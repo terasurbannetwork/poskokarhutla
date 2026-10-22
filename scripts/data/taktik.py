@@ -47,12 +47,12 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "lance_tambah_cm": (20.0, AS, "lance = bara tinggi + 20 cm, dibulatkan NAIK ke kelipatan 50 cm"),
     "lance_langkah_cm": (50.0, AS, "kelipatan panjang lance"),
     "wt_rusak_cm": (-40.0, BS, "PP 57/2016 jo. PP 71/2014: muka air tanah gambut > 0,4 m di bawah permukaan = kriteria rusak"),
-    "sekat_kanal_km": (2.0, AS, "kanal <= 2 km dari kompleks"),
+    "sekat_kanal_km": (2.0, AS, "kanal <= 2 km dari cluster"),
     "kg_per_mj": (0.368, BV, "Wooster dkk. 2005 JGR 110 D24311; dari ingatan (abstrak hanya memuat r2 0,98); koefisien dari biomassa NYALA, bukan bara gambut"),
     "frp_detik": (600, BS, "satu pindaian Himawari-9 = 10 menit"),
     "himawari_sel_min": (3, AS, "< 3 sel dalam radius: FRE terlalu jarang"),
     "himawari_umur_jam": (6, AS, "himawari.json harus <= 6 jam SEBELUM tugas_kompleks.dibuat; sesudahnya tidak dipakai"),
-    "setengah_sel_km": (1.0, BS, "setengah sel Himawari 2 km, ditambahkan ke jari-jari ekuivalen kompleks"),
+    "setengah_sel_km": (1.0, BS, "setengah sel Himawari 2 km, ditambahkan ke jari-jari ekuivalen cluster"),
     "target_hari": (3, AS, "target kurung T hari untuk kebutuhan; sama dengan operasi.json ringkas_T3 dan laci Ringkasan"),
     "debit_serang_lpm": (190, AS, "debit kerja satu selang serang 1,5 inci, dasar kehilangan tekanan (50 gpm; nilai lapangan belum diverifikasi)"),
     "gesek_c": (24, BV, "FL(psi per 100 ft) = C x (gpm/100)^2, C selang 1,5 inci = 24 (rumus kehilangan gesek dinas pemadam, IFSTA/NFPA; diingat dari buku ajar, teks belum dibuka)"),
@@ -72,7 +72,7 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "celup_kw": (0.75, AS, "daya satu pompa celup listrik untuk sumur bor (1 HP)"),
     "celup_per_regu": (1, AS, "satu pompa celup tiap regu bara"),
     "celup_per_genset": (2, AS, "pompa celup per genset"),
-    "beban_logistik_kw": (2.5, AS, "pengisian drone termal dan HT (0,5 kW) + penerangan malam (2 kW) per kompleks gambut; operasi gambut siang-malam (koef rotasi)"),
+    "beban_logistik_kw": (2.5, AS, "pengisian drone termal dan HT (0,5 kW) + penerangan malam (2 kW) per cluster gambut; operasi gambut siang-malam (koef rotasi)"),
     "faktor_daya": (0.8, AS, "cos phi beban motor kecil"),
     "lonjakan_start": (3, BV, "faktor lonjakan start langsung motor (umumnya 3-7x arus nominal); 3x dari arahan pemilik"),
     "genset_kva": ([1, 2, 3, 5, 7.5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 125, 150, 200], AS, "ukuran genset komersial umum (kVA); daftar katalog belum diverifikasi"),
@@ -109,7 +109,7 @@ CATATAN = {   # teks tetap, ditulis sekali di akar berkas (taktik_catatan) supay
     "dasar": "dasar.luas_ha = hitungan piksel (px24 x ha_bara_piksel), bukan terukur; rekonsiliasi_ha_per_piksel = operasi.json rekonsiliasi.ha_per_piksel_setara_resmi",
     "genset": "untuk celup = pompa celup listrik sumur bor (bor >= 16 m lebih dalam dari batas hisap 7,5 m); logistik = pengisian drone termal dan HT serta penerangan malam",
     "tangki": "tangki_fleksibel = isi per hari dan mobil_tangki = rit per hari, masing-masing 5.000 L (laporan BNPB, belum diverifikasi); dihitung dari air_l_hari",
-    "akses": "akses.jalan = titik jalan OSM terdekat dari pusat kompleks (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya kompleks yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
+    "akses": "akses.jalan = titik jalan OSM terdekat dari pusat cluster (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya cluster yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
     "pembasah": "Santoso dkk. 2021 (IJWF 30(5):378-390, doi 10.1071/WF20117) hanya menunjukkan: bahan pembasah nabati 1% memangkas waktu padam bara gambut sekitar 39% dibanding air murni (5%: sekitar 26%), uji laboratorium semprot permukaan, efek termal, volume air tetap sekitar 5,7 L per kg gambut; belum uji lapangan, dosis 1% berlaku untuk agen yang diuji dan produk lain (foam kelas A) mengikuti dosis label. Hidrofobisitas gambut tropis yang kering tak balik (drainase, kemarau, kebakaran; lapisan 0-50 cm paling rentan) adalah klaim terpisah, dari literatur Indonesia yang belum dibaca utuh (belum diverifikasi): studi gambut hidrofobik Kalimantan Tengah FTIR 2009 (agris.fao.org/search/es/records/65df24c863b8185d9cab1a4e), IJTech UI 2018 (ijtech.eng.ui.ac.id/download/article/805), studi Palangka Raya 2021 (e-journal.upr.ac.id/index.php/Agp/article/download/3696/2832). konsentrat_l_hari = air bara saja (tanpa air front) x 1%, bila memakai agen setara pada 1%. Cara: campur di jalur pompa dengan inductor atau proportioner foam, atau premix di tangki fleksibel, lalu semprot (diuji); injeksi belum diuji. Peringatan: pakai produk biodegradable berlabel kebakaran kelas A; jangan buang konsentrat ke kanal, sumber air minum atau kolam ikan; ikuti dosis label produk, lebih pekat tidak lebih baik. Peralatan dan ambang DC asumsi platform",
     "per_ha": "per_ha = total / luas operasi per skenario [rendah, tengah, tinggi]; personel_hari_rujukan = rasio regional BNPB 20-21 Okt, model tengah 24,75 (koef bara_regu catatan_regional)",
 }
@@ -381,7 +381,7 @@ def rekomendasi(t, op, kd, kl, ak, himawari, koef, omc_hari, tugas_dibuat, pm25=
                "perahu atau motor trail (asumsi platform)")
     # darat_selang
     if dekat and darat:
-        tambah("darat_selang", f"Air {air:g} km dari kompleks (batas {kanal_dekat:g} km) dan akses darat "
+        tambah("darat_selang", f"Air {air:g} km dari cluster (batas {kanal_dekat:g} km) dan akses darat "
                + (f"jalan kaki {kaki:g} km" if kaki is not None and kaki <= AMBANG["kaki_selang_km"] else f"jalan utama {jalan:g} km")
                + ", regu bisa menyedot dari kanal dan menyerang langsung.", PMP, selang())
     # sumur_bor
@@ -629,7 +629,7 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     n = sum("rekomendasi" in k for k in out["kompleks"])
     pb = sum(bool(((k.get("rekomendasi") or {}).get("kebutuhan") or {}).get("pembasah")) for k in out["kompleks"])
-    print(f"taktik: {n}/{len(out['kompleks'])} kompleks mendapat rekomendasi, {sum('akses' in k for k in out['kompleks'])} analisis akses, {pb} pembasah")
+    print(f"taktik: {n}/{len(out['kompleks'])} cluster mendapat rekomendasi, {sum('akses' in k for k in out['kompleks'])} analisis akses, {pb} pembasah")
 
 
 KOEF = {k: {"lo": v[0], "mid": v[1], "hi": v[2]} for k, v in {

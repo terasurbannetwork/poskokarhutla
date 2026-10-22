@@ -271,7 +271,7 @@ def tambah(hasil, titik=None, dem=None):
         e["air"] = {"elev_m": e0, "sumber": sumber}
         n_s += 1
         n_b += any(s["beda_tinggi_m"] is not None for s in sumber)
-    print(f"air_dem: {n_s}/{len(hasil)} kompleks punya sumber air <= {CARI_KM:g} km, {n_b} dengan beda tinggi, {dem.diunduh} ubin DEM")
+    print(f"air_dem: {n_s}/{len(hasil)} cluster punya sumber air <= {CARI_KM:g} km, {n_b} dengan beda tinggi, {dem.diunduh} ubin DEM")
     return n_s, n_b
 
 

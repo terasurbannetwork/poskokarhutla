@@ -163,14 +163,14 @@ const Insight = {
     const G = S.bukti?.gambut; if (!G?.n_kering) return "";
     const pv = Object.entries(G.prov || {}).sort((a, b) => b[1] - a[1]), U = this.uk(), W = U.W, L = U.L, rh = 30, mx = Math.max(1, ...pv.map(x => x[1])), X = v => v / mx * (W - L - 80);
     const g = pv.map(([k, n], i) => { const y = i * rh;
-      return `<g data-prov="${esc(k)}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(k))}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(n))}" height="${rh - 10}" fill="#7a4a2c" data-tip="<b>${esc(namaProv(k))}</b><br>${fmt(n)} kompleks konsesi berlahan gambut di sel Siaga atau Awas"/><g class="gf" style="--i:${i}">${this.p(L + X(n) + 8, y + 5, fmt(n), "#7a4a2c")[0]}</g></g>`; }).join("");
-    const R = (G.daftar || []).map(d => ({...d, nm: d.id})), kol = [{k: "nm", h: "Kompleks", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.prov), s: r => `<span translate="no">${esc(namaProv(r.prov))}</span>`},
+      return `<g data-prov="${esc(k)}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(k))}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(n))}" height="${rh - 10}" fill="#7a4a2c" data-tip="<b>${esc(namaProv(k))}</b><br>${fmt(n)} cluster konsesi berlahan gambut di sel Siaga atau Awas"/><g class="gf" style="--i:${i}">${this.p(L + X(n) + 8, y + 5, fmt(n), "#7a4a2c")[0]}</g></g>`; }).join("");
+    const R = (G.daftar || []).map(d => ({...d, nm: d.id})), kol = [{k: "nm", h: "Cluster", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.prov), s: r => `<span translate="no">${esc(namaProv(r.prov))}</span>`},
       {k: "lv", h: "Status", v: r => r.lv, s: r => pill(r.lv)}, {k: "dc", h: "DC", n: 1, v: r => r.dc, s: r => r.dc != null ? fmt(r.dc) : "–"}, {k: "spi", h: "SPI-3", n: 1, v: r => r.spi3, s: r => r.spi3 != null ? F2(r.spi3) : "–"}, {k: "titik", h: "Titik panas tercatat", n: 1, v: r => r.titik, s: r => fmt(r.titik)}];
-    Kartu.leg([["#7a4a2c", "kompleks konsesi berlahan gambut di sel Siaga atau Awas"]]);
+    Kartu.leg([["#7a4a2c", "cluster konsesi berlahan gambut di sel Siaga atau Awas"]]);
     const dcMaks = Math.max(0, ...R.map(r => r.dc || 0));
-    return this.ex(`${this.hl(fmt(G.n_kering) + " dari " + fmt(G.n_gambut) + " kompleks konsesi")} berlahan gambut berada di sel kekeringan Siaga atau Awas${dcMaks ? `, DC tertinggi ${this.hl(fmt(dcMaks))}` : ""}`, "", "",
-      `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Konsesi gambut mengering per provinsi">${g}</svg>` + (R.length ? this.tabel("gambut", kol, R, r => `data-prov="${esc(r.prov)}"`, 8, `kompleks teratas (dari ${fmt(G.n_kering)} di sel Siaga atau Awas)`) : "") + `<p style="margin:12px 2px 0"><a href="../">Lihat titik panas dan konsesi di halaman Karhutla</a></p>`,
-      `Indikator kasar per sel 0,5°, tanpa data tinggi muka air gambut; kompleks tanpa nama. Sumber: Pantau Bencana, konsesi dan titik panas dari halaman Karhutla`); },
+    return this.ex(`${this.hl(fmt(G.n_kering) + " dari " + fmt(G.n_gambut) + " cluster konsesi")} berlahan gambut berada di sel kekeringan Siaga atau Awas${dcMaks ? `, DC tertinggi ${this.hl(fmt(dcMaks))}` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Konsesi gambut mengering per provinsi">${g}</svg>` + (R.length ? this.tabel("gambut", kol, R, r => `data-prov="${esc(r.prov)}"`, 8, `cluster teratas (dari ${fmt(G.n_kering)} di sel Siaga atau Awas)`) : "") + `<p style="margin:12px 2px 0"><a href="../">Lihat titik panas dan konsesi di halaman Karhutla</a></p>`,
+      `Indikator kasar per sel 0,5°, tanpa data tinggi muka air gambut; cluster tanpa nama. Sumber: Pantau Bencana, konsesi dan titik panas dari halaman Karhutla`); },
 
   /* 9. kabupaten kandidat sering kering: temuan jujur, tanpa menyebut satu pun "berulang" bila ujinya tak lolos */
   exBerulang() {

@@ -97,7 +97,7 @@ export function buatSumber(kluster, pltu, A, o = {}) {
   const grup = [], sumber = [], nApi = o.nApi ?? KONF.nApi;
   const tinggi = (gambut, frp) => { const s = Math.min(1, frp / 8000); return gambut ? [30, 300 + 500 * s] : [100, 500 + 1500 * s]; };
   const buatApi = (p, g) => { const [lo, hi] = tinggi(p.gambut, p.frp24); sumber.push({g, jenis: "api", id: p.id, lat: p.lat, lon: p.lon, Q: emisiApi(p.frp24, p.gambut, p.lintasan), gambut: !!p.gambut, lintasan: p.lintasan || KONF.lintasanCadangan, zlo: lo, zhi: hi, frp: p.frp24}); };
-  P.slice(0, nApi).forEach(p => { grup.push({id: p.id, jenis: "api", nama: p.kab ? `Kompleks ${p.kab} ${p.id}` : `Kompleks ${p.id}`, kab: p.kab || "", prov: p.prov || "", frp: p.frp24, luas: p.luas, lat: p.lat, lon: p.lon, konsesi: p.konsesi || []}); buatApi(p, grup.length - 1); });
+  P.slice(0, nApi).forEach(p => { grup.push({id: p.id, jenis: "api", nama: p.kab ? `Cluster ${p.kab} ${p.id}` : `Cluster ${p.id}`, kab: p.kab || "", prov: p.prov || "", frp: p.frp24, luas: p.luas, lat: p.lat, lon: p.lon, konsesi: p.konsesi || []}); buatApi(p, grup.length - 1); });
   const sisa = new Map(); for (const p of P.slice(nApi)) { const k = Math.round(p.lat) + "|" + Math.round(p.lon), q = sisa.get(k) || {frp: 0, la: 0, lo: 0, gb: 0, daya: 0}; q.frp += p.frp24; q.daya += p.frp24 / Math.max(1, p.lintasan || KONF.lintasanCadangan); q.la += p.lat * p.frp24; q.lo += p.lon * p.frp24; q.gb += p.gambut ? p.frp24 : 0; sisa.set(k, q); }
   const lump = [...sisa.values()].sort((a, b) => b.frp - a.frp).slice(0, o.nLump ?? KONF.nLump);
   if (lump.length) { grup.push({id: "lain", jenis: "api", nama: "Api lain", frp: lump.reduce((s, q) => s + q.frp, 0)}); const g = grup.length - 1;
@@ -304,7 +304,7 @@ export function bandingKota(prak, jiwa, pmDasar, pmSkn) {
 export const ENS = {n: 24, sdAngin: .2, sdArah: 10, sdBlh: .25, sdApi: .35, sdPltu: .2};
 export const SEKOLAH = {luarS: .25, fs: .8, luarR: .1, fr: .6};
 export const ASUMSI = [
-  {nama: "Emisi api (non-gambut)", nilai: `jumlah FRP 24 jam / lintasan teramati (cadangan ${KONF.lintasanCadangan}) x koreksi ${String(KONF.koreksiApi).replace(".", ",")} x ${String(KONF.dmFre).replace(".", ",")} kg/MJ x ${String(KONF.efMineral).replace(".", ",")} g PM2,5/kg`, sumber: "Wooster dkk. 2005 (kg per MJ); Andreae dan Merlet 2001, hutan tropis (semak dan pertanian lebih rendah, ini batas atas); lintasan dari hotspot24.json per kompleks"},
+  {nama: "Emisi api (non-gambut)", nilai: `jumlah FRP 24 jam / lintasan teramati (cadangan ${KONF.lintasanCadangan}) x koreksi ${String(KONF.koreksiApi).replace(".", ",")} x ${String(KONF.dmFre).replace(".", ",")} kg/MJ x ${String(KONF.efMineral).replace(".", ",")} g PM2,5/kg`, sumber: "Wooster dkk. 2005 (kg per MJ); Andreae dan Merlet 2001, hutan tropis (semak dan pertanian lebih rendah, ini batas atas); lintasan dari hotspot24.json per cluster"},
   {nama: "Emisi api (gambut)", nilai: `jumlah FRP 24 jam / lintasan teramati x koreksi ${String(KONF.koreksiApi).replace(".", ",")} x ${String(KONF.dmGambut).replace(".", ",")} kg/MJ x ${String(KONF.efGambut).replace(".", ",")} g PM2,5/kg`, sumber: "ASUMSI untuk kg/MJ: orde GFAS (Kaiser dkk. 2012, Heil 2010), belum dicek ke tabelnya; gambut membara ber-FRP kecil tetapi bahan kering besar. 17,3 g/kg: Jayarathne dkk. 2018, sama dengan atribusi pipeline"},
   {nama: "Koreksi api kecil dan tertutup awan", nilai: `x ${String(KONF.koreksiApi).replace(".", ",")}`, sumber: "ASUMSI: VIIRS 375 m tidak melihat api kecil dan awan atau asap menutup sebagian; belum dikalibrasi"},
   {nama: "Faktor skala K", nilai: "satu pengali terpisah pada asap api di kota, dihitung dari median target/model; ditampilkan di kartu Kecocokan skala", sumber: "K jauh dari 1 (di atas 3 atau di bawah 1/3) berarti emisi model salah skala secara struktural, bukan galat satuan"},
@@ -349,7 +349,7 @@ export function* urutGen(A, prak, dasar, K, jiwa, pmDasar, o = {}) {
 export const SKENARIO = [
   {id: "dasar", nama: "Dasar", skn: {}},
   {id: "api50", nama: "Api padam 50%", skn: {fApi: .5}},
-  {id: "kompleks", nama: "Padamkan kompleks", skn: null},
+  {id: "kompleks", nama: "Padamkan cluster", skn: null},
   {id: "balik", nama: "Angin berbalik", skn: {anginPutar: Math.PI}},
   {id: "lemah", nama: "Angin melemah", skn: {anginKali: .5}},
   {id: "pltu", nama: "PLTU mati", skn: {fPltu: 0}}
@@ -368,7 +368,7 @@ export const BATAS = [
   "Bila pipeline menolak atribusi api suatu hari di suatu kota (model lebih dari 1,5 kali CAMS, porsi null), PM2,5 kota itu dibiarkan apa adanya di skenario dan diberi tanda bintang di label; kota itu tidak ikut menentukan peringkat perlakuan.",
   "Jiwa-jam yang dihindari adalah perkiraan kasar dengan rentang (porsi api x0,7 sampai x1,3; infiltrasi sekolah x0,5 sampai x1,5), bukan hitungan pasti.",
   "Skenario mengubah prakiraan model (belum dikoreksi ke alat ukur) di tiap kota menurut nisbah model; nilainya perkiraan, bukan nasihat medis.",
-  "Sumber di luar 80 kompleks terbesar digabung per sel 1 derajat; kompleks dan PLTU di luar kisi angin dibuang.",
+  "Sumber di luar 80 cluster terbesar digabung per sel 1 derajat; cluster dan PLTU di luar kisi angin dibuang.",
   `Pita ketidakpastian dari ensemble ${ENS.n} anggota (benih, tinggi lapisan campuran, angin, emisi diganggu; simpangan emisi api diturunkan dari galat kecocokan skala): p10 dan p90 adalah sebaran anggota, bukan selang kepercayaan statistik, dan galat model fisikanya sendiri tidak ikut tercakup.`,
   "Kecocokan skala dibandingkan dengan atribusi CAMS di kota (tinggalkan-satu); sebagian melingkar karena K dan target sama-sama dari atribusi, dan itu bukan validasi terhadap alat ukur di tanah, yang belum ada.",
   "Peringkat perlakuan memakai biaya satuan asumsi (masker, pembersih udara, regu pemadam, selisih biaya pembangkit) yang bukan angka resmi; orang-hari terpapar = jam di atas 55,5 µg/m³ dibagi 24 dikali penduduk kota, tanpa membedakan umur atau kecamatan.",

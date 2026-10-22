@@ -280,7 +280,7 @@ slide("provinsi", "Kondisi {prov}", "situasi", c => c.D.sejarah.prov[c.prov] ? n
       ...(i19 >= 0 ? [{a: selisih(ini, tt[i19]), k: `titik 2026 s.d. ${tglK(b)} dibanding setahun penuh 2019 (${fmt(tt[i19])} titik)`}] : []),
       ...(lp.sipongi_ha ? [{a: fmt(lp.sipongi_ha) + " ha", k: `luas terbakar resmi KLHK SiPongi s.d. ${lp.sipongi_sd}`}] : []),
       ...(lp.padam_ha ? [{a: fmt(lp.padam_ha) + " ha", k: `luas dipadamkan, rekap BNPB s.d. ${tglP(c.D.operasi?.per || c.tgl)}`}] : []),
-      {a: fmt(lp.luas_kompleks) + " ha", k: `luas ${fmt(lp.kompleks)} kejadian api yang terdeteksi satelit (kluster titik, posisi laporan ${tglK(cut)})`},
+      {a: fmt(lp.luas_kompleks) + " ha", k: `luas ${fmt(lp.kompleks)} kejadian api yang terdeteksi satelit (cluster titik, posisi laporan ${tglK(cut)})`},
     ],
     judul: [R("Titik panas "), R(c.namaProv, C.biru), R(` sampai ${tglK(b)} 2026 sudah `), R(i19 >= 0 ? selisih(ini, tt[i19]).replace(/^[+-]/, "") + (ini >= tt[i19] ? " di atas" : " di bawah") : "", C.jingga), R(" tahun penuh 2019 dan setara "), R(pct(ini, tt[ip]) + " persen", C.jingga), R(" tahun penuh " + th[ip])],
     sub: [R(fmt(lp.kompleks), C.jingga, true), R(` kejadian api di `), R(fmt(aktif), C.jingga, true), R(` kab/kota; status `), R(levelProv(c), C.biru, true), R(` (posisi laporan ${tglK(cut)})`)],
@@ -411,7 +411,7 @@ slide("lampiran_kab", "Lampiran: titik dan luas per kab/kota", "lampiran", c => 
   a[0] && (a[0].on = true); b[0] && (b[0].on = true);
   rangka(k, c, {
     judul: [R("Lampiran: "), R(a[0]?.l || "", C.jingga), R(" paling banyak titik panas dalam 12 hari terakhir di "), R(c.namaProv, C.biru)],
-    sumber: `Laporan harian ${c.merek} s.d. ${tglP(c.tgl)} (MODIS, VIIRS S-NPP, NOAA-20); luas kejadian api dari kluster titik VIIRS berdekatan, posisi laporan ${tglP(c.D.laporan.cutoff.slice(0, 10))}`,
+    sumber: `Laporan harian ${c.merek} s.d. ${tglP(c.tgl)} (MODIS, VIIRS S-NPP, NOAA-20); luas kejadian api dari cluster titik VIIRS berdekatan, posisi laporan ${tglP(c.D.laporan.cutoff.slice(0, 10))}`,
   });
   judulBagian(k, 0.6, 1.6, 5.8, "Titik panas, 12 hari terakhir");
   batangH(k, 0.6, 2.1, 5.8, 4.55, a, {lw: 2.0, s: 8});

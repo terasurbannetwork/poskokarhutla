@@ -172,12 +172,12 @@
       const har = p.harian || [], tot = har.reduce((a, x) => a + x[1], 0), puncak = har.reduce((a, x) => x[1] > (a?.[1] || 0) ? x : a, null);
       const lini = har.length ? `<div class="ak-ml"><span class="ak-pl">${fmt(tot)}</span> titik panas${puncak ? ` · puncak <b>${tgl(puncak[0])}</b> (${fmt(puncak[1])})` : ""}</div>${A.grafikHarian(har, Math.max(hariIniWIB(), hariKe(har[har.length - 1][0])))}`
         : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
-      const kom = (p.kompleks || []).length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Kompleks</th><th class="n">Titik panas</th><th>Rentang</th></tr></thead><tbody>${p.kompleks.map((k, i) => `<tr data-kom="${esc(k.id)}" tabindex="0"><td class="n">${i + 1}</td><td>${esc(k.id)}</td><td class="n">${fmt(k.n)}</td><td class="ak-mt">${rentang(k.dari, k.sampai)}</td></tr>`).join("")}</tbody></table></div>`
-        : `<p class="fnd">Tidak ada kompleks api aktif di konsesi ini dalam 7 hari terakhir.</p>`;
+      const kom = (p.kompleks || []).length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Cluster</th><th class="n">Titik panas</th><th>Rentang</th></tr></thead><tbody>${p.kompleks.map((k, i) => `<tr data-kom="${esc(k.id)}" tabindex="0"><td class="n">${i + 1}</td><td>${esc(k.id)}</td><td class="n">${fmt(k.n)}</td><td class="ak-mt">${rentang(k.dari, k.sampai)}</td></tr>`).join("")}</tbody></table></div>`
+        : `<p class="fnd">Tidak ada cluster aktif di konsesi ini dalam 7 hari terakhir.</p>`;
       const tt = p.titik || [];
       const tp = tt.length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Waktu</th><th class="n">Daya api (MW)</th><th>Satelit</th></tr></thead><tbody data-tt>${tt.slice(0, AWAL_TITIK).map(barisTitik).join("")}</tbody></table></div>${tt.length > AWAL_TITIK ? `<button type="button" class="btn" data-semua-tt>Tampilkan semua (${fmt(tt.length)})</button>` : ""}`
         : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
-      isi = lipatA("Linimasa titik panas 2026", lini) + lipatA("Kompleks api 7 hari", kom) + lipatA("Titik panas terbaru", tp);
+      isi = lipatA("Linimasa titik panas 2026", lini) + lipatA("Cluster 7 hari", kom) + lipatA("Titik panas terbaru", tp);
     }
     return `<div class="hd"><div class="hd-isi"><span class="hd-ey">Perusahaan</span><h2 title="${esc(p.nama)}">${esc(p.nama)}</h2>
       <div class="hd-meta">${bendera_}${grup ? `<span class="ak-gr" data-tip="${esc(grup)}">${esc(grup)}</span>` : ""}<span>${esc(p.prov || "")}</span>${indPil(p.industri)}</div></div>
@@ -194,7 +194,7 @@
     const bd = el.querySelector(".bd");
     el.querySelector(".tutup").onclick = () => { el.classList.remove("on"); lepasDenyut(); };
     bd.onclick = e => {
-      const k = e.target.closest("[data-kom]"); if (k) { if (!S.kluster?.features.some(f => f.properties.id === k.dataset.kom)) return typeof toast === "function" && toast("Kompleks ini sudah tidak aktif"); return Laci.buka(k.dataset.kom); }
+      const k = e.target.closest("[data-kom]"); if (k) { if (!S.kluster?.features.some(f => f.properties.id === k.dataset.kom)) return typeof toast === "function" && toast("Cluster ini sudah tidak aktif"); return Laci.buka(k.dataset.kom); }
       const t = e.target.closest("[data-lat]"); if (t) { const lat = +t.dataset.lat, lon = +t.dataset.lon; bukaTab("peta"); lepasDenyut();
         requestAnimationFrame(() => { peta.flyTo({center: [lon, lat], zoom: 13, duration: 900});
           const m = document.createElement("div"); m.className = "ak-dn"; denyut = new maplibregl.Marker({element: m}).setLngLat([lon, lat]).addTo(peta); }); return; }
@@ -274,7 +274,7 @@
       <div class="ak-kpm"><span class="ak-j" style="--w:${j[1]}">${esc(j[0])}</span>${r ? rspo(r) : ""}${r?.titik_7h ? `<span class="ak-rs ak-rsa">● Masih ada api</span>` : ""}</div>
       <div class="ak-kps">${ub(luas != null ? fmt(luas) : "–", "ha konsesi")}${ub(r?.gambut_ha != null ? fmt(r.gambut_ha) : "–", `ha gambut${r?.gambut_ha && luas ? ` · ${pc(r.gambut_ha / luas)}` : ""}`)}
         ${r ? ub(fmt(r.titik), "titik panas 2026") + ub(fmt(lama(r)), "titik > 2 hari") + ub(fmt(r.titik_7h || 0), "titik 7 hari", r.titik_7h ? "ak-tck" : "")
-          + ub(fmt((r.kejadian || []).length), "kompleks") + ub(fmt(r.luas_bakar_ha || 0), `ha terbakar · ${pc(r.persen_bakar)} konsesi`, "ak-kpl") : ""}</div>
+          + ub(fmt((r.kejadian || []).length), "cluster") + ub(fmt(r.luas_bakar_ha || 0), `ha terbakar, ${pc(r.persen_bakar)} konsesi`, "ak-kpl") : ""}</div>
       ${r ? "" : `<p class="ak-kpk">Tidak ada titik panas di konsesi ini sepanjang 2026.</p>`}
       ${ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : ""}</div>`; };
   const _bukaLaci = Laci.buka.bind(Laci);
@@ -284,7 +284,7 @@
     const sek = [...document.querySelectorAll("#laci details.lipat")].find(d => (d.querySelector("summary")?.textContent || "").startsWith("Lahan & penanggung jawab"));
     if (!sek) return;
     const urut = ps.map(p => [p, d26[p.id]]).sort((a, b) => (b[1]?.titik || 0) - (a[1]?.titik || 0));
-    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di kompleks ini</div>${urut.length ? urut.map(([p, r]) => barisPer(p, r)).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di kompleks ini.</p>`}
+    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di cluster ini</div>${urut.length ? urut.map(([p, r]) => barisPer(p, r)).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di cluster ini.</p>`}
       <p class="ak-kpk">Sumber: NASA FIRMS VIIRS 375 m di poligon konsesi GFW/Trase, 1 Jan 2026 s.d. hari ini; terbakar = indikasi dari piksel VIIRS.</p></div>`);
     sek.querySelector(".ak-laci").onclick = e => { const b = e.target.closest("[data-ak-buka]"); if (b && !e.target.closest("[data-tip]")) A.buka(b.dataset.akBuka); }; }); };
   /* tooltip kompleks (konsesi.js): nama perusahaan, paling banyak 3 */

@@ -51,7 +51,7 @@
   /* ================= pop-up peta saat masuk ================= */
   function ringkasan(tugas) {
     const aktif = (tugas || []).filter(t => t.status === "buka"), terlambat = aktif.filter(t => t.terlambat).length;
-    return {aktif: aktif.length, terlambat, teks: `${aktif.length} kompleks aktif, ${terlambat} terlambat`};
+    return {aktif: aktif.length, terlambat, teks: `${ang(aktif.length, 0)} cluster aktif, ${ang(terlambat, 0)} terlambat`};
   }
   /* baris titik panas /api/titik di wilayah akun: kolom wilayah berisi "kodeprov|kabupaten|kecamatan" */
   function titikWilayah(j, saya) {

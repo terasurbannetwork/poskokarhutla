@@ -292,7 +292,7 @@ def akses(simpul, sisi, kompleks, basis, n_daops=3, n_posko=2, detik=None):
     out = {}
     for k in kompleks:
         if detik and time.time() - t0 > detik:
-            print(f"akses: batas waktu {detik} dtk, {len(out)}/{len(kompleks)} kompleks selesai (sisanya garis lurus)", file=sys.stderr)
+            print(f"akses: batas waktu {detik} dtk, {len(out)}/{len(kompleks)} cluster selesai (sisanya garis lurus)", file=sys.stderr)
             break
         benih = {}
         for i, d in dekat(ind, simpul, k["lat"], k["lon"], KAKI_MAKS_KM):
@@ -368,7 +368,7 @@ def harian():
             e.pop("air", None)
         n_s, n_b = air_dem.tambah(hasil)
         air = {"kompleks_dengan_sumber": n_s, "dengan_beda_tinggi": n_b, "cari_km": air_dem.CARI_KM, "dem": air_dem.DEM_KET,
-               "arti": "beda_tinggi_m = elevasi kompleks - elevasi sumber (positif: air harus dinaikkan); km = garis lurus ke sumber, jarak selang = km x 1,2 (hitungEstafet)"} if n_s else None
+               "arti": "beda_tinggi_m = elevasi cluster - elevasi sumber (positif: air harus dinaikkan); km = garis lurus ke sumber, jarak selang = km x 1,2 (hitungEstafet)"} if n_s else None
     except Exception as e:     # sumber air/DEM gagal tidak boleh menjatuhkan rute
         print(f"akses: air_dem dilewati ({e.__class__.__name__}: {e})", file=sys.stderr)
     out = {"_meta": {"laju_kmj": LAJU, "kaki_kmj": KAKI_KMJ, "batas_jam": BATAS_JAM, "kompleks": len(kompleks), "terjangkau": len(hasil),

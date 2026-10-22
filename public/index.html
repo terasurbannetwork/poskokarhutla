@@ -10,23 +10,23 @@
 <link rel="alternate" hreflang="en" href="https://pantau.terasurban.com/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://pantau.terasurban.com/">
 <link rel="icon" href="./img/logo.svg?v=2" type="image/svg+xml">
-<meta name="description" content="Pemantauan titik panas, bahaya cuaca kebakaran, kompleks kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi Indonesia.">
+<meta name="description" content="Pemantauan titik panas, bahaya cuaca kebakaran, cluster, dan simulasi penjalaran api 72 jam untuk 38 provinsi Indonesia.">
 <!-- og -->
 <link rel="canonical" href="https://pantau.terasurban.com/">
 <meta name="theme-color" content="#0b2545">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pantau Bencana">
 <meta property="og:locale" content="id_ID">
-<meta property="og:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
-<meta property="og:description" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta property="og:title" content="Pantau Bencana, Karhutla: titik panas, cluster &amp; asap hari ini">
+<meta property="og:description" content="12 Okt: 19.901 titik panas, 194 cluster prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
 <meta property="og:url" content="https://pantau.terasurban.com/">
 <meta property="og:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta property="og:image:alt" content="12 Okt: 19.901 titik panas, 194 cluster prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
-<meta name="twitter:description" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta name="twitter:title" content="Pantau Bencana, Karhutla: titik panas, cluster &amp; asap hari ini">
+<meta name="twitter:description" content="12 Okt: 19.901 titik panas, 194 cluster prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
 <meta name="twitter:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
 <!-- /og -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -274,6 +274,9 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .prio{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bad);margin-left:5px;vertical-align:middle}
 .pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.fs-pola{font-size:11px;color:var(--ink2)}
+.fs-ya{background:color-mix(in oklch,var(--brand2) 12%,transparent);color:var(--brand2)}
+.fs-mungkin{background:transparent;color:var(--ink2);border:1px dashed var(--ink2)}
 .l0{background:oklch(62% .16 150 / .14);color:oklch(45% .13 150)}
 .pill.nt{background:var(--surface);color:var(--ink2);border:1px solid var(--line)}
 .pill.nt::before{display:none}
@@ -1444,7 +1447,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
 <body>
 <div id="tip" role="tooltip"></div>
 <dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
-<dialog class="dlg dlg-laci" id="dlgLaci" aria-label="Rincian kompleks kebakaran"></dialog>
+<dialog class="dlg dlg-laci" id="dlgLaci" aria-label="Rincian cluster"></dialog>
 <header class="top">
   <div class="mark">
     <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -1473,7 +1476,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-m="kom" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg>Kompleks Api</button><button data-m="posko" aria-pressed="false" hidden>Posko (Ajuan)</button></div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-m="kom" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg>Cluster api</button><button data-m="posko" aria-pressed="false" hidden>Posko (Ajuan)</button></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, kecamatan, atau K001" autocomplete="off" aria-label="Cari wilayah">
@@ -1495,7 +1498,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
         <details open><summary>Api & respons</summary>
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label style="display:none"><input type="checkbox" data-l="himawari" checked> Himawari 10 menit</label><!-- ikut tombol Satelit (pemilik, 19 Okt 2026) -->
-          <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
+          <label><input type="checkbox" data-l="kluster" checked> Cluster</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Belum padam per kabupaten</label>
@@ -1537,7 +1540,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
     <div class="dok" id="dok">
       <div class="box" id="legenda"></div>
     </div>
-    <aside class="card laci" id="laci" aria-label="Rincian kompleks kebakaran"></aside>
+    <aside class="card laci" id="laci" aria-label="Rincian cluster"></aside>
   </section>
 
   <!-- ================= SIMULASI ================= -->
@@ -1567,7 +1570,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
-  <section class="page scroll" id="p-kompleks" aria-label="Kompleks api (pindah ke Insight)"></section>
+  <section class="page scroll" id="p-kompleks" aria-label="Cluster (pindah ke Insight)"></section>
   <!-- Tentang sebagai tab (tanpa pindah halaman): tentang.html?tertanam=1 tanpa header situsnya sendiri -->
   <section class="page" id="p-tentang" aria-label="Tentang Pantau Bencana"><iframe id="tentangBingkai" title="Tentang Pantau Bencana" style="width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s cubic-bezier(.16,1,.3,1)" onload="this.style.opacity=1" loading="lazy"></iframe></section>
   <!-- ================= METODE ================= -->
@@ -1630,7 +1633,7 @@ const STATUS_AKSI = [
   ["Patroli pencegahan sesuai jadwal rutin", "Uji pompa 3 menit tiap 3 hari, uji 10 menit tiap minggu", "Inventarisasi sumber air dan akses jalan"],
   ["Ground-check maksimal 1x24 jam oleh tim 2 orang bermotor dengan alat tangan", "Patroli terpadu harian (Manggala Agni, TNI, Polri, MPA)", "Laporkan hasil: api ditemukan, tidak ditemukan, atau tertutup awan"],
   ["Olah data titik maksimal 15 menit sejak diterima", "Kirim regu terdekat untuk pemadaman awal dengan pompa jinjing", "Isi tangki dan pasang jalur selang dari sumber air terdekat", "Laporan kejadian maksimal 1x24 jam"],
-  ["Gabungkan regu dan tunjuk komandan lapangan; regu yang datang melapor personel dan alat", "Ajukan water bombing bila akses darat sulit", "Di gambut: pisahkan regu sekat bakar, api permukaan, dan injeksi gambut", "Mop-up sampai 30 m dari sayap api terluar", "Bila beberapa kompleks prioritas di satu kabupaten: usulkan penetapan status siaga darurat ke bupati"],
+  ["Gabungkan regu dan tunjuk komandan lapangan; regu yang datang melapor personel dan alat", "Ajukan water bombing bila akses darat sulit", "Di gambut: pisahkan regu sekat bakar, api permukaan, dan injeksi gambut", "Mop-up sampai 30 m dari sayap api terluar", "Bila beberapa cluster prioritas di satu kabupaten: usulkan penetapan status siaga darurat ke bupati"],
 ];
 const FWI_KELAS = [["Rendah", "0–1"], ["Sedang", "2–6"], ["Tinggi", "7–13"], ["Sangat tinggi", "> 13"]];
 const kelasFWI = v => v < 2 ? 0 : v < 7 ? 1 : v < 14 ? 2 : 3;
@@ -1644,7 +1647,7 @@ const SINGKAT_PROV = {12: "Sumut", 13: "Sumbar", 16: "Sumsel", 19: "Babel", 21: 
 const namaProvHtml = k => SINGKAT_PROV[k] ? `<span class="nm-pjg">${esc(namaProv(k))}</span><span class="nm-pdk" title="${esc(namaProv(k))}">${SINGKAT_PROV[k]}</span>` : esc(namaProv(k));
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Kompleks"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["tentang", "Tentang"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["tentang", "Tentang"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
@@ -1755,7 +1758,7 @@ async function muatData() {
   { const lb = document.querySelector('#lapis input[data-l="pfvi"]')?.closest("label"); if (lb) lb.style.display = adaPfvi() ? "" : "none"; }
   $("#upd").innerHTML = `<span class="pjg">Data </span>${jamWIB(S.acuan || meta.dibuat).replace(" WIB", '<span class="pjg"> WIB</span>')}`; $("#upd").title = "Lintasan satelit terakhir; diolah " + jamWIB(meta.dibuat);
   const umur = (Date.now() - new Date(meta.dibuat)) / 36e5; S.basi = umur > 36;
-  if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status kompleks tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
+  if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status cluster tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
 }
 
 /* titik di hari terpilih? SATU hari kalender WIB (setara SiPongi/BNPB), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
@@ -1994,7 +1997,7 @@ const Peta = {
     peta.on("mouseleave", "prio-klaster", () => { peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
     peta.on("mousemove", "prio-klaster", e => { const f = e.features[0], id = f.properties.cluster_id, ev = e.originalEvent;
       if (tip._kl !== id) { tip._kl = id; peta.getSource("prio").getClusterLeaves(id, 8, 0).then(fs => { if (tip._kl !== id) return;
-        tampilTip(kartuTip({judul: `${fmt(f.properties.point_count)} kompleks prioritas`, kepala: ikon("api", "#c9503a"),
+        tampilTip(kartuTip({judul: `${fmt(f.properties.point_count)} cluster prioritas`, kepala: ikon("api", "#c9503a"),
           daftar: fs.map(x => [x.properties.id, esc(x.properties.kab || "")]),
           kaki: f.properties.point_count > 8 ? `+${fmt(f.properties.point_count - 8)} lainnya` : ""}), ev); }); }
       tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, ev.clientX + 14) + "px"; tip.style.top = Math.max(8, ev.clientY - tip.offsetHeight - 12) + "px"; });
@@ -2010,7 +2013,7 @@ const Peta = {
           /* luas terbakar dan belum padam (perkiraan satelit per provinsi) tampil berdua begitu data luas dimuat (ukuran Luas terbakar atau Belum padam; pemilik, 22 Okt 2026);
              urutannya membuat kolom kanan berisi hektar: titik|luas, kompleks|belum padam, FWI|prioritas */
           stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"],
-            ...(pk ? [["puncak", fmt(pk.luas[ph] || 0), `ha luas terbakar<br>${tglLain(S.pk.hari[ph])}`, "#d9600b"]] : []), ["api", kl.length, "kompleks aktif", "#5f6fb0"],
+            ...(pk ? [["puncak", fmt(pk.luas[ph] || 0), `ha luas terbakar<br>${tglLain(S.pk.hari[ph])}`, "#d9600b"]] : []), ["api", kl.length, "cluster aktif", "#5f6fb0"],
             ...(pk ? [["api", fmt(pk.belum[ph] || 0), `ha belum padam<br>${tglLain(S.pk.hari[ph])}`, "#c9503a"]] : []),
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : []), ["skor", pr, "prioritas", "#c9503a", pr > 0]], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
@@ -2140,9 +2143,9 @@ const Lapis = {
         if (!Lapis._klikUdara) Lapis._klikUdara = peta.on("click", "udara", e => { const id = e.features[0].properties.id, [jn] = id.split(":");
           const x = jn === "h" ? d.heli.find(h => "h:" + h.nama + h.prov === id) : jn === "a" ? d.aju.find(a => "a:" + a.nama === id) : d.omc.find(o => "o:" + o.nama === id);
           const kb = (k, v, pn) => `<div class="kb${pn ? " penuh" : ""}"><span>${k}</span><b>${v}</b></div>`;
-          const sel = jn === "h" ? [kb("Melayani", esc(namaProv(x.prov))), kb("Kompleks", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Terbang rata-rata", fmt(x.terbang_menit_rata) + " menit"),
+          const sel = jn === "h" ? [kb("Melayani", esc(namaProv(x.prov))), kb("Cluster", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Terbang rata-rata", fmt(x.terbang_menit_rata) + " menit"),
               kb("Siklus siram", "± " + fmt(x.siklus_menit) + " menit"), kb("Siram per jam", "± " + fmt(x.siram_per_jam)), kb("Landasan", fmt(x.landasan_m) + " m"), kb("Cakupan kumulatif", x.cakupan + "%")]
-            : jn === "a" ? [kb("Kompleks prioritas", fmt(x.kompleks.length)), kb("Jarak ke api", fmt(x.jarak_api) + " km"), kb("Ke pangkalan utama", x.ke_utama_km ? fmt(x.ke_utama_km) + " km" : "–"), kb("Avtur", "dikirim lewat darat", 1)]
+            : jn === "a" ? [kb("Cluster prioritas", fmt(x.kompleks.length)), kb("Jarak ke api", fmt(x.jarak_api) + " km"), kb("Ke pangkalan utama", x.ke_utama_km ? fmt(x.ke_utama_km) + " km" : "–"), kb("Avtur", "dikirim lewat darat", 1)]
             : [kb("Landasan", fmt(x.landasan_m) + " m"), kb("Ke pusat api", fmt(x.jarak_ke_pusat_api) + " km"), kb("Pesawat", "CN-295 / CASA 212", 1)];
           new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${jn === "o" ? "#2f6f8f" : "#d06a33"},rgba(11,37,69,.95))">
             <small>${jn === "h" ? "Pangkalan helikopter water bombing" : jn === "a" ? "Pangkalan aju helikopter" : "Pangkalan modifikasi cuaca"}</small><b>${esc(x.nama)}${x.icao ? " · " + x.icao : ""}</b></div>
@@ -2383,7 +2386,7 @@ function renderKPI() {
   const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())} · sehari penuh WIB`;
   const kart = [
     ["Titik panas", fmt(jml(S.hit)), `${nmR} · ${fmt(jml(S.tinggi))} keyakinan tinggi`],
-    ["Kompleks api", fmt(kl.length), "aktif 72 jam"],
+    ["Cluster", fmt(kl.length), "aktif 72 jam"],
     ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain siaga pemadaman`],
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],
   ];
@@ -2577,7 +2580,7 @@ function renderDaftarPosko() {
     const kecN = (x.nama || "").split(/,\s*Kec\.\s*/)[1], sub = x.tingkat === 2 ? `${x.id} · ${kecN ? "Kec. " + kecN : x.kab || ""} · ${x.jenis_posko === "aju" ? "posko aju" : "permanen"}` : "";
     const komp = x.tingkat === 2 ? x.kompleks.length : x.kompleks;
     return `<button class="pk-row t${x.tingkat}" data-pk="${x.id}">${ikon(x)}<span class="pk-nama"><b>${esc(nama)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span>
-      <span class="pk-chips">${chip(komp, "kompleks")}${x.prioritas ? chip(x.prioritas, "prioritas", "merah") : ""}</span></button>`; };
+      <span class="pk-chips">${chip(komp, "cluster")}${x.prioritas ? chip(x.prioritas, "prioritas", "merah") : ""}</span></button>`; };
   const bobot = u => { const x = S.semuaPosko.get(u.id); return (x.prioritas || 0) * 1e4 + (x.kompleks || 0); };
   for (const u of S.pusat.filter(u => !pv || u.prov === pv).sort((a, b) => bobot(b) - bobot(a))) {
     baris.push(row(S.semuaPosko.get(u.id)));
@@ -2610,8 +2613,8 @@ function renderDaftarKom() {
     return `<details class="kgp"${provs.length === 1 ? " open" : ""}><summary style="grid-template-columns:${KOL}"><span class="kg-nm">${lambang(pv)}<b>${namaProvHtml(pv)}</b><span class="pill nt">${fmt(xs.length)}</span></span>${ringkas(xs)}</summary>`
       + kabs.map(([kb, ys]) => `<details class="kgk"${kabs.length === 1 ? " open" : ""}><summary style="grid-template-columns:${KOL}"><span class="kg-nm"><b>${esc(kb)}</b><span class="pill nt">${fmt(ys.length)}</span></span>${ringkas(ys)}</summary><div class="kgi">${ys.map((f, n) => baris(f.properties, n)).join("")}</div></details>`).join("")
       + `</details>`; }).join("");
-  $("#rows").innerHTML = `<div class="tb kepala" style="grid-template-columns:${KOL}"><span></span><span>Kompleks</span><span class="n">Piksel 24j</span><span class="n">Hari</span><span style="text-align:right">Status</span></div>`
-    + (html || `<div class="kosong">Tidak ada kompleks aktif di wilayah ini.</div>`);
+  $("#rows").innerHTML = `<div class="tb kepala" style="grid-template-columns:${KOL}"><span></span><span>Cluster</span><span class="n">Piksel 24j</span><span class="n">Hari</span><span style="text-align:right">Status</span></div>`
+    + (html || `<div class="kosong">Tidak ada cluster aktif di wilayah ini.</div>`);
   terapkanUrut();
 }
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
@@ -2684,7 +2687,7 @@ const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e05
   kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
 const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
+  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
@@ -2758,7 +2761,7 @@ function renderLegenda() {
       ${z >= 5.8 ? `<span><i class="sw dot" style="background:#5f6fb0;border:2px solid #fff"></i>Posko kabupaten</span>` : ""}
       ${z >= 7.5 ? `<span><i class="sw dot" style="background:#2b8c86;border:2px solid #fff"></i>Posko permanen</span><span><i class="sw dot" style="background:#fff;border:2px solid #5f6fb0"></i>Posko aju</span>` : ""}` : ""}
       ${Peta.lihat("daops") ? `<span><i class="sw dot" style="background:#4f8fc4;border:2px solid #fff"></i>Markas Daops</span>` : ""}</div>
-    `}${S.panel === "riw" || !Peta.lihat("kluster") ? "" : `<div class="lbl" style="margin-top:8px">Status kompleks</div>
+    `}${S.panel === "riw" || !Peta.lihat("kluster") ? "" : `<div class="lbl" style="margin-top:8px">Status cluster</div>
     <div class="leg" style="margin-top:4px">${S.meta.status.map((s, i) => i === 0 || (i < 3 && z < 6) ? "" : `<span><i class="sw" style="background:${["#5a9e74", "#4f8fc4", "#e58a45", "#c9503a"][i]}"></i>${s}</span>`).join("")}</div>
 `}
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
@@ -2803,7 +2806,7 @@ $("#cari").addEventListener("input", e => {
   if (q.length < 2) { h.hidden = true; return; }
   const hasil = (indeksCari || []).filter(i => i.nama.toLowerCase().includes(q)).sort((a, b) => a.nama.toLowerCase().indexOf(q) - b.nama.toLowerCase().indexOf(q)).slice(0, 12);
   /* dikelompokkan: Wilayah lalu Kompleks; baris = nama · chip induk · lencana tingkat */
-  const grup = [["Wilayah", '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', hasil.filter(i => !i.kl)], ["Kompleks", IKON.api, hasil.filter(i => i.kl)]];
+  const grup = [["Wilayah", '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', hasil.filter(i => !i.kl)], ["Cluster", IKON.api, hasil.filter(i => i.kl)]];
   /* judul grup (Wilayah/Kompleks) disembunyikan (pemilik, 14 Okt 2026); lencana tingkat di tiap baris sudah cukup */
   const lain = window.Cari?.html(e.target.value.trim(), hasil.length) || "";
   h.innerHTML = !hasil.length && lain ? lain : hasil.length ? grup.filter(g => g[2].length).map(([n, ik, xs]) => xs.map(i => `<button data-k="${esc(i.kunci)}" ${i.kl ? "data-kl=1" : ""}><b>${esc(i.nama)}</b><span class="hs-in">${i.induk ? `<i>${esc(i.induk)}</i>` : ""}</span><span class="hs-lv hs-${i.lv}">${i.lv}</span></button>`).join("")).join("")
@@ -2819,6 +2822,9 @@ $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"
 document.addEventListener("click", e => { if (!e.target.closest(".cari")) $("#hasil").hidden = true; });
 
 /* ---------- laci kompleks ---------- */
+/* firespot (metode Kemenhut): properti dari pipeline; data lama tanpa properti = tidak tampil apa pun */
+const POLA_FIRESPOT = {HH: "High 2 hari", H: "High 1 hari", MH: "Medium dan High 2 hari", MMM: "Medium 3 hari berturut-turut", MM: "Medium 2 hari", M: "Medium 1 hari"};
+const firespotHtml = p => p.firespot !== "ya" && p.firespot !== "mungkin" ? "" : `<span class="pill ${p.firespot === "ya" ? "fs-ya" : "fs-mungkin"}" title="Metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut">${p.firespot === "ya" ? "Firespot" : "Mungkin api, perlu dicek"}</span>${POLA_FIRESPOT[p.pola] ? `<small class="fs-pola">${POLA_FIRESPOT[p.pola]}</small>` : ""}`;
 const Laci = {
   buka(id) {
     const f = S.kluster.features.find(f => f.properties.id === id); if (!f) return;
@@ -2840,11 +2846,11 @@ const Laci = {
             return `<rect x="${k * bw + bw * .15}" y="${24 - hh}" width="${bw * .7}" height="${hh}" rx=".8" fill="${j === v.length - 1 ? "#c9503a" : "#e58a45"}" data-tip="<b>${th[j]}</b><br>${fmt(x)} titik"/>${x ? `<text x="${k * bw + bw / 2}" y="${22 - hh}" text-anchor="middle" font-size="2.9" font-weight="700" fill="var(--ink2)" pointer-events="none">${lb(x)}</text>` : ""}<text x="${k * bw + bw / 2}" y="31" text-anchor="middle" font-size="2.6" fill="var(--ink2)" opacity=".8">'${String(th[j]).slice(2)}</text>`; }).join("")}</svg>`).join(""); })()}
         ${rw ? `<button class="btn btn-gelap" data-analisa style="justify-self:end">Analisa lengkap ›</button>` : ""}`; })();
     const ps = S.poskoDari.get(p.id), bp = bpbdDekat(p.lat, p.lon), dk = daopsDekat(p.lat, p.lon);
-    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">Kompleks ${esc(p.id)}</span><h2 title="${esc(p.kec)}, ${esc(p.kab)}">${esc(p.kec)}, ${esc(p.kab)}</h2>
-      <div class="hd-meta"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><span class="hd-ko" title="Koordinat pusat kompleks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</span></div></div>
+    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">Cluster ${esc(p.id)}</span><h2 title="${esc(p.kec)}, ${esc(p.kab)}">${esc(p.kec)}, ${esc(p.kab)}</h2>
+      <div class="hd-meta"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span>${firespotHtml(p)}<span class="hd-ko" title="Koordinat pusat cluster"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</span></div></div>
       <div class="hd-aksi"><button class="ik-btn" id="keSim" title="Simulasikan 72 jam" aria-label="Simulasikan 72 jam"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg></button>
         <a class="ik-btn" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}" title="Buka di Google Maps" aria-label="Buka di Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></a>
-        <button class="ik-btn" id="bagiK" title="Bagikan kompleks ini" aria-label="Bagikan kompleks ini"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+        <button class="ik-btn" id="bagiK" title="Bagikan cluster ini" aria-label="Bagikan cluster ini"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         <button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah padam, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap padam."}</div>`}
@@ -2877,7 +2883,7 @@ const Laci = {
           ? `<tr><td colspan="2">Muka air perkiraan di atas permukaan; gambut di bawahnya dianggap tidak terbakar.</td></tr>`
           : baris("Massa gambut terbakar", rt(b.m, "ton")) + baris("Emisi CO₂", rt(b.co2, "ton")) + baris("Emisi CH₄", rt(b.ch4, "ton")) + baris("Emisi CO", rt(b.co, "ton"))}${b.fb != null && Number.isFinite(b.fb) ? baris("Persistensi api", `${Math.round(b.fb * 100).toLocaleString("id-ID")}% sel gambut terdeteksi ≥ 2 hari`) : ""}${baris("Muka air (perkiraan)", wt)}</tbody></table>
         ${b.dipotong === false ? ket("kedalaman tidak dipotong muka air") : ""}${ket("Perkiraan = luas × kedalaman × kerapatan gambut × faktor emisi (IPCC 2013). Skenario memakai asumsi rendah–tinggi, belum divalidasi lapangan; bukan tambahan dari estimasi emisi nasional. Muka air = perkiraan, bukan pengukuran.")}${ket(`Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s.d. ${jamWIB(p.akhir)}`)}`); })()}
-      ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id} · ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km · menjangkau ${fmt(ps.kompleks.length)} kompleks (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
+      ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id}, ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km, menjangkau ${fmt(ps.kompleks.length)} cluster (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
         <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Via darat</th></tr></thead><tbody>
           ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
           ${bp ? `<tr><td><b>${esc(bp.nama)}</b><small>${bp.pusdalops ? "Pusdalops " + esc(bp.pusdalops) : "kantor BPBD"}</small></td><td class="n">–</td><td class="n">–</td><td class="n num"><b>${fmt(Math.round(bp.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(bp.jarak))}</td></tr>` : ""}</tbody></table>
@@ -2890,8 +2896,8 @@ const Laci = {
     const dl = $("#dlgLaci"); if (pop) { if (el.parentNode !== dl) dl.appendChild(el); if (!dl.open) dl.showModal(); }
     el.querySelector(".tutup").onclick = () => { if (dl.open) return dl.close(); el.classList.remove("on"); S.pilihK = null; peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], ""], 3.4, 1.8]); };
     el.querySelector("#keSim").onclick = () => bukaTab("sim");
-    el.querySelector("#bagiK").onclick = () => typeof Bagikan !== "undefined" ? Bagikan.bukaKompleks(p.id) : navigator.clipboard?.writeText(location.origin + "/k/" + p.id).then(() => toast("Tautan kompleks disalin"));
-    if (el.querySelector("#bagi")) el.querySelector("#bagi").onclick = () => { navigator.clipboard?.writeText(location.origin + "/k/" + p.id); toast("Tautan kompleks disalin"); };
+    el.querySelector("#bagiK").onclick = () => typeof Bagikan !== "undefined" ? Bagikan.bukaKompleks(p.id) : navigator.clipboard?.writeText(location.origin + "/k/" + p.id).then(() => toast("Tautan cluster disalin"));
+    if (el.querySelector("#bagi")) el.querySelector("#bagi").onclick = () => { navigator.clipboard?.writeText(location.origin + "/k/" + p.id); toast("Tautan cluster disalin"); };
     nanti(() => { peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], id], 3.4, 1.8]);
       peta.fitBounds(kotak([f]), {padding: innerWidth > 900 ? {top: 60, bottom: 60, left: 400, right: 420} : {top: 40, bottom: innerHeight * .74, left: 20, right: 20}, maxZoom: 12.5, duration: 700}); });
   },
@@ -2926,20 +2932,20 @@ const Tabel = {
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
-      el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar kompleks</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
-        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><select id="tprov" multiple aria-label="Provinsi"><option value="" selected>Semua provinsi</option>${Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join("")}</select><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
+      el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar cluster</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
+        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari cluster"><select id="tprov" multiple aria-label="Provinsi"><option value="" selected>Semua provinsi</option>${Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join("")}</select><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
         <div class="ex-bd"><div class="tw"><table data-bagi-kol="0,3,4,6,7,8"><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
       $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
       $("#tprov").addEventListener("change", e => { this.prov = PilihCantik.nilai(e.target).join(",") || null; this.hal = 0; nanti(() => this.render()); });
       pengurutKepala(this, $("#th"), () => nanti(() => this.render()));
       $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) { Laci._popup = true; Laci.buka(b.dataset.id); } });
       $("#pg").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
-      $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
+      $("#tcsv").onclick = () => unduh(`cluster-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
     /* pilihan provinsi bisa datang dari strip prioritas juga: pemilih ikut */
     const PV = this.prov ? this.prov.split(",") : [], sp = $("#tprov"); [...sp.options].forEach(o => o.selected = o.value ? PV.includes(o.value) : !PV.length); PilihCantik.label(sp);
-    $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " kompleks")} aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi " : ""}di ${esc(PV.length > 3 ? PV.length + " provinsi" : PV.map(namaProv).join(", "))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " kompleks")} kebakaran aktif ${[window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi" : "", window.KonsesiF?.gambut ? "di lahan gambut" : ""].filter(Boolean).join(" dan ") || "di seluruh Indonesia"}`;
+    $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " cluster")} aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi " : ""}di ${esc(PV.length > 3 ? PV.length + " provinsi" : PV.map(namaProv).join(", "))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " cluster")} kebakaran aktif ${[window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi" : "", window.KonsesiF?.gambut ? "di lahan gambut" : ""].filter(Boolean).join(" dan ") || "di seluruh Indonesia"}`;
     $("#tjudul").onclick = e => { if (e.target.closest("[data-semua]")) { Tabel.prov = null; Tabel.hal = 0; document.querySelectorAll("#prioritas details[data-pr][open]").forEach(x => x.open = false); nanti(() => Tabel.render()); } };
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}"${KOL_TIP[k] ? ` title="${KOL_TIP[k]}"` : ""} aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
     $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link kp-id" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>
@@ -2948,10 +2954,10 @@ const Tabel = {
       <td class="n"><span class="kp-hr h${p.hari >= 7 ? 3 : p.hari >= 3 ? 2 : 1}">${fmt(p.hari)} hari</span></td>
       <td class="n num"><b>${fmt(p.n)}</b></td><td class="n num">${fmt(p.luas)}</td>
       <td class="n"><span class="kp-fwi f${kelasFWI(p.fwi)}" title="${FWI_KELAS[kelasFWI(p.fwi)][0]}">${fmt(p.fwi)}</span></td><td class="n num kp-ab">${fmt(p.dc)}</td></tr>`).join("")
-      : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
+      : `<tr><td colspan="11" class="kosong">Tidak ada cluster yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
-    $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} kompleks</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td></tr>`;
-    $("#pg").innerHTML = paginasi(this.hal, r.length, this.per, "kompleks");
+    $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} cluster</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td></tr>`;
+    $("#pg").innerHTML = paginasi(this.hal, r.length, this.per, "cluster");
   },
 };
 
@@ -2962,15 +2968,15 @@ function rekomendasi(k, d) {
   const R = [], tambah = (lv, teks, dasar) => { if (!/regu|posko|Daops|MPA/i.test(teks + " " + dasar)) R.push({lv, teks, dasar}); };
   const prio = d.kl.filter(f => f.properties.level === 3).sort((a, b) => a.properties.peringkat - b.properties.peringkat);
   if (prio.length) { const top = prio.slice(0, 3).map(f => f.properties);
-    tambah(3, `Kerahkan regu ke ${prio.length} kompleks prioritas, mulai ${top.map(p => `<b>${p.id}</b> ${esc(p.kec)}`).join(", ")}`,
+    tambah(3, `Kerahkan regu ke ${prio.length} cluster prioritas, mulai ${top.map(p => `<b>${p.id}</b> ${esc(p.kec)}`).join(", ")}`,
       `front aktif ${top.map(p => fmt(p.px24) + " piksel").join(", ")}; FWI ${top.map(p => fmt(p.fwi)).join(", ")}`);
     const jauh = top.filter(p => (daopsDekat(p.lat, p.lon, 1)[0]?.jarak || 0) > 150);
     if (jauh.length) tambah(3, `Andalkan MPA, BPBD, dan regu perusahaan untuk ${jauh.map(p => p.id).join(", ")}: Daops terdekat lebih dari 150 km`, "jarak ke markas Daops Manggala Agni"); }
   /* hanya kompleks siaga/prioritas yang hilang dari citra: kompleks rutin yang hilang biasanya memang sudah padam */
   const bara = d.kl.filter(f => !f.properties.teramati && f.properties.dc > 350 && f.properties.gambut && f.properties.level >= 2);
-  if (bara.length) tambah(2, `Ground-check ${fmt(bara.length)} kompleks siaga/prioritas di gambut yang tidak terdeteksi lagi, mulai ${bara.slice(0, 3).map(f => `<b>${f.properties.id}</b>`).join(", ")}`, "bisa tertutup asap atau awan; gambut dengan DC > 350 bisa tetap membara di bawah permukaan");
+  if (bara.length) tambah(2, `Ground-check ${fmt(bara.length)} cluster siaga/prioritas di gambut yang tidak terdeteksi lagi, mulai ${bara.slice(0, 3).map(f => `<b>${f.properties.id}</b>`).join(", ")}`, "bisa tertutup asap atau awan; gambut dengan DC > 350 bisa tetap membara di bawah permukaan");
   const siaga = d.kl.filter(f => f.properties.level === 2).length;
-  if (siaga) tambah(2, `Pemadaman awal untuk ${fmt(siaga)} kompleks siaga sebelum membesar; kirim regu terdekat dari posko permanen`, "status siaga: front kecil, cuaca mendukung api");
+  if (siaga) tambah(2, `Pemadaman awal untuk ${fmt(siaga)} cluster siaga sebelum membesar; kirim regu terdekat dari posko permanen`, "status siaga: front kecil, cuaca mendukung api");
   if (d.fwiH3 >= 14) tambah(2, `Bahaya cuaca sangat tinggi ${d.hariSangat} dari 4 hari ke depan: larang pembakaran dan siagakan patroli`, `FWI maksimum ${fmt(Math.round(d.fwiH3))} dalam 4 hari`);
   if (d.hujan >= 20) tambah(1, `Hujan diperkirakan ${fmt(Math.round(d.hujan))} mm dalam 4 hari: manfaatkan untuk pembasahan dan mop-up, bukan menghentikan patroli`, "rata-rata hujan sel di provinsi ini");
   else if (d.fwiH3 >= 7) tambah(1, "Hampir tanpa hujan 4 hari ke depan: siapkan modifikasi cuaca bila ada awan potensial", `hujan rata-rata ${fmt(Math.round(d.hujan * 10) / 10)} mm`);
@@ -3006,13 +3012,13 @@ async function renderPrioritas() {
     const kartuRek = (n, teks, w, dasar = "") => `<details class="lpr" style="--w:${w}"><summary><i>${n}</i><span>${teks}</span></summary>${dasar ? `<small>Dasar: ${esc(dasar)}</small>` : ""}</details>`;
     const kelasF = v => FWI_KELAS[kelasFWI(v)][0];
     return {k, lv, nk: kl.length, np: lvN[3], kmr, fw: w.fwi_maks, html: `<div class="pv">
-      ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45", "", "api")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli", "prio")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length), "daun")}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha", "luas")}</div>
+      ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45", "", "api")}${ubin(fmt(lvN[3]), "cluster prioritas", "#c9503a", fmt(lvN[2]) + " siaga, " + fmt(lvN[1]) + " patroli", "prio")}${ubin(fmt(gambut), "cluster di gambut", "#8a6a3f", "dari " + fmt(kl.length), "daun")}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha", "luas")}</div>
         <div class="pv-sub">Titik panas 7 hari terakhir</div>${(() => { const W = matchMedia("(max-width:560px)").matches ? 360 : 640, H = 150, B = 120, T = 26, gp = W / harian.length, bw = gp * .6, Y = v => B - v / mh * (B - T);
           return `<svg viewBox="0 0 ${W} ${H}" class="pr-hr" role="img" aria-label="Titik panas harian">` + harian.map(([tg, v], i) => { const ak = i === harian.length - 1, x = i * gp + (gp - bw) / 2, w = ak ? "#e8743b" : "currentColor", tt = new Date(tg + "T12:00:00+07:00");
             return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="${Math.min(8, bw / 4)}" fill="${w}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
               + `<text x="${x + bw / 2}" y="${Y(v) - 8}" text-anchor="middle" font-size="12.5" font-weight="700" style="fill:${ak ? "#e8743b" : "var(--lp-ink)"}">${rb(v)}</text>`
               + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 700 : 500}" style="fill:${ak ? "var(--lp-ink)" : "var(--lp-ink2)"}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
-      ${sek(`Rekomendasi · ${rek.length} langkah`, `<div class="lpr-g">${rek.map((x, i) => kartuRek(i + 1, x.teks, warnaRek[x.lv], x.dasar)).join("") || kartuRek(1, "Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.", warnaRek[0])}</div>`, "pv-lebar")}
+      ${sek(`Rekomendasi, ${rek.length} langkah`, `<div class="lpr-g">${rek.map((x, i) => kartuRek(i + 1, x.teks, warnaRek[x.lv], x.dasar)).join("") || kartuRek(1, "Pencegahan rutin; tidak ada cluster berstatus siaga atau prioritas.", warnaRek[0])}</div>`, "pv-lebar")}
       ${bnb.length ? sek("Rekomendasi BNPB", `<div class="lpr-g">${bnb.map((x, i) => kartuRek(i + 1, esc(x), warnaRek[0])).join("")}</div>`, "pv-lebar") : ""}
       <div class="pv-g">
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
@@ -3033,14 +3039,14 @@ async function renderPrioritas() {
   /* halaman Kompleks api: strip 9 provinsi prioritas di atas tabel; klik provinsi = saring tabel + kartu rinciannya */
   const pil = Tabel.prov, kp = kartu.find(x => x.k === pil);
   const totP = kartu.reduce((a, x) => a + x.np, 0), provP = kartu.filter(x => x.np).length;
-  $("#prioritas").innerHTML = `<div class="head"><div><h2>${Insight.hl(fmt(totP) + " kompleks prioritas")} tersebar di ${Insight.hl(provP + " provinsi")}</h2></div></div>
+  $("#prioritas").innerHTML = `<div class="head"><div><h2>${Insight.hl(fmt(totP) + " cluster prioritas")} tersebar di ${Insight.hl(provP + " provinsi")}</h2></div></div>
     <div class="pr-list">${kartu.sort((a, b) => b.lv - a.lv || b.np - a.np || b.nk - a.nk).map(x => `<details class="pr-row l${x.lv}" data-pr="${x.k}"${x.k === pil ? " open" : ""}>
       <summary>${lambang(x.k)}<span class="pr-n"><b>${esc(namaProv(x.k))}</b></span>
-        ${[["api", x.np, "prioritas", "#c9503a", x.np > 0], ["titik", x.nk, "kompleks", "#e58a45"], ["kal", x.kmr, "titik kemarin", "#5f6fb0"], ["fwi", x.fw, "FWI maks", "#a9402f", x.fw >= 14]].map(([ik, v, l, w, b]) => `<span class="pr-st${b ? " bahaya" : ""}" style="--w:${w}">${ikon(ik, w)}<span><b>${fmt(v)}</b><small>${l}</small></span></span>`).join("")}
+        ${[["api", x.np, "prioritas", "#c9503a", x.np > 0], ["titik", x.nk, "cluster", "#e58a45"], ["kal", x.kmr, "titik kemarin", "#5f6fb0"], ["fwi", x.fw, "FWI maks", "#a9402f", x.fw >= 14]].map(([ik, v, l, w, b]) => `<span class="pr-st${b ? " bahaya" : ""}" style="--w:${w}">${ikon(ik, w)}<span><b>${fmt(v)}</b><small>${l}</small></span></span>`).join("")}
         <span class="pill l${x.lv}">${["Rutin", "Patroli", "Siaga", "Prioritas"][x.lv]}</span></summary>
       <div class="pr-isi">${x.html}</div></details>`).join("")}</div>
     ${""/* Beban Daops Manggala Agni disembunyikan dulu (pemilik, 13 Okt 2026): bebanDaops() */}`;
-  headKeKartu($("#prioritas"), "Kompleks", false);
+  headKeKartu($("#prioritas"), "Cluster", false);
   /* buka satu provinsi = saring tabel kompleks ke provinsi itu (yang lain dilipat); tutup = semua provinsi */
   if (!$("#prioritas")._tg) $("#prioritas")._tg = 1, $("#prioritas").addEventListener("toggle", e => { const d = e.target; if (!d.matches?.("details[data-pr]")) return;
     if (d.open) { $("#prioritas").querySelectorAll("details[data-pr][open]").forEach(x => x !== d && (x.open = false)); Tabel.prov = d.dataset.pr; }
@@ -3170,7 +3176,7 @@ const Kp = {
             <td class="n num"><b>${Math.round(mc.inkrPos[j] * 100)}%</b><br><small style="color:var(--ink2)">peluang positif</small></td></tr>`; }).join("")}</tbody></table>
       <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink2)">Perkiraan luas terbakar ${fmt(Math.round(this.luas(P)))} ha. Suatu langkah disetujui bila manfaat bersihnya positif di ≥ 70% dari ${fmt(this.n)} simulasi. Efektivitas serangan awal, MPA, dan water bombing belum punya bukti terukur di Indonesia: tetapkan pengukurannya sejak musim pertama.</p></div>
     <div class="grid g4" style="margin-bottom:14px">${[["Perkiraan luas terbakar", fmt(Math.round(this.luas(P))) + " ha", {harapan: `${Math.round(this.pEN * 100)}% El Niño, ${Math.round(100 - this.pEN * 100)}% normal`, normal: "median tahun non-El Niño", elnino: "tahun El Niño 2015, 2019, 2023", 2026: `${fmt(P.titik_ini)} titik 2026, bila program sudah jalan sejak awal`}[this.tahun]],
-      ["Porsi gambut", Math.round(P.porsi_gambut * 100) + "%", "dari kompleks api hari ini"], ["Cakupan posko permanen", Math.round(P.cakupan_posko * 100) + "%", `titik panas riwayat ≤ 30 km dari ${P.posko_permanen} posko`],
+      ["Porsi gambut", Math.round(P.porsi_gambut * 100) + "%", "dari cluster hari ini"], ["Cakupan posko permanen", Math.round(P.cakupan_posko * 100) + "%", `titik panas riwayat ≤ 30 km dari ${P.posko_permanen} posko`],
       ["Kecamatan langganan api", fmt(P.kecamatan_langganan), "terbakar di ≥ 3 tahun"]].map(([l, v, sm]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${sm}</small></div>`).join("")}</div>
     <div class="tw" style="margin-bottom:8px"><table><thead><tr><th>Pilihan</th><th class="n">Biaya tambahan</th><th class="n">Ha dicegah</th><th class="n">Manfaat</th><th class="n">Manfaat bersih</th><th class="n">Rentang 80%</th><th class="n">Peluang positif</th><th class="n">Peringkat 1 (multikriteria)</th><th class="n">ISPA dicegah</th><th class="n">Emisi dicegah (tCO2e)</th><th>Bukti</th></tr></thead><tbody>
       ${OPSI.map((o, j) => { const x = tengah[j]; return `<tr${j === terbaik ? ' style="background:oklch(42% .11 255 / .08)"' : ""}><td><b>${o[0]}</b> ${esc(o[1])}<br><small style="color:var(--ink2)">${esc(o[2])}</small></td>
@@ -3208,7 +3214,7 @@ const Kp = {
            ["Pemda (APBD)", "menanggung: biaya posko & MPA"], ["BNPB (DSP)", "menanggung: helikopter & OMC (opsi D)"], ["Perusahaan konsesi", "menanggung: regu & sarana wajib (Permentan 5/2018)"]].map(([a, b]) => `<tr><td>${a}</td><td style="white-space:normal">${b}</td></tr>`).join("")}</tbody></table></div></div>
     <div class="head"><div><h2>Target pemantauan</h2><p>Diukur tiap musim untuk menguji asumsi model.</p></div></div>
     <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Indikator</th><th>Target</th><th>Sumber data</th></tr></thead><tbody>
-      ${[["Luas terbakar (ha)", `turun ≥ ${Math.round(tb.ha / Math.max(1, this.luas(P)) * 100)}% dari perkiraan`, "SiPongi / KLHK"], ["Kompleks prioritas di-ground-check < 24 jam", "≥ 90%", "laporan posko lapangan"],
+      ${[["Luas terbakar (ha)", `turun ≥ ${Math.round(tb.ha / Math.max(1, this.luas(P)) * 100)}% dari perkiraan`, "SiPongi / KLHK"], ["Cluster prioritas di-ground-check < 24 jam", "≥ 90%", "laporan posko lapangan"],
          ["Hari kualitas udara tidak sehat", "turun", "ISPU / CAMS"], ["Kasus ISPA musim kebakaran", `turun ${fmt(Math.round(tb.ispa))} kasus`, "Dinas Kesehatan"], ["Sekat kanal berfungsi", "≥ 80% tiap tahun", "inspeksi lapangan"]]
         .map(([a, b, c]) => `<tr><td>${a}</td><td>${b}</td><td>${c}</td></tr>`).join("")}</tbody></table></div>
     <div class="head"><div><h2>Asumsi dan sumber</h2><p>Angka bertanda asumsi belum punya bukti terukur di Indonesia.</p></div></div>
@@ -3405,9 +3411,9 @@ const Tren = {
         <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, r.jenis === "prov" ? "nasional" : `nasional<br>ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
           ${kot("Tahun terbakar", `${r.tahun}<span style="font-size:13px;opacity:.6"> / ${th.length}</span>`, `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tahun / th.length >= .6 ? ["Langganan api", 3] : r.tahun / th.length >= .3 ? ["Sering", 2] : ["Jarang", 0])}<br>${beruntun ? beruntun + " tahun beruntun" : "terakhir " + terakhir}<br>≥ ${fmt(amb)} titik`)}${kot("Tren", (r.tren >= 1 ? "↑ " : "↓ ") + fmt(r.tren) + "×", `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tren >= 1.1 ? ["Naik", 3] : r.tren <= .9 ? ["Turun", 0] : ["Stabil", 1])}<br>rata-rata 2023+ vs sebelumnya`)}</div>
         <details class="lipat" open><summary>Saat ini</summary><div class="isi">
-          <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), namaRentang())}${kot("Kompleks aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span> · ${siaga} siaga` : siaga + " siaga")}
+          <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), namaRentang())}${kot("Cluster aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span>, ${siaga} siaga` : siaga + " siaga")}
             ${(en => kot("Peluang periode ini", o ? Math.round((en ? o.p_el_nino : o.p_semua)[das] * 100) + "%" : "–", o ? `${DAS(das)} · ${en ? "tahun El Niño seperti sekarang" : "semua tahun"}` : ""))(window.ENSO_STATUS === "El Niño")}</div>
-          ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div id="rkHal"></div>` : ""}` : ""}</div></details>
+          ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Cluster</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div id="rkHal"></div>` : ""}` : ""}</div></details>
         <details class="lipat" open><summary>Titik panas per tahun ${th[0]}–${th.at(-1)}</summary><div class="isi">
           <svg viewBox="0 -14 ${W} ${Hc}" width="100%" role="img" aria-label="Titik panas per tahun">${grafik}</svg>
           <span class="ex-leg" style="font-size:11.5px;color:var(--ink2);justify-content:center"><span><i style="background:#a9402f"></i>tahun El Niño</span><span><i style="background:#e58a45"></i>tahun biasa</span><span><i style="background:#c9503a"></i>${th.at(-1)} (berjalan)</span><span><i style="background:none;border-top:2px dashed #a9402f;height:0;border-radius:0"></i>rata-rata El Niño ${rb(rEN)}</span><span><i style="background:none;border-top:2px dashed #c46a2a;height:0;border-radius:0"></i>rata-rata biasa ${rb(rB)}</span></span></div></details>
@@ -3417,7 +3423,7 @@ const Tren = {
           <div class="sg-ket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Siaga</b> artinya peluang terjadi api besar di periode itu <b>≥ 30%</b></span></div></div></details>` : ""}
         ${anak.length ? `<details class="lipat" open><summary>${r.jenis === "prov" ? "Kabupaten/kota" : "Kecamatan"} di dalamnya</summary><div class="isi"><table class="tb3 rk-tb"><thead><tr><th>${r.jenis === "prov" ? "Kabupaten/kota" : "Kecamatan"}</th><th class="n">Skor</th><th class="n">Tahun terbakar</th><th class="n">Titik ${th[0]}–${th.at(-1)}</th><th>Risiko</th></tr></thead><tbody>
           ${anak.map(x => `<tr data-anak="${esc(x.kunci)}"><td><b>${esc(x.nama)}</b></td><td class="n">${x.skor}</td><td class="n">${x.tahun}/${th.length}</td><td class="n">${fmt(x.total)}</td><td><span class="pill l${x.lv}">${x.kelas}</span></td></tr>`).join("")}</tbody></table></div></details>` : ""}
-        <p class="fnd sumber"><em>Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)} (keyakinan ≥ 30); titik panas & kompleks pembaruan ${jamWIB(S.meta.dibuat)}</em></p>
+        <p class="fnd sumber"><em>Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)} (keyakinan ≥ 30); titik panas & cluster pembaruan ${jamWIB(S.meta.dibuat)}</em></p>
       </div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close();
     d.onclick = e => { if (e.target === d) return d.close();
@@ -3429,7 +3435,7 @@ const Tren = {
     /* tabel kompleks berhalaman, 8 baris per halaman */
     const isiKl = h => { const tb = d.querySelector("#rkKl"); if (!tb) return; const n = Math.ceil(kl.length / 8);
       tb.innerHTML = kl.slice(h * 8, h * 8 + 8).map(f => { const p = f.properties; return `<tr data-kom="${p.id}"><td><span class="kd">${p.id}</span></td><td>${esc(p.kec)}</td><td class="n">${fmt(p.px24)}</td><td class="n">${p.hari}</td><td><span class="pill l${p.level}">${["Rutin", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td></tr>`; }).join("");
-      const pg = d.querySelector("#rkHal"); if (pg) pg.innerHTML = paginasi(h, kl.length, 8, "kompleks"); };
+      const pg = d.querySelector("#rkHal"); if (pg) pg.innerHTML = paginasi(h, kl.length, 8, "cluster"); };
     isiKl(0);
     d.showModal(); },
 
@@ -3735,14 +3741,14 @@ const Insight = {
     const R = ks.map(p => ({p, j: cepat(p)})), n = KAT.map(([, , f]) => R.filter(r => f(r.j)).length), kat = j => KAT.findIndex(([, , f]) => f(j));
     const W = 940, H = 180, L = 20, bw = (W - L) / KAT.length - 18, mx = Math.max(1, ...n);
     const g = KAT.map(([nm, w], i) => { const v = n[i], h = v / mx * 120, x = L + i * (bw + 18);
-      return `<rect class="gy" style="--i:${i}" x="${x}" y="${145 - h}" width="${bw}" height="${Math.max(2, h)}" rx="8" fill="${w}" data-tip="<b>Akses ${nm.toLowerCase()}</b>${fmt(v)} kompleks prioritas"/>
+      return `<rect class="gy" style="--i:${i}" x="${x}" y="${145 - h}" width="${bw}" height="${Math.max(2, h)}" rx="8" fill="${w}" data-tip="<b>Akses ${nm.toLowerCase()}</b>${fmt(v)} cluster prioritas"/>
         <text x="${x + bw / 2}" y="${138 - h}" text-anchor="middle" font-size="16" font-weight="800">${fmt(v)}</text><text x="${x + bw / 2}" y="168" text-anchor="middle" font-size="13" font-weight="600">${nm}</text>`; }).join("");
     const sulit = R.filter(r => kat(r.j) >= 2).sort((a, b) => (b.j ?? 99) - (a.j ?? 99)).slice(0, 10);
-    const tb = sulit.length ? `<table class="tb3 rk-tb" style="margin-top:12px"><thead><tr><th>Kompleks</th><th>Kabupaten</th><th>Provinsi</th><th>Regu terdekat</th><th>Akses</th></tr></thead><tbody>${sulit.map(({p, j}) => { const d = (A[p.id].dari || []).filter(x => x.jam != null).sort((a, b) => a.jam - b.jam)[0], k = kat(j);
+    const tb = sulit.length ? `<table class="tb3 rk-tb" style="margin-top:12px"><thead><tr><th>Cluster</th><th>Kabupaten</th><th>Provinsi</th><th>Regu terdekat</th><th>Akses</th></tr></thead><tbody>${sulit.map(({p, j}) => { const d = (A[p.id].dari || []).filter(x => x.jam != null).sort((a, b) => a.jam - b.jam)[0], k = kat(j);
       return `<tr data-kl="${p.id}"><td><span class="kd">${p.id}</span> ${esc(p.kec || "")}</td><td>${esc(p.kab)}</td><td>${esc(namaProv(p.prov))}</td><td>${d ? esc(d.dari) : "–"}</td><td><span class="pill" style="background:${KAT[k][1]}22;color:${KAT[k][1]}">${KAT[k][0]}</span></td></tr>`; }).join("")}</tbody></table>` : "";
     this.leg(KAT.map(([nm, w], i) => [w, nm + [" (< 3 jam)", " (3–6 jam)", " (> 6 jam)", " (perlu perahu/udara)"][i]]));
-    return this.ex(`Regu sulit menjangkau ${this.hl(fmt(n[2] + n[3]) + " dari " + fmt(R.length))} kompleks prioritas`, "", "",
-      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Akses regu ke kompleks prioritas">${g}</svg>${tb}`, `Sumber: © kontributor OpenStreetMap (ODbL)`); },
+    return this.ex(`Regu sulit menjangkau ${this.hl(fmt(n[2] + n[3]) + " dari " + fmt(R.length))} cluster prioritas`, "", "",
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Akses regu ke cluster prioritas">${g}</svg>${tb}`, `Sumber: © kontributor OpenStreetMap (ODbL)`); },
 
   /* 5. laporan BNPB; klik judul kolom = urutkan */
   exBnpb() {
@@ -4154,7 +4160,7 @@ const Berita = {
     const side = `<aside class="bp-side"><h4>Kabupaten paling diberitakan</h4><div class="bp-seg">${[[0, "Semua"], [1, "Memburuk"], [2, "Netral"], [3, "Membaik"]].map(([v, n]) => `<button data-bpn="${v}" aria-pressed="${nf === v}">${n}</button>`).join("")}</div>
       <ol class="bp-ls">${topK.map((o, i) => { const [nl, nw] = this.lbl(o.s / o.n), kp = o.k.split("|"); return `<li><button data-bpk="${esc(o.k)}"><span class="bp-no">${i + 1}</span><span class="bp-nm"><b>${esc(kp[1])}</b><small>${esc(namaProv(kp[0]))}</small></span><i style="background:${nw}" title="nada ${nl}"></i><em>${fmt(o.n)}</em></button></li>`; }).join("")}</ol></aside>`;
     return `<article class="ex"><h3>${pk ? `${Insight.hl(esc(namaProv(pk)))} paling banyak diberitakan 7 hari terakhir: ${Insight.hl(fmt(pn) + " berita")} dari ${fmt(tot)} berita yang menyebut lokasi di Indonesia` : "Sebaran berita 7 hari terakhir"}</h3>
-      <p class="unit">gelembung = jumlah berita 7 hari (warna = nada situasi); tanda merah bergaris = kompleks prioritas tanpa berita. Klik gelembung untuk melihat daftar beritanya.</p>
+      <p class="unit">gelembung = jumlah berita 7 hari (warna = nada situasi); tanda merah bergaris = cluster prioritas tanpa berita. Klik gelembung untuk melihat daftar beritanya.</p>
       <div class="bp-wrap">${side}<div id="brPeta"></div><aside class="bp-side bp-news"></aside></div>
       <p class="fn">Lokasi diambil dari nama wilayah di judul; ${fmt(Math.round(this.d.ringkasan.berlokasi_kab * 100))}% berita bisa dipetakan sampai kabupaten.</p></article>`; },
   pasangPeta() {
@@ -4197,7 +4203,7 @@ const Berita = {
       const tip = $("#tip");
       m.on("mousemove", "kab", e => { const p = e.features[0].properties, [nl, nw] = this.lbl(p.s), kp = p.k.split("|");
         tampilTip(kartuTip({judul: esc(p.nama), kepala: lambang(kp[0], kp[1]), sub: `<span class="tp-pl" style="background:${nw}">nada ${nl}</span>`, stat: [["titik", p.n, "berita 7 hari", "#4f8fc4"], ["skor", Math.round(p.s * 100) / 100, "skor nada", nw]]}), e.originalEvent); m.getCanvas().style.cursor = "pointer"; });
-      m.on("mousemove", "celah", e => { const p = e.features[0].properties; tip.innerHTML = `<b>${esc(p.id)}</b> · ${esc(p.kab)}<br>kompleks prioritas, tidak ada berita 7 hari`; tip.classList.add("on");
+      m.on("mousemove", "celah", e => { const p = e.features[0].properties; tip.innerHTML = `<b>${esc(p.id)}</b>, ${esc(p.kab)}<br>cluster prioritas, tidak ada berita 7 hari`; tip.classList.add("on");
         tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
       ["kab", "celah"].forEach(l => m.on("mouseleave", l, () => { tip.classList.remove("on"); m.getCanvas().style.cursor = ""; }));
       /* klik gelembung: popup daftar berita 7 hari di kabupaten itu; tombol bawah menyaring daftar utama */
@@ -4256,7 +4262,7 @@ const Berita = {
     const D = this.d;
     return `<article class="ex"><h3>Yang luput dan yang melonjak</h3><p class="sub">Membandingkan berita dengan data satelit</p><p class="unit">untuk memeriksa: api yang belum jadi perhatian publik, dan kebakaran yang diberitakan tetapi tidak tertangkap satelit. Klik baris untuk rinciannya.</p>
       <div class="grid g3">
-        <div><div class="lbl">Api prioritas tanpa berita 7 hari</div><table class="tb3"><tbody>${D.celah.map((c, i) => `<tr data-celah="${i}" tabindex="0" style="cursor:pointer"><td><b>${esc(c.kab.split("|")[1])}</b><small>${esc(namaProv(c.prov))}</small></td><td class="n">${fmt(c.n_prioritas)} kompleks<small>± ${rb(c.luas_ha)} ha</small></td></tr>`).join("") || `<tr><td>Tidak ada.</td></tr>`}</tbody></table></div>
+        <div><div class="lbl">Api prioritas tanpa berita 7 hari</div><table class="tb3"><tbody>${D.celah.map((c, i) => `<tr data-celah="${i}" tabindex="0" style="cursor:pointer"><td><b>${esc(c.kab.split("|")[1])}</b><small>${esc(namaProv(c.prov))}</small></td><td class="n">${fmt(c.n_prioritas)} cluster<small>± ${rb(c.luas_ha)} ha</small></td></tr>`).join("") || `<tr><td>Tidak ada.</td></tr>`}</tbody></table></div>
         <div><div class="lbl">Berita kebakaran tanpa titik panas</div><table class="tb3"><tbody>${D.tanpa_api.slice(0, 8).map(a => `<tr><td><a href="${escUrl(a.url)}" target="_blank" rel="noopener">${esc(a.judul)}</a><small>${esc(a.sumber)} · ${a.tgl.slice(0, 10)}</small></td></tr>`).join("")}</tbody></table>
           <p class="fnd">Bisa api kecil yang tidak tertangkap satelit, tertutup awan, atau berita lama.</p></div>
         <div><div class="lbl">Lonjakan berita 7 hari</div><table class="tb3"><tbody>${(this._lonj = lonj.slice(0, 8)).map((x, i) => `<tr data-lonj="${i}" tabindex="0" style="cursor:pointer"><td><b>${esc(namaProv(x.prov))}</b><small>${x.tgl}</small></td><td class="n">${fmt(x.n)} berita<small>biasanya ${fmt(Math.round(x.rata14))}</small></td></tr>`).join("") || `<tr><td>Tidak ada lonjakan.</td></tr>`}</tbody></table></div>
@@ -4273,10 +4279,10 @@ const Berita = {
     d.querySelectorAll("[data-kom]").forEach(b => b.onclick = () => { d.close(); bukaTab("peta"); Laci.buka(b.dataset.kom); }); d.showModal(); },
   /* api prioritas tanpa berita: kompleks di kabupaten itu */
   rinciCelah(i) { const c = this.d.celah[i], ks = c.kompleks.map(id => S.kluster?.features.find(f => f.properties.id === id)?.properties).filter(Boolean);
-    this.dlg(`${esc(c.kab.split("|")[1])}: api prioritas tanpa berita`, `${esc(namaProv(c.prov))} · ${fmt(c.n_prioritas)} kompleks prioritas · ± ${rb(c.luas_ha)} ha · tidak ada berita 7 hari terakhir`,
-      `<p style="margin:0 0 10px">Kompleks ini aktif menurut satelit, tetapi belum muncul di berita. Bisa berarti api jauh dari permukiman, belum dilaporkan, atau luput dari perhatian. Layak dicek lapangan dan disampaikan ke publik.</p>
-      <div class="tw"><table><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Luas</th><th class="n">Titik 24 jam</th><th class="n">FWI</th><th class="n">Hari aktif</th><th></th></tr></thead><tbody>
-      ${ks.map(p => `<tr><td><b>${p.id}</b></td><td>${esc(p.kec || "–")}</td><td class="n num">${rb(p.luas || 0)} ha</td><td class="n num">${fmt(p.n24 || 0)}</td><td class="n num">${p.fwi == null ? "–" : fmt(Math.round(p.fwi))}</td><td class="n num">${fmt(p.hari || 0)}</td><td><button class="btn sec" data-kom="${p.id}">Buka di peta</button></td></tr>`).join("") || `<tr><td colspan="7">Data kompleks tidak ditemukan.</td></tr>`}</tbody></table></div>`); },
+    this.dlg(`${esc(c.kab.split("|")[1])}: api prioritas tanpa berita`, `${esc(namaProv(c.prov))}, ${fmt(c.n_prioritas)} cluster prioritas, ± ${rb(c.luas_ha)} ha, tidak ada berita 7 hari terakhir`,
+      `<p style="margin:0 0 10px">Cluster ini aktif menurut satelit, tetapi belum muncul di berita. Bisa berarti api jauh dari permukiman, belum dilaporkan, atau luput dari perhatian. Layak dicek lapangan dan disampaikan ke publik.</p>
+      <div class="tw"><table><thead><tr><th>Cluster</th><th>Kecamatan</th><th class="n">Luas</th><th class="n">Titik 24 jam</th><th class="n">FWI</th><th class="n">Hari aktif</th><th></th></tr></thead><tbody>
+      ${ks.map(p => `<tr><td><b>${p.id}</b></td><td>${esc(p.kec || "–")}</td><td class="n num">${rb(p.luas || 0)} ha</td><td class="n num">${fmt(p.n24 || 0)}</td><td class="n num">${p.fwi == null ? "–" : fmt(Math.round(p.fwi))}</td><td class="n num">${fmt(p.hari || 0)}</td><td><button class="btn sec" data-kom="${p.id}">Buka di peta</button></td></tr>`).join("") || `<tr><td colspan="7">Data cluster tidak ditemukan.</td></tr>`}</tbody></table></div>`); },
   /* lonjakan: berita provinsi itu pada hari lonjakan + 21 hari volume */
   rinciLonj(i) { const x = this._lonj[i], D = this.d, A = D.artikel.filter(a => a.prov?.includes(x.prov)), hari = Object.keys(D.harian).sort().slice(-21);
     const per = Object.fromEntries(hari.map(t => [t, 0])); A.forEach(a => { const t = a.tgl.slice(0, 10); if (t in per) per[t]++; });
@@ -4485,7 +4491,7 @@ const Berita = {
       <div class="br-list">${hal.map(a => { const [sl, sw] = this.lbl(a.situasi), [rl, rw] = this.lblR(a.respons);
         return `<div class="br-item"><a href="${escUrl(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a>
           <small class="br-meta"><span class="br-src">${esc(a.sumber)}</span></small>
-          <span class="br-meta2"><em class="br-lb" style="--w:#5b6782">${new Date(a.tgl.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})} · ${a.tgl.slice(11, 16).replace(":", ".")} WIB</em>${a.kab?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(a.kab[0].split("|")[1])}</em>` : a.prov?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(namaProv(a.prov[0]))}</em>` : ""}${a.n_kompleks ? `<button class="br-lb br-lb-k" style="--w:#c9503a" data-kom="${a.kompleks[0]}">🔥 ${fmt(a.n_kompleks)} kompleks api</button>` : ""}</span>
+          <span class="br-meta2"><em class="br-lb" style="--w:#5b6782">${new Date(a.tgl.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}, ${a.tgl.slice(11, 16).replace(":", ".")} WIB</em>${a.kab?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(a.kab[0].split("|")[1])}</em>` : a.prov?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(namaProv(a.prov[0]))}</em>` : ""}${a.n_kompleks ? `<button class="br-lb br-lb-k" style="--w:#c9503a" data-kom="${a.kompleks[0]}">🔥 ${fmt(a.n_kompleks)} cluster</button>` : ""}</span>
           <span class="br-chip">${(a.topik || []).map(t => `<i style="--w:${WARNA_T[t]}">${TOPIK_B[t]}</i>`).join("")}<i style="--w:${sw}" data-tip="${a.alasan?.situasi?.length ? "kata pemicu: " + esc(a.alasan.situasi.join(", ")) : "tidak ada kata pemicu"}">situasi ${sl}</i>${rl !== "netral" ? `<i style="--w:${rw}" data-tip="kata pemicu: ${esc((a.alasan?.respons || []).join(", "))}">respons ${rl}</i>` : ""}</span></div>`; }).join("") || `<p class="kosong">Tidak ada berita yang cocok.</p>`}</div>${paginasi(this.f.hal, R.length, per, "berita")}
       `; },
   ikat() {
@@ -4755,7 +4761,7 @@ const Berita = {
     const K = D0().kontradiksi || [], tanpa = D0().tanpa_api || [];
     return `<section class="pm-p pm-rek"><div class="pm-h"><h4>Klaim vs satelit</h4><span class="fnd">judul yang mengklaim padam/nihil padahal satelit masih mendeteksi api sesudahnya</span></div>
       ${K.map((k, i) => baris("kt:" + i, `<span class="pm-gt"><span><b>${esc(k.judul)}</b><small>${esc(k.sumber)} · ${tg(k.tgl)} · ${esc(wil(k.wilayah))}</small></span>
-        <span class="n"><b class="num" style="color:${MERAH}">${fmt(k.kompleks_aktif)}</b><small>kompleks aktif</small></span><span class="n"><b class="num">${fmt(k.titik24)}</b><small>titik 24 jam</small></span><span class="n"><b class="num">${fmt(k.prioritas)}</b><small>prioritas</small></span></span>`, k.judul)).join("")
+        <span class="n"><b class="num" style="color:${MERAH}">${fmt(k.kompleks_aktif)}</b><small>cluster aktif</small></span><span class="n"><b class="num">${fmt(k.titik24)}</b><small>titik 24 jam</small></span><span class="n"><b class="num">${fmt(k.prioritas)}</b><small>prioritas</small></span></span>`, k.judul)).join("")
         || `<p class="pm-ok">Tidak ada klaim padam/nihil 7 hari terakhir yang bertentangan dengan data satelit.</p>`}
       ${tanpa.length ? baris("ta", `<span class="pm-gt"><span><b>Arah sebaliknya: ${fmt(tanpa.length)} berita kebakaran tanpa titik panas</b><small>api kecil, tertutup awan, berita lama, atau salah lokasi; perlu cek lapangan</small></span></span>`, "Berita kebakaran tanpa titik panas") : ""}</section>`;
   };
@@ -4818,10 +4824,10 @@ const Berita = {
         `<p class="fnd">Penuntut: ${esc(t.penuntut.join(", "))}</p>${bukti(t.contoh, b => `<br><span class="pm-q">${esc(b.penuntut)} → ${esc(b.isi)}</span>`)}${t.prov[0] ? tombolPeta(t.prov[0]) : ""}`); }
     if (jenis === "kt") { const k = D.kontradiksi[+id];
       return this.dlg("Klaim bertentangan dengan satelit", `${esc(wil(k.wilayah))} · klaim "${esc(k.klaim)}" · ${esc(k.jenis)}`,
-        `${bukti([k])}<p style="margin:0">Sesudah judul ini terbit, satelit masih mendeteksi <b>${fmt(k.kompleks_aktif)} kompleks api aktif</b> di ${esc(wil(k.wilayah))} (${fmt(k.prioritas)} prioritas, ${fmt(k.titik24)} titik panas 24 jam; deteksi terakhir ${esc(k.deteksi_terakhir.slice(0, 16).replace("T", " "))} UTC).</p>
+        `${bukti([k])}<p style="margin:0">Sesudah judul ini terbit, satelit masih mendeteksi <b>${fmt(k.kompleks_aktif)} cluster aktif</b> di ${esc(wil(k.wilayah))} (${fmt(k.prioritas)} prioritas, ${fmt(k.titik24)} titik panas 24 jam; deteksi terakhir ${esc(k.deteksi_terakhir.slice(0, 16).replace("T", " "))} UTC).</p>
         <p class="fnd">Bisa berarti klaimnya hanya untuk satu lokasi, apinya muncul lagi, atau klaimnya keliru. Perlu konfirmasi lapangan sebelum dikutip.</p>
         <div class="pm-aksi">${tombolPeta(k.wilayah)}${k.kompleks.slice(0, 4).map(id => `<button class="btn sec" data-kom="${esc(id)}">${esc(id)}</button>`).join("")}</div>`); }
-    if (jenis === "ta") return this.dlg("Berita kebakaran tanpa titik panas", "4 hari terakhir, kabupaten tanpa kompleks aktif ±3 hari", bukti(D.tanpa_api.slice(0, 15), b => b.kab?.length ? " · " + esc(b.kab[0].split("|")[1]) : ""));
+    if (jenis === "ta") return this.dlg("Berita kebakaran tanpa titik panas", "4 hari terakhir, kabupaten tanpa cluster aktif ±3 hari", bukti(D.tanpa_api.slice(0, 15), b => b.kab?.length ? ", " + esc(b.kab[0].split("|")[1]) : ""));
     if (jenis === "rk") { const r = D.rekomendasi_komunikasi[+id]; return this.dlg(esc(r.judul), `Bukti untuk rekomendasi komunikasi · pemilik: ${esc(r.pemilik)}`, bukti(r.bukti)); }
   };
 
@@ -4928,9 +4934,9 @@ const Posko = {
     const nama = x.tingkat === 2 ? x.id + " · " + x.nama : x.tingkat === 1 ? "Kab. " + x.kab : x.nama;
     const kb = (k, v, penuh) => `<div class="kb${penuh ? " penuh" : ""}"><span>${k}</span><b title="${esc(String(v).replace(/<[^>]+>/g, ""))}">${v}</b></div>`;
     const sel = [];
-    if (x.tingkat === 2) sel.push(kb("Kompleks aktif", fmt(x.kompleks.length)), kb("Prioritas", fmt(x.prioritas)), kb("Jarak rata-rata", x.kompleks.length ? fmt(x.jarak_rata) + " km" : "–"), kb("Regu", fmt(a.regu)));
-    if (x.tingkat === 1) sel.push(kb("Posko lapangan", fmt(x.lapangan.length)), kb("Kompleks", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Ke provinsi", fmt(x.jarak_induk) + " km"));
-    if (x.tingkat === 0) sel.push(kb("Posko kabupaten", fmt(x.menengah.length)), kb("Posko lapangan", fmt(x.lapangan)), kb("Kompleks", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)));
+    if (x.tingkat === 2) sel.push(kb("Cluster aktif", fmt(x.kompleks.length)), kb("Prioritas", fmt(x.prioritas)), kb("Jarak rata-rata", x.kompleks.length ? fmt(x.jarak_rata) + " km" : "–"), kb("Regu", fmt(a.regu)));
+    if (x.tingkat === 1) sel.push(kb("Posko lapangan", fmt(x.lapangan.length)), kb("Cluster", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Ke provinsi", fmt(x.jarak_induk) + " km"));
+    if (x.tingkat === 0) sel.push(kb("Posko kabupaten", fmt(x.menengah.length)), kb("Posko lapangan", fmt(x.lapangan)), kb("Cluster", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)));
     sel.push(kb("Personel", fmt(a.org)), kb("Alat kurang", rp(a.alat.t)), kb("Operasional/hari", rp(a.harian)), kb("Total " + a.hari + " hari", rp(a.total)));
     if (x.tingkat === 0 && a.dsp) sel.push(kb("DSP BNPB (terpisah)", rp(a.dsp), 1));
     if (x.tingkat === 1 && x.melayani?.length > 1) sel.push(kb("Melayani", x.melayani.map(esc).join(", "), 1));
@@ -4992,18 +4998,18 @@ const Posko = {
     el.innerHTML = (sel ? this.rinciHTML(sel) : "") + komando + ang + `<div class="head"><div><h2>Posko lapangan: permanen dan aju</h2><p>Posko tetap sepanjang musim, ditambah posko aju untuk api yang jauh.</p></div>
       <div style="display:flex;gap:8px"><select id="pkProv" multiple class="btn sec" aria-label="Pilih provinsi"><option value="" ${PV.length ? "" : "selected"}>Semua provinsi (${fmt(S.posko.length)})</option>${provs.map(k => `<option value="${k}" ${PV.includes(k) ? "selected" : ""}>${esc(namaProv(k))} (${S.posko.filter(x => x.prov === k).length})</option>`).join("")}</select>
       <button class="btn sec" id="pkCsv">Unduh CSV</button></div></div>
-      <div class="grid g4" style="margin-bottom:14px">${[["Posko disarankan", fmt(daftar.length), this.prov ? nmPv : "seluruh Indonesia"], ["Kompleks terjangkau", fmt(tot(x => x.kompleks.length)), "siaga + prioritas"], ["Kompleks prioritas", fmt(tot(x => x.prioritas)), "terjangkau posko"], ["Jarak rata-rata", fmt(daftar.length ? tot(x => x.jarak_rata) / daftar.length : 0) + " km", "posko ke kompleks"]].map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
-      <div class="tw"><table><thead><tr><th>Posko</th><th>Lokasi</th><th>Kab/Kota</th><th class="n">Kompleks</th><th class="n">Prioritas</th><th class="n">Jarak rata (km)</th><th>Dukungan terdekat</th><th class="n">Regu</th><th class="n">Anggaran (APBD)</th><th></th></tr></thead><tbody>
+      <div class="grid g4" style="margin-bottom:14px">${[["Posko disarankan", fmt(daftar.length), this.prov ? nmPv : "seluruh Indonesia"], ["Cluster terjangkau", fmt(tot(x => x.kompleks.length)), "siaga + prioritas"], ["Cluster prioritas", fmt(tot(x => x.prioritas)), "terjangkau posko"], ["Jarak rata-rata", fmt(daftar.length ? tot(x => x.jarak_rata) / daftar.length : 0) + " km", "posko ke cluster"]].map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
+      <div class="tw"><table><thead><tr><th>Posko</th><th>Lokasi</th><th>Kab/Kota</th><th class="n">Cluster</th><th class="n">Prioritas</th><th class="n">Jarak rata (km)</th><th>Dukungan terdekat</th><th class="n">Regu</th><th class="n">Anggaran (APBD)</th><th></th></tr></thead><tbody>
       ${hal.map(x => `<tr><td><b>${x.id}</b><br><small style="color:var(--ink2)">${x.jenis_posko === "aju" ? "aju" : "permanen"}</small></td><td>${esc(x.nama)}<br><small style="color:var(--ink2)">${x.lat}, ${x.lon}</small></td><td>${esc(x.kab)}<br><small style="color:var(--ink2)">${esc(namaProv(x.prov))}</small></td>
         <td class="n num">${fmt(x.kompleks.length)}</td><td class="n num">${fmt(x.prioritas)}</td><td class="n num">${fmt(x.jarak_rata)}</td><td style="white-space:normal;font-size:12px;min-width:220px">${this.dukung(x) || "–"}</td>
         <td class="n num">${x.kompleks.length ? reguPosko(x) : 1}</td><td class="n num">${rpc(anggaran(S.semuaPosko.get(x.id)).total)}</td>
-        <td><button class="link" data-rinci="${x.id}">Rincian</button> · <button class="link" data-lihat="${x.id}">Peta</button></td></tr>`).join("") || `<tr><td colspan="10" class="kosong">Belum ada kompleks siaga atau prioritas.</td></tr>`}</tbody></table></div>
+        <td><button class="link" data-rinci="${x.id}">Rincian</button> <button class="link" data-lihat="${x.id}">Peta</button></td></tr>`).join("") || `<tr><td colspan="10" class="kosong">Belum ada cluster siaga atau prioritas.</td></tr>`}</tbody></table></div>
       <div class="pager">${jml > 1 ? `Halaman ${this.hal + 1} dari ${jml} ${this.hal > 0 ? `<button class="btn sec" data-h="${this.hal - 1}">‹</button>` : ""}${this.hal < jml - 1 ? `<button class="btn sec" data-h="${this.hal + 1}">›</button>` : ""}` : ""}</div>`;
     el.querySelector("#asumsi").addEventListener("change", e => { const i = e.target.closest("[data-a]"); if (!i) return;
       ASUMSI[i.dataset.a] = i.type === "checkbox" ? i.checked : Math.max(0, +i.value); simpanLokal("pk-asumsi2", ASUMSI); nanti(() => this.render()); });
     $("#pkProv").onchange = e => { const P = PilihCantik.nilai(e.target); this.prov = P.join(","); this.hal = 0; if (P.length === 1) turun(P[0]); else naik(0); nanti(() => this.render()); };
     el.querySelector(".pager").onclick = e => { const b = e.target.closest("button"); if (b) { this.hal = +b.dataset.h; nanti(() => this.render()); } };
-    $("#pkCsv").onclick = () => unduh("rekomendasi-posko.csv", csv([["Posko", "Lokasi", "Kab/Kota", "Provinsi", "Lintang", "Bujur", "Kompleks", "Prioritas", "Jarak rata km", "Daops terdekat", "Jarak Daops km", "Kode kompleks"],
+    $("#pkCsv").onclick = () => unduh("rekomendasi-posko.csv", csv([["Posko", "Lokasi", "Kab/Kota", "Provinsi", "Lintang", "Bujur", "Cluster", "Prioritas", "Jarak rata km", "Daops terdekat", "Jarak Daops km", "Kode cluster"],
       ...daftar.map(x => [x.id, x.nama, x.kab, namaProv(x.prov), x.lat, x.lon, x.kompleks.length, x.prioritas, x.jarak_rata, x.daops?.nama, x.daops?.km, x.kompleks.join(" ")])]));
     el.querySelectorAll("tbody").forEach(tb => tb.onclick = e => { const r = e.target.closest("[data-rinci]"); if (r) return this.rinci(r.dataset.rinci);
       const b = e.target.closest("[data-lihat]"); if (!b) return; const x = S.posko.find(x => x.id === b.dataset.lihat);
@@ -5049,7 +5055,7 @@ function bebanDaops() {
     const d = daopsDekat(p.lat, p.lon, 1)[0]; if (d.jarak > 150) { jauh++; continue; } const x = b.get(d.kode); p.level === 3 ? x.p++ : x.s++; }
   const r = [...b.values()].sort((a, c) => (c.p * 3 + c.s) / (c.d.regu || 1) - (a.p * 3 + a.s) / (a.d.regu || 1));
   return `<div class="head" style="margin-top:26px"><div><h2>Beban regu Manggala Agni</h2><p>Daops dengan rasio tinggi perlu tambahan regu dari tempat lain.</p></div></div>
-    <div class="tw"><table><thead><tr><th>Daops</th><th>Provinsi</th><th class="n">Regu</th><th class="n">Prioritas</th><th class="n">Siaga</th><th class="n">Kompleks per regu</th></tr></thead><tbody>
+    <div class="tw"><table><thead><tr><th>Daops</th><th>Provinsi</th><th class="n">Regu</th><th class="n">Prioritas</th><th class="n">Siaga</th><th class="n">Cluster per regu</th></tr></thead><tbody>
     ${r.map(({d, s, p}) => `<tr><td>${esc(d.nama)}</td><td>${esc(namaProv(d.prov))}</td><td class="n num">${d.regu ?? "–"}</td><td class="n num">${fmt(p)}</td><td class="n num">${fmt(s)}</td><td class="n num"><b>${fmt(Math.round((p + s) / (d.regu || 1) * 10) / 10)}</b></td></tr>`).join("")}</tbody>
     <tfoot><tr><td colspan="2">Total ${fmt(S.daops.length)} Daops</td><td class="n num">${fmt(S.daops.reduce((a, d) => a + (d.regu || 0), 0))}</td><td class="n num">${fmt(r.reduce((a, x) => a + x.p, 0))}</td><td class="n num">${fmt(r.reduce((a, x) => a + x.s, 0))}</td><td></td></tr></tfoot></table></div>
     <p style="font-size:12px;color:var(--ink2)">Sumber: SiPongi. Sebagian lokasi markas perkiraan.</p>`;
@@ -5219,7 +5225,7 @@ function mtKompleks() {
   const F = (S.kluster?.features || []).map(f => f.properties);
   return F.filter(p => p.level === 3 && mtAdaCuaca(p)).sort((a, b) => (b.skor || 0) - (a.skor || 0))[0] || F.filter(mtAdaCuaca)[0] || F[0];
 }
-const mtNamaK = p => `kompleks ${esc(p.id)} di ${esc(p.kec)}, ${esc(p.kab)} (${esc(namaProv(p.prov))})`;
+const mtNamaK = p => `cluster ${esc(p.id)} di ${esc(p.kec)}, ${esc(p.kab)} (${esc(namaProv(p.prov))})`;
 const MT_ISPU = v => v <= 15.5 ? "baik" : v <= 55.4 ? "sedang" : v <= 150.4 ? "tidak sehat" : v <= 250.4 ? "sangat tidak sehat" : "berbahaya";
 
 function renderMetode() {
@@ -5243,7 +5249,7 @@ function renderMetode() {
 
   B.push({ik: "jam", j: "Pembaruan harian", sub: "Kapan data diambil, dihitung, diuji, lalu terbit",
     singkat: `Tiap malam pukul 21.20 WIB komputer menjalankan urutan program yang sama: mengambil data satelit dan cuaca terbaru, menghitung ulang semua angka, lalu mengujinya. Bila uji gagal, data hari itu tidak diterbitkan dan halaman tetap memakai data sebelumnya. Jam 21.20 dipilih karena data satelit lintasan siang (± 13.30 waktu setempat) baru masuk NASA sekitar 3 jam kemudian.`,
-    alur: [["d", "sensor", "Ambil data", "titik panas, cuaca, asap, laporan BNPB, METAR"], ["o", "hitung", "Hitung", "titik per wilayah, FWI, kompleks, status"], ["o", "tenda", "Rencanakan", "posko, pangkalan heli, model keputusan"],
+    alur: [["d", "sensor", "Ambil data", "titik panas, cuaca, asap, laporan BNPB, METAR"], ["o", "hitung", "Hitung", "titik per wilayah, FWI, cluster, status"], ["o", "tenda", "Rencanakan", "posko, pangkalan heli, model keputusan"],
       ["u", "centang", "Uji otomatis", "rumus FWI, aturan status, posko; gagal = tidak terbit"], ["h", "berkas", "Terbit", "berkas data baru dibaca halaman ini"]],
     contoh: () => {
       const umur = (Date.now() - new Date(M.dibuat)) / 36e5;
@@ -5252,7 +5258,7 @@ function renderMetode() {
         ["in", "Jalan terakhir selesai", "pipeline GitHub Actions", M.dibuat ? jamWIB(M.dibuat) : "–"],
         ["", "Umur data saat halaman ini dibuka", "jam sekarang dikurangi jam selesai", mtA(umur) + " jam"],
         mtCek(umur <= 26, "Masih di bawah 26 jam?", "lewat 26 jam muncul pita peringatan merah di atas halaman"),
-        mtCek(umur <= 36, "Masih di bawah 36 jam?", "lewat 36 jam status kompleks dinyatakan tidak boleh dipakai untuk keputusan"),
+        mtCek(umur <= 36, "Masih di bawah 36 jam?", "lewat 36 jam status cluster dinyatakan tidak boleh dipakai untuk keputusan"),
         ["hasil", "Kesimpulan", "", umur <= 26 ? "data segar" : umur <= 36 ? "periksa pembaruan" : "jangan dipakai untuk keputusan"]]);
     },
     teknis: `<p>Jam 21.20 WIB dipilih karena lintasan siang VIIRS dan MODIS (± 13.30 waktu setempat) sudah masuk FIRMS NRT dengan latensi ± 3 jam (catatan di <code>.github/workflows/data.yml</code>). Urutan langkah:</p>
@@ -5265,7 +5271,7 @@ function renderMetode() {
       ["6", "<code>scrape/metar.py</code>", "metar.json", "boleh gagal (batas 300 detik)"],
       ["7", "uji: <code>fwi.py</code>, <code>aturan.py</code>, <code>posko.py uji</code>, <code>udara_rekom.py uji</code>", "–", "data tidak diterbitkan"]])}
     <p>Berkas yang tidak ada di daftar ini (arsip riwayat, kalender musim, lapisan lahan, bandara, Daops, luas terbakar) dibuat manual oleh skrip terpisah dan tidak berubah tiap hari. Batas waktu satu jalan 50 menit.</p>
-    <p><b>Peringatan data basi</b>: bila umur data &gt; 26 jam muncul pita peringatan; bila &gt; 36 jam, status kompleks dinyatakan tidak boleh dipakai untuk keputusan sampai data diperbarui.</p>
+    <p><b>Peringatan data basi</b>: bila umur data &gt; 26 jam muncul pita peringatan; bila &gt; 36 jam, status cluster dinyatakan tidak boleh dipakai untuk keputusan sampai data diperbarui.</p>
     <p>Semua rumus, konstanta, dan ambang di halaman ini diambil dari kode platform: <code>scripts/data/*.py</code>, <code>scripts/scrape/*.py</code>, dan <code>public/index.html</code>. Angka yang tidak berasal dari kode atau berkas data ditandai sebagai kutipan sumber luar.</p>`,
     batas: ["Bila pengambilan data NASA FIRMS gagal, seluruh jalan gagal dan data sebelumnya tetap tampil.", "Deteksi yang masuk NASA setelah 21.20 WIB baru terhitung di jalan berikutnya.",
       "Arsip riwayat, kalender musim, lapisan lahan, bandara, Daops, dan luas terbakar tidak diperbarui harian."]});
@@ -5288,8 +5294,8 @@ function renderMetode() {
         ["hasil", "Titik panas hari ini", "angka di kartu, peta, dan tabel", fmt(resmi) + " titik"]],
         `Lintasan yang masuk setelah jam jalan (${M.dibuat ? jamWIB(M.dibuat) : "–"}) belum terhitung untuk tanggal ini.`);
     },
-    teknis: `${h("Tujuan")}<p>Menghitung titik panas dengan cara yang sama dengan SiPongi/BNPB, dan menyediakan deteksi untuk pengelompokan kompleks api.</p>
-    ${h("Data masukan")}${tb(["Produk FIRMS", "Satelit", "Piksel nominal", "Dihitung di angka resmi", "Dipakai untuk kompleks"], [
+    teknis: `${h("Tujuan")}<p>Menghitung titik panas dengan cara yang sama dengan SiPongi/BNPB, dan menyediakan deteksi untuk pengelompokan cluster.</p>
+    ${h("Data masukan")}${tb(["Produk FIRMS", "Satelit", "Piksel nominal", "Dihitung di angka resmi", "Dipakai untuk cluster"], [
       ["VIIRS_SNPP_NRT", "Suomi NPP", "375 m", "ya (kode N)", "ya, keyakinan sedang/tinggi"], ["VIIRS_NOAA20_NRT", "NOAA-20", "375 m", "ya (N20)", "ya, sedang/tinggi"],
       ["VIIRS_NOAA21_NRT", "NOAA-21", "375 m", "tidak (tampil di peta)", "ya, sedang/tinggi"], ["MODIS_NRT", "Terra & Aqua", "1 km", "ya (M)", "tidak"]])}
     <p>Diambil lewat FIRMS area API untuk kotak 94–141,5 BT, 11,5 LS–6,5 LU. Parameter tanggal API adalah tanggal <i>awal</i> jendela dengan rentang maksimal 5 hari, jadi tiap sensor diminta dua kali: mulai H−4 (H−4 s.d. H) dan mulai H−9 (H−9 s.d. H−5), tanggal UTC. Sepuluh hari UTC itu lalu dipotong ke 7 × 24 jam terakhir dari saat jalan. Permintaan yang gagal diulang 4 kali; bila kuota FIRMS (5.000 transaksi per 10 menit) habis, jeda 90 detik.</p>
@@ -5386,33 +5392,33 @@ FWI
       "Bila seluruh perhitungan FWI gagal, hitungan terakhir dipakai ulang. Berkas <code>fwi.json</code> menyimpan 8 hari per sel (termasuk hari ini dan 3 hari prakiraan)."])}
     ${h("Kelas bahaya")}${tb(["Indeks", "Rendah", "Sedang", "Tinggi", "Sangat tinggi"], [
       ["FWI (dipakai status)", "&lt; 2", "2 s.d. &lt; 7", "7 s.d. &lt; 14", "≥ 14"], ["FFMC", "0–72", "73–77", "78–82", "&gt; 82"],
-      ["DC (dipakai kompleks)", "≤ 140 basah", "141–260 lembap", "261–350 kering", "&gt; 350 sangat kering"], ["ISI", "0–1", "2–3", "4–5", "&gt; 5"]])}
+      ["DC (dipakai cluster)", "≤ 140 basah", "141–260 lembap", "261–350 kering", "&gt; 350 sangat kering"], ["ISI", "0–1", "2–3", "4–5", "&gt; 5"]])}
     <p>Sumber kelas: BMKG (bmkg.go.id/cuaca/karhutla). Ambang FFMC 82 (penyulutan) dari de Groot dkk. 2005/2007; DC &gt; 350 (asap pekat di gambut) dari Field dkk. 2004 dan BMKG. Kelas FFMC dan ISI hanya ditampilkan; yang masuk aturan status adalah kelas FWI dan ambang DC 350.</p>
     ${h("Validasi")}<p>Tiap hari sebelum terbit, <code>fwi.py</code> menguji contoh baku Van Wagner & Pickett (1985): 45° LU, April, suhu 17 °C, RH 42%, angin 25 km/jam, hujan 0, nilai awal 85/6/15, Le 12,8, Lf 0,9. Hasil wajib FFMC 87,7 · DMC 8,5 · DC 19,0 · ISI 10,9 · BUI 8,5 · FWI 10,1. Diuji juga bahwa hari kosong membawa kode tanpa menggesernya, dan bahwa melanjutkan dari keadaan kemarin sama dengan menghitung bersambung.</p>
     ${h("Yang mengubah hasil")}<p>Hujan 24 jam di atas 0,5 mm (FFMC), 1,5 mm (DMC), atau 2,8 mm (DC); jam pengambilan (12.00); kehilangan keadaan bersambung (sel dipanaskan ulang dari ERA5).</p>`,
     batas: ["Cuaca berasal dari model komputer di titik tengah sel 55 km, bukan pengamatan stasiun. Hujan model lemah di tropis (temuan peer review, belum diganti hujan satelit IMERG/GSMaP).", "Nilai bisa berbeda dari FWI resmi SPARTAN BMKG; lapisan resmi belum diperoleh.",
-      "Kompleks api mengambil sel terdekat tanpa batas jarak; di pulau kecil yang titik tengah selnya jatuh di laut, sel terdekat bisa jauh.", "Tiga hari ke depan dihitung dari cuaca prakiraan, jadi makin jauh makin tidak pasti.", "Faktor panjang hari dibuat tetap; variasi musiman kecil di khatulistiwa diabaikan."]});
+      "Cluster mengambil sel terdekat tanpa batas jarak; di pulau kecil yang titik tengah selnya jatuh di laut, sel terdekat bisa jauh.", "Tiga hari ke depan dihitung dari cuaca prakiraan, jadi makin jauh makin tidak pasti.", "Faktor panjang hari dibuat tetap; variasi musiman kecil di khatulistiwa diabaikan."]});
 
-  B.push({ik: "kelompok", j: "Kompleks kebakaran", sub: "Titik yang berdekatan digabung menjadi satu kejadian api",
-    singkat: `Satu kebakaran besar bisa menghasilkan ratusan titik panas. Supaya yang dinilai adalah api, bukan titik, titik-titik yang berjarak dekat (paling jauh ± 1,5 km) dan muncul dalam selang ${d.jam_st || 48} jam digabung menjadi satu kompleks kebakaran. Cara pengelompokan menurut jarak dan waktu ini disebut ST-DBSCAN.`,
+  B.push({ik: "kelompok", j: "Cluster", sub: "Titik yang berdekatan digabung menjadi satu kejadian api",
+    singkat: `Satu kebakaran besar bisa menghasilkan ratusan titik panas. Supaya yang dinilai adalah api, bukan titik, titik-titik yang berjarak dekat (paling jauh ± 1,5 km) dan muncul dalam selang ${d.jam_st || 48} jam digabung menjadi satu cluster. Cara pengelompokan menurut jarak dan waktu ini disebut ST-DBSCAN. Cluster lalu dinilai dulu apakah api nyata (firespot), mengikuti metode Kemenhut: ada titik High, atau 4 titik Medium, atau Medium 3 hari berturut-turut. Cluster yang belum memenuhi syarat itu diberi label Mungkin api, perlu dicek, dan dicek dulu di lapangan. Cluster firespot kemudian diurutkan prioritasnya menurut cuaca dan besar api.`,
     alur: [["d", "sensor", "Titik VIIRS 7 hari", "3 satelit, keyakinan sedang dan tinggi"], ["o", "radius", "Ukur jarak antartitik", "jarak di permukaan bumi"], ["o", "jam", "Cek selang waktu", `paling lama ${d.jam_st || 48} jam`],
-      ["o", "kelompok", "Gabungkan", "titik bertetangga menjadi satu kompleks"], ["h", "tabel", "Hitung ciri tiap kompleks", "front 24 jam, hari menyala, luas indikatif, cuaca, gambut"]],
+      ["o", "kelompok", "Gabungkan", "titik bertetangga menjadi satu cluster"], ["h", "tabel", "Hitung ciri tiap cluster", "front 24 jam, hari menyala, luas indikatif, cuaca, gambut"]],
     contoh: () => {
       const p = mtKompleks(), a = p.api24 || [];
-      if (a.length < 2) throw new Error("kompleks contoh tidak punya dua titik 24 jam");
+      if (a.length < 2) throw new Error("cluster contoh tidak punya dua titik 24 jam");
       const j = a.slice(1).reduce((b, q) => km(a[0][1], a[0][0], q[1], q[0]) < km(a[0][1], a[0][0], b[1], b[0]) ? q : b, a[1]), jarak = km(a[0][1], a[0][0], j[1], j[0]);
       const eps = d.eps_km || 1.5, e375 = Math.min(eps, Math.max(.6, 1.5 * .375)), e800 = Math.min(eps, Math.max(.6, 1.5 * .8)), sel = Math.round(p.luas / 14.0625);
       const batasJam = p.gambut && p.dc > 350 ? d.aktif_gambut_jam : d.aktif_jam;
-      return mtTangga(`${esc(p.id)} · ${esc(p.kec)}, ${esc(p.kab)}`, `Dua titik panas 24 jam terakhir dari ${mtNamaK(p)}, lalu ciri kompleksnya.`, [
+      return mtTangga(`${esc(p.id)}, ${esc(p.kec)}, ${esc(p.kab)}`, `Dua titik panas 24 jam terakhir dari ${mtNamaK(p)}, lalu ciri cluster itu.`, [
         ["in", "Titik A dan titik terdekatnya, B", `A ${mtA(a[0][1], 4)}, ${mtA(a[0][0], 4)} · B ${mtA(j[1], 4)}, ${mtA(j[0], 4)}`, ""],
         ["", "Jarak di permukaan bumi", "rumus Haversine (jari-jari bumi 6.371 km)", mtA(jarak * 1000, 0) + " m"],
         ["", "Batas jarak tetangga", `1,5 × ukuran piksel, paling kecil 0,6 km dan paling besar ${mtA(eps)} km. Piksel 375 m di tengah sapuan → ${mtA(e375)} km; piksel 0,8 km di tepi sapuan → ${mtA(e800)} km`, `${mtA(e375)}–${mtA(e800)} km`],
         mtCek(jarak <= e375, "A dan B bertetangga?", `${mtA(jarak, 2)} km ≤ ${mtA(e375)} km, dan keduanya terdeteksi dalam 24 jam terakhir (≤ ${d.jam_st || 48} jam)`),
         ["", "Semua titik yang tersambung", `rantai tetangga selama ${fmt(p.hari)} hari menyala`, fmt(p.n) + " deteksi"],
         ["", "Front aktif 24 jam", "jumlah kotak ± 375 m berbeda yang berisi titik 24 jam terakhir", `${fmt(p.px24)} piksel<small>≈ ${fmt(Math.round(p.px24 * 14.0625))} ha</small>`],
-        ["", "Luas indikatif 7 hari", `${fmt(sel)} kotak × 14,0625 ha; laci kompleks menampilkannya sebagai rentang 0,3–1,0 kali`, `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`],
+        ["", "Luas indikatif 7 hari", `${fmt(sel)} kotak × 14,0625 ha; laci cluster menampilkannya sebagai rentang 0,3–1,0 kali`, `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`],
         mtCek(p.jam_sejak <= batasJam, "Masih dihitung aktif?", `deteksi terakhir ${mtA(p.jam_sejak)} jam lalu, batas ${fmt(batasJam)} jam${p.gambut && p.dc > 350 ? " (gambut sangat kering)" : ""}`, "aktif", "tidak aktif"),
-        ["hasil", "Satu kompleks kebakaran", `dari ${fmt(M.jumlah_kluster)} kompleks pada jalan terakhir`, esc(p.id)]],
+        ["hasil", "Satu cluster", `dari ${fmt(M.jumlah_kluster)} cluster pada jalan terakhir`, esc(p.id)]],
         "Luas indikatif bukan luas terbakar resmi; angka resmi tetap dari KLHK/BNPB.");
     },
     teknis: `${h("Data masukan")}<p>Deteksi VIIRS dari 3 satelit (S-NPP, NOAA-20, NOAA-21) dengan keyakinan sedang dan tinggi selama ${fmt(d.jendela_hari)} hari terakhir dari jam jalan. MODIS tidak dipakai karena pikselnya 1 km.</p>
@@ -5427,24 +5433,24 @@ minPts = ${d.min_pts}  → deteksi tunggal tetap menjadi kejadian sendiri
 Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
 (Indonesia berada di |lintang| < 11°, jadi sel pada cos 12° tidak melewatkan tetangga)`)}
     <p>Piksel VIIRS melebar ke tepi sapuan, jadi radius tetangga mengikuti ukuran piksel sebenarnya (kolom scan/track FIRMS), dibatasi 0,6–${fmt(d.eps_km)} km. Parameter mengikuti FEDS (Chen dkk. 2022) dan uji akurasi VIIRS di Indonesia (Indradjad dkk. 2024, puncak galat lokasi 1–1,5 km).</p>
-    ${h("Atribut tiap kompleks")}${tb(["Atribut", "Cara hitung"], [
+    ${h("Atribut tiap cluster")}${tb(["Atribut", "Cara hitung"], [
       ["Pusat", "rata-rata lintang dan bujur semua deteksi"], ["Wilayah", "kecamatan tempat pusat jatuh; bila pusat di luar poligon, kecamatan yang paling sering muncul di antara deteksinya"],
       ["px24 (front aktif 24 jam)", "jumlah sel ± 375 m berbeda yang berisi deteksi 24 jam terakhir. Sel = (round(lintang/0,003375), round(bujur·cos lintang/0,003375))"],
       ["Hari menyala", "jumlah tanggal WIB berbeda"], ["Deteksi hari ini / kemarin", "per tanggal WIB jam jalan"], ["FRP, FRP 24 jam", "jumlah FRP (MW)"],
-      ["Luas indikatif", "luas garis luar kompleks (di bawah), lubang dikurangi. Sejak 14 Okt 2026; sebelumnya jumlah sel ± 375 m berbeda × 14,0625 ha. Deteksi di tepi sapuan kini dihitung selebar pikselnya (bisa ± 0,8 km), deteksi tunggal ± 0,84 sel. Laci kompleks menampilkannya sebagai rentang 0,3–1,0 kali nilai itu"],
+      ["Luas indikatif", "luas garis luar cluster (di bawah), lubang dikurangi. Sejak 14 Okt 2026; sebelumnya jumlah sel ± 375 m berbeda × 14,0625 ha. Deteksi di tepi sapuan kini dihitung selebar pikselnya (bisa ± 0,8 km), deteksi tunggal ± 0,84 sel. Laci cluster menampilkannya sebagai rentang 0,3–1,0 kali nilai itu"],
       ["Bentuk", "garis luar mengikuti deteksi (bila ≥ 3 titik berbeda dan status ≥ siaga; selain itu titik): tiap deteksi VIIRS diraster ke kisi 375 m selebar jejak pikselnya (scan × track FIRMS), celah satu sel ditutup (dilatasi lalu erosi satu sel), tiap komponen terhubung dikontur (marching squares), dihaluskan Chaikin dan disederhanakan 56 m. Api yang terpisah jadi beberapa bagian (MultiPolygon); lahan tak terbakar yang dikelilingi api jadi lubang"],
       ["Cuaca", "FWI, FFMC, DMC, DC, ISI, BUI, angin, RH, suhu hari ini dari sel FWI terdekat; tidak ada = 'cuaca tidak tersedia'"],
       ["Gambut", "pusat atau salah satu dari 20 deteksi pertama jatuh di poligon gambut"], ["Daops", "markas Daops terdekat (Haversine) dan jaraknya"],
       ["Benih simulasi", "≤ 80 deteksi 24 jam terakhir dengan FRP terbesar (hanya status ≥ siaga)"],
       ["Penanggung jawab lahan", "konsesi sawit → perusahaan perkebunan; HPH → pemegang PBPH; kawasan konservasi → BKSDA/Balai TN; hutan lindung dan Tahura → pemda; HP/HPT/HPK → KPH/pemegang PBPH; selain itu → desa/camat/bupati (P.32/2016 dan praktik KLHK)"]])}
-    ${h("Kapan kompleks dianggap aktif")}<p>Kompleks ditampilkan bila deteksi terakhirnya ≤ ${d.aktif_jam} jam dari jam jalan. Di gambut sangat kering (DC &gt; 350 dan berada di peta gambut; tanpa peta gambut cukup DC) batasnya ${d.aktif_gambut_jam || 168} jam, karena bara bisa tertutup awan atau asap (deteksi VIIRS di gambut ± 71%). Kompleks yang tidak terdeteksi 24 jam diberi tanda <i>tidak teramati</i>; tidak teramati tidak sama dengan padam.</p>
-    <p>Kompleks dengan &lt; 3 deteksi, status pencegahan rutin, dan terdeteksi dalam 24 jam terakhir hanya dihitung, tidak digambar (${fmt(M.titik_tunggal_belum_dinilai)} pada jalan terakhir). Jalan terakhir menghasilkan ${fmt(M.jumlah_kluster)} kompleks.</p>
+    ${h("Kapan cluster dianggap aktif")}<p>Cluster ditampilkan bila deteksi terakhirnya ≤ ${d.aktif_jam} jam dari jam jalan. Di gambut sangat kering (DC &gt; 350 dan berada di peta gambut; tanpa peta gambut cukup DC) batasnya ${d.aktif_gambut_jam || 168} jam, karena bara bisa tertutup awan atau asap (deteksi VIIRS di gambut ± 71%). Cluster yang tidak terdeteksi 24 jam diberi tanda <i>tidak teramati</i>; tidak teramati tidak sama dengan padam.</p>
+    <p>Cluster dengan &lt; 3 deteksi, status pencegahan rutin, dan terdeteksi dalam 24 jam terakhir hanya dihitung, tidak digambar (${fmt(M.titik_tunggal_belum_dinilai)} pada jalan terakhir). Jalan terakhir menghasilkan ${fmt(M.jumlah_kluster)} cluster.</p>
     ${h("Yang mengubah hasil")}<p>eps, jendela waktu 48 jam, jendela 7 hari, dan batas aktif 72/168 jam (semua di <code>harian.py</code>, terbaca di <code>meta.json</code>).</p>`,
     batas: ["Dua api terpisah yang berjarak kurang dari 1,5 km digabung; satu api besar dengan celah deteksi lebih dari 1,5 km atau 48 jam terpecah.", "Garis luar adalah jejak piksel deteksi, bukan batas bekas terbakar: piksel 375 m memuat lahan yang tidak terbakar dan api kecil di bawah ambang tidak terdeteksi; luas indikatif bukan luas terbakar. FIRMS tidak menganjurkan titik panas untuk luas; angka resmi tetap KLHK/BNPB (Landsat dan lapangan).",
-      "Pusat kompleks adalah rata-rata, bisa jatuh di luar area api.", "Peta gambut global melebihkan luas gambut ± 2,5 kali angka BBSDLP, jadi hanya dipakai sebagai tanda ya/tidak."]});
+      "Pusat cluster adalah rata-rata, bisa jatuh di luar area api.", "Peta gambut global melebihkan luas gambut ± 2,5 kali angka BBSDLP, jadi hanya dipakai sebagai tanda ya/tidak."]});
 
   B.push({ik: "centang", j: "Status taktis dan prioritas", sub: "Empat status tindakan dan siapa yang dipadamkan dulu",
-    singkat: `Tiap kompleks diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Kompleks prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
+    singkat: `Tiap cluster diberi satu dari empat status tindakan: ${(M.status || []).map(s => esc(s).toLowerCase()).join(", ")}. Statusnya ditentukan dua hal: seberapa besar api yang terlihat satelit, dan seberapa berbahaya cuacanya. Cuaca hanya boleh menaikkan status, tidak pernah menurunkannya. Cluster prioritas lalu diurutkan dengan skor supaya regu tahu mana yang didatangi lebih dulu.`,
     alur: [["d", "api", "Ukur besar api", "S1, S2, S3 dari front 24 jam dan hari menyala"], ["d", "awan", "Kelas cuaca", "kelas FWI BMKG"], ["o", "tabel", "Matriks status", "gabungan besar api dan cuaca"],
       ["u", "centang", "Uji prioritas", "front ≥ 15 piksel dan FWI ≥ 7"], ["h", "urut", "Urutkan", "skor di dalam wilayah kerja tiap Daops"]],
     contoh: () => {
@@ -5454,7 +5460,7 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
       const fR = 1 + Math.log1p(p.frp24 || 0) / 5, fH = 1 + Math.min(p.hari, 5) / 5, dcG = p.gambut !== false && p.dc > 350;
       const fC = 1 + Math.min(Math.max(p.isi || 0, 0), 20) / 20 + (dcG ? .5 : 0), bahaya = Math.max(p.px24, 1) * fR * fH * fC;
       const celah = Math.min((p.jarak_daops ?? 150) / 150, 1), skor = bahaya * (1 + celah) * (1 + (p.risiko || 0) / 100);
-      return mtTangga(`${esc(p.id)} · ${esc(p.kec)}, ${esc(p.kab)}`, `${mtNamaK(p)}, kompleks prioritas dengan skor tertinggi hari ini.`, [
+      return mtTangga(`${esc(p.id)}, ${esc(p.kec)}, ${esc(p.kab)}`, `${mtNamaK(p)}, cluster prioritas dengan skor tertinggi hari ini.`, [
         ["in", "Front aktif 24 jam", `${fmt(p.hari)} hari menyala, ${fmt(p.n)} deteksi`, fmt(p.px24) + " piksel"],
         mtCek(sev === 3, "Api besar (S3)?", "front ≥ 10 piksel (± 140 ha), atau menyala ≥ 4 hari dengan front ≥ 5", "S3", sev === 1 ? "S1" : "S2"),
         ["in", "Cuaca di sel terdekat", ada ? `FWI ${mtA(p.fwi)}` : "cuaca tidak tersedia (tidak dianggap rendah)", kl == null ? "tidak tersedia" : FWI_KELAS[kl][0]],
@@ -5467,12 +5473,12 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
         ["", "Jauh dari Daops", `${fmt(p.jarak_daops)} km ÷ 150 km, paling besar 1 → dikali ${mtA(1 + celah, 2)}`, mtA(celah, 2)],
         ["", "Riwayat kecamatan", `indeks risiko ${fmt(p.risiko)} dari 100 (bagian 6) → dikali ${mtA(1 + (p.risiko || 0) / 100, 2)}`, fmt(p.risiko)],
         ["hasil", "Skor urutan", `${fmt(Math.round(bahaya))} × ${mtA(1 + celah, 2)} × ${mtA(1 + (p.risiko || 0) / 100, 2)}; di berkas ${fmt(p.skor)}, peringkat ${fmt(p.peringkat)} di wilayah kerjanya`, fmt(Math.round(skor))]],
-        `Hari ini: ${[0, 1, 2, 3].map(i => `${statusPill(i)} ${fmt(lv[i])}`).join(" · ")} kompleks.`);
+        `Hari ini: ${[0, 1, 2, 3].map(i => `${statusPill(i)} ${fmt(lv[i])}`).join(", ")} cluster.`);
     },
     teknis: `${h("Langkah 1: keparahan teramati (aturan.py)")}${rumus(`S3  bila px24 ≥ 10 piksel (≈ 140 ha)  atau  (hari menyala ≥ 4 dan px24 ≥ 5)
 S1  bila jumlah deteksi < 3 dan hari menyala ≤ 1
 S2  selain itu`)}
-    <p>Klausul lama "naik 50% dari kemarin" dibuang karena uji balik menunjukkan ia menambah kompleks tanpa menangkap api besar tambahan.</p>
+    <p>Klausul lama "naik 50% dari kemarin" dibuang karena uji balik menunjukkan ia menambah cluster tanpa menangkap api besar tambahan.</p>
     ${h("Langkah 2: bahaya cuaca")}<p>Kelas FWI BMKG apa adanya. FFMC (penyulutan), ISI (laju), dan DC (gambut/asap) ditampilkan terpisah, tidak dijumlahkan ke kelas. Kenaikan kelas otomatis dari FFMC &gt; 82 dan ISI &gt; 5 dihapus karena ambang itu terlampaui hampir tiap hari kemarau.</p>
     ${h("Langkah 3: matriks status")}<div class="tw"><table><thead><tr><th>Bahaya cuaca</th><th>S1</th><th>S2</th><th>S3</th></tr></thead><tbody>
     <tr><td>Rendah / sedang</td><td><span class="pill l0">Pencegahan rutin</span></td><td><span class="pill l1">Patroli terpadu</span></td><td><span class="pill l2">Siaga pemadaman awal</span></td></tr>
@@ -5483,18 +5489,18 @@ S2  selain itu`)}
     ${h("Langkah 4: prioritas pemadaman")}${rumus(`Prioritas  bila  status = siaga  dan  teramati (terdeteksi ≤ 24 jam)
                 dan  px24 ≥ 15 piksel VIIRS (≈ 210 ha)
                 dan  (FWI ≥ 7  atau  FWI tidak tersedia)`)}
-    <p>Prioritas tidak dibatasi jumlahnya. Di dalam tiap wilayah kerja, kompleks prioritas diurutkan dengan skor. Wilayah kerja = Daops terdekat bila jaraknya ≤ 150 km, selain itu kabupaten.</p>
+    <p>Prioritas tidak dibatasi jumlahnya. Di dalam tiap wilayah kerja, cluster prioritas diurutkan dengan skor. Wilayah kerja = Daops terdekat bila jaraknya ≤ 150 km, selain itu kabupaten.</p>
     ${rumus(`bahaya = max(px24, 1) · (1 + ln(1 + FRP24)/5) · (1 + min(hari, 5)/5)
          · (1 + min(max(ISI, 0), 20)/20 + 0,5·[DC > 350])        DC hanya dihitung di gambut (atau bila peta gambut tidak ada)
 celah  = min(jarak ke Daops / 150 km, 1)
 skor   = bahaya · (1 + celah) · (1 + risiko kecamatan/100)      risiko 0–100, lihat bagian 6`)}
-    ${h("Validasi: uji balik")}<p><b>Agustus–Oktober 2019 dan 2023</b> (VIIRS S-NPP, 9 provinsi): ambang front ≥ 10 piksel & FWI ≥ 7 menandai 90% (2019) dan 95% (2023) api yang akhirnya ≥ 100 piksel sebelum mencapai separuh ukurannya, presisi 53% dan 35%, porsi prioritas 1,9% dan 0,8% kompleks-hari. Pipeline harian memakai 3 satelit VIIRS (lebih banyak lintasan dari S-NPP saja), jadi ambangnya dinaikkan menjadi 15 piksel; perlu diuji ulang dengan data NOAA-20.</p>
+    ${h("Validasi: uji balik")}<p><b>Agustus–Oktober 2019 dan 2023</b> (VIIRS S-NPP, 9 provinsi): ambang front ≥ 10 piksel & FWI ≥ 7 menandai 90% (2019) dan 95% (2023) api yang akhirnya ≥ 100 piksel sebelum mencapai separuh ukurannya, presisi 53% dan 35%, porsi prioritas 1,9% dan 0,8% cluster-hari. Pipeline harian memakai 3 satelit VIIRS (lebih banyak lintasan dari S-NPP saja), jadi ambangnya dinaikkan menjadi 15 piksel; perlu diuji ulang dengan data NOAA-20.</p>
     <p><b>Kenapa peringkat berkuota ditolak</b>: versi dengan kuota k = regu/2 per Daops hanya menangkap 60–76% api besar, dan 7 dari 10 prioritasnya hilang keesokan hari. Karena itu skor hanya dipakai untuk mengurutkan, bukan membatasi jumlah prioritas.</p>
     <p>Aturan ini diuji tiap hari sebelum terbit (<code>aturan.py</code>): batas kelas FWI dan DC, contoh S1/S2/S3, larangan cuaca menurunkan S3, level 3 hanya lewat ambang prioritas, dan arah skor (lebih jauh dari Daops = lebih tinggi).</p>
     ${h("Batas peran model")}<p>"Siaga darurat" dan "tanggap darurat" adalah status hukum wilayah (Permen LHK P.9/2018) yang ditetapkan bupati, gubernur, atau menteri. Model tidak memberikannya.</p>
     <div class="tw"><table><thead><tr><th>Status</th><th>Tindakan yang disarankan</th></tr></thead><tbody>${(M.status || []).map((s, i) => `<tr><td><span class="pill l${i}">${esc(s)}</span></td><td style="white-space:normal">${STATUS_AKSI[i].map(esc).join("; ")}</td></tr>`).join("")}</tbody></table></div>
     ${catat("Tindakan disusun dari isi SOP dan regulasi, bukan salinan SOP.")}`,
-    batas: ["Cuaca dinilai per sel 55 km; satu kompleks memakai satu sel.", "Ambang 15 piksel belum diuji ulang dengan 3 satelit.", "Jarak ke Daops garis lurus; markas sebagian Daops masih lokasi perkiraan (bagian 14).",
+    batas: ["Cuaca dinilai per sel 55 km; satu cluster memakai satu sel.", "Ambang 15 piksel belum diuji ulang dengan 3 satelit.", "Jarak ke Daops garis lurus; markas sebagian Daops masih lokasi perkiraan (bagian 14).",
       "Model tidak menetapkan status siaga darurat atau tanggap darurat; itu wewenang bupati, gubernur, atau menteri."]});
 
   B.push({ik: "tren", j: "Indeks risiko riwayat", sub: "Angka 0–100: seberapa sering dan seberapa besar wilayah ini terbakar dulu",
@@ -5524,7 +5530,7 @@ tren      rasio = (rata-rata 2023 s.d. tahun berjalan + 1) / (rata-rata tahun se
 skor = round(100 · (0,5·fK + 0,3·fB + 0,2·fT))`)}
     <p><b>Kelas</b>: wilayah setingkat se-Indonesia diurutkan menurut skor (seri: total titik). 10% teratas sangat tinggi, 10–30% tinggi, 30–60% sedang, sisanya rendah. Kelas adalah posisi relatif, bukan ambang skor tetap.</p>
     ${h("Data")}<p>Arsip NASA FIRMS MODIS Terra/Aqua (arsip standar + NRT), keyakinan ≥ 30, tanggal WIB, 2002 s.d. tahun berjalan (<code>sejarah_modis.json</code>). Tahun 2001 dikeluarkan karena hanya ada Terra (Aqua mulai Juli 2002), jadi jumlahnya tidak sebanding. Berkas hanya menyimpan kecamatan yang pernah ≥ 10 titik setahun; angka kabupaten dan provinsi adalah jumlah kecamatan-kecamatan itu. Tab Tren juga bisa memakai arsip VIIRS S-NPP 2015 s.d. sekarang (keyakinan sedang/tinggi).</p>
-    ${h("Versi untuk skor prioritas (aturan.py)")}<p>Skor prioritas kompleks memakai rumus bobot yang sama pada arsip VIIRS S-NPP 2015 s.d. sekarang (<code>sejarah.json</code>), ambang 10 titik di kecamatan, besaran dibagi total kecamatan terbesar. Hasilnya mengalikan skor kompleks dengan (1 + risiko/100), maksimal 2 kali. Laci kompleks menyebut kecamatan "langganan api" bila risikonya ≥ 60.</p>
+    ${h("Versi untuk skor prioritas (aturan.py)")}<p>Skor prioritas cluster memakai rumus bobot yang sama pada arsip VIIRS S-NPP 2015 s.d. sekarang (<code>sejarah.json</code>), ambang 10 titik di kecamatan, besaran dibagi total kecamatan terbesar. Hasilnya mengalikan skor cluster dengan (1 + risiko/100), maksimal 2 kali. Laci cluster menyebut kecamatan "langganan api" bila risikonya ≥ 60.</p>
     ${h("Validasi")}<p>Uji di <code>aturan.py</code>: kecamatan yang terbakar 500 titik tiap tahun harus berisiko lebih tinggi daripada yang terbakar 6.000 titik sekali saja; tanpa api sama sekali skor = 10 (hanya komponen tren netral). Belum ada uji kecocokan indeks terhadap luas terbakar resmi yang tercatat di repo.</p>`,
     batas: ["Tahun berjalan ikut dihitung padahal belum lengkap: menekan kekerapan dan tren sebelum musim selesai.", "Titik panas MODIS mencakup sumber panas non-kebakaran (industri) di luar provinsi yang sering mengalami karhutla.",
       "Kabupaten dan provinsi tidak menghitung kecamatan yang tidak pernah ≥ 10 titik setahun.", "Dua versi (MODIS 2002–sekarang dan VIIRS 2015–sekarang) memberi angka berbeda untuk kecamatan yang sama.", "Indeks belum diuji terhadap luas terbakar resmi."]});
@@ -5574,7 +5580,7 @@ puncak      = dasarian dengan rata tertinggi`)}
         x.titik ? ["in", "Riwayat kecamatan", `terbakar ${fmt(x.tahun_maks)} tahun sejak 2015, ${fmt(x.titik)} titik`, ""] : null,
         x.titik ? ["", "Bobot kecamatan", `${fmt(x.tahun_maks)} × ln(1 + ${fmt(x.titik)})`, mtA(x.tahun_maks * Math.log1p(x.titik))] : null,
         x.cakupan ? ["", "Bobot provinsi yang terjangkau", `setelah posko ini dipilih; pemilihan posko berikutnya berlanjut sampai 80%`, fmt(x.cakupan) + "%"] : null,
-        ["in", "Kompleks yang dilayani hari ini", `${fmt(x.prioritas)} prioritas, ${fmt(siaga)} siaga, rata-rata ${mtA(x.jarak_rata)} km`, fmt(x.kompleks.length)],
+        ["in", "Cluster yang dilayani hari ini", `${fmt(x.prioritas)} prioritas, ${fmt(siaga)} siaga, rata-rata ${mtA(x.jarak_rata)} km`, fmt(x.kompleks.length)],
         ["", "Jumlah regu", `⌈${fmt(x.prioritas)}/2 + ${fmt(siaga)}/6⌉ = ${fmt(mentah)}, dibatasi 1–6 regu; 15 orang per regu`, `${fmt(g.regu)} regu<small>${fmt(g.org)} orang</small>`],
         ["", "Biaya satu orang per hari", `${mtA(A.porsiBKO * 100, 0)}% uang harian SBM ${rp(uh)} + ${mtA(A.porsiMPA * 100, 0)}% honor MPA ${rp(A.honorMPA)} + konsumsi ${rp(A.konsumsi)}; Manggala Agni sudah dibayar DIPA`, rp(orang)],
         ["", "Operasional per hari", `orang ${rp(g.org * orang)} + pompa ${fmt(A.jamPompa)} jam × ${mtA(A.lPompa)} L ${rp(pompa)} + sewa mobil dan Dexlite ${rp(mobil)} + Starlink ${rp(A.starlink / 30)}`, rp(g.harian)],
@@ -5590,7 +5596,7 @@ Per provinsi, greedy maximal covering radius 30 km: pilih kandidat yang menjangk
 ulangi sampai ≥ 80% bobot provinsi terjangkau.
 Geser ke desa terdekat bila ≤ 15 km (nama tempat nyata); selain itu tetap di titik berat kecamatan.`)}
     <p>Radius 30 km dipilih sebagai ± 1 jam perjalanan darat/sungai di gambut (catatan di kode). Saat ini ${fmt(nPerm)} posko permanen.</p>
-    ${h("Posko aju (harian)")}<p>Tiap kompleks siaga atau prioritas di 9 provinsi ditugaskan ke pangkalan tetap terdekat (posko permanen atau markas Daops) bila ≤ 30 km. Sisanya dikelompokkan per kabupaten dan diberi posko aju dengan greedy maximal covering yang sama (radius 30 km, sampai semua terjangkau), bobot = (3 bila prioritas, 1 bila siaga) × max(1, px24). Kandidat lokasi = desa dalam kotak kompleks ± 0,3°; bila tidak ada data desa, titik berat kecamatan; bila tetap kosong, titik kompleks itu sendiri. Saat ini ${fmt(nAju)} posko aju.</p>
+    ${h("Posko aju (harian)")}<p>Tiap cluster siaga atau prioritas di 9 provinsi ditugaskan ke pangkalan tetap terdekat (posko permanen atau markas Daops) bila ≤ 30 km. Sisanya dikelompokkan per kabupaten dan diberi posko aju dengan greedy maximal covering yang sama (radius 30 km, sampai semua terjangkau), bobot = (3 bila prioritas, 1 bila siaga) × max(1, px24). Kandidat lokasi = desa dalam kotak cluster ± 0,3°; bila tidak ada data desa, titik berat kecamatan; bila tetap kosong, titik cluster itu sendiri. Saat ini ${fmt(nAju)} posko aju.</p>
     ${h("Posko kabupaten (menengah)")}<p>Tidak tiap kabupaten. Per provinsi, kandidat = satu kota (OSM <i>town/city</i> di kabupaten itu sendiri, terdekat ke pusat bobot api kabupaten; cadangan: titik berat kecamatan). Bobot posko lapangan = bobot api aktif + ln(1 + titik riwayat) untuk posko permanen. Greedy radius 75 km (± 2–3 jam, batas koordinasi harian) sampai semua posko lapangan terlayani; posko lapangan yang tidak terjangkau menjadikan kabupatennya hub sendiri. Tiap posko lapangan melapor ke hub terdekat; hub tanpa anak dibuang. Saat ini ${fmt(nKab)} posko kabupaten.</p>
     ${h("Posko provinsi")}<p>Ibu kota provinsi (Kalimantan Selatan: Banjarbaru), ${fmt(nPusat)} posko. Jalur laporan: posko lapangan → posko kabupaten → posko provinsi → BNPB dan KLHK.</p>
     ${h("Jarak dan waktu tempuh")}<p>Semua jarak garis lurus Haversine. Waktu tempuh darat = jarak × 1,4 (kelok jalan) ÷ 40 km/jam. Di gambut tanpa jalan waktu nyata bisa 3–6 kali lebih lama. Sumber air dan fasilitas kesehatan terdekat hanya tersedia di provinsi yang punya lapisan OSM lengkap (saat ini Kalimantan Selatan); provinsi lain memakai titik pusat desa Kemendagri tanpa air dan faskes.</p>
@@ -5598,7 +5604,7 @@ Geser ke desa terdekat bila ≤ 15 km (nama tempat nyata); selain itu tetap di t
     ${h("Rumus anggaran per posko (fungsi anggaran)")}${rumus(`biaya orang/hari = ${fmt(A.porsiBKO)}·UH_SBM provinsi + ${fmt(A.porsiMPA)}·honor MPA (Rp${fmt(A.honorMPA)}) + konsumsi (Rp${fmt(A.konsumsi)})
                    sisa porsi = Manggala Agni, sudah dibiayai DIPA (tidak dihitung)
 
-Posko lapangan:  regu = min(6, max(1, ⌈prioritas/2 + siaga/6⌉))   (1 bila belum ada kompleks);  orang = 15·regu
+Posko lapangan:  regu = min(6, max(1, ⌈prioritas/2 + siaga/6⌉))   (1 bila belum ada cluster);  orang = 15 × regu
   harian = orang·biaya orang
          + regu·${fmt(A.jamPompa)} jam pompa·${fmt(A.lPompa)} L/jam·Rp${fmt(A.bbm)}/L
          + regu·${fmt(A.mobilPerRegu)} kendaraan·(sewa Rp${fmt(A.sewaMobil)} + 40 L·Rp${fmt(A.dexlite)} Dexlite)
@@ -5607,14 +5613,14 @@ Posko lapangan:  regu = min(6, max(1, ⌈prioritas/2 + siaga/6⌉))   (1 bila be
 Posko kabupaten: ${fmt(A.staffKab)} staf·(uang harian Rp${fmt(A.uhDalam)} + konsumsi) + 3 kendaraan sewa + Starlink/30
 Posko provinsi:  ${fmt(A.staffProv)} staf·(uang harian Rp${fmt(A.uhDalam)} + konsumsi) + 2 kendaraan sewa + 2·Starlink/30
 total (APBD/instansi) = alat × (1 − alat yang sudah ada ${fmt(A.adaAlat)}%) + harian × hari
-Dana Siap Pakai BNPB (provinsi yang punya kompleks prioritas, terpisah dari total):
+Dana Siap Pakai BNPB (provinsi yang punya cluster prioritas, terpisah dari total):
   ${fmt(A.heliUnit)} heli × ${fmt(A.heliJamHari)} jam/hari × Rp${fmt(A.heliJam)} × ${fmt(A.hariDarurat)} hari + ${fmt(A.omcHari)} hari OMC × Rp${fmt(A.omc)}`)}
     ${catat("Angka di atas adalah nilai asumsi yang aktif di peramban ini; bisa diubah di tab Posko.")}
     <p>Kendaraan disewa, bukan dibeli. Harga satuan: ${fmt(nHarga)} item, ${fmt(nEst)} di antaranya masih estimasi (ditandai, wajib dicek ke e-Katalog atau SSH daerah); sisanya dari Tokopedia, Indotrading, INAPROC, Auto2000, Carmudi, dan SSH Lombok Tengah/Sulawesi Selatan. Item tanpa harga tidak masuk total.</p>
     ${tb(["Provinsi", "Uang harian luar kota SBM 2026"], Object.entries(UH).map(([k, v]) => [esc(namaProv(k)), "Rp" + fmt(v)]), [1])}
     <p>Pemisahan sumber dana: APBD/instansi (alat yang kurang + operasional), Dana Siap Pakai BNPB (helikopter dan modifikasi cuaca, hanya saat status darurat), DIPA kementerian (Manggala Agni, tidak dihitung), dan kewajiban perusahaan (Permentan 5/2018).</p>`,
     batas: ["Lokasi dari jarak garis lurus, bukan waktu tempuh jaringan jalan atau sungai.", "Posko permanen dihitung dari arsip VIIRS 2015 s.d. tahun berjalan; musim berjalan ikut mempengaruhi lokasi.",
-      "Jumlah regu posko aju bergantung pada kompleks hari itu, jadi berubah tiap hari.", "Harga bertanda estimasi belum diverifikasi.", "Sumber air dan fasilitas kesehatan terdekat baru tersedia di Kalimantan Selatan."]});
+      "Jumlah regu posko aju bergantung pada cluster hari itu, jadi berubah tiap hari.", "Harga bertanda estimasi belum diverifikasi.", "Sumber air dan fasilitas kesehatan terdekat baru tersedia di Kalimantan Selatan."]});
 
   B.push({ik: "pesawat", j: "Pangkalan udara: helikopter dan modifikasi cuaca", sub: "Bandara mana yang paling cocok untuk water bombing dan penyemaian awan",
     singkat: `Helikopter pemadam (water bombing) butuh bandara dengan bahan bakar avtur. Platform memilih bandara yang menjangkau paling banyak api besar dalam radius 100 km, paling banyak 3 per provinsi. Untuk modifikasi cuaca (OMC, penyemaian awan supaya hujan), dipilih satu bandara per provinsi dengan landasan ≥ 1.000 m yang paling dekat ke pusat api.`,
@@ -5627,7 +5633,7 @@ Dana Siap Pakai BNPB (provinsi yang punya kompleks prioritas, terpisah dari tota
       const air = U.asumsi_jarak_air_km ?? 5, siklus = 2.5 + .8 * air, laju = U.laju_heli_kmj || 200;
       return mtTangga(`${esc(x.nama)}${x.icao ? " (" + esc(x.icao) + ")" : ""}`, `Pangkalan helikopter pertama untuk ${esc(namaProv(kode))}; provinsi ini mendapat ${fmt(Hs.length)} pangkalan helikopter.`, [
         mtCek(x.landasan_m >= 800, "Landasan cukup untuk helikopter?", "syarat ≥ 800 m dan ada avtur (bandara atau pangkalan militer)", fmt(x.landasan_m) + " m"),
-        ["in", "Api dalam radius " + fmt(U.radius_heli_km || 100) + " km", `${fmt(x.prioritas)} di antaranya prioritas`, fmt(x.kompleks) + " kompleks"],
+        ["in", "Api dalam radius " + fmt(U.radius_heli_km || 100) + " km", `${fmt(x.prioritas)} di antaranya prioritas`, fmt(x.kompleks) + " cluster"],
         ["", "Waktu terbang rata-rata", `${fmt(x.jarak_rata)} km ÷ ${fmt(laju)} km/jam × 60`, mtA(x.jarak_rata / laju * 60, 0) + " menit"],
         ["", "Satu siklus siram", `2,5 menit + 0,8 × jarak sumber air ${fmt(air)} km (asumsi)`, mtA(siklus) + " menit"],
         ["", "Siraman per jam", `60 ÷ ${mtA(siklus)}`, mtA(60 / siklus)],
@@ -5639,10 +5645,10 @@ Dana Siap Pakai BNPB (provinsi yang punya kompleks prioritas, terpisah dari tota
     ${h("Pangkalan helikopter water bombing (udara_rekom.py)")}${rumus(`Kandidat  = bandara besar/sedang/kecil atau pangkalan militer dengan landasan ≥ 800 m, boleh lintas provinsi (butuh Avtur)
 Bobot     = (3 bila prioritas, 0,3 bila siaga) × max(1, px24)
 Per provinsi, greedy maximal covering radius 100 km; berhenti bila ≥ 90% bobot terjangkau atau sudah 3 pangkalan
-Waktu terbang = jarak rata-rata ke kompleks / 200 km/jam
+Waktu terbang = jarak rata-rata ke cluster / 200 km/jam
 Siklus siram  = 2,5 + 0,8 × jarak sumber air (km);  asumsi 5 km → 6,5 menit, ± 9,2 siraman per jam`)}
-    <p>Kompleks prioritas yang &gt; 100 km dari pangkalan terpilih diberi pangkalan aju: helipad, landasan perintis, atau bandara terdekat ≤ 60 km sebagai titik isi ulang; Avtur dikirim lewat darat.</p>
-    ${h("Pangkalan modifikasi cuaca (OMC)")}<p>Satu per provinsi: bandara kandidat dengan landasan ≥ 1.000 m (CN-295 butuh ± 962 m) yang paling dekat ke pusat bobot kompleks siaga/prioritas.</p>`,
+    <p>Cluster prioritas yang &gt; 100 km dari pangkalan terpilih diberi pangkalan aju: helipad, landasan perintis, atau bandara terdekat ≤ 60 km sebagai titik isi ulang; Avtur dikirim lewat darat.</p>
+    ${h("Pangkalan modifikasi cuaca (OMC)")}<p>Satu per provinsi: bandara kandidat dengan landasan ≥ 1.000 m (CN-295 butuh ± 962 m) yang paling dekat ke pusat bobot cluster siaga/prioritas.</p>`,
     batas: ["Jarak sumber air 5 km adalah asumsi dari riset pemakaian bucket; belum memakai jarak nyata ke sungai/danau.", "Panjang landasan dari OurAirports atau tag OSM; banyak landasan OSM tanpa panjang.", "Helikopter dan OMC diminta lewat BNPB; platform hanya menyarankan lokasi."]});
 
   B.push({ik: "perisai", j: "Model keputusan musim (tab Keputusan)", sub: "Empat strategi dibandingkan: hektare dicegah, nilai, dan biaya",
@@ -5684,7 +5690,7 @@ Papua Selatan memakai luas KLHK "Papua" sebelum 2023 (sebelum pemekaran)`)}
 L_normal = median L̂(N_t), t = tahun lalu lainnya sejak 2015 (jumlah genap: nilai tengah atas)
 L_2026   = L̂( N_2026 / max(0,05; 1 − sisa) )
 sisa     = [Σ rata-rata bulanan setelah bulan ini + (1 − tanggal/30)·rata-rata bulan ini] / Σ rata-rata bulanan`)}
-    ${h("Langkah 2: masukan per provinsi")}${ul(["Porsi gambut g = bobot px24 kompleks berstatus ≥ patroli yang berada di gambut hari ini.", "Porsi langganan = porsi titik tahun-tahun lalu yang jatuh di kecamatan terbakar ≥ 3 tahun.", "Cakupan posko = porsi titik tahun-tahun lalu (di titik berat kecamatan) yang ≤ 30 km dari posko permanen.", "Paparan asap = pengali kasar per provinsi relatif rata-rata nasional (Riau dan Sumsel 1,5; Jambi 1,3; Kalsel 1,0; Kalbar 0,9; Kalteng 0,8; Kaltim 0,7; NTT 0,3; Papua Selatan 0,2), mengikuti Hein dkk. 2022 bahwa beban kesehatan terbesar di Sumatra. Ditandai sebagai asumsi."])}
+    ${h("Langkah 2: masukan per provinsi")}${ul(["Porsi gambut g = bobot px24 cluster berstatus ≥ patroli yang berada di gambut hari ini.", "Porsi langganan = porsi titik tahun-tahun lalu yang jatuh di kecamatan terbakar ≥ 3 tahun.", "Cakupan posko = porsi titik tahun-tahun lalu (di titik berat kecamatan) yang ≤ 30 km dari posko permanen.", "Paparan asap = pengali kasar per provinsi relatif rata-rata nasional (Riau dan Sumsel 1,5; Jambi 1,3; Kalsel 1,0; Kalbar 0,9; Kalteng 0,8; Kaltim 0,7; NTT 0,3; Papua Selatan 0,2), mengikuti Hein dkk. 2022 bahwa beban kesehatan terbesar di Sumatra. Ditandai sebagai asumsi."])}
     ${h("Langkah 3: hektare dicegah dan biaya tiap pilihan (Kp.hitung)")}${rumus(`Luas tahun ini L:
   deterministik: L = p·L_ElNino + (1 − p)·L_normal  (p bawaan ${mtA(Kp.pEN, 2)} = 3 dari 25 tahun terakhir seperti 2015/2019/2023);  rendah/tinggi = L·e^(∓1,28σ)  (persentil 10/90)
   simulasi:      tahun El Niño diundi dengan peluang p; L = median tahun itu · e^(σ·Z), Z ~ N(0, 1)
@@ -5745,7 +5751,7 @@ Bobot bawaan 50/20/30 → α = 10/4/6`)}
       const lb = bb.rumput ? (p.ws < 1 ? 1 : 1.1 * Math.pow(p.ws, .464)) : 1 + 8.729 * Math.pow(1 - Math.exp(-.030 * p.ws), 2.155), bara = bb.membara && p.dc > 350;
       return mtTangga(`${esc(p.id)} · bahan bakar ${esc(bb.n.toLowerCase())}`, `Laju kepala api dengan cuaca siang ini di ${mtNamaK(p)}, sebelum dikoreksi kelembapan dan angin tiap jam.`, [
         ["in", "Cuaca siang ini", `angin ${mtA(p.ws)} km/jam dari ${arah(p.wd)}, kelembapan ${fmt(p.rh)}%`, "ISI " + mtA(p.isi)],
-        ["in", "Bahan bakar bawaan", p.gambut ? "kompleks di peta gambut" : ["93", "53", "52", "81"].includes(p.prov) ? "provinsi sabana" : "selain gambut dan sabana", esc(bb.cat)],
+        ["in", "Bahan bakar bawaan", p.gambut ? "cluster di peta gambut" : ["93", "53", "52", "81"].includes(p.prov) ? "provinsi sabana" : "selain gambut dan sabana", esc(bb.cat)],
         ["", "Kekeringan serasah f(F)", `ISI ÷ (0,208 × pengaruh angin ${mtA(fW(p.ws), 2)}); dianggap tetap selama 72 jam`, mtA(fF, 2)],
         ["", "Laju kepala api (searah angin)", `${bb.a} × (1 − e^(−${mtA(bb.b, 3)} × ISI))^${mtA(bb.c)} × faktor kering rumput ${mtA(bb.cf, 2)}`, mtA(kepala) + " m/menit"],
         ["", "Laju ke belakang (melawan angin)", `rumus sama dengan angin dibalik`, mtA(belakang, 2) + " m/menit"],
@@ -5755,8 +5761,8 @@ Bobot bawaan 50/20/30 → α = 10/4/6`)}
         ["hasil", "Arah utama penjalaran", "kebalikan arah datang angin", "ke " + arah((p.wd || 0) + 180)]],
         "Simulasi lengkap dijalankan di tab Simulasi dengan angin per jam 72 jam dari Open-Meteo, di kisi 220 × 220 sel 120 m.");
     },
-    teknis: `${h("Data masukan")}${ul(["Benih = ≤ 80 deteksi 24 jam terakhir dengan FRP terbesar; bila tidak ada, sel di dalam lambung kompleks; bila tetap tidak ada, pusat kompleks.", "Cuaca per jam Open-Meteo Forecast (angin 10 m, arah, RH, hujan) di pusat kompleks, 73 jam mulai jam sekarang − 1, diambil peramban saat tombol ditekan. Bila gagal, angin/RH siang ini dipakai konstan tanpa hujan.", "ISI, BUI, DC, RH siang ini dari sel FWI kompleks."])}
-    ${h("Algoritma inti")}<p>Versi skenario menjalankan algoritma ini 18 kali (6 skenario × laju −20%, apa adanya, +20%), dengan bahan bakar per sel dari peta gambut, kawasan hutan, dan konsesi; kadar air bahan bakar diperbarui tiap jam (persamaan FFMC per jam Van Wagner); laju dikalibrasi ke pertumbuhan kompleks yang teramati 7 hari terakhir. Serangan awal: regu membangun sekat dengan laju tetap per regu, porsi keliling yang tertahan memperlambat api di tepinya. Sekat bakar: sel di garis sekat tidak bisa terbakar.</p>${rumus(`Kisi 220 × 220 sel, 120 m (26,4 km × 26,4 km), berpusat di pusat kompleks
+    teknis: `${h("Data masukan")}${ul(["Benih = ≤ 80 deteksi 24 jam terakhir dengan FRP terbesar; bila tidak ada, sel di dalam lambung cluster; bila tetap tidak ada, pusat cluster.", "Cuaca per jam Open-Meteo Forecast (angin 10 m, arah, RH, hujan) di pusat cluster, 73 jam mulai jam sekarang − 1, diambil peramban saat tombol ditekan. Bila gagal, angin/RH siang ini dipakai konstan tanpa hujan.", "ISI, BUI, DC, RH siang ini dari sel FWI cluster."])}
+    ${h("Algoritma inti")}<p>Versi skenario menjalankan algoritma ini 18 kali (6 skenario × laju −20%, apa adanya, +20%), dengan bahan bakar per sel dari peta gambut, kawasan hutan, dan konsesi; kadar air bahan bakar diperbarui tiap jam (persamaan FFMC per jam Van Wagner); laju dikalibrasi ke pertumbuhan cluster yang teramati 7 hari terakhir. Serangan awal: regu membangun sekat dengan laju tetap per regu, porsi keliling yang tertahan memperlambat api di tepinya. Sekat bakar: sel di garis sekat tidak bisa terbakar.</p>${rumus(`Kisi 220 × 220 sel, 120 m (26,4 km × 26,4 km), berpusat di pusat cluster
 Waktu tempuh minimum (Dijkstra) ke 16 arah tetangga (8 arah + 8 langkah kuda); berhenti di 72 jam
 waktu antarsel = jarak / laju / 60 jam (laju m/menit), laju memakai cuaca pada jam keberangkatan
 
@@ -5769,9 +5775,9 @@ CF rumput  = 0,005·(e^(0,061·C) − 1) bila C < 58,8;  0,176 + 0,02·(C − 58
 Rasio panjang-lebar: rumput 1,1·W^0,464 (1 bila W < 1);  lainnya 1 + 8,729·(1 − e^(−0,030·W))^2,155
 Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah θ = akar positif persamaan elips`)}
     ${tb(["Bahan bakar", "a", "b", "c", "Catatan"], Object.values(BAHAN).map(b => [esc(b.n), b.a, b.b, b.c, esc(b.cat)]), [1, 2, 3])}
-    <p>Bahan bakar bawaan: gambut bila kompleks di peta gambut; sabana untuk Papua Selatan, NTT, NTB, Maluku; selain itu rumput. Indonesia hanya punya adaptasi tipe rumput O-1 (dasar indikator ISI BMKG); semak memakai proksi D-1.</p>
+    <p>Bahan bakar bawaan: gambut bila cluster di peta gambut; sabana untuk Papua Selatan, NTT, NTB, Maluku; selain itu rumput. Indonesia hanya punya adaptasi tipe rumput O-1 (dasar indikator ISI BMKG); semak memakai proksi D-1.</p>
     <p>Gambut: api bara bawah permukaan menjalar 2,7 cm/jam mendatar dan 0,8 cm/jam ke bawah (Graham dkk. 2022), jadi tidak berpindah antarsel 120 m dalam 72 jam. Peringatan bara muncul bila bahan bakar gambut dan DC &gt; 350.</p>
-    ${h("Keluaran")}<p>Peta waktu tiba (≤ 12, 12–24, 24–48, 48–72 jam), jangkauan terjauh 12/24/72 jam (jarak sel terbakar terjauh dari pusat kisi, yaitu pusat kompleks, bukan dari benih), laju kepala maksimum, dan arah angin dominan (rata-rata vektor). Bila api mencapai 2 sel dari tepi kisi, muncul peringatan.</p>`,
+    ${h("Keluaran")}<p>Peta waktu tiba (≤ 12, 12–24, 24–48, 48–72 jam), jangkauan terjauh 12/24/72 jam (jarak sel terbakar terjauh dari pusat kisi, yaitu pusat cluster, bukan dari benih), laju kepala maksimum, dan arah angin dominan (rata-rata vektor). Bila api mencapai 2 sel dari tepi kisi, muncul peringatan.</p>`,
     batas: ["Belum divalidasi untuk Indonesia; luas tidak ditampilkan.", "Lereng dan peta bahan bakar belum dimasukkan; satu jenis bahan bakar untuk seluruh kisi.", "Tidak ada efek sekat bakar, sungai, jalan, atau pemadaman.",
       "Kekeringan serasah siang dipakai 72 jam; naik-turun kelembapan harian hanya didekati dengan koreksi kelembapan.", "Belum ada uji balik terhadap batas api nyata."]});
 
@@ -5789,7 +5795,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
         x ? ["in", "Hujan 24 jam sampai 12.00", "sel cuaca 0,5° terdekat; skala warna 1, 10, 30, 80 mm", mtA(x.hujan) + " mm"] : null,
         ["in", "Angin siang", `dari ${arah(p.wd)} (${fmt(p.wd)}°); partikel di peta bergerak searah angin`, mtA(p.ws) + " km/jam"],
         pm != null ? ["", "Asap PM2.5 (maksimum per jam hari ini)", `sel asap 1° di ${mtA(sa[0])}°, ${mtA(sa[1])}°; ambang ISPU 15,5 / 55,4 / 150,4 / 250,4 µg/m³`, `${fmt(pm)} µg/m³<small>${MT_ISPU(pm)}</small>`] : ["no", "Asap PM2.5", "asap.json belum tersedia", "–"],
-        ina != null ? ["", "InaRISK BNPB di titik kompleks", "raster 100 m, 0–1; di atas 0,66 = tinggi", `${mtA(ina, 3)}<small>${ina > .66 ? "tinggi" : ina > .33 ? "sedang" : "rendah"}</small>`] : null,
+        ina != null ? ["", "InaRISK BNPB di titik cluster", "raster 100 m, 0–1; di atas 0,66 = tinggi", `${mtA(ina, 3)}<small>${ina > .66 ? "tinggi" : ina > .33 ? "sedang" : "rendah"}</small>`] : null,
         mt ? ["in", `Bandara ${esc(mt.nama)} (${esc(mt.icao)})`, `laporan METAR: ${esc(mt.raw || "")}`, fmt(mt.vis_m) + " m"] : null,
         mt ? mtCek(!mt.asap, "Bebas asap di bandara itu?", `kode cuaca ${esc(mt.wx || "kosong")}; FU = asap, HZ = kabut asap`, "bebas asap", "ada asap") : null,
         mt ? ["hasil", "Kelas jarak pandang terburuk", "warna titik bandara di peta", kVis(mt.vis_m)] : null]);
@@ -5800,7 +5806,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Angin", "fwi.json, angin dan arah jam 12.00", "partikel bergerak, interpolasi bilinear 4 sel; tanpa animasi (preferensi gerak dikurangi) = panah", "makin terang makin kencang"],
       ["Asap PM2.5", "CAMS (Copernicus) lewat Open-Meteo Air Quality API, kisi 1° darat dan laut (799 sel), 4 hari, waktu WIB", "PM2.5 = maksimum per jam dalam sehari; CO = rata-rata harian", "ISPU: ≤ 15,5 baik, ≤ 55,4 sedang, ≤ 150,4 tidak sehat, ≤ 250,4 sangat tidak sehat, &gt; 250,4 berbahaya (µg/m³)"],
       ["Jarak pandang bandara", "METAR aviationweather.gov (NOAA), 25 bandara, laporan 6 jam terakhir, yang terbaru per bandara", "statute mile × 1.609,34 m dibulatkan 100 m; \"10+\" = 9.999 m; tanda asap bila kode cuaca memuat FU (asap) atau HZ (kabut asap)", "&lt; 1 km, 1–5 km, 5–8 km, ≥ 8 km"],
-      ["InaRISK", "BNPB ImageServer bahaya karhutla, raster 100 m, 0–1", "nilai di titik kompleks siaga/prioritas dan semua posko", "≤ 0,33 rendah, ≤ 0,66 sedang, &gt; 0,66 tinggi"]])}
+      ["InaRISK", "BNPB ImageServer bahaya karhutla, raster 100 m, 0–1", "nilai di titik cluster siaga/prioritas dan semua posko", "≤ 0,33 rendah, ≤ 0,66 sedang, &gt; 0,66 tinggi"]])}
     <p>Pilihan hari di garis waktu (hari ini + 3 hari) berlaku untuk FWI, hujan, angin, dan asap sekaligus. METAR di sumbernya terbit ± 30 menit, tetapi di platform hanya diambil sekali sehari bersama pipeline. Bandara tanpa laporan 6 jam terakhir tidak tampil.</p>`,
     batas: ["Semua lapisan diambil sekali sehari; METAR di sumbernya terbit tiap ± 30 menit.", "Asap dan hujan adalah keluaran model (CAMS, Open-Meteo), bukan alat ukur di lapangan.", "Bandara tanpa laporan 6 jam terakhir tidak tampil."]});
 
@@ -5834,11 +5840,11 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       "Luas terbakar satelit cocok dengan angka resmi di tahun besar, tetapi hanya menangkap 0–30% di tahun sepi (api kecil dan gambut membara di bawah asap); untuk NTT satelit tidak bisa dipakai (savana, api kecil)."]});
 
   B.push({ik: "gedung", j: "Sumber data", sub: "Penyedia, lisensi, resolusi, dan seberapa sering diperbarui",
-    singkat: `Platform hanya memakai data terbuka dan data resmi yang bisa ditelusuri. Satu kompleks api saja sudah memakai data dari tujuh penyedia berbeda. Tabel lengkap di rincian teknis mencatat penyedia, lisensi, resolusi, dan seberapa sering tiap data diperbarui.`,
+    singkat: `Platform hanya memakai data terbuka dan data resmi yang bisa ditelusuri. Satu cluster saja sudah memakai data dari tujuh penyedia berbeda. Tabel lengkap di rincian teknis mencatat penyedia, lisensi, resolusi, dan seberapa sering tiap data diperbarui.`,
     alur: [["d", "sensor", "Satelit", "NASA FIRMS, GWIS"], ["d", "awan", "Model cuaca dan asap", "Open-Meteo, CAMS"], ["d", "gedung", "Instansi", "BNPB, KLHK, Kemendagri, SiPongi"], ["d", "pin", "Peta terbuka", "OpenStreetMap, OurAirports, GFW"], ["h", "berkas", "Berkas data platform", "public/data/*.json"]],
     contoh: () => {
       const p = mtKompleks();
-      return mtTangga(`Satu kompleks, banyak sumber: ${esc(p.id)}`, `Dari mana tiap angka ${mtNamaK(p)} berasal.`, [
+      return mtTangga(`Satu cluster, banyak sumber: ${esc(p.id)}`, `Dari mana tiap angka ${mtNamaK(p)} berasal.`, [
         ["in", "Titik panas dan front 24 jam", "NASA FIRMS, VIIRS 3 satelit", `${fmt(p.n)} deteksi`],
         ["in", "Cuaca dan FWI", "Open-Meteo (model) di sel 0,5° terdekat", "FWI " + mtA(p.fwi)],
         ["in", "Kecamatan", "batas wilayah kode Kemendagri", esc(p.kec)],
@@ -5846,7 +5852,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
         ["in", "Penanggung jawab lahan", "kawasan hutan KLHK 2017 dan konsesi lewat GFW", esc((p.tanggung || []).join(", ") || "–")],
         ["in", "Daops terdekat", "API SiPongi + geokode OpenStreetMap", `${esc(p.daops || "–")}<small>${fmt(p.jarak_daops)} km</small>`],
         S.inarisk?.[p.id] != null ? ["in", "Indeks bahaya InaRISK", "BNPB, raster 100 m", mtA(S.inarisk[p.id], 3)] : null,
-        ["hasil", "Penyedia data untuk satu kompleks", "", "7 penyedia"]]);
+        ["hasil", "Penyedia data untuk satu cluster", "", "7 penyedia"]]);
     },
     teknis: `${tb(["Data", "Penyedia / alamat", "Lisensi (seperti tercatat di repo)", "Resolusi", "Pembaruan di platform", "Berkas"], [
       ["Titik panas NRT", "NASA FIRMS area API (firms.modaps.eosdis.nasa.gov)", "tidak dicantumkan", "VIIRS 375 m, MODIS 1 km, per lintasan", "harian 21.20 WIB", "hotspot.json, hotspot72.json, kluster.json, wilayah.json"],
@@ -5854,10 +5860,10 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Arsip titik panas MODIS 2002–sekarang", "NASA FIRMS, arsip standar + NRT, keyakinan ≥ 30", "tidak dicantumkan", "1 km", "manual", "sejarah_modis.json, musim.json (2002–2025)"],
       ["Cuaca per jam dan prakiraan 4 hari", "Open-Meteo Forecast API", "tidak dicantumkan", "diambil di titik tengah sel 0,5°", "harian", "fwi.json, fwi_state.json"],
       ["Reanalisis ERA5 (pemanasan FWI)", "Open-Meteo Archive API", "tidak dicantumkan", "titik tengah sel 0,5°", "saat sel baru atau keadaannya &gt; 8 hari", "fwi_state.json"],
-      ["Angin per jam simulasi", "Open-Meteo Forecast API, dari peramban", "tidak dicantumkan", "titik pusat kompleks", "saat simulasi dijalankan", "–"],
+      ["Angin per jam simulasi", "Open-Meteo Forecast API, dari peramban", "tidak dicantumkan", "titik pusat cluster", "saat simulasi dijalankan", "–"],
       ["PM2.5 dan CO", "CAMS (Copernicus) lewat Open-Meteo Air Quality API", "tidak dicantumkan", "1°", "harian", "asap.json"],
       ["Laporan harian 6 provinsi", "BNPB gis.bnpb.go.id/karhutla2026", "tidak dicantumkan", "per provinsi", "harian", "bnpb.json"],
-      ["Indeks bahaya karhutla", "InaRISK BNPB (gis.bnpb.go.id)", "tidak dicantumkan", "raster 100 m", "harian (di titik kompleks dan posko)", "inarisk.json"],
+      ["Indeks bahaya karhutla", "InaRISK BNPB (gis.bnpb.go.id)", "tidak dicantumkan", "raster 100 m", "harian (di titik cluster dan posko)", "inarisk.json"],
       ["Kantor BPBD & Pusdalops", "BNPB peta_bpbd; nomor pribadi pejabat tidak disimpan", "tidak dicantumkan", "titik", "harian (isi data lama, ± 2016, perlu dicek)", "bpbd.json"],
       ["Markas Daops Manggala Agni", "API SiPongi opsroom.sipongidata.my.id + geokode Nominatim (OSM)", "tidak dicantumkan", `titik; ${fmt(nKota)} dari ${fmt(nDaops)} lokasi perkiraan (kota), sisanya alamat`, "manual", "daops.json"],
       ["Batas provinsi, kab/kota, kecamatan", "kode Kemendagri (dari pangantara)", "tidak dicantumkan", "poligon disederhanakan", "tetap", "geo/"],
@@ -5879,19 +5885,19 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       "Lapisan lahan berumur: kawasan hutan 2017, konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026); status lahan wajib dipastikan ke KPH/ATR.", "Banyak lisensi data tidak dicantumkan di sumbernya."]});
 
   B.push({ik: "cari", j: "Peer review 12 Oktober 2026", sub: "Temuan peninjau, yang sudah diperbaiki, dan yang masih antre",
-    singkat: `Pada 12 Oktober 2026 metode dan kode platform ditinjau oleh peninjau metode dan peninjau kode. Sebagian besar temuan sudah diperbaiki; sisanya masih antre. Contoh di bawah menghitung berapa kompleks hari ini yang statusnya bergantung pada perbaikan tersebut.`,
+    singkat: `Pada 12 Oktober 2026 metode dan kode platform ditinjau oleh peninjau metode dan peninjau kode. Sebagian besar temuan sudah diperbaiki; sisanya masih antre. Contoh di bawah menghitung berapa cluster hari ini yang statusnya bergantung pada perbaikan tersebut.`,
     alur: [["d", "cari", "Tinjau metode", "rumus, ambang, uji balik"], ["d", "berkas", "Tinjau kode", "pipeline dan halaman"], ["o", "tabel", "Catat temuan", "kritis, tinggi, major, sedang, rendah"], ["o", "alat", "Perbaiki dan uji", "uji otomatis tiap hari"], ["h", "jam", "Sisanya antre", "tercatat di tabel"]],
     contoh: () => {
       const F = (S.kluster?.features || []).map(f => f.properties);
       const s3rendah = F.filter(p => p.sev === 3 && mtAdaCuaca(p) && kelasFWI(p.fwi) <= 1).length, tanpaCuaca = F.filter(p => !mtAdaCuaca(p)).length, tak = F.filter(p => p.teramati === false).length;
       const gambutLama = F.filter(p => p.jam_sejak > (d.aktif_jam || 72)).length, prio = F.filter(p => p.level === 3).length;
-      return mtTangga("Dampak perbaikan pada data hari ini", `Dihitung dari ${fmt(F.length)} kompleks aktif pada jalan terakhir.`, [
-        ["", "Api besar (S3) dengan cuaca rendah/sedang", "dulu bisa turun ke patroli; sekarang minimal siaga", fmt(s3rendah) + " kompleks"],
-        ["", "Kompleks tanpa data cuaca", "dulu dianggap cuaca rendah; sekarang \"tidak tersedia\"", fmt(tanpaCuaca) + " kompleks"],
-        ["", "Kompleks tidak teramati 24 jam", "dulu \"tidak ada titik\" dianggap aman; sekarang ditandai \"tidak teramati\", bukan padam", fmt(tak) + " kompleks"],
-        ["", `Gambut kering, tanpa deteksi lebih dari ${fmt(d.aktif_jam)} jam`, `dipertahankan sampai ${fmt(d.aktif_gambut_jam)} jam karena bara bisa tertutup awan`, fmt(gambutLama) + " kompleks"],
-        mtCek(prio / Math.max(1, F.length) < .11, "Porsi prioritas lebih kecil dari 11%?", "sebelum perbaikan 11% kompleks berstatus prioritas sehingga tidak bermakna", mtA(prio / Math.max(1, F.length) * 100) + "%", mtA(prio / Math.max(1, F.length) * 100) + "%"),
-        ["hasil", "Kompleks prioritas hari ini", "front ≥ 15 piksel dan FWI ≥ 7", fmt(prio)]]);
+      return mtTangga("Dampak perbaikan pada data hari ini", `Dihitung dari ${fmt(F.length)} cluster aktif pada jalan terakhir.`, [
+        ["", "Api besar (S3) dengan cuaca rendah/sedang", "dulu bisa turun ke patroli; sekarang minimal siaga", fmt(s3rendah) + " cluster"],
+        ["", "Cluster tanpa data cuaca", "dulu dianggap cuaca rendah; sekarang \"tidak tersedia\"", fmt(tanpaCuaca) + " cluster"],
+        ["", "Cluster tidak teramati 24 jam", "dulu \"tidak ada titik\" dianggap aman; sekarang ditandai \"tidak teramati\", bukan padam", fmt(tak) + " cluster"],
+        ["", `Gambut kering, tanpa deteksi lebih dari ${fmt(d.aktif_jam)} jam`, `dipertahankan sampai ${fmt(d.aktif_gambut_jam)} jam karena bara bisa tertutup awan`, fmt(gambutLama) + " cluster"],
+        mtCek(prio / Math.max(1, F.length) < .11, "Porsi prioritas lebih kecil dari 11%?", "sebelum perbaikan 11% cluster berstatus prioritas sehingga tidak bermakna", mtA(prio / Math.max(1, F.length) * 100) + "%", mtA(prio / Math.max(1, F.length) * 100) + "%"),
+        ["hasil", "Cluster prioritas hari ini", "front ≥ 15 piksel dan FWI ≥ 7", fmt(prio)]]);
     },
     teknis: `<div class="tw"><table><thead><tr><th>Temuan</th><th>Tingkat</th><th>Tindak lanjut</th></tr></thead><tbody>
     ${[["Cuaca (sel 55 km) bisa menurunkan api besar teramati menjadi 'patroli'; FWI kosong dianggap rendah", "kritis", "Diperbaiki: S3 minimal siaga; FWI kosong = 'tidak tersedia'", "l0"],
@@ -5918,10 +5924,10 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
   /* ---------------------------------------------------------------- gambaran besar */
   const SUMBER = [["sensor", "Satelit NASA FIRMS", "titik panas 4 sensor"], ["awan", "Open-Meteo", "cuaca per jam dan prakiraan 4 hari"], ["kisi", "CAMS Copernicus", "asap PM2.5 dan CO"],
     ["gedung", "BNPB", "laporan harian, InaRISK, kantor BPBD"], ["pesawat", "NOAA METAR", "jarak pandang 25 bandara"], ["pin", "Peta tetap", "batas wilayah, gambut, konsesi, kawasan hutan, bandara, Daops"]];
-  const PROSES = [["hitung", "Titik dihitung per wilayah", "angka resmi per hari WIB · bagian 2"], ["awan", "Cuaca diubah jadi FWI", "bahaya cuaca tiap sel 55 km · bagian 3"], ["kelompok", "Titik digabung jadi kompleks", "satu kejadian api · bagian 4"],
+  const PROSES = [["hitung", "Titik dihitung per wilayah", "angka resmi per hari WIB, bagian 2"], ["awan", "Cuaca diubah jadi FWI", "bahaya cuaca tiap sel 55 km, bagian 3"], ["kelompok", "Titik digabung jadi cluster", "satu kejadian api, bagian 4"],
     ["centang", "Status dan prioritas", "empat status tindakan · bagian 5"], ["tenda", "Posko dan pangkalan udara", "lokasi dan anggaran · bagian 8–9"], ["perisai", "Uji otomatis", "gagal uji = data tidak terbit · bagian 1"]];
-  const TAB = [["peta", "Peta", "titik panas, kompleks, cuaca, asap, riwayat"], ["insight", "Insight", "kesimpulan penting dalam grafik"], ["keputusan", "Keputusan", "empat strategi musim dibandingkan"],
-    ["posko", "Posko", "lokasi, jenjang, dan anggaran posko"], ["kompleks", "Kompleks api", "daftar kompleks, dari yang paling mendesak"], ["tren", "Tren", "riwayat tahunan dan kalender musim"],
+  const TAB = [["peta", "Peta", "titik panas, cluster, cuaca, asap, riwayat"], ["insight", "Insight", "kesimpulan penting dalam grafik"], ["keputusan", "Keputusan", "empat strategi musim dibandingkan"],
+    ["posko", "Posko", "lokasi, jenjang, dan anggaran posko"], ["kompleks", "Cluster", "daftar cluster, dari yang paling mendesak"], ["tren", "Tren", "riwayat tahunan dan kalender musim"],
     ["sim", "Simulasi", "arah penjalaran api 72 jam"]];
   const panah = `<div class="mt-panah" aria-hidden="true"><svg class="mt-ikon" viewBox="0 0 24 24">${MT_IKON.panah}</svg></div>`;
   const umur = M.dibuat ? (Date.now() - new Date(M.dibuat)) / 36e5 : null;
@@ -6292,7 +6298,7 @@ const Sim = {
     const p = this.f.properties, ha = K.d * K.d / 1e4, awal = new Set(K.benih);
     const tumbuh = m => { const r = sebar(K, tab, fuel, W.hujan, {mult: m, tMax: 24}); let c = 0; for (let k = 0; k < r.T.length; k++) if (r.T[k] <= 24 && !awal.has(k)) c++; return c * ha; };
     const tanpa = tumbuh(1);
-    if (!this.op.kalibrasi || !(p.hari >= 2) || !(p.luas >= 100)) return {m: 1, tanpa, alasan: this.op.kalibrasi ? "riwayat kompleks kurang dari 2 hari atau < 100 ha" : "dimatikan"};
+    if (!this.op.kalibrasi || !(p.hari >= 2) || !(p.luas >= 100)) return {m: 1, tanpa, alasan: this.op.kalibrasi ? "riwayat cluster kurang dari 2 hari atau < 100 ha" : "dimatikan"};
     const target = p.luas / p.hari; let lo = Math.log(.02), hi = Math.log(2);
     for (let q = 0; q < 9; q++) { const md = (lo + hi) / 2; if (tumbuh(Math.exp(md)) > target) hi = md; else lo = md; }
     const m = Math.exp((lo + hi) / 2); return {m, target, tanpa, batas: m < .025 || m > 1.9};
@@ -6381,7 +6387,7 @@ const Sim = {
   /* ---------- panel ---------- */
   tandaiBasi() { this.basi = !!this.hasil; const s = $("#simStatus"); if (s && this.basi) s.textContent = "Pengaturan berubah. Jalankan ulang untuk memperbarui hasil."; },
   panel() {
-    const p = this.f?.properties; if (!p) { $("#simPanel").innerHTML = `<div class="kosong">Belum ada kompleks aktif.</div>`; return; }
+    const p = this.f?.properties; if (!p) { $("#simPanel").innerHTML = `<div class="kosong">Belum ada cluster aktif.</div>`; return; }
     const o = this.op, opsi = S.kluster.features.slice(0, 1500).map(f => `<option value="${f.properties.id}" ${f.properties.id === this.k ? "selected" : ""}>${f.properties.id} · ${esc(f.properties.kec)} (${fmt(f.properties.n)} titik)</option>`).join("");
     const geser = (id, lbl, min, max, step, v, sat) => `<label class="simgeser"><span>${lbl}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${v}"><b class="num" id="${id}V">${fmt(v)} ${sat}</b></label>`;
     const sr = this.sumberRegu || {};
@@ -6394,7 +6400,7 @@ const Sim = {
     };
     $("#simPanel").innerHTML = `<div class="lbl">Simulasi penjalaran 72 jam · model</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
       <div style="font-size:12.5px;color:var(--ink2)">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></div>
-      <label class="fld"><span class="lbl">Kompleks</span><select id="simK">${opsi}</select></label>
+      <label class="fld"><span class="lbl">Cluster</span><select id="simK">${opsi}</select></label>
       <div class="kv"><div><b>${fmt(p.ffmc)}</b><span>FFMC</span></div><div><b>${fmt(p.isi)}</b><span>ISI</span></div><div><b>${fmt(p.dc)}</b><span>DC</span></div></div>
       <div class="lbl" style="margin:12px 0 6px">Skenario yang dibandingkan</div>
       <div class="simchips" role="group" aria-label="Skenario">${SKEN.map(s => `<button type="button" data-sk="${s.id}" aria-pressed="${s.id === "dasar" || o.on.has(s.id)}" ${s.id === "dasar" ? "disabled title=\"Selalu dihitung sebagai pembanding\"" : ""}><i style="background:${s.w}"></i>${s.n}</button>`).join("")}</div>
@@ -6435,7 +6441,7 @@ const Sim = {
   },
   tafsir(H) {
     const D = this.hasil.dasar, p = this.f.properties, l72 = H.luas.mid[72], d72 = D.luas.mid[72], pct = d72 > 0 ? Math.round((l72 - d72) / d72 * 100) : 0;
-    const desa = x => x ? (x.eta < 1 ? `${esc(x.nama)} sudah berada di dalam atau tepat di samping area api` : `api diperkirakan mencapai ${esc(x.nama)} dalam ± ${Math.round(x.eta)} jam (± ${fmt(Math.round(x.km * 10) / 10)} km di ${arah(x.arah)} pusat kompleks)`) : "tidak ada titik pusat desa yang tercapai dalam 72 jam di area simulasi" + (H.terdekat ? ` (terdekat: ${esc(H.terdekat.nama)}, ± ${fmt(Math.round(H.terdekat.km * 10) / 10)} km di ${arah(H.terdekat.arah)} pusat kompleks)` : "");
+    const desa = x => x ? (x.eta < 1 ? `${esc(x.nama)} sudah berada di dalam atau tepat di samping area api` : `api diperkirakan mencapai ${esc(x.nama)} dalam ± ${Math.round(x.eta)} jam (± ${fmt(Math.round(x.km * 10) / 10)} km di ${arah(x.arah)} pusat cluster)`) : "tidak ada titik pusat desa yang tercapai dalam 72 jam di area simulasi" + (H.terdekat ? ` (terdekat: ${esc(H.terdekat.nama)}, ± ${fmt(Math.round(H.terdekat.km * 10) / 10)} km di ${arah(H.terdekat.arah)} pusat cluster)` : "");
     const banding = Math.abs(pct) < 3 ? "hampir sama dengan prakiraan" : `${pct < 0 ? "turun" : "naik"} ± ${Math.abs(pct)}% dibanding prakiraan`;
     if (H.s.id === "dasar") { const S2 = this.hasil.serang, sp = S2 && d72 > 0 ? Math.round((d72 - S2.luas.mid[72]) / d72 * 100) : null;
       return `Bila tidak ada pemadaman, ${desa(H.desa[0])}.${sp != null ? ` Dengan serangan awal ${fmt(this.op.regu)} regu yang tiba jam ke-${fmt(this.op.serangT)}, luas 72 jam ${sp > 0 ? `turun ± ${sp}%` : "hampir tidak berubah"}.` : ""}`; }

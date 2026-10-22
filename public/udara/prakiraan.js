@@ -47,7 +47,7 @@ const Prak = {
   kartuKota(i) { const k = S.prak.kota[i]; if (!k) return ""; const v = this.nilai(k); if (v == null) return ""; const s = M.statusDari(v), w = M.ST_WARNA[s];
     return PI.kartuTip({judul: esc(k.nama), stat: [["perisai", M.labelStatus(s), "status", w, s !== "normal"], ["debit", fmt(Math.round(v)) + " µg/m³", this.st.jam != null ? "rata-rata 24 jam sampai jam ini" : "rata-rata 24 jam", w]]}); },
   kartuKomp(i) { const k = S.lin.kompleks[i]; if (!k) return "";
-    return PI.kartuTip({judul: "Kompleks api " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
+    return PI.kartuTip({judul: "Cluster " + esc(k.id), sub: k.konsesi?.length ? `<small>${k.konsesi.map(esc).join(", ")}</small>` : "", stat: [["peringatan", fmt(Math.round(k.frp)) + " MW", "daya radiasi api", "#c0392b"], ...(k.kota?.length ? [["peta", fmt(k.kota.length) + " kota", "dilalui asap", "#e8743b"]] : [])]}); },
 
   /* kontrol di kartu kanan: geser jam + pilih lapis; muncul hanya bila lapisan kota atau lintasan menyala */
   kontrol() { const el = $("#jamKota"); if (!el) return; if (!S.prak) { el.hidden = true; return; }
@@ -88,7 +88,7 @@ const Prak = {
     if (a.terpercaya === false) return `<p class="fnd">Asal asap besok:</p>${cm}<p class="fnd">Model jauh di atas CAMS, porsi tak dihitung.${a.alasan ? " " + esc(a.alasan) : ""}</p>`;
     return `<p class="fnd">Asal asap besok:</p>${cm}<svg viewBox="0 0 420 22" width="100%" role="img" aria-label="Asal PM2,5">${this.batangAtribusi(a)}</svg>
       <div class="legd">${M.normBagian(a.bagian || []).map((b, j) => `<span class="kt" style="--c:${warnaBag(b, j)};--f:#fff;text-transform:none" translate="no">${esc(namaBag(b))} · ${fmt(b.persen)}%</span>`).join(" ")}</div>
-      ${kom.length ? `<p class="fnd">Kompleks api di karhutla: ${kom.map(b => `<a href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}</a>`).join(", ")}</p>` : ""}`; },
+      ${kom.length ? `<p class="fnd">Cluster di karhutla: ${kom.map(b => `<a href="/?k=${encodeURIComponent(b.id)}" translate="no">${esc(b.id)}</a>`).join(", ")}</p>` : ""}`; },
   laciKota(i) { const k = S.prak.kota[i]; if (!k) return; const a = atrKota(k.kode), hr = S.prak.hari;
     const kom = a && a.terpercaya !== false ? M.normBagian(a.bagian || []).filter(b => b.jenis === "api" && b.id) : [];
     Laci.buka("Kota", `<span translate="no">${esc(k.nama)}</span>`, pilKor(),

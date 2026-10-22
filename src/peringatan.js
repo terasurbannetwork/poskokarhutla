@@ -95,7 +95,7 @@ async function aturanKarhutla(env, kini) {
   return tulis(rows.map((r, i) => {
     const lat = Math.round(r.lat * 100) / 100, lon = Math.round(r.lon * 100) / 100, ok = lat >= -11.5 && lat <= 6.5 && lon >= 94 && lon <= 142;   // 0,01 derajat (~1 km): bukan titik tepat
     return env.DB.prepare(MASUK).bind(`karhutla:${kunci[i]}:siaga`, "karhutla", "Siaga", r.prov, potong(r.kab, 80), ok ? lat : null, ok ? lon : null, potong(`Api level 3 baru di ${nama(r)}`, 200),
-      potong(`Kompleks titik api level 3 (${r.n24} titik panas 24 jam${r.luas_ha ? `, perkiraan ${Math.round(r.luas_ha)} ha` : ""}) terdeteksi satelit di ${nama(r)}. Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat.`, TEKS_MAKS),
+      potong(`Cluster titik api level 3 (${r.n24} titik panas 24 jam${r.luas_ha ? `, perkiraan ${Math.round(r.luas_ha)} ha` : ""}) terdeteksi satelit di ${nama(r)}. Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat.`, TEKS_MAKS),
       "Deteksi Pantau Bencana", null, kini, r.dibuat + BERLAKU_KARHUTLA);
   }));
 }

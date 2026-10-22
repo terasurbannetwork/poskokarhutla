@@ -30,6 +30,24 @@ SENSOR_UTAMA = {"M", "N", "N20"}
 EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
 R_BUMI = 6371.0088
 
+# Klasifikasi firespot ala Kemenhut SIPANTAU KARHUTLA (paparan pembentukan firespot, 22 Okt 2026): saringan "api nyata?" DI DEPAN
+# urutan prioritas level 0-3 kita. Kelas harian per cluster: H bila >= 1 titik keyakinan tinggi (c=2) ATAU >= AMBANG_MEDIUM_PX piksel
+# nominal (c=1); selain itu M. Beda sengaja dari Kemenhut: yang dihitung PIKSEL UNIK (pix), bukan titik, supaya satu api yang dilihat
+# 3 satelit VIIRS (S-NPP, NOAA-20, NOAA-21) tidak terhitung 3 kali. Persistensi spasial = keanggotaan cluster ST-DBSCAN yang sama
+# (eps adaptif 0,6-1,5 km, sambungan 48 jam), BUKAN radius 375 m Kemenhut: posisi VIIRS bergeser +-375 m antarlintasan dan piksel
+# melebar ~0,8 km di tepi sapuan, jadi 375 m membuang api asli.
+# UJI BALIK (ujibalik_firespot.py -> public/data/ujibalik_firespot.json; S-NPP saja, satu snapshot per hari, Agu-Okt, sev >= 2 TANPA cuaca):
+#   api besar (>= 100 piksel) 2019: 142, 2023: 34. Hari pertama sev >= 2 berstatus "mungkin": 28 (19,7%) dan 9 (26,5%);
+#   tertunda 1 hari: 22 dan 6, 2 hari: 6 dan 3; tidak pernah "ya": 0; tertunda pada px24 >= 10 atau >= 15 (jalur level 3): 0.
+#   Batasan: satu satelit (bukan 3 VIIRS + piksel unik lintas satelit), hanya api besar, sev tanpa FWI; belum uji balik 3 satelit.
+# BIAS SIANG-MALAM: keyakinan tinggi ("h") jauh lebih jarang malam: porsi titik "h" di api besar siang 12,5-12,6%, malam 2,3-3,0%
+#   (2019, 2023). Api malam lolos "H" nyaris hanya lewat jalur >= AMBANG_MEDIUM_PX piksel unik. Ambang sengaja TIDAK diubah; kandidat
+#   penyetelan sesudah uji balik 3 satelit.
+AMBANG_MEDIUM_PX = 4
+SUMBER_FIRESPOT = "Kemenhut SIPANTAU KARHUTLA, paparan pembentukan firespot 22 Okt 2026"
+# pola -> firespot; "mungkin" dibatasi level <= 1 (cek lapangan dulu)
+POLA_YA = {"HH", "H", "MH", "MMM"}
+
 # Tugas otomatis untuk Worker (rancangan api padam 0.4, keputusan pemilik 22 Okt 2026): level 3, ATAU level 2 yang memenuhi
 # minimal satu syarat. Ambang di bawah adalah asumsi platform (belum diuji balik), bukan standar baku; ikut ditulis ke JSON.
 #   permukiman: desa (osm/desa.json, 9 provinsi karhutla) atau fasilitas (fasilitas.json) dalam 5 km dari pusat/titik api24.
@@ -44,6 +62,37 @@ SYARAT = {"permukiman_km": 5.0, "tumbuh_tambah": 3, "tumbuh_kali": 1.5}
 
 # Status taktis per kompleks. "Tanggap darurat" adalah status hukum wilayah (P.9/2018) yang ditetapkan
 # bupati/gubernur, jadi tidak diberikan oleh model.
+
+
+def pix(p):  # sel kisi ~375 m tempat titik jatuh
+    return (round(p["lat"] / 0.003375), round(p["lon"] * math.cos(math.radians(p["lat"])) / 0.003375))
+
+
+def tgl(t):  # hari kalender WIB
+    return t.astimezone(WIB).date()
+
+
+def firespot(pts):
+    """Titik cluster (p["c"] 1 nominal, 2 tinggi; p["t"] waktu) -> (pola, "ya"|"mungkin"). Hari acuan Hd = hari WIB deteksi terakhir."""
+    per = {}
+    for p in pts:
+        per.setdefault(tgl(p["t"]), []).append(p)
+    def kelas(h):
+        if h not in per:
+            return None
+        ps = per[h]
+        return "H" if any(p["c"] == 2 for p in ps) or len({pix(p) for p in ps if p["c"] == 1}) >= AMBANG_MEDIUM_PX else "M"
+    hd = max(per)
+    k0, k1, k2 = (kelas(hd - dt.timedelta(days=i)) for i in range(3))
+    pola = "HH" if k0 == "H" and k1 == "H" else "H" if k0 == "H" else "MH" if k1 == "H" else "MMM" if k1 == k2 == "M" else "MM" if k1 == "M" else "M"
+    return pola, "ya" if pola in POLA_YA else "mungkin"
+
+
+def gerbang_firespot(q):
+    """"mungkin" dibatasi level 1 (STATUS[1], cek lapangan dulu). Hanya yang teramati (<= 24 jam): cluster tanpa deteksi baru
+    (mis. gambut kering dipertahankan 168 jam untuk bara) tetap level lamanya. `turun` = diturunkan gerbang, kandidat jalur verifikasi."""
+    if q["firespot"] == "mungkin" and q["level"] > 1 and q["teramati"]:
+        q["level"], q["status"], q["turun"] = 1, STATUS[1], True
 
 
 def kunci():
@@ -355,7 +404,6 @@ def main():
     print("kejadian api...", file=sys.stderr)
     kini = dt.datetime.now(dt.timezone.utc)
     akhir = max((p["t"] for p in titik), default=kini)
-    tgl = lambda t: t.astimezone(WIB).date()
     hari_akhir = tgl(kini)
     # gunung api aktif (aturan.GUNUNG_API) tidak dijadikan kompleks karhutla; titiknya tetap ada di hotspot.json (setara SiPongi)
     viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)
@@ -364,9 +412,6 @@ def main():
     kluster = {}
     for p, l in zip(viirs, label):
         kluster.setdefault(l, []).append(p)
-
-    def pix(p):  # sel kisi ~375 m tempat titik jatuh
-        return (round(p["lat"] / 0.003375), round(p["lon"] * math.cos(math.radians(p["lat"])) / 0.003375))
 
     daops = json.load(open(os.path.join(KELUAR, "daops.json"))) if os.path.exists(os.path.join(KELUAR, "daops.json")) else []
 
@@ -430,6 +475,7 @@ def main():
         p24 = [p for p in pts if p["t"] >= t24]
         n24s = sum(1 for p in pts if t24 - dt.timedelta(hours=24) <= p["t"] < t24)  # 24 jam sebelum jendela p24: dasar syarat "tumbuh"
         px24 = len({pix(p) for p in p24})
+        pola, fs = firespot(pts)
         sev = A.keparahan(len(pts), len(hari), n_ini, n_kmrn, px24)
         fdrs = A.kelas_fwi(h["fwi"]) if h else None
         lv = A.status(fdrs, sev)
@@ -467,7 +513,7 @@ def main():
                 "gambut": di_gambut, "tanggung": penanggung(lon0, lat0),
                 "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
                                                      (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
-                "level": lv, "status": STATUS[lv],
+                "level": lv, "status": STATUS[lv], "firespot": fs, "pola": pola,
                 **({"bara": bara} if bara else {}),
             }})
 
@@ -476,6 +522,11 @@ def main():
         q = f["properties"]
         if q["level"] == 2 and q["teramati"] and A.prioritas(q["px24"], q["fwi"]):
             q["level"], q["status"] = 3, STATUS[3]
+    for f in fitur:  # gerbang firespot: "mungkin" = cek lapangan dulu (STATUS[1]), tidak jadi tugas pemadaman
+        q = f["properties"]
+        # hanya yang teramati (<= 24 jam): cluster tanpa deteksi baru (mis. gambut kering dipertahankan 168 jam untuk bara) tetap level lamanya.
+        # api24/bara/poligon dibuang nanti oleh pemangkasan INTI, SESUDAH tugas_kompleks menilai syarat jalur verifikasi.
+        gerbang_firespot(q)
     kelompok = {}
     for f in fitur:
         q = f["properties"]
@@ -488,12 +539,23 @@ def main():
     fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["skor"]))
     for i, f in enumerate(fitur):
         f["properties"]["id"] = f"K{i + 1:04d}"
+    def baca_json(nama, awal):
+        try:
+            return json.load(open(os.path.join(KELUAR, nama)))
+        except (OSError, ValueError):
+            return awal
+    desa, fasilitas = baca_json("osm/desa.json", {}), baca_json("fasilitas.json", [])
+    dekat_permukiman = indeks_permukiman(desa, fasilitas) if desa or fasilitas else None
+    di_konsesi = (lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KONSESI.cari(lon, lat))) if KONSESI.indeks else None
+    tugas = tugas_kompleks(fitur, kini, dekat_permukiman, di_konsesi)  # sebelum pemangkasan INTI: butuh api24 dan level asal
     # berkas ringan: kompleks rendah (level 0-1) cukup atribut inti; teks status diambil dari level di peramban
-    INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev"}
+    INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev", "firespot", "pola"}
     for f in fitur:
         q = f["properties"]
         q.pop("status", None)
         if q["level"] < 2:
+            if f["geometry"]["type"] != "Point":
+                f["geometry"] = {"type": "Point", "coordinates": [q["lon"], q["lat"]]}
             for k in [k for k in q if k not in INTI]:
                 q.pop(k)
 
@@ -546,15 +608,7 @@ def main():
     # muatan awal (rentang bawaan "hari ini", juga "kemarin", dan jendela 48 jam Ringkasan): tanggal WIB hari ini & kemarin
     # ditambah 48 jam terakhir dari acuan. jam_maks=48 -> peramban memuat hotspot72/hotspot.json hanya bila rentang lebih panjang.
     simpan("hotspot24.json", titik_json(lambda p: tgl(p["t"]) >= hari_akhir - dt.timedelta(days=1) or p["t"] >= akhir - dt.timedelta(hours=48), jam_maks=48))
-    def baca_opsional(nama, awal):
-        try:
-            return json.load(open(os.path.join(KELUAR, nama)))
-        except (OSError, ValueError):
-            return awal
-    desa, fasilitas = baca_opsional("osm/desa.json", {}), baca_opsional("fasilitas.json", [])
-    dekat_permukiman = indeks_permukiman(desa, fasilitas) if desa or fasilitas else None
-    di_konsesi = (lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KONSESI.cari(lon, lat))) if KONSESI.indeks else None
-    simpan("tugas_kompleks.json", tugas_kompleks(fitur, kini, dekat_permukiman, di_konsesi))
+    simpan("tugas_kompleks.json", tugas)
     simpan("kluster.json", {"type": "FeatureCollection", "features": fitur})
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
@@ -568,10 +622,11 @@ def main():
         "dibuat": sekarang.isoformat(timespec="minutes"), "data_terakhir": akhir.isoformat(), "hari_wib": hari_akhir.isoformat(),
         "jumlah_titik": len(titik), "titik_industri": industri, "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
-        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48},
+        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48,
+                   "firespot": {"ambang_medium_px": AMBANG_MEDIUM_PX, "sumber": SUMBER_FIRESPOT, "unit": "piksel unik, bukan titik"}},
         "bara": GB.CATATAN})
     from collections import Counter
-    print(f"{len(titik)} titik, {len(fitur)} kompleks (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
+    print(f"{len(titik)} titik, {len(fitur)} cluster (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
           "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)
 
 
@@ -648,14 +703,19 @@ def tugas_kompleks(fitur, kini, permukiman=None, konsesi=None):
     ks = []
     for f in fitur:
         q = f["properties"]
-        if q["level"] >= 2 and q["jam_sejak"] <= 24:
+        verif = bool(q.get("turun")) and q["jam_sejak"] <= 24  # level >= 2 diturunkan gerbang firespot: jalur verifikasi, bukan pemadaman
+        if (q["level"] >= 2 or verif) and q["jam_sejak"] <= 24:
             sy = syarat_level2(q, permukiman, konsesi) if q["level"] == 2 else []
+            if verif:  # cek lapangan/kontak desa: hanya bila dekat permukiman atau di konsesi; "tumbuh" tidak berlaku
+                sy = [x for x in syarat_level2(q, permukiman, konsesi) if x != "tumbuh"]
+                if not sy:
+                    continue
             ks.append({"id": q["id"], "lat": round(q["lat"], 4), "lon": round(q["lon"], 4), "prov": q["prov"], "kab": q["kab"], "kec": q["kec"],
                        "level": q["level"], "n24": q["n24"], "jam_sejak": round(q["jam_sejak"], 1), "luas": round(q["luas"]), "konsesi": [],
-                       "otomatis": q["level"] == 3 or bool(sy), "syarat": sy,
+                       "jenis": "verifikasi" if verif else "pemadaman", "otomatis": q["level"] == 3 or bool(sy), "syarat": sy, "firespot": q.get("firespot"), "pola": q.get("pola"),
                        # data syarat tersedia? False = syarat itu tidak bisa dinilai (bukan "tidak terpenuhi")
                        "syarat_dinilai": {"permukiman": permukiman is not None, "konsesi": konsesi is not None, "tumbuh": q.get("n24s") is not None}})
-    return {"dibuat": kini.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "syarat_ambang": SYARAT, "kompleks": ks}
+    return {"dibuat": kini.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "syarat_ambang": SYARAT, "firespot_ambang": {"ambang_medium_px": AMBANG_MEDIUM_PX, "sumber": SUMBER_FIRESPOT}, "kompleks": ks}
 
 
 def hitung_otomatis():
@@ -672,13 +732,38 @@ def hitung_otomatis():
     sblm = collections.Counter(i for r, i in zip(rows, KK.pasang_kompleks(kl, [(r[c["lat"]], r[c["lon"]]) for r in rows])) if i is not None and -48 <= r[c["jam"]] < -24)
     for i, f in enumerate(kl):
         f["properties"]["n24s"] = sblm[i]
+    # firespot: titik VIIRS per cluster dari hotspot.json (hari WIB dari tgl_wib; tahun diambil dari meta). Pendekatan: pemasangan titik ke
+    # cluster lewat lambung/3 km, bukan keanggotaan ST-DBSCAN asli, dan hotspot.json hanya memuat 7 hari.
+    th = dt.datetime.fromisoformat(json.load(open(D("meta.json")))["dibuat"]).year
+    per = collections.defaultdict(list)
+    for r, i in zip(rows, KK.pasang_kompleks(kl, [(r[c["lat"]], r[c["lon"]]) for r in rows])):
+        if i is not None:
+            m_, d_ = map(int, r[c["tgl_wib"]].split("-"))
+            per[i].append({"lat": r[c["lat"]], "lon": r[c["lon"]], "c": r[c["keyakinan"]], "t": dt.datetime(th, m_, d_, 5, tzinfo=dt.timezone.utc)})
+    hitung = lambda tk: (len(tk), sum(k["level"] == 3 for k in tk), sum(k["otomatis"] for k in tk))
+    kini_ = dt.datetime.fromisoformat(json.load(open(D("meta.json")))["dibuat"])
     KON = Poligon(D("lahan/konsesi.geojson"))
     perm = indeks_permukiman(json.load(open(D("osm/desa.json"))), json.load(open(D("fasilitas.json"))))
     kons = lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KON.cari(lon, lat))
-    tk = tugas_kompleks(kl, dt.datetime.fromisoformat(json.load(open(D("meta.json")))["dibuat"]), perm, kons)["kompleks"]
-    sy = collections.Counter(x for k in tk for x in k["syarat"])
-    n2 = sum(k["level"] == 2 for k in tk)
-    print(f"level>=2 teramati<=24j: {len(tk)} (level 2: {n2}, level 3: {len(tk) - n2}); otomatis: {sum(k['otomatis'] for k in tk)}; syarat level 2: {dict(sy)}; ambang: {SYARAT}")
+    tk0 = tugas_kompleks(kl, kini_, perm, kons)["kompleks"]
+    lv0 = collections.Counter(f["properties"]["level"] for f in kl)
+    pola, tanpa = collections.Counter(), 0
+    for i, f in enumerate(kl):
+        q = f["properties"]
+        if i not in per:
+            tanpa += 1
+            continue
+        q["pola"], q["firespot"] = firespot(per[i])
+        pola[q["pola"]] += 1
+        gerbang_firespot(q)
+    lv1 = collections.Counter(f["properties"]["level"] for f in kl)
+    tk1 = tugas_kompleks(kl, kini_, perm, kons)["kompleks"]
+    print(f"firespot: cluster per level sebelum {dict(sorted(lv0.items()))}, sesudah {dict(sorted(lv1.items()))}; pola {dict(pola)}; tanpa titik terpasang {tanpa}")
+    print(f"tugas (level>=2 teramati<=24j, level 3, otomatis): sebelum {hitung(tk0)}, sesudah {hitung(tk1)}")
+    jn = collections.Counter(k["jenis"] for k in tk1)
+    ver = [k for k in tk1 if k["jenis"] == "verifikasi"]
+    print(f"sesudah per jenis: {dict(jn)}, total {len(tk1)}; verifikasi dekat permukiman {sum('permukiman' in k['syarat'] for k in ver)}, di konsesi {sum('konsesi' in k['syarat'] for k in ver)}; "
+          f"otomatis pemadaman {sum(k['otomatis'] for k in tk1 if k['jenis'] == 'pemadaman')}, otomatis verifikasi {sum(k['otomatis'] for k in ver)}")
 
 
 def uji():
@@ -728,6 +813,41 @@ def uji():
     t = tugas_kompleks([{"properties": {**L2, "lat": -3.1, "lon": 112.1}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))["kompleks"][0]
     assert t["otomatis"] is False and t["syarat_dinilai"]["permukiman"] is False and t["syarat_dinilai"]["konsesi"] is False, "tanpa data permukiman/konsesi: syarat tidak dinilai, bukan dianggap terpenuhi"
     print("harian uji: pecah_kluster OK")
+    # firespot: enam pola, piksel unik, gerbang
+    def tt(hari, c, n=1, lat=-3.0, lon=112.0, geser=0.0):  # n titik di piksel berbeda, hari ke-`hari` Okt 2026 siang WIB
+        return [{"t": dt.datetime(2026, 10, hari, 5, 0, tzinfo=dt.timezone.utc), "c": c, "lat": lat + i * 0.01 + geser, "lon": lon} for i in range(n)]
+    ok = lambda pts, pola, fs: firespot(pts) == (pola, fs) or (_ for _ in ()).throw(AssertionError((firespot(pts), pola)))
+    ok(tt(10, 2) + tt(11, 2), "HH", "ya")
+    ok(tt(10, 1, 2) + tt(11, 2), "H", "ya")            # H hari terakhir, kemarin M
+    ok(tt(11, 2) + tt(12, 1, 2), "MH", "ya")
+    ok(tt(10, 1, 3) + tt(11, 1, 3) + tt(12, 1, 3), "MMM", "ya")
+    ok(tt(11, 1, 3) + tt(12, 1, 3), "MM", "mungkin")
+    ok(tt(12, 1, 3), "M", "mungkin")
+    ok(tt(10, 2) + tt(12, 1, 2), "M", "mungkin")        # kemarin kosong: bukan MH
+    ok(tt(12, 1, AMBANG_MEDIUM_PX), "H", "ya")           # tepat ambang piksel
+    ok(tt(12, 1, AMBANG_MEDIUM_PX - 1), "M", "mungkin")
+    tiga = [dict(p, s=s) for s in ("N", "N20", "N21") for p in tt(12, 1, AMBANG_MEDIUM_PX - 1)]  # 3 satelit, piksel sama: 3 piksel, bukan 9 titik
+    ok(tiga, "M", "mungkin")
+    # gerbang: level 3 butuh px24 >= 15 dalam 24 jam, yang melintasi paling banyak 2 hari WIB (Hd dan Hd-1). Dua hari itu menampung >= 15
+    # piksel, jadi salah satunya >= 8 >= AMBANG_MEDIUM_PX = H; H di Hd atau Hd-1 selalu "ya" (H/HH/MH). Dibuktikan lewat semua pembagian:
+    assert 2 * AMBANG_MEDIUM_PX <= A.PRIOR_PX, "bukti 'level 3 selalu ya' bergantung pada ambang ini"
+    for a in range(A.PRIOR_PX + 1):
+        assert firespot(tt(11, 1, a) + tt(12, 1, A.PRIOR_PX - a, geser=0.5) if a < A.PRIOR_PX else tt(11, 1, a) + tt(12, 1, 1, geser=0.5))[1] == "ya", a
+    print("harian uji: firespot OK")
+    # jalur verifikasi: level 1 hasil gerbang ("turun") ikut tugas_kompleks sebagai "verifikasi" bila dekat permukiman/konsesi (tanpa "tumbuh")
+    V = {**L2, "level": 1, "turun": True, "n24": 9, "n24s": 3, "lat": -3.1, "lon": 112.1, "api24": []}   # tumbuh + permukiman
+    mv = lambda **k: tugas_kompleks([{"properties": {**V, **k}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB), dekat, lambda lon, lat: lon > 113)["kompleks"]
+    t = mv()[0]
+    assert t["jenis"] == "verifikasi" and t["otomatis"] and t["syarat"] == ["permukiman"] and t["level"] == 1, t
+    assert mv(lat=-3.5, lon=112.5) == [], "verifikasi tanpa permukiman/konsesi: bukan tugas, 'tumbuh' tidak berlaku"
+    assert mv(lat=-3.5, lon=113.5)[0]["syarat"] == ["konsesi"]
+    assert mv(jam_sejak=30) == [] and mv(turun=False) == [], "tidak teramati atau level 1 asli: bukan verifikasi"
+    assert mk()["jenis"] == "pemadaman" and mk(level=3)["jenis"] == "pemadaman"
+    G = lambda **k: (lambda q: (gerbang_firespot(q), q)[1])({"firespot": "mungkin", "level": 2, "teramati": True, **k})
+    assert G()["level"] == 1 and G()["turun"] and G(level=3)["level"] == 1
+    assert G(teramati=False)["level"] == 2 and "turun" not in G(teramati=False), "tidak teramati: level lama dipertahankan"
+    assert G(firespot="ya")["level"] == 2 and G(level=0)["level"] == 0
+    print("harian uji: verifikasi OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat
     GB.uji()  # estimasi bara gambut: rumus tangan, urutan rentang, pemotongan muka air

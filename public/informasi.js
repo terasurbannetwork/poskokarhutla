@@ -230,7 +230,7 @@
     const durTeks = dur != null ? `<div class="lw-durasi">${p.sub === "hidup" ? "Akhirnya hidup" : `Kini “${esc(J.sub[p.sub][0])}”`} setelah ${kata} <b>${dur} jam</b>${dur >= 48 ? ` (${(dur / 24).toFixed(1).replace(".", ",")} hari)` : ""}</div>` : "";
     const lanjut = J.lanjut && !p.digantikan ? `<div class="lw-blok"><h4>Perbarui status di titik ini</h4><div class="lw-pil">${Object.entries(J.sub).filter(([s]) => s !== p.sub).map(([s, [n, k]]) =>
       `<button class="lw-btn" data-lanjut="${s}"><span class="lw-titikw" style="background:${K.WARNA[k]}"></span>${s === "hidup" ? "Sudah hidup" : esc(n)}</button>`).join("")}<button class="lw-btn" data-lanjut="${p.sub}">Masih ${esc(J.sub[p.sub][0].toLowerCase())}</button></div></div>` : "";
-    const laciL = p.laci ? (HAL === "karhutla" ? `<a href="/k/${esc(p.laci)}" data-laci="${esc(p.laci)}">lihat kompleks ${esc(p.laci)}</a>` : `<a href="${AKAR}#k/${esc(p.laci)}">lihat kompleks ${esc(p.laci)}</a>`) : "";
+    const laciL = p.laci ? (HAL === "karhutla" ? `<a href="/k/${esc(p.laci)}" data-laci="${esc(p.laci)}">lihat cluster ${esc(p.laci)}</a>` : `<a href="${AKAR}#k/${esc(p.laci)}">lihat cluster ${esc(p.laci)}</a>`) : "";
     bukaPanel("rinci", `
       <div class="lw-p-kepala">${chip(p.jenis, 24)}<div><h3>${judulF(p)}</h3><p>${lalu(p.dibuat)} · ${jamWIB(p.dibuat)}${w ? ` · Kec. ${esc(w.kec)}, ${esc(w.kab)}` : ""}</p></div></div>
       ${p.kedaluwarsa_lewat ? `<p class="lw-catatan">Laporan ini sudah kedaluwarsa (lebih dari ${J.umur} jam).</p>` : ""}

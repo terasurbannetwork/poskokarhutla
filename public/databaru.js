@@ -117,7 +117,7 @@
       const as = s?.grid.find(r => r[0] === Math.floor(p.lat) + .5 && r[1] === Math.floor(p.lon) + .5);
       let h = "";
       h += g ? `<div class="lbl">Peluang bahaya cuaca 7 hari</div>${pitaAns(a, g)}${catatanAns(a)}`
-        : `<p class="fnd">Peluang ansambel hanya dihitung untuk ${a ? "provinsi yang sering mengalami karhutla" : "data yang sudah tersedia"}; kompleks ini di luar cakupan.</p>`;
+        : `<p class="fnd">Peluang ansambel hanya dihitung untuk ${a ? "provinsi yang sering mengalami karhutla" : "data yang sudah tersedia"}; cluster ini di luar cakupan.</p>`;
       if (tn && (tn.sm0 != null || tn.sm1 != null)) h += `<div class="lbl" style="margin-top:6px">Kelembapan tanah hari ini</div><table class="tb2"><tbody>
         ${[0, 1].map(j => `<tr><td>${t.lapisan[j]}</td><td class="n">${tn["pct" + j] != null ? `<b style="color:${warnaTanah(tn["pct" + j])}" data-tip="Persentil ${tn["pct" + j]}: lebih ${tn["pct" + j] < 50 ? "kering" : "basah"} dari ${tn["pct" + j] < 50 ? 100 - tn["pct" + j] : tn["pct" + j]}% hari pada ${das(t.dasarian)} tahun 2015–2025">${kataTanah(tn["pct" + j])}</b> · p${tn["pct" + j]} · ` : ""}${fmt(Math.round(tn["sm" + j] * 100))}% vol.</td></tr>`).join("")}</tbody></table>
         <p class="fnd">${tn.pct0 == null && tn.pct1 == null ? "" : `Dibanding hari-hari ${das(t.dasarian)} 2015–2025. p10 = lebih kering dari 90% hari itu. `}% vol. = bagian tanah yang berisi air. Ini model tanah mineral, bukan gambut: pakai sebagai pendukung DC, bukan pengganti tinggi muka air gambut.</p>`;

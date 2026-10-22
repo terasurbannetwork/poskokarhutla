@@ -106,7 +106,7 @@ function renderStatus(j, loc) {
     + (loc?.akurasi > BATAS_AKURASI ? `<div class="kosong basi"><p>${esc(pesanAkurasi(loc.akurasi))}</p></div>` : "");
   const basi = !!j.basi, nm = x => NAMA_SUMBER[x] || x;
   const catBasi = `<div class="kosong basi"><b>Data prakiraan belum diperbarui</b><p>${j.basi_sumber?.length ? `<span>Sumber yang tertunda:</span> ${lst(j.basi_sumber.map(nm))}. ` : ""}<span>Hasil di bawah bisa belum mencerminkan keadaan terbaru.</span></p></div>`;
-  const sm = j.simulasi, catSim = sm && Number.isFinite(+sm.n_aktif) ? `<p class="st-upd">Simulasi penjalaran api mencakup ${(+sm.n_diramal || 0).toLocaleString("id-ID")} dari ${(+sm.n_aktif).toLocaleString("id-ID")} kompleks aktif hari ini. Tidak ada peringatan simulasi bukan berarti aman.</p>` : "";
+  const sm = j.simulasi, catSim = sm && Number.isFinite(+sm.n_aktif) ? `<p class="st-upd">Simulasi penjalaran api mencakup ${(+sm.n_diramal || 0).toLocaleString("id-ID")} dari ${(+sm.n_aktif).toLocaleString("id-ID")} cluster aktif hari ini. Tidak ada peringatan simulasi bukan berarti aman.</p>` : "";
   const upd = j.diperbarui && Object.keys(j.diperbarui).length ? `<p class="st-upd"><span>Diperbarui:</span> ${Object.entries(j.diperbarui).map(([k, v]) => `<span>${esc(nm(k))}</span> <span>${esc(waktuUpd(v))}</span>`).join(" · ")}</p>` : "";
   if (!w) { el.innerHTML = kepala + `<div class="kosong"><b>Lokasi belum dikenali</b><p>Titik ini tidak masuk wilayah kecamatan yang kami pantau. Periksa koordinatnya.</p></div>`; return; }
   if (!P.length && basi) { el.innerHTML = kepala + catBasi + upd; return; }
@@ -150,7 +150,7 @@ function kartuTindakan(k) {
   const B = BENCANA[k], tk = Object.keys(B.tindakan).map(Number).sort((a, b) => a - b), awal = tk.includes(2) ? 2 : tk[0];
   return `<article class="kartu${LEBAR.has(k) ? " lebar" : ""}" data-k="${k}" style="--w:${B.warna}">
     <div class="k-foto"><img loading="lazy" decoding="async" alt="" src="/img/${B.gambar}"><h3>${esc(B.nama)}</h3></div><div class="k-pita"></div>
-    <div class="k-badan">${piktos(k)}${k === "karhutla" ? '<p class="k-cat">Sebagian peringatan karhutla berasal dari simulasi penjalaran api 72 jam. Itu perkiraan model, paling lemah untuk kebakaran gambut dan kompleks besar.</p>' : ""}
+    <div class="k-badan">${piktos(k)}${k === "karhutla" ? '<p class="k-cat">Sebagian peringatan karhutla berasal dari simulasi penjalaran api 72 jam. Itu perkiraan model, paling lemah untuk kebakaran gambut dan cluster besar.</p>' : ""}
       <div class="seg" role="group" aria-label="Tingkat peringatan ${esc(B.pendek)}">${tk.map(t => `<button type="button" data-t="${t}" style="--tc:${TINGKAT[t].warna}" aria-pressed="${t === awal}"><i></i>${TINGKAT[t].nama}</button>`).join("")}</div>
       <div class="k-isi" aria-live="polite"></div></div></article>`;
 }

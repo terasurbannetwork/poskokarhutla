@@ -409,9 +409,9 @@ uji("pop-up peta saat masuk: tampil sekali per sesi (sessionStorage), tidak lagi
   const saya = {akun: {id: "akun1", tingkat: "kab", wilayah: "Pemerintah Kab Satu", status: "aktif"}, cakupan: ["62"], kab: "Kab Satu"};
   const d = dunia({sesi, jalur: "/instansi"}); d.win.fetch = () => respons({baris: [], wilayah: [], acuan: "2026-10-21T03:00:00Z"}); d.jalankan("instansi_tugaskan.js");
   const T = d.win.Tugaskan; assert.ok(T && typeof T.popupMasuk === "function", "modul memajang Tugaskan.popupMasuk");
-  assert.equal(T.ringkasan(tugasKu).teks, "2 kompleks aktif, 1 terlambat", "ringkasan N kompleks aktif, M terlambat"); assert.deepEqual([T.ringkasan(tugasKu).aktif, T.ringkasan(tugasKu).terlambat], [2, 1]); assert.equal(T.ringkasan([]).teks, "0 kompleks aktif, 0 terlambat");
+  assert.equal(T.ringkasan(tugasKu).teks, "2 cluster aktif, 1 terlambat", "ringkasan N cluster aktif, M terlambat"); assert.deepEqual([T.ringkasan(tugasKu).aktif, T.ringkasan(tugasKu).terlambat], [2, 1]); assert.equal(T.ringkasan([]).teks, "0 cluster aktif, 0 terlambat");
   const sebelum = d.log.body.length; const a = await T.popupMasuk({saya, tugas: tugasKu, lihatTugas() {}}); assert.equal(a, true, "muncul pertama kali"); assert.equal(d.log.body.length, sebelum + 1, "modal dipasang ke body sekali");
-  const modal = d.log.body.at(-1); assert.equal(modal.attrs.role, "dialog"); assert.equal(modal.attrs["aria-modal"], "true"); assert.match(modal.innerHTML, /Lihat tugas/); assert.match(modal.innerHTML, /Tutup/); assert.match(modal.innerHTML, /2 kompleks aktif, 1 terlambat/);
+  const modal = d.log.body.at(-1); assert.equal(modal.attrs.role, "dialog"); assert.equal(modal.attrs["aria-modal"], "true"); assert.match(modal.innerHTML, /Lihat tugas/); assert.match(modal.innerHTML, /Tutup/); assert.match(modal.innerHTML, /2 cluster aktif, 1 terlambat/);
   assert.equal(sesi.get("pb_peta_masuk:akun1"), "1", "kunci sesi tertulis"); assert.doesNotMatch(modal.innerHTML, /·/);
   const b = await T.popupMasuk({saya, tugas: tugasKu, lihatTugas() {}}); assert.equal(b, false, "tidak tampil lagi dalam sesi yang sama"); assert.equal(d.log.body.length, sebelum + 1);
   /* halaman dimuat ulang (modul baru, sessionStorage yang sama): tetap tidak tampil */

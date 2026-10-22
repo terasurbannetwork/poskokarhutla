@@ -54,8 +54,8 @@ export function emailPeringatan({asal, lat, lon, wilayah, peringatan, simulasi, 
   const blok = urut.map(({b, t}, i) => `<p style="margin:${i ? 16 : 6}px 0 4px;font:700 14px ${FONT};color:#12202e">${esc(BENCANA[b].nama)} ${pil(t)}</p>${daftar(tindakanUntuk(b, t))}`).join("");
   /* karhutla yang tingkatnya dibawa simulasi: blok sorot jarak, cakrawala, peluang + tombol ke /sim/<kompleks> */
   const sim = peringatan.filter(p => p.sumber_jenis === "simulasi" && p.kompleks).sort((a, b) => b.tingkat - a.tingkat || a.jam_sisa - b.jam_sisa);
-  const cakupan = Number.isFinite(simulasi?.n_aktif) && Number.isFinite(simulasi?.n_diramal) ? ` Simulasi hanya mencakup ${angka(simulasi.n_diramal)} dari ${angka(simulasi.n_aktif)} kompleks aktif hari ini; tidak ada peringatan simulasi bukan berarti aman.` : "";
-  const catatSim = `Ini perkiraan model, bukan pengamatan. Model paling lemah untuk kebakaran gambut dan kompleks besar.${cakupan}`;
+  const cakupan = Number.isFinite(simulasi?.n_aktif) && Number.isFinite(simulasi?.n_diramal) ? ` Simulasi hanya mencakup ${angka(simulasi.n_diramal)} dari ${angka(simulasi.n_aktif)} cluster aktif hari ini; tidak ada peringatan simulasi bukan berarti aman.` : "";
+  const catatSim = `Ini perkiraan model, bukan pengamatan. Model paling lemah untuk kebakaran gambut dan cluster besar.${cakupan}`;
   const blokSim = sim.length ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 0;background:#fff4e8;border-left:4px solid ${TINGKAT[sim[0].tingkat].warna};border-collapse:separate"><tr><td style="padding:12px 14px;font:14px/1.55 ${FONT};color:#1d2733">
 <b style="font:700 15px ${FONT};color:#12202e">Simulasi penjalaran api</b>${sim.map(p => `<br>${esc(p.kalimat || p.rincian)}`).join("")}
 <br><span style="font:12px/1.5 ${FONT};color:#5b6773">${esc(catatSim)}</span>

@@ -5,7 +5,7 @@
 import REGISTRY from "./bencana.generated.js";
 import {hidup, akar, dasar, tabRute} from "./bencana.js";
 /* nama tab untuk judul; tab yang belum terdaftar jatuh ke id berhuruf kapital. Himpunan tab yang dikenal datang dari registry (tabRute). */
-const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak", metode: "Metode",
+const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Cluster", posko: "Posko", dampak: "Dampak", metode: "Metode",
   operasi: "Operasi", sarana: "Sarana", keputusan: "Keputusan", prioritas: "Prioritas", informasi: "Informasi", ringkasan: "Ringkasan", sim: "Simulasi"};
 const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 

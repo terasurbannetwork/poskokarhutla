@@ -49,7 +49,7 @@ const Metode = {
           ["Kewajaran target", esc(T2.pelaporan ? `DIBI mencatat laporan BPBD: hanya ${fmt(T2.pelaporan.kab_pernah_melapor)} dari ${fmt(T2.pelaporan.kab_total)} kabupaten pernah melapor kekeringan sejak Okt 2023, jadi alarm di kabupaten yang tak melapor terhitung palsu. Ini batas atas FAR dan tidak dipakai untuk meloloskan` : "DIBI mencatat laporan BPBD, bukan semua kekeringan")]]), "Pantau Bencana; DIBI BNPB; NASA POWER; Open-Meteo; ERA5-Land"));
     }
     if (B) o.push(kartu("Bukti", "Bukti gambut dan kabupaten kandidat sering kering, beserta batasnya", tabel(["Bagian", "Keterangan"],
-      [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "kompleks konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
+      [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "cluster konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
        ...(B.berulang ? [["Sering kering", esc(B.berulang.catatan || "")], ["Tampungan", esc((B.berulang.embung_sumber || "") + ". Nol bukan bukti kekurangan karena peta OSM tidak lengkap")]] : [])]), "Pantau Bencana; OpenStreetMap; InaRISK BNPB"));
     if (R || N) o.push(kartu("BNPB", "Sumber BNPB dan batasnya", tabel(["Data", "Keterangan"],
       [...(R ? [["SK status darurat", `${fmt(R.n)} SK ${R.tahun_data} yang menyebut kekeringan dari ${fmt(R.n_sk_total)} SK; ${fmt(R.n_aktif)} berlaku sekarang. Tampil sebagai riwayat, bukan status berlaku; dicocokkan ke kabupaten lewat nama`]] : []),

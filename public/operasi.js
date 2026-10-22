@@ -134,8 +134,8 @@ var Operasi = typeof document === "undefined" ? null : (() => {
         </tbody></table><p class="op-cat">Harga satuan dari asumsi anggaran tab Posko (uang harian SBM 2026, BBM, sewa heli Rp ${rb0(typeof ASUMSI === "object" ? ASUMSI.heliJam : 150e6)}/jam, OMC Rp ${rb0(typeof ASUMSI === "object" ? ASUMSI.omc : 220e6)}/hari). Manggala Agni sudah dibiayai DIPA; pompa dan selang yang sudah dimiliki tidak dihitung ulang.</p></section>
     </div>
     ${hRekon(T, s)}
-    <section class="op-bag"><h3 class="op-h">Kebutuhan dan selisih per provinsi <small>klik baris untuk rincian kompleks dan rumus langkah demi langkah</small></h3>
-      <div class="tw"><table class="op-prov"><thead><tr><th>Provinsi</th><th class="n">Kompleks</th><th class="n">Front km</th><th class="n">Bara ha</th><th class="n">Personel butuh</th><th class="n">Terjun</th><th class="n">Selisih</th><th class="n">Pompa</th><th class="n">Titik bor</th><th class="n">Heli</th><th class="n">OMC</th><th>Tambahan</th></tr></thead>
+    <section class="op-bag"><h3 class="op-h">Kebutuhan dan selisih per provinsi <small>klik baris untuk rincian cluster dan rumus langkah demi langkah</small></h3>
+      <div class="tw"><table class="op-prov"><thead><tr><th>Provinsi</th><th class="n">Cluster</th><th class="n">Front km</th><th class="n">Bara ha</th><th class="n">Personel butuh</th><th class="n">Terjun</th><th class="n">Selisih</th><th class="n">Pompa</th><th class="n">Titik bor</th><th class="n">Heli</th><th class="n">OMC</th><th>Tambahan</th></tr></thead>
       <tbody>${provs.filter(x => x.b.personel).map(({k, b}) => { const L = D.byP[k], fr = L.reduce((a, c) => a + c.front[s], 0), ba = L.reduce((a, c) => a + c.bara[s], 0), gap = b.ada ? b.personel - b.ada.personel : null;
         return `<tr data-opp="${k}" tabindex="0"><td><b>${esc(nP(k))}</b></td><td class="n">${fmt(b.kompleks)}</td><td class="n">${f0(fr)}</td><td class="n">${f0(ba)}</td><td class="n"><b>${fmt(b.personel)}</b><small>${fmt(b.regu)} regu</small></td>
           <td class="n">${b.ada ? fmt(b.ada.personel) + `<small>${b.ada.jenis === "resmi" ? "BNPB" : "Daops saja"}</small>` : "<small>tidak dilaporkan</small>"}</td>
@@ -163,14 +163,14 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     return `<section class="card op-blok op-rekon"><h3>Resmi vs satelit: mengapa angkanya berbeda</h3>
       <div class="grid g3">
         <div><span class="lbl">Belum padam ${tag("resmi")}</span><b class="op-big">${res != null ? fmt(res) + " ha" : "–"}</b><small>${R ? `${fmt(R.belum_padam_ha.prioritas_6_prov)} ha di 6 provinsi yang sering mengalami karhutla + ${fmt(R.belum_padam_ha.lainnya)} ha lainnya; ${fmt(R.dipadamkan_total_ha)} ha sudah dipadamkan; ${R.padam_hari_sama_pct}% luas baru padam di hari yang sama` : ""}</small></div>
-        <div><span class="lbl">Api aktif 24 jam ${tag("satelit")}</span><b class="op-big">${fmt(r.kompleks)} kompleks</b><small>${fmt(r.px24)} piksel VIIRS (${fmt(r.px24_gambut)} di gambut); jejak piksel ${fmt(r.ha_piksel)} ha, bukan luas terbakar</small></div>
+        <div><span class="lbl">Api aktif 24 jam ${tag("satelit")}</span><b class="op-big">${fmt(r.kompleks)} cluster</b><small>${fmt(r.px24)} piksel VIIRS (${fmt(r.px24_gambut)} di gambut); jejak piksel ${fmt(r.ha_piksel)} ha, bukan luas terbakar</small></div>
         <div><span class="lbl">Bara gambut yang direncanakan ${tag("model")}</span><b class="op-big">${fmt(r.bara_ha[s])} ha</b><small>${fmt(H.k("ha_bara_piksel", s))} ha bara per piksel aktif (rentang ${fmt(r.bara_ha[0])}–${fmt(r.bara_ha[2])} ha). Agar sama dengan angka BNPB, tiap piksel hanya boleh berisi ${r.ha_per_piksel_setara_resmi ?? "?"} ha api.</small></div>
       </div>
       <ol class="op-alasan">
         <li><b>Definisinya berbeda.</b> "Luas belum padam" BNPB adalah luas yang sudah dicek regu darat dan dilaporkan masih menyala. Piksel satelit adalah kotak 375 × 375 m (14 ha) yang di dalamnya ada sumber panas, sekecil apa pun; satu piksel tidak sama dengan 14 ha terbakar.</li>
-        <li><b>Gambut membara tanpa nyala.</b> Bara di bawah permukaan bisa padam di permukaan (dilaporkan padam) tetapi masih terdeteksi panas, lalu menyala lagi beberapa hari kemudian. Platform mempertahankan kompleks gambut kering 7 hari karena itu.</li>
-        <li><b>Api baru belum terlaporkan.</b> Satelit melihat seluruh Indonesia tiap beberapa jam; laporan darat hanya mencakup lokasi yang sudah didatangi. ${fmt(r.kompleks)} kompleks aktif jauh lebih banyak dari lokasi yang tercantum di rekap.</li>
-        <li><b>Cakupan wilayah.</b> Rekap harian BNPB di platform ini hanya enam provinsi pantauan; ${fmt(r.kompleks - bn.reduce((a, x) => a + (D.byP[x[0]] || []).length, 0))} kompleks aktif ada di luar enam provinsi itu (terbanyak Papua Selatan).</li>
+        <li><b>Gambut membara tanpa nyala.</b> Bara di bawah permukaan bisa padam di permukaan (dilaporkan padam) tetapi masih terdeteksi panas, lalu menyala lagi beberapa hari kemudian. Platform mempertahankan cluster gambut kering 7 hari karena itu.</li>
+        <li><b>Api baru belum terlaporkan.</b> Satelit melihat seluruh Indonesia tiap beberapa jam; laporan darat hanya mencakup lokasi yang sudah didatangi. ${fmt(r.kompleks)} cluster aktif jauh lebih banyak dari lokasi yang tercantum di rekap.</li>
+        <li><b>Cakupan wilayah.</b> Rekap harian BNPB di platform ini hanya enam provinsi pantauan; ${fmt(r.kompleks - bn.reduce((a, x) => a + (D.byP[x[0]] || []).length, 0))} cluster aktif ada di luar enam provinsi itu (terbanyak Papua Selatan).</li>
       </ol>
       <div class="tw"><table class="op-tb"><thead><tr><th>Provinsi</th><th class="n">Akan dipadamkan (BNPB harian)</th><th class="n">Piksel aktif 24 jam</th></tr></thead><tbody>${bn.map(([k, h, p]) => `<tr><td>${esc(nP(k))}</td><td class="n">${f1(h)} ha</td><td class="n">${fmt(p)}</td></tr>`).join("")}</tbody></table></div>
       <p class="op-cat">Kedua angka ditampilkan apa adanya. Perencanaan di halaman ini memakai satelit karena ia satu-satunya sumber yang mencakup seluruh wilayah setiap hari; angka resmi dipakai sebagai pembanding dan batas bawah.</p></section>`;
@@ -184,7 +184,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const pompa = Math.ceil(reguResmi * 2 * H.k("cadangan_pompa", s)), bor = Math.ceil(ha / hb), selang = pompa * H.koef.selang_pompa.hi;
     const tak = L.filter(c => c.jsum === "akses" && (c.jam == null || c.jam > H.k("jam_tiba", s)));
     return `<section class="card op-blok op-tnp"><h3>Taman Nasional Tanjung Puting (Kalimantan Tengah): paket penanganan</h3>
-      <p>${so ? `Kebakaran baru <b>${fmt(so.luas_ha)} ha</b> ${tag("resmi")} di rawa gambut yang sulit dijangkau kendaraan. ` : ""}Satelit mencatat <b>${fmt(L.length)}</b> kompleks aktif di dalam taman nasional ${tag("satelit")} dengan ${fmt(L.reduce((a, c) => a + c.px, 0))} piksel aktif 24 jam; ${fmt(tak.length)} kompleks tidak punya rute jalan/sungai ≤ ${H.k("jam_tiba", s)} jam menurut graf OSM. Jejak 7 hari kompleks satelit (${fmt(Math.round(L.reduce((a, c) => a + c.luas, 0)))} ha) bukan luas terbakar dan tidak dapat dibandingkan langsung dengan angka BNPB.</p>
+      <p>${so ? `Kebakaran baru <b>${fmt(so.luas_ha)} ha</b> ${tag("resmi")} di rawa gambut yang sulit dijangkau kendaraan. ` : ""}Satelit mencatat <b>${fmt(L.length)}</b> cluster aktif di dalam taman nasional ${tag("satelit")} dengan ${fmt(L.reduce((a, c) => a + c.px, 0))} piksel aktif 24 jam; ${fmt(tak.length)} cluster tidak punya rute jalan/sungai ≤ ${H.k("jam_tiba", s)} jam menurut graf OSM. Jejak 7 hari cluster satelit (${fmt(Math.round(L.reduce((a, c) => a + c.luas, 0)))} ha) bukan luas terbakar dan tidak dapat dibandingkan langsung dengan angka BNPB.</p>
       <div class="grid g2">
         <div><span class="lbl">Paket dari angka resmi ${fmt(ha)} ha ${tag("model")}</span>
           <ol class="op-rumus">
@@ -195,10 +195,10 @@ var Operasi = typeof document === "undefined" ? null : (() => {
             <li>Perahu: 1 klotok/speedboat per 2 regu = <b>${fmt(Math.ceil(reguTot / 2))} perahu</b> (asumsi platform)</li>
             <li>Helikopter: 1–2 unit untuk pendinginan titik (spot cooling) di depan regu; <b>tidak memadamkan bara gambut</b></li>
           </ol></div>
-        <div><span class="lbl">Paket dari satelit (semua kompleks TN) ${tag("model")}</span>
+        <div><span class="lbl">Paket dari satelit (semua cluster TN) ${tag("model")}</span>
           <table class="op-tb"><tbody><tr><td>Regu (rotasi termasuk)</td><td class="n"><b>${fmt(t.regu)}</b></td></tr><tr><td>Personel</td><td class="n"><b>${fmt(t.personel)}</b></td></tr>
           <tr><td>Pompa · selang</td><td class="n">${fmt(t.pompa)} · ${km(t.pompa * H.koef.selang_pompa.hi)}</td></tr><tr><td>Titik bor</td><td class="n">${fmt(t.bor)}</td></tr><tr><td>Heli WB (front tak terjangkau)</td><td class="n">${fmt(t.heli)}</td></tr></tbody></table>
-          <p class="op-cat">Akses: dari Kumai/Pangkalan Bun lewat Sungai Sekonyer dengan klotok, lalu jalan kaki di rawa; Daops Pangkalanbun (PKB-05) dan Balai TN Tanjung Puting memimpin, dibantu TNI, Polri, MPA desa penyangga, dan perusahaan sawit di batas timur (Permentan 5/2018). Waktu tempuh sungai belum dimodelkan untuk semua kompleks.</p>
+          <p class="op-cat">Akses: dari Kumai/Pangkalan Bun lewat Sungai Sekonyer dengan klotok, lalu jalan kaki di rawa; Daops Pangkalanbun (PKB-05) dan Balai TN Tanjung Puting memimpin, dibantu TNI, Polri, MPA desa penyangga, dan perusahaan sawit di batas timur (Permentan 5/2018). Waktu tempuh sungai belum dimodelkan untuk semua cluster.</p>
           <div class="op-kl">${L.slice(0, 8).map(c => `<button class="btn sec" data-opk="${c.id}">${c.id} · ${fmt(c.px)} piksel</button>`).join("")}</div></div>
       </div></section>`;
   }
@@ -237,13 +237,13 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const n = {gambut_dalam: 0, gambut_dangkal: 0, mineral: 0, savana: 0, konservasi: 0, konsesi: 0};
     for (const c of D.kompleks) { if (c.jenis === "gambut") n[(c.dc ?? 400) >= 350 ? "gambut_dalam" : "gambut_dangkal"]++; else n[c.jenis]++; if (c.kaw !== "lain") n[c.kaw]++; }
     const nas = H.total(D.kompleks, T, s), ph = Object.values(D.prov).reduce((a, v) => a + (v.polhut?.butuh[s] || 0), 0);
-    return `<section class="op-bag"><h3 class="op-h">Cara menyelesaikan: langkah per jenis situasi <small>jumlah kompleks aktif hari ini per jenis; kedalaman gambut tidak tersedia, kekeringan (DC) dipakai sebagai penanda bara dalam</small></h3>
+    return `<section class="op-bag"><h3 class="op-h">Cara menyelesaikan: langkah per jenis situasi <small>jumlah cluster aktif hari ini per jenis; kedalaman gambut tidak tersedia, kekeringan (DC) dipakai sebagai penanda bara dalam</small></h3>
       <div class="op-presiden card"><span class="lbl">Arahan Presiden ${tag("resmi")} → angka platform ${tag("model")}</span><ul>
         <li><b>Tambah pompa:</b> butuh ${fmt(nas.pompa)} pompa dan ${km(nas.selang)} selang untuk target ${T} hari.</li>
         <li><b>Tambah titik bor air:</b> butuh ${fmt(nas.bor)} titik bor untuk bara gambut yang sedang aktif (satu titik per ${fmt(H.k("ha_per_bor", s))} ha).</li>
         <li><b>Perkuat polisi hutan menuju 70.000:</b> patroli pencegahan di petak langganan terbakar butuh ± ${fmt(ph)} personel (lihat di bawah); sisanya untuk pengamanan kawasan hutan lain.</li>
         <li><b>Polisi hutan dibekali pompa dan bor air:</b> setara 1 pompa jinjing + 1 set bor dangkal per regu patroli 3 orang.</li></ul></div>
-      <div class="op-play">${PLAY.map(([k, nm, w, L]) => `<article class="card op-pc" style="--w:${w}"><h4>${nm}<small>${fmt(n[k])} kompleks</small></h4>
+      <div class="op-play">${PLAY.map(([k, nm, w, L]) => `<article class="card op-pc" style="--w:${w}"><h4>${nm}<small>${fmt(n[k])} cluster</small></h4>
         <ol>${L.map(([a, b, c]) => `<li><b>${a}</b><span>${b}</span><em>${c}</em></li>`).join("")}</ol></article>`).join("")}</div></section>`;
   }
 
@@ -283,17 +283,17 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     return `<ol class="op-sumber">
       ${surplus.length ? `<li><b>Provinsi dengan personel lebih</b> ${tag("resmi")}: ${surplus.slice(0, 3).map(o => `${esc(nP(o.x))} (lebih ${fmt(o.b.ada.personel - o.b.personel)})`).join(", ")}</li>` : ""}
       ${dp ? `<li><b>Manggala Agni</b>: ${fmt(dp.n)} Daops, ${fmt(dp.regu)} regu / ${fmt(dp.anggota)} orang (${esc(dp.nama.join(", "))})</li>` : ""}
-      ${Object.keys(dari).length ? `<li><b>Posko/Daops terdekat dengan rute ≤ 12 jam</b>: ${Object.entries(dari).sort((a, c) => c[1] - a[1]).slice(0, 4).map(([n, v]) => `${esc(n)} (${v} kompleks)`).join(", ")}</li>` : ""}
+      ${Object.keys(dari).length ? `<li><b>Posko/Daops terdekat dengan rute ≤ 12 jam</b>: ${Object.entries(dari).sort((a, c) => c[1] - a[1]).slice(0, 4).map(([n, v]) => `${esc(n)} (${v} cluster)`).join(", ")}</li>` : ""}
       <li><b>TNI/Polri (BKO)</b>: ${esc(KOREM[k] || "Korem setempat")} dan Polda ${esc(nP(k))}</li>
-      <li><b>MPA</b>: desa di sekitar kompleks; honor dan pompa dari APBD/Dana Desa</li>
-      ${ks ? `<li><b>Perusahaan pemegang konsesi</b> (wajib punya regu & sarana, Permentan 5/2018 dan P.32/2016): ${fmt(ks.kompleks)} kompleks di areal konsesi butuh ± ${fmt(reguKons)} regu bekerja; menurut areal: ${(ks.jenis || []).map(([n, v]) => `${esc(n)} (${v})`).join(", ")}</li>` : ""}
+      <li><b>MPA</b>: desa di sekitar cluster; honor dan pompa dari APBD/Dana Desa</li>
+      ${ks ? `<li><b>Perusahaan pemegang konsesi</b> (wajib punya regu & sarana, Permentan 5/2018 dan P.32/2016): ${fmt(ks.kompleks)} cluster di areal konsesi butuh ± ${fmt(reguKons)} regu bekerja; menurut areal: ${(ks.jenis || []).map(([n, v]) => `${esc(n)} (${v})`).join(", ")}</li>` : ""}
     </ol>`;
   }
 
   function dlgProv(k) {
     const T = st.T, s = st.s, b = butuhProv(k), L = (D.byP[k] || []).slice().sort((a, c) => (c.wl[s] + c.wb[s]) - (a.wl[s] + a.wb[s]));
     const bi = biaya(k, b, T, s), om = omcHari(k);
-    dlg(`${esc(nP(k))}: kebutuhan operasi ${T} hari`, `${fmt(b.kompleks)} kompleks aktif · skenario ${SKEN[s].toLowerCase()} · ${b.ada ? `terjun ${fmt(b.ada.personel)} (${esc(b.ada.sumber)})` : "personel terjun tidak dilaporkan"}`,
+    dlg(`${esc(nP(k))}: kebutuhan operasi ${T} hari`, `${fmt(b.kompleks)} cluster aktif, skenario ${SKEN[s].toLowerCase()}, ${b.ada ? `terjun ${fmt(b.ada.personel)} (${esc(b.ada.sumber)})` : "personel terjun tidak dilaporkan"}`,
       `<div class="grid g4 op-kpi">${kpi("Personel", fmt(b.personel), `${fmt(b.regu)} regu`, W.ungu)}${kpi("Tambah", fmt(b.tambahPersonel), `${fmt(b.tambahRegu)} regu`, b.tambahPersonel ? W.merah : W.hijau)}
         ${kpi("Pompa · selang", fmt(b.pompa), km(b.selang), W.biru)}${kpi("Titik bor · heli", `${fmt(b.bor)} · ${fmt(b.heli)}`, `OMC layak ${om.length} hari`, W.teal)}</div>
       <p><b>${esc(kalimat(k, T))}</b>. Perkiraan biaya ${bi.hari} hari: ${rp(bi.total)}.</p>
@@ -304,12 +304,12 @@ var Operasi = typeof document === "undefined" ? null : (() => {
         <li>Pompa = (regu bara × 2 + regu garis gambut × 2 + regu garis lain × 1) × ${f1(H.k("cadangan_pompa", s))} = <b>${fmt(b.pompa)}</b>; selang ${fmt(H.k("selang_pompa", s))} m/pompa</li>
         <li>OMC: hari dengan peluang hujan ≥ 5 mm rata-rata provinsi 15–60% (ansambel ECMWF): ${om.length ? om.map(t => esc(t.slice(5))).join(", ") : "tidak ada"}</li></ol>
       <h4>Sumber tambahan, urut paling cepat</h4>${sumberTarik(k, b)}
-      <h4>Kompleks terberat (klik untuk rumus langkah demi langkah)</h4>
-      <div class="tw"><table class="op-tb"><thead><tr><th>Kompleks</th><th>Jenis</th><th class="n">Front km</th><th class="n">Bara ha</th><th class="n">Regu kerja</th><th class="n">Tiba</th><th></th></tr></thead><tbody>
+      <h4>Cluster terberat (klik untuk rumus langkah demi langkah)</h4>
+      <div class="tw"><table class="op-tb"><thead><tr><th>Cluster</th><th>Jenis</th><th class="n">Front km</th><th class="n">Bara ha</th><th class="n">Regu kerja</th><th class="n">Tiba</th><th></th></tr></thead><tbody>
       ${L.slice(0, 25).map(c => { const x = H.kebutuhan(c, T, s); return `<tr><td><b>${c.id}</b><small>${esc(c.kab || "")}${c.kec ? ", " + esc(c.kec) : ""}</small></td><td>${JENIS[c.jenis]}${c.kaw !== "lain" ? `<small>${c.kaw}</small>` : ""}</td>
         <td class="n">${f1(c.front[s])}</td><td class="n">${f1(c.bara[s])}</td><td class="n">${f1(x.regu_kerja)}</td><td class="n">${c.jam == null ? "tanpa rute" : f1(c.jam) + " jam"}${c.jsum === "perkiraan" ? "<small>perkiraan</small>" : ""}</td>
         <td><button class="btn sec" data-opk="${c.id}">Rumus</button></td></tr>`; }).join("")}</tbody></table></div>
-      ${L.length > 25 ? `<p class="op-cat">${fmt(L.length - 25)} kompleks kecil lain ikut dijumlahkan; kompleks kecil berdekatan ditangani bergiliran oleh satu regu, jadi kebutuhannya boleh pecahan.</p>` : ""}`);
+      ${L.length > 25 ? `<p class="op-cat">${fmt(L.length - 25)} cluster kecil lain ikut dijumlahkan; cluster kecil berdekatan ditangani bergiliran oleh satu regu, jadi kebutuhannya boleh pecahan.</p>` : ""}`);
   }
 
   function dlgKompleks(id) {
@@ -320,8 +320,8 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const heliOk = c.wh[s] > 0, siklus = 2 * k("jarak_air_heli") / 150 * 60 + 3, kmHeli = k("heli_jam_hari") * 60 / siklus * k("m_per_drop") / 1000;
     dlg(`${c.id}: rumus langkah demi langkah`, `${esc(c.kab || "")}${c.kec ? ", " + esc(c.kec) : ""} · ${esc(nP(c.prov))} · ${JENIS[c.jenis]} (gambut ${Math.round(c.ps * 100)}% titik) · ${esc(c.pj || "")} · target ${T} hari, skenario ${SKEN[s].toLowerCase()}`,
       `<ol class="op-rumus op-langkah">
-        <li><b>Keliling kompleks</b> dari poligon ${tag("satelit")}: ${f1(c.kel)} km. Luas jejak 7 hari ${fmt(Math.round(c.luas))} ha.</li>
-        <li><b>Front aktif</b>: ${fmt(c.px)} piksel VIIRS 24 jam × 14 ha = ${f1(pxKm)} km² → bila lingkaran, keliling 2√(π × ${f1(pxKm)}) = ${f1(ling)} km; diambil yang lebih kecil dari ini dan keliling kompleks = ${f1(Math.min(ling, c.kel))} km.
+        <li><b>Keliling cluster</b> dari poligon ${tag("satelit")}: ${f1(c.kel)} km. Luas jejak 7 hari ${fmt(Math.round(c.luas))} ha.</li>
+        <li><b>Front aktif</b>: ${fmt(c.px)} piksel VIIRS 24 jam × 14 ha = ${f1(pxKm)} km² → bila lingkaran, keliling 2√(π × ${f1(pxKm)}) = ${f1(ling)} km; diambil yang lebih kecil dari ini dan keliling cluster = ${f1(Math.min(ling, c.kel))} km.
           Deteksi hari ini ${fmt(c.ini ?? 0)} vs kemarin ${fmt(c.kmrn ?? 0)} → faktor tumbuh ${f1(g)} (maks ${f1(k("tumbuh_maks"))}) → <b>front ${f1(c.front[s])} km</b>.</li>
         <li><b>Produksi garis</b> ${JENIS[c.jenis].toLowerCase()}: ${f1(r)} km/regu/hari; ISI ${f1(c.isi ?? 0)} vs ambang ${k("isi_ambang")} → dibagi ${f1(fi)} → <b>${f1(c.front[s] * fi / r)} regu-hari</b> garis.</li>
         <li><b>Regu garis</b> = ${f1(c.wl[s])} regu-hari ÷ ${T} hari = <b>${f1(x.regu_garis)} regu</b>.</li>
@@ -331,7 +331,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
         <li><b>Titik bor</b> = ${f1(c.bara[s])} ha ÷ ${fmt(k("ha_per_bor"))} ha${c.kanal != null && c.kanal <= k("kanal_dekat") ? ` × 0,5 (kanal ${f1(c.kanal)} km)` : c.kanal != null ? ` (kanal terdekat ${f1(c.kanal)} km)` : " (data kanal tidak ada)"} = <b>${fmt(c.bor[s])}</b>; air ± ${fmt(Math.round(c.bara[s] * k("air_bara") / 1000))} m³.</li>
         <li><b>Akses</b>: ${tiba}. ${heliOk ? `Lebih dari ${k("jam_tiba")} jam → water bombing menahan front: siklus ${f1(siklus)} menit, ${f1(kmHeli)} km garis basah/heli/hari → ${f1(c.wh[s])} heli-hari ÷ ${T} = <b>${f1(x.heli)} heli</b>. Water bombing tidak memadamkan bara gambut.` : "Regu darat dapat tiba; heli tidak dihitung (boleh untuk pendinginan titik)."}</li>
       </ol><p class="op-cat">Semua koefisien dan sumbernya ada di tabel koefisien tab Operasi dan OPERASI.md. Angka satelit adalah perkiraan; cek lapangan menentukan.</p>
-      <button class="btn sec" data-kom="${c.id}">Buka kompleks ${c.id} di peta</button>`);
+      <button class="btn sec" data-kom="${c.id}">Buka cluster ${c.id} di peta</button>`);
   }
 
   return {siap, render, butuhProv, kalimat, get T() { return st.T; }};

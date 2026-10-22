@@ -180,7 +180,7 @@
     const batas = t.status !== "buka" ? "Selesai" : `${langkahNama(t)} ${t.terlambat ? "terlambat" : "sisa"} ${fmt.durasi(t.tenggat - kini)}`;
     return `<button type="button" class="in-baris ${t.terlambat ? "telat" : ""} ${t.id === terpilih ? "aktif" : ""}" data-id="${esc(t.id)}" aria-pressed="${t.id === terpilih}">
       <span class="in-c-nama"><b>${esc(Wilayah.kab(t.kab))}</b>${t.kec ? `<small>Kecamatan ${esc(t.kec)}</small>` : ""}</span><span class="in-c-status">${statusPil(t)}</span>
-      <span class="in-c-ciri">${esc(t.ciri || "")}</span>
+      <span class="in-c-ciri">${t.judul ? `<b>${esc(t.judul)}</b>. ` : ""}${esc(t.ciri || "")}</span>
       <span class="in-c-batas ${t.terlambat && t.status === "buka" ? "telat" : ""}">${t.status === "buka" ? ik("jam") : ""}${esc(batas)}</span>
       <span class="in-c-umur">Umur ${fmt.durasi(kini - t.dibuat)}</span><span class="in-c-jarak">${j == null ? "" : `sekitar ${angka(j, 1)} km`}</span>
       <span class="in-c-cara">${c ? `<span>Cara utama: <b>${esc(c.utama)}</b></span>${pil("Perkiraan, belum divalidasi lapangan", "emas")}` : ""}</span></button>`;
@@ -331,6 +331,7 @@
     const buka = t.status === "buka", c = caraTeks(t.rekomendasi), kini = Date.now(), j = jarakKe(t);
     w.innerHTML = `<button type="button" class="lp-tombol in-kembali" data-aksi="kembali">${ik("panah")}Kembali ke daftar</button>
       <div class="in-kartu ${t.terlambat && buka ? "terlambat" : ""}"><div class="in-kepala"><div><b class="in-kab">${esc(Wilayah.kab(t.kab))}</b>${t.kec ? `<span class="in-kec">Kecamatan ${esc(t.kec)}</span>` : ""}</div>${statusPil(t)}</div>
+        ${t.judul ? `<p class="in-ciri"><b>${esc(t.judul)}</b>. ${esc(t.arahan || "")}</p>` : ""}
         ${t.ciri ? `<p class="in-ciri">${esc(t.ciri)}</p>` : ""}
         <a class="lp-tombol in-nav" href="https://www.google.com/maps/dir/?api=1&amp;destination=${esc(t.lat)},${esc(t.lon)}&amp;travelmode=driving" target="_blank" rel="noopener noreferrer">${ik("panah")}Navigasi ke titik api (Google Maps)</a>
         <p class="lp-kecil in-nav-cat">Google Maps berhenti di ujung jalan yang bisa dilalui; sisanya jalan kaki, lihat kartu akses.</p>
@@ -441,7 +442,7 @@
   function galeri(media) {
     if (!media.length) return "";
     return `<div class="in-galeri">${media.map(m => `<figure class="in-media"><a href="/api/instansi/media/${esc(m.id)}" target="_blank" rel="noopener"><img src="/api/instansi/thumb/${esc(m.id)}" alt="${m.jenis === "video" ? "Video" : "Foto"} lapangan" loading="lazy"></a>
-      <figcaption>${m.jenis === "video" ? `Video ${angka(m.durasi, 0)} detik<br>` : ""}${esc(jamWIB(m.waktu_ambil))}, ${esc(SUMBER[m.sumber_waktu])}<br>${m.orang_terdeteksi != null ? `minimal ${angka(m.orang_terdeteksi, 0)} orang terlihat (mesin${m.orang_sumber === "bingkai_klien" ? ", dari bingkai video kiriman peramban yang tak bisa diperiksa server" : ", dari thumbnail tersimpan"})` : "orang tidak dihitung"}${window.Tugaskan ? `<br>${window.Tugaskan.exifInfo(m)}` : ""}${m.gps_curiga ? `<br>${pil("GPS curiga", "merah")}` : ""}${m.jauh ? `<br>${pil("Jauh dari kompleks", "merah")}` : ""}</figcaption></figure>`).join("")}</div>`;
+      <figcaption>${m.jenis === "video" ? `Video ${angka(m.durasi, 0)} detik<br>` : ""}${esc(jamWIB(m.waktu_ambil))}, ${esc(SUMBER[m.sumber_waktu])}<br>${m.orang_terdeteksi != null ? `minimal ${angka(m.orang_terdeteksi, 0)} orang terlihat (mesin${m.orang_sumber === "bingkai_klien" ? ", dari bingkai video kiriman peramban yang tak bisa diperiksa server" : ", dari thumbnail tersimpan"})` : "orang tidak dihitung"}${window.Tugaskan ? `<br>${window.Tugaskan.exifInfo(m)}` : ""}${m.gps_curiga ? `<br>${pil("GPS curiga", "merah")}` : ""}${m.jauh ? `<br>${pil("Jauh dari cluster", "merah")}` : ""}</figcaption></figure>`).join("")}</div>`;
   }
   async function riwayat(id, wadah) {
     if (!wadah || wadah.dataset.muat === id) return;
@@ -450,7 +451,7 @@
     if (!r.ok) { wadah.textContent = manusiawi(r); return; }
     wadah.dataset.muat = id;
     wadah.innerHTML = (r.j.isian.length ? r.j.isian.map(i => `<p class="in-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b>, ${esc(jamWIB(i.dibuat))},
-      ${esc(i.oleh.wilayah)}. ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}, PIC ${esc(i.pic_nama)} (${esc(i.pic_jabatan)})${i.jauh ? ", lokasi isian jauh dari pusat kompleks" : ""}`
+      ${esc(i.oleh.wilayah)}. ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}, PIC ${esc(i.pic_nama)} (${esc(i.pic_jabatan)})${i.jauh ? ", lokasi isian jauh dari pusat cluster" : ""}`
       : `${i.tindakan ? esc(i.tindakan) + " " : ""}Status ${esc(STATUS_API[i.status_api])}${i.personel_efektif != null ? `, ${angka(i.personel_efektif, 0)} personel${i.personel != null && i.personel_terlihat != null ? ` (isian manual, mesin melihat minimal ${angka(i.personel_terlihat, 0)})` : ""}` : ""}.`}</p>`).join("") : `<p class="in-meta">Belum ada isian.</p>`) + galeri(r.j.media);
   }
 
@@ -577,7 +578,7 @@
         if (h.ok) {
           await hapusAntrean(it.id).catch(() => {});
           if (it.pic) { try { localStorage.setItem(it.pic.kunci, JSON.stringify(it.pic.nilai)); } catch (e) {} }
-          pesan(`Terkirim.${h.ok.personel_terlihat != null ? ` Minimal ${angka(h.ok.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin).` : ""}${h.ok.jauh ? " Lokasimu lebih dari 5 km dari pusat kompleks, admin akan melihat tanda ini." : ""}`, "ok");
+          pesan(`Terkirim.${h.ok.personel_terlihat != null ? ` Minimal ${angka(h.ok.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin).` : ""}${h.ok.jauh ? " Lokasimu lebih dari 5 km dari pusat cluster, admin akan melihat tanda ini." : ""}`, "ok");
           draf.delete(it.tugasId); await muatTugas(); if ($("daftar")) { segarkanDaftar(); isiPanel(); }
         } else if (h.tolak) { it.galat = h.tolak; await simpanAntrean(it).catch(() => {}); }
         else { it.info = h.tunda; await simpanAntrean(it).catch(() => {}); break; }   // masih tertunda: berhenti, coba lagi nanti

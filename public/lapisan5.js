@@ -111,11 +111,11 @@
         const hari = pm ? a.hari.map((t, i) => pm[i] == null ? "" : `<span class="l5-pm" style="background:${W_KELAS[kelasPM(pm[i])]}" title="${KELAS[kelasPM(pm[i])]}">${new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short"})} ${Math.round(pm[i])}</span>`).join("") : "–";
         return `<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${x.t === "rs" ? WARNA.ungu : x.t === "faskes" ? WARNA.biru : "#b8902c"},rgba(11,37,69,.95))"><div>
           <small>${{rs: "Rumah sakit", faskes: "Fasilitas kesehatan", sekolah: "Sekolah " + esc(x.j)}[x.t]}</small><b>${esc(x.nama)}</b></div></div>
-          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${x.t === "sekolah" ? kb("Status", x.st === "N" ? "Negeri" : "Swasta") + kb("Siswa", x.sw == null ? "–" : fmt(x.sw)) + kb("Desa / kecamatan", esc([x.desa, x.kec].filter(Boolean).join(", ") || "–"), 1) : ""}${kb("Kompleks terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
-          ${k ? kb("Status kompleks", `${esc(k.p.id)}, ${esc(S.meta.status[k.p.level])}`, 1) : ""}</div>
+          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${x.t === "sekolah" ? kb("Status", x.st === "N" ? "Negeri" : "Swasta") + kb("Siswa", x.sw == null ? "–" : fmt(x.sw)) + kb("Desa / kecamatan", esc([x.desa, x.kec].filter(Boolean).join(", ") || "–"), 1) : ""}${kb("Cluster terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
+          ${k ? kb("Status cluster", `${esc(k.p.id)}, ${esc(S.meta.status[k.p.level])}`, 1) : ""}</div>
           <div class="kk">PM2.5 maks. harian (µg/m³), prakiraan CAMS:<div class="l5-hari">${hari}</div>
           ${pm && pm.some(v => v > 55.4) ? `<b>${x.t === "sekolah" ? "Pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang." : "Siapkan layanan ISPA, masker, dan ruang bersih udara."}</b>` : ""}
-          ${k?.p.level ? `<button class="btn sec" data-l5k="${esc(k.p.id)}">Buka kompleks ${esc(k.p.id)}</button>` : ""}</div></div>`; }, 330); },
+          ${k?.p.level ? `<button class="btn sec" data-l5k="${esc(k.p.id)}">Buka cluster ${esc(k.p.id)}</button>` : ""}</div></div>`; }, 330); },
     async jalan() { const d = await muat("jalan", "data/jalan.geojson"), bawah = Peta.lapisAwal();
       peta.addSource("l5-jalan", {type: "geojson", data: d, attribution: "Jalan & sungai © kontributor OpenStreetMap (ODbL)"});
       peta.addLayer({id: "l5-sungai", type: "line", source: "l5-jalan", filter: ["==", ["get", "k"], 6], paint: {"line-color": WARNA.biru, "line-width": ["interpolate", ["linear"], ["zoom"], 5, .6, 10, 2], "line-opacity": .8}}, bawah);
@@ -246,8 +246,8 @@
     const a = ak?.[id];
     const tabel = a ? `<table class="tb3"><thead><tr><th>Dari</th><th class="n">Lewat jalan/sungai</th><th class="n">Waktu</th></tr></thead><tbody>
         ${a.dari.map(x => `<tr><td><b>${esc(x.dari)}</b><small>${x.jenis === "daops" ? "Markas Daops" : "Posko disarankan"}</small></td><td class="n num">${fmt(x.km_jalan)} km</td><td class="n num"><b>± ${fj(x.jam)}</b></td></tr>`).join("") || `<tr><td colspan="3">Tidak ada jalur jalan/sungai terpeta dari markas mana pun dalam ${fmt(ak._meta.batas_jam)} jam. Pertimbangkan perahu lewat pesisir atau dukungan udara.</td></tr>`}</tbody></table>
-        <p class="fnd">Termasuk ± ${fmt(a.kaki_km)} km jalan kaki dari jalan/sungai terdekat ke titik tengah kompleks (4 km/jam). Laju: primer 50, sekunder 40, tersier 30, jalan tanah 15 km/jam, perahu 15 km/jam. Kondisi jalan, banjir, dan portal kebun tidak dimodelkan. Data jalan © OpenStreetMap.</p>`
-      : `<p class="fnd">${ak ? "Belum dihitung: waktu tempuh hanya untuk kompleks prioritas di 9 provinsi pantauan." : "Data waktu tempuh belum tersedia."} Perkiraan garis lurus ada di tabel di atas.</p>`;
+        <p class="fnd">Termasuk ± ${fmt(a.kaki_km)} km jalan kaki dari jalan/sungai terdekat ke titik tengah cluster (4 km/jam). Laju: primer 50, sekunder 40, tersier 30, jalan tanah 15 km/jam, perahu 15 km/jam. Kondisi jalan, banjir, dan portal kebun tidak dimodelkan. Data jalan © OpenStreetMap.</p>`
+      : `<p class="fnd">${ak ? "Belum dihitung: waktu tempuh hanya untuk cluster prioritas di 9 provinsi pantauan." : "Data waktu tempuh belum tersedia."} Perkiraan garis lurus ada di tabel di atas.</p>`;
     let sekitar = "";
     const kn = Lapis.cache.kanal, fs = Lapis.cache.fasilitas; /* hanya bila lapisannya pernah dinyalakan: laci tidak memaksa unduhan besar */
     if (kn?.provinsi?.includes(p.prov)) { const r = 5; let t = 0; for (const [la, lo, v] of kn.grid) if (Math.abs(la - p.lat) < .06 && Math.abs(lo - p.lon) < .06 && km(p.lat, p.lon, la, lo) <= r) t += v;

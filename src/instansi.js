@@ -330,8 +330,9 @@ async function munculPer(env, rows) {
   return out;
 }
 const bentukTugas = (t, kini, muncul, kartu = null) => {
+  const jenis = jenisTugas(kartu);
   const {sekarang, mulai_doc, padam_doc, mulai_manual, luas_konf, lahan_obs, kunjungan, ...x} = t, rek = jsonAman(t.rekomendasi), s = jsonAman(sekarang);
-  return {...x, rekomendasi: rek, akses: jsonAman(t.akses), kartu, padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
+  return {...x, jenis, ...teksJenis(jenis), rekomendasi: rek, akses: jsonAman(t.akses), kartu, padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
     sekarang: s && {...s, personel_efektif: s.personel ?? s.personel_terlihat ?? null}, luas_terkonfirmasi: luas_konf, kebutuhan_konf: kebutuhanTerkonfirmasi(rek, luas_konf), kurang: kekurangan(rek, s, luas_konf),
     /* "terdokumentasi" = waktu FOTO/VIDEO, bukan jam mulai atau padam yang sebenarnya */
     dokumentasi: {mulai: mulai_doc, padam: padam_doc, durasi_ms: mulai_doc != null && padam_doc != null && padam_doc >= mulai_doc ? padam_doc - mulai_doc : null, mulai_manual}};
@@ -387,7 +388,7 @@ export async function tugasRegu(env, req, kini) {
   try { rows = (await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE t.status = 'buka' AND t.prov = ? AND lower(t.kab) = lower(?) AND t.dummy = ? ORDER BY t.level DESC, t.dibuat DESC LIMIT 20`).bind(g.prov, g.kab, g.dummy ? 1 : 0).all()).results; }
   catch (e) { if (tanpaTabel(e)) return gagal(503, "tugas api belum diaktifkan (migrasi 0029 belum diterapkan)"); throw e; }
   const KR = await kartuPer(env, rows);
-  return json({kini, tugas: rows.map(t => ({id: t.id, lat: t.lat, lon: t.lon, kab: t.kab, kec: t.kec, level: t.level, rekomendasi: bersihKontak(jsonAman(t.rekomendasi)), akses: bersihKontak(jsonAman(t.akses)), kartu: bersihKontak(KR.get(t.id) ?? null)}))}, 200, {"cache-control": "private, no-store"});
+  return json({kini, tugas: rows.map(t => ({id: t.id, lat: t.lat, lon: t.lon, kab: t.kab, kec: t.kec, level: t.level, jenis: jenisTugas(KR.get(t.id)), ...teksJenis(jenisTugas(KR.get(t.id))), rekomendasi: bersihKontak(jsonAman(t.rekomendasi)), akses: bersihKontak(jsonAman(t.akses)), kartu: bersihKontak(KR.get(t.id) ?? null)}))}, 200, {"cache-control": "private, no-store"});
 }
 
 /* ================================================================ isian: GPS, konfirmasi, kabar */
@@ -509,6 +510,8 @@ async function konfirmasi(env, req, id, kini) {
       ...(usul ? [stmtUsulan(env, a.id, id, usul, kini, "EXISTS (SELECT 1 FROM tugas_isian WHERE id = ?)", [iid])] : [])]);
   } catch (e) { if (/UNIQUE/i.test(String(e.message || e))) return gagal(409, "tugas ini baru saja dikonfirmasi akun lain"); throw e; }
   if (!hasil[0].meta.changes) return gagal(409, "tugas sudah dikonfirmasi atau ditutup, atau media sudah dipakai isian lain");
+  /* api ada pada tugas verifikasi: naik jadi pemadaman (kabar tindakan lalu berlaku); tabel 0041 belum ada = tak ada jenis untuk dinaikkan */
+  if (o.hasil === "api_ada") await env.DB.prepare("UPDATE tugas_kartu SET kartu = json_set(kartu, '$.jenis', 'pemadaman') WHERE tugas_id = ? AND json_extract(kartu, '$.jenis') = 'verifikasi'").bind(id).run().catch(e => { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; });
   return json({id: iid, status: selesai, jarak_km: md.g.jarak_km, jauh: md.g.jarak_km > JAUH_KM, personel_terlihat: md.terlihat}, 201);
 }
 async function kabar(env, req, id, kini) {
@@ -839,7 +842,11 @@ export async function butirCekUlang(env, kini, dummyOk) {
 }
 /* kartu (kunci saudara di tugas_kompleks.json, kontrak docs/bnpb/RANCANGAN-API-PADAM.md bagian 7): hanya kunci berikut yang dibawa, JSON <= 3000 huruf.
    Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
-const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal"];
+const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"];
+const JENIS_TUGAS = ["pemadaman", "verifikasi"];
+/* teks tampil per jenis tugas; verifikasi = cluster firespot "mungkin" (cek lapangan), BUKAN pemadaman. Tanpa jenis (berkas lama) = pemadaman. SLA sama dengan pemadaman: konfirmasi 6 jam (cek cepat justru paling berguna), kabar tindakan hanya muncul bila regu menyatakan api ada. */
+export const jenisTugas = kartu => kartu?.jenis === "verifikasi" ? "verifikasi" : "pemadaman";
+export const teksJenis = j => j === "verifikasi" ? {judul: "Cek lapangan: kemungkinan api, belum pasti", arahan: "Pastikan ada api atau tidak, kabari lewat laporan. Jangan dikerahkan sebagai pemadaman sebelum api terlihat."} : {judul: null, arahan: null};
 const insidenSah = v => typeof v === "string" && v.length >= 3 && v.length <= 40 ? v : null;
 const angkaSah = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
 export function pasKartu(k) {
@@ -848,6 +855,8 @@ export function pasKartu(k) {
   for (const c of KUNCI_KARTU) if (k[c] !== undefined) x[c] = k[c];
   if (x.insiden !== undefined) { const i = insidenSah(x.insiden); if (i) x.insiden = i; else delete x.insiden; }
   for (const c of ["front", "masuk"]) if (x[c] !== undefined && x[c] !== null && !titikSah(x[c])) delete x[c];   // koordinat di luar bbox dibuang; masuk null (tak ada jalan) tetap sah
+  if (x.jenis !== undefined && !JENIS_TUGAS.includes(x.jenis)) delete x.jenis;
+  if (x.firespot !== undefined && !["ya", "mungkin"].includes(x.firespot)) delete x.firespot;
   if (x.radius_m !== undefined && !angkaSah(x.radius_m)) delete x.radius_m;
   for (const c of ["luas_aktif", "luas_koreksi"]) if (x[c] !== undefined && !(x[c] && typeof x[c] === "object" && ["ha", "min", "maks"].every(f => x[c][f] === undefined || angkaSah(x[c][f])))) delete x[c];
   if (x.tren !== undefined && !(x.tren && typeof x.tren === "object" && ["n24", "n24_kemarin"].every(f => x.tren[f] === undefined || angkaSah(x.tren[f])))) delete x.tren;
@@ -910,8 +919,8 @@ async function buatTugasIsi(env, kini, versi) {
   const provs = [...new Set(ks.map(k => k.prov))];
   const buka = (await env.DB.prepare("SELECT id, prov, kab, lat, lon, status FROM tugas_api WHERE (status = 'buka' OR (status = 'bukan_api' AND konfirmasi_pada > ?2)) AND prov IN (SELECT value FROM json_each(?1)) LIMIT 5000").bind(JSON.stringify(provs), kini - 14 * HARI).all()).results;
   /* insiden -> tugas terbuka (0041); tabel belum ada = hanya pencocokan jarak */
-  const perInsiden = new Map(), kartuAda = {ya: true};
-  try { const idx = new Map(buka.map(t => [t.id, t])); for (const r of (await env.DB.prepare("SELECT tugas_id, insiden FROM tugas_kartu WHERE insiden IS NOT NULL AND tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(buka.map(t => t.id))).all()).results) if (idx.has(r.tugas_id)) perInsiden.set(r.insiden, idx.get(r.tugas_id)); }
+  const perInsiden = new Map(), kartuAda = {ya: true}, jenisAda = new Map();
+  try { const idx = new Map(buka.map(t => [t.id, t])); for (const r of (await env.DB.prepare("SELECT tugas_id, insiden, json_extract(kartu, '$.jenis') jenis FROM tugas_kartu WHERE tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(buka.map(t => t.id))).all()).results) if (idx.has(r.tugas_id)) { if (r.insiden) perInsiden.set(r.insiden, idx.get(r.tugas_id)); jenisAda.set(r.tugas_id, r.jenis); } }
   catch (e) { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; kartuAda.ya = false; }
   const st = [], kartu = [], awal = [], level3 = [], luasAwal = []; let baru = 0, digabung = 0, pantau = 0;
   for (const k of ks) {
@@ -921,8 +930,10 @@ async function buatTugasIsi(env, kini, versi) {
     const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses), ins = insidenSah(k.insiden), front = titikSah(k.front), lat = front ? front.lat : k.lat, lon = front ? front.lon : k.lon;
     let dekat = ins ? perInsiden.get(ins) ?? null : null, jarak = GABUNG_KM + 1e-9;
     if (!dekat) for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = Math.min(km(k.lat, k.lon, t.lat, t.lon), km(lat, lon, t.lat, t.lon)); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
-    const kt = kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal}) : null;
-    const simpanKartu = id => { if (kartuAda.ya && (ins || kt)) kartu.push(env.DB.prepare("INSERT INTO tugas_kartu (tugas_id, insiden, kartu, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(tugas_id) DO UPDATE SET insiden = coalesce(?2, insiden), kartu = coalesce(?3, kartu), diperbarui = ?4").bind(id, ins, kt, kini)); if (ins) perInsiden.set(ins, buka.find(t => t.id === id)); };
+    const kt = kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal, firespot: k.firespot, jenis: k.jenis}) : null;
+    /* verifikasi hanya bertahan bila tugas yang digabung juga verifikasi: tugas pemadaman tidak diturunkan, dan pemadaman baru menaikkan verifikasi lama */
+    const jenisKt = gabung => { if (!kt) return kt; const o = JSON.parse(kt); if (o.jenis === "verifikasi" && gabung && jenisAda.get(gabung) !== "verifikasi") o.jenis = "pemadaman"; return JSON.stringify(o); };
+    const simpanKartu = (id, gabung) => { if (kartuAda.ya && (ins || kt)) kartu.push(env.DB.prepare("INSERT INTO tugas_kartu (tugas_id, insiden, kartu, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(tugas_id) DO UPDATE SET insiden = coalesce(?2, insiden), kartu = coalesce(?3, kartu), diperbarui = ?4").bind(id, ins, jenisKt(gabung), kini)); if (ins) perInsiden.set(ins, buka.find(t => t.id === id)); };
     if (dekat?.status === "bukan_api") {   // sudah dikonfirmasi bukan api: hanya catat deteksi terakhir, tanpa membuka kembali dan tanpa tugas baru tiap 3 jam
       digabung++;
       st.push(env.DB.prepare("UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1) WHERE id = ?2 AND status = 'bukan_api'").bind(terakhir, dekat.id));
@@ -935,7 +946,7 @@ async function buatTugasIsi(env, kini, versi) {
         lat = CASE WHEN ?8 AND status = 'buka' THEN ?9 ELSE lat END, lon = CASE WHEN ?8 AND status = 'buka' THEN ?10 ELSE lon END WHERE id = ?6 AND status IN ('buka', 'bukan_api')`)
         .bind(terakhir, n24, k.level, luas, rek, dekat.id, akses, front ? 1 : 0, lat, lon));
       if (front && dekat.status === "buka") { dekat.lat = lat; dekat.lon = lon; }
-      simpanKartu(dekat.id);
+      simpanKartu(dekat.id, dekat.id);
     } else if (k.otomatis === false) {
       pantau++;   // daftar pantau: tidak membebani daerah dengan tugas baru; yang sudah ada tetap diperbarui di cabang atas
     } else {

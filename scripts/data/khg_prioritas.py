@@ -234,15 +234,15 @@ def main():
     baris_khg = rakit(props, titik7, t30, musim, kompleks, kanal, geom, Wilayah(), lengkap)
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "per": hari_ini, "hari_curiga": len(curiga_sisa), "jendela_7h": j7, "jendela_30h": [(h0 - dt.timedelta(days=30)).isoformat(), kemarin],
            "musim_tahun": int(hari_ini[:4]), "musim_lengkap": lengkap, "musim_data_dari": tgl_awal_ada,
-           "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); kanal: OpenStreetMap (ODbL); kompleks: operasi.json",
+           "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); kanal: OpenStreetMap (ODbL); cluster: operasi.json",
            "catatan": ("Poligon KHG tidak diubah isinya, hanya disederhanakan untuk tampilan (Douglas-Peucker, toleransi 0,002 derajat, galat sampai +-220 m di tepi), jadi titik dekat tepi bisa masuk/keluar KHG secara keliru; lisensi PRIMS nonkomersial. "
                        "Titik dihitung di dalam poligon (point-in-polygon, cincin luar), sensor M/N/N20 semua keyakinan, titik industri/PLTU sudah dibuang. "
                        f"titik_7h = jumlah titik harian WIB pada jendela_7h {j7[0]} s.d. {j7[1]} (7 hari penuh terakhir; hari ini yang belum selesai tidak dihitung); titik_30h dan titik_musim dari khg_hari.json sampai {kemarin}. "
                        + ("" if lengkap else f"Musim BELUM lengkap: {len(curiga_sisa)} hari belum terisi/parsial/curiga (kosong padahal nasional >= {CURIGA_NAS}; contoh {curiga_sisa[0]}): titik_musim dan titik_30h batas bawah, terisi penuh bertahap tiap jalan harian. ")
-                       + f"kompleks_aktif = kompleks operasi.json (per {op.get('per')}, titik tengah) dengan deteksi hari itu > 0 yang jatuh di KHG. "
+                       + f"kompleks_aktif = cluster operasi.json (per {op.get('per')}, titik tengah) dengan deteksi hari itu > 0 yang jatuh di KHG. "
                        "kanal_km = jumlah panjang kanal/parit OSM pada sel 0,02 derajat yang titik tengahnya di KHG (perkiraan kasar, +-2 km per sel). "
                        "kab = kab/kota yang dilintasi menurut titik contoh tiap 4,4 km (maks 6, urut luas contoh), prov = yang terbanyak. "
-                       "Hanya KHG dengan titik_musim > 0; urut titik_7h lalu titik_musim. Prioritas pembasahan = di mana titik, kompleks, dan kanal bertemu."),
+                       "Hanya KHG dengan titik_musim > 0; urut titik_7h lalu titik_musim. Prioritas pembasahan = di mana titik, cluster, dan kanal bertemu."),
            "khg": baris_khg}
     p = os.path.join(DATA, "khg_prioritas.json")
     json.dump(out, open(p, "w"), ensure_ascii=False, separators=(",", ":"))

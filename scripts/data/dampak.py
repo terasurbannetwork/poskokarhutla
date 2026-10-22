@@ -306,7 +306,7 @@ def main():
     out["udara"] = {"hari": hari, "dibuat": asap and asap["dibuat"], "prov": dict(kes), "pm_basis": "rata24" if pm24_sel else "maks",
                     "kota": [{"nama": n, "lat": la, "lon": lo, "prov": p, "pm": pm_di(la, lo), "skor_api": a[0], "api_km": a[1], "karhutla": a[0] >= AMBANG_ASAP}
                              for n, la, lo, p in KOTA if pm_di(la, lo) for a in [asap_api(la, lo, semua_k)]],
-                    "aturan_asap": f"titik panas 24 jam kompleks <= {RADIUS_ASAP:.0f} km, dibobot jarak dan arah angin; >= {AMBANG_ASAP:.0f} = asap karhutla",
+                    "aturan_asap": f"titik panas 24 jam cluster <= {RADIUS_ASAP:.0f} km, dibobot jarak dan arah angin; >= {AMBANG_ASAP:.0f} = asap karhutla",
                     "tetangga": [{"nama": n, "negara": ng, "lat": la, "lon": lo, "pm": pm_di(la, lo), "skor_api": a[0], "karhutla": a[0] >= AMBANG_ASAP}
                                  for n, la, lo, ng in TETANGGA if pm_di(la, lo) for a in [asap_api(la, lo, semua_k, 900)]]}  # asap lintas batas menempuh ratusan km
     art = berita.get("artikel", [])
@@ -470,7 +470,7 @@ def main():
     cek(out)
     json.dump(out, open(os.path.join(D, "dampak.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     print(f"musim sejak {m0}: {H[1]:,.0f} ha ({H[0]:,.0f}-{H[2]:,.0f}); emisi {em[1]:,.0f} Mt CO2e; kerugian Rp{out['kerugian']['total'][1] / 1e12:,.1f} T"
-          f" ({out['kerugian']['total'][0] / 1e12:,.1f}-{out['kerugian']['total'][2] / 1e12:,.1f}); {len(aktif)} kompleks aktif")
+          f" ({out['kerugian']['total'][0] / 1e12:,.1f}-{out['kerugian']['total'][2] / 1e12:,.1f}); {len(aktif)} cluster aktif")
 
 
 def cek(o):
@@ -517,7 +517,7 @@ def uji():
     assert abs(tambah_ispa(1e6, 25, 1.05) - 1e6 * ISPA_HARIAN * 0.05) < 1e-6, "+10 ug/m3 = +5% dasar"
     assert [kelas_pm(v) for v in (10, 30, 100, 200, 300)] == [0, 1, 2, 3, 4]
     k = {"lat": 0, "lon": 0, "r": 2.0}
-    assert jarak_kompleks(0, 0.01, k) == 0, "titik di dalam kompleks berjarak 0"
+    assert jarak_kompleks(0, 0.01, k) == 0, "titik di dalam cluster berjarak 0"
     assert 8.9 < jarak_kompleks(0, 0.1, k) < 9.2, jarak_kompleks(0, 0.1, k)
     assert ispa_berita("Video: Imbas Karhutla, ISPA di Sumsel Tembus 52.483 Kasus Per September 2026") == 52483
     assert ispa_berita("Kabut Asap Palembang, Kasus ISPA Tembus 17 Ribu") == 17000

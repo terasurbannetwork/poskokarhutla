@@ -41,11 +41,11 @@
     const n = nas(), k = (ik, judul, angka, label, warna) => `<section class="bn-kartu"><h2><span class="kb-ikon-kartu" data-w="${warna}">${ikon(ik)}</span>${esc(judul)}</h2><div class="bn-angka">${angka}</div><div class="bn-label">${label}</div></section>`;
     const tahun = D.tahun_dipakai[`${sk}|${hor}`];
     el("kartu").innerHTML = `<section class="bn-kartu kb-utama"><h2><span class="kb-ikon-kartu" data-w="c2">${ikon("rupiah")}</span>Total perkiraan ${hor} hari</h2>
-        <div class="bn-angka">${rpR(n.rp_rendah, n.rp_tinggi)}</div><div class="bn-label">Titik tengah ${rpK(n.rp_total)} · rentang dari tahun paling sepi sampai paling ramai dan 1,5 sampai 6 jam heli per kompleks</div>
-        <div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka · tahun ${esc(tahun.join(", "))}. Titik per kompleks berasal dari kondisi kompleks saat ini, bukan dari tahun-tahun itu.</div>
+        <div class="bn-angka">${rpR(n.rp_rendah, n.rp_tinggi)}</div><div class="bn-label">Titik tengah ${rpK(n.rp_total)}, rentang dari tahun paling sepi sampai paling ramai dan 1,5 sampai 6 jam heli per cluster</div>
+        <div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka, tahun ${esc(tahun.join(", "))}. Titik per cluster berasal dari kondisi cluster saat ini, bukan dari tahun-tahun itu.</div>
         <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Pantau Bencana.</div>
         <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rpK(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rpK(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rpK(n.rp_masker)}</span></div></section>`
-      + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang · ${fmt(n.kompleks)} kompleks api`, "c3")
+      + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang, ${fmt(n.kompleks)} cluster`, "c3")
       + k("regu", "Regu darat", bulat(n.regu_rata) + " regu", `rata-rata siaga · ${fmt(n.regu_hari)} regu-hari`, "c4")
       + k("masker", "Masker N95", fmt(n.masker) + " masker", `untuk ${fmt(n.terdampak)} warga terdampak asap`, "c1")
       ;
@@ -61,7 +61,7 @@
     });
     const hal = Math.min(st.hal, Math.max(0, Math.ceil(rs.length / PER) - 1)), potong = rs.slice(hal * PER, hal * PER + PER);
     el("isiTabel").innerHTML = potong.map(r => `<tr><td data-label="Provinsi">${esc(D.provinsi[r[0]])}</td>
-      <td class="n" data-label="Titik panas">${fmt(r[IX.titik])}</td><td class="n" data-label="Kompleks api">${fmt(r[IX.kompleks])}</td>
+      <td class="n" data-label="Titik panas">${fmt(r[IX.titik])}</td><td class="n" data-label="Cluster">${fmt(r[IX.kompleks])}</td>
       <td class="n" data-label="Jam terbang">${fmt(r[IX.jam_terbang])}</td><td class="n" data-label="Regu darat">${bulat(r[IX.regu_rata])}</td>
       <td class="n" data-label="Masker">${fmt(r[IX.masker])}</td><td class="n" data-label="Total rupiah">${rpT(r[IX.rp_total])}</td></tr>`).join("");
     el("pgn").innerHTML = paginasi(hal, rs.length, PER, "provinsi");
@@ -77,10 +77,10 @@
       ["Porsi MPA dan honornya", `${fmt(t.porsi_mpa.nilai)} · ${rp(t.honor_mpa.nilai)}`, t.honor_mpa.satuan, t.honor_mpa.sumber],
       ["Konsumsi", rp(t.konsumsi.nilai), t.konsumsi.satuan, t.konsumsi.sumber],
       ["Harga masker N95", rp(t.harga_masker.nilai), t.harga_masker.satuan, t.harga_masker.sumber],
-      ...Object.entries(k).map(([id, v]) => [{orang_per_regu: "Orang per regu", jam_heli_per_api: "Jam heli per kompleks prioritas", rotasi: "Rotasi regu", masker_per_orang: "Masker per warga terdampak"}[id] || id, fmt(v.nilai), v.satuan, v.sumber]),
+      ...Object.entries(k).map(([id, v]) => [{orang_per_regu: "Orang per regu", jam_heli_per_api: "Jam heli per cluster prioritas", rotasi: "Rotasi regu", masker_per_orang: "Masker per warga terdampak"}[id] || id, fmt(v.nilai), v.satuan, v.sumber]),
     ];
     el("isiAsumsi").innerHTML = baris.map(r => `<tr><td data-label="Komponen">${esc(r[0])}</td><td class="n" data-label="Nilai">${esc(r[1])}</td><td data-label="Satuan">${esc(r[2])}</td><td data-label="Sumber">${esc(r[3])}</td></tr>`).join("");
-    const nama = {titik: "Titik panas", kompleks: "Kompleks api", jam_terbang: "Jam terbang", regu_hari: "Regu-hari", regu_rata: "Regu darat", terdampak: "Warga terdampak", masker: "Masker", rp_heli: "Rupiah heli", rp_regu: "Rupiah regu", rp_masker: "Rupiah masker", rp_total: "Total rupiah"};
+    const nama = {titik: "Titik panas", kompleks: "Cluster", jam_terbang: "Jam terbang", regu_hari: "Regu-hari", regu_rata: "Regu darat", terdampak: "Warga terdampak", masker: "Masker", rp_heli: "Rupiah heli", rp_regu: "Rupiah regu", rp_masker: "Rupiah masker", rp_total: "Total rupiah"};
     el("rumus").innerHTML = Object.entries(D.rumus).map(([c, v]) => `<li><b>${esc(nama[c] || c)}</b>: ${esc(v)}</li>`).join("")
       + D.batas.map(b => `<li>${esc(b)}</li>`).join("")
       + `<li>Dasar data: ${esc(Object.values(D.dasar).filter(v => typeof v === "string").join("; "))}.</li>`;

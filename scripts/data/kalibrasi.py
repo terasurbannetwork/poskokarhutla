@@ -92,9 +92,9 @@ def angka(v):
     return v if isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) else None
 
 
-ASUMSI = ["luas_satelit_ha = luas garis luar piksel kompleks; ha_bara_piksel = luas_lapangan_ha / (luas_satelit_ha / 14,0625)",
+ASUMSI = ["luas_satelit_ha = luas garis luar piksel cluster; ha_bara_piksel = luas_lapangan_ha / (luas_satelit_ha / 14,0625)",
           "BIAS luas_satelit_ha: bila nilai ekspor = maks sepanjang umur tugas sedangkan luas_lapangan_ha = isian TERAKHIR, rasio condong rendah (ha_bara_piksel terlalu kecil)",
-          "BIAS satuan: luas garis luar (poligon) bukan jumlah piksel; poligon cembung membesarkan penyebut sehingga ha_bara_piksel condong rendah di kompleks yang renggang",
+          "BIAS satuan: luas garis luar (poligon) bukan jumlah piksel; poligon cembung membesarkan penyebut sehingga ha_bara_piksel condong rendah di cluster yang renggang",
           "BIAS lahan: kelas lahan dari isian regu (lahan_teramati), bukan peta gambut; salah kelas mencampur bara gambut dengan mineral dan menurunkan bara_regu gambut",
           "BIAS regu: regu = isian TERAKHIR, bukan maks atau rata-rata sepanjang pemadaman; bila regu dikurangi menjelang akhir, bara_regu condong tinggi (optimis)",
           "BIAS penyintas: bara_regu hanya dari tugas padam_terverifikasi; kasus yang ditinggal/tak bisa dipadamkan tak ikut, jadi condong optimis",

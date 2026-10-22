@@ -87,7 +87,7 @@ const Dampak = (() => {
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${judul}</h3><p>${sub}</p></div><button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); };
     d.querySelectorAll("[data-kom]").forEach(b => b.onclick = () => { d.close(); bukaTab("peta"); Laci.buka(b.dataset.kom); }); d.showModal(); }
-  const tombolK = id => id ? `<button class="btn sec" data-kom="${esc(id)}">Buka kompleks ${esc(id)} di peta</button>` : "";
+  const tombolK = id => id ? `<button class="btn sec" data-kom="${esc(id)}">Buka cluster ${esc(id)} di peta</button>` : "";
   /* batang horizontal sederhana: rows = [{n, v, w, tip, dk, lo, hi, txt}] */
   function hbar(rows, {L = 150, W2 = lw(), rh = 26, maks, garis = []} = {}) {
     L = LL(L); const ct = r => r.cat ? r.cat.length * 9.5 * .55 + 6 : 0, R = Math.max(50, ...rows.map(r => pw(r.txt ?? fmt(r.v)) + ct(r) + 16)), m = maks || Math.max(1, ...rows.map(r => r.hi ?? r.v)), X = v => L + Math.max(0, v) / m * (W2 - L - R);
@@ -140,11 +140,11 @@ const Dampak = (() => {
         + `<g class="gx" style="--i:${n}">` + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("") + "</g>"
         + `${pilV(x + 5, y + 3, rb(r.ts), NAVY)}</g>`; }).join("")}</svg>`;
     const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: fmt(c.pm[i]), cat: `AQI ${aqiT(c.pm[i])} · ${KELAS[kelas(c.pm[i])]}`,
-      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>AQI (ISPU): ${aqiT(c.pm[i])}<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
+      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>AQI (ISPU): ${aqiT(c.pm[i])}<br>${KELAS[kelas(c.pm[i])]}<br>asap dari cluster terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
     return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi yang sering mengalami karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
       svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"], [250.4, "berbahaya"]]}),
-      `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus) lewat Open-Meteo")}, dibuat ${jamWIB(U.dibuat)}; penduduk ${sm("wpop", "WorldPop")} 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
+      `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus) lewat Open-Meteo")}, dibuat ${jamWIB(U.dibuat)}; penduduk ${sm("wpop", "WorldPop")} 2026; hanya asap dari cluster searah angin dalam 300 km`,
       seg("hari", U.hari.map((t, j) => [j, j ? hariN(t) : "Hari ini"])));
   }
   function popProv(k) {
@@ -295,14 +295,14 @@ const Dampak = (() => {
     const rows = ks.map(k => ({n: nmP(k), v: P[k].sekolah[1], w: W.kuning, dk: "dekat|" + k, txt: `${fmt(P[k].sekolah[1])} (≤ 1 km: ${fmt(P[k].sekolah[0])})`,
       tip: `<b>${esc(namaProv(k))}</b><br>≤ 1 km: ${fmt(P[k].sekolah[0])}<br>≤ 5 km: ${fmt(P[k].sekolah[1])}<br>≤ 10 km: ${fmt(P[k].sekolah[2])}<br>di udara tidak sehat hari ini: ${fmt(P[k].sekolah_tidak_sehat)}`}));
     return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi yang sering mengalami karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
-      "Sekolah dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
+      "Sekolah dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi cluster berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
       hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
-      + pg("S", tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks", "Status"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)}</td><td><span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`))), D.dekat.sekolah.length, "sekolah")
+      + pg("S", tabel(["Sekolah", "Provinsi", ">Jarak", "Cluster", "Status"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)}</td><td><span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`))), D.dekat.sekolah.length, "sekolah")
       + `<div class="lbl" style="margin:14px 0 4px">Berita penutupan sekolah</div>` + tabel(["Tanggal", "Judul", "Media"], SB.slice(0, 10).map((x, j) => baris("sekb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
       `Sumber: data sekolah nasional Kemendikbud (NPSN), prakiraan ${sm("cams", "CAMS")}, berita media; pembanding Oktober 2015: 24.773 sekolah (${sm("wb16", "World Bank 2016")})`);
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
-    dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
+    dlg(esc(s.nama), `${esc(namaProv(s.prov))}, ${s.km ? satu(s.km) + " km" : "di dalam area"} dari cluster ${esc(s.kompleks)}`,
       (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · AQI ${aqiT(v)} · ${KELAS[kelas(v)]}`, tip: `<b>PM2.5 ${fmt(v)} µg/m³</b><br>AQI (ISPU): ${aqiT(v)}<br>${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
       + `<p style="margin:0">${s.pm && Math.max(...s.pm) > 55.4 ? "<b>Udara tidak sehat dalam 4 hari ke depan: pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang.</b>" : "Pantau kualitas udara; api dekat bisa membawa asap mendadak bila angin berbalik."}</p>${tombolK(s.kompleks)}`); }
   function popBerita(arr, j, jenis) { const x = arr[j];
@@ -318,19 +318,19 @@ const Dampak = (() => {
         + [2, 1, 0].map(c => `<rect class="gx" style="--i:${n}" x="${L}" y="${y + 5}" width="${Math.max(1, X(j[c]))}" height="${rh - 10}" fill="${WB[c]}" data-tip="<b>${esc(namaProv(k))}</b><br>≤ ${R[c]} km: ${rb(j[c])} jiwa, ${fmt(P[k].desa[c])} desa"/>`).join("")
         + `<text x="${L + X(j[2]) + 5}" y="${y + 17}" font-size="10.5">${rb(j[1])} ≤ 5 km</text></g>`; }).join("")}</svg>`;
     return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi yang sering mengalami karhutla berada dalam 5 km dari api yang perlu dipadamkan`,
-      "Penduduk dan desa menurut jarak ke tepi kompleks yang perlu dipadamkan", `Batang bertingkat: merah ≤ ${R[0]} km, oranye ≤ ${R[1]} km, kuning ≤ ${R[2]} km. Klik provinsi atau desa untuk rinciannya.`,
+      "Penduduk dan desa menurut jarak ke tepi cluster yang perlu dipadamkan", `Batang bertingkat: merah ≤ ${R[0]} km, oranye ≤ ${R[1]} km, kuning ≤ ${R[2]} km. Klik provinsi atau desa untuk rinciannya.`,
       svg + LG(R.map((r, i) => [`≤ ${r} km`, WB[i]])) + `<div class="lbl" style="margin:14px 0 4px">Desa terdekat ke api</div>`
-      + pg("D", tabel(["Desa", "Kode desa", "Provinsi", ">Jarak", "Kompleks", "Status"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b></td><td><span class="dk-s">${esc(x.kode)}</span></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)}</td><td><span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`))), D.dekat.desa.length, "desa"),
-      `Sumber: ${sm("osm", "OpenStreetMap")}, ${sm("wpop", "WorldPop")} 2026, kompleks api siaga & prioritas dari peta ini`);
+      + pg("D", tabel(["Desa", "Kode desa", "Provinsi", ">Jarak", "Cluster", "Status"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b></td><td><span class="dk-s">${esc(x.kode)}</span></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)}</td><td><span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`))), D.dekat.desa.length, "desa"),
+      `Sumber: ${sm("osm", "OpenStreetMap")}, ${sm("wpop", "WorldPop")} 2026, cluster siaga & prioritas dari peta ini`);
   }
   function popDekat(k) { const d = D.dekat.prov[k], R = D.dekat.radius_km;
-    dlg(esc(namaProv(k)), "Penduduk, desa, sekolah, dan faskes dekat kompleks berstatus siaga & prioritas",
+    dlg(esc(namaProv(k)), "Penduduk, desa, sekolah, dan faskes dekat cluster berstatus siaga & prioritas",
       tabel(["Jarak", ">Jiwa", ">Desa", ">Sekolah", ">Faskes"], R.map((r, i) => `<tr><td>≤ ${r} km</td><td class="n">${rb(d.jiwa[i])}</td><td class="n">${fmt(d.desa[i])}</td><td class="n">${fmt(d.sekolah[i])}</td><td class="n">${fmt(d.faskes[i])}</td></tr>`))
       + `<div class="dk-kvs">${kotak("Sekolah di udara tidak sehat hari ini", fmt(d.sekolah_tidak_sehat))}</div><p class="fnd">Desa hanya tersedia untuk 9 provinsi yang sering mengalami karhutla; sekolah & faskes hanya yang terpeta di OpenStreetMap.</p>`); }
   function popDesa(j) { const x = D.dekat.desa[j], k = S.kluster?.features.find(f => f.properties.id === x.kompleks)?.properties;
     dlg(`Desa ${esc(x.nama)}`, `${esc(namaProv(x.prov))} · kode ${esc(x.kode)}`,
-      `<div class="dk-kvs">${kotak("Jarak ke tepi kompleks", x.km ? satu(x.km) + " km" : "di dalam area kompleks")}${kotak("Kompleks", esc(x.kompleks) + " · " + esc(S.meta?.status?.[x.level] || ""))}
-      ${k ? kotak("Luas kompleks", "± " + rb(k.luas) + " ha") + kotak("Titik panas 24 jam", fmt(k.n24)) + kotak("Lokasi", esc([k.kec, k.kab].filter(Boolean).join(", "))) : ""}</div>
+      `<div class="dk-kvs">${kotak("Jarak ke tepi cluster", x.km ? satu(x.km) + " km" : "di dalam area cluster")}${kotak("Cluster", esc(x.kompleks) + ", " + esc(S.meta?.status?.[x.level] || ""))}
+      ${k ? kotak("Luas cluster", "± " + rb(k.luas) + " ha") + kotak("Titik panas 24 jam", fmt(k.n24)) + kotak("Lokasi", esc([k.kec, k.kab].filter(Boolean).join(", "))) : ""}</div>
       <p style="margin:0">Desa sedekat ini perlu jalur evakuasi, masker, dan informasi arah angin harian. Pastikan MPA dan BPBD setempat tahu.</p>${tombolK(x.kompleks)}`); }
 
   /* ================= 6. hutan & gambut ================= */
@@ -342,24 +342,24 @@ const Dampak = (() => {
       tip: `<b>${esc(namaProv(k))}</b><br>${fmt(v.titik)} titik MODIS × ${satu(v.rasio)} ha/titik<br>± ${rb(v.ha)} ha (${rb(v.lo)}–${rb(v.hi)})${bn[k] != null ? `<br>BNPB indikatif: ${rb(bn[k])} ha` : ""}`}));
     const lind = (kh.konservasi || 0) + (kh.lindung || 0); let x = 0;
     const kats = Object.entries(kh).sort((a, b) => b[1] - a[1]);
-    const SW = lw(), strip = `<svg class="dk-svg" viewBox="0 0 ${SW} 46" role="img">${kats.map(([c, v]) => { const w = v / tot * SW, o = `<rect class="gx" x="${x}" y="0" width="${w}" height="28" fill="${KAT[c]?.[1] || "#8a96a8"}" data-dk="kat|${c}" style="cursor:pointer" data-tip="<b>${esc(KAT[c]?.[0] || c)}</b><br>${rb(v)} ha (${Math.round(v / tot * 100)}%) di kompleks aktif<br>klik untuk per provinsi"/>${w > 40 ? `<text x="${x + w / 2}" y="42" text-anchor="middle" font-size="10">${Math.round(v / tot * 100)}%</text>` : ""}`; x += w; return o; }).join("")}</svg>`;
-    return ex(6, `Sejak ${tgl(Ms.mulai)}, satelit memperkirakan ${hl("± " + jt(H[1]) + " ha")} terbakar; ${hl(Math.round(gam / tot * 100) + "%")} luas kompleks aktif berada di gambut dan ${hl(rb(lind) + " ha")} di kawasan lindung/konservasi`,
-      "Luas terbakar musim berjalan per provinsi, dan status lahan kompleks yang sedang aktif", "Batang = perkiraan tengah, garis = rentang. Pita warna = status lahan kompleks aktif. Klik untuk rincian.",
-      hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Status lahan kompleks aktif</div>` + strip + LG(kats.map(([c]) => [KAT[c]?.[0] || c, KAT[c]?.[1] || "#8a96a8"]))
-      + `<div class="lbl" style="margin:14px 0 4px">Kompleks terluas di kawasan konservasi & hutan lindung</div>`
-      + tabel(["Kompleks", "Status", "Kawasan", "Gambut", "Kabupaten", "Provinsi", ">Luas"], L6.lindung.slice(0, 10).map((r, j) => baris("lind|" + j, `<td><b>${esc(r.id)}</b></td><td><span class="pill l${r.level}">${esc(S.meta?.status?.[r.level] || "")}</span></td><td>${esc(r.nama)}</td><td>${r.gambut ? "ya" : "–"}</td><td>${esc(r.kab || "")}</td><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td>`))),
+    const SW = lw(), strip = `<svg class="dk-svg" viewBox="0 0 ${SW} 46" role="img">${kats.map(([c, v]) => { const w = v / tot * SW, o = `<rect class="gx" x="${x}" y="0" width="${w}" height="28" fill="${KAT[c]?.[1] || "#8a96a8"}" data-dk="kat|${c}" style="cursor:pointer" data-tip="<b>${esc(KAT[c]?.[0] || c)}</b><br>${rb(v)} ha (${Math.round(v / tot * 100)}%) di cluster aktif<br>klik untuk per provinsi"/>${w > 40 ? `<text x="${x + w / 2}" y="42" text-anchor="middle" font-size="10">${Math.round(v / tot * 100)}%</text>` : ""}`; x += w; return o; }).join("")}</svg>`;
+    return ex(6, `Sejak ${tgl(Ms.mulai)}, satelit memperkirakan ${hl("± " + jt(H[1]) + " ha")} terbakar; ${hl(Math.round(gam / tot * 100) + "%")} luas cluster aktif berada di gambut dan ${hl(rb(lind) + " ha")} di kawasan lindung/konservasi`,
+      "Luas terbakar musim berjalan per provinsi, dan status lahan cluster yang sedang aktif", "Batang = perkiraan tengah, garis = rentang. Pita warna = status lahan cluster aktif. Klik untuk rincian.",
+      hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Status lahan cluster aktif</div>` + strip + LG(kats.map(([c]) => [KAT[c]?.[0] || c, KAT[c]?.[1] || "#8a96a8"]))
+      + `<div class="lbl" style="margin:14px 0 4px">Cluster terluas di kawasan konservasi & hutan lindung</div>`
+      + tabel(["Cluster", "Status", "Kawasan", "Gambut", "Kabupaten", "Provinsi", ">Luas"], L6.lindung.slice(0, 10).map((r, j) => baris("lind|" + j, `<td><b>${esc(r.id)}</b></td><td><span class="pill l${r.level}">${esc(S.meta?.status?.[r.level] || "")}</span></td><td>${esc(r.nama)}</td><td>${r.gambut ? "ya" : "–"}</td><td>${esc(r.kab || "")}</td><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td>`))),
       `Sumber: ${sm("firms", "NASA FIRMS MODIS")}, kalibrasi ${sm("gwis", "GWIS MCD64A1")}, peta gambut, fungsi kawasan hutan dan konsesi${Ms.bnpb_waktu ? "; " + sm("bnpb", "BNPB") + " " + jamWIB(Ms.bnpb_waktu) : ""}`);
   }
   function popMusim(k) { const v = D.musim.prov[k], kp = D.lahan.kategori_prov[k] || {}, t = Object.values(kp).reduce((a, b) => a + b, 0) || 1;
     dlg(`${esc(namaProv(k))}: luas terbakar musim ini`, `sejak ${tgl(D.musim.mulai)}`,
       `<div class="dk-kvs">${kotak("Titik panas MODIS", fmt(v.titik))}${kotak("Rasio kalibrasi", satu(v.rasio) + " ha per titik")}${kotak("Perkiraan luas", `± ${rb(v.ha)} ha (${rb(v.lo)}–${rb(v.hi)})`)}</div>`
-      + (Object.keys(kp).length ? tabel(["Status lahan kompleks aktif", ">Luas", ">Porsi"], Object.entries(kp).sort((a, b) => b[1] - a[1]).map(([c, x]) => `<tr><td>${esc(KAT[c]?.[0] || c)}</td><td class="n">${rb(x)} ha</td><td class="n">${Math.round(x / t * 100)}%</td></tr>`)) : "")); }
+      + (Object.keys(kp).length ? tabel(["Status lahan cluster aktif", ">Luas", ">Porsi"], Object.entries(kp).sort((a, b) => b[1] - a[1]).map(([c, x]) => `<tr><td>${esc(KAT[c]?.[0] || c)}</td><td class="n">${rb(x)} ha</td><td class="n">${Math.round(x / t * 100)}%</td></tr>`)) : "")); }
   function popKat(c) { const P = D.lahan.kategori_prov, rs = Object.keys(P).filter(k => P[k][c]).sort((a, b) => P[b][c] - P[a][c]);
-    dlg(esc(KAT[c]?.[0] || c), `${rb(D.lahan.kategori_ha[c])} ha di kompleks aktif`, tabel(["Provinsi", ">Luas kompleks aktif"], rs.map(k => `<tr><td>${esc(namaProv(k))}</td><td class="n">${rb(P[k][c])} ha</td></tr>`))
+    dlg(esc(KAT[c]?.[0] || c), `${rb(D.lahan.kategori_ha[c])} ha di cluster aktif`, tabel(["Provinsi", ">Luas cluster aktif"], rs.map(k => `<tr><td>${esc(namaProv(k))}</td><td class="n">${rb(P[k][c])} ha</td></tr>`))
       + `<p class="fnd">Penanggung jawab lahan menurut aturan: ${{konsesi_sawit: "perusahaan perkebunan", konsesi_hph: "pemegang PBPH", hutan_produksi: "KPH", konservasi: "BKSDA / Balai Taman Nasional", lindung: "KPH / dinas kehutanan", apl: "desa, camat, bupati"}[c] || "pemegang izin"}.</p>`); }
   function popLind(j) { const r = D.lahan.lindung[j];
-    dlg(`Kompleks ${esc(r.id)} di ${esc(r.nama)}`, `${esc(r.kab || "")}, ${esc(namaProv(r.prov))}`,
-      `<div class="dk-kvs">${kotak("Luas kompleks", rb(r.luas) + " ha")}${kotak("Gambut", r.gambut ? "ya" : "tidak")}${kotak("Status", esc(S.meta?.status?.[r.level] || ""))}</div><p style="margin:0">Api di kawasan konservasi atau lindung merusak habitat dan simpanan karbon yang sulit dipulihkan. Penanggung jawab: BKSDA / Balai Taman Nasional atau KPH.</p>${tombolK(r.id)}`); }
+    dlg(`Cluster ${esc(r.id)} di ${esc(r.nama)}`, `${esc(r.kab || "")}, ${esc(namaProv(r.prov))}`,
+      `<div class="dk-kvs">${kotak("Luas cluster", rb(r.luas) + " ha")}${kotak("Gambut", r.gambut ? "ya" : "tidak")}${kotak("Status", esc(S.meta?.status?.[r.level] || ""))}</div><p style="margin:0">Api di kawasan konservasi atau lindung merusak habitat dan simpanan karbon yang sulit dipulihkan. Penanggung jawab: BKSDA / Balai Taman Nasional atau KPH.</p>${tombolK(r.id)}`); }
 
   /* ================= 7. emisi ================= */
   function b7() {
@@ -390,17 +390,17 @@ const Dampak = (() => {
     return ex(8, `Kerusakan & kerugian lahan diperkirakan ${hl(rp(tot[1]))}; ${hl(rb(kons) + " ha")} terbakar di dalam areal konsesi`,
       "Nilai kerusakan dan kerugian per status lahan, musim berjalan", "Batang = nilai tengah (Rupiah 2026); garis = rentang. Klik untuk rincian per jenis areal.",
       hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
-      + `<div class="lbl" style="margin:14px 0 4px">Kompleks api aktif menurut jenis areal konsesi</div>`
-      + tabel(["Jenis areal", ">Luas kompleks", ">Kompleks", "Provinsi terluas"], kjs.map(([j, a]) => baris("ksj|" + j, `<td><b>${esc(JNK[j] || j)}</b></td><td class="n">${rb(a.luas)} ha</td><td class="n">${fmt(a.n)}</td><td>${Object.entries(a.prov).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => esc(namaProv(k))).join(", ")}</td>`))),
+      + `<div class="lbl" style="margin:14px 0 4px">Cluster aktif menurut jenis areal konsesi</div>`
+      + tabel(["Jenis areal", ">Luas cluster", ">Cluster", "Provinsi terluas"], kjs.map(([j, a]) => baris("ksj|" + j, `<td><b>${esc(JNK[j] || j)}</b></td><td class="n">${rb(a.luas)} ha</td><td class="n">${fmt(a.n)}</td><td>${Object.entries(a.prov).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => esc(namaProv(k))).join(", ")}</td>`))),
       `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi (sawit/HPH ± 2014, HTI 2020–2022, tambang 2026); api di areal konsesi tidak otomatis berarti pemegang izinnya pelaku`);
   }
   function popEko(c) { const v = D.ekonomi[c];
     dlg(esc(KAT[c]?.[0] || c), "Nilai kerusakan & kerugian lahan terbakar", tabel(["Skenario", ">Luas", ">Nilai (Rp 2026)"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rb(v.ha[i])} ha</td><td class="n">${rp(v.rp[i])}</td></tr>`))
       + `<p class="fnd">Porsi ${Math.round(v.porsi * 100)}% dari luas musim × US$${fmt(v.usd_ha)}/ha (2015).</p>`); }
   function popKsj(j) { const rs = (D.lahan.konsesi || []).filter(r => r.jenis === j); if (!rs.length) return;
-    dlg(esc(JNK[j] || j), `${rb(rs.reduce((a, r) => a + r.luas, 0))} ha kompleks aktif di ${rs.length} provinsi`,
-      tabel(["Provinsi", ">Luas kompleks", ">Kompleks"], rs.map(r => `<tr><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td><td class="n">${fmt(r.n_kompleks)}</td></tr>`))
-      + `<div class="dk-kvs">${rs.flatMap(r => r.kompleks).slice(0, 40).map(id => `<button class="btn sec" data-kom="${esc(id)}">${esc(id)}</button>`).join("")}</div><p class="fnd">Klik kompleks untuk membukanya di peta. Data ini hanya penunjuk status lahan, bukan penetapan siapa yang membakar.</p>`); }
+    dlg(esc(JNK[j] || j), `${rb(rs.reduce((a, r) => a + r.luas, 0))} ha cluster aktif di ${rs.length} provinsi`,
+      tabel(["Provinsi", ">Luas cluster", ">Cluster"], rs.map(r => `<tr><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td><td class="n">${fmt(r.n_kompleks)}</td></tr>`))
+      + `<div class="dk-kvs">${rs.flatMap(r => r.kompleks).slice(0, 40).map(id => `<button class="btn sec" data-kom="${esc(id)}">${esc(id)}</button>`).join("")}</div><p class="fnd">Klik cluster untuk membukanya di peta. Data ini hanya penunjuk status lahan, bukan penetapan siapa yang membakar.</p>`); }
 
   /* ================= 9. lintas batas ================= */
   function b9() {

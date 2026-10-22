@@ -1,0 +1,112 @@
+{
+ "sumber": "VIIRS S-NPP arsip standar (data/raw/firms), Agu-Okt, satu snapshot per hari, sev tanpa cuaca",
+ "ambang_medium_px": 4,
+ "api_besar_min_px": 100,
+ "tahun": {
+  "2019": {
+   "titik": 329743,
+   "api_besar": 142,
+   "kriteria": {
+    "sev>=2 (kandidat level 2)": {
+     "terukur": 142,
+     "hari_pertama_mungkin": 28,
+     "persen_mungkin": 19.7,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 114,
+      "1": 22,
+      "2": 6
+     },
+     "pola_hari_pertama": {
+      "H": 113,
+      "M": 14,
+      "MM": 14,
+      "HH": 1
+     }
+    },
+    "sev3 (px24>=10)": {
+     "terukur": 142,
+     "hari_pertama_mungkin": 0,
+     "persen_mungkin": 0.0,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 142
+     },
+     "pola_hari_pertama": {
+      "H": 83,
+      "HH": 59
+     }
+    },
+    "px24>=15 (level 3 tanpa FWI)": {
+     "terukur": 142,
+     "hari_pertama_mungkin": 0,
+     "persen_mungkin": 0.0,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 142
+     },
+     "pola_hari_pertama": {
+      "HH": 94,
+      "H": 48
+     }
+    }
+   },
+   "porsi_titik_h_persen": {
+    "siang": 12.6,
+    "malam": 3.0
+   }
+  },
+  "2023": {
+   "titik": 186152,
+   "api_besar": 34,
+   "kriteria": {
+    "sev>=2 (kandidat level 2)": {
+     "terukur": 34,
+     "hari_pertama_mungkin": 9,
+     "persen_mungkin": 26.5,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 25,
+      "1": 6,
+      "2": 3
+     },
+     "pola_hari_pertama": {
+      "H": 25,
+      "MM": 2,
+      "M": 7
+     }
+    },
+    "sev3 (px24>=10)": {
+     "terukur": 34,
+     "hari_pertama_mungkin": 0,
+     "persen_mungkin": 0.0,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 34
+     },
+     "pola_hari_pertama": {
+      "H": 19,
+      "HH": 15
+     }
+    },
+    "px24>=15 (level 3 tanpa FWI)": {
+     "terukur": 34,
+     "hari_pertama_mungkin": 0,
+     "persen_mungkin": 0.0,
+     "tak_pernah_ya": 0,
+     "tunda_hari": {
+      "0": 34
+     },
+     "pola_hari_pertama": {
+      "H": 13,
+      "HH": 21
+     }
+    }
+   },
+   "porsi_titik_h_persen": {
+    "siang": 12.5,
+    "malam": 2.3
+   }
+  }
+ }
+}

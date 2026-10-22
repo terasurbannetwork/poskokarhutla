@@ -74,9 +74,9 @@ def main():
         json.dump({"radius_heli_km": RADIUS_HELI, "laju_heli_kmj": LAJU_HELI, "asumsi_jarak_air_km": JARAK_AIR,
                    "heli": heli, "aju": aju, "omc": omc}, f, ensure_ascii=False, separators=(",", ":"))
     for h in heli:
-        print(PROVINSI[h["prov"]], "heli:", h["nama"], h["icao"], f'{h["kompleks"]} kompleks ({h["prioritas"]} prio), {h["terbang_menit_rata"]} mnt, cakupan {h["cakupan"]}%', file=sys.stderr)
+        print(PROVINSI[h["prov"]], "heli:", h["nama"], h["icao"], f'{h["kompleks"]} cluster ({h["prioritas"]} prio), {h["terbang_menit_rata"]} mnt, cakupan {h["cakupan"]}%', file=sys.stderr)
     for a in aju:
-        print(PROVINSI[a["prov"]], "aju:", a["nama"], a["jenis"], len(a["kompleks"]), "kompleks prioritas,", a["jarak_api"], "km", file=sys.stderr)
+        print(PROVINSI[a["prov"]], "aju:", a["nama"], a["jenis"], len(a["kompleks"]), "cluster prioritas,", a["jarak_api"], "km", file=sys.stderr)
     for o in omc:
         print(PROVINSI[o["prov"]], "OMC:", o["nama"], o["icao"], o["landasan_m"], "m", file=sys.stderr)
 

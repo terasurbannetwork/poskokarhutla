@@ -542,7 +542,7 @@ def main():
     for c in tugas["kompleks"]:
         c.update(hasil.get(c["id"], {}))
     tulis(os.path.join(DATA, "tugas_kompleks.json"), json.dumps(tugas, ensure_ascii=False, separators=(",", ":")))
-    print("insiden: %s, %d kompleks level>=2, %d entri tugas disisipi, insiden.json %.0f KB" %
+    print("insiden: %s, %d cluster level>=2, %d entri tugas disisipi, insiden.json %.0f KB" %
           (dict(n), len(ks), sum(1 for i in sudah if i in hasil), len(teks.encode()) / 1e3))
 
 

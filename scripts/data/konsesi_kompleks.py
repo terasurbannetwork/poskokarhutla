@@ -213,7 +213,7 @@ def main():
     with open(jalur, "w") as f:
         json.dump(h, f, ensure_ascii=False, separators=(",", ":"))
     n_tugas = isi_tugas(os.path.join(DATA, "tugas_kompleks.json"), nama_konsesi(kl, titik, ks["features"]))
-    print(f"tugas_kompleks.json: {n_tugas} kompleks berisi pemegang konsesi", file=sys.stderr)
+    print(f"tugas_kompleks.json: {n_tugas} cluster berisi pemegang konsesi", file=sys.stderr)
     n_ks = sum(1 for v in h["kompleks"].values() if v["jenis"])
     print(f"kompleks_konsesi.json: {n_ks} kompleks berisi titik di konsesi, {h['total']['konsesi']}/{h['total']['n']} titik, "
           f"{os.path.getsize(jalur) / 1e6:.2f} MB", file=sys.stderr)

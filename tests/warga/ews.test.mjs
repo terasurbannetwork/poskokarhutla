@@ -637,12 +637,12 @@ uji("simulasi: email memuat kalimat, kata peluang, cakupan, catatan kelemahan, t
   assert.ok(a.html.includes("Lihat simulasi") && a.html.includes('href="https://contoh.id/sim/K1%22%3E%3Cb%3Ex"'), "id di-encode di URL");
   assert.ok(!a.html.includes("<b>x") && !a.html.includes("<i>X</i>"), "data di-escape");
   assert.ok(a.html.includes("dalam 30 jam") && a.html.includes("sekitar 1 dari 2 kemungkinan"));
-  assert.ok(a.html.includes("Ini perkiraan model, bukan pengamatan.") && a.html.includes("kebakaran gambut dan kompleks besar"));
-  assert.ok(a.html.includes("Simulasi hanya mencakup 987 dari 1.234 kompleks aktif hari ini; tidak ada peringatan simulasi bukan berarti aman."), "cakupan id-ID");
+  assert.ok(a.html.includes("Ini perkiraan model, bukan pengamatan.") && a.html.includes("kebakaran gambut dan cluster besar"));
+  assert.ok(a.html.includes("Simulasi hanya mencakup 987 dari 1.234 cluster aktif hari ini; tidak ada peringatan simulasi bukan berarti aman."), "cakupan id-ID");
   assert.ok(a.text.includes("/sim/K1%22%3E%3Cb%3Ex") && a.text.includes("987 dari 1.234"));
   assert.ok(!/±|24–48/.test(a.html + a.text));
   const tanpaCakupan = bangun([p], null);
-  assert.ok(tanpaCakupan.html.includes("Ini perkiraan model") && !tanpaCakupan.html.includes("kompleks aktif hari ini"), "tanpa cakupan: kalimat cakupan dihilangkan");
+  assert.ok(tanpaCakupan.html.includes("Ini perkiraan model") && !tanpaCakupan.html.includes("cluster aktif hari ini"), "tanpa cakupan: kalimat cakupan dihilangkan");
   const tanpa = bangun([{...p, sumber_jenis: undefined, kompleks: undefined}], null);
   assert.ok(!tanpa.html.includes("Lihat simulasi"), "peringatan karhutla biasa tanpa blok simulasi");
 });
@@ -657,7 +657,7 @@ uji("simulasi e2e: Awas terkirim, dedupe, kenaikan terkirim, acuan basi diabaika
   assert.equal(await kirim(TA + 7 * JAM, {24: [[1, 0.7]]}, {jejakAcuan: TA + 7 * JAM - 6 * JAM}), 2, "naik ke Awas: email baru");
   const awas = untuk(em).at(-1);
   assert.match(awas.subject, /^Awas karhutla hari ini/);
-  assert.ok(awas.html.includes("Lihat simulasi") && awas.html.includes(ASAL + "/sim/K0012") && awas.html.includes("dalam 2 km dari lokasimu") && awas.html.includes("lebih dari separuh kemungkinan") && awas.html.includes("8 dari 10 kompleks aktif"));
+  assert.ok(awas.html.includes("Lihat simulasi") && awas.html.includes(ASAL + "/sim/K0012") && awas.html.includes("dalam 2 km dari lokasimu") && awas.html.includes("lebih dari separuh kemungkinan") && awas.html.includes("8 dari 10 cluster aktif"));
   const kunci = (await DB5.prepare("SELECT kunci FROM ews_terkirim").all()).results.map(r => r.kunci);
   assert.ok(kunci.includes(`karhutla-sim|K0012|${wib(TA + 7 * JAM)}|3`) && kunci.every(k => k.length <= 80), kunci.join());
   /* acuan lebih tua dari SIM_UMUR: diabaikan walau memuat sel Awas baru */

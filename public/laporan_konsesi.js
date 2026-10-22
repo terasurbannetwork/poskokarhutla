@@ -200,7 +200,7 @@
         ${rspoSel(r)}<td class="r">${ha(r.luas_ha)}</td><td class="r">${r.gambut_ha ? ha(r.gambut_ha) : NA}</td><td class="r kn-mt">${r.gambut_ha && r.luas_ha ? pct(r.gambut_ha / r.luas_ha) : NA}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td><td class="kn-c">${r.titik_7h ? '<span class="kn-ya"><i></i>Ya</span>' : '<span class="kn-mt">Tidak</span>'}</td>
         <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`;
   const rspoSel = r => `<td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td>`;
-  const KEPALA = `<thead><tr><th>No</th><th>Nama PT</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r" title="Luas konsesi yang berada di lahan gambut">Gambut (ha)</th><th class="r" title="Bagian luas konsesi yang berada di lahan gambut">% gambut</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th title="Ada titik panas dalam 7 hari terakhir">Masih ada api</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>`;
+  const KEPALA = `<thead><tr><th>No</th><th>Nama PT</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r" title="Luas konsesi yang berada di lahan gambut">Gambut (ha)</th><th class="r" title="Bagian luas konsesi yang berada di lahan gambut">% gambut</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th title="Ada titik panas dalam 7 hari terakhir">Masih ada api</th><th class="r" title="Cluster (kejadian)">Cluster</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>`;
   const KAB_BUKA = new Set();
   function tabelDaftar(rs) {
     const grup = new Map();
@@ -218,9 +218,9 @@
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
   function top5Hari(r) {
     const top = r.harian.slice().sort((a, b) => b[1] - a[1] || b[0].localeCompare(a[0])).slice(0, 5);
-    return `<div class="kn-top5"><div class="kn-band"><b>Top 5 hari tertinggi</b><span>hari dengan titik panas terbanyak</span></div><div class="tw"><table class="kn-tb"><thead><tr><th>Peringkat</th><th>Tanggal</th><th class="r">Titik panas</th><th class="r">Kompleks api</th><th class="r">Bertahan (hari berturut-turut)</th></tr></thead><tbody>
+    return `<div class="kn-top5"><div class="kn-band"><b>Top 5 hari tertinggi</b><span>hari dengan titik panas terbanyak</span></div><div class="tw"><table class="kn-tb"><thead><tr><th>Peringkat</th><th>Tanggal</th><th class="r">Titik panas</th><th class="r">Cluster</th><th class="r">Bertahan (hari berturut-turut)</th></tr></thead><tbody>
       ${top.map(([d, n], j) => `<tr><td>${j + 1}</td><td><b>${tglT(d)}</b></td><td class="r"><b>${fmt(n)}</b></td><td class="r">${fmt(kompleksHari(r, d).length)}</td><td class="r">${fmt(lamaBerturut(r, d))} hari</td></tr>`).join("")}
-      </tbody></table></div>${keterangan([["Kompleks api", "kelompok titik hari itu yang berjarak ≤ 1,5 km"], ["Bertahan", "panjang rangkaian hari berturut-turut dengan hotspot yang memuat tanggal itu"]])}</div>`;
+      </tbody></table></div>${keterangan([["Cluster", "kelompok titik hari itu yang berjarak ≤ 1,5 km"], ["Bertahan", "panjang rangkaian hari berturut-turut dengan hotspot yang memuat tanggal itu"]])}</div>`;
   }
 
   /* keparahan: satu aturan untuk tabel kompleks dan tabel harian. k = [lat, lon, lokasi, titik, awal, akhir, hari, FRP maks] */
@@ -475,7 +475,7 @@
           <li><b>Indikasi luas terbakar:</b> jumlah piksel VIIRS 375 m yang kemasukan titik × ${fmt(IDX.ha_piksel)} ha, paling besar seluas konsesi. Bukan peta luas bakar resmi; piksel bisa terbakar sebagian.</li>
           <li><b>Kejadian:</b> rangkaian hari dengan hotspot dengan jeda paling lama ${IDX.jeda_kejadian} hari tanpa titik.</li>
           <li><b>Grup dan pemegang saham:</b> atribut grup di peta konsesi dan penelusuran kepemilikan perusahaan.</li>
-          <li><b>Kompleks api:</b> kelompok titik VIIRS berdekatan (1,5 km, 7 hari) seperti di peta Centurisk97.</li>
+          <li><b>Cluster:</b> kelompok titik VIIRS berdekatan (1,5 km, 7 hari) seperti di peta Centurisk97.</li>
           <li>Titik panas di dalam areal konsesi menunjukkan lokasi api, <b>bukan bukti siapa yang membakar</b>. Verifikasi lapangan tetap diperlukan.</li>
         </ul>
       </section>`;
@@ -508,7 +508,7 @@
     const px = x(r.puncak[0]) + bw * .39, py = y(r.puncak[1]), kiri = px > W - 170;
     const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])} · ${fmt(r.puncak[1])} titik</text>`;
     return `<svg class="kn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian 2026, puncak ${tgl(r.puncak[0])}">${grid}<line x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}" class="kn-ax"/><g class="kn-br">${bar}</g>${pk}${blabel}</svg>
-      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>kompleks api (kejadian) yang menyala di bulan itu</span></div>`;
+      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>cluster (kejadian) yang menyala di bulan itu</span></div>`;
   }
 
   /* bagian titik panas harian: grafik selebar kartu + tabel lengkap tiap hari dengan hotspot (dibagi 3 lajur) */
@@ -535,7 +535,7 @@
         ["Baris berwarna", "hari puncak"],
         ["Lintasan satelit", "jumlah lewatan satelit S-NPP yang menangkap api hari itu"],
         ["Api bertahan", `hari ke-berapa dalam kejadiannya / lama kejadian itu (jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot tetap satu kejadian)`],
-        [KET_PARAH[0], KET_PARAH[1] + '<small class="kn-mt">dihitung per hari dari kompleks titik ≤ 1,5 km hari itu</small>']],
+        [KET_PARAH[0], KET_PARAH[1] + '<small class="kn-mt">dihitung per hari dari cluster titik ≤ 1,5 km hari itu</small>']],
         '<p class="kn-mt kn-hr-k kn-cetak-saja">Hari berkeparahan rendah tidak dicetak; jumlah dan kumulatif tetap menghitungnya.</p>')}</section>`;
   }
 
@@ -554,19 +554,19 @@
     const tabelK = (judul, ks, lain, catatan) => {
       const sisa = ks.slice(10), nS = sisa.length + (lain ? lain[0] : 0), tS = sisa.reduce((a, k) => a + k[3], 0) + (lain ? lain[1] : 0),
         mS = Math.max(0, ...sisa.map(k => k[3]), lain ? lain[2] : 0), nT = ks.length + (lain ? lain[0] : 0);
-      return `<section class="kn-sek"><div class="kn-band"><b>${judul}</b><span>${fmt(nT)} kompleks · ${catatan}</span></div>
+      return `<section class="kn-sek"><div class="kn-band"><b>${judul}</b><span>${fmt(nT)} cluster, ${catatan}</span></div>
       <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Kecamatan</th><th>Kabupaten/kota</th><th>Koordinat</th><th class="r">Titik</th><th class="r">Hari</th><th>Rentang</th><th class="r">FRP maks (MW)</th><th>Keparahan</th></tr></thead><tbody>
       ${ks.slice(0, 10).map((k, j) => { const [n, w] = parah(k); return `<tr><td>${j + 1}</td><td><b>${esc(k[2].split(",")[0] || "–")}</b></td><td>${esc((k[2].split(",")[1] || "").trim() || "–")}</td>
         <td class="num kn-nw"><a class="kn-ln" href="https://www.google.com/maps/dir/?api=1&destination=${k[0]},${k[1]}" target="_blank" rel="noopener">${k[0].toFixed(4)}, ${k[1].toFixed(4)}</a></td>
         <td class="r"><b>${fmt(k[3])}</b></td><td class="r">${fmt(k[6])}</td><td class="kn-nw">${rentang(k[4], k[5])}</td><td class="r">${fmt(k[7])}</td><td><span class="kn-pr" style="--w:${w}">${n}</span></td></tr>`; }).join("")}
-      ${nS ? `<tr class="kn-sub"><td></td><td colspan="3">${fmt(nS)} kompleks kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
+      ${nS ? `<tr class="kn-sub"><td></td><td colspan="3">${fmt(nS)} cluster kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
       </tbody></table></div></section>`; };
     const kl = r.kompleks_lalu || [];
-    const kp = (r.kompleks?.length ? tabelK("Kompleks api 7 hari terakhir", r.kompleks, null, "titik berdekatan ≤ 1,5 km") : "")
-      + (kl.length ? tabelK("Kompleks api sebelumnya", kl, r.kompleks_lalu_sisa, `sejak ${tgl(r.pertama)}, sebelum 7 hari terakhir`) : "")
-      + (r.kompleks?.length || kl.length ? `${keterangan([["Kompleks", "titik berdekatan ≤ 1,5 km dengan selang ≤ 7 hari"], ["Hari", "hari dengan hotspot"], KET_PARAH])}` : "");
+    const kp = (r.kompleks?.length ? tabelK("Cluster 7 hari terakhir", r.kompleks, null, "titik berdekatan ≤ 1,5 km") : "")
+      + (kl.length ? tabelK("Cluster sebelumnya", kl, r.kompleks_lalu_sisa, `sejak ${tgl(r.pertama)}, sebelum 7 hari terakhir`) : "")
+      + (r.kompleks?.length || kl.length ? `${keterangan([["Cluster", "titik berdekatan ≤ 1,5 km dengan selang ≤ 7 hari"], ["Hari", "hari dengan hotspot"], KET_PARAH])}` : "");
     const tt = `<section class="kn-sek"><div class="kn-band"><b>Titik panas terbaru</b><span>12 deteksi terakhir VIIRS S-NPP</span></div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Waktu</th><th>Koordinat</th><th class="r">Daya api (MW)</th><th title="Keparahan kompleks api tempat titik ini berada pada harinya">Keparahan</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Waktu</th><th>Koordinat</th><th class="r">Daya api (MW)</th><th title="Keparahan cluster tempat titik ini berada pada harinya">Keparahan</th></tr></thead><tbody>
       ${r.pt.slice(-12).reverse().map((p, j) => `<tr><td>${j + 1}</td><td class="kn-nw"><b>${tgl("2026-" + p[2].slice(0, 5))}</b> ${p[2].slice(6)} WIB</td><td class="num kn-nw">${p[0].toFixed(4)}, ${p[1].toFixed(4)}</td><td class="r">${fmt(p[3])}</td><td>${(([n, w]) => `<span class="kn-pr" style="--w:${w}">${n}</span>`)(parahTitik(r, p))}</td></tr>`).join("")}
       </tbody></table></div></section>`;
     /* kebakaran di gambut: kejadian yang titiknya jatuh di lahan gambut (jeda sama dengan kejadian umum) */
@@ -594,7 +594,7 @@
         <span class="kn-no">${r._rp}</span>
         <div class="kn-ph-t"><span class="kn-ph-ey">${esc(r.kabU)}, ${esc(namaProv(r.prov))}</span><h2>${esc(r.nama)}</h2></div>
         <div class="kn-ph-m">${jenisPil(r.jenis)}${r.jenis === "sawit" && r.rspo ? `<span class="kn-sert" title="${r.rspo.sertifikat ? "Bersertifikat" : "Anggota"} RSPO lewat ${esc(r.rspo.grup)} (data RSPO 2020)"><i aria-hidden="true">✓</i>RSPO<em>${r.rspo.sertifikat ? "bersertifikat" : "anggota"}</em></span>` : ""}${lencanaRiw(r)}${r.grup ? `<span class="kn-grp">${logoPT(r, 20)}${(r.negara || []).map(k => bendera(k, 14)).join("")}<b>${esc(r.grup)}</b>${r.unit ? `<em>${esc(r.unit)}</em>` : ""}</span>` : ""}
-          ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i aria-hidden="true">${IKON_KPI.api}</i><span>Masih ada api</span><span class="kn-sta-d"><b>${fmt(r.titik_7h)}</b>titik</span>${r.kompleks?.length ? `<span class="kn-sta-d"><b>${fmt(r.kompleks.length)}</b>kompleks</span>` : ""}<small class="kn-sta-d">7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
+          ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i aria-hidden="true">${IKON_KPI.api}</i><span>Masih ada api</span><span class="kn-sta-d"><b>${fmt(r.titik_7h)}</b>titik</span>${r.kompleks?.length ? `<span class="kn-sta-d"><b>${fmt(r.kompleks.length)}</b>cluster</span>` : ""}<small class="kn-sta-d">7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
       </header>
       <section class="kn-kpi kn-kpi-p">
         <div><span class="kn-kpi-l">Titik panas 2026</span><b>${fmt(r.titik)}</b><small>puncak ${tgl(r.puncak[0])} (${fmt(r.puncak[1])} titik)</small></div>

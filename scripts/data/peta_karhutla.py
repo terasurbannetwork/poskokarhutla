@@ -402,7 +402,7 @@ def metode():
             f"Deteksi celah disetel pada data 2026 sendiri dan belum diuji independen; kehilangan satelit di bawah {100 - CELAH_HILANG * 100:.0f}% per pita bujur "
             f"{PITA}° dan hari berisik (harapan kurang dari {CELAH_MIN} titik) tidak terdeteksi.",
             "Sumber NASA FIRMS: arsip standar (SP) bila tersedia, selain itu NRT; hari-hari NRT dapat bergeser sedikit saat diganti SP.",
-            "Aturan padam 48 jam berbeda dengan peta kompleks platform (72 jam, 168 jam di gambut kering).",
+            "Aturan padam 48 jam berbeda dengan peta cluster platform (72 jam, 168 jam di gambut kering).",
             f"S-NPP dijadwalkan berhenti didistribusikan FIRMS pada 1 Nov 2026 13.00 UTC; sesudahnya hotspot memakai NOAA-21 sebagai pengganti S-NPP tanpa koreksi "
             f"dan porsi tidak dihitung ulang. Pada 2026 titik S-NPP semua keyakinan sekitar {koma(UKUR['snpp_n21_median'], 2)} x titik NOAA-21 "
             f"(median harian {UKUR['snpp_n21_hari']} hari; sebaran harian {koma(UKUR['snpp_n21_p10'], 2)}–{koma(UKUR['snpp_n21_p90'], 2)}), jadi rata-rata sebanding "

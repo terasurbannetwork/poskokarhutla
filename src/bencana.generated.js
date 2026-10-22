@@ -58,8 +58,8 @@ export default {
       ],
       "kejadian": {
         "awalan": "K",
-        "nama": "Kompleks api",
-        "nama_jamak": "Kompleks api"
+        "nama": "Cluster",
+        "nama_jamak": "Cluster"
       },
       "tingkat": [
         {
@@ -132,7 +132,7 @@ export default {
       },
       "kata": {
         "unit": "titik panas",
-        "kejadian": "kompleks api",
+        "kejadian": "cluster",
         "tindakan": [
           "Pencegahan rutin",
           "Patroli terpadu",

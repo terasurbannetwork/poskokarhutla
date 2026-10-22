@@ -117,7 +117,7 @@
     b.push(pil(`${ang(d.sumber_air.length)} sumber air`, "", "air"), pil(`${ang(d.permintaan.filter(p => p.jenis === "heli").length)} permintaan heli`, "", "heli"), pil(`${ang(d.drop.length)} drop`, "", "air"),
       pil(`${ang(d.drone.titik.length)} titik drone`, "", "drone"), pil(`${ang(d.penugasan.filter(p => p.posisi).length)} regu berposisi`, "", "lokasi"));
     if (a) b.push(pil(`Angin ${a.ws_kmj != null ? ang(a.ws_kmj, 1) + " km/jam " : ""}dari ${a.dari || "arah tak diketahui"}`, "", "angin"));
-    if (d.kluster) b.push(pil(`Kluster ${d.kluster.id}, ${kmF(d.kluster.jarak_km)} dari titik tugas`, "", "lokasi"));
+    if (d.kluster) b.push(pil(`Cluster ${d.kluster.id}, ${kmF(d.kluster.jarak_km)} dari titik tugas`, "", "lokasi"));
     return b.join("") + `<p class="op-kecil">Drone: <span class="op-t" data-w="1"></span>di bawah 100 <span class="op-t" data-w="2"></span>100 sampai 200 <span class="op-t" data-w="3"></span>200 sampai 300 <span class="op-t" data-w="4"></span>di atas 300 derajat C. Drop: merah masih ada titik panas, hijau tidak ada titik baru, abu menunggu.</p>`;
   }
 

@@ -111,7 +111,7 @@ function itemBukti(c, hs) {
   for (let h = 0; h <= 72; h += 6) { let hj = 0; for (let q = Math.max(0, h - 5); q <= h; q++) hj += W.hujan[q];
     out.push({ms: mulai + h * 36e5, h, ik: "cuaca", jd: `Angin ${nf(Math.round(W.ws[h]))} km/j · RH ${nf(Math.round(W.rh[h]))}%`, sm: `${cuaca} · hujan 6 j ${hj >= .1 ? nf(Math.round(hj * 10) / 10, 1) + " mm" : "0 mm"}`, lat: p.lat, lon: p.lon}); }
   for (const d of H.desa) out.push({ms: mulai + d.eta * 36e5, h: Math.min(72, Math.ceil(d.eta)), ik: "desa", jd: `${esc(d.nama)} tercapai api`, sm: `model sebaran · ± ${nf(Math.round(d.km * 10) / 10, 1)} km`, lat: d.lat, lon: d.lon});
-  if (Sim.k !== "titik") { const n = Number.isFinite(p.n) ? p.n : p.api24?.length; if (n > 0) out.push({ms: mulai, h: 0, ik: "api", jd: `${nf(n)} titik panas 24 jam`, sm: `kompleks ${esc(p.kec || p.id)} (FIRMS)`, lat: p.lat, lon: p.lon}); }
+  if (Sim.k !== "titik") { const n = Number.isFinite(p.n) ? p.n : p.api24?.length; if (n > 0) out.push({ms: mulai, h: 0, ik: "api", jd: `${nf(n)} titik panas 24 jam`, sm: `cluster ${esc(p.kec || p.id)} (FIRMS)`, lat: p.lat, lon: p.lon}); }
   return out.sort((a, b) => a.ms - b.ms || a.h - b.h);
 }
 function htmlBukti(c) {

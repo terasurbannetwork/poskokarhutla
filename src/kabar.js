@@ -120,7 +120,7 @@ export async function kabarLevel3(env, tugas, kini = Date.now()) {
   for (const {a, ts} of [...per.values()].slice(0, MAKS_AKUN)) {
     const kunci = "l3:" + (await sha(ts.map(t => t.id).sort().join(","))).slice(0, 40), t0 = ts[0];
     const r = await kabarkan(env, kunci, [jadiPenerima(a)], {judul: ts.length > 1 ? `${ts.length} api level 3 baru di wilayah Anda` : `Api level 3 baru di ${tempat(t0.prov, t0.kab, t0.kec)}`,
-      isi: `Kompleks api level 3 baru terdeteksi (${ts.map(t => tempat(t.prov, t.kab, t.kec)).slice(0, 3).join("; ")}). Buka Tugas api untuk konfirmasi lapangan dalam 6 jam.`, url: "/instansi"}, kini);
+      isi: `Cluster api level 3 baru terdeteksi (${ts.map(t => tempat(t.prov, t.kab, t.kec)).slice(0, 3).join("; ")}). Buka Tugas api untuk konfirmasi lapangan dalam 6 jam.`, url: "/instansi"}, kini);
     o.akun++; o.push += r.push || 0; o.email += r.email || 0;
   }
   return o;

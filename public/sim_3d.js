@@ -422,7 +422,7 @@ function ctx() {
 }
 function segarkanBar() {
   const p = Sim.f?.properties; if (!p) return; const titik = Sim.k === "titik";
-  $("#s3Nm").textContent = titik ? "Insiden simulasi" : `Kompleks ${p.kec}`;
+  $("#s3Nm").textContent = titik ? "Insiden simulasi" : `Cluster ${p.kec}`;
   $("#s3Lok").innerHTML = `${ik(P.pin, 13)}<span>${esc(titik ? p.kab : `${p.kec}, ${p.kab}`)}</span>`;
   if (Sim.cuaca) $("#s3Rg").innerHTML = `${ik(P.kal, 13)}<span>${wt(Sim, 0)} – ${wt(Sim, 72)} WIB</span>`;
 }
@@ -566,7 +566,7 @@ function isiInsiden(c) {
   const ws = SKEN.filter(s => S.hasil[s.id]);
   c.el.kanan.innerHTML = `<section class="s3-sec"><h3>${ik(P.lapis)}Lapisan</h3><div class="s3-lyl">${htmlLapis()}</div></section>
     <section class="s3-sec"><h3>${ik(P.info)}Ringkasan insiden</h3><dl class="s3-kv2">
-      ${kv("Nama", titik ? "Insiden simulasi" : `Kompleks ${esc(p.kec)}`)}${kv("ID", esc(idInsiden(p, titik)))}${kv("Lokasi", esc(titik ? p.kab : `${p.kec}, ${p.kab}`))}
+      ${kv("Nama", titik ? "Insiden simulasi" : `Cluster ${esc(p.kec)}`)}${kv("ID", esc(idInsiden(p, titik)))}${kv("Lokasi", esc(titik ? p.kab : `${p.kec}, ${p.kab}`))}
       ${kv("Mulai", `${wt(S, 0)} WIB`)}${kv("Selesai simulasi", `${wt(S, 72)} WIB <small>(+72 j)</small>`)}
       ${kv("Luas total", `<b>${fmt(bulat(L.mid[72]))} ha</b> <small>${fmt(bulat(L.lo[72]))}–${fmt(bulat(L.hi[72]))}</small>`)}${kv("Penyebab", "Simulasi")}
       ${kv("Status analisis", `<span class="s3-st"><i></i><span id="s3Stat">${S.basi ? "Pengaturan berubah, jalankan ulang" : "Hasil model, belum divalidasi"}</span></span>`)}</dl>

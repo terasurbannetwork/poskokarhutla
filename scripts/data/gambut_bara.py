@@ -25,7 +25,7 @@ CATATAN = {
     "cc": "CC = 1,0 (ASUMSI, kerangka kedalaman terbakar).",
     "ef": "g/kg bahan kering: CO2 1.703, CH4 21,0 (IPCC 2013 Wetlands Supplement Bab 2, tanah organik tropis; sama dengan dampak.py), CO 210 (IPCC 2013 Wetlands Supplement Tabel 2.7, belum diverifikasi ke dokumen asli).",
     "rentang": "Skenario rendah/tengah/tinggi dikombinasi ujung-ke-ujung (rendah x rendah, tinggi x tinggi); bukan selang kepercayaan.",
-    "banding": "Perkiraan lokal per kompleks, bukan tambahan dari estimasi emisi nasional (dampak.py); jangan dijumlahkan.",
+    "banding": "Perkiraan lokal per cluster, bukan tambahan dari estimasi emisi nasional (dampak.py); jangan dijumlahkan.",
     "status": "Estimasi, belum divalidasi lapangan; muka air = proxy, bukan pengukuran; MCE tidak dihitung: tidak ada ukuran CO2 sebanding pada kolom asap dari satelit.",
 }
 
