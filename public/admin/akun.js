@@ -13,7 +13,7 @@
   const pil = (t, kls = "") => h("span", {class: "ak-pil " + kls, teks: t});
   const STATUS = {aktif: "Aktif", ganti: "Belum ganti sandi", dicabut: "Dicabut"};
   const ST_INSTANSI = {belum_klaim: "Belum diklaim", menunggu: "Menunggu verifikasi", aktif: "Aktif", ditolak: "Ditolak", dicabut: "Dicabut"};
-  let D = null, F = {status: "", q: ""}, ubahId = null, rahasia = null, jadwal = 0;
+  let D = null, P = null, pmUbah = null, F = {status: "", q: ""}, ubahId = null, rahasia = null, jadwal = 0;
   const statusDari = s => s.status === "dicabut" ? "dicabut" : s.wajib_ganti ? "ganti" : "aktif";
 
   /* ---------- ringkasan dan kontrol (berubah seketika) ---------- */
@@ -22,13 +22,14 @@
     const kartu = (k, l, v, kls = "") => h("button", {class: "ak-kartu " + kls, type: "button", "data-status": k, "aria-pressed": String(F.status === k)}, h("b", {teks: angka(v)}), h("span", {teks: l}));
     app.replaceChildren(
       rahasia ? h("div", {class: "ak-rahasia-kotak", role: "status"}, h("p", {teks: `Akun untuk ${rahasia.nama}. Tampil sekali, salin dan serahkan langsung ke orangnya:`}),
-        h("code", {class: "ak-rahasia", teks: `Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`}), h("small", {teks: "Saat masuk pertama di /admin/pantau, ia wajib membuat sandi baru."})) : null,
+        h("code", {class: "ak-rahasia", teks: `Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`}), h("small", {teks: "Staf: masuk di /admin/pantau lalu wajib membuat sandi baru. Pemirsa: masuk di halaman login situs."})) : null,
       h("div", {class: "ak-ringkas"}, kartu("", "Akun staf", D.staf.length), kartu("aktif", "Aktif", n("aktif")), kartu("ganti", "Belum ganti sandi", n("ganti"), n("ganti") ? "kuning" : ""), kartu("dicabut", "Dicabut", n("dicabut"))),
       panelBuat(),
       h("section", {class: "ak-panel"},
         h("div", {class: "ak-kepala"}, h("h2", {teks: "Daftar akun staf"}),
           h("input", {class: "ak-cari", type: "search", placeholder: "Cari nama, username, unit, NIP", "aria-label": "Cari akun", value: F.q, "data-cari": "1"})),
         h("div", {id: "akDaftar"}, h("p", {class: "ak-redup", teks: "Menggambar daftar…"}))),
+      panelPemirsa(),
       panelInstansi(instansi),
       panelMatriks());
     tunda();
@@ -90,6 +91,30 @@
     return h("tr", {class: "ak-ubah", "data-staf": s.id}, h("td", {colspan: "7"}, f));
   }
 
+  /* ---------- akun pemirsa: hanya melihat tab tertentu situs (src/pemirsa.js); data JSON tetap terbuka, jadi ini pembatas tampilan ---------- */
+  const cekTab = (pilih = []) => h("fieldset", {class: "ak-peran ak-tab"}, h("legend", {teks: "Tab yang boleh dilihat"}),
+    ...Object.entries(P.tab).map(([k, l]) => h("label", {class: "ak-cek"}, h("input", {type: "checkbox", name: "tab", value: k, checked: pilih.includes(k)}), l)));
+  function panelPemirsa() {
+    if (!P) return h("section", {class: "ak-panel"}, h("h2", {teks: "Akun pemirsa"}), h("p", {class: "ak-redup", teks: "Akun pemirsa belum diaktifkan (migrasi D1 0036_pemirsa belum diterapkan)."}));
+    const f = h("form", {class: "ak-form", "data-pm-buat": "1"}, h("div", {class: "ak-grid"}, h("label", null, "Nama", h("input", {name: "nama", required: true, placeholder: "Nama orang atau lembaga", autocomplete: "off"}))),
+      cekTab(["berita"]), h("p", {class: "ak-galat", role: "alert"}), tombol("Buat akun pemirsa", {type: "submit"}, "utama"));
+    const xs = P.pemirsa, rows = xs.flatMap(p => { const hidup = p.status === "aktif";
+      return [h("tr", {"data-pm": p.id, class: hidup ? "" : "redup"},
+        h("td", null, h("b", {teks: p.nama}), h("small", {teks: "@" + p.username})),
+        h("td", null, h("div", {class: "ak-akses"}, ...p.tab.map(t => pil(P.tab_label[t] || t, "akses")))),
+        h("td", null, pil(hidup ? "Aktif" : "Dicabut", hidup ? "aktif" : "dicabut"), h("small", {teks: "Dibuat " + tgl(p.dibuat)})),
+        h("td", null, hidup ? h("div", {class: "ak-aksi"}, tombol(pmUbah === p.id ? "Tutup" : "Ubah tab", {"data-pm-aksi": "ubah-buka"}), tombol("Reset sandi", {"data-pm-aksi": "reset"}), tombol("Cabut", {"data-pm-aksi": "cabut"}, "bahaya")) : null)),
+        pmUbah === p.id ? h("tr", {class: "ak-ubah", "data-pm": p.id}, h("td", {colspan: "4"}, h("form", {class: "ak-form", "data-pm-ubah": p.id}, cekTab(p.tab), h("p", {class: "ak-galat", role: "alert"}),
+          h("div", {class: "ak-aksi"}, tombol("Simpan tab", {type: "submit"}, "utama"), tombol("Batal", {"data-pm-aksi": "ubah-buka"}))))) : null]; });
+    return h("section", {class: "ak-panel", id: "akPemirsa"}, h("div", {class: "ak-kepala"}, h("h2", {teks: `Akun pemirsa (${angka(xs.length)})`})),
+      h("p", {class: "ak-redup", teks: "Hanya bisa melihat tab yang dicentang di situs. Tab lain disembunyikan dan alamatnya dialihkan. Masuk lewat halaman login yang sama."}),
+      h("details", {class: "ak-buat-pm"}, h("summary", null, h("span", {class: "ak-plus", "aria-hidden": "true", teks: "+"}), "Buat akun pemirsa"), f),
+      xs.length ? h("div", {class: "ak-tabel-wadah"}, h("table", {class: "ak-tabel ak-tabel-pm"}, h("thead", null, h("tr", null, ["Nama", "Tab yang boleh dilihat", "Status", ""].map(k => h("th", {teks: k})))), h("tbody", null, rows)))
+        : h("p", {class: "ak-kosong", teks: "Belum ada akun pemirsa."}));
+  }
+  const gagalJaringan = {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}};
+  function gambarPemirsa() { document.getElementById("akPemirsa")?.replaceWith(panelPemirsa()); }
+
   /* ---------- akun instansi (ringkas; kelola di /admin/instansi) dan matriks peran ---------- */
   function panelInstansi(r) {
     if (!r) return null;
@@ -113,11 +138,17 @@
     if (r.status === 403) { app.replaceChildren(h("p", {class: "ak-kosong", teks: "Halaman Akun hanya untuk Super Admin."})); return; }
     if (r.status === 503) { app.replaceChildren(h("p", {class: "ak-kosong", teks: "Akun staf belum diaktifkan (migrasi D1 0030_staf belum diterapkan)."})); return; }
     if (!r.ok) { app.replaceChildren(h("p", {class: "ak-kosong", teks: `Galat ${r.status}. Daftar akun belum bisa dimuat.`})); return; }
-    const [d, ins] = await Promise.all([r.json(), fetch("/api/instansi/admin/akun").then(x => x.ok ? x.json() : null).catch(() => null)]);
-    D = d; gambar(ins);
+    const [d, ins, pm] = await Promise.all([r.json(), fetch("/api/instansi/admin/akun").then(x => x.ok ? x.json() : null).catch(() => null),
+      fetch("/api/pemirsa/admin/daftar").then(x => x.ok ? x.json() : null).catch(() => null)]);
+    D = d; P = pm && {...pm, tab_label: pm.tab}; gambar(ins);
   }
   app.addEventListener("input", e => { if (e.target.matches("[data-cari]")) { F.q = e.target.value; tunda(); } });
   app.addEventListener("submit", async e => {
+    const pf = e.target.closest("[data-pm-buat], [data-pm-ubah]");
+    if (pf) { e.preventDefault(); const fd = new FormData(pf), b = pf.querySelector("[type=submit]"), baru = pf.dataset.pmBuat; b.disabled = true;
+      const x = await Admin.kirim(baru ? "/api/pemirsa/admin/buat" : "/api/pemirsa/admin/" + pf.dataset.pmUbah, baru ? {nama: fd.get("nama"), tab: fd.getAll("tab")} : {aksi: "ubah", tab: fd.getAll("tab")}).catch(() => gagalJaringan); b.disabled = false;
+      if (!x.ok) { pf.querySelector(".ak-galat").textContent = x.j.galat || `Gagal (${x.status})`; return; }
+      rahasia = baru ? {nama: x.j.pemirsa.nama, username: x.j.username, sandi: x.j.sandi} : null; pmUbah = null; return muat(); }
     const f = e.target.closest("[data-ubah]"); if (!f) return;
     e.preventDefault(); const fd = new FormData(f), b = f.querySelector("[type=submit]"); b.disabled = true;
     const x = await Admin.kirim("/api/staf/admin/" + f.dataset.ubah, {aksi: "ubah", peran: fd.getAll("peran"), wilayah: fd.getAll("wilayah")}).catch(() => ({ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}})); b.disabled = false;
@@ -127,6 +158,13 @@
   app.addEventListener("click", async e => {
     const k = e.target.closest("[data-status]");
     if (k) { F.status = F.status === k.dataset.status ? "" : k.dataset.status; for (const x of app.querySelectorAll("[data-status]")) x.setAttribute("aria-pressed", String(x.dataset.status === F.status)); tunda(); return; }
+    const pb = e.target.closest("[data-pm-aksi]");
+    if (pb) { const id = pb.closest("[data-pm]").dataset.pm, p = P.pemirsa.find(x => x.id === id), a = pb.dataset.pmAksi;
+      if (a === "ubah-buka") { pmUbah = pmUbah === id ? null : id; gambarPemirsa(); return; }
+      if (!confirm(a === "cabut" ? `Cabut akun pemirsa ${p.nama}? Ia langsung keluar dan tidak bisa masuk lagi.` : `Reset sandi ${p.nama}? Sandi lama langsung tidak berlaku.`)) return;
+      pb.disabled = true; const x = await Admin.kirim("/api/pemirsa/admin/" + id, {aksi: a}).catch(() => gagalJaringan); pb.disabled = false;
+      if (!x.ok) { alert(x.j.galat || `Gagal (${x.status})`); return; }
+      rahasia = a === "reset" ? {nama: p.nama, username: p.username, sandi: x.j.sandi} : null; return muat(); }
     const b = e.target.closest("[data-aksi]"); if (!b) return;
     const id = b.closest("[data-staf]").dataset.staf, s = D.staf.find(x => x.id === id), a = b.dataset.aksi;
     if (a === "ubah-buka") { ubahId = ubahId === id ? null : id; tunda(); return; }

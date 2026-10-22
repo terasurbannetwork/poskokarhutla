@@ -40,5 +40,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-app
 .ak-jenis{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:#e8eef8;color:var(--navy);margin-left:4px}
 .ak-jalan{background:#f7f9fc;border-radius:12px;padding:10px 12px}
 .ak-bawa{margin:4px 0 0;padding-left:20px}.ak-bawa li{margin:2px 0}
+.lk-angin{margin:0;padding:14px 16px;border-radius:14px;background:#c0392b;color:#fff;font-weight:700;font-size:17px;border:3px solid #7b1d12}
+.lk-darurat{border:2px solid var(--merah)}
+.lk-tombol.darurat{border-color:var(--merah);background:var(--merah);color:#fff}
+.lk-dar-pilih{display:grid;gap:8px}
 @media (min-width:600px){.lk-wrap{padding-top:20px}.lk-kartu h1{font-size:28px}}
 @media (prefers-reduced-motion:no-preference){.lk-tombol{transition:background-color .12s,opacity .12s}}

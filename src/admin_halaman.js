@@ -139,10 +139,10 @@ export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link h
 <script src="/admin/omc.js?v=2"></script>`, ctx);
 
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
-export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=1" rel="stylesheet">
+export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=2" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
-<script src="/admin/akun.js?v=1"></script>`);
+<script src="/admin/akun.js?v=2"></script>`);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">

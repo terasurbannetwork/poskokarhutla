@@ -11,6 +11,7 @@ import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
 import {halamanAdmin} from "./statistik.js";
+import {tautkanLaporanRegu} from "./instansi.js";
 import {halamanPosko, HALAMAN_STAF} from "./admin_halaman.js";
 import {modAtauStaf, stafPeran, dalamWilayahStaf, dariStaf, stafNyata, P_KONSESI} from "./staf.js";   // peran analis_konsesi = jalur tambahan untuk kontak PT dan panggilan (staf.js)
 
@@ -222,6 +223,8 @@ async function lapor(env, req, url, kini) {
       agregat(env, tgl, prov, kab, kini)]);
   } catch (e) { if (/UNIQUE/i.test(String(e.message || e))) { const u = await ulang(); if (u) return u; } throw e; }   // dua kiriman serentak dengan klien_id sama
   if (!hasil[0].meta.changes) return gagal(429, `batas laporan tercapai: ${LAJU_REGU} per jam untuk satu regu atau ${LAJU_KAB} per kabupaten per hari`, {"retry-after": "600"});
+  /* L1: tautkan ke tugas api terdekat (padam/menyala mengubah status verifikasi). Galat tidak menggagalkan laporan yang sudah tersimpan; kontrak respons regu tidak berubah. */
+  try { await tautkanLaporanRegu(env, {id, lat: la, lon: lo, prov, kab, status: o.status, waktu, dipercaya: !tahan && !gps.curiga.length}, kini); } catch (e) { console.error("tautan laporan regu", e?.message); }
   return json({id, prov, kab, kompleks_id: laci ?? null, ditahan: !!tahan}, 201);
 }
 /* JPEG: buang segmen APP1 (EXIF/XMP, memuat GPS dan perangkat) dan APP13 sebelum SOS. Struktur janggal = berkas apa adanya. */

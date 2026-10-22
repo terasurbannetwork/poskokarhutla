@@ -23,9 +23,17 @@
     if (p.status === "padam_dilaporkan") return pil(Date.now() - p.pada >= 24 * JAM ? "Padam, belum ada titik baru 24 jam" : "Padam dilaporkan", "emas");
     const [teks, k] = PADAM_PENDEK[p.status] || ["", ""]; return teks ? pil(teks, k) : "";
   }
+  const SUMBER = {firms: "titik panas NASA", himawari: "Himawari (perkiraan, sekitar 2 km)", regu: "laporan regu lapangan"};
+  const HARI_CEK = h => `H+${h}`;
+  /* api muncul lagi: sumber, waktu, jarak. Jadwal cek ulang H+1/H+3/H+7 (gambut atau lahan belum diketahui): pil hijau selesai, merah lewat, emas menunggu. */
+  function munculJadwal(p) {
+    const m = p.muncul, j = p.jadwal_cek_ulang;
+    return (m ? `<p>${pil("Api muncul lagi", "merah")} ${esc(SUMBER[m.sumber] || m.sumber)}, ${esc(tglJamWIB(m.waktu))} WIB${m.jarak_km != null ? `, ${esc(ang(m.jarak_km))} km dari titik tugas` : ""}.${m.keterangan ? " " + esc(m.keterangan) : ""}</p>` : "")
+      + (j ? `<p class="tg-jadwal"><span class="k">Cek ulang lapangan${p.dasar_lahan === "tidak_diketahui" ? " (lahan belum diketahui, dianggap gambut)" : ""}</span> ${j.map(x => pil(`${HARI_CEK(x.hari)} ${x.selesai != null ? "sudah" : x.terlambat ? "terlambat" : tglJamWIB(x.jatuh_tempo)}`, x.selesai != null ? "hijau" : x.terlambat ? "merah" : "emas")).join(" ")}</p>` : "");
+  }
   function padamBlok(t) {
     const p = t?.padam; if (!p) return "";
-    return `<div class="in-kartu tg-padam ${esc(p.tingkat)}"><h2 class="in-sub">Sudah padam belum?</h2><p>${padamPil(t)} ${esc(p.label)}</p>
+    return `<div class="in-kartu tg-padam ${esc(p.tingkat)}"><h2 class="in-sub">Sudah padam belum?</h2><p>${padamPil(t)} ${esc(p.label)}</p>${munculJadwal(p)}
       <p class="lp-kecil">Satelit memeriksa titik panas dalam radius 2 km tiap 3 jam sesudah laporan padam. Satelit tidak melihat bara bawah permukaan, jadi lapangan tetap perlu mengecek ulang.</p>
       ${p.cek_ulang ? `<p>${pil("Sudah dicek ulang lapangan", "hijau")} ${p.cek_ulang_pada ? esc(tglJamWIB(p.cek_ulang_pada)) + " WIB" : ""}</p>` : ""}</div>`;
   }
@@ -125,9 +133,18 @@
     if (p.status === "dicabut") return ["Dicabut", "merah"]; if (p.status === "kedaluwarsa") return ["Tautan kedaluwarsa", "merah"]; if (p.status === "selesai") return ["Selesai", "hijau"];
     if (p.tiba_pada) return ["Tiba di lokasi", "hijau"]; if (p.berangkat_pada) return ["Dalam perjalanan", "emas"]; if (p.dibuka_pada) return ["Tautan dibuka, belum berangkat", ""]; return ["Tautan belum dibuka", ""];
   }
+  /* darurat dari tombol di halaman lacak (<= 6 jam): kotak merah mencolok di atas baris; tautan WhatsApp hanya bila nomor tampil (akun pembuat), tidak ada kiriman otomatis */
+  function daruratHtml(p) {
+    const d = p.darurat; if (!d || p.status !== "aktif") return "";
+    const wa = /^62\d{8,13}$/.test(p.wa || "") ? `https://wa.me/${p.wa}?text=${encodeURIComponent("Posko di sini. Kami menerima panggilan darurat dari Anda. Anda di mana dan apa yang terjadi?")}` : null;
+    return `<div class="tg-darurat" role="alert"><b>DARURAT: ${esc(d.label || d.jenis)}</b> dikirim ${esc(jamWIB(d.pada))} WIB${d.lat != null ? `, posisi ${ang(d.lat, 5)}, ${ang(d.lon, 5)}` : ", tanpa posisi (lihat posisi terakhir)"}. Hubungi sekarang atau telepon 112.
+      ${wa ? `<a class="lp-tombol utama" href="${esc(wa)}" target="_blank" rel="noopener noreferrer">Hubungi lewat WhatsApp</a>` : `<span class="lp-kecil">Nomor orang ini hanya tampil untuk akun yang menugaskannya; hubungi lewat pembuat penugasan.</span>`}</div>`;
+  }
+  /* bunyi pendek sekali per darurat baru; peramban butuh ketukan sebelumnya, jadi gagal diam-diam */
+  function bunyiDarurat() { try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.type = "square"; o.frequency.value = 880; g.gain.value = .12; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .6); o.onended = () => c.close(); } catch (e) {} }
   function barisHtml(p, admin, kini) {
     const [k, kls] = keadaan(p), mati = p.status !== "aktif", pos = p.posisi, umur = pos ? kini - pos.pada : null, lamaPos = umur != null && umur > 5 * MENIT && p.berangkat_pada && !p.tiba_pada && !mati;
-    return `<article class="tg-orang" data-pid="${esc(p.id)}"><div class="tg-o-kepala"><b>${esc(p.nama)}</b><span class="tg-peran">${esc(PERAN[p.peran] || p.peran)}, ${ang(p.orang, 0)} orang</span>${pil(k, kls)}${p.dummy ? pil("Contoh", "") : ""}</div>
+    return `<article class="tg-orang${p.darurat && p.status === "aktif" ? " tg-ada-darurat" : ""}" data-pid="${esc(p.id)}">${daruratHtml(p)}<div class="tg-o-kepala"><b>${esc(p.nama)}</b><span class="tg-peran">${esc(PERAN[p.peran] || p.peran)}, ${ang(p.orang, 0)} orang</span>${pil(k, kls)}${p.dummy ? pil("Contoh", "") : ""}</div>
       <p class="tg-o-info">${pos ? `Posisi ${esc(jamWIB(pos.pada))} WIB (${esc(lama(umur))})${pos.akurasi != null ? `, akurasi sekitar ${ang(pos.akurasi, 0)} m` : ""}.` : "Belum ada posisi."}
         ${p.jarak_km != null ? ` <b>${ang(p.jarak_km)} km</b> dari titik api (garis lurus)${p.eta_menit != null ? `, ETA kasar ${ang(p.eta_menit, 0)} menit` : ""}.` : ""}${lamaPos ? ` ${pil("Posisi lama: layar mati atau sinyal hilang?", "merah")}` : ""}</p>
       <p class="lp-kecil">Persiapan: ${ang(p.ringkas.wajib_centang, 0)} dari ${ang(p.ringkas.wajib, 0)} butir wajib dicentang.${p.berangkat_pada ? ` Berangkat ${esc(jamWIB(p.berangkat_pada))} WIB.` : ""}${p.tiba_pada ? ` Tiba ${esc(jamWIB(p.tiba_pada))} WIB.` : ""}${p.selesai_pada ? ` Selesai ${esc(jamWIB(p.selesai_pada))} WIB.` : ""}</p>
@@ -142,6 +159,16 @@
     <label>Masa berlaku tautan<select id="tgJam"><option value="24">24 jam</option><option value="48" selected>48 jam</option><option value="72">72 jam</option><option value="168">7 hari</option></select></label>
     <p id="tgGalat" class="lp-pesan galat" role="alert" hidden></p>
     <button type="submit" class="lp-tombol utama" id="tgKirim">Buat tautan</button></form>`;
+  /* kandidat dari GET /api/instansi/usulan/:id (sudah urut waktu tempuh lalu beban); rumus dan sifat "perkiraan" ditampilkan apa adanya */
+  function usulanHtml(j, admin) {
+    if (!j.kandidat.length) return `<p class="lp-kecil">${esc(j.pesan || "Belum ada kandidat.")}</p>`;
+    const alat = j.alat?.pompa?.filter(p => p.total_siap > 0).map(p => `${esc(p.label)}: ${ang(p.total_siap, 0)} siap, terdekat ${esc(p.tersedia[0]?.nama || "")} ${ang(p.tersedia[0]?.jarak_km)} km`) || [];
+    return `<p class="lp-kecil"><b>Perkiraan.</b> ${esc(j.rumus)}</p><ol class="tg-usulan-daftar">${j.kandidat.map((k, i) => `<li><b>${esc(k.nama)}</b> <span class="tg-peran">${esc(k.peran_nama)}, ${ang(k.orang, 0)} orang, ${esc(k.oleh)}</span>
+      <p class="lp-kecil">${k.tempuh_menit != null ? `Tempuh sekitar <b>${ang(k.tempuh_menit, 0)} menit</b> (${k.cara === "graf" ? "graf jalan dan sungai" : "garis lurus x 1,3"}${k.jarak_km != null ? `, ${ang(k.jarak_km)} km` : ""})` : "Waktu tempuh tidak diketahui (belum ada posisi atau pos asal)"}.
+        ${k.asal.jenis === "posisi" ? `Dari posisi terakhir ${ang(k.asal.umur_menit, 0)} menit lalu.` : k.asal.jenis === "pos" ? `Dari ${esc(k.asal.nama)}.` : ""} Beban 7 hari: ${ang(k.beban_7h, 0)} penugasan.</p>
+      ${admin ? "" : `<button type="button" class="lp-tombol utama" data-tg="pilih" data-i="${i}">Tugaskan</button>`}</li>`).join("")}</ol>
+      ${alat.length ? `<p class="lp-kecil">Alat siap yang cocok dengan rekomendasi: ${alat.join("; ")}.</p>` : j.alat?.gudang?.length ? `<p class="lp-kecil">Gudang terdekat dengan alat siap: ${j.alat.gudang.map(g => `${esc(g.nama)} (${ang(g.jarak_km)} km)`).join(", ")}.</p>` : ""}`;
+  }
   function hasilHtml(j, nama) {
     const wa = typeof j.wa?.tautan === "string" && j.wa.tautan.startsWith("https://wa.me/") ? j.wa.tautan : null;
     return `<div class="tg-hasil" role="status"><p><b>Tautan untuk ${esc(nama)} sudah dibuat.</b> Tautan hanya tampil sekali di layar ini dan tidak bisa dilihat lagi. Hilang atau salah kirim? Cabut lalu terbitkan ulang.</p>
@@ -157,7 +184,7 @@
     const url = admin ? `/api/instansi/admin/penugasan/${t.id}` : `/api/instansi/penugasan/${t.id}`, boleh = !admin && t.status === "buka";
     wadah.innerHTML = `<section class="in-kartu tg-kartu" aria-label="Penugasan dan pelacak posisi"><div class="tg-kepala"><h2 class="in-sub">Penugasan dan pelacak posisi</h2>${boleh ? `<button type="button" class="lp-tombol utama tg-baru" data-tg="baru">Tugaskan orang</button>` : ""}</div>
       <p class="lp-kecil">${admin ? "Posisi terakhir dan jejak orang yang ditugaskan. Nomor WhatsApp mereka tidak ditampilkan di sini." : "Buat tautan untuk driver, regu, atau petugas. Mereka membuka tautan di ponsel, melihat rute dan checklist, lalu membagikan posisi saat berangkat."} Posisi hanya terlihat oleh akun pemilik tugas, moderator, dan staf pusdalops wilayah ini, dan berhenti dikirim saat tugas selesai.</p>
-      ${boleh ? formHtml() : ""}<div class="tg-hasil-wadah"></div><div class="tg-peta" hidden></div><div class="tg-daftar" aria-live="polite"><p class="lp-kecil">Memuat penugasan…</p></div></section>`;
+      ${boleh ? formHtml() : ""}<div class="tg-hasil-wadah"></div><div class="tg-usulan"><button type="button" class="lp-tombol" data-tg="usulan">Lihat usulan orang untuk ditugaskan</button><div class="tg-usulan-isi" aria-live="polite"></div></div><div class="tg-peta" hidden></div><div class="tg-daftar" aria-live="polite"><p class="lp-kecil">Memuat penugasan…</p></div></section>`;
     const q = s => wadah.querySelector(s), hidup = () => aktif === S && saya === gen && wadah.isConnected !== false;
     async function muat() {
       if (!hidup()) return;
@@ -178,6 +205,8 @@
         ganti(art, h);
       }
       S.html = html; petaPosisi();
+      S.bunyi ||= new Set(); let baruDar = false; for (const p of S.daftar) if (p.darurat && p.status === "aktif" && !S.bunyi.has(p.id + ":" + p.darurat.pada)) { S.bunyi.add(p.id + ":" + p.darurat.pada); baruDar = true; }
+      if (baruDar) bunyiDarurat();
     }
     function ganti(art, h) {
       const buka = art.querySelector("details")?.open, id = art.dataset.pid, fokus = document.activeElement?.dataset?.k;
@@ -221,6 +250,11 @@
       const onClick = async e => {
         const b = e.target.closest?.("[data-tg]"); if (!b) return; const a = b.dataset.tg;
         if (a === "baru") { const f = q("#tgForm"); f.hidden = !f.hidden; if (!f.hidden) q("#tgNama").focus(); return; }
+        if (a === "usulan") { const w = q(".tg-usulan-isi"); b.disabled = true; w.innerHTML = `<p class="lp-kecil">Mencari kandidat…</p>`; const r = await api("GET", `/api/instansi/usulan/${t.id}`); b.disabled = false;
+          if (!r.ok) { w.innerHTML = `<p class="lp-kecil">${esc(r.status === 503 ? "Usulan belum aktif di server." : r.j.galat || "Usulan belum bisa dimuat.")}</p>`; return; } S.usulan = r.j.kandidat; w.innerHTML = usulanHtml(r.j, admin); return; }
+        if (a === "pilih") { const k = S.usulan?.[Number(b.dataset.i)]; if (!k || b.disabled) return; b.disabled = true; b.textContent = "Membuat tautan…";
+          const r = await api("POST", `/api/instansi/penugasan/${t.id}`, {nama: k.nama, peran: k.peran, wa: k.wa || "", orang: k.orang || 1, jam: 48});
+          if (!r.ok) { b.disabled = false; b.textContent = r.j.galat || "Gagal, coba lagi"; return; } b.textContent = "Sudah ditugaskan"; q(".tg-hasil-wadah").innerHTML = hasilHtml(r.j, k.nama); return muat(); }
         if (a === "salin") { try { await navigator.clipboard.writeText(b.dataset.url); b.textContent = "Tautan disalin"; } catch (x) { q(".tg-tautan")?.select?.(); b.textContent = "Salin manual: tekan lama pada tautan"; } return; }
         if (a === "cabut") { if (b.dataset.konfirmasi !== "1") { b.dataset.konfirmasi = "1"; b.textContent = "Ketuk lagi untuk mencabut"; return; }
           b.disabled = true; const r = await api("POST", `/api/instansi/cabut_penugasan/${b.dataset.p}`, {}); if (!r.ok) { b.disabled = false; b.textContent = r.j.galat || "Gagal mencabut"; return; } return muat(); }

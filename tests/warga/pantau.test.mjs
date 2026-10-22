@@ -413,3 +413,45 @@ uji("503 sopan bila 0030 belum diterapkan; rute lama tetap jalan dan sesi staf t
   assert.equal((await V.api("GET", "/admin/pantau")).s, 200, "kerangka halaman tidak butuh tabel");
   assert.deepEqual(await bersihkanPantau({DB: V.DB}, Date.now()), {lewat: "migrasi 0030 belum diterapkan"});
 });
+
+/* ================================================================ L1: butir cek_ulang_jatuh_tempo (cek ulang lapangan gambut H+1/H+3/H+7) */
+uji("L1: butir cek_ulang_jatuh_tempo: tugas padam di gambut (atau lahan tak diketahui) yang jadwal cek ulangnya lewat; hilang saat ada cek ulang; mineral, belum jatuh tempo, dan butir muncul lagi tidak ikut", async () => {
+  await bersihSumber();
+  const now = Date.now(), padam = (jamLalu, o = {}) => tugas({status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now - jamLalu * JAM, verif_pada: now - jamLalu * JAM, konfirmasi_pada: now - (jamLalu + 1) * JAM, isian_terakhir: now - jamLalu * JAM, ...o});
+  const telat = await padam(30), belum = await padam(10), lama = await padam(80), cek = await padam(30, {cek_ulang_pada: now - 2 * JAM});
+  let j = await butir(), b = ada(j, "cek_ulang_jatuh_tempo");
+  assert.equal(JENIS.cek_ulang_jatuh_tempo.peran[0], "pusdalops"); assert.ok(j.jenis.cek_ulang_jatuh_tempo);
+  assert.deepEqual(b.map(x => x.id.split(":")[1]).sort(), [telat, lama].sort(), "H+1 lewat (30 jam) dan H+3 lewat (80 jam); 10 jam belum; yang sudah dicek ulang tidak");
+  const bl = b.find(x => x.id.includes(lama)); assert.match(bl.id, /:1$/, "80 jam tanpa kunjungan sama sekali: jadwal paling awal yang lewat dulu"); assert.match(bl.judul, /Cek ulang H\+1 di Baamang, Kotawaringin Timur belum ada/); assert.equal(bl.tautan, "/admin/instansi"); assert.equal(bl.terlambat, true);
+  /* lahan mineral teramati = bukan gambut: tanpa butir */
+  await akunMenunggu();
+  await DB.prepare("INSERT INTO tugas_isian (id, tugas_id, akun_id, klien_id, langkah, dibuat, tindakan, kendala, bantuan, status_api, lahan_teramati) SELECT ?, ?, id, ?, 'tindakan', ?, 'Uji', '[]', '[]', 'bara', 'mineral' FROM instansi_akun LIMIT 1")
+    .bind("2".repeat(16), telat, "uji-mineral-pantau", now - 40 * JAM).run();
+  assert.equal((await DB.prepare("SELECT count(*) n FROM tugas_isian WHERE tugas_id = ?").bind(telat).first()).n, 1);
+  assert.ok(!ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(telat)), "mineral teramati: bukan gambut, tanpa butir");
+  /* kunjungan berfoto sesudah padam menghapus butir; peran lain tidak melihat jenis ini */
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(lama)), true);
+  await DB.prepare("UPDATE tugas_api SET cek_ulang_pada = ? WHERE id = ?").bind(now - JAM, lama).run();
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(lama) && x.id.endsWith(":1")), false, "H+1 terpenuhi; H+3 (80 jam) lewat jadi butir baru");
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").filter(x => x.id.includes(lama)).map(x => x.id.split(":")[3]).join(), "3");
+  await bersihSumber();
+});
+
+/* ================================================================ L3 pantau: alarm keselamatan regu dari src/penugasan.js */
+uji("L3 pantau: penugasan_darurat muncul di Meja Pantau sebagai butir darurat, prioritas 0 di paling atas; jenis baru terdaftar; staf tanpa peran tidak melihatnya", async () => {
+  await bersihSumber();
+  const now = Date.now(), tid = await tugas({status: "buka"}), akun = id16();
+  await akunMenunggu({id: akun});
+  const pid = id16();
+  await sisip("penugasan", {id: pid, tugas_id: tid, akun_id: akun, nama: "Regu Alfa", peran: "ketua_regu", orang: 4, token_sha: "a".repeat(63) + "1", status: "aktif", dibuat: now - 3 * JAM, kedaluwarsa: now + 5 * JAM, berangkat_pada: now - 2 * JAM, dummy: 0});
+  await sisip("penugasan_darurat", {penugasan_id: pid, jenis: "terkepung_api", lat: -2.5, lon: 113.2, pada: now - 5 * MENIT});
+  await tugas({status: "buka", konfirmasi_pada: null, dibuat: now - 30 * JAM});   // api_konfirmasi terlambat, prioritas 1
+  const j = await butir(), d = ada(j, "darurat");
+  for (const k of ["darurat", "regu_sunyi", "angin_ke_regu", "regu_rotasi"]) { assert.ok(JENIS[k], k); assert.ok(j.jenis[k], "dikirim ke klien: " + k); assert.deepEqual(JENIS[k].peran, ["pusdalops"]); }
+  assert.equal(d.length, 1); assert.match(d[0].judul, /DARURAT terkepung api: Regu Alfa/); assert.equal(d[0].prioritas, 0); assert.deepEqual(d[0].provs, ["62"]);
+  assert.equal(j.butir[0].jenis, "darurat", "darurat paling atas, di atas butir prioritas 1");
+  assert.ok(ada(j, "regu_sunyi").length === 1, "posisi tak pernah terkirim sejak berangkat 2 jam lalu: regu sunyi");
+  await DB.prepare("DELETE FROM penugasan_darurat").run(); await DB.prepare("DELETE FROM penugasan WHERE id = ?").bind(pid).run();
+  assert.equal(ada(await butir(), "darurat").length, 0, "kondisinya hilang: butir hilang sendiri");
+  await bersihSumber();
+});

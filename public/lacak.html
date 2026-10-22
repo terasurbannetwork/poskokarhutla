@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0b2545">
 <title>Tugas api | Pantau Bencana</title>
 <link rel="icon" href="/img/logo.svg">
-<link rel="stylesheet" href="/lacak.css?v=1">
+<link rel="stylesheet" href="/lacak.css?v=2">
 </head>
 <body>
 <header class="lk-top"><img src="/img/logo.svg" alt="" width="28" height="28"><span>Pantau Bencana</span><b>Tugas api</b></header>
@@ -22,6 +22,7 @@
   </section>
 
   <div id="isi" hidden>
+    <p id="angin" class="lk-angin" role="alert" aria-live="assertive" hidden></p>
     <section class="lk-kartu lk-tugas" aria-labelledby="judul">
       <p class="lk-label">Ditugaskan ke</p>
       <h1 id="judul"></h1>
@@ -53,9 +54,22 @@
       </div>
       <p class="lk-kecil lk-layar">Jika layar mati, posisi berhenti terkirim. Biarkan layar menyala dan jangan tutup halaman ini selama di jalan. Posisimu hanya terlihat oleh pihak yang menugaskanmu dan berhenti dikirim saat kamu menekan Selesai.</p>
     </section>
+    <section class="lk-kartu lk-darurat" aria-labelledby="hDar">
+      <h2 id="hDar">Darurat</h2>
+      <button type="button" id="bDarurat" class="lk-tombol darurat">Darurat, butuh bantuan</button>
+      <div id="pilihDarurat" class="lk-dar-pilih" hidden>
+        <p class="lk-kecil">Pilih yang paling sesuai. Posisimu dan jenisnya langsung tampil paling atas di Posko. Bila bisa, telepon 112 atau komandanmu juga.</p>
+        <button type="button" class="lk-tombol darurat" data-dar="cedera">Cedera</button>
+        <button type="button" class="lk-tombol darurat" data-dar="terkepung_api">Terkepung api</button>
+        <button type="button" class="lk-tombol darurat" data-dar="tersesat">Tersesat</button>
+        <button type="button" class="lk-tombol darurat" data-dar="lainnya">Keadaan darurat lainnya</button>
+        <button type="button" id="bDarBatal" class="lk-tombol">Batal</button>
+      </div>
+      <p id="statusDarurat" class="lk-status" role="status" aria-live="polite" hidden></p>
+    </section>
   </div>
 </main>
 <script src="/instansi_akses.js?v=1" defer></script>
-<script src="/lacak.js?v=1" defer></script>
+<script src="/lacak.js?v=2" defer></script>
 </body>
 </html>

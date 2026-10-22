@@ -9,7 +9,7 @@ import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: instansi.js dan worker.js saling impor
-import {buatTugas, bersihkanInstansi, personelProvinsi, susunDefs, sandiAcak, tenggat, pesanTagih, kekurangan, kebutuhanTerkonfirmasi, waktuMedia, hitungOrang, pasRekomendasi, pasAkses, infoPadam, verifikasiPadam, butirApiMunculLagi, KODAM, PROV, JENIS, HASIL, STATUS_API, LAHAN, BANTUAN, UNSUR, ALAT} from "../../src/instansi.js";
+import {buatTugas, bersihkanInstansi, personelProvinsi, susunDefs, sandiAcak, tenggat, pesanTagih, kekurangan, kebutuhanTerkonfirmasi, waktuMedia, hitungOrang, pasRekomendasi, pasAkses, infoPadam, verifikasiPadam, butirApiMunculLagi, butirCekUlang, jadwalCekUlang, lahanTugas, bolehCekUlang, tautkanLaporanRegu, KODAM, PROV, JENIS, HASIL, STATUS_API, LAHAN, BANTUAN, UNSUR, ALAT} from "../../src/instansi.js";
 import {KENDALA} from "../../src/posko.js";
 import {bersihJpeg, bersihWebp, bersihMp4} from "../../src/media_bersih.js";
 import {durasiMP4} from "../../src/foto.js";
@@ -1104,4 +1104,141 @@ uji("instansi: cron buatTugas menjalankan verifikasi padam lebih dulu, walau tug
   await DB.prepare("ALTER TABLE titik_terbaru RENAME TO titik_terbaru_x").run();
   try { TUGAS = {dibuat: new Date(BASE + 3 * JAM - 30 * MENIT).toISOString(), kompleks: [KOMPLEKS("K9200", -0.3, 110.3)]}; const sebelum = await n("tugas_api"); await cron(BASE + 3 * JAM); assert.equal(await n("tugas_api"), sebelum + 1, "tugas baru tetap dibuat"); }
   finally { await DB.prepare("ALTER TABLE titik_terbaru_x RENAME TO titik_terbaru").run(); }
+});
+
+
+/* ================================================================ L1: verifikasi padam + api muncul lagi (Himawari, regu, cek ulang terjadwal) */
+const padamkan = (id, padamPada, o = {}) => DB.prepare("UPDATE tugas_api SET status = 'padam', padam_verif = ?, padam_pada = ?, verif_pada = ?, cek_ulang_pada = ?, konfirmasi_pada = ?, isian_terakhir = ? WHERE id = ?")
+  .bind(o.verif ?? "padam_dilaporkan", padamPada, padamPada, o.cek ?? null, padamPada - JAM, padamPada, id).run();
+const himawariR2 = (baris, acuan) => R2.put("data/himawari.json", JSON.stringify({acuan: new Date(acuan).toISOString(), kolom: [], baris}));
+uji("L1: Himawari dalam 2 km memicu muncul_lagi (sumber, jarak, keterangan); di luar 2 km, basi, n=1, level 1, dan sebelum laporan padam tidak", async () => {
+  const h = await masuk("pemkabseruyan"), now = Date.now(), pada = now - 3 * JAM, dLat = derajatM(1);
+  const mk = async (lat, lon, o) => { const id = await tugasBaru("62", "Seruyan", {lat, lon}); await padamkan(id, o?.pada ?? pada); return id; };
+  const A = await mk(-0.7, 110.7), B = await mk(-0.9, 110.9), C = await mk(-0.5, 110.5), D = await mk(-0.3, 110.3, {pada: now - 10 * MENIT});
+  const km1_2 = [-0.7, 110.7 + derajatM(1200) / Math.cos(0)];
+  await himawariR2([[km1_2[0], km1_2[1], 20, 30, 3, 3, 1, 3, 50, 1],                     // A: 1,2 km, bertahan 3 pindaian
+    [-0.9, 110.9 + derajatM(2600), 20, 30, 3, 3, 1, 3, 50, 1],                            // B: 2,6 km
+    [-0.5, 110.5, 61, 30, 3, 3, 1, 4, 90, 0], [-0.5, 110.5, 20, 30, 3, 3, 1, 1, 20, 0], [-0.5, 110.5, 20, 30, 1, 3, 1, 4, 50, 0],   // C: terlalu tua, n=1, level 1
+    [-0.3, 110.3, 20, 30, 3, 3, 1, 3, 50, 1]], now - 5 * MENIT);                          // D: terdeteksi sebelum laporan padam
+  await DB.prepare("DELETE FROM titik_terbaru").run(); await titikRound(now - 10 * MENIT, [[5, 100, 0]]);
+  const v = await verifikasiPadam({DB, MEDIA: R2}, now); assert.equal(v.muncul, 1, JSON.stringify([v, (await DB.prepare("SELECT id, lat, lon, padam_pada, verif_pada FROM tugas_api WHERE padam_verif = 'muncul_lagi'").all()).results, [A, B, C, D]]));
+  const st = async id => (await DB.prepare("SELECT status, padam_verif, verif_pada FROM tugas_api WHERE id = ?").bind(id).first());
+  assert.deepEqual(await st(A), {status: "buka", padam_verif: "muncul_lagi", verif_pada: now});
+  for (const id of [B, C, D]) assert.equal((await st(id)).padam_verif, "padam_dilaporkan", "tidak terpicu");
+  const m = await DB.prepare("SELECT * FROM tugas_muncul WHERE tugas_id = ?").bind(A).first();
+  assert.equal(m.sumber, "himawari"); assert.equal(m.waktu, now); assert.ok(Math.abs(m.jarak_km - 1.2) < 0.05, m.jarak_km); assert.match(m.keterangan, /sekitar 2 km[^]*perkiraan, bukan kepastian/);
+  assert.equal(await n("tugas_muncul", `tugas_id = '${A}'`), 1);
+  const rin = (await api("GET", `/api/instansi/tugas/${A}`, undefined, h)).j.tugas.padam;
+  assert.equal(rin.status, "muncul_lagi"); assert.equal(rin.muncul.sumber, "himawari"); assert.equal(rin.muncul.waktu, now); assert.ok(rin.muncul.jarak_km > 1);
+  /* acuan Himawari basi (> 3 jam): tidak memicu, dan tanpa putaran FIRMS yang memutuskan pun tidak galat */
+  await himawariR2([[-0.9, 110.9, 20, 30, 3, 3, 1, 3, 50, 1]], now - 4 * JAM);
+  assert.equal((await verifikasiPadam({DB, MEDIA: R2}, now)).muncul, 0, "acuan 4 jam: basi");
+  /* R2 tak terbaca atau tanpa binding: dilewati, FIRMS tetap jalan */
+  await R2.put("data/himawari.json", "{bukan json"); assert.equal((await verifikasiPadam({DB, MEDIA: R2}, now)).muncul, 0);
+  await DB.prepare("DELETE FROM titik_terbaru").run(); await titikRound(now - MENIT, [[-0.9, 110.9 + derajatM(500), -0.1]]);
+  assert.equal((await verifikasiPadam({DB, MEDIA: R2}, now)).muncul, 1, "FIRMS 500 m sesudah padam tetap memicu walau R2 rusak");
+  const f = await DB.prepare("SELECT sumber, jarak_km FROM tugas_muncul WHERE tugas_id = ?").bind(B).first(); assert.equal(f.sumber, "firms"); assert.ok(Math.abs(f.jarak_km - 0.5) < 0.05);
+  await R2.delete("data/himawari.json");
+  /* tabel rincian 0037 belum ada: tugas tetap dibuka kembali */
+  const E = await mk(-0.1, 110.1); await DB.prepare("DELETE FROM titik_terbaru").run(); await titikRound(now - MENIT, [[-0.1, 110.1 + derajatM(300), -0.1]]);
+  await DB.prepare("ALTER TABLE tugas_muncul RENAME TO tugas_muncul_x").run();
+  try { assert.equal((await verifikasiPadam({DB}, now)).muncul, 1); assert.equal((await st(E)).padam_verif, "muncul_lagi"); }
+  finally { await DB.prepare("ALTER TABLE tugas_muncul_x RENAME TO tugas_muncul").run(); }
+  assert.equal((await api("GET", `/api/instansi/tugas/${E}`, undefined, h)).j.tugas.padam.muncul, null, "tanpa rincian: status tetap tampil");
+});
+
+uji("L1: jadwal cek ulang H+1/H+3/H+7 untuk gambut (atau lahan tak diketahui); butir jatuh tempo; satu kunjungan memenuhi satu jadwal; mineral tanpa jadwal", async () => {
+  const h = await masuk("pemkabseruyan"), lat = -1.1, lon = 111.1, g = gps(lat, lon), now = Date.now();
+  const id = await tugasBaru("62", "Seruyan", {lat, lon}); await padamkan(id, now - 30 * HARI / 24 * 1);   // 30 jam lalu
+  const foto = async () => (await unggah(h, id, {media: jpeg(1), g})).j.id, CU = m => ({klien_id: `uji-cu-${++kl}`, media: [m]});
+  const info = async () => (await api("GET", `/api/instansi/tugas/${id}`, undefined, h)).j.tugas.padam;
+  let p = await info(); assert.equal(p.gambut, true); assert.equal(p.dasar_lahan, "tidak_diketahui", "tanpa bukti lahan = dianggap gambut");
+  assert.deepEqual(p.jadwal_cek_ulang.map(x => [x.hari, x.selesai, x.terlambat]), [[1, null, true], [3, null, false], [7, null, false]]); assert.equal(p.cek_ulang_berikutnya.hari, 1);
+  assert.equal(p.jadwal_cek_ulang[0].jatuh_tempo - p.pada, HARI);
+  /* butir Meja Pantau: H+1 lewat tanpa kunjungan */
+  let b = (await butirCekUlang({DB}, now, false)).filter(x => x.id.includes(id)); assert.equal(b.length, 1); assert.equal(b[0].jenis, "cek_ulang_jatuh_tempo"); assert.deepEqual(b[0].provs, ["62"]); assert.match(b[0].id, /:1$/); assert.match(b[0].judul, /Cek ulang H\+1 di Kec Uji, Seruyan/);
+  assert.match(b[0].rincian, /dianggap gambut/);
+  /* cek ulang pertama memenuhi H+1; butir hilang; kedua belum boleh (H+3 belum masuk jendela) */
+  const c1 = await api("POST", `/api/instansi/cekulang/${id}`, CU(await foto()), h); assert.equal(c1.s, 201, c1.t);
+  p = await info(); assert.equal(p.jadwal_cek_ulang[0].selesai > 0, true); assert.equal(p.cek_ulang_berikutnya.hari, 3); assert.equal(p.boleh_cek_ulang, false);
+  assert.ok(!(await butirCekUlang({DB}, Date.now(), false)).some(x => x.id.includes(id)), "kunjungan menghapus butir");
+  assert.equal((await api("POST", `/api/instansi/cekulang/${id}`, CU(await foto()), h)).s, 409, "H+3 belum masuk jendela");
+  /* 80 jam sesudah padam: H+3 lewat -> butir H+3; kirim lagi boleh; H+7 belum */
+  await DB.prepare("UPDATE tugas_api SET padam_pada = ?, verif_pada = ? WHERE id = ?").bind(Date.now() - 80 * JAM, Date.now() - 80 * JAM, id).run();
+  b = (await butirCekUlang({DB}, Date.now(), false)).filter(x => x.id.includes(id)); assert.equal(b.length, 1); assert.match(b[0].id, /:3$/);
+  const kunc = (await DB.prepare("SELECT cek_ulang_pada FROM tugas_api WHERE id = ?").bind(id).first()).cek_ulang_pada;
+  const c2 = await api("POST", `/api/instansi/cekulang/${id}`, CU(await foto()), h); assert.equal(c2.s, 201, c2.t);
+  assert.equal((await DB.prepare("SELECT cek_ulang_pada FROM tugas_api WHERE id = ?").bind(id).first()).cek_ulang_pada, kunc, "cek_ulang_pada tetap = cek ulang pertama");
+  p = await info(); assert.deepEqual(p.jadwal_cek_ulang.map(x => x.selesai != null), [true, true, false]); assert.equal(p.cek_ulang_berikutnya.hari, 7);
+  assert.ok(!(await butirCekUlang({DB}, Date.now(), false)).some(x => x.id.includes(id)));
+  assert.equal((await api("POST", `/api/instansi/cekulang/${id}`, CU(await foto()), h)).s, 409, "H+7 belum masuk jendela");
+  /* murni: satu kunjungan hanya memenuhi satu jadwal; jendela 12 jam sebelum jatuh tempo; mineral teramati = bukan gambut, tanpa jadwal; campuran = gambut */
+  const T0 = 1e12, tp = {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: T0, cek_ulang_pada: null};
+  assert.deepEqual(jadwalCekUlang({...tp, kunjungan: String(T0 + 11 * JAM)}, T0 + 2 * HARI).jadwal.map(x => x.selesai), [null, null, null], "11 jam sesudah padam: lebih awal dari jendela H+1 (12 jam sebelum jatuh tempo)");
+  assert.equal(jadwalCekUlang({...tp, kunjungan: String(T0 + 13 * JAM)}, T0 + 2 * HARI).jadwal[0].selesai, T0 + 13 * JAM);
+  assert.deepEqual(jadwalCekUlang({...tp, kunjungan: `${T0 + 30 * JAM},${T0 + 31 * JAM}`}, T0 + 4 * HARI).jadwal.map(x => x.selesai != null), [true, false, false], "H+3 butuh jendela 60 jam: dua kunjungan dini tidak memenuhi dua jadwal");
+  assert.equal(jadwalCekUlang({...tp, status: "buka"}, T0), null);
+  assert.deepEqual([lahanTugas({lahan_obs: "mineral"}).gambut, lahanTugas({lahan_obs: "mineral,gambut"}).gambut, lahanTugas({lahan_obs: "campuran"}).gambut, lahanTugas({lahan_obs: "tidak_tahu", rekomendasi: '{"cara":"pembasahan gambut"}'}).dasar, lahanTugas({}).dasar], [false, true, true, "rekomendasi", "tidak_diketahui"]);
+  assert.equal(infoPadam({...tp, lahan_obs: "mineral"}, T0 + HARI).jadwal_cek_ulang, null); assert.equal(bolehCekUlang({...tp, lahan_obs: "mineral", cek_ulang_pada: T0 + JAM}, T0 + 5 * HARI), false, "non-gambut: sekali");
+});
+
+uji("L1: padam_terverifikasi untuk gambut butuh cek ulang H+1; non-gambut cukup aturan lama", async () => {
+  const lat = -1.3, lon = 111.3, now = Date.now(), pada = now - 49 * JAM;
+  const G = await tugasBaru("62", "Seruyan", {lat, lon}), M = await tugasBaru("62", "Seruyan", {lat: lat - 0.2, lon});
+  await padamkan(G, pada); await padamkan(M, pada);
+  /* M: lahan mineral teramati di satu isian (SQL langsung; rute pembuatnya diuji di atas) */
+  await DB.prepare("INSERT INTO tugas_isian (id, tugas_id, akun_id, klien_id, langkah, dibuat, tindakan, kendala, bantuan, status_api, lahan_teramati) SELECT ?, ?, id, ?, 'tindakan', ?, 'Uji', '[]', '[]', 'bara', 'mineral' FROM instansi_akun LIMIT 1")
+    .bind("1".repeat(16), M, "uji-mineral-1", pada - JAM).run();
+  await DB.prepare("DELETE FROM titik_terbaru").run(); await titikRound(now - 20 * MENIT, [[lat + 0.5, lon, 0]]);
+  const st = async id => (await DB.prepare("SELECT padam_verif FROM tugas_api WHERE id = ?").bind(id).first()).padam_verif;
+  await verifikasiPadam({DB}, now);
+  assert.equal(await st(M), "padam_terverifikasi", "mineral: aturan lama"); assert.equal(await st(G), "padam_dilaporkan", "gambut tanpa cek ulang H+1: belum");
+  const t = await DB.prepare(`SELECT ${"t.id, t.status, t.padam_verif, t.padam_pada, t.verif_pada, t.cek_ulang_pada, t.rekomendasi"} FROM tugas_api t WHERE t.id = ?`).bind(G).first();
+  assert.match(infoPadam(t, now).label, /Menunggu cek ulang lapangan H\+1 \(gambut\)/);
+  await DB.prepare("UPDATE tugas_api SET cek_ulang_pada = ? WHERE id = ?").bind(now - 10 * JAM, G).run();
+  await verifikasiPadam({DB}, now); assert.equal(await st(G), "padam_terverifikasi", "cek ulang H+1 ada");
+  /* cek ulang yang terlalu dini (sebelum jendela H+1) tidak dihitung */
+  const D = await tugasBaru("62", "Seruyan", {lat: lat - 0.4, lon}); await padamkan(D, pada, {cek: pada + 2 * JAM});
+  await verifikasiPadam({DB}, now); assert.equal(await st(D), "padam_dilaporkan");
+});
+
+uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam mengisi padam_pada; menyala pada tugas padam = muncul_lagi sumber regu; kab lain dan >2 km tidak", async () => {
+  const now = Date.now(), lat = 2.3, lon = 99.3, L = (id, o = {}) => ({id, lat: lat + derajatM(500), lon, prov: "62", kab: "Seruyan", status: "padam", waktu: now, dipercaya: true, ...o});
+  const idL = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
+  const dekat = await tugasBaru("62", "Seruyan", {lat, lon}), jauh = await tugasBaru("62", "Seruyan", {lat: lat + derajatM(1500), lon}), lain = await tugasBaru("62", "Katingan", {lat, lon});
+  const p = idL(), r = await tautkanLaporanRegu({DB}, L(p), now);
+  assert.equal(r.tugas_id, dekat, "yang terdekat (0,5 km), bukan 1,0 km"); assert.equal(r.efek, "padam_dilaporkan"); assert.ok(Math.abs(r.jarak_km - 0.5) < 0.05);
+  const t = await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(); assert.deepEqual(t, {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now, cek_ulang_pada: null});
+  assert.deepEqual(await DB.prepare("SELECT tugas_id, status FROM tugas_lapangan WHERE lapangan_id = ?").bind(p).first(), {tugas_id: dekat, status: "padam"});
+  assert.equal((await tautkanLaporanRegu({DB}, L(p), now)).efek, null, "kirim ulang: tidak ada tautan ganda, padam_pada tidak bergeser"); assert.equal(await n("tugas_lapangan", `lapangan_id = '${p}'`), 1);
+  assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(lain).first()).status, "buka", "kabupaten lain tidak tersentuh"); assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(jauh).first()).status, "buka");
+  /* menyala sesudah padam: muncul_lagi sumber regu; sebelum waktu padam tidak */
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "bara", waktu: now - HARI}), now)).efek, null, "kejadian regu lebih tua dari laporan padam");
+  const m = idL(), r2 = await tautkanLaporanRegu({DB}, L(m, {status: "menyala", waktu: now + 1000}), now + 2000); assert.equal(r2.efek, "muncul_lagi");
+  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, verif_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "buka", padam_verif: "muncul_lagi", verif_pada: now + 2000});
+  const mu = await DB.prepare("SELECT sumber, jarak_km, keterangan FROM tugas_muncul WHERE tugas_id = ?").bind(dekat).first(); assert.equal(mu.sumber, "regu"); assert.ok(Math.abs(mu.jarak_km - 0.5) < 0.05); assert.match(mu.keterangan, /api menyala/);
+  /* padam lagi dari regu pada tugas muncul_lagi: verifikasi mulai dari awal; laporan tidak dipercaya (ditahan/GPS curiga) hanya menaut */
+  const x = await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 5000, dipercaya: false}), now + 6000); assert.equal(x.efek, null); assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(dekat).first()).status, "buka");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7000}), now + 8000)).efek, "padam_dilaporkan");
+  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now + 7000, cek_ulang_pada: null});
+  /* tugas dummy dan tugas ditutup tidak ditautkan */
+  const dm = await tugasBaru("62", "Seruyan", {lat: lat - 0.5, lon}); await DB.prepare("UPDATE tugas_api SET dummy = 1 WHERE id = ?").bind(dm).run();
+  assert.equal(await tautkanLaporanRegu({DB}, L(idL(), {lat: lat - 0.5}), now), null); await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(dm).run();
+  /* retensi: baris yatim (tugas sudah dihapus) dibuang cron */
+  await DB.prepare("DELETE FROM tugas_api WHERE id IN (?, ?, ?)").bind(dekat, jauh, lain).run(); assert.ok(await n("tugas_muncul", `tugas_id = '${dekat}'`) > 0);
+  await bersihkanInstansi({DB}, Date.now()); assert.equal(await n("tugas_muncul", `tugas_id = '${dekat}'`), 0); assert.equal(await n("tugas_lapangan", `tugas_id = '${dekat}'`), 0);
+});
+
+uji("L1: migrasi 0037 idempoten; CHECK menolak sumber liar dan jarak negatif; satu laporan satu tugas", async () => {
+  const f = readFileSync(path.join(AKAR, "migrations/0037_verifikasi_padam.sql"), "utf8"), id = "a".repeat(16);
+  await DB.prepare("INSERT INTO tugas_muncul (tugas_id, waktu, sumber) VALUES (?, 1, 'firms')").bind(id).run();
+  await DB.batch(pecah(f).map(s => DB.prepare(s))); await DB.batch(pecah(f).map(s => DB.prepare(s)));
+  assert.equal(await n("tugas_muncul", `tugas_id = '${id}'`), 1, "dijalankan ulang tidak mengubah baris");
+  await assert.rejects(() => DB.prepare("INSERT INTO tugas_muncul (tugas_id, waktu, sumber) VALUES (?, 2, 'dukun')").bind(id).run(), /CHECK/);
+  await assert.rejects(() => DB.prepare("INSERT INTO tugas_muncul (tugas_id, waktu, sumber, jarak_km) VALUES (?, 3, 'regu', -1)").bind(id).run(), /CHECK/);
+  await assert.rejects(() => DB.prepare("INSERT INTO tugas_muncul (tugas_id, waktu, sumber) VALUES (?, 1, 'regu')").bind(id).run(), /UNIQUE/);
+  await DB.prepare("INSERT INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, 1, 'padam', 1)").bind(id, "b".repeat(16)).run();
+  await assert.rejects(() => DB.prepare("INSERT INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, 1, 'menyala', 1)").bind("c".repeat(16), "b".repeat(16)).run(), /UNIQUE/, "satu laporan menaut ke satu tugas");
+  await assert.rejects(() => DB.prepare("INSERT INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, 1, 'rusak', 1)").bind(id, "d".repeat(16)).run(), /CHECK/);
+  await DB.prepare("DELETE FROM tugas_muncul WHERE tugas_id = ?").bind(id).run(); await DB.prepare("DELETE FROM tugas_lapangan WHERE tugas_id = ?").bind(id).run();
 });
