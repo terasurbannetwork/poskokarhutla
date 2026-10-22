@@ -476,8 +476,8 @@ TANPA = "(tanpa nama)"
 
 def kunci_kab(prov, nama):
     """Kunci kabupaten = kunci layar (index.html aturWilayah: kode provinsi + "|" + properti kab fitur public/geo/kabupaten/<prov>.json).
-    Titik di fitur tanpa nama (danau; nama kosong) memakai "<prov>|(tanpa nama)" supaya jumlah kabupaten tetap sama dengan provinsi; layar tak punya fiturnya.
-    Bukan "<prov>|": penjaga kontrak layar (peta_karhutla.js cekKab, /^\\d+\\|./) menolak seluruh berkas bila ada kunci bernama kosong."""
+    Titik di fitur tanpa nama (danau; nama kosong) memakai "<prov>|(tanpa nama)" supaya jumlah kabupaten tetap sama dengan provinsi dan nama tidak pernah kosong;
+    layar tak punya fiturnya, jadi titik itu tak tergambar di peta kabupaten."""
     return f"{prov}|{nama or TANPA}"
 
 
@@ -915,7 +915,7 @@ def uji_kab():
     geo = {"62|A", "62|B", "16|C"}
     assert list(k["kab"]) == ["16|C", "62|(tanpa nama)", "62|A", "62|B"], list(k["kab"])                      # terurut; titik tanpa nama kabupaten punya kunci "<prov>|(tanpa nama)"
     import re
-    assert all(re.match(r"^\d+\|.", key) for key in k["kab"]), "kunci harus lolos penjaga kontrak layar (peta_karhutla.js cekKab); '<prov>|' menolak seluruh berkas"
+    assert all(re.match(r"^\d+\|.", key) for key in k["kab"]), "nama kabupaten tidak pernah kosong: titik di fitur tanpa nama berkunci '<prov>|(tanpa nama)', bukan '<prov>|'"
     assert k["kab"]["62|A"]["d"] == [[0, bul(3 * titik), bul(titik)], [2, bul(titik), 0]] and k["kab"]["62|B"]["d"] == [[0, bul(2 * titik), bul(2 * titik)]], k["kab"]
     assert k["kab"]["62|(tanpa nama)"] == {"nama": TANPA, "prov": "62", "d": [[2, bul(titik), bul(titik)]]} and k["kab"]["16|C"]["d"] == [[0, 2, 0]], k["kab"]
     assert all(e[0] != 1 for v in k["kab"].values() for e in v["d"]), "hari tanpa titik (indeks 1) tak boleh ditulis"
