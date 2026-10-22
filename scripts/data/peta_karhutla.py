@@ -743,7 +743,7 @@ def uji_sintetis():
         assert abs(rw["62|A"][j] - rw["62|A|x"][j] - rw["62|A|y"][j]) < 1e-9 and abs(rw["62|A"][j] + rw["62|B"][j] - sum(rw[k][j] for k in kk)) < 1e-9, (j, rw)
     assert rw["62|A"][0] == 3 and rw["62|B"][0] == 1 and rw["62|A|x"][3] == 0.5 * 4.3 and rw["62|B|z"][3] == 0.5 * 4.3, rw   # c1 dan c2 tak muncul lagi: keduanya padam
     iw = susun_wil(None, d, d, d + HARI, {d.isoformat(): rw, (d + HARI).isoformat(): {"62|A": [0, 0.4, 0, 0]}}, "x")
-    assert iw["d"]["62|A"] == [0, 3, 4, 2, 2] and iw["d"]["62|A|y"] == [0, 0, 2, 0, 2] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
+    assert iw["d"]["62|A"] == [0, 3, 4, 2, 2] and iw["d"]["62|A|y"] == [0, 0, 2, 0, 0] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
     # teks metode: angka dari konstanta, tanda baca bertipografi (en dash, ±), klaim tak melampaui bukti
     mt = metode()
     teks = json.dumps(mt, ensure_ascii=False)
