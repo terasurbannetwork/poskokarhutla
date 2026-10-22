@@ -294,7 +294,7 @@ def w_konsesi(c):
     if not ps or not terkini(ps[0]):
         raise Kosong("tidak ada perusahaan dengan titik 7 hari di dalam batas izin")
     JENIS = {"sawit": "Sawit", "pbph": "Hutan tanaman atau alam"}
-    baris = [{"nama": p["nama"], "walhi": p.get("peringkat"), "terkini": terkini(p), "jenis": JENIS.get(p["jenis"], p["jenis"]),
+    baris = [{"nama": p["nama"], "terkini": terkini(p), "jenis": JENIS.get(p["jenis"], p["jenis"]),
               "wilayah": ", ".join(x for x in (p.get("kab"), p.get("prov")) if x)} for p in ps[:BARIS_MAKS]]
     t = ps[0]
     jn = {x["jenis"]: x["n"] for x in kk["jenis"]}
@@ -303,12 +303,12 @@ def w_konsesi(c):
         judul=f"Indikasi: {K(fid(tot))} titik panas berada di dalam batas izin dalam 7 hari sampai {tgl(tg(c, 'kompleks_konsesi'))}, terbanyak di areal {K(t['nama'])} ({K(fid(terkini(t)) + ' titik')})",
         angka=[angka("Titik di dalam batas izin (7 hari)", tot, "titik"),
                angka("Di areal sawit", jn.get("sawit", 0), "titik"), angka("Di areal hutan tanaman", jn.get("hti", 0), "titik")],
-        kolom=[kol("nama", "Perusahaan"), kol("walhi", "Titik musim ini menurut WALHI", "angka"), kol("terkini", "Titik 7 hari terakhir di dalam batas izin", "angka"),
+        kolom=[kol("nama", "Perusahaan"), kol("terkini", "Titik 7 hari terakhir di dalam batas izin", "angka"),
                kol("jenis", "Jenis izin", "pill"), kol("wilayah", "Wilayah")],
         baris=baris,
         tindak_lanjut=tindak(("KLHK Gakkum", f"Verifikasi lapangan ke areal {t['nama']} dan {ps[1]['nama'] if len(ps) > 1 else 'perusahaan berikutnya'}."),
                              ("ATR/BPN", "Cocokkan batas izin terbaru dengan titik panas sebelum langkah hukum.")),
-        sumber="NASA FIRMS dicocokkan ke peta izin (Kementerian Kehutanan lewat Global Forest Watch, Trase), kajian WALHI 2026",
+        sumber="Batas izin Kemenhut via GFW dan Trase, titik panas NASA FIRMS VIIRS",
         catatan="Indikasi titik panas di dalam batas izin, bukan penetapan pelaku. Batas izin berumur (sawit dan HPH sekitar 2014) dan bisa sudah berubah.")
 
 
@@ -324,7 +324,7 @@ def w_gambut(c):
         angka=[angka("Titik panas 7 hari di semua KHG", tot, "titik"), angka("KHG yang bertitik panas", len(ks), "KHG"),
                angka("Titik panas 7 hari di KHG teratas", t["titik_7h"], "titik")],
         kolom=[kol("nama", "KHG"), kol("prov", "Provinsi"), kol("t7", "Titik 7 hari", "angka"), kol("t30", "Titik 30 hari", "angka"),
-               kol("aktif", "Kejadian api aktif", "angka"), kol("kanal", "Kanal (km)", "angka")],
+               kol("aktif", "Kejadian api tercatat", "angka"), kol("kanal", "Kanal (km)", "angka")],
         baris=[{"nama": k["nama"], "prov": k["prov_nama"], "t7": k["titik_7h"], "t30": k["titik_30h"], "aktif": k["kompleks_aktif"],
                 "kanal": round(k["kanal_km"])} for k in ks[:BARIS_MAKS]],
         tindak_lanjut=tindak(("BRGM", f"Basahi gambut dan pasang sekat kanal di {t['nama']} lebih dulu ({fid(t['kanal_km'])} km kanal)."),
@@ -375,9 +375,9 @@ def w_asap(c):
     sebelum = u["terpapar"][hari[i - 1]] if i else None
     pr = sorted(t["prov"].items(), key=lambda kv: -kv[1]["penduduk"])[:BARIS_MAKS]
     d = dt.date.fromisoformat(h)
-    prakiraan = d > waktu(u["dibuat"]).date()
+    ke_depan = d > waktu(u["dibuat"]).date()
     pend = bulat(t["penduduk"])
-    kata = f"prakiraan {tgl(d)}" if prakiraan else tgl(d)
+    kata = f"perkiraan {tgl(d)}" if ke_depan else tgl(d)
     pembanding = f", perubahan dibanding {tgl(dt.date.fromisoformat(hari[i - 1]))}" if i else ""
     return dict(
         judul=f"Sekitar {K(fid(pend / 1e6) + ' juta')} penduduk tinggal di kecamatan dengan PM2,5 tidak sehat ({kata}, perkiraan model)",
@@ -389,8 +389,22 @@ def w_asap(c):
         tindak_lanjut=tindak(("Kemenkes", f"Bagikan masker dan siagakan layanan ISPA di {c.prov(pr[0][0])} dan provinsi terpapar lain."),
                              ("Kemendikdasmen", "Izinkan belajar dari rumah di sekolah pada kecamatan terpapar sampai udara membaik.")),
         sumber="CAMS (Copernicus) lewat Open-Meteo, WorldPop 2026, Dapodik dan EMIS (sekolah), OpenStreetMap (fasilitas kesehatan)",
-        catatan=f"Perkiraan model, belum dikoreksi stasiun{'; tanggal ini prakiraan, bukan pengukuran' if prakiraan else ''}. Batas tidak sehat {fid(u['batas'], 1)} mikrogram per meter kubik. "
+        catatan=f"Perkiraan model, belum dikoreksi stasiun{'; tanggal ini perkiraan ke depan, bukan pengukuran' if ke_depan else ''}. Batas tidak sehat {fid(u['batas'], 1)} mikrogram per meter kubik. "
                 f"Sekolah dan fasilitas kesehatan hanya terpetakan di {t['kec_tercakup_sekolah']} dari {t['kec']} kecamatan terpapar, jadi angkanya batas bawah.")
+
+
+def per_bandara(ks):
+    """{kode bandara: {n, j: {jenis: n}, akhir}}; berita tanpa bandara jelas tetap masuk total di pemanggil, tidak masuk sini"""
+    per = {}
+    for k in ks:
+        if not k["bandara"]:
+            continue
+        q = per.setdefault(k["bandara"], {"n": 0, "j": {}, "akhir": ""})
+        q["n"] += 1
+        q["akhir"] = max(q["akhir"], k["tgl"])
+        for jn in k["jenis"]:
+            q["j"][jn] = q["j"].get(jn, 0) + 1
+    return per
 
 
 def w_penerbangan(c):
@@ -401,15 +415,7 @@ def w_penerbangan(c):
     ref = max(dt.date.fromisoformat(k["tgl"]) for k in ks)
     dalam = lambda k, a, b: a <= (ref - dt.date.fromisoformat(k["tgl"])).days <= b
     n7, n14 = sum(1 for k in ks if dalam(k, 0, 6)), sum(1 for k in ks if dalam(k, 7, 13))
-    per = {}
-    for k in ks:
-        if not k["bandara"]:   # berita tanpa bandara jelas: tetap masuk total, tidak masuk tabel
-            continue
-        q = per.setdefault(k["bandara"], {"n": 0, "j": {}, "akhir": ""})
-        q["n"] += 1
-        q["akhir"] = max(q["akhir"], k["tgl"])
-        for jn in k["jenis"]:
-            q["j"][jn] = q["j"].get(jn, 0) + 1
+    per = per_bandara(ks)
     urut = sorted(per.items(), key=lambda kv: -kv[1]["n"])
     nj = p["nama_jenis"]
     nama = lambda kode: p["bandara"].get(kode, {}).get("nama", kode)
@@ -520,16 +526,22 @@ def w_luas(c):
         catatan=f"Angka resmi {th[i]} baru sampai {BULAN_PENUH[sampai.month - 1]} dan belum mencakup puncak kemarau. Perkiraan satelit memakai titik VIIRS dikali 4,3 ha per titik dan bukan angka resmi.")
 
 
-def w_berulang(c):
+def langganan(c):
+    """-> (sejarah, indeks tahun ini, [(kunci 'prov|kab|kec', titik tahun ini, tahun bertitik, rata-rata tahun lalu)] urut turun)"""
     s = c.j("sejarah")
-    th = s["tahun"]
-    ini = len(th) - 1
+    ini = len(s["tahun"]) - 1
     lg = []
     for kunci, v in s["kec"].items():
         ulang = sum(1 for x in v[:ini] if x >= TITIK_TAHUN)
         if v[ini] >= MIN_INI and ulang >= MIN_ULANG:
             lg.append((kunci, v[ini], ulang, sum(v[:ini]) / ini))
     lg.sort(key=lambda x: -x[1])
+    return s, ini, lg
+
+
+def w_berulang(c):
+    s, ini, lg = langganan(c)
+    th = s["tahun"]
     if not lg:
         raise Kosong("tidak ada kecamatan yang memenuhi syarat langganan")
     kd, n, ul, rata = lg[0]
@@ -634,6 +646,185 @@ WIDGET = {  # id -> (label pill, fungsi)
 }
 
 
+# ---------------------------------------------------------------- peta
+# lapisan peta.json (kontrak bagian Peta). Tiap p_<id>(c) -> bagian lapisan; id, widget, per ditambah rakit_peta().
+MAKS_FITUR = 300
+BOX = (-11.0, 6.5, 94.0, 141.5)   # lat min, lat maks, lon min, lon maks
+
+
+def r3(x):
+    return round(x, 3)
+
+
+def titik_poligon(geom):
+    """titik di DALAM poligon (lubang dihormati) -> (lat, lon): bagian terbesar, garis mendatar di beberapa tinggi, tengah selang terlebar
+    (geo/batas.py titik_dalam mengabaikan lubang, jadi dipakai untuk bahan bagian terbesar saja)"""
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "geo"))
+    from batas import bagian, luas_derajat
+    part = max(bagian(geom), key=lambda p: luas_derajat(p[0]))
+    ys = [q[1] for q in part[0]]
+    y0, y1 = min(ys), max(ys)
+    terbaik = (-1, None, None)
+    for fr in (.5, .4, .6, .3, .7, .2, .8):
+        y = y0 + (y1 - y0) * fr
+        xs = sorted(r[k - 1][0] + (y - r[k - 1][1]) * (r[k][0] - r[k - 1][0]) / (r[k][1] - r[k - 1][1])
+                    for r in part for k in range(len(r)) if (r[k - 1][1] > y) != (r[k][1] > y))
+        for a, b in zip(xs[::2], xs[1::2]):
+            if b - a > terbaik[0]:
+                terbaik = (b - a, (a + b) / 2, y)
+    return r3(terbaik[2]), r3(terbaik[1])
+
+
+def fitur(lat, lon, nama, nilai, *teks, pill=None):
+    f = {"lat": r3(lat), "lon": r3(lon), "nama": nama, "nilai": nilai, "teks": list(teks)}
+    if pill:
+        f["pill"] = pill
+    return f
+
+
+def p_provinsi(c):
+    return dict(label="Titik panas 7 hari", jenis="provinsi", satuan="titik", nilai={k: t7 for k, t7, _ in prov_7hari(c)[1]})
+
+
+def p_cuaca(c):
+    cu, hh, _ = cuaca_prov(c)
+    return dict(label=f"Wilayah berbahaya api sangat tinggi, {hh} hari ke depan", jenis="provinsi", satuan="persen wilayah", pill="perkiraan {nilai} persen wilayah",
+                catatan="Perkiraan model ECMWF dan FWI, bukan peluang adanya api.",
+                nilai={k: round(v[1] * 100) for k, v in cu.items()})
+
+
+def p_kejadian(c):
+    kl, kk, kend = c.j("kluster"), c.j("kompleks_konsesi")["kompleks"], c.j("kendala")["kompleks"]
+    op = {x["id"]: x["jenis"] for x in c.j("operasi")["kompleks"]}
+    aktif = sorted((f["properties"] for f in kl["features"] if f["properties"].get("n24", 0) > 0), key=lambda p: -p["luas"])
+    fs = []
+    for p in aktif[:MAKS_FITUR]:
+        lab = kend.get(p["id"], {}).get("label")
+        fs.append(fitur(p["lat"], p["lon"], f"{p['kec']}, {p['kab']}", round(p["luas"]),
+                        f"Titik panas 24 jam {fid(p['n24'])}", "Gambut" if gambut_kejadian(c, p, kk, op) else "Bukan gambut",
+                        ", ".join(lab) if lab else "Tanpa kendala akses tercatat", pill=f"sekitar {fid(bulat(p['luas']))} ha"))
+    return dict(label="Kejadian api", jenis="titik", satuan="ha, perkiraan sebaran titik", fitur=fs)
+
+
+def p_konsesi(c):
+    a = c.j("aktor_karhutla")
+    nm = lambda x: re.sub(r"[^a-z0-9]", "", (x or "").lower())
+    izin = {}   # nama -> fitur izin terluas; titik wakil di dalam poligon izin itu sendiri
+    for f in json.load(open(os.path.join(c.dasar, "lahan", "konsesi.geojson")))["features"]:
+        p = f["properties"]
+        if nm(p.get("nama")) and p["luas_peta_ha"] > (izin.get(nm(p["nama"]), {"properties": {"luas_peta_ha": -1}})["properties"]["luas_peta_ha"]):
+            izin[nm(p["nama"])] = f
+    JENIS = {"sawit": "Sawit", "pbph": "Hutan tanaman atau alam"}
+    fs = []
+    for p in a["perusahaan"]:
+        n = (p.get("cek") or {}).get("titik_terkini") or 0
+        f = izin.get(nm(p["nama"]))
+        if not n or not f:
+            continue
+        lat, lon = titik_poligon(f["geometry"])
+        fs.append(fitur(lat, lon, p["nama"], n, f"Titik panas 7 hari di dalam batas izin {fid(n)}", f"Jenis izin {JENIS.get(p['jenis'], p['jenis']).lower()}",
+                        f"{f['properties']['kab']}, {c.prov(f['properties']['prov'])}", "Indikasi, bukan penetapan pelaku"))
+    fs.sort(key=lambda x: -x["nilai"])
+    return dict(label="Areal izin bertitik panas 7 hari", jenis="titik", satuan="titik", catatan="Indikasi, bukan penetapan pelaku.", fitur=fs[:MAKS_FITUR])
+
+
+def p_gambut(c):
+    kh = [k for k in c.j("khg_prioritas")["khg"] if k["titik_7h"] > 0]
+    geo = {f["properties"]["kode"]: f["geometry"] for f in json.load(open(os.path.join(c.dasar, "lahan", "khg.geojson")))["features"]}
+    fs = []
+    for k in sorted(kh, key=lambda k: -k["titik_7h"])[:MAKS_FITUR]:
+        if k["kode"] in geo:
+            lat, lon = titik_poligon(geo[k["kode"]])
+            fs.append(fitur(lat, lon, k["nama"], k["titik_7h"], f"Titik panas 7 hari {fid(k['titik_7h'])}", f"Titik panas 30 hari {fid(k['titik_30h'])}",
+                            f"Kejadian api tercatat {fid(k['kompleks_aktif'])}", f"{k['prov_nama']}, kanal {fid(k['kanal_km'])} km"))
+    if not fs:
+        raise Kosong("tidak ada KHG bertitik yang poligonnya ditemukan")
+    return dict(label="Kawasan hidrologis gambut bertitik panas", jenis="titik", satuan="titik", per=iso(waktu(c.j("khg_prioritas")["jendela_7h"][1])), fitur=fs)
+
+
+def p_asap(c):
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "udara"))
+    import kualitas   # ambang ISPU PM2,5 yang sama dengan modul udara (Permen LHK P.14/2020)
+    u, a = c.j("udara_dampak"), c.j("asap")
+    h = min(u["hari"], key=lambda x: abs((dt.date.fromisoformat(x) - c.sekarang.date()).days))   # hari yang sama dengan widget asap
+    if h not in a["hari"]:
+        raise Kosong(f"asap.json tidak memuat {h}")
+    i, kol_ = a["hari"].index(h), a["kolom"].index("pm25_rata")   # rata-rata 24 jam, sama dengan dasar widget asap
+    B = kualitas.BATAS
+    nama_k = ["Baik", "Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"]
+    pil = {2: f"Tidak sehat, {fid(round(B[1]))} sampai {fid(round(B[2]))} µg/m³", 3: f"Sangat tidak sehat, {fid(round(B[2]))} sampai {fid(round(B[3]))} µg/m³",
+           4: f"Berbahaya, di atas {fid(round(B[3]))} µg/m³"}
+    sel = sorted(((g[kol_][i], g[0], g[1]) for g in a["grid"] if g[kol_][i] is not None and g[kol_][i] > u["batas"]), reverse=True)[:MAKS_FITUR]
+    d = tgl(dt.date.fromisoformat(h))
+    fs = [fitur(la, lo, f"Sel model sekitar {fid(abs(la), 1)}° {'LS' if la < 0 else 'LU'}, {fid(lo, 1)}° BT", v, f"Perkiraan model CAMS pada {d}",
+                f"Batas tidak sehat {fid(u['batas'], 1)} µg/m³", pill=pil[kualitas.kategori(v)]) for v, la, lo in sel]
+    return dict(label="PM2,5 tidak sehat (perkiraan model)", jenis="titik", satuan="µg/m³", per=iso(waktu(h)),
+                kelas=[{"dari": r3(B[k - 1] + 0.1), "label": nama_k[k]} for k in (2, 3, 4)],
+                catatan="Perkiraan model CAMS, rata-rata 24 jam, belum dikoreksi stasiun.", fitur=fs)
+
+
+def p_penerbangan(c):
+    p = c.j("penerbangan")
+    per, nj = per_bandara(p["kejadian"]), p["nama_jenis"]
+    fs = []
+    for kode, v in sorted(per.items(), key=lambda kv: -kv[1]["n"])[:MAKS_FITUR]:
+        b = p["bandara"].get(kode)
+        if b and b.get("lat") is not None and b.get("lon") is not None:
+            jn = nj.get(max(v["j"], key=v["j"].get)) if v["j"] else None
+            fs.append(fitur(b["lat"], b["lon"], f"{b['nama']} ({kode})", v["n"], f"Gangguan musim ini {fid(v['n'])}",
+                            *([f"Jenis terbanyak {jn.lower()}"] if jn and jn != nj.get("lain") else []), f"Terakhir {tgl(dt.date.fromisoformat(v['akhir']))}"))
+    return dict(label="Bandara terdampak asap", jenis="titik", satuan="gangguan", fitur=fs)
+
+
+def p_posko(c):
+    po = c.j("posko")
+    fs = [fitur(x["lat"], x["lon"], x["nama"], len(x["kompleks"]), f"{x['kab']}, {c.prov(x['prov'])}", f"Posko {x['jenis_posko']}",
+                f"Dalam radius {fid(po['radius_km'])} km")
+          for x in sorted(po["posko"], key=lambda x: -len(x["kompleks"]))[:MAKS_FITUR]]
+    return dict(label="Posko terdata", jenis="titik", satuan="kejadian api dalam jangkauan", fitur=fs)
+
+
+def p_berulang(c):
+    s, ini, lg = langganan(c)
+    th = s["tahun"][ini]
+    dasar_kec, fs = {}, []
+    for kunci, n, ul, rata in lg:
+        pr, kab, kec = kunci.split("|")
+        if pr not in dasar_kec:
+            dasar_kec[pr] = {(f["properties"]["kab"], f["properties"]["kec"]): f["geometry"]
+                             for f in json.load(open(os.path.join(c.dasar, "..", "geo", "kecamatan", pr + ".json")))["features"]}
+        g = dasar_kec[pr].get((kab, kec))
+        if g and len(fs) < MAKS_FITUR:
+            lat, lon = titik_poligon(g)
+            fs.append(fitur(lat, lon, f"{kec}, {kab}", n, f"Titik panas {th} {fid(n)}", f"Rata-rata {fid(round(rata))} titik per tahun pada {s['tahun'][0]} sampai {s['tahun'][ini - 1]}",
+                            f"Tercatat ada titik panas di {ul} dari {ini} tahun ({s['tahun'][0]} sampai {s['tahun'][ini - 1]})", c.prov(pr)))
+    if not fs:
+        raise Kosong("tidak ada kecamatan langganan yang batasnya ditemukan")
+    return dict(label="Kecamatan langganan kembali bertitik panas", jenis="titik", satuan="titik", fitur=fs)
+
+
+# id lapisan -> (widget terkait yang `per`-nya dipakai, fungsi); urutan = urutan chip di layar
+LAPISAN = {"provinsi": ("provinsi", p_provinsi), "cuaca": ("cuaca", p_cuaca), "kejadian": ("kejadian", p_kejadian), "konsesi": ("konsesi", p_konsesi),
+           "gambut": ("gambut", p_gambut), "asap": ("asap", p_asap), "penerbangan": ("penerbangan", p_penerbangan),
+           "posko": ("sumberdaya", p_posko), "berulang": ("berulang", p_berulang)}
+
+
+def rakit_peta(ws, c, dibuat):
+    """lapisan yang gagal atau yang widgetnya kosong dibuang dengan peringatan; peta.json tetap terbit"""
+    per = {w["id"]: w for w in ws}
+    out = []
+    for lid, (wid, fn) in LAPISAN.items():
+        try:
+            if per[wid]["status"] == "kosong":
+                raise Kosong(f"widget {wid} kosong")
+            l = fn(c)
+            out.append({"id": lid, "widget": wid, "label": l.pop("label"), "jenis": l.pop("jenis"), "satuan": l.pop("satuan"), "per": l.pop("per", per[wid]["per"]),
+                        "sumber": per[wid]["sumber"], **l})
+        except Exception as e:
+            print(f"presiden: lapisan peta {lid} dibuang: {type(e).__name__}: {e}", file=sys.stderr)
+    return {"versi": "presiden-peta/1", "dibuat": dibuat, "lapisan": out}
+
+
 # ---------------------------------------------------------------- rakit
 def rakit(wid, c):
     label, fn = WIDGET[wid]
@@ -675,6 +866,7 @@ def bangun(dasar, keluar, sekarang=None):
 
     semua = {"versi": VERSI, "dibuat": dibuat, "widget": ws}
     tulis("semua.json", semua)
+    tulis("peta.json", rakit_peta(ws, c, dibuat))
     for w in ws:
         tulis(w["id"] + ".json", w)
     indeks = {"versi": VERSI, "dibuat": dibuat,
@@ -689,6 +881,9 @@ def main():
     for w in semua["widget"]:
         print(f"presiden/{w['id']}: {w['status']}")
     print(f"presiden/semua.json: {os.path.getsize(os.path.join(KELUAR, 'semua.json'))} byte")
+    pt = json.load(open(os.path.join(KELUAR, "peta.json")))
+    print(f"presiden/peta.json: {os.path.getsize(os.path.join(KELUAR, 'peta.json'))} byte,",
+          ", ".join(f"{l['id']}={len(l['fitur']) if 'fitur' in l else len(l['nilai'])}" for l in pt["lapisan"]))
 
 
 # ---------------------------------------------------------------- uji
@@ -712,6 +907,86 @@ def _kunci(x):
     elif isinstance(x, list):
         for v in x:
             yield from _kunci(v)
+
+
+def uji_peta(tmp, ws, dasar):
+    """peta.json: bentuk kontrak, batas, kode provinsi, ukuran, tanpa data pribadi, dan angka dicek ulang dari sumber"""
+    ukuran = os.path.getsize(os.path.join(tmp, "peta.json"))
+    assert ukuran < 400_000, ukuran
+    pt = json.load(open(os.path.join(tmp, "peta.json")))
+    assert pt["versi"] == "presiden-peta/1" and re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d\+07:00", pt["dibuat"]) and pt["lapisan"]
+    kode_ada = {f["properties"]["kode"] for f in json.load(open(os.path.join(dasar, "..", "geo", "provinsi.json")))["features"]}
+    ids = [l["id"] for l in pt["lapisan"]]
+    assert ids == [i for i in LAPISAN if i in ids], ids   # urutan chip sesuai kontrak
+    S = lambda n: json.load(open(os.path.join(dasar, n + ".json")))
+    for l in pt["lapisan"]:
+        lid = l["id"]
+        assert l["widget"] == LAPISAN[lid][0] and l["sumber"] == ws[l["widget"]]["sumber"] and l["sumber"], lid
+        assert re.fullmatch(r"\d{4}-\d\d-\d\dT\d\d:\d\d\+07:00", l["per"]), lid
+        if lid not in ("gambut", "asap"):   # dua lapisan ini memakai tanggal akhir data sebenarnya, bukan per widget
+            assert l["per"] == ws[l["widget"]]["per"], lid
+        assert l["label"] and l["satuan"] and l["jenis"] in ("provinsi", "titik"), lid
+        if l["jenis"] == "provinsi":
+            assert set(l) <= {"id", "widget", "label", "jenis", "satuan", "per", "sumber", "catatan", "pill", "nilai"} and l["nilai"], lid
+            assert set(l["nilai"]) <= kode_ada, (lid, set(l["nilai"]) - kode_ada)
+            assert all(isinstance(v, (int, float)) for v in l["nilai"].values()), lid
+            continue
+        assert set(l) <= {"id", "widget", "label", "jenis", "satuan", "per", "sumber", "catatan", "kelas", "fitur"} and 0 < len(l["fitur"]) <= MAKS_FITUR, lid
+        for f in l["fitur"]:
+            assert set(f) <= {"lat", "lon", "nama", "nilai", "teks", "pill"} and {"lat", "lon", "nama", "nilai", "teks"} <= set(f) and isinstance(f["nilai"], (int, float)), (lid, f)
+            assert BOX[0] <= f["lat"] <= BOX[1] and BOX[2] <= f["lon"] <= BOX[3], (lid, f)
+            assert f["lat"] == round(f["lat"], 3) and f["lon"] == round(f["lon"], 3), (lid, f)
+            assert f["nama"] and 1 <= len(f["teks"]) <= 4 and all(isinstance(t, str) and t for t in f["teks"]), (lid, f)
+            if lid == "konsesi":
+                assert "Indikasi, bukan penetapan pelaku" in f["teks"], f
+            if lid == "asap":   # kategori, bukan angka persis
+                assert re.fullmatch(r"(Tidak sehat|Sangat tidak sehat), \d+ sampai \d+ µg/m³|Berbahaya, di atas \d+ µg/m³", f["pill"]), f["pill"]
+            if lid == "kejadian":   # dibulatkan 2 angka penting seperti judul
+                m_ = re.fullmatch(r"sekitar ([\d.]+) ha", f["pill"])
+                assert m_ and int(m_.group(1).replace(".", "")) == bulat(int(m_.group(1).replace(".", ""))), f["pill"]
+    teks = list(_teks(pt))
+    assert not any(" · " in t or "—" in t or "kompleks" in t.lower() or re.search(r"terbakar", t) for t in teks), "pemisah/istilah terlarang di peta"
+    assert not any(re.search(r"[\w.+-]+@[\w-]+\.\w+|\+62\d|\b08\d{8,}", t) for t in teks), "email/telepon di peta"
+    assert not (set(_kunci(pt)) & {"pelapor", "nama_pelapor", "telepon", "hp", "phone", "email", "nomor_hp", "wa", "foto", "regu_nama", "tokoh"})
+    L = {l["id"]: l for l in pt["lapisan"]}
+    assert L["konsesi"]["catatan"].count("bukan penetapan pelaku") == 1 if "konsesi" in L else True
+    if "asap" in L:
+        assert L["asap"]["satuan"] == "µg/m³" and L["asap"]["kelas"] and "perkiraan" in L["asap"]["catatan"].lower() and not any("prakiraan" in t for t in teks)
+    if "konsesi" in L:   # titik wakil harus di dalam poligon izin perusahaan itu, dan provinsi di teks = provinsi titik
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "geo"))
+        from batas import di_dalam, bagian
+        ada = lambda g, x, y: any(di_dalam(x, y, p[0]) and not any(di_dalam(x, y, h) for h in p[1:]) for p in bagian(g))
+        izin = {}
+        for g in json.load(open(os.path.join(dasar, "lahan", "konsesi.geojson")))["features"]:
+            izin.setdefault(re.sub(r"[^a-z0-9]", "", (g["properties"].get("nama") or "").lower()), []).append(g["geometry"])
+        pv = json.load(open(os.path.join(dasar, "..", "geo", "provinsi.json")))["features"]
+        nama_prov = S("meta")["provinsi"]
+        for f in L["konsesi"]["fitur"]:
+            assert any(ada(g, f["lon"], f["lat"]) for g in izin[re.sub(r"[^a-z0-9]", "", f["nama"].lower())]), ("titik di luar izin", f["nama"])
+            kd = next(p["properties"]["kode"] for p in pv if ada(p["geometry"], f["lon"], f["lat"]))
+            assert f["teks"][2].endswith(", " + nama_prov[kd]), (f["nama"], f["teks"][2], nama_prov[kd])
+    # angka satu lapisan dicek ulang dari sumber: provinsi = total 7 hari widget, kejadian/gambut/posko = hitung langsung
+    if "provinsi" in L and ws["provinsi"]["status"] != "kosong":
+        m = S("musim_harian")
+        th = str(dt.date.fromisoformat(m["sd"]).year)
+        assert L["provinsi"]["nilai"] == {k: sum(v[th][-7:]) for k, v in m["prov"].items()}
+        assert sum(L["provinsi"]["nilai"].values()) == ws["provinsi"]["angka"][1]["nilai"]
+    if "kejadian" in L:
+        luas = sorted((f["properties"]["luas"] for f in S("kluster")["features"] if f["properties"].get("n24", 0) > 0), reverse=True)[:MAKS_FITUR]
+        assert [f["nilai"] for f in L["kejadian"]["fitur"]] == [round(x) for x in luas]
+    if "gambut" in L:
+        kh = S("khg_prioritas")["khg"]
+        assert max(f["nilai"] for f in L["gambut"]["fitur"]) == max(k["titik_7h"] for k in kh)
+        assert len(L["gambut"]["fitur"]) <= sum(1 for k in kh if k["titik_7h"] > 0)
+    if "posko" in L:
+        assert len(L["posko"]["fitur"]) == min(MAKS_FITUR, len(S("posko")["posko"]))
+    if "konsesi" in L:
+        assert sum(1 for f in L["konsesi"]["fitur"]) <= sum(1 for p in S("aktor_karhutla")["perusahaan"] if (p.get("cek") or {}).get("titik_terkini"))
+    # semua sumber hilang: peta.json tetap terbit, tanpa lapisan
+    with tempfile.TemporaryDirectory() as k0:
+        bangun(k0, os.path.join(k0, "k"))
+        assert json.load(open(os.path.join(k0, "k", "peta.json")))["lapisan"] == []
+    print(f"peta.json {ukuran} byte,", ", ".join(f"{i}={len(l['fitur']) if 'fitur' in l else len(l['nilai'])}" for i, l in L.items()))
 
 
 def uji():
@@ -822,7 +1097,7 @@ def uji():
             assert kw["angka"][0]["nilai"] == tot and f"[[{fid(tot)}]]" in kw["judul"], kw["judul"]
             assert f"[[{fid(ter[0])} titik]]" in kw["judul"] and kw["judul"].count("[[") == 3
             assert [b["terkini"] for b in kw["baris"]] == ter[:len(kw["baris"])] and ter[0] > 0
-            assert [k["label"] for k in kw["kolom"]][1] == "Titik musim ini menurut WALHI"
+            assert [k["k"] for k in kw["kolom"]] == ["nama", "terkini", "jenis", "wilayah"]
             assert kw["catatan"].count("bukan penetapan pelaku") == 1
         if ws["gambut"]["status"] != "kosong":
             kh = src("khg_prioritas")["khg"]
@@ -830,6 +1105,9 @@ def uji():
             assert g["angka"][0]["nilai"] == sum(x["titik_7h"] for x in kh)
             assert g["angka"][1]["nilai"] == sum(1 for x in kh if x["titik_7h"] > 0)
             assert g["baris"][0]["t7"] == max(x["titik_7h"] for x in kh)
+        uji_peta(tmp, ws, DATA)
+        for nm in os.listdir(tmp):   # keputusan pemilik 17 Okt: WALHI tidak tampil di situs
+            assert "walhi" not in open(os.path.join(tmp, nm)).read().lower(), nm
     print("presiden --uji: lulus,", ", ".join(f"{i}={ws[i]['status']}" for i in IDS), f"| semua.json {ukuran} byte")
 
 

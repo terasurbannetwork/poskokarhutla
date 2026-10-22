@@ -662,8 +662,9 @@ export async function cacheTepi(req, ctx, detik, buat) {
 }
 
 /* /presiden saja: boleh di-iframe dari domain mana pun (pemilik 22 Okt 2026). ASSETS.fetch membawa X-Frame-Options SAMEORIGIN
-   dari /* di public/_headers, jadi ditimpa di sini (satu-satunya tempat). 'unsafe-inline' untuk skrip tema di kepala presiden.html. */
-const CSP_PRESIDEN = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors *; object-src 'none'; base-uri 'self'; form-action 'none'";
+   dari /* di public/_headers, jadi ditimpa di sini (satu-satunya tempat). 'unsafe-inline' untuk skrip tema di kepala presiden.html;
+   tiles.openfreemap.org + blob: untuk peta MapLibre di tab Peta. */
+const CSP_PRESIDEN = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://tiles.openfreemap.org; worker-src 'self' blob:; child-src 'self' blob:; frame-ancestors *; object-src 'none'; base-uri 'self'; form-action 'none'";
 function bisaDiIframe(res) {
   const h = new Headers(res.headers); h.delete("x-frame-options"); h.delete("content-security-policy");
   h.set("content-security-policy-report-only", CSP_PRESIDEN);

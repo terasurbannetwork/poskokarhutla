@@ -81,6 +81,43 @@ Aturan isi:
 Generator boleh menggugurkan widget yang sumbernya tidak memadai, asal
 dilaporkan alasannya; jangan memalsukan isi.
 
+## Peta (permintaan pemilik 22 Okt 2026: tampil juga di peta, bukan hanya kartu)
+
+Berkas terpisah `public/data/presiden/peta.json`, dimuat HANYA saat tab Peta
+dibuka (kartu tetap satu fetch kecil). Target < 400 KB.
+
+```json
+{"versi": "presiden-peta/1", "dibuat": "…", "lapisan": [
+  {"id": "provinsi", "widget": "provinsi", "label": "Titik panas 7 hari", "jenis": "provinsi",
+   "satuan": "titik", "per": "…", "nilai": {"62": 37427, "16": 15233}},          // kode BPS 2 digit = properties.kode di public/geo/provinsi.json
+  {"id": "kejadian", "widget": "kejadian", "label": "Kejadian api", "jenis": "titik",
+   "satuan": "ha sebaran titik", "per": "…",
+   "fitur": [{"lat": -2.1, "lon": 113.2, "nama": "Seruyan Hilir, Seruyan", "nilai": 17002,
+              "teks": ["Titik 24 jam 725", "Gambut", "Akses sulit di rawa"]}]}       // teks = baris pop-up, tanpa data pribadi
+]}
+```
+
+Medan tambahan (putaran 2, dari pemeriksa angka):
+- lapisan `sumber` (wajib, nama lembaga seperti widget) dan `catatan` (opsional, satu kalimat, mis. "Indikasi, bukan penetapan pelaku", "Perkiraan model, belum dikoreksi stasiun"); layar menampilkan keduanya di legenda.
+- lapisan `label` sama dengan label kartu widget terkait bila maknanya sama.
+- fitur `pill` (opsional, string jadi): bila ada, layar memakainya untuk pill pop-up menggantikan `nilai` + `satuan` (dipakai untuk perkiraan yang dibulatkan atau dikategorikan, mis. "sekitar 17.000 ha", "di atas 250 µg/m³, berbahaya"). `nilai` mentah tetap untuk ukuran lingkaran.
+- lapisan `kelas` (opsional, untuk titik berkategori): `[{"dari": 55.5, "label": "Tidak sehat"}, …]`; bila ada, legenda menampilkan kelas, bukan "kecil … maks".
+- `per` = tanggal akhir data yang benar-benar dipakai, bukan waktu pembuatan berkas.
+
+Lapisan (urutan chip di layar), paling banyak 300 fitur per lapisan titik:
+
+| id | jenis | isi |
+| --- | --- | --- |
+| `provinsi` | provinsi | titik panas 7 hari per provinsi (semua provinsi, bukan 10 besar) |
+| `cuaca` | provinsi | porsi wilayah berbahaya api sangat tinggi (persen) dari `peluang.json` |
+| `kejadian` | titik | kejadian api tercatat, ukuran = sebaran titik, 300 terbesar |
+| `konsesi` | titik | areal izin dengan titik 7 hari terbanyak (titik di kejadian terbesarnya), catatan indikasi di pop-up |
+| `gambut` | titik | KHG bertitik 7 hari (titik pusat poligon `public/data/lahan/khg.geojson`) |
+| `asap` | titik | sel PM2,5 tidak sehat (perkiraan model) hari terakhir dari `asap.json` |
+| `penerbangan` | titik | bandara terdampak asap musim ini |
+| `posko` | titik | posko terdata (`posko.json`) |
+| `berulang` | titik | kecamatan langganan yang kembali tercatat titik panas (titik pusat kecamatan) |
+
 ## Layar
 
 - `/presiden` menampilkan semua widget sebagai kartu bergaya Insight
