@@ -44,6 +44,7 @@ async function mulai(S, d) {
   const dalam = (lon, lat) => lon >= S.A.lon0 && lon <= S.A.lon0 + (S.A.nx - 1) * S.A.dlon && lat >= S.A.lat0 && lat <= S.A.lat0 + (S.A.ny - 1) * S.A.dlat;
   S.prak = {...d.prak, kota: d.prak.kota.filter(k => dalam(k.lon, k.lat) && k.pm?.length)};
   S.kota = S.prak.kota; S.src = M.buatSumber(d.kluster, d.pltu, S.A); S.jiwa = d.pend ? M.pendudukKota(d.pend, S.kota) : new Float64Array(S.kota.length);
+  S.umurApi = (Date.parse(d.prak.dibuat) - Math.max(...(d.kluster?.features || d.kluster || []).map(f => Date.parse((f.properties || f).akhir)).filter(Number.isFinite))) / 864e5;
   S.fk = d.fas ? T.fasilitasKota(d.fas, S.kota) : null; S.galat = d.prak.galat || null; S.koreksi = d.prak.koreksi || null;
   /* tampilan: kotak yang memuat 10%-90% FRP (menurut bujur dan lintang) + kota di sekitarnya; api terpencil (mis. Papua) tidak melebarkan kamera */
   const fr = S.src.sumber.filter(q => q.jenis === "api" && q.id !== "lain").length ? S.src.sumber.filter(q => q.jenis === "api" && q.id !== "lain") : S.src.sumber;
@@ -177,6 +178,7 @@ function cekData(S) {
   if (v.ok) { const t = v.bias > 1.15 ? ", cenderung terlalu pekat" : v.bias < .87 ? ", cenderung terlalu tipis" : "";
     k1 = `Di ${fmt(v.n)} kota dengan porsi asap, asap model menyimpang rata-rata ${fmt1(v.galat)} kali dari atribusi CAMS${t}; ${fmt(v.luar2 * 100)}% kota di luar faktor 2.`; }
   L.push(`Faktor skala K = ${fmt1(S.K)} (pengali terpisah pada asap api di kota)${S.K > 3 || S.K < 1 / 3 ? ": <b>K di luar 1/3 sampai 3, emisi model salah skala secara struktural, jadi awan 3D dan angka absolut tidak bisa dipercaya</b>" : ""}.`);
+  if (S.umurApi > 2) L.push(`<b>Titik api terbaru ${fmt(S.umurApi)} hari lebih tua dari prakiraan CAMS</b>, jadi K di atas tidak bermakna sampai data api diperbarui.`);
   L.push("Ini bukan validasi: K dan targetnya sama-sama dari atribusi pipeline (sebagian melingkar), K dihitung tanpa kota yang dinilai.");
   L.push(st ? `Stasiun ukur: ${fmt(st.n)} hari-stasiun, bias ${fmt1(st.bias)} µg/m³, RMSE ${fmt1(st.rmse)} µg/m³, kategori tepat ${fmt(st.tepat_kategori * 100)}% (${esc(st.periode)}).`
     : "Belum ada stasiun ukur PM2,5 di pipeline (butuh WAQI_TOKEN), jadi model belum diuji terhadap alat ukur di tanah.");

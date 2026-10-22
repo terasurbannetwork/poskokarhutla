@@ -163,7 +163,7 @@ test("kecocokan (identitas metrik): tinggalkan-satu, galat >= 1 dan dalam2 antar
 test("kecocokan skala: tinggalkan-satu, galat >= 1, dalam2 + luar2 = 1, ada kota terburuk", () => {
   const v = M.kecocokanSkala(dasar, prak); assert.ok(v.ok && v.n >= 2, JSON.stringify(v));
   assert.ok(v.galat >= 1 && Math.abs(v.dalam2 + v.luar2 - 1) < 1e-12 && v.terburuk.length > 0 && !("validasi" in M), JSON.stringify(v));
-  assert.equal(M.sdApiDariGalat(1), .2); assert.equal(M.sdApiDariGalat(100), 1); assert.ok(Math.abs(M.sdApiDariGalat(2) - Math.log(2) / .6745) < 1e-12);
+  assert.equal(M.sdApiDariGalat(1), .2); assert.equal(M.sdApiDariGalat(100), 1); assert.ok(Math.abs(M.sdApiDariGalat(1.5) - Math.log(1.5) / .6745) < 1e-12);
 });
 test("K pada data nyata di repo berada di rentang wajar (emisi tak salah skala struktural)", { skip: !existsSync(new URL("../../public/data/hotspot24.json", import.meta.url)) }, () => {
   const baca = p => JSON.parse(readFileSync(new URL("../../public/" + p, import.meta.url))), ang = baca("udara/data/angin.json"), pr = baca("udara/data/prakiraan.json"), kl = baca("data/kluster.json"), pl = baca("udara/data/pltu.json"), hs = baca("data/hotspot24.json");
@@ -171,7 +171,11 @@ test("K pada data nyata di repo berada di rentang wajar (emisi tak salah skala s
   const P = {...pr, kota: pr.kota.filter(dlm)}, props = kl.features.map(f => f.properties).filter(p => p.frp24 > 0), L = M.lintasanKompleks(props, hs.baris);
   assert.ok(Object.values(L).every(n => n >= 1 && n <= 20), "lintasan masuk akal");
   const S = M.buatSumber(props.map(p => ({...p, lintasan: L[p.id]})), pl, AA), h = M.jalankan(AA, S, P.kota, {}), c = M.kalibrasi(h, P);
-  assert.ok(c.terkalibrasi && c.K >= .2 && c.K <= 5, `K ${c.K} di luar rentang wajar 0,2 sampai 5 (n ${c.n})`);
+  const umur = (Date.parse(pr.dibuat) - Math.max(...props.map(p => Date.parse(p.akhir)))) / 864e5;
+  assert.ok(c.terkalibrasi && Number.isFinite(c.K), "terkalibrasi");
+  /* titik api yang lebih tua dari 2 hari dari prakiraan tidak sebanding dengan atribusi hari ini: K tak bermakna, hanya dilaporkan */
+  if (umur > 2) return console.log(`# K ${c.K.toFixed(2)} tidak dinilai: titik api ${umur.toFixed(1)} hari lebih tua dari prakiraan`);
+  assert.ok(c.K >= .2 && c.K <= 5, `K ${c.K} di luar rentang wajar 0,2 sampai 5 (n ${c.n})`);
 });
 test("ensemble: deterministik, anggota di batas, pita p10 <= p50 <= p90 dan peluang di [0,1]", () => {
   const a = M.anggotaEnsemble(5, 7), b = M.anggotaEnsemble(5, 7); assert.deepEqual(a, b); assert.equal(a.length, 4);
