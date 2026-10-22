@@ -243,7 +243,7 @@ jobs:
           [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
           for i in 1 2 3; do
             kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
-            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null; echo
+            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null || true; echo
             [ "$kode" = 200 ] && exit 0
             sleep 30
           done

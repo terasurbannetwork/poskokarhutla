@@ -21,6 +21,15 @@ jobs:
       GH_REPO: ${{ github.repository }}
       URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
     steps:
+      - name: Jalankan ulang jadwal yang terusir antrean (boleh gagal)
+        continue-on-error: true
+        run: |
+          # grup concurrency "data" hanya menyimpan SATU run antre: run terjadwal yang kalah dari run lain dibatalkan tanpa job (titik.yml 22 Okt 2026). Bila run terakhir sebuah workflow cancelled dan tak ada yang antre/jalan, picu sekali.
+          for w in titik.yml data.yml banjir.yml udara.yml lintas.yml; do
+            [ "$(gh run list --workflow "$w" -L 1 --json conclusion --jq '.[0].conclusion')" = cancelled ] || continue
+            [ -z "$(gh run list --workflow "$w" --json status --jq '.[] | select(.status == "queued" or .status == "in_progress") | .status')" ] || continue
+            gh workflow run "$w" && echo "$w terusir antrean, dipicu ulang" || true
+          done
       - name: Periksa /api/status, terbitkan ulang bila basi
         run: |
           for i in 1 2 3; do
