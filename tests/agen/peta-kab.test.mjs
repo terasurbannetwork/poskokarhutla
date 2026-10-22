@@ -217,7 +217,7 @@ test('overlay kabupaten: sumber disebut, periode jumlah diberi catatan deteksi u
   const j = baca('public/peta_kab.js')
   assert.match(j, /R\.teksKab\(st\.metrik, hit\[k\], fmt\)/, 'angka tooltip/popup lewat R.teksKab (angka persis + belum padam 0 = "0 ha")')
   assert.match(j, /R\.kosongKab\(m, kls\.maks\)/, 'baris legenda petak kosong lewat R.kosongKab')
-  assert.match(j, /Perkiraan satelit NASA FIRMS, bukan luas resmi\./, 'popup menyebut sumber')
+  assert.match(j, /Sumber NASA FIRMS, bukan luas resmi\./, 'popup menyebut sumber')
   assert.match(j, /Api yang sama terhitung lagi tiap hari\./, 'jumlah periode luas diberi catatan deteksi ulang')
   // satu penghitung bersama membuat Sampai (Tab dari Dari < 600 ms) membatalkan komit Dari
   assert.doesNotMatch(j, /clearTimeout\(tunda\)/, 'peta_kab.js: penghitung waktu tanggal harus per input (c._h), bukan bersama')
