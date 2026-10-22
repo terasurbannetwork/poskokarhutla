@@ -6,7 +6,7 @@ import vm from "node:vm";
 import fs from "node:fs";
 
 function muat() {
-  const ctx = vm.createContext({console, km: () => 99, fmt: n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1}), F2: n => Number(n).toFixed(2), WIB: {timeZone: "Asia/Jakarta"},
+  const ctx = vm.createContext({console, $: () => null, nanti: f => setTimeout(f, 0), toast() {}, esc: x => x, tglPendek: x => x, km: () => 99, fmt: n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1}), F2: n => Number(n).toFixed(2), WIB: {timeZone: "Asia/Jakarta"},
     S: {hujan: {hari: ["2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16"], hari_ini: "2026-10-13", grid: [{lat: -6.875, lon: 106.875, h: [0, 120, 40, 10, 0], jam: [6, 6, 6, 6, 6], imax: [0, 30, 10, 3, 0], sm: [.3, .3, .3, .3, .3], a7: 10}]},
       sungai: {hari: [], titik: []}, rob: null, geo: {kec: {}}}, Simulasi: {kec: {}, dasar: {}, kode: "32"}});
   ctx.window = ctx;
@@ -28,7 +28,7 @@ test("susun: tanpa lahan satu CN seragam (hujan global); dengan lahan hujan per 
   assert.equal(b.seri.length, 2, "dua CN unik (90 dan 73) = dua seri"); assert.equal(cfb.hujanKelas.length, 2); assert.equal(cfb.kelas.length, N); assert.equal(cfb.manning.length, N);
   assert.ok(cfb.manning[0] === T3.lahan.n[0] && cfb.manning[N - 1] === T3.lahan.n[N - 1], "Manning sel = n lahan sel");
   const tot = s => s.reduce((x, y) => x + y, 0); assert.ok(tot(b.seri[0]) !== tot(b.seri[1]), "CN beda harus menghasilkan limpasan beda");
-  const lo = c2.SimGenangan.cnAMC(73, b.amc), hi = c2.SimGenangan.cnAMC(90, b.amc); assert.ok(b.cn > lo && b.cn < hi, `CN rata-rata ${b.cn} harus di antara kelas (${lo}..${hi}, sesudah koreksi kelembapan tanah)`);
+  const lo = c2.SimGenangan.cnAMC(73, 1), hi = c2.SimGenangan.cnAMC(90, 3); /* CN dirata-rata per hari, tiap hari dengan AMC sendiri */ assert.ok(b.cn > lo && b.cn < hi, `CN rata-rata ${b.cn} harus di antara kelas (${lo}..${hi}, sesudah koreksi kelembapan tanah)`);
   T3.dcn = 5; const g = V.susun(); assert.ok(g.cn > b.cn + 2 && g.cn <= 100, `geser CN +5 harus naik ~5: ${b.cn} -> ${g.cn}`);
 });
 

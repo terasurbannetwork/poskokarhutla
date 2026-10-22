@@ -2,7 +2,7 @@
 /* sim_lahan.js: tutupan lahan nyata per sel untuk simulasi genangan, murni (tanpa DOM). Dipakai tiga cara seperti sim_genangan.js:
    <script> di halaman (window.SimLahan), importScripts di sim_kerja.js, dan vm di tests/banjir/sim_lahan.test.mjs.
    Sumber: ESA WorldCover 2021 v200 (10 m, 11 kelas, CC BY 4.0) lewat ubin PNG Microsoft Planetary Computer (ber-CORS). Tiap sel
-   disampel 3x3 titik; CN SCS dan Manning n per sel = rata-rata nilai kelas titik-titiknya. Hasilnya menggantikan CN 80 dan n 0,06
+   disampel 3-8 titik per sisi (sel 240 m: 8 x 8 pada ubin 19 m); CN SCS, Manning n, dan bobot penduduk per sel = rata-rata nilai kelas titik-titiknya, kelas dominan = modus. Hasilnya menggantikan CN 80 dan n 0,06
    seragam. Nilai kelas = ASUMSI (pilihan tengah dari tabel rujukan, tanah kelompok C); gagal memuat = pemanggil kembali ke nilai seragam. */
 (function (akar) {
 const salah = m => { throw new Error("SimLahan: " + m); };
@@ -41,11 +41,12 @@ async function bacaPNG(url) {
   const cv = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(256, 256) : Object.assign(document.createElement("canvas"), {width: 256, height: 256});
   const g = cv.getContext("2d", {willReadFrequently: true}); g.drawImage(bm, 0, 0); return g.getImageData(0, 0, 256, 256).data;
 }
-const SUB = 3;
 /* K = rencanaKisi (nx, ny, zoom, s, x0, y0). Kembali {cn, n, bangun, bobot, dom, proporsi, kosong, gagal, ubin} atau null bila > 30 % ubin gagal
    atau < 50 % sel punya data. bacaUbin(url) -> RGBA 256x256 | null (disuntik supaya bisa diuji tanpa jaringan). */
 async function kisiLahan(K, bacaUbin = bacaPNG, dasar = {cn: 80, n: .06}) {
-  const {nx, ny, zoom, s, x0, y0} = K, N = nx * ny, lat0 = K.lat, zw = Math.max(12, Math.min(14, Math.ceil(Math.log2(156543.03 * Math.cos(lat0 * Math.PI / 180) * 3 / (K.dx)))));
+  const {nx, ny, zoom, s, x0, y0} = K, N = nx * ny, lat0 = K.lat, c0 = 156543.03 * Math.cos(lat0 * Math.PI / 180),
+    /* ubin sehalus ~dx/12 (>= 9 m; sel 60 m = z14, sel 240 m = z13), titik sampel per sisi sel ~ 1 per 1,5 piksel, 3-8: sel 240 m dicuplik 8 x 8 = 64 titik (~40 % piksel), bukan 9 */
+    zw = Math.max(12, Math.min(14, Math.ceil(Math.log2(c0 / Math.max(9, K.dx / 12))))), SUB = Math.max(3, Math.min(8, Math.ceil(K.dx / (c0 / 2 ** zw) / 1.5)));
   const f = 2 ** (zw - zoom), tx0 = Math.floor(x0 * f / 256), ty0 = Math.floor(y0 * f / 256), tx1 = Math.floor((x0 + nx * s) * f / 256), ty1 = Math.floor((y0 + ny * s) * f / 256);
   ((tx1 - tx0 + 1) * (ty1 - ty0 + 1) <= 64) || salah("area terlalu besar untuk ubin tutupan lahan");
   const ubin = new Map(); let gagal = 0, total = 0;
@@ -69,7 +70,7 @@ async function kisiLahan(K, bacaUbin = bacaPNG, dasar = {cn: 80, n: .06}) {
   }
   if (kosong > N * .5) return null;
   const tot = Object.values(cacah).reduce((x, y) => x + y, 0), proporsi = Object.fromEntries(Object.entries(cacah).map(([k, v]) => [k, v / tot]));
-  return {cn, n, bangun, bobot, dom, proporsi, kosong, gagal, ubin: total, zoomLahan: zw};
+  return {cn, n, bangun, bobot, dom, proporsi, kosong, gagal, ubin: total, zoomLahan: zw, sampelPerSisi: SUB};
 }
 /* ringkasan teks untuk layar: kelas terbesar dulu, hanya yang >= 3 % */
 const ringkasLahan = L => Object.entries(L.proporsi).filter(([, v]) => v >= .03).sort((a, b) => b[1] - a[1]).map(([k, v]) => ({kode: +k, nama: KELAS[k][0], bagian: v}));

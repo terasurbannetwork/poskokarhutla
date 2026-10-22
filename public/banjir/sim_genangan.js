@@ -122,6 +122,26 @@ function limpasanSel(hujan, cnSel, amc = 2, darat) {
   L.forEach((l, i) => { const w = cacah[i] / Math.max(1, nD); cn += l.cn * w; for (let t = 0; t < hujan.length; t++) efektif[t] += l.efektif[t] * w; for (let t = 0; t <= hujan.length; t++) resap[t] += l.resap[t] * w; });
   return {kelas, seri: L.map(l => l.efektif), cn, efektif, resap};
 }
+/* SCS-CN PER HARI dengan kelembapan anteseden bergeser. SCS-CN adalah kejadian satu badai (Q dari P satu hari); memakainya pada jumlah 72 jam
+   melebih-lebihkan limpasan (CN 73, 150/80/60 mm: kumulatif 201 mm, per hari dengan AMC bergeser ~113 mm). Tiap hari dihitung sendiri; hujan
+   anteseden 5 hari = a7 x 5/7 (hujan 7 hari teramati, asumsi) yang meluruh 1/5 per hari ke depan + hujan hari-hari sebelumnya dalam simulasi.
+   Kelas AMC memakai ambang SCS baku musim tanam (NEH-4 tabel 10.1; tropis dianggap musim tanam): I < 35,6 mm, III > 53,3 mm per 5 hari.
+   geser = -1/+1 menggeser kelas satu tingkat (kepekaan, dipakai pita). cn = angka atau larik per sel (+ darat). Kembali seperti limpasan/limpasanSel plus amc[hari]. */
+const AMC5 = {KERING: 35.6, BASAH: 53.3};
+const kelasAMC5 = p5 => p5 > AMC5.BASAH ? 3 : p5 < AMC5.KERING ? 1 : 2;
+function limpasanHarian(hujan, cn, a7 = 0, opsi = {}) {
+  const J = hujan.length, nH = Math.ceil(J / 24), geser = opsi.geser || 0, skalar = typeof cn === "number", amc = [], sebelum = [];
+  const efektif = new Float64Array(J), resap = new Float64Array(J + 1); let seri = null, kelas = null, cnSum = 0;
+  for (let d = 0; d < nH; d++) {
+    const irisan = hujan.subarray(d * 24, Math.min(J, (d + 1) * 24)), p5 = a7 * 5 / 7 * (1 - Math.min(d, 5) / 5) + sebelum.slice(-5).reduce((x, y) => x + y, 0);
+    const a = Math.max(1, Math.min(3, kelasAMC5(p5) + geser)); amc.push(a);
+    const L = skalar ? limpasan(irisan, cn, a) : limpasanSel(irisan, cn, a, opsi.darat);
+    efektif.set(L.efektif, d * 24); for (let t = 0; t < irisan.length; t++) resap[d * 24 + t + 1] = resap[d * 24] + L.resap[t + 1]; cnSum += L.cn;
+    if (!skalar) { if (!seri) { kelas = L.kelas; seri = L.seri.map(() => new Float64Array(J)); } L.seri.forEach((x, c) => seri[c].set(x, d * 24)); }
+    sebelum.push(irisan.reduce((x, y) => x + y, 0));
+  }
+  return {kelas, seri, cn: cnSum / nH, efektif, resap, amc};
+}
 /* muka laut per jam dari maks harian: kosinus M2 berpuncak di maks hari itu (fase tak diketahui = asumsi) */
 function pasang(maksHarian, rentang = ASUMSI.PASANG_RENTANG, periode = ASUMSI.PERIODE_PASANG) {
   const J = 24 * maksHarian.length, o = new Float64Array(J + 1);
@@ -329,7 +349,7 @@ async function ambilDEM(lat, lon, sisi, n, ambil) {
 const keSel = (K, lon, lat) => { const [x, y] = keDunia(lon, lat, K.zoom); return [(x - K.x0) / K.s - .5, (y - K.y0) / K.s - .5]; };
 const dariSel = (K, i, j) => dariDunia(K.x0 + (i + .5) * K.s, K.y0 + (j + .5) * K.s, K.zoom);
 
-const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, siapkanArea, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, limpasanSel, pasang, topengLaut, garisSel, naikkan, jalankan,
+const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, siapkanArea, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, kelasAMC5, limpasanHarian, AMC5, limpasan, limpasanSel, pasang, topengLaut, garisSel, naikkan, jalankan,
   rencanaKisi, ambilDEM, keSel, dariSel, terrarium};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimGenangan = API;
 })(typeof self !== "undefined" ? self : globalThis);
