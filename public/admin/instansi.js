@@ -96,7 +96,9 @@
       <p class="ai-meta">${esc(d.akun.wilayah)}${v.nama ? `<br>${esc(v.nama)}, NIP/NRP ${esc(v.nip)}, ${esc(v.jabatan)}, ${esc(v.unit)}<br>${esc(v.email)}, WhatsApp ${esc(v.wa)}` : "<br>Belum mengisi verifikasi"}</p>
       <h3>Jejak audit</h3>${d.jejak.length ? `<ul>${d.jejak.map(x => `<li>${jam(x.waktu)}: ${esc(AKSI[x.aksi] || x.aksi)} oleh ${esc(x.oleh)}${x.alasan ? `, ${esc(x.alasan)}` : ""}</li>`).join("")}</ul>` : `<p class="ai-meta">Belum ada aksi.</p>`}</div>`;
   }
-  const csv = rows => "﻿username,jenis,wilayah,sandi\n" + rows.map(r => [r.username, r.jenis, r.wilayah, r.sandi].map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
+  /* teks undangan siap tempel ke WhatsApp wakil instansi; sandi di sini sandi AWAL, wajib diganti sesudah akun aktif */
+  const undangan = r => `Yth. ${r.wilayah},\n\nAkun Pantau Bencana untuk penanganan karhutla di wilayah Anda sudah dibuat.\nUsername: ${r.username}\nSandi awal: ${r.sandi}\n\n1. Masuk di ${location.origin}/instansi\n2. Isi verifikasi: nama, NIP/NRP, jabatan, surat tugas, kartu pegawai.\n3. Sesudah disetujui admin, buat sandi baru.\n\nTugas api di wilayah Anda muncul di sana begitu satelit mendeteksi api prioritas: lokasi, arah ke titik masuk, dan kebutuhan regu. Mohon tidak meneruskan pesan ini ke pihak lain.`;
+  const csv = rows => "﻿username,jenis,wilayah,sandi,undangan\n" + rows.map(r => [r.username, r.jenis, r.wilayah, r.sandi, undangan(r)].map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
   function unduhCsv() {
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv(hasilBuat)], {type: "text/csv;charset=utf-8"}));
     a.download = `akun-instansi-${new Date().toISOString().slice(0, 10)}.csv`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
