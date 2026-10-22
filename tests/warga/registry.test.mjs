@@ -47,7 +47,7 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
 test("statistik dan sumber status mengikuti registry", () => {
   assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
   // hanya "aktif" menentukan 503 /api/status (banjir, gempa, cuaca, udara, gunungapi, kekeringan aktif); tahap "uji" dilaporkan terpisah (kini tak ada bencana uji)
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "berita_cuaca", "berita_gempa", "berita_gunungapi", "berita_kekeringan", "berita_udara", "cuaca", "cuaca_nowcast", "dampak", "gempa_terbaru", "gunungapi", "himawari", "kekeringan", "kualitas", "titik"]);
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "berita_cuaca", "berita_gempa", "berita_gunungapi", "berita_kekeringan", "berita_udara", "cuaca", "cuaca_nowcast", "dampak", "gempa_terbaru", "gunungapi", "himawari", "kekeringan", "kualitas", "presiden", "titik"]);
   assert.deepEqual(SUMBER_UJI, []);
   const U = salinan(); U.bencana.find(b => b.id === "cuaca").status = "uji";   // pemisahan aktif/uji diuji pada salinan
   assert.deepEqual(sumberUji(U).map(s => s[0]).sort(), ["berita_cuaca", "cuaca", "cuaca_nowcast"]); assert.ok(!sumberStatus(U).some(s => s[0].includes("cuaca")));

@@ -367,8 +367,8 @@
   /* foto kebun: label = tahun dari tgl (tidak dipatok +1/+2); "sawit mulai tampak" bila tahun_sawit sama dengan tahun foto */
   const kebunJud = c => { const y = c?.tgl?.slice(0, 4); return !y ? "Kebun" : c.tahun_sawit != null && String(c.tahun_sawit) === y ? `${y}, sawit mulai tampak` : y; };
   const riwTahunAda = () => Object.keys(SRY).map(Number).sort((a, b) => a - b);
-  /* bawaan: tahun terbaru yang jendelanya lengkap (2023 jendela pendek), bukan 2015 */
-  function pilihRiw(t) { if (!SRY[t]) { const th = riwTahunAda(); t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1]; } riwTahun = t; SR = SRY[t] || null; RIW = Object.fromEntries((SR?.perusahaan || []).map(e => [e.id, e])); }
+  /* bawaan: tahun terbaru berjendela lengkap dengan daftar berisi (>= 10 perusahaan); 2023 jendela pendek, 2020-2022 hanya 3-4 perusahaan */
+  function pilihRiw(t) { if (!SRY[t]) { const th = riwTahunAda(); t = th.filter(y => !SRY[y].jendela_pendek && SRY[y].perusahaan.length >= 10).pop() ?? th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1]; } riwTahun = t; SR = SRY[t] || null; RIW = Object.fromEntries((SR?.perusahaan || []).map(e => [e.id, e])); }
   function riwItem(e, i) {
     const ttm = SR.sumber_peta === "ttm", L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0) + (L[5] || 0), A = e.asal_ha || {}, c = e.citra || {}; const k1 = c.kebun1 || c.plus1, k2 = c.kebun2 || c.plus2;
     return `<article class="kn-riw-k" id="riw-${i}" data-id="${esc(e.id)}"${i >= RIW_HAL ? " hidden" : ""}>
@@ -413,9 +413,10 @@
     requestAnimationFrame(() => requestAnimationFrame(kerja)); setTimeout(kerja, 120);
   }
   /* daftar tahun ringkas: lebih dari 3 tahun jadi rentang, mis. "2016–2023 (6 tahun)" */
-  const thnTeks = th => th.length > 3 ? `${th[0]}–${th[th.length - 1]} (${fmt(th.length)} tahun)` : th.join(", ");
+  const thnTeks = th => th.length > 3 ? `${th[0]}–${th[th.length - 1]}, ${fmt(th.length)} tahun` : th.join(", ");
   const lencanaRiw = r => { const th = riwTahunAda().filter(t => SRY[t].perusahaan.some(e => e.id === r.id)); if (!th.length) return "";
-    const t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1], e = SRY[t].perusahaan.find(x => x.id === r.id);
+    /* tahun dengan bakar-lalu-sawit terbesar bagi perusahaan ini */
+    const bs = y => SRY[y].perusahaan.find(x => x.id === r.id).bs_ha || 0, t = th.reduce((a, y) => bs(y) > bs(a) ? y : a), e = SRY[t].perusahaan.find(x => x.id === r.id);
     return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${thnTeks(th)} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}${SRY[t].jendela_pendek ? " (belum lengkap)" : ""}</a>`; };
   /* perbesar citra: satu <dialog> bersama */
   let dlgZ = null;

@@ -37,7 +37,7 @@ test("Kartu bahaya: label Indonesia, satuan, angka id-ID, pil model/hipotesis, t
   assert.match(kar(b), /Kartu Banjir/); assert.match(kar(b), /sekitar 12\.000 jiwa/); assert.match(kar(b), /187 mm/); assert.match(kar(b), /Penduduk terdampak/);
   assert.match(kar(g), /Level PVMBG/); assert.match(kar(g), /4, Awas/); assert.match(kar(g), /3,5 km/); assert.match(kar(g), /WorldPop/);
   assert.match(kar(e), /Magnitudo/); assert.match(kar(e), /6,2/); assert.match(kar(e), /MMI/); assert.match(kar(e), /perkiraan model, belum diuji/); assert.match(kar(e), /10 km/);
-  assert.match(kar(d), /Hipotesis/); assert.match(kar(d), /Penduduk kabupaten terlibat/); assert.match(kar(d), /-1,84|−1,84/); assert.doesNotMatch(kar(d), /Penduduk (terdampak|terpapar)/);
+  assert.match(kar(d), /Hipotesis/); assert.match(kar(d), /Penduduk kabupaten terlibat/); assert.match(kar(d), /-1,8|−1,8/); assert.doesNotMatch(kar(d), /Penduduk (terdampak|terpapar)/);
   assert.match(kar(c), /Jenis peringatan/); assert.match(kar(c), /hujan lebat/); assert.match(kar(c), /WIB/);
   assert.match(kar(k), /Kartu Api/);   // karhutla tidak berubah
   for (const x of TUGAS) { assert.doesNotMatch(kar(x) + tek(x), TERLARANG, x.id); assert.match(tek(x), /Sumber|Belum divalidasi/); }
@@ -112,3 +112,14 @@ else {
     assert.equal(await tab.eval("!!document.querySelector('.in-baris .in-bc')"), false);
   });
 }
+
+test("Checklist penugasan per bahaya: karhutla tetap APD tahan api dan N95, bahaya lain tanpa butir api", async () => {
+  await import("../../src/worker.js");   /* siklus impor: mulai dari titik masuk */
+  const {susunChecklist} = await import("../../src/penugasan.js"), {UMUR_KAJI_CEPAT_JAM, BENCANA} = await import("../../src/tugas_bencana.js");
+  const teks = b => susunChecklist({bencana: b}, 3).map(x => x.teks).join("|");
+  assert.match(teks(undefined), /baju tahan api/); assert.match(teks("karhutla"), /Masker N95 untuk tiap orang \(3 buah\), asap gambut/);
+  assert.deepEqual(susunChecklist({}, 2), susunChecklist({bencana: "karhutla"}, 2));
+  for (const b of ["banjir", "gempa", "gunungapi", "cuaca", "kekeringan", "udara"]) { assert.doesNotMatch(teks(b), /tahan api|asap gambut/, b); assert.ok(susunChecklist({bencana: b}, 1).some(x => x.k === "apd" && x.wajib), b); assert.ok(susunChecklist({bencana: b}, 1).some(x => x.k === "air_minum"), b); }
+  assert.match(teks("banjir"), /life jacket/); assert.match(teks("gunungapi"), /penyaring abu/);
+  assert.equal(BENCANA.udara.umurMaksJam, UMUR_KAJI_CEPAT_JAM); assert.equal(BENCANA.gempa.umurMaksJam, UMUR_KAJI_CEPAT_JAM);
+});

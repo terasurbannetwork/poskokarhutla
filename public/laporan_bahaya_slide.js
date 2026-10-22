@@ -10,13 +10,13 @@ const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
 const tglP = t => { const [y, m, d] = String(t).split("-").map(Number); return `${d} ${BULAN[m - 1]} ${y}`; };
 const tglK = t => { const [, m, d] = String(t).split("-").map(Number); return `${d} ${BULAN[m - 1].slice(0, 3)}`; };
 const nn = v => typeof v === "number" && Number.isFinite(v);
-const ang = (v, d = 0) => nn(v) ? Number(v).toLocaleString("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: d}) : "NA";
+const ang = (v, d = 0) => nn(v) ? Number(v).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "–";
 const ketik = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 const kap = t => String(t).charAt(0).toUpperCase() + String(t).slice(1);
 const TINGKAT = {awas: ["Awas", C.merah], siaga: ["Siaga", C.jingga], waspada: ["Waspada", "A88A3C"], info: ["Info", C.biru]};
 const DAMPAK = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["terdampak", "jiwa terdampak"]];
 const namaSumber = s => (s.sumber || []).map(x => x.nama).filter(Boolean).join(", ") || "laporan harian otomatis";
-const ubahTeks = u => !u ? null : u.arah === "tetap" ? "sama dengan hari sebelumnya" : `${u.arah} ${u.persen == null ? "dari nol" : ang(u.persen) + " persen"} dari hari sebelumnya`;
+const ubahTeks = u => u?.teks ?? null;
 const unggul = s => s.nasional?.find(m => m.utama) ?? s.nasional?.[0] ?? null;
 
 /* ------------------------------------------------------------ komponen */
@@ -51,7 +51,7 @@ const slide = (id, judul, siap, gambar) => REGISTRI.push({id, judul, bagian: "ut
 
 slide("utama", "Ringkasan nasional", () => null, (k, c) => {
   const s = c.s, u = unggul(s), ms = (s.nasional || []).slice(0, 4);
-  rangka(k, c, u ? [J(`${ang(u.nilai, u.desimal)} ${u.satuan}`), R(` ${u.label.toLowerCase()} pada ${tglP(s.tanggal_data)}`)] : [R(`${s.judul} per tanggal ${tglP(s.tanggal_laporan)}`)], {s: 24, sumber: u ? namaSumber(s) : null});
+  rangka(k, c, u ? [J(`${ang(u.nilai, u.desimal)} ${u.satuan}`), R(` ${u.judul ?? u.label.toLowerCase()} pada ${tglP(s.tanggal_data)}`)] : [R(`${s.judul} per tanggal ${tglP(s.tanggal_laporan)}`)], {s: 24, sumber: u ? namaSumber(s) : null});
   if (!ms.length) return kosongKartu(k, 0.6, 1.6, 12.15, 3.2, "Pantauan otomatis belum ada data", s.data_otomatis ? `${kap(s.data_otomatis.alasan)}${s.data_otomatis.hari_lengkap ? `; hari lengkap terakhir ${tglP(s.data_otomatis.hari_lengkap)}` : ""}.` : null);
   const w = 2.9, g = (12.15 - 4 * w) / 3;
   ms.forEach((m, i) => {
@@ -76,15 +76,15 @@ slide("tren", "Tiga hari terakhir", s => s.tiga_hari ? null : "kurang dari dua h
   if (s.otomatis?.berjalan) k.teks(0.6, 6.3, 12.15, 0.3, `Hari terakhir (${tglP(s.tanggal_data)}) masih berjalan dan belum final menurut berkas otomatis.`, {s: 9, i: true, c: C.abu});
 });
 
-slide("provinsi", "Provinsi prioritas", s => s.provinsi.length ? null : "tidak ada provinsi prioritas dan tidak ada kiriman provinsi", (k, c) => {
+slide("provinsi", "Provinsi yang wajib mengirim laporan", s => s.provinsi.length ? null : "tidak ada provinsi yang wajib mengirim laporan dan tidak ada kiriman provinsi", (k, c) => {
   const s = c.s, ms = (s.metrik || []).filter(m => s.provinsi.some(p => p.metrik[m.k] != null)).slice(0, 3), n = s.provinsi.length;
-  rangka(k, c, [J(`${n} provinsi`), R(` dalam laporan ${s.nama_bencana.toLowerCase()} ${tglP(s.tanggal_data)}`), s.provinsi.some(p => p.wajib) ? R(`; ${s.provinsi.filter(p => p.wajib && p.ada).length} dari ${s.provinsi.filter(p => p.wajib).length} provinsi prioritas mengirim laporan`) : R("")], {s: 20, sumber: `${namaSumber(s)} (angka otomatis); ${sumberProv} (kolom laporan)`});
+  rangka(k, c, [J(`${n} provinsi`), R(` dalam laporan ${s.nama_bencana.toLowerCase()} ${tglP(s.tanggal_data)}`), s.provinsi.some(p => p.wajib) ? R(`; ${s.provinsi.filter(p => p.wajib && p.ada).length} dari ${s.provinsi.filter(p => p.wajib).length} provinsi yang wajib mengirim laporan sudah mengirim`) : R("")], {s: 20, sumber: `${namaSumber(s)} (angka otomatis); ${sumberProv} (kolom laporan)`});
   const sisa = 12.15 - 2.2 - ms.length * 1.6, kol = [{j: "Provinsi", w: 2.2}, ...ms.map(m => ({j: `${m.label} (${m.satuan})`, w: 1.6, a: "r"})), {j: "Laporan provinsi", w: sisa}], xs = tabelHeader(k, 0.6, 1.5, kol), rh = Math.min(0.62, 4.5 / n);
   s.provinsi.slice(0, 7).forEach((p, i) => { const y = 1.95 + i * rh; if (i % 2 === 0) k.kotak(0.6, y, 12.15, rh, {f: "F6F7F9"});
     k.teks(xs[0], y, 2.1, rh, [R(p.nama, C.teks, true), R(p.wajib ? "" : "  (tidak wajib)", C.abu)], {s: 10, v: "m"});
-    ms.forEach((m, j) => { const v = p.metrik[m.k]; k.teks(xs[1 + j], y, 1.5, rh, nn(v) ? ang(v, m.desimal) : "NA", {s: 11, b: nn(v), a: "r", v: "m", c: nn(v) ? (m.utama ? C.jingga : C.teks) : KABUR}); });
+    ms.forEach((m, j) => { const v = p.metrik[m.k]; k.teks(xs[1 + j], y, 1.5, rh, nn(v) ? ang(v, m.desimal) : "–", {s: 11, b: nn(v), a: "r", v: "m", c: nn(v) ? (m.utama ? C.jingga : C.teks) : KABUR}); });
     const x = p.kiriman; k.teks(xs[1 + ms.length], y, sisa - 0.1, rh, x ? ketik(x.ringkasan ?? "", 110) : p.lanjut_tanpa ? `lanjut tanpa laporan: ${ketik(p.lanjut_tanpa.alasan, 80)}` : "belum ada laporan provinsi", {s: 8.5, v: "m", c: x ? C.teks : KABUR}); });
-  if (n > 7) k.teks(0.6, 1.95 + 7 * rh + 0.05, 12, 0.25, `dan ${n - 7} provinsi lain pada JSON snapshot`, {s: 8, c: C.abu});
+  if (n > 7) k.teks(0.6, 1.95 + 7 * rh + 0.05, 12, 0.25, `dan ${n - 7} provinsi lain tidak ditampilkan di slide ini`, {s: 8, c: C.abu});
 });
 
 slide("lapprov", "Laporan dan dampak provinsi", s => s.provinsi.some(p => p.kiriman) ? null : "belum ada laporan provinsi yang disetujui", (k, c) => {
@@ -96,7 +96,7 @@ slide("lapprov", "Laporan dan dampak provinsi", s => s.provinsi.some(p => p.kiri
     const dm = DAMPAK.filter(([e]) => nn(q.dampak?.[e])).map(([e, l]) => `${ang(q.dampak[e])} ${l}`).join(", ");
     k.teks(x + 0.2, y + 1.05, w - 0.4, 0.3, dm ? `Dampak: ${dm}` : "Dampak jiwa tidak dilaporkan", {s: 9, b: !!dm, c: dm ? C.jingga : KABUR});
     k.teks(x + 0.2, y + 1.4, w - 0.4, 0.95, [q.upaya ? R("Upaya: ", C.biru, true) : R(""), R(q.upaya ? ketik(q.upaya, 90) + "  " : ""), q.hambatan ? R("Hambatan: ", C.biru, true) : R(""), R(q.hambatan ? ketik(q.hambatan, 90) : "")], {s: 8.5}); });
-  if (ps.length > 4) k.teks(0.6, 6.5, 12, 0.25, `dan ${ps.length - 4} provinsi lain pada JSON snapshot`, {s: 8, c: C.abu});
+  if (ps.length > 4) k.teks(0.6, 6.5, 12, 0.25, `dan ${ps.length - 4} provinsi lain tidak ditampilkan di slide ini`, {s: 8, c: C.abu});
 });
 
 slide("sorot", "Perlu perhatian", s => s.sorot ? null : "berkas otomatis tidak memuat butir perlu perhatian", (k, c) => {
@@ -111,7 +111,7 @@ slide("prakiraan", "Prakiraan", s => s.prakiraan ? null : "berkas otomatis tidak
   rangka(k, c, [R(ketik(p.judul, 90))], {s: 20, sumber: namaSumber(s)});
   const kol = [{j: "Wilayah", w: 12.15 - nh * lw}, ...p.hari.map(h => ({j: tglK(h), w: lw, a: "r"}))], xs = tabelHeader(k, 0.6, 1.5, kol), rh = Math.min(0.5, 4.4 / p.baris.length);
   p.baris.forEach((b, i) => { const y = 1.95 + i * rh; if (i % 2 === 0) k.kotak(0.6, y, 12.15, rh, {f: "F6F7F9"}); k.teks(xs[0], y, kol[0].w - 0.1, rh, ketik(b.label, 50), {s: 10, b: true, v: "m"});
-    p.hari.forEach((_, j) => k.teks(xs[1 + j], y, lw - 0.1, rh, nn(b.nilai[j]) ? ang(b.nilai[j], 2) : "NA", {s: 10, a: "r", v: "m", c: nn(b.nilai[j]) ? C.teks : KABUR})); });
+    p.hari.forEach((_, j) => k.teks(xs[1 + j], y, lw - 0.1, rh, nn(b.nilai[j]) ? ang(b.nilai[j], b.desimal ?? 0) : "–", {s: 10, a: "r", v: "m", c: nn(b.nilai[j]) ? C.teks : KABUR})); });
   if (p.baris[0]?.satuan) k.teks(0.6, 1.95 + p.baris.length * rh + 0.1, 12, 0.3, `Satuan nilai: ${p.baris[0].satuan}.`, {s: 8.5, i: true, c: C.abu});
 });
 
@@ -120,9 +120,9 @@ slide("metode", "Metode, sumber, dan catatan data", () => null, (k, c) => {
   rangka(k, c, [R("Metode, sumber, dan catatan data"), s.pengecualian.length ? R(`: ${s.pengecualian.length} provinsi dilanjutkan tanpa kiriman terbaru`) : R("")], {s: 20});
   const blok = [
     ["DUA TANGGAL", `Laporan ${tglP(s.tanggal_laporan)} (hari dikunci). Data ${tglP(s.tanggal_data)}, cut-off ${tglP(s.tanggal_laporan)} pukul 07.00 WIB.`],
-    ["SUMBER ANGKA", `Angka nasional dan per provinsi dari berkas laporan otomatis (${namaSumber(s)})${s.otomatis?.dibuat ? `, dibuat ${s.otomatis.dibuat}` : ""}. Dampak jiwa, upaya, dan hambatan dari laporan Pemerintah Provinsi yang diverifikasi Pusdalops BNPB. Keduanya tidak dicampur.`],
+    ["SUMBER ANGKA", `Angka nasional dan per provinsi dari berkas laporan otomatis (${namaSumber(s)})${s.otomatis?.dibuat_teks ? `, dibuat ${s.otomatis.dibuat_teks}` : ""}. Dampak jiwa, upaya, dan hambatan dari laporan Pemerintah Provinsi yang diverifikasi Pusdalops BNPB. Keduanya tidak dicampur.`],
     ["STATUS LAPORAN", `${s.status === "dikunci_pengecualian" ? "Dikunci dengan pengecualian" : "Dikunci"}${s.dikunci_oleh ? " oleh " + s.dikunci_oleh : ""}, ${s.ralat ? "Ralat-" + s.ralat + (s.alasan_ralat ? ", " + s.alasan_ralat : "") : "kunci pertama (tanpa ralat)"}${ex.hash ? `. Hash snapshot ${ex.hash.slice(0, 16)}` : ""}.`],
-    ["ARTI NA", "NA berarti belum ada data pada snapshot. Angka tidak diisi dari hari lain tanpa tertulis tanggal data terakhir."],
+    ["ARTI TANDA –", "Tanda – berarti belum ada data. Angka tidak diisi dari hari lain tanpa tertulis tanggal data terakhir."],
   ];
   blok.forEach(([l, t], i) => { const x = 0.6 + (i % 2) * 6.15, y = 1.5 + Math.floor(i / 2) * 1.5; kartu(k, x, y, 6.0, 1.38); labelKecil(k, x + 0.2, y + 0.12, 5.6, l); k.teks(x + 0.2, y + 0.4, 5.6, 0.95, t, {s: 10.5}); });
   let y = 4.6; k.teks(0.6, y, 6, 0.3, "Slide yang dilewati karena belum ada data", {s: 12}); k.garis(0.6, y + 0.33, 12.75, y + 0.33, {c: C.navy, w: 0.75});

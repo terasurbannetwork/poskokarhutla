@@ -461,14 +461,14 @@ async function admin(env, req, url, id, kini) {
 export const SUMBER_STATUS = sumberStatus();
 export const SUMBER_UJI = sumberUji();   // tahap uji: dilaporkan di `uji`, tidak pernah ikut 503   // dari registry (public/bencana.json), bukan ditulis tangan
 /* "dibuat" selalu kunci pertama berkas: baca 1 KB awal saja, jangan urai berita.json 5 MB (batas CPU Workers) */
-async function dibuatAset(env, asal, jalur) {
+async function dibuatAset(env, asal, jalur, kunci = "dibuat") {
   try {
     const r = await env.ASSETS.fetch(new Request(new URL(jalur, asal)));
     if (!r.ok) { r.body?.cancel(); return null; }
     const rd = r.body.getReader(), dec = new TextDecoder(); let t = "";
     while (t.length < 1024) { const {value, done} = await rd.read(); if (done) break; t += dec.decode(value, {stream: true}); }
     rd.cancel().catch(() => {});
-    const m = t.match(/"dibuat"\s*:\s*"([^"]+)"/), w = m ? Date.parse(m[1]) : NaN;
+    const m = t.match(new RegExp(`"${kunci}"\\s*:\\s*"([^"]+)"`)), w = m ? Date.parse(m[1]) : NaN;
     return Number.isNaN(w) ? null : w;
   } catch (e) { return null; }
 }
@@ -483,6 +483,10 @@ async function periksaStatus(env, url, kini) {
     ...SUMBER_STATUS.map(async ([nama, ...r]) => { const {basi: b, ...o} = await umurSumber(env, url, kini, r); sumber[nama] = o; if (b) basi.push(nama); }),
     ...SUMBER_UJI.map(async ([nama, ...r]) => { uji[nama] = await umurSumber(env, url, kini, r); }),   // informatif: `basi` di sini tidak memengaruhi ok
   ]);
+  /* jeda satelit lewat -> data terbit (PROGRAM-15-JAM blok E): pengamatan terbaru (meta.json data_terakhir) sampai meta.json dibuat. Tanpa ambang: tidak pernah 503,
+     tapi ikut status_riwayat tiap jam sehingga /api/sla dan dashboard kinerja punya median dan p95-nya. */
+  const [dib, lewat] = await Promise.all([dibuatAset(env, url, "/data/meta.json"), dibuatAset(env, url, "/data/meta.json", "data_terakhir")]);
+  if (dib != null && lewat != null && dib >= lewat) sumber.jeda_satelit = {dibuat: new Date(lewat).toISOString(), umur_jam: Math.round((dib - lewat) / JAM * 10) / 10, ambang_jam: null};
   return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
 }
 const status = async (env, url, kini) => { const h = await periksaStatus(env, url, kini); return json(h, h.ok ? 200 : 503); };
@@ -593,6 +597,7 @@ export const HTML_RUTE = [
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
   [/^\/presiden\/?$/, "/presiden.html", "/presiden"],   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
+  [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
   [/^\/karbon\/?$/, "/karbon/index.html", "/karbon"],   // Pantau Karbon (public/karbon/), hanya situs Centurisk97 dan wajib masuk
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97

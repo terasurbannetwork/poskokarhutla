@@ -38,9 +38,9 @@ disunting (token git tanpa scope workflow).
   "id": "provinsi",
   "label": "Provinsi",              // teks pill kategori
   "judul": "…",                     // satu kalimat temuan; angka kunci dibungkus [[…]] untuk disorot
-  "per": "2026-10-22T12:00+07:00",  // waktu data sumber paling tua yang dipakai widget ini
+  "per": "2026-10-22T12:00+07:00",  // tanggal akhir data yang dipakai (sama dengan per lapisan petanya); kesegaran: waktu pemeriksaan; tidak pernah di masa depan
   "status": "ok" | "kosong" | "basi",   // basi = sumber lebih tua dari ambang widget
-  "angka": [ {"label": "…", "nilai": 123, "satuan": "titik", "ubah": -12.5} ],   // 0–4 angka kunci, ubah = % vs pembanding, boleh null
+  "angka": [ {"label": "…", "nilai": 123, "satuan": "titik", "ubah": -12.5, "tampil": "sekitar 123 titik"} ],   // 0–4 angka kunci, ubah = % vs pembanding, boleh null; tampil (opsional) = teks jadi yang menggantikan nilai+satuan di layar
   "grafik": null | {"jenis": "batang" | "garis", "label": ["…"], "seri": [{"nama": "…", "nilai": [1,2]}], "satuan": "…"},
   "kolom": [ {"k": "prov", "label": "Provinsi", "jenis": "teks" | "angka" | "persen" | "pill"} ],
   "baris": [ {"prov": "Kalimantan Tengah", "titik": 1234} ],   // paling banyak 10 baris
@@ -51,6 +51,12 @@ disunting (token git tanpa scope workflow).
 ```
 
 Aturan isi:
+- Pill yang punya pembanding (naik/turun) menulisnya DI DALAM `tampil` ("15.486 titik, naik 1.309% dari median ...") dan `ubah` null, supaya tidak ganda; angka batas bawah ditulis "paling sedikit", bukan "sekitar".
+- Semua perkiraan model memakai `tampil` ("sekitar 85 juta orang", "sekitar 1,1 juta ha (0,5 sampai 2,4 juta)"); `nilai` tetap angka mentah. `satuan` boleh "" bila label sudah memuat satuannya.
+- Hari kalender berjalan tidak dipakai di perbandingan harian atau jendela 7 hari: judul, angka, dan `per` memakai tanggal hari lengkap terakhir yang sama.
+- Kompleks yang tidak ada di `kendala.json` ditulis "Belum dinilai" (bukan "Tanpa kendala tercatat") dan tidak masuk tindak lanjut regu darat.
+- `asap` dibatasi ke provinsi yang sering mengalami karhutla (PM2,5 CAMS berasal dari semua sumber); `sumberdaya` menamai `posko.json` "Lokasi posko usulan" (rekomendasi algoritma, bukan posko terdata).
+- Lembaga: Kementerian Kehutanan (SiPongi, Manggala Agni, Gakkum Kehutanan) dan Kementerian Lingkungan Hidup; nama regulasi historis (Permen LHK) tetap.
 - Angka nyata dari berkas sumber; tidak ada angka karangan. Sumber kosong =
   `status: "kosong"` dan `baris: []`, bukan 0.
 - Perkiraan diberi kata "perkiraan" di judul atau catatan; angka konsesi diberi
@@ -60,23 +66,24 @@ Aturan isi:
 
 ## Widget (urutan tampil)
 
+Widget `peringatan` (nowcast BMKG) dibuang 22 Okt 2026: umpannya harian sedangkan nowcast berlaku 1 sampai 3 jam, jadi selalu basi.
+
 | id | Pertanyaan | Sumber utama | Tindak lanjut khas |
 | --- | --- | --- | --- |
-| `situasi` | Seberapa parah hari ini dibanding biasanya dan 2015? | `titik24.json`, `kumulatif.json`, `musim_harian.json` | BNPB, KLHK |
-| `provinsi` | Provinsi mana paling mendesak? (titik 7 hari, ubah vs 7 hari sebelumnya, vonis peluang cuaca) | `titik_tahun.json`, `peluang.json` | Gubernur: status siaga/darurat |
-| `kejadian` | 10 kejadian api terbesar yang masih aktif, aksesnya, gambut atau bukan | `kluster.json`/`kompleks_konsesi.json`, `kendala.json` | BNPB: water bombing, regu darat |
-| `konsesi` | Perusahaan dengan titik panas terbanyak di areal izinnya musim ini | `kompleks_konsesi.json`, `aktor_karhutla.json` | KLHK Gakkum: verifikasi lapangan |
+| `situasi` | Seberapa parah hari ini dibanding biasanya dan 2015? | `musim_harian.json`, `kumulatif.json` | BNPB, Kementerian Kehutanan |
+| `provinsi` | Provinsi mana paling mendesak? (titik 7 hari lengkap, ubah vs 7 hari sebelumnya, vonis peluang cuaca) | `musim_harian.json`, `peluang.json` | Gubernur: status siaga/darurat |
+| `kejadian` | 10 kejadian api aktif terbesar, aksesnya (termasuk "Belum dinilai"), gambut atau bukan | `kluster.json`, `kompleks_konsesi.json`, `kendala.json`, `operasi.json` | BNPB: water bombing; Manggala Agni: regu darat |
+| `konsesi` | Perusahaan (yang namanya terdata, sekitar sepertiga titik) dengan titik panas terbanyak di areal izinnya, 7 x 24 jam | `kompleks_konsesi.json`, `aktor_karhutla.json` | Gakkum Kehutanan, Kementerian Lingkungan Hidup: verifikasi lapangan |
 | `gambut` | KHG dengan titik terbanyak 7 hari terakhir | `khg_prioritas.json` | BRGM: pembasahan, sekat kanal |
 | `cuaca` | Provinsi dengan peluang cuaca api ekstrem 7 hari ke depan, plus ENSO/IOD | `peluang.json`, `iklim_outlook.json` | BMKG/BNPB: OMC |
-| `asap` | Berapa penduduk, siswa, faskes terpapar PM2.5 tidak sehat (perkiraan model) | `udara_dampak.json` | Kemenkes, Kemendikdasmen |
+| `asap` | Berapa penduduk, siswa, faskes di provinsi yang sering mengalami karhutla terpapar PM2.5 tidak sehat (perkiraan model) | `udara_dampak.json`, `peluang.json` | Kemenkes, Kemendikdasmen |
 | `penerbangan` | Gangguan bandara akibat asap musim ini | `penerbangan.json` | Kemenhub |
-| `sumberdaya` | Kebutuhan regu/air perkiraan vs posko yang ada per provinsi | `operasi.json`, `posko.json` | BNPB, TNI/Polri |
-| `dampak` | Kerugian ekonomi, emisi, kesehatan yang sudah tercatat (dengan sumber) | `dampak.json` | Bappenas, Kemenkeu |
-| `luas` | Luas terbakar resmi SiPongi per tahun dan provinsi teratas | `luas_resmi.json` | KLHK |
-| `berulang` | Kecamatan langganan yang terbakar lagi tahun ini | `keputusan.json`, `sejarah.json` | Pemda: pencegahan permanen |
+| `sumberdaya` | Kebutuhan regu/personel (rentang skenario) vs personel tercatat BNPB per provinsi, plus lokasi posko usulan | `operasi.json`, `posko.json` | BNPB, TNI/Polri |
+| `dampak` | Perkiraan model kerugian ekonomi, emisi, kesehatan dan luas (tiga skenario, bukan angka tercatat) | `dampak.json` | Bappenas, Kemenkeu |
+| `luas` | Luas terbakar resmi SiPongi per tahun dan provinsi teratas | `luas_resmi.json` | Kementerian Kehutanan |
+| `berulang` | Kecamatan langganan yang terbakar lagi tahun ini | `sejarah.json` | Pemda: pencegahan permanen |
 | `pencegahan` | Paket pencegahan dan perkiraan biaya untuk provinsi teratas | `preventif.json` | Bappenas, Kemendagri |
-| `peringatan` | Peringatan aktif level tertinggi | `peringatan.json` | BNPB |
-| `kesegaran` | Umur tiap sumber data dibanding jadwalnya | `meta.json` + `dibuat` tiap berkas | Pengelola platform |
+| `kesegaran` | Umur tiap sumber data dibanding batasnya (`per` = waktu pemeriksaan) | `dibuat` atau tanggal akhir tiap berkas (tabel `WAKTU` di kode) | Pengelola platform |
 
 Generator boleh menggugurkan widget yang sumbernya tidak memadai, asal
 dilaporkan alasannya; jangan memalsukan isi.
@@ -102,7 +109,8 @@ Medan tambahan (putaran 2, dari pemeriksa angka):
 - lapisan `label` sama dengan label kartu widget terkait bila maknanya sama.
 - fitur `pill` (opsional, string jadi): bila ada, layar memakainya untuk pill pop-up menggantikan `nilai` + `satuan` (dipakai untuk perkiraan yang dibulatkan atau dikategorikan, mis. "sekitar 17.000 ha", "di atas 250 µg/m³, berbahaya"). `nilai` mentah tetap untuk ukuran lingkaran.
 - lapisan `kelas` (opsional, untuk titik berkategori): `[{"dari": 55.5, "label": "Tidak sehat"}, …]`; bila ada, legenda menampilkan kelas, bukan "kecil … maks".
-- `per` = tanggal akhir data yang benar-benar dipakai, bukan waktu pembuatan berkas.
+- `per` = tanggal akhir data yang benar-benar dipakai, bukan waktu pembuatan berkas, dan SAMA dengan `per` kartu widget terkait.
+- Pencocokan lapisan `konsesi` ke `lahan/konsesi.geojson`: lewat id poligon di `aktor_karhutla.json`, lalu nama yang dinormalkan (tanpa keterangan dalam kurung); yang gagal dicetak sebagai peringatan, tidak diam-diam dibuang.
 
 Lapisan (urutan chip di layar), paling banyak 300 fitur per lapisan titik:
 
@@ -113,9 +121,9 @@ Lapisan (urutan chip di layar), paling banyak 300 fitur per lapisan titik:
 | `kejadian` | titik | kejadian api tercatat, ukuran = sebaran titik, 300 terbesar |
 | `konsesi` | titik | areal izin dengan titik 7 hari terbanyak (titik di kejadian terbesarnya), catatan indikasi di pop-up |
 | `gambut` | titik | KHG bertitik 7 hari (titik pusat poligon `public/data/lahan/khg.geojson`) |
-| `asap` | titik | sel PM2,5 tidak sehat (perkiraan model) hari terakhir dari `asap.json` |
+| `asap` | titik | sel PM2,5 tidak sehat (perkiraan model) hari terakhir dari `asap.json`, hanya sel yang pusatnya di provinsi yang sering mengalami karhutla; kelas 55,5 / 150,5 / 250,5 |
 | `penerbangan` | titik | bandara terdampak asap musim ini |
-| `posko` | titik | posko terdata (`posko.json`) |
+| `posko` | titik | lokasi posko usulan (rekomendasi algoritma, `posko.json`), bukan posko terdata |
 | `berulang` | titik | kecamatan langganan yang kembali tercatat titik panas (titik pusat kecamatan) |
 
 ## Layar

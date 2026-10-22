@@ -5,10 +5,10 @@
 import {tglPanjang, hariPanjang} from "./laporan_karhutla_wa.js";
 
 const nn = v => typeof v === "number" && Number.isFinite(v);
-const fmt = (n, d = 0) => Number(n).toLocaleString("id-ID", {maximumFractionDigits: d, minimumFractionDigits: 0});
+const fmt = (n, d = 0) => Number(n).toLocaleString("id-ID", {maximumFractionDigits: d, minimumFractionDigits: d});
 const B = t => `*${t}*`, I = t => `_${t}_`, H1 = t => `***${t}***`, H2 = t => `**${t}**`;
 const kapital = t => String(t).charAt(0).toUpperCase() + String(t).slice(1);
-const ubahTeks = u => !u ? "" : u.arah === "tetap" ? ", sama dengan hari sebelumnya" : `, ${u.arah} ${u.persen == null ? "dari nol" : fmt(u.persen) + " persen"} dari hari sebelumnya`;
+const ubahTeks = u => u?.teks ? ", " + u.teks : "";
 const namaSumber = s => (s.sumber || []).map(x => x.nama).filter(Boolean).join(", ") || "laporan harian otomatis";
 const DAMPAK = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["terdampak", "jiwa terdampak"]];
 const kalimat = t => { t = String(t).trim(); return /[.!?]$/.test(t) ? t : t + "."; };
@@ -56,7 +56,7 @@ export function laporanBencana(s) {
   }
   if (s.prakiraan) {
     const p = s.prakiraan;
-    L.push(H1("D. PRAKIRAAN"), "", `${kalimat(p.judul)} Hari ${p.hari.map(tglPanjang).join(", ")}.`, ...p.baris.slice(0, 5).map(b => `* ${b.label}: ${b.nilai.map(v => nn(v) ? fmt(v, 2) : "belum ada data").join("; ")}${b.satuan ? " " + b.satuan : ""}`), I(`Sumber: ${namaSumber(s)}`), "");
+    L.push(H1("D. PRAKIRAAN"), "", `${kalimat(p.judul)} Hari ${p.hari.map(tglPanjang).join(", ")}.`, ...p.baris.slice(0, 5).map(b => `* ${b.label}: ${b.nilai.map(v => nn(v) ? fmt(v, b.desimal ?? 0) : "belum ada data").join("; ")}${b.satuan ? " " + b.satuan : ""}`), I(`Sumber: ${namaSumber(s)}`), "");
   }
   for (const p of s.pengecualian) L.push(I(`Catatan: ${p.label}, data terakhir ${p.data_terakhir ? tglPanjang(p.data_terakhir) : "tidak ada"} (${p.alasan})`));
   L.push(H1("KESIMPULAN"), "", ...s.kesimpulan.map(t => `* ${t}`));

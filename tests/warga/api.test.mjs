@@ -487,7 +487,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   const B = structuredClone(REG); B.bencana.find(b => b.id === "cuaca").status = "uji";
   const tmp = mkdtempSync(path.join(tmpdir(), "uji-registry-"));
   cpSync(path.join(AKAR, "src"), path.join(tmp, "src"), {recursive: true});
-  mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
+  mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js", "laporan_bencana_spek.js", "laporan_bencana_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);
   const mf2 = new Miniflare({...opsi(), scriptPath: path.join(tmp, "src/worker.js"), modulesRoot: tmp, d1Databases: {DB: "uji-registry"}});
   try {
@@ -555,4 +555,19 @@ uji("GET /cuaca/simulasi menyajikan public/cuaca/simulasi.html, /udara/simulasi 
   assert.ok(sim.teks.length > 1000 && sim.teks.includes("sim_layar.js"), "isi simulasi.html, bukan index.html");
   assert.equal(judul((await panggil("GET", "/cuaca/peta")).teks), judul(baca("cuaca/index.html")));
   assert.equal(judul((await panggil("GET", "/udara/simulasi")).teks), judul(baca("udara/index.html")));
+});
+
+/* PROGRAM-15-JAM blok E: jeda satelit lewat -> data terbit, dari meta.json (dibuat - data_terakhir); tanpa ambang, tidak pernah 503 */
+uji("status: jeda satelit dari meta.json, tanpa ambang dan tanpa data_terakhir tidak dilaporkan", async () => {
+  const lama = ASET_UJI["/data/meta.json"], iso = jam => new Date(KINI - jam * JAM).toISOString();
+  try {
+    ASET_UJI["/data/meta.json"] = JSON.stringify({dibuat: iso(1), data_terakhir: iso(3.5), isi: "x".repeat(2000)});
+    let r = await panggil("GET", "/api/status");
+    assert.equal(r.j.sumber.jeda_satelit?.umur_jam, 2.5, r.teks);
+    assert.equal(r.j.sumber.jeda_satelit.ambang_jam, null);
+    assert.ok(!r.j.basi.includes("jeda_satelit"), "jeda tanpa ambang tidak boleh membuat 503");
+    ASET_UJI["/data/meta.json"] = JSON.stringify({dibuat: iso(1)});
+    r = await panggil("GET", "/api/status");
+    assert.ok(!("jeda_satelit" in r.j.sumber), "tanpa data_terakhir: tidak ada angka, bukan nol");
+  } finally { if (lama === undefined) delete ASET_UJI["/data/meta.json"]; else ASET_UJI["/data/meta.json"] = lama; }
 });

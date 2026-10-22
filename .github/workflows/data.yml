@@ -187,6 +187,19 @@ jobs:
           key: air-${{ github.run_id }}
           restore-keys: air-
 
+      # cache graf-/air- bisa dibuang GitHub (cache data- besar); arsip R2 dari statis.yml/graf.yml jadi cadangan. Tanpa keduanya akses.py gagal.
+      - name: Pulihkan graf dan titik air dari R2 bila cache hilang (boleh gagal)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p data
+          for b in graf_jalan air_titik; do
+            [ -s data/$b.json.gz ] && continue
+            npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/arsip/$b.json.gz --file data/$b.json.gz --remote || { rm -f data/$b.json.gz; echo "::warning title=$b::cache dan arsip R2 kosong; jalankan graf.yml"; }
+          done
+
       # jejak GPS regu 30 hari terakhir; token kosong atau respons bukan 200 = tidak ada berkas (akses.py anggap tanpa jejak)
       - name: Tarik jejak regu (boleh gagal)
         continue-on-error: true
@@ -230,7 +243,9 @@ jobs:
       # harian.py menulis ulang tugas_kompleks.json tanpa kunci insiden; tanpa langkah ini Kartu Api kosong sampai putaran titik.yml berikutnya
       - name: Insiden api, front, luas terkoreksi (boleh gagal)
         continue-on-error: true
-        run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+        run: |
+          python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+          python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
       # luas terukur Sentinel-2 (dNBR) per insiden yang sudah >= 7 hari tak terdeteksi; hasil menumpuk di public/data/luas_citra.json,
       # ikut cache data- (sama seperti insiden.json) dan terbit lewat deploy/`git add public/data`

@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
 import {existsSync, readFileSync} from "node:fs";
 import path from "node:path";
+import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
@@ -53,7 +54,8 @@ const kid = () => "kid" + String(++kidN).padStart(8, "0");
 const P = "/api/laporan-karhutla/", SANDI = "SandiUji123456";
 
 /* akun pemprov aktif lewat rute masuk sungguhan; cookie sesi instansi hanya terkirim ke /api/instansi, jadi memakai alias /api/instansi/laporan/* */
-const pemprov = async (kode, nama) => {
+const pemprov = async (kode, nama, U_ = U) => {
+  const {DB, api} = U_, sisip = (tabel, o) => DB.prepare(`INSERT INTO ${tabel} (${Object.keys(o).join(", ")}) VALUES (${Object.keys(o).map(() => "?").join(", ")})`).bind(...Object.values(o)).run();
   const garam = "c".repeat(32), id = id16(), username = "pemprov" + kode + id.slice(0, 4);
   await sisip("instansi_akun", {id, username, jenis: "pemprov", tingkat: "prov", wilayah: "Provinsi " + nama, kunci_wilayah: "k" + id, cakupan: JSON.stringify([kode]), prov: null, kab: null, garam, sandi_sha: sha256(garam + SANDI),
     status: "aktif", nama: "Budi", nip: "198001012005011001", jabatan: "Kalak", unit: "BPBD Provinsi", email: "budi@contoh.go.id", wa: "6281234500" + kode, surat: 1, kartu: 1, dikirim: 1, diputus: 1, wajib_ganti: 0, dibuat: Date.now() - 3 * HARI, dummy: 0});
@@ -78,6 +80,7 @@ let A72, A62;
 uji("migrasi 0048 idempoten; CHECK dan trigger menahan bencana liar, sumber bukan provinsi, riwayat dan snapshot beku, hari terkunci tidak dibuka", async () => {
   const sql = teks("migrations/0048_laporan_bencana.sql");
   for (let i = 0; i < 2; i++) await DB.batch(pecah(sql).map(s => DB.prepare(s)));
+  const sql49 = teks("migrations/0049_laporan_bencana_jaga.sql"); for (let i = 0; i < 2; i++) await DB.batch(pecah(sql49).map(s => DB.prepare(s)));   // susulan, idempoten
   const k = (o = {}) => sisip("lkb_kiriman", {bencana: "banjir", tanggal_laporan: "2026-01-01", sumber: "prov:72", status: "draf", versi: 1, isi: "{}", pengirim: "uji", diubah: 1, ...o});
   await assert.rejects(() => k({bencana: "karhutla"}), /CHECK/, "karhutla bukan penghuni lkb_*"); await assert.rejects(() => k({bencana: "tsunami"}), /CHECK/);
   await assert.rejects(() => k({sumber: "udara"}), /CHECK/); await assert.rejects(() => k({sumber: "prov:7"}), /CHECK/); await assert.rejects(() => k({isi: "bukan json"}), /CHECK/); await assert.rejects(() => k({isi: JSON.stringify({x: "a".repeat(262200)})}), /CHECK/);
@@ -92,9 +95,16 @@ uji("migrasi 0048 idempoten; CHECK dan trigger menahan bencana liar, sumber buka
   await sisip("lkb_versi", v); await assert.rejects(() => sisip("lkb_versi", {...v, klien_id: "pendek"}), /CHECK/); await assert.rejects(() => DB.prepare("UPDATE lkb_versi SET oleh = 'x' WHERE dummy = 0").run(), /hanya bisa ditambah/); await assert.rejects(() => DB.prepare("DELETE FROM lkb_versi WHERE dummy = 0").run(), /hanya bisa ditambah/);
   const s = {bencana: "banjir", tanggal_laporan: "2026-01-01", ralat: 0, hash: "b".repeat(64), isi: "{}", oleh: "uji", waktu: 1};
   await sisip("lkb_snapshot", s); await assert.rejects(() => sisip("lkb_snapshot", {...s, tanggal_laporan: "2026-01-02", ralat: 1}), /CHECK/, "ralat wajib beralasan"); await assert.rejects(() => DB.prepare("UPDATE lkb_snapshot SET isi = '[]'").run(), /beku/); await assert.rejects(() => DB.prepare("DELETE FROM lkb_snapshot WHERE dummy = 0").run(), /beku/);
+  /* 0049: hari terkunci nyata tidak bisa dihapus langsung; kiriman hari terkunci tidak bisa dihapus dan hanya bisa diubah menjadi disetujui (ralat) */
+  await assert.rejects(() => DB.prepare("DELETE FROM lkb_hari WHERE tanggal_laporan = '2026-01-04'").run(), /tidak bisa dihapus/);
+  await k({tanggal_laporan: "2026-01-04", status: "terkirim"});
+  await assert.rejects(() => DB.prepare("DELETE FROM lkb_kiriman WHERE tanggal_laporan = '2026-01-04'").run(), /tidak bisa dihapus/);
+  await assert.rejects(() => DB.prepare("UPDATE lkb_kiriman SET status = 'draf' WHERE tanggal_laporan = '2026-01-04'").run(), /hanya bisa diubah lewat ralat/);
+  await DB.prepare("UPDATE lkb_kiriman SET status = 'disetujui', verif_oleh = 'x', verif_pada = 1 WHERE tanggal_laporan = '2026-01-04'").run();   // jalur ralat tetap jalan
+  await DB.prepare("UPDATE lkb_kiriman SET status = 'draf' WHERE tanggal_laporan = '2026-01-01'").run(); await DB.prepare("DELETE FROM lkb_kiriman WHERE tanggal_laporan = '2026-01-01' AND bencana = 'gempa'").run();   // hari terbuka bebas
+  await sisip("lkb_hari", {bencana: "gempa", tanggal_laporan: "2026-01-05", status: "dikunci", hash: "a".repeat(64), dikunci_oleh: "x", dikunci_pada: 1, dibuat: 1, dummy: 1}); await DB.prepare("DELETE FROM lkb_hari WHERE tanggal_laporan = '2026-01-05'").run();   // dummy boleh dihapus
   /* dummy boleh dihapus */
   await sisip("lkb_versi", {...v, tanggal_laporan: "2026-01-09", dummy: 1}); await DB.prepare("DELETE FROM lkb_versi WHERE dummy = 1").run();
-  for (const t of ["lkb_versi", "lkb_snapshot", "lkb_kiriman", "lkb_hari"]) await DB.prepare(`DELETE FROM ${t} WHERE dummy = 0`).run().catch(() => {});   // pembersihan: trigger menahan versi/snapshot nyata, itu disengaja
 });
 
 uji("registri bencana: daftar sama dengan CHECK migrasi 0048, tiap bahaya punya adaptor, karhutla membungkus spek lama apa adanya (hash agregasi emas)", async () => {
@@ -131,6 +141,68 @@ uji("adaptor membaca laporan.json v1 NYATA tiap bahaya: bagian tanpa angka dihil
   }
   assert.equal(SB.dariLaporan(JSON.parse(teks("public/gempa/data/laporan.json")), "1999-01-01"), null, "hari di luar berkas = null");
   assert.equal(SB.dariLaporan({v: 2}, "2026-01-01"), null);
+  /* besaran berdesimal (magnitudo) tidak dipersenkan: presisi palsu */
+  const mag = SB.dariLaporan({v: 1, hari: ["2026-01-01", "2026-01-02"], metrik: [{k: "m", label: "M terbesar", satuan: "M", desimal: 1, utama: true}, {k: "n", label: "Jumlah", satuan: "kejadian", desimal: 0}], nasional: {m: [4.9, 5], n: [0, 3]}, prov: {}, sumber: []}, "2026-01-02");
+  assert.deepEqual(mag.nasional.map(m => m.ubah.teks), ["naik dari 4,9 pada hari sebelumnya", "naik dari nol"]); assert.equal(mag.nasional[0].ubah.persen, null);
+  assert.match(SB.spek("gempa").teksWA(SB.spek("gempa").agregasi({tanggal_laporan: "2026-01-03", prioritas: [], kiriman: {}, laporan: {v: 1, bencana: "gempa", hari: ["2026-01-01", "2026-01-02"], metrik: [{k: "m", label: "M terbesar", satuan: "M", desimal: 1, utama: true}], nasional: {m: [4.9, 5]}, prov: {}, sumber: [{nama: "BMKG"}]}, dikunci_oleh: "a", dikunci_pada: 1})).laporan, /\*5,0 M\* \(M terbesar\), naik dari 4,9 pada hari sebelumnya/, "desimal sesuai berkas: 5,0 bukan 5");
+});
+
+/* ================================================================ deck dan paparan (skrip klasik dijalankan nyata di vm, kanvas perekam) */
+const win = {}, ctxVm = {window: win, document: {}, Intl, Date, Math};
+vm.createContext(ctxVm);
+for (const f of ["paparan_slide", "laporan_bnpb_slide", "laporan_bahaya_slide"]) vm.runInContext(teks(`public/${f}.js`), ctxVm, {filename: f});
+const PS = win.PaparanSlide, BS = win.LaporanBahayaSlide;
+const rekam = () => { const t = [], k = {teks: (x, y, w, h, r, o = {}) => t.push((typeof r === "string" ? [{t: r}] : Array.isArray(r) ? r : [r]).map(p => p.t ?? p).join("")), kotak() {}, garis() {}, bulat() {}, gambar() {}}; return {k, t}; };
+const ar = x => JSON.parse(JSON.stringify(x));   // salin lintas realm sebelum deepEqual
+const isiSlide = (sl, c) => { const r = rekam(); sl.gambar(r.k, c); return r.t.join(" | "); };
+const bersih = (x, id) => assert.ok(!/undefined|NaN|\[object|\bnull\b| · /.test(x), `slide ${id} bersih dari undefined, NaN, null, dan titik tengah: ${x.slice(0, 300)}`);
+
+uji("deck bahaya dari snapshot: slide mengikuti data, angka dan sumber tercetak, bagian null dilewati beralasan, DRAF berwatermark, tanpa nol karangan", async () => {
+  const SPB = SB.spek("banjir"), isiKiriman = SPB.normalisasi("prov:72", SULTENG, "2026-10-20", true).isi;
+  const snapB = SPB.agregasi({tanggal_laporan: "2026-10-20", prioritas: ["72", "62"], kiriman: {"prov:72": {isi: isiKiriman}}, pengecualian: [{sumber: "prov:62", alasan: "Kalteng belum mengirim laporan"}], laporan: FX.banjir(), dikunci_oleh: "admin", dikunci_pada: 1});
+  const d = BS.deck(snapB), lewatB = Object.fromEntries(d.dilewati.map(y => [y.id, y.alasan])), t = d.slide.map((x, i) => isiSlide(x, {no: i + 1, total: d.slide.length, aset: {}, s: snapB, ex: {lewat: lewatB}, tahun: "2026"}));
+  assert.deepEqual(ar(d.slide.map(x => x.id)), ["utama", "tren", "provinsi", "lapprov", "sorot", "metode"]); assert.deepEqual(ar(d.dilewati.map(x => x.id)), ["prakiraan"]); assert.match(d.dilewati[0].alasan, /tidak memuat prakiraan/);
+  for (const x of ["5 kecamatan", "siaga atau awas banjir", "9.823", "naik 25 persen dari hari sebelumnya", "BMKG, InaRISK BNPB"]) assert.ok(t[0].includes(x), `utama memuat "${x}"`);
+  assert.ok(t[1].includes("2 menjadi 5 kecamatan") && t[1].includes("17 Oktober 2026"), "tren dari tiga hari fixture"); assert.ok(t[2].includes("Sulawesi Tengah") && t[2].includes("Kalimantan Tengah") && t[2].includes("lanjut tanpa laporan: Kalteng belum mengirim laporan"), "provinsi dan pengecualian");
+  assert.ok(t[3].includes("3 meninggal, 1 hilang, 5 luka, 200 mengungsi, 1.500 jiwa terdampak") && t[3].includes("Evakuasi dan dapur umum"), "laporan provinsi"); assert.ok(t[4].includes("Sulawesi Tengah: 3 kecamatan siaga banjir")); assert.ok(t[5].includes("Prakiraan: berkas otomatis tidak memuat prakiraan") && t[5].includes("Kalimantan Tengah: data terakhir tidak ada"), "metode mencatat slide dilewati dan pengecualian");
+  d.slide.forEach((x, i) => bersih(t[i], x.id));
+  const draf = rekam(); BS.deck(snapB, {draf: true}).slide[0].gambar(draf.k, {no: 1, aset: {}, s: snapB, ex: {lewat: {}}, tahun: "2026", draf: true}); assert.ok(draf.t.includes("DRAF"), "watermark DRAF");
+  assert.match(BS.namaBerkas({...snapB, ralat: 2}, "pptx"), /^Laporan-Harian-Banjir-20-Okt-2026-Ralat-2\.pptx$/);
+  /* gunungapi jarang: tanpa kiriman, metrik null tidak jadi nol; tanpa berkas otomatis semua bagian dilewati beralasan dan utama menulis belum ada data */
+  const sg = SB.spek("gunungapi").agregasi({tanggal_laporan: "2026-10-20", prioritas: ["35"], kiriman: {}, laporan: FX.gunungapi(), dikunci_oleh: "a", dikunci_pada: 1}), dg = BS.deck(sg), tg = dg.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: sg, ex: {lewat: {}}, tahun: "2026"}));
+  assert.deepEqual(ar(dg.slide.map(x => x.id)), ["utama", "tren", "provinsi", "sorot", "metode"], "tanpa laporan provinsi: slide lapprov dilewati"); assert.ok(dg.dilewati.find(x => x.id === "lapprov").alasan.length > 10); assert.ok(!tg[0].includes("bandara"), "bandara_abu null tidak digambar"); tg.forEach((x, i) => bersih(x, dg.slide[i].id));
+  const kosong = SB.spek("gunungapi").agregasi({tanggal_laporan: "2026-10-25", prioritas: [], kiriman: {}, laporan: FX.gunungapi(), dikunci_oleh: "a", dikunci_pada: 1}), dk = BS.deck(kosong), tk = dk.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: kosong, ex: {lewat: Object.fromEntries(dk.dilewati.map(y => [y.id, y.alasan]))}, tahun: "2026"}));
+  assert.deepEqual(ar(dk.slide.map(x => x.id)), ["utama", "metode"]); assert.ok(tk[0].includes("belum ada data") && tk[0].includes("tidak mencakup 24 Oktober 2026")); assert.ok(tk[1].includes("Slide yang dilewati") && tk[1].includes("Tiga hari terakhir")); dk.slide.forEach((x, i) => bersih(tk[i], x.id));
+  /* semua bahaya dari berkas NYATA: deck terbangun dan bersih */
+  for (const b of K.DAFTAR_BENCANA.filter(x => x !== "karhutla")) {
+    const L = JSON.parse(teks("public" + K.BENCANA[b].url)), td = L.hari.at(-1), sn = SB.spek(b).agregasi({tanggal_laporan: K.geserHari(td, 1), prioritas: SB.pilihPrioritas(L, td), kiriman: {}, laporan: L, dikunci_oleh: "a", dikunci_pada: 1}), dd = BS.deck(sn);
+    assert.ok(dd.slide.length >= 3, `${b}: deck punya isi`); dd.slide.forEach((x, i) => bersih(isiSlide(x, {no: i + 1, aset: {}, s: sn, ex: {lewat: {}}, tahun: "2026"}), `${b}/${x.id}`));
+  }
+});
+
+uji("paparan ?bencana=: slide karhutla khusus karhutla, slide b_* hanya bencana lain dengan bahan dari spek, sampul memakai nama bahaya, karhutla tetap utuh", async () => {
+  const L = FX.banjir(), td = "2026-10-19", B = SB.dariLaporan(L, td), dasar = {D: {laporan: L}, B, prov: "72", namaProv: "Sulawesi Tengah", tgl: td, merek: "Pantau Bencana", templat: {sampul: {}}, gambar: {}};
+  const c = {...dasar, bencana: "banjir", namaB: "Banjir, longsor dan rob"}, karhutla = {...dasar, bencana: undefined, B: null};
+  const reg = PS.REGISTRI, khusus = reg.filter(s => s.khusus === "karhutla").map(s => s.id), bahaya = reg.filter(s => s.khusus === "bahaya").map(s => s.id);
+  assert.deepEqual(ar(khusus), ["nasional", "provinsi", "harian", "operasi", "konsesi", "konsesi12", "profil3", "lampiran_kab"]); assert.deepEqual(ar(bahaya), ["b_nasional", "b_provinsi", "b_peringkat", "b_sorot", "b_prakiraan", "b_sumber"]);
+  for (const id of khusus) { assert.equal(reg.find(x => x.id === id).siap(c), "khusus karhutla"); assert.equal(PS.berlaku(reg.find(x => x.id === id), "banjir"), false); assert.equal(PS.berlaku(reg.find(x => x.id === id), "karhutla"), true); assert.equal(PS.berlaku(reg.find(x => x.id === id), undefined), true); }
+  for (const id of bahaya) { const sl = reg.find(x => x.id === id); assert.equal(PS.berlaku(sl, "karhutla"), false, id + " tidak tampil di paparan karhutla"); assert.equal(PS.berlaku(sl, "banjir"), true); assert.ok(sl.siap(karhutla), id + " dilewati bila dipanggil di konteks karhutla"); }
+  assert.equal(PS.berlaku(reg.find(x => x.id === "sampul"), "gempa"), true); assert.equal(PS.berlaku(reg.find(x => x.id === "daftar"), "karhutla"), true);
+  const aktif = reg.filter(s => PS.berlaku(s, "banjir") && !s.siap(c)), lewat = reg.filter(s => PS.berlaku(s, "banjir") && s.siap(c)).map(s => s.id);
+  assert.deepEqual(ar(aktif.map(s => s.id)), ["sampul", "daftar", "b_nasional", "b_provinsi", "b_peringkat", "b_sorot", "b_sumber"]); assert.deepEqual(ar(lewat), ["b_prakiraan"]);
+  const urutan = aktif.map((s, i) => ({id: s.id, bagian: s.bagian, judulTampil: s.judul.replace("{prov}", c.namaProv), hal: i + 1})), tt = Object.fromEntries(aktif.map((s, i) => [s.id, isiSlide(s, {...c, no: i + 1, urutan})]));
+  assert.ok(tt.sampul.includes("Paparan Rakor Banjir, longsor dan rob") && tt.sampul.includes("Pengendalian Darurat Banjir, longsor dan rob Provinsi Sulawesi Tengah Tahun 2026") && tt.sampul.includes("pengendalian banjir, longsor dan rob Sulawesi Tengah"), "sampul memakai nama bahaya");
+  assert.ok(tt.b_nasional.includes("5 kecamatan siaga atau awas banjir pada 19 Oktober 2026") && tt.b_nasional.includes("9.823 jiwa") && tt.b_nasional.includes("naik 25 persen dari hari sebelumnya") && tt.b_nasional.includes("BMKG, InaRISK BNPB"), "angka dan sumber dari spek");
+  assert.ok(tt.b_provinsi.includes("Sulawesi Tengah") && tt.b_provinsi.includes("3 kecamatan siaga atau awas banjir") && tt.b_provinsi.includes("6.000 jiwa")); assert.ok(tt.b_peringkat.indexOf("Sulawesi Tengah") < tt.b_peringkat.indexOf("Kalimantan Tengah"), "urut menurun menurut metrik utama"); assert.ok(tt.b_peringkat.includes("Aceh"), "nol yang dilaporkan sumber tetap tampil (bukan nol karangan)");
+  assert.ok(tt.b_sorot.includes("Sulawesi Tengah: 3 kecamatan siaga banjir")); assert.ok(tt.b_sumber.includes("BMKG") && tt.b_sumber.includes("InaRISK BNPB") && tt.b_sumber.includes("Arti tanda –")); assert.ok(tt.daftar.includes("Situasi nasional") && tt.daftar.includes("Kondisi Sulawesi Tengah"));
+  for (const [id, x] of Object.entries(tt)) bersih(x, id);
+  /* karhutla: sampul persis seperti dulu */
+  const sk = isiSlide(reg.find(x => x.id === "sampul"), {...karhutla, namaProv: "Kalimantan Tengah", no: 1, urutan: []});
+  assert.ok(sk.includes("Paparan Rakor Karhutla") && sk.includes("Rapat Koordinasi Penanganan dan Pengendalian Darurat Karhutla Provinsi Kalimantan Tengah Tahun 2026") && sk.includes("pengendalian karhutla Kalimantan Tengah"), "sampul karhutla tak berubah");
+  /* tanggal di luar berkas: bahan null, semua slide b_* dilewati beralasan */
+  const kosong = {...c, B: SB.dariLaporan(L, "2030-01-01")}; for (const id of bahaya) assert.match(reg.find(x => x.id === id).siap(kosong), /tidak mencakup tanggal/);
+  /* sparse: bahaya tanpa nilai provinsi pada hari itu, b_provinsi dilewati */
+  const g = FX.gunungapi(), cg = {...c, D: {laporan: g}, B: SB.dariLaporan(g, "2026-10-17"), tgl: "2026-10-17", bencana: "gunungapi", prov: "35"}; assert.equal(cg.B.nasional, null); assert.match(reg.find(x => x.id === "b_nasional").siap(cg), /tidak ada angka nasional/); assert.match(reg.find(x => x.id === "b_provinsi").siap(cg), /tidak ada angka provinsi/);
 });
 
 /* ================================================================ validasi ?bencana= */
@@ -162,7 +234,7 @@ uji("banjir: prioritas dari fixture (hanya nilai > 0), draf otomatis memuat angk
   assert.equal((await draf(A72, "banjir", T, "udara", {})).s, 400, "sumber non-provinsi ditolak"); assert.equal((await GET(A72, `${P}hari?${q("banjir")}&tanggal=${T}`)).s, 403, "pemprov tidak membaca kelengkapan");
   const tanpaRingkasan = await kirim(A72, "banjir", T, "prov:72", {dampak: {meninggal: 1}}); assert.equal(tanpaRingkasan.s, 400, tanpaRingkasan.t); assert.match(tanpaRingkasan.j.galat, /Ringkasan situasi: wajib diisi/);
   const liar = await kirim(A72, "banjir", T, "prov:72", {ringkasan: "ok", dampak: {gempa: 1}}); assert.equal(liar.s, 400); const negatif = await kirim(A72, "banjir", T, "prov:72", {ringkasan: "ok", dampak: {meninggal: -2}}); assert.equal(negatif.s, 400);
-  assert.equal((await draf(A72, "banjir", T, "prov:72", {ringkasan: "masih draf"})).s, 201); assert.equal(await n("lkb_hari", "bencana = 'banjir'"), 1, "hari lahir saat draf pertama, prioritas beku");
+  assert.equal((await draf(A72, "banjir", T, "prov:72", {ringkasan: "masih draf"})).s, 201); assert.equal(await n("lkb_hari", "bencana = 'banjir' AND tanggal_laporan = '2026-10-20'"), 1, "hari lahir saat draf pertama, prioritas beku");
   const lagi = await hari("banjir", T); assert.equal(lagi.tersimpan, true); assert.deepEqual(lagi.prioritas, ["72", "62"]);
   AKTIF.banjir.nasional.banjir_sa[2] = 99;   // berkas berubah sesudah hari dibuat: prioritas tidak bergeser
   assert.deepEqual((await hari("banjir", T)).prioritas, ["72", "62"], "prioritas dibekukan saat hari dibuat"); AKTIF.banjir = FX.banjir();
@@ -191,7 +263,7 @@ uji("banjir: kunci dengan 'lanjut tanpa' beralasan menghasilkan snapshot beku, t
   assert.equal(await n("lk_hari", "tanggal_laporan = ?", T), 0, "karhutla tidak tersentuh"); assert.equal(await n("lkb_snapshot", "bencana = 'banjir' AND tanggal_laporan = ?", T), 1);
   const s = await snap("banjir", T); assert.equal(s.s, 200, s.t); assert.equal(s.j.utuh, true); assert.equal(s.j.terbaru, true); const sn = s.j.snapshot;
   assert.equal(sn.bencana, "banjir"); assert.equal(sn.tanggal_data, "2026-10-19"); assert.equal(sn.status, "dikunci_pengecualian"); assert.deepEqual(sn.prioritas, ["72", "62"]);
-  assert.deepEqual(sn.nasional.map(m => [m.k, m.nilai, m.kemarin]), [["banjir_sa", 5, 4], ["penduduk", 9823, 8000]]); assert.deepEqual(sn.nasional[0].ubah, {arah: "naik", persen: 25}); assert.deepEqual(sn.tiga_hari.map(x => x.nilai), [2, 4, 5]);
+  assert.deepEqual(sn.nasional.map(m => [m.k, m.nilai, m.kemarin]), [["banjir_sa", 5, 4], ["penduduk", 9823, 8000]]); assert.deepEqual(sn.nasional[0].ubah, {arah: "naik", persen: 25, dari: 4, teks: "naik 25 persen dari hari sebelumnya"}); assert.deepEqual(sn.tiga_hari.map(x => x.nilai), [2, 4, 5]);
   assert.deepEqual(sn.dampak_provinsi, {provinsi: 1, meninggal: 3, hilang: 1, luka: 5, mengungsi: 200, terdampak: 1500}, "dampak hanya dari provinsi yang melapor (disetujui)");
   assert.equal(sn.provinsi[0].kiriman.ringkasan, SULTENG.ringkasan); assert.equal(sn.provinsi[1].kiriman, null, "Kalteng tanpa kiriman: kiriman null, bukan nol"); assert.equal(sn.provinsi[1].lanjut_tanpa.alasan, "Kalteng belum mengirim, data terakhir belum ada");
   assert.deepEqual(sn.provinsi[1].metrik, {banjir_sa: 2, penduduk: 3823}, "angka otomatis Kalteng tetap dari sumber"); assert.equal(sn.sorot[0].prov, "72"); assert.equal(sn.prakiraan, null, "tanpa prakiraan di berkas: bagian null"); assert.equal(sn.tambahan, null);
@@ -201,7 +273,7 @@ uji("banjir: kunci dengan 'lanjut tanpa' beralasan menghasilkan snapshot beku, t
   assert.ok(wa.includes("_Sumber: BMKG, InaRISK BNPB_"), "sumber tiap bagian"); assert.ok(wa.includes("*3 meninggal*, 1 hilang, 5 luka, 200 mengungsi, 1.500 jiwa terdampak"), "dampak provinsi, angka kunci tebal di depan");
   assert.ok(wa.includes("> belum ada laporan provinsi. _(data terakhir tidak ada; Kalteng belum mengirim, data terakhir belum ada)_"), "pengecualian tercetak"); assert.ok(wa.includes("_Sumber: laporan Pemerintah Provinsi, diverifikasi Pusdalops BNPB_"));
   assert.ok(!wa.includes("D. PRAKIRAAN"), "bagian tanpa data dihilangkan"); assert.ok(!/ · /.test(wa), "tanpa titik tengah pemisah"); assert.doesNotMatch(wa, /undefined|NaN|\bnull\b/);
-  assert.ok(wa.includes("1 dari 2 provinsi prioritas mengirim laporan provinsi"));
+  assert.ok(wa.includes("1 dari 2 provinsi yang wajib mengirim laporan sudah mengirim"));
   assert.equal((await snap("banjir", T, "&ralat=7")).s, 404); assert.equal((await snap("banjir", T, "&ralat=x")).s, 400); assert.equal((await snap("banjir", "2026-10-19")).s, 404, "hari belum dikunci"); assert.equal((await GET(A72, `${P}snapshot/${T}?${q("banjir")}`)).s, 403, "pemprov tidak membaca snapshot");
   /* isolasi antarbahaya: gunungapi pada tanggal yang sama tidak melihat apa pun dari banjir */
   const g = await hari("gunungapi", T); assert.equal(g.tersimpan, false); assert.ok(g.kiriman.every(x => x.status === "belum"), "tak ada kiriman gunungapi dari banjir"); assert.equal((await snap("gunungapi", T)).s, 404);
@@ -220,8 +292,8 @@ uji("gunungapi: metrik null dihilangkan (bukan nol), prioritas dari erupsi, kiri
   /* tanggal yang tidak dicakup berkas: seluruh bagian otomatis null dan alasannya tertulis */
   const T2 = "2026-10-25", a = await hari("gunungapi", T2); assert.deepEqual(a.prioritas, []); assert.equal(a.data_otomatis.tersedia, false); assert.equal(a.data_otomatis.hari_lengkap, "2026-10-18");
   assert.equal((await kunci("gunungapi", T2)).s, 400, "tanggal belum tiba"); const kosong = SB.spek("gunungapi").agregasi({tanggal_laporan: T2, prioritas: [], kiriman: {}, laporan: AKTIF.gunungapi, dikunci_oleh: "a", dikunci_pada: 1});
-  assert.equal(kosong.nasional, null); assert.equal(kosong.sorot, null); assert.equal(kosong.metrik, null); assert.match(kosong.data_otomatis.alasan, /tidak mencakup 2026-10-24/); assert.match(kosong.kesimpulan[0], /tidak tersedia.*hari lengkap terakhir 2026-10-18/);
-  const waKosong = SB.spek("gunungapi").teksWA(kosong).laporan; assert.ok(waKosong.includes("belum ada data (berkas otomatis tidak mencakup 2026-10-24, hari lengkap terakhir 18 Oktober 2026)")); assert.ok(!waKosong.includes("B. PROVINSI")); assert.ok(!waKosong.includes("C. PERLU"));
+  assert.equal(kosong.nasional, null); assert.equal(kosong.sorot, null); assert.equal(kosong.metrik, null); assert.match(kosong.data_otomatis.alasan, /tidak mencakup 24 Oktober 2026/); assert.match(kosong.kesimpulan[0], /tidak tersedia.*hari lengkap terakhir 18 Oktober 2026/);
+  const waKosong = SB.spek("gunungapi").teksWA(kosong).laporan; assert.ok(waKosong.includes("belum ada data (berkas otomatis tidak mencakup 24 Oktober 2026, hari lengkap terakhir 18 Oktober 2026)")); assert.ok(!waKosong.includes("B. PROVINSI")); assert.ok(!waKosong.includes("C. PERLU"));
   const hilang = SB.spek("gunungapi").agregasi({tanggal_laporan: T2, prioritas: [], kiriman: {}, laporan: null, dikunci_oleh: "a", dikunci_pada: 1}); assert.match(hilang.data_otomatis.alasan, /tidak terbaca/);
 });
 
@@ -232,9 +304,11 @@ uji("ralat banjir: snapshot baru, lama utuh, bagian otomatis tetap beku walau be
   assert.equal((await POST(AD, `${P}ralat?${q("banjir")}`, {tanggal: T, alasan: "Kalteng mengirim terlambat lewat telepon", ganti: {"prov:62": {}}})).s, 400, "ralat memakai validasi kirim: ringkasan wajib");
   assert.equal((await POST(AD, `${P}ralat?${q("banjir")}`, {tanggal: T, alasan: "Kalteng mengirim terlambat lewat telepon", ganti: {"prov:62": {ringkasan: "ok", dampak: {terdampak: 1, meninggal: 5}}}})).s, 422, "merah menahan ralat");
   assert.equal((await POST(AD, `${P}ralat?${q("banjir")}`, {tanggal: T, alasan: "Tanpa perubahan angka sama sekali ya", ganti: {"prov:72": SULTENG}})).s, 400, "tanpa perubahan angka ditolak");
+  /* kiriman hidup prov:72 diubah diam-diam sesudah kunci (UPDATE langsung ke D1): ralat tidak boleh menyerapnya, sumber yang tak dikoreksi dibaca dari snapshot sebelumnya */
+  await DB.prepare("UPDATE lkb_kiriman SET isi = json_set(isi, '$.ringkasan', 'DIUBAH DIAM-DIAM', '$.dampak.meninggal', 999) WHERE bencana = 'banjir' AND tanggal_laporan = ? AND sumber = 'prov:72'").bind(T).run();
   const r = await POST(AD, `${P}ralat?${q("banjir")}`, {tanggal: T, alasan: "Kalteng mengirim terlambat lewat telepon", ganti: {"prov:62": {ringkasan: "Banjir ringan di dua kecamatan", dampak: {terdampak: 400, mengungsi: 50}}}});
   assert.equal(r.s, 201, r.t); assert.equal(r.j.ralat, 1); assert.ok(r.j.perubahan.some(x => x.jalur.startsWith("provinsi.1.kiriman")), "perubahan tercatat per jalur");
-  const baru = (await snap("banjir", T)).j; assert.equal(baru.ralat, 1); assert.equal(baru.terbaru, true); assert.equal(baru.snapshot.nasional[0].nilai, 5, "bagian otomatis tetap 5, bukan 77 dari berkas yang kini berubah"); assert.equal(baru.snapshot.provinsi[1].kiriman.dampak.terdampak, 400);
+  const baru = (await snap("banjir", T)).j; assert.equal(baru.ralat, 1); assert.equal(baru.terbaru, true); assert.equal(baru.snapshot.nasional[0].nilai, 5, "bagian otomatis tetap 5, bukan 77 dari berkas yang kini berubah"); assert.equal(baru.snapshot.provinsi[1].kiriman.dampak.terdampak, 400); assert.equal(baru.snapshot.provinsi[0].kiriman.ringkasan, SULTENG.ringkasan, "prov:72 tetap dari snapshot lama"); assert.equal(baru.snapshot.provinsi[0].kiriman.dampak.meninggal, 3); assert.ok(!JSON.stringify(baru.snapshot).includes("DIUBAH DIAM-DIAM"));
   assert.equal(baru.snapshot.status, "dikunci", "pengecualian Kalteng gugur karena kini dikoreksi"); assert.equal(baru.snapshot.dampak_provinsi.provinsi, 2); assert.equal(baru.snapshot.dampak_provinsi.terdampak, 1900); assert.ok(baru.teks_wa.laporan.includes("Ralat-1"));
   const awal = (await snap("banjir", T, "&ralat=0")).j; assert.equal(awal.hash, lama.hash, "snapshot lama utuh"); assert.equal(awal.terbaru, false); assert.equal(awal.ralat_tersedia.length, 2); AKTIF.banjir = FX.banjir();
 });
@@ -247,7 +321,7 @@ uji("hak laporan bencana: pimpinan non-verifikator ditolak, dummy hanya Super Ad
   assert.equal((await hari("banjir", "2026-10-21")).tersimpan, false, "dummy gempa tidak bocor ke banjir"); assert.equal(await n("lkb_hari", "dummy = 1"), 1);
   const dk = await kunci("gempa", "2026-10-21"); assert.equal(dk.s, 201, dk.t); const sn = (await snap("gempa", "2026-10-21")).j; assert.equal(sn.utuh, true); assert.ok(sn.snapshot.provinsi.every(p => /DUMMY/.test(p.kiriman.ringkasan)), "isi dummy berlabel DUMMY, tanpa angka dampak karangan"); assert.equal(sn.snapshot.dampak_provinsi, null);
   const x = await api("POST", `${P}dummy?${q("gempa")}`, {aksi: "hapus"}, ADMIN); assert.equal(x.s, 200); assert.equal(x.j.hari, 1); assert.equal(await n("lkb_hari", "dummy = 1"), 0); assert.equal(await n("lkb_snapshot", "dummy = 1"), 0);
-  assert.equal(await n("lkb_hari", "bencana = 'banjir'"), 1, "baris nyata banjir tidak tersentuh"); assert.equal((await api("POST", `${P}dummy?${q("gempa")}`, {aksi: "x"}, ADMIN)).s, 400);
+  assert.equal(await n("lkb_hari", "bencana = 'banjir' AND tanggal_laporan = '2026-10-20'"), 1, "baris nyata banjir tidak tersentuh"); assert.equal((await api("POST", `${P}dummy?${q("gempa")}`, {aksi: "x"}, ADMIN)).s, 400);
 });
 
 uji("karhutla tidak berubah oleh sumbu bencana: rute lama menulis lk_*, lkb_* tak bertambah, snapshot karhutla tanpa kunci bencana", async () => {
@@ -257,6 +331,51 @@ uji("karhutla tidak berubah oleh sumbu bencana: rute lama menulis lk_*, lkb_* ta
   assert.deepEqual([await n("lkb_hari"), await n("lkb_kiriman"), await n("lkb_snapshot")], sebelum, "tabel lkb_* tak tersentuh oleh karhutla");
   const k = await api("GET", `${P}kiriman?tanggal=${T}&sumber=udara`, undefined, ADMIN); assert.equal(k.s, 200, k.t); assert.equal(k.j.sumber, "udara");
   assert.equal((await api("GET", `${P}kiriman?${q("banjir")}&tanggal=${T}&sumber=udara`, undefined, ADMIN)).s, 400, "udara bukan sumber banjir");
+});
+
+/* ================================================================ batas akun provinsi, tanggal tanpa ISO mentah */
+uji("akun provinsi: tanggal lebih dari 14 hari ke belakang ditolak, tulis dibatasi 60 per jam, karhutla juga; admin dan verifikator tidak terkena", async () => {
+  const U2 = await siapkan("uji-lkb-batas", {ikat: {LAPORAN_MUNDUR_HARI: "14"}, asetKu}), a = await pemprov("72", "Sulawesi Tengah", U2);
+  const GET2 = (j) => U2.api("GET", j, undefined, a.h), POST2 = (j, b) => U2.api("POST", j, b, a.hp), wib = ms => new Date(Date.now() + 7 * 36e5 + ms).toISOString().slice(0, 10);
+  const lama = wib(-20 * HARI), ok = wib(-10 * HARI);
+  for (const [b, sumber] of [["banjir", "prov:72"], ["karhutla", "prov:62"]]) {
+    const akhiran = b === "karhutla" ? "" : `?bencana=${b}`, isi = b === "karhutla" ? {total: {fs: 0, fs_padam: 0, target_ha: 0, padam_ha: 0}, personel: {total: 1}} : {ringkasan: "ok"};
+    const r = await POST2(`/api/instansi/laporan/draf${akhiran}`, {tanggal: lama, sumber, isi, versi_dasar: 0, klien_id: kid()}); assert.equal(r.s, b === "karhutla" ? 404 : 400, `${b}: ${r.t}`);   // karhutla: akun 72 bukan provinsi 62, 404 lebih dulu; bahaya lain: tanggal
+    if (b !== "karhutla") assert.match(r.j.galat, /lebih dari 14 hari/);
+  }
+  const lamaK = await U2.api("POST", "/api/instansi/laporan/draf", {tanggal: lama, sumber: "prov:72", isi: {}, versi_dasar: 0, klien_id: kid()}, a.hp); assert.equal(lamaK.s, 409, "karhutla: provinsi bukan prioritas ditolak sebelum batas; batas tanggal dicek sesudah hak");
+  assert.equal((await POST2("/api/instansi/laporan/draf?bencana=banjir", {tanggal: ok, sumber: "prov:72", isi: {ringkasan: "ok"}, versi_dasar: 0, klien_id: kid()})).s, 201, "10 hari lalu sah");
+  /* batas laju: 60 tulis per jam per akun; sisa kuota habis -> 429 */
+  await U2.DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'laporan.tulis'").run();
+  const akun = (await U2.DB.prepare("SELECT id FROM instansi_akun LIMIT 1").first()).id;
+  await U2.DB.batch(Array.from({length: 59}, () => U2.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'laporan.tulis', ?)").bind("instansi:" + akun, Date.now())));
+  const s60 = await POST2("/api/instansi/laporan/draf?bencana=banjir", {tanggal: ok, sumber: "prov:72", isi: {ringkasan: "ke-60"}, versi_dasar: 1, klien_id: kid()}); assert.equal(s60.s, 201, s60.t);
+  const s61 = await POST2("/api/instansi/laporan/draf?bencana=banjir", {tanggal: ok, sumber: "prov:72", isi: {ringkasan: "ke-61"}, versi_dasar: 2, klien_id: kid()}); assert.equal(s61.s, 429, s61.t); assert.match(s61.j.galat, /laporan\.tulis/);
+  const k61 = await POST2("/api/instansi/laporan/kirim", {tanggal: ok, sumber: "prov:72", isi: {}, versi_dasar: 0, klien_id: kid()}); assert.notEqual(k61.s, 201, "jalur karhutla memakai kuota yang sama");
+  assert.equal((await U2.api("GET", `${P}hari?bencana=banjir&tanggal=${ok}`, undefined, ADMIN)).s, 200, "admin tidak terkena batas");
+  void GET2;
+});
+
+uji("tanggal ditulis 'd Bulan yyyy' di kesimpulan, WA, slide, dan paparan (tanpa ISO mentah); tanda – untuk sel kosong; desimal prakiraan menurut data; judul menjaga singkatan; tanpa 'provinsi prioritas'", async () => {
+  const L = FX.banjir(); L.metrik.push(metrik("fwi", "FWI maksimum", "indeks", {desimal: 1}), metrik("pm", "PM2,5 rerata", "µg/m³"));
+  L.nasional.fwi = [1.5, 2, 3.25]; L.nasional.pm = [10, 11, 12]; L.prov["72"].fwi = [1, 1, 2]; L.prov["72"].pm = [null, null, null];
+  L.prakiraan = {judul: "Peluang hujan lebat 3 hari", hari: ["2026-10-20", "2026-10-21"], baris: [{label: "Sulawesi Tengah", prov: "72", nilai: [0.12, null], satuan: "peluang"}, {label: "Kalimantan Tengah", prov: "62", nilai: [40, 55], satuan: "mm"}]};
+  const sn = SB.spek("banjir").agregasi({tanggal_laporan: "2026-10-20", prioritas: ["72"], pengecualian: [{sumber: "prov:62", alasan: "Belum mengirim laporan"}], kiriman: {"prov:62": {isi: null, data_terakhir: "2026-10-12"}}, laporan: L, dikunci_oleh: "a", dikunci_pada: 1});
+  const wa = SB.spek("banjir").teksWA(sn).laporan, kes = sn.kesimpulan.join("\n"), kosong = SB.spek("banjir").agregasi({tanggal_laporan: "2026-11-20", prioritas: [], kiriman: {}, laporan: L, dikunci_oleh: "a", dikunci_pada: 1});
+  for (const t of [wa, kes, kosong.kesimpulan.join("\n"), kosong.data_otomatis.alasan]) assert.doesNotMatch(t.replace(/\d{4}-\d{2}-\d{2}T/g, ""), /\d{4}-\d{2}-\d{2}/, "tanpa tanggal ISO mentah: " + t.slice(0, 200));
+  assert.ok(kes.includes("Data 19 Oktober 2026:") && /tidak mencakup 19 November 2026/.test(kosong.kesimpulan[0]) && /hari lengkap terakhir 19 Oktober 2026/.test(kosong.kesimpulan[0]));
+  assert.match(sn.pengecualian[0].data_terakhir, /2026-10-12/, "nilai di snapshot tetap ISO (data), hanya tampilan yang diformat"); assert.ok(sn.kesimpulan.some(x => x.includes("data terakhir 12 Oktober 2026")));
+  assert.equal(SB.waktuWIB("2026-10-21T04:41+07:00"), "21 Okt 2026, 04.41 WIB"); assert.equal(SB.waktuWIB("2026-10-20T21:05:00Z"), "21 Okt 2026, 04.05 WIB"); assert.equal(SB.waktuWIB("bukan waktu"), null); assert.equal(sn.otomatis.cutoff_teks, "20 Okt 2026, 02.30 WIB");
+  assert.deepEqual(sn.prakiraan.baris.map(b => b.desimal), [2, 0], "peluang dua desimal, curah bulat"); assert.ok(wa.includes("Sulawesi Tengah: 0,12; belum ada data peluang") && wa.includes("Kalimantan Tengah: 40; 55 mm"), wa);
+  assert.deepEqual(sn.metrik.map(m => m.judul), ["siaga atau awas banjir", "terpapar banjir", "FWI maksimum", "PM2,5 rerata"], "singkatan terjaga"); assert.equal(SB.labelKalimat("Gempa M 4 atau lebih"), "gempa M 4 atau lebih");
+  assert.ok(kes.includes("0 dari 1 provinsi yang wajib mengirim laporan sudah mengirim")); assert.ok(!/provinsi prioritas/i.test(wa + kes));
+  /* slide dan paparan memakai judul, tanda –, waktu terformat, desimal data, tanpa kata teknis */
+  const d = BS.deck(sn), t = d.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: sn, ex: {lewat: Object.fromEntries(d.dilewati.map(y => [y.id, y.alasan]))}, tahun: "2026"})).join("\n");
+  assert.doesNotMatch(t, /JSON|\bNA\b|provinsi prioritas|\d{4}-\d{2}-\d{2}/); assert.ok(t.includes("0,12") && t.includes("–") && t.includes("40") && !t.includes("40,00"), "prakiraan: desimal data, sel kosong –");
+  const c = {D: {laporan: L}, B: SB.dariLaporan(L, "2026-10-19"), bencana: "banjir", namaB: "Banjir, longsor dan rob", prov: "72", namaProv: "Sulawesi Tengah", tgl: "2026-10-19", merek: "Pantau Bencana", templat: {sampul: {}}, gambar: {}};
+  const p = ["b_nasional", "b_peringkat", "b_prakiraan", "b_sumber"].map(id => isiSlide(PS.REGISTRI.find(x => x.id === id), {...c, no: 1, urutan: []})).join("\n");
+  assert.ok(p.includes("20 Okt 2026, 02.30 WIB") && p.includes("0,12") && p.includes("–") && p.includes("Arti tanda –") && p.includes("fwi") === false, p); assert.doesNotMatch(p, /\bNA\b|\d{4}-\d{2}-\d{2}/);
+  assert.ok(isiSlide(PS.REGISTRI.find(x => x.id === "b_nasional"), {...c, B: SB.dariLaporan(L, "2026-10-19")}).includes("siaga atau awas banjir pada 19 Oktober 2026"));
 });
 
 /* ================================================================ degrade tanpa migrasi */
@@ -271,6 +390,6 @@ uji("503 sopan tanpa migrasi 0048: semua rute ?bencana=, karhutla tetap jalan", 
   }
   const lewat = await api("GET", `${P}hari?tanggal=${T}`, undefined, ADMIN); assert.equal(lewat.s, 200, "karhutla tak terpengaruh"); assert.equal((await api("GET", "/admin/laporan-karhutla", undefined, ADMIN)).s, 200);
   assert.equal((await api("GET", "/api/pantau", undefined, ADMIN)).s, 200, "Meja Pantau tetap jalan"); await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 9, 23, 0, 1)});
-  await DB.batch(pecah(teks("migrations/0048_laporan_bencana.sql")).map(s => DB.prepare(s)));
+  for (const f of ["0048_laporan_bencana", "0049_laporan_bencana_jaga"]) await DB.batch(pecah(teks(`migrations/${f}.sql`)).map(s => DB.prepare(s)));
   assert.equal((await api("GET", `${P}hari?${q("banjir")}&tanggal=${T}`, undefined, ADMIN)).s, 200, "begitu migrasi diterapkan rute hidup tanpa deploy ulang");
 });

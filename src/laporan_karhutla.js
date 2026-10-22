@@ -21,6 +21,7 @@ import {halamanLaporanKarhutla, HALAMAN_STAF} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
+import {laju} from "./bnpb.js";
 import {buatRute as buatRuteBencana, tanpa0048} from "./laporan_bencana.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, BATAS_WIB_JAM = 9;
@@ -43,6 +44,13 @@ async function pelaku(env, req, kini) {
   if (a.jenis !== "pemprov" || a.tingkat !== "prov") return gagal(403, "laporan harian hanya untuk akun Pemerintah Provinsi");
   if (req.method === "POST" && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman instansi wajib membawa header x-pb: 1");
   return {tipe: "pemprov", oleh: "instansi:" + a.id, peran: [], mod: false, dummy: a.dummy ? 1 : 0, cakupan: jsonAman(a.cakupan) || [], akun: a};
+}
+/* akun provinsi: tanggal paling jauh 14 hari ke belakang (koreksi lebih lama lewat ralat verifikator; LAPORAN_MUNDUR_HARI menggantinya, dipakai uji) dan 60 tulisan per jam (pola src/instansi.js, aksi instansi.isi) */
+async function batasPemprov(env, p, tanggal, kini) {
+  if (p.tipe !== "pemprov") return null;
+  const mundur = Number(env.LAPORAN_MUNDUR_HARI) > 0 ? Number(env.LAPORAN_MUNDUR_HARI) : 14;
+  if (tanggal < wib(kini - mundur * HARI)) return gagal(400, `tanggal laporan lebih dari ${mundur} hari ke belakang tidak bisa diisi akun provinsi; minta verifikator membuat ralat`);
+  return laju(env, "instansi:" + p.akun.id, "laporan.tulis", [[JAM, 60]], kini);
 }
 const verifikator = p => p.mod || p.peran.some(x => P_VERIF.includes(x));
 const bolehTulis = (p, sumber) => {
@@ -228,6 +236,7 @@ async function parameterKiriman(env, req, kini, p) {
   if (hari.status !== "terbuka") return {r: gagal(409, "laporan hari itu sudah dikunci; koreksi lewat ralat oleh verifikator")};
   const kode = S.kodeDariSumber(sumber);
   if (kode && !(jsonDari(hari.prioritas) || []).includes(kode)) return {r: gagal(409, "provinsi ini bukan provinsi prioritas pada hari itu")};
+  const bp = await batasPemprov(env, p, tanggal, kini); if (bp) return {r: bp};
   return {tanggal, sumber, isi, klien: klien_id ?? null, dasar: versi_dasar, hari, kode};
 }
 const galatBentuk = g => json({galat: `isian tidak sah, ${S.galatManusia(g[0])}`, rincian: g.slice(0, 50)}, 400);
@@ -535,7 +544,7 @@ export async function butirLaporanKarhutla(env, kini, bolehDummy) {
 /* ================================================================ halaman dan tabel rute */
 /* ?bencana=<bahaya> pada tiap rute di bawah: kosong atau karhutla = alur karhutla di atas (lk_*, tak berubah); bahaya lain = src/laporan_bencana.js (lkb_*, migrasi 0048).
    Nilai di luar registri (public/laporan_karhutla_spek.js BENCANA) = 400. Tanpa 0048 hanya jalur bahaya lain yang 503; karhutla tidak terpengaruh. */
-const BN = buatRuteBencana({pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs});
+const BN = buatRuteBencana({pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs, batasPemprov});
 const bila = (nama, f) => async (env, req, url, kini, ctx, ...sisa) => {
   const b = url.searchParams.get("bencana");
   if (b == null || b === "karhutla") return f(env, req, url, kini, ctx, ...sisa);

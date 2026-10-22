@@ -31,6 +31,9 @@
   const tabel = (kepala, baris, k) => `<div class="ad-tabel-wadah"><table class="ad-tabel ai-tabel"><thead><tr>${kepala.map(x => `<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${
     baris.length ? baris.map(r => { let i = 0; return r.replace(/<td(?=[ >])/g, () => `<td data-label="${esc(kepala[i++] || "")}"`); }).join("") : `<tr><td colspan="${kepala.length}">${esc(k)}</td></tr>`}</tbody></table></div>`;
   /* deep link dari Meja Pantau: #<tab> atau #<tab>/<id butir>; tab yang tidak diizinkan jatuh ke tab pertama yang boleh */
+  /* filter jenis bencana tab Pantau (?bencana=banjir dst, divalidasi terhadap kamus bersama instansi_kartu.js; selain itu semua) */
+  const bcAwal = new URLSearchParams(location.search).get("bencana");
+  let bcPantau = bcAwal && window.KartuApi?.KAMUS?.[bcAwal] ? bcAwal : "";
   const [tabHash, sorotHash] = location.hash.slice(1).split("/");
   let tab = TABS.some(([k]) => k === tabHash) ? tabHash : TABS[0][0], sorotId = TABS.some(([k]) => k === tabHash) ? sorotHash : null, filter = {jenis: "", prov: "", status: "", hal: 0}, hasilBuat = [], pesanAkhir = null;
 
@@ -93,7 +96,9 @@
       <p class="ai-meta">${esc(d.akun.wilayah)}${v.nama ? `<br>${esc(v.nama)}, NIP/NRP ${esc(v.nip)}, ${esc(v.jabatan)}, ${esc(v.unit)}<br>${esc(v.email)}, WhatsApp ${esc(v.wa)}` : "<br>Belum mengisi verifikasi"}</p>
       <h3>Jejak audit</h3>${d.jejak.length ? `<ul>${d.jejak.map(x => `<li>${jam(x.waktu)}: ${esc(AKSI[x.aksi] || x.aksi)} oleh ${esc(x.oleh)}${x.alasan ? `, ${esc(x.alasan)}` : ""}</li>`).join("")}</ul>` : `<p class="ai-meta">Belum ada aksi.</p>`}</div>`;
   }
-  const csv = rows => "﻿username,jenis,wilayah,sandi\n" + rows.map(r => [r.username, r.jenis, r.wilayah, r.sandi].map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
+  /* teks undangan siap tempel ke WhatsApp wakil instansi; sandi di sini sandi AWAL, wajib diganti sesudah akun aktif */
+  const undangan = r => `Yth. ${r.wilayah},\n\nAkun Pantau Bencana untuk penanganan karhutla di wilayah Anda sudah dibuat.\nUsername: ${r.username}\nSandi awal: ${r.sandi}\n\n1. Masuk di ${location.origin}/instansi\n2. Isi verifikasi: nama, NIP/NRP, jabatan, surat tugas, kartu pegawai.\n3. Sesudah disetujui admin, buat sandi baru.\n\nTugas api di wilayah Anda muncul di sana setiap kali data satelit terbit, berisi lokasi, arah ke titik masuk, dan kebutuhan regu. Mohon tidak meneruskan pesan ini ke pihak lain.`;
+  const csv = rows => "﻿username,jenis,wilayah,sandi,undangan\n" + rows.map(r => [r.username, r.jenis, r.wilayah, r.sandi, undangan(r)].map(x => `"${String(x).replace(/"/g, '""')}"`).join(",")).join("\n") + "\n";
   function unduhCsv() {
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv(hasilBuat)], {type: "text/csv;charset=utf-8"}));
     a.download = `akun-instansi-${new Date().toISOString().slice(0, 10)}.csv`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 10000);
@@ -118,19 +123,21 @@
   const rekBlok = r => !r ? "" : `<div class="ai-rek">${pil("Perkiraan, belum divalidasi lapangan", "kuning")}${Array.isArray(r.cara) && r.cara.length ? `<b>Cara pemadaman</b><ol>${r.cara.map(c => `<li>${esc(c.metode)}${c.alasan ? `: ${esc(c.alasan)}` : ""}</li>`).join("")}</ol>` : ""}
     ${Array.isArray(r.alat) && r.alat.length ? `<b>Alat</b><ul>${r.alat.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}${Array.isArray(r.bara_cm) && r.bara_cm.length === 3 ? `<p>Perkiraan kedalaman bara ${r.bara_cm.map(x => num(x)).join(", ")} cm (rendah, tengah, tinggi)</p>` : ""}${r.catatan ? `<p>${esc(r.catatan)}</p>` : ""}</div>`;
   async function tampilPantau() {
-    const d = await ambil(`${API}/pantau`, "Akun instansi");
+    const d = await ambil(`${API}/pantau${bcPantau ? "?bencana=" + encodeURIComponent(bcPantau) : ""}`, "Akun instansi");
+    const chip = (id, nama, n) => `<button type="button" class="ad-tombol kecil" data-bcf="${esc(id)}" aria-pressed="${bcPantau === id}">${esc(nama)} <b>${num(n)}</b></button>`;
+    const chips = d.bencana.length > 1 ? `<div class="ai-aksi" role="group" aria-label="Jenis bencana">${chip("", "Semua", d.bencana.reduce((a, b) => a + b.n, 0))}${d.bencana.map(b => chip(b.id, b.nama, b.n)).join("")}</div>` : "";
     const prov = d.provinsi.map(p => `<article class="ai-prov${p.terlambat ? " telat" : ""}"><div class="ai-kepala"><b>${esc(p.nama)}</b>${p.terlambat ? pil(num(p.terlambat) + " terlambat", "merah") : pil("Tepat waktu", "hijau")}</div>
       <div class="ai-angka"><b>${num(p.aktif)}</b><span>tugas aktif</span></div>
       <div class="ai-hal"><span>Terkonfirmasi <b>${num(p.terkonfirmasi)}</b></span><span>Padam <b>${num(p.padam)}</b></span><span>Bukan api <b>${num(p.bukan_api)}</b></span></div>
       <p class="ai-meta">Median waktu konfirmasi ${p.median_konfirmasi_menit == null ? "belum ada" : fmt.durasi(p.median_konfirmasi_menit * 60e3)}</p></article>`);
     const akun = d.akun.map(a => `<tr><td><b>${esc(a.username)}</b>${dum(a)}</td><td>${esc(JENIS[a.jenis])}</td><td>${esc(kab(a.wilayah))}</td><td class="n">${num(a.isian)}</td><td class="n">${num(a.konfirmasi)}</td><td class="n">${num(a.kabar)}</td><td class="w">${jam(a.terakhir)}</td></tr>`);
-    const lambat = d.terlambat.map(t => `<article class="ai-kartu ai-telat" data-id="${esc(t.id)}"><div class="ai-kepala"><b>${esc(kab(t.kab))}</b>${t.kec ? `<span class="ai-meta">Kec. ${esc(t.kec)}</span>` : ""}${pil(t.langkah === "konfirmasi" ? "Konfirmasi terlambat" : "Kabar terlambat", "merah")}${dum(t)}</div>
+    const lambat = d.terlambat.map(t => `<article class="ai-kartu ai-telat" data-id="${esc(t.id)}"><div class="ai-kepala"><b>${esc(kab(t.kab))}</b>${t.kec ? `<span class="ai-meta">Kec. ${esc(t.kec)}</span>` : ""}${d.bencana.length > 1 || t.bencana !== "karhutla" ? pil(t.bencana_nama) : ""}${pil(t.langkah === "konfirmasi" ? "Konfirmasi terlambat" : "Kabar terlambat", "merah")}${dum(t)}</div>
       <div class="ai-angka merah"><b>${fmt.durasi(Date.now() - t.tenggat)}</b><span>melewati batas</span></div>
       <p class="ai-meta">${esc(t.ciri || "")}</p>${t.padam && window.Tugaskan ? `<p class="ai-meta">${window.Tugaskan.padamPil({padam: t.padam})} ${esc(t.padam.label)}</p>` : ""}
       <p class="ai-meta">Tugas dibuat ${jam(t.dibuat)}, batas ${jam(t.tenggat)}</p>
       <div class="ai-tagih">${t.dummy ? `<span class="ai-meta">Data contoh: tidak ada tautan tagih.</span>` : t.tagih.length ? t.tagih.map(x => `<a class="ad-tombol utama" href="${esc(x.tautan)}" target="_blank" rel="noopener" title="${esc(x.untuk)}"><b>${ik("kontak")}${x.jenis === "wakil" ? "Tagih wakil" : "Tagih PIC"}</b><small>${esc(x.nama ?? x.untuk)}</small></a>`).join("") : `<span class="ai-meta">Belum ada nomor WhatsApp yang bisa ditagih.</span>`}
       <button class="ad-tombol" data-rincian="1">Rincian</button></div><div class="ai-rincian"></div></article>`);   // tab Pantau hanya tampil untuk admin dan staf pusdalops; rincian terbuka untuk P_VALIDASI (keputusan pemilik 21 Okt 2026)
-    return `<h3 class="ai-judul">Per provinsi</h3>${prov.length ? `<div class="ai-prov-grid">${prov.join("")}</div>` : kosong("Belum ada tugas api.")}
+    return `${chips}<h3 class="ai-judul">Per provinsi</h3>${prov.length ? `<div class="ai-prov-grid">${prov.join("")}</div>` : kosong(bcPantau ? "Belum ada tugas untuk jenis bencana ini." : "Belum ada tugas.")}
       <h3 class="ai-judul">Tugas terlambat</h3>${lambat.length ? `<div class="ai-daftar">${lambat.join("")}</div>` : kosong("Tidak ada tugas terlambat.")}
       <h3 class="ai-judul">Per akun aktif</h3>${tabel(["Username", "Jenis", "Wilayah", "Isian", "Konfirmasi", "Kabar", "Terakhir"], akun, "Belum ada akun aktif.")}`;
   }
@@ -157,6 +164,7 @@
       ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}
       ${i.jarak_km != null ? ` Jarak ke pusat cluster ${num(i.jarak_km)} km${i.jauh ? " (jauh, lebih dari 5 km)" : ""}.` : ""}${i.gps_curiga ? ` ${pil("GPS curiga", "merah")} ${esc(i.gps_curiga)}` : ""}</p>`).join("") : `<p class="ai-meta">Belum ada isian.</p>`)
       + galeri(d.media) + (d.usulan.length ? `<p class="ai-meta">Usulan kontak PT: ${d.usulan.map(u => `${esc(u.nama_pt)} (${esc(u.status)})`).join(", ")}</p>` : "");
+    if (d.tugas.status === "buka" && d.tugas.bencana && d.tugas.bencana !== "karhutla") wadah.insertAdjacentHTML("beforeend", `<div class="ai-aksi"><button class="ad-tombol bahaya" data-selesai="${esc(d.tugas.id)}">Tutup tugas ${esc(d.tugas.bencana_nama.toLowerCase())} ini</button></div>`);   // karhutla ditutup lewat laporan padam + satelit
     if (window.KartuApi) window.KartuApi.pasang(wadah.querySelector(".kp-wadah"), d.tugas, d.kartu ?? d.tugas.kartu ?? null);
     if (T) T.pasangAdmin(d.tugas, wadah.querySelector(".tg-adm"));   // posisi terakhir dan jejak, baca saja
   }
@@ -191,6 +199,15 @@
     if (t.dataset.tab) {   // chrome urgent (tombol aktif, aria-busy, "Memuat…"), isi tab menyusul sesudah satu frame; hanya #aiIsi yang diganti
       tab = t.dataset.tab; history.replaceState(null, "", "#" + tab); for (const b of app.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === tab)); document.getElementById("aiPesan").textContent = "";
       const isi = document.getElementById("aiIsi"); isi.setAttribute("aria-busy", "true"); isi.innerHTML = `<p class="ad-redup">Memuat…</p>`; return sesudahCat(muat);
+    }
+    if (t.dataset.bcf !== undefined) {   // chip jenis bencana: tanda aktif seketika (urgent), daftar menyusul sesudah satu frame
+      bcPantau = t.dataset.bcf; for (const b of t.parentNode.children) b.setAttribute("aria-pressed", String(b === t));
+      const isi = document.getElementById("aiIsi"); isi.setAttribute("aria-busy", "true"); return sesudahCat(muat);
+    }
+    if (t.dataset.selesai) {
+      if (!confirm("Tutup tugas ini? Statusnya menjadi selesai (menunggu verifikasi). Tindakan ini tidak bisa dibatalkan dari halaman ini.")) return;
+      t.disabled = true; const r = await kirim(`${API}/selesai/${t.dataset.selesai}`, {}); t.disabled = false;
+      pesanTeks(r.ok ? "Tugas ditutup." : (r.j.galat || `Gagal (${r.status})`), r.ok); return r.ok || r.status === 409 ? muat() : undefined;
     }
     if (t.id === "aiBuat") return buatMassal(t);
     if (t.id === "aiCsv") return unduhCsv();

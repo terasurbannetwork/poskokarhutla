@@ -39,10 +39,14 @@ R_BUMI = 6371.0088
 # UJI BALIK (ujibalik_firespot.py -> public/data/ujibalik_firespot.json; S-NPP saja, satu snapshot per hari, Agu-Okt, sev >= 2 TANPA cuaca):
 #   api besar (>= 100 piksel) 2019: 142, 2023: 34. Hari pertama sev >= 2 berstatus "mungkin": 28 (19,7%) dan 9 (26,5%);
 #   tertunda 1 hari: 22 dan 6, 2 hari: 6 dan 3; tidak pernah "ya": 0; tertunda pada px24 >= 10 atau >= 15 (jalur level 3): 0.
-#   Batasan: satu satelit (bukan 3 VIIRS + piksel unik lintas satelit), hanya api besar, sev tanpa FWI; belum uji balik 3 satelit.
-# BIAS SIANG-MALAM: keyakinan tinggi ("h") jauh lebih jarang malam: porsi titik "h" di api besar siang 12,5-12,6%, malam 2,3-3,0%
-#   (2019, 2023). Api malam lolos "H" nyaris hanya lewat jalur >= AMBANG_MEDIUM_PX piksel unik. Ambang sengaja TIDAK diubah; kandidat
-#   penyetelan sesudah uji balik 3 satelit.
+#   Batasan: hanya api besar, satu snapshot per hari, sev tanpa FWI.
+# UJI BALIK 3 SATELIT (2019: S-NPP+N20, 2023: +N21; api besar >= 100 piksel unik LINTAS sensor, setara ~60 piksel S-NPP, jadi 207 dan 115
+#   bukan "api besar bertambah"): "mungkin" pada hari pertama sev >= 2 25,1% dan 18,3%, tunda <= 2 hari kecuali 2 kasus (3 dan 4 hari, 2019),
+#   tak pernah "ya" 0, level 3 tertunda 0. Ambang 3 untuk semua: tunda turun ke 12,6% / 7,0% tetapi cluster "ya" +38-44% (74-77% di antaranya
+#   umur 1 hari, <= 4 px; proksi, bukan bukti alarm palsu); ambang 3 hanya hari tanpa lintasan siang: turun 1-2 poin untuk +5% cluster.
+#   Ambang 4 dipertahankan. Layak diuji berikutnya: ambang 3 khusus gambut (butuh masker gambut di ujibalik_firespot.py).
+# BIAS SIANG-MALAM: keyakinan tinggi ("h") jauh lebih jarang malam: porsi titik "h" di api besar siang 9,9-12,6%, malam 1,4-3,0%
+#   (2019, 2023, S-NPP dan gabungan). Api malam lolos "H" nyaris hanya lewat jalur >= AMBANG_MEDIUM_PX piksel unik; dampaknya terukur di atas.
 AMBANG_MEDIUM_PX = 4
 SUMBER_FIRESPOT = "Kemenhut SIPANTAU KARHUTLA, paparan pembentukan firespot 22 Okt 2026"
 # pola -> firespot; "mungkin" dibatasi level <= 1 (cek lapangan dulu)

@@ -189,7 +189,7 @@
         ${Object.keys(al).length ? `Alat: ${esc(Object.entries(al).map(([a, n]) => `${NAMA_ALAT[a] || a} ${angka(n, 0)}`).join(", "))}.` : ""}</p>` : `<p>Belum ada kabar tindakan.</p>`}
       ${d.mulai != null ? `<p>Pemadaman terdokumentasi mulai ${esc(jamWIB(d.mulai))}${d.padam != null ? `, padam terdokumentasi ${esc(jamWIB(d.padam))}${d.durasi_ms != null ? `, selang ${fmt.durasi(d.durasi_ms)}` : ""}` : ""}. Ini waktu foto atau video, bukan jam mulai atau padam yang sebenarnya.</p>` : ""}</div>`;
   }
-  const statusPil = t => (t.status === "padam" ? pil(kapital(kam(t).selesai), "hijau") : t.status === "bukan_api" ? pil(kam(t).st.bukan_api) : t.terlambat ? pil("Terlambat", "merah") : pil("Aktif", "emas")) + (t.hipotesis ? pil("Hipotesis") : "") + (apiTugas(t) && window.Tugaskan ? window.Tugaskan.padamPil(t) : "");   // pil verifikasi padam di samping status
+  const statusPil = t => (t.status === "padam" ? pil(kapital(kam(t).selesai), "hijau") : t.status === "bukan_api" ? pil(kam(t).st.bukan_api) : t.terlambat ? pil("Terlambat", "merah") : pil("Aktif", "emas")) + (t.hipotesis || bid(t) === "kekeringan" ? pil("Hipotesis") : "") + (apiTugas(t) && window.Tugaskan ? window.Tugaskan.padamPil(t) : "");   // pil verifikasi padam di samping status
   const langkahNama = t => t.konfirmasi_pada == null ? "Konfirmasi" : "Kabar tindakan";
   /* cara pemadaman dari rekomendasi: utama = urutan pertama, pelengkap = sisanya (perkiraan pipeline, bukan hasil validasi lapangan) */
   const caraTeks = r => { const c = (Array.isArray(r?.cara) ? r.cara : []).map(x => x && x.metode).filter(Boolean); return c.length ? {utama: c[0], lengkap: c.slice(1)} : null; };

@@ -111,7 +111,7 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi�
 <script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
-<script src="/admin/instansi.js?v=3"></script>`, ctx);
+<script src="/admin/instansi.js?v=4"></script>`, ctx);
 
 /* Inventaris peralatan pemadam (/admin/inventaris): peta gudang digambar SVG sendiri oleh skrip halaman, jadi CSP admin tidak berubah */
 export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alat…", `<link href="/admin/inventaris.css?v=1" rel="stylesheet">
@@ -129,11 +129,11 @@ export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…"
 <script src="/admin/korban.js?v=2"></script>`, ctx);
 
 /* Laporan Karhutla otomatis (/admin/laporan-karhutla): berkas klien memakai garis bawah (public/admin/laporan_karhutla.*) */
-export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=1" rel="stylesheet">
+export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
-<script src="/admin/laporan_karhutla.js?v=2" type="module"></script>`, ctx);
+<script src="/admin/laporan_karhutla.js?v=3" type="module"></script>`, ctx);
 
 /* Sortie OMC dan evaluasinya (/admin/omc): peta sasaran digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link href="/admin/omc.css?v=1" rel="stylesheet">

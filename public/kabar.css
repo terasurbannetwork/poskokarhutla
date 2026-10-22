@@ -1,0 +1,20 @@
+/* /kabar: daftar api prioritas per kabupaten; kartu api memakai instansi_kartu.css */
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font)}
+.top .mark{display:flex;align-items:center;gap:10px}
+/* kepala.css menimpa latar tautan; tombol utama dipertegas di sini */
+.kb .kp-tombol.utama{background:#d9531e;border-color:#d9531e;color:#fff}
+.kb{max-width:720px;margin:0 auto;padding:16px}
+.kb-pilih{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}
+.kb-pilih select{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:500}
+.kb-ringkas{margin:16px 0;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.kb-angka{margin:0;font-size:22px;font-weight:800;color:#d9531e}
+.kb-redup,.kb-catatan{font-size:13px;color:var(--ink2);margin:4px 0 10px}
+.kb-daftar{list-style:none;margin:0;padding:0}
+.kb-daftar details{border:1px solid var(--line);border-radius:12px;background:var(--card);margin:8px 0}
+.kb-daftar summary{display:flex;gap:10px;align-items:center;min-height:44px;padding:8px 12px;cursor:pointer;font-size:14px}
+.kb-lv{flex:none;display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-weight:800;font-size:11.5px;background:color-mix(in srgb,#d9531e 18%,transparent);color:var(--ink)}
+.kb-lv.l3{background:#d9531e;color:#fff}
+.kb-oranye{color:#d9531e}
+.kb-kartu{padding:0 12px 4px}
+.kb-kartu .kp-kartu{margin-top:0}

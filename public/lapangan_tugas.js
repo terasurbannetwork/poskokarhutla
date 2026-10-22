@@ -23,11 +23,19 @@
   }
   const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
   const ukuran = b => b >= 1048576 ? (b / 1048576).toLocaleString("id-ID", {maximumFractionDigits: 1}) + " MB" : Math.max(1, Math.round(b / 1024)).toLocaleString("id-ID") + " KB";
-  const jamLokal = ms => new Date(ms).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "");
+  const jamLokal = ms => new Date(ms).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   /* huruf dari lapisan gaya: text-font berupa larik teks; ekspresi dilewati */
   const tumpukanHuruf = gaya => { const s = new Set(); for (const l of gaya.layers || []) { const f = l.layout && l.layout["text-font"]; if (Array.isArray(f) && f.every(x => typeof x === "string")) s.add(f.join(",")); } return [...s]; };
   const sprite = gaya => typeof gaya.sprite === "string" ? [".json", ".png", "@2x.json", "@2x.png"].map(e => gaya.sprite + e) : [];
-  const api = {daftarUbin, jarakKm, ukuran, tumpukanHuruf, sprite, BATAS};
+  /* bentuk layar per bahaya. Kamus kata = KartuApi.KAMUS (instansi_kartu.js), tidak disalin. Tanpa `bencana` atau KartuApi = karhutla, teks bawaan halaman.
+     Kunci status ke server tetap menyala/bara/padam/tidak_ditemukan; hanya label yang berganti. Gempa tanpa "padam" (kaji cepat dan laporan saja). Kekeringan selalu berpil Hipotesis. */
+  function bentukForm(t, K) {
+    const b = K && K.idBencana ? K.idBencana(t) : "karhutla", m = K && K.KAMUS && K.KAMUS[b];
+    if (!m || b === "karhutla") return {b: "karhutla", api: true, sebut: "Api", titik: "titik api", kondisi: "Kondisi api", st: null, hipotesis: false};
+    const st = {menyala: m.st.menyala, bara: m.st.bara, padam: m.tanpaSelesai ? null : m.st.padam, tidak_ditemukan: m.st.bukan_api};
+    return {b, api: false, sebut: m.sebut, titik: m.titik, kondisi: m.kondisi, st, hipotesis: b === "kekeringan" || !!(t && t.hipotesis === true)};
+  }
+  const api = {daftarUbin, jarakKm, ukuran, tumpukanHuruf, sprite, bentukForm, BATAS};
   if (typeof document === "undefined") { (typeof window !== "undefined" ? window : globalThis).LapanganTugas = api; return; }
 
   /* ---------- unduh peta ---------- */
@@ -67,11 +75,13 @@
   /* ---------- tampilan ---------- */
   const $ = id => document.getElementById(id);
   const el = (tag, kelas, teks) => { const e = document.createElement(tag); if (kelas) e.className = kelas; if (teks != null) e.textContent = teks; return e; };
-  let opsi = null, daftar = [], dipilih = 0, petaGL = null, dariCache = null, sedangUnduh = null;
+  let opsi = null, bentuk = bentukForm(null, null), daftar = [], dipilih = 0, petaGL = null, dariCache = null, sedangUnduh = null;
   const gelap = () => matchMedia("(prefers-color-scheme: dark)").matches;
   const urut = () => { const l = opsi.lokasi && opsi.lokasi(); if (l) daftar.sort((a, b) => jarakKm(l.lat, l.lon, a.lat, a.lon) - jarakKm(l.lat, l.lon, b.lat, b.lon)); return l; };
 
+  const pasangBentuk = t => { bentuk = bentukForm(t, window.KartuApi); if (opsi.bentuk) opsi.bentuk(bentuk); };
   function keadaan(jenis, judul, isi, tombol) {   // jenis: memuat | kosong | galat | luring | belum
+    if (jenis === "kosong" || jenis === "belum") pasangBentuk(null);
     const w = $("tugasIsi"); w.replaceChildren();
     const k = el("div", "lp-keadaan " + jenis); k.append(el("b", "", judul)); if (isi) k.append(el("span", "lp-kecil", isi));
     if (tombol) { const b = el("button", "lp-tombol", tombol); b.type = "button"; b.addEventListener("click", () => muat()); k.append(b); }
@@ -79,42 +89,43 @@
   }
   async function muat() {
     if (!opsi || !opsi.kode()) return;
-    keadaan("memuat", "Memuat tugas api…");
+    keadaan("memuat", "Memuat tugas…");
     let r;
     try { r = await fetch("/api/lapangan/tugas", {headers: {"x-kode-regu": opsi.kode()}}); }
     catch (e) { opsi.jaringan(false); return keadaan("luring", "Belum ada tugas yang tersimpan", "Ponsel sedang tanpa sinyal dan tugas belum pernah dimuat di sini. Buka halaman ini sekali saat ada sinyal supaya tugas tersimpan.", "Coba lagi"); }
     opsi.jaringan(!r.headers.get("x-dari-cache"));
     if (r.status === 403) return opsi.kodeMati();
-    if (r.status === 404 || r.status === 405 || r.status === 503) return keadaan("belum", "Daftar tugas belum aktif", "Server belum menyediakan tugas api untuk regu. Formulir lapor di bawah tetap bisa dipakai.");
+    if (r.status === 404 || r.status === 405 || r.status === 503) return keadaan("belum", "Daftar tugas belum aktif", "Server belum menyediakan tugas untuk regu. Formulir lapor di bawah tetap bisa dipakai.");
     if (!r.ok) return keadaan("galat", "Tugas belum bisa dimuat", `Server menjawab ${r.status}. Formulir lapor di bawah tetap bisa dipakai.`, "Coba lagi");
     const j = await r.json().catch(() => null);
     dariCache = r.headers.get("x-dari-cache") ? Number(r.headers.get("x-disimpan")) || true : null;
     daftar = j && Array.isArray(j.tugas) ? j.tugas.filter(t => t && Number.isFinite(t.lat) && Number.isFinite(t.lon)).slice(0, 5) : [];
-    dipilih = 0; if (!daftar.length) return keadaan("kosong", "Belum ada api yang ditugaskan", "Posko belum menugaskan regu ini ke api. Halaman ini akan menampilkan Kartu Api begitu ada tugas. Formulir lapor di bawah tetap bisa dipakai.", "Muat ulang");
+    dipilih = 0; if (!daftar.length) return keadaan("kosong", "Belum ada tugas untuk regu ini", "Posko belum menugaskan regu ini. Halaman ini akan menampilkan kartu tugas begitu ada. Formulir lapor di bawah tetap bisa dipakai.", "Muat ulang");
     gambar();
   }
   function gambar() {
-    const lok = urut(), t = daftar[dipilih], w = $("tugasIsi"); w.replaceChildren();
+    const lok = urut(), t = daftar[dipilih], w = $("tugasIsi"); w.replaceChildren(); pasangBentuk(t);
+    const bt = bentuk;
     const kop = el("div", "lp-tugas-kop");
-    kop.append(el("p", "lp-kecil", lok ? "Api terdekat dari lokasimu" : "Tugas pertama dari posko"));
+    kop.append(el("p", "lp-kecil", lok ? `${bt.sebut} terdekat dari lokasimu` : "Tugas pertama dari posko"));
     kop.append(el("h3", "", `${t.kec ? t.kec + ", " : ""}${t.kab || "lokasi tugas"}`));
     kop.append(el("p", "lp-jarak", lok ? `Sekitar ${jarakKm(lok.lat, lok.lon, t.lat, t.lon).toLocaleString("id-ID", {maximumFractionDigits: 1})} km garis lurus dari lokasimu` : "Ambil lokasi di bagian 1 untuk melihat jarak."));
     if (dariCache) kop.append(el("p", "lp-simpanan", `Data tersimpan di ponsel${typeof dariCache === "number" ? ` sejak ${jamLokal(dariCache)}` : ""}. Bisa sudah berubah, periksa lagi saat ada sinyal.`));
     w.append(kop);
     if (daftar.length > 1) {
-      const lb = el("label", "", "Api lain yang ditugaskan"), s = el("select"); s.id = "tugasPilih";
+      const lb = el("label", "", `${bt.sebut} lain yang ditugaskan`), s = el("select"); s.id = "tugasPilih";
       daftar.forEach((x, i) => { const o = el("option", "", `${x.kec ? x.kec + ", " : ""}${x.kab || "tugas"}${lok ? `, ${jarakKm(lok.lat, lok.lon, x.lat, x.lon).toLocaleString("id-ID", {maximumFractionDigits: 1})} km` : ""}`); o.value = String(i); s.append(o); });
       s.value = String(dipilih); s.addEventListener("change", () => { dipilih = Number(s.value); gambar(); }); lb.append(s); w.append(lb);
     }
     const kartu = el("div", "lp-kartu-api"); w.append(kartu);
-    if (window.KartuApi) window.KartuApi.pasang(kartu, t, t.kartu || null);
-    if (window.AksesKartu && t.akses) { const a = el("div"); a.innerHTML = window.AksesKartu.html(t.akses); w.append(a); }
+    if (window.KartuApi) window.KartuApi.pasang(kartu, bt.hipotesis && t.hipotesis !== true ? {...t, hipotesis: true} : t, t.kartu || null);
+    if (bt.api && window.AksesKartu && t.akses) { const a = el("div"); a.innerHTML = window.AksesKartu.html(t.akses); w.append(a); }
     const cara = (Array.isArray(t.cara) ? t.cara : (Array.isArray(t.rekomendasi && t.rekomendasi.cara) ? t.rekomendasi.cara.map(c => c && c.metode) : [])).filter(x => typeof x === "string").slice(0, 4);
-    if (cara.length) { const s = el("section", "ak-kartu"); s.append(el("h2", "", "Taktik pemadaman"), el("span", "ak-pil", "Perkiraan, belum divalidasi lapangan")); const ol = el("ol"); cara.forEach(c => ol.append(el("li", "", c))); s.append(ol); w.append(s); }
-    w.append(blokPeta(t));
+    if (bt.api && cara.length) { const s = el("section", "ak-kartu"); s.append(el("h2", "", "Taktik pemadaman"), el("span", "ak-pil", "Perkiraan, belum divalidasi lapangan")); const ol = el("ol"); cara.forEach(c => ol.append(el("li", "", c))); s.append(ol); w.append(s); }
+    w.append(blokPeta(t, bt));
   }
 
-  function blokPeta(t) {
+  function blokPeta(t, bt) {
     const s = el("section", "lp-peta-blok"); s.append(el("h3", "", "Peta area ini"));
     const wadah = el("div", "lp-peta"); wadah.id = "tugasPeta"; wadah.hidden = true;
     const bTampil = el("button", "lp-tombol", "Tampilkan peta"); bTampil.type = "button";
@@ -130,8 +141,8 @@
     const bHapus = el("button", "lp-tombol", "Hapus peta tersimpan"); bHapus.type = "button";
     const tampilMeta = () => {
       const m = bacaMeta(); bHapus.hidden = !m;
-      if (!m) info.textContent = `Belum ada peta tersimpan. Satu area radius ${BATAS.radiusKm} km dari api ini, beberapa MB sampai puluhan MB. Simpan saat ada sinyal.`;
-      else info.textContent = `Tersimpan ${ukuran(m.byte)}, ${m.ubin} ubin radius ${m.radius_km} km, ${jamLokal(m.waktu)}.${m.tugas && m.tugas !== t.id ? " Area ini milik api lain; simpan lagi untuk menggantinya." : ""}${m.tidak_lengkap ? (m.tidak_lengkap === "batas" ? " Berhenti di batas 80 MB, sebagian ubin belum tersimpan." : " Dibatalkan, sebagian ubin belum tersimpan.") : ""}`;
+      if (!m) info.textContent = `Belum ada peta tersimpan. Satu area radius ${BATAS.radiusKm} km dari ${bt.titik} ini, beberapa MB sampai puluhan MB. Simpan saat ada sinyal.`;
+      else info.textContent = `Tersimpan ${ukuran(m.byte)}, ${m.ubin} ubin radius ${m.radius_km} km, ${jamLokal(m.waktu)}.${m.tugas && m.tugas !== t.id ? ` Area ini milik ${bt.titik} lain; simpan lagi untuk menggantinya.` : ""}${m.tidak_lengkap ? (m.tidak_lengkap === "batas" ? " Berhenti di batas 80 MB, sebagian ubin belum tersimpan." : " Dibatalkan, sebagian ubin belum tersimpan.") : ""}`;
     };
     bSimpan.addEventListener("click", async () => {
       if (sedangUnduh) return;

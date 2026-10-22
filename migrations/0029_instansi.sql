@@ -63,7 +63,7 @@ CREATE INDEX IF NOT EXISTS instansi_sesi_akun ON instansi_sesi (akun_id);
 CREATE INDEX IF NOT EXISTS instansi_sesi_kedaluwarsa ON instansi_sesi (kedaluwarsa);
 
 -- Tugas api per lokasi (kompleks dari public/data/tugas_kompleks.json; id K#### tidak stabil, jadi kunci = lokasi). status turunan "terlambat" dihitung saat dibaca.
--- konfirmasi_pada terisi = langkah 1 selesai. isian_terakhir = waktu isian terakhir (acuan tenggat kabar 24 jam). rekomendasi = JSON dari orkestrator (<= 3000 huruf).
+-- konfirmasi_pada terisi = langkah 1 selesai. isian_terakhir = waktu isian terakhir (acuan tenggat kabar 24 jam). rekomendasi = JSON dari orkestrator (<= 2000 huruf).
 CREATE TABLE IF NOT EXISTS tugas_api (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
   prov TEXT NOT NULL CHECK (length(prov) = 2 AND prov NOT GLOB '*[^0-9]*'),
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS tugas_api (
   status TEXT NOT NULL DEFAULT 'buka' CHECK (status IN ('buka', 'padam', 'bukan_api')),
   konfirmasi_pada INTEGER,
   isian_terakhir INTEGER,
-  rekomendasi TEXT CHECK (rekomendasi IS NULL OR (json_valid(rekomendasi) AND length(rekomendasi) <= 3000)),
+  rekomendasi TEXT CHECK (rekomendasi IS NULL OR (json_valid(rekomendasi) AND length(rekomendasi) <= 2000)),
   -- akses = salinan kunci saudara `akses` di tugas_kompleks.json (jalan terdekat, jalan kaki, pangkalan asal, barang dipikul); kartu akses dan checklist persiapan membacanya. <= 1500 huruf.
   akses TEXT CHECK (akses IS NULL OR (json_valid(akses) AND length(akses) <= 1500)),
   -- verifikasi padam (src/instansi.js verifikasiPadam): status tetap 'padam'; padam_verif menandai pemeriksaan satelit sesudahnya.
@@ -194,8 +194,8 @@ CREATE INDEX IF NOT EXISTS instansi_media_akun ON instansi_media (akun_id, dibua
 CREATE TRIGGER IF NOT EXISTS tugas_isian_unsur_sah BEFORE INSERT ON tugas_isian
 WHEN EXISTS (SELECT 1 FROM json_each(NEW.personel_unsur) WHERE key NOT IN ('bpbd', 'tni', 'polri', 'manggala_agni', 'mpa', 'damkar', 'swasta', 'relawan', 'lainnya')
     OR typeof(value) != 'integer' OR value < 0 OR value > 5000)
-  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal', 'pembasah_l')
-    OR typeof(value) != 'integer' OR value < 0 OR value > 100000 OR (key = 'pembasah_l' AND value > 5000))
+  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal')
+    OR typeof(value) != 'integer' OR value < 0 OR value > 100000)
 BEGIN
   SELECT RAISE(ABORT, 'personel_unsur atau alat_dipakai tidak sah');
 END;
@@ -243,8 +243,8 @@ END;
 CREATE TRIGGER IF NOT EXISTS tugas_isian_unsur_ubah BEFORE UPDATE OF personel_unsur, alat_dipakai ON tugas_isian
 WHEN EXISTS (SELECT 1 FROM json_each(NEW.personel_unsur) WHERE key NOT IN ('bpbd', 'tni', 'polri', 'manggala_agni', 'mpa', 'damkar', 'swasta', 'relawan', 'lainnya')
     OR typeof(value) != 'integer' OR value < 0 OR value > 5000)
-  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal', 'pembasah_l')
-    OR typeof(value) != 'integer' OR value < 0 OR value > 100000 OR (key = 'pembasah_l' AND value > 5000))
+  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal')
+    OR typeof(value) != 'integer' OR value < 0 OR value > 100000)
 BEGIN
   SELECT RAISE(ABORT, 'personel_unsur atau alat_dipakai tidak sah');
 END;

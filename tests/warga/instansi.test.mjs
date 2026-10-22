@@ -126,11 +126,12 @@ uji("instansi: migrasi 0029 idempoten dan tabel lengkap", async () => {
   const sql = readFileSync(path.join(AKAR, "migrations/0029_instansi.sql"), "utf8");
   for (const s of pecah(sql)) await DB.prepare(s).run();   // jalankan ulang: IF NOT EXISTS, tanpa galat
   for (const t of ["instansi_akun", "instansi_sesi", "tugas_api", "tugas_isian", "instansi_media", "usulan_kontak_pt"]) assert.equal(await n(t), 0, t);
-  assert.match(sql, /rekomendasi TEXT CHECK \(rekomendasi IS NULL OR \(json_valid\(rekomendasi\) AND length\(rekomendasi\) <= 3000\)\)/, "kolom rekomendasi nullable JSON <= 3000 huruf");
+  assert.match(sql, /rekomendasi TEXT CHECK \(rekomendasi IS NULL OR \(json_valid\(rekomendasi\) AND length\(rekomendasi\) <= 2000\)\)/, "kolom rekomendasi nullable JSON <= 3000 huruf");
 });
 
 uji("instansi: daftar tetap kode = CHECK migrasi 0029 = instansi.js klien", () => {
-  const sql = readFileSync(path.join(AKAR, "migrations/0029_instansi.sql"), "utf8");
+  /* semua migrasi, bukan 0029 saja: daftar boleh dibuat ulang di migrasi sesudahnya (0050 menambah pembasah_l ke trigger alat), 0029 yang sudah diterapkan dibekukan (migrasi_beku.test.mjs) */
+  const sql = migrasi();
   const daftar = [...sql.matchAll(/IN \(([^)]+)\)/g)].map(m => [...m[1].matchAll(/'([^']+)'/g)].map(x => x[1]));
   const ada = (nama, isi) => assert.ok(daftar.some(d => d.length === isi.length && d.every((v, i) => v === isi[i])), `${nama} di 0029 harus persis ${JSON.stringify(isi)}`);
   ada("jenis", JENIS); ada("hasil", HASIL); ada("status_api", STATUS_API); ada("lahan", LAHAN); ada("kendala (trigger)", Object.keys(KENDALA)); ada("bantuan (trigger)", Object.keys(BANTUAN)); ada("unsur (trigger)", UNSUR); ada("alat (trigger)", ALAT);
@@ -318,7 +319,7 @@ uji("instansi: cron menggabung kompleks <= 2 km di kabupaten sama, idempoten, id
   await ev(BASE + 9 * JAM); assert.equal(await n("tugas_api"), 5); assert.equal(await n("tugas_api", "kab = 'Pulang Pisau'"), 1);
 });
 
-uji("instansi: rekomendasi disalin dari kompleks (JSON <= 3000, dipotong tetap sah) dan diperbarui saat bergabung", async () => {
+uji("instansi: rekomendasi disalin dari kompleks (JSON <= 2000, dipotong tetap sah) dan diperbarui saat bergabung", async () => {
   const REK = {cara: [{metode: "Sekat kanal", alasan: "gambut"}, {metode: "Pompa", alasan: "akses jalan"}], alat: ["Pompa", "Selang"], bara_cm: [10, 30, 60], catatan: "Perkiraan", kebutuhan: {regu: [2, 4, 6], pompa: [2, 3, 4]}};
   TUGAS = {dibuat: new Date(BASE + 12 * JAM - 30 * MENIT).toISOString(), kompleks: [KOMPLEKS("K1", -1.2, 113.0, {kab: "Kapuas", rekomendasi: REK})]};
   await cron(BASE + 12 * JAM);
@@ -328,9 +329,9 @@ uji("instansi: rekomendasi disalin dari kompleks (JSON <= 3000, dipotong tetap s
   await cron(BASE + 15 * JAM);
   assert.equal(await n("tugas_api", "kab = 'Kapuas'"), 1); assert.equal(JSON.parse((await DB.prepare("SELECT rekomendasi FROM tugas_api WHERE kab = 'Kapuas'").first()).rekomendasi).catatan, "Perkiraan baru", "diperbarui saat bergabung; kompleks tanpa rekomendasi tidak menghapus");
   const panjang = {cara: Array.from({length: 40}, (_, i) => ({metode: "Metode " + i, alasan: "x".repeat(60)})), alat: ["a"], catatan: "y".repeat(300)}, p = pasRekomendasi(panjang);
-  assert.ok(p.length <= 3000 && JSON.parse(p).cara.length > 0 && JSON.parse(p).alat.length === 1, "dipotong berurutan, tetap JSON sah: " + p.length);
+  assert.ok(p.length <= 2000 && JSON.parse(p).cara.length > 0 && JSON.parse(p).alat.length === 1, "dipotong berurutan, tetap JSON sah: " + p.length);
   assert.equal(pasRekomendasi("teks"), null); assert.equal(pasRekomendasi([1]), null);
-  await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = ? WHERE id = ?").bind("x".repeat(3001).replace(/^/, '"') + '"', t.id).run(), /CHECK/, "D1 menolak > 3000 huruf");
+  await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = ? WHERE id = ?").bind("x".repeat(2001).replace(/^/, '"') + '"', t.id).run(), /CHECK/, "D1 menolak > 2000 huruf");
   await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = 'bukan json' WHERE id = ?").bind(t.id).run(), /CHECK/);
 });
 
@@ -927,7 +928,7 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],
