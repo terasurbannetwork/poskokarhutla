@@ -17,7 +17,7 @@ from laporan import baca, DATA, WIB, BULAN  # noqa: E402  (pembaca JSON + zona w
 KELUAR = os.path.join(DATA, "presiden")
 VERSI = "presiden/1"
 IDS = ["situasi", "provinsi", "kejadian", "konsesi", "gambut", "cuaca", "asap", "penerbangan", "sumberdaya", "dampak",
-       "luas", "berulang", "pencegahan", "peringatan", "kesegaran"]
+       "luas", "berulang", "pencegahan", "kesegaran"]   # peringatan BMKG dibuang 22 Okt 2026: umpan harian, nowcast berlaku 3 jam, selalu basi
 BARIS_MAKS, ANGKA_MAKS = 10, 4
 # kecamatan "langganan": terbakar (>= TITIK_TAHUN titik di setahun) pada >= MIN_ULANG tahun lalu, dan >= MIN_INI titik tahun ini
 TITIK_TAHUN, MIN_ULANG, MIN_INI = 20, 5, 50
@@ -100,7 +100,6 @@ WAKTU = {
     "luas_resmi": ("Luas terbakar SiPongi", 24 * 100, lambda j, c: j["sampai"][max(j["sampai"])]),
     "sejarah": ("Riwayat titik panas", 24 * 60, lambda j, c: j["dibuat"]),
     "preventif": ("Paket pencegahan", 24 * 60, lambda j, c: j["dibuat"]),
-    "peringatan": ("Peringatan BMKG", 3, lambda j, c: j["dibuat"]),
     "aktor_karhutla": ("Perusahaan dan titik panas", 240, lambda j, c: j["periode"]["terkini"]["acuan"]),
 }
 
@@ -812,40 +811,6 @@ def w_pencegahan(c):
                 "Tenggat = dua bulan sebelum awal musim api di provinsi itu; tahun dihitung dari tanggal data.")
 
 
-SEV = {"Extreme": (4, "Luar biasa"), "Severe": (3, "Berat"), "Moderate": (2, "Sedang"), "Minor": (1, "Ringan")}
-
-
-def daerah(x):
-    """wilayah peringatan: 'di <provinsi>' dari headline BMKG (daftar kecamatan di umpan panjang dan terpotong), selain itu awal daftar"""
-    m = re.search(r" di (.+)$", x.get("headline") or "")
-    return m.group(1) if m else x["wilayah"].title()[:80]
-
-
-def w_peringatan(c):
-    p = c.j("peringatan")
-    t0 = min(waktu(p["dibuat"]), c.sekarang)   # nowcast BMKG berlaku 1 sampai 3 jam sejak terbit: kebenarannya diukur pada waktu umpan
-    aktif = [x for x in p["nowcast"] if waktu(x["selesai"]) >= t0 and waktu(x["mulai"]) <= t0]
-    aktif.sort(key=lambda x: -SEV.get(x["severity"], (0,))[0])
-    pembaruan = f"pembaruan {jam(t0)} WIB {tgl(t0)}"
-    lama = (c.sekarang - t0).total_seconds() / 3600
-    kw = dict(kolom=[kol("event", "Peringatan"), kol("wilayah", "Wilayah"), kol("tingkat", "Tingkat", "pill"), kol("selesai", "Berlaku sampai")],
-              sumber="BMKG (peringatan dini cuaca nowcast)",
-              catatan="Peringatan dini cuaca BMKG secara umum, tidak khusus karhutla. Nowcast berlaku 1 sampai 3 jam"
-                      + (f"; umpan ini sudah {round(lama)} jam, jadi peringatan di bawah mungkin sudah berakhir. " if lama > 3 else ". ")
-                      + "Hujan lebat di daerah rawan api membantu pemadaman tetapi dapat memicu banjir.")
-    if not aktif:
-        return dict(judul=f"Pada {pembaruan}, {K('tidak ada')} peringatan dini cuaca BMKG yang berlaku", angka=[angka("Peringatan aktif", 0, "peringatan")],
-                    baris=[], tindak_lanjut=tindak(("BNPB", "Pantau peringatan BMKG tiap 3 jam selama musim kemarau.")), **kw)
-    t = aktif[0]
-    return dict(
-        judul=f"Pada {pembaruan}, {K(str(len(aktif)) + ' peringatan dini')} cuaca BMKG berlaku, tertinggi tingkat {SEV[t['severity']][1].lower()}: {t['event']} di {daerah(t)}",
-        angka=[angka("Peringatan aktif", len(aktif), "peringatan"),
-               angka("Tingkat berat atau lebih", sum(1 for x in aktif if SEV.get(x["severity"], (0,))[0] >= 3), "peringatan")],
-        baris=[{"event": x["event"], "wilayah": daerah(x), "tingkat": SEV.get(x["severity"], (0, x["severity"]))[1],
-                "selesai": wib(waktu(x["selesai"]))} for x in aktif[:BARIS_MAKS]],
-        tindak_lanjut=tindak(("BNPB", f"Teruskan peringatan {t['event'].lower()} ke BPBD {', '.join(c.prov(k) for k in t['prov'][:2])}.")), **kw)
-
-
 def umur_kata(jam_):
     return f"sekitar {round(jam_ / 24)} hari" if jam_ >= 48 else f"{round(jam_)} jam"
 
@@ -886,7 +851,7 @@ def w_kesegaran(c):
         tindak_lanjut=tindak(("Pengelola platform", f"Periksa pembaruan {basi[0]['sumber']}." if basi else "Tidak ada tindakan; semua sumber segar.")),
         sumber="Catatan waktu pembaruan tiap sumber data",
         catatan="Batas kesegaran mengikuti jadwal tiap sumber (3 jam, harian, mingguan, atau tahunan), ditambah toleransi; tabel diurut dari yang paling dekat atau melewati batasnya. "
-                "Peringatan BMKG bernilai 1 sampai 3 jam, jadi batasnya 3 jam. Luas terbakar resmi SiPongi memang lama karena baru dirilis sampai Juli.")
+                "Luas terbakar resmi SiPongi memang lama karena baru dirilis sampai Juli.")
 
 
 WIDGET = {  # id -> (label pill, fungsi)
@@ -894,7 +859,7 @@ WIDGET = {  # id -> (label pill, fungsi)
     "konsesi": ("Areal izin", w_konsesi), "gambut": ("Gambut", w_gambut), "cuaca": ("Cuaca", w_cuaca), "asap": ("Asap", w_asap),
     "penerbangan": ("Penerbangan", w_penerbangan), "sumberdaya": ("Sumber daya", w_sumberdaya), "dampak": ("Dampak", w_dampak),
     "luas": ("Luas terbakar", w_luas), "berulang": ("Langganan", w_berulang), "pencegahan": ("Pencegahan", w_pencegahan),
-    "peringatan": ("Peringatan", w_peringatan), "kesegaran": ("Kesegaran data", w_kesegaran),
+    "kesegaran": ("Kesegaran data", w_kesegaran),
 }
 
 
@@ -1150,6 +1115,10 @@ def bangun(dasar, keluar, sekarang=None):
               "widget": [{"id": w["id"], "label": w["label"], "judul": w["judul"], "per": w["per"], "status": w["status"],
                           "url": f"/data/presiden/{w['id']}.json"} for w in ws]}
     tulis("indeks.json", indeks)
+    tetap = {w["id"] + ".json" for w in ws} | {"semua.json", "peta.json", "indeks.json"}
+    for f in os.listdir(keluar):   # feed widget yang dibuang (mis. peringatan) tidak tertinggal basi dari cache CI
+        if f.endswith(".json") and f not in tetap:
+            os.remove(os.path.join(keluar, f))
     return semua, indeks
 
 
@@ -1331,11 +1300,6 @@ def uji_butir(ws, now):
         assert len(w["angka"]) == 3 and not any("satelit" in a["label"] for a in w["angka"]) and "baru sampai" in w["catatan"]
     if W("dampak"):
         assert all("tampil" in a and a["tampil"].startswith("sekitar ") and "(" in a["tampil"] for a in W("dampak")["angka"])
-    if W("peringatan"):
-        w = W("peringatan")
-        assert w["judul"].startswith("Pada pembaruan ") and "([[0]])" not in w["judul"]
-        t0 = waktu(S("peringatan")["dibuat"])
-        assert (w["status"] == "basi") == ((now - t0).total_seconds() / 3600 > 3), w["status"]
     if W("penerbangan"):
         p = S("penerbangan")
         assert W("penerbangan")["angka"][3]["label"] == "Berita pembatalan penerbangan" and "JHB" not in " ".join(b["bandara"] for b in W("penerbangan")["baris"])

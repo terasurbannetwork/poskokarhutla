@@ -13,7 +13,7 @@ Untuk tim teknis dashboard Presiden. Bentuk data lengkap ada di `KONTRAK.md`.
 
 Daftar `id` widget: `situasi`, `provinsi`, `kejadian`, `konsesi`, `gambut`, `cuaca`,
 `asap`, `penerbangan`, `sumberdaya`, `dampak`, `luas`, `berulang`, `pencegahan`,
-`peringatan`, `kesegaran`.
+`kesegaran`.
 
 ## Iframe
 

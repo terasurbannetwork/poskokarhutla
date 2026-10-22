@@ -66,6 +66,8 @@ Aturan isi:
 
 ## Widget (urutan tampil)
 
+Widget `peringatan` (nowcast BMKG) dibuang 22 Okt 2026: umpannya harian sedangkan nowcast berlaku 1 sampai 3 jam, jadi selalu basi.
+
 | id | Pertanyaan | Sumber utama | Tindak lanjut khas |
 | --- | --- | --- | --- |
 | `situasi` | Seberapa parah hari ini dibanding biasanya dan 2015? | `musim_harian.json`, `kumulatif.json` | BNPB, Kementerian Kehutanan |
@@ -81,7 +83,6 @@ Aturan isi:
 | `luas` | Luas terbakar resmi SiPongi per tahun dan provinsi teratas | `luas_resmi.json` | Kementerian Kehutanan |
 | `berulang` | Kecamatan langganan yang terbakar lagi tahun ini | `sejarah.json` | Pemda: pencegahan permanen |
 | `pencegahan` | Paket pencegahan dan perkiraan biaya untuk provinsi teratas | `preventif.json` | Bappenas, Kemendagri |
-| `peringatan` | Peringatan aktif level tertinggi | `peringatan.json` | BNPB |
 | `kesegaran` | Umur tiap sumber data dibanding batasnya (`per` = waktu pemeriksaan) | `dibuat` atau tanggal akhir tiap berkas (tabel `WAKTU` di kode) | Pengelola platform |
 
 Generator boleh menggugurkan widget yang sumbernya tidak memadai, asal
