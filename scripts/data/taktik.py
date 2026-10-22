@@ -837,6 +837,13 @@ def uji():
     k1 = s2["kompleks"][0]
     assert k1["akses"]["kaki_km"] == 8.0 and "akses" not in k1["rekomendasi"] and len(json.dumps(k1["rekomendasi"], ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"]
     assert len(json.dumps(k1["akses"], ensure_ascii=False, separators=(",", ":"))) < 1800, "akses terlalu besar"
+    # akses.json dicocokkan lewat LOKASI: id tugas (K0950) tak ada di akses.json tapi 1 km dari entri K0001 -> kaki_km terpakai;
+    # id sama (K0001) tapi 20 km dari entri -> tidak ditempel; entri tanpa lokasi (berkas lama) diabaikan
+    ak_ = {"_meta": {}, "K0001": {"lat": -3.0, "lon": 112.0, "kaki_km": 3.5, "dari": []}, "K0002": {"kaki_km": 9.9, "dari": []}}
+    sk = lambda **k: susun({"dibuat": dc, "kompleks": [T(prov="62", kab="Seruyan", **k)]}, None, None, ak_, None, None)["kompleks"][0].get("akses") or {}
+    assert sk(id="K0950", lat=-3.009)["kaki_km"] == 3.5, "id berubah, lokasi 1 km: harus cocok"
+    assert sk(id="K0001", lat=-3.2).get("kaki_km") is None, "id sama tapi lokasi 20 km: tidak boleh ditempel"
+    assert sk(id="K0002").get("kaki_km") == 3.5 and sk(id="K0002", lat=-9.0, lon=100.0).get("kaki_km") is None
     # tanggal WIB: 23:30Z = 06:30 WIB hari berikutnya; 17:00Z = 00:00 WIB
     assert tgl_wib("2026-10-21T23:30:00Z") == "2026-10-22" and tgl_wib("2026-10-21T16:59:00Z") == "2026-10-21" and tgl_wib("2026-10-21T17:00:00Z") == "2026-10-22"
     ud2 = {"batas": [15.5, 55.4, 150.4, 250.4], "hari": ["2026-10-21", "2026-10-22"], "kab": [[], [["62", "Seruyan", 400.0, 500, 1, 1]]]}

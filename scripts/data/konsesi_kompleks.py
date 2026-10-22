@@ -154,6 +154,40 @@ def hitung(kluster, titik, tgl, konsesi, kawasan, gambut, lama=None, acuan=None)
     return {"kompleks": keluar, "jenis": per, "total": total, "harian": harian}
 
 
+def nama_konsesi(kluster, titik, konsesi, maks=3):
+    """{id kompleks: [{jenis, nama, pemegang}]} maks `maks`, urut jumlah titik di konsesi itu. Untuk tugas_kompleks.json (rancangan api
+    padam 0.7). Nama diambil dari lahan/konsesi.geojson yang SUDAH terbit (nama + grup per poligon); data/raw/konsesi (sanksi, RSPO,
+    pemegang saham) tidak disentuh. pemegang = grup bila ada, selain itu nama pemegang izin itu sendiri. Izin berakhir diabaikan."""
+    milik = pasang_kompleks(kluster, titik)
+    konsesi = [f for f in konsesi if f["properties"].get("aktif") is not False and f["properties"].get("nama")]
+    ik = Indeks(konsesi)
+    hitung_, info = {}, {}
+    for (lat, lon), i in zip(titik, milik):
+        if i is None:
+            continue
+        kid = kluster[i]["properties"]["id"]
+        for j in ik.cari(lon, lat):
+            p = konsesi[j]["properties"]
+            kunci = (p["jenis"], p["nama"])
+            info[kunci] = p.get("grup") or p["nama"]
+            c = hitung_.setdefault(kid, {})
+            c[kunci] = c.get(kunci, 0) + 1
+    return {kid: [{"jenis": j, "nama": n, "pemegang": info[j, n]} for (j, n), _ in sorted(c.items(), key=lambda x: (-x[1], x[0]))[:maks]]
+            for kid, c in hitung_.items()}
+
+
+def isi_tugas(jalur, nama):
+    """Isi `konsesi` tiap kompleks di tugas_kompleks.json (ditulis harian.py putaran yang sama, id sama dengan kluster.json). Tidak ada berkas = lewati."""
+    if not os.path.exists(jalur):
+        return 0
+    d = json.load(open(jalur))
+    for k in d["kompleks"]:
+        k["konsesi"] = nama.get(k["id"], [])
+    with open(jalur, "w") as f:
+        json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
+    return sum(1 for k in d["kompleks"] if k["konsesi"])
+
+
 def main():
     kl = json.load(open(os.path.join(DATA, "kluster.json")))["features"]
     hs = json.load(open(os.path.join(DATA, "hotspot.json")))
@@ -178,6 +212,8 @@ def main():
                     "tambang PPKH Kemenhut Jan 2026; bisa sudah berubah. Pastikan ke KPH/Dinas/ATR sebelum tindakan hukum.")
     with open(jalur, "w") as f:
         json.dump(h, f, ensure_ascii=False, separators=(",", ":"))
+    n_tugas = isi_tugas(os.path.join(DATA, "tugas_kompleks.json"), nama_konsesi(kl, titik, ks["features"]))
+    print(f"tugas_kompleks.json: {n_tugas} kompleks berisi pemegang konsesi", file=sys.stderr)
     n_ks = sum(1 for v in h["kompleks"].values() if v["jenis"])
     print(f"kompleks_konsesi.json: {n_ks} kompleks berisi titik di konsesi, {h['total']['konsesi']}/{h['total']['n']} titik, "
           f"{os.path.getsize(jalur) / 1e6:.2f} MB", file=sys.stderr)
@@ -214,6 +250,25 @@ def uji():
     h2 = hitung(kl, t, ["2026-10-12"] * len(t), ks, kw, gb, h, "2026-10-12")
     assert h2["jenis"][0]["musim"] == 15, h2["jenis"][0]["musim"]
     assert "PT" not in json.dumps(h) and "Api" not in json.dumps(h), "nama perusahaan bocor ke keluaran"
+    # 0.7 nama konsesi per kompleks (untuk tugas_kompleks.json): urut jumlah titik, maks 3, izin berakhir dan tanpa nama diabaikan
+    ks2 = ks + [{"properties": {"nama": "PT Grup Satu", "grup": "Grup Raksasa", "jenis": "hti"}, "geometry": kotak(100.5, .5, 101, 1)},
+                {"properties": {"nama": "PT Ketiga", "jenis": "tambang"}, "geometry": kotak(100.6, .5, 101, 1)},
+                {"properties": {"nama": "PT Keempat", "jenis": "hph"}, "geometry": kotak(100.7, .5, 101, 1)},
+                {"properties": {"jenis": "sawit"}, "geometry": kotak(100, 0, 101, 1)}]  # tanpa nama: diabaikan
+    nm = nama_konsesi(kl, t, ks2)
+    assert list(nm) == ["K0001"] and len(nm["K0001"]) == 3, nm   # K0002 tanpa titik; 6 poligon bernama -> maks 3
+    assert nm["K0001"][0] == {"jenis": "sawit", "nama": "PT Api Jaya 1", "pemegang": "PT Api Jaya 1"}, nm   # titik terbanyak; tanpa grup -> pemegang = nama
+    assert all(set(x) == {"jenis", "nama", "pemegang"} for x in nm["K0001"])
+    assert nama_konsesi(kl, t, [f for f in ks2 if f["properties"].get("nama") == "PT Grup Satu"])["K0001"] == [{"jenis": "hti", "nama": "PT Grup Satu", "pemegang": "Grup Raksasa"}]
+    assert nama_konsesi(kl, t, [ks[3]]) == {}, "izin berakhir tidak jadi pemegang"
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        jt = os.path.join(tmp, "tugas_kompleks.json")
+        assert isi_tugas(jt, nm) == 0   # berkas tak ada: lewati
+        json.dump({"dibuat": "x", "kompleks": [{"id": "K0001", "konsesi": [], "otomatis": True}, {"id": "K0009", "konsesi": [{"x": 1}]}]}, open(jt, "w"))
+        assert isi_tugas(jt, nm) == 1
+        d = json.load(open(jt))
+        assert d["kompleks"][0]["konsesi"] == nm["K0001"] and d["kompleks"][0]["otomatis"] is True and d["kompleks"][1]["konsesi"] == [], d
     # berkas hasil (kalau ada): invarian + tanpa nama
     jalur = os.path.join(DATA, "kompleks_konsesi.json")
     if os.path.exists(jalur):
