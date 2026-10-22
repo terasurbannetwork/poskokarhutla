@@ -14,7 +14,7 @@ import REGISTRY from "./bencana.generated.js";
 const JAM = 3600e3, HARI = 24 * JAM, BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
 export const TINGKAT = ["berat", "sedang", "ringan"];
 export const STATUS = ["sah", "ditolak"];
-const MAKS_FOTO = 1.5 * 1048576, DEDUP_DERAJAT = 0.0001 /* ~11 m */, DEDUP_JENDELA = 6 * JAM, MAKS_DAFTAR = 500, MAKS_REKAP = 3000, JENDELA_TANGGAL = 120 * HARI, MAKS_RENTANG_REKAP = 366 * HARI;
+const MAKS_FOTO = 1.5 * 1048576, DEDUP_DERAJAT = 0.0001 /* ~11 m */, MAKS_DAFTAR = 500, MAKS_REKAP = 3000, JENDELA_TANGGAL = 120 * HARI, MAKS_RENTANG_REKAP = 366 * HARI;
 const BATAS_BUAT = [[JAM, 60], [HARI, 400]], BATAS_IP = [[JAM, 240]], BATAS_FOTO = [[JAM, 60]];
 const bencanaSah = id => typeof id === "string" && REGISTRY.bencana.some(b => b.id === id && b.status !== "mati");
 
@@ -49,12 +49,12 @@ async function buat(env, req, url, kini) {
   const la = Math.round(lat * 1e5) / 1e5, lo = Math.round(lon * 1e5) / 1e5;
   const g = await pakaiLaju(env, req, s, "rumah.buat", BATAS_BUAT, kini); if (g) return g;
   const id = acak(8);
-  /* dedup ATOMIK: pelapor + bencana + tingkat sama, ~10 m, dalam 6 jam, yang masih sah -> tidak disisipkan (cek-lalu-sisip bisa dilompati kiriman serentak) */
+  /* dedup ATOMIK: bencana + tanggal kejadian sama, ~10 m, dari SIAPA PUN (satu rumah = satu laporan), yang masih sah -> tidak disisipkan (cek-lalu-sisip bisa dilompati kiriman serentak) */
   const r = await env.DB.prepare(`INSERT INTO rumah_rusak (id, bencana, tanggal, lat, lon, prov, kab, kec, tingkat, catatan, pelapor, waktu)
     SELECT ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12
-    WHERE NOT EXISTS (SELECT 1 FROM rumah_rusak WHERE pelapor = ?11 AND bencana = ?2 AND tingkat = ?9 AND status = 'sah' AND waktu > ?13 AND abs(lat - ?4) < ?14 AND abs(lon - ?5) < ?14)`)
-    .bind(id, o.bencana, tanggal, la, lo, prov, kab, kec, o.tingkat, catatan, s.pid, kini, kini - DEDUP_JENDELA, DEDUP_DERAJAT).run();
-  if (!r.meta.changes) return gagal(409, "laporan yang sama (tingkat sama, jarak sekitar 10 m) sudah Anda kirim dalam 6 jam terakhir");
+    WHERE NOT EXISTS (SELECT 1 FROM rumah_rusak WHERE bencana = ?2 AND tanggal = ?3 AND status = 'sah' AND abs(lat - ?4) < ?13 AND abs(lon - ?5) < ?13)`)
+    .bind(id, o.bencana, tanggal, la, lo, prov, kab, kec, o.tingkat, catatan, s.pid, kini, DEDUP_DERAJAT).run();
+  if (!r.meta.changes) return gagal(409, "rumah ini (jarak sekitar 10 m, tanggal kejadian sama) sudah dilaporkan");
   return json({id, prov, kab, kec, tingkat: o.tingkat, tanggal}, 201);
 }
 

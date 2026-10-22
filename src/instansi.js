@@ -760,7 +760,7 @@ export async function verifikasiPadam(env, kini = Date.now()) {
 /* Laporan regu berkode (posko.js lapor, sesudah laporan tersimpan) menaut ke tugas api terdekat (<= 2 km, kabupaten sama, tugas nyata yang buka atau padam) lewat tugas_lapangan.
    Efek hanya bila laporan dipercaya (l.dipercaya: GPS di wilayah regu, tidak ditahan, tanpa tanda GPS curiga). PADAM dari regu hanyalah klaim (tercatat, efek "klaim_regu"): tugas berubah
    padam_dilaporkan bila dua regu BERBEDA yang dipercaya melapor padam dalam 24 jam (sesudah dibukanya kembali, bila muncul_lagi); konfirmasi akun instansi lewat isian tugas sendiri.
-   Jalur regu tidak pernah menutup penugasan atau melepas alat. menyala atau bara dari regu dipercaya pada tugas padam = muncul_lagi sumber regu (arah aman). Tabel 0037 belum ada = lewati. */
+   Jalur regu tidak pernah menutup penugasan; alat dilepas (lepasDariTugas) begitu tugas jadi padam_dilaporkan. menyala atau bara dari regu dipercaya pada tugas padam = muncul_lagi sumber regu (arah aman). Tabel 0037 belum ada = lewati. */
 export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
   try {
     const C = (await env.DB.prepare(`SELECT id, lat, lon, status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE prov = ? AND lower(kab) = lower(?) AND dummy = 0
@@ -776,7 +776,7 @@ export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
       const n = (await env.DB.prepare("SELECT count(DISTINCT regu_id) n FROM tugas_lapangan WHERE tugas_id = ? AND status = 'padam' AND dipercaya = 1 AND regu_id IS NOT NULL AND dibuat > ?").bind(t.id, sejak).first()).n;
       if (n < 2) return {tugas_id: t.id, jarak_km: d, efek: "klaim_regu"};
       const r = await env.DB.prepare(`UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?1, verif_pada = ?2, cek_ulang_pada = NULL WHERE id = ?3 AND (padam_pada IS NULL OR (status = 'buka' AND padam_verif = 'muncul_lagi'))`).bind(waktu, kini, t.id).run();
-      if (r.meta.changes) return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"};
+      if (r.meta.changes) { await lepasDariTugas(env, t.id, kini); return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"}; }   // alat tidak tersangkut 'dikerahkan' di tugas padam
     } else if ((l.status === "menyala" || l.status === "bara") && t.status === "padam" && waktu > t.padam_pada) {
       if (await bukaKembali(env, [{id: t.id, sumber: "regu", jarak: d, ket: `Laporan regu berkode: api ${l.status} dalam ${Math.round(d * 10) / 10} km dari tugas yang dilaporkan padam`}], kini)) return {tugas_id: t.id, jarak_km: d, efek: "muncul_lagi"};
     }
@@ -823,17 +823,20 @@ async function buatTugasIsi(env, kini) {
   const ks = (Array.isArray(berkas.kompleks) ? berkas.kompleks : []).filter(kompleksSah).slice(0, 600);
   if (!ks.length) return {baru: 0, digabung: 0};
   const provs = [...new Set(ks.map(k => k.prov))];
-  const buka = (await env.DB.prepare("SELECT id, prov, kab, lat, lon FROM tugas_api WHERE status = 'buka' AND prov IN (SELECT value FROM json_each(?)) LIMIT 5000").bind(JSON.stringify(provs)).all()).results;
+  const buka = (await env.DB.prepare("SELECT id, prov, kab, lat, lon, status FROM tugas_api WHERE (status = 'buka' OR (status = 'bukan_api' AND konfirmasi_pada > ?2)) AND prov IN (SELECT value FROM json_each(?1)) LIMIT 5000").bind(JSON.stringify(provs), kini - 14 * HARI).all()).results;
   const st = []; let baru = 0, digabung = 0;
   for (const k of ks) {
     const kab = k.kab.toLowerCase(), terakhir = Math.round(dibuat - (Number.isFinite(k.jam_sejak) ? k.jam_sejak : 0) * JAM), n24 = Math.max(0, Math.round(k.n24) || 0), luas = Number.isFinite(k.luas) && k.luas >= 0 ? k.luas : null;
     const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses);
     let dekat = null, jarak = GABUNG_KM + 1e-9;
     for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = km(k.lat, k.lon, t.lat, t.lon); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
-    if (dekat) {
+    if (dekat?.status === "bukan_api") {   // sudah dikonfirmasi bukan api: hanya catat deteksi terakhir, tanpa membuka kembali dan tanpa tugas baru tiap 3 jam
+      digabung++;
+      st.push(env.DB.prepare("UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1) WHERE id = ?2 AND status = 'bukan_api'").bind(terakhir, dekat.id));
+    } else if (dekat) {
       digabung++;
       st.push(env.DB.prepare(`UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1), n24 = max(n24, ?2), level = max(level, ?3),
-        luas_ha = CASE WHEN ?4 IS NULL THEN luas_ha ELSE max(coalesce(luas_ha, 0), ?4) END, rekomendasi = coalesce(?5, rekomendasi), akses = coalesce(?7, akses) WHERE id = ?6 AND status = 'buka'`)
+        luas_ha = CASE WHEN ?4 IS NULL THEN luas_ha ELSE max(coalesce(luas_ha, 0), ?4) END, rekomendasi = coalesce(?5, rekomendasi), akses = coalesce(?7, akses) WHERE id = ?6 AND status IN ('buka', 'bukan_api')`)
         .bind(terakhir, n24, k.level, luas, rek, dekat.id, akses));
     } else {
       baru++;
@@ -932,7 +935,8 @@ async function ubahAkun(env, req, id, kini) {
   }
   if (aksi === "cabut") {
     if (ada.status === "dicabut") return gagal(409, "akun sudah dicabut");
-    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini)]);
+    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini),
+      ...(await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE name = 'penugasan'").first() ? [env.DB.prepare("UPDATE penugasan SET status = 'dicabut' WHERE akun_id = ? AND status = 'aktif'").bind(id)] : [])]);   // tautan lacak akun yang dicabut ikut mati
     return json({id, status: "dicabut"});
   }
   if (aksi === "reset") {

@@ -47,7 +47,8 @@ uji("laporan bnpb: simpan lalu baca kembali sama persis, simpan ulang menimpa", 
   const r = await api("POST", "/api/laporan-bnpb", sah, ADMIN); assert.equal(r.s, 201, r.t);
   const b = await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-19", null, ADMIN);
   assert.equal(b.s, 200); assert.deepEqual(b.j.isi, sah.isi); assert.equal(b.h.get("cache-control"), "no-store");
-  assert.equal((await api("POST", "/api/laporan-bnpb", {...sah, isi: {...sah.isi, laporan_masuk: 40}}, ADMIN)).s, 201);
+  const dasar = (await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-19", null, ADMIN)).j.diubah;
+  assert.equal((await api("POST", "/api/laporan-bnpb", {...sah, isi: {...sah.isi, laporan_masuk: 40}, diubah: dasar}, ADMIN)).s, 201);
   assert.equal((await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-19", null, ADMIN)).j.isi.laporan_masuk, 40);
   const d = await api("GET", "/api/laporan-bnpb?jenis=harian", null, ADMIN);
   assert.deepEqual(d.j.daftar.map(x => x.tanggal), ["2026-10-19"], "satu baris per (jenis, tanggal)");

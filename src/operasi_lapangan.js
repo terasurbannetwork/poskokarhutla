@@ -479,15 +479,23 @@ async function ubahPermintaan(env, req, kini, id) {
     if (r.jenis !== "logistik") return gagal(409, "hanya permintaan logistik yang bisa diteruskan ke Meja logistik");
     if (r.meja_id) return gagal(409, "sudah diteruskan ke Meja logistik");
     if (r.status === "ditolak") return gagal(409, "permintaan yang ditolak tidak diteruskan");
-    const tempat = [t.kec, t.kab].filter(Boolean).join(", ").slice(0, 60), orang = (await penugasanAktif(env, t, kini)).reduce((s, p) => s + p.orang, 0);
-    const m = await sisipLogistik(env, {prov: t.prov, kab: t.kab, data: {barang: r.barang, jumlah_diminta: r.jumlah, satuan: r.satuan, posko: `Titik api ${tempat}`, kebutuhan_untuk: orang}}, kini, P.oleh, t.dummy);
-    if (m.galat) return gagal(400, `Meja logistik menolak: ${m.galat}`);
-    const u = await env.DB.prepare("UPDATE ops_permintaan SET meja_id = ?, diubah = ? WHERE id = ? AND meja_id IS NULL").bind(m.id, kini, id).run();
-    if (!u.meta.changes) return gagal(409, "sudah diteruskan ke Meja logistik");
+    /* klaim atomik DULU (dua klik serentak tidak melahirkan dua baris Meja); penanda 16 karakter agar lolos CHECK meja_id, diganti id Meja sesudah sisip */
+    const klaim = await env.DB.prepare("UPDATE ops_permintaan SET meja_id = 'klaim-diteruskan', diubah = ? WHERE id = ? AND meja_id IS NULL").bind(kini, id).run();
+    if (!klaim.meta.changes) return gagal(409, "sudah diteruskan ke Meja logistik");
+    const lepas = () => env.DB.prepare("UPDATE ops_permintaan SET meja_id = NULL WHERE id = ? AND meja_id = 'klaim-diteruskan'").bind(id).run();
+    let m;
+    try {
+      const tempat = [t.kec, t.kab].filter(Boolean).join(", ").slice(0, 60), orang = (await penugasanAktif(env, t, kini)).reduce((s, p) => s + p.orang, 0);
+      m = await sisipLogistik(env, {prov: t.prov, kab: t.kab, data: {barang: r.barang, jumlah_diminta: r.jumlah, satuan: r.satuan, posko: `Titik api ${tempat}`, kebutuhan_untuk: orang}}, kini, P.oleh, t.dummy);
+    } catch (e) { await lepas(); throw e; }
+    if (m.galat) { await lepas(); return gagal(400, `Meja logistik menolak: ${m.galat}`); }
+    await env.DB.prepare("UPDATE ops_permintaan SET meja_id = ?, diubah = ? WHERE id = ? AND meja_id = 'klaim-diteruskan'").bind(m.id, kini, id).run();
     return json({permintaan: bentukPermintaan(await env.DB.prepare("SELECT * FROM ops_permintaan WHERE id = ?").bind(id).first()), meja_id: m.id});
   }
   if (o.aksi !== "status") return gagal(400, "aksi harus status/teruskan");
   const peran = typeof o.ke === "string" && Object.hasOwn(TRANSISI[r.jenis][r.status] ?? {}, o.ke) ? TRANSISI[r.jenis][r.status][o.ke] : null;
+  if (r.meja_id && o.ke === "ditolak") return gagal(409, "permintaan yang sudah diteruskan ke Meja logistik tidak bisa ditolak di sini (Meja tidak mengenal status ditolak)");
+  if (r.meja_id === "klaim-diteruskan") return gagal(409, "permintaan sedang diteruskan ke Meja logistik; coba lagi sebentar");
   if (!peran) return gagal(409, `transisi ${r.status} ke ${String(o.ke).slice(0, 30)} tidak sah untuk permintaan ${r.jenis}`);
   if (peran === "adm" && !P.mod) return tolakAdm();
   const cat = tx(o.catatan, 200); if (cat === undefined) return gagal(400, "catatan maksimal 200 karakter");
@@ -495,7 +503,10 @@ async function ubahPermintaan(env, req, kini, id) {
   const l = await lajuTulis(env, P, kini); if (l) return l;
   const hasil = await env.DB.batch([env.DB.prepare("UPDATE ops_permintaan SET status = ?, diubah = ? WHERE id = ? AND status = ?").bind(o.ke, kini, id, r.status),
     env.DB.prepare("INSERT INTO ops_jejak (tugas_id, waktu, jenis, ref_id, ket, oleh, dummy) SELECT ?, ?, 'permintaan', ?, ?, ?, ? WHERE changes() > 0")
-      .bind(t.id, kini, id, `${r.jenis === "heli" ? "Permintaan heli" : "Permintaan logistik"} ${r.status} ke ${o.ke}${cat ? `: ${cat}` : ""}`.slice(0, 300), P.oleh, t.dummy)]);
+      .bind(t.id, kini, id, `${r.jenis === "heli" ? "Permintaan heli" : "Permintaan logistik"} ${r.status} ke ${o.ke}${cat ? `: ${cat}` : ""}`.slice(0, 300), P.oleh, t.dummy),
+    /* sudah diteruskan: salin status ke baris Meja (satu langkah yang sama; trigger meja_catatan_ubah menjaga transisi). Bila Meja sudah bergeser sendiri (status beda) dibiarkan, tidak ada galat. */
+    ...(r.meja_id ? [env.DB.prepare("UPDATE meja_catatan SET status = ?1, diubah = max(diubah, ?2) WHERE id = ?3 AND status = ?4 AND EXISTS (SELECT 1 FROM ops_permintaan WHERE id = ?5 AND status = ?1 AND diubah = ?2)").bind(o.ke, kini, r.meja_id, r.status, id),
+      env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh) SELECT ?, ?, ?, ?, ? WHERE changes() > 0").bind(r.meja_id, r.status, o.ke, kini, P.oleh)] : [])]);
   if (!hasil[0].meta.changes) return gagal(409, "status permintaan berubah; muat ulang");
   return json({permintaan: bentukPermintaan(await env.DB.prepare("SELECT * FROM ops_permintaan WHERE id = ?").bind(id).first())});
 }

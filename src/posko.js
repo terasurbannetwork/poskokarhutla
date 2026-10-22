@@ -53,14 +53,15 @@ const tolakMod = () => gagal(403, "fitur ini hanya untuk moderator ke atas (buka
 const tolakAdmin = () => gagal(403, "akses ditolak");
 
 /* ================================================================ regu (kode) */
-/* kembalikan baris regu, atau Response galat. Tebakan kode dihitung per IP (hash bergaram) SEBELUM lookup D1: > MAKS_GAGAL_KODE per jam = 429. */
+/* kembalikan baris regu, atau Response galat. Kode sah langsung lolos (regu sah di balik NAT tidak ikut terkunci karena tetangganya menebak);
+   hanya tebakan SALAH yang dihitung per IP (hash bergaram): > MAKS_GAGAL_KODE per jam = 429, dicek sebelum lookup D1 bila kodenya tidak cocok. */
 export async function reguDari(env, req, kini = Date.now()) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
-  const ip = await ipHash(env, req);
-  if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
   const k = (req.headers.get("x-kode-regu") || "").trim().toLowerCase();
   const r = /^[0-9a-f]{26}$/.test(k) ? await env.DB.prepare("SELECT id, nama, unsur, prov, kab, perusahaan_id, dicabut FROM regu WHERE kode_sha = ?").bind(await sha(k)).first() : null;
   if (r && !r.dicabut) return r;
+  const ip = await ipHash(env, req);
+  if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
   await catatGagal(env, ip, "kode_gagal", kini);
   return kodeTolak();   // tidak dikenal dan dicabut dijawab sama: tidak membocorkan kode mana yang pernah sah
 }
@@ -162,7 +163,7 @@ async function simpanRakor(env, req, kini) {
   const kendala = o.kendala ?? [];
   if (!kendalaSah(kendala)) return gagal(400, `kendala harus larik dari: ${Object.keys(KENDALA).join(", ")}`);
   /* ejaan kabupaten mengikuti agregat regu hari itu (tanpa beda huruf besar/kecil), supaya rakor benar-benar menimpa baris regu yang sama */
-  const ada = await env.DB.prepare("SELECT kab FROM neraca_harian WHERE tgl = ? AND prov = ? AND lower(kab) = lower(?) LIMIT 1").bind(o.tgl, o.prov, kab0).first(), kab = ada?.kab ?? kab0;
+  const ada = await env.DB.prepare("SELECT kab FROM neraca_harian WHERE tgl = ? AND prov = ? AND lower(trim(kab)) = lower(trim(?)) LIMIT 1").bind(o.tgl, o.prov, kab0).first(), kab = ada?.kab ?? kab0;
   await env.DB.prepare(`INSERT INTO neraca_harian (tgl, prov, kab, sumber, fs, luas_ha, padam_ha, sisa_ha, personel, kendala, catatan, diubah, oleh) VALUES (?, ?, ?, 'rakor', ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (tgl, prov, kab, sumber) DO UPDATE SET fs = excluded.fs, luas_ha = excluded.luas_ha, padam_ha = excluded.padam_ha, sisa_ha = excluded.sisa_ha, personel = excluded.personel,
       kendala = excluded.kendala, catatan = excluded.catatan, diubah = excluded.diubah, oleh = excluded.oleh, dummy = 0`)

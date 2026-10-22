@@ -592,7 +592,8 @@ uji("tebakan kode regu dan token admin dihitung per IP bergaram; login dan IP la
   const baris = (await DB.prepare("SELECT kunci FROM laju_posko WHERE aksi = 'kode_gagal'").all()).results;
   assert.equal(baris.filter(x => x.kunci === ipH(ip)).length, 3, "tiap kegagalan tercatat"); assert.ok(!baris.some(x => x.kunci === ip), "IP mentah tidak tersimpan");
   await pasang(ipH(ip), "kode_gagal", 297);
-  const blok = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": g.kode}); assert.equal(blok.s, 429, "300 gagal: kode BENAR pun ditahan dari IP itu"); assert.ok(blok.h.get("retry-after"));
+  const blok = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": g.kode}); assert.equal(blok.s, 201, "300 gagal: kode BENAR tetap lolos (tidak ikut terkunci)");
+  const salahLagi = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": "0".repeat(26)}); assert.equal(salahLagi.s, 429, "300 gagal: tebakan salah berikutnya 429"); assert.ok(salahLagi.h.get("retry-after"));
   assert.equal((await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": "203.0.113.8", "x-kode-regu": g.kode})).s, 201, "IP lain tidak terkena");
   /* admin lewat header */
   const ip2 = "203.0.113.9", salah = {"cf-connecting-ip": ip2, "x-admin-token": "tebakan"};

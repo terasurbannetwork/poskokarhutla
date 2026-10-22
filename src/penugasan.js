@@ -148,6 +148,7 @@ async function terbitUlang(env, req, url, kini, pid) {
   const b = await bacaBody(req, 512); if (b.galat) return gagal(b.status || 400, b.galat);
   const jam = jamKedaluwarsa(b.o.jam); if (jam == null) return gagal(400, `masa berlaku tautan 1-${BATAS.kedaluwarsaMaksJam} jam`);
   if (p.tstatus !== "buka") return gagal(409, "tugas ini sudah ditutup; tautan tidak bisa diterbitkan ulang");
+  if (p.status === "selesai") return gagal(409, "penugasan ini sudah selesai; riwayat waktunya tidak boleh dihapus. Buat penugasan baru bila perlu.");
   const l = await laju(env, a.id, "instansi.tugaskan", [[JAM, 60]], kini); if (l) return l;
   const {token, sha: th} = await tokenBaru(), kedaluwarsa = kini + jam * JAM;
   await env.DB.prepare("UPDATE penugasan SET token_sha = ?, status = 'aktif', kedaluwarsa = ?, dibuka_pada = NULL, berangkat_pada = NULL, tiba_pada = NULL, selesai_pada = NULL WHERE id = ?").bind(th, kedaluwarsa, pid).run();
@@ -239,11 +240,11 @@ async function dariToken(env, req, kini, tanpaIp = false) {
   /* di atas batas: tolak tanpa menulis; token tak dikenal tidak menulis baris laju sama sekali (probing tidak membengkakkan tabel) */
   if (!tanpaIp && (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'lacak.ip' AND waktu > ?").bind(ip, kini - MENIT).first()).n >= BATAS.posisiPerMenitIp)
     return {r: gagal(429, `batas ${BATAS.posisiPerMenitIp} per menit per IP sudah tercapai`, {"retry-after": "60"})};
-  const p = await env.DB.prepare(`SELECT p.*, t.prov, t.kab, t.kec, t.lat, t.lon, t.level, t.status tstatus, t.rekomendasi, t.akses, a.wilayah akun_wilayah
+  const p = await env.DB.prepare(`SELECT p.*, t.prov, t.kab, t.kec, t.lat, t.lon, t.level, t.status tstatus, t.rekomendasi, t.akses, a.wilayah akun_wilayah, a.status akun_status
     FROM penugasan p JOIN tugas_api t ON t.id = p.tugas_id JOIN instansi_akun a ON a.id = p.akun_id WHERE p.token_sha = ?`).bind(await sha(tk)).first();
   if (!p) return {r: gagal(404, "tautan tidak dikenal")};
   if (!tanpaIp) await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lacak.ip', ?)").bind(ip, kini).run();   // darurat dikecualikan: banjir /posisi dari satu IP (CGNAT) tak boleh memblokir tombol darurat; batasnya per tautan
-  const s = statusEfektif(p, kini);
+  const s = p.akun_status !== "aktif" ? "dicabut" : statusEfektif(p, kini);   // akun instansi dicabut = tautan lacaknya ikut mati
   if (s !== "aktif") return {r: json({galat: s === "dicabut" ? "tautan ini dicabut oleh yang menugaskan" : s === "selesai" ? "tugas ini sudah selesai; terima kasih" : "tautan ini sudah kedaluwarsa; minta tautan baru", alasan: s}, 410)};
   return {p};
 }

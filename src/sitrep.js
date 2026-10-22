@@ -43,14 +43,17 @@ async function provNeraca(env, kini) {
   catch (e) { return []; }
 }
 
-export async function arsipkanSitrep(env, kini = Date.now()) {
+export async function arsipkanSitrep(env, kini = Date.now(), terakhir = false) {
   if (!env.MEDIA) return {lewat: "tanpa MEDIA"};
   const tgl = wibTgl(kini), kunci = kunciR2(tgl);
   if (await env.MEDIA.head(kunci)) return {lewat: "sudah ada", tgl};
   /* [kunci arsip = URL yang diambil sitrep.js, URL yang benar-benar diminta, aset?]; neraca diminta dengan &tgl= eksplisit supaya cocok dengan hari arsip */
   const jalur = [...ASET.map(j => [j, j, true]), ...API.map(j => [j, j, false]), ...(await provNeraca(env, kini)).map(p => [`/api/neraca?prov=${p}`, `/api/neraca?prov=${p}&tgl=${tgl}`, false])];
   const teks = await Promise.all(jalur.map(async ([k, j, a]) => { const t = await ambilTeks(env, j, a); return k === "/api/warga?jam=24" && t ? ringkasWarga(t) : t; }));
-  if (!teks[0]) return {lewat: "bencana.json tidak terbaca", tgl};   // tanpa registry sitrep kosong; cron berikutnya mencoba lagi
+  /* semua masukan wajib (ASET + API) harus terbaca; satu saja gagal = jangan menulis arsip timpang (hari ini terkunci "sudah ada"), cron berikutnya mengulang.
+     Percobaan terakhir (terakhir=true) menulis yang ada asal registry terbaca: satu masukan yang mati permanen tidak boleh membuat semua hari tanpa arsip. Neraca provinsi opsional. */
+  const kurang = jalur.map((x, i) => !teks[i] && i < ASET.length + API.length ? x[0] : null).filter(Boolean);
+  if (kurang.length && (!terakhir || !teks[0])) return {lewat: "masukan wajib tidak terbaca: " + kurang.join(", "), tgl};
   const ada = jalur.map((x, i) => teks[i] ? JSON.stringify(x[0]) + ":" + teks[i] : null).filter(Boolean);
   const gz = await gzip(`{"v":1,"tgl":"${tgl}","dibuat":${kini},"masukan":{${ada.join(",")}}}`);
   /* etagDoesNotMatch "*" = tulis hanya bila belum ada (dua cron serentak tidak saling timpa) */

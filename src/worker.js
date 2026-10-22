@@ -223,7 +223,7 @@ async function daftar(env, url, kini) {
     const salah = js.find(j => !JENIS[j]); if (salah) return gagal(400, `jenis '${salah}' tidak dikenal`);
     where += ` AND l.jenis IN (${js.map(() => "?").join(",")})`; ikat.push(...js);
   }
-  if (q.get("bahaya")) { if (!BAHAYA[q.get("bahaya")]) return gagal(400, "bahaya tidak dikenal"); }
+  if (q.get("bahaya")) { if (!BAHAYA[q.get("bahaya")]) return gagal(400, "bahaya tidak dikenal"); where += " AND l.bahaya = ?"; ikat.push(q.get("bahaya")); }
   if (q.has("prov")) {
     if (!/^\d{2}$/.test(q.get("prov"))) return gagal(400, "prov harus 2 digit kode provinsi");
     where += " AND w.prov = ?"; ikat.push(q.get("prov"));
@@ -531,6 +531,13 @@ const RUTE = {
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
+/* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
+   ditolak, karena SameSite=Lax tidak menahannya. Peramban selalu mengirim Origin pada POST sama-situs. Tanpa cookie sesi (publik, token header): seperti semula. */
+const tolakOrigin = (req, url) => {
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)sesi_admin=/.test(req.headers.get("cookie") || "");
+  if (sesi ? (!o || o === "null" || !URL.canParse(o) || new URL(o).host !== url.host) : (o && o !== "null" && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
+  return null;
+};
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
@@ -542,8 +549,7 @@ async function rute(env, req, url, ctx) {
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
   if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
-    const o = req.headers.get("origin");
-    if (o && o !== "null" && (!URL.canParse(o) || new URL(o).host !== url.host)) return gagal(403, "origin lain ditolak");
+    const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
   try { return await f(env, req, url, Date.now(), ctx, id); }
@@ -680,8 +686,7 @@ export default {
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {
       if (req.method === "POST") {
-        const o = req.headers.get("origin");
-        if (o && (!URL.canParse(o) || new URL(o).host !== url.host)) return gagal(403, "origin lain ditolak");
+        const x = tolakOrigin(req, url); if (x) return x;
         if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
       }
       if (p.length === 0 && req.method === "GET") return cacheTepi(req, ctx, 30, () => daftar(env, url, kini));
@@ -716,7 +721,7 @@ export default {
       if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
       /* tugas api instansi: invokasi sendiri (menit 18, sesudah titik 15 dan antrean 16); tanpa tugas_kompleks.json = dicatat lalu keluar */
       if (m === 18 && w.getUTCHours() % 3 === 0) try { console.log("tugas api", JSON.stringify(await buatTugas(env, sekarang))); } catch (e) { console.error("tugas api", e?.message); }
-      if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
+      if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang, m === 35))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
@@ -744,7 +749,7 @@ export default {
 
 // bersih-bersih Lapor Warga, foto, gempa, peringatan, EWS, gangguan, garam IP (dulu cron "17 * * * *", kini menit 17 dari cron tiap menit)
 async function bersihSemua(env, sekarang) {
-    await bersihkan(env);
+    try { await bersihkan(env); } catch (e) { console.error("bersihkan", e); }
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanStaf(env, Date.now()); await bersihkanPantau(env, Date.now()); } catch (e) { console.error("pantau", e?.message); }   // migrasi 0030 belum jalan = cron lain tetap jalan
     try { await bersihkanPemirsa(env, Date.now()); } catch (e) { console.error("pemirsa", e?.message); }
@@ -759,8 +764,10 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
-    await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
-    await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
-    const ip = await env.DB.prepare("SELECT min(diambil) t, count(*) n FROM stat_ip").first();   // daftar IP perayap: sehari sekali
-    if (!ip.n || kini - ip.t > 24 * JAM) console.log("rentang ip", JSON.stringify(await Pub.perbaruiRentang(env, kini)));
+    try { await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini); } catch (e) { console.error("gangguan", e?.message); }
+    try { await Pub.musnahkanGaram(env, kini).run(); } catch (e) { console.error("garam", e?.message); }   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
+    try {
+      const ip = await env.DB.prepare("SELECT min(diambil) t, count(*) n FROM stat_ip").first();   // daftar IP perayap: sehari sekali
+      if (!ip.n || kini - ip.t > 24 * JAM) console.log("rentang ip", JSON.stringify(await Pub.perbaruiRentang(env, kini)));
+    } catch (e) { console.error("rentang ip", e?.message); }
 }

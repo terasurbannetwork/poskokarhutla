@@ -16,6 +16,7 @@ import REGISTRY from "./bencana.generated.js";
 import {hidup} from "./bencana.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
 import {jaringanHosting} from "./publik.js";
+import {bersihMedia} from "./media_bersih.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 export const BATAS_FOTO = {unggah: [[JAM, 5], [HARI, 20]], komentar: [[JAM, 10], [HARI, 50]], suka: [[JAM, 120]], aduan: [[JAM, 20]]};
@@ -145,6 +146,7 @@ async function unggah(env, req, url, kini) {
   if (!env.MEDIA) return tanpaMedia();
   if (!(req.headers.get("content-type") || "").startsWith("multipart/form-data")) return gagal(400, "kirim sebagai multipart/form-data");
   const pjg = Number(req.headers.get("content-length") || 0);
+  if (!(pjg > 0)) return gagal(411, "Content-Length wajib pada unggahan");   // sebelum formData(): body chunked tak terbatas tidak ditampung
   if (pjg > MAKS.video + MAKS.thumb + 65536) return gagal(413, `kiriman ${Math.round(pjg / 1048576)} MB, maksimal ${MAKS.video / 1048576} MB`);
   let f; try { f = await req.formData(); } catch (e) { return gagal(400, "formulir tidak terbaca"); }
   const v = k => f.get(k), n = k => (v(k) == null || v(k) === "" ? null : Number(v(k)));
@@ -207,14 +209,17 @@ async function unggah(env, req, url, kini) {
   if (gps.tolak) return gagal(400, gps.tolak);
   const curiga = (await kolomAda(env, "gps_curiga", kini)) ? gps.curiga.join(" · ").slice(0, 600) : null;
 
+  /* metadata (EXIF, XMP, lokasi) dibuang dari berkas dan thumbnail SEBELUM disimpan; struktur tak biasa ditolak (sama dengan src/instansi.js) */
+  const simpan = bersihMedia(mime, b); if (!simpan) return gagal(400, `struktur ${jenis} tidak sah atau tidak lengkap (berkas rusak atau bukan ${jenis} yang dikenal)`);
+  const simpanT = bersihMedia(mimeT, tb); if (!simpanT) return gagal(400, "struktur thumbnail tidak sah");
   const id = acak(8);
-  await env.MEDIA.put(`foto/${id}`, b, {httpMetadata: {contentType: mime}});
-  await env.MEDIA.put(`foto/${id}_t`, tb, {httpMetadata: {contentType: mimeT}});
+  await env.MEDIA.put(`foto/${id}`, simpan, {httpMetadata: {contentType: mime}});
+  await env.MEDIA.put(`foto/${id}_t`, simpanT, {httpMetadata: {contentType: mimeT}});
   try {
     await env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat,
       exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash${ada ? ", bencana, kategori_b" : ""}${curiga != null ? ", gps_curiga" : ""}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?${ada ? ", ?, ?" : ""}${curiga != null ? ", ?" : ""})`)
       .bind(id, jenis, LAMA.has(kategori) ? kategori : "lainnya", Math.round(lat * 1e5) / 1e5, Math.round(lon * 1e5) / 1e5, Math.round(akurasi), prov, kab, kec, ket.teks, nm.teks, tampil, email,
-        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, b.length, durasi, mime, ip, ...(ada ? [ben, ben === "karhutla" ? "" : kategori] : []), ...(curiga != null ? [curiga] : [])).run();
+        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, simpan.length, durasi, mime, ip, ...(ada ? [ben, ben === "karhutla" ? "" : kategori] : []), ...(curiga != null ? [curiga] : [])).run();
   } catch (e) { await env.MEDIA.delete([`foto/${id}`, `foto/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, status: "menunggu", wilayah: {prov, kab, kec}}, 201);
 }

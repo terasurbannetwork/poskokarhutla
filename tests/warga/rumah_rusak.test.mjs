@@ -72,14 +72,14 @@ uji("POST /api/rumah-rusak: isian salah ditolak 400", async () => {
   assert.equal(await n("rumah_rusak"), sebelum);
 });
 
-uji("duplikat: pelapor + tingkat sama dalam ~10 m ditolak 409; tingkat lain, titik jauh, pelapor lain lolos", async () => {
+uji("duplikat: rumah sama (bencana + tanggal sama, ~10 m) ditolak 409 dari siapa pun; titik jauh, bencana lain, tanggal lain lolos", async () => {
   const p = {lat: -2.4, lon: 113.9}, a = await kirim(B(p)); assert.equal(a.s, 201, a.t);
   const sebelum = await n("rumah_rusak");
   assert.equal((await kirim(B({...p, lat: p.lat + 0.00005}))).s, 409, "~5 m");
   assert.equal(await n("rumah_rusak"), sebelum);
-  assert.equal((await kirim(B({...p, tingkat: "ringan"}))).s, 201, "tingkat lain");
+  assert.equal((await kirim(B({...p, tingkat: "ringan"}))).s, 409, "tingkat lain: tetap rumah yang sama");
   assert.equal((await kirim(B({...p, lat: p.lat + 0.0005}))).s, 201, "~55 m");
-  assert.equal((await kirim(B(p), MOD2)).s, 201, "pelapor lain");
+  assert.equal((await kirim(B(p), MOD2)).s, 409, "pelapor lain: tetap rumah yang sama");
   assert.equal((await kirim(B({...p, bencana: "banjir"}))).s, 201, "bencana lain");
   assert.equal((await adm("POST", `/api/rumah-rusak/${a.j.id}`, {status: "ditolak", alasan: "salah titik"})).s, 200);
   assert.equal((await kirim(B(p))).s, 201, "setelah ditolak admin boleh lapor ulang");

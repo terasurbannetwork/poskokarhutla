@@ -193,7 +193,8 @@ async function buka(tanggal, {dariTerakhir = false} = {}) {
   tulisDraf();
   S.tanggal = tanggal; $("#lbTgl").value = tanggal;
   let isi = bacaDraf(), asal = isi ? "draf lokal (belum disimpan)" : "";
-  if (!isi) try { isi = (await api(`/api/laporan-bnpb?jenis=${S.jenis}&tanggal=${tanggal}`)).isi; asal = "tersimpan di server"; } catch (e) { if (e.status !== 404 && e.status !== 403) console.warn(e); }
+  S.diubah = null;   // penanda penguncian optimistis: diubah milik baris di server; kosong = laporan baru
+  try { const r = await api(`/api/laporan-bnpb?jenis=${S.jenis}&tanggal=${tanggal}`); S.diubah = r.diubah; if (!isi) { isi = r.isi; asal = "tersimpan di server"; } } catch (e) { if (e.status !== 404 && e.status !== 403) console.warn(e); }
   if (!isi && dariTerakhir && S.daftar.length) {
     const lama = S.daftar.find(d => d.tanggal < tanggal) || S.daftar[0];
     try { isi = (await api(`/api/laporan-bnpb?jenis=${S.jenis}&tanggal=${lama.tanggal}`)).isi; asal = `salinan laporan ${LB.tglP(lama.tanggal)}; ubah angkanya lalu Simpan`; } catch (e) {}
@@ -204,9 +205,9 @@ async function buka(tanggal, {dariTerakhir = false} = {}) {
 }
 async function simpan() {
   const b = $("#lbSimpan"); b.disabled = true; status("Menyimpan…");
-  try { await api("/api/laporan-bnpb", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({jenis: S.jenis, tanggal: S.tanggal, isi: S.isi})});
-    S.ubah = false; hapusDraf(); b.classList.remove("perlu"); await muatDaftar(); status(`Tersimpan: ${S.jenis === "harian" ? "Laporan Harian" : "Paparan Presiden"} ${LB.tglP(S.tanggal)}.`); }
-  catch (e) { status(e.status === 403 ? "Gagal menyimpan: sesi masuk habis. Buka /admin/masuk di tab baru, lalu Simpan lagi (isian tetap aman di peramban ini)." : "Gagal menyimpan: " + e.message); }
+  try { const h = await api("/api/laporan-bnpb", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({jenis: S.jenis, tanggal: S.tanggal, isi: S.isi, diubah: S.diubah})});
+    S.diubah = h.diubah; S.ubah = false; hapusDraf(); b.classList.remove("perlu"); await muatDaftar(); status(`Tersimpan: ${S.jenis === "harian" ? "Laporan Harian" : "Paparan Presiden"} ${LB.tglP(S.tanggal)}.`); }
+  catch (e) { status(e.status === 409 ? "Laporan ini baru diubah petugas lain. Muat ulang dulu." : e.status === 403 ? "Gagal menyimpan: sesi masuk habis. Buka /admin/masuk di tab baru, lalu Simpan lagi (isian tetap aman di peramban ini)." : "Gagal menyimpan: " + e.message); }
   finally { b.disabled = false; }
 }
 
