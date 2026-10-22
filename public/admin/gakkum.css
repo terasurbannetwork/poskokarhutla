@@ -66,3 +66,6 @@ body.gk-buka{overflow:hidden}
   .gk-tb th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 .gk-kv{break-inside:avoid}
+.gk-bukti{break-inside:avoid;margin:0 0 10px}
+.gk-bukti p{margin:0 0 3px}
+.gk-curiga{color:#b3261e}

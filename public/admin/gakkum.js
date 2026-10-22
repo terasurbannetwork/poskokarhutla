@@ -75,6 +75,30 @@
     pilJenis(); isi();
   }
 
+  /* ---------- bukti lapangan (L11): tugas api instansi di dalam poligon konsesi ---------- */
+  const cincin = (lon, lat, c) => { let d = false; for (let i = 0, j = c.length - 1; i < c.length; j = i++) { const [xi, yi] = c[i], [xj, yj] = c[j]; if ((yi > lat) !== (yj > lat) && lon < (xj - xi) * (lat - yi) / (yj - yi) + xi) d = !d; } return d; };
+  const dalamPoli = (lon, lat, geom) => (geom || []).some(g => (g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : []).some(p => cincin(lon, lat, p[0]) && !p.slice(1).some(h => cincin(lon, lat, h))));
+  function bboxGeom(geom) {
+    let a = [180, 90, -180, -90]; const naik = c => Array.isArray(c[0]) ? c.forEach(naik) : (a = [Math.min(a[0], c[0]), Math.min(a[1], c[1]), Math.max(a[2], c[0]), Math.max(a[3], c[1])]);
+    (geom || []).forEach(g => g.coordinates && naik(g.coordinates)); return a[0] <= a[2] ? a : null;
+  }
+  const PADAM = {dilaporkan: "Padam dilaporkan", terverifikasi: "Padam terverifikasi satelit", muncul_lagi: "Api muncul lagi"};
+  const fotoBukti = m => `<figure class="gk-fig gk-bfoto"><img src="${esc(m.thumb)}" alt="Foto lapangan">
+    <figcaption>${m.jenis === "video" ? "Video, " : ""}${esc(m.exif_waktu ? wib(m.exif_waktu) : "waktu EXIF tidak ada")}<br>${m.exif_lat != null ? `${fmt(m.exif_lat, 5)}, ${fmt(m.exif_lon, 5)}` : "koordinat EXIF tidak ada"}${m.gps_curiga ? `<br><b class="gk-curiga">GPS diragukan</b>` : ""}${m.orang_terdeteksi ? `<br>${fmt(m.orang_terdeteksi)} orang terlihat` : ""}</figcaption></figure>`;
+  const bagianBukti = ts => ts.length ? ts.map(t => `<div class="gk-bukti"><p><b>Deteksi ${esc(wib(t.waktu_deteksi))}</b>, ${esc(t.kab)}${t.kec ? ", " + esc(t.kec) : ""}, ${fmt(t.lat, 4)}, ${fmt(t.lon, 4)}${t.luas_ha != null ? `, ${fmt(t.luas_ha, 1)} ha` : ""}</p>
+      <p class="gk-sub">${esc(t.padam ? PADAM[t.padam] || t.padam : t.status === "bukan_api" ? "Dikonfirmasi bukan api" : "Belum dilaporkan padam")}${t.padam_pada ? `, ${esc(wib(t.padam_pada))}` : ""}${(() => { const i = t.isian.filter(x => x.status_api).pop(); return i ? `. Isian terakhir: api ${esc(i.status_api)}${i.lahan_teramati ? `, lahan ${esc(i.lahan_teramati)}` : ""}${i.kedalaman_bara_cm != null ? `, bara ${fmt(i.kedalaman_bara_cm)} cm` : ""}` : ""; })()}</p>
+      ${t.media.length ? `<div class="gk-citra">${t.media.slice(0, 6).map(fotoBukti).join("")}</div>${t.media.length > 6 ? `<p class="gk-sub">dan ${fmt(t.media.length - 6)} berkas lain tersimpan</p>` : ""}` : `<p class="gk-sub">Belum ada foto atau video.</p>`}</div>`).join("")
+    : `<p class="gk-kosong">Belum ada bukti lapangan di konsesi ini</p>`;
+  async function muatBukti(r, wadah) {
+    const bb = bboxGeom(r.geom);
+    if (!bb) { wadah.innerHTML = bagianBukti([]); return; }
+    try {
+      const d = await ambil(`/api/ops/bukti?bbox=${bb.map(x => +x.toFixed(5)).join(",")}`);
+      wadah.innerHTML = bagianBukti((d.tugas || []).filter(t => dalamPoli(t.lon, t.lat, r.geom)));
+    } catch (e) { wadah.innerHTML = `<p class="gk-kosong">Bukti lapangan belum bisa dibuka (butuh akses analis konsesi atau Pusdalops). Coba muat ulang.</p>`; }
+    wadah.querySelectorAll("img").forEach(im => im.addEventListener("error", () => { const x = document.createElement("div"); x.className = "gk-nocitra"; x.textContent = "Foto tidak tersedia"; im.replaceWith(x); }));
+  }
+
   /* ---------- berkas A4 ---------- */
   const baris = (k, v) => v == null || v === "" ? "" : `<tr><th>${esc(k)}</th><td>${v}</td></tr>`;
   function figur(c, judul) {
@@ -114,7 +138,9 @@
       ${e ? `<table class="gk-kv"><tbody>${baris("Jejak api 2015", `${fmt(e.jejak_ha)} ha, ${fmt(e.titik)} titik${e.api?.pertama ? `, ${esc(tgl(e.api.pertama))} sampai ${esc(tgl(e.api.terakhir))}` : ""}`)}${baris("Bekas api jadi sawit", `${fmt(e.bs_ha)} ha (${pct(e.bs_porsi)} jejak api), sawit tercatat sejak ${esc(e.tahun_sawit ?? "–")}`)}</tbody></table>
         <div class="gk-citra gk-empat">${figur(e.citra?.sebelum, "Sebelum")}${figur(e.citra?.terbakar, "Terbakar")}${figur(e.citra?.kebun1, "Kebun")}${figur(e.citra?.kebun2, "Kebun")}</div>
         <p class="gk-sub">Indikasi dari tumpang tindih lokasi dan waktu (Gaveau dkk. 2022), bukan bukti siapa yang membakar atau menanam.</p>` : `<p class="gk-kosong">Tidak ada riwayat terbakar 2015 tercatat untuk konsesi ini.</p>`}
-      <h3>6. Sumber data</h3>
+      <h3>6. Bukti lapangan</h3>
+      <div id="gkBukti"><p class="gk-sub">Memuat bukti lapangan…</p></div>
+      <h3>7. Sumber data</h3>
       <ul class="gk-sumber"><li>Titik panas: ${esc(sumT(IDX.sumber_titik))}, ${esc(tgl(IDX.dari))} sampai ${esc(sam(IDX.sampai))}. Celah: ${esc(IDX.celah)}.</li>
         <li>Batas konsesi: ${esc(sk || "tidak tercatat")}.</li>${e ? `<li>Riwayat 2015: ${esc(IDX_RIW)}</li>` : ""}
         <li>Citra: Sentinel-2 L2A (Copernicus), Landsat (USGS) bila ada.</li><li>Data diunduh dan dihitung: ${esc(wib(IDX.dibuat))}.</li></ul>
@@ -132,6 +158,7 @@
     m.querySelector("#gkTutup").addEventListener("click", tutup);
     m.querySelector("#gkCetak").addEventListener("click", () => window.print());
     m.querySelectorAll("img").forEach(im => im.addEventListener("error", () => { const d = document.createElement("div"); d.className = "gk-nocitra"; d.textContent = "Citra tidak tersedia"; im.replaceWith(d); }));
+    muatBukti(r, m.querySelector("#gkBukti"));
     m.querySelector("#gkTutup").focus();
   }
 

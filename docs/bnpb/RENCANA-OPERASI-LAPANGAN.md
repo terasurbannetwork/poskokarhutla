@@ -29,7 +29,7 @@ ke modul itu, tidak menyalin.
 
 ## Aturan
 
-- Migrasi baru mulai 0040 (sesi lain memakai 0036 ke atas untuk akun). Hanya `CREATE ... IF NOT EXISTS`.
+- Migrasi modul ini 0037-0039 (diberi nomor ulang dari 0040-0042 sebelum diterapkan, supaya urutan produksi sama dengan uji); berikutnya 0040+. Hanya `CREATE ... IF NOT EXISTS`.
 - Tanpa kiriman otomatis keluar. Alarm masuk Meja Pantau dan halaman lacak; WhatsApp lewat tautan wa.me yang ditekan manusia.
 - Data posisi orang hanya untuk Posko/staf berwenang dan pemegang tautan lacak sendiri; tidak pernah publik.
 - Tiap rute dan tabel diuji integrasi (Miniflare + D1) dan masuk `tests/warga/cakupan.json`; tiap layar baru masuk `tests/bnpb/layar.test.mjs`.

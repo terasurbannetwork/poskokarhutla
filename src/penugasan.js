@@ -78,7 +78,7 @@ async function daftarUntukTugas(env, t, kini, akunId) {
   const J = (await env.DB.prepare(`SELECT penugasan_id, lat, lon, akurasi, pada FROM (SELECT penugasan_id, lat, lon, akurasi, pada, row_number() OVER (PARTITION BY penugasan_id ORDER BY pada DESC) rn
     FROM penugasan_posisi WHERE penugasan_id IN (SELECT value FROM json_each(?))) WHERE rn <= ? ORDER BY pada`).bind(JSON.stringify(P.map(p => p.id)), BATAS.jejakMaks).all()).results;
   const per = new Map(P.map(p => [p.id, []])); for (const x of J) per.get(x.penugasan_id)?.push(x);
-  const dar = new Map();   // darurat terbaru (<= 6 jam) per penugasan; tabel 0041 belum ada = tidak ada darurat
+  const dar = new Map();   // darurat terbaru (<= 6 jam) per penugasan; tabel 0038 belum ada = tidak ada darurat
   try { for (const x of (await env.DB.prepare("SELECT penugasan_id, jenis, lat, lon, pada FROM penugasan_darurat WHERE pada > ? AND penugasan_id IN (SELECT value FROM json_each(?)) ORDER BY pada DESC")
     .bind(kini - KESELAMATAN.daruratAktifJam * JAM, JSON.stringify(P.map(p => p.id))).all()).results) if (!dar.has(x.penugasan_id)) dar.set(x.penugasan_id, {jenis: x.jenis, label: JENIS_DARURAT[x.jenis], lat: x.lat, lon: x.lon, pada: x.pada}); }
   catch (e) { if (!TANPA_TABEL.test(String(e?.message || e))) throw e; }
@@ -333,7 +333,7 @@ async function darurat(env, req, kini) {
 
 /* Butir Meja Pantau untuk dipanggil src/pantau.js (agent lain yang menyambung): [{id, jenis, judul, rincian, provs, kab, dibuat, tenggat, prioritas, dummy}].
    darurat (prioritas 0, paling atas) | sunyi (tanpa posisi > 30 menit sejak posisi terakhir atau berangkat) | rotasi (berangkat > 12 jam tanpa selesai) | angin_ke_regu.
-   Hanya penugasan berstatus aktif, belum kedaluwarsa, tugas masih buka. Tabel 0035 belum ada = []; 0041 belum ada = tanpa butir darurat. */
+   Hanya penugasan berstatus aktif, belum kedaluwarsa, tugas masih buka. Tabel 0035 belum ada = []; 0038 belum ada = tanpa butir darurat. */
 export async function alarmKeselamatan(env, kini = Date.now()) {
   const out = [], tempat = p => [p.kec, p.kab].filter(Boolean).join(", ");
   try {
@@ -414,7 +414,7 @@ export async function dummyPenugasan(env, kini, {akunKab, tugas}) {
   const p9 = await baru(B, "Joko (rotasi 13 jam)", "driver", 3, {dibuka: kini - 14 * JAM, berangkat: kini - 13 * JAM, cek: 5}); posisiSql.push(env.DB.prepare("INSERT INTO penugasan_posisi (penugasan_id, lat, lon, akurasi, pada) VALUES (?, ?, ?, 15, ?)").bind(p9, B.lat - 0.03, B.lon + 0.02, kini - MENIT));
   await env.DB.batch(st); for (let i = 0; i < posisiSql.length; i += 50) await env.DB.batch(posisiSql.slice(i, i + 50));
   try { await env.DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, 'terkepung_api', ?, ?, 12, ?)").bind(p1, A.lat - 0.03 * 0.8, A.lon + 0.03 * 0.6, kini - 3 * MENIT).run(); }
-  catch (e) { if (!/no such table: (main\.)?penugasan_darurat/i.test(String(e?.message || e))) throw e; }   // 0041 belum diterapkan: dummy lain tetap terisi
+  catch (e) { if (!/no such table: (main\.)?penugasan_darurat/i.test(String(e?.message || e))) throw e; }   // 0038 belum diterapkan: dummy lain tetap terisi
   return st.length;
 }
 
@@ -439,5 +439,5 @@ const RUTE_ASLI = {
 export const RUTE_PENUGASAN = Object.fromEntries(Object.entries(RUTE_ASLI).map(([kunci, f]) => [kunci, async (env, req, ...sisa) => {
   if (req.method === "POST" && !kunci.includes("/admin/") && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman wajib membawa header x-pb: 1 (dikirim otomatis oleh halaman)");
   try { return await f(env, req, ...sisa); }
-  catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return gagal(503, "fitur penugasan belum diaktifkan (migrasi 0035 atau 0041 belum diterapkan)"); throw e; }
+  catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return gagal(503, "fitur penugasan belum diaktifkan (migrasi 0035 atau 0038 belum diterapkan)"); throw e; }
 }]));

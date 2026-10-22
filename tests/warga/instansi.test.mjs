@@ -1139,7 +1139,7 @@ uji("L1: Himawari dalam 2 km memicu muncul_lagi (sumber, jarak, keterangan); di 
   assert.equal((await verifikasiPadam({DB, MEDIA: R2}, now)).muncul, 1, "FIRMS 500 m sesudah padam tetap memicu walau R2 rusak");
   const f = await DB.prepare("SELECT sumber, jarak_km FROM tugas_muncul WHERE tugas_id = ?").bind(B).first(); assert.equal(f.sumber, "firms"); assert.ok(Math.abs(f.jarak_km - 0.5) < 0.05);
   await R2.delete("data/himawari.json");
-  /* tabel rincian 0040 belum ada: tugas tetap dibuka kembali */
+  /* tabel rincian 0037 belum ada: tugas tetap dibuka kembali */
   const E = await mk(-0.1, 110.1); await DB.prepare("DELETE FROM titik_terbaru").run(); await titikRound(now - MENIT, [[-0.1, 110.1 + derajatM(300), -0.1]]);
   await DB.prepare("ALTER TABLE tugas_muncul RENAME TO tugas_muncul_x").run();
   try { assert.equal((await verifikasiPadam({DB}, now)).muncul, 1); assert.equal((await st(E)).padam_verif, "muncul_lagi"); }
@@ -1229,8 +1229,8 @@ uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam 
   await bersihkanInstansi({DB}, Date.now()); assert.equal(await n("tugas_muncul", `tugas_id = '${dekat}'`), 0); assert.equal(await n("tugas_lapangan", `tugas_id = '${dekat}'`), 0);
 });
 
-uji("L1: migrasi 0040 idempoten; CHECK menolak sumber liar dan jarak negatif; satu laporan satu tugas", async () => {
-  const f = readFileSync(path.join(AKAR, "migrations/0040_verifikasi_padam.sql"), "utf8"), id = "a".repeat(16);
+uji("L1: migrasi 0037 idempoten; CHECK menolak sumber liar dan jarak negatif; satu laporan satu tugas", async () => {
+  const f = readFileSync(path.join(AKAR, "migrations/0037_verifikasi_padam.sql"), "utf8"), id = "a".repeat(16);
   await DB.prepare("INSERT INTO tugas_muncul (tugas_id, waktu, sumber) VALUES (?, 1, 'firms')").bind(id).run();
   await DB.batch(pecah(f).map(s => DB.prepare(s))); await DB.batch(pecah(f).map(s => DB.prepare(s)));
   assert.equal(await n("tugas_muncul", `tugas_id = '${id}'`), 1, "dijalankan ulang tidak mengubah baris");

@@ -1,6 +1,6 @@
-/* Operasi lapangan (src/operasi_lapangan.js, migrations/0042_operasi_lapangan.sql, L4-L13) di workerd (Miniflare) dengan D1 + R2 lokal sungguhan, migrasi apa adanya (TEST.md: tanpa mock klien DB).
+/* Operasi lapangan (src/operasi_lapangan.js, migrations/0039_operasi_lapangan.sql, L4-L13) di workerd (Miniflare) dengan D1 + R2 lokal sungguhan, migrasi apa adanya (TEST.md: tanpa mock klien DB).
    Dibuktikan: auth (akun lain dan wilayah lain 404, tanpa x-pb 403, gerbang situs 401, staf lain wilayah 404), validasi, transisi status, panjang/luas garis pada angka tangan, pompa estafet pada angka tangan,
-   hasil drop dengan titik FIRMS/Himawari fixture, linimasa urut, CSV drone/TMAT liar ditolak, dummy isi dan hapus bersih, migrasi 0042 idempoten.
+   hasil drop dengan titik FIRMS/Himawari fixture, linimasa urut, CSV drone/TMAT liar ditolak, dummy isi dan hapus bersih, migrasi 0039 idempoten.
    Jalankan: node --test tests/warga/operasi_lapangan.test.mjs */
 import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
@@ -8,11 +8,12 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, susutBar100m, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
+import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, susutBar100m, nilaiDropTertunda, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
 import {BARANG} from "../../src/meja_spek.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
 const uji = berantai();
+const env0 = () => ({DB: U.DB});   // env minimal untuk memanggil fungsi cron langsung
 const dekat = (a, b, tol, pesan) => assert.ok(Math.abs(a - b) <= tol, `${pesan ?? ""} ${a} bukan ${b} +- ${tol}`);
 /* fixture aset: kompleks/kluster kecil buatan sendiri (deterministik); berkas lain dari public/ */
 const FIX = {
@@ -72,14 +73,14 @@ const csvDrone = (baris, kepala = "lat,lon,suhu_c,waktu") => [kepala, ...baris.m
 const sekarangIso = () => new Date().toISOString();
 
 let A, B, C, E, T1, T2, T3, P1, S1, S2, SKERING, H1, H2, L1, PER1;
-const SQL = teks("migrations/0042_operasi_lapangan.sql");
+const SQL = teks("migrations/0039_operasi_lapangan.sql");
 const TABEL = ["ops_garis", "ops_sumber_air", "ops_periode", "ops_serah", "ops_permintaan", "ops_drop", "ops_jejak", "ops_pelajaran", "ops_patroli", "ops_kunjungan", "ops_drone_unggah", "ops_drone", "ops_tmat"];
 
-uji("ops: migrasi 0042 idempoten, tabel lengkap, CHECK menahan data buruk, daftar tetap sama dengan kode", async () => {
+uji("ops: migrasi 0039 idempoten, tabel lengkap, CHECK menahan data buruk, daftar tetap sama dengan kode", async () => {
   for (const s of pecah(SQL)) await DB.prepare(s).run();   // jalankan ulang: IF NOT EXISTS, tanpa galat
   for (const t of TABEL) assert.equal(await n(t), 0, t);
   const daftar = [...SQL.matchAll(/IN \(([^)]+)\)/g)].map(m => [...m[1].matchAll(/'([^']+)'/g)].map(x => x[1]));
-  const ada = (nama, isi) => assert.ok(daftar.some(d => d.length === isi.length && d.every((v, i) => v === isi[i])), `${nama} di 0042 harus persis ${JSON.stringify(isi)}`);
+  const ada = (nama, isi) => assert.ok(daftar.some(d => d.length === isi.length && d.every((v, i) => v === isi[i])), `${nama} di 0039 harus persis ${JSON.stringify(isi)}`);
   ada("jenis garis", JENIS_GARIS); ada("jenis sumber", JENIS_SUMBER); ada("kondisi sumber", KONDISI_SUMBER); ada("status periode", STATUS_PERIODE); ada("prioritas", PRIORITAS); ada("alasan patroli", ALASAN_PATROLI); ada("status patroli", STATUS_PATROLI);
   const semuaStatus = [...new Set(Object.values(TRANSISI).flatMap(x => [...Object.keys(x), ...Object.values(x).flatMap(Object.keys)]))].sort();
   const sqlStatus = daftar.find(d => d.includes("dijadwalkan") && d.includes("dikirim")); assert.deepEqual([...sqlStatus].sort(), semuaStatus, "status permintaan = semua simpul TRANSISI");
@@ -498,9 +499,68 @@ uji("ops: dummy: hanya Super Admin, mengisi semua tabel, tampak hanya untuk akun
   const td = await tugas("Seruyan", {dummy: 1}); const r2 = await api("POST", "/api/ops/dummy", {aksi: "isi"}, ADMIN); assert.equal(r2.j.tugas_id, td); await api("POST", "/api/ops/dummy", {aksi: "hapus"}, ADMIN); assert.equal(await n("tugas_api", `id = '${td}'`), 1, "tugas dummy milik modul lain tidak dihapus"); await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(td).run();
 });
 
-uji("ops: tanpa tabel 0042 semua rute menjawab 503 sopan, bukan 500", async () => {
+uji("L11: bukti lapangan hanya untuk moderator/staf berwenang, bbox liar 400, isi tanpa nama/WA, media dengan EXIF", async () => {
+  const kini = Date.now(), R2 = await mf.getR2Bucket("MEDIA");
+  const TB = await tugas("Kab Satu", {lat: -3.5, lon: 113.5, status: "padam", extra: {padam_verif: "padam_terverifikasi", padam_pada: kini - HARI}}), TL = await tugas("Kab Satu", {lat: -3.52, lon: 113.52}), TD = await tugas("Kab Satu", {lat: -3.51, lon: 113.51, dummy: 1});
+  const isian = id16(), KOL = "id, tugas_id, akun_id, klien_id, langkah, dibuat, lat, lon, waktu_gps, hasil, pic_nama, pic_jabatan, pic_wa, status_api, lahan_teramati, kedalaman_bara_cm";
+  await DB.prepare(`INSERT INTO tugas_isian (${KOL}) VALUES (?, ?, ?, ?, 'konfirmasi', ?, -3.5, 113.5, ?, 'api_ada', 'Rahasia Nama', 'Kalak', '628111222333', 'bara', 'gambut', 45)`).bind(isian, TB, A.id, "klien-uji-1", kini - 2 * HARI, kini - 2 * HARI).run();
+  const media = async (tugasId, isianId, extra = {}) => {
+    const m = id16(), x = {exif_waktu: kini - 2 * HARI, exif_lat: -3.5001, exif_lon: 113.5002, gps_curiga: null, orang: 2, ...extra};
+    await DB.prepare("INSERT INTO instansi_media (id, akun_id, tugas_id, isian_id, jenis, mime, ukuran, waktu_ambil, sumber_waktu, lat, lon, waktu_gps, gps_curiga, orang_terdeteksi, exif_waktu, exif_lat, exif_lon, kamera, dibuat) VALUES (?, ?, ?, ?, 'foto', 'image/jpeg', 10, ?, 'exif', -3.5, 113.5, ?, ?, ?, ?, ?, ?, 1, ?)")
+      .bind(m, A.id, tugasId, isianId, x.exif_waktu, kini, x.gps_curiga, x.orang, x.exif_waktu, x.exif_lat, x.exif_lon, kini).run();
+    await R2.put(`instansi/media/${m}_t`, new Uint8Array([1, 2, 3]), {httpMetadata: {contentType: "image/webp"}}); return m;
+  };
+  const m1 = await media(TB, isian), m2 = await media(TB, isian, {gps_curiga: "lokasi lompat 800 km", orang: null}); await media(TB, null);   // belum dirujuk isian: tidak ikut
+  const u = "/api/ops/bukti?bbox=113.4,-3.6,113.6,-3.4";
+  assert.equal((await api("GET", u, undefined, {})).s, 403, "tanpa sesi"); assert.equal((await api("GET", u, undefined, A.hg)).s, 403, "akun instansi biasa"); assert.equal((await api("GET", u, undefined, GERBANG)).s, 403, "gerbang situs bukan admin");
+  const ver = await bikinStaf("Verif Uji", ["verifikator"]); assert.equal((await api("GET", u, undefined, ver.h)).s, 403, "peran tanpa hak bukti");
+  const r = await api("GET", u, undefined, ADMIN); assert.equal(r.s, 200, r.t);
+  const ids = r.j.tugas.map(t => t.id); assert.ok(ids.includes(TB) && ids.includes(TL) && ids.includes(TD), "admin melihat semua termasuk contoh");
+  const t = r.j.tugas.find(x => x.id === TB);
+  assert.equal(t.padam, "terverifikasi"); assert.equal(r.j.tugas.find(x => x.id === TL).padam, null); assert.equal(t.isian.length, 1);
+  assert.deepEqual(t.isian[0], {langkah: "konfirmasi", dibuat: kini - 2 * HARI, status_api: "bara", lahan_teramati: "gambut", kedalaman_bara_cm: 45});
+  assert.ok(!/Rahasia Nama|628111222333|pic_/.test(r.t), "tanpa nama/WA PIC"); assert.ok(!/akun_id|klien_id/.test(r.t));
+  assert.equal(t.media.length, 2, "media tanpa isian tidak ikut");
+  const a = t.media.find(x => x.id === m1), b = t.media.find(x => x.id === m2);
+  assert.equal(a.exif_waktu, kini - 2 * HARI); assert.equal(a.exif_lat, -3.5001); assert.equal(a.exif_lon, 113.5002); assert.equal(a.orang_terdeteksi, 2); assert.equal(a.gps_curiga, false);
+  assert.equal(b.gps_curiga, true); assert.equal(a.thumb, `/api/instansi/admin/thumb/${m1}`);
+  assert.equal((await api("GET", a.thumb, undefined, ADMIN)).s, 200, "tautan media admin yang sudah ada melayani");
+  const an = await bikinStaf("Analis Uji", ["analis_konsesi"], ["62"]), lain = await bikinStaf("Analis Lain", ["analis_konsesi"], ["11"]);
+  const rs = await api("GET", u, undefined, an.h); assert.equal(rs.s, 200, rs.t);
+  const ids2 = rs.j.tugas.map(x => x.id); assert.ok(ids2.includes(TB) && ids2.includes(TL) && !ids2.includes(TD), "staf nyata tidak melihat dummy");
+  assert.equal((await api("GET", u, undefined, lain.h)).j.tugas.length, 0, "wilayah lain tidak terlihat");
+  assert.equal((await api("GET", u + `&dari=${kini + HARI}`, undefined, ADMIN)).j.tugas.length, 0);
+  assert.ok((await api("GET", u + `&dari=${new Date(kini - 3 * HARI).toISOString()}&sampai=${kini + JAM}`, undefined, ADMIN)).j.tugas.length >= 2);
+  for (const bx of ["", "1,2,3", "a,b,c,d", "113.6,-3.6,113.4,-3.4", "0,0,1,1", "90,-3,100,-2", "100,-10,120,5", "113.4,-3.6,113.6,", ",,,"]) assert.equal((await api("GET", `/api/ops/bukti?bbox=${bx}`, undefined, ADMIN)).s, 400, `bbox "${bx}"`);
+  assert.equal((await api("GET", u + "&dari=besok", undefined, ADMIN)).s, 400, "dari liar");
+  assert.equal((await api("GET", "/api/ops/bukti?bbox=100,-1,100.5,-0.5", undefined, ADMIN)).j.tugas.length, 0);
+});
+
+uji("drop cron: nilaiDropTertunda menilai drop yang jendela 6 jam lewat dan tidak menyentuh yang belum; cron menit 23 memanggilnya", async () => {
+  const jam = Math.floor(Date.now() / JAM) * JAM - JAM, t = jam + 23 * MENIT;
+  const ins = (pada, lat, lon) => { const id = id16(); return DB.prepare("INSERT INTO ops_drop (id, permintaan_id, tugas_id, lat, lon, liter, pada, oleh, dibuat) VALUES (?, ?, ?, ?, ?, 3000, ?, 'uji', ?)").bind(id, H1, T1, lat, lon, pada, pada).run().then(() => id); };
+  const hasil = id => DB.prepare("SELECT hasil, hasil_n, hasil_pada FROM ops_drop WHERE id = ?").bind(id).first();
+  const ada = await ins(t - 7 * JAM, -2.56, 112.0), kosong = await ins(t - 7 * JAM, -2.56, 112.05), belum = await ins(t - 2 * JAM, -2.56, 112.0);
+  await DB.prepare("DELETE FROM titik_terbaru").run();
+  const s0 = await nilaiDropTertunda(env0(), t); assert.equal((await hasil(ada)).hasil, null, "tanpa data: tetap menunggu"); assert.equal(s0.dinilai, 0);
+  await titikPanas(t, [[-2.5627, 112.0, -6, 30, "n"]]);
+  const s = await nilaiDropTertunda(env0(), t);
+  assert.deepEqual(await hasil(ada), {hasil: "ada_titik", hasil_n: 1, hasil_pada: t}); assert.equal((await hasil(kosong)).hasil, "tanpa_titik", "data menutup jendela, tanpa titik di dekatnya");
+  assert.equal((await hasil(belum)).hasil, null, "jendela belum lewat: tidak disentuh"); assert.ok(s.dinilai >= 2);
+  await nilaiDropTertunda(env0(), t + JAM); assert.equal((await hasil(ada)).hasil_pada, t, "yang sudah diputus tidak diubah");
+  await DB.prepare("DELETE FROM titik_terbaru").run();
+  const banyak = []; for (let i = 0; i < 55; i++) banyak.push(await ins(t - 8 * JAM - i * MENIT, -2.56, 112.0));
+  await titikPanas(t, []);
+  assert.equal((await nilaiDropTertunda(env0(), t)).diperiksa, 50); assert.equal(await n("ops_drop", `id IN (${banyak.map(x => `'${x}'`).join(",")}) AND hasil IS NULL`), 5);
+  assert.equal((await nilaiDropTertunda(env0(), t)).diperiksa, 5, "panggilan berikut menyelesaikan sisa");
+  const w = await mf.getWorker(), c = await ins(t - 9 * JAM, -2.56, 112.0);
+  await w.scheduled({cron: "* * * * *", scheduledTime: jam + 22 * MENIT}); assert.equal((await hasil(c)).hasil, null, "menit 22 tidak menilai");
+  await w.scheduled({cron: "* * * * *", scheduledTime: t}); assert.equal((await hasil(c)).hasil, "tanpa_titik", "cron menit 23 menilai drop tertunda tanpa ada yang membuka layar");
+});
+
+uji("ops: tanpa tabel 0039 semua rute menjawab 503 sopan, bukan 500", async () => {
   await DB.prepare("DROP TABLE ops_kunjungan").run(); await DB.prepare("DROP TABLE ops_patroli").run(); await DB.prepare("DROP TABLE ops_sumber_air").run();
-  const r = await api("GET", `/api/ops/sumber_air?tugas_id=${T1}`, undefined, A.hg); assert.equal(r.s, 503); assert.match(r.j.galat, /0042/);
+  const r = await api("GET", `/api/ops/sumber_air?tugas_id=${T1}`, undefined, A.hg); assert.equal(r.s, 503); assert.match(r.j.galat, /0039/);
   assert.equal((await api("GET", "/api/ops/patroli", undefined, A.hg)).s, 503);
   const p = await api("GET", `/api/ops/permintaan?tugas_id=${T1}`, undefined, A.hg); assert.equal(p.s, 200, "tabel lain tetap jalan");
   for (const s of pecah(SQL)) await DB.prepare(s).run();   // pulihkan

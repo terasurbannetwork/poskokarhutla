@@ -1492,7 +1492,6 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
         <details open><summary>Api & respons</summary>
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label style="display:none"><input type="checkbox" data-l="himawari" checked> Himawari 10 menit</label><!-- ikut tombol Satelit (pemilik, 19 Okt 2026) -->
-          <label style="display:none"><input type="checkbox" data-l="hwbaru" checked> Api baru (Himawari)</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
@@ -1816,7 +1815,7 @@ const Peta = {
   lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("titik")) return;
-    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "khg", "kawasan", "konsesi", "udara", "metar", "himawari", "hwbaru"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
+    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "khg", "kawasan", "konsesi", "udara", "metar", "himawari"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
     const bawahLabel = this.lapisAwal();
     peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
@@ -2020,9 +2019,9 @@ const Peta = {
       if (pk && pk.length) return Posko.popup(pk[0].properties.id, [pk[0].geometry.coordinates[0], pk[0].geometry.coordinates[1]]);
       const t = peta.queryRenderedFeatures(e.point, {layers: ["titik"]});
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
-      const hx = ["hwbaru", "himawari"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none"), hf = hx.length && peta.queryRenderedFeatures([[e.point.x - 9, e.point.y - 9], [e.point.x + 9, e.point.y + 9]], {layers: hx});
-      if (hf && hf.length) { const f0 = hf.find(x => x.layer.id === "hwbaru") || hf[0], p = f0.properties, bar = f0.layer.id === "hwbaru", kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
-        return new maplibregl.Popup({closeButton: false, maxWidth: "280px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:${bar ? "#d946ef" : "#22b8e0"}"><div><small>Himawari-9</small><b>${bar ? "Api baru" : "Titik Himawari"}</b></div></div>
+      const hx = ["himawari"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none" && peta.getZoom() >= 8), hf = hx.length && peta.queryRenderedFeatures([[e.point.x - 9, e.point.y - 9], [e.point.x + 9, e.point.y + 9]], {layers: hx});
+      if (hf && hf.length) { const f0 = hf[0], p = f0.properties, bar = +p.baru === 1, kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
+        return new maplibregl.Popup({closeButton: false, maxWidth: "280px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#d946ef"><div><small>Himawari-9</small><b>Api baru</b></div></div>
           <div class="kg">${bar ? `<div class="kb penuh" style="justify-content:center"><span class="tp-pl" style="background:#d946ef">Belum tercatat FIRMS</span></div>` : ""}${kb("Pertama terlihat", hwLalu(+p.u0) + " lalu")}${kb("Fase api", {1: "Dingin", 2: "Membara", 3: "Menyala"}[p.lv] || "-")}${kb("Daya api", fmt(Math.round(+p.f)) + " MW")}${kb("Piksel 2 km", fmt(+p.px))}</div>
           <div class="kk">Sumber: Himawari-9, JAXA</div></div>`).addTo(peta); }
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
@@ -2034,11 +2033,11 @@ const Peta = {
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
     /* hover pangkalan udara & METAR: kartu info seperti titik lain */
-    peta.on("mousemove", e => { const hx = ["hwbaru", "himawari"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none");
+    peta.on("mousemove", e => { const hx = ["himawari"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none" && peta.getZoom() >= 8);
       if (hx.length || peta._tipHw) { const hf = hx.length ? peta.queryRenderedFeatures([[e.point.x - 8, e.point.y - 8], [e.point.x + 8, e.point.y + 8]], {layers: hx}) : [];
         if (!hf.length) { if (peta._tipHw) { peta._tipHw = 0; $("#tip").classList.remove("on"); peta.getCanvas().style.cursor = ""; } }
-        else { const f0 = hf.find(x => x.layer.id === "hwbaru") || hf[0], p = f0.properties, bar = f0.layer.id === "hwbaru"; peta._tipHw = 1; peta.getCanvas().style.cursor = "pointer";
-          return tampilTip(kartuTip({judul: bar ? "Api baru" : "Titik Himawari", stat: [["api", fmt(Math.round(+p.f)) + " MW", "daya api", bar ? "#d946ef" : "#22b8e0"], ["kal", hwLalu(+p.u) + " lalu", "terakhir terlihat"], ["titik", fmt(+p.px), "piksel"]]}), e.originalEvent); } }
+        else { const f0 = hf[0], p = f0.properties, bar = +p.baru === 1; peta._tipHw = 1; peta.getCanvas().style.cursor = "pointer";
+          return tampilTip(kartuTip({judul: "Api baru", stat: [["api", fmt(Math.round(+p.f)) + " MW", "daya api", "#d946ef"], ["kal", hwLalu(+p.u) + " lalu", "terakhir terlihat"], ["titik", fmt(+p.px), "piksel"]]}), e.originalEvent); } }
       const ls = ["udara", "metar"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none"); if (!ls.length) return;
       const f = peta.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers: ls})[0];
       if (!f) { if (peta._tipUdara) { peta._tipUdara = 0; $("#tip").classList.remove("on"); peta.getCanvas().style.cursor = ""; } return; }
@@ -2052,7 +2051,7 @@ const Peta = {
 const hwLalu = u => u < 10 ? "< 10 menit" : u < 120 ? fmt(u) + " menit" : fmt(Math.round(u / 60)) + " jam";
 const Lapis = {
   cache: {},
-  /* Himawari: satu fetch + satu interval untuk lapisan himawari dan hwbaru; baris lama 7 kolom = n 1, u0 u, baru 0 */
+  /* Himawari: satu fetch + satu interval untuk lapisan himawari (satu lapisan "Api baru"; hwbaru digabung ke sini, pemilik 22 Okt 2026); baris lama 7 kolom = n 1, u0 u, baru 0 */
   hwFitur(baru) { const d = this.cache.hwMeta; if (!d || !Array.isArray(d.baris)) return {type: "FeatureCollection", features: []};
     return (this._hwG && this._hwG.d === d ? this._hwG : (this._hwG = {d, semua: this.hwGrup(d.baris), baru: this.hwGrup(d.baris.filter(b => b[9] === 1))}))[baru ? "baru" : "semua"]; },
   /* piksel ± 2 km yang berjarak <= 4,5 km digabung jadi satu api (grid + union-find), titik di pusat berbobot FRP */
@@ -2086,9 +2085,9 @@ const Lapis = {
     }
     const kunci = JSON.stringify(fitur.map(f => [f.properties.asal, f.geometry.coordinates.map(x => x.toFixed(4))]));
     if (kunci !== this._hwk) { this._hwk = kunci; peta.getSource("hwk").setData({type: "FeatureCollection", features: fitur}); } },
-  hwMulai() { if (this._hw) return; const ada = () => Peta.lihat("himawari") || Peta.lihat("hwbaru"), ambil = () => {
+  hwMulai() { if (this._hw) return; const ada = () => Peta.lihat("himawari"), ambil = () => {
       fetch("/api/himawari", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { if (!d || !Array.isArray(d.baris)) return;
-        this.cache.hwMeta = d; peta.getSource("himawari")?.setData(this.hwFitur(0)); peta.getSource("hwbaru")?.setData(this.hwFitur(1)); }).catch(() => {}); };
+        this.cache.hwMeta = d; peta.getSource("himawari")?.setData(this.hwFitur(0)); }).catch(() => {}); };
     this._hw = setInterval(() => { if (ada() && !document.hidden) ambil(); }, 600000); setTimeout(ambil, 1500); },
   async pasang(k) {
     const bawahLabel = Peta.lapisAwal(), gaya = {
@@ -2174,21 +2173,16 @@ const Lapis = {
         /* gelembung biru tidak menutupi lingkaran kompleks merah: digambar dari sumber turunan "hwk" yang posisinya digeser ke pojok terdekat (geserHw) */
         peta.addSource("hwk", {type: "geojson", data: {type: "FeatureCollection", features: []}});
         peta.addLayer({id: "himawari-klaster", type: "circle", source: "hwk", minzoom: 3, maxzoom: 8,
-          paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#22b8e0", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
+          paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#d946ef", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
         peta.addLayer({id: "himawari-n", type: "symbol", source: "hwk", minzoom: 3, maxzoom: 8,
           layout: {"text-field": ["to-string", ["get", "point_count"]], "text-size": 9.5, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
-          paint: {"text-color": "#fff", "text-halo-color": "#0e6f8a", "text-halo-width": .6}});
+          paint: {"text-color": "#fff", "text-halo-color": "#8a1f99", "text-halo-width": .6}});
         peta.on("mouseenter", "himawari-klaster", () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", "himawari-klaster", () => { peta.getCanvas().style.cursor = ""; });
-        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 8, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
-          "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1, 10, 1.6],
-          "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
-        ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); peta.on("idle", () => this.geserHw()); this.hwMulai(); },
-      /* api baru: Himawari >= 2 pindai, FIRMS belum ada dalam 4 km / 24 jam; suar fuchsia (halo + titik), di atas titik & himawari.
-         Mulai zoom 8, sama dengan cincin Himawari: di skala nasional dan provinsi titik lepas ini mengotori peta (pemilik, 22 Okt 2026) */
-      hwbaru: async () => {
-        peta.addSource("hwbaru", {type: "geojson", data: this.hwFitur(1)});
-        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 8, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
-        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 8, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
+        /* cincin tetap dirender sejak zoom 3 supaya ubin sumbernya termuat untuk geserHw; di bawah zoom 8 opasitas .01, bukan 0 (lapisan beropasitas 0 tidak memuat ubin) */
+        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 3, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
+          "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#d946ef", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1, 10, 1.6],
+          "circle-stroke-opacity": ["step", ["zoom"], .01, 8, ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]]}});
+        peta.on("idle", () => this.geserHw()); this.hwMulai(); },
     };
     try { await gaya[k](); } catch (e) { toast("Lapisan " + k + " gagal dimuat"); }
   },
@@ -2664,7 +2658,7 @@ const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e05
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {hwbaru: "Api baru", aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
@@ -2684,9 +2678,9 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   if (li?.checked) { li.checked = false; li.dispatchEvent(new Event("change", {bubbles: true})); }
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
-  if (i.dataset.l === "satelit") ["himawari", "hwbaru"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
+  if (i.dataset.l === "satelit") ["himawari"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], hwbaru: ["hwbaru", "hwbaru-halo"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
@@ -2727,7 +2721,7 @@ function renderLegenda() {
     ${S.panel === "riw" || !Peta.lihat("titik") || (Kini.on && z < 6.5) ? "" : `<div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ecaa4f"></i>6–24 jam</span><span><i class="sw dot" style="background:#d4643c"></i>1–3 hari</span><span><i class="sw dot" style="background:#93352c"></i>3–7 hari</span></div>`}
-    ${S.panel === "riw" || !(Peta.lihat("himawari") || Peta.lihat("hwbaru")) ? "" : `<div class="leg" style="margin:4px 0 8px;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 14px">${Peta.lihat("hwbaru") ? `<span><i class="sw dot" style="background:#d946ef;border:2px solid #fff;box-shadow:0 0 0 3px rgba(217,70,239,.25)"></i>Api baru</span>` : ""}${Peta.lihat("himawari") ? `<span><i class="sw dot" style="background:transparent;border:1.5px solid #22b8e0"></i>Himawari 10 menit</span>` : ""}</div>`}
+    ${S.panel === "riw" || !Peta.lihat("himawari") ? "" : `<div class="leg" style="margin:4px 0 8px;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 14px"><span><i class="sw dot" style="background:#d946ef;border:2px solid #fff;box-shadow:0 0 0 3px rgba(217,70,239,.25)"></i>Api baru</span></div>`}
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>

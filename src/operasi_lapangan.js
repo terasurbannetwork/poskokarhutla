@@ -1,12 +1,12 @@
 /* Operasi lapangan (docs/bnpb/RENCANA-OPERASI-LAPANGAN.md L4-L13): peta operasi per tugas, garis api rekam jalan, sumber air + pompa estafet, rencana aksi periode,
-   permintaan heli/logistik + log drop, linimasa, patroli, drone termal, impor TMAT. Skema: migrations/0042_operasi_lapangan.sql. Aturan:
+   permintaan heli/logistik + log drop, linimasa, patroli, drone termal, impor TMAT. Skema: migrations/0039_operasi_lapangan.sql. Aturan:
    - Tulis dan baca = akun instansi AKTIF pemegang cakupan tugas (sesi + header x-pb pada POST), atau moderator ke atas (modOK), atau staf berperan (pusdalops, koordalops, udara; baca + verifikator,
      pimpinan) yang wilayahnya mencakup tugas. Tugas di luar cakupan dijawab 404 (sama dengan "tidak ada"). Tidak ada rute publik; posisi orang tidak pernah keluar dari rute ini ke publik.
    - Persetujuan permintaan (diminta -> disetujui/ditolak, jadwal heli, kirim logistik) hanya moderator ke atas atau staf; akun instansi mengajukan dan menutup (selesai/diterima).
    - Baris dummy hanya terlihat akun dummy, staf dummy, dan admin (sama dengan tugas api). POST /api/ops/dummy (Super Admin) mengisi dan menghapus semua butir.
    - Berkas besar (tugas_kompleks.json, kluster_geo.json, kluster_awal.json) dibaca bertahap dari ASSETS dan dihentikan begitu nilai yang dicari ketemu: CPU Worker 10 ms tidak cukup untuk JSON.parse 6 MB.
    ponytail: batas laju baca-lalu-tulis (laju_bnpb), serentak bisa lolos satu-dua di atas batas. Batas 2000 titik drone per tugas dicek sebelum menulis, dua unggahan serentak bisa melewatinya.
-   ponytail: hasil drop dinilai saat dibaca (tanpa cron); titik_terbaru hanya menyimpan putaran FIRMS terakhir (<= 24 jam), jadi drop yang tak pernah dibaca dalam 30 jam berstatus tak_dinilai. */
+   ponytail: hasil drop dinilai saat dibaca DAN oleh cron jam menit 23 (nilaiDropTertunda, <= 50 per jam); titik_terbaru hanya menyimpan 8 putaran FIRMS (24 jam), jadi cron per jam menjaga drop tak jatuh ke tak_dinilai hanya karena tak dibuka. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
 import {tx, num, modOK, superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
@@ -19,7 +19,7 @@ import {muatHimawari} from "./himawari.js";
 
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM;
 const RE_ID = /^[0-9a-f]{16}$/, RE_ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,3})?)?(Z|[+-]\d{2}:\d{2})$/;
-/* daftar tetap: sama dengan CHECK di 0042 (dijaga operasi_lapangan.test.mjs) */
+/* daftar tetap: sama dengan CHECK di 0039 (dijaga operasi_lapangan.test.mjs) */
 export const JENIS_GARIS = ["garis_api", "padam", "sektor_aktif", "sektor_dingin"];
 export const JENIS_SUMBER = ["sungai", "kanal", "embung", "sumur_bor", "sekat_kanal", "hidran", "lainnya"];
 export const KONDISI_SUMBER = ["ada_air", "kering", "tidak_tahu"];
@@ -527,6 +527,12 @@ async function nilaiDrop(env, drops, kini) {
   if (st.length) await env.DB.batch(st);
   return drops;
 }
+/* cron: nilai drop menunggu yang jendela 6 jamnya sudah lewat, memakai nilaiDrop yang sama (<= 50 per panggilan, tertua dulu) */
+export async function nilaiDropTertunda(env, kini = Date.now()) {
+  const d = (await env.DB.prepare("SELECT * FROM ops_drop WHERE hasil IS NULL AND pada <= ? ORDER BY pada LIMIT 50").bind(kini - BATAS.dropJam * JAM).all()).results;
+  await nilaiDrop(env, d, kini);
+  return {diperiksa: d.length, dinilai: d.filter(x => x.hasil != null).length};
+}
 async function catatDrop(env, req, kini) {
   const P = await pelaku(env, req, kini, true); if (P instanceof Response) return P;
   const b = await bacaJson(req, 2048); if (b.r) return b.r; const o = b.o;
@@ -775,6 +781,28 @@ async function dummyIsi(env, kini, oleh) {
   await env.DB.batch(st);
   return json({ok: true, tugas_id: t.id, tabel: TABEL_HAPUS}, 201);
 }
+/* ---- L11: bukti lapangan per bbox konsesi untuk berkas Gakkum. Tanpa nama/WA PIC; titik-dalam-poligon disaring klien ---- */
+const P_BUKTI = ["analis_konsesi", "pusdalops", "pimpinan"], STATUS_BUKTI = {padam_dilaporkan: "dilaporkan", padam_terverifikasi: "terverifikasi", muncul_lagi: "muncul_lagi"};
+async function buktiLapangan(env, req, url, kini) {
+  if (!await modAtauStaf(env, req, P_BUKTI)) return tolakAdm();
+  const b = (url.searchParams.get("bbox") || "").split(",").map(x => x.trim() === "" ? NaN : Number(x));
+  const [x0, y0, x1, y1] = b;
+  if (b.length !== 4 || !b.every(Number.isFinite) || !titikSah(y0, x0) || !titikSah(y1, x1) || x0 >= x1 || y0 >= y1 || x1 - x0 > 10 || y1 - y0 > 10) return gagal(400, "bbox harus lonMin,latMin,lonMaks,latMaks di Indonesia, urut, lebar dan tinggi <= 10 derajat");
+  const w = {}; for (const k of ["dari", "sampai"]) { const v = url.searchParams.get(k); if (v) { w[k] = waktuMs(v); if (w[k] == null) return gagal(400, `${k} harus waktu (ms atau ISO)`); } }
+  const nyata = stafNyata(req);
+  const ts = (await env.DB.prepare("SELECT id, prov, kab, kec, lat, lon, level, luas_ha, dibuat, status, padam_verif, padam_pada, dummy FROM tugas_api WHERE lat BETWEEN ? AND ? AND lon BETWEEN ? AND ? AND dibuat >= ? AND dibuat <= ? ORDER BY dibuat DESC LIMIT 400")
+    .bind(y0, y1, x0, x1, w.dari ?? 0, w.sampai ?? 4e12).all()).results.filter(t => !(nyata && t.dummy) && dalamWilayahStaf(req, [t.prov])).slice(0, 200);
+  const ids = JSON.stringify(ts.map(t => t.id)), per = new Map(ts.map(t => [t.id, {isian: [], media: []}]));
+  if (ts.length) {
+    const [is, md] = await Promise.all([
+      env.DB.prepare("SELECT tugas_id, langkah, dibuat, status_api, lahan_teramati, kedalaman_bara_cm FROM tugas_isian WHERE tugas_id IN (SELECT value FROM json_each(?)) ORDER BY dibuat").bind(ids).all(),
+      env.DB.prepare("SELECT id, tugas_id, jenis, waktu_ambil, exif_waktu, exif_lat, exif_lon, gps_curiga, orang_terdeteksi FROM instansi_media WHERE isian_id IS NOT NULL AND tugas_id IN (SELECT value FROM json_each(?)) ORDER BY waktu_ambil").bind(ids).all()]);
+    for (const i of is.results) { const {tugas_id, ...r} = i; per.get(tugas_id)?.isian.push(r); }
+    for (const m of md.results) { const {tugas_id, ...r} = m; per.get(tugas_id)?.media.push({...r, gps_curiga: !!m.gps_curiga, gps_curiga_alasan: m.gps_curiga, url: `/api/instansi/admin/media/${m.id}`, thumb: `/api/instansi/admin/thumb/${m.id}`}); }
+  }
+  return json({tugas: ts.map(t => ({id: t.id, prov: t.prov, kab: t.kab, kec: t.kec, lat: t.lat, lon: t.lon, level: t.level, luas_ha: t.luas_ha, waktu_deteksi: t.dibuat, status: t.status,
+    padam: t.status === "padam" || t.padam_verif ? STATUS_BUKTI[t.padam_verif] ?? "dilaporkan" : null, padam_pada: t.padam_pada, ...per.get(t.id)}))});
+}
 async function dummy(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
   const b = await bacaJson(req, 1024); if (b.r) return b.r;
@@ -808,10 +836,11 @@ const RUTE_ASLI = {
   "POST /api/ops/drone": (env, req, url, kini) => unggahDrone(env, req, kini),
   "POST /api/ops/tmat": (env, req, url, kini) => unggahTmat(env, req, kini),
   "GET /api/ops/tmat": (env, req, url, kini) => petaTmat(env, req, kini, url),
+  "GET /api/ops/bukti": (env, req, url, kini) => buktiLapangan(env, req, url, kini),
   "POST /api/ops/dummy": (env, req, url, kini) => dummy(env, req, kini),
 };
-/* tabel 0042 (atau 0029/0035 yang dibutuhkan) belum ada = 503 yang jelas, bukan 500 */
+/* tabel 0039 (atau 0029/0035 yang dibutuhkan) belum ada = 503 yang jelas, bukan 500 */
 export const RUTE_OPS = Object.fromEntries(Object.entries(RUTE_ASLI).map(([kunci, f]) => [kunci, async (env, req, ...sisa) => {
   try { return await f(env, req, ...sisa); }
-  catch (e) { if (/no such table: (ops_|tugas_api|instansi_)/i.test(String(e?.message || e))) return gagal(503, "operasi lapangan belum diaktifkan (migrasi 0042_operasi_lapangan belum diterapkan)"); throw e; }
+  catch (e) { if (/no such table: (ops_|tugas_api|instansi_)/i.test(String(e?.message || e))) return gagal(503, "operasi lapangan belum diaktifkan (migrasi 0039_operasi_lapangan belum diterapkan)"); throw e; }
 }]));

@@ -314,7 +314,7 @@ export function infoPadam(t, kini) {
     boleh_cek_ulang: bolehCekUlang(t, kini), gambut: lahan.gambut, dasar_lahan: lahan.dasar, jadwal_cek_ulang: jd?.jadwal ?? null, cek_ulang_berikutnya: jd?.berikutnya ?? null,
     muncul: t.padam_verif === "muncul_lagi" ? t.muncul ?? null : null};
 }
-/* kejadian "muncul lagi" terakhir per tugas (tabel 0040; belum ada = tanpa rincian, status tetap tampil dari tugas_api) */
+/* kejadian "muncul lagi" terakhir per tugas (tabel 0037; belum ada = tanpa rincian, status tetap tampil dari tugas_api) */
 async function munculPer(env, rows) {
   const ids = rows.filter(t => t.padam_verif === "muncul_lagi").map(t => t.id), out = new Map();
   if (!ids.length) return out;
@@ -717,7 +717,7 @@ export function pasAkses(a) {
    (atau lahan tak diketahui, lihat lahanTugas) cek ulang lapangan H+1 sudah ada. Berjalan di awal buatTugas. */
 const UPD_MUNCUL = "UPDATE tugas_api SET status = 'buka', padam_verif = 'muncul_lagi', verif_pada = ?1, isian_terakhir = ?1 WHERE id = ?2 AND status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi')";
 const INS_MUNCUL = "INSERT OR IGNORE INTO tugas_muncul (tugas_id, waktu, sumber, jarak_km, keterangan) SELECT ?1, ?2, ?3, ?4, ?5 WHERE EXISTS (SELECT 1 FROM tugas_api WHERE id = ?1 AND padam_verif = 'muncul_lagi' AND verif_pada = ?2)";
-/* kejadian: [{id, sumber, jarak, ket}]. Pembukaan kembali dulu; rinciannya terpisah supaya tabel 0040 yang belum diterapkan tidak menggagalkan pembukaan. Mengembalikan jumlah tugas yang benar-benar dibuka. */
+/* kejadian: [{id, sumber, jarak, ket}]. Pembukaan kembali dulu; rinciannya terpisah supaya tabel 0037 yang belum diterapkan tidak menggagalkan pembukaan. Mengembalikan jumlah tugas yang benar-benar dibuka. */
 async function bukaKembali(env, kejadian, kini) {
   let n = 0;
   for (let i = 0; i < kejadian.length; i += CHUNK) n += (await env.DB.batch(kejadian.slice(i, i + CHUNK).map(k => env.DB.prepare(UPD_MUNCUL).bind(kini, k.id)))).reduce((x, r) => x + r.meta.changes, 0);
@@ -758,7 +758,7 @@ export async function verifikasiPadam(env, kini = Date.now()) {
 }
 /* Laporan regu berkode (posko.js lapor, sesudah laporan tersimpan) menaut ke tugas api terdekat (<= 2 km, kabupaten sama, tugas nyata yang buka atau padam) lewat tugas_lapangan.
    Efeknya hanya bila laporan dipercaya (tidak ditahan, tanpa tanda GPS curiga): padam = laporan padam (padam_pada diisi bila belum, atau tugas muncul_lagi yang dipadamkan lagi);
-   menyala atau bara pada tugas yang sudah padam = muncul_lagi sumber regu. Tabel 0040 belum ada = lewati. Galat tidak boleh menggagalkan laporan (pemanggil menangkap). */
+   menyala atau bara pada tugas yang sudah padam = muncul_lagi sumber regu. Tabel 0037 belum ada = lewati. Galat tidak boleh menggagalkan laporan (pemanggil menangkap). */
 export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
   try {
     const C = (await env.DB.prepare(`SELECT id, lat, lon, status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE prov = ? AND lower(kab) = lower(?) AND dummy = 0
@@ -861,7 +861,7 @@ async function bersihkanInstansiIsi(env, kini) {
   const r = await env.DB.batch([env.DB.prepare("DELETE FROM instansi_sesi WHERE kedaluwarsa <= ?").bind(kini), ...pulang,
     env.DB.prepare(`DELETE FROM instansi_media WHERE tugas_id IN (${tua})`).bind(lama),
     env.DB.prepare(`DELETE FROM tugas_isian WHERE tugas_id IN (${tua})`).bind(lama), env.DB.prepare("DELETE FROM tugas_api WHERE dibuat <= ? AND dummy = 0").bind(lama)]);
-  try { await env.DB.batch([env.DB.prepare("DELETE FROM tugas_muncul WHERE tugas_id NOT IN (SELECT id FROM tugas_api)"), env.DB.prepare("DELETE FROM tugas_lapangan WHERE tugas_id NOT IN (SELECT id FROM tugas_api)")]); }   // yatim sesudah tugas dihapus; tabel 0040 belum ada = dilewati
+  try { await env.DB.batch([env.DB.prepare("DELETE FROM tugas_muncul WHERE tugas_id NOT IN (SELECT id FROM tugas_api)"), env.DB.prepare("DELETE FROM tugas_lapangan WHERE tugas_id NOT IN (SELECT id FROM tugas_api)")]); }   // yatim sesudah tugas dihapus; tabel 0037 belum ada = dilewati
   catch (e) { if (!/no such table: tugas_(muncul|lapangan)/i.test(String(e?.message || e))) throw e; }
   const posisi = await bersihkanPenugasan(env, kini);   // posisi pelacak 30 hari; tabel 0035 belum ada = dilewati
   return {sesi: r[0].meta.changes, tugas: r[r.length - 1].meta.changes, media: media.length, alat_pulang: alat ? r[2].meta.changes : 0, ...(posisi ? {posisi} : {})};

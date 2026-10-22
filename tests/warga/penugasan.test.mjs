@@ -309,8 +309,8 @@ uji("penugasan: dummy mengisi tiap keadaan (berangkat berjejak, belum dibuka, ti
 
 uji("penugasan: tanpa migrasi 0035 rute menjawab 503 yang jelas, cron dan dummy tidak melempar, tugas lain tetap jalan", async () => {
   const U2 = await siapkan("uji-penugasan-tanpa", {r2: true}), D2 = U2.DB;
-  for (const x of (await D2.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND sql LIKE '%REFERENCES penugasan (%'").all()).results) await D2.prepare(`DROP TABLE ${x.name}`).run();   // anak FK (posisi, darurat 0041, tabel modul lain) ikut hilang seperti sebelum 0035
-  await D2.prepare("DROP TABLE IF EXISTS penugasan_posisi").run(); await D2.prepare("DROP TABLE penugasan").run();   // keadaan produksi sebelum 0035 (dan 0041)
+  for (const x of (await D2.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND sql LIKE '%REFERENCES penugasan (%'").all()).results) await D2.prepare(`DROP TABLE ${x.name}`).run();   // anak FK (posisi, darurat 0038, tabel modul lain) ikut hilang seperti sebelum 0035
+  await D2.prepare("DROP TABLE IF EXISTS penugasan_posisi").run(); await D2.prepare("DROP TABLE penugasan").run();   // keadaan produksi sebelum 0035 (dan 0038)
   const r = await U2.api("GET", "/api/lacak/info", undefined, {"x-lacak": "ab".repeat(18)}); assert.equal(r.s, 503, r.t); assert.match(r.j.galat, /0035/);
   assert.equal((await U2.api("POST", "/api/lacak/posisi", {lat: -2, lon: 113}, {"x-lacak": "ab".repeat(18), ...PB})).s, 503);
   const w = await U2.mf.getWorker(); await w.scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 9, 21, 4, 17)});   // bersih-bersih tidak melempar
@@ -456,8 +456,8 @@ const envAlarm = {DB, ASSETS: {fetch: asetKu}};
 const butirDari = async (kini, pid) => (await alarmKeselamatan(envAlarm, kini)).filter(b => b.id.includes(pid));
 const OFFSET_2KM = 2 / 111.32;   // derajat lintang untuk 2 km
 
-uji("L3: migrasi 0041 idempoten, CHECK menahan jenis dan koordinat buruk, indeks ada", async () => {
-  const sql = teks("migrations/0041_keselamatan.sql");
+uji("L3: migrasi 0038 idempoten, CHECK menahan jenis dan koordinat buruk, indeks ada", async () => {
+  const sql = teks("migrations/0038_keselamatan.sql");
   for (const q of pecah(sql)) await DB.prepare(q).run();   // jalankan ulang tanpa galat
   assert.equal(await n("penugasan_darurat"), 0);
   const idx = (await DB.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'penugasan_darurat'").all()).results.map(x => x.name);
@@ -569,10 +569,10 @@ uji("L3: alarmKeselamatan mengembalikan darurat di paling atas (prioritas 0), la
   const D2 = await DB.prepare("SELECT 1 x").first(); assert.ok(D2);
 });
 
-uji("L3: tanpa tabel (0035 atau 0041 belum ada) alarmKeselamatan tidak melempar; cron membuang darurat 30 hari", async () => {
+uji("L3: tanpa tabel (0035 atau 0038 belum ada) alarmKeselamatan tidak melempar; cron membuang darurat 30 hari", async () => {
   const U5 = await siapkan("uji-penugasan-l3-tanpa", {r2: true}), D5 = U5.DB;
   await D5.prepare("DROP TABLE penugasan_darurat").run();
-  assert.deepEqual(await alarmKeselamatan({DB: D5, ASSETS: {fetch: asetKu}}, Date.now()), [], "tanpa 0041 dan tanpa penugasan aktif");
+  assert.deepEqual(await alarmKeselamatan({DB: D5, ASSETS: {fetch: asetKu}}, Date.now()), [], "tanpa 0038 dan tanpa penugasan aktif");
   await D5.prepare("DROP TABLE penugasan_posisi").run(); await D5.prepare("DROP TABLE penugasan").run();
   assert.deepEqual(await alarmKeselamatan({DB: D5, ASSETS: {fetch: asetKu}}, Date.now()), [], "tanpa 0035");
   const r = await U5.api("POST", "/api/lacak/darurat", {jenis: "cedera"}, {"x-lacak": "ab".repeat(18), ...PB}); assert.equal(r.s, 503, r.t);
