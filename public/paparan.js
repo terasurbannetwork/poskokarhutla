@@ -144,17 +144,6 @@ async function muatFoto() {
     S.foto = {data: c.toDataURL("image/jpeg", 0.85), kredit: `Foto: ${kr.penulis}, ${kr.lisensi}`};
   } catch (e) { console.warn("foto sampul tidak dimuat", e); }
 }
-/* Roboto (Apache 2.0, subset Latin, public/vendor/roboto) ditanam ke jsPDF supaya PDF sama dengan PPTX */
-let robotoB64 = null;
-async function muatRoboto() {
-  if (robotoB64) return robotoB64;
-  const b64 = async u => { const a = new Uint8Array(await (await fetch(u)).arrayBuffer()); let s = ""; for (let i = 0; i < a.length; i += 8192) s += String.fromCharCode(...a.subarray(i, i + 8192)); return btoa(s); };
-  try { robotoB64 = {n: await b64("/vendor/roboto/Roboto-Regular.ttf"), b: await b64("/vendor/roboto/Roboto-Bold.ttf")}; } catch (e) { console.warn("Roboto gagal dimuat, PDF memakai Helvetica"); robotoB64 = {}; }
-  return robotoB64;
-}
-function pasangRoboto(doc, r) {
-  if (!r.n) return; doc.addFileToVFS("Roboto-Regular.ttf", r.n); doc.addFont("Roboto-Regular.ttf", "Roboto", "normal"); doc.addFileToVFS("Roboto-Bold.ttf", r.b); doc.addFont("Roboto-Bold.ttf", "Roboto", "bold"); doc.__roboto = true;
-}
 async function awal() {
   const [laporan, kumulatif, sejarah, kompleks, operasi, templat] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto()]);
   S.D = {laporan, kumulatif, sejarah, kompleks, operasi}; S.templat = templat; S.susunan = susun(templat);
