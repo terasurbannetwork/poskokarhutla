@@ -510,12 +510,13 @@ async function buktiTitik(env) {
   return {f: Array.isArray(firms?.baris) && Number.isFinite(af) ? firms.baris.map(b => ({lat: b[0], lon: b[1], t: af + b[2] * JAM})) : [], af: Number.isFinite(af) ? af : null,
     h: Array.isArray(hw?.baris) && Number.isFinite(ah) ? hw.baris.map(b => ({lat: b[0], lon: b[1], t: ah - b[2] * MENIT})) : [], ah: Number.isFinite(ah) ? ah : null};
 }
-/* murni. {hasil, n}: ada_titik bila ada titik dalam jendela (langsung final), tanpa_titik hanya bila data sudah mencakup seluruh 6 jam, tak_dinilai bila > 30 jam tanpa putusan, selain itu null (menunggu). */
+/* murni. {hasil, n}: ada_titik bila ada titik dalam jendela (langsung final); tanpa_titik hanya bila data sudah mencakup seluruh 6 jam DAN jendela masih dalam 24 jam terakhir data
+   (putaran FIRMS hanya menyimpan 24 jam); tak_dinilai bila data tak mungkin lagi mencakupnya atau > 30 jam tanpa putusan; selain itu null (menunggu). */
 export function nilaiSatuDrop(d, B, kini) {
-  const akhir = d.pada + BATAS.dropJam * JAM;
+  const akhir = d.pada + BATAS.dropJam * JAM, acuan = Math.max(B.af ?? 0, B.ah ?? 0);
   const n = B.f.filter(p => p.t > d.pada && p.t <= akhir && km(p.lat, p.lon, d.lat, d.lon) <= BATAS.dropFirmsKm).length + B.h.filter(p => p.t > d.pada && p.t <= akhir && km(p.lat, p.lon, d.lat, d.lon) <= BATAS.dropHimawariKm).length;
   if (n > 0) return {hasil: "ada_titik", n};
-  if (Math.max(B.af ?? 0, B.ah ?? 0) >= akhir && kini >= akhir) return {hasil: "tanpa_titik", n: 0};
+  if (acuan >= akhir) return d.pada >= acuan - 24 * JAM ? {hasil: "tanpa_titik", n: 0} : {hasil: "tak_dinilai", n: 0};
   return kini - d.pada > 30 * JAM ? {hasil: "tak_dinilai", n: 0} : null;
 }
 async function nilaiDrop(env, drops, kini) {

@@ -436,3 +436,22 @@ uji("L1: butir cek_ulang_jatuh_tempo: tugas padam di gambut (atau lahan tak dike
   assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").filter(x => x.id.includes(lama)).map(x => x.id.split(":")[3]).join(), "3");
   await bersihSumber();
 });
+
+/* ================================================================ L3 pantau: alarm keselamatan regu dari src/penugasan.js */
+uji("L3 pantau: penugasan_darurat muncul di Meja Pantau sebagai butir darurat, prioritas 0 di paling atas; jenis baru terdaftar; staf tanpa peran tidak melihatnya", async () => {
+  await bersihSumber();
+  const now = Date.now(), tid = await tugas({status: "buka"}), akun = id16();
+  await akunMenunggu({id: akun});
+  const pid = id16();
+  await sisip("penugasan", {id: pid, tugas_id: tid, akun_id: akun, nama: "Regu Alfa", peran: "ketua_regu", orang: 4, token_sha: "a".repeat(63) + "1", status: "aktif", dibuat: now - 3 * JAM, kedaluwarsa: now + 5 * JAM, berangkat_pada: now - 2 * JAM, dummy: 0});
+  await sisip("penugasan_darurat", {penugasan_id: pid, jenis: "terkepung_api", lat: -2.5, lon: 113.2, pada: now - 5 * MENIT});
+  await tugas({status: "buka", konfirmasi_pada: null, dibuat: now - 30 * JAM});   // api_konfirmasi terlambat, prioritas 1
+  const j = await butir(), d = ada(j, "darurat");
+  for (const k of ["darurat", "regu_sunyi", "angin_ke_regu", "regu_rotasi"]) { assert.ok(JENIS[k], k); assert.ok(j.jenis[k], "dikirim ke klien: " + k); assert.deepEqual(JENIS[k].peran, ["pusdalops"]); }
+  assert.equal(d.length, 1); assert.match(d[0].judul, /DARURAT terkepung api: Regu Alfa/); assert.equal(d[0].prioritas, 0); assert.deepEqual(d[0].provs, ["62"]);
+  assert.equal(j.butir[0].jenis, "darurat", "darurat paling atas, di atas butir prioritas 1");
+  assert.ok(ada(j, "regu_sunyi").length === 1, "posisi tak pernah terkirim sejak berangkat 2 jam lalu: regu sunyi");
+  await DB.prepare("DELETE FROM penugasan_darurat").run(); await DB.prepare("DELETE FROM penugasan WHERE id = ?").bind(pid).run();
+  assert.equal(ada(await butir(), "darurat").length, 0, "kondisinya hilang: butir hilang sendiri");
+  await bersihSumber();
+});

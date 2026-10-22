@@ -292,14 +292,14 @@ uji("penugasan: dummy mengisi tiap keadaan (berangkat berjejak, belum dibuka, ti
   const nyata = {penugasan: await n("penugasan", "dummy = 0"), posisi: await n("penugasan_posisi", "penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 0)")};
   assert.equal((await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}, MOD2)).s, 403, "moderator bukan super");
   await DB.prepare("DELETE FROM penugasan WHERE dummy = 1").run(); await DB.prepare("DELETE FROM tugas_api WHERE dummy = 1").run();
-  const r = await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}, ADMIN); assert.equal(r.s, 201, r.t); assert.equal(r.j.penugasan, 6);
+  const r = await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}, ADMIN); assert.equal(r.s, 201, r.t); assert.equal(r.j.penugasan, 8);
   const st = async (kol) => (await DB.prepare(`SELECT DISTINCT ${kol} v FROM penugasan WHERE dummy = 1`).all()).results.map(x => x.v);
   assert.deepEqual((await st("status")).sort(), ["aktif", "dicabut", "selesai"]); assert.equal(await n("penugasan", "dummy = 1 AND kedaluwarsa < " + Date.now() + " AND status = 'aktif'"), 1, "satu aktif yang sudah kedaluwarsa");
-  assert.equal(await n("penugasan", "dummy = 1 AND dibuka_pada IS NULL"), 1, "belum dibuka"); assert.equal(await n("penugasan", "dummy = 1 AND tiba_pada IS NOT NULL AND selesai_pada IS NULL"), 1, "tiba"); assert.equal(await n("penugasan", "dummy = 1 AND berangkat_pada IS NOT NULL AND tiba_pada IS NULL"), 1, "sedang berangkat");
+  assert.equal(await n("penugasan", "dummy = 1 AND dibuka_pada IS NULL"), 1, "belum dibuka"); assert.equal(await n("penugasan", "dummy = 1 AND tiba_pada IS NOT NULL AND selesai_pada IS NULL"), 1, "tiba"); assert.equal(await n("penugasan", "dummy = 1 AND berangkat_pada IS NOT NULL AND tiba_pada IS NULL"), 3, "sedang berangkat: Hendra, Wati (sunyi), Joko (rotasi)");
   assert.ok(await n("penugasan", "dummy = 1 AND checklist != '{}'") >= 3, "checklist terisi"); assert.ok(await n("penugasan_posisi", "penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 1)") >= 20, "jejak");
   /* layar dummy: akun dummy melihat jejak, jarak, ETA, dan checklist berangka */
-  const tid = (await DB.prepare("SELECT tugas_id FROM penugasan WHERE dummy = 1 AND berangkat_pada IS NOT NULL AND tiba_pada IS NULL").first()).tugas_id;
-  const ad = await api("GET", `/api/instansi/admin/penugasan/${tid}`, undefined, ADMIN); assert.equal(ad.s, 200); const jalan = ad.j.penugasan.find(p => p.status === "aktif" && p.berangkat_pada && !p.tiba_pada);
+  const tid = (await DB.prepare("SELECT tugas_id FROM penugasan WHERE dummy = 1 AND nama LIKE '%Hendra%'").first()).tugas_id;
+  const ad = await api("GET", `/api/instansi/admin/penugasan/${tid}`, undefined, ADMIN); assert.equal(ad.s, 200); const jalan = ad.j.penugasan.find(p => p.status === "aktif" && p.berangkat_pada && !p.tiba_pada && /Hendra/.test(p.nama));
   assert.ok(jalan.jejak.length >= 10 && jalan.jarak_km > 1 && jalan.eta_menit > 0 && jalan.ringkas.centang >= 1, JSON.stringify([jalan.jejak.length, jalan.jarak_km, jalan.eta_menit]));
   assert.equal((await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}, ADMIN)).s, 409, "gerbang 'sudah ada'");
   const h = await api("POST", "/api/instansi/admin/dummy", {aksi: "hapus"}, ADMIN); assert.equal(h.s, 200, h.t);
@@ -652,4 +652,16 @@ uji("L2/L3: klien lacak.js dan instansi_tugaskan.js memuat kontrol baru (tombol 
   assert.match(tg, /\/api\/instansi\/usulan\//); assert.match(tg, /data-tg="pilih"/); assert.match(tg, /wa\.me/); assert.match(css, /\.tg-darurat/);
   assert.ok(!/·/.test(html + js + tg), "tanpa titik pemisah di teks");
   new vm.Script(js); new vm.Script(tg);
+});
+
+uji("L3: dummy mengisi darurat, regu_sunyi, regu_rotasi yang terbaca alarmKeselamatan; hapus dummy membersihkan semuanya tanpa yatim", async () => {
+  const r = await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}, ADMIN); assert.equal(r.s, 201, r.t);
+  const b = (await alarmKeselamatan(envAlarm, Date.now())).filter(x => x.dummy === 1), jenis = new Set(b.map(x => x.jenis));
+  for (const j of ["darurat", "regu_sunyi", "regu_rotasi"]) assert.ok(jenis.has(j), `${j} dari dummy: ${[...jenis]}`);
+  assert.ok(await n("penugasan_darurat", "penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 1)") >= 1);
+  assert.equal(b[0].jenis, "darurat", "darurat paling atas");
+  assert.equal((await api("POST", "/api/instansi/admin/dummy", {aksi: "hapus"}, ADMIN)).s, 200);
+  assert.equal(await n("penugasan_darurat", "penugasan_id NOT IN (SELECT id FROM penugasan)"), 0, "tanpa yatim");
+  assert.equal(await n("penugasan_darurat", "1"), await n("penugasan_darurat", "penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 0)"), "semua darurat sisa milik data nyata");
+  assert.equal((await alarmKeselamatan(envAlarm, Date.now())).filter(x => x.dummy === 1).length, 0);
 });
