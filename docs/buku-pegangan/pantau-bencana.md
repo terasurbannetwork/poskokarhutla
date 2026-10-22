@@ -5,7 +5,7 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
 Disegarkan 22 Okt 2026\
-commit 5ecb0289
+commit 2f822db2
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -15,17 +15,29 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
-1. 22 Okt 2026
+1. 22 Okt 2026 (lanjutan)
+   - **Satu tujuan: api padam lebih cepat.** Rancangan `docs/bnpb/RANCANGAN-API-PADAM.md` Fase 0 dan 1 disetujui dan selesai: ID insiden stabil (`scripts/data/insiden.py`), Kartu Api di `/instansi` dengan teks WA dan cetak, tugas dibuat begitu data terbit. Keputusan pemilik: tugas otomatis untuk level 3 dan level 2 bersyarat (permukiman, konsesi, tumbuh); insiden Himawari ke Posko pusat saja sampai VIIRS mengonfirmasi; server rute berbayar boleh bila graf sendiri tidak cukup; surat akses data TMAT, SiPongi, Daops jalan. Radius permukiman 5 km dan nama perusahaan di tugas diambil sebagai bawaan.
+   - **Program lanjut disetujui dan tayang** (`docs/bnpb/RENCANA-LANJUT.md`): alarm Himawari, push dan email seketika, dashboard kinerja dan SLA, kalibrasi, gerbang prakiraan, rute ke titik api, CAP, hash berkas Gakkum, regu luring. Push akun daerah tiap 3 jam lewat Web Push standar tanpa pustaka. Operasi lapangan: verifikasi padam (Himawari, laporan regu, cek ulang gambut H+1/3/7), keselamatan regu, peta operasi, sumber air dan pompa estafet.
+   - **Program 15 jam**: produksi ternyata masih di migrasi 0035 dengan nol akun instansi dan nol tugas; hambatannya adopsi dan aktivasi, bukan fitur model. Lahir `scripts/bnpb/aktivasi.sh` (uji kering migrasi tertunda di salinan skema produksi), halaman `/kabar` per kabupaten, teks undangan WhatsApp di CSV akun massal, graf jalan diarsipkan ke R2, `jeda_satelit` di `/api/status`, uji siklus insiden ujung ke ujung.
+   - **Tugas api tidak pernah terbentuk di produksi** (`7526857c`): migrasi 0029 di repo disunting ke 3.000 huruf sesudah diterapkan, produksi tetap 2.000, cron gagal tiap menit dan seluruh batch ditolak. Batas kembali 2.000.
+   - **Semua pengembangan karhutla dibawa ke bencana lain** (`3169c015`): *"semua pengembangan karhutla, lakukan juga di bencana lain"*. Tugas lapangan, Ruang Instansi, operasi, laporan harian, WA, deck, dan paparan kini per bencana (migrasi 0047 sampai 0049).
+   - **Panel presiden** `/presiden`: kartu dan tab Peta, feed JSON `/data/presiden/*` untuk dashboard Presiden. Publik tanpa sesi (agregat saja), boleh di-iframe, nama perusahaan boleh, WALHI tidak. Kartu basi diredupkan dengan "Data terakhir <tanggal>". Widget peringatan BMKG dicabut atas permintaan pemilik; panel kini 14 widget.
+   - **Domain pindah ke centurisk97.id**; pantau.terasurban.com sengaja dilepas. Rujukan operasional (`src/ews.js`, `src/pengingat.js`, `URL_STATUS`) pindah; canonical dan og meta sengaja tetap. *"Jangan ganti domain dulu."*
+   - **"perkiraan satelit" tidak pernah ditulis** di judul, tooltip, legenda, pop-up, grafik, dan slide (`944bffc5`). Tab Posko (Ajuan) benar-benar tersembunyi; tab Replay banjir keluar dari menu (validasi 26%).
+   - **Laporan konsesi** menambah kebakaran 2019 dan 2023 dengan peta The TreeMap 2024 (CC BY-NC 4.0, terbit atas keputusan pemilik, atribusi tampil).
+   - **Uji balik yang tidak diadopsi**: persentil FWI per provinsi seri di Sumatra dan Kalimantan, status tidak diubah; firespot tiga satelit, ambang 4 dipertahankan. Peluang "akan membesar" tetap disembunyikan (prospektif 17% lawan dasar historis sekitar 3%).
+   - Peta: lapisan EFFIS (prakiraan FWI, Drought Code, area terbakar) dan AOD NASA GIBS. Audit worker: EXIF dibuang dari unggahan publik, CSRF admin seragam.
+2. 22 Okt 2026
    - **Ruang Instansi masuk main** (`16652489`): akun daerah (pemprov, pemkab/pemkot, polda, polres, kodam, kodim) dibuat massal bersandi acak lalu diklaim lewat verifikasi dokumen; tugas api per kompleks; rekomendasi cara padam; akun staf BNPB dan Meja Pantau; inventaris dan P3K; laporan korban jiwa; laporan karhutla harian bersnapshot; OMC; konferensi pers dan laporan Dit. Koordalops di `/laporan-bnpb`. Migrasi D1 0029 sampai 0035 menunggu pemilik. Rincian di [Ruang Instansi](#ruang-instansi).
    - **Terbit merah karena rute `/kekeringan/simulasi` 404**: tab simulasi kekeringan belum didaftarkan di registry. Dibetulkan di `a5afb8ab`; gerbangnya `gerbang-tab-registry`.
    - **Lampu malam ditahan**: modul `scripts/umum/lampu_malam.py` tidak dilanjutkan walau token Earthdata terisi. Skripnya tidak dipanggil workflow dan JSON validasinya tidak dibaca layar.
    - **Indeks risiko kebakaran permukiman DKI** (`/bnpb/kebakaran`): uji balik gagal. Indeks menangkap 18% kebakaran, jumlah bangunan saja 32%, acak sekitar 20%. Tetap berlabel belum lulus uji.
-2. 21 Okt 2026
+3. 21 Okt 2026
    - **Program Ruang Instansi dimulai**: sistem untuk daerah dan pusat yang dipakai harian. Sepuluh butir permintaan dicatat di memori `ruang-instansi` dan dicocokkan sebelum menyatakan selesai.
    - **Peringatan dari berita untuk tujuh bencana** (`81032a48`): berita Google News dipilah jadi peringatan ke depan (wajib sumber resmi) dan kejadian yang sedang berlangsung, dengan masa berlaku dari tanggal di judul. Panel bersama `public/inti/peringatan-berita.js` di tab Insight tujuh halaman dan `/semua`, berlabel "dari berita, belum diverifikasi".
    - **Abrasi garis pantai tahunan** (`1cd255ee`): Landsat 1988 sampai 2025, MNDWI + Otsu, transek 1 km, laju regresi dengan selang 95%, lima situs pantura, 167 transek (161 terbaca). Lapisan `abrasi` di entri banjir; agent baru `pesisir`.
    - **Konpers harian, rekomendasi cara padam per kompleks, arsip evaluasi OMC** (`scripts/data/taktik.py`): heli selalu pelengkap, dry ice bukan pemadaman titik.
-3. 20 Okt 2026
+4. 20 Okt 2026
    - **Titik tengah dilarang**: *"Gw ga pernah suka dipisahin titik gini. Catet."* (paparan Presiden). Tiap teks tampil, kartu, pil, slide, dan judul laporan tanpa " · ". Pakai koma, label sendiri, atau baris baru. Angka kunci di depan.
    - **Semua bencana dibuka di menu**: label "Soon" dicabut dari dropdown bencana.
    - **Header**: tab rata tengah, ikon tampil di desktop, tab pindah ke menu garis tiga di bawah 1280 px.
@@ -33,7 +45,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Laporan konsesi**: indikasi lahan dibakar lalu jadi sawit (kebakaran 2015) dengan empat foto bukti; citra Sentinel-2 untuk 1.529 konsesi bertitik, panel tanpa adegan memakai citra terdekat (paling jauh 10 hari) sebelum jatuh ke VIIRS.
    - **Insiden penanda konflik**: `<<<<<<<` ter-commit di `public/udara/data/*.json`, JSON.parse gagal di layar tanpa satu uji merah. Gerbang baru `gerbang-konflik`.
    - **Ruang Koordinasi gelombang penyempurnaan**: Layar Pimpinan, pengingat harian, kapasitas relawan dinamis, uji balik jujur, mode luring, arsip sitrep R2, rehab-rekon, stok gudang, ekspor gaya DIBI, uji layar 59/59.
-4. 19 Okt 2026
+5. 19 Okt 2026
    - **Pemilik menjadi staf ahli BNPB**, lalu meminta sistem yang membetulkan kinerja BNPB. Lahir **Ruang Koordinasi** di balik `/bnpb`: relawan dan kampus mitra, alun-alun, riset, Meja Kerja, sitrep otomatis, indeks risiko kecamatan, kebutuhan musim, berkas Gakkum. M8 pengungsi dicoret pemilik. Agent baru `ruang-bnpb`.
    - **Bahasa lugas**: deck Kepala BNPB ditolak keras karena kalimat bergaya (personifikasi, slogan, kontras "X bukan Y", "mulai besok"). Judul = fakta + angka + sumber; label = kata benda polos.
    - **Kekeringan tetap tampil dengan pil hipotesis**: ambang SPI gagal uji balik (POD 22%, FAR 97%, CSI 0,026 lawan acak 0,012). *"Tetap tampilkan angka kekeringan dengan pil hipotesis yang jelas, lalu setel ulang ambangnya di blok model."*
@@ -44,7 +56,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Rencana 20 jam kedua** (`RENCANA-20-JAM-2.md`, blok B0 sampai B4): gerbang hijau, angka gempa jujur, registry = halaman, Lapor Warga multi-bahaya, `/semua` menampilkan kejadian aktif lintas bencana, i18n EN untuk lima bencana baru.
    - **Spanduk persetujuan dinyalakan lagi** (*"nyalakan"*) supaya statistik per bencana terisi.
    - **Insiden "gas" menyapu**: perubahan yang sengaja ditahan di working tree ikut commit GitHub Desktop pemilik dan langsung terbit. Sejak itu tidak ada suntingan yang "ditahan" di tree.
-5. 18 Okt 2026
+6. 18 Okt 2026
    - **Overlay Lahan diringkas**: 12 tombol jadi 8 berikon, lalu Hutan (kawasan hutan 2026, tutupan lahan 2025, tutupan pohon, hutan primer, mangrove) dan Konsesi (batas izin, hutan tanaman, tambang) sebagai pil pilihan.
    - **Lapisan Kesatuan Hidrologis Gambut** (518 KHG, BRGM PRIMS WFS), nama mulai zoom 8.
    - **Cari pabrik/konsesi** dengan buffer 10/25/50 km, slider banding, timelapse GIF, persen harian di pop-up.
@@ -52,7 +64,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Banjir**: peluang status 3 hari dari ansambel ECMWF, rob terpisah, dampak 4 hari + jalan berisiko terputus, bukti DAS hulu untuk 16 daerah.
    - **Cuaca ekstrem**: prediksi kecamatan 72 jam, siklon, gelombang, verifikasi, simulasi, laporan harian.
    - Worker menyajikan PMTiles dari R2 (`/ubin/<nama>.pmtiles`, HTTP Range). Roster: `tests/<bencana>/**` milik pengerja modulnya.
-6. 17 Okt 2026
+7. 17 Okt 2026
    - **Enam bencana dibuka** (status aktif, "Segera" hilang, masuk sitemap): banjir, gempa & tsunami, letusan gunung api, kekeringan, kualitas udara, ditambah beranda `/semua`. Tiap modul lolos audit paritas terhadap karhutla (`docs/multi-bencana/PARITAS-*.md`) dan cek data ke sumber resmi (BMKG gempaterkini 15/15, MAGMA level dan radius, SPI dihitung ulang). *"Kalo misal udah selesai maka coming soon nya dihilangkan dan orang bisa akses ya."* Cuaca ekstrem menyusul hari yang sama begitu nowcast BMKG tiap 10 menit ikut menentukan `/api/status`.
    - **Modul karhutla dipasang ulang, bukan disalin**: *"modulnya yang dari karhutla kaya plug and play ya... Lu tetap berpaku pada artifacts"*, lalu *"kodingannya udah ada semua ya tiru aja semua. Biar bisa kaya mirroring gitu."* CSS bersama di `public/inti/`, kartu Insight, mesin Bagikan per bencana, pop-up Situasi `Sapa.daftar`, foto per bencana (`?bencana=`), kaki/jejak/OG dari registry. Tambahan khas bencana boleh asal beralasan.
    - **Laporan harian karhutla** (`/laporan`): titik panas dan luas terdampak per provinsi dan kab/kota, perbandingan harian, cut-off dan sumber, cetak PDF berkop provinsi, kurva musim lintas tahun dengan latar median 2019 sampai 2025.
@@ -62,25 +74,25 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Produksi = worker `centurisk97`**: domain pantau.terasurban.com ternyata dilayani worker kedua; `wrangler.jsonc` diganti ke `centurisk97`, yang memegang domain, secret, dan cron. Worker `poskokarhutla` yatim.
    - **Tanpa branch**: *"Agar cukup main saja ya jangan ada branch."* Lalu *"gw ga mau ada branch"* saat melihat `staging`; branch itu dihapus.
    - **Insiden dan gerbangnya**: terbit gagal karena `_headers` lebih dari 100 aturan; terbit gagal karena batas 5 cron akun Workers Free (kini satu cron tiap menit); data live basi karena deploy dari laptop; git macet karena repo di iCloud Documents. *"Catat ya biar ga gagal lagi."*
-7. 16 Okt 2026
+8. 16 Okt 2026
    - **Jalan 20 jam**: *"Lu yang tentukan sendiri habis ini apa setelah ini apa."* Ucapan berulang dari 438 pesan dijadikan aturan A1 sampai A25 dan rencana sembilan blok di `docs/multi-bencana/RENCANA-20-JAM.md`. Push dan deploy menunggu kata pemilik.
    - **Perfeksionis**: *"Gw adalah perfeksionis sedetail itu... lu harus control freak dan lu harus review lagi kerjaan agent lu."* Laporan agent bukan bukti.
    - **Tiga keputusan copy diputus**: sapaan "kamu", em dash dilarang di teks tampil, ikon tetap SVG garis.
    - **Rencana multi-bencana dilengkapi**: `PETA.md`, `PELATIHAN-MODEL.md`, `COPYWRITING.md`, `MODUL-PLUG-AND-PLAY.md`. *"Rencana arsitektur copywriting total fitur nya gimana modul nya yang udah ada jadi plug and play. Copy coding petanya. Petanya juga tiru modelnya."*
    - **Lima buku pegangan rujukan dipasang** (`docs/buku-pegangan/rujukan/`) dan diterbitkan sebagai artifact. Buku ini lahir meniru bentuknya: *"Iya lu tiru ya dari situ."*
-8. 15 Okt 2026
+9. 15 Okt 2026
    - **Semua bencana meniru karhutla, rinci dan exhaustive**: *"Gw mau yang bencana lain tiru best practice dan secara rinci semua fitur dan bagian yang dari Karhutla."*
    - **Foto lapangan**: 100 foto dummy karhutla, unik semua. Label waktu dan ikon kategori duduk DI DALAM foto; *"Gausah ada nomor ini de."* Upvote, bukan ikon hati; koordinat GPS tampil di pop-up.
    - **Nama provinsi di peta**: rounded rectangle, cukup besar. *"Bro coba agak besarin dikit dong yang nama provinsinya soalnya ga keliatan sumpah."*
    - Admin masuk pakai email dan kata sandi. Mobile 640 px ke bawah: tab pindah ke menu garis tiga.
-9. 14 Okt 2026
-   - **Daftar "yang disembunyikan" wajib dicatat**, karena pemilik bisa meminta daftarnya dan memulihkan sebagian.
-   - **Bahasa konsesi netral**: "titik panas berada di dalam areal konsesi", tidak pernah menuduh siapa yang membakar.
-   - Halaman Tentang bergaya editorial berfoto. Lapisan Angin dikembalikan NYALA.
-10. 13 Okt 2026
+10. 14 Okt 2026
+    - **Daftar "yang disembunyikan" wajib dicatat**, karena pemilik bisa meminta daftarnya dan memulihkan sebagian.
+    - **Bahasa konsesi netral**: "titik panas berada di dalam areal konsesi", tidak pernah menuduh siapa yang membakar.
+    - Halaman Tentang bergaya editorial berfoto. Lapisan Angin dikembalikan NYALA.
+11. 13 Okt 2026
     - **Semua halaman memakai format kartu Insight**. *"jelek banget"* untuk catatan teks polos, `<select>` bawaan, dan singkatan "rb" dalam perbandingan.
     - **"9 provinsi prioritas" dilarang**; tulis "provinsi yang sering mengalami karhutla".
-11. 12 Okt 2026
+12. 12 Okt 2026
     - Repo lahir: situs statis Cloudflare, tab Insight, mode peta, kalender bahaya, pembaruan data harian 21.20 WIB.
 
 ## Keputusan pemilik
@@ -89,6 +101,15 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Tugas api otomatis | 22 Okt 2026 | Level 3 dan level 2 bersyarat (permukiman, konsesi, tumbuh); insiden Himawari ke Posko pusat saja sampai VIIRS mengonfirmasi |
+| Server rute berbayar boleh | 22 Okt 2026 | Bila graf jalan sendiri tidak cukup |
+| Surat akses data | 22 Okt 2026 | Surat ke BRGM (TMAT), SiPongi, Daops jalan; draf `docs/bnpb/SURAT-AKSES-DATA.md` |
+| Program lanjut api padam | 22 Okt 2026 | Disetujui, termasuk dashboard kinerja/SLA dan email di samping push |
+| Pengembangan karhutla ke semua bencana | 22 Okt 2026 | Tugas, kartu, operasi, push, SLA, laporan harian, paparan berlaku per bencana |
+| Panel presiden publik | 22 Okt 2026 | Tanpa sesi, agregat saja, boleh di-iframe; nama perusahaan boleh, WALHI tidak; kartu basi diredupkan; tanpa widget peringatan BMKG |
+| Domain centurisk97.id | 22 Okt 2026 | pantau.terasurban.com sengaja dilepas; canonical/og meta tidak diganti sampai pemilik bilang |
+| "perkiraan satelit" dilarang | 22 Okt 2026 | Slide memakai "hitungan satelit"; pop-up kab "Bukan luas resmi." |
+| The TreeMap 2024 di laporan konsesi | 22 Okt 2026 | Boleh terbit dengan atribusi dan lisensi CC BY-NC tampil |
 | Lampu malam ditahan | 22 Okt 2026 | Tidak dilanjutkan walau token Earthdata ada; berkasnya boleh tinggal karena tidak dipanggil siapa pun |
 | Ruang Instansi wajib lengkap | 21 Okt 2026 | Sepuluh butir di memori `ruang-instansi` dicocokkan sebelum menyatakan selesai; migrasi produksi tetap oleh pemilik |
 | Titik tengah dilarang | 20 Okt 2026 | Tidak ada " · " di teks tampil, slide, pil, laporan. Koma, label sendiri, atau baris baru |
@@ -128,13 +149,18 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Pertanyaan | Usulan | Rujukan |
 | --- | --- | --- |
+| `/kabar` dibuka publik | Tambah ke `PUBLIK_TANPA_SESI` bila disetujui; kini di balik login | `docs/bnpb/PROGRAM-15-JAM.md` |
+| `/data/tugas_kompleks.json` publik dan memuat nama pemegang konsesi | Dibatasi atau dibiarkan | memori `program-15-jam` |
+| Angka kebijakan tugas lintas bencana | `JIWA_MIN` 1000, `UMUR_KAJI_CEPAT_JAM` 72, `LAPORAN_MUNDUR_HARI` 14 | `scripts/umum/tugas.py`, `src/tugas_bencana.js` |
+| Radius permukiman tugas dan nama perusahaan di tugas | Bawaan 5 km dan tampil | `RANCANGAN-API-PADAM.md` |
+| Target SLA | Kini vonis hanya konfirmasi 6 jam dan kabar 24 jam | `RENCANA-LANJUT.md` |
+| CSP dan daftar iframe panel presiden | Belum diputus | `docs/presiden/KONTRAK.md` |
 | Kapan `/bnpb` masuk nav utama | Sesudah migrasi 0022 sampai 0028 diterapkan dan uji layar hijau di produksi | `docs/bnpb/STATUS.md` |
 | Daftar 21 Kodam untuk akun instansi | Dicek pemilik sebelum akun massal dibagikan | memori `ruang-instansi` |
 | Nama jenis bencana gaya DIBI di ekspor Meja | Dicocokkan pemilik ke istilah DIBI resmi | `/api/meja/ekspor` |
 | Turnstile relawan dan alun-alun | Isi sitekey begitu form mulai diserbu spam | `wrangler.jsonc` |
 | Ambang kekeringan baru | Opus merancang, `gunungapi-kering` mengerjakan, `validasi-model` memeriksa | `RENCANA-20-JAM-2.md` blok B3b |
 | Keputusan arsitektur multi-bencana yang menunggu | Daftarnya di akhir `ARSITEKTUR.md` | `docs/multi-bencana/ARSITEKTUR.md` |
-| Routine pembaru buku ini | Didaftarkan di Mac mini, tiap hari 21.00 WIB | [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui) |
 
 ## Stack & peta repo
 
@@ -146,7 +172,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Pipeline | Python 3.12 stdlib di GitHub Actions; JSON di-commit ke `public/data/` dan `public/<bencana>/data/` |
 | Workflow | `data.yml` harian, `titik.yml` 3 jam, `statis.yml`, `banjir.yml`, `gempa.yml`, `udara.yml` (OMC dirantai di sini), `himawari.yml`, `lintas.yml` (cuaca, gunung api, kekeringan, indeks risiko, kebutuhan musim), `bangunan.yml`, `jaga.yml`, `terbit.yml` |
 | Terbit | Cloudflare static assets (`assets.directory ./public`); seluruh isi `public/` ikut terbit, jadi tidak ada kunci, berkas kerja, atau data pribadi di sana. `_headers` paling banyak 100 aturan (kini 37 sesudah digabung per pola) |
-| D1 | Migrasi 0001 sampai 0035. 0022 sampai 0028 (Ruang Koordinasi) dan 0029 sampai 0035 (Ruang Instansi) diterapkan pemilik; sebelum itu API barunya menjawab 503 "fitur belum diaktifkan" |
+| D1 | Migrasi 0001 sampai 0049; produksi sudah sampai 0049 per 22 Okt. Migrasi yang sudah diterapkan tidak pernah disunting: uji lokal memakai versi repo dan tidak melihat bedanya |
 
 Peta modul dan pengerjanya ada di `AGENTS.md` §2. Repo di `~/Documents` disinkron iCloud: stage path eksplisit saja, salinan `* 2.*` yang muncul sendiri dihapus, git jaringan dibungkus batas waktu.
 
@@ -156,8 +182,8 @@ Satu worker, tiga wajah. Merek dipilih dari nama host.
 
 | Alamat | Wajah |
 | --- | --- |
-| pantau.terasurban.com | Pantau Bencana utuh: semua bencana, Tentang, Chat Admin |
-| centurisk97.id | Merek Centurisk 97, semua halaman HTML wajib masuk admin, tanpa Tentang, tanpa kata WALHI; laporan konsesi hanya di sini |
+| centurisk97.id | Situs produksi sejak 22 Okt: merek Centurisk 97, semua halaman HTML wajib masuk admin (JSON/JS/CSS publik), tanpa Tentang, tanpa kata WALHI; laporan konsesi hanya di sini; `/presiden` terbuka tanpa sesi |
+| pantau.terasurban.com | Sengaja dilepas 22 Okt (NXDOMAIN); jangan dipulihkan. Canonical dan og meta masih menyebutnya sampai pemilik memutus |
 | *.workers.dev | Sama dengan centurisk97.id, tanpa Chat Admin |
 
 Pulihkan Tentang di Centurisk97: hapus aturan `html[data-situs=w]` di `public/inti/kepala.css` dan alihan `tt` di `src/worker.js`.
@@ -168,7 +194,7 @@ Pulihkan Tentang di Centurisk97: hapus aturan `html[data-situs=w]` di `public/in
 | --- | --- |
 | Bencana | `/` karhutla, `/banjir/`, `/gempa/`, `/cuaca/`, `/udara/`, `/gunungapi/`, `/kekeringan/`, `/semua` |
 | Tab per bencana | Insight, Peta, Tren, Berita, Dampak, Foto, Simulasi, Metode, Tentang menurut `tab` di registry; kejadian berkode `/banjir/k/B####`, kode generik C cuaca, U udara, V gunung api, D kekeringan |
-| Laporan | `/laporan` harian karhutla, `/laporan-konsesi` (Centurisk97), `/laporan-bnpb` konpers dan Koordalops, `/paparan` |
+| Laporan | `/laporan` harian karhutla, `/laporan-konsesi` (Centurisk97), `/laporan-bnpb` konpers dan Koordalops, `/paparan`, `/presiden` panel dan feed `/data/presiden/*`, `/kabar` per kabupaten (di balik login) |
 | Warga | `/warga` Lapor Warga multi-bahaya, `/peringatan` langganan email, `/foto`, `/statistik` |
 | Ruang Koordinasi | `/bnpb`, `/relawan`, `/kampus`, `/alun-alun`, `/riset`, `/risiko`, `/sitrep`, `/kebutuhan`, `/meja`, `/bnpb/kebakaran` |
 | Ruang Instansi | `/instansi`, `/lapangan`, `/lacak#token` |
@@ -232,6 +258,8 @@ Aturan A1 sampai A25 (`docs/multi-bencana/RENCANA-20-JAM.md` §1) dipindai sebel
 - Probabilitas dibulatkan kasar atau jadi kelas; skor dan regu bulat; luas terbakar dibulatkan sesuai resolusi piksel. Angka kinerja model dibaca dari JSON uji, tidak diketik tangan.
 - Sapaan "kamu". Em dash dilarang; en dash untuk rentang. **Titik tengah " · " dilarang**: pakai koma, label sendiri, atau baris baru. Ikon SVG garis.
 - Suara: polos, faktual, satu baris satu temuan, angka di depan, tanpa emoji. Judul = fakta + angka + sumber; label = kata benda polos. Tanpa personifikasi, slogan, kontras "X bukan Y", "mulai besok", tiga-serangkai, kalimat penutup bergaya. Pola lengkap: `docs/multi-bencana/COPYWRITING.md`.
+- Tidak pernah menulis "perkiraan satelit"; luas dari satelit = "hitungan satelit", dan pop-up kab menambah "Bukan luas resmi."
+- Panel presiden: estimasi model dibulatkan ("sekitar"), hitungan titik panas tetap persis, tiap judul membawa tanggal data, kartu basi diredupkan.
 - Frasa wilayah: "provinsi yang sering mengalami karhutla", tidak pernah "9 provinsi prioritas". "Titik panas", bukan "titik api", untuk data satelit.
 - Angka yang belum lulus uji balik tampil dengan pil "hipotesis" atau label "belum diuji balik", tidak disembunyikan diam-diam dan tidak dijual sebagai pasti.
 
@@ -247,6 +275,7 @@ Daftar lengkap berikut cara memulihkannya hidup di memori `fitur-disembunyikan`.
 | Insight karhutla | Model sebaran "Coming soon", sebDorong, sebUji, sebGalat, sebLolos; kartu `ytd`, `tahun`, `kec` (dobel dengan Tren); Laporan resmi BNPB dan Penanganan; PSN Merauke dan Tokoh politik; tombol gambar kartu Musim | 14 sampai 17 Okt |
 | Pindah ke Tren | kartu `luasTahun`, `luas`, `nasional`, `dunia` dan bab "Penempatan regu" | 17 Okt |
 | Cerita | bab Model sebaran, bab Uji model, keterangan bab Pendorong | 14 sampai 15 Okt |
+| Panel dan menu (22 Okt) | Posko (Ajuan) di panel peta, tab Replay banjir (masih di `/banjir/replay`), widget peringatan BMKG panel presiden, tulisan "perkiraan satelit" | 22 Okt |
 | Bagikan | tab Ekspor, subjudul, teks ukuran, watermark logo, blok Rekomendasi | 14 Okt |
 | Laci kompleks | nama provinsi di kepala, "Teruskan ke", caption langganan api; "Kenapa status ini" diganti visual | 14 Okt |
 | Pop-up situasi | kartu jarak Daops, baris waktu data | 15 Okt |
@@ -278,10 +307,16 @@ Daftar lengkap berikut cara memulihkannya hidup di memori `fitur-disembunyikan`.
 | Indeks risiko kecamatan | Gempa lulus melawan sebagian pembanding tapi kalah dari peta bahaya InaRISK; banjir dan longsor belum mengalahkan baseline penduduk; bahaya harian butuh sekitar 44 hari potret untuk uji prospektif | Label per bahaya |
 | Risiko kebakaran permukiman DKI | Menangkap 18% kebakaran; jumlah bangunan saja 32%; acak sekitar 20% | Belum lulus |
 | Status banjir | Persen ketepatan dari cacah n, peluang 3 hari dari ansambel ECMWF | Ketepatan tampil jujur |
+| Persentil FWI per provinsi | Sumatra dan Kalimantan seri (J 0,591 lawan 0,592), provinsi lain hit turun | Tidak diadopsi, pembanding saja |
+| Firespot tiga satelit | Api besar mungkin di hari pertama 25,1% (2019) dan 18,3% (2023); level 3 tidak pernah tertunda | Ambang 4 dipertahankan |
+| Peluang "akan membesar" | Prospektif 17% lawan dasar historis sekitar 3%, selisih belum terjelaskan | Disembunyikan, gerbang dua putaran |
+| Replay banjir | 1 dari 23 laporan di sel, 26% dengan toleransi sekitar 1 km | Tab keluar dari menu |
 | OMC | Evaluasi dengan kontrol, pita diurnal, dan plasebo; bukan klaim sebab-akibat | Arsip evaluasi |
 
 ### Data yang perlu diingat
 
+- S-NPP berhenti 1 Nov 2026; `insiden.py` pindah ke NOAA-20 (rasio 0,89).
+- Graf jalan dan titik air diarsipkan permanen ke R2 (`graf.yml`); cache Actions sempat terusir karena cache `data-` 11,6 GB melewati batas 10 GB.
 - Riwayat titik 2026 Jan sampai Jun dibangun ulang dari arsip VIIRS S-NPP; 37 hari tanpa S-NPP diisi NOAA-20 × 0,978.
 - Luas terdampak harian = piksel VIIRS × 14,06 ha. Perkiraan luas terbakar 2026 tampil sebagai rentang (1,6 sampai 2,3 juta ha).
 - Luas resmi KLHK SiPongi ditarik tiap hari; provinsi pemekaran sebelum 2023 = null.
@@ -324,7 +359,9 @@ Program 21 Okt 2026, masuk main 22 Okt (`16652489`). Pengguna: daerah dan pusat,
 9. **OMC**: catatan sortie, arsip PM2.5/METAR, evaluasi dengan kontrol dan plasebo.
 10. **Staf BNPB berperan + Meja Pantau**: antrean harian tugas terlambat, konsesi tanpa kontak, korban, laporan belum masuk, P3K, OMC. Inventaris peralatan dan P3K per gudang. Laporan korban jiwa dengan nama privat.
 
-Migrasi 0029 sampai 0035 belum diterapkan di produksi.
+Sejak 22 Okt (api padam): Kartu Api, ID insiden stabil, verifikasi padam, keselamatan regu, operasi lapangan, push 3 jam per wilayah, dashboard kinerja dan SLA, `/kabar` per kabupaten, teks undangan WA di CSV akun massal, dan semua itu berlaku per bencana lewat `src/tugas_bencana.js`.
+
+Produksi sudah di migrasi 0049, tetapi per 22 Okt belum ada satu pun akun instansi atau tugas api; aktivasi lewat `scripts/bnpb/aktivasi.sh` dan `docs/bnpb/AKTIVASI.md`.
 
 ## Gerbang penjaga
 
@@ -342,6 +379,8 @@ Migrasi 0029 sampai 0035 belum diterapkan di produksi.
 | `gerbang-paparan-templat` | templat `/paparan` menolak id bentrok, gambar luar, `<` | `npm run uji:agen` |
 | `laporan-inti`, `peluang-inti`, `peta-karhutla` | mesin laporan harian, kartu peluang, kartu peta provinsi | `npm run uji:agen` |
 | `laporan-karhutla-deck`, `laporan-konpers`, `laporan-koordalops` | angka hanya dari snapshot atau isian, bagian kosong tidak dikarang, tanpa " · ", Matador terbaca | `npm run uji:agen` |
+| `siklus_insiden`, `presiden`, `sla_koreksi` | satu siklus insiden dari cron sampai SLA; panel presiden; uji cron di luar jendela push 3 jam | `npm run uji:warga` |
+| `peta-kab` | kartu peta kabupaten | `npm run uji:agen` |
 | `tests/warga/*` | route, skema D1, API, foto, OG, EWS, Ruang Koordinasi, Ruang Instansi di Miniflare sungguhan | `npm run uji:warga` |
 | `tests/banjir`, `tests/udara`, `tests/<bencana>` | pipeline dan kontrak tiap bencana | `npm run uji:banjir`, `npm run uji:udara` |
 | `tests/bnpb/*` | 19 halaman × 1440/390 + interaksi di Chrome headless | `npm run uji:layar` |
@@ -357,6 +396,8 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 22 Okt | Tugas api nol di produksi: CHECK 2.000 huruf menolak seluruh batch tiap menit | Migrasi yang sudah diterapkan tidak disunting; batas di kode mengikuti produksi |
+| 22 Okt | `akses.py` gagal tiap hari karena cache graf jalan terusir | Arsip permanen di R2, bukan cache Actions |
 | 22 Okt | Terbit merah: `/kekeringan/simulasi` 404 | Tab baru didaftarkan di registry dulu; `gerbang-tab-registry` |
 | 20 Okt | Penanda konflik git ter-commit di JSON udara | `gerbang-konflik` |
 | 19 Okt | Commit "gas" pemilik menyapu suntingan yang sengaja ditahan dan langsung terbit | Tree dianggap publik dalam hitungan menit; yang belum aman ditaruh di luar repo |
@@ -387,12 +428,15 @@ Aturannya: Opus merencanakan, model murah mengerjakan; penulis kode bukan pengul
 
 Yang tidak bisa dikerjakan sesi agent:
 
-1. Terapkan migrasi D1 produksi 0022 sampai 0035: `npx wrangler d1 migrations apply poskowarga --remote -c wrangler.jsonc`.
-2. Commit berkas `.github/workflows/**` lewat GitHub Desktop (langkah harian indeks risiko, kebutuhan musim, peringatan dari berita di `lintas.yml`).
-3. Isi `TURNSTILE_SITEKEY` dan secret `TURNSTILE_SECRET` bila form relawan dan alun-alun diserbu spam.
-4. Pastikan secret `SUPER_ADMIN` memuat awalan hash akun supaya tombol isi dan hapus dummy muncul.
-5. Cek daftar 21 Kodam dan nama jenis bencana DIBI.
-6. Putuskan kapan `/bnpb` masuk nav utama.
+1. Pasang secret `VAPID_*` dan `PIPA_TOKEN` (Worker dan GitHub), verifikasi domain Resend lalu ganti `EMAIL_FROM` ke domain sendiri (`docs/bnpb/AKTIVASI.md`).
+2. Buat dan bagikan akun instansi pertama; produksi masih nol akun.
+3. Putar ulang kunci FIRMS dan Earthdata (salinan `.env 2` pernah terlacak).
+4. Putuskan `/kabar` publik, `/data/tugas_kompleks.json`, target SLA, dan angka kebijakan tugas lintas bencana.
+5. Commit berkas `.github/workflows/**` lewat GitHub Desktop (langkah harian indeks risiko, kebutuhan musim, peringatan dari berita di `lintas.yml`).
+6. Isi `TURNSTILE_SITEKEY` dan secret `TURNSTILE_SECRET` bila form relawan dan alun-alun diserbu spam.
+7. Pastikan secret `SUPER_ADMIN` memuat awalan hash akun supaya tombol isi dan hapus dummy muncul.
+8. Cek daftar 21 Kodam dan nama jenis bencana DIBI.
+9. Putuskan kapan `/bnpb` masuk nav utama.
 
 ## Rencana multi-bencana
 
