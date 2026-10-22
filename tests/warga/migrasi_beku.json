@@ -51,5 +51,6 @@
   "0047_tugas_bencana.sql": "d89a5bb87bd1294ac427372a5a25ab92fe5b910cfc803096157b112a097b43e5",
   "0048_laporan_bencana.sql": "e8c3e5e13848ac1357b6d4dffcf8636d4fa0c77cc6ddb4a73d68ebc68033a814",
   "0049_laporan_bencana_jaga.sql": "10b1b03e1957e3bca5b341fe7918fa12a7fe6c1d03aa8909a2ef2fb17f2618d4",
-  "0050_pembasah_alat.sql": "9424806af297c22cc0c4b5eed473cde1bd32aceece20d2866def875d0b4f5cbd"
+  "0050_pembasah_alat.sql": "9424806af297c22cc0c4b5eed473cde1bd32aceece20d2866def875d0b4f5cbd",
+  "0052_hukum.sql": "0226fb1c23e0c9afee54e4c953c8cc7385bf71906a314cab1768b19dd46eb1cf"
 }
