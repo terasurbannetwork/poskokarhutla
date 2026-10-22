@@ -818,11 +818,16 @@ export async function butirCekUlang(env, kini, dummyOk) {
    Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
 const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat"];
 const insidenSah = v => typeof v === "string" && v.length >= 3 && v.length <= 40 ? v : null;
+const angkaSah = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
 export function pasKartu(k) {
   if (!k || typeof k !== "object" || Array.isArray(k)) return null;
   const x = {};
   for (const c of KUNCI_KARTU) if (k[c] !== undefined) x[c] = k[c];
   if (x.insiden !== undefined) { const i = insidenSah(x.insiden); if (i) x.insiden = i; else delete x.insiden; }
+  for (const c of ["front", "masuk"]) if (x[c] !== undefined && x[c] !== null && !titikSah(x[c])) delete x[c];   // koordinat di luar bbox dibuang; masuk null (tak ada jalan) tetap sah
+  if (x.radius_m !== undefined && !angkaSah(x.radius_m)) delete x.radius_m;
+  for (const c of ["luas_aktif", "luas_koreksi"]) if (x[c] !== undefined && !(x[c] && typeof x[c] === "object" && ["ha", "min", "maks"].every(f => x[c][f] === undefined || angkaSah(x[c][f])))) delete x[c];
+  if (x.tren !== undefined && !(x.tren && typeof x.tren === "object" && ["n24", "n24_kemarin"].every(f => x.tren[f] === undefined || angkaSah(x.tren[f])))) delete x.tren;
   if (Array.isArray(x.konsesi)) x.konsesi = x.konsesi.slice(0, 3);
   if (Array.isArray(x.syarat)) x.syarat = x.syarat.filter(v => typeof v === "string").slice(0, 3);
   if (!Object.keys(x).length) return null;
@@ -871,11 +876,12 @@ export async function tugasBaruDariBerkas(env, kini = Date.now()) {
 }
 async function buatTugasIsi(env, kini, versi) {
   const tandai = () => versi ? env.DB.prepare("INSERT INTO tugas_meta (kunci, nilai) VALUES (?1, ?2) ON CONFLICT(kunci) DO UPDATE SET nilai = ?2").bind(META_VERSI, versi).run().catch(e => { if (!/no such table: tugas_meta/i.test(String(e?.message || e))) throw e; }) : null;
-  let berkas;
-  try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/tugas_kompleks.json")); if (!r.ok) { r.body?.cancel(); return {lewat: "tugas_kompleks.json belum ada"}; } berkas = await r.json(); }
-  catch (e) { return {lewat: "tugas_kompleks.json tidak terbaca"}; }
+  let berkas, r;
+  try { r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/tugas_kompleks.json")); } catch (e) { return {lewat: "tugas_kompleks.json tidak terbaca"}; }
+  if (!r.ok) { r.body?.cancel(); return {lewat: "tugas_kompleks.json belum ada"}; }
+  try { berkas = await r.json(); } catch (e) { await tandai(); return {lewat: "tugas_kompleks.json tidak terbaca"}; }   // rusak: ditandai supaya berkas besar tidak diurai tiap menit
   const dibuat = Date.parse(berkas?.dibuat);
-  if (!Number.isFinite(dibuat) || kini - dibuat > 6 * JAM) { if (Number.isFinite(dibuat)) await tandai(); return {lewat: "tugas_kompleks.json lebih dari 6 jam atau tanpa waktu"}; }   // basi: ditandai supaya tidak diurai ulang tiap menit
+  if (!Number.isFinite(dibuat) || kini - dibuat > 6 * JAM) { await tandai(); return {lewat: "tugas_kompleks.json lebih dari 6 jam atau tanpa waktu"}; }   // basi atau `dibuat` tak terurai: ditandai juga
   const ks = (Array.isArray(berkas.kompleks) ? berkas.kompleks : []).filter(kompleksSah).slice(0, 600);
   if (!ks.length) { await tandai(); return {baru: 0, digabung: 0}; }
   const provs = [...new Set(ks.map(k => k.prov))];

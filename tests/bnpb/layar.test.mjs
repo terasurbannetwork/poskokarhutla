@@ -311,7 +311,7 @@ if (!CHROME) {
     await tab.eval(`window.KartuApi.pasang(document.querySelector('#ujiKartu'), {}, null)`);   // kosong: tidak ada kartu, tidak ada galat
     assert.equal(await tab.eval("document.querySelector('#ujiKartu').innerHTML"), "");
     await tab.eval(`window.KartuApi.pasang(document.querySelector('#ujiKartu'), ${JSON.stringify(TUGAS)}, null)`);   // kartu null: yang ada dari rekomendasi
-    assert.match(await tab.eval("document.querySelector('#ujiKartu').innerText"), /Luas terkoreksi belum tersedia/);
+    assert.match(await tab.eval("document.querySelector('#ujiKartu').innerText"), /Luas belum tersedia/);
     assert.deepEqual(tab.galat().filter(bukanFavicon), [], "Kartu Api memunculkan galat konsol");
   });
 }

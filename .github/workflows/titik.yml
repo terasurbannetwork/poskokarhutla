@@ -71,6 +71,12 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
 
+      # ID insiden stabil + front/masuk/luas terkoreksi/tren; status bergulir di public/data/insiden.json (cache data-, BUKAN dari repo:
+      # jangan masukkan ke daftar "lapisan statis"). Menyisipkan kunci ke tugas_kompleks.json, jadi HARUS sesudah taktik.py.
+      - name: Insiden api, front, luas terkoreksi (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true
@@ -101,6 +107,7 @@ jobs:
         run: python3 scripts/data/cuaca_jam.py
 
       - name: Uji prospektif model membesar (boleh gagal)
+        id: prosp
         continue-on-error: true
         timeout-minutes: 10
         run: python3 scripts/sebaran/prospektif.py
@@ -117,8 +124,9 @@ jobs:
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
           python3 scripts/sebaran/jejak.py
 
+      # run yang gagal sebelum langkah pulihkan (mis. FIRMS putus 20 Okt) dulu menyimpan salinan kosong dari git dan memutus rantai catatan
       - name: Simpan catatan uji prospektif
-        if: always()
+        if: always() && steps.prosp.outcome != 'skipped'
         continue-on-error: true
         uses: actions/cache/save@v4
         with:

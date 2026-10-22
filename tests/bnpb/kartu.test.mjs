@@ -7,10 +7,12 @@ uji("teks WA lengkap: angka kunci, rentang terkoreksi, navigasi ke titik masuk, 
   const s = K.teks(TUGAS, KARTU);
   assert.match(s, /KARTU API 62-261022-007/);
   assert.match(s, /Sekitar 12 ha, rentang 8,1 sampai 21 ha|sekitar 12 ha, rentang 8,1 sampai 21 ha/i);
-  assert.doesNotMatch(s, /\b40 ha|\b30 ha/, "luas mentah piksel tidak boleh tampil");
+  assert.match(s, /Kisaran antartahun, perkiraan dari titik panas, bukan pengukuran, dasar rekonsiliasi BNPB/);
+  assert.match(s, /Front aktif:\* sekitar 40 ha, rentang 30 sampai 60 ha, dari piksel satelit aktif 12 jam terakhir, bukan luas terbakar\./, "luas_aktif terpisah");
+  assert.doesNotMatch(s.split("Front aktif")[0], /\b40 ha|\b30 ha/, "luas_aktif tidak pernah jadi luas terbakar");
   assert.match(s, /destination=-2\.5,113\.9/, "navigasi ke titik masuk");
-  assert.match(s, /radius sekitar 380 m/); assert.match(s, /konsesi hti PT Contoh Lestari \(pemegang Grup Contoh\)/);
-  assert.match(s, /regu 3 regu \(rentang 2 sampai 5\)/); assert.match(s, /Perkiraan dari satelit, belum divalidasi lapangan/);
+  assert.match(s, /ukuran piksel sekitar 380 m, posisi bisa meleset lebih jauh/); assert.match(s, /konsesi HTI PT Contoh Lestari \(pemegang Grup Contoh\)/);
+  assert.match(s, /regu 3 \(rentang 2 sampai 5\)/); assert.match(s, /Sumber: deteksi satelit \(VIIRS, MODIS, Himawari\) dan hitungan Pantau Bencana\. Belum divalidasi lapangan\./);
   assert.doesNotMatch(s, /·|NaN|undefined|null|—/);
 });
 uji("teks WA tanpa kartu atau kartu kosong: yang ada saja, tanpa galat", () => {
@@ -21,6 +23,20 @@ uji("teks WA tanpa kartu atau kartu kosong: yang ada saja, tanpa galat", () => {
   assert.equal(K.html({}, null), "", "tanpa isi sama sekali: tidak ada kartu");
 });
 uji("luas: koreksi didahulukan, cadangan luas aktif, dua angka bermakna", () => {
-  assert.match(K.teks({}, {luas_aktif: {ha: 1234, min: 900, maks: 1500}}), /sekitar 1\.200 ha/);
-  assert.match(K.teks({}, {luas_koreksi: {ha: 5}, luas_aktif: {ha: 999}}), /sekitar 5 ha/);
+  const a = K.teks({}, {luas_aktif: {ha: 1234, min: 900, maks: 1500}});
+  assert.match(a, /Front aktif:\* sekitar 1\.200 ha/); assert.doesNotMatch(a, /Sebesar apa:\* sekitar/, "luas_aktif bukan cadangan luas terbakar");
+  assert.match(K.teks({}, {luas_koreksi: {ha: 5}, luas_aktif: {ha: 999}}), /Sebesar apa:\* sekitar 5 ha/);
+});
+uji("jenis dan arah bernama prototipe tidak tercetak aneh", () => {
+  const s = K.teks({}, {masuk: {lat: -2.5, lon: 113.9, jarak_km: 1, jenis: "constructor"}, tren: {n24: 3, arah: "__proto__"}});
+  assert.doesNotMatch(s, /function|\[object|Object\(/);
+});
+uji("tren sedikit: titik panas sedikit, tren belum terbaca", () => {
+  assert.match(K.teks({}, {tren: {n24: 2, arah: "sedikit"}}), /titik panas sedikit, tren belum terbaca/i);
+});
+uji("angka kecil, kebutuhan tanpa satuan ganda, front aktif tanpa rentang bila min sama maks, tanpa kurung bersarang", () => {
+  assert.match(K.teks({}, {luas_koreksi: {ha: 0.456}}), /sekitar 0,46 ha/);
+  const t = K.teks(TUGAS, KARTU); assert.match(t, /pompa 4 unit, 13 HP/); assert.match(t, /helikopter 1 unit/);
+  assert.doesNotMatch(K.teks({}, {luas_aktif: {ha: 40, min: 40, maks: 40}}), /Front aktif:\* sekitar 40 ha, rentang/);
+  assert.doesNotMatch(K.teks({}, {luas_koreksi: {ha: 12, min: 8, maks: 20}}).split("\n").find(l => l.includes("Sebesar")), /\([^)]*\(/);
 });

@@ -119,7 +119,8 @@ const tugasBaru = async (prov, kab, o = {}) => {
   return id;
 };
 const KOMPLEKS = (id, lat, lon, o = {}) => ({id, lat, lon, prov: "62", kab: "Seruyan", kec: "Seruyan Hilir", level: 2, n24: 5, jam_sejak: 2, luas: 30, konsesi: [], ...o});
-const cron = (jam = BASE) => mf.getWorker().then(w => w.scheduled({cron: "* * * * *", scheduledTime: jam}));
+/* tiap panggilan memproses berkasnya: meta versi (0041) dikosongkan lebih dulu supaya uji lama yang memakai `dibuat` sama tetap berarti; gerbang versi diuji di kartu_insiden.test.mjs */
+const cron = async (jam = BASE) => { await DB.prepare("DELETE FROM tugas_meta").run(); return (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: jam}); };
 
 uji("instansi: migrasi 0029 idempoten dan tabel lengkap", async () => {
   const sql = readFileSync(path.join(AKAR, "migrations/0029_instansi.sql"), "utf8");
@@ -309,9 +310,9 @@ uji("instansi: cron menggabung kompleks <= 2 km di kabupaten sama, idempoten, id
   await DB.prepare("UPDATE tugas_api SET status = 'padam' WHERE id = ?").bind(seruyan.id).run();
   TUGAS = {dibuat: new Date(BASE + 6 * JAM - 30 * MENIT).toISOString(), kompleks: [KOMPLEKS("K0001", -2.55, 112.0)]};
   await ev(BASE + 6 * JAM); assert.equal(await n("tugas_api"), 4); assert.equal(await n("tugas_api", "status = 'buka'"), 3);
-  /* bukan di jadwal cron (menit 17 atau jam bukan kelipatan 3): tidak jalan */
+  /* versi baru diproses di menit/jam mana pun (0.3), tidak lagi menunggu jam kelipatan 3 */
   TUGAS = {dibuat: new Date(BASE + 7 * JAM).toISOString(), kompleks: [KOMPLEKS("K0001", -3.5, 113.0, {kab: "Pulang Pisau"})]};
-  await ev(BASE + 7 * JAM); assert.equal(await n("tugas_api"), 4, "jam 10 UTC bukan jadwal");
+  await ev(BASE + 7 * JAM); assert.equal(await n("tugas_api"), 5, "jam 10 UTC: versi baru tetap diproses");
   /* kompleks tidak sah satu pun tidak menggagalkan batch */
   TUGAS = {dibuat: new Date(BASE + 9 * JAM - 10 * MENIT).toISOString(), kompleks: [{id: "x", lat: 99, lon: 0, prov: "62", kab: "Seruyan", level: 2}, {lat: "a"}, null, KOMPLEKS("K9", -3.5, 113.0, {kab: "Pulang Pisau"})]};
   await ev(BASE + 9 * JAM); assert.equal(await n("tugas_api"), 5); assert.equal(await n("tugas_api", "kab = 'Pulang Pisau'"), 1);

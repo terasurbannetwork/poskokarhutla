@@ -14,7 +14,7 @@
     "POST /api/lacak/posisi": "penugasan: batas laju 4 posisi per menit",
     "POST /api/lacak/tiba": "penugasan: geofence tiba otomatis",
     "POST /api/lacak/selesai": "penugasan: geofence tiba otomatis",
-    "table tugas_kartu": "0041: migrasi idempoten, kartu ditolak",
+    "table tugas_kartu": "0041: migrasi idempoten",
     "table tugas_meta": "0.3: versi sama diproses sekali",
     "table tugas_muncul": "L1: migrasi 0037 idempoten",
     "table tugas_lapangan": "L1: migrasi 0037 idempoten",

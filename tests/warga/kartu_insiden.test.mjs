@@ -1,6 +1,7 @@
 /* Tugas api per versi berkas + ID insiden + Kartu Api (src/instansi.js tugasBaruDariBerkas/buatTugasIsi/pasKartu, migrations/0041_tugas_kartu.sql)
    di workerd (Miniflare) dengan D1 sungguhan dan migrasi apa adanya. Jalankan: node --test tests/warga/kartu_insiden.test.mjs */
 import {test, before, after} from "node:test";
+const uji = test;
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import path from "node:path";
@@ -27,7 +28,7 @@ const berkas = (waktu, kompleks) => { BERKAS = {dibuat: new Date(waktu).toISOStr
 const bersih = () => DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM tugas_meta")]);
 const jumlah = async () => (await DB.prepare("SELECT count(*) n FROM tugas_api").first()).n;
 
-test("0041: migrasi idempoten, kartu ditolak bila bukan JSON atau > 3000 huruf", async () => {
+uji("0041: migrasi idempoten, kartu ditolak bila bukan JSON atau > 3000 huruf", async () => {
   for (const s of pecah(readFileSync(path.join(AKAR, "migrations/0041_tugas_kartu.sql"), "utf8"))) await DB.prepare(s).run();
   await DB.prepare("INSERT INTO tugas_api (id, prov, kab, lat, lon, level, dibuat, terakhir_terdeteksi) VALUES ('aaaaaaaaaaaaaaaa', '62', 'Seruyan', -2, 112, 3, 1, 1)").run();
   await assert.rejects(DB.prepare("INSERT INTO tugas_kartu (tugas_id, kartu, diperbarui) VALUES ('aaaaaaaaaaaaaaaa', 'bukan json', 1)").run());
@@ -35,7 +36,7 @@ test("0041: migrasi idempoten, kartu ditolak bila bukan JSON atau > 3000 huruf",
   await DB.prepare("DELETE FROM tugas_api").run();
 });
 
-test("0.3: versi sama diproses sekali; versi baru diproses di menit mana pun; tanpa jam kelipatan 3 menit 18", async () => {
+uji("0.3: versi sama diproses sekali; versi baru diproses di menit mana pun; tanpa jam kelipatan 3 menit 18", async () => {
   await bersih(); berkas(T0 - 10 * MENIT, [K("K1", -2.5, 112)]);
   assert.deepEqual(await tugasBaruDariBerkas(env, T0), {baru: 1, digabung: 0});
   assert.equal(await jumlah(), 1);
@@ -49,7 +50,7 @@ test("0.3: versi sama diproses sekali; versi baru diproses di menit mana pun; ta
   BERKAS = null; assert.equal((await tugasBaruDariBerkas(env, T0 + 5 * MENIT)).lewat, "tugas_kompleks.json belum ada");
 });
 
-test("0.3: pengintaian murah, berkas basi ditandai supaya tidak diurai tiap menit; gagal tulis tidak menandai", async () => {
+uji("0.3: pengintaian murah, berkas basi ditandai supaya tidak diurai tiap menit; gagal tulis tidak menandai", async () => {
   await bersih(); berkas(T0 - 7 * JAM, [K("K1", -2.5, 112)]);
   assert.match((await tugasBaruDariBerkas(env, T0)).lewat, /lebih dari 6 jam/); assert.equal(await jumlah(), 0);
   assert.equal((await tugasBaruDariBerkas(env, T0 + MENIT)).lewat, "versi sama");
@@ -62,7 +63,7 @@ test("0.3: pengintaian murah, berkas basi ditandai supaya tidak diurai tiap meni
   } finally { await DB.prepare("ALTER TABLE tugas_meta_x RENAME TO tugas_meta").run(); }
 });
 
-test("0.4: otomatis=false tanpa tugas lama tidak membuat tugas; dengan tugas lama memperbarui; tanpa kunci = perilaku lama", async () => {
+uji("0.4: otomatis=false tanpa tugas lama tidak membuat tugas; dengan tugas lama memperbarui; tanpa kunci = perilaku lama", async () => {
   await bersih(); berkas(T0 - 5 * MENIT, [K("K1", -2.5, 112, {otomatis: false})]);
   assert.deepEqual(await buatTugas(env, T0), {baru: 0, digabung: 0, pantau: 1}); assert.equal(await jumlah(), 0);
   berkas(T0 - 4 * MENIT, [K("K1", -2.5, 112, {otomatis: true, n24: 5})]); await buatTugas(env, T0); assert.equal(await jumlah(), 1);
@@ -73,7 +74,7 @@ test("0.4: otomatis=false tanpa tugas lama tidak membuat tugas; dengan tugas lam
   assert.deepEqual(await buatTugas(env, T0), {baru: 1, digabung: 0});
 });
 
-test("1.1: insiden sama = tugas sama walau kompleks pindah > 2 km; insiden berbeda berjauhan = tugas lain; cadangan jarak 2 km", async () => {
+uji("1.1: insiden sama = tugas sama walau kompleks pindah > 2 km; insiden berbeda berjauhan = tugas lain; cadangan jarak 2 km", async () => {
   await bersih(); berkas(T0 - 5 * MENIT, [K("K1", -2.5, 112, {insiden: "62-261022-007"})]);
   await buatTugas(env, T0);
   berkas(T0 - 4 * MENIT, [K("K9", -2.5, 112.1, {insiden: "62-261022-007"})]);   // ~11 km
@@ -85,7 +86,7 @@ test("1.1: insiden sama = tugas sama walau kompleks pindah > 2 km; insiden berbe
   const r = await DB.prepare("SELECT insiden FROM tugas_kartu ORDER BY insiden").all(); assert.deepEqual(r.results.map(x => x.insiden), ["62-261022-007", "62-261022-008"]);
 });
 
-test("0.5: lokasi tugas ikut front terbaru selama buka; tidak bergeser setelah padam; front tak sah diabaikan", async () => {
+uji("0.5: lokasi tugas ikut front terbaru selama buka; tidak bergeser setelah padam; front tak sah diabaikan", async () => {
   await bersih(); berkas(T0 - 5 * MENIT, [K("K1", -2.5, 112, {insiden: "62-261022-001", front: {lat: -2.51, lon: 112.01, waktu: "x", sensor: "VIIRS", radius_m: 375}})]);
   await buatTugas(env, T0);
   const lok = async () => { const t = await DB.prepare("SELECT lat, lon, status FROM tugas_api").first(); return [t.lat, t.lon, t.status]; };
@@ -99,7 +100,7 @@ test("0.5: lokasi tugas ikut front terbaru selama buka; tidak bergeser setelah p
   await buatTugas(env, T0); assert.equal((await lok())[0], -2.6, "tugas padam tidak bergeser");
 });
 
-test("kartu: kunci kontrak tersimpan, diperbarui tiap putaran, konsesi ikut; API admin mengembalikan kartu terurai", async () => {
+uji("kartu: kunci kontrak tersimpan, diperbarui tiap putaran, konsesi ikut; API admin mengembalikan kartu terurai", async () => {
   await bersih();
   const isi = {insiden: "62-261022-007", front: {lat: -2.5, lon: 112, waktu: "2026-10-22T03:00:00Z", sensor: "VIIRS", radius_m: 375}, masuk: {lat: -2.49, lon: 112.01, jarak_km: 1.2, jenis: "jalan"},
     radius_m: 375, luas_aktif: {ha: 12, min: 8, maks: 20}, luas_koreksi: {ha: 40, min: 30, maks: 60, faktor: 3.3, dasar: "rekonsiliasi"}, tren: {n24: 9, n24_kemarin: 4, arah: "tumbuh"},
@@ -118,7 +119,7 @@ test("kartu: kunci kontrak tersimpan, diperbarui tiap putaran, konsesi ikut; API
   const r2 = await (await mf.dispatchFetch(`http://instansi.lokal/api/instansi/admin/tugas/${id}`, {headers: {"x-admin-token": "rahasia-admin"}})).json(); assert.equal(r2.tugas.kartu, null);
 });
 
-test("kartu kepanjangan dipotong berurutan dan tetap JSON sah <= 3000; tugas dihapus = kartu ikut hilang", async () => {
+uji("kartu kepanjangan dipotong berurutan dan tetap JSON sah <= 3000; tugas dihapus = kartu ikut hilang", async () => {
   const besar = {insiden: "62-261022-009", front: {lat: -2.5, lon: 112}, tren: {n24: 1}, syarat: ["konsesi"], konsesi: [1, 2, 3].map(i => ({jenis: "HTI", nama: "N".repeat(1100), pemegang: "P" + i}))};
   const s = pasKartu(besar); assert.ok(s.length <= 3000, String(s.length)); const o = JSON.parse(s);
   assert.equal(o.insiden, "62-261022-009"); assert.deepEqual(o.tren, {n24: 1}); assert.ok(o.konsesi.length < 3, "konsesi dipotong dari belakang dulu");
@@ -131,11 +132,38 @@ test("kartu kepanjangan dipotong berurutan dan tetap JSON sah <= 3000; tugas dih
   await DB.prepare("DELETE FROM tugas_api").run(); assert.equal((await DB.prepare("SELECT count(*) n FROM tugas_kartu").first()).n, 0, "ON DELETE CASCADE");
 });
 
-test("tanpa kunci baru dan tanpa tabel 0041: perilaku lama (jarak 2 km), tidak ada galat", async () => {
+uji("tanpa kunci baru dan tanpa tabel 0041: perilaku lama (jarak 2 km), tidak ada galat", async () => {
   await bersih(); await DB.batch([DB.prepare("ALTER TABLE tugas_kartu RENAME TO tugas_kartu_x")]);
   try {
     berkas(T0 - 5 * MENIT, [K("K1", -2.5, 112, {insiden: "62-261022-007", front: {lat: -2.5, lon: 112.001}})]);
     assert.deepEqual(await buatTugas(env, T0), {baru: 1, digabung: 0});
     berkas(T0 - 4 * MENIT, [K("K2", -2.5, 112.005)]); assert.deepEqual(await buatTugas(env, T0), {baru: 0, digabung: 1});
   } finally { await DB.prepare("ALTER TABLE tugas_kartu_x RENAME TO tugas_kartu").run(); }
+});
+
+uji("0.3: versi sama tidak mengurai berkas (CPU 10 ms): hanya awal berkas dibaca lalu body dibatalkan", async () => {
+  await bersih(); berkas(T0 - 5 * MENIT, [K("K1", -2.5, 112)]);
+  let urai = 0;
+  const envC = {DB, ASSETS: {fetch: async () => { const r = Response.json(BERKAS), j = r.json.bind(r); r.json = () => { urai++; return j(); }; return r; }}};
+  await tugasBaruDariBerkas(envC, T0); assert.equal(urai, 1, "versi baru diurai sekali");
+  for (let i = 1; i <= 5; i++) assert.equal((await tugasBaruDariBerkas(envC, T0 + i * MENIT)).lewat, "versi sama");
+  assert.equal(urai, 1, "versi sama tidak pernah diurai");
+});
+
+uji("berkas rusak atau dibuat tak terurai diurai sekali saja per versi, tidak tiap menit", async () => {
+  await bersih(); let urai = 0;
+  const bikin = teks => ({DB, ASSETS: {fetch: async () => { const r = new Response(teks); const j = r.json.bind(r); r.json = () => { urai++; return j(); }; return r; }}});
+  const rusak = bikin('{"dibuat":"2026-10-22T03:00:00Z","kompleks":[{'), tak = bikin('{"dibuat":"bukan-tanggal","kompleks":[]}');
+  for (let i = 0; i < 5; i++) await tugasBaruDariBerkas(rusak, T0 + i * MENIT);
+  assert.equal(urai, 1, "rusak: diurai sekali");
+  urai = 0; for (let i = 0; i < 5; i++) await tugasBaruDariBerkas(tak, T0 + i * MENIT);
+  assert.equal(urai, 1, "dibuat tak terurai: diurai sekali");
+  assert.equal(await jumlah(), 0);
+});
+
+uji("pasKartu membuang koordinat di luar bbox dan angka negatif atau tak hingga", () => {
+  const o = JSON.parse(pasKartu({insiden: "62-261022-007", front: {lat: 99, lon: 112}, masuk: {lat: -2.5, lon: 500, jarak_km: 1}, radius_m: -5, luas_aktif: {ha: -1, min: 1, maks: 2},
+    luas_koreksi: {ha: 10, min: 5, maks: 20}, tren: {n24: Infinity}}));
+  assert.deepEqual(Object.keys(o).sort(), ["insiden", "luas_koreksi"]);
+  const n = JSON.parse(pasKartu({insiden: "62-261022-007", masuk: null, front: {lat: -2.5, lon: 112}})); assert.equal(n.masuk, null); assert.deepEqual(n.front, {lat: -2.5, lon: 112});
 });

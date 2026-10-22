@@ -9,7 +9,7 @@ const SimData = window.SimData = {
   async jalan(S) {
     const p = S.f.properties, st = $("#simStatus");
     try {
-      if (st) st.textContent += " · model data: memuat…";
+      if (st) st.textContent += ", model data: memuat…";
       this.model ||= await SebaranModel.muat();
       this.prosp ||= await muatJSON("data/prospektif.json").catch(() => null); /* gerbang peluang "akan membesar": tampil hanya bila prospektif.teruji (scripts/sebaran/prospektif.py N_MIN_DINILAI) */
       const o = u => muatJSON(u).catch(() => null);
@@ -22,8 +22,8 @@ const SimData = window.SimData = {
       const titik = await this.titik(sel0);
       this.hasil = SebaranModel.ramal({model: this.model, lat: p.lat, lon: p.lon, waktu: Date.now(), cuaca, lahan: this.lahan, sel0, frp, frpJumlah: p.frp24, titik, mc: 60, seed: 3});
       this.k = S.k;
-      if (st) st.textContent = st.textContent.replace(" · model data: memuat…", " · model data selesai");
-    } catch (e) { console.error(e); this.hasil = null; if (st) st.textContent += " · model data gagal: " + e.message; }
+      if (st) st.textContent = st.textContent.replace(", model data: memuat…", ", model data selesai");
+    } catch (e) { console.error(e); this.hasil = null; if (st) st.textContent += ", model data gagal: " + e.message; }
   },
   /* deteksi S-NPP/NOAA-20 7 hari (hotspot.json) untuk model "akan membesar"; titik kompleks ini sendiri (<= 750 m dari sel awal)
      dibuang karena model dilatih pada titik panas BARU yang belum punya riwayat di tempatnya */
@@ -52,15 +52,18 @@ const SimData = window.SimData = {
     const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
     const ha = fmt((this.model.lepas_sel || 10) * 14), L = this.model.lolos, K = L?.kinerja || {};
     const PR = this.prosp, teruji = PR?.teruji === true;
+    const bulat = x => { if (!x) return 0; const d = Math.floor(Math.log10(Math.abs(x))), p = 10 ** Math.max(0, d - 1); return Math.round(x / p) * p; }; /* 2 angka bermakna */
+    const tahunUji = (L?.laporan || []).map(x => /Uji (\d{4})-(\d{4})/.exec(x.himpunan || "")).find(Boolean)?.slice(1, 3).join("–") || "2024–2026";
+    const dari10 = K.cv_recall != null ? Math.round(K.cv_recall * 10) : 7;
     const membesar = r.sudah_besar ? `Sudah ≥ ${ha} ha (≥ ${this.model.lepas_sel || 10} sel aktif 24 jam): perlakukan sebagai kebakaran besar.`
-      : !teruji ? `Peluang membesar ≥ ${ha} ha: <b>belum teruji</b>, baru ${fmt(PR?.mode?.awal?.dinilai || 0)} dari ${fmt(PR?.n_min || 300)} ramalan yang sudah dinilai 72 jam kemudian.`
+      : !teruji ? `Peluang membesar ≥ ${ha} ha: <b>belum teruji</b>, ${PR ? `baru ${fmt(PR.mode?.awal?.dinilai || 0)} dari ${fmt(PR.n_min || 300)} ramalan yang sudah dinilai 72 jam kemudian.` : "belum ada data penilaian."}`
       : r.lolos ? `${r.lolos.waspada ? `<b style="display:inline-block;padding:1px 8px;border-radius:6px;background:var(--bad);color:#fff">WASPADA: berpotensi membesar</b> ` : ""}Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik panas baru, terkalibrasi).
-        Tanda WASPADA dipasang mulai ${fmt(Math.round(r.lolos.ambang * 1000) / 10)}% agar sedikitnya 7 dari 10 api yang benar-benar membesar tertangkap${K.uji2_presisi != null ? `; akibatnya hanya ± ${fmt(Math.round(K.uji2_presisi * 100))}% tanda yang benar-benar membesar (uji 2024–2026: ${fmt(Math.round(K.uji2_recall * 100))}% api besar tertangkap)` : ""}. Model ini untuk api yang baru muncul; kompleks yang sudah lama menyala bisa dinilai terlalu rendah.`
+        Tanda WASPADA dipasang mulai ${fmt(Math.round(r.lolos.ambang * 100))}% agar sedikitnya ${dari10} dari 10 api yang benar-benar membesar tertangkap${K.uji2_presisi != null ? `; akibatnya hanya ${fmt(Math.round(K.uji2_presisi * 100))}% tanda yang benar-benar membesar (uji ${tahunUji}: ${fmt(Math.round(K.uji2_recall * 100))}% api besar tertangkap)` : ""}. Model ini untuk api yang baru muncul; kompleks yang sudah lama menyala bisa dinilai terlalu rendah.`
       : `Peluang membesar ≥ ${ha} ha: ${fmt(Math.round(r.p_lepas * 100))}% (dari Monte Carlo; data titik sekitar tidak termuat, model khusus tidak dijalankan).`;
-    return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada 2024–2026 dan 123 kejadian lalu).</b> Luas 24/48/72 jam, median (rentang 80%${this.model.selang ? ", dikalibrasi pada 2015–2023" : ""}): ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.
+    return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada ${tahunUji} dan 123 kejadian lalu).</b> Luas median (rentang 80%${this.model.selang ? ", dikalibrasi pada 2015–2023" : ""}): ${r.luas.map((x, i) => `${(i + 1) * 24} jam ${fmt(bulat(x.p50))} ha (${fmt(bulat(x.p10))}–${fmt(bulat(x.p90))})`).join("; ")}.
       ${membesar} ${r.arah ? `Arah utama ${mata[Math.round(r.arah.deg / 45) % 8]} (keyakinan rendah: pada uji, arah sebar tidak bisa diramal model mana pun).` : ""}
-      Terkena (harapan 72 jam): gambut ${fmt(r.kena.gambut_ha)} ha, kawasan lindung ${fmt(r.kena.lindung_ha)} ha${r.kena.desa.length ? `, desa: ${r.kena.desa.slice(0, 6).map(x => esc(x.nama)).join(", ")}` : ""}.
-      Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji 2024–2026: lihat Insight → "Uji model pada kejadian lalu".
+      Terkena (harapan 72 jam): gambut ${fmt(bulat(r.kena.gambut_ha))} ha, kawasan lindung ${fmt(bulat(r.kena.lindung_ha))} ha${r.kena.desa.length ? `, desa: ${r.kena.desa.slice(0, 6).map(x => esc(x.nama)).join(", ")}` : ""}.
+      Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji ${tahunUji}: lihat Insight → "Uji model pada kejadian lalu".
       ${Sim.kal?.alasan ? `<br><span style="color:var(--bad)">Model fisika di bawah belum terkalibrasi untuk kompleks ini (${esc(Sim.kal.alasan)}) dan pada uji cenderung melebih-lebihkan luas hingga puluhan kali; pakai hanya sebagai pembanding.</span>` : "Model fisika di bawah (terkalibrasi ke pertumbuhan teramati) ditampilkan sebagai pembanding."}</div>`;
   },
 };

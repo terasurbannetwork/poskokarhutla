@@ -198,6 +198,11 @@ jobs:
         run: |
           python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
           python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
+
+      # harian.py menulis ulang tugas_kompleks.json tanpa kunci insiden; tanpa langkah ini Kartu Api kosong sampai putaran titik.yml berikutnya
+      - name: Insiden api, front, luas terkoreksi (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
           python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
 
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
