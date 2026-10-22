@@ -33,9 +33,10 @@ BATAS_JAM = 18.0
 PULAU, CELAH_KM, CELAH_KMJ = 3000, 5.0, 10.0  # komponen < 3000 simpul disambung lewat celah <= 5 km, 10 km/jam
 SEL = 0.05  # indeks ruang (derajat)
 # akses.json berkunci id kompleks harian (K0001..., diurut ulang tiap putaran) -> dicocokkan ke kompleks lewat LOKASI.
-# 3 km = 2 x eps DBSCAN 1,5 km (harian.EPS_KM): dua titik pusat kompleks yang sama antar putaran tak mungkin lebih jauh dari
-# satu tautan; sama dengan jari-jari pasang_kompleks di konsesi_kompleks.py. Asumsi platform, bukan standar baku.
-COCOK_KM = 3.0
+# 1,5 km = eps DBSCAN (harian.EPS_KM): pusat kompleks yang sama bergeser antar putaran sekitar satu tautan; lebih longgar
+# (3 km) membuat tetangga 1,5-3 km ikut mengambil akses kompleks lain. Satu entri hanya untuk SATU kompleks per putaran
+# (pasangan terdekat menang). Asumsi platform, belum diuji balik terhadap drift nyata (butuh arsip kluster antar putaran).
+COCOK_KM = 1.5
 
 
 def km(a1, o1, a2, o2):
@@ -262,14 +263,19 @@ def daftar_akses(ak):
             if k != "_meta" and isinstance(v, dict) and isinstance(v.get("lat"), (int, float)) and isinstance(v.get("lon"), (int, float))]
 
 
-def cocok_akses(daftar, lat, lon, maks_km=COCOK_KM):
-    """Entri akses terdekat dari (lat, lon) dalam maks_km, atau None. ID kompleks tidak dipakai."""
-    best, jarak = None, maks_km
-    for la, lo, v in daftar:
-        d = km(lat, lon, la, lo)
-        if d <= jarak:
-            best, jarak = v, d
-    return best
+def pasangkan_akses(daftar, titik, maks_km=COCOK_KM):
+    """titik [(kunci, lat, lon)] -> {kunci: entri akses}. Pasangan terdekat dalam maks_km menang; satu entri hanya untuk satu
+    kompleks, kompleks lain (tetangga tanpa entri sendiri) tidak mendapat apa-apa. ID kompleks tidak dipakai."""
+    pasang = sorted((km(la, lo, a, b), i, j) for i, (_, la, lo) in enumerate(titik) for j, (a, b, _) in enumerate(daftar))
+    out, pakai_t, pakai_d = {}, set(), set()
+    for d, i, j in pasang:
+        if d > maks_km:
+            break
+        if i not in pakai_t and j not in pakai_d:
+            out[titik[i][0]] = daftar[j][2]
+            pakai_t.add(i)
+            pakai_d.add(j)
+    return out
 
 
 def harian():
@@ -310,13 +316,16 @@ def uji():
     assert (r["lat"], r["lon"]) == (round(k["lat"], 4), round(k["lon"], 4)), r
     d = daftar_akses({"_meta": {}, "K0001": r, "K0002": {"kaki_km": 1.0, "dari": []}})   # K0002 berkas lama tanpa lokasi
     assert len(d) == 1, d
-    assert cocok_akses(d, k["lat"], k["lon"]) is r
-    assert cocok_akses(d, k["lat"] + 1 / 110.57, k["lon"]) is r, "id berubah (K0001 -> K0950) tapi lokasi 1 km: tetap cocok"
-    assert cocok_akses(d, k["lat"] + (COCOK_KM + 0.5) / 110.57, k["lon"]) is None, "lokasi jauh tidak boleh cocok"
-    assert cocok_akses([], 0, 0) is None and cocok_akses(daftar_akses(None), 0, 0) is None
+    kc = lambda dy, key="X": (key, k["lat"] + dy / 110.57, k["lon"])
+    assert pasangkan_akses(d, [kc(0)])["X"] is r
+    assert pasangkan_akses(d, [kc(1)])["X"] is r, "id berubah (K0001 -> K0950) tapi lokasi 1 km: tetap cocok"
+    assert pasangkan_akses(d, [kc(COCOK_KM + 0.5)]) == {}, "lokasi jauh tidak boleh cocok"
+    assert pasangkan_akses([], [kc(0)]) == {} and pasangkan_akses(daftar_akses(None), [kc(0)]) == {} and pasangkan_akses(d, []) == {}
     lain = {"lat": k["lat"] + 2 / 110.57, "lon": k["lon"], "kaki_km": 9.0, "dari": []}
-    assert cocok_akses(daftar_akses({"A": r, "B": lain}), k["lat"] + 1.8 / 110.57, k["lon"]) is lain, "yang terdekat menang"
-
+    assert pasangkan_akses(daftar_akses({"A": r, "B": lain}), [kc(1.4)])["X"] is lain, "yang terdekat menang"
+    # dua kompleks di 1 km dan 1,4 km dari SATU entri: hanya yang terdekat mendapat, tetangga tidak mengambil milik orang
+    m = pasangkan_akses(d, [kc(1.4, "jauh"), kc(1.0, "dekat")])
+    assert m == {"dekat": r}, m
 
 if __name__ == "__main__":
     uji()

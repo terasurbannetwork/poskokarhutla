@@ -31,6 +31,17 @@ RINGKAS = os.path.join(PUBLIK, "prospektif.json") if RIWAYAT_HARI >= 7 else os.p
 SIMPAN_HARI = 12
 UMUR_MIN, UMUR_MAKS = 6 * 60, 24 * 60  # menit sesudah deteksi pertama: jendela NOAA-20 +-3 jam tertutup & sudah masuk NRT
 JEDA_NILAI = 72 * 60 + 6 * 60  # 72 jam + keterlambatan NRT
+# Gerbang tampil peluang "akan membesar" di layar (semua harus terpenuhi, mode awal):
+N_MIN_DINILAI = 300   # ASUMSI: ~17% lolos (teramati prospektif 20 Okt 2026: 149 dari 882) => ~50 kasus lolos
+N_MIN_LOLOS = 50      # ASUMSI: dengan 50 kasus, setengah lebar CI95 recall ~ +-0,13 (Wilson); lebih sedikit = recall belum bisa dipegang
+TOLERANSI_RECALL = 0.15  # ASUMSI: batas bawah CI95 recall prospektif >= klaim model (model_sebaran.json lolos.kinerja.uji2_recall) - 0,15
+
+
+def wilson_bawah(k, n, z=1.96):
+    if n <= 0:
+        return None
+    p = k / n
+    return (p + z * z / (2 * n) - z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / (1 + z * z / n)
 MAKS_BOBOT = float(os.environ.get("PROSPEKTIF_BOBOT", "400"))
 URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -58,8 +69,8 @@ def gabung(lama, hs):
     baru = []
     for la, lo, jam, s, frp, c, w, _ in hs["baris"]:
         if s in ("N", "N20") and c >= 1:
-            baru.append([round(a0 + jam * 60, 1), la, lo, s, frp, hs["wilayah"][w].split("|")[0]])
-    out = list({(r[0], r[1], r[2], r[3]): r for r in lama + baru}.values())
+            baru.append([round(a0 + jam * 60), la, lo, s, frp, hs["wilayah"][w].split("|")[0]])  # menit BULAT: jam di hotspot.json dibulatkan 0,01 jam terhadap acuan yang berganti, pecahan menit tidak stabil antarjalan
+    out = list({(round(r[0]), r[1], r[2], r[3]): r for r in lama + baru}.values())
     out = [r for r in out if r[0] >= a0 - SIMPAN_HARI * 1440]
     out.sort(key=lambda r: r[0])
     return out, a0
@@ -160,6 +171,31 @@ def baca_jsonl(j):
     return [json.loads(l) for l in open(j)] if os.path.exists(j) else []
 
 
+def nilai_baru(ramalan, dinilai, snpp, a0, t_awal, acuan):
+    """Baris nilai.jsonl baru untuk ramalan yang 72 jam (+ jeda NRT) sudah lewat. Deteksi awal dicocokkan menurut LOKASI (lat, lon persis)
+    dan menit +-1, bukan menit pecahan persis: gudang & ramalan lama bisa berbeda pembulatan menit."""
+    per_lok = {}
+    for i, x in enumerate(snpp):
+        per_lok.setdefault((x[1], x[2]), []).append(i)
+    out = []
+    for r in ramalan:
+        if (r["kunci"], r["mode"]) in dinilai:
+            continue
+        t0 = float(r["kunci"].split("_")[0])
+        if a0 < t0 + JEDA_NILAI:
+            continue
+        if t0 < t_awal:
+            out.append({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True})
+            continue
+        awal = sorted({i for m, la, lo in r["awal"] for i in per_lok.get((la, lo), ()) if abs(snpp[i][0] - m) <= 1})
+        if not awal:  # titik awal tak ketemu di gudang sesudah jeda: tak akan membaik, jangan dibuang diam-diam
+            out.append({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True, "tak_cocok": True})
+            continue
+        n72 = label72(snpp, awal, t0)
+        out.append({"kunci": r["kunci"], "mode": r["mode"], "n72": n72, "lolos": n72 >= LL.LEPAS, "dinilai": acuan})
+    return out
+
+
 def main():
     os.makedirs(FOLDER, exist_ok=True)
     M = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
@@ -218,30 +254,18 @@ def main():
                                     "fitur": {k: round(x, 3) for k, x in v.items()}}, separators=(",", ":")) + "\n")
     # nilai: ramalan yang 72 jam (+ jeda NRT) sudah lewat
     nilai = baca_jsonl(NILAI)
-    dinilai = {(r["kunci"], r["mode"]) for r in nilai}
+    baru = nilai_baru(ramalan, {(r["kunci"], r["mode"]) for r in nilai}, snpp, a0, t_awal, hs["acuan"][:16])
     with open(NILAI, "a") as f:
-        for r in ramalan:
-            if (r["kunci"], r["mode"]) in dinilai:
-                continue
-            t0 = float(r["kunci"].split("_")[0])
-            if a0 < t0 + JEDA_NILAI:
-                continue
-            if t0 < t_awal:
-                f.write(json.dumps({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True}) + "\n")
-                continue
-            kunci_awal = {tuple(x) for x in r["awal"]}
-            awal = [i for i, x in enumerate(snpp) if (x[0], x[1], x[2]) in kunci_awal]
-            if not awal:
-                continue
-            n72 = label72(snpp, awal, t0)
-            f.write(json.dumps({"kunci": r["kunci"], "mode": r["mode"], "n72": n72, "lolos": n72 >= LL.LEPAS, "dinilai": hs["acuan"][:16]}) + "\n")
+        for r in baru:
+            f.write(json.dumps(r) + "\n")
     ringkas()
 
 
 def ringkas():
     import gbdt as G
     R = baca_jsonl(RAMALAN)
-    N = {(r["kunci"], r["mode"]): r for r in baca_jsonl(NILAI) if not r.get("kedaluwarsa")}
+    semua_n = baca_jsonl(NILAI)
+    N = {(r["kunci"], r["mode"]): r for r in semua_n if not r.get("kedaluwarsa")}
     out = {"diperbarui": dt.datetime.now(dt.timezone.utc).isoformat()[:16], "definisi": "lolos = >= 10 sel VIIRS 375 m (~140 ha) dalam 72 jam sejak deteksi pertama",
            "catatan": "ramalan dicatat saat titik api baru muncul (cuaca = prakiraan Open-Meteo), dinilai 72 jam kemudian dengan FIRMS NRT; tidak bisa disetel ulang sesudahnya",
            "mode": {}}
@@ -268,6 +292,16 @@ def ringkas():
                                "tepat": sum(1 for r, n in dn if r["strata"] == st and n["lolos"] and r["waspada"]),
                                "waspada": sum(1 for r, _ in dn if r["strata"] == st and r["waspada"])} for st in ("gambut", "mineral", "sabana")}
         out["mode"][mode] = o
+    out["n_min"] = N_MIN_DINILAI
+    A = out["mode"]["awal"]
+    klaim = json.load(open(os.path.join(PUBLIK, "model_sebaran.json"))).get("lolos", {}).get("kinerja", {}).get("uji2_recall")
+    A["recall_bawah95"] = round(wilson_bawah(A["tepat"], A["lolos"]), 3) if A["lolos"] else None
+    out["recall_min"] = round(klaim - TOLERANSI_RECALL, 3) if klaim is not None else None
+    out["n_min_lolos"] = N_MIN_LOLOS
+    out["tak_cocok"] = sum(1 for r in semua_n if r.get("tak_cocok") and r["mode"] == "awal")  # ramalan yang titik awalnya tak ditemukan lagi saat dinilai
+    out["teruji"] = bool(A["dinilai"] >= N_MIN_DINILAI and A["lolos"] >= N_MIN_LOLOS and out["recall_min"] is not None
+                         and A["recall_bawah95"] is not None and A["recall_bawah95"] >= out["recall_min"])  # layar menyembunyikan peluang "akan membesar" selama false
+    out["mulai"] = min((r["t0"] for r in R), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
     out["terbaru"] = [{"t0": r["t0"], "lat": r["lat"], "lon": r["lon"], "prov": r["prov"], "p": r["p"], "waspada": r["waspada"],
                        "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
     json.dump(out, open(RINGKAS, "w"), ensure_ascii=False, separators=(",", ":"))
@@ -289,6 +323,17 @@ if __name__ == "__main__":
         assert len(g) == 1 and g[0][3] == "N" and g[0][5] == "62" and abs(g[0][0] - (a0 - 60)) < 1e-6, g
         g2, _ = gabung(g, hs)
         assert len(g2) == 1
+        # kasus 0-dinilai: ramalan memuat menit pecahan (.4) yang tak sama dengan gudang sekarang; harus tetap dinilai lewat lokasi
+        gud = [[1000, -2.0, 114.0, "N", 5, "62"], [1500, -2.0, 114.0 + .5 * km, "N", 5, "62"], [2000, -2.0, 114.0 + 1.0 * km, "N", 5, "62"]]
+        ram = [{"kunci": "1000_-2.0000_114.0000", "mode": "awal", "awal": [[1000.4, -2.0, 114.0]]},
+               {"kunci": "9999_-1.0000_100.0000", "mode": "awal", "awal": [[9999.0, -1.0, 100.0]]}]
+        nb = nilai_baru(ram, set(), gud, 1000 + JEDA_NILAI + 5, 0, "x")
+        assert len(nb) == 1 and nb[0]["n72"] == 3 and nb[0]["lolos"] is False, nb  # ramalan kedua belum 78 jam: tak dinilai
+        assert nilai_baru(ram, {("1000_-2.0000_114.0000", "awal")}, gud, 1000 + JEDA_NILAI + 5, 0, "x") == []
+        assert nilai_baru(ram, set(), gud, 1000 + JEDA_NILAI + 5, 2000, "x")[0].get("kedaluwarsa")
+        r0 = nilai_baru([{"kunci": "1000_-9.0000_100.0000", "mode": "awal", "awal": [[1000.0, -9.0, 100.0]]}], set(), gud, 1000 + JEDA_NILAI + 5, 0, "x")
+        assert r0 == [{"kunci": "1000_-9.0000_100.0000", "mode": "awal", "kedaluwarsa": True, "tak_cocok": True}], r0  # tak cocok => dihitung, bukan dibuang
+        assert abs(wilson_bawah(34, 50) - 0.541) < .005 and wilson_bawah(0, 0) is None
         print("ok")
     else:
         main()

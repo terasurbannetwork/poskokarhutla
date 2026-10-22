@@ -11,6 +11,7 @@ const SimData = window.SimData = {
     try {
       if (st) st.textContent += " · model data: memuat…";
       this.model ||= await SebaranModel.muat();
+      this.prosp ||= await muatJSON("data/prospektif.json").catch(() => null); /* gerbang peluang "akan membesar": tampil hanya bila prospektif.teruji (scripts/sebaran/prospektif.py N_MIN_DINILAI) */
       const o = u => muatJSON(u).catch(() => null);
       this.lahan ||= {gambut: Lapis.cache.gambut || await o("data/lahan/gambut.geojson"), kawasan: Lapis.cache.kawasan || await o("data/lahan/kawasan.geojson"),
         konsesi: Lapis.cache.konsesi || await o("data/lahan/konsesi.geojson"), kanal: await o("data/kanal.json"),
@@ -50,7 +51,9 @@ const SimData = window.SimData = {
     const r = this.hasil; if (!r) return "";
     const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
     const ha = fmt((this.model.lepas_sel || 10) * 14), L = this.model.lolos, K = L?.kinerja || {};
+    const PR = this.prosp, teruji = PR?.teruji === true;
     const membesar = r.sudah_besar ? `Sudah ≥ ${ha} ha (≥ ${this.model.lepas_sel || 10} sel aktif 24 jam): perlakukan sebagai kebakaran besar.`
+      : !teruji ? `Peluang membesar ≥ ${ha} ha: <b>belum teruji</b>, baru ${fmt(PR?.mode?.awal?.dinilai || 0)} dari ${fmt(PR?.n_min || 300)} ramalan yang sudah dinilai 72 jam kemudian.`
       : r.lolos ? `${r.lolos.waspada ? `<b style="display:inline-block;padding:1px 8px;border-radius:6px;background:var(--bad);color:#fff">WASPADA: berpotensi membesar</b> ` : ""}Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik panas baru, terkalibrasi).
         Tanda WASPADA dipasang mulai ${fmt(Math.round(r.lolos.ambang * 1000) / 10)}% agar sedikitnya 7 dari 10 api yang benar-benar membesar tertangkap${K.uji2_presisi != null ? `; akibatnya hanya ± ${fmt(Math.round(K.uji2_presisi * 100))}% tanda yang benar-benar membesar (uji 2024–2026: ${fmt(Math.round(K.uji2_recall * 100))}% api besar tertangkap)` : ""}. Model ini untuk api yang baru muncul; kompleks yang sudah lama menyala bisa dinilai terlalu rendah.`
       : `Peluang membesar ≥ ${ha} ha: ${fmt(Math.round(r.p_lepas * 100))}% (dari Monte Carlo; data titik sekitar tidak termuat, model khusus tidak dijalankan).`;

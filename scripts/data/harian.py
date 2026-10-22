@@ -35,8 +35,11 @@ R_BUMI = 6371.0088
 #   permukiman: desa (osm/desa.json, 9 provinsi karhutla) atau fasilitas (fasilitas.json) dalam 5 km dari pusat/titik api24.
 #               5 km = radius tengah dampak.RADIUS (1, 5, 10) untuk kedekatan desa ke kompleks aktif.
 #   konsesi   : pusat atau titik api24 di dalam poligon konsesi yang izinnya tidak berakhir (lahan/konsesi.geojson).
-#   tumbuh    : titik 24 jam terakhir naik dibanding 24 jam sebelumnya: tambah >= 3 titik DAN >= 1,5 kali. Dua ambang itu
-#               menyaring noise 1 -> 2 titik; tanpa n24s (berkas lama) tidak dinilai tumbuh.
+#   HIPOTESIS: ambang tumbuh 3 titik / 1,5 kali dan radius 5 km BELUM di-backtest terhadap kejadian nyata; angka dipilih untuk
+#   menyaring noise dan menekan jumlah tugas. Ulangi hitungan dampaknya: python3 scripts/data/harian.py hitung-otomatis
+#   tumbuh    : api yang SUDAH ada 24 jam lalu (n24s >= 1) dan titik 24 jam terakhir naik: tambah >= 3 titik DAN >= 1,5 kali.
+#               Api baru (n24s = 0) bukan "tumbuh" (3 titik baru melonjakkan 1.048 dari 2.065 level 2 pada data 12 Okt; dengan
+#               n24s >= 1 tinggal 314); api baru dekat desa tetap tertangkap syarat permukiman. Tanpa n24s (berkas lama) tidak dinilai.
 SYARAT = {"permukiman_km": 5.0, "tumbuh_tambah": 3, "tumbuh_kali": 1.5}
 
 # Status taktis per kompleks. "Tanggap darurat" adalah status hukum wilayah (P.9/2018) yang ditetapkan
@@ -632,7 +635,7 @@ def syarat_level2(q, permukiman=None, konsesi=None):
     if konsesi and any(konsesi(lo, la) for la, lo in titik):
         out.append("konsesi")
     s = q.get("n24s")
-    if s is not None and q["n24"] - s >= SYARAT["tumbuh_tambah"] and q["n24"] >= SYARAT["tumbuh_kali"] * s:
+    if s and q["n24"] - s >= SYARAT["tumbuh_tambah"] and q["n24"] >= SYARAT["tumbuh_kali"] * s:
         out.append("tumbuh")
     return out
 
@@ -648,8 +651,33 @@ def tugas_kompleks(fitur, kini, permukiman=None, konsesi=None):
             sy = syarat_level2(q, permukiman, konsesi) if q["level"] == 2 else []
             ks.append({"id": q["id"], "lat": round(q["lat"], 4), "lon": round(q["lon"], 4), "prov": q["prov"], "kab": q["kab"], "kec": q["kec"],
                        "level": q["level"], "n24": q["n24"], "jam_sejak": round(q["jam_sejak"], 1), "luas": round(q["luas"]), "konsesi": [],
-                       "otomatis": q["level"] == 3 or bool(sy), "syarat": sy})
+                       "otomatis": q["level"] == 3 or bool(sy), "syarat": sy,
+                       # data syarat tersedia? False = syarat itu tidak bisa dinilai (bukan "tidak terpenuhi")
+                       "syarat_dinilai": {"permukiman": permukiman is not None, "konsesi": konsesi is not None, "tumbuh": q.get("n24s") is not None}})
     return {"dibuat": kini.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "syarat_ambang": SYARAT, "kompleks": ks}
+
+
+def hitung_otomatis():
+    """Ulangi hitungan dampak syarat atas public/data lokal (tanpa menulis apa pun): berapa kompleks level >= 2 teramati <= 24 jam,
+    berapa otomatis, dan sumbangan tiap syarat. n24s DIPERKIRAKAN dari hotspot.json (titik VIIRS dipasang ke kompleks lewat
+    konsesi_kompleks.pasang_kompleks), jadi angka tumbuh hanya pendekatan; di CI n24s asli dari harian.main."""
+    import collections
+    import konsesi_kompleks as KK
+    D = lambda n: os.path.join(KELUAR, n)
+    kl = json.load(open(D("kluster.json")))["features"]
+    hs = json.load(open(D("hotspot.json")))
+    c = {k: i for i, k in enumerate(hs["kolom"])}
+    rows = [r for r in hs["baris"] if r[c["sensor"]] != "M" and r[c["keyakinan"]] >= 1]
+    sblm = collections.Counter(i for r, i in zip(rows, KK.pasang_kompleks(kl, [(r[c["lat"]], r[c["lon"]]) for r in rows])) if i is not None and -48 <= r[c["jam"]] < -24)
+    for i, f in enumerate(kl):
+        f["properties"]["n24s"] = sblm[i]
+    KON = Poligon(D("lahan/konsesi.geojson"))
+    perm = indeks_permukiman(json.load(open(D("osm/desa.json"))), json.load(open(D("fasilitas.json"))))
+    kons = lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KON.cari(lon, lat))
+    tk = tugas_kompleks(kl, dt.datetime.fromisoformat(json.load(open(D("meta.json")))["dibuat"]), perm, kons)["kompleks"]
+    sy = collections.Counter(x for k in tk for x in k["syarat"])
+    n2 = sum(k["level"] == 2 for k in tk)
+    print(f"level>=2 teramati<=24j: {len(tk)} (level 2: {n2}, level 3: {len(tk) - n2}); otomatis: {sum(k['otomatis'] for k in tk)}; syarat level 2: {dict(sy)}; ambang: {SYARAT}")
 
 
 def uji():
@@ -681,6 +709,8 @@ def uji():
     t = mk()
     assert t["otomatis"] is False and t["syarat"] == [] and t["konsesi"] == [], f"level 2 tanpa syarat: tidak otomatis {t}"
     assert mk(id="K3", level=3)["otomatis"] is True and mk(level=3)["syarat"] == []
+    assert mk()["syarat_dinilai"] == {"permukiman": True, "konsesi": True, "tumbuh": True}
+    assert mk(n24s=None)["syarat_dinilai"]["tumbuh"] is False
     t = mk(lat=-3.1, lon=112.1)
     assert t["otomatis"] and t["syarat"] == ["permukiman"], t
     t = mk(api24=[[112.52, -3.5], [112.1, -3.12]])   # titik api tepi dekat desa walau pusat jauh
@@ -689,12 +719,13 @@ def uji():
     assert t["syarat"] == ["konsesi"] and t["otomatis"], t
     t = mk(n24=9, n24s=3)
     assert t["syarat"] == ["tumbuh"] and t["otomatis"], t
+    assert mk(n24=9, n24s=0)["syarat"] == [] and mk(n24=9, n24s=0)["otomatis"] is False, "api baru (24 jam lalu belum ada) bukan tumbuh"
     assert mk(n24=2, n24s=1)["syarat"] == [] and mk(n24=7, n24s=6)["syarat"] == [], "naik kecil atau < 1,5 kali: bukan tumbuh"
     assert mk(n24=5, n24s=None)["syarat"] == [], "berkas lama tanpa n24s: tidak dinilai tumbuh"
     t = mk(lat=-3.1, lon=112.1, api24=[[113.5, -3.1]], n24=9, n24s=1)
     assert t["syarat"] == ["permukiman", "konsesi", "tumbuh"], t
     t = tugas_kompleks([{"properties": {**L2, "lat": -3.1, "lon": 112.1}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))["kompleks"][0]
-    assert t["otomatis"] is False, "tanpa data permukiman/konsesi: syarat tidak dinilai, bukan dianggap terpenuhi"
+    assert t["otomatis"] is False and t["syarat_dinilai"]["permukiman"] is False and t["syarat_dinilai"]["konsesi"] is False, "tanpa data permukiman/konsesi: syarat tidak dinilai, bukan dianggap terpenuhi"
     print("harian uji: pecah_kluster OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat
@@ -704,6 +735,8 @@ def uji():
 if __name__ == "__main__":
     if sys.argv[1:] == ["uji"]:
         uji()
+    elif sys.argv[1:] == ["hitung-otomatis"]:
+        hitung_otomatis()
     elif sys.argv[1:] == ["pecah"]:   # buat ulang kluster_awal/geo dari kluster.json yang ada (tanpa FIRMS)
         a, g = pecah_kluster(json.load(open(os.path.join(KELUAR, "kluster.json")))["features"])
         for n, isi in (("kluster_awal.json", a), ("kluster_geo.json", g)):

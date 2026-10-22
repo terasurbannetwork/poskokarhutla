@@ -22,7 +22,7 @@ import datetime as dt, json, math, os, sys, time
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
-from akses import daftar_akses, cocok_akses  # noqa: E402  (akses.json dicocokkan ke kompleks lewat lokasi, bukan id harian)
+from akses import daftar_akses, pasangkan_akses  # noqa: E402  (akses.json dicocokkan ke kompleks lewat lokasi, bukan id harian)
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -100,13 +100,13 @@ def label(air_km, gambut, kaki_km, jalan_km, a=AMBANG):
 
 def bangun(kompleks, air, jalan, akses, prov_ok, a=AMBANG):
     out = {}
-    daftar = daftar_akses(akses)
+    daftar = pasangkan_akses(daftar_akses(akses), [(k["id"], k["lat"], k["lon"]) for k in kompleks if k["prov"] in prov_ok])
     for k in kompleks:
         if k["prov"] not in prov_ok:
             continue
         da, ja = air.terdekat(k["lat"], k["lon"], a["cari_maks_km"])
         dj, jj = jalan.terdekat(k["lat"], k["lon"], a["cari_maks_km"])
-        ak = cocok_akses(daftar, k["lat"], k["lon"])
+        ak = daftar.get(k["id"])
         kaki = ak["kaki_km"] if ak else None
         jam = ak["dari"][0]["jam"] if ak and ak.get("dari") else None
         gambut = k.get("jenis") == "gambut"
@@ -191,6 +191,8 @@ def uji():
     assert r["K0900"]["kaki_km"] == 0.4 and r["K0900"]["jam"] == 2.5, r
     r = bangun([{"id": "K1", "prov": "62", "lat": 0, "lon": 10 * e, "jenis": "gambut"}], air, jal, ak, {"62"})
     assert r["K1"]["kaki_km"] is None and r["K1"]["jam"] is None, "id sama tapi lokasi jauh: tidak boleh ditempel"
+    r = bangun([{"id": "A", "prov": "62", "lat": 0, "lon": 1.4 * e}, {"id": "B", "prov": "62", "lat": 0, "lon": 0.5 * e}], air, jal, ak, {"62"})
+    assert r["B"]["kaki_km"] == 0.4 and r["A"]["kaki_km"] is None, "satu entri untuk satu kompleks: yang terdekat"
     assert bangun([{"id": "K9", "prov": "62", "lat": 5, "lon": 5}], air, jal, ak, {"62"})["K9"]["kaki_km"] is None, "berkas lama tanpa lokasi diabaikan"
     print("kendala: uji lolos")
 

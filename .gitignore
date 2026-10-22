@@ -49,7 +49,8 @@ data/raw/sebaran/*
 !data/raw/sebaran/*.json
 !data/raw/sebaran/*.log
 !data/raw/sebaran/prospektif/
-data/raw/sebaran/prospektif/jejak_cuaca/
+data/raw/sebaran/prospektif/*
+!data/raw/sebaran/prospektif/README*
 !data/raw/sebaran/prospektif_uji_alur_14okt/
 
 # salinan otomatis Finder/iCloud ("berkas 2.js"): jangan pernah ikut commit

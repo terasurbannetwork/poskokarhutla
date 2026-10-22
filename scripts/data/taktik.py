@@ -29,7 +29,7 @@ from wilayah import AKAR  # noqa: E402
 import gambut_bara as GB  # noqa: E402
 import operasi as OP  # noqa: E402  (kebutuhan sumber daya: rumus satu-satunya di operasi.kebutuhan/total)
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
-from akses import KAKI_KMJ, daftar_akses, cocok_akses  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
+from akses import KAKI_KMJ, daftar_akses, pasangkan_akses  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
 
 DATA = os.path.join(AKAR, "public/data")
 
@@ -585,7 +585,7 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     ops = {k["id"]: k for k in (op or {}).get("kompleks", [])}
     kds = (kendala or {}).get("kompleks", {})
     kls = {f["properties"]["id"]: f["properties"] for f in (kluster or {}).get("features", [])}
-    daf_ak = daftar_akses(akses)   # akses.json dicocokkan lewat LOKASI: id K#### berubah tiap putaran
+    daf_ak = pasangkan_akses(daftar_akses(akses), [(t["id"], t["lat"], t["lon"]) for t in tugas["kompleks"] if t.get("lat") is not None and t.get("lon") is not None])   # akses.json dicocokkan lewat LOKASI: id K#### berubah tiap putaran
     bt = ((udara or {}).get("batas") or [None] * 4)[3]
     hr = (udara or {}).get("hari", [])
     kab = (udara or {}).get("kab", [])
@@ -596,7 +596,7 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
            "taktik_ambang": {**AMBANG_META, "rumus": RUMUS}, "taktik_catatan": CATATAN, "kompleks": []}
     for t in tugas["kompleks"]:
         t = {k: v for k, v in t.items() if k not in ("rekomendasi", "akses")}
-        ak = cocok_akses(daf_ak, t["lat"], t["lon"]) if t.get("lat") is not None and t.get("lon") is not None else None
+        ak = daf_ak.get(t["id"])
         omc = [h for h in (((op or {}).get("prov") or {}).get(t.get("prov"), {}).get("omc") or {}).get("hari", []) if h >= tgl]
         r = rekomendasi(t, ops.get(t["id"]), kds.get(t["id"]), kls.get(t["id"]), ak, himawari, koef, omc, tugas["dibuat"], pm.get((t.get("prov"), t.get("kab"))), rekon=((op or {}).get("rekonsiliasi") or {}).get("ha_per_piksel_setara_resmi"))
         if r:
