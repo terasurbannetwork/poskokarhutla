@@ -6,11 +6,12 @@ Env: HIMAWARI_JAM (jendela jam terhadap pindaian terbaru, bawaan 3).
 Level 1 dingin/2 membara/3 menyala; Reliability 1 rendah (sering = industri, dibuang) 3 normal 5 tinggi;
 QF 0 normal/1 jenuh/2 FRP kurang yakin. FRP MW = FRP(W/m2) x Area(km2). Grid 0.02 derajat.
 """
-import datetime as dt, ftplib, io, json, os, re, sys
+import datetime as dt, ftplib, io, json, os, re, sys, time
 
 HOST = "ftp.ptree.jaxa.jp"
 KELUAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../public/data/himawari.json")
 SUMBER = "Himawari-9 L2 WLF v010 · P-Tree System, JAXA"
+BATAS_DETIK = 240  # total waktu run; FTP JAXA kadang macet dan job dipotong di 8 menit. Lewat -> berhenti tanpa menulis, putaran berikutnya mengulang
 NAMA = re.compile(r"H09_(\d{8})_(\d{4})_L2WLF010_FLDK")
 
 
@@ -48,6 +49,10 @@ def gabung(per_berkas):
     return semua
 
 
+def habis(t0, sekarang=None):
+    return (time.monotonic() if sekarang is None else sekarang) - t0 > BATAS_DETIK
+
+
 def uji():
     s = ("# a\n# b\n"
          "1,2026,10,19,600,-2.0,110.0,4.0,0,3,3,10.0,0\n"      # frp 40.0
@@ -62,17 +67,21 @@ def uji():
     awal = {(-2.0, 110.0): (dt.datetime(2026, 10, 19, 6, 0), 40.0, 3, 3, 0)}
     g = gabung([awal, d, {}])[(-2.0, 110.0)]
     assert (g[0].minute, g[1], g[5], g[6].minute) == (10, 50.0, 2, 0), g
+    assert not habis(100.0, 100.0 + BATAS_DETIK) and habis(100.0, 100.0 + BATAS_DETIK + 1), "batas waktu total"
     print("uji OK")
 
 
 def main():
+    t0 = time.monotonic()
     jam = int(os.environ.get("HIMAWARI_JAM", "3"))
-    f = ftplib.FTP(HOST, timeout=60)
+    f = ftplib.FTP(HOST, timeout=30)
     f.login(os.environ["PTREE_USER"], os.environ["PTREE_PASS"])  # gagal -> exception -> exit != 0
     f.set_pasv(True)
     now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None, minute=0, second=0, microsecond=0)
     berkas = []  # (waktu_pindai, path)
     for i in range(jam + 4):  # mundur dari sekarang; latensi ~1 jam jadi beri kelonggaran
+        if habis(t0):
+            return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mendaftar folder (FTP JAXA lambat); keluaran lama dibiarkan, putaran berikutnya mengulang")
         h = now - dt.timedelta(hours=i)
         d = f"/pub/himawari/L2/WLF/010/{h:%Y%m}/{h:%d}/{h:%H}"
         try:
@@ -88,6 +97,8 @@ def main():
     pilih = sorted(b for b in berkas if b[0] > acuan - dt.timedelta(hours=jam))
     hasil = []
     for _, p in pilih:
+        if habis(t0):
+            return print(f"himawari: lewat batas {BATAS_DETIK} dtk saat mengunduh {len(hasil)}/{len(pilih)} CSV (FTP JAXA lambat); data parsial tidak ditulis, keluaran lama dibiarkan, putaran berikutnya mengulang")
         buf = io.BytesIO()
         f.retrbinary("RETR " + p, buf.write)
         hasil.append(parse(buf.getvalue().decode("utf-8", "replace")))

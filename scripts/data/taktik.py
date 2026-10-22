@@ -574,6 +574,11 @@ def baca(nama):
         return None
 
 
+def tgl_wib(dibuat):
+    """ISO UTC "...Z" -> tanggal WIB (UTC+7) 'YYYY-MM-DD'; udara.hari bertanggal WIB."""
+    return (dt.datetime.fromisoformat(dibuat.replace("Z", "+00:00")) + dt.timedelta(hours=7)).date().isoformat()
+
+
 def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     """-> tugas baru (kunci `dibuat` pertama, `taktik_ambang`, tiap kompleks +rekomendasi bila ada)."""
     koef = (op or {}).get("koef") or {}
@@ -583,11 +588,11 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     bt = ((udara or {}).get("batas") or [None] * 4)[3]
     hr = (udara or {}).get("hari", [])
     kab = (udara or {}).get("kab", [])
-    hari_ini = kab[hr.index(tugas["dibuat"][:10])] if tugas["dibuat"][:10] in hr and len(kab) == len(hr) else []   # kab = satu daftar per hari; hari lain tidak dipakai
+    tgl = tgl_wib(tugas["dibuat"])
+    hari_ini = kab[hr.index(tgl)] if tgl in hr and len(kab) == len(hr) else []   # kab = satu daftar per hari; hari lain tidak dipakai
     pm = {(r[0], r[1]): r[2] for r in hari_ini if bt is not None and r[2] >= bt}
     out = {"dibuat": tugas["dibuat"], **{k: v for k, v in tugas.items() if k not in ("dibuat", "kompleks", "taktik_ambang")},
            "taktik_ambang": {**AMBANG_META, "rumus": RUMUS}, "taktik_catatan": CATATAN, "kompleks": []}
-    tgl = tugas["dibuat"][:10]
     for t in tugas["kompleks"]:
         t = {k: v for k, v in t.items() if k not in ("rekomendasi", "akses")}
         omc = [h for h in (((op or {}).get("prov") or {}).get(t.get("prov"), {}).get("omc") or {}).get("hari", []) if h >= tgl]
@@ -830,6 +835,11 @@ def uji():
     k1 = s2["kompleks"][0]
     assert k1["akses"]["kaki_km"] == 8.0 and "akses" not in k1["rekomendasi"] and len(json.dumps(k1["rekomendasi"], ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"]
     assert len(json.dumps(k1["akses"], ensure_ascii=False, separators=(",", ":"))) < 1800, "akses terlalu besar"
+    # tanggal WIB: 23:30Z = 06:30 WIB hari berikutnya; 17:00Z = 00:00 WIB
+    assert tgl_wib("2026-10-21T23:30:00Z") == "2026-10-22" and tgl_wib("2026-10-21T16:59:00Z") == "2026-10-21" and tgl_wib("2026-10-21T17:00:00Z") == "2026-10-22"
+    ud2 = {"batas": [15.5, 55.4, 150.4, 250.4], "hari": ["2026-10-21", "2026-10-22"], "kab": [[], [["62", "Seruyan", 400.0, 500, 1, 1]]]}
+    s3 = susun({"dibuat": "2026-10-21T23:30:00Z", "kompleks": [T(prov="62", kab="Seruyan")]}, {"koef": KOEF, "kompleks": [{"id": "K1", "jenis": "mineral", "jam": 9.0, "isi": 5}], "prov": {}}, {"kompleks": {"K1": {"air_km": 5.0, "kaki_km": 8.0}}}, None, None, None, ud2)
+    assert "kemungkinan tidak terbang" in s3["kompleks"][0]["rekomendasi"]["catatan"], "PM2.5 hari WIB 22 harus terpakai untuk dibuat 23:30Z tgl 21"
     print("taktik uji: OK")
 
 

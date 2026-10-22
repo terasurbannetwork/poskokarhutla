@@ -271,8 +271,10 @@ def olah_metar(teks):
 def baca_arsip():
     try:
         return json.load(open(os.path.join(RAW, "arsip.json")))
-    except Exception:
+    except FileNotFoundError:
         return {}
+    except Exception as e:  # ada tapi rusak: jangan menimpa arsip musim dengan RSS terkini saja
+        sys.exit(f"arsip.json ada tapi tak terbaca ({e}); keluar tanpa menulis")
 
 
 def main(ambil_rss=True):
@@ -384,6 +386,19 @@ def uji():
     m = olah_metar("station,valid,vsby\nWIPP,2026-10-01 07:00,0.62\nWIPP,2026-10-01 07:30,2.5\nWIPP,2026-10-01 08:00,M\nWIPP,2026-10-02 07:00,6.21\n")
     assert m["2026-10-01"] == [1.0, 1, 1] and m["2026-10-02"][1] == 0, m
     assert all(len(v[0]) == 4 and v[0] == v[0].upper() for v in BANDARA.values()), "ICAO 4 huruf"
+    import tempfile
+    global RAW
+    r0, RAW = RAW, tempfile.mkdtemp()
+    try:
+        assert baca_arsip() == {}, "tak ada berkas -> {}"
+        open(os.path.join(RAW, "arsip.json"), "w").write("{rusak")
+        try:
+            baca_arsip()
+            raise AssertionError("arsip rusak harus keluar")
+        except SystemExit:
+            pass
+    finally:
+        RAW = r0
     print("uji penerbangan: lolos")
 
 

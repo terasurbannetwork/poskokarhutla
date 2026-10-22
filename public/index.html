@@ -2507,7 +2507,7 @@ $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-r
 /* rata-rata titik per hari pada bulan berjalan di tahun-tahun lalu (VIIRS S-NPP keyakinan sedang/tinggi); dibandingkan dengan
    hitungan S-NPP sedang/tinggi kemarin (hari penuh) supaya sebanding */
 /* m = bulan (0-11) hari yang dibandingkan, dari tanggal WIB hari terpilih (bukan jam peramban) */
-function normalHarian(prov, m) { const D = S.sejarah; if (!D) return null; const hari = new Date(2026, m + 1, 0).getDate(), lalu = D.tahun.slice(0, -1);
+function normalHarian(prov, m) { const D = S.sejarah; if (!D) return null; const hari = new Date(Date.UTC(new Date(Date.now() + 7 * 36e5).getUTCFullYear(), m + 1, 0)).getUTCDate(), lalu = D.tahun.slice(0, -1);
   const ps = prov ? [D.prov[prov] || {}] : Object.values(D.prov);
   const tot = lalu.reduce((a, t) => a + ps.reduce((b, P) => b + ((P[t] || [])[m] || 0), 0), 0);
   return tot / lalu.length / hari || null; }
@@ -3430,7 +3430,7 @@ const Tren = {
     const nil = th.map(tot), maks = Math.max(1, ...nil), ini = th[th.length - 1], rata = nil.slice(0, -1).reduce((a, b) => a + b, 0) / (th.length - 1);
     const rank = [...nil].sort((a, b) => b - a).indexOf(nil[nil.length - 1]) + 1;
     /* bulan berjalan: bandingkan sampai bulan yang sama */
-    const bln = new Date().getMonth(), sdBulan = t => (P[t] || []).slice(0, bln + 1).reduce((a, b) => a + b, 0);
+    const bln = new Date(Date.now() + 7 * 36e5).getUTCMonth(), sdBulan = t => (P[t] || []).slice(0, bln + 1).reduce((a, b) => a + b, 0);
     const iniSd = sdBulan(ini), rataSd = th.slice(0, -1).reduce((a, t) => a + sdBulan(t), 0) / (th.length - 1);
     const provs = PRIO.filter(k => D.prov[k]).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     /* bulan puncak rata-rata */
@@ -3611,7 +3611,7 @@ const Insight = {
 
   /* 2. sampai bulan ini dibanding rata-rata periode sama; klik = tab Tren provinsi itu */
   exYtd() {
-    const {mo} = this.data, th = mo.tahun, bl = new Date().getMonth(), lalu = th.slice(0, -1), ini = th.at(-1);
+    const {mo} = this.data, th = mo.tahun, bl = new Date(Date.now() + 7 * 36e5).getUTCMonth(), lalu = th.slice(0, -1), ini = th.at(-1);
     const sd = (k, t) => (mo.prov[k]?.[t] || []).slice(0, bl + 1).reduce((a, b) => a + b, 0);
     const row = PRIO.filter(k => mo.prov[k]).map(k => { const r = lalu.reduce((a, t) => a + sd(k, t), 0) / lalu.length, v = sd(k, ini); return {k, v, r, x: v / (r || 1)}; });
     row.sort(this.st.ytd === "jumlah" ? (a, b) => b.v - a.v : (a, b) => b.x - a.x);
@@ -5008,7 +5008,7 @@ const PV_IK = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 
 const pvUbin = (v, l, w = "#1d4e89", ket = "", ik = "") => `<div class="pv-u" style="--w:${w}">${ik ? `<i class="pv-i"><svg viewBox="0 0 24 24">${PV_IK[ik]}</svg></i>` : ""}<b>${String(v).replace(/^([\d.,]+)( ?)(rb|jt|km|%|×)$/, (_, n, sp, u) => `${n}<small>${sp}${u}</small>`)}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
 function trenKartu(k) {
   const D = S.sejarah; if (!D || !D.prov[k]) return "";
-  const P = D.prov[k], th = D.tahun, ini = th[th.length - 1], lalu = th.slice(0, -1), bln = new Date().getMonth();
+  const P = D.prov[k], th = D.tahun, ini = th[th.length - 1], lalu = th.slice(0, -1), bln = new Date(Date.now() + 7 * 36e5).getUTCMonth();
   const sd = t => (P[t] || []).slice(0, bln + 1).reduce((a, b) => a + b, 0), iniSd = sd(ini), rataSd = lalu.reduce((a, t) => a + sd(t), 0) / lalu.length;
   const iklim = BULAN.map((_, m) => lalu.reduce((a, t) => a + ((P[t] || [])[m] || 0), 0) / lalu.length), tahunan = iklim.reduce((a, b) => a + b, 0) || 1;
   const sisa = iklim.slice(bln + 1).reduce((a, b) => a + b, 0) / tahunan, rank = [...th].map(sd).sort((a, b) => b - a).indexOf(iniSd) + 1;
