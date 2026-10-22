@@ -39,6 +39,18 @@ menerima apa pun dari sistem ini. Tiap jam kerja diarahkan ke tiga hal, urut dam
 - Blok A selesai (commit 984bf94a): `scripts/bnpb/aktivasi.sh`, `docs/bnpb/AKTIVASI.md`. VAPID dan `PIPA_TOKEN` belum terpasang; `EMAIL_FROM` masih `@resend.dev`.
 - Blok B selesai di kode (`/kabar`, `scripts/data/kabar_kab.py`, dirantai di titik.yml dan data.yml): 106 kabupaten dari data 22 Okt.
   Halamannya masih terkunci login di centurisk97.id sampai pemilik memutuskan membukanya (`PUBLIK_TANPA_SESI` di `src/worker.js`).
+- Blok C selesai (44257099): CSV akun massal membawa kolom teks undangan WhatsApp.
+- Blok D: perluasan rute ke semua kompleks tugas sudah ada di kode, tetapi `akses.py` gagal tiap hari sejak cache graf
+  terbuang (cache `data-` 11,6 GB melewati batas 10 GB; `konsesi2026/citra` 1,2 GB ikut tiap entri). Graf kini diarsipkan ke R2
+  (`graf.yml`, `statis.yml`) dan `data.yml` memulihkannya (dc5792da). Pembangunan ulang dipicu 22 Okt (run 39789986599).
+- Blok E selesai (commit status jeda satelit): `/api/status` melaporkan `jeda_satelit` (satelit lewat sampai data terbit),
+  tercatat tiap jam ke `status_riwayat`; nilai 22 Okt sekitar 2,5 jam.
+- Blok F selesai (e69c8904): `tests/warga/siklus_insiden.test.mjs`, satu siklus dari cron sampai `/api/sla`, 6 uji hijau.
+- Blok G: ulasan keamanan, angka, dan INP oleh pemeriksa terpisah; semua temuan dibetulkan (ce53845c).
+  `uji:warga` 882 lolos, `uji:agen` 110 lolos.
+- **Temuan G paling penting:** migrasi produksi sudah 0049, tetapi `tugas_api` tetap 0 karena cron gagal tiap menit:
+  `CHECK constraint failed: ... length(rekomendasi) <= 2000`. Migrasi 0029 di repo disunting jadi 3000 sesudah diterapkan,
+  jadi uji lokal tidak bisa menangkapnya. Perbaikan kode (batas 2000) sedang dikerjakan sesi lain.
 - Temuan: `/data/tugas_kompleks.json` terbuka publik dan memuat nama pemegang konsesi, padahal keputusan 14 Okt
   menyimpan data bernama di `data/raw/konsesi`. `/data/kabar/*` sengaja tanpa nama.
 
