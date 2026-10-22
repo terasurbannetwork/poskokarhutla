@@ -100,11 +100,13 @@ export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<l
 /* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
 export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi…", `<link href="/admin/instansi.css?v=3" rel="stylesheet">
 <link href="/instansi_kebutuhan.css?v=1" rel="stylesheet">
+<link href="/instansi_kartu.css?v=1" rel="stylesheet">
 <link href="/instansi_tugaskan.css?v=1" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/instansi_kebutuhan.js?v=2"></script>
 <script src="/instansi_akses.js?v=1"></script>
+<script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
 <script src="/admin/instansi.js?v=3"></script>`, ctx);

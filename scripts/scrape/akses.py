@@ -32,6 +32,10 @@ MARKAS_KMJ, MARKAS_MAKS_KM, KELOK = 20.0, 10.0, 1.3
 BATAS_JAM = 18.0
 PULAU, CELAH_KM, CELAH_KMJ = 3000, 5.0, 10.0  # komponen < 3000 simpul disambung lewat celah <= 5 km, 10 km/jam
 SEL = 0.05  # indeks ruang (derajat)
+# akses.json berkunci id kompleks harian (K0001..., diurut ulang tiap putaran) -> dicocokkan ke kompleks lewat LOKASI.
+# 3 km = 2 x eps DBSCAN 1,5 km (harian.EPS_KM): dua titik pusat kompleks yang sama antar putaran tak mungkin lebih jauh dari
+# satu tautan; sama dengan jari-jari pasang_kompleks di konsesi_kompleks.py. Asumsi platform, bukan standar baku.
+COCOK_KM = 3.0
 
 
 def km(a1, o1, a2, o2):
@@ -248,8 +252,24 @@ def akses(simpul, sisi, kompleks, basis, n_daops=3, n_posko=2):
                 hasil.append({"dari": b["dari"], "kode": b["kode"], "jenis": b["jenis"], "km_jalan": round(c[1], 1), "jam": round(c[0] / 60, 1)})
         hasil.sort(key=lambda x: x["jam"])
         pilih = [x for x in hasil if x["jenis"] == "daops"][:n_daops] + [x for x in hasil if x["jenis"] == "posko"][:n_posko]
-        out[k["id"]] = {"kaki_km": round(kaki, 1), "dari": sorted(pilih, key=lambda x: x["jam"])}
+        out[k["id"]] = {"lat": round(k["lat"], 4), "lon": round(k["lon"], 4), "kaki_km": round(kaki, 1), "dari": sorted(pilih, key=lambda x: x["jam"])}
     return out
+
+
+def daftar_akses(ak):
+    """akses.json -> [(lat, lon, entri)]. Entri tanpa lat/lon (berkas lama, id harian yang sudah basi) DIABAIKAN, bukan ditempel."""
+    return [(v["lat"], v["lon"], v) for k, v in (ak or {}).items()
+            if k != "_meta" and isinstance(v, dict) and isinstance(v.get("lat"), (int, float)) and isinstance(v.get("lon"), (int, float))]
+
+
+def cocok_akses(daftar, lat, lon, maks_km=COCOK_KM):
+    """Entri akses terdekat dari (lat, lon) dalam maks_km, atau None. ID kompleks tidak dipakai."""
+    best, jarak = None, maks_km
+    for la, lo, v in daftar:
+        d = km(lat, lon, la, lo)
+        if d <= jarak:
+            best, jarak = v, d
+    return best
 
 
 def harian():
@@ -286,6 +306,16 @@ def uji():
     s3, e3 = bangun_graf([("primary", [(0, 0), (0, e)]), ("primary", [(1 / 110.57, 0), (1 / 110.57, e)])])
     assert any(abs(m - 7.8) < 0.1 for *_, m, _ in e3), "pulau jaringan tidak disambung"
     assert sederhana([(0, 0), (0, 1e-5), (0, 1)], 1e-4) == [(0, 0), (0, 1)]
+    # akses.json menyimpan lokasi; pencocokan ke kompleks lewat lokasi, bukan id
+    assert (r["lat"], r["lon"]) == (round(k["lat"], 4), round(k["lon"], 4)), r
+    d = daftar_akses({"_meta": {}, "K0001": r, "K0002": {"kaki_km": 1.0, "dari": []}})   # K0002 berkas lama tanpa lokasi
+    assert len(d) == 1, d
+    assert cocok_akses(d, k["lat"], k["lon"]) is r
+    assert cocok_akses(d, k["lat"] + 1 / 110.57, k["lon"]) is r, "id berubah (K0001 -> K0950) tapi lokasi 1 km: tetap cocok"
+    assert cocok_akses(d, k["lat"] + (COCOK_KM + 0.5) / 110.57, k["lon"]) is None, "lokasi jauh tidak boleh cocok"
+    assert cocok_akses([], 0, 0) is None and cocok_akses(daftar_akses(None), 0, 0) is None
+    lain = {"lat": k["lat"] + 2 / 110.57, "lon": k["lon"], "kaki_km": 9.0, "dari": []}
+    assert cocok_akses(daftar_akses({"A": r, "B": lain}), k["lat"] + 1.8 / 110.57, k["lon"]) is lain, "yang terdekat menang"
 
 
 if __name__ == "__main__":

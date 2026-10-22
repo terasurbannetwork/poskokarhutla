@@ -294,4 +294,24 @@ if (!CHROME) {
     await tab.tungguFungsi("/Operasi lapangan: contoh terisi/.test(document.querySelector('#aiPesan')?.innerText || '')", 30000);
     const sesudah = await hitung(); assert.ok(sesudah.g >= 3 && sesudah.s >= 3, "contoh operasi lapangan tidak terisi oleh tombol 🧪: " + JSON.stringify(sesudah));
   });
+  test("Kartu Api: fixture lengkap dan kosong di ponsel, tombol salin dan navigasi, tanpa galat atau scroll mendatar", async () => {
+    const {TUGAS, KARTU} = await import("./kartu_fixture.mjs");
+    await tab.ukuran(390, 844); await tab.cookie(dunia.base, "sesi_admin", dunia.sesi);
+    await tab.buka(dunia.base + "/admin/instansi#pantau", {tunggu: "[data-dummy=hapus]"}); tab.kosongkanGalat();
+    await tab.eval(`(() => { window.__salin = null; Object.defineProperty(navigator, "clipboard", {value: {writeText: async t => { window.__salin = t; }}, configurable: true});
+      const w = document.createElement("div"); w.id = "ujiKartu"; document.body.prepend(w); window.KartuApi.pasang(w, ${JSON.stringify(TUGAS)}, ${JSON.stringify(KARTU)}); })()`);
+    const teks = await tab.eval("document.querySelector('#ujiKartu').innerText");
+    for (const b of [/Di mana/i, /Sebesar apa/i, /Situasi/i, /Kebutuhan/i, /Sekitar 12 ha/, /Titik masuk/, /PT Contoh Lestari/, /Perkiraan/]) assert.match(teks, b);
+    assert.deepEqual([...new Set(teks.match(TERLARANG) || [])], [], "kartu lengkap memuat nilai terlarang"); assert.doesNotMatch(teks, /·/);
+    assert.match(await tab.eval("document.querySelector('#ujiKartu [data-kp=wa]').href"), /^https:\/\/wa\.me\/\?text=/);
+    assert.match(await tab.eval("document.querySelector('#ujiKartu .kp-nav').href"), /destination=-2\.5,113\.9/);
+    await tab.klik("#ujiKartu [data-kp=salin]"); await tab.tungguFungsi("window.__salin !== null");
+    assert.match(await tab.eval("window.__salin"), /KARTU API 62-261022-007/);
+    const lb = await tab.lebihLebar(); assert.ok(lb.sw <= 391, "kartu membuat scroll mendatar di ponsel: " + lb.sw);
+    await tab.eval(`window.KartuApi.pasang(document.querySelector('#ujiKartu'), {}, null)`);   // kosong: tidak ada kartu, tidak ada galat
+    assert.equal(await tab.eval("document.querySelector('#ujiKartu').innerHTML"), "");
+    await tab.eval(`window.KartuApi.pasang(document.querySelector('#ujiKartu'), ${JSON.stringify(TUGAS)}, null)`);   // kartu null: yang ada dari rekomendasi
+    assert.match(await tab.eval("document.querySelector('#ujiKartu').innerText"), /Luas terkoreksi belum tersedia/);
+    assert.deepEqual(tab.galat().filter(bukanFavicon), [], "Kartu Api memunculkan galat konsol");
+  });
 }

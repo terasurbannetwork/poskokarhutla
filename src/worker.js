@@ -24,7 +24,7 @@ import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
-import {RUTE_INSTANSI, buatTugas, bersihkanInstansi} from "./instansi.js";
+import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
@@ -721,8 +721,8 @@ export default {
       if (m === 15 && w.getUTCHours() % 3 === 0) try { console.log("titik", JSON.stringify(await perbaruiTitik(env))); } catch (e) { console.error("titik", e?.message); }
       /* antrean panggilan perusahaan: invokasi sendiri (menit 16, sesudah titik di menit 15) supaya parse konsesi2026/<prov>.json punya anggaran CPU sendiri */
       if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
-      /* tugas api instansi: invokasi sendiri (menit 18, sesudah titik 15 dan antrean 16); tanpa tugas_kompleks.json = dicatat lalu keluar */
-      if (m === 18 && w.getUTCHours() % 3 === 0) try { console.log("tugas api", JSON.stringify(await buatTugas(env, sekarang))); } catch (e) { console.error("tugas api", e?.message); }
+      /* tugas api instansi: tiap menit memeriksa `dibuat` tugas_kompleks.json (murah) dan membuat tugas sekali per versi baru; verifikasi padam tetap menit 18 jam kelipatan 3 */
+      try { const h = await tugasBaruDariBerkas(env, sekarang); if (!h.lewat || h.padam) console.log("tugas api", JSON.stringify(h)); } catch (e) { console.error("tugas api", e?.message); }
       if (m >= 25 && w.getUTCHours() % 3 === 0) try { const r = await kirimPushDaerah(env, sekarang); if (r.akun) console.log("push daerah", JSON.stringify(r)); } catch (e) { console.error("push daerah", e?.message); }   // push 3 jam: menit 25 (sesudah tugas api menit 18), menit 26+ melanjutkan sisa akun
       if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang, m === 35))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)

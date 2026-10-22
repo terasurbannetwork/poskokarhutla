@@ -295,6 +295,13 @@
     const r = await ambilRincian(id); if (terpilih !== id || !$("gudangTugas")) return;
     $("gudangTugas").innerHTML = r.ok ? window.Kebutuhan.gudang(r.j.gudang_terdekat) : "";
   }
+  /* Kartu Api (instansi_kartu.js): `kartu` ada di detail tugas; sebelum detail datang, kartu dari data tugas yang ada (kartu null = tampilkan yang ada saja) */
+  async function kartuMuat(t) {
+    if (!window.KartuApi || !$("kartuApi")) return;
+    window.KartuApi.pasang($("kartuApi"), t, t.kartu ?? null);
+    const r = await ambilRincian(t.id); if (terpilih !== t.id || !$("kartuApi") || !r.ok) return;
+    const k = r.j?.kartu ?? r.j?.tugas?.kartu; if (k) window.KartuApi.pasang($("kartuApi"), t, k);
+  }
   /* ---- draf isian per tugas (memori): menyimpan semua isian form yang belum terkirim supaya tidak hilang ---- */
   function simpanDrafPanel() {
     const f = $("fLapor"); if (!f) return;
@@ -333,11 +340,12 @@
         ${c ? `<div class="in-cara"><div>${pil("Perkiraan, belum divalidasi lapangan", "emas")}</div><p><span class="k">Cara padam utama</span><b>${esc(c.utama)}</b></p>${c.lengkap.length ? `<p><span class="k">Pelengkap</span>${esc(c.lengkap.join(", "))}</p>` : ""}</div>` : ""}</div>
       ${buka ? formLapor(t) : `<p class="in-kosong">Tugas ini sudah ditutup (${t.status === "padam" ? "api padam" : "bukan api"}).</p>`}
       ${window.Tugaskan ? window.Tugaskan.padamBlok(t) : ""}${t.padam?.boleh_cek_ulang ? formCekUlang(t) : ""}
+      <div id="kartuApi"></div>
       ${window.AksesKartu ? window.AksesKartu.html(t.akses) : ""}
       <div id="tgWadah"></div>
       ${kebutuhanKartu(t, !!c)}
       <details class="in-rinci in-kartu in-detail" id="detailTugas"><summary>Riwayat isian dan galeri</summary><div class="in-riwayat" id="riwayat"></div></details>`;
-    pulihDraf(t.id); alatInvMuat(t.id); gudangMuat(t.id);
+    pulihDraf(t.id); alatInvMuat(t.id); gudangMuat(t.id); kartuMuat(t);
     if (window.Tugaskan && $("tgWadah")) window.Tugaskan.pasang(t, $("tgWadah"));   // penugasan dan pelacak posisi (instansi_tugaskan.js)
   }
   /* ---- media terpilih: satu objectURL per berkas (Map), figure ditambah atau dihapus satu per satu, URL dilepas saat dihapus ---- */

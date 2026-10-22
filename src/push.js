@@ -141,7 +141,7 @@ export function ringkasAkun(a, D, sejak, kini) {
     isi: bagian.length ? bagian.join(", ") : "Buka Tugas api untuk konfirmasi lapangan.", tag: "pb-" + a.id, url: "/instansi", n};
 }
 
-/* ---------------- cron: jam UTC kelipatan 3, mulai menit 25 (sesudah buatTugas menit 18); menit berikutnya melanjutkan sisa akun ---------------- */
+/* ---------------- cron: jam UTC kelipatan 3, mulai menit 25 (ringkasan tugas yang dibuat sejak push terakhir, jadi tugas baru di menit mana pun ikut putaran berikutnya); menit berikutnya melanjutkan sisa akun ---------------- */
 export async function kirimPushDaerah(env, kini = Date.now()) {
   const w = new Date(kini);
   if (w.getUTCHours() % 3 !== 0 || w.getUTCMinutes() < 25) return {lewat: "bukan jadwal"};

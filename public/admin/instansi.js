@@ -150,13 +150,14 @@
     wadah.textContent = "Memuat…";
     const d = await ambil(`${API}/tugas/${id}`);
     const T = window.Tugaskan, aksesH = window.AksesKartu ? window.AksesKartu.html(d.tugas.akses) : "";
-    wadah.innerHTML = (T ? T.padamBlok(d.tugas) : "") + aksesH + `<div class="tg-adm"></div>` + rekBlok(d.tugas.rekomendasi) + window.Kebutuhan.html(d.tugas, !!d.tugas.rekomendasi) + window.Kebutuhan.gudang(d.gudang_terdekat) + sekarang(d.tugas) + (d.isian.length ? d.isian.map(i => `<p class="ai-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b> ${jam(i.dibuat)} oleh ${esc(i.oleh.username)} (${esc(i.oleh.wilayah)}).
+    wadah.innerHTML = (T ? T.padamBlok(d.tugas) : "") + `<div class="kp-wadah"></div>` + aksesH + `<div class="tg-adm"></div>` + rekBlok(d.tugas.rekomendasi) + window.Kebutuhan.html(d.tugas, !!d.tugas.rekomendasi) + window.Kebutuhan.gudang(d.gudang_terdekat) + sekarang(d.tugas) + (d.isian.length ? d.isian.map(i => `<p class="ai-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b> ${jam(i.dibuat)} oleh ${esc(i.oleh.username)} (${esc(i.oleh.wilayah)}).
       ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}. PIC ${esc(i.pic_nama)}, ${esc(i.pic_jabatan)}, WhatsApp ${esc(i.pic_wa)}.` : `${esc(i.tindakan)} Status ${esc(STATUS_API[i.status_api])}. Kendala ${esc(i.kendala.map(k => KENDALA[k]).concat(i.kendala_lain ? [i.kendala_lain] : []).join(", ") || "tidak ada")}.
       Bantuan ${esc(i.bantuan.map(k => BANTUAN[k]).concat(i.bantuan_lain ? [i.bantuan_lain] : []).join(", ") || "tidak ada")}. Luas ${i.luas_ha == null ? "-" : num(i.luas_ha)} ha, padam ${i.padam_ha == null ? "-" : num(i.padam_ha)} ha.`}
       Personel ${i.personel == null ? "-" : num(i.personel) + " (manual)"}${i.personel_terlihat != null ? `, mesin melihat minimal ${num(i.personel_terlihat)}` : ""}${i.personel_unsur ? `, per unsur ${esc(Object.entries(i.personel_unsur).map(([k, n]) => `${k} ${num(n)}`).join(", "))}` : ""}${i.regu != null ? `, ${num(i.regu)} regu` : ""}${i.alat_dipakai ? `. Alat ${esc(Object.entries(i.alat_dipakai).map(([a, n]) => `${NAMA_ALAT[a] || a} ${num(n)}`).join(", "))}` : ""}.
       ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}
       ${i.jarak_km != null ? ` Jarak ke pusat kompleks ${num(i.jarak_km)} km${i.jauh ? " (jauh, lebih dari 5 km)" : ""}.` : ""}${i.gps_curiga ? ` ${pil("GPS curiga", "merah")} ${esc(i.gps_curiga)}` : ""}</p>`).join("") : `<p class="ai-meta">Belum ada isian.</p>`)
       + galeri(d.media) + (d.usulan.length ? `<p class="ai-meta">Usulan kontak PT: ${d.usulan.map(u => `${esc(u.nama_pt)} (${esc(u.status)})`).join(", ")}</p>` : "");
+    if (window.KartuApi) window.KartuApi.pasang(wadah.querySelector(".kp-wadah"), d.tugas, d.kartu ?? d.tugas.kartu ?? null);
     if (T) T.pasangAdmin(d.tugas, wadah.querySelector(".tg-adm"));   // posisi terakhir dan jejak, baca saja
   }
 

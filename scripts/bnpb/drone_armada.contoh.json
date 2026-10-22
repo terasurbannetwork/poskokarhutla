@@ -1,0 +1,18 @@
+{
+  "_catatan": "Contoh armada untuk scripts/bnpb/drone.py. Koordinat dock = lokasi contoh, bukan dock yang sudah terpasang. drone_enum, drone_sub_enum, payload_enum WAJIB disalin dari wpmz/waylines.wpml sebuah rute yang diekspor FlightHub 2 untuk drone yang sama (nilai di sini belum diverifikasi). webhook kosong = kering: KMZ dan log ditulis, tidak ada yang terbang. tmat = berkas JSON hasil GET /api/ops/tmat atau CSV unggahan TMAT (id, lat, lon, tmat_cm, waktu, sumber); kosong = gerbang memakai DC dan hujan saja.",
+  "mode": "usul",
+  "ambang": 50,
+  "ambang_otomatis": 70,
+  "webhook": "",
+  "tmat": "",
+  "patroli_per_hari": 2,
+  "drone_enum": 100,
+  "drone_sub_enum": 1,
+  "payload_enum": 99,
+  "dock": [
+    {"id": "KTG-PPS-1", "sn": "ISI-SN-DOCK", "lat": -2.735, "lon": 114.247, "radius_km": 6},
+    {"id": "KTG-PLK-1", "sn": "ISI-SN-DOCK", "lat": -2.330, "lon": 114.050, "radius_km": 6},
+    {"id": "SMS-OKI-1", "sn": "ISI-SN-DOCK", "lat": -3.330, "lon": 105.430, "radius_km": 6},
+    {"id": "SMS-OKI-2", "sn": "ISI-SN-DOCK", "lat": -3.150, "lon": 105.700, "radius_km": 6}
+  ]
+}
