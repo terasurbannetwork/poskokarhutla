@@ -517,6 +517,9 @@ main.kn{position:static;inset:auto}
 .kn-pg button{width:34px;height:34px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:800 16px var(--font);cursor:pointer}
 .kn-pg button:hover{border-color:var(--brand2);background:var(--surface)}
 .kn-riwp{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:color-mix(in oklch,var(--warn) 28%,#fff);color:#3d2a00;font:800 12px var(--font);text-decoration:none;white-space:nowrap}
+.kn-thn{display:inline-flex;gap:4px}
+.kn-thn button{height:28px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink2);font:800 12px var(--font);cursor:pointer}
+.kn-thn button[aria-pressed=true]{background:#0b2545;border-color:#0b2545;color:#fff}
 .kn-riwp:hover{text-decoration:underline}
 .kn-zm{border:0;padding:0;background:transparent;max-width:92vw;max-height:92vh;overflow:visible}
 .kn-zm::backdrop{background:rgba(0,0,0,.78)}
