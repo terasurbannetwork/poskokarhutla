@@ -43,11 +43,7 @@
   const SUHU = s => s < 100 ? "#f2c14e" : s < 200 ? "#e8743b" : s < 300 ? "#c9503a" : "#7a1d12";
   const MSG503 = "Fitur operasi lapangan belum diaktifkan di server: migrasi database belum diterapkan. Hubungi admin.";
 
-  async function api(metode, url, body) {
-    const h = {...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined ? {} : {"content-type": "application/json"})};
-    let r; try { r = await fetch(url, {method: metode, headers: h, body: body === undefined ? undefined : JSON.stringify(body)}); } catch (e) { return {ok: false, status: 0, j: {galat: "Tidak ada sinyal."}}; }
-    return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))};
-  }
+  const api = (...a) => window.Tugaskan.api(...a);   // satu pembungkus fetch, milik instansi_tugaskan.js (dimuat lebih dulu di instansi.html)
   const ket = (r, cad) => r.status === 503 ? MSG503 : r.status === 401 ? "Sesimu berakhir. Masuk lagi lalu ulangi." : r.status === 0 ? r.j.galat : r.j.galat || `${cad} (kode ${r.status}).`;
   const posisiSaya = () => new Promise((ok, no) => navigator.geolocation ? navigator.geolocation.getCurrentPosition(p => ok({lat: p.coords.latitude, lon: p.coords.longitude, akurasi: Math.round(p.coords.accuracy)}), () => no(new Error("Posisi perangkat tidak bisa dibaca. Ketuk peta untuk memilih titik.")), {enableHighAccuracy: true, timeout: 8000}) : no(new Error("Perangkat ini tidak punya GPS. Ketuk peta untuk memilih titik.")));
 

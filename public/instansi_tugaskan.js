@@ -305,5 +305,5 @@
   });
   document.addEventListener("visibilitychange", () => aktif?.lihat?.());
   window.Tugaskan = {pasang: (t, w) => pasangInti(t, w, false), pasangAdmin: (t, w) => pasangInti(t, w, true), lepas: () => { if (aktif?.timer) clearInterval(aktif.timer); aktif = null; ++gen; },
-    popupMasuk, ringkasan, titikWilayah, padamPil, padamBlok, exifInfo, keadaan};
+    popupMasuk, ringkasan, titikWilayah, padamPil, padamBlok, exifInfo, keadaan, api};
 })();
