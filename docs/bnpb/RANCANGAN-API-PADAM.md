@@ -1,7 +1,10 @@
 # Rancangan: dari data ke api padam
 
-Status: **DRAF, menunggu persetujuan pemilik.** Disusun 22 Okt 2026 dari (1) review kode dan
-data produksi, (2) riset sistem operasional dan repo terbuka. Belum ada kode yang ditulis.
+Status: **Fase 0 dan 1 DISETUJUI pemilik 22 Okt 2026** dengan keputusan: tugas otomatis untuk level 3 + level 2
+bersyarat; insiden Himawari hanya ke Posko pusat sampai VIIRS mengonfirmasi; server rute berbayar BOLEH bila graf sendiri tidak
+cukup (Fase 3); permintaan akses data TMAT BRGM, SiPongi, Daops lewat jalur BNPB DIJALANKAN (draf surat:
+`docs/bnpb/SURAT-AKSES-DATA.md`).
+Fase 2 sampai 5 masih draf. Disusun dari (1) review kode dan data produksi, (2) riset sistem operasional dan repo terbuka.
 
 Tujuan tunggal: **api padam lebih cepat.** Ukurannya waktu nyata per insiden:
 deteksi → tugas → dikonfirmasi → tim tiba → padam → padam terverifikasi.
@@ -130,3 +133,29 @@ Lisensi dan keaktifan repo dicek ulang sebelum dipakai.
 - Kedalaman bara gambut tidak bisa diukur satelit; ditampilkan sebagai perkiraan dan diverifikasi regu.
 - Angka kebutuhan air per hektare gambut di literatur sangat lebar (ratusan ribu sampai satu juta liter); dipakai sebagai rentang, bukan angka pasti.
 - Target waktu respons ditetapkan dari data tugas sendiri (4.3), bukan dari angka luar yang tidak terverifikasi.
+
+## 7. Kontrak data Fase 0 dan 1 (dipegang semua pengerja)
+
+`public/data/tugas_kompleks.json` tetap satu-satunya berkas yang dibaca Worker (menit-menit cron, CPU kecil).
+Tiap entri `kompleks[]` mempertahankan kunci lama (`id, lat, lon, prov, kab, kec, level, n24, jam_sejak, luas,
+rekomendasi, akses, konsesi`) dan menambah kunci di bawah. Kunci yang belum ada = Worker memakai perilaku lama.
+
+| Kunci | Bentuk | Penulis | Arti |
+|---|---|---|---|
+| `insiden` | string, contoh `"62-261022-007"` (kode prov, tanggal WIB pertama terdeteksi, urut) | `scripts/data/insiden.py` | ID stabil sepanjang umur api |
+| `otomatis` | bool | `scripts/data/harian.py` | true = Worker membuat tugas baru (level 3, atau level 2 dengan syarat) |
+| `syarat` | daftar dari `"permukiman"`, `"konsesi"`, `"tumbuh"` | `scripts/data/harian.py` | alasan level 2 ikut otomatis |
+| `konsesi` | daftar `{jenis, nama, pemegang}` (maks 3) | `scripts/data/konsesi_kompleks.py` | pemegang lahan di bawah kompleks |
+| `front` | `{lat, lon, waktu, sensor, radius_m}` | `insiden.py` | deteksi terbaru, terpanas bila seri |
+| `masuk` | `{lat, lon, jarak_km, jenis}` atau null | `insiden.py` | titik jalan/sungai terdekat ke front |
+| `radius_m` | angka | `insiden.py` | ketidakpastian lokasi front (VIIRS 375, MODIS 1000, Himawari 2000) |
+| `luas_aktif` | `{ha, min, maks}` | `insiden.py` | piksel deteksi <= 12 jam, dikoreksi |
+| `luas_koreksi` | `{ha, min, maks, faktor, dasar}` | `insiden.py` | luas terbakar terkoreksi faktor rekonsiliasi; `luas` mentah tetap untuk kompatibilitas tapi tidak lagi tampil sebagai luas |
+| `tren` | `{n24, n24_kemarin, arah}` | `insiden.py` | tumbuh/stabil/menyusut |
+
+`public/data/insiden.json` (penulis `insiden.py`): status bergulir semua insiden aktif dan padam <= 14 hari
+(id, kompleks hari ini, garis luar, front, riwayat per putaran, desa terdekat). Bergulir lewat cache `data-` di titik.yml.
+
+Worker: `tugas_api` menyimpan `insiden`; pencocokan tugas lama memakai `insiden` dulu, jarak 2 km kabupaten sama
+sebagai cadangan. Lokasi tugas (`lat, lon`) ikut `front` terbaru selama tugas belum padam. Tugas dibuat begitu
+`dibuat` di tugas_kompleks.json berubah (diperiksa tiap menit), bukan jam kelipatan 3.
