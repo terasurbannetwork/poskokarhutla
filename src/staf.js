@@ -10,6 +10,8 @@
 import {json, gagal, acak, sha, bacaBody, normalWA, ipHash, adminOK} from "./worker.js";
 import {tx, modOK, superOK, RE_EMAIL} from "./posko.js";
 import {PROV, sandiAcak} from "./instansi.js";
+import {aksesStaf, halamanAkun} from "./admin_halaman.js";
+import {halamanAdmin} from "./statistik.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, SESI_UMUR = 30 * HARI, COOKIE = "sesi_staf";
 /* daftar tetap: sama dengan trigger staf_larik_sah di 0030 dan public/admin/pantau.js (dijaga pantau.test.mjs) */
@@ -148,7 +150,8 @@ async function buat(env, req, kini) {
 }
 async function daftar(env, req) {
   if (!await superOK(env, req)) return tolakSuper();   // NIP, WA, email staf: Super Admin saja
-  return json({staf: (await env.DB.prepare(`SELECT ${KOLOM} FROM staf ORDER BY status, nama LIMIT 500`).all()).results.map(r => ringkas(bentuk(r))), peran: PERAN});
+  return json({staf: (await env.DB.prepare(`SELECT ${KOLOM} FROM staf ORDER BY status, nama LIMIT 500`).all()).results.map(r => { const s = ringkas(bentuk(r)); return {...s, akses: aksesStaf(s.peran)}; }),
+    peran: PERAN, akses: Object.fromEntries(Object.keys(PERAN).map(p => [p, aksesStaf([p])]))});
 }
 async function ubah(env, req, id, kini) {
   const mod = await superOK(env, req); if (!mod) return tolakSuper();
@@ -197,4 +200,5 @@ export const RUTE_STAF = Object.fromEntries(Object.entries({
   "GET /api/staf/admin/daftar": (env, req) => daftar(env, req),
   "POST /api/staf/admin/:id": (env, req, url, kini, ctx, id) => ubah(env, req, id, kini),
 }).map(([k, f]) => [k, bungkusStaf(f)]));
+RUTE_STAF["GET /admin/akun"] = (env, req, url, kini) => halamanAdmin(env, req, kini, halamanAkun());
 export const tanpaTabelStaf = tabelBelum;

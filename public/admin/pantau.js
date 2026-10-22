@@ -113,32 +113,8 @@
     tunda();
   }
 
-  /* ---------- Super Admin: kelola staf ---------- */
-  function panelStaf() {
-    const d = h("details", {class: "pt-staf", id: "ptStaf"}, h("summary", {teks: "Kelola akun staf (Super Admin)"}), h("div", {id: "ptStafIsi", class: "pt-redup", teks: "Buka untuk memuat daftar."}));
-    d.addEventListener("toggle", () => { if (d.open) muatStaf(); });
-    return d;
-  }
-  async function muatStaf(rahasia) {
-    const isi = document.getElementById("ptStafIsi"); if (!isi) return;
-    const r = await fetch("/api/staf/admin/daftar").then(x => x.ok ? x.json() : null).catch(() => null);
-    if (!r) { isi.textContent = "Daftar staf gagal dimuat."; return; }
-    const f = h("form", {class: "pt-form pt-grid", id: "ptBuat"},
-      ...[["nama", "Nama lengkap"], ["nip", "NIP"], ["unit", "Unit"], ["email", "Email dinas"], ["wa", "WhatsApp (0812…)"]].map(([k, l]) => h("label", null, l, h("input", {name: k, required: true}))),
-      h("fieldset", null, h("legend", {teks: "Peran"}), ...Object.entries(r.peran).map(([k, l]) => h("label", {class: "pt-cek"}, h("input", {type: "checkbox", name: "peran", value: k}), l))),
-      h("fieldset", {class: "pt-wilayah"}, h("legend", {teks: "Wilayah kerja (tidak ada yang dipilih = nasional)"}), h("div", {class: "pt-wilayah-isi"}, ...Object.entries(wil.PROV).map(([k, n]) => h("label", {class: "pt-cek"}, h("input", {type: "checkbox", name: "wilayah", value: k}), n)))),
-      h("p", {id: "ptBuatGalat", class: "pt-pesan galat", role: "alert"}), tombol("Buat akun staf", {type: "submit"}, "utama"));
-    f.addEventListener("submit", async e => { e.preventDefault(); const fd = new FormData(f), o = Object.fromEntries(["nama", "nip", "unit", "email", "wa"].map(k => [k, fd.get(k)]));
-      o.peran = fd.getAll("peran"); o.wilayah = fd.getAll("wilayah");
-      const x = await kirim("/api/staf/admin/buat", o); if (x.ok) return muatStaf({username: x.j.username, sandi: x.j.sandi, nama: x.j.staf.nama});
-      document.getElementById("ptBuatGalat").textContent = x.j.galat || `Gagal (${x.status})`; });
-    const baris = r.staf.map(s => h("tr", {"data-staf": s.id}, h("td", null, h("b", {teks: s.nama}), h("small", {teks: `${s.username}, ${s.unit}`})), h("td", {teks: s.peran.map(p => PERAN[p] || p).join(", ")}),
-      h("td", {teks: s.wilayah.length ? s.wilayah.map(wil.prov).join(", ") : "Nasional"}), h("td", null, h("span", {class: "pt-pil " + (s.status === "aktif" ? "dikerjakan" : "abaikan"), teks: s.status}), s.dummy ? h("span", {class: "pt-pil dummy", teks: "DUMMY"}) : null),
-      h("td", null, s.status === "aktif" && !s.dummy ? h("div", {class: "pt-aksi"}, tombol("Reset sandi", {"data-staf-aksi": "reset"}), tombol("Cabut", {"data-staf-aksi": "cabut"})) : null)));
-    isi.className = ""; isi.replaceChildren(
-      rahasia ? h("div", {class: "pt-rahasia-kotak"}, h("p", {teks: `Akun untuk ${rahasia.nama ?? "staf"}. Tampil sekali, serahkan langsung:`}), h("code", {class: "pt-rahasia", teks: `${rahasia.username}  ${rahasia.sandi}`})) : null,
-      h("div", {class: "pt-tabel-wadah"}, h("table", {class: "pt-tabel"}, h("thead", null, h("tr", null, ["Staf", "Peran", "Wilayah", "Status", ""].map(k => h("th", {teks: k})))), h("tbody", null, baris.length ? baris : h("tr", null, h("td", {colspan: "5", teks: "Belum ada akun staf."}))))), f);
-  }
+  /* ---------- Super Admin: akun staf dikelola di /admin/akun ---------- */
+  const panelStaf = () => h("a", {class: "pt-btn", href: "/admin/akun", teks: "👥 Kelola akun staf dan aksesnya"});
 
   /* ---------- riwayat satu butir ---------- */
   async function muatRiwayat(ol) {
@@ -164,10 +140,6 @@
       tunda(); return; }
     const ch = t.closest("[data-jenis]"); if (ch) { F.jenis = ch.dataset.jenis; for (const c of app.querySelectorAll("[data-jenis]")) c.setAttribute("aria-pressed", String(c.dataset.jenis === F.jenis)); tunda(); return; }
     const le = t.closest("[data-lebih]"); if (le) { F["lebih_" + le.dataset.lebih] = true; tunda(); return; }
-    const sa = t.closest("[data-staf-aksi]");
-    if (sa) { const id = sa.closest("[data-staf]").dataset.staf, cabut = sa.dataset.stafAksi === "cabut"; if (cabut && !confirm("Cabut akun staf ini? Sesinya langsung berakhir.")) return;
-      const r = await kirim("/api/staf/admin/" + id, {aksi: sa.dataset.stafAksi}); if (!r.ok) return pesan(r.j.galat || `Gagal (${r.status})`, false);
-      return muatStaf(cabut ? undefined : {username: "(username tetap)", sandi: r.j.sandi, nama: "staf ini"}); }
     const b = t.closest("[data-aksi]"); if (!b || b.disabled) return;
     const a = b.dataset.aksi, li = b.closest("[data-id]"), id = li?.dataset.id;
     if (a === "keluar") { await kirim("/api/staf/keluar", {}); return location.reload(); }

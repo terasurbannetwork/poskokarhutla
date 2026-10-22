@@ -86,6 +86,28 @@
         ".wrangler/kbr"
       ],
       "port": 8796
+    },
+    {
+      "name": "akun",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8798",
+        "--persist-to",
+        ".wrangler/akun",
+        "--var",
+        "SESI_KUNCI:kunci-lokal",
+        "--var",
+        "ADMIN_TOKEN:uji:sandi-uji",
+        "--var",
+        "SUPER_ADMIN:fee6957b3172",
+        "--var",
+        "IP_SALT:garam-lokal"
+      ],
+      "port": 8798
     }
   ]
 }

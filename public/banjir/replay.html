@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Replay Banjir Jabodetabek, 2 Mar sampai 5 Mar 2025</title>
+<meta name="description" content="Putar ulang banjir Jabodetabek 2 sampai 5 Maret 2025 dari model genangan sederhana, hujan ERA5 yang disesuaikan dengan alat ukur, dan laporan media. Bukan prakiraan.">
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<link rel="stylesheet" href="replay.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script src="sim_genangan.js"></script>
+</head>
+<body>
+<header id="kepala">
+  <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2c3.2 4.1 5.6 7 5.6 10.2a5.6 5.6 0 0 1-11.2 0C6.4 10.2 8.8 7.3 12 3.2z" fill="#1f6fb2"/></svg>
+  <h1 id="judul">Replay Banjir Jabodetabek</h1>
+  <span id="rentang" class="abu"></span>
+  <span id="areaTeks" class="abu elips"></span>
+  <div id="cariBungkus">
+    <svg viewBox="0 0 24 24" class="ikon" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+    <input id="cari" type="search" autocomplete="off" spellcheck="false" placeholder="Cari jalan, perumahan, atau tempat" aria-label="Cari jalan, perumahan, atau tempat" role="combobox" aria-expanded="false" aria-controls="hasil">
+    <ul id="hasil" role="listbox" hidden></ul>
+  </div>
+  <span id="pil">Model sederhana, bukan prakiraan</span>
+  <button id="tur" class="tombolGaris" type="button"><svg viewBox="0 0 24 24" class="ikon" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3.3 2.1c-.7.4-1.1.9-1.1 1.7M12 16.6v.1"/></svg>Tur</button>
+</header>
+
+<main id="isi">
+  <section id="kiri">
+    <div id="petaBungkus">
+      <div id="peta" aria-label="Peta 3D genangan"></div>
+      <div id="chip" role="group" aria-label="Area"></div>
+      <aside id="pin" hidden aria-live="polite"></aside>
+      <div id="muat" role="status">Memuat data genangan</div>
+    </div>
+    <div id="bilah">
+      <button id="putar" type="button" aria-label="Putar" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path id="ikPutar" d="M8 5.5v13l10.5-6.5z"/></svg></button>
+      <div id="laju" role="group" aria-label="Kecepatan"><button type="button" data-x="1" class="on">1x</button><button type="button" data-x="2">2x</button><button type="button" data-x="4">4x</button></div>
+      <span id="jam" aria-live="off"></span>
+      <span class="legenda"><i class="k abu"></i>Hujan<i class="k bir"></i>Lahan tergenang<i class="t mer"></i>Kejadian</span>
+    </div>
+    <div id="lini"><canvas id="cvLini" aria-label="Linimasa hujan dan luas genangan. Klik atau geser untuk pindah waktu." role="slider" tabindex="0" aria-valuemin="0" aria-valuemax="96"></canvas></div>
+    <div id="grafik">
+      <div class="gk"><b>Hujan</b><em id="nHujan"></em><canvas id="cvHujan"></canvas></div>
+      <div class="gk"><b>Lahan tergenang</b><em id="nLuas"></em><canvas id="cvLuas"></canvas></div>
+      <div class="gk"><b>Bangunan terendam</b><em id="nGedung"></em><canvas id="cvGedung"></canvas></div>
+      <div class="gk"><b>Air di alur Kali Bekasi (P2C)</b><em id="nSungai"></em><canvas id="cvSungai"></canvas></div>
+    </div>
+  </section>
+
+  <aside id="kanan">
+    <div id="tab" role="tablist">
+      <button type="button" role="tab" data-p="ringkasan" aria-selected="true">Ringkasan</button>
+      <button type="button" role="tab" data-p="lapisan" aria-selected="false">Lapisan</button>
+      <button type="button" role="tab" data-p="model" aria-selected="false">Model</button>
+    </div>
+    <div id="isiKanan">
+      <div class="panel" id="p-ringkasan"></div>
+      <div class="panel" id="p-lapisan" hidden></div>
+      <div class="panel" id="p-model" hidden></div>
+    </div>
+  </aside>
+</main>
+<div id="turKartu" hidden role="dialog" aria-label="Tur"></div>
+<script src="replay.js"></script>
+</body>
+</html>

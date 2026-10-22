@@ -200,6 +200,13 @@ test('pengabelan: peta_kab.js sah secara sintaks; index.html memuatnya sesudah p
     'Luas terbakar (perkiraan satelit)', 'Belum padam (perkiraan satelit)']) assert.ok(en[t], `en.json tanpa kunci: ${t}`)
 })
 
+test('selera pemilik: angka di tooltip/popup overlay ditulis apa adanya ("1.234 ha"), tanpa tanda ±', () => {
+  const j = baca('public/peta_kab.js')
+  assert.doesNotMatch(j, /±/, 'peta_kab.js memakai ± (pemilik: tanpa ±)')
+  assert.match(j, /const nilai = k => hit\[k\] \? `\$\{fmt\(hit\[k\]\)\} ha` : "Tanpa deteksi"/)
+  assert.doesNotMatch(baca('public/peta_kab.css'), /±/)
+})
+
 // data/peta_karhutla_kab.json (bila sudah terbit): invarian terhadap peta_karhutla.json dan GeoJSON kabupaten layar
 // PETA_KAB_JSON = jalur berkas lain (mis. contoh buatan) untuk membuktikan uji ini sendiri; tanpa itu yang diuji berkas terbit
 const jalurKab = process.env.PETA_KAB_JSON || fileURLToPath(new URL('public/data/peta_karhutla_kab.json', akar))

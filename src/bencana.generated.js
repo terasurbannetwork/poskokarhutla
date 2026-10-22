@@ -190,6 +190,7 @@ export default {
         "tren",
         "dampak",
         "sim",
+        "replay",
         "foto",
         "tentang",
         "posko",
@@ -203,6 +204,9 @@ export default {
         "keputusan",
         "sarana"
       ],
+      "halaman": {
+        "replay": "replay.html"
+      },
       "tab_sembunyi": [
         "posko",
         "informasi",
@@ -213,7 +217,8 @@ export default {
         "rob",
         "sungai",
         "keputusan",
-        "sarana"
+        "sarana",
+        "replay"
       ],
       "alias": {
         "simulasi": "sim"

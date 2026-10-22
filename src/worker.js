@@ -23,6 +23,7 @@ import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
 import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat.js";
+import {RUTE_OPS} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, buatTugas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
@@ -520,6 +521,7 @@ const RUTE = {
   ...RUTE_OMC,   // catatan sortie OMC: staf TMC mengisi, GET /api/omc/sortie publik untuk pipeline (src/omc.js)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
+  ...RUTE_OPS,   // operasi pemadaman lapangan (src/operasi_lapangan.js)
   ...RUTE_PENGINGAT,   // antrean pengingat harian Ruang Koordinasi (src/pengingat.js)
   ...RUTE_LAPORAN_BNPB,   // Laporan Harian & Paparan Presiden BNPB yang diketik tim (public/laporan_bnpb*)
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)

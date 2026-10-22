@@ -82,7 +82,7 @@
 
   /* ---------- tooltip dan popup ---------- */
   const kata = () => R.waktuBagian(D.P, st.mode, kls.i0, kls.i1, st.metrik);
-  const nilai = k => hit[k] ? `±${fmt(hit[k])} ha` : "Tanpa deteksi";
+  const nilai = k => hit[k] ? `${fmt(hit[k])} ha` : "Tanpa deteksi";
   function isiTip(p) {
     const I = INFO[st.metrik], [kw, lw] = kata();
     return kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`,
@@ -101,7 +101,7 @@
         if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "kab", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "kab", id: hov}, {hover: true}); }
         /* tooltip kompleks prioritas, Himawari, pangkalan udara, METAR, dan bahaya gambut didahulukan: penangannya didaftarkan lebih awal dan sudah menandai kartunya */
         if (tip._kl != null || tip._pf || peta._tipHw || peta._tipUdara) return;
-        if (pop) { tip.classList.remove("on"); return; }   /* popup terbuka menutupi tempat tooltip: jangan tumpuk (tooltip wilayah di bawahnya ikut disembunyikan) */
+        if (pop && pop._k === f.id) { tip.classList.remove("on"); return; }   /* popup kabupaten ini terbuka: jangan tumpuk (tooltip wilayah di bawahnya ikut disembunyikan); kabupaten lain tetap bertooltip */
         peta.getCanvas().style.cursor = "pointer"; tampilTip(isiTip(f.properties), e.originalEvent); },
       l: () => { if (hov !== null) peta.setFeatureState({source: "kab", id: hov}, {hover: false}); hov = null; peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); }};
     peta.on("mousemove", "kab-fill", ev.m); peta.on("mouseleave", "kab-fill", ev.l);
@@ -116,7 +116,7 @@
     pop = new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:${I.warna}"><div><small>${esc(namaProv(p.prov))}</small><b>${esc(p.nama)}</b></div></div>
       <div class="kg">${kb(st.metrik === "luas" && kls.i0 !== kls.i1 ? I.jumlah : I.judul, nilai(p.kunci))}${kb("Periode", wil(kw, lw))}</div>
       <div class="kk">Perkiraan satelit, bukan luas resmi.</div></div>`).addTo(peta);
-    const p0 = pop; p0.on("close", () => { if (pop === p0) pop = null; });
+    const p0 = pop; p0._k = p.kunci; p0.on("close", () => { if (pop === p0) pop = null; });
     return true;
   }
 

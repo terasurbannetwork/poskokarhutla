@@ -17,11 +17,12 @@ const PeringatanBerita = (() => {
     if (semua) ps.append(el("span", "pb-pil", NAMA[p.bencana] || p.bencana));
     ps.append(el("span", "pb-pil " + (p.jenis === "peringatan" ? "p" : "k"), p.jenis === "peringatan" ? "peringatan" : "kejadian"));
     if (p.bahaya && p.bahaya !== p.bencana) ps.append(el("span", "pb-pil k", kata(p.bahaya)));
-    ps.append(el("span", "pb-pil", "dari berita, belum diverifikasi"));
+    const kn = new Set((p.sumber || []).map(s => s.kanal === "tiktok" ? "TikTok" : "berita"));
+    ps.append(el("span", "pb-pil", "dari " + ([...kn].sort().join(" dan ") || "berita") + ", belum diverifikasi"));
     const ss = (p.sumber || []).filter(s => url(s.url)), s0 = ss[0];
     const j = s0 ? el("a", "pb-jd", p.judul) : el("span", "pb-jd", p.judul);
     if (s0) { j.href = url(s0.url); j.target = "_blank"; j.rel = "noopener noreferrer"; }
-    const n = el("div", "pb-ps"); n.append(el("span", "pb-n", fmt(p.n_sumber || ss.length || 1) + " media"));
+    const n = el("div", "pb-ps"); n.append(el("span", "pb-n", fmt(p.n_sumber || ss.length || 1) + ((p.sumber || []).every(s => s.kanal === "tiktok") ? " akun" : " media")));
     if (s0) n.append(el("span", "pb-wl", s0.sumber || ""));
     const wl = el("div", "pb-wl", (p.wilayah || []).join(", "));
     const wk = el("div", "pb-wl", p.mulai && p.selesai ? "Berlaku " + rentang(p.mulai, p.selesai) : "");

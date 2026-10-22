@@ -189,6 +189,7 @@
         "tren",
         "dampak",
         "sim",
+        "replay",
         "foto",
         "tentang",
         "posko",
@@ -202,6 +203,9 @@
         "keputusan",
         "sarana"
       ],
+      "halaman": {
+        "replay": "replay.html"
+      },
       "tab_sembunyi": [
         "posko",
         "informasi",
@@ -212,7 +216,8 @@
         "rob",
         "sungai",
         "keputusan",
-        "sarana"
+        "sarana",
+        "replay"
       ],
       "alias": {
         "simulasi": "sim"

@@ -2054,6 +2054,24 @@ const Lapis = {
         properties: {px: a.length, f, lv: Math.max(...a.map(b => b[4])), rel: Math.max(...a.map(b => b[5])), u: Math.min(...a.map(b => b[2])), u0: Math.max(...a.map(b => b[8] ?? b[2])), n: Math.max(...a.map(b => b[7] ?? 1)), baru: a.some(b => b[9] === 1) ? 1 : 0}}; })}; },
   /* radius menurut zoom x jumlah FRP (<30 MW kecil, 30-150 sedang, >150 besar); k = pengali, b = ukuran suar */
   hwR(k, b) { const r = (a, c, d) => ["step", ["get", "f"], a * k, 30, c * k, 150, d * k]; return b ? ["interpolate", ["linear"], ["zoom"], 3, r(3, 4, 5.5), 12, r(6, 8, 11)] : ["interpolate", ["linear"], ["zoom"], 3, r(3, 4, 5.5), 12, r(6, 9, 13)]; },
+  /* klaster Himawari yang menimpa lingkaran kompleks merah (prio-klaster, kl-pt3) dipindah ke pojok diagonal terdekat lingkaran itu, seperti lencana;
+     pojok yang sudah terisi dilewati. Dihitung saat peta diam (idle); setData hanya bila hasilnya berubah, supaya idle tidak berulang tanpa henti */
+  geserHw() { if (!peta.getSource("hwk")) return;
+    const rK = n => n <= 10 ? 13 + (n - 2) / 8 * 5 : n <= 40 ? 18 + (n - 10) / 30 * 8 : 26, rB = n => n <= 10 ? 7.5 + (n - 2) / 8 * 1.5 : n <= 50 ? 9 + (n - 10) / 40 * 2 : 11;
+    const merah = (peta.getLayer("prio-klaster") ? peta.queryRenderedFeatures({layers: ["prio-klaster", "kl-pt3"]}) : [])
+      .map(f => ({p: peta.project(f.geometry.coordinates), r: f.properties.point_count ? rK(f.properties.point_count) : 8, isi: new Set()}));
+    const sudah = new Set(), fitur = [];
+    for (const f of peta.querySourceFeatures("himawari", {filter: ["has", "point_count"]})) {
+      const id = f.properties.cluster_id; if (sudah.has(id)) continue; sudah.add(id);
+      let c = f.geometry.coordinates; const p = peta.project(c), rb = rB(f.properties.point_count);
+      const m = merah.find(m => Math.hypot(p.x - m.p.x, p.y - m.p.y) < m.r + rb);
+      if (m) { const awal = (p.y <= m.p.y ? 0 : 2) + ((p.x >= m.p.x) === (p.y <= m.p.y) ? 0 : 1);   /* 0 kanan atas, 1 kiri atas, 2 kiri bawah, 3 kanan bawah */
+        const q = [0, 1, 2, 3].map(i => (awal + i) % 4).find(q => !m.isi.has(q)) ?? awal, a = [-45, -135, 135, 45][q] * Math.PI / 180, d = m.r + rb * .45; m.isi.add(q);
+        c = peta.unproject([m.p.x + d * Math.cos(a), m.p.y + d * Math.sin(a)]).toArray(); }
+      fitur.push({type: "Feature", geometry: {type: "Point", coordinates: c}, properties: f.properties});
+    }
+    const kunci = JSON.stringify(fitur.map(f => [f.properties.cluster_id, f.geometry.coordinates.map(x => x.toFixed(4))]));
+    if (kunci !== this._hwk) { this._hwk = kunci; peta.getSource("hwk").setData({type: "FeatureCollection", features: fitur}); } },
   hwMulai() { if (this._hw) return; const ada = () => Peta.lihat("himawari") || Peta.lihat("hwbaru"), ambil = () => {
       fetch("/api/himawari", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { if (!d || !Array.isArray(d.baris)) return;
         this.cache.hwMeta = d; peta.getSource("himawari")?.setData(this.hwFitur(0)); peta.getSource("hwbaru")?.setData(this.hwFitur(1)); }).catch(() => {}); };
@@ -2139,21 +2157,24 @@ const Lapis = {
       himawari: async () => {
         /* api berdekatan digabung jadi gelembung biru bernomor di skala kecil, pecah saat diperbesar (sama dengan kompleks prioritas) */
         peta.addSource("himawari", {type: "geojson", data: this.hwFitur(0), cluster: true, clusterRadius: 40, clusterMaxZoom: 7});
-        peta.addLayer({id: "himawari-klaster", type: "circle", source: "himawari", minzoom: 3, filter: ["has", "point_count"],
+        /* gelembung biru tidak menutupi lingkaran kompleks merah: digambar dari sumber turunan "hwk" yang posisinya digeser ke pojok terdekat (geserHw) */
+        peta.addSource("hwk", {type: "geojson", data: {type: "FeatureCollection", features: []}});
+        peta.addLayer({id: "himawari-klaster", type: "circle", source: "hwk", minzoom: 3,
           paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#22b8e0", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
-        peta.addLayer({id: "himawari-n", type: "symbol", source: "himawari", minzoom: 3, filter: ["has", "point_count"],
+        peta.addLayer({id: "himawari-n", type: "symbol", source: "hwk", minzoom: 3,
           layout: {"text-field": ["to-string", ["get", "point_count"]], "text-size": 9.5, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
           paint: {"text-color": "#fff", "text-halo-color": "#0e6f8a", "text-halo-width": .6}});
         peta.on("mouseenter", "himawari-klaster", () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", "himawari-klaster", () => { peta.getCanvas().style.cursor = ""; });
         peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 3, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
           "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1, 10, 1.6],
           "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
-        ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); this.hwMulai(); },
-      /* api baru: Himawari >= 2 pindai, FIRMS belum ada dalam 4 km / 24 jam; suar fuchsia (halo + titik), di atas titik & himawari */
+        ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); peta.on("idle", () => this.geserHw()); this.hwMulai(); },
+      /* api baru: Himawari >= 2 pindai, FIRMS belum ada dalam 4 km / 24 jam; suar fuchsia (halo + titik), di atas titik & himawari.
+         Mulai zoom 6: di skala nasional titik lepas ini mengotori peta (pemilik, 22 Okt 2026) */
       hwbaru: async () => {
         peta.addSource("hwbaru", {type: "geojson", data: this.hwFitur(1)});
-        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 3, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
-        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 3, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
+        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 6, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
+        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 6, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
     };
     try { await gaya[k](); } catch (e) { toast("Lapisan " + k + " gagal dimuat"); }
   },
