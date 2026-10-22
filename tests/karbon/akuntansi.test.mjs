@@ -190,6 +190,14 @@ test("risikoApi: kelas dan buffer 12% + 5% × kelas", () => {
   assert.equal(proyeksiKredit(S, {...A, buffer: null}).buffer_dipakai, 0.12);
 });
 
+test("skorSaring: izin konversi (HTI, sawit) diberi peringatan deforestasi terencana; HPH tidak", () => {
+  const p = j => skorSaring({...S, jenis: j}, A).peringatan.join();
+  assert.match(p("hti"), /izin HTI: pembukaan hutan di dalamnya umumnya terencana/);
+  assert.match(p("sawit"), /izin SAWIT/);
+  assert.doesNotMatch(p("hph"), /terencana dan sah/);
+  assert.doesNotMatch(skorSaring(S, A).peringatan.join(), /terencana dan sah/, "tanpa jenis = tanpa peringatan izin");
+});
+
 test("skorSaring: luas kecil tidak layak, gambut > 2% menutup jalur Verra tanpa menggugurkan layak", () => {
   const s = skorSaring(S, A);
   assert.equal(s.layak, false);

@@ -12,6 +12,7 @@ export const AMBANG = Object.freeze({
 });
 export const UJI_BALIK = Object.freeze({latih: [2010, 2019], uji: [2020, 2024]});   // bawaan ujiBalik
 export const BATAS_HARGA = 1000;   // batas atas pencarian harga impas (USD/t)
+export const JENIS_KONVERSI = Object.freeze(["hti", "sawit"]);   // izin yang sah membuka hutan alam (kontrak §3.1 `jenis`)
 
 export const ASUMSI_BAWAAN = Object.freeze({
   periode_acuan: [2016, 2025], metode: "rerata", ef_metode: "gfw", tahun_mulai: 2027, durasi_th: 20, masa_baseline_th: 7, pendorong_baseline: ["1", "2", "3", "6"],
@@ -327,6 +328,9 @@ export function skorSaring(stat, a, frl) {
   const layak = alasan.length === 0;
   if (!jalur_verra) peringatan.push(`gambut > ${AMBANG.gambut_maks * 100}%: VM0048/VMD0055 tidak berlaku, belum ada metodologi Verra untuk gambut tropis (VM0036 ditahan)`);
   if (a.durasi_th > a.masa_baseline_th) peringatan.push(`kredit sesudah tahun ke-${a.masa_baseline_th} memerlukan baseline yang dinilai ulang (VMD0055: masa baseline <= ${a.masa_baseline_th} th)`);
+  /* di izin konversi (HTI, sawit) pembukaan hutan alam biasanya TERENCANA dan sah menurut RKU/HGU; WRI tetap melabelinya
+     pertanian/permukiman. VM0048 hanya mencakup deforestasi tak terencana, jadi kehilangan ini bukan bukti ancaman tak terencana. */
+  if (JENIS_KONVERSI.includes(stat.jenis)) peringatan.push(`izin ${stat.jenis.toUpperCase()}: pembukaan hutan di dalamnya umumnya terencana dan sah, bukan deforestasi tak terencana; jalur REDD+ VM0048 belum tentu berlaku, perlu rencana kerja (RKU) sebagai baseline deforestasi terencana`);
   if (k.npv_usd > 0 && k.npv_masa_baseline_usd < 0) peringatan.push(`Layak hanya bila baseline diperpanjang sesudah tahun ke-${a.masa_baseline_th}`);
   return {potensi_kredit_th: p.rerata_masa_kredit_t, stok_tCO2_ha: h2000 > 0 ? (num(stat.stok_tC?.atas) + num(stat.stok_tC?.bawah)) / h2000 * CO2_PER_C : 0,
     laju: bl.laju, porsi_gambut, risiko_api: r.kelas, npv_usd: k.npv_usd, npv_masa_baseline_usd: k.npv_masa_baseline_usd, irr: k.irr, layak, jalur_verra, alasan, peringatan};

@@ -155,7 +155,7 @@ async function cariPeraturan(env, url, a) {
   return {total: d.total, ditampilkan: d.hasil.length, hasil: d.hasil, catatan: "cuplikan memberi tanda [[kata]] pada kata yang cocok. Kutip sebagai 'label pasal + id dokumen' (mis. Pasal 5 perban-1-2026). Baca penuh dengan baca_peraturan_bnpb."};
 }
 async function bacaPeraturan(env, url, a) {
-  const d = hukumOk(await bacaDok(env, a.id, a.pasal)), meta = {id: d.id, judul: d.judul, jenis: d.jenis, nomor: d.nomor, tahun: d.tahun, status: d.status, url: d.url, pdf: d.pdf};
+  const d = hukumOk(await bacaDok(env, a.id, a.pasal)), meta = {id: d.id, judul: d.judul, jenis: d.jenis, nomor: d.nomor, tahun: d.tahun, status: d.status, resmi: d.resmi, sumber: d.sumber, url: d.url, pdf: d.pdf};
   if (a.pasal) return {...meta, segmen: d.segmen.map(s => ({label: s.label, bab: s.bab, halaman: s.halaman, teks: s.teks}))};
   let sisa = 16000; const segmen = [];
   for (const s of d.segmen) { if (sisa <= 0) break; const t = s.teks.slice(0, sisa); sisa -= t.length; segmen.push({label: s.label, bab: s.bab, halaman: s.halaman, teks: t}); }
@@ -175,9 +175,9 @@ const TOOLS = [
     skema: {properties: {prov: P_PROV}}, jalan: kualitasUdara},
   {nama: "peringatan_aktif", deskripsi: "Peringatan dini cuaca (nowcast) yang sedang aktif dan peringatan gelombang tinggi dari BMKG. Diperbarui berkala beberapa kali sehari; periksa kolom dibuat untuk umur data.", skema: {properties: {}}, jalan: peringatanAktif},
   {nama: "daftar_wilayah", deskripsi: "Kode provinsi BPS (38 provinsi). Dengan argumen prov: daftar nama kabupaten/kota provinsi itu, untuk dipakai sebagai argumen kab tool lain.", skema: {properties: {prov: P_PROV}}, jalan: daftarWilayah},
-  {nama: "cari_peraturan_bnpb", deskripsi: "Cari pasal di peraturan BNPB (Peraturan Badan, Perka, juklak/juknis, keputusan kepala) dari jdih.bnpb.go.id, pencarian teks penuh per pasal. Jawab pengguna dengan MENGUTIP label pasal dan id dokumen (mis. 'Pasal 5 perban-1-2026'); jangan mengarang pasal. UU/PP/Perpres di luar BNPB tidak ada di sini: rujuk ke pasal.id.",
+  {nama: "cari_peraturan_bnpb", deskripsi: "Cari pasal di peraturan BNPB (Peraturan Badan, Perka, juklak/juknis, keputusan kepala) dari jdih.bnpb.go.id, pencarian teks penuh per pasal. Jawab pengguna dengan MENGUTIP label pasal dan id dokumen (mis. 'Pasal 5 perban-1-2026'); jangan mengarang pasal. UU/PP/Perpres di luar BNPB tidak ada di sini: rujuk ke pasal.id. Hasil dengan resmi=0 adalah salinan tidak resmi (lihat sumber): sarankan pengguna memeriksa sumber resmi (jdih.bnpb.go.id).",
     skema: {required: ["q"], properties: {q: {type: "string", maxLength: 200, description: "Kata kunci, mis. 'dana bersama penyaluran'."}, jenis: {type: "string", maxLength: 30, description: "Singkatan atau jenis dokumen, mis. PERBAN, PERKA."}, tahun: {type: "integer", minimum: 1900, maximum: 2100, description: "Tahun penetapan."}, status: {type: "string", maxLength: 30, description: "mis. BERLAKU, DICABUT."}, limit: P_LIMIT(20, 8)}}, jalan: cariPeraturan},
-  {nama: "baca_peraturan_bnpb", deskripsi: "Baca teks peraturan BNPB berdasarkan id dokumen, seluruhnya (dipotong, disertai daftar isi) atau satu pasal lewat argumen pasal. Saat menjawab, kutip label pasal dan id dokumen. UU/PP di luar BNPB: rujuk ke pasal.id.",
+  {nama: "baca_peraturan_bnpb", deskripsi: "Baca teks peraturan BNPB berdasarkan id dokumen, seluruhnya (dipotong, disertai daftar isi) atau satu pasal lewat argumen pasal. Saat menjawab, kutip label pasal dan id dokumen. UU/PP di luar BNPB: rujuk ke pasal.id. Dokumen resmi=0 adalah salinan tidak resmi (lihat sumber): sarankan cek sumber resmi.",
     skema: {required: ["id"], properties: {id: P_IDDOK, pasal: {type: "string", maxLength: 60, description: "Label segmen persis atau nomornya, mis. 'Pasal 5' atau '5'."}}}, jalan: bacaPeraturan},
   {nama: "relasi_peraturan_bnpb", deskripsi: "Relasi satu peraturan BNPB: dasar hukum (mengingat), yang dicabut/diganti/diubah, dan peraturan lain yang merujuknya (masuk). Berguna memeriksa apakah suatu peraturan masih berlaku. Sebut id dokumen saat mengutip.",
     skema: {required: ["id"], properties: {id: P_IDDOK}}, jalan: relasiPeraturan},

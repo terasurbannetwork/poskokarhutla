@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS hukum_dok (
   id TEXT PRIMARY KEY CHECK (length(id) BETWEEN 3 AND 60),
   slug TEXT, tipe TEXT, jenis TEXT, singkatan TEXT, nomor TEXT, tahun INTEGER,
   judul TEXT NOT NULL, status TEXT, subjek TEXT, tgl_tetap TEXT, tgl_undang TEXT, url TEXT,
-  pdf TEXT, halaman INTEGER, mutu REAL, diperbarui INTEGER
+  pdf TEXT, halaman INTEGER, mutu REAL, diperbarui INTEGER,
+  resmi INTEGER NOT NULL DEFAULT 1 CHECK (resmi IN (0,1)),   -- 0 = salinan tidak resmi (BPBD, UNFPA, dst.)
+  sumber TEXT   -- domain asal berkas
 );
 CREATE INDEX IF NOT EXISTS hukum_dok_tahun ON hukum_dok (tahun);
 CREATE TABLE IF NOT EXISTS hukum_segmen (

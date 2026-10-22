@@ -33,6 +33,10 @@
   const warnaPil = e => { const w = e.dataset.w; if (w) e.style.setProperty("--pil", "var(--" + w + ")"); return e; };
   const pilStatus = st => { const [i, w] = WARNA_STATUS[String(st || "").toUpperCase()] || ["dokumen", "ink3"]; return warnaPil(pil(i, kapital(st || "Tidak diketahui"), w)); };
   const pilW = (i, t, w) => warnaPil(pil(i, t, w));
+  const tidakResmi = x => !!x && (x.resmi === false || x.resmi === 0 || x.resmi === "0");
+  const pilTakResmi = x => pilW("peringatan", "Salinan tidak resmi" + (x.sumber ? " (dari " + x.sumber + ")" : ""), "c1");
+  let pKat = null; /* katalog dimuat sekali; null bila belum ada */
+  const katalogPeta = () => pKat || (pKat = fetch("/data/bnpb/hukum/katalog.json").then(r => r.ok ? r.json() : null).then(k => new Map(((k && k.dok) || []).map(d => [d.id, d]))).catch(() => new Map()));
   const sebut = d => `${d.singkatan ? kapital(d.singkatan) : "Dokumen"} ${d.nomor}/${d.tahun}`;
   const JENIS = ["UU", "PP", "PERPRES", "PERKA", "PERBAN", "KEPKA", "JUKLAK", "JUKNIS", "SE"];
   const STATUS = ["BERLAKU", "DICABUT", "DIGANTI", "DIUBAH"];
@@ -128,7 +132,7 @@
   }
   function kartuHasil(x) {
     const a = h("a", {class: "bn-kartu hk-hit", href: tautanDok(x.dok, x.label)},
-      h("div", {class: "hk-pils"}, pilW("dokumen", `${x.singkatan || ""} ${x.nomor}/${x.tahun}`.trim(), "c5"), pilStatus(x.status), pilW("buku", x.label || "", "ink3")),
+      h("div", {class: "hk-pils"}, pilW("dokumen", `${x.singkatan || ""} ${x.nomor}/${x.tahun}`.trim(), "c5"), pilStatus(x.status), tidakResmi(x) ? pilTakResmi({sumber: null}) : null, pilW("buku", x.label || "", "ink3")),
       h("h3", {teks: x.judul || ""}), x.bab ? h("div", {class: "hk-bab", teks: x.bab}) : null, h("p", {class: "hk-cuplik"}, bersorot(x.cuplikan)));
     return a;
   }
@@ -161,6 +165,9 @@
     if (d.tgl_tetap) pils.push(pilW("kalender", "Ditetapkan " + tgl(d.tgl_tetap), "ink3"));
     if (d.tgl_undang) pils.push(pilW("kalender", "Diundangkan " + tgl(d.tgl_undang), "ink3"));
     if (d.sumber_bn) pils.push(pilW("buku", d.sumber_bn, "ink3"));
+    if (tidakResmi(d)) pils.push(pilTakResmi(d)); else if (d.sumber) pils.push(pilW("tautan", d.sumber, "ink3"));
+    const seg0 = seg.length && seg.every(x => x.jenis === "judul"), tanpaTeks = !seg.length || seg0 || d.halaman === 0;
+    if (tanpaTeks) pils.push(pilW("peringatan", "Teks belum tersedia", "c3"));
     if (d.halaman_ocr > 0) pils.push(pilW("mata", `Dibaca OCR: ${angka(d.halaman_ocr)} dari ${angka(d.halaman)} halaman`, "c3"));
     const kembali = h("button", {type: "button", class: "ad-tombol"}, svg("kiri"), "Kembali");
     kembali.onclick = () => { location.hash = "t=" + tabAktif; };
@@ -205,7 +212,7 @@
       if (n < seg.length) setTimeout(lot, 0); else sorotPasal(pasal);
     };
     teks.addEventListener("click", e => { const b = e.target.closest("button[data-i]"); if (b) salin(b, `${seg[+b.dataset.i].label} ${sebut(d)}`, "Salin kutipan"); });
-    if (seg.length) lot(); else teks.append(h("p", {class: "hk-kosong", teks: "Teks dokumen ini belum tersedia di pustaka. Buka PDF resminya."}));
+    if (!tanpaTeks) lot(); else { teks.append(h("p", {class: "hk-kosong"}, "Teks dokumen ini belum tersedia di pustaka. Buka ", d.url ? h("a", {href: d.url, target: "_blank", rel: "noopener noreferrer"}, "halaman JDIH") : "PDF resminya", ".")); sorotPasal(null); }
   }
   function sorotPasal(label) {
     for (const e of document.querySelectorAll(".hk-seg.sorot")) e.classList.remove("sorot");
@@ -222,14 +229,16 @@
     $("jawab").replaceChildren(h("div", {class: "bn-kartu"}, h("p", {class: "hk-catatan", teks: "Mencari pasal dan memeriksa kutipan ke teks asli..."}), h("div", {class: "hk-memuat"})));
     try {
       const D = await ambil("/api/hukum/tanya", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({pertanyaan: q})});
-      gambarJawab(D);
+      await gambarJawab(D);
     } catch (e) { bersih("jawab"); $("pesanTanya").textContent = e.status === 503 || !e.status ? "Pustaka hukum belum diaktifkan." : e.status === 429 ? "Batas pertanyaan tercapai." + tungguLagi(e.retry) : e.message; }
     tanyaJalan = false; $("bTanya").disabled = false;
   }
   const tungguLagi = d => !d ? " Coba lagi nanti." : d >= 5400 ? ` Coba lagi sekitar ${angka(Math.ceil(d / 3600))} jam lagi.` : ` Coba lagi sekitar ${angka(Math.max(1, Math.ceil(d / 60)))} menit lagi.`;
-  const kartuSegmen = x => h("a", {class: "bn-kartu hk-hit", href: tautanDok(x.dok, x.label)},
-    h("div", {class: "hk-pils"}, pilW("buku", x.label || "Pasal", "ink3"), pilW("dokumen", x.judul || x.dok, "c5")), h("p", {class: "hk-cuplik", teks: x.teks || ""}));
-  function gambarJawab(D) {
+  const kartuSegmen = (x, kat) => { const r = x.resmi === undefined ? kat.get(x.dok) : x; return h("a", {class: "bn-kartu hk-hit", href: tautanDok(x.dok, x.label)},
+    h("div", {class: "hk-pils"}, pilW("buku", x.label || "Pasal", "ink3"), pilW("dokumen", x.judul || x.dok, "c5"), tidakResmi(r) ? pilTakResmi(r) : null), h("p", {class: "hk-cuplik", teks: x.teks || ""})); };
+  async function gambarJawab(D) {
+    const perluKat = [...(D.kutipan || []), ...(D.segmen_dipakai || [])].some(k => k.dok && k.resmi === undefined);
+    const kat = perluKat ? await katalogPeta() : new Map();
     const kut = D.kutipan || [], bu = D.dibuang || 0, pils = [];
     if (kut.length) pils.push(pilW("perisai", "Terverifikasi ke teks asli", "c4"));
     if (bu > 0) pils.push(pilW("peringatan", `${angka(bu)} kutipan dibuang`, "c3"));
@@ -239,10 +248,10 @@
     const isi = [h("section", {class: "bn-kartu hk-jawab"}, h("h2", null, svg("tanya"), "Jawaban"), pils.length ? h("div", {class: "hk-pils"}, ...pils) : null, ...awal,
       ...(tanpaJawaban ? [h("p", {teks: segP.length ? (D.model ? "Model tidak menghasilkan kutipan yang lolos verifikasi. Pasal paling relevan:" : "Model sedang tidak tersedia. Pasal paling relevan:") : "Tidak ditemukan di peraturan BNPB."})] : par.map(t => h("p", {teks: t}))),
       h("p", {class: "hk-catatan", teks: "Bukan nasihat hukum. Rujuk dokumen resmi."}))];
-    if (tanpaJawaban && segP.length) isi.push(h("div", {class: "hk-hasil"}, ...segP.map(kartuSegmen)));
+    if (tanpaJawaban && segP.length) isi.push(h("div", {class: "hk-hasil"}, ...segP.map(x => kartuSegmen(x, kat))));
     if (kut.length) isi.push(h("h2", {class: "hk-judul", teks: `Kutipan (${angka(kut.length)})`}), h("div", {class: "hk-hasil"}, ...kut.map(k => {
       const ada = k.dok, a = h(ada ? "a" : "div", {class: "bn-kartu hk-hit", href: ada ? tautanDok(k.dok, k.label) : null},
-        h("div", {class: "hk-pils"}, pilW("buku", k.label || "Kutipan", "ink3"), k.dok ? pilW("dokumen", k.dok_nama || k.dok, "c5") : null), h("p", {class: "hk-cuplik", teks: k.teks || ""}));
+        h("div", {class: "hk-pils"}, pilW("buku", k.label || "Kutipan", "ink3"), k.dok ? pilW("dokumen", k.dok_nama || k.dok, "c5") : null, tidakResmi(k.resmi === undefined ? kat.get(k.dok) : k) ? pilTakResmi(k.resmi === undefined ? kat.get(k.dok) : k) : null), h("p", {class: "hk-cuplik", teks: k.teks || ""}));
       return a; })));
     $("jawab").replaceChildren(...isi);
   }
@@ -300,7 +309,7 @@
       h("section", {class: "hk-tabel-sec", "data-w": "relC"}, h("h2", null, "Definisi istilah"), h("label", {class: "bn-isian"}, "Cari istilah", h("input", {id: "cariIstilah", type: "search", placeholder: "Contoh: bencana", autocomplete: "off"})), h("div", {id: "relC"})));
     tabel("relA", [
       {k: "ke", l: "Dokumen", v: r => (dm.get(r.id) ? sebut(dm.get(r.id)) : r.ke_judul || r.id).toLowerCase(), f: r => h("span", null, link(r.id, judul(r.id, r.ke_judul), !!dm.get(r.id)), dm.get(r.id) ? h("div", {class: "hk-redup", teks: dm.get(r.id).judul}) : null)},
-      {k: "st", l: "Status", v: r => dm.get(r.id)?.status || "", f: r => dm.get(r.id) ? pilStatus(dm.get(r.id).status) : h("span", {class: "hk-redup", teks: "Belum ada di pustaka"})},
+      {k: "st", l: "Status", v: r => dm.get(r.id)?.status || "", f: r => dm.get(r.id) ? h("span", {class: "hk-pils"}, pilStatus(dm.get(r.id).status), tidakResmi(dm.get(r.id)) ? pilTakResmi(dm.get(r.id)) : null) : h("span", {class: "hk-redup", teks: "Belum ada di pustaka"})},
       {k: "n", l: "Dirujuk oleh", n: true, v: r => r.n, f: r => angka(r.n) + " dokumen"}], A, {urut: "n", arah: -1, kosong: kos.relA});
     const JN = {mengganti: "Diganti oleh", mencabut: "Dicabut oleh", mengubah: "Diubah oleh"};
     tabel("relB", [

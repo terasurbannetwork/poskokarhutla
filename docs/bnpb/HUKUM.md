@@ -13,6 +13,13 @@ diunduh dari BPK (cocok lewat nomor+tahun; indeks.json memuat `pdf_bpk`, `bpk`, 
 ditambahkan sebagai dok baru (metadata dari halaman BPK, `sumber_data: "peraturan.bpk.go.id"`, kunci `BPK/<slug>` di indeks).
 `tarik` ulang tidak menghapus bidang BPK. Katalog memakai `pdf_bpk` sebagai tautan PDF bila ada; dok membawa `sumber`.
 `--bpk-saja` / `--tanpa-bpk` mengatur langkahnya.
+Urutan sumber teks: JDIH, peraturan.bpk.go.id, bnpb.go.id (`pdf_bnpb`, pola URL `uploads/24/peraturan-kepala|badan/{Y}/...` dan
+`uploads/migration/pubs/PERKA_{N}_{Y}.PDF`), lalu salinan lain dari `data/raw/hukum/tidak_resmi.json` (kurasi tangan, `sumber_tidak_resmi`).
+Tiap PDF non-JDIH divalidasi: delapan halaman pertama menyebut Penanggulangan Bencana/BNPB dan halaman 1 memuat NOMOR n TAHUN y
+(salah baca OCR boleh, bertentangan tidak); yang gagal dicatat di `bpk_tolak.json`/`bnpb_tolak.json`, tidak dipakai.
+Katalog: `pdf` dan `sumber` (domain) memakai sumber yang benar-benar dipakai; `resmi` = false untuk domain di luar
+{jdih.bnpb.go.id, peraturan.bpk.go.id, bnpb.go.id, peraturan.go.id} (layar wajib menandainya). `hukum_dok` butuh kolom `resmi INTEGER`
+dan `sumber TEXT` (kolom ada di migrasi `0052_hukum.sql`).
 
 ## Alur
 
@@ -52,7 +59,7 @@ Rujukan ke dokumen yang TIDAK ada di JDIH BNPB tetap dicatat (`terdaftar: false`
 `relasi.jenis`: `mengingat` (dasar hukum di konsideran), `mencabut`, `mengganti`, `mengubah`, `merujuk` (sitasi di batang tubuh).
 `mutu` = porsi kata teks yang dikenal kamus korpus berlapis-teks (0..1); `halaman_ocr` = halaman yang dibaca tesseract.
 
-## Kontrak D1 (migrasi `0049_hukum.sql`, isi dari `data/hukum/seed.sql`)
+## Kontrak D1 (migrasi `0052_hukum.sql`, isi dari `data/hukum/seed.sql`)
 
 | Tabel | Kolom |
 |---|---|

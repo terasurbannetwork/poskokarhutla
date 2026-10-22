@@ -36,14 +36,25 @@ def satu(f, tanya=None):
     return {**f["properties"], **(statistik(f["geometry"], tanya) if tanya else statistik(f["geometry"]))}
 
 
-def geom_ringan(f, tol=0.003):
+def _dalam(x, y, cincin):
+    k = False
+    for (x1, y1), (x2, y2) in zip(cincin, cincin[1:]):
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            k = not k
+    return k
+
+
+def geom_ringan(f, tol=0.002):
+    """Geometri ringan untuk peta dan tombol "Jadikan proyek". Lubang yang sesudah penyederhanaan menembus cincin luar
+    dibuang: worker (src/karbon.js) menolak poligon begitu (22 Okt 2026, tol 0,003 membuat poligon HTI ditolak 400)."""
     from lahan import dp
     g = bersih(f["geometry"])
     polis = []
     for p in g["coordinates"]:
         rs = [[[round(x, 4), round(y, 4)] for x, y in dp([tuple(c) for c in r], tol)] for r in p]
         if len(rs[0]) >= 4:
-            polis.append([r for r in rs if len(r) >= 4])
+            luar = rs[0]
+            polis.append([luar] + [r for r in rs[1:] if len(r) >= 4 and all(_dalam(x, y, luar) for x, y in r)])
     return {"type": "Feature", "properties": {"id": f["properties"]["id"]},
             "geometry": {"type": "MultiPolygon", "coordinates": polis or g["coordinates"]}}
 

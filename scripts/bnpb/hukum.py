@@ -94,7 +94,7 @@ def tarik(tipe_daftar, jdih=True, bpk=True):
                     continue
                 m = metadata(d)
                 m.update(url=t, tipe=tipe, slug=slug)
-                m.update({k: lama[k] for k in ("pdf_bpk", "bpk", "pdf_bnpb", "sumber_data") if k in lama})
+                m.update({k: lama[k] for k in ("pdf_bpk", "bpk", "pdf_bnpb", "sumber_tidak_resmi", "sumber_data") if k in lama})
                 ada = 0
                 for j, p in enumerate(m["pdf"]):
                     fp = f"{MENTAH}/pdf/{nama_pdf(slug, len(m['pdf']), j)}"
@@ -112,6 +112,7 @@ def tarik(tipe_daftar, jdih=True, bpk=True):
     if bpk:
         tarik_bpk(indeks, f)
         tarik_bnpb(indeks, f)
+        tarik_tidak_resmi(indeks, f)
 
 
 # ── cadangan: peraturan.bpk.go.id (entitas 616 = BNPB). Mengisi PDF yang 404 di JDIH dan menambah dokumen yang JDIH tak punya. ──
@@ -122,9 +123,24 @@ BPK_META = {"Judul": "Judul", "Nomor": "Nomor", "Tahun": "Tahun", "Tanggal Penet
             "Bidang Hukum": "Bidang Hukum"}
 
 
+RESMI = {"jdih.bnpb.go.id", "peraturan.bpk.go.id", "bnpb.go.id", "peraturan.go.id"}
+
+
 def ada_sumber(v):
-    """Dokumen sudah punya PDF dari salah satu sumber (JDIH, BPK, bnpb.go.id)."""
-    return bool(v.get("pdf_ok") or v.get("teks_ok") or v.get("pdf_bpk") or v.get("pdf_bnpb"))
+    """Dokumen sudah punya PDF dari salah satu sumber (JDIH, BPK, bnpb.go.id, salinan tidak resmi)."""
+    return bool(v.get("pdf_ok") or v.get("teks_ok") or v.get("pdf_bpk") or v.get("pdf_bnpb") or v.get("sumber_tidak_resmi"))
+
+
+def sumber_dok(m):
+    """(domain, resmi, [url pdf]) dari sumber yang BENAR-BENAR dipakai untuk teksnya; urutan JDIH, BPK, bnpb.go.id, salinan lain."""
+    if m.get("pdf_bpk"):
+        return "peraturan.bpk.go.id", True, [m["pdf_bpk"]]
+    if m.get("pdf_bnpb"):
+        return "bnpb.go.id", True, [m["pdf_bnpb"]]
+    t = m.get("sumber_tidak_resmi")
+    if t:
+        return t["domain"], t["domain"] in RESMI, [t["url"]]
+    return "jdih.bnpb.go.id", True, m.get("pdf", [])
 
 
 def slug_jdih(jenis, no, th):
@@ -142,27 +158,49 @@ def kandidat_bnpb(jenis, no, th):
 
 
 def cocok_nomor(fp, no, th):
-    """Halaman 1 memuat 'NOMOR no TAHUN th' (toleran spasi, huruf besar-kecil, dan salah baca OCR O/0, l/1)."""
-    t = halaman_pdf(fp)[:1]
-    t = t[0] if t else ""
-    if huruf(t) < MIN_HURUF:
-        t = ocr_halaman(fp, 1)
-    t = re.sub(r"\s+", " ", t).upper()
-    kls = {"0": "[0O]", "1": "[1IL|]", "5": "[5S]", "8": "[8B]"}
-    angka = lambda x: "".join(kls.get(c, c) for c in str(x))
-    return bool(re.search(rf"N[O0]M[O0]R\s*[0O]*{angka(no)}\s*TAHUN\s*{angka(th)}", t))
+    """Halaman 1 memuat 'NOMOR no TAHUN th' dan delapan halaman pertama menyebut Penanggulangan Bencana/BNPB. BPK menyimpan
+    'Peraturan Badan ... Nomor 8 Tahun 2018' milik Basarnas dengan slug yang mirip, jadi nomor saja tak cukup.
+    Salah baca OCR/judul yang rusak ('NOMOR: 0;', 'TAHUN .') boleh tak terbaca, tetapi tak boleh BERTENTANGAN, dan satu
+    dari nomor/tahun harus terbaca persis."""
+    hs = halaman_pdf(fp)[:8]
+    p1 = hs[0] if hs else ""
+    if huruf(p1) < MIN_HURUF:
+        p1 = ocr_halaman(fp, 1)
+        hs = [p1] + hs[1:]
+    semua = re.sub(r"\s+", " ", " ".join(hs)).upper()
+    if not re.search(r"PENANGGULANGAN\s+BENCANA|\bBNPB\b", semua):
+        return False
+    t = re.sub(r"\s+", " ", p1).upper()
+    g = re.search(r"N[O0]M[O0]R\s*[:.]?\s*(\S*)\s*TAHUN\s*(\S*)", t)
+    if not g:
+        return False
+    kls = {"O": "0", "I": "1", "L": "1", "|": "1", "S": "5", "B": "8"}
+
+    def baca(tok, panjang):    # -> 'cocok' | 'rusak' | 'beda'
+        x = "".join(kls.get(c, c) for c in tok)
+        if not x.isdigit() or len(x) > panjang:
+            return "rusak"
+        return (x,)
+    n, y = baca(g[1], 4), baca(g[2], 4)
+    sah = lambda r, nilai: r == "rusak" or (r[0].lstrip("0") == str(nilai).lstrip("0"))
+    benar = lambda r, nilai: r != "rusak" and r[0].lstrip("0") == str(nilai).lstrip("0")
+    return sah(n, no) and sah(y, th) and (benar(n, no) or benar(y, th))
 
 
 def tarik_bnpb(indeks, f_indeks):
     cache = f"{MENTAH}/bnpb_go.json"
     peta = json.load(open(cache)) if os.path.exists(cache) else {}
+    f_tolak = f"{MENTAH}/bnpb_tolak.json"
+    tolak = json.load(open(f_tolak)) if os.path.exists(f_tolak) else {}
     dipakai = ditolak = 0
     for kid, v in sorted(indeks.items()):
         g = re.match(r"(perka|perban)-nomor-(\d+)-tahun-(\d{4})$", v["slug"])
-        if not g or ada_sumber(v):
+        if not g or ada_sumber(v) or v["slug"] in tolak:
             continue
         jenis, no, th = g[1], int(g[2]), int(g[3])
         fp = f"{MENTAH}/pdf/{v['slug']}.pdf"
+        if os.path.exists(fp) and v["slug"] not in peta:
+            continue      # berkas ada tapi bukan unduhan bnpb.go.id (asalnya sumber lain): jangan dicap bnpb.go.id
         url = None
         for u in ([peta[v["slug"]]] if v["slug"] in peta else kandidat_bnpb(jenis, no, th)):
             if not os.path.exists(fp):
@@ -176,6 +214,11 @@ def tarik_bnpb(indeks, f_indeks):
             print("  ditolak (nomor tak cocok)", v["slug"], u, flush=True)
             ditolak += 1
             os.remove(fp)
+            peta.pop(v["slug"], None)
+            tolak[v["slug"]] = f"{u}: halaman 1 bukan BNPB NOMOR {no} TAHUN {th}"
+            json.dump(tolak, open(f_tolak, "w"), ensure_ascii=False, indent=1)
+            json.dump(peta, open(cache, "w"), indent=1)
+            break
         if url:
             v.update(pdf_bnpb=url, sumber_data="bnpb.go.id")
             peta[v["slug"]] = url
@@ -184,6 +227,35 @@ def tarik_bnpb(indeks, f_indeks):
             json.dump(indeks, open(f_indeks, "w"), ensure_ascii=False, indent=1)
             json.dump(peta, open(cache, "w"), indent=1)
     print(f"bnpb.go.id: dipakai {dipakai}, ditolak {ditolak}, masih tanpa PDF {sum(1 for v in indeks.values() if not ada_sumber(v))}")
+
+
+def tarik_tidak_resmi(indeks, f_indeks):
+    """Salinan tidak resmi (BPBD, UNFPA, ...) HANYA bila tak ada sumber lain. Petunjuk: data/raw/hukum/tidak_resmi.json
+    {slug: {url, domain}} (kurasi tangan). Domain di luar RESMI diberi resmi=false di katalog. Isi halaman 1 divalidasi."""
+    f = f"{MENTAH}/tidak_resmi.json"
+    if not os.path.exists(f):
+        return
+    peta, dipakai = json.load(open(f)), 0
+    for kid, v in sorted(indeks.items()):
+        t = peta.get(v["slug"])
+        g = re.match(r"(?:perka|perban|juklak|juknis|pedoman)-nomor-(\d+)-tahun-(\d{4})$", v["slug"])
+        if not t or not g or ada_sumber(v):
+            continue
+        fp = f"{MENTAH}/pdf/{v['slug']}.pdf"
+        if not os.path.exists(fp):
+            b = ambil(t["url"], biner=True, tries=2)
+            if not b or not b.startswith(b"%PDF"):
+                continue
+            open(fp, "wb").write(b)
+        if not cocok_nomor(fp, int(g[1]), int(g[2])):
+            print("  ditolak (tidak resmi, nomor tak cocok)", v["slug"], flush=True)
+            os.remove(fp)
+            continue
+        v["sumber_tidak_resmi"] = {"url": t["url"], "domain": t["domain"]}
+        dipakai += 1
+        print("  salinan", t["domain"], kid, flush=True)
+        json.dump(indeks, open(f_indeks, "w"), ensure_ascii=False, indent=1)
+    print(f"salinan lain: dipakai {dipakai}, masih tanpa PDF {sum(1 for v in indeks.values() if not ada_sumber(v))}")
 
 
 def tarik_bpk(indeks, f_indeks):
@@ -214,7 +286,12 @@ def tarik_bpk(indeks, f_indeks):
         if g:
             ada[(int(g[2]), int(g[3]))] = kid
 
-    def unduh(slug, det):
+    f_tolak = f"{MENTAH}/bpk_tolak.json"
+    tolak = json.load(open(f_tolak)) if os.path.exists(f_tolak) else {}
+
+    def unduh(slug, det, no, th):
+        if det in tolak:
+            return None, None
         h = ambil(BPK + det)
         if not h:
             return None, None
@@ -228,6 +305,12 @@ def tarik_bpk(indeks, f_indeks):
             if not b or not b.startswith(b"%PDF"):
                 return h, None
             open(fp, "wb").write(b)
+        if not cocok_nomor(fp, no, th):   # isi halaman 1 bukan peraturan BNPB nomor/tahun ini
+            print("  ditolak (halaman 1 bukan BNPB NOMOR %s TAHUN %s)" % (no, th), det, flush=True)
+            os.remove(fp)
+            tolak[det] = "halaman 1 tidak memuat BNPB + NOMOR %s TAHUN %s" % (no, th)
+            json.dump(tolak, open(f_tolak, "w"), ensure_ascii=False, indent=1)
+            return None, None
         return h, BPK + urllib.parse.quote(ln[0], safe="/%")
 
     isi = baru = 0
@@ -237,14 +320,14 @@ def tarik_bpk(indeks, f_indeks):
             v = indeks[kid]
             if ada_sumber(v):
                 continue
-            _, url = unduh(v["slug"], det)
+            _, url = unduh(v["slug"], det, no, th)
             if url:
                 v.update(pdf_bpk=url, bpk=BPK + det, sumber_data="peraturan.bpk.go.id")
                 isi += 1
                 print("  isi", kid, det, flush=True)
         else:
             slug = slug_jdih(jenis, no, th)
-            h, url = unduh(slug, det)
+            h, url = unduh(slug, det, no, th)
             if not h:
                 continue
             m = {"slug": slug, "tipe": "Peraturan", "Nomor": str(no), "Tahun": str(th), "url": BPK + det, "bpk": BPK + det,
@@ -256,8 +339,9 @@ def tarik_bpk(indeks, f_indeks):
                     m[BPK_META[b]] = re.sub(r"\s+", " ", baris[i + 1])
             if m.get("Status"):
                 m["Status"] = m["Status"].upper()
-            if url:
-                m.update(pdf_bpk=url)
+            if not url:      # tanpa PDF yang lolos validasi isi, dokumen tidak ditambahkan
+                continue
+            m.update(pdf_bpk=url)
             indeks[f"BPK/{slug}"] = m
             baru += 1
             print("  baru", slug, m.get("Status", "-"), flush=True)
@@ -313,7 +397,7 @@ def ocr_halaman(path, n):
 def daftar_pdf(m):
     n = len(m.get("pdf", []))
     fs = [os.path.join(MENTAH, "pdf", nama_pdf(m["slug"], n, j)) for j in range(n)]
-    if (m.get("pdf_bpk") or m.get("pdf_bnpb")) and not m.get("pdf_ok"):   # JDIH 404: salinan BPK/bnpb.go.id disimpan sebagai <slug>.pdf
+    if (m.get("pdf_bpk") or m.get("pdf_bnpb") or m.get("sumber_tidak_resmi")) and not m.get("pdf_ok"):   # JDIH 404: salinan BPK/bnpb.go.id disimpan sebagai <slug>.pdf
         return [os.path.join(MENTAH, "pdf", m["slug"] + ".pdf")]
     return fs
 
@@ -804,7 +888,7 @@ def bangun(baca=None):
                     "singkatan": jenis, "nomor": m.get("Nomor"), "tahun": int(m["Tahun"]) if str(m.get("Tahun", "")).isdigit() else None,
                     "judul": judul, "status": m.get("Status"), "subjek": m.get("Subjek"), "bidang": m.get("Bidang Hukum"),
                     "tgl_tetap": tanggal(m.get("Tanggal Penetapan")), "tgl_undang": tanggal(m.get("Tanggal Pengundangan")),
-                    "sumber": m.get("sumber_data") or "jdih.bnpb.go.id", "sumber_bn": None if m.get("Sumber") in (None, "", "-") else m["Sumber"], "url": m.get("url"), "pdf": [m["pdf_bpk"]] if m.get("pdf_bpk") else [m["pdf_bnpb"]] if m.get("pdf_bnpb") else m.get("pdf", []),  # JDIH 404 -> BPK -> bnpb.go.id
+                    "sumber": sumber_dok(m)[0], "resmi": sumber_dok(m)[1], "sumber_bn": None if m.get("Sumber") in (None, "", "-") else m["Sumber"], "url": m.get("url"), "pdf": sumber_dok(m)[2],  # JDIH -> BPK -> bnpb.go.id -> salinan lain: yang benar-benar dipakai
                     "halaman": len(t["halaman"]) if t else 0, "halaman_ocr": len(t["ocr"]) if t else 0, "mutu": t["mutu"] if t else None,
                     "n_segmen": len(segs)})
         for k, s in enumerate(segs):
@@ -831,9 +915,9 @@ def tulis_seed(kat, segmen, ms):
          "DELETE FROM hukum_fts;", "DELETE FROM hukum_relasi;", "DELETE FROM hukum_segmen;", "DELETE FROM hukum_dok;"]
     for d in kat["dok"]:
         b.append(sisip("hukum_dok", ["id", "slug", "tipe", "jenis", "singkatan", "nomor", "tahun", "judul", "status", "subjek",
-                                     "tgl_tetap", "tgl_undang", "url", "pdf", "halaman", "mutu", "diperbarui"],
+                                     "tgl_tetap", "tgl_undang", "url", "pdf", "halaman", "mutu", "diperbarui", "resmi", "sumber"],
                        [d["id"], d["slug"], d["tipe"], d["jenis"], d["singkatan"], d["nomor"], d["tahun"], d["judul"], d["status"],
-                        d["subjek"], d["tgl_tetap"], d["tgl_undang"], d["url"], json.dumps(d["pdf"]), d["halaman"], d["mutu"], ms]))
+                        d["subjek"], d["tgl_tetap"], d["tgl_undang"], d["url"], json.dumps(d["pdf"]), d["halaman"], d["mutu"], ms, int(d["resmi"]), d["sumber"]]))
     for s in segmen:
         b.append(sisip("hukum_segmen", ["id", "dok", "urut", "jenis", "label", "bab", "halaman", "teks"],
                        [s["id"], s["dok"], s["urut"], s["jenis"], s["label"], s["bab"], s["halaman"], s["teks"]]))

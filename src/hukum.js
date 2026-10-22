@@ -1,5 +1,5 @@
 /* Pustaka Hukum BNPB (docs/bnpb/HUKUM.md): cari per pasal (FTS5), baca dokumen, tanya-jawab dengan kutipan yang DIPERIKSA mesin.
-   Skema: migrations/0049_hukum.sql. Semua rute publik, tanpa data pribadi. Pembaca D1 (cariHukum, bacaDok, bacaRelasi) dipakai ulang oleh tool MCP (src/mcp.js).
+   Skema: migrations/0052_hukum.sql. Semua rute publik, tanpa data pribadi. Pembaca D1 (cariHukum, bacaDok, bacaRelasi) dipakai ulang oleh tool MCP (src/mcp.js).
    Konsep: konteks kecil per pasal; model hanya boleh menjawab dari segmen bernomor yang kita kirim, dan tiap kutipannya wajib substring segmen itu (verifikasiKutipan). */
 import {json, gagal, bacaBody, cacheTepi} from "./worker.js";
 import {halamanBnpbPublik, lajuIP, laju} from "./bnpb.js";
@@ -30,7 +30,7 @@ export function cariHukum(env, {q, jenis, tahun, status, hal = 1, limit = PER_HA
     if (status) { w.push("upper(d.status) = ?"); b.push(status.toUpperCase()); }
     const dari = `FROM hukum_fts JOIN hukum_segmen s ON s.id = hukum_fts.rowid JOIN hukum_dok d ON d.id = s.dok WHERE ${w.join(" AND ")}`;
     const total = (await env.DB.prepare(`SELECT count(*) n ${dari}`).bind(...b).first()).n;
-    const {results} = await env.DB.prepare(`SELECT s.id segmen, d.id dok, d.judul, d.singkatan, d.nomor, d.tahun, d.status, s.label, s.bab,
+    const {results} = await env.DB.prepare(`SELECT s.id segmen, d.id dok, d.judul, d.singkatan, d.nomor, d.tahun, d.status, d.resmi, d.sumber, s.label, s.bab,
       snippet(hukum_fts, 0, '[[', ']]', '...', 24) cuplikan ${dari} ORDER BY bm25(hukum_fts, 1.0, 3.0, 1.0) LIMIT ? OFFSET ?`).bind(...b, limit, ((h ?? 1) - 1) * limit).all();
     const wj = w.filter(x => !x.startsWith("(lower(d.singkatan)")), bj = jenis ? b.filter((_, i) => i !== 1 && i !== 2) : b;   // hitungan per jenis abaikan filter jenis
     const pj = await env.DB.prepare(`SELECT upper(d.singkatan) j, count(*) n FROM hukum_fts JOIN hukum_segmen s ON s.id = hukum_fts.rowid JOIN hukum_dok d ON d.id = s.dok WHERE ${wj.join(" AND ")} GROUP BY 1 ORDER BY 2 DESC`).bind(...bj).all();

@@ -1461,7 +1461,11 @@
   "tipe": "Peraturan",
   "slug": "juknis-nomor-7-tahun-2023",
   "teks": [],
-  "teks_ok": false
+  "teks_ok": false,
+  "sumber_tidak_resmi": {
+   "url": "https://indonesia.unfpa.org/sites/default/files/pub-pdf/juklak_standar_data_kejadian_dan_dampak_bencana.pdf",
+   "domain": "indonesia.unfpa.org"
+  }
  },
  "Peraturan/juknis-nomor-9-tahun-2023": {
   "Jenis Dokumen": "Petunjuk Pelaksanaan",
@@ -1486,7 +1490,11 @@
   "tipe": "Peraturan",
   "slug": "juknis-nomor-9-tahun-2023",
   "teks": [],
-  "teks_ok": false
+  "teks_ok": false,
+  "sumber_tidak_resmi": {
+   "url": "https://indonesia.unfpa.org/sites/default/files/pub-pdf/bnpb_juklak_no_9_2023_data_terpilah.pdf",
+   "domain": "indonesia.unfpa.org"
+  }
  },
  "Peraturan/pedoman-nomor-1-tahun-2024": {
   "Jenis Dokumen": "Pedoman",
@@ -1884,7 +1892,11 @@
   "tipe": "Peraturan",
   "slug": "juklak-nomor-3-tahun-2022",
   "teks": [],
-  "teks_ok": false
+  "teks_ok": false,
+  "sumber_tidak_resmi": {
+   "url": "https://bpbd.sukabumikota.go.id/wp-content/uploads/2023/03/SALINAN-Petunjuk-Pelaksanaan-Pengkajian-Cepat-pada-Keadaan-Darurat-Bencana.pdf",
+   "domain": "bpbd.sukabumikota.go.id"
+  }
  },
  "Peraturan/perban-nomor-1-tahun-2022": {
   "Jenis Dokumen": "Peraturan Badan",
@@ -5008,13 +5020,7 @@
   "relasi": [],
   "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perka-nomor-19-tahun-2011",
   "tipe": "Peraturan",
-  "slug": "perka-nomor-19-tahun-2011",
-  "teks": [
-   "perka-nomor-19-tahun-2011.txt"
-  ],
-  "teks_ok": true,
-  "pdf_bpk": "https://peraturan.bpk.go.id/Download/214061/No.%2019%20Tahun%202011.pdf",
-  "bpk": "https://peraturan.bpk.go.id/Details/219655/perka-bnpb-no-19-tahun-2011"
+  "slug": "perka-nomor-19-tahun-2011"
  },
  "Peraturan/perka-nomor-8-tahun-2011": {
   "Jenis Dokumen": "Peraturan Kepala Badan",
@@ -6042,7 +6048,10 @@
   "tipe": "Peraturan",
   "slug": "perka-nomor-14-tahun-2009",
   "teks": [],
-  "teks_ok": false
+  "sumber_tidak_resmi": {
+   "url": "https://peraturan.go.id/files/BN+1415-2014.pdf",
+   "domain": "peraturan.go.id"
+  }
  },
  "Peraturan/perka-nomor-15-tahun-2009": {
   "Jenis Dokumen": "Peraturan Kepala Badan",
@@ -6096,7 +6105,10 @@
   "tipe": "Peraturan",
   "slug": "perka-nomor-4-tahun-2009",
   "teks": [],
-  "teks_ok": false
+  "sumber_tidak_resmi": {
+   "url": "https://peraturan.go.id/files/BN+1413-2014.pdf",
+   "domain": "peraturan.go.id"
+  }
  },
  "Peraturan/perka-nomor-5-tahun-2009": {
   "Jenis Dokumen": "Peraturan Kepala Badan",
@@ -6700,25 +6712,5 @@
   "Sumber": "BN 2025 (892): 10 hlm.; peraturan.go.id",
   "Status": "BERLAKU",
   "pdf_bpk": "https://peraturan.bpk.go.id/Download/412828/Peraturan%20BNPB%20Nomor%207%20Tahun%202025.pdf"
- },
- "BPK/perban-nomor-8-tahun-2018": {
-  "slug": "perban-nomor-8-tahun-2018",
-  "tipe": "Peraturan",
-  "Nomor": "8",
-  "Tahun": "2018",
-  "url": "https://peraturan.bpk.go.id/Details/224680/peraturan-bnpb-no-8-tahun-2018",
-  "bpk": "https://peraturan.bpk.go.id/Details/224680/peraturan-bnpb-no-8-tahun-2018",
-  "Jenis Dokumen": "Peraturan Badan",
-  "Singkatan": "PERBAN",
-  "sumber_data": "peraturan.bpk.go.id",
-  "pdf": [],
-  "relasi": [],
-  "Subjek": "Jenis",
-  "Judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 8 Tahun 2018 tentang Sertifikasi Petugas Pencarian dan Pertolongan",
-  "Tanggal Penetapan": "24 Agustus 2018",
-  "Tanggal Pengundangan": "31 Agustus 2018",
-  "Sumber": "BN.2018/No.1196, peraturan.go.id: 11 hlm.",
-  "Status": "BERLAKU",
-  "pdf_bpk": "https://peraturan.bpk.go.id/Download/219293/Peraturan%20BNPB%20Nomor%208%20Tahun%202018.pdf"
  }
 }

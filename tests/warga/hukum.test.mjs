@@ -1,4 +1,4 @@
-/* Pustaka Hukum BNPB (src/hukum.js, migrations/0049_hukum.sql, tool MCP *_peraturan_bnpb). Worker di Miniflare, D1 + FTS5 sungguhan, migrasi apa adanya.
+/* Pustaka Hukum BNPB (src/hukum.js, migrations/0052_hukum.sql, tool MCP *_peraturan_bnpb). Worker di Miniflare, D1 + FTS5 sungguhan, migrasi apa adanya.
    Satu-satunya stub: env.AI (layanan eksternal), lewat tests/warga/_hukum_worker.mjs. Jalankan: node --test tests/warga/hukum.test.mjs */
 import assert from "node:assert/strict";
 import {siapkan, berantai} from "./_bnpb.mjs";
@@ -36,8 +36,8 @@ const SEG = [   // [dok, jenis, label, bab, teks]
 ];
 let idSeg = {};   // "dok|label" -> id
 
-uji("migrasi 0049 idempoten: dijalankan ulang tidak galat, tabel tetap ada", async () => {
-  const baris = pecah(readFileSync(path.join(AKAR, "migrations/0049_hukum.sql"), "utf8")); assert.equal(baris.length, 7, "4 tabel + 3 indeks");
+uji("migrasi 0052 idempoten: dijalankan ulang tidak galat, tabel tetap ada", async () => {
+  const baris = pecah(readFileSync(path.join(AKAR, "migrations/0052_hukum.sql"), "utf8")); assert.equal(baris.length, 7, "4 tabel + 3 indeks");
   await DB.batch(baris.map(s => DB.prepare(s)));
   for (const t of ["hukum_dok", "hukum_segmen", "hukum_fts", "hukum_relasi"]) assert.equal(await n(t), 0, t);
 });
@@ -56,6 +56,7 @@ uji("CHECK: jenis segmen dan jenis relasi di luar daftar ditolak langsung di D1;
   const salah = async (sql, ...b) => assert.rejects(DB.prepare(sql).bind(...b).run(), /CHECK|constraint/i, sql);
   await salah("INSERT INTO hukum_segmen (dok, urut, jenis, label, teks) VALUES ('uji-0-0000', 1, 'liar', 'x', 'y')");
   await salah("INSERT INTO hukum_segmen (dok, urut, jenis, label, teks) VALUES ('uji-0-0000', 1, 'pasal', 'x', ?)", "a".repeat(6001));
+  await salah("INSERT INTO hukum_dok (id, judul, resmi) VALUES ('uji-0-0001', 'x', 2)");
   await salah("INSERT INTO hukum_relasi (dari, ke, jenis) VALUES ('a', 'b', 'liar')");
   await salah("INSERT INTO hukum_relasi (dari, ke, jenis, terdaftar) VALUES ('a', 'b', 'merujuk', 2)");
   await DB.prepare("DELETE FROM hukum_dok WHERE id = 'uji-0-0000'").run();
@@ -63,8 +64,8 @@ uji("CHECK: jenis segmen dan jenis relasi di luar daftar ditolak langsung di D1;
 });
 
 uji("seed mini: 3 dokumen, 10 segmen, FTS terisi, relasi", async () => {
-  for (const d of DOK) await DB.prepare("INSERT INTO hukum_dok (id, tipe, jenis, singkatan, nomor, tahun, judul, status, url, pdf) VALUES (?,?,?,?,?,?,?,?,?,?)")
-    .bind(...d, `https://jdih.bnpb.go.id/dokumen/${d[0]}`, JSON.stringify([`https://jdih.bnpb.go.id/${d[0]}.pdf`])).run();
+  for (const d of DOK) await DB.prepare("INSERT INTO hukum_dok (id, tipe, jenis, singkatan, nomor, tahun, judul, status, url, pdf, resmi, sumber) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)")
+    .bind(...d, `https://jdih.bnpb.go.id/dokumen/${d[0]}`, JSON.stringify([`https://jdih.bnpb.go.id/${d[0]}.pdf`]), d[0] === "juknis-5-2023" ? 0 : 1, d[0] === "juknis-5-2023" ? "bpbd.contoh.go.id" : "jdih.bnpb.go.id").run();
   let urut = 0;
   for (const [dok, jenis, label, bab, teks] of SEG) {
     const r = await DB.prepare("INSERT INTO hukum_segmen (dok, urut, jenis, label, bab, halaman, teks) VALUES (?,?,?,?,?,?,?)").bind(dok, ++urut, jenis, label, bab, 1, teks).run();
@@ -84,6 +85,16 @@ uji("cari: menemukan pasal yang benar, urut relevansi, cuplikan bertanda [[ ]]",
   assert.match(r.j.hasil[0].cuplikan, /\[\[/); assert.equal(r.j.hasil[0].singkatan, "PERBAN"); assert.equal(r.j.hasil[0].tahun, 2026);
   const aksen = await cari("q=" + encodeURIComponent("PÉNYALURAN DIPRIORITASKAN")); assert.equal(aksen.j.hasil[0].label, "Pasal 5", "huruf besar dan diakritik dinormalkan FTS");
   const label = await cari("q=" + encodeURIComponent("pasal 5")); assert.equal(label.j.hasil[0].label, "Pasal 5", "label ikut diindeks");
+});
+
+uji("cari, dok, dan MCP mengembalikan resmi/sumber; salinan tidak resmi (resmi=0) ditandai", async () => {
+  const c = await cari("q=" + encodeURIComponent("posko pengungsian logistik")); const j = c.j.hasil.find(h => h.dok === "juknis-5-2023");
+  assert.equal(j.resmi, 0); assert.equal(j.sumber, "bpbd.contoh.go.id");
+  assert.equal((await cari("q=" + encodeURIComponent("penyaluran diprioritaskan"))).j.hasil[0].resmi, 1);
+  const d = await api("GET", "/api/hukum/dok?id=juknis-5-2023", undefined, ip()); assert.equal(d.j.resmi, 0); assert.equal(d.j.sumber, "bpbd.contoh.go.id");
+  const m = JSON.parse((await alat("baca_peraturan_bnpb", {id: "juknis-5-2023"})).content[0].text); assert.equal(m.resmi, 0); assert.equal(m.sumber, "bpbd.contoh.go.id");
+  assert.equal(JSON.parse((await alat("cari_peraturan_bnpb", {q: "posko pengungsian"})).content[0].text).hasil[0].resmi, 0);
+  const ds = (await rpc("tools/list")).j.result.tools; for (const t of ["cari_peraturan_bnpb", "baca_peraturan_bnpb"]) assert.match(ds.find(x => x.name === t).description, /resmi=0.*tidak resmi/i, t);
 });
 
 uji("cari: filter jenis, tahun, status bekerja dan bisa digabung; halaman di luar jangkauan kosong", async () => {

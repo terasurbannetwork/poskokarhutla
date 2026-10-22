@@ -1,7 +1,7 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
-    "table hukum_dok": "migrasi 0049 idempoten",
+    "table hukum_dok": "migrasi 0052 idempoten",
     "table hukum_segmen": "CHECK: jenis segmen dan jenis relasi",
     "table hukum_relasi": "CHECK: jenis segmen dan jenis relasi",
     "GET /api/hukum/cari": "cari: masukan liar 400",
@@ -377,6 +377,14 @@
     "POST /api/pengingat/dummy": "dummy: lahir dari rantai sumber dummy",
     "cron buatPengingat": "pendeteksi: tiap jenis terdeteksi tepat di tepi ambang",
     "table laporan_bnpb": "migrasi 0023 idempoten",
+    "table karbon_proyek": "karbon: CRUD proyek, pihak, kesepakatan, laporan; luas dihitung server",
+    "table karbon_pihak": "karbon: penguncian optimistis, diubah basi = 409 dan tidak menimpa",
+    "table karbon_kesepakatan": "karbon: CRUD proyek, pihak, kesepakatan, laporan; luas dihitung server",
+    "table karbon_laporan": "karbon: CRUD proyek, pihak, kesepakatan, laporan; luas dihitung server",
+    "table karbon_peringatan": "karbon: cron menyisipkan peringatan GFW dan FIRMS sekali (jalan kedua tanpa ganda)",
+    "table karbon_buku": "karbon: buku kredit menolak saldo/tersedia negatif dan UPDATE/DELETE (append-only)",
+    "trigger karbon_buku_tanpa_ubah": "karbon: buku kredit menolak saldo/tersedia negatif dan UPDATE/DELETE (append-only)",
+    "trigger karbon_buku_tanpa_hapus": "karbon: buku kredit menolak saldo/tersedia negatif dan UPDATE/DELETE (append-only)",
     "GET /api/laporan-bnpb": "laporan bnpb: simpan lalu baca kembali sama persis",
     "POST /api/laporan-bnpb": "laporan bnpb: isian salah DITOLAK 400/413",
     "table rumah_rusak": "migrasi 0024 rumah_rusak idempoten",
