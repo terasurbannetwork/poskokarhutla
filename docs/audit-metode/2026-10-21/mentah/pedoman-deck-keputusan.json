@@ -1,0 +1,825 @@
+[
+ {
+  "deck": "Laporan Penanganan Pengendalian Karhutla 211026 data satelit. Versi final punya 3 slide dengan cut-off 21 Okt 2026 22.33 WIB. Slide 1: Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026. Slide 2: Penanganan dan Pengendalian Karhutla per Tanggal 21 Oktober 2026, berisi 6 provinsi dengan hotspot terbanyak dan kolom 19/20/21 Okt. Slide 3: Operasi Penanganan Karhutla yang Dilakukan per Tanggal 20 Oktober 2026. Isi final sudah dicek dari salinan PPTX di repo. Sumber pesan: transkrip 519b7abb, pesan langsung pemilik ditambah pesan antre (queued_command) pemilik. Yang hanya berupa pertanyaan tanpa keputusan tidak dimasukkan. Tiga butir bertanda (dashboard/website) bukan soal deck, tapi tetap dicatat karena menyangkut cara angka dihitung.",
+  "keputusan": [
+   {
+    "waktu": "21 Okt 14:07 WIB",
+    "kategori": "data",
+    "keputusan": "Semua angka luas terbakar di deck diganti dengan perkiraan satelit milik platform sendiri, bukan angka BNPB.",
+    "kutipan": "Oke sekarang pakai data kita aja ya. Luas terbakar ganti semua pakai data kita.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:07 WIB",
+    "kategori": "data",
+    "keputusan": "Belum padam berarti api yang bertahan 1 hari penuh di lokasi yang sama. Pada akhirnya diterapkan sebagai lokasi (±375 m) yang sudah menyala 12–36 jam sebelumnya, dihitung dari NOAA-20 + NOAA-21.",
+    "kutipan": "Belum padam juga berarti yang bertahan selama 1 hari penuh.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:07 WIB",
+    "kategori": "data",
+    "keputusan": "Fire spot diisi dengan hotspot yang bertahan selama 1 hari.",
+    "kutipan": "Oke fire spot pakai data hotspot yang bertahan selama 1 hari",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 14:38 dihitung per kebakaran (klaster 1,5 km), lalu 22:50 labelnya diganti 'Lokasi api bertahan' oleh asisten di bawah delegasi 'Lu tentukan'. Pukul 22:55 barisnya ikut hilang karena slide Provinsi Tambahan dihapus, jadi deck final tidak punya baris fire spot."
+   },
+   {
+    "waktu": "21 Okt 14:08 WIB",
+    "kategori": "proses",
+    "keputusan": "Perubahan langsung dikerjakan tanpa menunggu konfirmasi lagi. Pukul 14:38 diulang lagi.",
+    "kutipan": "Oke langsung diubah ya.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:09 WIB",
+    "kategori": "struktur",
+    "keputusan": "Deck cukup 3 slide, diambil dari versi BNPB non-Lengkap: Penanganan dan Pengendalian (5 provinsi), Provinsi Tambahan, dan Operasi.",
+    "kutipan": "Oke cukup 3 slide ya",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 21:42 slide peta ditambah di depan sehingga deck jadi 4 slide. Pukul 22:55 slide Provinsi Tambahan dihapus, jadi kembali 3 slide: Peta, tabel 6 provinsi, Operasi."
+   },
+   {
+    "waktu": "21 Okt 14:10 WIB",
+    "kategori": "proses",
+    "keputusan": "Hanya slide data 1 dan 2 (tabel) yang diganti, dan harus cepat. Isi slide operasi tetap angka BNPB. Pemilik berkali-kali menanyakan berapa lama lagi.",
+    "kutipan": "CEPETIN dong gw cuma mau ganti yang di slide 1 dan 2 aja",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:12 WIB",
+    "kategori": "data",
+    "keputusan": "Semua sel NA di tabel wajib terisi, termasuk Papua Selatan, Sulteng, dan Kaltim.",
+    "kutipan": "yang NA NA harusnya keiisi semua kan ya?",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:20 WIB",
+    "kategori": "data",
+    "keputusan": "Pakai data sampai 20 Okt saja. Jangan menarik atau menghitung data yang lebih baru.",
+    "kutipan": "Pakai data 20 Okt aja bro. Jangan ambil yang terbaru lagi",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 22:32 semua slide data diperbarui ke data 21 Okt, dengan kolom 19/20/21 Okt."
+   },
+   {
+    "waktu": "21 Okt 14:24 WIB",
+    "kategori": "kata",
+    "keputusan": "Catatan kaki slide data cukup 'Data berdasarkan GIS', menggantikan catatan dua bintang tentang S-NPP dan 4,3 ha per titik.",
+    "kutipan": "Ini keterangannya data berdasarkan GIS",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 23:05 catatan kaki jadi '*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).' Sebelumnya, pukul 22:50, sempat diubah asisten jadi '...perkiraan, bukan data lapangan BNPB'."
+   },
+   {
+    "waktu": "21 Okt 14:38 WIB",
+    "kategori": "data",
+    "keputusan": "Pemilik menyetujui usulan perbaikan metode. Luas terbakar dan belum padam memakai rata-rata S-NPP + NOAA-20. Angka 'telah padam' dihitung dari api yang benar-benar hilang. Fire spot dihitung per kebakaran.",
+    "kutipan": "oke ubah langsung bro, cepetin",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 15:18 (v3, setelah verifikasi independen) luas dan belum padam dihitung dari NOAA-20 + NOAA-21 × 0,534 × 4,3 ha. Pukul 15:26 aturan padam diganti jadi 48 jam tanpa titik."
+   },
+   {
+    "waktu": "21 Okt 14:38 WIB",
+    "kategori": "data",
+    "keputusan": "Kolom hotspot juga memakai data sendiri (MODIS + VIIRS S-NPP + NOAA-20 per hari WIB), bukan angka GIS BNPB.",
+    "kutipan": "Loh data hotspot bukan pakai data kita?",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:43 WIB",
+    "kategori": "kata",
+    "keputusan": "Kata 'padam' tetap dipakai di kalimat bawah judul. Usul menggantinya dengan 'tidak terdeteksi lagi' ditolak.",
+    "kutipan": "Ga apa pakai padam aja.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:43 WIB",
+    "kategori": "visual",
+    "keputusan": "Judul kolom 'LUAS TERBAKAR* (ha)' beserta ikonnya rata tengah di dalam kotaknya.",
+    "kutipan": "Rata tengah",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:56 WIB",
+    "kategori": "proses",
+    "keputusan": "Semua metode perhitungan di website dievaluasi, bukan cuma deck, karena datanya akan diserahkan ke Presiden.",
+    "kutipan": "Lu evaluasi. Apakah kira\" relevan atau nggak metodenya. Karena ini data yang mau dikasih ke Presiden",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 14:57 WIB",
+    "kategori": "proses",
+    "keputusan": "Cari metode yang lebih tepat. Hasilnya wajib benar, valid, dan lebih mendekati kebenaran.",
+    "kutipan": "Iya tapi pastikan benar ya. Dan valid datanya. Dan lebih mendekati kebenaran",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 15:26 WIB",
+    "kategori": "data",
+    "keputusan": "Padam berarti 48 jam tanpa titik. Titik api hari H-2 dianggap padam kalau lokasinya (±375 m) tidak terdeteksi lagi selama 2 hari berikutnya, dan persennya dihitung dari luas api H-2. Aturan ini hanya berlaku di deck. Kompleks di platform tetap memakai 72 jam (168 jam untuk gambut).",
+    "kutipan": "Oke berarti 48 jam tanpa titik berarti padam ya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 15:38 WIB",
+    "kategori": "proses",
+    "keputusan": "Semua hasil kerja disimpan di repo: deck, data mentah, skrip, verifikasi, dan hasil evaluasi metode.",
+    "kutipan": "Simpan semua ya hasilnya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:41 WIB",
+    "kategori": "data",
+    "keputusan": "Pil CUT OFF DATA diperbarui ke jam tarikan data terbaru, menggantikan '21 Okt 2026, 07.00 WIB'. Nilai finalnya 21 Okt 2026, 22.33 WIB.",
+    "kutipan": "Cut off data terbaru update dong.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:42 WIB",
+    "kategori": "struktur",
+    "keputusan": "Ditambah slide pembuka 'Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026' yang juga memuat luas terbakar dan belum padam.",
+    "kutipan": "Bisa ga paparan depannya tambahin ini ... Tapi bisa ditambah luas terbakar dan luas belum padamnya ga",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:42 WIB",
+    "kategori": "data",
+    "keputusan": "Slide peta tetap memakai tanggal 20 Oktober.",
+    "kutipan": "Tetap tanggalnya 20 Oktober ya",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 22:32 semua slide data, termasuk peta, memakai data 21 Okt."
+   },
+   {
+    "waktu": "21 Okt 21:44 WIB",
+    "kategori": "visual",
+    "keputusan": "Format slide peta disamakan dengan format paparan BNPB: judul, pil cut-off, logo, dan footer.",
+    "kutipan": "Oke tapi formatnya samain sama format paparan ya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:46 WIB",
+    "kategori": "visual",
+    "keputusan": "Warna peta mengikuti palet PPT: daratan biru tua dan bulatan oranye, bukan emas.",
+    "kutipan": "Warnanya sesuaikan ya sama format ppt",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:50 WIB",
+    "kategori": "visual",
+    "keputusan": "Kotak angka nasional (Hotspot, Luas terbakar, Belum padam) dikecilkan, diberi ikon, dan ditaruh di atas peta.",
+    "kutipan": "Kecilin Buat bagus ada icon dan buat di atas peta.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:52 WIB",
+    "kategori": "kata",
+    "keputusan": "Kalimat bawah judul slide peta mengikuti pola: provinsi dengan hotspot terbanyak, lalu total hotspot, total lahan terbakar, dan total belum padam. Hasil finalnya: 'Terbanyak di Kalimantan Tengah (3.250 titik). Total: 14.807 titik, 33.021 ha terbakar, 15.883 ha belum padam'.",
+    "kutipan": "Provinsi dengan hotspot terbanyak bla bla bla. Total hotspot, Total lahan terbakar, total belum padam bla bla bla",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:52 WIB",
+    "kategori": "visual",
+    "keputusan": "Peringkat 1–7 provinsi dengan hotspot terbanyak ditandai di peta dengan label kecil.",
+    "kutipan": "Tandain nomor 1 2 3 4 5 6 7 paling banyak. Pakai label kecil aja",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:53 WIB",
+    "kategori": "kata",
+    "keputusan": "Tanggal dihapus dari label 'PROVINSI · 20 OKT', jadi cukup 'PROVINSI'. Kalimat bawah judul peta juga tanpa tanggal.",
+    "kutipan": "Hilangkan 20 Okt.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:53 WIB",
+    "kategori": "visual",
+    "keputusan": "Pemilik mengeluhkan tabel peringkat di slide peta jelek dan minta dirombak. Hasilnya header berikon seperti slide tabel, plus rapikan.",
+    "kutipan": "Bagusin. Sumpah jelek banget",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:53 WIB",
+    "kategori": "data",
+    "keputusan": "Tiap kolom (hotspot, luas terbakar, belum padam) di tabel peta punya persen naik/turun dari hari sebelumnya, ditaruh di samping angkanya.",
+    "kutipan": "Masing\" ada percentagenya ya. Dibuat di sampingnya naik atau turun",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:54 WIB",
+    "kategori": "visual",
+    "keputusan": "Peta diperbesar dan ruang kosong dikurangi.",
+    "kutipan": "Besarin aja mapsnya ini white spacenya banyak banget",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:54 WIB",
+    "kategori": "visual",
+    "keputusan": "Judul kolom tabel di slide peta disamakan dengan judul kolom slide tabel: ikon, tanda bintang, dan satuan, misalnya 'HOTSPOT* (titik)'.",
+    "kutipan": "Samain sama ini",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:54 WIB",
+    "kategori": "visual",
+    "keputusan": "Legenda 'naik dari hari sebelumnya / turun dari hari sebelumnya' ditambah ke slide peta.",
+    "kutipan": "Tambahin ini di slide 1 sebagai lagenda",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:55 WIB",
+    "kategori": "kata",
+    "keputusan": "Kotak angka di slide peta tanpa tanda ±. Catatan: kalimat bawah judul slide tabel di deck final masih memakai ±.",
+    "kutipan": "Gausah pakai lebih kurang",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:55 WIB",
+    "kategori": "kata",
+    "keputusan": "Keterangan kecil di bawah angka kotak dihapus, misalnya '33 provinsi · ▼17% dari 19 Okt', '38 provinsi, perkiraan satelit', dan 'api bertahan ≥1 hari'.",
+    "kutipan": "Hilangkan keterangan ini",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:56 WIB",
+    "kategori": "proses",
+    "keputusan": "PPT didahulukan dari pekerjaan website, dan filenya langsung dikirim.",
+    "kutipan": "Oke fokus ke ppt dulu ya. Kasih ppt nya mana",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:57 WIB",
+    "kategori": "visual",
+    "keputusan": "Label nomor di peta tidak boleh biru gelap karena tenggelam di daratan biru tua. Hasil finalnya putih dengan pinggiran oranye.",
+    "kutipan": "Warna label jangan biru gelap juga. Nyaru",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:58 WIB",
+    "kategori": "visual",
+    "keputusan": "Tabel di slide peta tanpa progress bar, hanya angka dan persen.",
+    "kutipan": "Gausah ada progress barnya.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:58 WIB",
+    "kategori": "visual",
+    "keputusan": "Judul kolom tabel di slide peta dibuat satu baris.",
+    "kutipan": "Bagusin. Itu kalo bisa sebaris ya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 21:59 WIB",
+    "kategori": "visual",
+    "keputusan": "Nomor peringkat di tabel memakai bulatan biru gelap berangka putih, bukan bulatan bergaris oranye.",
+    "kutipan": "Pake yang biru gelap ini aja angkanya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:01 WIB",
+    "kategori": "struktur",
+    "keputusan": "Luas terbakar ditaruh paling kanan di slide peta (urutan Hotspot → Belum padam → Luas terbakar).",
+    "kutipan": "Luas terbakar paling kanan ya",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 22:40 diganti 'Belum padam paling kanan deh', jadi urutannya Hotspot → Luas terbakar → Belum padam."
+   },
+   {
+    "waktu": "21 Okt 21:46 WIB",
+    "kategori": "proses",
+    "keputusan": "(Website Insight, bukan deck) Kartu peta yang bisa memilih hotspot, luas terbakar, atau belum padam, dengan pemilih periode, dan dibuat lebih bagus dari contoh.",
+    "kutipan": "Hotspot, luas terbakar dan belum padam dimasukin bisa dipilih\" dan bisa ada picker period",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:04 WIB",
+    "kategori": "proses",
+    "keputusan": "(Dashboard, bukan deck) Ditambah overlay luas terbakar dan belum padam per wilayah dengan filter waktu di peta dashboard.",
+    "kutipan": "Luas lahan terbakar dan belum padam bisa di overlay kan dengan ada filter waktu di dashboard map",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:24 WIB",
+    "kategori": "data",
+    "keputusan": "(Dashboard, bukan deck) Tidak boleh ada angka akumulasi. Titik panas selalu satu hari kalender WIB, dan pilihan 72 jam / 7 hari dihapus.",
+    "kutipan": "Ini jangan ada yang akumulasi lah berarti.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:32 WIB",
+    "kategori": "data",
+    "keputusan": "Semua slide data diperbarui ke data 21 Okt, dan kolom tabel bergeser dari 18/19/20 menjadi 19/20/21 Okt.",
+    "kutipan": "Oke untuk slide gw pengen semuanya diupdate dengan data 2021. ... 18 19 20 jadi 19 20 21.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:32 WIB",
+    "kategori": "data",
+    "keputusan": "Papua Selatan diminta jadi nomor 10 di peringkat slide peta.",
+    "kutipan": "Papuas selatan jadi no. 10 ya.",
+    "berlaku": "diganti",
+    "diganti_oleh": "Data terbaru menempatkan Papua Selatan di nomor 11 (Kalbar 529 lawan Papsel 528). Setelah pemilik bilang 'Lu tentukan deh' (22:48), urutan dibiarkan mengikuti data: tabel tetap 10 baris dan Papsel tidak dipaksa masuk."
+   },
+   {
+    "waktu": "21 Okt 22:32 WIB",
+    "kategori": "kata",
+    "keputusan": "Slide operasi memakai tanggal 20 Oktober, bukan 21.",
+    "kutipan": "Operasi yang dilakukan per tanggal 20 Oktober.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:38 WIB",
+    "kategori": "data",
+    "keputusan": "Keluhan: dashboard belum terupdate dan Papua Selatan masih nomor 10, jadi beda dengan deck. Penjelasannya: deck mengikuti tarikan data terbaru, sedangkan dashboard diperbarui otomatis tiap 3 jam.",
+    "kutipan": "Ini belum terupdate. masih nomor 10 bro",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:40 WIB",
+    "kategori": "struktur",
+    "keputusan": "Belum padam ditaruh paling kanan. Urutannya Hotspot → Luas terbakar → Belum padam, baik di kotak angka maupun tabel slide peta, sama dengan slide tabel.",
+    "kutipan": "Belum padam paling kanan deh",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:48 WIB",
+    "kategori": "proses",
+    "keputusan": "Keputusan yang tertunda diserahkan ke asisten dengan pegangan best practice, yaitu soal catatan kaki, Papsel 10 atau 11 baris, dan aturan kompleks. Asisten lalu memasang catatan kaki 'perkiraan', mengganti 'Fire spot' menjadi 'Lokasi api bertahan', menghapus 'karena peningkatan hotspot', dan mempertahankan 10 provinsi teratas.",
+    "kutipan": "Lu tentukan deh. Ikuti best practice",
+    "berlaku": "masih",
+    "diganti_oleh": "Catatan kaki 'perkiraan' yang dipilih asisten kemudian diganti pemilik pada 23:05."
+   },
+   {
+    "waktu": "21 Okt 22:55 WIB",
+    "kategori": "visual",
+    "keputusan": "Label nomor peringkat di peta tidak boleh menumpuk dengan bulatan atau label lain.",
+    "kutipan": "Tumpang tindih",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:55 WIB",
+    "kategori": "struktur",
+    "keputusan": "Slide tabel pertama dijadikan 6 provinsi prioritas, dengan menambahkan Riau.",
+    "kutipan": "Slide pertama jadikan 6 provinsi prioritas",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 23:01 diganti menjadi 6 provinsi dengan hotspot terbanyak, urutannya sama dengan slide peta."
+   },
+   {
+    "waktu": "21 Okt 22:55 WIB",
+    "kategori": "struktur",
+    "keputusan": "Slide ketiga, Provinsi Tambahan Prioritas, dihapus.",
+    "kutipan": "Slide ketiga hilangkan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:55 WIB",
+    "kategori": "kata",
+    "keputusan": "Judul slide operasi menjadi 'Operasi Penanganan Karhutla yang Dilakukan per Tanggal 20 Oktober 2026', satu baris dengan huruf sedikit dikecilkan.",
+    "kutipan": "Operasi Penanganan Karhutla yang Dilakukan per Tanggal 20",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 22:56 WIB",
+    "kategori": "visual",
+    "keputusan": "Angka, panah, dan persen di tabel slide peta harus lurus seragam ke bawah: angka rata kanan, panah dan persen rata kiri.",
+    "kutipan": "Rapiin ya. Untuk angka dan panah dan persen agar lurus seragam ke bawah",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 23:01 WIB",
+    "kategori": "struktur",
+    "keputusan": "Slide 2 memuat 6 provinsi dengan hotspot terbanyak, urutannya sama dengan nomor 1–6 di slide peta: Kalteng, Sumsel, Kalsel, Kaltim, Sulteng, Jambi. Ini bukan 6 provinsi prioritas BNPB.",
+    "kutipan": "Bukan yang di slide 2 juga yang paling banyak titiknya ya. samain sama depan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 23:05 WIB",
+    "kategori": "kata",
+    "keputusan": "Catatan kaki slide 1 dan 2 menjadi '*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).' Kalimat 'luas terbakar dan belum padam adalah perkiraan...' dihapus.",
+    "kutipan": "Date berdasarkan Geographic Information System dengan satelit Nasa bla bla bla. ... luas terbakar bla bla bla itu hilangkan aja",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "22 Okt 00:43 WIB",
+    "kategori": "proses",
+    "keputusan": "Deck ini ditulis di artifact sebagai deck utama dan pedoman ('kitab suci') yang akan terus diperbarui. Isinya dari riwayat pilihan pemilik di sesi ini dan sesi session_01GdiaGQm9rXgcafXC8MwFbk.",
+    "kutipan": "Lu catat sebagai kitab suci yang bakal gw update terus. Lu liat historinya. Pilihan\" gw.",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   }
+  ],
+  "berkas": [
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pptx (dibuat 21 Okt 14:21 dan terus ditimpa; per 22 Okt 00:47 nama ini sudah tidak ada di Downloads)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pdf (sama: sudah tidak ada dengan nama ini)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 v0.pptx (mtime 21 Okt 23:05; dipakai asisten sebagai deck acuan final)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026 v0.pdf (dicek dengan cmp: identik dengan salinan PDF final di repo)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan Pengendalian Karhutla 211026.pptx dan .pdf (mtime 21 Okt 22:00; tidak disebut di transkrip, kemungkinan cuplikan versi 4 slide, belum dipastikan)",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pptx (final 3 slide, cut-off 22.33 WIB)",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/Laporan Penanganan Pengendalian Karhutla 211026 data satelit.pdf",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/satelit-2026-10-21/ (README.md, ganti.py, tambah_peta.py, peta.mjs, hitung3.py, hitung_nasional.py, angka.json, angka_nasional.json, peta-20okt.png/svg, sumber-asli-BNPB-211026.pptx, firms-raw-15-21okt.tar.gz, verifikasi/)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026.pptx dan .pdf (sumber asli BNPB dari pemilik, masukan, bukan hasil)",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/docs/audit-metode/2026-10-21/HASIL.md dan RINGKASAN-EKSEKUTIF.md (hasil evaluasi metode, bukan deck)"
+  ]
+ },
+ {
+  "deck": "Laporan Penanganan Pengendalian Karhutla 211026 + Koordalops: turunan deck 21 Okt 2026 milik pemilik, ditambah data Laporan Harian Dit. Koordalops BNPB 20 Okt. Transkrip yang dibaca: 5b021841-a037-4a40-a53c-13a8e1239472.jsonl (21 Okt 2026, 07:46–08:29 WIB). Sempat menjadi 3 slide, lalu dipangkas lagi menjadi 2 slide. Berkas asli tidak diubah.",
+  "keputusan": [
+   {
+    "waktu": "21 Okt 2026 07:50 WIB",
+    "kategori": "proses",
+    "keputusan": "Yang diminta pemilik adalah informasi dari Laporan Harian Dit. Koordalops untuk ditambahkan ke deck yang ia kirim. Ia tidak meminta isi deck dimasukkan ke skema /laporan-bnpb.",
+    "kutipan": "Bukan dari laporan harian dir koordalops tadi bisa menambah informasi apa di deck yang saya kirim",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 07:53 WIB",
+    "kategori": "data",
+    "keputusan": "Kolom 20 Okt di slide 1 yang masih NA diisi dari Laporan Harian: Kalteng 431,66/321,35, Jambi 98,50/70,00, Sulteng 70,00/70,00 (poin 1). Baris Jumlah tetap NA.",
+    "kutipan": "1. gas",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 07:53 WIB",
+    "kategori": "data",
+    "keputusan": "Luas terbakar kumulatif 2026 (Kalteng, Riau, Sumsel, Jambi) dimasukkan ke deck (poin 2). Awalnya ditaruh di slide 3 baru.",
+    "kutipan": "2. gas",
+    "berlaku": "diganti",
+    "diganti_oleh": "08:15 dipindah menjadi strip di slide 1 ('slide 1 gas'), lalu 08:24 dihapus ('Hilangkan' + tangkapan strip KUMULATIF 2026). Slide 3 juga dihapus pukul 08:26."
+   },
+   {
+    "waktu": "21 Okt 2026 07:53 WIB",
+    "kategori": "struktur",
+    "keputusan": "Status darurat yang segera berakhir (poin 3) dan kesiapan armada udara (poin 4) dimasukkan ke deck sebagai slide 3 baru.",
+    "kutipan": "3. 4 gas",
+    "berlaku": "diganti",
+    "diganti_oleh": "08:15 status darurat dipindah menjadi pil di slide 1 dan armada menjadi format siap/total di slide 2. Pukul 08:24–08:25 keduanya dihapus ('Hilangkan'), dan slide 3 dihapus pukul 08:26."
+   },
+   {
+    "waktu": "21 Okt 2026 07:53 WIB",
+    "kategori": "data",
+    "keputusan": "Kondisi lapangan dimasukkan (poin 7: jarak pandang, PM2.5 Palangka Raya, ENSO/FWI, jadwal akhir OMC), tetapi info sekolah daring/PJJ tidak ikut.",
+    "kutipan": "7 gas yang sekolah daring gausah",
+    "berlaku": "diganti",
+    "diganti_oleh": "Kondisi lapangan sempat ada di slide 3, lalu ikut hilang saat 'Slide 3 hilangkan' (08:26). Pengecualian sekolah daring tetap tidak dibalik."
+   },
+   {
+    "waktu": "21 Okt 2026 07:53 WIB",
+    "kategori": "data",
+    "keputusan": "Kebutuhan mendesak dan Gakkum dimasukkan (poin 8: kebutuhan Kalteng, Sigi, Riau; Gakkum Riau 61 kasus, Jambi 10 kasus).",
+    "kutipan": "8 gas",
+    "berlaku": "diganti",
+    "diganti_oleh": "Isinya sempat ada di slide 3, lalu ikut hilang saat 'Slide 3 hilangkan' (08:26)."
+   },
+   {
+    "waktu": "21 Okt 2026 07:55 WIB",
+    "kategori": "visual",
+    "keputusan": "Di slide 2, angka PM2.5 (366) dipisah dari label kategorinya (BERBAHAYA), sehingga angka berdiri sendiri di kiri pil.",
+    "kutipan": "336 dan berbahaya ya dipisah labelnya ya.",
+    "berlaku": "diganti",
+    "diganti_oleh": "08:25 'Ini kecilin lah biar atas sama bawah lebarnya sama. Angkanya masuk': angka kembali masuk ke dalam pil."
+   },
+   {
+    "waktu": "21 Okt 2026 07:55 WIB",
+    "kategori": "visual",
+    "keputusan": "Label BERBAHAYA pada pil PM2.5 di slide 2 diberi ikon (segitiga peringatan).",
+    "kutipan": "Berbahaya kasih icon",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 07:55 WIB",
+    "kategori": "visual",
+    "keputusan": "Pil cuaca angin kencang dan hujan di slide 2 diberi ikon. Asisten sengaja tidak memberi ikon hujan pada TANPA HUJAN.",
+    "kutipan": "Angin kencang dan hujan kasih icon",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:13 WIB",
+    "kategori": "kata",
+    "keputusan": "Catatan kaki ** di slide 1 tidak boleh menyebut Laporan Harian Dit. Koordalops sebagai sumber angka Kalteng, Jambi, dan Sulteng. Bunyinya sekarang 'masih dalam proses rekapitulasi, menunggu data laporan dari lapangan'.",
+    "kutipan": "Jambi, dan Sulawesi Tengah dari Laporan Harian Dit. Koordalops BNPB 20  ini gausah ada",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:13 WIB",
+    "kategori": "kata",
+    "keputusan": "Kalimat tentang kejadian baru di Sigi (±60 ha) dan Tojo Una-Una (±10 ha) dibuang dari catatan kaki slide 1.",
+    "kutipan": "Sulawesi Tengah = kejadian baru di Sigi (±60 ha) dan Tojo Una-Una (±10 ha), belum padam. ini gausah ada",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:14 WIB",
+    "kategori": "struktur",
+    "keputusan": "Pemilik bertanya apakah isi slide 3 (dikirim sebagai tangkapan layar) bisa dimasukkan ke slide 1 dan 2 sebagai ganti slide terpisah.",
+    "kutipan": "Ini ga bisa dimasukin ke slide 1 dan 2?",
+    "berlaku": "diganti",
+    "diganti_oleh": "Pukul 08:24–08:26 semua sisipan dari slide 3 di slide 1 dan 2 dihapus, dan slide 3 juga dihapus."
+   },
+   {
+    "waktu": "21 Okt 2026 08:15 WIB",
+    "kategori": "struktur",
+    "keputusan": "Slide 1 dapat pil status darurat di samping nama provinsi (Kalteng 'TD S.D. 29 OKT' oranye, Kalsel 'SIAGA S.D. 31 OKT') dan strip 'KUMULATIF 2026 (ha)' di kanan baris Fire spot.",
+    "kutipan": "slide 1 gas",
+    "berlaku": "diganti",
+    "diganti_oleh": "08:24 'Hilangkan' (dengan tangkapan strip kumulatif dan pil TD/Siaga): keduanya dihapus."
+   },
+   {
+    "waktu": "21 Okt 2026 08:15 WIB",
+    "kategori": "data",
+    "keputusan": "Kolom unit di kartu Armada Udara slide 2 diubah ke format siap/total, dan baris Kalbar/Kalsel yang tidak ada datanya dibiarkan kosong ('–').",
+    "kutipan": "jadi kedua baris itu akan kosong. oke gas",
+    "berlaku": "diganti",
+    "diganti_oleh": "08:24–08:25 'Hilangkan' (tangkapan catatan 'siap/total (serviceable); Sumsel per 19 Okt' dan angka –/10, ≥7/10, 5/8, 4/5, –/2): kolom kembali ke 'N unit' seperti aslinya."
+   },
+   {
+    "waktu": "21 Okt 2026 08:15 WIB",
+    "kategori": "struktur",
+    "keputusan": "Kondisi lapangan, kebutuhan, dan Gakkum tidak dimasukkan ke slide 2, sehingga kartu Penanganan tidak diringkas.",
+    "kutipan": "oke ga apa gausah dimasukin dulu",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:25 WIB",
+    "kategori": "visual",
+    "keputusan": "Pil PM2.5 di slide 2 diperkecil supaya lebarnya sama dengan pil cuaca di bawahnya, dan angka masuk ke dalam pil (misalnya '⚠ 366 BERBAHAYA').",
+    "kutipan": "Ini kecilin lah biar atas sama bawah lebarnya sama. Angkanya masuk",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:26 WIB",
+    "kategori": "kata",
+    "keputusan": "Penggalan 'Riau dikeluarkan; terdapat 7 provinsi prioritas' dibuang dari judul slide 2, sehingga judul berhenti di '…dan Sulawesi Tengah masuk prioritas'.",
+    "kutipan": "Riau dikeluarkan; terdapat 7 provinsi prioritas ini hilangkan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:26 WIB",
+    "kategori": "struktur",
+    "keputusan": "Slide 3 (Laporan harian Koordalops: luas 2026, status darurat, kesiapan armada, kondisi lapangan, kebutuhan & Gakkum) dihapus, sehingga deck kembali 2 slide.",
+    "kutipan": "Slide 3 hilangkan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 08:28 WIB",
+    "kategori": "visual",
+    "keputusan": "Tulisan pada pil kuning TIDAK SEHAT (97 dan 84) di slide 2 harus putih. Saran asisten untuk menggelapkan kuning ke amber belum dijawab.",
+    "kutipan": "Ini harusnya tulisan putih",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   }
+  ],
+  "berkas": [
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026 + Koordalops.pptx (hasil akhir, 2 slide)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026 + Koordalops.pdf (hasil akhir, 2 slide)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026.pptx (deck asli kiriman pemilik, input, tidak diubah)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Penanganan  Pengendalian Karhutla 211026.pdf (deck asli kiriman pemilik, input, tidak diubah)",
+   "/Users/alfatehanseptianta/Downloads/Laporan Harian Dit. Koordalops BNPB 20102026.docx (1).pdf (sumber data, input)",
+   "/private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/5b021841-a037-4a40-a53c-13a8e1239472/scratchpad/bangun.py (skrip perakit deck)",
+   "/private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/5b021841-a037-4a40-a53c-13a8e1239472/scratchpad/deck/final.pptx (sama ukurannya dengan versi + Koordalops di Downloads, 260,7 KB)",
+   "/private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/5b021841-a037-4a40-a53c-13a8e1239472/scratchpad/deck/tiga.pptx (versi antara 3 slide)"
+  ]
+ },
+ {
+  "deck": "Sesi a6e51d3e (20 Okt 2026, 13:33 sampai 16:32 WIB) tidak menyunting deck. Sesi ini membangun halaman input centurisk97.id/laporan-bnpb yang membuat dua deck dari isian formulir lalu mengekspornya ke PPTX/PDF. Bahan acuannya berkas yang dilampirkan pemilik: Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026 (versi Utama dan Lengkap) serta Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026. Hasilnya dua deck: Laporan Harian 4 slide dan Paparan Presiden 7 slide, mengikuti versi Utama. Slide tambahan versi Lengkap (33 halaman) belum dibuat. Transkrip ini tidak berisi koreksi pemilik soal tampilan slide, cara hitung angka, label, atau urutan slide. Contoh seperti \"padam = 48 jam\", \"rata tengah\", \"gausah ±\", \"jangan ambil data terbaru\", atau \"belum padam paling kanan\" tidak ada di sini. Sisa pesan pemilik membahas peta (gelembung Himawari) dan spanduk privasi, bukan deck.",
+  "keputusan": [
+   {
+    "waktu": "20 Okt 13:33 WIB",
+    "kategori": "struktur",
+    "keputusan": "Berkas paparan Presiden dan laporan harian BNPB yang dilampirkan dibuatkan dashboard atau tampilan, lengkap dengan cara input datanya. Asisten mewujudkannya sebagai halaman /laporan-bnpb: formulir, pratinjau slide langsung, dan tombol Simpan ke D1.",
+    "kutipan": "Tolong ini buatkan dashboardnya atau tampilannya. Dan cara inputan datanya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 13:33 WIB",
+    "kategori": "proses",
+    "keputusan": "Fitur laporan BNPB hanya untuk situs centurisk97.id. Di alamat Pantau Bencana halaman ini membalas 404, dan di centurisk97.id wajib masuk dulu.",
+    "kutipan": "Ini hanya untuk centurisk97.id ya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 13:33 WIB",
+    "kategori": "proses",
+    "keputusan": "Harus ada ekspor otomatis ke PPT dan PDF. Pratinjau, PPTX, dan PDF digambar dari fungsi slide yang sama, dan nama berkasnya mengikuti pola berkas pemilik.",
+    "kutipan": "Dan ada otomatis utnuk di export ke ppt dan pdf",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 13:34 WIB",
+    "kategori": "proses",
+    "keputusan": "Pemilik minta dibuatkan akun login baru di centurisk97.id dengan username dirgayuza. Sandinya diberikan di chat dan sengaja tidak disalin di sini. Asisten mengubah kode supaya tiap orang punya secret sendiri (AKUN_SITUS_<NAMA>). Pemilik sendiri yang menyimpan secret-nya lewat wrangler, lalu menjalankan migrasi 0023 dan git push.",
+    "kutipan": "Oke buatkan akun di centurisk97.id",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 15:56 WIB",
+    "kategori": "visual",
+    "keputusan": "Ini soal peta, bukan deck. Titik Himawari dikelompokkan seperti lapisan lain: lingkaran kecil di dalam lingkaran besar yang berisi angka jumlah api, dan peta memperbesar saat gelembung diklik.",
+    "kutipan": "ada lingkaran kecil gitu di lingkaran besar. Ada angkanya. Baru nanti dia zoom",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 15:59 WIB",
+    "kategori": "visual",
+    "keputusan": "Ini soal peta, bukan deck. Pemilik mengeluh angka pada gelembung tidak terlihat. Tindak lanjutnya pesan 16:27 (gelembung Himawari dikecilkan supaya tidak menutupi gelembung merah kompleks).",
+    "kutipan": "Mana angkanya ga keliatan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 16:27 WIB",
+    "kategori": "visual",
+    "keputusan": "Ini soal peta, bukan deck. Gelembung Himawari dibuat kecil saja. Asisten mengecilkannya ke angka 9,5 pt dan lingkaran 7,5 sampai 11 px (sebelumnya 12 sampai 24 px), jadi lebih kecil daripada gelembung merah kompleks.",
+    "kutipan": "Kecil aja yang Himawari ya",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "20 Okt 16:27 WIB",
+    "kategori": "visual",
+    "keputusan": "Ini soal situs, bukan deck. Pemilik mengeluh spanduk privasi belum hilang dari layar. Penyelesaiannya keputusan pukul 16:29.",
+    "kutipan": "Kenapa belum ilang",
+    "berlaku": "diganti",
+    "diganti_oleh": "20 Okt 16:29: spanduk privasi dihapus, analitik tetap menyala untuk semua pengunjung"
+   },
+   {
+    "waktu": "20 Okt 16:29 WIB",
+    "kategori": "proses",
+    "keputusan": "Ini soal situs, bukan deck. Spanduk privasi dihapus, dan analitik menyala bawaan untuk semua pengunjung tanpa harus klik Terima. Asisten tetap menghormati Do Not Track/GPC dan opt-out manual.",
+    "kutipan": "Dihapus aja Tapi tetap analitik semua pengunjung",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   }
+  ],
+  "berkas": [
+   "/Users/alfatehanseptianta/.claude/projects/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/a6e51d3e-7322-40a7-8b3c-8148d9866ae2.jsonl (transkrip yang dibaca)",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026-Utama.pptx",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026-Utama.pdf",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026-Lengkap.pptx",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026-Lengkap.pdf",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pptx",
+   "INPUT dari pemilik: /Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pdf",
+   "MESIN SLIDE (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public/laporan_bnpb_slide.js",
+   "HALAMAN INPUT (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public/laporan_bnpb.js",
+   "API (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/src/laporan_bnpb.js",
+   "MIGRASI D1 (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/migrations/0023_laporan_bnpb.sql",
+   "UJI (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/tests/warga/laporan_bnpb.test.mjs",
+   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/harian-2026-10-19.json",
+   "DATA CONTOH (dibuat sesi ini): /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/presiden-2026-10-20.json",
+   "CATATAN: ekspor uji pukul 14:00 WIB menghasilkan Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pptx/.pdf (4 slide) dan Paparan-Kepala-BNPB-kepada-Presiden-Karhutla-20-Okt-2026.pptx/.pdf (7 slide) di peramban pratinjau. Keempatnya tidak tersimpan ke disk oleh sesi ini; Paparan-...-20-Okt-2026.pptx yang ada di Downloads bertanggal 20 Okt 11:18, sebelum sesi dimulai."
+  ]
+ },
+ {
+  "deck": "Laporan Kejadian Bencana Harian Dit. Koordalops BNPB, periode 20/10/2026 07.00 WIB s.d. 21/10/2026 07.00 WIB (4 slide, dibuat dengan generator /laporan-bnpb memakai format deck 18-19 Okt). Transkrip: 8e8cb936-031a-43a9-8fcc-cf168ec823eb.jsonl. Isinya cuma SATU pesan teks dari pemilik (21 Okt 07:47 WIB) dan SATU jawaban pilihan ganda (07:49 WIB). Tidak ada keluhan atau koreksi susulan, dan sesi berakhir pukul 07:50 WIB setelah deck dikirim. Ada empat hal yang diputuskan asisten sendiri lalu diminta dicek pemilik: Karanganyar ditandai 'belum selesai', Bromo masuk 'Perlu perhatian', 4 kotak 'Yang akan dilakukan BNPB' masih draf asisten, dan kolom Kekeringan bernilai 0. Keempatnya BUKAN keputusan pemilik dan belum dijawab.",
+  "keputusan": [
+   {
+    "waktu": "21 Okt 2026 07:47 WIB",
+    "kategori": "proses",
+    "keputusan": "Deck harian sebelumnya (PDF+PPTX 18-19 Okt) menjadi standar acuan, dan laporan baru disesuaikan ke standar itu.",
+    "kutipan": "Ini gw kirim standar laporan harian sebelumnya. Tolong dibantu disesuaikan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 07:47 WIB",
+    "kategori": "data",
+    "keputusan": "Sumber data deck adalah teks WA pemantauan Dit. Koordalops BNPB periode 20/10/2026 07.00 WIB s.d. 21/10/2026 07.00 WIB: 19 laporan kejadian dan 18 kejadian menonjol per provinsi A-L, masing-masing dengan Dampak, Penetapan status, Pendampingan BNPB, Kondisi mutakhir, dan Entry no laphar.",
+    "kutipan": "Laporan kejadian bencana sejumlah 19 (sembilan belas) kejadian. INi ada laporan harian",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "21 Okt 2026 07:49 WIB",
+    "kategori": "struktur",
+    "keputusan": "Yang dibuat hanya deck 20-21 Okt dengan format deck yang sekarang. Generator /laporan-bnpb tidak diubah ke format kolom WA, dan tidak ditambah tombol salin teks WA.",
+    "kutipan": "Buat deck 20–21 Okt saja",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   }
+  ],
+  "berkas": [
+   "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-20-21-Okt-2026.pdf",
+   "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-20-21-Okt-2026.pptx",
+   "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/laporan-bnpb/harian-2026-10-21.json"
+  ]
+ },
+ {
+  "deck": "Transkrip a45fb6a5-2f28-419d-be41-a8350d845378.jsonl (judul sesi \"Google Open Building\", 20 Okt 2026, 13:39 sampai 15:41 WIB) TIDAK membuat atau menyunting deck. Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026 (PDF dan PPTX di ~/Downloads) cuma dilampirkan pemilik sebagai rujukan untuk kategori rumah rusak RB/RS/RR. Di sesi ini tidak ada keputusan soal tampilan slide, warna, perataan, urutan slide, label angka, \"padam = 48 jam\", atau \"jangan ambil data terbaru\". Isi transkrip: 5 pesan pemilik (termasuk 2 pesan yang dikirim saat Claude masih bekerja) dan 2 jawaban AskUserQuestion. Semuanya tentang fitur situs: Open Buildings, form laporan rumah rusak, login di centurisk, dan spanduk privasi. Keputusan yang dicatat di bawah sudah lengkap. Hanya butir pertama yang menyentuh isi deck, yaitu sebagai sumber kolom rumah rusak.",
+  "keputusan": [
+   {
+    "waktu": "2026-10-20 13:42 WIB",
+    "kategori": "data",
+    "keputusan": "Kategori rumah rusak Berat/Sedang/Ringan di laporan harian 18-19 Okt dijadikan dasar fitur, supaya orang bisa mengirim laporan rumah rusak sendiri.",
+    "kutipan": "ada rumah yang rusak sedang berat ringan. Jadi orang bisa kasih laporan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "2026-10-20 13:42 WIB",
+    "kategori": "data",
+    "keputusan": "Semua lapisan keterpaparan bangunan Open Buildings yang diusulkan disetujui: karhutla (radius dari titik api/sebaran), banjir/rob (zona genangan), gempa (zona MMI), dan gunung api (KRB).",
+    "kutipan": "Oke untuk semua",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "2026-10-20 13:43 WIB",
+    "kategori": "proses",
+    "keputusan": "Hasilnya ditaruh di centurisk.id, bagian yang wajib login, bukan di situs publik.",
+    "kutipan": "Ini taruh di centurisk.id aja yang butuh login",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "2026-10-20 13:46 WIB",
+    "kategori": "proses",
+    "keputusan": "Yang boleh melapor rumah rusak: pemegang akun login ditambah regu lapangan berkode. Laporan langsung dihitung, admin bisa mengoreksi. Ini jawaban pemilik di AskUserQuestion.",
+    "kutipan": "Akun + regu kode (Recommended)",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "2026-10-20 13:59 WIB",
+    "kategori": "visual",
+    "keputusan": "Spanduk privasi di situs dihilangkan. Pemilik melampirkan tangkapan layar; Claude menerjemahkannya menjadi SPANDUK = false di public/persetujuan.js.",
+    "kutipan": "Hilangkan",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   },
+   {
+    "waktu": "2026-10-20 14:30 WIB",
+    "kategori": "struktur",
+    "keputusan": "Regu berkode membuka form rumah rusak lewat tombol di dalam /lapangan. Daftar halaman tanpa login tetap hanya /lapangan. Ini jawaban pemilik di AskUserQuestion.",
+    "kutipan": "Tombol di /lapangan (Recommended)",
+    "berlaku": "masih",
+    "diganti_oleh": ""
+   }
+  ],
+  "berkas": [
+   "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pptx (masukan dari pemilik, bukan hasil sesi ini)",
+   "/Users/alfatehanseptianta/Downloads/Laporan-Kejadian-Bencana-Harian-18-19-Okt-2026.pdf (masukan dari pemilik, bukan hasil sesi ini)",
+   "/Users/alfatehanseptianta/.claude/projects/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/a45fb6a5-2f28-419d-be41-a8350d845378.jsonl (transkrip yang diperiksa; tidak ada berkas deck yang dihasilkan)"
+  ]
+ },
+ {
+  "deck": "Transkrip de8d4fe1 (judul sesi \"Prompt untuk presentasi\", 19 Okt 2026 sekitar 01:38 WIB) tidak berisi pembuatan deck. Isinya cuma satu pesan pemilik plus satu screenshot. Pemilik bertanya apa isi prompt PPT yang ia minta sebelumnya. Asisten menjawab bahwa sesi aslinya (\"Presentasi BNPB Kalimantan Selatan dan Tengah\", paparan untuk Mayjen Kristomei Sianturi) berjalan di Mac mini Priyanka, jadi transkrip dan promptnya tidak ada di Mac ini. Di repo juga tidak ada commit deck sejak 18 Okt. Di sesi ini tidak ada deck yang dibuat dan tidak ada keputusan soal tampilan, data, angka, kata, atau urutan slide.",
+  "keputusan": [],
+  "berkas": []
+ }
+]

@@ -1,0 +1,225 @@
+{
+ "id": "5e6bec19",
+ "nama": "20250424 Paparan Verifikasi",
+ "deck": "20250424 Paparan Verifikasi: \"Hasil Verifikasi Dokumen dan Dukungan Bakal Calon Ketua Umum IA-ITB 2025-2029\" (Panitia Pemilu IA-ITB). 11 slide, 10 x 5,625 in (16:9 bawaan Google Slides, 9144000x5143500 EMU), tema sisa \"Simple Light\"",
+ "tujuan_dan_audiens": "Tujuannya mengumumkan dan mendokumentasikan hasil verifikasi 14 syarat administrasi dan dukungan untuk tiga bakal calon Ketua Umum IA-ITB, yaitu Puja Pramudya (IF'06), Agustin Peranginangin (SI'94), dan Agung Asmawedha (FI'02). Deck ini lebih mirip berita acara yang ditayangkan daripada deck pengambilan keputusan. Audiensnya rapat panitia pemilu dan pengurus pusat IA-ITB, serta para bakal calon dan tim suksesnya yang perlu tahu dokumen mana yang gagal dan alasannya (umumnya 'Tidak ada materai' atau 'Tidak ada cap'). Deck ini tidak menyebut keputusan yang diminta, konsekuensi skor 10/14 atau 13/14 (gugur atau masa perbaikan), maupun tenggat. Pejabat senior yang membacanya harus menyimpulkan semuanya sendiri.",
+ "nilai_deck": {
+  "pesan_judul": 1,
+  "alur_cerita": 2,
+  "hierarki_visual": 3,
+  "grid_ruang": 2,
+  "visualisasi_data": 2,
+  "tipografi_warna": 2,
+  "kepadatan_keterbacaan": 2,
+  "kecocokan_pimpinan": 2
+ },
+ "ringkasan_penilaian": "Deck ini berguna sebagai catatan, tapi lemah sebagai alat bantu keputusan. Kekuatannya ada di tingkat tabel. Status ditulis dobel, warna sekaligus teks ('Lolos' hijau, 'Tidak Lolos' merah). Capaian ditulis sebagai rasio capaian/syarat (172/150, 1/4, 0/3). Kolom Keterangan menyebut sub-entitas yang gagal berikut alasannya ('Jakarta (Tidak ada materai)'), jadi tiap vonis bisa dilacak ke bukti. Tiap kandidat ditutup kotak skor 2 panel dengan angka 40pt (10/14 merah, 14/14 hijau, 13/14 merah). Kelemahannya struktural. (1) Tidak ada action title, keenam slide isi berjudul 'Laporan Verifikasi [Nama]'. (2) Vonis tiap kandidat baru muncul di slide keduanya, dan tidak ada ringkasan perbandingan ketiga kandidat. (3) Teks tabel 7–8pt (693 run teks berukuran 7 atau 8pt), sampai 214 kata per slide. (4) Grid tidak konsisten. Lebar kolom 'Dokumen' berubah dari 45,5% ke 43,3% lalu 33,5% lebar slide, judul berganti antara 16pt dan 14pt, label KPI antara 24pt dan 16pt. (5) Ada cacat produksi: nama meluap keluar kotak di slide 5, footer basi 'Panitia Pemilu Ketua IA-ITB 2021' di deck 2025, dan nomor halaman ganda yang satu terpotong di slide pembatas. (6) Warna status memakai hijau dan merah bawaan Excel (00B050 kontras 2,9:1, FF0000 kontras 4,0:1 di atas putih), keduanya gagal WCAG AA untuk teks 8pt dan tidak serasi dengan merah dan biru brand. Yang layak ditiru untuk generator adalah pola tabel status, format rasio, dan kotak vonis. Yang tidak layak ditiru adalah alur, tipografi, dan grid-nya.",
+ "alur": "Urutannya induktif per entitas (bottom-up), kebalikan dari prinsip piramida: Sampul (s1) → [Kandidat 1: pembatas s2 → tabel syarat 1–10 s3 → tabel syarat 11–14 + kotak skor 10/14 s4] → [Kandidat 2: s5 → s6 (syarat 1–8) → s7 (syarat 9–14 + 14/14)] → [Kandidat 3: s8 → s9 (syarat 1–10) → s10 (syarat 11–14 + 13/14)] → Penutup 'TERIMA KASIH' (s11). Kandidat diurutkan menurut nomor urut, bukan menurut hasil. Pola blok 'pembatas → detail → skor' yang identik untuk tiap kandidat memudahkan pembaca dan gampang dijadikan templat. Ada empat celah. (a) Tidak ada slide kriteria: daftar 14 syarat dan definisi 'lolos' (materai Rp10.000, cap) tidak dijelaskan, padahal itu alasan gagal yang dominan. (b) Tidak ada ringkasan eksekutif atau matriks pembanding, misalnya 'Agustin 14/14 lolos penuh; Agung 13/14 kurang 1 surat Komisariat; Puja 10/14 kurang 4 surat persetujuan', yang mestinya ada di slide 2. (c) Konsekuensi skor tidak dijelaskan: apakah 10/14 berarti gugur atau diberi masa perbaikan. (d) Tidak ada tindak lanjut atau keputusan yang diminta. Penutup 'TERIMA KASIH' menempati slot yang semestinya berisi langkah berikutnya. Pemeriksaan logika data: skor konsisten dengan baris tabel (Puja 4 baris Tidak Lolos = 10/14, Agung 1 = 13/14). Pembilang rasio hanya menghitung dokumen sah, misalnya 5/3 untuk Prodi Agustin padahal 7 diajukan dan 2 tanpa materai. Aturan ini rapi tetapi tidak dijelaskan di slide.",
+ "sistem_desain": {
+  "palet": [
+   {
+    "hex": "21468B",
+    "peran": "Biru-navy utama brand (32 run): isi pita judul slide isi, baris header tabel, panel kiri kotak skor KPI. Selalu berpasangan dengan teks putih."
+   },
+   {
+    "hex": "21458A",
+    "peran": "Varian hampir identik dari 21468B (4 run), hasil drift warna (kemungkinan dari salinan objek atau logo). Generator harus menggabungkannya menjadi satu token."
+   },
+   {
+    "hex": "691118",
+    "peran": "Merah marun (3 run): isi kotak nama kandidat di slide pembatas (s2, s5, s8)."
+   },
+   {
+    "hex": "00B050",
+    "peran": "Status OK (163 run, warna teks terbanyak): 'Lolos', tanda ✔, rasio terpenuhi (172/150, 5/5), '(✔)' di Keterangan, angka 14/14. Hijau bawaan Excel, kontras 2,9:1 di atas putih, gagal AA untuk teks kecil."
+   },
+   {
+    "hex": "FF0000",
+    "peran": "Status gagal (129 run): 'Tidak Lolos', rasio kurang (1/4, 0/3, 2/3), '(Tidak ada materai)', angka 10/14 dan 13/14. Merah murni, kontras 4,0:1, tidak serasi dengan merah brand di gambar mosaik."
+   },
+   {
+    "hex": "000000",
+    "peran": "Teks isi tabel, judul dokumen di kolom 1, keterangan KPI, garis tabel, dan bingkai panel putih kotak KPI (85 run)."
+   },
+   {
+    "hex": "FFFFFF",
+    "peran": "Latar slide isi, teks di atas pita/header/kotak, nomor halaman di atas band bawah."
+   },
+   {
+    "hex": "F2F2F2 (perkiraan visual, tidak tercatat di struktur.json)",
+    "peran": "Isi abu muda kolom 'Dokumen' sebagai penanda kepala baris, dan strip footer abu di slide pembatas."
+   },
+   {
+    "hex": "(di dalam gambar, perkiraan visual) biru royal, biru periwinkle, merah crimson, marun, navy",
+    "peran": "Mosaik geometris brand (lingkaran, daun, bintang empat) pada kolom kiri sampul/penutup dan band bawah semua slide isi/pembatas. Warnanya tertanam di PNG, bukan di tema."
+   },
+   {
+    "hex": "4285F4, 212121, 78909C, FFAB40, 0097A7, EEFF41 (accent1–6 tema)",
+    "peran": "Sisa tema Google Slides 'Simple Light' yang tidak dipakai sama sekali. Tema tidak mencerminkan brand, jadi placeholder baru akan mewarisi warna yang salah."
+   }
+  ],
+  "huruf": "Roboto dominan (851 run) untuk semua isi tabel, header tabel, keterangan, dan byline. Archivo, Archivo Black, dan Archivo ExtraBold (29+16+12 run) kemungkinan dipakai untuk judul sampul, judul pita, nama di pembatas, dan label KPI; di render tergantikan font sans tebal. Arial Nova Cond (3 run) cocok dengan tiga angka besar 1/2/3 di pembatas (49,5pt, 3 run). Calibri Light (18 run) dipakai untuk footer abu 'Panitia Pemilu Ketua IA-ITB 2021' 7,5pt di pembatas. Arial (8 run) adalah sisa placeholder, dan font tema (judul/isi) tetap Arial. Total ada 5 keluarga huruf, padahal cukup 1–2.",
+  "skala_huruf": "Judul sampul 32pt tebal putih dengan bayangan; 'TERIMA KASIH' 30pt kapital. Angka pembatas 49,5pt, nama kandidat di pembatas 20pt tebal. Judul pita slide isi 15–16pt di s3/s6/s9 tetapi 14pt di s4/s7/s10, jadi tidak konsisten antar halaman lanjutan dari kandidat yang sama. Header tabel 9,5pt di s3/s6/s9 dan sekitar 8pt di s4/s10. Isi tabel 8pt (444 run) dan 7pt (249 run). Angka KPI 40pt tebal. Label KPI 24pt di s4/s10 dan 16pt di s7. Keterangan KPI 14pt reguler. Byline sampul 12pt, penutup 12,3pt. Footer pembatas 7,5pt. Rasio judul:isi sekitar 2:1, terlalu datar. Catatan skala: slide ini lebar 10 in, jadi 8pt di sini setara sekitar 10,7pt pada slide 13,33 in, tetap di bawah batas baca proyektor.",
+  "grid_margin": "Slide 10 x 5,625 in, sekitar 110 px/in di render. Margin kiri 0,23 in (pita judul dan tabel mulai x=25 px). Margin kanan tabel hanya 0,12 in (berakhir x=1087 dari 1100) sedangkan logo 0,39 in, jadi tidak simetris. Pita judul y 0,45–0,76 in (8,1–13,6% tinggi), lebar 2,3–87% (berhenti 5 px sebelum logo). Tabel menempel langsung di bawah pita (y 0,79 in, celah ~0). Band dekoratif bawah 0,65 in (88,5–100% tinggi, 11,5% tinggi slide terpakai dekorasi). Area konten efektif y 0,79–4,97 in x 9,65 in. Tidak ada grid kolom tetap. Kolom 1 tabel 45,5% lebar (s3/s9), 43,3% (s4/s10), dan 33,5% (s6). Kolom 'Kelengkapan' 12% (s3) dan 23,9% (s6). Kotak KPI terpusat dengan lebar 16,6–83,3% (2/3 lebar slide), dibagi dua sama lebar. Whitespace tidak terkelola: s4/s10 punya celah kosong ~10% tinggi antara tabel dan kotak KPI, sementara s3 tabelnya menempel band bawah tanpa celah.",
+  "elemen_berulang": "Logo 'PEMILU IA-ITB 2025' di pojok kanan atas semua slide (x 8,75–9,6 in, y 0,38–0,78 in). Pita judul biru 21468B di slide isi. Band mosaik brand di bawah slide isi dan pembatas (0,65 in). Nomor halaman putih ~12pt di kanan band (x ~96,8%) pada slide isi. Slide pembatas memakai varian lain: band lebih tipis (89–94%) plus strip abu (94–100%) berisi footer basi 'Panitia Pemilu Ketua IA-ITB 2021' dan nomor abu dengan garis vertikal, sementara nomor putih dari layout terpotong di tepi kanan, jadi nomor halaman ganda. Kolom mosaik kiri (18,6% lebar) pada sampul dan penutup. Tidak ada baris sumber, tanggal paparan, status dokumen, atau penanda '(lanjutan)' di halaman tabel kedua.",
+  "gaya_grafik": "Tidak ada grafik sama sekali (0 chart). Seluruh data disajikan dalam tabel 4 kolom: Dokumen | Kelengkapan | Verifikasi | Keterangan. Header diisi 21468B dengan teks putih tebal rata tengah dan pemisah vertikal putih. Kolom 1 diisi abu muda dengan teks hitam tebal rata kiri. Kolom 2–4 putih, rata tengah. Ada garis horizontal hitam ~1–1,5pt di antara baris, bingkai luar hitam, tanpa garis vertikal di badan tabel. 'Kelengkapan' berisi ✔ hijau atau rasio x/y tebal berwarna status plus kata 'terverifikasi' hitam. 'Verifikasi' berisi 'Lolos' hijau atau 'Tidak Lolos' merah, tebal. 'Keterangan' berisi '-' atau daftar berbutir: nama sub-entitas tebal hitam + '(✔)' hijau atau '(Tidak ada materai)' merah reguler. Kolom 'Kelengkapan' dan 'Verifikasi' redundan karena warnanya selalu sama. KPI berupa kotak 2 panel, tanpa ikon atau progress bar."
+ },
+ "slide": [
+  {
+   "no": 1,
+   "jenis": "sampul",
+   "judul": "Hasil Verifikasi Dokumen dan Dukungan Bakal Calon Ketua Umum IA-ITB 2025-2029",
+   "nilai": 3,
+   "yang_bagus": "Identitas brand kuat dan khas. Kolom mosaik geometris 3x9 ubin (lingkaran, daun, bintang empat) dalam biru/merah/marun mengikat sampul dengan band bawah slide isi. Foto gedung kampus diberi overlay duotone biru yang memudar ke putih di atas dan biru pekat di bawah, sehingga judul putih 32pt punya latar gelap. Judul rata kiri 3 baris dengan byline 'Disusun oleh:' tebal + nama tim reguler, hierarki dua tingkat yang jelas. Logo kanan atas tidak bersaing dengan judul.",
+   "yang_lemah": "Tanpa tanggal paparan (24 April 2025) dan tanpa forum/rapat. Judul memanjang sampai x≈96,8%, hampir menyentuh tepi kanan, dan kata 'Dokumen dan' jatuh di area foto yang paling terang sehingga keterbacaannya bergantung pada bayangan teks. Judul memakai Archivo Black, sedangkan seluruh isi deck memakai Roboto. Tidak ada subjudul yang menyebut hasil, misalnya '3 bakal calon, 1 lolos penuh'.",
+   "resep_tata_letak": "Latar penuh: foto lokasi + gradien duotone brand (atas ~10% opasitas, bawah ~90%). Kiri 0–18,6% lebar x 100% tinggi: kolom mosaik ubin persegi 0,62 in (3 kolom x 9 baris). Logo: x 87,5–96%, y 7–14%. Judul: kotak teks x 26–92% (beri margin kanan ≥0,4 in), y 44–71%, rata kiri, 32pt tebal putih, maks 3 baris, bayangan halus. Byline: x 26%, y 77–84%, 12pt putih, baris 1 tebal ('Disusun oleh:'), baris 2 reguler. Tambahkan baris tanggal dan forum 12pt di bawah byline.",
+   "layak_contoh": true
+  },
+  {
+   "no": 2,
+   "jenis": "pembatas bab",
+   "judul": "1 Puja Pramudya (IF'06)",
+   "nilai": 2,
+   "yang_bagus": "Penomoran kandidat besar (49,5pt) dalam kotak marun 691118 mudah dikenali dari jauh dan memberi ritme yang konsisten antar blok kandidat. Komposisi dua bagian (foto kiri 45%, teks kanan) sederhana.",
+   "yang_lemah": "Kosong informasi. Foto gedung lama hitam-putih tidak berhubungan dengan kandidat, padahal 'Foto Profil' kandidat adalah salah satu dokumen yang diverifikasi. Tidak ada angka ringkas (skor 10/14) yang mestinya bisa jadi pengantar. Footer basi 'Panitia Pemilu Ketua IA-ITB 2021' (7,5pt Calibri Light) di deck 2025. Nomor halaman ganda: '2' abu di strip footer dan '2' putih dari layout yang terpotong di tepi kanan (x≈96,8%, y≈94%). Kotak marun berada di 50,3–90,6% lebar, tidak sejajar dengan tepi logo (96%) maupun tepi tabel slide isi (98,8%).",
+   "resep_tata_letak": "Kiri: gambar x 0–45% lebar, y 0–89% tinggi. Kanan: kotak isi warna aksen x 50–91%, y 36–53% (4,0 x 0,95 in), angka 49,5pt tebal kondensed putih rata kanan di 7% pertama kotak, nama 20pt tebal putih 2 baris di sebelahnya. Logo kanan atas x 87,5–96%, y 7–14%. Bawah: band mosaik y 89–94% + strip abu y 94–100% (footer kiri 7,5pt x 11%, nomor halaman x 92,5%). Untuk dipakai ulang: ganti foto dengan foto atau peta entitas, tambahkan 2–3 KPI di bawah kotak (y 58–80%), dan pakai satu placeholder nomor halaman saja.",
+   "layak_contoh": false
+  },
+  {
+   "no": 3,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Puja Pramudya (IF'06)",
+   "nilai": 3,
+   "yang_bagus": "Pola tabel status yang patut ditiru. Status ditulis dobel (warna dan teks 'Lolos'/'Tidak Lolos'), jadi tetap terbaca oleh pembaca buta warna dan di cetak hitam-putih. Rasio capaian/syarat '172/150', '1/4', '0/1', '0/3' langsung menunjukkan jarak dari ambang. Kolom Keterangan menyebut setiap sub-entitas berikut alasan gagalnya ('Jakarta (Tidak ada materai)', 'MT (Tidak ada materai & cap)'), jadi bukti bisa diaudit. Kolom pertama abu + tebal berfungsi sebagai kepala baris. Empat baris merah berkelompok di tengah tabel sehingga masalahnya langsung tertangkap mata.",
+   "yang_lemah": "Judulnya label topik, bukan pesan. Seharusnya misalnya 'Puja Pramudya gagal 4 syarat: surat persetujuan pengurus tanpa materai'. Kepadatan 214 kata dengan teks isi 8pt, header 9,5pt. Hijau 00B050 2,9:1 dan merah FF0000 4,0:1 gagal kontras AA pada 8pt. Tabel menempel pita judul (celah 0) dan band bawah (celah ~1 px). Margin kanan 0,12 in vs kiri 0,23 in. Pita judul dan header tabel berwarna sama dan bersentuhan, sehingga terbaca sebagai header dobel. Kolom 'Kelengkapan' dan 'Verifikasi' menyampaikan hal yang sama dua kali. Tidak ada penanda 'bagian 1 dari 2'.",
+   "resep_tata_letak": "Pita judul: x 2,3–87% lebar, y 8–13,6% tinggi (0,31 in), isi warna brand, teks putih tebal 16pt rata kiri, inset 0,1 in. Logo di kanan pita (x 87,5–96%). Tabel: x 2,3–98,8%, y 14–88%. Kolom: Dokumen 45,5% (abu muda, tebal, rata kiri), Kelengkapan 12% (tengah), Verifikasi 12,7% (tengah), Keterangan 26,4% (rata kiri, berbutir). Header 0,25 in, baris sederhana 0,24 in, baris 2 baris ~0,36 in, baris daftar hingga 0,77 in. Garis horizontal hitam 1–1,5pt, tanpa garis vertikal di badan. Band dekoratif bawah y 88,5–100% dengan nomor halaman putih kanan. Perbaikan saat ditiru: beri jarak 0,1–0,15 in pita–tabel–band, isi ≥10pt (≥12pt di 13,33 in), gabungkan kolom 2–3 menjadi satu kolom 'Status' (rasio + label).",
+   "layak_contoh": true
+  },
+  {
+   "no": 4,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Puja Pramudya (IF'06)",
+   "nilai": 3,
+   "yang_bagus": "Kotak vonis 2 panel adalah elemen terkuat deck ini. Panel kiri navy berlabel 'Verifikasi Kelengkapan Dokumen' 24pt putih, panel kanan putih berisi '10/14' 40pt merah tebal dan satu kalimat konsekuensi 14pt ('Terdapat 4 dokumen yang tidak lolos verifikasi'). Pesannya terbaca dari belakang ruangan dalam 2 detik. Baris biaya pendaftaran '251/250' disertai rincian 'Dibagi dalam 2 tahap: Rp. 25 juta, Rp. 226 juta', contoh keterangan yang menjelaskan angka.",
+   "yang_lemah": "Vonis ada di slide ke-2 kandidat, setelah 14 baris bukti; untuk pimpinan urutannya terbalik. Keterangan KPI tidak menyebut keempat dokumen yang gagal (pembaca harus kembali ke slide 3). Konsekuensi '10/14' (gugur atau perbaikan) tidak dijelaskan. Satuan '251/250' tidak disebut (juta rupiah). Judul 14pt, berbeda dengan slide 3 yang 16pt. Lebar kolom berbeda dari slide 3 (Dokumen 43,3% vs 45,5%, Verifikasi 14,8% vs 12,7%), jadi tabel 'lanjutan' tidak sejajar. Ada celah kosong ~10% tinggi antara tabel (berakhir y 47,7%) dan kotak (mulai 58%).",
+   "resep_tata_letak": "Pita judul dan logo sama dengan s3. Tabel lanjutan: x 2,3–98,8%, y 15–48% (4 baris + header). Kotak vonis: x 16,6–83,3% (2/3 lebar, terpusat), y 58–81% (1,3 in). Panel kiri 50% kotak, isi navy brand, label 24pt tebal putih rata tengah, 3 baris. Panel kanan 50%, putih, bingkai hitam 1pt, angka 40pt tebal (warna status) rata tengah di 55% atas, kalimat konsekuensi 14pt hitam rata tengah di 45% bawah. Band bawah y 88,5–100%. Saat ditiru: pindahkan kotak vonis ke atas (y 15–35%) atau jadikan action title, dan kalimat konsekuensi wajib menyebut item yang gagal.",
+   "layak_contoh": true
+  },
+  {
+   "no": 5,
+   "jenis": "pembatas bab",
+   "judul": "2 Agustin Peranginangin (SI'94)",
+   "nilai": 1,
+   "yang_bagus": "Konsisten secara struktur dengan s2 dan s8 (posisi foto, kotak marun, angka besar).",
+   "yang_lemah": "Cacat produksi: nama 'Agustin Peranginangin (SI'94)' 20pt melipat menjadi 3 baris dan meluap ke luar tepi atas kotak marun ('Agustin' menyentuh dan melewati batas y 35,7%). Kotak tidak diperbesar dan huruf tidak diperkecil. Footer basi '2021' dan nomor halaman ganda (5 abu + 5 putih terpotong) sama seperti s2. Foto identik dengan s2, jadi tidak ada pembeda visual antar kandidat.",
+   "resep_tata_letak": "Sama dengan s2. Aturan generator: tinggi kotak nama harus menyesuaikan jumlah baris (tinggi = jumlah baris x 1,2 x ukuran huruf + inset 0,15 in atas/bawah), atau nama dibatasi 2 baris dengan pemendekan otomatis 20→16pt. Lakukan uji luapan sebelum ekspor.",
+   "layak_contoh": false
+  },
+  {
+   "no": 6,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Agustin Peranginangin (SI'94)",
+   "nilai": 2,
+   "yang_bagus": "Kolom Keterangan menunjukkan kelebihan dukungan secara transparan (8 Pengurus Daerah untuk syarat 4, 7 Prodi diajukan untuk syarat 3), dan dokumen yang tidak sah tetap ditandai merah walau syaratnya lolos ('Material (Tidak ada materai dan cap)', 'Geodesi (Tidak ada materai)'). Rasio 329/150, 8/4, 5/3 hijau menunjukkan surplus sekilas.",
+   "yang_lemah": "Isi tabel turun ke 7pt, terkecil di deck. Grid kolom berubah total: Dokumen 33,5% sehingga teks syarat melipat ('...Pengurus Program / Studi'), sedangkan 'Kelengkapan' membengkak ke 23,9% padahal isinya hanya '✔' atau '8/4', ruang terbuang ~1 in. Baris Pengurus Daerah berisi 8 butir sehingga satu baris setinggi ~1 in. Tidak ada judul yang menyatakan 'lolos penuh' meski semua baris hijau, jadi pesan positifnya tersembunyi.",
+   "resep_tata_letak": "Pita judul 16pt seperti s3. Tabel x 2,3–98,8%, y 14–82%, 8 baris + header. Kolom (seperti adanya): 33,5% / 23,9% / 12,7% / 26,4%. Rekomendasi: kunci lebar kolom sama dengan s3 (45/12/13/26%), dan untuk daftar >4 butir ringkas jadi 'Jakarta, Yogyakarta, Aceh, Sumut, Kepri, Kaltim, Kalbar, Jabar (semua ✔)' dalam satu paragraf, atau pecah ke 2 kolom butir.",
+   "layak_contoh": false
+  },
+  {
+   "no": 7,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Agustin Peranginangin (SI'94)",
+   "nilai": 2,
+   "yang_bagus": "Kotak vonis '14/14' hijau 40pt menjadi satu-satunya kabar 'lolos penuh' di deck dan langsung terbaca. Rincian biaya 'Dibagi dalam 3 tahap: Rp. 1 juta, Rp. 186 juta, Rp. 63 juta' memperjelas angka 250/250.",
+   "yang_lemah": "Kotak vonis tidak konsisten dengan s4/s10: label 'Verifikasi Kelengkapan Dokumen' 16pt 2 baris (bukan 24pt 3 baris), tanpa kalimat konsekuensi. Kotak turun ke y 68–86,6% sehingga hanya ~0,1 in dari band bawah. Isi tabel 7pt. Judul 14pt, berbeda dengan s6 yang 16pt. Baris Komisariat ITB 2000/SPURI ('Tidak ada cap') memakai merah walau syaratnya lolos 4/3. Merah di tabel yang hasilnya hijau membingungkan tanpa legenda.",
+   "resep_tata_letak": "Pita judul 14pt. Tabel x 2,3–98,8%, y 15–63%, 6 baris + header, kolom 43,3/14,2/14,8/24,3%. Kotak vonis x 16,6–83,3%, y 68–86,6%. Panel kiri navy dengan label 16pt putih, panel kanan putih dengan angka 40pt hijau. Saat ditiru: samakan spesifikasi kotak vonis di semua kemunculan (ukuran label, tinggi, ada atau tidaknya kalimat konsekuensi), dan beri kalimat konsekuensi juga untuk hasil positif ('Seluruh 14 syarat terpenuhi').",
+   "layak_contoh": false
+  },
+  {
+   "no": 8,
+   "jenis": "pembatas bab",
+   "judul": "3 Agung Asmawedha (FI'02)",
+   "nilai": 2,
+   "yang_bagus": "Nama muat dalam 2 baris di kotak, tanpa luapan. Ritme blok kandidat terjaga.",
+   "yang_lemah": "Masalahnya sama dengan s2: foto tidak relevan dan identik, footer '2021' basi, nomor halaman ganda/terpotong (8 abu + 8 putih terpotong), dan tidak ada informasi ringkas.",
+   "resep_tata_letak": "Sama dengan s2.",
+   "layak_contoh": false
+  },
+  {
+   "no": 9,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Agung Asmawedha (FI'02)",
+   "nilai": 3,
+   "yang_bagus": "Grid kolom kembali sama dengan s3 (45,5/12/12,7/26,4%), jadi s3 dan s9 bisa dibandingkan baris per baris. Satu-satunya baris merah (Pengurus Komisariat 2/3, 'ITB 2000 (Tidak ada cap)') langsung menonjol di antara baris hijau, contoh baik status merah sebagai pengecualian. Butir sub-entitas pendek (≤4 per sel).",
+   "yang_lemah": "Judul topik tanpa pesan. Pesan yang semestinya: 'Agung Asmawedha kurang 1 syarat: surat Komisariat ITB 2000 tanpa cap'. Isi 8pt. Tabel menempel pita judul. Margin kanan sempit 0,12 in. Kolom 'Kelengkapan' dan 'Verifikasi' tetap redundan.",
+   "resep_tata_letak": "Identik dengan s3: pita judul y 8–13,6%, tabel y 14–84%, 10 baris + header, kolom 45,5/12/12,7/26,4%, band bawah y 88,5–100%.",
+   "layak_contoh": false
+  },
+  {
+   "no": 10,
+   "jenis": "tabel",
+   "judul": "Laporan Verifikasi Agung Asmawedha (FI'02)",
+   "nilai": 3,
+   "yang_bagus": "Spesifikasi kotak vonis sama dengan s4 (label 24pt 3 baris, '13/14' merah 40pt, kalimat konsekuensi 14pt 'Terdapat 1 dokumen yang tidak lolos verifikasi'), jadi s4 dan s10 konsisten satu sama lain.",
+   "yang_lemah": "Kalimat konsekuensi tidak menyebut dokumen mana yang gagal, padahal hanya satu dan mudah ditulis ('Surat Pengurus Komisariat ITB 2000 tanpa cap'). Merah untuk 13/14 sama kerasnya dengan 10/14, jadi warnanya tidak membedakan 'nyaris' dan 'jauh'. Kolom Keterangan biaya berisi '-' padahal s4 dan s7 merinci tahap transfer; perlakuannya tidak konsisten. Celah kosong ~12% tinggi di antara tabel (berakhir 45%) dan kotak (58%). Lebar kolom berbeda dari s9.",
+   "resep_tata_letak": "Identik dengan s4: tabel y 15–45%, kolom 43,3/14,2/14,8/24,3%, kotak vonis x 16,6–83,3%, y 58–81%, panel 50/50.",
+   "layak_contoh": false
+  },
+  {
+   "no": 11,
+   "jenis": "penutup",
+   "judul": "TERIMA KASIH",
+   "nilai": 2,
+   "yang_bagus": "Komposisinya mencerminkan sampul (mosaik kiri, foto duotone, logo kanan atas), jadi deck terasa dibingkai rapi. Byline penutup 'Panitia Pemilu IA-ITB 2025' tebal 12,3pt.",
+   "yang_lemah": "Slide terakhir, yang paling lama tayang saat diskusi, terpakai untuk 'TERIMA KASIH' tanpa isi. Mestinya berisi rekap tiga kandidat dan tindak lanjut (masa perbaikan, tenggat, penetapan calon). Byline berbeda dengan sampul ('Tim Verifikator Panitia Pemilu IA-ITB' vs 'Panitia Pemilu IA-ITB 2025'). Tidak ada kontak atau rujukan dokumen.",
+   "resep_tata_letak": "Sama dengan sampul: mosaik kiri 0–18,6%, foto duotone. Teks 'TERIMA KASIH' 30pt tebal kapital putih x 26%, y 63–70%. Byline 12,3pt tebal x 26%, y 77–84%. Rekomendasi: ganti dengan slide 'Keputusan & tindak lanjut' berlatar putih, dan simpan mosaik hanya sebagai band tipis.",
+   "layak_contoh": false
+  }
+ ],
+ "pola_untuk_ditiru": [
+  "Status dobel warna + teks dalam kolom sendiri ('Lolos'/'Tidak Lolos' tebal), tidak pernah warna saja, sehingga tetap terbaca di cetakan hitam-putih dan oleh pembaca buta warna.",
+  "Format rasio capaian/syarat 'x/y' (172/150, 1/4, 0/3, 251/250) yang diwarnai menurut status: jarak ke ambang terlihat tanpa grafik.",
+  "Kolom Keterangan yang menyebut sub-entitas spesifik + alasan gagal dalam kurung berwarna ('Jakarta (Tidak ada materai)', 'ITB 2000 (Tidak ada cap)'), dengan nama entitas tebal dan alasan reguler. Setiap vonis bisa diaudit.",
+  "Kotak vonis 2 panel: label di panel isi warna brand (kiri 50%), angka besar 40pt warna status + satu kalimat konsekuensi 14pt di panel putih (kanan 50%), terpusat 2/3 lebar slide.",
+  "Blok berulang identik per entitas (pembatas → detail → vonis), cocok untuk generator berbasis templat: satu fungsi, N entitas.",
+  "Kolom pertama tabel diisi abu muda + teks tebal rata kiri sebagai kepala baris; kolom status rata tengah.",
+  "Baris merah sebagai pengecualian di antara baris hijau (s9): kalau mayoritas OK, masalah langsung menonjol tanpa perlu sorotan tambahan.",
+  "Sampul dan penutup dengan foto lokasi ber-overlay duotone brand + kolom mosaik brand: identitas kuat tanpa memakan ruang di slide isi (di slide isi cukup band tipis).",
+  "Keterangan angka uang dengan rincian tahap ('Dibagi dalam 3 tahap: Rp. 1 juta, Rp. 186 juta, Rp. 63 juta') di sel yang sama dengan angkanya."
+ ],
+ "pola_untuk_dihindari": [
+  "Judul topik berulang 'Laporan Verifikasi [Nama]' di 6 slide. Judul harus menyatakan vonis dan sebabnya.",
+  "Vonis di akhir blok (slide ke-2 tiap kandidat) dan tidak ada matriks ringkasan lintas kandidat di depan.",
+  "Teks isi 7–8pt (693 run) dan 214 kata per slide; tabel 10–11 baris dipaksakan dalam satu slide.",
+  "Lebar kolom berubah antar halaman lanjutan (kolom 1: 45,5% → 43,3% → 33,5%; kolom 2: 12% → 23,9%), sehingga tabel tidak bisa dibandingkan dan ruang terbuang.",
+  "Ukuran judul berubah 16pt ↔ 14pt dan label KPI 24pt ↔ 16pt di dalam deck yang sama; kotak vonis kadang punya kalimat konsekuensi, kadang tidak.",
+  "Hijau/merah bawaan Excel (00B050 2,9:1; FF0000 4,0:1) untuk teks 8pt: gagal kontras AA dan bentrok dengan merah/biru brand di mosaik.",
+  "Teks meluap keluar kotak (nama 3 baris di s5) tanpa penyesuaian tinggi atau ukuran.",
+  "Footer basi dari templat lama ('Panitia Pemilu Ketua IA-ITB 2021') dan nomor halaman ganda yang satu terpotong di slide pembatas.",
+  "Tabel menempel pita judul dan band bawah (celah 0 px); margin kanan 0,12 in vs kiri 0,23 in.",
+  "Pita judul berwarna sama dan bersentuhan dengan header tabel, sehingga terbaca sebagai dua header bertumpuk.",
+  "Kolom redundan ('Kelengkapan' dan 'Verifikasi' selalu berwarna sama).",
+  "Slide pembatas kosong informasi dengan foto generik identik di tiga kandidat.",
+  "Band dekoratif 0,65 in (11,5% tinggi) di setiap slide isi yang memakan ruang konten.",
+  "5 keluarga huruf (Roboto, Archivo x3 bobot, Calibri Light, Arial, Arial Nova Cond) dan font/warna tema sisa Google Slides 'Simple Light' yang tidak dipakai.",
+  "Penutup 'TERIMA KASIH' sebagai slide terakhir, alih-alih rekap + keputusan/tindak lanjut.",
+  "Tidak ada tanggal paparan, sumber data, satuan ('251/250' tanpa 'juta Rp'), maupun penanda '(lanjutan)'."
+ ],
+ "pelajaran_untuk_deck_bnpb": [
+  "Tiru tabel status s3/s9 sebagai 'Matriks Kesiapan per Provinsi': baris = provinsi prioritas karhutla, kolom = Indikator | Capaian/Ambang (x/y) | Status | Keterangan. Contoh sel: 'Posko kab/kota aktif 9/12', 'Heli water bombing siap 3/5', Keterangan 'Kab. Pelalawan (SK siaga belum terbit)'. Nama entitas tebal, alasan reguler, seperti 'Jakarta (Tidak ada materai)'.",
+  "Jangan pakai 00B050/FF0000. Petakan status ke palet sendiri. Status OK: teks slate 3F5F80 (kontras 6,6:1) + ikon centang. Status belum/gagal: teks navy 051C2C tebal di sel bertint oranye D9600B 12–15%, atau penanda bulat oranye. Oranye D9600B di atas putih hanya 3,7:1, jadi pakai untuk angka besar ≥18pt tebal, isian, atau penanda, jangan untuk teks status kecil. Tetap tulis labelnya ('Terpenuhi'/'Belum'), jangan warna saja.",
+  "Pindahkan kotak vonis s4 ke depan dan ubah jadi action title + KPI. Contoh judul: 'Riau baru memenuhi 10 dari 14 indikator kesiapan; 4 kekurangan ada di penetapan status siaga kab/kota'. Kotak KPI (label navy 051C2C | angka 40pt oranye + kalimat yang menyebut item yang gagal) ditaruh di bawah judul, sebelum tabel bukti.",
+  "Wajib ada slide ringkasan eksekutif yang tidak ada di deck ini: matriks provinsi x skor (seperti 10/14, 14/14, 13/14) diurutkan dari yang terburuk, dengan satu kolom 'Keputusan/permintaan'. Untuk briefing Presiden/Kepala BNPB, slide ini bisa jadi satu-satunya yang dibaca.",
+  "Untuk 16:9 13,33 in milik pemilik: 8pt di slide 10 in ini setara ~10,7pt, masih terlalu kecil. Tetapkan isi tabel minimal 12pt Roboto, header 12pt tebal, judul 20–24pt, KPI 40–54pt. Kalau tabel >7 baris, generator memecahnya dan bukan mengecilkan huruf.",
+  "Kunci grid kolom sebagai token dan pakai ulang di setiap halaman lanjutan. Ulangi header tabel dan tambahkan '(lanjutan 2/2)' di judul. Generator sebaiknya menolak ekspor kalau lebar kolom tabel bertipe sama berbeda antar slide.",
+  "Ganti slide pembatas kosong dengan pembatas berisi informasi: peta mini provinsi (sebaran hotspot dari data SiPongi/FIRMS yang sudah ada di pipeline poskokarhutla) + 3 KPI (hotspot 24 jam, luas terbakar, status darurat). Kotak nama dibuat auto-fit untuk nama kabupaten yang panjang.",
+  "Tambahkan pemeriksaan teks di generator: (a) luapan teks dari kotak (bug s5), (b) teks footer yang tahunnya tidak sama dengan tanggal deck (bug '2021'), (c) lebih dari satu placeholder nomor halaman, (d) kontras teks <4,5:1 untuk <18pt.",
+  "Footer slide isi BNPB: 'Sumber: SiPongi KLHK, BMKG, BPBD; data per 22 Okt 2026 pukul 07.00 WIB' kiri 9–10pt slate + nomor halaman kanan. Deck ini tidak punya baris sumber dan tanggal sama sekali; untuk data bencana yang berubah tiap 3 jam itu fatal.",
+  "Batasi ornamen di slide isi. Band mosaik 0,65 in (11,5% tinggi) di sini memakan ruang; untuk BNPB cukup garis aksen oranye 3–4pt di bawah judul, logo BNPB kecil kanan atas, dan ornamen penuh hanya di sampul/penutup.",
+  "Satu keluarga huruf: Roboto (Regular/Medium/Bold/Black) untuk judul, isi, dan angka. Set juga font tema (major/minor) dan warna tema ke Roboto + 051C2C/3F5F80/D9600B supaya placeholder baru tidak mewarisi sisa tema seperti 'Simple Light' di sini.",
+  "Beri jarak eksplisit: pita/judul → tabel ≥0,15 in, tabel → footer ≥0,2 in, margin kiri = kanan (mis. 0,5 in di 13,33 in). Jangan biarkan pita judul dan header tabel berwarna sama saling menempel: judul pakai teks navy di atas putih, header tabel pakai isi navy.",
+  "Gabungkan kolom redundan. Satu kolom 'Status' berisi rasio + label ('9/12 · Belum') menghemat ~13% lebar untuk kolom Keterangan, tempat bukti paling bernilai.",
+  "Ganti 'TERIMA KASIH' dengan slide 'Keputusan yang diminta & tindak lanjut': 3–5 butir bernomor dengan penanggung jawab dan tenggat (mis. 'Penetapan status siaga darurat Kab. X oleh Bupati paling lambat 24 Okt 2026').",
+  "Tulis kalimat konsekuensi KPI yang spesifik dan berbeda untuk 'nyaris' dan 'jauh'. Deck ini memakai merah yang sama untuk 13/14 dan 10/14. Pakai dua tingkat (mis. oranye pekat untuk ≤75% dan aksen oranye lebih terang/outline untuk 76–99%), dan selalu sebut item yang gagal di bawah angka."
+ ]
+}

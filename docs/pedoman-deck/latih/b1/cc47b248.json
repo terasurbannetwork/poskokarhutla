@@ -1,0 +1,205 @@
+{
+ "id": "cc47b248",
+ "nama": "2025-03-13_WFP_Introductory_Presentation",
+ "deck": "2025-03-13_WFP_Introductory_Presentation (9 slide, 16:9, 13,33 x 7,5 in)",
+ "tujuan_dan_audiens": "Ini deck perkenalan atau kick-off misi lapangan bersama BGN, WFP, dan IFSR di Timor Tengah Selatan (NTT), Maret 2025, untuk pilot \"remote-modelling\" Makan Bergizi Gratis di wilayah 3T. Audiensnya BAPPEDA TTS, dinas teknis kabupaten (pendidikan, kesehatan, ketahanan pangan, pertanian, sosial, PMD), dan pelaku rantai pasok. Tujuannya menyamakan pemahaman tentang alasan misi, tujuan, jadwal kunjungan, dan kerangka penilaian rantai pasok, supaya tim mendapat akses dan kerja sama di lapangan. Deck ini bukan deck keputusan dan bukan laporan temuan. Tidak ada angka, tidak ada permintaan ke audiens, tidak ada keluaran yang dijanjikan. Bahasanya Inggris untuk audiens pemda kabupaten, lalu tiba-tiba Indonesia di slide penutup (\"Terima Kasih\").",
+ "nilai_deck": {
+  "pesan_judul": 2,
+  "alur_cerita": 3,
+  "hierarki_visual": 3,
+  "grid_ruang": 2,
+  "visualisasi_data": 2,
+  "tipografi_warna": 3,
+  "kepadatan_keterbacaan": 4,
+  "kecocokan_pimpinan": 2
+ },
+ "ringkasan_penilaian": "Deck ini bersih, ringan, dan konsisten secara merek: biru WFP 007DBC di semua judul, logo WFP di kiri bawah, banyak ruang kosong, isi 18–20 pt sehingga mudah dibaca dari jauh. Sampul (foto 69% atas dan pita putih berjudul) serta penutup kembarannya adalah bagian terkuat. Kelemahan utamanya ada empat. (1) Judul hampir semuanya label topik: \"Background\", \"Mission Objectives\", \"Team Introduction\", \"Itinerary\". Hanya slide 8 yang mendekati judul aksi. (2) Grid tidak dikunci. Posisi judul melompat di tiap slide (pusat judul y≈73–105 px pada render 825 px, selisih ±0,3 in), judul slide 2 rata kiri sementara slide lain di tengah, jarak lingkaran di linimasa tidak sama, dan baris nama di slide 5 tidak sejajar. (3) Ada warna di luar palet (hijau tua slide 4, krem slide 3, tiga varian biru hampir sama: 007DBC/0076BB/0070BA). Slide 7 memakai gambar raster pihak ketiga yang labelnya ±8 pt, tidak terbaca, tanpa sumber, dan tanpa logo footer. (4) Untuk pejabat senior, deck ini tidak memberi apa pun untuk diputuskan atau disetujui: tidak ada angka (jumlah sekolah, siswa, anggaran), tanggal, keluaran, atau permintaan. Nilainya sebagai contoh ada pada pola tata letak (sampul foto, kartu 3 kolom, diagram kondisi→inti→3 implikasi, tabel bergaris tanpa isian, pita linimasa), bukan pada cara bertutur.",
+ "alur": "Urutannya why → what → objectives → who → when → how → tutup: 1 Sampul → 2 Mengapa makan bergizi penting (efek pengganda ke anak, rumah tangga, komunitas, dan 4 sektor) → 3 Latar (3 model dibayangkan, baru 1 yang jalan yaitu dapur sentral, perlu adaptasi konteks, BGN-WFP-IFSR bermitra untuk wilayah 3T) → 4 Tujuan misi (Assess / Identify / Explore) → 5 Tim (3 lembaga) → 6 Itinerary (pemda → rantai pasok → sekolah) → 7 Kerangka peta pemangku kepentingan sistem pasar → 8 Kriteria penilaian rantai pasok → 9 Terima kasih. Logikanya wajar untuk kick-off, tetapi ada empat cacat. (a) Slide 7–8 (metode) seharusnya langsung sesudah tujuan (4), sebab itinerary (6) adalah pelaksanaan metode itu. (b) Tim (5) lebih pas langsung sesudah sampul, atau digabung ke slide latar. (c) Tidak ada slide \"Yang kami butuhkan dari Pemda TTS\" (data, kontak, izin sekolah, jadwal), padahal itu alasan utama presentasi ini diadakan. (d) Tidak ada keluaran dan tenggat (kapan model selesai, apa produknya). Akibatnya argumen berhenti di \"kami datang untuk menilai\" tanpa \"maka kami minta / maka hasilnya\".",
+ "sistem_desain": {
+  "palet": [
+   {
+    "hex": "007DBC",
+    "peran": "Biru WFP primer: semua judul, lingkaran inti (s3), pita dan nomor linimasa (s6), blok logo vertikal sampul, ikon persegi (s2). Tercatat 16 run dan sama dengan dk1 tema."
+   },
+   {
+    "hex": "0076BB",
+    "peran": "Varian biru yang hampir sama (7 run). Ini inkonsistensi, bukan peran tersendiri, dan harus dilebur ke 007DBC."
+   },
+   {
+    "hex": "0070BA",
+    "peran": "Varian biru ketiga (4 run). Sama: inkonsistensi."
+   },
+   {
+    "hex": "1A4262",
+    "peran": "Navy (hampir sama dengan accent1 1A4161): garis atas tabel s8, bingkai kotak definisi s7, kata kunci tebal 'Market System'."
+   },
+   {
+    "hex": "36B5C5",
+    "peran": "Teal (lt1 tema): blok L di belakang diagram s7. Nada teal serupa dipakai pada kuadran puzzle s2 (gambar)."
+   },
+   {
+    "hex": "BDE3FF",
+    "peran": "Biru sangat muda: isian kotak definisi atau ikon puzzle s7."
+   },
+   {
+    "hex": "ECE1B1",
+    "peran": "Krem/tan (hampir sama dengan accent5 ECDFBB): isian 3 kotak implikasi s3. Ini satu-satunya warna hangat dan dipakai sekali saja."
+   },
+   {
+    "hex": "000000",
+    "peran": "Teks isi utama (53 run): butir s3, s4, s6."
+   },
+   {
+    "hex": "FFFFFF",
+    "peran": "Latar slide isi dan teks di atas bidang biru (20 run). FFFFFE dipakai untuk pita bawah sampul."
+   },
+   {
+    "hex": "≈00473A (estimasi visual, TIDAK tercatat di struktur.json)",
+    "peran": "Hijau tua untuk cincin, nomor, dan subjudul s4. Di luar palet WFP; mungkin berasal dari grup/SmartArt."
+   },
+   {
+    "hex": "≈EFEBE8 (estimasi visual, tidak tercatat)",
+    "peran": "Abu hangat untuk isian kartu s5 dan kotak putus-putus s3."
+   },
+   {
+    "hex": "≈3F3F3F (estimasi visual, tidak tercatat)",
+    "peran": "Abu tua untuk nama lembaga di kartu s5."
+   }
+  ],
+  "huruf": "Font tema Calibri Light/Calibri, tetapi praktis tidak dipakai (Calibri 3 run, +mn-lt 18 run). Font yang sebenarnya dipakai: Open Sans untuk isi (111 run); Open Sans ExtraBold untuk judul dan penekanan, tercatat dengan dua ejaan berbeda ('Open Sans Extrabold' 6 dan 'Open Sans ExtraBold' 6), tanda nama font tidak dibakukan; Open Sans Light 1 run. Di render LibreOffice, judul tersubstitusi ke sans tebal mirip Arial, dan beberapa glyph (&, kurung, angka '1.' '3') jatuh ke serif. Itu tanda bahwa pada sumbernya teks berganti font di tengah kalimat. Huruf tebal dipakai untuk menyorot kata kunci di tengah kalimat (s3, s4). Subjudul diberi garis bawah (s4, s6), gaya yang terlihat seperti tautan.",
+  "skala_huruf": "Judul sampul dan penutup 34 pt tebal 007DBC; tanggal sampul 16 pt tebal. Judul isi 28–30 pt tebal 007DBC (30 di s7 dan s8, 28 di s6; s3–s5 mewarisi dari layout tanpa ukuran eksplisit). Ukuran judul tidak satu angka. Isi 20 pt (s4, s5), 18 pt (s6, s8), 16 pt (kotak definisi s7), 14 pt (teks kanan s7). Nomor linimasa 28 pt putih tebal. Tidak ada ukuran keterangan atau sumber karena tidak ada satu pun baris sumber. Label di dalam gambar raster s7 setara ±8–9 pt.",
+  "grid_margin": "Slide 13,33 x 7,5 in (render 1466 x 825 px, ≈110 px/in). Margin samping efektif ≈0,55 in: tepi kartu s5 di x=61 px, garis tabel s8 x=60–1420 px, kotak s3 x=60 px. Judul sampul menjorok lebih dalam, 0,82 in (x=90 px). Zona judul isi: atas ≈0,45–1,3 in, rata tengah di semua slide isi kecuali s2 (rata tengah di dalam kolom kiri 47%). Pusat vertikal judul bergeser 73–105 px antarslide. Zona konten ≈1,8–6,9 in. Footer: logo WFP horizontal kiri-bawah di x 0,7–2,2 in, y 6,3–7,0 in (≈1,5 x 0,65 in), margin bawah ≈0,55 in. Tidak ada kolom baku: s5 3 kolom @3,86 in dengan gutter 0,38 in; s8 3 kolom ≈21/37/35% lebar; s6 3 kolom dengan jarak tidak sama.",
+  "elemen_berulang": "(1) Logo WFP horizontal di kiri-bawah slide isi 2–6 dan 8. Slide 7 tidak memilikinya, jadi tidak dikunci di master. (2) Judul biru tebal di tengah atas. (3) Pasangan sampul/penutup identik: foto penuh 69% atas, pita putih, blok logo vertikal biru dengan tagline 'SAVING LIVES CHANGING LIVES' yang melintasi tepi foto. (4) Lingkaran bernomor 1–2–3 putih di atas biru/hijau (s4, s6). (5) Huruf tebal pada kata kunci di dalam kalimat. Tidak ada nomor halaman, tidak ada baris sumber, tidak ada tanggal atau klasifikasi di footer, tidak ada header band.",
+  "gaya_grafik": "Deck ini tidak memuat grafik data sama sekali (grafik=0, tabel=0 di struktur.json). Diagram konseptual dibuat dari bidang datar biru/teal dengan teks putih (puzzle 4 kuadran s2 berupa gambar, tidak bisa disunting), lingkaran inti dengan ikon putih dan panah titik-titik tipis ke kotak sudut membulat (s3), cincin dengan 3 simpul (s4), dan pita horizontal penuh dengan lingkaran nomor (s6). 'Tabel' s8 adalah daftar bergaris tanpa isian dan tanpa garis vertikal: garis atas navy lebih tebal, garis pemisah baris abu tipis, garis sub-baris lebih pendek yang hanya membentang di kolom 3, semua teks biru 18 pt reguler, tanpa header kolom. Diagram s7 adalah raster tempelan."
+ },
+ "slide": [
+  {
+   "no": 1,
+   "jenis": "sampul",
+   "judul": "Remote-Modelling for Nutritious Meals: Pilot for Learning",
+   "nilai": 4,
+   "yang_bagus": "Foto emosional berkualitas tinggi (anak tersenyum di depan piring nasi) langsung memberi tahu topiknya tanpa kata. Pembagian 69% foto / 31% pita putih tegas. Judul 34 pt biru tebal rata kiri, maksimal 2 baris, punya ruang napas. Blok logo vertikal biru melintasi tepi foto (separuh di foto, separuh di pita) sehingga kedua bidang terkunci dan merek terasa kuat. Hanya ada 3 elemen teks.",
+   "yang_lemah": "Format tanggal '2025 March' tidak baku (seharusnya 'Maret 2025' atau '13 Maret 2025'). Tidak ada baris audiens/tempat/acara (misalnya 'Pertemuan dengan BAPPEDA TTS, Soe'). Tidak ada logo mitra (BGN, IFSR), padahal misinya tiga lembaga. Judulnya deskriptif, bukan janji hasil. Foto tanpa keterangan lokasi atau kredit.",
+   "resep_tata_letak": "Foto full-bleed x 0–100%, y 0–69% (sampai 5,2 in), dipotong agar wajah subjek berada di sepertiga kiri. Pita bawah y 69–100% berisi off-white (FFFFFE). Judul x mulai 6,1% (0,82 in), y 75–88%, rata kiri, 34 pt tebal warna primer, lebar maks ≈66%, maks 2 baris. Tanggal x 6,1%, y 91–94%, 16 pt tebal warna primer. Blok merek vertikal x 86–94% (lebar ≈1,1 in), y 51–89,5% (melintasi tepi foto ≈18% tinggi slide), isian warna primer, logo putih di atas dan tagline putih 2 baris di bawah.",
+   "layak_contoh": true
+  },
+  {
+   "no": 2,
+   "jenis": "lainnya",
+   "judul": "Free Nutritious Meals & the Multiplier Effect",
+   "nilai": 3,
+   "yang_bagus": "Visual kuat: lingkaran puzzle 4 kuadran (Education, Social Protection, Food Systems, Health & Nutrition) dengan bidang biru/teal bergantian dan ikon di lingkaran putih tengah menyampaikan 'saling mengunci' tanpa kalimat panjang. Tiga ikon persegi seragam (Children, Households, Wider Community) dengan label biru menunjukkan cakupan manfaat. Palet disiplin, hanya biru dan teal.",
+   "yang_lemah": "Kolom kiri (3 penerima manfaat) dan lingkaran kanan (4 sektor) tidak dihubungkan; tidak ada panah atau penjelasan bagaimana 'pengganda' terjadi. Judul hanya label topik, tidak menyatakan efeknya (misalnya angka atau klaim). Judul rata tengah di kolom kiri, sedangkan logo dan ikon rata lain, jadi sumbu kiri tidak satu. Seluruh diagram berupa gambar (ukuran_huruf kosong, 5 gambar), tidak bisa disunting atau diterjemahkan. Tidak ada sumber untuk klaim efek.",
+   "resep_tata_letak": "Dua kolom 47/53. Kiri: judul 2 baris rata tengah x 6–47%, y 6,5–17,5%, ≈30 pt tebal primer. Di bawahnya kolom ikon: 3 ubin persegi warna primer ≈0,9 in (6,8% lebar) di x 22–29,5%, y 24–36% / 45–57% / 66–78%, masing-masing dengan label 16 pt primer rata tengah tepat di bawahnya (y 41%, 62%, 82%). Kanan: lingkaran x 46–93%, y 10–92% (≈6,2 in), dibagi 4 kuadran berbentuk puzzle dengan celah putih ≈0,1 in, warna bergantian primer/teal, lingkaran putih tengah ≈1,5 in berisi ikon; di tiap kuadran judul putih tebal 18 pt dan isi putih 14 pt rata kiri. Logo footer kiri-bawah.",
+   "layak_contoh": true
+  },
+  {
+   "no": 3,
+   "jenis": "proses/alur",
+   "judul": "Background",
+   "nilai": 3,
+   "yang_bagus": "Struktur kiri→tengah→kanan jelas: kondisi awal (kotak putus-putus '3 model dibayangkan') → status sekarang (lingkaran biru besar 'One model implemented (central kitchen)') → tiga konsekuensi (kotak krem). Lingkaran biru 2,6 in menjadi titik fokus tunggal. Kata kunci ditebalkan ('adaptation', 'BGN, WFP & IFSR', '3T regions', 'design & scale-up') sehingga slide bisa dipindai.",
+   "yang_lemah": "Judul 'Background' tidak menyatakan pesannya (seharusnya kira-kira 'Baru 1 dari 3 model berjalan; daerah 3T butuh model yang disesuaikan'). Kotak kanan tidak sejajar: tepi kiri di x 839/866/874 px dan lebarnya berbeda. Panah titik-titik terlalu tipis dan salah satunya terputus (ada sisa garis di bawah kiri lingkaran). Ada pemenggalan 'im-plemented' di tengah lingkaran. Ketiga kotak kanan mencampur logika berbeda (kebutuhan, kemitraan, tujuan) tanpa label. Warna krem dan abu hangat hanya muncul di slide ini.",
+   "resep_tata_letak": "Judul rata tengah y 10–16%. Kiri: kotak sudut membulat dengan garis putus-putus 1 pt dan isian abu hangat, x 4–25%, y 33–63%, isi daftar bernomor 18–20 pt dengan frasa kunci tebal. Panah titik-titik pendek x 25–28% pada y 49%. Tengah: lingkaran isian primer dengan pusat x 39%, y 48,5%, diameter 19,5% lebar (≈2,6 in); ikon putih di sepertiga atas, teks putih tebal 20 pt 2–3 baris di tengah, keterangan miring dalam kurung. Kanan: 3 kotak sudut membulat isian krem, rata kiri pada satu sumbu x 58% sampai 95%, y 29–41% / 47–63% / 69–83%, teks hitam 20 pt dengan kata kunci tebal. Tiga panah menyebar dari tepi kanan lingkaran ke tepi kiri tiap kotak. Logo footer kiri-bawah.",
+   "layak_contoh": true
+  },
+  {
+   "no": 4,
+   "jenis": "lainnya",
+   "judul": "Mission Objectives",
+   "nilai": 2,
+   "yang_bagus": "Tiga kata kerja (Assess, Identify, Explore) memberi kerangka tujuan yang mudah diingat. Tiap butir punya 1–2 kata kunci tebal ('coordination', 'readiness', 'Local sourcing', 'challenges', 'local economy', 'stakeholders'). Isi 20 pt cukup besar.",
+   "yang_lemah": "Hijau tua (≈00473A) di luar palet WFP biru dan tidak muncul di slide lain. Nomor berjalan berlawanan arah jarum jam (1 di arah jam 10, 2 di jam 6, 3 di jam 3), sehingga mata harus melompat kiri→bawah→kanan. Penempatan tiga kelompok teks tidak seimbang: kuadran kanan-atas kosong, Explore menggantung di tengah kanan, Identify berdesakan di bawah dekat logo. Cincin dan kaca pembesar hanya dekorasi tanpa informasi. Subjudul bergaris bawah tampak seperti tautan. Tujuan tidak dikaitkan dengan keluaran.",
+   "resep_tata_letak": "(Pola asli, tidak disarankan.) Judul rata tengah y 8–14%. Cincin dengan pusat x 51%, y 46%, diameter ≈27% lebar, garis ≈5 px; cakram dalam ≈12,6% lebar berisi ikon putih. Tiga simpul lingkaran ≈0,75 in di posisi jam 10, 6, dan 3 dengan angka putih tebal. Kelompok teks: kiri x 6–36%, y 27–60%; kanan x 68–95%, y 43–58%; bawah x 36–65%, y 77–91%; masing-masing subjudul tebal bergaris bawah lalu 2–3 butir 20 pt. Versi perbaikan: 3 kolom sama lebar (≈29% + gutter 3%) dengan nomor di atas, kata kerja sebagai subjudul tebal tanpa garis bawah, butir di bawahnya, semuanya mulai dari y yang sama.",
+   "layak_contoh": false
+  },
+  {
+   "no": 5,
+   "jenis": "lainnya",
+   "judul": "Team Introduction",
+   "nilai": 2,
+   "yang_bagus": "Grid 3 kartu yang benar-benar sama lebar (≈3,86 in) dengan gutter seragam ≈0,38 in, latar abu hangat netral, dan logo setiap lembaga diberi bingkai yang sama sehingga ketiga mitra tampil setara.",
+   "yang_lemah": "Judulnya 'Team Introduction' tetapi tidak ada satu pun nama orang, jabatan, atau peran lembaga dalam misi. Isinya hanya tiga logo. Baris nama tidak sejajar: 'Badan Gizi Nasional' di y≈475 px, 'World Food Programme' di y≈483 px, 'Indonesia Food Security Review' dua baris di y 485–523 px. Bingkai berbentuk pin peta tidak bermakna untuk lembaga. Sepertiga bawah slide (y 68–100%) kosong kecuali logo footer.",
+   "resep_tata_letak": "Judul rata tengah y 9–15%. Tiga kartu persegi tanpa sudut membulat, isian abu hangat: lebar 29% (3,86 in), gutter 2,9% (0,38 in), x mulai 4,2% / 36% / 67,9%, y 26–68%. Di tiap kartu: logo dalam bingkai seragam rata tengah di y 29–50% slide; nama lembaga 20 pt tebal abu tua rata tengah di y 55–64%. Perbaikan wajib: kunci baris pertama nama di y yang sama, tambahkan 2–3 baris PIC/peran 14–16 pt, dan turunkan atau perpanjang kartu supaya ruang kosong bawah terisi.",
+   "layak_contoh": false
+  },
+  {
+   "no": 6,
+   "jenis": "linimasa",
+   "judul": "Itinerary",
+   "nilai": 2,
+   "yang_bagus": "Pita biru horizontal full-bleed dengan 3 lingkaran bernomor besar langsung terbaca sebagai urutan tahapan. Ada tiga tahap yang logis: pemerintah, rantai pasok, sekolah.",
+   "yang_lemah": "Ini linimasa tanpa waktu: tidak ada tanggal, hari, jam, atau lokasi. Jarak lingkaran tidak sama (pusat di 20,5%, 49%, 81%; selisih 422 px vs 470 px). Kolom sangat timpang: kolom 1 punya 10 baris termasuk sub-butir enam dinas yang bisa ditulis satu baris, kolom 2 dua baris, kolom 3 satu baris tanpa butir. Judul tidak tepat di tengah (≈706 px dari 733 px). Subjudul bergaris bawah. Warna teks berganti, subjudul biru dan isi hitam, berbeda dari s8 yang seluruhnya biru.",
+   "resep_tata_letak": "Judul rata tengah y 6–12% (28 pt). Pita isian primer full-bleed x 0–100%, y 22,4–25,8% (tebal ≈0,25 in). N lingkaran isian primer berdiameter ≈0,85 in, berpusat di pita, pada pusat kolom yang sama lebar (untuk 3 kolom: 1/6, 3/6, 5/6 lebar, yaitu 16,7%, 50%, 83,3%), angka putih tebal 28 pt. Di bawah tiap lingkaran: subjudul 18 pt tebal primer rata tengah di y 35%, lalu isi 18 pt mulai y 42% di kolom lebar ≈27% dengan gutter ≈4%. Perbaikan: tanggal/hari di dalam atau tepat di atas lingkaran, isi tiap kolom dibatasi 3–4 baris, daftar dinas dipadatkan menjadi satu baris berkoma.",
+   "layak_contoh": true
+  },
+  {
+   "no": 7,
+   "jenis": "peta",
+   "judul": "Supply chain stakeholders mapping",
+   "nilai": 2,
+   "yang_bagus": "Ada niat menjelaskan kerangka sebelum turun lapangan: definisi 'Market System' di kiri, peta tiga lapis (Enabling Environment, Retail Supply Chain, Support Services) di tengah, implikasi bagi WFP di kanan, sehingga terbentuk struktur definisi→kerangka→so-what.",
+   "yang_lemah": "Diagram tengah berupa raster tempelan dengan label ±8–9 pt yang tidak terbaca di layar proyektor dan tidak bisa disunting. Tidak ada sumber, padahal jelas diambil dari panduan pihak lain. Blok teal berbentuk L di belakang diagram tampak seperti bayangan yang salah letak. Kurung kurawal gambar tangan gayanya tidak cocok dengan slide lain. Spasi baris kotak definisi ≈2,0 sehingga terlalu renggang, dan warnanya dicampur (navy tebal, biru reguler). Logo footer hilang. Judul hanya label. Tidak ada yang spesifik TTS: tidak ada nama komoditas, pelaku, atau titik lemah.",
+   "resep_tata_letak": "(Pola asli, tidak disarankan.) Judul rata tengah y 8–14% (30 pt). Kiri: kotak definisi x 3,6–31%, y 36–63%, isian biru sangat muda dengan bingkai navy 1 pt, teks 16 pt. Tengah: diagram x 34,5–77%, y 27–82%. Blok teal L: batang tegak x 78,5–83%, y 39–87%, batang datar x 36,6–83%, y 83,5–87%. Kanan: kurung x 80–82,5%, ikon puzzle x 90–95%, y 31–39%, teks 14 pt rata tengah x 83–97%, y 42–63%. Versi perbaikan: bangun diagram secara native sebagai 3 pita horizontal berlabel di kiri (lingkungan pendukung / rantai pasok inti / layanan penunjang) dengan simpul ikon minimal 12 pt, kotak so-what di kanan selebar 25%, dan baris sumber 10 pt di kiri-bawah.",
+   "layak_contoh": false
+  },
+  {
+   "no": 8,
+   "jenis": "tabel",
+   "judul": "Identify gaps through assessing the supply chain",
+   "nilai": 3,
+   "yang_bagus": "Satu-satunya judul yang berupa kalimat kerja, bukan label. Tabelnya minimalis: tanpa isian, tanpa garis vertikal, hanya garis atas navy lebih tebal dan garis abu tipis antar-baris. Hierarki dua tingkat (7 kategori → 12 subkriteria) terbaca lewat garis sub-baris yang lebih pendek dan hanya membentang di kolom kanan. Teks 18 pt, banyak ruang, tidak ada butir.",
+   "yang_lemah": "Semua teks satu warna (biru) dan satu bobot (reguler), sehingga kategori tidak dibedakan dari subkriteria; kategori seharusnya tebal. Kolom 1 menghabiskan ≈21% lebar untuk satu label 'Assessment Criteria' yang mestinya menjadi header. Tidak ada header kolom ('Aspek', 'Yang dinilai', idealnya juga 'Sumber data/Metode'). Ujung garis tidak konsisten (sebagian berhenti di 1400 px, sebagian 1420 px; awal di 332 vs 875 px). Judul menjanjikan 'celah' tetapi tabel hanya berisi kriteria. Logo footer berbagi zona dengan dua baris terakhir.",
+   "resep_tata_letak": "Judul rata tengah y 6–12% (30 pt). Garis atas 1,5–2 pt navy x 4–97% pada y 20%. Kolom: label/kategori mulai x 4,6% (lebar ≈20%), kategori x 24,6–58%, subkriteria x 61,7–97%. Garis pemisah kategori 0,75 pt abu dari x 22,6% sampai 97%. Garis sub-baris 0,5 pt abu dari x 59,7% sampai 95,5%. Tinggi baris ≈0,5 in, teks 18 pt rata kiri dengan baseline sejajar pada baris pertama tiap kategori. Badan tabel y 20–90%. Perbaikan: header kolom 14 pt tebal di atas garis, kategori tebal, garis berakhir di satu x, dan kolom ketiga dipakai untuk metode/sumber.",
+   "layak_contoh": true
+  },
+  {
+   "no": 9,
+   "jenis": "penutup",
+   "judul": "Terima Kasih",
+   "nilai": 3,
+   "yang_bagus": "Mencerminkan sampul persis (foto, pita, blok merek) sehingga deck tertutup rapi dan identitas merek kuat. Judul 34 pt satu baris.",
+   "yang_lemah": "Penutup tidak berisi apa pun yang bisa ditindaklanjuti: tidak ada kontak PIC, langkah berikut, atau permintaan. Bahasanya berganti ke Indonesia setelah 8 slide berbahasa Inggris. Tanggal tetap '2025 March'. Ada jarak vertikal kosong antara judul (y≈650 px) dan tanggal (y≈760 px) karena placeholder judul 2 baris dipakai untuk 1 baris.",
+   "resep_tata_letak": "Gandakan resep slide 1. Ganti judul dengan 'Terima kasih' 34 pt satu baris di y 75–82%. Isi ruang y 84–90% dengan 1–2 baris kontak 14 pt (nama, jabatan, telepon/surel) atau satu baris 'Langkah berikut: …'. Tanggal 16 pt tetap di y 92%.",
+   "layak_contoh": true
+  }
+ ],
+ "pola_untuk_ditiru": [
+  "Sampul dan penutup kembar: foto full-bleed 69% atas, pita polos 31% bawah, judul rata kiri 34 pt di x 0,8 in, dan blok merek vertikal yang melintasi tepi foto (≈18% tinggi slide di atas foto, sisanya di pita). Satu bentuk mengunci dua bidang dan menjadi ciri.",
+  "Diagram 'kondisi → status inti → 3 implikasi' (s3): satu lingkaran berwarna primer ≈2,6 in sebagai fokus tunggal, kotak masukan bergaris putus-putus di kiri, 3 kotak konsekuensi di kanan dengan panah menyebar. Cocok untuk 'situasi → status → keputusan'.",
+  "Kata kunci tebal di dalam kalimat isi ('Contextual **adaptation** required') supaya pejabat cukup membaca kata tebalnya saja.",
+  "Tabel bergaris tanpa isian (s8): garis atas lebih tebal berwarna gelap, garis abu tipis antar-baris, garis sub-baris lebih pendek untuk hierarki dua tingkat, tanpa garis vertikal dan tanpa zebra.",
+  "Grid kartu 3 kolom sama lebar dengan gutter tetap ≈0,38 in dan perlakuan logo yang seragam agar mitra tampil setara (s5).",
+  "Pita linimasa full-bleed dengan lingkaran bernomor di atasnya (s6) sebagai penanda tahap yang langsung terbaca dari jauh.",
+  "Isi minimal 18–20 pt dan kepadatan rendah (9–46 kata per slide menurut struktur.json): tidak ada slide yang berupa dinding teks.",
+  "Logo lembaga di posisi footer tetap (kiri-bawah, ≈1,5 x 0,65 in, margin 0,55 in) sebagai jangkar merek di slide isi."
+ ],
+ "pola_untuk_dihindari": [
+  "Judul label topik ('Background', 'Mission Objectives', 'Team Introduction', 'Itinerary'). Untuk pimpinan, judul harus berupa kalimat kesimpulan.",
+  "Posisi dan ukuran judul yang bergeser antarslide (pusat y bergeser ±0,3 in; 28/30/34 pt; s2 rata kiri, lainnya di tengah). Judul harus satu kotak tetap di master.",
+  "Warna 'tamu' yang muncul sekali (hijau tua s4, krem s3, abu hangat s3/s5) dan varian biru hampir kembar (007DBC/0076BB/0070BA). Setiap warna harus punya satu peran yang berulang.",
+  "Subjudul bergaris bawah (s4, s6): terlihat seperti tautan web; pakai tebal dan warna.",
+  "Raster diagram pihak ketiga dengan label ≈8 pt, tanpa sumber (s7), dan bentuk dekoratif tanpa makna (blok L teal, kurung gambar tangan, cincin dan kaca pembesar, pin peta).",
+  "Linimasa tanpa waktu dan dengan jarak simpul tidak sama (s6); kolom timpang 10 vs 2 vs 1 baris.",
+  "Slide 'tim' tanpa orang dan peran (s5), dan baseline nama yang tidak sejajar antarkartu.",
+  "Penomoran diagram yang berlawanan dengan arah baca (1 jam 10 → 2 jam 6 → 3 jam 3 di s4).",
+  "Diagram yang seluruhnya berupa gambar sehingga teks tidak bisa disunting atau diterjemahkan (s2).",
+  "Footer tidak konsisten (logo hilang di s7), tanpa nomor halaman dan tanpa baris sumber di seluruh deck.",
+  "Bahasa campur: isi Inggris, penutup Indonesia; tanggal '2025 March'.",
+  "Penutup tanpa permintaan, kontak, atau langkah berikut; deck berakhir tanpa 'jadi apa yang kami minta'."
+ ],
+ "pelajaran_untuk_deck_bnpb": [
+  "Sampul BNPB: tiru struktur s1 dengan foto lapangan nyata kejadian (asap atau kebakaran lahan dari Posko, beserta kredit 9 pt) di 0–69% tinggi, pita bawah putih atau navy 051C2C, judul Roboto Bold 34 pt rata kiri di x 0,8 in. Blok merek vertikal navy 051C2C x 86–94% yang melintasi tepi foto, berisi logo BNPB dan unit. Tambahkan satu baris konteks 14–16 pt slate 3F5F80: forum, tempat, tanggal format Indonesia ('Rapat Terbatas · Istana Merdeka · 22 Oktober 2026').",
+  "Kunci kotak judul di master: posisi atas 0,45 in, kiri 0,55 in, lebar 12,2 in, Roboto Bold 26–28 pt navy, selalu rata kiri, maksimal 2 baris, dan selalu berupa kalimat kesimpulan. Contoh: bukan 'Itinerary' tetapi 'Operasi 72 jam: water bombing Riau dulu, lalu Jambi, lalu evaluasi status'.",
+  "Ubah pola s3 menjadi templat 'Situasi → Status → Keputusan': kotak kiri abu muda berisi kondisi (titik panas, luas terbakar), lingkaran tengah navy 051C2C berisi status kunci dengan angka besar putih, tiga kotak kanan rata satu tepi kiri dengan warna slate 3F5F80. Hanya kotak yang meminta keputusan diberi oranye D9600B. Panah 1,5 pt solid, bukan titik-titik.",
+  "Tabel BNPB (matriks kabupaten, kebutuhan logistik, status siaga) memakai gaya s8: garis atas navy 2 pt, garis antar-baris abu 0,5 pt, kategori Roboto Bold, header kolom 12–14 pt slate. Tambah kolom status dengan penanda oranye D9600B hanya pada baris yang butuh tindakan, dan jangan pernah menyisakan kolom selebar 21% untuk satu label.",
+  "Linimasa operasi: pakai pita full-bleed s6, tetapi simpul di pusat kolom sama lebar (16,7/50/83,3% untuk 3 tahap), tanggal/jam di setiap simpul, simpul 'hari ini' oranye dan sisanya navy, isi tiap kolom 3–4 baris.",
+  "Slide instansi atau pos komando: grid kartu s5 (3 atau 4 kolom, gutter 0,38 in) yang selalu berisi nama PIC, jabatan, dan tugas dalam operasi, dengan baris pertama nama dikunci di y yang sama.",
+  "Palet BNPB diberi peran tetap supaya kesalahan 'warna tamu' WFP tidak terulang: navy 051C2C untuk judul, bidang utama, dan garis atas tabel; slate 3F5F80 untuk teks sekunder, label, dan bidang kedua; oranye D9600B hanya untuk satu sorotan per slide (angka kritis atau keputusan); abu terang untuk latar kartu. Tidak ada warna lain.",
+  "Jangan menempel peta atau diagram raster pihak lain (pelajaran s7). Bangun peta sebaran titik panas atau diagram kelembagaan secara native, label minimal 12 pt, dan selalu beri baris sumber 9–10 pt slate di kiri-bawah ('Sumber: BMKG/SiPongi, diolah Pusdalops BNPB, 21 Okt 2026 pukul 14.00 WIB').",
+  "Footer dikunci di master untuk SEMUA slide isi: logo BNPB kiri-bawah, baris sumber, nomor halaman kanan-bawah, dan klasifikasi ('TERBATAS') bila perlu. Deck WFP tidak punya nomor halaman, padahal pimpinan merujuk 'halaman 5'.",
+  "Deck untuk pimpinan wajib menyisipkan dua slide yang tidak ada di deck WFP: (a) ringkasan eksekutif berisi 3–4 angka kunci di awal, (b) 'Keputusan/dukungan yang diminta' sebelum penutup. Penutup memuat kontak PIC, bukan hanya 'Terima kasih'.",
+  "Satu bahasa (Indonesia baku) untuk seluruh deck, termasuk label diagram. Hindari tanggal gaya 'Oktober 2026' tanpa hari bila konteksnya operasi harian.",
+  "Pertahankan disiplin kepadatan WFP (isi ≥18 pt, ≤50 kata per slide, kata kunci tebal), tetapi isi ruang kosong dengan angka, bukan dekorasi (cincin, pin, kaca pembesar)."
+ ]
+}

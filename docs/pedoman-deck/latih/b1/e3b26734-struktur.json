@@ -1,0 +1,208 @@
+{
+ "ukuran_emu": [
+  12192000,
+  6858000
+ ],
+ "ukuran_in": [
+  13.33,
+  7.5
+ ],
+ "tema_warna": {
+  "nama": "WFP COLOUR PALETTE",
+  "dk1": "007DBC",
+  "lt1": "36B5C5",
+  "dk2": "00B385",
+  "lt2": "008868",
+  "accent1": "1A4161",
+  "accent2": "982B56",
+  "accent3": "EF404C",
+  "accent4": "B79F8D",
+  "accent5": "ECDFBB",
+  "accent6": "F37847",
+  "hlink": "FFFFFF",
+  "folHlink": "000000"
+ },
+ "tema_huruf": {
+  "judul": "Calibri Light",
+  "isi": "Calibri"
+ },
+ "slide": [
+  {
+   "no": 1,
+   "shape": 2,
+   "gambar": 3,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 8,
+   "teks": "Modelling for Learning: TTS Mission Findings | 2025 March",
+   "ukuran_huruf": [
+    16.0,
+    34.0
+   ]
+  },
+  {
+   "no": 2,
+   "shape": 6,
+   "gambar": 5,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 14,
+   "teks": "Engagements | Government | (Provincial, district, sub-district) | Value Chain Actors (traders, farmers, retailers)  | Dev. Actors | Schools",
+   "ukuran_huruf": [
+    20.0
+   ]
+  },
+  {
+   "no": 3,
+   "shape": 7,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 1,
+   "kata": 125,
+   "teks": "Context | Coverage | :  | 17 Kitchens in NTT (2025 target: 113)  | No kitchen yet operational in TTS | Two kitchens being established in TTS: | One with UNICEF support in Koa | One in  | Soe |  (support unclear) | Local Supply Chain | :  | Most food in TTS (including  | Soe | ) sourced from outside ( | Kupang |  or other) | Supply chain for fruit may be prone to volatility and high prices | Seasonality: rainy season is challenge, production favorable during dry season but with water availability challenges (different from Java) | Government Support | :  | Support from local officials (across technical district offices | Vice  | Bupati |  on board to provide support, with key focus on community participation/empowerment – identified one school as potential site | BPMP (Quality Assurance under Min. Edu) identified six clusters for MBG in  | Soe",
+   "ukuran_huruf": [
+    28.0
+   ]
+  },
+  {
+   "no": 4,
+   "shape": 13,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 2,
+   "kata": 99,
+   "teks": "Value Addition &amp; Showcasing Opportunity | 3 | 1 | 2 | Menu |  to align with local  | availability, seasonality and pricing  | Linkages between  | farmers (local) |  and kitchens | Alignment of supply side actors and food demand  |  create  | impact across value chain | Distribution efficiencies  | based on context | Menu &amp; Supply Chain Optimization | Community Model | Evidence, Guidelines &amp; Integration for scalability | Evidence |  Generation (e.g., baseline, impact assessment, regular monitoring) | Guideline |  development | Integration into national guidelines  | for scalability | Utilize  | existing community structures |  to support project (e.g., school committees, community farmer groups, women groups etc.) | Integrate  | complementary activities  | supported by communities (e.g., school gardens, waste management etc.)",
+   "ukuran_huruf": [
+    20.0
+   ]
+  },
+  {
+   "no": 5,
+   "shape": 6,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 62,
+   "teks": "Site Identification: SD  | Inpres | Nunumeu |  (Primary School) | School Kitchen  | Kitchen design to vary | MODEL | 11 schools | 3,145 beneficiaries | 2 km radius | SCHOOLS &amp; BEN. | Cost-effective | : available land in school | Site in  | good condition | 27% ben. in walking distance ( | logistics cost | ) | Endorsement |  of Edu. and Vice  | Bupati | Unlikely to overlap  | in the short term with planned kitchens in central  | Soe",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 6,
+   "shape": 0,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 0,
+   "teks": "",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 7,
+   "shape": 1,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 5,
+   "teks": "IFSR-proposed Budget Summary (Kitchen only)",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 8,
+   "shape": 1,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 3,
+   "teks": "Budget: Capital Costs",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 9,
+   "shape": 1,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 3,
+   "teks": "Budget: Implementation Costs",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 10,
+   "shape": 1,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 3,
+   "teks": "Workplan: Tentative TBD",
+   "ukuran_huruf": []
+  }
+ ],
+ "huruf_dipakai": [
+  [
+   "Open Sans",
+   50
+  ],
+  [
+   "+mn-lt",
+   9
+  ],
+  [
+   "Open Sans Extrabold",
+   1
+  ]
+ ],
+ "warna_dipakai": [
+  [
+   "000000",
+   37
+  ],
+  [
+   "000F59",
+   27
+  ],
+  [
+   "FFFFFF",
+   25
+  ],
+  [
+   "007DBC",
+   5
+  ],
+  [
+   "ECE1B1",
+   3
+  ],
+  [
+   "0070BA",
+   1
+  ]
+ ],
+ "ukuran_huruf_dipakai": [
+  [
+   16.0,
+   1
+  ],
+  [
+   20.0,
+   9
+  ],
+  [
+   28.0,
+   1
+  ],
+  [
+   34.0,
+   1
+  ]
+ ]
+}

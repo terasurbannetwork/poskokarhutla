@@ -1,0 +1,500 @@
+{
+ "ukuran_emu": [
+  12192000,
+  6858000
+ ],
+ "ukuran_in": [
+  13.33,
+  7.5
+ ],
+ "tema_warna": {
+  "nama": "Office",
+  "dk1": "000000",
+  "lt1": "FFFFFF",
+  "dk2": "44546A",
+  "lt2": "E7E6E6",
+  "accent1": "4472C4",
+  "accent2": "ED7D31",
+  "accent3": "A5A5A5",
+  "accent4": "FFC000",
+  "accent5": "5B9BD5",
+  "accent6": "70AD47",
+  "hlink": "0563C1",
+  "folHlink": "954F72"
+ },
+ "tema_huruf": {
+  "judul": "Calibri Light",
+  "isi": "Calibri"
+ },
+ "slide": [
+  {
+   "no": 1,
+   "shape": 5,
+   "gambar": 4,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 19,
+   "teks": "Makan | Bergizi | Bersama | JAPFA | Studi |  Program  | Makan | Bergizi |  Gratis Prabowo - Gibran | Hasil Analisa  | Implementasi |  Program di 5 Lokasi ",
+   "ukuran_huruf": [
+    16.0,
+    36.0
+   ]
+  },
+  {
+   "no": 2,
+   "shape": 6,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 252,
+   "teks": "Ringkasan | Eksekutif | *) Hanya 1.011 dari 1.143 siswa penerima manfaat yang memiliki status gizi yang lengkap/hadir saat proses penimbangan sebelum program, dan 1004 siswa hadir saat pengukuran di akhir program | Latar |  Belakang | Indonesia  | masih | menghadapi | tantangan | serius | dalam | pemenuhan | gizi | anak-anak | . JAPFA,  | sebagai | perusahaan | pangan | ,  | berkomitmen | untuk | mengatasi | masalah | ini | dengan | mendukung | pelaksanaan |  uji  | coba |  program  | Makan | Bergizi | Gratis. | Tujuan Kegiatan | JAPFA bersama FKM UI dan UGM, studi ini bertujuan untuk mengevaluasi efektivitas tiga model dalam penyediaan makanan bergizi (Ready-to-Eat/RTE, Ready-to-Cook/RTC, dan Swakelola). Kegiatan program dilaksanakan dengan  | 1.143 siswa penerima manfaat di 5 lokasi selama 6 minggu (Mei – Juli 2024). | Temuan Utama | Sebelum dilaksanakan program,  | 9% |  atau 92 dari 1011* siswa mengalami gizi kurang/buruk | (anak memiliki berat badan dan tinggi badan yang tidak sesuai dengan umur) dan  | konsumsi protein hewani di kalangan siswa masih rendah, kecuali telur dimana 67% siswa mengkonsumsi 1-3x sehari. | Saat pelaksanaan program:  | Model RTC dan Swakelola memerlukan waktu penyajian lebih lama (3 – 4 jam),  | namun tingkat konsumsi lebih tinggi | karena guru dan orang tua yang terlibat dalam penyajian mengerti selera anak dan  | hanya model RTC dan Swakelola yang dapat menekan biaya dibawah Rp. 15.000. | Susu menjadi komponen dengan tingkat konsumsi siswa yan",
+   "ukuran_huruf": [
+    10.5,
+    14.0,
+    28.0
+   ]
+  },
+  {
+   "no": 3,
+   "shape": 2,
+   "gambar": 4,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 304,
+   "teks": "Ready-to-Eat ( | RTE) | Penunjukan | Katering | Ready-to-Cook (RTC) | Sekolah | mengelola | produksi | makanan | , | bahan  | baku |  protein  | disediakan |  JAPFA | Swakelola | Dana  | disediakan |  dan  | dikelolah | oleh sekolah | untuk membentuk  | tim | produksi | makanan | Biaya |  rata-rata | per porsi  | ( | tanpa |  susu) | Rp 18.375 | / | porsi | Rp 12.719  | / | porsi | Rp 13.145  | / | porsi | Persiapan |  dan  | Pengolahan | Makanan | Katering | terkendala |  pada  | saat | gramasi | karena | baru | pertama | menerima | pesanan |  yang  | makanannya | penyajiannya | ditimbang | Katering | terkendala | dalam | membeli | bahan | makanan | sesuai |  menu yang  | disepakati |  ( | fluktuasi | harga |  &amp;  | kesediaan | bahan | saat |  menu  | terjadwal | ) | Sekolah | tidak | dilibatkan | dalam |  menyusun  | menu,  | makan | kurang | bervariasi |  dan  | sesuai | dengan | selera | anak | . | Porsi | makanan | lebih | tepat | karena | diawasi | sekolah | Sekolah | terlibat | dalam | menyusun |  menu | Penyediaan | bahan | baku | sesuai | dengan | jumlah |  dan  | porsi | cukup | menjadi | tantangan | Kesulitan | dalam | permorsian |  yang  | harus |  ditimbang | Porsi | makanan | lebih | tepat | karena | diawasi | sekolah | Sekolah | terlibat | dalam | menyusun |  menu | Membutuhkan | waktu |  lama  | untuk | belanja | ,  | produksi |  dan  | distribusi | Tim  | d | apur  | mengalami | kekurangan | bahan |  ( | kurang | pengalaman | memasak | dalam | jumlah | bes",
+   "ukuran_huruf": [
+    11.0,
+    12.0,
+    14.0,
+    28.0
+   ]
+  },
+  {
+   "no": 4,
+   "shape": 3,
+   "gambar": 4,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 6,
+   "teks": "Tentang | Program | Makan | Bergizi | bersama |  JAPFA",
+   "ukuran_huruf": [
+    36.0
+   ]
+  },
+  {
+   "no": 5,
+   "shape": 12,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 3,
+   "kata": 216,
+   "teks": "Makan | Bergizi | Bersama | JAPFA | Program  | Pangan |  Dunia (WFP)  | mencatat | bahwa |  22,9  | juta | penduduk |  Indonesia  | menghadapi | kendala | dalam | memenuhi | kebutuhan | gizi | mereka | . JAPFA,  | sebagai | penyedia |  protein  | hewani | nasional | ,  | berkomitmen | untuk | memenuhi | kebutuhan | gizi | generasi | penerus | bangsa | dengan | menyediakan | pangan | bergizi |  dan  | terjangkau | . | Melalui | berbagai |  program, JAPFA  | secara | aktif | berkontribusi | dalam | mengatasi | masalah | pemenuhan | pangan |  di Indonesia. Salah  | satunya | mendukung | penuh |  program  | penyediaan | Makan | Bergizi |  Gratis oleh  | presiden | terpilih | , Prabowo – Gibran | dalam | penyediaan | pangan | bergizi | kepada | siswa | seluruh | jenjang | sekolah |  di Indonesia.  | Studi | ini | diharapkan | dapat | menghasilkan | rekomendasi | kepada | pemerintah | terkait | efektivitas | tiap |  model yang  | diinisiasikan |  oleh JAPFA  | dengan | berkolaborasi | dengan | tim |  FKM Universitas Indonesia dan  | tim | peneliti | dari |  Universitas Gajah  | Mada | untuk | analisa |  monitoring dan  | evaluasi | hasil |  program. | Selama | enam | minggu | ,  | lebih | dari | seribu | anak | sekolah | dasar |  dan  | taman | kanak-kanak | menerima | makanan | bergizi | melalui | tiga |  model  | pemberian | makan | siang | :  | Ready to Eat, Ready to Cook, |  dan  | Swakelola | .  | Setiap |  model  | dijalankan | selama | sepuluh | hari | untuk | mengevaluasi |",
+   "ukuran_huruf": [
+    14.0,
+    16.0,
+    36.0
+   ]
+  },
+  {
+   "no": 6,
+   "shape": 29,
+   "gambar": 3,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 9,
+   "kata": 149,
+   "teks": "Pengadaan | makanan |  oleh vendor | Pengiriman | makanan | ke | sekolah | Pemberian | makanan | ke | anak | Post-delivery:  | pengumpulan |  tray,  | mencuci | , waste management | Ready  | t | o Eat | Menunjuk salah satu katering rekanan untuk memproduksi makanan yang didistribusikan kepada siswa di sekolah | Pengadaan | bahan | makan |  oleh JAPFA | Pengiriman | bahan | makan | ke | sekolah | Memasak | bahan | makanan | Packaging | Pemberian | makanan | ke | anak | Post-delivery:  | pengumpulan |  tray,  | mencuci | , waste management | Ready  | t | o | Cook | Sekolah mengelola produksi makanan untuk diberikan kepada anak-anak. Bahan baku (protein) disediakan oleh JAPFA.  | Transfer dana  | ke | sekolah | Pengadaan | bahan | makan | Memasak | bahan | makanan | Packaging | Pemberian | makanan | ke | anak | Post-delivery:  | pengumpulan |  tray,  | mencuci | , waste management | Swakelola | Dana yang  | disediakan | dikelola | oleh | sekolah |  dan  | sekolah | membentuk | tim | untuk | memproduksi | bahan | makanan | .  | Alur  | Kegiatan | Tiap |  Model | Pemilihan |  menu oleh  | katering | (menu dikoreksi oleh FKM UI) | Pemilihan |  menu oleh  | sekolah | (menu  | dikoreksi |  oleh FKM UI) | Pemilihan |  menu oleh  | sekolah | (menu  | dikoreksi |  oleh FKM UI)",
+   "ukuran_huruf": [
+    8.0,
+    9.0,
+    10.0,
+    18.0,
+    28.0
+   ]
+  },
+  {
+   "no": 7,
+   "shape": 9,
+   "gambar": 6,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 6,
+   "kata": 59,
+   "teks": "Total  | Siswa | Penerima | Manfaat | sebanyak | 1.143  | siswa | Padang (Semi Urban) | SDN 06  | Batang | Anai |  – 146  | Siswa | Mempawah |  (Rural) | SDN 03 Sungai  | Pinyuh | – 270  | Siswa | Lokasi | Studi | Makassar (Urban) | SD  | Buqatun | Mubarakah |  - 352  | siswa | TK Asoka - 142  | siswa | Sragen |  (Semi Urban) | SDN 01  | Duyungan |  – 133  | Siswa | Malang (Rural) | Posyandu | Kec | .  | Buluwalang |  - 100  | balita",
+   "ukuran_huruf": [
+    10.0,
+    12.0,
+    36.0
+   ]
+  },
+  {
+   "no": 8,
+   "shape": 14,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 45,
+   "teks": "Timeline | Minggu |  ke-1 Mei | Sosialisasi | Minggu |  ke-1 Mei | Distribusi | peralatan | pendukung | Minggu |  ke-2 &amp; 3 Mei | Pelaksanaan |  Model  | Ready to Eat | Minggu |  ke-4 Mei &amp;  | Minggu |  ke-1  | Juni | Pelaksanaan |  Model  | Ready to Cook | Minggu |  ke-2 &amp; 3  | Juni | Pelaksanaan |  Model  | Swakelola | Minggu |  ke-4  | Juli | Evaluasi",
+   "ukuran_huruf": [
+    13.0,
+    36.0
+   ]
+  },
+  {
+   "no": 9,
+   "shape": 3,
+   "gambar": 4,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 7,
+   "teks": "Hasil |  Evaluasi Kegiatan | Makan Bergizi bersama JAPFA",
+   "ukuran_huruf": [
+    36.0
+   ]
+  },
+  {
+   "no": 10,
+   "shape": 20,
+   "gambar": 1,
+   "grafik": 4,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 230,
+   "teks": "Sebelum |  program  | dilakukan | ,  | 9%  | dari | seluruh | siswa | mengalami | gizi | kurang | / | buruk | Distribusi | Jenis | Kelamin |  Anak berdasarkan Wilayah | Status  | Gizi | berdasarkan |  Kelas | ( | sebelum |  program  | berjalan | ) | Makasar | (SD) | Makasar | (TK) | Malang | ( | Posyandu | ) | Mempawah | (SD) | Padang | (SD) | Sragen | (SD) | 132  | anak | 124  | anak | 249  | anak | 327  | anak | 83  | anak | 83  | anak | Rata  | usia | anak | sekolah | dasar | dimulai | dari | kelas |  1  | hingga | kelas |  6  | berturut-turut | adalah |  7  | tahun | , 8  | tahun | , 9  | tahun | , 10  | tahun | , 11  | tahun |  dan 12  | tahun | ,  | sedangkan | untuk | siswa | taman | kanak-kanak |  rata-rata  | usianya | adalah |  5  | tahun |  dan  | anak | balita |  rata-rata 1  | tahun | .  | Berdasarkan | jenis | kelaminnya | ,  | rasio | anak | laki-laki |  dan  | perempuan | tidak | jauh | berbeda | Hasil  | pengukuran | menunjukkan | bahwa | sebagian | besar | anak | memiliki | Indeks |  Massa  | Tubuh |  (BMI) yang normal | sesuai | dengan | standar |  WHO dan  | Kemenkes | .  | Namun |  9%  | anak | dari |  6  | lokasi | mengalami | gizi | buruk | / | gizi | kurang | ( | ditandai | dari | tinggi |  badan dan  | berat |  badan yang  | tidak | sesuai | dengan | umur | ) | Jumlah |  Anak  | dengan | Gizi | Buruk | /Kurang  | berdasarkan |  Kota  | ( | sebelum |  program) | Lokasi | Jumlah | (%  Total  | siswa | ) | Padang | (SD) | 4  (3%) | Sragen | (SD) | 9 (7%)",
+   "ukuran_huruf": [
+    7.0,
+    9.0,
+    11.0,
+    12.0,
+    13.0,
+    20.0
+   ]
+  },
+  {
+   "no": 11,
+   "shape": 15,
+   "gambar": 0,
+   "grafik": 12,
+   "tabel": 0,
+   "grup": 4,
+   "kata": 157,
+   "teks": "Sebelum |  program  | berjalan | ,  | asupan |  protein  | hewani | siswa | tergolong | rendah | ,  | seperti | proporsi | ayam |  (50%), ikan (48%), dan  | daging | merah |  (2%) | .  | Sebaliknya | ,  | konsumsi | telur |  (67%) dan protein  | nabati |  (71%)  | relatif | lebih | tinggi |  dan  | dilakukan | beberapa |  kali  | setiap | hari | ,  | karena | ketersediaan | harga |  yang  | lebih | murah | . | Distribusi | Frekuensi | Siswa | Mengkonsumsi | Jenis | Makanan | Tertentu | ( | sebelum |  program  | berjalan | ) | Sekitar |  72%  | siswa | secara |  rata-rata  | mengonsumsi | makanan | sebanyak | tiga |  kali  | sehari | 3  | dari |  10  | siswa | membawa | bekal | setiap | hari | untuk | dimakan |  di  | saat |  jam  | istirahat | 36,8% | 34,2% | 28,9% | Sebagian  | besar | siswa | memiliki | kebiasaan | sarapan |  dan  | makan | siang | setiap | hari | .  | Perbedaan | signifikan | terlihat |  pada  | lokasi | makan | siang | , di mana  | siswa | cenderung | memilih | untuk | makan |  di  | rumah | Kebiasaan | Sarapan | Kebiasaan Makan Siang | Lokasi Makan Siang | Sebelum |  program  | berjalan | ,  | mayoritas | siswa | makan |  3x  | sehari |  dan  | konsumsi |  protein  | hewani |  di  | kalangan | siswa | masih | rendah | .  | Dibandingkan | jenis |  protein  | lainnya | , | konsumsi | telur | cukup | tinggi | ,  | yaitu | sekitar |  67%",
+   "ukuran_huruf": [
+    9.0,
+    11.0,
+    12.0,
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 12,
+   "shape": 24,
+   "gambar": 5,
+   "grafik": 4,
+   "tabel": 0,
+   "grup": 11,
+   "kata": 181,
+   "teks": "Saat penyelenggaraan program, pengujian efektivitas tiap model  | dimulai pada saat persiapan makanan di dapur hingga penyajian makanan ke siswa | Pihak yang memasak makanan  | untuk siswa selama periode program | Ready-to-Eat | Catering | 6 | dari |  6 lokasi | Ready-to-Cook | Catering | 1  | dari |  6  | lokasi | Dapur | Komunitas | 5  | dari |  6  | lokasi |  - Tim yang  | dibentuk |  oleh  | sekolah | ,  | beranggotakan | tenaga | upahan |  dan  | petugas | dapur | sekolah | Kader  | Posyandu | ( | hanya |  di Malang) | Swakelola | Catering | 2  | dari |  6  | lokasi | Dapur | Komunitas | 4  | dari |  6  | lokasi |  - Tim yang  | dibentuk |  oleh  | sekolah | ,  | beranggotakan | tenaga | upahan |  dan  | petugas | dapur | sekolah | Kader  | Posyandu | ( | hanya |  di Malang) | Rerata | Durasi |  Waktu dan  | Jumlah | Individu |  yang  | Dibutuhkan | Memasak | Makanan |  per Hari | Swakelola | memerlukan | rerata | durasi |  proses  | memasak |  yang  | lebih |  lama ( | selisih |  ± 1 jam)  | dibanding |  RTC  | setiap | harinya | ,  | mengingat |  model  | swakelola |  membutuhkan  | waktu | persiapan |  yang lebih lama  | karena | semua | bahan | harus | disiapkan | sendiri | ,  | tidak | seperti |  RTE dan RTC |  3 jam 37 menit  |  4 jam 30 menit  | Rata-rata  | Jumlah | Individu |  di  | setiap | lokasi | untuk | sekali | memasak | dalam |  model RTC dan  | swakelola | adalah | 4 ( | empat | ) orang  | untuk 150-200 porsi",
+   "ukuran_huruf": [
+    7.0,
+    9.0,
+    10.0,
+    10.5,
+    11.0,
+    14.0,
+    16.0,
+    20.0
+   ]
+  },
+  {
+   "no": 13,
+   "shape": 3,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 307,
+   "teks": "Model Ready-to-Eat (RTE) dan Ready-to-Cook (RTC)  | berhasil | mencapai | tingkat | penyajian | makanan |  yang sangat  | tinggi | ,  | dengan | persentase | hari |  di mana  | seluruh | siswa | mendapat | makanan | siang | mencapai |  100% | Ready-to-Eat (RTE) | Ready-to-Cook (RTC) | Swakelola | Jumlah |  Total  | Siswa | Penerima | Makanan |  Siang dan Rerata  | Kehadiran | Siswa | (di 5  | lokasi | ) | Jumlah |  Total  | Siswa | Penerima | 1.043 | siswa |  (TK dan SD), dan  | 100 | balita | Rerata  | Kehadiran | Siswa |  Per Hari (%)* | 87% | 85,24% | 79,37% | Jumlah | Aktual |  Hari  | Penyajian | Makanan | ke | Sekolah |  ( | hari | ) | 10 Hari | ( | terkecuali |  di  | Mempawah | hanya |  7  | hari | ) | 10 Hari | ( | terkecuali |  di  | Mempawah | hanya |  7  | hari | ) | 10 Hari | ( | terkecuali |  di  | Mempawah | hanya |  7  | hari | ) | Porsi | Makanan |  yang  | Disajikan | Kepada | Siswa | (di 5  | lokasi | ) | Persentase | hari | dengan | seluruh | siswa | mendapat | makan | siang |  (%) | 100% | 100% | 97% | Porsi | Makanan |  yang Tidak Terbagikan  | Kepada | Siswa | (di 5  | lokasi | ) | Persentase | porsi | makanan | tidak | terbagikan |   (%) | 0,011% | 0,013% | 0,017% | Porsi |  makanan yang  | tidak |  terbagikan  | ke | siswa |  (tray) | 13 tray | 15 tray | 20 tray | Perlakuan | Sekolah | Terhadap | Porsi | Makanan | Tersisa |  yang Tidak  | Dibagikan | Kepada | Siswa | Dikembalikan | kepada | katering | Dibagikan | kepada | : guru,  | staf | sekolah | ,",
+   "ukuran_huruf": [
+    10.0,
+    10.5,
+    12.0,
+    20.0
+   ]
+  },
+  {
+   "no": 14,
+   "shape": 14,
+   "gambar": 5,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 4,
+   "kata": 248,
+   "teks": "Variasi | Terhadap |  Audit  | Saji | dari | Tiap |  Model | RTE | RTC | Swakelola | Pada model RTE,  | rata-rata  | penyajian |  protein  | hewani | lebih | rendah | sekitar |  8,90  | persen | dari | standar | porsi | . | Berbanding | terbalik | dengan | penyajian | sayuran |  yang rata-rata  | lebih | tinggi |  24,9%  | dari | standar | porsi | ,  | diikuti | dengan | karbohidrat | . | Terdapat | kecenderungan | dari | pengolola | katering | mengambil | keuntungan | dengan | mengurangi | porsi |  protein  | hewani | dan  | beratnya | digantikan | dengan | sayuran | .  | Penyajian |  protein  | hewani |  di  | model RTC juga  | memiliki | penyajian | porsi |  yang  | lebih | rendah | dari | standar | porsi |  (4,5%  | lebih | rendah | ),  | namun | tidak | serendah |  di model RTE | enyajian |  protein  | nabati | sedikit | meningkat |  pada model  | ini | . Salah  | satu | potensi | alasan | adalah | untuk | menutupi | porsi |  protein  | hewani | . | Faktor | defisit |  protein  | hewani | diakibatkan | diantaranya | , audit  | dilakukan | setelah | disajikan | ,  | penyusutan | setelah | dimasak | ,  | ukuran |  pada  | kemasan | ayam | potong |  So Good  | memiliki | gramasi |  yang  | berbeda-beda | Model  | swakelola |  yang  | cenderung | melebihkan | porsi | sayuran |  ( | sekitar |  11,20  | persen | lebih | banyak | ) |  dan  | buah-buahan |  ( | sekitar |  8,0  | persen | )  | dari | standar |  yang  | ditetapkan | . | Namun | porsi |  pada  | komponen | lainnya ",
+   "ukuran_huruf": [
+    8.0,
+    9.0,
+    11.0,
+    12.0,
+    14.0
+   ]
+  },
+  {
+   "no": 15,
+   "shape": 9,
+   "gambar": 6,
+   "grafik": 2,
+   "tabel": 0,
+   "grup": 7,
+   "kata": 101,
+   "teks": "Gambaran Umum  | Tingkat Konsumsi Siswa | Tujuan | dari |  audit  | sisa | adalah | estimasi | rerata | sisa | makanan |  per  | komponen |  pada  | akhir | waktu | makan | siang | .  | Susu  | menjadi | komponen | dari | tingkat | konsumsi | siswa |  yang paling  | tinggi | ,  | bahkan | hampir | menyentuh |  100%.  | Artinya | , susu  | menjadi |  menu yang paling  | ditunggu |  dan  | disukai |  oleh  | siswa | ketika | disajikan | . | Secara | umum | ,  | siswa | tidak | menghabiskan | setiap | komponen |  yang  | disajikan | ,  | dengan | variasi | antar | komponen | .  | Secara | umum | ,  | siswa | cenderung | untuk | menghabiskan | buah | .  | Komponen | sayur | adalah |  yang paling  | banyak | tersisa | . | Sekitar |  75  | persen | porsi | atau | lebih | dari | karbohidrat | , protein,  | buah | , dan susu  | terkonsumsi | .",
+   "ukuran_huruf": [
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 16,
+   "shape": 22,
+   "gambar": 1,
+   "grafik": 6,
+   "tabel": 0,
+   "grup": 2,
+   "kata": 198,
+   "teks": "Makasar | (SD) | Makasar | (TK) | Malang | (Posyandu) | Mempawah | (SD) | Padang | (SD) | Sragen | (SD) | Variasi Tingkat Konsumsi Antar Model dan Komponen | Variasi Tingkat Konsumsi Antar Jenjang dan Daerah  | Tingkat konsumsi tertinggi adalah makanan yang disajikan dalam model RTC dan Swakelola, yaitu  | sekitar 83 dan 84 persen | . | Tingkat konsumsi RTE lebih rendah  | sekitar 10 poin persentase di sekitar 74 persen.  | Secara | umum | ,  | pola | tingkat | konsumsi | antar | komponen |  dan model  | cukup | konsisten | .  | Di  | setiap | komponen | ,  | kecuali | protein  | nabati | ,  | tingkat | konsumsi | makanan | dari |  model RTE  | lebih | rendah | . | Di  | ketiga |  model,  | susu  | menjadi | komponen | dengan | tingkat | konsumsi | tertinggi | Tingkat konsumsi balita dan siswa SD secara umum lebih tinggi dibandingkan konsumsi siswa TK. | Di Makassar dan Sragen,  | tingkat konsumsi anak SD mencapai 89 persen | . | Namun, rerata tingkat konsumsi siswa TK adalah 63 persen. | Rendahnya  | tingkat konsumsi di jenjang TK dikarenakan adanya batasan waktu 15-20 menit menjelang jam kepulangan siswa | Tingkat konsumsi tertinggi pada RTC sebesar 83% dan Swakelola sebesar 84% menunjukkan bahwa kedua model ini memiliki penerimaan rasa yang baik di kalangan siswa.  | Hal ini mengindikasikan bahwa metode dapur komunitas pada kedua model tersebut lebih mampu menyajikan makanan sesuai dengan preferensi siswa | Variasi Tingkat Konsumsi Hasil Antar Model",
+   "ukuran_huruf": [
+    7.0,
+    10.0,
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 17,
+   "shape": 9,
+   "gambar": 0,
+   "grafik": 2,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 131,
+   "teks": "Berdasarkan | analisa | biaya | ,  | pembuatan | makanan |  rata-rata  | berkisar |  di  | antara |  Rp 10.000 - Rp 25.000.  | Namun | ,  | hanya |  pada model RTC dan  | Swakelola | ,  | biaya |  &lt; Rp 15.000 per  | porsi | karena | dapur | berusaha | memenuhi | biaya | produksi |  yang  | telah | disepakati | untuk | menghindari | kerugian | Rata-rata  | biaya | ini | adalah | biaya | keseluruhan | , yang  | meliputi | memasak | ,  | distribusi | ke | sekolah | hingga | penyucian |  tray. Pada  | keseluruhan | lokasi | didapati | biaya | pembuatan | sesuai | standar | porsi | tertinggi | ada |  pada  | model Ready-to-Eat,  | dimana | menyentuh | hingga |  Rp 18.372 per  | porsinya | , rata-rata  | lebih | tinggi |  ~Rp5.000  | dari |  model  | lainnya | . | Biaya | Pembuatan |  per Standar Porsi  | (Tanpa Susu) | Harga upah tenaga kerja, distribusi yang terlalu tinggi, dan tidak ada katering halal  | menjadi penyebab biaya produksi di Mempawah terlampau tinggi | Biaya rata-rata pembuatan per porsi | (tanpa susu)  | di 6 titik lokasi | (rata-rata)  | seluruh | lokasi",
+   "ukuran_huruf": [
+    7.0,
+    9.0,
+    10.0,
+    12.0,
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 18,
+   "shape": 12,
+   "gambar": 0,
+   "grafik": 4,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 258,
+   "teks": "Berdasarkan | hasil | analisa | biaya | ditemukan | bahwa | Ready-to-Cook (RTC | )  | menjadi  | model  | dengan | biaya | produksi |  yang paling  | rendah | Komponen | Biaya |  Per Porsi  | (tanpa Susu) | Komponen | Biaya | Bahan | Makanan |  Per Porsi | Secara | umum, | komponen | bahan | makan | adalah | biaya |  yang  | tertinggi | untuk | setiap | porsi |  ( | Rp7.372 - Rp8.050 | ). | Berdasarkan | perincian | biaya |  per  | porsi | ,  | model RTC  | merupakan |  model  | dengan | biaya | produksi |  paling  | rendah |  di  | antara | ketiga |  model | ,  | diikuti |  oleh model  | swakelola |  dan model RTE. | Secara | umum | , model RTE  | mengambil |  profit  | tertinggi | ,  | yakni |  Rp4.390  | atau |  24%  | dari |  total  | biaya |  per  | porsi | .  | Hasil  | ini | sesuai | dengan | perkiraan | awal | mengingat | katering | memiliki | pengalaman | dalam | mengelola | produksi | makanan | dalam | skala | besar | ,  | sehingga | lebih | efisien | .  | Selain | itu | ,  | orientasi | bisnis | katering |  yang  | cenderung | mengambil |  profit. | Di  | sisi |  lain,  | model RTC dan  | Swakelola | merupakan |  model  | pengelolaan |  yang  | berbasis | komunitas | .  | Keduanya | tidak | didorong |  oleh  | tujuan | bisnis | ,  | melainkan | lebih | fokus |  pada  | aspek | sosial |  dan gotong royong. | Model  | swakelola | mengeluarkan | biaya |  protein  | hewani |  yang  | lebih | besar | (Rp 4.357 per  | porsi | )  | dibandingkan |  model RTC dan RTE. Model",
+   "ukuran_huruf": [
+    7.0,
+    10.5,
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 19,
+   "shape": 25,
+   "gambar": 1,
+   "grafik": 4,
+   "tabel": 0,
+   "grup": 18,
+   "kata": 153,
+   "teks": "Catatan | Secara | umum | terdapat | peningkatan |  Tinggi dan  | Berat |  Badan |  pada  | anak | setelah |  program | Perubahan Rata-Rata Berat Badan Anak | berdasarkan Jenjang Kelas  | (Kg)  | Perubahan Rata-Rata Tinggi Badan Anak | berdasarkan Jenjang Kelas  | (Cm)  | Terjadi kenaikan berat badan pada anak setelah kegiatan pemberian makan siang bergizi. | Adapun penambahan rata-rata berat badan anak paling banyak terdapat pada siswa kelas 5 yaitu sebesar 1,5 kg. | Sedangkan penambahan rata-rata berat badan anak paling sedikit adalah pada anak balita yakni sebesar 0,2 kg.  | Terjadi kenaikan tinggi badan pada anak setelah kegiatan pemberian makan siang bergizi. | Adapun penambahan rata-rata tinggi badan anak paling banyak terdapat pada siswa kelas 1 yaitu sebesar 1 cm. | Sedangkan penambahan rata-rata tinggi badan anak paling sedikit adalah pada siswa TK yakni sebesar 0,1 cm  | + 0,2 | + 0,4 | + 0,5 | + 0,3 | + 0,8 | + 1,2 | + 1,5 | + 1,2 | + 0,8 | + 0,1 | + 1,0 | + 0,8 | + 0,2 | + 0,4 | + 0,7 | + 0,8",
+   "ukuran_huruf": [
+    9.0,
+    10.0,
+    11.0,
+    12.0,
+    14.0,
+    24.0
+   ]
+  },
+  {
+   "no": 20,
+   "shape": 14,
+   "gambar": 1,
+   "grafik": 8,
+   "tabel": 0,
+   "grup": 3,
+   "kata": 178,
+   "teks": "Secara | keseluruhan | jumlah | anak | dengan |  status  | gizi | buruk | / | kurang | berkurang |  28%  | dibandingkan | sebelum |  program | - 26 (-28% | ) | Perubahan | kondisi | gizi | anak | sebelum |  vs.  | sesudah |  program   | Kondisi | anak | membaik | Kondisi | anak | perlu | diperhatikan | ,  | membutuhkan | intervensi | khusus | terkait | gizi | atau | tambahan | intervensi | lainnya |  yang  | ditujukan | kepada |  orang  | tua | Dari 92  | anak |  yang  | mengalami | gizi | buruk | / | gizi | kurang | sebelum |  program  | berlangsung | , 28  | anak | mencapai |  status normal  | setelah | diberikan |  6  | minggu | makan |  gratis. | 2  | anak | mengalami | kenaikan | berat |  badan  | secara | berlebih | sehingga | mengalami |  overweight. Hal  | ini | dapat | terjadi |  pada  | anak |  yang  | makan |  &gt; 3x  | sehari |  dan  | kurang | bergerak | . | 9  | anak | mengalami | perubahan |  status  | gizi | menjadi |  normal | 205  | siswa | tetap | mengalami |  overweight &amp; obese dan  | membutuhkan | intervensi | khusus | lainnya | seperti | pengawasan | pemberian | gizi |  oleh orang  | tua | atau | mendorong | anak | untuk | berolahraga | Terdapat |  6  | anak |  yang  | memiliki |  status  | gizi |  normal  | turun | menjadi | kurang | gizi |  dan 20  | anak |  naik  | menjadi |  overweight | Hal  | ini | dapat | terjadi | jika | anak | berada |  di  | ambang |  batas  | bawah | angka |  normal /  | ambang |  batas  | angka |  normal | Jumlah | siswa",
+   "ukuran_huruf": [
+    9.0,
+    12.0,
+    14.0,
+    20.0
+   ]
+  },
+  {
+   "no": 21,
+   "shape": 1,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 209,
+   "teks": "Kendala | Tiap |  Model  | Pada  | Saat |  Program  | Berlangsung | Aspek | Ready-to-Eat (RTE) | Ready-to-Cook (RTC) | Swakelola | Persiapan |  dan Proses  | Memasak | Katering | terkendala |  pada  | saat | gramasi | karena | baru | pertama | menerima | pesanan |  yang  | makanannya | penyajiannya | ditimbang | Katering | terkendala | dalam | membeli | bahan | makanan | sesuai |  menu yang  | disepakati |  (pada  | saat | jadwal |  menu  | bahan | makanan | tidak | ada | atau | harga | sedang |  naik). | Penyediaan | bahan | baku | sesuai | dengan | jumlah |  dan  | porsi | cukup | menjadi | tantangan | Kesulitan | dalam | permorsian |  yang  | harus | ditimbang | Lebih  | membutuhkan | waktu |  yang lama  | untuk |  proses  | belanja | hingga | distribusi | karena | kesibukan | kader | Beberapa |  kali  | tim | dapur | kekurangan |  bahan makanan karena upaya dari sekolah untuk menekan biaya | Penyajian &amp; Pengantaran Makanan  | Sering  | terjadi | kontaminasi |  ( | sering | ditemukan | rambut | maupun | ulat | sayur |  pada  | makanan | ) | Distribusi makanan cenderung tidak tepat waktu dikarenakan jarak dengan katering dan sekolah bervariatif | Membutuhkan | waktu | untuk | pemorsian |  yang lama  | Keterbatasan | alat | ,  | waktu |  dan  | tenaga | Waktu  | pemorsian | cukup |  lama  | karena | keterbatasan | tenaga | kerja | dan timbangan | Konsumsi | Terdapat | beberapa |  menu  | tidak | sesuai | dengan | selera | anak | Tidak | ada | kendala | , menu  | menyesua",
+   "ukuran_huruf": [
+    12.0,
+    16.0,
+    24.0
+   ]
+  },
+  {
+   "no": 22,
+   "shape": 9,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 1,
+   "kata": 451,
+   "teks": "Kami  | merekomendasikan |  model RTC dan  | Swakelola | karena | efisiensi | harga | ,  | dampak | positif | terhadap | penyerapan | tenaga | kerja | , dan  | penerimaan |  rasa yang  | lebih | baik | berkat | tim | memasak |  yang  | lebih | memahami | preferensi | siswa | Melakukan | edukasi | mengenai |  menu  | makanan | bergizi | perlu | diberikan | kepada |  orang  | tua | Kampanye | informasi | kepada |  orang  | tua | mengenai | pentingnya | gizi |  yang  | terkandung | dalam | setiap | komponen | makanan | tersajikan | . | Penerapan | rosedur | operasi | standar | untuk | identifikasi | alergi |  dan  | pola | makan |  (vegetarian, vegan) yang  | dapat | dikonsumsi |  oleh  | siswa | . | Edukasi |  dan  | mengkampanyekan | kepada |  orang  | tua | siswa | akan | pentingnya |  susu segar ( | karena | banyaknya | misinformasi |  di  | daerah | tertentu |  yang  | membuat |  orang  | tua | nyaman | untuk | memberikan | anaknya |  susu  | kental |  manis  | sebagai |  susu) | Edukasi | anak-anak | mengenai | konsumsi | makanan | bergizi |  dan susu,  | pengelolaan |  food waste, dan  | jenis-jenis | makanan |  yang  | sehat | secara | aktif |  dan  | efektif | . | Terapkan | sistem | pengendalian | kualitas |  yang  | ketat | terhadap | seluruh | bahan | baku | yang  | masuk | .  | Untuk | menjamin | keamanan |  dan  | kualitas | pangan | ,  | perlu | diterapkan | sistem | pengendalian | kualitas |  yang  | ketat | terhadap | seluruh | bahan | baku | ,  | terutama |  pr",
+   "ukuran_huruf": [
+    12.0,
+    24.0
+   ]
+  }
+ ],
+ "huruf_dipakai": [
+  [
+   "+mj-lt",
+   260
+  ],
+  [
+   "Montserrat",
+   239
+  ],
+  [
+   "Arial",
+   179
+  ],
+  [
+   "+mn-lt",
+   102
+  ],
+  [
+   "Montserrat Light",
+   12
+  ]
+ ],
+ "warna_dipakai": [
+  [
+   "005F51",
+   647
+  ],
+  [
+   "000000",
+   365
+  ],
+  [
+   "FFFFFF",
+   41
+  ],
+  [
+   "C00000",
+   35
+  ],
+  [
+   "F36715",
+   27
+  ],
+  [
+   "ED7D31",
+   4
+  ],
+  [
+   "F1671A",
+   2
+  ],
+  [
+   "FFFF00",
+   2
+  ],
+  [
+   "C42D30",
+   1
+  ]
+ ],
+ "ukuran_huruf_dipakai": [
+  [
+   7.0,
+   65
+  ],
+  [
+   8.0,
+   8
+  ],
+  [
+   9.0,
+   370
+  ],
+  [
+   10.0,
+   227
+  ],
+  [
+   10.5,
+   524
+  ],
+  [
+   11.0,
+   724
+  ],
+  [
+   12.0,
+   957
+  ],
+  [
+   13.0,
+   172
+  ],
+  [
+   14.0,
+   591
+  ],
+  [
+   16.0,
+   10
+  ],
+  [
+   18.0,
+   9
+  ],
+  [
+   20.0,
+   188
+  ],
+  [
+   24.0,
+   65
+  ],
+  [
+   28.0,
+   11
+  ],
+  [
+   36.0,
+   23
+  ]
+ ]
+}

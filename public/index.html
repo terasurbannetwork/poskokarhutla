@@ -1316,6 +1316,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 </style>
 <link rel="stylesheet" href="/inti/kartu.css">
 <link href="lapisan5.css" rel="stylesheet">
+<link href="peta_kab.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
 <link href="ringkasan.css" rel="stylesheet">
 <link href="operasi.css" rel="stylesheet">
@@ -1487,10 +1488,12 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
         <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Api & respons</summary>
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
-          <label style="display:none"><input type="checkbox" data-l="himawari" checked> Himawari 10 menit</label><!-- ikut tombol Satelit (pemilik, 19 Okt 2026) -->
+          <label style="display:none"><input type="checkbox" data-l="himawari"> Himawari 10 menit</label><!-- dimatikan: cuma Api baru yang tampil (pemilik, 21 Okt 2026) -->
           <label style="display:none"><input type="checkbox" data-l="hwbaru" checked> Api baru (Himawari)</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
+          <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten (perkiraan satelit)</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
+          <label><input type="checkbox" data-l="kabbelum"> Belum padam per kabupaten (perkiraan satelit)</label>
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
         </details>
@@ -2011,6 +2014,7 @@ const Peta = {
           <div class="kg">${kb("Sebelum lintasan terakhir", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           <div class="kk">${p.s === "N21" ? "NOAA-21 tidak dihitung dalam jumlah titik. " : ""}Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
+      if (window.PetaKab?.klik(e)) return;   /* overlay Luas terbakar / Belum padam: klik = popup kabupaten, bukan turun ke wilayah */
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
     /* hover pangkalan udara & METAR: kartu info seperti titik lain */
@@ -2613,10 +2617,11 @@ const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e05
   hutan: ["#1f5a3a", "#5fae6e", "hutan"], konsesig: ["#7a4bb0", "#e58a45", "pabrik"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
   gambut: ["#4a3426", "#a0764f", "daun"], khg: ["#5a3a1c", "#c9a27a", "kanal"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
-  penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
+  penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"],
+  kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
 const UBIN_PENDEK = {hwbaru: "Api baru", aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit"};
+  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
@@ -2635,7 +2640,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   if (li?.checked) { li.checked = false; li.dispatchEvent(new Event("change", {bubbles: true})); }
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
-  if (i.dataset.l === "satelit") ["himawari", "hwbaru"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
+  if (i.dataset.l === "satelit") ["hwbaru"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
     angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], hwbaru: ["hwbaru", "hwbaru-halo"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
@@ -6440,6 +6445,8 @@ function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingC
   atur(document.querySelector("#laci"), "lebar-laci", "kiri", 340, Math.min(960, innerWidth * .7)); })();
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
+<script src="peta_karhutla.js"></script>
+<script src="peta_kab.js"></script><!-- sebelum lapisan5.js: legendanya ikut hitungan kolom legenda lapisan5 -->
 <script src="lapisan5.js"></script>
 <link rel="stylesheet" href="banding.css">
 <link rel="stylesheet" href="cari.css">

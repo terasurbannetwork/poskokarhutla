@@ -153,3 +153,10 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | naik / turun dari hari (periode) sebelumnya | up / down from the previous day (period) | legenda warna oranye / biru seperti slide deck BNPB |
 | Perubahan tidak ditampilkan: data satelit ... tidak lengkap | Change not shown: satellite data ... is incomplete | lencana perubahan disembunyikan bila periode atau pembandingnya memuat hari celah |
 | 1–20 Okt 2026; 1 Jan – 20 Okt 2026 | 1–20 Oct 2026; 1 Jan – 20 Oct 2026 | bulan/tahun yang belum tercakup penuh diberi nama rentang tercakup, bukan "Oktober 2026" / "2026" |
+
+## Overlay kabupaten di peta utama (index.html, 22 Okt 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| Luas terbakar / Belum padam (ubin Overlay) | Burned area / Not extinguished | grup "Api & respons"; nama lengkap di tooltip ubin: "... per kabupaten (perkiraan satelit)" = "... by regency (satellite estimate)" |
+| Perkiraan satelit, bukan luas resmi. | Satellite estimate, not the official area. | kaki popup kabupaten; legenda: "Perkiraan satelit · selama 1–20 Okt 2026" |

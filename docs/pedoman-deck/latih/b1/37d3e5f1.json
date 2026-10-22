@@ -1,0 +1,354 @@
+{
+ "id": "37d3e5f1",
+ "nama": "20240821 - Hasil Evaluasi Program Makan Bergizi Bersama JAPFA (Final)",
+ "deck": "20240821 - Hasil Evaluasi Program Makan Bergizi Bersama JAPFA (Final) — 22 slide, 16:9 (13,33 x 7,5 in), tema Office (Calibri Light/Calibri) yang ditimpa manual dengan Montserrat + palet hijau tua 005F51 / oranye F36715-ED7D31",
+ "tujuan_dan_audiens": "Tujuan: melaporkan hasil uji coba 6 minggu (Mei–Juli 2024) tiga model penyediaan makan siang sekolah (Ready-to-Eat/katering, Ready-to-Cook/sekolah memasak dengan protein dari JAPFA, Swakelola/dana ke sekolah) di 5 kota (6 titik) dengan 1.143 penerima, lalu merekomendasikan model RTC + Swakelola kepada pemerintah. Dibuat Agustus 2024, sebelum pelantikan Prabowo–Gibran, jadi audiens utamanya tim transisi / calon Badan Gizi Nasional dan pejabat terkait MBG, ditambah manajemen JAPFA dan mitra riset (FKM UI, UGM, edufarmers). Bentuknya laporan evaluasi yang dibaca sendiri (pre-read), bukan deck untuk dipaparkan. Kepadatan teks (150–450 kata per slide) dan grafik 7–9 pt hanya terbaca di layar pribadi atau cetakan. Catatan kredibilitas yang akan ditangkap pejabat senior: model yang direkomendasikan (RTC) adalah model yang bahan proteinnya dipasok JAPFA, dan konflik kepentingan ini tidak diungkapkan di deck mana pun.",
+ "nilai_deck": {
+  "pesan_judul": 3,
+  "alur_cerita": 3,
+  "hierarki_visual": 3,
+  "grid_ruang": 2,
+  "visualisasi_data": 2,
+  "tipografi_warna": 2,
+  "kepadatan_keterbacaan": 2,
+  "kecocokan_pimpinan": 3
+ },
+ "ringkasan_penilaian": "Isinya kuat, eksekusi visualnya setengah jadi. Kekuatan nyata: (1) ada ringkasan eksekutif di depan (s2) plus matriks perbandingan model x aspek dengan angka biaya per porsi (s3). Slide paling berguna untuk pengambil keputusan adalah s3. (2) Sekitar 11 dari 22 slide (s10–s14, s16–s20, s22) memakai judul aksi berupa kalimat temuan lengkap dengan angka. (3) Ada lapisan anotasi yang matang: kotak putus-putus mengelilingi bagian data yang relevan dan panah ke kalimat penjelas (s11, s16, s17, s18), juga konektor drill-down (s18) dan warna semantik membaik/perlu perhatian (s20). (4) Peta lokasi (s7) bersih dan informatif. Kelemahannya sistemik. Tidak ada grid tetap: zona judul berpindah-pindah (kiri atas, tengah, di tengah kanan s14, di dalam bingkai grafik s15), dan ada lima perlakuan bingkai berbeda (bingkai oranye penuh, kartu putih berbayang, pita oranye atas-bawah, full-bleed, polos). Grafik memakai warna bawaan Office (4472C4, 5B9BD5, 70AD47, FFC000, A5A5A5) yang bentrok dengan merek 005F51/F36715. Pemetaan warna seri juga berubah antarslide (RTE biru di s16, hijau di s17–18). Ada dosa visualisasi yang serius: sumbu Y terpotong di s16 (74% vs 83% tampil seperti 1:2,5), sumbu log untuk dua nilai sekitar 4 di s12, label pai terpotong di s11, label nilai diputar 90 derajat, dan garis target Rp15.000 tidak digambar padahal menjadi inti judul s17. Judul dua-warna berganti warna di tengah kalimat tanpa makna (s17 berganti 4 kali). Teks rata kanan-kiri menciptakan celah kata. Angka tidak konsisten antarslide: Rp 18.375 (s3) vs Rp18.372 (s17), '5 lokasi' vs '6 dari 6 lokasi' (s12), dan format 6.6% / Rp16,680 (gaya Inggris) bercampur dengan 85,24% / Rp 18.375 (gaya Indonesia). Ada salah ketik ('enyajian', 'rosedur', 'pengolola') dan sisa draf ('?' di legenda s12). Tidak ada nomor halaman, baris sumber, maupun tanggal data. Untuk briefing BNPB/Presiden, deck ini lebih berguna sebagai katalog pola anotasi dan tata letak perbandingan daripada sebagai standar desain.",
+ "alur": "Urutannya mengikuti logika laporan evaluasi, belum mengikuti piramida keputusan. (A) Pembuka: s1 sampul → s2 ringkasan eksekutif naratif (latar, tujuan, 3 temuan) → s3 matriks perbandingan 3 model (biaya, persiapan, penyajian, konsumsi). Rekomendasi eksplisit 'pilih RTC + Swakelola' TIDAK muncul di bagian pembuka, jadi pembaca harus menyimpulkannya sendiri dari biaya dan konsumsi. (B) Bab 1 'Tentang Program' (s4 pembatas) → s5 latar & tujuan → s6 alur kerja tiap model → s7 peta lokasi → s8 linimasa. Bagian konteks ini terlalu panjang (5 slide) untuk pimpinan. (C) Bab 2 'Hasil Evaluasi' (s9 pembatas) mengikuti rantai input→proses→output→biaya→hasil: s10 status gizi awal (9% gizi kurang) → s11 kebiasaan makan awal (protein hewani rendah) → s12 proses memasak (durasi, jumlah orang, siapa memasak) → s13 tingkat penyajian (100%/100%/97%) → s14 audit saji (defisit protein RTE 8,9%) → s15 konsumsi umum per komponen → s16 konsumsi per model (RTC 83%, Swakelola 84%, RTE 74%) → s17 biaya per lokasi (hanya RTC/Swakelola di bawah Rp15.000) → s18 komponen biaya → s19 perubahan TB/BB → s20 perubahan status gizi (-28%). (D) Penutup: s21 kendala per model (struktur kolom sama dengan s3) → s22 rekomendasi (judul aksi + 6 butir). Kelemahan alur: temuan 'baseline' (s10–s11) mendahului temuan model padahal pertanyaannya 'model mana yang dipilih'; s15 (konsumsi umum) memecah alur antara audit saji dan konsumsi per model; dampak gizi (s19–s20), yang paling penting bagi pejabat, baru muncul di slide 19 dari 22; tidak ada slide 'keputusan yang diminta' (anggaran, skala, siapa melaksanakan).",
+ "sistem_desain": {
+  "palet": [
+   {
+    "hex": "005F51",
+    "peran": "Warna primer (hijau tua): judul, kata kunci tebal di badan teks, angka biaya di tabel, blok pembatas bab, lingkaran linimasa, garis putus-putus kotak anotasi, seri 'Sesudah' di s20. Warna teks eksplisit paling sering (647 run)."
+   },
+   {
+    "hex": "F36715",
+    "peran": "Oranye merek JAPFA (hex eksplisit): kata kedua pada judul dua-warna, angka sorotan ('1.143 siswa'), pin peta, garis linimasa, cincin ikon, bingkai latar penuh (s5, s10, s14, s19, s20)."
+   },
+   {
+    "hex": "ED7D31",
+    "peran": "Oranye accent2 tema Office, praktis kembar F36715: kepala tabel isi putih (s3, s13, s21), pita atas-bawah (s7, s11), seri RTC di s16. Ada dua oranye yang hampir sama, plus F1671A sebagai varian ketiga, dan itu tidak konsisten."
+   },
+   {
+    "hex": "000000",
+    "peran": "Teks badan dan label (365 run)."
+   },
+   {
+    "hex": "FFFFFF",
+    "peran": "Latar kartu konten dan teks di atas kepala tabel oranye / panel hijau."
+   },
+   {
+    "hex": "C00000",
+    "peran": "Merah: kategori 'gizi buruk/kurang' (s10), anotasi '-26 (-28%)' (s20), kondisi 'perlu perhatian' (s20), TAPI juga untuk teks positif 'Tidak ada kendala' (s21), sehingga maknanya bertabrakan."
+   },
+   {
+    "hex": "4472C4 / 5B9BD5 / 70AD47 / FFC000 / A5A5A5",
+    "peran": "Warna bawaan tema Office yang dibiarkan di grafik: biru 4472C4 (s12, s15, s16), biru muda 5B9BD5 + hijau 70AD47 + kuning FFC000 (s10, s17, s18), abu A5A5A5 (s16). Warna ini tidak termasuk palet merek."
+   },
+   {
+    "hex": "FBE5D6 (perkiraan, accent2 terang 80%)",
+    "peran": "Isian baris peach pada tabel (baris berselang s3, baris subjudul s13, baris total s10). Diperkirakan dari gambar karena tidak tercatat di struktur.json."
+   },
+   {
+    "hex": "E2EFDA (perkiraan, accent6 terang 80%)",
+    "peran": "Isian hijau muda penanda sel 'terbaik' di tabel s13. Diperkirakan dari gambar."
+   },
+   {
+    "hex": "D9D9D9 (perkiraan)",
+    "peran": "Kotak langkah proses abu-abu di s6."
+   },
+   {
+    "hex": "5E7B72 (perkiraan)",
+    "peran": "Isian daratan peta Indonesia abu-hijau (s7)."
+   }
+  ],
+  "huruf": "Tiga keluarga huruf bercampur. (1) Montserrat Bold untuk judul display: sampul, pembatas bab, s5–s8 (239 run), dan Montserrat Light/Regular untuk subjudul (12 run). (2) Font tema +mj-lt/+mn-lt = Calibri Light / Calibri (260 + 102 run) untuk judul aksi dan badan di s2–s3 serta s10–s22, ter-render di sini sebagai pengganti metrik Calibri. (3) Arial (179 run) di label grafik dan tabel. Akibatnya judul berganti karakter: geometris lebar (Montserrat) di bagian 'Tentang', humanis sempit (Calibri) di bagian 'Hasil'.",
+  "skala_huruf": "36 pt Montserrat Bold: judul sampul (s1), pembatas bab (s4, s9), judul s5, s7, s8. 28 pt: 'Ringkasan Eksekutif' (s2, s3), judul s6. 24 pt: judul aksi s19, s21, s22. 20 pt tebal: judul aksi standar s10–s18, s20 (ukuran judul paling umum, 188 run). 16–18 pt: subjudul / nama model (s6 18 pt, kepala tabel s21 16 pt). 14 pt: badan teks utama (s2, s5, s15) dan subjudul seksi (591 run). 12 pt: badan teks paling sering, tabel, rekomendasi (957 run). 10,5–11 pt: isi tabel dan butir padat (s3, s13, s18). 9–10 pt: label grafik, deskripsi proses (370 + 227 run). 7–8 pt: anotasi dan callout grafik (s10, s12, s16–s18), terlalu kecil untuk proyektor. Tidak ada aturan 'judul selalu X pt'; ukuran judul aksi berkisar 20–28 pt dan panjangnya 2–4 baris.",
+  "grid_margin": "Slide 13,33 x 7,5 in (render 110 px/in). Tidak ada grid tetap; ada tiga sistem margin. (a) Kartu putih berbayang di atas latar terang/oranye: kartu dari x 0,6 in sampai 12,7 in, y 0,4–0,55 in sampai 7,1–7,25 in (s1, s13, s15, s17), konten di dalamnya mulai x 0,8–0,9 in. (b) Bingkai oranye penuh dengan kartu putih menyisakan bingkai 0,15–0,6 in (s5 0,6 in kiri / 0,27 in atas; s14 dan s20 0,15–0,25 in). (c) Full-bleed tanpa kartu dengan margin 0,15–0,35 in (s3 tabel hanya 0,15 in dari tepi, s2 kanan 0,36 in, s11 kiri 0,27 in). Logo JAPFA kanan atas sekitar 0,3 in dari tepi atas/kanan, lebar sekitar 1 in. Pembagian kolom yang sering: foto/panel kiri 31–38% lebar + konten kanan 60–65% (s2, s10, s12), atau dua kolom 50/50 (s20, s22), atau grafik 57% + teks 40% (s14, s15).",
+  "elemen_berulang": "Logo JAPFA kanan atas (s3, s13, s15–s19, s21, s22) atau putih di atas foto kiri atas (s2, s5, s12). Deretan logo mitra UI / edufarmers / JAPFA di sampul dan pembatas bab. Bilah aksen hijau pendek sekitar 1,1 x 0,1 in di atas judul atau di bawah teks (s1, s5, s14, s22). Ikon garis hitam di dalam cincin oranye sekitar 0,6–0,8 in sebagai penanda model RTE/RTC/Swakelola (s3, s6, s12) dan penanda butir (s15). Kotak anotasi bergaris putus-putus hijau 005F51 dan oranye, dengan panah siku ke kalimat penjelas (s11, s16–s18). Pil oranye 'Catatan' di atas kotak catatan putus-putus (s19). Catatan kaki penyebut '*) Hanya 1.011 dari 1.143 siswa...' (s2, s10, s13). TIDAK ADA: nomor halaman, footer, baris sumber data, tanggal data, kode rahasia/klasifikasi, agenda.",
+  "gaya_grafik": "Grafik native Office (s10: 4, s11: 12, s12: 4, s16: 6, s17: 2, s18: 4, s19: 4, s20: 8) dengan warna tema bawaan. Label nilai langsung di atas atau di dalam batang, garis kisi sebagian besar dihapus, legenda di atas atau bawah, label nilai sering diputar 90 derajat (s17–s19). Format angka gaya Inggris 'Rp16,680' dan '71.7%' di grafik, gaya Indonesia di teks. Pai dipakai untuk komposisi (s11) dengan label terpotong. Forest plot dengan IK 95% ditempel sebagai gambar dari perangkat lunak statistik (s14). Lapisan anotasi digambar sebagai shape terpisah. Tabel: kepala oranye isi putih, kolom label tebal, baris berselang peach atau baris subjudul peach tebal, garis tepi oranye tipis, sel 'terbaik' diisi hijau muda (s13), angka kunci hijau tebal (s3)."
+ },
+ "slide": [
+  {
+   "no": 1,
+   "jenis": "sampul",
+   "judul": "Makan Bergizi Bersama JAPFA — Studi Program Makan Bergizi Gratis Prabowo - Gibran; Hasil Analisa Implementasi Program di 5 Lokasi",
+   "nilai": 4,
+   "yang_bagus": "Komposisi berlapis yang rapi: pita oranye bawah, kartu putih berbayang, foto otentik nampan makan di kiri. Judul 36 pt Montserrat Bold dua baris, nama merek 'JAPFA' satu-satunya kata oranye, jadi dua-warnanya bermakna. Hierarki tiga tingkat jelas: judul, subjudul 16 pt, lalu baris deliverable dengan garis bawah hijau. Logo mitra dikelompokkan rapi di kanan bawah.",
+   "yang_lemah": "Tidak ada tanggal (21 Agustus 2024 hanya ada di nama berkas), forum/audiens, atau penyusun. '5 Lokasi' bertentangan dengan 6 titik di s7/s12/s17. Ruang putih antara subjudul dan baris deliverable (y 47–63%) terasa kosong tanpa fungsi.",
+   "resep_tata_letak": "Latar putih. Pita oranye F36715 full-width di y 72,5–100%. Kartu putih berbayang lembut x 4,6–95,3%, y 7,4–96,7%. Foto potret di dalam kartu x 4,6–38,9%, setinggi kartu. Blok teks rata kiri mulai x 41,4%: judul 36 pt Bold 2 baris di y 29–44% (warna primer, nama merek beraksen), subjudul 16–20 pt Regular di y 46%, baris deliverable 16 pt di y 63% dengan bilah aksen 1,1 x 0,05 in di bawahnya. Logo mitra x 71–92%, y 85–95%.",
+   "layak_contoh": true
+  },
+  {
+   "no": 2,
+   "jenis": "ringkasan eksekutif",
+   "judul": "Ringkasan Eksekutif",
+   "nilai": 3,
+   "yang_bagus": "Struktur Latar Belakang → Tujuan → Temuan Utama jelas dengan subjudul hijau tebal. Temuan memuat angka konkret (9% atau 92 dari 1.011, Rp15.000, susu 97%, BB +0,2–1,5 kg, gizi kurang turun 28%). Catatan kaki penyebut (1.011 dari 1.143) jujur. Foto anak memegang nampan memberi wajah manusia.",
+   "yang_lemah": "Sekitar 250 kata prosa rata kanan-kiri 14 pt, jadi pimpinan harus membaca, bukan memindai. REKOMENDASI tidak disebut sama sekali, padahal ini slide jawaban. Sorotan memakai dua warna (oranye tebal dan hijau tebal) tanpa makna berbeda. Penomoran 1/2/3 tidak sejajar (butir 3 menjorok berbeda), dan sub-butir '•' menempel tanpa spasi. Format angka campur '6.6%' (titik) vs 'Rp. 15.000'. Judul topik 'Ringkasan Eksekutif', bukan pesan.",
+   "resep_tata_letak": "Foto full-bleed kiri x 0–31%, setinggi slide, logo putih kiri atas di atas foto. Kolom teks x 33–97%. Judul 28 pt di y 4–10%. Tiga seksi bertumpuk: subjudul hijau tebal (Latar y 14%, Tujuan y 30%, Temuan y 46%) masing-masing diikuti badan 14 pt. Temuan berupa daftar bernomor dengan angka kunci tebal berwarna. Catatan kaki 10,5 pt di y 94–97%.",
+   "layak_contoh": false
+  },
+  {
+   "no": 3,
+   "jenis": "perbandingan",
+   "judul": "Ringkasan Eksekutif — Perbandingan Model Penyajian Makan Siang",
+   "nilai": 4,
+   "yang_bagus": "Slide keputusan terbaik di deck. Opsi menjadi kolom (RTE / RTC / Swakelola) dengan ikon dan definisi satu baris di kepala oranye. Aspek menjadi baris (Biaya per porsi, Persiapan, Penyajian, Tingkat Konsumsi). Baris biaya dan konsumsi diangkat sebagai angka besar hijau tebal (Rp 18.375 / 12.719 / 13.145; 74% / 83% / 84%), sehingga perbandingan inti terbaca dalam 5 detik. Baris berselang peach membantu membaca horizontal.",
+   "yang_lemah": "Tidak ada baris 'Penilaian/Rekomendasi' atau penanda kolom pemenang, padahal datanya jelas mengarah ke RTC/Swakelola. Tabel hampir full-bleed (margin 0,15 in) dan tidak sejajar dengan judul (x 0,35 in). Sel teks 11–12 pt berisi 2–3 butir panjang. Rp 18.375 di sini vs Rp18.372 di s17. Judul topik, bukan temuan.",
+   "resep_tata_letak": "Judul 28 pt x 2,6%, y 3–9%; subjudul 18–20 pt hijau tebal y 9–12%; logo kanan atas x 92–98%. Ikon garis 0,55 in tepat di atas tiap kolom opsi di y 15–21%. Tabel x 1–99%, y 22–98%: kolom label 12% lebar (teks tebal rata tengah), 3 kolom opsi masing-masing 29%. Baris kepala oranye y 22–31% (nama opsi 14 pt tebal putih + deskripsi 11 pt). Baris angka kunci y 31–41% (angka 14 pt hijau tebal + satuan hitam). Dua baris kualitatif bergaris butir 11 pt (y 41–68%, 68–84%). Baris angka kedua y 84–98% (persentase hijau tebal + 1 kalimat).",
+   "layak_contoh": true
+  },
+  {
+   "no": 4,
+   "jenis": "pembatas bab",
+   "judul": "Tentang Program — Makan Bergizi bersama JAPFA",
+   "nilai": 3,
+   "yang_bagus": "Pola pembatas yang konsisten (dipakai ulang di s9): foto besar kiri atas, blok warna solid kanan bawah, judul bab dua-warna 36 pt kiri bawah. Memberi jeda visual yang tegas antarbab.",
+   "yang_lemah": "Blok hijau sekitar 32% x 56% slide kosong total, ruang yang bisa memuat nomor bab atau daftar isi bab. Tidak ada nomor bab ('01'). Pewarnaan 'Tentang' oranye + 'Program' hijau tidak bermakna. Celah putih tipis antara foto dan blok hijau terasa tidak disengaja.",
+   "resep_tata_letak": "Foto x 0–65%, y 0–69%. Blok solid warna primer x 68–100%, y 44,5–100%. Judul bab 36 pt Bold rata kiri x 4%, y 78–85%. Subjudul 20 pt Regular warna primer di bawahnya y 86–89%. Logo mitra x 77–99%, y 4–13%. (Usulan perbaikan: nomor bab 60–80 pt putih di dalam blok solid.)",
+   "layak_contoh": true
+  },
+  {
+   "no": 5,
+   "jenis": "lainnya",
+   "judul": "Makan Bergizi Bersama JAPFA (latar belakang dan tujuan kegiatan)",
+   "nilai": 3,
+   "yang_bagus": "Komponen 'Tujuan Kegiatan' kanan bagus: tiga butir dengan bilah vertikal berselang oranye/hijau dan kata kerja pembuka tebal (Menganalisis, Memantau, Menghasilkan rekomendasi), mudah dipindai. Foto anak minum susu dengan logo memperkuat merek.",
+   "yang_lemah": "Kolom kiri berupa 4 paragraf (~200 kata) 14 pt rata kanan-kiri, bahan pidato, bukan slide. Isinya mengulang s2. Bingkai oranye penuh (margin 0,27 in atas) adalah gaya bingkai keempat yang berbeda. Judul 36 pt hanya nama program, tanpa pesan.",
+   "resep_tata_letak": "Latar oranye penuh. Kartu putih x 4,4–95,6%, y 3,6–96,4%. Bilah aksen hijau x 6,3–14,4%, y 7–8%. Judul 36 pt Montserrat Bold 2 baris x 7%, y 14–30%. Badan 14 pt x 7–55%, y 35–95%. Kolom kanan x 59–94%: foto y 7–48%, subjudul 16 pt hijau tebal y 53–56%, tiga butir dengan bilah 0,08 in di kiri (warna berselang) y 59–70%, 72–83%, 84–92%.",
+   "layak_contoh": false
+  },
+  {
+   "no": 6,
+   "jenis": "proses/alur",
+   "judul": "Alur Kegiatan Tiap Model",
+   "nilai": 3,
+   "yang_bagus": "Tiga jalur paralel berdampingan dengan kosakata langkah yang sama (pemilihan menu → pengadaan → pengiriman → memasak → packaging → pemberian → post-delivery), sehingga perbandingan antarmodel mungkin dilakukan. Ikon cincin oranye + nama model 18 pt konsisten dengan s3. Koreksi menu oleh FKM UI ditulis miring sebagai catatan.",
+   "yang_lemah": "Perbedaan antarmodel (siapa mengadakan bahan, siapa memasak) tidak disorot, sehingga pembaca harus mencarinya sendiri. Panel RTE berhenti di y 75% sementara dua lainnya sampai y 97%, sehingga tinggi panel tidak sejajar. Lebar kotak abu tidak seragam. Teks 8–10 pt. Panah hitam tipis. Judul topik.",
+   "resep_tata_letak": "Judul 28 pt Montserrat Bold rata tengah y 6–13%. Tiga panel bergaris putus-putus hijau, masing-masing lebar 29%, x 3–33%, 35–65%, 67–97%, y 15–97% (samakan tingginya). Kepala panel: cincin ikon 0,8 in kiri + nama model 18 pt tebal + deskripsi 9 pt di kanannya (y 18–30%). Kotak langkah abu D9D9D9 sekitar 1,6 x 0,55 in ditumpuk vertikal dengan panah 0,25 in, kotak 'post-delivery' di kanan langkah terakhir. (Perbaikan: isi kotak yang berbeda antarmodel dengan warna aksen.)",
+   "layak_contoh": false
+  },
+  {
+   "no": 7,
+   "jenis": "peta",
+   "judul": "Lokasi Studi — Total Siswa Penerima Manfaat sebanyak 1.143 siswa",
+   "nilai": 4,
+   "yang_bagus": "Peta Indonesia polos abu-hijau tanpa detail berlebih. Pin oranye di lokasi. Garis leader titik-titik vertikal menuju label di luar daratan, sehingga label tidak menimpa peta. Label dua tingkat: kota + tipologi (Urban/Semi Urban/Rural) oranye tebal, lalu sekolah + jumlah hijau. Total di subjudul dengan angka oranye. Sangat cepat dibaca.",
+   "yang_lemah": "Judul topik ('Lokasi Studi') padahal bisa menyatakan sebaran tipologi. '1.143 siswa' memasukkan 100 balita Posyandu Malang. 5 kota tetapi 6 titik (Makassar SD + TK), tidak dijelaskan. Pita oranye atas-bawah adalah gaya bingkai lain lagi. Tidak ada legenda tipologi atau sumber peta.",
+   "resep_tata_letak": "Pita oranye full-width y 0–2,4% dan 97,3–100%. Judul 36 pt Bold rata tengah y 7–13%. Subjudul 20 pt tebal hitam dengan angka total oranye, rata tengah y 16–19%. Peta x 7–95%, y 26–90%, isian daratan satu warna netral. Pin oranye sekitar 0,45 in. Garis leader titik-titik oranye vertikal 0,6–1,2 in. Label rata tengah terhadap garis: baris 1 nama + tipologi 13–14 pt tebal oranye, baris 2–3 detail 11–12 pt warna primer.",
+   "layak_contoh": true
+  },
+  {
+   "no": 8,
+   "jenis": "linimasa",
+   "judul": "Timeline",
+   "nilai": 3,
+   "yang_bagus": "Sangat bersih: satu garis oranye tebal full-bleed, 6 lingkaran hijau, label berselang atas/bawah dengan konektor putus-putus sehingga label tidak bertumpuk. Label dua tingkat (minggu tebal hijau + kegiatan hitam 13 pt). Nama model dimiringkan konsisten.",
+   "yang_lemah": "Titik berjarak sama padahal waktunya tidak (dua kegiatan di Minggu ke-1 Mei, lalu loncat ke Minggu ke-4 Juli). Fase yang berdurasi 2 minggu digambar sebagai titik, bukan batang. Tidak ada penanda bulan pada sumbu. Judul berbahasa Inggris dan tanpa pesan. Sekitar 40% slide kosong.",
+   "resep_tata_letak": "Judul 36 pt rata tengah y 10–18%. Garis horizontal oranye tebal sekitar 0,1 in full-bleed di y 55%. 6 lingkaran warna primer diameter 0,6 in di x 10,4 / 26,3 / 42,1 / 58 / 73,8 / 89,7% (jarak 15,9%). Label ganjil di bawah (y 75–82%), genap di atas (y 26–35%), dihubungkan garis putus-putus oranye vertikal. Label: tanggal 13 pt tebal warna primer + kegiatan 13 pt Regular. (Perbaikan: skala waktu nyata + batang durasi.)",
+   "layak_contoh": false
+  },
+  {
+   "no": 9,
+   "jenis": "pembatas bab",
+   "judul": "Hasil Evaluasi Kegiatan — Makan Bergizi bersama JAPFA",
+   "nilai": 3,
+   "yang_bagus": "Mengulang tata letak s4 secara identik, jadi sistem pembatasnya konsisten. Foto anak dengan nampan dan susu relevan dengan isi bab.",
+   "yang_lemah": "Kelemahan sama dengan s4: blok hijau kosong, tidak ada nomor bab maupun pertanyaan kunci bab. Untuk bab yang memuat 12 slide hasil, pembatas ini bisa memuat 3–4 pertanyaan evaluasi sebagai peta bab.",
+   "resep_tata_letak": "Identik dengan s4: foto x 0–65% / y 0–69%, blok solid x 68–100% / y 44,5–100%, judul 36 pt x 4% / y 78–85%, subjudul 20 pt, logo kanan atas.",
+   "layak_contoh": false
+  },
+  {
+   "no": 10,
+   "jenis": "grafik",
+   "judul": "Sebelum program dilakukan, 9% dari seluruh siswa mengalami gizi kurang/buruk",
+   "nilai": 2,
+   "yang_bagus": "Judul aksi pendek dan berangka. Tabel ringkas kanan (jumlah gizi kurang per lokasi + persentase + baris total peach '92 dari 1011 siswa* (9%)') sebenarnya sudah cukup membuktikan judul. Catatan kaki penyebut. Merah C00000 untuk kategori gizi buruk tepat secara semantik.",
+   "yang_lemah": "Tiga visual + foto + 3 butir dalam satu slide. Grafik batang terkelompok per kelas didominasi seri 'Normal' (hijau 70AD47), sehingga kategori yang menjadi pesan (merah) justru paling kecil. Grafik jenis kelamin (100% bertumpuk) tidak relevan dengan judul. Warna Office (FFC000, 5B9BD5, 70AD47) bercampur dengan bingkai oranye tebal sekitar 0,1 in. Tabel tidak diurutkan (Padang 3% → Makassar SD 13%). Teks grafik 7–9 pt. Badan teks rata kanan-kiri.",
+   "resep_tata_letak": "Foto x 0–38%, y 0–34%. Judul 20 pt tebal dua-warna x 1,6–34%, y 36–48%. Butir 14 pt bulatan oranye x 2–36%, y 52–93%. Panel kanan berbingkai oranye x 38–100%: grafik batang horizontal x 39–77% / y 3–76%, tabel x 79–98% / y 12–62% + catatan kaki y 63–70%, small multiples 100% bertumpuk x 41–90% / y 78–98%. (Perbaikan: satu batang terurut '% gizi kurang per lokasi' + angka total sebagai KPI.)",
+   "layak_contoh": false
+  },
+  {
+   "no": 11,
+   "jenis": "grafik",
+   "judul": "Sebelum program berjalan, mayoritas siswa makan 3x sehari dan konsumsi protein hewani di kalangan siswa masih rendah. Dibandingkan jenis protein lainnya, konsumsi telur cukup tinggi, yaitu sekitar 67%",
+   "nilai": 2,
+   "yang_bagus": "Judul grafik yang dipimpin angka ('Sekitar 72% siswa / secara rata-rata mengonsumsi makanan sebanyak tiga kali sehari'; '3 dari 10 siswa membawa bekal setiap hari'). Batang 100% horizontal per jenis makanan memakai hijau merek 005F51 / oranye / abu. Kotak putus-putus hitam mengelilingi 4 baris protein hewani dengan panah ke paragraf penjelas, contoh anotasi yang baik.",
+   "yang_lemah": "Enam grafik dengan tiga sistem warna (biru Office di batang kiri, hijau/abu/merah di pai, hijau merek di kanan). Label pai terpotong ('Pemal', 'arang', 'adang-kadang'), dan pai dipakai untuk 3–4 kategori. Judul 4 baris memuat dua pesan dan rata kanan-kiri sehingga ada celah kata lebar ('masih   rendah.'). Label '3%' di segmen oranye sempit bertabrakan. Tidak ada sumber/n survei.",
+   "resep_tata_letak": "Pita oranye y 0–2,4% dan 97,6–100%. Judul 20 pt dua-warna x 2–49,5%, y 6–21%. Dua grafik kolom kecil berdampingan x 2–25% dan 27–48%, y 26–55%, masing-masing dengan judul angka 14 pt + keterangan 11 pt. Subjudul 12 pt tebal y 61–66%. Tiga pai y 68–96%. Kanan: batang 100% horizontal x 58–97%, y 6–83%. Kotak putus-putus x 52–98%, y 50–81% + panah siku ke paragraf 12 pt x 52–94%, y 84–95%.",
+   "layak_contoh": false
+  },
+  {
+   "no": 12,
+   "jenis": "grafik",
+   "judul": "Saat penyelenggaraan program, pengujian efektivitas tiap model dimulai pada saat persiapan makanan di dapur hingga penyajian makanan ke siswa",
+   "nilai": 2,
+   "yang_bagus": "Diagram 'Pihak yang memasak' (kotak hijau tua → tiga cincin ikon model → butir Catering / Dapur Komunitas / Kader Posyandu dengan '5 dari 6 lokasi') informatif dan konsisten dengan ikon s3/s6. Panel kiri oranye dengan dua kartu putih membulat memisahkan data kuantitatif dari kualitatif.",
+   "yang_lemah": "Judul menyatakan metode, bukan temuan (temuannya: Swakelola sekitar 1 jam lebih lama, 4 orang per 150–200 porsi). Grafik bawah memakai SUMBU LOG (0,1 / 1 / 10) untuk dua nilai 4,12 dan 3,98, sesuatu yang tidak perlu dan menyesatkan. Kotak garis hijau kosong di bawah label nilai (tidak membingkai apa pun). Legenda berisi tanda tanya sisa draf ('...memasak makanan? (orang)'). Batang biru 4472C4 dan oranye ED7D31 bawaan Office. '6 dari 6 lokasi' bertentangan dengan '5 lokasi' di sampul. Judul rata kanan-kiri 3 baris.",
+   "resep_tata_letak": "Panel kiri solid oranye x 0–36%, judul panel 16 pt putih tebal rata tengah y 3–9%. Dua kartu putih radius sekitar 0,15 in x 1–35%, y 12–57% dan 58–98%, masing-masing kalimat temuan 10–11 pt + grafik kolom 2 batang. Kanan: foto x 38–99%, y 2–37,5%. Judul 20 pt x 37,5–97,5%, y 39–51%. Kartu proses x 37–99%, y 52–98%: kotak hijau tua radius x 40–52%, y 65–96%; garis penghubung ke tiga cincin ikon di x 60 / 75 / 90%, y 55–64%; di bawah tiap ikon nama model 12 pt tebal + butir label oranye 11 pt + detail 9 pt.",
+   "layak_contoh": false
+  },
+  {
+   "no": 13,
+   "jenis": "tabel",
+   "judul": "Model Ready-to-Eat (RTE) dan Ready-to-Cook (RTC) berhasil mencapai tingkat penyajian makanan yang sangat tinggi, dengan persentase hari di mana seluruh siswa mendapat makanan siang mencapai 100%",
+   "nilai": 3,
+   "yang_bagus": "Judul aksi dengan angka. Tabel berseksi: baris subjudul peach tebal ('Jumlah Total Siswa...', 'Porsi Makanan yang Disajikan...', 'Porsi... Tidak Terbagikan') mengelompokkan metrik. Sel hijau muda E2EFDA menandai nilai terbaik sehingga mata langsung ke pemenang. Sel gabungan untuk nilai bersama (1.043 siswa + 100 balita). Catatan kaki menjelaskan anomali Swakelola (akhir semester).",
+   "yang_lemah": "Penyorotan menonjolkan selisih yang tidak bermakna (0,011% vs 0,013% vs 0,017% sisa porsi). Baris terakhir (daftar penerima sisa makanan) menghabiskan sekitar 25% tinggi tabel untuk informasi bernilai rendah. Judul 3 baris rata kanan-kiri dengan celah kata. Sel kepala kiri kosong putih tanpa label. Format '85,24%' (dua desimal) vs '87%'.",
+   "resep_tata_letak": "Kartu putih berbayang x 4,6–95,3%, y 5–94,5%. Judul 20 pt dua-warna x 6,6–85%, y 7–20%; logo x 88–94%, y 7–12%. Tabel x 6,6–93,4%, y 22–88%: kolom label 29% (teks 10,5 pt rata kiri), 3 kolom opsi masing-masing 19,3% (rata tengah). Kepala oranye hanya di atas kolom opsi. Baris seksi peach tebal selebar tabel. Sel terbaik diisi hijau muda. Catatan kaki 10 pt y 89–91%.",
+   "layak_contoh": true
+  },
+  {
+   "no": 14,
+   "jenis": "grafik",
+   "judul": "Hasil pada audit saji menunjukkan adanya defisit pada komponen protein hewani dengan kisaran rata-rata 8,9% pada model RTE dan 4,5% pada model RTC.",
+   "nilai": 3,
+   "yang_bagus": "Jujur secara statistik: forest plot deviasi dari standar porsi dengan selang kepercayaan 95% dan garis nol merah. Tiap model satu baris (small multiples) dengan butir penjelas di sebelahnya. Foto nampan RTC dengan keterangan miring ('Dokumentasi foto menu RTC di lokasi SDN 01 Duyungan, Sragen') sebagai bukti lapangan. Faktor penyebab diringkas jadi 3 butir 14 pt.",
+   "yang_lemah": "Skala sumbu X tiap plot berbeda (-20..40, -10..10, -5..15), sehingga perbandingan visual antarmodel menyesatkan. Plot berupa gambar tempelan beresolusi rendah dengan huruf 8 pt. Judul aksi diletakkan di tengah kanan (y 53%), bukan di atas, sehingga pesan bukan hal pertama yang terbaca. Salah ketik 'enyajian', 'pengolola', 'protein hewan:'. Bingkai oranye tipis lagi-lagi gaya berbeda.",
+   "resep_tata_letak": "Latar oranye. Kartu kiri putih x 1,4–57,4%, y 1,6–98%: judul grafik 14 pt tebal rata tengah y 4–8% + catatan IK 7 pt. Tiga baris y 11–38 / 41–68 / 70–97% dipisah garis putus-putus hijau; tiap baris berisi plot x 3–25% dan butir 11 pt x 27–56%. Kanan x 59,4–98,8%: foto y 1,6–48%, keterangan 9 pt miring y 49–51%, judul 20 pt y 53–69%, subjudul oranye 14 pt y 73–76%, butir 14 pt y 77–95%, bilah hijau y 97–99%. (Perbaikan: judul pindah ke atas, sumbu X disamakan.)",
+   "layak_contoh": false
+  },
+  {
+   "no": 15,
+   "jenis": "grafik",
+   "judul": "Gambaran Umum Tingkat Konsumsi Siswa",
+   "nilai": 3,
+   "yang_bagus": "Grafik kolom diurutkan menurun (susu 97% → sayuran 66%), label putih tebal di dalam ujung batang, sumbu Y dihapus, sehingga bersih. Kolom kanan berisi 5 wawasan, masing-masing dengan cincin ikon oranye dan frasa kunci hijau tebal, pola 'grafik + bacaan' yang mudah diikuti.",
+   "yang_lemah": "Tidak ada judul aksi di zona judul; judul ada di dalam bingkai grafik dan bersifat deskriptif. Pesan 'susu tertinggi, sayur terendah' seharusnya menjadi judul. Batang biru Office 4472C4, bukan warna merek; sayuran (pesan negatif) tidak disorot dengan warna berbeda. Butir 1 berisi metode ('Tujuan dari audit sisa...'), bukan wawasan. Teks kanan rata kanan-kiri.",
+   "resep_tata_letak": "Kartu putih berbayang x 5–96%, y 5–94,5%; logo kanan atas. Panel grafik bergaris putus-putus hijau x 8–51%, y 18–89%; judul 20 pt dua-warna di dalamnya y 21–25%; kolom terurut y 37–85%, label nilai di dalam batang. Kolom kanan x 54–93%: 5 baris di y 23 / 37 / 54 / 68 / 80%, masing-masing cincin ikon 0,6 in x 54–58,5% + teks 14 pt x 60–93%. (Perbaikan: judul aksi 20 pt di atas kartu.)",
+   "layak_contoh": true
+  },
+  {
+   "no": 16,
+   "jenis": "grafik",
+   "judul": "Tingkat konsumsi tertinggi pada RTC sebesar 83% dan Swakelola sebesar 84% menunjukkan bahwa kedua model ini memiliki penerimaan rasa yang baik di kalangan siswa. Hal ini mengindikasikan bahwa metode dapur komunitas pada kedua model tersebut lebih mampu menyajikan makanan sesuai dengan preferensi siswa",
+   "nilai": 2,
+   "yang_bagus": "Pola dasbor tiga kartu (konsumsi per model; per model x komponen; per jenjang/daerah) dengan kotak bacaan putus-putus di samping tiap grafik. Penyorotan bergaya: batang RTE dibingkai hijau dengan konektor ke kotak penjelas, dan batang Makassar TK dibingkai dengan panah, yaitu anotasi yang mengarahkan mata.",
+   "yang_lemah": "SUMBU Y TERPOTONG pada grafik kiri: 74% vs 83% digambar sekitar 140 px vs 345 px (kesan 2,5x lipat), pelanggaran integritas data yang serius untuk audiens pemerintah. Judul grafik kiri menimpa label '83%'. Warna seri RTE/RTC/Swakelola = biru/oranye/abu di sini tetapi hijau/biru/kuning di s17–s18. Judul 4 baris (sekitar 55 kata) rata kanan-kiri. Label 7 pt di grafik klaster.",
+   "resep_tata_letak": "Judul 20 pt x 2–91%, y 2–18% (maksimal 2 baris!). Pita oranye y 20–100% sebagai latar. Kartu putih radius: kiri x 1,6–34%, y 23–98% (grafik kolom 3 batang + kotak bacaan putus-putus y 79–95%); kanan atas x 36–98,4%, y 23–58% (grafik klaster x 37–72% + kotak bacaan x 74–97%); kanan bawah x 36–98,4%, y 59,5–97,5% (kolom per lokasi x 38–68% + kotak bacaan x 69–97%). Sumbu harus mulai dari 0.",
+   "layak_contoh": false
+  },
+  {
+   "no": 17,
+   "jenis": "grafik",
+   "judul": "Berdasarkan analisa biaya, pembuatan makanan rata-rata berkisar di antara Rp 10.000 - Rp 25.000. Namun, hanya pada model RTC dan Swakelola, biaya < Rp 15.000 per porsi karena dapur berusaha memenuhi biaya produksi yang telah disepakati untuk menghindari kerugian",
+   "nilai": 3,
+   "yang_bagus": "Pencilan dijelaskan di tempat: Mempawah Rp24.947 dibingkai putus-putus oranye dengan panah ke catatan penyebab (upah, distribusi, tidak ada katering halal). Kelompok 'rata-rata seluruh lokasi' dipisah di kanan, dibingkai putus-putus hijau, dan dihubungkan panah ke judul, sehingga bukti dan klaim terhubung. Paragraf bawah mendefinisikan cakupan biaya (memasak, distribusi, cuci tray).",
+   "yang_lemah": "Ambang Rp15.000, inti judul, TIDAK digambar sebagai garis referensi, jadi pembaca harus membandingkan sendiri ke sumbu. Label nilai diputar 90 derajat. Format angka Inggris 'Rp16,680' bertentangan dengan 'Rp 15.000' di judul, dan 'Rp18,372' vs 'Rp 18.375' di s3. Judul 3 baris berganti warna 4 kali (oranye-hijau-oranye-hijau) tanpa makna. Warna seri Office hijau/biru/kuning.",
+   "resep_tata_letak": "Kartu putih berbayang x 4,6–95,3%, y 5–94,5%. Judul 20 pt x 6–93%, y 8–22%. Catatan pencilan 7 pt x 7–19,5%, y 29–35% dengan panah siku ke kotak putus-putus di atas batang pencilan. Grafik klaster per lokasi x 7–80%, y 30–83%; judul grafik 14 pt rata tengah y 31%; legenda y 80%. Kelompok rata-rata x 83–94,5%, y 31–78% dalam kotak putus-putus warna primer + panah ke judul. Paragraf definisi 12 pt y 85–91%. (Tambahkan: garis ambang horizontal oranye + label.)",
+   "layak_contoh": true
+  },
+  {
+   "no": 18,
+   "jenis": "grafik",
+   "judul": "Berdasarkan hasil analisa biaya ditemukan bahwa Ready-to-Cook (RTC) menjadi model dengan biaya produksi yang paling rendah",
+   "nilai": 3,
+   "yang_bagus": "Pola drill-down yang jelas: kelompok 'Bahan makanan' (komponen terbesar Rp7.372–8.050) dibingkai kotak solid gelap, lalu konektor siku menuju panel putus-putus hijau berisi rincian bahan makanan (karbohidrat, protein hewani, dst.). Kotak putus-putus oranye + callout untuk 'Bahan pendukung' dan 'Profit' (RTE Rp4.390 = 24%). Judul aksi ditaruh di kolom kiri yang sempit dengan font besar, terbaca lebih dulu.",
+   "yang_lemah": "Enam butir sekitar 200 kata 11–12 pt rata kanan-kiri di kolom kiri. Callout 7 pt praktis tidak terbaca saat dipresentasikan. Label nilai diputar 90 derajat, label nol tampil 'Rp-'. Biaya per komponen lebih cocok ditampilkan sebagai batang bertumpuk per model (total + komposisi sekaligus). Klaim 'Swakelola beli protein dari pasar, RTC dari JAPFA' menyentuh konflik kepentingan tanpa diungkap.",
+   "resep_tata_letak": "Kolom kiri x 2–28,5%: judul 20 pt dua-warna y 3–25%, butir 11–12 pt bulatan oranye y 31–95%. Grafik atas x 30,5–97,5%, y 4–48% (judul 14 pt tebal + legenda di atas). Kotak solid gelap mengelilingi kelompok pertama x 30,5–39,3%, y 9–50%. Konektor siku dari bawah kotak ke panel bawah. Panel putus-putus warna primer x 30,5–97,3%, y 54,5–98,5% berisi grafik rincian. Callout 7–9 pt di kanan atas dengan panah siku.",
+   "layak_contoh": false
+  },
+  {
+   "no": 19,
+   "jenis": "grafik",
+   "judul": "Secara umum terdapat peningkatan Tinggi dan Berat Badan pada anak setelah program",
+   "nilai": 2,
+   "yang_bagus": "Judul aksi 24 pt pendek (2 baris). Pasangan sebelum (muda) / sesudah (tua) per jenjang dalam dua grafik berdampingan dengan skema terang-gelap yang intuitif. Kotak 'Catatan' bergaris putus-putus dengan pil oranye berlabel di tengah atasnya adalah pola rapi untuk bacaan grafik.",
+   "yang_lemah": "Pesan berupa PERUBAHAN (+0,1 s.d. +1,5) tetapi grafik menggambar LEVEL (9,8 → 147 kg/cm), sehingga selisih tak terlihat. Label delta '+0,2' dengan panah kecil bertumpuk dengan label nilai yang diputar (Kelas 6, Posyandu TB tidak terbaca). Biru dipakai untuk BB dan hijau Office untuk TB, warna baru lagi. Tidak ada pembanding (kontrol/pertumbuhan normal 6 minggu), sehingga klaim kausal lemah.",
+   "resep_tata_letak": "Latar oranye, kartu putih x 3–97%, y 3–97%. Judul 24 pt x 6–80%, y 5–14%; logo kanan atas. Dua grafik kolom berpasangan x 7–48,5% dan 51,5–92%, y 18–76%, judul grafik 12 pt 2 baris di atasnya, legenda di bawah y 73–75%. Kotak catatan putus-putus x 5–95,5%, y 76–95%, dua kolom butir 11 pt. Pil oranye 'Catatan' 14 pt putih x 44–56%, y 74,5–78% menimpa garis atas kotak. (Perbaikan: grafik batang delta.)",
+   "layak_contoh": false
+  },
+  {
+   "no": 20,
+   "jenis": "grafik",
+   "judul": "Secara keseluruhan jumlah anak dengan status gizi buruk/kurang berkurang 28% dibandingkan sebelum program",
+   "nilai": 3,
+   "yang_bagus": "Judul aksi berangka. Grafik kiri sebelum (hijau muda) / sesudah (hijau tua 005F51) memakai warna merek, dengan anotasi merah '-26 (-28%)' + panah tepat di kategori pesan. Panel kanan memecah perpindahan status menjadi tiga grafik batang kecil (dari <Normal, Normal, >Normal) dengan WARNA SEMANTIK: hijau = membaik, merah = perlu perhatian, abu = tetap, plus legenda kalimat di bawah. Ini pola terbaik di deck untuk data transisi.",
+   "yang_lemah": "Judul menutupi temuan negatif: overweight naik 108→117 dan obesitas 108→111, dan 205 anak tetap overweight/obese, hanya muncul di butir kecil 9–10 pt. Batang 'Status post-program NA' biru, warna keempat tanpa legenda. Bingkai oranye tipis + dua kartu. Grafik kiri memakai label n tanpa persen.",
+   "resep_tata_letak": "Latar oranye; dua kartu putih x 1,7–48,8% dan 49,8–98,2%, y 3–97%. Kiri: judul 24 pt x 3,6–45,5%, y 7,5–20%; judul grafik 14 pt abu rata tengah y 26–30%; kolom klaster sebelum/sesudah y 34–84%; anotasi delta merah + panah di atas kategori pesan; legenda y 87%. Kanan: judul 16 pt tebal y 5–9%; tiga blok bertumpuk (y 12–36%, 39–60%, 65–85%) dipisah garis putus-putus, masing-masing judul blok 12 pt + batang horizontal x 50–80% + butir 10 pt x 81,5–97,5%; legenda kotak warna + kalimat x 52,5–95%, y 89–95%.",
+   "layak_contoh": true
+  },
+  {
+   "no": 21,
+   "jenis": "tabel",
+   "judul": "Kendala Tiap Model Pada Saat Program Berlangsung",
+   "nilai": 3,
+   "yang_bagus": "Struktur kolom identik dengan s3 (RTE / RTC / Swakelola) sehingga pembaca tidak perlu orientasi ulang. Sel gabungan dipakai untuk temuan yang berlaku lintas model (Konsumsi RTC+Swakelola; baris 'Lainnya' selebar tabel). Butir 12 pt cukup terbaca.",
+   "yang_lemah": "Merah dipakai untuk kabar baik ('Tidak ada kendala'), membalik semantik warna. Sel kepala 'Aspek' putih dengan teks biru tua, tidak senada dengan kepala oranye. Ruang kosong besar di sel baris 1–2 (sekitar 40% sel kosong). Judul topik; seharusnya menyatakan kendala terberat (mis. kontaminasi dan keterlambatan di RTE). Tidak ada tingkat keparahan atau frekuensi kendala.",
+   "resep_tata_letak": "Judul 24 pt dua-warna rata tengah y 6–11%; logo kanan atas x 93–99%. Tabel x 4,4–95,5%, y 14–95%: kolom label 12,3% (teks 12 pt tebal), 3 kolom opsi masing-masing sekitar 26,2%. Kepala oranye 16 pt putih y 14–21,5%. Baris: persiapan y 21,5–51%, penyajian 51–73%, konsumsi 73–81%, biaya 81–89%, lainnya 89–95%. Butir 12 pt dengan bulatan hijau. Garis tepi oranye tipis.",
+   "layak_contoh": false
+  },
+  {
+   "no": 22,
+   "jenis": "rekomendasi",
+   "judul": "Kami merekomendasikan model RTC dan Swakelola karena efisiensi harga, dampak positif terhadap penyerapan tenaga kerja, dan penerimaan rasa yang lebih baik berkat tim memasak yang lebih memahami preferensi siswa",
+   "nilai": 3,
+   "yang_bagus": "Judul aksi teladan: keputusan + tiga alasan dalam satu kalimat. Rekomendasi bernomor 1–6 dengan kepala hijau tebal dan sub-butir. Butir 5 'Biaya' mengaitkan kembali ke angka (Rp12.719, Rp13.145 vs target Rp15.000).",
+   "yang_lemah": "Sekitar 450 kata 12 pt dalam dua kolom, terlalu padat untuk penutup bagi pimpinan. Tidak ada prioritas, penanggung jawab (Kemendikbud/BGN/Pemda/sekolah), linimasa, biaya, atau 'keputusan yang diminta'. Rekomendasi strategis (pilih model) bercampur dengan operasional (cuci sayur, sterilisasi). Kolom kanan rata kanan-kiri, kolom kiri rata kiri, sehingga tidak konsisten. Butir belah ketupat oranye bergaya dekoratif. Salah ketik 'rosedur'. Judul 3 baris dengan peralihan warna di tengah kalimat.",
+   "resep_tata_letak": "Kartu putih bergaris tipis x 1,3–98,5%, y 2–98%. Bilah aksen x 2,8–11%, y 3–4,2%. Judul 24 pt x 2,8–83,5%, y 5–19%; logo x 91–97%. Dua kolom: kiri x 3–53%, y 22–94%; kanan x 55,5–96,5%, y 22–95%. Tiap rekomendasi: nomor + kepala 12 pt tebal warna primer, lalu sub-butir 12 pt menjorok 0,4 in. (Perbaikan: tabel Rekomendasi | Penanggung jawab | Waktu | Biaya, maksimal 5 baris.)",
+   "layak_contoh": false
+  }
+ ],
+ "pola_untuk_ditiru": [
+  "Matriks keputusan opsi x aspek (s3): opsi sebagai kolom dengan ikon + definisi satu baris di kepala berwarna, aspek sebagai baris, dan baris angka kunci (biaya per porsi, % konsumsi) diangkat jadi angka besar tebal berwarna primer. Bisa dibaca 5 detik.",
+  "Peta lokasi (s7): daratan satu warna netral, pin aksen, garis leader titik-titik vertikal ke label di luar daratan, label dua tingkat (nama + tipologi tebal beraksen / detail + jumlah), total dalam subjudul dengan angka beraksen.",
+  "Lapisan anotasi bukti→klaim: kotak putus-putus mengelilingi baris/batang yang relevan + panah siku ke kalimat penjelas 1–2 baris (s11 kotak di 4 baris protein hewani; s16 batang RTE & Makassar TK; s17 pencilan Mempawah).",
+  "Kelompok 'rata-rata' dipisahkan di ujung kanan grafik, dibingkai putus-putus, dan dihubungkan panah ke judul aksi (s17), sehingga pembaca melihat bukti untuk angka di judul.",
+  "Drill-down antar-grafik (s18): komponen terbesar dibingkai kotak solid, konektor siku menuju panel rincian di bawahnya.",
+  "Warna semantik transisi status (s20): hijau = membaik, merah = perlu perhatian, abu = tetap, dengan legenda berupa kalimat makna (bukan cuma nama seri).",
+  "Judul grafik dipimpin angka (s11): baris 1 '72% siswa' berwarna, baris 2 penjelasnya, menggantikan judul grafik deskriptif.",
+  "Anotasi delta langsung di kategori pesan: '-26 (-28%)' merah + panah (s20).",
+  "Catatan kaki penyebut untuk angka yang n-nya berbeda dari total ('*) Hanya 1.011 dari 1.143 siswa...') di s2, s10, s13.",
+  "Foto lapangan sebagai bukti dengan keterangan lokasi miring di bawahnya (s14: 'Dokumentasi foto menu RTC di lokasi SDN 01 Duyungan, Sragen').",
+  "Tabel berseksi dengan baris subjudul berwarna lembut + sel 'terbaik' diberi isian hijau muda (s13).",
+  "Struktur kolom yang sama dipakai ulang di slide lain (s3 dan s21) agar pembaca tidak perlu orientasi ulang.",
+  "Pembatas bab foto besar + blok warna solid + judul bab kiri bawah (s4, s9), dengan nomor bab ditambahkan di blok.",
+  "Kotak catatan putus-putus dengan pil label berwarna menimpa garis atasnya (s19 'Catatan').",
+  "Grafik kolom diurutkan menurun dengan label nilai putih di dalam ujung batang dan sumbu dihapus (s15), dipasangkan dengan 4–5 wawasan ber-ikon di kanan.",
+  "Forest plot dengan selang kepercayaan untuk menunjukkan ketidakpastian (s14), asalkan skala sumbu disamakan dan grafik dibuat native."
+ ],
+ "pola_untuk_dihindari": [
+  "Sumbu Y batang tidak mulai dari nol (s16 kiri: 74% vs 83% digambar sekitar 1:2,5).",
+  "Sumbu logaritmik untuk dua nilai sekitar 4 (s12 bawah).",
+  "Diagram pai dengan 3–5 kategori dan label terpotong ('Pemal', 'arang', 'adang-kadang' di s11).",
+  "Membiarkan warna bawaan Office (4472C4, 5B9BD5, 70AD47, FFC000, A5A5A5) di grafik saat merek punya palet sendiri, dan mengganti pemetaan warna seri antarslide (RTE biru di s16, hijau di s17–s18).",
+  "Judul dua-warna yang berganti warna di tengah kalimat tanpa makna (s17 empat kali; s2/s3 'Ringkasan' oranye + 'Eksekutif' hijau).",
+  "Judul aksi 3–4 baris dan sekitar 55 kata (s16), judul yang ditaruh di tengah kanan (s14), atau judul yang dimasukkan ke dalam bingkai grafik (s15).",
+  "Teks rata kanan-kiri di kolom sempit dan judul, yang menghasilkan celah kata lebar (s11, s12, s13, s16, s22).",
+  "Label nilai diputar 90 derajat (s17, s18, s19) dan label delta yang bertumpuk dengan label nilai (s19).",
+  "Format angka campur: 'Rp16,680' / '71.7%' / '6.6%' (gaya Inggris) bersama 'Rp 18.375' / '85,24%' (gaya Indonesia); spasi 'Rp 15.000' vs 'Rp15.000'.",
+  "Angka tidak konsisten antarslide: Rp 18.375 (s3) vs Rp18.372 (s17); '5 Lokasi' (s1) vs '6 dari 6 lokasi' (s12) vs '6 titik lokasi' (s17).",
+  "Merah untuk kabar baik ('Tidak ada kendala' s21), membalik semantik warna.",
+  "Grafik level padahal pesannya perubahan (s19 TB/BB: selisih 0,1–1,5 tidak terlihat pada batang 80–147).",
+  "Judul yang menutupi temuan negatif (s20 tidak menyebut overweight 108→117 dan obesitas 108→111).",
+  "Lima perlakuan bingkai berbeda dalam satu deck (bingkai oranye penuh, kartu berbayang, pita atas-bawah, full-bleed, polos).",
+  "Tiga keluarga huruf (Montserrat, Calibri, Arial) dan tiga varian oranye (F36715, ED7D31, F1671A).",
+  "Teks 7–9 pt untuk callout dan label grafik (s10, s12, s16, s18).",
+  "Sisa draf dan salah ketik: '?' di legenda s12, kotak garis kosong s12, 'enyajian', 'rosedur', 'pengolola', 'protein hewan:'.",
+  "Tidak ada nomor halaman, baris sumber, tanggal data, maupun pengungkapan konflik kepentingan.",
+  "Satu slide memuat 3 grafik + tabel + foto + butir (s10) atau 6 grafik (s11).",
+  "Linimasa titik berjarak sama untuk fase berdurasi tidak sama (s8).",
+  "Rekomendasi tanpa penanggung jawab, waktu, biaya, dan prioritas, yang mencampur level strategis dengan operasional (s22)."
+ ],
+ "pelajaran_untuk_deck_bnpb": [
+  "Kunci satu zona judul untuk semua slide konten: judul aksi Roboto Bold 22–24 pt navy #051C2C, rata kiri di x 0,5 in / y 0,4 in, maksimal 2 baris (sekitar 20 kata). Sorot paling banyak SATU angka/frasa dengan oranye #D9600B (contoh: 'Titik panas Riau naik <oranye>3,2x</oranye> dalam 72 jam'), bukan dua-warna bergantian seperti 005F51/F36715 JAPFA.",
+  "Ringkasan eksekutif harus memuat keputusan yang diminta, bukan cuma temuan (kelemahan s2 JAPFA). Format briefing Presiden/Kepala BNPB: strip 3–4 KPI (titik panas, luas terbakar ha, warga terdampak, ISPU maksimum) + 3 butir Situasi–Dampak–Tindakan + kotak navy 'Keputusan yang diminta', total ≤80 kata.",
+  "Tiru matriks s3 untuk opsi penanganan: kolom = opsi (water bombing / pemadaman darat / modifikasi cuaca / sekat kanal) atau provinsi, baris = biaya per ha, waktu respons, cakupan, kendala. Tambahkan baris terakhir 'Rekomendasi' berisian navy dengan teks putih, langkah yang dilewatkan JAPFA.",
+  "Tiru resep peta s7 untuk sebaran karhutla: daratan slate #3F5F80 pudar (atau abu muda), pin/lingkaran oranye #D9600B berukuran sesuai jumlah titik panas, garis leader ke label 'Kab. Pelalawan — 214 titik / 1.850 ha', total di subjudul dengan angka oranye. Wajib tambahkan baris sumber + waktu data ('Sumber: NASA FIRMS VIIRS, 21 Okt 2026 14:00 WIB') yang tidak ada di JAPFA.",
+  "Tetapkan pemetaan warna seri sekali untuk seluruh deck dan jangan pernah pakai warna Office: navy = nilai utama / periode kini, slate = pembanding / periode lalu, oranye = sorotan / di atas ambang, abu #C8CDD3-an = konteks. Generator perlu memvalidasi bahwa seri bernama sama berwarna sama di semua slide (kesalahan RTE biru vs hijau di JAPFA).",
+  "Integritas grafik sebagai gerbang mekanis: batang harus mulai dari nol, sumbu log dilarang kecuali rentang data lebih dari 2 orde, pai dilarang (ganti batang terurut), label nilai tidak boleh diputar. Gambar garis ambang yang disebut di judul (ISPU 150/300, target luas, batas status siaga) sebagai garis putus-putus oranye berlabel, yaitu garis Rp15.000 yang hilang di s17.",
+  "Pakai lapisan anotasi JAPFA dengan disiplin: satu kotak putus-putus oranye + panah ke callout ≤20 kata per grafik, teks callout ≥11 pt. Pakai konektor drill-down (s18) untuk 'nasional → provinsi → kabupaten'.",
+  "Status semantik untuk perubahan kondisi (pola s20) disesuaikan dengan palet: oranye = memburuk/perlu tindakan, slate = tetap, navy = membaik. Merah darurat (mis. #B3261E) hanya untuk status 'Tanggap Darurat' dan tidak pernah untuk teks positif.",
+  "Saat pesannya perubahan, gambar selisihnya (batang delta / slope chart titik panas H-7 vs hari ini), jangan level berdampingan seperti s19. Jangan menyembunyikan memburuknya indikator lain di judul (pelajaran s20).",
+  "Linimasa operasi: pakai skala waktu sungguhan dengan batang durasi (Siaga Darurat, Tanggap Darurat, Transisi) dan penanda 'Hari ini', bukan titik berjarak sama seperti s8.",
+  "Kepadatan: ≤80 kata per slide konten, badan ≥14 pt, label grafik ≥11 pt, 9 pt hanya untuk sumber/footnote, rata kiri, tidak pernah rata kanan-kiri. Maksimal 2 visual per slide (JAPFA s10/s11 memuat 4–6).",
+  "Satu perlakuan bingkai: latar putih polos, margin 0,5 in di semua sisi, footer konsisten (sumber + waktu data kiri, nomor halaman kanan, Roboto 9 pt slate). Tanpa bingkai oranye, kartu berbayang, atau pita bergantian.",
+  "Satu sumber kebenaran angka: generator menyimpan tiap angka kunci (total titik panas, luas, korban) di satu tabel data dan semua slide merujuk ke situ, sehingga tidak ada 18.375 vs 18.372. Format Indonesia seragam: '1.143', '6,6%', 'Rp15.000', '1.850 ha'.",
+  "Catatan kaki penyebut (pola s2/s10) untuk data parsial: '*) 9 dari 11 kabupaten melapor hingga 14:00 WIB'.",
+  "Pembatas bab (pola s4/s9) dengan foto lapangan + blok navy berisi nomor bab 72 pt putih dan 2–3 pertanyaan kunci bab. Cukup 1 pembatas per bab, dan untuk briefing ≤10 slide tidak perlu pembatas sama sekali.",
+  "Foto lapangan wajib berketerangan lokasi + tanggal + sumber (pola s14), misalnya 'Pemadaman darat di Desa X, Kab. Ogan Komering Ilir, 20 Okt 2026 — Dok. BPBD Sumsel'.",
+  "Rekomendasi penutup dalam bentuk tabel Tindakan | Penanggung jawab (K/L/Pemda) | Tenggat | Kebutuhan anggaran, maksimal 5 baris, terurut prioritas, bukan 450 kata butir seperti s22.",
+  "Pakai Roboto saja (Bold untuk judul/angka, Regular untuk badan, Medium untuk label). Hindari campuran 3 keluarga huruf seperti Montserrat + Calibri + Arial di JAPFA."
+ ]
+}

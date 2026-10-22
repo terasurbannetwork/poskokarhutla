@@ -1,0 +1,248 @@
+{
+ "ukuran_emu": [
+  12192000,
+  6858000
+ ],
+ "ukuran_in": [
+  13.33,
+  7.5
+ ],
+ "tema_warna": {
+  "nama": "WFP COLOUR PALETTE",
+  "dk1": "007DBC",
+  "lt1": "36B5C5",
+  "dk2": "00B385",
+  "lt2": "008868",
+  "accent1": "1A4161",
+  "accent2": "982B56",
+  "accent3": "EF404C",
+  "accent4": "B79F8D",
+  "accent5": "ECDFBB",
+  "accent6": "F37847",
+  "hlink": "FFFFFF",
+  "folHlink": "000000"
+ },
+ "tema_huruf": {
+  "judul": "Calibri Light",
+  "isi": "Calibri"
+ },
+ "slide": [
+  {
+   "no": 1,
+   "shape": 2,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 9,
+   "teks": "Remote-Modelling  | for Nutritious  | Meals: | Pilot for Learning | 2025 March",
+   "ukuran_huruf": [
+    16.0,
+    34.0
+   ]
+  },
+  {
+   "no": 2,
+   "shape": 4,
+   "gambar": 5,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 1,
+   "kata": 11,
+   "teks": "Free Nutritious Meals &amp; the Multiplier Effect | Children | Households | Wider Community",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 3,
+   "shape": 10,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 1,
+   "kata": 44,
+   "teks": "Background | One model implemented | ( | central kitchen | ) | Contextual  | adaptation |  required | BGN, WFP &amp; IFSR  | partner to develop  | effective models  | for school meals in  | 3T regions | Models will guide context-specific  | design &amp; scale-up | 3  | School Meals models  | envisioned: | Central kitchen | School kitchen | Packed meals",
+   "ukuran_huruf": []
+  },
+  {
+   "no": 4,
+   "shape": 13,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 5,
+   "kata": 34,
+   "teks": "Mission Objectives | Existing  | coordination |  mechanisms | Context |  (education, health, nutrition) | Food availability, safety &amp; supply chain  | readiness | Assess | Local sourcing  | opportunities  | Key implementation  | challenges | Identify | Integration of  | local economy  | Key  | stakeholders | Explore | 2 | 1 | 3",
+   "ukuran_huruf": [
+    20.0
+   ]
+  },
+  {
+   "no": 5,
+   "shape": 13,
+   "gambar": 3,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 3,
+   "kata": 12,
+   "teks": "Team Introduction | Badan Gizi Nasional | World Food  | Programme | Indonesia Food Security Review",
+   "ukuran_huruf": [
+    20.0
+   ]
+  },
+  {
+   "no": 6,
+   "shape": 11,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 3,
+   "kata": 36,
+   "teks": "Itinerary | 1 | Government Engagement | BAPPEDA Timor Tengah Selatan (TTS) | District technical institutions | Education, | Health, | Food Security,  | Agriculture, | Social Affairs, | Village Affairs, etc. | Supply Chain Engagement | Production stakeholders | Transport stakeholders | School Visit | Assessment for readiness | 2 | 3",
+   "ukuran_huruf": [
+    18.0,
+    28.0
+   ]
+  },
+  {
+   "no": 7,
+   "shape": 5,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 46,
+   "teks": "All those components can  influence how we  | work with markets  | &amp;  | deliver assistance |  to the people we serve.  | Market System  | refers to  | all actors in a market &amp; their relationships in bringing goods from producer to consumer  | (core retail supply chain). | Supply  | chain stakeholders  | m | apping",
+   "ukuran_huruf": [
+    14.0,
+    16.0,
+    30.0
+   ]
+  },
+  {
+   "no": 8,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 9,
+   "teks": "Assessment criteria  | Identify gaps through assessing the supply chain",
+   "ukuran_huruf": [
+    18.0,
+    30.0
+   ]
+  },
+  {
+   "no": 9,
+   "shape": 2,
+   "gambar": 2,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 4,
+   "teks": "Terima |  Kasih | 2025 March",
+   "ukuran_huruf": [
+    16.0,
+    34.0
+   ]
+  }
+ ],
+ "huruf_dipakai": [
+  [
+   "Open Sans",
+   111
+  ],
+  [
+   "+mn-lt",
+   18
+  ],
+  [
+   "Open Sans Extrabold",
+   6
+  ],
+  [
+   "Open Sans ExtraBold",
+   6
+  ],
+  [
+   "Calibri",
+   3
+  ],
+  [
+   "Open Sans Light",
+   1
+  ]
+ ],
+ "warna_dipakai": [
+  [
+   "000000",
+   53
+  ],
+  [
+   "FFFFFF",
+   20
+  ],
+  [
+   "007DBC",
+   16
+  ],
+  [
+   "0076BB",
+   7
+  ],
+  [
+   "0070BA",
+   4
+  ],
+  [
+   "ECE1B1",
+   3
+  ],
+  [
+   "1A4262",
+   2
+  ],
+  [
+   "36B5C5",
+   1
+  ],
+  [
+   "BDE3FF",
+   1
+  ],
+  [
+   "FFFFFE",
+   1
+  ]
+ ],
+ "ukuran_huruf_dipakai": [
+  [
+   14.0,
+   5
+  ],
+  [
+   16.0,
+   6
+  ],
+  [
+   18.0,
+   5
+  ],
+  [
+   20.0,
+   10
+  ],
+  [
+   28.0,
+   3
+  ],
+  [
+   30.0,
+   5
+  ],
+  [
+   34.0,
+   6
+  ]
+ ]
+}

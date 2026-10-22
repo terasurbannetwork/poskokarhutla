@@ -1,0 +1,216 @@
+{
+ "id": "e3b26734",
+ "nama": "2025-03-26_TTS_Mission_Findings & Recs",
+ "deck": "2025-03-26_TTS_Mission_Findings & Recs (WFP × IFSR, \"Modelling for Learning: TTS Mission Findings\", 10 slide, 13,33×7,5 in / 16:9)",
+ "tujuan_dan_audiens": "Ini debrief misi lapangan WFP Indonesia/IFSR ke Kabupaten Timor Tengah Selatan (TTS), NTT, untuk program MBG (makan bergizi di sekolah). Tujuannya mengusulkan satu dapur model di SD Inpres Nunumeu, Soe: 11 sekolah dan 3.145 penerima manfaat dalam radius 2 km. Anggaran yang diusulkan USD 342.938 (modal 225.000, implementasi 3 bulan 111.938, pelatihan 6.000), dengan rencana kerja Apr 2025–Mei 2026 dan serah terima operasional ke BGN pada Nov 2025. Audiensnya pimpinan kantor negara WFP, mitra pemerintah (BGN, pemda TTS), dan calon donor. Ini deck kerja tingkat teknis, bukan briefing pimpinan. Isinya kuat (konkret, lokal, ada biaya, ada jadwal), tetapi desainnya rata-rata ke bawah. Judul file menjanjikan \"Findings & Recs\", padahal tidak ada slide rekomendasi atau permintaan keputusan yang eksplisit.",
+ "nilai_deck": {
+  "pesan_judul": 1,
+  "alur_cerita": 3,
+  "hierarki_visual": 2,
+  "grid_ruang": 2,
+  "visualisasi_data": 2,
+  "tipografi_warna": 2,
+  "kepadatan_keterbacaan": 2,
+  "kecocokan_pimpinan": 2
+ },
+ "ringkasan_penilaian": "Nilai deck ini ada di ALUR ISI, bukan di desainnya. Urutannya logis seperti kerja konsultan: siapa yang ditemui (s2), temuan konteks (s3), kerangka nilai tambah 3 pilar (s4), lokasi terpilih beserta alasannya (s5), bukti peta (s6), total anggaran (s7), rincian modal (s8), rincian operasional (s9), lalu linimasa (s10). Benang merahnya terjaga. Tiga pilar di s4 (Menu & Supply Chain, Community Model, Evidence/Guidelines/Integration) muncul lagi sebagai kelompok baris Gantt di s10 (Implementation, Evidence Generation, Scalability Support). Angka 11 sekolah / 3.145 di s5 dibuktikan oleh peta simulator di s6. Total anggaran disajikan lebih dulu (s7) sebelum rinciannya (s8–s9).\n\nKelemahannya sistemik:\n(1) Semua judul hanya topik (\"Engagements\", \"Budget: Capital Costs\", \"Workplan: Tentative TBD\"). Tidak satu pun menyatakan kesimpulan, dan s3 serta s6 tidak punya judul sama sekali.\n(2) Tidak ada ringkasan eksekutif, tidak ada slide rekomendasi atau permintaan keputusan, tidak ada risiko, tidak ada penutup.\n(3) Semua tabel (s7–s10) adalah tangkapan layar Excel dengan hijau ≈#4EA72E dan kuning ≈#FFFF00 di luar palet merek. Pemisah ribuan memakai titik (\"225.000\", \"342.938\") di deck berbahasa Inggris berlabel USD, sehingga ambigu. Baris total di s7 tidak diberi label.\n(4) Grid tidak dijaga. Posisi atas judul melompat antara ±0,6 in (s4) dan ±1,2 in (s2/s5/s8/s9). Kotak pertama di s3 hanya 0,06 in dari tepi atas. Tangkapan layar s6 keluar sampai tepi bawah dan menutupi logo (sisa karangan bunga WFP masih terlihat di ±0,73 in, 6,5–6,8 in).\n(5) Tipografinya campur aduk: tema Calibri, teks Open Sans, tabel bawaan Excel, judul seksi s4 terpotong tanda hubung otomatis (\"Op-/timization\", \"Integra-/tion\"), dan s3 rata kiri-kanan dengan spasi kata yang meregang.\n\nYang layak ditiru hanya polanya, bukan pikselnya: sampul foto lapangan, galeri foto pemangku kepentingan, slide alasan pemilihan lokasi, urutan anggaran dari total ke rincian, dan Gantt per kelompok kerja dengan anotasi ramp-up di dalam sel.",
+ "alur": "1 Sampul (foto anak-anak sekolah TTS berbusana tenun bersama tim)\n→ 2 Engagements: 4 kelompok yang ditemui (Pemerintah provinsi/kabupaten/kecamatan, aktor rantai nilai, sekolah, aktor pembangunan). Slide ini membangun kredibilitas \"kami sudah turun ke lapangan\".\n→ 3 Konteks: tiga temuan (Coverage: 17 dapur di NTT vs target 2025 113, belum ada dapur beroperasi di TTS; Local Supply Chain: pangan didatangkan dari Kupang, harga buah volatil, masalah musim dan air; Government Support: Wabup mendukung, BPMP menetapkan 6 klaster MBG di Soe). Ini PROBLEM.\n→ 4 Peluang nilai tambah: 3 pilar model (menu & rantai pasok lokal, model komunitas, bukti/pedoman/integrasi nasional). Ini SOLUSI dalam bentuk kerangka.\n→ 5 Lokasi terpilih SD Inpres Nunumeu: model + cakupan (11 sekolah, 3.145 penerima, radius 2 km) → 5 alasan (lahan tersedia, kondisi baik, 27% penerima bisa berjalan kaki, didukung Dinas Pendidikan & Wabup, tidak tumpang tindih dengan dapur di Soe pusat). Ini REKOMENDASI LOKASI.\n→ 6 Bukti: tangkapan layar \"Simulator Lokasi UP\" (poligon jangkauan 2 km, rute, tabel sekolah).\n→ 7 Total anggaran USD 342.938\n→ 8 Rincian modal\n→ 9 Rincian implementasi (ramp-up 3 bulan)\n→ 10 Rencana kerja Apr 2025–Mei 2026.\n\nPolanya Situasi → Komplikasi → Usulan → Bukti → Biaya → Jadwal. Yang hilang: ringkasan eksekutif di depan (pimpinan harus menunggu sampai slide 7 untuk tahu angkanya), slide \"keputusan yang diminta / langkah berikut\", risiko dan mitigasi (musim hujan, air, pendanaan dapur Soe \"support unclear\"), dan penutup. Slide 7–10 lebih cocok jadi lampiran di belakang satu slide ringkasan anggaran + jadwal.",
+ "sistem_desain": {
+  "palet": [
+   {
+    "hex": "#007DBC",
+    "peran": "Biru WFP (tema dk1, dipakai 5 kali sebagai warna teks): judul semua slide, judul sampul, isi 4 kotak label di s2, lingkaran 'Context' di s3, teks bullet s4. Warna merek utama."
+   },
+   {
+    "hex": "#0070BA",
+    "peran": "Variasi biru yang muncul 1 kali, kemungkinan judul dengan warna manual. Inkonsistensi kecil terhadap #007DBC."
+   },
+   {
+    "hex": "#000F59",
+    "peran": "Navy gelap (27 run): teks isi s5 (kotak model/cakupan dan panel alasan). Satu-satunya warna teks isi yang terasa 'premium'."
+   },
+   {
+    "hex": "#000000",
+    "peran": "Hitam (37 run): teks isi s3, teks tabel; juga isi tab header 'MODEL' / 'SCHOOLS & BEN.' di s5 (di luar palet merek)."
+   },
+   {
+    "hex": "#FFFFFF",
+    "peran": "Latar semua slide (putih polos) dan teks di atas biru/hitam."
+   },
+   {
+    "hex": "#ECE1B1",
+    "peran": "Krem/khaki (3 kali): isi 3 kotak temuan bersudut bulat di s3. Di render tampak lebih gelap (≈#E2CF9C, estimasi). Tidak senada dengan biru."
+   },
+   {
+    "hex": "#36B5C5 / #00B385 / #008868 / #1A4161 / #982B56 / #EF404C / #B79F8D / #ECDFBB / #F37847",
+    "peran": "Sisa palet tema 'WFP COLOUR PALETTE' (lt1, dk2, lt2, accent1–6): didefinisikan tetapi hampir tidak terpakai sebagai warna teks. Hijau tua judul seksi dan cincin di s4 tampak ≈#00503C (estimasi render, kemungkinan turunan 008868 yang digelapkan)."
+   },
+   {
+    "hex": "≈#4EA72E (estimasi render)",
+    "peran": "Hijau bawaan Excel di dalam gambar tabel: pita judul tabel s7–s9 dan batang Gantt s10. Di luar merek."
+   },
+   {
+    "hex": "≈#FFFF00 (estimasi render)",
+    "peran": "Kuning stabilo Excel: baris header kolom s8–s9 dan sel 'School Holidays' di Gantt. Di luar merek, tanpa legenda."
+   },
+   {
+    "hex": "≈#002060 / ≈#C9EAF8 / ≈#D9D9D9 (estimasi render)",
+    "peran": "Header bulan navy, pita tahun biru muda, dan baris kelompok abu-abu di Gantt s10 (gaya bawaan Excel)."
+   },
+   {
+    "hex": "≈#EFEAE7 (estimasi render)",
+    "peran": "Abu hangat untuk panel isi s5 (kotak model, cakupan, dan panel alasan)."
+   }
+  ],
+  "huruf": "Font tema Calibri Light (judul) dan Calibri (isi), tetapi run teks sebenarnya memakai Open Sans (50 run), +mn-lt/Calibri (9 run), dan Open Sans Extrabold (1 run). Di render, judul tampil sebagai sans tebal pengganti, label s2 dan isi s4/s5 tampil sebagai Carlito (=Calibri), isi s3 sebagai sans pengganti dengan spasi rata kiri-kanan yang meregang. Tabel s7–s10 berupa gambar dengan font bawaan Excel (Aptos/Calibri). Total ada 3–4 keluarga huruf, tidak disiplin.",
+  "skala_huruf": "Judul sampul 34 pt tebal biru (#007DBC); tanggal sampul 16 pt tebal biru. Judul slide isi ≈32 pt tebal (diwarisi layout, estimasi dari tinggi huruf kapital ±0,32 in). Judul seksi s4 ≈20 pt tebal bergaris bawah hijau tua. Isi/label 20 pt (label kotak s2, bullet s4; s5 tampak ≈20 pt). Isi s3 nominal 28 pt tetapi dikecilkan autofit menjadi ≈18–20 pt. Teks dalam gambar tabel setara ≈13–16 pt (s7–s9) dan ≈11 pt (Gantt s10); tabel di s6 setara ≈6 pt (tidak terbaca). Tidak ada ukuran untuk keterangan atau sumber karena tidak satu pun slide punya baris sumber. Kontras judul:isi hanya ±1,6:1, hierarki lemah.",
+  "grid_margin": "Slide 13,33×7,5 in. Tidak ada grid kolom yang konsisten. Judul: tepi kiri 1,0–1,1 in (110–122 px dari 1466), tepi atas huruf melompat dari ±0,62 in (s4) / ±0,77 in (s7) / ±0,94 in (s10) ke ±1,18 in (s2, s5, s8, s9). Konten kiri mulai di 0,7–1,4 in; margin kanan berkisar 0,3 in (s3, s8) sampai 1,9 in (s9) dan 5,2 in kosong di s7. Margin atas pernah hanya 0,06 in (kotak Coverage s3). Bawah: tidak ada margin bawah yang ditetapkan; tumpukan logo menempati x 0,7–2,25 in, y 6,3–7,43 in (0,07 in dari tepi). Satu-satunya grid rapi ada di s2: 4 kolom di 10–93% lebar dengan selokan 0,31–0,37 in (tidak sama).",
+  "elemen_berulang": "(1) Tumpukan logo kiri bawah di s2–s10: WFP (karangan bunga + 'World Food Programme' biru) di atas IFSR ('IFSR Indonesia Food Security Review' hijau-biru), sekitar 1,55 in lebar × 1,1 in tinggi. Posisinya bergeser beberapa piksel (s4 IFSR di x≈70 px vs 78 px), dan tertutup tangkapan layar di s6. (2) Judul biru tebal kiri atas tanpa garis, pita, atau subjudul. (3) Latar putih polos. TIDAK ADA: nomor halaman, pita header, footer teks, tanggal, baris sumber, label kerahasiaan, penanda bab. Sampul memakai blok vertikal WFP biru 'SAVING LIVES CHANGING LIVES' plus logo IFSR di kanan bawah.",
+  "gaya_grafik": "Tidak ada grafik atau tabel native (grafik=0, tabel=0 di semua slide menurut struktur.json). Semua data berupa GAMBAR. s7–s9: tangkapan layar Excel dengan pita hijau ≈#4EA72E, header kuning ≈#FFFF00, garis kisi hitam 1 px, angka rata kanan, pemisah ribuan titik ('2.000.000.000', '125.000'), kolom IDR dan USD berdampingan, kolom 'Detail' berisi catatan. s10: Gantt Excel dengan pita tahun biru muda, header bulan navy, baris kelompok abu-abu, sel terisi hijau, sel kuning untuk libur sekolah, dan anotasi '1000 ben./2000 ben./3000 ben' di dalam sel tanpa isi warna. Tidak ada legenda, penanda milestone, atau garis 'hari ini'. s6: tangkapan layar aplikasi web dengan poligon jangkauan ungu ≈#9F98E0, rute merah, pin sekolah hijau, dan tabel 5 baris. Tanpa judul, tanpa callout."
+ },
+ "slide": [
+  {
+   "no": 1,
+   "jenis": "sampul",
+   "judul": "Modelling for Learning: TTS Mission Findings (tanggal: '2025 March')",
+   "nilai": 4,
+   "yang_bagus": "Foto lapangan nyata (anak SD berbusana tenun ikat bersama tim WFP dan guru, wajah tersenyum, jempol) memenuhi 69% atas. Langsung menyampaikan 'ini tentang anak-anak TTS dan kami sudah ke sana'. Pita putih bawah memberi kontras bersih untuk judul biru 34 pt. Blok logo WFP vertikal biru menumpang di tepi foto (51–86% tinggi) dan menjadi jangkar merek yang elegan. Judul cukup pendek, satu baris.",
+   "yang_lemah": "Format tanggal '2025 March' tidak lazim (seharusnya 'March 2025' atau '26 March 2025'). Tidak ada subjudul acara atau audiens (mis. 'Debrief to WFP CO / BGN'). Dua logo bertumpuk di kanan bawah dengan gaya berbeda terasa padat; logo IFSR hanya 0,25 in dari tepi bawah. Ujung kanan judul (x≈1215 px) hanya 0,4 in dari blok WFP, sehingga judul yang sedikit lebih panjang akan bertabrakan. Tidak ada kredit foto.",
+   "resep_tata_letak": "Latar putih. FOTO selebar slide 0–100% W × 0–69% H (crop dengan subjek di 10–85% W). PITA bawah 69–100% H putih. JUDUL rata kiri di x=6,8% W, blok teks 75–82% H, 34 pt tebal #007DBC, lebar maks 83% W, 1 baris. TANGGAL 16 pt tebal #007DBC di x=6,8% W, 91–93% H. TILE LOGO vertikal 86–94% W × 51–86% H, isi #007DBC, logo putih + slogan, sengaja menumpang batas foto. LOGO MITRA 81–99% W × 88–97% H. Urutan baca: foto → judul → tanggal → logo.",
+   "layak_contoh": true
+  },
+  {
+   "no": 2,
+   "jenis": "foto/kutipan (galeri pemangku kepentingan yang ditemui)",
+   "judul": "Engagements",
+   "nilai": 3,
+   "yang_bagus": "Pola 4 kolom foto + tile label yang sederhana dan langsung terbaca. Foto-foto nyata (ruang rapat pemda, kebun pisang, tim di sekolah, kantor mitra) membuktikan cakupan konsultasi. Tile biru #007DBC dengan teks putih 20 pt tebal rata tengah konsisten, dan subkategori dalam kurung (Provincial, district, sub-district / traders, farmers, retailers) menambah ketelitian tanpa menambah slide.",
+   "yang_lemah": "Judul hanya topik; tidak menyebut berapa pertemuan atau apa hasilnya. Foto tidak sejajar: tepi atas di 248/250/264/264 px (selisih 0,15 in), lebar 264–282 px, padahal tile 274 px. Selokan antarkolom 34–41 px (tidak sama). Margin kiri 1,37 in vs kanan 0,95 in (asimetris). Bagian 75–100% tinggi kosong kecuali logo. Ruang kosong besar antara judul (21% H) dan foto (30% H) tanpa subjudul. Tidak ada jumlah peserta, tanggal, atau lokasi per foto.",
+   "resep_tata_letak": "JUDUL kiri x=7,7% W, 16–21% H, ±32 pt tebal #007DBC. GRID 4 kolom sama lebar di 10–93% W (tiap kolom ±18,7% W, selokan ±2,7% W). BARIS FOTO 30–55% H, crop seragam rasio ±1,35:1, tepi atas dan bawah harus segaris. BARIS TILE 57–75% H, isi warna merek, teks putih 20 pt tebal rata tengah vertikal-horizontal, maks 3 baris (baris 1 = kategori, baris 2–3 = rincian dalam kurung). FOOTER logo kiri bawah 5–17% W × 84–99% H. Ruang 76–83% H sebaiknya diisi baris takeaway.",
+   "layak_contoh": true
+  },
+  {
+   "no": 3,
+   "jenis": "lainnya (temuan konteks, hub-and-spoke)",
+   "judul": "(tanpa judul slide; label lingkaran 'Context')",
+   "nilai": 2,
+   "yang_bagus": "Mengelompokkan temuan menjadi 3 tema yang jelas (Coverage / Local Supply Chain / Government Support) dengan label tebal. Faktanya spesifik dan berguna: 17 dapur di NTT vs target 2025 sebanyak 113; nol dapur beroperasi di TTS; dua dapur sedang dibangun (Koa dengan UNICEF, Soe 'support unclear'); pangan dari Kupang; musim hujan vs air di musim kemarau 'different from Java'; BPMP menetapkan 6 klaster di Soe.",
+   "yang_lemah": "Tidak ada judul aksi; 'Context' di lingkaran 2,6 in mendominasi padahal tidak bermakna. 125 kata. Teks rata kiri-kanan sehingga spasi kata meregang. Nominal 28 pt dikecilkan autofit. Kotak 1 menempel tepi atas (0,06 in) dan kotak 3 sampai 0,28 in dari tepi kanan. Label 'Government Support:' menduduki garis batas kotak (teks meluber ke atas). Panah putus-putus dari lingkaran tidak menyatakan logika apa pun. Krem #ECE1B1 tidak senada dengan biru. Angka kunci (17 vs 113, 0 dapur) tidak ditonjolkan. Tidak ada 'so what', mis. 'Belum ada dapur di TTS dan pasokan bergantung Kupang, jadi model harus memecahkan pasokan lokal'.",
+   "resep_tata_letak": "(Resep apa adanya, untuk dihindari.) Lingkaran hub 2–22% W × 30–63% H isi #007DBC teks putih tebal. Kotak bulat 1: 26–76% W × 1–26% H; kotak 2: 46–96% W × 29–64% H; kotak 3: 21–98% W × 69–94% H; isi #ECE1B1, teks hitam, label tema tebal + 2–3 bullet. Panah titik dari tepi lingkaran ke tiap kotak. PERBAIKAN yang disarankan: judul aksi 1 baris di atas, 3 kolom sama lebar 7–93% W, tiap kolom = angka besar 40 pt + label + 2 bullet ≤12 kata, 'implikasi' di pita bawah.",
+   "layak_contoh": false
+  },
+  {
+   "no": 4,
+   "jenis": "rekomendasi (kerangka 3 pilar nilai tambah)",
+   "judul": "Value Addition & Showcasing Opportunity",
+   "nilai": 2,
+   "yang_bagus": "Konsepnya baik: 3 pilar bernomor (1 Menu & Supply Chain Optimization, 2 Community Model, 3 Evidence, Guidelines & Integration for scalability) yang nanti menjadi kelompok baris Gantt di s10. Tiap bullet diawali kata kunci tebal ('Menu', 'farmers (local)', 'existing community structures', 'Integration into national guidelines'), jadi bisa dibaca sekilas.",
+   "yang_lemah": "Judul seksi dipotong tanda hubung otomatis ('Op-/timization', 'Integra-/tion') dan diberi garis bawah, rata tengah dengan spasi baris lebar. Tiga warna bersaing (judul biru, seksi hijau tua, isi biru). Lencana nomor 1/2/3 di cincin tidak bersebelahan dengan bloknya: nomor 3 di bawah cincin, tetapi blok 3 di kanan bawah. Ikon kaca pembesar tidak bermakna. Tiga blok tidak berbagi garis atas atau kiri yang sama (22%, 21%, 67% H). Blok 1 mulai di x=5% W, lebih kiri dari judul (8,3%). Isi biru di atas putih menurunkan kontras penekanan tebal. Judul hanya topik.",
+   "resep_tata_letak": "(Apa adanya.) Judul kiri 8,3% W, 8–13% H. Blok 1 kiri 5–36% W × 22–70% H (judul seksi rata tengah bergaris bawah + 4 bullet). Cincin + ikon tengah 39–56% W × 24–57% H dengan lencana nomor di busur. Blok 2 kanan 60–90% W × 21–59% H. Blok 3 bawah tengah 35–76% W × 67–95% H. PERBAIKAN: 3 kolom sama lebar (7–93% W) dengan nomor besar 1/2/3 di atas tiap kolom, judul pilar tebal rata kiri tanpa garis bawah (matikan hyphenation), 2–3 bullet, warna pilar dipakai ulang di linimasa.",
+   "layak_contoh": false
+  },
+  {
+   "no": 5,
+   "jenis": "rekomendasi (pemilihan lokasi: apa + cakupan → mengapa di sini)",
+   "judul": "Site Identification: SD Inpres Nunumeu (Primary School)",
+   "nilai": 3,
+   "yang_bagus": "Logikanya paling 'konsultan' di deck ini: dua kotak input (MODEL: School Kitchen, desain dapur bervariasi; SCHOOLS & BEN.: 11 sekolah, 3.145 penerima, radius 2 km), panah, lalu panel alasan berisi 5 kriteria yang diawali kata tebal (Cost-effective, good condition, 27% ben. in walking distance (logistics cost), Endorsement, Unlikely to overlap). Teks navy #000F59 di atas abu hangat nyaman dibaca. Judulnya spesifik (nama sekolah).",
+   "yang_lemah": "Tab header hitam pekat di luar palet merek dan terlalu berat dibanding isinya. Angka kunci (11, 3.145, 2 km) terkubur sebagai bullet 20 pt, padahal seharusnya angka besar. Panel alasan tanpa header ('Why this site'). Judul tidak menyatakan keputusan ('kami merekomendasikan…'). Tab kiri (x 109 px) dan kotak di bawahnya (x 113 px) tidak segaris. Tidak ada peta mini di slide ini, sehingga bukti terpisah ke s6. Penerima 27% berjalan kaki tanpa pembanding.",
+   "resep_tata_letak": "JUDUL kiri 7,7% W, 15–21% H. KOLOM INPUT A: tab header 7,4–22,7% W × 33–37% H (isi gelap, teks putih kapital tebal rata tengah), kotak isi 7,7–23% W × 40–63% H (abu hangat). KOLOM INPUT B: 25,6–41% W, struktur sama. PANAH titik-titik horizontal 41–58% W di 52% H. PANEL ALASAN 58–90% W × 25–78% H, abu hangat, 5 baris kriteria rata kiri, kata kunci tebal, spasi 1 baris kosong di antara kriteria, teks navy. Logo kiri bawah. Untuk versi baik: ganti isi kotak B dengan 3 angka KPI 36–40 pt + label 12 pt, beri header panel kanan, dan tambahkan peta mini.",
+   "layak_contoh": true
+  },
+  {
+   "no": 6,
+   "jenis": "peta (tangkapan layar aplikasi simulator)",
+   "judul": "(tanpa judul; isi gambar berjudul 'Simulator Lokasi UP')",
+   "nilai": 2,
+   "yang_bagus": "Isinya bukti kuat dan langsung mendukung s5: poligon jangkauan 2 km (ungu), rute merah ke tiap sekolah, pin sekolah berlabel (SD Inpres Nunumeu, SMP Negeri 2 Soe, SMAS Kristen 1/2 Soe, PAUD…), serta ringkasan 3145 peserta didik / 11 sekolah. Menunjukkan bahwa usulan berbasis alat analisis spasial, bukan klaim.",
+   "yang_lemah": "Tanpa judul, tanpa takeaway, tanpa callout di lokasi dapur. Kerangka aplikasi (sidebar Dashboard/UP Locator/Settings, kolom Longitude/Latitude, tombol Kalkulasi) memakan ±30% lebar tanpa nilai. Tabel data sekolah setara ±6 pt sehingga tidak terbaca. Gambar membentang 2–100% tinggi, keluar tepi bawah, dan menutupi blok logo (sepotong karangan bunga WFP masih terlihat di kiri bawah). Tidak ada legenda, skala, atau sumber data.",
+   "resep_tata_letak": "(Apa adanya.) Satu gambar tangkapan layar 5,5–94,5% W × 2–100% H tanpa elemen lain. PERBAIKAN: judul aksi 1 baris (mis. '11 sekolah, 3.145 siswa dalam radius 2 km dari SD Inpres Nunumeu'); peta saja di-crop dari kanvas aplikasi pada 5–65% W × 18–90% H dengan legenda, skala, dan sumber 10 pt; panel kanan 68–95% W berisi 3 KPI besar + 5 sekolah terbesar (tabel native 12 pt); callout lingkaran oranye pada titik dapur.",
+   "layak_contoh": false
+  },
+  {
+   "no": 7,
+   "jenis": "tabel (ringkasan anggaran)",
+   "judul": "IFSR-proposed Budget Summary (Kitchen only)",
+   "nilai": 2,
+   "yang_bagus": "Total disajikan sebelum rincian (struktur piramida). Hanya 3 komponen (Capital 225.000; Implementation 3 bulan 111.938; Training 6.000) dan total tebal. Judul jujur soal cakupan ('Kitchen only').",
+   "yang_lemah": "Tabel berupa tangkapan layar Excel (sisa garis kisi terlihat di tepi kanan dan bawah). Header hijau Excel ≈#4EA72E dengan teks hitam di luar merek. Pemisah ribuan titik di deck berbahasa Inggris berlabel USD, sehingga '342.938' bisa dibaca 342,938 dolar. Baris total tanpa label 'Total'. Tabel hanya menempati 9–61% W × 30–52% H dan ±55% slide kosong. Tidak ada proporsi (%), biaya per penerima (USD 342.938 / 3.145 ≈ USD 109 per anak) yang seharusnya menjadi pesan, atau perbandingan dengan standar BGN. Judul tidak menyatakan angka.",
+   "resep_tata_letak": "(Apa adanya.) Judul kiri 8,2% W, 10–15% H. Gambar tabel 2 kolom (komponen | USD) 9–61% W × 30–52% H. PERBAIKAN: judul berisi angka ('Dapur model butuh USD 343 ribu; 66% modal sekali-bayar'); kiri 7–55% W: satu bar bertumpuk horizontal atau 3 tile KPI; kanan 58–93% W: tabel native 3 baris + total bertanda; catatan sumber/kurs 10 pt di 90% H.",
+   "layak_contoh": false
+  },
+  {
+   "no": 8,
+   "jenis": "tabel (rincian biaya modal)",
+   "judul": "Budget: Capital Costs",
+   "nilai": 2,
+   "yang_bagus": "Dua mata uang berdampingan (IDR dan USD, tersirat kurs 16.000). Kolom 'Detail' menjelaskan tiap baris (Land Lease 0 karena dapur di sekolah; trays; fire extinguisher, medical kit; procurement of vehicle). Baris total tebal. Enam baris saja, masih bisa dibaca.",
+   "yang_lemah": "Tangkapan layar Excel dengan pita hijau + header kuning stabilo ≈#FFFF00 yang paling tidak cocok untuk pimpinan. Catatan internal muncul di slide ('room to reduce costs here'). Ukuran font tidak konsisten di dalam tabel (IDR total lebih kecil dari baris lain). Tabel 7,5–97,4% W, sehingga margin kanan hanya 0,35 in, tidak sejajar dengan tabel s7 dan s9. Tidak ada penyorotan bahwa bangunan dapur (125.000 = 56%) adalah pos terbesar.",
+   "resep_tata_letak": "(Apa adanya.) Judul kiri 7,7% W, 15–21% H. Gambar tabel 7,5–97% W × 32–68% H: pita judul tabel, header kolom (Activity 22% | IDR 19% | USD 10% | Detail 39%), 6 baris + total. PERBAIKAN: tabel native, header navy teks putih, angka rata kanan dengan satuan di header ('Rp juta', 'USD ribu'), sorot satu baris terbesar dengan oranye, judul aksi menyebut pos dominan.",
+   "layak_contoh": false
+  },
+  {
+   "no": 9,
+   "jenis": "tabel (rincian biaya implementasi)",
+   "judul": "Budget: Implementation Costs",
+   "nilai": 2,
+   "yang_bagus": "Menunjukkan ramp-up bulanan (USD 18.563 → 37.125 → 56.250) yang sejalan dengan 1.000/2.000/3.000 penerima di Gantt. Format kolom konsisten dengan s8.",
+   "yang_lemah": "Teks aktivitas yang sama ('Food, Utilities, staffing and land leasing (if needed)') diulang 3 kali; seharusnya kolom bulan. Kolom Detail rata bawah sementara angka rata tengah. Hubungan ke jumlah penerima tidak dijelaskan di slide ini. Total IDR lebih kecil fontnya. Tabel 7,5–85% W, lebar ketiga yang berbeda dari s7/s8. Ramp-up ini lebih cocok sebagai grafik batang kecil.",
+   "resep_tata_letak": "(Apa adanya.) Judul kiri 7,7% W, 15–21% H. Gambar tabel 7,5–85% W × 30–70% H, 3 baris berulang + total. PERBAIKAN: 3 kolom bulan (Bln 1/2/3) × baris komponen (pangan, utilitas, staf, sewa), baris penerima di atas, total per bulan; atau grafik batang 3 bar dengan label nilai dan anotasi penerima.",
+   "layak_contoh": false
+  },
+  {
+   "no": 10,
+   "jenis": "linimasa (Gantt)",
+   "judul": "Workplan: Tentative TBD",
+   "nilai": 3,
+   "yang_bagus": "Strukturnya baik untuk pimpinan. Ada 4 kelompok kerja (Preparatory, Implementation, Evidence Generation, Scalability Support) yang memetakan pilar s4. Horizon 14 bulan (Apr 2025–Mei 2026) dengan pita tahun. Anotasi ramp-up di dalam sel ('1000 ben.', '2000 ben.', '3000 ben') sangat informatif. Milestone 'Operational Handover to BGN' (Nov) dan 'FLA signed' (Apr) terbaca. 'School Holidays' (Mei–Jun) ditandai sebagai kendala.",
+   "yang_lemah": "Judul 'Tentative TBD' bersifat ragu dan berlebihan (tentative = TBD). Tabel berupa gambar Excel dengan font ±11 pt. Tidak ada legenda: hijau berarti apa, kuning berarti apa. Milestone tidak dibedakan dari durasi (semua blok hijau). Tidak ada garis 'hari ini' dan jalur kritis. Sel Kitchen Operations berisi teks tetapi tanpa isi warna, sehingga paling tidak terlihat padahal paling penting. Header navy, pita biru muda, dan hijau semuanya bawaan Excel. Tabel 5,8–96% W, dan tepi bawahnya (80% H) hampir menyentuh logo.",
+   "resep_tata_letak": "JUDUL kiri 7,5% W, 12,5–18% H. GANTT 6–96% W × 25–80% H: kolom aktivitas ±19% W, 14 kolom bulan sama lebar (±5,1% W). Baris 1 pita tahun, baris 2 header bulan isi gelap teks putih, lalu blok kelompok (baris abu tebal sebagai pemisah) masing-masing 2–4 aktivitas; sel aktif diisi warna, anotasi kapasitas ditulis di dalam sel. PERBAIKAN: tabel/shape native Roboto 12 pt, milestone berlian oranye, garis vertikal 'hari ini', legenda 10 pt di 82% H, judul aksi yang menyebut tanggal kritis.",
+   "layak_contoh": true
+  }
+ ],
+ "pola_untuk_ditiru": [
+  "Sampul foto lapangan: foto orang nyata di lokasi selebar slide 0–69% tinggi, pita polos 31% bawah untuk judul 34 pt + tanggal 16 pt, tile logo vertikal yang menumpang batas foto sebagai jangkar merek.",
+  "Galeri 'siapa yang kami temui' 4 kolom: foto seragam + tile label berwarna merek berisi kategori dan rincian dalam kurung. Cara cepat membangun kredibilitas konsultasi.",
+  "Slide pemilihan lokasi 'apa + cakupan → mengapa di sini': dua kotak input kiri, panah, panel 5 kriteria dengan kata kunci tebal di depan tiap kalimat.",
+  "Klaim lalu bukti: angka di slide lokasi (11 sekolah, 3.145, 2 km) langsung dibuktikan oleh peta jangkauan + rute pada slide berikutnya.",
+  "Anggaran berbentuk piramida: satu slide total 3 komponen, baru rincian modal dan rincian operasional.",
+  "Dua mata uang berdampingan (IDR | USD) dan kolom 'Detail' yang menjelaskan tiap pos, termasuk alasan pos bernilai nol (Land Lease 0 karena lahan sekolah).",
+  "Benang merah kerangka → jadwal: 3 pilar di slide kerangka menjadi kelompok baris di Gantt (Implementation / Evidence Generation / Scalability Support).",
+  "Gantt dengan anotasi kapasitas di dalam sel (1000 → 2000 → 3000 penerima) dan kendala kalender (libur sekolah) ditandai di linimasa.",
+  "Kata kunci tebal sebagai pembuka bullet ('Menu…', 'Linkages between farmers (local)…', 'Integration into national guidelines…') agar slide bisa dipindai.",
+  "Blok logo kemitraan di posisi tetap kiri bawah pada semua slide isi."
+ ],
+ "pola_untuk_dihindari": [
+  "Judul topik tanpa kesimpulan ('Engagements', 'Budget: Capital Costs') dan judul ragu 'Workplan: Tentative TBD'.",
+  "Slide tanpa judul (s3 hanya lingkaran 'Context', s6 hanya tangkapan layar).",
+  "Tabel dan Gantt sebagai tangkapan layar Excel: font tak terkendali, sisa garis kisi, warna hijau #4EA72E dan kuning #FFFF00 di luar merek, tidak bisa disunting.",
+  "Tangkapan layar aplikasi utuh dengan sidebar, kolom input, dan tombol; tabel di dalamnya setara ±6 pt dan gambar menutupi logo footer.",
+  "Pemisah ribuan titik ('342.938') di deck berbahasa Inggris berlabel USD; baris total tanpa label.",
+  "Catatan kerja internal tampil di slide ('room to reduce costs here', 'support unclear').",
+  "Teks rata kiri-kanan dengan spasi meregang, autofit yang mengecilkan 28 pt menjadi ±19 pt, dan 125 kata dalam satu slide.",
+  "Pemotongan kata otomatis di judul seksi ('Op-/timization', 'Integra-/tion') serta judul seksi bergaris bawah.",
+  "Panah putus-putus dekoratif dari hub 'Context' yang tidak menyatakan logika sebab-akibat.",
+  "Elemen menempel tepi slide (kotak 0,06 in dari tepi atas, tabel 0,35 in dari kanan) dan posisi judul yang melompat 0,6–1,2 in antar slide.",
+  "Tab header hitam pekat dan kotak khaki #ECE1B1 yang tidak berasal dari palet merek utama; tiga warna teks bersaing di satu slide (biru, hijau tua, hitam).",
+  "Slide yang 55% kosong (ringkasan anggaran) bersebelahan dengan slide yang penuh sesak (konteks).",
+  "Tidak ada nomor halaman, baris sumber, ringkasan eksekutif, slide keputusan/permintaan, risiko, atau penutup; format tanggal '2025 March'."
+ ],
+ "pelajaran_untuk_deck_bnpb": [
+  "Pakai alurnya, bukan desainnya. Briefing karhutla BNPB: (1) sampul, (2) ringkasan eksekutif 3 poin + keputusan yang diminta, (3) siapa/mana yang sudah dikunjungi atau dikoordinasikan (galeri foto posko/BPBD/Manggala Agni), (4) situasi: 3 angka besar (hotspot 24 jam, luas terbakar, ISPU terburuk), (5) kerangka respons 3 pilar (Pencegahan / Pemadaman / Pemulihan), (6) lokasi prioritas + alasan, (7) peta bukti, (8) kebutuhan sumber daya & anggaran (total lalu rincian), (9) linimasa, (10) keputusan yang diminta. Tabel rinci dipindah ke lampiran.",
+  "Setiap judul harus berupa kalimat kesimpulan ≤15 kata, Roboto Bold 28 pt #051C2C, di posisi tetap (mis. kiri 0,5 in, atas 0,4 in) pada SEMUA slide. Deck WFP melompat 0,6–1,2 in. Contoh: bukan 'Konteks', melainkan 'Hotspot Kalbar naik 3× dalam 7 hari; 62% di lahan gambut'.",
+  "Sampul ala s1 diadaptasi: foto operasi pemadaman atau warga terdampak (dengan kredit foto 9 pt) 0–65% tinggi, pita navy #051C2C 35% bawah dengan judul putih Roboto Bold 32–36 pt, garis aksen oranye #D9600B 4 pt di atas judul, tile logo BNPB vertikal yang menumpang batas foto, tanggal penuh '22 Oktober 2026' plus nama forum ('Rapat Terbatas dengan Presiden').",
+  "Galeri pemangku kepentingan ala s2: 4 kolom sama lebar dengan selokan sama (0,3 in), foto di-crop seragam dan tepinya segaris, tile label navy #051C2C teks putih Roboto Bold 18 pt, ditambah satu baris angka oranye di bawahnya ('12 rapat · 86 peserta · 4 kabupaten').",
+  "Slide pemilihan lokasi ala s5 untuk posko/pos aju/lokasi prioritas water bombing: kiri 3 tile KPI (angka Roboto Bold 40 pt navy, label 12 pt slate #3F5F80), kanan panel abu muda dengan header 'Mengapa di sini' dan 4–5 kriteria berkata kunci tebal. Jangan pakai tab hitam; pakai slate #3F5F80.",
+  "Peta: JANGAN tempel tangkapan layar Pantau Bencana dengan kerangka UI. Ekspor kanvas peta saja (5–65% lebar), lengkapi legenda, skala, panah utara, dan sumber 10 pt ('Sumber: NASA FIRMS VIIRS 375 m, 22 Okt 2026 14.00 WIB'). Callout oranye #D9600B hanya pada 1–3 titik yang perlu tindakan, dan panel kanan berisi KPI + tabel 5 baris native ≥12 pt.",
+  "Tabel selalu native dan bisa disunting, Roboto 12–14 pt. Header #051C2C teks putih, sub-header #3F5F80, garis tipis abu, angka rata kanan, satuan di header ('Rp miliar'), baris 'Total' berlabel dan tebal. Format angka Indonesia konsisten (Rp 3,6 miliar; 3.145 jiwa). Oranye hanya untuk satu baris yang diminta keputusannya. Hapus catatan internal.",
+  "Ringkasan anggaran tidak boleh 55% kosong: judul berisi angka ('Kebutuhan tambahan Rp 48 miliar; 70% untuk sewa heli water bombing'), bar bertumpuk horizontal komposisi, dan rasio per unit (per hektare, per jiwa terdampak) yang di deck WFP absen padahal paling bermakna (USD 343 ribu / 3.145 ≈ USD 109 per anak).",
+  "Gantt/linimasa operasi native: kelompok baris = pilar respons (konsisten warna dengan slide kerangka), milestone sebagai berlian oranye, garis vertikal 'hari ini', legenda wajib, anotasi kapasitas di dalam batang (mis. '2 heli → 4 heli'), musim/kendala (puncak kemarau, El Niño) sebagai pita latar abu, judul menyebut tanggal kritis. Jangan pernah 'Tentative TBD'.",
+  "Kepadatan: maks ±60 kata per slide, rata kiri (bukan rata kiri-kanan), matikan hyphenation, autofit dimatikan. Kalau teks tidak muat, pecah slide, jangan kecilkan font. Ukuran minimum 12 pt untuk isi dan 9–10 pt hanya untuk sumber.",
+  "Footer standar di semua slide isi: logo BNPB kecil (tinggi ≤0,45 in) kiri bawah, baris sumber 9–10 pt slate di atas footer, nomor halaman kanan bawah, margin bawah ≥0,35 in. Tidak ada gambar yang boleh menimpa zona footer.",
+  "Disiplin palet: maksimal navy #051C2C (judul, header), slate #3F5F80 (teks sekunder, panel), oranye #D9600B (satu sorotan per slide), abu muda untuk panel, putih latar. Deck WFP membuktikan bahwa begitu tabel Excel masuk, merek runtuh (hijau, kuning, navy Excel, khaki, hitam). Generator harus menolak warna di luar token.",
+  "Ganti pola hub-and-spoke ala s3 dengan 3 kolom temuan sejajar: angka besar + label + 2 bullet + satu baris 'implikasi' oranye di bawah. Ganti lingkaran-cincin ala s4 dengan 3 kolom pilar bernomor besar yang warnanya dipakai ulang di linimasa.",
+  "Gerbang mekanis untuk generator: tolak slide tanpa judul; tolak judul ≤3 kata atau judul tanpa kata kerja/angka; tolak gambar yang melewati margin 0,4 in atau menimpa footer; tolak tabel berupa gambar; tolak teks rata kiri-kanan; tolak run font selain Roboto; tolak hex di luar token; wajibkan baris sumber pada slide berangka/peta; wajibkan slide 2 = ringkasan eksekutif dan slide terakhir sebelum lampiran = keputusan yang diminta."
+ ]
+}

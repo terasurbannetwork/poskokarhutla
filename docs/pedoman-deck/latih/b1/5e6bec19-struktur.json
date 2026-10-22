@@ -1,0 +1,324 @@
+{
+ "ukuran_emu": [
+  9144000,
+  5143500
+ ],
+ "ukuran_in": [
+  10.0,
+  5.62
+ ],
+ "tema_warna": {
+  "nama": "Simple Light",
+  "dk1": "000000",
+  "lt1": "FFFFFF",
+  "dk2": "595959",
+  "lt2": "EEEEEE",
+  "accent1": "4285F4",
+  "accent2": "212121",
+  "accent3": "78909C",
+  "accent4": "FFAB40",
+  "accent5": "0097A7",
+  "accent6": "EEFF41",
+  "hlink": "0097A7",
+  "folHlink": "0097A7"
+ },
+ "tema_huruf": {
+  "judul": "Arial",
+  "isi": "Arial"
+ },
+ "slide": [
+  {
+   "no": 1,
+   "shape": 4,
+   "gambar": 3,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 18,
+   "teks": "Hasil  | Verifikasi | Dokumen |  dan  | Dukungan | Bakal |  Calon  | Ketua | Umum |  IA-ITB 2025-2029 | Disusun oleh: | Tim  | Verifikator | Panitia | Pemilu |  IA-ITB",
+   "ukuran_huruf": [
+    12.0,
+    32.0
+   ]
+  },
+  {
+   "no": 2,
+   "shape": 5,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 10,
+   "teks": "2 | Puja  | Pramudya |  (IF’06)  | 1 | Panitia | Pemilu | Ketua |  IA-ITB 2021 ",
+   "ukuran_huruf": [
+    7.5,
+    20.0,
+    49.5
+   ]
+  },
+  {
+   "no": 3,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 214,
+   "teks": "Laporan Verifikasi  | Puja  | Pramudya |  (IF’06) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melengkapi | formulir | pendaftaran | Bakal |  Calon  | Ketua | Umum | ✔ | Lolos | - | Melampirkan |  KTP  | atau |  Passport  | ✔ | Lolos | - | Melampirkan | Foto | Profil | ✔ | Lolos | - | Mengumpulkan dukungan alumni ITB sebanyak  | 150 | ( | seratus |  lima  | puluh | )  | orang pada platform Pemilu  | 172/150 | terverifikasi | Lolos | - | Mendaftarkan |  data  | tim | sukses |  5 (lima) orang  | pada platform Pemilu  | 5/5  | terverifikasi | Lolos | - | Melampirkan dokumen surat persetujuan 4 (empat) Pengurus Daerah | 1/4 | Tidak |  Lolos | Kepulauan |  Riau ( | ✔ | ) | Jakarta | ( | Tidak | ada | materai | ) | Riau | ( | Tidak | ada | materai | ) | Jawa |  Barat  | ( | Tidak | ada | materai | ) | Sumatera Utara  | ( | Tidak | ada | materai | ) | Melampirkan dokumen surat persetujuan 1 (satu) Pengurus Luar Negeri | 0/1 | Tidak |  Lolos | Belanda  | ( | Tidak | ada | materai | ) | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Program Studi | 1/3 | Tidak |  Lolos | SITH ( | ✔ | ) | IF | ( | Tidak | ada | materai | ) | GD |  ( | Tidak | ada | materai | ) | MT  | ( | Tidak | ada | materai |  &amp; cap) | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Komisariat | 0/3 | Tidak |  Lolos | 2002  | ( | Tidak | ada | materai | ) | Ganesha |  Start Up Club  | ( | Tidak | ada | materai | ) | Ganeca | Lezat | ( | Tidak | ada | materai | ) | Melampirkan |  Lembar Su",
+   "ukuran_huruf": [
+    8.0,
+    9.5,
+    15.0,
+    16.0
+   ]
+  },
+  {
+   "no": 4,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 2,
+   "grup": 0,
+   "kata": 92,
+   "teks": "Laporan Verifikasi  | Puja Pramudya (IF’06) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melampirkan Lembar Surat Pernyataan Keabsahan Dokumen yang telah dilengkapi dengan e-materai atau materai Rp10.000 | ✔ | Lolos | - | Melampirkan  | Surat  | Komitmen | yang telah dilengkapi dengan e-materai atau materai Rp 10.000 | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | formulir | sebesar |  Rp. 1.000.000 (Satu Juta Rupiah) | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | pendaftaran | sebesar |  Rp. 250.000.000 (Dua Ratus Lima  | Puluh |  Juta Rupiah) | 251/250 | Lolos | Dibagi | dalam |  2  | tahap | Rp. 25  | juta | Rp. 226  | juta | Verifikasi | Kelengkapan | Dokumen | 10/14 | Terdapat |  4  | dokumen |  yang  | tidak | lolos | verifikasi",
+   "ukuran_huruf": [
+    8.0,
+    12.0,
+    14.0,
+    24.0,
+    40.0
+   ]
+  },
+  {
+   "no": 5,
+   "shape": 5,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 10,
+   "teks": "5 | Agustin  | Peranginangin |  (SI’94) | 2 | Panitia | Pemilu | Ketua |  IA-ITB 2021 ",
+   "ukuran_huruf": [
+    7.5,
+    20.0,
+    49.5
+   ]
+  },
+  {
+   "no": 6,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 172,
+   "teks": "Laporan Verifikasi  | Agustin  | Peranginangin |  (SI’94) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melengkapi | formulir | pendaftaran | Bakal |  Calon  | Ketua | Umum | ✔ | Lolos | - | Melampirkan |  KTP  | atau |  Passport  | ✔ | Lolos | - | Melampirkan | Foto | Profil | ✔ | Lolos | - | Mengumpulkan dukungan alumni ITB sebanyak  | 150 | ( | seratus |  lima  | puluh | )  | orang pada platform Pemilu  | 329/150 | terverifikasi | Lolos | - | Mendaftarkan |  data  | tim | sukses |  5 (lima) orang  | pada platform Pemilu  | 5/5  | terverifikasi | Lolos | - | Melampirkan dokumen surat persetujuan 4 (empat) Pengurus Daerah | 8/4 | Lolos | Jakarta ( | ✔ | ) | Yogyakarta  | ( | ✔ | ) | Aceh  | ( | ✔ | ) | Sumatera Utara  | ( | ✔ | ) | Kep | . Riau  | ( | ✔ | ) | Kalimantan Timur  | ( | ✔ | ) | Kalimantan Barat  | ( | ✔ | ) | Jawa |  Barat  | ( | ✔ | ) | Melampirkan dokumen surat persetujuan 1 (satu) Pengurus Luar Negeri | 1/1 | Lolos | Qatar ( | ✔ | ) | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Program Studi | 5/3 | Lolos | Farmasi |  ( | ✔ | ) | Mesin | ( | ✔ | ) | Material  | ( | Tidak | ada | materai |  dan cap) | TPSDA  | ( | ✔ | ) | Meteorologi | ( | ✔ | ) | Kimia | ( | ✔ | ) | Geodesi | ( | Tidak | ada | materai | )",
+   "ukuran_huruf": [
+    7.0,
+    9.5,
+    15.0,
+    16.0
+   ]
+  },
+  {
+   "no": 7,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 2,
+   "grup": 0,
+   "kata": 152,
+   "teks": "Laporan Verifikasi  | Agustin  | Peranginangin |  (SI’94) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Komisariat | 4/3 | Lolos | ITB 96 ( | ✔ | ) | ITB 97 ( | ✔ | ) | ITB 94 ( | ✔ | ) | ITB 2002 ( | ✔ | ) | ITB 2000 ( | Tidak | ada |  cap | ) | SPURI  | ( | Tidak | ada |  cap | ) | Melampirkan |  Lembar Surat  | Pernyataan | Tidak | Pernah | Dijatuhi | Hukuman | Pidana |  yang  | telah | dilengkapi | dengan |  e- | materai | /  | materai |  Rp10.000 | ✔ | Lolos | - | Melampirkan Lembar Surat Pernyataan Keabsahan Dokumen yang telah dilengkapi dengan e-materai atau materai Rp10.000 | ✔ | Lolos | - | Melampirkan  | Surat  | Komitmen | yang telah dilengkapi dengan e-materai atau materai Rp 10.000 | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | formulir | sebesar |  Rp. 1.000.000 (Satu Juta Rupiah) | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | pendaftaran | sebesar |  Rp. 250.000.000 (Dua Ratus Lima  | Puluh |  Juta Rupiah) | 250/250 | Lolos | Dibagi | dalam |  3  | tahap | Rp. 1  | juta | Rp. 186  | juta | Rp. 63  | juta | Verifikasi | Kelengkapan | Dokumen | 14/14",
+   "ukuran_huruf": [
+    7.0,
+    14.0,
+    16.0,
+    40.0
+   ]
+  },
+  {
+   "no": 8,
+   "shape": 5,
+   "gambar": 1,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 10,
+   "teks": "8 | Agung  | Asmawedha |  (FI’02) | 3 | Panitia | Pemilu | Ketua |  IA-ITB 2021 ",
+   "ukuran_huruf": [
+    7.5,
+    20.0,
+    49.5
+   ]
+  },
+  {
+   "no": 9,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 1,
+   "grup": 0,
+   "kata": 179,
+   "teks": "Laporan Verifikasi  | Agung  | Asmawedha |  (FI’02) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melengkapi | formulir | pendaftaran | Bakal |  Calon  | Ketua | Umum | ✔ | Lolos | - | Melampirkan |  KTP  | atau |  Passport  | ✔ | Lolos | - | Melampirkan | Foto | Profil | ✔ | Lolos | - | Mengumpulkan dukungan alumni ITB sebanyak  | 150 | ( | seratus |  lima  | puluh | )  | orang pada platform Pemilu  | 161/150 | terverifikasi | Lolos | - | Mendaftarkan |  data  | tim | sukses |  5 (lima) orang  | pada platform Pemilu  | 5/5  | terverifikasi | Lolos | - | Melampirkan dokumen surat persetujuan 4 (empat) Pengurus Daerah | 4/4 | Lolos | Jakarta ( | ✔ | ) | Jawa |  Barat |  ( | ✔ | ) | Banten |  ( | ✔ | ) | Riau  | ( | ✔ | ) | Melampirkan dokumen surat persetujuan 1 (satu) Pengurus Luar Negeri | 1/1 | Lolos | Qatar ( | ✔ | ) | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Program Studi | 3/3 | Lolos | Kimia ( | ✔ | ) | Fisika | ( | ✔ | ) | MBA | ( | ✔ | ) | Melampirkan dokumen surat persetujuan 3 (tiga) Pengurus Komisariat | 2/3 | Tidak |  Lolos | ITB 2002  | ( | ✔ | ) | ITB 1999  | ( | ✔ | ) | ITB 2000  | ( | Tidak | ada |  cap | ) | Melampirkan |  Lembar Surat  | Pernyataan | Tidak | Pernah | Dijatuhi | Hukuman | Pidana |  yang  | telah | dilengkapi | dengan |  e- | materai | /  | materai |  Rp10.000 | ✔ | Lolos | -",
+   "ukuran_huruf": [
+    8.0,
+    9.5,
+    15.0,
+    16.0
+   ]
+  },
+  {
+   "no": 10,
+   "shape": 2,
+   "gambar": 0,
+   "grafik": 0,
+   "tabel": 2,
+   "grup": 0,
+   "kata": 83,
+   "teks": "Laporan Verifikasi  | Agung  | Asmawedha |  (FI’02) | Dokumen | Kelengkapan | Verifikasi | Keterangan | Melampirkan Lembar Surat Pernyataan Keabsahan Dokumen yang telah dilengkapi dengan e-materai atau materai Rp10.000 | ✔ | Lolos | - | Melampirkan  | Surat  | Komitmen | yang telah dilengkapi dengan e-materai atau materai Rp 10.000 | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | formulir | sebesar |  Rp. 1.000.000 (Satu Juta Rupiah) | ✔ | Lolos | - | Melampirkan | bukti |  transfer  | biaya | pendaftaran | sebesar |  Rp. 250.000.000 (Dua Ratus Lima  | Puluh |  Juta Rupiah) | 250/250 | Lolos | - | Verifikasi | Kelengkapan | Dokumen | 13/14 | Terdapat |  1  | dokumen |  yang  | tidak | lolos | verifikasi",
+   "ukuran_huruf": [
+    8.0,
+    12.0,
+    14.0,
+    24.0,
+    40.0
+   ]
+  },
+  {
+   "no": 11,
+   "shape": 4,
+   "gambar": 3,
+   "grafik": 0,
+   "tabel": 0,
+   "grup": 0,
+   "kata": 8,
+   "teks": "TERIMA KASIH | Disusun oleh: | Panitia Pemilu IA-ITB 2025",
+   "ukuran_huruf": [
+    12.3,
+    30.0
+   ]
+  }
+ ],
+ "huruf_dipakai": [
+  [
+   "Roboto",
+   851
+  ],
+  [
+   "Archivo",
+   29
+  ],
+  [
+   "Calibri Light",
+   18
+  ],
+  [
+   "Archivo Black",
+   16
+  ],
+  [
+   "Archivo ExtraBold",
+   12
+  ],
+  [
+   "Arial",
+   8
+  ],
+  [
+   "Arial Nova Cond",
+   3
+  ]
+ ],
+ "warna_dipakai": [
+  [
+   "00B050",
+   163
+  ],
+  [
+   "FF0000",
+   129
+  ],
+  [
+   "000000",
+   85
+  ],
+  [
+   "21468B",
+   32
+  ],
+  [
+   "FFFFFF",
+   21
+  ],
+  [
+   "21458A",
+   4
+  ],
+  [
+   "691118",
+   3
+  ]
+ ],
+ "ukuran_huruf_dipakai": [
+  [
+   7.0,
+   249
+  ],
+  [
+   7.5,
+   18
+  ],
+  [
+   8.0,
+   444
+  ],
+  [
+   9.5,
+   12
+  ],
+  [
+   12.0,
+   26
+  ],
+  [
+   12.3,
+   2
+  ],
+  [
+   14.0,
+   10
+  ],
+  [
+   15.0,
+   3
+  ],
+  [
+   16.0,
+   14
+  ],
+  [
+   20.0,
+   9
+  ],
+  [
+   24.0,
+   10
+  ],
+  [
+   30.0,
+   1
+  ],
+  [
+   32.0,
+   13
+  ],
+  [
+   40.0,
+   3
+  ],
+  [
+   49.5,
+   3
+  ]
+ ]
+}
