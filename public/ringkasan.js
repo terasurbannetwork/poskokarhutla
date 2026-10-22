@@ -564,7 +564,7 @@ const Ringkasan = (() => {
           <tr><td>Kompleks api prioritas (satelit)</td><td>${fmt(K.k3)}; front membesar di ${fmt(K.naik)} kompleks; ditambah ${fmt(K.k2)} kompleks siaga</td></tr>
           <tr><td>Provinsi siaga dan darurat (model)</td><td>${fmt(D.nD)} darurat, ${fmt(D.nS)} siaga, ${fmt(D.nW)} waspada</td></tr>
           <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${fmt(K.jiwaPrio)} jiwa menghirup udara tidak sehat di provinsi yang sering mengalami karhutla (${fmt(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
-          <tr><td>Luas terbakar sejak 1 Juni</td><td>perkiraan satelit ${K.luas ? `${rb(K.luas[1])} ha (rentang ${rb(K.luas[0])}–${rb(K.luas[2])} ha)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? rb(K.bnpbHa) + " ha (6 provinsi)" : "–"}</td></tr>
+          <tr><td>Luas terbakar sejak 1 Juni</td><td>${K.luas ? `${rb(K.luas[1])} ha (rentang ${rb(K.luas[0])}–${rb(K.luas[2])} ha)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? rb(K.bnpbHa) + " ha (6 provinsi)" : "–"}</td></tr>
           <tr><td>Gangguan penerbangan 7 hari (berita)</td><td>${fmt(K.kj7.length)} kejadian di ${fmt(K.bandara7)} bandara</td></tr></tbody></table>
         <h2>II. Keputusan yang dibutuhkan hari ini</h2><ol class="rk-ckp">${kp}</ol>
         <p class="rk-cket">Angka bertanda satelit berasal dari pengamatan; model adalah perkiraan; resmi dari laporan BNPB; berita dari judul media.</p></section>

@@ -177,16 +177,16 @@ function muatPK() {
 /* jangkar periode: pilihan pengguna, atau hari terakhir data. Sengaja TIDAK mengikuti st.hari: kartu memakai hari kalender WIB (00.00-23.59, metode deck BNPB),
    kartu lain memakai hari laporan s.d. 16.00 WIB; satu tanggal bersama akan menampilkan dua jumlah berbeda (keputusan satu definisi hotspot: pemilik) */
 const jangkarPK = () => pet.ref || PKD.hari.at(-1);
-/* nm (judul, tooltip, keterangan) selalu memuat "perkiraan satelit": luas dan belum padam adalah hitungan dari deteksi, bukan hasil pengecekan regu darat;
+/* nm (judul, tooltip, keterangan): luas dan belum padam adalah hitungan dari deteksi, bukan hasil pengecekan regu darat, tetapi tulisan "(perkiraan satelit)" dibuang (pemilik, 22 Okt 2026);
    pil = kepala kolom daftar; jml/ada = legenda; kosong = judul bila tak ada deteksi (tiada deteksi bukan bukti tiada api) */
 const INFO_PK = {
   hot: {nm: "Hotspot", pil: "Hotspot", sat: "titik", jml: "jumlah titik panas", ada: "titik panas", kosong: "Tidak ada titik panas"},
-  luas: {nm: "Luas terbakar (perkiraan satelit)", pil: "Luas terbakar", sat: "ha, satelit", jml: "luas area terbakar (perkiraan satelit)", ada: "area terbakar", kosong: "Tidak ada area terbakar terdeteksi satelit"},
-  belum: {nm: "Belum padam (perkiraan satelit)", pil: "Belum padam", sat: "ha, satelit", jml: "luas deteksi satelit yang bertahan", ada: "deteksi satelit yang bertahan", kosong: "Tidak ada deteksi satelit yang bertahan"}};
+  luas: {nm: "Luas terbakar", pil: "Luas terbakar", sat: "ha, satelit", jml: "luas area terbakar", ada: "area terbakar", kosong: "Tidak ada area terbakar terdeteksi satelit"},
+  belum: {nm: "Belum padam", pil: "Belum padam", sat: "ha, satelit", jml: "luas deteksi satelit yang bertahan", ada: "deteksi satelit yang bertahan", kosong: "Tidak ada deteksi satelit yang bertahan"}};
 function modelPK(P) {
   const R = window.PetaKarhutla, m = pet.metrik, ref = jangkarPK(), I = INFO_PK[m], [, , warna, muda] = R.METRIK.find(x => x[0] === m);
   const r = R.rentang(PKD, pet.mode, ref, pet.a, pet.b) || {i0: PKD.n - 1, i1: PKD.n - 1}, [kw, lw] = R.waktuBagian(PKD, pet.mode, r.i0, r.i1, m);
-  const nm = m === "luas" && r.i0 !== r.i1 ? "Jumlah luas harian (perkiraan satelit)" : I.nm;   /* luas periode = jumlah harian: area yang sama bisa terhitung di beberapa hari */
+  const nm = m === "luas" && r.i0 !== r.i1 ? "Jumlah luas harian" : I.nm;   /* luas periode = jumlah harian: area yang sama bisa terhitung di beberapa hari */
   const w = `${kw} <span class="lp-w">${lw}</span>`, wTeks = `${kw} ${lw}`;   /* label tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
   const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `±${fmt(x)} ha`, mt = PKD.metode || {};
   const rows = PKD.kode.filter(k => !P.length || P.includes(k)).map(k => ({k, nama: PKD.prov[k].nama, t: sekarang[k] || 0, tp: sebelum ? sebelum[k] || 0 : null})).filter(x => x.t > 0).sort((a, c) => c.t - a.t);

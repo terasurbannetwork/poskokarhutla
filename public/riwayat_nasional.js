@@ -32,6 +32,6 @@ function riwayatNasional(fs, tb, sj, merek) {
     judul: `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + jt(ini.v) + " juta ha")} (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta) hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`,
     svg: `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas dan luas terbakar Indonesia per tahun 1997–${th}">${g}</svg>`,
     sumber: `Titik: NASA FIRMS VIIRS S-NPP keyakinan sedang/tinggi, setahun penuh (satelit mulai 2012, jadi 1997–1998 tidak ada); ${th}: perkiraan ${merek} dari titik x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi, jadi ha per titiknya tidak dihitung; 1997–${+th - 1}: luas BNPB via ${fs.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
-    leg: [[ORANYE, "titik panas setahun"], [MERAH, "luas di atas 1 juta ha"], [NAVY, "luas di bawah 1 juta ha"], ["#d98b7c", `${th}, perkiraan satelit (sementara)`]],
+    leg: [[ORANYE, "titik panas setahun"], [MERAH, "luas di atas 1 juta ha"], [NAVY, "luas di bawah 1 juta ha"], ["#d98b7c", `${th} (sementara)`]],
   };
 }
