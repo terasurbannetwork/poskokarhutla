@@ -1,5 +1,9 @@
 /* /kabar: daftar api prioritas per kabupaten; kartu api memakai instansi_kartu.css */
+*,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font)}
+.top .mark{display:flex;align-items:center;gap:10px}
+/* kepala.css menimpa latar tautan; tombol utama dipertegas di sini */
+.kb .kp-tombol.utama{background:#d9531e;border-color:#d9531e;color:#fff}
 .kb{max-width:720px;margin:0 auto;padding:16px}
 .kb-pilih{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px}
 .kb-pilih select{min-height:44px;padding:0 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:500}
