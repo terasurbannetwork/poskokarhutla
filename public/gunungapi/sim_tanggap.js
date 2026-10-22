@@ -16,6 +16,7 @@ const BAWAAN = {
   hari_ungsi: 3,           /* lama mengungsi dasar (hari) */
   biaya_orang_hari: 50000, /* Rp per jiwa per hari (makan, air, tenda; ASUMSI, ganti dengan data BPBD) */
   biaya_armada_hari: 2500000, /* Rp per kendaraan armada per hari (sewa + BBM + sopir; ASUMSI) */
+  maks_rit: 50000,        /* batas rit armada per simulasi (penjaga waktu hitung); bila tercapai hasil memberi terpotong: true */
   masker_per_orang_hari: 2, masker_hari_ekstra: 2, biaya_masker: 3500,
 };
 const R_BUMI = 6371;
@@ -72,38 +73,54 @@ function paparPiksel(piksel, sx, sel, luasSelKm2) {
 }
 const jiwaDalamRadius = (piksel, lat, lon, km) => piksel.reduce((a, p) => a + (jarakKm(lon, lat, p[1], p[0]) <= km ? p[2] : 0), 0);
 
+/* sel bahaya per unit penduduk dari hasil Lahar.simulasi: awan panas dan lahar digabung PER SEL dulu (waktu tiba = yang paling awal, lahar digeser `geserLahar` jam),
+   baru dihitung bagian luas piksel, supaya sel yang dilalui keduanya tak dihitung dua kali. ll(x, y) = [lon, lat] pusat sel DEM; n = lebar DEM; luasSelKm2 = luas satu sel. */
+function paparanUnit(pop, r, ll, n, luasSelKm2, geserLahar) {
+  if (!pop?.piksel?.length) return null;
+  const waktu = new Map(); for (const [tab, g] of [[r.pdc, 0], [r.lahar, geserLahar]]) tab.idx.forEach((v, q) => { const t = g + tab.t[q] / 3600, w = waktu.get(v); if (w == null || t < w) waktu.set(v, t); });
+  const sel = []; for (const [v, t] of waktu) { const [lo, la] = ll(v % n, (v / n) | 0); sel.push([la, lo, t]); }
+  const pp = paparPiksel(pop.piksel, pop.sx, sel, luasSelKm2);
+  return pop.piksel.map(([la, lo, jiwa], i) => ({lat: la, lon: lo, jiwa, frak: pp[i].frak >= 0.005 ? pp[i].frak : 0, bahaya_jam: pp[i].frak >= 0.005 ? pp[i].t : null}));
+}
+/* titik kumpul terdekat (garis lurus) dari daftar tujuan [[lon, lat]]: kunci sama dengan kunci titik pada entri evakuasi paparan */
+const kunciTitik = p => Math.round(p[0] * 1e4) + "," + Math.round(p[1] * 1e4);
+function tujuanTerdekat(tujuan, lon, lat) { let b = null, bd = Infinity; for (const t of tujuan) { const d = jarakKm(lon, lat, t[0], t[1]); if (d < bd) { bd = d; b = t; } } return b ? {kunci: kunciTitik(b), titik: b, km: bd} : null; }
+
 /* ---------- evakuasi dengan kapasitas ----------
-   o.desa = unit penduduk (piksel): [{jiwa, frak (bagian terpapar, bawaan 1), tempuh_menit, titik, bahaya_jam|null, titik_bahaya_jam|null, ruas: [[menit, jam]]}];
+   o.desa = unit penduduk (piksel): [{jiwa, frak (bagian terpapar, bawaan 1), tempuh_menit, titik, bahaya_jam|null (di unitnya), titik_bahaya_jam|null (di titik kumpul), ruas: [[menit dari unit, jam bahaya]]}];
    o.mulai_jam: jam perintah relatif erupsi (negatif = sebelum); o.dalam: indeks unit yang diungsikan; o.armada: {n}.
-   Aman = TIBA di titik kumpul sebelum bahaya sampai di unitnya, di titik kumpul, atau di ruas yang dilalui. "Terpapar" = jiwa x frak di unit yang dilanda awan panas/lahar. */
+   Kendaraan unit berangkat merata dalam jendela antrean [awal, akhir] di titik kumpul (FIFO, laju kap_jalan; antrean dibagi dengan truk). Selamat bila (a) berangkat dari unit sebelum bahaya sampai
+   di unit (berangkat = tiba di titik - tempuh), (b) tiba di titik kumpul sebelum bahaya sampai di titik itu, (c) tidak melewati ruas yang sudah tersapu. */
 function evakuasi(o) {
   const P = {...BAWAAN, ...o.param}, D = o.desa, n = D.length, dalam = o.dalam instanceof Set ? o.dalam : new Set(o.dalam);
   const mulai = o.mulai_jam + P.siaga_jam, hit = i => D[i].bahaya_jam != null, fr = i => D[i].frak ?? 1;
-  /* batas waktu aman unit: bahaya di unit, di titik kumpul, atau ruas jalannya yang dilalui lebih dulu */
-  const lim = i => { const d = D[i]; let b = Math.min(d.bahaya_jam ?? Infinity, d.titik_bahaya_jam ?? Infinity); for (const [m, th] of d.ruas || []) if (mulai + m / 60 >= th) b = -Infinity; return b; };
+  const blok = (i, t0) => (D[i].ruas || []).some(([m, th]) => t0 + m / 60 >= th);   /* melewati ruas yang sudah tersapu */
   const selamat = new Float64Array(n), per = D.map(() => ({mandiri: 0, armada: 0, tiba_jam: null}));
-  /* kendaraan pribadi: antrean FIFO per titik kumpul; selesai = max(tiba tanpa antre, titik kosong) + kendaraan / kapasitas */
   const grup = new Map(); for (const i of dalam) { const k = D[i].titik ?? "-"; (grup.get(k) || grup.set(k, []).get(k)).push(i); }
-  let selesai = mulai;
-  for (const idx of grup.values()) { idx.sort((a, b) => D[a].tempuh_menit - D[b].tempuh_menit); let kosong = -Infinity;
+  let selesai = mulai, terpotong = false; const kosongT = new Map();
+  for (const [k, idx] of grup) { idx.sort((a, b) => D[a].tempuh_menit - D[b].tempuh_menit); let kosong = -Infinity;
     for (const i of idx) { const d = D[i]; if (!isFinite(d.tempuh_menit)) continue; /* terputus: tak ada jalan ke titik kumpul */
-      const jiwa = d.jiwa * P.mandiri, kend = jiwa / P.orang_per_kend, awal = Math.max(mulai + d.tempuh_menit / 60, kosong), akhir = awal + kend / P.kap_jalan; kosong = akhir;
-      per[i].tiba_jam = akhir; selesai = Math.max(selesai, akhir); const L = lim(i);
-      const f = !hit(i) ? 1 : L >= akhir ? 1 : L <= awal ? 0 : (akhir > awal ? (L - awal) / (akhir - awal) : 0); selamat[i] += jiwa * f; per[i].mandiri = jiwa * f; } }
-  /* armada: tiap kendaraan bolak-balik dari titik kumpul; unit paling cepat terkena dilayani dulu; truk yang tak sempat tiba di unit sebelum bahaya tidak diberangkatkan */
+      const tm = d.tempuh_menit / 60, jiwa = d.jiwa * P.mandiri, kend = jiwa / P.orang_per_kend, awal = Math.max(mulai + tm, kosong), akhir = awal + kend / P.kap_jalan; kosong = akhir;
+      per[i].tiba_jam = akhir; selesai = Math.max(selesai, akhir);
+      let f = 1; if (hit(i)) { const w = akhir - awal, bv = d.bahaya_jam, bt = d.titik_bahaya_jam ?? Infinity;
+        f = blok(i, awal - tm) ? 0 : w > 0 ? Math.max(0, Math.min(1, (bv + tm - awal) / w, (bt - awal) / w)) : (awal - tm <= bv && awal <= bt ? 1 : 0); }
+      selamat[i] += jiwa * f; per[i].mandiri = jiwa * f; }
+    kosongT.set(k, kosong); }
+  /* armada: tiap kendaraan bolak-balik dari titik kumpul; unit paling cepat terkena dilayani dulu; truk berangkat hanya bila sempat tiba di unit sebelum bahaya, dan ikut antre di titik kumpul */
   const N = Math.max(0, Math.floor(o.armada?.n || 0));
   if (N > 0) { const sisa = D.map((d, i) => dalam.has(i) ? d.jiwa * (1 - P.mandiri) : 0), urut = [...dalam].sort((a, b) => (D[a].bahaya_jam ?? 1e9) - (D[b].bahaya_jam ?? 1e9));
     const bebas = new Float64Array(N).fill(mulai); let rit = 0;
-    for (const i of urut) { const d = D[i]; if (!isFinite(d.tempuh_menit)) continue; const L = lim(i);
-      while (sisa[i] > 0.5 && rit < 50000) { let k = 0; for (let q = 1; q < N; q++) if (bebas[q] < bebas[k]) k = q;
-        const ta = bebas[k] + d.tempuh_menit / 60; if (hit(i) && ta > L) break;   /* tak sempat tiba di unit sebelum bahaya: berhenti, kendaraan tak terpakai */
-        const bawa = Math.min(P.kap_armada, sisa[i]), tiba = ta + P.muat_menit / 60 + d.tempuh_menit / 60; bebas[k] = tiba; sisa[i] -= bawa; rit++;
-        selesai = Math.max(selesai, tiba); selamat[i] += bawa; per[i].armada += bawa; } } }
+    for (const i of urut) { const d = D[i]; if (!isFinite(d.tempuh_menit)) continue; const tm = d.tempuh_menit / 60, k = d.titik ?? "-";
+      while (sisa[i] > 0.5) { if (rit >= P.maks_rit) { terpotong = true; break; } let q0 = 0; for (let q = 1; q < N; q++) if (bebas[q] < bebas[q0]) q0 = q;
+        const ta = bebas[q0] + tm; if (hit(i) && (ta > d.bahaya_jam || blok(i, bebas[q0]))) break;   /* tak sempat tiba di unit sebelum bahaya: kendaraan tak diberangkatkan */
+        const bawa = Math.min(P.kap_armada, sisa[i]), mt = ta + P.muat_menit / 60 + tm, layan = Math.max(mt, kosongT.get(k) ?? -Infinity); kosongT.set(k, layan + 1 / P.kap_jalan);   /* truk melewati antrean titik */
+        bebas[q0] = layan; sisa[i] -= bawa; rit++; selesai = Math.max(selesai, layan);
+        if (!hit(i) || layan <= (d.titik_bahaya_jam ?? Infinity)) { selamat[i] += bawa; per[i].armada += bawa; } } } }
   let terpapar0 = 0, terpapar1 = 0, diungsi = 0;
   for (let i = 0; i < n; i++) { if (dalam.has(i)) diungsi += D[i].jiwa; if (hit(i)) { const f = fr(i); terpapar0 += D[i].jiwa * f; terpapar1 += f * (D[i].jiwa - Math.min(D[i].jiwa, selamat[i])); } }
   const hari = P.hari_ungsi + Math.ceil(Math.max(0, -o.mulai_jam) / 24), hariArmada = Math.max(1, Math.ceil(Math.max(0, selesai - o.mulai_jam) / 24));
   const biaya = diungsi * hari * P.biaya_orang_hari + N * hariArmada * P.biaya_armada_hari;
-  return {diungsi, terpapar0, terpapar1, terselamatkan: terpapar0 - terpapar1, selesai_jam: selesai, biaya, hari, per};
+  return {diungsi, terpapar0, terpapar1, terselamatkan: terpapar0 - terpapar1, selesai_jam: selesai, biaya, hari, per, terpotong};
 }
 
 /* ---------- peringkat perlakuan: paket radius x mulai x armada, tiap paket dijalankan lewat model yang sama ----------
@@ -118,8 +135,8 @@ function peringkat(dasar, desa, pilihan) {
     jalan([ka ? `Radius ${km} km` : "", kb ? `mulai ${nm(j)}` : "", kc ? `armada ${a}` : ""].filter(Boolean).join(", ").replace(/^./, c => c.toUpperCase()), {radius_km: km, mulai_jam: j, armada: {n: a}}); }
   const dr = baris[0];
   baris.forEach(b => { b.pareto = !baris.some(c => c !== b && c.selamat >= b.selamat && c.biaya <= b.biaya && (c.selamat > b.selamat || c.biaya < b.biaya)); b.tambah_selamat = b.selamat - dr.selamat; b.tambah_biaya = b.biaya - dr.biaya; });
-  const sulit = [{kap_jalan: BAWAAN.kap_jalan / 2}, {mandiri: 0.4}];
-  baris.forEach(b => { if (!b.pareto) return; const m = Math.min(b.selamat, ...sulit.map(p => evakuasi({...b.o, desa, dalam: b.dalam, param: {...b.o.param, ...p}}).terselamatkan)); b.peka = b.selamat > 0 && (b.selamat - m) / b.selamat > 0.2; });
+  baris.forEach(b => { if (!b.pareto) return; const pm = {...BAWAAN, ...b.o.param}, sulit = [{kap_jalan: pm.kap_jalan / 2}, {mandiri: Math.min(pm.mandiri, 0.4)}];   /* sisi buruk relatif terhadap nilai pemanggil */
+    const m = Math.min(b.selamat, ...sulit.map(p => evakuasi({...b.o, desa, dalam: b.dalam, param: {...b.o.param, ...p}}).terselamatkan)); b.peka = b.selamat > 0 && (b.selamat - m) / b.selamat > 0.2; });
   const lihat = new Set(), par = baris.filter(b => b.pareto && b !== dr && b.selamat > dr.selamat + 0.5).sort((a, b) => a.biaya - b.biaya || b.selamat - a.selamat)
     .filter(b => { const k = Math.round(b.selamat) + "|" + Math.round(b.biaya / 1e5); return lihat.has(k) ? false : (lihat.add(k), true); });   /* paket kembar (hasil sama) hanya dihitung sekali */
   /* manfaat marginal terhadap pareto sebelumnya (jiwa per Rp miliar) */
@@ -143,5 +160,5 @@ function bandaraTutup(bandara, jejak) {
   return out.sort((a, b) => a.jam - b.jam);
 }
 
-return {BAWAAN, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
+return {BAWAAN, jarakKm, slug, gunungBawaan, bangunGraf, dijkstra, kecepatanRute, median, evakuasi, peringkat, dalamRadius, paparPiksel, paparanUnit, tujuanTerdekat, kunciTitik, jiwaDalamRadius, ruasBahaya, masker, dalamPoligon, bandaraTutup};
 });

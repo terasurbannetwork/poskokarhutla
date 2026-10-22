@@ -742,6 +742,28 @@ def ukur(cache, jalur):
             "snpp_n21_p10": round(n21s[int(0.1 * (len(n21s) - 1))], 4), "snpp_n21_p90": round(n21s[int(0.9 * (len(n21s) - 1))], 4)}
 
 
+def ukur_statis(baris, wil, hari):
+    """[(sumber, baris_csv)] (harus memuat hari UTC hari-1 dan hari-2 untuk jendela belum) -> dict untuk konstanta STATIS pada hari WIB `hari` (date):
+    titik = N20/N21 n/h di provinsi mana pun; statis = yang jatuh di sel titik_palsu.sel_industri() (tanpa kawah); bertahan = yang terdeteksi lagi 12-36 jam
+    sebelumnya di sel 3x3 (bertahan() yang sama dengan hitung()); bertahan_statis = irisan keduanya."""
+    import titik_palsu
+    industri, _ = titik_palsu.sel_industri()
+    det, titik = defaultdict(list), []
+    for _, r in baris:
+        if r["satellite"] in ("N20", "N21") and r["confidence"].lower() in ("n", "h"):
+            jam = r["acq_time"].zfill(4)
+            lon, lat = float(r["longitude"]), float(r["latitude"])
+            c, t = sel(lon, lat), tgl(r["acq_date"]).toordinal() * 1440 + int(jam[:2]) * 60 + int(jam[2:])
+            det[c].append(t); titik.append((lon, lat, c, t))
+    awal = hari.toordinal() * 1440 - 420   # 00:00 WIB = 17:00 UTC hari sebelumnya
+    out = {"hari": hari.isoformat(), "titik": 0, "statis": 0, "bertahan": 0, "bertahan_statis": 0}
+    for lon, lat, c, t in titik:
+        if awal <= t < awal + 1440 and (wil.cari(lon, lat) or ("",))[0]:
+            b, s = bertahan(det, c, t), titik_palsu.palsu(lat, lon, industri)
+            out["titik"] += 1; out["statis"] += s; out["bertahan"] += b; out["bertahan_statis"] += b and s
+    return out
+
+
 # ---------------------------------------------------------------- uji (tanpa jaringan)
 FIKSTUR = os.path.join(AKAR, "data/laporan-bnpb/satelit-2026-10-21")
 
@@ -884,12 +906,14 @@ def uji_sintetis():
     assert rw["62|A"][0] == 3 and rw["62|B"][0] == 1 and rw["62|A|x"][3] == 0.5 * 4.3 and rw["62|B|z"][3] == 0.5 * 4.3, rw   # c1 dan c2 tak muncul lagi: keduanya padam
     iw = susun_wil(None, d, d, d + HARI, {d.isoformat(): rw, (d + HARI).isoformat(): {"62|A": [0, 0.4, 0, 0]}}, "x")
     assert iw["d"]["62|A"] == [0, 3, 4, 2, 2] and iw["d"]["62|A|y"] == [0, 0, 2, 0, 0] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
-    # teks metode: angka dari konstanta, tanda baca bertipografi (en dash, ±), klaim tak melampaui bukti
+    # teks metode: angka dari konstanta, tanda baca bertipografi (en dash), tanpa ± (selera pemilik), klaim tak melampaui bukti
     mt = metode()
     teks = json.dumps(mt, ensure_ascii=False)
     assert koma(PORSI) in mt["luas"] and koma(UKUR["porsi_median"]) in mt["luas"] and "16–19 Okt 2026" in mt["luas"], mt["luas"]
-    assert "±375 m" in mt["belum"] and "12–36 jam" in mt["belum"] and "±15–40%" in mt["catatan"][0], (mt["belum"], mt["catatan"][0])
+    assert "sampai 375 m dari titik" in mt["belum"] and "12–36 jam" in mt["belum"] and "Rentang galat 15–40%" in mt["catatan"][0], (mt["belum"], mt["catatan"][0])
+    assert "±" not in teks + json.dumps(metode_wil(), ensure_ascii=False), "± di teks tayang"
     assert not any(x in teks for x in ("+-", "16-19", "12-36", "15-40")), "tanda baca ASCII di teks tayang"
+    assert "1,0% titik NOAA-20/21 nasional (1,9% dari yang bertahan)" in mt["catatan"][-1] and "20 Okt 2026" in mt["catatan"][-1] and "gunung api" in mt["catatan"][-1], mt["catatan"][-1]
     assert "setara SiPongi dan GIS BNPB" not in teks and "Papua Selatan" in mt["hot"], mt["hot"]
     assert "4,3 ha per titik tidak diuji per provinsi" in mt["catatan"][0] and "belum diuji independen" in mt["catatan"][2], mt["catatan"]
     assert hari_lengkap_terakhir(dt.datetime(2026, 10, 21, 14, 20, tzinfo=UTC)) == dt.date(2026, 10, 20)      # jalan 21.20 WIB
@@ -946,7 +970,7 @@ def uji_kab():
     harus_gagal(ubah(lambda c: c["kab"]["62|A"]["d"][0].__setitem__(1, 40)), "(a) jumlah kabupaten jauh dari provinsi")
     harus_gagal(ubah(lambda c: c["kab"].__setitem__("62|Z", c["kab"].pop("62|B") | {"nama": "Z"})), "(b) kunci tak ada di GeoJSON layar")
     harus_gagal(ubah(lambda c: c["kab"]["62|B"].__setitem__("nama", "A")), "(b) nama tak cocok dengan kunci")
-    harus_gagal(ubah(lambda c: c["kab"].__setitem__("62|", c["kab"].pop("62|B") | {"nama": ""})), "(b) kunci bernama kosong (ditolak penjaga layar)")
+    harus_gagal(ubah(lambda c: c["kab"].__setitem__("62|", c["kab"].pop("62|B") | {"nama": ""})), "(b) kunci bernama kosong")
     harus_gagal(ubah(lambda c: c["kab"]["62|B"]["d"].append([1, 0, 0])), "(d) entri nol dua-duanya (tak jarang)")
     harus_gagal(ubah(lambda c: c["kab"]["62|A"]["d"].insert(0, [2, 1, 0])), "(d) indeks tak naik")
     harus_gagal(ubah(lambda c: c["kab"]["62|B"]["d"].append([3, 1, 0])), "(d) indeks di luar hari")
@@ -978,7 +1002,11 @@ def uji_deck():
     tar, ref = os.path.join(FIKSTUR, "firms-raw-15-21okt.tar.gz"), os.path.join(FIKSTUR, "angka_nasional.json")
     assert os.path.exists(tar) and os.path.exists(ref), f"fikstur deck tidak ada di {FIKSTUR} (harus di-commit bersama skrip ini)"
     A = json.load(open(ref))
-    rek = rekam(baris_deck(tar), Wilayah(), "2026-10-21T14:41:00+00:00")
+    baris, wil = baris_deck(tar), Wilayah()
+    rek = rekam(baris, wil, "2026-10-21T14:41:00+00:00")
+    st = ukur_statis(baris, wil, tgl(STATIS["hari"]))   # angka di teks metode (STATIS) = hitungan atas fikstur
+    assert st == STATIS, f"STATIS usang: fikstur memberi {st}, konstanta {STATIS}; jalankan --statis dan salin hasilnya (titik_palsu.json berubah?)"
+    assert 0 < st["statis"] < 0.05 * st["titik"], f"sel sumber panas tetap harus ada tetapi kecil: {st}"
     hd = {}
     for i in range(16, 21):
         hd[dt.date(2026, 10, i)] = hari_data(rek, dt.date(2026, 10, i))
@@ -1096,6 +1124,8 @@ def uji():
 if __name__ == "__main__":
     if "--uji" in sys.argv:
         uji()
+    elif "--statis" in sys.argv:
+        print("STATIS =", ukur_statis(baris_deck(os.path.join(FIKSTUR, "firms-raw-15-21okt.tar.gz")), Wilayah(), tgl(STATIS["hari"])))
     elif "--ukur" in sys.argv:   # --keluar berkas.json: JSON yang dibaca (hari + celah), bawaan yang terbit
         jl = sys.argv[sys.argv.index("--keluar") + 1] if "--keluar" in sys.argv else os.path.join(AKAR, "public/data/peta_karhutla.json")
         print("UKUR =", ukur(os.path.join(AKAR, "data/raw/peta_karhutla/utc"), jl))

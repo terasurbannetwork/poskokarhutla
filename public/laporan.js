@@ -188,11 +188,11 @@ function modelPK(P) {
   const r = R.rentang(PKD, pet.mode, ref, pet.a, pet.b) || {i0: PKD.n - 1, i1: PKD.n - 1}, [kw, lw] = R.waktuBagian(PKD, pet.mode, r.i0, r.i1, m);
   const nm = m === "luas" && r.i0 !== r.i1 ? "Jumlah luas harian (perkiraan satelit)" : I.nm;   /* luas periode = jumlah harian: area yang sama bisa terhitung di beberapa hari */
   const w = `${kw} <span class="lp-w">${lw}</span>`, wTeks = `${kw} ${lw}`;   /* label tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
-  const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `±${fmt(x)} ha`, mt = PKD.metode || {};
+  const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `${fmt(R.bulat2(x))} ha`, mt = PKD.metode || {};   /* luas satelit: dua angka penting (R.bulat2), tanpa tanda plus-minus */
   const rows = PKD.kode.filter(k => !P.length || P.includes(k)).map(k => ({k, nama: PKD.prov[k].nama, t: sekarang[k] || 0, tp: sebelum ? sebelum[k] || 0 : null})).filter(x => x.t > 0).sort((a, c) => c.t - a.t);
   const tot = rows.reduce((a, x) => a + x.t, 0), totNas = PKD.kode.reduce((a, k) => a + (sekarang[k] || 0), 0), top = rows[0];   /* porsi selalu dari total nasional */
   const j = !top ? `${I.kosong} ${w}` : m === "hot" ? `${Kartu.hl(fmt(rows.length))} provinsi mencatat titik panas ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${Kartu.hl(fmt(top.t))} titik)`
-    : `${nm} ${Kartu.hl("±" + fmt(tot) + " ha")} ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${v(top.t)})`;
+    : `${nm} ${Kartu.hl(fmt(R.bulat2(tot)) + " ha")} ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${v(top.t)})`;
   const dari = r.i0 === r.i1 ? "hari sebelumnya" : "periode sebelumnya";
   /* kaki: tiap kalimat di simpulnya sendiri supaya terjemahan EN per kalimat (teks metode dari JSON diterjemahkan per kunci di en.json) */
   const tetap = t => [t, "."];   /* kalimat tetap: titik penutup di luar simpul, supaya kunci en.json tanpa titik */
@@ -648,9 +648,9 @@ document.addEventListener("click", e => {
 });
 /* input tanggal memicu change pada tiap segmen yang menghasilkan tanggal sah (mengetik "10" lewat "1" melompat ke Januari lebih dulu) dan render ulang
    merebut fokus dari input yang sedang diketik: komit setelah jeda, seperti pencarian (tunda). Nilai dibaca saat jeda habis; yang belum sah diabaikan petaAtur. */
-let tundaTgl;
 document.addEventListener("change", e => { const c = e.target.closest("select[data-pk],input[data-pk]"); if (!c || !PKD) return;
-  if (c.type === "date") { clearTimeout(tundaTgl); tundaTgl = setTimeout(() => PKD && petaAtur(c.dataset.pk, c.value), 600); return; }
+  /* penghitung waktu PER INPUT: satu penghitung bersama membuat Sampai (Tab dari Dari, < 600 ms) membatalkan komit Dari */
+  if (c.type === "date") { clearTimeout(c._h); c._h = setTimeout(() => PKD && petaAtur(c.dataset.pk, c.value), 600); return; }
   petaAtur(c.dataset.pk, c.value); });
 /* pemilih kartu: gambar ulang kartunya saja */
 const GAMBAR = {ring: () => isi("ring", kartuRingkasan), luas: () => isi("luas", kartuLuas), kurva: () => isi("kurva", kartuKurva),
@@ -757,7 +757,7 @@ function kartuKonsesi() {
   const badan = (rk.length ? kep("Titik panas di areal konsesi per provinsi", "% di konsesi") + batang(rk, sKons, (o, t) => pct(Math.min(o._k, t) / (t || 1))) + leg(sKons.map(s => [s[0], s[1]])) : "")
     + (rg.length ? kep("Titik panas di lahan gambut per provinsi", "% di gambut") + batang(rg, [["Gambut", "#6b4a2b", o => o.gb, 1], ["Tanah mineral", "#d9c7a8", (o, t) => t - o.gb, 0]], (o, t) => pct(o.gb / (t || 1))) + leg([["Gambut", "#6b4a2b"], ["Tanah mineral", "#d9c7a8"]]) : "");
   return Kartu.kartu("Konsesi", `${Kartu.hl(pct(T.n ? T.konsesi / T.n : 0))} titik panas di kompleks api 7 hari terakhir (${fmt(T.konsesi)} dari ${fmt(T.n)}) berada di dalam areal konsesi`,
-    badan || '<div class="kosong">Data status lahan belum tersedia</div>', "NASA FIRMS VIIRS 375 m (7 hari); batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026 (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH); gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar");
+    badan || '<div class="kosong">Data status lahan belum tersedia</div>', "NASA FIRMS VIIRS 375 m (7 hari); batas konsesi: sawit/HPH sekitar 2014, HTI 2020–2022, tambang 2026 (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH); gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar");
 }
 
 /* ---------- muat ---------- */

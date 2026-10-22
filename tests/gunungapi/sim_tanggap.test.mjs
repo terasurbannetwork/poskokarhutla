@@ -100,3 +100,52 @@ test("waktu tiba awan panas (garis energi) dan lahar (Manning): terurut, kecepat
   const curam = L.simulasi({dem, n: N, m: N, z: 12, lat: 0, pusat: [C, C], V: 1e5, hl: 0.3, maxJalur: 1, proksimal: 0.5, ambangHulu: 0}).info[0];
   assert.equal(curam.pdc_menit, i.pdc_menit, "hasil harus deterministik");
 });
+
+test("aman: berangkat dari desa sebelum bahaya (bukan selesai antre); titik kumpul kena memakai jam bahaya titik; hitungan tangan", () => {
+  /* 1000 kendaraan (3500/0,6 jiwa x 0,6 / 3,5), kapasitas 1000/jam: antre 1 jam. Tempuh 1 jam, mulai 0: tiba di titik 1..2 jam, berangkat 0..1 jam. Bahaya di desa jam 0,5 -> 50% sempat berangkat */
+  const P = {mandiri: 0.6, orang_per_kend: 3.5, kap_jalan: 1000, siaga_jam: 0}, u = (x = {}) => ({jiwa: 3500 / 0.6, tempuh_menit: 60, bahaya_jam: 0.5, titik: "t", ...x});
+  const a = T.evakuasi({desa: [u()], dalam: [0], mulai_jam: 0, armada: {n: 0}, param: P});
+  assert.ok(Math.abs(a.per[0].mandiri - 0.5 * 3500) < 1e-6, `50% x 3500 = 1750, dapat ${a.per[0].mandiri}`);
+  const b = T.evakuasi({desa: [u({titik_bahaya_jam: 1.5})], dalam: [0], mulai_jam: 0, armada: {n: 0}, param: P});
+  assert.ok(Math.abs(b.per[0].mandiri - 0.5 * 3500) < 1e-6, `titik kena jam 1,5: tiba <= 1,5 = 50%, dapat ${b.per[0].mandiri}`);
+  const c = T.evakuasi({desa: [u({titik_bahaya_jam: 1.2})], dalam: [0], mulai_jam: 0, armada: {n: 0}, param: P});
+  assert.ok(Math.abs(c.per[0].mandiri - 0.2 * 3500) < 1e-6, `titik kena jam 1,2: 20%, dapat ${c.per[0].mandiri}`);
+});
+
+test("titik kumpul terdekat dipakai untuk desa tanpa entri evakuasi, bukan satu kunci bersama", () => {
+  const tj = [[110.4, -7.5], [110.6, -7.6]];
+  assert.equal(T.tujuanTerdekat(tj, 110.41, -7.5).kunci, T.kunciTitik(tj[0])); assert.equal(T.tujuanTerdekat(tj, 110.59, -7.61).kunci, T.kunciTitik(tj[1]));
+  assert.equal(T.tujuanTerdekat([], 0, 0), null);
+});
+
+test("paparanUnit: sel yang dilalui awan panas DAN lahar dihitung sekali (tak ganda), waktu = yang paling awal", () => {
+  const n = 4, sx = 1 / 120, luasPix = sx * 111.32 * sx * 110.57, luasSel = luasPix / 16;
+  const ll = (x, y) => [100 + (x - 1.5) * sx / 4 * 0.99, 0 + (1.5 - y) * sx / 4 * 0.99];   /* 4x4 sel, semua di satu piksel (pusat 100,0) */
+  const pop = {sx, piksel: [[0, 100, 1000]]}, tab = (ids, t) => ({idx: Uint32Array.from(ids), t: Float32Array.from(ids.map(() => t))});
+  const r = {pdc: tab([0, 1, 2, 3, 4, 5, 6, 7], 60), lahar: tab([4, 5, 6, 7, 8, 9, 10, 11], 3600)};   /* 8 + 8 sel, 4 tumpang tindih -> 12 unik */
+  const u = T.paparanUnit(pop, r, ll, n, luasSel, 1)[0];
+  assert.ok(Math.abs(u.frak - 12 * luasSel / luasPix) < 1e-9, `12 sel unik x 1/16 luas piksel = 0,75 (dihitung ganda akan 1,0), dapat ${u.frak}`);
+  assert.ok(Math.abs(u.bahaya_jam - 60 / 3600) < 1e-9, "waktu tiba = awan panas (0,0167 jam), bukan lahar jam 2");
+  assert.ok(Math.abs(u.jiwa * u.frak - 750) < 1e-6, "jiwa terpapar = 750");
+});
+
+test("armada: rit dipotong diberi tanda; kap_jalan/peka tidak menimpa nilai pemanggil; truk ikut antrean titik", () => {
+  const D = [{jiwa: 100000, tempuh_menit: 10, bahaya_jam: 100, titik: "t", frak: 1}];
+  const r = T.evakuasi({desa: D, dalam: [0], mulai_jam: 0, armada: {n: 5}, param: {maks_rit: 10, mandiri: 0}});
+  assert.equal(r.terpotong, true, "batas rit tercapai harus bertanda");
+  const kecil = [{jiwa: 80, tempuh_menit: 10, bahaya_jam: 100, titik: "t"}], sepi = T.evakuasi({desa: kecil, dalam: [0], mulai_jam: 0, armada: {n: 1}, param: {mandiri: 0, siaga_jam: 0}});
+  assert.equal(sepi.terpotong, false);
+  const dua = T.evakuasi({desa: kecil, dalam: [0], mulai_jam: 0, armada: {n: 1}, param: {mandiri: 0, siaga_jam: 0, kap_jalan: 1}});
+  assert.ok(dua.selesai_jam > sepi.selesai_jam, `kapasitas titik 1 kendaraan/jam harus memperlambat truk (${dua.selesai_jam} vs ${sepi.selesai_jam})`);
+  const pk = T.peringkat({radius_km: 5, mulai_jam: -3, armada: {n: 0}, param: {kap_jalan: 100}}, [{jiwa: 5000, tempuh_menit: 20, bahaya_jam: 2, titik: "t", km: 2}], {radius: [5], mulai: [-3, -12], armada: [0]});
+  assert.ok(pk.semua >= 2);
+});
+
+test("pareto diverifikasi terhadap himpunan SEMUA paket: tak ada paket yang mengalahkan satu pun anggota pareto", () => {
+  const D = Array.from({length: 12}, (_, i) => ({jiwa: 800 + i * 50, tempuh_menit: 10 + i * 4, bahaya_jam: i % 3 ? 0.3 + i * 0.2 : null, frak: 0.5, titik: i % 2 ? "a" : "b", km: 1 + i}));
+  const pil = {radius: [3, 6, 9, 12], mulai: [-12, -3, 0], armada: [0, 10]}, dasar = {radius_km: 3, mulai_jam: 0, armada: {n: 0}}, r = T.peringkat(dasar, D, pil);
+  const semua = []; for (const km of [3, 6, 9, 12]) for (const j of [-12, -3, 0]) for (const a of [0, 10]) { const e = T.evakuasi({radius_km: km, mulai_jam: j, armada: {n: a}, desa: D, dalam: T.dalamRadius(D, km)}); semua.push({s: e.terselamatkan, b: e.biaya}); }
+  assert.equal(semua.length, r.semua, "peringkat harus mencoba SEMUA kombinasi");
+  for (const p of r.pareto) assert.ok(!semua.some(c => c.s >= p.selamat - 1e-6 && c.b <= p.biaya + 1e-6 && (c.s > p.selamat + 1e-6 || c.b < p.biaya - 1e-6)), `${p.nama} dikalahkan paket lain`);
+  assert.ok(r.pareto.length >= 1);
+});

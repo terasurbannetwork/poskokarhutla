@@ -48,9 +48,30 @@ test("dampak padi: kemarau tanpa hujan menghilangkan hasil; pompa dan tanam awal
   for (const k of E.kand) assert.ok(k.padiHa <= E.dasar.hilang + 1e-6, `${k.id} menyelamatkan ${k.padiHa} ha > yang hilang ${E.dasar.hilang}`);
 });
 
+test("jiwa rentan: tak pernah melebihi penduduk × porsi rentan; hujan menghapusnya; butuh N hari kering berturut-turut", () => {
+  const {D, sk, hj} = mini(0), idx = [0, 1], penuh = S.dampak(D, S.jalankan(D, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.ok(penuh.jiwaPuncak <= 10500 + 1e-6, `jiwaPuncak ${penuh.jiwaPuncak} > penduduk 10.500`);
+  const D2 = {...D, rentan: [0.2, 0.2]}, r2 = S.dampak(D2, S.jalankan(D2, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.ok(r2.jiwaPuncak <= 0.2 * 10500 + 1e-6 && Math.abs(r2.jiwaPuncak - 0.2 * penuh.jiwaPuncak) < 1e-6, `porsi 20%: ${r2.jiwaPuncak} vs ${penuh.jiwaPuncak}`);
+  const b = mini(400), basah = S.dampak(b.D, S.jalankan(b.D, b.sk, b.hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.equal(basah.jiwaPuncak, 0, "hujan 400 mm/minggu: tanah tak pernah stres, tak ada jiwa rentan");
+  const D3 = {...D, nKering: 400}, r3 = S.dampak(D3, S.jalankan(D3, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.equal(r3.jiwaPuncak, 0, "N lebih panjang dari simulasi: tak pernah terpenuhi");
+  assert.ok(penuh.hariKrisis > 0 && penuh.hariKrisis <= S.H);
+});
+
 test("dampak padi: hujan cukup hampir tidak menghilangkan padi", () => {
   const basah = jalan(400), kering = jalan(0);
   assert.ok(basah.dasar.hilang < 0.05 * kering.dasar.hilang, `hujan 400 mm/minggu: hilang ${basah.dasar.hilang} ha, seharusnya jauh di bawah ${kering.dasar.hilang}`);
+});
+
+test("pita anggota: p10 (kering) merugikan paling besar, p90 (basah) paling kecil; tanpa anggota -> null", () => {
+  const {D, sk} = mini(0), w = m => Array.from({length: 2}, () => Array(26).fill(m));
+  assert.equal(S.pita(T, D, sk, [0, 1], {tanam: 0, pangkalan: pang}), null);
+  const b = S.pita(T, D, {...sk, anggota: {p10: w(0), p50: w(60), p90: w(400)}}, [0, 1], {tanam: 0, pangkalan: pang});
+  assert.ok(b.hilang[0] < b.hilang[1], `rentang padi hilang harus melebar: ${b.hilang}`);
+  assert.ok(b.hilang[1] > 900 && b.hilang[0] < 0.05 * b.hilang[1], `anggota 0 mm hilang hampir semua, 400 mm/minggu hampir tidak: ${b.hilang}`);
+  assert.ok(b.kand.p20[1] >= b.kand.p20[0] && Object.keys(b.kand).length === 8);
 });
 
 test("data nyata: tutupan selaras dengan neraca, jumlah sawah = acuan nasional, peringkat berjalan", () => {

@@ -1965,7 +1965,7 @@ const Peta = {
     let hov = null;
     const tip = $("#tip");
     peta.on("mousemove", e => { if (S.panel !== "riw" || !Riwayat.grid || Riwayat._diGelembung) return; const d = Riwayat.baca(e.lngLat.lng, e.lngLat.lat), G = Riwayat.grid;
-      tampilTip(d[2] ? kartuTip({judul: "Sel ± 11 km", stat: [["kal", `${d[2]}/${G.tahun}`, "thn terbakar", "#c9503a"], ["titik", d[3], "titik/thn", "#e58a45"]], kaki: "MODIS 2002–2025"})
+      tampilTip(d[2] ? kartuTip({judul: "Sel sekitar 11 km", stat: [["kal", `${d[2]}/${G.tahun}`, "thn terbakar", "#c9503a"], ["titik", d[3], "titik/thn", "#e58a45"]], kaki: "MODIS 2002–2025"})
         : kartuTip({judul: "Tidak pernah terbakar berarti", kaki: `kurang dari ${G.ambang} titik setahun`}), e.originalEvent); });
     peta.on("mouseout", () => tip.classList.remove("on"));
     peta.on("mousemove", e => { if (!peta.getLayer("pfvi") || !this.lihat("pfvi")) return;
@@ -1973,7 +1973,7 @@ const Peta = {
       if (!d) { if (tip._pf) { tip._pf = false; tip.classList.remove("on"); } return; }
       tip._pf = true; const k = kelasPG(d.pg), w = `rgb(${warnaFWI(PG_FWI[k]).join(",")})`;
       tampilTip(kartuTip({judul: `Bahaya api gambut <span class="tp-pl" style="background:${w}">${PG_KELAS[k]}</span>`,
-        stat: [["api", "±" + fmt(Math.round(d.pg * 20) * 5) + "%", "Peluang api besok", w, k >= 2], ["fwi", fmt(Math.round(d.fwi * 10) / 10), "FWI hari itu", w], ["skor", fmt(Math.round(d.pfvi)), `PFVI (${kelasPFVI(d.pfvi)}; batas 75/150/225)`, w]],
+        stat: [["api", fmt(Math.round(d.pg * 20) * 5) + "%", "Peluang api besok", w, k >= 2], ["fwi", fmt(Math.round(d.fwi * 10) / 10), "FWI hari itu", w], ["skor", fmt(Math.round(d.pfvi)), `PFVI (${kelasPFVI(d.pfvi)}; batas 75/150/225)`, w]],
         kaki: "Muka air tanah perkiraan, bukan pengukuran"}), e.originalEvent); });
     /* gelembung angka: kursor tangan + daftar kompleks di dalamnya; roda/trackpad diperlambat supaya zoom halus */
     peta.scrollZoom.setWheelZoomRate(1 / 650); peta.scrollZoom.setZoomRate(1 / 160);
@@ -2129,7 +2129,7 @@ const Lapis = {
           const x = jn === "h" ? d.heli.find(h => "h:" + h.nama + h.prov === id) : jn === "a" ? d.aju.find(a => "a:" + a.nama === id) : d.omc.find(o => "o:" + o.nama === id);
           const kb = (k, v, pn) => `<div class="kb${pn ? " penuh" : ""}"><span>${k}</span><b>${v}</b></div>`;
           const sel = jn === "h" ? [kb("Melayani", esc(namaProv(x.prov))), kb("Kompleks", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Terbang rata-rata", fmt(x.terbang_menit_rata) + " menit"),
-              kb("Siklus siram", "± " + fmt(x.siklus_menit) + " menit"), kb("Siram per jam", "± " + fmt(x.siram_per_jam)), kb("Landasan", fmt(x.landasan_m) + " m"), kb("Cakupan kumulatif", x.cakupan + "%")]
+              kb("Siklus siram", "sekitar " + fmt(x.siklus_menit) + " menit"), kb("Siram per jam", "sekitar " + fmt(x.siram_per_jam)), kb("Landasan", fmt(x.landasan_m) + " m"), kb("Cakupan kumulatif", x.cakupan + "%")]
             : jn === "a" ? [kb("Kompleks prioritas", fmt(x.kompleks.length)), kb("Jarak ke api", fmt(x.jarak_api) + " km"), kb("Ke pangkalan utama", x.ke_utama_km ? fmt(x.ke_utama_km) + " km" : "–"), kb("Avtur", "dikirim lewat darat", 1)]
             : [kb("Landasan", fmt(x.landasan_m) + " m"), kb("Ke pusat api", fmt(x.jarak_ke_pusat_api) + " km"), kb("Pesawat", "CN-295 / CASA 212", 1)];
           new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${jn === "o" ? "#2f6f8f" : "#d06a33"},rgba(11,37,69,.95))">
@@ -2730,7 +2730,7 @@ function renderLegenda() {
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ecaa4f"></i>6–24 jam</span><span><i class="sw dot" style="background:#d4643c"></i>1–3 hari</span><span><i class="sw dot" style="background:#93352c"></i>3–7 hari</span></div>`}
     ${S.panel === "riw" || !Peta.lihat("himawari") ? "" : `<div class="leg" style="margin:4px 0 8px;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px 14px"><span><i class="sw dot" style="background:#d946ef;border:2px solid #fff;box-shadow:0 0 0 3px rgba(217,70,239,.25)"></i>Api baru</span></div>`}
-    ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
+    ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel sekitar 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
     <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha)"}</div>
@@ -2747,7 +2747,7 @@ function renderLegenda() {
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
     ${Peta.lihat("khg") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:none;border-top:2px dashed #e0a94a;height:0;margin-top:6px"></i>Batas KHG (BRGM PRIMS)</span></div>` : ""}
     ${Peta.lihat("kawasan") ? `<div class="lbl" style="margin-top:8px">Kawasan hutan</div><div class="leg" style="margin-top:4px">${[["#1f7a3a", "Konservasi / Tahura (BKSDA, Taman Nasional)"], ["#5a9e74", "Hutan lindung (pemda)"], ["#9ccc65", "Hutan produksi (pemegang PBPH)"], ["#c5e1a5", "Produksi terbatas"], ["#e6ee9c", "Produksi dapat dikonversi"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
-    ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data ± 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#c98a3c"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#2f6f8f"></i>HPH (hutan alam)</span></div>` : ""}
+    ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data sekitar 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#c98a3c"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#2f6f8f"></i>HPH (hutan alam)</span></div>` : ""}
     ${Peta.lihat("udara") ? `<div class="lbl" style="margin-top:8px">Dukungan udara</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:#d06a33;border:2px solid #fff"></i>Pangkalan helikopter (lingkar 100 km)</span><span><i class="sw dot" style="background:#fff;border:2px solid #d06a33"></i>Pangkalan aju helikopter</span><span><i class="sw dot" style="background:#2f6f8f;border:2px solid #fff"></i>Pangkalan modifikasi cuaca</span></div>` : ""}
     ${Peta.lihat("metar") ? `<div class="lbl" style="margin-top:8px">Jarak pandang bandara</div><div class="leg" style="margin-top:4px">${[["#c9503a", "< 1 km"], ["#e58a45", "1–5 km"], ["#e3b94e", "5–8 km"], ["#5a9e74", "≥ 8 km"]].map(([c, n]) => `<span><i class="sw dot" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("aqi") ? `<div class="lg-g"><div class="lbl">AQI (ISPU) dari PM2.5</div><div class="leg">${[["Baik ≤ 50", "#5a9e74"], ["Sedang ≤ 100", "#4f8fc4"], ["Tidak sehat ≤ 200", "#e3b94e"], ["Sangat tidak sehat ≤ 300", "#c9503a"], ["Berbahaya > 300", "#5c1a2b"]].map(([t, w]) => `<span><i class="sw dot" style="background:${w}"></i>${t}</span>`).join("")}</div></div>` : ""}
@@ -2837,7 +2837,7 @@ const Laci = {
       ${lipat("Penjelasan status", (() => {
         /* dua bahan status: seberapa besar apinya + seberapa mendukung cuacanya; meteran bertingkat supaya terbaca orang awam */
         const meter = (n, isi, w) => `<span class="st-m">${Array.from({length: n}, (_, i) => `<i style="${i < isi ? `background:${w}` : ""}"></i>`).join("")}</span>`;
-        const api = ["", ["Kecil", "api baru sehari, cakupan sempit"], ["Sedang", "api menyebar atau sudah beberapa hari"], ["Besar", `garis api aktif ± ${fmt(Math.round(p.px24 * 14))} ha, atau menyala ≥ 4 hari`]][p.sev] || ["–", ""];
+        const api = ["", ["Kecil", "api baru sehari, cakupan sempit"], ["Sedang", "api menyebar atau sudah beberapa hari"], ["Besar", `garis api aktif sekitar ${fmt(Math.round(p.px24 * 14))} ha, atau menyala ≥ 4 hari`]][p.sev] || ["–", ""];
         const cu = p.cuaca ? [FWI_KELAS[p.fdrs][0], ["api sulit menjalar", "api bisa menjalar pelan", "api mudah menyala", "api sangat mudah menyala dan menjalar cepat"][p.fdrs]] : ["Tidak tersedia", "status dihitung dari pengamatan saja"];
         const wA = ["#8a94a6", "#e3b94e", "#e58a45", "#c9503a"][p.sev] || "#8a94a6", wC = p.cuaca ? ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"][p.fdrs] : "#8a94a6";
         return `<div class="st-j"><div class="st-r"><span class="st-ik" style="--w:${wA}"><svg viewBox="0 0 24 24" fill="currentColor">${IKON.api}</svg></span><div><span class="st-k">Ukuran api</span><b>${api[0]}</b>${meter(3, p.sev, wA)}<small>${api[1]}</small></div></div>
@@ -2846,7 +2846,7 @@ const Laci = {
       ${lipat("Cuaca di lokasi", `<div class="kv"><div><b>${fmt(p.fwi)}</b><span>FWI<em>${FWI_KELAS[kelasFWI(p.fwi)][0].toLowerCase()}</em></span></div><div><b>${fmt(p.ffmc)}</b><span>FFMC${p.ffmc > 82 ? "<em>mudah sulut</em>" : ""}</span></div><div><b>${fmt(p.dc)}</b><span>DC<em>${kelasDC}</em></span></div></div>
         ${p.cuaca ? `<table class="tb2"><tbody>${baris("Suhu siang", fmt(p.t) + " °C")}${baris("Kelembapan", fmt(p.rh) + "%")}${baris("Angin", `${fmt(p.ws)} km/jam dari ${arah(p.wd)}`)}</tbody></table>` : `<p class="fnd">Cuaca hari ini tidak tersedia untuk sel ini.</p>`}`)}
       ${lipat("Lahan & penanggung jawab", `        <table class="tb2"><tbody>${baris("Bahaya InaRISK", S.inarisk?.[p.id] != null ? fmt(S.inarisk[p.id]) + " (" + kelasInarisk(S.inarisk[p.id]) + ")" : "tidak ada data")}${baris("Lahan gambut", p.gambut ? "ya" : p.gambut === false ? "tidak" : "–")}</tbody></table>
-        <div class="sg-ket" style="margin:8px 0 0;border-radius:10px;width:auto;justify-content:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Sumber peta lahan</b>: kawasan hutan 2017 · sawit & HPH ± 2014 · HTI 2020–2022 · tambang 2026</span></div>`)}
+        <div class="sg-ket" style="margin:8px 0 0;border-radius:10px;width:auto;justify-content:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Sumber peta lahan</b>: kawasan hutan 2017 · sawit & HPH sekitar 2014 · HTI 2020–2022 · tambang 2026</span></div>`)}
       ${(() => {
         /* estimasi pipeline (p.bara) tampil apa adanya; bentuk tak lengkap = blok tidak tampil. Tengah a[1], ujung skenario rendah/tinggi, 2 angka penting */
         const b = p.bara, ok3 = x => Array.isArray(x) && x.length === 3 && x.every(Number.isFinite);
@@ -2862,8 +2862,8 @@ const Laci = {
         ${b.dipotong === false ? ket("kedalaman tidak dipotong muka air") : ""}${ket("Perkiraan = luas × kedalaman × kerapatan gambut × faktor emisi (IPCC 2013). Skenario memakai asumsi rendah–tinggi, belum divalidasi lapangan; bukan tambahan dari estimasi emisi nasional. Muka air = perkiraan, bukan pengukuran.")}${ket(`Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s.d. ${jamWIB(p.akhir)}`)}`); })()}
       ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id} · ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km · menjangkau ${fmt(ps.kompleks.length)} kompleks (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
         <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Via darat</th></tr></thead><tbody>
-          ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
-          ${bp ? `<tr><td><b>${esc(bp.nama)}</b><small>${bp.pusdalops ? "Pusdalops " + esc(bp.pusdalops) : "kantor BPBD"}</small></td><td class="n">–</td><td class="n">–</td><td class="n num"><b>${fmt(Math.round(bp.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(bp.jarak))}</td></tr>` : ""}</tbody></table>
+          ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">sekitar ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
+          ${bp ? `<tr><td><b>${esc(bp.nama)}</b><small>${bp.pusdalops ? "Pusdalops " + esc(bp.pusdalops) : "kantor BPBD"}</small></td><td class="n">–</td><td class="n">–</td><td class="n num"><b>${fmt(Math.round(bp.jarak))}</b> km</td><td class="n num">sekitar ${fmtJam(jamDarat(bp.jarak))}</td></tr>` : ""}</tbody></table>
         ${dk[0]?.jarak > 150 ? `<p class="fnd" style="color:var(--bad)">Daops terdekat lebih dari 150 km. Andalkan MPA, BPBD, dan regu perusahaan setempat.</p>` : ""}`)}
       ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${STATUS_AKSI[p.level].map(a => `<li>${esc(a)}</li>`).join("")}</ul>`)}
       ${lipat("Riwayat lokasi", riwayat, false)}

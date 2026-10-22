@@ -329,7 +329,7 @@ def skenario_ecmwf(mus, kunci, mulai, normal):
     n = min(HARI, len(tgl) - i0)
     if n < 30:
         return None
-    out_h, out_e, basah, n_basah = {}, {}, 0.0, 0
+    out_h, out_e, basah, n_basah, out_a = {}, {}, 0.0, 0, {}
     for k in kunci:
         t = mus["anak"].get(k)
         d = mus["titik"].get(t) if t else None
@@ -342,6 +342,9 @@ def skenario_ecmwf(mus, kunci, mulai, normal):
         out_h[k] = [round(statistics.median(sum(a[w * 7:(w + 1) * 7]) for a in ang)) for w in range(MINGGU)]
         e = [(d["et0"][i0 + j] if d.get("et0") and j < n and d["et0"][i0 + j] is not None else ne[j]) for j in range(HARI)]
         out_e[k] = [round(sum(e[b * 30:(b + 1) * 30]) / 30, 1) for b in range(BLOK)]
+        # pita ketidakpastian: anggota UTUH (deret mingguannya koheren) pada persentil 10/50/90 total hujan 180 hari; bukan persentil per minggu
+        urut = sorted(range(n_ang), key=lambda m: sum(ang[m]))
+        out_a[k] = {q: [round(sum(ang[urut[min(n_ang - 1, int(f * n_ang))]][w * 7:(w + 1) * 7])) for w in range(MINGGU)] for q, f in (("p10", .1), ("p50", .5), ("p90", .9))}
         for j in range(n):
             for v in hari[j]:
                 if v and v >= 1:
@@ -349,7 +352,7 @@ def skenario_ecmwf(mus, kunci, mulai, normal):
                     n_basah += 1
     if not out_h:
         return None
-    return {"hujan": out_h, "et0": out_e, "int": round(basah / n_basah, 1) if n_basah else PAR["intensitas"], "hari_ecmwf": n, "sel_ecmwf": len(out_h),
+    return {"hujan": out_h, "et0": out_e, "int": round(basah / n_basah, 1) if n_basah else PAR["intensitas"], "hari_ecmwf": n, "sel_ecmwf": len(out_h), "anggota": out_a,
             "et0_ecmwf": bool(next(iter(mus["titik"].values())).get("et0"))}
 
 
@@ -427,7 +430,9 @@ def bangun(tanah, pend, gb, iklim, hari_ini, harian=None, musiman=None, kemarau=
     ecmwf = None
     if ec:
         sk = {"ecmwf": {"nama": "Prakiraan ECMWF", "mulai": "hariini", "tgl": hari_ini.isoformat(), "int": ec["int"], "hujan": [ec["hujan"][k] if k in ec["hujan"] else ringkas(*normal_h[k])[0] for k in kunci],
-                        "et0": [ec["et0"][k] if k in ec["et0"] else ringkas(*normal_h[k])[1] for k in kunci]}, **sk}   # sel tanpa titik ECMWF: klimatologi Normal, bukan nol
+                        "et0": [ec["et0"][k] if k in ec["et0"] else ringkas(*normal_h[k])[1] for k in kunci],
+                        "anggota": {q: [ec["anggota"][k][q] if k in ec["anggota"] else ringkas(*normal_h[k])[0] for k in kunci] for q in ("p10", "p50", "p90")},
+                        "ada_anggota": [1 if k in ec["anggota"] else 0 for k in kunci]}, **sk}   # 0 = sel tanpa titik ECMWF: p10/p50/p90 hanya Normal, JANGAN digambar sebagai pita   # sel tanpa titik ECMWF: klimatologi Normal, bukan nol
         ecmwf = {"hari": ec["hari_ecmwf"], "sel": ec["sel_ecmwf"], "terbit": musiman.get("terbit"), "et0_ecmwf": ec["et0_ecmwf"]}
     mulai = {mk: {"tgl": t.isoformat(), "nama": {"hariini": "Hari ini", "kemarau": "Awal kemarau"}[mk], "tanam": TANAM_BAWAAN[mk]} for mk, t in mulai_ls.items()}
     return {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00"), "mulai": mulai, "hari": HARI,
@@ -559,13 +564,18 @@ def uji():
     mus = {"tgl": tg, "titik": {"t": {"p": [[1.0, 2.0, 9.0] for _ in range(150)], "et0": None}}, "anak": {"-2.25,113.75": "t"}}
     ec = skenario_ecmwf(mus, ["-2.25,113.75"], m, {"-2.25,113.75": nh})
     assert ec["hujan"]["-2.25,113.75"][0] == 14 and ec["hujan"]["-2.25,113.75"][25] == 50 and ec["et0"]["-2.25,113.75"] == [4.0] * 6 and ec["int"] == 4.0 and ec["hari_ecmwf"] == 150
+    a = ec["anggota"]["-2.25,113.75"]   # 3 anggota (1, 2, 9 mm/hari): p10 = anggota terkecil, p90 = terbesar; deret koheren
+    assert a["p10"][0] == 7 and a["p50"][0] == 14 and a["p90"][0] == 63 and len(a["p90"]) == MINGGU, a
     assert skenario_ecmwf({"tgl": ["2026-10-01", "2026-10-02"], "titik": {}, "anak": {}}, ["x"], m, {}) is None
     o = bangun(tanah, {}, {}, {"-2.25,113.75": c}, m, None, mus)
     assert "ecmwf" in o["skenario"] and o["skenario"]["ecmwf"]["hujan"][0][0] == 14 and o["ecmwf"]["hari"] == 150
+    assert o["skenario"]["ecmwf"]["ada_anggota"] == [1]
+    assert o["skenario"]["ecmwf"]["anggota"]["p90"][0][0] == 63 and len(o["skenario"]["ecmwf"]["anggota"]["p10"]) == 1
     assert o["skenario"]["ecmwf"]["hujan"][0][25] == o["skenario"]["normal"]["hujan"][0][25] and o["ecmwf"]["sel"] == 1
     tanah2 = {"grid": tanah["grid"][:2]}
     o2 = bangun(tanah2, {}, {}, {"-2.25,113.75": c, "-2.75,113.75": c}, m, None, mus)   # sel kedua tanpa titik ECMWF: jatuh ke Normal, bukan 0 mm
     assert o2["skenario"]["ecmwf"]["hujan"][1] == o2["skenario"]["normal"]["hujan"][1] and o2["ecmwf"]["sel"] == 1
+    assert o2["skenario"]["ecmwf"]["ada_anggota"] == [1, 0] and o2["skenario"]["ecmwf"]["anggota"]["p10"][1] == o2["skenario"]["ecmwf"]["anggota"]["p90"][1]   # sel tanpa anggota ditandai
     assert penduduk_sel([[-10.875, 122.625, 5, ""], [-10.625, 122.875, 7, ""]]) == {"-10.75,122.75": 12}
     # spin-up harian: hari awal tanpa hujan (None) dilewati; tanpa hujan, ET0 5 -> Dr naik dari TAW/2
     h = {"p": [None] * 3 + [0.0] * 10, "et0": [5.0] * 13}

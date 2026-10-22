@@ -11,7 +11,10 @@ const ASUMSI = {
   pompa_modal: 30e6, pompa_ha: 10, pompa_kap_mm: 150, pompa_bbm_hari: 0.3e6,         /* pompa sungai/embung: sumber terbatas */
   awal_ha: 0.4e6,                   /* Rp per ha: benih, penyuluhan, pengolahan dipercepat */
   omc_hari: 5, omc_rp_hari: 220e6,  /* hari operasi; Rp/hari = keputusan.json biaya_omc_hari (Kemenhut 2026) */
-  laju_irigasi: 6                   /* mm/hari saat pompa jalan */
+  laju_irigasi: 6,                  /* mm/hari saat pompa jalan */
+  porsi_rentan: 0.2,                /* ASUMSI: porsi penduduk yang bergantung sumber air musiman (sumur gali, mata air, hujan, permukaan); pengganti Susenas per provinsi sampai public/kekeringan/data/air_minum.json ada */
+  hari_kering: 14,                  /* ASUMSI: hari berturut-turut tanah stres (atau SPI-3 teramati <= -1,5 dan tanah masih stres) sebelum sumber musiman dianggap habis */
+  ambang_jiwa: 1000                 /* ASUMSI: hari dengan jiwa rentan di bawah ini tidak dihitung hari krisis */
 };
 
 const rad = d => d * Math.PI / 180;
@@ -42,10 +45,10 @@ function persentil(arr, q) {
   const r = (a.length - 1) * q, i = Math.floor(r), f = r - i; return a[i] + (a[Math.min(i + 1, a.length - 1)] - a[i]) * f;
 }
 
-/* urutkan kandidat menurut kunci: "padi" (ha), "jiwa", "biaya" (murah dulu). Seri: manfaat lain lebih besar, lalu biaya. */
+/* urutkan kandidat menurut kunci: "padi" (ha), "jiwa", "biaya" (murah dulu). Seri: biaya lebih murah (ha dan jiwa beda satuan, tak dijumlahkan). */
 function urutkan(kand, kunci) {
   const nilai = {padi: k => -k.padiHa, jiwa: k => -k.jiwa, biaya: k => k.biaya}[kunci] || (k => -k.padiHa);
-  return kand.slice().sort((a, b) => nilai(a) - nilai(b) || (b.padiHa + b.jiwa) - (a.padiHa + a.jiwa) || a.biaya - b.biaya);
+  return kand.slice().sort((a, b) => nilai(a) - nilai(b) || a.biaya - b.biaya);   /* seri: yang lebih murah; ha dan jiwa tidak dijumlahkan */
 }
 const perUnit = (biaya, manfaat) => manfaat > 0 ? biaya / manfaat : null;
 

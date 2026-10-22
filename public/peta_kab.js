@@ -59,9 +59,10 @@
     k.addEventListener("click", e => { const b = e.target.closest("button[data-pk]"); if (!b || !D || b.disabled) return;
       if (b.dataset.pk !== "geser") b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));   /* chrome urgent */
       aturPK(b.dataset.pk, b.dataset.v); });
-    /* input tanggal memicu change di tiap segmen sah ("10" lewat "1" melompat ke Januari): komit sesudah jeda, nilai dibaca saat jeda habis */
+    /* input tanggal memicu change di tiap segmen sah ("10" lewat "1" melompat ke Januari): komit sesudah jeda, nilai dibaca saat jeda habis.
+       Penghitung waktu PER INPUT: satu penghitung bersama membuat Sampai (Tab dari Dari, < 600 ms) membatalkan komit Dari */
     k.addEventListener("change", e => { const c = e.target.closest("select[data-pk],input[data-pk]"); if (!c || !D) return;
-      if (c.type === "date") { clearTimeout(tunda); tunda = setTimeout(() => aturPK(c.dataset.pk, c.value), 600); return; }
+      if (c.type === "date") { clearTimeout(c._h); c._h = setTimeout(() => aturPK(c.dataset.pk, c.value), 600); return; }
       aturPK(c.dataset.pk, c.value); });
     return k;
   }
@@ -81,11 +82,13 @@
 
   /* ---------- tooltip dan popup ---------- */
   const kata = () => R.waktuBagian(D.P, st.mode, kls.i0, kls.i1, st.metrik);
-  const nilai = k => hit[k] ? `${fmt(hit[k])} ha` : "Tanpa deteksi";
+  /* teks nilai = R.teksKab: belum padam 0 ditulis "0 ha" (bukan "Tanpa deteksi"), angka tampil dua angka penting (perkiraan satelit tidak seteliti hektare) */
+  const nilai = k => R.teksKab(st.metrik, hit[k], fmt);
+  const jml = () => st.metrik === "luas" && kls.i0 !== kls.i1;   /* luas periode = jumlah harian: api yang sama terhitung lagi tiap hari */
   function isiTip(p) {
     const I = INFO[st.metrik], [kw, lw] = kata();
     return kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`,
-      stat: [["api", nilai(p.kunci), st.metrik === "luas" && kls.i0 !== kls.i1 ? I.tipJml : I.tip, I.warna, false]], kaki: wil(kw, lw)});
+      stat: [["api", nilai(p.kunci), jml() ? I.tipJml : I.tip, I.warna, false]], kaki: wil(kw, lw)});
   }
   /* dipasang ulang tiap kali sumber dibuat (ganti peta dasar): Peta.pasang() mendaftarkan ulang penangan hover wilayah di tiap style.load,
      dan penangan yang didaftarkan terakhir menimpa kartunya, jadi milik kita harus tetap paling akhir */
@@ -113,8 +116,8 @@
     const p = f.properties, I = INFO[st.metrik], [kw, lw] = kata(), kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
     e._pk = 1; $("#tip").classList.remove("on");
     pop = new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:${I.warna}"><div><small>${esc(namaProv(p.prov))}</small><b>${esc(p.nama)}</b></div></div>
-      <div class="kg">${kb(st.metrik === "luas" && kls.i0 !== kls.i1 ? I.jumlah : I.judul, nilai(p.kunci))}${kb("Periode", wil(kw, lw))}</div>
-      <div class="kk">Perkiraan satelit, bukan luas resmi.</div></div>`).addTo(peta);
+      <div class="kg">${kb(jml() ? I.jumlah : I.judul, nilai(p.kunci))}${kb("Periode", wil(kw, lw))}</div>
+      <div class="kk">Perkiraan satelit NASA FIRMS, bukan luas resmi.${jml() ? " <span>Api yang sama terhitung lagi tiap hari.</span>" : ""}</div></div>`).addTo(peta);
     const p0 = pop; p0._k = p.kunci; p0.on("close", () => { if (pop === p0) pop = null; });
     return true;
   }
@@ -125,8 +128,8 @@
     const {b, w} = kls, I = INFO[m], [kw, lw] = kata(), pecah = (x, k) => k === 0 ? (b[0] === 1 ? "1" : `1–${fmt(b[0])}`) : k === b.length ? `> ${fmt(b[k - 1])}` : b[k - 1] + 1 === x ? fmt(x) : `${fmt(b[k - 1] + 1)}–${fmt(x)}`;
     const baris = w.map((c, k) => `<span><i class="sw" style="background:${c}"></i>${b.length ? pecah(b[k], k) : fmt(kls.maks)}</span>`);
     box.insertAdjacentHTML("beforeend", `<div class="lg-g"><div class="lbl">${I.lbl}</div><div class="leg">${kls.maks ? baris.join("") : ""}`
-      + `<span><i class="sw" style="background:none;border:1px solid var(--line)"></i>${kls.maks ? "Tanpa deteksi" : "Tanpa deteksi pada periode ini"}</span>`
-      + `<span class="kab-wkt"><span>Perkiraan satelit</span> · ${wil(kw, lw)}</span></div></div>`); };
+      + `<span><i class="sw" style="background:none;border:1px solid var(--line)"></i>${R.kosongKab(m, kls.maks)}</span>`
+      + `<span class="kab-wkt"><span>Perkiraan satelit</span> · ${wil(kw, lw)}</span>${jml() ? `<span class="kab-wkt"><span>Api yang sama terhitung lagi tiap hari.</span></span>` : ""}</div></div>`); };
 
   /* ---------- kotak centang: kunci kabluas / kabbelum (bukan milik penangan lama; saling eksklusif) ---------- */
   async function terapkan() {
@@ -137,7 +140,10 @@
     try { await ambil(); } catch (e) { console.warn("peta kabupaten", e); if (id !== gen) return;
       toast("Peta kabupaten gagal dimuat"); document.querySelectorAll('#lapis input[data-l^="kab"]').forEach(x => x.checked = false); st.metrik = null; kt.hidden = true; return; }
     if (id !== gen) return;   /* diganti pengguna selama memuat: panggilan terbaru yang menggambar */
-    pasang(); tampil(true); gambar();
+    /* tiga tugas, bukan satu: (1) sisa penyelesaian fetch (bangun fitur, cekKab), (2) addSource (salinan geometri ke worker), (3) setFeatureState + kartu + legenda.
+       Satu tugas gabungan 148 ms pada CPU 4x melambat dan bertabrakan dengan klik berikutnya */
+    await new Promise(nanti); if (id !== gen) return;
+    pasang(); nanti(() => { if (id === gen) { tampil(true); gambar(); } });
   }
   function hubungkan() {
     const L = $("#lapis"); if (!L) return;
