@@ -45,6 +45,7 @@ def pecah(dok):
         ks.sort(key=lambda k: (-(k.get("level") or 0), -(k.get("n24") or 0)))
         nama = slug(prov, kab)
         berkas[nama] = {"dibuat": dok.get("dibuat"), "prov": prov, "kab": kab, "total": len(ks),
+                        "l3": sum(1 for k in ks if k.get("level") == 3),
                         "butir": [butir(k) for k in ks[:MAKS]]}
         indeks.append({"f": nama, "prov": prov, "kab": kab, "n": len(ks),
                        "l3": sum(1 for k in ks if k.get("level") == 3)})

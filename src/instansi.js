@@ -1196,9 +1196,14 @@ export async function tautanTagih(env, daftar, kini, asal) {
 }
 async function pantau(env, req, url, kini) {
   if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();
-  const T = (await env.DB.prepare(`SELECT id, prov, kab, kec, lat, lon, level, status, dibuat, konfirmasi_pada, isian_terakhir, padam_verif, padam_pada, dummy,
-    (SELECT hasil FROM tugas_isian WHERE tugas_id = tugas_api.id AND langkah = 'konfirmasi') hasil_konfirmasi FROM tugas_api WHERE status = 'buka' OR dibuat > ? ORDER BY dibuat DESC LIMIT 5000`).bind(kini - 60 * HARI).all()).results
-    .filter(t => dalamWilayahStaf(req, [t.prov]) && !(stafNyata(req) && t.dummy));
+  const filter = bacaBencana(url.searchParams.get("bencana")); if (filter === undefined) return gagal(400, `bencana harus salah satu dari ${DAFTAR_BENCANA.join(", ")}`);
+  /* jenis bahaya per tugas lewat subquery (bukan bencanaPer: 5000 id melewati batas parameter D1); tabel 0047 belum ada = semua karhutla */
+  const bacaT = bc => env.DB.prepare(`SELECT id, prov, kab, kec, lat, lon, level, status, dibuat, konfirmasi_pada, isian_terakhir, padam_verif, padam_pada, dummy, ${bc ? "(SELECT bencana FROM tugas_bencana WHERE tugas_id = tugas_api.id)" : "NULL"} bencana,
+    (SELECT hasil FROM tugas_isian WHERE tugas_id = tugas_api.id AND langkah = 'konfirmasi') hasil_konfirmasi FROM tugas_api WHERE status = 'buka' OR dibuat > ? ORDER BY dibuat DESC LIMIT 5000`).bind(kini - 60 * HARI).all();
+  let semuaT; try { semuaT = (await bacaT(true)).results; } catch (e) { if (!tanpaBencana(e)) throw e; semuaT = (await bacaT(false)).results; }
+  const dilihat = semuaT.filter(t => dalamWilayahStaf(req, [t.prov]) && !(stafNyata(req) && t.dummy)).map(t => ({...t, bencana: bencanaId(t.bencana)}));
+  const hitung = new Map(); for (const t of dilihat) hitung.set(t.bencana, (hitung.get(t.bencana) || 0) + 1);
+  const T = filter == null ? dilihat : dilihat.filter(t => t.bencana === filter);
   const per = new Map();
   for (const t of T) {
     const p = per.get(t.prov) || per.set(t.prov, {prov: t.prov, nama: PROV[t.prov]?.[1] ?? t.prov, aktif: 0, terkonfirmasi: 0, terlambat: 0, padam: 0, bukan_api: 0, selang: []}).get(t.prov), d = tenggat(t, kini);
@@ -1213,9 +1218,9 @@ async function pantau(env, req, url, kini) {
   const lambat = T.filter(t => tenggat(t, kini).terlambat).sort((x, y) => tenggat(x, kini).tenggat - tenggat(y, kini).tenggat).slice(0, 60), tagih = await tautanTagih(env, lambat, kini, url.origin);
   const terlambat = lambat.map(t => {
     const d = tenggat(t, kini);
-    return {id: t.id, prov: t.prov, kab: t.kab, kec: t.kec, ciri: ciriTugas(t), dibuat: t.dibuat, langkah: d.langkah, tenggat: d.tenggat, lewat_jam: Math.round((kini - d.tenggat) / JAM * 10) / 10, padam: infoPadam(t, kini), dummy: t.dummy, tagih: tagih.get(t.id)};
+    return {id: t.id, bencana: t.bencana, bencana_nama: BENCANA[t.bencana].nama, prov: t.prov, kab: t.kab, kec: t.kec, ciri: ciriTugas(t), dibuat: t.dibuat, langkah: d.langkah, tenggat: d.tenggat, lewat_jam: Math.round((kini - d.tenggat) / JAM * 10) / 10, padam: infoPadam(t, kini), dummy: t.dummy, tagih: tagih.get(t.id)};
   });
-  return json({kini, provinsi, akun, terlambat});
+  return json({kini, provinsi, akun, terlambat, bencana: [...hitung].map(([id, n]) => ({id, nama: BENCANA[id].nama, n})).sort((x, y) => y.n - x.n || x.id.localeCompare(y.id))});
 }
 async function rincianAdmin(env, req, id, kini) {
   if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();   // keputusan pemilik 21 Okt 2026: staf verifikator/pusdalops (dalam wilayahnya) membuka rincian dan media tugas

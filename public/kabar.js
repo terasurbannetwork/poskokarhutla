@@ -26,7 +26,7 @@
   }
 
   function gambar(d) {
-    const r = $("ringkas"), l3 = d.butir.filter(b => b.t.level === 3).length;
+    const r = $("ringkas"), l3 = d.l3 ?? d.butir.filter(b => b.t.level === 3).length;
     r.hidden = false;
     r.innerHTML = `<p class="kb-angka">${ang(d.total)} api prioritas</p><p class="kb-redup">${l3 ? `${ang(l3)} di level 3. ` : ""}Data ${esc(waktu(d.dibuat))}${d.total > d.butir.length ? `, tampil ${ang(d.butir.length)} teratas` : ""}.</p>
       <div class="kp-aksi"><a class="kp-tombol utama" target="_blank" rel="noopener noreferrer" href="https://wa.me/?text=${encodeURIComponent(teksRingkas(d))}">Teruskan ke WhatsApp</a><button type="button" class="kp-tombol" id="salin">Salin teks</button></div><p class="kp-pesan" role="status" aria-live="polite"></p>`;
