@@ -4,6 +4,9 @@ Tiga tuas, ditulis SEBELUM skor dihitung: (a) 8 rancangan satuan/jeda/toleransi 
 (c) SPI + tanah (GWETROOT persentil) + HTH (POWER harian). 91 aturan x 8 rancangan = 728 kandidat; per rancangan satu terpilih di LATIH (CSI, >= 10 tepat),
 diuji SEKALI di UJI dengan selang bootstrap Bonferroni (K=8). Kriteria LAYAK tidak dilonggarkan (ujibalik.KRITERIA_LAYAK).
 
+Catatan: CSI acak memakai satu penyebut unit valid untuk laju alarm dan laju kejadian (pendekatan; kejadian dihitung di rentang bulan yang sedikit berbeda pada rancangan bertoleransi).
+D0, D1, D7 diagnosis (alarm boleh jatuh sesudah kejadian dalam jendela); D2-D5 prakiraan; D6 campuran. Jangan membaca D7 sebagai kemampuan prakiraan.
+
 Pakai:  python3 scripts/kekeringan/ambang2.py jalan    (butuh cache data/raw/kekeringan_ekstra.json; diunduh bila belum ada, +/- 15 menit)
         python3 scripts/kekeringan/ambang2.py uji
 """
@@ -26,8 +29,9 @@ ZONA_R, TANAH_P, HTH_D = .5, (20, 10), (21, 31)
 MIN_TEPAT, ULANG, BENIH, BATAS_WIL = 10, 10000, 20261022, .30
 # (kode, jeda, setengah-lebar toleransi, mode)  mode: b = kab-bulan, q1 = triwulan alarm bulan pertama, q2 = triwulan alarm salah satu bulan
 RANCANGAN = (("D0", 0, 0, "b"), ("D1", 0, 1, "b"), ("D2", 1, 0, "b"), ("D3", 2, 0, "b"), ("D4", 1, 1, "b"), ("D5", 2, 1, "b"), ("D6", 0, 0, "q1"), ("D7", 0, 0, "q2"))
-URAIAN = {"D0": "kab-bulan, serentak", "D1": "kab-bulan, serentak, kejadian +-1 bulan", "D2": "kab-bulan, jeda 1 bulan", "D3": "kab-bulan, jeda 2 bulan",
-          "D4": "kab-bulan, jeda 1 bulan +-1", "D5": "kab-bulan, jeda 2 bulan +-1", "D6": "kab-triwulan, alarm bulan pertama triwulan", "D7": "kab-triwulan, alarm salah satu bulan triwulan"}
+URAIAN = {"D0": "kab-bulan, serentak", "D1": "kab-bulan, serentak, kejadian ±1 bulan", "D2": "kab-bulan, jeda 1 bulan", "D3": "kab-bulan, jeda 2 bulan",
+          "D4": "kab-bulan, jeda 1 bulan ±1", "D5": "kab-bulan, jeda 2 bulan ±1", "D6": "kab-triwulan, alarm bulan pertama triwulan", "D7": "kab-triwulan, alarm salah satu bulan triwulan"}
+JENIS = {"D0": "diagnosis", "D1": "diagnosis", "D2": "prakiraan", "D3": "prakiraan", "D4": "prakiraan", "D5": "prakiraan", "D6": "campuran (alarm bulan pertama, kejadian di bulan yang sama atau dua bulan sesudahnya)", "D7": "diagnosis"}
 BARU = {"I": "E dan tanah <= p", "J": "E dan HTH >= d", "K": "E dan tanah <= p dan HTH >= d", "L": "tanah <= p dan HTH >= d (tanpa SPI)"}
 
 
@@ -227,16 +231,16 @@ def selang(tab, lebar, kiri, kanan, ulang=ULANG, benih=BENIH):
 
 def vonis_rc(s, ci, rc):
     k = UB.KRITERIA_LAYAK
-    f = lambda x: "tak ada" if x is None else f"{x:.2f}".replace(".", ",")
+    f = lambda x: "tak ada" if x is None else f"{100 * x:.1f}%".replace(".", ",")
     g = []
     if s["pod"] is None or s["pod"] < k["pod_min"]:
         g.append(f"POD {f(s['pod'])} < {f(k['pod_min'])}")
     if s["far"] is None or s["far"] > k["far_maks"]:
         g.append(f"FAR {f(s['far'])} > {f(k['far_maks'])}")
     if s["csi"] is None or s["csi_acak"] is None or s["csi"] < k["csi_lipat_acak"] * s["csi_acak"]:
-        g.append(f"CSI {f(s['csi'])} kurang dari {f(k['csi_lipat_acak'])}x acak ({f(s['csi_acak'])})")
+        g.append(f"CSI {s['csi']:.3f} kurang dari {k['csi_lipat_acak']:g}x acak ({s['csi_acak']:.3f})".replace('.', ','))
     if not ci.get("csi") or s["csi_acak"] is None or ci["csi"][0] <= s["csi_acak"]:
-        g.append(f"batas bawah selang CSI {f(ci['csi'][0] if ci.get('csi') else None)} tidak di atas acak")
+        g.append("batas bawah selang CSI " + ("tak ada" if not ci.get('csi') else f"{ci['csi'][0]:.3f}".replace('.', ',')) + " tidak di atas acak")
     return {"layak": not g, "alasan": "Lolos kriteria di periode uji." if not g else "Belum layak: " + "; ".join(g) + "."}
 
 
@@ -270,7 +274,7 @@ def setel2(pow_sel, ekstra, peta, obs, bulan_akhir):
         ok = [r[0] for r in reg if skr[r[0]]["tertangkap"] >= MIN_TEPAT]
         pil = max(ok, key=lambda k: skr[k]["csi"] if skr[k]["csi"] is not None else -1) if ok else None
         urut = sorted(ok, key=lambda k: -(skr[k]["csi"] or 0))[:5]
-        h = {"uraian": URAIAN[rc[0]], "jeda": rc[1], "toleransi": rc[2], "latih": list(bulan_antara_str(bulan, tl)), "uji": list(bulan_antara_str(bulan, tu)),
+        h = {"uraian": URAIAN[rc[0]], "jenis": JENIS[rc[0]], "jeda": rc[1], "toleransi": rc[2], "latih": list(bulan_antara_str(bulan, tl)), "uji": list(bulan_antara_str(bulan, tu)),
              "kandidat_n": len(reg), "memenuhi_syarat_tepat_latih": len(ok), "latih_lolos_pod_far": sum(1 for k in skr if (skr[k]["pod"] or 0) >= .5 and (skr[k]["far"] if skr[k]["far"] is not None else 1) <= .8),
              "latih_top5": [{"kode": k, **{x: skr[k][x] for x in ("pod", "far", "csi", "csi_acak", "tertangkap")}} for k in urut], "terpilih": pil}
         sk = A1.kode(*SEKARANG_KEL)
@@ -279,6 +283,8 @@ def setel2(pow_sel, ekstra, peta, obs, bulan_akhir):
             tab = tabel(rc, A[pil], E, *tu)
             s = skor(tab, lebar)
             ci = selang(tab, lebar, kiri, kanan)
+            ci["andal"] = len(tab) >= 10                                  # kurang dari 10 klaster (bulan/triwulan): selang bootstrap degenerat, jangan ditampilkan
+            ci["klaster"] = len(tab)
             h["terpilih_latih"] = skr[pil]
             h["terpilih_uji"] = s
             h["terpilih_selang_bonferroni"] = ci
@@ -289,14 +295,16 @@ def setel2(pow_sel, ekstra, peta, obs, bulan_akhir):
     layak = [k for k, h in hasil.items() if h["vonis"]["layak"]]
     best = max(layak, key=lambda k: hasil[k]["terpilih_uji"]["csi"]) if layak else None
     skala = {k: (h["terpilih_uji"]["csi"] / h["terpilih_uji"]["csi_acak"]) for k, h in hasil.items() if h.get("terpilih_uji") and h["terpilih_uji"]["csi"] and h["terpilih_uji"]["csi_acak"]}
-    dekat = max(skala, key=skala.get) if skala else None
+    dekat = max(skala, key=skala.get) if skala else None                          # aturan tertulis dari awal: rasio CSI/CSI acak uji tertinggi
+    tinggi = max((k for k in hasil if hasil[k].get("terpilih_uji")), key=lambda k: hasil[k]["terpilih_uji"]["csi"] or 0, default=None)   # pembanding: CSI uji mentah tertinggi
     kode_pil = {k: h["terpilih"] for k, h in hasil.items()}
     pel = pelaporan(A, E, peta, rc_dekat=next(r for r in RANCANGAN if r[0] == (best or dekat)), pil=kode_pil.get(best or dekat), bulan=bulan) if (best or dekat) and kode_pil.get(best or dekat) else None
+    pel2 = pelaporan(A, E, peta, rc_dekat=next(r for r in RANCANGAN if r[0] == tinggi), pil=kode_pil.get(tinggi), bulan=bulan) if tinggi and kode_pil.get(tinggi) and tinggi != (best or dekat) else None
     return {"protokol": "scripts/kekeringan/RISET-AMBANG.md (Putaran 2)", "latih": [AWAL, LATIH_AKHIR], "uji": [UJI_AWAL, bulan_akhir], "aturan_n": len(reg), "kandidat_n": len(reg) * K,
             "bonferroni_k": K, "bootstrap": {"ulang": ULANG, "cuplik": "bulan atau triwulan", "benih": BENIH, "persentil": [round(100 * kiri, 4), round(100 * kanan, 4)]},
             "zona": {"z1_monsunal": sum(1 for v in zn.values() if v == 1), "z2_lainnya": sum(1 for v in zn.values() if v == 2), "aturan": f"R = hujan Jun-Agu / Des-Feb 1991-2020 < {ZONA_R}"},
             "keluarga_baru": BARU, "kriteria_layak": {**UB.KRITERIA_LAYAK, "csi_bawah_selang_di_atas_acak": True, "koreksi": "Bonferroni K=8"},
-            "rancangan": hasil, "terbaik_uji": dekat, "rasio_csi_acak_uji": {k: round(v, 2) for k, v in skala.items()},
+            "rancangan": hasil, "terbaik_uji": dekat, "csi_tertinggi_uji": tinggi, "pelaporan_csi_tertinggi": pel2, "rasio_csi_acak_uji": {k: round(v, 2) for k, v in skala.items()},
             "vonis": {"layak": bool(layak), "rancangan": best, "terpilih": hasil[best]["terpilih"] if best else None,
                       "alasan": (f"Lolos di {best} ({hasil[best]['uraian']}): {hasil[best]['terpilih']}." if best else
                                  "Tidak satu pun dari 8 rancangan lolos kriteria di periode uji: " + "; ".join(f"{k}: {h['vonis']['alasan'].replace('Belum layak: ', '')}" for k, h in hasil.items())[:900])},
@@ -350,8 +358,8 @@ def unduh_ekstra(sel_keys):
     def satu(k):
         lat, lon = k.split(",")
         try:
-            d = ambil(f"https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&longitude={lon}&latitude={lat}&start=20230901&end=20260831&format=JSON", coba=4, batas_waktu=120, kepala=ua)
-            m = ambil(f"https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=GWETROOT&community=AG&longitude={lon}&latitude={lat}&start=1991&end=2026&format=JSON", coba=4, batas_waktu=120, kepala=ua)
+            d = ambil(f"https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&longitude={lon}&latitude={lat}&start=20230901&end=20260831&format=JSON", coba=4, batas_waktu=40, kepala=ua)
+            m = ambil(f"https://power.larc.nasa.gov/api/temporal/monthly/point?parameters=GWETROOT&community=AG&longitude={lon}&latitude={lat}&start=1991&end=2026&format=JSON", coba=4, batas_waktu=40, kepala=ua)
             return k, {"h": [round(v, 2) if v > -900 else None for _, v in sorted(d["properties"]["parameter"]["PRECTOTCORR"].items())],
                        "root": {a: b for a, b in m["properties"]["parameter"]["GWETROOT"].items() if b > -900 and not a.endswith("13")}}
         except Exception as e:
@@ -370,7 +378,7 @@ def jalan():
     pusat = json.load(open(os.path.join(H.AKAR, "public/banjir/data/pusat_kec.json")))
     pow_sel = SPI.hujan_bulanan([(g["lat"], g["lon"]) for g in tanah["grid"]], dt.datetime.now(H.WIB).date())
     ekstra = baca(EKSTRA, None)
-    if not ekstra or not all(k in ekstra for k in pow_sel):
+    if not ekstra or sum(k in ekstra for k in pow_sel) < .9 * len(pow_sel):   # sel yang gagal diunduh dibiarkan kosong (aturan tanah/HTH tak bernilai di sana)
         ekstra = unduh_ekstra(list(pow_sel))
         simpan(EKSTRA, ekstra)
     peta = H.peta_kec(penduduk, pusat, pow_sel)

@@ -70,7 +70,7 @@ hitungan kedua di sisi klien.
 
 ```json
 {
-  "kini": 0, "hari": 30,
+  "kini": 0, "hari": 30, "dummy": false, "prov_nama": "Sumatera Selatan (hanya bila prov diisi)",
   "sumber": [{"id": "titik", "nama": "Titik panas", "batas_menit": 480,
               "slo_target_pct": 99, "segar_pct": 97.2, "umur_p50": 95, "umur_p95": 410,
               "gangguan": [{"mulai": 0, "selesai": 0, "menit": 0}]}],

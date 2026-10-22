@@ -54,11 +54,27 @@ else {
     const l = await tab.teks(); assert.match(l, /isian lengkap/); assert.match(l, /dari 14 tugas/); assert.match(l, /dari 42 foto/); assert.match(l, /dari 11 tugas padam/); assert.match(l, /dari 13 tugas terkonfirmasi/); assert.match(l, /dari 12 tugas/); assert.match(l, /BPBD Kalimantan Tengah/); assert.doesNotMatch(l, /\b0%/); await cek();
     assert.deepEqual(tab.galat().filter(bukanFavicon), []);
   });
+  test("nilai null tampil 'belum ada data', bukan nol atau tanda hubung; satu satuan per kolom; catatan tampil", async () => {
+    mode = "ok"; await buka("/admin/kinerja?hari=7");
+    let d = await tab.teks();
+    assert.match(d, /Catatan metode/); assert.match(d, /dihitung dari saat tugas dibuat/);
+    assert.doesNotMatch(d, /Belum ada alarm Himawari/, "alarm null bukan nol alarm");
+    assert.equal(await tab.eval("[...document.querySelectorAll('.kj-ukur')].filter(e => /alarm dini|terkunci jadi tugas|hilang sebelum/.test(e.innerText)).every(e => /belum ada data/.test(e.innerText))"), true);
+    await tab.klikTeks("[data-tab]", "^Proses$"); await tab.tungguFungsi("document.querySelectorAll('.kj-corong li').length === 6");
+    d = await tab.teks(); assert.match(d, /Sebagian tahap belum ada data/); assert.doesNotMatch(d, /\d+ tugas menunggu,/);
+    const satuan = await tab.eval(`(() => { const baris = [...document.querySelectorAll('.kj-t1, table')].flatMap(t => [...t.querySelectorAll('tbody tr')]);
+      const kol = (tbl, i) => [...tbl.querySelectorAll('tbody tr')].map(r => r.children[i]?.innerText || '').filter(x => /menit|jam|hari/.test(x)).map(x => x.replace(/[^a-z]/g, ''));
+      return {w: [2, 3].map(i => new Set(kol(document.querySelector('.kj-tw'), i)).size), tahap: [2, 3].map(i => new Set(kol(document.querySelector('.kj-corong').closest('section').nextElementSibling.querySelector('table'), i)).size)}; })()`);
+    assert.deepEqual(satuan, {w: [1, 1], tahap: [1, 1]}, "satu satuan per kolom");
+    const tahapTbl = await tab.eval("document.querySelector('.kj-corong').closest('section').nextElementSibling.querySelector('table').innerText");
+    assert.match(tahapTbl, /belum ada data/); assert.doesNotMatch(tahapTbl, /–/);
+    assert.match(await tab.eval("document.querySelector('.kj-tw').innerText"), /Riau[\s\S]*belum ada data/);
+  });
   test("tab di URL dipulihkan dan ikut filter hari", async () => {
     mode = "ok"; await buka("/admin/kinerja?tab=lapangan&hari=7");
     assert.equal(await tab.eval("document.querySelector('[data-tab=lapangan]').getAttribute('aria-pressed')"), "true");
     assert.equal(await tab.eval("document.querySelectorAll('.kj-tr tbody tr').length"), 3);
-    await tab.klik("[data-urut=nama][data-t=r]"); await tab.tungguFungsi("document.querySelector('#kjIsiR tr td').innerText === 'BPBD Kalimantan Tengah'");
+    await tab.klik("[data-urut=nama][data-t=r]"); await tab.tungguFungsi("document.querySelector('#kjIsiR tr td')?.innerText === 'BPBD Kalimantan Tengah'");
     assert.equal(await tab.eval("document.querySelector('[data-urut=nama][data-t=r]').closest('th').getAttribute('aria-sort')"), "ascending");
     assert.ok(await tab.eval("location.search.includes('urutr=nama')"));
   });
@@ -70,9 +86,9 @@ else {
     assert.ok(dipanggil.some(q => q.includes("hari=7")), "fetch hari=7 tidak terkirim");
     await tab.tungguFungsi("document.querySelectorAll('.kj-corong li').length === 6 && document.querySelector('[data-hari=\"7\"]').getAttribute('aria-pressed') === 'true'");
     await tab.tungguFungsi("!!document.querySelector('[data-urut=nama][data-t=w]')");   // tabel wilayah digambar lewat nanti(), sesudah corong
-    await tab.klik("[data-urut=nama][data-t=w]"); await tab.tungguFungsi("document.querySelector('#kjIsiW tr td').innerText === 'Kalimantan Tengah' || document.querySelector('#kjIsiW tr td').innerText === 'Kalimantan Timur'");
+    await tab.klik("[data-urut=nama][data-t=w]"); await tab.tungguFungsi("document.querySelector('#kjIsiW tr td')?.innerText === 'Kalimantan Tengah' || document.querySelector('#kjIsiW tr td')?.innerText === 'Kalimantan Timur'");
     assert.equal(await tab.eval("document.querySelector('[data-urut=nama][data-t=w]').closest('th').getAttribute('aria-sort')"), "ascending");
-    assert.equal(await tab.eval("document.querySelector('#kjIsiW tr td').innerText"), "Kalimantan Tengah");
+    assert.equal(await tab.eval("document.querySelector('#kjIsiW tr td')?.innerText"), "Kalimantan Tengah");
     await tab.tungguFungsi("!!document.querySelector(\"[data-prov='16']\")");   // baris wilayah digambar ulang lewat nanti() sesudah urut
     await tab.klik("[data-prov='16']"); await tab.tungguFungsi("location.search.includes('prov=16') && document.querySelectorAll('.kj-tw tbody tr').length === 2");
     assert.match(await tab.eval("document.querySelector('#kjChip').innerText"), /Sumatera Selatan/);

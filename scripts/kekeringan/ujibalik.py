@@ -277,7 +277,7 @@ def prospek(spi, oni, pow_sel):
             "per_fase": {f: skor(v) for f, v in sorted(per_fase.items(), key=lambda x: str(x[0]))}}
 
 
-def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None):
+def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None, setel2=None):
     if len(pow_sel) < 3:
         raise ValueError(f"uji balik butuh seri POWER banyak sel, ada {len(pow_sel)}")
     if len({y for (_, y) in oni}) < 25:
@@ -292,6 +292,8 @@ def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None):
         import ambang   # impor lambat: ambang.py mengimpor modul ini
         obs, _, _ = kejadian_per_kab(kej, {kab for _, kab, _, _ in peta})
         kejadian["setel"] = ambang.setel(pow_sel, peta, obs, f"{ym[0]}-{ym[1]:02d}")
+        if setel2:
+            kejadian["setel2"] = setel2   # putaran 2 dibekukan (uji satu kali); dijalankan lewat ambang2.py jalan, hanya dibawa ke berkas baru
     isi = {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "versi": VERSI, "label": "Deteksi Pantau Bencana", "loo": True, "sel": len(pow_sel),
             "periode": [TAHUN[0], TAHUN[-1]], "klimatologi": list(SPI.DASAR),
             "catatan": "Angka apa adanya. SPI dihitung dengan tahun yang diuji dibuang dari gamma baku (tinggal-satu-tahun). Bagian aturan menguji SPI-3 terhadap tahun kering yang dikenal; "
@@ -319,7 +321,7 @@ def main():
     pusat = json.load(open(os.path.join(H.AKAR, "public/banjir/data/pusat_kec.json")))
     pow_sel = SPI.hujan_bulanan([(g["lat"], g["lon"]) for g in tanah["grid"]], dt.datetime.now(H.WIB).date())
     kej = baca(os.path.join(H.AKAR, "public/banjir/data/kejadian.json"))
-    isi = bangun(pow_sel, PK.muat_oni(iklim), penduduk, pusat, dt.datetime.now(H.WIB), kej)
+    isi = bangun(pow_sel, PK.muat_oni(iklim), penduduk, pusat, dt.datetime.now(H.WIB), kej, ((ada or {}).get("kejadian") or {}).get("setel2"))
     simpan(jalur_out, isi)
     s = isi["prospek"]["semua"]
     k = (isi.get("kejadian") or {}).get("aturan", {}).get("waspada", {}).get("semua") or {}
@@ -390,6 +392,7 @@ def uji():
     assert k["dibi_total"] == 4 and k["dibi_cocok"] == 3 and k["dibi_dalam_periode"] == 2 and k["periode_data"] == ["2023-10", "2026-08"]
     w = k["aturan"]["waspada"]["semua"]
     assert w["terlewat"] == 1 and w["tepat"] == 0 and w["pod"] == 0 and w["n"] == w["tepat"] + w["terlewat"] + w["palsu"] + w["tak_ada"] == 70 and k["vonis"]["hipotesis"] is True and "Belum layak" in k["vonis"]["alasan"]
+    assert bangun(pw, oni, pend, pusat, dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB), kej, {"vonis": {"layak": False}})["kejadian"]["setel2"] == {"vonis": {"layak": False}}   # putaran 2 ikut terbawa
     assert k["setel"]["kandidat_n"] == 21 and k["setel"]["vonis"]["layak"] is False and k["setel"]["uji"] == ["2025-01", "2026-08"]
     assert list(k["aturan"]["waspada"]) == ["semua", "2023-10..2024-12", "2025-01..2025-12", "2026-01..2026-08"]
     assert vonis({"semua": {}, "a": {"pod": .9, "far": .3, "csi": .6, "csi_acak": .1}})["layak"] is True and vonis({"semua": {}, "a": {"pod": .9, "far": .9, "csi": .6, "csi_acak": .1}})["layak"] is False

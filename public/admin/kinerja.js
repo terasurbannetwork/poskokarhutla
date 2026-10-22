@@ -10,6 +10,8 @@
   const TAHAP = {deteksi: "Deteksi", tugas: "Tugas dibuat", konfirmasi: "Konfirmasi", tiba: "Regu tiba", padam: "Padam", terverifikasi: "Terverifikasi"};
 
   /* ---------- format: tanpa presisi palsu, menit kecil tetap menit, besar jadi jam/hari ---------- */
+  const NA = "belum ada data", jam = m => m == null || !isFinite(m) ? NA : N1T.format(m / 60) + " jam";   // jam: satu satuan per kolom tabel
+  const angka = v => v == null ? NA : N0.format(v);
   const pct = v => v == null ? "–" : N1.format(v) + "%";
   const dur = m => { if (m == null || !isFinite(m)) return "–"; if (m < 90) return N0.format(Math.round(m)) + " menit"; if (m < 2880) return N1.format(Math.round(m / 6) / 10) + " jam"; return N1.format(Math.round(m / 144) / 10) + " hari"; };
   const tgl = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"});
@@ -64,8 +66,8 @@
     const ada = (d.tahap || []).some(t => t.n > 0);
     if (!ada) return seksi("Waktu per tahap penanganan", kosong("Belum ada tugas yang menyelesaikan tahap mana pun dalam periode ini."));
     const baris = d.tahap.map(t => {
-      const tgt = t.target_menit == null ? `<span class="kj-redup">target belum ditetapkan</span>` : t.dalam_target_pct == null ? "–" : `<b class="${t.dalam_target_pct >= 80 ? "ok" : "bahaya"}">${pct(t.dalam_target_pct)}</b> <small>dari target ${esc(dur(t.target_menit))}</small>`;
-      return `<tr><td data-label="Tahap"><b>${esc(TAHAP[t.dari] || t.dari)}</b> ke <b>${esc(TAHAP[t.ke] || t.ke)}</b></td><td class="n" data-label="Tugas">${N0.format(t.n)}</td><td class="n" data-label="Tengah (p50)">${t.n ? esc(dur(t.p50_menit)) : "–"}</td><td class="n" data-label="90% selesai dalam (p90)">${t.n ? esc(dur(t.p90_menit)) : "–"}</td><td data-label="Dalam target">${t.n ? tgt : "–"}</td></tr>`;
+      const tgt = t.target_menit == null ? `<span class="kj-redup">target belum ditetapkan</span>` : t.dalam_target_pct == null ? NA : `<b class="${t.dalam_target_pct >= 80 ? "ok" : "bahaya"}">${pct(t.dalam_target_pct)}</b> <small>dari target ${esc(dur(t.target_menit))}</small>`;
+      return `<tr><td data-label="Tahap"><b>${esc(TAHAP[t.dari] || t.dari)}</b> ke <b>${esc(TAHAP[t.ke] || t.ke)}</b></td><td class="n" data-label="Tugas">${N0.format(t.n)}</td><td class="n" data-label="Tengah (p50)">${esc(t.n ? jam(t.p50_menit) : NA)}</td><td class="n" data-label="90% selesai dalam (p90)">${esc(t.n ? jam(t.p90_menit) : NA)}</td><td data-label="Dalam target">${t.n ? tgt : NA}</td></tr>`;
     }).join("");
     return seksi("Waktu per tahap penanganan", `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Tahap</th><th>Tugas</th><th>Tengah (p50)</th><th>90% dalam (p90)</th><th>Dalam target</th></tr></thead><tbody>${baris}</tbody></table></div>`,
       "Tahap deteksi yang tanpa catatan awal dihitung dari saat tugas dibuat, ditandai perkiraan di catatan.");
@@ -75,9 +77,9 @@
   const TBL = {
     w: {id: "W", urut0: "n", kolom: [["nama", "Wilayah"], ["n", "Tugas"], ["p50", "Deteksi ke tugas, tengah"], ["p90", "Deteksi ke tugas, 90%"], ["terlambat_buka", "Terlambat dibuka"]],
       baris: () => DATA.wilayah, nilai: (w, k) => k === "nama" ? w.nama : k === "n" ? w.n : k === "terlambat_buka" ? w.terlambat_buka : w.tahap?.deteksi_tugas?.[k],
-      sel: w => `<td data-label="Wilayah">${S.prov ? esc(w.nama) : `<a class="kj-drill" href="?prov=${encodeURIComponent(w.kode)}" data-prov="${esc(w.kode)}">${esc(w.nama)}</a>`}</td><td class="n" data-label="Tugas">${N0.format(w.n)}</td>
-        <td class="n" data-label="Deteksi ke tugas, tengah">${esc(dur(w.tahap?.deteksi_tugas?.p50))}</td><td class="n" data-label="Deteksi ke tugas, 90%">${esc(dur(w.tahap?.deteksi_tugas?.p90))}</td>
-        <td class="n" data-label="Terlambat dibuka">${w.terlambat_buka ? `<b class="bahaya">${N0.format(w.terlambat_buka)}</b>` : "0"}</td>`},
+      sel: w => `<td data-label="Wilayah">${S.prov ? esc(w.nama) : `<a class="kj-drill" href="?prov=${encodeURIComponent(w.kode)}" data-prov="${esc(w.kode)}">${esc(w.nama)}</a>`}</td><td class="n" data-label="Tugas">${angka(w.n)}</td>
+        <td class="n" data-label="Deteksi ke tugas, tengah">${esc(jam(w.tahap?.deteksi_tugas?.p50))}</td><td class="n" data-label="Deteksi ke tugas, 90%">${esc(jam(w.tahap?.deteksi_tugas?.p90))}</td>
+        <td class="n" data-label="Terlambat dibuka">${w.terlambat_buka == null ? NA : w.terlambat_buka ? `<b class="bahaya">${N0.format(w.terlambat_buka)}</b>` : "0"}</td>`},
     r: {id: "R", urut0: "n", kolom: [["nama", "Instansi"], ["n", "Tugas"], ["tiba_p50_menit", "Regu tiba, tengah"], ["padam_p50_jam", "Padam, tengah"], ["isian_lengkap_pct", "Isian lengkap"], ["kabar_tepat_pct", "Kabar tepat"]],
       baris: () => DATA.lapangan?.regu || [], nilai: (r, k) => r[k],
       sel: r => `<td data-label="Instansi">${esc(r.nama)}</td><td class="n" data-label="Tugas">${N0.format(r.n)}</td><td class="n" data-label="Regu tiba, tengah">${esc(na(r.tiba_p50_menit == null ? "–" : N1T.format(r.tiba_p50_menit / 60) + " jam"))}</td>
@@ -104,10 +106,10 @@
   }
   function macetHtml(d) {
     const m = d.macet; if (!m) return seksi("Macet", kosong("Belum ada data."));
-    const tot = m.reduce((a, x) => a + (x.n_menunggu || 0), 0), lewat = m.reduce((a, x) => a + (x.n_lewat_target || 0), 0);
+    const sebagian = m.some(x => x.n_menunggu == null), tot = m.reduce((a, x) => a + (x.n_menunggu || 0), 0), lewat = m.reduce((a, x) => a + (x.n_lewat_target || 0), 0);
     return seksi("Tugas yang macet", m.length ? `<div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Menunggu tahap</th><th>Menunggu</th><th>Lewat target</th><th>Daftar</th></tr></thead><tbody>${m.map(x => `<tr><td data-label="Menunggu tahap"><b>${esc(TAHAP[x.tahap] || x.tahap)}</b></td><td class="n" data-label="Menunggu">${x.n_menunggu == null ? "belum ada data" : N0.format(x.n_menunggu)}</td>
       <td class="n" data-label="Lewat target">${x.n_lewat_target == null ? "belum ada data" : x.n_lewat_target ? `<b class="bahaya">${N0.format(x.n_lewat_target)}</b>` : "0"}</td><td class="n" data-label="Daftar">${x.n_menunggu ? `<a class="kj-drill" href="/admin/instansi#pantau">Buka tugasnya</a>` : "–"}</td></tr>`).join("")}</tbody></table></div>` : kosong("Tidak ada tugas yang menunggu."),
-      m.length ? `${N0.format(tot)} tugas menunggu, ${N0.format(lewat)} di antaranya lewat target. Target yang belum ditetapkan tidak dihitung lewat.` : "");
+      m.length ? (sebagian ? "Sebagian tahap belum ada data, jadi jumlah total belum bisa dihitung." : `${N0.format(tot)} tugas menunggu, ${N0.format(lewat)} di antaranya lewat target. Target yang belum ditetapkan tidak dihitung lewat.`) : "");
   }
   const wilayahHtml = d => seksi(S.prov ? `Per kabupaten, ${NAMA[S.prov] || "provinsi " + S.prov}` : "Per provinsi", d.wilayah?.length ? tabelUrut("w") : kosong("Belum ada tugas di wilayah ini pada periode ini."),
     "Terlambat dibuka: tugas yang dibuat melewati batas waktu sejak titik terdeteksi." + (S.prov ? "" : " Klik nama provinsi untuk melihat kabupatennya."));
@@ -134,14 +136,14 @@
   }
 
   /* ---------- tab Data ---------- */
-  const dataHtml = d => sumberHtml(d) + trenHtml(d) + himawariHtml(d);
+  const dataHtml = d => sumberHtml(d) + trenHtml(d) + himawariHtml(d) + catatanHtml(d);
   const prosesHtml = d => corongHtml(d) + tahapHtml(d) + macetHtml(d) + wilayahHtml(d);
   const ISI = {data: dataHtml, proses: prosesHtml, lapangan: lapanganHtml};
   const trenHtml = d => seksi("Tren harian", d.tren?.length ? `<div class="kj-grafiks">${garis("Kesegaran data (%)", d.tren, "segar_pct", pct)}${garis("Deteksi ke tugas, tengah", d.tren, "deteksi_tugas_p50", dur, true)}</div>` : kosong("Belum ada riwayat harian."));
   function himawariHtml(d) {
     const h = d.himawari; if (!h) return seksi("Himawari", kosong("Belum ada data Himawari."));
-    const semua0 = !h.alarm && !h.terkunci && !h.hilang;
-    return seksi("Himawari", `<div class="kj-ukurbaris">${ukur(N0.format(h.alarm), "alarm dini")}${ukur(N0.format(h.terkunci), "terkunci jadi tugas", h.terkunci ? "ok" : "")}${ukur(N0.format(h.hilang), "hilang sebelum terkunci")}${ukur(dur(h.selisih_viirs_p50_menit), "selisih ke VIIRS (tengah)")}</div>`
+    const semua0 = h.alarm === 0 && h.terkunci === 0 && h.hilang === 0, n = v => v == null ? "–" : N0.format(v);
+    return seksi("Himawari", `<div class="kj-ukurbaris">${ukur(n(h.alarm), "alarm dini")}${ukur(n(h.terkunci), "terkunci jadi tugas", h.terkunci ? "ok" : "")}${ukur(n(h.hilang), "hilang sebelum terkunci")}${ukur(dur(h.selisih_viirs_p50_menit), "selisih ke VIIRS (tengah)")}</div>`
       + (semua0 ? kosong("Belum ada alarm Himawari pada periode ini.") : ""), "Terkunci: alarm yang terkonfirmasi satelit lain atau pindai berikutnya sehingga jadi tugas. Hilang: alarm yang padam sebelum terkunci.");
   }
   const catatanHtml = d => d.catatan?.length ? seksi("Catatan metode", `<ul class="kj-catat">${d.catatan.map(c => `<li>${esc(c)}</li>`).join("")}</ul>`) : "";

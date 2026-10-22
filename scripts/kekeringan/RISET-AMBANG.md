@@ -239,3 +239,77 @@ dan berapa kabupaten pernah melapor; (2) FAR terpilih dipecah menurut provinsi
 yang pernah melapor kejadian kering vs yang tidak pernah; (3) bukti bahwa
 kabupaten yang melapor sekali cenderung melapor berulang. FAR yang turun tajam di
 provinsi pelapor menandakan sebagian "alarm palsu" adalah kekeringan tanpa laporan.
+
+## Hasil putaran 2 (satu kali jalan, 22 Okt 2026, SPI/tanah/HTH sampai Agu 2026)
+
+`python3 scripts/kekeringan/ambang2.py jalan`; 728 kandidat; 609 dari 611 sel punya
+tanah/HTH (2 sel gagal unduh, aturan tanah/HTH tak bernilai di sana). Zona: 156
+sel monsunal (Z1), 455 lainnya (Z2). Tak satu pun dari 728 kandidat memenuhi
+POD >= 0,5 dan FAR <= 0,8 sekaligus di periode LATIH.
+
+| Rancangan | Terpilih (latih) | POD uji | FAR uji | CSI uji | CSI acak | A-1,0 CSI uji |
+| --------- | ---------------- | ------- | ------- | ------- | -------- | ------------- |
+| D0 kab-bulan serentak | E[Z1-0,5 / Z2-1,0] | 0,227 | 0,923 | 0,061 | 0,011 | 0,038 |
+| D1 serentak +-1 bln | E[Z1-0,5 / Z2-1,5] | 0,132 | 0,815 | 0,083 | 0,016 | 0,047 |
+| D2 jeda 1 bln | Lp20d21 | 0,057 | 0,932 | 0,032 | 0,007 | 0,026 |
+| D3 jeda 2 bln | B[Z1-1,0 / Z2-1,5] | 0,050 | 0,966 | 0,021 | 0,009 | 0,021 |
+| D4 jeda 1 bln +-1 | Lp20d21 | 0,000 | 0,667 | 0,000 | 0,001 | 0,047 |
+| D5 jeda 2 bln +-1 | B[Z1-1,0 / Z2-1,5] | 0,000 | 0,946 | 0,000 | 0,017 | 0,023 |
+| D6 kab-triwulan, alarm bulan pertama | J-0,5 d21 | 0,122 | 0,802 | 0,082 | 0,014 | 0,065 |
+| D7 kab-triwulan, alarm salah satu bulan | E[Z1-0,5 / Z2-1,5] | 0,412 | 0,832 | 0,136 | 0,027 | 0,089 |
+
+**Vonis: TIDAK LAYAK untuk kedelapan rancangan.** Terbaik D7 (diagnosis per
+kab-triwulan): CSI 0,136 = 5 kali acak, tetapi POD 0,41 < 0,5, FAR 0,83 > 0,8, dan
+batas bawah selang Bonferroni CSI 0 (hanya 7 triwulan uji). `status.py` dan pil
+hipotesis tidak berubah.
+
+Bacaan:
+- Toleransi dan satuan triwulan menaikkan skor mentah (D7 CSI 0,136, aturan
+  sekarang 0,089), tetapi itu sebagian besar karena satuannya lebih longgar; FAR
+  tetap di atas 0,8 dan POD di bawah 0,5. Tidak ada kandidat latih yang lolos
+  POD dan FAR, jadi pelolosan di uji pun tidak akan bisa dibenarkan oleh latih.
+- Jeda 1 dan 2 bulan (D2-D5, prakiraan sungguhan) jatuh ke batas acak atau di
+  bawahnya: SPI-3/tanah/HTH bulan ini tidak memberi petunjuk laporan kekeringan
+  1-2 bulan lagi di data 2023-2026.
+- Ambang per zona memang dipilih di 5 dari 8 rancangan, dengan pola konsisten
+  (Z1 monsunal -0,5, Z2 -1,0/-1,5), tetapi tanpa pengujian lanjutan ia tidak
+  mengubah vonis.
+- Tanah (GWETROOT) dan HTH muncul sebagai terpilih (L, J) hanya di rancangan jeda
+  dan triwulan-bulan-pertama yang skornya sudah di dasar; tak satu pun memberi
+  keunggulan tegas atas SPI-3 saja.
+
+Kewajaran target DIBI (catatan, bukan alasan lolos): dari 508 kabupaten, 133 (26%)
+pernah melapor kekeringan Okt 2023 - Agu 2026, dan 60 dari 133 melapor lebih dari
+satu bulan. Pelapor terbanyak Jawa Tengah (27 dari 35 kab), Jawa Barat (21 dari
+27), Jawa Timur (14 dari 38), NTB (10 dari 10): DIBI sangat terkonsentrasi di
+Jawa dan Nusa Tenggara. Alarm D7 (rancangan terbaik) di provinsi yang tak pernah melapor 23 dari 23
+palsu menurut definisi; di provinsi pelapor FAR 0,82 (244 dari 298). Jadi
+sebagian FAR memang artefak pelaporan, tetapi hanya 23 dari 321 alarm berada
+di luar provinsi pelapor, sehingga koreksi pelaporan tidak mengubah kesimpulan.
+Target ini adil untuk menyatakan ada atau tidak ada laporan BPBD, tidak untuk
+menyatakan ada atau tidak ada kekeringan fisik.
+
+Langkah yang masih mungkin: kejadian Sep 2026 dan sesudahnya sebagai uji
+sungguhan baru, DIBI pra-2023 untuk memperpanjang latih, dan target selain
+laporan (mis. status siaga darurat SK BNPB atau gagal panen BPS).
+
+### Koreksi pelaporan (22 Okt 2026, sesudah tinjauan)
+
+- Aturan "rancangan terdekat" (untuk diagnostik pelaporan) tertulis di kode sejak
+  awal sebagai rasio CSI/CSI acak uji tertinggi = **D6** (5,86x; D7 5,04x). Sempat
+  saya ubah ke CSI mentah (D7) sesudah melihat hasil; itu dikembalikan.
+  `pelaporan` kini untuk D6 (aturan J-0,5 d21: FAR 78,7% di provinsi pelapor, 6
+  dari 6 alarm palsu di provinsi non-pelapor); D7 (CSI mentah tertinggi, 0,136)
+  dilaporkan terpisah di `pelaporan_csi_tertinggi` (FAR 81,9% di provinsi
+  pelapor, 23 dari 23 palsu di non-pelapor). Kesimpulan sama pada keduanya.
+  Teks "Alarm D7 ..." di atas merujuk ke rancangan CSI mentah tertinggi itu.
+- Jenis rancangan: D0, D1, D7 diagnosis (alarm boleh jatuh sesudah kejadian dalam
+  jendela atau triwulan); D2-D5 prakiraan; D6 campuran. D7 BUKAN bukti kemampuan
+  prakiraan. Tertulis di `rancangan.*.jenis` dan kartu Metode.
+- Selang bootstrap dengan kurang dari 10 klaster (D6, D7: 7 triwulan) tak andal:
+  `terpilih_selang_bonferroni.andal = false`, angka selang disembunyikan di layar.
+- CSI acak memakai satu penyebut unit valid untuk laju alarm dan laju kejadian
+  (pendekatan; rentang bulan kejadian bergeser sedikit pada rancangan bertoleransi).
+- Uji tidak sepenuhnya buta untuk keluarga E dan aturan A-1,0 (skor ujinya sudah
+  dilihat di putaran 1).
+- Teks vonis memakai persen satu desimal (FAR D6 80,2% > 80,0%).

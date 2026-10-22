@@ -22,7 +22,7 @@ export function fixture({hari = 30, prov = ""} = {}) {
   const dalam = prov ? TUGAS.filter(t => t.prov === prov).map((t, i) => ({...t, kab: i % 2 ? ["1602", "Kabupaten Musi Banyuasin"] : ["1601", "Kabupaten Ogan Komering Ilir"]})) : TUGAS;
   const kel = prov ? Object.values(Object.groupBy(dalam, t => t.kab[0])).map(g => [g[0].kab[0], g[0].kab[1], g]) : Object.entries(Object.groupBy(dalam, t => t.prov)).map(([k, g]) => [k, NAMA_PROV[k], g]);
   const wilayah = kel.map(([kode, nama, g]) => ({kode, nama, n: g.length, tahap: {deteksi_tugas: {p50: pers(g.map(t => t.dt), .5), p90: pers(g.map(t => t.dt), .9)}}, terlambat_buka: g.filter(t => t.dt > 180).length}));
-  if (!prov) wilayah.push({kode: "14", nama: "Riau", n: 0, tahap: {deteksi_tugas: {p50: null, p90: null}}, terlambat_buka: 0});
+  if (!prov) wilayah.push({kode: "14", nama: "Riau", n: 0, tahap: {deteksi_tugas: {p50: null, p90: null}}, terlambat_buka: null});
   const dt = dalam.map(t => t.dt), konf = dalam.filter(t => t.konf), tiba = konf.filter(t => t.tiba), padam = tiba.filter(t => t.padam), verif = padam.filter(t => t.verif);
   const proses = [["deteksi", dalam], ["tugas", dalam], ["konfirmasi", konf], ["tiba", tiba], ["padam", padam], ["terverifikasi", verif], ["muncul_lagi", dalam.filter(t => t.lagi)]].map(([tahap, l]) => ({tahap, n: l.length}));
   const tren = Array.from({length: Math.min(hari, 14)}, (_, i) => ({tanggal: new Date(KINI - (Math.min(hari, 14) - 1 - i) * HARI).toISOString().slice(0, 10), segar_pct: i === 5 ? 94.1 : 99.2 - (i % 3) * 0.4, deteksi_tugas_p50: i === 3 ? null : 40 + i * 4}));
@@ -38,7 +38,8 @@ export function fixture({hari = 30, prov = ""} = {}) {
     {dari: "deteksi", ke: "tugas", n: dalam.length, p50_menit: pers(dt, .5), p90_menit: pers(dt, .9), target_menit: null, dalam_target_pct: null},
     {dari: "tugas", ke: "konfirmasi", n: konf.length, p50_menit: 25, p90_menit: 140, target_menit: 60, dalam_target_pct: 83.3},
     {dari: "konfirmasi", ke: "tiba", n: tiba.length, p50_menit: 190, p90_menit: 700, target_menit: null, dalam_target_pct: null},
-    {dari: "tiba", ke: "padam", n: 0, p50_menit: null, p90_menit: null, target_menit: null, dalam_target_pct: null}], wilayah, tren, proses,
-    macet: [{tahap: "konfirmasi", n_menunggu: dalam.length - konf.length, n_lewat_target: dalam.length - konf.length}, {tahap: "tiba", n_menunggu: konf.length - tiba.length, n_lewat_target: null}], lapangan,
-    himawari: {alarm: 14, terkunci: 9, hilang: 3, selisih_viirs_p50_menit: 55}, catatan: ["Tahap deteksi untuk 4 tugas dihitung dari saat tugas dibuat (perkiraan)."]};
+    {dari: "tiba", ke: "padam", n: 0, p50_menit: null, p90_menit: null, target_menit: null, dalam_target_pct: null},
+    {dari: "padam", ke: "terverifikasi", n: 5, p50_menit: null, p90_menit: null, target_menit: 1440, dalam_target_pct: null}], wilayah, tren, proses,
+    macet: [{tahap: "konfirmasi", n_menunggu: dalam.length - konf.length, n_lewat_target: dalam.length - konf.length}, {tahap: "tiba", n_menunggu: hari === 7 ? null : konf.length - tiba.length, n_lewat_target: null}], lapangan,
+    himawari: hari === 7 ? {alarm: null, terkunci: null, hilang: null, selisih_viirs_p50_menit: null} : {alarm: 14, terkunci: 9, hilang: 3, selisih_viirs_p50_menit: 55}, catatan: ["Tahap deteksi untuk 4 tugas dihitung dari saat tugas dibuat (perkiraan)."]};
 }
