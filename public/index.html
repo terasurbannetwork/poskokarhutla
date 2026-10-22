@@ -2184,11 +2184,11 @@ const Lapis = {
           "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
         ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); peta.on("idle", () => this.geserHw()); this.hwMulai(); },
       /* api baru: Himawari >= 2 pindai, FIRMS belum ada dalam 4 km / 24 jam; suar fuchsia (halo + titik), di atas titik & himawari.
-         Mulai zoom 6: di skala nasional titik lepas ini mengotori peta (pemilik, 22 Okt 2026) */
+         Mulai zoom 8, sama dengan cincin Himawari: di skala nasional dan provinsi titik lepas ini mengotori peta (pemilik, 22 Okt 2026) */
       hwbaru: async () => {
         peta.addSource("hwbaru", {type: "geojson", data: this.hwFitur(1)});
-        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 6, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
-        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 6, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
+        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 8, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
+        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 8, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
     };
     try { await gaya[k](); } catch (e) { toast("Lapisan " + k + " gagal dimuat"); }
   },
