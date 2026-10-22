@@ -87,3 +87,14 @@ html.emb,.emb body{background:transparent}
 .pr-lg .cat{flex:1 0 100%;text-align:center;font-style:italic;color:#5d6d86}
 /* kartu basi: isi diredupkan, pill tanggal data tetap terbaca (pemilik 22 Okt 2026) */
 [data-basi] :is(h3,.pr-angka,.ex-bd){opacity:.5;filter:grayscale(.6)}
+/* cetak untuk rapat: A4 lanskap, dua kolom, kartu tidak terbelah, tanpa peta dan tombol */
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  html,body{background:#fff}
+  header.top,#peta,.pr-lapis,.pr-leg{display:none!important}
+  main#insight{display:grid!important;padding:0;max-width:none;grid-template-columns:1fr 1fr;gap:8mm}
+  #insight[hidden]{display:grid!important}
+  #insight .ex{break-inside:avoid;box-shadow:none;border:1px solid #d6dce5}
+  [data-basi] :is(h3,.pr-angka,.ex-bd){opacity:.7}
+  #insight svg{max-width:100%;height:auto}
+}

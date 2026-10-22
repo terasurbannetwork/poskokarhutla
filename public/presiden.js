@@ -1,15 +1,16 @@
 "use strict";
 /* /presiden: satu fetch ke /data/presiden/semua.json, kartu Insight dari skema widget (docs/presiden/KONTRAK.md).
    ?w=<id> = satu widget tanpa kepala untuk iframe; tinggi dilaporkan ke induk lewat postMessage. */
-const ID = new URLSearchParams(location.search).get("w");
+const ID = new URLSearchParams(location.search).get("w") || null;
 const WARNA = ["var(--f3)", "var(--f2)", "var(--brand2)", "var(--info)"];
-const tgl = iso => { const d = new Date(iso); if (/T23:59/.test(iso)) return isNaN(d) ? "" : d.toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}); return isNaN(d) ? "" : d.toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"}).replace(",", "").replace(/(\d\d):(\d\d)$/, "$1.$2") + " WIB"; };
+const tgl = iso => { const d = new Date(iso); if (/T23:59|^\d{4}-\d\d-\d\d$/.test(iso)) return isNaN(d) ? "–" : d.toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}); return isNaN(d) ? "–" : d.toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"}).replace(",", "").replace(/(\d\d):(\d\d)$/, "$1.$2") + " WIB"; };
 const lab = v => fmt(v);
 const pl = (t, w = "var(--brand2)") => `<span class="pl" style="--w:${w}">${esc(t)}</span>`;
 const sorot = s => esc(s).replace(/\[\[(.+?)\]\]/g, (_, x) => Kartu.hl(x));
 const kunci = a => {
-  const u = a.ubah == null ? "" : `, ${a.ubah > 0 ? "naik" : a.ubah < 0 ? "turun" : "tetap"}${a.ubah ? " " + fmt(Math.abs(a.ubah)) + "%" : ""}`;
-  return pl(`${a.label} ${fmt(a.nilai)}${a.satuan ? (a.satuan.startsWith("%") ? "" : " ") + a.satuan : ""}${u}`, a.ubah > 0 ? "var(--bad)" : a.ubah < 0 ? "var(--ok)" : "var(--brand2)");
+  const b = Math.abs(a.ubah), u = a.ubah == null ? "" : `, ${a.ubah > 0 ? "naik" : a.ubah < 0 ? "turun" : "tetap"}${a.ubah ? " " + fmt(b >= 100 ? Math.round(b) : b) + "%" : ""}`;
+  const n = a.tampil ?? `${fmt(a.nilai)}${a.satuan ? (a.satuan.startsWith("%") ? "" : " ") + a.satuan : ""}`;   /* tampil = teks jadi untuk perkiraan ("sekitar 85 juta orang") */
+  return pl(`${a.label} ${n}${u}`, a.ubah > 0 ? "var(--bad)" : a.ubah < 0 ? "var(--ok)" : "var(--brand2)");
 };
 
 /* grafik batang (tegak bila label pendek dan sedikit, selain itu mendatar) dan garis; angka di ujung batang, total di atasnya */
@@ -46,7 +47,7 @@ function tabel(w) {
 }
 
 function kartu(w) {
-  const kosong = w.status === "kosong", basi = w.status === "basi" && w.per;   /* basi: kartu diredupkan + tanggal data (pemilik 22 Okt) */
+  const kosong = w.status === "kosong", basi = w.status === "basi";   /* basi: kartu diredupkan + tanggal data (pemilik 22 Okt) */
   const tl = w.tindak_lanjut?.length ? `<div class="pr-tl"><span class="lbl">Tindak lanjut</span>${w.tindak_lanjut.map(x => `<div>${pl(x.siapa, "var(--brand2)")}<span>${esc(x.apa)}</span></div>`).join("")}</div>` : "";
   const g = !kosong && w.grafik?.label?.length ? w.grafik : null;
   if (g && g.seri.length > 1) Kartu.leg(g.seri.map((s, i) => [WARNA[i % 4], esc(s.nama)]));
@@ -54,7 +55,7 @@ function kartu(w) {
     + (!kosong && w.baris?.length ? tabel(w) : "") + tl + (w.catatan ? `<p class="pr-cat">${esc(w.catatan)}</p>` : "");
   const angka = !kosong && w.angka?.length ? `<div class="pr-angka">${w.angka.map(kunci).join("")}</div>` : "";
   return Kartu.ex(sorot(w.judul) + "", "", "", isi, "Sumber: " + esc(w.sumber || "–"))
-    .replace('<span class="ex-ey"></span>', () => `<div class="pr-ey"><span class="ex-ey">${esc(w.label)}</span>${basi ? pl("Data terakhir " + tgl(w.per.slice(0, 10) + "T23:59"), "var(--warn)") : ""}</div>`)
+    .replace('<span class="ex-ey"></span>', () => `<div class="pr-ey"><span class="ex-ey">${esc(w.label)}</span>${basi ? pl(w.per ? "Data terakhir " + tgl(w.per.slice(0, 10) + "T23:59+07:00") : "Data lama", "var(--warn)") : ""}</div>`)
     .replace("</header>", () => angka + "</header>")
     .replace("</footer>", () => w.per ? `<span class="per">Per ${tgl(w.per)}</span></footer>` : "</footer>")
     .replace("<article", () => `<article data-w="${esc(w.id)}"${basi ? " data-basi" : ""}`);
@@ -63,32 +64,36 @@ function kartu(w) {
 let W = [], WM = new Map();
 function grafikSemua() {
   const els = [...document.querySelectorAll("[data-g]")], lebar = els.map(e => Math.floor(e.clientWidth));   /* fase baca, lalu tulis */
-  els.forEach((e, i) => { const w = WM.get(e.dataset.g); if (w && lebar[i] > 0) e.innerHTML = grafik(w.grafik, lebar[i]); });
+  els.forEach((e, i) => { const w = WM.get(e.dataset.g); if (w && lebar[i] > 0) try { e.innerHTML = grafik(w.grafik, lebar[i]); } catch (x) { e.innerHTML = ""; } });
 }
 function tampil(j) {
-  W = Array.isArray(j) ? j : j.widget || j.widgets || Object.values(j).filter(x => x && x.id);
-  WM = new Map(W.map(w => [w.id, w]));
-  const pilih = ID ? W.filter(w => w.id === ID) : W;
-  $("#insight").innerHTML = pilih.length ? pilih.map(kartu).join("") : `<div class="kosong">${ID ? "Widget tidak ditemukan." : "Belum ada data."}</div>`;
+  const baru = Array.isArray(j) ? j : j.widget || j.widgets || Object.values(j).filter(x => x && x.id);
+  const pilih = ID ? baru.filter(w => w.id === ID) : baru, y = scrollY;
+  /* satu widget cacat jadi kartu pesan; kartu lain tetap tampil */
+  const aman = w => { try { return kartu(w); } catch (e) { Kartu.leg([]); return `<article class="ex" data-w="${esc(w.id)}"><div class="kosong">Data ${esc(w.label || w.id)} sedang bermasalah.</div></article>`; } };
+  $("#insight").innerHTML = pilih.length ? pilih.map(aman).join("") : `<div class="kosong">${ID ? "Widget tidak ditemukan." : "Belum ada data."}</div>`;
+  W = baru; WM = new Map(W.map(w => [w.id, w]));
   const dibuat = j.dibuat || j.per || W.map(w => w.per).filter(Boolean).sort().pop();
   $("#upd").textContent = dibuat ? "Diperbarui " + tgl(dibuat) : "";
-  grafikSemua();
+  grafikSemua(); if (y) scrollTo(0, y);   /* pembaruan data tidak melempar pembaca ke atas */
 }
 let lastW = innerWidth, lastH = 0, lastTeks = "";
 async function muat() {
   if (ID === "peta") return;
   try {
-    const r = await fetch("/data/presiden/semua.json"); if (!r.ok) throw 0;
+    const r = await fetch("/data/presiden/semua.json", {signal: AbortSignal.timeout?.(15000)}); if (!r.ok) throw 0;
     const t = await r.text(); if (t === lastTeks) return;   /* sama = tidak render ulang */
+    if (lastTeks && Pt.peta) return location.reload();   /* data baru saat peta terbuka: peta dan legenda ikut segar */
     tampil(JSON.parse(t)); lastTeks = t; if (!Pt.peta) nanti(() => "requestIdleCallback" in window ? requestIdleCallback(() => Pt.ambil().catch(() => {}), {timeout: 3000}) : setTimeout(() => Pt.ambil().catch(() => {}), 1500));
   }
-  catch (e) { if (!W.length) $("#insight").innerHTML = `<div class="kosong">Data belum bisa dimuat.</div>`; }
+  catch (e) { if (!W.length) { $("#insight").innerHTML = `<div class="kosong">Data belum bisa dimuat. Mencoba lagi…</div>`; setTimeout(muat, 30000); } }
 }
 setInterval(() => { if (!document.hidden) muat(); }, 10 * 60 * 1000);
+addEventListener("visibilitychange", () => { if (!document.hidden) muat(); }); addEventListener("online", () => muat());
 /* grafik digambar ulang hanya saat lebar berubah; tinggi dilaporkan ke iframe induk hanya bila berubah */
 new ResizeObserver(() => {
   if (innerWidth !== lastW) { lastW = innerWidth; nanti(grafikSemua); }
-  const h = document.documentElement.scrollHeight;
+  const h = Math.ceil(document.body.getBoundingClientRect().height);
   if (top !== window && ID !== "peta" && h !== lastH) { lastH = h; parent.postMessage({presiden: "tinggi", w: ID, tinggi: h}, "*"); }
 }).observe(document.body);
 
@@ -132,14 +137,20 @@ const Pt = {
   },
   susun() { this.vis = this.L.filter(l => this.aktif.has(l.id)).map(l => ({l, ids: this.ids(l)})); },
   mulai() {
-    const ada = new Set(this.L.map(l => l.id)), minta = (lapisDiminta || "").split(",").filter(x => ada.has(x));
+    const ada = new Set(this.L.map(l => l.id)), minta = (lapisDiminta || "").split(",").filter(x => ada.has(x)), jenis = x => this.L.find(l => l.id === x).jenis;
+    minta.splice(0, minta.length, ...minta.filter((x, i) => jenis(x) !== "provinsi" || minta.findIndex(y => jenis(y) === "provinsi") === i));   /* satu lapisan provinsi saja */
     (minta.length ? minta : ada.has("provinsi") ? ["provinsi"] : this.L.slice(0, 1).map(l => l.id)).forEach(i => this.aktif.add(i));
     this.L.forEach(l => { l.warna = WARNA_L[l.id] || "#d9481f"; });
     this.susun();
     $("#pr-lapis").innerHTML = this.L.map(l => `<button type="button" data-l="${esc(l.id)}" style="--c:${l.warna}" aria-pressed="${this.aktif.has(l.id)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[l.id] || IKON.provinsi}"/></svg><span>${esc(l.label)}</span></button>`).join("");
-    const m = this.peta = new maplibregl.Map({container: "pr-map", style: DASAR(), bounds: [[95, -11], [141, 6]], fitBoundsOptions: {padding: {top: 90, bottom: 70, left: 10, right: 10}}, minZoom: 2.5, maxZoom: 14, attributionControl: {compact: true}, dragRotate: false});
+    let m; try { m = this.peta = new maplibregl.Map({container: "pr-map", style: DASAR(), bounds: [[95, -11], [141, 6]], fitBoundsOptions: {padding: {top: 90, bottom: 70, left: 10, right: 10}}, minZoom: 2.5, maxZoom: 14, attributionControl: {compact: true}, dragRotate: false}); }
+    catch (e) { $("#pr-leg").innerHTML = `<div class="pr-lg">Peta tidak didukung peramban ini. Buka tampilan Kartu.</div>`; return; }
+    let jadi = false; const pasangSekali = () => { if (jadi) return; jadi = true; this.pasang(); this.legenda(); };
+    /* peta dasar (tiles.openfreemap.org) diblokir jaringan: lapisan tetap tampil di atas latar polos */
+    const polos = () => { if (!jadi) { m.setStyle({version: 8, sources: {}, layers: [{id: "bg", type: "background", paint: {"background-color": gelapTema() ? "#1b2230" : "#eef1f5"}}]}); m.once("style.load", pasangSekali); } };
+    m.on("error", e => { if (!jadi && /\/styles\//.test(e.error?.url || e.error?.message || "")) polos(); }); setTimeout(polos, 8000);   /* hanya gaya dasar yang gagal; galat ubin biasa diabaikan */
     m.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
-    m.once("style.load", () => { this.pasang(); this.legenda(); });
+    m.once("style.load", pasangSekali);
     m.on("click", e => this.klik(e));
     m.on("mousemove", e => {   /* satu per frame, lewati saat seret */
       if (this.tunggu || e.originalEvent.buttons) return; this.tunggu = true;
@@ -157,7 +168,7 @@ const Pt = {
     return {ts, rentang, c: x => x == null || x <= 0 ? null : warna[ts.filter(t => x >= t).length]};
   },
   /* titik berkelas (lapisan.kelas): warna dan ukuran legenda mengikuti kelas */
-  warnaKelas(l, x) { const K = l.kelas, i = K.reduce((a, k, j) => x >= k.dari ? j : a, 0); return RAMP[K.length < 2 ? 3 : Math.round(i * 4 / (K.length - 1))]; },
+  warnaKelas(l, x) { const K = l.kelas; if (x < K[0].dari) return "#9aa5b5"; const i = K.reduce((a, k, j) => x >= k.dari ? j : a, 0); return RAMP[K.length < 2 ? 3 : Math.round(i * 4 / (K.length - 1))]; },
   pasang() {
     const m = this.peta, abu = gelapTema() ? "#3a4659" : "#e6e9ee";
     [...this.L.filter(l => l.jenis === "provinsi"), ...this.L.filter(l => l.jenis !== "provinsi")].forEach(l => {
@@ -197,8 +208,10 @@ const Pt = {
     $("#pr-leg").innerHTML = this.vis.map(({l}) => {
       const dobel = l.satuan && l.label.toLowerCase().includes(l.satuan.toLowerCase()), ket = `<span><b>${esc(l.label)}</b>${l.satuan && !dobel ? ", " + esc(l.satuan) : ""}</span>`;
       let isi;
-      if (l.jenis === "provinsi") isi = l.k.rentang.map(([w, t]) => `<span class="kl"><i style="background:${w}"></i>${esc(t)}</span>`).join("");
+      if (l.jenis === "provinsi") isi = l.k.rentang.map(([w, t]) => `<span class="kl"><i style="background:${w}"></i>${esc(t)}</span>`).join("")
+        + (this.geo.features.some(f => !(l.nilai?.[f.properties.kode] > 0)) ? `<span class="kl"><i style="background:${gelapTema() ? "#3a4659" : "#e6e9ee"}"></i>Nol atau tanpa data</span>` : "");
       else if (l.kelas?.length) isi = l.kelas.map((k, i) => `<span class="kl">${dot(this.warnaKelas(l, k.dari), 8 + i * 3)}${esc(k.label)}, dari ${fmt(k.dari)}</span>`).join("");
+      else if (!l.F?.length) isi = `<span class="nl">Tidak ada titik</span>`;
       else isi = `<span class="nl">${dot(l.warna, 7)}kecil${dot(l.warna, 16, "margin-left:8px")}${fmt(l.mx)}</span>`;
       const per = [l.per ? "per " + tgl(l.per) : "", l.sumber ? "Sumber: " + esc(l.sumber) : ""].filter(Boolean).join(", ");
       return `<div class="pr-lg">${ket}${isi}${per ? `<span class="per">${per}</span>` : ""}${l.catatan ? `<span class="cat">${esc(l.catatan)}</span>` : ""}</div>`;
@@ -226,7 +239,7 @@ function mode(t, simpan = true) {
     if (cur !== t) return;
     $("#peta").hidden = t !== "peta"; $("#insight").hidden = t === "peta";
     if (t === "peta") { Pt.muatLib(); Pt.peta?.resize(); } else grafikSemua();   /* grafik digambar ulang: lebar 0 saat tersembunyi */
-    if (simpan) { ptSimpan.tulis(t); history.replaceState(null, "", location.pathname + location.search + (t === "peta" ? "#peta" : "")); }
+    if (simpan && !ID) { ptSimpan.tulis(t); history.replaceState(null, "", location.pathname + location.search + (t === "peta" ? "#peta" : "")); }
   });
 }
 document.addEventListener("click", e => {
@@ -239,4 +252,4 @@ const prefetch = e => { if (e.target.closest?.('#tampil [data-t="peta"]')) Pt.am
 document.addEventListener("pointerover", prefetch); document.addEventListener("focusin", prefetch);
 addEventListener("hashchange", () => { if (ID !== "peta") mode(location.hash === "#peta" ? "peta" : "kartu", false); });
 if (ID === "peta") { $("#peta").hidden = false; $("#insight").hidden = true; Pt.muatLib(); }
-else { mode(location.hash === "#peta" || (!location.hash && ptSimpan.baca() === "peta") ? "peta" : "kartu", false); muat(); }
+else { mode(!ID && (location.hash === "#peta" || (!location.hash && ptSimpan.baca() === "peta")) ? "peta" : "kartu", false); muat(); }
