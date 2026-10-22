@@ -55,3 +55,10 @@ test("format layar: rupiah rentang, waktu, kuantil", () => {
   assert.equal(U.waktu(Infinity), "tak terjangkau"); assert.equal(U.waktu(.5), "30 menit"); assert.equal(U.waktu(2.25), "2,3 jam");
   assert.equal(U.kuantil([5, 1, 3, 2, 4, NaN], .5), 3); assert.equal(U.kuantil([], .5), null);
 });
+
+test("sisiKec: kotak mengikuti kecamatan (x 1,1), dibatasi 6-24 km; kecamatan tak dikenal = null", () => {
+  const c = muat(), U = c.SimTampak._uji, kotak = (w, h) => ({properties: {kab: "K", kec: "A"}, geometry: {type: "Polygon", coordinates: [[[100, 0], [100 + w, 0], [100 + w, h], [100, h], [100, 0]]]}});
+  for (const [w, h, ekspektasi] of [[.02, .02, 6000], [.2, .1, 24000], [.1, .08, 12000], [1, 1, 24000]]) {
+    c.S.geo.kec["11"] = {features: [kotak(w, h)]}; assert.equal(U.sisiKec("11|K|A"), ekspektasi, `kotak ${w} x ${h} derajat`); }
+  assert.equal(U.sisiKec("11|K|Tak ada"), null);
+});
