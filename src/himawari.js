@@ -46,17 +46,18 @@ export function tandaiBaru(hw, firms, kini, diIndonesia = () => true) {
   });
 }
 
-/* isi /api/himawari: objek R2 + kolom `baru` + n_baru. Objek hilang = kosong (bukan 500). */
 /* wilayah gagal dimuat = jangan tandai apa pun (lebih baik diam daripada alarm di negara tetangga) */
 export async function saringIndonesia(env) {
   try { const W = await wilayah(env); return (lat, lon) => !!cariWilayah(W, lat, lon); } catch (e) { return () => false; }
 }
 
+/* isi /api/himawari: objek R2 + kolom `baru` + n_baru, hanya titik di wilayah Indonesia (layar menggambar semuanya sebagai "Api baru"; pemilik, 22 Okt 2026).
+   Objek hilang = kosong (bukan 500). */
 export async function himawariRespons(env, kini = Date.now()) {
   const hw = await muatHimawari(env);
   if (!hw) return {acuan: null, baris: [], n_baru: 0};
   let firms = null;
   try { const r = await env.DB?.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
-  const baris = tandaiBaru(hw, firms, kini, await saringIndonesia(env));
+  const diIndonesia = await saringIndonesia(env), baris = tandaiBaru(hw, firms, kini, diIndonesia).filter(r => diIndonesia(r[0], r[1]));
   return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru"], baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
 }
