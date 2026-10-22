@@ -74,6 +74,17 @@ test("pita anggota: p10 (kering) merugikan paling besar, p90 (basah) paling keci
   assert.ok(b.kand.p20[1] >= b.kand.p20[0] && Object.keys(b.kand).length === 8);
 });
 
+test("hindcast: selaras dengan kisi neraca; musim kering 2015 dan 2023 menghasilkan jiwa kering puncak tak melebihi penduduk", () => {
+  const n = json("data/kekeringan_neraca.json"), h = json("kekeringan/data/hindcast.json"), c = n.sel_data;
+  assert.deepEqual(h.lat, c.lat); assert.deepEqual(h.lon, c.lon);
+  const D = {...c, n: c.lat.length, param: n.param, dr0: c.dr0.map(() => 0), km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), rentan: c.lat.map(() => 1), nKering: 14}, total = c.jiwa.reduce((a, b) => a + b, 0);
+  for (const y of ["2015", "2023"]) {
+    const sk = {int: 15, ...h.tahun[y]}, R = S.jalankan(D, sk, S.hujanHarian(D, sk), {tanam: 30, laju: 0, kap: 0, omc: 0}), puncak = Math.max(...R.jiwa);
+    assert.equal(h.tahun[y].hujan[0].length, 26);
+    assert.ok(puncak > 0 && puncak <= total + 1e-6, `${y}: puncak ${puncak} di luar (0, ${total}]`);
+  }
+});
+
 test("data nyata: tutupan selaras dengan neraca, jumlah sawah = acuan nasional, peringkat berjalan", () => {
   const n = json("data/kekeringan_neraca.json"), t = json("kekeringan/data/tutupan.json"), c = n.sel_data;
   assert.deepEqual(t.lat, c.lat); assert.deepEqual(t.lon, c.lon);

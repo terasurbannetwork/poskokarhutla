@@ -159,6 +159,13 @@ def _pm_bulan(c, kunci, m):
 
 def nilai_bulan(c, skenario, mulai, y, m):
     """(hujan mm/hari, ET0 mm/hari, metode) bulan (y, m) untuk satu sel."""
+    if isinstance(skenario, int):   # hindcast: tahun kalender nyata (hanya yang ada di c["tahun"]); bulan di luar itu = klimatologi
+        t = str(y)
+        if t in c["tahun"] and y == skenario:
+            x = c["tahun"][t]
+            e, met = et0_bulan(c, m, x["tx"][m - 1], x["tn"][m - 1], _pm_bulan(c, ("tahun", t), m))
+            return x["p"][m - 1], e, met
+        skenario = "normal"
     if skenario == "nino":
         ths = tahun_komposit(mulai, y)
         if ths and all(str(t) in c["tahun"] for t in ths):

@@ -114,7 +114,7 @@ if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, 
 
 if (typeof document !== "undefined") (() => {
 const $ = s => document.querySelector(s), fmt1 = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
-const S = {D: null, sk: null, pl: "none", mode: "air", hari: 0, sel: 0, main: false, kec: 8, d3: false, tanam: 10, par: {laju: 4, kap: 150, cak: 30, geser: 10, omc: 10}, hj: {}, A: null, B: null, urut: "padi", As: {...Tanggap.ASUMSI}, airMinum: null, dibi: null, tutupan: false, posko: [], pangkalan: [], grid: null, omcRp: 0, ev: null};
+const S = {D: null, sk: null, pl: "none", mode: "air", hari: 0, sel: 0, main: false, kec: 8, d3: false, tanam: 10, par: {laju: 4, kap: 150, cak: 30, geser: 10, omc: 10}, hj: {}, A: null, B: null, urut: "padi", As: {...Tanggap.ASUMSI}, airMinum: null, dibi: null, hind: null, kal: null, tutupan: false, posko: [], pangkalan: [], grid: null, omcRp: 0, ev: null};
 const PL = [["none", "Tanpa"], ["pompa", "Pompa"], ["awal", "Tanam awal"], ["omc", "Hujan buatan"]];
 const RAMP = [[0, [164, 52, 58]], [.25, [224, 121, 59]], [.5, [232, 197, 71]], [.75, [121, 184, 106]], [1, [46, 127, 184]]];
 const KS_WARNA = ["#a4343a", "#e8b84a", "#5aa56e"];   /* berat, ringan, tak stres */
@@ -214,10 +214,10 @@ function atur3d() {
 
 /* ---------- panel ---------- */
 function renderAsumsi() {
-  const A = S.As, v = [...(S.airMinum ? [] : [["porsi_rentan", "Penduduk bergantung sumber musiman", 0, 60, 5, Math.round(A.porsi_rentan * 100), "%"]]), ["hari_kering", "Hari kering sebelum krisis", 3, 45, 1, A.hari_kering, " hari"],
+  const A = S.As, v = [...(S.airMinum ? [] : [["porsi_rentan", "Penduduk bergantung sumber musiman", 0, 60, .5, Math.round(A.porsi_rentan * 1000) / 10, "%"]]), ["hari_kering", "Hari kering sebelum krisis", 3, 45, 1, A.hari_kering, " hari"],
     ["laju_kmj", "Kecepatan truk", 20, 70, 5, A.laju_kmj, " km/jam"], ["jarak_dalam_sel_km", "Jarak tujuan minimal", 5, 50, 5, A.jarak_dalam_sel_km, " km"]];
   const el = $("#slAs"); if (!el.firstChild) el.innerHTML = v.map(([k, n, a, b, st, nil]) => `<label class="sm-sl"><span>${n}<b data-n="${k}"></b></span><input type="range" data-k="${k}" min="${a}" max="${b}" step="${st}" value="${nil}" aria-label="${n}"></label>`).join("");
-  v.forEach(([k, , , , , nil, sat]) => { const b = el.querySelector(`[data-n="${k}"]`); if (b) b.textContent = fmt(nil) + sat; });
+  v.forEach(([k, , , , , nil, sat]) => { const b = el.querySelector(`[data-n="${k}"]`); if (b) b.textContent = fmt1(nil) + sat; });
 }
 function renderSlider() {
   $("#rTanam").value = S.tanam;
@@ -307,13 +307,22 @@ function terapkanAsumsi() {
   D.spi = D.lat.map((la, i) => { const r = m.get(la + "," + D.lon[i]); return r && is >= 0 ? r[is] : null; });
   D.nKering = S.As.hari_kering; cache.clear();
 }
-/* pembanding: jiwa rentan puncak se-Indonesia pada El Niño kuat (awal kemarau) terhadap jiwa terdampak kekeringan yang tercatat BNPB/DIBI */
-function banding() {
-  const k = S.D.skenario.nino_k ? "nino_k" : "nino", sk = S.D.skenario[k], Dn = {...S.D, dr0: S.mulai === "kemarau" || k === "nino_k" ? S.D.nol : S.D.dr0, spi: null};
-  S.hj[k] ||= hujanHarian(S.D, sk); const R = jalankan(Dn, sk, S.hj[k], cfgDasar()), model = Math.max(...R.jiwa), th = S.dibi || {};
-  const rows = ["2019", "2023"].filter(y => th[y] && th[y].terdampak > 0).map(y => `DIBI ${y}: ${bulatan(th[y].terdampak)} jiwa (model ${model > th[y].terdampak ? "lebih tinggi" : "lebih rendah"} ${fmt(Math.round(Math.abs(model / th[y].terdampak - 1) * 100))}%)`);
-  return rows.length ? `Uji: model El Niño kuat se-Indonesia ${bulatan(model)} jiwa rentan pada puncak; terdampak tercatat ${rows.join("; ")}. DIBI hanya mencatat kejadian yang dilaporkan, jadi selisihnya batas bawah, bukan galat murni.` : "";
+/* Kalibrasi satu pengali (porsi rentan) terhadap jiwa terdampak DIBI. Hindcast = hujan dan ET0 bulanan NASA POWER tahun nyata (hindcast.json; hanya 2015 dan 2023 ada, 2019 tidak),
+   mulai 1 Juni simpanan penuh. Porsi tahun y = DIBI_y / jiwa kering puncak model (porsi 100%). Dipakai tahun terbaru ber-DIBI; tahun lain menguji (LOO dua tahun). */
+function kalibrasi() {
+  const H_ = S.hind, th = S.dibi || {}; if (!H_) return null;
+  const D = {...S.D, dr0: S.D.nol, spi: null, rentan: S.D.lat.map(() => 1), nKering: S.As.hari_kering}, rows = [];
+  for (const y of Object.keys(H_.tahun)) {
+    const sk = {int: 15, ...H_.tahun[y]}, R = jalankan(D, sk, hujanHarian(D, sk), cfgDasar()), obs = th[y] ? th[y].terdampak : 0, kej = th[y] ? th[y].kejadian : 0;
+    if (obs > 0) rows.push({y, model: Math.max(...R.jiwa), obs, kej, k: obs / Math.max(...R.jiwa)});
+  }
+  if (!rows.length) return null;
+  rows.sort((a, b) => b.y - a.y); const ref = rows[0];
+  rows.forEach(r => { const lain = rows.find(x => x !== r); r.loo = lain ? r.model * lain.k / r.obs : null; r.dari = lain ? lain.y : null; });   /* prediksi tahun r dengan pengali tahun lain, dibagi pengamatan */
+  return {porsi: ref.k, ref: ref.y, rows};
 }
+const kaliTeks = () => { const K = S.kal; if (!K) return ""; const x = r => `${r.y}: model ${bulatan(r.model)} jiwa kering puncak, DIBI ${bulatan(r.obs)} jiwa dari ${fmt(r.kej)} kejadian`;
+  return `Kalibrasi: porsi rentan ${fmt1(K.porsi * 100)}% dari ${K.ref} (${x(K.rows[0])}). Uji silang dua tahun: ` + K.rows.filter(r => r.dari).map(r => `pengali ${r.dari} memprediksi ${r.y} sebesar ${r.loo.toLocaleString("id-ID", {maximumSignificantDigits: 2})}× pengamatan${r === K.rows[0] ? "" : ` (${x(r)})`}`).join("; ") + `. DIBI hanya jiwa yang dilaporkan dan pencatatannya beda antartahun, jadi satu pengali belum tervalidasi; hindcast 2019 tak ada (bahan iklim hanya 2015 dan 2023).`; };
 /* ---------- dampak dan lapis tanggap di kawasan sekitar sel pilihan ---------- */
 const rp = n => "Rp" + (n >= 1e9 ? fmt1(n / 1e9) + " M" : n >= 1e6 ? fmt1(n / 1e6) + " jt" : fmt(Math.round(n)));
 const bulatan = n => n >= 1000 ? fmt(Math.round(n / 100) * 100) : fmt(Math.round(n));
@@ -363,10 +372,10 @@ function renderTanggap() {
   $("#dampakJudul").textContent = `Dampak di sekitar ${kab || "sel pilihan"}`;
   const sel = (judul, nil, kat) => `<div class="sm-h"><span class="sm-pil2">${judul}</span><b>${nil}</b>${kat ? `<small>${kat}</small>` : ""}</div>`;
   $("#dampak").innerHTML = (ada ? sel("Padi hilang", fmt(Math.round(m.hilang / 100) * 100) + "<i>ha</i>", `dari sawah perkiraan ${bulatan(m.sawah)} ha`) + sel("Padi puso", bulatan(m.puso) + "<i>ha</i>", "hilang hasil 50% atau lebih") : "")
-    + sel("Jiwa rentan krisis air", bulatan(m.jiwaPuncak), `puncak; porsi rentan ${fmt(Math.round(S.As.porsi_rentan * 100))}%${S.airMinum ? " (Susenas)" : " (asumsi)"}`) + sel("Kebutuhan air", bulatan(m.kebutuhanL / 1000) + "<i>m³/hari</i>", "15 liter per orang")
+    + sel("Jiwa rentan krisis air", bulatan(m.jiwaPuncak), `puncak; porsi rentan ${fmt1(S.As.porsi_rentan * 100)}%${S.airMinum ? " (Susenas)" : S.kal ? " (kalibrasi DIBI)" : " (asumsi)"}`) + sel("Kebutuhan air", bulatan(m.kebutuhanL / 1000) + "<i>m³/hari</i>", "15 liter per orang")
     + (D_kebun() ? sel("Kebun tertekan", bulatan(m.kebunPuncak) + "<i>ha</i>", "sawit dan HTI, puncak") : "")
     + (E.pita ? `<small class="sm-cat" style="grid-column:1/-1"><b>Pita 51 anggota SEAS5</b> (anggota hujan p10 sampai p90): padi hilang ${bulatan(E.pita.hilang[0])} sampai ${bulatan(E.pita.hilang[1])} ha, puso ${bulatan(E.pita.puso[0])} sampai ${bulatan(E.pita.puso[1])} ha, jiwa rentan krisis air ${bulatan(E.pita.jiwa[0])} sampai ${bulatan(E.pita.jiwa[1])}.${bss()}</small>` : S.D.skenario[kunciSk()].nama === "Prakiraan ECMWF" ? `<small class="sm-cat" style="grid-column:1/-1">Pita anggota SEAS5 muncul sesudah data simulasi diperbarui pipeline berikutnya.</small>` : `<small class="sm-cat" style="grid-column:1/-1">Pita anggota hanya ada pada Prakiraan ECMWF; skenario ini satu jalan.</small>`)
-    + pembanding() + `<small class="sm-cat" style="grid-column:1/-1">${banding()}</small>`
+    + pembanding() + `<small class="sm-cat" style="grid-column:1/-1">${kaliTeks()}</small>`
     + `<small class="sm-cat" style="grid-column:1/-1">Kawasan ${fmt(E.n)} sel (±1°) di sekitar sel pilihan, simulasi ${tgl(0, true)} sampai ${tgl(H - 1, true)}. ${ada ? "Luas sawah adalah perkiraan dari tutupan lahan, bukan data sawah." : "Tutupan lahan belum tersedia: padi tidak dihitung."}</small>`;
   const urut = Tanggap.urutkan(E.kand.filter(k => ada || (k.jenis !== "pompa" && k.jenis !== "awal")), S.urut);
   seg($("#segUrut"), ada ? [["padi", "Padi"], ["jiwa", "Jiwa"], ["biaya", "Biaya"]] : [["jiwa", "Jiwa"], ["biaya", "Biaya"]], S.urut, "urut");
@@ -440,10 +449,12 @@ Dr' = Dr − hujan − irigasi + ETa      (pers. 85), dipotong ke 0 sampai TAW</
   <h4>Tutupan lahan, dampak, dan peringkat perlakuan</h4>
   <ul><li>Bawaan simulasi: sel dengan SPI-3 terendah hari ini (kekeringan_grid.json, dibatasi −3 dan tanpa sel yang lebih dari separuh tahun dasarnya tanpa hujan) di antara sel berpenduduk di atas 50.000 jiwa, dengan prakiraan ECMWF dari hari ini. Bukan sel berpenduduk terbanyak.</li>
   <li>Tutupan dari lapisan repo (scripts/kekeringan/tutupan.py): hutan = kawasan hutan KLHK dan konsesi HPH, kebun = konsesi sawit dan HTI, gambut = peta gambut. Dirasterkan ke piksel 5,6 km. <b>Luas sawah tidak ada di data terbuka mana pun di repo.</b> Sawah per sel = lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali faktor supaya jumlahnya ${f(S.D.tutupan ? Math.round(S.D.tutupan.lbs_ha / 1e5) / 10 : 0)} juta ha: ${S.D.tutupan ? esc(S.D.tutupan.lbs_dari) : ""}. Luas baku sawah per provinsi tidak bisa diunduh otomatis (BPS webapi butuh kunci, ATR/BPN tanpa unduhan terbuka); begitu data/lbs_provinsi.json ada, tiap provinsi memakai angkanya sendiri. Sebaran merata di dalam provinsi. Pakai sebagai urutan besaran dan untuk membandingkan perlakuan, bukan sebagai luas sawah sel itu.</li>
-  <li>Padi hilang = luas sawah × turunnya hasil FAO-33 (1 − ky × (1 − ΣETa/ΣETc), ky padi ${f(KY)}), puso bila turun 50% atau lebih (sama dengan padi.py). Kebun: bak kedua, Kc 0,95, p 0,65, Zr 0,9 m. Jiwa rentan krisis air = penduduk sel × porsi yang bergantung sumber air musiman (sumur gali, mata air, hujan, air permukaan), pada hari tanah acuan (Kc 1,0, tak bergantung padi) stres berat sekurangnya N hari berturut-turut; sel dengan SPI-3 teramati ≤ −1,5 dianggap sudah memenuhi N hari selama tanahnya masih stres. Porsi bawaan ${f(Math.round(S.As.porsi_rentan * 100))}% dan N = ${f(S.As.hari_kering)} hari adalah ASUMSI, bisa diubah di kartu Asumsi; tabel Susenas per provinsi belum ada (BPS webapi butuh kunci, tabel web tak terunduh), begitu data/air_minum.json ada porsi per provinsi dipakai. Kebutuhan air 15 liter per orang per hari (Sphere 2018). Hari krisis = hari dengan jiwa rentan sekurangnya ${f(AMBANG_JIWA)} (ASUMSI).</li>
+  <li>Padi hilang = luas sawah × turunnya hasil FAO-33 (1 − ky × (1 − ΣETa/ΣETc), ky padi ${f(KY)}), puso bila turun 50% atau lebih (sama dengan padi.py). Kebun: bak kedua, Kc 0,95, p 0,65, Zr 0,9 m. Jiwa rentan krisis air = penduduk sel × porsi yang bergantung sumber air musiman (sumur gali, mata air, hujan, air permukaan), pada hari tanah acuan (Kc 1,0, tak bergantung padi) stres berat sekurangnya N hari berturut-turut; sel dengan SPI-3 teramati ≤ −1,5 dianggap sudah memenuhi N hari selama tanahnya masih stres. Porsi bawaan ${f(Math.round(S.As.porsi_rentan * 1000) / 10)}% ${S.kal && !S.airMinum ? "hasil kalibrasi ke DIBI (lihat bawah)" : "ASUMSI"} dan N = ${f(S.As.hari_kering)} hari (ASUMSI) bisa diubah di kartu Asumsi; tabel Susenas per provinsi belum ada (BPS webapi butuh kunci, tabel web tak terunduh), begitu data/air_minum.json ada porsi per provinsi dipakai. Kebutuhan air 15 liter per orang per hari (Sphere 2018). Hari krisis = hari dengan jiwa rentan sekurangnya ${f(AMBANG_JIWA)} (ASUMSI).</li>
   <li>Kawasan dampak dan peringkat: sel dalam ±1° dari sel pilihan. Tiap kandidat dijalankan lewat bak yang sama, manfaat = selisih terhadap tanpa perlakuan.</li>
   <li>Truk tangki: kecepatan ${f(S.As.laju_kmj)} km/jam dan jarak tujuan minimal ${f(S.As.jarak_dalam_sel_km)} km (keduanya ASUMSI, ubah di kartu Asumsi); pangkalan = tiga kantor BPBD kabupaten terdekat (posko_kekeringan.json, hanya yang terdata); waktu tempuh dari jarak lurus × 1,4 ÷ 40 km/jam seperti posko.py, bukan jaringan jalan; satu putaran = pergi, pulang, 1 jam isi dan bongkar; kerja 10 jam; tangki 5.000 liter. Jumlah truk adalah pengandaian, bukan data armada BPBD. Sumur bor 2 liter/detik, 12 jam/hari, untuk air bersih. Pompanisasi 10 ha per pompa, 6 mm/hari, sumber 150 mm (sungai atau embung terbatas).</li>
   <li>Biaya: sewa truk Rp1,5 jt/hari, sumur bor Rp200 jt/titik, pompa Rp30 jt + BBM Rp300 rb/hari, tanam awal Rp400 rb/ha, hujan buatan 5 hari × Rp220 jt (keputusan.json, Kemenhut 2026). Selain hujan buatan semuanya asumsi perencanaan, belum harga resmi.</li>
+  <li>${esc(kaliTeks())} Hindcast: scripts/kekeringan/hindcast.py (hujan, suhu, RH, angin, radiasi NASA POWER bulanan 2015 dan 2023).</li>
+  <li>Sumber data nyata yang dicoba tanpa kunci dan gagal: tabel Susenas air minum dan luas baku sawah per provinsi BPS (halaman statistics-table memuat tabel lewat skrip, judul yang dicari tak ditemukan; webapi butuh kunci), Kepmen ATR/BPN 686/2019 (tak ada unduhan terbuka yang bisa dicapai). air_minum.json dan lbs_provinsi.json karena itu belum ada.</li>
   <li>Padi dan jiwa tidak dijumlahkan; pilih urutan di atas peringkat. Hasil model, belum divalidasi terhadap puso Kementan atau laporan BPBD.</li></ul>
   <h4>Batas model</h4>
   <ul><li>Bak satu lapis: tanpa aliran lateral, muka air tanah, genangan sawah, atau irigasi nyata. Padi dianggap tadah hujan.</li>
@@ -483,15 +494,16 @@ function hubung() {
   try { const r = await fetch("../data/kekeringan_neraca.json"); if (!r.ok) throw new Error(r.status); raw = await r.json(); }
   catch (e) { $("#muat").innerHTML = `<div><b>Data simulasi belum tersedia.</b></div>`; return; }
   const lain = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (x) { return null; } };
-  const [tut, pk, gr, kp, pd, am, dk, ub] = await Promise.all([lain("data/tutupan.json"), lain("../data/posko_kekeringan.json"), lain("../data/kekeringan_grid.json"), lain("../data/keputusan.json"), lain("../data/kekeringan_padi.json"), lain("data/air_minum.json"), lain("../data/dampak_kekeringan.json"), lain("../data/kekeringan_ujibalik.json")]);
+  const [tut, pk, gr, kp, pd, am, dk, ub, hd] = await Promise.all([lain("data/tutupan.json"), lain("../data/posko_kekeringan.json"), lain("../data/kekeringan_grid.json"), lain("../data/keputusan.json"), lain("../data/kekeringan_padi.json"), lain("data/air_minum.json"), lain("../data/dampak_kekeringan.json"), lain("../data/kekeringan_ujibalik.json"), lain("data/hindcast.json")]);
   raw.tutupan = tut && tut.lat.length === raw.sel_data.lat.length && tut.lat.every((v, i) => v === raw.sel_data.lat[i] && tut.lon[i] === raw.sel_data.lon[i]) ? tut : null;   /* urutan sel harus sama dengan neraca; bila beda, tutupan dibuang */
-  S.D = siapkan(raw); S.grid = gr; S.padi = pd; S.uji = ub; S.airMinum = am; S.dibi = dk && dk.tahunan ? dk.tahunan : null;
+  S.D = siapkan(raw); S.grid = gr; S.padi = pd; S.uji = ub; S.hind = hd && hd.lat.length === raw.sel_data.lat.length ? hd : null; S.airMinum = am; S.dibi = dk && dk.tahunan ? dk.tahunan : null;
   S.posko = pk && pk.posko ? pk.posko : [];
   S.pangkalan = pk && pk.kabupaten ? pk.kabupaten.filter(k => k.bpbd && k.bpbd.lat != null).map(k => ({nama: "BPBD " + k.nama, lat: k.bpbd.lat, lon: k.bpbd.lon})) : [];
   S.omcRp = kp && kp.param && kp.param.biaya_omc_hari ? kp.param.biaya_omc_hari[0] : 0;
   const ids = Object.keys(S.D.skenario); if (!ids.length) { $("#muat").innerHTML = `<div><b>Data simulasi belum tersedia.</b></div>`; return; }
   S.mulai = S.D.mulai.hariini ? "hariini" : "kemarau"; S.tanam = S.D.mulai[S.mulai].tanam;   /* bawaan: kejadian hari ini dengan prakiraan ECMWF; Awal kemarau tetap bisa dipilih */
   S.sk = ["ecmwf", "nino"].find(k => listSk().some(([x]) => x === k)) || listSk()[0][0];
+  S.kal = kalibrasi(); if (S.kal && !S.airMinum) S.As.porsi_rentan = Math.round(S.kal.porsi * 1000) / 1000;
   terapkanAsumsi(); S.awal = selTerkering(); S.sel = S.awal.i; kartuAwal();
   seg($("#segMulai"), listMulai(), S.mulai, "mulai"); $("#kartuMulai").hidden = Object.keys(S.D.mulai).length < 2; seg($("#segSk"), listSk(), S.sk, "sk"); seg($("#segPl"), PL, S.pl, "pl");
   seg($("#segKec"), [[4, "Pelan"], [8, "Sedang"], [20, "Cepat"]], S.kec, "kec"); seg($("#segMode"), [["air", "Air tanah"], ["stres", "Stres"]], S.mode, "mode");
