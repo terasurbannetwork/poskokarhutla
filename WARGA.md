@@ -231,3 +231,22 @@ Akun instansi aktif menugaskan orang (driver, ketua regu, anggota) ke tugas api 
 - "Sudah padam belum?": status tugas tetap `padam`; kolom `padam_verif` menandai hasil pemeriksaan titik panas FIRMS di D1 (`titik_terbaru`) dalam radius 2 km sesudah laporan padam, dijalankan di awal cron menit 18 (`verifikasiPadam`). Tanpa titik baru selama 48 jam (dan putaran titik terbaru sudah mencakup 48 jam itu) = `padam_terverifikasi`, dengan label jujur bahwa bara bawah permukaan tetap mungkin. Titik baru = `muncul_lagi`: tugas dibuka kembali, jendela kabar 24 jam mulai lagi, dan muncul sebagai butir Meja Pantau `api_muncul_lagi` (`butirApiMunculLagi` di `src/instansi.js`). Melaporkan padam wajib minimal satu foto atau video; "Cek ulang lapangan" meminta foto kedua (`POST /api/instansi/cekulang/:id`).
 - Metadata foto: peramban membaca EXIF dari berkas ASLI sebelum kompres (waktu, GPS, tanda kamera) dan mengirimnya bersama unggahan; server menyimpan `exif_waktu`, `exif_lat`, `exif_lon`, `exif_jarak`, `kamera`, `exif_api_km`. Aturan sama dengan `src/foto.js`: GPS EXIF lebih dari 5 km dari GPS perangkat atau waktu lebih dari 48 jam = ditolak; GPS EXIF lebih dari 5 km dari titik api = ditandai curiga untuk admin. Berkas yang disimpan tetap tanpa EXIF (`src/media_bersih.js`).
 - Uji: `tests/warga/penugasan.test.mjs` (token, 410, laju, geofence, privasi, retensi, checklist, dummy, 503, halaman, klien `lacak.js` dan pop-up di `node:vm`) dan tambahan di `tests/warga/instansi.test.mjs` (akses dari cron, alur padam, EXIF).
+
+## API terbuka untuk mitra dan server MCP (src/api_v1.js, src/mcp.js, migrations/0040_kunci_api.sql)
+
+Dokumentasi untuk pihak luar: `/api` (public/api.html). Data publik: `GET /api/v1/data/<nama>` tanpa kunci (daftar putih `DATA` di src/api_v1.js; tiap nama harus berkas
+yang ada di public/). Data yang di situs wajib login (rumah rusak, bangunan, laporan BNPB) dibuka HANYA-BACA lewat `/api/v1/*` dengan header `X-API-Key`
+(kunci di query string diabaikan). Kunci tidak membuka rute lama dan tidak butuh cookie. `/api/v1/*`, `/api`, dan `POST /mcp` ditangani di `fetch()` sebelum gerbang
+centurisk97.id, jadi terjangkau di semua host dan tidak dicatat sebagai halaman pemirsa. CORS `*` tanpa credentials.
+
+**Menerbitkan kunci:** buka `/admin/kunci-api` (admin), isi nama pemegang dan centang cakupan (`rumah_rusak`, `bangunan`, `laporan_bnpb`), lalu salin kunci `pb_...` yang
+tampil SEKALI. D1 hanya menyimpan sha256-nya, jadi kunci yang hilang tidak bisa dilihat ulang: cabut dan terbitkan baru. **Mencabut:** tombol Cabut di halaman yang sama
+(berlaku seketika). Lewat curl: `POST /api/kunci-api/admin/buat {nama, cakupan}`, `GET /api/kunci-api/admin/daftar`, `POST /api/kunci-api/admin/cabut/<id>` dengan `x-admin-token`.
+Batas: 1.000 permintaan per jam per kunci; kunci salah > 300 per jam per hash IP = 429 (tabel `laju_bnpb`, aksi `api.kunci_gagal` dan `api.v1`).
+
+**Migrasi 0040 ke D1 remote (pemilik):** `npx wrangler d1 execute poskowarga --remote --file migrations/0040_kunci_api.sql`. Idempoten. Sebelum diterapkan, endpoint
+berkunci menjawab 503 dan halaman admin menampilkan pesan "migrasi belum diterapkan"; data publik tetap jalan.
+
+**MCP:** `POST /mcp` (Streamable HTTP, stateless, tanpa SDK). Tool publik tanpa kunci; tool berkunci (`rumah_rusak`, `rumah_rusak_rekap`, `bangunan_terpapar`, `laporan_bnpb`)
+muncul di `tools/list` hanya bila `X-API-Key` sah dan bercakupan cocok. claude.ai Connectors belum bisa mengirim header (tanpa OAuth), jadi di sana hanya tool publik.
+Uji: `node --test tests/warga/api_v1.test.mjs tests/warga/mcp.test.mjs`.

@@ -9,7 +9,7 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed, halamanKunciApi} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
@@ -27,6 +27,8 @@ import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, buatTugas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
+import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
+import {layaniMcp} from "./mcp.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
@@ -527,6 +529,8 @@ const RUTE = {
   ...RUTE_PENGINGAT,   // antrean pengingat harian Ruang Koordinasi (src/pengingat.js)
   ...RUTE_LAPORAN_BNPB,   // Laporan Harian & Paparan Presiden BNPB yang diketik tim (public/laporan_bnpb*)
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)
+  ...RUTE_KUNCI_API,   // penerbitan kunci API mitra (/api/v1/*, src/api_v1.js); API-nya sendiri ditangani langsung di fetch()
+  "GET /admin/kunci-api": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKunciApi()),
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
 };
 let GABUNG = null;
@@ -645,6 +649,13 @@ export async function cacheTepi(req, ctx, detik, buat) {
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
+    /* API terbuka mitra: di SEMUA host (termasuk centurisk97.id), sebelum gerbang halaman dan pencatatan pemirsa. /api = dokumentasinya (public/api.html). */
+    if (url.pathname === "/api/v1" || url.pathname.startsWith("/api/v1/")) return layaniApiV1(req, env, ctx, url);
+    if (url.pathname === "/mcp" || url.pathname === "/mcp/") return layaniMcp(req, env, ctx, url);   // server MCP remote (src/mcp.js), juga di semua host
+    if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
+      const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
+      return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=300", "x-content-type-options": "nosniff"}});
+    }
     if (url.pathname.startsWith("/ubin/")) return layaniUbin(req, env, ctx);   // ubin PMTiles dari R2 (src/ubin.js)
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
     if (url.pathname === "/api/himawari" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // hotspot Himawari: R2 data/himawari.json (diunggah Action 30 menit); hilang = kosong, bukan 500

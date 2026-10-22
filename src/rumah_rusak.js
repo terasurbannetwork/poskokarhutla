@@ -29,6 +29,7 @@ async function siapa(env, req, kini) {
 const pakaiLaju = async (env, req, s, aksi, batas, kini) => (await laju(env, s.pid, aksi, batas, kini)) || (await lajuIP(env, req, aksi + ".ip", BATAS_IP, kini));
 
 const KOLOM = "id, bencana, tanggal, lat, lon, prov, kab, kec, tingkat, foto, catatan, waktu, status, dikoreksi_oleh, dikoreksi_waktu";
+export const KOLOM_V1 = "id, bencana, tanggal, round(lat, 4) AS lat, round(lon, 4) AS lon, prov, kab, kec, tingkat, waktu";   // privasi: koordinat ~11 m, tanpa catatan, pelapor, dikoreksi_*, foto, status (selalu sah)
 const publik = (r, admin) => admin ? r : (({dikoreksi_oleh, ...x}) => x)(r);
 
 /* ---------------------------------------------------------------- buat */
@@ -64,25 +65,32 @@ function bboxDari(t) {
   const a = t.split(",").map(x => x.trim() === "" ? NaN : Number(x));
   return a.length === 4 && a.every(Number.isFinite) && a[0] < a[2] && a[1] < a[3] ? a : false;
 }
-async function daftar(env, req, url, kini) {
-  const s = await siapa(env, req, kini); if (s instanceof Response) return s;
-  const q = url.searchParams, w = [], p = [];
-  const bencana = q.get("bencana"), dari = q.get("dari"), sampai = q.get("sampai"), status = q.get("status"), bb = bboxDari(q.get("bbox"));
+/* kueri daftar bersama (/api/rumah-rusak dan /api/v1/rumah-rusak, src/api_v1.js): Response galat 400, atau {baris}.
+   pelapor = batasi ke satu pelapor; sah = hanya status 'sah' (parameter status diabaikan); kolom = daftar kolom SELECT */
+export async function bacaDaftar(env, q, {pelapor = null, sah = false, kolom = KOLOM} = {}) {
+  const w = [], p = [];
+  const bencana = q.get("bencana"), dari = q.get("dari"), sampai = q.get("sampai"), status = q.get("status"), bb = bboxDari(q.get("bbox")), prov = q.get("prov"), kab = q.get("kab");
   if (bencana != null) { if (!bencanaSah(bencana)) return gagal(400, "bencana tidak dikenal"); w.push("bencana = ?"); p.push(bencana); }
   if (dari != null) { if (!tglSah(dari)) return gagal(400, "dari harus YYYY-MM-DD"); w.push("tanggal >= ?"); p.push(dari); }
   if (sampai != null) { if (!tglSah(sampai)) return gagal(400, "sampai harus YYYY-MM-DD"); w.push("tanggal <= ?"); p.push(sampai); }
-  if (status != null) { if (!STATUS.includes(status)) return gagal(400, "status harus sah atau ditolak"); w.push("status = ?"); p.push(status); }
+  if (prov != null) { if (!/^\d{2}$/.test(prov)) return gagal(400, "prov harus kode 2 digit"); w.push("prov = ?"); p.push(prov); }
+  if (kab != null) { if (!kab || kab.length > 80) return gagal(400, "kab harus nama kabupaten/kota (maks 80 huruf)"); w.push("kab = ?"); p.push(kab); }
+  if (sah) w.push("status = 'sah'");
+  else if (status != null) { if (!STATUS.includes(status)) return gagal(400, "status harus sah atau ditolak"); w.push("status = ?"); p.push(status); }
   if (bb === false) return gagal(400, "bbox harus latMin,lonMin,latMaks,lonMaks (angka, min < maks)");
   if (bb) { w.push("lat BETWEEN ? AND ? AND lon BETWEEN ? AND ?"); p.push(bb[0], bb[2], bb[1], bb[3]); }
-  const saya = q.get("saya") === "1" || !s.admin;   // regu hanya melihat laporannya sendiri; akun boleh semua, atau ?saya=1
-  if (saya) { w.push("pelapor = ?"); p.push(s.pid); }
-  const baris = (await env.DB.prepare(`SELECT ${KOLOM}${s.admin ? ", pelapor" : ""} FROM rumah_rusak ${w.length ? "WHERE " + w.join(" AND ") : ""} ORDER BY waktu DESC LIMIT ${MAKS_DAFTAR}`).bind(...p).all()).results;
-  return json({jumlah: baris.length, batas: MAKS_DAFTAR, laporan: baris.map(r => publik(r, s.admin))}, 200, {"cache-control": "no-store"});
+  if (pelapor) { w.push("pelapor = ?"); p.push(pelapor); }
+  return {baris: (await env.DB.prepare(`SELECT ${kolom} FROM rumah_rusak ${w.length ? "WHERE " + w.join(" AND ") : ""} ORDER BY waktu DESC LIMIT ${MAKS_DAFTAR}`).bind(...p).all()).results};
+}
+async function daftar(env, req, url, kini) {
+  const s = await siapa(env, req, kini); if (s instanceof Response) return s;
+  const saya = url.searchParams.get("saya") === "1" || !s.admin;   // regu hanya melihat laporannya sendiri; akun boleh semua, atau ?saya=1
+  const d = await bacaDaftar(env, url.searchParams, {pelapor: saya ? s.pid : null, kolom: KOLOM + (s.admin ? ", pelapor" : "")}); if (d instanceof Response) return d;
+  return json({jumlah: d.baris.length, batas: MAKS_DAFTAR, laporan: d.baris.map(r => publik(r, s.admin))}, 200, {"cache-control": "no-store"});
 }
 
 /* ---------------------------------------------------------------- rekap (kolom RB/RS/RR laporan harian BNPB) */
-async function rekap(env, req, url, kini) {
-  const s = await siapa(env, req, kini); if (s instanceof Response) return s;
+export async function bacaRekap(env, url, kini, maksKec = Infinity) {   // juga dipakai /api/v1/rumah-rusak/rekap; hanya status 'sah'
   const q = url.searchParams, hariIni = wib(kini), dari = q.get("dari") ?? hariIni, sampai = q.get("sampai") ?? dari, bencana = q.get("bencana"), prov = q.get("prov");
   if (!tglSah(dari) || !tglSah(sampai) || dari > sampai) return gagal(400, "dari/sampai harus YYYY-MM-DD dan dari <= sampai");
   if (Date.parse(sampai) - Date.parse(dari) > MAKS_RENTANG_REKAP) return gagal(400, "rentang maksimal 366 hari");
@@ -98,7 +106,12 @@ async function rekap(env, req, url, kini) {
     const k = `${r.bencana}|${r.prov}|${r.kab}`, a = kabMap.get(k) || kabMap.set(k, {bencana: r.bencana, prov: r.prov, kab: r.kab, berat: 0, sedang: 0, ringan: 0, total: 0}).get(k);
     for (const t of Object.keys(total)) { a[t] += r[t]; total[t] += r[t]; }
   }
-  return json({dari, sampai, bencana: bencana || null, prov: prov || null, kec, kab: [...kabMap.values()], total}, 200, {"cache-control": "no-store"});
+  return json({dari, sampai, bencana: bencana || null, prov: prov || null, kec: kec.slice(0, maksKec), ...(maksKec === Infinity ? {} : {kec_dipotong: kec.length > maksKec}), kab: [...kabMap.values()], total}, 200, {"cache-control": "no-store"});
+}
+
+async function rekap(env, req, url, kini) {
+  const s = await siapa(env, req, kini); if (s instanceof Response) return s;
+  return bacaRekap(env, url, kini);
 }
 
 /* ---------------------------------------------------------------- koreksi admin */
@@ -111,7 +124,10 @@ async function koreksi(env, req, id, kini) {
   const baru = {...ada};
   if ("tingkat" in o) { if (!TINGKAT.includes(o.tingkat)) return gagal(400, "tingkat harus berat, sedang, atau ringan"); baru.tingkat = o.tingkat; }
   if ("status" in o) { if (!STATUS.includes(o.status)) return gagal(400, "status harus sah atau ditolak"); baru.status = o.status; }
-  if ("catatan" in o) { const c = tx(o.catatan, 300); if (c === undefined) return gagal(400, "catatan maksimal 300 karakter"); baru.catatan = c; }
+  if ("catatan" in o) {
+    const c = tx(o.catatan, 300); if (c === undefined) return gagal(400, "catatan maksimal 300 karakter");
+    if (c) { const t = bersihTeks(c); if (t.galat) return gagal(400, "catatan: " + t.galat); baru.catatan = t.teks || null; } else baru.catatan = c;   // buang tautan dan nomor HP seperti saat buat
+  }
   if (baru.tingkat === ada.tingkat && baru.status === ada.status && baru.catatan === ada.catatan) return gagal(400, "tidak ada yang berubah (tingkat, status, atau catatan)");
   await env.DB.batch([
     env.DB.prepare("UPDATE rumah_rusak SET tingkat = ?, status = ?, catatan = ?, dikoreksi_oleh = ?, dikoreksi_waktu = ? WHERE id = ?").bind(baru.tingkat, baru.status, baru.catatan, mod, kini, id),

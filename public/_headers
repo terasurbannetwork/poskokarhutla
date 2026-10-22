@@ -16,10 +16,13 @@
 # ("/*.js", "/*.css" immutable + pengecualian "! Cache-Control" untuk berkas yang juga dimuat tanpa ?v, "/*.html" no-cache); berkas tanpa versi tetap pakai bawaan Cloudflare (revalidasi ETag).
 /data/*
   Cache-Control: public, max-age=300, stale-while-revalidate=3600
+  Access-Control-Allow-Origin: *
 /banjir/data/*
   Cache-Control: public, max-age=300, stale-while-revalidate=3600
+  Access-Control-Allow-Origin: *
 /geo/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Access-Control-Allow-Origin: *
 /lambang/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 /img/*

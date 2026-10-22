@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API data · Pantau Bencana</title>
+<meta name="description" content="Cara mengambil data Pantau Bencana lewat API: titik panas, laporan karhutla, cuaca, dan data berkunci untuk mitra. Data publik tanpa kunci.">
+<meta name="theme-color" content="#0b2545">
+<style>
+:root{--paper:#f6f7fa;--card:#fff;--ink:#14213d;--ink2:#56607a;--line:#e1e5ee;--brand:#1d4e89;--kode:#eef1f7;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--paper:#10172a;--card:#172036;--ink:#eef1f7;--ink2:#aab4c8;--line:#2a3550;--brand:#8db4ea;--kode:#0c1222;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 56px}
+h1{font-size:24px;line-height:1.3;margin:0 0 4px}h2{font-size:18px;margin:32px 0 8px}h3{font-size:15px;margin:20px 0 4px}
+small,.kecil{color:var(--ink2);font-size:13px}
+a{color:var(--brand)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);font-size:14px}
+td,th{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+tr:last-child td{border-bottom:0}
+.tabel{overflow-x:auto;border-radius:8px}
+code,pre{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--kode);border-radius:6px}
+code{padding:1px 5px;white-space:nowrap}
+pre{padding:12px 14px;overflow-x:auto;margin:8px 0}
+pre code{padding:0;white-space:pre;background:none}
+.catatan{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:8px;padding:10px 14px;margin:12px 0}
+</style>
+</head>
+<body>
+<main>
+<p class="kecil"><a href="/">Pantau Bencana</a></p>
+<h1>API data Pantau Bencana</h1>
+<p>Data yang tampil di situs bisa diambil langsung dari program Anda. Data publik terbuka tanpa kunci dan tanpa pendaftaran. Data yang di situs hanya terbuka bagi pengguna masuk (rumah rusak, bangunan terpapar, laporan harian BNPB) bisa dibaca mitra lewat kunci API yang diterbitkan admin. Semuanya hanya baca (GET dan HEAD).</p>
+
+<h2>Alamat dasar</h2>
+<pre><code>https://pantau.terasurban.com/api/v1</code></pre>
+<p>Alamat itu mengembalikan daftar semua endpoint dalam JSON. Semua jawaban berformat JSON (UTF-8). Peramban dari situs mana pun boleh memanggilnya (CORS terbuka, tanpa cookie).</p>
+
+<h2>Data publik (tanpa kunci)</h2>
+<p>Bentuk alamatnya <code>/api/v1/data/&lt;nama&gt;</code>. Hanya nama di tabel ini yang dikenal; nama lain dijawab 404 beserta daftar nama yang sah. Isi berkas sama dengan yang dibaca situs, jadi struktur kolomnya dijelaskan di kolom <code>kolom</code> atau <code>definisi</code> berkas masing-masing. Cek <code>dibuat</code> atau <code>acuan</code> di dalam berkas untuk tahu umur datanya.</p>
+<div class="tabel"><table>
+<tr><th>Nama</th><th>Isi</th><th>Pembaruan</th></tr>
+<tr><td><code>titik24</code></td><td>Titik panas 24 jam terakhir, ringkas, dengan kode kompleks</td><td>Tiap 3 jam</td></tr>
+<tr><td><code>hotspot24</code></td><td>Titik panas 24 jam: koordinat, jam, sensor, FRP, keyakinan, wilayah</td><td>Tiap 3 jam</td></tr>
+<tr><td><code>hotspot72</code></td><td>Sama dengan <code>hotspot24</code>, rentang 72 jam</td><td>Tiap 3 jam</td></tr>
+<tr><td><code>meta</code></td><td>Waktu data terakhir, jumlah titik dan kluster, daftar provinsi</td><td>Tiap 3 jam</td></tr>
+<tr><td><code>laporan</code></td><td>Laporan harian karhutla: luas dan titik tahun berjalan per provinsi</td><td>Tiap 3 jam, laporan harian ditutup malam hari</td></tr>
+<tr><td><code>peta_karhutla</code></td><td>Titik panas harian per provinsi sepanjang tahun, untuk peta waktu</td><td>Harian</td></tr>
+<tr><td><code>peta_karhutla_kab</code></td><td>Sama, per kabupaten/kota</td><td>Harian</td></tr>
+<tr><td><code>wilayah</code></td><td>Ringkasan per provinsi: titik harian, kluster, tingkat, FWI maksimum</td><td>Tiap 3 jam</td></tr>
+<tr><td><code>kumulatif</code></td><td>Titik panas kumulatif tahun berjalan dibanding tahun-tahun lalu</td><td>Harian</td></tr>
+<tr><td><code>musim_harian</code></td><td>Hitungan titik panas per hari per provinsi, 2019 sampai sekarang</td><td>Harian</td></tr>
+<tr><td><code>fwi</code></td><td>Indeks cuaca kebakaran (FWI) per sel 0,5 derajat</td><td>Harian</td></tr>
+<tr><td><code>peringatan</code></td><td>Peringatan dini cuaca dan gelombang dari BMKG</td><td>Berkala, beberapa kali sehari</td></tr>
+<tr><td><code>udara_kualitas</code></td><td>Prakiraan PM2,5 per provinsi dan kabupaten/kota, dengan jumlah jiwa terpapar</td><td>Dua kali sehari</td></tr>
+</table></div>
+<p class="kecil">Kolom pembaruan adalah jadwal pipeline, bukan jaminan. Berkas yang gagal diperbarui tetap menyajikan versi sebelumnya; selalu lihat waktu di dalam berkas. Jawaban disimpan cache 5 menit.</p>
+
+<h2>Data berkunci (perlu X-API-Key)</h2>
+<div class="tabel"><table>
+<tr><th>Endpoint</th><th>Cakupan kunci</th><th>Isi</th></tr>
+<tr><td><code>GET /api/v1/rumah-rusak</code></td><td><code>rumah_rusak</code></td><td>Laporan rumah rusak berat, sedang, ringan yang berstatus sah. Maksimal 500 baris, terbaru dulu. Tanpa data pelapor, foto, dan catatan bebas. Koordinat <code>lat</code> dan <code>lon</code> dibulatkan 4 desimal (sekitar 11 meter) demi privasi pemilik rumah. Parameter: <code>bencana</code>, <code>prov</code> (kode 2 digit), <code>kab</code> (nama kabupaten/kota persis seperti di data), <code>dari</code> dan <code>sampai</code> (YYYY-MM-DD), <code>bbox</code> (latMin,lonMin,latMaks,lonMaks)</td></tr>
+<tr><td><code>GET /api/v1/rumah-rusak/rekap</code></td><td><code>rumah_rusak</code></td><td>Jumlah per kecamatan (maksimal 1.000 baris; <code>kec_dipotong: true</code> bila lebih) dan per kabupaten/kota (berat, sedang, ringan, total), hanya status sah. Parameter: <code>dari</code>, <code>sampai</code> (rentang maksimal 366 hari, bawaan hari ini WIB), <code>bencana</code>, <code>prov</code></td></tr>
+<tr><td><code>GET /api/v1/bangunan/terpapar</code></td><td><code>bangunan</code></td><td>Bangunan (Google Open Buildings) yang terpapar, ringkasan nasional</td></tr>
+<tr><td><code>GET /api/v1/bangunan/kec</code></td><td><code>bangunan</code></td><td>Paparan bangunan per kecamatan</td></tr>
+<tr><td><code>GET /api/v1/bangunan/grid?prov=62</code></td><td><code>bangunan</code></td><td>Paparan bangunan per sel grid untuk satu provinsi (<code>prov</code> kode BPS 2 digit, wajib)</td></tr>
+<tr><td><code>GET /api/v1/laporan-bnpb</code></td><td><code>laporan_bnpb</code></td><td>Laporan Harian dan Paparan Presiden BNPB (tanpa nama pengetik). <code>jenis=harian</code> atau <code>presiden</code> (wajib). Tanpa <code>tanggal</code>: daftar tanggal tersimpan. Dengan <code>tanggal=YYYY-MM-DD</code>: isi laporan hari itu</td></tr>
+</table></div>
+
+<h3>Memakai kunci</h3>
+<p>Kirim kunci di header <code>X-API-Key</code>. Kunci berbentuk <code>pb_</code> diikuti 64 karakter. Kunci di alamat (query string) tidak dibaca, supaya tidak tercatat di log mana pun. Satu kunci hanya membuka cakupan yang diberikan padanya, dan hanya di <code>/api/v1/*</code>.</p>
+<pre><code>curl -H "X-API-Key: pb_GANTI_DENGAN_KUNCI_ANDA" \
+  "https://pantau.terasurban.com/api/v1/rumah-rusak/rekap?dari=2026-10-01&amp;sampai=2026-10-22&amp;prov=62"</code></pre>
+
+<h3>Contoh data publik</h3>
+<pre><code>curl "https://pantau.terasurban.com/api/v1/data/meta"</code></pre>
+<pre><code>const r = await fetch("https://pantau.terasurban.com/api/v1/data/meta");
+if (!r.ok) throw new Error("galat " + r.status);
+const meta = await r.json();
+console.log(meta.jumlah_titik, meta.data_terakhir);</code></pre>
+
+<h3>Contoh data berkunci dari server Anda</h3>
+<pre><code>const r = await fetch("https://pantau.terasurban.com/api/v1/rumah-rusak?prov=62&amp;dari=2026-10-01", {
+  headers: {"X-API-Key": process.env.PANTAU_API_KEY},
+});
+const {jumlah, laporan} = await r.json();</code></pre>
+<div class="catatan">Simpan kunci di sisi server. Kunci yang ditaruh di JavaScript peramban bisa dibaca siapa pun yang membuka halaman Anda. Kalau kunci bocor, minta admin mencabutnya.</div>
+
+<h2>Server MCP (untuk asisten AI)</h2>
+<p>Asisten AI yang mendukung Model Context Protocol bisa memakai data yang sama lewat satu alamat, tanpa menulis kode:</p>
+<pre><code>https://pantau.terasurban.com/mcp</code></pre>
+<p>Transportnya Streamable HTTP tanpa sesi: tiap permintaan adalah POST JSON-RPC berdiri sendiri, dan GET dijawab 405. Tool publik terbuka tanpa kunci. Tool berkunci hanya muncul di daftar bila Anda mengirim header <code>X-API-Key</code> yang sah dengan cakupan yang cocok. Batasnya 600 permintaan per jam per jaringan (tanpa kunci) atau 1.000 per jam per kunci.</p>
+<div class="tabel"><table>
+<tr><th>Tool</th><th>Isi</th><th>Kunci</th></tr>
+<tr><td><code>titik_api_terkini</code></td><td>Titik panas 24 atau 72 jam, urut daya api; saring <code>prov</code>, <code>kab</code>; <code>limit</code> sampai 200</td><td>-</td></tr>
+<tr><td><code>status_kabupaten</code></td><td>Peringkat kabupaten/kota: titik panas, indikasi luas, level, FWI</td><td>-</td></tr>
+<tr><td><code>laporan_harian</code></td><td>Ringkasan laporan karhutla satu tanggal, nasional dan per provinsi</td><td>-</td></tr>
+<tr><td><code>kualitas_udara</code></td><td>Prakiraan PM2,5 per provinsi dan penduduk terpapar</td><td>-</td></tr>
+<tr><td><code>peringatan_aktif</code></td><td>Peringatan cuaca dan gelombang tinggi BMKG yang aktif</td><td>-</td></tr>
+<tr><td><code>daftar_wilayah</code></td><td>Kode provinsi dan nama kabupaten/kota</td><td>-</td></tr>
+<tr><td><code>rumah_rusak</code>, <code>rumah_rusak_rekap</code></td><td>Laporan dan rekap rumah rusak (status sah, tanpa catatan, koordinat ~11 m)</td><td><code>rumah_rusak</code></td></tr>
+<tr><td><code>bangunan_terpapar</code></td><td>Bangunan terpapar bahaya aktif, ringkasan</td><td><code>bangunan</code></td></tr>
+<tr><td><code>laporan_bnpb</code></td><td>Laporan Harian dan Paparan Presiden BNPB</td><td><code>laporan_bnpb</code></td></tr>
+</table></div>
+<h3>Claude Code</h3>
+<pre><code>claude mcp add --transport http pantau-bencana https://pantau.terasurban.com/mcp \
+  --header "X-API-Key: pb_GANTI_DENGAN_KUNCI_ANDA"</code></pre>
+<p>Tanpa kunci, hapus baris <code>--header</code>; yang tersedia tool publik saja.</p>
+<h3>Cursor</h3>
+<p>Di <code>~/.cursor/mcp.json</code> atau <code>.cursor/mcp.json</code> proyek:</p>
+<pre><code>{
+  "mcpServers": {
+    "pantau-bencana": {
+      "url": "https://pantau.terasurban.com/mcp",
+      "headers": {"X-API-Key": "pb_GANTI_DENGAN_KUNCI_ANDA"}
+    }
+  }
+}</code></pre>
+<div class="catatan">Connector kustom di claude.ai belum bisa mengirim header kunci (server ini belum memakai OAuth), jadi di sana hanya tool publik yang tersedia. Untuk tool berkunci, pakai Claude Code, Cursor, atau klien lain yang bisa mengatur header.</div>
+<p>Panggilan dari halaman web di localhost atau jaringan privat ditolak (perlindungan DNS rebinding); klien desktop dan baris perintah tidak terpengaruh.</p>
+
+<h2>Kode galat</h2>
+<p>Galat berbentuk <code>{"galat": "pesan"}</code>.</p>
+<div class="tabel"><table>
+<tr><th>Kode</th><th>Artinya</th></tr>
+<tr><td>400</td><td>Parameter tidak sah (tanggal bukan YYYY-MM-DD, kode provinsi salah, dan sebagainya). Pesan menyebut yang salah</td></tr>
+<tr><td>401</td><td>Header <code>X-API-Key</code> tidak ada, kunci salah, atau kunci sudah dicabut</td></tr>
+<tr><td>403</td><td>Kunci sah, tetapi cakupannya tidak termasuk endpoint ini</td></tr>
+<tr><td>404</td><td>Rute atau nama data tidak ada, atau berkasnya belum tersedia</td></tr>
+<tr><td>405</td><td>Selain GET dan OPTIONS tidak diterima</td></tr>
+<tr><td>429</td><td>Batas laju terlewati. Tunggu sebanyak header <code>Retry-After</code> (detik)</td></tr>
+<tr><td>503</td><td>Layanan belum tersedia; coba lagi nanti</td></tr>
+</table></div>
+
+<h2>Batas laju</h2>
+<ul>
+<li>Data publik: tidak dihitung per kunci. Ambil seperlunya; berkas diperbarui paling cepat tiap 3 jam, jadi satu kali ambil per jam sudah cukup.</li>
+<li>Data berkunci: 1.000 permintaan per jam per kunci.</li>
+<li>Kunci salah: lebih dari 300 kali per jam dari satu jaringan membuat jaringan itu ditolak (429) selama sejam.</li>
+</ul>
+
+<h2>Sumber dan atribusi</h2>
+<p>Pantau Bencana mengolah data pihak lain. Bila Anda menampilkan ulang, sebut sumbernya:</p>
+<ul>
+<li>Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, VIIRS NOAA-20).</li>
+<li>Peringatan dini cuaca dan gelombang: BMKG (cantumkan sumber).</li>
+<li>Kualitas udara: CAMS (Copernicus) lewat Open-Meteo; jumlah penduduk WorldPop. Angkanya prakiraan model, belum divalidasi dengan stasiun.</li>
+<li>Indeks cuaca kebakaran (FWI): dihitung Pantau Bencana dari data cuaca.</li>
+<li>Bangunan: Google Open Buildings.</li>
+<li>Rumah rusak dan Laporan BNPB: diinput tim lapangan dan staf, bukan angka resmi BNPB kecuali disebut demikian.</li>
+</ul>
+<p>Situs ini bukan kanal resmi BNPB, KLHK, atau BMKG. Untuk keputusan operasional, rujuk instansi yang berwenang.</p>
+
+<h2>Meminta kunci</h2>
+<p>Kunci diterbitkan admin untuk lembaga atau aplikasi tertentu, dan bisa dicabut kapan saja. Hubungi pengelola lewat formulir Kirim pesan di situs dan sebutkan nama lembaga, data yang dibutuhkan, dan keperluannya. Data publik di atas tidak perlu kunci.</p>
+<p class="kecil"><a href="/privasi">Privasi</a> · <a href="/api/v1">Daftar endpoint (JSON)</a></p>
+</main>
+</body>
+</html>

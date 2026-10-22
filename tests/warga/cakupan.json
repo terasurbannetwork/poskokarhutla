@@ -560,7 +560,16 @@
     "table ops_kunjungan": "ops: migrasi 0039 idempoten",
     "table ops_drone_unggah": "ops: migrasi 0039 idempoten",
     "table ops_drone": "ops: migrasi 0039 idempoten",
-    "table ops_tmat": "ops: migrasi 0039 idempoten"
+    "table ops_tmat": "ops: migrasi 0039 idempoten",
+    "table kunci_api": "admin buat: kunci tampil sekali, D1 hanya menyimpan sha256",
+    "trigger kunci_api_cakupan_sah": "migrasi 0040 idempoten; trigger dan CHECK menolak cakupan",
+    "trigger kunci_api_cakupan_ubah": "migrasi 0040 idempoten; trigger dan CHECK menolak cakupan",
+    "GET /admin/kunci-api": "admin: hanya admin menerbitkan, melihat daftar, mencabut",
+    "GET /api/v1": "indeks /api/v1 mencantumkan semua endpoint",
+    "POST /api/kunci-api/admin/buat": "admin buat: kunci tampil sekali, D1 hanya menyimpan sha256",
+    "GET /api/kunci-api/admin/daftar": "admin buat: kunci tampil sekali, D1 hanya menyimpan sha256",
+    "POST /api/kunci-api/admin/cabut/:id": "dicabut: langsung 401; mencabut dua kali 409",
+    "POST /mcp": "tools/call tiap tool publik: sukses, JSON sah, ukuran di bawah batas"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
