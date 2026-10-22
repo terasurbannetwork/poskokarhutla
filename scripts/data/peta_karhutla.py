@@ -71,7 +71,10 @@ PATAH = (dt.datetime.fromisoformat(SNPP_AKHIR[0]).replace(tzinfo=UTC) + dt.timed
 #   porsi_median/porsi_agregat = rasio S-NPP:N20+N21 (n/h) median harian / jumlah setahun; snpp_n21_* = S-NPP : N21 semua keyakinan (UTC-hari; p10/p90 harian).
 UKUR = {"hari": 264, "porsi_median": 0.5, "porsi_agregat": 0.5085, "snpp_n21_hari": 248, "snpp_n21_median": 1.006, "snpp_n21_agregat": 1.0222,
         "snpp_n21_p10": 0.7771, "snpp_n21_p90": 1.25}
-JENDELA = 4                                # hari terakhir yang dihitung ulang tiap jalan harian
+# Hasil --statis (22 Okt 2026, hari WIB 2026-10-20, fikstur deck): titik N20/N21 n/h di Indonesia ("titik") dan yang jatuh di sel sumber panas tetap
+# titik_palsu.sel_industri() ("statis"); "bertahan" = yang terdeteksi lagi 12-36 jam sebelumnya (dasar "belum"). Dipakai teks metode; uji_deck membuktikannya.
+STATIS = {"hari": "2026-10-20", "titik": 12516, "statis": 130, "bertahan": 6158, "bertahan_statis": 117}
+JENDELA = 4                               # hari terakhir yang dihitung ulang tiap jalan harian
 WARM = 2                                   # hari sebelum hari hitung yang dibutuhkan (belum 36 jam, padam d-2)
 LATENSI = dt.timedelta(hours=4)            # NRT terlambat; hari WIB d dianggap lengkap bila sudah (now - 4 jam) > d
 TRUST = dt.timedelta(hours=12)             # rekaman cache sah bila ditarik >= 12 jam sesudah hari UTC-nya berakhir
