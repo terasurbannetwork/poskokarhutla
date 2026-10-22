@@ -1055,11 +1055,11 @@ BATAS_TTM = [
     "Indikasi, bukan bukti pelaku: tumpang tindih lokasi dan waktu tidak menunjukkan siapa yang membakar atau menanam.",
     "Luas adalah luas jejak titik panas VIIRS, bukan luas terbakar terpeta: pakai untuk membandingkan perusahaan, bukan sebagai luas pasti.",
     "Hanya sawit yang masih ada pada 2024 terlihat: lahan yang dibuka lalu tidak menjadi sawit sampai 2024 tidak masuk hitungan.",
-    "Tahun tanam TTM 15 berarti 2015 atau sebelumnya, jadi lahan itu dihitung sudah sawit sebelum api.",
+    "Peta The TreeMap memberi tahun tanam paling awal 2015; kode itu berarti 2015 atau sebelumnya, jadi lahan itu dihitung sudah sawit sebelum api.",
     "Jeda 0 tahun (sawit tercatat pada tahun api itu juga) bisa berarti lahan sudah ditanam sebelum api.",
     "Peta konsesi KLHK bertanggal sekitar 2014 dan sebagian tumpang tindih; batas dan pemegang izin bisa sudah berubah.",
 ]
-BATAS_TTM_2023 = "Jendela hanya 0 sampai 1 tahun (api 2023, peta sampai 2024): angka bakar lalu sawit pasti kurang dari kenyataan."
+BATAS_TTM_2023 = "Jendela hanya 0 sampai 1 tahun (api 2023, peta sampai 2024): angka bakar lalu sawit cenderung lebih rendah dari kenyataan."
 
 
 def terbit_ttm(h, tahun, PROVINSI):
@@ -1082,12 +1082,12 @@ def terbit_ttm(h, tahun, PROVINSI):
     jb = t["jejak_ha"]
     return {
         "dibuat": dt.date.today().isoformat(), "tahun": tahun, "sumber_peta": "ttm", "jendela_tahun": [tahun, 2024], "jendela_pendek": bool(h["jendela_pendek"]),
-        "metode": f"Titik panas satelit VIIRS {tahun} dicocokkan dengan peta tahun tanam sawit The TreeMap (TTM2024) dan peta konsesi KLHK. "
+        "metode": f"Titik panas satelit VIIRS {tahun} dicocokkan dengan peta tahun tanam sawit The TreeMap 2024 dan peta konsesi KLHK. "
                   f"Lahan yang terbakar pada {tahun}, belum sawit sebelum api, lalu tercatat sawit pada {tahun} sampai 2024 disebut 'bakar lalu sawit'. "
                   "Ini indikasi dari tumpang tindih lokasi dan waktu, bukan bukti siapa yang membakar.",
-        "sumber": [SUMBER_TTM, "NASA FIRMS VIIRS 375 m (S-NPP/NOAA-20), deteksi vegetasi keyakinan nominal/tinggi.",
+        "sumber": [SUMBER_TTM, "NASA FIRMS VIIRS S-NPP 375 m, deteksi api vegetasi dengan keyakinan nominal dan tinggi.",
                    "KLHK/Global Forest Watch: peta konsesi sawit, HTI, dan HPH.",
-                   f"Contains modified Copernicus Sentinel data {tahun}" + ("" if tahun == 2024 else " dan 2024") + " (Sentinel-2 L2A, lewat Earth Search)."],
+                   f"Contains modified Copernicus Sentinel data {tahun - 1} sampai 2025 (Sentinel-2 L2A, lewat Earth Search)."],
         "lisensi": "CC BY-NC 4.0 (The TreeMap): bukan untuk penggunaan komersial",
         "batas": BATAS_TTM + ([BATAS_TTM_2023] if h["jendela_pendek"] else []),
         "total": {"jejak_ha": round(jb), "bs_ha": round(t["ha"]["bs"]), "bs_porsi": round(t["ha"]["bs"] / jb, 3), "st_ha": round(t["ha"]["st"]),

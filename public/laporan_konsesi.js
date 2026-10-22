@@ -373,15 +373,15 @@
     const ttm = SR.sumber_peta === "ttm", L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0) + (L[5] || 0), A = e.asal_ha || {}, c = e.citra || {}; const k1 = c.kebun1 || c.plus1, k2 = c.kebun2 || c.plus2;
     return `<article class="kn-riw-k" id="riw-${i}" data-id="${esc(e.id)}"${i >= RIW_HAL ? " hidden" : ""}>
       <header><b class="kn-riw-n">${esc(e.nama)}</b>${e.jenis ? jenisPilGP(e.jenis) : ""}${e.grup ? `<span class="kn-gr">${logo(e.grup, 16)}${esc(e.grup)}</span>` : ""}<span class="kn-mt">${esc([].concat(e.kab || []).join(", "))}</span></header>
-      <p class="kn-riw-u">± <b>${bulat(e.bs_ha)} ha</b> jejak api yang lalu menjadi sawit <span class="kn-ak">${pct(e.bs_porsi)} dari jejak api di konsesinya</span></p>
+      <p class="kn-riw-u">${e.bs_ha < 10 ? "Kurang dari <b>10 ha</b>" : `± <b>${bulat(e.bs_ha)} ha</b>`} jejak api yang lalu menjadi sawit <span class="kn-ak">${pct(e.bs_porsi)} dari jejak api di konsesinya</span></p>
       <dl class="kn-riw-d"><div><dt>Asal lahan</dt><dd>${ttm ? `${bulat(A["hutan primer saat api"])} ha hutan primer saat api; ${bulat(A["hutan primer sudah hilang sebelum api"])} ha hutan primer yang sudah hilang sebelum api; ${bulat(A["bukan hutan primer 2000"])} ha bukan hutan primer pada 2000` : `${bulat(A.Forest)} ha hutan pada 2014; ${bulat(e.bukan_hutan_sejak_2000_ha)} ha bukan hutan sejak 2000`}</dd></div>
-        <div><dt>Jeda jadi sawit</dt><dd>0–1 tahun sesudah api ${bulat(cepat)} ha; ${ttm ? "2 tahun ke atas" : "2–4 tahun"} ${bulat(lambat)} ha</dd></div>
+        <div><dt>Jeda jadi sawit</dt><dd>0–1 tahun sesudah api ${bulat(cepat)} ha; ${ttm ? "2 tahun ke atas" : "2–4 tahun"} ${SR.jendela_pendek ? "belum tercatat" : `${bulat(lambat)} ha`}</dd></div>
         ${ttm && e.pemilik_ha ? `<div><dt>Jenis kebun</dt><dd>industri ${bulat(e.pemilik_ha.industri)} ha; rakyat ${bulat(e.pemilik_ha.rakyat)} ha</dd></div>` : ""}
         ${!ttm && e.descals_konfirm != null ? `<div><dt>Peta sawit lain</dt><dd>terkonfirmasi ${pct(e.descals_konfirm)}</dd></div>` : ""}</dl>
       <div class="kn-riw-c">${riwCitra(c.sebelum, "Sebelum")}${riwCitra(c.terbakar, "Terbakar", e.api)}${riwCitra(k1, kebunJud(k1))}${riwCitra(k2, kebunJud(k2))}</div></article>`;
   }
   function bagianRiwayat() {
-    const th = riwTahunAda(); if (!th.length) return ""; if (!SRY[riwTahun]) pilihRiw(th[0]);
+    const th = riwTahunAda(); if (!th.length) return ""; if (!SRY[riwTahun]) pilihRiw();
     const ds = riwDaftar(); riwHal = 0; const T = SR.total || SR.total2015, y = SR.tahun || riwTahun;
     const hal = Math.max(1, Math.ceil(ds.length / RIW_HAL));
     return `<section class="kn-kartu kn-rws" id="knRiw"><h2>Indikasi dibakar lalu jadi sawit${th.length === 1 ? ` (kebakaran ${y})` : ""}</h2>
@@ -391,7 +391,7 @@
       ${ds.length ? `<div class="kn-riw-l">${ds.map(riwItem).join("")}</div>
       ${hal > 1 ? `<nav class="kn-pg" aria-label="Halaman riwayat"><button type="button" data-rhal="-1" aria-label="Sebelumnya">‹</button><span>Halaman <b>1</b> dari ${hal}</span><button type="button" data-rhal="1" aria-label="Berikutnya">›</button></nav>` : ""}`
       : `<div class="kosong">Tidak ada perusahaan riwayat untuk pilihan ini.</div>`}
-      ${(SR.sumber || []).length ? `<p class="kn-sumber">Sumber: ${SR.sumber.map(sumberTeks).join("; ")}${SR.lisensi ? `${/[.]$/.test(SR.sumber[SR.sumber.length - 1]) ? " " : ". "}Lisensi: ${esc(SR.lisensi)}` : ""}</p>` : ""}</section>`;
+      ${(SR.sumber || []).length ? `<p class="kn-sumber">Sumber: ${SR.sumber.map(x => sumberTeks(String(x).replace(/\.$/, ""))).join("; ")}.${SR.lisensi ? ` Lisensi: ${esc(SR.lisensi)}.` : ""}</p>` : ""}</section>`;
   }
   /* ganti halaman = hanya mengganti atribut hidden (murah); pil/teks halaman di-set langsung */
   function riwHalaman(h, gulirKe) {
@@ -401,15 +401,20 @@
     const b = $("#knRiw .kn-pg b"); if (b) b.textContent = riwHal + 1;
     if (gulirKe) { const el = $("#riw-" + gulirKe); el?.scrollIntoView({behavior: "smooth", block: "start"}); el?.classList.remove("kn-sorot"); void el?.offsetWidth; el?.classList.add("kn-sorot"); }
   }
-  /* ganti tahun: tombol di-set langsung, bagian dirender ulang di frame berikutnya */
+  /* ganti tahun: tombol + aria-busy di-set langsung (urgent), render berat sesudah paint: dua rAF, jaring setTimeout bila rAF tertahan (tab latar) */
+  let riwTunda = 0;
   function riwGantiTahun(t, id) {
-    document.querySelectorAll("#knRiw [data-rthn]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.rthn === t));
-    requestAnimationFrame(() => { const el = $("#knRiw"); if (!el) return; pilihRiw(t); el.outerHTML = bagianRiwayat();
-      if (id) { const i = riwDaftar().findIndex(x => x.id === id); if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); } });
+    const sek = $("#knRiw"); if (!sek) return; const j = ++riwTunda;
+    sek.querySelectorAll("[data-rthn]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.rthn === t)); sek.setAttribute("aria-busy", "true");
+    let jalan = false; const kerja = () => { if (jalan || j !== riwTunda) return; jalan = true;
+      const el = $("#knRiw"); if (!el) return; pilihRiw(t); el.outerHTML = bagianRiwayat();
+      const i = id ? riwDaftar().findIndex(x => x.id === id) : -1;
+      if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); else if (!id) $(`#knRiw [data-rthn="${t}"]`)?.focus(); };
+    requestAnimationFrame(() => requestAnimationFrame(kerja)); setTimeout(kerja, 120);
   }
   const lencanaRiw = r => { const th = riwTahunAda().filter(t => SRY[t].perusahaan.some(e => e.id === r.id)); if (!th.length) return "";
-    const t = th[th.length - 1], e = SRY[t].perusahaan.find(x => x.id === r.id);
-    return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${th.join(", ")} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}</a>`; };
+    const t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1], e = SRY[t].perusahaan.find(x => x.id === r.id);
+    return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${th.join(", ")} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}${SRY[t].jendela_pendek ? " (belum lengkap)" : ""}</a>`; };
   /* perbesar citra: satu <dialog> bersama */
   let dlgZ = null;
   function perbesar(img) {
@@ -460,7 +465,7 @@
           ${Object.entries(SB).map(([j, [i, t]]) => `<tr><td>Batas konsesi ${JN[j][0]}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${t}</td></tr>`).join("")}
           ${GP ? `<tr><td>Titik sumber asap, grup perusahaan</td><td><span class="kn-sb">Greenpeace, Pantau Gambut</span></td><td class="kn-mt">${esc(GP.sumber?.judul)} (2026); titik sumber asap, bukan titik panas VIIRS</td></tr>` : ""}
           ${SRY[2015] ? `<tr><td>Riwayat kebakaran 2015</td><td><span class="kn-sb">Gaveau dkk. 2022, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar</td></tr>` : ""}
-          ${SRY[2019] || SRY[2023] ? `<tr><td>Riwayat kebakaran ${[2019, 2023].filter(t => SRY[t]).join(" dan ")}</td><td><span class="kn-sb">The TreeMap 2026, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar. Lisensi CC BY-NC 4.0: bukan untuk penggunaan komersial</td></tr>` : ""}
+          ${SRY[2019] || SRY[2023] ? `<tr><td>Riwayat kebakaran ${[2019, 2023].filter(t => SRY[t]).join(" dan ")}</td><td><span class="kn-sb">The TreeMap 2026, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar. Lisensi ${esc((SRY[2019] || SRY[2023]).lisensi || "")}</td></tr>` : ""}
           ${SB_LAIN.map(([d, i, t]) => `<tr><td>${d}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${esc(t)}</td></tr>`).join("")}
         </tbody></table></div>
         <ul>
@@ -855,7 +860,7 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
     const zm = e.target.closest("img[data-zoom]"); if (zm) { perbesar(zm); return; }
     const rh = e.target.closest("[data-rhal]"); if (rh) { riwHalaman(riwHal + +rh.dataset.rhal); return; }
     const rb = e.target.closest("[data-riw]");
-    const rt = e.target.closest("[data-rthn]"); if (rt) { riwGantiTahun(+rt.dataset.rthn); return; }
+    const rt = e.target.closest("[data-rthn]"); if (rt) { if (+rt.dataset.rthn !== riwTahun) riwGantiTahun(+rt.dataset.rthn); return; }
     if (rb && rb.dataset.thn && +rb.dataset.thn !== riwTahun) { e.preventDefault(); riwGantiTahun(+rb.dataset.thn, rb.dataset.riw); return; }
     if (rb) { e.preventDefault(); const i = riwDaftar().findIndex(x => x.id === rb.dataset.riw); if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); return; }
     const thU = e.target.closest(".kn-tb thead th"); if (thU) { urutkan(thU); return; }
