@@ -7,7 +7,7 @@
  "sebelum_jam": 168,
  "kisi": {
   "lat": -6.26,
-  "lon": 106.945,
+  "lon": 106.925,
   "sisi_m": 24000,
   "n": 400
  },
@@ -109,13 +109,6 @@
   {
    "id": "kali_bekasi",
    "nama": "Kali Bekasi",
-   "masuk": {
-    "lat": -6.36,
-    "lon": 106.985,
-    "jendela_sel": 10,
-    "jumlah_sel": 3,
-    "baris_dari_tepi": 4
-   },
    "das": {
     "luas_km2": 500,
     "cn": 76,
@@ -136,34 +129,68 @@
      "lon": 106.97
     },
     "sumber": "pengisi: luas DAS Cileungsi + Cikeas sampai P2C sekitar 500 km2 dari permintaan pemilik, belum ada sumber tertulis; CN dan Tc asumsi; aliran dasar sesuai catatan spesifikasi (63 sampai 70 m3/dtk harian GloFAS)",
-    "sementara": true,
-    "kalibrasi": {
-     "puncak_m3s": 1050,
-     "jam_puncak_wib": "2025-03-04T06:30",
-     "lebar_jam": 3,
-     "bebas": [
-      "tc_jam",
-      "cn"
-     ],
-     "sumber": "Antara Lampung: puncak 875 cm 06.30 4 Mar, Bendung Bekasi 1.100 m3/dtk (kapasitas 1.000); sasaran 1.050 dari arahan sesi induk 1.000-1.100. https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya"
-    }
+    "sementara": true
+   },
+   "masuk": {
+    "alur": [
+     {
+      "regex": "leungsi",
+      "bagi": 0.6
+     },
+     {
+      "regex": "cikeas",
+      "bagi": 0.4
+     }
+    ],
+    "baris_dari_tepi": 4,
+    "catatan": "Kali Bekasi terbentuk di dalam kisi (pertemuan Ci Leungsi dan Kali Cikeas sekitar baris 281-303); debit dibagi dua ke kedua alur di tepi selatan, bagi 0,6/0,4 pengisi (sementara)"
+   },
+   "tma_terukur": {
+    "pos": "Pos Cileungsi (KP2C), Kali Bekasi",
+    "normal_cm": 350,
+    "awal_naik_wib": "2025-03-03T18:00",
+    "paruh_surut_jam": 10,
+    "titik": [
+     {
+      "waktu_wib": "2025-03-03T23:00",
+      "tma_cm": 400,
+      "sumber": "Antara Lampung (KP2C Siaga 1)"
+     },
+     {
+      "waktu_wib": "2025-03-03T23:40",
+      "tma_cm": 500,
+      "sumber": "Antara Lampung (CCTV pos hanyut)"
+     },
+     {
+      "waktu_wib": "2025-03-04T03:00",
+      "tma_cm": 710,
+      "sumber": "pojoksatu (batas normal 350 cm)"
+     },
+     {
+      "waktu_wib": "2025-03-04T06:30",
+      "tma_cm": 875,
+      "sumber": "Antara Lampung (puncak)"
+     }
+    ],
+    "kurva": {
+     "H1": 350,
+     "Q1": 60,
+     "H2": 875,
+     "Q2": 1100,
+     "b": 1.6,
+     "sumber": "ASUMSI kurva debit Q = a (H - H0)^b, b 1,6 (saluran alam 1,5-2); Q(350) = 60 m3/dtk aliran dasar (GloFAS harian 63-70, catatan spesifikasi), Q(875) = 1.100 m3/dtk (Bendung Bekasi saat puncak, Antara Lampung); H0 dan a dihitung dari kedua titik"
+    },
+    "sumber": "TMA Cileungsi dari linimasa_pos: https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya dan https://www.pojoksatu.id/nasional/1085720464/penyebab-banjir-besar-bekasi-4-maret-2025-sungai-cileungsi-cikeas-meluap-rendam-7-kecamatan; naik dari 350 cm sebelum 23.00 dan surut sesudah puncak adalah asumsi (belum bersumber); waktu tempuh pos ke tepi kisi diabaikan"
    }
   },
   {
    "id": "ciliwung",
    "nama": "Ciliwung",
-   "masuk": {
-    "lat": -6.36,
-    "lon": 106.84,
-    "jendela_sel": 10,
-    "jumlah_sel": 3,
-    "baris_dari_tepi": 4
-   },
    "das": {
-    "luas_km2": 330,
+    "luas_km2": 184,
     "cn": 78,
-    "tc_jam": 10,
-    "aliran_dasar_m3s": 20,
+    "tc_jam": 6,
+    "aliran_dasar_m3s": 5,
     "bbox_hujan": {
      "lat": [
       -6.7,
@@ -178,17 +205,27 @@
      "lat": -6.52,
      "lon": 106.88
     },
-    "sumber": "pengisi: luas DAS Ciliwung sampai Depok/Manggarai sekitar 330 km2 dari permintaan pemilik, belum ada sumber tertulis; CN dan Tc asumsi",
-    "sementara": true,
-    "kalibrasi": {
-     "puncak_m3s": null,
-     "jam_puncak_wib": "2025-03-04T09:00",
-     "lebar_jam": 3,
-     "bebas": [
-      "tc_jam"
-     ],
-     "sumber": "Air sampai Jakarta Timur sekitar 12.00 4 Mar, Manggarai 830 cm 11.00 (Liputan6, Metro TV); puncak masuk di tepi selatan kisi ditaksir 3 jam sebelumnya (asumsi pengerja). https://www.liputan6.com/news/read/5944835/bendungan-katulampa-siaga-3-hingga-selasa-siang-4-maret-2025-warga-jakarta-waspada-banjir-kiriman"
-    }
+    "sumber": "DAS antara Katulampa sampai tepi selatan kisi: 330 km2 (DAS sampai Depok/Manggarai, pengisi) dikurangi 146 km2 hulu Katulampa (angka umum, belum bersumber tertulis) = 184 km2; CN dan Tc asumsi; hujan DAS antara memakai pengali sel dijepit maks 3; tanpa kalibrasi",
+    "sementara": true
+   },
+   "masuk": {
+    "alur": [
+     {
+      "regex": "ci ?liwung",
+      "bagi": 1
+     }
+    ],
+    "baris_dari_tepi": 4
+   },
+   "hulu_terukur": {
+    "pos": "Bendung Katulampa",
+    "luas_hulu_km2": 146,
+    "dasar_m3s": 25,
+    "acuan_wib": "2025-03-03T23:30",
+    "tiba_tepi_wib": "2025-03-04T09:00",
+    "plateau_jam": 2,
+    "paruh_jam": 8,
+    "sumber": "Debit terukur Katulampa dari linimasa_pos (Antara, Metro TV, Liputan6, Kompas); TMA tanpa debit diubah lewat regresi TMA-debit dari pasangan yang ada. Waktu tempuh dikalibrasi: air kiriman terakhir terukur (TMA ~200 cm, 23.30 3 Mar) tiba di tepi selatan kisi sekitar 09.00 4 Mar sehingga sampai Jakarta Timur sekitar 12.00 (laporan Katulampa ke Jakarta 9-12 jam). Ekor sesudah 23.30 3 Mar tak terukur: datar 2 jam lalu surut waktu paruh 8 jam (asumsi). Kalibrasi ke laporan, bukan prediksi."
    }
   }
  ],
@@ -198,59 +235,50 @@
    "nama": "P2C Kali Bekasi",
    "lat": -6.265,
    "lon": 107.0,
-   "radius_sel": 4,
+   "radius_sel": 25,
    "sumber": "pengisi: koordinat perkiraan",
-   "sementara": true
+   "sementara": true,
+   "alur": "bekasi"
   },
   {
    "id": "kali_bekasi",
    "nama": "Kali Bekasi (Jatiasih)",
    "lat": -6.3,
    "lon": 106.96,
-   "radius_sel": 4,
+   "radius_sel": 25,
    "sumber": "pengisi: koordinat perkiraan",
-   "sementara": true
+   "sementara": true,
+   "alur": "bekasi"
   },
   {
    "id": "ciliwung",
    "nama": "Ciliwung (Kampung Melayu)",
    "lat": -6.224,
    "lon": 106.866,
-   "radius_sel": 4,
+   "radius_sel": 15,
    "sumber": "pengisi: koordinat perkiraan",
-   "sementara": true
+   "sementara": true,
+   "alur": "liwung"
   }
  ],
  "area": [
   {
-   "id": "jatiasih",
-   "nama": "Jatiasih",
-   "lat": -6.29,
-   "lon": 106.96
-  },
-  {
    "id": "pgp",
    "nama": "Pondok Gede Permai",
    "lat": -6.29,
-   "lon": 106.96
+   "lon": 106.956
   },
   {
-   "id": "mega_bekasi",
-   "nama": "Mega Bekasi",
-   "lat": -6.225,
-   "lon": 107.0
+   "id": "jatiasih",
+   "nama": "Jatiasih",
+   "lat": -6.305,
+   "lon": 106.965
   },
   {
-   "id": "pekayon",
-   "nama": "Pekayon",
-   "lat": -6.27,
-   "lon": 106.99
-  },
-  {
-   "id": "bekasi_utara",
-   "nama": "Bekasi Utara",
-   "lat": -6.19,
-   "lon": 107.0
+   "id": "bekasi_kota",
+   "nama": "Bekasi Kota",
+   "lat": -6.2349,
+   "lon": 106.9896
   },
   {
    "id": "kampung_melayu",
@@ -262,13 +290,7 @@
    "id": "cawang",
    "nama": "Cawang",
    "lat": -6.243,
-   "lon": 106.875
-  },
-  {
-   "id": "bidara_cina",
-   "nama": "Bidara Cina",
-   "lat": -6.232,
-   "lon": 106.871
+   "lon": 106.87
   }
  ],
  "laporan": [
@@ -1199,5 +1221,70 @@
     -6.31
    ]
   ]
- }
+ },
+ "pengali_maks": 3,
+ "drainase_mm_jam": {
+  "terbangun": 5,
+  "lainnya": 5,
+  "sumber": "Arahan sesi induk 22 Okt 2026: saluran kota dirancang periode ulang 2-5 tahun, sekitar 15-20 mm/jam (terbangun 15), lainnya 5. Belum diverifikasi ke dokumen (Permen PU 12/PRT/M/2014 tentang drainase perkotaan menetapkan periode ulang saluran tersier 2, sekunder 5, primer 10 tahun, ingatan pengerja, belum dibuka). Keputusan 1d: bawaan resmi 5 mm/jam (terbangun) dan 5 (lainnya) sampai tabel kepekaan {0,5,10} diputuskan sesi induk."
+ },
+ "penyebab": {
+  "teks": "Kiriman air dari hulu Bogor dan Puncak lewat DAS Ciliwung dan Kali Bekasi, ditambah hujan lokal dari pertumbuhan awan konvektif skala meso dan sirkulasi siklonik (penjelasan BMKG, Guswanto)",
+  "lembaga": "BMKG",
+  "url": "https://www.kompas.tv/info-publik/577958/penjelasan-bmkg-soal-banjir-di-wilayah-jabodetabek"
+ },
+ "alur_bankfull": {
+  "n_manning": 0.035,
+  "lereng_min": 0.0005,
+  "catatan": "Kedalaman bakar tiap sel alur = kedalaman penuh-tepi dari Manning untuk saluran persegi selebar satu sel: d = (Qbf n / (dx sqrt(S)))^(3/5), S = lereng lokal tepi alur (jendela +-8 sel, min 5e-4). n 0,035 ASUMSI (Chow 1959, saluran alam bersih 0,03-0,04). Kali Bekasi/Cileungsi/Cikeas: Qbf dikalibrasi ke SATU laporan waktu (air pertama masuk permukiman Jatiasih 23.42 3 Mar, Perum Bumi Nasio Indah 23.46); laporan lain (Pondok Gede Permai 00.10 dan limpas tanggul 03.15, kedalaman 47 laporan, puncak P2C 06.30) jadi validasi. Kanal 3 m, river lain 3 m, stream bernama 2 m (asumsi).",
+  "kelompok": [
+   {
+    "id": "kali_bekasi",
+    "regex": "^(kali )?bekasi|leungsi|cikeas",
+    "qbf_dari_hidrograf": {
+     "sungai": "kali_bekasi",
+     "waktu_wib": "2025-03-03T23:42"
+    },
+    "cabang": [
+     {
+      "regex": "leungsi",
+      "bagi": 0.6
+     },
+     {
+      "regex": "cikeas",
+      "bagi": 0.4
+     }
+    ],
+    "sumber": "Qbf = Q pada 23.42 3 Mar dari kurva debit TMA Cileungsi (satu-satunya kalibrasi: air pertama masuk Jatiasih 23.42, Perum Bumi Nasio 23.46); dibagi 0,6/0,4 ke Ci Leungsi/Cikeas (pembagian pengisi), penuh untuk Kali Bekasi hilir pertemuan. Laporan lain (PGP 00.10 dan limpas tanggul 03.15, 47 kedalaman, puncak P2C 06.30) = validasi"
+   },
+   {
+    "id": "ciliwung",
+    "regex": "ci ?liwung",
+    "qbf_m3s": 370,
+    "sumber": "ASUMSI belum bersumber: 370 m3/dtk (arahan sesi induk 22 Okt 2026); kapasitas penuh-tepi Ciliwung di Kampung Melayu tidak ditemukan bersumber"
+   }
+  ]
+ },
+ "dem_median_k": 9,
+ "laporan_kalibrasi": [
+  "l09",
+  "l13",
+  "l16",
+  "l17"
+ ],
+ "laporan_kalibrasi_alasan": "Dipakai atau terlalu dekat dengan kalibrasi Qbf Kali Bekasi (air pertama masuk Jatiasih 23.42): l09 Perum Bumi Nasio Indah 23.46, l16 Komplek Dosen IKIP 23.42, l17 Perum Jati Bening Permai 23.43, dan l13 Perum Pondok Gede Permai 00.10 (air pertama menggenang)",
+ "laporan_jaktim_10": [
+  "l25",
+  "l26",
+  "l27",
+  "l28",
+  "l29",
+  "l30",
+  "l31",
+  "l32",
+  "l33",
+  "l34",
+  "l35",
+  "l36"
+ ]
 }

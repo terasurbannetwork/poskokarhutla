@@ -129,6 +129,7 @@
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat kejadian"><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-keputusan" aria-label="Keputusan"><div class="wrap" id="keputusan"></div></section>
   <section class="page scroll" id="p-sim" aria-label="Simulasi skenario"><div class="wrap" id="simulasi"></div></section>
+  <section class="page" id="p-replay" aria-label="Replay banjir Jabodetabek Maret 2025"><iframe id="replayBingkai" title="Replay banjir Jabodetabek Maret 2025" style="width:100%;height:100%;border:0;display:block" loading="lazy"></iframe></section>
   <section class="page scroll" id="p-posko" aria-label="Rekomendasi posko"><div class="wrap" id="posko"></div></section>
   <section class="page scroll" id="p-sarana" aria-label="Kesiapan sarana posko"><div class="wrap" id="sarana"></div></section>
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
@@ -185,7 +186,7 @@ const S = {meta: null, st: null, hujan: null, sungai: null, bahaya: {}, kejadian
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"],
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["replay", "Replay"], ["foto", "Foto"], ["tentang", "Tentang"],
   ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"], ["prakiraan", "Prakiraan"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["keputusan", "Keputusan"], ["sarana", "Sarana"]];
 /* id lama -> id baru (tautan lama tetap hidup); sama dengan "alias" di public/bencana.json */
 const ALIAS = {simulasi: "sim"};
@@ -193,7 +194,7 @@ const ALIAS = {simulasi: "sim"};
    Prakiraan, Wilayah siaga, Provinsi, Rob, Sungai bukan tab lagi, isinya pindah ke Insight/Peta (L6/L7), sementara tetap bisa dibuka lewat tautan */
 const TAB_SEMBUNYI = new Set(["posko", "informasi", "metode", "prakiraan", "daftar", "provinsi", "rob", "sungai", "keputusan", "sarana"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
-  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>', replay: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const ID_JADI = id => ALIAS[id] || id;
 const halamanAda = id => { const p = $("#p-" + id); return !!p && !p.hidden; };
@@ -204,6 +205,7 @@ function bukaTab(id, dorong = true) {
   /* tautan bersih tanpa tagar: /banjir/insight (worker mengarahkan jalur ini ke index.html, routing di peramban) */
   if (dorong) history.replaceState(null, "", "/banjir/" + id);
   nanti(() => { if (id === "peta" && peta) peta.resize(); if (id === "informasi") window.Informasi?.render();
+    if (id === "replay") { const f = $("#replayBingkai"); if (!f.src) f.src = "/banjir/replay.html?tertanam=1"; }
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
     const f = {berita: Berita, dampak: Dampak, foto: Foto, insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, sim: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
 }
