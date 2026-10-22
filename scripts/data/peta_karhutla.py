@@ -22,6 +22,9 @@ Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/sate
   (m + 1) / 2 ha per hari (m = jumlah kabupaten tercatat di provinsi itu); aturan itu dipaksa periksa_kab. Padam dan hotspot tidak dipecah per kabupaten.
   Berkas kab membawa salinan hari/celah/celah_turunan/patah provinsi dan celah_luas (= celah_turunan: hari yang luas/belum-nya terdampak celah NOAA-20/21;
   dibaca peta_kab.js lewat PetaKarhutla.siapkan, jadi catatan celah tidak muncul untuk hari yang hanya kehilangan S-NPP).
+- sumber panas tetap (smelter, tambang, kilang, PLTU; public/data/titik_palsu.json) TIDAK disaring, beda dengan harian.py: angka provinsi tetap sama dengan deck BNPB.
+  Dampaknya kecil nasional (STATIS: ~1% titik) tetapi nyata di kabupaten tertentu (Halmahera Tengah, Cilacap, Kota Cilegon); teks metode menyebutnya. Menyaringnya
+  menggeser angka provinsi ~1% dan memutus paritas dengan deck (uji_deck), jadi itu keputusan pemilik, bukan perbaikan diam-diam.
 - celah = hari yang lintasan satelitnya hilang di FIRMS (lihat celah_hari): hotspot hari itu terlalu rendah, TIDAK dikoreksi.
   celah_turunan = hari yang luas/belum/padam-nya mewarisi celah NOAA-20/21 (hari celah + 2 hari sesudahnya; celah hanya S-NPP tidak menurun karena
   luas/belum/padam tak memakai S-NPP). patah = hari WIB pertama yang hot-nya memuat N21 pengganti S-NPP (seri hot berbeda mulai hari itu).
@@ -37,6 +40,7 @@ Pakai:
   python3 scripts/data/peta_karhutla.py --penuh    # bangun ulang 1 Jan..kemarin (cache UTC-hari dipakai ulang bila sudah lewat 12 jam dari akhir harinya)
   python3 scripts/data/peta_karhutla.py --uji      # self-check tanpa jaringan (butuh firms-raw-15-21okt.tar.gz + angka_nasional.json di data/laporan-bnpb)
   python3 scripts/data/peta_karhutla.py --ukur     # ukur porsi/faktor N21 setahun dari cache UTC-hari + JSON terbit (isi konstanta UKUR dari keluarannya)
+  python3 scripts/data/peta_karhutla.py --statis   # hitung ulang konstanta STATIS (titik di sel sumber panas tetap, 20 Okt 2026) dari fikstur deck
 Opsi: --mulai YYYY-MM-DD  --akhir YYYY-MM-DD  --jendela N  --keluar berkas.json  --cache folder
 Butuh FIRMS_MAP_KEY (env atau .env).
 """
