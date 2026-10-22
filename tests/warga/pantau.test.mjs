@@ -161,7 +161,8 @@ uji("matriks peran x rute: tiap peran hanya rute sahnya; rute lama tidak melongg
     ["GET", "/api/instansi/admin/pantau", undefined, ["verifikator", "pusdalops"]],
     /* keputusan pemilik 21 Okt 2026: verifikator dan pusdalops (dalam wilayahnya) membuka rincian dan media tugas; peran lain tetap 403. Id tak ada = 404 (bukan 403) bagi yang berhak. */
     ["GET", "/api/instansi/admin/tugas/" + id16(), undefined, ["verifikator", "pusdalops"]],
-    ["GET", "/api/instansi/admin/media/" + id16(), undefined, ["verifikator", "pusdalops"]],
+    ["GET", "/api/instansi/admin/media/" + id16(), undefined, ["verifikator", "pusdalops", "analis_konsesi", "pimpinan"]],   // analis_konsesi dan pimpinan: baca bukti Gakkum saja
+    ["GET", "/api/instansi/admin/thumb/" + id16(), undefined, ["verifikator", "pusdalops", "analis_konsesi", "pimpinan"]],
     ["GET", "/api/instansi/admin/usulan", undefined, ["analis_konsesi"]],
     ["POST", "/api/instansi/admin/usulan/" + uid, {aksi: "tolak", alasan: "uji"}, ["analis_konsesi"]],
     ["GET", "/api/posko/kontak", undefined, ["analis_konsesi"]],

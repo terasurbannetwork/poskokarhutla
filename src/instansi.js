@@ -662,8 +662,9 @@ async function lihatMedia(env, req, id, kini, thumb) {
   if (!m || (!m.isian_id && m.akun_id !== a.id) || (m.md && !a.dummy) || !dalamLingkup(a, m)) return gagal(404, "berkas tidak ada");
   return kirimMedia(env, req, m, id, thumb);
 }
+const peranBacaMedia = () => [...P_VALIDASI, "analis_konsesi", "pimpinan"];   // analis konsesi dan pimpinan hanya MEMBACA (bukti Gakkum, GET /api/ops/bukti); hak tulis tetap P_VALIDASI
 async function mediaAdmin(env, req, id, thumb) {
-  if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();
+  if (!await modAtauStaf(env, req, peranBacaMedia())) return tolakMod();
   const m = await env.DB.prepare("SELECT m.mime, m.dummy, t.prov FROM instansi_media m JOIN tugas_api t ON t.id = m.tugas_id WHERE m.id = ?").bind(id).first();
   return m && dalamWilayahStaf(req, [m.prov]) && !(stafNyata(req) && m.dummy) ? kirimMedia(env, req, m, id, thumb) : gagal(404, "berkas tidak ada");
 }
@@ -757,8 +758,9 @@ export async function verifikasiPadam(env, kini = Date.now()) {
   return {periksa: T.length, muncul, terverifikasi};
 }
 /* Laporan regu berkode (posko.js lapor, sesudah laporan tersimpan) menaut ke tugas api terdekat (<= 2 km, kabupaten sama, tugas nyata yang buka atau padam) lewat tugas_lapangan.
-   Efeknya hanya bila laporan dipercaya (tidak ditahan, tanpa tanda GPS curiga): padam = laporan padam (padam_pada diisi bila belum, atau tugas muncul_lagi yang dipadamkan lagi);
-   menyala atau bara pada tugas yang sudah padam = muncul_lagi sumber regu. Tabel 0037 belum ada = lewati. Galat tidak boleh menggagalkan laporan (pemanggil menangkap). */
+   Efek hanya bila laporan dipercaya (l.dipercaya: GPS di wilayah regu, tidak ditahan, tanpa tanda GPS curiga). PADAM dari regu hanyalah klaim (tercatat, efek "klaim_regu"): tugas berubah
+   padam_dilaporkan bila dua regu BERBEDA yang dipercaya melapor padam dalam 24 jam (sesudah dibukanya kembali, bila muncul_lagi); konfirmasi akun instansi lewat isian tugas sendiri.
+   Jalur regu tidak pernah menutup penugasan atau melepas alat. menyala atau bara dari regu dipercaya pada tugas padam = muncul_lagi sumber regu (arah aman). Tabel 0037 belum ada = lewati. */
 export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
   try {
     const C = (await env.DB.prepare(`SELECT id, lat, lon, status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE prov = ? AND lower(kab) = lower(?) AND dummy = 0
@@ -766,17 +768,20 @@ export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
     let t = null, d = GABUNG_KM + 1e-9;
     for (const c of C) { const x = km(l.lat, l.lon, c.lat, c.lon); if (x <= GABUNG_KM && x < d) { t = c; d = x; } }
     if (!t) return null;
-    await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini).run();
+    await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat, regu_id, dipercaya) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini, l.regu_id ?? null, l.dipercaya ? 1 : 0).run();
     if (!l.dipercaya) return {tugas_id: t.id, jarak_km: d, efek: null};
     const waktu = Math.min(l.waktu, kini);
     if (l.status === "padam" && (t.padam_pada == null || (t.status === "buka" && t.padam_verif === "muncul_lagi" && waktu > t.verif_pada))) {
+      const sejak = Math.max(kini - 24 * JAM, t.padam_verif === "muncul_lagi" ? t.verif_pada ?? 0 : 0);
+      const n = (await env.DB.prepare("SELECT count(DISTINCT regu_id) n FROM tugas_lapangan WHERE tugas_id = ? AND status = 'padam' AND dipercaya = 1 AND regu_id IS NOT NULL AND dibuat > ?").bind(t.id, sejak).first()).n;
+      if (n < 2) return {tugas_id: t.id, jarak_km: d, efek: "klaim_regu"};
       const r = await env.DB.prepare(`UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?1, verif_pada = ?2, cek_ulang_pada = NULL WHERE id = ?3 AND (padam_pada IS NULL OR (status = 'buka' AND padam_verif = 'muncul_lagi'))`).bind(waktu, kini, t.id).run();
-      if (r.meta.changes) { try { await lepasDariTugas(env, t.id, kini); } catch (e) {} return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"}; }
+      if (r.meta.changes) return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"};
     } else if ((l.status === "menyala" || l.status === "bara") && t.status === "padam" && waktu > t.padam_pada) {
       if (await bukaKembali(env, [{id: t.id, sumber: "regu", jarak: d, ket: `Laporan regu berkode: api ${l.status} dalam ${Math.round(d * 10) / 10} km dari tugas yang dilaporkan padam`}], kini)) return {tugas_id: t.id, jarak_km: d, efek: "muncul_lagi"};
     }
     return {tugas_id: t.id, jarak_km: d, efek: null};
-  } catch (e) { if (/no such table: tugas_lapangan/i.test(String(e?.message || e))) return null; throw e; }
+  } catch (e) { if (/no such table: tugas_lapangan|no such column: (regu_id|dipercaya)/i.test(String(e?.message || e))) return null; throw e; }
 }
 /* Butir Meja Pantau api_muncul_lagi (dipanggil src/pantau.js): tugas yang dibuka kembali karena titik panas baru dan belum ada kabar tindakan sesudahnya. Hilang sendiri saat kabar baru masuk. */
 export async function butirApiMunculLagi(env, kini, dummyOk) {

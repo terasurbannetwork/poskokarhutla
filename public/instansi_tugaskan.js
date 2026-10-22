@@ -182,7 +182,7 @@
     const saya = ++gen, S = {t, wadah, admin, daftar: [], peta: null, penanda: new Map(), pernahFit: false, timer: null, muatPeta: false};
     aktif = S;
     const url = admin ? `/api/instansi/admin/penugasan/${t.id}` : `/api/instansi/penugasan/${t.id}`, boleh = !admin && t.status === "buka";
-    wadah.innerHTML = `<section class="in-kartu tg-kartu" aria-label="Penugasan dan pelacak posisi"><div class="tg-kepala"><h2 class="in-sub">Penugasan dan pelacak posisi</h2>${boleh ? `<button type="button" class="lp-tombol utama tg-baru" data-tg="baru">Tugaskan orang</button>` : ""}</div>
+    wadah.innerHTML = `<section class="in-kartu tg-kartu" aria-label="Penugasan dan pelacak posisi"><div class="tg-kepala"><h2 class="in-sub">Penugasan dan pelacak posisi</h2><button type="button" class="lp-tombol tg-ops" data-tg="ops"><svg class="tg-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11zM10 10a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/></svg>Operasi lapangan</button>${boleh ? `<button type="button" class="lp-tombol utama tg-baru" data-tg="baru">Tugaskan orang</button>` : ""}</div>
       <p class="lp-kecil">${admin ? "Posisi terakhir dan jejak orang yang ditugaskan. Nomor WhatsApp mereka tidak ditampilkan di sini." : "Buat tautan untuk driver, regu, atau petugas. Mereka membuka tautan di ponsel, melihat rute dan checklist, lalu membagikan posisi saat berangkat."} Posisi hanya terlihat oleh akun pemilik tugas, moderator, dan staf pusdalops wilayah ini, dan berhenti dikirim saat tugas selesai.</p>
       ${boleh ? formHtml() : ""}<div class="tg-hasil-wadah"></div><div class="tg-usulan"><button type="button" class="lp-tombol" data-tg="usulan">Lihat usulan orang untuk ditugaskan</button><div class="tg-usulan-isi" aria-live="polite"></div></div><div class="tg-peta" hidden></div><div class="tg-daftar" aria-live="polite"><p class="lp-kecil">Memuat penugasan…</p></div></section>`;
     const q = s => wadah.querySelector(s), hidup = () => aktif === S && saya === gen && wadah.isConnected !== false;
@@ -249,6 +249,7 @@
     {
       const onClick = async e => {
         const b = e.target.closest?.("[data-tg]"); if (!b) return; const a = b.dataset.tg;
+        if (a === "ops") return bukaOps(t, admin, b);
         if (a === "baru") { const f = q("#tgForm"); f.hidden = !f.hidden; if (!f.hidden) q("#tgNama").focus(); return; }
         if (a === "usulan") { const w = q(".tg-usulan-isi"); b.disabled = true; w.innerHTML = `<p class="lp-kecil">Mencari kandidat…</p>`; const r = await api("GET", `/api/instansi/usulan/${t.id}`); b.disabled = false;
           if (!r.ok) { w.innerHTML = `<p class="lp-kecil">${esc(r.status === 503 ? "Usulan belum aktif di server." : r.j.galat || "Usulan belum bisa dimuat.")}</p>`; return; } S.usulan = r.j.kandidat; w.innerHTML = usulanHtml(r.j, admin); return; }
@@ -278,6 +279,30 @@
     }
     muat();
   }
+  /* layar operasi (instansi_ops.js) dimuat saat pertama dibuka bila halaman belum menaut skripnya (/admin/instansi) */
+  async function bukaOps(t, admin, pembuka) {
+    if (!window.InstansiOps) {
+      pembuka.disabled = true;
+      try {
+        const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/instansi_ops.css?v=1"; document.head.append(l);
+        await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "/instansi_ops.js?v=1"; sc.onload = ok; sc.onerror = () => no(new Error("skrip operasi gagal dimuat")); document.head.append(sc); });
+      } catch (e) { pembuka.disabled = false; pembuka.textContent = "Layar operasi belum bisa dimuat, coba lagi"; return; }
+      pembuka.disabled = false;
+    }
+    window.InstansiOps.buka(t, {admin, pembuka});
+  }
+  /* tombol 🧪/🧹 Super Admin di /admin/instansi: sesudah isi/hapus dummy instansi selesai, isi/hapus juga contoh operasi lapangan (POST /api/ops/dummy), supaya layar operasi berangka.
+     Handler halaman jalan lebih dulu (menonaktifkan tombol); tombol yang tidak jadi nonaktif berarti konfirmasi hapus ditolak, jadi tidak ada yang dikerjakan di sini. */
+  document.addEventListener("click", e => {
+    const d = e.target.closest?.("[data-dummy]"), aksi = d?.dataset.dummy; if (!d || !d.closest("#aksiJudul") || (aksi !== "isi" && aksi !== "hapus")) return;
+    if (!d.disabled) return;
+    const t0 = Date.now(), tunggu = async () => {
+      if (d.disabled && Date.now() - t0 < 90e3) return setTimeout(tunggu, 200);
+      const r = await api("POST", "/api/ops/dummy", {aksi}), p = document.getElementById("aiPesan");
+      if (p) p.textContent += r.ok ? ` Operasi lapangan: contoh ${aksi === "isi" ? "terisi" : "dihapus"}.` : ` Operasi lapangan: ${r.status === 503 ? "migrasi belum diterapkan" : r.j.galat || "gagal"}.`;
+    };
+    setTimeout(tunggu, 200);
+  });
   document.addEventListener("visibilitychange", () => aktif?.lihat?.());
   window.Tugaskan = {pasang: (t, w) => pasangInti(t, w, false), pasangAdmin: (t, w) => pasangInti(t, w, true), lepas: () => { if (aktif?.timer) clearInterval(aktif.timer); aktif = null; ++gen; },
     popupMasuk, ringkasan, titikWilayah, padamPil, padamBlok, exifInfo, keadaan};

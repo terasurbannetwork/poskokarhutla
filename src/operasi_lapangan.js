@@ -259,16 +259,16 @@ async function buatGaris(env, req, kini) {
     if (!pn) return gagal(404, "penugasan tidak ada di tugas ini");
     mulai = o.mulai == null ? (pn.berangkat_pada ?? pn.dibuat) : waktuMs(o.mulai); selesai = o.selesai == null ? (pn.selesai_pada ?? kini) : waktuMs(o.selesai);
     if (mulai == null || selesai == null || selesai <= mulai || selesai - mulai > 7 * HARI || selesai > kini + MENIT) return gagal(400, "mulai dan selesai: waktu sah, mulai < selesai, rentang paling lama 7 hari");
-    const rows = (await env.DB.prepare("SELECT lat, lon FROM penugasan_posisi WHERE penugasan_id = ? AND pada BETWEEN ? AND ? AND (akurasi IS NULL OR akurasi <= 100) ORDER BY pada LIMIT 5000").bind(pn.id, mulai, selesai).all()).results;
-    if (rows.length < 2) return gagal(409, "kurang dari 2 posisi akurat (<= 100 m) di rentang waktu itu");
-    ps = rows.map(r => [r.lon, r.lat]); sumber = "rekam";
+    const rows = (await env.DB.prepare("SELECT lat, lon FROM penugasan_posisi WHERE penugasan_id = ? AND pada BETWEEN ? AND ? AND akurasi IS NOT NULL AND akurasi <= 100 ORDER BY pada LIMIT 5000").bind(pn.id, mulai, selesai).all()).results;
+    if (rows.length < 2) return gagal(409, "kurang dari 2 posisi akurat (akurasi tercatat <= 100 m) di rentang waktu itu");
+    ps = rows.map(r => [bulat(r.lon, 5), bulat(r.lat, 5)]); sumber = "rekam";   // privasi: koordinat 5 desimal (~1 m) dan tanpa penugasan_id (lihat INSERT), jejak orang tidak melekat ke identitas regu
   }
   if (ps.length > BATAS.titikGaris) ps = sederhanakan(ps, BATAS.titikGaris);
   const tertutup = ps.length >= 4 && km(ps[0][1], ps[0][0], ps.at(-1)[1], ps.at(-1)[0]) <= 0.05;
   if (tertutup) ps[ps.length - 1] = [...ps[0]];
   const panjang = panjangKm(ps), luas = tertutup ? luasHa(ps) : null, id = acak(8);
   await env.DB.prepare("INSERT INTO ops_garis (id, tugas_id, penugasan_id, jenis, koordinat, n_titik, panjang_km, luas_ha, tertutup, sumber, mulai, selesai, oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, t.id, sumber === "rekam" ? o.penugasan_id : null, o.jenis, JSON.stringify(ps), ps.length, panjang, luas, tertutup ? 1 : 0, sumber, mulai, selesai, P.oleh, kini, t.dummy).run();
+    .bind(id, t.id, null, o.jenis, JSON.stringify(ps), ps.length, panjang, luas, tertutup ? 1 : 0, sumber, mulai, selesai, P.oleh, kini, t.dummy).run();
   return json({garis: bentukGaris(await env.DB.prepare("SELECT * FROM ops_garis WHERE id = ?").bind(id).first())}, 201);
 }
 async function ubahGaris(env, req, kini, id) {
@@ -507,16 +507,16 @@ async function buktiTitik(env) {
   try { const r = await env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
   try { hw = await muatHimawari(env); } catch (e) {}
   const af = firms && Date.parse(firms.acuan), ah = hw && Date.parse(hw.acuan);
-  return {f: Array.isArray(firms?.baris) && Number.isFinite(af) ? firms.baris.map(b => ({lat: b[0], lon: b[1], t: af + b[2] * JAM})) : [], af: Number.isFinite(af) ? af : null,
+  return {hOk: !!hw, f: Array.isArray(firms?.baris) && Number.isFinite(af) ? firms.baris.map(b => ({lat: b[0], lon: b[1], t: af + b[2] * JAM})) : [], af: Number.isFinite(af) ? af : null,
     h: Array.isArray(hw?.baris) && Number.isFinite(ah) ? hw.baris.map(b => ({lat: b[0], lon: b[1], t: ah - b[2] * MENIT})) : [], ah: Number.isFinite(ah) ? ah : null};
 }
 /* murni. {hasil, n}: ada_titik bila ada titik dalam jendela (langsung final); tanpa_titik hanya bila data sudah mencakup seluruh 6 jam DAN jendela masih dalam 24 jam terakhir data
-   (putaran FIRMS hanya menyimpan 24 jam); tak_dinilai bila data tak mungkin lagi mencakupnya atau > 30 jam tanpa putusan; selain itu null (menunggu). */
+   (putaran FIRMS hanya menyimpan 24 jam); Himawari gagal dimuat (B.hOk false) = tidak pernah tanpa_titik; tak_dinilai bila data tak mungkin lagi mencakupnya atau > 30 jam tanpa putusan; selain itu null (menunggu). */
 export function nilaiSatuDrop(d, B, kini) {
   const akhir = d.pada + BATAS.dropJam * JAM, acuan = Math.max(B.af ?? 0, B.ah ?? 0);
   const n = B.f.filter(p => p.t > d.pada && p.t <= akhir && km(p.lat, p.lon, d.lat, d.lon) <= BATAS.dropFirmsKm).length + B.h.filter(p => p.t > d.pada && p.t <= akhir && km(p.lat, p.lon, d.lat, d.lon) <= BATAS.dropHimawariKm).length;
   if (n > 0) return {hasil: "ada_titik", n};
-  if (acuan >= akhir) return d.pada >= acuan - 24 * JAM ? {hasil: "tanpa_titik", n: 0} : {hasil: "tak_dinilai", n: 0};
+  if (acuan >= akhir && B.hOk !== false) return d.pada >= acuan - 24 * JAM ? {hasil: "tanpa_titik", n: 0} : {hasil: "tak_dinilai", n: 0};
   return kini - d.pada > 30 * JAM ? {hasil: "tak_dinilai", n: 0} : null;
 }
 async function nilaiDrop(env, drops, kini) {
@@ -634,9 +634,10 @@ async function daftarPatroli(env, req, kini, url) {
   const q = url.searchParams, status = q.get("status"), prov = q.get("prov"), kab = q.get("kab");
   if (status && !STATUS_PATROLI.includes(status)) return gagal(400, `status harus ${STATUS_PATROLI.join("/")}`);
   if (prov && !Object.hasOwn(PROV, prov)) return gagal(400, "prov kode BPS 2 digit");
-  await env.DB.prepare("UPDATE ops_patroli SET status = 'terlewat' WHERE status = 'terjadwal' AND jadwal < ?").bind(kini - BATAS.patroliTerlewat).run();
-  const rows = (await env.DB.prepare(`SELECT * FROM ops_patroli WHERE (? IS NULL OR status = ?) AND (? IS NULL OR prov = ?) AND (? IS NULL OR lower(kab) = lower(?)) AND (? = 1 OR dummy = 0) ORDER BY jadwal DESC LIMIT 600`)
-    .bind(status, status, prov, prov, kab, kab, P.lihatDummy ? 1 : 0).all()).results.filter(r => wilayahOK(P, req, r.prov, r.kab)).slice(0, 200);
+  /* "terlewat" dihitung saat dibaca (tanpa UPDATE di jalur baca) */
+  const batas = kini - BATAS.patroliTerlewat;
+  const rows = (await env.DB.prepare(`SELECT * FROM ops_patroli WHERE (? IS NULL OR (CASE WHEN status = 'terjadwal' AND jadwal < ? THEN 'terlewat' ELSE status END) = ?) AND (? IS NULL OR prov = ?) AND (? IS NULL OR lower(kab) = lower(?)) AND (? = 1 OR dummy = 0) ORDER BY jadwal DESC LIMIT 600`)
+    .bind(status, batas, status, prov, prov, kab, kab, P.lihatDummy ? 1 : 0).all()).results.filter(r => wilayahOK(P, req, r.prov, r.kab)).slice(0, 200).map(r => r.status === "terjadwal" && r.jadwal < batas ? {...r, status: "terlewat"} : r);
   const K = rows.length ? (await env.DB.prepare("SELECT patroli_id, lat, lon, akurasi, media_id, catatan, pada FROM ops_kunjungan WHERE patroli_id IN (SELECT value FROM json_each(?)) ORDER BY pada").bind(JSON.stringify(rows.map(r => r.id))).all()).results : [];
   return json({kini, patroli: rows.map(r => bentukPatroli(r, K.filter(k => k.patroli_id === r.id).map(({patroli_id, ...k}) => k))), alasan: ALASAN_PATROLI, status: STATUS_PATROLI});
 }
@@ -650,7 +651,7 @@ async function kunjungiPatroli(env, req, kini, id) {
   let lat = o.lat, lon = o.lon, pada = o.pada == null ? kini : waktuMs(o.pada), media = null;
   if (o.media_id != null) {
     if (typeof o.media_id !== "string" || !RE_ID.test(o.media_id)) return gagal(400, "media_id 16 hex");
-    const m = await env.DB.prepare("SELECT id, akun_id, lat, lon, waktu_ambil FROM instansi_media WHERE id = ?").bind(o.media_id).first();
+    const m = await env.DB.prepare("SELECT m.id, m.akun_id, m.lat, m.lon, m.waktu_ambil FROM instansi_media m JOIN tugas_api t ON t.id = m.tugas_id WHERE m.id = ? AND t.prov = ? AND lower(t.kab) = lower(?)").bind(o.media_id, r.prov, r.kab).first();   // media dipagari ke wilayah patroli
     if (!m || (!P.mod && m.akun_id !== P.akun.id)) return gagal(404, "media tidak ada");
     media = m.id; lat = m.lat; lon = m.lon; pada = m.waktu_ambil;
   }

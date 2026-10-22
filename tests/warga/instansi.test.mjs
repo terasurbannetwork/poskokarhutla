@@ -1206,8 +1206,12 @@ uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam 
   const now = Date.now(), lat = 2.3, lon = 99.3, L = (id, o = {}) => ({id, lat: lat + derajatM(500), lon, prov: "62", kab: "Seruyan", status: "padam", waktu: now, dipercaya: true, ...o});
   const idL = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
   const dekat = await tugasBaru("62", "Seruyan", {lat, lon}), jauh = await tugasBaru("62", "Seruyan", {lat: lat + derajatM(1500), lon}), lain = await tugasBaru("62", "Katingan", {lat, lon});
-  const p = idL(), r = await tautkanLaporanRegu({DB}, L(p), now);
-  assert.equal(r.tugas_id, dekat, "yang terdekat (0,5 km), bukan 1,0 km"); assert.equal(r.efek, "padam_dilaporkan"); assert.ok(Math.abs(r.jarak_km - 0.5) < 0.05);
+  const p = idL(), r = await tautkanLaporanRegu({DB}, L(p, {regu_id: "regu-a"}), now);
+  assert.equal(r.tugas_id, dekat, "yang terdekat (0,5 km), bukan 1,0 km"); assert.equal(r.efek, "klaim_regu", "satu regu padam = klaim, bukan penutupan"); assert.ok(Math.abs(r.jarak_km - 0.5) < 0.05);
+  assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(dekat).first()).status, "buka");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-a", waktu: now + 10}), now + 20)).efek, "klaim_regu", "regu yang sama dua kali tetap satu regu");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-c", dipercaya: false}), now + 30)).efek, null, "tidak dipercaya: hanya tercatat");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-b"}), now + 40)).efek, "padam_dilaporkan", "dua regu berbeda yang dipercaya");
   const t = await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(); assert.deepEqual(t, {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now, cek_ulang_pada: null});
   assert.deepEqual(await DB.prepare("SELECT tugas_id, status FROM tugas_lapangan WHERE lapangan_id = ?").bind(p).first(), {tugas_id: dekat, status: "padam"});
   assert.equal((await tautkanLaporanRegu({DB}, L(p), now)).efek, null, "kirim ulang: tidak ada tautan ganda, padam_pada tidak bergeser"); assert.equal(await n("tugas_lapangan", `lapangan_id = '${p}'`), 1);
@@ -1219,8 +1223,9 @@ uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam 
   const mu = await DB.prepare("SELECT sumber, jarak_km, keterangan FROM tugas_muncul WHERE tugas_id = ?").bind(dekat).first(); assert.equal(mu.sumber, "regu"); assert.ok(Math.abs(mu.jarak_km - 0.5) < 0.05); assert.match(mu.keterangan, /api menyala/);
   /* padam lagi dari regu pada tugas muncul_lagi: verifikasi mulai dari awal; laporan tidak dipercaya (ditahan/GPS curiga) hanya menaut */
   const x = await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 5000, dipercaya: false}), now + 6000); assert.equal(x.efek, null); assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(dekat).first()).status, "buka");
-  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7000}), now + 8000)).efek, "padam_dilaporkan");
-  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now + 7000, cek_ulang_pada: null});
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7000, regu_id: "regu-a"}), now + 8000)).efek, "klaim_regu", "klaim lama (sebelum dibuka kembali) tidak dihitung");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7500, regu_id: "regu-b"}), now + 8500)).efek, "padam_dilaporkan");
+  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now + 7500, cek_ulang_pada: null});
   /* tugas dummy dan tugas ditutup tidak ditautkan */
   const dm = await tugasBaru("62", "Seruyan", {lat: lat - 0.5, lon}); await DB.prepare("UPDATE tugas_api SET dummy = 1 WHERE id = ?").bind(dm).run();
   assert.equal(await tautkanLaporanRegu({DB}, L(idL(), {lat: lat - 0.5}), now), null); await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(dm).run();

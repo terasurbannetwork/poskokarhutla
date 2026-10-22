@@ -71,13 +71,21 @@ function bentukPenugasan(p, t, jejak, kini, akunId, darurat = null) {
     berangkat_pada: p.berangkat_pada, tiba_pada: p.tiba_pada, selesai_pada: p.selesai_pada, checklist: cek, butir, ringkas: ringkasChecklist(butir, cek),
     posisi: akhir && {lat: akhir.lat, lon: akhir.lon, akurasi: akhir.akurasi, pada: akhir.pada}, jejak: jejak.map(x => [x.lat, x.lon, x.pada]), ...jarakEta(akhir, t, p, kini), darurat, dummy: p.dummy};
 }
+/* n posisi terbaru tiap penugasan lewat indeks penugasan_posisi_jejak (penugasan_id, pada DESC): satu SELECT ... LIMIT per penugasan, dikirim sebagai batch.
+   Pengganti row_number() OVER (PARTITION BY ...) yang memindai semua baris penugasan itu. Map id -> baris urut pada MENURUN; sejak = hanya pada > sejak. */
+async function posisiTerbaru(env, ids, n, sejak = 0) {
+  const out = new Map();
+  for (let i = 0; i < ids.length; i += 50) {
+    const potong = ids.slice(i, i + 50), rs = await env.DB.batch(potong.map(id => env.DB.prepare("SELECT lat, lon, akurasi, pada FROM penugasan_posisi WHERE penugasan_id = ?1 AND pada > ?2 ORDER BY pada DESC LIMIT ?3").bind(id, sejak, n)));
+    potong.forEach((id, k) => out.set(id, rs[k].results));
+  }
+  return out;
+}
 /* penugasan satu tugas + jejak terakhir (<= 200 titik tiap orang, urut waktu naik) */
 async function daftarUntukTugas(env, t, kini, akunId) {
   const P = (await env.DB.prepare("SELECT * FROM penugasan WHERE tugas_id = ? ORDER BY dibuat DESC LIMIT ?").bind(t.id, BATAS.maksPerTugas).all()).results;
   if (!P.length) return [];
-  const J = (await env.DB.prepare(`SELECT penugasan_id, lat, lon, akurasi, pada FROM (SELECT penugasan_id, lat, lon, akurasi, pada, row_number() OVER (PARTITION BY penugasan_id ORDER BY pada DESC) rn
-    FROM penugasan_posisi WHERE penugasan_id IN (SELECT value FROM json_each(?))) WHERE rn <= ? ORDER BY pada`).bind(JSON.stringify(P.map(p => p.id)), BATAS.jejakMaks).all()).results;
-  const per = new Map(P.map(p => [p.id, []])); for (const x of J) per.get(x.penugasan_id)?.push(x);
+  const per = new Map([...await posisiTerbaru(env, P.map(p => p.id), BATAS.jejakMaks)].map(([id, r]) => [id, r.reverse()]));   // urut waktu naik
   const dar = new Map();   // darurat terbaru (<= 6 jam) per penugasan; tabel 0038 belum ada = tidak ada darurat
   try { for (const x of (await env.DB.prepare("SELECT penugasan_id, jenis, lat, lon, pada FROM penugasan_darurat WHERE pada > ? AND penugasan_id IN (SELECT value FROM json_each(?)) ORDER BY pada DESC")
     .bind(kini - KESELAMATAN.daruratAktifJam * JAM, JSON.stringify(P.map(p => p.id))).all()).results) if (!dar.has(x.penugasan_id)) dar.set(x.penugasan_id, {jenis: x.jenis, label: JENIS_DARURAT[x.jenis], lat: x.lat, lon: x.lon, pada: x.pada}); }
@@ -191,48 +199,50 @@ async function usulan(env, req, kini, id) {
   } else { t = await tugasDalam(env, a, id); if (t instanceof Response) return t; }
   if (t.status !== "buka") return gagal(409, "tugas ini sudah ditutup; tidak ada usulan penugasan");
   const R = (await env.DB.prepare(`SELECT p.id, p.nama, p.peran, p.wa, p.orang, p.akun_id, p.status, p.kedaluwarsa, p.dibuat, tt.status tstatus, k.wilayah FROM penugasan p JOIN instansi_akun k ON k.id = p.akun_id JOIN tugas_api tt ON tt.id = p.tugas_id
-    WHERE k.status = 'aktif' AND p.dummy = ?1 AND p.dibuat > ?2 AND (k.prov = ?3 OR EXISTS (SELECT 1 FROM json_each(k.cakupan) WHERE value = ?3)) ORDER BY p.dibuat DESC LIMIT ?4`)
-    .bind(t.dummy ? 1 : 0, kini - USULAN.rosterHari * HARI, t.prov, USULAN.barisMaks).all()).results;
+    WHERE k.status = 'aktif' AND p.dummy = ?1 AND p.dibuat > ?2 AND (k.prov = ?3 OR EXISTS (SELECT 1 FROM json_each(k.cakupan) WHERE value = ?3)) AND (?5 IS NULL OR p.akun_id = ?5) ORDER BY p.dibuat DESC LIMIT ?4`)
+    .bind(t.dummy ? 1 : 0, kini - USULAN.rosterHari * HARI, t.prov, USULAN.barisMaks, admin ? null : a.id).all()).results;   // akun biasa: hanya orang akunnya sendiri; lintas akun hanya moderator/staf berwenang
   const orang = new Map();   // kunci orang = nomor WA, atau nama + akun bila tanpa WA; baris pertama (terbaru) menentukan nama, peran, akun
   for (const r of R) {
-    const k = r.wa || `${String(r.nama).toLowerCase().trim()}|${r.akun_id}`, o = orang.get(k) ?? orang.set(k, {...r, ids: [], beban: 0, bertugas: false}).get(k);
-    o.ids.push(r.id); if (r.dibuat > kini - USULAN.bebanHari * HARI) o.beban++;
+    const k = `${String(r.nama).toLowerCase().trim()}|${r.akun_id}`, o = orang.get(k) ?? orang.set(k, {...r, ids: [], idsAktif: [], beban: 0, bertugas: false}).get(k);   // kunci nama+akun, bukan WA (WA dikosongkan cron 7 hari)
+    o.ids.push(r.id); if (r.status === "aktif" && r.kedaluwarsa > kini) o.idsAktif.push(r.id); if (r.dibuat > kini - USULAN.bebanHari * HARI) o.beban++;
     if (r.status === "aktif" && r.kedaluwarsa > kini && r.tstatus === "buka") o.bertugas = true;
   }
   const bebas = [...orang.values()].filter(o => !o.bertugas);
   const posisi = new Map(), pos = new Map();
   if (bebas.length) {
-    for (const x of (await env.DB.prepare(`SELECT penugasan_id, lat, lon, pada FROM (SELECT penugasan_id, lat, lon, pada, row_number() OVER (PARTITION BY penugasan_id ORDER BY pada DESC) rn
-      FROM penugasan_posisi WHERE pada > ? AND penugasan_id IN (SELECT value FROM json_each(?))) WHERE rn = 1`).bind(kini - USULAN.posisiMaksJam * JAM, JSON.stringify(bebas.flatMap(o => o.ids))).all()).results) posisi.set(x.penugasan_id, x);
+    /* posisi hanya dari penugasan yang masih aktif (selesai/dicabut/kedaluwarsa tidak membuka lokasi terakhir orangnya) */
+    for (const [id, r] of await posisiTerbaru(env, bebas.flatMap(o => o.idsAktif), 1, kini - USULAN.posisiMaksJam * JAM)) if (r[0]) posisi.set(id, r[0]);
     try { for (const g of (await env.DB.prepare("SELECT akun_id, nama, jenis, lat, lon FROM gudang WHERE dummy = ? AND akun_id IN (SELECT value FROM json_each(?))").bind(t.dummy ? 1 : 0, JSON.stringify([...new Set(bebas.map(o => o.akun_id))])).all()).results) {
       const d = km(g.lat, g.lon, t.lat, t.lon), lama = pos.get(g.akun_id); if (!lama || d < lama.d) pos.set(g.akun_id, {...g, d}); } }
     catch (e) { if (!/no such table: gudang/i.test(String(e?.message || e))) throw e; }
   }
   const kandidat = bebas.map(o => {
-    const p = o.ids.map(i => posisi.get(i)).filter(Boolean).sort((x, y) => y.pada - x.pada)[0], g = pos.get(o.akun_id);
+    const p = o.idsAktif.map(i => posisi.get(i)).filter(Boolean).sort((x, y) => y.pada - x.pada)[0], g = pos.get(o.akun_id);
     const asal = p ? {lat: p.lat, lon: p.lon, pos: false} : g ? {lat: g.lat, lon: g.lon, nama: g.nama, pos: true} : null, w = tempuhMenit(asal, t);
-    return {nama: o.nama, peran: o.peran, peran_nama: PERAN[o.peran], orang: o.orang, ...(!admin && o.akun_id === a.id && o.wa ? {wa: o.wa} : {}), milik_saya: !admin && o.akun_id === a.id, oleh: o.wilayah,
-      asal: p ? {jenis: "posisi", umur_menit: Math.max(0, Math.round((kini - p.pada) / MENIT))} : g ? {jenis: "pos", nama: g.nama} : {jenis: "tidak_diketahui"},   // koordinat orang lain tidak dikirim
-      tempuh_menit: w?.menit ?? null, cara: w?.cara ?? null, jarak_km: w?.jarak_km ?? null, beban_7h: o.beban};
-  }).sort((x, y) => (x.tempuh_menit ?? Infinity) - (y.tempuh_menit ?? Infinity) || x.beban_7h - y.beban_7h).slice(0, USULAN.maks);
+    const milik = !admin && o.akun_id === a.id, dasar = {nama: o.nama, peran: o.peran, peran_nama: PERAN[o.peran], orang: o.orang, milik_saya: milik, oleh: o.wilayah, beban_7h: o.beban};
+    /* orang akun lain (hanya terlihat moderator/staf): kelas jarak kasar saja, tanpa jarak, umur posisi, nama pos, atau WA */
+    return milik ? {...dasar, ...(o.wa ? {wa: o.wa} : {}), asal: p ? {jenis: "posisi", umur_menit: Math.max(0, Math.round((kini - p.pada) / MENIT))} : g ? {jenis: "pos", nama: g.nama} : {jenis: "tidak_diketahui"},   // koordinat tidak dikirim
+      tempuh_menit: w?.menit ?? null, cara: w?.cara ?? null, jarak_km: w?.jarak_km ?? null}
+      : {...dasar, kelas_jarak: w == null ? null : w.jarak_km < 10 ? "< 10 km" : w.jarak_km <= 30 ? "10–30 km" : "> 30 km", tempuh_menit: null, _urut: w?.menit ?? null};
+  }).sort((x, y) => (x._urut ?? x.tempuh_menit ?? Infinity) - (y._urut ?? y.tempuh_menit ?? Infinity) || x.beban_7h - y.beban_7h).slice(0, USULAN.maks).map(({_urut, ...k}) => k);
   const al = await gudangTerdekat(env, t, admin ? {adminPic: true, dalam: p => dalamWilayahStaf(req, [p])} : {provs: [t.prov], akunId: a.id});
   return json({kini, tugas_id: t.id, perkiraan: true, rumus: RUMUS_USULAN, kandidat, alat: al && {gudang: al.gudang.slice(0, 3), pompa: al.pompa},
     ...(kandidat.length ? {} : {pesan: "Belum ada orang yang bisa diusulkan: tidak ada riwayat penugasan di provinsi ini, atau semuanya sedang bertugas. Tugaskan orang baru lewat tombol Tugaskan orang."})});
 }
 
 /* ================================================================ sisi penerima tugas (token di header x-lacak) */
-async function dariToken(env, req, kini) {
+async function dariToken(env, req, kini, tanpaIp = false) {
   const tk = req.headers.get("x-lacak") || "";
   if (!RE_TOKEN.test(tk)) return {r: gagal(404, "tautan tidak dikenal")};
   if (!env.IP_SALT) return {r: gagal(503, "server belum dikonfigurasi (IP_SALT)")};
   const ip = await ipHash(env, req);
   /* di atas batas: tolak tanpa menulis; token tak dikenal tidak menulis baris laju sama sekali (probing tidak membengkakkan tabel) */
-  if ((await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'lacak.ip' AND waktu > ?").bind(ip, kini - MENIT).first()).n >= BATAS.posisiPerMenitIp)
+  if (!tanpaIp && (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'lacak.ip' AND waktu > ?").bind(ip, kini - MENIT).first()).n >= BATAS.posisiPerMenitIp)
     return {r: gagal(429, `batas ${BATAS.posisiPerMenitIp} per menit per IP sudah tercapai`, {"retry-after": "60"})};
   const p = await env.DB.prepare(`SELECT p.*, t.prov, t.kab, t.kec, t.lat, t.lon, t.level, t.status tstatus, t.rekomendasi, t.akses, a.wilayah akun_wilayah
     FROM penugasan p JOIN tugas_api t ON t.id = p.tugas_id JOIN instansi_akun a ON a.id = p.akun_id WHERE p.token_sha = ?`).bind(await sha(tk)).first();
   if (!p) return {r: gagal(404, "tautan tidak dikenal")};
-  await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lacak.ip', ?)").bind(ip, kini).run();
+  if (!tanpaIp) await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lacak.ip', ?)").bind(ip, kini).run();   // darurat dikecualikan: banjir /posisi dari satu IP (CGNAT) tak boleh memblokir tombol darurat; batasnya per tautan
   const s = statusEfektif(p, kini);
   if (s !== "aktif") return {r: json({galat: s === "dicabut" ? "tautan ini dicabut oleh yang menugaskan" : s === "selesai" ? "tugas ini sudah selesai; terima kasih" : "tautan ini sudah kedaluwarsa; minta tautan baru", alasan: s}, 410)};
   return {p};
@@ -261,7 +271,7 @@ async function berangkat(env, req, kini) {
 }
 async function posisi(env, req, kini) {
   const d = await dariToken(env, req, kini); if (d.r) return d.r; const p = d.p;
-  if (p.tstatus !== "buka") return json({galat: "tugas api ini sudah ditutup; posisi tidak lagi dikirim", alasan: "ditutup"}, 410);
+  if (p.tstatus !== "buka" && p.tstatus !== "padam") return json({galat: "tugas api ini sudah ditutup; posisi tidak lagi dikirim", alasan: "ditutup"}, 410);   // padam saja tidak menutup: penugasan ditutup lewat jalurnya sendiri (selesai/cabut)
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const lat = num(b.o.lat, BBOX.latMin, BBOX.latMaks), lon = num(b.o.lon, BBOX.lonMin, BBOX.lonMaks);
   if (lat == null || lon == null || Number.isNaN(lat) || Number.isNaN(lon) || (lat === 0 && lon === 0)) return gagal(400, "posisi tidak sah: lat dan lon wajib angka di dalam Indonesia (0,0 ditolak)");
@@ -319,7 +329,7 @@ async function anginRegu(env, p, kini, cache = new Map()) {
   return pos ? anginKeRegu(await muatCuaca(env, p.lat, p.lon, cache), p, pos, kini) : null;
 }
 async function darurat(env, req, kini) {
-  const d = await dariToken(env, req, kini); if (d.r) return d.r; const p = d.p;
+  const d = await dariToken(env, req, kini, true); if (d.r) return d.r; const p = d.p;
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (!Object.hasOwn(JENIS_DARURAT, b.o.jenis)) return gagal(400, `jenis darurat harus ${Object.keys(JENIS_DARURAT).join("/")}`);
   /* posisi cacat tidak menggagalkan panggilan darurat: disimpan tanpa koordinat (tampilan memakai posisi terakhir) */
@@ -333,15 +343,19 @@ async function darurat(env, req, kini) {
 
 /* Butir Meja Pantau untuk dipanggil src/pantau.js (agent lain yang menyambung): [{id, jenis, judul, rincian, provs, kab, dibuat, tenggat, prioritas, dummy}].
    darurat (prioritas 0, paling atas) | sunyi (tanpa posisi > 30 menit sejak posisi terakhir atau berangkat) | rotasi (berangkat > 12 jam tanpa selesai) | angin_ke_regu.
-   Hanya penugasan berstatus aktif, belum kedaluwarsa, tugas masih buka. Tabel 0035 belum ada = []; 0038 belum ada = tanpa butir darurat. */
+   Penugasan berstatus aktif dan belum kedaluwarsa, APA PUN status tugasnya (buka atau padam: tugas ditandai padam tidak menutup penugasan). Hasil di-cache 30 detik per isolat (Meja Pantau dibaca berulang); tulisan penugasan lewat RUTE_PENUGASAN membuangnya. Tabel 0035 belum ada = []; 0038 belum ada = tanpa butir darurat. */
+const cacheAlarm = new WeakMap();   // env.DB -> {kini, v}
 export async function alarmKeselamatan(env, kini = Date.now()) {
+  const ttl = env.ASSETS ? Number(env.ALARM_CACHE_DETIK ?? 30) * 1000 : 0, c = cacheAlarm.get(env.DB);   // cache hanya di Worker sungguhan (ada ASSETS); ALARM_CACHE_DETIK=0 mematikan
+  if (ttl > 0 && c && Math.abs(kini - c.kini) < ttl) return c.v.slice();
+  const v = await hitungAlarm(env, kini); cacheAlarm.set(env.DB, {kini, v}); return v.slice();
+}
+async function hitungAlarm(env, kini) {
   const out = [], tempat = p => [p.kec, p.kab].filter(Boolean).join(", ");
   try {
     const P = (await env.DB.prepare(`SELECT p.id, p.nama, p.berangkat_pada, p.dummy, t.prov, t.kab, t.kec, t.lat, t.lon FROM penugasan p JOIN tugas_api t ON t.id = p.tugas_id
-      WHERE p.status = 'aktif' AND p.kedaluwarsa > ? AND p.selesai_pada IS NULL AND p.berangkat_pada IS NOT NULL AND t.status = 'buka' ORDER BY p.berangkat_pada LIMIT 500`).bind(kini).all()).results;
-    const akhir = new Map();
-    if (P.length) for (const x of (await env.DB.prepare(`SELECT penugasan_id, lat, lon, pada FROM (SELECT penugasan_id, lat, lon, pada, row_number() OVER (PARTITION BY penugasan_id ORDER BY pada DESC) rn
-      FROM penugasan_posisi WHERE penugasan_id IN (SELECT value FROM json_each(?))) WHERE rn = 1`).bind(JSON.stringify(P.map(p => p.id))).all()).results) akhir.set(x.penugasan_id, x);
+      WHERE p.status = 'aktif' AND p.kedaluwarsa > ? AND p.selesai_pada IS NULL AND p.berangkat_pada IS NOT NULL AND t.status IN ('buka', 'padam') ORDER BY p.berangkat_pada LIMIT 500`).bind(kini).all()).results;
+    const akhir = new Map(); if (P.length) for (const [id, r] of await posisiTerbaru(env, P.map(p => p.id), 1)) if (r[0]) akhir.set(id, r[0]);
     const cache = new Map();
     for (const p of P) {
       const pos = akhir.get(p.id), ref = Math.max(p.berangkat_pada, pos?.pada ?? 0), diam = kini - ref, batas = ref + KESELAMATAN.sunyiMenit * MENIT, jam = (kini - p.berangkat_pada) / JAM;
@@ -358,9 +372,12 @@ export async function alarmKeselamatan(env, kini = Date.now()) {
     }
   } catch (e) { if (/no such table: (main\.)?(penugasan|tugas_api)/i.test(String(e?.message || e))) return []; throw e; }
   try {
-    for (const x of (await env.DB.prepare(`SELECT d.id, d.penugasan_id, d.jenis, d.lat, d.lon, d.pada, p.nama, p.wa, p.dummy, t.prov, t.kab, t.kec FROM penugasan_darurat d JOIN penugasan p ON p.id = d.penugasan_id JOIN tugas_api t ON t.id = p.tugas_id
-      WHERE d.pada > ? AND p.status = 'aktif' ORDER BY d.pada DESC LIMIT 200`).bind(kini - KESELAMATAN.daruratAktifJam * JAM).all()).results)
-      out.push({id: `darurat:${x.penugasan_id}:${x.id}`, jenis: "darurat", judul: `DARURAT ${JENIS_DARURAT[x.jenis].toLowerCase()}: ${x.nama} (${tempat(x)})`,
+    /* satu butir per penugasan: panggilan terbaru + jumlahnya (6 tekanan tidak menjadi 6 butir) */
+    const per = new Map();
+    for (const x of (await env.DB.prepare(`SELECT d.id, d.penugasan_id, d.jenis, d.lat, d.lon, d.pada, p.nama, p.dummy, t.prov, t.kab, t.kec FROM penugasan_darurat d JOIN penugasan p ON p.id = d.penugasan_id JOIN tugas_api t ON t.id = p.tugas_id
+      WHERE d.pada > ? AND p.status = 'aktif' ORDER BY d.pada DESC LIMIT 500`).bind(kini - KESELAMATAN.daruratAktifJam * JAM).all()).results) { const o = per.get(x.penugasan_id); if (o) o.n++; else per.set(x.penugasan_id, {...x, n: 1}); }
+    for (const x of per.values())
+      out.push({id: `darurat:${x.penugasan_id}`, jenis: "darurat", judul: `DARURAT ${JENIS_DARURAT[x.jenis].toLowerCase()}: ${x.nama} (${tempat(x)})${x.n > 1 ? `, ${x.n} panggilan` : ""}`,
         rincian: `Dikirim ${Math.max(0, Math.floor((kini - x.pada) / MENIT))} menit lalu${x.lat != null ? `, posisi ${x.lat}, ${x.lon}` : ", tanpa posisi (lihat posisi terakhir)"}. Hubungi sekarang, kerahkan bantuan, atau telepon 112.`,
         provs: [x.prov], kab: x.kab, dibuat: x.pada, tenggat: x.pada, prioritas: 0, dummy: x.dummy});
   } catch (e) { if (!TANPA_TABEL.test(String(e?.message || e))) throw e; }
@@ -382,6 +399,8 @@ export async function halamanLacak(env, req, url) {
 
 /* ================================================================ cron bersih-bersih (dipanggil bersihkanInstansi) dan dummy */
 export async function bersihkanPenugasan(env, kini = Date.now()) {
+  /* WA orang yang ditugaskan tidak disimpan selamanya: dikosongkan 7 hari sesudah penugasan selesai/dicabut/kedaluwarsa (acuan: selesai_pada, selain itu kedaluwarsa) */
+  try { await env.DB.prepare("UPDATE penugasan SET wa = NULL WHERE wa IS NOT NULL AND (status <> 'aktif' OR kedaluwarsa <= ?1) AND coalesce(selesai_pada, kedaluwarsa) <= ?1 - ?2").bind(kini, 7 * HARI).run(); } catch (e) { if (!TANPA_TABEL.test(String(e?.message || e))) throw e; }
   try { await env.DB.prepare("DELETE FROM penugasan_darurat WHERE pada <= ?").bind(kini - BATAS.retensiHari * HARI).run(); } catch (e) { if (!TANPA_TABEL.test(String(e?.message || e))) throw e; }
   try { return (await env.DB.prepare("DELETE FROM penugasan_posisi WHERE pada <= ?").bind(kini - BATAS.retensiHari * HARI).run()).meta.changes; }
   catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return null; throw e; }
@@ -438,6 +457,6 @@ const RUTE_ASLI = {
 /* kiriman bersesi dan kiriman lacak wajib header x-pb: 1 (anti-CSRF; halaman mengirimnya otomatis); tabel 0035 belum ada = 503 yang jelas */
 export const RUTE_PENUGASAN = Object.fromEntries(Object.entries(RUTE_ASLI).map(([kunci, f]) => [kunci, async (env, req, ...sisa) => {
   if (req.method === "POST" && !kunci.includes("/admin/") && req.headers.get("x-pb") !== "1") return gagal(403, "kiriman wajib membawa header x-pb: 1 (dikirim otomatis oleh halaman)");
-  try { return await f(env, req, ...sisa); }
+  try { const r = await f(env, req, ...sisa); if (req.method === "POST") cacheAlarm.delete(env.DB); return r; }
   catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return gagal(503, "fitur penugasan belum diaktifkan (migrasi 0035 atau 0038 belum diterapkan)"); throw e; }
 }]));

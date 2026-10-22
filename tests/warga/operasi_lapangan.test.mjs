@@ -13,7 +13,7 @@ import {BARANG} from "../../src/meja_spek.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
 const uji = berantai();
-const env0 = () => ({DB: U.DB});   // env minimal untuk memanggil fungsi cron langsung
+let R2g; const env0 = () => ({DB: U.DB, MEDIA: R2g});   // env minimal untuk memanggil fungsi cron langsung
 const dekat = (a, b, tol, pesan) => assert.ok(Math.abs(a - b) <= tol, `${pesan ?? ""} ${a} bukan ${b} +- ${tol}`);
 /* fixture aset: kompleks/kluster kecil buatan sendiri (deterministik); berkas lain dari public/ */
 const FIX = {
@@ -177,9 +177,9 @@ uji("ops: garis rekam jalan dari penugasan_posisi: rentang waktu, akurasi, DP di
   const t0 = Date.now() - 3 * HARI;
   P1 = await penugasan(A.id, T1, {nama: "Hendra", peran: "ketua_regu", dibuat: t0 - 1000, berangkat: t0, selesai: t0 + 700e3});
   const lurus = Array.from({length: 700}, (_, i) => [-2.55 + i * (0.01 / 699), 112.0, 10, t0 + i * 1000]);   // 700 posisi segaris lurus 1,11 km
-  await posisi(P1, [...lurus, [-2.4, 112.3, 500, t0 + 350e3], [-2.3, 112.0, 10, t0 - 3600e3], [-2.2, 112.0, 10, t0 + 800e3]]);   // akurasi 500 m, sebelum mulai, sesudah selesai: semuanya dibuang
+  await posisi(P1, [...lurus, [-2.4, 112.3, 500, t0 + 350e3], [-2.3, 112.0, 10, t0 - 3600e3], [-2.2, 112.0, 10, t0 + 800e3], [-2.45, 112.1, null, t0 + 360e3]]);   // akurasi 500 m, sebelum mulai, sesudah selesai: semuanya dibuang
   const r = await api("POST", "/api/ops/garis", {tugas_id: T1, penugasan_id: P1, jenis: "garis_api"}, A.h); assert.equal(r.s, 201, r.t);
-  assert.equal(r.j.garis.sumber, "rekam"); assert.equal(r.j.garis.penugasan_id, P1); assert.equal(r.j.garis.n_titik, 2, "700 titik segaris disederhanakan DP"); dekat(r.j.garis.panjang_km, 1.1119, 0.003, "panjang rekam");
+  assert.equal(r.j.garis.sumber, "rekam"); assert.equal(r.j.garis.penugasan_id, null, "jejak orang tidak melekat ke penugasan"); assert.ok(r.j.garis.koordinat.every(k => k.every(x => (String(x).split(".")[1] || "").length <= 5)), "koordinat 5 desimal"); assert.equal(r.j.garis.n_titik, 2, "700 titik segaris disederhanakan DP"); dekat(r.j.garis.panjang_km, 1.1119, 0.003, "panjang rekam");
   assert.equal(r.j.garis.mulai, t0); assert.equal(r.j.garis.selesai, t0 + 700e3);
   const s = await api("POST", "/api/ops/garis", {tugas_id: T1, penugasan_id: P1, jenis: "padam", mulai: t0 + 100e3, selesai: t0 + 200e3}, A.h); assert.equal(s.s, 201, s.t); assert.equal(s.j.garis.mulai, t0 + 100e3);
   assert.equal((await api("POST", "/api/ops/garis", {tugas_id: T1, penugasan_id: P1, jenis: "padam", mulai: t0 + 10e3, selesai: t0 + 10500}, A.h)).s, 409, "kurang dari 2 posisi di rentang");
@@ -301,12 +301,15 @@ uji("ops: log drop dan hasil otomatis dari titik FIRMS (1 km) dan Himawari (2 km
   const ins = (pada, lat, lon) => { const id = id16(); return DB.prepare("INSERT INTO ops_drop (id, permintaan_id, tugas_id, lat, lon, liter, pada, oleh, dibuat) VALUES (?, ?, ?, ?, ?, 3000, ?, 'uji', ?)").bind(id, H1, T1, lat, lon, pada, kini).run().then(() => id); };
   const jauh = await ins(kini - 30 * MENIT, -2.52, 112.0), lama = await ins(kini - 7 * JAM, -2.56, 112.0), basi = await ins(kini - 31 * JAM, -2.56, 112.01);
   await titikPanas(kini, [[-2.547, 112.0, -0.1667, 30, "n"]]);   // acuan sekarang >= pada + 6 jam untuk drop 7 jam lalu
+  await R2.put("data/himawari.json", JSON.stringify({acuan: new Date(kini).toISOString(), baris: []}));   // Himawari termuat (kosong): tanpa_titik boleh final
   const p2 = (await api("GET", `/api/ops/permintaan?tugas_id=${T1}`, undefined, A.hg)).j.permintaan.find(x => x.id === H1).drop, h = id => p2.find(x => x.id === id).hasil;
   assert.equal(h(jauh), "menunggu", "titik > 1 km tidak dihitung dan jendela 6 jam belum penuh"); assert.equal(h(lama), "tanpa_titik", "7 jam lalu, data mencakup jendela, tidak ada titik dalam 1 km"); assert.equal(h(basi), "tak_dinilai", "31 jam tanpa data pada jendelanya");
   /* Himawari: 1,5 km dari drop (di luar 1 km FIRMS, di dalam 2 km), u = 20 menit sebelum acuan */
   await R2.put("data/himawari.json", JSON.stringify({acuan: new Date(kini).toISOString(), baris: [[-2.5755, 112.0, 20, 50, 3, 1, 1, 3, 20]]}));
   const hw = await ins(kini - 2 * JAM, -2.56, 112.0); const p3 = (await api("GET", `/api/ops/permintaan?tugas_id=${T1}`, undefined, A.hg)).j.permintaan.find(x => x.id === H1).drop;
   assert.equal(p3.find(x => x.id === hw).hasil, "ada_titik", "Himawari dalam 2 km"); await R2.delete("data/himawari.json");
+  /* Himawari gagal dimuat: tanpa_titik tidak final sampai 30 jam */
+  assert.equal(nilaiSatuDrop({pada: 1000, lat: -2.5, lon: 112}, {f: [], af: 1000 + 7 * JAM, h: [], ah: null, hOk: false}, 1000 + 8 * JAM), null); assert.equal(nilaiSatuDrop({pada: 1000, lat: -2.5, lon: 112}, {f: [], af: 1000 + 7 * JAM, h: [], ah: null, hOk: false}, 1000 + 31 * JAM).hasil, "tak_dinilai");
   /* murni */
   const B0 = {f: [{lat: -2.5, lon: 112, t: 1000 + 3 * JAM}], af: 1000 + 7 * JAM, h: [], ah: null}, d = {pada: 1000, lat: -2.5, lon: 112};
   assert.equal(nilaiSatuDrop(d, B0, 1000 + 8 * JAM).hasil, "ada_titik"); assert.equal(nilaiSatuDrop({...d, lat: -2.45}, B0, 1000 + 8 * JAM).hasil, "tanpa_titik"); assert.equal(nilaiSatuDrop({...d, lat: -2.45}, {...B0, af: 1000 + 2 * JAM}, 1000 + 8 * JAM), null);
@@ -439,7 +442,7 @@ uji("ops: patroli pencegahan: jadwal, wilayah, penanggung jawab, kunjungan, terl
   assert.equal((await kj(adm.j.patroli.id, {media_id: mid}, E.h)).s, 403);
   /* terlewat: jadwal lampau lebih dari sehari tanpa kunjungan */
   const lewat = id16(); await DB.prepare("INSERT INTO ops_patroli (id, prov, kab, kec, alasan, jadwal, akun_id, oleh, dibuat) VALUES (?, '62', 'Kab Satu', 'Kec Uji', 'khg', ?, ?, 'uji', ?)").bind(lewat, Date.now() - 2 * HARI, A.id, Date.now() - 3 * HARI).run();
-  const l = await api("GET", "/api/ops/patroli?status=terlewat", undefined, A.hg); assert.equal(l.s, 200); assert.deepEqual(l.j.patroli.map(x => x.id), [lewat]); assert.equal((await DB.prepare("SELECT status FROM ops_patroli WHERE id = ?").bind(lewat).first()).status, "terlewat");
+  const l = await api("GET", "/api/ops/patroli?status=terlewat", undefined, A.hg); assert.equal(l.s, 200); assert.deepEqual(l.j.patroli.map(x => x.id), [lewat]); assert.equal(l.j.patroli[0].status, "terlewat"); assert.equal((await DB.prepare("SELECT status FROM ops_patroli WHERE id = ?").bind(lewat).first()).status, "terjadwal", "keamanan ops: baca tidak menulis");
   const tl = await kj(lewat, {lat: -2.55, lon: 112.0, catatan: "terlambat tapi dikunjungi"}, A.h); assert.equal(tl.j.patroli.status, "dikunjungi", "terlewat masih bisa dikunjungi");
   const semua = await api("GET", "/api/ops/patroli", undefined, A.hg); assert.ok(semua.j.patroli.every(x => x.kab === "Kab Satu")); assert.equal(semua.j.patroli.find(x => x.id === pid).kunjungan.length, 1);
   assert.equal((await api("GET", "/api/ops/patroli", undefined, B.hg)).j.patroli.every(x => x.kab === "Kab Dua"), true, "kabupaten lain tidak melihat patroli Kab Satu");
@@ -538,11 +541,13 @@ uji("L11: bukti lapangan hanya untuk moderator/staf berwenang, bbox liar 400, is
 
 uji("drop cron: nilaiDropTertunda menilai drop yang jendela 6 jam lewat dan tidak menyentuh yang belum; cron menit 23 memanggilnya", async () => {
   const jam = Math.floor(Date.now() / JAM) * JAM - JAM, t = jam + 23 * MENIT;
+  const R2 = R2g = await mf.getR2Bucket("MEDIA"); await R2.delete("data/himawari.json");
   const ins = (pada, lat, lon) => { const id = id16(); return DB.prepare("INSERT INTO ops_drop (id, permintaan_id, tugas_id, lat, lon, liter, pada, oleh, dibuat) VALUES (?, ?, ?, ?, ?, 3000, ?, 'uji', ?)").bind(id, H1, T1, lat, lon, pada, pada).run().then(() => id); };
   const hasil = id => DB.prepare("SELECT hasil, hasil_n, hasil_pada FROM ops_drop WHERE id = ?").bind(id).first();
   const ada = await ins(t - 7 * JAM, -2.56, 112.0), kosong = await ins(t - 7 * JAM, -2.56, 112.05), belum = await ins(t - 2 * JAM, -2.56, 112.0);
   await DB.prepare("DELETE FROM titik_terbaru").run();
   const s0 = await nilaiDropTertunda(env0(), t); assert.equal((await hasil(ada)).hasil, null, "tanpa data: tetap menunggu"); assert.equal(s0.dinilai, 0);
+  await R2.put("data/himawari.json", JSON.stringify({acuan: new Date(t).toISOString(), baris: []}));
   await titikPanas(t, [[-2.5627, 112.0, -6, 30, "n"]]);
   const s = await nilaiDropTertunda(env0(), t);
   assert.deepEqual(await hasil(ada), {hasil: "ada_titik", hasil_n: 1, hasil_pada: t}); assert.equal((await hasil(kosong)).hasil, "tanpa_titik", "data menutup jendela, tanpa titik di dekatnya");
@@ -556,6 +561,19 @@ uji("drop cron: nilaiDropTertunda menilai drop yang jendela 6 jam lewat dan tida
   const w = await mf.getWorker(), c = await ins(t - 9 * JAM, -2.56, 112.0);
   await w.scheduled({cron: "* * * * *", scheduledTime: jam + 22 * MENIT}); assert.equal((await hasil(c)).hasil, null, "menit 22 tidak menilai");
   await w.scheduled({cron: "* * * * *", scheduledTime: t}); assert.equal((await hasil(c)).hasil, "tanpa_titik", "cron menit 23 menilai drop tertunda tanpa ada yang membuka layar");
+});
+
+uji("keamanan ops: Himawari tak termuat tidak memfinalkan tanpa_titik; media kunjungan patroli dipagari ke wilayah; rekam garis menolak akurasi NULL", async () => {
+  const kini = Date.now(), R2 = R2g = await mf.getR2Bucket("MEDIA");
+  await R2.delete("data/himawari.json"); await DB.prepare("DELETE FROM titik_terbaru").run(); await titikPanas(kini, []);
+  const id = id16(); await DB.prepare("INSERT INTO ops_drop (id, permintaan_id, tugas_id, lat, lon, liter, pada, oleh, dibuat) VALUES (?, ?, ?, -2.56, 112.0, 3000, ?, 'uji', ?)").bind(id, H1, T1, kini - 8 * JAM, kini).run();
+  await nilaiDropTertunda(env0(), kini); assert.equal((await DB.prepare("SELECT hasil FROM ops_drop WHERE id = ?").bind(id).first()).hasil, null, "tanpa Himawari tetap menunggu");
+  await R2.put("data/himawari.json", JSON.stringify({acuan: new Date(kini).toISOString(), baris: []})); await nilaiDropTertunda(env0(), kini);
+  assert.equal((await DB.prepare("SELECT hasil FROM ops_drop WHERE id = ?").bind(id).first()).hasil, "tanpa_titik", "Himawari termuat: final");
+  /* media di tugas kabupaten lain tidak bisa dijadikan bukti patroli, bahkan oleh moderator */
+  const TL = await tugas("Kab Lain", {lat: -3.0, lon: 113.0}), pat = await api("POST", "/api/ops/patroli", {prov: "62", kab: "Kab Satu", kec: "Kec Uji", alasan: "risiko", jadwal: kini + HARI}, ADMIN); assert.equal(pat.s, 201, pat.t);
+  const mid = id16(); await DB.prepare("INSERT INTO instansi_media (id, akun_id, tugas_id, isian_id, jenis, mime, ukuran, waktu_ambil, sumber_waktu, lat, lon, waktu_gps, kamera, dibuat) VALUES (?, ?, ?, NULL, 'foto', 'image/jpeg', 10, ?, 'exif', -3.0, 113.0, ?, 1, ?)").bind(mid, A.id, TL, kini, kini, kini).run();
+  assert.equal((await api("POST", `/api/ops/patroli/${pat.j.patroli.id}`, {aksi: "kunjungan", media_id: mid}, ADMIN)).s, 404, "media wilayah lain");
 });
 
 uji("ops: tanpa tabel 0039 semua rute menjawab 503 sopan, bukan 500", async () => {
