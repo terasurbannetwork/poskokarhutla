@@ -217,7 +217,8 @@ export default {
         "rob",
         "sungai",
         "keputusan",
-        "sarana"
+        "sarana",
+        "replay"
       ],
       "alias": {
         "simulasi": "sim"
