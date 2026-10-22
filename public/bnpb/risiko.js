@@ -10,11 +10,12 @@
     gempa: "M3 12h4l2-6 4 12 2-6h6",
     gunungapi: "M3 20l6-11 3 5 3-4 6 10zM12 3v3M9 4l1 2M15 4l-1 2",
     kekeringan: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2",
+    udara: "M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8",
     cuaca: "M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15zM11 15l-2 5 4-3-1 4",
   };
   const ikon = id => `<svg class="rk-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="${IKON[id] || IKON.cuaca}"/></svg>`;
-  const WARNA = {karhutla: "#f08a3c", banjir: "#4f9be0", gempa: "#8a6d4e", gunungapi: "#b5523b", kekeringan: "#c9a24b", cuaca: "#7d8ca3"};
-  const SIFAT = {karhutla: "harian", banjir: "statis × harian", gempa: "statis", gunungapi: "harian", kekeringan: "harian, hipotesis", cuaca: "harian"};
+  const WARNA = {karhutla: "#f08a3c", banjir: "#4f9be0", gempa: "#8a6d4e", gunungapi: "#b5523b", kekeringan: "#c9a24b", cuaca: "#7d8ca3", udara: "#4a9d9c"};
+  const SIFAT = {karhutla: "harian", banjir: "statis × harian", gempa: "statis", gunungapi: "harian", kekeringan: "harian, hipotesis", cuaca: "harian", udara: "harian, belum diuji"};
   let D, P, U, IX, BENCANA, KOR = new Map(), pilih = new Set(), prov = "", lingkup = "prov", geoCache = {}, elPath = [], terpilih = -1;
   const st = {urut: "risiko", turun: true, hal: 0}, PER_PRIO = 15;
   let halPrio = 0;
@@ -117,7 +118,7 @@
         <td class="n" data-label="Risiko">${pilKelas(x.skor)}</td>
         <td data-label="Bahaya utama"><span class="bn-pil rk-bhy" data-b="${x.utama}">${ikon(x.utama)}${esc(x.utama_nama)} ${idx(x.bahaya)}</span></td>
         <td class="n" data-label="Penduduk (jiwa)">${fmt(x.pend)}</td>
-        <td data-label="Perubahan">${x.perubahan === "naik" ? "Naik dari " + esc(x.dari_kelas) : x.perubahan == null ? "–" : x.perubahan === "turun" ? "Turun" : "Tetap"}${x.alasan.includes("harian_aktif") ? `<span class="rk-nair">Bahaya harian aktif</span>` : ""}</td>
+        <td data-label="Perubahan">${x.perubahan === "naik" ? "Naik dari " + esc(x.dari_kelas) : x.perubahan == null ? "–" : x.perubahan === "turun" ? "Turun" : "Tetap"}${x.alasan.includes("harian_aktif") ? `<span class="rk-nair">Bahaya harian aktif</span>` : ""}${x.alasan.includes("gempa_terbaru") ? `<span class="rk-nair">Gempa terbaru</span>` : ""}${x.hipotesis ? `<span class="rk-nair">Hipotesis</span>` : ""}</td>
         <td data-label="BPBD terdekat">${b ? esc(b.nama) + (b.sekab === false ? ` <span class="rk-nair">terdekat, ${fmt(Math.round(b.km))} km</span>` : "") + (b.pusdalops ? `<span class="rk-nair"><a href="tel:${tel(b.pusdalops)}">${esc(b.pusdalops)}</a></span>` : "") : "–"}</td></tr>`; }).join("")
       : `<tr><td colspan="8" class="ad-kosong">Tidak ada kecamatan yang memenuhi syarat prioritas saat ini.</td></tr>`;
     el("prioIsi").querySelectorAll(".rk-bhy").forEach(x => x.style.setProperty("--pil", WARNA[x.dataset.b]));

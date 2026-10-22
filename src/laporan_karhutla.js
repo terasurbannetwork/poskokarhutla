@@ -21,6 +21,7 @@ import {halamanLaporanKarhutla, HALAMAN_STAF} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
+import {buatRute as buatRuteBencana, tanpa0048} from "./laporan_bencana.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, BATAS_WIB_JAM = 9;
 const P_VERIF = ["verifikator", "pusdalops"], P_SUMBER = {udara: "udara", omc: "tmc", koordalops: "koordalops"};
@@ -532,21 +533,31 @@ export async function butirLaporanKarhutla(env, kini, bolehDummy) {
 }
 
 /* ================================================================ halaman dan tabel rute */
+/* ?bencana=<bahaya> pada tiap rute di bawah: kosong atau karhutla = alur karhutla di atas (lk_*, tak berubah); bahaya lain = src/laporan_bencana.js (lkb_*, migrasi 0048).
+   Nilai di luar registri (public/laporan_karhutla_spek.js BENCANA) = 400. Tanpa 0048 hanya jalur bahaya lain yang 503; karhutla tidak terpengaruh. */
+const BN = buatRuteBencana({pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs});
+const bila = (nama, f) => async (env, req, url, kini, ctx, ...sisa) => {
+  const b = url.searchParams.get("bencana");
+  if (b == null || b === "karhutla") return f(env, req, url, kini, ctx, ...sisa);
+  if (!S.bencanaSah(b)) return gagal(400, `bencana tidak dikenal; pilih salah satu dari ${S.DAFTAR_BENCANA.join(", ")}`);
+  try { return await BN[nama](env, req, url, kini, b, ...sisa); }
+  catch (e) { if (tanpa0048(e)) return gagal(503, `Laporan harian ${S.BENCANA[b].nama.toLowerCase()} belum diaktifkan (migrasi 0048_laporan_bencana belum diterapkan)`); throw e; }
+};
 /* rute digabung ke RUTE di src/worker.js. Hak diperiksa di tiap handler (pelaku): admin/moderator, sesi staf berperan, atau sesi akun instansi pemprov. */
 export const RUTE_LAPORAN_KARHUTLA = Object.fromEntries(Object.entries({
   "GET /admin/laporan-karhutla": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanLaporanKarhutla, Object.keys(PERAN)),   // staf tanpa peran untuk halaman ini ke Meja Pantau, anonim ke login admin
-  "GET /api/laporan-karhutla/hari": (env, req, url, kini) => bacaHari(env, req, url, kini),
-  "GET /api/laporan-karhutla/kiriman": (env, req, url, kini) => bacaKiriman(env, req, url, kini),
-  "POST /api/laporan-karhutla/draf": (env, req, url, kini) => simpanDraf(env, req, kini),
-  "POST /api/laporan-karhutla/kirim": (env, req, url, kini) => kirimKiriman(env, req, kini),
-  "POST /api/laporan-karhutla/verifikasi": (env, req, url, kini) => verifikasi(env, req, kini),
-  "POST /api/laporan-karhutla/prioritas": (env, req, url, kini) => ubahPrioritas(env, req, kini),
-  "POST /api/laporan-karhutla/kunci": (env, req, url, kini) => kunci(env, req, kini),
-  "POST /api/laporan-karhutla/ralat": (env, req, url, kini) => ralat(env, req, kini),
-  "GET /api/laporan-karhutla/snapshot/:tanggal": (env, req, url, kini, ctx, tanggal) => bacaSnapshot(env, req, url, kini, ctx, tanggal),
-  "POST /api/laporan-karhutla/dummy": (env, req, url, kini) => dummy(env, req, kini),
+  "GET /api/laporan-karhutla/hari": bila("hari", (env, req, url, kini) => bacaHari(env, req, url, kini)),
+  "GET /api/laporan-karhutla/kiriman": bila("kiriman", (env, req, url, kini) => bacaKiriman(env, req, url, kini)),
+  "POST /api/laporan-karhutla/draf": bila("draf", (env, req, url, kini) => simpanDraf(env, req, kini)),
+  "POST /api/laporan-karhutla/kirim": bila("kirim", (env, req, url, kini) => kirimKiriman(env, req, kini)),
+  "POST /api/laporan-karhutla/verifikasi": bila("verifikasi", (env, req, url, kini) => verifikasi(env, req, kini)),
+  "POST /api/laporan-karhutla/prioritas": bila("prioritas", (env, req, url, kini) => ubahPrioritas(env, req, kini)),
+  "POST /api/laporan-karhutla/kunci": bila("kunci", (env, req, url, kini) => kunci(env, req, kini)),
+  "POST /api/laporan-karhutla/ralat": bila("ralat", (env, req, url, kini) => ralat(env, req, kini)),
+  "GET /api/laporan-karhutla/snapshot/:tanggal": bila("snapshot", (env, req, url, kini, ctx, tanggal) => bacaSnapshot(env, req, url, kini, ctx, tanggal)),
+  "POST /api/laporan-karhutla/dummy": bila("dummy", (env, req, url, kini) => dummy(env, req, kini)),
   /* alias untuk operator provinsi: cookie sesi_instansi hanya dikirim peramban ke /instansi dan /api/instansi (Path), jadi halaman /instansi memakai tiga jalur ini; handler sama, hak sama */
-  "GET /api/instansi/laporan/kiriman": (env, req, url, kini) => bacaKiriman(env, req, url, kini),
-  "POST /api/instansi/laporan/draf": (env, req, url, kini) => simpanDraf(env, req, kini),
-  "POST /api/instansi/laporan/kirim": (env, req, url, kini) => kirimKiriman(env, req, kini),
+  "GET /api/instansi/laporan/kiriman": bila("kiriman", (env, req, url, kini) => bacaKiriman(env, req, url, kini)),
+  "POST /api/instansi/laporan/draf": bila("draf", (env, req, url, kini) => simpanDraf(env, req, kini)),
+  "POST /api/instansi/laporan/kirim": bila("kirim", (env, req, url, kini) => kirimKiriman(env, req, kini)),
 }).map(([k, f]) => [k, k.startsWith("GET /admin") ? f : lewat503(f)]));

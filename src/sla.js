@@ -20,6 +20,7 @@ import {stafOK, stafSesi, dariStaf} from "./staf.js";
 import {SEMUA_PERAN} from "./admin_halaman.js";
 import {superOK} from "./posko.js";
 import {tenggat, PROV} from "./instansi.js";
+import {labelBencana, bencanaId} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
 const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9"};
@@ -112,7 +113,7 @@ async function perGugus(env, sql, ids) {
 const IN = "IN (SELECT value FROM json_each(?))";
 export async function perkaya(env, baris) {
   const ids = baris.map(t => t.id), M = new Map(baris.map(t => [t.id, t]));
-  for (const t of baris) Object.assign(t, {isian: [], foto: 0, foto_sah: 0, foto_konf: 0, garis: null, muncul: false, saran_regu: null, saran_personel: null, akun: null});
+  for (const t of baris) Object.assign(t, {bencana: "karhutla", isian: [], foto: 0, foto_sah: 0, foto_konf: 0, garis: null, muncul: false, saran_regu: null, saran_personel: null, akun: null});
   const [isian, media, garis, muncul, saran] = await Promise.all([
     perGugus(env, `SELECT id, tugas_id, akun_id, langkah, dibuat, pic_nama, pic_jabatan, pic_wa, status_api, hasil, luas_ha, regu, personel FROM tugas_isian WHERE tugas_id ${IN} ORDER BY dibuat`, ids),
     perGugus(env, `SELECT tugas_id, isian_id, gps_curiga FROM instansi_media WHERE tugas_id ${IN}`, ids),
@@ -120,6 +121,7 @@ export async function perkaya(env, baris) {
     perGugus(env, `SELECT DISTINCT tugas_id FROM tugas_muncul WHERE tugas_id ${IN}`, ids),
     perGugus(env, `SELECT id, json_extract(rekomendasi, '$.kebutuhan.total.regu[1]') r, json_extract(rekomendasi, '$.kebutuhan.total.personel[1]') p FROM tugas_api WHERE id ${IN}`, ids),
   ]);
+  for (const r of await perGugus(env, `SELECT tugas_id, bencana FROM tugas_bencana WHERE tugas_id ${IN}`, ids)) { const t = M.get(r.tugas_id); if (t) t.bencana = bencanaId(r.bencana); }   // 0047 belum ada = semua karhutla
   for (const i of isian) M.get(i.tugas_id)?.isian.push(i);
   const konfId = new Map();
   for (const t of baris) { const k = t.isian.find(i => i.langkah === "konfirmasi"); if (k) { konfId.set(k.id, t); t.akun = k.akun_id; } }
@@ -215,8 +217,15 @@ export async function hitungSla(env, kini, {hari = 30, prov, kab, provs, dummy =
   } catch (e) { if (!/no such table: (main\.)?alarm_himawari/i.test(String(e?.message || e))) throw e; catatan.push("Alarm Himawari belum aktif (migrasi 0043 belum diterapkan)."); }
   hw.selisih_viirs_p50_menit = bulat(persen(baris.filter(t => t.himawari_awal != null).map(t => ((t.terdeteksi_awal ?? t.dibuat) - t.himawari_awal) / MENIT).filter(x => x >= 0), 50));
   return {kini, hari, ...(dummy ? {dummy: true} : {}), ...(prov ? {prov_nama: PROV[prov]?.[1] ?? null} : {}), ...(kab ? {kab_nama: baris.find(t => t.kab.toLowerCase() === kab.toLowerCase())?.kab ?? kab} : {}),
-    sumber, tahap: ringkasTahap(baris), wilayah: wilayahDari(baris, kini, !!prov), tren, himawari: hw, catatan, ...evaluasi(baris, kini)};
+    sumber, tahap: ringkasTahap(baris), wilayah: wilayahDari(baris, kini, !!prov), tren, himawari: hw, catatan, ...evaluasi(baris, kini), ...perBencana(baris, kini)};
 }
+
+/* per bahaya (hanya bila ada tugas selain karhutla, supaya jawaban karhutla-saja tidak berubah): {bencana, nama, n, buka, tahap: ringkasTahap, terlambat_buka} */
+const perBencana = (baris, kini) => {
+  if (!baris.some(t => t.bencana !== "karhutla")) return {};
+  const g = new Map(); for (const t of baris) (g.get(t.bencana) || g.set(t.bencana, []).get(t.bencana)).push(t);
+  return {per_bencana: [...g].map(([b, ts]) => ({bencana: b, nama: labelBencana(b).nama, n: ts.length, buka: ts.filter(t => t.status === "buka").length, terlambat_buka: ts.filter(t => tenggat(t, kini).terlambat && t.status === "buka").length, tahap: ringkasTahap(ts)})).sort((a, b) => b.n - a.n || a.bencana.localeCompare(b.bencana))};
+};
 
 /* blok Rapor BPBD: aparat/kab tanpa mengubah bobot RAPOR. ikut = termasuk data dummy. */
 export async function waktuTanggapApi(env, kini, ikut = false, hari = 30) {

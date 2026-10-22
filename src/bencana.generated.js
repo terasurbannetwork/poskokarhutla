@@ -358,12 +358,14 @@ export default {
         "tren",
         "kejadian",
         "dampak",
+        "informasi",
         "metode",
         "sim",
         "foto",
         "tentang"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -503,12 +505,14 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "halaman": {
         "simulasi": "simulasi.html"
       },
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -642,9 +646,11 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -768,9 +774,11 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -894,9 +902,11 @@ export default {
         "posko",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode",
         "posko"
       ],

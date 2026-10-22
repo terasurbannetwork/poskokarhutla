@@ -3,7 +3,7 @@
 /* Tab Berita banjir: rupa dan anatomi sama dengan tab Berita karhutla (kartu bergaya Insight: pil kategori, judul berangka, grafik, kaki "Sumber:";
    daftar berpaginasi, pil topik). Data: data/berita.json (scripts/umum/berita.py banjir). Nada/sentimen TIDAK ditampilkan selama
    `sentimen_teruji` false (belum ada label uji manusia): tidak ada kartu sentimen, tidak ada pil nada, warna batang/gelembung satu warna.
-   Dibuang dulu (data banjir belum ada): celah liputan, pantauan media, video, berita internasional. Mesin kartu dari public/inti. */
+   Dibuang dulu (data banjir belum ada): celah liputan, pantauan media, berita internasional. Mesin kartu dari public/inti. */
 const TOPIK_B = {kejadian: "Kejadian banjir", korban: "Korban", penanganan: "Penanganan", cuaca: "Cuaca", infrastruktur: "Infrastruktur", kebijakan: "Kebijakan", pencegahan: "Pencegahan"};
 const WARNA_T = {kejadian: "#c9503a", korban: "#7a2b2b", penanganan: "#4f8fc4", cuaca: "#e3b94e", infrastruktur: "#e58a45", kebijakan: "#2b8c86", pencegahan: "#5a9e74"};
 const Berita = {
@@ -26,7 +26,8 @@ const Berita = {
     if (!this.d) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat berita…</div>`;
       try { this.d = await muatJSON("data/berita.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data berita belum tersedia.</div>`; return; } }
     el.innerHTML = [this.exHarian(), this.exPeta(), this.exSorotan(), this.exTopik(), this.exDaftar()].join("");
-    this.pasangPeta(); this.ikat(); },
+    this.pasangPeta(); this.ikat();
+    (window.KartuVideo ? Promise.resolve() : new Promise(r => { const s = document.createElement("script"); s.src = "../inti/video.js"; s.onload = r; s.onerror = r; document.head.append(s); })).then(() => window.KartuVideo?.pasang(el, "banjir")); },
 
   /* 1. volume berita harian */
   exHarian() {

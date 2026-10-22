@@ -28,7 +28,7 @@ var KartuVideo = {
     a.querySelector(".vd-jd").innerHTML = `${Kartu.hl(fmt(xs.length) + " video")} di YouTube`;
     a.querySelector(".vd-grid").innerHTML = xs.slice(h * this.PER, (h + 1) * this.PER).map(v => { const j = JN[v.jenis || "kreator"];
       return `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer">${dur(v.durasi)}<i aria-hidden="true">▶</i></span>
-        <span class="vd-lb"><em class="br-lb" style="--w:${j[1]}">${j[0]}</em></span><b>${esc(v.judul)}</b><small>${esc(v.kanal)} · ${new Date(v.tgl).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})}${v.tonton != null ? ` · ${fmt(v.tonton)} kali ditonton` : ""}</small></a>`; }).join("") || `<p class="kosong">Tidak ada video yang cocok.</p>`;
+        <span class="vd-lb"><em class="br-lb" style="--w:${j[1]}">${j[0]}</em></span><b>${esc(v.judul)}</b><small>${esc(v.kanal)}, ${new Date(v.tgl).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})}${v.tonton != null ? `, ${fmt(v.tonton)} kali ditonton` : ""}</small></a>`; }).join("") || `<p class="kosong">Tidak ada video yang cocok.</p>`;
     a.querySelector(".vd-pg").innerHTML = paginasi(h, xs.length, this.PER, "video");
   },
 };

@@ -1,5 +1,5 @@
-/* informasi.js — tab "Informasi": Lapor Warga (warga bantu warga). Satu berkas untuk tiga tempat (data-halaman):
-   karhutla (public/index.html), banjir (public/banjir/index.html), warga (public/warga/index.html, layar penuh).
+/* informasi.js — tab "Informasi": Lapor Warga (warga bantu warga). Satu berkas untuk semua tempat (data-halaman):
+   halaman tiap bencana (public/index.html karhutla, public/<id>/index.html), warga (public/warga/index.html, layar penuh).
    Skrip klasik, dimuat SETELAH skrip utama halaman. Hanya butuh maplibregl global; katalog jenis diambil dengan import()
    dari informasi_jenis.js (sumber yang sama dengan worker). API: /api/warga (src/worker.js). Tidak mengubah index.html selain
    tag + kait yang dipasang scripts/warga/splice_informasi.py. */
@@ -8,7 +8,7 @@
   const AKAR = new URL(".", SKRIP?.src || location.href).href;          // folder public/
   const API = "/api/warga", JAM = 36e5;
   const RENTANG = [[6, "6j", "6 jam"], [24, "24j", "24 jam"], [72, "3h", "3 hari"], [168, "7h", "7 hari"]];
-  const BAHAYA_AWAL = {karhutla: "karhutla", banjir: "banjir"}[HAL] || new URLSearchParams(location.search).get("bahaya") || "umum";
+  const BAHAYA_AWAL = HAL === "warga" ? new URLSearchParams(location.search).get("bahaya") || "umum" : HAL;   // id halaman bencana = kunci bahaya (registry lapor_bahaya)
   const $ = (s, el = document) => el.querySelector(s);
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const baca = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
@@ -112,7 +112,7 @@
     $("#lwKiri").onclick = e => { const b = e.target.closest("button"); if (!b) return;
       if (b.dataset.semua != null) { const semuaMati = js.every(j => S.mati.has(j)); js.forEach(j => semuaMati ? S.mati.delete(j) : S.mati.add(j)); }
       else S.mati.has(b.dataset.j) ? S.mati.delete(b.dataset.j) : S.mati.add(b.dataset.j);
-      tulis("lw-mati", [...S.mati]); renderKiri(); terapkan(); };
+      tulis("lw-mati", [...S.mati]); renderKiri(); (window.nanti || requestAnimationFrame)(terapkan); };
   }
   const toast = (t, ms = 3200) => { const el = $("#lwToast"); el.textContent = t; el.classList.add("on"); clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove("on"), ms); };
   function aturURL(o) { const u = new URL(location.href); for (const [k, v] of Object.entries(o)) v == null ? u.searchParams.delete(k) : u.searchParams.set(k, v); history.replaceState(history.state, "", u); }

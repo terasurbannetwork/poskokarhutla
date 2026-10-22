@@ -585,7 +585,8 @@ export const HTML_RUTE = [
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
   [/^\/presiden\/?$/, "/presiden.html", "/presiden"],   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
-  [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
+  [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
+  [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */

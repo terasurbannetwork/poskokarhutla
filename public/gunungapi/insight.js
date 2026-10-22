@@ -38,7 +38,8 @@ const Insight = {
       `<svg viewBox="0 0 ${U.W} ${baris.length * (U.rh + 14) + 4}" role="img" aria-label="Gunung api per level">${g}</svg>`, SUMBER); },
 
   /* 1b. cerita satu gunung (C16): gunung berstatus tertinggi hari ini, dirangkai dari status MAGMA, factsheet letusan, indeks risiko riwayat, dan uji tren BNPB; baris tanpa data dibuang */
-  exCerita() {
+  exCerita() { return Cerita.kartu("gunungapi"); },
+  dataCerita() {
     const G = [...S.st.gunung].sort((a, b) => this.skor(b) - this.skor(a)); if (!G[0] || G[0].level < 2 || !this.cr) return "";
     const { fs, rk, dm } = this.cr, adaKasus = n => (fs?.kasus || []).filter(k => k.meninggal > 0 && idGn(k.gunung) === idGn(n)).sort((a, b) => b.meninggal - a.meninggal)[0];
     /* di antara gunung berlevel tertinggi, utamakan yang punya letusan terkurasi (cerita lebih utuh) */
@@ -50,8 +51,8 @@ const Insight = {
     if (T) baris.push(["#2f8f83", "Tren", T.vonis === "tidak bermakna" ? `Jumlah kejadian erupsi di seluruh Indonesia ${T.dari} sampai ${T.sampai} tidak menunjukkan tren naik atau turun yang bermakna (p = ${p3(T.p)}).` : `Jumlah kejadian erupsi di seluruh Indonesia ${T.dari} sampai ${T.sampai} menunjukkan tren ${T.vonis} (p = ${p3(T.p)}).`]);
     if (baris.length < 2) return "";
     if (g.radius_km) baris.push(["#e8743b", "Untuk kamu", `Kalau kamu tinggal dalam radius ${fmt(g.radius_km)} km dari ${this.nm(g.nama)}, ikuti rekomendasi PVMBG dan arahan BPBD setempat.`]);
-    return this.ex(`${this.hl(this.nm(g.nama))} termasuk gunung berstatus tertinggi ${hari}: ${this.hl("Level " + LEVEL[g.level][0] + " " + LEVEL[g.level][1])}`, "", "",
-      `<div class="cr">${baris.map(([w, t, x]) => `<div><span class="pl" style="--w:${w}">${t}</span><p>${x}</p></div>`).join("")}</div>`, SUMBER + "; Smithsonian GVP, NOAA NCEI, BNPB"); },
+    return {judul: `${this.hl(this.nm(g.nama))} termasuk gunung berstatus tertinggi ${hari}: ${this.hl("Level " + LEVEL[g.level][0] + " " + LEVEL[g.level][1])}`, baris,
+      sumber: SUMBER.replace("Sumber: ", "") + "; Smithsonian GVP, NOAA NCEI, BNPB"}; },
 
   /* 2. erupsi 24 jam terakhir per gunung (daftar informasi letusan MAGMA) */
   exLetusan() {
@@ -180,3 +181,4 @@ const Insight = {
       const gn = e.target.closest("[data-gn]"); if (gn) { const g = S.st.gunung.find(x => x.nama === gn.dataset.gn); if (g) { bukaTab("peta"); nanti(() => { Peta.terbang(g); Detail.buka(g); }); } } };
   },
 };
+Cerita.daftar("gunungapi", () => Insight.dataCerita());

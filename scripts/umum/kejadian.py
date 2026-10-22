@@ -208,6 +208,8 @@ def proses(id, awalan, calon, hari, masa, keluar, jarak_km=0):
              "besaran": c["besaran"], "pusat": c["pusat"]}
         if c.get("jiwa") is not None:
             r["jiwa"] = c["jiwa"]
+        if c.get("hingga"):   # CAP: akhir berlaku peringatan (dibaca scripts/umum/tugas.py untuk kartu cuaca)
+            r["hingga"] = c["hingga"]
         rows.append({k: v for k, v in r.items() if v is not None})
         g = {"type": "MultiPolygon", "coordinates": c["poligon"]} if c.get("poligon") else {"type": "Point", "coordinates": [c["pusat"][1], c["pusat"][0]]}
         fitur.append({"type": "Feature", "properties": {"kode": kode}, "geometry": g})
@@ -338,6 +340,7 @@ def adaptor_cuaca(akar, hari):
         ks = {k for k in (kab_di(akar, la, lo, pv), *(kab_di(akar, c[1], c[0], pv) for c in pts[:: max(1, len(pts) // 12)])) if k}
         out.append({"anggota": sorted(ks), "jenis": "cap:" + n["event"], "nama": f"{n['event']}, {(n.get('wilayah') or '')[:50]}".strip(", "), "prov": sorted({k[:2] for k in ks}), "kab": sorted(ks),
                     "pusat": [round(la, 3), round(lo, 3)], "poligon": [_ringkas(p) for p in ps if _ringkas(p)] or None, "jiwa": sum(pk.get(k, 0) for k in ks) or None,
+                    "hingga": n.get("selesai"),
                     "besaran": {"nilai": n.get("severity"), "satuan": "CAP", "ket": f"{n.get('severity')} / {n.get('urgency')}"}})
     return out
 
@@ -383,6 +386,7 @@ def uji():
         assert r["nc"] == "T0004" and r["na"] == "T0001", r
         s = json.load(open(os.path.join(t, "kejadian_t_awal.json")))
         assert list(s)[0] == "dibuat" and os.path.getsize(os.path.join(t, "kejadian_t_awal.json")) < 4000
+        assert proses("h", "H", [{**C(["q"]), "hingga": "2026-10-01T09:00:00+07:00"}], h(0), 1, t)[0]["hingga"] == "2026-10-01T09:00:00+07:00"   # CAP: hingga ikut ke _awal
         # pencocokan ruang (cap): anggota beda, pusat dekat
         a = proses("u", "U", [C(["p"], pusat=[1, 1])], h(0), 1, t, 50)[0]["kode"]
         assert proses("u", "U", [C(["q"], pusat=[1.1, 1.1])], h(1), 1, t, 50)[0]["kode"] == a

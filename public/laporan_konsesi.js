@@ -90,7 +90,7 @@
 
   let CIT = {}, CITJ = {}, GP = null, SR = null, RIW = {}, SRY = {}, riwTahun = 0;
   const janjiCit = Promise.all([fetch("/data/aktor_greenpeace.json").then(r => r.ok ? r.json() : null).then(d => { GP = d?.ringkasan ? d : null; }).catch(() => {}),
-    ...[[2015, "sawit_riwayat.json"], [2019, "sawit_riwayat_2019.json"], [2023, "sawit_riwayat_2023.json"]].map(([t, f]) => fetch("/data/konsesi2026/" + f).then(r => r.ok ? r.json() : null).then(d => { if (Array.isArray(d?.perusahaan)) SRY[t] = d; }).catch(() => {})),
+    ...[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023].map(t => fetch("/data/konsesi2026/sawit_riwayat" + (t === 2015 ? "" : "_" + t) + ".json").then(r => r.ok ? r.json() : null).then(d => { if (Array.isArray(d?.perusahaan)) SRY[t] = d; }).catch(() => {})),
     fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {}),
     fetch("/data/konsesi2026/citra_jelas.json").then(r => r.ok ? r.json() : {}).then(d => { CITJ = d; }).catch(() => {})]);
   /* lambang kab/kota: "kodeProv|Nama" -> berkas di /lambang/kabkota (sama dengan index.html); gagal = tanpa lambang */
@@ -412,9 +412,11 @@
       if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); else if (!id) $(`#knRiw [data-rthn="${t}"]`)?.focus(); };
     requestAnimationFrame(() => requestAnimationFrame(kerja)); setTimeout(kerja, 120);
   }
+  /* daftar tahun ringkas: lebih dari 3 tahun jadi rentang, mis. "2016–2023 (6 tahun)" */
+  const thnTeks = th => th.length > 3 ? `${th[0]}–${th[th.length - 1]} (${fmt(th.length)} tahun)` : th.join(", ");
   const lencanaRiw = r => { const th = riwTahunAda().filter(t => SRY[t].perusahaan.some(e => e.id === r.id)); if (!th.length) return "";
     const t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1], e = SRY[t].perusahaan.find(x => x.id === r.id);
-    return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${th.join(", ")} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}${SRY[t].jendela_pendek ? " (belum lengkap)" : ""}</a>`; };
+    return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${thnTeks(th)} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}${SRY[t].jendela_pendek ? " (belum lengkap)" : ""}</a>`; };
   /* perbesar citra: satu <dialog> bersama */
   let dlgZ = null;
   function perbesar(img) {
@@ -465,7 +467,7 @@
           ${Object.entries(SB).map(([j, [i, t]]) => `<tr><td>Batas konsesi ${JN[j][0]}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${t}</td></tr>`).join("")}
           ${GP ? `<tr><td>Titik sumber asap, grup perusahaan</td><td><span class="kn-sb">Greenpeace, Pantau Gambut</span></td><td class="kn-mt">${esc(GP.sumber?.judul)} (2026); titik sumber asap, bukan titik panas VIIRS</td></tr>` : ""}
           ${SRY[2015] ? `<tr><td>Riwayat kebakaran 2015</td><td><span class="kn-sb">Gaveau dkk. 2022, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar</td></tr>` : ""}
-          ${SRY[2019] || SRY[2023] ? `<tr><td>Riwayat kebakaran ${[2019, 2023].filter(t => SRY[t]).join(" dan ")}</td><td><span class="kn-sb">The TreeMap 2026, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar. Lisensi ${esc((SRY[2019] || SRY[2023]).lisensi || "")}</td></tr>` : ""}
+          ${riwTahunAda().some(t => SRY[t].sumber_peta === "ttm") ? `<tr><td>Riwayat kebakaran ${thnTeks(riwTahunAda().filter(t => SRY[t].sumber_peta === "ttm"))}</td><td><span class="kn-sb">The TreeMap 2026, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar. Lisensi ${esc(SRY[riwTahunAda().find(t => SRY[t].sumber_peta === "ttm")].lisensi || "")}</td></tr>` : ""}
           ${SB_LAIN.map(([d, i, t]) => `<tr><td>${d}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${esc(t)}</td></tr>`).join("")}
         </tbody></table></div>
         <ul>

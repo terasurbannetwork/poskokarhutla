@@ -124,6 +124,9 @@
   /* ================= kerangka ================= */
   const TAB = [["sumber", "Sumber air", "air"], ["rencana", "Rencana aksi", "rencana"], ["permintaan", "Permintaan", "heli"], ["drop", "Log drop", "air"], ["linimasa", "Linimasa", "linimasa"], ["drone", "Drone", "drone"], ["patroli", "Patroli", "patroli"], ["tmat", "TMAT", "tmat"]];
   function pesan(teks, ok) { const p = S?.wadah.querySelector("#opPesan"); if (p) { p.textContent = teks || ""; p.className = "op-pesan " + (teks ? (ok ? "ok" : "galat") : ""); if (teks && ok === false) p.scrollIntoView?.({block: "nearest"}); } }
+  /* bahaya selain karhutla: hanya bagian ICS netral (rencana aksi, permintaan logistik, linimasa, patroli); garis api, sumber air, drop heli, drone termal, dan TMAT khusus api */
+  const TAB_NETRAL = ["rencana", "permintaan", "linimasa", "patroli"];
+  const bukanApi = t => !!t?.bencana && t.bencana !== "karhutla";
   function buka(t, o = {}) {
     tutup();
     const w = document.createElement("div");
@@ -132,8 +135,8 @@
       <div class="op-kepala-aksi" id="opStatus"></div><div class="op-kepala-aksi"><button type="button" class="op-tombol" data-op="segar">${ik("segar")}Segarkan</button><button type="button" class="op-tombol utama" data-op="tutup">${ik("tutup")}Tutup</button></div></header>
       <p id="opPesan" class="op-pesan" role="status" aria-live="polite"></p>
       <div class="op-badan"><section class="op-kol-peta" aria-label="Peta operasi"><div class="op-peta" id="opPeta"></div><div class="op-legenda" id="opLegenda"></div></section>
-        <section class="op-kol-panel"><nav class="op-tab" aria-label="Bagian operasi">${TAB.map(([k, n, i]) => `<button type="button" class="op-tombol" data-tab="${k}" aria-pressed="${k === "sumber"}">${ik(i)}${n}</button>`).join("")}</nav><div id="opIsi" class="op-isi" aria-live="polite"><p class="op-kecil">Memuat…</p></div></section></div>`;
-    S = {t, admin: !!o.admin, wadah: w, pembuka: o.pembuka || document.activeElement, tab: "sumber", data: null, pick: null, sel: null, selang: null, tmat: null, tmatOn: false, gen: 0};
+        <section class="op-kol-panel"><nav class="op-tab" aria-label="Bagian operasi">${(bukanApi(t) ? TAB.filter(x => TAB_NETRAL.includes(x[0])) : TAB).map(([k, n, i]) => `<button type="button" class="op-tombol" data-tab="${k}" aria-pressed="${k === (bukanApi(t) ? "rencana" : "sumber")}">${ik(i)}${n}</button>`).join("")}</nav><div id="opIsi" class="op-isi" aria-live="polite"><p class="op-kecil">Memuat…</p></div></section></div>`;
+    S = {t, admin: !!o.admin, wadah: w, pembuka: o.pembuka || document.activeElement, tab: bukanApi(t) ? "rencana" : "sumber", data: null, pick: null, sel: null, selang: null, tmat: null, tmatOn: false, gen: 0};
     document.body.append(w); document.documentElement.classList.add("op-buka");
     w.addEventListener("click", klik); w.addEventListener("submit", kirim); w.addEventListener("change", ubah);
     S.esc = e => { if (e.key === "Escape" && S) tutup(); };
@@ -259,9 +262,9 @@
     const adm = p => S.admin && Object.values(S.transisi[p.jenis][p.status] || {}).includes("adm"), antre = S.perm.filter(adm), sisa = S.perm.filter(p => !adm(p));
     return `${S.admin ? `<section class="op-bagian"><h3>Antrean persetujuan</h3>${antre.length ? antre.map(kartuPerm).join("") : `<p class="op-kecil">Tidak ada permintaan yang menunggu keputusanmu.</p>`}</section>` : ""}
       <section class="op-bagian"><h3>${S.admin ? "Permintaan lain" : "Permintaan"}</h3>${(S.admin ? sisa : S.perm).length ? (S.admin ? sisa : S.perm).map(kartuPerm).join("") : `<p class="op-kecil">Belum ada permintaan untuk tugas ini.</p>`}</section>
-      <details class="op-bagian op-rinci"><summary>${ik("heli")}Minta helikopter water bombing</summary><form data-f="heli" novalidate><p class="op-kecil">Sasaran memakai titik yang kamu ketuk di peta. Tanpa ketukan, sasaran adalah titik tugas. Sumber air terdekat dicari otomatis.</p>${pickBar()}
+      ${bukanApi(S.t) ? "" : `<details class="op-bagian op-rinci"><summary>${ik("heli")}Minta helikopter water bombing</summary><form data-f="heli" novalidate><p class="op-kecil">Sasaran memakai titik yang kamu ketuk di peta. Tanpa ketukan, sasaran adalah titik tugas. Sumber air terdekat dicari otomatis.</p>${pickBar()}
         <div class="op-grid"><label>Perkiraan luas, hektare (boleh kosong)<input name="luas" inputmode="decimal" autocomplete="off"></label><label>Prioritas<select name="prioritas">${opsi({rendah: "Rendah", sedang: "Sedang", tinggi: "Tinggi", darurat: "Darurat"}, "sedang")}</select></label></div>
-        <label>Catatan (boleh kosong)<input name="catatan" maxlength="500" autocomplete="off"></label><button type="submit" class="op-tombol utama">Kirim permintaan heli</button></form></details>
+        <label>Catatan (boleh kosong)<input name="catatan" maxlength="500" autocomplete="off"></label><button type="submit" class="op-tombol utama">Kirim permintaan heli</button></form></details>`}
       <details class="op-bagian op-rinci"><summary>${ik("log")}Minta logistik</summary><form data-f="logistik" novalidate><div class="op-grid"><label>Barang<select name="barang">${BARANG.map(b => `<option value="${b}">${esc(kapital(b))}</option>`).join("")}</select></label><label>Keterangan barang (wajib bila lainnya)<input name="barang_ket" maxlength="100" autocomplete="off"></label>
         <label>Jumlah<input name="jumlah" inputmode="decimal" autocomplete="off"></label><label>Satuan<input name="satuan" maxlength="20" placeholder="mis. dus, liter" autocomplete="off"></label>
         <label>Prioritas<select name="prioritas">${opsi({rendah: "Rendah", sedang: "Sedang", tinggi: "Tinggi", darurat: "Darurat"}, "sedang")}</select></label></div>

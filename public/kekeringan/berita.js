@@ -26,7 +26,8 @@ const Berita = {
     if (!this.d) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat berita…</div>`;
       try { this.d = await muatJSON("../banjir/data/berita_kekeringan.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data berita belum tersedia.</div>`; return; } }
     el.innerHTML = [this.exHarian(), this.exPeta(), this.exSorotan(), this.exTopik(), this.exDaftar()].join("");
-    this.pasangPeta(); this.ikat(); },
+    this.pasangPeta(); this.ikat();
+    (window.KartuVideo ? Promise.resolve() : new Promise(r => { const s = document.createElement("script"); s.src = "../inti/video.js"; s.onload = r; s.onerror = r; document.head.append(s); })).then(() => window.KartuVideo?.pasang(el, "kekeringan")); },
 
   /* 1. volume berita harian */
   exHarian() {

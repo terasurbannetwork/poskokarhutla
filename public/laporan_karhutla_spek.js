@@ -35,6 +35,23 @@ export const labelAlat = k => LABEL_ALAT[k] ?? String(k).replace(/_/g, " ");
 export const KALIMAT_OMC = "kesesuaian lokasi hujan dengan sasaran belum membuktikan sebab-akibat";
 const TOL = 0.011;
 
+/* ================================================================ registri bencana (spek per bahaya)
+   Karhutla memakai SEMUA isi modul ini apa adanya (tabel lk_*). Bencana lain (banjir, gempa, gunungapi, cuaca, kekeringan, udara) memakai adaptor
+   public/laporan_bencana_spek.js yang membangun struktur bagian yang sama dari laporan.json v1 (docs/multi-bencana/LAPORAN-HARIAN.md) dan tabel lkb_* (migrasi 0048).
+   url = berkas laporan.json v1 sumber data otomatis (sama dengan KONFIG di public/bnpb/ringkas_bencana.js). Daftar non-karhutla HARUS sama dengan CHECK bencana di
+   migrations/0048_laporan_bencana.sql (dijaga tests/warga/laporan_bencana.test.mjs). */
+export const BENCANA = {
+  karhutla: {nama: "Karhutla", judul: "Laporan Harian Karhutla", url: "/data/laporan.json"},
+  banjir: {nama: "Banjir, longsor dan rob", judul: "Laporan Harian Banjir, Longsor dan Rob", url: "/banjir/data/laporan.json"},
+  gempa: {nama: "Gempa bumi", judul: "Laporan Harian Gempa Bumi", url: "/gempa/data/laporan.json"},
+  gunungapi: {nama: "Gunung api", judul: "Laporan Harian Gunung Api", url: "/banjir/data/laporan_gunungapi.json"},
+  cuaca: {nama: "Cuaca ekstrem", judul: "Laporan Harian Cuaca Ekstrem", url: "/banjir/data/cuaca_laporan.json"},
+  kekeringan: {nama: "Kekeringan", judul: "Laporan Harian Kekeringan", url: "/data/kekeringan_laporan.json"},
+  udara: {nama: "Kualitas udara", judul: "Laporan Harian Kualitas Udara", url: "/udara/data/laporan.json"},
+};
+export const DAFTAR_BENCANA = Object.keys(BENCANA);
+export const bencanaSah = b => typeof b === "string" && Object.hasOwn(BENCANA, b);
+
 /* ================================================================ angka dan tanggal */
 /* angka gaya Indonesia: "1.234,56" -> 1234.56, "74,77" -> 74.77, "2.083" -> 2083 (titik ribuan), "74.77" -> 74.77. Kosong -> null. Tak terbaca -> NaN. */
 export function angkaID(v) {
@@ -61,7 +78,7 @@ export const labelSumber = s => kodeDariSumber(s) ? namaProv(kodeDariSumber(s)) 
 export const sumberWajib = prioritas => [...prioritas.map(k => "prov:" + k), "udara", "omc"];
 
 /* ================================================================ pembaca bernilai: kumpulkan galat, jangan lempar */
-function Baca(galat, kirim) {
+export function Baca(galat, kirim) {
   const g = (jalur, pesan) => galat.push({jalur, pesan});
   return {
     g, kirim,

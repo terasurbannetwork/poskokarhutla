@@ -7,7 +7,8 @@
    Darurat regu dan tugas level 3 baru TIDAK menunggu 3 jam: src/kabar.js memakai kirimKe di bawah.
    ponytail: kerja per invokasi <= 100 akun dan <= 40 kiriman (batas subrequest akun Free); sisanya dilanjut menit berikutnya lewat penanda putaran. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
-import {akunAktif, tenggat, butirApiMunculLagi, butirCekUlang, tanpaTabel, PROV} from "./instansi.js";
+import {akunAktif, tenggat, butirApiMunculLagi, butirCekUlang, tanpaTabel, bencanaPer, PROV} from "./instansi.js";
+import {labelBencana} from "./tugas_bencana.js";
 import {laju} from "./bnpb.js";
 
 const JAM = 36e5, PUTARAN = 3 * JAM, MAKS_PERANGKAT = 10, MAKS_AKUN = 100, MAKS_KIRIM = 40, MAKS_PESAN = 3993, JWT_UMUR = 12 * JAM / 1000;
@@ -137,7 +138,11 @@ export function ringkasAkun(a, D, sejak, kini) {
   if (!total) return null;
   const tempat = a.tingkat === "kab" ? (a.kab.startsWith("Kota ") ? a.kab : "Kab. " + a.kab) : JSON.parse(a.cakupan).length === 1 && PROV[JSON.parse(a.cakupan)[0]] ? PROV[JSON.parse(a.cakupan)[0]][1] : a.wilayah;
   const bagian = [[n.konfirmasi, "tugas belum dikonfirmasi"], [n.kabar, "tugas belum ada kabar tindakan"], [n.muncul, "api muncul lagi"], [n.ulang, "cek ulang jatuh tempo"]].filter(([c]) => c).map(([c, t]) => `${c} ${t}`);
-  return {judul: n.baru ? `${n.baru} api baru di ${tempat}` : `Ada yang perlu dicek di ${tempat}`,
+  /* tugas bahaya lain (t.bencana, src/tugas_bencana.js): tanpa itu kalimatnya persis seperti dulu (api); dengan itu "N tugas baru" dan rincian per bahaya */
+  const per = {}; for (const t of baru) per[t.bencana || "karhutla"] = (per[t.bencana || "karhutla"] || 0) + 1;
+  const campur = Object.keys(per).some(b => b !== "karhutla");
+  if (campur) bagian.unshift(...Object.entries(per).map(([b, c]) => `${c} ${labelBencana(b).nama.toLowerCase()} baru`));
+  return {judul: n.baru ? `${n.baru} ${campur ? "tugas" : "api"} baru di ${tempat}` : `Ada yang perlu dicek di ${tempat}`,
     isi: bagian.length ? bagian.join(", ") : "Buka Tugas api untuk konfirmasi lapangan.", tag: "pb-" + a.id, url: "/instansi", n};
 }
 
@@ -155,6 +160,7 @@ export async function kirimPushDaerah(env, kini = Date.now()) {
     const subs = (await env.DB.prepare("SELECT id, akun_id, endpoint, p256dh, auth FROM push_langganan WHERE akun_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(akun.map(a => a.id))).all()).results;
     const D = {tugas: (await env.DB.prepare("SELECT id, prov, kab, status, dibuat, konfirmasi_pada, isian_terakhir, padam_verif FROM tugas_api WHERE status = 'buka' AND dummy = 0 LIMIT 5000").all()).results,
       cek: await butirCekUlang(env, kini, false), muncul: await butirApiMunculLagi(env, kini, false)};
+    { const idx = new Map(D.tugas.map(t => [t.id, t])); for (const [id, b] of await bencanaPer(env, D.tugas)) idx.get(id).bencana = b; }   // tabel 0047 belum ada = tanpa kolom, semua karhutla
     const o = {akun: 0, kirim: 0, kosong: 0, hapus: 0, galat: 0}, rencana = [];
     for (const a of akun) { const mine = subs.filter(s => s.akun_id === a.id); if (rencana.length && o.kirim + mine.length > MAKS_KIRIM) break; o.kirim += mine.length; rencana.push({a, mine}); }   // sisanya menit berikutnya
     o.kirim = 0;

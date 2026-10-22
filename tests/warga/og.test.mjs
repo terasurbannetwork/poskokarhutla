@@ -45,6 +45,12 @@ test("halaman & tab: peta, banjir, tab lain dapat og:url sendiri", () => {
   assert.equal(metaRute(u("/index.html"), M).url, S + "/");
   const bk = metaRute(u("/banjir/k/B0007"), M); assert.equal(bk.desk, metaRute(u("/banjir/"), M).desk, "kejadian banjir memakai deskripsi bencana");
   assert.equal(bk.gambar, img("banjir"), "kejadian bencana non-akar memakai gambar modulnya, bukan gambar karhutla");
+  /* kode kejadian modul lain yang kebetulan ada di M.kompleks (dengan provinsi berbaris prov-*) tetap memakai gambar modulnya */
+  const M2 = {...M, halaman: {...M.halaman, "/gempa/": {judul: "Gempa", desk: "d", gambar: "gempa"}, "/gunungapi/": {judul: "Gunungapi", desk: "d", gambar: "gunungapi"}, "/kekeringan/": {judul: "Kekeringan", desk: "d", gambar: "kekeringan"}, "/cuaca/": {judul: "Cuaca", desk: "d", gambar: "cuaca"}, "/udara/": {judul: "Udara", desk: "d", gambar: "udara"}},
+    kompleks: {...M.kompleks, G0001: ["Gempa M5", "62"], V0001: ["Gunung", "62"], D0001: ["Kering", "62"], C0001: ["Cuaca", "62"], U0001: ["Udara", "62"]}};
+  for (const [id, kode] of [["gempa", "G0001"], ["gunungapi", "V0001"], ["kekeringan", "D0001"], ["cuaca", "C0001"], ["udara", "U0001"]]) {
+    const r = metaRute(u(`/${id}/k/${kode}`), M2); assert.equal(r?.gambar, img(id), `${id}: gambar modulnya, bukan prov-62`);
+  }
   assert.equal(metaRute(u("/banjir/sim/B0007"), M), null);
   assert.equal(metaRute(u("/dampak"), M).url, S + "/dampak");
 });

@@ -10,6 +10,7 @@ import {emailAktif, kirimEmail} from "./ews.js";
 import {esc} from "./ews_email.js";
 import {PROV} from "./instansi.js";
 import {sha} from "./worker.js";
+import {labelBencana} from "./tugas_bencana.js";
 
 const MAKS_PENERIMA = 40, MAKS_AKUN = 30, MENIT = 6e4, JAM = 36e5, BACKOFF_MNT = [1, 5, 15, 60], MAKS_COBA = 5, ASAL = "https://centurisk97.id";
 const tanpaTabel = e => /no such (table|column): ?(main\.)?(kabar_terkirim|kabar_ulang|push_langganan|alarm_himawari|staf|instansi_akun)/i.test(String(e?.message || e));
@@ -111,16 +112,19 @@ export async function kabarDarurat(env, p, jenis, label, kini = Date.now()) {
     ...(await penerimaPosko(env)).map(x => ({...x, ganti: {url: "/admin/pantau", isi: dasar + "posisi terakhir ada di Meja Pantau."}}))];
   return kabarkan(env, `darurat:${p.id}:${Math.floor(kini / (5 * MENIT))}`, penerima, {judul: `DARURAT regu: ${label}`, isi: dasar, url: "/admin/pantau", kadaluarsa: kini + 15 * MENIT}, kini);
 }
-/* tugas level 3 baru -> akun wilayahnya. tugas = [{id, prov, kab, kec}]. Satu kabar ringkas per akun per putaran (kunci = sidik kumpulan tugasnya), maks 30 akun. */
-export async function kabarLevel3(env, tugas, kini = Date.now()) {
+/* tugas level 3 baru -> akun wilayahnya. tugas = [{id, prov, kab, kec}]. Satu kabar ringkas per akun per putaran (kunci = sidik kumpulan tugasnya), maks 30 akun.
+   bencana (src/tugas_bencana.js) menentukan kata; karhutla tetap kalimat aslinya. */
+export async function kabarLevel3(env, tugas, kini = Date.now(), bencana = "karhutla") {
   if (!tugas.length) return {};
+  const L = labelBencana(bencana), api = bencana === "karhutla";
   const A = await semuaAkun(env), per = new Map();
   for (const t of tugas.slice(0, 50)) for (const a of A) if (dalam(a, t.prov, t.kab)) (per.get(a.id) || per.set(a.id, {a, ts: []}).get(a.id)).ts.push(t);
   const o = {akun: 0, push: 0, email: 0};
   for (const {a, ts} of [...per.values()].slice(0, MAKS_AKUN)) {
     const kunci = "l3:" + (await sha(ts.map(t => t.id).sort().join(","))).slice(0, 40), t0 = ts[0];
-    const r = await kabarkan(env, kunci, [jadiPenerima(a)], {judul: ts.length > 1 ? `${ts.length} api level 3 baru di wilayah Anda` : `Api level 3 baru di ${tempat(t0.prov, t0.kab, t0.kec)}`,
-      isi: `Cluster api level 3 baru terdeteksi (${ts.map(t => tempat(t.prov, t.kab, t.kec)).slice(0, 3).join("; ")}). Buka Tugas api untuk konfirmasi lapangan dalam 6 jam.`, url: "/instansi"}, kini);
+    const r = await kabarkan(env, kunci, [jadiPenerima(a)], {judul: api ? (ts.length > 1 ? `${ts.length} api level 3 baru di wilayah Anda` : `Api level 3 baru di ${tempat(t0.prov, t0.kab, t0.kec)}`) : (ts.length > 1 ? `${ts.length} tugas ${L.nama.toLowerCase()} tingkat tinggi baru di wilayah Anda` : `${L.sebut} tingkat tinggi di ${tempat(t0.prov, t0.kab, t0.kec)}`),
+      isi: api ? `Cluster api level 3 baru terdeteksi (${ts.map(t => tempat(t.prov, t.kab, t.kec)).slice(0, 3).join("; ")}). Buka Tugas api untuk konfirmasi lapangan dalam 6 jam.`
+        : `Tugas ${L.nama.toLowerCase()} baru (${ts.map(t => tempat(t.prov, t.kab, t.kec)).slice(0, 3).join("; ")}). Buka Tugas untuk konfirmasi lapangan dalam 6 jam.`, url: "/instansi"}, kini);
     o.akun++; o.push += r.push || 0; o.email += r.email || 0;
   }
   return o;

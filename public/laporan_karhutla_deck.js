@@ -3,14 +3,16 @@
    supaya halaman admin tidak membayar ~100 KB sebelum diklik. Satu fungsi gambar per slide menulis ke pptx, pdf, dan html (pratinjau), jadi ketiganya identik.
    Unduh HANYA untuk snapshot terkunci; sebelum kunci pemanggil memakai opsi {draf: true} untuk pratinjau berwatermark. */
 (() => {
-const SKRIP = ["/paparan_slide.js", "/laporan_bnpb_slide.js", "/laporan_karhutla_slide.js"], LIB = {pdf: "/vendor/jspdf/jspdf.umd.min.js", pptx: "/vendor/pptxgenjs/pptxgen.bundle.js"};
+const SKRIP = ["/paparan_slide.js", "/laporan_bnpb_slide.js", "/laporan_karhutla_slide.js", "/laporan_bahaya_slide.js"], LIB = {pdf: "/vendor/jspdf/jspdf.umd.min.js", pptx: "/vendor/pptxgenjs/pptxgen.bundle.js"};
 const _muat = {};
 const skrip = src => _muat[src] ||= new Promise((ok, gagal) => { const s = document.createElement("script"); s.src = src; s.async = false; s.onload = ok; s.onerror = () => { delete _muat[src]; gagal(new Error("Gagal memuat " + src)); }; document.head.appendChild(s); });
-async function siap(lib) {
-  if (!window.LaporanKarhutlaSlide) { if (!window.PaparanSlide) await skrip(SKRIP[0]); if (!window.LaporanBnpbSlide) await skrip(SKRIP[1]); await skrip(SKRIP[2]); }
+/* s.bencana (snapshot bencana selain karhutla) memilih deck bahaya (laporan_bahaya_slide.js); tanpa itu = deck karhutla */
+async function siap(lib, bencana) {
+  const hz = !!bencana && bencana !== "karhutla", nama = hz ? "LaporanBahayaSlide" : "LaporanKarhutlaSlide";
+  if (!window[nama]) { if (!window.PaparanSlide) await skrip(SKRIP[0]); if (!window.LaporanBnpbSlide) await skrip(SKRIP[1]); await skrip(SKRIP[hz ? 3 : 2]); }
   if (lib === "pdf" && !window.jspdf) await skrip(LIB.pdf);
   if (lib === "pptx" && !window.PptxGenJS) await skrip(LIB.pptx);
-  return window.LaporanKarhutlaSlide;
+  return window[nama];
 }
 const jeda = () => new Promise(r => setTimeout(r, 0));
 const keDataUrl = u => new Promise(r => { const im = new Image(); im.onload = () => { try { const c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext("2d").drawImage(im, 0, 0); r(c.toDataURL("image/png")); } catch (e) { r(null); } }; im.onerror = () => r(null); im.src = u; });
@@ -32,7 +34,7 @@ const konteks = (s, a, i, n) => ({no: i + 1, total: n, tahun: s.tanggal_laporan.
 
 /* pratinjau HTML ke dalam wadah; gen = fungsi yang mengembalikan false bila render ini sudah usang (dibatalkan). Satu slide per frame supaya layar tidak membeku. */
 async function pratinjau(wadah, s, opsi = {}) {
-  const K = await siap(), a = await aset(), d = K.deck(s, opsi), PS = window.PaparanSlide, W = PS.W, H = PS.H;
+  const K = await siap(undefined, s.bencana), a = await aset(), d = K.deck(s, opsi), PS = window.PaparanSlide, W = PS.W, H = PS.H;
   wadah.replaceChildren(); let sk = 0;
   for (let i = 0; i < d.slide.length; i++) {
     if (opsi.gen && !opsi.gen()) return d;
@@ -50,7 +52,7 @@ const skalaUlang = wadah => { const f = wadah.querySelector(".sl-wrap"); if (!f)
 /* unduh: jenis "pptx" | "pdf". Mengembalikan {blob, nama, slide, dilewati}. status(teks) opsional untuk progres. */
 async function buat(jenis, s, opsi = {}) {
   const status = opsi.status || (() => {});
-  status("Memuat pustaka…"); const K = await siap(jenis), a = await aset(); await jeda();
+  status("Memuat pustaka…"); const K = await siap(jenis, s.bencana), a = await aset(); await jeda();
   const d = K.deck(s, opsi), n = d.slide.length, PS = window.PaparanSlide, nama = K.namaBerkas(s, jenis); let blob;
   if (jenis === "pptx") {
     const P = new window.PptxGenJS(); P.layout = "LAYOUT_WIDE"; P.title = nama.replace(/\.pptx$/, "").replace(/-/g, " "); P.company = "BNPB";

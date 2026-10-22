@@ -44,7 +44,7 @@ CITRA_TTM = os.path.join(AKAR, "data/raw/sawit/hasil/citra_ttm")   # sumber PNG;
 TERBIT = os.path.join(AKAR, "public/data/konsesi2026/sawit_riwayat.json")
 TERBIT_CITRA = os.path.join(AKAR, "public/data/konsesi2026/riwayat")   # folder sendiri: konsesi2026/citra dibersihkan skrip citra konsesi
 TAHUN_TERBIT = 2015             # sumber Gaveau; 2019 (jendela 1 tahun) tidak terbit dari Gaveau
-TAHUN_TERBIT_TTM = (2019, 2023)  # terbit dari TTM2024 (CC BY-NC, pemilik putuskan 22 Okt 2026: situs nonkomersial, atribusi wajib tampil)
+TAHUN_TERBIT_TTM = tuple(range(2016, 2024))  # terbit dari TTM2024 (CC BY-NC, pemilik putuskan 22 Okt 2026: situs nonkomersial, atribusi wajib tampil)
 BS_MIN, PORSI_MIN, TOP_TERBIT = 50, .10, 15   # hipotesis, belum diuji balik: saring perusahaan terbit
 LUAS_RESMI_2015 = 2_610_000     # ha, luas terbakar resmi KLHK 2015
 MUDA = (2016, 2018)             # tahun-sawit yang lebih tak pasti (peta konsesi/Gaveau dekat akhir jendela)
@@ -58,7 +58,7 @@ JENIS = [("Industrial_Oil_Palm", "industri"), ("Smallholder_Oil_Palm", "rakyat")
 SAWIT = {"IOPP", "Smallholder"}
 ASAL = ("Forest", "Non Forest", "ITP")
 TAHUN = (2015, 2019)
-TAHUN_TTM = (2019, 2023)        # sumber TTM2024 (tahun tanam dari peta, bukan jendela Gaveau)
+TAHUN_TTM = tuple(range(2016, 2024))   # sumber TTM2024 (tahun tanam dari peta, bukan jendela Gaveau)
 ASAL_TTM = ("hutan primer saat api", "hutan primer sudah hilang sebelum api", "bukan hutan primer 2000")
 BATAS = 2019                    # Gaveau berhenti di 2019
 JENDELA = 4                     # tahun sesudah api yang dicek untuk "jadi sawit"
@@ -95,7 +95,7 @@ def unduh():
                 while (b := r.read(1 << 20)):
                     f.write(b)
         zipfile.ZipFile(zp).extractall(DIR)
-    for y in TAHUN:
+    for y in sorted(set(TAHUN) | set(TAHUN_TTM)):
         p = os.path.join(DIR, f"viirs_{y}.csv")
         if not os.path.exists(p):
             url = f"https://firms.modaps.eosdis.nasa.gov/data/country/viirs-snpp/{y}/viirs-snpp_{y}_Indonesia.csv"
@@ -768,7 +768,7 @@ def foto_tahun(y, lat, lon, km, sesudah=None, ls=True):
             d1 = max(d1, (sesudah + dt.timedelta(days=1)).isoformat())
             if d1 > d2:
                 continue
-        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or (pilih_ls(lat, lon, km, d1, d2, "bersih") if ls or y < 2017 else None)
+        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or (pilih_ls(lat, lon, km, d1, d2, "bersih") if ls else None)
         if pil:
             return pil
     return None
@@ -943,7 +943,9 @@ def citra_ttm(tahun, top=TOP_TERBIT, hanya=None):
     jalur = os.path.join(ANTARA, f"agregat_ttm_{tahun}.json")
     h = json.load(open(jalur))
     pilih_ = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])[:top]
-    pilih_ = [p for p in pilih_ if not hanya or p["id"] in hanya]   # --id a,b: ulang hanya perusahaan itu
+    pilih_ = [p for p in pilih_ if not hanya or p["id"] in hanya]
+    sudah = [p for p in pilih_ if p.get("citra") or p.get("api")] if not hanya else []
+    pilih_ = [p for p in pilih_ if p not in sudah]   # dapat dilanjut: yang sudah dicoba (citra atau api terisi) dilewati   # --id a,b: ulang hanya perusahaan itu
     api_klaster(0, 0, tahun=tahun)   # muat arsip api sekali sebelum utas
 
     def kerja(p):
@@ -952,9 +954,10 @@ def citra_ttm(tahun, top=TOP_TERBIT, hanya=None):
         except Exception as e:
             log("  citra gagal", p["nama"], repr(e)[:120])
             return None, None
-    with ThreadPoolExecutor(3) as ex:
+    with ThreadPoolExecutor(10) as ex:
         for p, (c, api) in zip(pilih_, ex.map(kerja, pilih_)):
             p["citra"], p["api"] = c, api
+            json.dump(h, open(jalur, "w"), separators=(",", ":"))   # simpan tiap perusahaan: bisa dilanjut
             log(f"  citra ttm{tahun} {p['nama']}: " + (", ".join(f"{k}={c[k]['tgl'] + '/' + str(c[k]['awan']) if c[k] else '-'}" for k in ('sebelum', 'terbakar', 'kebun1', 'kebun2')) if c else "tidak ada"))
     json.dump(h, open(jalur, "w"), separators=(",", ":"))
 
@@ -1312,7 +1315,7 @@ def uji():
     # ambang awan: terang ATAU bendera; ambang terbit + peregangan warna asli
     assert layak({"ha": {"bs": 50}, "bs_porsi": .10}) and not layak({"ha": {"bs": 49}, "bs_porsi": .5}) and not layak({"ha": {"bs": 900}, "bs_porsi": .09})
     assert list(ke_byte_tc([0, 100, 20000], 2.75e-5, -.2)) == [0, 0, 255] and ke_byte_tc([10000], 2.75e-5, -.2)[0] > 0
-    assert TAHUN_TERBIT == 2015 and TAHUN_TERBIT_TTM == (2019, 2023) == TAHUN_TTM   # 2019/2023 terbit hanya dari TTM
+    assert TAHUN_TERBIT == 2015 and TAHUN_TERBIT_TTM == tuple(range(2016, 2024)) == TAHUN_TTM   # 2016..2023 terbit dari TTM
     uji_terbit_ttm()
     # dedup sampel: dua deteksi sama persis -> satu sampel, dua hitungan pusat
     import tempfile
@@ -1344,14 +1347,15 @@ if __name__ == "__main__":
         unduh()
         for t in th:
             analisis(t, "--tanpa-descals" not in a)
-    elif perintah == "ttm":     # analisis + foto + ringkasan TTM 2019/2023 (+ ttm_konfirm 2015 dengan --konfirm)
-        for t in TAHUN_TTM:
-            analisis_ttm(t)
+    elif perintah == "ttm":     # analisis TTM; --tahun T hanya T, tanpa itu semua TAHUN_TTM yang agregatnya belum ada
+        for t in ([int(a[a.index("--tahun") + 1])] if "--tahun" in a else TAHUN_TTM):
+            if "--tahun" in a or not os.path.exists(os.path.join(ANTARA, f"agregat_ttm_{t}.json")):
+                analisis_ttm(t)
     elif perintah == "konfirm":
         konfirm_2015()
     elif perintah == "citra-ttm":
         hanya = a[a.index("--id") + 1].split(",") if "--id" in a else None
-        for t in TAHUN_TTM:
+        for t in (th if "--tahun" in a else TAHUN_TTM):
             citra_ttm(t, hanya=hanya)
     elif perintah == "ringkas":
         ringkas()

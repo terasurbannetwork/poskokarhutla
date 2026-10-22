@@ -10,6 +10,11 @@
                 Gunung api: tingkat PVMBG hari ini (II 0,4; III 0,75; IV 1) x zona KRB yang menyentuh kecamatan (I 0,33; II 0,66; III 1). [harian]
                 Kekeringan: tingkat 0-3 (/3) sel 0,5 derajat terdekat. AMBANG BELUM LAYAK uji balik (POD 0,23, FAR 0,93).  [harian, hipotesis]
                 Cuaca     : tingkat peringatan 0-3 (/3) hari ini atau besok dari cuaca_kec.json (hujan, angin, gelombang).   [harian]
+                Udara     : tingkat 0-3 (/3) dari PM2,5 rata-rata 24 jam: Baik dan Sedang = 0 (bukan bahaya), Tidak sehat 1,
+                            Sangat tidak sehat 2, Berbahaya 3 (titik potong Permen LHK P.14/2020 = scripts/udara/kualitas.py BATAS;
+                            ambang Tidak sehat = 55,4 sama dengan scripts/udara/dampak_udara.py). Maks hari ini dan besok, dari titik
+                            kab/kota terdekat (paling jauh 80 km) di public/udara/data/prakiraan.json. Skala tingkat/3 sama dengan
+                            kekeringan dan cuaca, BUKAN bobot baru. Perkiraan model CAMS ~40 km, belum dikoreksi alat ukur; belum diuji balik.                                                       [harian]
   KETERPAPARAN  peringkat persentil penduduk kecamatan (WorldPop 2026, penduduk.json) di antara semua kecamatan, 0-1.
   KAPASITAS     statis: 1 - jarak ke kantor BPBD terdekat / 100 km (proksi; hanya 324 kantor terpetakan). Bobot w = 0,3.
                 Dinamis (opsional, C3): relawan siap per kabupaten dari /api/relawan/kapasitas. Hanya MENAIKKAN kapasitas:
@@ -46,13 +51,14 @@ URL_MEJA = "https://centurisk97.id/api/meja/ringkas"
 JARAK_KAPASITAS_KM = 100
 KELAS = ["Rendah", "Sedang", "Tinggi", "Sangat tinggi"]
 AMBANG = [15, 35, 60]            # skor < 15 rendah; < 35 sedang; < 60 tinggi; selebihnya sangat tinggi (ambang kerja tetap, bukan persentil)
+PM_BATAS = [15.5, 55.4, 150.4, 250.4]   # sama dengan scripts/udara/kualitas.py BATAS (Permen LHK P.14/2020)
 UMUR_MAKS = 7                    # hari; sumber harian yang lebih tua dari ini dibuang (null), yang lebih tua dari 2 hari ditandai usang
 FWI_JENUH = 14                   # FWI >= 14 = kelas Sangat tinggi (scripts/data/aturan.py kelas_fwi)
 TITIK_JENUH = 5                  # titik panas 3 hari di satu kecamatan yang dihitung penuh
 BOBOT_LEVEL = {1: 0.0, 2: 0.4, 3: 0.75, 4: 1.0}
 BOBOT_KRB = {"I": 0.33, "II": 0.66, "III": 1.0}
-BENCANA = ["karhutla", "banjir", "gempa", "gunungapi", "kekeringan", "cuaca"]
-NAMA = {"karhutla": "Karhutla", "banjir": "Banjir dan longsor", "gempa": "Gempa", "gunungapi": "Gunung api", "kekeringan": "Kekeringan", "cuaca": "Cuaca ekstrem"}
+BENCANA = ["karhutla", "banjir", "gempa", "gunungapi", "kekeringan", "cuaca", "udara"]
+NAMA = {"karhutla": "Karhutla", "banjir": "Banjir dan longsor", "gempa": "Gempa", "gunungapi": "Gunung api", "kekeringan": "Kekeringan", "cuaca": "Cuaca ekstrem", "udara": "Kualitas udara"}
 KOLOM = ["prov", "kab", "kec", "risiko", "kelas", "bahaya", "utama"] + ["h_" + b for b in BENCANA] + ["pend", "pangkat", "bpbd_km", "kapasitas", "sekolah", "siswa", "faskes", "kap_statis", "kap_dinamis"]
 Z = {"w": _kej._W}
 
@@ -84,13 +90,22 @@ def kelas_dari(skor):
     return None if skor is None else sum(skor >= a for a in AMBANG)
 
 
+HIPOTESIS = ("kekeringan",)   # bahaya yang ambangnya gagal uji balik: kalah dari bahaya teruji bila nilainya sama
+
+
+def utama_dari(ada):
+    """{bencana: nilai} -> bencana utama, DETERMINISTIK: nilai tertinggi; seri dimenangkan bahaya yang bukan hipotesis, lalu urutan BENCANA (bukan urutan set/dict)."""
+    urut = lambda b: BENCANA.index(b) if b in BENCANA else len(BENCANA)
+    return max(ada, key=lambda b: (ada[b], b not in HIPOTESIS, -urut(b), b))
+
+
 def risiko(h, pend_pangkat, kap):
     """h = {bencana: 0-1 atau None} yang dipilih -> (skor 0-100 atau None, bahaya, utama). Satu rumus untuk pipeline dan layar."""
     ada = {k: v for k, v in h.items() if v is not None}
     if not ada or pend_pangkat is None or kap is None:
-        return None, (max(ada.values()) if ada else None), (max(ada, key=ada.get) if ada else None)
+        return None, (max(ada.values()) if ada else None), (utama_dari(ada) if ada else None)
     b = max(ada.values())
-    return round(100 * b * pend_pangkat * (1 - BOBOT_KAPASITAS * kap), 1), b, max(ada, key=ada.get)
+    return round(100 * b * pend_pangkat * (1 - BOBOT_KAPASITAS * kap), 1), b, utama_dari(ada)
 
 
 def umur(hari, tgl):
@@ -227,6 +242,24 @@ def h_cuaca(pusat, cuaca, hari, urut):
                "validasi": "ambang hujan, angin, gelombang kelas BMKG; ambang ansambel masih hipotesis"}
 
 
+def h_udara(pusat, prak, hari):
+    """prak = prakiraan.json udara: kota[{lat, lon, r24 = PM2,5 rata-rata 24 jam per hari}], hari[]. Tingkat 0-3 / 3 (Baik dan Sedang = 0), maks hari ini dan besok."""
+    h, tgl = {k: None for k in pusat}, None
+    if prak and hari in prak.get("hari", []):
+        i, tgl = prak["hari"].index(hari), prak["hari"][0]
+        kota = []
+        for c in prak["kota"]:
+            v = [x for x in c["r24"][i:i + 2] if x is not None]
+            if v:
+                kota.append((c["lat"], c["lon"], sum(max(v) > b for b in PM_BATAS[1:]) / 3))
+        for k, (la, lo) in pusat.items():
+            t = terdekat(kota, la, lo, 80) if kota else None
+            h[k] = None if t is None else t[2]
+    return h, {"tanggal": {"prakiraan": tgl}, "umur_hari": {"prakiraan": umur(hari, tgl)},
+               "sumber": "Tingkat 0-3 dari PM2,5 rata-rata 24 jam (Baik dan Sedang = 0, Tidak sehat 1 sampai Berbahaya 3; Permen LHK P.14/2020) hari ini atau besok, kab/kota terdekat paling jauh 80 km, prakiraan CAMS via Open-Meteo",
+               "validasi": "perkiraan model ~40 km, belum dikoreksi alat ukur dan belum diuji balik; skala tingkat/3 mengikuti kekeringan dan cuaca, bukan bobot baru"}
+
+
 # ---------------------------------------------------------------- kapasitas dinamis (C3)
 def ambil_json(sumber):
     """Berkas lokal atau URL -> isi JSON, atau None (gagal, 404, bukan JSON). Tidak pernah melempar."""
@@ -330,6 +363,7 @@ def bangun(src, hari, kapasitas=None):
     H["gunungapi"], M["gunungapi"] = h_gunungapi(pusat, src["gunungapi_status"], src["paparan_geo"])
     H["kekeringan"], M["kekeringan"] = h_kekeringan(pusat, src["kekeringan_grid"], src["kekeringan_meta"], hari)
     H["cuaca"], M["cuaca"] = h_cuaca(pusat, src["cuaca_kec"], hari, list(kpusat))
+    H["udara"], M["udara"] = h_udara(pusat, src["udara_prakiraan"], hari)
     pend = {k: v for k, v in ((src["penduduk"] or {}).get("kec") or {}).items() if k in set(unit) and v}
     rank = pangkat(pend)
     kantor = [(x["lat"], x["lon"]) for x in (src["bpbd"] or {}).get("kantor", []) if x.get("lat") is not None]
@@ -386,7 +420,7 @@ def muat():
             "paparan_geo": d("public/gunungapi/data/paparan_geo.json"), "kekeringan_grid": d("public/data/kekeringan_grid.json"),
             "kekeringan_meta": d("public/data/kekeringan_meta.json"), "cuaca_kec": d("public/banjir/data/cuaca_kec.json"),
             "penduduk": d("public/data/penduduk.json"), "bpbd": d("public/data/bpbd.json"), "sekolah": d("public/data/sekolah.json"),
-            "fasilitas": d("public/data/fasilitas.json")}
+            "fasilitas": d("public/data/fasilitas.json"), "udara_prakiraan": d("public/udara/data/prakiraan.json")}
 
 
 def siapkan():
@@ -475,6 +509,14 @@ def cek():
     src2 = dict(src, inarisk_gempa=None)
     c = bangun(src2, hari)
     assert all(r[ix["h_gempa"]] is None for r in c["kec"]), "gempa hilang harus null"
+    # udara pada angka tangan: tingkat 0-3 / 3 (Baik dan Sedang = 0), maks hari ini dan besok, titik jauh (> 80 km) = null
+    pk = {"a": (0.0, 100.0), "b": (0.0, 100.8), "c": (5.0, 100.0)}
+    pr = {"hari": [hari, "x", "y"], "kota": [{"lat": 0.0, "lon": 100.0, "r24": [10, 60, 400]}, {"lat": 0.0, "lon": 100.8, "r24": [None, None, 400]}]}
+    hu, mu = h_udara(pk, pr, hari)
+    assert hu == {"a": 1 / 3, "b": None, "c": None}, hu   # a: maks(10, 60) = 60 -> Tidak sehat = 1/3; Sedang (30) = 0; b: tanpa nilai; c: jauh
+    assert h_udara({"a": (0.0, 100.0)}, {"hari": [hari], "kota": [{"lat": 0.0, "lon": 100.0, "r24": [30]}]}, hari)[0] == {"a": 0.0}, "Sedang bukan bahaya"
+    assert all(v is None for v in h_udara(pk, pr, "2030-01-01")[0].values()) and all(v is None for v in h_udara(pk, None, hari)[0].values())
+    assert "udara" in BENCANA and "belum diuji balik" in mu["validasi"]
     # rumus pada angka tangan
     assert risiko({"a": 0.5, "b": None}, 1.0, 0.0) == (50.0, 0.5, "a")
     assert risiko({"a": 0.5}, 1.0, 1.0)[0] == 35.0 and risiko({"a": None}, 1.0, 0.0)[0] is None and risiko({"a": 1.0}, None, 0.0)[0] is None

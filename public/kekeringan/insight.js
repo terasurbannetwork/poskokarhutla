@@ -63,7 +63,7 @@ const Insight = {
       return `<rect class="gy" style="--i:${i}" x="${x}" y="${y}" width="${bw}" height="${Math.max(1, h)}" rx="2" fill="${w(d.nilai)}" opacity="${ini ? 1 : .8}" data-tip="<b>${d.musim} ${d.tahun}</b><br>ONI: ${tanda(d.nilai)}"/>
         <text x="${x + bw / 2}" y="${d.nilai >= 0 ? y - 4 : y + h + 11}" text-anchor="middle" font-size="9.5" font-weight="${ini ? 800 : 600}" opacity=".85" pointer-events="none">${d.nilai < 0 ? "−" : ""}${F1(Math.abs(d.nilai))}</text>
         ${i % 6 === (o.length - 1) % 6 ? `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="10" opacity=".7" font-weight="${ini ? 800 : 400}">${d.musim} ${String(d.tahun).slice(2)}</text>` : ""}`; }).join("");
-    if (E.iod) g += this.p(Lm, 2, `${E.iod}${E.dmi != null ? " · DMI " + tanda(E.dmi) : ""}`, E.dmi >= .4 ? "#a8671c" : "#5f6fb0")[0];
+    if (E.iod) g += this.p(Lm, 2, `${E.iod}${E.dmi != null ? ", DMI " + tanda(E.dmi) : ""}`, E.dmi >= .4 ? "#a8671c" : "#5f6fb0")[0];
     const kuat = Math.abs(E.oni) >= 2 ? "sangat kuat" : Math.abs(E.oni) >= 1.5 ? "kuat" : Math.abs(E.oni) >= 1 ? "sedang" : "lemah";
     Kartu.leg([[MERAH, "El Niño (ONI ≥ +0,5)"], [BIRU, "La Niña (ONI ≤ −0,5)"], ["#9aa4b2", "Netral"]]);
     return this.ex(`${E.status} ${kuat}: ONI ${this.hl(tanda(E.oni))} (${E.musim} ${E.tahun})${E.peluang && E.hingga ? `; NOAA: ${this.hl(fmt(E.peluang) + "%")} bertahan hingga ${E.hingga}` : ""}`, "", "",
@@ -98,12 +98,12 @@ const Insight = {
     const P = S.prak, L = P?.nasional?.lead; if (!L?.length) return "";
     const bl = BLN_PRAK(), M = innerWidth < 640, W = M ? 700 : 940, H = 230, Lm = 20, B0 = 176, T0 = 40, gw = (W - Lm - 10) / L.length, bw = Math.min(70, gw / 4.2);
     const mx = Math.max(25, ...L.flatMap(l => [l.pk1, l.pk15, l.pk2])), Y = v => B0 - v / mx * (B0 - T0), WR = [JINGGA, MERAH, "#8e2a1f"], NM = ["SPI-3 ≤ −1", "≤ −1,5", "≤ −2"];
-    let g = this.p(Lm, 2, BELUM_UJI + " · ECMWF SEAS5 tanpa koreksi bias", NAVY)[0];
+    let g = this.p(Lm, 2, BELUM_UJI + ", ECMWF SEAS5 tanpa koreksi bias", NAVY)[0];
     g += L.map((l, i) => { const cx = Lm + gw * i + gw / 2, bs = BASELINE_PRAK("pk1", i);
       const bars = [l.pk1, l.pk15, l.pk2].map((v, j) => { const x = cx + (j - 1) * (bw + 6) - bw / 2, h = Math.max(1, B0 - Y(v));
         return `<rect class="gy" style="--i:${i * 3 + j}" x="${x}" y="${Y(v)}" width="${bw}" height="${h}" rx="3" fill="${WR[j]}" data-tip="<b>${esc(bl[i] || "")}</b><br>Peluang ${NM[j]}: ${fmt(v)}% (rerata nasional tertimbang penduduk)"/><text x="${x + bw / 2}" y="${Y(v) - 5}" text-anchor="middle" font-size="11" font-weight="800" opacity=".85" pointer-events="none">${fmt(Math.round(v))}%</text>`; }).join("");
       const base = bs != null ? `<line x1="${cx - (bw + 6) - bw / 2 - 5}" x2="${cx - (bw + 6) + bw / 2 + 5}" y1="${Y(bs)}" y2="${Y(bs)}" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3" opacity=".7"><title>baseline klimatologi</title></line>` : "";
-      return bars + base + `<text x="${cx}" y="${H - 6}" text-anchor="middle" font-size="12" font-weight="700">${esc(bl[i] || "")}${bs != null ? ` · garis putus = baseline ${fmt(Math.round(bs))}%` : ""}</text>`; }).join("");
+      return bars + base + `<text x="${cx}" y="${H - 6}" text-anchor="middle" font-size="12" font-weight="700">${esc(bl[i] || "")}${bs != null ? `, garis putus = baseline ${fmt(Math.round(bs))}%` : ""}</text>`; }).join("");
     Kartu.leg(WR.map((w, j) => [w, "Peluang " + NM[j]]));
     const bs0 = BASELINE_PRAK("pk1", 0), jiwa = P.nasional.jiwa_pk1_50?.[0];
     const rows = Object.entries(P.prov || {}).filter(([, o]) => prakAda(o)).map(([k, o]) => ({k, nm: namaProv(k), lead: o.lead}));
@@ -193,6 +193,7 @@ const Insight = {
     if (this.pel === undefined) { this.pel = null; if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { if (d) { this.pel = d; if (el.isConnected) this.render(); } }); }
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
+    Cerita.sisip(el, "kekeringan");
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="/kekeringan/simulasi" data-tab="simulasi">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);
     el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };
@@ -204,3 +205,7 @@ const Insight = {
       const kb = e.target.closest("[data-kab]"); if (kb) { const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab))); return; } };
   },
 };
+/* kartu Cerita (inti/cerita.js): rekap BNPB per tahun + status dasarian terbaru, dari dampak_kekeringan.json */
+Cerita.daftar("kekeringan", async () => { const D = await muatJSON("../banjir/data/dampak_kekeringan.json").catch(() => null), c = Cerita.dibi(D?.tahunan, "terdampak", "kekeringan"); if (!c) return null;
+  const P = D.terpapar, st = P?.kab_awas ? [["#c9503a", "Status", `Pada dasarian ${fmt(D.dasarian)}, ${fmt(P.kab_awas)} kabupaten/kota berstatus Awas kekeringan, dihuni ${Cerita.kata(P.jiwa_awas)} jiwa.`]] : [];
+  return {judul: c.judul, baris: [...st, ...c.baris], sumber: "BNPB, data.bnpb.go.id; deteksi Pantau Bencana (NASA POWER, ECMWF, ERA5-Land); WorldPop"}; });

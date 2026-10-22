@@ -142,11 +142,12 @@
   }
   /* bunyi pendek sekali per darurat baru; peramban butuh ketukan sebelumnya, jadi gagal diam-diam */
   function bunyiDarurat() { try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.type = "square"; o.frequency.value = 880; g.gain.value = .12; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .6); o.onended = () => c.close(); } catch (e) {} }
+  let titikIni = "titik api";   // kata lokasi tugas ini (titik api, lokasi banjir, ...) dari kamus KartuApi
   function barisHtml(p, admin, kini) {
     const [k, kls] = keadaan(p), mati = p.status !== "aktif", pos = p.posisi, umur = pos ? kini - pos.pada : null, lamaPos = umur != null && umur > 5 * MENIT && p.berangkat_pada && !p.tiba_pada && !mati;
     return `<article class="tg-orang${p.darurat && p.status === "aktif" ? " tg-ada-darurat" : ""}" data-pid="${esc(p.id)}">${daruratHtml(p)}<div class="tg-o-kepala"><b>${esc(p.nama)}</b><span class="tg-peran">${esc(PERAN[p.peran] || p.peran)}, ${ang(p.orang, 0)} orang</span>${pil(k, kls)}${p.dummy ? pil("Contoh", "") : ""}</div>
       <p class="tg-o-info">${pos ? `Posisi ${esc(jamWIB(pos.pada))} WIB (${esc(lama(umur))})${pos.akurasi != null ? `, akurasi sekitar ${ang(pos.akurasi, 0)} m` : ""}.` : "Belum ada posisi."}
-        ${p.jarak_km != null ? ` <b>${ang(p.jarak_km)} km</b> dari titik api (garis lurus)${p.eta_menit != null ? `, ETA kasar ${ang(p.eta_menit, 0)} menit` : ""}.` : ""}${lamaPos ? ` ${pil("Posisi lama: layar mati atau sinyal hilang?", "merah")}` : ""}</p>
+        ${p.jarak_km != null ? ` <b>${ang(p.jarak_km)} km</b> dari ${titikIni} (garis lurus)${p.eta_menit != null ? `, ETA kasar ${ang(p.eta_menit, 0)} menit` : ""}.` : ""}${lamaPos ? ` ${pil("Posisi lama: layar mati atau sinyal hilang?", "merah")}` : ""}</p>
       <p class="lp-kecil">Persiapan: ${ang(p.ringkas.wajib_centang, 0)} dari ${ang(p.ringkas.wajib, 0)} butir wajib dicentang.${p.berangkat_pada ? ` Berangkat ${esc(jamWIB(p.berangkat_pada))} WIB.` : ""}${p.tiba_pada ? ` Tiba ${esc(jamWIB(p.tiba_pada))} WIB.` : ""}${p.selesai_pada ? ` Selesai ${esc(jamWIB(p.selesai_pada))} WIB.` : ""}</p>
       <details class="in-rinci tg-cek"><summary>Checklist persiapan</summary><ul class="tg-cek-daftar">${p.butir.map(b => `<li><label><input type="checkbox" data-tg="centang" data-p="${esc(p.id)}" data-k="${esc(b.k)}"${p.checklist[b.k] ? " checked" : ""}${admin || mati ? " disabled" : ""}><span>${esc(b.teks)}${b.wajib ? "" : b.saran ? " (disarankan)" : " (opsional)"}${p.checklist[b.k] ? ` <small>dicentang ${esc(jamWIB(p.checklist[b.k]))}</small>` : ""}</span></label></li>`).join("")}</ul></details>
       ${admin ? "" : `<div class="tg-o-aksi">${p.status === "aktif" ? `<button type="button" class="lp-tombol" data-tg="cabut" data-p="${esc(p.id)}">Cabut tautan</button>` : ""}<button type="button" class="lp-tombol" data-tg="ulang" data-p="${esc(p.id)}">Terbitkan ulang tautan</button></div>`}</article>`;
@@ -179,6 +180,7 @@
   function pasangInti(t, wadah, admin) {
     if (aktif?.timer) clearInterval(aktif.timer);   // panel lama berhenti polling
     wadah.__tgOff?.();
+    titikIni = window.KartuApi?.KAMUS?.[window.KartuApi.idBencana(t)]?.titik || "titik api";
     const saya = ++gen, S = {t, wadah, admin, daftar: [], peta: null, penanda: new Map(), pernahFit: false, timer: null, muatPeta: false};
     aktif = S;
     const url = admin ? `/api/instansi/admin/penugasan/${t.id}` : `/api/instansi/penugasan/${t.id}`, boleh = !admin && t.status === "buka";
@@ -285,7 +287,7 @@
       pembuka.disabled = true;
       try {
         const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/instansi_ops.css?v=1"; document.head.append(l);
-        await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "/instansi_ops.js?v=1"; sc.onload = ok; sc.onerror = () => no(new Error("skrip operasi gagal dimuat")); document.head.append(sc); });
+        await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "/instansi_ops.js?v=3"; sc.onload = ok; sc.onerror = () => no(new Error("skrip operasi gagal dimuat")); document.head.append(sc); });
       } catch (e) { pembuka.disabled = false; pembuka.textContent = "Layar operasi belum bisa dimuat, coba lagi"; return; }
       pembuka.disabled = false;
     }

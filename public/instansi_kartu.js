@@ -59,8 +59,64 @@
     return {id: k.insiden || null, di, se, sit, kb, ada: !!(titik || luas || aktif || kons.length || kb.length)};
   }
 
+
+  /* ---- multi-bahaya: kamus kata per bahaya (cermin src/tugas_bencana.js `kata`) dan kartu bahaya selain karhutla ----
+     Kunci status yang dikirim ke server TETAP menyala/bara/padam/bukan_api; hanya label layarnya yang berganti. Gempa tidak punya tombol selesai (kaji cepat dan laporan regu saja). */
+  const KAMUS = {
+    karhutla: {nama: "Karhutla", sebut: "Api", titik: "titik api", selesai: "padam", tutup: "api padam", kondisi: "Kondisi api", st: {menyala: "Masih menyala", bara: "Tinggal bara", padam: "Sudah padam", bukan_api: "Bukan api"}},
+    banjir: {nama: "Banjir", sebut: "Banjir", titik: "lokasi banjir", selesai: "surut", tutup: "banjir surut", kondisi: "Kondisi banjir", st: {menyala: "Masih tergenang", bara: "Mulai surut", padam: "Sudah surut", bukan_api: "Bukan banjir"}},
+    gempa: {nama: "Gempa", sebut: "Gempa", titik: "lokasi terdampak", selesai: "selesai", tutup: "kaji cepat selesai", kondisi: "Hasil kaji cepat", tanpaSelesai: true, st: {menyala: "Ada kerusakan atau korban", bara: "Kerusakan ringan", bukan_api: "Tanpa dampak"}},
+    gunungapi: {nama: "Gunungapi", sebut: "Gunungapi", titik: "lokasi pos pantau", selesai: "turun status", tutup: "status turun", kondisi: "Kondisi di lokasi", st: {menyala: "Masih aktif", bara: "Mereda", padam: "Status sudah turun", bukan_api: "Tidak ada dampak"}},
+    cuaca: {nama: "Cuaca ekstrem", sebut: "Cuaca ekstrem", titik: "lokasi terdampak", selesai: "berakhir", tutup: "cuaca ekstrem berakhir", kondisi: "Kondisi cuaca", st: {menyala: "Masih berlangsung", bara: "Mereda", padam: "Sudah berakhir", bukan_api: "Tidak terjadi"}},
+    kekeringan: {nama: "Kekeringan", sebut: "Kekeringan", titik: "lokasi terdampak", selesai: "membaik", tutup: "kekeringan membaik", kondisi: "Kondisi kekeringan", st: {menyala: "Masih kering", bara: "Mulai membaik", padam: "Sudah membaik", bukan_api: "Tidak terjadi"}},
+    udara: {nama: "Kualitas udara", sebut: "Kualitas udara", titik: "lokasi terdampak", selesai: "membaik", tutup: "udara membaik", kondisi: "Kondisi udara", st: {menyala: "Masih buruk", bara: "Mulai membaik", padam: "Sudah membaik", bukan_api: "Tidak terjadi"}}};
+  const idBencana = t => Object.hasOwn(KAMUS, t?.bencana) ? t.bencana : "karhutla";
+  const LEVEL_GA = {1: "Normal", 2: "Waspada", 3: "Siaga", 4: "Awas"};
+  const SUMBER_B = {banjir: "Sumber: data hujan, peringatan banjir, dan hitungan Pantau Bencana.", gempa: "Sumber: BMKG dan hitungan Pantau Bencana (penduduk WorldPop).", gunungapi: "Sumber: PVMBG (MAGMA Indonesia) dan hitungan Pantau Bencana.",
+    cuaca: "Sumber: peringatan dini BMKG.", kekeringan: "Sumber: indeks kekeringan (SPI) dan hitungan Pantau Bencana.", udara: "Sumber: data kualitas udara dan hitungan Pantau Bencana."};
+  const str = v => typeof v === "string" && v.trim() ? v.trim().slice(0, 300) : null;
+  /* [kunci kartu, label, pemformat, satuan]; baris pertama yang terisi menjadi angka kunci (oranye) */
+  const KARTU_B = {
+    banjir: [["jiwa_terdampak", "Penduduk terdampak", v => `sekitar ${a2(v)}`, "jiwa"], ["hujan_mm", "Hujan", v => ang(v, 0), "mm"]],
+    gempa: [["mag", "Magnitudo", v => ang(v, 1), ""], ["mmi_maks", "Guncangan terkuat", v => ang(v, 0), "MMI"], ["jiwa_mmi6", "Penduduk di wilayah MMI 6 atau lebih", v => `sekitar ${a2(v)}`, "jiwa", "perkiraan model, belum diuji"], ["dalam_km", "Kedalaman", v => ang(v, 0), "km"]],
+    gunungapi: [["level", "Level PVMBG", v => LEVEL_GA[v] ? `${ang(v)}, ${LEVEL_GA[v]}` : ang(v), ""], ["radius_krb_km", "Radius kawasan rawan bencana", v => ang(v, 1), "km"], ["jiwa_krb", "Penduduk dalam radius", v => `sekitar ${a2(v)}`, "jiwa"]],
+    cuaca: [["jenis_peringatan", "Jenis peringatan", v => str(v) && kata(str(v)), ""], ["berlaku_hingga", "Berlaku hingga", v => waktu(v), ""], ["jiwa_kab_terlibat", "Penduduk kabupaten terlibat", v => `sekitar ${a2(v)}`, "jiwa"]],
+    kekeringan: [["spi3", "SPI 3 bulan", v => ang(v, 2), ""], ["hari_tanpa_hujan", "Hari tanpa hujan", v => ang(v, 0), "hari"], ["jiwa_kab_terlibat", "Penduduk kabupaten terlibat", v => `sekitar ${a2(v)}`, "jiwa"]],
+    udara: [["ispu", "ISPU", v => ang(v, 0), ""], ["polutan", "Polutan utama", v => str(v), ""], ["tren", "Tren", v => str(v) && kata(str(v)), ""]]};
+  function susunBencana(b, t, kartu) {
+    const k = obj(kartu) || {}, baris = [];
+    for (const [c, label, f, sat, cat] of KARTU_B[b] || []) {
+      const v = k[c], ok = typeof v === "string" ? !!str(v) : num(v); if (!ok) continue;
+      const isi = f(v); if (isi) baris.push([label, sat ? `${isi} ${sat}` : isi, cat]);
+    }
+    if (num(k.jiwa) && !(KARTU_B[b] || []).some(x => x[0] === "jiwa")) baris.push(["Penduduk terpapar", `sekitar ${a2(k.jiwa)} jiwa`]);
+    const syarat = (Array.isArray(k.syarat) ? k.syarat : []).filter(x => typeof x === "string").map(kata);
+    return {id: str(k.insiden), baris, dasar: str(k.dasar), syarat, nav: num(t?.lat) && num(t?.lon) ? navUrl(t.lat, t.lon) : null, titik: koor(t?.lat, t?.lon), hipotesis: t?.hipotesis === true || k.hipotesis === true, ada: baris.length > 0};
+  }
+  function teksBencana(b, t, kartu) {
+    const m = KAMUS[b], s = susunBencana(b, t, kartu), o = [`*KARTU ${m.sebut.toUpperCase()}${s.id ? " " + s.id : ""}*`];
+    const lok = [t?.kec && `Kecamatan ${t.kec}`, t?.kab].filter(Boolean).join(", ");
+    if (lok || s.titik) o.push(`*Di mana:* ${[lok, s.titik].filter(Boolean).join(", ")}.`);
+    if (s.nav) o.push(`Navigasi ke ${m.titik}: ${s.nav}`);
+    if (s.baris.length) o.push(`*Situasi:* ${s.baris.map(([n, v, c]) => `${n.toLowerCase()} ${v}${c ? ` (${c})` : ""}`).join(", ")}.`);
+    if (s.dasar) o.push(`Dasar: ${s.dasar}.`);
+    if (s.hipotesis) o.push("Status: hipotesis, ambang belum teruji."); o.push(SUMBER_B[b] + " Belum divalidasi lapangan."); return o.join("\n");
+  }
+  function htmlBencana(b, t, kartu) {
+    const m = KAMUS[b], s = susunBencana(b, t, kartu), [u, ...sisa] = s.baris;
+    return `<section class="kp-kartu" aria-label="Kartu ${esc(m.sebut)}"><div class="kp-kepala"><h2>Kartu ${esc(m.sebut)}</h2>${s.id ? `<span class="kp-id">${esc(s.id)}</span>` : ""}${s.hipotesis ? pil("Hipotesis") : ""}${pil("Perkiraan", "emas")}</div>
+      <div class="kp-bag"><h3>Di mana</h3>${s.titik ? `<p class="kp-utama">${esc(s.titik)}</p>` : `<p class="kp-redup">Koordinat belum tersedia.</p>`}${baris("Wilayah", esc([t?.kec && `Kecamatan ${t.kec}`, t?.kab].filter(Boolean).join(", ")))}
+        ${s.nav ? `<a class="kp-tombol utama kp-nav" href="${esc(s.nav)}" target="_blank" rel="noopener noreferrer">Navigasi ke ${esc(m.titik)}</a>` : ""}</div>
+      <div class="kp-bag"><h3>Situasi</h3>${u ? `<p class="kp-utama">${esc(u[1])}</p><p class="kp-baris"><span class="kp-k">${esc(u[0])}</span>${u[2] ? pil(u[2], "emas") : ""}</p>` : `<p class="kp-redup">Belum ada angka untuk kejadian ini.</p>`}
+        ${sisa.map(([n, v, c]) => baris(n, esc(v) + (c ? " " + pil(c, "emas") : ""))).join("")}${baris("Dasar", s.dasar && esc(s.dasar))}${s.syarat.length ? baris("Alasan prioritas", esc(s.syarat.join(", "))) : ""}</div>
+      <p class="kp-sumber">${esc(SUMBER_B[b])} Belum divalidasi lapangan.</p>
+      <div class="kp-aksi"><button type="button" class="kp-tombol" data-kp="salin">Salin teks WhatsApp</button><a class="kp-tombol" data-kp="wa" href="https://wa.me/?text=${encodeURIComponent(teksBencana(b, t, kartu))}" target="_blank" rel="noopener noreferrer">Buka WhatsApp</a><button type="button" class="kp-tombol" data-kp="cetak">Cetak</button></div>
+      <p class="kp-pesan" role="status" aria-live="polite"></p></section>`;
+  }
+
   /* teks ringkas siap kirim WhatsApp; tanpa tanda pemisah titik tengah */
   function teks(t, kartu) {
+    const bc = idBencana(t); if (bc !== "karhutla") return teksBencana(bc, t, kartu);
     const s = susun(t, kartu), b = [`*KARTU API${s.id ? " " + s.id : ""}*`];
     if (s.di.front) b.push(`*Di mana:* ${s.di.front}${s.di.radius ? `, ${s.di.radius}` : ""}${s.di.sensor ? `, ${s.di.sensor}` : ""}${s.di.waktu ? `, ${s.di.waktu}` : ""}.`);
     if (s.di.masuk) b.push(`Titik masuk: ${s.di.masuk}.`);
@@ -78,6 +134,7 @@
   const pil = (txt, warna = "") => `<span class="kp-pil ${warna}">${esc(txt)}</span>`;
   const baris = (nama, isi) => isi ? `<p class="kp-baris"><span class="kp-k">${esc(nama)}</span> ${isi}</p>` : "";
   function html(t, kartu) {
+    const bc = idBencana(t); if (bc !== "karhutla") return htmlBencana(bc, t, kartu);
     const s = susun(t, kartu); if (!s.ada && !s.id) return "";
     const di = s.di, se = s.se, sit = s.sit;
     const sitIsi = [sit.lahan && baris("Lahan", esc(sit.lahan)), ...sit.kons.map(x => baris("Konsesi", esc(x))), baris("Cuaca", sit.cuaca && esc(sit.cuaca)),
@@ -108,5 +165,5 @@
       window.addEventListener("afterprint", bersih); window.print();
     });
   }
-  window.KartuApi = {html, teks, pasang, susun};
+  window.KartuApi = {html, teks, pasang, susun, KAMUS, idBencana};
 })();
