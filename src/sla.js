@@ -23,7 +23,7 @@ import {tenggat, PROV} from "./instansi.js";
 import {labelBencana, bencanaId} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
-const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9"};
+const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9", jeda_satelit: "Jeda satelit lewat sampai data terbit"};
 /* urutan tahap; pasangan berurutan = tahap yang diukur */
 export const TAHAP = [["deteksi", "tugas"], ["tugas", "konfirmasi"], ["konfirmasi", "kabar"], ["konfirmasi", "tiba"], ["tiba", "padam"], ["padam", "terverifikasi"]];
 const kunciTahap = ([d, k]) => d === "deteksi" ? "deteksi_tugas" : `${d}_${k}`;

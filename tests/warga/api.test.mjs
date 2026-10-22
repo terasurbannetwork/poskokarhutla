@@ -556,3 +556,18 @@ uji("GET /cuaca/simulasi menyajikan public/cuaca/simulasi.html, /udara/simulasi 
   assert.equal(judul((await panggil("GET", "/cuaca/peta")).teks), judul(baca("cuaca/index.html")));
   assert.equal(judul((await panggil("GET", "/udara/simulasi")).teks), judul(baca("udara/index.html")));
 });
+
+/* PROGRAM-15-JAM blok E: jeda satelit lewat -> data terbit, dari meta.json (dibuat - data_terakhir); tanpa ambang, tidak pernah 503 */
+uji("status: jeda satelit dari meta.json, tanpa ambang dan tanpa data_terakhir tidak dilaporkan", async () => {
+  const lama = ASET_UJI["/data/meta.json"], iso = jam => new Date(KINI - jam * JAM).toISOString();
+  try {
+    ASET_UJI["/data/meta.json"] = JSON.stringify({dibuat: iso(1), data_terakhir: iso(3.5), isi: "x".repeat(2000)});
+    let r = await panggil("GET", "/api/status");
+    assert.equal(r.j.sumber.jeda_satelit?.umur_jam, 2.5, r.teks);
+    assert.equal(r.j.sumber.jeda_satelit.ambang_jam, null);
+    assert.ok(!r.j.basi.includes("jeda_satelit"), "jeda tanpa ambang tidak boleh membuat 503");
+    ASET_UJI["/data/meta.json"] = JSON.stringify({dibuat: iso(1)});
+    r = await panggil("GET", "/api/status");
+    assert.ok(!("jeda_satelit" in r.j.sumber), "tanpa data_terakhir: tidak ada angka, bukan nol");
+  } finally { if (lama === undefined) delete ASET_UJI["/data/meta.json"]; else ASET_UJI["/data/meta.json"] = lama; }
+});
