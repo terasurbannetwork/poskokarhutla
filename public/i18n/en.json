@@ -1,5 +1,7 @@
 {
 "kamus": {
+"ha luas terbakar": "ha burned area",
+"ha belum padam": "ha not extinguished",
 "Perkiraan model guncangan, bukan laporan kerusakan. Sumber: OurAirports, model guncangan Pantau Bencana": "Shaking model estimate, not a damage report. Source: OurAirports, Pantau Bencana shaking model",
 "{0} bandara diperkirakan MMI VI atau lebih, lima teratas ditampilkan. Perkiraan model guncangan, bukan laporan kerusakan. Sumber: OurAirports, model guncangan Pantau Bencana": "{0} airports estimated at MMI VI or higher, top five shown. Shaking model estimate, not a damage report. Source: OurAirports, Pantau Bencana shaking model",
 "Warna semu: tanah terbuka segar tampak terang. Sumber: Copernicus Sentinel-2 via Earth Search": "False color: freshly exposed ground appears bright. Source: Copernicus Sentinel-2 via Earth Search",

@@ -1997,12 +1997,15 @@ const Peta = {
       const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
         hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true});
-        const k = f.properties.kunci, kp = k.split("|"), kl = klusterDi(k), pr = kl.filter(x => x.properties.level === 3).length, fw = kp.length === 1 ? S.wilayah[k]?.fwi_maks : null;
+        const k = f.properties.kunci, kp = k.split("|"), kl = klusterDi(k), pr = kl.filter(x => x.properties.level === 3).length, fw = kp.length === 1 ? S.wilayah[k]?.fwi_maks : null, pk = kp.length === 1 && !S.jalur.length ? S.pk?.prov[k] : null, ph = pk ? pkHari() : 0;
         kartuWil = kartuTip({judul: esc(f.properties.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "",
           /* titik = hari terpilih (satu hari WIB); kompleks = aktif (terdeteksi <= 72 jam, gambut kering 168 jam) tanpa ikut hari terpilih, jadi labelnya disebut */
+          /* luas terbakar dan belum padam (perkiraan satelit per provinsi) tampil berdua begitu data luas dimuat (ukuran Luas terbakar atau Belum padam; pemilik, 22 Okt 2026);
+             urutannya membuat kolom kanan berisi hektar: titik|luas, kompleks|belum padam, FWI|prioritas */
           stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"],
-            ...(ukurAktif() === "hot" ? [] : [["puncak", fmt(nilaiWil(k)), `ha ${UKUR[ukurAktif()].toLowerCase()}<br>${tglLain(S.pk.hari[pkHari()])}`, "#d9600b"]]), ["api", kl.length, "kompleks aktif", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
-            ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : [])], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
+            ...(pk ? [["puncak", fmt(pk.luas[ph] || 0), `ha luas terbakar<br>${tglLain(S.pk.hari[ph])}`, "#d9600b"]] : []), ["api", kl.length, "kompleks aktif", "#5f6fb0"],
+            ...(pk ? [["api", fmt(pk.belum[ph] || 0), `ha belum padam<br>${tglLain(S.pk.hari[ph])}`, "#c9503a"]] : []),
+            ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : []), ["skor", pr, "prioritas", "#c9503a", pr > 0]], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || $("#tip")._pf || Riwayat._diGelembung) return;
       tampilTip(kartuWil, e.originalEvent); });
