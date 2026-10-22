@@ -19,6 +19,9 @@
 <link rel="stylesheet" href="/instansi_tugaskan.css?v=3">
 <link rel="stylesheet" href="/instansi_ops.css?v=1">
 <link rel="stylesheet" href="/instansi_korban.css?v=1">
+<link rel="stylesheet" href="/instansi_push.css?v=1">
+<link rel="manifest" href="/instansi.webmanifest">
+<link rel="apple-touch-icon" href="/img/logo.svg">
 </head>
 <body>
 <header class="ad-top">
@@ -85,6 +88,10 @@
 
   <section id="vUtama" hidden>
     <div id="banner" class="in-banner" role="status" hidden></div>
+    <div id="push" class="in-push" hidden>
+      <p id="pushInfo" class="lp-kecil" role="status" aria-live="polite"></p>
+      <div class="in-push-aksi"><button type="button" id="pushNyala" class="lp-tombol utama">Nyalakan notifikasi</button><button type="button" id="pushUji" class="lp-tombol" hidden>Kirim notifikasi uji</button><button type="button" id="pushMati" class="lp-tombol" hidden>Matikan</button></div>
+    </div>
     <nav id="tab" class="ad-tabs in-tab" aria-label="Menu instansi">
       <button type="button" data-tab="tugas" aria-pressed="true">Tugas api</button>
       <button type="button" data-tab="kontak" aria-pressed="false">Kontak konsesi</button>
@@ -104,5 +111,6 @@
 <script src="/instansi_alat.js?v=3" defer></script>
 <script src="/instansi_laporan.js?v=2" defer></script>
 <script src="/instansi_korban.js?v=2" defer></script>
+<script src="/instansi_push.js?v=1" defer></script>
 </body>
 </html>

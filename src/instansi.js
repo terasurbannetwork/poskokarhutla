@@ -147,11 +147,16 @@ async function gantiSandi(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`)), s = await sandiBaru();
   await env.DB.batch([env.DB.prepare("UPDATE instansi_akun SET garam = ?, sandi_sha = ?, wajib_ganti = 0 WHERE id = ?").bind(s.garam, s.sandi_sha, a.id),
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND token_sha != ?").bind(a.id, await sha(m[1])), stmtJejak(env, "pengguna", a.id, "ganti_sandi", null, kini)]);
+  await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ?").bind(a.id).run().catch(() => {});   // sesi lain dicabut: perangkat lain tidak boleh tetap menerima push (migrasi 0040 belum ada = dilewati)
   return json({sandi: s.sandi});   // tampil sekali; tidak disimpan, tidak di-log
 }
 async function keluar(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));
-  if (m) await env.DB.prepare("DELETE FROM instansi_sesi WHERE token_sha = ?").bind(await sha(m[1])).run();
+  if (m) {
+    const a = await sesiDari(env, req, kini), ep = await req.json().then(b => b?.endpoint, () => null);   // klien mengirim endpoint perangkat ini (instansi_push.js); tanpa itu hanya sesi yang dicabut
+    await env.DB.prepare("DELETE FROM instansi_sesi WHERE token_sha = ?").bind(await sha(m[1])).run();
+    if (a && typeof ep === "string" && ep.length <= 1000) await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ? AND endpoint = ?").bind(a.id, ep).run().catch(() => {});
+  }
   return denganCookie(json({ok: true}), cookieSet("", 0));
 }
 async function saya(env, req, kini) {
@@ -1189,7 +1194,7 @@ export async function personelProvinsi(env, tanggal) {
 
 /* ================================================================ halaman /instansi + rute */
 /* peta desktop: MapLibre dari cdnjs (dengan SRI di klien) dan ubin openfreemap, sama dengan /lapangan */
-const CSP_INSTANSI = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_INSTANSI = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.openfreemap.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 async function halamanPublik(env, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/instansi.html", url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman instansi tidak ada"); }

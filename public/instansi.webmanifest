@@ -1,0 +1,12 @@
+{
+  "name": "Pantau Bencana: Instansi",
+  "short_name": "Instansi",
+  "description": "Tugas api untuk pemda, polisi, dan TNI",
+  "start_url": "/instansi",
+  "scope": "/instansi",
+  "display": "standalone",
+  "background_color": "#0b2545",
+  "theme_color": "#0b2545",
+  "lang": "id",
+  "icons": [{"src": "/img/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

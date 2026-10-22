@@ -560,7 +560,14 @@
     "table ops_kunjungan": "ops: migrasi 0039 idempoten",
     "table ops_drone_unggah": "ops: migrasi 0039 idempoten",
     "table ops_drone": "ops: migrasi 0039 idempoten",
-    "table ops_tmat": "ops: migrasi 0039 idempoten"
+    "table ops_tmat": "ops: migrasi 0039 idempoten",
+    "GET /api/instansi/push/status": "push: langganan sah tersimpan, status memuat kunci publik",
+    "POST /api/instansi/push/langganan": "push: langganan liar ditolak 400",
+    "POST /api/instansi/push/berhenti": "push: akun lain tidak bisa berhenti langganan milik akun lain",
+    "POST /api/instansi/push/uji": "push: kirim notifikasi uji ke perangkat akun itu",
+    "cron kirimPushDaerah": "push: cron hanya jam UTC kelipatan 3 mulai menit 25",
+    "table push_langganan": "push: langganan sah tersimpan",
+    "table push_akun": "push: semua nol tidak mengirim apa pun"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

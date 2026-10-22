@@ -1,0 +1,3 @@
+.in-push{display:grid;gap:8px;margin:0 0 14px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--c5) 8%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c5) 25%,transparent)}
+.in-push p{margin:0}
+.in-push-aksi{display:flex;flex-wrap:wrap;gap:8px}
