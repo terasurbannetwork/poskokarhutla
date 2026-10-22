@@ -988,11 +988,16 @@ Ditetapkan di Jakarta"""
     # invarian nyata: pasal PERBAN/PERKA yang menyebut "ayat (2)" harus memuat penanda (1) dan (2) di awal baris (>= 90%)
     if glob.glob(f"{MENTAH}/teks/*.json"):
         _, sg = bangun()
-        cand = [x for x in sg if x["jenis"] == "pasal" and x["dok"].split("-")[0] in ("perban", "perka") and "ayat (2)" in x["teks"]]
+        # rujukan ke pasal LAIN ("Pasal 11 ayat (2)") bukan bukti pasal ini beranak ayat; buang sebelum menghitung
+        sendiri = lambda t: re.sub(r"Pasal\s+\d+[A-Z]?\s+ayat\s+\(\d+\)", "", t)
+        pasal = [x for x in sg if x["jenis"] == "pasal" and x["dok"].split("-")[0] in ("perban", "perka")]
+        kasar = [x for x in pasal if "ayat (2)" in x["teks"]]
+        cand = [x for x in pasal if "ayat (2)" in sendiri(x["teks"])]
         ok = [x for x in cand if re.search(r"(?m)^\(1\) ", x["teks"]) and re.search(r"(?m)^\(2\) ", x["teks"])]
         if cand:
             porsi = len(ok) / len(cand)
-            print(f"ayat (1)/(2) di awal baris: {len(ok)}/{len(cand)} pasal = {porsi:.1%}")
+            kasar_ok = sum(1 for x in kasar if re.search(r"(?m)^\(1\) ", x["teks"]) and re.search(r"(?m)^\(2\) ", x["teks"]))
+            print(f"ayat (1)/(2) di awal baris: {len(ok)}/{len(cand)} pasal = {porsi:.1%} (hitungan kasar tanpa buang rujukan pasal lain: {kasar_ok}/{len(kasar)})")
             assert porsi >= 0.9, f"hanya {porsi:.1%} dari {len(cand)} pasal bersitasi 'ayat (2)' memuat penanda (1)/(2) di awal baris"
     # invarian atas keluaran nyata (bila sudah dibangun)
     if os.path.exists(KATALOG):

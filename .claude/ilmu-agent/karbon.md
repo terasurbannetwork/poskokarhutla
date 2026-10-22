@@ -17,7 +17,7 @@ Wilayahmu: `scripts/karbon/**`, `public/karbon/**`, `tests/karbon/**`, `docs/kar
   `ujibalik.py`: ramal hilang 2020–2024 dari laju 2010–2019.
 - `public/karbon/akuntansi.js`: SATU-SATUNYA tempat rumus kredit dan keuangan (modul ES murni, tanpa DOM); dipakai
   layar, worker (`src/karbon.js`, milik warga-api), dan uji `tests/karbon/akuntansi.test.mjs`.
-- Worker dan D1 bukan wilayahmu: `src/karbon.js` + `migrations/0050_karbon.sql` milik warga-api.
+- Worker dan D1 bukan wilayahmu: `src/karbon.js` + `migrations/0051_karbon.sql` milik warga-api.
 - Masukan konsesi sementara: `public/data/lahan/konsesi.geojson` (3.489 poligon, milik pipa-data, data 2014 kebanyakan);
   versi bernama lengkap `data/raw/konsesi/konsesi_lengkap.geojson` (lokal, tidak terbit).
 
@@ -59,3 +59,4 @@ Wilayahmu: `scripts/karbon/**`, `public/karbon/**`, `tests/karbon/**`, `docs/kar
 
 - 22 Okt 2026: modul dibuat. Uji coba Pangean (hph-gfw-29245): hutan 50.196 ha dari 50.255 ha, AGC 8,5 jt tC
   (±169 tC/ha), hilang 2015–2024 ±191 ha/th, emisi GFW ±150 rb tCO2e/th; dokumen COA menulis 755.785 t/th (±5×).
+- 2026-10-23 · 23 Okt 2026: tab Penyaringan kembali 264 ms bukan karena resize peta, tapi karena setFeatureState 1000 poligon saat panel tersembunyi menumpuk render yang baru jalan saat tampil. Tunda warnaiPeta bila panel hidden (flag kotor), warnai di nanti sesudah tampil: 264 ke ~45 ms (Playwright ukur.cjs, 1000 konsesi). Cara tahu: sembunyikan #sgPeta sebelum kembali, waktu turun.

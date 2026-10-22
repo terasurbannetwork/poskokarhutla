@@ -170,7 +170,7 @@ pergantian tanda), payback, harga impas USD/t.
 dari laju 2010–2019, bandingkan dengan aktual. Laporkan median rasio ramal/aktual dan sebarannya.
 Angka ini yang menentukan bawaan `ketidakpastian`.
 
-## 5. Worker (`src/karbon.js`, migrasi `0050_karbon.sql`)
+## 5. Worker (`src/karbon.js`, migrasi `0051_karbon.sql`)
 
 Semua rute `adminOK` dulu, sebelum validasi (tamu tak boleh tahu apa pun). Penguncian optimistis
 memakai kolom `diubah` (pola `src/laporan_bnpb.js`).
@@ -238,7 +238,7 @@ tab Metode; angka pemisah ribuan titik; Rp rata kiri angka rata kanan; bahasa lu
   penguncian optimistis 409, buku kredit menolak saldo negatif dan UPDATE/DELETE (trigger), migrasi
   idempoten, cron dengan GFW tiruan (outboundService) menyisipkan peringatan tanpa ganda.
 - Pengulas: validasi-model (akuntansi, uji balik), guard-api + security-reviewer (rute),
-  migrasi-idempoten (0050), selera-angka + inp-reviewer (layar).
+  migrasi-idempoten (0051), selera-angka + inp-reviewer (layar).
 
 ## 8. Yang sengaja BELUM
 

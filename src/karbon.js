@@ -1,4 +1,4 @@
-/* Modul Karbon (docs/karbon/RANCANGAN.md §5, migrasi 0050_karbon.sql): proyek, pemantauan, pihak, kesepakatan, buku kredit, laporan MRV.
+/* Modul Karbon (docs/karbon/RANCANGAN.md §5, migrasi 0051_karbon.sql): proyek, pemantauan, pihak, kesepakatan, buku kredit, laporan MRV.
    SEMUA rute: gerbang `masuk` PERTAMA, sebelum parse/validasi: (1) host bukan situs Centurisk/localhost = 404 seragam (sama dengan halaman /karbon),
    (2) adminOK (403), (3) env KARBON_OLEH bila diisi = hanya moderator itu (403). Tamu tidak boleh tahu apa pun, termasuk ada/tidaknya baris.
    Kueri GFW dibaca dari public/karbon/gfw_kueri.json (SATU sumber bersama scripts/karbon/gfw.py) lewat ASSETS saat jalan, bukan impor

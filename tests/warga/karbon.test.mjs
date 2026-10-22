@@ -1,4 +1,4 @@
-/* Modul Karbon (src/karbon.js + migrasi 0050) di workerd (Miniflare) dengan D1 dan R2 lokal sungguhan, migrasi apa adanya.
+/* Modul Karbon (src/karbon.js + migrasi 0051) di workerd (Miniflare) dengan D1 dan R2 lokal sungguhan, migrasi apa adanya.
    GFW Data API tiruan lewat outboundService (bentuk respons {data: [...]} seperti data-api.globalforestwatch.org), selain itu 599.
    Jalankan: node --test tests/warga/karbon.test.mjs */
 import {test, before, after} from "node:test";
@@ -68,8 +68,8 @@ const hitung = async t => (await DB.prepare(`SELECT count(*) n FROM ${t}`).first
 const kotak = (x0, y0, x1, y1) => ({type: "Polygon", coordinates: [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]});
 const GEOM = kotak(101.0, 0.5, 101.1, 0.6);
 
-uji("migrasi 0050 idempoten: dijalankan dua kali tanpa galat", async () => {
-  await DB.batch(pecah(readFileSync(path.join(AKAR, "migrations/0050_karbon.sql"), "utf8")).map(s => DB.prepare(s)));
+uji("migrasi 0051 idempoten: dijalankan dua kali tanpa galat", async () => {
+  await DB.batch(pecah(readFileSync(path.join(AKAR, "migrations/0051_karbon.sql"), "utf8")).map(s => DB.prepare(s)));
   for (const t of TABEL) assert.equal(await hitung(t), 0, t);
 });
 
