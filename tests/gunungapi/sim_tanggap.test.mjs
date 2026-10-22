@@ -99,6 +99,7 @@ test("waktu tiba awan panas (garis energi) dan lahar (Manning): terurut, kecepat
   assert.ok(vL > 0.4 && vL <= 25, `kecepatan rata-rata lahar ${vL.toFixed(1)} m/dtk di luar batas`);
   const curam = L.simulasi({dem, n: N, m: N, z: 12, lat: 0, pusat: [C, C], V: 1e5, hl: 0.3, maxJalur: 1, proksimal: 0.5, ambangHulu: 0}).info[0];
   assert.equal(curam.pdc_menit, i.pdc_menit, "hasil harus deterministik");
+  for (const k of ["lahar", "pdc"]) assert.ok(r[k].t.every(Number.isFinite), `${k}: waktu tiba harus terhingga (NaN dari penampang kosong membuat sel hilang dari paparan)`);
 });
 
 test("aman: berangkat dari desa sebelum bahaya (bukan selesai antre); titik kumpul kena memakai jam bahaya titik; hitungan tangan", () => {
