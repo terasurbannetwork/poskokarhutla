@@ -30,6 +30,16 @@
     $("isi").hidden = true; $("tampilanMati").hidden = false; $("matiTeks").textContent = j.galat || "Tautan ini tidak bisa dipakai lagi.";
     pesan(j.galat || "Tautan ini tidak bisa dipakai lagi.", j.alasan === "selesai" ? "ok" : "galat");
   }
+  /* peringatan angin dihitung server (info dimuat ulang tiap 5 menit selagi berangkat); arah mata angin dan arah menjauh dari api */
+  function gambarAngin() {
+    const a = info.angin, w = $("angin"); w.hidden = !a;
+    if (a) w.textContent = `Angin mengarah ke posisimu. ${a.jam_ke ? `Dalam ${a.jam_ke} jam` : "Sekarang"} angin dari ${a.dari_arah} ${ang(a.ws, 0)} km/jam${a.gust != null ? `, hembusan ${ang(a.gust, 0)}` : ""} membawa api dan asap ke arahmu. Bergeserlah ke arah ${a.menjauh_arah}, jauhi arah angin, dan lapor komandan.`;
+  }
+  async function segarkanInfo() {
+    if (mati || !berangkat || document.visibilityState === "hidden") return;
+    const r = await api("GET", "info"); if (r.status === 410) return matikan(r.j); if (r.ok) { info.angin = r.j.angin; gambarAngin(); }
+  }
+  setInterval(segarkanInfo, 5 * 60e3);
   function gambar() {
     const t = info.tugas, p = info.penugasan;
     $("judul").textContent = `${t.kec ? t.kec + ", " : ""}${t.kab}`; $("ciri").textContent = `Koordinat ${ang(t.lat, 4)}, ${ang(t.lon, 4)}`;
@@ -39,7 +49,7 @@
     $("kartuAkses").innerHTML = window.AksesKartu ? window.AksesKartu.html(info.akses) : "";
     $("cara").innerHTML = t.cara?.length ? `<section class="lk-kartu"><h2>Cara pemadaman</h2><span class="ak-pil">Perkiraan, belum divalidasi lapangan</span><ol>${t.cara.map(c => `<li>${esc(c)}</li>`).join("")}</ol>${t.alat?.length ? `<p class="lk-kecil">Alat: ${esc(t.alat.join(", "))}</p>` : ""}</section>` : "";
     if (t.ditutup) pesan("Tugas ini sudah ditutup oleh pihak yang menugaskan. Hubungi mereka sebelum berangkat.", "galat");
-    gambarCek();
+    gambarCek(); gambarAngin();
   }
   function gambarCek() {
     const c = info.checklist || {}, r = info.ringkas;
@@ -120,6 +130,19 @@
     const r = await api("POST", "selesai", {}); selesaiSiap = false;
     if (r.ok) return matikan({galat: "Tugas selesai. Terima kasih, posisimu tidak lagi dikirim.", alasan: "selesai"});
     if (r.status === 410) return matikan(r.j); tombolJalan();
+  });
+
+  /* ---- darurat: dua ketukan (buka pilihan, pilih jenis) supaya tidak terkirim tak sengaja; posisi dibaca sekali lagi, bila gagal terkirim tanpa posisi ---- */
+  const posisiSekali = () => new Promise(res => { if (!navigator.geolocation) return res(posisiAkhir); navigator.geolocation.getCurrentPosition(p => res({lat: p.coords.latitude, lon: p.coords.longitude, akurasi: p.coords.accuracy}), () => res(posisiAkhir), {enableHighAccuracy: true, maximumAge: 15000, timeout: 6000}); });
+  $("bDarurat").addEventListener("click", () => { $("pilihDarurat").hidden = false; $("bDarurat").hidden = true; });
+  $("bDarBatal").addEventListener("click", () => { $("pilihDarurat").hidden = true; $("bDarurat").hidden = false; });
+  $("pilihDarurat").addEventListener("click", async e => {
+    const jenis = e.target?.dataset?.dar; if (!jenis || mati) return;
+    const s = $("statusDarurat"); s.hidden = false; s.className = "lk-status"; s.textContent = "Mengirim panggilan darurat…"; $("pilihDarurat").hidden = true;
+    const p = await posisiSekali(), r = await api("POST", "darurat", {jenis, ...(p ? {lat: p.lat, lon: p.lon, akurasi: Number.isFinite(p.akurasi) ? Math.round(p.akurasi) : null} : {})}, true);
+    if (r.ok) { s.className = "lk-status ok"; s.textContent = `Panggilan darurat terkirim ${jamLokal()}${r.j.posisi_tercatat ? " beserta posisimu" : " tanpa posisi (GPS belum terbaca)"}. Telepon 112 atau komandanmu bila bisa.`; }
+    else { s.className = "lk-status galat"; s.textContent = `Panggilan belum terkirim (${r.j.galat || "tidak ada sinyal"}). Telepon 112 atau komandanmu sekarang. Ketuk Darurat untuk mencoba lagi.`; }
+    $("bDarurat").hidden = false;
   });
 
   /* ---- mulai ---- */

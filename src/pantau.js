@@ -9,7 +9,7 @@
    ponytail: "api di konsesi" = antrean panggilan Posko (cron sudah mencocokkan titik FIRMS dengan konsesi); tugas_api tidak dicocokkan poligon konsesi sendiri (poligon 2,5 MB per provinsi, di luar anggaran CPU baca). */
 import {json, gagal, acak, bacaBody, adminOK} from "./worker.js";
 import {modOK, superOK, tx, wib, RUTE_POSKO} from "./posko.js";
-import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi} from "./instansi.js";
+import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi, butirCekUlang} from "./instansi.js";
 import {PERAN, P_VALIDASI, stafSesi, stafTertahan, stmtStaf, jejakStmt, sandiBaru, bungkusStaf, tanpaTabelStaf} from "./staf.js";
 import {butirInventarisLama, butirP3k} from "./inventaris.js";
 import {butirKorban} from "./korban.js";
@@ -33,6 +33,7 @@ export const JENIS = {
   omc_tanpa_hasil: {label: "Sortie OMC belum ada hasil", peran: ["tmc"], tautan: "/admin/omc"},
   inventaris_lama: {label: "Inventaris lebih dari 30 hari belum diperbarui", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   api_muncul_lagi: {label: "Api muncul lagi setelah dilaporkan padam", peran: ["pusdalops"], tautan: "/admin/instansi"},
+  cek_ulang_jatuh_tempo: {label: "Cek ulang lapangan gambut lewat jadwal", peran: ["pusdalops"], tautan: "/admin/instansi"},
   korban_baru: {label: "Laporan korban jiwa belum diverifikasi", peran: ["pusdalops"], tautan: "/admin/korban"},   // prioritas 0 = tertinggi, di atas "Segera"
   p3k_kedaluwarsa: {label: "Barang P3K kedaluwarsa atau hampir kedaluwarsa", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   p3k_stok: {label: "Stok P3K di bawah ambang", peran: ["pusdalops"], tautan: "/admin/inventaris"},
@@ -119,7 +120,8 @@ const inventarisLama = (env, kini, a) => butirInventarisLama(env, kini, a.dummy)
 const korbanBaru = (env, kini, a) => butirKorban(env, kini, a.dummy);   // laporan korban jiwa yang belum terverifikasi, prioritas 0 (src/korban.js)
 const p3kButir = (env, kini, a) => butirP3k(env, kini, a.dummy);   // P3K kedaluwarsa dalam 30 hari atau stok di bawah ambang (src/inventaris.js)
 const apiMunculLagi = (env, kini, a) => butirApiMunculLagi(env, kini, a.dummy);   // tugas dibuka kembali karena titik panas baru sesudah laporan padam (src/instansi.js)
-const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi];
+const cekUlangJatuhTempo = (env, kini, a) => butirCekUlang(env, kini, a.dummy);   // tugas padam di gambut yang jadwal cek ulang H+1/H+3/H+7 lewat tanpa kunjungan berfoto (src/instansi.js)
+const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo];
 
 /* tabel sumber yang belum dimigrasi (mis. 0018 atau 0029) melewati detektornya saja; 0030 belum ada ditangani pembungkus rute */
 async function kumpulkan(env, kini, a) {

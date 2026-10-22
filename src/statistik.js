@@ -13,6 +13,7 @@
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, bacaBytes, HOST_TERKUNCI} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
 import {stafSesi} from "./staf.js";
+import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {halStatistik} from "./bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, WIB = 7 * JAM;
@@ -227,7 +228,7 @@ const html = (isi, status = 200, h = {}) => new Response(isi, {status, headers: 
 const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store", ...h}});
 
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
-const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])/.test(k) ? k : ""; };
+const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
 export async function masuk(env, req, kini, halamanMasuk) {
   const ke = tujuan(req), merek = HOST_TERKUNCI.has(new URL(req.url).hostname) ? "Centurisk 97" : undefined, hal = g => halamanMasuk(g, ke, merek);
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
@@ -238,8 +239,15 @@ export async function masuk(env, req, kini, halamanMasuk) {
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
-  if (!sah) return html(hal("Username atau kata sandi salah."), 401);
-  return alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
+  if (!sah) {
+    /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
+    const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
+    if (!p) return html(hal("Username atau kata sandi salah."), 401);
+    const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : "/" + p.tab[0]), {"set-cookie": cookiePemirsa(p.token, p.umur)});
+    r.headers.append("set-cookie", cookie("", 0)); return r;
+  }
+  const r = alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
+  r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
 }
 export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
 /* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (layar masuk staf ada di halaman Meja Pantau). */

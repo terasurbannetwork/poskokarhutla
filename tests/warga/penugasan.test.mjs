@@ -5,18 +5,25 @@
    Alur padam, akses disalin cron, dan EXIF ada di instansi.test.mjs (butuh fixture tugas_kompleks.json dan unggahan berkas).
    Jalankan: node --test tests/warga/penugasan.test.mjs */
 import assert from "node:assert/strict";
-import {readFileSync, readdirSync} from "node:fs";
+import {readFileSync, readdirSync, existsSync} from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {susunChecklist, jarakEta, BATAS, PERAN} from "../../src/penugasan.js";
+import {susunChecklist, jarakEta, BATAS, PERAN, KESELAMATAN, USULAN, alarmKeselamatan, anginKeRegu, tempuhMenit} from "../../src/penugasan.js";
 import {infoPadam} from "../../src/instansi.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
 const uji = berantai();
-const U = await siapkan("uji-penugasan", {r2: true});
+/* aset uji: prakiraan angin per sel dikendalikan per uji (CUACA: jalur -> objek), selain itu berkas nyata di public/ seperti harness */
+const CUACA = new Map();
+const asetKu = async req => {
+  const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
+  if (p.startsWith("/data/cuaca/") && CUACA.has(p)) return new Response(JSON.stringify(CUACA.get(p)));
+  return existsSync(f) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
+};
+const U = await siapkan("uji-penugasan", {r2: true, asetKu});
 const {mf, DB, api, n} = U;
 const teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 let ipN = 0;
@@ -302,7 +309,8 @@ uji("penugasan: dummy mengisi tiap keadaan (berangkat berjejak, belum dibuka, ti
 
 uji("penugasan: tanpa migrasi 0035 rute menjawab 503 yang jelas, cron dan dummy tidak melempar, tugas lain tetap jalan", async () => {
   const U2 = await siapkan("uji-penugasan-tanpa", {r2: true}), D2 = U2.DB;
-  await D2.prepare("DROP TABLE penugasan_posisi").run(); await D2.prepare("DROP TABLE penugasan").run();   // keadaan produksi sebelum 0035
+  for (const x of (await D2.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND sql LIKE '%REFERENCES penugasan (%'").all()).results) await D2.prepare(`DROP TABLE ${x.name}`).run();   // anak FK (posisi, darurat 0041, tabel modul lain) ikut hilang seperti sebelum 0035
+  await D2.prepare("DROP TABLE IF EXISTS penugasan_posisi").run(); await D2.prepare("DROP TABLE penugasan").run();   // keadaan produksi sebelum 0035 (dan 0041)
   const r = await U2.api("GET", "/api/lacak/info", undefined, {"x-lacak": "ab".repeat(18)}); assert.equal(r.s, 503, r.t); assert.match(r.j.galat, /0035/);
   assert.equal((await U2.api("POST", "/api/lacak/posisi", {lat: -2, lon: 113}, {"x-lacak": "ab".repeat(18), ...PB})).s, 503);
   const w = await U2.mf.getWorker(); await w.scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 9, 21, 4, 17)});   // bersih-bersih tidak melempar
@@ -431,4 +439,217 @@ uji("penugasan: koefisien air minum sama dengan operasi.py koef air_minum mid, b
   for (const t of ["Posko Uji", "38 km", "3,1 km", "4,2 km garis lurus", "jalan utama (aspal) terdekat", "Selang, 200 m"]) assert.ok(h.toLowerCase().includes(t.toLowerCase()), t);
   for (const k of [{jalan: null, dari: null, bawa: null, kaki_km: 1, jam_tiba: 2, jalan_kaki_jam: 1}]) assert.doesNotThrow(() => d.win.AksesKartu.html(k));
   assert.doesNotMatch(h, /undefined|NaN|\[object|·/);
+});
+
+
+/* ================================================================ L2 usulan penugasan dan L3 keselamatan regu */
+const TOK = () => [...crypto.getRandomValues(new Uint8Array(32))].map(b => b.toString(16).padStart(2, "0")).join("");
+/* penugasan langsung lewat SQL dengan waktu bebas; posisi = [[lat, lon, pada]] */
+async function sisip(tid, akunId, {nama = "Uji Orang", peran = "anggota", wa = null, orang = 1, status = "aktif", dibuat, kedaluwarsa, berangkat = null, tiba = null, selesai = null, posisi = [], dummy = 0}) {
+  const id = id16(), d = dibuat ?? Date.now() - 3 * HARI;
+  await DB.prepare("INSERT INTO penugasan (id, tugas_id, akun_id, nama, peran, wa, orang, token_sha, status, dibuat, kedaluwarsa, berangkat_pada, tiba_pada, selesai_pada, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .bind(id, tid, akunId, nama, peran, wa, orang, TOK().slice(0, 64), status, d, kedaluwarsa ?? Date.now() + 40 * HARI, berangkat, tiba, selesai, dummy).run();
+  for (const [la, lo, pd] of posisi) await DB.prepare("INSERT INTO penugasan_posisi (penugasan_id, lat, lon, akurasi, pada) VALUES (?, ?, ?, 10, ?)").bind(id, la, lo, pd).run();
+  return id;
+}
+const envAlarm = {DB, ASSETS: {fetch: asetKu}};
+const butirDari = async (kini, pid) => (await alarmKeselamatan(envAlarm, kini)).filter(b => b.id.includes(pid));
+const OFFSET_2KM = 2 / 111.32;   // derajat lintang untuk 2 km
+
+uji("L3: migrasi 0041 idempoten, CHECK menahan jenis dan koordinat buruk, indeks ada", async () => {
+  const sql = teks("migrations/0041_keselamatan.sql");
+  for (const q of pecah(sql)) await DB.prepare(q).run();   // jalankan ulang tanpa galat
+  assert.equal(await n("penugasan_darurat"), 0);
+  const idx = (await DB.prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'penugasan_darurat'").all()).results.map(x => x.name);
+  assert.ok(idx.includes("penugasan_darurat_jejak") && idx.includes("penugasan_darurat_pada"), idx.join());
+  const pid = await sisip(T1, A.id, {});
+  const ins = (jenis, lat, lon, ak = 5) => DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, ?, ?, ?, ?, 1)").bind(pid, jenis, lat, lon, ak).run();
+  await ins("cedera", -2, 113); await ins("tersesat", null, null);
+  for (const [j, la, lo, ak] of [["raja", -2, 113, 5], ["cedera", 0.0 + 50, 113, 5], ["cedera", -2, 10, 5], ["cedera", -2, null, 5], ["cedera", -2, 113, 6000]]) await assert.rejects(ins(j, la, lo, ak), /CHECK|constraint/i, `${j} ${la} ${lo} ${ak}`);
+  await DB.prepare("DELETE FROM penugasan WHERE id = ?").bind(pid).run(); assert.equal(await n("penugasan_darurat"), 0, "ikut terhapus bersama penugasan (ON DELETE CASCADE)");
+});
+
+uji("L3: darurat lewat token sah tercatat; token liar 404, tanpa x-pb 403, jenis salah 400, tautan mati 410, laju 5 per 10 menit", async () => {
+  const q = (await tugaskan(A, T1, {nama: "Darurat Satu"})).j;
+  const kirim = (o, token = q.token, h = {}) => lacak("POST", "darurat", token, o).then(r => r);
+  const ok = await kirim({jenis: "cedera", ...BERADA(-2.21, 113.91, 12)}); assert.equal(ok.s, 201, ok.t); assert.equal(ok.j.posisi_tercatat, true);
+  const baris = await DB.prepare("SELECT * FROM penugasan_darurat WHERE penugasan_id = ?").bind(q.id).first(); assert.equal(baris.jenis, "cedera"); assert.equal(baris.lat, -2.21); assert.equal(baris.akurasi, 12);
+  assert.equal((await kirim({jenis: "raja"})).s, 400); assert.equal((await kirim({})).s, 400);
+  const tanpa = await kirim({jenis: "tersesat", lat: 0, lon: 0}); assert.equal(tanpa.s, 201, "posisi cacat tidak menggagalkan panggilan darurat"); assert.equal(tanpa.j.posisi_tercatat, false);
+  assert.equal((await DB.prepare("SELECT lat, lon FROM penugasan_darurat WHERE jenis = 'tersesat' AND penugasan_id = ?").bind(q.id).first()).lat, null);
+  assert.equal((await kirim({jenis: "lainnya"}, "ab".repeat(18))).s, 404, "token liar"); assert.equal((await kirim({jenis: "lainnya"}, "zz")).s, 404, "token bukan 36 hex");
+  assert.equal((await api("POST", "/api/lacak/darurat", {jenis: "cedera"}, {"x-lacak": q.token, ...ipBaru()})).s, 403, "tanpa x-pb");
+  assert.equal(await n("penugasan_darurat", "penugasan_id = '" + q.id + "'"), 2, "yang ditolak tidak ditulis");
+  for (let i = 0; i < 3; i++) assert.equal((await kirim({jenis: "lainnya"})).s, 201);   // total 5
+  const enam = await kirim({jenis: "lainnya"}); assert.equal(enam.s, 429, enam.t); assert.equal(enam.h.get("retry-after"), "60"); assert.equal(KESELAMATAN.daruratPer10Menit, 5);
+  await DB.prepare("UPDATE penugasan_darurat SET pada = pada - ? WHERE penugasan_id = ?").bind(11 * MENIT, q.id).run();
+  assert.equal((await kirim({jenis: "cedera"})).s, 201, "jendela 10 menit bergeser");
+  const q2 = (await tugaskan(A, T1, {nama: "Darurat Mati"})).j; await api("POST", `/api/instansi/cabut_penugasan/${q2.id}`, {}, {...A.h, ...ipBaru()});
+  assert.equal((await kirim({jenis: "cedera"}, q2.token)).s, 410, "tautan dicabut");
+});
+
+uji("L3: darurat tampil di rincian penugasan (akun pemilik dengan WA, akun lain tanpa WA), hilang setelah 6 jam", async () => {
+  const tid = await tugas("Kab Satu"), A2 = await akun("polressatu2", {jenis: "polres", kab: "Kab Satu"}), q = (await tugaskan(A, tid, {nama: "Cedera Wa", wa: "0812 3456 7888"})).j;
+  await lacak("POST", "berangkat", q.token, {}); assert.equal((await lacak("POST", "darurat", q.token, {jenis: "terkepung_api", ...BERADA(-2.2, 113.9)})).s, 201);
+  const pilih = r => r.j.penugasan.find(x => x.id === q.id);
+  const milik = pilih(await api("GET", `/api/instansi/penugasan/${tid}`, undefined, {...A.hg, ...ipBaru()})), lain = pilih(await api("GET", `/api/instansi/penugasan/${tid}`, undefined, {...A2.hg, ...ipBaru()}));
+  assert.equal(milik.darurat.jenis, "terkepung_api"); assert.equal(milik.darurat.label, "Terkepung api"); assert.equal(milik.wa, "6281234567888"); assert.equal(lain.darurat.jenis, "terkepung_api"); assert.ok(!("wa" in lain));
+  const adm = pilih(await api("GET", `/api/instansi/admin/penugasan/${tid}`, undefined, {...ADMIN, ...ipBaru()})); assert.equal(adm.darurat.jenis, "terkepung_api"); assert.ok(!("wa" in adm));
+  await DB.prepare("UPDATE penugasan_darurat SET pada = pada - ? WHERE penugasan_id = ?").bind(7 * JAM, q.id).run();
+  assert.equal(pilih(await api("GET", `/api/instansi/penugasan/${tid}`, undefined, {...A.hg, ...ipBaru()})).darurat, null, "lewat 6 jam: tidak lagi dianggap aktif");
+});
+
+uji("L3: alarm sunyi tepat di batas 30 menit (30 menit tidak, 30 menit + 1 ms ya), memakai berangkat bila belum ada posisi", async () => {
+  const K = Date.now(), tid = await tugas("Kab Satu"), M = KESELAMATAN.sunyiMenit * MENIT;
+  assert.equal(KESELAMATAN.sunyiMenit, 30);
+  const a1 = await sisip(tid, A.id, {berangkat: K - M}), a2 = await sisip(tid, A.id, {berangkat: K - M - 1}), a3 = await sisip(tid, A.id, {berangkat: K - 5 * JAM, posisi: [[-2.3, 113.9, K - M]]}), a4 = await sisip(tid, A.id, {berangkat: K - 5 * JAM, posisi: [[-2.3, 113.9, K - M - 1]]});
+  const a5 = await sisip(tid, A.id, {berangkat: null}), a6 = await sisip(tid, A.id, {berangkat: K - 2 * JAM, status: "selesai", selesai: K - JAM}), a7 = await sisip(tid, A.id, {berangkat: K - 2 * JAM, kedaluwarsa: K - 1000});
+  const sunyi = async id => (await butirDari(K, id)).filter(b => b.jenis === "regu_sunyi");
+  assert.equal((await sunyi(a1)).length, 0, "tepat 30 menit belum sunyi"); assert.equal((await sunyi(a2)).length, 1); assert.equal((await sunyi(a3)).length, 0, "posisi terakhir tepat 30 menit"); assert.equal((await sunyi(a4)).length, 1, "posisi terakhir 30 menit + 1 ms");
+  for (const id of [a5, a6, a7]) assert.equal((await butirDari(K, id)).length, 0, "belum berangkat / selesai / kedaluwarsa: tanpa alarm");
+  const b = (await sunyi(a2))[0]; assert.equal(b.prioritas, 1); assert.deepEqual(b.provs, ["62"]); assert.equal(b.kab, "Kab Satu"); assert.match(b.judul, /Uji Orang tidak mengirim posisi 30 menit/); assert.ok(!/·/.test(b.judul + b.rincian));
+  assert.equal(b.id, (await sunyi(a2))[0].id, "id stabil antar panggilan");
+  const tutup = await tugas("Kab Satu", {status: "padam"}); const a8 = await sisip(tutup, A.id, {berangkat: K - 3 * JAM}); assert.equal((await butirDari(K, a8)).length, 0, "tugas sudah ditutup: tanpa alarm");
+});
+
+uji("L3: rotasi 12 jam tepat di batas (12 jam tidak, 12 jam + 1 ms ya), selesai tidak", async () => {
+  const K = Date.now(), tid = await tugas("Kab Satu"), B12 = KESELAMATAN.rotasiJam * JAM;
+  assert.equal(KESELAMATAN.rotasiJam, 12);
+  const pos = [[-2.3, 113.9, K - 1000]], r1 = await sisip(tid, A.id, {berangkat: K - B12, posisi: pos}), r2 = await sisip(tid, A.id, {berangkat: K - B12 - 1, posisi: pos}), r3 = await sisip(tid, A.id, {berangkat: K - B12 - 5 * JAM, status: "selesai", selesai: K - JAM, posisi: pos});
+  const r4 = await sisip(tid, A.id, {berangkat: K - 13 * JAM, tiba: K - 12 * JAM, posisi: pos});
+  const rot = async id => (await butirDari(K, id)).filter(b => b.jenis === "regu_rotasi");
+  assert.equal((await rot(r1)).length, 0); assert.equal((await rot(r2)).length, 1); assert.equal((await rot(r3)).length, 0, "sudah selesai"); assert.equal((await rot(r4)).length, 1, "sudah tiba tetap dihitung bertugas");
+  const b = (await rot(r2))[0]; assert.equal(b.prioritas, 2); assert.match(b.judul, /sudah bertugas 12 jam, waktunya rotasi/); assert.equal((await butirDari(K, r1)).length, 0, "tidak sunyi: posisi 1 detik lalu");
+});
+
+uji("L3: angin mengarah ke regu: searah memicu, berlawanan tidak, ws dan gust kecil tidak, di luar 6 jam tidak, regu jauh tidak (fungsi murni)", () => {
+  const m0 = Date.UTC(2026, 9, 22, 0), kini = m0 + 3 * JAM + 10 * MENIT, api = {lat: -2.2, lon: 113.9}, regu = {lat: -2.2 - OFFSET_2KM, lon: 113.9};   // regu 2 km di selatan api: arah ke api = utara (0 derajat)
+  const c = (wd, ws, gust = ws) => ({m0, ws: Array(30).fill(ws), wd: Array(30).fill(wd), gust: Array(30).fill(gust)});
+  const a = anginKeRegu(c(0, 20), api, regu, kini); assert.ok(a, "angin dari utara (dari api) ke regu di selatan"); assert.equal(a.jam_ke, 0); assert.equal(a.dari_arah, "utara"); assert.equal(a.ws, 20); assert.equal(a.jarak_km, 2);
+  assert.ok([90, 270].includes(a.menjauh_derajat), "menjauh = tegak lurus angin: " + a.menjauh_derajat); assert.ok(["timur", "barat"].includes(a.menjauh_arah));
+  assert.ok(anginKeRegu(c(45, 20), api, regu, kini), "tepat 45 derajat masih memicu"); assert.ok(anginKeRegu(c(315, 20), api, regu, kini)); assert.equal(anginKeRegu(c(46, 20), api, regu, kini), null, "46 derajat tidak");
+  assert.equal(anginKeRegu(c(180, 30), api, regu, kini), null, "angin dari selatan = menjauhi regu ke arah api"); assert.equal(anginKeRegu(c(90, 30), api, regu, kini), null, "menyamping");
+  assert.equal(anginKeRegu(c(0, 14.9, 24.9), api, regu, kini), null, "ws dan gust di bawah ambang"); assert.ok(anginKeRegu(c(0, 15, 15), api, regu, kini), "ws tepat 15"); assert.ok(anginKeRegu(c(0, 5, 25), api, regu, kini), "gust tepat 25 saja cukup");
+  assert.equal(anginKeRegu(c(0, 5, 5), api, regu, kini), null, "ws kecil");
+  const nanti = c(180, 5); nanti.wd[3 + 4] = 0; nanti.ws[3 + 4] = 25; nanti.gust[3 + 4] = 40; const n4 = anginKeRegu(nanti, api, regu, kini); assert.equal(n4.jam_ke, 4, "ancaman di jam ke-4"); assert.equal(n4.gust, 40);
+  const jauh = c(180, 5); jauh.wd[3 + 6] = 0; jauh.ws[3 + 6] = 30; assert.equal(anginKeRegu(jauh, api, regu, kini), null, "jam ke-6 sudah di luar jendela 6 jam (jam 0 sampai 5)");
+  assert.equal(anginKeRegu(c(0, 30), api, {lat: -2.2 - 20 / 111.32, lon: 113.9}, kini), null, "regu 20 km dari api"); assert.equal(anginKeRegu(c(0, 30), api, api, kini), null, "tepat di titik api: arah tak terdefinisi");
+  assert.equal(anginKeRegu(null, api, regu, kini), null); assert.equal(anginKeRegu({m0}, api, regu, kini), null);
+  const timur = {lat: -2.2, lon: 113.9 + OFFSET_2KM}; assert.ok(anginKeRegu(c(270, 20), api, timur, kini), "regu di timur api: angin dari barat"); const t2 = anginKeRegu(c(270, 20), api, timur, kini); assert.ok([0, 180].includes(t2.menjauh_derajat));
+});
+
+uji("L3: info lacak membawa peringatan angin dari berkas sel (server menghitung), butir angin_ke_regu di alarmKeselamatan", async () => {
+  const tid = await tugas("Kab Satu", {lat: -2.2, lon: 113.9}), q = (await tugaskan(A, tid, {nama: "Regu Angin"})).j, K = Date.now(), m0 = Math.floor(K / JAM) * JAM - 3 * JAM;
+  const pasang = (wd, ws, gust) => CUACA.set("/data/cuaca/-2.25_113.75.json", {dibuat: K, lat: -2.25, lon: 113.75, m0, tc: Array(60).fill(30), rh: Array(60).fill(50), hujan: Array(60).fill(0), ws: Array(60).fill(ws), wd: Array(60).fill(wd), gust: Array(60).fill(gust)});
+  assert.equal(selCuacaUji(-2.2, 113.9), "-2.25_113.75");
+  pasang(0, 25, 35);
+  assert.equal((await lacak("GET", "info", q.token)).j.angin, null, "belum ada posisi: tanpa peringatan");
+  await lacak("POST", "berangkat", q.token, {}); assert.equal((await lacak("POST", "posisi", q.token, BERADA(-2.2 - OFFSET_2KM, 113.9))).s, 201);
+  const i1 = await lacak("GET", "info", q.token); assert.equal(i1.s, 200); assert.ok(i1.j.angin, i1.t); assert.equal(i1.j.angin.dari_arah, "utara"); assert.equal(i1.j.angin.ws, 25); assert.ok(i1.j.angin.menjauh_arah); assert.deepEqual(Object.keys(i1.j.darurat_jenis), ["cedera", "terkepung_api", "tersesat", "lainnya"]);
+  const b = (await butirDari(K, q.id)).filter(x => x.jenis === "angin_ke_regu"); assert.equal(b.length, 1); assert.equal(b[0].prioritas, 1); assert.match(b[0].judul, /Angin mengarah ke posisi Regu Angin/); assert.match(b[0].rincian, /Minta bergeser ke arah/);
+  pasang(180, 25, 35); assert.equal((await lacak("GET", "info", q.token)).j.angin, null, "berlawanan"); assert.equal((await butirDari(K, q.id)).filter(x => x.jenis === "angin_ke_regu").length, 0);
+  pasang(0, 8, 12); assert.equal((await lacak("GET", "info", q.token)).j.angin, null, "searah tetapi lemah");
+  CUACA.delete("/data/cuaca/-2.25_113.75.json"); const tanpaBerkas = await lacak("GET", "info", q.token); assert.equal(tanpaBerkas.s, 200); assert.equal(tanpaBerkas.j.angin, null, "berkas sel tidak ada: tanpa peringatan, info tetap jalan");
+  pasang(0, 25, 35); await DB.prepare("UPDATE penugasan_posisi SET pada = pada - ? WHERE penugasan_id = ?").bind(2 * JAM, q.id).run();
+  assert.equal((await lacak("GET", "info", q.token)).j.angin, null, "posisi lebih tua dari 60 menit tidak dipakai"); CUACA.clear();
+});
+const selCuacaUji = (lat, lon) => `${(Math.floor(lat / .5) * .5 + .25).toFixed(2)}_${(Math.floor(lon / .5) * .5 + .25).toFixed(2)}`;
+
+uji("L3: alarmKeselamatan mengembalikan darurat di paling atas (prioritas 0), lalu sunyi/angin, lalu rotasi; darurat hilang saat selesai atau lewat 6 jam", async () => {
+  const K = Date.now(), tid = await tugas("Kab Satu"), pid = await sisip(tid, A.id, {nama: "Regu Komplit", berangkat: K - 13 * JAM, dibuat: K - 14 * JAM});
+  await DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, 'cedera', -2.25, 113.9, 9, ?)").bind(pid, K - 4 * MENIT).run();
+  const semua = (await alarmKeselamatan(envAlarm, K)).filter(b => b.id.includes(pid)), urut = semua.map(b => b.jenis);
+  assert.deepEqual(urut, ["darurat", "regu_sunyi", "regu_rotasi"], "darurat paling atas"); assert.equal(semua[0].prioritas, 0);
+  const d = semua[0]; assert.match(d.judul, /^DARURAT cedera: Regu Komplit/); assert.match(d.rincian, /Dikirim 4 menit lalu, posisi -2.25, 113.9/); assert.deepEqual(d.provs, ["62"]); assert.equal(d.dibuat, K - 4 * MENIT);
+  for (const b of semua) for (const k of ["id", "jenis", "judul", "rincian", "provs", "kab", "dibuat", "tenggat", "prioritas", "dummy"]) assert.ok(k in b, `${b.jenis}.${k}`);
+  assert.equal((await alarmKeselamatan(envAlarm, K + 6 * JAM)).filter(b => b.id.includes(pid) && b.jenis === "darurat").length, 0, "lewat 6 jam");
+  await DB.prepare("UPDATE penugasan SET status = 'selesai', selesai_pada = ? WHERE id = ?").bind(K, pid).run();
+  assert.equal((await butirDari(K, pid)).length, 0, "selesai: semua alarm padam");
+  const bs = await alarmKeselamatan(envAlarm, K); for (let i = 1; i < bs.length; i++) assert.ok(bs[i - 1].prioritas <= bs[i].prioritas, "urut prioritas");
+  const D2 = await DB.prepare("SELECT 1 x").first(); assert.ok(D2);
+});
+
+uji("L3: tanpa tabel (0035 atau 0041 belum ada) alarmKeselamatan tidak melempar; cron membuang darurat 30 hari", async () => {
+  const U5 = await siapkan("uji-penugasan-l3-tanpa", {r2: true}), D5 = U5.DB;
+  await D5.prepare("DROP TABLE penugasan_darurat").run();
+  assert.deepEqual(await alarmKeselamatan({DB: D5, ASSETS: {fetch: asetKu}}, Date.now()), [], "tanpa 0041 dan tanpa penugasan aktif");
+  await D5.prepare("DROP TABLE penugasan_posisi").run(); await D5.prepare("DROP TABLE penugasan").run();
+  assert.deepEqual(await alarmKeselamatan({DB: D5, ASSETS: {fetch: asetKu}}, Date.now()), [], "tanpa 0035");
+  const r = await U5.api("POST", "/api/lacak/darurat", {jenis: "cedera"}, {"x-lacak": "ab".repeat(18), ...PB}); assert.equal(r.s, 503, r.t);
+  const pid = await sisip(T1, A.id, {}); const lama = Date.now() - 31 * HARI;
+  await DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, pada) VALUES (?, 'lainnya', ?), (?, 'lainnya', ?)").bind(pid, lama, pid, Date.now() - HARI).run();
+  const {bersihkanPenugasan} = await import("../../src/penugasan.js"); await bersihkanPenugasan({DB}, Date.now());
+  assert.equal(await n("penugasan_darurat", "penugasan_id = '" + pid + "'"), 1, "yang berumur 31 hari dibuang, kemarin tetap");
+});
+
+/* ---- L2 ---- */
+const tugasU = async (kab, o) => { const id = await tugas(kab, o); await DB.prepare("UPDATE tugas_api SET prov = '65' WHERE id = ?").bind(id).run(); return id; };   // provinsi 65: bebas dari orang uji lain
+let UA, UB, UD, TU;
+uji("L2: usulan hanya memuat orang yang TIDAK sedang bertugas, urut waktu tempuh lalu beban, tanpa orang provinsi lain", async () => {
+  UA = await akun("usulansatu", {prov: "65", kab: "Kab Usul", cakupan: ["65"]}); UB = await akun("usulandua", {prov: "65", kab: "Kab Usul Dua", cakupan: ["65"]}); UD = await akun("usulanluar", {prov: "63", kab: "Kab Luar", cakupan: ["63"]});
+  TU = await tugasU("Kab Usul", {lat: -2.2, lon: 113.9});
+  const K = Date.now(), lama = 2 * HARI, bln = (lat, lon) => [lat, lon];
+  const selesai = (akunId, o) => sisip(TU, akunId, {status: "selesai", dibuat: K - (o.hari ?? 2) * HARI, berangkat: K - (o.hari ?? 2) * HARI, selesai: K - (o.hari ?? 2) * HARI + JAM, kedaluwarsa: K + 40 * HARI, ...o});
+  /* Andi: posisi 5 menit lalu 10 km dari api; Fani: sama tetapi beban 3; Budi: tanpa posisi, pos Daops cocok graf akses; Eko: tanpa posisi dan tanpa pos; Citra: sedang bertugas; Dedi: provinsi 63 */
+  const dLat = 10 / 111.32;
+  await selesai(UA.id, {nama: "Andi Uji", wa: "6281200000001", peran: "driver", orang: 2, posisi: [[-2.2 - dLat, 113.9, K - 5 * MENIT]]});
+  for (const h of [1, 2, 3]) await selesai(UA.id, {nama: "Fani Uji", wa: null, peran: "ketua_regu", hari: h, posisi: h === 1 ? [[-2.2 - dLat, 113.9, K - 5 * MENIT]] : []});
+  await selesai(UB.id, {nama: "Budi Uji", wa: "6281200000002", hari: 10});
+  await selesai(UA.id, {nama: "Eko Uji", wa: "6281200000003", hari: 20});
+  await sisip(TU, UA.id, {nama: "Citra Uji", wa: "6281200000004", status: "aktif", dibuat: K - HARI, kedaluwarsa: K + JAM, berangkat: K - 20 * MENIT});
+  await selesai(UD.id, {nama: "Dedi Luar", wa: "6281200000005"});
+  await selesai(UB.id, {nama: "Citra Uji", wa: "6281200000004", hari: 30});   // Citra juga punya riwayat lama di akun lain: tetap dikenali sebagai orang yang sama lewat WA, sedang bertugas
+  await DB.prepare("INSERT INTO gudang (id, akun_id, nama, jenis, prov, kab, lat, lon, dibuat, diubah) VALUES (?, ?, 'Posko Uji', 'pos_daops', '65', 'Kab Usul Dua', ?, ?, ?, ?)").bind(id16(), UB.id, -2.2 + 20 / 111.32, 113.9, K, K).run();
+  const r = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UA.hg, ...ipBaru()}); assert.equal(r.s, 200, r.t);
+  const nama = r.j.kandidat.map(k => k.nama); assert.deepEqual(nama, ["Andi Uji", "Fani Uji", "Budi Uji", "Eko Uji"], "tanpa Citra (bertugas) dan Dedi (provinsi lain); Andi sebelum Fani karena beban 1 < 3");
+  const [andi, fani, budi, eko] = r.j.kandidat, kaki = AKSES.kaki_km / USULAN.kakiKmJam * 60;
+  /* TU memakai AKSES bawaan uji: kaki_km 3,1; pangkalan graf "Posko Uji" 1,4 jam */
+  assert.equal(andi.tempuh_menit, Math.round(10 * BATAS.etaFaktorJalan / BATAS.etaKmJam * 60 + kaki), "garis lurus x 1,3 pada 30 km/jam + kaki pada 3 km/jam"); assert.equal(andi.cara, "garis_lurus"); assert.equal(andi.asal.jenis, "posisi"); assert.ok(andi.asal.umur_menit >= 5 && andi.asal.umur_menit <= 6);
+  assert.equal(fani.tempuh_menit, andi.tempuh_menit); assert.equal(andi.beban_7h, 1); assert.equal(fani.beban_7h, 3);
+  assert.equal(budi.tempuh_menit, Math.round(1.4 * 60 + kaki)); assert.equal(budi.cara, "graf"); assert.deepEqual(budi.asal, {jenis: "pos", nama: "Posko Uji"});
+  assert.equal(eko.tempuh_menit, null); assert.equal(eko.asal.jenis, "tidak_diketahui"); assert.equal(r.j.perkiraan, true);
+  assert.match(r.j.rumus, /Perkiraan/); assert.match(r.j.rumus, /1\.3 pada 30 km\/jam/); assert.match(r.j.rumus, /3 km\/jam/); assert.ok(!/·/.test(r.j.rumus));
+  assert.equal(andi.wa, "6281200000001", "WA hanya orang akun sendiri"); assert.ok(!("wa" in budi), "orang akun lain: tanpa WA"); assert.ok(!r.t.includes("6281200000002"), "WA akun lain tidak bocor"); assert.ok(!/"lat"|"lon"/.test(JSON.stringify(r.j.kandidat)), "tanpa koordinat orang");
+  assert.equal(andi.peran, "driver"); assert.equal(andi.orang, 2); assert.ok(r.j.alat === null || typeof r.j.alat === "object");
+  assert.ok(USULAN.maks >= 20 && USULAN.posisiMaksJam === 24);
+});
+
+uji("L2: posisi lebih tua dari 24 jam diabaikan (jatuh ke pos asal); tempuhMenit murni untuk graf, garis lurus, tanpa asal", async () => {
+  const t = {lat: -2.2, lon: 113.9, akses: JSON.stringify({kaki_km: 3, dari: [{dari: "Posko A", kode: "A001", jam: 2}, {dari: "Daops B", kode: "BBB-05", jam: 5}]})};
+  assert.deepEqual(tempuhMenit({lat: -2.3, lon: 113.9, nama: "posko a", pos: true}, t), {menit: 180, cara: "graf", jarak_km: 11.1}, "nama sama (tanpa peduli huruf) memakai jam graf 2 jam + kaki 1 jam");
+  assert.equal(tempuhMenit({lat: -2.3, lon: 113.9, nama: "Pos Daops BBB-05 Utara", pos: true}, t).menit, 5 * 60 + 60, "kode pangkalan di dalam nama gudang");
+  assert.equal(tempuhMenit({lat: -2.3, lon: 113.9, nama: "Posko A", pos: false}, t).cara, "garis_lurus", "posisi hidup tidak memakai graf"); assert.equal(tempuhMenit({lat: -2.3, lon: 113.9, nama: "Gudang Lain", pos: true}, t).cara, "garis_lurus");
+  assert.equal(tempuhMenit({lat: -2.3, lon: 113.9, pos: false}, {lat: -2.2, lon: 113.9, akses: null}).menit, Math.round(11.1 * 1.3 / 30 * 60), "tanpa akses: tanpa kaki"); assert.equal(tempuhMenit(null, t), null);
+  /* posisi 25 jam lalu tidak dipakai */
+  const K = Date.now(), tid = await tugasU("Kab Usul", {lat: -2.2, lon: 113.9}), orang = await sisip(tid, UA.id, {nama: "Gina Basi", wa: "6281200000009", status: "selesai", selesai: K - 20 * HARI, berangkat: K - 20 * HARI, dibuat: K - 20 * HARI, posisi: [[-2.3, 113.9, K - 25 * JAM]]});
+  const r = await api("GET", `/api/instansi/usulan/${tid}`, undefined, {...UA.hg, ...ipBaru()}); const g = r.j.kandidat.find(k => k.nama === "Gina Basi"); assert.ok(g && g.asal.jenis !== "posisi", JSON.stringify(g)); assert.ok(orang);
+});
+
+uji("L2: gerbang akses usulan: tanpa sesi 401, akun kabupaten lain 404 (sama dengan tugas tak ada), tugas ditutup 409, admin/moderator tanpa WA", async () => {
+  assert.equal((await api("GET", `/api/instansi/usulan/${TU}`, undefined, ipBaru())).s, 401, "tanpa sesi");
+  assert.equal((await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UD.hg, ...ipBaru()})).s, 404, "akun provinsi lain"); assert.equal((await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UB.hg, ...ipBaru()})).s, 404, "akun kabupaten lain");
+  assert.equal((await api("GET", `/api/instansi/usulan/${id16()}`, undefined, {...UA.hg, ...ipBaru()})).s, 404);
+  assert.equal((await api("GET", `/api/instansi/usulan/${TU}`, undefined, {"x-admin-token": "salah", ...ipBaru()})).s, 401, "token admin salah ikut jawaban akun");
+  const prov = await akun("usulanprov", {jenis: "pemprov", tingkat: "prov", prov: null, kab: null, cakupan: ["65"]}); assert.equal((await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...prov.hg, ...ipBaru()})).s, 200, "akun provinsi memegang seluruh kabupaten");
+  const ad = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...ADMIN, ...ipBaru()}); assert.equal(ad.s, 200, ad.t); assert.ok(ad.j.kandidat.length >= 4); assert.ok(!ad.t.includes("62812000000"), "admin: tanpa nomor WA");
+  const tutup = await tugasU("Kab Usul", {status: "padam"}); assert.equal((await api("GET", `/api/instansi/usulan/${tutup}`, undefined, {...UA.hg, ...ipBaru()})).s, 409);
+});
+
+uji("L2: Tugaskan memakai rute penugasan yang ada (isian dari kandidat); orang itu lalu tidak lagi diusulkan; data kosong memberi pesan jelas", async () => {
+  const r = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UA.hg, ...ipBaru()}), k = r.j.kandidat[0];
+  const p = await api("POST", `/api/instansi/penugasan/${TU}`, {nama: k.nama, peran: k.peran, wa: k.wa || "", orang: k.orang, jam: 48}, {...UA.h, ...ipBaru()}); assert.equal(p.s, 201, p.t);
+  const r2 = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UA.hg, ...ipBaru()}); assert.ok(!r2.j.kandidat.some(x => x.nama === k.nama), "sudah ditugaskan: tidak lagi kandidat"); assert.equal(r2.j.kandidat.length, r.j.kandidat.length - 1);
+  /* tak ada riwayat di provinsi 64 */
+  const Z = await akun("usulankosong", {prov: "64", kab: "Kab Kosong", cakupan: ["64"]}), tz = await tugas("Kab Kosong"); await DB.prepare("UPDATE tugas_api SET prov = '64' WHERE id = ?").bind(tz).run();
+  const kosong = await api("GET", `/api/instansi/usulan/${tz}`, undefined, {...Z.hg, ...ipBaru()}); assert.equal(kosong.s, 200); assert.deepEqual(kosong.j.kandidat, []); assert.match(kosong.j.pesan, /Belum ada orang yang bisa diusulkan/); assert.match(kosong.j.pesan, /Tugaskan orang/);
+});
+
+uji("L2/L3: klien lacak.js dan instansi_tugaskan.js memuat kontrol baru (tombol darurat, banner angin, usulan), berkas lolos sintaks, tanpa skrip inline", () => {
+  const html = teks("public/lacak.html"), js = teks("public/lacak.js"), tg = teks("public/instansi_tugaskan.js"), css = teks("public/instansi_tugaskan.css");
+  for (const id of ["angin", "bDarurat", "pilihDarurat", "statusDarurat", "bDarBatal"]) assert.ok(html.includes(`id="${id}"`), id);
+  for (const j of ["cedera", "terkepung_api", "tersesat", "lainnya"]) assert.ok(html.includes(`data-dar="${j}"`), j);
+  assert.ok(!/<script(?![^>]*\bsrc=)/.test(html), "CSP: tanpa skrip inline"); assert.match(js, /"darurat"/); assert.match(js, /Angin mengarah ke posisimu/);
+  assert.match(tg, /\/api\/instansi\/usulan\//); assert.match(tg, /data-tg="pilih"/); assert.match(tg, /wa\.me/); assert.match(css, /\.tg-darurat/);
+  assert.ok(!/·/.test(html + js + tg), "tanpa titik pemisah di teks");
+  new vm.Script(js); new vm.Script(tg);
 });

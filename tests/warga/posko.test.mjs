@@ -652,3 +652,33 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   assert.equal((await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {redirect: "manual"})).status, 200, "halaman masuk tetap terbuka");
   const ews = await mf.dispatchFetch("https://centurisk97.id/ews/berhenti?x=1", {redirect: "manual"}); assert.ok(!(ews.headers.get("location") || "").startsWith("/admin/masuk"), "tautan surel EWS tidak digerbang admin");
 });
+
+/* ================================================================ L1: laporan regu berkode menaut ke tugas api terdekat (src/instansi.js tautkanLaporanRegu) */
+uji("L1: laporan regu menaut ke tugas api terdekat di kabupaten sama; padam = laporan padam, menyala sesudah padam = muncul_lagi; kabupaten lain dan >2 km tidak; respons regu tidak berubah", async () => {
+  const lat = -2.1234, lon = 113.5678, now = Date.now(), dm = m => m / 111320;
+  const tugas = async (kab, la, lo, o = {}) => {
+    const id = [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
+    await DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status) VALUES (?, '62', ?, 'Kec Uji', ?, ?, 3, 5, 10, ?, ?, 'buka')").bind(id, kab, la, lo, now - JAM, now - JAM).run();
+    return id;
+  };
+  const baca = id => DB.prepare("SELECT status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE id = ?").bind(id).first();
+  const tautan = id => DB.prepare("SELECT tugas_id, status, jarak_km FROM tugas_lapangan WHERE lapangan_id = ?").bind(id).first();
+  const g1 = await buatRegu(), probe = await kirim(g1.kode, lap(lat, lon, {status: "tidak_ditemukan"}, now)); assert.equal(probe.s, 201, probe.t);
+  const kab = probe.j.kab; assert.deepEqual(Object.keys(probe.j).sort(), ["ditahan", "id", "kab", "kompleks_id", "prov"], "kontrak respons /api/lapangan tidak berubah");
+  assert.equal(await DB.prepare("SELECT 1 x FROM tugas_lapangan WHERE lapangan_id = ?").bind(probe.j.id).first(), null, "tanpa tugas di dekatnya: tidak ada tautan");
+  const dekat = await tugas(kab, lat + dm(300), lon), jauh = await tugas(kab, lat + dm(2600), lon), lain = await tugas("Kabupaten Lain Uji", lat, lon);
+  /* padam dari regu: tugas dekat menjadi padam_dilaporkan, padam_pada = waktu GPS laporan */
+  const g2 = await buatRegu(), p = await kirim(g2.kode, lap(lat, lon, {status: "padam", luas_ha: 2, padam_ha: 2}, now)); assert.equal(p.s, 201, p.t);
+  const t = await baca(dekat); assert.equal(t.status, "padam"); assert.equal(t.padam_verif, "padam_dilaporkan"); assert.ok(Math.abs(t.padam_pada - now) < 5000, "padam_pada = waktu GPS laporan");
+  const tl = await tautan(p.j.id); assert.equal(tl.tugas_id, dekat); assert.equal(tl.status, "padam"); assert.ok(Math.abs(tl.jarak_km - 0.3) < 0.05, tl.jarak_km);
+  for (const x of [jauh, lain]) assert.deepEqual([(await baca(x)).status, (await baca(x)).padam_verif], ["buka", null], "tugas >2 km dan kabupaten lain tak tersentuh");
+  /* menyala sesudah padam dari regu lain: tugas dibuka kembali, rincian sumber regu */
+  await DB.prepare("UPDATE tugas_api SET padam_pada = ?, verif_pada = ? WHERE id = ?").bind(now - 3 * JAM, now - 3 * JAM, dekat).run();
+  const g3 = await buatRegu(), m = await kirim(g3.kode, lap(lat, lon, {status: "bara"}, Date.now())); assert.equal(m.s, 201, m.t);
+  const t2 = await baca(dekat); assert.equal(t2.status, "buka"); assert.equal(t2.padam_verif, "muncul_lagi");
+  const mu = await DB.prepare("SELECT sumber, jarak_km FROM tugas_muncul WHERE tugas_id = ?").bind(dekat).first(); assert.equal(mu.sumber, "regu"); assert.ok(mu.jarak_km < 0.4);
+  /* laporan yang ditahan (pencilan luas) menaut tetapi tidak mengubah status tugas */
+  await DB.prepare("UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?, verif_pada = ? WHERE id = ?").bind(now - 3 * JAM, now - 3 * JAM, dekat).run();
+  const g4 = await buatRegu(), tahan = await kirim(g4.kode, lap(lat, lon, {status: "menyala", luas_ha: 5000}, Date.now())); assert.equal(tahan.s, 201, tahan.t); assert.equal(tahan.j.ditahan, true);
+  assert.equal((await baca(dekat)).padam_verif, "padam_dilaporkan", "laporan ditahan: tidak membuka kembali"); assert.equal((await tautan(tahan.j.id)).tugas_id, dekat);
+});

@@ -50,3 +50,5 @@
 @media (min-width:720px){.ak-ringkas{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (prefers-reduced-motion:reduce){.ak-btn:active{transform:none}}
 .ak-tabel:not(.ak-matriks) td:nth-child(1){min-width:180px}.ak-tabel:not(.ak-matriks) td:nth-child(2){min-width:190px}.ak-tabel:not(.ak-matriks) td:nth-child(5){min-width:220px}
+.ak-buat-pm{margin:6px 0 4px}.ak-buat-pm>summary{cursor:pointer;font-weight:800;min-height:40px;display:flex;align-items:center;gap:8px}
+.ak-tab{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.ak-tabel-pm{min-width:640px}

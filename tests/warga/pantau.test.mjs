@@ -413,3 +413,26 @@ uji("503 sopan bila 0030 belum diterapkan; rute lama tetap jalan dan sesi staf t
   assert.equal((await V.api("GET", "/admin/pantau")).s, 200, "kerangka halaman tidak butuh tabel");
   assert.deepEqual(await bersihkanPantau({DB: V.DB}, Date.now()), {lewat: "migrasi 0030 belum diterapkan"});
 });
+
+/* ================================================================ L1: butir cek_ulang_jatuh_tempo (cek ulang lapangan gambut H+1/H+3/H+7) */
+uji("L1: butir cek_ulang_jatuh_tempo: tugas padam di gambut (atau lahan tak diketahui) yang jadwal cek ulangnya lewat; hilang saat ada cek ulang; mineral, belum jatuh tempo, dan butir muncul lagi tidak ikut", async () => {
+  await bersihSumber();
+  const now = Date.now(), padam = (jamLalu, o = {}) => tugas({status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now - jamLalu * JAM, verif_pada: now - jamLalu * JAM, konfirmasi_pada: now - (jamLalu + 1) * JAM, isian_terakhir: now - jamLalu * JAM, ...o});
+  const telat = await padam(30), belum = await padam(10), lama = await padam(80), cek = await padam(30, {cek_ulang_pada: now - 2 * JAM});
+  let j = await butir(), b = ada(j, "cek_ulang_jatuh_tempo");
+  assert.equal(JENIS.cek_ulang_jatuh_tempo.peran[0], "pusdalops"); assert.ok(j.jenis.cek_ulang_jatuh_tempo);
+  assert.deepEqual(b.map(x => x.id.split(":")[1]).sort(), [telat, lama].sort(), "H+1 lewat (30 jam) dan H+3 lewat (80 jam); 10 jam belum; yang sudah dicek ulang tidak");
+  const bl = b.find(x => x.id.includes(lama)); assert.match(bl.id, /:1$/, "80 jam tanpa kunjungan sama sekali: jadwal paling awal yang lewat dulu"); assert.match(bl.judul, /Cek ulang H\+1 di Baamang, Kotawaringin Timur belum ada/); assert.equal(bl.tautan, "/admin/instansi"); assert.equal(bl.terlambat, true);
+  /* lahan mineral teramati = bukan gambut: tanpa butir */
+  await akunMenunggu();
+  await DB.prepare("INSERT INTO tugas_isian (id, tugas_id, akun_id, klien_id, langkah, dibuat, tindakan, kendala, bantuan, status_api, lahan_teramati) SELECT ?, ?, id, ?, 'tindakan', ?, 'Uji', '[]', '[]', 'bara', 'mineral' FROM instansi_akun LIMIT 1")
+    .bind("2".repeat(16), telat, "uji-mineral-pantau", now - 40 * JAM).run();
+  assert.equal((await DB.prepare("SELECT count(*) n FROM tugas_isian WHERE tugas_id = ?").bind(telat).first()).n, 1);
+  assert.ok(!ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(telat)), "mineral teramati: bukan gambut, tanpa butir");
+  /* kunjungan berfoto sesudah padam menghapus butir; peran lain tidak melihat jenis ini */
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(lama)), true);
+  await DB.prepare("UPDATE tugas_api SET cek_ulang_pada = ? WHERE id = ?").bind(now - JAM, lama).run();
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").some(x => x.id.includes(lama) && x.id.endsWith(":1")), false, "H+1 terpenuhi; H+3 (80 jam) lewat jadi butir baru");
+  assert.equal(ada(await butir(), "cek_ulang_jatuh_tempo").filter(x => x.id.includes(lama)).map(x => x.id.split(":")[3]).join(), "3");
+  await bersihSumber();
+});

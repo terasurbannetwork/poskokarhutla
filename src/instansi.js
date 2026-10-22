@@ -14,6 +14,7 @@ import {nilaiGps, jaringanRelay} from "./gps.js";
 import {jaringanHosting} from "./publik.js";
 import {jenisBerkas, durasiMP4, ATURAN_MEDIA, jarakM} from "./foto.js";
 import {km} from "./titik.js";
+import {muatHimawari, BARU_N_MIN, BARU_U_MAKS, BARU_LEVEL_MIN, BARU_ACUAN_MAKS} from "./himawari.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanInstansi, HALAMAN_STAF} from "./admin_halaman.js";
 import {gudangTerdekat, siapkanKerahkan, lepasDariTugas} from "./inventaris.js";
@@ -229,11 +230,15 @@ export function tenggat(t, kini) {
   return {tenggat: batas, terlambat: kini > batas, langkah: konfirmasi ? "konfirmasi" : "kabar"};
 }
 export const jsonAman = s => { try { return s == null ? null : JSON.parse(s); } catch (e) { return null; } };
+const SQL_LAHAN = "(SELECT group_concat(DISTINCT lahan_teramati) FROM tugas_isian WHERE tugas_id = t.id AND lahan_teramati IS NOT NULL) lahan_obs";
+const SQL_KUNJUNGAN = "(SELECT group_concat(i.dibuat) FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'tindakan' AND i.dibuat > coalesce(t.padam_pada, 9e18) AND EXISTS (SELECT 1 FROM instansi_media m WHERE m.isian_id = i.id)) kunjungan";
 const KOLOM_TUGAS = `t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.level, t.n24, t.luas_ha, t.dibuat, t.terakhir_terdeteksi, t.status, t.konfirmasi_pada, t.isian_terakhir, t.rekomendasi, t.akses, t.padam_verif, t.padam_pada, t.verif_pada, t.cek_ulang_pada, t.dummy,
   (SELECT hasil FROM tugas_isian WHERE tugas_id = t.id AND langkah = 'konfirmasi') hasil_konfirmasi,
   (SELECT min(m.waktu_ambil) FROM instansi_media m JOIN tugas_isian i ON i.id = m.isian_id WHERE i.tugas_id = t.id AND ((i.langkah = 'konfirmasi' AND i.hasil = 'api_ada') OR i.status_api IN ('menyala', 'bara'))) mulai_doc,
   (SELECT min(m.waktu_ambil) FROM instansi_media m WHERE m.isian_id = (SELECT i.id FROM tugas_isian i WHERE i.tugas_id = t.id AND (i.status_api = 'padam' OR (i.langkah = 'konfirmasi' AND i.hasil = 'sudah_padam')) ORDER BY i.dibuat LIMIT 1)) padam_doc,
   (SELECT min(mulai_padam) FROM tugas_isian WHERE tugas_id = t.id) mulai_manual,
+  ${SQL_LAHAN},
+  ${SQL_KUNJUNGAN},
   (SELECT luas_ha FROM tugas_isian WHERE tugas_id = t.id AND luas_ha IS NOT NULL ORDER BY dibuat DESC LIMIT 1) luas_konf,
   (SELECT json_object('dibuat', i.dibuat, 'status_api', i.status_api, 'regu', i.regu, 'personel', i.personel, 'personel_terlihat', i.personel_terlihat, 'personel_unsur', json(i.personel_unsur), 'alat', json(i.alat_dipakai))
      FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'tindakan' ORDER BY i.dibuat DESC LIMIT 1) sekarang`;
@@ -269,18 +274,57 @@ export function kekurangan(rek, s, luas) {
 /* ===== verifikasi padam ("sudah padam belum?"). Status tugas tetap 'padam'; padam_verif menandai hasil pemeriksaan satelit sesudahnya.
    Label jujur: satelit tidak melihat bara bawah permukaan (gambut), jadi "terverifikasi" bukan jaminan padam total. ===== */
 const RADIUS_PADAM_KM = 2, JAM_PADAM_AMAN = 24, JAM_PADAM_VERIF = 48, UMUR_PERIKSA_PADAM = 7 * HARI;
+/* L1: cek ulang lapangan terjadwal H+1, H+3, H+7 sesudah dilaporkan padam. Bara gambut tidak terlihat satelit, jadi 48 jam tanpa titik belum berarti padam.
+   Data gambut per tugas TIDAK ada di tugas_api. Urutan bukti: lahan_teramati di isian (gambut/campuran = gambut, mineral = bukan), lalu kata "gambut" di rekomendasi pipeline;
+   tanpa bukti apa pun = tidak diketahui dan DIPERLAKUKAN SEBAGAI GAMBUT (lebih hati-hati: menahan "terverifikasi" sampai ada cek ulang lapangan). */
+export const JADWAL_CEK_HARI = [1, 3, 7], JENDELA_CEK = 12 * JAM;
+export function lahanTugas(t) {
+  const o = String(t.lahan_obs || "").split(",");
+  if (o.includes("gambut") || o.includes("campuran")) return {gambut: true, dasar: "teramati"};
+  if (o.includes("mineral")) return {gambut: false, dasar: "teramati"};
+  return {gambut: true, dasar: /gambut/i.test(String(t.rekomendasi || "")) ? "rekomendasi" : "tidak_diketahui"};
+}
+/* murni. Kunjungan = waktu isian tindakan berfoto sesudah padam_pada (+ cek_ulang_pada). Satu kunjungan memenuhi satu jadwal: yang paling awal dulu, boleh sampai 12 jam sebelum jatuh tempo. */
+export function jadwalCekUlang(t, kini) {
+  if (t.padam_pada == null || t.status !== "padam" || !["padam_dilaporkan", "padam_terverifikasi"].includes(t.padam_verif)) return null;
+  const pakai = new Set(), kj = [...new Set([...String(t.kunjungan || "").split(",").map(Number), t.cek_ulang_pada])].filter(x => x != null && Number.isFinite(x) && x > t.padam_pada).sort((x, y) => x - y);   // cek_ulang_pada = isian yang sama: dedupe
+  const jadwal = JADWAL_CEK_HARI.map(h => {
+    const jatuh = t.padam_pada + h * HARI, i = kj.findIndex((k, n) => !pakai.has(n) && k >= jatuh - JENDELA_CEK);
+    if (i >= 0) pakai.add(i);
+    return {hari: h, jatuh_tempo: jatuh, selesai: i >= 0 ? kj[i] : null, terlambat: i < 0 && kini > jatuh};
+  });
+  return {jadwal, berikutnya: jadwal.find(j => j.selesai == null) ?? null};
+}
+/* boleh mengirim cek ulang (lagi)? Pertama: selalu. Berikutnya (hanya gambut): bila jadwal berikutnya sudah masuk jendelanya. */
+export function bolehCekUlang(t, kini) {
+  if (t.status !== "padam" || !["padam_dilaporkan", "padam_terverifikasi"].includes(t.padam_verif)) return false;
+  if (t.cek_ulang_pada == null) return true;
+  const j = lahanTugas(t).gambut && jadwalCekUlang(t, kini)?.berikutnya;
+  return !!j && kini >= j.jatuh_tempo - JENDELA_CEK;
+}
 export function infoPadam(t, kini) {
   if (!t.padam_verif) return null;
-  const jam = t.padam_pada == null ? 0 : (kini - t.padam_pada) / JAM, ulang = t.cek_ulang_pada != null;
+  const jam = t.padam_pada == null ? 0 : (kini - t.padam_pada) / JAM, ulang = t.cek_ulang_pada != null, lahan = lahanTugas(t), jd = lahan.gambut ? jadwalCekUlang(t, kini) : null;
+  const tungguCek = lahan.gambut && !ulang && jam >= JAM_PADAM_VERIF;   // satelit bersih 48 jam tetapi cek ulang H+1 belum ada
   const L = {padam_terverifikasi: ["hijau", "Padam terverifikasi: tidak terdeteksi satelit 48 jam. Bara bawah permukaan tetap mungkin, cek ulang lapangan."],
     muncul_lagi: ["merah", `Api muncul lagi: ada titik panas baru dalam ${RADIUS_PADAM_KM} km sesudah dilaporkan padam. Tugas dibuka kembali.`],
-    padam_dilaporkan: jam >= JAM_PADAM_AMAN ? ["emas", "Padam, belum ada titik baru 24 jam. Menunggu 48 jam untuk verifikasi satelit."] : ["emas", "Padam dilaporkan. Satelit diperiksa tiap 3 jam, belum ada titik baru."]}[t.padam_verif];
+    padam_dilaporkan: tungguCek ? ["emas", "Padam, satelit bersih 48 jam. Menunggu cek ulang lapangan H+1 (gambut) sebelum disebut terverifikasi."]
+      : jam >= JAM_PADAM_AMAN ? ["emas", "Padam, belum ada titik baru 24 jam. Menunggu 48 jam untuk verifikasi satelit."] : ["emas", "Padam dilaporkan. Satelit diperiksa tiap 3 jam, belum ada titik baru."]}[t.padam_verif];
   return {status: t.padam_verif, tingkat: L[0], label: L[1], pada: t.padam_pada, verif_pada: t.verif_pada, cek_ulang: ulang, cek_ulang_pada: t.cek_ulang_pada,
-    boleh_cek_ulang: t.status === "padam" && !ulang && t.padam_verif !== "muncul_lagi"};
+    boleh_cek_ulang: bolehCekUlang(t, kini), gambut: lahan.gambut, dasar_lahan: lahan.dasar, jadwal_cek_ulang: jd?.jadwal ?? null, cek_ulang_berikutnya: jd?.berikutnya ?? null,
+    muncul: t.padam_verif === "muncul_lagi" ? t.muncul ?? null : null};
 }
-const bentukTugas = (t, kini) => {
-  const {sekarang, mulai_doc, padam_doc, mulai_manual, luas_konf, ...x} = t, rek = jsonAman(t.rekomendasi), s = jsonAman(sekarang);
-  return {...x, rekomendasi: rek, akses: jsonAman(t.akses), padam: infoPadam(t, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
+/* kejadian "muncul lagi" terakhir per tugas (tabel 0040; belum ada = tanpa rincian, status tetap tampil dari tugas_api) */
+async function munculPer(env, rows) {
+  const ids = rows.filter(t => t.padam_verif === "muncul_lagi").map(t => t.id), out = new Map();
+  if (!ids.length) return out;
+  try { for (const m of (await env.DB.prepare(`SELECT tugas_id, waktu, sumber, jarak_km, keterangan FROM tugas_muncul WHERE tugas_id IN (SELECT value FROM json_each(?)) ORDER BY waktu`).bind(JSON.stringify(ids)).all()).results) out.set(m.tugas_id, {waktu: m.waktu, sumber: m.sumber, jarak_km: m.jarak_km, keterangan: m.keterangan}); }
+  catch (e) { if (!/no such table: tugas_muncul/i.test(String(e?.message || e))) throw e; }
+  return out;
+}
+const bentukTugas = (t, kini, muncul) => {
+  const {sekarang, mulai_doc, padam_doc, mulai_manual, luas_konf, lahan_obs, kunjungan, ...x} = t, rek = jsonAman(t.rekomendasi), s = jsonAman(sekarang);
+  return {...x, rekomendasi: rek, akses: jsonAman(t.akses), padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
     sekarang: s && {...s, personel_efektif: s.personel ?? s.personel_terlihat ?? null}, luas_terkonfirmasi: luas_konf, kebutuhan_konf: kebutuhanTerkonfirmasi(rek, luas_konf), kurang: kekurangan(rek, s, luas_konf),
     /* "terdokumentasi" = waktu FOTO/VIDEO, bukan jam mulai atau padam yang sebenarnya */
     dokumentasi: {mulai: mulai_doc, padam: padam_doc, durasi_ms: mulai_doc != null && padam_doc != null && padam_doc >= mulai_doc ? padam_doc - mulai_doc : null, mulai_manual}};
@@ -291,10 +335,11 @@ async function daftarTugas(env, req, kini) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
   const [w, p] = lingkupSql(a);
   const r = (await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE ${w} AND (t.status = 'buka' OR t.dibuat > ?) ORDER BY t.dibuat DESC LIMIT 300`).bind(...p, kini - 3 * HARI).all()).results;
+  const M = await munculPer(env, r);
   /* PIC lapangan terakhir akun ini per kabupaten (terisi otomatis di konfirmasi berikutnya); WhatsApp milik akun itu sendiri */
   const pic = {}; for (const x of (await env.DB.prepare(`SELECT t.prov, lower(t.kab) kab, i.pic_nama, i.pic_jabatan, i.pic_wa, max(i.dibuat) waktu FROM tugas_isian i JOIN tugas_api t ON t.id = i.tugas_id
     WHERE i.akun_id = ? AND i.langkah = 'konfirmasi' GROUP BY t.prov, lower(t.kab)`).bind(a.id).all()).results) pic[`${x.prov}|${x.kab}`] = {nama: x.pic_nama, jabatan: x.pic_jabatan, wa: x.pic_wa};
-  return json({kini, tugas: r.map(t => bentukTugas(t, kini)).sort(urutTugas), batas: {konfirmasi_jam: 6, kabar_jam: 24}, pic_kab: pic});
+  return json({kini, tugas: r.map(t => bentukTugas(t, kini, M.get(t.id))).sort(urutTugas), batas: {konfirmasi_jam: 6, kabar_jam: 24}, pic_kab: pic});
 }
 /* tugas di lingkup akun, atau 404: "tidak ada" dan "di luar wilayah" dijawab sama (tidak membocorkan id yang ada) */
 export async function tugasDalam(env, a, id) {
@@ -316,7 +361,7 @@ const SQL_MEDIA = "SELECT id, akun_id, isian_id, jenis, durasi, waktu_ambil, sum
 async function rincianTugas(env, req, id, kini) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
   const t = await tugasDalam(env, a, id); if (t instanceof Response) return t;
-  return json({tugas: bentukTugas(t, kini), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, false)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, m.akun_id === a.id)),
+  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, false)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, m.akun_id === a.id)),
     gudang_terdekat: await gudangTerdekat(env, t, {provs: [t.prov], akunId: a.id})});   // null bila migrasi 0031 belum diterapkan
 }
 
@@ -478,8 +523,9 @@ async function kabar(env, req, id, kini) {
   return json({id: iid, status: o.status_api === "padam" ? "padam" : "buka", personel_terlihat: md.terlihat}, 201);
 }
 
-/* Cek ulang lapangan (sesudah dilaporkan padam): foto kedua di lokasi menutup pemeriksaan. Berlaku sekali per laporan padam; status tugas tetap 'padam'. */
-const SYARAT_CEK_ULANG = "status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND cek_ulang_pada IS NULL";
+/* Cek ulang lapangan (sesudah dilaporkan padam): foto kedua di lokasi menutup pemeriksaan H+1. Status tugas tetap 'padam'. Pertama sekali per laporan padam;
+   tugas gambut boleh lagi untuk H+3 dan H+7 begitu jadwal berikutnya masuk jendelanya (bolehCekUlang). cek_ulang_pada tetap = cek ulang pertama. */
+const SYARAT_CEK_ULANG = "status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi')";
 async function cekUlang(env, req, id, kini) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
   const t = await tugasDalam(env, a, id); if (t instanceof Response) return t;
@@ -488,14 +534,14 @@ async function cekUlang(env, req, id, kini) {
   if (!kunciIdem(o.klien_id)) return gagal(400, "klien_id wajib: 8-40 huruf/angka/garis (kunci kirim ulang)");
   const ulang = await env.DB.prepare("SELECT id FROM tugas_isian WHERE akun_id = ? AND klien_id = ? AND tugas_id = ?").bind(a.id, o.klien_id, id).first(); if (ulang) return json({id: ulang.id, ulang: true});
   if (t.status !== "padam" || !["padam_dilaporkan", "padam_terverifikasi"].includes(t.padam_verif)) return gagal(409, "cek ulang hanya untuk tugas yang dilaporkan padam");
-  if (t.cek_ulang_pada != null) return gagal(409, "cek ulang lapangan untuk laporan padam ini sudah dikirim");
+  if (!bolehCekUlang(t, kini)) return gagal(409, t.cek_ulang_pada != null ? "cek ulang lapangan untuk laporan padam ini sudah dikirim" + (lahanTugas(t).gambut ? " (jadwal berikutnya belum masuk)" : "") : "cek ulang tidak bisa dikirim");
   const md = await ambilMedia(env, a, id, o, 1); if (md instanceof Response) return md;   // foto kedua di lokasi wajib
   const l = await laju(env, a.id, "instansi.isi", [[JAM, 60]], kini); if (l) return l;
   const iid = acak(8);
   const hasil = await env.DB.batch([
     sisipIsian(env, {id: iid, tugas_id: id, akun_id: a.id, klien_id: o.klien_id, langkah: "tindakan", dibuat: kini, ...md.g, tindakan: "Cek ulang lapangan: foto kedua di lokasi padam", kendala: "[]", bantuan: "[]", status_api: "padam"},
-      `EXISTS (SELECT 1 FROM tugas_api WHERE id = ? AND ${SYARAT_CEK_ULANG}) AND ${SYARAT_MEDIA}`, [id, a.id, id, JSON.stringify(md.ids), md.ids.length]),
-    env.DB.prepare("UPDATE tugas_api SET cek_ulang_pada = ?1 WHERE id = ?2 AND cek_ulang_pada IS NULL AND EXISTS (SELECT 1 FROM tugas_isian WHERE id = ?3)").bind(kini, id, iid),
+      `EXISTS (SELECT 1 FROM tugas_api WHERE id = ? AND ${SYARAT_CEK_ULANG} AND cek_ulang_pada IS ${t.cek_ulang_pada == null ? "" : "NOT "}NULL) AND ${SYARAT_MEDIA}`, [id, a.id, id, JSON.stringify(md.ids), md.ids.length]),
+    env.DB.prepare("UPDATE tugas_api SET cek_ulang_pada = coalesce(cek_ulang_pada, ?1) WHERE id = ?2 AND EXISTS (SELECT 1 FROM tugas_isian WHERE id = ?3)").bind(kini, id, iid),
     ...ikatMedia(env, iid, a, id, md.ids)]);
   if (!hasil[0].meta.changes) return gagal(409, "cek ulang sudah dikirim, tugas tidak lagi berstatus padam, atau media sudah dipakai isian lain");
   return json({id: iid, padam_verif: t.padam_verif, cek_ulang_pada: kini}, 201);
@@ -537,7 +583,7 @@ async function unggahMedia(env, req, kini) {
   const v = k => f.get(k), n = k => (v(k) == null || v(k) === "" ? null : Number(v(k)));
   const tid = v("tugas_id"); if (typeof tid !== "string" || !/^[0-9a-f]{16}$/.test(tid)) return gagal(400, "tugas_id wajib");
   const t = await tugasDalam(env, a, tid); if (t instanceof Response) return t;
-  if (t.status !== "buka" && !(t.status === "padam" && ["padam_dilaporkan", "padam_terverifikasi"].includes(t.padam_verif) && t.cek_ulang_pada == null)) return gagal(409, "tugas ini sudah ditutup");   // padam yang belum dicek ulang boleh menerima foto kedua
+  if (t.status !== "buka" && !bolehCekUlang(t, kini)) return gagal(409, "tugas ini sudah ditutup");   // padam yang belum dicek ulang boleh menerima foto kedua
   const media = v("media"), thumb = v("thumb");
   if (!(media instanceof File) || !media.size) return gagal(400, "berkas foto atau video wajib");
   if (!(thumb instanceof File) || !thumb.size) return gagal(400, "thumbnail wajib (dibuat otomatis oleh halaman)");
@@ -661,29 +707,76 @@ export function pasAkses(a) {
   if (Array.isArray(x.bawa)) while (x.bawa.length && (s = JSON.stringify(x)).length > MAKS_AKSES) x.bawa = x.bawa.slice(0, -1);
   s = JSON.stringify(x); return s.length <= MAKS_AKSES ? s : null;
 }
-/* "Sudah padam belum?": tugas yang dilaporkan padam diperiksa terhadap putaran titik panas FIRMS terbaru di D1 (titik_terbaru, diisi perbaruiTitik tiap 3 jam, jendela 24 jam per putaran).
-   Titik baru (waktu SESUDAH laporan padam) dalam 2 km: muncul_lagi, tugas dibuka kembali (status buka, jendela kabar 24 jam dimulai lagi) dan menjadi butir Meja Pantau api_muncul_lagi.
-   Tanpa titik baru: padam_terverifikasi setelah 48 jam, hanya bila putaran terbaru sudah mencakup 48 jam itu (putaran lama atau cron mati = belum terverifikasi). Berjalan di awal buatTugas. */
+/* "Sudah padam belum?": tugas yang dilaporkan padam diperiksa terhadap tiga sumber, semuanya dengan syarat kejadian SESUDAH laporan padam dan dalam 2 km:
+   (1) putaran titik panas FIRMS terbaru di D1 (titik_terbaru, tiap 3 jam, jendela 24 jam per putaran);
+   (2) hotspot Himawari-9 di R2 (data/himawari.json, 10 menit): umur <= 60 menit, bertahan >= 2 pindaian, level >= 2 (konstanta yang sama dengan tandaiBaru). Resolusinya sekitar 2 km,
+       jadi dicatat sebagai perkiraan, bukan kepastian. R2 hilang atau tak terbaca = dilewati;
+   (3) laporan regu berkode (tautkanLaporanRegu di bawah, saat laporan masuk).
+   Ada kena: muncul_lagi, tugas dibuka kembali (status buka, jendela kabar 24 jam dimulai lagi), kejadian dicatat di tugas_muncul (sumber, waktu, jarak) dan menjadi butir api_muncul_lagi.
+   Tanpa kena: padam_terverifikasi setelah 48 jam, hanya bila putaran FIRMS terbaru sudah mencakup 48 jam itu (putaran lama atau cron mati = belum), DAN untuk tugas gambut
+   (atau lahan tak diketahui, lihat lahanTugas) cek ulang lapangan H+1 sudah ada. Berjalan di awal buatTugas. */
+const UPD_MUNCUL = "UPDATE tugas_api SET status = 'buka', padam_verif = 'muncul_lagi', verif_pada = ?1, isian_terakhir = ?1 WHERE id = ?2 AND status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi')";
+const INS_MUNCUL = "INSERT OR IGNORE INTO tugas_muncul (tugas_id, waktu, sumber, jarak_km, keterangan) SELECT ?1, ?2, ?3, ?4, ?5 WHERE EXISTS (SELECT 1 FROM tugas_api WHERE id = ?1 AND padam_verif = 'muncul_lagi' AND verif_pada = ?2)";
+/* kejadian: [{id, sumber, jarak, ket}]. Pembukaan kembali dulu; rinciannya terpisah supaya tabel 0040 yang belum diterapkan tidak menggagalkan pembukaan. Mengembalikan jumlah tugas yang benar-benar dibuka. */
+async function bukaKembali(env, kejadian, kini) {
+  let n = 0;
+  for (let i = 0; i < kejadian.length; i += CHUNK) n += (await env.DB.batch(kejadian.slice(i, i + CHUNK).map(k => env.DB.prepare(UPD_MUNCUL).bind(kini, k.id)))).reduce((x, r) => x + r.meta.changes, 0);
+  try { for (let i = 0; i < kejadian.length; i += CHUNK) await env.DB.batch(kejadian.slice(i, i + CHUNK).map(k => env.DB.prepare(INS_MUNCUL).bind(k.id, kini, k.sumber, k.jarak == null ? null : Math.round(k.jarak * 100) / 100, k.ket))); }
+  catch (e) { if (!/no such table: tugas_muncul/i.test(String(e?.message || e))) throw e; }
+  return n;
+}
+const KET_HIMAWARI = "Himawari-9 beresolusi sekitar 2 km: lokasinya perkiraan, bukan kepastian. Minta regu mengecek lapangan.";
+async function himawariPemicu(env, kini) {
+  const hw = await muatHimawari(env), ac = Date.parse(hw?.acuan);
+  if (!Array.isArray(hw?.baris) || !Number.isFinite(ac) || kini - ac > BARU_ACUAN_MAKS) return [];
+  return hw.baris.filter(r => (r[7] ?? 1) >= BARU_N_MIN && r[2] <= BARU_U_MAKS && r[4] >= BARU_LEVEL_MIN).map(r => ({lat: r[0], lon: r[1], t: ac - r[2] * MENIT}));
+}
+const terdekat = (titik, t) => { let d = Infinity; for (const b of titik) if (b.t > t.padam_pada) { const x = km(b.lat, b.lon, t.lat, t.lon); if (x <= RADIUS_PADAM_KM && x < d) d = x; } return d === Infinity ? null : d; };
 export async function verifikasiPadam(env, kini = Date.now()) {
-  const T = (await env.DB.prepare(`SELECT id, lat, lon, padam_pada, padam_verif FROM tugas_api WHERE padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND status = 'padam' AND padam_pada > ? LIMIT 1000`).bind(kini - UMUR_PERIKSA_PADAM).all()).results;
+  const T = (await env.DB.prepare(`SELECT t.id, t.lat, t.lon, t.status, t.padam_pada, t.padam_verif, t.cek_ulang_pada, t.rekomendasi, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
+    WHERE t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.status = 'padam' AND t.padam_pada > ? LIMIT 1000`).bind(kini - UMUR_PERIKSA_PADAM).all()).results;
   if (!T.length) return {periksa: 0, muncul: 0, terverifikasi: 0};
   const r = await env.DB.prepare("SELECT dibuat, isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first();
-  if (!r) return {periksa: T.length, muncul: 0, terverifikasi: 0, lewat: "belum ada putaran titik panas"};
-  let isi; try { isi = JSON.parse(r.isi); } catch (e) { return {periksa: T.length, muncul: 0, terverifikasi: 0, lewat: "putaran titik panas tidak terbaca"}; }
-  const acuan = Date.parse(isi.acuan), baris = Array.isArray(isi.baris) && Number.isFinite(acuan) ? isi.baris.map(b => ({lat: b[0], lon: b[1], t: acuan + b[2] * JAM})) : [];
-  const st = []; let muncul = 0, terverifikasi = 0;
+  let lewat = r ? null : "belum ada putaran titik panas", baris = [];
+  if (r) try { const isi = JSON.parse(r.isi), acuan = Date.parse(isi.acuan); baris = Array.isArray(isi.baris) && Number.isFinite(acuan) ? isi.baris.map(b => ({lat: b[0], lon: b[1], t: acuan + b[2] * JAM})) : []; } catch (e) { lewat = "putaran titik panas tidak terbaca"; }
+  const hw = await himawariPemicu(env, kini);
+  if (lewat && !hw.length) return {periksa: T.length, muncul: 0, terverifikasi: 0, lewat};
+  const buka = [], st = []; let terverifikasi = 0;
   for (const t of T) {
-    const kena = baris.some(b => b.t > t.padam_pada && km(b.lat, b.lon, t.lat, t.lon) <= RADIUS_PADAM_KM);
-    if (kena) {
-      muncul++;
-      st.push(env.DB.prepare(`UPDATE tugas_api SET status = 'buka', padam_verif = 'muncul_lagi', verif_pada = ?1, isian_terakhir = ?1 WHERE id = ?2 AND status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi')`).bind(kini, t.id));
-    } else if (t.padam_verif === "padam_dilaporkan" && kini - t.padam_pada >= JAM_PADAM_VERIF * JAM && r.dibuat >= t.padam_pada + JAM_PADAM_VERIF * JAM) {
+    const f = terdekat(baris, t), h = f == null ? terdekat(hw, t) : null;
+    if (f != null) buka.push({id: t.id, sumber: "firms", jarak: f, ket: "Titik panas NASA FIRMS sesudah laporan padam"});
+    else if (h != null) buka.push({id: t.id, sumber: "himawari", jarak: h, ket: KET_HIMAWARI});
+    else if (!lewat && t.padam_verif === "padam_dilaporkan" && kini - t.padam_pada >= JAM_PADAM_VERIF * JAM && r.dibuat >= t.padam_pada + JAM_PADAM_VERIF * JAM
+      && (!lahanTugas(t).gambut || jadwalCekUlang(t, kini)?.jadwal[0].selesai != null)) {
       terverifikasi++;
       st.push(env.DB.prepare(`UPDATE tugas_api SET padam_verif = 'padam_terverifikasi', verif_pada = ?1 WHERE id = ?2 AND status = 'padam' AND padam_verif = 'padam_dilaporkan'`).bind(kini, t.id));
     }
   }
+  const muncul = await bukaKembali(env, buka, kini);
   for (let i = 0; i < st.length; i += CHUNK) await env.DB.batch(st.slice(i, i + CHUNK));
   return {periksa: T.length, muncul, terverifikasi};
+}
+/* Laporan regu berkode (posko.js lapor, sesudah laporan tersimpan) menaut ke tugas api terdekat (<= 2 km, kabupaten sama, tugas nyata yang buka atau padam) lewat tugas_lapangan.
+   Efeknya hanya bila laporan dipercaya (tidak ditahan, tanpa tanda GPS curiga): padam = laporan padam (padam_pada diisi bila belum, atau tugas muncul_lagi yang dipadamkan lagi);
+   menyala atau bara pada tugas yang sudah padam = muncul_lagi sumber regu. Tabel 0040 belum ada = lewati. Galat tidak boleh menggagalkan laporan (pemanggil menangkap). */
+export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
+  try {
+    const C = (await env.DB.prepare(`SELECT id, lat, lon, status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE prov = ? AND lower(kab) = lower(?) AND dummy = 0
+      AND (status = 'buka' OR (status = 'padam' AND padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi'))) LIMIT 500`).bind(l.prov, l.kab).all()).results;
+    let t = null, d = GABUNG_KM + 1e-9;
+    for (const c of C) { const x = km(l.lat, l.lon, c.lat, c.lon); if (x <= GABUNG_KM && x < d) { t = c; d = x; } }
+    if (!t) return null;
+    await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini).run();
+    if (!l.dipercaya) return {tugas_id: t.id, jarak_km: d, efek: null};
+    const waktu = Math.min(l.waktu, kini);
+    if (l.status === "padam" && (t.padam_pada == null || (t.status === "buka" && t.padam_verif === "muncul_lagi" && waktu > t.verif_pada))) {
+      const r = await env.DB.prepare(`UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?1, verif_pada = ?2, cek_ulang_pada = NULL WHERE id = ?3 AND (padam_pada IS NULL OR (status = 'buka' AND padam_verif = 'muncul_lagi'))`).bind(waktu, kini, t.id).run();
+      if (r.meta.changes) { try { await lepasDariTugas(env, t.id, kini); } catch (e) {} return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"}; }
+    } else if ((l.status === "menyala" || l.status === "bara") && t.status === "padam" && waktu > t.padam_pada) {
+      if (await bukaKembali(env, [{id: t.id, sumber: "regu", jarak: d, ket: `Laporan regu berkode: api ${l.status} dalam ${Math.round(d * 10) / 10} km dari tugas yang dilaporkan padam`}], kini)) return {tugas_id: t.id, jarak_km: d, efek: "muncul_lagi"};
+    }
+    return {tugas_id: t.id, jarak_km: d, efek: null};
+  } catch (e) { if (/no such table: tugas_lapangan/i.test(String(e?.message || e))) return null; throw e; }
 }
 /* Butir Meja Pantau api_muncul_lagi (dipanggil src/pantau.js): tugas yang dibuka kembali karena titik panas baru dan belum ada kabar tindakan sesudahnya. Hilang sendiri saat kabar baru masuk. */
 export async function butirApiMunculLagi(env, kini, dummyOk) {
@@ -693,6 +786,22 @@ export async function butirApiMunculLagi(env, kini, dummyOk) {
         AND NOT EXISTS (SELECT 1 FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'tindakan' AND i.dibuat > t.verif_pada) ORDER BY t.verif_pada LIMIT 500`).all()).results;
     return R.map(t => ({id: `api-muncul:${t.id}:${t.verif_pada}`, jenis: "api_muncul_lagi", judul: `Api muncul lagi di ${[t.kec, t.kab].filter(Boolean).join(", ")} sesudah dilaporkan padam, ${durasi(kini - t.verif_pada)} lalu`,
       rincian: "Titik panas baru dalam 2 km sesudah laporan padam. Minta regu mengecek lapangan dan mengirim kabar tindakan.", provs: [t.prov], kab: t.kab, dibuat: t.verif_pada, tenggat: t.verif_pada + TENGGAT_KABAR, prioritas: 1, dummy: t.dummy}));
+  } catch (e) { if (tanpaTabel(e) || /no such column/i.test(String(e?.message))) return []; throw e; }
+}
+/* Butir Meja Pantau cek_ulang_jatuh_tempo: tugas padam di gambut (atau lahan tak diketahui) yang jadwal cek ulang H+1/H+3/H+7-nya lewat tanpa kunjungan berfoto. Hilang sendiri saat cek ulang masuk. */
+export async function butirCekUlang(env, kini, dummyOk) {
+  try {
+    const R = (await env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.status, t.padam_verif, t.padam_pada, t.cek_ulang_pada, t.rekomendasi, t.dummy, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
+      WHERE t.status = 'padam' AND t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.padam_pada > ? ${dummyOk ? "" : "AND t.dummy = 0"} LIMIT 1000`).bind(kini - 14 * HARI).all()).results, out = [];
+    for (const t of R) {
+      const L = lahanTugas(t); if (!L.gambut) continue;
+      const j = jadwalCekUlang(t, kini)?.jadwal.find(x => x.terlambat); if (!j) continue;
+      const lewat = kini - j.jatuh_tempo, tempat = [t.kec, t.kab].filter(Boolean).join(", ");
+      out.push({id: `cek-ulang:${t.id}:${t.padam_pada}:${j.hari}`, jenis: "cek_ulang_jatuh_tempo", judul: `Cek ulang H+${j.hari} di ${tempat} belum ada, lewat ${durasi(lewat)} dari jadwal`,
+        rincian: `Tugas dilaporkan padam di lahan ${L.dasar === "tidak_diketahui" ? "yang jenisnya belum diketahui (dianggap gambut)" : "gambut"}. Bara bawah permukaan tidak terlihat satelit: minta regu berkunjung dan mengirim foto cek ulang.`,
+        provs: [t.prov], kab: t.kab, dibuat: j.jatuh_tempo, tenggat: j.jatuh_tempo, prioritas: lewat >= HARI ? 1 : 2, dummy: t.dummy});
+    }
+    return out;
   } catch (e) { if (tanpaTabel(e) || /no such column/i.test(String(e?.message))) return []; throw e; }
 }
 export async function buatTugas(env, kini = Date.now()) {
@@ -752,6 +861,8 @@ async function bersihkanInstansiIsi(env, kini) {
   const r = await env.DB.batch([env.DB.prepare("DELETE FROM instansi_sesi WHERE kedaluwarsa <= ?").bind(kini), ...pulang,
     env.DB.prepare(`DELETE FROM instansi_media WHERE tugas_id IN (${tua})`).bind(lama),
     env.DB.prepare(`DELETE FROM tugas_isian WHERE tugas_id IN (${tua})`).bind(lama), env.DB.prepare("DELETE FROM tugas_api WHERE dibuat <= ? AND dummy = 0").bind(lama)]);
+  try { await env.DB.batch([env.DB.prepare("DELETE FROM tugas_muncul WHERE tugas_id NOT IN (SELECT id FROM tugas_api)"), env.DB.prepare("DELETE FROM tugas_lapangan WHERE tugas_id NOT IN (SELECT id FROM tugas_api)")]); }   // yatim sesudah tugas dihapus; tabel 0040 belum ada = dilewati
+  catch (e) { if (!/no such table: tugas_(muncul|lapangan)/i.test(String(e?.message || e))) throw e; }
   const posisi = await bersihkanPenugasan(env, kini);   // posisi pelacak 30 hari; tabel 0035 belum ada = dilewati
   return {sesi: r[0].meta.changes, tugas: r[r.length - 1].meta.changes, media: media.length, alat_pulang: alat ? r[2].meta.changes : 0, ...(posisi ? {posisi} : {})};
 }
@@ -884,7 +995,7 @@ async function rincianAdmin(env, req, id, kini) {
   if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();   // keputusan pemilik 21 Okt 2026: staf verifikator/pusdalops (dalam wilayahnya) membuka rincian dan media tugas
   const t = await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE t.id = ?`).bind(id).first();
   if (!t || !dalamWilayahStaf(req, [t.prov]) || (stafNyata(req) && t.dummy)) return gagal(404, "tugas tidak ada");
-  return json({tugas: bentukTugas(t, kini), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, true)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, true)),
+  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, true)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, true)),
     usulan: (await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, status FROM usulan_kontak_pt WHERE tugas_id = ?").bind(id).all()).results, gudang_terdekat: await gudangTerdekat(env, t, {adminPic: true, dalam: p => dalamWilayahStaf(req, [p])})});
 }
 async function daftarUsulan(env, req, url) {
