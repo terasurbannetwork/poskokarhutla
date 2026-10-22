@@ -11,7 +11,7 @@
     luas: {warna: "#3F5F80", judul: "Luas terbakar (perkiraan satelit)", jumlah: "Jumlah luas harian (perkiraan satelit)", lbl: "Luas terbakar (ha)", tip: "luas terbakar (perkiraan satelit)", tipJml: "jumlah luas harian (perkiraan satelit)"},
     belum: {warna: "#D9600B", judul: "Belum padam (perkiraan satelit)", lbl: "Belum padam (ha)", tip: "belum padam (perkiraan satelit)"}};
   let D = null, janji = null;           /* D = {P, KB, fc}: data siap pakai */
-  let st = {metrik: null, mode: "hari", ref: "", a: "", b: ""}, hit = {}, kls = {b: [], w: []}, fokus = null, hov = null, pop = null, tunda = 0, gen = 0;
+  let st = {metrik: null, mode: "hari", ref: "", a: "", b: ""}, hit = {}, kls = {b: [], w: []}, fokus = null, hov = null, pop = null, gen = 0;
   const wil = (kw, lw) => `<span>${kw}</span> <span>${lw}</span>`;   /* kata depan dan tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
 
   /* ---------- data: satu JSON + geometri kabupaten, hanya provinsi yang punya data ---------- */
@@ -34,20 +34,19 @@
     if (!D || !peta || peta.getSource("kab")) return;
     const bawah = Peta.lapisAwal();
     hov = null; peta.addSource("kab", {type: "geojson", data: D.fc, promoteId: "kunci"});
-    peta.addLayer({id: "kab-fill", type: "fill", source: "kab", paint: {"fill-color": "rgba(0,0,0,0)", "fill-opacity": .85}}, bawah);
+    /* warna kelas dititipkan di feature-state "c" oleh gambar(): ekspresi paint TETAP, jadi ganti periode tidak memuat ulang ubin sumber */
+    peta.addLayer({id: "kab-fill", type: "fill", source: "kab", paint: {"fill-color": ["to-color", ["coalesce", ["feature-state", "c"], "rgba(0,0,0,0)"]], "fill-opacity": .85}}, bawah);
     peta.addLayer({id: "kab-line", type: "line", source: "kab", paint: {"line-color": "#8fa0b5", "line-opacity": .85, "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.2, .6]}}, bawah);
     ikat();
   }
   function periode() { const P = D.P, ref = st.ref || P.hari[P.n - 1]; return {ref, ...(R.rentang(P, st.mode, ref, st.a, st.b) || {i0: P.n - 1, i1: P.n - 1})}; }
-  /* nilai per kabupaten -> keadaan fitur (v) dan warna kelas; nol = transparan */
+  /* nilai per kabupaten -> warna kelasnya di feature-state "c" (R.kelasKab = aturan step legenda); nol = transparan */
   function gambar() {
     const m = st.metrik; if (!m || !D || !ada()) return;
     pop?.remove();   /* popup lama memuat periode/ukuran lama */
     const {i0, i1} = periode(), maks = Math.max(0, ...Object.values(hit = R.agregatKab(D.KB, m, i0, i1))), b = R.batasKab(maks), w = R.warnaKab(INFO[m].warna, b.length + 1);
     kls = {b, w, i0, i1, maks};
-    const v = ["coalesce", ["feature-state", "v"], 0], kelas = b.length ? ["step", v, w[0], ...b.flatMap((x, k) => [x + .5, w[k + 1]])] : w[0];
-    peta.setPaintProperty("kab-fill", "fill-color", ["case", [">", v, 0], kelas, "rgba(0,0,0,0)"]);
-    for (const f of D.fc.features) peta.setFeatureState({source: "kab", id: f.properties.kunci}, {v: hit[f.properties.kunci] || 0});
+    for (const f of D.fc.features) { const k = f.properties.kunci; peta.setFeatureState({source: "kab", id: k}, {c: hit[k] ? w[R.kelasKab(b, hit[k])] : "rgba(0,0,0,0)"}); }
     kartu(); renderLegenda();
   }
 
