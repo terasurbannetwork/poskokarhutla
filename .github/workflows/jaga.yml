@@ -29,9 +29,9 @@ jobs:
             sleep 20
           done
           echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
-          # terbit sekali per 3 jam saja (run terbit yang gagal tidak dihitung): kalau sumbernya sendiri yang basi (FIRMS mati), terbit ulang tiap jam tak menolong
+          # terbit sekali per 3 jam saja (hanya run sukses atau yang masih jalan dihitung; gagal/cancelled tidak): kalau sumbernya sendiri yang basi (FIRMS mati), terbit ulang tiap jam tak menolong
           sejak=$(date -u -d '-3 hours' +%Y-%m-%dT%H:%M:%SZ)
-          if [ -z "$(gh run list --workflow terbit.yml --created ">=$sejak" --json databaseId,conclusion --jq '.[] | select(.conclusion != "failure") | .databaseId')" ]; then
+          if [ -z "$(gh run list --workflow terbit.yml --created ">=$sejak" --json databaseId,status,conclusion --jq '.[] | select(.status != "completed" or .conclusion == "success") | .databaseId')" ]; then
             gh workflow run terbit.yml && echo "terbit.yml dipicu"
           else
             echo "terbit.yml sudah jalan < 3 jam lalu; sumbernya yang perlu diperiksa"

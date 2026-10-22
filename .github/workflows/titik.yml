@@ -141,8 +141,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 5
         run: |
+          # cron 40 */3 telat 30-45 menit, jadi jam jatuh di 1,4,7,..; j%6 <= 2 menangkap satu dari tiap dua putaran (sekali per 6 jam)
           j=$((10#$(date -u +%H)))
-          if [ $((j % 6)) -ne 0 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
+          if [ $((j % 6)) -gt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
           python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
           python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py
 
