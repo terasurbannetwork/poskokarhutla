@@ -84,8 +84,8 @@ nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
 nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 @media (max-width:1500px){nav.tabs{margin:0 8px}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;gap:6px;font-size:13.5px!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
-/* ikon tetap tampil (pemilik, 20 Okt 2026); baru disembunyikan di 1261-1380px, tepat sebelum tab pindah ke menu garis tiga */
-@media (max-width:1380px) and (min-width:1261px){nav.tabs button svg,nav.tabs a.tab-ln svg{display:none}}
+/* ikon tab tidak pernah disembunyikan (pemilik, 20 & 22 Okt 2026); di 1261-1380px tab dipadatkan, bukan dibuang ikonnya */
+@media (max-width:1380px) and (min-width:1261px){nav.tabs{gap:0;margin:0 4px}nav.tabs button,nav.tabs a.tab-ln{padding:8px 7px;gap:4px;font-size:13px!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:14px;height:14px}}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya{flex:none}
@@ -957,7 +957,7 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 /* chip rentang tren diberi label sendiri supaya tak dikira penyaring kolom Titik; baris hari kolom Titik di atas kepala tabel */
 .tr-lb{flex-direction:column;align-items:stretch;gap:4px}
 #rows{container-type:inline-size}.nm-pdk{display:none}@container (max-width:480px){.nm-pjg{display:none}.nm-pdk{display:inline}}
-#panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}#panelMode button svg{width:14px;height:14px;flex:none}
+#panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}#panelMode button[hidden]{display:none}/* Posko (Ajuan) disembunyikan dulu (pemilik, 22 Okt 2026) */#panelMode button svg{width:14px;height:14px;flex:none}
 .tr-hari{padding:2px 2px 5px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}.tr-hari b{color:var(--ink)}
 .tr-c{display:flex;align-items:center;gap:4px;color:var(--ink2);overflow:visible!important}
 .tr-c svg{flex:none;color:var(--ink2)}
@@ -1497,8 +1497,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label style="display:none"><input type="checkbox" data-l="himawari" checked> Himawari 10 menit</label><!-- ikut tombol Satelit (pemilik, 19 Okt 2026) -->
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
-          <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten (perkiraan satelit)</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
-          <label><input type="checkbox" data-l="kabbelum"> Belum padam per kabupaten (perkiraan satelit)</label>
+          <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
+          <label><input type="checkbox" data-l="kabbelum"> Belum padam per kabupaten</label>
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
         </details>
