@@ -952,10 +952,13 @@ def citra_ttm(tahun, top=TOP_TERBIT, hanya=None):
         try:
             return citra_ttm_satu(p, tahun)
         except Exception as e:
-            log("  citra gagal", p["nama"], repr(e)[:120])
+            log("  citra gagal", p["nama"], repr(e)[:120], __import__("traceback").format_exc()[-300:])
             return None, None
     with ThreadPoolExecutor(10) as ex:
-        for p, (c, api) in zip(pilih_, ex.map(kerja, pilih_)):
+        from concurrent.futures import as_completed
+        fut = {ex.submit(kerja, p): p for p in pilih_}
+        for f in as_completed(fut):   # urutan selesai, bukan urutan antrean: satu perusahaan lambat tak menahan simpanan
+            p, (c, api) = fut[f], f.result()
             p["citra"], p["api"] = c, api
             json.dump(h, open(jalur, "w"), separators=(",", ":"))   # simpan tiap perusahaan: bisa dilanjut
             log(f"  citra ttm{tahun} {p['nama']}: " + (", ".join(f"{k}={c[k]['tgl'] + '/' + str(c[k]['awan']) if c[k] else '-'}" for k in ('sebelum', 'terbakar', 'kebun1', 'kebun2')) if c else "tidak ada"))
@@ -976,10 +979,13 @@ def citra(tahun=TAHUN_TERBIT, top=TOP_TERBIT):
         try:
             return citra_satu(p)
         except Exception as e:
-            log("  citra gagal", p["nama"], repr(e)[:120])
+            log("  citra gagal", p["nama"], repr(e)[:120], __import__("traceback").format_exc()[-300:])
             return None, None
     with ThreadPoolExecutor(3) as ex:
-        for p, (c, api) in zip(pilih_, ex.map(kerja, pilih_)):
+        from concurrent.futures import as_completed
+        fut = {ex.submit(kerja, p): p for p in pilih_}
+        for f in as_completed(fut):   # urutan selesai, bukan urutan antrean: satu perusahaan lambat tak menahan simpanan
+            p, (c, api) = fut[f], f.result()
             p["citra"], p["api"] = c, api
             log(f"  citra {tahun} {p['nama']}: " + (", ".join(f"{k}={c[k]['tgl'] if c[k] else '-'}" for k in ('sebelum', 'terbakar', 'kebun1', 'kebun2')) + f" px={c['px']} api={api['pertama']}..{api['terakhir']}" if c else "tidak ada"))
     json.dump(h, open(jalur, "w"), separators=(",", ":"))
