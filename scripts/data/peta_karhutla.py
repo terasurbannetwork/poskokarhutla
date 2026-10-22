@@ -370,6 +370,9 @@ def unduh_hari(hari_utc, kunci, ket, wil, cache, log=print):
 
 
 # ---------------------------------------------------------------- berkas keluaran
+BULAN = ("Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des")
+
+
 def koma(x, n=3):
     return f"{x:.{n}f}".replace(".", ",")
 
@@ -377,17 +380,22 @@ def koma(x, n=3):
 def metode():
     """Teks metode untuk kaki kartu. Angka kalimat berasal dari konstanta (PORSI, UKUR, CELAH_*), tidak diketik di sini."""
     bias = (PORSI / UKUR["porsi_agregat"] - 1) * 100
+    h = tgl(STATIS["hari"])
+    statis = (f"Panas industri (smelter, tambang, kilang, pembangkit) dan gunung api ikut terhitung sebagai titik karena tidak disaring. "
+              f"Pada {h.day} {BULAN[h.month - 1]} {h.year}, {koma(100 * STATIS['statis'] / STATIS['titik'], 1)}% titik NOAA-20/21 nasional "
+              f"({koma(100 * STATIS['bertahan_statis'] / STATIS['bertahan'], 1)}% dari yang bertahan) berada di sel sumber panas industri; "
+              f"di kabupaten yang memilikinya, luas terbakar dan belum padam bisa terbaca terlalu tinggi.")
     return {
         "hot": "Titik panas MODIS (Terra+Aqua) + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan, per hari kalender WIB. "
                "Definisi sama dengan SiPongi; kesesuaian jumlah per provinsi baru diuji untuk Papua Selatan.",
         "luas": f"Titik VIIRS NOAA-20 dan NOAA-21 berkeyakinan nominal/tinggi x porsi {koma(PORSI)} x 4,3 ha. Porsi = median rasio titik S-NPP terhadap NOAA-20+21 "
                 f"pada 16–19 Okt 2026 (S-NPP lengkap); tetap dipakai karena distribusi S-NPP berhenti 1 Nov 2026. "
                 f"Porsi sedikit di atas median 2026 ({koma(UKUR['porsi_median'])}, {UKUR['hari']} hari tanpa celah); luas cenderung sekitar {bias:.0f}% lebih tinggi dibanding basis S-NPP.",
-        "belum": "Luas x bagian titik NOAA-20/21 hari itu yang lokasinya (sel 3x3, ±375 m) sudah terdeteksi 12–36 jam sebelumnya. "
+        "belum": "Luas x bagian titik NOAA-20/21 hari itu yang lokasinya (sel 3x3, sampai 375 m dari titik) sudah terdeteksi 12–36 jam sebelumnya. "
                  "Cadangan pada hari itu, bukan dijumlahkan antarhari.",
         "padam": "Luas dua hari sebelumnya x bagian titiknya yang lokasinya tidak terdeteksi lagi sepanjang dua hari berikutnya (48 jam tanpa titik = padam).",
         "catatan": [
-            "Perkiraan dari satelit, bukan luas resmi. Rentang ±15–40% hanya galat porsi dan sampling; faktor 4,3 ha per titik tidak diuji per provinsi, "
+            "Perkiraan dari satelit, bukan luas resmi. Rentang galat 15–40% hanya berasal dari porsi dan sampling; faktor 4,3 ha per titik tidak diuji per provinsi, "
             "dan angka dapat jauh berbeda dari laporan lapangan BNPB.",
             "Hari bertanda celah: lintasan satelit hilang di FIRMS sehingga hotspot hari itu terlalu rendah; angka tidak dikoreksi. "
             "Celah NOAA-20/21 juga menurunkan luas, belum padam, dan padam pada hari itu dan dua hari sesudahnya (celah_turunan).",
@@ -399,6 +407,7 @@ def metode():
             f"dan porsi tidak dihitung ulang. Pada 2026 titik S-NPP semua keyakinan sekitar {koma(UKUR['snpp_n21_median'], 2)} x titik NOAA-21 "
             f"(median harian {UKUR['snpp_n21_hari']} hari; sebaran harian {koma(UKUR['snpp_n21_p10'], 2)}–{koma(UKUR['snpp_n21_p90'], 2)}), jadi rata-rata sebanding "
             f"tetapi hari ke hari bisa berbeda seperempat; perubahan hotspot yang melintasi hari patah dibaca hati-hati.",
+            statis,
         ],
     }
 
@@ -558,7 +567,7 @@ def metode_wil():
                       "(hari0 + indeks). Hanya hari dengan minimal satu angka bukan nol yang ditulis. Kunci kabupaten/kota \"kode|kab\", kecamatan \"kode|kab|kec\" "
                       "(sama dengan properties.kunci di layar).",
             "pembulatan": "Tiap wilayah dibulatkan sekali (setengah ke atas) dari angka desimalnya sendiri, jadi jumlah angka kecamatan dapat berbeda dari angka kabupaten/kota "
-                          "dan jumlah kabupaten/kota dari angka provinsi (peta_karhutla.json): hot selalu sama persis; luas, belum, padam beda sekitar ±1 per wilayah "
+                          "dan jumlah kabupaten/kota dari angka provinsi (peta_karhutla.json): hot selalu sama persis; luas, belum, padam beda sekitar 1 per wilayah "
                           "yang dijumlahkan, dan wilayah yang seluruh angkanya membulat ke 0 tidak tertulis. Metode lain sama dengan peta_karhutla.json."}
 
 
