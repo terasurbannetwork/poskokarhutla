@@ -92,7 +92,7 @@ const cron = async (isi, t, w = mf) => (await w.getWorker()).scheduled({cron: is
 const JAM_CRON = "17 * * * *", CRON_GEMPA = E.CRON_GEMPA;   // cron gempa bersama src/gempa.js (tiap menit)
 const sampai = async (fn, ms = 4000) => { const m = Date.now(); while (Date.now() - m < ms) { if (fn()) return true; await new Promise(r => setTimeout(r, 40)); } return false; };
 const untuk = (email, daftar = surat) => daftar.filter(s => s.to.includes(email));
-const ASAL = "https://pantau.terasurban.com";
+const ASAL = "https://centurisk97.id";
 const tokenDari = s => s.html.match(/\/ews\/konfirmasi\?t=([0-9a-f]{32})/)[1];
 const baris = async (email, db = DB) => db.prepare("SELECT * FROM ews_langganan WHERE email = ?").bind(email).first();
 

@@ -19,7 +19,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+      URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
     steps:
       - name: Periksa /api/status, terbitkan ulang bila basi
         run: |

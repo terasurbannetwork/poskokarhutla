@@ -166,7 +166,7 @@ jobs:
       - name: Periksa kesegaran data yang tayang
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+          URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
           for i in 1 2 3; do
