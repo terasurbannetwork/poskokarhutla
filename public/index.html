@@ -1998,7 +1998,8 @@ const Peta = {
         const k = f.properties.kunci, kp = k.split("|"), kl = klusterDi(k), pr = kl.filter(x => x.properties.level === 3).length, fw = kp.length === 1 ? S.wilayah[k]?.fwi_maks : null;
         kartuWil = kartuTip({judul: esc(f.properties.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "",
           /* titik = hari terpilih (satu hari WIB); kompleks = aktif (terdeteksi <= 72 jam, gambut kering 168 jam) tanpa ikut hari terpilih, jadi labelnya disebut */
-          stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"], ["api", kl.length, "kompleks aktif", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
+          stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"],
+            ...(ukurAktif() === "hot" ? [] : [["puncak", fmt(nilaiWil(k)), `ha ${UKUR[ukurAktif()].toLowerCase()}<br>${tglLain(S.pk.hari[pkHari()])}`, "#d9600b"]]), ["api", kl.length, "kompleks aktif", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : [])], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || $("#tip")._pf || Riwayat._diGelembung) return;
@@ -2007,7 +2008,8 @@ const Peta = {
     peta.on("click", e => {
       const kc = peta.getLayer("prio-klaster") && peta.queryRenderedFeatures(e.point, {layers: ["prio-klaster"]});
       const hk = peta.getLayer("himawari-klaster") && peta.getLayoutProperty("himawari-klaster", "visibility") !== "none" && peta.queryRenderedFeatures(e.point, {layers: ["himawari-klaster"]});
-      if (hk && hk.length) { const f = hk[0]; peta.getSource("himawari").getClusterExpansionZoom(f.properties.cluster_id).then(z => peta.easeTo({center: f.geometry.coordinates, zoom: z + .3, duration: 900})); return; }
+      if (hk && hk.length) { const f = hk[0], c = f.properties.asal ? JSON.parse(f.properties.asal) : f.geometry.coordinates;   /* lencana tunggal: terbang ke lokasi aslinya, cincinnya tampil mulai zoom 8 */
+        (f.properties.cluster_id == null ? Promise.resolve(8.2) : peta.getSource("himawari").getClusterExpansionZoom(f.properties.cluster_id)).then(z => peta.easeTo({center: c, zoom: z + .3, duration: 900})); return; }
       if (kc && kc.length) { const id = kc[0].properties.cluster_id, src = peta.getSource("prio");
         src.getClusterLeaves(id, 100, 0).then(fs => { const b = new maplibregl.LngLatBounds(); fs.forEach(f => b.extend(f.geometry.coordinates));
           peta.fitBounds(b, {padding: 90, maxZoom: 9.5, duration: 1100, essential: true}); }); return; }
@@ -2071,17 +2073,18 @@ const Lapis = {
     const rK = n => n <= 10 ? 13 + (n - 2) / 8 * 5 : n <= 40 ? 18 + (n - 10) / 30 * 8 : 26, rB = n => n <= 10 ? 7.5 + (n - 2) / 8 * 1.5 : n <= 50 ? 9 + (n - 10) / 40 * 2 : 11;
     const merah = (peta.getLayer("prio-klaster") ? peta.queryRenderedFeatures({layers: ["prio-klaster", "kl-pt3"]}) : [])
       .map(f => ({p: peta.project(f.geometry.coordinates), r: f.properties.point_count ? rK(f.properties.point_count) : 8, isi: new Set()}));
+    /* di bawah zoom 8 titik tunggal ikut jadi lencana "1" (cincin kosongnya menimpa titik kompleks; pemilik, 22 Okt 2026); mulai zoom 8 cincin di lokasi persis */
     const sudah = new Set(), fitur = [];
-    for (const f of peta.querySourceFeatures("himawari", {filter: ["has", "point_count"]})) {
-      const id = f.properties.cluster_id; if (sudah.has(id)) continue; sudah.add(id);
-      let c = f.geometry.coordinates; const p = peta.project(c), rb = rB(f.properties.point_count);
+    for (const f of peta.getZoom() < 8 ? peta.querySourceFeatures("himawari") : []) {
+      const n = f.properties.point_count || 1, id = f.properties.cluster_id ?? "t" + f.geometry.coordinates.join(); if (sudah.has(id)) continue; sudah.add(id);
+      let c = f.geometry.coordinates; const asal = JSON.stringify(c), p = peta.project(c), rb = rB(n);
       const m = merah.find(m => Math.hypot(p.x - m.p.x, p.y - m.p.y) < m.r + rb);
       if (m) { const awal = (p.y <= m.p.y ? 0 : 2) + ((p.x >= m.p.x) === (p.y <= m.p.y) ? 0 : 1);   /* 0 kanan atas, 1 kiri atas, 2 kiri bawah, 3 kanan bawah */
         const q = [0, 1, 2, 3].map(i => (awal + i) % 4).find(q => !m.isi.has(q)) ?? awal, a = [-45, -135, 135, 45][q] * Math.PI / 180, d = m.r + rb * .45; m.isi.add(q);
         c = peta.unproject([m.p.x + d * Math.cos(a), m.p.y + d * Math.sin(a)]).toArray(); }
-      fitur.push({type: "Feature", geometry: {type: "Point", coordinates: c}, properties: f.properties});
+      fitur.push({type: "Feature", geometry: {type: "Point", coordinates: c}, properties: {...f.properties, point_count: n, asal}});
     }
-    const kunci = JSON.stringify(fitur.map(f => [f.properties.cluster_id, f.geometry.coordinates.map(x => x.toFixed(4))]));
+    const kunci = JSON.stringify(fitur.map(f => [f.properties.asal, f.geometry.coordinates.map(x => x.toFixed(4))]));
     if (kunci !== this._hwk) { this._hwk = kunci; peta.getSource("hwk").setData({type: "FeatureCollection", features: fitur}); } },
   hwMulai() { if (this._hw) return; const ada = () => Peta.lihat("himawari") || Peta.lihat("hwbaru"), ambil = () => {
       fetch("/api/himawari", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { if (!d || !Array.isArray(d.baris)) return;
@@ -2170,13 +2173,13 @@ const Lapis = {
         peta.addSource("himawari", {type: "geojson", data: this.hwFitur(0), cluster: true, clusterRadius: 40, clusterMaxZoom: 7});
         /* gelembung biru tidak menutupi lingkaran kompleks merah: digambar dari sumber turunan "hwk" yang posisinya digeser ke pojok terdekat (geserHw) */
         peta.addSource("hwk", {type: "geojson", data: {type: "FeatureCollection", features: []}});
-        peta.addLayer({id: "himawari-klaster", type: "circle", source: "hwk", minzoom: 3,
+        peta.addLayer({id: "himawari-klaster", type: "circle", source: "hwk", minzoom: 3, maxzoom: 8,
           paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#22b8e0", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
-        peta.addLayer({id: "himawari-n", type: "symbol", source: "hwk", minzoom: 3,
+        peta.addLayer({id: "himawari-n", type: "symbol", source: "hwk", minzoom: 3, maxzoom: 8,
           layout: {"text-field": ["to-string", ["get", "point_count"]], "text-size": 9.5, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
           paint: {"text-color": "#fff", "text-halo-color": "#0e6f8a", "text-halo-width": .6}});
         peta.on("mouseenter", "himawari-klaster", () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", "himawari-klaster", () => { peta.getCanvas().style.cursor = ""; });
-        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 3, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
+        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 8, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
           "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1, 10, 1.6],
           "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
         ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); peta.on("idle", () => this.geserHw()); this.hwMulai(); },
@@ -2442,7 +2445,7 @@ function renderDaftar() {
   const sakelar = pilUkur + `<div class="tr-sw tr-lb"><span>Rentang tren</span><div class="seg penuh" role="group" aria-label="Rentang tren">${RENTANG_TREN.map(([x, n]) => `<button data-tn="${x}" aria-pressed="${S.trenN === x}"${x > ada ? ` disabled title="Riwayat ${n} tersedia setelah pembaruan data berikutnya"` : ""}>${n}</button>`).join("")}</div></div>`;
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "hot" ? `<div class="tr-hari" title="Kolom Titik: titik panas pada satu hari kalender WIB">Titik panas: <b>${relRentang() ? relRentang() + " · " : ""}${tglLain(tglRentang())}</b></div>`
-    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat; kolom Tren tetap titik panas">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b> (perkiraan satelit, ha)</div>`;
+    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat; kolom Tren tetap titik panas">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
   const kepala = hariTitik + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? "Titik" : "Ha"}</span><span class="n">Komp.</span><span title="Turun hijau = membaik, naik merah = memburuk">Tren</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
@@ -2728,7 +2731,7 @@ function renderLegenda() {
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
-    <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha, satelit)"}</div>
+    <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha)"}</div>
     <div class="legscale">${SKALA_WIL.map(([, c]) => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
     ${S.panel === "riw" || !(Peta.lihat("posko") || Peta.lihat("daops")) ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
