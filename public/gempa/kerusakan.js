@@ -99,5 +99,9 @@
   }
   function dampak(ctx, sk, jg) { var q = siap(ctx, sk, jg); return taksir(q.s, q.jg, q.m, q.jam); }
 
-  g.GempaKerusakan = { atur: atur, sigma: sigma, okupansi: okupansi, jamLokal: jamLokal, rusak: rusak, pita: pita, taksir: taksir, sebaran: sebaran, siap: siap, dampak: dampak, KELAS: KELAS, cdf: cdf, get kal() { return KAL; } };
+  /* API lama (uji lama masih memakainya): sigma total dan hitung(kec) dengan pga = [p16, p50, p84], jenis kerak */
+  function sigmaLn(jenis) { var s = sigma(jenis, 6); return Math.hypot(s.tau, s.phi); }
+  function hitung(kec) { return taksir(kec.map(function (c) { return { p: c.p, pg: c.pga[1] }; }), "kerak", 6, null); }
+
+  g.GempaKerusakan = { sigmaLn: sigmaLn, hitung: hitung, atur: atur, sigma: sigma, okupansi: okupansi, jamLokal: jamLokal, rusak: rusak, pita: pita, taksir: taksir, sebaran: sebaran, siap: siap, dampak: dampak, KELAS: KELAS, cdf: cdf, get kal() { return KAL; } };
 })(typeof window !== "undefined" ? window : globalThis);
