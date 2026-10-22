@@ -24,7 +24,7 @@ Pakai:  python3 scripts/umum/peringatan_berita.py          tulis keluaran
         python3 scripts/umum/peringatan_berita.py contoh   jumlah, contoh entri, artikel dibuang acak
 Stdlib saja.
 """
-import datetime as dt, hashlib, json, os, random, re, sys
+import datetime as dt, hashlib, json, os, random, re, sys, urllib.parse
 from collections import Counter
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
@@ -33,7 +33,8 @@ KELUAR = os.path.join(AKAR, "public/banjir/data")
 BAHAN = (("banjir", "public/banjir/data/berita.json"), ("cuaca", "public/banjir/data/berita_cuaca.json"),
          ("gempa", "public/banjir/data/berita_gempa.json"), ("gunungapi", "public/banjir/data/berita_gunungapi.json"),
          ("karhutla", "public/data/berita.json"), ("kekeringan", "public/banjir/data/berita_kekeringan.json"),
-         ("udara", "public/banjir/data/berita_udara.json"))  # urutan = urutan cadangan leksikon
+         ("udara", "public/banjir/data/berita_udara.json"),
+         ("medsos", "public/data/medsos_tiktok.json"))  # asal medsos tak punya leksikon: semua dicoba; urutan = urutan cadangan leksikon
 JAM_BAHAN, JAM_BASI, DURASI, MAKS_SUMBER, MAKS_LOKASI = 72, 48, {"peringatan": 48, "kejadian": 24}, 5, 3
 PROVINSI = {
     "11": "Aceh", "12": "Sumatera Utara", "13": "Sumatera Barat", "14": "Riau", "15": "Jambi", "16": "Sumatera Selatan",
@@ -71,7 +72,7 @@ BUANG_KERAS = K(
     "mendorong", "percepat", "mempercepat", "dipercepat", "atasi", "mengatasi", "penanganan", "tangani", "menangani", "ditangani", "upayakan",
     "benahi", "membenahi", "perbaiki", "memperbaiki", "diperbaiki", "perbaikan", "pembangunan", "bangun", "membangun", "dibangun", "uji coba",
     "lawan", "melawan", "tak mau", "peduli", "teliti", "meneliti", "peneliti", "penelitian", "kaji", "mengkaji", "dikaji", "sumur bor",
-    "satgas prr", "pemulihan", "rekonstruksi", "doa", "tahun lalu", "setahun", "kilas balik", "populer", "hakim", "narkoba", "2027",
+    "satgas prr", "pemulihan", "bekas kebakaran", "bekas terbakar", "bekas karhutla", "rehabilitasi", "penanaman", "menanam", "ditanami", "bibit", "benih", "reboisasi", "rekonstruksi", "doa", "tahun lalu", "setahun", "kilas balik", "populer", "hakim", "narkoba", "2027",
     "musim hujan", "musim kemarau", "dasarian", "sepanjang", "evaluasi", "rapat", "audiensi", "apbd", "jalur evakuasi", "kesiapsiagaan",
     "edukasi", "siapkan", "disiapkan", "menyiapkan", "tips",
     # politik/kebijakan/seremoni: pejabat bertemu atau membahas, desakan ke instansi (warga diminta waspada = imbauan, bukan ini)
@@ -85,6 +86,12 @@ BUANG_KERAS = K(
 BUANG_LUNAK = K("bantuan", "bantu", "membantu", "dibantu", "salurkan", "menyalurkan", "disalurkan", "sembako", "donasi", "csr")
 KEJ_KUAT = K("rendam", "merendam", "terendam", "tewas", "korban jiwa", "meninggal dunia", "erupsi", "meletus", "terbakar", "melanda", "dilanda",
              "terjang", "menerjang", "diterjang", "guncang", "mengguncang", "diguncang", "puting beliung", "hanyut", "jebol", "roboh", "ambruk")
+# PEJABAT_KEBIJAKAN: pernyataan/perintah pejabat tertinggi ("Presiden menegaskan akan menindak pembakar") adalah kebijakan, bukan kejadian,
+# untuk SEMUA kanal. Dibuang kecuali judul memuat kata kejadian kuat (terbakar, melanda, ...) atau lokasi tingkat desa/kecamatan
+# ("Menteri Tinjau Lokasi Kebakaran di Desa X" tetap kejadian).
+PEJABAT_KEBIJAKAN = re.compile(K("menegaskan", "tegaskan", "ditegaskan", "menindak", "tindak tegas", "instruksikan", "menginstruksikan", "perintahkan",
+                                 "memerintahkan", "presiden", "menteri"))
+LOKASI_SETEMPAT = re.compile(K("desa", "kelurahan", "kecamatan", "dusun", "kampung"))
 BUANG_UMUM = BUANG_KERAS  # nama lama
 RESMI_UMUM = K("bmkg", "bpbd", "bnpb", "bpba", "basarnas", r"stasiun (?:maritim|meteorologi|klimatologi|geofisika)", "pemkab", "pemkot", "pemprov",
                "pemda", "bupati", "wabup", r"wali ?kota", "walkot", "gubernur", "pusdalops", "badan meteorologi", "badan penanggulangan", "dinkes",
@@ -256,6 +263,8 @@ def klas_satu(b, judul, ringkas=""):
         return None, "bukan bahaya " + b
     if L["re_buang"].search(j) or (re_lunak.search(j) and not re_kej_kuat.search(j)):
         return None, "pencegahan/penanganan/kebijakan"
+    if PEJABAT_KEBIJAKAN.search(j) and not re_kej_kuat.search(j) and not LOKASI_SETEMPAT.search(j):
+        return None, "pernyataan pejabat/kebijakan"
     if L["re_tolak"] and L["re_tolak"].search(j) and not L["re_tolak_kecuali"].search(j):
         return None, "ramalan tanpa sumber resmi"
     resmi = bool(L["re_resmi"].search(j))
@@ -321,6 +330,8 @@ def olah(daftar, sekarang, dibuang=None):
         locs = lokasi(a) if jenis else []
         if jenis and not locs:
             jenis, bahaya = None, "tanpa lokasi Indonesia"
+        elif jenis and "tiktok.com" in (a.get("domain") or a.get("url") or "") and not a.get("kab"):
+            jenis, bahaya = None, "tiktok tanpa kabupaten"  # tebakan provinsi dari tagar tidak cukup untuk media sosial
         if not jenis:
             if dibuang is not None:
                 dibuang.append((a["judul"], bahaya))
@@ -358,7 +369,8 @@ def gabung(baris, sekarang):
             for r in sorted(k, key=lambda r: r["_tgl"], reverse=True):
                 if r["sumber"] not in media and len(sumber) < MAKS_SUMBER:
                     media.add(r["sumber"])
-                    sumber.append({"judul": r["judul"], "sumber": r["sumber"], "url": r["url"], "tgl": r["tgl"]})
+                    sumber.append({"judul": r["judul"], "sumber": r["sumber"], "url": r["url"], "tgl": r["tgl"],
+                                   "kanal": "tiktok" if urllib.parse.urlparse(r["url"] or "").netloc.endswith("tiktok.com") else "berita"})
             ct = Counter(r["judul"] for r in k)
             judul = max(k, key=lambda r: (ct[r["judul"]], r["_tgl"]))["judul"]
             ada = next((r for r in k if r["_koordinat"] and r.get("lat") is not None), None)
@@ -588,6 +600,30 @@ def uji():
     kh = [x for x in P if x["bencana"] == "karhutla"]
     assert len(kh) == 1 and kh[0]["n_sumber"] == 1, kh  # artikel kembar lintas berkas = satu entri
     assert pr["id"] in {x["id"] for x in gabung(list(olah(A, sek)), sek)}  # id stabil antarlari
+    # 6. TikTok: kejadian nyata lolos; sarkas/doa tidak; satu akun 5 video = n_sumber 1; dua akun = 2
+    def tt(i, akun, judul):
+        return ("medsos", {"id": f"tt{i}", "judul": judul, "sumber": f"TikTok @{akun}", "domain": "tiktok.com", "url": f"https://www.tiktok.com/@{akun}/video/{i}",
+                           "tgl": "2026-10-21T08:00+07:00", "ringkas": "", "prov": ["62"], "kab": ["62|Kota Palangkaraya"], "kec": [], "lat": -2.0, "lon": 113.7, "presisi": "kab"})
+    nyata = "Kebakaran lahan di Desa X makin meluas, api mendekati rumah warga"
+    dib6 = []
+    P6 = gabung(list(olah([tt(1, "a", nyata), tt(2, "b", nyata + " ya"), tt(3, "a", "Udara nya sangat segar"), tt(4, "c", "pray for kalimantan")], sek, dib6)), sek)
+    assert len(P6) == 1 and P6[0]["n_sumber"] == 2 and P6[0]["bencana"] == "karhutla" and {s["kanal"] for s in P6[0]["sumber"]} == {"tiktok"}, (P6, dib6)
+    P6 = gabung(list(olah([tt(i, "a", f"{nyata} {'x' * i}") for i in range(5, 10)], sek)), sek)
+    assert len(P6) == 1 and P6[0]["n_sumber"] == 1, P6
+    assert len(gabung(list(olah([("banjir", art(1, "Banjir Rendam Tiga Desa di Aceh Tenggara", "2026-10-21T06:00+07:00"))], sek)), sek)[0]["sumber"][0]["kanal"]) == 6  # "berita"
+    # 7. aturan pejabat, bekas kebakaran, TikTok wajib kab
+    assert k("Presiden Menegaskan Akan Menindak Tegas Pembakar Hutan dan Lahan Karhutla", "", "karhutla")[0] is None
+    assert k("Menteri Tinjau Kebakaran Lahan Meluas di Desa Pagung Kediri", "", "karhutla")[0] == "kejadian"
+    assert k("Menteri Kehutanan: Lahan Terbakar 50 Hektare di Kalimantan Tengah", "", "karhutla")[0] == "kejadian"
+    assert k("Penanaman Bibit Pohon di Lahan Bekas Kebakaran Hutan dan Lahan Kaltim", "", "karhutla")[0] is None
+    assert k("Rehabilitasi Lahan Pasca Kebakaran Hutan di Riau", "", "karhutla")[0] is None
+    assert k("Pemulihan Ekosistem Setelah Kebakaran Lahan Gambut", "", "karhutla")[0] is None
+    assert k("Kebakaran Lahan Meluas di Desa Niaso Muaro Jambi, Api Dekati Rumah", "", "karhutla")[0] == "kejadian"
+    dib7 = []
+    x7 = tt(11, "a", nyata)[1]
+    assert not list(olah([("medsos", dict(x7, kab=[], prov=["62"]))], sek, dib7)) and dib7[0][1] == "tiktok tanpa kabupaten", dib7
+    assert len(list(olah([("medsos", x7)], sek))) == 1
+    assert len(list(olah([("banjir", art(30, "Banjir Rendam Tiga Desa di Riau", "2026-10-21T06:00+07:00", kab=[], prov=["14"]))], sek))) == 1  # berita provinsi tetap
     assert set(LEKSIKON) == {"banjir", "cuaca", "gempa", "gunungapi", "karhutla", "kekeringan", "udara"}
     print("ok peringatan_berita")
 
