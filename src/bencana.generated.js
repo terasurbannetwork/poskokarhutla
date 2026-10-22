@@ -41,6 +41,11 @@ export default {
           8
         ],
         [
+          "presiden",
+          "/data/presiden/semua.json",
+          8
+        ],
+        [
           "berita",
           "/data/berita.json",
           30
