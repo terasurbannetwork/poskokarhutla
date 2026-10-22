@@ -403,6 +403,7 @@ uji("instansi: media 1 berkas, EXIF dibuang, urutan sumber waktu EXIF lalu GPS l
   assert.equal(a.j.sumber_waktu, "exif"); assert.equal(a.j.jenis, "foto"); assert.ok(a.j.exif_jarak < 100); assert.equal(a.j.orang_terdeteksi, null, "tanpa binding AI: null, tanpa galat"); assert.equal(a.j.jauh, false);
   const obj = new Uint8Array(await (await R2.get(`instansi/media/${a.j.id}`)).arrayBuffer());
   assert.ok(!new TextDecoder("latin1").decode(obj).includes("Exif"), "EXIF dibuang sebelum disimpan"); assert.ok(await R2.get(`instansi/media/${a.j.id}_t`));
+  assert.equal((await DB.prepare("SELECT sha256 FROM instansi_media WHERE id = ?").bind(a.j.id).first()).sha256, createHash("sha256").update(obj).digest("hex"), "0044: sha256 = hash byte yang tersimpan di R2");
   const b = await unggah(h, tid, {media: jpeg(0)}); assert.equal(b.j.sumber_waktu, "gps");
   const baris = await DB.prepare("SELECT waktu_ambil, sumber_waktu, isian_id FROM instansi_media WHERE id = ?").bind(a.j.id).first(); assert.ok(Math.abs(baris.waktu_ambil - (Date.now() - 2 * JAM)) < 10 * MENIT); assert.equal(baris.isian_id, null, "belum dirujuk isian");
   assert.equal((await unggah(h, tid, {media: WEBP, thumb: jpeg()})).s, 201, "WebP dan thumbnail JPEG sah");
@@ -926,7 +927,7 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !f.startsWith("0029")).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],

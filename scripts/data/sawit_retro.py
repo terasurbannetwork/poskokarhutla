@@ -25,7 +25,7 @@ Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015
         python3 scripts/data/sawit_retro.py analisis [--tahun 2015] [--tanpa-descals]
         python3 scripts/data/sawit_retro.py citra            # hanya 2015, 15 teratas terbit
         python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> hasil/sawit_retro.json + sawit_riwayat.json
-        python3 scripts/data/sawit_retro.py ttm | citra-ttm | ringkas   # 2019 dan 2023 dari TTM2024 (internal); konfirm = ttm_konfirm 2015
+        python3 scripts/data/sawit_retro.py ttm | citra-ttm [--id a,b] | ringkas   # 2019 dan 2023 dari TTM2024 (internal); konfirm = ttm_konfirm 2015
         python3 scripts/data/sawit_retro.py unduh | uji
 """
 from array import array
@@ -760,15 +760,15 @@ def pilih_s2(lat, lon, km, d1, d2):
     return {"tgl": pil[0], "aw": pil[1], "it": pil[2], "sat": "Sentinel-" + pil[2]["properties"].get("platform", "sentinel-2?").split("-")[-1].upper()} if pil else None
 
 
-def foto_tahun(y, lat, lon, km, sesudah=None):
+def foto_tahun(y, lat, lon, km, sesudah=None, ls=True):
     """foto terbaik tahun y: kemarau (Jun-Okt) dulu, lalu setahun penuh; Sentinel-2 (10 m) mulai 2017, sebelum itu Landsat.
-    sesudah (date) = foto harus bertanggal SETELAH hari itu (foto kebun tidak boleh lebih awal dari api); jendela dipotong, kosong -> lewati"""
+    ls=False: Sentinel-2 saja (Landsat Planetary Computer lambat/429, tak perlu sesudah 2017). sesudah (date) = foto harus bertanggal SETELAH hari itu (foto kebun tidak boleh lebih awal dari api); jendela dipotong, kosong -> lewati"""
     for d1, d2 in ((f"{y}-06-01", f"{y}-10-31"), (f"{y}-01-01", f"{y}-12-31")):
         if sesudah:
             d1 = max(d1, (sesudah + dt.timedelta(days=1)).isoformat())
             if d1 > d2:
                 continue
-        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or pilih_ls(lat, lon, km, d1, d2, "bersih")
+        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or (pilih_ls(lat, lon, km, d1, d2, "bersih") if ls or y < 2017 else None)
         if pil:
             return pil
     return None
@@ -914,12 +914,12 @@ def citra_ttm_satu(p, tahun):
     y1 = 2024 if tahun >= 2023 else min(max(ty or tahun, tahun), 2025)
     pil["kebun1"] = pil["kebun2"] = None
     for y in range(y1, min(y1 + 3, 2027)):
-        pil["kebun1"] = foto_tahun(y, lat, lon, km, sesudah)
+        pil["kebun1"] = foto_tahun(y, lat, lon, km, sesudah, ls=False)
         if pil["kebun1"]:
             break
     if pil["kebun1"]:
         yk = int(pil["kebun1"]["tgl"][:4])
-        k2 = [x for x in (foto_tahun(y, lat, lon, km, dt.date.fromisoformat(pil["kebun1"]["tgl"])) for y in (yk + 1, yk + 2)) if x]
+        k2 = [x for x in (foto_tahun(y, lat, lon, km, dt.date.fromisoformat(pil["kebun1"]["tgl"]), ls=False) for y in (yk + 1, yk + 2)) if x]
         pil["kebun2"] = k2[0] if tahun < 2023 else (min(k2, key=lambda x: (x["aw"], x["tgl"])) if k2 else None)
     pil = {k: v for k, v in pil.items() if v}
     if not pil:
@@ -938,11 +938,12 @@ def citra_ttm_satu(p, tahun):
     return hasil, api
 
 
-def citra_ttm(tahun, top=TOP_TERBIT):
+def citra_ttm(tahun, top=TOP_TERBIT, hanya=None):
     from concurrent.futures import ThreadPoolExecutor
     jalur = os.path.join(ANTARA, f"agregat_ttm_{tahun}.json")
     h = json.load(open(jalur))
     pilih_ = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])[:top]
+    pilih_ = [p for p in pilih_ if not hanya or p["id"] in hanya]   # --id a,b: ulang hanya perusahaan itu
     api_klaster(0, 0, tahun=tahun)   # muat arsip api sekali sebelum utas
 
     def kerja(p):
@@ -1349,8 +1350,9 @@ if __name__ == "__main__":
     elif perintah == "konfirm":
         konfirm_2015()
     elif perintah == "citra-ttm":
+        hanya = a[a.index("--id") + 1].split(",") if "--id" in a else None
         for t in TAHUN_TTM:
-            citra_ttm(t)
+            citra_ttm(t, hanya=hanya)
     elif perintah == "ringkas":
         ringkas()
     elif perintah == "citra":

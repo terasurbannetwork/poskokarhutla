@@ -70,3 +70,7 @@ public/data/himawari.json
 
 # paparan bangunan terkunci: dibuat di Actions (bangunan.yml), diunggah ke R2, tidak di-commit
 data/terkunci/
+
+# jejak GPS regu ditarik CI harian dari API, bukan git
+data/jejak_regu.json
+data/jejak_regu.tmp

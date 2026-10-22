@@ -21,6 +21,9 @@ const SKENARIO = [
   [20, 40, 70, null, null, "api_ada", 12, 1, [25, 22, 24], [2, 30], [2, 28]],
 ];
 async function isi(env, kini, oleh) {
+  /* semua tabel/kolom yang ditulis harus ada SEBELUM tulis apa pun (batch jalan per 40 pernyataan: tanpa ini migrasi yang hilang meninggalkan sebagian data). Galat "no such" -> 503 oleh dummySla. */
+  for (const q of ["SELECT terdeteksi_awal, himawari_awal, sumber_awal FROM tugas_api", "SELECT 1 FROM instansi_akun", "SELECT 1 FROM tugas_muncul", "SELECT 1 FROM tugas_isian", "SELECT 1 FROM instansi_media",
+    "SELECT 1 FROM penugasan", "SELECT 1 FROM ops_garis", "SELECT 1 FROM status_riwayat", "SELECT 1 FROM alarm_himawari"]) await env.DB.prepare(q + " LIMIT 0").all();
   if ((await env.DB.prepare(`SELECT count(*) n FROM tugas_api WHERE dummy = 1 AND prov = ?1 AND kab IN (${KAB_D.map((_, i) => "?" + (i + 2)).join(",")})`).bind(PROV_D, ...KAB_D).first()).n) return gagal(409, "data dummy SLA sudah ada; hapus dulu dengan 🧹");
   const st = [], akun = KAB_D.map((kab, i) => ({id: acak(8), kab, i}));
   for (const a of akun) st.push(env.DB.prepare(`INSERT INTO instansi_akun (id, username, jenis, tingkat, wilayah, kunci_wilayah, cakupan, prov, kab, garam, sandi_sha, status, nama, nip, jabatan, unit, email, wa, surat, kartu, wajib_ganti, dibuat, dummy)

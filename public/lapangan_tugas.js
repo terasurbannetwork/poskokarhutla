@@ -31,7 +31,8 @@
   if (typeof document === "undefined") { (typeof window !== "undefined" ? window : globalThis).LapanganTugas = api; return; }
 
   /* ---------- unduh peta ---------- */
-  const bacaMeta = () => { try { return JSON.parse(localStorage.getItem(K_PETA) || "null"); } catch (e) { return null; } };
+  const metaMentah = () => { try { return JSON.parse(localStorage.getItem(K_PETA) || "null"); } catch (e) { return null; } };
+  const bacaMeta = () => { const m = metaMentah(); return m && opsi && opsi.kh && m.h === opsi.kh() ? m : null; };   // peta milik kode regu lain tidak dianggap ada
   const tulisMeta = m => { try { m ? localStorage.setItem(K_PETA, JSON.stringify(m)) : localStorage.removeItem(K_PETA); } catch (e) {} };
   async function simpanKe(cache, url, sinyal) {
     const r = await fetch(url, {signal: sinyal});
@@ -58,7 +59,7 @@
     if (ubin.length > BATAS.ubinMaks) ubin.length = BATAS.ubinMaks;
     total = selesai + tetap.size + ubin.length; lapor();
     await antre(tetap); await antre(ubin.map(u => templ.replace("{z}", u.z).replace("{x}", u.x).replace("{y}", u.y)));
-    const meta = {lat, lon, radius_km: BATAS.radiusKm, ubin: ubin.length, byte, waktu: Date.now(), tugas: tugasId || null, tidak_lengkap: sinyal.aborted ? "batal" : henti};
+    const meta = {h: opsi.kh(), lat, lon, radius_km: BATAS.radiusKm, ubin: ubin.length, byte, waktu: Date.now(), tugas: tugasId || null, tidak_lengkap: sinyal.aborted ? "batal" : henti};
     tulisMeta(meta); return meta;
   }
   async function hapusPeta() { await caches.delete(PETA); tulisMeta(null); }
@@ -82,7 +83,7 @@
     let r;
     try { r = await fetch("/api/lapangan/tugas", {headers: {"x-kode-regu": opsi.kode()}}); }
     catch (e) { opsi.jaringan(false); return keadaan("luring", "Belum ada tugas yang tersimpan", "Ponsel sedang tanpa sinyal dan tugas belum pernah dimuat di sini. Buka halaman ini sekali saat ada sinyal supaya tugas tersimpan.", "Coba lagi"); }
-    opsi.jaringan(true);
+    opsi.jaringan(!r.headers.get("x-dari-cache"));
     if (r.status === 403) return opsi.kodeMati();
     if (r.status === 404 || r.status === 405 || r.status === 503) return keadaan("belum", "Daftar tugas belum aktif", "Server belum menyediakan tugas api untuk regu. Formulir lapor di bawah tetap bisa dipakai.");
     if (!r.ok) return keadaan("galat", "Tugas belum bisa dimuat", `Server menjawab ${r.status}. Formulir lapor di bawah tetap bisa dipakai.`, "Coba lagi");
@@ -95,7 +96,7 @@
   function gambar() {
     const lok = urut(), t = daftar[dipilih], w = $("tugasIsi"); w.replaceChildren();
     const kop = el("div", "lp-tugas-kop");
-    kop.append(el("p", "lp-kecil", lok ? "Api terdekat dari lokasimu" : "Api yang ditugaskan"));
+    kop.append(el("p", "lp-kecil", lok ? "Api terdekat dari lokasimu" : "Tugas pertama dari posko"));
     kop.append(el("h3", "", `${t.kec ? t.kec + ", " : ""}${t.kab || "lokasi tugas"}`));
     kop.append(el("p", "lp-jarak", lok ? `Sekitar ${jarakKm(lok.lat, lok.lon, t.lat, t.lon).toLocaleString("id-ID", {maximumFractionDigits: 1})} km garis lurus dari lokasimu` : "Ambil lokasi di bagian 1 untuk melihat jarak."));
     if (dariCache) kop.append(el("p", "lp-simpanan", `Data tersimpan di ponsel${typeof dariCache === "number" ? ` sejak ${jamLokal(dariCache)}` : ""}. Bisa sudah berubah, periksa lagi saat ada sinyal.`));
@@ -129,7 +130,7 @@
     const bHapus = el("button", "lp-tombol", "Hapus peta tersimpan"); bHapus.type = "button";
     const tampilMeta = () => {
       const m = bacaMeta(); bHapus.hidden = !m;
-      if (!m) info.textContent = `Belum ada peta tersimpan. Satu area radius ${BATAS.radiusKm} km dari api ini, sekitar 5 sampai 15 MB. Simpan saat ada sinyal.`;
+      if (!m) info.textContent = `Belum ada peta tersimpan. Satu area radius ${BATAS.radiusKm} km dari api ini, beberapa MB sampai puluhan MB. Simpan saat ada sinyal.`;
       else info.textContent = `Tersimpan ${ukuran(m.byte)}, ${m.ubin} ubin radius ${m.radius_km} km, ${jamLokal(m.waktu)}.${m.tugas && m.tugas !== t.id ? " Area ini milik api lain; simpan lagi untuk menggantinya." : ""}${m.tidak_lengkap ? (m.tidak_lengkap === "batas" ? " Berhenti di batas 80 MB, sebagian ubin belum tersimpan." : " Dibatalkan, sebagian ubin belum tersimpan.") : ""}`;
     };
     bSimpan.addEventListener("click", async () => {
@@ -159,7 +160,8 @@
     new maplibregl.Marker({color: "#c9503a"}).setLngLat([t.lon, t.lat]).addTo(petaGL);
   }
 
-  api.mulai = o => { opsi = o; muat(); };
+  api.hapusPeta = () => hapusPeta().catch(() => {});
+  api.mulai = o => { opsi = o; const m = metaMentah(); if (m && m.h !== o.kh()) hapusPeta().catch(() => {}); muat(); };   // kode regu berganti: peta area api regu lama dibuang
   api.segar = () => { if (!sedangUnduh && !petaGL) muat(); };   // saat sinyal kembali: tidak mengganggu unduhan atau peta yang sedang tampil
   api.lokasiBaru = () => { if (!daftar.length || sedangUnduh || petaGL || !$("tugasIsi").querySelector(".lp-tugas-kop")) return; dipilih = 0; gambar(); };   // tidak menggambar ulang saat unduhan atau peta aktif
   window.LapanganTugas = api;

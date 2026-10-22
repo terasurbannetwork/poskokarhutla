@@ -30,7 +30,7 @@ import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
-import {bersihkanKabar} from "./kabar.js";
+import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
@@ -63,6 +63,7 @@ export const json = (data, status = 200, h = {}) => new Response(JSON.stringify(
 export const gagal = (status, pesan, h) => json({galat: pesan}, status, h);
 export const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
 export const sha = async s => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+export const shaBytes = async b => hex(await crypto.subtle.digest("SHA-256", b));
 export const acak = n => hex(crypto.getRandomValues(new Uint8Array(n)));
 const jarak = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371e3; };
 const kelas = (j, s) => JENIS[j]?.sub[s]?.[1];
@@ -543,7 +544,7 @@ let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
 /* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
    ditolak, karena SameSite=Lax tidak menahannya. Peramban selalu mengirim Origin pada POST sama-situs. Tanpa cookie sesi (publik, token header): seperti semula. */
-const tolakOrigin = (req, url) => {
+export const tolakOrigin = (req, url) => {
   const o = req.headers.get("origin"), sesi = /(?:^|;\s*)sesi_admin=/.test(req.headers.get("cookie") || "");
   if (sesi ? (!o || o === "null" || !URL.canParse(o) || new URL(o).host !== url.host) : (o && o !== "null" && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -737,6 +738,7 @@ export default {
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
+      try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }

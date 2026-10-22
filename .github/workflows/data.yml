@@ -55,6 +55,14 @@ jobs:
           python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
             || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
 
+      # koefisien operasi dikalibrasi dari isian lapangan (Bearer PIPA_TOKEN); token kosong = dilewati dengan log, berkas lama/bawaan dipakai
+      - name: Kalibrasi koefisien dari isian lapangan (boleh gagal)
+        continue-on-error: true
+        env:
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+          PIPA_URL: ${{ vars.PIPA_URL }}
+        run: python3 scripts/data/kalibrasi.py uji && python3 scripts/data/kalibrasi.py
+
       - name: Titik panas, kompleks, FWI, BNPB
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
@@ -172,6 +180,26 @@ jobs:
           key: graf-${{ github.run_id }}
           restore-keys: graf-
 
+      - name: Pulihkan titik sumber air
+        uses: actions/cache/restore@v4
+        with:
+          path: data/air_titik.json.gz
+          key: air-${{ github.run_id }}
+          restore-keys: air-
+
+      # jejak GPS regu 30 hari terakhir; token kosong atau respons bukan 200 = tidak ada berkas (akses.py anggap tanpa jejak)
+      - name: Tarik jejak regu (boleh gagal)
+        continue-on-error: true
+        env:
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
+          PIPA_URL: ${{ vars.PIPA_URL || 'https://centurisk97.id' }}
+        run: |
+          if [ -z "$PIPA_TOKEN" ]; then echo "PIPA_TOKEN kosong, jejak regu dilewati"; exit 0; fi
+          sejak=$(( ($(date +%s) - 30*86400) * 1000 ))
+          mkdir -p data
+          kode=$(curl -sS --max-time 30 -H "Authorization: Bearer $PIPA_TOKEN" "$PIPA_URL/api/pipa/jejak?sejak=$sejak" -o data/jejak_regu.tmp -w '%{http_code}' || true)
+          if [ "$kode" = "200" ]; then mv data/jejak_regu.tmp data/jejak_regu.json; else echo "jejak regu HTTP $kode, dilewati"; rm -f data/jejak_regu.tmp; fi
+
       - name: Waktu tempuh regu (boleh gagal)
         continue-on-error: true
         run: python3 scripts/scrape/akses.py
@@ -203,6 +231,13 @@ jobs:
       - name: Insiden api, front, luas terkoreksi (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+
+      # luas terukur Sentinel-2 (dNBR) per insiden yang sudah >= 7 hari tak terdeteksi; hasil menumpuk di public/data/luas_citra.json,
+      # ikut cache data- (sama seperti insiden.json) dan terbit lewat deploy/`git add public/data`
+      - name: Luas terbakar terukur dari citra (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/data/luas_citra.py uji && python3 scripts/data/luas_citra.py
           python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
 
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)

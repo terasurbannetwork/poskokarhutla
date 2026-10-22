@@ -1,0 +1,67 @@
+name: Sumber panas tetap (bulanan)
+
+# Tanggal 3 tiap bulan pukul 03.00 WIB: segarkan daftar titik panas non-vegetasi (PLTU, kilang, tambang, kawah) dari arsip FIRMS standar
+# empat tahun penuh terakhir. Arsip tahun penuh tetap, jadi cache per tahun cukup: hanya tahun yang belum ada yang ditarik (~1 menit/tahun).
+on:
+  schedule:
+    - cron: "0 20 3 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  segar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tahun berjalan (kunci cache)
+        id: tahun
+        run: echo "y=$(date -u +%Y)" >> "$GITHUB_OUTPUT"
+
+      - name: Pulihkan arsip FIRMS
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/firms
+          key: firms-${{ steps.tahun.outputs.y }}-${{ github.run_id }}
+          restore-keys: firms-${{ steps.tahun.outputs.y }}-
+
+      - name: Segarkan titik_palsu.json
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          python3 scripts/data/titik_palsu.py uji
+          python3 scripts/data/titik_palsu.py segar
+
+      - name: Simpan arsip FIRMS
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/firms
+          key: firms-${{ steps.tahun.outputs.y }}-${{ github.run_id }}
+
+      # titik_palsu.json termasuk daftar `git checkout HEAD` di data/titik/terbit, jadi berlaku setelah commit ini; terbit.yml tidak terpicu
+      # oleh public/data, jadi tayang pada putaran titik.yml berikutnya (paling lama 3 jam).
+      - name: Commit
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/titik_palsu.json
+          git diff --cached --quiet && { echo "titik_palsu.json tidak berubah"; exit 0; }
+          git commit -q -m "data: titik_palsu bulanan $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push titik_palsu gagal::git push ke main gagal 3x"
+          exit 1

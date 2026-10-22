@@ -53,6 +53,16 @@ export const KOEF_SELANG_POMPA_M = 300;   // public/data/operasi.json koef selan
 export const susutBar100m = (debitLpm, c) => c * (debitLpm / 3.785411784 / 100) ** 2 * (100 / 0.3048 / 100) / 14.5037738;
 /* murni. jarakLurusKm dari sumber ke api. Tiap pompa menaikkan tekanan kembali ke kerja_bar; anggaran susut satu segmen = kerja_bar - sisa_bar.
    Jumlah pompa = ceil((susut selang total + tekanan naik) / anggaran), paling sedikit 1 (pompa di sumber). Beda tinggi negatif (api lebih rendah) diabaikan. */
+/* beda tinggi (m) api minus sumber air dari entri akses.json yang disalin ke tugas_api.akses (scripts/scrape/air_dem.py): air = {elev_m, sumber: [{jenis, lat, lon, km, elev_m, beda_tinggi_m}]}.
+   beda_tinggi_m positif = api lebih tinggi dari air (selang/pompa menaikkan air); km = garis lurus (hitungEstafet mengalikan 1,2 sendiri). Sumber terdaftar dicocokkan ke sumber DEM terdekat dalam 300 m.
+   null = tanpa DEM / tanpa kecocokan / DEM gagal (BUKAN nol): pemanggil menampilkan "tidak tersedia". Kembali {m, label, elev_api_m} atau null. */
+export function bedaTinggiM(akses, s) {
+  const air = typeof akses === "string" ? jsonAman(akses)?.air : akses?.air;
+  if (!air || !Array.isArray(air.sumber) || !Number.isFinite(s?.lat) || !Number.isFinite(s?.lon)) return null;
+  let best = null, bd = 0.3;
+  for (const x of air.sumber) { if (!Number.isFinite(x?.lat) || !Number.isFinite(x?.lon) || !Number.isFinite(x.beda_tinggi_m)) continue; const d = km(s.lat, s.lon, x.lat, x.lon); if (d <= bd) { bd = d; best = x; } }
+  return best && {m: best.beda_tinggi_m, label: `DEM (sumber DEM ${best.jenis ?? "air"}, ${best.km} km garis lurus dari api)`, elev_api_m: Number.isFinite(air.elev_m) ? air.elev_m : null};
+}
 export function hitungEstafet({jarakLurusKm, pompa = "tekanan_tinggi", selang = "1_5", bedaTinggiM = 0, sisaBar = SISA_BAR_DEFAULT, debitLpm}) {
   const P = POMPA[pompa], S = SELANG[selang], debit = debitLpm ?? P.debit_lpm, anggaran = P.kerja_bar - sisaBar;
   const jarakSelangM = jarakLurusKm * 1000 * FAKTOR_JARAK_SELANG, per100 = susutBar100m(debit, S.c), susut = per100 * jarakSelangM / 100, naik = BAR_PER_METER_NAIK * Math.max(0, bedaTinggiM);
@@ -121,7 +131,7 @@ const tolakAdm = () => gagal(403, "hanya moderator ke atas atau staf berwenang")
 /* tugas yang boleh dilihat pelaku, atau 404 yang sama untuk "tidak ada" dan "di luar wilayah" */
 async function tugasUntuk(env, P, req, id) {
   if (typeof id !== "string" || !RE_ID.test(id)) return gagal(400, "tugas_id harus 16 hex");
-  const t = await env.DB.prepare("SELECT id, prov, kab, kec, lat, lon, level, status, luas_ha, dibuat, konfirmasi_pada, padam_verif, padam_pada, verif_pada, cek_ulang_pada, rekomendasi, dummy FROM tugas_api WHERE id = ?").bind(id).first();
+  const t = await env.DB.prepare("SELECT id, prov, kab, kec, lat, lon, level, status, luas_ha, dibuat, konfirmasi_pada, padam_verif, padam_pada, verif_pada, cek_ulang_pada, rekomendasi, akses, dummy FROM tugas_api WHERE id = ?").bind(id).first();
   const ok = t && (P.akun ? dalamLingkup(P.akun, t) : (!t.dummy || P.lihatDummy) && dalamWilayahStaf(req, [t.prov]));
   return ok ? t : gagal(404, "tugas tidak ada");
 }
@@ -328,10 +338,12 @@ async function hitungSelang(env, req, kini, url) {
   const angka = (nama, min, maks, def) => { const v = q.get(nama); if (v == null || v === "") return def; return /^-?\d{1,5}(\.\d{1,3})?$/.test(v) && +v >= min && +v <= maks ? +v : NaN; };
   const beda = angka("beda_tinggi_m", -500, 3000, null), sisa = angka("sisa_bar", 0.5, 20, SISA_BAR_DEFAULT), debit = angka("debit_lpm", 20, 3000, undefined);
   if ([beda, sisa, debit].some(Number.isNaN)) return gagal(400, "beda_tinggi_m -500..3000, sisa_bar 0,5..20, debit_lpm 20..3000 (angka)");
-  const h = hitungEstafet({jarakLurusKm: km(t.lat, t.lon, s.lat, s.lon), pompa, selang, bedaTinggiM: beda ?? 0, sisaBar: sisa, debitLpm: debit});
+  const dem = beda == null ? bedaTinggiM(t.akses, s) : null, bedaPakai = beda ?? dem?.m ?? 0;   // kiriman menang atas DEM
+  const h = hitungEstafet({jarakLurusKm: km(t.lat, t.lon, s.lat, s.lon), pompa, selang, bedaTinggiM: bedaPakai, sisaBar: sisa, debitLpm: debit});
   if (h.galat) return gagal(400, h.galat);
   return json({tugas_id: t.id, sumber: bentukSumber(s), pompa_kelas: pompa, selang, ...h,
-    beda_tinggi: {m: beda ?? 0, keterangan: beda == null ? "beda tinggi tidak tersedia (belum ada data elevasi), dihitung 0 m; kirim ?beda_tinggi_m bila diukur di lapangan" : "beda tinggi dari kiriman"},
+    beda_tinggi: {m: bedaPakai, sumber: beda != null ? "kiriman" : dem ? "dem" : "tidak_ada", ...(dem ? {elev_api_m: dem.elev_api_m} : {}),
+      keterangan: beda != null ? "beda tinggi dari kiriman" : dem ? `beda tinggi dari ${dem.label}; kirim ?beda_tinggi_m bila diukur di lapangan` : "beda tinggi tidak tersedia (belum ada data elevasi), dihitung 0 m; kirim ?beda_tinggi_m bila diukur di lapangan"},
     peringatan: s.kondisi === "kering" ? "sumber ini dilaporkan kering" : s.kondisi === "tidak_tahu" ? "kondisi sumber belum diketahui" : null,
     rumus: "pompa = ceil((susut selang total + 0,0981 x beda tinggi) / (tekanan kerja - tekanan sisa)), paling sedikit 1; susut per 100 m = C x (gpm/100)^2 psi per 100 ft diubah ke bar",
     sumber_konstanta: {faktor_jarak_selang: {nilai: FAKTOR_JARAK_SELANG, sumber: "asumsi platform"}, bar_per_meter_naik: {nilai: BAR_PER_METER_NAIK, sumber: "fisika: 1000 kg/m3 x 9,81 / 1e5"},
@@ -795,6 +807,14 @@ async function dummyIsi(env, kini, oleh) {
 }
 /* ---- L11: bukti lapangan per bbox konsesi untuk berkas Gakkum. Tanpa nama/WA PIC; titik-dalam-poligon disaring klien ---- */
 const P_BUKTI = ["analis_konsesi", "pusdalops", "pimpinan"], STATUS_BUKTI = {padam_dilaporkan: "dilaporkan", padam_terverifikasi: "terverifikasi", muncul_lagi: "muncul_lagi"};
+/* media bukti: sha256 (0044, hash byte yang disimpan; null sebelum migrasi atau untuk berkas lama), dibuat (ms unggah), instansi (nama instansi pengunggah dari instansi_akun.wilayah, TANPA nama orang).
+   diverifikasi_oleh/pada tidak ada di skema media (verifikasi hanya di tingkat tugas: padam_verif/verif_pada), jadi tidak dikarang di sini. */
+async function mediaBukti(env, ids) {
+  const q = sha => `SELECT m.id, m.tugas_id, m.jenis, m.waktu_ambil, m.exif_waktu, m.exif_lat, m.exif_lon, m.gps_curiga, m.orang_terdeteksi, m.dibuat, a.wilayah instansi${sha ? ", m.sha256" : ""}
+    FROM instansi_media m JOIN instansi_akun a ON a.id = m.akun_id WHERE m.isian_id IS NOT NULL AND m.tugas_id IN (SELECT value FROM json_each(?)) ORDER BY m.waktu_ambil`;
+  try { return await env.DB.prepare(q(true)).bind(ids).all(); }
+  catch (e) { if (!/no such column: m?\.?sha256/i.test(String(e?.message || e))) throw e; return {results: (await env.DB.prepare(q(false)).bind(ids).all()).results.map(m => ({...m, sha256: null}))}; }
+}
 async function buktiLapangan(env, req, url, kini) {
   if (!await modAtauStaf(env, req, P_BUKTI)) return tolakAdm();
   const b = (url.searchParams.get("bbox") || "").split(",").map(x => x.trim() === "" ? NaN : Number(x));
@@ -808,7 +828,7 @@ async function buktiLapangan(env, req, url, kini) {
   if (ts.length) {
     const [is, md] = await Promise.all([
       env.DB.prepare("SELECT tugas_id, langkah, dibuat, status_api, lahan_teramati, kedalaman_bara_cm FROM tugas_isian WHERE tugas_id IN (SELECT value FROM json_each(?)) ORDER BY dibuat").bind(ids).all(),
-      env.DB.prepare("SELECT id, tugas_id, jenis, waktu_ambil, exif_waktu, exif_lat, exif_lon, gps_curiga, orang_terdeteksi FROM instansi_media WHERE isian_id IS NOT NULL AND tugas_id IN (SELECT value FROM json_each(?)) ORDER BY waktu_ambil").bind(ids).all()]);
+      mediaBukti(env, ids)]);
     for (const i of is.results) { const {tugas_id, ...r} = i; per.get(tugas_id)?.isian.push(r); }
     for (const m of md.results) { const {tugas_id, ...r} = m; per.get(tugas_id)?.media.push({...r, gps_curiga: !!m.gps_curiga, gps_curiga_alasan: m.gps_curiga, url: `/api/instansi/admin/media/${m.id}`, thumb: `/api/instansi/admin/thumb/${m.id}`}); }
   }

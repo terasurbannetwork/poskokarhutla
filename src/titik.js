@@ -76,7 +76,7 @@ export async function muatMasker(env) {
   try {
     const r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/titik_palsu.json")); if (!r.ok) { r.body?.cancel(); return null; }
     const d = await r.json(); return new Set((d.sumber_statis || []).filter(x => x.jenis !== "kawah").map(x => selTitik(x.lat, x.lon)));
-  } catch (e) { return null; }
+  } catch (e) { return null; }   // pemanggil mencatat masker: "tak terbaca" (perbaruiTitik)
 }
 
 /* ---------------- satu putaran: ambil, urai, simpan ---------------- */
@@ -108,7 +108,8 @@ export async function perbaruiTitik(env, kini = Date.now()) {
     env.DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(kini, teks),
     env.DB.prepare(`DELETE FROM titik_terbaru WHERE id NOT IN (SELECT id FROM titik_terbaru ORDER BY id DESC LIMIT ${SIMPAN})`),
   ]);
-  return {titik: isi.baris.length, palsu, rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
+  if (!masker) console.error("titik: masker titik_palsu.json tak terbaca, putaran tetap disimpan tanpa penyaringan");
+  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
 }
 
 export async function titikTerbaru(env) {

@@ -69,11 +69,14 @@ else {
     for (let i = 0; i < 40 && !dipanggil.some(q => q.includes("hari=7")); i++) await new Promise(r => setTimeout(r, 100));
     assert.ok(dipanggil.some(q => q.includes("hari=7")), "fetch hari=7 tidak terkirim");
     await tab.tungguFungsi("document.querySelectorAll('.kj-corong li').length === 6 && document.querySelector('[data-hari=\"7\"]').getAttribute('aria-pressed') === 'true'");
+    await tab.tungguFungsi("!!document.querySelector('[data-urut=nama][data-t=w]')");   // tabel wilayah digambar lewat nanti(), sesudah corong
     await tab.klik("[data-urut=nama][data-t=w]"); await tab.tungguFungsi("document.querySelector('#kjIsiW tr td').innerText === 'Kalimantan Tengah' || document.querySelector('#kjIsiW tr td').innerText === 'Kalimantan Timur'");
     assert.equal(await tab.eval("document.querySelector('[data-urut=nama][data-t=w]').closest('th').getAttribute('aria-sort')"), "ascending");
     assert.equal(await tab.eval("document.querySelector('#kjIsiW tr td').innerText"), "Kalimantan Tengah");
+    await tab.tungguFungsi("!!document.querySelector(\"[data-prov='16']\")");   // baris wilayah digambar ulang lewat nanti() sesudah urut
     await tab.klik("[data-prov='16']"); await tab.tungguFungsi("location.search.includes('prov=16') && document.querySelectorAll('.kj-tw tbody tr').length === 2");
     assert.match(await tab.eval("document.querySelector('#kjChip').innerText"), /Sumatera Selatan/);
+    await tab.tungguFungsi("!!document.querySelector('[data-semua]')");
     await tab.klik("[data-semua]"); await tab.tungguFungsi("!location.search.includes('prov=')");
     assert.deepEqual(tab.galat().filter(bukanFavicon), []);
   });

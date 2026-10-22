@@ -62,6 +62,6 @@ export const RUTE_BNPB = {
   "GET /admin/gakkum": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("gakkum")),
   /* Layar Pimpinan: satu layar lintas sistem untuk pimpinan, dirakit di peramban dari API admin yang sudah ada (tanpa rute data baru) */
   "GET /admin/pimpinan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("pimpinan")),
-  /* Kinerja pemantauan: tiga tab (Data, Proses, Lapangan) dari GET /api/sla (src/sla.js). Admin + semua peran staf (sama dengan API). */
-  "GET /admin/kinerja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("kinerja"), HALAMAN_STAF.kinerja),   // hak sama dengan GET /api/sla: admin + semua peran staf
+  /* Kinerja pemantauan: tiga tab (Data, Proses, Lapangan) dari GET /api/sla (src/sla.js). Hak sama persis dengan API: adminOK (token, akun gerbang AKUN_SITUS, sesi admin) ATAU sesi staf berperan apa pun (SEMUA_PERAN). Staf tanpa peran/anonim ke login. */
+  "GET /admin/kinerja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("kinerja"), HALAMAN_STAF.kinerja),
 };

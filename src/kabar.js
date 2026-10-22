@@ -1,43 +1,89 @@
 /* Kabar seketika (docs/bnpb/RENCANA-LANJUT.md §1.5): push + email SEKARANG untuk darurat regu, tugas level 3 baru, dan alarm Himawari,
    tanpa menunggu ringkasan 3 jam (src/push.js). Satu kejadian satu kabar per penerima: baris (kunci, penerima) di kabar_terkirim (0043)
-   dicatat DULU dengan INSERT OR IGNORE, kabar hanya dikirim bila baris itu baru. Penerima tanpa saluran yang sedang hidup (tanpa langganan push
-   dan email mati) tidak dicatat, jadi tidak "habis" sebelum saluran dipasang. Email lewat Resend (src/ews.js), tetap mati selama pengirim @resend.dev.
+   dicatat SESUDAH kirim berhasil (paling banyak sekali sukses); yang gagal masuk kabar_ulang (0045) dan dicoba lagi cron menit dengan jeda 1/5/15/60 menit, maks 5 percobaan (ulangiKabar).
+   Penerima tanpa saluran yang sedang hidup (tanpa langganan push dan email mati) tidak dicatat, jadi tidak "habis" sebelum saluran dipasang. Email lewat Resend (src/ews.js), tetap mati selama pengirim @resend.dev.
    Isi hanya wilayah dan jenis kejadian: tanpa nama orang dan nomor telepon. Migrasi 0043/0040 belum diterapkan = dilewati rapi.
    ponytail: maks 40 penerima per kejadian (batas subrequest akun Free); push ke staf/admin belum ada karena langganan push hanya milik akun instansi,
    Posko pusat dikabari lewat email (staf pimpinan/pusdalops/koordalops + EMAIL_TO). */
-import {siapPush, kirimKe, catatHasil} from "./push.js";
+import {siapPush, kirimKe, catatHasil, mati} from "./push.js";
 import {emailAktif, kirimEmail} from "./ews.js";
 import {esc} from "./ews_email.js";
 import {PROV} from "./instansi.js";
 import {sha} from "./worker.js";
 
-const MAKS_PENERIMA = 40, MAKS_AKUN = 30, JAM = 36e5, ASAL = "https://centurisk97.id";
-const tanpaTabel = e => /no such (table|column): ?(main\.)?(kabar_terkirim|push_langganan|alarm_himawari|staf|instansi_akun)/i.test(String(e?.message || e));
-const dalam = (a, prov, kab) => a.tingkat === "kab" ? prov === a.prov && String(kab).toLowerCase() === String(a.kab).toLowerCase() : JSON.parse(a.cakupan).includes(prov);
+const MAKS_PENERIMA = 40, MAKS_AKUN = 30, MENIT = 6e4, JAM = 36e5, BACKOFF_MNT = [1, 5, 15, 60], MAKS_COBA = 5, ASAL = "https://centurisk97.id";
+const tanpaTabel = e => /no such (table|column): ?(main\.)?(kabar_terkirim|kabar_ulang|push_langganan|alarm_himawari|staf|instansi_akun)/i.test(String(e?.message || e));
+const cakupanDari = a => { try { const c = JSON.parse(a.cakupan); return Array.isArray(c) ? c : []; } catch (e) { return []; } };   // cakupan rusak = tak mencakup apa pun, bukan menggagalkan putaran
+const dalam = (a, prov, kab) => a.tingkat === "kab" ? prov === a.prov && String(kab).toLowerCase() === String(a.kab).toLowerCase() : cakupanDari(a).includes(prov);
 export const tempat = (prov, kab, kec) => [kec, kab, PROV[prov]?.[1]].filter(Boolean).join(", ");
 
-/* pesan = {judul, isi, url}; penerima = [{id (kunci dedupe), akun?, email?}]. Kembali {push, email, lewat} atau {lewat: alasan}. */
+/* satu penerima, saluran yang diminta (Set "push"/"email") -> {ada, push, email, gagal: [saluran yang gagal]}.
+   Push berhasil bila minimal satu perangkat menjawab 2xx atau semua langganan sudah mati (404/410, dibuang); jaringan/5xx/429 pada semua perangkat = gagal. Email gagal bila Resend menolak. */
+async function kirimSatu(env, p, pesan, kanal, kini) {
+  const o = {ada: false, push: 0, email: 0, gagal: []}, pushOn = siapPush(env) && kanal.has("push"), suratOn = emailAktif(env) && kanal.has("email");
+  let subs = [];
+  if (pushOn && p.akun) try { subs = (await env.DB.prepare("SELECT id, endpoint, p256dh, auth FROM push_langganan WHERE akun_id = ?").bind(p.akun).all()).results; } catch (e) { if (!tanpaTabel(e)) throw e; }
+  const surel = suratOn && p.email ? p.email : null;
+  if (!subs.length && !surel) return o;
+  o.ada = true;
+  if (subs.length) try {
+    const hasil = await kirimKe(env, subs, {judul: pesan.judul, isi: pesan.isi, tag: "pb-kabar", url: pesan.url || "/instansi"}, "k" + String(p.akun).slice(0, 20), kini), baik = hasil.filter(h => h.status >= 200 && h.status < 300).length;
+    o.push = baik; if (!baik && !hasil.every(h => mati(h.status))) o.gagal.push("push");
+    const st = catatHasil(env, hasil, kini); if (st.length) await env.DB.batch(st);
+  } catch (e) { console.error("kabar push", e?.message); o.gagal.push("push"); }
+  if (surel) try {
+    await kirimEmail(env, surel, {subject: pesan.judul, html: htmlKabar(pesan), text: `${pesan.judul}\n${pesan.isi}\n${ASAL}${pesan.url || "/instansi"}`}); o.email = 1;
+  } catch (e) { console.error("kabar email", e?.message); o.gagal.push("email"); }
+  return o;
+}
+const htmlKabar = pesan => `<p style="font:700 16px Arial,sans-serif;margin:0 0 8px">${esc(pesan.judul)}</p><p style="font:14px/1.5 Arial,sans-serif;margin:0 0 12px">${esc(pesan.isi)}</p><p style="font:14px Arial,sans-serif;margin:0"><a href="${esc(ASAL + (pesan.url || "/instansi"))}">Buka Pantau Bencana</a></p>`;
+const adaTerkirim = async (env, kunci, penerima) => !!await env.DB.prepare("SELECT 1 x FROM kabar_terkirim WHERE kunci = ? AND penerima = ?").bind(kunci, penerima).first();
+const selesai = (env, kunci, penerima, kini) => env.DB.prepare("INSERT OR IGNORE INTO kabar_terkirim (kunci, penerima, waktu) VALUES (?, ?, ?)").bind(kunci, penerima, kini);
+
+/* pesan = {judul, isi, url}; penerima = [{id (kunci dedupe), akun?, email?}]. Kembali {push, email, tanpa_saluran, ulang} atau {lewat: alasan}.
+   Urutan: sudah terkirim/antre ulang? lewati -> kirim -> BARU catat kabar_terkirim bila semua saluran berhasil; yang gagal masuk kabar_ulang (cron mencoba lagi, ulangiKabar).
+   ponytail: dua pemanggil serentak untuk kunci+penerima yang sama bisa sama-sama mengirim (tak ada kunci sebelum kirim); kabar kita dipicu satu cron/satu permintaan per kejadian. */
 export async function kabarkan(env, kunci, penerima, pesan, kini = Date.now()) {
-  const o = {push: 0, email: 0, tanpa_saluran: 0}, pushOn = siapPush(env), suratOn = emailAktif(env), subjek = pesan.judul, isi = `${pesan.isi}\n${ASAL}${pesan.url || "/instansi"}`;
-  const html = `<p style="font:700 16px Arial,sans-serif;margin:0 0 8px">${esc(pesan.judul)}</p><p style="font:14px/1.5 Arial,sans-serif;margin:0 0 12px">${esc(pesan.isi)}</p><p style="font:14px Arial,sans-serif;margin:0"><a href="${esc(ASAL + (pesan.url || "/instansi"))}">Buka Pantau Bencana</a></p>`;
-  const sudah = new Set();
+  const o = {push: 0, email: 0, tanpa_saluran: 0, ulang: 0}, k = kunci.slice(0, 80), sudah = new Set();
   try {
     for (const p of penerima.slice(0, MAKS_PENERIMA)) {
       if (sudah.has(p.id)) continue; sudah.add(p.id);
-      let subs = [];
-      if (pushOn && p.akun) try { subs = (await env.DB.prepare("SELECT id, endpoint, p256dh, auth FROM push_langganan WHERE akun_id = ?").bind(p.akun).all()).results; } catch (e) { if (!tanpaTabel(e)) throw e; }
-      const surel = suratOn && p.email ? p.email : null;
-      if (!subs.length && !surel) { o.tanpa_saluran++; continue; }
-      const klaim = await env.DB.prepare("INSERT OR IGNORE INTO kabar_terkirim (kunci, penerima, waktu) VALUES (?, ?, ?)").bind(kunci.slice(0, 80), p.id.slice(0, 120), kini).run();
-      if (!klaim.meta.changes) continue;
-      if (subs.length) try {
-        const hasil = await kirimKe(env, subs, {judul: pesan.judul, isi: pesan.isi, tag: "pb-kabar", url: pesan.url || "/instansi"}, "k" + String(p.akun).slice(0, 20), kini);
-        o.push += hasil.filter(h => h.status >= 200 && h.status < 300).length;
-        const st = catatHasil(env, hasil, kini); if (st.length) await env.DB.batch(st);
-      } catch (e) { console.error("kabar push", e?.message); }
-      if (surel) try { await kirimEmail(env, surel, {subject: subjek, html, text: `${pesan.judul}\n${isi}`}); o.email++; } catch (e) { console.error("kabar email", e?.message); }
+      const pid = p.id.slice(0, 120);
+      if (await adaTerkirim(env, k, pid)) continue;
+      try { if (await env.DB.prepare("SELECT 1 x FROM kabar_ulang WHERE kunci = ? AND penerima = ?").bind(k, pid).first()) continue; } catch (e) { if (!tanpaTabel(e)) throw e; }
+      const psn = {...pesan, ...(p.ganti || {})};   // penerima boleh punya url/isi sendiri (darurat: instansi ke /instansi, Posko pusat ke Meja Pantau)
+      const r = await kirimSatu(env, p, psn, new Set(["push", "email"]), kini);
+      if (!r.ada) { o.tanpa_saluran++; continue; }
+      o.push += r.push; o.email += r.email;
+      if (!r.gagal.length) { await selesai(env, k, pid, kini).run(); continue; }
+      try {
+        await env.DB.prepare("INSERT OR REPLACE INTO kabar_ulang (kunci, penerima, akun, email, pesan, kanal, percobaan, berikut, dibuat) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)")
+          .bind(k, pid, p.akun || null, p.email || null, JSON.stringify(psn).slice(0, 4000), r.gagal.join(","), kini + BACKOFF_MNT[0] * MENIT, kini).run(); o.ulang++;
+      } catch (e) { if (!tanpaTabel(e)) throw e; console.error("kabar gagal terkirim dan antrean ulang (0045) belum ada:", pid); }
     }
   } catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0043 belum diterapkan"}; throw e; }
+  return o;
+}
+
+/* cron menit: coba lagi kabar yang gagal (jatuh tempo), maks 8 penerima per putaran (subrequest akun Free). Berhasil -> kabar_terkirim + hapus antrean; gagal -> jeda lebih panjang; MAKS_COBA habis -> menyerah (dicatat, antrean dihapus). */
+export async function ulangiKabar(env, kini = Date.now()) {
+  const o = {coba: 0, terkirim: 0, menyerah: 0};
+  try {
+    const rows = (await env.DB.prepare("SELECT kunci, penerima, akun, email, pesan, kanal, percobaan FROM kabar_ulang WHERE berikut <= ? ORDER BY berikut LIMIT 8").bind(kini).all()).results;
+    for (const r of rows) {
+      o.coba++;
+      const hapus = env.DB.prepare("DELETE FROM kabar_ulang WHERE kunci = ? AND penerima = ?").bind(r.kunci, r.penerima);
+      if (await adaTerkirim(env, r.kunci, r.penerima)) { await hapus.run(); continue; }
+      let pesan; try { pesan = JSON.parse(r.pesan); } catch (e) { await hapus.run(); continue; }
+      if (pesan.kadaluarsa && kini > pesan.kadaluarsa) { await hapus.run(); o.kedaluwarsa = (o.kedaluwarsa || 0) + 1; continue; }   // kabar darurat basi: tidak dikirim berjam-jam kemudian
+      const h = await kirimSatu(env, {id: r.penerima, akun: r.akun, email: r.email}, pesan, new Set(r.kanal.split(",")), kini);
+      if (!h.ada) { await hapus.run(); continue; }   // saluran sudah tidak ada (langganan mati, email dimatikan): tak ada yang bisa dikirim
+      if (!h.gagal.length) { await env.DB.batch([selesai(env, r.kunci, r.penerima, kini), hapus]); o.terkirim++; continue; }
+      if (r.percobaan + 1 > MAKS_COBA) { await hapus.run(); o.menyerah++; console.error("kabar menyerah setelah", r.percobaan, "percobaan:", r.kunci, r.penerima); continue; }
+      await env.DB.prepare("UPDATE kabar_ulang SET percobaan = ?, kanal = ?, berikut = ? WHERE kunci = ? AND penerima = ?")
+        .bind(r.percobaan + 1, h.gagal.join(","), kini + BACKOFF_MNT[Math.min(r.percobaan, BACKOFF_MNT.length - 1)] * MENIT, r.kunci, r.penerima).run();
+    }
+  } catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0045 belum diterapkan"}; throw e; }
   return o;
 }
 
@@ -54,11 +100,16 @@ export async function penerimaPosko(env) {
   return [...hasil.values()];
 }
 
-/* darurat regu: pemilik penugasan + Posko pusat. p = baris penugasan dari dariToken (id, akun_id, nama, prov, kab, kec). */
+/* darurat regu: pemilik penugasan + Posko pusat. p = baris penugasan dari dariToken (id, tugas_id, akun_id, prov, kab, kec). TANPA nama orang: hanya instansi (instansi_akun.wilayah), wilayah, jenis, tautan Meja Pantau.
+   Kunci kabar per jendela 5 menit PER PENUGASAN: panggilan berulang satu tautan = satu kabar per jendela, dan tautan lain di tugas yang sama tidak pernah ikut diredam (kabar pertama tiap penugasan selalu terkirim).
+   Batas per tautan (5 per 10 menit, 429) ada di rute darurat (src/penugasan.js). */
 export async function kabarDarurat(env, p, jenis, label, kini = Date.now()) {
-  const akun = await env.DB.prepare("SELECT id, email FROM instansi_akun WHERE id = ?").bind(p.akun_id).first();
-  const penerima = [...(akun ? [{id: "akun:" + akun.id, akun: akun.id, email: akun.email}] : []), ...await penerimaPosko(env)];
-  return kabarkan(env, `darurat:${p.id}:${kini}`, penerima, {judul: `DARURAT regu: ${label}`, isi: `Regu ${p.nama} melaporkan keadaan darurat (${label}) di ${tempat(p.prov, p.kab, p.kec)}. Hubungi regu dan komandan sekarang; posisi terakhir ada di Meja Pantau.`, url: "/instansi"}, kini);
+  if (p.dummy) return {lewat: "penugasan dummy: tidak ada kabar nyata"};
+  const akun = await env.DB.prepare("SELECT id, email, wilayah FROM instansi_akun WHERE id = ?").bind(p.akun_id).first();
+  const pukul = new Date(kini + 7 * JAM).toISOString().slice(11, 16), dasar = `Satu regu dari ${akun?.wilayah || "instansi"} di ${tempat(p.prov, p.kab, p.kec)} melaporkan keadaan darurat (${label}) pukul ${pukul} WIB. Hubungi komandan regu sekarang; `;
+  const penerima = [...(akun ? [{id: "akun:" + akun.id, akun: akun.id, email: akun.email, ganti: {url: "/instansi", isi: dasar + "posisi terakhir tampil di kotak DARURAT pada Tugas api."}}] : []),
+    ...(await penerimaPosko(env)).map(x => ({...x, ganti: {url: "/admin/pantau", isi: dasar + "posisi terakhir ada di Meja Pantau."}}))];
+  return kabarkan(env, `darurat:${p.id}:${Math.floor(kini / (5 * MENIT))}`, penerima, {judul: `DARURAT regu: ${label}`, isi: dasar, url: "/admin/pantau", kadaluarsa: kini + 15 * MENIT}, kini);
 }
 /* tugas level 3 baru -> akun wilayahnya. tugas = [{id, prov, kab, kec}]. Satu kabar ringkas per akun per putaran (kunci = sidik kumpulan tugasnya), maks 30 akun. */
 export async function kabarLevel3(env, tugas, kini = Date.now()) {
@@ -77,6 +128,9 @@ export async function kabarLevel3(env, tugas, kini = Date.now()) {
 
 /* retensi: kunci kabar 30 hari */
 export async function bersihkanKabar(env, kini = Date.now()) {
-  try { return (await env.DB.prepare("DELETE FROM kabar_terkirim WHERE waktu <= ?").bind(kini - 30 * 24 * JAM).run()).meta.changes; }
+  try {
+    try { await env.DB.prepare("DELETE FROM kabar_ulang WHERE dibuat <= ?").bind(kini - 2 * 24 * JAM).run(); } catch (e) { if (!tanpaTabel(e)) throw e; }
+    return (await env.DB.prepare("DELETE FROM kabar_terkirim WHERE waktu <= ?").bind(kini - 30 * 24 * JAM).run()).meta.changes;
+  }
   catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0043 belum diterapkan"}; throw e; }
 }

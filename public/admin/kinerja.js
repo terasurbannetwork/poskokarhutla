@@ -4,7 +4,7 @@
 (() => {
   const {esc} = Admin;   // public/admin/bersama.js
   const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul");
-  const N0 = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 0}), N1 = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 1});
+  const N0 = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 0}), N1 = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 1}), N1T = new Intl.NumberFormat("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const nanti = fn => window.nanti ? window.nanti(fn) : fn();
   const HARI = [7, 30, 90];
   const TAHAP = {deteksi: "Deteksi", tugas: "Tugas dibuat", konfirmasi: "Konfirmasi", tiba: "Regu tiba", padam: "Padam", terverifikasi: "Terverifikasi"};
@@ -80,8 +80,8 @@
         <td class="n" data-label="Terlambat dibuka">${w.terlambat_buka ? `<b class="bahaya">${N0.format(w.terlambat_buka)}</b>` : "0"}</td>`},
     r: {id: "R", urut0: "n", kolom: [["nama", "Instansi"], ["n", "Tugas"], ["tiba_p50_menit", "Regu tiba, tengah"], ["padam_p50_jam", "Padam, tengah"], ["isian_lengkap_pct", "Isian lengkap"], ["kabar_tepat_pct", "Kabar tepat"]],
       baris: () => DATA.lapangan?.regu || [], nilai: (r, k) => r[k],
-      sel: r => `<td data-label="Instansi">${esc(r.nama)}</td><td class="n" data-label="Tugas">${N0.format(r.n)}</td><td class="n" data-label="Regu tiba, tengah">${esc(na(dur(r.tiba_p50_menit)))}</td>
-        <td class="n" data-label="Padam, tengah">${r.padam_p50_jam == null ? "belum ada data" : esc(N1.format(r.padam_p50_jam) + " jam")}</td><td class="n" data-label="Isian lengkap">${esc(na(pct(r.isian_lengkap_pct)))}</td><td class="n" data-label="Kabar tepat">${esc(na(pct(r.kabar_tepat_pct)))}</td>`},
+      sel: r => `<td data-label="Instansi">${esc(r.nama)}</td><td class="n" data-label="Tugas">${N0.format(r.n)}</td><td class="n" data-label="Regu tiba, tengah">${esc(na(r.tiba_p50_menit == null ? "–" : N1T.format(r.tiba_p50_menit / 60) + " jam"))}</td>
+        <td class="n" data-label="Padam, tengah">${r.padam_p50_jam == null ? "belum ada data" : esc(N1T.format(r.padam_p50_jam) + " jam")}</td><td class="n" data-label="Isian lengkap">${esc(na(pct(r.isian_lengkap_pct)))}</td><td class="n" data-label="Kabar tepat">${esc(na(pct(r.kabar_tepat_pct)))}</td>`},
   };
   const arahDari = t => S[t === "w" ? "arah" : "arahr"] === "naik" ? 1 : -1, urutDari = t => S[t === "w" ? "urut" : "urutr"];
   function badan(t) {
@@ -119,14 +119,14 @@
     const N = L.n || {}, dari = (n, satuan) => n ? `dari ${N0.format(n)} ${satuan}` : "";   // tiap rasio memakai penyebutnya sendiri (lapangan.n)
     const R = (nilai, label, ton, ket) => nilai == null ? `<div class="kj-ukur"><b class="kj-na">belum ada data</b><span>${esc(label)}</span></div>` : `<div class="kj-ukur${ton ? " t-" + ton : ""}"><b>${esc(pct(nilai))}</b><span>${esc(label)}</span><small>${esc(ket)}</small></div>`;
     /* tanpa warna baik/buruk: kontrak belum punya target untuk rasio lapangan, jadi angkanya netral */
-    const gps = L.gps_curiga_n, tugas = dari(N.isian, "tugas"), foto = dari(N.foto, "foto"), padam = dari(N.padam, "tugas padam");
+    const gps = L.gps_curiga_n, tugas = dari(N.konfirmasi, "tugas terkonfirmasi"), foto = dari(N.foto, "foto"), padam = dari(N.padam, "tugas padam");
     const kartu = `<div class="kj-ukurbaris">${R(L.isian_lengkap_pct, "isian lengkap", "", tugas)}${R(L.foto_gps_sah_pct, "foto GPS sah", "", foto)}
       ${gps == null ? `<div class="kj-ukur"><b class="kj-na">belum ada data</b><span>foto GPS curiga</span></div>` : `<div class="kj-ukur"><b>${N0.format(gps)}</b><span>foto GPS curiga</span><small>${esc(foto)}</small></div>`}
       ${R(L.kabar_tepat_pct, "kabar tepat (tiap 24 jam)", "", dari(N.kabar, "tugas berjalan"))}${R(L.padam_terverifikasi_pct, "padam terverifikasi", "", padam)}
       ${R(L.muncul_lagi_pct, "muncul lagi sesudah padam", "", padam)}${R(L.bukan_api_pct, "bukan api (alarm palsu satelit)", "", dari(N.konfirmasi, "tugas terkonfirmasi"))}</div>`;
-    const N1T = new Intl.NumberFormat("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}), rasio = v => v == null ? "belum ada data" : N1T.format(v) + " kali";
+    const rasio =v => v == null ? "belum ada data" : N1T.format(v) + " kali";
     const luas = L.luas, tak = L.taktik;
-    const blok = (judul, o, a, b, ketA, ketB) => `<div class="kj-s"><h3>${esc(judul)}</h3>${!o || !o.n ? kosong("Belum ada tugas yang punya kedua angka.") : `<div class="kj-ukurbaris"><div class="kj-ukur"><b>${esc(rasio(o[a]))}</b><span>${esc(ketA)}</span><small>dari ${N0.format(o.n)} tugas</small></div>${b ? `<div class="kj-ukur"><b>${esc(rasio(o[b]))}</b><span>${esc(ketB)}</span><small>dari ${N0.format(o.n)} tugas</small></div>` : ""}</div>`}</div>`;
+    const blok = (judul, o, a, b, ketA, ketB) => `<div class="kj-s"><h3>${esc(judul)}</h3>${!o || !o.n ? kosong("Belum ada tugas yang punya kedua angka.") : `<div class="kj-ukurbaris"><div class="kj-ukur"><b>${esc(rasio(o[a]))}</b><span>${esc(ketA)}</span><small>dari ${N0.format(o.n)} tugas</small></div>${b ? `<div class="kj-ukur"><b>${esc(rasio(o[b]))}</b><span>${esc(ketB)}</span><small>dari ${N0.format(o.n_garis ?? o.n)} tugas</small></div>` : ""}</div>`}</div>`;
     return seksi("Evaluasi isian dan verifikasi", kartu, "Isian lengkap: konfirmasi, penanggung jawab, foto ber-GPS, dan status api. Kabar tepat: selang kabar tidak lebih dari 24 jam selama api belum padam. Bukan api: hasil isian regu, ukuran alarm palsu satelit.")
       + seksi("Luas dan taktik regu", `<div class="kj-sumber">${blok("Luas lapangan dibanding satelit", luas, "rasio_lapangan_satelit_p50", "rasio_garis_satelit_p50", "luas lapangan per luas satelit (tengah)", "luas garis api per luas satelit (tengah)")}${blok("Regu nyata dibanding saran", tak, "regu_nyata_per_saran_p50", "personel_nyata_per_saran_p50", "regu nyata per saran (tengah)", "personel nyata per saran (tengah)")}</div>`,
         "Rasio satu berarti sama dengan satelit atau saran; hanya tugas yang punya kedua angka yang dihitung.")
@@ -164,6 +164,7 @@
   async function muat() {
     const n = ++no; DATA = null; pasang(rangka());
     const q = new URLSearchParams({hari: S.hari}); if (S.prov) q.set("prov", S.prov); if (S.kab) q.set("kab", S.kab);
+    if (!Admin.staf) q.set("dummy", "1");   // server hanya menghormatinya untuk Super Admin; pembaca lain selalu tanpa dummy
     let r, j;
     try { r = await fetch("/api/sla?" + q); } catch (e) { if (n === no) pasang(galat(0, "Jaringan terputus atau server tidak menjawab.")); return; }
     if (n !== no) return;   // jawaban basi: filter sudah berganti
@@ -174,7 +175,7 @@
     DATA = j; if (j.prov_nama && S.prov) NAMA[S.prov] = j.prov_nama;
     if (!S.prov && j.wilayah?.length) { j.wilayah.forEach(w => { NAMA[w.kode] = w.nama; }); try { sessionStorage.setItem("kinerja_prov", JSON.stringify(NAMA)); } catch (e) {} }
     const chip = document.getElementById("kjChip"); if (chip && NAMA[S.prov]) chip.firstChild.textContent = NAMA[S.prov];
-    document.getElementById("kjWaktu").textContent = "Dihitung " + wib(j.kini);
+    document.getElementById("kjWaktu").textContent = "Dihitung " + wib(j.kini) + (j.dummy ? ", termasuk data dummy" : "");
     gambar();
   }
   const ulangKerangka = () => { app.innerHTML = kontrol(); nanti(muat); };

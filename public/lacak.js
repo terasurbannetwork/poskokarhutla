@@ -147,7 +147,8 @@
 
   /* ---- mulai ---- */
   /* service worker (public/sw-lapangan.js, scope /lacak): halaman + info tugas terakhir (per token) tetap terbuka tanpa sinyal */
-  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lacak"}).catch(() => {}), 1500));
+  const baruTerkendali = "serviceWorker" in navigator && !!navigator.serviceWorker.controller;
+  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lacak"}).then(() => navigator.serviceWorker.ready).then(() => navigator.serviceWorker.controller || new Promise(r => { navigator.serviceWorker.addEventListener("controllerchange", r, {once: true}); setTimeout(r, 5000); })).then(() => { if (!baruTerkendali) api("GET", "info"); }).catch(() => {}), 1500));   // kunjungan pertama: muat info sekali lagi lewat service worker supaya tersimpan untuk luring
   (async function muat() {
     if (!TOKEN) return matikan({galat: "Alamat tautan tidak lengkap. Buka lagi tautan dari WhatsApp."});
     try { const m = {name: "Tugas api", short_name: "Tugas api", start_url: "/lacak#" + TOKEN, scope: "/lacak", display: "standalone", orientation: "portrait", background_color: "#0b2545", theme_color: "#0b2545", icons: [{src: "/img/logo.svg", sizes: "any", type: "image/svg+xml"}]};

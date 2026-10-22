@@ -14,7 +14,7 @@ Catatan: data/raw/sebaran/prospektif/ramalan.jsonl, nilai.jsonl (append-only); r
 Pakai:  python3 scripts/sebaran/prospektif.py  |  ... uji  |  ... arsip <tujuan.jsonl.gz>  |  ... pulih <sumber.jsonl.gz>
 Uji balik historis (bukan prospektif): scripts/sebaran/prospektif_historis.py
 """
-import datetime as dt, gzip, json, math, os, sys, time, urllib.parse
+import datetime as dt, gzip, json, math, os, random, sys, time, urllib.parse
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, DIR)
@@ -27,6 +27,7 @@ FOLDER = os.path.join(MENTAH, "prospektif" if RIWAYAT_HARI >= 7 else "prospektif
 GUDANG = os.path.join(FOLDER, "titik.json.gz")
 RAMALAN = os.path.join(FOLDER, "ramalan.jsonl")
 NILAI = os.path.join(FOLDER, "nilai.jsonl")
+GERBANG = os.path.join(FOLDER, "gerbang.jsonl")  # vonis gerbang per evaluasi (append-only, ikut arsip): dasar syarat dua evaluasi berturut-turut
 CUACA = os.path.join(FOLDER, "cuaca")
 RINGKAS = os.path.join(PUBLIK, "prospektif.json") if RIWAYAT_HARI >= 7 else os.path.join(FOLDER, "ringkasan.json")
 SIMPAN_HARI = 12
@@ -43,6 +44,11 @@ TOLERANSI_RECALL = 0.15  # ASUMSI: batas bawah CI95 recall prospektif >= klaim m
 ECE_MAKS = 0.08   # ASUMSI: selisih rata-rata |teramati - diramal| per kantong <= 8 poin. Laju dasar ~17%: "20%" di layar boleh berarti 12-28%, tidak lebih.
                   # Dengan 10 kantong kuantil @ n=300 (30 per kantong) galat sampling ECE model SEMPURNA ~0,05; 0,08 menyisakan margin ~3 poin untuk
                   # salah kalibrasi sungguhan, jadi ambang ini tidak bisa dilolosi dengan n kecil yang kebetulan bagus dan tidak dihukum karena noise.
+# Tiga tambahan setelah tinjauan 22 Okt 2026 (ECE titik pada data kumulatif mulai n=300 = berhenti-opsional, dan buta skala):
+KAL_BESAR = (0.75, 1.33)  # kalibrasi-secara-umum: selang Wilson laju teramati harus beririsan dengan [0,75; 1,33] x rata-rata peluang diramal
+BOOT_B, BOOT_PCT = 200, 0.90  # ECE dinilai dari persentil ke-90 bootstrap (bukan titik): <= ECE_MAKS
+TAMBAH_MIN = 30   # evaluasi "berturut" hanya dihitung bila n dinilai bertambah >= 30 (satu kantong) sejak evaluasi lulus sebelumnya; jalan tanpa data baru tak dihitung
+RASIO_LAJU_MAKS = 2.0  # laju api besar prospektif vs laju saat model dikalibrasi: beda > 2x (ke atas/bawah) menolak teruji kecuali sudah direkalibrasi pada data prospektif
 SKILL_MIN = 0.0   # Brier skill terhadap klimatologi (laju dasar himpunan yang sama) harus > 0: peluang harus mengalahkan "selalu bilang laju dasar".
 KANTONG = 10
 KANTONG_MIN_N = 30  # kantong < 30 titik terlalu berisik: jumlah kantong diturunkan (n // 30), minimal 2
@@ -99,9 +105,54 @@ def metrik_set(p, y, w):
             "kalibrasi": kalibrasi(p, y)}
 
 
+def di_besar(p, y):
+    """Kalibrasi-secara-umum: Wilson 95% laju teramati beririsan dengan [KAL_BESAR] x rata-rata peluang diramal (peka skala, tak seperti ECE mutlak)."""
+    n = len(y)
+    lo, hi = wilson(sum(y), n)
+    mp = sum(p) / n
+    return {"teramati": round(sum(y) / n, 4), "lo": round(lo, 4), "hi": round(hi, 4), "rata_p": round(mp, 4),
+            "ok": lo <= KAL_BESAR[1] * mp and hi >= KAL_BESAR[0] * mp}
+
+
+def ece_p90(p, y, b=BOOT_B, persen=BOOT_PCT, benih=7):
+    """Persentil bootstrap ECE (resampel titik dengan pengembalian, benih tetap): batas atas, bukan taksiran titik."""
+    rnd, n, e = random.Random(benih), len(y), []
+    for _ in range(b):
+        ix = [rnd.randrange(n) for _ in range(n)]
+        e.append(kalibrasi([p[i] for i in ix], [y[i] for i in ix])["ece"])
+    return sorted(e)[math.ceil(persen * b) - 1]
+
+
+def gerbang_kalibrasi(p, y):
+    """kalibrasi() + ece_p90 + di_besar (dipakai HANYA untuk prospektif; uji balik historis n ~1e5 cukup ECE titik). None bila n terlalu kecil."""
+    kal = kalibrasi(p, y)
+    if kal is None:
+        return None
+    kal["ece_p90"], kal["di_besar"] = round(ece_p90(p, y), 4), di_besar(p, y)
+    return kal
+
+
 def kalibrasi_lolos(kal):
-    """Lolos gerbang kalibrasi? kal = hasil kalibrasi() (None = n terlalu kecil = belum lolos)."""
-    return bool(kal and kal["ece"] <= ECE_MAKS and kal["brier_skill"] is not None and kal["brier_skill"] > SKILL_MIN)
+    """Lolos gerbang kalibrasi? kal = kalibrasi() (None = n terlalu kecil = belum lolos). Bila ada ece_p90/di_besar (prospektif) keduanya yang menentukan."""
+    return bool(kal and kal.get("ece_p90", kal["ece"]) <= ECE_MAKS and kal.get("di_besar", {"ok": True})["ok"]
+                and kal["brier_skill"] is not None and kal["brier_skill"] > SKILL_MIN)
+
+
+def laju_sejalan(prosp, model, rekalibrasi):
+    """(ok, rasio): laju api besar prospektif vs laju saat Platt dikalibrasi. Beda > RASIO_LAJU_MAKS x ditolak kecuali sudah direkalibrasi pada data prospektif."""
+    if not prosp or not model:
+        return bool(rekalibrasi), None
+    r = prosp / model
+    return bool(rekalibrasi) or 1 / RASIO_LAJU_MAKS <= r <= RASIO_LAJU_MAKS, round(r, 2)
+
+
+def berturut(riwayat, n, lulus):
+    """(dua_berturut, perlu_dicatat). riwayat = vonis lama [{n, lulus}]. Teruji hanya bila evaluasi ini lulus DAN evaluasi lulus sebelumnya
+    (dengan >= TAMBAH_MIN dinilai lebih sedikit) juga lulus: satu lulus kebetulan di n kecil tidak cukup."""
+    lama = max((r for r in riwayat if r["n"] <= n - TAMBAH_MIN), key=lambda r: r["n"], default=None)
+    return bool(lulus and lama and lama["lulus"]), not any(r["n"] == n for r in riwayat)
+
+
 MAKS_BOBOT = float(os.environ.get("PROSPEKTIF_BOBOT", "400"))
 URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -328,7 +379,7 @@ def main():
 def arsip(tujuan):
     n = 0
     with gzip.open(tujuan, "wt") as f:
-        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI))):
+        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI)), ("g", baca_jsonl(GERBANG))):
             for r in baris:
                 f.write(json.dumps({"j": j, **r}, separators=(",", ":")) + "\n")
                 n += 1
@@ -338,8 +389,9 @@ def arsip(tujuan):
 def pulih(sumber):
     """Gabungkan arsip ke ramalan.jsonl / nilai.jsonl: tambah baris yang (kunci, mode)-nya belum ada. Mengembalikan (ramalan+, nilai+)."""
     os.makedirs(FOLDER, exist_ok=True)
-    ada = {"r": {(r["kunci"], r["mode"]) for r in baca_jsonl(RAMALAN)}, "n": {(r["kunci"], r["mode"]) for r in baca_jsonl(NILAI)}}
-    tambah = {"r": [], "n": []}
+    ada = {"r": {(r["kunci"], r["mode"]) for r in baca_jsonl(RAMALAN)}, "n": {(r["kunci"], r["mode"]) for r in baca_jsonl(NILAI)},
+           "g": {(r["kunci"], r["mode"]) for r in baca_jsonl(GERBANG)}}
+    tambah = {"r": [], "n": [], "g": []}
     with gzip.open(sumber, "rt") as f:
         for l in f:
             r = json.loads(l)
@@ -347,11 +399,11 @@ def pulih(sumber):
             if (r["kunci"], r["mode"]) not in ada[j]:
                 ada[j].add((r["kunci"], r["mode"]))
                 tambah[j].append(r)
-    for j, berkas in (("r", RAMALAN), ("n", NILAI)):
+    for j, berkas in (("r", RAMALAN), ("n", NILAI), ("g", GERBANG)):
         with open(berkas, "a") as f:
             for r in tambah[j]:
                 f.write(json.dumps(r, separators=(",", ":")) + "\n")
-    return len(tambah["r"]), len(tambah["n"])
+    return len(tambah["r"]), len(tambah["n"])  # vonis gerbang ("g") ikut dipulihkan tanpa dilaporkan: hanya penambah
 
 
 def ringkas():
@@ -368,6 +420,8 @@ def ringkas():
         p = [r["p"] for r, _ in dn]
         w = [1 if r["waspada"] else 0 for r, _ in dn]
         o = {"dicatat": len(rs), **metrik_set(p, y, w)}
+        if mode == "awal":
+            o["kalibrasi"] = gerbang_kalibrasi(p, y)
         o["per_bulan"] = {}
         for r, n in dn:
             b = o["per_bulan"].setdefault(r["t0"][:7], {"dinilai": 0, "lolos": 0, "waspada": 0, "tepat": 0})
@@ -390,9 +444,23 @@ def ringkas():
                                 and A["recall_bawah95"] is not None and A["recall_bawah95"] >= out["recall_min"])
     out["kalibrasi_ok"] = kalibrasi_lolos(A.get("kalibrasi"))
     out["ece_maks"], out["skill_min"] = ECE_MAKS, SKILL_MIN
-    # layar menyembunyikan peluang "akan membesar" selama false: recall prospektif lolos DAN peluangnya terkalibrasi (ECE, Brier skill > 0).
+    # laju dasar: Platt dikalibrasi pada laju api besar 2015-2023 (luar-lipatan); laju prospektif yang beda > 2x berarti populasi/pelabelan lain
+    # dan peluang di layar tak bisa dianggap terkalibrasi, kecuali Platt sudah dipasang ulang pada data prospektif (kunci lolos.rekalibrasi_prospektif).
+    ML = json.load(open(os.path.join(PUBLIK, "model_sebaran.json"))).get("lolos", {})
+    lap = next((x for x in ML.get("laporan", []) if str(x.get("himpunan", "")).startswith("Luar-lipatan") and x.get("model") == "baru"), None)
+    out["laju_model"] = round(lap["lolos"] / lap["n"], 4) if lap and lap.get("n") else None
+    out["rekalibrasi_prospektif"] = bool(ML.get("rekalibrasi_prospektif"))
+    out["laju_dasar_ok"], out["rasio_laju"] = laju_sejalan(A["laju_teramati"], out["laju_model"], out["rekalibrasi_prospektif"])
+    # layar menyembunyikan peluang "akan membesar" selama false: recall prospektif lolos, peluangnya terkalibrasi (ECE persentil-90 bootstrap, kalibrasi
+    # secara umum, Brier skill > 0), laju dasar sejalan DAN semua itu lulus pada dua evaluasi berturut-turut (n dinilai bertambah di antaranya).
     # Uji balik historis (prospektif_historis.json) TIDAK ikut menentukan: ia hanya ditampilkan terpisah.
-    out["teruji"] = out["teruji_recall"] and out["kalibrasi_ok"]
+    out["lulus_sekarang"] = bool(out["teruji_recall"] and out["kalibrasi_ok"] and out["laju_dasar_ok"])
+    riwayat = baca_jsonl(GERBANG)
+    out["lulus_berturut"], catat = berturut(riwayat, A["dinilai"], out["lulus_sekarang"])
+    if catat and A.get("kalibrasi") and A["dinilai"] >= N_MIN_DINILAI:
+        with open(GERBANG, "a") as f:
+            f.write(json.dumps({"kunci": f"n{A['dinilai']}", "mode": "gerbang", "n": A["dinilai"], "lulus": out["lulus_sekarang"], "dinilai": out["diperbarui"]}) + "\n")
+    out["teruji"] = out["lulus_berturut"]
     out["mulai"] = min((r["t0"] for r in R), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
     out["terbaru"] = [{"t0": r["t0"], "lat": r["lat"], "lon": r["lon"], "prov": r["prov"], "p": r["p"], "waspada": r["waspada"],
                        "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
@@ -440,12 +508,37 @@ if __name__ == "__main__":
         kh = kalibrasi([.1] * 120, [1 if i % 10 in (0, 3, 6) else 0 for i in range(120)])  # ikatan peluang: urutan stabil = urutan indeks
         assert kh["ece"] == 0.2 and kh["kantong"][0]["teramati"] == .3 and abs(kh["brier"] - (36 * .81 + 84 * .01) / 120) < 1e-3 and kh["brier_klimatologi"] == .21 and len(kh["kantong"]) == 4, kh
         assert kalibrasi([.1] * 50, [0] * 50) is None and not kalibrasi_lolos(None)
+        # gerbang 1b: ECE persentil-90 >= ECE titik; kalibrasi-secara-umum menolak model yang skalanya salah walau ECE mutlak kecil
+        g = gerbang_kalibrasi(pp, yy)
+        assert g["ece_p90"] >= g["ece"] and g["di_besar"]["ok"] and kalibrasi_lolos(g) == (g["ece_p90"] <= ECE_MAKS), g
+        assert gerbang_kalibrasi([.1] * 50, [0] * 50) is None
+        lamb = [.02] * 3000  # peluang 2% padahal laju 6%: ECE mutlak 0,04 < 0,08 TAPI skala salah 3x -> di_besar menolak
+        yl = [1 if i % 50 < 3 else 0 for i in range(3000)]
+        dl = di_besar(lamb, yl)
+        assert not dl["ok"] and kalibrasi(lamb, yl)["ece"] < ECE_MAKS and not kalibrasi_lolos({**kalibrasi(lamb, yl), "di_besar": dl}), dl
+        assert di_besar([.06] * 3000, yl)["ok"] and di_besar([.045] * 3000, yl)["ok"] and not di_besar([.2] * 3000, yl)["ok"]
+        # ECE persentil-90 pada sampel kecil yang kebetulan bagus: batas atas > titik (hukuman noise), sampel besar mendekati titik
+        rk = random.Random(3)
+        pk = [rk.random() * .5 for _ in range(300)]
+        yk = [1 if rk.random() < q else 0 for q in pk]
+        gk = gerbang_kalibrasi(pk, yk)
+        assert gk["ece_p90"] > gk["ece"] + .005 and gk["ece_p90"] > g["ece_p90"], (gk["ece"], gk["ece_p90"], g["ece_p90"])
+        # 1c: laju beda > 2x ditolak kecuali direkalibrasi
+        assert laju_sejalan(.17, .0279, False) == (False, 6.09) and laju_sejalan(.17, .0279, True)[0] and laju_sejalan(.03, .0279, False)[0]
+        assert not laju_sejalan(.01, .0279, False)[0] and laju_sejalan(.0, .0279, False) == (False, None)
+        # 1b: dua evaluasi berturut-turut (n harus bertambah >= TAMBAH_MIN); lulus pertama saja, atau n tak bertambah, tidak cukup
+        assert berturut([], 400, True) == (False, True)
+        assert berturut([{"n": 400, "lulus": True}], 400, True) == (False, False)
+        assert berturut([{"n": 400, "lulus": True}], 420, True)[0] is False
+        assert berturut([{"n": 400, "lulus": True}], 440, True) == (True, True)
+        assert berturut([{"n": 400, "lulus": False}], 500, True)[0] is False and berturut([{"n": 400, "lulus": True}], 500, False)[0] is False
+        assert berturut([{"n": 300, "lulus": False}, {"n": 400, "lulus": True}], 500, True)[0]
         lo, hi = wilson(30, 100)
         assert abs(lo - .2189) < .002 and abs(hi - .3961) < .002 and wilson(0, 0) == (None, None)
         # arsip: bolak-balik tidak menambah apa pun, sumber lama TIDAK menimpa baris yang sudah ada
         import tempfile
         with tempfile.TemporaryDirectory() as td:
-            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"))
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"))
             open(RAMALAN, "w").write('{"kunci":"a","mode":"awal","p":0.1}\n')
             open(NILAI, "w").write('{"kunci":"a","mode":"awal","n72":3,"lolos":false}\n')
             arsip(os.path.join(td, "x.gz"))
@@ -455,6 +548,12 @@ if __name__ == "__main__":
             assert pulih(os.path.join(td, "x.gz")) == (0, 0)
             os.remove(NILAI)
             assert pulih(os.path.join(td, "x.gz")) == (0, 1) and len(baca_jsonl(RAMALAN)) == 2 and baca_jsonl(RAMALAN)[0]["p"] == .9
+            # vonis gerbang ikut arsip: pulih menambah yang hilang, tak menimpa
+            open(GERBANG, "w").write('{"kunci":"n400","mode":"gerbang","n":400,"lulus":true}\n')
+            arsip(os.path.join(td, "y.gz"))
+            os.remove(GERBANG)
+            pulih(os.path.join(td, "y.gz"))
+            assert baca_jsonl(GERBANG)[0]["lulus"] is True
         print("ok")
     elif sys.argv[1:2] == ["arsip"]:
         print("arsip", arsip(sys.argv[2]), "baris")

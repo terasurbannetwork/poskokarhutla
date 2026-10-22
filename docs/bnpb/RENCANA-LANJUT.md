@@ -43,8 +43,10 @@ Keputusan bawaan (pemilik boleh membalik):
 | Nomor | Isi |
 |---|---|
 | `0042_sla.sql` | `status_riwayat(slot INTEGER, sumber TEXT, umur_menit INTEGER, batas_menit INTEGER, segar INTEGER, PRIMARY KEY(slot, sumber))`, slot = jam epoch UTC |
-| `0043_insiden_waktu.sql` | `tugas_api` + `terdeteksi_awal INTEGER`, `himawari_awal INTEGER`, `sumber_awal TEXT`; tabel `alarm_himawari(id TEXT PRIMARY KEY, lat REAL, lon REAL, radius_m INTEGER, pertama INTEGER, terakhir INTEGER, n_pindai INTEGER, frp REAL, status TEXT CHECK(status IN ('siaga','terkunci','hilang')), tugas_id TEXT, terkunci_pada INTEGER, dikabarkan_pada INTEGER)` |
-| `0044_media_hash.sql` | `instansi_media.sha256 TEXT` (dan tabel media lapangan lain yang menyimpan berkas bukti) |
+| `0043_insiden_waktu.sql` | `tugas_api` + `terdeteksi_awal INTEGER`, `himawari_awal INTEGER`, `sumber_awal TEXT`; tabel `alarm_himawari(id TEXT PRIMARY KEY, lat REAL, lon REAL, radius_m INTEGER, pertama INTEGER, terakhir INTEGER, n_pindai INTEGER, frp REAL, status TEXT CHECK(status IN ('siaga','terkunci','hilang')), tugas_id TEXT, terkunci_pada INTEGER, dikabarkan_pada INTEGER)`; tabel `kabar_terkirim(kunci, penerima, waktu, PRIMARY KEY(kunci, penerima))` untuk kabar idempoten, retensi 30 hari |
+| `0044_media_hash.sql` | `instansi_media.sha256`, `lapangan.foto_sha256` (hex 64), dihitung dari byte yang disimpan ke R2 sesudah EXIF dibuang, supaya cocok dengan berkas yang diunduh |
+| `0045_kabar_ulang.sql` | antrean `kabar_ulang` untuk kabar yang gagal terkirim (jeda 1/5/15/60 menit, maks 5 percobaan, per saluran) |
+| `0046_luas_awal.sql` | `tugas_luas_awal`: luas satelit saat tugas pertama dibuat (ditulis sekali), untuk kalibrasi |
 
 Semua fitur baru wajib tetap aman sebelum migrasinya diterapkan: rute menjawab 503 dengan alasan,
 cron melewati langkahnya, layar menampilkan keadaan "belum aktif". Alasannya: commit "gas" pemilik
@@ -153,9 +155,23 @@ kabar per penerima (kunci idempoten di D1).
 Pemeriksa per §6 AGENTS.md: `guard-api` + `security-reviewer` (route), `migrasi-idempoten`,
 `validasi-model` (ramalan, kekeringan, kalibrasi), `selera-angka` + `inp-reviewer` (layar).
 
+### 2.1 Antrean Worker gelombang 2 (dikumpulkan dari laporan pengerja)
+
+| # | Butir | Kontrak |
+|---|---|---|
+| W1 | `CSP_LAPANGAN` (`src/posko.js`) | `worker-src 'self' blob:` supaya `sw-lapangan.js` terpasang |
+| W2 | `GET /api/lapangan/tugas` di `RUTE_POSKO` | header `x-kode-regu` lewat `reguDari`; `{kini, tugas:[{id, lat, lon, kab, kec, level, rekomendasi, akses, kartu}]}`, maks 20 tugas buka di kabupaten regu itu, level tertinggi dulu (kode regu tidak terhubung ke `penugasan`, jadi cabang "penugasan regu" tidak dipakai); bentuk `kartu/akses/rekomendasi` sama dengan `GET /api/instansi/tugas/:id`; `cache-control: private, no-store` |
+| W3 | `0044_media_hash.sql` + hash saat unggah | `instansi_media.sha256` dihitung dari byte yang diterima, sebelum disimpan ke R2 |
+| W4 | `buktiLapangan` (`GET /api/ops/bukti`) | tiap `media[]` menambah `sha256`, `dibuat` (ms), `instansi` (join `instansi_akun`, tanpa nama orang); `diverifikasi_oleh/pada` bila ada |
+| W5 | `bedaTinggiM` di `src/operasi_lapangan.js` | dari `akses.json` entri `air.sumber[].beda_tinggi_m` (api − sumber, null tanpa DEM, `km` garis lurus belum ×1,2) dan `air.elev_m` |
+| W6 | Feed CAP 1.2 + GeoJSON + CORS | `/api/peringatan/aktif.cap` dan `.geojson` dari `bentuk()` yang sama; `access-control-allow-origin: *` untuk GET; aturan peringatan karhutla (insiden level 3 baru, alarm Himawari tidak ikut sampai terkunci) |
+| W8 | Tambahan `/api/pipa/lapangan` | `regu_maks`, `regu_rata` (sepanjang pemadaman), `luas_satelit_awal_ha`, `luas_satelit_maks_ha`, `lahan_peta_gambut` (boolean dari peta gambut), `jumlah_isian`, `instansi_hash` (sha256 terpotong, untuk dedupe) |
+| W9 | Temuan review gelombang 1 | kunci dedupe darurat per jendela 5 menit; nama orang keluar dari isi push/email darurat (cukup regu, wilayah, tautan Meja Pantau); `/api/sla` memaksa `prov` ke wilayah staf berwilayah; penanda dummy jelas di respons; `cakupan` rusak di `kabarLevel3` tidak menggagalkan putaran; `PIPA_TOKEN` di `.dev.vars.example` + batas laju percobaan token gagal |
+| W7 | `GET /api/pipa/jejak?sejak=` | Bearer `PIPA_TOKEN`; `{"jejak":[[[lat,lon],...]]}` dari `penugasan_posisi`, tanpa identitas regu, titik dibulatkan 0,0001°, hanya segmen bergerak; dipakai `akses.py` lewat `data/jejak_regu.json` |
+
 ## 3. Yang hanya bisa dilakukan pemilik
 
-1. Terapkan migrasi D1 produksi 0036–0044.
+1. Terapkan migrasi D1 produksi 0036–0046.
 2. Verifikasi domain `centurisk97.id` di Resend, lalu ganti `EMAIL_FROM` (contoh `Pantau Bencana <kabar@centurisk97.id>`).
 3. Pastikan secret `VAPID_PUBLIK`, `VAPID_PRIVAT`, `VAPID_SUBJEK` terpasang di Worker produksi.
 4. Pasang secret `PIPA_TOKEN` (nilai acak yang sama) di Worker dan GitHub.

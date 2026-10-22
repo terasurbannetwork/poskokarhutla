@@ -44,6 +44,7 @@ function temukan() {
   if (/perbaruiSihka\(env/.test(w)) out.add("cron sihka");
   const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron
   if (/j === "\/api\/peringatan\/aktif"/.test(pr)) out.add("GET /api/peringatan/aktif");
+  for (const ext of ["cap", "geojson"]) if (new RegExp(`"/api/peringatan/aktif\\.${ext}"`).test(pr)) out.add(`GET /api/peringatan/aktif.${ext}`);   // feed CAP 1.2 + GeoJSON (W6)
   if (/\/api\/admin\/peringatan\//.test(pr)) out.add("POST /api/admin/peringatan/:kunci/cabut");
   if (/periksaPeringatan\(env/.test(w)) out.add("cron peringatan");
   if (/bersihkanFoto\(env\)/.test(w)) out.add("cron bersihkanFoto");

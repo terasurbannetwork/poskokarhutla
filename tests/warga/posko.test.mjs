@@ -256,6 +256,7 @@ uji("foto laporan: JPEG/WebP lewat R2 sungguhan; berkas lain, laporan regu lain,
   const ok = await api("POST", url, jpg, {"x-kode-regu": g.kode}); assert.equal(ok.s, 200, ok.t);
   assert.equal((await api("POST", url, jpg, {"x-kode-regu": g.kode})).s, 409, "foto kedua");
   assert.equal((await DB.prepare("SELECT foto FROM lapangan WHERE id = ?").bind(l.j.id).first()).foto, 1);
+  assert.equal((await DB.prepare("SELECT foto_sha256 f FROM lapangan WHERE id = ?").bind(l.j.id).first()).f, createHash("sha256").update(jpg).digest("hex"), "0044: foto_sha256 = hash byte yang disimpan");
   assert.equal((await api("GET", `/api/posko/foto/${l.j.id}`)).s, 403, "publik tidak boleh melihat foto");
   const f = await mf.dispatchFetch(`http://posko.lokal/api/posko/foto/${l.j.id}`, {headers: ADMIN});
   assert.equal(f.status, 200); assert.equal(f.headers.get("content-type"), "image/jpeg"); assert.deepEqual([...new Uint8Array(await f.arrayBuffer())], [...jpg]);

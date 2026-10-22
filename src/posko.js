@@ -6,12 +6,12 @@
    - Kontak perusahaan diinput admin; tidak pernah ada di rute publik (publik hanya /api/neraca dan /api/paparan/templat).
    ponytail: buatAntrean mengurai konsesi2026/<prov>.json (~2,5 MB) per provinsi bertitik; di Workers Free (CPU 10 ms) bisa tak muat,
    karena itu ia jalan di invokasi cron SENDIRI (menit 16). Bila terpotong: pecah per provinsi atau indeks bbox statis. */
-import {json, gagal, acak, sha, adminOK, bacaBody, bacaBytes, cacheTepi, normalWA, dekatApi, ipHash, gagalSudahBanyak, catatGagal} from "./worker.js";
+import {json, gagal, acak, sha, shaBytes, adminOK, bacaBody, bacaBytes, cacheTepi, normalWA, dekatApi, ipHash, gagalSudahBanyak, catatGagal} from "./worker.js";
 import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
 import {halamanAdmin} from "./statistik.js";
-import {tautkanLaporanRegu} from "./instansi.js";
+import {tautkanLaporanRegu, tugasRegu} from "./instansi.js";
 import {halamanPosko, HALAMAN_STAF} from "./admin_halaman.js";
 import {modAtauStaf, stafPeran, dalamWilayahStaf, dariStaf, stafNyata, P_KONSESI} from "./staf.js";   // peran analis_konsesi = jalur tambahan untuk kontak PT dan panggilan (staf.js)
 
@@ -58,7 +58,7 @@ const tolakAdmin = () => gagal(403, "akses ditolak");
 export async function reguDari(env, req, kini = Date.now()) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   const k = (req.headers.get("x-kode-regu") || "").trim().toLowerCase();
-  const r = /^[0-9a-f]{26}$/.test(k) ? await env.DB.prepare("SELECT id, nama, unsur, prov, kab, perusahaan_id, dicabut FROM regu WHERE kode_sha = ?").bind(await sha(k)).first() : null;
+  const r = /^[0-9a-f]{26}$/.test(k) ? await env.DB.prepare("SELECT id, nama, unsur, prov, kab, perusahaan_id, dicabut, dummy FROM regu WHERE kode_sha = ?").bind(await sha(k)).first() : null;
   if (r && !r.dicabut) return r;
   const ip = await ipHash(env, req);
   if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
@@ -258,9 +258,13 @@ async function fotoLapor(env, req, id, kini) {
   const q = await env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) SELECT ?1, 'foto', ?2 WHERE (SELECT count(*) FROM laju_posko WHERE kunci = ?1 AND aksi = 'foto' AND waktu > ?3) < ?4").bind(regu.id, kini, kini - JAM, LAJU_FOTO).run();
   if (!q.meta.changes) return gagal(429, `batas ${LAJU_FOTO} foto per jam untuk satu regu tercapai`, {"retry-after": "900"});
   if (mime === "image/jpeg") b = buangExif(b);   // WebP: metadata tidak dibuang (keterbatasan; klien mengecilkan lewat canvas yang membuangnya)
+  const hashSimpan = await shaBytes(b);   // hash dihitung SEBELUM put R2 dan UPDATE
   await env.MEDIA.put(`lapangan/${id}`, b, {httpMetadata: {contentType: mime}});
-  try { await env.DB.prepare("UPDATE lapangan SET foto = 1 WHERE id = ?").bind(id).run(); }
-  catch (e) { await env.MEDIA.delete(`lapangan/${id}`); throw e; }   // baris gagal = berkas jangan yatim
+  try {
+    await env.DB.prepare("UPDATE lapangan SET foto = 1 WHERE id = ?").bind(id).run();
+    /* hash byte yang disimpan (0044); migrasi belum diterapkan = tanpa hash */
+    try { await env.DB.prepare("UPDATE lapangan SET foto_sha256 = ? WHERE id = ?").bind(hashSimpan, id).run(); } catch (e) { if (!/no such column: foto_sha256/i.test(String(e?.message || e))) throw e; }
+  } catch (e) { await env.DB.prepare("UPDATE lapangan SET foto = 0 WHERE id = ?").bind(id).run().catch(() => {}); await env.MEDIA.delete(`lapangan/${id}`); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, foto: true});
 }
 async function fotoAdmin(env, req, id) {
@@ -659,7 +663,7 @@ async function dummy(env, req, kini) {
 }
 
 /* ================================================================ halaman regu + rute */
-const CSP_LAPANGAN = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_LAPANGAN = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 async function halamanLapangan(env, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/lapangan.html", url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman lapangan tidak ada"); }
@@ -673,6 +677,7 @@ export const RUTE_POSKO = {
   "GET /api/neraca": (env, req, url, kini, ctx) => neracaPublik(env, req, url, kini, ctx),
   "GET /api/paparan/templat": (env, req, url, kini, ctx) => cacheTepi(new Request(new URL("/api/paparan/templat", url), {method: "GET"}), ctx, 60, async () => json((await bacaTemplat(env)).templat)),
   "GET /api/lapangan/saya": async (env, req) => { const g = await reguDari(env, req); return !(g instanceof Response) ? json({regu: {nama: g.nama, unsur: g.unsur, prov: g.prov, kab: g.kab}}) : g; },
+  "GET /api/lapangan/tugas": (env, req, url, kini) => tugasRegu(env, req, kini),
   "POST /api/lapangan": (env, req, url, kini) => lapor(env, req, url, kini),
   "POST /api/lapangan/foto/:id": (env, req, url, kini, ctx, id) => fotoLapor(env, req, id, kini),
   "GET /api/posko/regu": (env, req) => daftarRegu(env, req),

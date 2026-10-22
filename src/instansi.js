@@ -6,8 +6,8 @@
    - Tagih = admin menekan tautan wa.me berisi pesan siap kirim. TIDAK ada kiriman otomatis. "Terlambat" dihitung saat dibaca, bukan kolom.
    - Tiap rute instansi memeriksa sesi, status aktif, DAN cakupan wilayah tugas di Worker. Kontak/dokumen tidak pernah lewat rute publik.
    ponytail: batas laju baca-lalu-tulis (laju_bnpb), serentak bisa lolos satu-dua di atas batas. Perbandingan sandi memakai === pada hash (sandi 93 bit acak). */
-import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, ipHash} from "./worker.js";
-import {tx, num, wib, tglSah, modOK, superOK, KENDALA, RE_PID, RE_EMAIL, cekKontak} from "./posko.js";
+import {json, gagal, acak, sha, shaBytes, bacaBody, bacaBytes, normalWA, ipHash} from "./worker.js";
+import {tx, num, wib, tglSah, modOK, superOK, KENDALA, RE_PID, RE_EMAIL, cekKontak, reguDari} from "./posko.js";
 import {bersihMedia} from "./media_bersih.js";
 import {laju} from "./bnpb.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
@@ -372,6 +372,24 @@ async function rincianTugas(env, req, id, kini) {
     gudang_terdekat: await gudangTerdekat(env, t, {provs: [t.prov], akunId: a.id})});   // null bila migrasi 0031 belum diterapkan
 }
 
+/* GET /api/lapangan/tugas (halaman regu /lapangan, kode regu di header x-kode-regu): sampai 20 tugas BUKA di kabupaten regu itu (wilayah saja, tanpa join penugasan) (level tertinggi dulu), dengan rekomendasi/akses/kartu
+   berbentuk sama seperti GET /api/instansi/tugas/:id. Tanpa nama orang, nomor, atau isian; regu uji (dummy) hanya melihat tugas dummy. private, no-store: jawaban per regu tak boleh disimpan perantara. */
+/* halaman regu tanpa akun: kunci kontak/identitas (WA, telepon, surel, PIC, NIP, nama orang) dibuang rekursif dari JSON bebas (rekomendasi/akses/kartu) sebagai sabuk pengaman */
+const KUNCI_KONTAK = /(^|_)(wa|whatsapp|telepon|telp|tel|hp|phone|email|surel|pic|nip|kontak|nama_pic|petugas)(_|$)/i;
+export function bersihKontak(v) {
+  if (Array.isArray(v)) return v.map(bersihKontak);
+  if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).filter(([k]) => !KUNCI_KONTAK.test(k)).map(([k, x]) => [k, bersihKontak(x)]));
+  return v;
+}
+export async function tugasRegu(env, req, kini) {
+  const g = await reguDari(env, req, kini); if (g instanceof Response) return g;
+  let rows;
+  try { rows = (await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE t.status = 'buka' AND t.prov = ? AND lower(t.kab) = lower(?) AND t.dummy = ? ORDER BY t.level DESC, t.dibuat DESC LIMIT 20`).bind(g.prov, g.kab, g.dummy ? 1 : 0).all()).results; }
+  catch (e) { if (tanpaTabel(e)) return gagal(503, "tugas api belum diaktifkan (migrasi 0029 belum diterapkan)"); throw e; }
+  const KR = await kartuPer(env, rows);
+  return json({kini, tugas: rows.map(t => ({id: t.id, lat: t.lat, lon: t.lon, kab: t.kab, kec: t.kec, level: t.level, rekomendasi: bersihKontak(jsonAman(t.rekomendasi)), akses: bersihKontak(jsonAman(t.akses)), kartu: bersihKontak(KR.get(t.id) ?? null)}))}, 200, {"cache-control": "private, no-store"});
+}
+
 /* ================================================================ isian: GPS, konfirmasi, kabar */
 const kunciIdem = s => typeof s === "string" && /^[A-Za-z0-9_-]{8,40}$/.test(s);
 const daftarKode = (v, boleh, maks) => v == null ? [] : Array.isArray(v) && v.length <= maks && v.every(x => typeof x === "string" && Object.hasOwn(boleh, x)) && new Set(v).size === v.length ? v : null;
@@ -637,14 +655,16 @@ async function unggahMedia(env, req, kini) {
     await env.DB.batch(kirimAI.flatMap(() => [catatLaju(env, a.id, "instansi.ai", kini), catatLaju(env, "semua", "instansi.ai.global", kini)]));
     orang = await hitungOrang(env, kirimAI).catch(() => null); if (orang) sumber = jenis === "foto" ? "thumbnail" : "bingkai_klien";
   }
-  const id = acak(8);
+  const id = acak(8), hashSimpan = await shaBytes(simpan);   // hash dihitung SEBELUM put R2 dan INSERT
   await env.MEDIA.put(`instansi/media/${id}`, simpan, {httpMetadata: {contentType: mime}});
   await env.MEDIA.put(`instansi/media/${id}_t`, simpanT, {httpMetadata: {contentType: mimeT}});
   try {
     await env.DB.prepare(`INSERT INTO instansi_media (id, akun_id, tugas_id, jenis, mime, ukuran, durasi, waktu_ambil, sumber_waktu, exif_jarak, lat, lon, akurasi, waktu_gps, jarak_km, gps_curiga, orang_terdeteksi, orang_sumber, orang_bingkai, dibuat, exif_waktu, exif_lat, exif_lon, kamera, exif_api_km)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(id, a.id, tid, jenis, mime, simpan.length, durasi, w.waktu, w.sumber, exifJarak, g.lat, g.lon, g.akurasi, g.waktu_gps, g.jarak_km, g.gps_curiga,
       orang ? orang.maks : null, sumber, orang ? JSON.stringify(orang.per) : null, kini, eWaktu, eOk ? Math.round(eLat * 1e5) / 1e5 : null, eOk ? Math.round(eLon * 1e5) / 1e5 : null, kamera, eApi).run();
-  } catch (e) { await env.MEDIA.delete([`instansi/media/${id}`, `instansi/media/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
+    /* hash byte yang disimpan (0044); migrasi belum diterapkan = tanpa hash, unggahan tetap sah */
+    try { await env.DB.prepare("UPDATE instansi_media SET sha256 = ? WHERE id = ?").bind(hashSimpan, id).run(); } catch (e) { if (!/no such column: sha256/i.test(String(e?.message || e))) throw e; }
+  } catch (e) { await env.DB.prepare("DELETE FROM instansi_media WHERE id = ?").bind(id).run().catch(() => {}); await env.MEDIA.delete([`instansi/media/${id}`, `instansi/media/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, jenis, waktu_ambil: w.waktu, sumber_waktu: w.sumber, orang_terdeteksi: orang ? orang.maks : null, orang_sumber: sumber, exif_jarak: exifJarak, exif_api_km: eApi, terverifikasi: {kamera: !!kamera, waktu: eWaktu != null, gps: eOk}, jarak_km: g.jarak_km, jauh: g.jarak_km > JAUH_KM}, 201);
 }
 /* media dan thumbnail dari R2 untuk akun dalam lingkup tugas atau admin; selalu private, no-store; Range didukung supaya video bisa digeser */
@@ -713,6 +733,7 @@ export function pasAkses(a) {
   const x = {...a}; let s = JSON.stringify(x);
   if (s.length <= MAKS_AKSES) return s;
   if (Array.isArray(x.bawa)) while (x.bawa.length && (s = JSON.stringify(x)).length > MAKS_AKSES) x.bawa = x.bawa.slice(0, -1);
+  if (Array.isArray(x.dari)) while (x.dari.length && (s = JSON.stringify(x)).length > MAKS_AKSES) x.dari = x.dari.slice(0, -1);   // air (DEM, beda tinggi sumber) lebih penting daripada posko terjauh
   s = JSON.stringify(x); return s.length <= MAKS_AKSES ? s : null;
 }
 /* "Sudah padam belum?": tugas yang dilaporkan padam diperiksa terhadap tiga sumber, semuanya dengan syarat kejadian SESUDAH laporan padam dan dalam 2 km:
@@ -892,7 +913,7 @@ async function buatTugasIsi(env, kini, versi) {
   const perInsiden = new Map(), kartuAda = {ya: true};
   try { const idx = new Map(buka.map(t => [t.id, t])); for (const r of (await env.DB.prepare("SELECT tugas_id, insiden FROM tugas_kartu WHERE insiden IS NOT NULL AND tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(buka.map(t => t.id))).all()).results) if (idx.has(r.tugas_id)) perInsiden.set(r.insiden, idx.get(r.tugas_id)); }
   catch (e) { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; kartuAda.ya = false; }
-  const st = [], kartu = [], awal = [], level3 = []; let baru = 0, digabung = 0, pantau = 0;
+  const st = [], kartu = [], awal = [], level3 = [], luasAwal = []; let baru = 0, digabung = 0, pantau = 0;
   for (const k of ks) {
     /* jam deteksi pertama insiden dari pipeline: insiden_awal_ms (ms epoch), cadangan insiden_awal / awal (ISO); hanya mengisi terdeteksi_awal yang masih kosong (src/alarm_himawari.js), tak pernah menimpa. Tanpa itu null dan tugas memakai `dibuat` (src/sla.js) */
     const aw = Number.isFinite(k.insiden_awal_ms) ? k.insiden_awal_ms : Date.parse(k.insiden_awal || k.awal || k.terdeteksi_awal), awalMs = Number.isFinite(aw) && aw <= kini ? aw : null;
@@ -923,12 +944,15 @@ async function buatTugasIsi(env, kini, versi) {
       st.push(env.DB.prepare(`INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, rekomendasi, akses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .bind(id, k.prov, k.kab, typeof k.kec === "string" && k.kec && k.kec.length <= 60 ? k.kec : null, lat, lon, k.level, n24, luas, kini, terakhir, rek, akses));
       simpanKartu(id);
+      if (luas != null) luasAwal.push(env.DB.prepare("INSERT OR IGNORE INTO tugas_luas_awal (tugas_id, luas_ha) VALUES (?, ?)").bind(id, luas));
       awal.push({id, lat, lon, awal: awalMs, baru: true});
       if (k.level === 3) level3.push({id, prov: k.prov, kab: k.kab, kec: typeof k.kec === "string" ? k.kec : null});
     }
   }
   for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
   for (let i = 0; i < kartu.length; i += 50) await env.DB.batch(kartu.slice(i, i + 50));   // sesudah tugasnya ada (REFERENCES)
+  /* luas satelit saat tugas dibuat (0046; tabel belum ada = dilewati, tugas tetap jadi) */
+  try { for (let i = 0; i < luasAwal.length; i += 50) await env.DB.batch(luasAwal.slice(i, i + 50)); } catch (e) { if (!/no such table: (main\.)?tugas_luas_awal/i.test(String(e?.message || e))) console.error("luas awal", e?.message); }
   /* sesudah tugasnya ada: jam deteksi pertama + kunci alarm Himawari (0043), lalu kabar seketika level 3 (push + email, idempoten). Galat di sini tidak menggagalkan putaran. */
   try { await catatAwalTugas(env, awal, kini); } catch (e) { console.error("awal tugas", e?.message); }
   if (level3.length) try { const h = await kabarLevel3(env, level3, kini); if (h.akun) console.log("kabar level 3", JSON.stringify(h)); } catch (e) { console.error("kabar level 3", e?.message); }

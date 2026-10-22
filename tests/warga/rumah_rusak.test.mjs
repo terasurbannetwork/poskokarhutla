@@ -194,6 +194,6 @@ uji("kabel worker.js: RUTE_RUMAH_RUSAK digabung ke RUTE; /rumah-rusak TIDAK beba
   assert.match(h, /id="bukaRR"/, "tombol Lapor rumah rusak hilang dari lapangan.html");
   assert.match(j, /rumah_rusak\.js/, "lapangan.js tidak memuat formulir rumah rusak");
   const csp = readFileSync(path.join(AKAR, "src/posko.js"), "utf8").match(/CSP_LAPANGAN = "([^"]*)"/)[1];
-  assert.match(csp, /script-src[^;]*cdnjs\.cloudflare\.com/, "CSP lapangan harus mengizinkan MapLibre dari cdnjs");
-  assert.match(csp, /worker-src blob:/, "MapLibre butuh worker blob:");
+  assert.ok(!/cdnjs/.test(csp), "CSP lapangan tanpa CDN: MapLibre lokal (/vendor/maplibre)");
+  assert.match(csp, /worker-src 'self' blob:/, "MapLibre butuh worker blob:");
 });

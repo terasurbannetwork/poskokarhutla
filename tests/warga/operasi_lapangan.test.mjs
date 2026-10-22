@@ -8,7 +8,7 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, susutBar100m, nilaiDropTertunda, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
+import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, bedaTinggiM, susutBar100m, nilaiDropTertunda, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
 import {BARANG} from "../../src/meja_spek.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
@@ -227,6 +227,21 @@ uji("ops: selang dan pompa estafet pada angka tangan (jarak x 1,2, susut per 100
   assert.equal((await api("GET", `/api/ops/selang?tugas_id=${T1}`, undefined, A.hg)).s, 400, "sumber_id wajib"); assert.equal((await api("GET", `/api/ops/selang?tugas_id=${T1}&sumber_id=${id16()}`, undefined, A.hg)).s, 404);
   assert.equal((await api("GET", `/api/ops/selang?tugas_id=${T1}&sumber_id=${S2}`, undefined, B.hg)).s, 404, "wilayah lain");
   await DB.prepare("UPDATE ops_sumber_air SET kondisi = 'kering' WHERE id = ?").bind(S2).run(); assert.match((await q()).j.peringatan, /kering/); await DB.prepare("UPDATE ops_sumber_air SET kondisi = 'ada_air', lat = -2.55, lon = 112.03 WHERE id = ?").bind(S2).run();
+});
+
+uji("ops: W5 beda tinggi dari DEM (akses.json air.sumber): dipakai bila tak ada kiriman, kiriman menang, null tanpa DEM = 0 dan berlabel, label sumber di respons", async () => {
+  const air = {elev_m: 120, sumber: [{jenis: "sungai", lat: -2.541, lon: 112.0, km: 1.0, elev_m: 100, beda_tinggi_m: 20}, {jenis: "kanal", lat: -2.6, lon: 112.0, km: 6.0, elev_m: null, beda_tinggi_m: null}]};
+  assert.deepEqual(bedaTinggiM({air}, {lat: -2.5411, lon: 112.0001}), {m: 20, label: "DEM (sumber DEM sungai, 1 km garis lurus dari api)", elev_api_m: 120}, "sumber terdaftar dicocokkan ke DEM terdekat <= 300 m");
+  assert.equal(bedaTinggiM({air}, {lat: -2.6, lon: 112.0}), null, "DEM gagal (null) = null, BUKAN nol"); assert.equal(bedaTinggiM({air}, {lat: -2.3, lon: 112.0}), null, "tak ada kecocokan"); assert.equal(bedaTinggiM(null, {lat: 0, lon: 0}), null); assert.equal(bedaTinggiM({}, {lat: 0, lon: 0}), null);
+  assert.equal(bedaTinggiM(JSON.stringify({air}), {lat: -2.541, lon: 112.0}).m, 20, "akses boleh berupa string JSON dari D1");
+  await DB.prepare("UPDATE ops_sumber_air SET lat = -2.541, lon = 112.0 WHERE id = ?").bind(S2).run(); await DB.prepare("UPDATE tugas_api SET akses = ? WHERE id = ?").bind(JSON.stringify({kaki_km: 1, air}), T1).run();
+  const q = (x = "") => api("GET", `/api/ops/selang?tugas_id=${T1}&sumber_id=${S2}${x}`, undefined, A.hg);
+  const d = await q(); assert.equal(d.s, 200, d.t); assert.equal(d.j.beda_tinggi.m, 20); assert.equal(d.j.beda_tinggi.sumber, "dem"); assert.equal(d.j.beda_tinggi.elev_api_m, 120); assert.match(d.j.beda_tinggi.keterangan, /DEM/);
+  dekat(d.j.tekanan_naik_bar, 1.962, 0.001); assert.equal(d.j.jarak_selang_m, 1201, "km garis lurus x 1,2 dikerjakan hitungEstafet, DEM tidak mengubah jarak");
+  const k = await q("&beda_tinggi_m=0"); assert.equal(k.j.beda_tinggi.m, 0); assert.equal(k.j.beda_tinggi.sumber, "kiriman", "kiriman menang atas DEM");
+  await DB.prepare("UPDATE tugas_api SET akses = ? WHERE id = ?").bind(JSON.stringify({air: {elev_m: null, sumber: [{jenis: "sungai", lat: -2.541, lon: 112.0, km: 1, elev_m: null, beda_tinggi_m: null}]}}), T1).run();
+  const n0 = await q(); assert.equal(n0.j.beda_tinggi.m, 0); assert.equal(n0.j.beda_tinggi.sumber, "tidak_ada"); assert.match(n0.j.beda_tinggi.keterangan, /tidak tersedia/);
+  await DB.prepare("UPDATE tugas_api SET akses = NULL WHERE id = ?").bind(T1).run();
 });
 
 uji("ops: rencana aksi periode: nilai awal otomatis, transisi draf-terbit-selesai, serah terima, cetak", async () => {
@@ -513,7 +528,8 @@ uji("L11: bukti lapangan hanya untuk moderator/staf berwenang, bbox liar 400, is
       .bind(m, A.id, tugasId, isianId, x.exif_waktu, kini, x.gps_curiga, x.orang, x.exif_waktu, x.exif_lat, x.exif_lon, kini).run();
     await R2.put(`instansi/media/${m}_t`, new Uint8Array([1, 2, 3]), {httpMetadata: {contentType: "image/webp"}}); return m;
   };
-  const m1 = await media(TB, isian), m2 = await media(TB, isian, {gps_curiga: "lokasi lompat 800 km", orang: null}); await media(TB, null);   // belum dirujuk isian: tidak ikut
+  const m1 = await media(TB, isian); await DB.prepare("UPDATE instansi_media SET sha256 = ? WHERE id = ?").bind("ab".repeat(32), m1).run();
+  const m2 = await media(TB, isian, {gps_curiga: "lokasi lompat 800 km", orang: null}); await media(TB, null);   // belum dirujuk isian: tidak ikut
   const u = "/api/ops/bukti?bbox=113.4,-3.6,113.6,-3.4";
   assert.equal((await api("GET", u, undefined, {})).s, 403, "tanpa sesi"); assert.equal((await api("GET", u, undefined, A.hg)).s, 403, "akun instansi biasa"); assert.equal((await api("GET", u, undefined, GERBANG)).s, 403, "gerbang situs bukan admin");
   const ver = await bikinStaf("Verif Uji", ["verifikator"]); assert.equal((await api("GET", u, undefined, ver.h)).s, 403, "peran tanpa hak bukti");
@@ -526,7 +542,9 @@ uji("L11: bukti lapangan hanya untuk moderator/staf berwenang, bbox liar 400, is
   assert.equal(t.media.length, 2, "media tanpa isian tidak ikut");
   const a = t.media.find(x => x.id === m1), b = t.media.find(x => x.id === m2);
   assert.equal(a.exif_waktu, kini - 2 * HARI); assert.equal(a.exif_lat, -3.5001); assert.equal(a.exif_lon, 113.5002); assert.equal(a.orang_terdeteksi, 2); assert.equal(a.gps_curiga, false);
-  assert.equal(b.gps_curiga, true); assert.equal(a.thumb, `/api/instansi/admin/thumb/${m1}`);
+  assert.equal(b.gps_curiga, true); assert.equal(a.sha256, "ab".repeat(32), "W4: hash berkas"); assert.strictEqual(b.sha256, null, "berkas tanpa hash (sebelum 0044) = null, tidak ditebak");
+  assert.equal(a.dibuat, kini, "W4: waktu unggah (ms)"); assert.equal(a.instansi, "Pemerintah Kab Satu", "W4: nama instansi dari instansi_akun.wilayah"); assert.ok(!/Budi Uji|budi@uji|628123456789/.test(r.t), "W4: tanpa nama orang, surel, nomor"); assert.ok(!("diverifikasi_oleh" in a), "tak ada kolom verifikasi media: tidak dikarang");
+  assert.equal(a.thumb, `/api/instansi/admin/thumb/${m1}`);
   assert.equal((await api("GET", a.thumb, undefined, ADMIN)).s, 200, "tautan media admin yang sudah ada melayani");
   const an = await bikinStaf("Analis Uji", ["analis_konsesi"], ["62"]), lain = await bikinStaf("Analis Lain", ["analis_konsesi"], ["11"]);
   const rs = await api("GET", u, undefined, an.h); assert.equal(rs.s, 200, rs.t);

@@ -16,7 +16,9 @@
    Migrasi 0043 belum ada = kolom awal dilewati; 0042 belum ada = /api/sla menjawab 503. */
 import {json, gagal} from "./worker.js";
 import {dummySla} from "./sla_dummy.js";
-import {modAtauStaf, PERAN} from "./staf.js";
+import {stafOK, stafSesi, dariStaf} from "./staf.js";
+import {SEMUA_PERAN} from "./admin_halaman.js";
+import {superOK} from "./posko.js";
 import {tenggat, PROV} from "./instansi.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
@@ -45,15 +47,15 @@ export async function catatRiwayatStatus(env, hasil, kini = Date.now()) {
 
 /* ---------------- tahap waktu per tugas ---------------- */
 /* kolom awal (0043) dan tabel penugasan (0035) boleh belum ada: coba penuh, lalu tanggalkan yang hilang */
-export async function muatTugas(env, kini, hari, {prov, kab, dummy = false} = {}) {
+export async function muatTugas(env, kini, hari, {prov, kab, provs, dummy = false} = {}) {
   let awal = true, tugasan = true;
   for (let i = 0; i < 3; i++) {
     const sql = `SELECT t.id, t.prov, t.kab, t.status, t.luas_ha, t.dibuat, t.konfirmasi_pada, t.isian_terakhir, t.padam_pada, t.verif_pada, t.padam_verif,
       ${awal ? "t.terdeteksi_awal, t.himawari_awal, t.sumber_awal" : "NULL terdeteksi_awal, NULL himawari_awal, NULL sumber_awal"},
       ${tugasan ? "(SELECT min(tiba_pada) FROM penugasan WHERE tugas_id = t.id AND tiba_pada IS NOT NULL) tiba" : "NULL tiba"},
       (SELECT min(dibuat) FROM tugas_isian WHERE tugas_id = t.id AND langkah = 'tindakan') kabar
-      FROM tugas_api t WHERE t.dibuat >= ?1 ${dummy ? "" : "AND t.dummy = 0"} ${prov ? "AND t.prov = ?2" : "AND ?2 IS NULL"} ${kab ? "AND lower(t.kab) = lower(?3)" : "AND ?3 IS NULL"} ORDER BY t.dibuat DESC LIMIT 5000`;
-    try { return {baris: (await env.DB.prepare(sql).bind(kini - hari * HARI, prov || null, kab || null).all()).results, awal, tugasan}; }
+      FROM tugas_api t WHERE t.dibuat >= ?1 ${dummy ? "" : "AND t.dummy = 0"} ${prov ? "AND t.prov = ?2" : "AND ?2 IS NULL"} ${kab ? "AND lower(t.kab) = lower(?3)" : "AND ?3 IS NULL"} AND (?4 IS NULL OR t.prov IN (SELECT value FROM json_each(?4))) ORDER BY t.dibuat DESC LIMIT 5000`;
+    try { return {baris: (await env.DB.prepare(sql).bind(kini - hari * HARI, prov || null, kab || null, provs?.length ? JSON.stringify(provs) : null).all()).results, awal, tugasan}; }
     catch (e) {
       const m = String(e?.message || e);
       if (awal && /no such column: t?\.?(terdeteksi_awal|himawari_awal|sumber_awal)/i.test(m)) awal = false;
@@ -176,9 +178,11 @@ export function evaluasi(ts, kini, denganRegu = true) {
 }
 
 /* ---------------- respons /api/sla ---------------- */
-export async function hitungSla(env, kini, {hari = 30, prov, kab} = {}) {
+/* dummy = false: tugas, alarm, dan riwayat status dummy TIDAK ikut (default); true hanya untuk Super Admin (?dummy=1) dan respons membawa dummy: true.
+   provs = batas wilayah staf berwilayah (daftar kode provinsi); alarm Himawari tak punya provinsi, jadi daftarnya dikosongkan untuk mereka. */
+export async function hitungSla(env, kini, {hari = 30, prov, kab, provs, dummy = false} = {}) {
   const catatan = [], dari = kini - hari * HARI;
-  const R = (await env.DB.prepare("SELECT slot, sumber, umur_menit, batas_menit, segar FROM status_riwayat WHERE slot >= ? ORDER BY slot").bind(Math.floor(dari / JAM)).all()).results;   // tanpa 0042: lempar, rute menjawab 503
+  const R = (await env.DB.prepare(`SELECT slot, sumber, umur_menit, batas_menit, segar FROM status_riwayat WHERE slot >= ? ${dummy ? "" : "AND sumber NOT LIKE 'dummy\\_%' ESCAPE '\\'"} ORDER BY slot`).bind(Math.floor(dari / JAM)).all()).results;   // tanpa 0042: lempar, rute menjawab 503
   const per = new Map(), perHari = new Map();
   for (const r of R) { (per.get(r.sumber) || per.set(r.sumber, []).get(r.sumber)).push(r); const h = WIB(r.slot * JAM), g = perHari.get(h) || perHari.set(h, {n: 0, segar: 0}).get(h); g.n++; g.segar += r.segar; }
   const sumber = [...per].map(([id, rs]) => {
@@ -189,7 +193,7 @@ export async function hitungSla(env, kini, {hari = 30, prov, kab} = {}) {
       umur_p50: bulat(persen(u, 50)), umur_p95: bulat(persen(u, 95)), gangguan: gangguan.map(g => ({mulai: g.mulai, selesai: g.akhir, menit: Math.round((g.akhir - g.mulai) / MENIT)}))};
   });
   if (!sumber.length) catatan.push("Belum ada riwayat umur data: cron bersih-bersih menulisnya tiap jam.");
-  const {baris, awal, tugasan} = await muatTugas(env, kini, hari, {prov, kab, dummy: true});   // dummy ikut: hanya Super Admin yang membuatnya (POST /api/sla/dummy), bernama [DUMMY]
+  const {baris, awal, tugasan} = await muatTugas(env, kini, hari, {prov, kab, provs, dummy});
   await perkaya(env, baris);
   if (!awal) catatan.push("Kolom jam deteksi pertama belum ada (migrasi 0043 belum diterapkan): tahap deteksi ke tugas tidak dihitung.");
   else if (baris.length && baris.every(t => waktuTahap(t).perkiraan)) catatan.push("Tidak ada tugas dengan jam deteksi pertama asli; tahap deteksi ke tugas menunggu pipeline mengisi awal.");
@@ -205,11 +209,12 @@ export async function hitungSla(env, kini, {hari = 30, prov, kab} = {}) {
   /* Himawari: alarm dan selisih terhadap VIIRS (hanya tugas yang terkunci oleh alarm) */
   const hw = {alarm: 0, terkunci: 0, hilang: 0, selisih_viirs_p50_menit: null, daftar: []};
   try {
-    for (const r of (await env.DB.prepare("SELECT status, count(*) n FROM alarm_himawari WHERE pertama >= ? GROUP BY status").bind(dari).all()).results) { hw.alarm += r.n; if (r.status !== "siaga") hw[r.status] = r.n; }
-    hw.daftar = (await env.DB.prepare("SELECT id, round(lat, 2) lat, round(lon, 2) lon, radius_m, pertama, terakhir, n_pindai, status, tugas_id, terkunci_pada FROM alarm_himawari WHERE status != 'hilang' AND terakhir >= ? ORDER BY terakhir DESC LIMIT 50").bind(Math.max(dari, kini - 7 * HARI)).all()).results;
+    for (const r of (await env.DB.prepare(`SELECT status, count(*) n FROM alarm_himawari WHERE pertama >= ? ${dummy ? "" : "AND id NOT LIKE 'dummy%'"} GROUP BY status`).bind(dari).all()).results) { hw.alarm += r.n; if (r.status !== "siaga") hw[r.status] = r.n; }
+    if (!provs?.length) hw.daftar = (await env.DB.prepare(`SELECT id, round(lat, 2) lat, round(lon, 2) lon, radius_m, pertama, terakhir, n_pindai, status, tugas_id, terkunci_pada FROM alarm_himawari WHERE status != 'hilang' AND terakhir >= ? ${dummy ? "" : "AND id NOT LIKE 'dummy%'"} ORDER BY terakhir DESC LIMIT 50`).bind(Math.max(dari, kini - 7 * HARI)).all()).results;
+    else catatan.push("Daftar alarm Himawari tidak ditampilkan untuk staf berwilayah (alarm belum punya provinsi).");
   } catch (e) { if (!/no such table: (main\.)?alarm_himawari/i.test(String(e?.message || e))) throw e; catatan.push("Alarm Himawari belum aktif (migrasi 0043 belum diterapkan)."); }
   hw.selisih_viirs_p50_menit = bulat(persen(baris.filter(t => t.himawari_awal != null).map(t => ((t.terdeteksi_awal ?? t.dibuat) - t.himawari_awal) / MENIT).filter(x => x >= 0), 50));
-  return {kini, hari, ...(prov ? {prov_nama: PROV[prov]?.[1] ?? null} : {}), ...(kab ? {kab_nama: baris.find(t => t.kab.toLowerCase() === kab.toLowerCase())?.kab ?? kab} : {}),
+  return {kini, hari, ...(dummy ? {dummy: true} : {}), ...(prov ? {prov_nama: PROV[prov]?.[1] ?? null} : {}), ...(kab ? {kab_nama: baris.find(t => t.kab.toLowerCase() === kab.toLowerCase())?.kab ?? kab} : {}),
     sumber, tahap: ringkasTahap(baris), wilayah: wilayahDari(baris, kini, !!prov), tren, himawari: hw, catatan, ...evaluasi(baris, kini)};
 }
 
@@ -226,11 +231,20 @@ export async function waktuTanggapApi(env, kini, ikut = false, hari = 30) {
 
 /* ---------------- rute ---------------- */
 async function rute(env, req, url, kini) {
-  if (!await modAtauStaf(env, req, Object.keys(PERAN))) return gagal(403, "analitik SLA hanya untuk moderator ke atas atau staf BNPB");
-  const q = url.searchParams, hari = Math.min(90, Math.max(1, Math.floor(Number(q.get("hari") || 30)) || 30)), prov = q.get("prov") || "", kab = q.get("kab") || "";
+  /* hak SAMA dengan halaman /admin/kinerja: adminOK (token, akun gerbang, sesi admin) ATAU sesi staf berperan apa pun (SEMUA_PERAN) */
+  const oleh = await stafOK(env, req, SEMUA_PERAN);
+  if (!oleh) return gagal(403, "analitik SLA hanya untuk admin atau staf BNPB");
+  const q = url.searchParams, hari = Math.min(90, Math.max(1, Math.floor(Number(q.get("hari") || 30)) || 30)), kab = q.get("kab") || "";
+  let prov = q.get("prov") || "", provs = null;
   if (prov && !/^\d{2}$/.test(prov)) return gagal(400, "prov harus kode 2 digit");
   if (kab.length > 60) return gagal(400, "kab terlalu panjang");
-  try { return json(await hitungSla(env, kini, {hari, prov, kab})); }
+  /* staf berwilayah hanya melihat wilayahnya: prov dipaksa ke wilayah itu, provinsi lain 403 */
+  if (dariStaf(oleh)) {
+    const w = (await stafSesi(env, req, kini))?.wilayah || [];
+    if (w.length) { if (prov && !w.includes(prov)) return gagal(403, "wilayah Anda tidak mencakup provinsi itu"); if (!prov) { if (w.length === 1) prov = w[0]; else provs = w; } }
+  }
+  const dummy = q.get("dummy") === "1" && !!await superOK(env, req);   // dummy: Super Admin saja, ?dummy=1 (pola meja.js)
+  try { return json(await hitungSla(env, kini, {hari, prov, kab, provs, dummy})); }
   catch (e) { if (tanpaTabel(e)) return gagal(503, "analitik SLA belum aktif (migrasi 0042 belum diterapkan)"); throw e; }
 }
 export const RUTE_SLA = {"GET /api/sla": rute, "POST /api/sla/dummy": (env, req, url, kini) => dummySla(env, req, kini)};

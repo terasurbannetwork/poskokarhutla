@@ -25,17 +25,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Tarik OSM (jalan, fasilitas, kanal) 9 provinsi
+      - name: Tarik OSM (jalan, fasilitas, kanal, sumber air) 9 provinsi
         run: |
           python3 scripts/scrape/tarik_osm.py fasilitas
           python3 scripts/scrape/tarik_osm.py jalan
           python3 scripts/scrape/tarik_osm.py sungai
+          python3 scripts/scrape/tarik_osm.py air
 
       - name: Bangun lapisan
         run: |
           python3 scripts/scrape/fasilitas.py
           python3 scripts/scrape/kanal.py
           python3 scripts/scrape/akses.py graf
+          python3 scripts/scrape/air_dem.py bangun
           python3 scripts/data/penduduk.py
 
       - name: Konsesi (Kemenhut PPKH/PBPH, Trase HTI, GFW sawit/HPH)
@@ -54,6 +56,12 @@ jobs:
         with:
           path: data/graf_jalan.json.gz
           key: graf-${{ github.run_id }}
+
+      - name: Simpan titik sumber air untuk jalan harian
+        uses: actions/cache/save@v4
+        with:
+          path: data/air_titik.json.gz
+          key: air-${{ github.run_id }}
 
       - name: Commit
         run: |

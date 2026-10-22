@@ -15,11 +15,17 @@
   const tulis = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
   const buang = k => { try { localStorage.removeItem(k); } catch (e) {} };
 
-  let kode = null, lokasi = null, sedangKirim = false;
+  let kode = null, kh = null, lokasi = null, sedangKirim = false;   // kh = 16 hex pertama sha256(kode): pengikat draf & peta luring ke satu kode regu
+  /* draf milik kode aktif disimpan, sisanya dibuang (ponsel bersama: draf Regu A tidak boleh terkirim atas nama Regu B) */
+  const saringDraf = (a, h) => { const l = Array.isArray(a) ? a : []; const milik = h ? l.filter(d => d && d.h === h) : []; return {milik, buang: l.length - milik.length}; };
+  const hashKode = async k => { try { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(k)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16); } catch (e) { return null; } };
+  const capLama = (a, h) => (Array.isArray(a) ? a : []).map(d => d && !d.h && h ? {...d, h} : d);   // draf sebelum ada cap: milik kode yang tersimpan waktu itu
+  window.LapanganDraf = {saringDraf, capLama};
   const pesan = (t, k) => { $("pesan").textContent = t || ""; $("pesan").className = "lp-pesan " + (k || ""); };
 
   /* ---- kode regu: dari fragmen tautan (tidak ikut ke server/log), lalu localStorage; tanpa localStorage tetap jalan selama tab terbuka ---- */
   const dariHash = (location.hash.match(/^#k=([0-9a-fA-F]{26})$/) || [])[1];
+  const kodeLama = baca(K_KODE);   // kode tersimpan SEBELUM tautan baru menimpanya: pemilik draf lama tanpa cap
   if (dariHash) { kode = dariHash.toLowerCase(); tulis(K_KODE, kode); try { history.replaceState(null, "", location.pathname); } catch (e) {} }
   else { const b = baca(K_KODE); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
@@ -51,7 +57,8 @@
   });
 
   /* ---- draf (offline) ---- */
-  const drafAda = () => { try { const a = JSON.parse(baca(K_DRAF) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const drafSemua = () => { try { const a = JSON.parse(baca(K_DRAF) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const drafAda = () => saringDraf(drafSemua(), kh).milik;
   const drafSimpan = a => tulis(K_DRAF, JSON.stringify(a));
   /* indikator jaringan: navigator.onLine sering bohong (sinyal ada, internet tidak), jadi hasil fetch ikut menentukan */
   let daring = navigator.onLine;
@@ -110,7 +117,7 @@
     return {tolak: j.galat || `Ditolak (${r.status})`};
   }
   async function kirimAntrean() {
-    if (sedangKirim || !kode) return; sedangKirim = true;
+    if (sedangKirim || !kode || !kh) return; sedangKirim = true;
     try {
       let a = drafAda(), terkirim = 0, catat = "";
       while (a.length) {
@@ -125,13 +132,13 @@
     } finally { sedangKirim = false; tampilAntrean(); }
   }
   function kodeTidakBerlaku() {
-    buang(K_KODE); kode = null; $("regu").textContent = "Kode tidak berlaku";
+    buang(K_KODE); kode = null; kh = null; window.LapanganTugas?.hapusPeta?.(); $("regu").textContent = "Kode tidak berlaku";
     $("tanpaKode").hidden = false; $("tanpaKode").textContent = "Kode regu ini sudah dicabut atau salah. Minta tautan baru dari posko."; $("kirim").disabled = true;
   }
 
   $("f").addEventListener("submit", async e => {
     e.preventDefault();
-    if (!kode) return pesan("Buka dulu tautan dari posko.", "galat");
+    if (!kode || !kh) return pesan("Buka dulu tautan dari posko.", "galat");
     const status = (document.querySelector('input[name="status"]:checked') || {}).value;
     if (!lokasi) return pesan("Ambil lokasi dulu (tombol 1).", "galat");
     if (!status) return pesan("Pilih kondisi api (bagian 2).", "galat");
@@ -150,7 +157,7 @@
     const cat = [$("catatan").value.trim(), drone && `Mosaik drone: ${drone}`].filter(Boolean).join("\n");
     if (cat.length > 500) { t.disabled = false; return pesan("Catatan dan tautan drone lebih dari 500 huruf. Persingkat salah satunya.", "galat"); }
     if (cat) body.catatan = cat;
-    const foto = await kecilkan($("foto").files[0]), rec = {body, foto: foto ? await keDataUrl(foto) : null, dibuat: Date.now()}, a = drafAda();
+    const foto = await kecilkan($("foto").files[0]), rec = {h: kh, body, foto: foto ? await keDataUrl(foto) : null, dibuat: Date.now()}, a = drafAda();
     a.push(rec);
     if (!drafSimpan(a)) {   // kuota localStorage: coba tanpa foto, lalu menyerah
       const adaFoto = !!rec.foto; rec.foto = null;
@@ -163,7 +170,7 @@
   });
 
   $("kirimLagi").addEventListener("click", kirimAntrean);
-  /* ---- lapor rumah rusak: formulirnya modul rumah_rusak.js; MapLibre (cdnjs, SRI) dan modul dimuat HANYA saat tombol diketuk, jadi form lapangan tidak melambat ---- */
+  /* ---- lapor rumah rusak: formulirnya modul rumah_rusak.js; MapLibre (lokal, /vendor/maplibre) dan modul dimuat HANYA saat tombol diketuk, jadi form lapangan tidak melambat ---- */
   const PETA_JS = "/vendor/maplibre/maplibre-gl.js?v=4.7.1", PETA_CSS = "/vendor/maplibre/maplibre-gl.css?v=4.7.1";   // lokal (tanpa CDN) supaya terbuka luring; disalin ke cache oleh sw-lapangan.js
   const sisip = (tag, atribut) => new Promise((ok, gagal) => {
     const e = document.createElement(tag); Object.assign(e, atribut); e.onload = () => ok(); e.onerror = () => gagal(new Error(atribut.src || atribut.href));
@@ -188,17 +195,24 @@
   window.addEventListener("online", () => { jaringan(true); if (window.LapanganTugas && kode) window.LapanganTugas.segar(); });
   window.addEventListener("offline", () => jaringan(false));
   /* service worker: cangkang halaman + jawaban terakhir (saya, tugas) + peta luring; ditunda sampai halaman siap supaya tidak bersaing dengan muat awal */
-  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lapangan"}).catch(() => {}), 1500));
+  const sudahDikendalikan = "serviceWorker" in navigator && !!navigator.serviceWorker.controller;
+  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lapangan"}).then(() => navigator.serviceWorker.ready).then(() => navigator.serviceWorker.controller || new Promise(r => { navigator.serviceWorker.addEventListener("controllerchange", r, {once: true}); setTimeout(r, 5000); })).then(() => { if (!sudahDikendalikan && kode) { fetch("/api/lapangan/saya", {headers: hdr()}).catch(() => {}); window.LapanganTugas?.segar(); } }).catch(() => {}), 1500));   // kunjungan pertama: jawaban dimuat sekali lagi lewat service worker supaya tersimpan untuk luring
 
   /* ---- mulai: periksa kode ke server; gagal jaringan = tetap boleh mengisi (draf) dan tugas terakhir tampil dari simpanan ---- */
   (async () => {
+    if (kode) {
+      kh = await hashKode(kode);
+      const hl = kodeLama && /^[0-9a-f]{26}$/.test(kodeLama) ? await hashKode(kodeLama) : null;
+      const {milik, buang: n} = saringDraf(capLama(drafSemua(), hl), kh);
+      if (n && kh) { drafSimpan(milik); pesan(`${n} laporan antre milik kode regu sebelumnya dihapus dari ponsel ini.`, "galat"); }
+    }
     tampilAntrean();
     if (!kode) { $("regu").textContent = "Belum ada kode regu"; $("tanpaKode").hidden = false; $("kirim").disabled = true; return; }
     $("tugas").hidden = false;
-    window.LapanganTugas?.mulai({kode: () => kode, lokasi: () => lokasi, jaringan, kodeMati: kodeTidakBerlaku, muatMapLibre});
+    window.LapanganTugas?.mulai({kode: () => kode, kh: () => kh, lokasi: () => lokasi, jaringan, kodeMati: kodeTidakBerlaku, muatMapLibre});
     try {
       const r = await fetch("/api/lapangan/saya", {headers: hdr()});
-      jaringan(true);
+      jaringan(!r.headers.get("x-dari-cache"));
       if (r.status === 403) return kodeTidakBerlaku();
       const j = await r.json(); $("regu").textContent = `${j.regu.nama}, ${j.regu.unsur}, ${j.regu.kab}` + (r.headers.get("x-dari-cache") ? " (data tersimpan)" : "");
     } catch (e) { jaringan(false); $("regu").textContent = "Regu (kode tersimpan, sedang offline)"; }

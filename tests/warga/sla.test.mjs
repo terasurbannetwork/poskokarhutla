@@ -151,8 +151,16 @@ uji("sla: kabar darurat regu: push + email ke pemilik penugasan dan Posko pusat,
   assert.ok(dorong.includes(a.ep), "push ke perangkat pemilik penugasan");
   assert.match(surel[0].subject, /DARURAT regu: Terkepung api/); assert.ok(!/6281234567890|081234/.test(JSON.stringify(surel)), "tanpa nomor telepon");
   assert.equal(await n("kabar_terkirim", "kunci LIKE 'darurat:%'"), 3);
+  assert.ok(!/Regu Melati/.test(JSON.stringify(surel)), "nama regu/orang tidak ada di isi email darurat"); assert.match(surel[0].text, /Satu regu dari Pemkab Pulang Pisau di Kec, Pulang Pisau, Kalimantan Tengah melaporkan keadaan darurat \(.+\) pukul \d\d:\d\d WIB/);
+  const milik = surel.find(x => x.to.includes("kabar@pulpis.go.id")), posko = surel.find(x => x.to.includes("pos@contoh.id"));
+  assert.match(milik.text, /kotak DARURAT pada Tugas api/); assert.match(milik.text, /centurisk97\.id\/instansi$/); assert.match(milik.html, /href="https:\/\/centurisk97\.id\/instansi"/);
+  assert.match(posko.text, /Meja Pantau/); assert.match(posko.text, /\/admin\/pantau$/); assert.match(posko.html, /href="https:\/\/centurisk97\.id\/admin\/pantau"/);
+  const kunci = (await DB.prepare("SELECT DISTINCT kunci FROM kabar_terkirim WHERE kunci LIKE 'darurat:%'").all()).results.map(x => x.kunci); assert.equal(kunci.length, 1);
+  assert.match(kunci[0], /^darurat:[0-9a-f]{16}:\d+$/); const jendela = Number(kunci[0].split(":")[2]); assert.ok(Math.abs(jendela - Math.floor(Date.now() / (5 * MENIT))) <= 1, "kunci per jendela 5 menit");
   const sebelum = surel.length, r2 = await api("POST", "/api/lacak/darurat", {jenis: "terkepung_api"}, {"x-lacak": token, ...PB}); assert.equal(r2.s, 201);
-  assert.ok(await tunggu(() => surel.length >= sebelum + 3), "kejadian baru = kabar baru"); assert.equal(await n("kabar_terkirim", "kunci LIKE 'darurat:%'"), 6);
+  await new Promise(r => setTimeout(r, 400)); assert.equal(surel.length, sebelum, "panggilan ulang dalam jendela 5 menit yang sama = tidak ada kabar baru"); assert.equal(await n("kabar_terkirim", "kunci LIKE 'darurat:%'"), 3);
+  await DB.prepare("DELETE FROM kabar_terkirim").run();   // jendela 5 menit berikutnya = kunci lain: sama dengan menghapus catatan jendela ini
+  assert.equal((await api("POST", "/api/lacak/darurat", {jenis: "cedera"}, {"x-lacak": token, ...PB})).s, 201); assert.ok(await tunggu(() => surel.length >= sebelum + 3), "kabar baru sesudah catatan jendela hilang"); assert.equal(await n("kabar_terkirim", "kunci LIKE 'darurat:%'"), 3);
 });
 
 uji("sla: email mati (pengirim @resend.dev): darurat tetap tercatat, push tetap jalan, tidak ada email dan kunci email tidak habis", async () => {
@@ -229,6 +237,15 @@ uji("sla: tanpa migrasi 0043 alarm/kabar/riwayat dilewati rapi dan /api/sla 503 
   await R2.put("data/himawari.json", "{}"); const w = await S.mf.getWorker(); await w.scheduled({cron: "* * * * *", scheduledTime: mnt(17)});   // tidak melempar
 });
 
+uji("sla: halaman /admin/kinerja dan GET /api/sla: hak SAMA (adminOK atau staf berperan apa pun); anonim dan sesi palsu 303 dan 403", async () => {
+  const hal = async h => (await U.mf.dispatchFetch("http://bnpb.lokal/admin/kinerja", {redirect: "manual", headers: h})), GERBANG = {"x-admin-token": "gerbang@x:sandi"};
+  const anon = await hal({}); assert.equal(anon.status, 303); assert.match(anon.headers.get("location"), /\/admin\/masuk/);
+  const palsu = await hal({cookie: "sesi_staf=" + "a".repeat(64)}); assert.equal(palsu.status, 303, "sesi staf palsu = bukan staf"); assert.equal((await api("GET", "/api/sla", undefined, {cookie: "sesi_staf=" + "a".repeat(64)})).s, 403);
+  for (const [nama, h] of [["admin", ADMIN], ["akun gerbang AKUN_SITUS", GERBANG]]) { assert.equal((await hal(h)).status, 200, nama + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, h)).s, 200, nama + " API"); }
+  for (const peran of ["tmc", "pimpinan", "verifikator"]) { const s = await staf([peran]); assert.equal((await hal(s)).status, 200, peran + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, s)).s, 200, peran + " API"); }
+  const { SEMUA_PERAN } = await import("../../src/admin_halaman.js"), { PERAN } = await import("../../src/staf.js"); assert.deepEqual(SEMUA_PERAN, Object.keys(PERAN), "daftar peran halaman = daftar peran staf");
+});
+
 uji("sla: GET /api/pipa/lapangan: 503 tanpa PIPA_TOKEN, 401 salah/tanpa, 200 teranonim (koordinat 0,01, tanpa nama/akun/media), dummy dan sejak disaring", async () => {
   const S = await siapkan("uji-sla-pipa-503", {luar, asetKu: aset}); assert.equal((await S.api("GET", "/api/pipa/lapangan", undefined, {authorization: "Bearer apa-saja"})).s, 503);
   assert.equal((await api("GET", "/api/pipa/lapangan")).s, 401); assert.equal((await api("GET", "/api/pipa/lapangan", undefined, {authorization: "Bearer salah"})).s, 401);
@@ -280,7 +297,9 @@ uji("sla: dummy: hanya Super Admin; isi -> /api/sla berisi semua blok -> isi ula
   const nyata = await tugas({dibuat: Date.now() - HARI}, D);
   const i = await D.api("POST", "/api/sla/dummy", {aksi: "isi"}, SUPER); assert.equal(i.s, 201, i.t); assert.equal(i.j.tugas, 12);
   assert.equal((await D.api("POST", "/api/sla/dummy", {aksi: "isi"}, SUPER)).s, 409, "gerbang: baris dummy hidup sudah ada");
-  const j = (await D.api("GET", "/api/sla", undefined, ADMIN)).j, L = j.lapangan, s = JSON.stringify(j);
+  const bersih = (await D.api("GET", "/api/sla", undefined, ADMIN)).j; assert.equal(bersih.sumber.length, 0, "default: riwayat dummy tidak ikut"); assert.equal(bersih.himawari.alarm, 0); assert.equal(bersih.lapangan.n.konfirmasi, 0); assert.ok(!("dummy" in bersih));
+  assert.equal(bersih.proses.find(p => p.tahap === "tugas").n, 1, "hanya tugas nyata"); assert.ok(!("dummy" in (await D.api("GET", "/api/sla?dummy=1", undefined, mod2)).j), "moderator biasa: ?dummy=1 diabaikan");
+  const j = (await D.api("GET", "/api/sla?dummy=1", undefined, ADMIN)).j, L = j.lapangan, s = JSON.stringify(j); assert.strictEqual(j.dummy, true, "respons menandai dummy: true");
   assert.equal(j.sumber.length, 3); for (const x of j.sumber) { assert.ok(x.id.startsWith("dummy_") && x.segar_pct > 0 && x.segar_pct < 100 && x.umur_p50 > 0 && x.gangguan.length >= 2, x.id); for (const g of x.gangguan) assert.ok(g.mulai > 1e12 && g.selesai > g.mulai && g.menit >= 60); }
   assert.ok(j.tahap.every(t => t.n > 0 && t.p50_menit != null), "tiap tahap berangka"); assert.ok(j.wilayah.length === 1 && j.wilayah[0].tahap.deteksi_tugas.p50 > 0 && j.wilayah[0].terlambat_buka >= 1);
   assert.ok(j.tren.length >= 3 && j.tren.some(t => t.segar_pct != null) && j.tren.some(t => t.deteksi_tugas_p50 != null));
@@ -298,7 +317,7 @@ uji("sla: dummy: hanya Super Admin; isi -> /api/sla berisi semua blok -> isi ula
   const h = await D.api("POST", "/api/sla/dummy", {aksi: "hapus"}, SUPER); assert.equal(h.s, 200); assert.equal(h.j.tugas, 12);
   for (const t of ["tugas_isian", "instansi_media", "penugasan", "ops_garis", "tugas_muncul", "alarm_himawari", "status_riwayat"]) assert.equal(await D.n(t), 0, t + " kosong lagi");
   assert.equal(await D.n("instansi_akun"), 0); assert.equal(await D.n("tugas_api"), 1, "baris nyata utuh"); assert.equal(await D.n("tugas_api", "id = '" + nyata + "'"), 1);
-  const k = (await D.api("GET", "/api/sla", undefined, ADMIN)).j; assert.equal(k.sumber.length, 0); assert.equal(k.himawari.alarm, 0); assert.equal(k.lapangan.n.konfirmasi, 0); assert.strictEqual(k.lapangan.isian_lengkap_pct, null);
+  const k = (await D.api("GET", "/api/sla?dummy=1", undefined, ADMIN)).j; assert.equal(k.sumber.length, 0); assert.equal(k.himawari.alarm, 0); assert.equal(k.lapangan.n.konfirmasi, 0); assert.strictEqual(k.lapangan.isian_lengkap_pct, null);
   assert.equal((await D.api("POST", "/api/sla/dummy", {aksi: "isi"}, SUPER)).s, 201, "bisa diisi lagi sesudah dihapus"); await D.api("POST", "/api/sla/dummy", {aksi: "hapus"}, SUPER);
 });
 
