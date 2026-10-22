@@ -23,6 +23,10 @@ data/raw/berita/*
 data/raw/konsesi/*
 !data/raw/konsesi/sanksi_karhutla.json
 !data/raw/konsesi/grup_perusahaan.json
+
+!data/raw/hukum/
+data/raw/hukum/*
+!data/raw/hukum/indeks.json
 __pycache__/
 .DS_Store
 data/graf_jalan.json.gz
@@ -49,7 +53,8 @@ data/raw/sebaran/*
 !data/raw/sebaran/*.json
 !data/raw/sebaran/*.log
 !data/raw/sebaran/prospektif/
-data/raw/sebaran/prospektif/jejak_cuaca/
+data/raw/sebaran/prospektif/*
+!data/raw/sebaran/prospektif/README*
 !data/raw/sebaran/prospektif_uji_alur_14okt/
 
 # salinan otomatis Finder/iCloud ("berkas 2.js"): jangan pernah ikut commit
@@ -69,3 +74,7 @@ public/data/himawari.json
 
 # paparan bangunan terkunci: dibuat di Actions (bangunan.yml), diunggah ke R2, tidak di-commit
 data/terkunci/
+
+# jejak GPS regu ditarik CI harian dari API, bukan git
+data/jejak_regu.json
+data/jejak_regu.tmp

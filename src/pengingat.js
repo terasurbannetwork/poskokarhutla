@@ -72,7 +72,7 @@ async function bantuan(env, kini, dummy) {
 /* F2 prioritas dampak: satu baris per kecamatan dari public/banjir/data/risiko_prioritas.json (agregat publik: wilayah, kelas, bahaya, jiwa, BPBD; tanpa data pribadi).
    keadaan = kelas saja (BUKAN tanggal data: tanggal akan membuat baris baru tiap hari); naik kelas = baris baru, tanggal data di muatan ikut diperbarui selama masih 'baru'.
    JSON hilang/404/usang/rusak = null (jenis dilewati, antrean tidak dipangkas). */
-const SITUS = "https://pantau.terasurban.com", RE_TGL = /^\d{4}-\d\d-\d\d$/;
+const SITUS = "https://centurisk97.id", RE_TGL = /^\d{4}-\d\d-\d\d$/;
 const hash16 = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))).slice(0, 8)].map(x => x.toString(16).padStart(2, "0")).join("");
 async function prioritas(env, kini, dummy) {
   let d;

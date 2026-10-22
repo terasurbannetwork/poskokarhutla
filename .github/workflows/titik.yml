@@ -71,6 +71,12 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
 
+      # ID insiden stabil + front/masuk/luas terkoreksi/tren; status bergulir di public/data/insiden.json (cache data-, BUKAN dari repo:
+      # jangan masukkan ke daftar "lapisan statis"). Menyisipkan kunci ke tugas_kompleks.json, jadi HARUS sesudah taktik.py.
+      - name: Insiden api, front, luas terkoreksi (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true
@@ -92,6 +98,16 @@ jobs:
           key: prospektif-${{ github.run_id }}
           restore-keys: prospektif-
 
+      # arsip jangka panjang di R2: cache Actions bisa hilang (7 hari tak dipakai / evict), arsip tidak. Gagal = lanjut dengan cache saja.
+      - name: Pulihkan arsip prospektif dari R2 (boleh gagal)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/arsip.jsonl.gz --remote  # wrangler 4: bawaan LOKAL, --remote wajib
+          python3 scripts/sebaran/prospektif.py pulih /tmp/arsip.jsonl.gz
+
       # hanya sel kompleks Siaga/Prioritas BARU (berkas sel < 20 jam dilewati), maks 60 sel = ± 200 panggilan kuota
       - name: Cuaca per jam sel baru (boleh gagal)
         continue-on-error: true
@@ -101,9 +117,20 @@ jobs:
         run: python3 scripts/data/cuaca_jam.py
 
       - name: Uji prospektif model membesar (boleh gagal)
+        id: prosp
         continue-on-error: true
         timeout-minutes: 10
         run: python3 scripts/sebaran/prospektif.py
+
+      - name: Arsipkan catatan prospektif ke R2 (boleh gagal)
+        if: steps.prosp.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          python3 scripts/sebaran/prospektif.py arsip /tmp/arsip.jsonl.gz
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/arsip.jsonl.gz --content-type application/gzip --remote
 
       # Jejak api: simulasi sebaran +24/+48/+72 jam tiap kompleks aktif (model data + cuaca prakiraan) -> public/data/jejak_api.json
       # (dibaca src/ews.js untuk peringatan email). Cache cuaca ikut folder prospektif (disimpan di langkah berikutnya). Anggaran sendiri 420 dtk.
@@ -117,8 +144,9 @@ jobs:
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
           python3 scripts/sebaran/jejak.py
 
+      # run yang gagal sebelum langkah pulihkan (mis. FIRMS putus 20 Okt) dulu menyimpan salinan kosong dari git dan memutus rantai catatan
       - name: Simpan catatan uji prospektif
-        if: always()
+        if: always() && steps.prosp.outcome != 'skipped'
         continue-on-error: true
         uses: actions/cache/save@v4
         with:
@@ -141,8 +169,9 @@ jobs:
         continue-on-error: true
         timeout-minutes: 5
         run: |
+          # cron 40 */3 telat 30-45 menit, jadi jam jatuh di 1,4,7,..; j%6 <= 2 menangkap satu dari tiap dua putaran (sekali per 6 jam)
           j=$((10#$(date -u +%H)))
-          if [ $((j % 6)) -ne 0 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
+          if [ $((j % 6)) -gt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
           python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
           python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py
 
@@ -191,12 +220,12 @@ jobs:
       - name: Periksa kesegaran data yang tayang
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+          URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
           for i in 1 2 3; do
             kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
-            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null; echo
+            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null || true; echo
             [ "$kode" = 200 ] && exit 0
             sleep 30
           done

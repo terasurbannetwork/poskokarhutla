@@ -13,6 +13,7 @@ import {kunciSah, DATA} from "./api_v1.js";
 import {bacaDaftar, bacaRekap, KOLOM_V1} from "./rumah_rusak.js";
 import {kirim} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
+import {cariHukum, bacaDok, bacaRelasi} from "./hukum.js";
 
 const JAM = 3600e3, VERSI_SERVER = "1.0.0", PROTOKOL = ["2025-06-18", "2025-03-26", "2024-11-05"], MAKS_BODY = 65536, BATAS_TEKS = 24000, BATAS_IP = [[JAM, 600]];
 const CORS = {"access-control-allow-origin": "*", "access-control-allow-headers": "X-API-Key, Mcp-Session-Id, MCP-Protocol-Version, Content-Type, Accept", "access-control-allow-methods": "POST, OPTIONS", "access-control-max-age": "86400"};
@@ -146,6 +147,23 @@ async function laporanBnpb(env, url, a) {
   const { isi, buang } = ringkas(j, 20); return {...isi, _dipotong_elemen: buang, _catatan: "Isi besar: larik dipotong 20 elemen pertama."};
 }
 
+/* Pustaka Hukum BNPB: pembaca D1 yang sama dengan rute /api/hukum (src/hukum.js) */
+const hukumOk = d => { if (d.galat) tolak(d.galat); return d; };
+const P_IDDOK = {type: "string", pattern: "^[a-z0-9-]{3,60}$", description: "Id dokumen kanonik, mis. perban-1-2026 (hasil cari_peraturan_bnpb, kolom dok)."};
+async function cariPeraturan(env, url, a) {
+  const d = hukumOk(await cariHukum(env, {q: a.q, jenis: a.jenis, tahun: a.tahun, status: a.status, limit: a.limit}));
+  return {total: d.total, ditampilkan: d.hasil.length, hasil: d.hasil, catatan: "cuplikan memberi tanda [[kata]] pada kata yang cocok. Kutip sebagai 'label pasal + id dokumen' (mis. Pasal 5 perban-1-2026). Baca penuh dengan baca_peraturan_bnpb."};
+}
+async function bacaPeraturan(env, url, a) {
+  const d = hukumOk(await bacaDok(env, a.id, a.pasal)), meta = {id: d.id, judul: d.judul, jenis: d.jenis, nomor: d.nomor, tahun: d.tahun, status: d.status, url: d.url, pdf: d.pdf};
+  if (a.pasal) return {...meta, segmen: d.segmen.map(s => ({label: s.label, bab: s.bab, halaman: s.halaman, teks: s.teks}))};
+  let sisa = 16000; const segmen = [];
+  for (const s of d.segmen) { if (sisa <= 0) break; const t = s.teks.slice(0, sisa); sisa -= t.length; segmen.push({label: s.label, bab: s.bab, halaman: s.halaman, teks: t}); }
+  return {...meta, daftar_isi: d.segmen.map(s => s.label), segmen, dipotong: segmen.length < d.segmen.length || sisa <= 0,
+    catatan: "Teks dipotong sekitar 16000 huruf; untuk pasal tertentu isi argumen pasal (mis. 'Pasal 5'). Kutip label pasal + id dokumen."};
+}
+async function relasiPeraturan(env, url, a) { return hukumOk(await bacaRelasi(env, a.id)); }
+
 const TOOLS = [
   {nama: "titik_api_terkini", deskripsi: "Titik panas (hotspot) satelit di Indonesia dalam 24 atau 72 jam terakhir, terurut dari daya api (FRP, megawatt) terbesar. Bisa disaring per provinsi dan kabupaten/kota. Sumber NASA FIRMS (MODIS, VIIRS S-NPP, VIIRS NOAA-20), diperbarui tiap 3 jam. Titik panas adalah indikasi, belum tentu kebakaran.",
     skema: {properties: {prov: P_PROV, kab: {type: "string", maxLength: 80, description: "Nama kabupaten/kota persis (tak peka huruf besar), mis. Kapuas."}, jam: {type: "integer", enum: [24, 72], default: 24, description: "Rentang jam ke belakang dari waktu data terakhir: 24 atau 72."}, limit: P_LIMIT(200, 50)}}, jalan: titikApi},
@@ -157,6 +175,12 @@ const TOOLS = [
     skema: {properties: {prov: P_PROV}}, jalan: kualitasUdara},
   {nama: "peringatan_aktif", deskripsi: "Peringatan dini cuaca (nowcast) yang sedang aktif dan peringatan gelombang tinggi dari BMKG. Diperbarui berkala beberapa kali sehari; periksa kolom dibuat untuk umur data.", skema: {properties: {}}, jalan: peringatanAktif},
   {nama: "daftar_wilayah", deskripsi: "Kode provinsi BPS (38 provinsi). Dengan argumen prov: daftar nama kabupaten/kota provinsi itu, untuk dipakai sebagai argumen kab tool lain.", skema: {properties: {prov: P_PROV}}, jalan: daftarWilayah},
+  {nama: "cari_peraturan_bnpb", deskripsi: "Cari pasal di peraturan BNPB (Peraturan Badan, Perka, juklak/juknis, keputusan kepala) dari jdih.bnpb.go.id, pencarian teks penuh per pasal. Jawab pengguna dengan MENGUTIP label pasal dan id dokumen (mis. 'Pasal 5 perban-1-2026'); jangan mengarang pasal. UU/PP/Perpres di luar BNPB tidak ada di sini: rujuk ke pasal.id.",
+    skema: {required: ["q"], properties: {q: {type: "string", maxLength: 200, description: "Kata kunci, mis. 'dana bersama penyaluran'."}, jenis: {type: "string", maxLength: 30, description: "Singkatan atau jenis dokumen, mis. PERBAN, PERKA."}, tahun: {type: "integer", minimum: 1900, maximum: 2100, description: "Tahun penetapan."}, status: {type: "string", maxLength: 30, description: "mis. BERLAKU, DICABUT."}, limit: P_LIMIT(20, 8)}}, jalan: cariPeraturan},
+  {nama: "baca_peraturan_bnpb", deskripsi: "Baca teks peraturan BNPB berdasarkan id dokumen, seluruhnya (dipotong, disertai daftar isi) atau satu pasal lewat argumen pasal. Saat menjawab, kutip label pasal dan id dokumen. UU/PP di luar BNPB: rujuk ke pasal.id.",
+    skema: {required: ["id"], properties: {id: P_IDDOK, pasal: {type: "string", maxLength: 60, description: "Label segmen persis atau nomornya, mis. 'Pasal 5' atau '5'."}}}, jalan: bacaPeraturan},
+  {nama: "relasi_peraturan_bnpb", deskripsi: "Relasi satu peraturan BNPB: dasar hukum (mengingat), yang dicabut/diganti/diubah, dan peraturan lain yang merujuknya (masuk). Berguna memeriksa apakah suatu peraturan masih berlaku. Sebut id dokumen saat mengutip.",
+    skema: {required: ["id"], properties: {id: P_IDDOK}}, jalan: relasiPeraturan},
   {nama: "rumah_rusak", cakupan: "rumah_rusak", deskripsi: "Laporan rumah rusak per rumah (berat/sedang/ringan), hanya yang berstatus sah, terbaru dulu. Diinput tim lapangan; tanpa pelapor, foto, dan catatan bebas; koordinat dibulatkan 4 desimal (sekitar 11 m). Butuh kunci API bercakupan rumah_rusak.",
     skema: {properties: {bencana: {type: "string", pattern: "^[a-z0-9_]{2,30}$", description: "Id bencana, mis. banjir, karhutla."}, prov: P_PROV, kab: {type: "string", maxLength: 80, description: "Nama kabupaten/kota persis."}, dari: P_TGL("Tanggal kejadian awal YYYY-MM-DD."), sampai: P_TGL("Tanggal kejadian akhir YYYY-MM-DD."), limit: P_LIMIT(100, 50)}}, jalan: rumahRusak},
   {nama: "rumah_rusak_rekap", cakupan: "rumah_rusak", deskripsi: "Rekap jumlah rumah rusak berat/sedang/ringan per kabupaten/kota untuk rentang tanggal (bawaan hari ini WIB, maksimal 366 hari), hanya status sah. Butuh kunci API bercakupan rumah_rusak.",

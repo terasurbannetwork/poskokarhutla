@@ -88,9 +88,9 @@
   let IDX = null; const DATA = {}; let daftar = [];
   const gambar = new Map();   // id + dasar -> [citra, viirs]
 
-  let CIT = {}, CITJ = {}, GP = null, SR = null, RIW = {};
+  let CIT = {}, CITJ = {}, GP = null, SR = null, RIW = {}, SRY = {}, riwTahun = 0;
   const janjiCit = Promise.all([fetch("/data/aktor_greenpeace.json").then(r => r.ok ? r.json() : null).then(d => { GP = d?.ringkasan ? d : null; }).catch(() => {}),
-    fetch("/data/konsesi2026/sawit_riwayat.json").then(r => r.ok ? r.json() : null).then(d => { SR = Array.isArray(d?.perusahaan) ? d : null; RIW = Object.fromEntries((SR?.perusahaan || []).map(e => [e.id, e])); }).catch(() => {}),
+    ...[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023].map(t => fetch("/data/konsesi2026/sawit_riwayat" + (t === 2015 ? "" : "_" + t) + ".json").then(r => r.ok ? r.json() : null).then(d => { if (Array.isArray(d?.perusahaan)) SRY[t] = d; }).catch(() => {})),
     fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {}),
     fetch("/data/konsesi2026/citra_jelas.json").then(r => r.ok ? r.json() : {}).then(d => { CITJ = d; }).catch(() => {})]);
   /* lambang kab/kota: "kodeProv|Nama" -> berkas di /lambang/kabkota (sama dengan index.html); gagal = tanpa lambang */
@@ -200,7 +200,7 @@
         ${rspoSel(r)}<td class="r">${ha(r.luas_ha)}</td><td class="r">${r.gambut_ha ? ha(r.gambut_ha) : NA}</td><td class="r kn-mt">${r.gambut_ha && r.luas_ha ? pct(r.gambut_ha / r.luas_ha) : NA}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td><td class="kn-c">${r.titik_7h ? '<span class="kn-ya"><i></i>Ya</span>' : '<span class="kn-mt">Tidak</span>'}</td>
         <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`;
   const rspoSel = r => `<td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td>`;
-  const KEPALA = `<thead><tr><th>No</th><th>Nama PT</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r" title="Luas konsesi yang berada di lahan gambut">Gambut (ha)</th><th class="r" title="Bagian luas konsesi yang berada di lahan gambut">% gambut</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th title="Ada titik panas dalam 7 hari terakhir">Masih ada api</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>`;
+  const KEPALA = `<thead><tr><th>No</th><th>Nama PT</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r" title="Luas konsesi yang berada di lahan gambut">Gambut (ha)</th><th class="r" title="Bagian luas konsesi yang berada di lahan gambut">% gambut</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th title="Ada titik panas dalam 7 hari terakhir">Masih ada api</th><th class="r" title="Cluster (kejadian)">Cluster</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>`;
   const KAB_BUKA = new Set();
   function tabelDaftar(rs) {
     const grup = new Map();
@@ -218,9 +218,9 @@
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
   function top5Hari(r) {
     const top = r.harian.slice().sort((a, b) => b[1] - a[1] || b[0].localeCompare(a[0])).slice(0, 5);
-    return `<div class="kn-top5"><div class="kn-band"><b>Top 5 hari tertinggi</b><span>hari dengan titik panas terbanyak</span></div><div class="tw"><table class="kn-tb"><thead><tr><th>Peringkat</th><th>Tanggal</th><th class="r">Titik panas</th><th class="r">Kompleks api</th><th class="r">Bertahan (hari berturut-turut)</th></tr></thead><tbody>
+    return `<div class="kn-top5"><div class="kn-band"><b>Top 5 hari tertinggi</b><span>hari dengan titik panas terbanyak</span></div><div class="tw"><table class="kn-tb"><thead><tr><th>Peringkat</th><th>Tanggal</th><th class="r">Titik panas</th><th class="r">Cluster</th><th class="r">Bertahan (hari berturut-turut)</th></tr></thead><tbody>
       ${top.map(([d, n], j) => `<tr><td>${j + 1}</td><td><b>${tglT(d)}</b></td><td class="r"><b>${fmt(n)}</b></td><td class="r">${fmt(kompleksHari(r, d).length)}</td><td class="r">${fmt(lamaBerturut(r, d))} hari</td></tr>`).join("")}
-      </tbody></table></div>${keterangan([["Kompleks api", "kelompok titik hari itu yang berjarak ≤ 1,5 km"], ["Bertahan", "panjang rangkaian hari berturut-turut dengan hotspot yang memuat tanggal itu"]])}</div>`;
+      </tbody></table></div>${keterangan([["Cluster", "kelompok titik hari itu yang berjarak ≤ 1,5 km"], ["Bertahan", "panjang rangkaian hari berturut-turut dengan hotspot yang memuat tanggal itu"]])}</div>`;
   }
 
   /* keparahan: satu aturan untuk tabel kompleks dan tabel harian. k = [lat, lon, lokasi, titik, awal, akhir, hari, FRP maks] */
@@ -357,7 +357,7 @@
   }
   const jenisPilGP = j => JN[j] ? jenisPil(j) : `<span class="kn-j" style="--w:#8a6d3b">${j === "tebu" ? "Tebu" : j === "pbph" ? "PBPH" : esc(j || "–")}</span>`;
 
-  /* riwayat 2015: jejak api yang SEBELUMNYA bukan sawit lalu jadi sawit (bs_*); st_ha = sudah sawit saat terbakar */
+  /* riwayat 2015, 2019, 2023 (satu berkas per tahun, hilang = tahun itu tak ada): jejak api yang SEBELUMNYA bukan sawit lalu jadi sawit (bs_*); st_ha = sudah sawit saat terbakar */
   const RIW_HAL = 8; let riwHal = 0;
   const riwDaftar = () => (SR?.perusahaan || []).filter(e => { const p = e.prov == null ? "" : String(e.prov).toLowerCase();
     return (!p || [...S.prov].some(k => k === p || namaProv(k).toLowerCase() === p)) && (!S.cari || (e.nama + " " + (e.grup || "")).toLowerCase().includes(S.cari)); }).sort((a, b) => (b.bs_ha || 0) - (a.bs_ha || 0));
@@ -366,27 +366,32 @@
       <figcaption><b>${jud}</b>${api?.pertama ? ` ${esc(api.terakhir && api.terakhir !== api.pertama ? `${tgl(api.pertama)}–${tglY(api.terakhir)}` : tglY(api.pertama))}${api.titik != null ? ` (${fmt(api.titik)} titik)` : ""}` : src ? ` ${esc(tglY(c.tgl))}${c.satelit ? `, ${esc(c.satelit)}` : ""}` : ""}</figcaption></figure>`; };
   /* foto kebun: label = tahun dari tgl (tidak dipatok +1/+2); "sawit mulai tampak" bila tahun_sawit sama dengan tahun foto */
   const kebunJud = c => { const y = c?.tgl?.slice(0, 4); return !y ? "Kebun" : c.tahun_sawit != null && String(c.tahun_sawit) === y ? `${y}, sawit mulai tampak` : y; };
+  const riwTahunAda = () => Object.keys(SRY).map(Number).sort((a, b) => a - b);
+  /* bawaan: tahun terbaru yang jendelanya lengkap (2023 jendela pendek), bukan 2015 */
+  function pilihRiw(t) { if (!SRY[t]) { const th = riwTahunAda(); t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1]; } riwTahun = t; SR = SRY[t] || null; RIW = Object.fromEntries((SR?.perusahaan || []).map(e => [e.id, e])); }
   function riwItem(e, i) {
-    const L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0), A = e.asal_ha || {}, c = e.citra || {}; const k1 = c.kebun1 || c.plus1, k2 = c.kebun2 || c.plus2;
+    const ttm = SR.sumber_peta === "ttm", L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0) + (L[5] || 0), A = e.asal_ha || {}, c = e.citra || {}; const k1 = c.kebun1 || c.plus1, k2 = c.kebun2 || c.plus2;
     return `<article class="kn-riw-k" id="riw-${i}" data-id="${esc(e.id)}"${i >= RIW_HAL ? " hidden" : ""}>
       <header><b class="kn-riw-n">${esc(e.nama)}</b>${e.jenis ? jenisPilGP(e.jenis) : ""}${e.grup ? `<span class="kn-gr">${logo(e.grup, 16)}${esc(e.grup)}</span>` : ""}<span class="kn-mt">${esc([].concat(e.kab || []).join(", "))}</span></header>
-      <p class="kn-riw-u">± <b>${bulat(e.bs_ha)} ha</b> jejak api yang lalu menjadi sawit <span class="kn-ak">${pct(e.bs_porsi)} dari jejak api di konsesinya</span></p>
-      <dl class="kn-riw-d"><div><dt>Asal lahan</dt><dd>${bulat(A.Forest)} ha hutan pada 2014; ${bulat(e.bukan_hutan_sejak_2000_ha)} ha bukan hutan sejak 2000</dd></div>
-        <div><dt>Jeda jadi sawit</dt><dd>0–1 tahun sesudah api ${bulat(cepat)} ha; 2–4 tahun ${bulat(lambat)} ha</dd></div>
-        ${e.descals_konfirm != null ? `<div><dt>Peta sawit lain</dt><dd>terkonfirmasi ${pct(e.descals_konfirm)}</dd></div>` : ""}</dl>
+      <p class="kn-riw-u">${e.bs_ha < 10 ? "Kurang dari <b>10 ha</b>" : `± <b>${bulat(e.bs_ha)} ha</b>`} jejak api yang lalu menjadi sawit <span class="kn-ak">${pct(e.bs_porsi)} dari jejak api di konsesinya</span></p>
+      <dl class="kn-riw-d"><div><dt>Asal lahan</dt><dd>${ttm ? `${bulat(A["hutan primer saat api"])} ha hutan primer saat api; ${bulat(A["hutan primer sudah hilang sebelum api"])} ha hutan primer yang sudah hilang sebelum api; ${bulat(A["bukan hutan primer 2000"])} ha bukan hutan primer pada 2000` : `${bulat(A.Forest)} ha hutan pada 2014; ${bulat(e.bukan_hutan_sejak_2000_ha)} ha bukan hutan sejak 2000`}</dd></div>
+        <div><dt>Jeda jadi sawit</dt><dd>0–1 tahun sesudah api ${bulat(cepat)} ha; ${ttm ? "2 tahun ke atas" : "2–4 tahun"} ${SR.jendela_pendek ? "belum tercatat" : `${bulat(lambat)} ha`}</dd></div>
+        ${ttm && e.pemilik_ha ? `<div><dt>Jenis kebun</dt><dd>industri ${bulat(e.pemilik_ha.industri)} ha; rakyat ${bulat(e.pemilik_ha.rakyat)} ha</dd></div>` : ""}
+        ${!ttm && e.descals_konfirm != null ? `<div><dt>Peta sawit lain</dt><dd>terkonfirmasi ${pct(e.descals_konfirm)}</dd></div>` : ""}</dl>
       <div class="kn-riw-c">${riwCitra(c.sebelum, "Sebelum")}${riwCitra(c.terbakar, "Terbakar", e.api)}${riwCitra(k1, kebunJud(k1))}${riwCitra(k2, kebunJud(k2))}</div></article>`;
   }
   function bagianRiwayat() {
-    const ds = riwDaftar(); if (!SR?.perusahaan) return ""; riwHal = 0;
+    const th = riwTahunAda(); if (!th.length) return ""; if (!SRY[riwTahun]) pilihRiw();
+    const ds = riwDaftar(); riwHal = 0; const T = SR.total || SR.total2015, y = SR.tahun || riwTahun;
     const hal = Math.max(1, Math.ceil(ds.length / RIW_HAL));
-    return `<section class="kn-kartu kn-rws" id="knRiw"><h2>Indikasi dibakar lalu jadi sawit (kebakaran 2015)</h2>
-      <div class="kn-pilbaris">${hipPil("indikasi", "Tumpang-tindih ruang dan waktu, bukan bukti siapa membakar")}${SR.total2015?.jejak_ha != null ? `<span class="lp-pil">± ${bulat(SR.total2015.jejak_ha)} ha jejak titik api 2015</span>` : ""}</div>
+    return `<section class="kn-kartu kn-rws" id="knRiw"><h2>Indikasi dibakar lalu jadi sawit${th.length === 1 ? ` (kebakaran ${y})` : ""}</h2>
+      <div class="kn-pilbaris">${th.length > 1 ? `<span class="kn-thn" role="group" aria-label="Tahun kebakaran">${th.map(t => `<button type="button" data-rthn="${t}" aria-pressed="${t === riwTahun}">${t}</button>`).join("")}</span>` : ""}${hipPil("indikasi", "Tumpang-tindih ruang dan waktu, bukan bukti siapa membakar")}${T?.jejak_ha != null ? `<span class="lp-pil">± ${bulat(T.jejak_ha)} ha jejak titik api ${y}</span>` : ""}${SR.jendela_pendek ? hipPil("belum lengkap", `Jendela pengamatan sesudah api hanya 0 sampai 1 tahun (${[].concat(SR.jendela_tahun || []).join(" sampai ")}), jadi kebun yang baru jadi sawit lebih lambat belum tercatat`) : ""}</div>
       <p class="kn-riw-m">${esc(SR.metode || "")}</p>
       ${(SR.batas || []).length ? `<details class="kn-batas"><summary>Batas data (${fmt(SR.batas.length)})</summary><ul>${SR.batas.map(b => `<li>${sumberTeks(b)}</li>`).join("")}</ul></details>` : ""}
       ${ds.length ? `<div class="kn-riw-l">${ds.map(riwItem).join("")}</div>
-      ${hal > 1 ? `<nav class="kn-pg" aria-label="Halaman riwayat 2015"><button type="button" data-rhal="-1" aria-label="Sebelumnya">‹</button><span>Halaman <b>1</b> dari ${hal}</span><button type="button" data-rhal="1" aria-label="Berikutnya">›</button></nav>` : ""}`
+      ${hal > 1 ? `<nav class="kn-pg" aria-label="Halaman riwayat"><button type="button" data-rhal="-1" aria-label="Sebelumnya">‹</button><span>Halaman <b>1</b> dari ${hal}</span><button type="button" data-rhal="1" aria-label="Berikutnya">›</button></nav>` : ""}`
       : `<div class="kosong">Tidak ada perusahaan riwayat untuk pilihan ini.</div>`}
-      ${(SR.sumber || []).length ? `<p class="kn-sumber">Sumber: ${SR.sumber.map(sumberTeks).join("; ")}</p>` : ""}</section>`;
+      ${(SR.sumber || []).length ? `<p class="kn-sumber">Sumber: ${SR.sumber.map(x => sumberTeks(String(x).replace(/\.$/, ""))).join("; ")}.${SR.lisensi ? ` Lisensi: ${esc(SR.lisensi)}.` : ""}</p>` : ""}</section>`;
   }
   /* ganti halaman = hanya mengganti atribut hidden (murah); pil/teks halaman di-set langsung */
   function riwHalaman(h, gulirKe) {
@@ -396,7 +401,22 @@
     const b = $("#knRiw .kn-pg b"); if (b) b.textContent = riwHal + 1;
     if (gulirKe) { const el = $("#riw-" + gulirKe); el?.scrollIntoView({behavior: "smooth", block: "start"}); el?.classList.remove("kn-sorot"); void el?.offsetWidth; el?.classList.add("kn-sorot"); }
   }
-  const lencanaRiw = r => { const e = RIW[r.id]; return e ? `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran 2015)">Riwayat 2015 (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api</a>` : ""; };
+  /* ganti tahun: tombol + aria-busy di-set langsung (urgent), render berat sesudah paint: dua rAF, jaring setTimeout bila rAF tertahan (tab latar) */
+  let riwTunda = 0;
+  function riwGantiTahun(t, id) {
+    const sek = $("#knRiw"); if (!sek) return; const j = ++riwTunda;
+    sek.querySelectorAll("[data-rthn]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.rthn === t)); sek.setAttribute("aria-busy", "true");
+    let jalan = false; const kerja = () => { if (jalan || j !== riwTunda) return; jalan = true;
+      const el = $("#knRiw"); if (!el) return; pilihRiw(t); el.outerHTML = bagianRiwayat();
+      const i = id ? riwDaftar().findIndex(x => x.id === id) : -1;
+      if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); else if (!id) $(`#knRiw [data-rthn="${t}"]`)?.focus(); };
+    requestAnimationFrame(() => requestAnimationFrame(kerja)); setTimeout(kerja, 120);
+  }
+  /* daftar tahun ringkas: lebih dari 3 tahun jadi rentang, mis. "2016–2023 (6 tahun)" */
+  const thnTeks = th => th.length > 3 ? `${th[0]}–${th[th.length - 1]} (${fmt(th.length)} tahun)` : th.join(", ");
+  const lencanaRiw = r => { const th = riwTahunAda().filter(t => SRY[t].perusahaan.some(e => e.id === r.id)); if (!th.length) return "";
+    const t = th.filter(y => !SRY[y].jendela_pendek).pop() ?? th[th.length - 1], e = SRY[t].perusahaan.find(x => x.id === r.id);
+    return `<a class="kn-riwp" href="#knRiw" data-riw="${esc(r.id)}" data-thn="${t}" title="Lihat indikasi dibakar lalu jadi sawit (kebakaran ${th.join(", ")})">Riwayat ${thnTeks(th)} (indikasi): ± ${bulat(e.bs_ha)} ha jadi sawit sesudah api ${t}${SRY[t].jendela_pendek ? " (belum lengkap)" : ""}</a>`; };
   /* perbesar citra: satu <dialog> bersama */
   let dlgZ = null;
   function perbesar(img) {
@@ -446,7 +466,8 @@
         <div class="tw"><table class="kn-tb"><thead><tr><th>Data</th><th>Instansi</th><th>Rincian</th></tr></thead><tbody>
           ${Object.entries(SB).map(([j, [i, t]]) => `<tr><td>Batas konsesi ${JN[j][0]}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${t}</td></tr>`).join("")}
           ${GP ? `<tr><td>Titik sumber asap, grup perusahaan</td><td><span class="kn-sb">Greenpeace, Pantau Gambut</span></td><td class="kn-mt">${esc(GP.sumber?.judul)} (2026); titik sumber asap, bukan titik panas VIIRS</td></tr>` : ""}
-          ${SR ? `<tr><td>Riwayat kebakaran 2015</td><td><span class="kn-sb">Gaveau dkk. 2022, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar</td></tr>` : ""}
+          ${SRY[2015] ? `<tr><td>Riwayat kebakaran 2015</td><td><span class="kn-sb">Gaveau dkk. 2022, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar</td></tr>` : ""}
+          ${riwTahunAda().some(t => SRY[t].sumber_peta === "ttm") ? `<tr><td>Riwayat kebakaran ${thnTeks(riwTahunAda().filter(t => SRY[t].sumber_peta === "ttm"))}</td><td><span class="kn-sb">The TreeMap 2026, NASA FIRMS</span></td><td class="kn-mt">Indikasi tumpang-tindih jejak api dan sawit; bukan bukti pembakar. Lisensi ${esc(SRY[riwTahunAda().find(t => SRY[t].sumber_peta === "ttm")].lisensi || "")}</td></tr>` : ""}
           ${SB_LAIN.map(([d, i, t]) => `<tr><td>${d}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${esc(t)}</td></tr>`).join("")}
         </tbody></table></div>
         <ul>
@@ -456,7 +477,7 @@
           <li><b>Indikasi luas terbakar:</b> jumlah piksel VIIRS 375 m yang kemasukan titik × ${fmt(IDX.ha_piksel)} ha, paling besar seluas konsesi. Bukan peta luas bakar resmi; piksel bisa terbakar sebagian.</li>
           <li><b>Kejadian:</b> rangkaian hari dengan hotspot dengan jeda paling lama ${IDX.jeda_kejadian} hari tanpa titik.</li>
           <li><b>Grup dan pemegang saham:</b> atribut grup di peta konsesi dan penelusuran kepemilikan perusahaan.</li>
-          <li><b>Kompleks api:</b> kelompok titik VIIRS berdekatan (1,5 km, 7 hari) seperti di peta Centurisk97.</li>
+          <li><b>Cluster:</b> kelompok titik VIIRS berdekatan (1,5 km, 7 hari) seperti di peta Centurisk97.</li>
           <li>Titik panas di dalam areal konsesi menunjukkan lokasi api, <b>bukan bukti siapa yang membakar</b>. Verifikasi lapangan tetap diperlukan.</li>
         </ul>
       </section>`;
@@ -489,7 +510,7 @@
     const px = x(r.puncak[0]) + bw * .39, py = y(r.puncak[1]), kiri = px > W - 170;
     const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])} · ${fmt(r.puncak[1])} titik</text>`;
     return `<svg class="kn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian 2026, puncak ${tgl(r.puncak[0])}">${grid}<line x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}" class="kn-ax"/><g class="kn-br">${bar}</g>${pk}${blabel}</svg>
-      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>kompleks api (kejadian) yang menyala di bulan itu</span></div>`;
+      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>cluster (kejadian) yang menyala di bulan itu</span></div>`;
   }
 
   /* bagian titik panas harian: grafik selebar kartu + tabel lengkap tiap hari dengan hotspot (dibagi 3 lajur) */
@@ -516,7 +537,7 @@
         ["Baris berwarna", "hari puncak"],
         ["Lintasan satelit", "jumlah lewatan satelit S-NPP yang menangkap api hari itu"],
         ["Api bertahan", `hari ke-berapa dalam kejadiannya / lama kejadian itu (jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot tetap satu kejadian)`],
-        [KET_PARAH[0], KET_PARAH[1] + '<small class="kn-mt">dihitung per hari dari kompleks titik ≤ 1,5 km hari itu</small>']],
+        [KET_PARAH[0], KET_PARAH[1] + '<small class="kn-mt">dihitung per hari dari cluster titik ≤ 1,5 km hari itu</small>']],
         '<p class="kn-mt kn-hr-k kn-cetak-saja">Hari berkeparahan rendah tidak dicetak; jumlah dan kumulatif tetap menghitungnya.</p>')}</section>`;
   }
 
@@ -535,19 +556,19 @@
     const tabelK = (judul, ks, lain, catatan) => {
       const sisa = ks.slice(10), nS = sisa.length + (lain ? lain[0] : 0), tS = sisa.reduce((a, k) => a + k[3], 0) + (lain ? lain[1] : 0),
         mS = Math.max(0, ...sisa.map(k => k[3]), lain ? lain[2] : 0), nT = ks.length + (lain ? lain[0] : 0);
-      return `<section class="kn-sek"><div class="kn-band"><b>${judul}</b><span>${fmt(nT)} kompleks · ${catatan}</span></div>
+      return `<section class="kn-sek"><div class="kn-band"><b>${judul}</b><span>${fmt(nT)} cluster, ${catatan}</span></div>
       <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Kecamatan</th><th>Kabupaten/kota</th><th>Koordinat</th><th class="r">Titik</th><th class="r">Hari</th><th>Rentang</th><th class="r">FRP maks (MW)</th><th>Keparahan</th></tr></thead><tbody>
       ${ks.slice(0, 10).map((k, j) => { const [n, w] = parah(k); return `<tr><td>${j + 1}</td><td><b>${esc(k[2].split(",")[0] || "–")}</b></td><td>${esc((k[2].split(",")[1] || "").trim() || "–")}</td>
         <td class="num kn-nw"><a class="kn-ln" href="https://www.google.com/maps/dir/?api=1&destination=${k[0]},${k[1]}" target="_blank" rel="noopener">${k[0].toFixed(4)}, ${k[1].toFixed(4)}</a></td>
         <td class="r"><b>${fmt(k[3])}</b></td><td class="r">${fmt(k[6])}</td><td class="kn-nw">${rentang(k[4], k[5])}</td><td class="r">${fmt(k[7])}</td><td><span class="kn-pr" style="--w:${w}">${n}</span></td></tr>`; }).join("")}
-      ${nS ? `<tr class="kn-sub"><td></td><td colspan="3">${fmt(nS)} kompleks kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
+      ${nS ? `<tr class="kn-sub"><td></td><td colspan="3">${fmt(nS)} cluster kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
       </tbody></table></div></section>`; };
     const kl = r.kompleks_lalu || [];
-    const kp = (r.kompleks?.length ? tabelK("Kompleks api 7 hari terakhir", r.kompleks, null, "titik berdekatan ≤ 1,5 km") : "")
-      + (kl.length ? tabelK("Kompleks api sebelumnya", kl, r.kompleks_lalu_sisa, `sejak ${tgl(r.pertama)}, sebelum 7 hari terakhir`) : "")
-      + (r.kompleks?.length || kl.length ? `${keterangan([["Kompleks", "titik berdekatan ≤ 1,5 km dengan selang ≤ 7 hari"], ["Hari", "hari dengan hotspot"], KET_PARAH])}` : "");
+    const kp = (r.kompleks?.length ? tabelK("Cluster 7 hari terakhir", r.kompleks, null, "titik berdekatan ≤ 1,5 km") : "")
+      + (kl.length ? tabelK("Cluster sebelumnya", kl, r.kompleks_lalu_sisa, `sejak ${tgl(r.pertama)}, sebelum 7 hari terakhir`) : "")
+      + (r.kompleks?.length || kl.length ? `${keterangan([["Cluster", "titik berdekatan ≤ 1,5 km dengan selang ≤ 7 hari"], ["Hari", "hari dengan hotspot"], KET_PARAH])}` : "");
     const tt = `<section class="kn-sek"><div class="kn-band"><b>Titik panas terbaru</b><span>12 deteksi terakhir VIIRS S-NPP</span></div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Waktu</th><th>Koordinat</th><th class="r">Daya api (MW)</th><th title="Keparahan kompleks api tempat titik ini berada pada harinya">Keparahan</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Waktu</th><th>Koordinat</th><th class="r">Daya api (MW)</th><th title="Keparahan cluster tempat titik ini berada pada harinya">Keparahan</th></tr></thead><tbody>
       ${r.pt.slice(-12).reverse().map((p, j) => `<tr><td>${j + 1}</td><td class="kn-nw"><b>${tgl("2026-" + p[2].slice(0, 5))}</b> ${p[2].slice(6)} WIB</td><td class="num kn-nw">${p[0].toFixed(4)}, ${p[1].toFixed(4)}</td><td class="r">${fmt(p[3])}</td><td>${(([n, w]) => `<span class="kn-pr" style="--w:${w}">${n}</span>`)(parahTitik(r, p))}</td></tr>`).join("")}
       </tbody></table></div></section>`;
     /* kebakaran di gambut: kejadian yang titiknya jatuh di lahan gambut (jeda sama dengan kejadian umum) */
@@ -575,7 +596,7 @@
         <span class="kn-no">${r._rp}</span>
         <div class="kn-ph-t"><span class="kn-ph-ey">${esc(r.kabU)}, ${esc(namaProv(r.prov))}</span><h2>${esc(r.nama)}</h2></div>
         <div class="kn-ph-m">${jenisPil(r.jenis)}${r.jenis === "sawit" && r.rspo ? `<span class="kn-sert" title="${r.rspo.sertifikat ? "Bersertifikat" : "Anggota"} RSPO lewat ${esc(r.rspo.grup)} (data RSPO 2020)"><i aria-hidden="true">✓</i>RSPO<em>${r.rspo.sertifikat ? "bersertifikat" : "anggota"}</em></span>` : ""}${lencanaRiw(r)}${r.grup ? `<span class="kn-grp">${logoPT(r, 20)}${(r.negara || []).map(k => bendera(k, 14)).join("")}<b>${esc(r.grup)}</b>${r.unit ? `<em>${esc(r.unit)}</em>` : ""}</span>` : ""}
-          ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i aria-hidden="true">${IKON_KPI.api}</i><span>Masih ada api</span><span class="kn-sta-d"><b>${fmt(r.titik_7h)}</b>titik</span>${r.kompleks?.length ? `<span class="kn-sta-d"><b>${fmt(r.kompleks.length)}</b>kompleks</span>` : ""}<small class="kn-sta-d">7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
+          ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i aria-hidden="true">${IKON_KPI.api}</i><span>Masih ada api</span><span class="kn-sta-d"><b>${fmt(r.titik_7h)}</b>titik</span>${r.kompleks?.length ? `<span class="kn-sta-d"><b>${fmt(r.kompleks.length)}</b>cluster</span>` : ""}<small class="kn-sta-d">7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
       </header>
       <section class="kn-kpi kn-kpi-p">
         <div><span class="kn-kpi-l">Titik panas 2026</span><b>${fmt(r.titik)}</b><small>puncak ${tgl(r.puncak[0])} (${fmt(r.puncak[1])} titik)</small></div>
@@ -841,6 +862,8 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
     const zm = e.target.closest("img[data-zoom]"); if (zm) { perbesar(zm); return; }
     const rh = e.target.closest("[data-rhal]"); if (rh) { riwHalaman(riwHal + +rh.dataset.rhal); return; }
     const rb = e.target.closest("[data-riw]");
+    const rt = e.target.closest("[data-rthn]"); if (rt) { if (+rt.dataset.rthn !== riwTahun) riwGantiTahun(+rt.dataset.rthn); return; }
+    if (rb && rb.dataset.thn && +rb.dataset.thn !== riwTahun) { e.preventDefault(); riwGantiTahun(+rb.dataset.thn, rb.dataset.riw); return; }
     if (rb) { e.preventDefault(); const i = riwDaftar().findIndex(x => x.id === rb.dataset.riw); if (i >= 0) riwHalaman(Math.floor(i / RIW_HAL), i); return; }
     const thU = e.target.closest(".kn-tb thead th"); if (thU) { urutkan(thU); return; }
     const kb = e.target.closest("[data-kab]");

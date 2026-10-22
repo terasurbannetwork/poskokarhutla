@@ -3,7 +3,7 @@
 -- Daftar tetap (jenis, kondisi, status) HARUS sama dengan src/operasi_lapangan.js; tests/warga/operasi_lapangan.test.mjs menjaganya.
 -- Semua tabel punya kolom dummy (0/1): diisi dan dihapus oleh POST /api/ops/dummy (Super Admin).
 
--- Garis hasil rekam jalan penugasan_posisi atau koordinat kiriman. koordinat = larik [lon, lat] (urutan GeoJSON), 2-500 titik; panjang dan luas dihitung Worker.
+-- Garis hasil rekam jalan penugasan_posisi atau koordinat kiriman. Garis rekam disimpan TANPA penugasan_id dan koordinat 5 desimal (posisi orang hanya 30 hari; garis bertahan lebih lama). koordinat = larik [lon, lat] (urutan GeoJSON), 2-500 titik; panjang dan luas dihitung Worker.
 CREATE TABLE IF NOT EXISTS ops_garis (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
   tugas_id TEXT NOT NULL REFERENCES tugas_api (id) ON DELETE CASCADE,
@@ -169,6 +169,7 @@ CREATE TABLE IF NOT EXISTS ops_patroli (
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1))
 );
 CREATE INDEX IF NOT EXISTS ops_patroli_wilayah ON ops_patroli (prov, kab, jadwal);
+CREATE INDEX IF NOT EXISTS ops_patroli_status ON ops_patroli (status, jadwal);
 
 -- Kunjungan patroli: titik GPS (atau foto GPS lewat instansi_media bila ada) dan catatan. Hanya menambah.
 CREATE TABLE IF NOT EXISTS ops_kunjungan (

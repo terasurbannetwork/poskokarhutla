@@ -27,6 +27,10 @@ export async function buatDunia() {
      Tiap modul diisi sendiri-sendiri: modul yang dummy-nya rusak melapor galatnya (uji halamannya gagal dengan sebab itu), modul lain tetap jalan */
   const galatIsi = {}, kode = {};
   for (const m of ["meja", "relawan", "riset", "alun", "pengingat"]) { const r = await api("POST", `/api/${m}/dummy`, {aksi: "isi"}); if (r.s >= 300) galatIsi[m] = `POST /api/${m}/dummy ${r.s} ${r.t.slice(0, 160)}`; }
+  /* Instansi lalu Operasi lapangan (L4-L13): dummy ops memakai tugas dummy instansi yang sudah ada (tugas buka tertua), jadi urutannya tetap */
+  const inst = await api("POST", "/api/instansi/admin/dummy", {aksi: "isi"}); if (inst.s >= 300) galatIsi.instansi = `POST /api/instansi/admin/dummy ${inst.s} ${inst.t.slice(0, 160)}`;
+  const ops = await api("POST", "/api/ops/dummy", {aksi: "isi"}); if (ops.s >= 300) galatIsi.ops = `POST /api/ops/dummy ${ops.s} ${ops.t.slice(0, 160)}`;
+  kode.opsTugas = ops.j?.tugas_id;
   /* kode pribadi nyata (kode dummy tidak bisa dipakai masuk): petugas Meja, relawan, koordinator kampus */
   const pt = await api("POST", "/api/meja/petugas", {nama: "Petugas Uji", prov: "64", kab: "Kutai Kartanegara", meja: ["kaji_cepat", "logistik", "gudang"]});
   kode.meja = pt.j?.kode; if (!kode.meja) galatIsi.meja_kode = `POST /api/meja/petugas ${pt.s} ${pt.t.slice(0, 160)}`;

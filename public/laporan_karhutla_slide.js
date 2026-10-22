@@ -237,21 +237,21 @@ slide("ringkasan", "Hotspot, OMC, armada udara, penanganan", "utama", () => null
 
 /* ---- slide 3: kompleks api (data satelit) ---- */
 const kompleks = s => { const b = s.lampiran?.B4_konsesi_terindikasi; return Array.isArray(b) && b.some(x => nn(x.kompleks)) ? b : null; };
-slide("kompleks", "Kompleks api per provinsi", "utama", () => null, (k, c) => {
+slide("kompleks", "Cluster per provinsi", "utama", () => null, (k, c) => {
   const s = c.s, kp = kompleks(s), nm = kd => s.provinsi.find(p => p.kode === kd)?.nama || kd;
   if (!kp) {
-    rangka(k, c, [R("Kompleks api dan titik panas di areal konsesi serta lahan gambut: "), J("belum ada data")]);
-    kosongKartu(k, 0.6, 1.6, 12.15, 4.9, "Belum ada data kompleks api, konsesi, dan gambut", "Snapshot ini tidak memuat angka satelit kompleks api (public/data/laporan.json tidak terbaca saat kunci). Tidak ada angka yang diisi dari sumber lain.");
+    rangka(k, c, [R("Cluster dan titik panas di areal konsesi serta lahan gambut: "), J("belum ada data")]);
+    kosongKartu(k, 0.6, 1.6, 12.15, 4.9, "Belum ada data cluster, konsesi, dan gambut", "Snapshot ini tidak memuat angka satelit cluster (public/data/laporan.json tidak terbaca saat kunci). Tidak ada angka yang diisi dari sumber lain.");
     return;
   }
   const urut = [...kp].sort((a, b) => (b.luas_kompleks || 0) - (a.luas_kompleks || 0)), top = urut[0], tot = sum(kp, x => x.kompleks), luas = sum(kp, x => x.luas_kompleks), mx = Math.max(1, ...kp.map(x => x.luas_kompleks || 0));
-  rangka(k, c, [R("Kompleks api terluas di "), Bi(nm(top.kode)), R(`: ${n0(top.kompleks)} kompleks seluas `), J(`±${n0(top.luas_kompleks)} ha`), R(`, dari ${n0(tot)} kompleks (`), J(`±${n0(luas)} ha`), R(`) di ${kp.length} provinsi`)], {s: 20});
-  k.teks(0.6, 1.5, 6, 0.28, "Kompleks api per provinsi (kluster titik panas satelit)", {s: 12}); k.garis(0.6, 1.82, 8.9, 1.82, {c: C.navy, w: 0.75});
+  rangka(k, c, [R("Cluster terluas di "), Bi(nm(top.kode)), R(`: ${n0(top.kompleks)} cluster seluas `), J(`±${n0(top.luas_kompleks)} ha`), R(`, dari ${n0(tot)} cluster (`), J(`±${n0(luas)} ha`), R(`) di ${kp.length} provinsi`)], {s: 20});
+  k.teks(0.6, 1.5, 6, 0.28, "Cluster per provinsi (cluster titik panas satelit)", {s: 12}); k.garis(0.6, 1.82, 8.9, 1.82, {c: C.navy, w: 0.75});
   urut.forEach((x, i) => { const y = 1.95 + i * 0.62, bw = Math.max(0.05, 4.3 * (x.luas_kompleks || 0) / mx);
     k.teks(0.6, y, 2.0, 0.5, nm(x.kode), {s: 10.5, b: i === 0, v: "m"}); k.kotak(2.65, y + 0.1, bw, 0.3, {f: i === 0 ? C.jingga : C.navy}); k.teks(2.65 + bw + 0.08, y, 1.7, 0.5, `±${n0(x.luas_kompleks)} ha`, {s: 10, b: true, v: "m", c: i === 0 ? C.jingga : C.teks});
-    pilTeks(k, 8.0, y + 0.14, `${n0(x.kompleks)} kompleks`, TERANG, TEKS2, {s: 8, h: 0.24}); k.garis(0.6, y + 0.58, 9.3, y + 0.58, {c: "ECEEF1", w: 0.5}); });
+    pilTeks(k, 8.0, y + 0.14, `${n0(x.kompleks)} cluster`, TERANG, TEKS2, {s: 8, h: 0.24}); k.garis(0.6, y + 0.58, 9.3, y + 0.58, {c: "ECEEF1", w: 0.5}); });
   kosongKartu(k, 9.75, 1.5, 3.0, 4.4, "Konsesi dan gambut: belum ada data", "Persen titik panas di areal konsesi dan lahan gambut per provinsi belum ada pada snapshot ini (lampiran A6 dan B2 dilewati). Nama perusahaan hanya di laporan berotorisasi.");
-  k.teks(0.6, 6.15, 12.15, 0.4, "Kompleks api = titik panas satelit yang berdekatan dikelompokkan; luas adalah perkiraan satelit, bukan hasil ukur lapangan. Titik atau kompleks di suatu areal bukan bukti siapa yang membakar.", {s: 8.5, i: true, c: C.abu});
+  k.teks(0.6, 6.15, 12.15, 0.4, "Cluster = titik panas satelit yang berdekatan dikelompokkan; luas adalah hitungan dari deteksi satelit, bukan hasil ukur lapangan. Titik atau cluster di suatu areal bukan bukti siapa yang membakar.", {s: 8.5, i: true, c: C.abu});
 });
 
 /* ---- daftar lampiran (isi diisi saat deck dirakit) ---- */
@@ -304,14 +304,14 @@ slide("a2", "A2 Riwayat luas terbakar", "lampiran", s => riwayatTahun(s) ? null 
   const s = c.s, r = riwayatTahun(s), akhir = r.tahun.length - 1, p = r.perkiraan, nmax = Math.max(1, ...p.map(x => x?.v || 0), ...r.sipongi.map(x => x?.v || 0));
   const v26 = p[akhir], urut = p.map((x, i) => [x?.v ?? -1, i]).sort((a, b) => b[0] - a[0]), rank = urut.findIndex(x => x[1] === akhir) + 1;
   rangka(k, c, v26 ? [R(`A2. Perkiraan luas terbakar ${r.tahun[akhir]} di provinsi prioritas sudah `), J(`±${n0(v26.v)} ha`), R(` hingga ${tglP(s.tanggal_data)}, tertinggi ke-`), J(String(rank)), R(` sejak ${r.tahun[0]}`)] : [R(`A2. Riwayat luas terbakar ${r.tahun[0]} sampai ${r.tahun[akhir]}: perkiraan tahun berjalan `), J("belum ada data")], {s: 20});
-  k.teks(1.9, 1.5, 4.9, 0.3, "PERKIRAAN SATELIT (HA)", {s: 9, b: true, c: C.abu}); k.teks(7.2, 1.5, 4.2, 0.3, "ANGKA RESMI SIPONGI (HA)", {s: 9, b: true, c: C.abu});
+  k.teks(1.9, 1.5, 4.9, 0.3, "HITUNGAN SATELIT (HA)", {s: 9, b: true, c: C.abu}); k.teks(7.2, 1.5, 4.2, 0.3, "ANGKA RESMI SIPONGI (HA)", {s: 9, b: true, c: C.abu});
   const rh = Math.min(0.46, 4.1 / r.tahun.length);
   r.tahun.forEach((y, i) => { const yy = 1.9 + i * rh, ini = i === akhir;
     if (ini) k.kotak(0.6, yy, 12.15, rh, {f: "FDF1E7"});
     k.teks(0.7, yy, 1.0, rh, y, {s: 11, b: true, v: "m"});
     [[p[i], 1.9, 4.2, ini ? "EBA56F" : C.navy], [r.sipongi[i], 7.2, 3.9, ini ? "EBA56F" : C.slate]].forEach(([d, x, w, wr]) => { if (!d) { k.teks(x, yy, 2, rh, "belum ada data", {s: 8.5, i: true, c: KABUR, v: "m"}); return; } const bw = Math.max(0.03, w * d.v / nmax); k.kotak(x, yy + rh * 0.2, bw, rh * 0.6, {f: wr}); k.teks(x + bw + 0.08, yy, 1.8, rh, `${n0(d.v)} ha`, {s: 9, b: true, v: "m", c: ini ? C.jingga : C.teks}); });
   });
-  k.kotak(0.6, 6.18, 12.15, 0.45, {f: "FDF1E7", r: 0.05}); k.teks(0.75, 6.18, 11.9, 0.45, `Jumlah ${r.nProv} provinsi prioritas. Perkiraan satelit dan angka SiPongi berasal dari dua sumber berbeda dan tidak dijumlahkan. ${r.tahun[akhir]}: tahun berjalan sampai tanggal data, bukan hasil ukur lapangan.`, {s: 8.5, v: "m"});
+  k.kotak(0.6, 6.18, 12.15, 0.45, {f: "FDF1E7", r: 0.05}); k.teks(0.75, 6.18, 11.9, 0.45, `Jumlah ${r.nProv} provinsi prioritas. Hitungan satelit dan angka SiPongi berasal dari dua sumber berbeda dan tidak dijumlahkan. ${r.tahun[akhir]}: tahun berjalan sampai tanggal data, bukan hasil ukur lapangan.`, {s: 8.5, v: "m"});
 });
 
 /* ---- A3: cut-off tiga hari ---- */

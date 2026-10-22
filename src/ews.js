@@ -15,7 +15,7 @@ import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
 import {emailKonfirmasi, emailPeringatan, emailGempa, angka, kataPeluang} from "./ews_email.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
-const ASAL_PUBLIK = "https://pantau.terasurban.com";   // cron tak punya permintaan, jadi tak tahu origin
+const ASAL_PUBLIK = "https://centurisk97.id";   // cron tak punya permintaan, jadi tak tahu origin
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};   // sama dengan CHECK lat/lon migrasi dan src/worker.js
 const RE_EMAIL = /^[^\s@<>()",;:]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;   // sama dengan src/foto.js
 export const BATAS_EWS = {langganan: [[JAM, 5], [HARI, 20]]};

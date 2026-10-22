@@ -106,11 +106,11 @@
       const dl = .5, dlo = .5 / Math.max(.2, Math.cos(la * rad));
       for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.utama.has(b[3]) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
       for (const f of S.kluster.features) { const p = f.properties; if (Math.abs(p.lat - la) > dl || Math.abs(p.lon - lo) > dlo) continue; const d = jarak(la, lo, p.lat, p.lon); BUF.forEach((km, j) => d <= km && kp[j]++); }
-      bd = tab("Radius", [`Titik panas ${ren}`, "Kompleks aktif (72 jam, tak ikut hari terpilih)"], BUF.map((km, j) => [km + " km", fmt(t[j]) + " titik", fmt(kp[j]) + " kompleks"])); }
+      bd = tab("Radius", [`Titik panas ${ren}`, "Cluster aktif (72 jam, tak ikut hari terpilih)"], BUF.map((km, j) => [km + " km", fmt(t[j]) + " titik", fmt(kp[j]) + " cluster"])); }
     else if (T.poli) { const P = polys(T.poli.geometry), b = T.bb; let t = 0, kp = 0;
       for (const r of S.titik) if (r[1] >= b[0] && r[1] <= b[2] && r[0] >= b[1] && r[0] <= b[3] && S.utama.has(r[3]) && masuk(r) && dalamPoli(r[1], r[0], P)) t++;
       for (const f of S.kluster.features) { const p = f.properties; if (p.lon >= b[0] && p.lon <= b[2] && p.lat >= b[1] && p.lat <= b[3] && dalamPoli(p.lon, p.lat, P)) kp++; }
-      bd = tab("Di dalam poligon", [`Titik panas ${ren}`, "Kompleks aktif (72 jam, tak ikut hari terpilih)"], [["Jumlah", fmt(t) + " titik", fmt(kp) + " kompleks"]]) + (catatan ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }
+      bd = tab("Di dalam poligon", [`Titik panas ${ren}`, "Cluster aktif (72 jam, tak ikut hari terpilih)"], [["Jumlah", fmt(t) + " titik", fmt(kp) + " cluster"]]) + (catatan ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }
     else bd = `<p class="ck-n">Poligon konsesi tidak ditemukan di data.</p>`;
     k.querySelector(".ck-b").innerHTML = bd; }
   function bukaKartu(judul, baris, atr) {

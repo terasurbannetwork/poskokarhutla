@@ -197,7 +197,7 @@ def main():
         x["daops"] = d and {"nama": d["nama"], "km": round(km(x["lat"], x["lon"], d["lat"], d["lon"]))}
         x["air"] = air and {"jenis": air[0][2], "nama": air[0][3] if len(air[0]) > 3 else "", "km": round(air[1], 1)}
         x["faskes"] = fk and {"nama": fk[0][2], "jenis": fk[0][3] if len(fk[0]) > 3 else "", "km": round(fk[1], 1)}
-    print(f"{len(permanen)} permanen, {len(aju)} aju; {ke_daops} kompleks ditangani markas Daops; {lepas} tak terjangkau kandidat", file=sys.stderr)
+    print(f"{len(permanen)} permanen, {len(aju)} aju; {ke_daops} cluster ditangani markas Daops; {lepas} tak terjangkau kandidat", file=sys.stderr)
 
     # tingkat menengah: TIDAK tiap kabupaten. Per provinsi, kandidat = satu kota per kabupaten yang punya posko lapangan
     # (kota terdekat ke pusat bobot api kabupaten itu). Dipilih greedy: kandidat yang menjangkau bobot posko lapangan

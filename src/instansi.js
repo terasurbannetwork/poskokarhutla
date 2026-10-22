@@ -1,13 +1,13 @@
 /* Akun Instansi & Tugas Api. Skema: migrations/0029_instansi.sql. Aturan pemilik (21 Okt 2026):
    - Akun dibuat massal oleh admin (belum_klaim), wakil masuk lalu mengisi verifikasi (menunggu), admin aktif/tolak/cabut. Sandi acak 16 huruf tampil SEKALI
      ke admin (tidak disimpan, tidak di-log); yang disimpan sha256(garam akun + sandi). Tidak ada ganti sandi oleh pengguna; admin bisa reset (sesi dicabut).
-   - Tugas api dibuat cron menit 18 dari public/data/tugas_kompleks.json. Id kompleks tidak stabil antarhari, jadi tugas dikunci ke LOKASI:
+   - Tugas api dibuat cron (tiap menit, sekali per versi `dibuat`) dari public/data/tugas_kompleks.json. Id kompleks tidak stabil antarhari, jadi tugas dikunci ke LOKASI:
      kompleks dalam <= 2 km dari tugas terbuka di kabupaten yang sama digabung. Dua langkah: konfirmasi (6 jam) lalu kabar tindakan (tiap 24 jam sampai padam).
    - Tagih = admin menekan tautan wa.me berisi pesan siap kirim. TIDAK ada kiriman otomatis. "Terlambat" dihitung saat dibaca, bukan kolom.
    - Tiap rute instansi memeriksa sesi, status aktif, DAN cakupan wilayah tugas di Worker. Kontak/dokumen tidak pernah lewat rute publik.
    ponytail: batas laju baca-lalu-tulis (laju_bnpb), serentak bisa lolos satu-dua di atas batas. Perbandingan sandi memakai === pada hash (sandi 93 bit acak). */
-import {json, gagal, acak, sha, bacaBody, bacaBytes, normalWA, ipHash} from "./worker.js";
-import {tx, num, wib, tglSah, modOK, superOK, KENDALA, RE_PID, RE_EMAIL, cekKontak} from "./posko.js";
+import {json, gagal, acak, sha, shaBytes, bacaBody, bacaBytes, normalWA, ipHash} from "./worker.js";
+import {tx, num, wib, tglSah, modOK, superOK, KENDALA, RE_PID, RE_EMAIL, cekKontak, reguDari} from "./posko.js";
 import {bersihMedia} from "./media_bersih.js";
 import {laju} from "./bnpb.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
@@ -18,8 +18,11 @@ import {muatHimawari, BARU_N_MIN, BARU_U_MAKS, BARU_LEVEL_MIN, BARU_ACUAN_MAKS} 
 import {halamanAdmin} from "./statistik.js";
 import {halamanInstansi, HALAMAN_STAF} from "./admin_halaman.js";
 import {gudangTerdekat, siapkanKerahkan, lepasDariTugas} from "./inventaris.js";
+import {catatAwalTugas} from "./alarm_himawari.js";
+import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan} from "./penugasan.js";
+import {BENCANA, DAFTAR_BENCANA, bencanaId, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM, TENGGAT_KONFIRMASI = 6 * JAM, TENGGAT_KABAR = 24 * JAM, SESI_UMUR = 30 * HARI, GABUNG_KM = 2, JAUH_KM = 5;
 /* bacaan GPS boleh sampai 6 jam lalu: isian dari antrean luring terkirim saat sinyal kembali (sama dengan laporan regu posko, src/posko.js) */
@@ -147,11 +150,16 @@ async function gantiSandi(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`)), s = await sandiBaru();
   await env.DB.batch([env.DB.prepare("UPDATE instansi_akun SET garam = ?, sandi_sha = ?, wajib_ganti = 0 WHERE id = ?").bind(s.garam, s.sandi_sha, a.id),
     env.DB.prepare("DELETE FROM instansi_sesi WHERE akun_id = ? AND token_sha != ?").bind(a.id, await sha(m[1])), stmtJejak(env, "pengguna", a.id, "ganti_sandi", null, kini)]);
+  await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ?").bind(a.id).run().catch(() => {});   // sesi lain dicabut: perangkat lain tidak boleh tetap menerima push (migrasi 0040 belum ada = dilewati)
   return json({sandi: s.sandi});   // tampil sekali; tidak disimpan, tidak di-log
 }
 async function keluar(env, req, kini) {
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=([0-9a-f]{64})`));
-  if (m) await env.DB.prepare("DELETE FROM instansi_sesi WHERE token_sha = ?").bind(await sha(m[1])).run();
+  if (m) {
+    const a = await sesiDari(env, req, kini), ep = await req.json().then(b => b?.endpoint, () => null);   // klien mengirim endpoint perangkat ini (instansi_push.js); tanpa itu hanya sesi yang dicabut
+    await env.DB.prepare("DELETE FROM instansi_sesi WHERE token_sha = ?").bind(await sha(m[1])).run();
+    if (a && typeof ep === "string" && ep.length <= 1000) await env.DB.prepare("DELETE FROM push_langganan WHERE akun_id = ? AND endpoint = ?").bind(a.id, ep).run().catch(() => {});
+  }
   return denganCookie(json({ok: true}), cookieSet("", 0));
 }
 async function saya(env, req, kini) {
@@ -314,6 +322,17 @@ export function infoPadam(t, kini) {
     boleh_cek_ulang: bolehCekUlang(t, kini), gambut: lahan.gambut, dasar_lahan: lahan.dasar, jadwal_cek_ulang: jd?.jadwal ?? null, cek_ulang_berikutnya: jd?.berikutnya ?? null,
     muncul: t.padam_verif === "muncul_lagi" ? t.muncul ?? null : null};
 }
+/* jenis bencana per tugas (tabel 0047; baris tak ada atau tabel belum ada = karhutla). Map id -> id bencana. */
+const KECUALI_LAIN = "AND NOT EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana != 'karhutla')";
+const tanpaBencana = e => /no such table: (main\.)?tugas_bencana/i.test(String(e?.message || e));
+export async function bencanaPer(env, rows) {
+  const out = new Map(); if (!rows.length) return out;
+  try { for (const r of (await env.DB.prepare("SELECT tugas_id, bencana FROM tugas_bencana WHERE tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(rows.map(t => t.id))).all()).results) out.set(r.tugas_id, bencanaId(r.bencana)); }
+  catch (e) { if (!tanpaBencana(e)) throw e; }
+  return out;
+}
+/* sql(saringan) dijalankan dengan KECUALI_LAIN: tugas bahaya lain tidak ikut aturan satelit/gambut karhutla; tabel 0047 belum ada = tanpa saringan */
+const hanyaKarhutla = async sql => { try { return await sql(KECUALI_LAIN); } catch (e) { if (!tanpaBencana(e)) throw e; return sql(""); } };
 /* kejadian "muncul lagi" terakhir per tugas (tabel 0037; belum ada = tanpa rincian, status tetap tampil dari tugas_api) */
 async function munculPer(env, rows) {
   const ids = rows.filter(t => t.padam_verif === "muncul_lagi").map(t => t.id), out = new Map();
@@ -322,24 +341,31 @@ async function munculPer(env, rows) {
   catch (e) { if (!/no such table: tugas_muncul/i.test(String(e?.message || e))) throw e; }
   return out;
 }
-const bentukTugas = (t, kini, muncul) => {
+const bentukTugas = (t, kini, muncul, kartu = null, bencana = "karhutla") => {
+  const jenis = jenisTugas(kartu);
   const {sekarang, mulai_doc, padam_doc, mulai_manual, luas_konf, lahan_obs, kunjungan, ...x} = t, rek = jsonAman(t.rekomendasi), s = jsonAman(sekarang);
-  return {...x, rekomendasi: rek, akses: jsonAman(t.akses), padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
+  return {...x, bencana, bencana_nama: BENCANA[bencana].nama, jenis, ...teksJenis(jenis), rekomendasi: rek, akses: jsonAman(t.akses), kartu, padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
     sekarang: s && {...s, personel_efektif: s.personel ?? s.personel_terlihat ?? null}, luas_terkonfirmasi: luas_konf, kebutuhan_konf: kebutuhanTerkonfirmasi(rek, luas_konf), kurang: kekurangan(rek, s, luas_konf),
     /* "terdokumentasi" = waktu FOTO/VIDEO, bukan jam mulai atau padam yang sebenarnya */
     dokumentasi: {mulai: mulai_doc, padam: padam_doc, durasi_ms: mulai_doc != null && padam_doc != null && padam_doc >= mulai_doc ? padam_doc - mulai_doc : null, mulai_manual}};
 };
 const urutTugas = (x, y) => (y.terlambat - x.terlambat) || (y.dibuat - x.dibuat);
 
-async function daftarTugas(env, req, kini) {
+async function daftarTugas(env, req, url, kini) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
+  const filter = bacaBencana(url.searchParams.get("bencana")); if (filter === undefined) return gagal(400, `bencana harus salah satu dari ${DAFTAR_BENCANA.join(", ")}`);
   const [w, p] = lingkupSql(a);
-  const r = (await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE ${w} AND (t.status = 'buka' OR t.dibuat > ?) ORDER BY t.dibuat DESC LIMIT 300`).bind(...p, kini - 3 * HARI).all()).results;
-  const M = await munculPer(env, r);
+  const baca = bagian => env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE ${w} ${bagian} AND (t.status = 'buka' OR t.dibuat > ?) ORDER BY t.dibuat DESC LIMIT 300`).bind(...p, kini - 3 * HARI).all();
+  /* ?bencana= (tabel 0047): karhutla = baris tanpa catatan atau bercatatan karhutla; tabel belum ada = semua tugas adalah karhutla */
+  let r;
+  try { r = (await baca(filter == null ? "" : filter === "karhutla" ? KECUALI_LAIN : "AND EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana = '" + filter + "')")).results; }
+  catch (e) { if (!tanpaBencana(e)) throw e; r = filter != null && filter !== "karhutla" ? [] : (await baca("")).results; }
+  const BC = await bencanaPer(env, r);
+  const M = await munculPer(env, r), KR = await kartuPer(env, r);
   /* PIC lapangan terakhir akun ini per kabupaten (terisi otomatis di konfirmasi berikutnya); WhatsApp milik akun itu sendiri */
   const pic = {}; for (const x of (await env.DB.prepare(`SELECT t.prov, lower(t.kab) kab, i.pic_nama, i.pic_jabatan, i.pic_wa, max(i.dibuat) waktu FROM tugas_isian i JOIN tugas_api t ON t.id = i.tugas_id
     WHERE i.akun_id = ? AND i.langkah = 'konfirmasi' GROUP BY t.prov, lower(t.kab)`).bind(a.id).all()).results) pic[`${x.prov}|${x.kab}`] = {nama: x.pic_nama, jabatan: x.pic_jabatan, wa: x.pic_wa};
-  return json({kini, tugas: r.map(t => bentukTugas(t, kini, M.get(t.id))).sort(urutTugas), batas: {konfirmasi_jam: 6, kabar_jam: 24}, pic_kab: pic});
+  return json({kini, tugas: r.map(t => bentukTugas(t, kini, M.get(t.id), KR.get(t.id) ?? null, BC.get(t.id))).sort(urutTugas), batas: {konfirmasi_jam: 6, kabar_jam: 24}, pic_kab: pic});
 }
 /* tugas di lingkup akun, atau 404: "tidak ada" dan "di luar wilayah" dijawab sama (tidak membocorkan id yang ada) */
 export async function tugasDalam(env, a, id) {
@@ -361,8 +387,26 @@ const SQL_MEDIA = "SELECT id, akun_id, isian_id, jenis, durasi, waktu_ambil, sum
 async function rincianTugas(env, req, id, kini) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
   const t = await tugasDalam(env, a, id); if (t instanceof Response) return t;
-  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, false)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, m.akun_id === a.id)),
+  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id), (await kartuPer(env, [t])).get(t.id) ?? null, (await bencanaPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, false)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, m.akun_id === a.id)),
     gudang_terdekat: await gudangTerdekat(env, t, {provs: [t.prov], akunId: a.id})});   // null bila migrasi 0031 belum diterapkan
+}
+
+/* GET /api/lapangan/tugas (halaman regu /lapangan, kode regu di header x-kode-regu): sampai 20 tugas BUKA di kabupaten regu itu (wilayah saja, tanpa join penugasan) (level tertinggi dulu), dengan rekomendasi/akses/kartu
+   berbentuk sama seperti GET /api/instansi/tugas/:id. Tanpa nama orang, nomor, atau isian; regu uji (dummy) hanya melihat tugas dummy. private, no-store: jawaban per regu tak boleh disimpan perantara. */
+/* halaman regu tanpa akun: kunci kontak/identitas (WA, telepon, surel, PIC, NIP, nama orang) dibuang rekursif dari JSON bebas (rekomendasi/akses/kartu) sebagai sabuk pengaman */
+const KUNCI_KONTAK = /(^|_)(wa|whatsapp|telepon|telp|tel|hp|phone|email|surel|pic|nip|kontak|nama_pic|petugas)(_|$)/i;
+export function bersihKontak(v) {
+  if (Array.isArray(v)) return v.map(bersihKontak);
+  if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).filter(([k]) => !KUNCI_KONTAK.test(k)).map(([k, x]) => [k, bersihKontak(x)]));
+  return v;
+}
+export async function tugasRegu(env, req, kini) {
+  const g = await reguDari(env, req, kini); if (g instanceof Response) return g;
+  let rows;
+  try { rows = (await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE t.status = 'buka' AND t.prov = ? AND lower(t.kab) = lower(?) AND t.dummy = ? ORDER BY t.level DESC, t.dibuat DESC LIMIT 20`).bind(g.prov, g.kab, g.dummy ? 1 : 0).all()).results; }
+  catch (e) { if (tanpaTabel(e)) return gagal(503, "tugas api belum diaktifkan (migrasi 0029 belum diterapkan)"); throw e; }
+  const KR = await kartuPer(env, rows);
+  return json({kini, tugas: rows.map(t => ({id: t.id, lat: t.lat, lon: t.lon, kab: t.kab, kec: t.kec, level: t.level, jenis: jenisTugas(KR.get(t.id)), ...teksJenis(jenisTugas(KR.get(t.id))), rekomendasi: bersihKontak(jsonAman(t.rekomendasi)), akses: bersihKontak(jsonAman(t.akses)), kartu: bersihKontak(KR.get(t.id) ?? null)}))}, 200, {"cache-control": "private, no-store"});
 }
 
 /* ================================================================ isian: GPS, konfirmasi, kabar */
@@ -484,6 +528,8 @@ async function konfirmasi(env, req, id, kini) {
       ...(usul ? [stmtUsulan(env, a.id, id, usul, kini, "EXISTS (SELECT 1 FROM tugas_isian WHERE id = ?)", [iid])] : [])]);
   } catch (e) { if (/UNIQUE/i.test(String(e.message || e))) return gagal(409, "tugas ini baru saja dikonfirmasi akun lain"); throw e; }
   if (!hasil[0].meta.changes) return gagal(409, "tugas sudah dikonfirmasi atau ditutup, atau media sudah dipakai isian lain");
+  /* api ada pada tugas verifikasi: naik jadi pemadaman (kabar tindakan lalu berlaku); tabel 0041 belum ada = tak ada jenis untuk dinaikkan */
+  if (o.hasil === "api_ada") await env.DB.prepare("UPDATE tugas_kartu SET kartu = json_set(kartu, '$.jenis', 'pemadaman') WHERE tugas_id = ? AND json_extract(kartu, '$.jenis') = 'verifikasi'").bind(id).run().catch(e => { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; });
   return json({id: iid, status: selesai, jarak_km: md.g.jarak_km, jauh: md.g.jarak_km > JAUH_KM, personel_terlihat: md.terlihat}, 201);
 }
 async function kabar(env, req, id, kini) {
@@ -630,14 +676,16 @@ async function unggahMedia(env, req, kini) {
     await env.DB.batch(kirimAI.flatMap(() => [catatLaju(env, a.id, "instansi.ai", kini), catatLaju(env, "semua", "instansi.ai.global", kini)]));
     orang = await hitungOrang(env, kirimAI).catch(() => null); if (orang) sumber = jenis === "foto" ? "thumbnail" : "bingkai_klien";
   }
-  const id = acak(8);
+  const id = acak(8), hashSimpan = await shaBytes(simpan);   // hash dihitung SEBELUM put R2 dan INSERT
   await env.MEDIA.put(`instansi/media/${id}`, simpan, {httpMetadata: {contentType: mime}});
   await env.MEDIA.put(`instansi/media/${id}_t`, simpanT, {httpMetadata: {contentType: mimeT}});
   try {
     await env.DB.prepare(`INSERT INTO instansi_media (id, akun_id, tugas_id, jenis, mime, ukuran, durasi, waktu_ambil, sumber_waktu, exif_jarak, lat, lon, akurasi, waktu_gps, jarak_km, gps_curiga, orang_terdeteksi, orang_sumber, orang_bingkai, dibuat, exif_waktu, exif_lat, exif_lon, kamera, exif_api_km)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(id, a.id, tid, jenis, mime, simpan.length, durasi, w.waktu, w.sumber, exifJarak, g.lat, g.lon, g.akurasi, g.waktu_gps, g.jarak_km, g.gps_curiga,
       orang ? orang.maks : null, sumber, orang ? JSON.stringify(orang.per) : null, kini, eWaktu, eOk ? Math.round(eLat * 1e5) / 1e5 : null, eOk ? Math.round(eLon * 1e5) / 1e5 : null, kamera, eApi).run();
-  } catch (e) { await env.MEDIA.delete([`instansi/media/${id}`, `instansi/media/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
+    /* hash byte yang disimpan (0044); migrasi belum diterapkan = tanpa hash, unggahan tetap sah */
+    try { await env.DB.prepare("UPDATE instansi_media SET sha256 = ? WHERE id = ?").bind(hashSimpan, id).run(); } catch (e) { if (!/no such column: sha256/i.test(String(e?.message || e))) throw e; }
+  } catch (e) { await env.DB.prepare("DELETE FROM instansi_media WHERE id = ?").bind(id).run().catch(() => {}); await env.MEDIA.delete([`instansi/media/${id}`, `instansi/media/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, jenis, waktu_ambil: w.waktu, sumber_waktu: w.sumber, orang_terdeteksi: orang ? orang.maks : null, orang_sumber: sumber, exif_jarak: exifJarak, exif_api_km: eApi, terverifikasi: {kamera: !!kamera, waktu: eWaktu != null, gps: eOk}, jarak_km: g.jarak_km, jauh: g.jarak_km > JAUH_KM}, 201);
 }
 /* media dan thumbnail dari R2 untuk akun dalam lingkup tugas atau admin; selalu private, no-store; Range didukung supaya video bisa digeser */
@@ -662,8 +710,9 @@ async function lihatMedia(env, req, id, kini, thumb) {
   if (!m || (!m.isian_id && m.akun_id !== a.id) || (m.md && !a.dummy) || !dalamLingkup(a, m)) return gagal(404, "berkas tidak ada");
   return kirimMedia(env, req, m, id, thumb);
 }
+const peranBacaMedia = () => [...P_VALIDASI, "analis_konsesi", "pimpinan"];   // analis konsesi dan pimpinan hanya MEMBACA (bukti Gakkum, GET /api/ops/bukti); hak tulis tetap P_VALIDASI
 async function mediaAdmin(env, req, id, thumb) {
-  if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();
+  if (!await modAtauStaf(env, req, peranBacaMedia())) return tolakMod();
   const m = await env.DB.prepare("SELECT m.mime, m.dummy, t.prov FROM instansi_media m JOIN tugas_api t ON t.id = m.tugas_id WHERE m.id = ?").bind(id).first();
   return m && dalamWilayahStaf(req, [m.prov]) && !(stafNyata(req) && m.dummy) ? kirimMedia(env, req, m, id, thumb) : gagal(404, "berkas tidak ada");
 }
@@ -705,6 +754,7 @@ export function pasAkses(a) {
   const x = {...a}; let s = JSON.stringify(x);
   if (s.length <= MAKS_AKSES) return s;
   if (Array.isArray(x.bawa)) while (x.bawa.length && (s = JSON.stringify(x)).length > MAKS_AKSES) x.bawa = x.bawa.slice(0, -1);
+  if (Array.isArray(x.dari)) while (x.dari.length && (s = JSON.stringify(x)).length > MAKS_AKSES) x.dari = x.dari.slice(0, -1);   // air (DEM, beda tinggi sumber) lebih penting daripada posko terjauh
   s = JSON.stringify(x); return s.length <= MAKS_AKSES ? s : null;
 }
 /* "Sudah padam belum?": tugas yang dilaporkan padam diperiksa terhadap tiga sumber, semuanya dengan syarat kejadian SESUDAH laporan padam dan dalam 2 km:
@@ -733,8 +783,8 @@ async function himawariPemicu(env, kini) {
 }
 const terdekat = (titik, t) => { let d = Infinity; for (const b of titik) if (b.t > t.padam_pada) { const x = km(b.lat, b.lon, t.lat, t.lon); if (x <= RADIUS_PADAM_KM && x < d) d = x; } return d === Infinity ? null : d; };
 export async function verifikasiPadam(env, kini = Date.now()) {
-  const T = (await env.DB.prepare(`SELECT t.id, t.lat, t.lon, t.status, t.padam_pada, t.padam_verif, t.cek_ulang_pada, t.rekomendasi, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
-    WHERE t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.status = 'padam' AND t.padam_pada > ? LIMIT 1000`).bind(kini - UMUR_PERIKSA_PADAM).all()).results;
+  const T = (await hanyaKarhutla(f => env.DB.prepare(`SELECT t.id, t.lat, t.lon, t.status, t.padam_pada, t.padam_verif, t.cek_ulang_pada, t.rekomendasi, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
+    WHERE t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.status = 'padam' AND t.padam_pada > ? ${f} LIMIT 1000`).bind(kini - UMUR_PERIKSA_PADAM).all())).results;   // satelit FIRMS/Himawari hanya untuk karhutla; bahaya lain: selesaiBencana
   if (!T.length) return {periksa: 0, muncul: 0, terverifikasi: 0};
   const r = await env.DB.prepare("SELECT dibuat, isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first();
   let lewat = r ? null : "belum ada putaran titik panas", baris = [];
@@ -757,8 +807,9 @@ export async function verifikasiPadam(env, kini = Date.now()) {
   return {periksa: T.length, muncul, terverifikasi};
 }
 /* Laporan regu berkode (posko.js lapor, sesudah laporan tersimpan) menaut ke tugas api terdekat (<= 2 km, kabupaten sama, tugas nyata yang buka atau padam) lewat tugas_lapangan.
-   Efeknya hanya bila laporan dipercaya (tidak ditahan, tanpa tanda GPS curiga): padam = laporan padam (padam_pada diisi bila belum, atau tugas muncul_lagi yang dipadamkan lagi);
-   menyala atau bara pada tugas yang sudah padam = muncul_lagi sumber regu. Tabel 0037 belum ada = lewati. Galat tidak boleh menggagalkan laporan (pemanggil menangkap). */
+   Efek hanya bila laporan dipercaya (l.dipercaya: GPS di wilayah regu, tidak ditahan, tanpa tanda GPS curiga). PADAM dari regu hanyalah klaim (tercatat, efek "klaim_regu"): tugas berubah
+   padam_dilaporkan bila dua regu BERBEDA yang dipercaya melapor padam dalam 24 jam (sesudah dibukanya kembali, bila muncul_lagi); konfirmasi akun instansi lewat isian tugas sendiri.
+   Jalur regu tidak pernah menutup penugasan; alat dilepas (lepasDariTugas) begitu tugas jadi padam_dilaporkan. menyala atau bara dari regu dipercaya pada tugas padam = muncul_lagi sumber regu (arah aman). Tabel 0037 belum ada = lewati. */
 export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
   try {
     const C = (await env.DB.prepare(`SELECT id, lat, lon, status, padam_verif, padam_pada, verif_pada FROM tugas_api WHERE prov = ? AND lower(kab) = lower(?) AND dummy = 0
@@ -766,24 +817,27 @@ export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
     let t = null, d = GABUNG_KM + 1e-9;
     for (const c of C) { const x = km(l.lat, l.lon, c.lat, c.lon); if (x <= GABUNG_KM && x < d) { t = c; d = x; } }
     if (!t) return null;
-    await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat) VALUES (?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini).run();
+    await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat, regu_id, dipercaya) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini, l.regu_id ?? null, l.dipercaya ? 1 : 0).run();
     if (!l.dipercaya) return {tugas_id: t.id, jarak_km: d, efek: null};
     const waktu = Math.min(l.waktu, kini);
     if (l.status === "padam" && (t.padam_pada == null || (t.status === "buka" && t.padam_verif === "muncul_lagi" && waktu > t.verif_pada))) {
+      const sejak = Math.max(kini - 24 * JAM, t.padam_verif === "muncul_lagi" ? t.verif_pada ?? 0 : 0);
+      const n = (await env.DB.prepare("SELECT count(DISTINCT regu_id) n FROM tugas_lapangan WHERE tugas_id = ? AND status = 'padam' AND dipercaya = 1 AND regu_id IS NOT NULL AND dibuat > ?").bind(t.id, sejak).first()).n;
+      if (n < 2) return {tugas_id: t.id, jarak_km: d, efek: "klaim_regu"};
       const r = await env.DB.prepare(`UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?1, verif_pada = ?2, cek_ulang_pada = NULL WHERE id = ?3 AND (padam_pada IS NULL OR (status = 'buka' AND padam_verif = 'muncul_lagi'))`).bind(waktu, kini, t.id).run();
-      if (r.meta.changes) { try { await lepasDariTugas(env, t.id, kini); } catch (e) {} return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"}; }
+      if (r.meta.changes) { await lepasDariTugas(env, t.id, kini); return {tugas_id: t.id, jarak_km: d, efek: "padam_dilaporkan"}; }   // alat tidak tersangkut 'dikerahkan' di tugas padam
     } else if ((l.status === "menyala" || l.status === "bara") && t.status === "padam" && waktu > t.padam_pada) {
       if (await bukaKembali(env, [{id: t.id, sumber: "regu", jarak: d, ket: `Laporan regu berkode: api ${l.status} dalam ${Math.round(d * 10) / 10} km dari tugas yang dilaporkan padam`}], kini)) return {tugas_id: t.id, jarak_km: d, efek: "muncul_lagi"};
     }
     return {tugas_id: t.id, jarak_km: d, efek: null};
-  } catch (e) { if (/no such table: tugas_lapangan/i.test(String(e?.message || e))) return null; throw e; }
+  } catch (e) { if (/no such table: tugas_lapangan|no such column: (regu_id|dipercaya)/i.test(String(e?.message || e))) return null; throw e; }
 }
 /* Butir Meja Pantau api_muncul_lagi (dipanggil src/pantau.js): tugas yang dibuka kembali karena titik panas baru dan belum ada kabar tindakan sesudahnya. Hilang sendiri saat kabar baru masuk. */
 export async function butirApiMunculLagi(env, kini, dummyOk) {
   try {
-    const R = (await env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.luas_ha, t.terakhir_terdeteksi, t.dibuat, t.verif_pada, t.dummy FROM tugas_api t
-      WHERE t.padam_verif = 'muncul_lagi' AND t.status = 'buka' ${dummyOk ? "" : "AND t.dummy = 0"}
-        AND NOT EXISTS (SELECT 1 FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'tindakan' AND i.dibuat > t.verif_pada) ORDER BY t.verif_pada LIMIT 500`).all()).results;
+    const R = (await hanyaKarhutla(f => env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.luas_ha, t.terakhir_terdeteksi, t.dibuat, t.verif_pada, t.dummy FROM tugas_api t
+      WHERE t.padam_verif = 'muncul_lagi' AND t.status = 'buka' ${dummyOk ? "" : "AND t.dummy = 0"} ${f}
+        AND NOT EXISTS (SELECT 1 FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'tindakan' AND i.dibuat > t.verif_pada) ORDER BY t.verif_pada LIMIT 500`).all())).results;
     return R.map(t => ({id: `api-muncul:${t.id}:${t.verif_pada}`, jenis: "api_muncul_lagi", judul: `Api muncul lagi di ${[t.kec, t.kab].filter(Boolean).join(", ")} sesudah dilaporkan padam, ${durasi(kini - t.verif_pada)} lalu`,
       rincian: "Titik panas baru dalam 2 km sesudah laporan padam. Minta regu mengecek lapangan dan mengirim kabar tindakan.", provs: [t.prov], kab: t.kab, dibuat: t.verif_pada, tenggat: t.verif_pada + TENGGAT_KABAR, prioritas: 1, dummy: t.dummy}));
   } catch (e) { if (tanpaTabel(e) || /no such column/i.test(String(e?.message))) return []; throw e; }
@@ -791,8 +845,8 @@ export async function butirApiMunculLagi(env, kini, dummyOk) {
 /* Butir Meja Pantau cek_ulang_jatuh_tempo: tugas padam di gambut (atau lahan tak diketahui) yang jadwal cek ulang H+1/H+3/H+7-nya lewat tanpa kunjungan berfoto. Hilang sendiri saat cek ulang masuk. */
 export async function butirCekUlang(env, kini, dummyOk) {
   try {
-    const R = (await env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.status, t.padam_verif, t.padam_pada, t.cek_ulang_pada, t.rekomendasi, t.dummy, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
-      WHERE t.status = 'padam' AND t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.padam_pada > ? ${dummyOk ? "" : "AND t.dummy = 0"} LIMIT 1000`).bind(kini - 14 * HARI).all()).results, out = [];
+    const R = (await hanyaKarhutla(f => env.DB.prepare(`SELECT t.id, t.prov, t.kab, t.kec, t.status, t.padam_verif, t.padam_pada, t.cek_ulang_pada, t.rekomendasi, t.dummy, ${SQL_LAHAN}, ${SQL_KUNJUNGAN} FROM tugas_api t
+      WHERE t.status = 'padam' AND t.padam_verif IN ('padam_dilaporkan', 'padam_terverifikasi') AND t.padam_pada > ? ${dummyOk ? "" : "AND t.dummy = 0"} ${f} LIMIT 1000`).bind(kini - 14 * HARI).all())).results, out = [];
     for (const t of R) {
       const L = lahanTugas(t); if (!L.gambut) continue;
       const j = jadwalCekUlang(t, kini)?.jadwal.find(x => x.terlambat); if (!j) continue;
@@ -804,41 +858,179 @@ export async function butirCekUlang(env, kini, dummyOk) {
     return out;
   } catch (e) { if (tanpaTabel(e) || /no such column/i.test(String(e?.message))) return []; throw e; }
 }
-export async function buatTugas(env, kini = Date.now()) {
-  let padam = null;
-  try { padam = await verifikasiPadam(env, kini); } catch (e) { if (!tanpaTabel(e) && !/no such (table: titik_terbaru|column)/i.test(String(e?.message || e))) console.error("verifikasi padam", e?.message); }   // galat di sini tidak boleh menahan pembuatan tugas
-  try { const h = await buatTugasIsi(env, kini); return padam && padam.periksa ? {...h, padam} : h; } catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0029 belum diterapkan"}; throw e; }
+/* kartu (kunci saudara di tugas_kompleks.json, kontrak docs/bnpb/RANCANGAN-API-PADAM.md bagian 7): hanya kunci berikut yang dibawa, JSON <= 3000 huruf.
+   Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
+const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"];
+const JENIS_TUGAS = ["pemadaman", "verifikasi"];
+/* teks tampil per jenis tugas; verifikasi = cluster firespot "mungkin" (cek lapangan), BUKAN pemadaman. Tanpa jenis (berkas lama) = pemadaman. SLA sama dengan pemadaman: konfirmasi 6 jam (cek cepat justru paling berguna), kabar tindakan hanya muncul bila regu menyatakan api ada. */
+export const jenisTugas = kartu => kartu?.jenis === "verifikasi" ? "verifikasi" : "pemadaman";
+export const teksJenis = j => j === "verifikasi" ? {judul: "Cek lapangan: kemungkinan api, belum pasti", arahan: "Pastikan ada api atau tidak, kabari lewat laporan. Jangan dikerahkan sebagai pemadaman sebelum api terlihat."} : {judul: null, arahan: null};
+const insidenSah = v => typeof v === "string" && v.length >= 3 && v.length <= 40 ? v : null;
+const angkaSah = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
+export function pasKartu(k) {
+  if (!k || typeof k !== "object" || Array.isArray(k)) return null;
+  const x = {};
+  for (const c of KUNCI_KARTU) if (k[c] !== undefined) x[c] = k[c];
+  if (x.insiden !== undefined) { const i = insidenSah(x.insiden); if (i) x.insiden = i; else delete x.insiden; }
+  for (const c of ["front", "masuk"]) if (x[c] !== undefined && x[c] !== null && !titikSah(x[c])) delete x[c];   // koordinat di luar bbox dibuang; masuk null (tak ada jalan) tetap sah
+  if (x.jenis !== undefined && !JENIS_TUGAS.includes(x.jenis)) delete x.jenis;
+  if (x.firespot !== undefined && !["ya", "mungkin"].includes(x.firespot)) delete x.firespot;
+  if (x.radius_m !== undefined && !angkaSah(x.radius_m)) delete x.radius_m;
+  for (const c of ["luas_aktif", "luas_koreksi"]) if (x[c] !== undefined && !(x[c] && typeof x[c] === "object" && ["ha", "min", "maks"].every(f => x[c][f] === undefined || angkaSah(x[c][f])))) delete x[c];
+  if (x.tren !== undefined && !(x.tren && typeof x.tren === "object" && ["n24", "n24_kemarin"].every(f => x.tren[f] === undefined || angkaSah(x.tren[f])))) delete x.tren;
+  if (Array.isArray(x.konsesi)) x.konsesi = x.konsesi.slice(0, 3);
+  if (Array.isArray(x.syarat)) x.syarat = x.syarat.filter(v => typeof v === "string").slice(0, 3);
+  if (!Object.keys(x).length) return null;
+  let s = JSON.stringify(x);
+  if (Array.isArray(x.konsesi)) while (x.konsesi.length && (s = JSON.stringify(x)).length > MAKS_KARTU) x.konsesi = x.konsesi.slice(0, -1);
+  for (const c of ["konsesi", "syarat", "tren", "luas_koreksi", "luas_aktif", "masuk", "radius_m", "front"]) { if ((s = JSON.stringify(x)).length <= MAKS_KARTU) break; delete x[c]; }
+  s = JSON.stringify(x); return s.length <= MAKS_KARTU && Object.keys(x).length ? s : null;
 }
-async function buatTugasIsi(env, kini) {
-  let berkas;
-  try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/tugas_kompleks.json")); if (!r.ok) { r.body?.cancel(); return {lewat: "tugas_kompleks.json belum ada"}; } berkas = await r.json(); }
-  catch (e) { return {lewat: "tugas_kompleks.json tidak terbaca"}; }
+const titikSah = o => o && typeof o === "object" && Number.isFinite(o.lat) && Number.isFinite(o.lon) && o.lat >= BBOX.latMin && o.lat <= BBOX.latMaks && o.lon >= BBOX.lonMin && o.lon <= BBOX.lonMaks ? o : null;
+/* kartu per tugas (tabel 0041; belum ada = tanpa kartu) */
+async function kartuPer(env, rows) {
+  const out = new Map(); if (!rows.length) return out;
+  try { for (const r of (await env.DB.prepare("SELECT tugas_id, insiden, kartu FROM tugas_kartu WHERE tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(rows.map(t => t.id))).all()).results) out.set(r.tugas_id, jsonAman(r.kartu) ?? (r.insiden ? {insiden: r.insiden} : null)); }
+  catch (e) { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; }
+  return out;
+}
+const META_VERSI = "tugas_kompleks_dibuat";
+const jalankanVerifikasi = async (env, kini) => {
+  try { return await verifikasiPadam(env, kini); } catch (e) { if (!tanpaTabel(e) && !/no such (table: titik_terbaru|column)/i.test(String(e?.message || e))) console.error("verifikasi padam", e?.message); return null; }   // galat di sini tidak boleh menahan pembuatan tugas
+};
+export async function buatTugas(env, kini = Date.now()) {
+  const padam = await jalankanVerifikasi(env, kini);
+  return {...await buatTugasAman(env, kini, null), ...(padam && padam.periksa ? {padam} : {})};
+}
+const buatTugasAman = async (env, kini, versi, bencana = "karhutla") => { try { return await buatTugasIsi(env, kini, versi, bencana); } catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0029 belum diterapkan"}; throw e; } };
+/* Cron tiap menit: tugas dibuat SEKALI per versi tugas_kompleks.json (nilai `dibuat`), di menit mana pun versi baru muncul. Pengintaian `dibuat` murah (awal berkas saja);
+   berkas utuh diurai hanya untuk versi baru. Verifikasi padam tetap di jadwal lama (menit 18 jam UTC kelipatan 3) dan di setiap versi baru.
+   Meta 0041 belum ada = perilaku lama (hanya di jadwal menit 18). */
+/* intip awal berkas: `dibuat` (dan bila id diberikan, `bencana` HARUS cocok; keduanya sebelum `kompleks`, kontrak src/tugas_bencana.js). Tak cocok atau tak ada = null, berkas tidak diurai. */
+async function intipDibuat(env, berkas = "tugas_kompleks.json", id = null) {
+  let r; try { r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/" + berkas)); } catch (e) { return null; }
+  if (!r.ok) { r.body?.cancel(); return null; }
+  const rd = r.body.getReader(), dek = new TextDecoder(); let buf = "";
+  try { while (buf.length < (id ? 1024 : 512)) { const {done, value} = await rd.read(); if (done) break; buf += dek.decode(value, {stream: true}); const m = buf.match(/"dibuat"\s*:\s*"([^"]{1,40})"/); if (m && (!id || new RegExp(`"bencana"\\s*:\\s*"${id}"`).test(buf))) return m[1]; } }
+  catch (e) { return null; } finally { rd.cancel().catch(() => {}); }
+  return null;
+}
+/* bahaya selain karhutla: tiap berkas diproses sekali per versi `dibuat` (kunci meta sendiri). Tanpa tugas_meta atau tugas_bencana tidak ada yang diproses (perilaku lama). Hanya hasil yang berarti dilaporkan. */
+async function bencanaLain(env, kini, adaMeta) {
+  const out = {}; if (!adaMeta) return out;
+  const ids = DAFTAR_BENCANA.filter(x => x !== "karhutla");
+  let meta; try { meta = new Map((await env.DB.prepare("SELECT kunci, nilai FROM tugas_meta WHERE kunci IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids.map(x => BENCANA[x].meta))).all()).results.map(r => [r.kunci, r.nilai])); } catch (e) { return out; }
+  for (const id of ids) {
+    const v = await intipDibuat(env, BENCANA[id].berkas, id);
+    if (v == null || meta.get(BENCANA[id].meta) === v) continue;
+    try { const h = await buatTugasAman(env, kini, v, id); if (h.baru || h.digabung || h.ditutup || h.lewat?.startsWith("migrasi")) out[id] = h; }
+    catch (e) { console.error("tugas " + id, e?.message); out[id] = {galat: String(e?.message || e).slice(0, 120)}; }
+  }
+  return out;
+}
+export async function tugasBaruDariBerkas(env, kini = Date.now()) {
+  const w = new Date(kini), slot = w.getUTCMinutes() === 18 && w.getUTCHours() % 3 === 0, v = await intipDibuat(env);
+  let terakhir = null, adaMeta = true;
+  try { terakhir = (await env.DB.prepare("SELECT nilai FROM tugas_meta WHERE kunci = ?").bind(META_VERSI).first())?.nilai ?? null; } catch (e) { if (!/no such table: tugas_meta/i.test(String(e?.message || e))) throw e; adaMeta = false; }
+  const proses = v != null && (adaMeta ? terakhir !== v : slot), lain = await bencanaLain(env, kini, adaMeta), tambah = Object.keys(lain).length ? {bencana: lain} : {};
+  if (!proses && !slot) return {lewat: v == null ? "tugas_kompleks.json belum ada" : "versi sama", ...tambah};
+  const padam = await jalankanVerifikasi(env, kini);
+  const h = proses ? await buatTugasAman(env, kini, adaMeta ? v : null) : {lewat: v == null ? "tugas_kompleks.json belum ada" : "versi sama"};
+  return {...h, ...(padam && padam.periksa ? {padam} : {}), ...tambah};
+}
+/* Penutupan otomatis bahaya selain karhutla (BENCANA[b].reda; src/tugas_bencana.js): tiap tugas buka bahaya itu (di mana pun) yang butirnya hilang atau reda di versi ini bertambah `reda`,
+   yang lain direset; mencapai `berturut` = status padam, padam_verif padam_dilaporkan (lalu padam_terverifikasi 48 jam kemudian bila masih reda); dibatalkan bila berkas kosong tanpa lengkap:true/terpotong atau > separuh tugas tertutup sekaligus. cocok = Map id tugas -> butir berkas yang digabung ke tugas itu; baru = id tugas yang dibuat putaran ini (belum dinilai). */
+async function selesaiBencana(env, b, kini, cocok, baru, boleh = true) {
+  const R = BENCANA[b].reda; if (!R) return {lewat: "tanpa penutupan otomatis; hanya laporan regu"};
+  if (!boleh) return {lewat: "berkas kosong tanpa lengkap:true, terpotong, atau berisi butir tak sah: tidak ada yang dinilai"};
+  const buka = (await env.DB.prepare("SELECT t.id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ? AND t.status = 'buka' AND t.dummy = 0 LIMIT 5000").bind(b).all()).results.map(r => r.id).filter(id => !baru.has(id));
+  const reda = id => !cocok.has(id) || butirReda(b, cocok.get(id));
+  const st = buka.map(id => env.DB.prepare("UPDATE tugas_bencana SET reda = CASE WHEN ?1 THEN reda + 1 ELSE 0 END WHERE tugas_id = ?2").bind(reda(id) ? 1 : 0, id));
+  for (let i = 0; i < st.length; i += CHUNK) await env.DB.batch(st.slice(i, i + CHUNK));
+  const tutup = (await env.DB.prepare("SELECT x.tugas_id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ?1 AND x.reda >= ?2 AND t.status = 'buka' AND t.dummy = 0 LIMIT 500").bind(b, R.berturut).all()).results.map(r => r.tugas_id);
+  /* pagar massal: lebih dari separuh tugas buka (>= 5) akan tertutup sekaligus = curiga berkas, bukan lapangan: tak ada yang ditutup */
+  if (buka.length >= 5 && tutup.length * 2 > buka.length) { console.error(`tugas ${b}: ${tutup.length} dari ${buka.length} tugas akan tertutup sekaligus, dibatalkan`); return {ditutup: 0, dibatalkan: tutup.length}; }
+  /* reda = padam_dilaporkan (menunggu verifikasi, seperti karhutla); terverifikasi bila 48 jam kemudian butirnya masih hilang/reda */
+  for (let i = 0; i < tutup.length; i += CHUNK) await env.DB.batch(tutup.slice(i, i + CHUNK).map(id => env.DB.prepare("UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?1, verif_pada = ?1, cek_ulang_pada = NULL WHERE id = ?2 AND status = 'buka'").bind(kini, id)));
+  for (const id of tutup) await lepasDariTugas(env, id, kini);   // alat tidak tersangkut 'dikerahkan' di tugas yang selesai
+  const tunggu = (await env.DB.prepare("SELECT t.id FROM tugas_bencana x JOIN tugas_api t ON t.id = x.tugas_id WHERE x.bencana = ? AND t.status = 'padam' AND t.padam_verif = 'padam_dilaporkan' AND t.padam_pada <= ? AND t.dummy = 0 LIMIT 500").bind(b, kini - JAM_PADAM_VERIF * JAM).all()).results.map(r => r.id).filter(reda);
+  for (let i = 0; i < tunggu.length; i += CHUNK) await env.DB.batch(tunggu.slice(i, i + CHUNK).map(id => env.DB.prepare("UPDATE tugas_api SET padam_verif = 'padam_terverifikasi', verif_pada = ?1 WHERE id = ?2 AND status = 'padam' AND padam_verif = 'padam_dilaporkan'").bind(kini, id)));
+  return {ditutup: tutup.length, ...(tunggu.length ? {terverifikasi: tunggu.length} : {})};
+}
+/* adapter selesai per bahaya: karhutla = verifikasi satelit (verifikasiPadam, berjalan terpisah di cron); lainnya = aturan berkas di atas; gempa dan udara tanpa otomatis */
+export const selesai = Object.fromEntries(DAFTAR_BENCANA.map(b => [b, b === "karhutla" ? verifikasiPadam : (env, kini, cocok = new Map(), baru = new Set()) => selesaiBencana(env, b, kini, cocok, baru)]));
+async function buatTugasIsi(env, kini, versi, bc = "karhutla") {
+  const B = BENCANA[bc], lain = bc !== "karhutla", metaKunci = B.meta;
+  const tandai = () => versi ? env.DB.prepare("INSERT INTO tugas_meta (kunci, nilai) VALUES (?1, ?2) ON CONFLICT(kunci) DO UPDATE SET nilai = ?2").bind(metaKunci, versi).run().catch(e => { if (!/no such table: tugas_meta/i.test(String(e?.message || e))) throw e; }) : null;
+  let berkas, r;
+  if (lain) try { await env.DB.prepare("SELECT 1 FROM tugas_bencana LIMIT 1").first(); } catch (e) { if (tanpaBencana(e)) return {lewat: "migrasi 0047 belum diterapkan"}; throw e; }   // tanpa tabel jenis, tugas bahaya lain tak bisa dibedakan dari karhutla: tidak dibuat
+  try { r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/" + B.berkas)); } catch (e) { return {lewat: B.berkas + " tidak terbaca"}; }
+  if (!r.ok) { r.body?.cancel(); return {lewat: B.berkas + " belum ada"}; }
+  try { berkas = await r.json(); } catch (e) { await tandai(); return {lewat: B.berkas + " tidak terbaca"}; }   // rusak: ditandai supaya berkas besar tidak diurai tiap menit
   const dibuat = Date.parse(berkas?.dibuat);
-  if (!Number.isFinite(dibuat) || kini - dibuat > 6 * JAM) return {lewat: "tugas_kompleks.json lebih dari 6 jam atau tanpa waktu"};
-  const ks = (Array.isArray(berkas.kompleks) ? berkas.kompleks : []).filter(kompleksSah).slice(0, 600);
-  if (!ks.length) return {baru: 0, digabung: 0};
+  if (lain && berkas?.bencana !== bc) { await tandai(); return {lewat: `${B.berkas}: bencana tidak cocok`}; }
+  if (!Number.isFinite(dibuat) || kini - dibuat > 6 * JAM) { await tandai(); return {lewat: B.berkas + " lebih dari 6 jam atau tanpa waktu"}; }   // basi atau `dibuat` tak terurai: ditandai juga
+  const mentah = Array.isArray(berkas.kompleks) ? berkas.kompleks : [], ks = mentah.filter(kompleksSah).slice(0, 600);
+  /* dinilai (butir hilang = reda) hanya bila berkas utuh: semua butir sah, tidak terpotong 600, dan tidak kosong kecuali berkas menyatakan lengkap: true */
+  const utuh = mentah.length <= 600 && ks.length === mentah.length && (ks.length > 0 || berkas.lengkap === true);
+  if (!ks.length) { const t = lain ? await selesaiBencana(env, bc, kini, new Map(), new Set(), utuh) : null; await tandai(); return {baru: 0, digabung: 0, ...(t?.ditutup ? {ditutup: t.ditutup} : {})}; }
   const provs = [...new Set(ks.map(k => k.prov))];
-  const buka = (await env.DB.prepare("SELECT id, prov, kab, lat, lon FROM tugas_api WHERE status = 'buka' AND prov IN (SELECT value FROM json_each(?)) LIMIT 5000").bind(JSON.stringify(provs)).all()).results;
-  const st = []; let baru = 0, digabung = 0;
+  let buka = (await env.DB.prepare("SELECT id, prov, kab, lat, lon, status FROM tugas_api WHERE (status = 'buka' OR (status = 'bukan_api' AND konfirmasi_pada > ?2)) AND prov IN (SELECT value FROM json_each(?1)) LIMIT 5000").bind(JSON.stringify(provs), kini - 14 * HARI).all()).results;
+  /* hanya tugas bahaya yang sama yang digabung (banjir tidak menelan api di dekatnya); tabel 0047 belum ada = semuanya karhutla */
+  { const jenis = await bencanaPer(env, buka); buka = buka.filter(t => (jenis.get(t.id) ?? "karhutla") === bc); }
+  /* insiden -> tugas terbuka (0041); tabel belum ada = hanya pencocokan jarak */
+  const perInsiden = new Map(), kartuAda = {ya: true}, jenisAda = new Map();
+  try { const idx = new Map(buka.map(t => [t.id, t])); for (const r of (await env.DB.prepare("SELECT tugas_id, insiden, json_extract(kartu, '$.jenis') jenis FROM tugas_kartu WHERE tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(buka.map(t => t.id))).all()).results) if (idx.has(r.tugas_id)) { if (r.insiden) perInsiden.set(r.insiden, idx.get(r.tugas_id)); jenisAda.set(r.tugas_id, r.jenis); } }
+  catch (e) { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; kartuAda.ya = false; }
+  const st = [], kartu = [], awal = [], level3 = [], luasAwal = [], jenisBaru = [], cocok = new Map(), barus = new Set(); let baru = 0, digabung = 0, pantau = 0;
   for (const k of ks) {
+    /* jam deteksi pertama insiden dari pipeline: insiden_awal_ms (ms epoch), cadangan insiden_awal / awal (ISO); hanya mengisi terdeteksi_awal yang masih kosong (src/alarm_himawari.js), tak pernah menimpa. Tanpa itu null dan tugas memakai `dibuat` (src/sla.js) */
+    const aw = Number.isFinite(k.insiden_awal_ms) ? k.insiden_awal_ms : Date.parse(k.insiden_awal || k.awal || k.terdeteksi_awal), awalMs = Number.isFinite(aw) && aw <= kini ? aw : null;
     const kab = k.kab.toLowerCase(), terakhir = Math.round(dibuat - (Number.isFinite(k.jam_sejak) ? k.jam_sejak : 0) * JAM), n24 = Math.max(0, Math.round(k.n24) || 0), luas = Number.isFinite(k.luas) && k.luas >= 0 ? k.luas : null;
-    const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses);
-    let dekat = null, jarak = GABUNG_KM + 1e-9;
-    for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = km(k.lat, k.lon, t.lat, t.lon); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
-    if (dekat) {
+    const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses), ins = insidenSah(k.insiden) ?? (lain ? insidenSah(k.id) : null), front = titikSah(k.front), lat = front ? front.lat : k.lat, lon = front ? front.lon : k.lon;
+    let dekat = ins ? perInsiden.get(ins) ?? null : null, jarak = GABUNG_KM + 1e-9;
+    if (!dekat && !(lain && ins)) for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = Math.min(km(k.lat, k.lon, t.lat, t.lon), km(lat, lon, t.lat, t.lon)); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
+    const kt = kartuAda.ya && lain ? pasKartuBencana(bc, {...k, insiden: ins ?? undefined, front: titikSah(k.front) ?? undefined, masuk: k.masuk === null ? null : titikSah(k.masuk) ?? undefined}) : kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal, firespot: k.firespot, jenis: k.jenis}) : null;
+    /* verifikasi hanya bertahan bila tugas yang digabung juga verifikasi: tugas pemadaman tidak diturunkan, dan pemadaman baru menaikkan verifikasi lama */
+    const jenisKt = gabung => { if (!kt) return kt; const o = JSON.parse(kt); if (o.jenis === "verifikasi" && gabung && jenisAda.get(gabung) !== "verifikasi") o.jenis = "pemadaman"; return JSON.stringify(o); };
+    const simpanKartu = (id, gabung) => { if (kartuAda.ya && (ins || kt)) kartu.push(env.DB.prepare("INSERT INTO tugas_kartu (tugas_id, insiden, kartu, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(tugas_id) DO UPDATE SET insiden = coalesce(?2, insiden), kartu = coalesce(?3, kartu), diperbarui = ?4").bind(id, ins, jenisKt(gabung), kini)); if (ins) perInsiden.set(ins, buka.find(t => t.id === id)); };
+    if (dekat?.status === "bukan_api") {   // sudah dikonfirmasi bukan api: hanya catat deteksi terakhir, tanpa membuka kembali dan tanpa tugas baru tiap 3 jam
       digabung++;
+      st.push(env.DB.prepare("UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1) WHERE id = ?2 AND status = 'bukan_api'").bind(terakhir, dekat.id));
+    } else if (dekat) {
+      digabung++; cocok.set(dekat.id, k);
+      if (awalMs != null && !lain) awal.push({id: dekat.id, lat, lon, awal: awalMs, baru: false});
+      /* lokasi ikut front terbaru selama tugas masih buka (padam/bukan_api tidak bergeser) */
       st.push(env.DB.prepare(`UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1), n24 = max(n24, ?2), level = max(level, ?3),
-        luas_ha = CASE WHEN ?4 IS NULL THEN luas_ha ELSE max(coalesce(luas_ha, 0), ?4) END, rekomendasi = coalesce(?5, rekomendasi), akses = coalesce(?7, akses) WHERE id = ?6 AND status = 'buka'`)
-        .bind(terakhir, n24, k.level, luas, rek, dekat.id, akses));
+        luas_ha = CASE WHEN ?4 IS NULL THEN luas_ha ELSE max(coalesce(luas_ha, 0), ?4) END, rekomendasi = coalesce(?5, rekomendasi), akses = coalesce(?7, akses),
+        lat = CASE WHEN ?8 AND status = 'buka' THEN ?9 ELSE lat END, lon = CASE WHEN ?8 AND status = 'buka' THEN ?10 ELSE lon END WHERE id = ?6 AND status IN ('buka', 'bukan_api')`)
+        .bind(terakhir, n24, k.level, luas, rek, dekat.id, akses, front ? 1 : 0, lat, lon));
+      if (front && dekat.status === "buka") { dekat.lat = lat; dekat.lon = lon; }
+      simpanKartu(dekat.id, dekat.id);
+    } else if (k.otomatis === false || (lain && butirReda(bc, k))) {   // bahaya lain: butir yang sudah reda tidak membuat tugas baru
+      pantau++;   // daftar pantau: tidak membebani daerah dengan tugas baru; yang sudah ada tetap diperbarui di cabang atas
     } else {
       baru++;
-      const id = acak(8); buka.push({id, prov: k.prov, kab: k.kab, lat: k.lat, lon: k.lon});   // kompleks berikutnya di run yang sama ikut bergabung
+      const id = acak(8); buka.push({id, prov: k.prov, kab: k.kab, lat, lon, status: "buka"}); barus.add(id); if (lain) jenisBaru.push(env.DB.prepare("INSERT OR IGNORE INTO tugas_bencana (tugas_id, bencana) VALUES (?, ?)").bind(id, bc));   // kompleks berikutnya di run yang sama ikut bergabung
       st.push(env.DB.prepare(`INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, rekomendasi, akses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-        .bind(id, k.prov, k.kab, typeof k.kec === "string" && k.kec && k.kec.length <= 60 ? k.kec : null, k.lat, k.lon, k.level, n24, luas, kini, terakhir, rek, akses));
+        .bind(id, k.prov, k.kab, typeof k.kec === "string" && k.kec && k.kec.length <= 60 ? k.kec : null, lat, lon, k.level, n24, luas, kini, terakhir, rek, akses));
+      simpanKartu(id);
+      if (luas != null && !lain) luasAwal.push(env.DB.prepare("INSERT OR IGNORE INTO tugas_luas_awal (tugas_id, luas_ha) VALUES (?, ?)").bind(id, luas));
+      if (!lain) awal.push({id, lat, lon, awal: awalMs, baru: true});
+      if (lain ? k.level >= 3 : k.level === 3) level3.push({id, prov: k.prov, kab: k.kab, kec: typeof k.kec === "string" && k.kec.length <= 60 ? k.kec : null});
     }
   }
   for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
-  return {baru, digabung};
+  for (let i = 0; i < jenisBaru.length; i += 50) await env.DB.batch(jenisBaru.slice(i, i + 50));   // sesudah tugasnya ada (REFERENCES)
+  for (let i = 0; i < kartu.length; i += 50) await env.DB.batch(kartu.slice(i, i + 50));   // sesudah tugasnya ada (REFERENCES)
+  /* luas satelit saat tugas dibuat (0046; tabel belum ada = dilewati, tugas tetap jadi) */
+  try { for (let i = 0; i < luasAwal.length; i += 50) await env.DB.batch(luasAwal.slice(i, i + 50)); } catch (e) { if (!/no such table: (main\.)?tugas_luas_awal/i.test(String(e?.message || e))) console.error("luas awal", e?.message); }
+  /* sesudah tugasnya ada: jam deteksi pertama + kunci alarm Himawari (0043), lalu kabar seketika level 3 (push + email, idempoten). Galat di sini tidak menggagalkan putaran. */
+  try { await catatAwalTugas(env, awal, kini); } catch (e) { console.error("awal tugas", e?.message); }
+  if (level3.length) try { const h = await kabarLevel3(env, level3, kini, bc); if (h.akun) console.log("kabar level 3", JSON.stringify(h)); } catch (e) { console.error("kabar level 3", e?.message); }
+  const tutup = lain ? await selesaiBencana(env, bc, kini, cocok, barus, utuh) : null;
+  await tandai();
+  return {baru, digabung, ...(pantau ? {pantau} : {}), ...(tutup?.ditutup ? {ditutup: tutup.ditutup} : {})};
 }
 /* retensi (cron menit 17): sesi kedaluwarsa; tugas dan isian 180 hari (foto R2 ikut dibuang) */
 export async function bersihkanInstansi(env, kini = Date.now()) {
@@ -927,7 +1119,8 @@ async function ubahAkun(env, req, id, kini) {
   }
   if (aksi === "cabut") {
     if (ada.status === "dicabut") return gagal(409, "akun sudah dicabut");
-    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini)]);
+    await env.DB.batch([ubah("UPDATE instansi_akun SET status = 'dicabut', alasan = ?, diputus = ?, oleh = ? WHERE id = ?", alasan, kini, mod, id), cabutSesi, stmtJejak(env, mod, id, "cabut", alasan, kini),
+      ...(await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE name = 'penugasan'").first() ? [env.DB.prepare("UPDATE penugasan SET status = 'dicabut' WHERE akun_id = ? AND status = 'aktif'").bind(id)] : [])]);   // tautan lacak akun yang dicabut ikut mati
     return json({id, status: "dicabut"});
   }
   if (aksi === "reset") {
@@ -995,7 +1188,7 @@ async function rincianAdmin(env, req, id, kini) {
   if (!await modAtauStaf(env, req, P_VALIDASI)) return tolakMod();   // keputusan pemilik 21 Okt 2026: staf verifikator/pusdalops (dalam wilayahnya) membuka rincian dan media tugas
   const t = await env.DB.prepare(`SELECT ${KOLOM_TUGAS} FROM tugas_api t WHERE t.id = ?`).bind(id).first();
   if (!t || !dalamWilayahStaf(req, [t.prov]) || (stafNyata(req) && t.dummy)) return gagal(404, "tugas tidak ada");
-  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, true)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, true)),
+  return json({tugas: bentukTugas(t, kini, (await munculPer(env, [t])).get(t.id), (await kartuPer(env, [t])).get(t.id) ?? null, (await bencanaPer(env, [t])).get(t.id)), isian: (await env.DB.prepare(SQL_ISIAN).bind(id).all()).results.map(x => bentukIsian(x, true)), media: (await env.DB.prepare(SQL_MEDIA).bind(id).all()).results.map(m => bentukMedia(m, true)),
     usulan: (await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, status FROM usulan_kontak_pt WHERE tugas_id = ?").bind(id).all()).results, gudang_terdekat: await gudangTerdekat(env, t, {adminPic: true, dalam: p => dalamWilayahStaf(req, [p])})});
 }
 async function daftarUsulan(env, req, url) {
@@ -1180,7 +1373,7 @@ export async function personelProvinsi(env, tanggal) {
 
 /* ================================================================ halaman /instansi + rute */
 /* peta desktop: MapLibre dari cdnjs (dengan SRI di klien) dan ubin openfreemap, sama dengan /lapangan */
-const CSP_INSTANSI = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_INSTANSI = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; media-src 'self' blob:; connect-src 'self' https://*.openfreemap.org; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 async function halamanPublik(env, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/instansi.html", url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman instansi tidak ada"); }
@@ -1197,7 +1390,7 @@ const RUTE_ASLI = {
   "POST /api/instansi/verifikasi": (env, req, url, kini) => verifikasi(env, req, kini),
   "POST /api/instansi/surat": (env, req, url, kini) => unggahDok(env, req, kini, "surat"),
   "POST /api/instansi/kartu": (env, req, url, kini) => unggahDok(env, req, kini, "kartu"),
-  "GET /api/instansi/tugas": (env, req, url, kini) => daftarTugas(env, req, kini),
+  "GET /api/instansi/tugas": (env, req, url, kini) => daftarTugas(env, req, url, kini),
   "GET /api/instansi/tugas/:id": (env, req, url, kini, ctx, id) => rincianTugas(env, req, id, kini),
   "POST /api/instansi/konfirmasi/:id": (env, req, url, kini, ctx, id) => konfirmasi(env, req, id, kini),
   "POST /api/instansi/kabar/:id": (env, req, url, kini, ctx, id) => kabar(env, req, id, kini),

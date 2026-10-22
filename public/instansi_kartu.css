@@ -1,0 +1,12 @@
+/* Kartu Api (instansi_kartu.js): satu gaya untuk /instansi dan /admin/instansi; mandiri (admin tidak memuat instansi.css), token warna dengan cadangan. Cetak: satu halaman. */
+.kp-kartu{--kp-ink:var(--ink,#1b2733);--kp-garis:var(--line,#d9dee5);--kp-oranye:#d9531e;border:1px solid var(--kp-garis);border-radius:14px;padding:14px;margin:12px 0;background:var(--surface,#fff);color:var(--kp-ink)}
+.kp-kepala{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.kp-kepala h2{margin:0;font-size:18px}.kp-id{font-size:12px;color:var(--ink2,#556)}
+.kp-pil{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft,#eef1f5);white-space:nowrap}.kp-pil.emas{background:color-mix(in srgb,#e0a100 22%,transparent)}
+.kp-bag{padding:10px 0;border-top:1px dashed var(--kp-garis)}.kp-bag:first-of-type{margin-top:10px}.kp-bag h3{margin:0 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;display:flex;gap:8px;align-items:center}
+.kp-utama{margin:0 0 4px;font-size:20px;font-weight:800;color:var(--kp-oranye)}.kp-baris{margin:2px 0;font-size:14px}.kp-k{font-weight:700;margin-right:4px}.kp-k::after{content:":"}
+.kp-redup,.kp-sumber,.kp-pesan{font-size:12.5px;color:var(--ink2,#556);margin:4px 0}.kp-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.kp-tombol{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--kp-garis);background:var(--surface,#fff);color:inherit;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.kp-tombol.utama{background:var(--kp-oranye);border-color:var(--kp-oranye);color:#fff}.kp-nav{margin-top:8px;width:100%}
+@media print{body.kp-cetak>*:not(main):not(.kp-cetak-ini){display:none!important}body.kp-cetak :not(.kp-cetak-ini):not(.kp-cetak-ini *):not(main):not(body):not(html){visibility:hidden}
+  body.kp-cetak .kp-cetak-ini,body.kp-cetak .kp-cetak-ini *{visibility:visible}body.kp-cetak .kp-cetak-ini{position:absolute;inset:0 auto auto 0;width:100%}
+  .kp-aksi,.kp-nav,.kp-pesan{display:none!important}.kp-kartu{border:0;color:#000;page-break-inside:avoid;font-size:12pt}.kp-utama{color:#000}}

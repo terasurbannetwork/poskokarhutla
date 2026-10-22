@@ -37,7 +37,8 @@ uji("kode pribadi: hanya hash tersimpan, salah/format liar 403, tebakan > 300/ja
   assert.equal((await pemegangKode(env, req("10.0.0.1"), "uji", cari)).status, 403);
   const k = Date.now();
   await U.DB.batch(Array.from({length: 300}, (_, i) => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) SELECT kunci, aksi, ? FROM laju_bnpb WHERE aksi = 'uji.kode_gagal' LIMIT 1").bind(k - i)));
-  assert.equal((await pemegangKode(env, req("10.0.0.1", kode), "uji", cari, k)).status, 429, "IP yang sudah banyak gagal ditolak walau kodenya benar");
+  assert.deepEqual(await pemegangKode(env, req("10.0.0.1", kode), "uji", cari, k), {id: "pemegang"}, "kode BENAR lolos walau IP sudah banyak menebak salah (pemegang sah di balik NAT tidak terkunci)");
+  assert.equal((await pemegangKode(env, req("10.0.0.1", "y".repeat(26)), "uji", cari, k)).status, 429, "IP yang sudah banyak gagal: tebakan salah berikutnya ditolak 429");
   assert.deepEqual(await pemegangKode(env, req("10.0.0.2", kode), "uji", cari, k), {id: "pemegang"}, "IP lain tidak ikut terkunci");
 });
 

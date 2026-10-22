@@ -16,7 +16,7 @@ const aset = async req => {
 export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/worker.js", asetKu} = {}) {
   const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, skrip), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
-    bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", ...ikat},
+    bindings: {IP_SALT: "garam-uji", ALARM_CACHE_DETIK: "0", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", ...ikat},
     serviceBindings: {ASSETS: asetKu || aset}, outboundService: luar || (() => new Response("diblok di uji", {status: 599})), cache: false});
   const DB = await mf.getD1Database("DB");
   await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));

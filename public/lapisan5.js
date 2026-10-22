@@ -25,19 +25,25 @@
     ["Akses", [["jalan", "Jalan & sungai (OSM)"]]],
   ];
   /* lapisan ubin pasif (config + legenda di data/lapisan_tambahan.json): satu sumber ditambah hanya saat dinyalakan */
-  const UBIN = [["jrc", "Tutupan pohon"], ["primer", "Hutan primer"], ["mangrove", "Mangrove"], ["tanaman", "Tanaman & kebun"], ["tambang", "Tambang"], ["plkemenhut", "Tutupan lahan 2025 (Kemenhut, 11 kelas)"], ["kwskemenhut", "Kawasan hutan"]];
+  const UBIN = [["jrc", "Tutupan pohon"], ["primer", "Hutan primer"], ["mangrove", "Mangrove"], ["tanaman", "Tanaman & kebun"], ["tambang", "Tambang"], ["plkemenhut", "Tutupan lahan 2025 (Kemenhut, 11 kelas)"], ["kwskemenhut", "Kawasan hutan"],
+    ["effis_fwi", "Cuaca api resmi"], ["effis_dc", "Kekeringan gambut"], ["effis_ba", "Area terbakar"], ["gibs_aod", "Asap satelit"]];
   /* grup ubin dengan sub-pilihan: satu ubin + deretan pil. Pil sumber l5 membawa data-l = kunci UBIN; pil "proxy" (konsesi, milik skrip
      utama) membawa data-px dan menggerakkan kotak aslinya (tersembunyi di index.html), jadi popup/legenda/cari.js/aktor.js tak berubah.
      Fase 2 (PMTiles: sawit industri, sawit rakyat, kelapa, kawasan terbangun, jalan logging): tambah entri di UBIN + satu baris di
      SUB.konsesig.isi + config di lapisan_tambahan.json. Isi: [kunci, label pil, proxy?]. */
   const SUB = {hutan: {nama: "Hutan", awal: "kwskemenhut", isi: [["kwskemenhut", "Kawasan hutan 2026 (status)"], ["plkemenhut", "Tutupan lahan 2025"], ["jrc", "Tutupan pohon 2020"], ["primer", "Hutan primer 2025"], ["mangrove", "Mangrove"]]},
     konsesig: {nama: "Konsesi", awal: "konsesi", isi: [["konsesi", "Batas izin", 1], ["tanaman", "Hutan tanaman & kebun"], ["tambang", "Area tambang"]]}};
+  /* grup "Cuaca & asap": EFFIS (WMS Copernicus, TIME = hari) dan NASA GIBS AOD; tanggal & pilihan hari dibangun di gfw() dan legenda */
+  const CUACA = [["cuaca", "Cuaca kebakaran resmi (EFFIS)"], ["gibs_aod", "Asap satelit (NASA)"]];
+  SUB.cuaca = {nama: "EFFIS", awal: "effis_fwi", isi: [["effis_fwi", "Indeks cuaca api (FWI)"], ["effis_dc", "Kekeringan gambut (DC)"], ["effis_ba", "Area terbakar 30 hari"]]};
   const LAHAN = [["hutan", "Hutan (status, tutupan lahan, pohon, primer, mangrove)"], ["konsesig", "Konsesi (batas izin, kebun, tambang)"], ["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"]];
-  const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0]), ...UBIN.map(x => x[0])]);
+  const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0]), ...CUACA.map(x => x[0]), ...UBIN.map(x => x[0])]);
   const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>` + (SUB[k] ? `<div class="ub-chip" data-g="${k}" hidden><b class="ub-jd">${SUB[k].nama}</b>${SUB[k].isi.map(([s, t, px]) => `<label><input type="checkbox" data-${px ? "px" : "l"}="${s}"><span>${t}</span></label>`).join("")}</div>` : "");
   function sisipKotak() {
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan" || d.querySelector("summary")?.textContent.trim() === window.T?.("Lahan"));
+    const cuaca = [...L.querySelectorAll("details")].find(d => ["Cuaca & asap", window.T?.("Cuaca & asap")].includes(d.querySelector("summary")?.textContent.trim()));
+    cuaca ? cuaca.insertAdjacentHTML("beforeend", CUACA.map(kotak).join("")) : L.insertAdjacentHTML("beforeend", `<details open><summary>Cuaca & asap</summary>${CUACA.map(kotak).join("")}</details>`);
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
     /* grup "Akses" digabung ke "Infrastruktur" (permintaan pemilik 13 Okt 2026); grup lain tetap jadi grup sendiri */
     const infra = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Infrastruktur" || d.querySelector("summary")?.textContent.trim() === window.T?.("Infrastruktur"));
@@ -94,7 +100,7 @@
         "circle-color": ["match", ["get", "c"], 1, W_KELAS[1], 2, W_KELAS[2], 3, W_KELAS[3], W_KELAS[4]], "circle-opacity": .55,
         "circle-stroke-color": gelap() ? "#0b1424" : "#fff", "circle-stroke-width": .8}}, Peta.lapisAwal());
       klikSekali("l5-penduduk", e => { const p = e.features[0].properties;
-        return `<b>± ${fmt(Math.round(p.n / 1000) * 1000)} jiwa</b> di sel ± 28 km ini<br>PM2.5 maks. ${fmt(p.pm)} µg/m³ · <b>${KELAS[p.c]}</b><br><small>Prakiraan CAMS; penduduk WorldPop 2026</small>`; }); },
+        return `<b>± ${fmt(Math.round(p.n / 1000) * 1000)} jiwa</b> di sel ± 28 km ini<br>PM2.5 maks. ${fmt(p.pm)} µg/m³, <b>${KELAS[p.c]}</b><br><small>Prakiraan CAMS; penduduk WorldPop 2026</small>`; }); },
     async fasilitas() { const d = await FAS();
       peta.addSource("l5-fasilitas", {type: "geojson", data: {type: "FeatureCollection", features: d.map((x, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {i, t: x.t, g: x.g || ""}}))}});
       const w = ["match", ["get", "t"], "rs", WARNA.ungu, "faskes", WARNA.biru, ["match", ["get", "g"], "dini", W_JENJANG.dini, "sd", W_JENJANG.sd, "smp", W_JENJANG.smp, "sma", W_JENJANG.sma, W_JENJANG.lain]];
@@ -105,11 +111,11 @@
         const hari = pm ? a.hari.map((t, i) => pm[i] == null ? "" : `<span class="l5-pm" style="background:${W_KELAS[kelasPM(pm[i])]}" title="${KELAS[kelasPM(pm[i])]}">${new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short"})} ${Math.round(pm[i])}</span>`).join("") : "–";
         return `<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${x.t === "rs" ? WARNA.ungu : x.t === "faskes" ? WARNA.biru : "#b8902c"},rgba(11,37,69,.95))"><div>
           <small>${{rs: "Rumah sakit", faskes: "Fasilitas kesehatan", sekolah: "Sekolah " + esc(x.j)}[x.t]}</small><b>${esc(x.nama)}</b></div></div>
-          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${x.t === "sekolah" ? kb("Status", x.st === "N" ? "Negeri" : "Swasta") + kb("Siswa", x.sw == null ? "–" : fmt(x.sw)) + kb("Desa / kecamatan", esc([x.desa, x.kec].filter(Boolean).join(", ") || "–"), 1) : ""}${kb("Kompleks terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
-          ${k ? kb("Status kompleks", `${esc(k.p.id)} · ${esc(S.meta.status[k.p.level])}`, 1) : ""}</div>
+          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${x.t === "sekolah" ? kb("Status", x.st === "N" ? "Negeri" : "Swasta") + kb("Siswa", x.sw == null ? "–" : fmt(x.sw)) + kb("Desa / kecamatan", esc([x.desa, x.kec].filter(Boolean).join(", ") || "–"), 1) : ""}${kb("Cluster terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
+          ${k ? kb("Status cluster", `${esc(k.p.id)}, ${esc(S.meta.status[k.p.level])}`, 1) : ""}</div>
           <div class="kk">PM2.5 maks. harian (µg/m³), prakiraan CAMS:<div class="l5-hari">${hari}</div>
           ${pm && pm.some(v => v > 55.4) ? `<b>${x.t === "sekolah" ? "Pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang." : "Siapkan layanan ISPA, masker, dan ruang bersih udara."}</b>` : ""}
-          ${k?.p.level ? `<button class="btn sec" data-l5k="${esc(k.p.id)}">Buka kompleks ${esc(k.p.id)}</button>` : ""}</div></div>`; }, 330); },
+          ${k?.p.level ? `<button class="btn sec" data-l5k="${esc(k.p.id)}">Buka cluster ${esc(k.p.id)}</button>` : ""}</div></div>`; }, 330); },
     async jalan() { const d = await muat("jalan", "data/jalan.geojson"), bawah = Peta.lapisAwal();
       peta.addSource("l5-jalan", {type: "geojson", data: d, attribution: "Jalan & sungai © kontributor OpenStreetMap (ODbL)"});
       peta.addLayer({id: "l5-sungai", type: "line", source: "l5-jalan", filter: ["==", ["get", "k"], 6], paint: {"line-color": WARNA.biru, "line-width": ["interpolate", ["linear"], ["zoom"], 5, .6, 10, 2], "line-opacity": .8}}, bawah);
@@ -129,17 +135,36 @@
     if (c.jenis === "vector") { peta.addSource("l5-" + k, {type: "vector", tiles: c.tiles, minzoom: c.minzoom, maxzoom: c.maxzoom, attribution: c.atribusi});
       peta.addLayer({id: "l5-" + k, type: "fill", source: "l5-" + k, "source-layer": c.sumber_layer, paint: {"fill-color": warnaOk(c.warna), "fill-opacity": .75}}, Peta.lapisAwal());
       peta.addLayer({id: "l5-" + k + "_g", type: "line", source: "l5-" + k, "source-layer": c.sumber_layer, paint: {"line-color": "#fff", "line-width": .6, "line-opacity": .8}}, Peta.lapisAwal()); return; }
-    const akhir = new Date().toISOString().slice(0, 10), mulai = new Date(Date.now() - (c.hari || 90) * 864e5).toISOString().slice(0, 10);
-    peta.addSource("l5-" + k, {type: "raster", tiles: c.tiles.map(t => t.replace("{mulai}", mulai).replace("{akhir}", akhir).replace("{kemarin}", new Date(Date.now() - 864e5).toISOString().slice(0, 10))), tileSize: c.tileSize, minzoom: c.minzoom, maxzoom: c.maxzoom, attribution: c.atribusi});
+    const akhir = wib(), mulai = wib(-(c.hari || 90));
+    const mk = tgl => c.tiles.map(t => t.replace("{mulai}", mulai).replace("{akhir}", akhir).replace("{tgl}", tgl).replace("{kemarin}", wib(-1)));
+    const tgl = await tglUbin(c, akhir); (C5.tgl ||= {})[k] = {tgl, mulai, akhir}; (C5.mk ||= {})[k] = mk;
+    peta.addSource("l5-" + k, {type: "raster", tiles: mk(tgl), tileSize: c.tileSize, minzoom: c.minzoom, maxzoom: c.maxzoom, attribution: c.atribusi});
     peta.addLayer({id: "l5-" + k, type: "raster", source: "l5-" + k, paint: {"raster-opacity": c.opasitas ?? .85, "raster-fade-duration": 0}}, Peta.lapisAwal());
     if (c.lambat) petunjukMuat(k, c); };
+  /* tanggal kalender WIB (Asia/Jakarta); n = geser hari dari sekarang. tambah() = aritmetika kalender murni pada teks YYYY-MM-DD */
+  const wib = (n = 0) => new Intl.DateTimeFormat("en-CA", {timeZone: "Asia/Jakarta"}).format(Date.now() + n * 864e5), tambah = (t, n) => new Date(Date.parse(t) + n * 864e5).toISOString().slice(0, 10);
+  /* tanggal ubin: hari_depan = prakiraan (hari ke-N dari hari ini WIB, pilihan di legenda); cari_tgl = mundur dari kemarin sampai ubin ada (GIBS telat 1-3 hari) */
+  const tglUbin = async (c, hariIni) => { if (c.hari_depan != null) return tambah(hariIni, C5.eh || 0);
+    if (!c.cari_tgl) return hariIni;
+    /* semua tanggal dicoba serentak (batas 2,5 detik), ambil yang terbaru ada; tidak ada = tanggal tertua yang dicoba */
+    const tg = Array.from({length: c.cari_tgl}, (_, i) => wib(-(i + 1)));
+    const ok = await Promise.all(tg.map(t => fetch(c.tiles[0].replace("{tgl}", t).replace("{z}", 0).replace("{y}", 0).replace("{x}", 0), {method: "HEAD", signal: AbortSignal.timeout(2500)}).then(r => r.ok, () => false)));
+    return tg[ok.indexOf(true)] || tg[tg.length - 1]; };
+  const tglID = t => new Date(t + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
   /* server lambat (Kemenhut): tulisan "memuat…" di legenda; galat ubin diam-diam (tanpa toast/konsol berisik) */
   function petunjukMuat(k, c) { const id = "l5-" + k, ubah = () => { const el = document.getElementById("l5m-" + k); if (!el) return;
-      el.textContent = peta.getZoom() < c.minzoom ? ` · perbesar peta (zoom ${c.minzoom}+) untuk melihat` : peta.isSourceLoaded(id) ? "" : " · memuat…"; };
+      el.textContent = peta.getZoom() < c.minzoom ? ` (perbesar peta ke zoom ${c.minzoom}+ untuk melihat)` : peta.isSourceLoaded(id) ? "" : " (memuat…)"; };
     (C5.ubah ||= {})[k] = ubah; ubah();
     peta.on("sourcedata", e => e.sourceId === id && ubah()); peta.on("idle", ubah); peta.on("zoomend", ubah); peta.on("error", e => e.sourceId === id ? ubah() : console.error(e.error)); }
   for (const k of ["peringatan", "satelit", ...UBIN.map(x => x[0])]) pasang[k] = () => gfw(k);
   pasang.hilang = async () => { await gfw("hilang"); await gfw("hilang_api"); };
+
+  /* pilihan hari prakiraan EFFIS: chrome (tombol) langsung, ganti ubin di frame berikutnya */
+  document.addEventListener("click", e => { const b = e.target.closest?.("button[data-eh]"); if (!b) return; const i = +b.dataset.eh; C5.eh = i;
+    document.querySelectorAll("button[data-eh]").forEach(x => { const on = x === b || +x.dataset.eh === i; x.setAttribute("aria-pressed", on); x.style.fontWeight = on ? 700 : ""; x.style.outline = on ? "2px solid #e58a45" : ""; });
+    requestAnimationFrame(() => { const T = Lapis.cache.lapisan_tambahan?.lapisan; for (const k in C5.mk || {}) { const c = T?.[k]; if (c?.hari_depan == null) continue;
+      const w = C5.tgl[k]; w.tgl = tambah(w.akhir, i); peta.getSource("l5-" + k)?.setTiles(C5.mk[k](w.tgl));
+      const el = document.getElementById("l5t-" + k); if (el) el.innerHTML = `<b>Prakiraan untuk ${tglID(w.tgl)}</b>`; } }); });
 
   const klik = new Set();
   function klikSekali(id, isi, lebar = 280) { if (klik.has(id)) return; klik.add(id);
@@ -147,7 +172,11 @@
       pop.getElement().querySelector("[data-l5k]")?.addEventListener("click", b => { pop.remove(); Laci.buka(b.currentTarget.dataset.l5k); }); });
     peta.on("mouseenter", id, () => peta.getCanvas().style.cursor = "pointer"); peta.on("mouseleave", id, () => peta.getCanvas().style.cursor = ""); }
 
-  async function pasangSatu(k) { if (!LAYER[k] || peta.getLayer(LAYER[k][0])) return; try { await pasang[k](); } catch (e) { console.warn(k, e); toast("Lapisan " + k + " gagal dimuat"); } }
+  /* janji per kunci: centang-matikan-centang saat pasang masih menunggu (HEAD GIBS) tidak memasang dua kali; kotak yang keburu dimatikan disembunyikan */
+  const janjiPasang = {};
+  function pasangSatu(k) { if (!LAYER[k] || peta.getLayer(LAYER[k][0])) return Promise.resolve();
+    return janjiPasang[k] ||= (async () => { try { await pasang[k](); } catch (e) { console.warn(k, e); toast("Lapisan " + k + " gagal dimuat"); } finally { delete janjiPasang[k]; }
+      if (!nyala(k)) LAYER[k].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", "none")); })(); }
   function lihat(k, on) { if (on && !peta.getLayer(LAYER[k][0])) return pasangSatu(k).then(renderLegenda);
     LAYER[k].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none")); renderLegenda(); }
 
@@ -189,7 +218,9 @@
     if (nyala("kanal") && C5.kanalST) h += `<div class="lbl" style="margin-top:8px">Kanal & parit (km per sel ± 2 km)</div><div class="legscale">${[1, 3, 8, 20, 40].map(v => `<i style="background:rgb(${gradasi(C5.kanalST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>3</span><span>8</span><span>20</span><span>40+</span></div>`;
     const T = Lapis.cache.lapisan_tambahan?.lapisan;
     for (const [k] of UBIN) { const c = nyala(k) && T?.[k]; if (!c) continue;
-      h += `<div class="lbl" style="margin-top:8px">${esc(c.nama)}<span id="l5m-${k}" style="font-weight:400;opacity:.7"></span></div><div class="leg" style="margin-top:4px">${c.legenda.map(([w, n]) => `<span><i class="sw" style="background:${warnaOk(w)}"></i>${esc(n)}</span>`).join("")}${c.catatan ? `<span>${esc(c.catatan)}</span>` : ""}</div>`; }
+      const w = C5.tgl?.[k], ket = !w ? "" : c.hari_depan != null ? `Prakiraan untuk ${tglID(w.tgl)}` : c.hari ? `Area terbakar ${tglID(w.mulai)} sampai ${tglID(w.akhir)}` : `Citra ${tglID(w.tgl)}`;
+      const hr = c.hari_depan == null ? "" : `<span class="l5-eh" style="display:flex;flex-wrap:wrap;gap:3px">${Array.from({length: c.hari_depan + 1}, (_, i) => `<button type="button" class="btn sec" data-eh="${i}" aria-pressed="${(C5.eh || 0) === i}" style="padding:1px 6px;font-size:11px${(C5.eh || 0) === i ? ";font-weight:700;outline:2px solid #e58a45" : ""}">${i ? "+" + i : "Hari ini"}</button>`).join("")}</span>`;
+      h += `<div class="lbl" style="margin-top:8px">${esc(c.nama)}<span id="l5m-${k}" style="font-weight:400;opacity:.7"></span></div><div class="leg" style="margin-top:4px">${ket ? `<span id="l5t-${k}"><b>${ket}</b></span>` : ""}${hr}${c.legenda.map(([w, n]) => `<span><i class="sw" style="background:${warnaOk(w)}"></i>${esc(n)}</span>`).join("")}${c.catatan ? `<span>${esc(c.catatan)}</span>` : ""}</div>`; }
     if (h) box.insertAdjacentHTML("beforeend", h);
     for (const [k] of UBIN) nyala(k) && C5.ubah?.[k]?.();
     /* catatan berikon (angin, satelit) dikumpulkan jadi satu baris di bawah supaya tidak meninggalkan ruang kosong di kisi legenda */
@@ -215,8 +246,8 @@
     const a = ak?.[id];
     const tabel = a ? `<table class="tb3"><thead><tr><th>Dari</th><th class="n">Lewat jalan/sungai</th><th class="n">Waktu</th></tr></thead><tbody>
         ${a.dari.map(x => `<tr><td><b>${esc(x.dari)}</b><small>${x.jenis === "daops" ? "Markas Daops" : "Posko disarankan"}</small></td><td class="n num">${fmt(x.km_jalan)} km</td><td class="n num"><b>± ${fj(x.jam)}</b></td></tr>`).join("") || `<tr><td colspan="3">Tidak ada jalur jalan/sungai terpeta dari markas mana pun dalam ${fmt(ak._meta.batas_jam)} jam. Pertimbangkan perahu lewat pesisir atau dukungan udara.</td></tr>`}</tbody></table>
-        <p class="fnd">Termasuk ± ${fmt(a.kaki_km)} km jalan kaki dari jalan/sungai terdekat ke titik tengah kompleks (4 km/jam). Laju: primer 50, sekunder 40, tersier 30, jalan tanah 15 km/jam, perahu 15 km/jam. Kondisi jalan, banjir, dan portal kebun tidak dimodelkan. Data jalan © OpenStreetMap.</p>`
-      : `<p class="fnd">${ak ? "Belum dihitung: waktu tempuh hanya untuk kompleks prioritas di 9 provinsi pantauan." : "Data waktu tempuh belum tersedia."} Perkiraan garis lurus ada di tabel di atas.</p>`;
+        <p class="fnd">Termasuk ± ${fmt(a.kaki_km)} km jalan kaki dari jalan/sungai terdekat ke titik tengah cluster (4 km/jam). Laju: primer 50, sekunder 40, tersier 30, jalan tanah 15 km/jam, perahu 15 km/jam. Kondisi jalan, banjir, dan portal kebun tidak dimodelkan. Data jalan © OpenStreetMap.</p>`
+      : `<p class="fnd">${ak ? "Belum dihitung: waktu tempuh hanya untuk cluster prioritas di 9 provinsi pantauan." : "Data waktu tempuh belum tersedia."} Perkiraan garis lurus ada di tabel di atas.</p>`;
     let sekitar = "";
     const kn = Lapis.cache.kanal, fs = Lapis.cache.fasilitas; /* hanya bila lapisannya pernah dinyalakan: laci tidak memaksa unduhan besar */
     if (kn?.provinsi?.includes(p.prov)) { const r = 5; let t = 0; for (const [la, lo, v] of kn.grid) if (Math.abs(la - p.lat) < .06 && Math.abs(lo - p.lon) < .06 && km(p.lat, p.lon, la, lo) <= r) t += v;

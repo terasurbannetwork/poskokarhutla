@@ -1,0 +1,20 @@
+{
+  "_catatan": "Faktor FRL Indonesia 2022 (Modified 2nd FRL, UNFCCC 29/30 Mei 2022, https://redd.unfccc.int/media/modified_2nd_frl_indonesia_20220529_clean.pdf), disalin dari docs/karbon/bahan/E-verifikasi-2026.md §3. Biomassa dalam t bahan kering/ha (AGB+BGB rata-rata Indonesia); karbon = x0,47; CO2 = C x 44/12. Gambut: EF dekomposisi tCO2/ha/th (Tabel 10, Novita dkk. 2021). Kunci = kode kelas tutupan KLHK (sama dengan idn_land_cover_2017__class di GFW).",
+  "sumber": "FRL Indonesia 2022 Tabel 6, 7, 8, 10",
+  "fraksi_karbon": 0.47,
+  "biomassa_dm_ha": {
+    "2001": 375.70, "2002": 263.29, "2005": 303.53, "20051": 249.62, "2004": 309.62, "20041": 131.59,
+    "2006": 213.63, "2007": 158.81, "20071": 50.86, "2010": 135.61, "2012": 5.95, "20121": 0, "20122": 35.94,
+    "2014": 6.31, "20141": 0, "3000": 10.68, "20091": 35.94, "20092": 165.03, "20093": 26.29, "20094": 0,
+    "5001": 0, "50011": 0
+  },
+  "kelas_hutan_alam": ["2001", "2002", "2005", "20051", "2004", "20041"],
+  "gambut_ef_tco2_ha_th": {
+    "2001": 0, "2002": 32.42, "2005": 0, "20051": 32.42, "2004": 0, "20041": 32.42, "2006": 72.95, "2007": 45.04,
+    "20071": 45.04, "2010": 36.63, "2012": 45.04, "20121": 0, "20122": 54.66, "2014": 63.79, "20141": 63.79,
+    "3000": 45.04, "20091": 45.42, "20092": 54.66, "20093": 33.71, "20094": 0, "5001": 0, "50011": 0
+  },
+  "_tujuan": "Kelas tutupan sesudah deforestasi per pendorong WRI (wri_google_tree_cover_loss_drivers__category). HIPOTESIS pemetaan oleh tim, bukan dari FRL: FRL memakai transisi kelas teramati, yang tidak tersedia per poligon dari GFW.",
+  "tujuan_per_pendorong": {"1": "2010", "2": "20141", "3": "20092", "4": "2006", "5": "2007", "6": "2012", "7": "2007", "lain": "2007"},
+  "api_gambut": {"cf": 0.54, "ef_co2_g_kg": 1670.13, "ef_ch4_g_kg_co2e": 177.87, "bd_g_cm3": 0.16, "kedalaman_bakar_cm": 31.88}
+}

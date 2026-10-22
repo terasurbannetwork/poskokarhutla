@@ -23,7 +23,7 @@ const Metode = {
     /* penyetelan ambang (ambang.py, RISET-AMBANG.md): dipilih di periode latih, diuji sekali; angka apa adanya */
     const T = J?.kejadian?.setel;
     if (T?.hasil?.terpilih) {
-      const pc = x => x == null ? "–" : fmt(Math.round(x * 100)) + "%", ci = v => v ? ` (${pc(v[0])}–${pc(v[1])})` : "";
+      const pc = x => x == null ? "belum ada data" : fmt(Math.round(x * 100)) + "%", ci = v => v ? ` (${pc(v[0])}–${pc(v[1])})` : "";
       const nama = k => { const c = (T.kandidat || []).find(x => x.kode === k); return c ? esc((T.keluarga?.[c.keluarga] || k).replaceAll("<= t", "≤ " + String(c.t).replace(".", ",").replace("-", "−"))) : esc(k); };
       const bar = (lab, k, s, c) => [lab, nama(k), pc(s.pod) + ci(c?.pod), pc(s.far) + ci(c?.far), F3m(s.csi) + (c?.csi ? ` (${F3m(c.csi[0])}–${F3m(c.csi[1])})` : ""), F3m(s.csi_acak)];
       const H2 = T.hasil.terpilih, S0 = T.hasil.sekarang, L = T.latih.map(blnIso).join(" sampai "), U = T.uji.map(blnIso).join(" sampai ");
@@ -34,8 +34,22 @@ const Metode = {
           ["Kriteria layak", "POD 50% atau lebih, alarm palsu 80% atau kurang, CSI 2 kali alarm acak atau lebih, dan batas bawah selang CSI di atas alarm acak, di periode uji; ditetapkan sebelum angka dilihat"],
           ["Vonis", esc(T.vonis?.alasan || "")]]), "Pantau Bencana; DIBI BNPB; NASA POWER"));
     }
+    const T2 = J?.kejadian?.setel2;
+    if (T2?.rancangan) {
+      const BD = "belum ada data", pn = x => x == null ? BD : fmt(Math.round(x * 100)) + "%", p1 = x => x == null ? BD : (x * 100).toFixed(1).replace(".", ",") + "%", mn = x => String(x).replaceAll("-", "−");
+      const ci2 = (v, ok) => ok === false ? " (selang tak andal, kurang dari 10 klaster)" : v ? ` (${p1(v[0])}–${p1(v[1])})` : "", br = Object.entries(T2.rancangan);
+      o.push(kartu("Penyetelan putaran 2", `${fmt(T2.kandidat_n)} kandidat (${fmt(T2.aturan_n)} aturan × ${fmt(T2.bonferroni_k)} rancangan) diuji: ${Kartu.hl(T2.vonis?.layak ? "ada yang lolos" : "tidak ada yang lolos")}${T2.vonis?.layak ? "" : ", status tetap memakai ambang sekarang"}`,
+        tabel(["Rancangan", "Jenis", "Aturan terpilih (latih)", "Tertangkap (POD)", "Alarm palsu (FAR)", "CSI", "CSI alarm acak"], br.map(([k, h]) => { const u = h.terpilih_uji, c = h.terpilih_selang_bonferroni, a = c?.andal;
+          return u ? [esc(`${k}, ${h.uraian}`), esc(h.jenis || ""), esc(mn(h.terpilih)), p1(u.pod) + (a === false ? "" : ci2(c?.pod, a)), p1(u.far) + (a === false ? "" : ci2(c?.far, a)), F3m(u.csi) + (a === false ? " (selang tak andal, kurang dari 10 klaster)" : ""), F3m(u.csi_acak)]
+            : [esc(`${k}, ${h.uraian}`), esc(h.jenis || ""), BD, BD, BD, BD, BD]; }), "n num") +
+        tabel(["Bagian", "Keterangan"], [["Cara", esc(`protokol ditulis sebelum angka dihitung; per rancangan satu aturan dipilih dari CSI latih ${T2.latih.map(blnIso).join(" sampai ")}, diuji sekali ${T2.uji.map(blnIso).join(" sampai ")}; selang Bonferroni untuk ${T2.bonferroni_k} uji dari ${fmt(T2.bootstrap?.ulang)} cuplikan ulang bulan atau triwulan`)],
+          ["Jenis rancangan", "diagnosis: alarm boleh jatuh sesudah kejadian dalam jendela; prakiraan: alarm mendahului kejadian. Rancangan diagnosis tidak boleh dibaca sebagai kemampuan memprakirakan"],
+          ["Kriteria layak", "POD 50% atau lebih, alarm palsu 80% atau kurang, CSI 2 kali alarm acak atau lebih, dan batas bawah selang CSI di atas alarm acak; tidak dilonggarkan dari putaran 1"],
+          ["Uji tidak sepenuhnya buta", "periode uji sudah pernah dilihat untuk keluarga E dan aturan A−1,0 pada putaran 1; aturan lain belum pernah"],
+          ["Kewajaran target", esc(T2.pelaporan ? `DIBI mencatat laporan BPBD: hanya ${fmt(T2.pelaporan.kab_pernah_melapor)} dari ${fmt(T2.pelaporan.kab_total)} kabupaten pernah melapor kekeringan sejak Okt 2023, jadi alarm di kabupaten yang tak melapor terhitung palsu. Ini batas atas FAR dan tidak dipakai untuk meloloskan` : "DIBI mencatat laporan BPBD, bukan semua kekeringan")]]), "Pantau Bencana; DIBI BNPB; NASA POWER; Open-Meteo; ERA5-Land"));
+    }
     if (B) o.push(kartu("Bukti", "Bukti gambut dan kabupaten kandidat sering kering, beserta batasnya", tabel(["Bagian", "Keterangan"],
-      [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "kompleks konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
+      [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "cluster konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
        ...(B.berulang ? [["Sering kering", esc(B.berulang.catatan || "")], ["Tampungan", esc((B.berulang.embung_sumber || "") + ". Nol bukan bukti kekurangan karena peta OSM tidak lengkap")]] : [])]), "Pantau Bencana; OpenStreetMap; InaRISK BNPB"));
     if (R || N) o.push(kartu("BNPB", "Sumber BNPB dan batasnya", tabel(["Data", "Keterangan"],
       [...(R ? [["SK status darurat", `${fmt(R.n)} SK ${R.tahun_data} yang menyebut kekeringan dari ${fmt(R.n_sk_total)} SK; ${fmt(R.n_aktif)} berlaku sekarang. Tampil sebagai riwayat, bukan status berlaku; dicocokkan ke kabupaten lewat nama`]] : []),

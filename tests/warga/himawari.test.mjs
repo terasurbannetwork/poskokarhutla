@@ -34,7 +34,7 @@ uji("himawari: tandaiBaru: baris lama 7 kolom dianggap n=1 (bukan baru) dan teta
   assert.deepEqual(r, [-2, 114, 20, 30, 3, 3, 1, 1, 20, 0]);
 });
 
-const ACU_NYATA = new Date(Date.now() - 600e3).toISOString(), RAW = hw([H, [-3, 115, 20, 30, 3, 3, 1, 1, 20], [5.9, 116.1, 20, 30, 3, 3, 1, 4, 50]], ACU_NYATA);   // baris 3: Sabah (Malaysia), tak pernah baru   // rute memakai jam nyata
+const ACU_NYATA = new Date(Date.now() - 600e3).toISOString(), RAW = hw([H, [-3, 115, 20, 30, 3, 3, 1, 1, 20], [5.9, 116.1, 20, 30, 3, 3, 1, 4, 50]], ACU_NYATA);   // baris 3: Sabah (Malaysia), dibuang dari respons   // rute memakai jam nyata
 const r2 = o => ({get: async k => k === "data/himawari.json" && o ? {body: new Response(JSON.stringify(o)).body} : null});
 /* ASSETS asli dari public/: saringan wilayah Indonesia (src/titik.js wilayah) memakai poligon provinsi sungguhan */
 const ASSETS = {fetch: async q => { try { return new Response(readFileSync(new URL("../../public" + new URL(q.url).pathname, import.meta.url))); } catch (e) { return new Response(null, {status: 404}); } }};
@@ -42,12 +42,12 @@ const D1 = isi => ({prepare: () => ({first: async () => isi ? {isi: JSON.stringi
 uji("himawari: /api/himawari menambah kolom baru + n_baru, FIRMS dari D1 menutup", async () => {
   const ambil = async env => (await worker.fetch(new Request("https://x.test/api/himawari?k=" + Math.random()), env, undefined)).json();
   const a = await ambil({MEDIA: r2({...RAW, kolom: ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]}), DB: D1(null), ASSETS});
-  assert.equal(a.kolom.at(-1), "baru"); assert.equal(a.n_baru, a.baris.filter(r => r[9]).length);
-  assert.ok(a.baris.every(r => r.length === 10)); assert.equal(a.baris.reduce((s, r) => s + r[9], 0), a.n_baru);
+  assert.equal(a.kolom.at(-1), "w"); assert.equal(a.n_baru, a.baris.filter(r => r[9]).length);
+  assert.ok(a.baris.every(r => r.length === 11 && a.wilayah[r[10]].split("|").length === 3)); assert.equal(a.baris.reduce((s, r) => s + r[9], 0), a.n_baru);
   assert.equal(a.acuan, RAW.acuan);
-  assert.deepEqual(a.baris.map(r => r[9]), [1, 0, 0]);
+  assert.deepEqual(a.baris.map(r => r[9]), [1, 0]);   // Sabah tidak ikut terkirim
   const c = await ambil({MEDIA: r2(RAW), DB: D1(firms([[-2, 114, -1, "VIIRS", 5, 1]], ACU_NYATA)), ASSETS});
-  assert.deepEqual(c.baris.map(r => r[9]), [0, 0, 0]); assert.equal(c.n_baru, 0);
+  assert.deepEqual(c.baris.map(r => r[9]), [0, 0]); assert.equal(c.n_baru, 0);
 });
 uji("himawari: /api/himawari: objek R2 hilang = kosong", async () => {
   const b = await (await worker.fetch(new Request("https://x.test/api/himawari?z=1"), {MEDIA: r2(null)}, undefined)).json();

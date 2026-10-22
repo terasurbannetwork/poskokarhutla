@@ -386,8 +386,8 @@ def main():
     n = sum(1 for xs in kompleks.values() if xs)
     aw = sorted(h["awan_pct"] for xs in kompleks.values() for h in xs if h["awan_pct"] is not None)
     uk = sum(os.path.getsize(os.path.join(DIR, f)) for f in os.listdir(DIR))
-    print(f"citra: {n}/{len(ks)} kompleks bergambar · {sum(len(x) for x in kompleks.values())} entri · "
-          f"awan median {aw[len(aw) // 2] if aw else '–'}% · {uk / 1e6:.1f} MB · {time.time() - t0:.0f} dtk")
+    print(f"citra: {n}/{len(ks)} cluster bergambar, {sum(len(x) for x in kompleks.values())} entri, "
+          f"awan median {aw[len(aw) // 2] if aw else '–'}%, {uk / 1e6:.1f} MB, {time.time() - t0:.0f} dtk")
 
 
 # ---------------------------------------------------------------- swa-uji

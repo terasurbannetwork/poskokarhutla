@@ -94,7 +94,7 @@ const Insight = {
     if (!T.length) return "";
     const {W, rh} = U, L = U.M ? 150 : 260, T0 = 26, mx = Math.max(1.2, ...T.map(t => t.r)), X = v => L + v / mx * (W - L - 90);
     let g = `<line x1="${X(1)}" x2="${X(1)}" y1="${T0 - 4}" y2="${T0 + T.length * rh}" stroke="${NAVY}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".6"/>${this.p(X(1) - 52, 0, "banjir 2 tahunan", NAVY, "#fff", 11)[0]}`;
-    g += T.map((t, i) => { const y = T0 + i * rh, w = t.kelas ? WARNA_LV[t.kelas] : BIRU, tip = `<b>${esc(t.kec)}</b>${t.kab ? " · " + esc(t.kab) : ""}<br>Puncak 7 hari: ${fmt(Math.round(t.puncak))} m³/s<br>Banjir 2 tahunan: ${fmt(Math.round(t.q2))} m³/s`;
+    g += T.map((t, i) => { const y = T0 + i * rh, w = t.kelas ? WARNA_LV[t.kelas] : BIRU, tip = `<b>${esc(t.kec)}</b>${t.kab ? ", " + esc(t.kab) : ""}<br>Puncak 7 hari: ${fmt(Math.round(t.puncak))} m³/s<br>Banjir 2 tahunan: ${fmt(Math.round(t.q2))} m³/s`;
       return `<g data-sg="${t.i}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.M ? 13 : 12.5}"><tspan font-weight="700">${esc(t.kec)}</tspan>${U.M ? "" : `<tspan opacity=".6"> ${esc(t.kab)}</tspan>`}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(t.r) - L)}" height="${rh - 10}" rx="4" fill="${w}" data-tip="${tip}"/>
         <g class="gf" style="--i:${i}">${this.p(X(t.r) + 8, y + 5, F2(t.r) + "×", w, t.kelas === 1 ? FG_LV[1] : "#fff")[0]}</g></g>`; }).join("");
@@ -113,7 +113,7 @@ const Insight = {
     let g = hr.map((d, j) => `<text x="${L + j * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" font-weight="${j ? 500 : 800}">${j ? d.slice(8) + "/" + d.slice(5, 7) : "Hari ini"}</text>`).join("");
     g += T.map((t, i) => `<g data-rob="${t.i}" style="cursor:pointer"><text x="${L - 10}" y="${T0 + i * rh + 18}" text-anchor="end" font-size="12.5"><tspan font-weight="700" translate="no">${esc(t.kec || t.kab)}</tspan><tspan opacity=".6" translate="no"> ${esc(t.kab)}</tspan></text>` +
       t.lvs.map((l, j) => { const v = t.h[iH + j], d = v - t.p95, nm = esc(t.kec || t.kab);
-        return `<rect x="${L + j * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="5" style="fill:${l ? WARNA_LV[l] : `color-mix(in oklch, ${BIRU} ${Math.round(Math.max(8, Math.min(70, 40 + d * 200)))}%, var(--surface))`}" data-tip="<b>${nm} · ${tglPendek(hr[j])}</b><br>Muka laut maks: ${F2(v)} m<br>Ambang p95: ${F2(t.p95)} m<br>Status: ${LEVEL[l || 0]}"/>`
+        return `<rect x="${L + j * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="5" style="fill:${l ? WARNA_LV[l] : `color-mix(in oklch, ${BIRU} ${Math.round(Math.max(8, Math.min(70, 40 + d * 200)))}%, var(--surface))`}" data-tip="<b>${nm}, ${tglPendek(hr[j])}</b><br>Muka laut maks: ${F2(v)} m<br>Ambang p95: ${F2(t.p95)} m<br>Status: ${LEVEL[l || 0]}"/>`
           + `<text x="${L + j * cw + cw / 2}" y="${T0 + i * rh + 18}" text-anchor="middle" font-size="10.5" font-weight="700" pointer-events="none" style="fill:${l === 1 ? FG_LV[1] : l ? "#fff" : "currentColor"}">${F2(v)}</text>`; }).join("") + `</g>`).join("");
     const n = R.titik.filter(t => Math.max(...t.lv.slice(iH)) > 0).length, bm = R.bmkg?.rob?.length || 0;
     Kartu.leg([[BIRU, "di bawah ambang"], [WARNA_LV[1], "Waspada"], [WARNA_LV[2], "Siaga"], [WARNA_LV[3], "Awas"]]);
@@ -134,7 +134,7 @@ const Insight = {
     let s = [0, .5, 1].map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" opacity=".6">${F2(v)}</text>`).join("");
     s += PT.jendela.map(j => { const a = ix(j.awal), b = ix(j.akhir); return `<rect x="${X(a) - 1}" y="${T - 8}" width="${Math.max(3, X(b) - X(a) + 2)}" height="${B - T + 8}" fill="${MERAH}" opacity=".16"/>`; }).join("");
     s += `<path d="M${X(0)},${B} ${g.map((v, i) => `L${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")} L${X(n - 1)},${B}Z" fill="${BIRU}" opacity=".16"/><path d="${g.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}" fill="none" stroke="${BIRU}" stroke-width="1.8" stroke-linejoin="round"/>`;
-    s += tertinggi.map((j, k) => { const c = (X(ix(j.awal)) + X(ix(j.akhir))) / 2, tk = `${rentang(j.awal, j.akhir)} · ${F2(j.nilai)}`, w = tk.length * 6.8 + 16, x = Math.max(2, Math.min(W - w - 2, c - w / 2)), y = k % 2 ? 30 : 4;
+    s += tertinggi.map((j, k) => { const c = (X(ix(j.awal)) + X(ix(j.akhir))) / 2, tk = `${rentang(j.awal, j.akhir)}, ${F2(j.nilai)}`, w = tk.length * 6.8 + 16, x = Math.max(2, Math.min(W - w - 2, c - w / 2)), y = k % 2 ? 30 : 4;
       return `<line x1="${c}" x2="${c}" y1="${y + 22}" y2="${Y(j.nilai) - 3}" stroke="${MERAH}" stroke-width="1" opacity=".5"/>${this.p(x, y, tk, MERAH, "#fff", 11)[0]}`; }).join("");
     let bl = "", xl = -99; for (let i = 0; i < n; i++) { const d = new Date(t0 + i * 864e5); if ((d.getUTCDate() === 1 || i === 0) && X(i) - xl >= 40) { xl = X(i); bl += `<text x="${X(i)}" y="${B + 18}" text-anchor="${i ? "middle" : "start"}" font-size="${M ? 11 : 10.5}" opacity=".7">${BLN[d.getUTCMonth()]}${d.getUTCMonth() === 0 ? " " + String(d.getUTCFullYear()).slice(2) : ""}</text>`; } }
     const kol = g.map((v, i) => { const t = new Date(t0 + i * 864e5).toISOString().slice(0, 10), j = PT.jendela.find(w => t >= w.awal && t <= w.akhir);
@@ -177,7 +177,7 @@ const Insight = {
     g += baris.map((r, i) => { const y = T0 + i * rh;
       return `<g data-prov="${r.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(r.k))}</text>`
         + r.lv.map((a, h) => { const x = L + h * cw + 2, n = a ? a.n[1] + a.n[2] + a.n[3] : 0, tg = h ? tglPendek(S.st.hari[h]) : "Hari ini", sebelum = h && ag[h - 1][r.k] ? ag[h - 1][r.k].n[1] + ag[h - 1][r.k].n[2] + ag[h - 1][r.k].n[3] : 0, d = n - sebelum;
-          return a ? `<rect class="gx" style="--i:${i}" x="${x}" y="${y + 3}" width="${cw - 4}" height="${rh - 6}" rx="6" fill="${WARNA_LV[a.lv]}" data-tip="<b>${esc(namaProv(r.k))} · ${tg}</b><br>Status tertinggi: ${LEVEL[a.lv]}<br>Awas: ${fmt(a.n[3])} kecamatan<br>Siaga: ${fmt(a.n[2])} kecamatan<br>Waspada: ${fmt(a.n[1])} kecamatan${h ? `<br>Dibanding hari sebelumnya: ${d > 0 ? "▲" : d < 0 ? "▼" : ""} ${fmt(Math.abs(d))} kecamatan` : ""}"/><text x="${x + (cw - 4) / 2}" y="${y + 19}" text-anchor="middle" font-size="12" font-weight="800" pointer-events="none" style="fill:${a.lv === 1 ? FG_LV[1] : "#fff"}">${fmt(n)}</text>`
+          return a ? `<rect class="gx" style="--i:${i}" x="${x}" y="${y + 3}" width="${cw - 4}" height="${rh - 6}" rx="6" fill="${WARNA_LV[a.lv]}" data-tip="<b>${esc(namaProv(r.k))}, ${tg}</b><br>Status tertinggi: ${LEVEL[a.lv]}<br>Awas: ${fmt(a.n[3])} kecamatan<br>Siaga: ${fmt(a.n[2])} kecamatan<br>Waspada: ${fmt(a.n[1])} kecamatan${h ? `<br>Dibanding hari sebelumnya: ${d > 0 ? "▲" : d < 0 ? "▼" : ""} ${fmt(Math.abs(d))} kecamatan` : ""}"/><text x="${x + (cw - 4) / 2}" y="${y + 19}" text-anchor="middle" font-size="12" font-weight="800" pointer-events="none" style="fill:${a.lv === 1 ? FG_LV[1] : "#fff"}">${fmt(n)}</text>`
             : `<rect x="${x}" y="${y + 3}" width="${cw - 4}" height="${rh - 6}" rx="6" style="fill:var(--surface)"/><text x="${x + (cw - 4) / 2}" y="${y + 19}" text-anchor="middle" font-size="12" opacity=".45" pointer-events="none">–</text>`; }).join("")
         + `<g class="gf" style="--i:${i}">${this.p(W - 88, y + 4, fmt(Math.round(r.h3)) + " mm", this.warnaHujan(r.h3))[0]}</g></g>`; }).join("");
     Kartu.leg([[WARNA_LV[3], "Awas"], [WARNA_LV[2], "Siaga"], [WARNA_LV[1], "Waspada"]]);
@@ -224,7 +224,7 @@ const Insight = {
     const t = top[0], ket = w === "lalu" ? `hujan ${kapan}` : `prakiraan hujan ${kapan}`;
     const judul = t ? `${this.hl(pc(t[w + "_persen"]))} ${ket} di hulu <span translate="no">${esc(d.kab)}</span> jatuh di sub-DAS sekitar <span translate="no">${esc(t.label)}</span>${l0 >= 2 ? `; status kab hari ini ${NL[l0]}` : lv >= 2 ? `; status kab diprakirakan ${NL[lv]} sampai ${tg(H.status_hari[1])}` : ""}`
       : `Belum ada hujan tercatat di hulu <span translate="no">${esc(d.kab)}</span> untuk ${kapan}`;
-    const opsi = H.daerah.map(x => [esc(x.slug), `${esc(x.kab)}${x.status.maks >= 2 ? (x.status.maks === 3 ? " · Awas" : " · Siaga") : ""}`]);
+    const opsi = H.daerah.map(x => [esc(x.slug), `${esc(x.kab)}${x.status.maks >= 2 ? (x.status.maks === 3 ? ", Awas" : ", Siaga") : ""}`]);
     Kartu.leg([[BIRU, "porsi hujan sub-DAS"], [MERAH, "memuat sel hutan hilang terbanyak sejak 2021"], ...(U.M ? [] : [[NAVY, "konsesi di sub-DAS"]])]);  /* layar sempit: konsesi cukup di tooltip */
     return this.ex(judul, "", "", top.length ? `<svg viewBox="0 0 ${W} ${baris.length * rh + 6}" role="img" aria-label="Porsi hujan per sub-DAS hulu">${g}</svg>` : "",
       `Sumber: hujan Open-Meteo kisi 0,25 derajat, batas HydroBASINS v1c; hutan hilang dan konsesi hulu di <a href="/banjir/laporan-das.html#${esc(d.slug)}">Bukti DAS hulu</a>. Porsi volume hujan, bukan debit sungai${H.status_cocok === false ? ". Status kab tidak ditampilkan: data status beda hari dengan data hujan" : ""}`,
@@ -290,7 +290,7 @@ const Insight = {
     if (!pv.length) return "";
     const W = 940, L = 200, cw = (W - L - 70) / 12, rh = 26, T0 = 22, H = T0 + pv.length * rh;
     let g = BLN.map((b, i) => `<text x="${L + i * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" font-weight="${i === new Date().getMonth() ? 800 : 400}">${b}</text>`).join("") + `<text x="${W - 4}" y="14" text-anchor="end" font-size="11" font-weight="700">Total</text>`;
-    g += pv.map((x, i) => { const m = Math.max(1, ...x.v); return `<text x="${L - 10}" y="${T0 + i * rh + 17}" text-anchor="end" font-size="12.5" font-weight="600">${esc(namaProv(x.k))}</text>` + x.v.map((n, b) => `<rect x="${L + b * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="4" style="fill:${n ? `color-mix(in oklch, #3f7fb8 ${Math.round(15 + n / m * 80)}%, var(--surface))` : "var(--surface)"}" data-tip="<b>${esc(namaProv(x.k))} · ${BLN[b]}</b><br>Kejadian: ${fmt(n)}"/>`).join("") + `<text x="${W - 4}" y="${T0 + i * rh + 17}" text-anchor="end" font-size="12" font-weight="700">${fmt(x.n)}</text>`; }).join("");
+    g += pv.map((x, i) => { const m = Math.max(1, ...x.v); return `<text x="${L - 10}" y="${T0 + i * rh + 17}" text-anchor="end" font-size="12.5" font-weight="600">${esc(namaProv(x.k))}</text>` + x.v.map((n, b) => `<rect x="${L + b * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="4" style="fill:${n ? `color-mix(in oklch, #3f7fb8 ${Math.round(15 + n / m * 80)}%, var(--surface))` : "var(--surface)"}" data-tip="<b>${esc(namaProv(x.k))}, ${BLN[b]}</b><br>Kejadian: ${fmt(n)}"/>`).join("") + `<text x="${W - 4}" y="${T0 + i * rh + 17}" text-anchor="end" font-size="12" font-weight="700">${fmt(x.n)}</text>`; }).join("");
     const bulan = Array(12).fill(0); pv.forEach(x => x.v.forEach((n, b) => bulan[b] += n)); const pk = bulan.indexOf(Math.max(...bulan));
     return this.ex(`Kejadian ${j === "banjir" ? "banjir" : j === "longsor" ? "longsor" : "rob"} memuncak pada ${this.hl(BLN[pk])}; bulan ini (${BLN[new Date().getMonth()]}) ${this.hl(fmt(Math.round(bulan[new Date().getMonth()] / Math.max(...bulan) * 100)) + "%")} dari puncak`, "", "",
       `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Kalender kejadian">${g}</svg></div>`, `Sumber: DIBI BNPB`,
@@ -338,6 +338,7 @@ const Insight = {
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
+    Cerita.sisip(el, "banjir");
     el.onchange = e => { const m = e.target.closest("input[data-multi]");
       if (m) { const k = m.dataset.multi, box = m.closest(".pm-menu"); if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
         this.st[k] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); Kartu._bukaMulti = k; Object.values(this.T).forEach(t => t.hal = 0); return this.ulang(m.closest("[data-ex]")); }
@@ -359,3 +360,7 @@ const Insight = {
 };
 /* serah-terima ke Tren (musim) dan Dampak (dampak, kab): kartu jadi dengan label pil; kontrol (data-set) ditangani pemanggil lewat st */
 window.InsightEx = {musim: () => Insight.gambar("musim"), dampak: () => Insight.gambar("dampak"), kab: () => Insight.gambar("kab"), st: Insight.st};
+/* kartu Cerita (inti/cerita.js): rekap BNPB/DIBI per tahun + status hari ini, dari data/dampak.json */
+Cerita.daftar("banjir", async () => { const D = await muatJSON("data/dampak.json").catch(() => null), c = Cerita.dibi(D?.tahunan?.nasional, "terdampak", "banjir"); if (!c) return null;
+  const P = D.terpapar, st = P?.kec ? [["#c9503a", "Status", `Pada ${new Date(D.hari + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"})}, ${fmt(P.kec)} kecamatan berstatus Siaga atau Awas banjir, dihuni ${Cerita.kata(P.penduduk)} jiwa (penduduk seluruh kecamatan, bukan area tergenang).`]] : [];
+  return {judul: c.judul, baris: [...st, ...c.baris], sumber: "BNPB, data.bnpb.go.id; DIBI BNPB; WorldPop"}; });

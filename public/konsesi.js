@@ -31,7 +31,7 @@
     const k = KK.kompleks[id];
     let h;
     if (KK.gagal) h = `<p class="fnd">Data status lahan belum tersedia.</p>`;
-    else if (!k) h = `<p style="margin:0;font-size:12.5px">Semua titik panas kompleks ini berada <b>di luar areal konsesi</b>, gambut, dan kawasan hutan yang tercatat.</p>`;
+    else if (!k) h = `<p style="margin:0;font-size:12.5px">Semua titik panas cluster ini berada <b>di luar areal konsesi</b>, gambut, dan kawasan hutan yang tercatat.</p>`;
     else {
       const lind = LINDUNG.reduce((a, f) => a + (k.kawasan[f] || 0), 0);
       h = `<div class="lbl">Status lahan titik panas</div>
@@ -118,7 +118,7 @@
     /* satu baris: persen saja, jumlah titik di tooltip */
     const por = (v, n) => v && n ? `<td class="n num" data-tip="${fmt(v)} titik">${pct(v / n)}</td>` : `<td class="n num">–</td>`;
     ex.innerHTML = `<div class="ks-hd"><div><h3>Kebakaran di konsesi: titik panas menurut status lahan</h3>
-        <p class="sub">7 hari terakhir · ${fmt(T.konsesi)} dari ${fmt(T.n)} titik panas VIIRS di kompleks api (${pct(T.n ? T.konsesi / T.n : 0)}) berada di dalam areal konsesi.</p></div></div>
+        <p class="sub">7 hari terakhir, ${fmt(T.konsesi)} dari ${fmt(T.n)} titik panas VIIRS di cluster (${pct(T.n ? T.konsesi / T.n : 0)}) berada di dalam areal konsesi.</p></div></div>
       ${""/* tabel status lahan disembunyikan (pemilik, 14 Okt 2026) */}
       ${pvs.length ? (() => { /* grafik batang 100% per provinsi: sawit, HTI, HPH, tambang, di luar konsesi (pemilik, 14 Okt 2026) */
         const segs = [...daf.map(j => [jn(j)[0], jn(j)[1], o => o[j] || 0]), ["Di luar konsesi", "#cfd8e3", (o, n, t) => t - n]];
@@ -141,7 +141,7 @@
           g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(gp)}</text>`; });
         return `<div class="ks-ch ks-ch2"><b>Titik panas di lahan gambut per provinsi</b><span>% di gambut</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di lahan gambut per provinsi">${g}</svg>
           <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px"><span><i style="background:#6b4a2b"></i>Gambut</span><span><i style="background:#d9c7a8"></i>Tanah mineral</span></div>`; })()}
-      <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai kompleksnya.</em></footer>`;
+      <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai cluster itu.</em></footer>`;
   }
   function tunjuk(j) {
     const ids = S.kluster.features.filter(f => jenisDi(f.properties.id)[j]).map(f => f.properties.id);
@@ -152,7 +152,7 @@
     bukaTab("peta");
     nanti(() => { peta.fitBounds(b, {padding: kiriPad(), maxZoom: 10, duration: 900});
       peta.setPaintProperty("kl-line", "line-width", ["case", ["in", ["get", "id"], ["literal", ids]], 3.6, 1.8]);
-      if (typeof toast === "function") toast(`${ids.length} kompleks dengan titik panas di areal ${jn(j)[2].toLowerCase()} ditandai garis tebal`); });
+      if (typeof toast === "function") toast(`${ids.length} cluster dengan titik panas di areal ${jn(j)[2].toLowerCase()} ditandai garis tebal`); });
   }
   muat();
 })();

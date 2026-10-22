@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
-import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {AKAR, migrasi, pecah, JPEG_SAH, WEBP_SAH, badanPanjang} from "./_bantu.mjs";
 
 const JAM = 3600e3, ADMIN = {"x-admin-token": "rahasia-admin"};
 const REG = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana;
@@ -30,11 +30,10 @@ const uji = (nama, fn) => test(nama, async () => {
 });
 
 /* berkas uji: hanya byte awal yang menentukan jenisnya */
-const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, ...Array(2000).fill(7)]);
-const WEBP = new Uint8Array([..."RIFF"].map(c => c.charCodeAt(0)).concat([0, 0, 0, 0], [..."WEBPVP8 "].map(c => c.charCodeAt(0)), Array(500).fill(1)));
+const JPEG = JPEG_SAH, WEBP = WEBP_SAH;   // struktur sah: unggah dibersihkan metadata-nya sebelum disimpan
 function mp4(detik) {   // ftyp + mvhd versi 0, skala 1000
-  const b = new Uint8Array(200), v = new DataView(b.buffer), tulis = (i, s) => [...s].forEach((c, k) => b[i + k] = c.charCodeAt(0));
-  v.setUint32(0, 24); tulis(4, "ftypisom"); v.setUint32(24, 120); tulis(28, "moov"); v.setUint32(32, 108); tulis(36, "mvhd");
+  const b = new Uint8Array(140), v = new DataView(b.buffer), tulis = (i, s) => [...s].forEach((c, k) => b[i + k] = c.charCodeAt(0));
+  v.setUint32(0, 24); tulis(4, "ftypisom"); v.setUint32(24, 116); tulis(28, "moov"); v.setUint32(32, 108); tulis(36, "mvhd");
   v.setUint32(40 + 12, 1000); v.setUint32(40 + 16, Math.round(detik * 1000)); return b;
 }
 let n = 0; const ipBaru = () => `10.7.${Math.floor(++n / 250)}.${n % 250}`;
@@ -48,7 +47,7 @@ async function unggah(isian = {}, berkas = {}, ip = ipBaru(), cf = {country: "ID
   for (const [k, v] of Object.entries({...SAH(), ...isian})) if (v != null) f.append(k, v);
   if (berkas.media !== null) f.append("media", new File([berkas.media || JPEG], "a.bin"));
   if (berkas.thumb !== null) f.append("thumb", new File([berkas.thumb || WEBP], "t.bin"));
-  const r = await mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ip}, cf});
+  const r = await mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", ...await badanPanjang(f, {"cf-connecting-ip": ip}), cf});
   return {s: r.status, j: await r.json()};
 }
 const panggil = async (metode, jalur, body, ip = "10.8.8.8", h = {}) => {

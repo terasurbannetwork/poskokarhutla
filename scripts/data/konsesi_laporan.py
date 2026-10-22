@@ -328,8 +328,8 @@ def uji():
                 f"{r['nama']}: titik {r['titik']} tidak sama dengan jumlah titik/harian/kejadian"
             assert not r["luas_ha"] or r["luas_bakar_ha"] <= r["luas_ha"], f"{r['nama']}: luas bakar {r['luas_bakar_ha']} > luas {r['luas_ha']}"
             lalu = sum(k[3] for k in r["kompleks_lalu"]) + ((r["kompleks_lalu_sisa"] or [0, 0])[1])
-            assert lalu + sum(k[3] for k in r["kompleks"]) <= r["titik"], f"{r['nama']}: titik kompleks {lalu} melebihi titik"
-            assert all(k[4] <= k[5] for k in r["kompleks_lalu"]), f"{r['nama']}: rentang kompleks lampau terbalik"
+            assert lalu + sum(k[3] for k in r["kompleks"]) <= r["titik"], f"{r['nama']}: titik cluster {lalu} melebihi titik"
+            assert all(k[4] <= k[5] for k in r["kompleks_lalu"]), f"{r['nama']}: rentang cluster lampau terbalik"
             assert r["gambut_titik"] == sum(e[3] for e in r["gambut_kejadian"]) <= r["titik"], f"{r['nama']}: titik gambut tidak cocok"
             assert r["gambut_bakar_ha"] <= r["luas_bakar_ha"] and r["gambut_ha"] <= (r["luas_ha"] or r["gambut_ha"]), f"{r['nama']}: luas gambut"
             assert r["pertama"] >= "2026-01-01" and r["pertama"] <= r["terakhir"], f"{r['nama']}: tanggal {r['pertama']}..{r['terakhir']}"

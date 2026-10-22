@@ -49,12 +49,17 @@ export default {
           "dampak",
           "/data/dampak.json",
           null
+        ],
+        [
+          "himawari",
+          "/api/himawari",
+          3
         ]
       ],
       "kejadian": {
         "awalan": "K",
-        "nama": "Kompleks api",
-        "nama_jamak": "Kompleks api"
+        "nama": "Cluster",
+        "nama_jamak": "Cluster"
       },
       "tingkat": [
         {
@@ -127,7 +132,7 @@ export default {
       },
       "kata": {
         "unit": "titik panas",
-        "kejadian": "kompleks api",
+        "kejadian": "cluster",
         "tindakan": [
           "Pencegahan rutin",
           "Patroli terpadu",
@@ -353,12 +358,14 @@ export default {
         "tren",
         "kejadian",
         "dampak",
+        "informasi",
         "metode",
         "sim",
         "foto",
         "tentang"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -498,12 +505,14 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "halaman": {
         "simulasi": "simulasi.html"
       },
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -637,9 +646,11 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -763,9 +774,11 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode"
       ],
       "sumber_status": [
@@ -889,9 +902,11 @@ export default {
         "posko",
         "foto",
         "tentang",
+        "informasi",
         "metode"
       ],
       "tab_sembunyi": [
+        "informasi",
         "metode",
         "posko"
       ],

@@ -30,10 +30,10 @@ Insight.exSebMusim = function () {
       const p1 = (o.pertama || [])[0];
       return `<text x="${x0 - 8}" y="${y + 4}" font-size="12" text-anchor="end">${esc(o.nama)}</text>
         ${m != null ? `<line x1="${X(m)}" x2="${X(a)}" y1="${y}" y2="${y}" stroke="currentColor" opacity=".3"/><circle cx="${X(m)}" cy="${y}" r="5" fill="none" stroke="currentColor" opacity=".55" data-tip="Median awal 2015–2025: ${hari(m)}"/>` : ""}
-        <circle cx="${X(a)}" cy="${y}" r="7" fill="${w}" data-tip="${esc(o.nama)} 2026: mulai ${esc(o.awal_2026)}${o.selisih_hari != null ? `, ${Math.abs(o.selisih_hari)} hari ${o.selisih_hari < 0 ? "lebih awal" : "lebih lambat"} dari biasa` : ""}${p1 ? `<br>Kompleks besar pertama: ${esc(p1.kab || "")}, ${new Date(p1.t0).toLocaleDateString("id-ID", {day: "numeric", month: "short"})} (${fmt(p1.ha)} ha)` : ""}<br>Klik untuk rincian" data-sebprov="${o.k}"/>`; }).join("")}</svg>`;
+        <circle cx="${X(a)}" cy="${y}" r="7" fill="${w}" data-tip="${esc(o.nama)} 2026: mulai ${esc(o.awal_2026)}${o.selisih_hari != null ? `, ${Math.abs(o.selisih_hari)} hari ${o.selisih_hari < 0 ? "lebih awal" : "lebih lambat"} dari biasa` : ""}${p1 ? `<br>Cluster besar pertama: ${esc(p1.kab || "")}, ${new Date(p1.t0).toLocaleDateString("id-ID", {day: "numeric", month: "short"})} (${fmt(p1.ha)} ha)` : ""}<br>Klik untuk rincian" data-sebprov="${o.k}"/>`; }).join("")}</svg>`;
   const cepat = ur.filter(o => o.selisih_hari != null).sort((a, b) => a.selisih_hari - b.selisih_hari)[0];
   return this.ex(`Musim 2026 mulai di ${this.hl(esc(ur[0].nama))} pada ${esc(ur[0].awal_2026)}; ${esc(cepat.nama)} ${this.hl(Math.abs(cepat.selisih_hari) + " hari")} lebih awal dari biasanya`,
-    "Hari pertama jumlah titik 7 hari bertahan di atas 2× median 2015–2025 selama ≥ 14 hari", "bulat = 2026, lingkaran kosong = median 2015–2025 · klik untuk kompleks besar pertama", svg,
+    "Hari pertama jumlah titik 7 hari bertahan di atas 2× median 2015–2025 selama ≥ 14 hari", "bulat = 2026, lingkaran kosong = median 2015–2025 · klik untuk cluster besar pertama", svg,
     `${esc(M.narasi)} Sumber: NASA FIRMS VIIRS S-NPP 2015–2026; celah data 8 Mei–1 Jun 2026.`);
 };
 
@@ -73,7 +73,7 @@ Insight.exSebUji = function () {
   const R = K.ringkasan, kel = this.st.sebUjiKelas, daf = K.kasus.map((x, i) => ({...x, i})).filter(x => !kel || x.kelas === kel);
   const c = v => v ? `${fmt(Math.round(v[0] * 100) / 100)} <small>(${fmt(Math.round(v[1] * 100) / 100)}–${fmt(Math.round(v[2] * 100) / 100)})</small>` : "–";
   const pemb = Object.entries(R.model_lain || {}).filter(([nm]) => !nm.endsWith("_mentah")).sort((a, b) => (b[1].f1_24?.[0] || 0) - (a[1].f1_24?.[0] || 0));
-  const NM = {hibrida: "Sim FBP terkalibrasi", sim: "Sim FBP situs (tanpa kalibrasi)", sim_kal: "Sim FBP + kalibrasi kompleks", rothermel: "Rothermel/BehavePlus (AS)", mcarthur: "McArthur Mk5 (Australia)",
+  const NM = {hibrida: "Sim FBP terkalibrasi", sim: "Sim FBP situs (tanpa kalibrasi)", sim_kal: "Sim FBP + kalibrasi cluster", rothermel: "Rothermel/BehavePlus (AS)", mcarthur: "McArthur Mk5 (Australia)",
     csiro_vesta: "CSIRO rumput + Vesta (Australia)", elips_angin: "Elips angin saja"};
   const tabel = `<div class="tw" style="max-height:340px"><table><thead><tr><th>Th</th><th>Provinsi</th><th>Kelas</th><th>Gambut</th><th class="n">Teramati 72 j (ha)</th><th class="n">Ramalan (P10–P90)</th><th class="n">IoU 24/72</th><th class="n">P(membesar) lama</th><th>Benar</th><th class="n">P baru</th><th>Benar baru</th></tr></thead><tbody>
     ${daf.map(x => `<tr class="klik" tabindex="0" data-sebkasus="${x.i}"><td>${x.th}</td><td>${esc(x.nama_prov)}</td><td>${x.kelas}</td><td>${x.gambut ? "ya" : "–"}</td><td class="n num">${fmt(x.obs_ha[2])}</td>
@@ -161,7 +161,7 @@ Insight.exSebModelLama = function () {
   const isi = `<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-sebke="sim">Buka Simulasi</button>${typeof Cerita !== "undefined" ? `<button class="btn" data-sebke="cerita">Coba di peta (cerita bab 5)</button>` : ""}</div>`;
   return this.ex(`Kalau besok ada titik panas di X: model data memberi ${this.hl("peta peluang 72 jam")}, luas dengan rentang, dan desa/gambut yang terkena`,
     `Dilatih dari 12 musim VIIRS; uji 2024–2026: F1 sel baru 24 jam ${K.f1_24 ? fmt(Math.round(K.f1_24[0] * 100) / 100) : "–"}, AUC membesar ${K.lepas_auc != null ? fmt(Math.round(K.lepas_auc * 100) / 100) : "–"}`,
-    "pilih kompleks di Simulasi lalu centang 'Model data (dilatih)', atau klik sembarang titik di cerita bab 5", isi,
+    "pilih cluster di Simulasi lalu centang 'Model data (dilatih)', atau klik sembarang titik di cerita bab 5", isi,
     `${M.pohon.length} pohon keputusan, ${M.fitur.length} variabel (cuaca per jam, FWI, lahan, konsesi, kanal, jalan, desa). Peluang per jam = pembagian luas harian menurut ISI per jam (VIIRS hanya melihat ±2 kali sehari).`);
 };
 
@@ -173,7 +173,7 @@ document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);
   const p = e.target.closest?.("[data-sebprov]"); if (p && SEB.d?.musim) { const o = SEB.d.musim.prov[p.dataset.sebprov], d = $("#dlg");
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(o.nama)}: musim 2026</h3><p>Mulai ${esc(o.awal_2026 || "–")} · puncak ${esc(o.puncak_2026 || "–")} · ${fmt(o.titik_2026)} titik VIIRS</p></div><button aria-label="Tutup" data-tutup>×</button></div>
-      <div class="db"><div class="tw"><table><thead><tr><th>Kompleks besar</th><th>Mulai</th><th class="n">ha</th><th class="n">hari aktif</th></tr></thead><tbody>
+      <div class="db"><div class="tw"><table><thead><tr><th>Cluster besar</th><th>Mulai</th><th class="n">ha</th><th class="n">hari aktif</th></tr></thead><tbody>
       ${[...(o.pertama || []).map(x => ({...x, jenis: "pertama"})), ...(o.terbesar || []).map(x => ({...x, jenis: "terbesar"}))].map(x => `<tr><td>${esc(x.kab || "")}, ${esc(x.kec || "")} <small>(${x.jenis})</small></td><td>${new Date(x.t0).toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</td><td class="n num">${fmt(x.ha)}</td><td class="n num">${x.hari}</td></tr>`).join("")}</tbody></table></div>
       <p class="fnd">Awal musim per tahun: ${Object.entries(o.per_tahun || {}).map(([y, v]) => `${y} ${v.awal || "–"}`).join(" · ")}</p></div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); }; return d.showModal(); }

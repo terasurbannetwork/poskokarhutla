@@ -64,7 +64,7 @@ KELOMPOK = {                            # id: (jenis DIBI atau None = USGS, baha
 }
 RETRO = ["banjir_longsor", "gempa"]     # yang punya komponen statis -> bisa diuji mundur
 PROSPEK = list(KELOMPOK)
-TAK_TERUJI = ["karhutla (FWI dan titik panas harian)", "gunung api (status harian)", "cuaca (peringatan harian)", "kekeringan (tingkat harian)"]
+TAK_TERUJI = ["karhutla (FWI dan titik panas harian)", "gunung api (status harian)", "cuaca (peringatan harian)", "kekeringan (tingkat harian)", "udara (prakiraan PM2,5 harian, ditambahkan 22 Okt 2026)"]
 
 
 def baca(jalur):
@@ -349,7 +349,7 @@ def potret(r):
         kab = f"{row[0]}|{row[1]}"
         d = per.setdefault(kab, [None] * len(R.BENCANA))
         for i, b in enumerate(R.BENCANA):
-            h = row[ix["h_" + b]]
+            h = row[ix["h_" + b]] if "h_" + b in ix else None    # berkas risiko lama belum punya kolom bencana baru (udara): tak ada data
             s = R.risiko({b: h}, row[ix["pangkat"]], row[ix["kapasitas"]])[0]
             if s is not None and (d[i] is None or s > d[i]):
                 d[i] = s
@@ -361,6 +361,7 @@ def tambah_arsip(arsip, r):
     hari, kab, kls = potret(r)
     if not arsip or arsip.get("kab") != kab:
         arsip = {"kab": kab, "hari": {}, "catatan": "potret kelas kabupaten (kecamatan tertinggi) per bahaya, urutan " + ",".join(R.BENCANA) + "; x = tak ada data"}
+    arsip["catatan"] = "potret kelas kabupaten (kecamatan tertinggi) per bahaya, urutan " + ",".join(R.BENCANA) + "; x = tak ada data; potret lama punya lebih sedikit kolom (bencana baru ditambah di akhir)"
     arsip["hari"][hari] = ",".join(kls)
     for h in sorted(arsip["hari"])[:-ARSIP_HARI]:
         del arsip["hari"][h]

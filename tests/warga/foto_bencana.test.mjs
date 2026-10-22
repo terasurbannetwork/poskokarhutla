@@ -6,22 +6,22 @@ import assert from "node:assert/strict";
 import {readFileSync, readdirSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
-import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import {AKAR, migrasi, pecah, JPEG_SAH, WEBP_SAH} from "./_bantu.mjs";
 
 const REG = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana, ADMIN = {"x-admin-token": "rahasia-admin"};
 const aset = async req => { const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p.endsWith("/") ? p + "index.html" : p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404}); };
 const opsi = nama => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
   compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, r2Buckets: {MEDIA: nama + "-r2"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin"}, serviceBindings: {ASSETS: aset}, cache: false});
-const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, ...Array(2000).fill(7)]);
-const WEBP = new Uint8Array([..."RIFF"].map(c => c.charCodeAt(0)).concat([0, 0, 0, 0], [..."WEBPVP8 "].map(c => c.charCodeAt(0)), Array(500).fill(1)));
+const JPEG = JPEG_SAH, WEBP = WEBP_SAH;
 let n = 0; const ipBaru = () => `10.9.${Math.floor(++n / 250)}.${n % 250}`;
-const unggahDi = (mf, isian) => { const f = new FormData();
+const unggahDi = async (mf, isian) => { const f = new FormData();
   const t = Date.now();   // anti GPS palsu (src/gps.js, migrasi 0015): >= 3 bacaan berurutan, yang terakhir = titik kiriman dan waktu_gps
   const sampel = JSON.stringify([[-2.21002, 113.91999, 18, t - 2000], [-2.20999, 113.92002, 16, t - 1000], [-2.21, 113.92, 15, t]]);
   for (const [k, v] of Object.entries({kategori: "api", lat: "-2.2100", lon: "113.9200", akurasi: "15", waktu_gps: String(t), setuju: "1", keterangan: "uji", sampel, ...isian})) f.append(k, v);
   f.append("media", new File([JPEG], "a.bin")); f.append("thumb", new File([WEBP], "t.bin"));
-  return mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ipBaru()}, cf: {country: "ID"}}).then(async r => ({s: r.status, j: await r.json()})); };
+  const r0 = new Response(f), body = new Uint8Array(await r0.arrayBuffer());   // Content-Length eksplisit, seperti peramban (server mewajibkannya)
+  return mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body, headers: {"cf-connecting-ip": ipBaru(), "content-type": r0.headers.get("content-type"), "content-length": String(body.length)}, cf: {country: "ID"}}).then(async r => ({s: r.status, j: await r.json()})); };
 const ambil = async (mf, jalur) => { const r = await mf.dispatchFetch("http://warga.lokal" + jalur, {headers: {"cf-connecting-ip": "10.8.8.8"}}); return {s: r.status, j: await r.json().catch(() => null)}; };
 const setujui = (mf, id) => mf.dispatchFetch("http://warga.lokal/api/foto/admin/" + id, {method: "POST", headers: {"content-type": "application/json", "cf-connecting-ip": "10.8.8.8", ...ADMIN}, body: JSON.stringify({aksi: "setujui"})});
 

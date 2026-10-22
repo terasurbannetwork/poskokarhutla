@@ -164,9 +164,13 @@ test("kecocokan skala: tinggalkan-satu, galat >= 1, dalam2 + luar2 = 1, ada kota
   const v = M.kecocokanSkala(dasar, prak); assert.ok(v.ok && v.n >= 2, JSON.stringify(v));
   assert.ok(v.galat >= 1 && Math.abs(v.dalam2 + v.luar2 - 1) < 1e-12 && v.terburuk.length > 0 && !("validasi" in M), JSON.stringify(v));
   assert.equal(M.sdApiDariGalat(1), .2); assert.equal(M.sdApiDariGalat(100), 1); assert.ok(Math.abs(M.sdApiDariGalat(1.5) - Math.log(1.5) / .6745) < 1e-12);
+  /* median |ln X| = .6745 sd (X lognormal): galat 2 memberi sd 1,03 yang sengaja dijepit ke 1 (fApi sudah terpotong .2 sampai 5), jadi rumus diuji di galat 1,5 yang tak terjepit */
+  assert.equal(M.sdApiDariGalat(2), 1);
 });
-test("K pada data nyata di repo berada di rentang wajar (emisi tak salah skala struktural)", { skip: !existsSync(new URL("../../public/data/hotspot24.json", import.meta.url)) }, () => {
+test("K pada data nyata di repo berada di rentang wajar (emisi tak salah skala struktural)", { skip: !existsSync(new URL("../../public/data/hotspot24.json", import.meta.url)) }, t => {
   const baca = p => JSON.parse(readFileSync(new URL("../../public/" + p, import.meta.url))), ang = baca("udara/data/angin.json"), pr = baca("udara/data/prakiraan.json"), kl = baca("data/kluster.json"), pl = baca("udara/data/pltu.json"), hs = baca("data/hotspot24.json");
+  /* salinan repo public/data/hotspot24.json hanya diperbarui CI karhutla, sedangkan prakiraan udara terbit tiap 12 jam: api 9 hari lalu dibanding CAMS hari ini menggeser K antara 2 dan 7,7 (diukur 18-21 Okt), bukan salah skala. Uji hanya bermakna bila masukan sezaman. */
+  const umur = (Date.parse(pr.dibuat) - Date.parse(hs.acuan)) / 864e5; if (!(umur <= 2)) return t.skip(`hotspot24 basi ${umur.toFixed(1)} hari terhadap prakiraan`);
   const AA = M.kemasAngin(ang), dlm = k => k.lon >= AA.lon0 && k.lon <= AA.lon0 + (AA.nx - 1) * AA.dlon && k.lat >= AA.lat0 && k.lat <= AA.lat0 + (AA.ny - 1) * AA.dlat && k.pm?.length;
   const P = {...pr, kota: pr.kota.filter(dlm)}, props = kl.features.map(f => f.properties).filter(p => p.frp24 > 0), L = M.lintasanKompleks(props, hs.baris);
   assert.ok(Object.values(L).every(n => n >= 1 && n <= 20), "lintasan masuk akal");

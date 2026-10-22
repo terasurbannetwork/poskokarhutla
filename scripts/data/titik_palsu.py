@@ -13,11 +13,17 @@ Jenis: PLTU (<= 1 km dari scripts/udara/pltu.py), kawah (<= aturan.RADIUS_GUNUNG
 Tidak dipakai: suar migas VIIRS Nightfire / Global Gas Flaring (butuh akun EOG; tanpa kunci tidak terjangkau); suar darat tertangkap
 lewat tipe FIRMS 2 dan pola persisten.
 
-Pakai:  python3 scripts/data/titik_palsu.py bangun <viirs_2023.csv> <viirs_2024.csv> ...   (CSV dari firms.py, boleh satu per tahun)
+Penyegaran bulanan (CI): `segar` menarik SENDIRI arsip standar (SP, kolom type) S-NPP untuk TAHUN_JENDELA tahun kalender PENUH terakhir lewat firms.py
+(FIRMS_MAP_KEY; ~73 permintaan, ~1 menit per tahun) ke data/raw/firms/viirs_<tahun>.csv, lalu `bangun` dengan ambang yang sama. Tahun penuh bersifat tetap, jadi berkas
+yang sudah ada TIDAK ditarik ulang (cache Actions per tahun); tahun berjalan tak dipakai (NRT tak punya kolom type, SP tertinggal). Berkas hasil tidak ditimpa bila
+jumlah sel turun > 50% dari berkas lama (tanda tarikan separuh jadi) atau tarikan < MIN_BARIS baris.
+
+Pakai:  python3 scripts/data/titik_palsu.py segar                                           (CI bulanan; butuh FIRMS_MAP_KEY)
+        python3 scripts/data/titik_palsu.py bangun <viirs_2023.csv> <viirs_2024.csv> ...   (CSV dari firms.py, boleh satu per tahun)
         python3 scripts/data/titik_palsu.py dampak <csv_30hari>                            hitung titik terbuang di CSV itu
         python3 scripts/data/titik_palsu.py uji   (bila data/raw/firms/viirs_*.csv ada: uji out-of-sample, sel OKI tak boleh tertandai)
 """
-import csv, collections, datetime as dt, json, math, os, sys
+import csv, collections, datetime as dt, json, math, os, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, PROVINSI, Wilayah
@@ -26,6 +32,8 @@ import aturan
 JALUR = os.path.join(AKAR, "public/data/titik_palsu.json")
 PLTU = os.path.join(AKAR, "public/udara/data/pltu.json")
 HARI_MIN, BULAN_MIN, TAHUN_MIN, R_PLTU = 30, 8, 2, 1.0
+TAHUN_JENDELA, MIN_BARIS, TURUN_MAKS = 4, 100_000, 0.5   # 2022-2025 punya ratusan ribu baris S-NPP per tahun; < 100 rb = tarikan gagal
+ARSIP = os.path.join(AKAR, "data/raw/firms")
 TIPE = {"1": "gunung api", "2": "sumber panas tetap (industri/tambang/kilang)", "3": "lepas pantai (anjungan/suar)"}
 
 
@@ -105,6 +113,45 @@ def bangun(berkas):
     return d
 
 
+def tahun_penuh(kini=None, n=TAHUN_JENDELA):
+    """n tahun kalender penuh terakhir (tahun berjalan tidak ikut)."""
+    y = (kini or dt.date.today()).year
+    return list(range(y - n, y))
+
+
+def segar(kini=None, tarik=None):
+    """Pastikan arsip SP n tahun penuh terakhir ada (tarik yang belum), lalu bangun dan tulis JALUR (dengan pengaman). -> dict hasil.
+    tarik(tahun, jalur_csv): pengganti firms.py untuk uji. Gagal menarik = SystemExit, berkas daftar lama tidak disentuh."""
+    os.makedirs(ARSIP, exist_ok=True)
+    berkas = []
+    for y in tahun_penuh(kini):
+        b = os.path.join(ARSIP, f"viirs_{y}.csv")
+        if not os.path.exists(b):
+            tmp = b + ".tmp"
+            if tarik:
+                tarik(y, tmp)
+            else:
+                if not os.environ.get("FIRMS_MAP_KEY"):
+                    sys.exit("titik_palsu segar: FIRMS_MAP_KEY kosong dan arsip %d tidak ada" % y)
+                with open(tmp, "w") as f:
+                    r = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "firms.py"), f"{y}-01-01", f"{y}-12-31"], stdout=f, env={**os.environ, "SENSOR": "VIIRS_SNPP"})
+                if r.returncode:
+                    os.remove(tmp)
+                    sys.exit("titik_palsu segar: firms.py gagal untuk %d" % y)
+            n = sum(1 for _ in open(tmp)) - 1
+            if n < MIN_BARIS:
+                os.remove(tmp)
+                sys.exit("titik_palsu segar: arsip %d hanya %d baris (< %d), dibatalkan" % (y, n, MIN_BARIS))
+            os.replace(tmp, b)
+        berkas.append(b)
+    d = bangun(berkas)
+    lama = len(json.load(open(JALUR))["sumber_statis"]) if os.path.exists(JALUR) else 0
+    baru = len(d["sumber_statis"])
+    if lama and baru < lama * (1 - TURUN_MAKS):
+        sys.exit("titik_palsu segar: %d sel < %d%% dari %d sel lama, tidak ditimpa" % (baru, 100 * (1 - TURUN_MAKS), lama))
+    return {"d": d, "lama": lama, "baru": baru, "berkas": berkas}
+
+
 def palsu(lat, lon, daftar_sel):
     """daftar_sel: set sel(...) dari entri sumber_statis. True bila titik jatuh di sel sumber statis."""
     return sel(lat, lon) in daftar_sel
@@ -163,6 +210,39 @@ def uji():
         print(f"  OKI: {len(ramai)} sel >= 30 hari/tahun (arsip {len(arsip)} tahun), tertandai statis {len(kena)} (semua tipe FIRMS non-vegetasi), api gambut 0")
     else:
         print("  (arsip data/raw/firms/viirs_*.csv tak ada: uji OKI dilewati)")
+    # segar: tahun penuh, tarik hanya yang belum ada, pengaman terhadap tarikan separuh jadi
+    import tempfile
+    global ARSIP, JALUR, MIN_BARIS
+    asli = (ARSIP, JALUR, MIN_BARIS)
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            ARSIP, JALUR, MIN_BARIS = os.path.join(tmp, "firms"), os.path.join(tmp, "tp.json"), 3
+            assert tahun_penuh(dt.date(2026, 10, 22)) == [2022, 2023, 2024, 2025] and tahun_penuh(dt.date(2027, 1, 1), 1) == [2026]
+            dipanggil = []
+            def tarik(y, tmpf):
+                dipanggil.append(y)
+                with open(tmpf, "w") as f:
+                    f.write("latitude,longitude,acq_date,type\n")
+                    for d in range(1, 41):    # sel (-3,00 / 104,00) menyala 40 hari di 10 bulan; sel (-4,00 / 105,00) tipe 2 sama
+                        f.write(f"-3.001,104.001,{y}-{(d % 10) + 1:02d}-{(d // 10) + 1:02d},0\n-4.001,105.001,{y}-{(d % 10) + 1:02d}-{(d // 10) + 1:02d},2\n")
+            h = segar(dt.date(2026, 10, 22), tarik)
+            assert dipanggil == [2022, 2023, 2024, 2025] and h["baru"] == 2, (dipanggil, h["baru"])
+            assert {x["jenis"] for x in h["d"]["sumber_statis"]} == {"persisten", "sumber panas tetap"}, h["d"]["jumlah"]
+            assert segar(dt.date(2026, 10, 22), tarik) and dipanggil == [2022, 2023, 2024, 2025], "arsip yang ada tidak boleh ditarik ulang"
+            json.dump({"sumber_statis": [{}] * 10}, open(JALUR, "w"))
+            try:
+                segar(dt.date(2026, 10, 22), tarik)
+                raise AssertionError("penurunan > 50% harus ditolak")
+            except SystemExit as e:
+                assert "tidak ditimpa" in str(e), e
+            os.remove(os.path.join(ARSIP, "viirs_2022.csv"))
+            try:
+                segar(dt.date(2026, 10, 22), lambda y, f: open(f, "w").write("latitude\n"))
+                raise AssertionError("tarikan kosong harus dibatalkan")
+            except SystemExit as e:
+                assert "dibatalkan" in str(e) and not os.path.exists(os.path.join(ARSIP, "viirs_2022.csv")), e
+    finally:
+        ARSIP, JALUR, MIN_BARIS = asli
     print("titik_palsu.py: uji lulus")
 
 
@@ -170,6 +250,11 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if a[:1] == ["uji"]:
         uji()
+    elif a[:1] == ["segar"]:
+        h = segar()
+        with open(JALUR, "w") as f:
+            json.dump(h["d"], f, ensure_ascii=False, separators=(",", ":"))
+        print(f"titik_palsu.json: {h['lama']} -> {h['baru']} sel dari arsip {[os.path.basename(b)[6:10] for b in h['berkas']]}, {h['d']['jumlah']}")
     elif a[:1] == ["bangun"] and len(a) > 1:
         d = bangun(a[1:])
         with open(JALUR, "w") as f:

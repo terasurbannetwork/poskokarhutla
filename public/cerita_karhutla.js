@@ -126,12 +126,12 @@ const Cerita = {
     this.DMAX = Math.max(...C.musim26.map(s => s[2])); this.st.hariMusim = this.tf = this.DMAX;
     const f = d => this.px((d - TL0) / (this.DMAX - TL0));
     /* kartu samping: provinsi berurutan menurut awal musim (gantinya grafik dumbbell dan tabel kompleks pertama) */
-    const sisi = ur.map(o => { const k = kmp[o.k], s = o.selisih_hari, kt = k ? `Kompleks: ${k.kab} · ${tglP(k.t0)} · ${nf(k.ha)} ha` : "";
+    const sisi = ur.map(o => { const k = kmp[o.k], s = o.selisih_hari, kt = k ? `Cluster: ${k.kab}, ${tglP(k.t0)}, ${nf(k.ha)} ha` : "";
       return `<div class="ct-sd" data-pk="${o.k}" data-a="${o.awal_2026_iso ? doy(o.awal_2026_iso) : 9999}" data-b="${k ? doy(k.t0) : 9999}"><i style="background:${WP[o.k] || "#c9503a"}"></i><b>${es(o.nama)}</b><span class="dt">${o.awal_2026_iso ? tglP(o.awal_2026_iso) : "belum mulai"}</span>
         ${s == null ? "" : `<span class="ct-pl ${s < 0 ? "awal" : "lambat"}">${bd(s)}</span>`}${k ? `<small class="kp" title="${es(kt)}">${es(kt)}</small>` : ""}</div>`; }).join("");
     /* penggeser: tanda bulan + penanda bab (awal musim = titik, kompleks besar pertama = api) */
     const tick = [151, 181, 212, 243, 273].filter(d => d <= this.DMAX).map(d => `<i class="ct-scr-t" style="left:${f(d)}"></i><span class="ct-scr-b" style="left:${f(d)}">${hariKe(d)}</span>`).join("");
-    const marks = this.ev.map(x => `<i class="ct-mk ${x.jenis}" style="left:${f(x.d)};--c:${WP[x.pk] || "#c9503a"}" data-hari="${x.d}" data-t="${es(x.jenis === "awal" ? `${hariKe(x.d)} · awal musim ${x.prov}` : `${hariKe(x.d)} · kompleks besar ${x.kab || x.prov} (${nf(x.ha)} ha)`)}">${x.jenis === "besar" ? API : ""}</i>`).join("");
+    const marks = this.ev.map(x => `<i class="ct-mk ${x.jenis}" style="left:${f(x.d)};--c:${WP[x.pk] || "#c9503a"}" data-hari="${x.d}" data-t="${es(x.jenis === "awal" ? `${hariKe(x.d)}, awal musim ${x.prov}` : `${hariKe(x.d)}, cluster besar ${x.kab || x.prov} (${nf(x.ha)} ha)`)}">${x.jenis === "besar" ? API : ""}</i>`).join("");
     this.urutRe = R.map((r, i) => i).sort((a, b) => R[b].ha - R[a].ha);
     const pilih = `<select data-ubah="peristiwa" aria-label="Lihat peristiwa terbesar"><option value="-1">Lihat peristiwa terbesar</option>${this.urutRe.map(i => `<option value="${i}">${es(R[i].kab || nmP(R[i].prov))} · ${tglID(R[i].t0)} · ${nf(R[i].ha)} ha</option>`).join("")}</select>`;
     return this.bab("Musim 2026", "musim", "Video sebaran api wilayah Indonesia di 2026",
@@ -143,7 +143,7 @@ const Cerita = {
             <div class="ct-scr" id="ct-scr" role="slider" tabindex="0" aria-label="Tanggal"><div class="ct-scr-tr"><i class="ct-scr-fill" id="ct-fill"></i></div><div class="ct-nasx">${tick}${marks}</div><i class="ct-scr-head" id="ct-kepala"></i></div>
             <button type="button" class="ct-kec on" id="ct-kam" data-aksi="kam" aria-pressed="true">Kamera otomatis</button><span id="ct-nas">${pilih}</span><span id="ct-re" hidden><button type="button" class="ct-kec lbl" data-aksi="kembali">← Kembali ke Indonesia</button></span></div></div></div>
       <div id="ct-reBawah" hidden><div id="ct-sebarInfo" class="ct-chips satu"></div></div>`,
-      {leg: [["background:#1d4e89;border-radius:50%", "label awal musim provinsi"], ["background:#e0663a;clip-path:polygon(50% 0,90% 45%,100% 70%,80% 100%,20% 100%,0 70%,15% 40%)", "label kompleks besar pertama"], ["background:linear-gradient(90deg,#fde7a7,#ef9a4a,#c63b2f,#5c0f1f)", "sel terbakar: makin tua makin baru"]], sumber: "NASA FIRMS VIIRS 2015–2026"});
+      {leg: [["background:#1d4e89;border-radius:50%", "label awal musim provinsi"], ["background:#e0663a;clip-path:polygon(50% 0,90% 45%,100% 70%,80% 100%,20% 100%,0 70%,15% 40%)", "label cluster besar pertama"], ["background:linear-gradient(90deg,#fde7a7,#ef9a4a,#c63b2f,#5c0f1f)", "sel terbakar: makin tua makin baru"]], sumber: "NASA FIRMS VIIRS 2015–2026"});
   },
   ovl(k, d, n) { return `<span class="ct-ov-k">${k}</span><b class="ct-ov-d">${d}</b><span class="ct-ov-n">${n}</span>`; },
   infoSebar() {
@@ -320,7 +320,7 @@ const Cerita = {
   caption(d) { /* kalimat peristiwa terakhir yang sudah dilewati */
     const sudah = this.ev.filter(x => x.d <= d);
     if (!sudah.length) return `<b>${hariKe(d)} 2026</b><span>Belum ada provinsi yang memulai musim</span>`;
-    const dd = sudah.at(-1).d, tx = x => x.jenis === "awal" ? `Awal musim di ${es(x.prov)}${x.selisih != null ? ` (${bd(x.selisih)} dari median)` : ""}` : `Kompleks besar pertama di ${es(x.kab)}, ${es(x.prov)} (${nf(x.ha)} ha)`;
+    const dd = sudah.at(-1).d, tx = x => x.jenis === "awal" ? `Awal musim di ${es(x.prov)}${x.selisih != null ? ` (${bd(x.selisih)} dari median)` : ""}` : `Cluster besar pertama di ${es(x.kab)}, ${es(x.prov)} (${nf(x.ha)} ha)`;
     return `<b>${hariKe(dd)} 2026</b><span>${sudah.filter(x => x.d === dd).map(tx).join("; ")}</span>`;
   },
   setCap(h) { const c = $q("#ct-cap", this.el); if (!c || h === this.capTxt) return; this.capTxt = h; c.innerHTML = h; c.classList.remove("ganti"); void c.offsetWidth; c.classList.add("ganti"); },

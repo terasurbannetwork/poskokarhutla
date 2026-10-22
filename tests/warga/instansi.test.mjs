@@ -119,7 +119,8 @@ const tugasBaru = async (prov, kab, o = {}) => {
   return id;
 };
 const KOMPLEKS = (id, lat, lon, o = {}) => ({id, lat, lon, prov: "62", kab: "Seruyan", kec: "Seruyan Hilir", level: 2, n24: 5, jam_sejak: 2, luas: 30, konsesi: [], ...o});
-const cron = (jam = BASE) => mf.getWorker().then(w => w.scheduled({cron: "* * * * *", scheduledTime: jam}));
+/* tiap panggilan memproses berkasnya: meta versi (0041) dikosongkan lebih dulu supaya uji lama yang memakai `dibuat` sama tetap berarti; gerbang versi diuji di kartu_insiden.test.mjs */
+const cron = async (jam = BASE) => { await DB.prepare("DELETE FROM tugas_meta").run(); return (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: jam}); };
 
 uji("instansi: migrasi 0029 idempoten dan tabel lengkap", async () => {
   const sql = readFileSync(path.join(AKAR, "migrations/0029_instansi.sql"), "utf8");
@@ -309,9 +310,9 @@ uji("instansi: cron menggabung kompleks <= 2 km di kabupaten sama, idempoten, id
   await DB.prepare("UPDATE tugas_api SET status = 'padam' WHERE id = ?").bind(seruyan.id).run();
   TUGAS = {dibuat: new Date(BASE + 6 * JAM - 30 * MENIT).toISOString(), kompleks: [KOMPLEKS("K0001", -2.55, 112.0)]};
   await ev(BASE + 6 * JAM); assert.equal(await n("tugas_api"), 4); assert.equal(await n("tugas_api", "status = 'buka'"), 3);
-  /* bukan di jadwal cron (menit 17 atau jam bukan kelipatan 3): tidak jalan */
+  /* versi baru diproses di menit/jam mana pun (0.3), tidak lagi menunggu jam kelipatan 3 */
   TUGAS = {dibuat: new Date(BASE + 7 * JAM).toISOString(), kompleks: [KOMPLEKS("K0001", -3.5, 113.0, {kab: "Pulang Pisau"})]};
-  await ev(BASE + 7 * JAM); assert.equal(await n("tugas_api"), 4, "jam 10 UTC bukan jadwal");
+  await ev(BASE + 7 * JAM); assert.equal(await n("tugas_api"), 5, "jam 10 UTC: versi baru tetap diproses");
   /* kompleks tidak sah satu pun tidak menggagalkan batch */
   TUGAS = {dibuat: new Date(BASE + 9 * JAM - 10 * MENIT).toISOString(), kompleks: [{id: "x", lat: 99, lon: 0, prov: "62", kab: "Seruyan", level: 2}, {lat: "a"}, null, KOMPLEKS("K9", -3.5, 113.0, {kab: "Pulang Pisau"})]};
   await ev(BASE + 9 * JAM); assert.equal(await n("tugas_api"), 5); assert.equal(await n("tugas_api", "kab = 'Pulang Pisau'"), 1);
@@ -402,6 +403,7 @@ uji("instansi: media 1 berkas, EXIF dibuang, urutan sumber waktu EXIF lalu GPS l
   assert.equal(a.j.sumber_waktu, "exif"); assert.equal(a.j.jenis, "foto"); assert.ok(a.j.exif_jarak < 100); assert.equal(a.j.orang_terdeteksi, null, "tanpa binding AI: null, tanpa galat"); assert.equal(a.j.jauh, false);
   const obj = new Uint8Array(await (await R2.get(`instansi/media/${a.j.id}`)).arrayBuffer());
   assert.ok(!new TextDecoder("latin1").decode(obj).includes("Exif"), "EXIF dibuang sebelum disimpan"); assert.ok(await R2.get(`instansi/media/${a.j.id}_t`));
+  assert.equal((await DB.prepare("SELECT sha256 FROM instansi_media WHERE id = ?").bind(a.j.id).first()).sha256, createHash("sha256").update(obj).digest("hex"), "0044: sha256 = hash byte yang tersimpan di R2");
   const b = await unggah(h, tid, {media: jpeg(0)}); assert.equal(b.j.sumber_waktu, "gps");
   const baris = await DB.prepare("SELECT waktu_ambil, sumber_waktu, isian_id FROM instansi_media WHERE id = ?").bind(a.j.id).first(); assert.ok(Math.abs(baris.waktu_ambil - (Date.now() - 2 * JAM)) < 10 * MENIT); assert.equal(baris.isian_id, null, "belum dirujuk isian");
   assert.equal((await unggah(h, tid, {media: WEBP, thumb: jpeg()})).s, 201, "WebP dan thumbnail JPEG sah");
@@ -925,7 +927,7 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !f.startsWith("0029")).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],
@@ -1206,8 +1208,12 @@ uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam 
   const now = Date.now(), lat = 2.3, lon = 99.3, L = (id, o = {}) => ({id, lat: lat + derajatM(500), lon, prov: "62", kab: "Seruyan", status: "padam", waktu: now, dipercaya: true, ...o});
   const idL = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
   const dekat = await tugasBaru("62", "Seruyan", {lat, lon}), jauh = await tugasBaru("62", "Seruyan", {lat: lat + derajatM(1500), lon}), lain = await tugasBaru("62", "Katingan", {lat, lon});
-  const p = idL(), r = await tautkanLaporanRegu({DB}, L(p), now);
-  assert.equal(r.tugas_id, dekat, "yang terdekat (0,5 km), bukan 1,0 km"); assert.equal(r.efek, "padam_dilaporkan"); assert.ok(Math.abs(r.jarak_km - 0.5) < 0.05);
+  const p = idL(), r = await tautkanLaporanRegu({DB}, L(p, {regu_id: "regu-a"}), now);
+  assert.equal(r.tugas_id, dekat, "yang terdekat (0,5 km), bukan 1,0 km"); assert.equal(r.efek, "klaim_regu", "satu regu padam = klaim, bukan penutupan"); assert.ok(Math.abs(r.jarak_km - 0.5) < 0.05);
+  assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(dekat).first()).status, "buka");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-a", waktu: now + 10}), now + 20)).efek, "klaim_regu", "regu yang sama dua kali tetap satu regu");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-c", dipercaya: false}), now + 30)).efek, null, "tidak dipercaya: hanya tercatat");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {regu_id: "regu-b"}), now + 40)).efek, "padam_dilaporkan", "dua regu berbeda yang dipercaya");
   const t = await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(); assert.deepEqual(t, {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now, cek_ulang_pada: null});
   assert.deepEqual(await DB.prepare("SELECT tugas_id, status FROM tugas_lapangan WHERE lapangan_id = ?").bind(p).first(), {tugas_id: dekat, status: "padam"});
   assert.equal((await tautkanLaporanRegu({DB}, L(p), now)).efek, null, "kirim ulang: tidak ada tautan ganda, padam_pada tidak bergeser"); assert.equal(await n("tugas_lapangan", `lapangan_id = '${p}'`), 1);
@@ -1219,8 +1225,9 @@ uji("L1: tautkanLaporanRegu: tugas terdekat dalam 2 km di kabupaten sama; padam 
   const mu = await DB.prepare("SELECT sumber, jarak_km, keterangan FROM tugas_muncul WHERE tugas_id = ?").bind(dekat).first(); assert.equal(mu.sumber, "regu"); assert.ok(Math.abs(mu.jarak_km - 0.5) < 0.05); assert.match(mu.keterangan, /api menyala/);
   /* padam lagi dari regu pada tugas muncul_lagi: verifikasi mulai dari awal; laporan tidak dipercaya (ditahan/GPS curiga) hanya menaut */
   const x = await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 5000, dipercaya: false}), now + 6000); assert.equal(x.efek, null); assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(dekat).first()).status, "buka");
-  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7000}), now + 8000)).efek, "padam_dilaporkan");
-  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now + 7000, cek_ulang_pada: null});
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7000, regu_id: "regu-a"}), now + 8000)).efek, "klaim_regu", "klaim lama (sebelum dibuka kembali) tidak dihitung");
+  assert.equal((await tautkanLaporanRegu({DB}, L(idL(), {status: "padam", waktu: now + 7500, regu_id: "regu-b"}), now + 8500)).efek, "padam_dilaporkan");
+  assert.deepEqual(await DB.prepare("SELECT status, padam_verif, padam_pada, cek_ulang_pada FROM tugas_api WHERE id = ?").bind(dekat).first(), {status: "padam", padam_verif: "padam_dilaporkan", padam_pada: now + 7500, cek_ulang_pada: null});
   /* tugas dummy dan tugas ditutup tidak ditautkan */
   const dm = await tugasBaru("62", "Seruyan", {lat: lat - 0.5, lon}); await DB.prepare("UPDATE tugas_api SET dummy = 1 WHERE id = ?").bind(dm).run();
   assert.equal(await tautkanLaporanRegu({DB}, L(idL(), {lat: lat - 0.5}), now), null); await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(dm).run();

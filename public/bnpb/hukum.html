@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pustaka Hukum BNPB · Pantau Bencana</title>
+<meta name="description" content="Cari pasal peraturan BNPB, baca dokumennya, dan tanyakan dengan jawaban yang kutipannya diperiksa ke teks asli.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/hukum.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Pustaka Hukum</span>
+</header>
+<main class="bn-wrap">
+  <nav class="ad-tabs" id="tab" aria-label="Bagian pustaka hukum"></nav>
+
+  <section id="pCari" class="hk-panel" aria-labelledby="hCari">
+    <div class="hk-hero">
+      <h1 id="hCari">Temukan pasal yang kamu butuhkan</h1>
+      <p>Peraturan BNPB dari jdih.bnpb.go.id, dicari per pasal.</p>
+      <form id="fCari" class="hk-cari" role="search">
+        <label class="hk-kotak"><span class="hk-sr">Kata kunci</span><input id="q" type="search" maxlength="200" placeholder="Contoh: dana siap pakai" autocomplete="off" enterkeyhint="search"></label>
+        <button class="bn-tombol" type="submit" id="bCari">Cari</button>
+      </form>
+      <div class="hk-contoh" id="contoh" aria-label="Contoh kueri"></div>
+      <div class="hk-saring">
+        <label class="bn-isian">Jenis<select id="fJenis"></select></label>
+        <label class="bn-isian">Tahun<select id="fTahun"></select></label>
+        <label class="bn-isian">Status<select id="fStatus"></select></label>
+      </div>
+    </div>
+    <p id="pesanCari" class="bn-pesan galat" role="status"></p>
+    <div id="ringkasCari" class="hk-ringkas" aria-live="polite"></div>
+    <div id="hasil" class="hk-hasil"></div>
+    <div id="halCari" class="hk-hal"></div>
+  </section>
+
+  <section id="pTanya" class="hk-panel" aria-labelledby="hTanya" hidden>
+    <div class="hk-hero">
+      <h1 id="hTanya">Tanya peraturan BNPB</h1>
+      <p>Jawaban disusun hanya dari pasal yang ditemukan. Tiap kutipan dicocokkan ke teks aslinya sebelum tampil.</p>
+      <form id="fTanya" class="hk-tanya">
+        <label class="bn-isian"><span class="hk-sr">Pertanyaan</span><textarea id="tanya" maxlength="500" rows="3" placeholder="Contoh: Siapa yang berwenang menetapkan status keadaan darurat bencana?"></textarea></label>
+        <div class="hk-baris-aksi"><button class="bn-tombol" type="submit" id="bTanya">Tanyakan</button><span class="hk-catatan">Bukan nasihat hukum. Rujuk dokumen resmi.</span></div>
+      </form>
+      <div class="hk-contoh" id="contohTanya" aria-label="Contoh pertanyaan"></div>
+    </div>
+    <p id="pesanTanya" class="bn-pesan galat" role="status"></p>
+    <div id="jawab" aria-live="polite"></div>
+  </section>
+
+  <section id="pRelasi" class="hk-panel" aria-labelledby="hRelasi" hidden>
+    <div class="bn-judul"><h1 id="hRelasi">Relasi antarperaturan</h1></div>
+    <p id="pesanRelasi" class="bn-pesan galat" role="status"></p>
+    <div id="relasi"></div>
+  </section>
+
+  <section id="pDok" class="hk-panel" aria-label="Dokumen" hidden>
+    <p id="pesanDok" class="bn-pesan galat" role="status"></p>
+    <div id="dok"></div>
+  </section>
+</main>
+<script src="/bnpb/hukum.js?v=2"></script>
+</body>
+</html>

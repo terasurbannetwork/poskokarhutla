@@ -8,7 +8,7 @@
   const WIB = 7 * 36e5, hariIni = () => new Date(Date.now() + WIB).toISOString().slice(0, 10);
   const geser = (t, n) => new Date(Date.parse(t) + n * 864e5).toISOString().slice(0, 10);
   const jam = s => `${String(Math.floor(s / 6)).padStart(2, "0")}:${String(s % 6 * 10).padStart(2, "0")}`;
-  const TAB = {ringkasan: "Dashboard", peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak",
+  const TAB = {ringkasan: "Dashboard", peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Cluster", posko: "Posko", dampak: "Dampak",
     metode: "Metode", sim: "Simulasi", simulasi: "Simulasi", informasi: "Lapor Warga", prakiraan: "Prakiraan", daftar: "Wilayah siaga", provinsi: "Provinsi", rob: "Rob",
     sungai: "Sungai", keputusan: "Keputusan", sarana: "Sarana"};
   /* nama halaman: bencana dari registry (public/bencana.json, diisi sebelum render pertama) + halaman tetap; urutan karhutla, banjir, ... lalu tetap */
@@ -114,7 +114,7 @@
       for (const [lo, la] of c) a = [Math.min(a[0], lo), Math.min(a[1], la), Math.max(a[2], lo), Math.max(a[3], la)]; pusat[f.properties.kode] = [(a[1] + a[3]) / 2, (a[0] + a[2]) / 2]; }
     const prov = baris("provinsi").filter(([k]) => pusat[k]).map(([k, n]) => ({j: namaProv(k), la: pusat[k][0], lo: pusat[k][1], n}));
     const kk = kluster ? baris("kompleks").filter(([k]) => kluster[k]).map(([k, n]) => ({j: k + " · " + kluster[k][2], la: kluster[k][0], lo: kluster[k][1], n})) : [];
-    return `<div class="ad-peta-w"><svg viewBox="${VB}" role="img" aria-label="Peta kompleks dan provinsi paling dibuka">${dasar()}${kotak}${gelembung(prov, "#5a9e74")}${gelembung(kk, "#c9503a")}</svg>${sel.length + prov.length + kk.length ? "" : '<span class="ad-peta-kosong">Belum ada data</span>'}</div>`;
+    return `<div class="ad-peta-w"><svg viewBox="${VB}" role="img" aria-label="Peta cluster dan provinsi paling dibuka">${dasar()}${kotak}${gelembung(prov, "#5a9e74")}${gelembung(kk, "#c9503a")}</svg>${sel.length + prov.length + kk.length ? "" : '<span class="ad-peta-kosong">Belum ada data</span>'}</div>`;
   }
 
   /* ---------- halaman ---------- */
@@ -152,7 +152,7 @@
     <div class="ad-grid">
       ${daftar("Tab", "tab", {label: namaTab, warna: W[4]})}
       ${daftar("Provinsi", "provinsi", {label: namaProv, warna: W[3]})}
-      ${daftar("Kompleks api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k} · ${kluster[k][2]}` : k})}
+      ${daftar("Cluster api", "kompleks", {warna: W[0], label: k => kluster?.[k] ? `${k} · ${kluster[k][2]}` : k})}
       ${daftar("Kabupaten / kecamatan", "wilayah", {label: namaWil, warna: W[3]})}
       ${daftar("Eksibit yang dilihat", "ex_lihat", {warna: W[5], label: k => k.replace(/^(\w+):/, (_, t) => namaTab(t) + " ·")})}
       ${daftar("Simulasi dijalankan", "sim", {warna: W[1]})}
@@ -173,7 +173,7 @@
     <div class="ad-peta">
       <section class="ad-kartu"><h3>Wilayah pengunjung</h3>${petaPengunjung()}<p class="ad-catat">Kota kasar dari jaringan Cloudflare (bukan GPS, bukan IP).</p></section>
       <section class="ad-kartu"><h3>Yang paling dibuka di peta</h3><div id="petaDibuka">${petaDibuka()}</div>
-        <div class="ad-leg"><span><i data-c="#c9503a"></i>kompleks</span><span><i data-c="#5a9e74"></i>provinsi</span><span><i data-c="#e3b94e"></i>pusat tampilan peta (sel 0,5°)</span></div></section>
+        <div class="ad-leg"><span><i data-c="#c9503a"></i>cluster</span><span><i data-c="#5a9e74"></i>provinsi</span><span><i data-c="#e3b94e"></i>pusat tampilan peta (sel 0,5°)</span></div></section>
     </div>
     <div class="ad-grid">
       ${daftar("Negara", "cf_negara", {warna: W[5]})}${daftar("Provinsi / region", "cf_wilayah", {warna: W[5]})}${daftar("Kota", "cf_kota", {label: namaKota, warna: W[5]})}

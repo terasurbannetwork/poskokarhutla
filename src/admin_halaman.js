@@ -17,14 +17,16 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc"];
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "kinerja"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
 const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
-export const HALAMAN_STAF = {pantau: null, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"]};
+/* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
+export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];
+export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"]};
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
 export const aksesStaf = peran => Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, peran)).map(k => ({k, ikon: HAL[k][0], label: HAL[k][1]}));
 const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
@@ -100,11 +102,13 @@ export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<l
 /* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
 export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi…", `<link href="/admin/instansi.css?v=3" rel="stylesheet">
 <link href="/instansi_kebutuhan.css?v=1" rel="stylesheet">
+<link href="/instansi_kartu.css?v=1" rel="stylesheet">
 <link href="/instansi_tugaskan.css?v=1" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/instansi_kebutuhan.js?v=2"></script>
 <script src="/instansi_akses.js?v=1"></script>
+<script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
 <script src="/admin/instansi.js?v=3"></script>`, ctx);
@@ -152,6 +156,7 @@ export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci�
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
 ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
+` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=3"></script>
 <script src="/admin/${k}.js?v=${k === "pantau" ? 3 : 1}"></script>`, ctx);
 

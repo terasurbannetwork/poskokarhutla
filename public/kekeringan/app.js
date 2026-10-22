@@ -62,14 +62,14 @@ const irbiKab = kunci => { if (!S.bnpb?.irbi) return null; if (!S._irbi) { S._ir
 const tepat = n => [n[0] - n[1], n[1] - n[2], n[2]];   /* [waspada, siaga, awas] */
 const pill = l => `<span class="pill l${l}">${LEVEL[l]}</span>`;
 
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["posko", "Posko"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["posko", "Posko"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
 /* tidak tampil di nav: Metode dan Posko ada tapi disembunyikan (A24, sama dengan karhutla; rute /kekeringan/posko tetap terbuka bila alamatnya diketik); Foto menunggu kategori kekeringan di public/foto.js (KAT_AWAL): tanpa itu galerinya
    jatuh ke kategori karhutla dan kirimannya ditolak server. Hapus "foto" dari sini dan dari tab_sembunyi di public/bencana.json begitu foto.js memilikinya. */
-const TAB_SEMBUNYI = new Set(["metode", "posko"]);
+const TAB_SEMBUNYI = new Set(["informasi", "metode", "posko"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M8 5v14l11-7z"/>', posko: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
-const halamanAda = id => !!$("#p-" + id) && (!TAB_SEMBUNYI.has(id) || id === "metode" || id === "posko");
+const halamanAda = id => !!$("#p-" + id) && (!TAB_SEMBUNYI.has(id) || id === "informasi" || id === "metode" || id === "posko");
 function bukaTab(id, dorong = true) {
   if (!halamanAda(id)) id = "peta";
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -78,7 +78,7 @@ function bukaTab(id, dorong = true) {
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "simulasi") { const f = $("#simulasiBingkai"); if (!f.src) f.src = "/kekeringan/simulasi.html?tertanam=1"; }
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, posko: Posko, foto: window.Foto, metode: Metode})[id]?.render(); });
+    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, posko: Posko, foto: window.Foto, metode: Metode, informasi: window.Informasi})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");

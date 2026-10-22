@@ -207,14 +207,14 @@ Object.assign(Sim, {
     const P = this.pk?.id === this.k ? this.pk : null;
     Sim._dl ||= S.kluster.features.filter(f => f.properties.level >= 1).slice(0, 2500).map(f => `<option value="${f.properties.id} · ${esc(f.properties.kec)}, ${esc(f.properties.kab)}">`).join("");
     box.innerHTML = `<div class="pk-kepala"><span class="lbl">Perlakuan</span><h3>Apa yang paling efektif untuk ${esc(this.k)}?</h3>
-      <p class="fnd">Menguji regu dari posko dan Daops terdekat, MPA desa, helikopter water bombing, sekat bakar, modifikasi cuaca, dan gabungannya, memakai waktu tempuh dan jumlah regu dari data. Pilih kompleks lain lewat daftar di atas, kotak cari, atau klik titik kompleks di peta.</p></div>
-      <label class="fld"><span class="lbl">Cari kompleks (ID atau kecamatan)</span><input id="pkCari" list="pkDaftar" placeholder="mis. K0039 atau Katingan" autocomplete="off"></label><datalist id="pkDaftar">${Sim._dl}</datalist>
+      <p class="fnd">Menguji regu dari posko dan Daops terdekat, MPA desa, helikopter water bombing, sekat bakar, modifikasi cuaca, dan gabungannya, memakai waktu tempuh dan jumlah regu dari data. Pilih cluster lain lewat daftar di atas, kotak cari, atau klik titik cluster di peta.</p></div>
+      <label class="fld"><span class="lbl">Cari cluster (ID atau kecamatan)</span><input id="pkCari" list="pkDaftar" placeholder="mis. K0039 atau Katingan" autocomplete="off"></label><datalist id="pkDaftar">${Sim._dl}</datalist>
       <button class="btn pri" id="pkJalan" style="width:100%">${P ? "Uji ulang semua perlakuan" : "Uji semua perlakuan"}</button>
       <div class="simprog" id="pkProg" hidden><i></i></div><p class="fnd" id="pkStatus" aria-live="polite">${P ? `${P.C.length} perlakuan diuji · cuaca ${esc(this.cuaca?.sumber || "")}` : ""}</p>
       <div id="pkHasil"></div>`;
     $("#simPanel").appendChild(box);
     const cari = $("#pkCari"); cari.onchange = () => { const m = cari.value.trim().match(/^K\d+/i); if (!m) return; const id = m[0].toUpperCase();
-      if (!S.kluster.features.some(f => f.properties.id === id)) return toast(`Kompleks ${id} tidak ditemukan`); this.pilih(id); };
+      if (!S.kluster.features.some(f => f.properties.id === id)) return toast(`Cluster ${id} tidak ditemukan`); this.pilih(id); };
     $("#pkJalan").onclick = () => { $("#pkJalan").textContent = "Menghitung…"; $("#pkJalan").disabled = true; nanti(() => this.pkJalan()); };
     if (P) this.pkRender();
   },
@@ -322,7 +322,7 @@ Sim.klikPeta = function (e) {
   if (this._gambarSekat) return asli.klikPeta.call(this, e);
   const m = this.peta, q = m.getLayer("pk-kl") ? m.queryRenderedFeatures([[e.point.x - 8, e.point.y - 8], [e.point.x + 8, e.point.y + 8]], {layers: ["pk-kl"]}) : [];
   const id = q[0]?.properties.id; if (!id || id === this.k) return;
-  toast(`Kompleks ${id} dipilih`); this.pilih(id);
+  toast(`Cluster ${id} dipilih`); this.pilih(id);
 };
 /* bila tab Simulasi sudah terbuka sebelum modul ini termuat */
 if (Sim.f && $("#simPanel")?.innerHTML && !$("#pkBox")) Sim.pkPanel();

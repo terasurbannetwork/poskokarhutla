@@ -1,0 +1,74 @@
+{
+  "_catatan": "Kontrak kueri GFW Data API untuk statistik karbon per poligon (docs/karbon/RANCANGAN.md §2-3). SATU sumber untuk scripts/karbon/statistik.py dan src/karbon.js. POST https://data-api.globalforestwatch.org/dataset/<dataset>/<versi>/query/json, body {sql, geometry}, header huruf kecil persis 'x-api-key'. Versi 'harian' = vYYYYMMDD tanggal UTC hari ini, mundur sampai 3 hari bila 404.",
+  "host": "data-api.globalforestwatch.org",
+  "kunci_publik": "2d60cd88-8348-4c0f-a6d5-bd9adb585a8c",
+  "kueri": {
+    "luas": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT SUM(area__ha) AS ha FROM results"
+    },
+    "tutupan": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_density_2000__threshold AS ambang, is__umd_regional_primary_forest_2001 AS primer, SUM(area__ha) AS ha, SUM(gfw_aboveground_carbon_stock_2000__Mg_C) AS atas, SUM(gfw_belowground_carbon_stock_2000__Mg_C) AS bawah, SUM(gfw_soil_carbon_stock_2000__Mg_C) AS tanah FROM results GROUP BY umd_tree_cover_density_2000__threshold, is__umd_regional_primary_forest_2001"
+    },
+    "tutupan_gambut": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_density_2000__threshold AS ambang, SUM(area__ha) AS ha FROM results WHERE is__gfw_peatlands = 1 GROUP BY umd_tree_cover_density_2000__threshold"
+    },
+    "hilang": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_loss__year AS th, is__umd_regional_primary_forest_2001 AS primer, SUM(area__ha) AS ha, SUM(gfw_forest_carbon_gross_emissions__Mg_CO2e) AS co2 FROM results WHERE umd_tree_cover_density_2000__threshold >= 30 AND umd_tree_cover_loss__year >= 2001 GROUP BY umd_tree_cover_loss__year, is__umd_regional_primary_forest_2001"
+    },
+    "hilang_gambut": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_loss__year AS th, SUM(area__ha) AS ha FROM results WHERE is__gfw_peatlands = 1 AND umd_tree_cover_density_2000__threshold >= 30 AND umd_tree_cover_loss__year >= 2001 GROUP BY umd_tree_cover_loss__year"
+    },
+    "hilang_pendorong": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_loss__year AS th, wri_google_tree_cover_loss_drivers__category AS pendorong, SUM(area__ha) AS ha, SUM(gfw_forest_carbon_gross_emissions__Mg_CO2e) AS co2 FROM results WHERE umd_tree_cover_density_2000__threshold >= 30 AND umd_tree_cover_loss__year >= 2001 GROUP BY umd_tree_cover_loss__year, wri_google_tree_cover_loss_drivers__category",
+      "_catatan": "Kueri sendiri karena GROUP BY pada lapisan pendorong membuang piksel tanpa pendorong (lihat _null_group). Selisih total hilang dikurangi jumlah per pendorong = 'tanpa_pendorong'."
+    },
+    "hilang_api": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT umd_tree_cover_loss_from_fires__year AS th, SUM(area__ha) AS ha FROM results WHERE umd_tree_cover_density_2000__threshold >= 30 AND umd_tree_cover_loss_from_fires__year >= 2001 GROUP BY umd_tree_cover_loss_from_fires__year"
+    },
+    "tutupan2017": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT idn_land_cover_2017__class AS tutupan, SUM(area__ha) AS ha FROM results GROUP BY idn_land_cover_2017__class"
+    },
+    "kawasan": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT idn_forest_area__class AS kawasan, SUM(area__ha) AS ha FROM results GROUP BY idn_forest_area__class"
+    },
+    "pendorong": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT wri_google_tree_cover_loss_drivers__category AS kategori, SUM(area__ha) AS ha FROM results WHERE umd_tree_cover_density_2000__threshold >= 30 AND umd_tree_cover_loss__year >= 2001 GROUP BY wri_google_tree_cover_loss_drivers__category"
+    },
+    "serapan": {
+      "dataset": "umd_tree_cover_density_2000", "versi": "v1.8",
+      "sql": "SELECT SUM(gfw_forest_carbon_gross_removals__Mg_CO2e) AS serapan FROM results WHERE umd_tree_cover_density_2000__threshold >= 30"
+    },
+    "peringatan": {
+      "dataset": "gfw_integrated_alerts", "versi": "harian",
+      "sql": "SELECT latitude AS lat, longitude AS lon, gfw_integrated_alerts__date AS tanggal, gfw_integrated_alerts__confidence AS keyakinan FROM results WHERE gfw_integrated_alerts__date >= '{sejak}'"
+    }
+  },
+  "_null_group": "GROUP BY membuang piksel yang lapisannya kosong (raster GFW). is__gfw_peatlands kosong di luar gambut: dikelompokkan bersama ambang, poligon Pangean tinggal 1.173 dari 50.255 ha (22 Okt 2026). Maka gambut = filter WHERE terpisah, tutupan dan kawasan = kueri terpisah, luas = SUM tanpa GROUP BY (piksel tutupan <10% tidak punya ambang). Ambang adalah BIN: baris 30+50+75 = WHERE ambang >= 30 (Pangean 50.195,53 ha keduanya).",
+  "peringatan_piksel_derajat": 0.0001,
+  "_peringatan": "Kueri peringatan mengembalikan DAFTAR PIKSEL (SUM/GROUP BY dengan latitude ditolak GFW, 22 Okt 2026). Klien mengelompokkan piksel per (tanggal, sel 0,005 derajat) jadi satu kejadian; luas_ha = n x (0,0001 x 111320 m)^2 x cos(lat) / 10000.",
+  "tahun_data_akhir": {"v1.13": 2025},
+  "hutan_ambang_min": 30,
+  "kelas_tutupan_klhk": {
+    "2001": "Hutan lahan kering primer", "2002": "Hutan lahan kering sekunder", "2004": "Hutan mangrove primer",
+    "20041": "Hutan mangrove sekunder", "2005": "Hutan rawa primer", "20051": "Hutan rawa sekunder", "2006": "Hutan tanaman",
+    "2007": "Semak belukar", "20071": "Semak belukar rawa", "2010": "Perkebunan", "2012": "Permukiman", "20121": "Bandara/pelabuhan",
+    "20122": "Transmigrasi", "2014": "Tanah terbuka", "20141": "Pertambangan", "3000": "Savana/padang rumput",
+    "20091": "Pertanian lahan kering", "20092": "Pertanian lahan kering campur semak", "20093": "Sawah", "20094": "Tambak",
+    "5001": "Tubuh air", "50011": "Rawa", "2500": "Awan"
+  },
+  "_pendorong": "Urutan kelas Sims dkk. 2025 (WRI/Google, metadata GFW): 1 pertanian permanen, 2 komoditas keras, 3 perladangan berpindah, 4 tebang/kehutanan, 5 kebakaran liar, 6 permukiman & infrastruktur, 7 gangguan alami lain. Pendorong = dominan per sel 1 km untuk 2001-2025, bukan per tahun.",
+  "pendorong_wri": {
+    "1": "Pertanian permanen", "2": "Komoditas keras (tambang, energi)", "3": "Perladangan berpindah", "4": "Kehutanan (tebang, hutan tanaman)",
+    "5": "Kebakaran liar", "6": "Permukiman & infrastruktur", "7": "Gangguan alami lain"
+  }
+}

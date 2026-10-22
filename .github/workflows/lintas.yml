@@ -73,6 +73,24 @@ jobs:
       # Tanpa langkah "Uji aturan" bersama: tiap modul menjalankan `uji`-nya sendiri di langkahnya, jadi satu uji rusak
       # hanya mematikan modul itu, bukan kelima bencana sekaligus.
 
+      # Uji mandiri gunung api dan kekeringan yang tadinya tidak jalan di CI mana pun (tanpa jaringan, detik). Gagal = anotasi ::error dan langkah merah,
+      # tetapi continue-on-error supaya satu uji rusak tidak mematikan pipa harian; modul lain tetap jalan. Jangan dilonggarkan: betulkan skripnya.
+      - name: Uji mandiri gunung api dan kekeringan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          gagal=0
+          t() { "$@" > uji.log 2>&1 && echo "lulus: $*" || { echo "::error title=uji gagal::$*"; tail -20 uji.log; gagal=1; }; }
+          t node scripts/gunungapi/uji_setara.mjs
+          t node scripts/gunungapi/uji_lahar.mjs
+          t python3 scripts/gunungapi/uji_abu.py uji
+          t python3 scripts/gunungapi/abu.py uji
+          t python3 scripts/gunungapi/laporan.py uji
+          for s in neraca ujibalik ambang ambang2 dampak posko; do t python3 scripts/kekeringan/$s.py uji; done
+          t python3 scripts/kekeringan/uji_rantai.py
+          rm -f uji.log
+          exit $gagal
+
       # 8 langkah cuaca.py (sarana sekali, gelombang, prakiraan_kec, dampak_cuaca, medan, siklon, verifikasi, laporan_cuaca) gagal sendiri-sendiri.
       # Kuota Open-Meteo ±1.085/hari (gelombang 320, medan 416, verifikasi 349); butuh hujan.json dan hujan_ansambel.json dari banjir.yml.
       - name: Cuaca ekstrem (boleh gagal)
@@ -82,12 +100,39 @@ jobs:
           python3 scripts/cuaca/cuaca.py uji && python3 scripts/cuaca/cuaca.py || echo "::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan"
           python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
 
-      # magma.py merantai abu.py (angin ECMWF lapisan tekanan, ±beberapa puluh bobot kuota) lalu laporan.py. paparan.py dan citra.py TIDAK di sini (statis.yml bulanan):
-      # mereka menulis public/gunungapi/data (di luar cache, ditimpa checkout main) dan memakai Overpass/STAC; tempatnya statis.yml.
+      # magma.py merantai abu.py (angin ECMWF lapisan tekanan, ±beberapa puluh bobot kuota) lalu laporan.py. paparan.py dan citra.py: langkah sesudah peluang abu (+ statis.yml bulanan).
       - name: Gunung api (MAGMA, abu, laporan) (boleh gagal)
         continue-on-error: true
         timeout-minutes: 25
         run: python3 scripts/gunungapi/magma.py uji && python3 scripts/gunungapi/magma.py
+
+      # Paparan semua gunung (paparan.json dipakai ulang apa adanya, hanya gunung baru yang dihitung: murah) tiap hari; citra Sentinel-2 tiap Minggu.
+      # Keluaran di public/gunungapi/data (di luar cache, ditimpa checkout main saat terbit) jadi DI-COMMIT ke main di langkah berikutnya.
+      # Gunung baru butuh piksel WorldPop: pop_piksel.json ter-cache (lintas-); TIF ~ diunduh hanya bila cache itu belum ada.
+      - name: Paparan dan citra gunung api (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 30
+        run: |
+          if [ ! -f data/raw/gunungapi/pop_piksel.json ] && [ ! -f data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif ]; then
+            mkdir -p data/raw/penduduk
+            curl -fsSL -m 900 -A "poskokarhutla/1.0" -o data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif \
+              https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/2026/IDN/v1/1km_ua/constrained/idn_pop_2026_CN_1km_R2025A_UA_v1.tif \
+              || { echo "::warning title=gunungapi-paparan::unduh WorldPop gagal"; rm -f data/raw/penduduk/*.tif; }
+          fi
+          python3 scripts/gunungapi/paparan.py uji && { python3 scripts/gunungapi/paparan.py || echo "::warning title=gunungapi-paparan::paparan.py gagal; berkas lamanya dibiarkan"; }
+          if [ "$(date -u +%u)" = 7 ]; then
+            python3 scripts/gunungapi/citra.py uji && { python3 scripts/gunungapi/citra.py || echo "::warning title=gunungapi-citra::citra.py gagal; berkas lamanya dibiarkan"; }
+          fi
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/gunungapi/data/paparan.json public/gunungapi/data/paparan_geo.json public/gunungapi/data/citra
+          git diff --cached --quiet && { echo "paparan gunung api tidak berubah"; exit 0; }
+          git commit -q -m "data: paparan gunung api $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push paparan gunung api gagal::git push ke main gagal 3x"
 
       # skenario 18 anggota deterministik + 51 anggota ensemble untuk gunung level >= 2, ±2 menit CPU; kuota Open-Meteo ±100-300
       - name: Peluang abu bandara dan kota (boleh gagal)
@@ -136,6 +181,14 @@ jobs:
         continue-on-error: true
         timeout-minutes: 10
         run: python3 scripts/umum/kejadian.py uji && python3 scripts/umum/kejadian.py
+
+      # Tugas lapangan per bencana (banjir, gempa, gunung api, cuaca, kekeringan) -> public/data/tugas_<id>.json (cache data-, dibaca terbit.yml).
+      # SESUDAH kejadian.py: banjir memakai kejadian_aktif_awal.json (cache banjir- dipulihkan di atas), gunung api gunungapi_status.json,
+      # gempa mengambil GEMPA_API (bawaan https://centurisk97.id/api/gempa/terbaru?jam=72). Adaptor yang masukannya basi/hilang tidak menulis.
+      - name: Tugas lapangan lintas bencana (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/umum/tugas.py uji && python3 scripts/umum/tugas.py tulis
 
       # Indeks risiko operasional per kecamatan (Ruang Koordinasi BNPB, /risiko): SESUDAH cuaca, gunung api, kekeringan; fwi/hotspot/penduduk dari
       # cache karhutla. Keluaran public/banjir/data/risiko_kecamatan.json ikut cache banjir- yang dipulihkan terbit.yml. Sumber basi > 7 hari = null.
@@ -238,12 +291,12 @@ jobs:
       - name: Periksa kesegaran data yang tayang
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+          URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
           for i in 1 2 3; do
             kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
-            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null; echo
+            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null || true; echo
             [ "$kode" = 200 ] && exit 0
             sleep 30
           done

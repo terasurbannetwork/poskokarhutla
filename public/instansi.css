@@ -228,3 +228,12 @@
 #alatInvWadah{margin-bottom:8px}
 .in-c-ciri{grid-area:ciri;font-size:12.5px;line-height:1.4;color:var(--ink2);font-weight:600;min-width:0;overflow-wrap:anywhere}.in-c-ciri:empty{display:none}
 .in-ciri{margin:0;font-size:13px;color:var(--ink2);font-weight:600;line-height:1.4}.in-gudang:empty{display:none}.in-gudang{margin-top:10px}
+
+/* ---- multi-bahaya: chip jenis bencana dan label bahaya di baris tugas ---- */
+.in-status.dua{grid-template-columns:1fr 1fr}
+.in-chips{display:flex;flex-wrap:wrap;gap:8px;min-width:0}.in-chips[hidden]{display:none}
+.in-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:1.5px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink2);font:800 14px/1 var(--display);cursor:pointer}
+.in-chip[aria-pressed="true"]{background:var(--navy2);border-color:var(--navy2);color:#fff}
+.in-bc-ik{width:18px;height:18px;flex:none}
+.in-bc{display:inline-flex!important;align-items:center;gap:5px;font-weight:700}
+.in-bc .in-bc-ik{width:15px;height:15px}

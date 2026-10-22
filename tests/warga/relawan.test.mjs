@@ -168,7 +168,8 @@ uji("kode relawan tidak bisa dipakai di rute kampus; tebakan salah > 300 per jam
   const ip = "10.88.0.1", kunci = sha256("garam-uji|" + ip), kini = Date.now();
   await U.DB.batch(Array.from({length: 300}, (_, i) => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'relawan.kode_gagal', ?)").bind(kunci, kini - i)));
   const kena = await U.api("GET", "/api/relawan/saya", undefined, {"x-kode": a.j.kode, "cf-connecting-ip": ip});
-  assert.equal(kena.s, 429, "IP yang sudah banyak menebak ditolak walau kodenya benar");
+  assert.equal(kena.s, 200, "kode BENAR lolos walau IP sudah banyak menebak salah");
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, {"x-kode": "0".repeat(26), "cf-connecting-ip": ip})).s, 429, "tebakan salah dari IP itu ditahan 429");
   assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(a.j.kode))).s, 200);
 });
 

@@ -31,7 +31,7 @@ PARAM = {
     "ha_per_sekat": [9.8, 4.5, 14, "ha/sekat", "Castro dkk. 2026", ""],
     "umur_sekat": [3, 1, 10, "tahun", "Salmayenti dkk. 2026: 70% rusak 2015-2024", ""],
     "faktor_marginal": [0.75, 0.5, 1.0, "manfaat per ha dicegah / rata-rata kerugian per ha", "peer review: api kecil yang dicegah < rata-rata", "lemah"],
-    "ukuran_api": [30, 10, 80, "ha per kejadian api (rata-rata akhir)", "ASUMSI dari luas resmi / jumlah kompleks VIIRS", "lemah"],
+    "ukuran_api": [30, 10, 80, "ha per kejadian api (rata-rata akhir)", "ASUMSI dari luas resmi / jumlah cluster VIIRS", "lemah"],
     "api_per_regu_hari": [0.5, 0.25, 1.0, "kejadian api diserang per regu per hari", "ASUMSI", "lemah"],
     "p_padam_awal": [0.6, 0.3, 0.85, "peluang api tertahan bila diserang dini", "ASUMSI (boreal ~0,9; gambut lebih rendah)", "lemah"],
     "porsi_tumbuh_dicegah": [0.8, 0.6, 0.95, "porsi ukuran akhir yang tidak sempat terbakar", "ASUMSI: diserang saat masih kecil", "lemah"],

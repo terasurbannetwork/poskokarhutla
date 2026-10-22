@@ -9,7 +9,8 @@
    ponytail: "api di konsesi" = antrean panggilan Posko (cron sudah mencocokkan titik FIRMS dengan konsesi); tugas_api tidak dicocokkan poligon konsesi sendiri (poligon 2,5 MB per provinsi, di luar anggaran CPU baca). */
 import {json, gagal, acak, bacaBody, adminOK} from "./worker.js";
 import {modOK, superOK, tx, wib, RUTE_POSKO} from "./posko.js";
-import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi, butirCekUlang} from "./instansi.js";
+import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi, butirCekUlang, bencanaPer} from "./instansi.js";
+import {labelBencana} from "./tugas_bencana.js";
 import {PERAN, P_VALIDASI, stafSesi, stafTertahan, stmtStaf, jejakStmt, sandiBaru, bungkusStaf, tanpaTabelStaf} from "./staf.js";
 import {alarmKeselamatan} from "./penugasan.js";
 import {butirInventarisLama, butirP3k} from "./inventaris.js";
@@ -70,12 +71,12 @@ const bolehTagih = a => a.admin ? a.mod : a.peran.some(p => P_VALIDASI.includes(
 const dumSql = (a, kolom = "dummy") => a.dummy ? "" : `AND ${kolom} = 0`;
 async function tugasApi(env, kini, a) {
   const T = (await env.DB.prepare(`SELECT id, prov, kab, kec, lat, lon, luas_ha, terakhir_terdeteksi, status, dibuat, konfirmasi_pada, isian_terakhir, dummy FROM tugas_api WHERE status = 'buka' ${dumSql(a)} LIMIT ${MAKS_BACA}`).all()).results;
-  const out = [];
+  const out = [], BC = await bencanaPer(env, T);   // tabel 0047 belum ada = semua karhutla
   for (const t of T) {
     const d = tenggat(t, kini); if (!d.terlambat) continue;
-    const lewat = kini - d.tenggat, konf = d.langkah === "konfirmasi", tempat = [t.kec, t.kab].filter(Boolean).join(", ");
-    out.push({id: konf ? `api-konf:${t.id}` : `api-kabar:${t.id}:${t.isian_terakhir ?? t.konfirmasi_pada}`, jenis: konf ? "api_konfirmasi" : "api_kabar",
-      judul: `Api di ${tempat} ${konf ? "belum dikonfirmasi lapangan" : "belum ada kabar tindakan"}, lewat ${jam(lewat)} dari batas ${konf ? 6 : 24} jam`, rincian: ciriTugas(t),
+    const lewat = kini - d.tenggat, konf = d.langkah === "konfirmasi", tempat = [t.kec, t.kab].filter(Boolean).join(", "), sebut = labelBencana(BC.get(t.id)).sebut;   // karhutla = "Api" seperti dulu
+    out.push({id: konf ? `api-konf:${t.id}` : `api-kabar:${t.id}:${t.isian_terakhir ?? t.konfirmasi_pada}`, jenis: konf ? "api_konfirmasi" : "api_kabar", ...(BC.get(t.id) && BC.get(t.id) !== "karhutla" ? {bencana: BC.get(t.id)} : {}),
+      judul: `${sebut} di ${tempat} ${konf ? "belum dikonfirmasi lapangan" : "belum ada kabar tindakan"}, lewat ${jam(lewat)} dari batas ${konf ? 6 : 24} jam`, rincian: ciriTugas(t),
       provs: [t.prov], kab: t.kab, dibuat: t.dibuat, tenggat: d.tenggat, prioritas: lewat >= (konf ? 12 : 24) * JAM ? 1 : 2, dummy: t.dummy, tugas: t});
   }
   return out;

@@ -25,7 +25,7 @@ Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015
         python3 scripts/data/sawit_retro.py analisis [--tahun 2015] [--tanpa-descals]
         python3 scripts/data/sawit_retro.py citra            # hanya 2015, 15 teratas terbit
         python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> hasil/sawit_retro.json + sawit_riwayat.json
-        python3 scripts/data/sawit_retro.py ttm | citra-ttm | ringkas   # 2019 dan 2023 dari TTM2024 (internal); konfirm = ttm_konfirm 2015
+        python3 scripts/data/sawit_retro.py ttm | citra-ttm [--id a,b] | ringkas   # 2019 dan 2023 dari TTM2024 (internal); konfirm = ttm_konfirm 2015
         python3 scripts/data/sawit_retro.py unduh | uji
 """
 from array import array
@@ -40,10 +40,11 @@ ANTARA = os.path.join(DIR, "antara")
 # bernama perusahaan: keputusan pemilik 14 Okt 2026, tidak terbit -> data/raw (di-ignore)
 KELUAR = os.path.join(AKAR, "data/raw/sawit/hasil/sawit_retro.json")
 CITRA_DIR = os.path.join(AKAR, "data/raw/sawit/hasil/citra")
-CITRA_TTM = os.path.join(AKAR, "data/raw/sawit/hasil/citra_ttm")   # internal, belum terbit
+CITRA_TTM = os.path.join(AKAR, "data/raw/sawit/hasil/citra_ttm")   # sumber PNG; hanya yang direferensikan disalin ke TERBIT_CITRA
 TERBIT = os.path.join(AKAR, "public/data/konsesi2026/sawit_riwayat.json")
 TERBIT_CITRA = os.path.join(AKAR, "public/data/konsesi2026/riwayat")   # folder sendiri: konsesi2026/citra dibersihkan skrip citra konsesi
-TAHUN_TERBIT = 2015             # 2019 tidak terbit: jendela 1 tahun (hanya F2019)
+TAHUN_TERBIT = 2015             # sumber Gaveau; 2019 (jendela 1 tahun) tidak terbit dari Gaveau
+TAHUN_TERBIT_TTM = tuple(range(2016, 2024))  # terbit dari TTM2024 (CC BY-NC, pemilik putuskan 22 Okt 2026: situs nonkomersial, atribusi wajib tampil)
 BS_MIN, PORSI_MIN, TOP_TERBIT = 50, .10, 15   # hipotesis, belum diuji balik: saring perusahaan terbit
 LUAS_RESMI_2015 = 2_610_000     # ha, luas terbakar resmi KLHK 2015
 MUDA = (2016, 2018)             # tahun-sawit yang lebih tak pasti (peta konsesi/Gaveau dekat akhir jendela)
@@ -57,7 +58,7 @@ JENIS = [("Industrial_Oil_Palm", "industri"), ("Smallholder_Oil_Palm", "rakyat")
 SAWIT = {"IOPP", "Smallholder"}
 ASAL = ("Forest", "Non Forest", "ITP")
 TAHUN = (2015, 2019)
-TAHUN_TTM = (2019, 2023)        # sumber TTM2024 (tahun tanam dari peta, bukan jendela Gaveau)
+TAHUN_TTM = tuple(range(2016, 2024))   # sumber TTM2024 (tahun tanam dari peta, bukan jendela Gaveau)
 ASAL_TTM = ("hutan primer saat api", "hutan primer sudah hilang sebelum api", "bukan hutan primer 2000")
 BATAS = 2019                    # Gaveau berhenti di 2019
 JENDELA = 4                     # tahun sesudah api yang dicek untuk "jadi sawit"
@@ -94,7 +95,7 @@ def unduh():
                 while (b := r.read(1 << 20)):
                     f.write(b)
         zipfile.ZipFile(zp).extractall(DIR)
-    for y in TAHUN:
+    for y in sorted(set(TAHUN) | set(TAHUN_TTM)):
         p = os.path.join(DIR, f"viirs_{y}.csv")
         if not os.path.exists(p):
             url = f"https://firms.modaps.eosdis.nasa.gov/data/country/viirs-snpp/{y}/viirs-snpp_{y}_Indonesia.csv"
@@ -759,10 +760,15 @@ def pilih_s2(lat, lon, km, d1, d2):
     return {"tgl": pil[0], "aw": pil[1], "it": pil[2], "sat": "Sentinel-" + pil[2]["properties"].get("platform", "sentinel-2?").split("-")[-1].upper()} if pil else None
 
 
-def foto_tahun(y, lat, lon, km):
-    """foto terbaik tahun y: kemarau (Jun-Okt) dulu, lalu setahun penuh; Sentinel-2 (10 m) mulai 2017, sebelum itu Landsat"""
+def foto_tahun(y, lat, lon, km, sesudah=None, ls=True):
+    """foto terbaik tahun y: kemarau (Jun-Okt) dulu, lalu setahun penuh; Sentinel-2 (10 m) mulai 2017, sebelum itu Landsat.
+    ls=False: Sentinel-2 saja (Landsat Planetary Computer lambat/429, tak perlu sesudah 2017). sesudah (date) = foto harus bertanggal SETELAH hari itu (foto kebun tidak boleh lebih awal dari api); jendela dipotong, kosong -> lewati"""
     for d1, d2 in ((f"{y}-06-01", f"{y}-10-31"), (f"{y}-01-01", f"{y}-12-31")):
-        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or pilih_ls(lat, lon, km, d1, d2, "bersih")
+        if sesudah:
+            d1 = max(d1, (sesudah + dt.timedelta(days=1)).isoformat())
+            if d1 > d2:
+                continue
+        pil = (pilih_s2(lat, lon, km, d1, d2) if y >= 2017 else None) or (pilih_ls(lat, lon, km, d1, d2, "bersih") if ls else None)
         if pil:
             return pil
     return None
@@ -903,17 +909,18 @@ def citra_ttm_satu(p, tahun):
         pil["terbakar"] = s2_dict(pilih(lat, lon, km, dd(d1, a), dd(d1, b), "asc", "pertama"))
         if pil["terbakar"]:
             break
-    if tahun >= 2023:
-        y1 = 2024
-        pil["kebun1"] = foto_tahun(2024, lat, lon, km)
-        k2 = [x for x in (foto_tahun(2025, lat, lon, km), foto_tahun(2026, lat, lon, km)) if x]
-        pil["kebun2"] = min(k2, key=lambda x: (x["aw"], x["tgl"])) if k2 else None
-    else:
-        y1 = min(max(ty or tahun, tahun), 2025)
-        pil["kebun1"] = foto_tahun(y1, lat, lon, km)
-        pil["kebun2"] = foto_tahun(y1 + 1, lat, lon, km) or foto_tahun(y1 + 2, lat, lon, km)
-    if pil["kebun1"] and pil["terbakar"] and pil["kebun1"]["tgl"] == pil["terbakar"]["tgl"]:
-        pil["kebun1"], pil["kebun2"] = foto_tahun(y1 + 1, lat, lon, km), foto_tahun(y1 + 2, lat, lon, km)
+    # kebun1/kebun2: foto kebun hanya SESUDAH api terakhir dan sesudah foto terbakar; tak ada yang bersih -> None
+    sesudah = max(d1, dt.date.fromisoformat(pil["terbakar"]["tgl"])) if pil["terbakar"] else d1
+    y1 = 2024 if tahun >= 2023 else min(max(ty or tahun, tahun), 2025)
+    pil["kebun1"] = pil["kebun2"] = None
+    for y in range(y1, min(y1 + 3, 2027)):
+        pil["kebun1"] = foto_tahun(y, lat, lon, km, sesudah, ls=False)
+        if pil["kebun1"]:
+            break
+    if pil["kebun1"]:
+        yk = int(pil["kebun1"]["tgl"][:4])
+        k2 = [x for x in (foto_tahun(y, lat, lon, km, dt.date.fromisoformat(pil["kebun1"]["tgl"]), ls=False) for y in (yk + 1, yk + 2)) if x]
+        pil["kebun2"] = k2[0] if tahun < 2023 else (min(k2, key=lambda x: (x["aw"], x["tgl"])) if k2 else None)
     pil = {k: v for k, v in pil.items() if v}
     if not pil:
         return None, api
@@ -931,11 +938,14 @@ def citra_ttm_satu(p, tahun):
     return hasil, api
 
 
-def citra_ttm(tahun, top=TOP_TERBIT):
+def citra_ttm(tahun, top=TOP_TERBIT, hanya=None):
     from concurrent.futures import ThreadPoolExecutor
     jalur = os.path.join(ANTARA, f"agregat_ttm_{tahun}.json")
     h = json.load(open(jalur))
     pilih_ = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])[:top]
+    pilih_ = [p for p in pilih_ if not hanya or p["id"] in hanya]
+    sudah = [p for p in pilih_ if p.get("citra") or p.get("api")] if not hanya else []
+    pilih_ = [p for p in pilih_ if p not in sudah]   # dapat dilanjut: yang sudah dicoba (citra atau api terisi) dilewati   # --id a,b: ulang hanya perusahaan itu
     api_klaster(0, 0, tahun=tahun)   # muat arsip api sekali sebelum utas
 
     def kerja(p):
@@ -944,9 +954,10 @@ def citra_ttm(tahun, top=TOP_TERBIT):
         except Exception as e:
             log("  citra gagal", p["nama"], repr(e)[:120])
             return None, None
-    with ThreadPoolExecutor(3) as ex:
+    with ThreadPoolExecutor(10) as ex:
         for p, (c, api) in zip(pilih_, ex.map(kerja, pilih_)):
             p["citra"], p["api"] = c, api
+            json.dump(h, open(jalur, "w"), separators=(",", ":"))   # simpan tiap perusahaan: bisa dilanjut
             log(f"  citra ttm{tahun} {p['nama']}: " + (", ".join(f"{k}={c[k]['tgl'] + '/' + str(c[k]['awan']) if c[k] else '-'}" for k in ('sebelum', 'terbakar', 'kebun1', 'kebun2')) if c else "tidak ada"))
     json.dump(h, open(jalur, "w"), separators=(",", ":"))
 
@@ -978,7 +989,7 @@ def citra(tahun=TAHUN_TERBIT, top=TOP_TERBIT):
 CATATAN = [
     "INDIKASI, bukan bukti siapa membakar: tumpang-tindih ruang-waktu antara titik panas, perubahan lahan, dan konsesi tidak menunjukkan pelaku; lahan dapat dibuka pihak lain atau dijual sebelum ditanami.",
     "Luas = luas di bawah jejak titik VIIRS (scan x track, sampel kisi ~125 m), BUKAN luas bakar terpeta; melebihi untuk api kecil dan sedikit menurun untuk api besar yang tak terdeteksi tiap lintasan.",
-    "Gaveau dkk. 2022 hanya memuat poligon lahan yang menjadi sawit s.d. 2019: lahan yang ditanami sesudah 2019 tidak tampak. Untuk 2019 jendela hanya satu tahun (F2019), jadi 'bakar lalu sawit' 2019 sangat kurang (tidak terbit); ditambah Descals dkk. 2024 (tahun persiapan lahan 2019-2021) di luar poligon Gaveau.",
+    "Gaveau dkk. 2022 hanya memuat poligon lahan yang menjadi sawit s.d. 2019: lahan yang ditanami sesudah 2019 tidak tampak. Untuk 2019 jendela hanya satu tahun (F2019), jadi 'bakar lalu sawit' 2019 dari Gaveau sangat kurang (2019 terbit dari TTM2024, bukan dari Gaveau); ditambah Descals dkk. 2024 (tahun persiapan lahan 2019-2021) di luar poligon Gaveau.",
     "Tahun tanam Descals = tahun persiapan lahan terakhir; penanaman ulang kebun tua ikut terhitung, sehingga kelas Descals dapat memuat peremajaan.",
     "Konsesi KLHK/GFW bertanggal ~2014-2019 dan tidak lengkap; izin berubah. 'Di luar konsesi terpetakan' bukan berarti tanpa izin. Konsesi yang tumpang-tindih: yang pertama menang (urutan sawit, hti, hph).",
     "Sampel dikelompokkan sebagai Forest/Non Forest/ITP menurut kelas lahan Gaveau pada tahun sebelum api; 'ITP' = hutan tanaman industri. Kelas 'bukan sawit' mencakup lahan yang tak pernah jadi sawit sampai 2019.",
@@ -1043,6 +1054,70 @@ def terbit(h, PROVINSI):
         "perusahaan": daftar}
 
 
+BATAS_TTM = [
+    "Indikasi, bukan bukti pelaku: tumpang tindih lokasi dan waktu tidak menunjukkan siapa yang membakar atau menanam.",
+    "Luas adalah luas jejak titik panas VIIRS, bukan luas terbakar terpeta: pakai untuk membandingkan perusahaan, bukan sebagai luas pasti.",
+    "Hanya sawit yang masih ada pada 2024 terlihat: lahan yang dibuka lalu tidak menjadi sawit sampai 2024 tidak masuk hitungan.",
+    "Peta The TreeMap memberi tahun tanam paling awal 2015; kode itu berarti 2015 atau sebelumnya, jadi lahan itu dihitung sudah sawit sebelum api.",
+    "Jeda 0 tahun (sawit tercatat pada tahun api itu juga) bisa berarti lahan sudah ditanam sebelum api.",
+    "Peta konsesi KLHK bertanggal sekitar 2014 dan sebagian tumpang tindih; batas dan pemegang izin bisa sudah berubah.",
+]
+BATAS_TTM_2023 = "Jendela hanya 0 sampai 1 tahun (api 2023, peta sampai 2024): angka bakar lalu sawit cenderung lebih rendah dari kenyataan."
+
+
+def terbit_ttm(h, tahun, PROVINSI):
+    """sawit_riwayat_<tahun>.json dari agregat TTM: kontrak sama dengan 2015 (perusahaan layak, urut bs_ha) + jendela, lisensi"""
+    t, grup = h["total"], grup_peta()
+    r = lambda d, ks: {x: round(d.get(x, 0)) for x in ks}
+    lag = [str(i) for i in range(h["total"]["jendela_tahun"])]
+    daftar = []
+    for p in sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"]):
+        c = p.get("citra")
+        daftar.append({
+            "id": p["id"], "nama": p["nama"], "grup": grup.get(p["id"]) or p["grup"] or "", "jenis": p["jenis"],
+            "prov": PROVINSI.get(p["prov"], p["prov"]), "kab": p["kab"], "jejak_ha": round(p["jejak_ha"]), "bs_ha": round(p["ha"]["bs"]),
+            "bs_porsi": p["bs_porsi"], "st_ha": round(p["ha"]["st"]), "asal_ha": r(p["asal"], ASAL_TTM), "lag_ha": r(p["lag_ha"], lag),
+            "pemilik_ha": r(p["pemilik_kebun"], ("industri", "rakyat")), "titik": p["titik_total"],
+            "lokasi": p["contoh"][0][:2] if p["contoh"] else None, "api": p.get("api"),
+            "tahun_sawit": int(max(p["tahun_sawit"], key=p["tahun_sawit"].get)) if p["tahun_sawit"] else None,
+            "citra": {k: ({**c[k], "f": "konsesi2026/riwayat/" + c[k]["f"]} if c.get(k) else None) for k in ("sebelum", "terbakar", "kebun1", "kebun2")}
+                     | {"bbox": c["bbox"], "px": c["px"]} if c else None})
+    jb = t["jejak_ha"]
+    return {
+        "dibuat": dt.date.today().isoformat(), "tahun": tahun, "sumber_peta": "ttm", "jendela_tahun": [tahun, 2024], "jendela_pendek": bool(h["jendela_pendek"]),
+        "metode": f"Titik panas satelit VIIRS {tahun} dicocokkan dengan peta tahun tanam sawit The TreeMap 2024 dan peta konsesi KLHK. "
+                  f"Lahan yang terbakar pada {tahun}, belum sawit sebelum api, lalu tercatat sawit pada {tahun} sampai 2024 disebut 'bakar lalu sawit'. "
+                  "Ini indikasi dari tumpang tindih lokasi dan waktu, bukan bukti siapa yang membakar.",
+        "sumber": [SUMBER_TTM, "NASA FIRMS VIIRS S-NPP 375 m, deteksi api vegetasi dengan keyakinan nominal dan tinggi.",
+                   "KLHK/Global Forest Watch: peta konsesi sawit, HTI, dan HPH.",
+                   f"Contains modified Copernicus Sentinel data {tahun - 1} sampai 2025 (Sentinel-2 L2A, lewat Earth Search)."],
+        "lisensi": "CC BY-NC 4.0 (The TreeMap): bukan untuk penggunaan komersial",
+        "batas": BATAS_TTM + ([BATAS_TTM_2023] if h["jendela_pendek"] else []),
+        "total": {"jejak_ha": round(jb), "bs_ha": round(t["ha"]["bs"]), "bs_porsi": round(t["ha"]["bs"] / jb, 3), "st_ha": round(t["ha"]["st"]),
+                  "bs_di_konsesi_ha": round(t["ha"]["bs"] - t["luar_konsesi_ha"]["bs"]), "asal_ha": r(t["asal_bs_ha"], ASAL_TTM),
+                  "lag_ha": r(t["lag_ha"], lag), "pemilik_ha": r(t["pemilik_bs_ha"], ("industri", "rakyat")), "titik": sum(t["titik"].values()),
+                  "perusahaan_terbit": len(daftar), "bs_ha_terbit": sum(d["bs_ha"] for d in daftar)},
+        "perusahaan": daftar}
+
+
+def salin_png(daftar, tahun):
+    """salin hanya PNG yang direferensikan ke TERBIT_CITRA; PNG <tahun>_ttm lama yang tak dipakai lagi dibuang dari folder publik"""
+    import shutil
+    os.makedirs(TERBIT_CITRA, exist_ok=True)
+    pakai = set()
+    for d in daftar:
+        for k in ("sebelum", "terbakar", "kebun1", "kebun2"):
+            v = (d["citra"] or {}).get(k)
+            if v:
+                n = os.path.basename(v["f"])
+                shutil.copyfile(os.path.join(CITRA_TTM, n), os.path.join(TERBIT_CITRA, n))
+                pakai.add(n)
+    for n in os.listdir(TERBIT_CITRA):
+        if f"_ttm{tahun}_" in n and n not in pakai:
+            os.remove(os.path.join(TERBIT_CITRA, n))
+    return pakai
+
+
 def tulis():
     ada_ = {}
     for t in TAHUN:
@@ -1066,11 +1141,11 @@ def tulis():
            "kelas": {"bs": "bakar lalu sawit (Gaveau)", "bd": "bakar lalu sawit 2019-2021 (Descals, 2019 saja)", "st": "sawit terbakar (sudah sawit saat api)", "bk": "bukan sawit s.d. 2019"},
            "sumber": SUMBER + ([SUMBER_DESCALS] if desc else []),
            "catatan_batas": CATATAN,
-           "tidak_terbit": {"2019": "jendela 1 tahun (hanya F2019): 'bakar lalu sawit' sangat kurang"},
+           "tidak_terbit_dari_gaveau": {"2019": "jendela 1 tahun (hanya F2019): 'bakar lalu sawit' sangat kurang; 2019 dan 2023 terbit dari TTM2024"},
            "tahun": ada_}
     if ttm:
         out["ttm"] = {
-            "sumber": SUMBER_TTM, "lisensi": "CC BY-NC 4.0: hanya internal, cek sebelum terbit",
+            "sumber": SUMBER_TTM, "lisensi": "CC BY-NC 4.0; terbit 22 Okt 2026 (situs nonkomersial, atribusi wajib tampil)",
             "metode": "Tahun api 2019 dan 2023 dengan tahun tanam dari TTM2024 (kode ABFFYY, ~10 m) pada piksel titik sampel 125 m. 'st' = tahun_tanam < tahun api (YY=15 = <=2015 ikut); 'bs' = tahun_tanam >= tahun api (jendela 0..2024-tahun api); 'bk' = bukan sawit 2024. Asal bs: hutan primer saat api / sudah hilang sebelum api / bukan hutan primer 2000.",
             "kelas": {"bs": "bakar lalu sawit (TTM)", "st": "sawit terbakar", "bk": "bukan sawit 2024"},
             "catatan": ["Hanya sawit yang masih ada pada 2024 terlihat: kebun yang sudah dibuka tetapi bukan sawit 2024 tidak masuk.",
@@ -1084,6 +1159,14 @@ def tulis():
         with open(TERBIT, "w") as f:
             json.dump(terbit(ada_[str(TAHUN_TERBIT)], PROVINSI), f, separators=(",", ":"), ensure_ascii=False)
         log(f"{TERBIT}: {os.path.getsize(TERBIT) / 1e3:.0f} KB")
+    for t in TAHUN_TERBIT_TTM:
+        if str(t) in ttm:
+            d = terbit_ttm(ttm[str(t)], t, PROVINSI)
+            pk = salin_png(d["perusahaan"], t)
+            jalur = TERBIT.replace("sawit_riwayat.json", f"sawit_riwayat_{t}.json")
+            with open(jalur, "w") as f:
+                json.dump(d, f, separators=(",", ":"), ensure_ascii=False)
+            log(f"{jalur}: {os.path.getsize(jalur) / 1e3:.0f} KB, {len(d['perusahaan'])} perusahaan, bs {d['total']['bs_ha_terbit']} ha, {len(pk)} PNG")
 
 
 # ---------------------------------------------------------------- ringkasan internal
@@ -1154,6 +1237,38 @@ def ringkas():
 
 
 # ---------------------------------------------------------------- uji
+def uji_terbit_ttm():
+    """kontrak citra TTM terbit: foto kebun bertanggal > api.terakhir (dan > foto terbakar); tiap f ada di disk (kalau agregat ada)"""
+    # foto_tahun memotong jendela: sesudah 2019-10-13 tak boleh menghasilkan jendela sebelum itu
+    pernah = []
+    global pilih_s2, pilih_ls
+    a, b = pilih_s2, pilih_ls
+    pilih_s2 = lambda lat, lon, km, d1, d2: pernah.append(d1) or None
+    pilih_ls = lambda lat, lon, km, d1, d2, m: None
+    try:
+        foto_tahun(2019, 0, 0, 6, dt.date(2019, 10, 13))
+        assert pernah == ["2019-10-14", "2019-10-14"], pernah
+        pernah.clear()
+        foto_tahun(2019, 0, 0, 6, dt.date(2019, 12, 20))     # kemarau habis -> dilewati; setahun penuh dipotong
+        assert pernah == ["2019-12-21"], pernah
+    finally:
+        pilih_s2, pilih_ls = a, b
+    for t in TAHUN_TERBIT_TTM:
+        j = TERBIT.replace("sawit_riwayat.json", f"sawit_riwayat_{t}.json")
+        if not os.path.exists(j):
+            continue
+        for d in json.load(open(j))["perusahaan"]:
+            for k in ("kebun1", "kebun2"):
+                v = (d["citra"] or {}).get(k)
+                if v:
+                    assert v["tgl"] > d["api"]["terakhir"], (d["id"], k, v["tgl"], d["api"]["terakhir"])
+                    if d["citra"].get("terbakar"):
+                        assert v["tgl"] > d["citra"]["terbakar"]["tgl"], (d["id"], k)
+            for v in (d["citra"] or {}).values():
+                if isinstance(v, dict):
+                    assert os.path.exists(os.path.join(AKAR, "public/data", v["f"])), v["f"]
+
+
 def uji():
     # kisi + luas
     assert abs(luas_ha(0) - 1.557) < .01 and luas_ha(-5000) < luas_ha(0) * 1.0001
@@ -1200,7 +1315,8 @@ def uji():
     # ambang awan: terang ATAU bendera; ambang terbit + peregangan warna asli
     assert layak({"ha": {"bs": 50}, "bs_porsi": .10}) and not layak({"ha": {"bs": 49}, "bs_porsi": .5}) and not layak({"ha": {"bs": 900}, "bs_porsi": .09})
     assert list(ke_byte_tc([0, 100, 20000], 2.75e-5, -.2)) == [0, 0, 255] and ke_byte_tc([10000], 2.75e-5, -.2)[0] > 0
-    assert TAHUN_TERBIT == 2015 and "2019" not in str(TAHUN_TERBIT)
+    assert TAHUN_TERBIT == 2015 and TAHUN_TERBIT_TTM == tuple(range(2016, 2024)) == TAHUN_TTM   # 2016..2023 terbit dari TTM
+    uji_terbit_ttm()
     # dedup sampel: dua deteksi sama persis -> satu sampel, dua hitungan pusat
     import tempfile
     global DIR
@@ -1231,14 +1347,16 @@ if __name__ == "__main__":
         unduh()
         for t in th:
             analisis(t, "--tanpa-descals" not in a)
-    elif perintah == "ttm":     # analisis + foto + ringkasan TTM 2019/2023 (+ ttm_konfirm 2015 dengan --konfirm)
-        for t in TAHUN_TTM:
-            analisis_ttm(t)
+    elif perintah == "ttm":     # analisis TTM; --tahun T hanya T, tanpa itu semua TAHUN_TTM yang agregatnya belum ada
+        for t in ([int(a[a.index("--tahun") + 1])] if "--tahun" in a else TAHUN_TTM):
+            if "--tahun" in a or not os.path.exists(os.path.join(ANTARA, f"agregat_ttm_{t}.json")):
+                analisis_ttm(t)
     elif perintah == "konfirm":
         konfirm_2015()
     elif perintah == "citra-ttm":
-        for t in TAHUN_TTM:
-            citra_ttm(t)
+        hanya = a[a.index("--id") + 1].split(",") if "--id" in a else None
+        for t in (th if "--tahun" in a else TAHUN_TTM):
+            citra_ttm(t, hanya=hanya)
     elif perintah == "ringkas":
         ringkas()
     elif perintah == "citra":

@@ -24,7 +24,7 @@
   /* serahkan kerja berat SESUDAH satu frame tercat (dua rAF, setTimeout sebagai jaring untuk tab tersembunyi) */
   const sesudahCat = fn => { let jalan = false; const f = () => { if (!jalan) { jalan = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 120); };
 
-  let saya = null, tugas = [], tab = "tugas", terpilih = null, konsesi = {}, sibuk = false, muatStatus = "memuat", posisi = null, filter = {kab: "", status: "aktif"}, berkas = [], peta = null, penanda = new Map(), picKab = {}, panelSig = "", petaGagal = false, petaMemuat = false;
+  let saya = null, tugas = [], tab = "tugas", terpilih = null, konsesi = {}, sibuk = false, muatStatus = "memuat", posisi = null, filter = {kab: "", status: "aktif", bencana: ""}, berkas = [], peta = null, penanda = new Map(), picKab = {}, panelSig = "", petaGagal = false, petaMemuat = false;
   const draf = new Map();   // tugasId -> isian form yang belum terkirim (bertahan walau daftar dimuat ulang, tab pindah, atau panel digambar ulang)
 
   /* galat jaringan tidak dilempar: status 0 (luring); 401 di tengah sesi mengembalikan ke layar masuk */
@@ -43,6 +43,18 @@
     413: "Berkas terlalu besar. Pilih foto yang lebih kecil atau video yang lebih pendek.", 429: "Terlalu banyak kiriman dalam waktu singkat. Tunggu sebentar; dicoba lagi otomatis."};
   const manusiawi = (r, cadangan) => r.j?.galat || GALAT[r.status] || cadangan || `Gagal (${r.status}). Coba lagi sebentar lagi.`;
   const pil = (t, k = "") => `<span class="in-pil ${k}">${esc(t)}</span>`;
+  /* ---- multi-bahaya (kamus kata di instansi_kartu.js, cermin src/tugas_bencana.js): tugas tanpa `bencana` = karhutla; modul khusus api disembunyikan untuk bahaya lain ---- */
+  const bid = t => window.KartuApi.idBencana(t), kam = t => window.KartuApi.KAMUS[bid(t)], apiTugas = t => bid(t) === "karhutla";
+  const kapital = s => String(s).replace(/^./, c => c.toUpperCase());
+  let bcMeta = {}, bcIkon = {};   // warna dan tingkat dari /bencana.json (registry bersama, hanya dibaca); penanda = titik berwarna (modul ikon kepala.js tidak dimuat: ES module, uji statis lama menolaknya)
+  const banyakBencana = () => new Set(tugas.map(bid)).size > 1;
+  const warnaBc = id => bcMeta[id]?.warna || "#8a94a3";
+  async function muatBencanaMeta() {
+    try { const j = await (await fetch("/bencana.json")).json(); bcMeta = Object.fromEntries((j.bencana || []).map(b => [b.id, b])); } catch (e) {}
+    if ($("fBencana")) segarkanChip();
+  }
+  const titikBc = id => `<svg class="in-bc-ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg>`;
+  const metodeNama = m => m === "rekomendasi_pvmbg" ? "Rekomendasi PVMBG" : String(m ?? "");
   /* ikon garis (SVG), gaya Ruang Koordinasi; dipakai di baris tugas dan layar kosong */
   const IK = {jam: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', api: '<path d="M12 3c1 3.5 4.5 5.5 4.5 10a4.5 4.5 0 0 1-9 0c0-2 1-3 2-4 .3 1.2 1 1.8 1.8 2C11.5 8.5 11.2 5.5 12 3z"/>', galat: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/>', panah: '<path d="M15 6l-6 6 6 6"/>', kamera: '<path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', luring: '<path d="M3 3l18 18M8.5 8.5A8 8 0 0 0 5 12M16 11.2a8 8 0 0 1 3 1.8M12 17h.01M9 14.2a5 5 0 0 1 3-1.2"/>'};
   const ik = n => `<svg class="in-ik" viewBox="0 0 24 24" aria-hidden="true">${IK[n]}</svg>`;
@@ -70,6 +82,7 @@
   });
   $("gSalin").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("gSandi").textContent); pesan("Sandi disalin.", "ok"); } catch (e) { pesan("Salin manual: tekan lama pada sandi.", "galat"); } });
   $("gLanjut").addEventListener("click", async () => { $("gSandi").textContent = ""; $("gHasil").hidden = true; $("gAwal").hidden = false; $("gBuat").disabled = false; await muatSaya(); });
+  muatBencanaMeta();
   async function muatSaya() {
     const r = await api("GET", "/api/instansi/saya");
     saya = r.ok ? r.j : null; tampil();
@@ -149,9 +162,14 @@
   /* terlambat dulu, lalu terdekat dari GPS (bila diizinkan), lalu terbaru */
   const urut = (x, y) => (y.terlambat - x.terlambat) || ((jarakKe(x) ?? 0) - (jarakKe(y) ?? 0)) || (y.dibuat - x.dibuat);
   function tampilan() {
-    return tugas.filter(t => (!filter.kab || t.kab === filter.kab) && (filter.status === "" || (filter.status === "aktif" ? t.status === "buka" : filter.status === "terlambat" ? t.terlambat : t.status !== "buka"))).sort(urut);
+    return tugas.filter(t => (!filter.kab || t.kab === filter.kab) && (!filter.bencana || bid(t) === filter.bencana) && (filter.status === "" || (filter.status === "aktif" ? t.status === "buka" : filter.status === "terlambat" ? t.terlambat : t.status !== "buka"))).sort(urut);
   }
   /* ---- Tugas ---- */
+  /* bahaya selain karhutla: rekomendasi resmi (gunungapi: teks PVMBG dari MAGMA) dengan sumbernya, tanpa pil "Perkiraan" karena bukan hitungan mesin */
+  function rekomendasiResmi(r) {
+    const cara = Array.isArray(r?.cara) ? r.cara.filter(c => c && c.alasan) : []; if (!cara.length) return "";
+    return `<div class="in-cara">${cara.map(c => `<p><span class="k">${esc(metodeNama(c.metode))}</span><b>${esc(c.alasan)}</b></p>`).join("")}${r.sumber ? `<p class="lp-kecil">Sumber: ${esc(r.sumber)}</p>` : ""}</div>`;
+  }
   function rekomendasi(r, tanpaPil) {
     if (!r || typeof r !== "object") return "";
     const cara = Array.isArray(r.cara) ? r.cara : [], alat = Array.isArray(r.alat) ? r.alat : [], b = Array.isArray(r.bara_cm) ? r.bara_cm : null;
@@ -164,33 +182,33 @@
   }
   /* "di lapangan sekarang" (kabar terakhir) dan waktu terdokumentasi; kebutuhan dan selisihnya digambar Kebutuhan.html */
   function lapanganSekarang(t) {
-    const s = t.sekarang, d = t.dokumentasi || {};
+    const kamT = kam(t), s = t.sekarang, d = t.dokumentasi || {};
     if (!s && d.mulai == null) return "";
     const al = s?.alat || {}, per = s?.personel_efektif;
-    return `<div class="in-rek"><h3>Di lapangan sekarang</h3>${s ? `<p>${esc(STATUS_API[s.status_api] || "-")}, ${per != null ? `${angka(per, 0)} personel` : "personel belum diisi"}${s.personel_terlihat != null ? `, minimal ${angka(s.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin, bisa kurang karena asap atau di luar bingkai)` : ""}, ${s.regu != null ? angka(s.regu, 0) + " regu" : "regu belum diisi"}.
+    return `<div class="in-rek"><h3>Di lapangan sekarang</h3>${s ? `<p>${esc(kamT.st[s.status_api] || "-")}, ${per != null ? `${angka(per, 0)} personel` : "personel belum diisi"}${s.personel_terlihat != null ? `, minimal ${angka(s.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin, bisa kurang karena asap atau di luar bingkai)` : ""}, ${s.regu != null ? angka(s.regu, 0) + " regu" : "regu belum diisi"}.
         ${Object.keys(al).length ? `Alat: ${esc(Object.entries(al).map(([a, n]) => `${NAMA_ALAT[a] || a} ${angka(n, 0)}`).join(", "))}.` : ""}</p>` : `<p>Belum ada kabar tindakan.</p>`}
       ${d.mulai != null ? `<p>Pemadaman terdokumentasi mulai ${esc(jamWIB(d.mulai))}${d.padam != null ? `, padam terdokumentasi ${esc(jamWIB(d.padam))}${d.durasi_ms != null ? `, selang ${fmt.durasi(d.durasi_ms)}` : ""}` : ""}. Ini waktu foto atau video, bukan jam mulai atau padam yang sebenarnya.</p>` : ""}</div>`;
   }
-  const statusPil = t => (t.status === "padam" ? pil("Padam", "hijau") : t.status === "bukan_api" ? pil("Bukan api") : t.terlambat ? pil("Terlambat", "merah") : pil("Aktif", "emas")) + (window.Tugaskan ? window.Tugaskan.padamPil(t) : "");   // pil verifikasi padam di samping status
+  const statusPil = t => (t.status === "padam" ? pil(kapital(kam(t).selesai), "hijau") : t.status === "bukan_api" ? pil(kam(t).st.bukan_api) : t.terlambat ? pil("Terlambat", "merah") : pil("Aktif", "emas")) + (t.hipotesis ? pil("Hipotesis") : "") + (apiTugas(t) && window.Tugaskan ? window.Tugaskan.padamPil(t) : "");   // pil verifikasi padam di samping status
   const langkahNama = t => t.konfirmasi_pada == null ? "Konfirmasi" : "Kabar tindakan";
   /* cara pemadaman dari rekomendasi: utama = urutan pertama, pelengkap = sisanya (perkiraan pipeline, bukan hasil validasi lapangan) */
   const caraTeks = r => { const c = (Array.isArray(r?.cara) ? r.cara : []).map(x => x && x.metode).filter(Boolean); return c.length ? {utama: c[0], lengkap: c.slice(1)} : null; };
   function baris(t) {
-    const kini = Date.now(), j = jarakKe(t), c = caraTeks(t.rekomendasi);
+    const kini = Date.now(), j = jarakKe(t), c = caraTeks(t.rekomendasi), api = apiTugas(t);
     const batas = t.status !== "buka" ? "Selesai" : `${langkahNama(t)} ${t.terlambat ? "terlambat" : "sisa"} ${fmt.durasi(t.tenggat - kini)}`;
     return `<button type="button" class="in-baris ${t.terlambat ? "telat" : ""} ${t.id === terpilih ? "aktif" : ""}" data-id="${esc(t.id)}" aria-pressed="${t.id === terpilih}">
-      <span class="in-c-nama"><b>${esc(Wilayah.kab(t.kab))}</b>${t.kec ? `<small>Kecamatan ${esc(t.kec)}</small>` : ""}</span><span class="in-c-status">${statusPil(t)}</span>
-      <span class="in-c-ciri">${esc(t.ciri || "")}</span>
+      <span class="in-c-nama"><b>${esc(Wilayah.kab(t.kab))}</b>${t.kec ? `<small>Kecamatan ${esc(t.kec)}</small>` : ""}${!api || banyakBencana() ? `<small class="in-bc" data-bc="${esc(bid(t))}">${titikBc(bid(t))}${esc(t.bencana_nama || kam(t).nama)}</small>` : ""}</span><span class="in-c-status">${statusPil(t)}</span>
+      <span class="in-c-ciri">${t.judul ? `<b>${esc(t.judul)}</b>. ` : ""}${esc(t.ciri || "")}</span>
       <span class="in-c-batas ${t.terlambat && t.status === "buka" ? "telat" : ""}">${t.status === "buka" ? ik("jam") : ""}${esc(batas)}</span>
       <span class="in-c-umur">Umur ${fmt.durasi(kini - t.dibuat)}</span><span class="in-c-jarak">${j == null ? "" : `sekitar ${angka(j, 1)} km`}</span>
-      <span class="in-c-cara">${c ? `<span>Cara utama: <b>${esc(c.utama)}</b></span>${pil("Perkiraan, belum divalidasi lapangan", "emas")}` : ""}</span></button>`;
+      <span class="in-c-cara">${c ? (api ? `<span>Cara utama: <b>${esc(c.utama)}</b></span>${pil("Perkiraan, belum divalidasi lapangan", "emas")}` : `<span><b>${esc(metodeNama(c.utama))}</b></span>`) : ""}</span></button>`;
   }
   function daftarHtml() {
     const d = tampilan();
     if (muatStatus === "memuat") return skeleton(5);
     if (muatStatus.startsWith("galat:")) return kosongHtml(muatStatus.slice(6), "Coba lagi", "muat", true);
     if (!tugas.length) return kosongHtml("Belum ada tugas api di wilayahmu. Tugas baru muncul otomatis tiap 3 jam bila ada titik api.", "Muat ulang", "muat");
-    if (!d.length) return kosongHtml("Tidak ada tugas yang cocok dengan penyaring.", "Tampilkan semua tugas", "semua");
+    if (!d.length) return kosongHtml(filter.bencana ? `Tidak ada tugas ${window.KartuApi.KAMUS[filter.bencana].nama.toLowerCase()} yang cocok dengan penyaring.` : "Tidak ada tugas yang cocok dengan penyaring.", "Tampilkan semua tugas", "semua");
     return d.slice(0, 150).map(baris).join("");
   }
   async function tampilTugas() {
@@ -200,10 +218,11 @@
     await muatTugas();
     if (terpilih && !tugas.some(t => t.id === terpilih)) terpilih = null;
     segarkanDaftar(); isiPanel(); bukaPeta(); cobaPosisi();
-    if (muatStatus === "ok" && window.Tugaskan) sesudahCat(() => window.Tugaskan.popupMasuk({saya, tugas, lihatTugas: () => { filter = {kab: "", status: "aktif"}; segarkanDaftar(); $("daftar")?.scrollIntoView?.({block: "start"}); }}).catch(() => {}));   // pop-up peta wilayah sekali per sesi
+    if (muatStatus === "ok" && window.Tugaskan) sesudahCat(() => window.Tugaskan.popupMasuk({saya, tugas, lihatTugas: () => { filter = {kab: "", status: "aktif", bencana: ""}; segarkanDaftar(); $("daftar")?.scrollIntoView?.({block: "start"}); }}).catch(() => {}));   // pop-up peta wilayah sekali per sesi
   }
   function tataLetak() {
     return `<div class="in-app tanpa-peta" data-pilih="0"><div class="in-kiri">
+      <div id="fBencana" class="in-chips" role="group" aria-label="Jenis bencana" hidden></div>
       <div class="in-filter"><label>Kabupaten<select id="fKab"><option value="">Semua</option></select></label>
         <label>Status<select id="fStatus">${[["aktif", "Aktif"], ["terlambat", "Terlambat"], ["selesai", "Selesai"], ["", "Semua"]].map(([k, v]) => `<option value="${k}" ${k === filter.status ? "selected" : ""}>${v}</option>`).join("")}</select></label>
         <button type="button" class="lp-tombol" id="bJarak" data-aksi="jarak">Urut terdekat</button></div>
@@ -215,9 +234,24 @@
     const kab = [...new Set(tugas.map(t => t.kab))].sort(), f = $("fKab"); if (!f) return;
     if (filter.kab && !kab.includes(filter.kab)) filter.kab = "";
     f.innerHTML = `<option value="">Semua</option>` + kab.map(k => `<option ${k === filter.kab ? "selected" : ""}>${esc(k)}</option>`).join("");
-    $("bJarak").textContent = posisi ? "Jarak darimu aktif" : "Urut terdekat";
+    segarkanChip(); $("bJarak").textContent = posisi ? "Jarak darimu aktif" : "Urut terdekat";
     $("daftar").innerHTML = daftarHtml(); $("daftar").removeAttribute("aria-busy");
     perbaruiPenanda();
+  }
+  /* chip jenis bencana: Semua dan bahaya yang punya tugas; hanya muncul bila ada lebih dari satu bahaya. Keadaan aktif diperbarui seketika oleh penangan klik (chrome urgent). */
+  function segarkanChip() {
+    const w = $("fBencana"); if (!w) return;
+    const n = new Map(); for (const t of tugas) n.set(bid(t), (n.get(bid(t)) || 0) + 1);
+    const tabT = document.querySelector('#tab [data-tab="tugas"]'); if (tabT) tabT.textContent = [...n.keys()].some(k => k !== "karhutla") ? "Tugas" : "Tugas api";
+    if (filter.bencana && !n.has(filter.bencana)) filter.bencana = "";
+    w.hidden = n.size < 2; const sig = [...n].join("|") + "|" + Object.keys(bcMeta).length + "|" + filter.bencana;
+    if (w.dataset.sig === sig) return;
+    w.dataset.sig = sig; w.replaceChildren();
+    const tombol = (id, nama, jumlah) => { const b = document.createElement("button"); b.type = "button"; b.className = "in-chip"; b.dataset.bc = id; b.setAttribute("aria-pressed", String(filter.bencana === id));
+      if (id) { b.innerHTML = titikBc(id); b.firstChild.style.color = warnaBc(id); }
+      b.append(document.createTextNode(`${nama} ${angka(jumlah, 0)}`)); w.append(b); };
+    tombol("", "Semua", tugas.length);
+    for (const [id, jml] of n) tombol(id, window.KartuApi.KAMUS[id].nama, jml);
   }
   /* GPS hanya dibaca bila izin sudah diberikan (tanpa meminta izin tiba-tiba); selain itu lewat tombol "Urut terdekat" */
   async function cobaPosisi() {
@@ -256,33 +290,36 @@
   const formCekUlang = t => `<form id="fLapor" class="in-form in-blok" data-tugas="${esc(t.id)}" data-langkah="cekulang" novalidate><h2>Cek ulang lapangan</h2>
     <p class="lp-kecil">Laporan padam ditutup dengan foto kedua di lokasi. Periksa tanah dan gambut dengan tangan atau tongkat, lalu foto lokasi yang sudah padam.</p>${mediaWidget()}
     <div class="in-bar"><ul id="progBerkas" class="in-up"></ul><p id="progres" class="in-progres" role="status" aria-live="polite"></p><button type="submit" id="kirim" class="lp-tombol utama besar">Kirim foto cek ulang</button></div></form>`;
+  const KENDALA_API = ["air_jauh", "akses_sulit_rawa", "air_tidak_cukup", "asap_tebal"];   // kendala khas pemadaman; bahaya lain memakai sisanya
   const langkahHtml = (n, teks) => `<h3 class="in-langkah"><i>${n}</i>${esc(teks)}</h3>`;
   function formLapor(t) {
-    const konf = t.konfirmasi_pada == null, pic = ingatPIC(t);
-    const st = (konf ? ["menyala", "bara", "padam", "bukan_api"] : ["menyala", "bara", "padam"]).map(k => `<label class="in-st st-${k}"><input type="radio" name="sapi" value="${k}"><span>${k === "bukan_api" ? "Bukan api" : STATUS_API[k]}</span></label>`).join("");
+    const konf = t.konfirmasi_pada == null, pic = ingatPIC(t), api = apiTugas(t), km = kam(t);
+    const kunci = (konf ? ["menyala", "bara", "padam", "bukan_api"] : ["menyala", "bara", "padam"]).filter(k => km.st[k]);   // gempa: tanpa tombol selesai
+    const st = kunci.map(k => `<label class="in-st st-${k}"><input type="radio" name="sapi" value="${k}"><span>${esc(km.st[k])}</span></label>`).join("");
     return `<form id="fLapor" class="in-form in-blok" data-tugas="${esc(t.id)}" data-langkah="${konf ? "konfirmasi" : "kabar"}" novalidate>
       <h2>${konf ? "Konfirmasi di lokasi" : "Kabar tindakan"}</h2>
       ${langkahHtml(1, "Foto atau video")}${mediaWidget()}
-      ${langkahHtml(2, "Kondisi api")}<div class="in-status ${konf ? "empat" : "tiga"}" role="radiogroup" aria-label="Kondisi api">${st}</div>
+      ${langkahHtml(2, km.kondisi)}<div class="in-status ${kunci.length === 4 ? "empat" : kunci.length === 3 ? "tiga" : "dua"}" role="radiogroup" aria-label="${esc(km.kondisi)}">${st}</div>
       ${konf ? `<details class="in-rinci" ${pic ? "" : "open"}><summary>PIC lapangan, wajib${pic ? " (terisi dari kiriman sebelumnya di kabupaten ini)" : ""}</summary>
         <label>Nama PIC lapangan<input id="picNama" maxlength="80" autocomplete="name" value="${esc(pic?.nama)}"></label><label>Jabatan atau instansi<input id="picJabatan" maxlength="80" value="${esc(pic?.jabatan)}"></label>
         <label>Nomor WhatsApp<input id="picWa" inputmode="tel" maxlength="30" autocomplete="tel" value="${esc(pic?.wa)}"></label></details>` : ""}
       <details class="in-rinci" id="rinci"><summary>Tambah keterangan, boleh dilewati</summary>
         ${konf ? "" : `<label>Tindakan yang dilakukan<textarea id="tindakan" rows="3" maxlength="1000"></textarea></label>
-          <h3 class="in-sub">Kendala</h3><div class="lp-centang">${Object.entries(KENDALA).map(([k, v]) => `<label class="lp-cek"><input type="checkbox" name="kendala" value="${k}">${v}</label>`).join("")}</div>
+          <h3 class="in-sub">Kendala</h3><div class="lp-centang">${Object.entries(KENDALA).filter(([k]) => api || !KENDALA_API.includes(k)).map(([k, v]) => `<label class="lp-cek"><input type="checkbox" name="kendala" value="${k}">${v}</label>`).join("")}</div>
           <label>Kendala lain<input id="kendalaLain" maxlength="300"></label>
-          <h3 class="in-sub">Bantuan yang dibutuhkan</h3><div class="lp-centang">${Object.entries(BANTUAN).map(([k, v]) => `<label class="lp-cek"><input type="checkbox" name="bantuan" value="${k}">${v}</label>`).join("")}</div>
+          <h3 class="in-sub">Bantuan yang dibutuhkan</h3><div class="lp-centang">${Object.entries(BANTUAN).filter(([k]) => api || k !== "heli_water_bombing").map(([k, v]) => `<label class="lp-cek"><input type="checkbox" name="bantuan" value="${k}">${v}</label>`).join("")}</div>
           <label>Bantuan lain<input id="bantuanLain" maxlength="300"></label>
           <h3 class="in-sub">Alat dari inventaris yang dipakai</h3><div id="alatInvWadah" class="lp-centang"><p class="lp-kecil">Memuat alat siap…</p></div>`}
-        <label>Luas terbakar di lokasi (hektare)<input id="luas" inputmode="decimal"></label><label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal"></label>
-        ${bidangPemadaman()}${gambutBidang()}
-        ${konf ? `<h3 class="in-sub">Perusahaan konsesi</h3><div id="ptWadah" class="in-baris-isi"><p class="lp-kecil">Dicocokkan dengan peta konsesi saat bagian ini dibuka.</p></div>` : ""}</details>
+        ${api ? `<label>Luas terbakar di lokasi (hektare)<input id="luas" inputmode="decimal"></label><label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal"></label>` : ""}
+        ${bidangPemadaman(api)}${api ? gambutBidang() : ""}
+        ${konf && api ? `<h3 class="in-sub">Perusahaan konsesi</h3><div id="ptWadah" class="in-baris-isi"><p class="lp-kecil">Dicocokkan dengan peta konsesi saat bagian ini dibuka.</p></div>` : ""}</details>
       ${langkahHtml(3, "Kirim")}
       <div class="in-bar"><ul id="progBerkas" class="in-up"></ul><p id="progres" class="in-progres" role="status" aria-live="polite"></p>
         <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button></div></form>`;
   }
   /* kebutuhan pemadaman dan kondisi lapangan: selalu terlihat (tanpa dibuka), kartu hanya bila ada isinya */
   function kebutuhanKartu(t, pilSudah) {   // pil "Perkiraan, belum divalidasi lapangan" cukup sekali per rincian: yang pertama tampil menang
+    if (!apiTugas(t)) return `<div class="in-kartu"><h2 class="in-sub">Kondisi lapangan dan gudang terdekat</h2>${lapanganSekarang(t)}<div id="gudangTugas" class="in-gudang"></div></div>`;
     const rek = rekomendasi(t.rekomendasi, pilSudah), h = rek + window.Kebutuhan.html(t, pilSudah || !!rek) + lapanganSekarang(t);
     return `<div class="in-kartu"><h2 class="in-sub">Kebutuhan pemadaman dan kondisi lapangan</h2>${h}<div id="gudangTugas" class="in-gudang"></div></div>`;
   }
@@ -294,6 +331,13 @@
     w.innerHTML = `<p class="lp-kecil">Mencari gudang terdekat…</p>`;
     const r = await ambilRincian(id); if (terpilih !== id || !$("gudangTugas")) return;
     $("gudangTugas").innerHTML = r.ok ? window.Kebutuhan.gudang(r.j.gudang_terdekat) : "";
+  }
+  /* Kartu Api (instansi_kartu.js): `kartu` ada di detail tugas; sebelum detail datang, kartu dari data tugas yang ada (kartu null = tampilkan yang ada saja) */
+  async function kartuMuat(t) {
+    if (!window.KartuApi || !$("kartuApi")) return;
+    window.KartuApi.pasang($("kartuApi"), t, t.kartu ?? null);
+    const r = await ambilRincian(t.id); if (terpilih !== t.id || !$("kartuApi") || !r.ok) return;
+    const k = r.j?.kartu ?? r.j?.tugas?.kartu; if (k) window.KartuApi.pasang($("kartuApi"), t, k);
   }
   /* ---- draf isian per tugas (memori): menyimpan semua isian form yang belum terkirim supaya tidak hilang ---- */
   function simpanDrafPanel() {
@@ -321,23 +365,26 @@
     if (!paksa && sig === panelSig && w.firstChild) return;
     simpanDrafPanel(); panelSig = sig; rincianMem.clear();
     if (!t) { w.innerHTML = desktop() ? `<div class="in-kosong"><p>Pilih satu tugas di daftar untuk melapor.</p></div>` : ""; berkas = []; pratinjau(); return; }
-    const buka = t.status === "buka", c = caraTeks(t.rekomendasi), kini = Date.now(), j = jarakKe(t);
+    const buka = t.status === "buka", c = caraTeks(t.rekomendasi), kini = Date.now(), j = jarakKe(t), api = apiTugas(t), km = kam(t), tingkat = bcMeta[bid(t)]?.tingkat?.find(x => x.kode === t.level)?.nama;
     w.innerHTML = `<button type="button" class="lp-tombol in-kembali" data-aksi="kembali">${ik("panah")}Kembali ke daftar</button>
       <div class="in-kartu ${t.terlambat && buka ? "terlambat" : ""}"><div class="in-kepala"><div><b class="in-kab">${esc(Wilayah.kab(t.kab))}</b>${t.kec ? `<span class="in-kec">Kecamatan ${esc(t.kec)}</span>` : ""}</div>${statusPil(t)}</div>
+        ${t.judul ? `<p class="in-ciri"><b>${esc(t.judul)}</b>. ${esc(t.arahan || "")}</p>` : ""}
         ${t.ciri ? `<p class="in-ciri">${esc(t.ciri)}</p>` : ""}
-        <a class="lp-tombol in-nav" href="https://www.google.com/maps/dir/?api=1&amp;destination=${esc(t.lat)},${esc(t.lon)}&amp;travelmode=driving" target="_blank" rel="noopener noreferrer">${ik("panah")}Navigasi ke titik api (Google Maps)</a>
+        <a class="lp-tombol in-nav" href="https://www.google.com/maps/dir/?api=1&amp;destination=${esc(t.lat)},${esc(t.lon)}&amp;travelmode=driving" target="_blank" rel="noopener noreferrer">${ik("panah")}Navigasi ke ${esc(km.titik)} (Google Maps)</a>
         <p class="lp-kecil in-nav-cat">Google Maps berhenti di ujung jalan yang bisa dilalui; sisanya jalan kaki, lihat kartu akses.</p>
         ${buka ? `<div class="in-tenggat ${t.terlambat ? "telat" : ""}"><span class="in-t-label">${langkahNama(t)} ${t.terlambat ? "terlambat" : "sisa waktu"}</span><b class="in-t-angka">${fmt.durasi(t.tenggat - kini)}</b></div>` : ""}
         <dl class="in-stat"><div><dt>Umur tugas</dt><dd>${fmt.durasi(kini - t.dibuat)}</dd></div>${j == null ? "" : `<div><dt>Jarak darimu</dt><dd>${angka(j, 1)}<small>km</small></dd></div>`}
-          <div><dt>Titik 24 jam</dt><dd>${angka(t.n24, 0)}</dd></div><div><dt>Luas satelit</dt><dd>${angka(t.luas_ha, 0)}<small>ha</small></dd></div><div><dt>Status karhutla</dt><dd>${LEVEL[Math.min(3, Math.max(0, t.level | 0))]}</dd></div></dl>
-        ${c ? `<div class="in-cara"><div>${pil("Perkiraan, belum divalidasi lapangan", "emas")}</div><p><span class="k">Cara padam utama</span><b>${esc(c.utama)}</b></p>${c.lengkap.length ? `<p><span class="k">Pelengkap</span>${esc(c.lengkap.join(", "))}</p>` : ""}</div>` : ""}</div>
-      ${buka ? formLapor(t) : `<p class="in-kosong">Tugas ini sudah ditutup (${t.status === "padam" ? "api padam" : "bukan api"}).</p>`}
-      ${window.Tugaskan ? window.Tugaskan.padamBlok(t) : ""}${t.padam?.boleh_cek_ulang ? formCekUlang(t) : ""}
+          ${api ? `<div><dt>Titik 24 jam</dt><dd>${angka(t.n24, 0)}</dd></div><div><dt>Luas satelit</dt><dd>${angka(t.luas_ha, 0)}<small>ha</small></dd></div><div><dt>Status karhutla</dt><dd>${LEVEL[Math.min(3, Math.max(0, t.level | 0))]}</dd></div>`
+            : `<div><dt>Jenis</dt><dd>${esc(t.bencana_nama || km.nama)}</dd></div>${tingkat ? `<div><dt>Tingkat</dt><dd>${esc(tingkat)}</dd></div>` : ""}`}</dl>
+        ${!api ? rekomendasiResmi(t.rekomendasi) : c ? `<div class="in-cara"><div>${pil("Perkiraan, belum divalidasi lapangan", "emas")}</div><p><span class="k">Cara padam utama</span><b>${esc(c.utama)}</b></p>${c.lengkap.length ? `<p><span class="k">Pelengkap</span>${esc(c.lengkap.join(", "))}</p>` : ""}</div>` : ""}</div>
+      ${buka ? formLapor(t) : `<p class="in-kosong">Tugas ini sudah ditutup (${t.status === "padam" ? km.tutup : km.st.bukan_api.toLowerCase()}).</p>`}
+      ${api && window.Tugaskan ? window.Tugaskan.padamBlok(t) : ""}${api && t.padam?.boleh_cek_ulang ? formCekUlang(t) : ""}
+      <div id="kartuApi"></div>
       ${window.AksesKartu ? window.AksesKartu.html(t.akses) : ""}
       <div id="tgWadah"></div>
       ${kebutuhanKartu(t, !!c)}
       <details class="in-rinci in-kartu in-detail" id="detailTugas"><summary>Riwayat isian dan galeri</summary><div class="in-riwayat" id="riwayat"></div></details>`;
-    pulihDraf(t.id); alatInvMuat(t.id); gudangMuat(t.id);
+    pulihDraf(t.id); alatInvMuat(t.id); gudangMuat(t.id); kartuMuat(t);
     if (window.Tugaskan && $("tgWadah")) window.Tugaskan.pasang(t, $("tgWadah"));   // penugasan dan pelacak posisi (instansi_tugaskan.js)
   }
   /* ---- media terpilih: satu objectURL per berkas (Map), figure ditambah atau dihapus satu per satu, URL dilepas saat dihapus ---- */
@@ -403,11 +450,15 @@
   $("isi").addEventListener("click", async e => {
     const t = e.target.closest("button"); if (!t) return;
     if (t.dataset.hapus != null) { const fig = t.closest(".in-pv"); berkas.splice(berkas.indexOf(fig._f), 1); pratinjau(); return simpanDrafPanel(); }
+    if (t.classList.contains("in-chip")) {
+      filter.bencana = t.dataset.bc; for (const c of t.parentNode.children) c.setAttribute("aria-pressed", String(c === t));   // chip urgent
+      $("daftar").setAttribute("aria-busy", "true"); return sesudahCat(segarkanDaftar);   // daftar menyusul sesudah cat
+    }
     const baris = t.closest(".in-baris[data-id]"); if (baris) return pilihTugas(baris.dataset.id);
     const a = t.dataset.aksi;
     if (a === "kembali") return pilihTugas(null);
     if (a === "muat") { muatStatus = "memuat"; $("daftar").innerHTML = skeleton(5); return gantiTab("tugas"); }
-    if (a === "semua") { filter = {kab: "", status: ""}; return gantiTab("tugas"); }
+    if (a === "semua") { filter = {kab: "", status: "", bencana: ""}; return gantiTab("tugas"); }
     if (a === "jarak") { if (!navigator.geolocation) return pesan("Peramban ini tidak bisa membaca lokasi.", "galat"); pesan("Membaca lokasi…"); return ambilPosisi(); }
   });
   $("isi").addEventListener("change", e => {
@@ -433,7 +484,7 @@
   function galeri(media) {
     if (!media.length) return "";
     return `<div class="in-galeri">${media.map(m => `<figure class="in-media"><a href="/api/instansi/media/${esc(m.id)}" target="_blank" rel="noopener"><img src="/api/instansi/thumb/${esc(m.id)}" alt="${m.jenis === "video" ? "Video" : "Foto"} lapangan" loading="lazy"></a>
-      <figcaption>${m.jenis === "video" ? `Video ${angka(m.durasi, 0)} detik<br>` : ""}${esc(jamWIB(m.waktu_ambil))}, ${esc(SUMBER[m.sumber_waktu])}<br>${m.orang_terdeteksi != null ? `minimal ${angka(m.orang_terdeteksi, 0)} orang terlihat (mesin${m.orang_sumber === "bingkai_klien" ? ", dari bingkai video kiriman peramban yang tak bisa diperiksa server" : ", dari thumbnail tersimpan"})` : "orang tidak dihitung"}${window.Tugaskan ? `<br>${window.Tugaskan.exifInfo(m)}` : ""}${m.gps_curiga ? `<br>${pil("GPS curiga", "merah")}` : ""}${m.jauh ? `<br>${pil("Jauh dari kompleks", "merah")}` : ""}</figcaption></figure>`).join("")}</div>`;
+      <figcaption>${m.jenis === "video" ? `Video ${angka(m.durasi, 0)} detik<br>` : ""}${esc(jamWIB(m.waktu_ambil))}, ${esc(SUMBER[m.sumber_waktu])}<br>${m.orang_terdeteksi != null ? `minimal ${angka(m.orang_terdeteksi, 0)} orang terlihat (mesin${m.orang_sumber === "bingkai_klien" ? ", dari bingkai video kiriman peramban yang tak bisa diperiksa server" : ", dari thumbnail tersimpan"})` : "orang tidak dihitung"}${window.Tugaskan ? `<br>${window.Tugaskan.exifInfo(m)}` : ""}${m.gps_curiga ? `<br>${pil("GPS curiga", "merah")}` : ""}${m.jauh ? `<br>${pil("Jauh dari cluster", "merah")}` : ""}</figcaption></figure>`).join("")}</div>`;
   }
   async function riwayat(id, wadah) {
     if (!wadah || wadah.dataset.muat === id) return;
@@ -442,7 +493,7 @@
     if (!r.ok) { wadah.textContent = manusiawi(r); return; }
     wadah.dataset.muat = id;
     wadah.innerHTML = (r.j.isian.length ? r.j.isian.map(i => `<p class="in-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b>, ${esc(jamWIB(i.dibuat))},
-      ${esc(i.oleh.wilayah)}. ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}, PIC ${esc(i.pic_nama)} (${esc(i.pic_jabatan)})${i.jauh ? ", lokasi isian jauh dari pusat kompleks" : ""}`
+      ${esc(i.oleh.wilayah)}. ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}, PIC ${esc(i.pic_nama)} (${esc(i.pic_jabatan)})${i.jauh ? ", lokasi isian jauh dari pusat cluster" : ""}`
       : `${i.tindakan ? esc(i.tindakan) + " " : ""}Status ${esc(STATUS_API[i.status_api])}${i.personel_efektif != null ? `, ${angka(i.personel_efektif, 0)} personel${i.personel != null && i.personel_terlihat != null ? ` (isian manual, mesin melihat minimal ${angka(i.personel_terlihat, 0)})` : ""}` : ""}.`}</p>`).join("") : `<p class="in-meta">Belum ada isian.</p>`) + galeri(r.j.media);
   }
 
@@ -569,7 +620,7 @@
         if (h.ok) {
           await hapusAntrean(it.id).catch(() => {});
           if (it.pic) { try { localStorage.setItem(it.pic.kunci, JSON.stringify(it.pic.nilai)); } catch (e) {} }
-          pesan(`Terkirim.${h.ok.personel_terlihat != null ? ` Minimal ${angka(h.ok.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin).` : ""}${h.ok.jauh ? " Lokasimu lebih dari 5 km dari pusat kompleks, admin akan melihat tanda ini." : ""}`, "ok");
+          pesan(`Terkirim.${h.ok.personel_terlihat != null ? ` Minimal ${angka(h.ok.personel_terlihat, 0)} orang terlihat di foto (hitungan mesin).` : ""}${h.ok.jauh ? " Lokasimu lebih dari 5 km dari pusat cluster, admin akan melihat tanda ini." : ""}`, "ok");
           draf.delete(it.tugasId); await muatTugas(); if ($("daftar")) { segarkanDaftar(); isiPanel(); }
         } else if (h.tolak) { it.galat = h.tolak; await simpanAntrean(it).catch(() => {}); }
         else { it.info = h.tunda; await simpanAntrean(it).catch(() => {}); break; }   // masih tertunda: berhenti, coba lagi nanti
@@ -598,8 +649,8 @@
     try {
       const sapi = (document.querySelector('input[name="sapi"]:checked') || {}).value;
       if ((konf || cek) && !berkas.length) throw new Error("Ambil minimal satu foto atau video di lokasi.");
-      if (!konf && !cek && sapi === "padam" && !berkas.length) throw new Error("Melaporkan padam wajib berfoto: ambil foto lokasi yang sudah padam.");
-      if (!sapi && !cek) throw new Error("Pilih kondisi api: ketuk salah satu tombol besar.");
+      if (!konf && !cek && sapi === "padam" && !berkas.length) throw new Error(`Melaporkan ${tg ? kam(tg).selesai : "padam"} wajib berfoto: ambil foto lokasi.`);
+      if (!sapi && !cek) throw new Error(`Pilih ${(tg ? kam(tg).kondisi : "Kondisi api").toLowerCase()}: ketuk salah satu tombol besar.`);
       if (cek) body = {klien_id: idAcak()};
       else {
       if (konf && (!nilai("picNama") || !nilai("picJabatan") || !nilai("picWa"))) { $("picNama")?.closest("details")?.setAttribute("open", ""); throw new Error("PIC lapangan wajib: nama, jabatan, dan nomor WhatsApp."); }
@@ -612,7 +663,7 @@
       const lk = angkaIsian("luas"), pk = angkaIsian("padam"); if (lk != null) body.luas_ha = lk; if (pk != null) body.padam_ha = pk;
       if (pk != null && lk != null && pk > lk) throw new Error("Luas padam tidak boleh melebihi luas terbakar.");
       if (!konf) { const ai = [...document.querySelectorAll('input[name="alatInv"]:checked')].map(i => i.value); if (ai.length) body.alat_inventaris = ai; }
-      bacaGambut(body); bacaPemadaman(body); if (konf) { const pt = bacaPT("pt", false); if (pt) body.pt = pt; }
+      bacaGambut(body); bacaPemadaman(body); if (konf && $("ptWadah")) { const pt = bacaPT("pt", false); if (pt) body.pt = pt; }
       }
     } catch (x) { const g = $("progres"); if (g) { g.className = "in-progres galat"; g.textContent = x.message; g.scrollIntoView({block: "nearest"}); } return; }
     sibuk = true; t.disabled = true; pesan(""); const prog = $("progres"), it = {id: idAcak(), tugasId: tid, langkah, body, dibuat: Date.now(), nama: tg ? tg.kab : "tugas", berkas: []}; prog.className = "in-progres";
@@ -629,12 +680,11 @@
     await prosesAntrean(); tampilBanner(); pilihTugas(null); gantiTab("tugas");
   }
 
-  const bidangPemadaman = () => `<details class="in-rinci"><summary>Koreksi manual personel, regu, alat (boleh kosong)</summary>
+  const bidangPemadaman = (api = true) => `<details class="in-rinci"><summary>Koreksi manual personel, regu${api ? ", alat" : ""} (boleh kosong)</summary>
     <p class="lp-kecil">Bila diisi, angka ini dipakai dan hitungan mesin ditampilkan berdampingan.</p>
     ${Object.entries(UNSUR).map(([k, v]) => `<label>Personel ${v}<input data-unsur="${k}" inputmode="numeric"></label>`).join("")}
     <label>Jumlah regu<input id="regu" inputmode="numeric"></label>
-    ${Object.entries(NAMA_ALAT).map(([k, v]) => `<label>Alat dipakai, ${v}<input data-alat="${k}" inputmode="numeric"></label>`).join("")}
-    <label>Pemadaman mulai (boleh kosong)<input id="mulaiPadam" type="datetime-local"></label></details>`;
+    ${api ? Object.entries(NAMA_ALAT).map(([k, v]) => `<label>Alat dipakai, ${v}<input data-alat="${k}" inputmode="numeric"></label>`).join("") + `<label>Pemadaman mulai (boleh kosong)<input id="mulaiPadam" type="datetime-local"></label>` : ""}</details>`;
   function bacaPemadaman(body) {
     const un = {}, al = {};
     for (const i of document.querySelectorAll("[data-unsur]")) if (i.value.trim()) { const n = Number(i.value); if (!Number.isInteger(n) || n < 0 || n > 5000) throw new Error(`Personel ${UNSUR[i.dataset.unsur]} harus bilangan bulat 0-5000.`); un[i.dataset.unsur] = n; }

@@ -55,8 +55,16 @@ async function simpan(env, req, url, kini) {
   if (!isi || typeof isi !== "object" || Array.isArray(isi)) return gagal(400, "isi harus objek");
   let bersih; try { bersih = JSON.stringify(bersihIsi(isi)); } catch (e) { return gagal(400, e.message); }
   if (bersih.length > MAKS_ISI) return gagal(413, `isi lebih dari ${MAKS_ISI / 1024} KB`);
-  await env.DB.prepare("INSERT INTO laporan_bnpb (jenis, tanggal, isi, diubah, oleh) VALUES (?1, ?2, ?3, ?4, ?5) ON CONFLICT (jenis, tanggal) DO UPDATE SET isi = ?3, diubah = ?4, oleh = ?5")
-    .bind(jenis, tanggal, bersih, kini, mod).run();
+  /* penguncian optimistis (seperti laporan_karhutla): klien mengirim `diubah` terakhir yang ia muat; tanpa itu hanya baris baru yang boleh disisipkan */
+  const dasar = b.o.diubah, kalah = () => gagal(409, "Laporan ini baru diubah petugas lain. Muat ulang dulu.");
+  if (dasar != null && !Number.isSafeInteger(dasar)) return gagal(400, "diubah harus angka waktu dari muatan terakhir");
+  if (dasar != null) {
+    const u = await env.DB.prepare("UPDATE laporan_bnpb SET isi = ?1, diubah = ?2, oleh = ?3 WHERE jenis = ?4 AND tanggal = ?5 AND diubah = ?6").bind(bersih, kini, mod, jenis, tanggal, dasar).run();
+    if (!u.meta.changes) return kalah();
+  } else {
+    try { await env.DB.prepare("INSERT INTO laporan_bnpb (jenis, tanggal, isi, diubah, oleh) VALUES (?1, ?2, ?3, ?4, ?5)").bind(jenis, tanggal, bersih, kini, mod).run(); }
+    catch (e) { if (/UNIQUE|PRIMARY KEY/i.test(String(e?.message || e))) return kalah(); throw e; }
+  }
   return json({ok: true, jenis, tanggal, diubah: kini, ukuran: bersih.length}, 201);
 }
 

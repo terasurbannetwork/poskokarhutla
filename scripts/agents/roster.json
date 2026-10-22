@@ -446,6 +446,28 @@
         "public/pesisir/**",
         "tests/pesisir/**"
       ]
+    },
+    {
+      "nama": "karbon",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul karbon: penyaringan konsesi dari data satelit (GFW Data API), akuntansi kredit & keuangan (public/karbon/akuntansi.js), layar /karbon, uji balik baseline, impor data konsesi Kemenhut.",
+      "kapan": "scripts/karbon/**, public/karbon/**, tests/karbon/**, docs/karbon/** disentuh atau rusak, atau angka kredit/NPV karbon dipertanyakan",
+      "fokus": [
+        "Kontrak di docs/karbon/RANCANGAN.md: kolom statistik satelit, urutan potongan kredit, rute worker. Ubah dokumen dulu sebelum mengubah kontrak.",
+        "Satu bahasa hitung: semua kredit/NPV dari public/karbon/akuntansi.js (fungsi murni); Python hanya menarik data satelit.",
+        "Python stdlib; GFW lewat http.client dengan header huruf kecil x-api-key; dataset dasar umd_tree_cover_density_2000 untuk luas/stok (tabel loss cuma piksel hilang).",
+        "Jujur: estimasi satelit bukan kredit tersertifikasi; asumsi tak teruji dilabeli HIPOTESIS; tiap angka di layar dibaca dari keluaran fungsi, tak diketik."
+      ],
+      "larangan": "Jangan menyentuh src/** dan migrations/** (milik warga-api; cukup usulan), scripts/data (milik pipa-data), atau .github/workflows. Jangan menulis data karbon ke public/data (data bisnis pribadi, R2 saja).",
+      "bisa": "membangun & membetulkan pipeline statistik satelit karbon, akuntansi kredit dan keuangan, layar /karbon, uji karbon",
+      "tidak": "worker dan D1; layar karhutla/bencana lain; menyunting .github/workflows; klaim sertifikasi",
+      "milik": [
+        "scripts/karbon/**",
+        "public/karbon/**",
+        "tests/karbon/**",
+        "docs/karbon/**"
+      ]
     }
   ]
 }

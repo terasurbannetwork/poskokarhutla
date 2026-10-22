@@ -177,6 +177,7 @@ const Insight = {
     const el = $("#insight");
     if (typeof Peluang !== "undefined") this.PL = await Peluang.muat("../banjir/data/cuaca_peluang.json");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
+    Cerita.sisip(el, "cuaca");
     el.addEventListener("change", e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } });
     el.onclick = e => {
       const ds = e.target.closest("button[data-set]"); if (ds) { this.st[ds.dataset.set] = ds.dataset.v; ds.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === ds)); this.ulang(ds.closest("[data-ex]")); return; }
@@ -190,3 +191,7 @@ const Insight = {
         this.ulang(box); } };
   },
 };
+/* kartu Cerita (inti/cerita.js): rekap BNPB per tahun (diperingkat menurut rumah rusak: jiwa terdampak cuaca ekstrem jarang tercatat) + prakiraan hujan hari ini */
+Cerita.daftar("cuaca", async () => { const D = await muatJSON("../banjir/data/cuaca_dampak.json").catch(() => null), c = Cerita.dibi(D?.tahunan?.nasional, "rumah_rusak", "cuaca ekstrem"); if (!c) return null;
+  const P = D.terpapar?.[D.hari_ini], st = P?.penduduk ? [["#c9503a", "Status", `Pada ${new Date(D.hari_ini + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"})}, hujan ${fmt(D.ambang_mm)} mm atau lebih diprakirakan turun di area berpenduduk ${Cerita.kata(P.penduduk)} jiwa (prakiraan, bukan jiwa yang sudah terdampak).`]] : [];
+  return {judul: c.judul, baris: [...st, ...c.baris], sumber: "BNPB, data.bnpb.go.id; DIBI BNPB; Open-Meteo; WorldPop"}; });

@@ -8,8 +8,8 @@
   const KUNCI = {kabluas: "luas", kabbelum: "belum"};
   /* warna sasaran = deck BNPB: luas menuju biru baja, belum padam menuju oranye */
   const INFO = {
-    luas: {warna: "#3F5F80", judul: "Luas terbakar (perkiraan satelit)", jumlah: "Jumlah luas harian (perkiraan satelit)", lbl: "Luas terbakar (ha)", tip: "luas terbakar (perkiraan satelit)", tipJml: "jumlah luas harian (perkiraan satelit)"},
-    belum: {warna: "#D9600B", judul: "Belum padam (perkiraan satelit)", lbl: "Belum padam (ha)", tip: "belum padam (perkiraan satelit)"}};
+    luas: {warna: "#3F5F80", judul: "Luas terbakar", jumlah: "Jumlah luas harian", lbl: "Luas terbakar (ha)", tip: "luas terbakar", tipJml: "jumlah luas harian"},
+    belum: {warna: "#D9600B", judul: "Belum padam", lbl: "Belum padam (ha)", tip: "belum padam"}};
   let D = null, janji = null;           /* D = {P, KB, fc}: data siap pakai */
   let st = {metrik: null, mode: "hari", ref: "", a: "", b: ""}, hit = {}, kls = {b: [], w: []}, fokus = null, hov = null, pop = null, gen = 0;
   const wil = (kw, lw) => `<span>${kw}</span> <span>${lw}</span>`;   /* kata depan dan tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
@@ -120,7 +120,7 @@
     e._pk = 1; $("#tip").classList.remove("on");
     pop = new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:${I.warna}"><div><small>${esc(namaProv(p.prov))}</small><b>${esc(p.nama)}</b></div></div>
       <div class="kg">${kb(jml() ? I.jumlah : I.judul, nilai(p.kunci))}${kb("Periode", wil(kw, lw))}</div>
-      <div class="kk">Perkiraan satelit NASA FIRMS, bukan luas resmi.${jml() ? " <span>Api yang sama terhitung lagi tiap hari.</span>" : ""}</div></div>`).addTo(peta);
+      <div class="kk">Sumber NASA FIRMS, bukan luas resmi.${jml() ? " <span>Api yang sama terhitung lagi tiap hari.</span>" : ""}</div></div>`).addTo(peta);
     const p0 = pop; p0._k = p.kunci; p0.on("close", () => { if (pop === p0) pop = null; });
     return true;
   }
@@ -132,7 +132,7 @@
     const baris = w.map((c, k) => `<span><i class="sw" style="background:${c}"></i>${b.length ? pecah(b[k], k) : fmt(kls.maks)}</span>`);
     box.insertAdjacentHTML("beforeend", `<div class="lg-g"><div class="lbl">${I.lbl}</div><div class="leg">${kls.maks ? baris.join("") : ""}`
       + `<span><i class="sw" style="background:none;border:1px solid var(--line)"></i>${R.kosongKab(m, kls.maks)}</span>`
-      + `<span class="kab-wkt"><span>Perkiraan satelit</span> · ${wil(kw, lw)}</span>${jml() ? `<span class="kab-wkt"><span>Api yang sama terhitung lagi tiap hari.</span></span>` : ""}</div></div>`); };
+      + `<span class="kab-wkt">${wil(kw, lw)}</span>${jml() ? `<span class="kab-wkt"><span>Api yang sama terhitung lagi tiap hari.</span></span>` : ""}</div></div>`); };
 
   /* ---------- kotak centang: kunci kabluas / kabbelum (bukan milik penangan lama; saling eksklusif) ---------- */
   async function terapkan() {

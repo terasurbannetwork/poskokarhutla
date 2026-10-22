@@ -2,7 +2,7 @@
    Skema: migrations/0022_bnpb_bersama.sql (laju_bnpb). Pola kode tanpa akun = kode regu Posko (src/posko.js reguDari). */
 import {gagal, sha, acak, ipHash} from "./worker.js";
 import {halamanAdmin} from "./statistik.js";
-import {halamanBnpb} from "./admin_halaman.js";
+import {halamanBnpb, HALAMAN_STAF} from "./admin_halaman.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 
@@ -23,15 +23,15 @@ export const lajuIP = async (env, req, aksi, batas, kini) => laju(env, await ipH
 export const kodeBaru = async () => { const kode = acak(13); return {kode, kode_sha: await sha(kode)}; };
 
 /* Cari pemegang kode dari header `x-kode`. cari(kode_sha) -> baris atau null (modul menulis SELECT-nya sendiri, termasuk syarat dicabut).
-   Tebakan dihitung per IP SEBELUM lookup; > 300 gagal per jam = 429. Tidak dikenal dan dicabut dijawab sama (403). */
+   Kode sah lolos dulu; hanya tebakan salah dihitung per IP, > 300 gagal per jam = 429. Tidak dikenal dan dicabut dijawab sama (403). */
 export async function pemegangKode(env, req, modul, cari, kini = Date.now()) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
+  const k = (req.headers.get("x-kode") || "").trim().toLowerCase();
+  const r = /^[0-9a-f]{26}$/.test(k) ? await cari(await sha(k)) : null;
+  if (r) return r;   // kode sah lolos tanpa menyentuh penghitung kegagalan
   const ip = await ipHash(env, req), aksi = modul + ".kode_gagal";
   const n = (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(ip, aksi, kini - JAM).first()).n;
   if (n >= 300) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
-  const k = (req.headers.get("x-kode") || "").trim().toLowerCase();
-  const r = /^[0-9a-f]{26}$/.test(k) ? await cari(await sha(k)) : null;
-  if (r) return r;
   await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(ip, aksi, kini).run();
   return gagal(403, "kode tidak berlaku (salah atau sudah dicabut); minta tautan baru dari admin");
 }
@@ -62,4 +62,6 @@ export const RUTE_BNPB = {
   "GET /admin/gakkum": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("gakkum")),
   /* Layar Pimpinan: satu layar lintas sistem untuk pimpinan, dirakit di peramban dari API admin yang sudah ada (tanpa rute data baru) */
   "GET /admin/pimpinan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("pimpinan")),
+  /* Kinerja pemantauan: tiga tab (Data, Proses, Lapangan) dari GET /api/sla (src/sla.js). Hak sama persis dengan API: adminOK (token, akun gerbang AKUN_SITUS, sesi admin) ATAU sesi staf berperan apa pun (SEMUA_PERAN). Staf tanpa peran/anonim ke login. */
+  "GET /admin/kinerja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("kinerja"), HALAMAN_STAF.kinerja),
 };

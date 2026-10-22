@@ -5,7 +5,7 @@
 import REGISTRY from "./bencana.generated.js";
 import {hidup, akar, dasar, tabRute} from "./bencana.js";
 /* nama tab untuk judul; tab yang belum terdaftar jatuh ke id berhuruf kapital. Himpunan tab yang dikenal datang dari registry (tabRute). */
-const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak", metode: "Metode",
+const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Cluster", posko: "Posko", dampak: "Dampak", metode: "Metode",
   operasi: "Operasi", sarana: "Sarana", keputusan: "Keputusan", prioritas: "Prioritas", informasi: "Informasi", ringkasan: "Ringkasan", sim: "Simulasi"};
 const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 
@@ -20,7 +20,7 @@ export function metaRute(url, M, B = REGISTRY) {
   for (const b of bs) {   // /k/K0001, /sim/K0001 (akar) atau /<id>/k/<KODE>: awalan kode dari kejadian.awalan
     const aw = b.kejadian?.awalan, k = aw && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(${akar(b) || !b.warisan ? "k|sim" : "k"})/(${aw}\\d+)$`));
     if (!k) continue;
-    const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = prov && M.prov?.[prov] ? "prov-" + prov : akar(b) ? "ringkasan" : profil(b, M).gambar, api = aw === "K";
+    const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = !akar(b) ? profil(b, M).gambar : prov && M.prov?.[prov] ? "prov-" + prov : "ringkasan"   /* gambar provinsi hanya milik karhutla (akar); modul lain memakai gambarnya sendiri walau kodenya terdaftar di kompleks */, api = aw === "K";
     return {judul: `${sim ? (api ? "Simulasi penjalaran api" : "Simulasi " + b.kejadian.nama.toLowerCase()) : b.kejadian.nama} ${k[2]} · Pantau Bencana`,
       desk: !d && !akar(b) ? profil(b, M).desk : d ? `${d}.${api ? " " + (sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta.") : ""}` : dasarH.desk,
       gambar: gbr(g), url: S + p};

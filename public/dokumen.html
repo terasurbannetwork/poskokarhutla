@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Generator Dokumen</title>
+<meta name="description" content="Pilih laporan atau data bencana, saring provinsi, lalu unduh sebagai Excel, PDF, Word, atau PowerPoint.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/dokumen.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark"><a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><b>Generator Dokumen</b></div>
+</header>
+<main class="dk">
+  <h1>Generator dokumen</h1>
+  <p class="dk-intro">Pilih laporan atau data di kiri, saring provinsi bila perlu, lalu unduh dalam format yang dibutuhkan. Angka diambil apa adanya dari data terbaru tiap bencana.</p>
+  <nav class="dk-kiri" id="dkDaftar" aria-label="Daftar laporan dan data"></nav>
+  <div class="dk-kanan">
+    <div class="dk-alat">
+      <label><span class="lbl">Wilayah</span><select id="dkProv" aria-label="Saring provinsi"></select></label>
+      <div class="dk-fmt" role="group" aria-label="Unduh sebagai">
+        <button type="button" data-fmt="xlsx" disabled><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1d7a46"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg><span><b>Excel</b><small>Data lengkap, tiap bagian satu lembar</small></span></button>
+        <button type="button" data-fmt="pdf" disabled><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="#c9503a"/><path d="M8 16V8h3a2 2 0 0 1 0 4H8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>PDF</b><small>Siap cetak dan kirim</small></span></button>
+        <button type="button" data-fmt="docx" disabled><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1d4e89"/><path d="M7 8l2 8 3-6 3 6 2-8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Word</b><small>Bisa disunting jadi nota</small></span></button>
+        <button type="button" data-fmt="pptx" disabled><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3" fill="#e58a45"/><path d="M9 16V8h3.5a2.5 2.5 0 0 1 0 5H9" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>PowerPoint</b><small>Slide paparan rapat</small></span></button>
+      </div>
+    </div>
+    <div id="dkPratinjau"><div class="kosong">Memuat…</div></div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/i18n.js"></script>
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js"></script>
+<script src="/dokumen_katalog.js"></script>
+<script src="/dokumen.js"></script>
+</body>
+</html>

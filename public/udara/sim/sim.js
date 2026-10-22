@@ -87,7 +87,7 @@ function kerangka(S) {
   </section>
   <section class="su-kartu"><div class="su-hd"><h3>Skenario</h3></div>
     <div class="su-seg baris" id="suSkn" role="group" aria-label="Skenario">${M.SKENARIO.map(k => `<button type="button" data-s="${k.id}" aria-pressed="${k.id === "dasar"}">${k.nama}</button>`).join("")}</div>
-    <div class="su-kontrol" id="suKompBar" hidden><select class="su-pilih" id="suKomp" aria-label="Kompleks api"></select></div>
+    <div class="su-kontrol" id="suKompBar" hidden><select class="su-pilih" id="suKomp" aria-label="Cluster"></select></div>
     <p class="su-kal" id="suRingkas" style="margin-top:12px"></p><div id="suTabel"></div></section>
   <section class="su-kartu"><div class="su-hd"><h3>Perlakuan paling berdampak</h3><span class="su-pil">Hasil model, belum divalidasi</span></div><p class="su-kal" id="suPerlKal"></p><ul class="su-lis" id="suPerl"></ul></section>
   <section class="su-kartu"><div class="su-hd"><h3>Pita ketidakpastian PM2,5</h3><span class="su-pil" id="suEnsPil">Ensemble</span></div>
@@ -153,7 +153,7 @@ function ringkas(S) {
     kal.innerHTML = tot ? `Dalam 72 jam ke depan ada sekitar <b>${jj(tot)} jiwa-jam</b> di atas ambang tidak sehat.` : `Tidak ada kota di atas ambang tidak sehat dalam 72 jam.`;
     tb.innerHTML = top.length ? tabel(["Kota", "PM2,5 puncak <span class=\"su-sat\">(µg/m³)</span>", "Jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), jj(x.jjDasar)])) : ""; return; }
   const tot = b.reduce((s, x) => s + x.hindar, 0), tot0 = b.reduce((s, x) => s + x.jjDasar, 0), p = tot0 ? Math.abs(tot) / tot0 * 100 : 0;
-  const nama = S.sk === "kompleks" ? `Padamkan ${S.daftarKomp?.find(x => x.id === S.komp)?.nama || "kompleks"}` : M.SKENARIO.find(x => x.id === S.sk).nama;
+  const nama = S.sk === "kompleks" ? `Padamkan ${S.daftarKomp?.find(x => x.id === S.komp)?.nama || "cluster"}` : M.SKENARIO.find(x => x.id === S.sk).nama;
   kal.innerHTML = Math.abs(tot) < 1 ? `${esc(nama)} hampir tidak mengubah paparan kota dalam 72 jam.` : `${esc(nama)} ${tot > 0 ? "mengurangi" : "menambah"} paparan sekitar <b>${jj(Math.abs(tot))} jiwa-jam</b> (${fmt(p)}%) dibanding dasar.`;
   const top = b.filter(x => Math.abs(x.hindar) >= 1).sort((a, c) => Math.abs(c.hindar) - Math.abs(a.hindar)).slice(0, 8);
   tb.innerHTML = top.length ? tabel(["Kota", "Dasar <span class=\"su-sat\">(µg/m³)</span>", "Skenario <span class=\"su-sat\">(µg/m³)</span>", "Selisih jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), kat(x.puncakSkn), jj(-x.hindar)])) : "";

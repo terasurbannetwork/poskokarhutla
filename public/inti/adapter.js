@@ -10,8 +10,8 @@ export const ADAPTOR = {
   async karhutla(b) {
     const d = await ambil("/data/titik24.json");
     return {titik: d.titik.map(([la, lo]) => [lo, la, 2.2]),
-      judul: `${hl(d.titik.length)} titik panas terdeteksi dalam 24 jam, tersebar di ${hl(d.laci.length)} kompleks api`,
-      pil: [[`${fmt(d.titik.length)} titik panas`, b.warna], [`${fmt(d.laci.length)} kompleks api`, "#d64545"], dataPil(d.acuan)],
+      judul: `${hl(d.titik.length)} titik panas terdeteksi dalam 24 jam, tersebar di ${hl(d.laci.length)} cluster`,
+      pil: [[`${fmt(d.titik.length)} titik panas`, b.warna], [`${fmt(d.laci.length)} cluster`, "#d64545"], dataPil(d.acuan)],
       sumber: b.bagikan?.sumber || "NASA FIRMS", legenda: [[b.warna, "Titik panas 24 jam"]]};
   },
   async banjir(b) {

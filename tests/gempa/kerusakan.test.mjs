@@ -23,15 +23,16 @@ test("kerapuhan: naik bersama PGA, peluang tak melebihi 1, nol tanpa guncangan",
   assert.ok(K.rusak(pga, "tembokan").rb > K.rusak(pga, "beton").rb && K.rusak(pga, "beton").rb > K.rusak(pga, "kayu").rb);
 });
 
-test("hitung: rentang rendah <= tengah <= tinggi, korban jiwa mengikuti runtuhan", () => {
-  const kec = [{p: 50000, pga: [150, 300, 600]}, {p: 20000, pga: [30, 60, 120]}];
-  const h = K.hitung(kec);
+test("taksir: rentang rendah <= tengah <= tinggi, korban jiwa mengikuti runtuhan", () => {
+  const kec = [{p: 50000, pg: 300}, {p: 20000, pg: 60}]; // pg = PGA tengah cm/s2
+  const h = K.taksir(kec, "kerak", 6.8, 3);
   for (const n of ["rb", "jiwa"]) assert.ok(h[n][0] <= h[n][1] && h[n][1] <= h[n][2], `${n}: ${h[n]}`);
   const sedangPlus = h.rb.map((v, i) => v + h.rs[i]); // RS sendiri tidak monoton (pindah ke RB), RS+RB harus monoton
   assert.ok(sedangPlus[0] <= sedangPlus[1] && sedangPlus[1] <= sedangPlus[2], `RS+RB: ${sedangPlus}`);
   assert.ok(h.rb[1] > 0 && h.jiwa[1] > 0 && h.rb[1] < h.rumah, `RB ${h.rb[1]} dari ${h.rumah} rumah`);
-  assert.equal(K.hitung([{p: 1000, pga: [0, 0, 0]}]).jiwa[1], 0);
-  assert.ok(K.sigmaLn("antarmuka") > K.sigmaLn("kerak"));
+  assert.deepEqual([...K.taksir([{p: 1000, pg: 0}], "kerak", 6.8, 3).jiwa], [0, 0, 0]);
+  const tot = (j, m) => Math.hypot(K.sigma(j, m).tau, K.sigma(j, m).phi);
+  assert.ok(tot("antarmuka", 8) > tot("kerak", 8));
 });
 
 test("Vs30 per sel: dalam rentang proksi, dataran rendah lebih lunak dari pegunungan, di luar grid jatuh ke 400", () => {
@@ -46,8 +47,8 @@ test("Vs30 per sel: dalam rentang proksi, dataran rendah lebih lunak dari pegunu
 
 test("pita sigma: MMI p16 < p50 < p84 lewat pgaKeMmi, dan tanah lunak mengguncang lebih kuat", () => {
   const model = JSON.parse(fs.readFileSync("public/gempa/data/model_guncangan.json", "utf8")), M = GG.pasang(model);
-  const pg = M.pga(6.8, 15, 10, "kerak", 400), s = K.sigmaLn("kerak");
-  const [a, b, c] = [pg * Math.exp(-s), pg, pg * Math.exp(s)].map(M.pgaKeMmi);
+  const pg = M.pga(6.8, 15, 10, "kerak", 400), m = 6.8;
+  const [a, b, c] = K.pita(pg, "kerak", m).map(M.pgaKeMmi);
   assert.ok(a < b && b < c, `${a} ${b} ${c}`);
   assert.ok(Math.abs(b - M.mmi(6.8, 15, 10, "kerak", 400)) < 1e-12);
   assert.ok(M.mmi(6.8, 15, 10, "kerak", 200) > M.mmi(6.8, 15, 10, "kerak", 700));

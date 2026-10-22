@@ -8,7 +8,7 @@
   const NAMA = {manusia: "Manusia", ai_jawab: "Jawaban AI", ai_crawl: "Pencarian & pelatihan AI", mesin_cari: "Mesin pencari"};
   const RENT = [["24j", "24 jam"], ["7h", "7 hari"], ["30h", "30 hari"], ["semua", "Sepanjang waktu"]];
   const TAB = {"/": "Beranda karhutla", "/banjir/": "Beranda banjir", "/statistik": "Statistik", "/peta": "Peta", "/insight": "Insight", "/berita": "Berita", "/tren": "Tren",
-    "/kompleks": "Kompleks", "/posko": "Posko", "/dampak": "Dampak", "/metode": "Metode", "/sim": "Simulasi", "/informasi": "Lapor Warga", "/ringkasan": "Ringkasan"};
+    "/kompleks": "Cluster", "/posko": "Posko", "/dampak": "Dampak", "/metode": "Metode", "/sim": "Simulasi", "/informasi": "Lapor Warga", "/ringkasan": "Ringkasan"};
   const tglID = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"});
   let r = "7h", d = null;
   try { r = sessionStorage.getItem("pb-r") || r; } catch (e) {}

@@ -46,8 +46,8 @@ const kotaTerdekat = (la, lo, maksDeg = 1.2) => { let b = null, bd = maksDeg * m
   for (const k of S.prak.kota) { const d = (k.lat - la) ** 2 + ((k.lon - lo) * c) ** 2; if (d < bd) { bd = d; b = k; } } return b; };
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
-const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
+const TAB_SEMBUNYI = new Set(["informasi", "metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M4 4v16h16"/><path d="M7 15c3-1 3-8 6-8s3 7 7 6"/>',
@@ -59,7 +59,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/udara/" + id);   /* tautan bersih tanpa tagar; worker melayani index.html untuk jalur ini */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi})[id]?.render(); });
+    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi, informasi: window.Informasi})[id]?.render(); });
 }
 /* tab Kejadian hanya ada bila ada kejadian segar (A18): dipanggil lagi sesudah berkasnya terbaca */
 const tbTab = ([k, n]) => `<button data-t="${k}" aria-current="${document.querySelector("#p-" + k)?.classList.contains("on") ? "page" : (k === "peta" ? "page" : "false")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;

@@ -11,7 +11,7 @@ import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {susunChecklist, jarakEta, BATAS, PERAN, KESELAMATAN, USULAN, alarmKeselamatan, anginKeRegu, tempuhMenit} from "../../src/penugasan.js";
+import {susunChecklist, jarakEta, BATAS, PERAN, KESELAMATAN, USULAN, alarmKeselamatan, anginKeRegu, tempuhMenit, bersihkanPenugasan} from "../../src/penugasan.js";
 import {infoPadam} from "../../src/instansi.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
@@ -106,7 +106,8 @@ uji("penugasan: akun lain sekabupaten tidak melihat WA, tidak bisa mencabut atau
   assert.match(u.j.tautan, /^http:\/\/bnpb\.lokal\/lacak#[0-9a-f]{36}$/, "token di fragmen"); assert.ok(!u.j.wa.pesan.includes("/lacak/"));
   const tk = u.j.token; await lacak("POST", "berangkat", tk, {}); assert.equal((await lacak("POST", "posisi", tk, BERADA(-2.2, 113.95))).s, 201);
   await DB.prepare("UPDATE tugas_api SET status = 'padam' WHERE id = ?").bind(tid).run();
-  const t = await lacak("POST", "posisi", tk, BERADA(-2.2, 113.95)); assert.equal(t.s, 410); assert.equal(t.j.alasan, "ditutup"); assert.equal((await lacak("GET", "info", tk)).j.tugas.ditutup, true, "info tetap terbaca dengan penanda ditutup");
+  const t = await lacak("POST", "posisi", tk, BERADA(-2.2, 113.95)); assert.equal(t.s, 201, "tugas ditandai padam tidak menutup penugasan yang masih aktif"); await DB.prepare("UPDATE tugas_api SET status = 'bukan_api' WHERE id = ?").bind(tid).run();
+  const t2 = await lacak("POST", "posisi", tk, BERADA(-2.2, 113.95)); assert.equal(t2.s, 410); assert.equal(t2.j.alasan, "ditutup"); assert.equal((await lacak("GET", "info", tk)).j.tugas.ditutup, true, "info tetap terbaca dengan penanda ditutup");
 });
 
 uji("penugasan: IP_SALT kosong = 503 di awal, token tak dikenal tidak menulis baris laju", async () => {
@@ -408,9 +409,9 @@ uji("pop-up peta saat masuk: tampil sekali per sesi (sessionStorage), tidak lagi
   const saya = {akun: {id: "akun1", tingkat: "kab", wilayah: "Pemerintah Kab Satu", status: "aktif"}, cakupan: ["62"], kab: "Kab Satu"};
   const d = dunia({sesi, jalur: "/instansi"}); d.win.fetch = () => respons({baris: [], wilayah: [], acuan: "2026-10-21T03:00:00Z"}); d.jalankan("instansi_tugaskan.js");
   const T = d.win.Tugaskan; assert.ok(T && typeof T.popupMasuk === "function", "modul memajang Tugaskan.popupMasuk");
-  assert.equal(T.ringkasan(tugasKu).teks, "2 kompleks aktif, 1 terlambat", "ringkasan N kompleks aktif, M terlambat"); assert.deepEqual([T.ringkasan(tugasKu).aktif, T.ringkasan(tugasKu).terlambat], [2, 1]); assert.equal(T.ringkasan([]).teks, "0 kompleks aktif, 0 terlambat");
+  assert.equal(T.ringkasan(tugasKu).teks, "2 cluster aktif, 1 terlambat", "ringkasan N cluster aktif, M terlambat"); assert.deepEqual([T.ringkasan(tugasKu).aktif, T.ringkasan(tugasKu).terlambat], [2, 1]); assert.equal(T.ringkasan([]).teks, "0 cluster aktif, 0 terlambat");
   const sebelum = d.log.body.length; const a = await T.popupMasuk({saya, tugas: tugasKu, lihatTugas() {}}); assert.equal(a, true, "muncul pertama kali"); assert.equal(d.log.body.length, sebelum + 1, "modal dipasang ke body sekali");
-  const modal = d.log.body.at(-1); assert.equal(modal.attrs.role, "dialog"); assert.equal(modal.attrs["aria-modal"], "true"); assert.match(modal.innerHTML, /Lihat tugas/); assert.match(modal.innerHTML, /Tutup/); assert.match(modal.innerHTML, /2 kompleks aktif, 1 terlambat/);
+  const modal = d.log.body.at(-1); assert.equal(modal.attrs.role, "dialog"); assert.equal(modal.attrs["aria-modal"], "true"); assert.match(modal.innerHTML, /Lihat tugas/); assert.match(modal.innerHTML, /Tutup/); assert.match(modal.innerHTML, /2 cluster aktif, 1 terlambat/);
   assert.equal(sesi.get("pb_peta_masuk:akun1"), "1", "kunci sesi tertulis"); assert.doesNotMatch(modal.innerHTML, /·/);
   const b = await T.popupMasuk({saya, tugas: tugasKu, lihatTugas() {}}); assert.equal(b, false, "tidak tampil lagi dalam sesi yang sama"); assert.equal(d.log.body.length, sebelum + 1);
   /* halaman dimuat ulang (modul baru, sessionStorage yang sama): tetap tidak tampil */
@@ -452,7 +453,7 @@ async function sisip(tid, akunId, {nama = "Uji Orang", peran = "anggota", wa = n
   for (const [la, lo, pd] of posisi) await DB.prepare("INSERT INTO penugasan_posisi (penugasan_id, lat, lon, akurasi, pada) VALUES (?, ?, ?, 10, ?)").bind(id, la, lo, pd).run();
   return id;
 }
-const envAlarm = {DB, ASSETS: {fetch: asetKu}};
+const envAlarm = {DB, ASSETS: {fetch: asetKu}, ALARM_CACHE_DETIK: "0"};
 const butirDari = async (kini, pid) => (await alarmKeselamatan(envAlarm, kini)).filter(b => b.id.includes(pid));
 const OFFSET_2KM = 2 / 111.32;   // derajat lintang untuk 2 km
 
@@ -509,7 +510,8 @@ uji("L3: alarm sunyi tepat di batas 30 menit (30 menit tidak, 30 menit + 1 ms ya
   for (const id of [a5, a6, a7]) assert.equal((await butirDari(K, id)).length, 0, "belum berangkat / selesai / kedaluwarsa: tanpa alarm");
   const b = (await sunyi(a2))[0]; assert.equal(b.prioritas, 1); assert.deepEqual(b.provs, ["62"]); assert.equal(b.kab, "Kab Satu"); assert.match(b.judul, /Uji Orang tidak mengirim posisi 30 menit/); assert.ok(!/·/.test(b.judul + b.rincian));
   assert.equal(b.id, (await sunyi(a2))[0].id, "id stabil antar panggilan");
-  const tutup = await tugas("Kab Satu", {status: "padam"}); const a8 = await sisip(tutup, A.id, {berangkat: K - 3 * JAM}); assert.equal((await butirDari(K, a8)).length, 0, "tugas sudah ditutup: tanpa alarm");
+  const tutup = await tugas("Kab Satu", {status: "bukan_api"}); const a8 = await sisip(tutup, A.id, {berangkat: K - 3 * JAM}); assert.equal((await butirDari(K, a8)).length, 0, "tugas bukan api: tanpa alarm");
+  const padam = await tugas("Kab Satu", {status: "padam"}); const a9 = await sisip(padam, A.id, {berangkat: K - 3 * JAM}); assert.equal((await butirDari(K, a9)).filter(b => b.jenis === "regu_sunyi").length, 1, "keamanan ops: tugas ditandai padam, penugasan masih aktif: alarm tetap");
 });
 
 uji("L3: rotasi 12 jam tepat di batas (12 jam tidak, 12 jam + 1 ms ya), selesai tidak", async () => {
@@ -592,7 +594,8 @@ uji("L2: usulan hanya memuat orang yang TIDAK sedang bertugas, urut waktu tempuh
   const selesai = (akunId, o) => sisip(TU, akunId, {status: "selesai", dibuat: K - (o.hari ?? 2) * HARI, berangkat: K - (o.hari ?? 2) * HARI, selesai: K - (o.hari ?? 2) * HARI + JAM, kedaluwarsa: K + 40 * HARI, ...o});
   /* Andi: posisi 5 menit lalu 10 km dari api; Fani: sama tetapi beban 3; Budi: tanpa posisi, pos Daops cocok graf akses; Eko: tanpa posisi dan tanpa pos; Citra: sedang bertugas; Dedi: provinsi 63 */
   const dLat = 10 / 111.32;
-  await selesai(UA.id, {nama: "Andi Uji", wa: "6281200000001", peran: "driver", orang: 2, posisi: [[-2.2 - dLat, 113.9, K - 5 * MENIT]]});
+  await selesai(UA.id, {nama: "Andi Uji", wa: "6281200000001", peran: "driver", orang: 2});
+  const TP = await tugasU("Kab Usul", {status: "padam"}); await sisip(TP, UA.id, {nama: "Andi Uji", wa: "6281200000001", peran: "driver", orang: 2, status: "aktif", dibuat: K - HARI, kedaluwarsa: K + JAM, berangkat: K - 30 * MENIT, posisi: [[-2.2 - dLat, 113.9, K - 5 * MENIT]]});   // posisi hanya dari penugasan aktif (tugas padam tidak membuatnya bertugas di tugas ini)
   for (const h of [1, 2, 3]) await selesai(UA.id, {nama: "Fani Uji", wa: null, peran: "ketua_regu", hari: h, posisi: h === 1 ? [[-2.2 - dLat, 113.9, K - 5 * MENIT]] : []});
   await selesai(UB.id, {nama: "Budi Uji", wa: "6281200000002", hari: 10});
   await selesai(UA.id, {nama: "Eko Uji", wa: "6281200000003", hari: 20});
@@ -601,12 +604,15 @@ uji("L2: usulan hanya memuat orang yang TIDAK sedang bertugas, urut waktu tempuh
   await selesai(UB.id, {nama: "Citra Uji", wa: "6281200000004", hari: 30});   // Citra juga punya riwayat lama di akun lain: tetap dikenali sebagai orang yang sama lewat WA, sedang bertugas
   await DB.prepare("INSERT INTO gudang (id, akun_id, nama, jenis, prov, kab, lat, lon, dibuat, diubah) VALUES (?, ?, 'Posko Uji', 'pos_daops', '65', 'Kab Usul Dua', ?, ?, ?, ?)").bind(id16(), UB.id, -2.2 + 20 / 111.32, 113.9, K, K).run();
   const r = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...UA.hg, ...ipBaru()}); assert.equal(r.s, 200, r.t);
-  const nama = r.j.kandidat.map(k => k.nama); assert.deepEqual(nama, ["Andi Uji", "Fani Uji", "Budi Uji", "Eko Uji"], "tanpa Citra (bertugas) dan Dedi (provinsi lain); Andi sebelum Fani karena beban 1 < 3");
-  const [andi, fani, budi, eko] = r.j.kandidat, kaki = AKSES.kaki_km / USULAN.kakiKmJam * 60;
+  const nama = r.j.kandidat.map(k => k.nama); assert.deepEqual(nama, ["Andi Uji", "Eko Uji", "Fani Uji"], "keamanan ops: akun biasa hanya orang akunnya sendiri (Budi akun lain tidak); tanpa Citra (bertugas); yang berposisi dulu, lalu beban");
+  const [andi, eko, fani] = r.j.kandidat, kaki = AKSES.kaki_km / USULAN.kakiKmJam * 60;
   /* TU memakai AKSES bawaan uji: kaki_km 3,1; pangkalan graf "Posko Uji" 1,4 jam */
   assert.equal(andi.tempuh_menit, Math.round(10 * BATAS.etaFaktorJalan / BATAS.etaKmJam * 60 + kaki), "garis lurus x 1,3 pada 30 km/jam + kaki pada 3 km/jam"); assert.equal(andi.cara, "garis_lurus"); assert.equal(andi.asal.jenis, "posisi"); assert.ok(andi.asal.umur_menit >= 5 && andi.asal.umur_menit <= 6);
-  assert.equal(fani.tempuh_menit, andi.tempuh_menit); assert.equal(andi.beban_7h, 1); assert.equal(fani.beban_7h, 3);
-  assert.equal(budi.tempuh_menit, Math.round(1.4 * 60 + kaki)); assert.equal(budi.cara, "graf"); assert.deepEqual(budi.asal, {jenis: "pos", nama: "Posko Uji"});
+  assert.equal(fani.tempuh_menit, null, "keamanan ops: posisi dari penugasan SELESAI tidak dipakai"); assert.equal(fani.asal.jenis, "tidak_diketahui"); assert.equal(andi.beban_7h, 2); assert.equal(fani.beban_7h, 3);
+  /* keamanan ops: moderator melihat lintas akun, tetapi orang akun lain hanya nama, peran, kelas jarak kasar (tanpa jarak, umur posisi, nama pos, WA) */
+  const ad = await api("GET", `/api/instansi/usulan/${TU}`, undefined, {...ADMIN, ...ipBaru()}), budi = ad.j.kandidat.find(k => k.nama === "Budi Uji"), andiAd = ad.j.kandidat.find(k => k.nama === "Andi Uji");
+  assert.ok(budi && andiAd, ad.t); assert.equal(budi.kelas_jarak, "10–30 km"); assert.equal(andiAd.kelas_jarak, "10–30 km", "Andi tepat sekitar 10 km"); assert.equal(ad.j.kandidat.find(k => k.nama === "Eko Uji").kelas_jarak, null);
+  for (const k of ad.j.kandidat) for (const f of ["jarak_km", "umur_menit", "asal", "wa", "cara"]) assert.ok(!(f in k), `keamanan ops: ${f} tidak untuk orang akun lain`); assert.ok(!ad.t.includes("Posko Uji") && !ad.t.includes("umur_menit"));
   assert.equal(eko.tempuh_menit, null); assert.equal(eko.asal.jenis, "tidak_diketahui"); assert.equal(r.j.perkiraan, true);
   assert.match(r.j.rumus, /Perkiraan/); assert.match(r.j.rumus, /1\.3 pada 30 km\/jam/); assert.match(r.j.rumus, /3 km\/jam/); assert.ok(!/·/.test(r.j.rumus));
   assert.equal(andi.wa, "6281200000001", "WA hanya orang akun sendiri"); assert.ok(!("wa" in budi), "orang akun lain: tanpa WA"); assert.ok(!r.t.includes("6281200000002"), "WA akun lain tidak bocor"); assert.ok(!/"lat"|"lon"/.test(JSON.stringify(r.j.kandidat)), "tanpa koordinat orang");
@@ -664,4 +670,36 @@ uji("L3: dummy mengisi darurat, regu_sunyi, regu_rotasi yang terbaca alarmKesela
   assert.equal(await n("penugasan_darurat", "penugasan_id NOT IN (SELECT id FROM penugasan)"), 0, "tanpa yatim");
   assert.equal(await n("penugasan_darurat", "1"), await n("penugasan_darurat", "penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 0)"), "semua darurat sisa milik data nyata");
   assert.equal((await alarmKeselamatan(envAlarm, Date.now())).filter(x => x.dummy === 1).length, 0);
+});
+
+uji("keamanan ops: darurat 6 kali = satu butir '6 panggilan' dengan id per penugasan", async () => {
+  const K = Date.now(), tid = await tugas("Kab Satu"), pid = await sisip(tid, A.id, {nama: "Regu Banjir", berangkat: K - JAM, posisi: [[-2.3, 113.9, K - MENIT]]});
+  for (let i = 0; i < 6; i++) await DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, 'cedera', -2.25, 113.9, 9, ?)").bind(pid, K - (6 - i) * MENIT).run();
+  const d = (await alarmKeselamatan(envAlarm, K)).filter(b => b.id.includes(pid) && b.jenis === "darurat");
+  assert.equal(d.length, 1); assert.equal(d[0].id, `darurat:${pid}`); assert.match(d[0].judul, /Regu Banjir.*, 6 panggilan/); assert.equal(d[0].dibuat, K - MENIT, "yang terbaru");
+});
+
+uji("keamanan ops: darurat tidak kena 429 per-IP bersama (posisi kena), tetap dibatasi per tautan", async () => {
+  const q = (await tugaskan(A, T1, {nama: "Darurat Ip"})).j; await lacak("POST", "berangkat", q.token, {});
+  const ip = {"cf-connecting-ip": "203.0.113.90"}; assert.equal((await lacak("GET", "info", q.token, undefined, ip)).s, 200);
+  const kunci = (await DB.prepare("SELECT kunci FROM laju_bnpb WHERE aksi = 'lacak.ip' ORDER BY waktu DESC LIMIT 1").first()).kunci, now = Date.now();
+  await DB.batch(Array.from({length: 300}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'lacak.ip', ?)").bind(kunci, now)));
+  assert.equal((await lacak("GET", "info", q.token, undefined, ip)).s, 429, "IP penuh");
+  assert.equal((await lacak("POST", "darurat", q.token, {jenis: "cedera"}, ip)).s, 201, "darurat tetap lolos");
+  const n0 = await n("laju_bnpb", `kunci = '${kunci}'`); await lacak("POST", "darurat", q.token, {jenis: "cedera"}, ip); assert.equal(await n("laju_bnpb", `kunci = '${kunci}'`), n0, "darurat tidak menulis baris laju IP");
+  for (let i = 0; i < 4; i++) await lacak("POST", "darurat", q.token, {jenis: "cedera"}, ip);
+  assert.equal((await lacak("POST", "darurat", q.token, {jenis: "cedera"}, ip)).s, 429, "batas per tautan tetap");
+});
+
+uji("keamanan ops: WA dikosongkan 7 hari sesudah penugasan selesai, dicabut, atau kedaluwarsa; yang aktif dan baru utuh", async () => {
+  const K = Date.now(), tid = await tugas("Kab Satu"), wa = "6281200009999";
+  const lama = await sisip(tid, A.id, {wa, status: "selesai", dibuat: K - 20 * HARI, berangkat: K - 20 * HARI, selesai: K - 9 * HARI});
+  const baru = await sisip(tid, A.id, {wa, status: "selesai", dibuat: K - 3 * HARI, berangkat: K - 3 * HARI, selesai: K - 2 * HARI});
+  const aktif = await sisip(tid, A.id, {wa, status: "aktif", dibuat: K - 3 * HARI});
+  const cabut = await sisip(tid, A.id, {wa, status: "dicabut", dibuat: K - 30 * HARI, kedaluwarsa: K - 20 * HARI});
+  const kedal = await sisip(tid, A.id, {wa, status: "aktif", dibuat: K - 30 * HARI, kedaluwarsa: K - 10 * HARI});
+  await bersihkanPenugasan({DB}, K);
+  const ada = async id => (await DB.prepare("SELECT wa FROM penugasan WHERE id = ?").bind(id).first()).wa;
+  assert.equal(await ada(lama), null); assert.equal(await ada(cabut), null); assert.equal(await ada(kedal), null);
+  assert.equal(await ada(baru), wa); assert.equal(await ada(aktif), wa);
 });

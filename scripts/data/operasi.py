@@ -13,6 +13,7 @@ import datetime as dt, json, math, os, shutil, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, Poligon  # noqa: E402
+import kalibrasi as KAL  # noqa: E402  (koefisien dari isian lapangan; dipasang di main/taktik.main, bukan saat impor, supaya uji hermetis)
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -45,7 +46,7 @@ KOEF = {
     "tumbuh_maks": dict(lo=1.25, mid=1.5, hi=2.0, satuan="kali",
         sumber="Asumsi platform: rasio deteksi hari ini / kemarin (kluster.json: ini/kmrn), dibatasi",
         url="",
-        arti="Kompleks yang deteksinya bertambah dari kemarin diberi cadangan panjang front (maksimal 1,5 kali) karena api masih membesar selama regu dalam perjalanan."),
+        arti="Cluster yang deteksinya bertambah dari kemarin diberi cadangan panjang front (maksimal 1,5 kali) karena api masih membesar selama regu dalam perjalanan."),
     "ha_bara_piksel": dict(lo=1, mid=2, hi=4, satuan="ha/piksel aktif",
         sumber="Asumsi platform: piksel VIIRS 14 ha hanya sebagian kecil yang benar-benar membara; dicocokkan dengan rekap BNPB (lihat kotak rekonsiliasi)",
         url="https://www.earthdata.nasa.gov/data/tools/firms",
@@ -64,7 +65,7 @@ KOEF = {
         url="https://lpds.or.id/climatereporter/bor-sumur-sekat-kanal/",
         arti="Satu titik bor air (sumur bor dangkal 16-30 m, pipa 2,5 inci) melayani gambut di sekitarnya lewat selang. Dibuat ± 3 jam per titik (BRG)."),
     "kanal_dekat": dict(lo=0.5, mid=0.5, hi=0.5, satuan="km",
-        sumber="Asumsi platform: jarak pusat kompleks ke sel kanal OSM (kanal.json) yang masih terjangkau selang 10-15 gulung",
+        sumber="Asumsi platform: jarak pusat cluster ke sel kanal OSM (kanal.json) yang masih terjangkau selang 10-15 gulung",
         url="https://www.openstreetmap.org",
         arti="Bila kanal/parit berada <= 0,5 km, separuh kebutuhan titik bor dianggap tertutup air kanal."),
     "pompa_regu_gambut": dict(lo=2, mid=2, hi=2, satuan="pompa/regu",
@@ -89,7 +90,7 @@ KOEF = {
         url="", arti="Tambahan orang di belakang garis: komandan, dapur umum, medis, pengemudi dan motoris perahu."),
     "jam_tiba": dict(lo=6, mid=6, hi=6, satuan="jam",
         sumber="ATURAN.jamTiba di ringkasan.js; waktu tempuh dari akses.json (jalan & sungai OSM)",
-        url="", arti="Kompleks yang tidak bisa dicapai regu darat dalam 6 jam dianggap butuh dukungan water bombing untuk menahan front."),
+        url="", arti="Cluster yang tidak bisa dicapai regu darat dalam 6 jam dianggap butuh dukungan water bombing untuk menahan front."),
     "jarak_air_heli": dict(lo=2, mid=5, hi=15, satuan="km",
         sumber="Asumsi platform; jarak ke danau/sungai untuk isi ember",
         url="", arti="Jarak bolak-balik heli ke sumber air menentukan berapa kali bisa menjatuhkan air per jam."),
@@ -130,6 +131,11 @@ KOEF = {
         sumber="Asumsi platform: 5 hari kerja dari 7, cuti dan pelatihan", url="",
         arti="Faktor agar patroli tetap jalan tiap hari walau personel libur bergantian."),
 }
+
+
+def pasang_kalibrasi(kal=None):
+    """Timpa KOEF (gambut, n >= KAL.N_MIN) dari public/data/kalibrasi.json bila ada. -> daftar koefisien yang ditimpa."""
+    return KAL.terapkan_koef(KOEF, kal if kal is not None else KAL.muat())
 
 
 def k(nama, s):
@@ -223,6 +229,7 @@ def baca(nama):
 
 
 def main():
+    kalibrasi = pasang_kalibrasi()
     meta, kl, ak, kn = baca("meta.json"), baca("kluster.json"), baca("akses.json") or {}, baca("kanal.json")
     bn, ans, dop, prev, res = baca("bnpb.json"), baca("fwi_ansambel.json"), baca("daops.json") or [], baca("preventif.json"), baca("operasi_resmi.json")
     gb = Poligon(os.path.join(DATA, "lahan/gambut.geojson"))
@@ -324,11 +331,12 @@ def main():
 
     hasil = {"dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%dT%H:%M+07:00"), "per": meta.get("hari_wib"), "data_terakhir": meta.get("data_terakhir"),
              "catatan": "Perkiraan perencanaan dari citra satelit dan koefisien terbuka; bukan perintah operasi. Beban kerja dalam regu-hari; halaman membaginya dengan target hari.",
-             "koef": KOEF, "rekonsiliasi": rek, "prov": prov, "kompleks": out,
+             "koef": KOEF, "kalibrasi": {nama: KOEF[nama]["kalibrasi"] for nama in kalibrasi}, "rekonsiliasi": rek, "prov": prov, "kompleks": out,
              "ringkas_T3": {s: total(out, 3, i) for s, i in S.items()}}
     json.dump(hasil, open(os.path.join(DATA, "operasi.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     t = hasil["ringkas_T3"]["tengah"]
-    print(f"operasi.json: {len(out)} kompleks; T=3 tengah: {t['regu']} regu, {t['personel']} personel, {t['pompa']} pompa, {t['bor']} titik bor, {t['heli']} heli")
+    print(f"operasi.json: koefisien terkalibrasi {kalibrasi or 'tidak ada (bawaan)'}")
+    print(f"operasi.json: {len(out)} cluster; T=3 tengah: {t['regu']} regu, {t['personel']} personel, {t['pompa']} pompa, {t['bor']} titik bor, {t['heli']} heli")
 
 
 # ---------------------------------------------------------------- uji
@@ -368,8 +376,8 @@ def uji():
     mn = kom(ps=0.0, jam=2)
     assert kebutuhan(mn, 3)["bor"] == 0 and kebutuhan(mn, 3)["regu_bara"] == 0, "mineral diberi titik bor/mop-up gambut"
     assert kebutuhan(kom(jam=2), 3)["heli"] == 0, "heli diminta padahal regu tiba 2 jam"
-    assert total([kom(jam=12)], 3)["heli"] >= 1, "kompleks 12 jam tanpa heli"
-    assert total([kom(jam=None)], 3)["heli"] >= 1, "kompleks tanpa rute tanpa heli"
+    assert total([kom(jam=12)], 3)["heli"] >= 1, "cluster 12 jam tanpa heli"
+    assert total([kom(jam=None)], 3)["heli"] >= 1, "cluster tanpa rute tanpa heli"
     # 6. koefisien lengkap
     for n, v in KOEF.items():
         assert {"lo", "mid", "hi", "satuan", "sumber", "arti"} <= set(v), f"koefisien {n} tidak lengkap"

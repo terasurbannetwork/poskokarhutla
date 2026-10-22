@@ -4,3 +4,8 @@ ADMIN_TOKEN=ganti-token-admin-lokal
 # SUPER_ADMIN: awalan akun yang boleh memakai dummy (🧪/🧹). Isi = 12 hex awal sha256 dari entri ADMIN_TOKEN akun itu, pisah koma.
 # Hitung: printf '%s' 'token-atau-email:sandi' | shasum -a 256 | cut -c1-12   Kosong = dummy tertutup. Akun AKUN_SITUS tidak dapat kontak PT / kirim ke perusahaan.
 SUPER_ADMIN=
+# PIPA_TOKEN: Bearer untuk GET /api/pipa/lapangan dan /api/pipa/jejak (pipeline Python). Kosong = rute menjawab 503. Buat nilai acak: openssl rand -hex 24
+# Pasang yang SAMA sebagai secret Worker (wrangler secret put PIPA_TOKEN) dan secret GitHub PIPA_TOKEN. Jangan di-commit.
+PIPA_TOKEN=
+# GFW_API_KEY: kunci GFW Data API (modul Karbon, src/karbon.js). Kosong = pakai kunci publik di public/karbon/gfw_kueri.json. KARBON_OLEH: id moderator 12 hex dipisah koma yang boleh memakai /api/karbon (kosong = semua admin).
+GFW_API_KEY=

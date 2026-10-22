@@ -21,6 +21,8 @@ import datetime as dt, json, math, os, sys, time
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
+sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
+from akses import daftar_akses, pasangkan_akses  # noqa: E402  (akses.json dicocokkan ke kompleks lewat lokasi, bukan id harian)
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -98,12 +100,13 @@ def label(air_km, gambut, kaki_km, jalan_km, a=AMBANG):
 
 def bangun(kompleks, air, jalan, akses, prov_ok, a=AMBANG):
     out = {}
+    daftar = pasangkan_akses(daftar_akses(akses), [(k["id"], k["lat"], k["lon"]) for k in kompleks if k["prov"] in prov_ok])
     for k in kompleks:
         if k["prov"] not in prov_ok:
             continue
         da, ja = air.terdekat(k["lat"], k["lon"], a["cari_maks_km"])
         dj, jj = jalan.terdekat(k["lat"], k["lon"], a["cari_maks_km"])
-        ak = akses.get(k["id"])
+        ak = daftar.get(k["id"])
         kaki = ak["kaki_km"] if ak else None
         jam = ak["dari"][0]["jam"] if ak and ak.get("dari") else None
         gambut = k.get("jenis") == "gambut"
@@ -137,18 +140,18 @@ def main():
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "per": op.get("per"), "ambang": AMBANG,
            "label": LABEL, "n": len(hasil), "n_label": n_lab,
            "catatan": ("Perkiraan perencanaan dari data OpenStreetMap (ODbL) yang sudah terbit di repo, bukan survei lapangan dan bukan tabel BNPB; label meniru slide 7 Rakor BNPB Kalteng 19 Okt 2026. "
-                       "Hanya kompleks operasi.json di 9 provinsi prioritas (kanal.json provinsi). Ambang di `ambang` adalah asumsi platform (alasan di docstring scripts/data/kendala.py): "
+                       "Hanya cluster operasi.json di 9 provinsi prioritas (kanal.json provinsi). Ambang di `ambang` adalah asumsi platform (alasan di docstring scripts/data/kendala.py): "
                        "air_km > air_jauh_km: label Sungai/kanal besar > 2 km; gambut dan kaki_km (akses.json) > rawa_jalan_km: Akses sulit di rawa (hanya bila kaki_km ada); "
                        "jalan_km > jalan_utama_km: Jalan utama > 2 km. "
                        "air_km = jarak terdekat ke sungai besar OSM (air_jenis sungai) atau kanal/parit OSM (sel 0,02 derajat, galat sampai ~1,5 km); danau, embung, rawa, dan anak sungai kecil tidak ada di data, jadi air_km adalah batas atas "
                        "(null = tak ada dalam cari_maks_km, dihitung melewati ambang). 2 km air mengacu pada koef jarak_air_heli lo di operasi.py, bukan batas kemampuan heli. "
                        "jalan_km = jarak ke jalan OSM trunk/primary/secondary/tertiary (jalan_kelas). Jalan desa/kebun (unclassified, track) BELUM terdata di peta terbit (jalan.geojson hanya kelas 1-3, graf_jalan.json.gz tidak menyimpan kelas), "
-                       "jadi label jalan menyatakan jarak ke jalan utama, bukan bahwa roda empat tidak bisa masuk. kaki_km dan jam (tercepat dari posko/daops) hanya untuk kompleks yang masuk akses.json (level 3), selain itu null dan tanpa label rawa. "
+                       "jadi label jalan menyatakan jarak ke jalan utama, bukan bahwa roda empat tidak bisa masuk. kaki_km dan jam (tercepat dari posko/daops) hanya untuk cluster yang masuk akses.json (level 3), selain itu null dan tanpa label rawa. "
                        "Kondisi musiman (banjir, portal perusahaan, jalan rusak) tidak dimodelkan."),
            "kompleks": hasil}
     p = os.path.join(DATA, "kendala.json")
     json.dump(out, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
-    print(f"kendala.json {len(hasil)} kompleks, label {n_lab}, {os.path.getsize(p) / 1e3:.0f} KB, {time.time() - t0:.1f} dtk")
+    print(f"kendala.json {len(hasil)} cluster, label {n_lab}, {os.path.getsize(p) / 1e3:.0f} KB, {time.time() - t0:.1f} dtk")
 
 
 def uji():
@@ -179,9 +182,18 @@ def uji():
     air.tambah(0, 3 * e, "sungai")
     jal.garis([(0, 0), (0, 5 * e)], 3)
     ks = [{"id": "K1", "prov": "62", "kab": "X", "lat": 0, "lon": 0, "jenis": "gambut"}, {"id": "K2", "prov": "11", "lat": 0, "lon": 0}]
-    r = bangun(ks, air, jal, {"K1": {"kaki_km": 0.4, "dari": [{"jam": 2.5}]}}, {"62"})
+    r = bangun(ks, air, jal, {"K1": {"lat": 0, "lon": 0, "kaki_km": 0.4, "dari": [{"jam": 2.5}]}}, {"62"})
     assert list(r) == ["K1"] and r["K1"]["air_jenis"] == "sungai" and abs(r["K1"]["air_km"] - 3) < 0.01 and r["K1"]["jalan_utama_dekat"] is True
     assert r["K1"]["jalan_kelas"] == "tertiary" and r["K1"]["jam"] == 2.5 and r["K1"]["label"] == [LABEL["air"]], r
+    # akses dicocokkan lewat lokasi: id berbeda (K0900) tapi 1 km dari entri tetap cocok; 10 km tidak; entri tanpa lokasi diabaikan
+    ak = {"_meta": {}, "K1": {"lat": 0, "lon": 0, "kaki_km": 0.4, "dari": [{"jam": 2.5}]}, "K9": {"kaki_km": 7.0, "dari": [{"jam": 9.0}]}}
+    r = bangun([{"id": "K0900", "prov": "62", "lat": 0, "lon": e, "jenis": "gambut"}], air, jal, ak, {"62"})
+    assert r["K0900"]["kaki_km"] == 0.4 and r["K0900"]["jam"] == 2.5, r
+    r = bangun([{"id": "K1", "prov": "62", "lat": 0, "lon": 10 * e, "jenis": "gambut"}], air, jal, ak, {"62"})
+    assert r["K1"]["kaki_km"] is None and r["K1"]["jam"] is None, "id sama tapi lokasi jauh: tidak boleh ditempel"
+    r = bangun([{"id": "A", "prov": "62", "lat": 0, "lon": 1.4 * e}, {"id": "B", "prov": "62", "lat": 0, "lon": 0.5 * e}], air, jal, ak, {"62"})
+    assert r["B"]["kaki_km"] == 0.4 and r["A"]["kaki_km"] is None, "satu entri untuk satu cluster: yang terdekat"
+    assert bangun([{"id": "K9", "prov": "62", "lat": 5, "lon": 5}], air, jal, ak, {"62"})["K9"]["kaki_km"] is None, "berkas lama tanpa lokasi diabaikan"
     print("kendala: uji lolos")
 
 

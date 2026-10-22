@@ -256,6 +256,150 @@
     ]
    ],
    "catatan": "Data pemerintah, publik"
+  },
+  "effis_fwi": {
+   "nama": "Prakiraan indeks cuaca api (FWI), EFFIS",
+   "tiles": [
+    "https://maps.effis.emergency.copernicus.eu/gwis?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=ecmwf.fwi&STYLES=&FORMAT=image/png&TRANSPARENT=true&SRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}&TIME={tgl}"
+   ],
+   "tileSize": 256,
+   "minzoom": 0,
+   "maxzoom": 10,
+   "opasitas": 0.7,
+   "hari_depan": 7,
+   "atribusi": "Copernicus EMS / EFFIS (GWIS), prakiraan ECMWF",
+   "lisensi": "Copernicus, bebas pakai dengan atribusi",
+   "pembaruan": "harian; prakiraan hari ini sampai +7 hari (tersedia sampai +8, dibatasi 7 agar aman saat pergantian hari; diperiksa 22 Okt 2026)",
+   "legenda": [
+    [
+     "#9cffc0",
+     "Rendah (di bawah 11,2)"
+    ],
+    [
+     "#cde24e",
+     "Sedang (11,2 sampai 21,3)"
+    ],
+    [
+     "#e6ac00",
+     "Tinggi (21,3 sampai 38)"
+    ],
+    [
+     "#d97010",
+     "Sangat tinggi (38 sampai 50)"
+    ],
+    [
+     "#ad060e",
+     "Ekstrem (50 sampai 70)"
+    ],
+    [
+     "#3a0015",
+     "Sangat ekstrem (di atas 70)"
+    ]
+   ],
+   "catatan": "Kelas resmi EFFIS. Ambangnya beda dari BMKG: Tinggi EFFIS mulai 21,3, BMKG mulai 7. Sumber: Copernicus EMS / EFFIS"
+  },
+  "effis_dc": {
+   "nama": "Prakiraan Drought Code (kekeringan lapisan dalam, gambut), EFFIS",
+   "tiles": [
+    "https://maps.effis.emergency.copernicus.eu/gwis?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=ecmwf.dc&STYLES=&FORMAT=image/png&TRANSPARENT=true&SRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}&TIME={tgl}"
+   ],
+   "tileSize": 256,
+   "minzoom": 0,
+   "maxzoom": 10,
+   "opasitas": 0.7,
+   "hari_depan": 7,
+   "atribusi": "Copernicus EMS / EFFIS (GWIS), prakiraan ECMWF",
+   "lisensi": "Copernicus, bebas pakai dengan atribusi",
+   "pembaruan": "harian; prakiraan hari ini sampai +7 hari (tersedia sampai +8, dibatasi 7 agar aman saat pergantian hari; diperiksa 22 Okt 2026)",
+   "legenda": [
+    [
+     "#9cffc0",
+     "Rendah (di bawah 256,1)"
+    ],
+    [
+     "#cde24e",
+     "Sedang (256,1 sampai 334,1)"
+    ],
+    [
+     "#e6ac00",
+     "Tinggi (334,1 sampai 450,6)"
+    ],
+    [
+     "#d97010",
+     "Sangat tinggi (450,6 sampai 600)"
+    ],
+    [
+     "#ad060e",
+     "Ekstrem (600 sampai 749,4)"
+    ],
+    [
+     "#3a0015",
+     "Sangat ekstrem (di atas 749,4)"
+    ]
+   ],
+   "catatan": "Legenda resmi EFFIS. Sumber: Copernicus EMS / EFFIS"
+  },
+  "effis_ba": {
+   "nama": "Area terbakar hampir real-time, EFFIS",
+   "tiles": [
+    "https://maps.effis.emergency.copernicus.eu/gwis?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&LAYERS=nrt.ba&STYLES=&FORMAT=image/png&TRANSPARENT=true&SRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}&TIME={mulai}/{akhir}"
+   ],
+   "tileSize": 256,
+   "minzoom": 0,
+   "maxzoom": 10,
+   "opasitas": 0.85,
+   "hari": 30,
+   "atribusi": "Copernicus EMS / EFFIS (GWIS), area terbakar NRT",
+   "lisensi": "Copernicus, bebas pakai dengan atribusi",
+   "pembaruan": "harian; data berhenti di hari ini (hari esok kosong)",
+   "legenda": [
+    [
+     "#ff0000",
+     "Area terbakar (estimasi NRT, hektare)"
+    ]
+   ],
+   "catatan": "Sumber: Copernicus EMS / EFFIS"
+  },
+  "gibs_aod": {
+   "nama": "Kabut asap (Aerosol Optical Depth), MODIS",
+   "tiles": [
+    "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Combined_Value_Added_AOD/default/{tgl}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png"
+   ],
+   "tileSize": 256,
+   "minzoom": 0,
+   "maxzoom": 6,
+   "opasitas": 0.75,
+   "cari_tgl": 5,
+   "atribusi": "NASA GIBS / MODIS Combined Value-Added AOD",
+   "lisensi": "domain publik",
+   "pembaruan": "harian, tertunda 1 sampai 3 hari; hanya jalur satelit yang tidak berawan",
+   "legenda": [
+    [
+     "#fffcc7",
+     "0,0 (jernih)"
+    ],
+    [
+     "#ffc648",
+     "0,2"
+    ],
+    [
+     "#ff9528",
+     "0,3"
+    ],
+    [
+     "#f52810",
+     "0,5"
+    ],
+    [
+     "#9b000e",
+     "1,0"
+    ],
+    [
+     "#80000e",
+     "5,0 (sangat pekat)"
+    ]
+   ],
+   "catatan": "Warna dan skala dari colormap resmi NASA GIBS (AOD 0 sampai 5). Sumber: NASA GIBS"
   }
  },
  "tidak_dipakai": {

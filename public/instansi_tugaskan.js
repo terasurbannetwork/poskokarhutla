@@ -51,7 +51,7 @@
   /* ================= pop-up peta saat masuk ================= */
   function ringkasan(tugas) {
     const aktif = (tugas || []).filter(t => t.status === "buka"), terlambat = aktif.filter(t => t.terlambat).length;
-    return {aktif: aktif.length, terlambat, teks: `${aktif.length} kompleks aktif, ${terlambat} terlambat`};
+    return {aktif: aktif.length, terlambat, teks: `${ang(aktif.length, 0)} cluster aktif, ${ang(terlambat, 0)} terlambat`};
   }
   /* baris titik panas /api/titik di wilayah akun: kolom wilayah berisi "kodeprov|kabupaten|kecamatan" */
   function titikWilayah(j, saya) {
@@ -142,11 +142,12 @@
   }
   /* bunyi pendek sekali per darurat baru; peramban butuh ketukan sebelumnya, jadi gagal diam-diam */
   function bunyiDarurat() { try { const c = new (window.AudioContext || window.webkitAudioContext)(), o = c.createOscillator(), g = c.createGain(); o.type = "square"; o.frequency.value = 880; g.gain.value = .12; o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime + .6); o.onended = () => c.close(); } catch (e) {} }
+  let titikIni = "titik api";   // kata lokasi tugas ini (titik api, lokasi banjir, ...) dari kamus KartuApi
   function barisHtml(p, admin, kini) {
     const [k, kls] = keadaan(p), mati = p.status !== "aktif", pos = p.posisi, umur = pos ? kini - pos.pada : null, lamaPos = umur != null && umur > 5 * MENIT && p.berangkat_pada && !p.tiba_pada && !mati;
     return `<article class="tg-orang${p.darurat && p.status === "aktif" ? " tg-ada-darurat" : ""}" data-pid="${esc(p.id)}">${daruratHtml(p)}<div class="tg-o-kepala"><b>${esc(p.nama)}</b><span class="tg-peran">${esc(PERAN[p.peran] || p.peran)}, ${ang(p.orang, 0)} orang</span>${pil(k, kls)}${p.dummy ? pil("Contoh", "") : ""}</div>
       <p class="tg-o-info">${pos ? `Posisi ${esc(jamWIB(pos.pada))} WIB (${esc(lama(umur))})${pos.akurasi != null ? `, akurasi sekitar ${ang(pos.akurasi, 0)} m` : ""}.` : "Belum ada posisi."}
-        ${p.jarak_km != null ? ` <b>${ang(p.jarak_km)} km</b> dari titik api (garis lurus)${p.eta_menit != null ? `, ETA kasar ${ang(p.eta_menit, 0)} menit` : ""}.` : ""}${lamaPos ? ` ${pil("Posisi lama: layar mati atau sinyal hilang?", "merah")}` : ""}</p>
+        ${p.jarak_km != null ? ` <b>${ang(p.jarak_km)} km</b> dari ${titikIni} (garis lurus)${p.eta_menit != null ? `, ETA kasar ${ang(p.eta_menit, 0)} menit` : ""}.` : ""}${lamaPos ? ` ${pil("Posisi lama: layar mati atau sinyal hilang?", "merah")}` : ""}</p>
       <p class="lp-kecil">Persiapan: ${ang(p.ringkas.wajib_centang, 0)} dari ${ang(p.ringkas.wajib, 0)} butir wajib dicentang.${p.berangkat_pada ? ` Berangkat ${esc(jamWIB(p.berangkat_pada))} WIB.` : ""}${p.tiba_pada ? ` Tiba ${esc(jamWIB(p.tiba_pada))} WIB.` : ""}${p.selesai_pada ? ` Selesai ${esc(jamWIB(p.selesai_pada))} WIB.` : ""}</p>
       <details class="in-rinci tg-cek"><summary>Checklist persiapan</summary><ul class="tg-cek-daftar">${p.butir.map(b => `<li><label><input type="checkbox" data-tg="centang" data-p="${esc(p.id)}" data-k="${esc(b.k)}"${p.checklist[b.k] ? " checked" : ""}${admin || mati ? " disabled" : ""}><span>${esc(b.teks)}${b.wajib ? "" : b.saran ? " (disarankan)" : " (opsional)"}${p.checklist[b.k] ? ` <small>dicentang ${esc(jamWIB(p.checklist[b.k]))}</small>` : ""}</span></label></li>`).join("")}</ul></details>
       ${admin ? "" : `<div class="tg-o-aksi">${p.status === "aktif" ? `<button type="button" class="lp-tombol" data-tg="cabut" data-p="${esc(p.id)}">Cabut tautan</button>` : ""}<button type="button" class="lp-tombol" data-tg="ulang" data-p="${esc(p.id)}">Terbitkan ulang tautan</button></div>`}</article>`;
@@ -179,10 +180,11 @@
   function pasangInti(t, wadah, admin) {
     if (aktif?.timer) clearInterval(aktif.timer);   // panel lama berhenti polling
     wadah.__tgOff?.();
+    titikIni = window.KartuApi?.KAMUS?.[window.KartuApi.idBencana(t)]?.titik || "titik api";
     const saya = ++gen, S = {t, wadah, admin, daftar: [], peta: null, penanda: new Map(), pernahFit: false, timer: null, muatPeta: false};
     aktif = S;
     const url = admin ? `/api/instansi/admin/penugasan/${t.id}` : `/api/instansi/penugasan/${t.id}`, boleh = !admin && t.status === "buka";
-    wadah.innerHTML = `<section class="in-kartu tg-kartu" aria-label="Penugasan dan pelacak posisi"><div class="tg-kepala"><h2 class="in-sub">Penugasan dan pelacak posisi</h2>${boleh ? `<button type="button" class="lp-tombol utama tg-baru" data-tg="baru">Tugaskan orang</button>` : ""}</div>
+    wadah.innerHTML = `<section class="in-kartu tg-kartu" aria-label="Penugasan dan pelacak posisi"><div class="tg-kepala"><h2 class="in-sub">Penugasan dan pelacak posisi</h2><button type="button" class="lp-tombol tg-ops" data-tg="ops"><svg class="tg-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11zM10 10a2 2 0 1 0 4 0 2 2 0 1 0-4 0"/></svg>Operasi lapangan</button>${boleh ? `<button type="button" class="lp-tombol utama tg-baru" data-tg="baru">Tugaskan orang</button>` : ""}</div>
       <p class="lp-kecil">${admin ? "Posisi terakhir dan jejak orang yang ditugaskan. Nomor WhatsApp mereka tidak ditampilkan di sini." : "Buat tautan untuk driver, regu, atau petugas. Mereka membuka tautan di ponsel, melihat rute dan checklist, lalu membagikan posisi saat berangkat."} Posisi hanya terlihat oleh akun pemilik tugas, moderator, dan staf pusdalops wilayah ini, dan berhenti dikirim saat tugas selesai.</p>
       ${boleh ? formHtml() : ""}<div class="tg-hasil-wadah"></div><div class="tg-usulan"><button type="button" class="lp-tombol" data-tg="usulan">Lihat usulan orang untuk ditugaskan</button><div class="tg-usulan-isi" aria-live="polite"></div></div><div class="tg-peta" hidden></div><div class="tg-daftar" aria-live="polite"><p class="lp-kecil">Memuat penugasan…</p></div></section>`;
     const q = s => wadah.querySelector(s), hidup = () => aktif === S && saya === gen && wadah.isConnected !== false;
@@ -249,6 +251,7 @@
     {
       const onClick = async e => {
         const b = e.target.closest?.("[data-tg]"); if (!b) return; const a = b.dataset.tg;
+        if (a === "ops") return bukaOps(t, admin, b);
         if (a === "baru") { const f = q("#tgForm"); f.hidden = !f.hidden; if (!f.hidden) q("#tgNama").focus(); return; }
         if (a === "usulan") { const w = q(".tg-usulan-isi"); b.disabled = true; w.innerHTML = `<p class="lp-kecil">Mencari kandidat…</p>`; const r = await api("GET", `/api/instansi/usulan/${t.id}`); b.disabled = false;
           if (!r.ok) { w.innerHTML = `<p class="lp-kecil">${esc(r.status === 503 ? "Usulan belum aktif di server." : r.j.galat || "Usulan belum bisa dimuat.")}</p>`; return; } S.usulan = r.j.kandidat; w.innerHTML = usulanHtml(r.j, admin); return; }
@@ -278,7 +281,31 @@
     }
     muat();
   }
+  /* layar operasi (instansi_ops.js) dimuat saat pertama dibuka bila halaman belum menaut skripnya (/admin/instansi) */
+  async function bukaOps(t, admin, pembuka) {
+    if (!window.InstansiOps) {
+      pembuka.disabled = true;
+      try {
+        const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/instansi_ops.css?v=1"; document.head.append(l);
+        await new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = "/instansi_ops.js?v=3"; sc.onload = ok; sc.onerror = () => no(new Error("skrip operasi gagal dimuat")); document.head.append(sc); });
+      } catch (e) { pembuka.disabled = false; pembuka.textContent = "Layar operasi belum bisa dimuat, coba lagi"; return; }
+      pembuka.disabled = false;
+    }
+    window.InstansiOps.buka(t, {admin, pembuka});
+  }
+  /* tombol 🧪/🧹 Super Admin di /admin/instansi: sesudah isi/hapus dummy instansi selesai, isi/hapus juga contoh operasi lapangan (POST /api/ops/dummy), supaya layar operasi berangka.
+     Handler halaman jalan lebih dulu (menonaktifkan tombol); tombol yang tidak jadi nonaktif berarti konfirmasi hapus ditolak, jadi tidak ada yang dikerjakan di sini. */
+  document.addEventListener("click", e => {
+    const d = e.target.closest?.("[data-dummy]"), aksi = d?.dataset.dummy; if (!d || !d.closest("#aksiJudul") || (aksi !== "isi" && aksi !== "hapus")) return;
+    if (!d.disabled) return;
+    const t0 = Date.now(), tunggu = async () => {
+      if (d.disabled && Date.now() - t0 < 90e3) return setTimeout(tunggu, 200);
+      const r = await api("POST", "/api/ops/dummy", {aksi}), p = document.getElementById("aiPesan");
+      if (p) p.textContent += r.ok ? ` Operasi lapangan: contoh ${aksi === "isi" ? "terisi" : "dihapus"}.` : ` Operasi lapangan: ${r.status === 503 ? "migrasi belum diterapkan" : r.j.galat || "gagal"}.`;
+    };
+    setTimeout(tunggu, 200);
+  });
   document.addEventListener("visibilitychange", () => aktif?.lihat?.());
   window.Tugaskan = {pasang: (t, w) => pasangInti(t, w, false), pasangAdmin: (t, w) => pasangInti(t, w, true), lepas: () => { if (aktif?.timer) clearInterval(aktif.timer); aktif = null; ++gen; },
-    popupMasuk, ringkasan, titikWilayah, padamPil, padamBlok, exifInfo, keadaan};
+    popupMasuk, ringkasan, titikWilayah, padamPil, padamBlok, exifInfo, keadaan, api};
 })();

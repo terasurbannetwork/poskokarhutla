@@ -27,9 +27,10 @@ import datetime as dt, json, math, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
 import gambut_bara as GB  # noqa: E402
+import kalibrasi as CAL  # noqa: E402
 import operasi as OP  # noqa: E402  (kebutuhan sumber daya: rumus satu-satunya di operasi.kebutuhan/total)
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
-from akses import KAKI_KMJ  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
+from akses import KAKI_KMJ, daftar_akses, pasangkan_akses  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
 
 DATA = os.path.join(AKAR, "public/data")
 
@@ -46,12 +47,12 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "lance_tambah_cm": (20.0, AS, "lance = bara tinggi + 20 cm, dibulatkan NAIK ke kelipatan 50 cm"),
     "lance_langkah_cm": (50.0, AS, "kelipatan panjang lance"),
     "wt_rusak_cm": (-40.0, BS, "PP 57/2016 jo. PP 71/2014: muka air tanah gambut > 0,4 m di bawah permukaan = kriteria rusak"),
-    "sekat_kanal_km": (2.0, AS, "kanal <= 2 km dari kompleks"),
+    "sekat_kanal_km": (2.0, AS, "kanal <= 2 km dari cluster"),
     "kg_per_mj": (0.368, BV, "Wooster dkk. 2005 JGR 110 D24311; dari ingatan (abstrak hanya memuat r2 0,98); koefisien dari biomassa NYALA, bukan bara gambut"),
     "frp_detik": (600, BS, "satu pindaian Himawari-9 = 10 menit"),
     "himawari_sel_min": (3, AS, "< 3 sel dalam radius: FRE terlalu jarang"),
     "himawari_umur_jam": (6, AS, "himawari.json harus <= 6 jam SEBELUM tugas_kompleks.dibuat; sesudahnya tidak dipakai"),
-    "setengah_sel_km": (1.0, BS, "setengah sel Himawari 2 km, ditambahkan ke jari-jari ekuivalen kompleks"),
+    "setengah_sel_km": (1.0, BS, "setengah sel Himawari 2 km, ditambahkan ke jari-jari ekuivalen cluster"),
     "target_hari": (3, AS, "target kurung T hari untuk kebutuhan; sama dengan operasi.json ringkas_T3 dan laci Ringkasan"),
     "debit_serang_lpm": (190, AS, "debit kerja satu selang serang 1,5 inci, dasar kehilangan tekanan (50 gpm; nilai lapangan belum diverifikasi)"),
     "gesek_c": (24, BV, "FL(psi per 100 ft) = C x (gpm/100)^2, C selang 1,5 inci = 24 (rumus kehilangan gesek dinas pemadam, IFSTA/NFPA; diingat dari buku ajar, teks belum dibuka)"),
@@ -71,7 +72,7 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "celup_kw": (0.75, AS, "daya satu pompa celup listrik untuk sumur bor (1 HP)"),
     "celup_per_regu": (1, AS, "satu pompa celup tiap regu bara"),
     "celup_per_genset": (2, AS, "pompa celup per genset"),
-    "beban_logistik_kw": (2.5, AS, "pengisian drone termal dan HT (0,5 kW) + penerangan malam (2 kW) per kompleks gambut; operasi gambut siang-malam (koef rotasi)"),
+    "beban_logistik_kw": (2.5, AS, "pengisian drone termal dan HT (0,5 kW) + penerangan malam (2 kW) per cluster gambut; operasi gambut siang-malam (koef rotasi)"),
     "faktor_daya": (0.8, AS, "cos phi beban motor kecil"),
     "lonjakan_start": (3, BV, "faktor lonjakan start langsung motor (umumnya 3-7x arus nominal); 3x dari arahan pemilik"),
     "genset_kva": ([1, 2, 3, 5, 7.5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 125, 150, 200], AS, "ukuran genset komersial umum (kVA); daftar katalog belum diverifikasi"),
@@ -108,7 +109,7 @@ CATATAN = {   # teks tetap, ditulis sekali di akar berkas (taktik_catatan) supay
     "dasar": "dasar.luas_ha = hitungan piksel (px24 x ha_bara_piksel), bukan terukur; rekonsiliasi_ha_per_piksel = operasi.json rekonsiliasi.ha_per_piksel_setara_resmi",
     "genset": "untuk celup = pompa celup listrik sumur bor (bor >= 16 m lebih dalam dari batas hisap 7,5 m); logistik = pengisian drone termal dan HT serta penerangan malam",
     "tangki": "tangki_fleksibel = isi per hari dan mobil_tangki = rit per hari, masing-masing 5.000 L (laporan BNPB, belum diverifikasi); dihitung dari air_l_hari",
-    "akses": "akses.jalan = titik jalan OSM terdekat dari pusat kompleks (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya kompleks yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
+    "akses": "akses.jalan = titik jalan OSM terdekat dari pusat cluster (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya cluster yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
     "pembasah": "Santoso dkk. 2021 (IJWF 30(5):378-390, doi 10.1071/WF20117) hanya menunjukkan: bahan pembasah nabati 1% memangkas waktu padam bara gambut sekitar 39% dibanding air murni (5%: sekitar 26%), uji laboratorium semprot permukaan, efek termal, volume air tetap sekitar 5,7 L per kg gambut; belum uji lapangan, dosis 1% berlaku untuk agen yang diuji dan produk lain (foam kelas A) mengikuti dosis label. Hidrofobisitas gambut tropis yang kering tak balik (drainase, kemarau, kebakaran; lapisan 0-50 cm paling rentan) adalah klaim terpisah, dari literatur Indonesia yang belum dibaca utuh (belum diverifikasi): studi gambut hidrofobik Kalimantan Tengah FTIR 2009 (agris.fao.org/search/es/records/65df24c863b8185d9cab1a4e), IJTech UI 2018 (ijtech.eng.ui.ac.id/download/article/805), studi Palangka Raya 2021 (e-journal.upr.ac.id/index.php/Agp/article/download/3696/2832). konsentrat_l_hari = air bara saja (tanpa air front) x 1%, bila memakai agen setara pada 1%. Cara: campur di jalur pompa dengan inductor atau proportioner foam, atau premix di tangki fleksibel, lalu semprot (diuji); injeksi belum diuji. Peringatan: pakai produk biodegradable berlabel kebakaran kelas A; jangan buang konsentrat ke kanal, sumber air minum atau kolam ikan; ikuti dosis label produk, lebih pekat tidak lebih baik. Peralatan dan ambang DC asumsi platform",
     "per_ha": "per_ha = total / luas operasi per skenario [rendah, tengah, tinggi]; personel_hari_rujukan = rasio regional BNPB 20-21 Okt, model tengah 24,75 (koef bara_regu catatan_regional)",
 }
@@ -380,7 +381,7 @@ def rekomendasi(t, op, kd, kl, ak, himawari, koef, omc_hari, tugas_dibuat, pm25=
                "perahu atau motor trail (asumsi platform)")
     # darat_selang
     if dekat and darat:
-        tambah("darat_selang", f"Air {air:g} km dari kompleks (batas {kanal_dekat:g} km) dan akses darat "
+        tambah("darat_selang", f"Air {air:g} km dari cluster (batas {kanal_dekat:g} km) dan akses darat "
                + (f"jalan kaki {kaki:g} km" if kaki is not None and kaki <= AMBANG["kaki_selang_km"] else f"jalan utama {jalan:g} km")
                + ", regu bisa menyedot dari kanal dan menyerang langsung.", PMP, selang())
     # sumur_bor
@@ -436,6 +437,8 @@ def rekomendasi(t, op, kd, kl, ak, himawari, koef, omc_hari, tugas_dibuat, pm25=
     cara.sort(key=lambda c: c["peran"] != "utama")
     M_ = [c["metode"] for c in cara[:4]]  # stabil: utama dulu, heli pelengkap tak pernah di depan
     kb = kebutuhan(op0, jenis, lance, T, {"air_km": air, "jalan_km": jalan, "dekat": dekat, "sumur_bor": "sumur_bor" in M_, "injeksi": inj}, rekon=rekon) if op0 else None
+    if kb and jenis == "gambut" and CAL.n_koef(koef, "bara_regu", "ha_bara_piksel"):
+        kb["berdasarkan_insiden"] = CAL.n_koef(koef, "bara_regu", "ha_bara_piksel")   # koef bara_regu + ha_bara_piksel dikalibrasi dari isian lapangan
     if kb:
         kb["pembasah"] = pembasah(jenis, bara, kl.get("dc"), wt, op0, T, kb["melampaui_rujukan_lapangan"])
     if kb and kb["melampaui_rujukan_lapangan"]:
@@ -574,28 +577,40 @@ def baca(nama):
         return None
 
 
+def tgl_wib(dibuat):
+    """ISO UTC "...Z" -> tanggal WIB (UTC+7) 'YYYY-MM-DD'; udara.hari bertanggal WIB."""
+    return (dt.datetime.fromisoformat(dibuat.replace("Z", "+00:00")) + dt.timedelta(hours=7)).date().isoformat()
+
+
 def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     """-> tugas baru (kunci `dibuat` pertama, `taktik_ambang`, tiap kompleks +rekomendasi bila ada)."""
     koef = (op or {}).get("koef") or {}
     ops = {k["id"]: k for k in (op or {}).get("kompleks", [])}
     kds = (kendala or {}).get("kompleks", {})
     kls = {f["properties"]["id"]: f["properties"] for f in (kluster or {}).get("features", [])}
+    daf_ak = pasangkan_akses(daftar_akses(akses), [(t["id"], t["lat"], t["lon"]) for t in tugas["kompleks"] if t.get("lat") is not None and t.get("lon") is not None])   # akses.json dicocokkan lewat LOKASI: id K#### berubah tiap putaran
     bt = ((udara or {}).get("batas") or [None] * 4)[3]
     hr = (udara or {}).get("hari", [])
     kab = (udara or {}).get("kab", [])
-    hari_ini = kab[hr.index(tugas["dibuat"][:10])] if tugas["dibuat"][:10] in hr and len(kab) == len(hr) else []   # kab = satu daftar per hari; hari lain tidak dipakai
+    tgl = tgl_wib(tugas["dibuat"])
+    hari_ini = kab[hr.index(tgl)] if tgl in hr and len(kab) == len(hr) else []   # kab = satu daftar per hari; hari lain tidak dipakai
     pm = {(r[0], r[1]): r[2] for r in hari_ini if bt is not None and r[2] >= bt}
     out = {"dibuat": tugas["dibuat"], **{k: v for k, v in tugas.items() if k not in ("dibuat", "kompleks", "taktik_ambang")},
            "taktik_ambang": {**AMBANG_META, "rumus": RUMUS}, "taktik_catatan": CATATAN, "kompleks": []}
-    tgl = tugas["dibuat"][:10]
+    kal = {n: {"n": v["kalibrasi"]["n"], "dari": v["kalibrasi"]["dari"], "sampai": v["kalibrasi"]["sampai"]} for n, v in koef.items() if isinstance(v, dict) and v.get("kalibrasi")}
+    if GB.KAL_N:
+        kal["kedalaman_bara"] = {"n": GB.KAL_N}
+    if kal:
+        out["kalibrasi"] = kal   # "berdasarkan N insiden" untuk koefisien yang dipakai kebutuhan bara; nama koefisien -> n
     for t in tugas["kompleks"]:
         t = {k: v for k, v in t.items() if k not in ("rekomendasi", "akses")}
+        ak = daf_ak.get(t["id"])
         omc = [h for h in (((op or {}).get("prov") or {}).get(t.get("prov"), {}).get("omc") or {}).get("hari", []) if h >= tgl]
-        r = rekomendasi(t, ops.get(t["id"]), kds.get(t["id"]), kls.get(t["id"]), (akses or {}).get(t["id"]), himawari, koef, omc, tugas["dibuat"], pm.get((t.get("prov"), t.get("kab"))), rekon=((op or {}).get("rekonsiliasi") or {}).get("ha_per_piksel_setara_resmi"))
+        r = rekomendasi(t, ops.get(t["id"]), kds.get(t["id"]), kls.get(t["id"]), ak, himawari, koef, omc, tugas["dibuat"], pm.get((t.get("prov"), t.get("kab"))), rekon=((op or {}).get("rekonsiliasi") or {}).get("ha_per_piksel_setara_resmi"))
         if r:
             t["rekomendasi"] = r
         kb = (r or {}).get("kebutuhan") or {}
-        a = akses_kompleks(t, ops.get(t["id"]), kds.get(t["id"]), (akses or {}).get(t["id"]), koef, jalan, kb.get("pembasah"), ((kb.get("total") or {}).get("regu") or [None, None])[1])
+        a = akses_kompleks(t, ops.get(t["id"]), kds.get(t["id"]), ak, koef, jalan, kb.get("pembasah"), ((kb.get("total") or {}).get("regu") or [None, None])[1])
         if a:
             t["akses"] = a   # kunci saudara rekomendasi (bukan di dalamnya): tidak makan 3.000 huruf
         out["kompleks"].append(t)
@@ -603,6 +618,8 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
 
 
 def main():
+    OP.pasang_kalibrasi()   # KOEF operasi.py yang dipakai OP.k/OP.total sama dengan operasi.json
+    GB.pasang_kalibrasi()
     tugas = baca("tugas_kompleks.json")
     if not tugas:
         print("taktik: tugas_kompleks.json tidak ada, dilewati")
@@ -612,7 +629,7 @@ def main():
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     n = sum("rekomendasi" in k for k in out["kompleks"])
     pb = sum(bool(((k.get("rekomendasi") or {}).get("kebutuhan") or {}).get("pembasah")) for k in out["kompleks"])
-    print(f"taktik: {n}/{len(out['kompleks'])} kompleks mendapat rekomendasi, {sum('akses' in k for k in out['kompleks'])} analisis akses, {pb} pembasah")
+    print(f"taktik: {n}/{len(out['kompleks'])} cluster mendapat rekomendasi, {sum('akses' in k for k in out['kompleks'])} analisis akses, {pb} pembasah")
 
 
 KOEF = {k: {"lo": v[0], "mid": v[1], "hi": v[2]} for k, v in {
@@ -709,6 +726,10 @@ def uji():
     assert r["kebutuhan"]["target_hari"] == 3 and kb["regu"][1] == ref["regu"] and kb["personel"][1] == ref["personel"] and kb["selang_m"][1] == ref["selang"], (kb, ref)
     assert r["kebutuhan"]["dasar"]["luas_ha"] == [10, 20, 40] and kb["bor"] == [10, 20, 40] and kb["lance_cm"] == 100 and kb["jet_shooter"][1] == ref["regu_bara"], kb
     assert all(len(kb[x]) == 3 for x in ("regu", "personel", "selang_m", "bor", "heli", "air_l_hari", "jet_shooter"))
+    assert "berdasarkan_insiden" not in r["kebutuhan"]   # KOEF uji tanpa kalibrasi
+    kk = {n: dict(v, kalibrasi={"n": 12, "dari": "a", "sampai": "b"}) for n, v in KOEF.items()}
+    kk.update(bara_regu=dict(KOEF["isi_ambang"], kalibrasi={"n": 12}), ha_bara_piksel=dict(KOEF["isi_ambang"], kalibrasi={"n": 15}))
+    assert R(T(), c, {"air_km": 1.0, "kaki_km": 1.0}, {"bara": b}, koef=kk)["kebutuhan"]["berdasarkan_insiden"] == 12   # terkecil dari dua koefisien
     rm = R(T(), dict(c, jenis="mineral", isi=5), {"air_km": 1.0, "kaki_km": 1.0}, None)
     # pembasah: gambut + bara -> 1% air; gambut basah tanpa tanda kering -> null; mineral/savana -> null; DC dan muka air memicu tanpa bara
     pb = r["kebutuhan"]["pembasah"]
@@ -830,6 +851,18 @@ def uji():
     k1 = s2["kompleks"][0]
     assert k1["akses"]["kaki_km"] == 8.0 and "akses" not in k1["rekomendasi"] and len(json.dumps(k1["rekomendasi"], ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"]
     assert len(json.dumps(k1["akses"], ensure_ascii=False, separators=(",", ":"))) < 1800, "akses terlalu besar"
+    # akses.json dicocokkan lewat LOKASI: id tugas (K0950) tak ada di akses.json tapi 1 km dari entri K0001 -> kaki_km terpakai;
+    # id sama (K0001) tapi 20 km dari entri -> tidak ditempel; entri tanpa lokasi (berkas lama) diabaikan
+    ak_ = {"_meta": {}, "K0001": {"lat": -3.0, "lon": 112.0, "kaki_km": 3.5, "dari": []}, "K0002": {"kaki_km": 9.9, "dari": []}}
+    sk = lambda **k: susun({"dibuat": dc, "kompleks": [T(prov="62", kab="Seruyan", **k)]}, None, None, ak_, None, None)["kompleks"][0].get("akses") or {}
+    assert sk(id="K0950", lat=-3.009)["kaki_km"] == 3.5, "id berubah, lokasi 1 km: harus cocok"
+    assert sk(id="K0001", lat=-3.2).get("kaki_km") is None, "id sama tapi lokasi 20 km: tidak boleh ditempel"
+    assert sk(id="K0002").get("kaki_km") == 3.5 and sk(id="K0002", lat=-9.0, lon=100.0).get("kaki_km") is None
+    # tanggal WIB: 23:30Z = 06:30 WIB hari berikutnya; 17:00Z = 00:00 WIB
+    assert tgl_wib("2026-10-21T23:30:00Z") == "2026-10-22" and tgl_wib("2026-10-21T16:59:00Z") == "2026-10-21" and tgl_wib("2026-10-21T17:00:00Z") == "2026-10-22"
+    ud2 = {"batas": [15.5, 55.4, 150.4, 250.4], "hari": ["2026-10-21", "2026-10-22"], "kab": [[], [["62", "Seruyan", 400.0, 500, 1, 1]]]}
+    s3 = susun({"dibuat": "2026-10-21T23:30:00Z", "kompleks": [T(prov="62", kab="Seruyan")]}, {"koef": KOEF, "kompleks": [{"id": "K1", "jenis": "mineral", "jam": 9.0, "isi": 5}], "prov": {}}, {"kompleks": {"K1": {"air_km": 5.0, "kaki_km": 8.0}}}, None, None, None, ud2)
+    assert "kemungkinan tidak terbang" in s3["kompleks"][0]["rekomendasi"]["catatan"], "PM2.5 hari WIB 22 harus terpakai untuk dibuat 23:30Z tgl 21"
     print("taktik uji: OK")
 
 

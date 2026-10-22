@@ -16,6 +16,11 @@ export async function muatHimawari(env) {
   try { const o = await env.MEDIA?.get("data/himawari.json"); return o ? JSON.parse(await new Response(o.body).text()) : null; } catch (e) { return null; }
 }
 
+/* waktu data (kunci `acuan`, selalu kunci pertama) tanpa mengurai berkas: baca 300 byte awal dari R2. null = objek/kunci tidak ada. Dipakai /api/status. */
+export async function himawariDibuat(env) {
+  try { const o = await env.MEDIA?.get("data/himawari.json", {range: {offset: 0, length: 300}}); const t = o ? await new Response(o.body).text() : "", w = Date.parse(t.match(/"acuan"\s*:\s*"([^"]+)"/)?.[1]); return Number.isNaN(w) ? null : w; } catch (e) { return null; }
+}
+
 /* hw = {acuan, baris}; firms = {acuan, baris: [[lat, lon, jam(negatif, jam sebelum acuan), ...]]} atau null. Mengembalikan baris
    [lat, lon, u, frp, level, rel, qf, n, u0, baru]; baris lama 7 kolom: n = 1, u0 = u. diIndonesia(lat, lon): FIRMS di D1 membuang titik negara tetangga,
    jadi tanpa saringan ini api di Malaysia/Timor Leste/PNG selalu tampak "baru". */
@@ -46,17 +51,22 @@ export function tandaiBaru(hw, firms, kini, diIndonesia = () => true) {
   });
 }
 
-/* isi /api/himawari: objek R2 + kolom `baru` + n_baru. Objek hilang = kosong (bukan 500). */
 /* wilayah gagal dimuat = jangan tandai apa pun (lebih baik diam daripada alarm di negara tetangga) */
 export async function saringIndonesia(env) {
   try { const W = await wilayah(env); return (lat, lon) => !!cariWilayah(W, lat, lon); } catch (e) { return () => false; }
 }
 
+/* isi /api/himawari: objek R2 + kolom `baru` dan `w` + n_baru, hanya titik di wilayah Indonesia (layar menggambar semuanya sebagai "Api baru"; pemilik, 22 Okt 2026).
+   Objek hilang = kosong (bukan 500). */
 export async function himawariRespons(env, kini = Date.now()) {
   const hw = await muatHimawari(env);
   if (!hw) return {acuan: null, baris: [], n_baru: 0};
   let firms = null;
   try { const r = await env.DB?.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
-  const baris = tandaiBaru(hw, firms, kini, await saringIndonesia(env));
-  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru"], baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
+  /* kolom w = indeks ke `wilayah` (kunci "prov|kab|kec"), untuk indikator Api baru per wilayah di panel layar; wilayah gagal dimuat = kosong */
+  let W = null; try { W = await wilayah(env); } catch (e) {}
+  const kunci = (lat, lon) => W ? cariWilayah(W, lat, lon) : null, daftar = [], idx = new Map();
+  const baris = tandaiBaru(hw, firms, kini, (lat, lon) => !!kunci(lat, lon)).flatMap(r => { const k = kunci(r[0], r[1]); if (!k) return [];
+    if (!idx.has(k)) { idx.set(k, daftar.length); daftar.push(k); } return [[...r, idx.get(k)]]; });
+  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru", "w"], wilayah: daftar, baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
 }

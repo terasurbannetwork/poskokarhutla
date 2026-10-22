@@ -10,7 +10,7 @@
      melewati 20 rb, kiriman disampel deterministik per peramban (p 1 -> 0,5 -> 0,2 -> 0,05) dan dicatat dengan bobot 1/p;
      dasbor menandai "perkiraan (sampel)". Batas kasar tulisan statistik: ~40 rb/hari + 5 % dari kelebihannya.
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
-import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, bacaBytes, HOST_TERKUNCI} from "./worker.js";
+import {json, gagal, sha, hex, acak, cekLaju, ipHash, gagalSudahBanyak, catatGagal, turnstileOK, adminOK, bacaBody, bacaBytes, HOST_TERKUNCI} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
 import {stafSesi} from "./staf.js";
 import {masukPemirsa, arahPemirsa, cookiePemirsa} from "./pemirsa.js";
@@ -25,6 +25,7 @@ export const PERISTIWA = new Set(["tampil", "tab", "tab_detik", "gulir", "masuk_
   "perangkat", "layar", "viewport", "bahasa", "koneksi", "skema", "pwa", "rujukan", "utm_sumber", "utm_medium", "utm_kampanye", "tautan_dalam",
   "vital", "vital_kelas", "galat_js", "gagal_muat", "umur_data"]);
 const BOT = /bot\b|bot\/|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|facebookexternalhit|whatsapp|telegram|discord|curl|wget|python|axios|node-fetch|undici|go-http|java\/|okhttp|phantom|puppeteer|playwright|selenium/i;
+const MAKS_GAGAL_EMAIL = 20;   // gagal masuk per email per jam (selain batas per IP)
 export const MAKS_BODY_JEJAK = 4096, MAKS_PERISTIWA = 50, KUNCI_PER_DIM = 100;
 const MAKS_KUNCI = 80;
 
@@ -114,7 +115,8 @@ function lajuJejak(kunci, kini) {
 export async function jejak(env, req, kini) {
   const ua = req.headers.get("user-agent") || "";
   if (!ua || BOT.test(ua)) return gagal(403, "bot atau permintaan tanpa user-agent tidak dihitung");
-  const t = await req.text();
+  const u = await bacaBytes(req, MAKS_BODY_JEJAK * 4); if (u.galat) return gagal(u.status, u.galat);   // dibaca bertahap, berhenti di batas
+  const t = new TextDecoder().decode(u.b);
   if (t.length > MAKS_BODY_JEJAK) return gagal(413, `kiriman ${t.length} byte, maksimal ${MAKS_BODY_JEJAK}`);
   let o; try { o = JSON.parse(t); } catch (e) { return gagal(400, "body bukan JSON"); }
   if (!o || typeof o !== "object" || Array.isArray(o)) return gagal(400, "body harus objek JSON");
@@ -238,11 +240,13 @@ export async function masuk(env, req, kini, halamanMasuk) {
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
+  const kunciEmail = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";   // batas per akun: memutar IP tak menghindarinya
+  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return html(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
     const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
-    if (!p) return html(hal("Username atau kata sandi salah."), 401);
+    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return html(hal("Username atau kata sandi salah."), 401); }
     const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : "/" + p.tab[0]), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }
@@ -275,7 +279,8 @@ const RE_EMAIL = /^[^\s@<>()",;:]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?
 const polos = (s, n) => String(s ?? "").normalize("NFC").replace(/<[^>]*>?/g, "").replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "").replace(/[ \t]+/g, " ").trim().slice(0, n + 1);
 
 export async function kirimPesan(env, req, ctx, kini) {
-  const t = await req.text();
+  const u = await bacaBytes(req, 8192 * 4); if (u.galat) return gagal(u.status, u.galat);
+  const t = new TextDecoder().decode(u.b);
   if (t.length > 8192) return gagal(413, `body ${t.length} byte, maksimal 8192`);
   let o; try { o = JSON.parse(t); } catch (e) { return gagal(400, "body bukan JSON"); }
   if (!o || typeof o !== "object" || Array.isArray(o)) return gagal(400, "body harus objek JSON");

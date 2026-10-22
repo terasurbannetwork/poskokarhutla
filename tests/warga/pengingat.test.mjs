@@ -258,7 +258,7 @@ uji("F2: kelompok per BPBD; tautan wa.me hanya untuk nomor sah; teks tanpa data 
   assert.equal(A.kecamatan, 2); assert.equal(A.ids.length, 2); assert.equal(A.wa, "6281234567890");
   assert.ok(A.tautan.startsWith("https://wa.me/6281234567890?text="), A.tautan);
   const teks = decodeURIComponent(A.tautan.split("?text=")[1]); assert.equal(teks, A.teks);
-  for (const p of ["Kec. Kec 1, Kabupaten A: Tinggi, Banjir, ±", "Kec. Kec 2", "19 Oktober 2026", "https://pantau.terasurban.com/risiko", "BPBD AAA"]) assert.ok(teks.includes(p), p);
+  for (const p of ["Kec. Kec 1, Kabupaten A: Tinggi, Banjir, ±", "Kec. Kec 2", "19 Oktober 2026", "https://centurisk97.id/risiko", "BPBD AAA"]) assert.ok(teks.includes(p), p);
   for (const pii of [...PII, "0812-3456", "081234567890", "token", "@"]) assert.ok(!teks.includes(pii), `teks memuat ${pii}`);
   assert.equal(B.tautan, null, "nomor tak sah tidak jadi tautan"); assert.equal(B.wa, null); assert.equal(C.tautan, null);
   assert.match((await baris()).find(r => r.judul.includes("Kec 4")).rincian, /terdekat 22\.5 km/);

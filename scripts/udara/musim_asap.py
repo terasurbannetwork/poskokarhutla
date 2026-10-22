@@ -67,7 +67,7 @@ def susun(mh, ik, riwayat=None):
             cams.append([b, len(v), round(sum(v) / len(v), 1)])
     return {"sd": sd, "doy": doy, "bulan": bulan, "tahun": tahun, "cams": cams,
             "kini": {k: ik.get(k) for k in ("status", "iod_status") if ik.get(k)} | ({"oni": ik["oni_terakhir"]} if ik.get("oni_terakhir") else {}),
-            "sumber": "NASA FIRMS (titik panas, semua satelit); ONI NOAA CPC; PM2,5 analisis Copernicus CAMS lewat Open-Meteo"}
+            "sumber": "NASA FIRMS, MODIS C6.1 + VIIRS S-NPP + VIIRS NOAA-20; arsip standar sampai batas SP, NRT sesudahnya; hanya titik di daratan Indonesia; ONI NOAA CPC; PM2,5 analisis Copernicus CAMS lewat Open-Meteo"}
 
 
 def main():

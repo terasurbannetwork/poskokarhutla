@@ -10,6 +10,7 @@ import {laju, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {PROV} from "./alun.js";
+import {waktuTanggapApi} from "./sla.js";
 import {MEJA, DAFTAR_MEJA, BENCANA, RAPOR, spekPublik, validasi, statusEfektif, tandaBahaya} from "./meja_spek.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, LAJU_TULIS = [[JAM, 120]], TTL_RINGKAS = 2 * JAM, MAKS_EKSPOR = 20000, RE_ID = /^[0-9a-f]{16}$/;
@@ -368,7 +369,8 @@ async function hitungRapor(env, kini, ikut, admin) {
   for (const k of hasil) { const p = (prov[k.prov] ??= {prov: k.prov, n_kab: 0, n_dengan_skor: 0, jumlah: 0}); p.n_kab++; if (k.skor != null) { p.n_dengan_skor++; p.jumlah += k.skor; } }
   return {dibuat: kini, label: "indeks komposit, bobot sementara", bobot: RAPOR.bobot, kab: hasil,
     prov: Object.values(prov).map(({jumlah, ...p}) => ({...p, skor: p.n_dengan_skor ? bulat(jumlah / p.n_dengan_skor) : null})).sort((a, b) => (b.skor ?? -1) - (a.skor ?? -1)),
-    lapor_warga: "belum dihitung: tabel laporan tidak punya kolom prov/kab"};
+    lapor_warga: "belum dihitung: tabel laporan tidak punya kolom prov/kab",
+    waktu_tanggap_api: await waktuTanggapApi(env, kini, ikut)};   // blok terpisah dari src/sla.js; TIDAK masuk gabungSkor/RAPOR.bobot
 }
 async function raporAdmin(env, req, url, kini) {
   const p = await adminSaja(env, req); if (p instanceof Response) return p;

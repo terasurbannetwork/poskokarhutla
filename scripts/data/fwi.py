@@ -32,6 +32,46 @@ def ffmc(f0, t, h, w, hujan):
     return min(max(59.5 * (250 - m) / (147.2 + m), 0), 101)
 
 
+KOEF_FFMC_JAM = 250 * 59.5 / 101  # 147,27723: pengali cffdrs hffmc (harian di atas memakai 147,2 Van Wagner 1987)
+
+
+def ffmc_jam(f0, t, h, w, hujan, jam=1.0):
+    """FFMC per jam (Van Wagner 1977; Van Wagner & Pickett 1985 pers. 1-8), ditulis ulang dari rumus dan dicek ke
+    fixture cffdrs hffmc. Beda dari ffmc() harian: hujan penuh (tanpa -0,5 mm), laju 0,0579 bukan 0,581 (per jam),
+    suku 0,0015 memakai kadar air SEBELUM hujan. jam = lama langkah (jam); cuaca = rerata/jumlah jam itu."""
+    h = min(max(h, 0.0), 100.0)
+    w = max(w, 0.0)
+    mo = KOEF_FFMC_JAM * (101 - f0) / (59.5 + f0)
+    if hujan > 0:
+        tambah = 42.5 * hujan * math.exp(-100 / (251 - mo)) * (1 - math.exp(-6.93 / hujan))
+        if mo > 150:
+            tambah += 0.0015 * (mo - 150) ** 2 * math.sqrt(hujan)
+        mo = min(mo + tambah, 250)
+    ed = 0.942 * h ** 0.679 + 11 * math.exp((h - 100) / 10) + 0.18 * (21.1 - t) * (1 - math.exp(-0.115 * h))
+    ew = 0.618 * h ** 0.753 + 10 * math.exp((h - 100) / 10) + 0.18 * (21.1 - t) * (1 - math.exp(-0.115 * h))
+    sk = 0.0579 * math.exp(0.0365 * t) * jam
+    if mo > ed:
+        ko = 0.424 * (1 - (h / 100) ** 1.7) + 0.0694 * math.sqrt(w) * (1 - (h / 100) ** 8)
+        m = ed + (mo - ed) * 10 ** (-ko * sk)
+    elif mo < ew:
+        k1 = 0.424 * (1 - ((100 - h) / 100) ** 1.7) + 0.0694 * math.sqrt(w) * (1 - ((100 - h) / 100) ** 8)
+        m = ew - (ew - mo) * 10 ** (-k1 * sk)
+    else:
+        m = mo
+    return max(59.5 * (250 - m) / (KOEF_FFMC_JAM + m), 0.0)
+
+
+def deret_ffmc_jam(jam_jam, awal=85.0):
+    """jam_jam = [(t, h, w, hujan_jam_itu), ...] per jam berurutan. Jam kosong (ada None) membawa nilai sebelumnya.
+    Hasil sepanjang input. Panaskan >= 48 jam sebelum jam yang dipakai (ingatan FFMC ~ hari)."""
+    f, hasil = awal, []
+    for t, h, w, r in jam_jam:
+        if None not in (t, h, w, r):
+            f = ffmc_jam(f, t, h, w, r)
+        hasil.append(f)
+    return hasil
+
+
 def dmc(d0, t, h, hujan, le=LE_KHATULISTIWA):
     t = max(t, -1.1)
     rk = 1.894 * (t + 1.1) * (100 - h) * le * 1e-4
@@ -139,6 +179,22 @@ LE_KANADA = (6.5, 7.5, 9, 12.8, 13.9, 13.9, 12.4, 10.9, 9.4, 8, 7, 6)
 LF_KANADA = (-1.6, -1.6, -1.6, 0.9, 3.8, 5.8, 6.4, 5, 2.4, 0.4, -1.6, -1.6)
 
 
+# Fixture resmi cffdrs hffmc (cran/cffdrs tests/testthat/data/HourlyFineFuelMoistureCode.csv): satu langkah, sampel tiap baris
+# ke-72 dari baris dalam rentang fisik (RH 0-100, angin >= 0, FFMC 0-101; hujan <= 0 dianggap kering seperti R).
+# (T, RH, angin, hujan, FFMC_lama, langkah_jam, FFMC_baru) - berkas membulatkan 4 angka penting.
+HFFMC_CFFDRS = [
+    (8.5,4.58,0,-10,0,9,26.63), (26.2,26.45,291.6,-10,0,9,91.11), (43,48.32,218.7,55.61,0,9,91.41),
+    (59.8,70.19,145.8,121.22,0,9,90.33), (-13.5,99.35,72.9,186.83,0,9,0.8108), (-18,99.35,0,252.44,0,9,0.09201),
+    (-21.6,99.35,291.6,252.44,0,9,1.118), (58.6,92.06,218.7,-10,72.9,9,83.02), (40.9,4.58,218.7,55.61,72.9,9,99.62),
+    (57.7,26.45,145.8,121.22,72.9,9,98.38), (-15.6,55.61,72.9,186.83,72.9,9,25.91), (1.2,77.48,0,252.44,72.9,9,12.14),
+    (18.9,99.35,291.6,252.44,72.9,9,10.76), (43.4,19.16,291.6,-10,0,18,97.35), (-29.9,48.32,218.7,55.61,0,18,35.84),
+    (-13.1,70.19,145.8,121.22,0,18,46.24), (3.7,92.06,72.9,186.83,0,18,30.66), (-0.8,92.06,0,252.44,0,18,4.312),
+    (-4.4,92.06,291.6,252.44,0,18,39.83), (-14.3,92.06,218.7,-10,72.9,18,72.9), (36.9,99.35,145.8,55.61,72.9,18,21.66),
+    (-15.2,26.45,145.8,121.22,72.9,18,59.18), (1.6,48.32,72.9,186.83,72.9,18,68.66), (18.4,70.19,0,252.44,72.9,18,36.78),
+    (36.1,92.06,291.6,252.44,72.9,18,79.1),
+]
+
+
 if __name__ == "__main__":
     # Uji baku Van Wagner & Pickett (1985): 45 LU, April, T17 RH42 W25 hujan 0, mulai 85/6/15
     f = ffmc(85, 17, 42, 25, 0)
@@ -165,4 +221,13 @@ if __name__ == "__main__":
         x = fwi(i, bui(d, c))
         assert abs(d - D0) < 0.006 and abs(c - C0) < 0.006, ("DMC/DC menyimpang dari cffdrs", m, t, h, w, r, d, D0, c, C0)
         assert abs(f - F0) < 0.15 and abs(i - I0) < 0.3 and abs(x - W0) < 0.3, ("FFMC/ISI/FWI menyimpang", f, F0, i, I0, x, W0)
+    # FFMC per jam vs fixture cffdrs: seluruh 2.595 baris dalam rentang fisik lolos < 0,005 (dibulatkan berkas); sampel ini 25 baris.
+    for T, H, W, R_, F0, J, F1 in HFFMC_CFFDRS:
+        v = ffmc_jam(F0, T, H, W, max(R_, 0), J)
+        assert abs(v - F1) < 0.006, ("hffmc menyimpang dari cffdrs", T, H, W, R_, F0, J, v, F1)
+    # sifat fisik: hujan menurunkan; kering-hangat menaikkan; mendarat di pita ekuilibrium [Ew, Ed] dan diam di sana (dari bawah di tepi basah, dari atas di tepi kering)
+    assert ffmc_jam(90, 28, 60, 5, 5) < ffmc_jam(90, 28, 60, 5, 0)
+    a, b = deret_ffmc_jam([(32, 40, 10, 0)] * 2000, 20)[-1], deret_ffmc_jam([(32, 40, 10, 0)] * 2000, 99)[-1]
+    assert a < b and a > 85 and abs(ffmc_jam(a, 32, 40, 10, 0) - a) < 1e-6 and abs(ffmc_jam(b, 32, 40, 10, 0) - b) < 1e-6, (a, b)
+    assert deret_ffmc_jam([(30, 50, 10, 0), (None, 1, 1, 1)], 80)[1] == deret_ffmc_jam([(30, 50, 10, 0)], 80)[0]
     print("ok", hasil)

@@ -40,7 +40,7 @@
   const desimal = x => x.replace(/^([−-]?)(\d{1,3}(?:\.\d{3})*|\d+),(\d{1,2})(?!\d)/, (_, sg, bul, pec) => sg + Number(bul.replace(/\./g, "")).toLocaleString("en-GB") + "." + pec);
   /* token bisa membawa koma/titik penutup ("119," dari "di 119, mengecil"); bila terjemahan sudah memuat tanda yang sama, jangan digandakan */
   const isi = (tpl, tok) => tpl.replace(/\{(\d+)\}([.,]?)/g, (_, i, nx) => { if (tok[i] == null) return nx; let v = angkaEN(tok[i]);
-    if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; });
+    if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; }).replace(/\b1 ((?:[a-z-]+ )*?)clusters\b/g, "1 $1cluster");   // "1 clusters" -> "1 cluster"
   /* "minggu ke-42": hubung ordinal "ke-" ikut tertangkap sebagai minus; kunci kamus ("ke{0}") sudah menelannya, tokennya tidak boleh membawa "-" */
   const ordinal = (t, m, o) => m[0] === "-" && /(?:^|\W)ke$/.test(t.slice(0, o)) ? m.slice(1) : m;
   const kapital = s => s.charAt(0).toUpperCase() + s.slice(1);

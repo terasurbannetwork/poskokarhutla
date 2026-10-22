@@ -15,11 +15,17 @@
   const tulis = (k, v) => { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
   const buang = k => { try { localStorage.removeItem(k); } catch (e) {} };
 
-  let kode = null, lokasi = null, sedangKirim = false;
+  let kode = null, kh = null, lokasi = null, sedangKirim = false;   // kh = 16 hex pertama sha256(kode): pengikat draf & peta luring ke satu kode regu
+  /* draf milik kode aktif disimpan, sisanya dibuang (ponsel bersama: draf Regu A tidak boleh terkirim atas nama Regu B) */
+  const saringDraf = (a, h) => { const l = Array.isArray(a) ? a : []; const milik = h ? l.filter(d => d && d.h === h) : []; return {milik, buang: l.length - milik.length}; };
+  const hashKode = async k => { try { return [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(k)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16); } catch (e) { return null; } };
+  const capLama = (a, h) => (Array.isArray(a) ? a : []).map(d => d && !d.h && h ? {...d, h} : d);   // draf sebelum ada cap: milik kode yang tersimpan waktu itu
+  window.LapanganDraf = {saringDraf, capLama};
   const pesan = (t, k) => { $("pesan").textContent = t || ""; $("pesan").className = "lp-pesan " + (k || ""); };
 
   /* ---- kode regu: dari fragmen tautan (tidak ikut ke server/log), lalu localStorage; tanpa localStorage tetap jalan selama tab terbuka ---- */
   const dariHash = (location.hash.match(/^#k=([0-9a-fA-F]{26})$/) || [])[1];
+  const kodeLama = baca(K_KODE);   // kode tersimpan SEBELUM tautan baru menimpanya: pemilik draf lama tanpa cap
   if (dariHash) { kode = dariHash.toLowerCase(); tulis(K_KODE, kode); try { history.replaceState(null, "", location.pathname); } catch (e) {} }
   else { const b = baca(K_KODE); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
@@ -45,16 +51,27 @@
       lokasi = await ambilGPS();
       $("lokasi").textContent = `Lokasi terbaca: ${lokasi.lat.toFixed(5)}, ${lokasi.lon.toFixed(5)} (akurasi ±${Math.round(lokasi.akurasi)} m)` + (lokasi.akurasi > 1000 ? ". Terlalu lemah, coba di tempat terbuka." : "");
       if (lokasi.akurasi > 1000) lokasi = null;
-      pesan("");
+      pesan(""); if (lokasi && window.LapanganTugas) window.LapanganTugas.lokasiBaru();
     } catch (e) { lokasi = null; pesan(e.message, "galat"); }
     t.disabled = false;
   });
 
   /* ---- draf (offline) ---- */
-  const drafAda = () => { try { const a = JSON.parse(baca(K_DRAF) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const drafSemua = () => { try { const a = JSON.parse(baca(K_DRAF) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+  const drafAda = () => saringDraf(drafSemua(), kh).milik;
   const drafSimpan = a => tulis(K_DRAF, JSON.stringify(a));
+  /* indikator jaringan: navigator.onLine sering bohong (sinyal ada, internet tidak), jadi hasil fetch ikut menentukan */
+  let daring = navigator.onLine;
+  function jaringan(ya) { if (ya === daring) return; daring = ya; gambarJaringan(); }
+  function gambarJaringan() {
+    const n = drafAda().length, b = $("jaringan");
+    b.className = "lp-jaringan " + (daring ? "daring" : "luring");
+    $("jaringanTeks").textContent = daring ? "Online" : n ? "Tanpa sinyal. Laporan disimpan di ponsel dan dikirim saat sinyal kembali." : "Tanpa sinyal. Formulir tetap bisa diisi, laporan disimpan di ponsel.";
+    $("jaringanN").hidden = !n; $("jaringanN").textContent = n ? `${n} antre` : "";
+  }
   function tampilAntrean() {
     const n = drafAda().length;
+    gambarJaringan();
     $("antrean").hidden = !n;
     if (n) $("antreanTeks").textContent = `${n} laporan tersimpan di ponsel dan menunggu sinyal. Akan dikirim otomatis saat online.`;
   }
@@ -82,7 +99,8 @@
   async function kirimSatu(d) {
     let r;
     try { r = await fetch("/api/lapangan", {method: "POST", headers: {...hdr(), "content-type": "application/json"}, body: JSON.stringify(d.body)}); }
-    catch (e) { return {tunda: "Tidak ada sinyal."}; }
+    catch (e) { jaringan(false); return {tunda: "Tidak ada sinyal."}; }
+    jaringan(true);
     const j = await r.json().catch(() => ({}));
     if (r.status === 201 || r.status === 200) {
       let catatFoto = "";
@@ -99,7 +117,7 @@
     return {tolak: j.galat || `Ditolak (${r.status})`};
   }
   async function kirimAntrean() {
-    if (sedangKirim || !kode) return; sedangKirim = true;
+    if (sedangKirim || !kode || !kh) return; sedangKirim = true;
     try {
       let a = drafAda(), terkirim = 0, catat = "";
       while (a.length) {
@@ -114,13 +132,13 @@
     } finally { sedangKirim = false; tampilAntrean(); }
   }
   function kodeTidakBerlaku() {
-    buang(K_KODE); kode = null; $("regu").textContent = "Kode tidak berlaku";
+    buang(K_KODE); kode = null; kh = null; window.LapanganTugas?.hapusPeta?.(); $("regu").textContent = "Kode tidak berlaku";
     $("tanpaKode").hidden = false; $("tanpaKode").textContent = "Kode regu ini sudah dicabut atau salah. Minta tautan baru dari posko."; $("kirim").disabled = true;
   }
 
   $("f").addEventListener("submit", async e => {
     e.preventDefault();
-    if (!kode) return pesan("Buka dulu tautan dari posko.", "galat");
+    if (!kode || !kh) return pesan("Buka dulu tautan dari posko.", "galat");
     const status = (document.querySelector('input[name="status"]:checked') || {}).value;
     if (!lokasi) return pesan("Ambil lokasi dulu (tombol 1).", "galat");
     if (!status) return pesan("Pilih kondisi api (bagian 2).", "galat");
@@ -133,8 +151,13 @@
       kendala: [...document.querySelectorAll("#kendala input:checked")].map(i => i.value)};
     if (luas != null) body.luas_ha = luas; if (padam != null) body.padam_ha = padam; if (personel != null) body.personel = personel;
     if ($("air").value) body.sumber_air = $("air").value;
-    if ($("catatan").value.trim()) body.catatan = $("catatan").value.trim();
-    const foto = await kecilkan($("foto").files[0]), rec = {body, foto: foto ? await keDataUrl(foto) : null, dibuat: Date.now()}, a = drafAda();
+    /* placeholder mosaik drone (OpenDroneMap): tautan https ditulis ke catatan, tanpa kolom baru di server. Dipasang di catatan.length <= 500 */
+    let drone = $("drone").value.trim();
+    if (drone && !/^https:\/\/[^\s]{4,200}$/.test(drone)) { t.disabled = false; return pesan("Tautan drone harus diawali https:// dan tanpa spasi.", "galat"); }
+    const cat = [$("catatan").value.trim(), drone && `Mosaik drone: ${drone}`].filter(Boolean).join("\n");
+    if (cat.length > 500) { t.disabled = false; return pesan("Catatan dan tautan drone lebih dari 500 huruf. Persingkat salah satunya.", "galat"); }
+    if (cat) body.catatan = cat;
+    const foto = await kecilkan($("foto").files[0]), rec = {h: kh, body, foto: foto ? await keDataUrl(foto) : null, dibuat: Date.now()}, a = drafAda();
     a.push(rec);
     if (!drafSimpan(a)) {   // kuota localStorage: coba tanpa foto, lalu menyerah
       const adaFoto = !!rec.foto; rec.foto = null;
@@ -147,20 +170,20 @@
   });
 
   $("kirimLagi").addEventListener("click", kirimAntrean);
-  /* ---- lapor rumah rusak: formulirnya modul rumah_rusak.js; MapLibre (cdnjs, SRI) dan modul dimuat HANYA saat tombol diketuk, jadi form lapangan tidak melambat ---- */
-  const CDN = "https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.";
-  const SRI_JS = "sha512-dXgoFR02YHJ9Fa29P3D/1umNaZ0EXS2N0w29Lm3b/1BK8UDLMdLWDFwuujIyJJdU27/PLuk3dmS1V9NO8ABX1A==", SRI_CSS = "sha512-qN/uDg9bS3IAldWq4lswyC+9ZSoShtfyNDp+FaJhdtXJqdgubHA+s4nB8BajW0m90Y0+RBGbqu2anzbxiQYdHA==";
+  /* ---- lapor rumah rusak: formulirnya modul rumah_rusak.js; MapLibre (lokal, /vendor/maplibre) dan modul dimuat HANYA saat tombol diketuk, jadi form lapangan tidak melambat ---- */
+  const PETA_JS = "/vendor/maplibre/maplibre-gl.js?v=4.7.1", PETA_CSS = "/vendor/maplibre/maplibre-gl.css?v=4.7.1";   // lokal (tanpa CDN) supaya terbuka luring; disalin ke cache oleh sw-lapangan.js
   const sisip = (tag, atribut) => new Promise((ok, gagal) => {
     const e = document.createElement(tag); Object.assign(e, atribut); e.onload = () => ok(); e.onerror = () => gagal(new Error(atribut.src || atribut.href));
     document.head.append(e);
   });
+  let janjiPeta = null;
+  const muatMapLibre = () => window.maplibregl ? Promise.resolve() : janjiPeta || (janjiPeta = Promise.all([sisip("link", {rel: "stylesheet", href: PETA_CSS}).catch(() => {}), sisip("script", {src: PETA_JS})]).then(() => {}, e => { janjiPeta = null; throw e; }));
   $("bukaRR").addEventListener("click", async () => {
     const t = $("bukaRR"); t.disabled = true; $("rrWadah").hidden = false;
     try {
-      sisip("link", {rel: "stylesheet", href: CDN + "css", integrity: SRI_CSS, crossOrigin: "anonymous"}).catch(() => {});   // peta tanpa gaya masih bisa dipakai lewat tombol lokasi
       sisip("link", {rel: "stylesheet", href: "/rumah_rusak.css?v=1"}).catch(() => {});
       sisip("link", {rel: "stylesheet", href: "/inti/lapor-gelap.css?v=1&k=2"}).catch(() => {});   // ulang SESUDAH rumah_rusak.css: :root terang-nya menimpa mode gelap bila yang pertama
-      await Promise.all([sisip("script", {src: CDN + "js", integrity: SRI_JS, crossOrigin: "anonymous"}).catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=1"})]);
+      await Promise.all([muatMapLibre().catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=1"})]);
       window.RumahRusak.pasang($("rrWadah"), {kode});
       t.hidden = true;
     } catch (e) { pesan("Formulir rumah rusak belum termuat. Periksa sinyal lalu ketuk lagi.", "galat"); t.disabled = false; $("rrWadah").hidden = true; }
@@ -169,15 +192,30 @@
   window.addEventListener("online", kirimAntrean);
   setInterval(() => { if (drafAda().length) kirimAntrean(); }, 60000);
 
-  /* ---- mulai: periksa kode ke server; gagal jaringan = tetap boleh mengisi (draf) ---- */
+  window.addEventListener("online", () => { jaringan(true); if (window.LapanganTugas && kode) window.LapanganTugas.segar(); });
+  window.addEventListener("offline", () => jaringan(false));
+  /* service worker: cangkang halaman + jawaban terakhir (saya, tugas) + peta luring; ditunda sampai halaman siap supaya tidak bersaing dengan muat awal */
+  const sudahDikendalikan = "serviceWorker" in navigator && !!navigator.serviceWorker.controller;
+  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lapangan"}).then(() => navigator.serviceWorker.ready).then(() => navigator.serviceWorker.controller || new Promise(r => { navigator.serviceWorker.addEventListener("controllerchange", r, {once: true}); setTimeout(r, 5000); })).then(() => { if (!sudahDikendalikan && kode) { fetch("/api/lapangan/saya", {headers: hdr()}).catch(() => {}); window.LapanganTugas?.segar(); } }).catch(() => {}), 1500));   // kunjungan pertama: jawaban dimuat sekali lagi lewat service worker supaya tersimpan untuk luring
+
+  /* ---- mulai: periksa kode ke server; gagal jaringan = tetap boleh mengisi (draf) dan tugas terakhir tampil dari simpanan ---- */
   (async () => {
+    if (kode) {
+      kh = await hashKode(kode);
+      const hl = kodeLama && /^[0-9a-f]{26}$/.test(kodeLama) ? await hashKode(kodeLama) : null;
+      const {milik, buang: n} = saringDraf(capLama(drafSemua(), hl), kh);
+      if (n && kh) { drafSimpan(milik); pesan(`${n} laporan antre milik kode regu sebelumnya dihapus dari ponsel ini.`, "galat"); }
+    }
     tampilAntrean();
     if (!kode) { $("regu").textContent = "Belum ada kode regu"; $("tanpaKode").hidden = false; $("kirim").disabled = true; return; }
+    $("tugas").hidden = false;
+    window.LapanganTugas?.mulai({kode: () => kode, kh: () => kh, lokasi: () => lokasi, jaringan, kodeMati: kodeTidakBerlaku, muatMapLibre});
     try {
       const r = await fetch("/api/lapangan/saya", {headers: hdr()});
+      jaringan(!r.headers.get("x-dari-cache"));
       if (r.status === 403) return kodeTidakBerlaku();
-      const j = await r.json(); $("regu").textContent = `${j.regu.nama} · ${j.regu.unsur} · ${j.regu.kab}`;
-    } catch (e) { $("regu").textContent = "Regu (kode tersimpan, sedang offline)"; }
+      const j = await r.json(); $("regu").textContent = `${j.regu.nama}, ${j.regu.unsur}, ${j.regu.kab}` + (r.headers.get("x-dari-cache") ? " (data tersimpan)" : "");
+    } catch (e) { jaringan(false); $("regu").textContent = "Regu (kode tersimpan, sedang offline)"; }
     kirimAntrean();
   })();
 })();

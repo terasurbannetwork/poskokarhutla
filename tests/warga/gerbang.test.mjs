@@ -19,11 +19,17 @@ function temukan() {
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
   const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8") + readFileSync(path.join(AKAR, "src/posko.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED + RUTE_POSKO digabung ke RUTE
   /* Ruang Koordinasi BNPB: RUTE_BNPB, RUTE_RELAWAN, RUTE_ALUN, RUTE_RISET, RUTE_MEJA digabung ke RUTE */
-  const bn = ["bnpb", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
+  const bn = ["bnpb", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "push", "sla", "pipa"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
   if (/bersihkanBnpb\(env/.test(w)) out.add("cron bersihkanBnpb");
   if (/arsipkanSitrep\(env/.test(w)) out.add("cron arsipkanSitrep");
   if (/buatTugas\(env/.test(w)) out.add("cron buatTugas");
   if (/bersihkanInstansi\(env/.test(w)) out.add("cron bersihkanInstansi");
+  if (/kirimPushDaerah\(env/.test(w)) out.add("cron kirimPushDaerah");
+  if (/catatRiwayatStatus\(env/.test(w)) out.add("cron catatRiwayatStatus");
+  if (/alarmHimawari\(env/.test(w)) out.add("cron alarmHimawari");
+  if (/kabarDarurat\(/.test(readFileSync(path.join(AKAR, "src/penugasan.js"), "utf8"))) out.add("cron kabarDarurat");
+  if (/kabarLevel3\(/.test(readFileSync(path.join(AKAR, "src/instansi.js"), "utf8"))) out.add("cron kabarLevel3");
+  if (/catatAwalTugas\(/.test(readFileSync(path.join(AKAR, "src/instansi.js"), "utf8"))) out.add("cron kunciAlarmVIIRS");
   if (/bersihkanPantau\(env/.test(w)) out.add("cron bersihkanPantau");
   if (/bersihkanStaf\(env/.test(w)) out.add("cron bersihkanStaf");
   if (/buatPengingat\(env/.test(w)) out.add("cron buatPengingat");
@@ -38,6 +44,7 @@ function temukan() {
   if (/perbaruiSihka\(env/.test(w)) out.add("cron sihka");
   const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron
   if (/j === "\/api\/peringatan\/aktif"/.test(pr)) out.add("GET /api/peringatan/aktif");
+  for (const ext of ["cap", "geojson"]) if (new RegExp(`"/api/peringatan/aktif\\.${ext}"`).test(pr)) out.add(`GET /api/peringatan/aktif.${ext}`);   // feed CAP 1.2 + GeoJSON (W6)
   if (/\/api\/admin\/peringatan\//.test(pr)) out.add("POST /api/admin/peringatan/:kunci/cabut");
   if (/periksaPeringatan\(env/.test(w)) out.add("cron peringatan");
   if (/bersihkanFoto\(env\)/.test(w)) out.add("cron bersihkanFoto");

@@ -79,8 +79,8 @@ const Insight = {
     const rendah = m.filter(x => x.vis_m < 5000).length, asap = m.filter(x => x.asap).length, M = innerWidth < 640, W = M ? 520 : 940, L = M ? 140 : 210, rh = 30, X = v => Math.min(v, 10000) / 10000 * (W - L - 130);
     const g = m.map((x, i) => { const y = i * rh, k = kelasJP(x.vis_m), w = wxNama(x.wx), km = x.vis_m >= 9999 ? "10 km+" : fmt(x.vis_m / 1000) + " km";
       return `<g><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="13" font-weight="600" translate="no">${esc(x.nama.replace(/ (Intl|Arpt|Airport)$/i, ""))}</text>
-        <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(x.vis_m))}" height="${rh - 10}" fill="${JP[k].w}" data-tip="<b>${esc(x.nama)}</b> · ${esc(x.icao)}<br>Jarak pandang: ${km}${w ? `<br>Cuaca: ${w}` : ""}<br>Laporan: ${jamWIB(x.waktu)}"/>
-        <g class="gf" style="--i:${i}">${Kartu.pil(L + Math.max(3, X(x.vis_m)) + 8, y + 5, km + (w ? " · " + w : ""), JP[k].w, k === 1 ? "#3b2e00" : "#fff")[0]}</g></g>`; }).join("");
+        <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(x.vis_m))}" height="${rh - 10}" fill="${JP[k].w}" data-tip="<b>${esc(x.nama)}</b>, ${esc(x.icao)}<br>Jarak pandang: ${km}${w ? `<br>Cuaca: ${w}` : ""}<br>Laporan: ${jamWIB(x.waktu)}"/>
+        <g class="gf" style="--i:${i}">${Kartu.pil(L + Math.max(3, X(x.vis_m)) + 8, y + 5, km + (w ? ", " + w : ""), JP[k].w, k === 1 ? "#3b2e00" : "#fff")[0]}</g></g>`; }).join("");
     Kartu.leg(JP.map(j => [j.w, j.n]));
     const terbaru = jamWIB(Math.max(...seg.map(x => +new Date(x.waktu))));
     return Kartu.ex(rendah ? `${this.hl(fmt(rendah) + " bandara")} melapor jarak pandang di bawah 5 km${asap ? `, ${fmt(asap)} di antaranya berasap` : ""}` : `${this.hl(fmt(m.length) + " bandara")} melapor jarak pandang berkurang${asap ? `, ${fmt(asap)} berasap` : ""}`, "", "",
@@ -101,6 +101,7 @@ const Insight = {
     const el = $("#insight");
     if (typeof Peluang !== "undefined") [this.PL, this.AS] = await Promise.all([Peluang.muat("data/peluang.json"), fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
+    Cerita.sisip(el, "udara");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));
     el.addEventListener("change", e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } });
     el.onclick = e => {
@@ -109,3 +110,10 @@ const Insight = {
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); nanti(() => Peta.pilihProv(pv.dataset.prov)); } };
   },
 };
+/* kartu Cerita (inti/cerita.js): tahun-tahun titik panas terbanyak sejak 2019 menurut fase ENSO, dari data/musim_asap.json (FIRMS, ONI NOAA CPC). Titik panas = penyebab asap, bukan ukuran asapnya. */
+Cerita.daftar("udara", async () => { const D = await muatJSON("data/musim_asap.json").catch(() => null), T = D?.tahun; if (!T) return null;
+  const tuntas = Object.keys(T).filter(y => !T[y].sementara).sort((a, b) => T[b].n - T[a].n), y = tuntas[0], z = Object.keys(T).find(k => T[k].sementara), th = Object.keys(T).sort(); if (!y) return null;
+  const baris = [["#b5651d", "Pernah terjadi", `Tahun ${y} (${T[y].fase}) mencatat ${fmt(T[y].n)} titik panas di Indonesia, paling banyak di antara ${th[0]} sampai ${Math.max(...tuntas.map(Number))}.`]];
+  if (tuntas[1]) baris.push(["#6b7fa3", "Pembanding", `Tahun ${tuntas[1]} (${T[tuntas[1]].fase}) mencatat ${fmt(T[tuntas[1]].n)} titik panas; tahun La Niña ${tuntas.filter(k => T[k].fase === "La Niña").map(k => `${k} hanya ${fmt(T[k].n)}`).join(", ")}.`]);
+  if (z) baris.unshift(["#c9503a", "Tahun ini", `Per ${new Date(D.sd + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"})} tahun ${z} (${T[z].fase}) sudah mencatat ${fmt(T[z].n)} titik panas, angka sementara.`]);
+  return {judul: z && T[z].n > T[y].n ? `${Kartu.hl("sekitar " + Cerita.kata(T[z].n) + " titik panas")} sudah tercatat pada ${z} (sementara), melampaui ${y} (sekitar ${Cerita.kata(T[y].n)}), tertinggi dari ${th[0]} sampai ${Math.max(...tuntas.map(Number))}` : `${Kartu.hl("sekitar " + Cerita.kata(T[y].n) + " titik panas")} pada ${y}, tahun terbanyak sejak ${th[0]}, saat ${T[y].fase}`, baris, sumber: "NASA FIRMS, MODIS C6.1 + VIIRS S-NPP + VIIRS NOAA-20, hanya titik di daratan Indonesia; ONI NOAA CPC"}; });

@@ -256,6 +256,7 @@ uji("foto laporan: JPEG/WebP lewat R2 sungguhan; berkas lain, laporan regu lain,
   const ok = await api("POST", url, jpg, {"x-kode-regu": g.kode}); assert.equal(ok.s, 200, ok.t);
   assert.equal((await api("POST", url, jpg, {"x-kode-regu": g.kode})).s, 409, "foto kedua");
   assert.equal((await DB.prepare("SELECT foto FROM lapangan WHERE id = ?").bind(l.j.id).first()).foto, 1);
+  assert.equal((await DB.prepare("SELECT foto_sha256 f FROM lapangan WHERE id = ?").bind(l.j.id).first()).f, createHash("sha256").update(jpg).digest("hex"), "0044: foto_sha256 = hash byte yang disimpan");
   assert.equal((await api("GET", `/api/posko/foto/${l.j.id}`)).s, 403, "publik tidak boleh melihat foto");
   const f = await mf.dispatchFetch(`http://posko.lokal/api/posko/foto/${l.j.id}`, {headers: ADMIN});
   assert.equal(f.status, 200); assert.equal(f.headers.get("content-type"), "image/jpeg"); assert.deepEqual([...new Uint8Array(await f.arrayBuffer())], [...jpg]);
@@ -592,7 +593,8 @@ uji("tebakan kode regu dan token admin dihitung per IP bergaram; login dan IP la
   const baris = (await DB.prepare("SELECT kunci FROM laju_posko WHERE aksi = 'kode_gagal'").all()).results;
   assert.equal(baris.filter(x => x.kunci === ipH(ip)).length, 3, "tiap kegagalan tercatat"); assert.ok(!baris.some(x => x.kunci === ip), "IP mentah tidak tersimpan");
   await pasang(ipH(ip), "kode_gagal", 297);
-  const blok = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": g.kode}); assert.equal(blok.s, 429, "300 gagal: kode BENAR pun ditahan dari IP itu"); assert.ok(blok.h.get("retry-after"));
+  const blok = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": g.kode}); assert.equal(blok.s, 201, "300 gagal: kode BENAR tetap lolos (tidak ikut terkunci)");
+  const salahLagi = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": "0".repeat(26)}); assert.equal(salahLagi.s, 429, "300 gagal: tebakan salah berikutnya 429"); assert.ok(salahLagi.h.get("retry-after"));
   assert.equal((await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": "203.0.113.8", "x-kode-regu": g.kode})).s, 201, "IP lain tidak terkena");
   /* admin lewat header */
   const ip2 = "203.0.113.9", salah = {"cf-connecting-ip": ip2, "x-admin-token": "tebakan"};
@@ -633,7 +635,8 @@ uji("origin tak terurai ditolak 403 JSON (bukan 500) di rute POST", async () => 
 
 uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; semua halaman lain tertutup (halaman baru ikut terkunci)", async () => {
   /* /instansi masuk daftar putih atas keputusan pemilik 21 Okt 2026: pemda, polisi, dan TNI memakai akun instansi sendiri (bukan sesi admin); sesi, status aktif, dan cakupan dicek di API */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/instansi"], "daftar putih persis dua halaman, masing-masing bersama alasan");
+  /* /presiden: panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026) */
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/presiden", "/instansi"], "daftar putih persis tiga halaman, masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);
@@ -669,6 +672,8 @@ uji("L1: laporan regu menaut ke tugas api terdekat di kabupaten sama; padam = la
   const dekat = await tugas(kab, lat + dm(300), lon), jauh = await tugas(kab, lat + dm(2600), lon), lain = await tugas("Kabupaten Lain Uji", lat, lon);
   /* padam dari regu: tugas dekat menjadi padam_dilaporkan, padam_pada = waktu GPS laporan */
   const g2 = await buatRegu(), p = await kirim(g2.kode, lap(lat, lon, {status: "padam", luas_ha: 2, padam_ha: 2}, now)); assert.equal(p.s, 201, p.t);
+  assert.equal((await baca(dekat)).status, "buka", "keamanan ops: satu regu padam hanya klaim");
+  const g2b = await buatRegu(), p2 = await kirim(g2b.kode, lap(lat + 0.0001, lon, {status: "padam", luas_ha: 2, padam_ha: 2}, now + 1000)); assert.equal(p2.s, 201, p2.t);
   const t = await baca(dekat); assert.equal(t.status, "padam"); assert.equal(t.padam_verif, "padam_dilaporkan"); assert.ok(Math.abs(t.padam_pada - now) < 5000, "padam_pada = waktu GPS laporan");
   const tl = await tautan(p.j.id); assert.equal(tl.tugas_id, dekat); assert.equal(tl.status, "padam"); assert.ok(Math.abs(tl.jarak_km - 0.3) < 0.05, tl.jarak_km);
   for (const x of [jauh, lain]) assert.deepEqual([(await baca(x)).status, (await baca(x)).padam_verif], ["buka", null], "tugas >2 km dan kabupaten lain tak tersentuh");
@@ -681,4 +686,16 @@ uji("L1: laporan regu menaut ke tugas api terdekat di kabupaten sama; padam = la
   await DB.prepare("UPDATE tugas_api SET status = 'padam', padam_verif = 'padam_dilaporkan', padam_pada = ?, verif_pada = ? WHERE id = ?").bind(now - 3 * JAM, now - 3 * JAM, dekat).run();
   const g4 = await buatRegu(), tahan = await kirim(g4.kode, lap(lat, lon, {status: "menyala", luas_ha: 5000}, Date.now())); assert.equal(tahan.s, 201, tahan.t); assert.equal(tahan.j.ditahan, true);
   assert.equal((await baca(dekat)).padam_verif, "padam_dilaporkan", "laporan ditahan: tidak membuka kembali"); assert.equal((await tautan(tahan.j.id)).tugas_id, dekat);
+});
+
+uji("keamanan ops: regu dengan GPS di kabupaten lain tidak berefek pada tugas; klaim tercatat tetapi tidak dipercaya", async () => {
+  const lat = -2.1234, lon = 113.5678, now = Date.now();
+  const id = [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
+  const g0 = await buatRegu(), probe = await kirim(g0.kode, lap(lat, lon, {status: "tidak_ditemukan"}, now)); assert.equal(probe.s, 201, probe.t);
+  await DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status) VALUES (?, '62', ?, 'Kec Uji', ?, ?, 3, 5, 10, ?, ?, 'buka')").bind(id, probe.j.kab, lat, lon, now - JAM, now - JAM).run();
+  /* dua regu terdaftar di kabupaten LAIN, tetapi GPS-nya di kabupaten tugas: laporan tersimpan, tugas tidak berubah */
+  for (const i of [1, 2]) { const g = await buatRegu({kab: "Kabupaten Jauh Uji"}), r = await kirim(g.kode, lap(lat + i * 0.0001, lon, {status: "padam", luas_ha: 2, padam_ha: 2}, now + i * 1000)); assert.equal(r.s, 201, r.t); }
+  assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(id).first()).status, "buka");
+  assert.equal((await DB.prepare("SELECT count(*) n FROM tugas_lapangan WHERE tugas_id = ? AND dipercaya = 0").bind(id).first()).n, 2, "klaim tercatat, tidak dipercaya");
+  assert.equal((await DB.prepare("SELECT count(*) n FROM lapangan WHERE regu_id IN (SELECT id FROM regu WHERE kab = 'Kabupaten Jauh Uji')").first()).n, 2, "laporan tetap tersimpan");
 });

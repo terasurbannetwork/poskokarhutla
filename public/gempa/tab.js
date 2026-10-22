@@ -1,10 +1,10 @@
 "use strict";
 /* Tab, kepala, burger, tema. Urutan dan ikon mengikuti banjir; daftar tab = "tab" di public/bencana.json. */
-const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
-/* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/metode dan tautan (A24). */
-const TAB_SEMBUNYI = new Set(["metode"]);
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
+/* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/metode dan /gempa/informasi dan tautan (A24). */
+const TAB_SEMBUNYI = new Set(["informasi", "metode"]);
 const ISI_TAB = {kejadian: () => Kejadian.render(), insight: () => Insight.render(), tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(),
-  sim: () => typeof Sim !== "undefined" && Sim.render(), metode: () => Metode.render()};
+  sim: () => typeof Sim !== "undefined" && Sim.render(), metode: () => Metode.render(), informasi: () => window.Informasi?.render()};
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   sim: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 3.5-4 6-3"/><path d="M2 19h20"/>',
