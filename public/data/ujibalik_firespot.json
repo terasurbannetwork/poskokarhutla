@@ -1,111 +1,799 @@
 {
- "sumber": "VIIRS S-NPP arsip standar (data/raw/firms), Agu-Okt, satu snapshot per hari, sev tanpa cuaca",
- "ambang_medium_px": 4,
+ "sumber": "VIIRS arsip standar SP (data/raw/firms), Agu-Okt, satu snapshot per hari, sev tanpa cuaca; snpp = S-NPP saja, gabungan = semua VIIRS yang ada (2019: S-NPP+NOAA-20; 2023: +NOAA-21)",
+ "ambang_medium_px_produksi": 4,
  "api_besar_min_px": 100,
  "tahun": {
   "2019": {
-   "titik": 329743,
-   "api_besar": 142,
-   "kriteria": {
-    "sev>=2 (kandidat level 2)": {
-     "terukur": 142,
-     "hari_pertama_mungkin": 28,
-     "persen_mungkin": 19.7,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 114,
-      "1": 22,
-      "2": 6
+   "snpp": {
+    "titik": 329743,
+    "cluster": 86192,
+    "satelit": [
+     "N"
+    ],
+    "opsi": {
+     "c_tetap4": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 28,
+        "persen_mungkin": 19.7,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 114,
+         "1": 22,
+         "2": 6
+        },
+        "pola_hari_pertama": {
+         "H": 113,
+         "M": 14,
+         "MM": 14,
+         "HH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "H": 83,
+         "HH": 59
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "HH": 94,
+         "H": 48
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 11379,
+       "cluster_tambahan_vs_tetap4": 0,
+       "cluster_hari_ya": 22420,
+       "cluster_hari_ya_tambahan": 0,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 0,
+       "tambahan_umur_hari": {},
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
      },
-     "pola_hari_pertama": {
-      "H": 113,
-      "M": 14,
-      "MM": 14,
-      "HH": 1
+     "a_3_semua": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 12,
+        "persen_mungkin": 8.5,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 130,
+         "1": 9,
+         "2": 3
+        },
+        "pola_hari_pertama": {
+         "H": 129,
+         "M": 3,
+         "MM": 9,
+         "HH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "H": 70,
+         "HH": 72
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "HH": 102,
+         "H": 40
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 15457,
+       "cluster_tambahan_vs_tetap4": 4078,
+       "cluster_hari_ya": 28414,
+       "cluster_hari_ya_tambahan": 6228,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 3039,
+       "tambahan_umur_hari": {
+        "1": 3039,
+        "2": 937,
+        "3": 80,
+        "4": 18,
+        "5": 4
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "b_3_hari_tanpa_siang": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 22,
+        "persen_mungkin": 15.5,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 120,
+         "1": 18,
+         "2": 4
+        },
+        "pola_hari_pertama": {
+         "H": 119,
+         "M": 11,
+         "MM": 11,
+         "HH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "H": 77,
+         "HH": 65
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 142,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 142
+        },
+        "pola_hari_pertama": {
+         "HH": 99,
+         "H": 43
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 12032,
+       "cluster_tambahan_vs_tetap4": 653,
+       "cluster_hari_ya": 23649,
+       "cluster_hari_ya_tambahan": 1345,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 404,
+       "tambahan_umur_hari": {
+        "1": 404,
+        "2": 223,
+        "3": 18,
+        "4": 7,
+        "5": 1
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
      }
     },
-    "sev3 (px24>=10)": {
-     "terukur": 142,
-     "hari_pertama_mungkin": 0,
-     "persen_mungkin": 0.0,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 142
-     },
-     "pola_hari_pertama": {
-      "H": 83,
-      "HH": 59
-     }
-    },
-    "px24>=15 (level 3 tanpa FWI)": {
-     "terukur": 142,
-     "hari_pertama_mungkin": 0,
-     "persen_mungkin": 0.0,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 142
-     },
-     "pola_hari_pertama": {
-      "HH": 94,
-      "H": 48
-     }
+    "api_besar": 142,
+    "porsi_titik_h_persen": {
+     "siang": 12.6,
+     "malam": 3.0
     }
    },
-   "porsi_titik_h_persen": {
-    "siang": 12.6,
-    "malam": 3.0
+   "gabungan": {
+    "titik": 656595,
+    "cluster": 134690,
+    "satelit": [
+     "N",
+     "N20"
+    ],
+    "opsi": {
+     "c_tetap4": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 52,
+        "persen_mungkin": 25.1,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 155,
+         "1": 41,
+         "2": 9,
+         "3": 1,
+         "4": 1
+        },
+        "pola_hari_pertama": {
+         "H": 154,
+         "MM": 23,
+         "M": 29,
+         "MH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 119,
+         "HH": 88
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 69,
+         "HH": 138
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 18817,
+       "cluster_tambahan_vs_tetap4": 0,
+       "cluster_hari_ya": 38298,
+       "cluster_hari_ya_tambahan": 0,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 0,
+       "tambahan_umur_hari": {},
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "a_3_semua": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 26,
+        "persen_mungkin": 12.6,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 181,
+         "1": 21,
+         "2": 4,
+         "3": 1
+        },
+        "pola_hari_pertama": {
+         "H": 180,
+         "MM": 19,
+         "M": 7,
+         "MH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 99,
+         "HH": 108
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 60,
+         "HH": 147
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 26031,
+       "cluster_tambahan_vs_tetap4": 7214,
+       "cluster_hari_ya": 48834,
+       "cluster_hari_ya_tambahan": 10997,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 5343,
+       "tambahan_umur_hari": {
+        "1": 5343,
+        "2": 1728,
+        "3": 121,
+        "4": 20,
+        "5": 2
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "b_3_hari_tanpa_siang": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 47,
+        "persen_mungkin": 22.7,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 160,
+         "1": 37,
+         "2": 8,
+         "3": 1,
+         "4": 1
+        },
+        "pola_hari_pertama": {
+         "H": 159,
+         "MM": 22,
+         "M": 25,
+         "MH": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 114,
+         "HH": 93
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 207,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 207
+        },
+        "pola_hari_pertama": {
+         "H": 66,
+         "HH": 141
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 19776,
+       "cluster_tambahan_vs_tetap4": 959,
+       "cluster_hari_ya": 39979,
+       "cluster_hari_ya_tambahan": 1871,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 581,
+       "tambahan_umur_hari": {
+        "1": 581,
+        "2": 346,
+        "3": 27,
+        "4": 5
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     }
+    },
+    "api_besar": 207,
+    "porsi_titik_h_persen": {
+     "siang": 11.3,
+     "malam": 2.4
+    }
    }
   },
   "2023": {
-   "titik": 186152,
-   "api_besar": 34,
-   "kriteria": {
-    "sev>=2 (kandidat level 2)": {
-     "terukur": 34,
-     "hari_pertama_mungkin": 9,
-     "persen_mungkin": 26.5,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 25,
-      "1": 6,
-      "2": 3
+   "snpp": {
+    "titik": 186152,
+    "cluster": 76219,
+    "satelit": [
+     "N"
+    ],
+    "opsi": {
+     "c_tetap4": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 9,
+        "persen_mungkin": 26.5,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 25,
+         "1": 6,
+         "2": 3
+        },
+        "pola_hari_pertama": {
+         "H": 25,
+         "MM": 2,
+         "M": 7
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 19,
+         "HH": 15
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 13,
+         "HH": 21
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 8193,
+       "cluster_tambahan_vs_tetap4": 0,
+       "cluster_hari_ya": 13271,
+       "cluster_hari_ya_tambahan": 0,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 0,
+       "tambahan_umur_hari": {},
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
      },
-     "pola_hari_pertama": {
-      "H": 25,
-      "MM": 2,
-      "M": 7
+     "a_3_semua": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 2,
+        "persen_mungkin": 5.9,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 32,
+         "1": 1,
+         "2": 1
+        },
+        "pola_hari_pertama": {
+         "H": 32,
+         "MM": 1,
+         "M": 1
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 17,
+         "HH": 17
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 12,
+         "HH": 22
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 11478,
+       "cluster_tambahan_vs_tetap4": 3285,
+       "cluster_hari_ya": 17672,
+       "cluster_hari_ya_tambahan": 4507,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 2532,
+       "tambahan_umur_hari": {
+        "1": 2532,
+        "2": 683,
+        "3": 61,
+        "4": 8,
+        "5": 1
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "b_3_hari_tanpa_siang": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 7,
+        "persen_mungkin": 20.6,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 27,
+         "1": 5,
+         "2": 2
+        },
+        "pola_hari_pertama": {
+         "H": 27,
+         "MM": 2,
+         "M": 5
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 18,
+         "HH": 16
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 34,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 34
+        },
+        "pola_hari_pertama": {
+         "H": 13,
+         "HH": 21
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 8644,
+       "cluster_tambahan_vs_tetap4": 451,
+       "cluster_hari_ya": 13950,
+       "cluster_hari_ya_tambahan": 719,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 312,
+       "tambahan_umur_hari": {
+        "1": 312,
+        "2": 127,
+        "3": 10,
+        "4": 1,
+        "5": 1
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
      }
     },
-    "sev3 (px24>=10)": {
-     "terukur": 34,
-     "hari_pertama_mungkin": 0,
-     "persen_mungkin": 0.0,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 34
-     },
-     "pola_hari_pertama": {
-      "H": 19,
-      "HH": 15
-     }
-    },
-    "px24>=15 (level 3 tanpa FWI)": {
-     "terukur": 34,
-     "hari_pertama_mungkin": 0,
-     "persen_mungkin": 0.0,
-     "tak_pernah_ya": 0,
-     "tunda_hari": {
-      "0": 34
-     },
-     "pola_hari_pertama": {
-      "H": 13,
-      "HH": 21
-     }
+    "api_besar": 34,
+    "porsi_titik_h_persen": {
+     "siang": 12.5,
+     "malam": 2.3
     }
    },
-   "porsi_titik_h_persen": {
-    "siang": 12.5,
-    "malam": 2.3
+   "gabungan": {
+    "titik": 550397,
+    "cluster": 148428,
+    "satelit": [
+     "N",
+     "N20",
+     "N21"
+    ],
+    "opsi": {
+     "c_tetap4": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 21,
+        "persen_mungkin": 18.3,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 94,
+         "1": 15,
+         "2": 6
+        },
+        "pola_hari_pertama": {
+         "H": 94,
+         "M": 16,
+         "MM": 5
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 73,
+         "HH": 42
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 50,
+         "HH": 65
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 20438,
+       "cluster_tambahan_vs_tetap4": 0,
+       "cluster_hari_ya": 34769,
+       "cluster_hari_ya_tambahan": 0,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 0,
+       "tambahan_umur_hari": {},
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "a_3_semua": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 8,
+        "persen_mungkin": 7.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 107,
+         "1": 7,
+         "2": 1
+        },
+        "pola_hari_pertama": {
+         "H": 107,
+         "M": 5,
+         "MM": 3
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 64,
+         "HH": 51
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 45,
+         "HH": 70
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 29437,
+       "cluster_tambahan_vs_tetap4": 8999,
+       "cluster_hari_ya": 46718,
+       "cluster_hari_ya_tambahan": 12253,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 6900,
+       "tambahan_umur_hari": {
+        "1": 6900,
+        "2": 1912,
+        "3": 166,
+        "4": 18,
+        "5": 3
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     },
+     "b_3_hari_tanpa_siang": {
+      "api_besar_kriteria": {
+       "sev>=2 (kandidat level 2)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 20,
+        "persen_mungkin": 17.4,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 95,
+         "1": 15,
+         "2": 5
+        },
+        "pola_hari_pertama": {
+         "H": 95,
+         "M": 15,
+         "MM": 5
+        }
+       },
+       "sev3 (px24>=10)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 73,
+         "HH": 42
+        }
+       },
+       "px24>=15 (level 3 tanpa FWI)": {
+        "terukur": 115,
+        "hari_pertama_mungkin": 0,
+        "persen_mungkin": 0.0,
+        "tak_pernah_ya": 0,
+        "tunda_hari": {
+         "0": 115
+        },
+        "pola_hari_pertama": {
+         "H": 50,
+         "HH": 65
+        }
+       }
+      },
+      "biaya_semua_cluster": {
+       "cluster_pernah_ya": 21361,
+       "cluster_tambahan_vs_tetap4": 923,
+       "cluster_hari_ya": 36138,
+       "cluster_hari_ya_tambahan": 1471,
+       "proksi_palsu_umur<=1hari_px<=2": 0,
+       "proksi_palsu_umur<=1hari_px<=4": 636,
+       "tambahan_umur_hari": {
+        "1": 636,
+        "2": 261,
+        "3": 19,
+        "4": 5,
+        "5": 2
+       },
+       "catatan": "proksi, bukan alarm palsu terverifikasi; ya/tidak cluster dari pola firespot tanpa batas level"
+      }
+     }
+    },
+    "api_besar": 115,
+    "porsi_titik_h_persen": {
+     "siang": 9.9,
+     "malam": 1.4
+    }
    }
   }
  }
