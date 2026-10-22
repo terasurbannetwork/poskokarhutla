@@ -36,7 +36,10 @@ const id16 = () => randomBytes(8).toString("hex"), mnt = m => { const d = new Da
 const U = await siapkan("uji-sla-koreksi", {r2: true, ikat: IKAT, luar, asetKu: aset});
 const {DB, api, n} = U, W = await U.mf.getWorker(), R2 = await U.mf.getR2Bucket("MEDIA");
 const sisip = (tabel, o, T = U) => T.DB.prepare(`INSERT INTO ${tabel} (${Object.keys(o).join(", ")}) VALUES (${Object.keys(o).map(() => "?").join(", ")})`).bind(...Object.values(o)).run();
-const cron = (ms, T = W) => T.scheduled({cron: "* * * * *", scheduledTime: ms});
+/* jam UTC kelipatan 3 menit >= 25 adalah jendela push ringkasan 3 jam (worker.js); uji kabar menghitung push,
+   jadi waktu cron digeser mundur ke menit 24 jam yang sama supaya hasilnya tidak bergantung jam dinding */
+const luarRingkasan = ms => { const w = new Date(ms); return w.getUTCHours() % 3 === 0 && w.getUTCMinutes() >= 25 ? ms - (w.getUTCMinutes() - 24) * 60000 : ms; };
+const cron = (ms, T = W) => T.scheduled({cron: "* * * * *", scheduledTime: luarRingkasan(ms)});
 let nip = 0;
 const staf = async (peran, wilayah = []) => {
   const r = await api("POST", "/api/staf/admin/buat", {nama: "Siti Koreksi", nip: `19800${++nip}0012005`, unit: "Pusdalops BNPB", email: `k${nip}@bnpb.go.id`, wa: "081234567890", peran, wilayah}, ADMIN); assert.equal(r.s, 201, r.t);
@@ -198,7 +201,7 @@ uji("koreksi: darurat penugasan dummy tidak mengirim apa pun; kabar darurat keda
   /* kedaluwarsa */
   const t2 = randomBytes(18).toString("hex"); await penugasan(await tugas({kab: "Lamandau"}), a, t2, "Regu Basi"); GAGAL_SURAT = 99; assert.equal((await darurat(t2)).s, 201); await new Promise(r => setTimeout(r, 500));
   assert.ok(await n("kabar_ulang") >= 1); GAGAL_SURAT = 0; surel.length = 0;
-  await DB.prepare("UPDATE kabar_ulang SET berikut = 0, pesan = json_set(pesan, '$.kadaluarsa', ?)").bind(Date.now() - MENIT).run(); await cron(Date.now());
+  await DB.prepare("UPDATE kabar_ulang SET berikut = 0, pesan = json_set(pesan, '$.kadaluarsa', ?)").bind(Date.now() - 60 * MENIT).run(); await cron(Date.now());   // satu jam lalu: tetap basi walau waktu cron digeser mundur oleh luarRingkasan
   assert.equal(await n("kabar_ulang"), 0, "basi: dibuang"); assert.equal(surel.length, 0, "tidak dikirim terlambat"); assert.equal(await n("kabar_terkirim"), 0);
 });
 
