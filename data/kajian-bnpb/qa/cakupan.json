@@ -1,0 +1,46 @@
+{
+  "_catatan": [
+    "Registri cakupan gerbang QA (PEDOMAN-DESAIN.md bagian D, standar uji pemilik TEST.md). Tiap kode di tabel D1 pedoman wajib ada di tepat satu dari diuji, dikecualikan, antre. 'antre' adalah utang eksplisit yang hanya boleh menyusut.",
+    "diuji: kode -> nama fixture negatif di qa/uji.py yang harus ditolak gerbangnya. qa/uji.py menolak registri yang tidak lengkap atau gerbang diuji yang tidak punya fixture.",
+    "T-1..T-3 adalah gerbang tambahan di luar tabel D1: sisa sintaks naskah, jumlah halaman PDF = dokumen asal (KEPUTUSAN P13), tautan gambar."
+  ],
+  "diuji": {
+    "D-1": ["d1-em-dash", "pdf-helvetica-em-dash"],
+    "D-2": ["d2-titik-tengah-pptx"],
+    "D-3": ["d3-emoji"],
+    "D-4": ["d4-arial-docx", "d4-tema-calibri-pptx", "pdf-helvetica-em-dash"],
+    "D-5": ["d5-7pt-docx", "d5-5pt-pptx"],
+    "D-6": ["d6-manifest-basi", "d6-jumlah-salah"],
+    "D-7": ["d7-nomor-loncat", "d7-tanpa-sumber"],
+    "D-9": ["d9-hex-terlarang"],
+    "D-10": ["d10-titik-api"],
+    "D-11": ["d11-kapital-isi"],
+    "D-12": ["d12-melebihi-batas"],
+    "D-13": ["d13-toc-kosong"],
+    "D-14": ["d14-tanpa-keyakinan"],
+    "D-15": ["d15-lisensi-nc"],
+    "D-16": ["d16-desimal-titik"],
+    "D-17": ["d17-judul-3-baris-pptx", "d17-elipsis-docx"],
+    "D-19": ["d19-pustaka-yatim", "d19-path-internal"],
+    "D-20": ["d20-garis-vertikal"],
+    "D-22": ["d22-angka-ketikan"],
+    "D-23": ["d23-panah"],
+    "T-1": ["t1-token-sisa"],
+    "T-2": ["t2-halaman-beda"],
+    "T-3": ["t3-gambar-hilang"]
+  },
+  "dikecualikan": {
+    "D-12 PDF ringkas": "KEPUTUSAN P13: keluaran 8 berkas tanpa PDF ringkas; yang diperiksa halaman isi DOCX terhadap tema.json kajian.<k>.batas_halaman_isi (T5)"
+  },
+  "antre": {
+    "D-8": "butuh manifest render peta (bounding box label, legenda, unsur peta resmi); komponen peta belum menulis manifest",
+    "D-18": "butuh bentuk tabel lampiran kab/kota dari pembangun DOCX; sementara dijaga naskah.py (tabel csv dari katalog lengkap, uji 119 kab/kota Jawa)",
+    "D-21": "butuh manifest render grafik (seri, warna, legenda)",
+    "D-24": "butuh manifest.json generator per halaman (peran tiap hex, PEDOMAN B1.8)",
+    "D-25": "butuh glif khusus komponen ikon dan penanda asal ikon di keluaran",
+    "D-26": "butuh gaya 'Isi Temuan' dari pembangun DOCX dan ukur baris Bold dari render",
+    "D-27": "butuh halaman Pesan Kunci dan matriks rekomendasi dari pembangun DOCX",
+    "D-28": "butuh manifest render grafik (pesan G1-G24, jenis)",
+    "D-29": "butuh manifest render peta kecil berganda (kelas, skala, legenda)"
+  }
+}

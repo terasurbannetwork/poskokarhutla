@@ -44,7 +44,11 @@
       "biru-abu": {"hex": "#3F5F80", "pakai": "ukuran kedua: pil kolom luas, seri kedua grafik"},
       "biru-lembaga": {"hex": "#00499D", "pakai": "nama tempat yang disorot di judul slide"},
       "emas-teks": {"hex": "#8A6A2E", "pakai": "teks bernada kekeringan di bawah 14 pt"},
-      "sumber": {"hex": "#4A9BE0", "pakai": "bilah 3 pt di kiri catatan sumber slide; tanda grafis saja"}
+      "sumber": {"hex": "#4A9BE0", "pakai": "bilah 3 pt di kiri catatan sumber slide; tanda grafis saja"},
+      "teks-di-navy": {"hex": "#C9D1E3", "pakai": "slide gelap: footer, baris laporan penutup, butir pembatas Lampiran (d9 s7, s8)"},
+      "aksen-di-navy": {"hex": "#F6B26B", "pakai": "slide gelap: subjudul dan kepala kelompok pembatas Lampiran (d9 s8)"},
+      "oranye-di-navy": {"hex": "#F28C28", "pakai": "slide gelap: garis aksen penutup, kode lampiran di pembatas (d9 s7, s8)"},
+      "redup-di-navy": {"hex": "#8C9AA8", "pakai": "slide gelap: garis pemisah dan nomor halaman di pembatas Lampiran (d9 s8)"}
     },
     "arah": {
       "naik": "oranye",
@@ -228,7 +232,8 @@
     "daftar_objek": {"ukuran_pt": 10.5, "bobot_label": "bold", "warna": "teks"},
     "pustaka": {"ukuran_pt": 10, "bobot": "regular", "warna": "teks"},
     "isi_kotak": {"ukuran_pt": 9.5, "bobot": "regular", "warna": "teks"},
-    "judul_kotak": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "teks"}
+    "judul_kotak": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "teks"},
+    "label_bagian": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks-2", "kapital_literal": true, "spasi_huruf_pt": 0.8}
   },
 
   "header_footer": {
@@ -271,24 +276,123 @@
   },
 
   "peta": {
+    "_catatan": "dibaca bangun/visual/peta.mjs; ukuran huruf di visual.tipografi; tebal batas di garis_pt (batas_wilayah, batas_provinsi, pantai, sorot_prioritas)",
     "latar": "kertas",
     "laut": "kertas",
     "daratan_netral": "wilayah",
     "simbol_garis": "kertas",
     "simbol_di_koroplet": "navy",
-    "label_min_pt": 8,
-    "legenda_pt": 7.5,
-    "pil_label_garis": "garis"
+    "pil_label_garis": "garis",
+    "margin_pt": 3,
+    "sederhana_pt": 0.35,
+    "pil_tinggi_rasio": 1.75,
+    "pil_isi_pt": 4,
+    "pil_garis_pt": 0.5,
+    "pemandu_pt": 0.5,
+    "titik_pemandu_pt": 1.1,
+    "jarak_label_pt": [0, 4, 9, 15, 22, 30, 40, 52, 66, 82, 100],
+    "jarak_antar_label_pt": 1.5,
+    "simbol_r_maks_pt": 9,
+    "simbol_r_min_pt": 1.8,
+    "simbol_r_tetap_pt": 3,
+    "simbol_garis_pt": 0.75,
+    "inset_lebar_rasio": 0.2,
+    "skala_lebar_rasio": 0.16,
+    "utara_pt": 9,
+    "jarak_legenda_pt": 8,
+    "warna_pil": "kertas",
+    "warna_pemandu": "teks-2",
+    "warna_luar": "kertas",
+    "warna_inset_darat": "wilayah",
+    "warna_inset_fokus": "navy",
+    "warna_bingkai": "garis",
+    "warna_skala": "teks-2"
   },
 
   "grafik": {
+    "_catatan": "dibaca bangun/visual/grafik.mjs; jarak dalam pt pada ukuran cetak",
     "batang_ujung_bulat": true,
     "sumbu_y": false,
     "nilai_di_atas": true,
     "warna_pembanding": "pembanding",
     "warna_garis_dasar": "garis",
     "warna_rata_rata": "navy",
-    "warna_seri_kedua": "biru-abu"
+    "warna_seri_kedua": "biru-abu",
+    "warna_batang": "navy",
+    "warna_batang_lama": "skala.netral.2",
+    "warna_pita": "tint.netral.pita",
+    "warna_garis_acuan": "garis",
+    "warna_anotasi": "teks-2",
+    "warna_nomor": "navy",
+    "warna_kumis": "biru-abu",
+    "warna_titik_tengah": "navy",
+    "warna_sel": "tint.netral.pita",
+    "warna_sorot_baris": "tint.sorot-baris.pita",
+    "batang_radius_rasio": 0.22,
+    "batang_celah_rasio": 0.38,
+    "garis_dasar_pt": 0.75,
+    "garis_seri_pt": 1.75,
+    "garis_acuan_pt": 0.5,
+    "garis_anotasi_pt": 0.5,
+    "titik_pt": 2.4,
+    "kumis_pt": 2,
+    "jarak_teks_pt": 3,
+    "tepi_pt": 2,
+    "baris_horizontal_pt": 17,
+    "bulatan_nomor_pt": 12,
+    "sel_panas_tinggi_pt": 17,
+    "sel_celah_pt": 1.5,
+    "legenda_kotak_pt": [10, 7],
+    "legenda_jarak_pt": 10,
+    "pil_tinggi_pt": 14,
+    "pil_isi_pt": 5
+  },
+
+  "visual": {
+    "_catatan": [
+      "Token perender bangun/visual (peta, grafik, ikon). Mode docx = cetak A4 (batas 8 pt, PEDOMAN B2 baris Teks grafik dan peta); mode slide = deck (batas 6 pt, Buku Pegangan bab Selera presentasi).",
+      "Ukuran 'penuh', 'dua-kolom', 'tiga-kolom' diambil dari objek.lebar_cm; preset slide di bawah. Tinggi grafik = lebar x rasio_tinggi bila spek tidak menyebut tinggi."
+    ],
+    "dpi": 300,
+    "ukuran_slide": {
+      "slide-penuh": {"lebar_pt": 873.6, "tinggi_pt": 399},
+      "slide-dua-pertiga": {"lebar_pt": 576, "tinggi_pt": 320},
+      "slide-separuh": {"lebar_pt": 431.4, "tinggi_pt": 300}
+    },
+    "rasio_tinggi": {"batang": 0.42, "garis": 0.48, "bertumpuk": 0.52, "matriks": 0.5},
+    "ikon": {"garis": 2, "rasio": 0.58, "viewbox": 24},
+    "tipografi": {
+      "docx": {
+        "batas_bawah_pt": 8,
+        "nilai": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "teks"},
+        "kategori": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks"},
+        "legenda": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks"},
+        "judul_legenda": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"},
+        "anotasi": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks-2"},
+        "acuan": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks-3"},
+        "kepala": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+        "kepala_kolom": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "teks-3"},
+        "panel": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+        "label_peta": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks"},
+        "nomor": {"ukuran_pt": 8, "bobot": "bold", "warna": "kertas"},
+        "pil": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"}
+      },
+      "slide": {
+        "batas_bawah_pt": 6,
+        "nilai": {"ukuran_pt": 7.6, "bobot": "bold", "warna": "teks"},
+        "kategori": {"ukuran_pt": 6.5, "bobot": "regular", "warna": "teks-3"},
+        "legenda": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks"},
+        "judul_legenda": {"ukuran_pt": 7.5, "bobot": "bold", "warna": "teks"},
+        "anotasi": {"ukuran_pt": 7, "bobot": "regular", "warna": "teks-2"},
+        "acuan": {"ukuran_pt": 6.5, "bobot": "regular", "warna": "teks-3"},
+        "kepala": {"ukuran_pt": 10, "bobot": "regular", "warna": "teks"},
+        "kepala_kolom": {"ukuran_pt": 6.5, "bobot": "bold", "warna": "teks-3"},
+        "panel": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+        "label_peta": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks"},
+        "nomor": {"ukuran_pt": 6.5, "bobot": "bold", "warna": "kertas"},
+        "pil": {"ukuran_pt": 6.6, "bobot": "bold", "warna": "teks"}
+      }
+    }
   },
 
   "ikon": {
@@ -422,6 +526,11 @@
       "Sekolah terganggu",
       "Faskes terganggu"
     ],
+    "istilah": {
+      "_catatan": "PEDOMAN C3 dan gerbang D-10 sampai glosarium.json ada: label dari data diganti ke istilah baku; teks tampil yang memuat istilah terlarang ditolak (kata utuh, tanpa beda huruf)",
+      "ganti": {"Bali–Nusa Tenggara": "Bali dan Nusa Tenggara"},
+      "terlarang": ["titik api", "perkiraan satelit", "provinsi prioritas", "hujan pertama", "kamu", "Anda", "pra bencana", "pra-bencana", "subsiden", "amblesan", "Bali–Nusa Tenggara", "[SEKUNDER]", "TIDAK DITEMUKAN"]
+    },
     "indikator_skenario_nonalam": {
       "pandemi": ["Kasus", "Kematian", "Hari layanan kesehatan terganggu"],
       "kebakaran-tpa": ["Luas terbakar", "Hari asap", "Kasus ISPA"],
@@ -482,6 +591,41 @@
       "cut_off": {"label": "CUT OFF DATA", "tinggi_pt": [16.6, 18], "lebar_pt": [186, 220], "warna_isi": "navy"},
       "catatan_kaki": {"bilah_pt": [3, 15], "warna_bilah": "sumber"},
       "jarak_isi_ke_tepi_panel_pt": 7
+    }
+  },
+
+  "docx": {
+    "_catatan": "Kenop khusus pembangun DOCX (bangun/docx/bangun.py) yang belum ada di blok lain. Warna, huruf, margin, garis tetap dibaca dari blok di atas.",
+    "akhiran_nomor_halaman": "",
+    "_akhiran": "Buku Pegangan L4: kata H a l a m a n JAPFA tidak ditiru. Isi dengan ' | H a l a m a n' bila pemilik memutus lain.",
+    "romawi_mulai": 2,
+    "gantung_judul_cm": {"subbab": 1.2, "subsubbab": 1.4},
+    "gantung_daftar_cm": {"toc1": 1.6, "toc2": 1.2, "toc3": 1.4, "objek": 2.1},
+    "daftar": {"inden_mm": 6, "gantung_mm": 4, "sesudah_pt": 3},
+    "sel_tabel_mm": {"kiri": 1.5, "kanan": 1.5, "atas": 0.8, "bawah": 0.8},
+    "spasi_baris_tabel": 1.0,
+    "ikon_mm": {"kartu": 9, "pita": 6, "chip": 4.5},
+    "ikon_px": 192,
+    "kartu_sela_mm": 2.5,
+    "label_kolom_kartu_cm": 3.0,
+    "aksen_bab_sesudah_pt": 4,
+    "tinggi_gambar_maks_cm": 21,
+    "sampul": {"teks_di_bawah_foto_cm": 1.4, "margin_bawah_cm": 1.0, "logo_tinggi_mm": 14, "nama_lembaga_pt": 11, "terbit_pt": 12, "sela_subjudul_pt": 12, "sela_logo_pt": 24},
+    "sampul_belakang": {"teks_dari_atas_cm": 11, "logo_tinggi_mm": 18, "baris_pt": 10.5},
+    "pembatas_lampiran": {"judul_dari_atas_cm": 9, "daftar_pt": 10.5},
+    "sampul_foto": {
+      "air": {"berkas": "gambar/foto/sampul-air.jpg", "judul": "Waduk Jatiluhur, Purwakarta", "pengarang": "Cep Budhi Darma", "lisensi": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Jatiluhur_12.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
+      "mitigasi": {"berkas": "gambar/foto/sampul-mitigasi.jpg", "judul": "Rumah rusak di Desa Cangkringan sesudah erupsi Merapi 2010", "pengarang": "Crisco 1492", "lisensi": "CC BY-SA 3.0", "url": "https://commons.wikimedia.org/wiki/File:Destroyed_house_in_Cangkringan_Village_after_the_2010_Eruptions_of_Mount_Merapi.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"}
+    },
+    "kolofon": {
+      "ditujukan": "Kepala Badan Nasional Penanggulangan Bencana",
+      "dasar": [
+        "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+        "Peraturan Presiden Nomor 87 Tahun 2020 tentang Rencana Induk Penanggulangan Bencana Tahun 2020–2044",
+        "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029"
+      ],
+      "versi": "Draf 1",
+      "batas_data": "23 Oktober 2026"
     }
   }
 }
