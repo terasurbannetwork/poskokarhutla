@@ -245,3 +245,59 @@ Tidak ada kebocoran (fitur api dan riwayat dihitung ulang dari CSV FIRMS mentah:
 Konsekuensi: model produksi = model BARU (tanpa cuaca, sel statis ditapis, tolak NaN), didaftarkan dulu dengan logistik
 riwayat sebagai pembanding wajib. LOYO 2015-2025 dan 2026 s.d. minggu 39 sudah dilihat, jadi bukti konfirmasinya hanya
 dari catatan prospektif mingguan mulai sekarang.
+
+## Pendaftaran model produksi P1 (23 Okt 2026, di-commit SEBELUM dilatih)
+
+Keputusan pemilik 23 Okt: bangun versi produksi, tampil sekarang HANYA untuk akun login sebagai eksperimental dengan catatan
+prospektif mingguan; publik setelah lolos uji prospektif.
+
+### Model
+
+- **Fitur (25):** api terbaru `n7, n30, n7_3, n30_3, n7_11, n30_11, hari_sejak`; `minggu`; lahan `gambut, hutan, produksi,
+  apl, kebun, hti, hph, konsesi, kanal_km, jalan_km, penduduk_km2`; riwayat & wilayah `klim, klim5, klim_3, kekerapan,
+  reg_prov, reg_kab`. **Tanpa cuaca dan tanpa ONI/DMI** (audit: tidak menambah; sumber 2026 tidak konsisten).
+- **Hiperparameter dan sampel:** sama dengan uji balik (`HP`, positif 0,5/bobot 2, negatif 0,02/bobot 50). Tidak disetel.
+- **Data latih:** semua minggu lengkap 2013 s.d. minggu terakhir yang selesai sebelum 23 Okt 2026, riwayat/klimatologi tiap
+  baris hanya dari tahun sebelum baris itu. Sensor: S-NPP s.d. 31 Mar 2018 lalu NOAA-20 (seperti uji balik), tanpa faktor
+  penyetara (audit: dipakai pohon sebagai penanda era).
+- **Sel statis ditapis** dari target, fitur, dan peta: sel `titik_palsu` + sel yang berapi > 20% dari semua minggu 2015-2025
+  (smelter, tambang, kilang). Daftarnya ikut diekspor.
+- **Data kosong ditolak:** fitur NaN/hilang atau data NOAA-20 kurang dari 85 hari dalam 90 hari terakhir = tidak ada ramalan
+  minggu itu (status `tanpa_ramalan` + alasan); peta tetap menampilkan ramalan terakhir dengan tanggalnya.
+- **Jalan di CI tanpa data/raw:** artefak (pohon, tabel sel statis, riwayat per sel-minggu, lahan, kode wilayah) di-commit;
+  ramalan dihitung dengan Python stdlib; titik NOAA-20 90 hari dari arsip bergulir (cache + R2) yang diisi FIRMS NRT.
+
+### Jadwal dan target prospektif
+
+- **Terbit mingguan** mengikuti kalender model: minggu k = hari-dalam-tahun 7k+1..7k+7 (WIB), hari terbit = sehari sebelum
+  minggu mulai; fitur hanya dari hari <= hari terbit. Ramalan + pembanding dibekukan saat terbit (tidak bisa diubah).
+- **Target:** sel punya >= 1 titik NOAA-20 NRT keyakinan sedang/tinggi, sel bukan statis, dalam minggu itu. Dinilai 2 hari
+  sesudah minggu berakhir (latensi NRT). Ramalan yang terbit terlambat (sesudah minggunya mulai) ditampilkan dengan tanda
+  "terbit terlambat" dan TIDAK ikut dinilai.
+- **Pembanding yang dibekukan bersama:** B1 = logistik berbobot dari 13 fitur api + riwayat (log1p), dilatih pada data yang
+  sama (pembanding wajib dari audit); B2 = logistik persistensi + klimatologi terdaftar.
+
+### Syarat publik (dibekukan)
+
+Dinilai setelah >= 6 minggu prospektif dan >= 2.000 sel-minggu berapi:
+1. Brier skill P1 terhadap B1 > 0, batas bawah selang 95% (bootstrap blok minggu) > 0.
+2. Recall bila 10% sel teratas tiap provinsi-minggu ditandai: P1 >= B1.
+3. Rasio rata-rata peluang / laju teramati 0,7-1,3.
+4. Di provinsi prioritas dengan >= 300 sel-minggu berapi, Brier skill P1 terhadap B2 tidak negatif.
+
+Lolos = boleh publik. Gagal = tetap internal dengan hasil ditampilkan apa adanya; tidak ada penyetelan pada minggu yang
+sudah dinilai; versi baru (P2) wajib didaftarkan dan menjalani masa prospektifnya sendiri.
+
+### Kontrak data (R2 `poskokarhutla-foto`, dibaca Worker hanya untuk akun login)
+
+`risiko/terbaru.json`:
+```
+{"versi":"P1","status":"eksperimental","minggu":42,"tahun":2026,"terbit":"2026-10-21","berlaku":["2026-10-22","2026-10-28"],
+ "terlambat":false,"dibuat":"<iso>","sensor":"NOAA-20","grid":{"x0":94.5,"y1":6.5,"sel":0.05},
+ "sel":[[ix,iy,p_permil,peringkat_persen_dalam_provinsi], ...],   // sel non-statis dengan p >= 1 permil atau 20% teratas provinsinya
+ "prov":{"62":{"sel":n,"harapan_berapi":x,"p_rata_permil":y}, ...},
+ "keandalan":{"uji_balik":{"auc_dalam_prov_minggu":0.847,"pembanding_riwayat":0.840,"recall10":0.414},
+              "prospektif":{"minggu_dinilai":n,"sel_berapi":n,"lolos":null|true|false,"ringkas":"..."}}}
+```
+`risiko/prospektif.json`: `{"minggu":[{"tahun","minggu","terbit","n_sel","berapi","brier_p1","brier_b1","brier_b2",
+"recall10_p1","recall10_b1","rasio_p"}, ...],"syarat":{...},"lolos":null|true|false}`.
