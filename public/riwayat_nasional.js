@@ -27,9 +27,12 @@ function riwayatNasional(fs, tb, sj, merek) {
         : `<text x="${A0 + w + 8}" y="${y + 17}" font-size="12" font-weight="800" style="fill:${r.v >= 1e6 ? MERAH : "currentColor"}">${lbl(r)}</text>`
           + (r.ini ? `<text x="${A0 + w + 8 + lbl(r).length * 6.4 + 6}" y="${y + 17}" font-size="11" font-weight="700" style="fill:#b07a1e">perkiraan ${jt(tb.rendah)}–${jt(tb.tinggi)} juta, s.d. ${tgl(tb.sd)}</text>` : ""))
       + `<text x="${W}" y="${y + 17}" text-anchor="end" font-size="12" font-weight="700" opacity="${r.ini ? .45 : .85}">${rasio(r)}</text>`; });
-  const ini = rows.at(-1), lebih = rows.filter(r => !r.ini && r.n !== "1997–1998" && r.v > ini.v).map(r => r.n);
+  /* peringkat luas hanya diklaim bila batas bawah dan atas rentang menghasilkan urutan yang sama; perkiraan dibandingkan dengan angka resmi tahun lain
+     (definisi berbeda), jadi rentang yang melintasi angka tahun lain dilaporkan sebagai rentang peringkat (audit 21 Okt 2026 §2.3) */
+  const ini = rows.at(-1), lain = rows.filter(r => !r.ini && r.n !== "1997–1998"), rk = v => 1 + lain.filter(r => r.v > v).length, rAtas = rk(tb.tinggi), rBawah = rk(tb.rendah);
+  const klaim = rAtas === rBawah ? `peringkat luas ke-${rAtas} sejak 2015 (perkiraan dibanding angka resmi tahun lain)` : `peringkat luas antara ke-${rAtas} dan ke-${rBawah} sejak 2015: rentang perkiraan melintasi angka resmi tahun lain`;
   return {
-    judul: `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + jt(ini.v) + " juta ha")} (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta) hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`,
+    judul: `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + jt(ini.v) + " juta ha")} (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta) hingga ${tgl(tb.sd)}; ${klaim}`,
     svg: `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas dan luas terbakar Indonesia per tahun 1997–${th}">${g}</svg>`,
     sumber: `Titik: NASA FIRMS VIIRS S-NPP keyakinan sedang/tinggi, setahun penuh (satelit mulai 2012, jadi 1997–1998 tidak ada); ${th}: perkiraan ${merek} dari titik x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi, jadi ha per titiknya tidak dihitung; 1997–${+th - 1}: luas BNPB via ${fs.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
     leg: [[ORANYE, "titik panas setahun"], [MERAH, "luas di atas 1 juta ha"], [NAVY, "luas di bawah 1 juta ha"], ["#d98b7c", `${th} (sementara)`]],

@@ -32,3 +32,24 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/data/himawari.json --file public/data/himawari.json --content-type application/json --remote  # wrangler 4: bawaan LOKAL, --remote wajib
+
+      # Arsip bertanggal untuk melatih/menguji model per jam (deteksi awal, sebaran 1 jam).
+      # Kunci: arsip/himawari/YYYY/MM/DD/<HHMM acuan>.json.gz, acuan dari medan "acuan" di himawari.json
+      # (UTC; acuan yang sama menimpa kunci yang sama, jadi putaran tanpa data baru tidak menggandakan).
+      # Biaya R2 (paket Free 10 GB): jendela 3 jam berisi ratusan-ribuan baris x ~40 B = ~10-60 KB
+      # setelah gzip; paling banyak 48 objek/hari = ~0,5-3 MB/hari = ~15-90 MB/bulan = ~0,2-1 GB/tahun.
+      # Jauh di bawah 10 GB, jadi TANPA retensi/penghapusan: arsip sengaja dibiarkan menumpuk.
+      # Pantau ukuran awalan arsip/himawari/ tiap triwulan; bila mendekati 5 GB, rapatkan (mis. simpan tiap jam).
+      # Jendela tumpang tindih 3 jam (tiap titik muncul di hingga ~6 arsip): deduplikasi saat melatih lewat kolom u/u0.
+      - name: Arsipkan salinan bertanggal ke R2 (boleh gagal)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -e
+          [ -f public/data/himawari.json ] || { echo "tidak ada himawari.json, arsip dilewati"; exit 0; }
+          KUNCI=$(python3 -c "import json;a=json.load(open('public/data/himawari.json'))['acuan'];print('arsip/himawari/%s/%s/%s/%s%s.json.gz'%(a[0:4],a[5:7],a[8:10],a[11:13],a[14:16]))")
+          gzip -9 -c public/data/himawari.json > himawari.json.gz
+          echo "arsip: $KUNCI ($(stat -c %s himawari.json.gz) B)"
+          npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/$KUNCI" --file himawari.json.gz --content-type application/gzip --remote  # wrangler 4: bawaan LOKAL, --remote wajib
