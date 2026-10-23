@@ -1,0 +1,5 @@
++ timeout 2700 python3 scripts/data/lab_padam.py uji
+lab_padam: tahun 2019 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
+lab_padam: tahun 2019 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
+lab_padam: tahun 2020 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
+lab_padam uji: ok
