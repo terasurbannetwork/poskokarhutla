@@ -10,7 +10,7 @@ Ukuran: tangkap@K (rata-rata per kelompok dari D tertangkap / D orakel K teratas
 teratas tahun itu yang masuk K teratas hari itu, dijumlah lintas kelompok); K = 5, 10; hanya kelompok >= K+1 peristiwa.
 Seri pada skor dibagi rata (harapan di bawah urutan acak), jadi skor kasar S0 tidak diuntungkan oleh urutan berkas.
 
-Pakai:  python3 scripts/sebaran/prioritas.py [jalan] | uji
+Pakai:  python3 scripts/sebaran/prioritas.py [jalan] | v2 (sekali; pendaftaran v2) | uji
 """
 import json, math, os, pickle, random, sys, time
 
@@ -37,18 +37,27 @@ def log(*a):
 
 
 # ---------------- data ----------------
-def bangun_cache():
+LINTAS1 = 30  # menit: deteksi dalam 30 menit dari deteksi pertama = lintasan pertama (sama dengan lolos.baris 'pertama')
+
+
+def d72(det):
+    """FRP deteksi SESUDAH lintasan pertama sampai 72 jam: p + 30 < t <= p + 72 jam (v2). det urut naik waktu."""
+    p = det[0][0]
+    return sum(x[2] for x in det if p + LINTAS1 < x[0] <= p + 72 * 60)
+
+
+def bangun_cache(tahun=TAHUN, path=CACHE):
     d = pickle.load(open(os.path.join(MENTAH, "lolos_baris.pkl"), "rb"))
     kol = d["kolom"]
     c = {f: kol.index(f) for f in ("n0", "frp_jml0", "fwi", "isi_maks", "dc", "gambut", "penduduk_km2")}
     P = pickle.load(open(os.path.join(MENTAH, "lolos_peluang.pkl"), "rb"))
     E = {}
     for r in d["baris"]:
-        if r[1] in TAHUN:
+        if r[1] in tahun:
             E[r[0]] = {"th": r[1], "prov": r[2], "st": r[3], "lolos": r[4], "p": P[r[0]], **{f: r[7][j] for f, j in c.items()}}
     del d
-    log(f"{len(E)} baris 2015-2023; membaca peristiwa.jsonl")
-    sisa = len(E)
+    log(f"{len(E)} baris {min(tahun)}-{max(tahun)}; membaca peristiwa.jsonl")
+    sisa, t_akhir = len(E), -math.inf
     for l in open(os.path.join(MENTAH, "peristiwa.jsonl")):
         i = l[7:15]  # {"id":"E0000001",...
         e = E.get(i)
@@ -57,16 +66,23 @@ def bangun_cache():
         det = json.loads(l)["det"]
         p = det[0][0]
         e["frp_hidup"] = sum(x[2] for x in det)
-        e["ndet0"] = sum(1 for x in det if x[0] - p <= 30)  # deteksi lintasan pertama (sama dengan 'pertama' di lolos.baris)
+        e["frp_sesudah"] = sum(x[2] for x in det if x[0] - p > LINTAS1)
+        e["d72"] = d72(det)
+        e["t0m"] = p
+        t_akhir = max(t_akhir, det[-1][0])
+        e["ndet0"] = sum(1 for x in det if x[0] - p <= LINTAS1)  # deteksi lintasan pertama (sama dengan 'pertama' di lolos.baris)
         e["hari"] = (p + 7 * 60) // 1440  # hari WIB (UTC+7) sejak 2015-01-01
         sisa -= 1
     assert sisa == 0, f"{sisa} peristiwa tidak ditemukan di peristiwa.jsonl"
-    pickle.dump(E, open(CACHE, "wb"), protocol=pickle.HIGHEST_PROTOCOL)
+    E = {"_akhir": t_akhir, **E}
+    pickle.dump(E, open(path, "wb"), protocol=pickle.HIGHEST_PROTOCOL)
     return E
 
 
-def muat():
-    return pickle.load(open(CACHE, "rb")) if os.path.exists(CACHE) else bangun_cache()
+def muat(tahun=TAHUN, path=CACHE):
+    """-> (peristiwa {id: ...}, menit deteksi terakhir di himpunan itu)."""
+    E = pickle.load(open(path, "rb")) if os.path.exists(path) else bangun_cache(tahun, path)
+    return E, E.pop("_akhir", None)
 
 
 # ---------------- skor ----------------
@@ -79,7 +95,12 @@ def skor_s0(e):
     lv = A.status(A.kelas_fwi(fwi), sev)
     if lv == 2 and A.prioritas(px, fwi):
         lv = 3
-    return lv * 1e6 + A.skor(px, e["frp_jml0"], 1, e["isi_maks"], e["dc"] if e["gambut"] else 0, 0)
+    return lv * 1e6 + skor_aturan(e)
+
+
+def skor_aturan(e):
+    """aturan.skor saja (tanpa level), masukan sama dengan S0; dipakai S3/S4 v2."""
+    return A.skor(e["n0"], e["frp_jml0"], 1, e["isi_maks"], e["dc"] if e["gambut"] else 0, 0)
 
 
 def paparan(e, kg, w, jiwa_maks):
@@ -158,7 +179,7 @@ def ringkas(rows, nama_skor, beda=None):
 
 def jalan():
     t0 = time.time()
-    E = muat()
+    E, _ = muat()
     for i, e in E.items():
         e["_id"] = i
     jm = math.log1p(max(e["penduduk_km2"] for e in E.values()))
@@ -248,7 +269,88 @@ def jalan():
     log("vonis", json.dumps(H["vonis"], ensure_ascii=False), H["detik"], "dtk")
 
 
+TAHUN_V2 = range(2024, 2027)
+CACHE_V2 = os.path.join(MENTAH, "prioritas_cache_v2.pkl")
+
+
+def jalan_v2():
+    """Pendaftaran v2 (docs/riset/SKOR-PRIORITAS.md, commit 2bda0206): hasil D72, kandidat S4, uji 2024-2026 SEKALI.
+    Peluang 2024+ = p_uji di lolos_peluang.pkl: model konfigurasi produksi dilatih pada cvi (tahun 2015-2023, lolos.py
+    akhir()), Platt + ambang dari luar-lipatan 2015-2023; bukan model ekspor (yang dilatih ulang pada semua tahun)."""
+    H = json.load(open(KELUAR))
+    assert "v2" not in H, "v2 sudah pernah dijalankan: pendaftaran mengizinkan SATU kali"
+    t0 = time.time()
+    E, akhir = muat(TAHUN_V2, CACHE_V2)
+    batas = akhir - 72 * 60
+    n_awal = len(E)
+    E = {i: e for i, e in E.items() if e["t0m"] <= batas}  # jendela 72 jam harus teramati penuh di arsip
+    for i, e in E.items():
+        e["_id"] = i
+    jm = math.log1p(max(e["penduduk_km2"] for e in E.values()))
+    G = {}
+    for e in E.values():
+        G.setdefault((e["prov"], e["hari"]), []).append(e)
+    kg = K_UTAMA
+    gam = lambda e: kg if e["gambut"] else 1
+    pap = lambda e: paparan(e, kg, W_UTAMA, jm)
+    sk = {"S0": skor_s0, "S1": lambda e: e["p"], "S2": lambda e: e["p"] * pap(e), "S3": lambda e: skor_aturan(e) * e["p"],
+          "S4": lambda e: skor_aturan(e) * e["p"] * pap(e)}
+
+    def atas10(hasil):
+        out = set()
+        for th in TAHUN_V2:
+            es = [e for e in E.values() if e["th"] == th]
+            v = sorted(hasil(e) for e in es)
+            out |= {e["_id"] for e in es if hasil(e) >= v[int(.9 * len(v))]} if v else set()
+        return out
+
+    nm = list(sk) + ["Orakel"]
+    out = {"pendaftaran": "docs/riset/SKOR-PRIORITAS.md 'Pendaftaran v2' (commit 2bda0206, sebelum dijalankan)", "dibuat": time.strftime("%Y-%m-%d"),
+           "model": jalan_v2.__doc__.split("\n", 1)[1].strip(), "n_peristiwa": len(E), "dibuang_jendela_72j_terpotong": n_awal - len(E),
+           "arsip_akhir_menit": akhir, "n_lolos": sum(e["lolos"] for e in E.values()), "n_kelompok": len(G),
+           "per_tahun_n": {th: sum(1 for e in E.values() if e["th"] == th) for th in TAHUN_V2},
+           "d72_definisi": d72.__doc__.strip(), "s3_s4": "aturan.skor (masukan S0, tanpa level) x p [x paparan K_GAMBUT 3, w_jiwa 0,5]",
+           "hasil": {}}
+    hasil_d72 = lambda e: e["d72"] * gam(e)
+    for nama, hasil, atas in (("D72", hasil_d72, None), ("sesudah_hidup", lambda e: e["frp_sesudah"] * gam(e), None),
+                              ("lolos", lambda e: float(e["lolos"]), {e["_id"] for e in E.values() if e["lolos"]})):
+        atas = atas if atas is not None else atas10(hasil)
+        for k in KS:
+            rows = nilai_kelompok(G, {**sk, "Orakel": hasil}, hasil, atas, k)
+            out["hasil"][f"{nama}_K{k}"] = ringkas(rows, nm, beda=("S4", "S0"))
+            if nama == "D72" and k == 10:
+                utama = rows
+        log(nama, round(time.time() - t0), "dtk")
+    out["per_provinsi"] = {p: ringkas([r for r in utama if r["prov"] == p], nm, beda=("S4", "S0")) for p in sorted({r["prov"] for r in utama})}
+    out["per_tahun"] = {th: ringkas([r for r in utama if r["th"] == th], nm) for th in TAHUN_V2}
+    atas = atas10(hasil_d72)
+    out["per_lahan"] = {}
+    for st in ("gambut", "mineral", "sabana"):
+        Gs = {}
+        for e in E.values():
+            if e["st"] == st:
+                Gs.setdefault((e["prov"], e["hari"]), []).append(e)
+        out["per_lahan"][st] = ringkas(nilai_kelompok(Gs, {**sk, "Orakel": hasil_d72}, hasil_d72, atas, 10), nm)
+    u = out["hasil"]["D72_K10"]
+    d = u["S4-S0"]["tangkap"]
+    kalah = [{"prov": p, "hari_keputusan": v["hari_keputusan"], "S0": v["S0"]["tangkap"][0], "S4": v["S4"]["tangkap"][0]}
+             for p, v in out["per_provinsi"].items() if v["hari_keputusan"] >= HARI_MIN_PROV and v["S4"]["tangkap"][0] < v["S0"]["tangkap"][0]]
+    syarat = {"selisih_10_poin": d[0] >= SELISIH_MIN, "batas_bawah_positif": d[1] > 0, "tidak_kalah_per_provinsi": not kalah}
+    out["vonis"] = {"lolos": all(syarat.values()), "teks": "LOLOS" if all(syarat.values()) else "GAGAL", "syarat": syarat,
+                    "selisih_tangkap10": d, "provinsi_kalah": kalah, "konfigurasi": "S4, hasil D72, K_GAMBUT 3, w_jiwa 0,5, K 10"}
+    out["detik"] = round(time.time() - t0)
+    H["v2"] = out
+    json.dump(H, open(KELUAR, "w"), ensure_ascii=False, indent=1)
+    log("vonis v2", json.dumps(out["vonis"], ensure_ascii=False), out["detik"], "dtk")
+
+
 def uji():
+    # D72: hanya sesudah lintasan pertama (> 30 menit) dan <= 72 jam
+    det = [[100, 1, 500.0], [110, 2, 300.0], [130, 3, 40.0], [131, 4, 5.0], [100 + 4320, 5, 2.0], [100 + 4321, 6, 99.0]]
+    assert d72(det) == 7.0, d72(det)
+    bocor = sum(x[2] for x in det if x[0] <= det[0][0] + 4320)  # FRP lintasan pertama ikut = bocoran yang harus DITOLAK
+    assert d72(det) != bocor and d72(det) < 500
+    assert d72([[0, 1, 9.0]]) == 0
     # ambil_k: seri dibagi rata; urutan benar = orakel
     assert ambil_k([3, 2, 1], [10, 5, 1], 2) == 15
     assert ambil_k([1, 1, 1, 1], [4, 0, 0, 0], 2) == 2  # seri penuh: harapan = K/n x jumlah
@@ -290,5 +392,7 @@ if __name__ == "__main__":
         uji()
     elif a in ([], ["jalan"]):
         jalan()
+    elif a == ["v2"]:
+        jalan_v2()
     else:
         sys.exit(__doc__)

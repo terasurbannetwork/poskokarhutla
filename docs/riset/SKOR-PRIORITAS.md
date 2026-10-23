@@ -130,3 +130,52 @@ yang BELUM terjadi.
   bootstrap blok tahun x provinsi > 0, dan tidak kalah dari S0 di provinsi mana pun dengan >= 30 hari-keputusan.
 - **Bila lolos:** mode bayangan prospektif musim 2027 sebelum tampil sebagai saran. **Bila gagal:** ditulis, tidak tampil,
   dan tidak ada v3 di himpunan yang sama.
+
+## Hasil uji v2 (23 Okt 2026, dijalankan sekali): GAGAL
+
+`python3 scripts/sebaran/prioritas.py v2` -> kunci `v2` di `public/data/prioritas_uji.json` (v1 tidak diubah; skrip menolak
+jalan kedua bila kunci `v2` sudah ada). ~6 dtk. Swauji `prioritas.py uji` mencakup D72 (FRP lintasan pertama dan sesudah 72 jam
+ditolak).
+
+Himpunan: 97.749 api baru 2024-2026 (2024: 10.675; 2025: 13.399; 2026: 73.675), 2.922 lolos, arsip terakhir 12 Okt 2026
+06:37 UTC; tidak ada api yang jendela 72 jamnya terpotong. 938 hari-keputusan (K 10) dalam 21 blok tahun x provinsi.
+
+Peluang: `p_uji` di `data/raw/sebaran/lolos_peluang.pkl`, ditulis `lolos.py akhir()` (`m = latih(cvi, ...)`, `cvi` = baris
+tahun 2015-2023; Platt dan ambang dari luar-lipatan 2015-2023), bukan model ekspor peramban (dilatih ulang semua tahun). Cara
+memastikan model tidak melihat 2024+: kode commit 601216df (berkas peluang ditulis 14 Okt 17:09, sesudah commit itu 17:03)
+membatasi `cvi` pada `TAHUN_CV = 2015..2023`; dan AUC yang dihitung ulang dari peluang ini sama persis dengan
+`lolos_hasil.json uji_lihat_kedua` (semua 0,9077; 2024 0,9504; 2025 0,9552; 2026 0,8846).
+
+Utama (hasil D72, K_GAMBUT 3, w_jiwa 0,5, K 10):
+
+| Skor | tangkap@10 | recall@10 |
+| ---- | ---------- | --------- |
+| S0 aturan.py | 0,434 [0,386; 0,485] | 0,170 [0,117; 0,263] |
+| S1 p | 0,524 [0,468; 0,583] | 0,177 [0,124; 0,273] |
+| S2 p x paparan | 0,520 [0,465; 0,581] | 0,178 [0,124; 0,275] |
+| S3 aturan.skor x p | 0,506 [0,451; 0,568] | 0,175 [0,122; 0,271] |
+| S4 aturan.skor x p x paparan | 0,513 [0,461; 0,570] | 0,177 [0,123; 0,274] |
+| Orakel | 1 | 0,233 [0,155; 0,398] |
+| S4 - S0 | **+0,080 [0,061; 0,102]** | +0,007 [0,002; 0,020] |
+
+Syarat: selisih >= 10 poin **GAGAL** (7,96 poin); batas bawah > 0 lolos; tidak kalah per provinsi lolos (S4 >= S0 di semua
+provinsi; provinsi >= 30 hari: 16, 53, 61, 62, 63, 64, 93; 14 dan 15 di bawah 30 hari). Vonis: GAGAL, tidak tampil,
+dan tidak ada v3 di himpunan ini.
+
+Per provinsi, tangkap@10 S0 -> S4 (hari): 14 0,739 -> 0,897 (10); 15 0,621 -> 0,635 (27); 16 0,525 -> 0,588 (92);
+53 0,464 -> 0,563 (258); 61 0,362 -> 0,428 (180, selang selisih [-0,020; 0,092]); 62 0,449 -> 0,511 (96); 63 0,401 -> 0,528 (90);
+64 0,430 -> 0,493 (89); 93 0,315 -> 0,387 (96). Per tahun: 2024 0,508 -> 0,593; 2025 0,366 -> 0,497; 2026 0,430 -> 0,497.
+Per lahan: gambut 0,491 -> 0,544; mineral 0,452 -> 0,523; sabana 0,472 -> 0,552.
+
+Sekunder: FRP sesudah lintasan pertama sepanjang hidup S4 - S0 = +0,085 [0,065; 0,106]; label lolos +0,045 [0,026; 0,065].
+
+Bacaan: model menambah ~8 poin tangkap@10 atas aturan.py pada hari yang belum dilihat, konsisten di semua provinsi, tetapi di
+bawah ambang 10 poin yang dibekukan. Di himpunan ini kandidat lebih sederhana S1 (p saja) memberi titik tertinggi (0,524);
+itu pengamatan, bukan pilihan baru (pendaftaran memilih S4 sebagai satu-satunya kandidat). recall@10 rendah untuk semua
+skor karena 10% D72 teratas jauh lebih banyak dari 10 per hari (orakel sendiri 0,233).
+
+Batas: 2026 mendominasi (568 dari 938 hari; S-NPP saja, NOAA-21 tidak dipakai; dua tahun sepi 2024-2025); hanya 21 blok,
+jadi selang bootstrap sempit secara semu untuk provinsi dengan satu-dua blok (15: satu blok); uji 2024-2026 sudah pernah
+dilihat untuk model sel dan dilaporkan sekali untuk model lolos (tidak dipakai menyetel); hipotesis D72 lahir dari diagnostik
+v1 pada 2015-2023, bukan dari himpunan ini; omisi awan/asap membuat D72 rendah palsu di gambut; faktor gambut ada di D72 dan
+di S4 sekaligus.
