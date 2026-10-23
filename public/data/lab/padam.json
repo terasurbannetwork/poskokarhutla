@@ -1,6 +1,6 @@
 {
  "_catatan": "LAB, bukan produksi. Kriteria ditulis SEBELUM angka dihitung.",
- "dibuat": "2026-10-23T09:59Z",
+ "dibuat": "2026-10-23T11:45Z",
  "tahap": "selesai",
  "kriteria_sha": "d3987163dce3678ffe7cec988be04d754cf7a50c1039b14a0dc5edb1814e9bb8",
  "kriteria": {
@@ -2919,5 +2919,5 @@
  "sentinel2": {
   "dilewati": "waktu tersisa tidak cukup atau aturan terpilih A0/tidak ada"
  },
- "detik": 141
+ "detik": 106
 }

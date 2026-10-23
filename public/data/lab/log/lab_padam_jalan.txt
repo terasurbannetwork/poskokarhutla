@@ -1,4 +1,4 @@
-+ timeout 2700 python3 scripts/data/lab_padam.py jalan
++ timeout 2880 python3 scripts/data/lab_padam.py jalan
 lab_padam: kriteria ditulis
 lab_padam: FIRMS 2019 cache
 lab_padam: FIRMS 2020 cache
@@ -7,10 +7,10 @@ lab_padam: FIRMS 2023 cache
 lab_padam: tahun lengkap [2019, 2020, 2022, 2023] titik {2019: 809341, 2020: 157369, 2022: 91883, 2023: 468628}
 lab_padam: sel sampel 52
 lab_padam: bobot Open-Meteo 0 terpotong False
-lab_padam: tahun 2019 {'lokasi': 17570, 'di_luar_jendela': 568, 'pengamatan_calon': 27863, 'di_luar_negeri_atau_laut': 942, 'pengamatan_dipakai': 26921, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 140998, 'sel_dengan_cuaca': 52} 79 dtk
-lab_padam: tahun 2020 {'lokasi': 5646, 'di_luar_jendela': 58, 'pengamatan_calon': 6091, 'di_luar_negeri_atau_laut': 354, 'pengamatan_dipakai': 5737, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 10136, 'sel_dengan_cuaca': 52} 7 dtk
-lab_padam: tahun 2022 {'lokasi': 2940, 'di_luar_jendela': 60, 'pengamatan_calon': 3055, 'di_luar_negeri_atau_laut': 146, 'pengamatan_dipakai': 2909, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 4806, 'sel_dengan_cuaca': 52} 4 dtk
-lab_padam: tahun 2023 {'lokasi': 15742, 'di_luar_jendela': 235, 'pengamatan_calon': 21730, 'di_luar_negeri_atau_laut': 745, 'pengamatan_dipakai': 20985, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 70710, 'sel_dengan_cuaca': 52} 37 dtk
+lab_padam: tahun 2019 {'lokasi': 17570, 'di_luar_jendela': 568, 'pengamatan_calon': 27863, 'di_luar_negeri_atau_laut': 942, 'pengamatan_dipakai': 26921, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 140998, 'sel_dengan_cuaca': 52} 58 dtk
+lab_padam: tahun 2020 {'lokasi': 5646, 'di_luar_jendela': 58, 'pengamatan_calon': 6091, 'di_luar_negeri_atau_laut': 354, 'pengamatan_dipakai': 5737, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 10136, 'sel_dengan_cuaca': 52} 5 dtk
+lab_padam: tahun 2022 {'lokasi': 2940, 'di_luar_jendela': 60, 'pengamatan_calon': 3055, 'di_luar_negeri_atau_laut': 146, 'pengamatan_dipakai': 2909, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 4806, 'sel_dengan_cuaca': 52} 3 dtk
+lab_padam: tahun 2023 {'lokasi': 15742, 'di_luar_jendela': 235, 'pengamatan_calon': 21730, 'di_luar_negeri_atau_laut': 745, 'pengamatan_dipakai': 20985, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 70710, 'sel_dengan_cuaca': 52} 28 dtk
 # Lab: luas masih terdeteksi / belum padam
 
 Tahap: selesai. Tahun lengkap: [2019, 2020, 2022, 2023]. kriteria_sha: ***. LAB, bukan produksi.
