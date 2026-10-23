@@ -15,6 +15,10 @@ PAKAI
 Batas waktu: env LAB_MENIT (bawaan 30). Kemajuan disimpan di public/data/lab/luas_fitur.json (agregat per sensor-tahun, ikut di-commit)
 sehingga putaran berikutnya melanjutkan; yang belum selesai ditulis di `belum_dikerjakan`.
 
+Kriteria & ambang keputusan: scripts/data/lab_kriteria/lab_luas.json (dibaca, di-hash sha256 kanonik). Tiap `jalan` menambah satu baris awal dan satu baris
+penutup (append-only) ke public/data/lab/jalan.jsonl; luas.json mencatat kriteria_sha. Klaim akurasi hanya terhadap acuan independen (Gaveau 2019, GFED5);
+pemilihan model memakai tahun seleksi, tahun uji akhir (daftar di berkas kriteria) dibuka sekali setelah pemenang dibekukan.
+
 URL berkunci FIRMS TIDAK pernah dicetak: semua pesan galat lewat redaksi().
 """
 import bisect, csv, datetime as dt, glob, gzip, hashlib, io, json, math, os, random, re, statistics, sys, time, urllib.error, urllib.request, zipfile
@@ -33,7 +37,6 @@ RAW = os.path.join(AKAR, "data/raw/lab")
 UA = {"User-Agent": "poskokarhutla-lab/1.0 (+github.com/pangantara/poskokarhutla)"}
 BBOX = (94.0, -11.5, 141.5, 6.5)  # lon0, lat0, lon1, lat1
 FAKTOR_TITIK = 4.3          # ha per titik S-NPP (laporan.json luas_banding)
-MIN_TRAIN_HA, MIN_EVAL_HA = 100.0, 1000.0
 NUSANTARA_2026 = 1_916_588  # ha, Nusantara Atlas Jan-Sep 2026 nasional; rujukan berita AFP, BUKAN data yang kita ukur
 OMISI_LIT = (0.52, 0.57, 0.62)   # GWIS kurang hitung 52-62% di Indonesia (rentang literatur; tengah 57%)
 GRUP = {"65": "64", "93": "91", "94": "91", "95": "91", "96": "92"}   # GWIS tak memisahkan; pemetaan sama dengan laporan.json `gabung`
@@ -54,34 +57,60 @@ SERI = {"N": (2012, 2026), "M": (2003, 2026)}   # tahun pelatihan/validasi per s
 TAHUN_TABEL = list(range(2001, 2027))
 FIRMS_DASAR = "https://firms.modaps.eosdis.nasa.gov"
 
-KRITERIA = {
-    "ditulis_sebelum_menghitung": True,
-    "unit_evaluasi": "provinsi(-gabungan GWIS) x tahun dengan acuan >= %d ha; leave-one-year-out (LOYO), model dilatih tanpa tahun uji" % MIN_EVAL_HA,
-    "K1_mape": {"ambang": 0.30, "arti": "MAPE (rata-rata |pred-acuan|/acuan) <= 30% terhadap acuan GABUNGAN, LOYO"},
-    "K2_gaveau_2019": {"rasio_median": [0.7, 1.4], "korelasi_log_min": 0.7,
-                       "arti": "tahun 2019 diramal tanpa melihat 2019 (LOYO; koreksi omisi GWIS pun tanpa Gaveau): median(pred/Gaveau) 0,7-1,4 dan korelasi log >= 0,7"},
-    "K3_cakupan": {"rentang": [0.70, 0.90], "nominal": 0.80, "arti": "cakupan selang P10-P90 (konformal silang per tahun) 70-90%"},
-    "dipilih": "model terbaik yang lolos K1, K2, K3 sekaligus (MAPE terendah); acuan latih yang boleh dipilih: sipongi, gwis, gabungan. Bila tak ada yang lolos: dikatakan, tidak ada model terpilih",
-    "tidak_dipilih": "acuan latih 'gaveau' (satu tahun) hanya dilaporkan",
-    "pembanding_wajib": "M0",
-    "lonjakan_antartahun": "faktor >= 2x dibanding tahun sebelumnya",
-    "pita_tally": "P50 model di dalam [min, maks] acuan yang tersedia (SiPongi, GWIS, Gaveau 2019, GFED5, Nusantara 2026 nasional)",
-    "rasio_historis_tally": "luas/hotspot dan luas/firespot di dalam P5-P95 tahun-tahun lain pada unit yang sama (min 5 tahun)",
-}
+KRITERIA_JALUR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab_kriteria", "lab_luas.json")
 
+
+def muat_kriteria(jalur=None):
+    """Semua kriteria & ambang keputusan tinggal di berkas terpisah (lab_kriteria/lab_luas.json), bukan di kode ini."""
+    with open(jalur or KRITERIA_JALUR, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def kanon(obj):
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+KRITERIA = muat_kriteria()
+MIN_TRAIN_HA = float(KRITERIA["min_latih_ha"])
+MIN_TITIK_EVAL = int(KRITERIA["min_titik_eval"])
+TAHUN_UJI_AKHIR = tuple(KRITERIA["pemilihan"]["tahun_uji_akhir"])
+ACUAN_NILAI = tuple(KRITERIA["acuan"]["nilai"])
+ACUAN_INDEP = tuple(KRITERIA["acuan"]["independen_dari_target_latih"])
+ACUAN_LATIH = tuple(KRITERIA["acuan"]["latih_boleh_dipilih"])
+JALAN_JSONL = os.path.join(OUT, "jalan.jsonl")
+
+_TUA = ", ".join(str(y) for y in TAHUN_UJI_AKHIR)
+_OM = "%d-%d%%" % (round(OMISI_LIT[0] * 100), round(OMISI_LIT[2] * 100))
+_MB = KRITERIA["bootstrap"]["min_blok_tahun"]
+_MA = KRITERIA["tally"]["min_acuan_independen"]
+_R2 = str(KRITERIA["keputusan"]["K2"]["galat_log_median_maks_rasio"]).replace(".", ",")
+_MTS = KRITERIA["pemilihan"]["min_tahun_seleksi"]
+_MUT = KRITERIA["metrik"]["min_unit_per_tahun"]
 JUJUR = [
-    "Acuan saling berselisih: GWIS (MCD64A1, 500 m) kurang hitung luas Indonesia 52-62% (kebakaran kecil, tertutup asap/awan, gambut); Gaveau dkk. 2021 (Sentinel-2 20 m) 2019 jauh di atas SiPongi dan GWIS.",
+    "Acuan saling berselisih: GWIS (MCD64A1, 500 m) kurang hitung luas Indonesia {OM} (kebakaran kecil, tertutup asap/awan, gambut); Gaveau dkk. 2021 (Sentinel-2 20 m) 2019 jauh di atas SiPongi dan GWIS.",
     "SiPongi (KLHK) TIDAK independen dari titik panas: indikasinya diturunkan dari titik panas + verifikasi; melatih model titik-panas terhadap SiPongi bersifat melingkar. M0/M1 pun dikalibrasi ke SiPongi.",
-    "GWIS adalah batas bawah, bukan kebenaran. Acuan gabungan = Gaveau (2019) atau GWIS x koreksi omisi yang ditaksir dari rasio Gaveau/GWIS 2019; koreksi satu-tahun itu diandaikan berlaku di tahun lain (tak teruji).",
-    "Gaveau hanya tersedia untuk 2019, sehingga satu-satunya uji luar-sampel terhadap citra ber-resolusi tinggi adalah satu tahun El Nino ekstrem; tahun basah tak punya acuan citra.",
+    "GWIS adalah batas bawah, bukan kebenaran. Target latih 'gabungan' = GWIS x prior literatur omisi {OM}; Gaveau 2019 TIDAK ikut membentuk target latih, supaya Gaveau tetap penilai independen. 'Gabungan' tidak pernah dipakai menilai akurasi.",
+    "Klaim akurasi hanya terhadap acuan independen dari target latih: Gaveau 2019 (satu tahun El Nino ekstrem) dan GFED5 2001-2020 bila terbaca (butuh netCDF4). Bila GFED5 tak terbaca, blok tahun independen < {MB} dan K1 tak dapat dinilai: tidak ada model terpilih. Itu hasil jujur, bukan galat.",
+    "Pembanding K1 dan skor seleksi = M0_terskala (M0 x median(target latih / M0) dari tahun latih lipatan, per acuan latih), supaya model tidak menang hanya karena M0 produksi (4,3 ha/titik) salah skala; selisih terhadap M0 mentah tetap dilaporkan (vs_m0_mentah).",
+    "K1 lolos hanya bila selisih (M0_terskala - model) positif terhadap GFED5 (bootstrap blok tahun, >= {MB} blok) DAN terhadap Gaveau 2019 (satu tahun, tanpa CI). K1 (bagian Gaveau) dan K2 berbagi data Gaveau 2019. GFED5 semi-independen: BA turunan titik api aktif MODIS, jadi bukan bukti sepenuhnya independen dari fitur titik. Blok tahun < 4 = tak dapat dinilai, tanpa label CI.",
+    "Tally hanya punya SATU bukti (dalam_pita); selang_tumpang dibuang karena hanya mengulang. Pita acuan = heuristik ditulis sebelum hasil. Tally memakai P50 (koreksi median residu) sedangkan K1/K2 memakai prediksi mentah; bedanya dilaporkan (luas_model_mentah, rasio_p50_vs_mentah). `model_lolos` di tiap baris dan luas.json menandai apakah model yang dipakai tabel lolos K1-K3.",
+    "Pada seri N, GFED5 hanya punya TEPAT 4 blok tahun di tahun uji akhir (2015, 2018, 2019, 2020), padahal min_blok_tahun = {MB}: K1 butuh keempatnya (satu tahun tanpa GFED5 = K1 tak dapat dinilai).",
+    "Semua tahun api besar ada di tahun uji akhir; model dilatih di tahun tenang. 'Tidak lolos' bisa berarti tak mampu ekstrapolasi ke tahun besar, bukan titik panas tak informatif.",
+    "Validasi silang antar-tahun ini adalah hindcast (melatih dengan tahun yang lebih baru untuk menguji tahun yang lebih lama), bukan prakiraan ke depan.",
+    "Kandidat dengan < {MTS} tahun seleksi (berskor atau bertarget latih) tidak dapat menang (dilaporkan 'tahun seleksi kurang'); tahun dengan < {MUT} unit tidak dihitung sebagai blok galat/bootstrap.",
+    "Pemilihan dari puluhan kandidat (model x acuan latih x seri) memakai tahun seleksi saja; tahun uji akhir ({TUA}) tak dipakai melatih/memilih. Pemenang dibekukan lebih dulu; bila gagal, tidak turun ke peringkat 2.",
+    "Acuan saling berselisih sampai sekitar 3x, maka K2 = median |ln(pred/Gaveau)| <= ln({R2}), bukan kecocokan ketat; pita tally melebar menurut ketidakpastian tiap acuan independen.",
+    "Cakupan selang (K3) dihitung terhadap target latih: diagnosa kalibrasi internal, bukan bukti akurasi. Selang adalah selang terhadap target latih (untuk 'gabungan' dilebarkan ketidakpastian omisi), bukan luas sebenarnya.",
+    "Tally: pita dari acuan independen saja; tahun dengan < {MA} acuan independen = tak dapat dinilai (bukan cocok). Rasio luas/hotspot dan luas/firespot = konsistensi internal (model dibuat dari titik itu), bukan bukti. ENSO/IOD = penjelasan, bukan uji. Uji kekuatan menyuntik galat x0,5 dan x2 untuk melihat apakah tally mendeteksinya.",
     "Pergantian sensor: MODIS Terra 2000/Aqua Juli 2002 (jadi 2001-2002 setengah), S-NPP VIIRS 375 m sejak 2012, NOAA-20 sejak 2018, NOAA-21 sejak 2023; hitungan titik antar sensor tidak setara. Model dilatih per seri (N = S-NPP, M = MODIS) agar definisi konstan.",
-    "Selang P10-P90 berasal dari residu konformal silang antar-tahun; residu satu tahun berkorelasi, jadi cakupan bisa kurang dari nominal. Selang nasional = jumlah kuantil provinsi (asumsi komonoton, konservatif).",
+    "Selang P10-P90 berasal dari residu konformal berkelompok (blok = tahun, koreksi n+1, per kelas ukuran bila n cukup); residu satu tahun berkorelasi, jadi cakupan per tahun dilaporkan, termasuk tahun El Nino. Selang nasional = jumlah kuantil provinsi (asumsi komonoton, konservatif).",
     "Papua/Papua Barat dilatih sebagai gabungan (91+93+94+95, 92+96) karena GWIS tak memisahkan; Kaltara dihitung di Kaltim. Batas provinsi pada titik memakai sel 0,01 derajat (galat sekitar 1 km di perbatasan).",
     "Nusantara Atlas 1.916.588 ha (Jan-Sep 2026, nasional) adalah angka berita (AFP), bukan data yang kita ukur ulang.",
     "Perkiraan 2026 memakai model yang dilatih pada tahun penuh, padahal data 2026 baru s.d. Oktober (musim belum usai) dan versi Jan-Sep (periode Nusantara Atlas) lebih pendek lagi, jadi bias rendah.",
     "Agregasi Gaveau per cluster (kecocokan petak terbakar dengan cluster DBSCAN) TIDAK dikerjakan di sini; sudah dicakup scripts/data/ujibanding_firespot.py. Di sini hanya per provinsi dan per sel 0,25 derajat.",
     "Sel 0,25 derajat Gaveau tanpa titik panas tidak terjangkau model; luasnya dilaporkan terpisah (ha_gaveau_tanpa_titik).",
 ]
+JUJUR = [x.format(OM=_OM, TUA=_TUA, MB=_MB, MA=_MA, R2=_R2, MTS=_MTS, MUT=_MUT) for x in JUJUR]
 
 FITUR_DAFTAR = {
     "titik": ["n0", "n1", "n2", "n", "n_nh (n1+n2)"],
@@ -793,6 +822,10 @@ def tabel_target(acuan, ref, kor):
     elif acuan == "gaveau":
         for g, v in (ref.get("gaveau") or {}).items():
             out[(g, 2019)] = v
+    elif acuan == "gfed5":
+        for g, d in (ref.get("gfed5") or {}).items():
+            for y, v in d.items():
+                out[(g, y)] = v
     elif acuan == "gabungan":
         ys = {y for d in ref["gwis"].values() for y in d}
         for g in ref["gwis"]:
@@ -1007,8 +1040,27 @@ def _loyo_dalam(tr, fit_pred, lams):
 def spec_model(nama, ctx):
     """-> fungsi fit(list[Latihan]) -> ramal(f) = ln(ha). ctx: {'faktor_setara', 'seri'}."""
     if nama == "M0":
-        fs = ctx.get("faktor_setara", 1.0) if ctx.get("seri") == "M" else 1.0
+        def fs_lipatan():
+            """S4: faktor setara MODIS->S-NPP dihitung HANYA dari tahun latih lipatan (ctx['tahun_latih'] + ctx['rasio_nm']); tanpa itu, nilai tunggal ctx['faktor_setara']."""
+            if ctx.get("seri") != "M":
+                return 1.0
+            rn, tl = ctx.get("rasio_nm"), ctx.get("tahun_latih")
+            if rn is not None and tl is not None:
+                v = [rn[y] for y in tl if y in rn]
+                return median(v) if v else 1.0
+            return ctx.get("faktor_setara", 1.0)
+        fs = fs_lipatan()
         return lambda tr: (lambda f: math.log(max(1.0, FAKTOR_TITIK * fs * (f.get("n1", 0) + f.get("n2", 0)))))
+
+    if nama == "M0_terskala":
+        base = spec_model("M0", ctx)([])
+
+        def fit(tr):
+            """B-1: M0 x median(target latih / M0) dari tahun latih lipatan (konstanta skala per acuan latih)."""
+            r = [t.ha / math.exp(base(t.f)) for t in tr]
+            lc = math.log(median(r)) if r else 0.0
+            return lambda f: base(f) + lc
+        return fit
 
     if nama == "M1":
         def fit(tr):
@@ -1064,6 +1116,7 @@ def spec_model(nama, ctx):
 
 MODEL = ["M0", "M1", "M2", "M3", "M4"]
 KET_MODEL = {
+    "M0_terskala": "pembanding K1/seleksi: M0 x median(target latih / M0) dari tahun latih lipatan, per acuan latih (bukan kandidat)",
     "M0": "produksi: titik keyakinan sedang/tinggi x 4,3 ha (seri M: x faktor setara S-NPP)",
     "M1": "faktor ha/titik per provinsi (insiden.faktor_luas, median rasio acuan/titik antartahun latih)",
     "M2": "log-linier ridge: ln(piksel unik toleran) + ln(ukuran cluster median) + porsi gambut + porsi hutan + ONI JAS + anomali hujan; lambda lewat LOYO dalam",
@@ -1073,115 +1126,305 @@ KET_MODEL = {
 
 
 # ================================================================ validasi
-def lipat_loyo(baris, ref, acuan, seri_tahun, gabungan_ref=None):
-    """Daftar lipatan LOYO: {'nama', 'tahun_uji', 'latih': [Latihan], 'uji': [baris]}. Target latih dibangun TANPA info tahun uji
-    (2019: koreksi omisi tanpa Gaveau)."""
+# Prinsip (temuan validasi-model): (1) klaim akurasi HANYA terhadap acuan independen dari target latih (Gaveau 2019, GFED5); "gabungan" hanya target latih;
+# (2) tiap model dilaporkan terhadap semua acuan dengan M0 yang sama; (3) pemilihan dari banyak kandidat memakai tahun SELEKSI saja (LOYO), pemenang dibekukan,
+# baru tahun uji akhir dibuka (winner's curse); (4) unit disaring dari jumlah titik (fitur), tidak dari nilai kebenaran.
+def hujan_z_lipatan(baris, tahun_latih):
+    """H2: anomali hujan z per grup dengan mu/sigma dari TAHUN LATIH lipatan saja; tahun uji dan 2026 memakai mu/sigma itu. -> {(g, y): z}"""
+    nmin = KRITERIA["hujan_z"]["min_tahun_latih"]
+    per = {}
+    for b in baris:
+        h = b["f"].get("hujan_mm")
+        if h is not None:
+            per.setdefault(b["g"], []).append((b["y"], h))
+    out = {}
+    for g, v in per.items():
+        lat = [h for y, h in v if y in tahun_latih]
+        if len(lat) < nmin:
+            continue
+        mu = sum(lat) / len(lat)
+        sd = math.sqrt(sum((x - mu) ** 2 for x in lat) / len(lat)) or 1.0
+        for y, h in v:
+            out[(g, y)] = (h - mu) / sd
+    return out
+
+
+def target_latih(acuan, ref):
+    """Target LATIH per acuan. 'gabungan' = GWIS x prior literatur omisi (Gaveau 2019 TIDAK ikut: ia penilai independen dan satu-satunya citra beresolusi tinggi).
+    Hanya 'gaveau' (dilaporkan saja, tak boleh dipilih) memakai Gaveau. -> {(g,y): ha}"""
+    rl = {**ref, "gaveau": ref.get("gaveau") if acuan == "gaveau" else None}
+    kor = bangun_koreksi(rl["gwis"], None, tanpa_gaveau=True)
+    return tabel_target(acuan, rl, kor)
+
+
+def lipat_loyo(baris, tt):
+    """Lipatan LOYO atas `baris` (pemanggil sudah membuang tahun uji akhir). Target latih tt tak bergantung pada tahun uji."""
     out = []
     for y in sorted({b["y"] for b in baris}):
-        kor = bangun_koreksi(ref["gwis"], ref.get("gaveau"), tanpa_gaveau=(y == 2019))
-        tt = tabel_target(acuan, {**ref, "gaveau": None if y == 2019 else ref.get("gaveau")}, kor)
         out.append(_lipat("y%d" % y, baris, tt, lambda b, y=y: b["y"] == y))
         out[-1]["tahun_uji"] = y
     return out
 
 
-def lipat_lopo(baris, ref, acuan):
+def lipat_lopo(baris, tt):
+    """Leave-one-province-out. hujan_z grup uji memakai semua tahun (kovariat grup itu sendiri; tak ada kebocoran target)."""
     out = []
+    tahun_semua = {b["y"] for b in baris}
     for g in sorted({b["g"] for b in baris}):
-        kor = bangun_koreksi(ref["gwis"], ref.get("gaveau"), kecuali_grup=g)
-        tt = tabel_target(acuan, ref, kor)
-        out.append(_lipat("g%s" % g, baris, tt, lambda b, g=g: b["g"] == g))
+        out.append(_lipat("g%s" % g, baris, tt, lambda b, g=g: b["g"] == g, z_tahun=tahun_semua))
         out[-1]["grup_uji"] = g
     return out
 
 
-def _lipat(nama, baris, tt, uji_fn):
+def lipat_uji_akhir(baris, tt, tahun_uji):
+    """Satu lipatan: semua tahun uji akhir ditahan; latih = sisanya."""
+    tu = set(tahun_uji)
+    l = _lipat("uji_akhir", baris, tt, lambda b: b["y"] in tu)
+    l["tahun_uji"] = sorted(tu)
+    return [l]
+
+
+def _lipat(nama, baris, tt, uji_fn, z_tahun=None):
+    tahun_latih = {b["y"] for b in baris if not uji_fn(b)}
+    z = hujan_z_lipatan(baris, tahun_latih if z_tahun is None else z_tahun)
     tr, uji = [], []
     for b in baris:
+        zb = z.get((b["g"], b["y"]))
+        fb = b["f"] if zb is None else dict(b["f"], hujan_z=zb)
         if uji_fn(b):
-            uji.append(b)
+            uji.append(b if zb is None else dict(b, f=fb))
         else:
             ha = tt.get((b["g"], b["y"]))
             if ha is not None and ha >= MIN_TRAIN_HA and b["f"].get("n_nh", 0) > 0:
-                tr.append(Latihan(dict(b["f"], _g=b["g"]), ha, b["y"], b["g"]))
-    return {"nama": nama, "latih": tr, "uji": uji}
+                tr.append(Latihan(dict(fb, _g=b["g"]), ha, b["y"], b["g"]))
+    return {"nama": nama, "latih": tr, "uji": uji, "tahun_latih": tahun_latih}
 
 
 def jalankan_lipatan(nama_model, lipatan, ctx, tenggat=None):
-    """-> {(g,y): ln pred} untuk semua baris uji dengan titik > 0."""
-    fit = spec_model(nama_model, ctx)
+    """-> ({(g,y): ln pred}, selesai) untuk semua baris uji dengan titik > 0. M0 memakai faktor setara dari tahun latih lipatan (S4)."""
     pred = {}
     for l in lipatan:
         if tenggat and tenggat():
             return pred, False
         if not l["latih"] and nama_model != "M0":
             continue
-        ramal = fit(l["latih"]) if l["latih"] or nama_model == "M0" else None
+        ramal = spec_model(nama_model, dict(ctx, tahun_latih=l.get("tahun_latih")))(l["latih"])
         for b in l["uji"]:
             if b["f"].get("n_nh", 0) > 0:
                 pred[(b["g"], b["y"])] = ramal(dict(b["f"], _g=b["g"]))
     return pred, True
 
 
-def metrik(pred, truth, min_ha=MIN_EVAL_HA):
-    """pred: {k: ln ha}; truth: {k: ha}. Selang konformal silang antar-tahun: residu e = ln(T/P) tahun LAIN (kuantil 10 dan 90)."""
-    ks = [k for k in pred if k in truth and truth[k] >= min_ha]
-    if len(ks) < 3:
-        return {"n": len(ks)}
-    e = {k: math.log(truth[k]) - pred[k] for k in ks}
-    ape = [abs(math.exp(pred[k]) - truth[k]) / truth[k] for k in ks]
-    ok = 0
-    ket = 0
-    for k in ks:
-        pool = [e[j] for j in ks if j[1] != k[1]] or [e[j] for j in ks if j != k]
-        if len(pool) < 3:
+# ---- metrik: galat log simetris
+def _d_log(pred, truth, titik, min_titik):
+    """d[k] = ln(pred) - ln(acuan). Unit disaring dari JUMLAH TITIK (fitur), bukan dari kebenaran; acuan <= 0 tak punya log (dihitung di n_nol)."""
+    d, nol = {}, 0
+    for k, lp in pred.items():
+        t = truth.get(k)
+        if t is None or titik.get(k, 0) < min_titik:
             continue
-        ket += 1
-        if kuantil(pool, 0.1) <= e[k] <= kuantil(pool, 0.9):
-            ok += 1
-    lp = [pred[k] for k in ks]
-    lt = [math.log(truth[k]) for k in ks]
-    return {"n": len(ks), "rasio_median": bulat(math.exp(-median([e[k] for k in ks])), 3), "mape": bulat(sum(ape) / len(ape), 3),
-            "mdape": bulat(median(ape), 3), "bias_log": bulat(-sum(e.values()) / len(e), 3), "korelasi_log": bulat(pearson(lp, lt), 3),
-            "cakupan_p10_p90": bulat(ok / ket, 3) if ket else None}
+        if t <= 0:
+            nol += 1
+            continue
+        d[k] = lp - math.log(t)
+    return d, nol
 
 
-def cek_gaveau_2019(pred, gaveau):
-    ks = [(g, 2019) for g in gaveau if (g, 2019) in pred and gaveau[g] >= MIN_EVAL_HA]
+def galat_per_tahun(pred, truth, titik, min_titik, min_unit=None):
+    """{tahun: median |ln(pred/acuan)|}; tahun dengan < min_unit_per_tahun unit TIDAK dihitung sebagai blok (derau)."""
+    mu = KRITERIA["metrik"]["min_unit_per_tahun"] if min_unit is None else min_unit
+    d, _ = _d_log(pred, truth, titik, min_titik)
+    per = {}
+    for k, v in d.items():
+        per.setdefault(k[1], []).append(abs(v))
+    return {y: median(v) for y, v in per.items() if len(v) >= mu}
+
+
+def _ringkas_d(ks, d, pred, truth):
+    ad = [abs(d[k]) for k in ks]
+    w = [truth[k] for k in ks]
+    per = {}
+    for k in ks:
+        per.setdefault(k[1], []).append(k)
+    tot = {}
+    for y, kk in per.items():
+        sp, st = sum(math.exp(pred[k]) for k in kk), sum(truth[k] for k in kk)
+        tot[y] = (abs(sp - st) / st, sp / st - 1.0)
+    sp_all, st_all = sum(math.exp(pred[k]) for k in ks), sum(w)
+    return {"n": len(ks), "n_tahun": len(per), "galat_log_median": bulat(median(ad), 4), "faktor_galat_median": bulat(math.exp(median(ad)), 3),
+            "bias_log": bulat(sum(d[k] for k in ks) / len(ks), 4),
+            "galat_log_berbobot_luas": bulat(sum(wi * a for wi, a in zip(w, ad)) / sum(w), 4),
+            "galat_total_nasional": {"median_tahun": bulat(median([v[0] for v in tot.values()]), 4), "bias_total_median_tahun": bulat(median([v[1] for v in tot.values()]), 4),
+                                     "gabung_semua_tahun": bulat(abs(sp_all - st_all) / st_all, 4)}}
+
+
+def metrik_log(pred, truth, titik, min_titik=None, tahun_elnino=()):
+    """H9: metrik utama = median |ln(pred/acuan)|, bias log, galat total nasional (per tahun), bobot per luas untuk agregat. pred: {k: ln ha}; truth: {k: ha}.
+    Dilaporkan per tahun dan khusus tahun El Nino (H11)."""
+    mt = MIN_TITIK_EVAL if min_titik is None else min_titik
+    d, nol = _d_log(pred, truth, titik, mt)
+    ks = list(d)
     if len(ks) < 3:
-        return {"n": len(ks)}
-    r = [pred[k] - math.log(gaveau[k[0]]) for k in ks]
-    return {"n": len(ks), "rasio_median": bulat(math.exp(median(r)), 3), "korelasi_log": bulat(pearson([pred[k] for k in ks], [math.log(gaveau[k[0]]) for k in ks]), 3),
-            "mape": bulat(sum(abs(math.exp(pred[k]) - gaveau[k[0]]) / gaveau[k[0]] for k in ks) / len(ks), 3)}
+        return {"n": len(ks), "n_acuan_nol": nol}
+    out = _ringkas_d(ks, d, pred, truth)
+    out["n_acuan_nol"] = nol
+    out["korelasi_log"] = bulat(pearson([pred[k] for k in ks], [math.log(truth[k]) for k in ks]), 3)
+    out["per_tahun"] = {str(y): _ringkas_d([k for k in ks if k[1] == y], d, pred, truth) for y in sorted({k[1] for k in ks})}
+    ke = [k for k in ks if k[1] in set(tahun_elnino)]
+    out["el_nino"] = _ringkas_d(ke, d, pred, truth) if len(ke) >= 3 else {"n": len(ke)}
+    return out
 
 
-def lolos(m_loyo, g19):
-    K = KRITERIA
-    k1 = m_loyo.get("mape") is not None and m_loyo["mape"] <= K["K1_mape"]["ambang"]
-    lo, hi = K["K2_gaveau_2019"]["rasio_median"]
-    k2 = g19.get("rasio_median") is not None and g19.get("korelasi_log") is not None and lo <= g19["rasio_median"] <= hi and g19["korelasi_log"] >= K["K2_gaveau_2019"]["korelasi_log_min"]
-    a, b = K["K3_cakupan"]["rentang"]
-    k3 = m_loyo.get("cakupan_p10_p90") is not None and a <= m_loyo["cakupan_p10_p90"] <= b
-    return {"K1": bool(k1), "K2": bool(k2), "K3": bool(k3), "semua": bool(k1 and k2 and k3),
-            "K2_dinilai": bool(g19.get("n")), "catatan": None if g19.get("n") else "Gaveau 2019 tak tersedia: K2 tak dapat dinilai, dihitung TIDAK lolos"}
+def selisih_tahun(pred, pred0, truth, titik, min_titik=None):
+    """{tahun: galat_median(M0) - galat_median(model)} pada unit yang sama; positif = model lebih baik."""
+    mt = MIN_TITIK_EVAL if min_titik is None else min_titik
+    ks = set(pred) & set(pred0)
+    e1 = galat_per_tahun({k: pred[k] for k in ks}, truth, titik, mt)
+    e0 = galat_per_tahun({k: pred0[k] for k in ks}, truth, titik, mt)
+    return {y: e0[y] - e1[y] for y in e1 if y in e0}
 
 
-def evaluasi_seri(seri, baris, ref, ctx, tenggat=None, acuan_list=("sipongi", "gwis", "gabungan", "gaveau")):
-    """Semua model x acuan latih: LOYO (+ LOPO). Dinilai terhadap acuan gabungan (utama) dan acuan latih sendiri."""
-    kor_penuh = bangun_koreksi(ref["gwis"], ref.get("gaveau"))
-    truth_gab = tabel_target("gabungan", ref, kor_penuh)
+def bootstrap_selisih(d_tahun):
+    """Bootstrap BLOK TAHUN atas rata-rata selisih. -> {'dapat_dinilai', 'n_tahun', 'selisih_rata', 'ci', 'lebih_baik'}; < min_blok_tahun = tak dapat dinilai."""
+    B = KRITERIA["bootstrap"]
+    ys = sorted(d_tahun)
+    if len(ys) < B["min_blok_tahun"]:
+        return {"dapat_dinilai": False, "status": "tak_dapat_dinilai", "n_tahun": len(ys), "alasan": "blok tahun < %d (tanpa CI)" % B["min_blok_tahun"]}
+    rng = random.Random(B["benih"])
+    rata = []
+    for _ in range(B["ulang"]):
+        s = [d_tahun[ys[rng.randrange(len(ys))]] for _ in ys]
+        rata.append(sum(s) / len(s))
+    a = (1 - B["tingkat_ci"]) / 2
+    lo, hi = kuantil(rata, a), kuantil(rata, 1 - a)
+    return {"dapat_dinilai": True, "n_tahun": len(ys), "selisih_rata": bulat(sum(d_tahun[y] for y in ys) / len(ys), 4), "ci": [bulat(lo, 4), bulat(hi, 4)],
+            "tingkat_ci": B["tingkat_ci"], "lebih_baik": bool(lo > KRITERIA["keputusan"]["K1"]["batas_bawah_ci_lebih_dari"])}
+
+
+# ---- konformal berkelompok (blok = tahun), koreksi (n+1), kuantil per kelas ukuran
+def kelas_ukuran(ln_pred):
+    ha = math.exp(ln_pred)
+    return sum(1 for b in KRITERIA["cakupan"]["kelas_ukuran_ha"] if ha >= b)
+
+
+def batas_konformal(pool, qlo=0.1, qhi=0.9):
+    """Kuantil konformal split dengan koreksi (n+1): bawah = urutan floor((n+1)qlo), atas = urutan ceil((n+1)qhi). None bila di luar jangkauan (n terlalu kecil)."""
+    n = len(pool)
+    if n == 0:
+        return None
+    xs = sorted(pool)
+    rlo = int(math.floor((n + 1) * qlo + 1e-9))
+    rhi = int(math.ceil((n + 1) * qhi - 1e-9))
+    if rlo < 1 or rhi > n:
+        return None
+    return xs[rlo - 1], xs[rhi - 1]
+
+
+def _kolam(residu, tahun, ln_pred):
+    """Residu tahun LAIN (blok = tahun); kuantil per kelas ukuran (menurut P50 prediksi, bukan kebenaran) bila n kelas cukup, selain itu semua kelas."""
+    c = KRITERIA["cakupan"]
+    lain = [(e, l) for k, (e, l) in residu.items() if k[1] != tahun]
+    kls = kelas_ukuran(ln_pred)
+    kl = [e for e, l in lain if kelas_ukuran(l) == kls]
+    if len(kl) >= c["min_pool_kelas"]:
+        return kl, "kelas"
+    return [e for e, _ in lain], "semua"
+
+
+def kumpul_residu(pred, truth, titik, min_titik=None):
+    """{k: (e, ln_pred)} dengan e = ln(acuan) - ln(pred); unit disaring dari jumlah titik."""
+    mt = MIN_TITIK_EVAL if min_titik is None else min_titik
+    d, _ = _d_log(pred, truth, titik, mt)
+    return {k: (-v, pred[k]) for k, v in d.items()}
+
+
+def _cakupan(items, kal, tahun_elnino):
+    """items, kal: {k: (e, ln_pred)}. Selang tiap unit dari residu `kal` tahun LAIN (blok = tahun), (n+1), per kelas ukuran."""
+    c = KRITERIA["cakupan"]
+    ok = n = 0
+    per, el = {}, [0, 0]
+    for k, (e, lp) in items.items():
+        pool, _ = _kolam(kal, k[1], lp)
+        if len(pool) < c["min_pool"]:
+            continue
+        b = batas_konformal(pool, *c["kuantil"])
+        if b is None:
+            continue
+        hit = b[0] <= e <= b[1]
+        n += 1
+        ok += hit
+        p = per.setdefault(k[1], [0, 0])
+        p[0] += hit
+        p[1] += 1
+        if k[1] in set(tahun_elnino):
+            el[0] += hit
+            el[1] += 1
+    return {"n": n, "total": bulat(ok / n, 3) if n else None, "per_tahun": {str(y): bulat(v[0] / v[1], 3) for y, v in sorted(per.items())},
+            "el_nino": bulat(el[0] / el[1], 3) if el[1] else None, "n_el_nino": el[1], "terhadap": "target latih (kalibrasi internal), bukan luas sebenarnya"}
+
+
+def cakupan_konformal(pred, truth, titik, min_titik=None, tahun_elnino=()):
+    """Cakupan selang P10-P90 konformal berkelompok (leave-year-out) terhadap `truth` (= target LATIH): DIAGNOSA kalibrasi, bukan bukti akurasi.
+    Dilaporkan total, per tahun, dan tahun El Nino."""
+    res = kumpul_residu(pred, truth, titik, min_titik)
+    return _cakupan(res, res, tahun_elnino)
+
+
+def cakupan_uji_akhir(pred_ua, pred_loyo, truth, titik, min_titik=None, tahun_elnino=()):
+    """Cakupan di tahun uji akhir: selang dikalibrasi dari residu LOYO (tahun seleksi), diuji pada tahun yang tak ikut kalibrasi (termasuk El Nino 2015/2019/2023)."""
+    return _cakupan(kumpul_residu(pred_ua, truth, titik, min_titik), kumpul_residu(pred_loyo, truth, titik, min_titik), tahun_elnino)
+
+
+def selang_unit(ln_pred, tahun, residu, omisi_sd=0.0, min_pool=None):
+    """(p10, p50, p90) ha. residu {k: (e, ln_pred_k)}: konformal berkelompok tahun-lain, koreksi (n+1), kuantil per kelas ukuran bila n cukup.
+    H12: selang dilebarkan 1,2816 x omisi_sd (ketidakpastian koreksi omisi GWIS) di kedua ujung; tanpa omisi_sd selang HANYA terhadap target latih."""
+    mp = KRITERIA["cakupan"]["min_pool"] if min_pool is None else min_pool
+    pool, _ = _kolam(residu, tahun, ln_pred)
+    if len(pool) < mp:
+        return None
+    b = batas_konformal(pool, *KRITERIA["cakupan"]["kuantil"])
+    if b is None:
+        return None
+    z = 1.2816 * omisi_sd
+    return tuple(math.exp(ln_pred + x) for x in (b[0] - z, median(pool), b[1] + z))
+
+
+def evaluasi_seri(seri, baris, ref, ctx, tenggat=None, acuan_list=ACUAN_LATIH + ("gaveau",)):
+    """Semua model x acuan latih. Seleksi: LOYO (+LOPO) pada tahun SELEKSI saja. Tahun uji akhir ditahan dari latih & pilih; prediksinya dihitung untuk semua kandidat
+    tetapi pemenang ditentukan lebih dulu oleh pilih_model dari skor_seleksi (tidak membaca hasil tahun uji akhir).
+    -> (hasil, preds, info). info: target latih, acuan nilai, titik, El Nino, omisi_sd."""
+    uji_akhir = sorted({b["y"] for b in baris} & set(TAHUN_UJI_AKHIR))
+    baris_sel = [b for b in baris if b["y"] not in uji_akhir]
+    tahun_sel = {b["y"] for b in baris_sel}
+    titik = {(b["g"], b["y"]): b["f"].get("n_nh", 0) for b in baris}
+    elnino = {y for y, v in (ctx.get("oni_jas") or {}).items() if v >= KRITERIA["elnino"]["oni_jas_min"]}
+    kor_prior = bangun_koreksi(ref["gwis"], None, tanpa_gaveau=True)
+    nilai = {a: tabel_target(a, ref, kor_prior) for a in ACUAN_NILAI}
+    # mata uang seleksi bersama: gabungan = GWIS x prior literatur, tanpa Gaveau (skala acuan berbeda membuat skor per-acuan tak sebanding)
+    mata_uang = tabel_target(KRITERIA["pemilihan"]["seleksi_mata_uang_acuan"], {**ref, "gaveau": None}, kor_prior)
+    kor_info = bangun_koreksi(ref["gwis"], ref.get("gaveau"))
+    info = {"latih": {}, "nilai": nilai, "titik": titik, "elnino": elnino, "uji_akhir": uji_akhir,
+            "omisi_sd": max(kor_prior["sd"], kor_info["sd"])}
     hasil, preds = [], {}
     for acuan in acuan_list:
         if acuan == "gaveau" and not ref.get("gaveau"):
             continue
-        truth_sendiri = tabel_target(acuan, ref, kor_penuh)
+        tt = target_latih(acuan, ref)
+        info["latih"][acuan] = tt
         if acuan == "gaveau":
-            fold = {"lopo": [l for l in lipat_lopo([b for b in baris if b["y"] == 2019], ref, "gaveau")],
-                    "transfer": [_lipat("transfer", baris, tabel_target("gaveau", ref, kor_penuh), lambda b: b["y"] != 2019)]}
+            fold = {"lopo": lipat_lopo([b for b in baris if b["y"] == 2019], tt),
+                    "transfer": [_lipat("transfer", baris, tt, lambda b: b["y"] != 2019)]}
         else:
-            fold = {"loyo": lipat_loyo(baris, ref, acuan, None), "lopo": lipat_lopo(baris, ref, acuan)}
-        for nm in MODEL:
-            ent = {"seri": seri, "model": nm, "acuan_latih": acuan, "ket": KET_MODEL[nm]}
+            fold = {"loyo": lipat_loyo(baris_sel, tt), "lopo": lipat_lopo(baris_sel, tt)}
+            if uji_akhir:
+                fold["uji_akhir"] = lipat_uji_akhir(baris, tt, uji_akhir)
+        daftar = []
+        for m_ in MODEL:
+            daftar.append(m_)
+            if m_ == "M0":
+                daftar.append("M0_terskala")
+        for nm in daftar:
+            ent = {"seri": seri, "model": nm, "acuan_latih": acuan, "ket": KET_MODEL[nm], "tahun_uji_akhir": uji_akhir}
             for jenis, lip in fold.items():
                 if tenggat and tenggat():
                     ent[jenis] = {"dilewati": "anggaran habis"}
@@ -1191,30 +1434,94 @@ def evaluasi_seri(seri, baris, ref, ctx, tenggat=None, acuan_list=("sipongi", "g
                 if not selesai:
                     ent[jenis] = {"dilewati": "anggaran habis di tengah"}
                     continue
-                ent[jenis] = {"vs_gabungan": metrik(pr, truth_gab), "vs_sendiri": metrik(pr, truth_sendiri)}
-                if ref.get("gaveau"):
-                    ent[jenis]["gaveau_2019"] = cek_gaveau_2019(pr, ref["gaveau"])
-            if acuan != "gaveau" and isinstance(ent.get("loyo"), dict) and "vs_gabungan" in ent["loyo"]:
-                ent["lolos"] = lolos(ent["loyo"]["vs_gabungan"], ent["loyo"].get("gaveau_2019", {}))
-                ent["boleh_dipilih"] = True
-            else:
-                ent["boleh_dipilih"] = False
+                ev = {"vs": {a: metrik_log(pr, nilai[a], titik, MIN_TITIK_EVAL, elnino) for a in ACUAN_NILAI if nilai.get(a) and a != ("gaveau" if acuan == "gaveau" else None)}}
+                if jenis == "loyo":
+                    ev["cakupan"] = cakupan_konformal(pr, tt, titik, MIN_TITIK_EVAL, elnino)
+                if nm not in ("M0", "M0_terskala") and jenis in ("loyo", "uji_akhir") and (seri, "M0_terskala", acuan, jenis) in preds:
+                    p0 = preds[(seri, "M0_terskala", acuan, jenis)]      # pembanding K1 & seleksi = M0 TERSKALA
+                    pm = preds[(seri, "M0", acuan, jenis)]
+                    ev["vs_m0_terskala"] = {a: bootstrap_selisih(selisih_tahun(pr, p0, nilai[a], titik)) for a in ACUAN_NILAI if nilai.get(a)}
+                    ev["vs_m0_mentah"] = {a: bootstrap_selisih(selisih_tahun(pr, pm, nilai[a], titik)) for a in ACUAN_NILAI if nilai.get(a)}
+                    if jenis == "loyo":
+                        sel_d = selisih_tahun(pr, p0, mata_uang, titik)
+                        ev["skor_seleksi"] = _rata(sel_d)
+                        ev["skor_seleksi_n_tahun"] = len(sel_d)
+                        ev["tahun_seleksi_target"] = len({y for (g_, y), ha_ in tt.items() if y in tahun_sel and ha_ >= MIN_TRAIN_HA and titik.get((g_, y), 0) > 0})
+                        ev["status_seleksi"] = "memenuhi" if min(ev["skor_seleksi_n_tahun"], ev["tahun_seleksi_target"]) >= KRITERIA["pemilihan"]["min_tahun_seleksi"] else "tahun seleksi kurang"
+                        ev["skor_seleksi_mata_uang"] = KRITERIA["pemilihan"]["seleksi_mata_uang"]
+                    if jenis == "uji_akhir":
+                        ev["k1_gfed5"] = bootstrap_selisih(selisih_tahun(pr, p0, nilai.get("gfed5") or {}, titik))
+                        dg = selisih_tahun(pr, p0, nilai.get("gaveau") or {}, titik)
+                        mg = (sum(dg.values()) / len(dg)) if dg else None
+                        ev["k1_gaveau"] = {"dapat_dinilai": bool(dg), "n_tahun": len(dg), "selisih_rata": bulat(mg, 4) if dg else None,
+                                           "positif": bool(dg and mg > 0), "catatan": "satu tahun, tanpa CI; berbagi data Gaveau 2019 dengan K2"}
+                if jenis == "uji_akhir":
+                    ev["cakupan"] = cakupan_uji_akhir(pr, preds.get((seri, nm, acuan, "loyo"), {}), tt, titik, MIN_TITIK_EVAL, elnino)
+                ev["acuan_independen"] = list(ACUAN_INDEP)
+                ev["acuan_latih_dinilai_sendiri"] = acuan
+                ent[jenis] = ev
+            ent["boleh_dipilih"] = bool(acuan != "gaveau" and nm != "M0_terskala" and isinstance(ent.get("loyo"), dict) and "vs" in ent["loyo"])
+            if ent["boleh_dipilih"] and isinstance(ent.get("uji_akhir"), dict) and "vs" in ent["uji_akhir"]:
+                ent["lolos"] = putusan_entri(ent)
             hasil.append(ent)
-    return hasil, preds, truth_gab
+    return hasil, preds, info
+
+
+def _rata(d):
+    return bulat(sum(d.values()) / len(d), 4) if d else None
+
+
+def putusan_entri(ent):
+    """K1 (lebih baik dari M0, bootstrap blok tahun, acuan independen, tahun uji akhir), K2 (galat log median vs Gaveau 2019), K3 (kalibrasi). Tak dapat dinilai = tidak lolos."""
+    K = KRITERIA["keputusan"]
+    ua = ent.get("uji_akhir") or {}
+    bg, gv = ua.get("k1_gfed5") or {}, ua.get("k1_gaveau") or {}
+    k1_n = bool(bg.get("dapat_dinilai") and gv.get("dapat_dinilai"))
+    k1 = bool(k1_n and bg.get("lebih_baik") and gv.get("positif"))
+    g = (ua.get("vs") or {}).get(K["K2"]["acuan"]) or {}
+    k2_n = bool(g.get("n", 0) >= K["K2"]["min_unit"] and g.get("galat_log_median") is not None)
+    k2 = bool(k2_n and g["galat_log_median"] <= math.log(K["K2"]["galat_log_median_maks_rasio"]))
+    cv = (ent.get("loyo") or {}).get("cakupan") or {}
+    cu = ua.get("cakupan") or {}
+    a, bb = KRITERIA["cakupan"]["rentang"]
+    k3_n = bool(cv.get("total") is not None and cu.get("el_nino") is not None and cu.get("n_el_nino", 0) >= KRITERIA["cakupan"]["min_unit_elnino"])
+    k3 = bool(k3_n and a <= cv["total"] <= bb and cu["el_nino"] >= KRITERIA["cakupan"]["elnino_min"])
+    return {"K1": k1, "K2": k2, "K3": k3, "semua": bool(k1 and k2 and k3), "dapat_dinilai": {"K1": k1_n, "K2": k2_n, "K3": k3_n},
+            "K1_status": "tak_dapat_dinilai" if not k1_n else ("lolos" if k1 else "gagal"), "pembanding_k1": "M0_terskala",
+            "label_data": "K1 (bagian Gaveau) dan K2 berbagi data Gaveau 2019 (satu tahun, satu sumber); GFED5 semi-independen",
+            "catatan": None if (k1_n and k2_n and k3_n) else "ada kriteria yang tak dapat dinilai (acuan independen/El Nino kurang): dihitung TIDAK lolos"}
+
+
+def _layak(e):
+    """Kandidat yang BOLEH menang: dapat dipilih, bukan M0, ada skor seleksi, dan tahun seleksi (berskor DAN bertarget latih) >= min_tahun_seleksi."""
+    lo = e.get("loyo") or {}
+    return bool(e.get("boleh_dipilih") and e["model"] != "M0" and lo.get("skor_seleksi") is not None
+                and min(lo.get("skor_seleksi_n_tahun", 0), lo.get("tahun_seleksi_target", 0)) >= KRITERIA["pemilihan"]["min_tahun_seleksi"])
+
+
+def n_kandidat(hasil):
+    """Jumlah kandidat yang boleh menang (tahun seleksi cukup)."""
+    return sum(1 for e in hasil if _layak(e))
+
+
+def n_tahun_seleksi_kurang(hasil):
+    """Kandidat berskor tetapi tahun seleksi < min_tahun_seleksi: dilaporkan, tidak dapat menang."""
+    return sum(1 for e in hasil if e.get("boleh_dipilih") and e["model"] != "M0" and (e.get("loyo") or {}).get("skor_seleksi") is not None and not _layak(e))
 
 
 def pilih_model(hasil):
-    """-> (terpilih | None, terbaik_tak_lolos | None). Urut MAPE terendah."""
-    cand = [e for e in hasil if e.get("boleh_dipilih") and "lolos" in e]
-    lolos_ = sorted((e for e in cand if e["lolos"]["semua"]), key=lambda e: e["loyo"]["vs_gabungan"]["mape"])
-    ada = [e for e in cand if e["loyo"]["vs_gabungan"].get("mape") is not None]
-    terbaik = min(ada, key=lambda e: e["loyo"]["vs_gabungan"]["mape"]) if ada else None
-    return (lolos_[0] if lolos_ else None), terbaik
+    """-> (terpilih | None, pemenang_seleksi | None). Pemenang = skor_seleksi tertinggi (> 0) di antara kandidat layak (tahun seleksi >= min); TIDAK membaca hasil tahun uji akhir.
+    Bila pemenang gagal K1-K3, tidak ada model terpilih (tidak turun ke peringkat 2: itu memilih dengan tahun uji akhir)."""
+    cand = [e for e in hasil if _layak(e) and e["loyo"]["skor_seleksi"] > 0]
+    if not cand:
+        return None, None
+    win = max(cand, key=lambda e: e["loyo"]["skor_seleksi"])
+    return (win if (win.get("lolos") or {}).get("semua") else None), win
 
 
 def evaluasi_sel(seri, sel_fitur, gav_sel, kov_g, ctx, tenggat=None, ukuran_blok=2.0):
-    """Sel 0,25 derajat 2019 vs Gaveau (leave-one-spatial-block-out, blok 2x2 derajat). Sel Gaveau tanpa titik panas TIDAK terjangkau model
-    (dilaporkan sebagai `ha_gaveau_tanpa_titik`). -> {'n_sel', 'ha_gaveau_total', 'ha_gaveau_tanpa_titik', 'model': [...]}"""
+    """Sel 0,25 derajat 2019 vs Gaveau (leave-one-spatial-block-out, blok 2x2 derajat). CATATAN: latih & uji sama-sumber (Gaveau, blok lain), jadi ini validasi spasial,
+    BUKAN acuan independen dari target latih; tidak dipakai untuk K1-K3. Sel tanpa titik panas tidak terjangkau (ha_gaveau_tanpa_titik)."""
     rows = []
     for k, f in sel_fitur.items():
         if f.get("n_nh", 0) <= 0:
@@ -1227,13 +1534,16 @@ def evaluasi_sel(seri, sel_fitur, gav_sel, kov_g, ctx, tenggat=None, ukuran_blok
     for r in rows:
         r["bi"] = ids_blok[r["blok"]]
     truth = {(r["id"], r["bi"]): r["ha"] for r in rows}
+    titik = {(r["id"], r["bi"]): r["f"].get("n_nh", 0) for r in rows}
     tanpa = sum(v for k, v in gav_sel.items() if k not in sel_fitur or sel_fitur[k].get("n_nh", 0) <= 0)
-    out = {"n_sel": len(rows), "n_blok": len(ids_blok), "ha_gaveau_total": sum(gav_sel.values()), "ha_gaveau_tanpa_titik": tanpa, "model": []}
+    out = {"n_sel": len(rows), "n_blok": len(ids_blok), "ha_gaveau_total": sum(gav_sel.values()), "ha_gaveau_tanpa_titik": tanpa, "model": [],
+           "catatan": "validasi spasial dalam sumber yang sama (Gaveau); bukan acuan independen dari target latih; tidak dipakai untuk K1-K3"}
+    ctx_sel = dict(ctx, tahun_latih=(set(ctx["rasio_nm"]) - {2019}) if ctx.get("rasio_nm") is not None else None)
     for nm in MODEL:
         if tenggat and tenggat():
             out["model"].append({"model": nm, "seri": seri, "dilewati": "anggaran habis"})
             continue
-        fit = spec_model(nm, ctx)
+        fit = spec_model(nm, ctx_sel)
         pred = {}
         for bi in ids_blok.values():
             tr = [Latihan(dict(r["f"], _g=r["g"]), r["ha"], r["bi"], r["g"]) for r in rows if r["bi"] != bi and r["ha"] >= MIN_TRAIN_HA]
@@ -1244,36 +1554,31 @@ def evaluasi_sel(seri, sel_fitur, gav_sel, kov_g, ctx, tenggat=None, ukuran_blok
                 if r["bi"] == bi:
                     pred[(r["id"], r["bi"])] = ramal(dict(r["f"], _g=r["g"]))
         tot_pred = sum(math.exp(v) for v in pred.values())
-        out["model"].append({"model": nm, "seri": seri, "metrik": metrik(pred, truth), "ha_prediksi_total": round(tot_pred),
+        out["model"].append({"model": nm, "seri": seri, "metrik": metrik_log(pred, truth, titik, MIN_TITIK_EVAL), "ha_prediksi_total": round(tot_pred),
                              "rasio_total_vs_gaveau_sel_bertitik": bulat(tot_pred / sum(r["ha"] for r in rows), 3) if rows and sum(r["ha"] for r in rows) else None})
     return out
 
 
 # ================================================================ prediksi akhir + selang + tabel
-def kumpul_residu(pred, truth, min_ha=MIN_EVAL_HA):
-    return {k: math.log(truth[k]) - pred[k] for k in pred if k in truth and truth[k] >= min_ha}
-
-
-def selang_unit(ln_pred, tahun, residu):
-    """ln_pred + kuantil 10/90 residu tahun LAIN (konformal silang per tahun) -> (p10, p50, p90) ha."""
-    pool = [e for k, e in residu.items() if k[1] != tahun]
-    if len(pool) < 3:
-        pool = list(residu.values())
-    if not pool:
-        return None
-    return tuple(math.exp(ln_pred + kuantil(pool, q)) for q in (0.1, 0.5, 0.9))
-
-
-def prediksi_unit(entri, baris, ref, ctx, preds, truth_gab, tenggat=None):
-    """Prediksi p10/p50/p90 per unit untuk model `entri`: LOYO untuk unit berlabel, model akhir untuk lainnya. -> {(g,y): dict}"""
+def prediksi_unit(entri, baris, ref, ctx, preds, info, tenggat=None):
+    """Prediksi p10/p50/p90 per unit untuk model `entri`: LOYO (tahun seleksi), uji akhir (tahun ditahan), model akhir (lainnya, termasuk 2026).
+    hujan_z dihitung dari tahun latih model akhir (2026 memakai mu/sigma itu). Selang konformal berkelompok terhadap target latih `acuan_latih`;
+    untuk acuan 'gabungan' dilebarkan ketidakpastian koreksi omisi (H12). -> {(g,y): dict}"""
     seri, nm, acuan = entri["seri"], entri["model"], entri["acuan_latih"]
     pr_loyo = preds.get((seri, nm, acuan, "loyo"), {})
-    residu = kumpul_residu(pr_loyo, truth_gab)
-    kor = bangun_koreksi(ref["gwis"], ref.get("gaveau"))
-    tt = tabel_target(acuan, ref, kor)
-    tr = [Latihan(dict(b["f"], _g=b["g"]), tt[(b["g"], b["y"])], b["y"], b["g"]) for b in baris
+    pr_ua = preds.get((seri, nm, acuan, "uji_akhir"), {})
+    tt = info["latih"][acuan]
+    residu = kumpul_residu(pr_loyo, tt, info["titik"])
+    omisi = info["omisi_sd"] if acuan == "gabungan" else 0.0
+    tahun_tr = {b["y"] for b in baris if (b["g"], b["y"]) in tt and tt[(b["g"], b["y"])] >= MIN_TRAIN_HA and b["f"].get("n_nh", 0) > 0}
+    z = hujan_z_lipatan(baris, tahun_tr)
+
+    def fz(b):
+        zb = z.get((b["g"], b["y"]))
+        return b["f"] if zb is None else dict(b["f"], hujan_z=zb)
+    tr = [Latihan(dict(fz(b), _g=b["g"]), tt[(b["g"], b["y"])], b["y"], b["g"]) for b in baris
           if (b["g"], b["y"]) in tt and tt[(b["g"], b["y"])] >= MIN_TRAIN_HA and b["f"].get("n_nh", 0) > 0]
-    ramal = spec_model(nm, ctx)(tr) if tr or nm == "M0" else None
+    ramal = spec_model(nm, dict(ctx, tahun_latih=tahun_tr))(tr) if tr or nm == "M0" else None
     out = {}
     for b in baris:
         if b["f"].get("n_nh", 0) <= 0:
@@ -1281,22 +1586,56 @@ def prediksi_unit(entri, baris, ref, ctx, preds, truth_gab, tenggat=None):
         k = (b["g"], b["y"])
         if k in pr_loyo:
             lp, asal = pr_loyo[k], "LOYO"
+        elif k in pr_ua:
+            lp, asal = pr_ua[k], "uji_akhir"
         elif ramal:
-            lp, asal = ramal(dict(b["f"], _g=b["g"])), "model_akhir"
+            lp, asal = ramal(dict(fz(b), _g=b["g"])), "model_akhir"
         else:
             continue
-        s = selang_unit(lp, b["y"], residu)
+        s = selang_unit(lp, b["y"], residu, omisi)
         if s:
-            out[k] = {"p10": s[0], "p50": s[1], "p90": s[2], "asal": asal}
+            out[k] = {"p10": s[0], "p50": s[1], "p90": s[2], "mentah": math.exp(lp), "asal": asal}
     return out
 
 
-def ensoy(oni_jas, y):
-    return oni_jas.get(y)
+def ha_per_piksel(pred, fitur_cache, seri):
+    """S22: faktor efektif model terpilih = sum(P50) / sum(piksel unik 'px') atas unit (grup, tahun) berprediksi. -> {'nasional', 'prov': {g: ...}, 'tahun'}"""
+    sp, sx, pg, tahun = 0.0, 0.0, {}, set()
+    for (g, y), v in pred.items():
+        e = fitur_cache.get("%s|%d" % (seri, y))
+        px = ((e or {}).get("prov", {}).get(g) or {}).get("px")
+        if not px:
+            continue
+        sp += v["p50"]
+        sx += px
+        a = pg.setdefault(g, [0.0, 0.0])
+        a[0] += v["p50"]
+        a[1] += px
+        tahun.add(y)
+    if not sx:
+        return None
+    return {"nasional": bulat(sp / sx, 4), "prov": {g: bulat(a[0] / a[1], 4) for g, a in sorted(pg.items()) if a[1]}, "tahun": sorted(tahun), "seri": seri,
+            "definisi": "jumlah P50 model / jumlah piksel unik (px) atas unit provinsi-tahun berprediksi; piksel seri %s" % seri}
 
 
-def bendera_tabel(baris_tahun, refs_fn, oni_jas, sensor_ganti=(2012, 2018, 2023), dmi=None):
-    """baris_tahun: {y: {'luas': {p10,p50,p90}|None, 'hotspot_seri': n|None, 'nfs': n|None}} -> {y: bendera}. refs_fn(y) -> list[float] acuan."""
+# ---- tally kecocokan antartahun
+def pita_independen(ind):
+    """Pita dari acuan INDEPENDEN saja, melebar menurut ketidakpastian tiap acuan: [nilai/f, nilai*f] -> (min bawah, maks atas)."""
+    fk = KRITERIA["tally"]["lebar_pita_faktor"]
+    v = [(k, x) for k, x in ind.items() if x]
+    if not v:
+        return None
+    return min(x / fk.get(k, 2.0) for k, x in v), max(x * fk.get(k, 2.0) for k, x in v)
+
+
+def bendera_tabel(baris_tahun, indep_fn, oni_jas, sensor_ganti=(2012, 2018, 2023), dmi=None):
+    """baris_tahun: {y: {'luas': {p10,p50,p90}|None, 'hotspot_seri': n|None, 'nfs': n|None}}; indep_fn(y) -> {nama: nilai}. Hanya acuan yang punya lebar pita
+    (Gaveau independen, GFED5 semi-independen) membentuk pita; Nusantara hanya rujukan (S-2).
+    Tiga jenis bendera, dipisah: BUKTI (dalam_pita saja; satu bukti, tidak dua), KONSISTENSI INTERNAL (rasio luas/hotspot dan luas/firespot; model dibuat dari titik
+    itu; bukan bukti), PENJELASAN (lonjakan ENSO/IOD; bukan uji). `cocok` True hanya bila tahun dapat dinilai (>= min acuan) dan dalam_pita dinilai dan lolos.
+    Label acuan per tahun: gaveau+gfed5 / gfed5 semi-independen / gaveau / tak_dapat_dinilai. Pita = heuristik, ditulis sebelum hasil."""
+    T = KRITERIA["tally"]
+    L = KRITERIA["lonjakan"]
     ys = sorted(baris_tahun)
     out = {}
 
@@ -1309,30 +1648,35 @@ def bendera_tabel(baris_tahun, refs_fn, oni_jas, sensor_ganti=(2012, 2018, 2023)
         return v
     for i, y in enumerate(ys):
         r = baris_tahun[y]
-        fl = {"dalam_pita": None, "selang_tumpang": None, "rasio_hotspot_hist": None, "rasio_firespot_hist": None, "lonjakan": None}
+        fl = {"dalam_pita": None, "rasio_hotspot_hist": None, "rasio_firespot_hist": None, "lonjakan": None}
         sebab = []
+        ind = {k: v for k, v in (indep_fn(y) or {}).items() if v and k in T["lebar_pita_faktor"]}
+        pita = pita_independen(ind)
+        label = "gaveau+gfed5" if ("gaveau" in ind and "gfed5" in ind) else ("gfed5 semi-independen" if "gfed5" in ind else ("gaveau" if "gaveau" in ind else "tak_dapat_dinilai"))
+        status = "tanpa_model" if not r.get("luas") else ("dapat_dinilai" if len(ind) >= T["min_acuan_independen"] else "tak_dapat_dinilai")
         if r.get("luas"):
-            refs = [v for v in refs_fn(y) if v]
-            if refs:
-                lo, hi = min(refs), max(refs)
+            if status == "dapat_dinilai":
+                lo, hi = pita
                 fl["dalam_pita"] = bool(lo <= r["luas"]["p50"] <= hi)
-                fl["selang_tumpang"] = bool(r["luas"]["p10"] <= hi and r["luas"]["p90"] >= lo)
                 if r["luas"]["p50"] > hi:
-                    sebab.append("model di atas semua acuan (acuan kurang hitung?)")
+                    sebab.append("model di atas pita acuan (acuan kurang hitung?)")
                 elif r["luas"]["p50"] < lo:
-                    sebab.append("model di bawah semua acuan")
+                    sebab.append("model di bawah pita acuan")
             for kunci, nama in (("hotspot_seri", "rasio_hotspot_hist"), ("nfs", "rasio_firespot_hist")):
                 h = rasio_hist(y, kunci)
-                if r.get(kunci) and len(h) >= 5:
+                if r.get(kunci) and len(h) >= T["rasio_hist_min_tahun"]:
                     x = r["luas"]["p50"] / r[kunci]
-                    fl[nama] = bool(kuantil(h, 0.05) <= x <= kuantil(h, 0.95))
+                    pa, pb = T["rasio_hist_persentil"]
+                    fl[nama] = bool(kuantil(h, pa) <= x <= kuantil(h, pb))
             if i > 0 and baris_tahun[ys[i - 1]].get("luas") and ys[i - 1] == y - 1:
                 faktor = r["luas"]["p50"] / baris_tahun[ys[i - 1]]["luas"]["p50"]
-                if faktor >= 2 or faktor <= 0.5:
+                if faktor >= L["faktor"] or faktor <= 1 / L["faktor"]:
                     a, b = oni_jas.get(y), oni_jas.get(y - 1)
-                    jelas = bool(a is not None and b is not None and ((faktor >= 2 and a - b >= 0.5 and a >= 0.5) or (faktor <= 0.5 and b - a >= 0.5 and b >= 0.5)))
-                    da, db = (dmi or {}).get(y), (dmi or {}).get(y - 1)   # IOD positif (DMI JAS >= 0,4 dan naik >= 0,3) juga pendorong kekeringan (2019)
-                    iod = bool(da is not None and db is not None and ((faktor >= 2 and da >= 0.4 and da - db >= 0.3) or (faktor <= 0.5 and db >= 0.4 and db - da >= 0.3)))
+                    E, I = L["enso"], L["iod"]
+                    naik, turun = faktor >= L["faktor"], faktor <= 1 / L["faktor"]
+                    jelas = bool(a is not None and b is not None and ((naik and a - b >= E["delta_oni_min"] and a >= E["oni_min"]) or (turun and b - a >= E["delta_oni_min"] and b >= E["oni_min"])))
+                    da, db = (dmi or {}).get(y), (dmi or {}).get(y - 1)   # IOD positif juga pendorong kekeringan (2019)
+                    iod = bool(da is not None and db is not None and ((naik and da >= I["dmi_min"] and da - db >= I["delta_dmi_min"]) or (turun and db >= I["dmi_min"] and db - da >= I["delta_dmi_min"])))
                     fl["lonjakan"] = {"faktor": bulat(faktor, 2), "dijelaskan_enso": jelas, "dijelaskan_iod": iod,
                                       "oni_jas": [bulat(b, 2) if b is not None else None, bulat(a, 2) if a is not None else None],
                                       "dmi_jas": [bulat(db, 2) if db is not None else None, bulat(da, 2) if da is not None else None]}
@@ -1341,15 +1685,57 @@ def bendera_tabel(baris_tahun, refs_fn, oni_jas, sensor_ganti=(2012, 2018, 2023)
                     if not jelas and not iod:
                         sebab.append("lonjakan %.1fx tak dijelaskan ENSO maupun IOD" % faktor)
         a = oni_jas.get(y)
-        if a is not None and a >= 0.5:
+        if a is not None and a >= KRITERIA["elnino"]["oni_jas_min"]:
             sebab.append("El Nino (ONI JAS %.1f)" % a)
         if y in sensor_ganti:
             sebab.append({2012: "S-NPP VIIRS mulai (Jan 2012)", 2018: "NOAA-20 mulai (Apr 2018)", 2023: "NOAA-21 mulai"}[y])
         if y in (2001, 2002):
             sebab.append("MODIS Terra saja (Aqua mulai Jul 2002)")
-        gagal = [k for k in ("dalam_pita", "rasio_hotspot_hist", "rasio_firespot_hist") if fl[k] is False] + (["lonjakan"] if fl["lonjakan"] and not (fl["lonjakan"]["dijelaskan_enso"] or fl["lonjakan"]["dijelaskan_iod"]) else [])
-        out[y] = {"tally": fl, "cocok": (not gagal) if any(fl[k] is not None for k in ("dalam_pita", "rasio_hotspot_hist", "rasio_firespot_hist")) else None,
-                  "gagal": gagal, "sebab_dugaan": sebab}
+        bukti = T["bendera_bukti"]
+        dinilai = [k for k in bukti if fl[k] is not None]
+        gagal = [k for k in bukti if fl[k] is False]
+        cocok = None
+        if status == "dapat_dinilai" and len(dinilai) >= T["cocok_min_bendera_dinilai"]:
+            cocok = not gagal
+        out[y] = {"tally": fl, "jenis_bendera": {"bukti": list(bukti), "konsistensi_internal_bukan_bukti": T["bendera_konsistensi_internal"], "penjelasan_bukan_uji": T["bendera_penjelasan"]},
+                  "status": status, "label_acuan": label, "n_acuan_independen": len(ind), "n_bendera_dinilai": len(dinilai),
+                  "pita_independen": [bulat(pita[0], 0), bulat(pita[1], 0)] if pita else None, "pita_label": T["pita_label"],
+                  "cocok": cocok, "gagal": gagal, "sebab_dugaan": sebab}
+    return out
+
+
+def _daya(out):
+    """H-1: tally berdaya hanya bila >= min_tahun_uji_kekuatan tahun dapat dinilai DAN deteksi galat x2 >= daya_deteksi_min_x2; selain itu label 'tally tak berdaya'."""
+    T = KRITERIA["tally"]
+    d2 = (out.get("deteksi") or {}).get("2.0")
+    out["tally_tak_berdaya"] = bool(out["n_tahun_dinilai"] < T["min_tahun_uji_kekuatan"] or d2 is None or d2 < T["daya_deteksi_min_x2"])
+    out["label_daya"] = "tally tak berdaya" if out["tally_tak_berdaya"] else "tally berdaya"
+
+
+def uji_kekuatan_tally(per, per_m0, indep_fn, oni_jas, dmi=None):
+    """UJI KEKUATAN: suntik galat x0,5 dan x2 pada angka model; laporkan tingkat deteksi (cocok False) pada tahun yang dapat dinilai, tingkat lolos model apa adanya,
+    dan tingkat lolos M0. Bila tak ada tahun dapat dinilai: tak_dapat_dinilai (tally tak punya daya sama sekali)."""
+    def skala(p, f):
+        return {y: (dict(r, luas={k: r["luas"][k] * f for k in ("p10", "p50", "p90")}) if r.get("luas") else r) for y, r in p.items()}
+
+    def cocok(p):
+        return {y: b["cocok"] for y, b in bendera_tabel(p, indep_fn, oni_jas, dmi=dmi).items()}
+    base = cocok(per)
+    dn = [y for y, c in base.items() if c is not None]
+    out = {"n_tahun_dinilai": len(dn), "tahun_dinilai": dn}
+    if not dn:
+        out.update({"tak_dapat_dinilai": True, "deteksi": {}, "tingkat_lolos_model": None, "tingkat_lolos_m0": None})
+        _daya(out)
+        return out
+    out["tak_dapat_dinilai"] = False
+    out["deteksi"] = {}
+    for f in KRITERIA["tally"]["uji_kekuatan_faktor_galat"]:
+        c = cocok(skala(per, f))
+        out["deteksi"][str(f)] = bulat(sum(1 for y in dn if c.get(y) is False) / len(dn), 3)
+    out["tingkat_lolos_model"] = bulat(sum(1 for y in dn if base[y] is True) / len(dn), 3)
+    c0 = cocok(per_m0)
+    out["tingkat_lolos_m0"] = bulat(sum(1 for y in dn if c0.get(y) is True) / len(dn), 3)
+    _daya(out)
     return out
 
 
@@ -1633,15 +2019,7 @@ def rakit_baris(seri, fitur_cache, statis, kov, tahun_min, tahun_maks):
             ff = dict(f)
             ff.update(kovariat_baris(g, y, statis, kov))
             baris.append({"g": g, "y": y, "f": ff})
-    # anomali hujan z per grup
-    for g in {b["g"] for b in baris}:
-        v = [(b, (kov.get("hujan") or {}).get(g, {}).get(b["y"])) for b in baris if b["g"] == g]
-        v = [(b, x) for b, x in v if x is not None]
-        if len(v) >= 5:
-            mu = sum(x for _, x in v) / len(v)
-            sd = math.sqrt(sum((x - mu) ** 2 for _, x in v) / len(v)) or 1.0
-            for b, x in v:
-                b["f"]["hujan_z"] = (x - mu) / sd
+    # hujan_z TIDAK dihitung di sini (H2): mu/sigma harus dari tahun latih tiap lipatan -> hujan_z_lipatan() di _lipat / prediksi_unit
     return baris
 
 
@@ -1666,9 +2044,9 @@ def kovariat_baris(g, y, statis, kov):
     return f
 
 
-def faktor_setara(fitur_cache):
-    """Median nasional N_nh / M_nh pada tahun tumpang tindih (M0 seri M: MODIS x faktor setara S-NPP)."""
-    r = []
+def rasio_setara_tahun(fitur_cache):
+    """{tahun: N_nh nasional / M_nh nasional} pada tahun tumpang tindih. M0 seri M mengambil median HANYA atas tahun latih lipatan (S4)."""
+    r = {}
     for y in range(2013, 2026):
         n, m = fitur_cache.get("N|%d" % y), fitur_cache.get("M|%d" % y)
         if not n or not m:
@@ -1676,12 +2054,18 @@ def faktor_setara(fitur_cache):
         a = sum(f.get("n_nh", 0) for f in n["prov"].values())
         b = sum(f.get("n_nh", 0) for f in m["prov"].values())
         if a and b:
-            r.append(a / b)
+            r[y] = a / b
+    return r
+
+
+def faktor_setara(fitur_cache):
+    """Median semua tahun tumpang tindih (hanya untuk model akhir/tabel; di dalam lipatan pakai rasio_setara_tahun + tahun latih)."""
+    r = list(rasio_setara_tahun(fitur_cache).values())
     return median(r) if r else 1.0
 
 
 # ================================================================ tabel kecocokan
-def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih, nama_model):
+def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih, nama_model, model_lolos=None):
     """pred_seri: {seri: {(g,y): {p10,p50,p90,asal}}}. Tabel nasional + 9 prioritas, 2001-2026."""
     def sumber_luas(g, y):
         for s in (seri_pilih, "M" if seri_pilih == "N" else "N"):
@@ -1715,6 +2099,7 @@ def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih
             ps = [(p, s) for p, s in ps if p]
             if ps:
                 luas = {k: sum(p[k] for p, _ in ps) for k in ("p10", "p50", "p90")}
+                luas["mentah"] = sum(p.get("mentah", p["p50"]) for p, _ in ps)
                 luas["asal"] = "/".join(sorted({p["asal"] for p, _ in ps}))
                 asal_seri = sorted({s for _, s in ps})
             sn = asal_seri[0] if asal_seri else seri_pilih
@@ -1727,11 +2112,18 @@ def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih
             ac = {"sipongi": _jum(ref["sipongi"], grups, y), "gwis": _jum(ref["gwis"], grups, y),
                   "gaveau": _jum_g(ref.get("gaveau"), grups) if y == 2019 else None,
                   "gfed5": _jum(ref.get("gfed5") or {}, grups, y), "nusantara": NUSANTARA_2026 if (nasional and y == 2026) else None}
-            per[y] = {"luas": luas, "hotspot_seri": nh, "nfs": nfs, "ncl": ncl, "hot": hot_, "ac": ac, "seri_luas": asal_seri}
+            m0 = None
+            if luas and nh:   # M0 pembanding tally: titik x 4,3 ha (seri M: x faktor setara), tanpa selang (titik); hanya pada tahun yang model utamanya punya luas
+                p0 = max(1.0, FAKTOR_TITIK * (fs_m if sn == "M" else 1.0) * nh)
+                m0 = {"p10": p0, "p50": p0, "p90": p0}
+            per[y] = {"luas": luas, "hotspot_seri": nh, "nfs": nfs, "ncl": ncl, "hot": hot_, "ac": ac, "seri_luas": asal_seri, "m0": m0}
         return per
 
     def refs(per):
-        return lambda y: [v for k, v in per[y]["ac"].items() if v]
+        """HANYA Gaveau (independen) dan GFED5 (semi-independen); SiPongi/GWIS dilaporkan di baris tetapi tidak membentuk pita; Nusantara hanya rujukan."""
+        return lambda y: {k: v for k, v in per[y]["ac"].items() if v and k in ("gaveau", "gfed5")}
+
+    fs_m = faktor_setara(fitur_cache)
 
     def render(per, tahun_list):
         bd = bendera_tabel({y: per[y] for y in tahun_list}, refs(per), oni_jas, dmi=(kov or {}).get("dmi"))
@@ -1742,6 +2134,8 @@ def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih
                 return bulat(a / b, 3) if a and b else None
             rows.append({"tahun": y, "hotspot": r["hot"], "hotspot_seri_nh": r["hotspot_seri"], "firespot_R0": r["nfs"], "cluster": r["ncl"],
                          "luas_model": {k: round(l[k]) for k in ("p10", "p50", "p90")} | {"asal": l["asal"], "seri": r["seri_luas"]} if l else None,
+                         "luas_model_mentah": round(l["mentah"]) if l else None, "rasio_p50_vs_mentah": rs(l and l["p50"], l and l["mentah"]),
+                         "model_lolos": model_lolos,
                          "acuan": {k: (round(v) if v else None) for k, v in ac.items()},
                          "rasio": {"model_sipongi": rs(l and l["p50"], ac["sipongi"]), "model_gwis": rs(l and l["p50"], ac["gwis"]),
                                    "model_gaveau": rs(l and l["p50"], ac["gaveau"]), "model_nusantara": rs(l and l["p50"], ac["nusantara"]),
@@ -1751,7 +2145,15 @@ def bangun_tabel(fitur_cache, pred_seri, ref, kov, repo_hot, oni_jas, seri_pilih
         return rows
 
     semua_g = sorted({g for d in pred_seri.values() for (g, _) in d} | set(fitur_cache_grup(fitur_cache)))
-    tabel = {"nasional": render(baris_unit(semua_g, TAHUN_TABEL, True), TAHUN_TABEL), "prov": {}}
+    per_nas = baris_unit(semua_g, TAHUN_TABEL, True)
+    tabel = {"nasional": render(per_nas, TAHUN_TABEL), "prov": {}}
+    tabel["uji_kekuatan"] = uji_kekuatan_tally({y: per_nas[y] for y in TAHUN_TABEL}, {y: dict(per_nas[y], luas=per_nas[y]["m0"]) for y in TAHUN_TABEL},
+                                              refs(per_nas), oni_jas, dmi=(kov or {}).get("dmi"))
+    tabel["catatan_tally"] = ("SATU bukti: dalam_pita (P50 model di pita dari Gaveau [independen] dan/atau GFED5 [semi-independen: turunan titik api MODIS]); pita = %s; "
+                              "label acuan per tahun; tahun tanpa acuan = tak dapat dinilai; Nusantara hanya rujukan; rasio luas/hotspot & luas/firespot = konsistensi internal, bukan bukti; "
+                              "lonjakan ENSO/IOD = penjelasan, bukan uji. Tally memakai P50 (koreksi median residu); besaran mentah ada di luas_model_mentah (K1/K2 memakai mentah)."
+                              % KRITERIA["tally"]["pita_label"])
+    tabel["model_lolos"] = model_lolos
     for g in prioritas_grup():
         tabel["prov"][g] = {"nama": nama_grup(g), "baris": render(baris_unit([g], TAHUN_TABEL, False), TAHUN_TABEL)}
     return tabel
@@ -1782,25 +2184,33 @@ def tanda(b):
 
 def tulis_md(J):
     L = ["# Luas terbakar: model terintegrasi dan tabel kecocokan antartahun (LAB)", "",
-         "Status: **%s** · dibuat %s · bukan produksi." % (J.get("status"), J.get("dibuat")), ""]
+         "Status: **%s** · dibuat %s · kriteria_sha %s · bukan produksi." % (J.get("status"), J.get("dibuat"), (J.get("kriteria_sha") or "-")[:12]), ""]
     tp = J.get("terpilih")
+    nk = J.get("n_kandidat")
     if tp:
-        L.append("Model terpilih: **%s / seri %s / dilatih terhadap %s** (lolos K1-K3)." % (tp["model"], tp["seri"], tp["acuan_latih"]))
+        L.append("Model terpilih: **%s / seri %s / dilatih terhadap %s** (pemenang seleksi dari %s kandidat; lolos K1-K3 pada tahun uji akhir)." % (tp["model"], tp["seri"], tp["acuan_latih"], nk))
     else:
         tb = J.get("terbaik_tak_lolos")
-        L.append("**Tidak ada model yang lolos kriteria K1-K3.**" + (" Terbaik (TIDAK lolos): %s / seri %s / %s, MAPE LOYO %s." % (
-            tb["model"], tb["seri"], tb["acuan_latih"], tb["loyo"]["vs_gabungan"].get("mape")) if tb else " Belum ada hasil validasi."))
-    L += ["", "Kriteria (dipra-tulis): MAPE <= 30% vs acuan gabungan (LOYO); 2019 vs Gaveau rasio median 0,7-1,4 dan korelasi log >= 0,7; cakupan P10-P90 70-90%.", ""]
-    L += ["## Validasi (LOYO, terhadap acuan gabungan)", "", "| Seri | Model | Latih | n | MAPE | rasio med | cakupan | Gaveau19 rasio/korelasi | K1 K2 K3 |", "|---|---|---|---|---|---|---|---|---|"]
+        L.append("**Tidak ada model terpilih** (kandidat: %s)." % nk + (" Pemenang seleksi (TIDAK lolos K1-K3 di tahun uji akhir): %s / seri %s / %s." % (
+            tb["model"], tb["seri"], tb["acuan_latih"]) if tb else " Belum ada hasil validasi."))
+    L += ["", "Kriteria ada di scripts/data/lab_kriteria/lab_luas.json (dipra-tulis, sha di atas). Klaim akurasi HANYA terhadap acuan independen (Gaveau 2019, GFED5); "
+          "SiPongi/GWIS dilaporkan tetapi bukan penilai (target latih / turunan titik). Metrik: median |ln(pred/acuan)|.", ""]
+    L += ["## Seleksi (LOYO tahun seleksi, terhadap target latih sendiri) dan tahun uji akhir", "",
+          "| Seri | Model | Latih | skor seleksi (M0_terskala - model, mata uang gabungan) | galat log med. uji akhir vs Gaveau | vs GFED5 | K1 K2 K3 |", "|---|---|---|---|---|---|---|"]
     for e in J.get("model", []):
-        if not e.get("boleh_dipilih") or "vs_gabungan" not in (e.get("loyo") or {}):
+        if not e.get("boleh_dipilih"):
             continue
-        m, g, lo = e["loyo"]["vs_gabungan"], e["loyo"].get("gaveau_2019", {}), e.get("lolos", {})
-        L.append("| %s | %s | %s | %s | %s | %s | %s | %s/%s | %s %s %s |" % (e["seri"], e["model"], e["acuan_latih"], m.get("n"), m.get("mape"), m.get("rasio_median"),
-                                                                        m.get("cakupan_p10_p90"), g.get("rasio_median"), g.get("korelasi_log"),
-                                                                        tanda(lo.get("K1")), tanda(lo.get("K2")), tanda(lo.get("K3"))))
+        ua = (e.get("uji_akhir") or {}).get("vs") or {}
+        lo = e.get("lolos") or {}
+        L.append("| %s | %s | %s | %s | %s | %s | %s %s %s |" % (e["seri"], e["model"], e["acuan_latih"], (e.get("loyo") or {}).get("skor_seleksi"),
+                                                                (ua.get("gaveau") or {}).get("galat_log_median"), (ua.get("gfed5") or {}).get("galat_log_median"),
+                                                                tanda(lo.get("K1")), tanda(lo.get("K2")), tanda(lo.get("K3"))))
+    uk = (J.get("tabel") or {}).get("uji_kekuatan")
+    if uk:
+        L += ["", "## Uji kekuatan tally", "", "Tahun dapat dinilai: %s; deteksi galat x0,5/x2: %s; lolos model: %s; lolos M0: %s%s; **%s**" % (
+            uk.get("n_tahun_dinilai"), uk.get("deteksi"), uk.get("tingkat_lolos_model"), uk.get("tingkat_lolos_m0"), " (TAK DAPAT DINILAI)" if uk.get("tak_dapat_dinilai") else "", uk.get("label_daya"))]
     L += ["", "## Tabel kecocokan nasional (ha)", "",
-          "| Tahun | Hot M | Hot N | Hot N20 | Hot N21 | Firespot | Cluster | Model P10 | P50 | P90 | SiPongi | GWIS | Gaveau | Nusantara | M/Sip | M/GWIS | pita | rasio hot | rasio fs | cocok |",
+          "| Tahun | Hot M | Hot N | Hot N20 | Hot N21 | Firespot | Cluster | Model P10 | P50 | P90 | SiPongi | GWIS | Gaveau | Nusantara | M/Sip | M/GWIS | status | label acuan | pita | cocok |",
           "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in (J.get("tabel") or {}).get("nasional", []):
         l, a, t = r.get("luas_model") or {}, r["acuan"], r["tally"]
@@ -1808,8 +2218,9 @@ def tulis_md(J):
         L.append("| %d | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (
             r["tahun"], f_ha(h.get("M")), f_ha(h.get("N")), f_ha(h.get("N20")), f_ha(h.get("N21")), f_ha(r.get("firespot_R0")), f_ha(r.get("cluster")),
             f_ha(l.get("p10")), f_ha(l.get("p50")), f_ha(l.get("p90")), f_ha(a.get("sipongi")), f_ha(a.get("gwis")), f_ha(a.get("gaveau")), f_ha(a.get("nusantara")),
-            r["rasio"].get("model_sipongi") or "-", r["rasio"].get("model_gwis") or "-", tanda(t["dalam_pita"]), tanda(t["rasio_hotspot_hist"]),
-            tanda(t["rasio_firespot_hist"]), tanda(r.get("cocok"))))
+            r["rasio"].get("model_sipongi") or "-", r["rasio"].get("model_gwis") or "-", r.get("status"), r.get("label_acuan"), tanda(t["dalam_pita"]), tanda(r.get("cocok"))))
+    L += ["", "Bendera: `pita` = SATU bukti (Gaveau independen; GFED5 semi-independen; pita heuristik, ditulis sebelum hasil); Nusantara hanya rujukan. model_lolos = %s." % (J.get("model_lolos"),) + " Rasio luas/hotspot dan luas/firespot = konsistensi internal, BUKAN bukti. Lonjakan ENSO/IOD = penjelasan, BUKAN uji. "
+          "`-` = tak dapat dinilai (bukan lolos)."]
     ket = [r for r in (J.get("tabel") or {}).get("nasional", []) if r.get("cocok") is False]
     if ket:
         L += ["", "## Tahun yang tidak cocok (nasional) dan dugaan sebab", ""]
@@ -1865,8 +2276,25 @@ def tugas_titik():
     return res
 
 
-def sha_kriteria():
-    return hashlib.sha256(json.dumps(KRITERIA, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:12]
+def sha_kriteria(k=None):
+    """sha256 penuh dari bentuk kanonik (kunci terurut, tanpa spasi) berkas kriteria."""
+    return hashlib.sha256(kanon(KRITERIA if k is None else k).encode("utf-8")).hexdigest()
+
+
+def catat_jalan(baris, jalur=None):
+    """B8: satu baris JSON ke jalan.jsonl, APPEND-ONLY (mode 'a'; baris lama tidak pernah dibaca-tulis ulang)."""
+    jalur = jalur or JALAN_JSONL
+    os.makedirs(os.path.dirname(jalur), exist_ok=True)
+    with open(jalur, "a", encoding="utf-8") as f:
+        f.write(json.dumps(baris, sort_keys=True, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
+def baris_jalan(fase, mulai, status, vonis=None):
+    b = {"skrip": "lab_luas.py", "waktu": dt.datetime.now(UTC).isoformat(timespec="seconds"), "id_jalan": mulai, "fase": fase, "kriteria_sha": sha_kriteria(),
+         "git_commit": os.environ.get("GITHUB_SHA") or None, "status": status}
+    if vonis is not None:
+        b["vonis"] = vonis
+    return b
 
 
 def kunci_cache(sensor, y, sampai):
@@ -1874,12 +2302,23 @@ def kunci_cache(sensor, y, sampai):
 
 
 def jalan():
-    ang = Anggaran(float(os.environ.get("LAB_MENIT", "30")))
+    """Bungkus: baris awal ke jalan.jsonl SEBELUM menghitung apa pun, baris penutup (status + vonis) di akhir, juga bila gagal."""
     mulai = dt.datetime.now(UTC).isoformat(timespec="seconds")
+    catat_jalan(baris_jalan("awal", mulai, "berjalan"))
+    try:
+        J = _jalan(mulai)
+    except BaseException as e:  # noqa: BLE001
+        catat_jalan(baris_jalan("akhir", mulai, "gagal", "galat: " + redaksi(type(e).__name__ + ": " + str(e))[:200]))
+        raise
+    catat_jalan(baris_jalan("akhir", mulai, J["status"], J.get("vonis")))
+
+
+def _jalan(mulai):
+    ang = Anggaran(float(os.environ.get("LAB_MENIT", "30")))
     os.makedirs(OUT, exist_ok=True)
     p_luas, p_fit = os.path.join(OUT, "luas.json"), os.path.join(OUT, "luas_fitur.json")
     # 1. kriteria DIKUNCI sebelum menghitung apa pun
-    simpan_json(p_luas, {"versi": 1, "status": "berjalan", "dibuat": mulai, "kriteria": dict(KRITERIA, dikunci_pada=mulai, sha=sha_kriteria()), "jujur": JUJUR})
+    simpan_json(p_luas, {"versi": 2, "status": "berjalan", "dibuat": mulai, "kriteria": dict(KRITERIA, dikunci_pada=mulai), "kriteria_sha": sha_kriteria(), "jujur": JUJUR})
     kunci = kunci_firms()
     cache = (muat_json(p_fit) or {}).get("unit", {})
     catatan, status, belum = {}, {}, []
@@ -1948,15 +2387,16 @@ def jalan():
     # 5. model
     J = susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav)
     J["data"]["peta"] = peta.stat
-    assert J["kriteria"]["sha"] == sha_kriteria()
+    assert J["kriteria_sha"] == sha_kriteria()
     simpan_json(p_luas, J)
     with open(os.path.join(OUT, "luas_ringkas.md"), "w") as f:
         f.write(tulis_md(J))
     log("selesai; %s" % J["status"])
+    return J
 
 
 def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav):
-    hasil_all, preds_all, truth_all, baris_seri = [], {}, {}, {}
+    hasil_all, preds_all, info_seri, baris_seri = [], {}, {}, {}
     ctx_seri = {}
     for seri, (y0, y1) in SERI.items():
         baris = rakit_baris(seri, cache, statis, kov, y0, min(y1, 2025))
@@ -1964,27 +2404,28 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
         if len({b["y"] for b in baris}) < 3:
             belum.append("model seri %s: tahun berfitur < 3" % seri)
             continue
-        ctx = {"seri": seri, "faktor_setara": faktor_setara(cache)}
+        ctx = {"seri": seri, "faktor_setara": faktor_setara(cache), "rasio_nm": rasio_setara_tahun(cache), "oni_jas": kov["oni_jas"]}
         ctx_seri[seri] = ctx
-        h, p, truth = evaluasi_seri(seri, baris, ref, ctx, tenggat=lambda: ang.lewat(0.92))
+        h, p, inf = evaluasi_seri(seri, baris, ref, ctx, tenggat=lambda: ang.lewat(0.92))
         hasil_all += h
         preds_all.update(p)
-        truth_all = truth
-    terpilih, terbaik = pilih_model(hasil_all)
-    pakai = terpilih or terbaik
+        info_seri[seri] = inf
+    terpilih, pemenang = pilih_model(hasil_all)
+    pakai = terpilih or pemenang
     pred_seri = {}
     if pakai:
+        def _ent(seri):
+            return [e for e in hasil_all if e["seri"] == seri and e.get("boleh_dipilih") and e["model"] == pakai["model"] and e["acuan_latih"] == pakai["acuan_latih"]]
         for seri, ctx in ctx_seri.items():
-            bagus = [e for e in hasil_all if e["seri"] == seri and e.get("boleh_dipilih") and e["model"] == pakai["model"] and e["acuan_latih"] == pakai["acuan_latih"]]
+            bagus = _ent(seri)
             if bagus:
-                pred_seri[seri] = prediksi_unit(bagus[0], baris_seri[seri], ref, ctx, preds_all, truth_all)
-        # 2026 dan tahun tak berlabel: baris dari cache lain
+                pred_seri[seri] = prediksi_unit(bagus[0], baris_seri[seri], ref, ctx, preds_all, info_seri[seri])
+        # 2026 dan tahun tak berlabel: baris dari cache lain (hujan_z memakai mu/sigma tahun latih)
         for seri, ctx in ctx_seri.items():
             extra = rakit_baris(seri, cache, statis, kov, 2026, 2026)
-            if extra and pred_seri.get(seri) is not None:
-                e = [e for e in hasil_all if e["seri"] == seri and e["model"] == pakai["model"] and e["acuan_latih"] == pakai["acuan_latih"]][0]
-                pred_seri[seri].update(prediksi_unit(e, baris_seri[seri] + extra, ref, ctx, preds_all, truth_all))
-    tabel = bangun_tabel(cache, pred_seri, ref, kov, None, kov["oni_jas"], pakai["seri"] if pakai else "N", pakai["model"] if pakai else None) if cache else None
+            if extra and pred_seri.get(seri) is not None and _ent(seri):
+                pred_seri[seri].update(prediksi_unit(_ent(seri)[0], baris_seri[seri] + extra, ref, ctx, preds_all, info_seri[seri]))
+    tabel = bangun_tabel(cache, pred_seri, ref, kov, None, kov["oni_jas"], pakai["seri"] if pakai else "N", pakai["model"] if pakai else None, model_lolos=bool(terpilih)) if cache else None
     # 2026 Jan-Sep (periode yang sama dengan Nusantara Atlas): model akhir diterapkan pada fitur s.d. 30 Sep
     if pakai and tabel:
         sj = pakai["seri"]
@@ -1992,7 +2433,7 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
         if e_js and sj in ctx_seri:
             rows_js = rakit_baris(sj, {"%s|2026" % sj: e_js}, statis, kov, 2026, 2026)
             ent = [e for e in hasil_all if e["seri"] == sj and e["model"] == pakai["model"] and e["acuan_latih"] == pakai["acuan_latih"]][0]
-            pj = prediksi_unit(ent, baris_seri[sj] + rows_js, ref, ctx_seri[sj], preds_all, truth_all)
+            pj = prediksi_unit(ent, baris_seri[sj] + rows_js, ref, ctx_seri[sj], preds_all, info_seri[sj])
             tot = {k: sum(v[k] for (g, y), v in pj.items() if y == 2026) for k in ("p10", "p50", "p90")}
             r26 = [r for r in tabel["nasional"] if r["tahun"] == 2026][0]
             r26["luas_model_jan_sep"] = {k: round(v) for k, v in tot.items()} | {"catatan": "model tahun penuh diterapkan pada fitur s.d. 30 Sep; bias rendah terhadap tahun penuh"}
@@ -2004,21 +2445,39 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
         for seri, ctx in ctx_seri.items():
             e19 = cache.get("%s|2019" % seri)
             if e19 and e19.get("sel"):
-                kg = {b["g"]: {k: v for k, v in b["f"].items() if k in ("oni_jas", "oni_aso", "dmi_jas", "hujan_mm", "hujan_z", "kanal_dens", "hilang012") or k.startswith("wc_")}
+                kg = {b["g"]: {k: v for k, v in b["f"].items() if k in ("oni_jas", "oni_aso", "dmi_jas", "hujan_mm", "kanal_dens", "hilang012") or k.startswith("wc_")}
                       for b in baris_seri.get(seri, []) if b["y"] == 2019}
                 sel_hasil.append(evaluasi_sel(seri, e19["sel"], ref["gaveau_sel"], kg, ctx, tenggat=lambda: ang.lewat(0.97)))
-    J = {"versi": 1, "status": "selesai" if not belum else "sebagian", "dibuat": mulai, "selesai": dt.datetime.now(UTC).isoformat(timespec="seconds"),
-         "kriteria": dict(KRITERIA, dikunci_pada=mulai, sha=sha_kriteria()), "jujur": JUJUR, "fitur": FITUR_DAFTAR, "model_ket": KET_MODEL,
-         "model": hasil_all, "terpilih": _ringkas_pilih(terpilih), "terbaik_tak_lolos": _ringkas_pilih(terbaik) if not terpilih else None,
+    hp = None
+    if pakai and pred_seri.get(pakai["seri"]):
+        hp = ha_per_piksel(pred_seri[pakai["seri"]], cache, pakai["seri"])
+    vonis = ("terpilih %s/%s/%s (pemenang seleksi dari %d kandidat, lolos K1-K3 di tahun uji akhir)" % (terpilih["model"], terpilih["seri"], terpilih["acuan_latih"], n_kandidat(hasil_all))
+             if terpilih else "tidak ada model terpilih (%d kandidat; %s)" % (n_kandidat(hasil_all), ("pemenang seleksi %s/%s/%s gagal atau tak dapat dinilai pada K1-K3" % (
+                 pemenang["model"], pemenang["seri"], pemenang["acuan_latih"])) if pemenang else "tak ada kandidat dengan skor seleksi > 0"))
+    J = {"versi": 2, "status": "selesai" if not belum else "sebagian", "dibuat": mulai, "selesai": dt.datetime.now(UTC).isoformat(timespec="seconds"),
+         "kriteria": dict(KRITERIA, dikunci_pada=mulai), "kriteria_sha": sha_kriteria(), "jujur": JUJUR, "fitur": FITUR_DAFTAR, "model_ket": KET_MODEL,
+         "n_kandidat": n_kandidat(hasil_all), "n_kandidat_tahun_seleksi_kurang": n_tahun_seleksi_kurang(hasil_all), "model_lolos": bool(terpilih), "tahun_uji_akhir": list(TAHUN_UJI_AKHIR), "vonis": vonis,
+         "model": hasil_all, "terpilih": _ringkas_pilih(terpilih), "terbaik_tak_lolos": _ringkas_pilih(pemenang) if not terpilih else None,
+         "selang_ket": "Selang P10-P90 = konformal berkelompok (blok tahun, koreksi n+1) terhadap TARGET LATIH model, bukan luas sebenarnya; untuk target 'gabungan' dilebarkan "
+                       "ketidakpastian koreksi omisi (1,2816 x sd).",
          "tabel": tabel, "sel_gaveau_2019": sel_hasil, "acuan_ringkas": {"gaveau_2019_total_ha": gav["total"] if gav else None, "nusantara_2026_jan_sep_ha": NUSANTARA_2026,
-                                          "koreksi_omisi": bangun_koreksi(ref["gwis"], ref.get("gaveau")) if ref.get("gaveau") else "prior literatur 52-62%"},
+                                          "koreksi_omisi_informasi": bangun_koreksi(ref["gwis"], ref.get("gaveau")) if ref.get("gaveau") else "prior literatur 52-62%",
+                                          "catatan": "koreksi berbasis Gaveau hanya informasi; target latih tidak memakai Gaveau"},
          "data": {"unduhan": status, "catatan": catatan, "peta": None}, "belum_dikerjakan": belum,
          "waktu": {"detik": round(ang.terpakai()), "batas_detik": round(ang.total)}}
+    if terpilih and hp:
+        J["ha_per_piksel"] = hp["nasional"]          # dibaca lab_padam.faktor_luas (hanya model terpilih yang lolos)
+        J["ha_per_piksel_detail"] = hp
+    else:
+        J["ha_per_piksel_tersedia"] = False
+        J["ha_per_piksel_alasan"] = "tidak ada model terpilih yang lolos K1-K3; lab_padam memakai faktor produksi"
+        if hp:
+            J["ha_per_piksel_kandidat"] = dict(hp, catatan="pemenang seleksi yang TIDAK lolos; JANGAN dipakai")
     return J
 
 
 def _ringkas_pilih(e):
-    return None if not e else {k: e[k] for k in ("seri", "model", "acuan_latih", "ket", "loyo", "lolos") if k in e}
+    return None if not e else {k: e[k] for k in ("seri", "model", "acuan_latih", "ket", "loyo", "uji_akhir", "lolos") if k in e}
 
 
 # ================================================================ uji sintetis
@@ -2128,33 +2587,153 @@ def uji():
         return sorted(tuple(v) for v in d.values())
     assert partisi(l1) == partisi(l2) and len(set(l1)) > 5, (len(set(l1)), len(set(l2)))
 
-    # --- kuantil / metrik / konformal, hitung tangan
+    # --- kuantil / metrik log / bootstrap / konformal, hitung tangan
     _anggota(kuantil([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 0.1), 2.0, 1e-12)
     _anggota(kuantil([0, 10], 0.25), 2.5, 1e-12)
     _anggota(median([3, 1, 2, 4]), 2.5, 1e-12)
-    # 4 unit, 2 tahun; truth 1000,2000,4000,8000; pred = truth x {1, 2, 0.5, 1}
+    # 4 unit, 2 tahun; truth 1000,2000,4000,8000; pred = truth x {1, 2, 0.5, 1}; semua >= 20 titik
     truth = {("a", 1): 1000.0, ("b", 1): 2000.0, ("a", 2): 4000.0, ("b", 2): 8000.0}
     pred = {("a", 1): math.log(1000), ("b", 1): math.log(4000), ("a", 2): math.log(2000), ("b", 2): math.log(8000)}
-    mt = metrik(pred, truth)
-    assert mt["n"] == 4
-    _anggota(mt["mape"], (0 + 1.0 + 0.5 + 0) / 4, 1e-9, "mape")
-    _anggota(mt["mdape"], 0.25, 1e-9)
-    # log-resid e = ln(T/P): 0, -ln2, +ln2, 0 -> bias_log = -mean(e) = 0; rasio median pred/truth = exp(-median(e)) = 1
+    tk = {k: 30 for k in truth}
+    mt = metrik_log(pred, truth, tk, 20, tahun_elnino={1})
+    assert mt["n"] == 4 and mt["n_tahun"] == 2
+    # d = ln(pred/truth) = 0, ln2, -ln2, 0 -> |d| median = (0 + ln2)/2
+    _anggota(mt["galat_log_median"], round(math.log(2) / 2, 4), 1e-9, "galat log median")
+    _anggota(mt["faktor_galat_median"], round(math.exp(math.log(2) / 2), 3), 1e-9)
     _anggota(mt["bias_log"], 0.0, 1e-9)
-    _anggota(mt["rasio_median"], 1.0, 1e-9)
-    assert mt["cakupan_p10_p90"] is None      # pool residu tahun lain hanya 2 (< 3): cakupan tidak dinilai
-    # cakupan, hitung tangan: 5 tahun, satu unit per tahun, e = 0; 0,1; 0,2; 0,3; 0,4 (truth = 1000 exp(e), pred = ln 1000)
-    tr5 = {("u", i + 1): 1000.0 * math.exp(0.1 * i) for i in range(5)}
-    pr5 = {k: math.log(1000.0) for k in tr5}
-    m5 = metrik(pr5, tr5)
-    # tahun 1 (e=0): pool [.1,.2,.3,.4] q10=.13 -> luar; tahun 2 (.1): pool [0,.2,.3,.4] q10=.06 q90=.37 -> dalam; tahun 3 (.2): dalam;
-    # tahun 4 (.3): pool [0,.1,.2,.4] q90=.34 -> dalam; tahun 5 (.4): pool [0,.1,.2,.3] q90=.27 -> luar  => 3/5
-    _anggota(m5["cakupan_p10_p90"], 0.6, 1e-9, "cakupan")
-    s = selang_unit(math.log(1000), 1, {("a", 2): math.log(2), ("b", 2): 0.0, ("c", 3): -math.log(2)})
-    # pool tahun != 1: {ln2, 0, -ln2}; q10 = -0,8 ln2 ; q90 = +0,8 ln2
-    _anggota(s[0], 1000 * 2 ** -0.8, 1e-6)
-    _anggota(s[2], 1000 * 2 ** 0.8, 1e-6)
-    _anggota(s[1], 1000.0, 1e-9)
+    # berbobot luas: (2000 ln2 + 4000 ln2) / 15000 = 0,4 ln2
+    _anggota(mt["galat_log_berbobot_luas"], round(0.4 * math.log(2), 4), 1e-9, "bobot luas")
+    # galat total per tahun: tahun 1 (5000 vs 3000) 2/3 bias +2/3; tahun 2 (10000 vs 12000) 1/6 bias -1/6; median = rata-rata dua nilai; semua tahun: 15000 vs 15000
+    _anggota(mt["galat_total_nasional"]["median_tahun"], round((2 / 3 + 1 / 6) / 2, 4), 1e-9)
+    _anggota(mt["galat_total_nasional"]["bias_total_median_tahun"], round((2 / 3 - 1 / 6) / 2, 4), 1e-9)
+    _anggota(mt["galat_total_nasional"]["gabung_semua_tahun"], 0.0, 1e-9)
+    assert mt["per_tahun"]["1"]["n"] == 2 and mt["el_nino"] == {"n": 2}      # tahun El Nino 1 hanya 2 unit (< 3): tidak diringkas
+    # saring dari JUMLAH TITIK, bukan kebenaran: unit ("b",2) 5 titik keluar -> sisa a1,b1,a2: |d| = 0, ln2, ln2 -> median ln2
+    tk2 = {**tk, ("b", 2): 5}
+    m2_ = metrik_log(pred, truth, tk2, 20)
+    assert m2_["n"] == 3
+    _anggota(m2_["galat_log_median"], round(math.log(2), 4), 1e-9)
+    # acuan kecil (10 ha < MIN lama 1000) TETAP ikut asal titik cukup; acuan 0 dicatat n_acuan_nol, bukan dibuang diam-diam
+    truth3 = {**truth, ("c", 1): 10.0, ("d", 1): 0.0}
+    pred3 = {**pred, ("c", 1): math.log(10), ("d", 1): math.log(50)}
+    m3_ = metrik_log(pred3, truth3, {**tk, ("c", 1): 40, ("d", 1): 40}, 20)
+    assert m3_["n"] == 5 and m3_["n_acuan_nol"] == 1, m3_
+    # bootstrap blok tahun, hitung tangan (min_blok_tahun = 4)
+    b1 = bootstrap_selisih({1: 0.2, 2: 0.2, 3: 0.2, 4: 0.2})        # semua resample rata-rata 0,2 -> CI [0,2, 0,2]
+    assert b1["dapat_dinilai"] and b1["lebih_baik"] and b1["ci"] == [0.2, 0.2] and b1["n_tahun"] == 4
+    b2 = bootstrap_selisih({1: 0.1, 2: -0.1, 3: 0.1, 4: -0.1})      # P(semua resample -0,1) = 1/16 > 5%: batas bawah -0,1 -> tak lebih baik
+    assert b2["dapat_dinilai"] and not b2["lebih_baik"] and b2["ci"][0] == -0.1
+    b3 = bootstrap_selisih({1: 0.1, 2: 0.3, 3: 0.1, 4: 0.3})        # P(rata-rata=0,1)=1/16 > 5%: persentil 5 = 0,1 > 0; persentil 95 = 0,3
+    assert b3["lebih_baik"] and b3["ci"] == [0.1, 0.3] and abs(b3["selisih_rata"] - 0.2) < 1e-9
+    b4 = bootstrap_selisih({1: 5.0})
+    assert not b4["dapat_dinilai"] and "lebih_baik" not in b4 and "ci" not in b4          # < 4 blok tahun: tak dapat dinilai, tanpa CI
+    assert bootstrap_selisih({1: 0.1, 2: 0.3, 3: 0.1, 4: 0.3}) == b3                  # benih tetap: deterministik
+    # selisih per tahun: model galat 0 pada tahun 1 (a,b), M0 galat ln2 -> selisih tahun 1 = ln2
+    # min_unit_per_tahun = 5: tahun 1 punya 5 unit (dihitung), tahun 2 hanya 4 unit (BUKAN blok)
+    tr_ = {(c, 1): 1000.0 for c in "abcde"}
+    tr_.update({(c, 2): 1000.0 for c in "abcd"})
+    sd_ = selisih_tahun({k: math.log(1000) for k in tr_}, {k: math.log(2000) for k in tr_}, tr_, {k: 30 for k in tr_})
+    assert set(sd_) == {1} and KRITERIA["metrik"]["min_unit_per_tahun"] == 5
+    _anggota(sd_[1], math.log(2), 1e-9)
+    # galat_per_tahun: tahun 1 (5 unit, |d| = 0,1,0,1,0 x ln2 -> median 0), tahun 2 (4 unit) dibuang; min_unit eksplisit 4 -> tahun 2 ikut
+    pr_g = {(c, 1): math.log(1000) + (math.log(2) if c in "bd" else 0.0) for c in "abcde"}
+    pr_g.update({(c, 2): math.log(1000) + math.log(3) for c in "abcd"})
+    gp_ = galat_per_tahun(pr_g, tr_, {k: 30 for k in tr_}, 20)
+    assert set(gp_) == {1} and abs(gp_[1]) < 1e-9
+    gp4 = galat_per_tahun(pr_g, tr_, {k: 30 for k in tr_}, 20, min_unit=4)
+    assert set(gp4) == {1, 2}
+    _anggota(gp4[2], math.log(3), 1e-9)
+    # blok tahun < min_unit tidak ikut bootstrap: 4 tahun, tahun 4 hanya 3 unit -> 3 blok (< 4) -> tak dapat dinilai
+    tb_, pb_, p0b_, tkb_ = {}, {}, {}, {}
+    for y in (1, 2, 3, 4):
+        for c in range(5 if y < 4 else 3):
+            k = ("u%d" % c, y)
+            tb_[k], pb_[k], p0b_[k], tkb_[k] = 1000.0, math.log(1000), math.log(2000), 30
+    db_ = selisih_tahun(pb_, p0b_, tb_, tkb_)
+    assert sorted(db_) == [1, 2, 3] and not bootstrap_selisih(db_)["dapat_dinilai"]
+    assert bootstrap_selisih(selisih_tahun(pb_, p0b_, tb_, tkb_, min_titik=20) | {4: db_[1]})["dapat_dinilai"]
+    # konformal (n+1): n=19 -> urutan 2 dan 18; n=9 -> urutan 1 dan 9 (min, maks); n=8 -> tak terjangkau
+    assert batas_konformal(list(range(1, 20))) == (2, 18)
+    assert batas_konformal(list(range(1, 10))) == (1, 9)
+    assert batas_konformal(list(range(1, 9))) is None and batas_konformal([]) is None
+    assert kelas_ukuran(math.log(1000)) == 0 and kelas_ukuran(math.log(5000)) == 1 and kelas_ukuran(math.log(60000)) == 2
+    # selang_unit: 19 residu 0,1..1,9 di tahun 2/3, ln_pred = ln 1000 -> (0,2; median 1,0; 1,8); lalu +- 1,2816 x 0,1 untuk omisi
+    res_ = {("g%d" % i, 2 + i % 2): (0.1 * i, math.log(1000)) for i in range(1, 20)}
+    s = selang_unit(math.log(1000), 1, res_, min_pool=19)
+    _anggota(s[0], 1000 * math.exp(0.2), 1e-6)
+    _anggota(s[1], 1000 * math.exp(1.0), 1e-6)
+    _anggota(s[2], 1000 * math.exp(1.8), 1e-6)
+    so = selang_unit(math.log(1000), 1, res_, omisi_sd=0.1, min_pool=19)
+    _anggota(so[0], 1000 * math.exp(0.2 - 0.12816), 1e-6)
+    _anggota(so[2], 1000 * math.exp(1.8 + 0.12816), 1e-6)
+    assert selang_unit(math.log(1000), 1, res_, min_pool=25) is None       # pool terlalu kecil: tak ada selang
+    # blok = tahun: tahun uji 3 mengeluarkan i ganjil (10 residu) -> sisa i genap 0,2..1,8 (9 nilai): urutan 1 dan 9 = (0,2; 1,8), median 1,0
+    s2 = selang_unit(math.log(1000), 3, res_, min_pool=9)
+    _anggota(s2[0], 1000 * math.exp(0.2), 1e-6)
+    _anggota(s2[2], 1000 * math.exp(1.8), 1e-6)
+    _anggota(s2[1], 1000 * math.exp(1.0), 1e-6)
+    # per kelas ukuran: kelas 2 (lp ln 60000) punya 40 residu 0,01..0,40; kelas 0 berisi sampah 100: n=40 -> urutan floor(4,1)=4 dan ceil(36,9)=37
+    res2 = {("k%d" % i, 2 + i % 2): (0.01 * i, math.log(60000)) for i in range(1, 41)}
+    res2.update({("s%d" % i, 2 + i % 2): (100.0, math.log(1000)) for i in range(1, 31)})
+    s3 = selang_unit(math.log(60000), 1, res2)
+    _anggota(s3[0], 60000 * math.exp(0.04), 1e-6)
+    _anggota(s3[2], 60000 * math.exp(0.37), 1e-6)
+    s4 = selang_unit(math.log(1000), 1, res2)         # kelas 0 punya 30 sampah (>= min_pool_kelas): kuantil kelasnya sendiri, bukan kelas 2
+    assert s4[1] > 1000 * math.exp(50), s4
+    # cakupan: 5 tahun x 8 grup, e = 0 kecuali satu pencilan e = 5 di tahun 3 -> 39/40 tercakup; tahun 3: 7/8; El Nino (tahun 1) 8/8
+    tr_c, pr_c, tk_c = {}, {}, {}
+    for y in range(1, 6):
+        for g in range(8):
+            k = ("g%d" % g, y)
+            tr_c[k] = 1000.0 * (math.exp(5.0) if (g, y) == (0, 3) else 1.0)
+            pr_c[k] = math.log(1000.0)
+            tk_c[k] = 30
+    cv_ = cakupan_konformal(pr_c, tr_c, tk_c, 20, tahun_elnino={1})
+    assert cv_["n"] == 40 and cv_["total"] == 0.975 and cv_["per_tahun"]["3"] == 0.875 and cv_["per_tahun"]["1"] == 1.0, cv_
+    assert cv_["el_nino"] == 1.0 and cv_["n_el_nino"] == 8
+    # uji akhir: kalibrasi dari residu tahun 1-5 (e = 0), uji tahun 9 (8 unit, e = 0) -> cakupan 1,0; satu unit e = 3 -> 7/8
+    pu_ = {("g%d" % g, 9): math.log(1000.0) for g in range(8)}
+    tu_ = {k: 1000.0 for k in pu_}
+    tu_[("g0", 9)] = 1000.0 * math.exp(3.0)
+    cu_ = cakupan_uji_akhir(pu_, pr_c, {**tr_c, **tu_}, {**tk_c, **{k: 30 for k in pu_}}, 20, tahun_elnino={9})
+    # pool kalibrasi: 40 residu, satu pencilan e=5 -> n=40: urutan floor(4,1)=4 dan ceil(36,9)=37 -> kedua nol; e=0 tercakup, e=3 tidak
+    assert cu_["total"] == 0.875 and cu_["el_nino"] == 0.875 and cu_["n_el_nino"] == 8, cu_
+
+    # --- hujan_z dalam lipatan (H2): mu/sigma dari tahun latih saja
+    bz = [{"g": "A", "y": 2001 + i, "f": {"hujan_mm": 100.0 * (i + 1), "n_nh": 10}} for i in range(8)]     # 100..800
+    z1 = hujan_z_lipatan(bz, {2001, 2002, 2003, 2004, 2005})          # mu 300, sigma sqrt(100000/5)
+    _anggota(z1[("A", 2003)], 0.0, 1e-12)
+    _anggota(z1[("A", 2007)], 400.0 / math.sqrt(20000.0), 1e-9)       # 700 -> tahun uji memakai mu/sigma latih
+    z2 = hujan_z_lipatan(bz, {y for y in range(2001, 2009) if y != 2007})
+    mu_ = 2900.0 / 7
+    _anggota(z2[("A", 2007)], (700.0 - mu_) / math.sqrt(1550000.0 / 7 - mu_ ** 2), 1e-9)
+    assert z1[("A", 2007)] != z2[("A", 2007)]
+    assert hujan_z_lipatan(bz, {2001, 2002, 2003, 2004}) == {}          # < 5 tahun latih: tidak ada z (bukan z dari semua tahun)
+    lp_ = _lipat("uji", bz, {("A", y): 1000.0 for y in range(2001, 2009)}, lambda b: b["y"] == 2007)
+    _anggota(lp_["uji"][0]["f"]["hujan_z"], (700.0 - mu_) / math.sqrt(1550000.0 / 7 - mu_ ** 2), 1e-9)
+    assert lp_["tahun_latih"] == {y for y in range(2001, 2009) if y != 2007} and all(t.y != 2007 for t in lp_["latih"])
+    assert "hujan_z" not in bz[0]["f"], "baris asli tidak boleh dimutasi"
+    # rakit_baris tidak lagi menaruh hujan_z (itu urusan lipatan)
+    cs_ = {"N|%d" % y: {"prov": {"A": {"ncl": 1, "n_nh": 10}}} for y in range(2010, 2018)}
+    rb_ = rakit_baris("N", cs_, {}, {"hujan": {"A": {y: float(y) for y in range(2010, 2018)}}}, 2010, 2017)
+    assert len(rb_) == 8 and all("hujan_z" not in b["f"] for b in rb_)
+
+    # --- M0 seri M: faktor setara dari tahun latih lipatan saja (S4)
+    csr = {}
+    for y, (n_, m_) in {2013: (200, 100), 2014: (400, 100), 2015: (1000, 100)}.items():
+        csr["N|%d" % y] = {"prov": {"A": {"n_nh": n_}}}
+        csr["M|%d" % y] = {"prov": {"A": {"n_nh": m_}}}
+    assert rasio_setara_tahun(csr) == {2013: 2.0, 2014: 4.0, 2015: 10.0} and faktor_setara(csr) == 4.0
+    lip0 = {"latih": [], "uji": [{"g": "A", "y": 2015, "f": {"n1": 10, "n2": 0, "n_nh": 10}}], "tahun_latih": {2013, 2014}}
+    ctxm = {"seri": "M", "rasio_nm": rasio_setara_tahun(csr), "faktor_setara": faktor_setara(csr)}
+    p0_, _ = jalankan_lipatan("M0", [lip0], ctxm)
+    _anggota(math.exp(p0_[("A", 2015)]), 4.3 * 3.0 * 10, 1e-6, "M0 fs=median(2,4)=3 tanpa 2015")
+    p1_, _ = jalankan_lipatan("M0", [dict(lip0, tahun_latih={2015})], ctxm)
+    _anggota(math.exp(p1_[("A", 2015)]), 4.3 * 10.0 * 10, 1e-6, "M0 fs=10 bila hanya 2015 tahun latih")
+    p2_, _ = jalankan_lipatan("M0", [dict(lip0, tahun_latih=None)], ctxm)
+    _anggota(math.exp(p2_[("A", 2015)]), 4.3 * 4.0 * 10, 1e-6, "tanpa tahun latih: nilai tunggal")
+    p3_, _ = jalankan_lipatan("M0", [lip0], {"seri": "N", "rasio_nm": {2013: 2.0}})
+    _anggota(math.exp(p3_[("A", 2015)]), 4.3 * 10, 1e-6, "seri N tak memakai faktor setara")
 
     # --- ridge (rekonstruksi eksak) dan NNLS (hitung tangan)
     X = [[0.0], [1.0], [2.0], [3.0]]
@@ -2191,29 +2770,35 @@ def uji():
     k3 = bangun_koreksi(gwis, gav_, kecuali_grup="B")      # B tak ikut: nasional = rasio A
     _anggota(k3["nas"], 3.0, 1e-9)
     assert "B" not in k3["r"]
-    # target 2019 pakai Gaveau; tahun lain GWIS x r
+    # target gabungan (informasi): 2019 pakai Gaveau; tahun lain GWIS x r
     t19 = target_gabungan("A", 2019, gwis, gav_, k1)
     assert t19 == (30000.0, 30000.0, 30000.0)
     t18 = target_gabungan("A", 2018, gwis, gav_, k1)
     _anggota(t18[1], 5000 * k1["r"]["A"], 1e-6)
     assert t18[0] < t18[1] < t18[2]
-    # lipatan LOYO 2019: target latih tidak boleh tergantung pada Gaveau; ubah Gaveau -> target latih identik
+    # B1: target LATIH tidak memakai Gaveau sama sekali (Gaveau = penilai independen); ubah Gaveau -> target latih identik
     baris = [{"g": g, "y": y, "f": {"n1": 10, "n2": 5, "n_nh": 15}} for g in ("A", "B") for y in (2018, 2019)]
-    refa = {"sipongi": {}, "gwis": gwis, "gaveau": gav_}
-    refb = {"sipongi": {}, "gwis": gwis, "gaveau": {"A": 99999.0, "B": 3333.0}}
-    la = [l for l in lipat_loyo(baris, refa, "gabungan", None) if l["tahun_uji"] == 2019][0]
-    lb = [l for l in lipat_loyo(baris, refb, "gabungan", None) if l["tahun_uji"] == 2019][0]
-    assert [(t.g, t.y, round(t.ha, 6)) for t in la["latih"]] == [(t.g, t.y, round(t.ha, 6)) for t in lb["latih"]] and la["latih"], "bocor Gaveau di lipatan 2019"
-    _anggota(la["latih"][0].ha, 5000 * (1 / (1 - 0.57)), 1e-6, "latih 2018 pakai prior literatur")
-    # lipatan 2018: Gaveau boleh dipakai (info 2019 bukan milik tahun uji), dan 2019 ikut latih sebagai Gaveau
-    l18 = [l for l in lipat_loyo(baris, refa, "gabungan", None) if l["tahun_uji"] == 2018][0]
-    assert any(t.y == 2019 and t.ha == 30000.0 for t in l18["latih"])
-    # LOPO: provinsi uji tidak ikut menentukan r nasional
-    lp = [l for l in lipat_lopo(baris, refa, "gabungan") if l["grup_uji"] == "B"][0]
-    tA = [t for t in lp["latih"] if t.g == "A" and t.y == 2018][0]
-    _anggota(tA.ha, 5000 * bangun_koreksi(gwis, gav_, kecuali_grup="B")["r"]["A"], 1e-6)
-    _anggota(tA.ha, 15000.0, 1e-6)       # tanpa B: rasio nasional = rasio A = 3
-    assert all(t.g != "B" for t in lp["latih"])
+    refa = {"sipongi": {}, "gwis": gwis, "gaveau": gav_, "gfed5": None}
+    refb = {"sipongi": {}, "gwis": gwis, "gaveau": {"A": 99999.0, "B": 3333.0}, "gfed5": None}
+    assert target_latih("gabungan", refa) == target_latih("gabungan", refb)
+    _anggota(target_latih("gabungan", refa)[("A", 2018)], 5000 * (1 / (1 - 0.57)), 1e-6, "target latih gabungan = GWIS x prior literatur")
+    assert ("A", 2019) in target_latih("gabungan", refa) and target_latih("gabungan", refa)[("A", 2019)] != 30000.0
+    assert target_latih("gaveau", refa)[("A", 2019)] == 30000.0 and ("A", 2018) not in target_latih("gaveau", refa)    # hanya acuan-latih 'gaveau' yang memakainya
+    assert target_latih("gwis", refa)[("B", 2018)] == 1000.0
+    # gabungan tidak ada di daftar penilai; Gaveau & GFED5 independen
+    assert "gabungan" not in ACUAN_NILAI and set(ACUAN_INDEP) == {"gaveau", "gfed5"} and set(ACUAN_NILAI) >= {"sipongi", "gwis", "gaveau"}
+    # LOYO: lipatan 2018 melatih dengan 2019 (target GWIS x prior), tanpa Gaveau
+    tta = target_latih("gabungan", refa)
+    l18 = [l for l in lipat_loyo(baris, tta) if l["tahun_uji"] == 2018][0]
+    assert any(t.y == 2019 and abs(t.ha - 10000 / 0.43) < 1e-6 for t in l18["latih"]) and all(t.y != 2018 for t in l18["latih"])
+    # LOPO: provinsi uji tidak ikut latih
+    lp = [l for l in lipat_lopo(baris, tta) if l["grup_uji"] == "B"][0]
+    assert lp["latih"] and all(t.g != "B" for t in lp["latih"]) and {b["g"] for b in lp["uji"]} == {"B"}
+    # tahun uji akhir: tidak ikut latih
+    ua_ = lipat_uji_akhir(baris, tta, [2019])[0]
+    assert all(t.y != 2019 for t in ua_["latih"]) and {b["y"] for b in ua_["uji"]} == {2019} and ua_["tahun_latih"] == {2018}
+    # GFED5 sebagai acuan nilai
+    assert tabel_target("gfed5", {"gfed5": {"A": {2015: 7.0}}}, None) == {("A", 2015): 7.0}
 
     # --- M0, M1 (insiden.faktor_luas), M4, M2 lewat spec_model
     f0 = spec_model("M0", {"seri": "N"})([])
@@ -2255,7 +2840,7 @@ def uji():
     for i in range(60):
         la, lo = rs_.uniform(-8, 4), rs_.uniform(100, 118)
         k = kunci_sel(sel_025(la, lo))
-        px_ = rs_.uniform(5, 400)
+        px_ = rs_.uniform(25, 400)
         selx[k] = {"n": 3 * px_, "n0": 0, "n1": px_, "n2": px_, "n_nh": 2 * px_, "px": px_, "px_tol": 0.8 * px_, "ncl": px_ / 5, "nfs": 1, "cl_med": 2.0, "cl_p90": 9.0,
                    "cl_p100": 0.0, "pxcl100": 0.0, "frp": 5 * px_, "frp_px": 5.0, "malam": 0.2, "dur_med": 1.0, "dur_p90": 3.0, "hari": 20, "gb": 0.3, "ks": 0.0,
                    "ht": 0.2, "g": "62" if la > 0 else "16", "lat": (math.floor(la / .25) + .5) * .25, "lon": (math.floor(lo / .25) + .5) * .25}
@@ -2265,99 +2850,310 @@ def uji():
         gsel[k] = 20.0 * 0.8 * px_ * math.exp(rs_.gauss(0, 0.05))
     gsel["999|999"] = 5000.0                       # sel terbakar tanpa titik panas
     es = evaluasi_sel("N", selx, gsel, {}, {"seri": "N"})
-    assert es["n_sel"] == len(selx) and es["ha_gaveau_tanpa_titik"] == 5000.0 and len(es["model"]) == 5
+    assert es["n_sel"] == len(selx) and es["ha_gaveau_tanpa_titik"] == 5000.0 and len(es["model"]) == 5 and "bukan acuan independen" in es["catatan"]
     ms_ = {m["model"]: m for m in es["model"]}
-    assert ms_["M2"]["metrik"]["mape"] < ms_["M0"]["metrik"]["mape"] and ms_["M2"]["metrik"]["korelasi_log"] > 0.9, ms_["M2"]
+    assert ms_["M2"]["metrik"]["galat_log_median"] < ms_["M0"]["metrik"]["galat_log_median"] and ms_["M2"]["metrik"]["korelasi_log"] > 0.9, ms_["M2"]
 
-    # --- tally: bendera, hand-calc
+    # --- tally: bendera, hand-calc. Pita dari Gaveau (x/1,5 .. x*1,5) dan GFED5 (x/2 .. x*2); pita = (min bawah, maks atas). SATU bukti: dalam_pita
+    P = pita_independen
+    assert P({"gaveau": 100.0}) == (100.0 / 1.5, 150.0) and P({}) is None and P({"gaveau": None}) is None
+    pg_ = P({"gaveau": 100.0, "gfed5": 110.0})
+    _anggota(pg_[0], 55.0, 1e-9)       # min(66,67; 55)
+    _anggota(pg_[1], 220.0, 1e-9)      # max(150; 220)
+    assert KRITERIA["tally"]["bendera_bukti"] == ["dalam_pita"] and "nusantara" not in KRITERIA["tally"]["lebar_pita_faktor"]
     oni = {2014: 0.0, 2015: 2.0, 2016: 0.0, 2017: 0.0, 2018: 0.0, 2019: 0.4, 2020: 0.0}
     per = {}
-    for y, p50 in zip(range(2014, 2021), (100, 400, 100, 100, 100, 150, 100)):
+    for y, p50 in zip(range(2014, 2021), (100, 800, 100, 100, 100, 150, 100)):
         per[y] = {"luas": {"p10": p50 * .5, "p50": p50, "p90": p50 * 2}, "hotspot_seri": 10, "nfs": 5}
-    bd = bendera_tabel(per, lambda y: [90, 120] if y != 2015 else [300, 350], oni)
-    assert bd[2014]["tally"]["dalam_pita"] is True      # 100 dalam [90,120]
-    assert bd[2015]["tally"]["dalam_pita"] is False and bd[2015]["tally"]["selang_tumpang"] is True   # 400 > 350; P10 200 <= 350, P90 800 >= 300
-    assert bd[2015]["tally"]["lonjakan"]["faktor"] == 4.0 and bd[2015]["tally"]["lonjakan"]["dijelaskan_enso"] is True   # ONI 0 -> 2
-    assert bd[2016]["tally"]["lonjakan"]["faktor"] == 0.25 and bd[2016]["tally"]["lonjakan"]["dijelaskan_enso"] is True   # turun setelah ONI 2 -> 0
-    assert bd[2019]["tally"]["lonjakan"] is None        # 100 -> 150 (1,5x) bukan lonjakan
-    assert bd[2020]["tally"]["lonjakan"] is None
-    # rasio luas/hotspot: 10 di 5 tahun lain... 2015 = 40 vs lain {10,10,10,10,15,10}: P95 > 40? tidak -> False
-    assert bd[2015]["tally"]["rasio_hotspot_hist"] is False and bd[2014]["tally"]["rasio_hotspot_hist"] is True
-    assert bd[2018]["sebab_dugaan"] and any("NOAA-20" in s for s in bd[2018]["sebab_dugaan"])
-    assert any("El Nino" in s for s in bd[2015]["sebab_dugaan"]) and bd[2015]["cocok"] is False and "dalam_pita" in bd[2015]["gagal"]
+
+    def indep(y):
+        if y == 2017:
+            return {"gfed5": 100.0}                                   # hanya GFED5: dinilai, berlabel semi-independen
+        if y == 2018:
+            return {"nusantara": 100.0}                               # Nusantara hanya rujukan: tidak membentuk pita
+        return {"gaveau": 100.0, "gfed5": 110.0} if y != 2015 else {"gaveau": 300.0, "gfed5": 350.0}
+    bd = bendera_tabel(per, indep, oni)
+    assert bd[2014]["tally"]["dalam_pita"] is True and bd[2014]["cocok"] is True and bd[2014]["status"] == "dapat_dinilai" and bd[2014]["label_acuan"] == "gaveau+gfed5"   # 100 dalam [55,220]
+    assert "selang_tumpang" not in bd[2014]["tally"] and bd[2014]["pita_label"] == "heuristik, ditulis sebelum hasil"
+    # 2015: pita [min(200,175), max(450,700)] = [175,700]; 800 di luar -> cocok False
+    assert bd[2015]["pita_independen"] == [175.0, 700.0] and bd[2015]["tally"]["dalam_pita"] is False and bd[2015]["cocok"] is False and bd[2015]["gagal"] == ["dalam_pita"]
+    assert bd[2015]["tally"]["lonjakan"]["faktor"] == 8.0 and bd[2015]["tally"]["lonjakan"]["dijelaskan_enso"] is True   # ONI 0 -> 2
+    assert abs(bd[2016]["tally"]["lonjakan"]["faktor"] - 0.125) < 0.006 and bd[2016]["tally"]["lonjakan"]["dijelaskan_enso"] is True
+    # GFED5 saja: pita [50, 200], model 100 -> dinilai dan cocok; label semi-independen
+    assert bd[2017]["status"] == "dapat_dinilai" and bd[2017]["label_acuan"] == "gfed5 semi-independen" and bd[2017]["cocok"] is True and bd[2017]["pita_independen"] == [50.0, 200.0]
+    # tanpa acuan (Nusantara tak dihitung): tak dapat dinilai, cocok None (bukan lolos)
+    assert bd[2018]["status"] == "tak_dapat_dinilai" and bd[2018]["label_acuan"] == "tak_dapat_dinilai" and bd[2018]["cocok"] is None and bd[2018]["n_bendera_dinilai"] == 0 and bd[2018]["n_acuan_independen"] == 0
+    assert bd[2019]["tally"]["lonjakan"] is None and bd[2020]["tally"]["lonjakan"] is None        # 1,5x bukan lonjakan; 150 -> 100 = 0,67
+    assert any("NOAA-20" in s for s in bd[2018]["sebab_dugaan"]) and any("El Nino" in s for s in bd[2015]["sebab_dugaan"])
+    assert bendera_tabel({2014: dict(per[2014])}, lambda y: {"gaveau": 100.0}, {})[2014]["label_acuan"] == "gaveau"
+    jb = bd[2014]["jenis_bendera"]
+    assert jb["bukti"] == ["dalam_pita"] and "rasio_hotspot_hist" in jb["konsistensi_internal_bukan_bukti"] and jb["penjelasan_bukan_uji"] == ["lonjakan"]
+    # rasio luas/hotspot TIDAK menjadi bukti: bukti lolos, rasio historis gagal -> cocok tetap True
+    per_r = {y: {"luas": {"p10": 50.0, "p50": 100.0, "p90": 200.0}, "hotspot_seri": 10, "nfs": 5} for y in range(2010, 2017)}
+    per_r[2016]["hotspot_seri"] = 1                                  # rasio 100 vs 10 pada 6 tahun lain: di luar P5-P95
+    br = bendera_tabel(per_r, lambda y: {"gaveau": 100.0, "gfed5": 100.0}, {})
+    assert br[2016]["tally"]["rasio_hotspot_hist"] is False and br[2016]["tally"]["dalam_pita"] is True and br[2016]["cocok"] is True and br[2016]["gagal"] == []
+    # lonjakan tak dijelaskan BUKAN kegagalan uji (penjelasan, bukan uji), tetapi dicatat
     per2 = {2014: dict(per[2014]), 2015: dict(per[2015])}
     per2[2015]["luas"] = {"p10": 100, "p50": 400, "p90": 800}
-    b2_ = bendera_tabel(per2, lambda y: [], {2014: 0.0, 2015: 0.1})
-    assert b2_[2015]["tally"]["lonjakan"]["dijelaskan_enso"] is False and any("tak dijelaskan ENSO" in s for s in b2_[2015]["sebab_dugaan"])
-    assert "lonjakan" in b2_[2015]["gagal"]
-    b3_ = bendera_tabel(per2, lambda y: [], {2014: 0.0, 2015: 0.1}, dmi={2014: 0.0, 2015: 0.9})   # seperti 2019: ONI lemah, IOD positif kuat
+    b2_ = bendera_tabel(per2, lambda y: {}, {2014: 0.0, 2015: 0.1})
+    assert b2_[2015]["tally"]["lonjakan"]["dijelaskan_enso"] is False and any("tak dijelaskan ENSO" in s for s in b2_[2015]["sebab_dugaan"]) and "lonjakan" not in b2_[2015]["gagal"]
+    assert b2_[2015]["cocok"] is None
+    b3_ = bendera_tabel(per2, lambda y: {}, {2014: 0.0, 2015: 0.1}, dmi={2014: 0.0, 2015: 0.9})   # seperti 2019: ONI lemah, IOD positif kuat
     assert b3_[2015]["tally"]["lonjakan"]["dijelaskan_iod"] is True and b3_[2015]["tally"]["lonjakan"]["dijelaskan_enso"] is False
-    assert "lonjakan" not in b3_[2015]["gagal"] and any("IOD positif" in s for s in b3_[2015]["sebab_dugaan"])
+    assert any("IOD positif" in s for s in b3_[2015]["sebab_dugaan"])
+    assert bendera_tabel({2014: {"luas": None}}, lambda y: {"gaveau": 1.0, "gfed5": 1.0}, {})[2014]["status"] == "tanpa_model"
 
-    # --- pilih_model & lolos
-    mm = {"mape": 0.25, "cakupan_p10_p90": 0.8, "n": 50}
-    assert lolos(mm, {"rasio_median": 1.0, "korelasi_log": 0.8, "n": 20})["semua"]
-    assert lolos(mm, {})["K2_dinilai"] is False and not lolos(mm, {})["K2"]
-    assert not lolos(dict(mm, mape=0.31), {"rasio_median": 1.0, "korelasi_log": 0.8, "n": 20})["K1"]
-    assert not lolos(mm, {"rasio_median": 1.5, "korelasi_log": 0.8})["K2"] and not lolos(mm, {"rasio_median": 1.0, "korelasi_log": 0.6})["K2"]
-    assert not lolos(dict(mm, cakupan_p10_p90=0.65), {"rasio_median": 1.0, "korelasi_log": 0.8})["K3"]
-    ents = [{"boleh_dipilih": True, "lolos": {"semua": False}, "loyo": {"vs_gabungan": {"mape": 0.4}}, "model": "x"},
-            {"boleh_dipilih": True, "lolos": {"semua": True}, "loyo": {"vs_gabungan": {"mape": 0.28}}, "model": "y"},
-            {"boleh_dipilih": True, "lolos": {"semua": True}, "loyo": {"vs_gabungan": {"mape": 0.20}}, "model": "z"},
-            {"boleh_dipilih": False, "lolos": {"semua": True}, "loyo": {"vs_gabungan": {"mape": 0.01}}, "model": "g"}]
+    # --- UJI KEKUATAN tally. Model 100 ha di 2010-2015; acuan gaveau 100 + gfed5 100 hanya 2012-2015 (pita [50, 200]); 2010-2011 tanpa acuan.
+    pk = {y: {"luas": {"p10": 80.0, "p50": 100.0, "p90": 120.0}, "hotspot_seri": 10, "nfs": 5} for y in range(2010, 2016)}
+    pk0 = {y: dict(r, luas={"p10": 100.0 if y < 2014 else 400.0, "p50": 100.0 if y < 2014 else 400.0, "p90": 100.0 if y < 2014 else 400.0}) for y, r in pk.items()}
+    ik = lambda y: {"gaveau": 100.0, "gfed5": 100.0} if y >= 2012 else {}   # noqa: E731
+    uk = uji_kekuatan_tally(pk, pk0, ik, {})
+    assert uk["n_tahun_dinilai"] == 4 and uk["tahun_dinilai"] == [2012, 2013, 2014, 2015] and not uk["tak_dapat_dinilai"]
+    # x0,5 -> 50 dan x2 -> 200 jatuh TEPAT di tepi pita [50,200] (inklusif): tidak terdeteksi
+    assert uk["deteksi"] == {"0.5": 0.0, "2.0": 0.0}, uk
+    assert uk["tingkat_lolos_model"] == 1.0 and uk["tingkat_lolos_m0"] == 0.5     # M0 100 lolos (2012-13), 400 gagal (2014-15)
+    assert uk["tally_tak_berdaya"] is True and uk["label_daya"] == "tally tak berdaya"        # 4 tahun < 5 dan daya x2 = 0 < 0,5
+    # pita sempit (hanya Gaveau: [66,7; 150]) dan 6 tahun dinilai: x0,5 (50) dan x2 (200) terdeteksi semua -> berdaya
+    uk2 = uji_kekuatan_tally(pk, pk0, lambda y: {"gaveau": 100.0}, {})
+    assert uk2["deteksi"] == {"0.5": 1.0, "2.0": 1.0} and uk2["n_tahun_dinilai"] == 6 and uk2["tally_tak_berdaya"] is False and uk2["label_daya"] == "tally berdaya"
+    assert abs(uk2["tingkat_lolos_m0"] - 4 / 6) < 1e-3     # M0: 100 lolos 2010-13 (4 tahun), 400 gagal 2014-15
+    # tak ada tahun dapat dinilai: dilaporkan tak_dapat_dinilai dan tak berdaya
+    uk3 = uji_kekuatan_tally(pk, pk0, lambda y: {}, {})
+    assert uk3["tak_dapat_dinilai"] and uk3["tingkat_lolos_model"] is None and uk3["n_tahun_dinilai"] == 0 and uk3["tally_tak_berdaya"] is True
+    # daya cukup tetapi tahun < 5: tetap tak berdaya
+    uk4 = uji_kekuatan_tally({y: pk[y] for y in range(2010, 2014)}, pk0, lambda y: {"gaveau": 100.0}, {})
+    assert uk4["n_tahun_dinilai"] == 4 and uk4["deteksi"]["2.0"] == 1.0 and uk4["tally_tak_berdaya"] is True
+
+    # --- M0_terskala: M0 x median(target latih / M0) dari tahun latih; hitung tangan
+    trs = [Latihan({"n1": 10, "n2": 0}, 86.0, 2001, "A"), Latihan({"n1": 20, "n2": 0}, 258.0, 2002, "A"), Latihan({"n1": 10, "n2": 0}, 215.0, 2003, "A")]
+    # M0: 4,3 x 10 = 43; 4,3 x 20 = 86; rasio 86/43 = 2, 258/86 = 3, 215/43 = 5 -> median 3
+    rs0 = spec_model("M0_terskala", {"seri": "N"})(trs)
+    _anggota(math.exp(rs0({"n1": 10, "n2": 0})), 129.0, 1e-6, "M0_terskala = 3 x 43")
+    _anggota(math.exp(rs0({"n1": 100, "n2": 0})), 3 * 430.0, 1e-6)
+    assert "M0_terskala" not in MODEL and "M0_terskala" in KET_MODEL
+
+    # --- putusan K1-K3 dan pilih_model. K1 = positif vs GFED5 (bootstrap blok tahun, >= 4 blok) DAN positif vs Gaveau (satu tahun, tanpa CI)
+    k1g_ok = {"dapat_dinilai": True, "lebih_baik": True, "n_tahun": 4}
+    k1v_ok = {"dapat_dinilai": True, "positif": True, "n_tahun": 1}
+    ua_ok = {"k1_gfed5": k1g_ok, "k1_gaveau": k1v_ok, "vs": {"gaveau": {"n": 10, "galat_log_median": 0.40}}, "cakupan": {"el_nino": 0.75, "n_el_nino": 12}}
+    ent_ok = {"loyo": {"cakupan": {"total": 0.8}}, "uji_akhir": ua_ok}
+    po = putusan_entri(ent_ok)
+    assert po["semua"] is True and po["K1_status"] == "lolos" and po["pembanding_k1"] == "M0_terskala" and "berbagi data Gaveau 2019" in po["label_data"]
+    ln15 = math.log(1.5)
+    assert 0.405 < ln15 < 0.4055
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, vs={"gaveau": {"n": 10, "galat_log_median": 0.4055}})))["K2"] is False     # > ln 1,5
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, vs={"gaveau": {"n": 10, "galat_log_median": 0.405}})))["K2"] is True
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, vs={"gaveau": {"n": 4, "galat_log_median": 0.1}})))["dapat_dinilai"]["K2"] is False   # unit Gaveau < 5
+    pk1 = putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, k1_gfed5={"dapat_dinilai": False, "status": "tak_dapat_dinilai"})))
+    assert pk1["K1"] is False and pk1["semua"] is False and pk1["dapat_dinilai"]["K1"] is False and pk1["K1_status"] == "tak_dapat_dinilai" and pk1["catatan"]
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, k1_gfed5=dict(k1g_ok, lebih_baik=False))))["K1_status"] == "gagal"
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, k1_gaveau=dict(k1v_ok, positif=False))))["K1"] is False        # positif vs GFED5 saja TIDAK cukup
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, k1_gaveau={"dapat_dinilai": False})))["K1_status"] == "tak_dapat_dinilai"
+    assert putusan_entri(dict(ent_ok, loyo={"cakupan": {"total": 0.95}}))["K3"] is False and putusan_entri(dict(ent_ok, loyo={"cakupan": {"total": 0.65}}))["K3"] is False
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, cakupan={"el_nino": 0.6, "n_el_nino": 12})))["K3"] is False              # El Nino di bawah 0,7
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, cakupan={"el_nino": 0.9, "n_el_nino": 5})))["dapat_dinilai"]["K3"] is False   # < 10 unit
+    assert putusan_entri(dict(ent_ok, uji_akhir=dict(ua_ok, cakupan={"el_nino": None})))["K3"] is False
+    # bootstrap blok tahun < 4 -> tak dapat dinilai, tanpa label CI
+    bb_ = bootstrap_selisih({2015: 1.0, 2019: 1.0, 2020: 1.0})
+    assert bb_["dapat_dinilai"] is False and bb_["status"] == "tak_dapat_dinilai" and "ci" not in bb_ and "lebih_baik" not in bb_
+    ents = [{"boleh_dipilih": True, "model": "x", "loyo": {"skor_seleksi": 0.1, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 8}, "lolos": {"semua": True}},
+            {"boleh_dipilih": True, "model": "y", "loyo": {"skor_seleksi": 0.3, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 8}, "lolos": {"semua": True}},
+            {"boleh_dipilih": True, "model": "z", "loyo": {"skor_seleksi": 0.5, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 8}, "lolos": {"semua": False}, "uji_akhir": {"k1_bootstrap": {"lebih_baik": False}}},
+            {"boleh_dipilih": True, "model": "M0", "loyo": {"skor_seleksi": 0.9, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 8}, "lolos": {"semua": True}},
+            {"boleh_dipilih": False, "model": "g", "loyo": {"skor_seleksi": 0.99, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 8}, "lolos": {"semua": True}}]
     tp, tb = pilih_model(ents)
-    assert tp["model"] == "z" and tb["model"] == "z"
-    tp, tb = pilih_model(ents[:1])
-    assert tp is None and tb["model"] == "x"
+    assert tp is None and tb["model"] == "z", (tp, tb)         # pemenang seleksi z gagal: TIDAK turun ke y (itu memilih dengan tahun uji akhir)
+    assert n_kandidat(ents) == 3
+    ents2 = [dict(e, lolos={"semua": e["model"] == "z"}, uji_akhir={"k1_bootstrap": {"lebih_baik": True}}) for e in ents]   # ubah SEMUA hasil tahun uji akhir
+    tp2, tb2 = pilih_model(ents2)
+    assert tb2["model"] == "z" and tp2["model"] == "z"          # pemenang tak berubah: seleksi tak membaca tahun uji akhir
+    assert pilih_model([dict(ents[0], loyo=dict(ents[0]["loyo"], skor_seleksi=-0.1))]) == (None, None) and pilih_model([]) == (None, None)
 
-    # --- pipeline sintetis ujung ke ujung: dunia dengan hukum ha = 3,0 x px_tol^1,0 x eksp(0,3 oni) + bising kecil
+    # H-A: kandidat dengan < 5 tahun seleksi tidak dapat menang, walau skor tertinggi; dilaporkan
+    ents3 = ents + [{"boleh_dipilih": True, "model": "kurang_skor", "loyo": {"skor_seleksi": 0.8, "skor_seleksi_n_tahun": 4, "tahun_seleksi_target": 8}, "lolos": {"semua": True}},
+                    {"boleh_dipilih": True, "model": "kurang_target", "loyo": {"skor_seleksi": 0.7, "skor_seleksi_n_tahun": 8, "tahun_seleksi_target": 3}, "lolos": {"semua": True}}]
+    assert pilih_model(ents3)[1]["model"] == "z" and n_kandidat(ents3) == 3 and n_tahun_seleksi_kurang(ents3) == 2
+    assert n_kandidat([dict(ents[0], loyo=dict(ents[0]["loyo"], skor_seleksi_n_tahun=5, tahun_seleksi_target=5))]) == 1      # tepat 5 = cukup
+    assert pilih_model([ents3[-2]]) == (None, None)
+    assert KRITERIA["pemilihan"]["min_tahun_seleksi"] == 5 and "3 tahun" in KRITERIA["pemilihan"]["min_tahun_seleksi_alasan"]
+
+    # --- B8: kriteria di berkas terpisah, sha kanonik, jalan.jsonl append-only
+    assert os.path.exists(KRITERIA_JALUR)
+    mentah = open(KRITERIA_JALUR, encoding="utf-8").read()
+
+    def terurut(o):
+        if isinstance(o, list):
+            return all(terurut(x) for x in o)
+        if isinstance(o, dict):
+            ks = list(o)
+            return ks == sorted(ks) and all(terurut(v) for v in o.values())
+        return True
+    assert terurut(json.loads(mentah, object_pairs_hook=lambda ps: dict(ps))), "kunci berkas kriteria harus terurut"
+    assert sha_kriteria() == hashlib.sha256(json.dumps(json.loads(mentah), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")).hexdigest() and len(sha_kriteria()) == 64
+    assert sha_kriteria({"a": 1, "b": 2}) == sha_kriteria({"b": 2, "a": 1}) != sha_kriteria({"a": 1, "b": 3})
+    assert KRITERIA["keputusan"]["K2"]["galat_log_median_maks_rasio"] == 1.5 and KRITERIA["cakupan"]["rentang"] == [0.7, 0.9] and list(TAHUN_UJI_AKHIR) == [2015, 2018, 2019, 2020, 2021, 2023] and KRITERIA["bootstrap"]["min_blok_tahun"] == 4 and KRITERIA["tally"]["min_acuan_independen"] == 1 and KRITERIA["keputusan"]["K1"]["pembanding"] == "M0_terskala" and KRITERIA["acuan"]["catatan_independensi"]["gfed5"].startswith("semi-independen")
+    assert KRITERIA["bootstrap"]["ulang"] >= 1000 and "alasan" in KRITERIA["keputusan"]["K2"] and KRITERIA["acuan"]["pembanding_wajib"] == "M0"
+    assert MIN_TITIK_EVAL == KRITERIA["min_titik_eval"] and "MIN_EVAL_HA" not in globals(), "unit tidak boleh disaring dengan kebenaran (truth >= MIN_EVAL_HA)"
+    jl = os.path.join(RAW, "uji", "jalan_uji.jsonl")
+    os.makedirs(os.path.dirname(jl), exist_ok=True)
+    if os.path.exists(jl):
+        os.remove(jl)
+    os.environ.pop("GITHUB_SHA", None)
+    catat_jalan(baris_jalan("awal", "t0", "berjalan"), jl)
+    sat = open(jl).read()
+    os.environ["GITHUB_SHA"] = "abc123def"
+    try:
+        catat_jalan(baris_jalan("akhir", "t0", "sebagian", "tidak ada model terpilih"), jl)
+        catat_jalan(baris_jalan("awal", "t1", "berjalan"), jl)
+    finally:
+        del os.environ["GITHUB_SHA"]
+    ls_ = [json.loads(x) for x in open(jl).read().splitlines()]
+    assert open(jl).read().startswith(sat) and len(ls_) == 3, "append-only: baris lama tak boleh berubah"
+    assert ls_[0]["git_commit"] is None and ls_[1]["git_commit"] == "abc123def" and ls_[1]["vonis"] == "tidak ada model terpilih"
+    assert all(x["skrip"] == "lab_luas.py" and x["kriteria_sha"] == sha_kriteria() and x["waktu"] for x in ls_) and ls_[0]["fase"] == "awal" and ls_[1]["fase"] == "akhir" and "vonis" not in ls_[0]
+    os.remove(jl)
+
+    # --- pipeline sintetis ujung ke ujung: dunia dengan hukum ha = 3,0 x px_tol^1,0 + bising kecil
     rng = random.Random(11)
     grups = ["62", "16", "61", "15", "14", "64", "13", "12"]
-    cache_s, gw_s, sip_s = {}, {g: {} for g in grups}, {g: {} for g in grups}
+    cache_s, gw_s, sip_s, ha_s = {}, {g: {} for g in grups}, {g: {} for g in grups}, {g: {} for g in grups}
     for y in range(2012, 2026):
         e = {"prov": {}, "n_total": 0}
         for g in grups:
             px = int(math.exp(rng.uniform(4, 9)))
-            f = {"n": px * 2, "n0": 0, "n1": px, "n2": px, "n_nh": px * 2, "px": px, "px_tol": int(px * 0.8), "ncl": px // 5, "nfs": px // 10, "cl_med": 3.0, "cl_p90": 20.0,
+            ptol = int(px * rng.uniform(0.3, 1.0))      # rasio piksel toleran/unik bervariasi: M0 (titik) meleset tak seragam, M2 (px_tol) tidak
+            f = {"n": px * 2, "n0": 0, "n1": px, "n2": px, "n_nh": px * 2, "px": px, "px_tol": ptol, "ncl": px // 5, "nfs": px // 10, "cl_med": 3.0, "cl_p90": 20.0,
                  "cl_p100": 0.02, "pxcl100": 0.3, "frp": px * 10.0, "frp_px": 10.0, "malam": 0.2, "dur_med": 2.0, "dur_p90": 6.0, "hari": 60, "gb": rng.random(), "ks": 0.1, "ht": 0.3}
             for k in KLS_KEYS:
                 f[k] = 0
             f["k0l"], f["k2h"] = px // 5, px // 20
             e["prov"][g] = f
             ha = 3.0 * f["px_tol"] * math.exp(rng.gauss(0, 0.1))
+            ha_s[g][y] = ha
             gw_s[g][y] = ha / 2.3 * math.exp(rng.gauss(0, 0.05))
             sip_s[g][y] = ha * 0.7 if y >= 2018 else None
         cache_s["N|%d" % y] = e
     sip_s = {g: {y: v for y, v in d.items() if v} for g, d in sip_s.items()}
-    gav_s = {g: gw_s[g][2019] * 2.3 for g in grups}
-    ref_s = {"sipongi": sip_s, "gwis": gw_s, "gaveau": gav_s, "gfed5": None}
-    kov_s = {"oni_jas": {y: 0.0 for y in range(2001, 2027)}, "oni_aso": {}, "dmi": {}, "hujan": {}, "luas_km2": {}}
+    gav_s = {g: ha_s[g][2019] for g in grups}
+    gfe_s = {g: {y: ha_s[g][y] for y in (2015, 2018, 2019, 2020)} for g in grups}
+    ref_s = {"sipongi": sip_s, "gwis": gw_s, "gaveau": gav_s, "gfed5": gfe_s}
+    oni_s = {y: 0.0 for y in range(2001, 2027)}
+    oni_s.update({2015: 2.0, 2019: 0.6, 2023: 1.2})
+    kov_s = {"oni_jas": oni_s, "oni_aso": {}, "dmi": {}, "hujan": {}, "luas_km2": {}}
+    ctx_s = {"seri": "N", "faktor_setara": 1.0, "oni_jas": oni_s}
     baris_s = rakit_baris("N", cache_s, {}, kov_s, 2012, 2025)
     assert len(baris_s) == 14 * 8
-    hs, ps, tg = evaluasi_seri("N", baris_s, ref_s, {"seri": "N", "faktor_setara": 1.0})
-    assert len(hs) == 5 * 4 and all("loyo" in e or e["acuan_latih"] == "gaveau" for e in hs)
+    hs, ps, inf = evaluasi_seri("N", baris_s, ref_s, ctx_s)
+    assert len(hs) == 6 * 4 and inf["uji_akhir"] == [2015, 2018, 2019, 2020, 2021, 2023]       # 5 model + M0_terskala, x 4 acuan latih
     by = {(e["model"], e["acuan_latih"]): e for e in hs}
-    m0 = by[("M0", "gabungan")]["loyo"]["vs_gabungan"]
-    m2 = by[("M2", "gabungan")]["loyo"]["vs_gabungan"]
-    assert m2["mape"] < m0["mape"], (m2, m0)      # hukum log-linier dikenali M2; M0 (4,3 ha x titik) jauh meleset
-    assert m2["mape"] < 0.2 and m2["korelasi_log"] > 0.95, m2
-    g19 = by[("M2", "gabungan")]["loyo"]["gaveau_2019"]
-    assert 0.7 <= g19["rasio_median"] <= 1.4, g19
-    assert by[("M0", "gabungan")]["boleh_dipilih"] and not by[("M2", "gaveau")]["boleh_dipilih"]
-    terp, terb = pilih_model(hs)
-    assert terb is not None
-    pu = prediksi_unit(by[("M2", "gabungan")], baris_s, ref_s, {"seri": "N", "faktor_setara": 1.0}, ps, tg)
+    # H3: LOYO tidak menyentuh tahun uji akhir; prediksi uji akhir hanya pada tahun itu
+    for (nm, ac), e in by.items():
+        if ac == "gaveau":
+            continue
+        assert not {k[1] for k in ps[("N", nm, ac, "loyo")]} & set(TAHUN_UJI_AKHIR), "LOYO memakai tahun uji akhir"
+        assert {k[1] for k in ps[("N", nm, ac, "uji_akhir")]} == set(TAHUN_UJI_AKHIR)
+    # B1(b): tiap model dilaporkan terhadap acuan yang ada sekaligus, M0 yang sama
+    m2g = by[("M2", "gwis")]
+    assert set(m2g["uji_akhir"]["vs"]) == {"sipongi", "gwis", "gaveau", "gfed5"} and set(m2g["loyo"]["vs"]) >= {"sipongi", "gwis"}
+    assert m2g["uji_akhir"]["vs"]["gaveau"]["n"] == 8 and "vs_m0_mentah" in m2g["uji_akhir"] and "n_acuan_nol" in m2g["loyo"]["vs"]["gwis"]
+    assert by[("M0", "gwis")]["uji_akhir"]["vs"]["gaveau"]["galat_log_median"] > 1.0         # M0 (4,3 x titik) jauh meleset di dunia ini
+    # model berlatih pada GWIS (ha/2,3) dan dinilai terhadap Gaveau (= ha): galat log ~ ln 2,3 = 0,83, M0 ~ ln 3,6 = 1,28; 1 blok tahun Gaveau saja -> bootstrap tak dapat dinilai
+    assert 0.6 < m2g["uji_akhir"]["vs"]["gaveau"]["galat_log_median"] < 1.0 and m2g["uji_akhir"]["vs_m0_terskala"]["gaveau"]["dapat_dinilai"] is False
+    g_ = by[("M2", "gabungan")]
+    assert g_["uji_akhir"]["vs"]["gaveau"]["galat_log_median"] < 0.3 and 0.7 < g_["loyo"]["vs"]["gwis"]["galat_log_median"] < 1.0     # gabungan = GWIS x 2,33: dekat Gaveau, jauh dari GWIS (tak dinilai akurat vs GWIS)
+    # K1 (vs M0_terskala): GFED5 pada 2015/2018/2019/2020 = 4 blok tahun; Gaveau 2019 satu tahun tanpa CI
+    k1g = g_["uji_akhir"]["k1_gfed5"]
+    assert k1g["dapat_dinilai"] and k1g["n_tahun"] == 4 and k1g["lebih_baik"] and k1g["ci"][0] > 0, k1g
+    assert g_["uji_akhir"]["k1_gaveau"]["dapat_dinilai"] and g_["uji_akhir"]["k1_gaveau"]["positif"] and g_["uji_akhir"]["k1_gaveau"]["n_tahun"] == 1
+    assert g_["lolos"]["K1"] and g_["lolos"]["K2"] and g_["lolos"]["K1_status"] == "lolos"
+    # M0_terskala dilaporkan sebagai pembanding (bukan kandidat), lebih baik dari M0 mentah di dunia ini
+    ms = by[("M0_terskala", "gabungan")]
+    assert not ms["boleh_dipilih"] and ms["uji_akhir"]["vs"]["gaveau"]["galat_log_median"] < by[("M0", "gabungan")]["uji_akhir"]["vs"]["gaveau"]["galat_log_median"]
+    assert g_["loyo"]["cakupan"]["n"] > 0 and g_["uji_akhir"]["cakupan"]["n_el_nino"] == 24
+    # mata uang seleksi SAMA untuk semua kandidat: skor = selisih vs target gabungan (prior), bukan target latih sendiri
+    mu_ = tabel_target("gabungan", {**ref_s, "gaveau": None}, bangun_koreksi(gw_s, None, tanpa_gaveau=True))
+    for (nm_, ac_), e_ in by.items():
+        if e_["boleh_dipilih"] and nm_ != "M0":
+            _anggota(e_["loyo"]["skor_seleksi"], _rata(selisih_tahun(ps[("N", nm_, ac_, "loyo")], ps[("N", "M0_terskala", ac_, "loyo")], mu_, inf["titik"])), 1e-9, "mata uang seleksi")
+            assert e_["loyo"]["skor_seleksi_mata_uang"] == "gabungan_prior_literatur"
+    assert KRITERIA["pemilihan"]["seleksi_mata_uang"] == "gabungan_prior_literatur" and KRITERIA["pemilihan"]["seleksi_mata_uang_alasan"]
+    assert g_["loyo"]["skor_seleksi"] > 0.05 and by[("M2", "gabungan")]["loyo"]["skor_seleksi_n_tahun"] == 8
+    assert not by[("M2", "gaveau")]["boleh_dipilih"] and "lolos" not in by[("M2", "gaveau")]
+    terp, pem = pilih_model(hs)
+    assert pem is not None and pem["boleh_dipilih"] and pem["loyo"]["skor_seleksi"] == max(e["loyo"]["skor_seleksi"] for e in hs if e["boleh_dipilih"] and e["model"] != "M0")
+    # sipongi: target hanya 2022, 2024, 2025 di tahun seleksi (3 < 5) -> tak dapat menang; gwis & gabungan 8 tahun
+    assert by[("M2", "sipongi")]["loyo"]["status_seleksi"] == "tahun seleksi kurang" and by[("M2", "sipongi")]["loyo"]["tahun_seleksi_target"] == 3
+    assert by[("M2", "gwis")]["loyo"]["status_seleksi"] == "memenuhi" and by[("M2", "gwis")]["loyo"]["tahun_seleksi_target"] == 8
+    assert n_kandidat(hs) == 8 and n_tahun_seleksi_kurang(hs) == 4 and pem["acuan_latih"] != "sipongi" and pem["model"] != "M0_terskala"
+    # S-C: tak satu pun baris latih lipatan uji akhir berasal dari tahun uji akhir
+    ua_f = lipat_uji_akhir(baris_s, inf["latih"]["gabungan"], inf["uji_akhir"])[0]
+    assert ua_f["latih"] and all(t.y not in TAHUN_UJI_AKHIR for t in ua_f["latih"]) and ua_f["tahun_latih"].isdisjoint(TAHUN_UJI_AKHIR)
+    # pemenang seleksi tak berubah bila SEMUA acuan di tahun uji akhir diganti sampah (seleksi tak membaca tahun uji akhir)
+    ref_x = {"sipongi": sip_s, "gaveau": {g: 1e8 for g in grups}, "gfed5": {g: {y: 1e8 for y in (2015, 2018, 2019, 2020)} for g in grups},
+             "gwis": {g: {y: (v * 50 if y in TAHUN_UJI_AKHIR else v) for y, v in d.items()} for g, d in gw_s.items()}}
+    MODEL_ASLI = list(MODEL)
+    MODEL[:] = ["M0", "M2"]
+    try:
+        hx, _, _ = evaluasi_seri("N", baris_s, ref_x, ctx_s)
+        hy, _, _ = evaluasi_seri("N", baris_s, ref_s, ctx_s)
+    finally:
+        MODEL[:] = MODEL_ASLI
+    sx = {(e["model"], e["acuan_latih"]): e["loyo"]["skor_seleksi"] for e in hx if e["boleh_dipilih"] and e["model"] != "M0"}
+    sy = {(e["model"], e["acuan_latih"]): e["loyo"]["skor_seleksi"] for e in hy if e["boleh_dipilih"] and e["model"] != "M0"}
+    assert sx == sy and sx, "skor seleksi bergantung pada acuan tahun uji akhir (bocor)"
+    assert pilih_model(hx)[1]["acuan_latih"] == pilih_model(hy)[1]["acuan_latih"]
+    pu = prediksi_unit(by[("M2", "gabungan")], baris_s, ref_s, ctx_s, ps, inf)
     assert pu and all(v["p10"] <= v["p50"] <= v["p90"] for v in pu.values())
-    tabel = bangun_tabel(cache_s, {"N": pu}, ref_s, kov_s, None, kov_s["oni_jas"], "N", "M2")
+    assert {v["asal"] for k, v in pu.items() if k[1] in (2015, 2019)} == {"uji_akhir"} and {v["asal"] for k, v in pu.items() if k[1] == 2017} == {"LOYO"}
+    assert all(v["mentah"] > 0 for v in pu.values())
+    # H12: selang 'gabungan' dilebarkan omisi; 'gwis' tidak -> rasio p90/p10 gabungan > rasio tanpa omisi
+    pu0 = prediksi_unit(by[("M2", "gabungan")], baris_s, ref_s, ctx_s, ps, dict(inf, omisi_sd=0.0))
+    kk = ("62", 2017)
+    assert inf["omisi_sd"] >= 0.09 and kk in pu and kk in pu0
+    _anggota(math.log(pu[kk]["p90"] / pu[kk]["p10"]) - math.log(pu0[kk]["p90"] / pu0[kk]["p10"]), 2 * 1.2816 * inf["omisi_sd"], 1e-6)
+    _anggota(pu[kk]["p50"], pu0[kk]["p50"], 1e-9)
+    tabel = bangun_tabel(cache_s, {"N": pu}, ref_s, kov_s, None, kov_s["oni_jas"], "N", "M2", model_lolos=True)
     r19 = [r for r in tabel["nasional"] if r["tahun"] == 2019][0]
+    r15 = [r for r in tabel["nasional"] if r["tahun"] == 2015][0]
     assert r19["acuan"]["gaveau"] == round(sum(gav_s.values())) and r19["luas_model"] and r19["hotspot"]["N"] > 0 and r19["firespot_R0"] > 0
     assert [r["tahun"] for r in tabel["nasional"]] == TAHUN_TABEL and r19["acuan"]["sipongi"] is not None
     assert tabel["nasional"][0]["luas_model"] is None            # 2001: tak ada fitur
-    md = tulis_md({"status": "uji", "dibuat": "x", "model": hs, "terpilih": None, "terbaik_tak_lolos": terb, "tabel": tabel, "jujur": JUJUR, "belum_dikerjakan": ["x"]})
-    assert "| 2019 |" in md and "Belum dikerjakan" in md
-    assert sha_kriteria() == sha_kriteria() and len(sha_kriteria()) == 12
-    # kriteria tidak berubah dan memuat tanda dipra-tulis
-    assert KRITERIA["K1_mape"]["ambang"] == 0.30 and KRITERIA["K3_cakupan"]["rentang"] == [0.70, 0.90] and KRITERIA["K2_gaveau_2019"]["rasio_median"] == [0.7, 1.4]
+    assert r19["status"] == "dapat_dinilai" and r19["n_acuan_independen"] == 2 and r19["cocok"] is True and r19["label_acuan"] == "gaveau+gfed5", r19      # gaveau + gfed5 ada pada 2019
+    assert r15["status"] == "dapat_dinilai" and r15["label_acuan"] == "gfed5 semi-independen" and r15["n_acuan_independen"] == 1 and r15["cocok"] is True       # 2015 hanya gfed5
+    r17 = [r for r in tabel["nasional"] if r["tahun"] == 2017][0]
+    assert r17["status"] == "tak_dapat_dinilai" and r17["cocok"] is None and r17["label_acuan"] == "tak_dapat_dinilai"
+    assert r19["model_lolos"] is True and tabel["model_lolos"] is True and r19["luas_model_mentah"] > 0 and r19["rasio_p50_vs_mentah"] > 0
+    assert all("model_lolos" in r for g_pv in tabel["prov"].values() for r in g_pv["baris"])
+    assert tabel["nasional"][10]["status"] == "tanpa_model" and tabel["nasional"][10]["cocok"] is None
+    ukk = tabel["uji_kekuatan"]
+    assert ukk["tahun_dinilai"] == [2015, 2018, 2019, 2020] and set(ukk["deteksi"]) == {"0.5", "2.0"} and ukk["tingkat_lolos_m0"] == 0.0 and ukk["tingkat_lolos_model"] == 1.0, ukk   # M0 jauh di luar pita
+    assert ukk["tally_tak_berdaya"] is True and ukk["label_daya"] == "tally tak berdaya"       # 4 tahun dinilai < 5
+    assert "SATU bukti" in tabel["catatan_tally"] and "semi-independen" in tabel["catatan_tally"]
+    # S22: faktor efektif (ha per piksel unik): ha = 2,4 x px (px_tol = 0,8 px, hukum 3,0 x px_tol)
+    hp = ha_per_piksel(pu, cache_s, "N")
+    assert 1.0 < hp["nasional"] < 3.5 and set(hp["prov"]) == set(grups) and all(1.0 < v < 3.5 for v in hp["prov"].values()) and hp["seri"] == "N" and "ha_per_piksel" not in hp
+    assert ha_per_piksel({}, cache_s, "N") is None
+    # susun_hasil ujung ke ujung (hanya M0 & M2): kunci ha_per_piksel hanya muncul bila ada model terpilih; JSON dapat ditulis; kriteria_sha tercatat
+    MODEL[:] = ["M0", "M2"]
+    try:
+        Jt = susun_hasil(cache_s, ref_s, kov_s, {}, Anggaran(50), {}, {}, [], "2026-01-01T00:00:00+00:00", None)
+    finally:
+        MODEL[:] = MODEL_ASLI
+    assert Jt["kriteria_sha"] == sha_kriteria() and Jt["n_kandidat"] == 2 and Jt["n_kandidat_tahun_seleksi_kurang"] == 1 and Jt["model_lolos"] == bool(Jt["terpilih"]) and Jt["tabel"]["model_lolos"] == Jt["model_lolos"] and Jt["vonis"] and "selang_ket" in Jt and "bukan luas sebenarnya" in Jt["selang_ket"]
+    assert ("ha_per_piksel" in Jt) == bool(Jt["terpilih"]) and (Jt["terpilih"] is not None or Jt.get("ha_per_piksel_tersedia") is False)
+    if Jt["terpilih"]:
+        assert isinstance(Jt["ha_per_piksel"], float) and Jt["ha_per_piksel_detail"]["prov"]
+    else:
+        assert "ha_per_piksel" not in Jt and "ha_per_piksel_kandidat" in Jt
+    tj = os.path.join(RAW, "uji", "luas_uji.json")
+    simpan_json(tj, Jt)
+    assert json.load(open(tj))["kriteria_sha"] == sha_kriteria()
+    os.remove(tj)
+    md = tulis_md(dict(Jt, tabel=tabel))
+    assert "| 2019 |" in md and "Uji kekuatan" in md and "kriteria_sha" in md
+    assert tulis_md({"status": "uji", "dibuat": "x", "model": hs, "terpilih": None, "terbaik_tak_lolos": pem, "tabel": tabel, "jujur": JUJUR, "belum_dikerjakan": ["x"], "n_kandidat": 12})
+    assert "Belum dikerjakan" in tulis_md({"status": "uji", "dibuat": "x", "model": hs, "terpilih": None, "tabel": tabel, "jujur": JUJUR, "belum_dikerjakan": ["x"]})
     # tugas titik: 2019 pertama, semua sensor sah
     tt = tugas_titik()
     assert tt[0][:2] == ("N", 2019) and ("N20", 2019, False, None) in tt and not any(t[0] == "N21" and t[1] < 2023 for t in tt)
