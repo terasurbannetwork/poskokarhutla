@@ -1161,8 +1161,8 @@ def bangun():
                            t2025=tg[0], t2026=tg[1], t2027=tg[2], t2028=tg[3], t2029=tg[4], unit_renstra=unit, unit_otk_berlaku=unit,
                            halaman=f"{hal}; target hlm. 132-133", label="resmi"))
     for kode, unit, sas, ind, tg, ocr in RENSTRA_SK:
-        hlm_urut(RS, sas, 134, 140)
-        hal = hlm_urut(RS, ind, 134, 140)
+        hlm_urut(RS, sas, 134, 140, celah=20)
+        hal = hlm_urut(RS, ind, 134, 140, celah=20)
         ada_token(RS, 134, 140, ocr or [" ".join(tg)])  # deret lima tahun utuh (atau potongan OCR bila kolom bertukar)
         prog = next(p for k, p, *_ in RENSTRA_PROGRAM if k == kode)
         rs.append(dict(tingkat="sasaran kegiatan", kode=f"P{kode}", program=prog, sasaran=sas, indikator=ind, baseline="",
@@ -1177,9 +1177,9 @@ def bangun():
     for i, k in enumerate(RENAS_KEBIJAKAN, 1):
         rn.append(dict(tingkat="kebijakan", kode=str(i), nama=k, induk="", fokus_ripb="", halaman=hlm(RN, f"{i}. {k}" if i == 1 else k), label="resmi"))
     for k, v in RENAS_SASARAN.items():
-        rn.append(dict(tingkat="sasaran", kode=k, nama=v, induk="", fokus_ripb="", halaman=hlm_urut(RN, v, 32, 125), label="resmi"))
+        rn.append(dict(tingkat="sasaran", kode=k, nama=v, induk="", fokus_ripb="", halaman=hlm_urut(RN, v, 32, 125, celah=3), label="resmi"))
     for k, v in RENAS_STRATEGI.items():
-        rn.append(dict(tingkat="strategi", kode=k, nama=v, induk=k.split(".")[0], fokus_ripb="", halaman=hlm_urut(RN, v, 33, 125), label="resmi"))
+        rn.append(dict(tingkat="strategi", kode=k, nama=v, induk=k.split(".")[0], fokus_ripb="", halaman=hlm_urut(RN, v, 33, 125, celah=3), label="resmi"))
     # fokus capaian per program dibaca dari Tabel 3.1 (Rencana Aksi) dan dibandingkan dengan Tabel 2.9
     fk31, cur = {}, None
     for n, _, asli in dok(RN):
@@ -1207,7 +1207,7 @@ def bangun():
         rp.append(dict(tipe="kebijakan", nomor=str(i), teks=s, kebijakan_induk="", halaman=hlm(RN, f"{i}. {s}"), catatan=""))
     for kb, daftar in RIPB_STRATEGI.items():
         for huruf, s in daftar:
-            rp.append(dict(tipe="strategi", nomor=f"{kb}{huruf}", teks=s, kebijakan_induk=str(kb), halaman=hlm_urut(RN, s, 14, 16),
+            rp.append(dict(tipe="strategi", nomor=f"{kb}{huruf}", teks=s, kebijakan_induk=str(kb), halaman=hlm_urut(RN, s, 14, 16, celah=15),
                            catatan="ejaan sesuai sumber" if "peralatanan" in s else ""))
     for i, s in RIPB_FOKUS.items():
         rp.append(dict(tipe="fokus capaian 2025-2029", nomor=str(i), teks=s, kebijakan_induk="", halaman=hlm(RN, f"Fokus Capaian {i}: {s}"), catatan=""))
@@ -1338,6 +1338,13 @@ def cek(t, tema, unit_berlaku, prov):
             assert p["kekuatan"] == "kuat", p["id"]
         if p["kekuatan"] == "belum-terbukti":
             assert p["posisi"] in ("Program berjalan, wajib evaluasi dampak", "Uji coba terukur"), f"{p['id']}: program belum terbukti tidak boleh diusulkan sebagai program"
+    # dasar hukum dalam negeri yang disebut kolom `dasar` dan ada di korpus: judul/isi wajib ketemu
+    for slug, kut in [("perka-nomor-4-tahun-2012", "PEDOMAN PENERAPAN SEKOLAH/MADRASAH AMAN DARI BENCANA"),
+                      ("perban-nomor-2-tahun-2024", "TENTANG SISTEM PERINGATAN DINI BENCANA"),
+                      ("perban-nomor-7-tahun-2025", "Pedoman Umum Desa/Kelurahan Tangguh Bencana sudah tidak sesuai dengan perkembangan kebutuhan hukum, sehingga perlu diganti"),
+                      ("perban-nomor-7-tahun-2025", "a. Desa dan Kelurahan tangguh utama; b. Desa dan Kelurahan tangguh madya; dan c. Desa dan Kelurahan tangguh pratama."),
+                      (RN, "belum semua menerapkan satuan pendidikan aman bencana")]:
+        hlm(slug, kut)
     # perlindungan jebakan di Juklak: bila kelak teksnya memuat kewajiban analisis manfaat-biaya, status P24 harus ditinjau
     juk = " ".join(t for _, t, _ in dok("juklak-nomor-4-tahun-2025")).lower()
     assert not re.search(r"manfaat[- ]biaya|benefit[- ]cost|rasio manfaat", juk), "Juklak 4/2025 kini memuat analisis manfaat-biaya: tinjau status P24"

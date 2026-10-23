@@ -3,8 +3,8 @@
 Pedoman induk (grand design dan design system) untuk dua kajian yang diterbitkan
 Badan Nasional Penanggulangan Bencana:
 
-1. **Grand Design Ketahanan Air Pulau Jawa 2026–2045** (selanjutnya "kajian air").
-2. **Grand Design Mitigasi Bencana Indonesia 2026–2045** (selanjutnya "kajian mitigasi").
+1. **Grand Design Ketahanan Air Pulau Jawa 2026–2030** (selanjutnya "kajian air").
+2. **Grand Design Mitigasi Bencana Indonesia 2026–2030** (selanjutnya "kajian mitigasi").
 
 Versi 1.1, 23 Oktober 2026. Berkas ini satu-satunya sumber aturan tampilan, bahasa,
 angka, dan QA untuk kedua kajian. Isi bab ada di `KERANGKA.md`; ukuran terukur tata
@@ -21,7 +21,10 @@ membuat salinan aturan ketiga.
 ### 0.1 Urutan otoritas
 
 1. Kata pemilik di percakapan (dicatat di §0.3 Riwayat).
-2. Buku Pegangan Pantau Bencana (`docs/buku-pegangan/pantau-bencana.md`): kanon proyek.
+2. Buku Pegangan Pantau Bencana (`docs/buku-pegangan/pantau-bencana.md`): kanon proyek; dan
+   `KEPUTUSAN.md`: keputusan pemilik P1–P17 serta keputusan bawaan orkestrator T1–T10 yang
+   berlaku sampai pemilik membaliknya. Bila pedoman ini bertentangan dengan `KEPUTUSAN.md`,
+   `KEPUTUSAN.md` yang berlaku.
 3. Pedoman ini. Pedoman boleh berbeda dari Buku Pegangan hanya bila perbedaannya dicatat
    di §0.3 berikut alasannya; perbedaan yang tidak dicatat batal dan Buku Pegangan yang
    berlaku.
@@ -51,29 +54,38 @@ pemilik 20 Okt (dicatat di Buku Pegangan) melarangnya. Yang berlaku: dilarang.
 | K7 | Skenario terburuk dikelompokkan per jenis bencana, dengan korban jiwa, luas terdampak, kerugian materiil dan imateriil dari simulasi platform | 23 Okt 2026 |
 | K8 | IRBI BNPB sebagai indeks utama; indeks platform sebagai pendukung | 23 Okt 2026 |
 | K9 | Bencana nonalam: pandemi, kebakaran TPA, kebakaran industri. Kerusuhan sosial dibahas di bab bencana sosial (taksonomi UU 24/2007) | 23 Okt 2026 |
-| K10 | Strategi dibagi pra bencana, saat bencana, pascabencana | 23 Okt 2026 |
+| K10 | Strategi dibagi pra bencana, saat bencana, pascabencana (kata pemilik; ejaan dan nama fase di keluaran mengikuti T10) | 23 Okt 2026 |
 | K11 | Rekomendasi untuk internal BNPB dan lintas K/L, dengan lembaga teknis dan tugasnya | 23 Okt 2026 |
 | K12 | Peta disimulasikan di web lalu dirender ke dokumen | 23 Okt 2026 |
 | K13 | Bahasa formal ilmiah, tanpa kalimat bergaya dan tanpa yang dibuat-buat | 23 Okt 2026 |
 | K14 | Kedua kajian tidak harus meniru JAPFA REPORT, tetapi wajib punya grand design dan design system | 23 Okt 2026 |
 | K15 | Pola laporan kelas dunia yang divonis cocok di `riset/desain-benchmark/SINTESIS.md` diterapkan di §A–§B dan dicatat di Buku Pegangan bab Selera laporan (DOCX/PDF); aturan pemilik yang tertulis menang bila bentrok (`KEPUTUSAN.md` P16) | 23 Okt 2026 |
 
-**Belum diputus** (ditanyakan, tidak ditebak; rekomendasi di kolom kanan):
+**Diputus sebagai keputusan bawaan** (`KEPUTUSAN.md`, 23 Okt 2026; pemilik meminta tidak ada
+pertanyaan lagi, jadi bawaan ini berlaku sampai pemilik membaliknya):
 
-| No | Pertanyaan | Rekomendasi pedoman | Akibat bila ditolak |
+| No | Keputusan | Akibat di pedoman |
+| --- | --- | --- |
+| T1 | Judul bab KAPITAL ("BAB 1 PENDAHULUAN"); subbab ke bawah huruf judul ("1.1 Latar Belakang") | §B2, §C2; D-11 mengecualikan Heading 1 dan judul bagian depan |
+| T2 | Oranye naik, biru turun, juga di peta web kajian | §B1.5, §B6 |
+| T3 | Peta web di situs Pantau Bencana, `public/kajian/`, dibangun lokal; terbit hanya bila pemilik mendorong | §B6 |
+| T4 | Kaki halaman: "Badan Nasional Penanggulangan Bencana, Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120" dan "Call Center 117, www.bnpb.go.id" | §B4. T4 tidak memutus teks pil batas data PDF ringkas; bawaannya di §B4 |
+| T5 | Kajian air batas atas ±110 hlm isi; kajian mitigasi ±150 | §A3.2, §A3.3, D-12 |
+| T6 | Palet tambal enam keluarga (ΔE CIEDE2000 terkecil 17,6) | §B1.3 |
+| T7 | Kata Pengantar ditulis sebagai draf untuk ditandatangani Kepala BNPB, ditandai untuk diperiksa pemilik | §A3.4 |
+| T8 | Kelas IRBI memakai skala oranye rumah BNPB (ramp api, kelas 1, 3, 5) dengan nama kelas resmi Rendah, Sedang, Tinggi dan legenda; merah hanya bahaya | §B1.4; ramp keluarga hanya untuk indeks platform |
+| T9 | Daftar Pustaka tidak dihitung dalam batas halaman, sama seperti lampiran | §A3.2, §A3.3, §B5.17, D-12 |
+| T10 | "prabencana", "tanggap darurat", "pascabencana" sesuai UU 24/2007; subjudul kajian mitigasi "Strategi Prabencana, Tanggap Darurat, dan Pascabencana" | §A4, §B5.12, §B5.14, §B5.22, §C3 |
+
+**Belum diputus** (berbawaan; tiap bawaan bisa dibalik pemilik):
+
+| No | Pertanyaan | Bawaan yang dipakai | Bila dibalik |
 | --- | --- | --- | --- |
-| T1 | Judul bab dan subbab KAPITAL PENUH (pola JAPFA, `SPESIFIKASI-GAYA.md` §4) atau kapital tiap kata menurut PUEBI? | Kapital tiap kata menurut PUEBI ("Profil Risiko Musim Kemarau"), frasa deskriptif (§C2). Kanon proyek membatasi kapital berspasi untuk pil, kepala kolom, dan label pita; buku Utama, MBG, Betutu Sambe melarang kapital penuh di kertas | Gaya Heading di templat diganti satu kali; gerbang D-11 dilonggarkan untuk Heading |
-| T2 | Arah naik/turun di peta web kajian: oranye/biru (pola dokumen) atau merah/hijau (pola situs)? | Oranye/biru, supaya PNG dan web identik | Peta web punya tooltip merah/hijau; PNG tetap oranye/biru |
-| T3 | Peta web dihost di situs Pantau Bencana (aturan login dan merek ikut) atau artifact terpisah? | Halaman `public/kajian/` di situs, turunan `public/bnpb/risiko.html` | Artifact terpisah butuh salinan data sendiri; risiko angka berbeda |
-| T4 | Kaki halaman dan pil batas data: alamat BNPB dua baris (pola JAPFA) atau "Badan Nasional Penanggulangan Bencana \| Copyright 2026" dan pil "CUT OFF DATA" (pola templat BNPB di deck)? Dua istilah Inggris itu tampil tegak dan kapital di dokumen formal berbahasa Indonesia | Pola templat BNPB, dicatat sebagai pengecualian templat; alamat lengkap di kolofon dan sampul belakang. Bila pemilik memilih bahasa Indonesia: "Hak Cipta © 2026 BNPB" dan "BATAS DATA" | Kaki dua baris, tinggi kaki naik 4 mm; atau dua string diganti sekali di `tema.json` |
-| T5 | Batas 150 halaman untuk kajian air: `KERANGKA.md` menyusun ±100 hlm | Isi ±140 hlm (alokasi §A3.2); tidak diisi paksa ke 150 | Bab 4–6 diperpanjang atau dipersingkat |
-| T6 | Warna turunan untuk keluarga yang belum punya warna di deck: nonalam `#3D6B5A`, sosial `#4B4F58` (§B1.3) | Disetujui; sudah lolos validator beda warna dan kontras | Diganti, satu berkas token |
-| T7 | Kata Pengantar Kepala BNPB: ditulis tim atau diserahkan kosong untuk diisi pimpinan? | Draf satu halaman, ditandai "draf untuk disetujui" | Halaman kosong berjudul |
-| T8 | Warna IRBI: diperlakukan sebagai produk resmi (warna legenda InaRISK) atau indeks berpalet rumah? | Indeks berpalet rumah, satu ramp per keluarga bahaya (§B1.4), legenda menyebut "kelas IRBI BNPB". IRBI indeks, bukan status peringatan; ramp keluarga mencegah dua ramp untuk bahaya yang sama dalam satu dokumen | Hex legenda InaRISK diambil dari layanan InaRISK saat tarik data (URL dicatat di `tema.json`), tidak dari ingatan; ramp keluarga tinggal untuk indeks platform |
-| T9 | Daftar Pustaka dihitung dalam batas 150 halaman? K3 hanya mengecualikan lampiran | Dihitung, karena letaknya sebelum Lampiran (§A3.4); cadangan 10 hlm menampungnya | D-12 berhenti menghitung di judul Daftar Pustaka |
-| T10 | Ejaan fase: K10 memakai kata pemilik "pra bencana, saat bencana, pascabencana"; UU 24/2007 dan PUEBI menulis "prabencana", "tanggap darurat", "pascabencana" | "Prabencana, saat bencana, pascabencana": "pra" diserangkaikan menurut PUEBI, "saat bencana" tetap kata pemilik dan disamakan dengan tahap tanggap darurat di glosarium | "Prabencana, saat tanggap darurat (saat bencana), pascabencana"; diganti sekali di `glosarium.json` |
-| T11 | Peta bernomor sendiri ("Peta 4.1") dengan Daftar Peta, pola GAR dan UNICEF (SINTESIS P11)? | Bawaan: peta tetap seri Gambar, satu seri Caption | SEQ "Peta" dan bidang Daftar Peta ditambah; D-7 menghitung dua seri |
-| T12 | Tabel tahap × horizon pola Deltaprogramma (SINTESIS P78) di DOCX, padahal pemilik membuang Gantt dari slide rekomendasi d5? | Bawaan: dipakai hanya di DOCX bab Peta Jalan (§B5.29), sel tahap berupa pil native; tidak di deck dan PDF ringkas | Diganti kolom WAKTU berpil horizon di matriks rekomendasi (§B5.13) saja |
+| T11 | Peta bernomor sendiri ("Peta 4.1") dengan Daftar Peta, pola GAR dan UNICEF (SINTESIS P11)? | Peta tetap seri Gambar, satu seri Caption | SEQ "Peta" dan bidang Daftar Peta ditambah; D-7 menghitung dua seri |
+| T12 | Tabel tahap × tahun pola Deltaprogramma (SINTESIS P78) di DOCX, padahal pemilik membuang Gantt dari slide rekomendasi d5? | Kolom WAKTU berpil horizon di matriks rekomendasi (§B5.13) saja, mengikuti satu-satunya sinyal pemilik; tabel §B5.29 tidak dibuat | Tabel §B5.29 dipasang di DOCX bab Peta Jalan saja, sel tahap berupa pil native; tidak di deck dan PDF ringkas |
+| T13 | Kelas IRBI banjir, longsor, dan kekeringan di kajian air ikut berwarna oranye (ramp api, T8), padahal kategori basah biru dan kering emas. Dikehendaki? | T8 apa adanya: semua kelas IRBI ramp api, legenda "Kelas IRBI BNPB" | `skala.irbi.ramp` di `tema.json` diganti per keluarga (air, emas, netral); ambang IRBI ΔE ≥ 20 tetap berlaku |
+| T14 | Keterangan gambar dan tabel: judul aksi berangka (MGI, WDR; SINTESIS P22) atau deskriptif? Vonis pemilik 23 Okt ("judul memakai bentuk deskriptif", Riwayat Buku Pegangan; "Judul deskriptif menang atas judul data", bab Selera presentasi) lebih baru daripada "judul = fakta + angka + sumber", dan tidak ada kata pemilik yang membatasinya ke deck | Deskriptif stabil berisi besaran, tempat, periode, dan satuan ("Gambar 5.2 Kejadian banjir per kabupaten/kota di Pulau Jawa, 2015–2025 (kejadian)"); kalimat temuan berangka ditulis di kalimat pembuka tebal paragraf yang merujuk gambar (§B2, §C2) | Keterangan berupa kalimat temuan berangka ≤ 2 baris; kutipan pemilik dicatat di §0.3; Daftar Gambar berubah tiap pembaruan data |
+| T15 | Judul slide deck kajian: tabel Judul Buku Pegangan bab Selera presentasi belum punya baris untuk deck kajian (§B7) | Kalimat temuan ≤ 2 baris, angka `oranye`, seperti Paparan Presiden lampiran, karena `KERANGKA.md` menyusun deck seperti Paparan Presiden | Judul topik deskriptif seperti deck wilayah |
 
 ### 0.3 Riwayat (terbaru di atas; kutipan miring = kata pemilik)
 
