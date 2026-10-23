@@ -83,7 +83,7 @@
   }
  },
  "mesin_fisika": {
-  "metrik": "galat luas 72 jam |ln((1+prediksi)/(1+teramati))|",
+  "metrik": "galat luas 72 jam |ln((1+prediksi)/(1+teramati))|, 123 kasus uji balik, cuaca reanalisis (prakiraan sempurna)",
   "arah": "rendah lebih baik",
   "pembanding": "persistensi (luas awal tetap)",
   "n": 123,

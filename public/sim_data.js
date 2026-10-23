@@ -77,6 +77,7 @@ const SimData = window.SimData = {
     const bolehLolosPenuh = bolehLolos && PR?.vonis === "lolos", teruji = (PR?.teruji_sensor_kini ?? PR?.teruji) === true && bolehLolosPenuh, d2 = x => x == null ? "–" : (Math.round(x * 100) / 100).toString().replace(".", ","), p1 = x => x == null ? "–" : (x * 100).toFixed(1).replace(".", ",") + "%"; /* ECE: satu desimal (0,6%), bukan dibulatkan ke 0 */
     const bulat = x => { if (!x) return 0; const d = Math.floor(Math.log10(Math.abs(x))), p = 10 ** Math.max(0, d - 1); return Math.round(x / p) * p; }; /* 2 angka bermakna */
     const tahunUji = (L?.laporan || []).map(x => /Uji (\d{4})-(\d{4})/.exec(x.himpunan || "")).find(Boolean)?.slice(1, 3).join("–") || "2024–2026";
+    const kt = r.lolos ? [...(PR?.mode?.awal?.kalibrasi?.kantong || [])].reverse().find(k => r.lolos.p >= k.p_min && r.lolos.p <= k.p_maks * 1.1 && k.n >= (PR?.kantong_min_n ?? 30)) : null; /* kantong kalibrasi prospektif yang memuat peluang ini */
     const pap = this.paparan(this.api24, this.lahan?.desa);
     const membesar = r.sudah_besar ? `Sudah ≥ ${ha} ha (≥ ${this.model.lepas_sel || 10} sel aktif 24 jam): perlakukan sebagai kebakaran besar.`
       : !teruji ? `Peluang membesar ≥ ${ha} ha: <b>belum teruji</b>, ${!PR ? "belum ada data penilaian." : !PR.teruji_recall ? `baru ${fmt(PR.mode?.awal?.dinilai || 0)} dari ${fmt(PR.n_min || 300)} ramalan yang sudah dinilai 72 jam kemudian.`
@@ -85,8 +86,8 @@ const SimData = window.SimData = {
           : PR.teruji && (PR.teruji_sensor_kini === false) ? "terbukti hanya pada deteksi S-NPP; deteksi NOAA-21 (pengganti S-NPP sejak 1 Nov 2026) belum diuji sendiri."
           : PR.teruji ? `${PR.vonis !== "lolos" ? `vonis uji prospektif pra-registrasi masih "${esc(PR.vonis || "tidak ada")}"` : `gerbang pembanding sederhana belum meloloskan (${esc(SebaranModel.gerbangAlasan(GB, "lolos"))})`}.`
           : "semua syarat sudah lulus satu kali; menunggu penilaian ulang kedua dengan data baru."}`}`
-      : r.lolos ? `Perkiraan model eksperimental: sekitar 1 dari ${fmt(Math.max(1, Math.round(1 / Math.max(r.lolos.p, 1e-6))))} titik panas seperti ini membesar hingga ≥ ${ha} ha dalam 72 jam (model khusus titik panas baru).
-        Pada uji ${tahunUji}${K.uji2_presisi != null ? `, dari api yang akhirnya membesar model menangkap ${fmt(Math.round(K.uji2_recall * 100))}%, tetapi dari api yang diperkirakan membesar hanya ${fmt(Math.round(K.uji2_presisi * 100))}% yang benar-benar membesar` : ""}. Model ini untuk api yang baru muncul; cluster yang sudah lama menyala bisa dinilai terlalu rendah.`
+      : r.lolos ? `Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik panas baru${kt ? `; pada ramalan prospektif dengan peluang serupa (${p1(kt.p_min)}–${p1(kt.p_maks)}, ${fmt(kt.n)} titik) yang benar-benar membesar ${p1(kt.teramati)}, selang 95% ${p1(kt.lo)}–${p1(kt.hi)}` : ""}).
+        Uji kedua (set uji ${tahunUji} sudah pernah dibuka, cuaca reanalisis ERA5): dari api yang akhirnya membesar model menangkap ${K.uji2_recall != null ? fmt(Math.round(K.uji2_recall * 100)) : "–"}%${K.uji2_presisi != null ? `, tetapi dari api yang diperkirakan membesar hanya ${fmt(Math.round(K.uji2_presisi * 100))}% yang benar-benar membesar` : ""}. Model ini untuk api yang baru muncul; cluster yang sudah lama menyala bisa dinilai terlalu rendah.`
       : `Peluang membesar ≥ ${ha} ha: ${fmt(Math.round(r.p_lepas * 100))}% (dari Monte Carlo; data titik sekitar tidak termuat, model khusus tidak dijalankan).`;
     const H = this.hist?.mode?.awal?.[this.hist?.kelompok_tampil], Hk = H?.kalibrasi; /* kelompok & tahun dibaca dari JSON: tahun yang kalibrasinya terlalu sedikit api besar tidak ikut */
     const tahunH = H?.tahun?.length ? [Math.min(...H.tahun), Math.max(...H.tahun)].filter((x, i, a) => a.indexOf(x) === i).join("–") : tahunUji;
@@ -99,7 +100,7 @@ const SimData = window.SimData = {
       ${r.sensor_utama === "N21" || r.peralihan ? `Titik sekitar memakai deteksi NOAA-21 (pengganti S-NPP sejak 1 Nov 2026); model dilatih pada S-NPP dan kemiripan distribusinya belum diukur, jadi anggap ini ekstrapolasi.` : ""}
       Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji ${tahunUji}: lihat Insight → "Uji model pada kejadian lalu".
       ${Sim.kal?.alasan ? `<br><span style="color:var(--bad)">Model fisika di bawah belum terkalibrasi untuk cluster ini (${esc(Sim.kal.alasan)}) dan pada uji cenderung melebih-lebihkan luas hingga puluhan kali; pakai hanya sebagai pembanding.</span>` : "Model fisika di bawah (terkalibrasi ke pertumbuhan teramati) ditampilkan sebagai pembanding."}
-      ${bolehFis ? "" : `<br><span class="fnd">Model fisika: ${esc(EKS)} (uji balik, galat luas 72 jam ${d2(GB.mesin_fisika?.skor_model)} vs persistensi ${d2(GB.mesin_fisika?.skor_pembanding)}).</span>`}</div>`;
+      ${bolehFis ? "" : `<br><span class="fnd">Model fisika: ${esc(EKS)} (galat luas 72 jam, 123 kasus uji balik, cuaca reanalisis/prakiraan sempurna: ${d2(GB.mesin_fisika?.skor_model)} vs persistensi ${d2(GB.mesin_fisika?.skor_pembanding)}).</span>`}</div>`;
   },
 };
 Sim.op.data = Sim.op.data ?? true; /* model data jadi perkiraan utama (uji 2024-2026: F1 0,136 vs fisika tak terkalibrasi 0,011) */

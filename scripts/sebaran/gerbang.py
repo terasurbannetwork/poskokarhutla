@@ -7,7 +7,7 @@ jejak_api.json) GAGAL-TERTUTUP: berkas ini hilang/rusak/kunci tak ada = sembunyi
 
 Keluaran (kunci tingkat atas), masing-masing {metrik, arah, pembanding, n, skor_model, skor_pembanding, selisih, selang95, boleh_tampil, alasan, sumber_berkas, rincian}:
   model_sel    peta peluang sel GBDT. Metrik: IoU sel terbakar 24 jam, 123 kasus uji balik, vs persistensi (hanya sel awal yang dianggap terbakar).
-  mesin_fisika luas 72 jam mesin fisika Simulasi (port simfisika.py, model_lain.sim). Metrik: galat luas |ln((1+prediksi)/(1+teramati))| vs persistensi (luas awal tetap).
+  mesin_fisika luas 72 jam mesin fisika Simulasi (port simfisika.py, model_lain.sim). Metrik: galat luas 72 jam |ln((1+prediksi)/(1+teramati))|, 123 kasus uji balik, cuaca reanalisis (prakiraan sempurna), vs persistensi (luas awal tetap).
   jejak_api    jejak 72 jam (jejak.py, dibaca src/ews.js). Mesin SAMA dengan model_sel, jadi bukti TIDAK LANGSUNG: IoU 72 jam kasus uji balik vs persistensi.
                Jejak memotong peluang sel >= 5%, uji balik memakai p >= tau: belum ada uji balik khusus jejak.
   lolos        peluang membesar >= 10 sel dalam 72 jam. Metrik: Brier skill terhadap laju dasar (klimatologi) pada uji balik historis tanpa bocoran
@@ -158,7 +158,7 @@ def bangun(kasus_json, model_json, prosp_json, hist_json):
         rincian={"iou": ril(iou_m, iou_p, "tinggi"), "galat_luas": ril(gl_m, gl_p, "rendah")})
     sim = [c["model_lain"]["sim"] for c in K]
     out["mesin_fisika"] = entri(
-        "galat luas 72 jam |ln((1+prediksi)/(1+teramati))|", "rendah", "persistensi (luas awal tetap)", [galat_luas(s["ha72"], c["obs_ha"][2]) for s, c in zip(sim, K)], gl_p[2], sumber_k,
+        "galat luas 72 jam |ln((1+prediksi)/(1+teramati))|, 123 kasus uji balik, cuaca reanalisis (prakiraan sempurna)", "rendah", "persistensi (luas awal tetap)", [galat_luas(s["ha72"], c["obs_ha"][2]) for s, c in zip(sim, K)], gl_p[2], sumber_k,
         catatan="mesin fisika = port Python simfisika.py (model_lain.sim, tanpa kalibrasi); mesin di layar Simulasi (index.html) memakai kalibrasi pertumbuhan teramati dan belum "
                 "punya uji balik terpisah di berkas ini.",
         rincian={"iou": ril([[s["iou"][h] for s in sim] for h in range(3)], iou_p, "tinggi")})

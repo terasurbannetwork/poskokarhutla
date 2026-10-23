@@ -173,7 +173,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          python3 scripts/sebaran/prospektif.py arsip /tmp/arsip.jsonl.gz
+          # arsip lama dari R2 sebagai pembanding: prospektif.py menolak (kode 3, unggah tidak jalan) bila arsip baru menyusut.
+          # Object belum ada / unduh gagal = tanpa pembanding (penanda arsip_tanda.json di cache masih menjaga).
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/lama.jsonl.gz --remote || rm -f /tmp/lama.jsonl.gz
+          python3 scripts/sebaran/prospektif.py arsip /tmp/arsip.jsonl.gz /tmp/lama.jsonl.gz
           npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/arsip.jsonl.gz --content-type application/gzip --remote
 
       # Jejak api: simulasi sebaran +24/+48/+72 jam tiap kompleks aktif (model data + cuaca prakiraan) -> public/data/jejak_api.json

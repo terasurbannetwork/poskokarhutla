@@ -34,6 +34,7 @@ FOLDER = os.path.join(MENTAH, "prospektif" if RIWAYAT_HARI >= 7 else "prospektif
 GUDANG = os.path.join(FOLDER, "titik.json.gz")
 RAMALAN = os.path.join(FOLDER, "ramalan.jsonl")
 NILAI = os.path.join(FOLDER, "nilai.jsonl")
+VONIS_BERKAS = os.path.join(FOLDER, "vonis.jsonl")  # vonis go/no-go TERKUNCI sekali (append-only, ikut arsip j=v)
 GERBANG = os.path.join(FOLDER, "gerbang.jsonl")  # vonis gerbang per evaluasi (append-only, ikut arsip): dasar syarat dua evaluasi berturut-turut
 CUACA = os.path.join(FOLDER, "cuaca")
 RINGKAS = os.path.join(PUBLIK, "prospektif.json") if RIWAYAT_HARI >= 7 else os.path.join(FOLDER, "ringkasan.json")
@@ -186,8 +187,9 @@ def gabung(lama, hs):
     a0 = menit_dari(acuan)
     baru = []
     for la, lo, jam, s, frp, c, w, _ in hs["baris"]:
-        if (s in ("N", "N20") or (s == "N21" and a0 + jam * 60 >= SN.menit_akhir())) and c >= 1:  # N21 sebelum batas tak dipakai (hemat gudang)
-            baru.append([round(a0 + jam * 60), la, lo, s, frp, hs["wilayah"][w].split("|")[0]])  # menit BULAT: jam di hotspot.json dibulatkan 0,01 jam terhadap acuan yang berganti, pecahan menit tidak stabil antarjalan
+        m = math.floor(a0 + jam * 60 + 1e-6)  # menit BULAT ke bawah (bukan round): deteksi pada menit 779,5-780 harus tetap S-NPP, tidak melompat ke sisi N21 batas SNPP_AKHIR
+        if (s in ("N", "N20") or (s == "N21" and m >= SN.menit_akhir())) and c >= 1:  # N21 sebelum batas tak dipakai (hemat gudang)
+            baru.append([m, la, lo, s, frp, hs["wilayah"][w].split("|")[0]])  # menit bulat: jam di hotspot.json dibulatkan 0,01 jam terhadap acuan yang berganti, pecahan menit tidak stabil antarjalan
     out = list({(round(r[0]), r[1], r[2], r[3]): r for r in lama + baru}.values())
     out = [r for r in out if r[0] >= a0 - SIMPAN_HARI * 1440]
     out.sort(key=lambda r: r[0])
@@ -384,13 +386,59 @@ def main():
 # Cache Actions hidup 7 hari dan bisa tertimpa (kasus 20 Okt 2026). Arsip = SATU berkas jsonl.gz berisi SELURUH ramalan + nilai, diunggah workflow
 # ke R2 (poskokarhutla-foto/arsip/prospektif.jsonl.gz) dan dipulihkan SEBELUM prospektif.py jalan. pulih() hanya MENAMBAH baris yang belum ada
 # (kunci, mode): append-only, tidak pernah menimpa. Ukuran: ~1 KB/ramalan dikompres ~0,3 KB => setahun ~ 1-2 MB.
-def arsip(tujuan):
+class ArsipMenyusut(Exception):
+    pass
+
+
+def hitung_catatan():
+    return {"r": len(baca_jsonl(RAMALAN)), "n": len(baca_jsonl(NILAI)), "v": len(baca_jsonl(VONIS_BERKAS))}
+
+
+def tanda_berkas():
+    return os.path.join(FOLDER, "arsip_tanda.json")
+
+
+def baca_tanda():
+    try:
+        return {j: int(v) for j, v in json.load(open(tanda_berkas())).items() if j in "rnv"}
+    except (OSError, ValueError, TypeError):
+        return {}
+
+
+def tulis_tanda(jumlah):
+    """Penanda jumlah baris r/n/v yang pernah dipulihkan/diarsipkan; hanya naik (maks per jenis). Ikut cache folder prospektif."""
+    lama = baca_tanda()
+    os.makedirs(FOLDER, exist_ok=True)
+    json.dump({j: max(jumlah.get(j, 0), lama.get(j, 0)) for j in "rnv"}, open(tanda_berkas(), "w"))
+
+
+def hitung_arsip(berkas):
+    h = {"r": 0, "n": 0, "v": 0}
+    with gzip.open(berkas, "rt") as f:
+        for l in f:
+            j = json.loads(l).get("j")
+            if j in h:
+                h[j] += 1
+    return h
+
+
+def arsip(tujuan, lama=None):
+    """Tulis arsip penuh r/n/g/v. MENOLAK (ArsipMenyusut) bila catatan lokal punya baris r/n/v LEBIH SEDIKIT dari penanda hasil pulih() / arsip sebelumnya,
+    atau dari arsip lama yang diberikan (lama = jalur arsip R2 yang baru diunduh): cache hilang + pulih gagal tidak boleh menimpa arsip lengkap dengan arsip hampir kosong."""
+    sekarang, minimal = hitung_catatan(), baca_tanda()
+    if lama and os.path.exists(lama):
+        for j, v in hitung_arsip(lama).items():
+            minimal[j] = max(minimal.get(j, 0), v)
+    kurang = {j: (sekarang[j], minimal[j]) for j in sekarang if sekarang[j] < minimal.get(j, 0)}
+    if kurang:
+        raise ArsipMenyusut(f"arsip baru lebih kecil dari yang dipulihkan/diketahui (jenis: (sekarang, minimal)) {kurang}; tidak ditulis, unggah R2 harus tidak jalan")
     n = 0
     with gzip.open(tujuan, "wt") as f:
-        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI)), ("g", baca_jsonl(GERBANG))):
+        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI)), ("g", baca_jsonl(GERBANG)), ("v", baca_jsonl(VONIS_BERKAS))):
             for r in baris:
                 f.write(json.dumps({"j": j, **r}, separators=(",", ":")) + "\n")
                 n += 1
+    tulis_tanda(sekarang)
     return n
 
 
@@ -398,8 +446,8 @@ def pulih(sumber):
     """Gabungkan arsip ke ramalan.jsonl / nilai.jsonl: tambah baris yang (kunci, mode)-nya belum ada. Mengembalikan (ramalan+, nilai+)."""
     os.makedirs(FOLDER, exist_ok=True)
     ada = {"r": {(r["kunci"], r["mode"]) for r in baca_jsonl(RAMALAN)}, "n": {(r["kunci"], r["mode"]) for r in baca_jsonl(NILAI)},
-           "g": {(r["kunci"], r["mode"]) for r in baca_jsonl(GERBANG)}}
-    tambah = {"r": [], "n": [], "g": []}
+           "g": {(r["kunci"], r["mode"]) for r in baca_jsonl(GERBANG)}, "v": {(r["kunci"], r["mode"]) for r in baca_jsonl(VONIS_BERKAS)}}
+    tambah = {"r": [], "n": [], "g": [], "v": []}
     with gzip.open(sumber, "rt") as f:
         for l in f:
             r = json.loads(l)
@@ -407,20 +455,45 @@ def pulih(sumber):
             if (r["kunci"], r["mode"]) not in ada[j]:
                 ada[j].add((r["kunci"], r["mode"]))
                 tambah[j].append(r)
-    for j, berkas in (("r", RAMALAN), ("n", NILAI), ("g", GERBANG)):
+    for j, berkas in (("r", RAMALAN), ("n", NILAI), ("g", GERBANG), ("v", VONIS_BERKAS)):
         with open(berkas, "a") as f:
             for r in tambah[j]:
                 f.write(json.dumps(r, separators=(",", ":")) + "\n")
+    tulis_tanda(hitung_catatan())  # penanda: jumlah sesudah pemulihan berhasil = batas bawah untuk arsip berikutnya
     return len(tambah["r"]), len(tambah["n"])  # vonis gerbang ("g") ikut dipulihkan tanpa dilaporkan: hanya penambah
 
 
 # ---------------- pra-registrasi go/no-go (audit metode 21 Okt 2026, §4.4 #10) ----------------
 # Ditulis 23 Okt 2026 SEBELUM data prospektif cukup untuk menilai. BEKU: jangan dilonggarkan; uji() menolak bila angkanya berubah, ringkas() menolak
-# menimpa prospektif.json yang kriterianya beda. Vonis dihitung dari metrik nyata kelompok sensor "N" (S-NPP, mode awal): lihat vonis_prospektif().
+# menimpa prospektif.json yang kriterianya beda, dan KRITERIA_SHA256 (hash kanonik angka beku) dicek uji() DAN ringkas() tanpa jalan pintas: mengubah angka berarti
+# mengubah KRITERIA dan konstanta hash sekaligus, yang terlihat di diff dan di tanggal_registrasi. Vonis dihitung dari metrik nyata kelompok sensor "N" (S-NPP, mode awal): lihat vonis_prospektif().
 KRITERIA = {"tanggal_registrasi": "2026-10-23", "n_dinilai_min": 200, "n_lolos_min": 20, "auc_bawah95_min": 0.80, "bss_min": 0.0,
             "aturan": "belum_cukup_data bila n_dinilai < n_dinilai_min atau n_lolos < n_lolos_min; lolos bila batas bawah selang 95% AUC >= auc_bawah95_min DAN "
-                      "Brier skill (terhadap laju dasar himpunan yang sama) > bss_min; selain itu gagal. Selang AUC = bootstrap persentil 2,5/97,5 (200 ulangan, biji 7)."}
+                      "Brier skill (terhadap laju dasar himpunan yang sama) > bss_min; selain itu gagal. Vonis lolos/gagal ditetapkan SEKALI saat n_dinilai_min dan n_lolos_min pertama kali "
+                      "terpenuhi (vonis_akhir, vonis.jsonl) dan tidak dihitung ulang.",
+            "metode_selang": "selang AUC = bootstrap persentil 2,5/97,5, 2000 ulangan, biji 7, resampel BERKELOMPOK per (minggu ISO t0, blok 1 derajat) karena catatan tak menyimpan id kompleks: "
+                             "ramalan di blok dan minggu yang sama (api yang sama, cuaca yang sama, hari-hari beruntun) saling bergantung; kelompok mingguan hanya MENGURANGI, tidak menghapus, "
+                             "dependensi antar-minggu (musim yang sama) sehingga selang tetap agak terlalu sempit. Metode ini diperkuat 23 Okt 2026 (semula 200 ulangan per titik); angka beku "
+                             "tak berubah. Kelompok sensor N21 memakai ambang yang SAMA tanpa registrasi terpisah (mewarisi pra-registrasi S-NPP; distribusinya belum diukur). "
+                             "aturan_vonis_v ada di luar hash: mengubahnya tidak mengubah angka beku, tetapi harus dicatat di sini.",
+            }
+ATURAN_VONIS_V = "1"  # versi aturan vonis (selang berkelompok minggu ISO x blok 1 derajat, vonis_akhir terkunci); DI LUAR hash agar hash tetap memverifikasi angka asli 23 Okt
+BEKU = ("tanggal_registrasi", "n_dinilai_min", "n_lolos_min", "auc_bawah95_min", "bss_min")  # angka yang dikunci hash; teks aturan/metode boleh diperjelas
+KRITERIA_SHA256 = "a03e5af65af8042ecc23b7d8cf08d3715a76750792525e965f90f8865263854d"
+
+
+def kriteria_sha(K):
+    """sha256 kanonik (json terurut, tanpa spasi) dari angka beku saja."""
+    import hashlib
+    return hashlib.sha256(json.dumps({k: K[k] for k in BEKU}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def pastikan_kriteria_beku():
+    """Tolak bila KRITERIA tidak cocok dengan hash terdaftar. Tidak ada jalan pintas lewat env."""
+    if kriteria_sha(KRITERIA) != KRITERIA_SHA256:
+        sys.exit(f"kriteria pra-registrasi beku tidak cocok dengan KRITERIA_SHA256 ({kriteria_sha(KRITERIA)}): tolak menulis")
 VONIS = ("belum_cukup_data", "lolos", "gagal")
+BOOT_AUC = 2000  # ulangan bootstrap selang AUC vonis (ECE tetap BOOT_B: dihitung ulang kalibrasi tiap ulangan)
 HARI_KESEHATAN = 7
 UMUR_TUA_JAM = 78  # = JEDA_NILAI: ramalan lebih tua dari ini seharusnya sudah dinilai
 
@@ -435,34 +508,65 @@ def bss(p, y):
     return 1 - (sum((a - b) ** 2 for a, b in zip(p, y)) / n) / klim if klim > 0 else None
 
 
-def auc_selang(p, y, b=BOOT_B, benih=7):
-    """(AUC, bawah95, atas95) bootstrap persentil; None bila satu kelas kosong."""
+def auc_selang(p, y, grup=None, b=BOOT_AUC, benih=7):
+    """(AUC, bawah95, atas95) bootstrap persentil; None bila satu kelas kosong. grup = label kelompok per titik (mis. (tanggal, sel 0,5)): bila ada, KELOMPOK diresampel
+    (dengan pengembalian) dan semua anggotanya ikut, sebab ramalan di hari dan sel cuaca yang sama saling bergantung; tanpa grup, per titik."""
     import gbdt as G
     n = len(y)
     a = G.auc(p, y) if 0 < sum(y) < n else None
     if a is None:
         return None
     rnd, v = random.Random(benih), []
+    if grup:
+        kel = {}
+        for i, g in enumerate(grup):
+            kel.setdefault(g, []).append(i)
+        daf = [kel[g] for g in sorted(kel, key=str)]
+        m = len(daf)
     for _ in range(b):
-        ix = [rnd.randrange(n) for _ in range(n)]
+        ix = [i for k in (daf[rnd.randrange(m)] for _ in range(m)) for i in k] if grup else [rnd.randrange(n) for _ in range(n)]
         yy = [y[i] for i in ix]
-        if 0 < sum(yy) < n:
+        if 0 < sum(yy) < len(yy):
             v.append(G.auc([p[i] for i in ix], yy))
     v.sort()
     return a, v[int(.025 * len(v))], v[min(len(v) - 1, int(.975 * len(v)))]
 
 
-def vonis_prospektif(p, y, K=KRITERIA):
+def vonis_prospektif(p, y, grup=None, K=KRITERIA):
     """(vonis, metrik) menurut KRITERIA beku. Metrik = angka yang dipakai menghakimi (selalu dilaporkan, juga saat belum cukup data)."""
     n, k = len(y), sum(y)
     m = {"n_dinilai": n, "n_lolos": k, "auc": None, "auc_bawah95": None, "auc_atas95": None, "bss": None}
-    sl = auc_selang(p, y) if n and 0 < k < n else None
+    sl = auc_selang(p, y, grup) if n and 0 < k < n else None
     if sl:
         m.update(auc=round(sl[0], 4), auc_bawah95=round(sl[1], 4), auc_atas95=round(sl[2], 4))
         m["bss"] = round(bss(p, y), 4)
     if n < K["n_dinilai_min"] or k < K["n_lolos_min"] or not sl:
         return "belum_cukup_data", m
     return ("lolos" if sl[1] >= K["auc_bawah95_min"] and m["bss"] > K["bss_min"] else "gagal"), m
+
+
+def kunci_vonis(kel, berjalan, metrik, kini, berkas=None, lama_doc=None):
+    """Vonis akhir TERKUNCI: ditetapkan sekali, saat vonis berjalan pertama kali lolos/gagal (n_dinilai_min dan n_lolos_min terpenuhi); sesudahnya dibaca dari
+    vonis.jsonl (append-only, ikut arsip) dan TIDAK dihitung ulang walau data bertambah. Bila vonis.jsonl tak punya kuncinya (cache + arsip R2 hilang) tetapi
+    prospektif.json LAMA (di CI berasal dari git = jangkar di luar cache) memuat vonis_akhir untuk kelompok ini, vonis itu dipulihkan ke vonis.jsonl dan dipakai,
+    BUKAN dihitung ulang dari data lain. -> {nilai, tanggal, n, ...} atau None."""
+    berkas = berkas or VONIS_BERKAS
+    kunci = f"vonis_{kel}"
+    ada = next((r for r in baca_jsonl(berkas) if r["kunci"] == kunci), None)
+    if ada is None and lama_doc:
+        lk = (lama_doc.get("vonis_akhir") if kel == "N" else ((lama_doc.get("per_sensor") or {}).get(kel) or {}).get("vonis_akhir"))
+        if isinstance(lk, dict) and lk.get("nilai") in ("lolos", "gagal"):
+            ada = {"kunci": kunci, "mode": "akhir", **lk, "dipulihkan_dari": "prospektif.json"}
+            os.makedirs(os.path.dirname(berkas), exist_ok=True)
+            with open(berkas, "a") as f:
+                f.write(json.dumps(ada, separators=(",", ":")) + "\n")
+    if ada is None and berjalan in ("lolos", "gagal"):
+        ada = {"kunci": kunci, "mode": "akhir", "nilai": berjalan, "tanggal": kini.isoformat()[:10], "n": metrik["n_dinilai"], "n_lolos": metrik["n_lolos"],
+               "auc_bawah95": metrik["auc_bawah95"], "bss": metrik["bss"]}
+        os.makedirs(os.path.dirname(berkas), exist_ok=True)
+        with open(berkas, "a") as f:
+            f.write(json.dumps(ada, separators=(",", ":")) + "\n")
+    return {k: ada[k] for k in ("nilai", "tanggal", "n", "n_lolos", "auc_bawah95", "bss") if k in ada} if ada else None
 
 
 def _waktu(s):
@@ -506,10 +610,18 @@ def blok(R, N, mode, kel):
     o["per_lahan"] = {st: {"dinilai": sum(1 for r, _ in dn if r["strata"] == st), "lolos": sum(1 for r, n in dn if r["strata"] == st and n["lolos"]),
                            "tepat": sum(1 for r, n in dn if r["strata"] == st and n["lolos"] and r["waspada"]),
                            "waspada": sum(1 for r, _ in dn if r["strata"] == st and r["waspada"])} for st in ("gambut", "mineral", "sabana")}
-    return o, p, y
+    grup = [(*dt.date.fromisoformat(r["t0"][:10]).isocalendar()[:2], math.floor(r["lat"]), math.floor(r["lon"])) for r, _ in dn]  # tanpa id kompleks: (minggu ISO, blok 1 derajat)
+    return o, p, y, grup
 
 
 def ringkas(kini=None):
+    pastikan_kriteria_beku()
+    lama = {}  # prospektif.json sebelumnya: jangkar vonis_akhir + pemeriksa kriteria. Ada tetapi tak terbaca = BERHENTI (bukan dianggap kosong)
+    if os.path.exists(RINGKAS):
+        try:
+            lama = json.load(open(RINGKAS))
+        except (OSError, ValueError) as e:
+            sys.exit(f"{RINGKAS} ada tetapi tak terbaca ({e}): berhenti, tidak ditimpa")
     kini = kini or dt.datetime.now(dt.timezone.utc)
     R = baca_jsonl(RAMALAN)
     semua_n = baca_jsonl(NILAI)
@@ -522,14 +634,16 @@ def ringkas(kini=None):
            "mode": {}, "per_sensor": {}}
     pu = {}
     for mode in ("awal", "ulang"):
-        out["mode"][mode], *pu[mode] = blok(R, N, mode, "N")
+        out["mode"][mode], *pu[mode] = blok(R, N, mode, "N")  # pu[mode] = [p, y, grup]
     for kel in ("N21", "peralihan"):
         ps = {"dicatat": sum(1 for r in R if kelompok_ramalan(r) == kel), "mode": {}}
         for mode in ("awal", "ulang"):
-            o, p, y = blok(R, N, mode, kel)
+            o, p, y, g = blok(R, N, mode, kel)
             ps["mode"][mode] = o
             if mode == "awal":
-                ps["vonis"], ps["metrik_vonis"] = vonis_prospektif(p, y)
+                ps["vonis_berjalan"], ps["metrik_vonis"] = vonis_prospektif(p, y, g)
+                ps["vonis_akhir"] = kunci_vonis(kel, ps["vonis_berjalan"], ps["metrik_vonis"], kini, lama_doc=lama) if kel == "N21" else None  # peralihan: campuran, tidak pernah divonis
+                ps["vonis"] = ps["vonis_akhir"]["nilai"] if ps["vonis_akhir"] else ps["vonis_berjalan"]
         out["per_sensor"][kel] = ps
     out["n_min"] = N_MIN_DINILAI
     A = out["mode"]["awal"]
@@ -563,18 +677,18 @@ def ringkas(kini=None):
     out["teruji_sensor_kini"] = bool(out["teruji"] and out["sensor_utama"]["kini"] == "N")
     # pra-registrasi go/no-go (kriteria beku) + kesehatan penilai
     out["kriteria"], out["tanggal_registrasi"] = dict(KRITERIA), KRITERIA["tanggal_registrasi"]
-    out["vonis"], out["metrik_vonis"] = vonis_prospektif(*pu["awal"])
+    out["vonis_berjalan"], out["metrik_vonis"] = vonis_prospektif(*pu["awal"])
+    out["vonis_akhir"] = kunci_vonis("N", out["vonis_berjalan"], out["metrik_vonis"], kini, lama_doc=lama)
+    out["vonis"] = out["vonis_akhir"]["nilai"] if out["vonis_akhir"] else out["vonis_berjalan"]  # terkunci sekali; vonis_berjalan hanya ditampilkan
     out["kesehatan"] = kesehatan(R, semua_n, kini)
     out["mulai"] = min((r["t0"] for r in R), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
     out["terbaru"] = [{"t0": r["t0"], "lat": r["lat"], "lon": r["lon"], "prov": r["prov"], "p": r["p"], "waspada": r["waspada"], "sensor_utama": r.get("sensor_utama", "N"),
                        "kelompok": kelompok_ramalan(r), "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
-    if os.path.exists(RINGKAS):
-        try:
-            lama = json.load(open(RINGKAS)).get("kriteria")
-        except (OSError, ValueError):
-            lama = None
-        if lama and lama != KRITERIA and not os.environ.get("PROSPEKTIF_KRITERIA_BARU"):
-            sys.exit(f"kriteria pra-registrasi beku berubah ({lama} -> {KRITERIA}); tolak menimpa {RINGKAS}")
+    lk = lama.get("kriteria")
+    if lk is not None and any(lk.get(k) != KRITERIA[k] for k in BEKU):
+        sys.exit(f"kriteria pra-registrasi beku berubah ({ {k: lk.get(k) for k in BEKU} } -> { {k: KRITERIA[k] for k in BEKU} }); tolak menimpa {RINGKAS}")
+    out["registrasi_pertama"] = KRITERIA["tanggal_registrasi"]  # selalu tanggal pra-registrasi (berkas lama tanpa kriteria = registrasi pertama, tanggal yang sama)
+    out["aturan_vonis_v"], out["kantong_min_n"] = ATURAN_VONIS_V, KANTONG_MIN_N
     json.dump(out, open(RINGKAS, "w"), ensure_ascii=False, separators=(",", ":"))
     log("ringkasan", json.dumps(out["mode"].get("awal", {}))[:300], "vonis", out["vonis"], "macet", out["kesehatan"]["macet"])
     return out
@@ -650,7 +764,7 @@ if __name__ == "__main__":
         # arsip: bolak-balik tidak menambah apa pun, sumber lama TIDAK menimpa baris yang sudah ada
         import tempfile
         with tempfile.TemporaryDirectory() as td:
-            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"))
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), VONIS_BERKAS=os.path.join(td, "v.jsonl"))
             open(RAMALAN, "w").write('{"kunci":"a","mode":"awal","p":0.1}\n')
             open(NILAI, "w").write('{"kunci":"a","mode":"awal","n72":3,"lolos":false}\n')
             arsip(os.path.join(td, "x.gz"))
@@ -715,7 +829,7 @@ if __name__ == "__main__":
         assert kesehatan([], [], kini) == {**kesehatan([], [], kini), "macet": False, "dicatat_7h": 0}
         # ringkas() menyeluruh di folder sementara: ramalan N21 tidak masuk metrik S-NPP, vonis & kesehatan ada, kriteria beku menolak ditimpa
         with tempfile.TemporaryDirectory() as td:
-            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), RINGKAS=os.path.join(td, "ringkas.json"))
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), RINGKAS=os.path.join(td, "ringkas.json"), VONIS_BERKAS=os.path.join(td, "v.jsonl"))
             def tulis_r(kunci, t0, p, y, kel=None):
                 r = {"kunci": kunci, "mode": "awal", "t0": t0, "terbit": t0, "p": p, "waspada": p >= .1, "strata": "mineral", "lat": -2.0, "lon": 114.0, "prov": "62"}
                 if kel:
@@ -738,9 +852,132 @@ if __name__ == "__main__":
                 raise AssertionError("kriteria beku harus ditolak")
             except SystemExit:
                 pass
+        # ---- hash kriteria beku (tanpa jalan pintas env) ----
+        assert kriteria_sha(KRITERIA) == KRITERIA_SHA256, "KRITERIA diubah tanpa mengubah KRITERIA_SHA256 (sengaja dibuat terlihat di diff)"
+        pastikan_kriteria_beku()
+        assert kriteria_sha({**KRITERIA, "n_dinilai_min": 150}) != KRITERIA_SHA256 and kriteria_sha({**KRITERIA, "auc_bawah95_min": .7}) != KRITERIA_SHA256
+        assert kriteria_sha({**KRITERIA, "aturan": "x", "metode_selang": "y"}) == KRITERIA_SHA256  # teks boleh diperjelas, angka tidak
+        os.environ["PROSPEKTIF_KRITERIA_BARU"] = "1"  # env lama tidak lagi berpengaruh
+        # ---- S1: menit dibulatkan ke bawah, deteksi S-NPP sebelum batas tak melompat ke sisi N21 ----
+        ak2 = SN.menit_akhir()
+        hs3 = {"acuan": (T0 + dt.timedelta(minutes=ak2) - dt.timedelta(seconds=24)).isoformat(), "wilayah": ["62|X|Y"],      # acuan = batas - 0,4 menit
+               "baris": [[-2.0, 114.0, 0.0, "N", 3.0, 1, 0, ""], [-2.0, 114.1, 0.0, "N21", 3.0, 1, 0, ""]]}
+        g4, _ = gabung([], hs3)
+        assert [(r[3], r[0]) for r in g4] == [("N", ak2 - 1)] and all(SN.baris_utama(r) for r in g4), g4                 # round() akan memberi menit batas (N21): salah
+        hs3["acuan"] = (T0 + dt.timedelta(minutes=ak2) + dt.timedelta(seconds=24)).isoformat()                           # batas + 0,4 menit
+        g5, _ = gabung([], hs3)
+        assert sorted((r[3], r[0]) for r in g5) == [("N", ak2), ("N21", ak2)] and [r[3] for r in g5 if SN.baris_utama(r)] == ["N21"], g5
+        # ---- S2/S3: bootstrap AUC 2000 ulangan, berkelompok ----
+        assert BOOT_AUC == 2000
+        rg = random.Random(5)
+        yg = [1 if rg.random() < .2 else 0 for _ in range(300)]
+        pg = [min(.99, .15 + .3 * v + rg.random() * .6) for v in yg]
+        gr = [(f"2026-11-{1 + i // 10:02d}", 0, 0) for i in range(300)]                  # 30 kelompok bergantung
+        a0_, l0, h0 = auc_selang(pg, yg)
+        a1_, l1, h1 = auc_selang(pg, yg, gr)
+        assert a0_ == a1_ and (h1 - l1) > 0 and l1 <= a1_ <= h1 and auc_selang(pg, yg, gr) == (a1_, l1, h1)
+        # ---- S4: vonis akhir terkunci sekali ----
+        with tempfile.TemporaryDirectory() as td:
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), RINGKAS=os.path.join(td, "ringkas.json"),
+                             VONIS_BERKAS=os.path.join(td, "v.jsonl"))
+            kini2 = dt.datetime(2026, 10, 28, tzinfo=dt.timezone.utc)
+            mt = {"n_dinilai": 250, "n_lolos": 30, "auc_bawah95": .9, "bss": .2}
+            assert kunci_vonis("N", "belum_cukup_data", mt, kini2) is None and not os.path.exists(VONIS_BERKAS)
+            ak_ = kunci_vonis("N", "lolos", mt, kini2)
+            assert ak_["nilai"] == "lolos" and ak_["tanggal"] == "2026-10-28" and ak_["n"] == 250
+            assert kunci_vonis("N", "gagal", {**mt, "n_dinilai": 900}, kini2 + dt.timedelta(days=9)) == ak_, "vonis akhir tidak boleh dihitung ulang"
+            assert len(baca_jsonl(VONIS_BERKAS)) == 1 and kunci_vonis("N21", "gagal", mt, kini2)["nilai"] == "gagal" and len(baca_jsonl(VONIS_BERKAS)) == 2
+            arsip(os.path.join(td, "v.gz"))
+            os.remove(VONIS_BERKAS)
+            pulih(os.path.join(td, "v.gz"))
+            assert len(baca_jsonl(VONIS_BERKAS)) == 2 and kunci_vonis("N", "gagal", mt, kini2)["nilai"] == "lolos"      # vonis ikut arsip & pulih
+            os.remove(VONIS_BERKAS)
+            # ringkas() menyeluruh: 260 ramalan N (30 api besar, terpisah baik) -> lolos terkunci; data buruk menyusul tidak mengubahnya
+            def isi(awal, akhir, t0s, bagus):
+                for i in range(awal, akhir):
+                    y = 1 if i % 8 == 0 else 0
+                    pq = (.7 if y else .05) + (i % 7) * .01 if bagus else (.3 if y else .35)
+                    r_ = {"kunci": f"k{i}", "mode": "awal", "t0": t0s, "terbit": t0s, "p": pq, "waspada": pq >= .1, "strata": "mineral", "lat": -2.0 + (i % 30) * .5, "lon": 110.0, "prov": "62"}
+                    open(RAMALAN, "a").write(json.dumps(r_) + "\n")
+                    open(NILAI, "a").write(json.dumps({"kunci": f"k{i}", "mode": "awal", "n72": 12 if y else 1, "lolos": bool(y), "dinilai": t0s}) + "\n")
+            isi(0, 260, "2026-10-10T00:00", True)
+            o1 = ringkas(kini=kini2)
+            assert o1["vonis_berjalan"] == "lolos" and o1["vonis"] == "lolos" and o1["vonis_akhir"]["nilai"] == "lolos" and o1["vonis_akhir"]["n"] == 260, o1["metrik_vonis"]
+            assert o1["registrasi_pertama"] == "2026-10-23"                                                          # berkas tanpa kriteria sebelumnya = registrasi pertama
+            isi(260, 700, "2026-10-12T00:00", False)
+            o2 = ringkas(kini=kini2 + dt.timedelta(days=1))
+            assert o2["vonis_akhir"] == o1["vonis_akhir"] and o2["vonis"] == "lolos" and o2["registrasi_pertama"] == "2026-10-23" and o2["metrik_vonis"]["n_dinilai"] == 700
+            assert o2["vonis_berjalan"] in VONIS
+            # ---- jangkar luar: vonis.jsonl hilang (cache + R2 gagal) tetapi prospektif.json lama (dari git) memuat vonis_akhir -> TETAP yang lama ----
+            os.remove(VONIS_BERKAS)
+            isi(700, 900, "2026-10-14T00:00", False)
+            o3 = ringkas(kini=kini2 + dt.timedelta(days=3))
+            assert o3["vonis_akhir"] == o1["vonis_akhir"] and o3["vonis"] == "lolos", o3["vonis_akhir"]
+            rv_ = baca_jsonl(VONIS_BERKAS)
+            assert len(rv_) == 1 and rv_[0]["dipulihkan_dari"] == "prospektif.json" and rv_[0]["tanggal"] == "2026-10-28"
+            # tanpa jangkar (berkas lama tanpa vonis_akhir) dan vonis.jsonl kosong -> ditetapkan baru dari data (registrasi pertama)
+            os.remove(VONIS_BERKAS)
+            json.dump({k: v for k, v in o3.items() if k != "vonis_akhir"}, open(RINGKAS, "w"))
+            assert ringkas(kini=kini2 + dt.timedelta(days=4))["vonis_akhir"]["tanggal"] == "2026-11-01"
+            # prospektif.json ada tetapi tak terbaca -> berhenti, bukan dianggap kosong
+            open(RINGKAS, "w").write("{rusak")
+            try:
+                ringkas(kini=kini2)
+                raise AssertionError("harus berhenti")
+            except SystemExit:
+                pass
+            os.remove(RINGKAS)
+        # ---- arsip tidak boleh menyusut (cache hilang + pulih gagal) ----
+        with tempfile.TemporaryDirectory() as td:
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), RINGKAS=os.path.join(td, "ringkas.json"),
+                             VONIS_BERKAS=os.path.join(td, "v.jsonl"))
+            for i in range(5):
+                open(RAMALAN, "a").write(json.dumps({"kunci": f"r{i}", "mode": "awal", "p": .1}) + "\n")
+            open(NILAI, "a").write(json.dumps({"kunci": "r0", "mode": "awal", "n72": 3, "lolos": False}) + "\n")
+            open(VONIS_BERKAS, "a").write(json.dumps({"kunci": "vonis_N", "mode": "akhir", "nilai": "lolos", "tanggal": "2026-10-28", "n": 250}) + "\n")
+            lengkap = os.path.join(td, "lengkap.gz")
+            assert arsip(lengkap) == 7 and baca_tanda() == {"r": 5, "n": 1, "v": 1}
+            # cache hilang: catatan kosong, penanda ikut hilang, tetapi arsip R2 yang baru diunduh (lama) diberikan -> ditolak
+            for b in (RAMALAN, NILAI, VONIS_BERKAS, tanda_berkas()):
+                os.remove(b)
+            try:
+                arsip(os.path.join(td, "kosong.gz"), lengkap)
+                raise AssertionError("arsip menyusut harus ditolak")
+            except ArsipMenyusut:
+                pass
+            assert not os.path.exists(os.path.join(td, "kosong.gz"))
+            # cache sebagian hilang, penanda tersisa dari pulih() -> ditolak tanpa arsip lama
+            assert pulih(lengkap) == (5, 1) and baca_tanda() == {"r": 5, "n": 1, "v": 1}
+            os.remove(RAMALAN)
+            try:
+                arsip(os.path.join(td, "kurang.gz"))
+                raise AssertionError("arsip menyusut harus ditolak")
+            except ArsipMenyusut:
+                pass
+            # lama lebih kecil dari lokal: boleh
+            for i in range(5):
+                open(RAMALAN, "a").write(json.dumps({"kunci": f"r{i}", "mode": "awal", "p": .1}) + "\n")
+            open(RAMALAN, "a").write(json.dumps({"kunci": "r9", "mode": "awal", "p": .1}) + "\n")
+            assert arsip(os.path.join(td, "lebih.gz"), lengkap) >= 8 and baca_tanda()["r"] == 6
+        # ---- jangkar hash di luar berkas: KRITERIA beku sama dengan commit pendaftaran 409f31f (dilewati bila git/commit tak tersedia) ----
+        try:
+            import re, subprocess
+            asli = subprocess.run(["git", "show", "409f31f:scripts/sebaran/prospektif.py"], cwd=os.path.dirname(DIR), capture_output=True, text=True, timeout=30)
+            m_ = re.search(r'KRITERIA = \{"tanggal_registrasi": "([^"]+)", "n_dinilai_min": (\d+), "n_lolos_min": (\d+), "auc_bawah95_min": ([\d.]+), "bss_min": ([\d.]+)', asli.stdout) if asli.returncode == 0 else None
+        except (OSError, subprocess.SubprocessError):
+            m_ = None
+        if m_:
+            assert (m_.group(1), int(m_.group(2)), int(m_.group(3)), float(m_.group(4)), float(m_.group(5))) == tuple(KRITERIA[k] for k in BEKU), "KRITERIA beku beda dari commit pendaftaran 409f31f"
+            assert kriteria_sha({k: v for k, v in zip(BEKU, (m_.group(1), int(m_.group(2)), int(m_.group(3)), float(m_.group(4)), float(m_.group(5))))}) == KRITERIA_SHA256
+        else:
+            print("catatan: jangkar commit 409f31f tidak tersedia (git/clone dangkal); uji jangkar luar dilewati", file=sys.stderr)
         print("ok")
     elif sys.argv[1:2] == ["arsip"]:
-        print("arsip", arsip(sys.argv[2]), "baris")
+        try:
+            print("arsip", arsip(sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None), "baris")
+        except ArsipMenyusut as e:
+            print("ARSIP DITOLAK:", e, file=sys.stderr)
+            sys.exit(3)  # kode keluar 3 khusus: langkah bash -e berhenti sebelum `wrangler r2 object put`
     elif sys.argv[1:2] == ["pulih"]:
         print("pulih (ramalan, nilai):", pulih(sys.argv[2]) if os.path.exists(sys.argv[2]) else "sumber tidak ada, dilewati")
     else:

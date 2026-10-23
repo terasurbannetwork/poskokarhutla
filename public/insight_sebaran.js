@@ -14,6 +14,7 @@ SEB.muat = () => SEB.janji ||= Promise.all(["data/musim_awal.json", "data/sebara
   .then(([musim, dorong, kasus, model, galat, prospektif, gerbang]) => { SEB.d = {musim, dorong, kasus, model, galat, prospektif, gerbang}; document.querySelectorAll('[data-ex^="seb"]').forEach(b => { b.innerHTML = Insight.gambar(b.dataset.ex); }); });
 /* Gerbang "harus menang lawan pembanding sederhana" (scripts/sebaran/gerbang.py): gagal-tertutup. Berkas hilang/rusak -> exhibit model disembunyikan;
    boleh_tampil bukan true -> subjudul diberi label eksperimental. Prospektif lolos juga wajib untuk "lolos" (vonis pra-registrasi). */
+const ada = kunci => !!SEB.d?.gerbang?.[kunci] && typeof SEB.d.gerbang[kunci] === "object"; /* kunci gerbang hilang/berkas rusak = exhibit disembunyikan (gagal-tertutup, sama dengan gerbang.py) */
 const eks = kunci => { const g = SEB.d?.gerbang?.[kunci], ok = g?.boleh_tampil === true && (kunci !== "lolos" || SEB.d?.prospektif?.vonis === "lolos"); return ok ? "" : "[eksperimental, belum mengalahkan pembanding] "; };
 const tunggu = judul => { SEB.muat(); return `<article class="ex"><h3>${esc(judul)}</h3><p class="unit">Memuat data…</p></article>`; };
 const pc = (v, d = 0) => v == null ? "–" : fmt(Math.round(v * 100 * 10 ** d) / 10 ** d) + "%";
@@ -72,7 +73,7 @@ Insight.exSebDorong = function () {
 
 /* ---------- Uji pada kejadian lalu ---------- */
 Insight.exSebUji = function () {
-  const K = SEB.d?.kasus; if (!SEB.d) return tunggu("Uji model pada kejadian lalu"); if (!K || !SEB.d.gerbang) return "";
+  const K = SEB.d?.kasus; if (!SEB.d) return tunggu("Uji model pada kejadian lalu"); if (!K || !ada("model_sel")) return "";
   const R = K.ringkasan, kel = this.st.sebUjiKelas, daf = K.kasus.map((x, i) => ({...x, i})).filter(x => !kel || x.kelas === kel);
   const c = v => v ? `${fmt(Math.round(v[0] * 100) / 100)} <small>(${fmt(Math.round(v[1] * 100) / 100)}–${fmt(Math.round(v[2] * 100) / 100)})</small>` : "–";
   const pemb = Object.entries(R.model_lain || {}).filter(([nm]) => !nm.endsWith("_mentah")).sort((a, b) => (b[1].f1_24?.[0] || 0) - (a[1].f1_24?.[0] || 0));
@@ -114,7 +115,7 @@ function dialogKasus(i) {
 
 /* ---------- Peringatan dini: akan membesar ---------- */
 Insight.exSebLolos = function () {
-  const M = SEB.d?.model; if (!SEB.d) return tunggu("Peringatan dini: titik panas yang akan membesar"); const L = M?.lolos; if (!L?.laporan || !SEB.d.gerbang) return "";
+  const M = SEB.d?.model; if (!SEB.d) return tunggu("Peringatan dini: titik panas yang akan membesar"); const L = M?.lolos; if (!L?.laporan || !ada("lolos")) return "";
   const Pr = SEB.d.prospektif?.mode?.awal, rows = L.laporan;
   const lama = rows.find(r => r.himpunan.startsWith("123") && r.model.startsWith("lama")), baru = rows.find(r => r.himpunan.startsWith("123") && r.model === "baru");
   const tabel = `<div class="tw"><table><thead><tr><th>Himpunan</th><th>Model</th><th class="n">Titik</th><th class="n">Membesar</th><th class="n">AUC</th><th class="n">Api besar tertangkap</th><th class="n">Tanda yang benar</th><th class="n">Alarm palsu per api kecil</th></tr></thead><tbody>
@@ -159,11 +160,11 @@ Insight.exSebModel = function () {
     <p style="margin:0;color:var(--ink2);font-size:13px;text-align:center;max-width:52ch">Peta peluang 72 jam, luas, dan desa/gambut yang terkena untuk titik panas mana pun sedang disiapkan.</p></div></article>`;
 };
 Insight.exSebModelLama = function () {
-  const M = SEB.d?.model; if (!SEB.d) return tunggu("Kalau ada titik di X"); if (!M || !SEB.d.gerbang) return "";
+  const M = SEB.d?.model; if (!SEB.d) return tunggu("Kalau ada titik di X"); if (!M || !ada("model_sel")) return "";
   const K = M.kinerja_uji || {};
   const isi = `<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-sebke="sim">Buka Simulasi</button>${typeof Cerita !== "undefined" ? `<button class="btn" data-sebke="cerita">Coba di peta (cerita bab 5)</button>` : ""}</div>`;
   return this.ex(`Kalau besok ada titik panas di X: model data memberi ${this.hl("peta peluang 72 jam")}, luas dengan rentang, dan desa/gambut yang terkena`,
-    eks("model_sel") + `Dilatih dari 12 musim VIIRS; uji 2024–2026: F1 sel baru 24 jam ${K.f1_24 ? fmt(Math.round(K.f1_24[0] * 100) / 100) : "–"}, AUC membesar ${K.lepas_auc != null ? fmt(Math.round(K.lepas_auc * 100) / 100) : "–"}`,
+    eks("model_sel") + `Dilatih dari 12 musim VIIRS; uji 2024–2026: F1 sel baru 24 jam ${K.f1_24 ? fmt(Math.round(K.f1_24[0] * 100) / 100) : "–"}; ${eks("model_sel")}AUC membesar (cara lama, Monte Carlo) ${K.lepas_auc != null ? fmt(Math.round(K.lepas_auc * 100) / 100) : "–"}`,
     "pilih cluster di Simulasi lalu centang 'Model data (dilatih)', atau klik sembarang titik di cerita bab 5", isi,
     `${M.pohon.length} pohon keputusan, ${M.fitur.length} variabel (cuaca per jam, FWI, lahan, konsesi, kanal, jalan, desa). Peluang per jam = pembagian luas harian menurut ISI per jam (VIIRS hanya melihat ±2 kali sehari).`);
 };

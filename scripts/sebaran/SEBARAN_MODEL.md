@@ -44,6 +44,8 @@ Port Python `simfisika.py` sudah memakai 50 (`efek_bui`). Bila index.html diperb
   maks harus < 1e-4) + penolakan masukan di luar jangkauan.
 - `python3 scripts/sebaran/uji_js.py sensor` — sebagian yang tidak butuh data mentah: VIIRS utama sadar waktu (S-NPP/N21) Python ↔ JS.
 - `python3 scripts/sebaran/{sensor,prospektif,jejak,gerbang}.py uji` — sensor utama, pra-registrasi/vonis/kesehatan prospektif, kontrak jejak, gerbang pembanding.
+- Pra-registrasi prospektif: angka beku dikunci `KRITERIA_SHA256` (dicek `uji` dan `ringkas()`, tanpa jalan pintas env); selang AUC bootstrap 2000 ulangan berkelompok
+  per (tanggal, sel 0,5 derajat); `vonis_akhir` ditetapkan sekali saat n_dinilai >= 200 dan n_lolos >= 20 (tersimpan di `vonis.jsonl`, ikut arsip), `vonis_berjalan` hanya tampilan.
 - `python3 scripts/sebaran/gerbang.py` menulis `public/data/gerbang_model.json` (boleh_tampil per keluaran: model_sel, mesin_fisika, jejak_api, lolos). Jalankan ulang
   setiap `sebaran_kasus.json`/`model_sebaran.json`/`prospektif.json` berubah. Pembaca gagal-tertutup (hilang/rusak = sembunyikan).
 - `public/_uji_model.html` dipakai sekali di peramban lalu dihapus (lihat RISET-SEBARAN.md).
