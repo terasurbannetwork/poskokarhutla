@@ -72,6 +72,7 @@ uji("pemirsa: tab miliknya terbuka dengan data-pemirsa-tab dan no-store; tab dan
   for (const j of ["/", "/peta", "/insight", "/sim/K0001", "/laporan", "/banjir"]) {
     const r = await situs(j, {cookie}); assert.equal(r.status, 303, j); assert.equal(r.headers.get("location"), "/berita", j);
   }
+  const dok = await situs("/api", {cookie}); assert.equal(dok.status, 200, "pemirsa boleh membaca dokumentasi /api"); assert.match(dok.headers.get("cache-control"), /no-store/); await dok.arrayBuffer();
   const ad = await situs("/admin/statistik", {cookie}); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /^\/admin\/masuk/);
   assert.equal((await api("GET", "/api/pemirsa/admin/daftar", undefined, {cookie})).s, 403, "pemirsa bukan admin");
   const tanpa = await situs("/berita"); assert.equal(tanpa.status, 303); assert.match(tanpa.headers.get("location"), /^\/admin\/masuk/);

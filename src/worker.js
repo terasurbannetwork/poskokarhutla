@@ -690,9 +690,9 @@ export default {
     if (url.pathname === "/api/v1" || url.pathname.startsWith("/api/v1/")) return layaniApiV1(req, env, ctx, url);
     if (url.pathname === "/mcp" || url.pathname === "/mcp/") return layaniMcp(req, env, ctx, url);   // server MCP remote (src/mcp.js), juga di semua host
     if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
-      /* dokumentasi di centurisk97.id hanya untuk admin yang masuk (pemilik 23 Okt 2026); endpoint /api/v1 dan /mcp tetap terbuka */
+      /* dokumentasi di centurisk97.id hanya untuk yang masuk: admin atau akun pemirsa (pemilik 23 Okt 2026, akun mitra); endpoint /api/v1 dan /mcp tetap terbuka */
       const kunci = HOST_TERKUNCI.has(url.hostname);
-      if (kunci && !await adminOK(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
+      if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
       const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
       return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": kunci ? "private, no-store" : "public, max-age=300", "x-content-type-options": "nosniff"}});
     }
