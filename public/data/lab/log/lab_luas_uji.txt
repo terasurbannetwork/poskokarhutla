@@ -1,0 +1,2 @@
++ timeout 2700 python3 scripts/data/lab_luas.py uji
+lab_luas uji ok (13.6 dtk)
