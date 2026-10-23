@@ -6,6 +6,7 @@
 (() => {
   "use strict";
   const X0 = 94.5, Y1 = 6.5, SEL = 0.05, TAHUN_AKTIF = 10, EL_NINO = [2004, 2006, 2009, 2015, 2019, 2023];   /* El Niño lemah sampai kuat sejak 2003 (2004, 2006, 2019 lemah; 2015, 2023 kuat): rasionya didominasi 2015 */
+  const namaProvLokal = k => (typeof S !== "undefined" && S?.meta?.provinsi?.[k]) || k;   // nama provinsi dari meta halaman bila ada
   const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const ARAH = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -128,7 +129,7 @@
     if (radius >= 5) saran.push(`Siagakan desa dan kebun dalam radius ${ang(Math.ceil(radius))} km; sejauh itu api di sini biasa meluas.`);
     if (R.k >= 2) saran.push("Api di sini sering kambuh: lanjutkan mop-up dan patroli minimal 14 hari setelah dinyatakan padam.");
     if (a.tahunIni.ini >= 20 && a.tahunIni.rLalu >= 1 && a.tahunIni.ini / a.tahunIni.rLalu >= 2) saran.push(`Tahun ini sudah ${kali(a.tahunIni.ini / a.tahunIni.rLalu)} kali rata-rata: tambah alokasi regu dan anggaran untuk lokasi ini.`);
-    if (a.sisaMusim > 14) saran.push(`Jaga kesiagaan sampai ${tglDoy(R.s[1])}; musim di sini biasanya belum berakhir sebelum itu.`);
+    if (a.sisaMusim > 14) saran.push(`Jaga kesiagaan sampai ${tglDoy(akhirD)}; musim di sini biasanya belum berakhir sebelum itu.`);
     if (a.aktif >= Math.ceil(a.penuh / 3)) saran.push(`Lokasi langganan: masukkan ke patroli pencegahan rutin mulai ${R.s ? BULAN[new Date(Date.UTC(2026, 0, Math.max(1, R.s[0] - 30))).getUTCMonth()] : "Juni"}, sebulan sebelum musim di sini biasanya mulai.`);
     if (a.rs >= 5 && aktif.length <= 2) saran.push("Api besar di tempat yang jarang terbakar: periksa izin dan pembukaan lahan baru bersama Gakkum dan pemilik lahan.");
     if (a.tren === "naik") saran.push(`Kebakaran di sini makin sering ${a.trenW} tahun terakhir: cari penyebabnya (pembukaan lahan, kanal baru) bersama pemilik lahan.`);
@@ -167,8 +168,12 @@
     if (!H?.nasional) return null;
     const unit = [["Kec.", H.kec?.[`${p.prov}|${p.kab}|${p.kec}`], p.kec], ["Kab.", H.kab?.[`${p.prov}|${p.kab}`], p.kab], ["Prov.", H.prov?.[p.prov], null]]
       .find(([, u]) => u) || ["nasional", H.nasional, null];
-    const [lv, u, nama] = unit, out = {tingkat: nama ? `${lv} ${nama}` : lv === "Prov." ? "provinsi" : "nasional"};
-    const hh = Math.max(1, Math.round(h || 1));
+    const [lv, u, nama] = unit, hh = Math.max(1, Math.round(h || 1));
+    /* label = tingkat terdalam yang datanya benar-benar berbobot (n/(n+k) >= 0,3); audit: sumbangan kecamatan/kabupaten sering kecil */
+    const kh = H.k?.[Math.min(hh, 14)] || {}, bobot = (x, kk) => (x?.n?.[Math.min(hh, 14) - 1] || 0) / ((x?.n?.[Math.min(hh, 14) - 1] || 0) + (kk ?? 1e9));
+    const lab = [["Kec.", H.kec?.[`${p.prov}|${p.kab}|${p.kec}`], p.kec, kh.c], ["Kab.", H.kab?.[`${p.prov}|${p.kab}`], p.kab, kh.a], ["Prov.", H.prov?.[p.prov], namaProvLokal(p.prov), kh.p]]
+      .find(([, x, , kk]) => x && bobot(x, kk) >= 0.3);
+    const out = {tingkat: lab ? `${lab[0]} ${lab[2] || ""}`.trim() : "nasional"};
     if (hh <= 14) {
       const dInduk = u.d?.[hh - 1] ?? H.nasional.d[hh - 1], kw = H.k?.[hh]?.w ?? 1e9, rw = (rec?.r || []).filter(v => v >= hh);
       const B = rw.length ? (rw.length * Math.log(median(rw)) + kw * Math.log(dInduk)) / (rw.length + kw) : Math.log(dInduk);
@@ -185,7 +190,7 @@
   function wilayahBaris(kec, kab, prov) {
     const TR = {naik: "naik", turun: "turun", datar: "relatif sama"};
     return [["Kecamatan", kec], ["Kabupaten", kab], ["Provinsi", prov]].filter(([, r]) => r).map(([t, r]) => ({
-      tingkat: t, nama: r.nama, m: r.m, rk: r.rk, el: r.el, tr: r.tr ? TR[r.tr] + (r.rt && r.tr !== "datar" ? ` ${kali(r.rt)}×` : "") : null,
+      tingkat: t, nama: r.nama, m: r.m, rk: r.rk, el: r.m != null && r.m * 23 < 60 ? null : r.el,   /* < 60 titik MODIS dalam 23 tahun: rasio El Niño terlalu goyang */ tr: r.tr ? TR[r.tr] + (r.rt && r.tr !== "datar" ? ` ${kali(r.rt)}×` : "") : null,
       ini: r.yd && r.yd[1] >= 1 && r.yd[0] >= 20 ? r.yd[0] / r.yd[1] : null}));
   }
 
@@ -205,7 +210,7 @@
     const mae = l.map(x => x.mae), pemb = l.map(x => x.mae_pembanding);
     const rg = xs => Math.min(...xs) === Math.max(...xs) ? ang(xs[0], 1) : `${ang(Math.min(...xs), 1)}–${ang(Math.max(...xs), 1)}`;
     const HL = u.hierarki?.lama && Object.values(u.hierarki.lama), HM = u.hierarki?.musim;
-    const teksH = HL?.length ? ` Model bertingkat (kecamatan, kabupaten, provinsi) ${u.hierarki.lama_unggul_hierarki ? "lebih tepat" : "tidak lebih tepat"}: lama meleset ${rg(HL.map(x => x.mae_hierarki))} hari vs ${rg(HL.map(x => x.mae_nasional))} hari median nasional${HM ? `; akhir musim ${ang(HM.mae_hierarki, 1)} vs ${ang(HM.mae_mentah, 1)} hari` : ""}${u.hierarki.lama_unggul_hierarki ? ", jadi model ini yang dipakai" : ""}.` : "";
+    const teksH = HL?.length ? ` Model bertingkat (kecamatan, kabupaten, provinsi) ${u.hierarki.lama_unggul_hierarki ? "lebih tepat" : "tidak lebih tepat"}: lama meleset ${rg(HL.map(x => x.mae_hierarki))} hari vs ${rg(HL.map(x => x.mae_nasional))} hari median nasional${HM ? `; akhir musim ${ang(HM.mae_hierarki, 1)} vs ${ang(HM.mae_mentah, 1)} hari` : ""}${u.hierarki.lama_unggul_hierarki ? ", jadi model ini yang dipakai" : ""}. Diuji hanya di dua musim El Niño (2019, 2023) dan umur api 3 dan 7 hari; selisihnya kecil.` : "";
     const E = u.el_nino, el = E && Object.values(E.lama || {}), em = E?.musim;
     const teksEl = el?.length ? ` Di musim El Niño, memakai musim El Niño sebelumnya saja: lama meleset ${rg(el.map(x => x.mae_analog))} hari vs ${rg(el.map(x => x.mae_umum))} hari dengan semua tahun${em ? `; akhir musim ${ang(em.mae_analog)} vs ${ang(em.mae_umum)} hari` : ""} (kasus yang sama).` : "";
     const nas = l.map(x => x.mae_nasional).filter(x => x != null);

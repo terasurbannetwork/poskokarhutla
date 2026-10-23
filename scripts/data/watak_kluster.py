@@ -47,8 +47,15 @@ def bertingkat(H, rec, p, h):
             break
     else:
         lv, u, nama = "nasional", H["nasional"], None
-    out = {"tingkat": f"{lv} {nama}" if nama else ("provinsi" if lv == "Prov." else "nasional")}
     hh = max(1, bulat(h or 1))
+    # label = tingkat terdalam yang berbobot (n/(n+k) >= 0,3), sama dengan layar (audit validasi-model 23 Okt 2026)
+    kh, i = (H.get("k") or {}).get(str(min(hh, 14))) or {}, min(hh, 14) - 1
+    bobot = lambda x, kk: ((x or {}).get("n") or [0] * 14)[i] / (((x or {}).get("n") or [0] * 14)[i] + (kk if kk is not None else 1e9))
+    lab = next((f"{l} {n_}".strip() for l, x, n_, kk in (
+        ("Kec.", (H.get("kec") or {}).get(f"{p.get('prov')}|{p.get('kab')}|{p.get('kec')}"), p.get("kec"), kh.get("c")),
+        ("Kab.", (H.get("kab") or {}).get(f"{p.get('prov')}|{p.get('kab')}"), p.get("kab"), kh.get("a")),
+        ("Prov.", (H.get("prov") or {}).get(p.get("prov")), p.get("prov"), kh.get("p"))) if x and bobot(x, kk) >= 0.3), "nasional")
+    out = {"tingkat": lab}
     if hh <= 14:
         d = (u.get("d") or [None] * 14)[hh - 1] or H["nasional"]["d"][hh - 1]
         kw = (H.get("k", {}).get(str(hh)) or {}).get("w", 1e9)
@@ -161,14 +168,16 @@ def uji():
     assert watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False)["sisa"] is None
     assert watak({"y": [1, 0] * 7 + [0], "r": []}, 2012, "2026-10-12", 10, 1)["rt"] == 1, "rata 0,5 harus jadi 1 (JS Math.round)"
     # bertingkat: sama dengan uji JS (tests/agen/riwayat-sel.test.mjs)
-    H = {"nasional": {"d": [6] * 14, "s": 305}, "prov": {"62": {"d": [8] * 14, "s": 300}}, "kab": {"62|Seruyan": {"d": [10] * 14, "s": 298}},
-         "kec": {"62|Seruyan|Seruyan Hilir": {"d": [12] * 14, "s": 296}}, "k": {"3": {"w": 4}, "musim": {"w": 4}}}
+    H = {"nasional": {"d": [6] * 14, "s": 305}, "prov": {"62": {"d": [8] * 14, "s": 300, "n": [500] * 14}}, "kab": {"62|Seruyan": {"d": [10] * 14, "s": 298, "n": [60] * 14}},
+         "kec": {"62|Seruyan|Seruyan Hilir": {"d": [12] * 14, "s": 296, "n": [40] * 14}}, "k": {"3": {"w": 4, "p": 4, "a": 64, "c": 64}, "musim": {"w": 4}}}
     pp = {"prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir"}
     b = bertingkat(H, {"r": [1, 2], "y": [0, 0]}, pp, 3)
     assert (b["tingkat"], b["sisa"], b["akhir"]) == ("Kec. Seruyan Hilir", 9, 296), b
     assert round(math.exp((4 * math.log(20) + 4 * math.log(12)) / 8), 1) == 15.5
     assert bertingkat(H, {"r": []}, {**pp, "kec": "Lain"}, 3)["tingkat"] == "Kab. Seruyan"
     assert bertingkat(None, {}, pp, 3) is None
+    H2 = json.loads(json.dumps(H)); H2["kec"]["62|Seruyan|Seruyan Hilir"]["n"] = [5] * 14; H2["kab"]["62|Seruyan"]["n"] = [5] * 14
+    assert bertingkat(H2, {"r": []}, pp, 3)["tingkat"].startswith("Prov."), "kecamatan berbobot kecil tidak boleh jadi label"
     w = watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False, hier={**b, "sisa_ok": False, "akhir_ok": False})
     assert w["sisa"] is None and w["akhir"] == "2026-11-01", "bertingkat yang tidak lolos uji DITOLAK"
     w = watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False, hier={**b, "sisa_ok": True, "akhir_ok": True})

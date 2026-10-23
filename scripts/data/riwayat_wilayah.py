@@ -245,7 +245,7 @@ def wilayah_main(sel, selm, th1, meta, df):
     df.update({"m": "rata-rata titik MODIS per tahun penuh (rank dasar)",
                "rk": "[peringkat m di antara unit saudara dalam induk yang sama (1 = terbanyak), jumlah saudara bertitik]; kecamatan: saudara = semua kecamatan bertitik dalam kabupaten, sebelum saringan >= " + str(MIN_KEC) + " titik",
                "er": "el unit dibagi el induk (kecamatan -> kabupaten, kabupaten -> provinsi, provinsi -> seluruh Indonesia); null bila salah satu null/0",
-               "kunci": "prov: kode Kemendagri 2 digit; kab: 'kode prov|nama kab'; kec (kec_<prov>.json): 'nama kab|nama kec' (poligon batas tidak memuat kode kab/kec)",
+               "kunci": "prov: kode Kemendagri 2 digit; kab: 'kode prov|nama kab'; kec (kec_<prov>.json): 'kode prov|nama kab|nama kec' (poligon batas tidak memuat kode kab/kec)",
                "sel": "sel 0,01 derajat berposisi rata-rata titik, satu kecamatan per sel; sel di luar semua poligon ditolak"})
     m2 = {**meta, "definisi": df}
     nas = [Akum(ny), Akum(nym)]

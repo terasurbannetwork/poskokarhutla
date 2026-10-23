@@ -392,8 +392,11 @@ def hierarki_uji(kasus, musim, bhn, nas, rng):
         gm = [abs(k[3] - k[4]) for k in xs]
         vs_nas = selang_pasang([(k[0], a - b) for k, (_, a), b in zip(xs, gh, gn)], rng)
         vs_m = selang_pasang([(k[0], a - b) for k, (_, a), b in zip(xs, gh, gm)], rng)
+        # tambahan audit (bukan kriteria terdaftar): blok provinsi x tahun, lebih konservatif karena jendela bertetangga berkorelasi
+        vs_pt = selang_pasang([((prov(k[0], k[1]), k[1]), a - b) for k, (_, a), b in zip(xs, gh, gn)], rng)
         out["lama"][str(h)] = {"n": len(xs), "mae_hierarki": round(st.mean(a for _, a in gh), 2), "mae_nasional": round(st.mean(gn), 2), "mae_mentah": round(st.mean(gm), 2),
-                               "selisih_nasional_ci95": [round(vs_nas[1], 2), round(vs_nas[2], 2)], "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)]}
+                               "selisih_nasional_ci95": [round(vs_nas[1], 2), round(vs_nas[2], 2)], "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)],
+                               "selisih_nasional_ci95_blok_prov_tahun": [round(vs_pt[1], 3), round(vs_pt[2], 3)]}
         unggul.append(vs_nas[2] < 0)
         for k, (_, a), b, c in zip(xs, gh, gn, gm):
             prb.setdefault(prov(k[0], k[1]), {}).setdefault(f"lama{h}", []).append((b, c, a))
@@ -417,8 +420,10 @@ def hierarki_uji(kasus, musim, bhn, nas, rng):
         gn = [abs(dasar - m[1]) for _, _, m in musim]
         vs_m = selang_pasang([(x[0], a - b) for x, a, b in zip(musim, gh, gm)], rng)
         vs_n = selang_pasang([(x[0], a - b) for x, a, b in zip(musim, gh, gn)], rng)
+        vs_mpt = selang_pasang([((prov(x[0], x[1]), x[1]), a - b) for x, a, b in zip(musim, gh, gm)], rng)
         out["musim"] = {"n": len(musim), "mae_hierarki": round(st.mean(gh), 2), "mae_mentah": round(st.mean(gm), 2), "mae_nasional": round(st.mean(gn), 2),
-                        "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)], "selisih_nasional_ci95": [round(vs_n[1], 2), round(vs_n[2], 2)]}
+                        "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)], "selisih_nasional_ci95": [round(vs_n[1], 2), round(vs_n[2], 2)],
+                        "selisih_mentah_ci95_blok_prov_tahun": [round(vs_mpt[1], 3), round(vs_mpt[2], 3)]}
         out["musim_unggul_hierarki"] = bool(vs_m[2] < 0)
         for (w, T, m), a, b, c in zip(musim, gh, gn, gm):
             prb.setdefault(prov(w, T), {}).setdefault("musim", []).append((b, c, a))
@@ -457,17 +462,18 @@ def hierarki_produksi(hari, akhir):
         stat, nat = fit([o for v in data.values() for o in v])
         B = _node(stat, nat, ks)
         out.setdefault("_nat", []).append(math.exp(nat))
-        per_h.append({kunci: (round(math.exp(B[kunci]), 1), n) for kunci, (n, _) in stat.items() if isinstance(kunci[0], str)})
+        per_h.append((B, nat, {kunci: n for kunci, (n, _) in stat.items() if isinstance(kunci[0], str)}))
         out.setdefault("_nn", []).append(sum(len(v) for v in data.values()))
-    for kunci in {k for d in per_h for k in d}:   # d = null bila tak ada episode >= h di unit itu
-        nodes[kunci] = {"d": [d.get(kunci, (None, 0))[0] for d in per_h], "n": [d.get(kunci, (None, 0))[1] for d in per_h]}
     data = data_musim(bj)
     ks = out["k"]["musim"] = pilih_k(data, T)
-    stat, nat = fit([o for v in data.values() for o in v])
-    B = _node(stat, nat, ks)
-    for kunci, (n, _) in stat.items():
-        if isinstance(kunci[0], str):
-            nodes.setdefault(kunci, {"d": [None] * len(per_h), "n": [0] * len(per_h)}).update(s=round(B[kunci], 1), ns=n)
+    stat, nat_s = fit([o for v in data.values() for o in v])
+    Bs = _node(stat, nat_s, ks)
+    semua = {k for _, _, nn in per_h for k in nn} | {k for k in stat if isinstance(k[0], str)}
+    # tiap unit punya d untuk SEMUA umur dan s: unit tanpa episode >= h memakai induk terdekat yang punya data (= rantai susut pipeline), n = 0
+    for kunci in semua:
+        nodes[kunci] = {"d": [round(math.exp(nilai_unit(B, kunci, nat)), 1) for B, nat, _ in per_h], "n": [nn.get(kunci, 0) for _, _, nn in per_h],
+                        "s": round(nilai_unit(Bs, kunci, nat_s), 1), "ns": stat.get(kunci, (0, 0))[0]}
+    nat = nat_s
     out["nasional"] = {"d": [round(x, 1) for x in out.pop("_nat")], "n": out.pop("_nn"), "s": round(nat, 1), "ns": sum(len(v) for v in data.values())}
     kl = sorted(k for k in nodes if len(k) == 3)
     idx = {k: i for i, k in enumerate(kl)}
@@ -479,12 +485,20 @@ def hierarki_produksi(hari, akhir):
     print(f"hierarki: {len(out['prov'])} prov, {len(out['kab'])} kab, {len(out['kec'])} kec, {len(out['w'])} jendela; k {json.dumps(out['k'])}", file=sys.stderr)
 
 
+def nilai_unit(B, kunci, nat):
+    """B unit atau induk terdekatnya yang punya taksiran; nasional bila tidak ada sama sekali (audit validasi-model 23 Okt: tanpa ini unit kosong lompat ke nasional)."""
+    for j in range(len(kunci), 0, -1):
+        if kunci[:j] in B:
+            return B[kunci[:j]]
+    return nat
+
+
 def _node(stat, nat, ks):
     """B tiap unit wilayah (kunci tuple string panjang 1-3) dengan susut berurutan dari induknya."""
     B = {}
     for kunci in sorted((k for k in stat if isinstance(k[0], str)), key=len):
         n, m = stat[kunci]
-        b = B.get(kunci[:-1], nat)
+        b = nilai_unit(B, kunci[:-1], nat)   # induk terdekat YANG punya data (kabupaten kosong -> provinsi, bukan langsung nasional)
         k = ks.get("pac"[len(kunci) - 1], 1e9)
         B[kunci] = (n * m + k * b) / (n + k)
     return B
@@ -634,7 +648,16 @@ def uji():
         raise SystemExit("kebocoran musim uji lolos")
     except AssertionError as e:
         assert "kebocoran" in str(e)
-    assert pilih_k({**bising}, 2019) == pilih_k({t: v for t, v in {**bising, 2019: lokal[2018]}.items() if t < 2019}, 2019)   # penyaring tahun < T = tak ada pengaruh data uji
+    # sinyal lokal yang hanya ada di tahun >= T tidak boleh mengubah k: data itu harus disaring SEBELUM pilih_k (penyaringnya assert di atas)
+    k_tanpa = pilih_k(bising, 2019)
+    try:
+        pilih_k({**bising, 2019: lokal[2018], 2020: lokal[2018]}, 2019)
+        raise SystemExit("sinyal tahun uji ikut memilih k")
+    except AssertionError as e:
+        assert "kebocoran" in str(e)
+    assert pilih_k({t: v for t, v in {**bising, 2019: lokal[2018]}.items() if t < 2019}, 2019) == k_tanpa
+    # nilai_unit: kabupaten tanpa data -> provinsi, bukan nasional
+    assert nilai_unit({("62",): 2.0}, ("62", "Seruyan", "X"), 9.0) == 2.0 and nilai_unit({}, ("62",), 9.0) == 9.0
     print("ok")
 
 

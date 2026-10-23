@@ -114,8 +114,8 @@ test("model bertingkat: unit terdalam dipakai, jendela disusut dengan rumus pipe
   const ctx3 = vm.createContext({window: {}}); vm.runInContext(readFileSync(new URL("../../public/riwayat_sel.js", import.meta.url), "utf8"), ctx3);
   const B = (...x) => structuredClone(ctx3.window.RiwayatSel.bertingkat(...x));
   const d14 = v => Array(14).fill(v);
-  const H = {nasional: {d: d14(6), s: 305}, prov: {"62": {d: d14(8), s: 300}}, kab: {"62|Seruyan": {d: d14(10), s: 298}},
-    kec: {"62|Seruyan|Seruyan Hilir": {d: d14(12), s: 296}}, k: {"3": {w: 4}, musim: {w: 4}}};
+  const H = {nasional: {d: d14(6), s: 305}, prov: {"62": {d: d14(8), s: 300, n: d14(500)}}, kab: {"62|Seruyan": {d: d14(10), s: 298, n: d14(60)}},
+    kec: {"62|Seruyan|Seruyan Hilir": {d: d14(12), s: 296, n: d14(40)}}, k: {"3": {w: 4, p: 4, a: 64, c: 64}, musim: {w: 4}}};
   const p = {prov: "62", kab: "Seruyan", kec: "Seruyan Hilir"};
   // jendela tanpa episode >= 3 hari: ikut kecamatan persis
   const a = B(H, {r: [1, 2], y: [0, 0]}, p, 3);
@@ -130,4 +130,14 @@ test("model bertingkat: unit terdalam dipakai, jendela disusut dengan rumus pipe
   assert.equal(B(H, {r: []}, {...p, kec: "Lain"}, 3).tingkat, "Kab. Seruyan");
   assert.equal(B(null, {r: []}, p, 3), null, "tanpa berkas bertingkat DITOLAK, bukan dikarang");
   assert.equal(B(H, {r: []}, p, 20).sisa, undefined, "umur > 14 hari di luar tabel: tidak meramal sisa");
+  // label hanya untuk tingkat yang berbobot: kecamatan 5 episode dengan k 64 (bobot 0,07) -> bukan "Kec."
+  const H2 = structuredClone(H); H2.kec["62|Seruyan|Seruyan Hilir"].n = d14(5); H2.kab["62|Seruyan"].n = d14(5);
+  assert.match(B(H2, {r: []}, p, 3).tingkat, /^Prov\./);
+});
+
+test("laci tidak gagal saat lokasi tanpa data musim tetapi model bertingkat aktif (audit: 6,6% lokasi)", () => {
+  const tanpaS = {...rec}; delete tanpaS.s;
+  const a = R.analisa(tanpaS, meta, {hari: 3}, null, {hier: {tingkat: "Prov. 62", sisa: 4, akhir: 320}, hierLama: true, hierMusim: true, kini: Date.UTC(2026, 9, 12)});
+  assert.ok(a.prakira.some(x => x[0] === "Akhir musim" && /16 November/.test(x[1])), a.prakira.map(x => x.join(" ")).join(" | "));
+  assert.ok(a.saran.some(x => /Jaga kesiagaan sampai 16 November/.test(x)));
 });

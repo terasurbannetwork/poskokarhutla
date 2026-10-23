@@ -132,6 +132,10 @@
     "selisih_mentah_ci95": [
      -0.13,
      -0.07
+    ],
+    "selisih_nasional_ci95_blok_prov_tahun": [
+     -0.106,
+     -0.018
     ]
    },
    "7": {
@@ -144,8 +148,12 @@
      -0.11
     ],
     "selisih_mentah_ci95": [
-     -0.39,
+     -0.38,
      -0.22
+    ],
+    "selisih_nasional_ci95_blok_prov_tahun": [
+     -0.223,
+     -0.083
     ]
    }
   },
@@ -159,8 +167,12 @@
     -0.43
    ],
    "selisih_nasional_ci95": [
-    -7.5,
+    -7.51,
     -6.49
+   ],
+   "selisih_mentah_ci95_blok_prov_tahun": [
+    -0.959,
+    -0.315
    ]
   },
   "lama_unggul_hierarki": true,
