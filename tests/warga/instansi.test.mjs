@@ -928,7 +928,7 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050", "0054"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],
