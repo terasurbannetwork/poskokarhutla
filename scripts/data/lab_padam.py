@@ -35,7 +35,7 @@ Pakai:  python3 scripts/data/lab_padam.py uji       self-check sintetis, tanpa j
         python3 scripts/data/lab_padam.py jalan     unduh + hitung (FIRMS_MAP_KEY; LAB_MENIT = anggaran menit, bawaan 30)
         python3 scripts/data/lab_padam.py ringkas   tulis ulang padam_ringkas.md dari padam.json
 """
-import bisect, collections, datetime as dt, gzip, hashlib, inspect, json, math, os, random, statistics, sys, time, urllib.request
+import bisect, collections, datetime as dt, gzip, hashlib, inspect, json, math, os, random, socket, statistics, sys, time, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +44,7 @@ import firms_sumber as FS  # noqa: E402
 import fwi as F  # noqa: E402
 import garis_api as GA  # noqa: E402
 import harian as H  # noqa: E402
+import lab_luas as LU  # noqa: E402  (pengunduh arsip tahunan per negara dipakai bersama)
 from wilayah import AKAR, Poligon  # noqa: E402
 
 KELUAR = os.path.join(AKAR, "public/data/lab/padam.json")
@@ -421,15 +422,55 @@ def luas_tiga(eps, ar, S):
 
 
 # ---------------------------------------------------------------- jaringan: FIRMS
-def ambil_teks(url, coba=4):
+_DIAG = {}
+
+
+def diagnosa_alamat(host, port=443, batas=5.0):
+    """Kelas galat tiap alamat (IPv4 dan IPv6) yang dicoba untuk host: 'IPv4 1.2.3.4 ENETUNREACH'. Murni jaringan, tanpa kunci. Dicache per host per jalan."""
+    if host in _DIAG:
+        return _DIAG[host]
+    out = []
+    try:
+        infos = socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    except Exception as e:  # noqa: BLE001
+        _DIAG[host] = "DNS %s" % type(e).__name__
+        return _DIAG[host]
+    for fam, _, _, _, sa in infos[:6]:
+        nama = "IPv6" if fam == socket.AF_INET6 else "IPv4"
+        try:
+            with socket.create_connection((sa[0], sa[1]), timeout=batas):
+                kls = "ok"
+        except OSError as e:
+            kls = (errno_nama(e.errno) if e.errno else type(e).__name__)
+        out.append("%s %s %s" % (nama, sa[0], kls))
+    _DIAG[host] = "; ".join(out) or "tanpa alamat"
+    return _DIAG[host]
+
+
+def errno_nama(n):
+    import errno
+    return errno.errorcode.get(n, "errno%s" % n)
+
+
+def ambil_teks(url, coba=4, jeda=15, diagnosa=diagnosa_alamat):
+    """GET teks. Galat akhir = RuntimeError berisi kelas galat + kelas tiap alamat yang dicoba, disaring FS.sensor_url (kunci tak bocor)."""
     for i in range(coba):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "poskokarhutla-lab/1.0"}), timeout=180) as r:
                 return r.read().decode()
         except Exception as e:
             if i == coba - 1:
-                raise RuntimeError(FS.sensor_url(f"{url}: {type(e).__name__}: {e}")) from None
-            time.sleep(15 * (i + 1))
+                try:
+                    alamat = diagnosa(urllib.parse.urlsplit(url).hostname)
+                except Exception:  # noqa: BLE001
+                    alamat = "diagnosa gagal"
+                raise RuntimeError(FS.sensor_url(f"{url}: {type(e).__name__}: {e} [alamat: {alamat}]")) from None
+            time.sleep(jeda * (i + 1))
+
+
+def ambil_teks_cadangan(url):
+    """Jalur cadangan area API: jeda lebih panjang (30/60/90/120 dtk) dan 5 percobaan."""
+    return ambil_teks(url, coba=5, jeda=30)
 
 
 def potongan(thn):
@@ -462,7 +503,7 @@ def unduh_potongan(tugas):
     if os.path.exists(p):
         return True
     try:
-        baris, ok = FS.unduh(d0, d1, kunci, ambil_teks, BBOX, ket, famili=FAMILI)
+        baris, ok = FS.unduh(d0, d1, kunci, ambil_teks_cadangan, BBOX, ket, famili=FAMILI)
     except Exception as e:
         print("lab_padam: potongan", d0, "gagal:", FS.sensor_url(e))
         return False
@@ -475,6 +516,125 @@ def unduh_potongan(tugas):
         json.dump(baris_ringkas(baris), f)
     os.replace(p + ".tmp", p)
     return True
+
+
+def titik_ke_ringkas(p):
+    return [round(p["lat"], 4), round(p["lon"], 4), p["t"].strftime("%Y-%m-%d"), p["t"].hour * 100 + p["t"].minute, p["c"], round(p["px"], 2), p["dn"] or "D",
+            0 if p["s"] == "N" else 1]
+
+
+def simpan_potongan(d0, baris):
+    p = jalur_potongan(d0)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    with gzip.open(p + ".tmp", "wt") as f:
+        json.dump(baris, f)
+    os.replace(p + ".tmp", p)
+
+
+def arsip_tahun(thn, arsip_fn, status):
+    """Sumber UTAMA: arsip tahunan per negara (lab_luas.titik_sensor_tahun, tanpa kunci) untuk S-NPP dan NOAA-20 -> potongan 5 hari yang BELUM ada.
+    True bila kedua sensor terbaca dan memuat titik di jendela; False (dengan alasan di status) bila tidak: potongan tidak ditulis sebagian."""
+    mulai, akhir = dt.date(thn, 7, 1).isoformat(), dt.date(thn, *AKHIR_DATA).isoformat()
+    semua = []
+    for sen in ("N", "N20"):
+        st = {}
+        try:
+            pts = arsip_fn(sen, thn, st)
+        except Exception as e:  # noqa: BLE001
+            pts, st["galat"] = None, "%s: %s" % (type(e).__name__, e)
+        if pts is None:
+            status[thn] = "arsip %s gagal: %s" % (sen, FS.sensor_url("; ".join(str(v) for v in st.values()) or "tanpa alasan")[:300])
+            return False
+        pts = [p for p in pts if p["c"] in (1, 2) and mulai <= p["t"].strftime("%Y-%m-%d") <= akhir]
+        if not pts:
+            status[thn] = "arsip %s kosong di jendela" % sen
+            return False
+        semua += pts
+    per_hari = collections.defaultdict(list)
+    for p in semua:
+        per_hari[p["t"].date()].append(titik_ke_ringkas(p))
+    for d0, d1 in potongan(thn):
+        if os.path.exists(jalur_potongan(d0)):
+            continue
+        simpan_potongan(d0, [r for i in range((d1 - d0).days + 1) for r in per_hari.get(d0 + dt.timedelta(days=i), ())])
+    status[thn] = "arsip"
+    return True
+
+
+_KET = {}
+
+
+def ketersediaan_sekali(kunci, ambil=None):
+    """data_availability dipanggil SEKALI per jalan (memori) dan dicache di berkas per hari UTC; RuntimeError bila gagal (dipegang pemanggil)."""
+    if "ket" in _KET:
+        return _KET["ket"]
+    if isinstance(_KET.get("galat"), Exception):
+        raise _KET["galat"]
+    jalur = os.path.join(CACHE, "ketersediaan.json")
+    hari = dt.datetime.now(UTC).date().isoformat()
+    try:
+        if os.path.exists(jalur):
+            c = json.load(open(jalur))
+            if c.get("hari") == hari:
+                _KET["ket"] = {k: (dt.date.fromisoformat(v[0]), dt.date.fromisoformat(v[1])) for k, v in c["ket"].items()}
+                return _KET["ket"]
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        ket = FS.muat_ketersediaan(kunci, ambil or ambil_teks_cadangan, famili=FAMILI)
+    except Exception as e:  # noqa: BLE001
+        _KET["galat"] = RuntimeError(FS.sensor_url(str(e)))
+        raise _KET["galat"] from None
+    _KET["ket"] = ket
+    os.makedirs(CACHE, exist_ok=True)
+    json.dump({"hari": hari, "ket": {k: [v[0].isoformat(), v[1].isoformat()] for k, v in ket.items()}}, open(jalur, "w"))
+    return ket
+
+
+def api_cadangan(tahun_gagal, kunci, stop, unduh=None, benang=2):
+    """CADANGAN bila arsip gagal: area API per potongan 5 hari, 1-2 benang, jeda panjang, data_availability sekali. -> set tahun yang lengkap."""
+    unduh = unduh or unduh_potongan
+    if not tahun_gagal or not kunci:
+        return set()
+    try:
+        ket = ketersediaan_sekali(kunci)
+    except Exception as e:  # noqa: BLE001
+        print("lab_padam: data_availability gagal, cadangan API dilewati:", FS.sensor_url(e))
+        return set()
+    tugas = [((d0, d1), kunci, ket) for thn in tahun_gagal for d0, d1 in potongan(thn) if not os.path.exists(jalur_potongan(d0))]
+    print("lab_padam: cadangan API, potongan belum ada:", len(tugas))
+    with ThreadPoolExecutor(max(1, min(2, benang))) as ex:
+        it = iter(tugas)
+        while True:
+            blok = [b for b in (next(it, None) for _ in range(4)) if b]
+            if not blok or stop():
+                break
+            list(ex.map(unduh, blok))
+    return {t for t in tahun_gagal if all(os.path.exists(jalur_potongan(d0)) for d0, _ in potongan(t))}
+
+
+def kumpul_firms(tahun, kunci, stop, arsip_fn, unduh=None):
+    """Arsip dulu per tahun; area API hanya untuk tahun yang arsipnya gagal. Kegagalan satu tahun tidak meng-crash. -> (status per tahun, tahun dari API)."""
+    status, gagal = {}, []
+    for thn in tahun:
+        if all(os.path.exists(jalur_potongan(d0)) for d0, _ in potongan(thn)):
+            status[thn] = "cache"
+            continue
+        if stop():
+            status[thn] = "anggaran habis"
+            continue
+        try:
+            ok = arsip_tahun(thn, arsip_fn, status)
+        except Exception as e:  # noqa: BLE001
+            ok, status[thn] = False, "arsip galat: " + FS.sensor_url("%s: %s" % (type(e).__name__, e))[:200]
+        if not ok:
+            gagal.append(thn)
+    for thn in gagal:
+        print("lab_padam: arsip %d gagal (%s); area API jadi cadangan" % (thn, status[thn]))
+    pulih = api_cadangan([t for t in gagal if status[t] != "anggaran habis"], kunci, stop, unduh)
+    for t in pulih:
+        status[t] += " -> area API"
+    return status, pulih
 
 
 def muat_tahun(thn):
@@ -960,19 +1120,14 @@ def _jalan():
     tulis(out)    # kriteria ada di berkas sebelum satu angka hasil dihitung
     print("lab_padam: kriteria ditulis")
 
-    # 1. FIRMS
-    ket = FS.muat_ketersediaan(kunci, ambil_teks, famili=FAMILI)
-    tugas = [((d0, d1), kunci, ket) for thn in TAHUN for d0, d1 in potongan(thn) if not os.path.exists(jalur_potongan(d0))]
-    print("lab_padam: potongan FIRMS belum ada:", len(tugas))
-    with ThreadPoolExecutor(4) as ex:
-        sisa_tugas = iter(tugas)
-        selesai = 0
-        while True:
-            blok = [next(sisa_tugas, None) for _ in range(8)]
-            blok = [b for b in blok if b]
-            if not blok or sisa() < menit * 60 * 0.35 - 150 + 0:
-                break
-            selesai += sum(ex.map(unduh_potongan, blok))
+    # 1. FIRMS: arsip tahunan per negara (utama), area API hanya cadangan
+    stop = lambda: sisa() < menit * 60 * 0.35 - 150
+    def arsip_fn(sen, thn, st):
+        r = LU.titik_sensor_tahun(sen, thn, None, stop, st)
+        return r
+    out["firms_status"], _ = kumpul_firms(list(TAHUN), kunci, stop, arsip_fn)
+    for t, v in out["firms_status"].items():
+        print("lab_padam: FIRMS", t, v)
     tahun_ok, pts = [], {}
     for thn in TAHUN:
         p = muat_tahun(thn)
@@ -1527,6 +1682,60 @@ def uji():
     # --- potongan FIRMS: 5 hari, menutup 1 Jul..20 Des tanpa celah
     pc = potongan(2019)
     assert pc[0][0] == dt.date(2019, 7, 1) and pc[-1][1] == dt.date(2019, 12, 20) and all(b[0] == a[1] + dt.timedelta(days=1) for a, b in zip(pc, pc[1:])) and all((b - a).days <= 4 for a, b in pc)
+    # --- sumber FIRMS: arsip tahunan dulu, area API hanya cadangan, kegagalan satu tahun tak meng-crash
+    import tempfile as _tf3
+    _lama = globals()["CACHE"]
+    with _tf3.TemporaryDirectory() as td_:
+        globals()["CACHE"] = td_
+        try:
+            def mk(thn, sen, n=3):
+                return [{"lat": -2.0 + i * .01, "lon": 104.0, "t": dt.datetime(thn, 8, 1 + i, 6, 30, tzinfo=UTC), "c": 1 + i % 2, "px": .4, "dn": "D", "frp": 1.0, "s": sen} for i in range(n)]
+            def arsip_ok(sen, thn, st):
+                if thn == 2020:
+                    raise RuntimeError("Network is unreachable (kunci RAHASIA999)")
+                return mk(thn, sen) + [{**mk(thn, sen, 1)[0], "c": 0}, {**mk(thn, sen, 1)[0], "t": dt.datetime(thn, 6, 1, tzinfo=UTC)}]   # c=0 dan di luar jendela tersaring
+            panggil = []
+            def unduh_palsu(tugas):
+                (d0, d1), kunci_, ket_ = tugas
+                panggil.append(d0)
+                simpan_potongan(d0, [])
+                return True
+            os.environ["FIRMS_MAP_KEY"] = "RAHASIA999"
+            _KET.clear()
+            _KET["ket"] = {"x": 1}
+            st, pulih = kumpul_firms([2019, 2020], "RAHASIA999", lambda: False, arsip_ok, unduh_palsu)
+            assert st[2019] == "arsip" and 2019 not in pulih, st
+            assert not [d for d in panggil if d.year == 2019], "API dipanggil padahal arsip berhasil"
+            assert panggil and all(d.year == 2020 for d in panggil) and pulih == {2020}, (panggil[:2], pulih)
+            assert st[2020].endswith("-> area API") and "RAHASIA999" not in json.dumps(st), st
+            assert muat_tahun(2019) is not None and len(muat_tahun(2019)) == 6 and {p["s"] for p in muat_tahun(2019)} == {"N", "N20"}
+            assert min(p["t"] for p in muat_tahun(2019)) >= dt.datetime(2019, 7, 1, tzinfo=UTC) and all(p["c"] in (1, 2) for p in muat_tahun(2019))
+            # arsip gagal semua + API gagal: tahun hilang, tanpa crash
+            panggil.clear()
+            for d0, _ in potongan(2020):
+                os.remove(jalur_potongan(d0))
+            _KET.clear()
+            _KET["galat"] = RuntimeError("Network is unreachable")
+            st, pulih = kumpul_firms([2019, 2020, 2022], "RAHASIA999", lambda: False, lambda s_, t_, c_: None, lambda tg: False)
+            assert st[2019] == "cache" and pulih == set() and muat_tahun(2020) is None and "gagal" in st[2020] and not panggil, st
+            # arsip kosong di jendela = gagal, bukan 'nol titik'
+            st, _ = kumpul_firms([2022], None, lambda: False, lambda s_, t_, c_: [], None)
+            assert "kosong" in st[2022] and muat_tahun(2022) is None
+            # diagnosa jaringan: kelas galat per alamat, kunci tidak bocor
+            try:
+                ambil_teks("https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/RAHASIA999/ALL", coba=1,
+                           diagnosa=lambda h: "IPv4 1.2.3.4 ENETUNREACH; IPv6 ::1 EHOSTUNREACH")
+                raise AssertionError("harus gagal")
+            except RuntimeError as e:
+                pesan = str(e)
+                if "RAHASIA999" in pesan or "ENETUNREACH" not in pesan:
+                    raise AssertionError(pesan)
+            except AssertionError:
+                raise
+            _KET.clear()
+            del os.environ["FIRMS_MAP_KEY"]
+        finally:
+            globals()["CACHE"] = _lama
     # --- faktor luas: bawaan produksi bila lab/luas.json tak ada
     assert faktor_luas()[0] > 0
     print("lab_padam uji: ok")
