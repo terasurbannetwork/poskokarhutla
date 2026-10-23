@@ -110,3 +110,37 @@ tar -xzf /tmp/sebaran-cache.tar.gz -C data/raw
 ```
 
 Setelah melatih ulang, buat rilis baru dengan tanggalnya sendiri, jangan menimpa yang lama.
+
+## Sensor: S-NPP berhenti 1 Nov 2026 (dicatat 23 Okt 2026)
+
+Jalur ramalan tidak lagi terkunci ke S-NPP. `prospektif.pilih_sensor` (dipakai `prospektif.py` dan `jejak.py`; padanan JS
+`sensorTitik` di `public/sebaran_model.js`): sensor primer = S-NPP kecuali NOAA-20 masih mendeteksi > 36 jam sesudah
+deteksi S-NPP terakhir, lalu NOAA-20. NOAA-21 hanya pendamping (fitur `n20_0`/`n20_14`) untuk NOAA-20, bukan primer:
+arsipnya tidak ada untuk uji balik. Keluaran mencatat `sensor`/`pendamping` (ramalan, nilai, `prospektif.json`
+`per_sensor`, `jejak_api.json`). Tiap ramalan dinilai dengan sensornya sendiri; ramalan S-NPP yang 72 jamnya terpotong
+penghentian = `kedaluwarsa` + `sensor_berhenti` (bukan "tidak lolos"). Tanpa VIIRS sama sekali: `status: "tanpa_viirs"`
+(prospektif.json, jejak_api.json) dan `lolos_status: "tanpa_viirs"` di JS, bukan hasil kosong.
+
+Uji arsip 2024-2026 (model 2015-2023 / sel 2015-2022, persis yang dinilai; p S-NPP mereproduksi `lolos_peluang.pkl`
+dengan beda 0). Versi NOAA-20 = peristiwa dari komponen N20, fitur dan label dari N20, pendamping = S-NPP sebagai pengganti
+NOAA-21 (selisih orbit ~50 menit sama). Pasangan "peristiwa sama" = deteksi pertama <= 3 jam dan <= 750 m: 71.133 dari
+252.582 peristiwa S-NPP 2018+ (yang lain hanya terlihat satu sensor), 32.723 di 2024-2026, label sama 96,2%.
+Selang 95% bootstrap baris (B = 200, tanpa klaster per kompleks, jadi terlalu sempit).
+
+| Model / himpunan 2024-2026 | S-NPP AUC | NOAA-20 AUC | S-NPP ECE | NOAA-20 ECE | rata-rata p vs teramati (N20) |
+| --- | --- | --- | --- | --- | --- |
+| membesar awal, populasi penuh (97.749 / 102.255) | 0,908 [0,903; 0,913] | 0,909 [0,903; 0,914] | 0,0035 | 0,0035 | 0,0269 vs 0,0293 |
+| membesar awal, pasangan (32.723) | 0,895 [0,886; 0,903] | 0,881 [0,873; 0,891] | 0,0045 | 0,0060 | 0,0365 vs 0,0424 |
+| ramal ulang 14 jam, populasi penuh | 0,955 [0,952; 0,958] | 0,957 [0,953; 0,960] | 0,0053 | 0,0056 | 0,0349 vs 0,0293 |
+| ramal ulang 14 jam, pasangan | 0,955 [0,949; 0,961] | 0,946 [0,940; 0,952] | 0,0124 | 0,0082 | 0,0503 vs 0,0424 |
+
+Selisih pasangan N20 - S-NPP: AUC awal -0,014 [-0,022; -0,004], ECE awal +0,0015 [-0,0003; +0,0041]; AUC ulang
+-0,009 [-0,016; -0,002]. Recall di ambang 0,0484: 0,674 (S-NPP) vs 0,665 (N20) populasi penuh. Model sel, 208 titik awal
+uji yang berpasangan (dari 500): F1 mikro sel baru 24 jam 0,133 vs 0,131 (selisih -0,002 [-0,047; +0,044]), IoU 24 jam
+0,617 vs 0,681 (persistensi 0,820 vs 0,812).
+
+Rekalibrasi (Platt pada skor luar-lipatan versi N20 2018-2023) TIDAK dipasang. Awal: ECE populasi penuh 0,0035 -> 0,0030 tetapi
+pasangan 0,0060 -> 0,0068 (tidak membaik). Ulang: ECE 0,0056 -> 0,0023 (penuh) dan 0,0082 -> 0,0044 (pasangan), AUC tetap, tetapi
+pergeseran yang sama sudah ada di versi S-NPP (0,0053, p 0,0352 vs teramati 0,0299): itu bukan efek sensor, dan pemasangannya
+butuh `lolos.py akhir` (ambang recall 70% dipilih ulang) karena `model_sebaran.json` tidak disunting tangan.
+Batas: NOAA-21 belum teruji (arsip tidak ada); cuaca reanalisis; prospektif tetap hakim terakhir (`per_sensor`).

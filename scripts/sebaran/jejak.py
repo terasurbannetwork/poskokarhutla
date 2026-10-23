@@ -1,7 +1,7 @@
 """Jejak api: ramalan jejak sebaran api (+24/+48/+72 jam) untuk tiap kompleks karhutla aktif -> public/data/jejak_api.json.
 
 Mesin = model data yang sama dengan peramban (model_sebaran.json, GBDT sel 375 m; Python setara SebaranModel.ramal: jalan Monte Carlo,
-fitur dari fitur.baris_sel). Keadaan awal tiap kompleks = deteksi VIIRS S-NPP (nominal/tinggi, 7 hari, hotspot.json) di kotak poligon
+fitur dari fitur.baris_sel). Keadaan awal tiap kompleks = deteksi VIIRS sensor primer (nominal/tinggi, 7 hari, hotspot.json) di kotak poligon
 kompleks (kluster.json, id K#### sama dengan /sim/K####); sel aktif = terdeteksi <= 24 jam sebelum acuan data. Cuaca = Open-Meteo
 prakiraan: public/data/cuaca/<sel 0,5>.json bila ada (cuaca_jam.py), selain itu diambil sendiri (cache per hari, anggaran MAKS_BOBOT).
 Peluang sel = frekuensi kumulatif Monte Carlo (JEJAK_MC putaran, biji tetap per kompleks) -> resolusi 1/JEJAK_MC; hanya sel dengan
@@ -10,6 +10,8 @@ peluang >= AMBANG_P ditulis. Ini PRAKIRAAN MODEL, bukan pengamatan: kinerjanya d
 Setara SebaranModel.ramal (public/sebaran_model.js) KECUALI umur_jam: di sini umur sejak deteksi pertama kompleks (cocok dengan data latih),
 di peramban JS umur mulai 0 pada titik awal. Perbedaan lain: batas sel aktif sumber calon (JEJAK_AKTIF, bawaan tanpa batas; kompleks yang kena batas diberi
 "terpangkas": true dan tidak boleh dipakai untuk peringatan tertinggi). Tanpa p_lepas (model membesar untuk titik baru, bukan kompleks).
+Sensor primer = prospektif.pilih_sensor: S-NPP selama masih mengirim, sesudah S-NPP berhenti (1 Nov 2026) NOAA-20; dicatat di "sensor".
+Tanpa VIIRS sama sekali: status "tanpa_viirs" (src/ews.js mengabaikan jejak yang statusnya bukan "ok"), bukan daftar kosong diam-diam.
 Urutan kompleks: level, lalu penduduk sekitar (WorldPop 0,25 derajat, 3x3 sel di sekitar pusat kompleks), lalu skor: untuk peringatan dini
 yang diramal lebih dulu adalah api yang dekat orang. "cakupan" di JSON mencatat berapa kompleks aktif, berapa diramal, dan alasan dilewati.
 
@@ -20,9 +22,10 @@ import datetime as dt, json, math, os, random, sys, time, urllib.parse, zlib
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, DIR)
+import prospektif as P  # noqa: E402  (gabung: hotspot.json -> baris; cuaca/ambil dipakai lagi). SEBELUM cuaca: cuaca memuat scripts/banjir/umum.py
+# yang menaruh scripts/banjir di depan sys.path, dan scripts/banjir/prospektif.py (18 Okt 2026) lalu menang -> ImportError KELUAR
 import cuaca  # noqa: E402
 import gbdt as G  # noqa: E402
-import prospektif as P  # noqa: E402  (gabung: hotspot.json -> baris; cuaca/ambil dipakai lagi)
 from fitur import Seri, baris_sel, calon, fitur_peristiwa, terakhir  # noqa: E402
 from umum import HA_SEL, MENTAH, PUBLIK, T0, pusat, sel  # noqa: E402
 
@@ -116,7 +119,7 @@ def kompleks_aktif(fitur_kluster, pend=None):
 
 
 def keadaan_awal(snpp, grid, f, t0):
-    """deteksi S-NPP di kotak kompleks -> (terbakar, aktif{sel: menit terakhir}, pertama_menit, baru24, frp24, centroid aktif) atau None"""
+    """deteksi sensor primer di kotak kompleks -> (terbakar, aktif{sel: menit terakhir}, pertama_menit, baru24, frp24, centroid aktif) atau None"""
     x0, y0, x1, y1 = kotak(f)
     rs = []
     for gx in range(math.floor(x0 / .05), math.floor(x1 / .05) + 1):
@@ -216,8 +219,10 @@ def susun(hasil, cap):
 
 def periksa(doc):
     """Kontrak jejak_api.json; lempar AssertionError bila rusak (dipakai sebelum menulis dan di uji)."""
-    for k in ("dibuat", "model", "sumber", "ambang_p", "kompleks", "cakupan", "acuan"):
+    for k in ("dibuat", "model", "sumber", "ambang_p", "kompleks", "cakupan", "acuan", "sensor", "status"):
         assert k in doc, f"kunci {k} hilang"
+    assert doc["sensor"] in P.SENSOR_URUT or (doc["sensor"] is None and doc["status"] == "tanpa_viirs"), f"sensor {doc['sensor']} / status {doc['status']}"
+    assert doc["status"] != "ok" or doc["kompleks"], "status ok tanpa kompleks"
     assert doc["dibuat"].endswith("+07:00") and 0 < doc["ambang_p"] < 1 and isinstance(doc["kompleks"], list)
     cv = doc["cakupan"]
     assert cv["n_aktif"] >= 0 and cv["n_diramal"] == len(doc["kompleks"]), f"cakupan: n_diramal {cv['n_diramal']} != {len(doc['kompleks'])} kompleks"
@@ -267,12 +272,13 @@ def main():
     M = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
     hs = json.load(open(os.path.join(PUBLIK, "hotspot.json")))
     D, a0 = P.gabung([], hs)
-    t0 = int(max([r[0] for r in D if r[3] == "N"] or [a0]))  # acuan = deteksi VIIRS S-NPP terbaru yang dipakai; horizon dihitung dari sini
+    prim, _, _ = P.pilih_sensor(D)
+    t0 = int(max([r[0] for r in D if r[3] == prim] or [a0]))  # acuan = deteksi VIIRS sensor primer terbaru yang dipakai; horizon dihitung dari sini
     umur_jam = (dt.datetime.now(dt.timezone.utc) - (T0 + dt.timedelta(minutes=t0))).total_seconds() / 3600
     wib = dt.timezone(dt.timedelta(hours=7))
     doc = {"dibuat": dt.datetime.now(wib).isoformat(timespec="seconds"), "model": f"model_sebaran v{M.get('versi')} ({M.get('dibuat')})",
            "sumber": "PRAKIRAAN model data (GBDT sel 375 m + cuaca prakiraan Open-Meteo, Monte Carlo), bukan pengamatan; kinerja di model_sebaran.json/prospektif.json",
-           "ambang_p": AMBANG_P, "acuan": (T0 + dt.timedelta(minutes=t0)).isoformat(timespec="minutes"), "n_mc": N_MC, "status": "tanpa_kompleks",
+           "ambang_p": AMBANG_P, "acuan": (T0 + dt.timedelta(minutes=t0)).isoformat(timespec="minutes"), "n_mc": N_MC, "status": "tanpa_kompleks", "sensor": prim,
            "kompleks": [], "cakupan": {}, "_hasil": []}
     pend = {}
     try:
@@ -283,12 +289,17 @@ def main():
         log("penduduk.json tidak terbaca: urutan hanya level & skor")
     aktif = kompleks_aktif(json.load(open(os.path.join(PUBLIK, "kluster.json")))["features"], pend)
     dilewati = {}
-    if umur_jam > BASI_JAM:
+    if prim is None:
+        doc["status"] = "tanpa_viirs"
+        dilewati["tanpa_viirs"] = len(aktif)
+        log("hotspot.json tanpa deteksi VIIRS S-NPP/NOAA-20: tidak meramal")
+    elif umur_jam > BASI_JAM:
         doc["status"] = "data_basi"
         dilewati["data_basi"] = len(aktif)
         log(f"hotspot.json berumur {umur_jam:.1f} jam > {BASI_JAM}: tidak meramal")
     else:
-        snpp = [r for r in D if r[3] == "N"]
+        snpp = [r for r in D if r[3] == prim]
+        log(f"sensor primer {prim}: {len(snpp)} deteksi")
         grid = {}
         for i, r in enumerate(snpp):
             grid.setdefault((math.floor(r[2] / .05), math.floor(r[1] / .05)), []).append(i)
@@ -305,7 +316,7 @@ def main():
             c = C.get(cuaca.sel05(p["lat"], p["lon"]))
             A = keadaan_awal(snpp, grid, f, t0)
             if not c or not A:
-                log(p["id"], "dilewati:", "cuaca tidak ada" if not c else "tanpa deteksi S-NPP 24 jam")
+                log(p["id"], "dilewati:", "cuaca tidak ada" if not c else f"tanpa deteksi {prim} 24 jam")
                 alasan = "tanpa_cuaca" if not c else "tanpa_deteksi_24j"
                 dilewati[alasan] = dilewati.get(alasan, 0) + 1
                 continue
@@ -323,7 +334,7 @@ def main():
             doc["status"] = "ok"
     doc["cakupan"] = {"n_aktif": len(aktif), "n_diramal": len(doc["_hasil"]), "dilewati": {k: v for k, v in dilewati.items() if v}}
     log("cakupan", json.dumps(doc["cakupan"]))
-    n_byte, cap = tulis(doc)
+    n_byte, cap = tulis(doc, KELUAR)
     log(f"{KELUAR}: {len(doc['kompleks'])} kompleks, {n_byte} B, cap {cap}, {time.time() - mulai:.0f} dtk, status {doc['status']}")
 
 
@@ -332,7 +343,7 @@ def uji():
     import copy, tempfile
     wib = dt.timezone(dt.timedelta(hours=7))
     dasar = {"dibuat": dt.datetime.now(wib).isoformat(timespec="seconds"), "model": "m", "sumber": "s", "ambang_p": AMBANG_P, "kompleks": [], "acuan": "2026-10-16T00:00+00:00",
-             "cakupan": {"n_aktif": 0, "n_diramal": 0, "dilewati": {}}}
+             "cakupan": {"n_aktif": 0, "n_diramal": 0, "dilewati": {}}, "sensor": "N", "status": "tanpa_kompleks"}
     periksa(dasar)  # hari kosong sah
     for kosong in (dict(dasar, _hasil=[]), ):  # tulis() menerima dokumen tanpa kompleks
         with tempfile.TemporaryDirectory() as d:
@@ -352,7 +363,7 @@ def uji():
     ks = susun(h, 100)[0]
     assert [len(x["sel"]) for x in ks["hari"]] == [1, 2, 2] and ks["hari"][2]["p_maks"] == .7 and ks["hari"][0]["luas_p50_ha"] == round(HA_SEL)
     assert len(susun(h, 1)[0]["hari"][2]["sel"]) == 1
-    doc = dict(dasar, kompleks=[ks], cakupan={"n_aktif": 3, "n_diramal": 1, "dilewati": {"anggaran": 1, "tanpa_cuaca": 1}})
+    doc = dict(dasar, kompleks=[ks], cakupan={"n_aktif": 3, "n_diramal": 1, "dilewati": {"anggaran": 1, "tanpa_cuaca": 1}}, status="ok")
     periksa(doc)
     assert buruk_cak(doc, {"n_aktif": 3, "n_diramal": 1, "dilewati": {"anggaran": 1}}), "diramal + dilewati harus = aktif"
     assert buruk_cak(doc, {"n_aktif": 1, "n_diramal": 0, "dilewati": {"anggaran": 1}}), "n_diramal harus = jumlah kompleks"
@@ -375,6 +386,10 @@ def uji():
     assert buruk(lambda d: d.pop("sumber"))
     assert buruk(lambda d: d["kompleks"][0].pop("terpangkas")) and buruk(lambda d: d["kompleks"][0].__setitem__("terpangkas", "ya"))
     assert buruk(lambda d: d.pop("cakupan"))
+    assert buruk(lambda d: d.pop("sensor")) and buruk(lambda d: d.__setitem__("sensor", "N21")), "sensor wajib & hanya S-NPP/NOAA-20"
+    assert buruk(lambda d: d.__setitem__("sensor", None)), "sensor None hanya sah bersama status tanpa_viirs"
+    periksa(dict(dasar, sensor=None, status="tanpa_viirs", cakupan={"n_aktif": 2, "n_diramal": 0, "dilewati": {"tanpa_viirs": 2}}))
+    assert buruk(lambda d: d.__setitem__("kompleks", []) or d.__setitem__("cakupan", {"n_aktif": 0, "n_diramal": 0, "dilewati": {}})), "status ok tanpa kompleks"
     assert buruk(lambda d: d.__setitem__("dibuat", "2026-10-16T10:00:00Z"))
     # kompleks_aktif: n24 > 0, level >= 2, urut level lalu skor, batas jumlah
     fs = [{"properties": {"id": i, "n24": n, "jam_sejak": j, "level": lv, "skor": s, "lat": -2.0, "lon": 110.0 + dx}} for i, n, j, lv, s, dx in
@@ -410,6 +425,32 @@ def uji():
     # penuh: simulasi -> susun -> kontrak
     hh = [{"id": "K0002", "nama": "n", "prov": "62", "lat": -2.0, "lon": 110.0, "titik_24j": 1, "p_lepas": None, "terpangkas": tp, "p": pc, "luas": luas}]
     periksa(dict(dasar, kompleks=susun(hh, CAP_SEL), cakupan={"n_aktif": 1, "n_diramal": 1, "dilewati": {}}))
+    # sensor: main() ujung-ke-ujung tanpa jaringan dan tanpa kompleks aktif untuk tiga keadaan hotspot.json
+    import shutil
+    acuan = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1)
+    # S-NPP ada -> primer N; S-NPP hilang -> kompleks tetap diramal dari NOAA-20 (sensor ditandai); tanpa VIIRS -> status eksplisit
+    kasus = {"snpp": (["N", "N20"], "N", "ok"), "n20": (["N20", "N21"], "N20", "ok"), "tanpa": (["M"], None, "tanpa_viirs")}
+    asli = globals()["PUBLIK"], globals()["KELUAR"], globals()["CACHE"], globals()["CUACA_JAM"], globals()["N_MC"]
+    cla, clo = cuaca.sel05(-2.0, 114.0)
+    nj = 40 * 24
+    try:
+        for nama, (ss, harap_s, harap_st) in kasus.items():
+            with tempfile.TemporaryDirectory() as d:
+                shutil.copy(os.path.join(asli[0], "model_sebaran.json"), d)
+                json.dump({"acuan": acuan.isoformat(), "wilayah": ["62|X|Y"], "baris": [[-2.0, 114.0, -2.0, s, 3.0, 1, 0, ""] for s in ss]}, open(os.path.join(d, "hotspot.json"), "w"))
+                json.dump({"features": [{"properties": {"id": "K0001", "n24": 3, "jam_sejak": 2, "level": 2, "lat": -2.0, "lon": 114.0, "prov": "62"}}]},
+                          open(os.path.join(d, "kluster.json"), "w"))
+                os.makedirs(os.path.join(d, "cuaca"))
+                json.dump({"lat": cla, "lon": clo, "mulai": (acuan - dt.timedelta(days=35)).strftime("%Y-%m-%dT00:00"), "tc": [32.0] * nj, "rh": [55.0] * nj,
+                           "hujan": [0.0] * nj, "ws": [12.0] * nj, "wd": [90.0] * nj}, open(os.path.join(d, "cuaca", f"{cla:.2f}_{clo:.2f}.json"), "w"))
+                globals().update(PUBLIK=d, KELUAR=os.path.join(d, "jejak_api.json"), CACHE=os.path.join(d, "cache"), CUACA_JAM=os.path.join(d, "cuaca"), N_MC=3)
+                main()
+                j = json.load(open(KELUAR))
+                assert j["sensor"] == harap_s and j["status"] == harap_st and len(j["kompleks"]) == (0 if nama == "tanpa" else 1), (nama, j)
+                if nama == "tanpa":
+                    assert j["cakupan"] == {"n_aktif": 1, "n_diramal": 0, "dilewati": {"tanpa_viirs": 1}}, j["cakupan"]
+    finally:
+        globals().update(PUBLIK=asli[0], KELUAR=asli[1], CACHE=asli[2], CUACA_JAM=asli[3], N_MC=asli[4])
     print("ok")
 
 
