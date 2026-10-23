@@ -31,13 +31,14 @@ permissions:
 env:
   TUGAS: ${{ inputs.tugas || 'semua' }}
   LAB_MENIT: "45"  # per skrip lab_*.py; skrip menyimpan kemajuan (public/data/lab) dan melanjutkan di putaran berikutnya
+  LAB_MENIT_lab_luas: "110"  # data sudah di-cache; tahap model + validasi sel GBDT butuh > 45 menit
 
 jobs:
   lab:
     # hanya cabang kerja claude/**: dispatch dari main tidak pernah mendorong hasil ke main
     if: startsWith(github.ref, 'refs/heads/claude/')
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 210
     steps:
       - uses: actions/checkout@v4
         with:
@@ -189,8 +190,11 @@ jobs:
             if ! git ls-files --error-unmatch "scripts/data/lab_kriteria/$n.json" > /dev/null 2>&1; then
               echo "$n dilewati: scripts/data/lab_kriteria/$n.json belum di-commit" | tee -a "$GITHUB_STEP_SUMMARY"; continue
             fi
-            lab_jalan "${n}_uji" timeout "$((menit * 60))" python3 "$f" uji || gagal=1
-            lab_jalan "${n}_jalan" timeout "$((menit * 60))" python3 "$f" jalan || gagal=1
+            # anggaran per skrip: LAB_MENIT_<nama> (mis. LAB_MENIT_lab_luas) menimpa LAB_MENIT; skrip membaca LAB_MENIT
+            v="LAB_MENIT_${n}"; m="${!v:-$menit}"
+            # timeout shell diberi kelonggaran 3 menit di atas anggaran skrip supaya skrip sempat menulis hasil sendiri
+            LAB_MENIT="$m" lab_jalan "${n}_uji" timeout "$((m * 60 + 180))" python3 "$f" uji || gagal=1
+            LAB_MENIT="$m" lab_jalan "${n}_jalan" timeout "$((m * 60 + 180))" python3 "$f" jalan || gagal=1
           done
           [ "$gagal" = 0 ] || exit 1
 

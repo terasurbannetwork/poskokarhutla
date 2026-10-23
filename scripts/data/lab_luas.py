@@ -1567,8 +1567,11 @@ def evaluasi_sel(seri, sel_fitur, gav_sel, kov_g, ctx, tenggat=None, ukuran_blok
             out["model"].append({"model": nm, "seri": seri, "dilewati": "anggaran habis"})
             continue
         fit = spec_model(nm, ctx_sel)
-        pred = {}
+        pred, putus = {}, False
         for bi in ids_blok.values():
+            if tenggat and tenggat():   # cek per blok: satu model GBDT x puluhan blok bisa > 20 menit
+                putus = True
+                break
             tr = [Latihan(dict(r["f"], _g=r["g"]), r["ha"], r["bi"], r["g"]) for r in rows if r["bi"] != bi and r["ha"] >= MIN_TRAIN_HA]
             if not tr and nm != "M0":
                 continue
@@ -1576,6 +1579,9 @@ def evaluasi_sel(seri, sel_fitur, gav_sel, kov_g, ctx, tenggat=None, ukuran_blok
             for r in rows:
                 if r["bi"] == bi:
                     pred[(r["id"], r["bi"])] = ramal(dict(r["f"], _g=r["g"]))
+        if putus:
+            out["model"].append({"model": nm, "seri": seri, "dilewati": "anggaran habis di tengah validasi blok"})
+            continue
         tot_pred = sum(math.exp(v) for v in pred.values())
         out["model"].append({"model": nm, "seri": seri, "metrik": metrik_log(pred, truth, titik, MIN_TITIK_EVAL), "ha_prediksi_total": round(tot_pred),
                              "rasio_total_vs_gaveau_sel_bertitik": bulat(tot_pred / sum(r["ha"] for r in rows), 3) if rows and sum(r["ha"] for r in rows) else None})
@@ -2565,6 +2571,7 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
         log_tahap(ang, "model seri " + seri, "selesai (%d entri)" % len(h))
     terpilih, pemenang = pilih_model(hasil_all)
     pakai = terpilih or pemenang
+    log_tahap(ang, "pilih model", "terpilih=%s pemenang=%s" % (bool(terpilih), (pemenang or {}).get("model")))
     pred_seri = {}
     if pakai:
         def _ent(seri):
@@ -2572,15 +2579,19 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
         for seri, ctx in ctx_seri.items():
             bagus = _ent(seri)
             if bagus:
+                log_tahap(ang, "prediksi unit " + seri, "mulai")
                 pred_seri[seri] = prediksi_unit(bagus[0], baris_seri[seri], ref, ctx, preds_all, info_seri[seri])
         # 2026 dan tahun tak berlabel: baris dari cache lain (hujan_z memakai mu/sigma tahun latih)
         for seri, ctx in ctx_seri.items():
             extra = rakit_baris(seri, cache, statis, kov, 2026, 2026)
             if extra and pred_seri.get(seri) is not None and _ent(seri):
+                log_tahap(ang, "prediksi 2026 " + seri, "mulai")
                 pred_seri[seri].update(prediksi_unit(_ent(seri)[0], baris_seri[seri] + extra, ref, ctx, preds_all, info_seri[seri]))
+    log_tahap(ang, "tabel tally", "mulai")
     tabel = bangun_tabel(cache, pred_seri, ref, kov, None, kov["oni_jas"], pakai["seri"] if pakai else "N", pakai["model"] if pakai else None, model_lolos=bool(terpilih)) if cache else None
     # 2026 Jan-Sep (periode yang sama dengan Nusantara Atlas): model akhir diterapkan pada fitur s.d. 30 Sep
     if pakai and tabel:
+        log_tahap(ang, "2026 Jan-Sep", "mulai")
         sj = pakai["seri"]
         e_js = cache.get("%s|2026|0930" % sj)
         if e_js and sj in ctx_seri:
@@ -2593,6 +2604,7 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
             r26["rasio"]["model_jan_sep_nusantara"] = bulat(tot["p50"] / NUSANTARA_2026, 3) if tot["p50"] else None
     # sel 0,25 derajat vs Gaveau 2019
     sel_hasil = None
+    log_tahap(ang, "sel Gaveau 2019", "mulai")
     if ref.get("gaveau_sel"):
         sel_hasil = []
         for seri, ctx in ctx_seri.items():
@@ -2600,7 +2612,11 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
             if e19 and e19.get("sel"):
                 kg = {b["g"]: {k: v for k, v in b["f"].items() if k in ("oni_jas", "oni_aso", "dmi_jas", "hujan_mm", "kanal_dens", "hilang012") or k.startswith("wc_")}
                       for b in baris_seri.get(seri, []) if b["y"] == 2019}
-                sel_hasil.append(evaluasi_sel(seri, e19["sel"], ref["gaveau_sel"], kg, ctx, tenggat=lambda: ang.lewat(0.97)))
+                sel_hasil.append(evaluasi_sel(seri, e19["sel"], ref["gaveau_sel"], kg, ctx, tenggat=lambda: ang.lewat(0.85)))
+        lewat = ["%s/%s" % (m["seri"], m["model"]) for sh in sel_hasil for m in sh["model"] if m.get("dilewati")]
+        if lewat:
+            belum.append("validasi sel Gaveau 2019 dilewati (anggaran habis): " + ", ".join(lewat))
+    log_tahap(ang, "ha per piksel", "mulai")
     hp = None
     if pakai and pred_seri.get(pakai["seri"]):
         hp = ha_per_piksel(pred_seri[pakai["seri"]], cache, pakai["seri"])
