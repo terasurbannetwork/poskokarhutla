@@ -1507,6 +1507,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Belum padam per kabupaten</label>
+          <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
         </details>
@@ -2120,6 +2121,12 @@ const Lapis = {
     this._hw = setInterval(() => { if (ada() && !document.hidden) ambil(); }, 600000); setTimeout(ambil, 1500); },
   async pasang(k) {
     const bawahLabel = Peta.lapisAwal(), gaya = {
+      /* lokasi langganan: lingkaran per jendela ~16 km yang terbakar >= 1/3 tahun; warna = bulan musim biasanya mulai (patroli sebulan sebelumnya), besar = tahun terbakar */
+      langganan: async () => { const d = this.cache.langganan ||= await muatJSON("data/riwayat_langganan.json");
+        peta.addSource("langganan", {type: "geojson", data: {type: "FeatureCollection", features: d.f.map(([x, y, a, n, b]) => ({type: "Feature", geometry: {type: "Point", coordinates: [x, y]}, properties: {a, n, b}}))}});
+        peta.addLayer({id: "langganan", type: "circle", source: "langganan", paint: {"circle-color": ["step", ["get", "b"], "#8a94a6", 1, "#6e1a12", 6, "#b8402a", 7, "#e0663a", 8, "#f29b54", 9, "#f7c68a"],
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["interpolate", ["linear"], ["get", "a"], 5, 1.6, 14, 4], 9, ["interpolate", ["linear"], ["get", "a"], 5, 6, 14, 13]],
+          "circle-opacity": .75, "circle-stroke-color": "#fff", "circle-stroke-width": .6}}, "wil-line"); },
       gambut: async () => { const d = this.cache.gambut ||= await muatJSON("data/lahan/gambut.geojson");
         peta.addSource("gambut", {type: "geojson", data: d}); peta.addLayer({id: "gambut", type: "fill", source: "gambut", paint: {"fill-color": "#6b4a2b", "fill-opacity": .38}}, "wil-line"); },
       /* batas KHG (BRGM PRIMS): garis putus-putus + nama mulai zoom 8; satu KHG = satu bentang hidrologis yang dikelola utuh */
@@ -2678,9 +2685,9 @@ const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e05
   gambut: ["#4a3426", "#a0764f", "daun"], khg: ["#5a3a1c", "#c9a27a", "kanal"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"],
-  kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
+  kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], langganan: ["#6e1a12", "#f29b54", "api"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {langganan: "Langganan api", aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
@@ -2702,7 +2709,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
   if (i.dataset.l === "satelit") ["himawari"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], langganan: ["langganan"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
@@ -2736,6 +2743,15 @@ $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("butto
     if (peta.getSource("pm10") && Lapis.cache.asap) { const a = gambarAsap(Lapis.cache.asap, 7, ST_PM10); peta.getSource("pm10").updateImage({url: a.url, coordinates: a.kor}); }
     if (peta.getSource("aqi") && Lapis.cache.dampakU) peta.getSource("aqi").setData(geoAQI(Lapis.cache.dampakU));
     if (peta.getSource("hujan")) { const h = gambarHujan(); peta.getSource("hujan").updateImage({url: h.url, coordinates: h.kor}); } if (peta.getLayer("angin")) { peta.removeLayer("angin"); peta.removeSource("angin"); Lapis.pasang("panah"); } }); });
+/* desa langganan untuk BPBD (scripts/data/riwayat_wilayah.py, 9 provinsi): provinsi terpilih, atau semua bila belum memilih */
+const DESA_RIWAYAT = ["14", "15", "16", "53", "61", "62", "63", "64", "93"];
+document.addEventListener("click", async e => { if (!e.target.closest("[data-desa-langganan]")) return;
+  const pv = DESA_RIWAYAT.includes(S.jalur?.[0]) ? [S.jalur[0]] : DESA_RIWAYAT;
+  const ds = (await Promise.all(pv.map(k => muatJSON(`data/riwayat_desa/${k}.json`).then(d => d.desa.filter(x => x.lg).map(x => ({...x, prov: k}))).catch(() => [])))).flat();
+  if (!ds.length) return toast("Data desa langganan belum tersedia");
+  ds.sort((a, b) => a.prov.localeCompare(b.prov) || a.kab.localeCompare(b.kab) || b.a - a.a || a.desa.localeCompare(b.desa));
+  unduh(`desa-langganan-${pv.length === 1 ? namaProv(pv[0]).toLowerCase().replace(/\s+/g, "-") : "9-provinsi"}.csv`, csv([["Provinsi", "Kab/Kota", "Kecamatan", "Desa", "Kode desa", "Tahun terbakar MODIS 2003-2025 (dari 23)", "Tren 2016-2025 vs 2003-2012", "Tahun terparah", "Titik MODIS tahun terparah", "Titik VIIRS 2026"],
+    ...ds.map(x => [namaProv(x.prov), x.kab, x.kec, x.desa, x.kd, x.a, x.tr || "", x.pk?.[0] ?? "", x.pk?.[1] ?? "", x.y?.[x.y.length - 1] ?? ""])])); });
 function renderLegenda() {
   /* hanya yang sedang tergambar: lapisan menyala DAN terlihat pada zoom saat ini (ambang sama dengan minzoom/opasitas lapisannya) */
   const fwiOn = Peta.lihat("fwi"), pfOn = Peta.lihat("pfvi") && adaPfvi(), z = peta ? peta.getZoom() : 4;
@@ -2750,6 +2766,10 @@ function renderLegenda() {
     <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && !window.PetaKab?.aktif() && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : ukurAktif() === "baru" ? "Jumlah api baru per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha)"}</div>
     <div class="legscale">${SKALA_WIL.map(([, c]) => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
+    ${!Peta.lihat("langganan") ? "" : `<div class="lbl" style="margin-top:8px">Lokasi langganan · musim biasanya mulai</div>
+    <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#6e1a12"></i>s.d. Mei</span><span><i class="sw dot" style="background:#b8402a"></i>Juni</span><span><i class="sw dot" style="background:#e0663a"></i>Juli</span><span><i class="sw dot" style="background:#f29b54"></i>Agustus</span><span><i class="sw dot" style="background:#f7c68a"></i>Sept+</span></div>
+    <p class="fnd" style="margin:0 0 6px">Terbakar ≥ 1/3 tahun 2003–2025 (MODIS); makin besar makin sering. Patroli sebulan sebelum warnanya.</p>
+    <button type="button" class="link" data-desa-langganan style="font-size:12px;margin-bottom:6px">Unduh desa langganan per kabupaten (CSV)</button>`}
     ${S.panel === "riw" || !(Peta.lihat("posko") || Peta.lihat("daops")) ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
     <div class="leg" style="margin:4px 0 0">${Peta.lihat("posko") ? `<span><i class="sw dot" style="background:#0b2545;border:2px solid #fff;box-shadow:0 0 0 1px #0b2545"></i>Posko provinsi</span>
       ${z >= 5.8 ? `<span><i class="sw dot" style="background:#5f6fb0;border:2px solid #fff"></i>Posko kabupaten</span>` : ""}
@@ -2930,15 +2950,17 @@ const Tabel = {
     const q = this.q.toLowerCase();
     let r = S.kluster.features.map(f => f.properties).filter(p => (!this.prov || this.prov.split(",").includes(p.prov)) && (!q || `${p.id} ${p.kec} ${p.kab} ${namaProv(p.prov)}`.toLowerCase().includes(q)));
     const k = this.urut, s = this.turun ? -1 : 1;
-    r.sort((a, b) => (a[k] > b[k] ? 1 : a[k] < b[k] ? -1 : 0) * s || b.n - a.n);
+    const v = p => k === "rs" ? p.wt?.rs ?? -1 : p[k];   /* rs = deteksi 7 hari / rata-rata titik setahun di lokasi (watak_kluster.py) */
+    r.sort((a, b) => (v(a) > v(b) ? 1 : v(a) < v(b) ? -1 : 0) * s || b.n - a.n);
     return r;
   },
   render() {
     const el = $("#kompleks"); if (!S.kluster) return;
     const r = this.baris(), hal = r.slice(this.hal * this.per, (this.hal + 1) * this.per), jml = Math.ceil(r.length / this.per);
-    const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel 24 j", 0, 1], ["hari", "Durasi", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
+    const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel 24 j", 0, 1], ["hari", "Durasi", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1], ["rs", "× biasa", 0, 1]];
     const KOL_TIP = {px24: "Jumlah piksel api VIIRS 375 m dalam 24 jam terakhir", fwi: "Fire Weather Index: potensi api menyala dan menjalar dari cuaca hari ini",
-      dc: "Drought Code: kekeringan lapisan organik dalam/gambut. Makin tinggi makin kering; di atas 300 api cenderung membara lama dan susah padam"};
+      dc: "Drought Code: kekeringan lapisan organik dalam/gambut. Makin tinggi makin kering; di atas 300 api cenderung membara lama dan susah padam",
+      rs: "Deteksi 7 hari dibanding rata-rata titik setahun di lokasi ini (2012–2025). Di atas 1: seminggu ini sudah melebihi setahun biasa; api di tempat yang jarang terbakar, sering pembukaan lahan baru"};
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
@@ -2951,7 +2973,7 @@ const Tabel = {
       $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) { Laci._popup = true; Laci.buka(b.dataset.id); } });
       $("#pg").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
       $("#tcsv").onclick = () => unduh(`cluster-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
-        ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
+        ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : k === "rs" ? p.wt?.rs ?? "" : p[k]).concat([p.lat, p.lon]))]));
     }
     /* pilihan provinsi bisa datang dari strip prioritas juga: pemilih ikut */
     const PV = this.prov ? this.prov.split(",") : [], sp = $("#tprov"); [...sp.options].forEach(o => o.selected = o.value ? PV.includes(o.value) : !PV.length); PilihCantik.label(sp);
@@ -2963,10 +2985,10 @@ const Tabel = {
       <td class="n num">${fmt(p.px24)}</td>
       <td class="n"><span class="kp-hr h${p.hari >= 7 ? 3 : p.hari >= 3 ? 2 : 1}">${fmt(p.hari)} hari</span></td>
       <td class="n num"><b>${fmt(p.n)}</b></td><td class="n num">${fmt(p.luas)}</td>
-      <td class="n"><span class="kp-fwi f${kelasFWI(p.fwi)}" title="${FWI_KELAS[kelasFWI(p.fwi)][0]}">${fmt(p.fwi)}</span></td><td class="n num kp-ab">${fmt(p.dc)}</td></tr>`).join("")
-      : `<tr><td colspan="11" class="kosong">Tidak ada cluster yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
+      <td class="n"><span class="kp-fwi f${kelasFWI(p.fwi)}" title="${FWI_KELAS[kelasFWI(p.fwi)][0]}">${fmt(p.fwi)}</span></td><td class="n num kp-ab">${fmt(p.dc)}</td><td class="n num">${p.wt?.rs != null ? (p.wt.rs >= 10 ? `<b>${fmt(Math.round(p.wt.rs))}×</b>` : fmt(p.wt.rs) + "×") : "–"}</td></tr>`).join("")
+      : `<tr><td colspan="12" class="kosong">Tidak ada cluster yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
-    $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} cluster</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td></tr>`;
+    $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} cluster</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td><td></td></tr>`;
     $("#pg").innerHTML = paginasi(this.hal, r.length, this.per, "cluster");
   },
 };

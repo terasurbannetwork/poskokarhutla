@@ -43,7 +43,7 @@ jobs:
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/riwayat_sel public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
@@ -245,6 +245,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+          python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
       # luas terukur Sentinel-2 (dNBR) per insiden yang sudah >= 7 hari tak terdeteksi; hasil menumpuk di public/data/luas_citra.json,

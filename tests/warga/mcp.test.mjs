@@ -9,7 +9,7 @@ const uji = berantai();
 const U = await siapkan("uji-mcp", {r2: true});
 const {DB, api, n, mf} = U;
 const R2 = await mf.getR2Bucket("MEDIA");
-const PUBLIK = ["titik_api_terkini", "status_kabupaten", "laporan_harian", "kualitas_udara", "peringatan_aktif", "daftar_wilayah", "cari_peraturan_bnpb", "baca_peraturan_bnpb", "relasi_peraturan_bnpb"];
+const PUBLIK = ["titik_api_terkini", "status_kabupaten", "laporan_harian", "kualitas_udara", "peringatan_aktif", "daftar_wilayah", "riwayat_lokasi", "cari_peraturan_bnpb", "baca_peraturan_bnpb", "relasi_peraturan_bnpb"];
 const KUNCI = ["rumah_rusak", "rumah_rusak_rekap", "bangunan_terpapar", "laporan_bnpb"];
 const BATAS_KB = 24000;
 let ipN = 0, id = 0;
@@ -80,6 +80,17 @@ uji("tools/call tiap tool publik: sukses, JSON sah, ukuran di bawah batas", asyn
   assert.ok(isi(await panggil("daftar_wilayah", {prov: "62"})).kabupaten.includes("Kapuas"));
   const s = isi(await panggil("status_kabupaten", {prov: "62", limit: 3})); assert.equal(s.kabupaten.length, 3); assert.ok(s.kabupaten.every(k => k.prov === "62"));
   assert.ok(s.kabupaten[0].titik >= s.kabupaten[1].titik);
+});
+
+uji("riwayat_lokasi: sel berisi, sel kosong data null, koordinat salah ditolak isError", async () => {
+  const tile = JSON.parse((await import("node:fs")).readFileSync(new URL("../../public/data/riwayat_sel/10_10.json", import.meta.url), "utf8")), sel = Object.keys(tile.c)[0], [ix, iy] = sel.split("_").map(Number);
+  const a = {lat: 6.5 - (iy + 0.5) * 0.05, lon: 94.5 + (ix + 0.5) * 0.05}, d = isi(await panggil("riwayat_lokasi", a));
+  assert.equal(d.sel, sel); assert.deepEqual(d.data, tile.c[sel]); assert.ok(d.catatan);
+  assert.equal(isi(await panggil("riwayat_lokasi", {lat: -10.9, lon: 94.6})).data, null);
+  assert.ok(!(await panggil("riwayat_lokasi", {lat: 5e-7, lon: 113})).j.result.isError, "notasi eksponen 5e-7 di dalam bbox tidak boleh ditolak");
+  for (const args of [{}, {lat: -2}, {lat: "-2", lon: 113}, {lat: 7, lon: 113}, {lat: -2, lon: 94}, {lat: -2, lon: 113, x: 1}, {lat: null, lon: 113}]) {
+    const r = await panggil("riwayat_lokasi", args); assert.equal(r.j.result?.isError, true, `${JSON.stringify(args)} harus isError: ${r.t.slice(0, 100)}`);
+  }
 });
 
 uji("argumen salah, tool tak dikenal, dan data tak ada: isError (bukan crash); tool tak dikenal -32602", async () => {

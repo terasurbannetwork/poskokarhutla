@@ -8,7 +8,7 @@ import {readFileSync, existsSync} from "node:fs";
 const ctx = vm.createContext({window: {}});
 vm.runInContext(readFileSync(new URL("../../public/riwayat_sel.js", import.meta.url), "utf8"), ctx);
 const R0 = ctx.window.RiwayatSel;   // objek dari realm vm lain: disalin supaya deepEqual membandingkan isi, bukan prototipe
-const R = {kunci: (...x) => structuredClone(R0.kunci(...x)), analisa: (...x) => structuredClone(R0.analisa(...x)), html: R0.html};
+const R = {kunci: (...x) => structuredClone(R0.kunci(...x)), analisa: (...x) => structuredClone(R0.analisa(...x)), html: R0.html, faktor: (...x) => structuredClone(R0.faktor(...x))};
 const meta = {th0: 2012, sd: "2026-10-12"};
 // 2012..2026: El Niño 2015/2019/2023 besar; 2026 s.d. 12 Okt sudah 800
 const rec = {y: [1, 1, 4, 1272, 0, 0, 1, 300, 0, 0, 0, 200, 0, 1, 800], yd: [1, 1, 1, 718, 0, 0, 0, 250, 0, 0, 0, 150, 0, 1, 800],
@@ -46,4 +46,43 @@ test("saran DITOLAK bila data tidak mendukung", () => {
   assert.ok(!a.saran.some(s => /operasi panjang|sekat bakar|kambuh|langganan/.test(s)), `saran tanpa dasar: ${a.saran.join(" | ")}`);
   assert.ok(!a.prakira.some(x => x[0] === "Arah jalar hari ini"), "angin 2 km/jam tidak boleh dipakai sebagai arah jalar");
   assert.ok(R.html(a).includes("Titik per tahun"));
+});
+
+test("analog El Niño hanya dipakai saat tahun berjalan El Niño dan episode El Niño >= 3", () => {
+  const en = {r: [20, 25, 30], s: [200, 330]};
+  const elNino = R.analisa({...rec, en}, meta, {hari: 3}, "El Niño");
+  assert.equal(elNino.analog, true);
+  assert.equal(elNino.lama.median, 25, "lama harus dari episode musim El Niño");
+  const biasa = R.analisa({...rec, en}, meta, {hari: 3}, "Netral");
+  assert.equal(biasa.analog, false);
+  assert.equal(biasa.lama.median, 10, "tahun netral memakai semua episode");
+  const tipis = R.analisa({...rec, en: {r: [20, 25]}}, meta, {hari: 3}, "El Niño");
+  assert.equal(tipis.analog, false, "2 episode El Niño terlalu sedikit untuk analog");
+  // gerbang uji balik: analog yang kalah di uji balik tidak boleh dipakai walau tahun El Niño, dan alasannya ditulis
+  const ditolak = R.analisa({...rec, en}, meta, {hari: 3}, "El Niño", {analog: false});
+  assert.equal(ditolak.analog, false);
+  assert.equal(ditolak.lama.median, 10);
+  assert.ok(ditolak.fakta.some(f => /memakai semua tahun: diuji pada musim El Niño/.test(f)), ditolak.fakta.join(" | "));
+});
+
+test("faktor pendorong: kelas dicocokkan ke tabel, variabel tanpa data DITOLAK", () => {
+  const pd = {kelas: {fwi: {nama: "FWI", tabel: [{kelas: "rendah", rasio: 1}, {kelas: "sedang", rasio: 1.2}, {kelas: "tinggi", rasio: 1.5}, {kelas: "sangat tinggi", rasio: 1.7}]},
+    gambut: {nama: "di gambut", tabel: [{kelas: "mineral", rasio: 1}, {kelas: "gambut", rasio: 3.6}]},
+    dc: {nama: "DC", tabel: [{kelas: "< 100", rasio: 1}, {kelas: "100-200", rasio: 2.5}, {kelas: "200-300", rasio: 2.7}]}}};
+  const f = R.faktor(pd, {fwi: 28, gambut: true, dc: 712, rh: null}, {sen: "VIIRS"}, null);
+  assert.deepEqual(f.map(x => [x.nama, x.kelas, x.rasio]), [["di gambut", "gambut", 3.6], ["DC", "200-300", 2.7], ["FWI", "sangat tinggi", 1.7]]);
+  assert.deepEqual(R.faktor(null, {fwi: 28}, {}, null), []);
+  assert.deepEqual(R.faktor(pd, {fwi: NaN, gambut: null}, {sen: "VIIRS"}, null), [], "angka rusak atau kosong tidak boleh jadi faktor");
+});
+
+test("seri panjang MODIS dipakai untuk kekerapan dan El Niño, VIIRS tetap untuk minggu ini", () => {
+  const m = {...meta, thm0: 2003, aktif_modis: 3};
+  // MODIS 2003..2026: terbakar (>= 3) hanya di tahun El Niño 2004/2006/2009/2015/2019/2023
+  const ym = Array.from({length: 24}, (_, i) => [2004, 2006, 2009, 2015, 2019, 2023].includes(2003 + i) ? 30 : 1);
+  const a = R.analisa({...rec, ym}, m, {hari: 3, n: 500}, null);
+  assert.match(a.fakta[0], /Terbakar 6 dari 23 tahun \(2003–2025, MODIS\)/);
+  assert.equal(a.sen, "MODIS");
+  assert.equal(a.th[0], 2003);
+  assert.ok(a.fakta.some(f => /El Niño \(2004, 2006, 2009, 2015, 2019, 2023\).*30 kali tahun biasa/.test(f)), a.fakta.join(" | "));
+  assert.ok(a.fakta.some(f => /Seminggu ini 500 deteksi.*VIIRS 2012–2025/.test(f)), "rasio minggu ini harus tetap VIIRS");
 });

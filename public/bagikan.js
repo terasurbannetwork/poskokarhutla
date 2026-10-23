@@ -266,7 +266,12 @@ const Bagikan = {
     const rows = [...dk.slice(0, 4).map(d => ({n: d.nama, v: Math.round(d.jarak), t: fmt(Math.round(d.jarak)) + " km", w: this.LV[1]})), ...(bp ? [{n: bp.nama, v: Math.round(bp.jarak), t: fmt(Math.round(bp.jarak)) + " km", w: this.LV[0]}] : [])];
     const rek = [{lv: p.level, t: `Status ${S.meta.status[p.level].toLowerCase()}${p.level === 3 && p.peringkat ? `, urutan ${p.peringkat} di wilayah kerjanya` : ""}.`},
       ...(p.gambut ? [{lv: 2, t: "Berada di lahan gambut: api bisa menyala di bawah permukaan, perlu pembasahan dan ground-check."}] : []),
-      ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : [])];
+      ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : []),
+      /* pola lokasi (watak_kluster.py `wt`, VIIRS 2012-2025 jendela ~16 km); bagian yang datanya kosong tidak ditulis */
+      ...(p.wt ? [{lv: p.wt.lg || p.wt.k >= 2 ? 2 : 1, t: [p.wt.lg ? `Lokasi langganan: terbakar ${p.wt.a} dari ${p.wt.n} tahun` : p.wt.a ? `Terbakar ${p.wt.a} dari ${p.wt.n} tahun` : `Tidak pernah terbakar besar dalam ${p.wt.n} tahun terakhir`,
+        p.wt.rs >= 1 ? `seminggu ini ${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun` : null, p.wt.md ? `biasanya ${fmt(p.wt.md)} hari` : null,
+        p.wt.akhir ? `musim sampai ${new Date(p.wt.akhir + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"})}` : null,
+        p.wt.k >= 2 ? "sering kambuh, mop-up 14 hari" : null].filter(Boolean).join(", ") + "."}] : [])];
     return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Cluster ${p.id}`, judul: `${p.kec}, ${p.kab}`,
       sub: `${namaProv(p.prov)} · status ${S.meta.status[p.level].toLowerCase()} · ${fmt(p.n)} deteksi VIIRS 7 hari`,
       kpi, bar: {judul: "Unit pemadam terdekat (jarak lurus)", pendek: "Unit terdekat", rows}, rek, legenda: [[this.LV[3], "Prioritas"], [this.LV[2], "Siaga"], [this.LV[1], "Patroli"]], petaKet: `Cluster ${p.id}`};

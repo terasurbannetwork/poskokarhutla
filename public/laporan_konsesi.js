@@ -88,9 +88,10 @@
   let IDX = null; const DATA = {}; let daftar = [];
   const gambar = new Map();   // id + dasar -> [citra, viirs]
 
-  let CIT = {}, CITJ = {}, GP = null, SR = null, RIW = {}, SRY = {}, riwTahun = 0;
+  let CIT = {}, CITJ = {}, GP = null, SR = null, RWL = null, RIW = {}, SRY = {}, riwTahun = 0;
   const janjiCit = Promise.all([fetch("/data/aktor_greenpeace.json").then(r => r.ok ? r.json() : null).then(d => { GP = d?.ringkasan ? d : null; }).catch(() => {}),
     ...[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023].map(t => fetch("/data/konsesi2026/sawit_riwayat" + (t === 2015 ? "" : "_" + t) + ".json").then(r => r.ok ? r.json() : null).then(d => { if (Array.isArray(d?.perusahaan)) SRY[t] = d; }).catch(() => {})),
+    fetch("/data/konsesi2026/riwayat_konsesi.json").then(r => r.ok ? r.json() : null).then(d => { RWL = d?.perusahaan ? d : null; }).catch(() => {}),
     fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {}),
     fetch("/data/konsesi2026/citra_jelas.json").then(r => r.ok ? r.json() : {}).then(d => { CITJ = d; }).catch(() => {})]);
   /* lambang kab/kota: "kodeProv|Nama" -> berkas di /lambang/kabkota (sama dengan index.html); gagal = tanpa lambang */
@@ -586,6 +587,19 @@
 
   const tag = (ik, l, v) => `<span class="kn-tg">${IKON_KPI[ik]}${l} <b>${v}</b></span>`;
   const blokInfo = (judul, rows) => `<table class="kn-it"><thead><tr><th colspan="2">${judul}</th></tr></thead><tbody>${rows.map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join("")}</tbody></table>`;
+  /* riwayat api 2012-2026 per PT (scripts/data/riwayat_wilayah.py): satu baris ringkas + jalur batang tahunan. Definisi ada di riwayat_konsesi.json */
+  const d1 = n => n.toLocaleString("id-ID", {maximumFractionDigits: 1});
+  function riwayatApi(r) {
+    const w = RWL?.perusahaan[r.id]; if (!w?.ym) return "";
+    const D = RWL.definisi, th1 = D.thm0 + w.ym.length - 1, mx = Math.max(...w.ym, 1);
+    const bagian = [`Terbakar <b>${fmt(w.a)}</b> dari ${fmt(D.n)} tahun`,
+      w.tr ? `tren <b>${w.tr}</b>${w.rt != null ? ` ${d1(w.rt)}×` : ""}` : "tren belum dinilai",
+      w.el != null ? `El Niño <b>${d1(w.el)}×</b>` : "",
+      w.yd[1] ? `${th1} <b>${d1(w.yd[0] / w.yd[1])}×</b> rata-rata` : `${th1} <b>${fmt(w.yd[0])}</b> titik`].filter(Boolean).join(" · ");
+    const bar = w.ym.map((v, i) => `<i style="height:${v ? Math.max(8, v / mx * 100) : 0}%" class="${D.thm0 + i === th1 ? "kn-rw-ini" : EL_RW.includes(D.thm0 + i) ? "kn-rw-el" : ""}" title="${D.thm0 + i}: ${fmt(v)} titik MODIS${D.thm0 + i === th1 ? " (belum lengkap)" : ""}"></i>`).join("");
+    return `<div class="kn-rw"><span class="kn-rw-t">${bagian}</span><span class="kn-rw-b" aria-label="Titik panas MODIS per tahun ${D.thm0} sampai ${th1}">${bar}</span><small>MODIS ${D.thm0}–${th1}</small></div>`;
+  }
+  const EL_RW = [2004, 2006, 2009, 2015, 2019, 2023];
   function profil(r, i) {
     const kw = Object.entries(r.kawasan || {}).filter(([, v]) => v >= .01).map(([f, v]) => `${KWS[f] || f} ${pct(v)}`).join(", ") || "Di luar kawasan hutan tercatat";
     const ps = r.pemegang || [];
@@ -605,6 +619,7 @@
         <div><span class="kn-kpi-l">Hari dengan hotspot</span><b>${fmt(r.hari_aktif)}<em> hari</em></b><small>${r.kejadian.length} kejadian, terlama ${fmt(terlama[2])} hari</small></div>
         <div class="${r.titik_7h ? "kn-kpi-a" : ""}"><span class="kn-kpi-l">7 hari terakhir</span><b>${fmt(r.titik_7h)}</b><small>${r.titik_7h ? "titik, api masih menyala" : "tidak ada titik"}</small></div>
       </section>
+      ${riwayatApi(r)}
       <div class="kn-dua">
         <div class="kn-info">
           ${blokInfo("Identitas", [

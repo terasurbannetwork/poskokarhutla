@@ -1,0 +1,60 @@
+{
+ "dibuat": "2026-10-23",
+ "tahun_uji": [
+  2019,
+  2023
+ ],
+ "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu yang >= h hari; pembanding = 2 x umur. Akhir musim: median hari deteksi terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi.",
+ "lama": {
+  "3": {
+   "n": 13548,
+   "mae": 5.0,
+   "tepat": 58,
+   "toleransi": 3,
+   "mae_pembanding": 5.0
+  },
+  "7": {
+   "n": 6626,
+   "mae": 6.4,
+   "tepat": 49,
+   "toleransi": 3,
+   "mae_pembanding": 6.8
+  }
+ },
+ "musim": {
+  "n": 6739,
+  "mae": 22.8,
+  "tepat": 44,
+  "toleransi": 14,
+  "mae_pembanding": 29.2
+ },
+ "el_nino": {
+  "definisi": "Musim El Nino 2019, 2023 diramal dua cara pada kasus yang SAMA: umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya, 2015, 2019, 2023).",
+  "lama": {
+   "3": {
+    "n": 10893,
+    "mae_umum": 5.1,
+    "mae_analog": 5.8,
+    "tepat_umum": 58,
+    "tepat_analog": 48,
+    "toleransi": 3
+   },
+   "7": {
+    "n": 4126,
+    "mae_umum": 6.6,
+    "mae_analog": 7.4,
+    "tepat_umum": 48,
+    "tepat_analog": 40,
+    "toleransi": 3
+   }
+  },
+  "musim": {
+   "n": 6600,
+   "mae_umum": 22.5,
+   "mae_analog": 25.5,
+   "tepat_umum": 44,
+   "tepat_analog": 40,
+   "toleransi": 14
+  }
+ }
+}

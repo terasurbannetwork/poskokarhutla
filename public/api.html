@@ -56,6 +56,12 @@ pre code{padding:0;white-space:pre;background:none}
 </table></div>
 <p class="kecil">Kolom pembaruan adalah jadwal pipeline, bukan jaminan. Berkas yang gagal diperbarui tetap menyajikan versi sebelumnya; selalu lihat waktu di dalam berkas. Jawaban disimpan cache 5 menit.</p>
 
+<h3>Riwayat titik panas satu lokasi</h3>
+<div class="tabel"><table>
+<tr><th>Endpoint</th><th>Isi</th></tr>
+<tr><td><code>GET /api/v1/riwayat?lat=-2.21&amp;lon=113.92</code></td><td>Riwayat titik panas VIIRS S-NPP sejak 2012 di sel 0,05 derajat (sekitar 5 km) yang memuat koordinat itu. <code>lat</code> (-11,5 sampai 6,5) dan <code>lon</code> (94,5 sampai 141,5) wajib, selain itu 400. Jawaban: <code>sumber</code>, <code>th0</code> (tahun pertama), <code>sd</code> (data sampai tanggal), <code>sel</code>, dan <code>data</code>: <code>y</code> titik per tahun, <code>yd</code> titik sampai tanggal <code>sd</code> tiap tahun, <code>m</code> titik per bulan, <code>r</code> lama episode (hari), <code>k</code> episode per tahun terbakar, <code>x</code> jangkauan (km), <code>v</code> pergeseran pusat api, <code>s</code> awal dan akhir musim (hari ke-), <code>nm</code> persen deteksi malam. Sel tanpa riwayat dijawab 200 dengan <code>data: null</code> dan <code>catatan</code>. Pola masa lalu, bukan prakiraan fisika. Tersedia juga sebagai tool MCP <code>riwayat_lokasi</code>.</td></tr>
+</table></div>
+
 <h2>Data berkunci (perlu X-API-Key)</h2>
 <div class="tabel"><table>
 <tr><th>Endpoint</th><th>Cakupan kunci</th><th>Isi</th></tr>
@@ -98,6 +104,7 @@ const {jumlah, laporan} = await r.json();</code></pre>
 <tr><td><code>kualitas_udara</code></td><td>Prakiraan PM2,5 per provinsi dan penduduk terpapar</td><td>-</td></tr>
 <tr><td><code>peringatan_aktif</code></td><td>Peringatan cuaca dan gelombang tinggi BMKG yang aktif</td><td>-</td></tr>
 <tr><td><code>daftar_wilayah</code></td><td>Kode provinsi dan nama kabupaten/kota</td><td>-</td></tr>
+<tr><td><code>riwayat_lokasi</code></td><td>Riwayat titik panas VIIRS sejak 2012 di sekitar <code>lat</code>, <code>lon</code> (wajib)</td><td>-</td></tr>
 <tr><td><code>rumah_rusak</code>, <code>rumah_rusak_rekap</code></td><td>Laporan dan rekap rumah rusak (status sah, tanpa catatan, koordinat ~11 m)</td><td><code>rumah_rusak</code></td></tr>
 <tr><td><code>bangunan_terpapar</code></td><td>Bangunan terpapar bahaya aktif, ringkasan</td><td><code>bangunan</code></td></tr>
 <tr><td><code>laporan_bnpb</code></td><td>Laporan Harian dan Paparan Presiden BNPB</td><td><code>laporan_bnpb</code></td></tr>

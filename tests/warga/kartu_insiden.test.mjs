@@ -167,3 +167,30 @@ uji("pasKartu membuang koordinat di luar bbox dan angka negatif atau tak hingga"
   assert.deepEqual(Object.keys(o).sort(), ["insiden", "luas_koreksi"]);
   const n = JSON.parse(pasKartu({insiden: "62-261022-007", masuk: null, front: {lat: -2.5, lon: 112}})); assert.equal(n.masuk, null); assert.deepEqual(n.front, {lat: -2.5, lon: 112});
 });
+
+uji("pasKartu: watak sah dibawa; field tak sah dibuang, objek bukan-objek atau a > n dibuang seluruhnya", () => {
+  const sah = {a: 9, n: 14, rt: 120, rs: 0.4, md: 7, sisa: 3, akhir: "2026-11-19", k: 2.5, lg: true, x: 10.2};
+  assert.deepEqual(JSON.parse(pasKartu({insiden: "62-261022-001", watak: sah})).watak, sah);
+  const campur = JSON.parse(pasKartu({insiden: "62-261022-001", watak: {a: 3, n: 10, md: -1, sisa: 1.5, akhir: "2026-02-30", k: "dua", lg: "ya", x: Infinity, rs: null, ekstra: "x"}})).watak;
+  assert.deepEqual(campur, {a: 3, n: 10}, "hanya field sah yang lolos, termasuk tanpa kunci tak dikenal dan null");
+  for (const buruk of ["teks", 5, [], [1], null, {}, {a: 20, n: 10}, {a: "9", n: "14"}, {akhir: "19 Nov"}]) {
+    const o = JSON.parse(pasKartu({insiden: "62-261022-001", watak: buruk})); assert.ok(!("watak" in o), `watak ${JSON.stringify(buruk)} harus dibuang`);
+  }
+  assert.equal(pasKartu({watak: "teks"}), null, "kartu yang hanya berisi watak buruk = null");
+  const lat = {lat: -2.5, lon: 112}, aman = JSON.parse(pasKartu({insiden: "62-261022-001", watak: sah, front: lat, syarat: ["a".repeat(1500), "b".repeat(1500)]}));
+  assert.ok(!("syarat" in aman) && aman.watak, "kepanjangan karena syarat: syarat dibuang lebih dulu, watak selamat");
+  const sesak = JSON.parse(pasKartu({insiden: "62-261022-001", watak: sah, tren: {n24: 5}, front: {...lat, pad: "x".repeat(3100)}}));
+  assert.ok(!("watak" in sesak) && !("front" in sesak), "kepanjangan karena front: watak dibuang sebelum tren, lalu front");
+});
+
+uji("Kartu Api: blok Pola lokasi dari watak (html dan teks WhatsApp), kalimat kambuh hanya bila k >= 2, watak buruk tidak menggambar apa pun", async () => {
+  const vm = await import("node:vm"), {readFileSync} = await import("node:fs"), jendela = {};
+  vm.runInNewContext(readFileSync(new URL("../../public/instansi_kartu.js", import.meta.url), "utf8"), {window: jendela, Number, Math, Date, String, Array, Object, Intl, encodeURIComponent});
+  const K = jendela.KartuApi, t = {lat: -2.5, lon: 112}, w = {a: 9, n: 14, lg: true, md: 7, sisa: 3, akhir: "2026-11-19", k: 2.5, x: 10.2};
+  const h = K.html(t, {insiden: "62-1", watak: w}), x = K.teks(t, {insiden: "62-1", watak: w});
+  for (const m of ["Pola lokasi", "Lokasi langganan: terbakar 9 dari 14 tahun", "Biasanya 7 hari; perkiraan sisa 3 hari", "selesai 19 Nov", "Sering kambuh: jangan tinggalkan lokasi, lanjutkan mop-up dan patroli 14 hari setelah padam"]) { assert.ok(h.includes(m), "html: " + m); assert.ok(x.includes(m), "teks: " + m); }
+  assert.ok(!K.teks(t, {insiden: "62-1", watak: {...w, k: 1.2}}).includes("Sering kambuh"));
+  assert.ok(!/NaN|undefined|null|\[object/.test(h + x));
+  const buruk = K.html(t, {insiden: "62-1", watak: {a: "x", n: -1, akhir: "besok", k: "dua"}}); assert.ok(!buruk.includes("Pola lokasi") && !buruk.includes("NaN"));
+  assert.ok(!K.html(t, {insiden: "62-1"}).includes("Pola lokasi"));
+});

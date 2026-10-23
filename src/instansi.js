@@ -870,14 +870,26 @@ export async function butirCekUlang(env, kini, dummyOk) {
   } catch (e) { if (tanpaTabel(e) || /no such column/i.test(String(e?.message))) return []; throw e; }
 }
 /* kartu (kunci saudara di tugas_kompleks.json, kontrak docs/bnpb/RANCANGAN-API-PADAM.md bagian 7): hanya kunci berikut yang dibawa, JSON <= 3000 huruf.
-   Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
-const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"];
+   Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, watak, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
+const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "watak", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"];
 const JENIS_TUGAS = ["pemadaman", "verifikasi"];
 /* teks tampil per jenis tugas; verifikasi = cluster firespot "mungkin" (cek lapangan), BUKAN pemadaman. Tanpa jenis (berkas lama) = pemadaman. SLA sama dengan pemadaman: konfirmasi 6 jam (cek cepat justru paling berguna), kabar tindakan hanya muncul bila regu menyatakan api ada. */
 export const jenisTugas = kartu => kartu?.jenis === "verifikasi" ? "verifikasi" : "pemadaman";
 export const teksJenis = j => j === "verifikasi" ? {judul: "Cek lapangan: kemungkinan api, belum pasti", arahan: "Pastikan ada api atau tidak, kabari lewat laporan. Jangan dikerahkan sebagai pemadaman sebelum api terlihat."} : {judul: null, arahan: null};
 const insidenSah = v => typeof v === "string" && v.length >= 3 && v.length <= 40 ? v : null;
 const angkaSah = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
+/* watak lokasi dari riwayat VIIRS (public/data/tugas_kompleks.json kartu.watak): field tak sah dibuang satu per satu, bukan objek -> seluruhnya dibuang; a > n atau tanpa field sah = dibuang. */
+const intWatak = (v, maks) => Number.isInteger(v) && v >= 0 && v <= maks;
+const angkaWatak = (v, maks) => typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= maks;
+export function pasWatak(w) {
+  if (!w || typeof w !== "object" || Array.isArray(w)) return null;
+  const o = {};
+  if (intWatak(w.a, 100)) o.a = w.a; if (intWatak(w.n, 100)) o.n = w.n; if (intWatak(w.rt, 1e6)) o.rt = w.rt;
+  if (angkaWatak(w.rs, 1e3)) o.rs = w.rs; if (intWatak(w.md, 3650)) o.md = w.md; if (intWatak(w.sisa, 3650)) o.sisa = w.sisa;
+  if (tglSah(w.akhir)) o.akhir = w.akhir; if (angkaWatak(w.k, 100)) o.k = w.k; if (typeof w.lg === "boolean") o.lg = w.lg; if (angkaWatak(w.x, 1e3)) o.x = w.x;
+  if (o.a !== undefined && o.n !== undefined && o.a > o.n) return null;
+  return Object.keys(o).length ? o : null;
+}
 export function pasKartu(k) {
   if (!k || typeof k !== "object" || Array.isArray(k)) return null;
   const x = {};
@@ -889,12 +901,13 @@ export function pasKartu(k) {
   if (x.radius_m !== undefined && !angkaSah(x.radius_m)) delete x.radius_m;
   for (const c of ["luas_aktif", "luas_koreksi"]) if (x[c] !== undefined && !(x[c] && typeof x[c] === "object" && ["ha", "min", "maks"].every(f => x[c][f] === undefined || angkaSah(x[c][f])))) delete x[c];
   if (x.tren !== undefined && !(x.tren && typeof x.tren === "object" && ["n24", "n24_kemarin"].every(f => x.tren[f] === undefined || angkaSah(x.tren[f])))) delete x.tren;
+  if (x.watak !== undefined) { const w = pasWatak(x.watak); if (w) x.watak = w; else delete x.watak; }
   if (Array.isArray(x.konsesi)) x.konsesi = x.konsesi.slice(0, 3);
   if (Array.isArray(x.syarat)) x.syarat = x.syarat.filter(v => typeof v === "string").slice(0, 3);
   if (!Object.keys(x).length) return null;
   let s = JSON.stringify(x);
   if (Array.isArray(x.konsesi)) while (x.konsesi.length && (s = JSON.stringify(x)).length > MAKS_KARTU) x.konsesi = x.konsesi.slice(0, -1);
-  for (const c of ["konsesi", "syarat", "tren", "luas_koreksi", "luas_aktif", "masuk", "radius_m", "front"]) { if ((s = JSON.stringify(x)).length <= MAKS_KARTU) break; delete x[c]; }
+  for (const c of ["konsesi", "syarat", "watak", "tren", "luas_koreksi", "luas_aktif", "masuk", "radius_m", "front"]) { if ((s = JSON.stringify(x)).length <= MAKS_KARTU) break; delete x[c]; }
   s = JSON.stringify(x); return s.length <= MAKS_KARTU && Object.keys(x).length ? s : null;
 }
 const titikSah = o => o && typeof o === "object" && Number.isFinite(o.lat) && Number.isFinite(o.lon) && o.lat >= BBOX.latMin && o.lat <= BBOX.latMaks && o.lon >= BBOX.lonMin && o.lon <= BBOX.lonMaks ? o : null;
@@ -1033,7 +1046,7 @@ async function buatTugasIsi(env, kini, versi, bc = "karhutla") {
     const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses), ins = insidenSah(k.insiden) ?? (lain ? insidenSah(k.id) : null), front = titikSah(k.front), lat = front ? front.lat : k.lat, lon = front ? front.lon : k.lon;
     let dekat = ins ? perInsiden.get(ins) ?? null : null, jarak = GABUNG_KM + 1e-9;
     if (!dekat && !(lain && ins)) for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = Math.min(km(k.lat, k.lon, t.lat, t.lon), km(lat, lon, t.lat, t.lon)); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
-    const kt = kartuAda.ya && lain ? pasKartuBencana(bc, {...k, insiden: ins ?? undefined, front: titikSah(k.front) ?? undefined, masuk: k.masuk === null ? null : titikSah(k.masuk) ?? undefined}) : kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal, firespot: k.firespot, jenis: k.jenis}) : null;
+    const kt = kartuAda.ya && lain ? pasKartuBencana(bc, {...k, insiden: ins ?? undefined, front: titikSah(k.front) ?? undefined, masuk: k.masuk === null ? null : titikSah(k.masuk) ?? undefined}) : kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, watak: k.watak, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal, firespot: k.firespot, jenis: k.jenis}) : null;
     /* verifikasi hanya bertahan bila tugas yang digabung juga verifikasi: tugas pemadaman tidak diturunkan, dan pemadaman baru menaikkan verifikasi lama */
     const jenisKt = gabung => { if (!kt) return kt; const o = JSON.parse(kt); if (o.jenis === "verifikasi" && gabung && jenisAda.get(gabung) !== "verifikasi") o.jenis = "pemadaman"; return JSON.stringify(o); };
     const simpanKartu = (id, gabung) => { if (kartuAda.ya && (ins || kt)) kartu.push(env.DB.prepare("INSERT INTO tugas_kartu (tugas_id, insiden, kartu, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(tugas_id) DO UPDATE SET insiden = coalesce(?2, insiden), kartu = coalesce(?3, kartu), diperbarui = ?4").bind(id, ins, jenisKt(gabung), kini)); if (ins) perInsiden.set(ins, buka.find(t => t.id === id)); };

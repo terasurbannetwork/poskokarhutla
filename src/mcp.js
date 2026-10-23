@@ -9,7 +9,7 @@
    - CORS terbuka seperti /api/v1, tanpa Allow-Credentials. Ditangani di fetch() worker.js sebelum gerbang centurisk97.id: terbuka di semua host. */
 import {bacaBytes, ipHash} from "./worker.js";
 import {laju} from "./bnpb.js";
-import {kunciSah, DATA} from "./api_v1.js";
+import {kunciSah, DATA, riwayatSel} from "./api_v1.js";
 import {bacaDaftar, bacaRekap, KOLOM_V1} from "./rumah_rusak.js";
 import {kirim} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
@@ -36,6 +36,7 @@ const lima = (a, urut, n) => [...a].sort(urut).slice(0, n);
 /* ---------------- skema argumen ---------------- */
 const P_PROV = {type: "string", pattern: "^\\d{2}$", description: "Kode provinsi BPS 2 digit, mis. 62 = Kalimantan Tengah. Daftar kode: tool daftar_wilayah."};
 const P_LIMIT = (maks, awal) => ({type: "integer", minimum: 1, maximum: maks, default: awal, description: `Jumlah baris maksimum (1-${maks}, bawaan ${awal}).`});
+const P_KOOR = (d, minimum, maximum) => ({type: "number", minimum, maximum, description: d});
 const P_TGL = d => ({type: "string", pattern: "^\\d{4}-\\d{2}-\\d{2}$", description: d});
 function cekArgumen(skema, a) {
   a ??= {};
@@ -46,6 +47,7 @@ function cekArgumen(skema, a) {
     const v = a[k];
     if (v === undefined || v === null) { if (skema.required?.includes(k)) return {galat: `argumen '${k}' wajib`}; if (p.default !== undefined) out[k] = p.default; continue; }
     if (p.type === "integer" && (!Number.isInteger(v) || v < (p.minimum ?? -Infinity) || v > (p.maximum ?? Infinity))) return {galat: `argumen '${k}' harus bilangan bulat ${p.minimum ?? ""}..${p.maximum ?? ""}`};
+    if (p.type === "number" && (typeof v !== "number" || !Number.isFinite(v) || v < p.minimum || v > p.maximum)) return {galat: `argumen '${k}' harus angka ${p.minimum}..${p.maximum}`};
     if (p.type === "string") {
       if (typeof v !== "string" || v.length > (p.maxLength ?? 200)) return {galat: `argumen '${k}' harus teks (maks ${p.maxLength ?? 200} huruf)`};
       if (p.pattern && !new RegExp(p.pattern).test(v)) return {galat: `argumen '${k}' berformat salah (${p.description || p.pattern})`};
@@ -113,6 +115,11 @@ async function daftarWilayah(env, url, {prov}) {
   return {prov, jumlah: kab.length, kabupaten: kab, catatan: "Nama kabupaten/kota persis seperti dipakai argumen kab."};
 }
 
+async function riwayatLokasi(env, url, a) {
+  const j = await dariRespons(await riwayatSel(env, url, new URLSearchParams({lat: a.lat.toFixed(10), lon: a.lon.toFixed(10)})));
+  return {...j, catatan: j.catatan ?? "data = rekaman sel 0,05 derajat (sekitar 5 km) dari arsip VIIRS S-NPP sejak th0: y = titik per tahun, yd = titik sampai tanggal sd tiap tahun, m = titik per bulan, r = lama episode (hari), k = episode per tahun terbakar, x = jangkauan km, v = pergeseran, s = awal dan akhir musim (hari ke-), nm = % deteksi malam. Pola masa lalu, bukan prakiraan fisika."};
+}
+
 /* ---------------- tool berkunci: logika yang sama dengan /api/v1 ---------------- */
 async function dariRespons(r) {   // Response pembaca v1 -> objek, atau GalatTool dengan pesan galat aslinya
   const t = await r.text(); let j; try { j = JSON.parse(t); } catch (e) { tolak(`jawaban bukan JSON (${r.status})`); }
@@ -175,6 +182,8 @@ const TOOLS = [
     skema: {properties: {prov: P_PROV}}, jalan: kualitasUdara},
   {nama: "peringatan_aktif", deskripsi: "Peringatan dini cuaca (nowcast) yang sedang aktif dan peringatan gelombang tinggi dari BMKG. Diperbarui berkala beberapa kali sehari; periksa kolom dibuat untuk umur data.", skema: {properties: {}}, jalan: peringatanAktif},
   {nama: "daftar_wilayah", deskripsi: "Kode provinsi BPS (38 provinsi). Dengan argumen prov: daftar nama kabupaten/kota provinsi itu, untuk dipakai sebagai argumen kab tool lain.", skema: {properties: {prov: P_PROV}}, jalan: daftarWilayah},
+  {nama: "riwayat_lokasi", deskripsi: "Riwayat titik panas VIIRS S-NPP sejak 2012 di sekitar satu koordinat (sel 0,05 derajat): titik per tahun dan per bulan, lama episode, kekambuhan, jangkauan, awal dan akhir musim. data null bila lokasi tidak punya riwayat (kebakaran di sana tidak biasa). Pola masa lalu, bukan prakiraan fisika.",
+    skema: {required: ["lat", "lon"], properties: {lat: P_KOOR("Lintang, -11,5 sampai 6,5 (negatif = selatan).", -11.5, 6.5), lon: P_KOOR("Bujur, 94,5 sampai 141,5.", 94.5, 141.5)}}, jalan: riwayatLokasi},
   {nama: "cari_peraturan_bnpb", deskripsi: "Cari pasal di peraturan BNPB (Peraturan Badan, Perka, juklak/juknis, keputusan kepala) dari jdih.bnpb.go.id, pencarian teks penuh per pasal. Jawab pengguna dengan MENGUTIP label pasal dan id dokumen (mis. 'Pasal 5 perban-1-2026'); jangan mengarang pasal. UU/PP/Perpres di luar BNPB tidak ada di sini: rujuk ke pasal.id. Hasil dengan resmi=0 adalah salinan tidak resmi (lihat sumber): sarankan pengguna memeriksa sumber resmi (jdih.bnpb.go.id).",
     skema: {required: ["q"], properties: {q: {type: "string", maxLength: 200, description: "Kata kunci, mis. 'dana bersama penyaluran'."}, jenis: {type: "string", maxLength: 30, description: "Singkatan atau jenis dokumen, mis. PERBAN, PERKA."}, tahun: {type: "integer", minimum: 1900, maximum: 2100, description: "Tahun penetapan."}, status: {type: "string", maxLength: 30, description: "mis. BERLAKU, DICABUT."}, limit: P_LIMIT(20, 8)}}, jalan: cariPeraturan},
   {nama: "baca_peraturan_bnpb", deskripsi: "Baca teks peraturan BNPB berdasarkan id dokumen, seluruhnya (dipotong, disertai daftar isi) atau satu pasal lewat argumen pasal. Saat menjawab, kutip label pasal dan id dokumen. UU/PP di luar BNPB: rujuk ke pasal.id. Dokumen resmi=0 adalah salinan tidak resmi (lihat sumber): sarankan cek sumber resmi.",

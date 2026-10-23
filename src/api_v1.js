@@ -63,6 +63,7 @@ const INDEKS = {
   versi: 1, dokumentasi: "/api", autentikasi: "header X-API-Key (hanya untuk endpoint berkunci)",
   endpoint: [
     ...Object.keys(DATA).map(n => ({jalur: `/api/v1/data/${n}`, kunci: false, cakupan: null})),
+    {jalur: "/api/v1/riwayat", kunci: false, cakupan: null},
     ...Object.entries(BERKUNCI).map(([j, [c]]) => ({jalur: "/api/v1" + j, kunci: true, cakupan: c})),
   ],
 };
@@ -75,10 +76,34 @@ async function dataPublik(env, url, nama) {
   return new Response(r.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=300, stale-while-revalidate=3600", "x-content-type-options": "nosniff"}});
 }
 
+/* Riwayat titik VIIRS 2012-sekarang per sel 0,05 derajat (public/data/riwayat_sel/<tx>_<ty>.json, scripts/data/riwayat_sel.py). Rumus kunci = public/riwayat_sel.js kunci().
+   Publik tanpa kunci (berkas statis yang sama dengan layar), disimpan cache 5 menit seperti /data/*. Sel tanpa catatan = data null, bukan 404. */
+const ANGKA = /^-?\d{1,3}(\.\d+)?$/, BBOX_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
+export function kunciSel(lat, lon) {
+  const ix = Math.trunc((lon - BBOX_ID.lonMin) / 0.05), iy = Math.trunc((BBOX_ID.latMaks - lat) / 0.05);
+  return {ubin: `${Math.trunc(ix * 0.05)}_${Math.trunc(iy * 0.05)}`, sel: `${ix}_${iy}`};
+}
+export async function riwayatSel(env, url, p) {
+  const a = p.get("lat"), o = p.get("lon");
+  if (!ANGKA.test(a ?? "") || !ANGKA.test(o ?? "")) return gagal(400, "lat dan lon wajib berupa angka desimal, mis. lat=-2.21&lon=113.92");
+  const lat = +a, lon = +o;
+  if (lat < BBOX_ID.latMin || lat > BBOX_ID.latMaks || lon < BBOX_ID.lonMin || lon > BBOX_ID.lonMaks) return gagal(400, `koordinat di luar Indonesia (lat ${BBOX_ID.latMin} sampai ${BBOX_ID.latMaks}, lon ${BBOX_ID.lonMin} sampai ${BBOX_ID.lonMaks})`);
+  const k = kunciSel(lat, lon), r = await env.ASSETS.fetch(new Request(new URL(`/data/riwayat_sel/${k.ubin}.json`, url)));
+  let t = null; if (r.ok) t = await r.json().catch(() => null); else r.body?.cancel();
+  const rec = t?.c && Object.hasOwn(t.c, k.sel) ? t.c[k.sel] : null;
+  return json({sumber: t?.sumber ?? null, th0: t?.th0 ?? null, sd: t?.sd ?? null, sel: k.sel, data: rec,
+    ...(rec ? {} : {catatan: t ? "sel ini tidak punya riwayat titik VIIRS sejak 2012 (kurang dari 20 titik dalam sekitar 16 km): kebakaran di sini tidak biasa" : "ubin riwayat untuk lokasi ini belum tersedia"})}, 200, {"cache-control": "public, max-age=300, stale-while-revalidate=3600"});
+}
+
 async function dalam(req, env, ctx, url) {
   const kini = Date.now(), sisa = url.pathname.replace(/\/+$/, "").slice("/api/v1".length);
   if (req.method !== "GET" && req.method !== "HEAD") return gagal(405, "hanya GET", {allow: "GET, HEAD, OPTIONS"});
   if (sisa === "") return json(INDEKS, 200, {"cache-control": "public, max-age=300"});
+  if (sisa === "/riwayat") {   // laju per hash IP; di sini, bukan di riwayatSel, supaya tool MCP (yang punya laju mcp.ip sendiri) tidak terhitung dua kali
+    if (!env.IP_SALT) { console.error("api v1: IP_SALT belum diset"); return gagal(503, "layanan belum tersedia"); }
+    const g = await laju(env, await ipHash(env, req), "riwayat.ip", [[JAM, 600]], kini); if (g) return g;
+    return riwayatSel(env, url, url.searchParams);
+  }
   if (sisa.startsWith("/data/")) return dataPublik(env, url, sisa.slice(6));
   const b = Object.hasOwn(BERKUNCI, sisa) ? BERKUNCI[sisa] : null;
   if (!b) return json({galat: "rute tidak ada", petunjuk: "daftar endpoint di /api/v1, dokumentasi di /api"}, 404);

@@ -52,6 +52,31 @@ uji("data publik: tiap nama dalam daftar putih 200 tanpa kunci, isinya berkas as
   assert.equal(meta.j.jumlah_titik, asli.jumlah_titik);
 });
 
+uji("riwayat sel: publik, sel berisi dikembalikan, sel kosong data null, koordinat salah atau di luar bbox 400", async () => {
+  const tile = JSON.parse(readFileSync(path.join(AKAR, "public/data/riwayat_sel/10_10.json"), "utf8")), sel = Object.keys(tile.c)[0], [ix, iy] = sel.split("_").map(Number);
+  assert.equal(`${Math.trunc(ix * 0.05)}_${Math.trunc(iy * 0.05)}`, "10_10", "sel contoh berada di ubin 10_10");
+  const lat = (6.5 - (iy + 0.5) * 0.05).toFixed(4), lon = (94.5 + (ix + 0.5) * 0.05).toFixed(4);
+  const r = await api("GET", `/api/v1/riwayat?lat=${lat}&lon=${lon}`); assert.equal(r.s, 200, r.t);
+  assert.equal(r.j.sel, sel); assert.equal(r.j.th0, tile.th0); assert.equal(r.j.sd, tile.sd); assert.deepEqual(r.j.data, tile.c[sel]); assert.equal(r.j.catatan, undefined);
+  assert.equal(r.h.get("access-control-allow-origin"), "*"); assert.match(r.h.get("cache-control"), /public/); assert.equal(r.h.get("access-control-allow-credentials"), null);
+  const kosong = await api("GET", "/api/v1/riwayat?lat=-10.9&lon=94.6"); assert.equal(kosong.s, 200); assert.equal(kosong.j.data, null); assert.match(kosong.j.catatan, /riwayat|ubin/);
+  for (const q of ["", "lat=-2", "lon=113", "lat=abc&lon=113", "lat=&lon=113", "lat=-2&lon=", "lat=NaN&lon=113", "lat=Infinity&lon=113", "lat=1e1&lon=113", "lat=0x10&lon=113", "lat=-2,5&lon=113",
+    "lat=7&lon=113", "lat=-11.6&lon=113", "lat=-2&lon=94.4", "lat=-2&lon=141.6", "lat=-2&lon=500", "lat=%20-2&lon=113", "lat=-2&lat2=1&lon=1e400"]) {
+    const x = await api("GET", "/api/v1/riwayat?" + q); assert.equal(x.s, 400, `${q} harus 400, dapat ${x.s}`); assert.equal(x.h.get("access-control-allow-origin"), "*");
+  }
+  assert.equal((await api("POST", "/api/v1/riwayat?lat=-2&lon=113", {})).s, 405);
+  assert.ok((await api("GET", "/api/v1")).j.endpoint.some(e => e.jalur === "/api/v1/riwayat" && e.kunci === false));
+});
+
+uji("riwayat sel: laju per hash IP, panggilan ke-601 dalam sejam 429 dengan CORS; IP lain tidak ikut; IP mentah tidak disimpan", async () => {
+  const alamat = "198.51.100.77", kunci = (await import("node:crypto")).createHash("sha256").update("garam-uji|" + alamat).digest("hex");
+  await DB.batch(Array.from({length: 600}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'riwayat.ip', ?)").bind(kunci, Date.now())));
+  const r = await api("GET", "/api/v1/riwayat?lat=-2&lon=113", undefined, {"cf-connecting-ip": alamat});
+  assert.equal(r.s, 429, r.t); assert.equal(r.h.get("access-control-allow-origin"), "*"); assert.equal(r.h.get("retry-after"), "3600");
+  assert.equal((await api("GET", "/api/v1/riwayat?lat=-2&lon=113", undefined, ip())).s, 200, "IP lain tidak ikut");
+  assert.equal(await n("laju_bnpb", `kunci = '${alamat}'`), 0, "IP mentah tidak disimpan");
+});
+
 uji("data publik: nama tak dikenal dan upaya keluar jalur 404; daftar nama sah ikut dijawab", async () => {
   for (const nama of ["tidak_ada", "..%2fmeta", "%2e%2e%2fmeta", "meta%2f..%2ffwi", "meta.json", "meta/x", "berita", "data/meta", "constructor", "__proto__", "toString", ""]) {
     const r = await api("GET", "/api/v1/data/" + nama);
