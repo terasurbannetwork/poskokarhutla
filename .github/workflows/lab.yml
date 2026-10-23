@@ -1,0 +1,211 @@
+name: Lab uji model karhutla (luring)
+
+# Uji LURING model/aturan karhutla terhadap acuan (Gaveau 2019, konfirmasi lapangan, luas terbakar). Bukan bagian produksi:
+# TANPA schedule (batas 5 jadwal cron akun), jalan saat skrip lab didorong ke cabang claude/** atau lewat dispatch.
+# numpy/rasterio/pyshp/fiona HANYA di job ini; pipeline produksi tetap Python stdlib.
+# Hasil di-commit ke cabang yang sama (hanya ujibanding_firespot.json dan public/data/lab/**). Push oleh GITHUB_TOKEN
+# TIDAK memicu workflow lagi, jadi tidak berulang; lagipula berkas hasil tidak ada di daftar paths pemicu.
+on:
+  push:
+    branches: ["claude/**"]
+    paths:
+      - "scripts/lab/**"
+      - "scripts/data/ujibanding_firespot.py"
+      - "scripts/data/ujiluas_*.py"
+      - "scripts/data/lab_*.py"
+      - ".github/workflows/lab.yml"
+  workflow_dispatch:
+    inputs:
+      tugas:
+        description: "Langkah yang dijalankan, dipisah koma: uji, citra, lapangan, ringkas, generik (atau 'semua')"
+        required: false
+        default: "semua"
+
+concurrency:
+  group: lab
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  TUGAS: ${{ inputs.tugas || 'semua' }}
+  LAB_MENIT: "45"  # per skrip lab_*.py; skrip menyimpan kemajuan (public/data/lab) dan melanjutkan di putaran berikutnya
+
+jobs:
+  lab:
+    # hanya cabang kerja claude/**: dispatch dari main tidak pernah mendorong hasil ke main
+    if: startsWith(github.ref, 'refs/heads/claude/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Runner kadang mencoba IPv6 lebih dulu dan gagal "Network is unreachable" (Errno 101) ke FIRMS; utamakan IPv4
+      # untuk semua alat (getaddrinfo), lalu catat diagnosis koneksi TANPA kunci.
+      - name: Utamakan IPv4 dan cek koneksi FIRMS
+        continue-on-error: true
+        run: |
+          echo "precedence ::ffff:0:0/96  100" | sudo tee -a /etc/gai.conf > /dev/null
+          for v in 4 6; do
+            kode=$(curl -$v -sS -o /dev/null -m 30 -w '%{http_code}' https://firms.modaps.eosdis.nasa.gov/ 2>&1 || true)
+            echo "FIRMS lewat IPv$v: $kode" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+
+      - name: Pustaka ilmiah (hanya job lab)
+        run: pip install numpy rasterio pyshp fiona netCDF4  # netCDF4 hanya untuk GFED5 di lab_luas.py
+
+      - name: Cache unduhan lab
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/raw/ujibanding
+            data/raw/lab
+            data/raw/firms
+            !data/raw/ujibanding/lapangan
+          key: lab-v1-${{ hashFiles('scripts/lab/**', 'scripts/data/ujibanding_firespot.py', 'scripts/data/ujiluas_*.py', 'scripts/data/lab_*.py') }}
+          restore-keys: lab-v1-
+
+      # Pembantu bersama: lab_jalan <nama> <perintah...> menjalankan, mencatat log (<= 200 KB, ekor) ke public/data/lab/log/<nama>.txt,
+      # menulis ringkasan ke $GITHUB_STEP_SUMMARY, dan mengembalikan kode keluar perintah. lab_boleh <nama> menyaring input `tugas`.
+      - name: Siapkan pembantu
+        run: |
+          mkdir -p data/raw/ujibanding data/raw/lab data/raw/firms public/data/lab/log
+          cat > "$RUNNER_TEMP/lab.sh" <<'SH'
+          lab_saring() {
+            local k="${FIRMS_MAP_KEY:-@@tanpa-kunci@@}"
+            sed -E -e "s#(/csv/)[^/ ]+#\1***#g" -e "s#${k}#***#g" -e 's#[A-Za-z0-9_-]{30,}#***#g' -e 's#(Bearer|Authorization)[^ ]*.*#\1 ***#Ig'
+          }
+          lab_boleh() { [ "$TUGAS" = "semua" ] || [[ ",$TUGAS," == *",$1,"* ]]; }
+          lab_jalan() {
+            local nama="$1"; shift
+            local log="public/data/lab/log/$nama.txt" tmp="$RUNNER_TEMP/lab_$nama.txt" rc
+            mkdir -p public/data/lab/log
+            echo "+ $*" | tee "$tmp"
+            "$@" 2>&1 | tee -a "$tmp"; rc=${PIPESTATUS[0]}
+            # Log yang DI-COMMIT disaring: kunci FIRMS ada di PATH URL (/csv/<kunci>/) dan bisa ikut pesan galat; token panjang
+            # dan baris Bearer juga dibuang. Hanya 60 baris terakhir, tiap baris <= 300 huruf.
+            tail -n 60 "$tmp" | cut -c1-300 | lab_saring > "$log"
+            { echo "### lab: $nama (kode $rc)"; echo '```'; tail -n 40 "$log"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            return $rc
+          }
+          SH
+
+      - name: 1. Uji sintetis ujibanding
+        continue-on-error: true
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh uji || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          lab_jalan uji_ujibanding python3 scripts/data/ujibanding_firespot.py uji
+
+      - name: 2. Citra acuan Gaveau 2019 + FIRMS
+        continue-on-error: true
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh citra || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          lab_jalan citra python3 scripts/data/ujibanding_firespot.py citra --tahun 2019 --maks-menit 40
+
+      # Hanya BACA (SELECT) dari D1 produksi (poskowarga); dummy = 0 di kedua tabel (kolom ada sejak migrasi 0029).
+      # Kolom PIC/WA/akun/foto TIDAK diambil. lapangan.json dan cache per tugas (LAB_CACHE_LAPANGAN) hanya di $RUNNER_TEMP, di luar cache Actions yang
+      # terbaca cabang lain; tidak di-commit. Token CF_D1_BACA = token Cloudflare KHUSUS izin D1 Read (bukan token deploy);
+      # tanpa secret itu langkah dilewati.
+      # (langkah commit hanya menambahkan ujibanding_firespot.json dan public/data/lab).
+      - name: 3. Ekspor konfirmasi lapangan (D1, baca saja)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_D1_BACA }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh lapangan || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "tanpa secret CF_D1_BACA (token D1 baca saja): ekspor dilewati"; exit 0; }
+          rm -f "$RUNNER_TEMP/lapangan.json"
+          # wrangler 4: bawaan LOKAL, --remote wajib. stdout (JSON) ke berkas; log hanya memuat stderr.
+          rc=0
+          npx --yes wrangler@4.42.0 d1 execute poskowarga --remote --json \
+            --command "SELECT t.id, t.prov, t.lat, t.lon, t.level, t.dibuat, t.terdeteksi_awal, i.hasil, i.dibuat AS konf_dibuat, i.waktu_gps, i.luas_ha FROM tugas_api t JOIN tugas_isian i ON i.tugas_id = t.id AND i.langkah = 'konfirmasi' WHERE t.dummy = 0 AND i.dummy = 0" \
+            > "$RUNNER_TEMP/lapangan.json" 2> "$RUNNER_TEMP/lab_ekspor_lapangan.txt" || rc=$?
+          # stderr wrangler TIDAK di-commit; hanya kode keluar dan ukuran
+          echo "ekspor lapangan: kode $rc, $(wc -c < "$RUNNER_TEMP/lapangan.json") byte" | tee -a "$GITHUB_STEP_SUMMARY"
+          exit $rc
+
+      - name: 4. Banding terhadap lapangan
+        continue-on-error: true
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          LAB_CACHE_LAPANGAN: ${{ runner.temp }}/lapangan_cache
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh lapangan || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          [ -s "$RUNNER_TEMP/lapangan.json" ] || { echo "lapangan.json tidak ada"; exit 1; }
+          lab_jalan lapangan python3 scripts/data/ujibanding_firespot.py lapangan "$RUNNER_TEMP/lapangan.json"
+
+      - name: 5. Ringkas keputusan
+        continue-on-error: true
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh ringkas || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          lab_jalan ringkas python3 scripts/data/ujibanding_firespot.py ringkas
+
+      # Skrip lab baru (luas terbakar, belum padam, ...) cukup dinamai scripts/data/lab_*.py dengan subperintah `uji` dan `jalan`.
+      - name: 6. Skrip lab generik (lab_*.py)
+        continue-on-error: true
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          source "$RUNNER_TEMP/lab.sh"
+          lab_boleh generik || { echo "dilewati (tugas=$TUGAS)"; exit 0; }
+          menit="${LAB_MENIT:-30}"; gagal=0
+          for f in $(ls scripts/data/lab_*.py 2>/dev/null | sort); do
+            n=$(basename "$f" .py)
+            # kriteria dipra-registrasi di berkas terpisah yang ter-commit; tanpa berkas itu skrip TIDAK dijalankan
+            # (mencegah melihat hasil sebelum kriteria dikunci). Sha-nya dicatat skrip ke public/data/lab/jalan.jsonl.
+            if ! git ls-files --error-unmatch "scripts/data/lab_kriteria/$n.json" > /dev/null 2>&1; then
+              echo "$n dilewati: scripts/data/lab_kriteria/$n.json belum di-commit" | tee -a "$GITHUB_STEP_SUMMARY"; continue
+            fi
+            lab_jalan "${n}_uji" timeout "$((menit * 60))" python3 "$f" uji || gagal=1
+            lab_jalan "${n}_jalan" timeout "$((menit * 60))" python3 "$f" jalan || gagal=1
+          done
+          [ "$gagal" = 0 ] || exit 1
+
+      - name: 7. Commit hasil ke cabang ini
+        if: always()
+        env:
+          CABANG: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Hasil disisihkan, cabang disamakan ke remote terbaru, hasil ditaruh lagi: tidak ada rebase yang bisa bentrok
+          # (putaran ulang commit lama dulu konflik add/add di log). jalan.jsonl digabung baris-unik supaya tetap append-only.
+          # path spesifik, bukan git add -A; lapangan.json ($RUNNER_TEMP) tidak pernah masuk.
+          simpan="$RUNNER_TEMP/hasil_lab"; rm -rf "$simpan"; mkdir -p "$simpan"
+          [ -e public/data/ujibanding_firespot.json ] && cp public/data/ujibanding_firespot.json "$simpan/"
+          [ -d public/data/lab ] && cp -r public/data/lab "$simpan/lab"
+          for i in 1 2 3; do
+            git fetch -q origin "$CABANG" && git reset -q --hard "origin/$CABANG"
+            lama=""; [ -f public/data/lab/jalan.jsonl ] && lama=$(cat public/data/lab/jalan.jsonl)
+            [ -e "$simpan/ujibanding_firespot.json" ] && cp "$simpan/ujibanding_firespot.json" public/data/
+            if [ -d "$simpan/lab" ]; then
+              mkdir -p public/data/lab && cp -r "$simpan/lab/." public/data/lab/
+              if [ -n "$lama" ] && [ -f "$simpan/lab/jalan.jsonl" ]; then
+                { printf '%s\n' "$lama"; cat "$simpan/lab/jalan.jsonl"; } | awk 'NF && !seen[$0]++' > public/data/lab/jalan.jsonl
+              fi
+            fi
+            for p in public/data/ujibanding_firespot.json public/data/lab; do [ -e "$p" ] && git add -- "$p"; done
+            git diff --cached --quiet && { echo "tidak ada perubahan hasil"; exit 0; }
+            git commit -q -m "lab: hasil uji ${GITHUB_SHA::7}"
+            git push -q origin "HEAD:refs/heads/$CABANG" && exit 0
+            echo "push ditolak (percobaan $i), ulang dari remote terbaru"
+          done
+          echo "::error title=Lab::push hasil gagal setelah 3 percobaan"
+          exit 1

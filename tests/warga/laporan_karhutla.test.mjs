@@ -285,10 +285,13 @@ uji("draf dari tugas api (api_ada), satelit, inventaris, dan personel tugas; tug
   await sisip("tugas_isian", {id: id16(), tugas_id: t, akun_id: akunId, klien_id: "tind" + t, langkah: "tindakan", dibuat: Date.parse("2026-10-13T12:00:00+07:00"), status_api: "menyala", luas_ha: 6.5, padam_ha: 1.5});
   const lama = id16(); await tugasBaris(lama, "61", "Barito"); await konf(lama, akunId, Date.parse("2026-10-12T10:00:00+07:00"));   // di luar jendela
   const bukanApi = id16(); await tugasBaris(bukanApi, "61", "Seruyan"); await sisip("tugas_isian", {id: id16(), tugas_id: bukanApi, akun_id: akunId, klien_id: "konf" + bukanApi, langkah: "konfirmasi", dibuat: Date.parse("2026-10-13T10:00:00+07:00"), lat: -2.2, lon: 113.9, waktu_gps: 1, hasil: "bukan_api", pic_nama: "Pak Joko", pic_jabatan: "Kades", pic_wa: "628123456781"});
+  /* sampel KONTROL uji lapangan (0054): api_ada pada kunjungan sampel bukan api prioritas, jadi bukan FS baru */
+  const kontrol = id16(); await tugasBaris(kontrol, "61", "Pulang Pisau"); await konf(kontrol, akunId, Date.parse("2026-10-13T10:00:00+07:00"));
+  await sisip("uji_tugas", {tugas_id: kontrol, sampel: "kontrol", level: 1, firespot: "mungkin", prov: "61", minggu: "2026-W42", dibuat: Date.parse("2026-10-13T05:00:00+07:00")});
   const d = (await GET(A["61"], P + "kiriman?tanggal=2026-10-14&sumber=prov:61")).j;
   assert.equal(d.fs_baru, 1); assert.equal(d.fs_kemarin, 1); const baru = d.isi.fs.find(f => f.tugas_id === t);
   assert.deepEqual([baru.fs_id, baru.kab, baru.target_ha, baru.padam_darat_ha, baru.status], ["FS-61-20261013-001", "Kapuas", 6.5, 1.5, "menyala"], "luas dan padam dari kabar tindakan");
-  assert.ok(!d.isi.fs.some(f => f.tugas_id === lama || f.tugas_id === bukanApi), "di luar jendela dan bukan api tidak masuk");
+  assert.ok(!d.isi.fs.some(f => f.tugas_id === lama || f.tugas_id === bukanApi), "di luar jendela dan bukan api tidak masuk"); assert.ok(!d.isi.fs.some(f => f.tugas_id === kontrol), "sampel kontrol uji lapangan tidak jadi FS baru");
   /* tugas_id provinsi lain ditolak; tugas yang sama dua baris ditolak */
   const t63 = id16(); await tugasBaris(t63, "63", "Banjar"); const lengkap = f => ({...f, padam_darat_ha: f.padam_darat_ha ?? 0, padam_udara_ha: f.padam_udara_ha ?? 0});
   const salah = await kirim(A["61"], "2026-10-14", "prov:61", {fs: [lengkap({...baru, tugas_id: t63})], personel: {total: 1}}); assert.equal(salah.s, 400, salah.t); assert.match(salah.j.galat, /provinsi ini/);

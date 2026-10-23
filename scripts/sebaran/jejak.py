@@ -1,7 +1,8 @@
 """Jejak api: ramalan jejak sebaran api (+24/+48/+72 jam) untuk tiap kompleks karhutla aktif -> public/data/jejak_api.json.
 
 Mesin = model data yang sama dengan peramban (model_sebaran.json, GBDT sel 375 m; Python setara SebaranModel.ramal: jalan Monte Carlo,
-fitur dari fitur.baris_sel). Keadaan awal tiap kompleks = deteksi VIIRS S-NPP (nominal/tinggi, 7 hari, hotspot.json) di kotak poligon
+fitur dari fitur.baris_sel). Keadaan awal tiap kompleks = deteksi VIIRS utama (S-NPP "N" sebelum 1 Nov 2026 13:00 UTC, NOAA-21 "N21" sesudahnya; sensor.py;
+nominal/tinggi, 7 hari, hotspot.json; doc.sensor_utama + doc.peralihan menandai sensor acuan; pergeseran distribusi N21 vs S-NPP BELUM diukur, model tidak dilatih ulang) di kotak poligon
 kompleks (kluster.json, id K#### sama dengan /sim/K####); sel aktif = terdeteksi <= 24 jam sebelum acuan data. Cuaca = Open-Meteo
 prakiraan: public/data/cuaca/<sel 0,5>.json bila ada (cuaca_jam.py), selain itu diambil sendiri (cache per hari, anggaran MAKS_BOBOT).
 Peluang sel = frekuensi kumulatif Monte Carlo (JEJAK_MC putaran, biji tetap per kompleks) -> resolusi 1/JEJAK_MC; hanya sel dengan
@@ -13,6 +14,9 @@ di peramban JS umur mulai 0 pada titik awal. Perbedaan lain: batas sel aktif sum
 Urutan kompleks: level, lalu penduduk sekitar (WorldPop 0,25 derajat, 3x3 sel di sekitar pusat kompleks), lalu skor: untuk peringatan dini
 yang diramal lebih dulu adalah api yang dekat orang. "cakupan" di JSON mencatat berapa kompleks aktif, berapa diramal, dan alasan dilewati.
 
+GERBANG: doc.boleh_tampil = gerbang_model.json["jejak_api"].boleh_tampil (gerbang.py: harus mengalahkan pembanding persistensi pada uji balik); berkas gerbang
+hilang/rusak = false. src/ews.js (milik warga-api) HARUS membaca medan ini sebelum menampilkan/memakai jejak; jejak_api.json tetap ditulis untuk audit.
+
 Pakai:  python3 scripts/sebaran/jejak.py  |  ... uji        Stdlib saja. Boleh gagal di CI (titik.yml).
 Env: JEJAK_MAKS (kompleks, 300) JEJAK_MC (20) JEJAK_DETIK (anggaran total, 900) JEJAK_BASI_JAM (12) JEJAK_AKTIF (0 = tanpa batas) JEJAK_KELUAR (berkas keluaran)
 """
@@ -22,7 +26,10 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, DIR)
 import cuaca  # noqa: E402
 import gbdt as G  # noqa: E402
+import gerbang as GB  # noqa: E402  (boleh_tampil per keluaran dari public/data/gerbang_model.json; gagal-tertutup)
+sys.path.insert(0, DIR)  # cuaca.py memuat scripts/banjir/umum.py yang menaruh scripts/banjir di depan sys.path; tanpa ini `import prospektif` memuat scripts/banjir/prospektif.py
 import prospektif as P  # noqa: E402  (gabung: hotspot.json -> baris; cuaca/ambil dipakai lagi)
+import sensor as SN  # noqa: E402  (VIIRS utama sadar waktu: S-NPP sebelum SNPP_AKHIR, N21 sesudahnya)
 from fitur import Seri, baris_sel, calon, fitur_peristiwa, terakhir  # noqa: E402
 from umum import HA_SEL, MENTAH, PUBLIK, T0, pusat, sel  # noqa: E402
 
@@ -216,8 +223,9 @@ def susun(hasil, cap):
 
 def periksa(doc):
     """Kontrak jejak_api.json; lempar AssertionError bila rusak (dipakai sebelum menulis dan di uji)."""
-    for k in ("dibuat", "model", "sumber", "ambang_p", "kompleks", "cakupan", "acuan"):
+    for k in ("dibuat", "model", "sumber", "ambang_p", "kompleks", "cakupan", "acuan", "sensor_utama", "boleh_tampil"):
         assert k in doc, f"kunci {k} hilang"
+    assert doc["sensor_utama"] in ("N", "N21") and isinstance(doc["boleh_tampil"], bool), "sensor_utama N|N21, boleh_tampil bool"
     assert doc["dibuat"].endswith("+07:00") and 0 < doc["ambang_p"] < 1 and isinstance(doc["kompleks"], list)
     cv = doc["cakupan"]
     assert cv["n_aktif"] >= 0 and cv["n_diramal"] == len(doc["kompleks"]), f"cakupan: n_diramal {cv['n_diramal']} != {len(doc['kompleks'])} kompleks"
@@ -267,12 +275,14 @@ def main():
     M = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
     hs = json.load(open(os.path.join(PUBLIK, "hotspot.json")))
     D, a0 = P.gabung([], hs)
-    t0 = int(max([r[0] for r in D if r[3] == "N"] or [a0]))  # acuan = deteksi VIIRS S-NPP terbaru yang dipakai; horizon dihitung dari sini
+    t0 = int(max([r[0] for r in D if SN.baris_utama(r)] or [a0]))  # acuan = deteksi VIIRS utama (S-NPP/N21 sadar waktu) terbaru; horizon dihitung dari sini
+    boleh, alasan_gerbang = GB.boleh("jejak_api")
     umur_jam = (dt.datetime.now(dt.timezone.utc) - (T0 + dt.timedelta(minutes=t0))).total_seconds() / 3600
     wib = dt.timezone(dt.timedelta(hours=7))
     doc = {"dibuat": dt.datetime.now(wib).isoformat(timespec="seconds"), "model": f"model_sebaran v{M.get('versi')} ({M.get('dibuat')})",
            "sumber": "PRAKIRAAN model data (GBDT sel 375 m + cuaca prakiraan Open-Meteo, Monte Carlo), bukan pengamatan; kinerja di model_sebaran.json/prospektif.json",
            "ambang_p": AMBANG_P, "acuan": (T0 + dt.timedelta(minutes=t0)).isoformat(timespec="minutes"), "n_mc": N_MC, "status": "tanpa_kompleks",
+           "sensor_utama": SN.utama_pada(t0), "peralihan": SN.peralihan(t0), "boleh_tampil": boleh, "gerbang": {"berkas": GB.NAMA, "kunci": "jejak_api", "alasan": alasan_gerbang},
            "kompleks": [], "cakupan": {}, "_hasil": []}
     pend = {}
     try:
@@ -288,7 +298,7 @@ def main():
         dilewati["data_basi"] = len(aktif)
         log(f"hotspot.json berumur {umur_jam:.1f} jam > {BASI_JAM}: tidak meramal")
     else:
-        snpp = [r for r in D if r[3] == "N"]
+        snpp = [r for r in D if SN.baris_utama(r)]
         grid = {}
         for i, r in enumerate(snpp):
             grid.setdefault((math.floor(r[2] / .05), math.floor(r[1] / .05)), []).append(i)
@@ -331,7 +341,7 @@ def uji():
     """Pemeriksaan mandiri tanpa jaringan/data besar: kontrak, kumulatif, penolakan masukan buruk, hari kosong, simulasi kecil."""
     import copy, tempfile
     wib = dt.timezone(dt.timedelta(hours=7))
-    dasar = {"dibuat": dt.datetime.now(wib).isoformat(timespec="seconds"), "model": "m", "sumber": "s", "ambang_p": AMBANG_P, "kompleks": [], "acuan": "2026-10-16T00:00+00:00",
+    dasar = {"dibuat": dt.datetime.now(wib).isoformat(timespec="seconds"), "model": "m", "sumber": "s", "sensor_utama": "N", "boleh_tampil": False, "ambang_p": AMBANG_P, "kompleks": [], "acuan": "2026-10-16T00:00+00:00",
              "cakupan": {"n_aktif": 0, "n_diramal": 0, "dilewati": {}}}
     periksa(dasar)  # hari kosong sah
     for kosong in (dict(dasar, _hasil=[]), ):  # tulis() menerima dokumen tanpa kompleks
@@ -375,6 +385,22 @@ def uji():
     assert buruk(lambda d: d.pop("sumber"))
     assert buruk(lambda d: d["kompleks"][0].pop("terpangkas")) and buruk(lambda d: d["kompleks"][0].__setitem__("terpangkas", "ya"))
     assert buruk(lambda d: d.pop("cakupan"))
+    assert buruk(lambda d: d.pop("sensor_utama")) and buruk(lambda d: d.__setitem__("sensor_utama", "N20")) and buruk(lambda d: d.pop("boleh_tampil"))
+    assert buruk(lambda d: d.__setitem__("boleh_tampil", "ya"))
+    # sensor utama sadar waktu: sebelum/sesudah SNPP_AKHIR memilih sensor yang benar (sumber tunggal sensor.py, dicek terhadap peta_karhutla.py)
+    SN.uji()
+    a_ = SN.menit_akhir()
+    assert SN.utama_pada(a_ - 1) == "N" and SN.utama_pada(a_) == "N21"
+    campur = [[a_ - 60, -2.0, 110.0, "N", 3.0, "62"], [a_ - 60, -2.0, 110.0, "N21", 3.0, "62"], [a_ + 60, -2.0, 110.0, "N", 3.0, "62"], [a_ + 60, -2.0, 110.0, "N21", 3.0, "62"],
+              [a_ + 60, -2.0, 110.0, "N20", 3.0, "62"]]
+    assert [(r[0] - a_, r[3]) for r in campur if SN.baris_utama(r)] == [(-60, "N"), (60, "N21")]
+    # gerbang gagal-tertutup: berkas hilang/rusak/kunci tak ada -> boleh_tampil False dengan alasan
+    with tempfile.TemporaryDirectory() as d_:
+        assert GB.boleh("jejak_api", os.path.join(d_, "tidak_ada.json"))[0] is False
+        open(os.path.join(d_, "rusak.json"), "w").write("{bukan json")
+        assert GB.boleh("jejak_api", os.path.join(d_, "rusak.json"))[0] is False
+        open(os.path.join(d_, "ok.json"), "w").write(json.dumps({"jejak_api": {"boleh_tampil": True, "alasan": "x"}, "lolos": {"boleh_tampil": "true"}}))
+        assert GB.boleh("jejak_api", os.path.join(d_, "ok.json")) == (True, "x") and GB.boleh("lolos", os.path.join(d_, "ok.json"))[0] is False and GB.boleh("zzz", os.path.join(d_, "ok.json"))[0] is False
     assert buruk(lambda d: d.__setitem__("dibuat", "2026-10-16T10:00:00Z"))
     # kompleks_aktif: n24 > 0, level >= 2, urut level lalu skor, batas jumlah
     fs = [{"properties": {"id": i, "n24": n, "jam_sejak": j, "level": lv, "skor": s, "lat": -2.0, "lon": 110.0 + dx}} for i, n, j, lv, s, dx in

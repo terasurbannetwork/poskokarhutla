@@ -257,8 +257,8 @@ pemadaman (tak ada data operasi), awan/asap (butuh Himawari), titik api baru yan
 
 ## 10. Per jam sungguhan
 
-Lihat SEBARAN_MODEL.md §5 (JAXA P-Tree Himawari-9 WLF 10 menit, pendaftaran oleh pemilik, kredensial `PTREE_USER` /
-`PTREE_PASS`, rancangan `himawari.py`).
+Lihat SEBARAN_MODEL.md §5b: Himawari-9 WLF (JAXA P-Tree, 10 menit) sudah terpasang (`scripts/data/himawari.py`, `himawari.yml`, jendela 3 jam), belum diarsip,
+jadi belum ada riwayat untuk melatih model per jam. §5a: pergantian VIIRS S-NPP -> NOAA-21 pada 1 Nov 2026 (`sensor.py`); pergeseran distribusinya belum diukur.
 
 ## 11. Berkas
 

@@ -5,6 +5,8 @@ Kunci dibaca dari env FIRMS_MAP_KEY atau dari .env.
 Arsip standar (SP) dipakai sampai tanggal akhirnya, sisanya NRT.
 """
 import csv, datetime as dt, io, os, sys, time, urllib.request
+sys.path.insert(0, os.path.dirname(__file__))
+from firms_sumber import sensor_url
 from concurrent.futures import ThreadPoolExecutor
 
 # Kotak luar Indonesia; titik di luar poligon provinsi dibuang di langkah berikutnya
@@ -31,7 +33,7 @@ def ambil(url, coba=5):
             return teks
         except Exception as e:  # jaringan putus / limit transaksi: tunggu lalu ulang
             if i == coba - 1:
-                raise
+                raise RuntimeError(sensor_url(f"{url}: {type(e).__name__}: {e}")) from None
             time.sleep(30 * (i + 1))
 
 

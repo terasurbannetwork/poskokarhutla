@@ -91,10 +91,11 @@ export async function muatData(env, kini) {
   /* titik panas: hanya yang <= 24 jam dan keyakinan sedang ke atas (rendah = banyak alarm palsu). ponytail: pindai linear (~20 rb titik) per pelanggan; indeks grid bila pelanggan > ribuan */
   const acuan = titik ? Date.parse(titik.acuan) : 0, pts = [];
   if (titik) for (const [la, lo, jam, , , c] of titik.baris) { const t = acuan + jam * JAM; if (c >= 1 && t >= kini - TITIK_UMUR) pts.push([la, lo, t]); }
-  const jejakAcuan = jejakMentah?.acuan, jejakStatus = jejakMentah?.status, jejak = jejakSegar({jejakAcuan, jejakStatus}, kini) ? indeksJejak(jejakMentah) : null;
-  return DATA = {kini, jejak, jejakAcuan, jejakStatus, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat, hwBaru, hwAcuan: hw?.acuan};
+  const jejakAcuan = jejakMentah?.acuan, jejakStatus = jejakMentah?.status, jejakBoleh = jejakMentah?.boleh_tampil === true, jejak = jejakSegar({jejakAcuan, jejakStatus, jejakBoleh}, kini) ? indeksJejak(jejakMentah) : null;
+  return DATA = {kini, jejak, jejakAcuan, jejakStatus, jejakBoleh, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat, hwBaru, hwAcuan: hw?.acuan};
 }
-export const jejakSegar = (d, kini) => d.jejakStatus === "ok" && kini - Date.parse(d.jejakAcuan) <= SIM_UMUR;
+/* gagal-tertutup: boleh_tampil (jejak.py; false = model kalah dari persistensi, gerbang_model.json) harus persis true; medan hilang = diabaikan */
+export const jejakSegar = (d, kini) => d.jejakBoleh === true && d.jejakStatus === "ok" && kini - Date.parse(d.jejakAcuan) <= SIM_UMUR;
 /* sel simulasi diindeks ke grid per cakrawala sekali per muat, jadi tiap pelanggan hanya memeriksa 9 sel, bukan semua sel. ponytail: seluruh sel di memori isolat; kalau jejak_api.json membengkak (> ~100 rb sel) pangkas di jejak.py */
 export function indeksJejak(j) {
   const kompleks = [], grid = {24: new Map(), 48: new Map(), 72: new Map()};

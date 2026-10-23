@@ -34,7 +34,7 @@ jobs:
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
-            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
+            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/gerbang_model.json public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
@@ -159,6 +159,13 @@ jobs:
         timeout-minutes: 10
         run: python3 scripts/sebaran/prospektif.py
 
+      # Gerbang "model harus menang lawan pembanding sederhana" -> public/data/gerbang_model.json (terbit bersama public/data lewat
+      # cache + deploy, seperti prospektif.json). Sesudah prospektif.py karena membaca ringkasannya. Self-check dulu.
+      - name: Gerbang model vs pembanding sederhana (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/sebaran/gerbang.py uji && python3 scripts/sebaran/gerbang.py
+
       - name: Arsipkan catatan prospektif ke R2 (boleh gagal)
         if: steps.prosp.outcome == 'success'
         continue-on-error: true
@@ -166,7 +173,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          python3 scripts/sebaran/prospektif.py arsip /tmp/arsip.jsonl.gz
+          # arsip lama dari R2 sebagai pembanding: prospektif.py menolak (kode 3, unggah tidak jalan) bila arsip baru menyusut.
+          # Object belum ada / unduh gagal = tanpa pembanding (penanda arsip_tanda.json di cache masih menjaga).
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/lama.jsonl.gz --remote || rm -f /tmp/lama.jsonl.gz
+          python3 scripts/sebaran/prospektif.py arsip /tmp/arsip.jsonl.gz /tmp/lama.jsonl.gz
           npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/arsip/prospektif.jsonl.gz --file /tmp/arsip.jsonl.gz --content-type application/gzip --remote
 
       # Jejak api: simulasi sebaran +24/+48/+72 jam tiap kompleks aktif (model data + cuaca prakiraan) -> public/data/jejak_api.json
