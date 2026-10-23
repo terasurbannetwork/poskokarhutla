@@ -2,12 +2,13 @@
 
 Langkah (tiap langkah menyimpan cache di data/raw/risiko/, aman diulang):
   python3 scripts/sebaran/risiko_mingguan.py api        # FIRMS -> api.npz (hitungan per sel-hari WIB per sensor) + setara.json
-  python3 scripts/sebaran/risiko_mingguan.py lahan      # lahan per sel (gambut, kawasan, konsesi, kanal, jalan, penduduk, wilayah)
-  python3 scripts/sebaran/risiko_mingguan.py cuaca      # cuaca harian per sel 0,5 derajat (NASA POWER), bisa dilanjutkan
-  python3 scripts/sebaran/risiko_mingguan.py bangun     # fitur tetap per tahun -> fitur_<th>.npz
-  python3 scripts/sebaran/risiko_mingguan.py balik      # tinggalkan-satu-tahun 2015-2025 -> public/data/risiko_mingguan_uji.json
-  python3 scripts/sebaran/risiko_mingguan.py produksi   # HANYA bila vonis LOLOS -> public/data/risiko_mingguan.json
+  python3 scripts/sebaran/risiko_mingguan.py lahan      # lahan & wilayah per sel -> lahan.npz
+  python3 scripts/sebaran/risiko_mingguan.py cuaca      # cuaca harian per sel 0,5 derajat (NASA POWER) -> cuaca_merra2/, bisa dilanjutkan
+  python3 scripts/sebaran/risiko_mingguan.py balik      # siapkan (tetap_<th>.npy, minggu.npz) + 11 lipatan + nilai -> public/data/risiko_mingguan_uji.json
+  python3 scripts/sebaran/risiko_mingguan.py nilai      # hitung ulang metrik & vonis dari lipat_<th>.npz
+  RISIKO_ABLASI=tanpa_cuaca python3 scripts/sebaran/risiko_mingguan.py balik   # ablasi INFO, tidak menentukan vonis
   python3 scripts/sebaran/risiko_mingguan.py uji        # swauji (termasuk kebocoran yang harus DITOLAK)
+Produksi (public/data/risiko_mingguan.json) BELUM ada: lihat docs/riset/RISIKO-MINGGUAN.md "Hasil".
 
 Hari = hari WIB (UTC+7). Hari terbit t: fitur dari hari <= t; target = >= 1 titik di hari t+1..t+7.
 Sensor (ditetapkan sebelum melatih, angka penyetaranya di setara.json): S-NPP sebelum SAKLAR (1 Apr 2018), NOAA-20 sesudahnya.
@@ -218,8 +219,8 @@ def lahan():
 
 # ---------------------------------------------------------------- cuaca
 # Cuaca: NASA POWER harian (MERRA-2, ~0,5 x 0,625 derajat), BUKAN ERA5. Alasan (diukur sebelum membangun): Open-Meteo archive
-# menghitung 1 panggilan per lokasi per 14 hari, jadi 2012-2026 = ~385 panggilan per lokasi; 1.3 rb sel 0,5 derajat = ~500 rb
-# panggilan = ~50 hari kuota gratis 10.000/hari. POWER: satu permintaan per titik untuk seluruh rentang, tanpa kunci.
+# menghitung 1 panggilan per lokasi per 14 hari, jadi 2012-2025 = ~365 panggilan per lokasi; 1.097 sel 0,5 derajat = ~400 rb
+# panggilan = ~40 hari kuota gratis 10.000/hari. POWER: satu permintaan per titik untuk seluruh rentang, tanpa kunci.
 POWER = "https://power.larc.nasa.gov/api/temporal/daily/point"
 VAR_C = ["PRECTOTCORR", "T2M_MAX", "T2M_MIN", "RH2M", "QV2M", "PS", "WS10M", "WS10M_MAX"]
 # Uji balik berhenti 31 Des 2025: permintaan yang menyentuh 2026 memakai sumber GEOSIT dan (diukur 23 Okt 2026, API v2.10.1)
@@ -593,10 +594,17 @@ def pembanding(X):
     return pers, klim
 
 
+# Ablasi INFO (bukan model terdaftar, tidak menentukan vonis): RISIKO_ABLASI=tanpa_cuaca melatih tanpa CUACA_F, berkas lipat_tanpa_cuaca_<T>.
+ABLASI = os.environ.get("RISIKO_ABLASI", "")
+BUANG = {"": [], "tanpa_cuaca": CUACA_F}[ABLASI]
+AKTIF = [i for i, f in enumerate(FITUR) if f not in BUANG]
+AWALAN = f"lipat_{ABLASI}_" if ABLASI else "lipat_"
+
+
 def lipatan(T, dasar):
     """Latih tanpa tahun T, nilai di T. -> data/raw/risiko/lipat_<T>.npz"""
     import gbdt_np as G
-    jl = os.path.join(RAW, f"lipat_{T}.npz")
+    jl = os.path.join(RAW, f"{AWALAN}{T}.npz")
     if os.path.exists(jl):
         return
     S, prov, kab, XL, P, P3, wil = dasar
@@ -615,22 +623,22 @@ def lipatan(T, dasar):
     X, y, w = np.concatenate(Xs), np.concatenate(ys), np.concatenate(ws)
     del Xs
     log(f"lipat {T}: k wilayah {kk}, latih {len(y)} baris ({int(y.sum())} positif), {time.time() - t0:.0f} dtk")
-    m = G.latih(X, y, w, **HP, seed=SEED, log=log)
+    m = G.latih(X[:, AKTIF], y, w, **HP, seed=SEED, log=log)
     pers, klim = pembanding(X)
     blr = G.logistik(np.column_stack([pers, klim]), y, w)
     XT = baris_tahun(T, T, P, P3, XL, wil, kk, ns)
     yT = target_tahun(P, T)
-    pT = G.prediksi(m, XT)
+    pT = G.prediksi(m, XT[:, AKTIF])
     persT, klimT = pembanding(XT)
     lrT = G.pred_logistik(blr, np.column_stack([persT, klimT]))
     pakai = np.zeros(len(FITUR), int)
     for s_ in m["pohon"]:
         for nd in s_:
             if len(nd) > 1:
-                pakai[nd[0]] += 1
+                pakai[AKTIF[nd[0]]] += 1
     np.savez_compressed(jl, y=yT, p=pT.astype(np.float32), pers=persT.astype(np.int8), klim=klimT.astype(np.float32),
                         lr=lrT.astype(np.float32), kk=np.array(kk), blr=blr, pakai=pakai)
-    json.dump(m, open(os.path.join(RAW, f"model_{T}.json"), "w"))
+    json.dump(m, open(os.path.join(RAW, f"model_{ABLASI + '_' if ABLASI else ''}{T}.json"), "w"))
     log(f"lipat {T} selesai {time.time() - t0:.0f} dtk; AUC model {G.auc(pT, yT):.4f} lr {G.auc(lrT, yT):.4f}")
 
 
@@ -775,7 +783,28 @@ def balik():
     dasar = muat_dasar()
     for T in TH_UJI:
         lipatan(T, dasar)
+    if ABLASI:
+        return ablasi()
     nilai_balik()
+
+
+def ablasi():
+    """Tambahkan ringkasan ablasi (info) ke risiko_mingguan_uji.json tanpa mengubah vonis."""
+    import gbdt_np as G
+    jl = os.path.join(PUBLIK, "risiko_mingguan_uji.json")
+    h = json.load(open(jl))
+    D, _ = kumpul()
+    p = np.concatenate([np.load(os.path.join(RAW, f"{AWALAN}{T}.npz"))["p"] for T in TH_UJI])
+    out = {"catatan": "INFO, bukan model terdaftar; tidak menentukan vonis. Sama persis dengan model kecuali fitur yang dibuang.", "buang": BUANG}
+    for nm, m in (("musim", D["musim"]), ("setahun", np.ones(len(p), bool))):
+        y = D["y"][m]
+        out[nm] = {"auc": round(G.auc(p[m], y), 4), "brier": round(float(((p[m] - y) ** 2).mean()), 6),
+                   "auc_model": round(G.auc(D["model"][m], y), 4), "brier_model": round(float(((D["model"][m] - y) ** 2).mean()), 6),
+                   "brier_logistik": round(float(((D["logistik"][m] - y) ** 2).mean()), 6)}
+        out[nm]["bss_vs_logistik"] = round(1 - out[nm]["brier"] / out[nm]["brier_logistik"], 4)
+    h.setdefault("ablasi", {})[ABLASI] = out
+    json.dump(h, open(jl, "w"), ensure_ascii=False, indent=1)
+    log("ablasi", json.dumps(out))
 
 
 # ---------------------------------------------------------------- swauji
