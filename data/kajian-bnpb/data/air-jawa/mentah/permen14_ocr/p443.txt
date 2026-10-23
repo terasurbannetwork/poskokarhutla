@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+8 D.I. Bulu Bulu 100
+9 D.I. Bulu Lohe 80
+10 D.I. Bulu Mallapo 70
+11 D.I. Bulu Marapa 474
+12 D.I. Bunga Eja 68
+13 D.I. Campaniga 200
+14 D.I. Cenrana 119
+15 D.I. Jambue 100
+16 D.I. Kacici 145
+17 D.I. Kaluku 95
+18 D.I. Kaluku I 105
+19 D.I. Laniti 85
+20 D.I. Leange 155
+21 D.I. Leang-Leang 693
+22 D.I. Lolang 90
+23 D.I. Mahaka 55
+24 D.I. Malaka 200
+25 D.I. Mallawa 108
+26 D.I. Mario 64
+27 D.I. Massipie 150
+28 D.I. Matajang 123
+29 D.I. Padaelo 270
+30 D.I. Panagi 215
+31 D.I. Pangisoreng 210
+32 D.I. Parang Bangkala 64
+33 D.I. Pattanyamang 100
+34 D.I. Pattiro 70
+35 D.I. Pattontongan 207
+36 D.I. Pattunuang 36
+37 D.I. Rea Toa 75
+38 D.I. Rumbia 220
+39 D.I. Samanggi 286
+40 D.I. Swadiri 150
+41 D.I. Taboe 60
+42 D.I. Takke Hatu 57
+43 D.I. Tana Takko 125
+44 D.I. Tanete Cenrana 85
+45 D.I. Tangapparang 195
+46 D.I. Timpuseng 80
+47 D.I. Tombolo 55
+48 D.I. Tompobalang | 125
+49 D.I. Ulu Malino 258
+50 D.I. Wanua Waru 183
+51 D.I. Aholiang 50
+52 D.I. Aloro 50
+53 D.I. Arra 40
+54 D.I. Bontotangnga 150
+55 D.I. Bu'rung 50
+56 D.I. Gattarengmatinggi 100
+57 D.I. Kassi-Kassi 70
+58 D.I. Leko 30
+59 D.I. Malempong 70
+60 D.I. Mangngai Patanyamang 60
+61 D.I. Manjalling 50
+62 D.I. Panggalungang 40
+63 D.I. Pannampu 50
+64 D.I. Parang Tinggia 238
+65 D.I. Puca 50
+66 D.I. Salukang 50
+67 D.I. Tanete Wana Waru 100
+68 D.I. Tompobalang II 95
+#KANAN
+443 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+69 D.I. Ulu Daya 250
+70 D.I. Bentenge 50
+71 D.I. Tanete 75
+72 D.I. Lajoa 50
+73 D.I. Telangnge 50
+74 D.I. Damma 25
+m Kab. Panakaiene & Kenulauan 118 13.392
+1 D.I. Balleangin Toa | 100
+2 D.I. Balleangin Toa II 100
+3 D.I. Balleangin Toa III 140
+4 D.I. Bara Batu 75
+5 D.I. Baruttung 60
+6 D.I. Batang Lamara 152
+7 D.I. Bonto Manai 150
+8 D.I. Gallang 52
+9 D.I. Gancie 100
+10 D.I. Ganele 84
+11 D.I. Gollae 123
+12 D.I. Jatie 75
+13 D.I. Jennae 100
+14 D.I. Kajuara 300
+15 D.I. Lamadingin 200
+16 D.I. Leang Kassi 150
+17 D.I. Libureng/Bulan 83
+18 D.I. Limbua 85
+19 D.I. Lompo Kassi 80
+20 D.I. Mangempang Amung 100
+21 D.I. Manggalung 125
+22 D.I. Massere 110
+23 D.I. Padakki I 125
+24 D.I. Padakki II 80
+25 D.I. Pani 200
+26 D.I. Parang Loang 70
+27 D.I. Parenreng 400
+28 D.I. Rea 80
+29 D.I. Sitiung 120
+30 D.I. Sumpang Leang 550
+31 D.I. Tabemba 100
+32 D.I. Tagari 100
+33 D.I. Tallang 120
+34 D.I. Tinjo Bali I 100
+35 D.I. Tinjo Bali II 100
+36 D.I. Tumbue 100
+37 D.I. Ulu Ere 60
+38 D.I. Ulu Malino 258
+39 D.I. Ulu Salo Lokae 150
+40 D.I. Ulu Salo Manggalung 125
+41 D.I. Allu Ballangan 120
+42 D.I. Alosie 200
+43 D.I. Amung 233
+44 D.I. Bakke 75
+45 D.I. Bangkangae 90
+46 D.I. Bangkeng Sakeang 20
+47 D.I. Barajogoe 90
+48 D.I. Baruttung Dalam 25
+49 D.I. Batto 50
+50 D.I. Batu Lappara 50
+51 D.I. Batu Napara 40
+52 D.I. Biring Ere 20
+53 D.I. Boddie 100

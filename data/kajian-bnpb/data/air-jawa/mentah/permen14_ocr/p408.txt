@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+85 D.I. Padang Batung I 50
+86 D.I. Padang Batung II 100
+87 D.I. Padang Taal 60
+88 D.I. Pahampangan Luar 50
+89 D.I. Pakuan Pematang 45
+90 D.I. Pakuan Timur | 60
+91 D.I. Pakuan Timur II 50
+92 D.I. Pakuan Timur III 75
+93 D.I. Palimbuaian | 100
+94 D.I. Pamujaan II 30
+95 D.I. Pancur Ambutun 40
+96 D.I. Pandulangan | 110
+97 D.I. Pandulangan II 75
+98 D.I. Pandulangan/A'an 75
+99 D.I. Panggang Hijau 175
+100 D.I. Panintingan 85
+101 D.I. Pantai Ulin | 50
+102 D.I. Pantai Ulin III 50
+103 D.I. Papancan 80
+104 D.I. Paring Agung 80
+105 D.I. Paring Agung 60
+106 D.I. Pejampang Bahagia 60
+107 D.I. Pompa Jambu Hilir 40
+108 D.I. Pulalaian 75
+109 D.I. Putat 45
+110 D.I. Ribut 60
+111 D.I. Samad 40
+112 D.I. Sarang Halang Hulu III 50
+113 D.I. Sarang Halang Padang | 150
+114 D.I. Sarang Halang Padang II 100
+115 D.I. Sarang Nyamuk 100
+116 D.I. Sarangan/Awang Bangkal 60
+117 D.I. Sarungga 75
+118 D.I. Taniti 150
+119 D.I. Tanjungan 90
+120 D.I. Tawia 150
+121 D.I. Umihan 70
+122 D.I. Wakasah 100
+123 D.I. Wasah Hilir 75
+124 D.I. Wasah Tengah 200
+d Kab. Hulu Sunaai Tenaah 107 11.844
+1 D.I. Baruh Hawang 371
+2 D.I. Talang 419
+3 D.I. Tamiyang 330
+4 D.I. Tapuk 192
+5 D.I. Abung 25
+6 D.I. Abung Surapati 200
+7 D.I. Abung Wijaya 100
+8 D.I. Air Panas 75
+9 D.I. Alat 75
+10 D.I. Awang Besar/Binjai 20
+11 D.I. Awang Pandawan 55
+12 D.I. Bakung 270
+13 D.I. Bangkal 80
+14 D.I. Banua Hanyar 90
+15 D.I. Batu Harang 100
+16 D.I. Binjai 275
+17 D.I. Damanhuri 200
+18 D.I. Durian Bungkuk 225
+19 D.I. Guha Timur 75
+#KANAN
+408
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Hapingin/Sei Laspak 20
+21 D.I. Haur Tutul 35
+22 D.I. Himbaya 40
+23 D.I. Jamil 150
+24 D.I. Kambat Utara 100
+25 D.I. Kampung Baru 125
+26 D.I. Kayu Bangun 30
+27 D.I. Kayu Bawang 40
+28 D.I. Landung 90
+29 D.I. Limpasu 115
+30 D.I. Lok Nyiur 150
+31 D.I. Mahela 120
+32 D.I. Mampanah 75
+33 D.I. Manjurung 30
+34 D.I. Mantalang 100
+35 D.I. Masiraan 200
+36 D.I. Pahalatan 600
+37 D.I. Palas 25
+38 D.I. Pamangkih 175
+39 D.I. Pauh 95
+40 D.I. Pauh Karatungan 95
+41 D.I. Pauh/Sei Tabuk 115
+42 D.I. Paya 84
+43 D.I. Pelas/Pelajau 100
+44 D.I. Pembantanan 140
+45 D.I. Pengambau Hilir Dalam 125
+46 D.I. Pengambau Hilir Luar 150
+47 D.I. Pinandam 80
+48 D.I. Pudak 150
+49 D.I. Pumpung 40
+50 D.I. Putat 60
+51 D.I. Rambung 30
+52 D.I. Ranggas 167
+53 D.I. Rantanan 125
+54 D.I. Rantauan 200
+55 D.I. Sarintan 75
+56 D.I. Sei Awang Pandawan 85
+57 D.I. Sei Awang Panjang 70
+58 D.I. Sei Balabau 20
+59 D.I. Sei Banta 62
+60 D.I. Sei Baru 120
+61 D.I. Sei Baru/Sei Kamis 100
+62 D.I. Sei Batu Harang 23
+63 D.I. Sei Besar 75
+64 D.I. Sei Bikat 30
+65 D.I. Sei Bundung Raya 65
+66 D.I. Sei Bungur 35
+67 D.I. Sei Datu dan Mundar 50
+68 D.I. Sei Jarau 25
+69 D.I. Sei Juwita 35
+70 D.I. Sei Kedundung 65
+71 D.I. Sei Keladi 85
+72 D.I. Sei Kiwa 63
+73 D.I. Sei Kuli 300
+74 D.I. Sei Limau 30
+75 D.I. Sei Mampanah 100
+76 D.I. Sei Muara Tanang 70
+77 D.I. Sei Mundar 40
+78 D.I. Sei Pabuan 99
+79 D.I. Sei Pandanu/Pudak 149
+80 D.I. Sei Panggadungan 17

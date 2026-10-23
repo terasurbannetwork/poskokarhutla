@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+| Kab. Wav kanan 51 3.080
+
+1 D.I. Way Air Ringkih 150
+2 D.I. Way Bakoman 60
+3 D.I. Way Beti-Beti 22
+4 D.I. Way Cukuh Batu 107
+5 D.I. Way Gambang 20
+6 D.I. Way Hanibung 30
+7 D.I. Way Jabi-Jabi 150
+8 D.I. Way Jingga 80
+9 D.I. Way Kali | 30
+10 D.I. Way Kali II 20
+11 D.I. Way Kalian 80
+12 D.I. Way Kawat Duri 60
+13 D.I. Way Kedaton 80
+14 D.I. Way Kerupuk 200
+15 D.I. Way Kubu I 60
+16 D.I. Way Kubu II 40
+17 D.I. Way Menanga Siamang 80
+18 D.I. Way Neki Sb 141
+19 D.I. Way Nengah Liyu 60
+20 D.I. Way Nyau 60
+21 D.I. Way Nyelai Ilir 40
+22 D.I. Way Nyelai Tengah 30
+23 D.I. Way Nyelai Ulu 30
+24 D.I. Way Ogan 110
+25 D.I. Way Pagaralam 40
+26 D.I. Way Pagelongan 40
+27 D.I. Way Paninjau 20
+28 D.I. Way Pisang Nyelai 112
+29 D.I. Way Selimut 30
+30 D.I. Way Semambo 79
+31 D.I. Way Sepandak 30
+32 D.I. Way Sepit 55
+33 D.I. Way Sri Rejeki 40
+34 D.I. Way Sri Tunggal 115
+35 D.I. Way Suban 25
+36 D.I. Way Surabaya 30
+37 D.I. Way Talang Jerambah 40
+38 D.I. Way Talang Kangkung 40
+39 D.I. Way Talang Pasundan 40
+40 D.I. Way Talang Semidang 40
+41 D.I. Way Talang Siring Panjang 27
+42 D.I. Way Tami Lumut 170
+43 D.I. Way Tangkas Ilir 80
+44 D.I. Way Tangkas Tengah 20
+45 D.I. Way Tawar 60
+46 D.I. Way Jaya Tinggi 25
+47 D.I. Way Kebon Duku 10
+48 D.I. Way Mejukul 40
+49 D.I. Way Rejang Mulya 27
+50 D.I. Way Talang Sawah 30
+51 D.I. Way Sri Numpi 75
+XI PROYINS! BANTEN 1227 ANK ARR
+a Kab. Lebak 463 49.264
+1 D.I. Cijoro 45
+2 D.I. Cikambuy 60
+3 D.I. Curug 180
+4 D.I. Cipancur 70
+5 D.I. Kadubale 65
+#KANAN
+144
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+6 D.I. Cikuda 80
+7 D.I. Leuwi Panjang | 75
+8 D.I. Leuwi Panjang 75
+9 D.I. Cimarga 211
+10 D.I. Catang Limus 120
+11 D.I. Cimajan 80
+12 D.I. Rajut 80
+13 D.I. Rancadundu 21
+14 D.I. Ciwaru II 60
+15 D.I. Cilembun 102
+16 D.I. Cilewong 60
+17 D.I. Bengkok 167
+18 D.I. Heas 145
+19 D.I. Ciselaraja 312
+20 D.I. Pasir Bedil 209
+21 D.I. Ajid 70
+22 D.I. Suprit 100
+23 D.I. Ciruyung 80
+24 D.I. Cipangasih 100
+25 D.I. Leuwi Hoya 60
+26 D.I. Bunut oteng 80
+27 D.I. Ranca Sema 100
+28 D.I. Cisitu 200
+29 D.I. Cieundik 50
+30 D.I. Batu 106
+31 D.I. Cikondang 312
+32 D.I. Cikoncer 80
+33 D.I. Cimariku 80
+34 D.I. Bunut 221
+35 D.I. Cihideung 100
+36 D.I. Curug Goong 60
+37 D.I. Cireret 60
+38 D.I. Cikupa 57
+39 D.I. Cirape 97
+40 D.I. Cikalung 80
+41 D.I. Cililitan 60
+42 D.I. Leuwibanen 80
+43 D.I. Leuwibedul 70
+44 D.I. Cisalam 70
+45 D.I. Cituak 60
+46 D.I. Cikarang Hilir 200
+47 D.I. Cibogo 100
+48 D.I. Cipicung 70
+49 D.I. Taman Jaya 120
+50 D.I. Citinggar 90
+51 D.I. Citeupuseun 75
+52 D.I. Cihonje 88
+53 D.I. Cikaduheulang 70
+54 D.I. Cidengdong 120
+55 D.I. Cibojan 115
+56 D.I. Leuwi Gentong 150
+57 D.I. Ciwaru | 160
+58 D.I. Ciwaru II 100
+59 D.I. Ungkal Munding 60
+60 D.I. Cikumpay 70
+61 D.I. Ciaembona 100
+62 D.I. Cikoneng 60
+63 D.I. Cipunglu 107
+64 D.I. Cigarung Cilaki 125
+65 D.I. Cilaja 45
+66 D.I. Cilantuk 60

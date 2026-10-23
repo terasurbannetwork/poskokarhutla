@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Jambu 40
+52 D.I. Janjing 495
+53 D.I. Jarum 27
+54 D.I. Jatisari 187
+55 D.I. Jeblokan 65
+56 D.I. Jembul 13
+57 D.I. Jemirahan 32
+58 D.I. Jeruk Purut 4
+59 D.I. Jeruk Purut 10
+60 D.I. Jerukwangi 18
+61 D.I. Jiyu 43
+62 D.I. Jogodayo 17
+63 D.I. Jolopeto 98
+64 D.I. Jotangan 6
+65 D.I. Jurang Jero 22
+66 D.I. Jurangsari 19
+67 D.I. K. Sadar I 20
+68 D.I. K. Sadar II 20
+69 D.I. Kalikatir I 16
+70 D.I. Kalikatir II 12
+71 D.I. Kalikatir III 11
+72 D.I. Kaliurip 49
+73 D.I. Kandangan 97
+74 D.I. Kanigoro 45
+75 D.I. Karangasem | 23
+76 D.I. Karangasem II 40
+77 D.I. Karangploso 52
+78 D.I. Karangsari 47
+79 D.I. Kebondalem 96
+80 D.I. Kedung Bendo 12
+81 D.I. Kedung Peluk 101
+82 D.I. Kedungkutil 191
+83 D.I. Kembang 31
+84 D.I. Kembangan 11
+85 D.I. Kemendung 54
+86 D.I. Kemiri Atas 98
+87 D.I. Kemiri Bawah 120
+88 D.I. Kemloko 23
+89 D.I. Kepuh Gunung 31
+90 D.I. Kesiman 38
+91 D.I. Kesiman 2
+92 D.I. Ketapan 32
+93 D.I. Ketidur 214
+94 D.I. Ketok 78
+95 D.I. Kresek 8
+96 D.I. Kupuhsari 56
+97 D.I. Kuripan 32
+98 D.I. Kwangen 45
+99 D.I. Kwaringan | 25
+100 D.I. Kwaringan II 29
+101 D.I. Lamongan I 7
+102 D.I. Lamongan II 27
+103 D.I. Lebak 42
+104 D.I. Lebak II 43
+105 D.I. Lebak III 6
+106 D.I. Lebaksari 7
+107 D.I. Losari | 16
+108 D.I. Losari II 17
+109 D.I. Lugundi 127
+110 D.I. Manting | 13
+111 D.I. Manting II 2
+#KANAN
+3-tO
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+112 D.I. Manting III 21
+113 D.I. Mantung 53
+114 D.I. Mlaten 29
+115 D.I. Mojogeneng 32
+116 D.I. Mojojejer 111
+117 D.I. Mojokembang | 45
+118 D.I. Mojokembang II 1
+119 D.I. Mojokerep 20
+120 D.I. Mojolegi 148
+121 D.I. Mojoroto 30
+122 D.I. Mojosarirejo | 67
+123 D.I. Mojosarirejo II 10
+124 D.I. Mojosongo Atas 16
+125 D.I. Mojosongo Bawah 70
+126 D.I. Mrasih 39
+127 D.I. Ngastemi 156
+128 D.I. Ngembeh 30
+129 D.I. Ngrayung I 46
+130 D.I. Ngrayung II 22
+131 D.I. Ngrayung III 26
+132 D.I. Ngrayung Iv 16
+133 D.I. Ngungkung 76
+134 D.I. Nono 15
+135 D.I. Oro-Oro Jipang 159
+136 D.I. Padusan 64
+137 D.I. Pandansari | 4
+138 D.I. Pandansari II 8
+139 D.I. Pandansari III 2
+140 D.I. Paras 25
+141 D.I. Patung 68
+142 D.I. Pehngaron 971
+143 D.I. Pekukuhan M
+144 D.I. Pekuwon 33
+145 D.I. Penanggungan | 23
+146 D.I. Penanggungan II 9
+147 D.I. Penanggungan III 9
+148 D.I. Pendowo 78
+149 D.I. Petung I 11
+150 D.I. Petung II 1
+151 D.I. Pikatan | 2
+152 D.I. Pringwulung 17
+153 D.I. Pudaksari 831
+154 D.I. Pulosari 70
+155 D.I. Pungging 50
+156 D.I. Purwojati 33
+157 D.I. Purworejo 79
+158 D.I. Raharjotirto 96
+159 D.I. Randegan 30
+160 D.I. Randubango 55
+161 D.I. Randurancang 12
+162 D.I. Reco 23
+163 D.I. Ringgit 17
+164 D.I. Ringgit 19
+165 D.I. Salen 36
+166 D.I. Sambikerep 26
+167 D.I. Sampang 90
+168 D.I. Sbr. Aren Kuning 29
+169 D.I. Sbr. Badut 4
+170 D.I. Sbr. Baruk 1 14
+171 D.I. Sbr. Baung 13
+172 D.I. Sbr. Bendo Waru 33

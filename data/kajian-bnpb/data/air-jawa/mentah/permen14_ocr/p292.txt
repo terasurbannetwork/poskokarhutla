@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+122 D.I. Tuk Tuker 11
+123 D.I. Balong 28
+124 D.I. Banyu Nibo 30
+125 D.I. Buyutan 30
+126 D.I. Bon Paing 15
+127 D.I. Geger 45
+128 D.I. Gobeh 40
+129 D.I. Jember 20
+130 D.I. Joho 10
+131 D.I. Kajar Patuk 25
+132 D.I. Kaligede Gagan 20
+133 D.I. Karang 80
+134 D.I. Kedung Lesung 15
+135 D.I. Kedungkayen 40
+136 D.I. Kepek 42
+137 D.I. Natah 25
+138 D.I. Ngepek 100
+139 D.I. Ngrapah 20
+140 D.I. Padangan 25
+141 D.I. Pakel 80
+142 D.I. Petung Patuk 15
+143 D.I. Pugeran 49
+144 D.I. Sambeng Kaliduren 25
+145 D.I. Suru 30
+146 D.I. Tlogomulyo 20
+147 D.I. Trembono 35
+148 D.I. Wareng Patuk 7
+149 D.I. Wungu 20
+150 D.I. Tuk Bendo Kr. Mojo 10
+151 D.I. Tuk Kali Anyar 10
+152 D.I. Tuk Kali Jambu 8
+153 D.I. Tuk Kali Lo 7
+154 D.I. Tuk Ngresik 10
+155 D.I. Tuk Setro 5
+156 D.I. Tuk Sulu 15
+157 D.I. Ceme 15
+158 D.I. Dawe 28
+159 D.I. Doga Hulu 10
+160 D.I. Dondong 32
+161 D.I. Gondang 40
+162 D.I. Gunung Manuk 5
+163 D.I. Ngepreh Hulu 30
+164 D.I. Pengkok 17
+165 D.I. Pengkol 96
+166 D.I. Putat 5
+167 D.I. Sedono 10
+168 D.I. Serut 30
+169 D.I. Srinten Hilir 10
+170 D.I. Sumber Alam 15
+171 D.I. Sumber Seng/Jetis 10
+172 D.I. Sunten 25
+173 D.I. Suru Hilir 10
+174 D.I. Suru Hulu 35
+175 D.I. Sp. Bolo Blarangan 60
+176 D.I. Tuk Bulu Blumbang 10
+177 D.I. Tuk Dadung Awuk 7
+178 D.I. Tuk Klungsu 30
+179 D.I. Tuk Ngembel 8
+180 D.I. Tuk Sangrah 21
+181 D.I. Tuk Terbah 35
+182 D.I. Tuk Daguran Hilir 5
+#KANAN
+292
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+c Kab. Kulon Proao 90 1.533
+1 D.I. Balong V 7
+2 D.I. Banaran 3
+3 D.I. Banjaran 17
+4 D.I. Belik II 4
+5 D.I. Bogor 15
+6 D.I. Borongaren 8
+7 D.I. Brangkalan 21
+8 D.I. Cikli 36
+9 D.I. Clangkring 4
+10 D.I. Clumprit 5
+11 D.I. Dasnganten 30
+12 D.I. Dukuh 8
+13 D.I. Dungdekem 8
+14 D.I. Duren/Mudal 26
+15 D.I. Gegunung 7
+16 D.I. Semalang 11
+17 D.I. Grembul 6
+18 D.I. Jambeaji 30
+19 D.I. Jati 6
+20 D.I. Jetis 8
+21 D.I. Jurug 59
+22 D.I. Kanjangan 37
+23 D.I. Karang/Togor 12
+24 D.I. Kayangan 198
+25 D.I. Kebonharjo 24
+26 D.I. Kedung Bathang 5
+27 D.I. Kedung Bisu 5
+28 D.I. Kedung Kobong 5
+29 D.I. Kedung Mojing 4
+30 D.I. Kembangmalang 4
+31 D.I. Klampok 3
+32 D.I. Kluwihan 8
+33 D.I. Mejing 6
+34 D.I. Melar 30
+35 D.I. Ngobarab (3bd) 30
+36 D.I. Niten 125
+37 D.I. Nyemani 15
+38 D.I. Pandan 7
+39 D.I. Penggung 32
+40 D.I. Pengkol 34
+41 D.I. Pereng 7
+42 D.I. Plelen 74
+43 D.I. Promasan 5
+44 D.I. Sarigono 30
+45 D.I. Sarimulyo 4
+46 D.I. Secang/Ngancar 9
+47 D.I. Seprati 6
+48 D.I. Siliran 8
+49 D.I. Singo Soweng 25
+50 D.I. Soka 8
+51 D.I. Sumitro 98
+52 D.I. Tulangan 15
+53 D.I. Wadas 20
+54 D.I. Balong 11
+55 D.I. Bancik 6
+56 D.I. Belik 7
+57 D.I. Besole 6
+58 D.I. Bimo 5
+59 D.I. Blekok 8
+60 D.I. Blimbing 4

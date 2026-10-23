@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+363 D.I. Supit Urang 89
+364 D.I. Talar | 16
+365 D.I. Talar II 17
+366 D.I. Taman I 39
+367 D.I. Taman II 8
+368 D.I. Tamansari 135
+369 D.I. Tancak 5
+370 D.I. Tapen 26
+371 D.I. Tasrip 175
+372 D.I. Tegal Batu II 322
+373 D.I. Tegal Waru 85
+374 D.I. Tegalan M4
+375 D.I. Tegalbago 53
+376 D.I. Telok 3
+377 D.I. Tempurejo 363
+378 D.I. Tenap | 8
+379 D.I. Tenap II 6
+380 D.I. Tenap III 35
+381 D.I. Tinggi I 36
+382 D.I. Tinggi II 35
+383 D.I. Toba 24
+384 D.I. Tohid 214
+385 D.I. Tono 10
+386 D.I. Tosi 12
+387 D.I. Tugusari 163
+388 D.I. Tulis 600
+389 D.I. Tuniuna 25
+390 D.I. Wangkal 30
+391 D.I. Waru 51
+392 D.I. Watu Urip I Tanggul 35
+393 D.I. Watu Urip II Tanggul 30
+394 D.I. Watu Urip III Tanggul 15
+395 D.I. Watu Urip Sumberbaru 119
+396 D.I. Wewe 80
+397 D.I. Winong 50
+398 D.I. Wringin 85
+399 D.I. Anyar 19
+400 D.I. Arah | Patrang 22
+401 D.I. Arah II Patrang 20
+402 D.I. As 28
+403 D.I. Astiya 40
+404 D.I. Batu urip 12
+405 D.I. Bebas 14
+406 D.I. Bedaan 7
+407 D.I. Bringin 45
+408 D.I. Brino 25
+409 D.I. Campoan 15
+410 D.I. Darungan II Patrang 11
+411 D.I. Duri 3
+412 D.I. Gajah 18
+413 D.I. Gumitir 10
+414 D.I. Jagir 26
+415 D.I. Jani 35
+416 D.I. Kangkung 5
+417 D.I. Kaporan 26
+418 D.I. Karang Anyar | Patrang 4
+419 D.I. Karang Anyar II Patrang 5
+420 D.I. Karang Katak 14
+421 D.I. Kebun Jureng 1
+422 D.I. Kentor 12
+423 D.I. Kolor 15
+#KANAN
+319 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+424 D.I. Lengkong II 17
+425 D.I. Lengkong I 35
+426 D.I. Lojejer 35
+427 D.I. Masjid 7
+428 D.I. Nan 4
+429 D.I. Ngitek 2
+430 D.I. Padasan III 15
+431 D.I. Pesantren 20
+432 D.I. Pringtali 54
+433 D.I. Rayap 31
+434 D.I. RecesI 30
+435 D.I. Reces II 35
+436 D.I. Rumi 4
+437 D.I. Saijab 35
+438 D.I. Salak 17
+439 D.I. Sanari 4
+440 D.I. Sbr. Beung 12
+441 D.I. Sbr. Cokol 26
+442 D.I. Sbr. Cottok 9
+443 D.I. Sbr. Jepang 25
+444 D.I. Sbr. Petung Patrang 26
+445 D.I. Sembah 42
+446 D.I. Sembunyi 8
+447 D.I. Sukowati 20
+448 D.I. Sumber Kolbuk 10
+h Kab. Jombana 196 12.648
+1 D.I. Balongsono 141
+2 D.I. Banjarejo 344
+3 D.I. Banjarsari 132
+4 D.I. Bareng 816
+5 D.I. Begoyo 22
+6 D.I. Bunder I 159
+7 D.I. Bunder II 175
+8 D.I. Carang Wulung | 7
+9 D.I. Carang Wulung II 9
+10 D.I. Carang Wulung III 13
+11 D.I. Gedangan 126
+12 D.I. Gembrong 75
+13 D.I. Gondang I 4
+14 D.I. Gondang II 4
+15 D.I. Gondang III 4
+16 D.I. Gondang IV 4
+17 D.I. Gondang V 4
+18 D.I. Gondang VI 2
+19 D.I. Gondang VII 2
+20 D.I. Gondang VIII 8
+21 D.I. Gondang IX 2
+22 D.I. Gondang X 2
+23 D.I. Gondang XI 3
+24 D.I. Gondang XII 3
+25 D.I. Gondang XIII 3
+26 D.I. Gondang XIV 3
+27 D.I. Gondang XV 3
+28 D.I. Gondang XVI 2
+29 D.I. Gondang XVII 3
+30 D.I. Gondang XVIII 3
+31 D.I. Gondang XIX 7
+32 D.I. Gondang XX 2
+33 D.I. Gondang XXIV 7
+34 D.I. Grogol I 19

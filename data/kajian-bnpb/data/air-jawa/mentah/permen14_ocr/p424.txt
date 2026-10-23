@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+280 D.I. Puntisese 10
+281 D.I. Purroma 45
+282 D.I. Purroma II 45
+283 D.I. Ramme 50
+284 D.I. Rammuk 15
+285 D.I. Randelangi 38
+286 D.I. Rano 213
+287 D.I. Rante 11
+288 D.I. Rante 81
+289 D.I. Rante Buda 46
+290 D.I. Rante Dama' 25
+291 D.I. Rante Katoan 15
+292 D.I. Rante Lombi 40
+293 D.I. Rante Lombi 32
+294 D.I. Rante Lombi II 56
+295 D.I. Rante Minanga 50
+296 D.I. Rante Pena' 8
+297 D.I. Rante Pongko 44
+298 D.I. Rantepongko 15
+299 D.I. Ranterima 8
+300 D.I. Rappa 10
+301 D.I. Ratte 30
+302 D.I. Ratte 50
+303 D.I. Ratte 50
+304 D.I. Ratte Appalla 65
+305 D.I. Ratte Popo 130
+306 D.I. Ratte Tangnga 55
+307 D.I. Rea 20
+308 D.I. Rea 80
+309 D.I. Remba 30
+310 D.I. Sale'Bok 20
+311 D.I. Salindu 40
+312 D.I. Salo Balo 56
+313 D.I. Saloan 43
+314 D.I. Salu 13
+315 D.I. Salu 40
+316 D.I. Salu Aho 45
+317 D.I. Salu Awo' 60
+318 D.I. Salu Balla 75
+319 D.I. Salu Bamba Tawalian 30
+320 D.I. Salu Batu 20
+321 D.I. Salu Beang 76
+322 D.I. Salu Beang 90
+323 D.I. Salu Bue 30
+324 D.I. Salu Buntu 14
+325 D.I. Salu Dengen 44
+326 D.I. Salu Didundu' 15
+327 D.I. Salu Durian 55
+328 D.I. Salu Induk 40
+329 D.I. Salu Kadake 20
+330 D.I. Salu Kanan 15
+331 D.I. Salu Lakunda 15
+332 D.I. Salu Lambu 14
+333 D.I. Salu Lelatin 10
+334 D.I. Salu Lombe' 50
+335 D.I. Salu Madalle 15
+336 D.I. Salu Maka' 55
+337 D.I. Salu Malunu 20
+338 D.I. Salu Mea 76
+339 D.I. Salu Minanga 23
+340 D.I. Salu Panu 15
+#KANAN
+494
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+341 D.I. Salu Ruru 44
+342 D.I. Salu Tabang 37
+343 D.I. Salu Tabone 100
+344 D.I. Salu Tando 20
+345 D.I. Salu Tete 55
+346 D.I. Salu Uma' 10
+347 D.I. Salu Umah 30
+348 D.I. Salubalo 10
+349 D.I. Salubanua 20
+350 D.I. Salubatu 35
+351 D.I. Salubelak 40
+352 D.I. Salubulo 15
+353 D.I. Salubulung 30
+354 D.I. Salubussu 35
+355 D.I. Saluhinduk 30
+356 D.I. Salukona 24
+357 D.I. Salukonta 30
+358 D.I. Salulak 15
+359 D.I. Salulau 20
+360 D.I. Saluledo 17
+361 D.I. Salulossa 20
+362 D.I. Salumada 40
+363 D.I. Salumerang 17
+364 D.I. Salumongin 10
+365 D.I. Salunata 30
+366 D.I. Salunata II 30
+367 D.I. Sambolangi 40
+368 D.I. Sampale 14
+369 D.I. Sangora 80
+370 D.I. Sapan 45
+371 D.I. Sarambu 7
+372 D.I. Sarang-Sarang 67
+373 D.I. Sariayo' 50
+374 D.I. Saruran 45
+375 D.I. Sendana 40
+376 D.I. Seppon 15
+377 D.I. Seppon Sariayo 10
+378 D.I. Sibanawa 60
+379 D.I. Sibunuan/Batu 18
+380 D.I. Siggi 10
+381 D.I. Sipate/Mamulu 50
+382 D.I. Siwi I 150
+383 D.I. Siwi II 45
+384 D.I. Sondong Layuk 25
+385 D.I. Suka Maju 15
+386 D.I. Sumua 25
+387 D.I. Sumua 40
+388 D.I. Sumule 54
+389 D.I. Tadamba 30
+390 D.I. Taite Humbe 10
+391 D.I. Tallo' 66
+392 D.I. Talukum 40
+393 D.I. Talukum II 40
+394 D.I. Tamalantik 60
+395 D.I. Tamoran 85
+396 D.I. Tampak Kaluak 35
+397 D.I. Tampak Loppo 53
+398 D.I. Tandekan 30
+399 D.I. Tandi Allo 50
+400 D.I. Tanduk Bulawan 34
+401 D.I. Tanete 34

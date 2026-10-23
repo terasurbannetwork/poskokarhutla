@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+61 D.I. Dukut Banyu 54
+62 D.I. Dungasu 46
+63 D.I. Dungbanger 13
+64 D.I. Dungbibis 12
+65 D.I. Dungsono 27
+66 D.I. Dungsuru 12
+67 D.I. Duren | 88
+68 D.I. Durenijo 110
+69 D.I. Duwet 13
+70 D.I. Eromoko 180
+71 D.I. G. Kendil 40
+72 D.I. Gabeng 31
+73 D.I. Gajah 47
+74 D.I. Gaji 39
+75 D.I. Galmoyo 33
+76 D.I. Garotan 27
+77 D.I. Gayam | 10
+78 D.I. Gebang 31
+79 D.I. Gedaren 16
+80 D.I. Gedong 36
+81 D.I. Gempur 60
+82 D.I. Geneng 83
+83 D.I. Gentungan 60
+84 D.I. Genuk 50
+85 D.I. Gesing 56
+86 D.I. Giling 64
+87 D.I. Glagahan 18
+88 D.I. Gledekan 100
+89 D.I. Slinggang 35
+90 D.I. Glirih 10
+91 D.I. Gloto 35
+92 D.I. Gng. Beruk 11
+93 D.I. Gng. Sengon 30
+94 D.I. Gondakan 148
+95 D.I. Gondang 34
+96 D.I. Gondangyoso 700
+97 D.I. Gondosini 63
+98 D.I. Gopel 35
+99 D.I. Gowang 15
+100 D.I. Gremeng 131
+101 D.I. Grenjeng 20
+102 D.I. Grenting 15
+103 D.I. Grojogan 122
+104 D.I. Grombyang 65
+105 D.I. Gunungijo 46
+106 D.I. Ingas 53
+107 D.I. Jambe 51
+108 D.I. Janggir 160
+109 D.I. Jarum 20
+110 D.I. Jaten 52
+111 D.I. Jaten 25
+112 D.I. Jatirejo Hilir 15
+113 D.I. Jatirejo Hulu 18
+114 D.I. Jatirogo 54
+115 D.I. Jatis 50
+116 D.I. Jatisari 53
+117 D.I. Jeblogan 62
+118 D.I. Jemplo 40
+119 D.I. Jendi 272
+120 D.I. Jeron telik 15
+121 D.I. Jladri 156
+#KANAN
+281 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+122 D.I. Jobot 30
+123 D.I. Joso 22
+124 D.I. Jrogajah 20
+125 D.I. Jublek 22
+126 D.I. Jumok 44
+127 D.I. Jurang Jamus 17
+128 D.I. Jurang Kunir 27
+129 D.I. Juranggandok 109
+130 D.I. Jurangkuwung 162
+131 D.I. Juweh 15
+132 D.I. Kajang 222
+133 D.I. Kajar 28
+134 D.I. Kakap 79
+135 D.I. Kali Kebo 27
+136 D.I. Kali Kebrok 21
+137 D.I. Kali Sepuluh 11
+138 D.I. Kaliasat 10
+139 D.I. Kaliduren 10
+140 D.I. Kaligading 64
+141 D.I. Kantenan 56
+142 D.I. Karang Mungal 31
+143 D.I. Karanglo 23
+144 D.I. Karanglo 14
+145 D.I. Karangroto 200
+146 D.I. Katir 114
+147 D.I. Kayangan 82
+148 D.I. Kebon Agung 522
+149 D.I. Kebrok 10
+150 D.I. Kedung Kampak 13
+151 D.I. Kedung Sentul 24
+152 D.I. Kedungdowo 14
+153 D.I. Kedungjaran 189
+154 D.I. Kedunglowo 101
+155 D.I. Kedungsengon 34
+156 D.I. Kedunguling 67
+157 D.I. Kembang 37
+158 D.I. Kenongo 25
+159 D.I. Kenti 131
+160 D.I. Kepatihan 240
+161 D.I. Kepil 91
+162 D.I. Kepil II 15
+163 D.I. Keron 157
+164 D.I. Ketel 27
+165 D.I. Ketonggo 171
+166 D.I. Ketonggo 20
+167 D.I. Klampis 26
+168 D.I. Klampok | 26
+169 D.I. Klampok II 45
+170 D.I. Kleco 87
+171 D.I. Klentang 25
+172 D.I. Klepu 22
+173 D.I. Klumpit | 52
+174 D.I. Klutuk 27
+175 D.I. Kodok 67
+176 D.I. Kolongan 18
+177 D.I. Kopen 70
+178 D.I. Koripan 58
+179 D.I. Krakal 55
+180 D.I. Kramat 13
+181 D.I. Krapyak 25
+182 D.I. Krendetan 11

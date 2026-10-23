@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+375 D.I. Semanding II 5
+376 D.I. Semarangan 40
+377 D.I. Sembung 1
+378 D.I. Sengon 2
+379 D.I. Sidowayah 1
+380 D.I. Sinangling 31
+381 D.I. Sinawang 3
+382 D.I. Sine 2
+383 D.I. Singgahan 82
+384 D.I. Sinoman 2
+385 D.I. Sobo 2
+386 D.I. Sobo 35
+387 D.I. Sobo 11
+388 D.I. Sobo 2
+389 D.I. Soho 6
+390 D.I. Soko 8
+391 D.I. Sono 13
+392 D.I. Suki 13
+393 D.I. Suko Redi 16
+394 D.I. Sunten 3
+395 D.I. Suren 30
+396 D.I. Suru 9
+397 D.I. Suru 2
+398 D.I. Suru | 7
+399 D.I. Suru II 8
+400 D.I. Suruh 250
+401 D.I. Suwaluh 2
+402 D.I. Suwaru 19
+403 D.I. Talang 9
+404 D.I. Tanggaran 11
+405 D.I. Tanggung 1
+406 D.I. Tanggung 12
+407 D.I. Tangkil 10
+408 D.I. Tangkil 12
+409 D.I. Tanjung 8
+410 D.I. Tapan 17
+411 D.I. Tawing 3
+412 D.I. Tawing 2
+413 D.I. Tawing 83
+414 D.I. Teklik 3
+415 D.I. Temboro 8
+416 D.I. Tempel 5
+417 D.I. Tempuran 5
+418 D.I. Tenggar 6
+419 D.I. Tlengku 9
+420 D.I. Tlogo 8
+421 D.I. Tlogo 1
+422 D.I. Tlutak 34
+423 D.I. Tretes 12
+424 D.I. Tuguran 3
+425 D.I. Tulakan 10
+426 D.I. Tumang 2
+427 D.I. Tumang II 2
+428 D.I. Tumpak Ajaran | 24
+429 D.I. Tumpak Ajaran II 29
+430 D.I. Tumpak Aren 6
+431 D.I. Tumpak Aren 1
+432 D.I. Tumpak Dolo 11
+433 D.I. Tumpak Kelor 6
+434 D.I. Tumpak Kendit 74
+435 D.I. Tumpak Lo 7
+#KANAN
+- 1015, No.638
+367 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+436 D.I. Tumpak Mindi 10
+437 D.I. Tumpak Nanas 11
+438 D.I. Tumpak Rawan 11
+439 D.I. Tumpak Sempu 4
+440 D.I. Tumpak Uni 20
+441 D.I. Tunggeng 13
+442 D.I. Umbul 6
+443 D.I. Umbul Mendak 1
+444 D.I. Wadi 13
+445 D.I. Wadi 3
+446 D.I. Wangi 10
+447 D.I. Warak 4
+448 D.I. Waringin 52
+449 D.I. Wates 3
+450 D.I. Watu Agung 4
+451 D.I. Watu Pecah 21
+452 D.I. Watu Ploso 4
+453 D.I. Watulimo 10
+454 D.I. Weru 14
+455 D.I. Winong 46
+456 D.I. Wonorejo 30
+457 D.I. Wulung 10
+458 D.I. Ampel 13
+459 D.I. Banyu urip 39
+460 D.I. Baran 18
+461 D.I. Belis 13
+462 D.I. Bimo 4
+463 D.I. Biring 1
+464 D.I. Bugelan 178
+465 D.I. Cangkring 60
+466 D.I. Emprit Ireng 7
+467 D.I. Gador 18
+468 D.I. Sarangan 2
+469 D.I. Gares 24
+470 D.I. Gebang 2
+471 D.I. Geladak 2
+472 D.I. Gelang 3
+473 D.I. Gemblung 38
+474 D.I. Gunung Cilik 2
+475 D.I. Gunung Tales 5
+476 D.I. Japuk 5
+477 D.I. Josari 10
+478 D.I. Juruk 3
+479 D.I. Kali Gesing 18
+480 D.I. Kedung Kenteng 211
+481 D.I. Ketro 27
+482 D.I. Kidang 1
+483 D.I. Klampok 13
+484 D.I. Kliko 4
+485 D.I. Lingku 17
+486 D.I. Manggahan 25
+487 D.I. Manggis 45
+488 D.I. Mangutan 6
+489 D.I. Mayu 21
+490 D.I. Mileng 7
+491 D.I. Ngambak 2
+492 D.I. Nganggut 5
+493 D.I. Nglebeng 8
+494 D.I. Nglumpang 32
+495 D.I. Ngumbul 8
+496 D.I. Nongko 5

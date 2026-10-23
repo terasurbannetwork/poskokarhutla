@@ -1,0 +1,63 @@
+#TATA_LETAK satu-tabel lebar=2480
+535 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+67 D.I.A.T. Kradenan SMTB 302 9
+68 D.I.A.T. Kradenan SMTB 303 9
+69 D.LA.T. Sumurgung SMTB 306 7
+70 D.LA.T. Sumurgung SMTB 307 8
+71 D.ILA.T. Punggul Rejo SDTB 070 47
+72 D.L.A.T. Temaji SDTB 01 50
+v Kab. Tulunaaauna 19 227
+1 D.LA.T. Kota Non SDTA 020 30
+2 D.LA.T. Rejoagung SDTA 021 30
+3 D.LA.T. Gondosukma SKTA 346 3
+4 D.LA.T. Gondosukma SKTA 347 3
+5 D.LA.T. Tawing SKTA 348 3
+6 D.L.A.T. Tawing SKTA 349 3
+7 D.LA.T. Kendal SKTA 350 3
+8 D.LA.T. Gasikan SKTA 351 3
+9 D.LA.T. Wates SKTA 352 3
+10 D.LA.T. Wates SKTA 353 3
+11 D.LA.T. Palem SKTA 354 3
+12 D.LA.T. Palem SKTA 355 3
+13 D.LA.T. Tamba SKTA 356 3
+14 D.LA.T. Sodo SKTA 357 3
+15 D.LA.T. Gombang SDTA 534 83
+16 D.LA.T. Duwet SDTA 564 12
+17 D.LA.T. Bono SDTA 565 12
+18 D.LA.T. Suruhan Kidul SDTA 566 12
+19 D.LA.T. Suruhan Lor SDTA 569 12
+IX PROVINSI BALI 140 2.729
+a Kab. Bulelena 50 989
+1 D.LA.T. Pejarakan NB.18 20
+2 D.LA.T. Pejarakan NB.19 27
+3 D.LA.T. Pejarakan NB.46 20
+4 D.LA.T. Patas NB.53 38
+5 D.LA.T. Pejarakan NB.48 20
+6 D.L.A.T. Patas NB.55 25
+7 D.LA.T. Patas PTS.89 19
+8 D.L.A.T. Musi BTW.1 20
+9 D.LA.T. Sangelangit BTW.2 13
+10 D.LA.T. Sangelangit BTW.3 19
+11 D.LA.T. Musi BW.5 20
+12 D.LA.T. Kayuputih NB.25 25
+13 D.LA.T. Kayuputih NB.26 25
+14 D.LA.T. Kayuputih NB.27 24
+15 D.LA.T. Kaliasem NB.28 11
+16 D.LA.T. Kaliasem NB.29 20
+17 D.LA.T. Panji NB.63 11
+18 D.I.A.T. Anturan NB.66 40
+19 D.LA.T. Kaliasem KLS.90 25
+20 D.I.A.T. Kaliasem KLS.91 26
+21 D.LA.T. Tukad Mungga TMG.92 30
+22 D.L.A.T. Julah JLH.08 17
+23 D.L.A.T. Pacung PAC.07 19
+24 D.I.A.T. Bondalem BDN.32 18
+25 D.I.A.T. Bondalem BDM.34 20
+26 D.I.A.T. Tejakula TKL.15 20
+27 D.LA.T. Les LES.07 17
+28 D.LA.T. Les LES.08 17
+29 D.I.A.T. Penuktukan PKT.05 18
+30 D.LA.T. Sembirenteng SBT.14 17

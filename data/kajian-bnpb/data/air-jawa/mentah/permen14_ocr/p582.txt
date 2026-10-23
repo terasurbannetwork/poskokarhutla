@@ -1,0 +1,19 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 589
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+61 D.LA.T. Tanah Miring SP.6 04 5
+62 D.LA.T. Tanah Miring SP.8 01 5
+63 D.LA.T. Tanah Miring SP.8 02 5
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+64 D.LA.T. Tanah Miring SP.8 03 6
+65 D.LA.T. Tanah Miring SP.8 04 5
+66 D.LA.T. Tanah Miring SP.9 01 5
+67 D.LA.T. Tanah Miring SP.9 02 5
+68 D.LA.T. Tanah Miring SP.9 03 5
+69 D.LA.T. Wasur 01 4
+70 D.ILA.T. Wonorejo 01 4
+TOTAL 5.659 113.600

@@ -1,0 +1,124 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+28 D.I. Suka Maju 250
+29 D.I. Tekang 80
+30 D.I. Telaga I 125
+31 D.I. Tonak Goneh 61
+32 D.I. Tuguk Kemayau 55
+33 D.I. Ungai 50
+34 D.I. Balai Harapan 150
+35 D.I. Bangkor 85
+36 D.I. Bayur 65
+37 D.I. Belimbing 63
+38 D.I. Bukit Labu 115
+39 D.I. Buluh Kuning 78
+40 D.I. Dsn. Mengkurai 65
+41 D.I. Dsn. Sei Raya 78
+42 D.I. Dsn. Paoh Desa 65
+43 D.I. Entogong 86
+44 D.I. Kedupai 69
+45 D.I. Kuari 75
+46 D.I. Landau Kodam 110
+47 D.I. Layung 500
+48 D.I. Lubuk Besar 50
+49 D.I. Lumut 115
+50 D.I. Mangat Baru 215
+51 D.I. Mansit 180
+52 D.I. Medang 54
+53 D.I. Melinakat 118
+54 D.I. Menjalin 618
+55 D.I. Mensiak Baru 185
+56 D.I. Merpak 85
+57 D.I. Nanga Merakai 130
+58 D.I. Pangkal Baru 120
+59 D.I. Paoh Desa (Sei.Sengalau) 85
+60 D.I. Penyak 80
+61 D.I. Pinang Kuyu 88
+62 D.I. Ranah Kedoma 52
+63 D.I. Ranah Lemeyeng 88
+64 D.I. Ransi 80
+65 D.I. Segaluh 86
+66 D.I. Sei Lais 415
+67 D.I. Sei Terona 85
+68 D.I. Sejirak 125
+69 D.I. Sekubang 85
+70 D.I. Semajau Mekar 250
+71 D.I. Sengalau 78
+72 D.I. Seria 215
+73 D.I. Sirana Setambana 100
+74 D.I. Tampang Benua 50
+75 D.I. Tanah Merah 65
+76 D.I. Tanah Putih 350
+77 D.I. Tinum Baru 120
+78 D.I. Tongar 75
+79 D.I. Umim 185
+m Kota Sinakawana 18 5.762
+1 D.I. Bok Makong 300
+2 D.I. Lirang 250
+3 D.I. Teluk Karang 275
+4 D.I. Kali Asin 350
+5 D.I. Pakunam 250
+6 D.I. Sijangkung 425
+7 D.I. Pasi Pangmilang 385
+#KANAN
+406
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+8 D.I. Lohabang 360
+9 D.I. Sagatani 283
+10 D.I. Tainam Pajintan 453
+11 D.I. Sanggau Kulor 500
+12 D.I. Nyarumkop 401
+14 D.I. Petengahan 300
+15 D.I. Mayasopa 325
+13 D.I. Sei. Tangket 250
+16 D.I. Pasiran 275
+17 D.I. Ho Loknam 180
+18 D.I. Manggis 200
+vw PROVINSI an & RaR
+KALINIAN LAN 1 ENYA
+a Kab. Barito Selatan 1 365
+1 D.I. Majundre 365
+b Kab. Barito Timur 6 1.131
+1 D.I. Baruh Rintis (Matabu) 131
+2 D.I. Takuam 400
+3 D.I. Bagok 100
+4 D.I. Dorong 200
+5 D.I. Maduso 100
+6 D.I. Pangkan 200
+c Kab. Barito Utara 7 2.042
+1 D.I. Majangkan 100
+2 D.I. Malungai 50
+3 D.I. Montallat 404
+4 D.I. Trinsing 388
+5 D.I. Walur 100
+6 D.I. Bawang 500
+7 D.I. Tandrahean 500
+d Kab. Gununa Mas 3 1.520
+1 D.I. Sekata Juri 400
+2 D.I. Sekata Tewah M0
+3 D.I. Gohong Rawai 710
+e Kab. Kotawarinain Barat 4 800
+1 D.I. Sagu Suka Mulya (Kumai Kondang) 300
+2 D.I. Berambai Makmur 200
+3 D.I. Pangkalan Satu 100
+4 D.I. Palih Baru 200
+f Kab. Kotawarinain Timur 1 600
+1 D.I. Tanjung Harapan 600
+a Kab. Lamandau 18 2.208
+1 D.I. Lubuk Hiju 75
+2 D.I. Tri Tunggal 175
+3 D.I. Sungai Tuat 60
+4 D.I. Modang Mas 126
+5 D.I. Suka Maiu 50
+6 D.I. Kudangan 250
+7 D.I. Batu Kotam 497
+8 D.I. Sumber Cahaya 125
+9 D.I. Bayat (Loda Manyam) 200
+10 D.I. Batu Tambun 100
+11 D.I. Bukit Makmur 50
+12 D.I. Karang Taba 85

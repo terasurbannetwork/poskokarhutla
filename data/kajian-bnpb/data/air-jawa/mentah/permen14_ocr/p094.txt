@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+175 D.I. Belakang Rumah 45
+176 D.I. Dulang-Dulang 40
+177 D.I. Kubang 161
+178 D.I. Pinang Sinawa 120
+179 D.I. Koto Panjang 50
+180 D.I. Batu Nan Panjang 60
+181 D.I. Batang Talabua 50
+182 D.I. Anduring 115
+183 D.I. Ampang Ngalau 123
+184 D.I. Sei. Janiah 86
+185 D.I. Nyiak Adia 50
+186 D.I. Kuruak Salo 57
+187 D.I. Kuruak Koto Katiak 48
+188 D.I. Mato Aia Kubang 50
+189 D.I. Ngarai Rempang 40
+190 D.I. Labuah 52
+191 D.I. Sawah Liek 37
+192 D.I. Aro M
+193 D.I. Pulai M
+194 D.I. Gadang Bukik Apik 31
+195 D.I. Kandih 59
+196 D.I. Pabungkuak 52
+197 D.I. Pabungkuak | 64
+198 D.I. Pabungkuak II 59
+199 D.I. Sawah Diabu 45
+200 D.I. Induriang 45
+201 D.I. Ngungun 45
+202 D.I. Sei. Jaring 75
+203 D.I. Birah Tinggi 49
+204 D.I. Birah Janjang 60
+205 D.I. Durian Taba 65
+206 D.I. Gadang Kapalo Kampuang 55
+207 D.I. Batang Nareh 74
+208 D.I. Lurah Tarok 55
+209 D.I. Pasa 47
+210 D.I. Baru 50
+211 D.I. Apa 50
+212 D.I. Nyiur 53
+213 D.I. Sampan Paraman 65
+214 D.I. Gadang Pili 83
+215 D.I. Gadang Kubu 65
+216 D.I. Bawah Salimpaung 62
+217 D.I. Batang Pauang 59
+218 D.I. Baru 53
+219 D.I. Pusaro 53
+220 D.I. Tabing 74
+221 D.I. Subarang Gauang 45
+222 D.I. Manguih Kaciak 45
+223 D.I. Koto Baru 40
+224 D.I. Sungai Tanang 44
+225 D.I. Batu Laweh 52
+226 D.I. Sei. Landai 57
+227 D.I. Subarang 50
+228 D.I. Batu Itam 50
+229 D.I. Sawah Rakan 40
+230 D.I. Sawah Liek 80
+231 D.I. Ampera 60
+232 D.I. Simpang 60
+233 D.I. Pantian 60
+234 D.I. Bulaan Gadang 73
+235 D.I. Tabek Tanjung 59
+#KANAN
+94
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+236 D.I. Laweh 93
+237 D.I. Balantiak 90
+238 D.I. Gadang 60
+239 D.I. Tabek Aia Asin 45
+240 D.I. Pincuran Cokang 70
+241 D.I. Pincuran Lantai Batu 53
+242 D.I. Batu Gadang 65
+243 D.I. Anak Aia Gambok 40
+244 D.I. Anak Singo Barantai 42
+245 D.I. Anak Aia Duku 40
+246 D.I. Ampangan Angku Lareh 60
+247 D.I. Mato Aia Pulai 60
+248 D.I. Ampangan Ngarai 40
+249 D.I. Surau Ambacang 40
+250 D.I. Ampangan SD III 40
+251 D.I. Amp. Jento 40
+252 D.I. Aia Ganggo 144
+253 D.I. Ampangan Mak Uma 40
+254 D.I. Ampangan Dulang Dulang 60
+255 D.I. Tumayo 45
+256 D.I. Rambun 45
+257 D.I. Ekor Pisang 50
+258 D.I. Kubu Gdang 40
+259 D.I. Ambacang 40
+260 D.I. Paragiang 40
+261 D.I. Kiyau 42
+262 D.I. Sadai Tapi 40
+263 D.I. Kabau Jalang 40
+264 D.I. Bukik Taban 60
+265 D.I. Bukik Jariang 40
+266 D.I. Gadang Lilin 60
+267 D.I. Kabun 40
+268 D.I. Anak Bateh Aka 53
+269 D.I. Lambeh Gadang 49
+270 D.I. Kayu Tanam 60
+271 D.I. Kaciak 75
+272 D.I. Gadang Marambuang 75
+273 D.I. Belukar Panjang 45
+274 D.I. Gadang Tantaman 41
+275 D.I. Alahan Panjang 65
+276 D.I. Gadang Ngungun 50
+277 D.I. Baru Padang Gantiang 60
+278 D.I. Gadang Cirimek 100
+279 D.I. Simpang III Sikabau 58
+280 D.I. Baru Gadang Gadih 30
+281 D.I. Batang Kuran-Kuran 55
+282 D.I. Simpang III Sei. Puar 70
+283 D.I. Padang 54
+284 D.I. Guguak 52
+285 D.I. Anak Aia Kajai 50
+286 D.I. Anak Aia Kajai | 93
+287 D.I. Air Masang 65
+288 D.I. Gadang Tangah 50
+289 D.I. Sarasah 80
+290 D.I. Batu Kamba 50
+291 D.I. Pulau Gadang 40
+292 D.I. Batang Paraman 40
+293 D.I. Lubuak Batu Balah 60
+294 D.I. Anak Aia Sansai 60
+295 D.I. Kampuang Parik 35

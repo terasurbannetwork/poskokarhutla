@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 564
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+2 D.LA.T. Inobonto I SMB 003 10
+
+3 D.LA.T. Inobonto I SMB 004 10
+
+4 D.LA.T. Solog TWB 001 25
+
+5 D.LA.T. Solog TWB 002 15
+
+6 D.I.A.T. Nanasi TWB 003 24
+
+7 D.LA.T. Nanasi TWB 005 27
+
+8 D.LA.T. Solog TWB 007 20
+
+9 D.LA.T. Inobonto I TWB 009 33
+10 D.I.A.T. Poigar TWB 010 18
+11 D.LA.T. Solog TWB 011 15
+12 D.LA.T. Langagon TWB 012 20
+13 D.LA.T. Tadoi TWB 013 17
+14 D.LA.T. Kembangmerta TWB 015 28
+15 D.LA.T. Kembangmerta TWB 016 32
+16 D.LA.T. Kembangmerta TWB 017 B 25
+17 D.LA.T. Kembangmerta TWB 017C 25
+18 D.LA.T. Kembangmerta TWB 018 29
+19 D.LA.T. Werdi Agung TWB 021 23
+20 D.LA.T. Siniyung TWB 022 27
+21 D.LA.T. Solog TWB 023 27
+22 D.LA.T. Osion TWB 024 22
+23 D.LA.T. Dumoga TWB 025 29
+24 D.LA.T. Siniyung TWB 026 25
+25 D.LA.T. Solog TWB 028 18
+26 D.LA.T. Dumoga/lbulagon TWB 029 20
+27 D.LA.T. Dumoga TWB 032 25
+28 D.LA.T. Insil TWB 036 7
+29 D.LA.T. Kembangmerta TWB 037 22
+30 D.LA.T. Siniyung TWB 038 10
+31 D.LA.T. Bungko TWB 039 B 20
+32 D.LA.T. Dumoga TWB 040 20
+33 D.LA.T. Linawan TWB 041 25
+34 D.LA.T. Sinsingon TWB 044 30
+35 D.LA.T. Kembangmerta TWB 046 22
+36 D.LA.T. Siniyung TWB 048 23
+37 D.LA.T. Sinsingon TWB 052 30
+38 D.LA.T. Dumoga Ilibulagon TWB 055 22
+39 D.LA.T. Dumoga TWB 056 19
+40 D.L.A.T. Tanoyan Utara TWB 058 18
+41 D.LA.T. Mongkoinit TWB 059 15
+42 D.LA.T. Tuyat TWB 060 19
+43 D.LA.T. Mongkoinit TWB 063 25
+44 D.LA.T. Bolaang TWB 064 20
+45 D.LA.T. Lolayan TWB 065 25
+46 D.LA.T. Siniyung TWB 066 22
+47 D.LA.T. Kembangmerta TWB 067 22
+48 D.LA.T. Tandu TWB 75 25
+49 D.LA.T. Diat TWB 76 25
+50 D.L.A.T. Inobonto TWB 77 25
+51 D.LA.T. Bungko TWB 81 25
+52 D.LA.T. Merta Sari TWB 30
+53 D.LA.T. Kembang Sari TWB 30
+54 D.LA.T. Tambulango TWB 25
+55 D.LA.T. Dumara TWB 30 30
+56 D.I.A.T. Lolayan TWB 61 30
+57 D.LA.T. Tungoi TWB 73 35
+58 D.LA.T. Bungko TWB 81 30
+
+b Kab. Bolaana Monaondow Timur 5 139
+
+1 D.LA.T. Guaan TWB 043 30
+
+2 D.LA.T. Guaan TWB 050 27

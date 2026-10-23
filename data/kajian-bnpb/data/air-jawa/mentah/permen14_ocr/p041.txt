@@ -1,0 +1,90 @@
+#TATA_LETAK satu-tabel lebar=2480
+A1 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+D UTUH KABUPATEN/KOTA 628 941.787
+| PROVINSI ACEH 37 63.265
+a Kab. Aceh Barat
+
+1 D.I. Kuala Bhee 1.000
+b Kab. Aceh Barat Daya
+
+1 D.I. Babah Rote 1.550
+2 D.I. Manggeng 1.684
+c Kab. Aceh Jaya
+
+1 D.I. Ceurace 2.000
+2 D.I. Lambesoi 2.000
+3 D.I. Pante Kuyun 1.557
+4 D.I. Patek 2.650
+5 D.I. Tanoh Ano 2.500
+d Kab. Aceh Selatan
+
+1 D.I. Beutong 2.566
+2 D.I. Gunung Pudung 2.229
+3 D.I. Jambo Dalem 1.000
+4 D.I. Paya Dapur 2.390
+e Kab. Aceh Singkil
+
+1 D.I. Sianjo-anjo 1.300
+f Kab. Aceh Tamiang
+
+1 D.I. Tenggulon 2.000
+g Kab. Aceh Tenggara
+
+1 D.I. Kuta Cane Lama 1114
+2 D.I. Kuta Tinggi 1.200
+3 D.I. Lawe Bulan 1.050
+4 D.I. Lawe Kinga/Maha Singkil 1.595
+5 D.I. Siluk-luk 1.710
+6 D.I. Teruntung Pedi 1.500
+h Kab. Aceh Timur
+
+1 D.I. Jambo Reuhat 2.625
+2 D.I. Peunaron 1.550
+3 D.I. Ulee Gajah 1.142
+i Kab. Aceh Utara
+
+1 D.I. Buluh Blang Ara 2.100
+2 D.I. Jamuan 1.000
+3 D.I. Krueng Tuan 2.228
+4 D.I. Mbang 1.106
+j Kab. Bener Meriah
+
+1 D.I. Datar Diana 1.270
+k Kab. Bireuen
+
+1 D.I. Krueng Nalan 2.833
+2 D.I. Krueng Pandrah 1.203
+3 D.I. Krueng Peudada 1.000
+| Kab. Gayo Lues
+
+1 D.I. Weih Sejuk 2.175
+2 D.I. Weih Tillis 2.500
+m Kab. Pidie
+
+1 D.I. Krueng Rajui 1.100
+n Kab. Pidie Jaya
+
+1 D.I. Cubo/Trienggadeng 1.909
+2 D.I. Meureudu 1.729
+3 D.I. Ule Glee 1.200
+Il PROVINSI SUMATERA UTARA 56 78.806
+a Kab. Asahan
+
+1 D.I. Cinta Maju/Cinta Damai 1.732
+2 D.I. Panca Arga 2.500
+3 D.I. Purwodadi 1.635
+4 D.I. Serbangan 2.333
+5 D.I. Simodong 2.435
+6 D.I. Sungai Balai 1185
+7 D.I. Tanjung Muda 1157
+b Kab. Dairi
+
+1 D.I. Bulu Duri 1.008
+c Kab. Deli Serdang
+
+1 D.I. Medan Krio 2.800
+2 D.I. Namo Rambe 1.036
+3 D.I. Rantau Panjang 2.309

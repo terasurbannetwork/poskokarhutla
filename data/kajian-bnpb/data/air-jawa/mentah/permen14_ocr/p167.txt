@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+828 D.I. Nyungcung 51
+829 D.I. Pa Oneng 20
+830 D.I. Pabangbon 17
+831 D.I. Palasari 55
+832 D.I. Palayangan 30
+833 D.I. Pamanggon 10
+834 D.I. Pamidahan 5
+835 D.I. Pancaniti 20
+836 D.I. Panewon 10
+837 D.I. Pangangonan 25
+838 D.I. Panggilingan 20
+839 D.I. Parakan Panjang 60
+840 D.I. Parigi 30
+841 D.I. Parung Santen 40
+842 D.I. Pasar Rebo 50
+843 D.I. Pasarean 43
+844 D.I. Pasir Angin 10
+845 D.I. Pasir Bentang 35
+846 D.I. Pasir Buncir 35
+847 D.I. Pasir Ciung 15
+848 D.I. Pasir Ciung 55
+849 D.I. Pasir Eurih 80
+850 D.I. Pasir Gantar 30
+851 D.I. Pasir Gombong 50
+852 D.I. Pasir Halang 15
+853 D.I. Pasir Ipis 15
+854 D.I. Pasir Ipis 20
+855 D.I. Pasir Kalong/Cijulang 82
+856 D.I. Pasir Kuda 37
+857 D.I. Pasir Nangka 18
+858 D.I. Pasir Peundeuy 30
+859 D.I. Pasir Pogor 35
+860 D.I. Pasir Reungit 69
+861 D.I. Pasir Waluh 50
+862 D.I. Pelton 20
+863 D.I. Peres 100
+864 D.I. Petir 30
+865 D.I. Pondok Gede 20
+866 D.I. Pondok Situan 23
+867 D.I. Rabudin 17
+868 D.I. Raden 61
+869 D.I. Raidun 66
+870 D.I. Ranca Badak 15
+871 D.I. Ranca Bokong 5
+872 D.I. Randa Cemong 15
+873 D.I. Rangga Gading 30
+874 D.I. Ranji 45
+875 D.I. Rasamala Cibadak 30
+876 D.I. Rawa 20
+877 D.I. Rawabakti 20
+878 D.I. Rawagabus 20
+879 D.I. Saimun 30
+880 D.I. Saiya 30
+881 D.I. Salihun 14
+882 D.I. Saluran Baru 37
+883 D.I. Saluran Cobaan 20
+884 D.I. Saluran Huni 25
+885 D.I. Saluran Sugih 25
+886 D.I. Samit 10
+887 D.I. Sari Kuning 15
+888 D.I. Sarongge 36
+#KANAN
+- 1015, No.638
+167 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+889 D.I. Sasak Onong 58
+890 D.I. Sawah Lega 30
+891 D.I. Sawah Pasir I 36
+892 D.I. Sawah Pasir II 20
+893 D.I. Sebah 60
+894 D.I. Seuseupan 10
+895 D.I. Seuseupan 30
+896 D.I. Sigeheng 40
+897 D.I. Sijengkol 35
+898 D.I. Sinampel/Pasir Awi 222
+899 D.I. Sindang Barang 14
+900 D.I. Sindang Barang 14
+901 D.I. Sindung Buhing 30
+902 D.I. Sinyurup 10
+903 D.I. Sipon/Saiban 20
+904 D.I. Situ Bale Kembang 15
+905 D.I. Situ Bambu 121
+906 D.I. Situ Bojong Gerot 60
+907 D.I. Situ Borongsong 35
+908 D.I. Situ Burung 43
+909 D.I. Situ Cibeureum 25
+910 D.I. Situ Cibeureum 8
+911 D.I. Situ Cibodas 38
+912 D.I. Situ Cigudeg 36
+913 D.I. Situ Cijantungeun Girang 50
+914 D.I. Situ Cijantungeun Hilir 35
+915 D.I. Situ Cijenggot 34
+916 D.I. Situ Cikaret 25
+917 D.I. Situ Cimangis 20
+918 D.I. Situ Cinangsi 12
+919 D.I. Situ Cipayung 4
+920 D.I. Situ Cipicung 60
+921 D.I. Situ Ciranji 12
+922 D.I. Situ Ciumbuleuit 42
+923 D.I. Situ Cogreg 20
+924 D.I. Situ Cogreg 30
+925 D.I. Situ Curug Hideung 25
+926 D.I. Situ Gede 77
+927 D.I. Situ Gunung Nyuncung 10
+928 D.I. Situ Hiang 20
+929 D.I. Situ Jampang Bulu 39
+930 D.I. Situ Kadongdong 46
+931 D.I. Situ Kemuning 29
+932 D.I. Situ Kepundan 20
+933 D.I. Situ Kibing 6
+934 D.I. Situ Moyan 41
+935 D.I. Situ Nanggerang 30
+936 D.I. Situ Pabrik 30
+937 D.I. Situ Pangampoan 43
+938 D.I. Situ Panjang 37
+939 D.I. Situ Pasir Maung 50
+940 D.I. Situ Pemda 3
+941 D.I. Situ Rawa Gede 32
+942 D.I. Situ Rawa Jejed II 140
+943 D.I. Situ Selabenda M
+944 D.I. Situ Singa Bangsa 22
+945 D.I. Situ Siyang 47
+946 D.I. Situ Taman Sari 25
+947 D.I. Situ Tarate M
+948 D.I. Situ Tarogong 63
+949 D.I. Situ Tonjong 29

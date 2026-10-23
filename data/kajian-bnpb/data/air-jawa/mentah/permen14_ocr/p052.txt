@@ -1,0 +1,70 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 59
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+XXVI PROVINSI SULAWESI BARAT 11 19.114
+a Kab. Mamasa
+1 D.I. Aralle 2.330
+2 D.I. Mambi 2.728
+3 D.I. Messawa 1.562
+4 D.I. Pana 1.334
+5 D.I. Rantebulahan Timur 1.400
+6 D.I. Tandukkalua 2.170
+b Kab. Mamuju
+1 D.I. Papalang-Sampaga 2.245
+2 D.I. Tobadak 1.880
+c Kab. Mamuju Utara
+1 D.I. Bantalaka 1.200
+d Kab. Polewali Mandar
+1 D.I. Lakejo 1.265
+2 D.I. Tandung 1.000
+XXVII PROVINSI SULAWESI SELATAN 34 51.962
+a Kab. Barru
+1 D.I. Lanrae 1.120
+b Kab. Bone
+1 D.I. Bengo 1.000
+2 D.I. Jaling 1.777
+3 D.I. Lanca 1.084
+4 D.I. Salomekko 1.723
+5 D.I. Selli Coppobulu 1.238
+6 D.I. Unyi 1.310
+7 D.I. Waru-Waru 1.000
+c Kab. Bulukumba
+1 D.I. Bettu 1.817
+2 D.I. Bongki-Bongki 1.796
+3 D.I. Bontonyeleng 1.096
+d Kab. Enrekang
+1 D.I. Tallu Ura 1.100
+e Kab. Luwu
+1 D.I. Lengkong Pini 1.000
+2 D.I. Makawa 2.600
+f Kab. Luwu Timur
+1 D.I. Angkona 1.200
+g Kab. Luwu Utara
+1 D.I. Bungadidi 2.950
+2 D.I. Kuri-Kuri Kasambi 2.000
+h Kab. Maros
+1 D.I. Cambajawaya 1.000
+2 D.I. Laiya 1.000
+i Kab. Pangkajene dan Kepulauan
+1 D.I. Leang Lonrong 1.229
+2 D.I. Padaelo 2.958
+j Kab. Pinrang
+1 D.I. Kalosi 1.004
+2 D.I. Taccipi 1.568
+k Kab. Sidenreng Rappang
+1 D.I. AlekarajaE 1.253
+2 D.I. Bilokka 1.005
+3 D.I. Torere 2.000
+| Kab. Sinjai
+1 D.I. Aparang Hulu 1174
+2 D.I. Aparang | 1.049
+3 D.I. Kalamisu 2.032
+m Kab. Soppeng
+1 D.I. Latenreng 1.700
+2 D.I. Leworeng 2.258
+3 D.I. Salo Bunne 1.386
+n Kab. Toraja Utara
+1 D.I. Balombong 1.230
+o Kab. Wajo
+1 D.I. Cenrana 2.305

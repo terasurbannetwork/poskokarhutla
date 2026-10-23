@@ -1,0 +1,124 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+14 D.I. Pkl. Mendo II 69
+15 D.I. Pkl. Niur 200
+16 D.I. Tanah Bawah | 20
+17 D.I. Tanah Bawah II 20
+18 D.I. Zed I 129
+19 D.I. Zed II 129
+20 D.I. Air Petaling | 30
+21 D.I. Air Petaling II 30
+22 D.I. Maras Senang | 13
+23 D.I. Maras Senang II 13
+24 D.I. Saing | 28
+25 D.I. Saing II 25
+b Kab. Banaka Barat 1 255
+1 D.I. Tuik 255
+c Kab. Banaka Selatan 7 885
+1 D.I. Bikang 100
+2 D.I. Tanjung Labu 50
+3 D.I. Bencah 100
+4 D.I. Pongok 25
+5 D.I. Sidoardjo 100
+6 D.I. Sebagin 385
+7 D.I. Sukajaya 125
+d Kab. Banaka Tenaah 2 197
+1 D.I. Namang 180
+2 D.I. Belilik 17
+e Kab. Belituna 5 625
+1 D.I. Air Gendang 80
+2 D.I. Kacang Botor 20
+3 D.I. Membalong 330
+4 D.I. Perpat 150
+5 D.I. Air Baik 45
+f Kab. Belituna Timur 3 53
+1 D.I. Simpang tiga 18
+2 D.I. Renggiang 15
+3 D.I. Limbungan 20
+X PROVINS! LAMPUNC LARA 17K R72
+a Kab. Lambuna Barat 118 11.447
+1 D.I. Way Air Putih 100
+2 D.I. Way Anak Besay I 100
+3 D.I. Way Anak Besay II 60
+4 D.I. Way Bangkenol 220
+5 D.I. Way Bawang Ujung 200
+6 D.I. Way Besay II 15
+7 D.I. Way Beton 50
+8 D.I. Way Buni Asih 100
+9 D.I. Way Buyuk 250
+10 D.I. Way Cabang III 100
+11 D.I. Way Campang Kanan 100
+12 D.I. Way Campang Kanan Kecil 43
+13 D.I. Way Campang Kiri 75
+14 D.I. Way Campang Limau 124
+15 D.I. Way Cangkaan | 75
+16 D.I. Way Cangkaan II 17
+17 D.I. Way Cempedak 160
+#KANAN
+135 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+18 D.I. Way Cengkaan Kelat 75
+19 D.I. Way Cilamaya 95
+20 D.I. Way Dingin 75
+21 D.I. Way Durian 50
+22 D.I. Way Empulau Ulu 12
+23 D.I. Way Fajar Bulan 8
+24 D.I. Way Gadingan 100
+25 D.I. Way Giham 55
+26 D.I. Way Gintungan 24
+27 D.I. Way Gunung Raya 150
+28 D.I. Way Gunung Raya II 5
+29 D.I. Way Hantatai | 31
+30 D.I. Way Hantatai II 14
+31 D.I. Wav Haru I 582
+32 D.I. Way Heni 300
+33 D.I. Way Jati Wangi 80
+34 D.I. Wav Jelatona 97
+35 D.I. Way Kabul | 22
+36 D.I. Way Kabul II 5
+37 D.I. Way Kabul III 11
+38 D.I. Way Kali Bening 250
+39 D.I. Way Kawitan Bandung 125
+40 D.I. Way Kawitan Uluhan 125
+41 D.I. Way Kejadian 300
+42 D.I. Way Kelahok 35
+43 D.I. Wav Keruna 87
+44 D.I. Way Kerung II 200
+45 D.I. Way Kubu Prahu 15
+46 D.I. Way Kumpai 193
+47 D.I. Wav Lampai Tenaah 26
+48 D.I. Way Lempaung 10
+49 D.I. Way Lempaung II 51
+50 D.I. Way Leuwi Monyet 36
+51 D.I. Way Lingkaran | 60
+52 D.I. Way Lingkaran II 70
+53 D.I. Way Litak 120
+54 D.I. Wav Luas 7
+55 D.I. Way Maja | 203
+56 D.I. Way Muara Jaya |, II 168
+57 D.I. Way Mulang Maya 154
+58 D.I. Way Nangka 75
+59 D.I. Way Ogan 57
+60 D.I. Way Padang Tambak 96
+61 D.I. Wav Pahavwu Java 37
+62 D.I. Way Pakuan 104
+63 D.I. Way Pakuan II 5
+64 D.I. Way Palakia 200
+65 D.I. Way Pama Blidang 36
+66 D.I. Way Pauh I 45
+67 D.I. Way Pauh II 75
+68 D.I. Way Penyelan 14
+69 D.I. Way Pepuh I 53
+70 D.I. Way Pepuh II 43
+71 D.I. Way Pepuh III 140
+72 D.I. Way Petai 16
+73 D.I. Way Petai Cina 200
+74 D.I. Way Pura Jaya 19
+75 D.I. Way Pura Jaya | 98
+76 D.I. Way Pura Jaya II 196
+77 D.I. Way Purawiwitan 39
+78 D.I. Way Ringkih I 73

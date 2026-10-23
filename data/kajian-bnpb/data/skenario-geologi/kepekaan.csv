@@ -1,0 +1,22 @@
+skenario,tuas,nilai_tuas,korban_rendah,korban_tengah,korban_tinggi,rb_tengah,faktor_terhadap_dasar,dasar_angka,label
+jawa,porsi evakuasi segera (tsunami),20%,897.1,2669.7,7945.2,,1,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+jawa,porsi evakuasi segera (tsunami),50%,594.2,1768.2,5262.3,,0.6623,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+jawa,porsi evakuasi segera (tsunami),70%,392.2,1167.2,3473.7,,0.4372,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+jawa,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),dasar (40/30/30),0,0,12726.3,24991,1,korban mesin tengah 311.7 vs dasar 311.7; faktor diterapkan ke korban analog guncangan,estimasi-model
+jawa,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan naik (20/50/30),0,0,7663.6,16762,0.6022,korban mesin tengah 187.7 vs dasar 311.7; faktor diterapkan ke korban analog guncangan,estimasi-model
+jawa,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan penuh (0/70/30),0,0,2600.8,8533,0.2044,korban mesin tengah 63.7 vs dasar 311.7; faktor diterapkan ke korban analog guncangan,estimasi-model
+jawa,jam kejadian (okupansi rumah),"malam (0,99) vs rata-rata (0,85)",0,0,14822.4,,1.1647,okupansi HAZUS di kerusakan.js; korban mesin linear terhadap okupansi,asumsi-kebijakan
+mentawai,porsi evakuasi segera (tsunami),20%,284.8,847.7,2522.8,,1,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+mentawai,porsi evakuasi segera (tsunami),50%,188.7,561.5,1670.9,,0.6623,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+mentawai,porsi evakuasi segera (tsunami),70%,124.5,370.6,1103,,0.4372,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+mentawai,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),dasar (40/30/30),198.6,1833.1,17292.4,50378,1,korban mesin tengah 902.4 vs dasar 902.4; faktor diterapkan ke korban analog guncangan,estimasi-model
+mentawai,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan naik (20/50/30),135.4,1249.2,11783.7,38399,0.6814,korban mesin tengah 614.9 vs dasar 902.4; faktor diterapkan ke korban analog guncangan,estimasi-model
+mentawai,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan penuh (0/70/30),72.1,665.2,6275,26420,0.3629,korban mesin tengah 327.5 vs dasar 902.4; faktor diterapkan ke korban analog guncangan,estimasi-model
+mentawai,jam kejadian (okupansi rumah),"malam (0,99) vs rata-rata (0,85)",231.3,2135.1,20140.5,,1.1647,okupansi HAZUS di kerusakan.js; korban mesin linear terhadap okupansi,asumsi-kebijakan
+sumba,porsi evakuasi segera (tsunami),20%,413.4,1230.3,3661.5,,1,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+sumba,porsi evakuasi segera (tsunami),50%,273.8,814.9,2425.1,,0.6623,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+sumba,porsi evakuasi segera (tsunami),70%,180.7,537.9,1600.8,,0.4372,"Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%",asumsi-kebijakan
+sumba,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),dasar (40/30/30),0,0,0,928,1,korban mesin tengah 9.6 vs dasar 9.6; faktor diterapkan ke korban analog guncangan,estimasi-model
+sumba,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan naik (20/50/30),0,0,0,590,0.5771,korban mesin tengah 5.5 vs dasar 9.6; faktor diterapkan ke korban analog guncangan,estimasi-model
+sumba,kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu),kepatuhan penuh (0/70/30),0,0,0,252,0.1541,korban mesin tengah 1.5 vs dasar 9.6; faktor diterapkan ke korban analog guncangan,estimasi-model
+sumba,jam kejadian (okupansi rumah),"malam (0,99) vs rata-rata (0,85)",0,0,0,,1.1647,okupansi HAZUS di kerusakan.js; korban mesin linear terhadap okupansi,asumsi-kebijakan

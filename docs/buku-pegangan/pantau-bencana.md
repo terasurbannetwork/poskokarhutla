@@ -7,7 +7,7 @@ Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Panta
 Disegarkan 23 Okt 2026\
 commit 2ce5dc44
 
-[Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
+[Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
 Terbaru di atas
 
@@ -16,6 +16,7 @@ Terbaru di atas
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
 1. 23 Okt 2026
+   - **Selera laporan dicatat** jadi bab [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data), dari tata letak JAPFA REPORT dan bedah 22 laporan kelas dunia (World Bank, ADB, IMF, McKinsey, BCG, Deloitte, IPCC, UNDRR, WMO, OECD, UNICEF, Jepang, Inggris, Belanda, Our World in Data, Financial Times): *"Tiru style mereka dan implementasikan untuk sempurnakan system kita."* Yang dipakai antara lain halaman Pesan Kunci, kalimat pembuka tebal, keterangan gambar berupa temuan, pilih grafik menurut pesan, peta kecil berganda, rentang ketidakpastian, matriks kemungkinan × dampak, rekomendasi berkode berlembaga, dan studi kasus empat pertanyaan. Aturan pemilik menang saat bentrok: baris satuan, sumbu Y, merah, latar gelap, laut biru, dan biaya proyek. Bukti per pola di `data/kajian-bnpb/riset/desain-benchmark/SINTESIS.md`; `PEDOMAN-DESAIN.md` kajian ikut diperbarui.
    - **Selera presentasi dicatat** jadi bab [Selera presentasi (PPT)](#selera-presentasi-ppt), diukur dari 9 deck tanggal 18 sampai 23 Okt. Laporan harian kini mengikuti deck 221026: *"Ini format terakhirnya yang kemarin"*. Deck 23 Okt yang dibuat Claude dengan generator `/laporan-bnpb` masih bergaya lama (palet D9650B/0F1E2D, tanpa ikon, teks terpotong "…"), jadi deck yang ditunjuk pemilik yang disalin, bukan generatornya.
    - **Paparan Karhutla Jawa Timur dirombak berulang**: *"Bagusin. Sumpah jelek banget"*. Gaya rumah BNPB dipertahankan, deck Kalteng dipakai untuk isi saja. Perubahannya:
      - pil CUT OFF DATA ditambahkan;
@@ -118,6 +119,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Laporan meniru laporan kelas dunia | 23 Okt 2026 | Pola yang divonis cocok di `data/kajian-bnpb/riset/desain-benchmark/SINTESIS.md` dipakai di DOCX dan PDF kajian; aturan pemilik yang tertulis menang bila bentrok (`KEPUTUSAN.md` P16) |
 | Laporan harian 2 slide | 23 Okt 2026 | Tanpa sampul dan tanpa penutup; nomor halaman 1 dan 2; dikirim PPTX dan PDF |
 | Karhutla sisa 0 ha = selesai | 23 Okt 2026 | Sisa belum padam website 0 ha memindahkan karhutla ke selesai walau laporan lapangan belum menutupnya |
 | Perlu perhatian = sisa ≥100 ha atau BPBD belum padam | 23 Okt 2026 | Kartu PERLU PERHATIAN, tanda ! peta, dan garis merah provinsi memakai satu aturan; sisa kecil tetap dalam penanganan tanpa tanda ! |
@@ -575,6 +577,184 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
 - Penutup Presiden (d9 s7) masih memuat nama penyaji dan kartu kontak, padahal d3 menghapusnya dari laporan harian.
 - Generator `/laporan-bnpb` disesuaikan ke d3 atau tidak.
 - Belum padam: merah (deck wilayah) atau oranye (templat BNPB) disatukan atau tidak.
+
+## Selera laporan (DOCX/PDF) dan visualisasi data
+
+Dari tata letak JAPFA REPORT yang diukur di `data/kajian-bnpb/SPESIFIKASI-GAYA.md` dan bedah 22 laporan kelas dunia pada 23 Okt: World Bank, ADB, IMF, McKinsey, BCG, Deloitte, IPCC, UNDRR, WMO, OECD, UNICEF, pemerintah Jepang, Inggris, dan Belanda, Our World in Data, dan Financial Times. Pemilik: *"Tiru style mereka dan implementasikan untuk sempurnakan system kita."* Bukti PNG dan vonis tiap pola ada di `data/kajian-bnpb/riset/desain-benchmark/SINTESIS.md`; kode P (pola) dan G (pilih grafik) di bab ini merujuk ke sana. Ukuran, token, dan gerbang mesin ada di `data/kajian-bnpb/PEDOMAN-DESAIN.md`. Aturan [Angka & copy](#angka--copy) serta palet, ikon, dan arah naik-turun di [Selera presentasi (PPT)](#selera-presentasi-ppt) berlaku penuh dan tidak diulang. Bila pola dunia bentrok dengan aturan pemilik yang tertulis, aturan pemilik yang berlaku; bentroknya dicatat di bawah.
+
+### Laporan acuan
+
+| Kode | Laporan | Yang diambil |
+| --- | --- | --- |
+| JAPFA | JAPFA REPORT, IFSR, Sep 2024 | Tata letak halaman, kepala, kaki, keterangan di atas objek, urutan bagian depan |
+| CCDR | World Bank, Indonesia Country Climate and Development Report 2023 | Kalimat pembuka tebal, kartu rekomendasi berkode, kisi prioritas, kronologi regulasi, peta satu warna sorot |
+| WS45 | World Bank dan Bappenas, Indonesia Vision 2045: Toward Water Security 2021 | Pilar, aksi, dampak bila tidak ditangani, matriks rekomendasi berlembaga |
+| ATLAS | World Bank, Atlas of SDGs 2018 | Keterangan berupa temuan, anotasi langsung di grafik, satu warna ditambah abu |
+| MGI, MGIA, CWF | McKinsey Global Institute 2020 (global dan Asia), Charting Our Water Future 2009 | Anatomi exhibit, peta kecil berganda, dasbor wilayah bertemplat, waterfall kesenjangan air |
+| WMO, OECD, IPCC, GAR | State of the Climate in Asia 2024, Global Drought Outlook 2025, AR6 WGII SPM, GAR 2025 | Halaman pesan kunci berikon, paragraf berkalimat tebal, temuan bernomor, matriks titik, skenario berlapis |
+| NRR, DELTA, NANKAI, JWP | National Risk Register 2026, Deltaprogramma 2026, Nankai Trough 2025, White Paper Jepang 2025 | Matriks kemungkinan × dampak, studi kasus empat pertanyaan, tabel skenario, efek tindakan, tabel preseden |
+| FTVV, OWID | Financial Times Visual Vocabulary, Our World in Data | Pilih grafik menurut pesan, normalisasi per kapita, catatan bias pelaporan |
+
+### Tata letak laporan (pola JAPFA dalam palet BNPB)
+
+- **L1.** A4 tegak, satu kolom isi selebar 165 mm. Margin kiri 25 mm, kanan 20 mm, atas 25 mm, bawah 20 mm. Margin JAPFA (1,1 cm dan 0,8 cm) terlalu mepet dan tidak ditiru.
+- **L2.** Isi Roboto 10,5 pt, spasi 1,15, 6 pt sesudah paragraf, rata kiri-kanan, warna 1A1A1A. Hanya Roboto, termasuk font tema DOCX; Regular dan Bold saja.
+- **L3.** Kepala halaman di semua halaman kecuali sampul: garis tegak D9600B 2 pt × 7 mm di kiri, baris 1 judul pendek kajian 8 pt Bold, baris 2 "BNPB | Oktober 2026" 8 pt, logo BNPB resmi setinggi 8 mm di kanan tanpa lingkaran, lalu garis 0,75 pt 1A1A1A selebar isi.
+- **L4.** Kaki halaman: garis 0,5 pt BFC5CC selebar isi, alamat BNPB dua baris 8 pt rata tengah (`KEPUTUSAN.md` T4), nomor halaman 9 pt Bold di kanan dari bidang PAGE Word. Kata "H a l a m a n" yang direnggangkan di JAPFA tidak ditiru.
+- **L5.** Sampul tanpa nomor, bagian depan romawi kecil, Bab 1 mulai angka 1. Bab selalu mulai halaman baru.
+- **L6.** Bagian depan berurutan: Sampul, Kolofon, Kata Pengantar, Daftar Isi, Daftar Tabel, Daftar Gambar, Daftar Lampiran, Daftar Singkatan, Ringkasan Eksekutif. Ucapan Terima Kasih dan Tim Penyusun milik JAPFA tidak dipasang (penerbit BNPB saja).
+- **L7.** Daftar Isi dari bidang TOC Word sampai tingkat 1.1.1, titik penuntun ke nomor halaman rata kanan. Daftar Tabel, Gambar, dan Lampiran dari Caption Word. Semua indeks diperbarui sebelum ekspor PDF, supaya tidak tercetak kosong.
+- **L8.** Judul bab mengikuti `KEPUTUSAN.md` T1 ("BAB 1 PENDAHULUAN"), subbab ke bawah huruf judul, warna 051C2C, paling banyak dua baris. Kapital berspasi di luar itu hanya untuk pil bagian, kepala kolom, dan label pita.
+- **L9.** Penekanan dalam isi Bold 051C2C; istilah asing miring; tanpa garis bawah hiasan.
+- **L10.** Keterangan objek di atas, "Sumber:" di bawah (pola JAPFA); rinciannya di Anatomi gambar dan tabel.
+- **L11.** Pustaka APA 7 urut abjad dengan inden gantung. Lampiran berkode huruf ("Lampiran A. Tabel indikator 119 kab/kota"), tabel di dalamnya "Tabel A.1"; data per kab/kota ikut diserahkan sebagai .xlsx.
+- **L12.** Sampul: foto Wikimedia Commons beratribusi di atas, blok navy 051C2C di bawah dengan judul putih, garis aksen oranye, logo BNPB berwarna di bidang putih; tanpa kepala, kaki, dan nomor. Sampul belakang navy memuat alamat BNPB.
+- **L13.** Satu angka, satu sumber: angka di judul, kartu, tabel, peta, dan teks dibaca dari JSON yang sama, tidak diketik tangan. Jumlah halaman, keluaran, dan nama berkas mengikuti `KEPUTUSAN.md`.
+
+### Pola laporan kelas dunia yang dipakai
+
+**Ringkasan dan alur**
+
+- **L14.** Halaman pertama Ringkasan Eksekutif adalah Pesan Kunci: kalimat tesis, lalu 6–8 temuan bernomor. Tiap temuan berupa ikon putih dalam lingkaran navy dan satu temuan berangka paling banyak 3 baris, angka di depan (WMO, ADB; P16). PDF ringkas halaman 2 memakai halaman yang sama.
+- **L15.** Temuan berkode huruf menurut pertanyaan pimpinan (A.1, B.2, C.3), ditutup label keyakinan dan rujukan "(Bab 5.2)" (IPCC; P18). Kolom Dasar di matriks rekomendasi menyebut kode temuan.
+- **L16.** Tiap paragraf temuan di Ringkasan Eksekutif dan bab analisis dibuka satu kalimat Bold 051C2C yang memuat angka, tempat, dan tahun, paling banyak 2 baris (OECD, CCDR; P17). Membaca kalimat tebalnya saja harus sudah memberi alur bab.
+- **L17.** Tiap bab dibuka kotak ringkasan bab: Temuan (paling banyak 3, berangka), Angka kunci (paling banyak 3, bersumber), Rekomendasi (nomor) (WDR, Deloitte; P6).
+- **L18.** Bab Grand Design dibuka satu halaman kerangka: pilar, sasaran, program bernomor. Kode program dipakai ulang di matriks, tabel indikator, dan rekomendasi (BCG; P2).
+- **L19.** Kajian air memakai urutan pilar, aksi bernomor, kotak "Dampak bila tidak ditangani" berangka, lalu aksi 100 hari berlembaga (WS45; P3, P58).
+- **L20.** Satu ancaman satu kartu skenario berkepala tetap (NRR; P4). Satu provinsi satu dasbor bertemplat identik, di lampiran (MGIA; P5).
+- **L21.** Studi kasus satu halaman bertint F3F5F8 dengan pil STUDI KASUS dan empat label tetap: Masalah, Pelaksana, Cara, Hasil. Judulnya hasil berangka (Deltaprogramma, BCG; P69, P24).
+- **L22.** Angka yang berbeda dari dokumen lama ditaruh di kotak "Perbandingan dengan kajian sebelumnya" di samping tabel rekonsiliasi (Deloitte; P71).
+- **L23.** Gambar dan tabel dirujuk lewat cross-reference Word ("lihat Gambar 5.2"), tidak diketik (BCG; P14).
+- **L24.** Wilayah dikelompokkan per tipe dengan pita grup E6EAF0, lalu rekomendasi per tipe (MGIA, Nankai; P104).
+
+**Ketidakpastian dan skenario**
+
+- **L25.** Angka model ditulis sebagai rentang rendah–tinggi dengan titik tengah. Data digambar garis solid, proyeksi garis putus, estimasi arsir, dan pil "belum diuji balik" dipasang di kanan atas gambar (Atlas, ADB; P54–P56).
+- **L26.** Skenario dibandingkan lewat tabel berkolom skenario dengan sel digabung bila nilainya sama (Nankai; P60), atau small multiples selisih dari skenario dasar (IMF; P57).
+- **L27.** Perkiraan lama dan baru berada di satu tabel: rentang "sekitar", asumsi tertulis di bawah nilai, stempel skenario (Nankai; P59).
+- **L28.** Angka kebijakan digambar sebagai pasangan batang "kondisi sekarang" lawan "bila target tercapai", berlabel "turun 70%" dengan ikon arah biru (Nankai; P61).
+- **L29.** Profil ancaman memakai matriks kemungkinan × dampak 5×5 bertint E6EAF0 seragam dengan nomor ancaman dalam bulatan navy; tiap kartu skenario memuat matriks mini dengan garis silang rentang keyakinan (NRR; P62).
+
+**Rekomendasi**
+
+- **L30.** Tiap rekomendasi berkode dan memuat aksi Bold paling banyak 8 kata, lembaga pemimpin, pendukung, tahun, indikator selesai, dan dasar (kode temuan, regulasi). Urgensi ditulis sebagai pil (CCDR, WS45; P75, P76). Rekomendasi berbentuk prosa tanpa penanggung jawab tidak dipakai.
+- **L31.** Satu halaman prioritas berupa kisi 3×3 urgensi × dampak yang berisi kode saja; nama rekomendasi di daftar samping (CCDR; P77).
+- **L32.** Kronologi regulasi berupa tabel native tiga kolom dua sisi (CCDR; P85).
+
+**Peta**
+
+- **L33.** Peta kecil berganda untuk tahun, skenario, atau komponen berbagi satu legenda dan satu skala kelas (MGI, OECD; P43).
+- **L34.** Koroplet hanya untuk rasio dan indeks. Total dan jumlah memakai bulatan sebanding dengan legenda tiga ukuran (FT; P46).
+- **L35.** Peta indeks studi kasus: bulatan bernomor di peta dan nomor yang sama di tabel di bawahnya (MGI; P44). Koroplet boleh bersanding dengan tabel peringkat yang warnanya sama (White Paper Jepang; P45).
+- **L36.** Kawasan padat diberi inset perbesaran, misalnya Jabodetabek dan Semarang–Demak (OECD; P47). Sorot satu kategori memakai oranye atau biru di atas daratan abu, tidak merah (CCDR; P42).
+
+### Pilih grafik menurut pesan
+
+Pesan ditetapkan dulu, grafik mengikutinya. Grafik di luar daftar ini butuh alasan tertulis.
+
+| No | Pesan | Grafik | Bukti |
+| --- | --- | --- | --- |
+| G1 | Perubahan waktu, paling banyak 24 periode | Batang tegak ujung membulat, nilai di atas, tanpa sumbu Y | WDR |
+| G2 | Perubahan waktu, seri panjang | Rata-rata per dekade sebagai batang, atau garis berlabel ujung dengan anotasi kejadian dan paling banyak 3 garis acuan | OWID, White Paper Jepang, IMF |
+| G3 | Musim berjalan lawan normal | Kurva tahun berjalan di atas pita median historis | ADB |
+| G4 | Peringkat | Batang horizontal terurut, nomor dalam bulatan navy, kolom jiwa terpapar | Atlas |
+| G5 | Peringkat seluruh wilayah | Satu deret batang terurut, nama hanya untuk yang disorot | Charting Our Water Future |
+| G6 | Dua titik waktu per wilayah | Dumbbell terurut, titik awal DCE1E7, selisih ditulis | Atlas |
+| G7 | Surplus atau defisit, anomali | Batang divergen dari nol, dua warna arah berlabel kata | FT |
+| G8 | Komposisi | Batang bertumpuk 100%, paling banyak 4 kategori ditambah "lainnya" | Atlas, BCG |
+| G9 | Komposisi per skenario atau tahun | Batang bertumpuk per skenario, total di atas | GAR, Deloitte |
+| G10 | Kesenjangan kebutuhan lawan pasokan | Waterfall atau baji dalam m³, pil selisih | Charting Our Water Future |
+| G11 | Proyeksi dengan rentang | Pita melebar, garis tengah navy, angka rentang tertulis | FT, IMF |
+| G12 | Rentang per wilayah atau skenario | Batang rentang mengambang dengan median | ADB, MGI |
+| G13 | Skenario lawan dasar | Small multiples selisih dari skenario dasar | IMF |
+| G14 | Efek tindakan | Pasangan batang sebelum dan sesudah, label "turun …%" | Nankai |
+| G15 | Rugi bila diam lawan manfaat bertindak | Batang kupu-kupu, dua skenario | WS45 |
+| G16 | Wilayah × kategori | Matriks titik atau tabel peta panas kelas diskret dengan angka tertulis | IPCC, ADB, MGI |
+| G17 | Kemungkinan × dampak | Matriks 5×5 tint netral, nomor dalam bulatan | NRR |
+| G18 | Prioritas | Kisi 3×3 urgensi × dampak berisi kode | CCDR |
+| G19 | Sebaran rasio atau indeks | Koroplet 5 kelas diskret | Atlas, FT |
+| G20 | Sebaran total | Bulatan sebanding berlegenda | FT, Atlas |
+| G21 | Aliran | Sankey paling banyak 3 tingkat, diagram aliran berikon | ADB, WS45, MGI |
+| G22 | Capaian lawan target | Bullet chart atau tabel status lawan target | FT, White Paper Jepang |
+| G23 | Kapan dan berapa lama | Tabel tahap × horizon (DOCX saja), kronologi dua sisi | Deltaprogramma, CCDR |
+| G24 | Respons antar-kejadian | Garis bersumbu "hari sejak kejadian" | White Paper Jepang |
+| G25 | Dilarang | Pai lebih dari satu pangsa, donat, sumbu ganda, radar, chord, streamgraph, violin, Voronoi, area bertumpuk lebih dari 4 kategori, 3D, lingkaran konsentris, ikon dekoratif sebagai grafik, kurva biaya | White Paper Jepang, UNICEF, WS45, Deltaprogramma, Charting Our Water Future |
+
+### Anatomi gambar dan tabel
+
+**Gambar**
+
+- **L37.** Urutan dari atas: keterangan, pil kanan atas bila ada, grafik atau peta, baris "Sumber:", lalu "Catatan:" bila ada (MGI; P32).
+- **L38.** Keterangan 9 pt rata tengah: label "Gambar 5.2" Bold 051C2C, satu spasi, lalu kalimat temuan berangka yang menyebut satuan, tempat, dan waktu. Paling banyak 2 baris, tanpa titik dua. Satuan ditulis dalam kurung di akhir bila tidak ada di legenda: "… di Pulau Jawa, 2015–2025 (jiwa)".
+- **L39.** Tidak ada baris subjudul indikator atau satuan di bawah keterangan (sama dengan Kartu Insight). Cara membaca grafik yang tidak lazim ditulis di baris "Catatan:".
+- **L40.** Pil kanan atas paling banyak satu: label keyakinan ("Estimasi model, belum diuji balik"), skenario ("Skenario El Niño kuat"), atau sasaran ("Sasaran Sendai B") (MGI, Atlas; P38).
+- **L41.** Label seri ditulis langsung di ujung garis atau batang bila seri paling banyak 4; lebih dari itu, legenda di atas grafik. Paling banyak 3 anotasi per grafik; kejadian di deret waktu ditandai garis tegak tipis berlabel (Atlas, IMF; P26, P27).
+- **L42.** Batang mengikuti grafik batang pemilik: ujung atas membulat, tanpa sumbu Y, nilai Bold di atas tiap batang termasuk yang kecil, total di atas batang bertumpuk, pembanding DCE1E7. Lebih dari 24 batang diringkas per dekade atau diganti garis.
+- **L43.** Teks di dalam grafik dan peta paling kecil 8 pt pada ukuran cetak. Arah ditulis dengan ikon vektor atau kata; karakter ▲, ▼, dan → tidak dipakai karena tidak ada di Roboto.
+- **L44.** Panel berganda diberi label (a), (b), (c) 9 pt Bold, skalanya sama, legendanya satu di kaki (WMO, OECD; P36).
+- **L45.** "Sumber:" Bold 8,5 pt 6B7280 rata kiri sejajar objek, tepat di bawah objek: lembaga atau sistem, periode, dan batas data, tanpa path internal. Seri yang bias pelaporannya mengubah cara baca, seperti DIBI sebelum dan sesudah 2008, diberi "Catatan:" satu baris (OWID; P28).
+- **L46.** Lebar objek penuh 165 mm atau satu lebar kolom grid.
+- **L47.** Grafik dan peta pihak ketiga tidak ditempel apa adanya, tetapi digambar ulang dari data dengan token rumah (P39).
+
+**Tabel**
+
+- **L48.** Keterangan di atas dengan bentuk yang sama ("Tabel 5.2" lalu kalimat temuan); "Sumber:" dan label keyakinan di bawah.
+- **L49.** Kepala navy teks putih Bold 8,5 pt, kata label kapital, satuan huruf asli dalam kurung ("LUAS (ha)"), diulang di tiap halaman. Kolom label baris tanpa isi warna. Kepala oranye dan kolom hijau JAPFA tidak ditiru.
+- **L50.** Angka rata kanan dengan digit tabular dan titik ribuan, teks rata kiri, garis bawah 0,5 pt BFC5CC, tanpa garis vertikal, tanpa pita selang-seling, baris total navy.
+- **L51.** Paling banyak 8 kolom di A4 tegak; kolom sekunder pindah ke lampiran atau .xlsx.
+- **L52.** Kolom target dan proyeksi berlatar F3F5F8, terpisah dari kolom aktual (IMF; P67).
+- **L53.** Tabel peta panas: sel diwarnai kelas diskret ramp keluarga, angka tetap tertulis, legenda kelas satu baris di bawah (ADB, MGI; G16).
+- **L54.** Tabel peringkat: nomor dalam bulatan navy, kolom jiwa terpapar di samping indeks, dasar urutan disebut di keterangan, wilayah fokus diblok FDF1E8 (UNICEF; P106).
+- **L55.** Tabel preseden: kejadian besar sebagai kolom, besaran yang sama sebagai baris, kolom yang sedang dikaji berlatar FDF1E8 (White Paper Jepang; P108).
+
+### Yang sengaja tidak ditiru
+
+| Pola | Laporan | Alasan |
+| --- | --- | --- |
+| Kolom samping untuk catatan, dua kolom isi, A4 lanskap | CCDR, MGI, WMO, IMF, GAR, UNICEF, NRR | A4 tegak satu kolom; sidenote di Word rapuh dan merusak Caption |
+| Pembuka bab halaman penuh berwarna atau berfoto | GAR, OECD, IMF, ADB, Deltaprogramma, NRR | Memakan batas halaman; halaman gelap hanya sampul dan pembatas Lampiran |
+| Kode warna per bab | GAR | Warna berarti makna (jenis bencana, arah), bukan nomor bab |
+| Palet banyak warna, climate stripes, hijau, pelangi, ungu, merah murni | CCDR, ADB, WMO, UNICEF, Nankai | Palet BNPB sudah final; merah hanya bahaya |
+| Serif, huruf Light, tiga keluarga huruf | IMF, MGI, Charting Our Water Future, NRR, Deltaprogramma | Hanya Roboto |
+| Huruf grafik dan sumber 5,9–7 pt | CCDR, Atlas, MGI, Deloitte | Batas laporan 8 pt |
+| Infografik dan panel berlatar gelap | MGI, BCG, Deloitte | Tanpa panel gelap; satu topik satu kontainer |
+| Kutipan tarik, halaman kutipan besar, judul slogan | CCDR, BCG, WMO | Teks tanpa informasi baru dibuang; tanpa slogan |
+| Ringkasan prosa tanpa angka sorotan, paragraf "Bab 1 membahas" | IMF, GAR | Kepala BNPB butuh angka kunci di halaman pertama |
+| Rekomendasi berupa prosa atau daftar pertanyaan tanpa penanggung jawab | ADB, Deloitte, MGI | Tidak bisa ditindaklanjuti |
+| Pai banyak irisan, donat, sumbu ganda, area bertumpuk 7 kategori, lingkaran konsentris, tetesan air dekoratif | White Paper Jepang, UNICEF, WS45, Deltaprogramma, OWID | Sulit dibandingkan atau luasnya menyesatkan |
+| Kurva biaya langkah, neraca anggaran dalam rupiah | Charting Our Water Future, MGIA, Deltaprogramma | Tanpa pagu dan tanpa biaya proyek (`KEPUTUSAN.md` P5) |
+| Grafik dan peta pihak ketiga ditempel apa adanya | OECD, WMO | Satu sumber data, satu set gambar |
+| Ilustrasi stok, ikon isometrik, kiasan, lanskap ilustrasi, foto anak, potret pejabat | GAR, Deloitte, IPCC, UNICEF, Deltaprogramma, WMO | Gambar hanya foto Commons, peta, logo BNPB, dan ikon garis |
+| Laut biru, bayangan relief, legenda gradien kontinu | WS45, UNICEF, BCG, GAR | Peta berlatar putih, kelas diskret berlegenda |
+| Daftar isi berubin atau tanpa titik penuntun | CCDR, GAR, BCG | Bidang TOC Word bertitik penuntun |
+| Dial jarum dan penilaian tiga kotak mini | WDR, CCDR | Berupa gambar yang tidak bisa disunting dan butuh legenda terpisah; diganti pil native |
+
+### Bentrok dengan keputusan pemilik
+
+| Pola dunia | Aturan pemilik yang berlaku |
+| --- | --- |
+| Judul aksi berangka di tiap objek (MGI, WDR, Atlas) | Di DOCX dan PDF keterangan gambar berupa kalimat temuan, sejalan dengan "judul = fakta + angka + sumber". Di deck, aturan judul per jenis deck tetap berlaku: deck wilayah memakai judul deskriptif |
+| Baris subjudul indikator dan satuan (CCDR, Atlas, IMF, MGI, OECD) | Dilarang seperti di Kartu Insight; satuan dilebur ke keterangan atau legenda |
+| Sumbu Y dan garis kisi (hampir semua) | Batang tanpa sumbu Y dengan nilai di atas; seri panjang diringkas atau dibuat garis |
+| Panah dan sorot merah (Nankai, CCDR, Atlas) | Turun biru 2F86D1, sorot oranye atau biru; merah hanya bahaya dan perlu perhatian |
+| Baris sumber di bawah grafik (semua) | Di deck dibuang (keputusan 23 Okt "Keterangan jadi label"); di DOCX dan PDF wajib, karena tiap angka punya sumber dan waktu |
+| Tabel tahap × tahun berwujud Gantt (Deltaprogramma) | Pemilik membuang Gantt dari slide rekomendasi d5, jadi tidak dipakai di deck dan PDF ringkas; di DOCX lihat Belum pasti |
+| Latar gelap untuk infografik (MGI, BCG, Deloitte) | Tanpa panel gelap, latar putih |
+| Laut biru (WS45, UNICEF, WMO) | Peta berlatar putih tanpa laut biru |
+| Kontras "X, not just Y" di judul (WDR) | Bahasa lugas tanpa kontras retoris |
+| Huruf 5,9–7 pt (CCDR, Atlas, MGI) | Batas bawah 8 pt di laporan; batas slide 6 pt tidak berlaku untuk kertas |
+| Kurva biaya dan neraca anggaran (Charting Our Water Future, Deltaprogramma) | Tanpa pagu dan biaya proyek; strukturnya dipakai untuk neraca air dalam m³ |
+
+### Cara memeriksa
+
+1. Sebelum menggambar, tulis pesan grafik dan cocokkan ke tabel Pilih grafik; jenis di G25 ditolak.
+2. Render DOCX dengan `soffice --headless --convert-to pdf` sesudah indeks diperbarui, PDF ringkas dengan Chromium headless, lalu `pdftoppm -png -r 110`. Setiap halaman dibaca dengan Read.
+3. Cek mekanis: titik tengah (U+00B7) dan em dash (U+2014) nol; huruf terkecil 8 pt atau lebih; tiap Gambar dan Tabel bernomor urut dengan "Sumber:" tepat di bawahnya; keterangan paling banyak 2 baris; paragraf temuan Ringkasan Eksekutif dibuka run Bold berangka; tiap rekomendasi punya kode temuan di kolom Dasar; peta kecil berganda berbagi satu skala kelas. Gerbang mesinnya D-1 sampai D-29 di `PEDOMAN-DESAIN.md` §D.
+
+### Belum pasti
+
+- Peta bernomor sendiri dengan Daftar Peta (GAR, UNICEF). Bawaan: peta tetap seri Gambar.
+- Tabel tahap × horizon pola Deltaprogramma di DOCX. Bawaan: dipakai hanya di bab Peta Jalan dengan sel tahap berupa pil native; tidak di deck dan PDF ringkas.
 
 ## Fitur yang disembunyikan
 

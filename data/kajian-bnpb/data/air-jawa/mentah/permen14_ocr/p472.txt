@@ -1,0 +1,33 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 472
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+82 D.I.R. Sukaramai 312 |
+83 D.I.R. Sungai Punggu Baru 135 |
+84 D.I.R. Sungai Punggu Lama 155 |
+85 D.I.R. Tabing Rimbah 415 |
+86 D.I.R. Tabukan Raya 27 |
+87 D.I.R. Tabunganen Kecil 90
+88 D.I.R. Tabunganen Pemurus 127
+89 D.I.R. Tabunganen Tengah 106
+90 D.I.R. Tamban Bangun 139
+91 D.I.R. Tamban Baru Muara 325
+92 D.I.R. Tanjung Harapan 155
+93 D.I.R. Tatah Mesjid 150
+94 D.I.R. Telan Kecil 242
+95 D.I.R. Teluk Tamba 439
+96 D.I.R. Terantang Ujung 213
+97 D.I.R. Tinggiran Darat 553
+98 D.I.R. Tinggiran Tengah 280
+99 D.I.R. Tumih 440
+d Kab. Hulu Sunaai Selatan 7 3.740
+1 D.I.R. Danau Bangkau 215
+2 D..R. Rawa Sianggantung 940
+3 D.I.R. Sungai Balum 535
+4 D..R. Sungai Kajang 800
+5 D.ILR. Sungai Taniran 300
+6 D.I.R. Tanggul Pangambau 500
+7 D.LR. Tirta Bahalayung 450
+e Kab. Hulu Sunaai Tenaah 4 2135
+1 D.I.R. Bangkau 320
+2 D.I.R. Tanggul Jeranih 905

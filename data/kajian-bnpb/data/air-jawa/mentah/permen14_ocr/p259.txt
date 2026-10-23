@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+312 D.I. Penggarit 30
+313 D.I. Permaswetan 30
+314 D.I. Pesanggrahan 67
+315 D.I. Planangan 30
+316 D.I. Praboto I 25
+317 D.I. Praboto II 30
+318 D.I. Renyep 11
+319 D.I. Rowobuyut 59
+320 D.I. Sabrang/Sono 15
+321 D.I. Sembojo 25
+322 D.I. Sices 30
+323 D.I. Sigugur 45
+324 D.I. Sijumbleng 50
+325 D.I. Sikori 96
+326 D.I. Sikunang 28
+327 D.I. Simejo 30
+328 D.I. Siwarung 23
+329 D.I. Songgodadi 45
+330 D.I. Srintal 14
+331 D.I. Sumiya 40
+332 D.I. Tawing II 40
+333 D.I. Timbang Balong 15
+334 D.I. Timbang Sikejer 20
+335 D.I. Tirung IIWot 53
+336 D.I. Tlogohendro 60
+337 D.I. Tonjong 33
+338 D.I. Wangansusuk 30
+339 D.I. Welo 15
+s Kab. Pemalana M 7.341
+1 D.I. Badak 33
+2 D.I. Balekambang 72
+3 D.I. Banyumudal II 10
+4 D.I. Banyumudal III 10
+5 D.I. Bawahan 15
+6 D.I. Bongas 40
+7 D.I. Buas 10
+8 D.I. Bulakan | 45
+9 D.I. Bulakan II 44
+10 D.I. Bulakan III 72
+11 D.I. Cikendung | 13
+12 D.I. Cikendung II 13
+13 D.I. Cikendung III 10
+14 D.I. Cikendung IV 21
+15 D.I. Cikendung V 14
+16 D.I. Curug Duwur 28
+17 D.I. Curug Watang 10
+18 D.I. Gambuhan II 22
+19 D.I. Gendoang | 71
+20 D.I. Gendoang II 54
+21 D.I. Gendoang III 19
+22 D.I. Genting 174
+23 D.I. Glandang 123
+24 D.I. Guluk 10
+25 D.I. Gunung Jaya I 11
+26 D.I. Gunung Jaya II 12
+27 D.I. Gunung Jaya III 28
+28 D.I. Gunung Jaya IV 112
+29 D.I. Gunung Tiga I 50
+30 D.I. Gunung Tiga II 11
+31 D.I. Jatiyem 90
+#KANAN
+259 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+32 D.I. Kalimas 21
+33 D.I. Karangsari/Tarmini 17
+34 D.I. Kebanggan I 16
+35 D.I. Kebanggan II 11
+36 D.I. Kebanggan III 17
+37 D.I. Kedung Belis 130
+38 D.I. Kedunggong 25
+39 D.I. Kejene 477
+40 D.I. Kenteng 48
+41 D.I. Kenyere 27
+42 D.I. Kramat Bawah 124
+43 D.I. Kumitir 20
+44 D.I. Kuta | 11
+45 D.I. Kuta II 50
+46 D.I. Lanji Ladang 789
+47 D.I. Lenggerong 4
+48 D.I. Lubrang Wangan 11
+49 D.I. Majalangu 50
+50 D.I. Mendelem 18
+51 D.I. Moga 14
+52 D.I. Munding 58
+53 D.I. Nambo 989
+54 D.I. Pagedangan 75
+55 D.I. Pagelaran 20
+56 D.I. Pancakomas 71
+57 D.I. Pepedan 27
+58 D.I. Petir 19
+59 D.I. Plakaran | 114
+60 D.I. Plakaran II 17
+61 D.I. Raaa 85
+62 D.I. Rejasa 60
+63 D.I. Rembul 60
+64 D.I. Rengas 116
+65 D.I. Rowokajar 150
+66 D.I. Salam 43
+67 D.I. Sidok 49
+68 D.I. Siebeg 37
+69 D.I. Sikalong 10
+70 D.I. Sima 50
+71 D.I. Simpur I 43
+72 D.I. Simpur II 47
+73 D.I. Sinini 77
+74 D.I. Sipedang 12
+75 D.I. Siraja 35
+76 D.I. Sulang 50
+77 D.I. Surajaya 39
+78 D.I. Suru 32
+79 D.I. Tandon 91
+80 D.I. Tengkolo 226
+81 D.I. Tracak 469
+82 D.I. Wadasminah 66
+83 D.I. Walangsanga | 10
+84 D.I. Walangsanga II 10
+85 D.I. Wanalaya 15
+86 D.I. Wangandawa 43
+87 D.I. Wangkelang 22
+88 D.I. Watukumpul 50
+89 D.I. Welut Putih 616
+90 D.I. Winong 74
+91 D.I. Wregu 102

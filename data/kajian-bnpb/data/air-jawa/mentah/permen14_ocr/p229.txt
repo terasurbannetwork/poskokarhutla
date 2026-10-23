@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+740 D.I. Satinah 10
+741 D.I. Sb. Gowak 13
+742 D.I. Sb. Grenjengan 22
+743 D.I. Sb. Joho 10
+744 D.I. Sb. Ploso 10
+745 D.I. Sb. Sobo 13
+746 D.I. Sb. Tringsing 11
+747 D.I. Sebumbung 24
+748 D.I. Sedudo 12
+749 D.I. Segatel 35
+750 D.I. Segol 10
+751 D.I. Sekajar 45
+752 D.I. Sekebo 20
+753 D.I. Seketung 10
+754 D.I. Selencir 20
+755 D.I. Selengkeh 10
+756 D.I. Sembrani 10
+757 D.I. Sempar 11
+758 D.I. Sempu 14
+759 D.I. Semurup 40
+760 D.I. Sendang 17
+761 D.I. Sendang 12
+762 D.I. Sendang 15
+763 D.I. Sendang Kemang 12
+764 D.I. Sengkeran 16
+765 D.I. Sentong 16
+766 D.I. Sentono 17
+767 D.I. sentul 30
+768 D.I. Sentul 35
+769 D.I. Sentul 13
+770 D.I. Serang 13
+771 D.I. Serut 16
+772 D.I. Serut 16
+773 D.I. Serut 27
+774 D.I. Setro 13
+775 D.I. Setumbu 164
+776 D.I. sewo (Ngrancah) 15
+777 D.I. Sewo tanjang 11
+778 D.I. Seyuyu 23
+779 D.I. Sibuyung 57
+780 D.I. Siwil 20
+781 D.I. Slumbung 10
+782 D.I. Soko (Kali Telon) 10
+783 D.I. Sowan lor 125
+784 D.I. Sowat 16
+785 D.I. Srinongko 23
+786 D.I. Suko 10
+787 D.I. Suko 10
+788 D.I. Sumber Mbubar 40
+789 D.I. Sumber Urip 10
+790 D.I. Sumero 10
+791 D.I. Sumoyo 13
+792 D.I. Sungon 33
+793 D.I. Suro 10
+794 D.I. Surojoyo 11
+795 D.I. Susukan/Suruhan 10
+796 D.I. Suwatu 15
+797 D.I. Tajug 20
+798 D.I. Taman 12
+799 D.I. Tambakrama 12
+800 D.I. TaroanWuluh 30
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+801 D.I. Tarso 15
+802 D.I. Tawar/Sb. Tawar 10
+803 D.I. Tegalrejo 15
+804 D.I. Tejo 25
+805 D.I. Temon 25
+806 D.I. Tempur 14
+807 D.I. Tempur 14
+808 D.I. Tempur 65
+809 D.I. Tempur 17
+810 D.I. Tempur 10
+811 D.I. Tempur 25
+812 D.I. Tengguli I 10
+813 D.I. Tengguli II 15
+814 D.I. Termen 12
+815 D.I. Tinggen 70
+816 D.I. Tinggen 50
+817 D.I. Towo 40
+818 D.I. Tritis 12
+819 D.I. Tritis Duren 13
+820 D.I. Truno 15
+821 D.I. Truwili 25
+822 D.I. Tuk 29
+823 D.I. Turus 17
+824 D.I. Ubin 10
+825 D.I. Upyuk 11
+826 D.I. Wates 30
+827 D.I. Watu 12
+828 D.I. Watu Lawang 12
+829 D.I. Watugede 14
+830 D.I. Wedusen 45
+831 D.I. Winong (Barat) 10
+832 D.I. Wolorejo 10
+833 D.I. Wuni 13
+834 D.I. Yuwono/Klum prit 35
+k Kab. Karanaanvar 351 18.867
+1 D.I. Awar Awar 34
+2 D.I. Bakalan 20
+3 D.I. Bakdalem | 140
+4 D.I. Banaran 18
+5 D.I. Bancang 115
+6 D.I. Bandungan 20
+7 D.I. Bangsri Lemahbang 10
+8 D.I. Banjaransari 202
+9 D.I. Bati 68
+10 D.I. Belik 19
+11 D.I. Beling 80
+12 D.I. Bener 60
+13 D.I. Bening 4
+14 D.I. Berjo 71
+15 D.I. Biru 11
+16 D.I. Blimbing 18
+17 D.I. Bodakan 37
+18 D.I. Bondukuh 55
+19 D.I. Bongso 30
+20 D.I. Brajan 124
+21 D.I. Brangkal 450
+22 D.I. Brongkol 24
+23 D.I. Bugel 20
+24 D.I. Buyutan 37
+25 D.I. Campuran 18

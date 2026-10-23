@@ -1,0 +1,133 @@
+#TATA_LETAK satu-tabel lebar=2480
+21 2015, No.638
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+d Kab. Lamongan
+
+1 D.I Bengawan Jero 8.230
+
+2 D.I Gondang 10.588
+
+3 D.I Wa. Prijetan 4.513
+
+e Kab. Lumajang
+
+1 D.I. Jatiroto 4.342
+
+f Kab. Malang
+
+1 D.I. Is Molek 3.883
+
+g Kab. Nganjuk
+
+1 D.I. Waduk Bening 8.752
+
+h Kab. Ngawi
+
+1 D.I. Waduk Pondok 3.450
+
+i Kab. Ponorogo
+
+1 D.I. Sungkur 3.065
+
+j Kab. Probolinggo
+
+1 D.I. Pekalen 6.479
+
+k Kab. Situbondo
+
+1 D.I. Banyuputih 3.571
+
+2 D.I. Sampean 10.208
+
+| Kab. Tuban
+
+1 D.I. Beron 4.964
+XV PROVINSI BALI 6 24.755
+
+a Kab. Buleleng
+
+1 D.I. Tukad Saba 3.897
+
+b Kab. Gianyar
+
+1 D.I. Tukad Oos 3.691
+
+2 D.I. Tukad Pekerisan 3.228
+
+3 D.I. Tukad Petanu 4.495
+
+c Kab. Tabanan
+
+1 D.I. Tukad Sungi 3.885
+
+2 D.I. Tukad Yeh Hoo 5.559
+XVI PROVINSI NUSA TENGGARA BARAT 15 67.285
+
+a Kab. Bima
+
+1 D.I. Pelaparado 4.815
+
+b Kab. Dompu
+
+1 D.I. Katua Kompleks 3.330
+
+2 D.I. Rababaka Kompleks 4.050
+
+c Kab. Lombok Barat
+
+1 D.I. Remening Kompleks 3.293
+
+d Kab. Lombok Tengah
+
+1 D.I. Batujai 3.580
+
+2 D.I. Jurang Batu 3.500
+
+3 D.I. Jurang Sate Hilir 6.439
+
+4 D.I. Jurang Sate Hulu 4.229
+
+5 D.I. Katon Kompleks 7.495
+
+6 D.I. Mujur II 3.506
+
+7 D.I. Surabaya 3.258
+
+e Kab. Lombok Timur
+
+1 D.I. Pandanduri-Swangi 5.168
+
+2 D.I. Tanggik Kompleks 3.424
+
+f Kab. Sumbawa
+
+1 D.I. Batu Bulan 5.782
+
+2 D.I. Mamak-Kakiang 5.416
+XVII PROVINSI NUSA TENGGARA TIMUR 19 75.12
+
+a Kab. Alor
+
+1 D.I. Benlelang 4.469
+
+b Kab. Ende
+
+1 D.I. Mautenda 3.008
+
+c Kab. Kupang
+
+1 D.I. Batu Merah 3.070
+
+2 D.I. Oesao 3.125
+
+3 D.I. Tilong 3.814
+
+d Kab. Lembata
+
+1 D.I. Waekomo 3.050
+
+e Kab. Manggarai
+
+1 D.I. Wae Mantar 4.788

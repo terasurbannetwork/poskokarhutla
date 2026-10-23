@@ -1,0 +1,415 @@
+tingkat,kode,nama,bahaya,jumlah_kab,penduduk_worldpop,overlay_jiwa_tinggi,krb_luas_tinggi_ha,krb_luas_sedang_ha,krb_terpapar_jiwa,dibi_kejadian,dibi_meninggal_hilang,dibi_menderita,dibi_mengungsi,dibi_rumah_rusak
+nasional,ID,Indonesia,banjir,514,286674532,142279381,25693207,23828167,113826725,18608.1333,5273,59479134,6597378,669625
+nasional,ID,Indonesia,banjir_bandang,514,286674532,31638903,2913344,1340064,15389384,295.6667,180,448098,31693,22442
+nasional,ID,Indonesia,longsor,514,286674532,92169999,50881827,28108569,25178627,10799.6667,3292,428578,164363,68226
+nasional,ID,Indonesia,banjir_longsor,514,286674532,,,,,543.2,242,1885445,220289,19169
+nasional,ID,Indonesia,cuaca_ekstrem,514,286674532,,32443846,36113187,255349429,16728.1667,685,736210,44107,375270
+nasional,ID,Indonesia,gelombang_abrasi,514,286674532,1811465,301655,163883,4080596,602,101,80125,17106,9522
+nasional,ID,Indonesia,rob,514,286674532,,,,,247.1667,0,1192756,14122,1996
+nasional,ID,Indonesia,kekeringan,514,286674532,47006421,30002273,128191608,272475672,1667,8,25419148,7,0
+nasional,ID,Indonesia,karhutla,514,286674532,,,,,8891.75,71,548398,2510,450
+pulau,Sumatera,Sumatera,banjir,154,62155299,34374342,7742794,7672244,26161327,5059,2050,14762657,2795820,334008
+pulau,Sumatera,Sumatera,banjir_bandang,154,62155299,6800851,817539,392511,3792925,106.5,35,58965,3827,6241
+pulau,Sumatera,Sumatera,longsor,154,62155299,15837284,10047943,4798523,3157698,1088,673,82008,21460,3176
+pulau,Sumatera,Sumatera,banjir_longsor,154,62155299,,,,,197.5,45,554478,93904,1483
+pulau,Sumatera,Sumatera,cuaca_ekstrem,154,62155299,,9115229,14012387,53869344,3518.5,115,148252,12668,63842
+pulau,Sumatera,Sumatera,gelombang_abrasi,154,62155299,216402,66617,24385,722015,134,12,4861,1072,1093
+pulau,Sumatera,Sumatera,rob,154,62155299,,,,,69,0,668967,2179,539
+pulau,Sumatera,Sumatera,kekeringan,154,62155299,942079,1666397,27064882,58502584,266,0,465365,0,0
+pulau,Sumatera,Sumatera,karhutla,154,62155299,,,,,3663.25,18,443336,1756,388
+pulau,Jawa,Jawa,banjir,119,160830619,80287252,1526491,1647692,63189232,7202.1333,1258,18861585,2421178,121392
+pulau,Jawa,Jawa,banjir_bandang,119,160830619,18041175,304032,171827,8104449,47.3333,12,102072,6089,1367
+pulau,Jawa,Jawa,longsor,119,160830619,49784419,3244158,1040361,13054323,7898.6667,1774,234811,111541,49521
+pulau,Jawa,Jawa,banjir_longsor,119,160830619,,,,,170.2,80,745507,76317,8971
+pulau,Jawa,Jawa,cuaca_ekstrem,119,160830619,,5148719,1448291,147925402,9740.6667,321,400226,20019,239071
+pulau,Jawa,Jawa,gelombang_abrasi,119,160830619,1047919,40298,14184,728643,99,52,22240,443,447
+pulau,Jawa,Jawa,rob,119,160830619,,,,,103.5,0,468303,6569,636
+pulau,Jawa,Jawa,kekeringan,119,160830619,31860021,2877406,9767513,152356122,958,0,15743888,0,0
+pulau,Jawa,Jawa,karhutla,119,160830619,,,,,1865.5,36,103124,743,4
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,banjir,41,15903474,2564451,172750,276666,3147073,1105,433,1889454,126103,101429
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,banjir_bandang,41,15903474,2618474,233157,110132,1255927,75.3333,90,138108,10164,3792
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,longsor,41,15903474,8675830,2885941,1514249,2453355,567,188,10063,3475,6493
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,banjir_longsor,41,15903474,,,,,26,6,37980,4344,661
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,cuaca_ekstrem,41,15903474,,514131,776365,13255392,1055,122,76554,3628,24975
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,gelombang_abrasi,41,15903474,237186,40847,12358,445354,114,17,15667,6303,2721
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,rob,41,15903474,,,,,18.6667,0,13242,0,76
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,kekeringan,41,15903474,5386795,3653242,3524449,15116209,184,2,8174674,0,0
+pulau,Bali-Nusa Tenggara,Bali-Nusa Tenggara,karhutla,41,15903474,,,,,157,0,172,0,15
+pulau,Kalimantan,Kalimantan,banjir,56,17622961,13742514,8616910,7149323,10911636,2038,204,18450933,651053,30576
+pulau,Kalimantan,Kalimantan,banjir_bandang,56,17622961,288544,432175,167512,266530,11,1,2676,0,2
+pulau,Kalimantan,Kalimantan,longsor,56,17622961,1957465,10579429,10544205,859758,477,171,35678,2272,1341
+pulau,Kalimantan,Kalimantan,banjir_longsor,56,17622961,,,,,32,16,320434,16771,48
+pulau,Kalimantan,Kalimantan,cuaca_ekstrem,56,17622961,,9656260,12786135,16458543,689,29,19425,1257,11362
+pulau,Kalimantan,Kalimantan,gelombang_abrasi,56,17622961,77998,25137,15094,168455,44,2,14441,1001,1985
+pulau,Kalimantan,Kalimantan,rob,56,17622961,,,,,10,0,18266,0,9
+pulau,Kalimantan,Kalimantan,kekeringan,56,17622961,2802511,4692585,36733529,16701742,39,0,78870,0,0
+pulau,Kalimantan,Kalimantan,karhutla,56,17622961,,,,,2778,12,70,11,33
+pulau,Sulawesi,Sulawesi,banjir,81,21100509,8634763,1108877,1119294,8190475,2501,578,4850962,440673,71083
+pulau,Sulawesi,Sulawesi,banjir_bandang,81,21100509,2874557,458571,209601,1387692,52,42,144492,10833,11029
+pulau,Sulawesi,Sulawesi,longsor,81,21100509,9951111,7984264,5142823,2957647,585,316,47406,8440,2835
+pulau,Sulawesi,Sulawesi,banjir_longsor,81,21100509,,,,,74,67,149648,22611,5542
+pulau,Sulawesi,Sulawesi,cuaca_ekstrem,81,21100509,,2148288,1627707,18284362,1517,86,78643,3654,32583
+pulau,Sulawesi,Sulawesi,gelombang_abrasi,81,21100509,205360,67996,23675,1068065,134,14,11608,2013,1604
+pulau,Sulawesi,Sulawesi,rob,81,21100509,,,,,24,0,7629,68,522
+pulau,Sulawesi,Sulawesi,kekeringan,81,21100509,4126251,4114692,15442414,21356214,204,0,840879,7,0
+pulau,Sulawesi,Sulawesi,karhutla,81,21100509,,,,,327,2,905,0,0
+pulau,Maluku,Maluku,banjir,21,3315256,586761,307278,372776,599347,464,126,190612,109074,4800
+pulau,Maluku,Maluku,banjir_bandang,21,3315256,454248,187898,73864,174266,2.5,0,730,0,0
+pulau,Maluku,Maluku,longsor,21,3315256,1759524,1962940,2763467,609075,127,84,7247,5798,1432
+pulau,Maluku,Maluku,banjir_longsor,21,3315256,,,,,30.5,8,28474,1737,295
+pulau,Maluku,Maluku,cuaca_ekstrem,21,3315256,,246919,665018,2693434,177,9,10886,2378,2914
+pulau,Maluku,Maluku,gelombang_abrasi,21,3315256,26600,47503,51257,743611,55,4,8833,1884,704
+pulau,Maluku,Maluku,rob,21,3315256,,,,,12,0,15799,1943,65
+pulau,Maluku,Maluku,kekeringan,21,3315256,414632,1034155,6855498,3191238,9,0,34961,0,0
+pulau,Maluku,Maluku,karhutla,21,3315256,,,,,59,2,143,0,0
+pulau,Papua,Papua,banjir,42,5746414,2089298,6218107,5590172,1627635,239,624,472931,53477,6337
+pulau,Papua,Papua,banjir_bandang,42,5746414,561054,479972,214617,407595,1,0,1055,780,11
+pulau,Papua,Papua,longsor,42,5746414,4204366,14177152,2304941,2086771,57,86,11365,11377,3428
+pulau,Papua,Papua,banjir_longsor,42,5746414,,,,,13,20,48924,4605,2169
+pulau,Papua,Papua,cuaca_ekstrem,42,5746414,,5614300,4797284,2862952,31,3,2224,503,523
+pulau,Papua,Papua,gelombang_abrasi,42,5746414,0,13257,22930,204453,22,0,2475,4390,968
+pulau,Papua,Papua,rob,42,5746414,,,,,10,0,550,3363,149
+pulau,Papua,Papua,kekeringan,42,5746414,1474132,11963796,28803323,5251563,7,6,80511,0,0
+pulau,Papua,Papua,karhutla,42,5746414,,,,,42,1,648,0,10
+provinsi,11,Aceh,banjir,23,5602631,3097201,474664,500794,3101890,994,676,5005383,2075861,208222
+provinsi,11,Aceh,banjir_bandang,23,5602631,860488,175177,78632,595143,21,10,26244,1579,1713
+provinsi,11,Aceh,longsor,23,5602631,2726030,3160712,470390,283621,132,49,5579,11762,640
+provinsi,11,Aceh,banjir_longsor,23,5602631,,,,,64,6,185396,73293,295
+provinsi,11,Aceh,cuaca_ekstrem,23,5602631,,684294,514408,4839117,649,17,13949,5356,7177
+provinsi,11,Aceh,gelombang_abrasi,23,5602631,82748,16377,3624,130748,42,1,494,759,354
+provinsi,11,Aceh,rob,23,5602631,,,,,8,0,1576,605,1
+provinsi,11,Aceh,kekeringan,23,5602631,2471,32991,4870288,5325224,54,0,21226,0,0
+provinsi,11,Aceh,karhutla,23,5602631,,,,,677,0,94,804,1
+provinsi,12,Sumatera Utara,banjir,33,15719991,7648452,720375,787041,7278686,986.5,622,4081722,185563,29322
+provinsi,12,Sumatera Utara,banjir_bandang,33,15719991,2366967,169936,80435,1062044,28,16,8043,587,759
+provinsi,12,Sumatera Utara,longsor,33,15719991,4116312,2180990,879228,1036176,200,197,17273,1690,400
+provinsi,12,Sumatera Utara,banjir_longsor,33,15719991,,,,,28.5,27,93237,16317,236
+provinsi,12,Sumatera Utara,cuaca_ekstrem,33,15719991,,990571,1580595,12984642,672,26,51356,3220,20059
+provinsi,12,Sumatera Utara,gelombang_abrasi,33,15719991,0,1489,1006,122521,8,1,208,127,30
+provinsi,12,Sumatera Utara,rob,33,15719991,,,,,17,0,639906,0,7
+provinsi,12,Sumatera Utara,kekeringan,33,15719991,0,0,611827,15158566,25,0,13680,0,0
+provinsi,12,Sumatera Utara,karhutla,33,15719991,,,,,533,2,39,0,1
+provinsi,13,Sumatera Barat,banjir,19,5882205,1942839,235661,289143,1884978,637.5,506,780895,228887,39984
+provinsi,13,Sumatera Barat,banjir_bandang,19,5882205,1199460,127829,63326,820389,27,9,5971,603,254
+provinsi,13,Sumatera Barat,longsor,19,5882205,3851956,1678689,963442,717905,313,170,35232,4520,967
+provinsi,13,Sumatera Barat,banjir_longsor,19,5882205,,,,,49.5,9,143781,2432,858
+provinsi,13,Sumatera Barat,cuaca_ekstrem,19,5882205,,620336,296891,4458396,580,17,7283,757,3293
+provinsi,13,Sumatera Barat,gelombang_abrasi,19,5882205,30665,2987,1499,79659,27,0,950,80,379
+provinsi,13,Sumatera Barat,rob,19,5882205,,,,,0,0,0,0,0
+provinsi,13,Sumatera Barat,kekeringan,19,5882205,277800,460344,2256526,5424710,28,0,86152,0,0
+provinsi,13,Sumatera Barat,karhutla,19,5882205,,,,,160,0,0,0,2
+provinsi,14,Riau,banjir,12,6782344,4786874,2149745,2406345,3424350,579,18,1574493,78904,27633
+provinsi,14,Riau,banjir_bandang,12,6782344,404557,49563,23147,126259,2,0,1290,65,13
+provinsi,14,Riau,longsor,12,6782344,461608,383683,317808,45805,52,2,797,178,232
+provinsi,14,Riau,banjir_longsor,12,6782344,,,,,1,0,1345,0,0
+provinsi,14,Riau,cuaca_ekstrem,12,6782344,,877416,4439093,6111158,154,9,8810,931,3199
+provinsi,14,Riau,gelombang_abrasi,12,6782344,0,4068,3289,52752,17,0,1680,98,161
+provinsi,14,Riau,rob,12,6782344,,,,,7,0,9250,0,404
+provinsi,14,Riau,kekeringan,12,6782344,0,0,350426,6210759,9,0,0,0,0
+provinsi,14,Riau,karhutla,12,6782344,,,,,683.25,9,441124,425,90
+provinsi,15,Jambi,banjir,11,3762630,2140946,823430,770781,1673969,383,26,752991,79986,8228
+provinsi,15,Jambi,banjir_bandang,11,3762630,343592,68122,29774,238229,4,0,674,0,5
+provinsi,15,Jambi,longsor,11,3762630,609705,648243,710505,145151,53,41,101,374,161
+provinsi,15,Jambi,banjir_longsor,11,3762630,,,,,6,2,58885,6,2
+provinsi,15,Jambi,cuaca_ekstrem,11,3762630,,423670,1672876,3476770,131,5,3229,76,3904
+provinsi,15,Jambi,gelombang_abrasi,11,3762630,0,225,474,4496,4,0,41,0,19
+provinsi,15,Jambi,rob,11,3762630,,,,,1,0,1675,0,0
+provinsi,15,Jambi,kekeringan,11,3762630,379706,639410,4029550,3557073,42,0,0,0,0
+provinsi,15,Jambi,karhutla,11,3762630,,,,,359,1,253,0,5
+provinsi,16,Sumatera Selatan,banjir,17,8997440,6506305,2348142,1981621,4882644,624.5,37,1795101,84611,1788
+provinsi,16,Sumatera Selatan,banjir_bandang,17,8997440,720934,113207,60739,510981,14,0,4846,641,1127
+provinsi,16,Sumatera Selatan,longsor,17,8997440,1168530,830662,449703,235079,121,47,9647,73,331
+provinsi,16,Sumatera Selatan,banjir_longsor,17,8997440,,,,,10.5,1,3167,31,34
+provinsi,16,Sumatera Selatan,cuaca_ekstrem,17,8997440,,3015620,3550687,8278585,306,8,25018,1108,8133
+provinsi,16,Sumatera Selatan,gelombang_abrasi,17,8997440,0,415,673,1188,2,0,473,0,0
+provinsi,16,Sumatera Selatan,rob,17,8997440,,,,,0,0,0,0,0
+provinsi,16,Sumatera Selatan,kekeringan,17,8997440,0,5643,7935529,8441106,27,0,25265,0,0
+provinsi,16,Sumatera Selatan,karhutla,17,8997440,,,,,384,6,500,0,11
+provinsi,17,Bengkulu,banjir,10,2133717,838769,82171,97193,484863,205,47,220604,29161,3387
+provinsi,17,Bengkulu,banjir_bandang,10,2133717,493961,61055,31188,198014,3,0,1760,0,88
+provinsi,17,Bengkulu,longsor,10,2133717,826677,573874,607129,215064,87,50,12627,5,85
+provinsi,17,Bengkulu,banjir_longsor,10,2133717,,,,,25,0,54501,1056,15
+provinsi,17,Bengkulu,cuaca_ekstrem,10,2133717,,181373,207143,1945739,59,8,1143,100,466
+provinsi,17,Bengkulu,gelombang_abrasi,10,2133717,5832,4421,1111,29149,4,0,160,0,19
+provinsi,17,Bengkulu,rob,10,2133717,,,,,3,0,0,0,0
+provinsi,17,Bengkulu,kekeringan,10,2133717,267346,493834,1498100,2026939,11,0,0,0,0
+provinsi,17,Bengkulu,karhutla,10,2133717,,,,,24,0,0,150,0
+provinsi,18,Lampung,banjir,15,9559544,5295061,518296,446397,2278205,457.5,97,468108,18235,11793
+provinsi,18,Lampung,banjir_bandang,15,9559544,401942,45235,22538,236353,7.5,0,10137,352,2282
+provinsi,18,Lampung,longsor,15,9559544,1914614,522355,287388,388265,73,24,47,15,100
+provinsi,18,Lampung,banjir_longsor,15,9559544,,,,,8,0,6462,0,25
+provinsi,18,Lampung,cuaca_ekstrem,15,9559544,,1508071,772368,8380680,387.5,12,20483,118,11597
+provinsi,18,Lampung,gelombang_abrasi,15,9559544,37327,9152,1853,87609,5,1,20,0,15
+provinsi,18,Lampung,rob,15,9559544,,,,,5,0,390,0,13
+provinsi,18,Lampung,kekeringan,15,9559544,0,910,3461470,8851566,57,0,267858,0,0
+provinsi,18,Lampung,karhutla,15,9559544,,,,,87,0,0,0,0
+provinsi,19,Kep. Bangka Belitung,banjir,7,1541617,1066310,307187,281590,530642,114,9,51434,14206,2940
+provinsi,19,Kep. Bangka Belitung,banjir_bandang,7,1541617,0,3222,760,680,0,0,0,0,0
+provinsi,19,Kep. Bangka Belitung,longsor,7,1541617,32343,18246,21712,1485,17,39,0,0,1
+provinsi,19,Kep. Bangka Belitung,banjir_longsor,7,1541617,,,,,0,0,0,0,0
+provinsi,19,Kep. Bangka Belitung,cuaca_ekstrem,7,1541617,,659458,764221,1411737,218,5,8882,39,3208
+provinsi,19,Kep. Bangka Belitung,gelombang_abrasi,7,1541617,0,8742,2151,33689,1,1,0,0,0
+provinsi,19,Kep. Bangka Belitung,rob,7,1541617,,,,,20,0,5174,0,74
+provinsi,19,Kep. Bangka Belitung,kekeringan,7,1541617,0,1620,1271791,1455485,1,0,49673,0,0
+provinsi,19,Kep. Bangka Belitung,karhutla,7,1541617,,,,,304,0,1321,329,268
+provinsi,21,Kepulauan Riau,banjir,7,2173180,1051585,83123,111339,621100,78,12,31926,406,711
+provinsi,21,Kepulauan Riau,banjir_bandang,7,2173180,8950,4193,1972,4833,0,0,0,0,0
+provinsi,21,Kepulauan Riau,longsor,7,2173180,129509,50489,91218,89147,40,54,705,2843,259
+provinsi,21,Kepulauan Riau,banjir_longsor,7,2173180,,,,,5,0,7704,769,18
+provinsi,21,Kepulauan Riau,cuaca_ekstrem,7,2173180,,154420,214105,1982520,362,8,8099,963,2806
+provinsi,21,Kepulauan Riau,gelombang_abrasi,7,2173180,59830,18741,8705,180204,24,8,835,8,116
+provinsi,21,Kepulauan Riau,rob,7,2173180,,,,,8,0,10996,1574,40
+provinsi,21,Kepulauan Riau,kekeringan,7,2173180,14756,31645,779375,2051156,12,0,1511,0,0
+provinsi,21,Kepulauan Riau,karhutla,7,2173180,,,,,452,0,5,48,10
+provinsi,31,DKI Jakarta,banjir,6,11147200,8491118,14944,29275,8319439,337.6667,126,944944,409373,1343
+provinsi,31,DKI Jakarta,banjir_bandang,6,11147200,0,0,0,0,0,0,0,0,0
+provinsi,31,DKI Jakarta,longsor,6,11147200,0,0,0,0,35,4,4801,39,43
+provinsi,31,DKI Jakarta,banjir_longsor,6,11147200,,,,,0.3333,1,600,1269,0
+provinsi,31,DKI Jakarta,cuaca_ekstrem,6,11147200,,82628,49759,11246068,60,14,3012,449,1490
+provinsi,31,DKI Jakarta,gelombang_abrasi,6,11147200,0,12381,4711,107506,4,0,1923,0,22
+provinsi,31,DKI Jakarta,rob,6,11147200,,,,,2,0,200,0,0
+provinsi,31,DKI Jakarta,kekeringan,6,11147200,5689,55696,111488,11246068,0,0,0,0,0
+provinsi,31,DKI Jakarta,karhutla,6,11147200,,,,,0,0,0,0,0
+provinsi,32,Jawa Barat,banjir,27,51002450,19439727,388110,379243,15238382,2078.8,296,6596978,1158719,36266
+provinsi,32,Jawa Barat,banjir_bandang,27,51002450,7753957,102265,53872,3257547,10.3333,5,4306,515,414
+provinsi,32,Jawa Barat,longsor,27,51002450,21761922,1340867,274334,6131444,3245.6667,855,111389,54857,23982
+provinsi,32,Jawa Barat,banjir_longsor,27,51002450,,,,,72.2,37,366058,27234,5100
+provinsi,32,Jawa Barat,cuaca_ekstrem,27,51002450,,1227035,269027,45729148,3257,59,174313,15092,83473
+provinsi,32,Jawa Barat,gelombang_abrasi,27,51002450,257810,2902,940,78734,16,7,10246,162,63
+provinsi,32,Jawa Barat,rob,27,51002450,,,,,29,0,98852,819,468
+provinsi,32,Jawa Barat,kekeringan,27,51002450,12310797,1311232,2225905,47533935,321,0,7593753,0,0
+provinsi,32,Jawa Barat,karhutla,27,51002450,,,,,321,2,70262,0,1
+provinsi,33,Jawa Tengah,banjir,35,38770526,20128085,446254,469909,14867751,2156.1667,303,5794912,429044,18699
+provinsi,33,Jawa Tengah,banjir_bandang,35,38770526,4398448,58898,32757,1887576,18.5,4,85170,5350,210
+provinsi,33,Jawa Tengah,longsor,35,38770526,14546501,734691,207457,3661479,3315,625,52946,41435,15761
+provinsi,33,Jawa Tengah,banjir_longsor,35,38770526,,,,,43.5,13,171054,29294,539
+provinsi,33,Jawa Tengah,cuaca_ekstrem,35,38770526,,1510034,324566,35672080,3415,97,108565,1834,74304
+provinsi,33,Jawa Tengah,gelombang_abrasi,35,38770526,233403,4532,2281,124108,33,39,8880,231,112
+provinsi,33,Jawa Tengah,rob,35,38770526,,,,,53.5,0,362394,5750,132
+provinsi,33,Jawa Tengah,kekeringan,35,38770526,16309298,941051,2336057,37117763,328,0,5155985,0,0
+provinsi,33,Jawa Tengah,karhutla,35,38770526,,,,,632.5,10,32740,386,1
+provinsi,34,DI Yogyakarta,banjir,5,3913753,1661383,27123,27034,932972,100.3333,9,10888,15205,300
+provinsi,34,DI Yogyakarta,banjir_bandang,5,3913753,38951,2250,1170,51785,0,0,0,0,0
+provinsi,34,DI Yogyakarta,longsor,5,3913753,750463,49902,60212,390018,224,33,3828,9237,532
+provinsi,34,DI Yogyakarta,banjir_longsor,5,3913753,,,,,5,3,2517,141,64
+provinsi,34,DI Yogyakarta,cuaca_ekstrem,5,3913753,,112922,34420,3575748,472.5,28,18210,599,9358
+provinsi,34,DI Yogyakarta,gelombang_abrasi,5,3913753,0,273,9,5283,14,0,950,0,116
+provinsi,34,DI Yogyakarta,rob,5,3913753,,,,,0,0,0,0,0
+provinsi,34,DI Yogyakarta,kekeringan,5,3913753,609202,26895,291686,3675662,35,0,588310,0,0
+provinsi,34,DI Yogyakarta,karhutla,5,3913753,,,,,112,0,0,0,0
+provinsi,35,Jawa Timur,banjir,38,43211767,21944484,514184,615875,17878850,1987,267,3742086,213888,30804
+provinsi,35,Jawa Timur,banjir_bandang,38,43211767,5025660,119667,73776,2536428,16.5,3,12493,187,725
+provinsi,35,Jawa Timur,longsor,38,43211767,10789684,934294,390129,2276057,933,244,54773,3612,8061
+provinsi,35,Jawa Timur,banjir_longsor,38,43211767,,,,,34.5,6,72112,1757,674
+provinsi,35,Jawa Timur,cuaca_ekstrem,38,43211767,,1828451,644506,40101528,2096,109,83828,1816,62467
+provinsi,35,Jawa Timur,gelombang_abrasi,38,43211767,500976,13935,4376,333435,31,6,241,50,134
+provinsi,35,Jawa Timur,rob,38,43211767,,,,,15,0,5030,0,27
+provinsi,35,Jawa Timur,kekeringan,38,43211767,1566601,373053,4005564,40994002,223,0,1757656,0,0
+provinsi,35,Jawa Timur,karhutla,38,43211767,,,,,746,24,122,0,2
+provinsi,36,Banten,banjir,8,12784923,8622455,135876,126356,5951838,542.1667,257,1771777,194949,33980
+provinsi,36,Banten,banjir_bandang,8,12784923,824159,20952,10252,371113,2,0,103,37,18
+provinsi,36,Banten,longsor,8,12784923,1935849,184404,108229,595325,146,13,7074,2361,1142
+provinsi,36,Banten,banjir_longsor,8,12784923,,,,,14.6667,20,133166,16622,2594
+provinsi,36,Banten,cuaca_ekstrem,8,12784923,,387649,126013,11600830,440.1667,14,12298,229,7979
+provinsi,36,Banten,gelombang_abrasi,8,12784923,55730,6275,1867,79577,1,0,0,0,0
+provinsi,36,Banten,rob,8,12784923,,,,,4,0,1827,0,9
+provinsi,36,Banten,kekeringan,8,12784923,1058434,169479,796813,11788692,51,0,648184,0,0
+provinsi,36,Banten,karhutla,8,12784923,,,,,54,0,0,357,0
+provinsi,51,Bali,banjir,9,4591019,781234,11715,22217,713786,135,67,79911,2059,3060
+provinsi,51,Bali,banjir_bandang,9,4591019,183744,14286,7625,164432,5,4,22040,615,147
+provinsi,51,Bali,longsor,9,4591019,2084618,195430,57990,472946,296,106,429,6,770
+provinsi,51,Bali,banjir_longsor,9,4591019,,,,,4,4,438,21,5
+provinsi,51,Bali,cuaca_ekstrem,9,4591019,,118705,78457,4072073,277,41,975,90,1878
+provinsi,51,Bali,gelombang_abrasi,9,4591019,0,6051,283,98986,34,6,2799,2930,615
+provinsi,51,Bali,rob,9,4591019,,,,,1,0,0,0,0
+provinsi,51,Bali,kekeringan,9,4591019,187826,42327,535679,4273992,24,0,77973,0,0
+provinsi,51,Bali,karhutla,9,4591019,,,,,67,0,0,0,0
+provinsi,52,Nusa Tenggara Barat,banjir,10,5642061,995836,59819,93208,1712041,611,80,1120033,39131,22728
+provinsi,52,Nusa Tenggara Barat,banjir_bandang,10,5642061,1291611,66619,28556,566840,62.3333,14,86953,3926,3011
+provinsi,52,Nusa Tenggara Barat,longsor,10,5642061,2681189,627134,466055,267403,105,37,3053,208,4397
+provinsi,52,Nusa Tenggara Barat,banjir_longsor,10,5642061,,,,,10,0,20548,25,6
+provinsi,52,Nusa Tenggara Barat,cuaca_ekstrem,10,5642061,,194992,215248,5123099,333,19,20378,302,6906
+provinsi,52,Nusa Tenggara Barat,gelombang_abrasi,10,5642061,162838,15338,3674,125648,26,0,2917,1793,329
+provinsi,52,Nusa Tenggara Barat,rob,10,5642061,,,,,10.6667,0,8883,0,0
+provinsi,52,Nusa Tenggara Barat,kekeringan,10,5642061,1453649,1037032,820200,5389670,99,0,5096765,0,0
+provinsi,52,Nusa Tenggara Barat,karhutla,10,5642061,,,,,25,0,61,0,0
+provinsi,53,Nusa Tenggara Timur,banjir,22,5670394,787381,101216,161241,721246,359,286,689510,84913,75641
+provinsi,53,Nusa Tenggara Timur,banjir_bandang,22,5670394,1143119,152252,73951,524655,8,72,29115,5623,634
+provinsi,53,Nusa Tenggara Timur,longsor,22,5670394,3910023,2063377,990204,1713006,166,45,6581,3261,1326
+provinsi,53,Nusa Tenggara Timur,banjir_longsor,22,5670394,,,,,12,2,16994,4298,650
+provinsi,53,Nusa Tenggara Timur,cuaca_ekstrem,22,5670394,,200434,482660,4060220,445,62,55201,3236,16191
+provinsi,53,Nusa Tenggara Timur,gelombang_abrasi,22,5670394,74348,19458,8401,220720,54,11,9951,1580,1777
+provinsi,53,Nusa Tenggara Timur,rob,22,5670394,,,,,7,0,4359,0,76
+provinsi,53,Nusa Tenggara Timur,kekeringan,22,5670394,3745320,2573883,2168570,5452547,61,2,2999936,0,0
+provinsi,53,Nusa Tenggara Timur,karhutla,22,5670394,,,,,65,0,111,0,15
+provinsi,61,Kalimantan Barat,banjir,14,5750703,4851069,2579726,2127415,4144329,428,31,2747400,264391,1274
+provinsi,61,Kalimantan Barat,banjir_bandang,14,5750703,107804,125913,44328,81935,7,1,912,0,2
+provinsi,61,Kalimantan Barat,longsor,14,5750703,903943,2082718,3378578,345740,34,35,290,235,64
+provinsi,61,Kalimantan Barat,banjir_longsor,14,5750703,,,,,16,8,150676,3684,38
+provinsi,61,Kalimantan Barat,cuaca_ekstrem,14,5750703,,3191919,4115536,5377756,122,10,2810,165,3183
+provinsi,61,Kalimantan Barat,gelombang_abrasi,14,5750703,66778,9640,5321,29481,4,0,190,0,56
+provinsi,61,Kalimantan Barat,rob,14,5750703,,,,,1,0,560,0,0
+provinsi,61,Kalimantan Barat,kekeringan,14,5750703,2711107,3955506,10321280,5461993,4,0,800,0,0
+provinsi,61,Kalimantan Barat,karhutla,14,5750703,,,,,212,9,0,1,4
+provinsi,62,Kalimantan Tengah,banjir,14,2823573,2264093,3084364,2785328,1859984,505,26,2657464,24805,3504
+provinsi,62,Kalimantan Tengah,banjir_bandang,14,2823573,40157,74991,31129,40187,2,0,711,0,0
+provinsi,62,Kalimantan Tengah,longsor,14,2823573,104965,1602870,2035036,53616,25,30,161,0,55
+provinsi,62,Kalimantan Tengah,banjir_longsor,14,2823573,,,,,1,0,225,0,0
+provinsi,62,Kalimantan Tengah,cuaca_ekstrem,14,2823573,,3705839,4809943,2624535,42,1,1210,10,461
+provinsi,62,Kalimantan Tengah,gelombang_abrasi,14,2823573,11220,3498,867,5743,13,0,502,102,110
+provinsi,62,Kalimantan Tengah,rob,14,2823573,,,,,4,0,1467,0,7
+provinsi,62,Kalimantan Tengah,kekeringan,14,2823573,3575,25680,8080480,2639990,8,0,1424,0,0
+provinsi,62,Kalimantan Tengah,karhutla,14,2823573,,,,,572,1,0,0,0
+provinsi,63,Kalimantan Selatan,banjir,13,4317654,3782134,1028302,658208,2796490,517,85,11314519,239732,22573
+provinsi,63,Kalimantan Selatan,banjir_bandang,13,4317654,109723,36184,15878,109833,1,0,38,0,0
+provinsi,63,Kalimantan Selatan,longsor,13,4317654,415778,483831,492803,99070,71,46,772,1288,150
+provinsi,63,Kalimantan Selatan,banjir_longsor,13,4317654,,,,,4,7,143174,13062,3
+provinsi,63,Kalimantan Selatan,cuaca_ekstrem,13,4317654,,1154826,1139213,4046023,399,14,13037,894,6167
+provinsi,63,Kalimantan Selatan,gelombang_abrasi,13,4317654,0,3157,1890,48708,14,1,13396,563,1730
+provinsi,63,Kalimantan Selatan,rob,13,4317654,,,,,4,0,16201,0,2
+provinsi,63,Kalimantan Selatan,kekeringan,13,4317654,0,0,3848991,4103548,15,0,52024,0,0
+provinsi,63,Kalimantan Selatan,karhutla,13,4317654,,,,,1121,0,65,2,26
+provinsi,64,Kalimantan Timur,banjir,10,3987512,2438702,1569214,1187334,1822582,482,50,1326996,114353,2320
+provinsi,64,Kalimantan Timur,banjir_bandang,10,3987512,15181,99705,39324,17846,0,0,0,0,0
+provinsi,64,Kalimantan Timur,longsor,10,3987512,417003,2650379,2615588,273961,270,40,25031,694,814
+provinsi,64,Kalimantan Timur,banjir_longsor,10,3987512,,,,,7,1,25640,25,3
+provinsi,64,Kalimantan Timur,cuaca_ekstrem,10,3987512,,947934,2189128,3747116,106,4,1893,182,1492
+provinsi,64,Kalimantan Timur,gelombang_abrasi,10,3987512,0,3556,3880,64545,10,1,353,299,77
+provinsi,64,Kalimantan Timur,rob,10,3987512,,,,,1,0,38,0,0
+provinsi,64,Kalimantan Timur,kekeringan,10,3987512,1027,3911,8916454,3803972,11,0,24497,0,0
+provinsi,64,Kalimantan Timur,karhutla,10,3987512,,,,,710,2,5,8,2
+provinsi,65,Kalimantan Utara,banjir,5,743519,406516,355304,391038,288251,106,12,404554,7772,905
+provinsi,65,Kalimantan Utara,banjir_bandang,5,743519,15679,95382,36853,16729,1,0,1015,0,0
+provinsi,65,Kalimantan Utara,longsor,5,743519,115776,3759631,2022200,87371,77,20,9424,55,258
+provinsi,65,Kalimantan Utara,banjir_longsor,5,743519,,,,,4,0,719,0,4
+provinsi,65,Kalimantan Utara,cuaca_ekstrem,5,743519,,655742,532315,663113,20,0,475,6,59
+provinsi,65,Kalimantan Utara,gelombang_abrasi,5,743519,0,5286,3136,19978,3,0,0,37,12
+provinsi,65,Kalimantan Utara,rob,5,743519,,,,,0,0,0,0,0
+provinsi,65,Kalimantan Utara,kekeringan,5,743519,86802,707488,5566324,692239,1,0,125,0,0
+provinsi,65,Kalimantan Utara,karhutla,5,743519,,,,,163,0,0,0,1
+provinsi,71,Sulawesi Utara,banjir,15,2784192,455231,37898,39428,627532,188,96,214137,82587,9694
+provinsi,71,Sulawesi Utara,banjir_bandang,15,2784192,406017,39556,18971,221165,11,22,35106,1012,7484
+provinsi,71,Sulawesi Utara,longsor,15,2784192,1858205,567065,466525,442377,79,58,4372,1072,678
+provinsi,71,Sulawesi Utara,banjir_longsor,15,2784192,,,,,20,11,47804,4515,492
+provinsi,71,Sulawesi Utara,cuaca_ekstrem,15,2784192,,101068,85320,2379742,74,35,2220,275,1315
+provinsi,71,Sulawesi Utara,gelombang_abrasi,15,2784192,82612,16035,1844,187117,26,0,4618,1020,782
+provinsi,71,Sulawesi Utara,rob,15,2784192,,,,,7,0,2358,63,21
+provinsi,71,Sulawesi Utara,kekeringan,15,2784192,353688,70994,1318070,2674331,10,0,58136,0,0
+provinsi,71,Sulawesi Utara,karhutla,15,2784192,,,,,34,1,0,0,0
+provinsi,72,Sulawesi Tengah,banjir,13,3164781,726636,235267,232439,1056595,715.5,81,630809,64521,7270
+provinsi,72,Sulawesi Tengah,banjir_bandang,13,3164781,558752,170184,73575,307252,15,1,13848,2358,653
+provinsi,72,Sulawesi Tengah,longsor,13,3164781,2633104,3243765,1520821,365156,52,49,2974,367,139
+provinsi,72,Sulawesi Tengah,banjir_longsor,13,3164781,,,,,9,0,4343,133,32
+provinsi,72,Sulawesi Tengah,cuaca_ekstrem,13,3164781,,309149,296489,2642416,116,7,1835,333,1413
+provinsi,72,Sulawesi Tengah,gelombang_abrasi,13,3164781,5681,7800,12257,315364,36,0,2666,454,355
+provinsi,72,Sulawesi Tengah,rob,13,3164781,,,,,11.5,0,3605,5,464
+provinsi,72,Sulawesi Tengah,kekeringan,13,3164781,24106,48804,6135326,3032535,12,0,15511,0,0
+provinsi,72,Sulawesi Tengah,karhutla,13,3164781,,,,,83,0,0,0,0
+provinsi,73,Sulawesi Selatan,banjir,24,9621547,5443986,441245,450176,4007951,738,207,2337199,55586,8343
+provinsi,73,Sulawesi Selatan,banjir_bandang,24,9621547,1418391,122418,63461,523240,7,6,49680,421,2352
+provinsi,73,Sulawesi Selatan,longsor,24,9621547,3287023,1995671,1012188,1216764,299,119,23034,5694,1086
+provinsi,73,Sulawesi Selatan,banjir_longsor,24,9621547,,,,,20,54,55928,16203,4858
+provinsi,73,Sulawesi Selatan,cuaca_ekstrem,24,9621547,,1320052,482354,8148962,981,36,40106,1306,21409
+provinsi,73,Sulawesi Selatan,gelombang_abrasi,24,9621547,86715,29203,5404,210638,30,0,2766,0,159
+provinsi,73,Sulawesi Selatan,rob,24,9621547,,,,,3,0,160,0,1
+provinsi,73,Sulawesi Selatan,kekeringan,24,9621547,1351049,1209957,4352093,8962956,118,0,380208,0,0
+provinsi,73,Sulawesi Selatan,karhutla,24,9621547,,,,,157,1,105,0,0
+provinsi,74,Sulawesi Tenggara,banjir,17,2786042,802836,253869,245134,837746,360,98,295041,93148,24630
+provinsi,74,Sulawesi Tenggara,banjir_bandang,17,2786042,219054,49483,18664,67889,2,8,51,0,0
+provinsi,74,Sulawesi Tenggara,longsor,17,2786042,810111,911424,1304788,216401,80,12,1552,707,229
+provinsi,74,Sulawesi Tenggara,banjir_longsor,17,2786042,,,,,4,0,8565,129,4
+provinsi,74,Sulawesi Tenggara,cuaca_ekstrem,17,2786042,,304876,569239,2421645,221,6,29458,833,3765
+provinsi,74,Sulawesi Tenggara,gelombang_abrasi,17,2786042,21304,10759,2530,230207,30,14,735,7,193
+provinsi,74,Sulawesi Tenggara,rob,17,2786042,,,,,0,0,0,0,0
+provinsi,74,Sulawesi Tenggara,kekeringan,17,2786042,2340475,2760730,1046040,2617230,24,0,190233,7,0
+provinsi,74,Sulawesi Tenggara,karhutla,17,2786042,,,,,18,0,400,0,0
+provinsi,75,Gorontalo,banjir,6,1233337,624140,48657,52625,625217,347,37,1229009,122117,11978
+provinsi,75,Gorontalo,banjir_bandang,6,1233337,105143,33434,14290,86222,15,5,36953,7013,440
+provinsi,75,Gorontalo,longsor,6,1233337,477559,462934,402886,147752,22,58,604,42,113
+provinsi,75,Gorontalo,banjir_longsor,6,1233337,,,,,6,0,4734,0,57
+provinsi,75,Gorontalo,cuaca_ekstrem,6,1233337,,44625,66457,1011392,43,0,3902,421,376
+provinsi,75,Gorontalo,gelombang_abrasi,6,1233337,9048,2960,707,36369,0,0,0,0,0
+provinsi,75,Gorontalo,rob,6,1233337,,,,,0,0,0,0,0
+provinsi,75,Gorontalo,kekeringan,6,1233337,56933,23615,1102092,1198765,30,0,104238,0,0
+provinsi,75,Gorontalo,karhutla,6,1233337,,,,,9,0,0,0,0
+provinsi,76,Sulawesi Barat,banjir,6,1510610,581934,91941,99492,1035434,152.5,59,144767,22714,9168
+provinsi,76,Sulawesi Barat,banjir_bandang,6,1510610,167200,43496,20640,181924,2,0,8854,29,100
+provinsi,76,Sulawesi Barat,longsor,6,1510610,885109,803405,435615,569197,53,20,14870,558,590
+provinsi,76,Sulawesi Barat,banjir_longsor,6,1510610,,,,,15,2,28274,1631,99
+provinsi,76,Sulawesi Barat,cuaca_ekstrem,6,1510610,,68518,127848,1680205,82,2,1122,486,4305
+provinsi,76,Sulawesi Barat,gelombang_abrasi,6,1510610,0,1239,933,88370,12,0,823,532,115
+provinsi,76,Sulawesi Barat,rob,6,1510610,,,,,2.5,0,1506,0,36
+provinsi,76,Sulawesi Barat,kekeringan,6,1510610,0,592,1488793,2870397,10,0,92553,0,0
+provinsi,76,Sulawesi Barat,karhutla,6,1510610,,,,,26,0,400,0,0
+provinsi,81,Maluku,banjir,11,1958501,418107,212675,271002,333176,175,66,61488,36162,3069
+provinsi,81,Maluku,banjir_bandang,11,1958501,168799,99153,41020,72248,1,0,450,0,0
+provinsi,81,Maluku,longsor,11,1958501,951669,1263255,1219158,419432,90,77,5365,491,1189
+provinsi,81,Maluku,banjir_longsor,11,1958501,,,,,20,7,18884,198,227
+provinsi,81,Maluku,cuaca_ekstrem,11,1958501,,169009,434950,1580323,90,7,2400,801,1427
+provinsi,81,Maluku,gelombang_abrasi,11,1958501,24694,36720,13902,430226,31,4,3878,1234,600
+provinsi,81,Maluku,rob,11,1958501,,,,,4,0,14572,0,0
+provinsi,81,Maluku,kekeringan,11,1958501,227216,500410,4190993,1875506,8,0,34126,0,0
+provinsi,81,Maluku,karhutla,11,1958501,,,,,40,0,143,0,0
+provinsi,82,Maluku Utara,banjir,10,1356755,168654,94603,101774,266171,289,60,129124,72912,1731
+provinsi,82,Maluku Utara,banjir_bandang,10,1356755,285449,88745,32844,102018,1.5,0,280,0,0
+provinsi,82,Maluku Utara,longsor,10,1356755,807855,699685,1544309,189643,37,7,1882,5307,243
+provinsi,82,Maluku Utara,banjir_longsor,10,1356755,,,,,10.5,1,9590,1539,68
+provinsi,82,Maluku Utara,cuaca_ekstrem,10,1356755,,77910,230068,1113111,87,2,8486,1577,1487
+provinsi,82,Maluku Utara,gelombang_abrasi,10,1356755,1906,10783,37355,313385,24,0,4955,650,104
+provinsi,82,Maluku Utara,rob,10,1356755,,,,,8,0,1227,1943,65
+provinsi,82,Maluku Utara,kekeringan,10,1356755,187416,533745,2664505,1315732,1,0,835,0,0
+provinsi,82,Maluku Utara,karhutla,10,1356755,,,,,19,2,0,0,0
+provinsi,91,Papua,banjir,9,1072358,484636,854417,926782,298745,100,224,201352,20515,2661
+provinsi,91,Papua,banjir_bandang,9,1072358,130010,111647,54769,79830,0,0,0,0,0
+provinsi,91,Papua,longsor,9,1072358,874036,2878994,843463,227764,25,26,825,206,39
+provinsi,91,Papua,banjir_longsor,9,1072358,,,,,3,8,28608,521,1529
+provinsi,91,Papua,cuaca_ekstrem,9,1072358,,221863,975001,629436,13,2,221,463,147
+provinsi,91,Papua,gelombang_abrasi,9,1072358,0,3928,5156,84858,17,0,1116,3923,960
+provinsi,91,Papua,rob,9,1072358,,,,,7,0,400,2875,137
+provinsi,91,Papua,kekeringan,9,1072358,740261,4706364,3128275,943119,0,0,0,0,0
+provinsi,91,Papua,karhutla,9,1072358,,,,,0,0,0,0,0
+provinsi,92,Papua Barat,banjir,7,574213,146622,471636,364480,116761,64,319,25493,14083,1607
+provinsi,92,Papua Barat,banjir_bandang,7,574213,57921,94649,38080,36780,0,0,0,0,0
+provinsi,92,Papua Barat,longsor,7,574213,496636,2424166,248896,78063,6,4,17,1080,25
+provinsi,92,Papua Barat,banjir_longsor,7,574213,,,,,4,0,3384,0,27
+provinsi,92,Papua Barat,cuaca_ekstrem,7,574213,,124570,393533,391697,6,0,610,40,137
+provinsi,92,Papua Barat,gelombang_abrasi,7,574213,0,929,3413,43920,3,0,564,110,1
+provinsi,92,Papua Barat,rob,7,574213,,,,,1,0,75,0,0
+provinsi,92,Papua Barat,kekeringan,7,574213,346973,1813196,3168270,463371,0,0,0,0,0
+provinsi,92,Papua Barat,karhutla,7,574213,,,,,12,0,367,0,0
+provinsi,93,Papua Selatan,banjir,4,548594,500048,3881032,3226615,386180,6,0,5327,312,842
+provinsi,93,Papua Selatan,banjir_bandang,4,548594,2498,22181,10743,2937,0,0,0,0,0
+provinsi,93,Papua Selatan,longsor,4,548594,3187,99398,86404,1036,0,0,0,0,0
+provinsi,93,Papua Selatan,banjir_longsor,4,548594,,,,,0,0,0,0,0
+provinsi,93,Papua Selatan,cuaca_ekstrem,4,548594,,4392370,2039438,471660,0,0,0,0,0
+provinsi,93,Papua Selatan,gelombang_abrasi,4,548594,0,3411,2732,9226,2,0,795,357,7
+provinsi,93,Papua Selatan,rob,4,548594,,,,,1,0,0,450,0
+provinsi,93,Papua Selatan,kekeringan,4,548594,23837,1767514,10960555,510721,1,0,0,0,0
+provinsi,93,Papua Selatan,karhutla,4,548594,,,,,5,0,0,0,0
+provinsi,94,Papua Tengah,banjir,8,1485046,516119,494396,567284,386950,27,30,20207,11846,556
+provinsi,94,Papua Tengah,banjir_bandang,8,1485046,136713,100844,46677,122625,1,0,1055,780,11
+provinsi,94,Papua Tengah,longsor,8,1485046,1150782,3063897,629777,576071,11,48,0,90,16
+provinsi,94,Papua Tengah,banjir_longsor,8,1485046,,,,,0,0,0,0,0
+provinsi,94,Papua Tengah,cuaca_ekstrem,8,1485046,,550147,804040,629902,5,0,1263,0,227
+provinsi,94,Papua Tengah,gelombang_abrasi,8,1485046,0,1051,2958,15290,0,0,0,0,0
+provinsi,94,Papua Tengah,rob,8,1485046,,,,,0,0,0,0,0
+provinsi,94,Papua Tengah,kekeringan,8,1485046,0,208,6101010,1291876,2,6,70744,0,0
+provinsi,94,Papua Tengah,karhutla,8,1485046,,,,,3,0,20,0,4
+provinsi,95,Papua Pegunungan,banjir,8,1446708,95543,168884,188856,116092,16,51,200860,6701,555
+provinsi,95,Papua Pegunungan,banjir_bandang,8,1446708,123749,74138,32036,107207,0,0,0,0,0
+provinsi,95,Papua Pegunungan,longsor,8,1446708,1231623,3877499,304857,1122428,10,7,10428,9957,3331
+provinsi,95,Papua Pegunungan,banjir_longsor,8,1446708,,,,,2,0,4853,0,145
+provinsi,95,Papua Pegunungan,cuaca_ekstrem,8,1446708,,126001,229224,249099,1,0,0,0,3
+provinsi,95,Papua Pegunungan,gelombang_abrasi,8,1446708,0,0,0,0,0,0,0,0,0
+provinsi,95,Papua Pegunungan,rob,8,1446708,,,,,0,0,0,0,0
+provinsi,95,Papua Pegunungan,kekeringan,8,1446708,328281,2293365,2946314,1444533,2,0,6080,0,0
+provinsi,95,Papua Pegunungan,karhutla,8,1446708,,,,,1,0,0,0,5
+provinsi,96,Papua Barat Daya,banjir,6,619495,346330,347742,316155,322907,26,0,19692,20,116
+provinsi,96,Papua Barat Daya,banjir_bandang,6,619495,110163,76513,32312,58216,0,0,0,0,0
+provinsi,96,Papua Barat Daya,longsor,6,619495,448102,1833198,191544,81409,5,1,95,44,17
+provinsi,96,Papua Barat Daya,banjir_longsor,6,619495,,,,,4,12,12079,4084,468
+provinsi,96,Papua Barat Daya,cuaca_ekstrem,6,619495,,199349,356048,491158,6,1,130,0,9
+provinsi,96,Papua Barat Daya,gelombang_abrasi,6,619495,0,3938,8671,51159,0,0,0,0,0
+provinsi,96,Papua Barat Daya,rob,6,619495,,,,,1,0,75,38,12
+provinsi,96,Papua Barat Daya,kekeringan,6,619495,34780,1383149,2498899,597943,2,0,3687,0,0
+provinsi,96,Papua Barat Daya,karhutla,6,619495,,,,,21,1,261,0,1

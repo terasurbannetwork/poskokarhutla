@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+71 D.I. Langsep 11
+72 D.I. Leces 12
+73 D.I. Legung 29
+74 D.I. Lembano 3
+75 D.I. Loji 5
+76 D.I. Loteng 23
+77 D.I. Macan 29
+78 D.I. Macan 20
+79 D.I. Macan 3
+80 D.I. Makam 22
+81 D.I. Maleng 4
+82 D.I. Manteng 1
+83 D.I. Masegit 8
+84 D.I. Motor 27
+85 D.I. Mulje 140
+86 D.I. Mumbul 27
+87 D.I. Nangka 11
+88 D.I. Nogosromo 497
+89 D.I. Palangan 222
+90 D.I. Palombo 5
+91 D.I. Pancoran 1
+92 D.I. Pao 14
+93 D.I. Pao 9
+94 D.I. Pao 1
+95 D.I. Paras 17
+96 D.I. Patemon 25
+97 D.I. Patemon 23
+98 D.I. Penanggungan 2
+99 D.I. Penjalinan A 26
+100 D.I. Penjalinan B 21
+101 D.I. Plalangan 3
+102 D.I. Posang 16
+103 D.I. Pregin A 52
+104 D.I. Pregin B 145
+105 D.I. Ra'as 13
+106 D.I. Rantai 22
+107 D.I. Sahar 11
+108 D.I. Saipa 10
+109 D.I. Sapari-Macan 160
+110 D.I. Sbr. Arjuno 11
+111 D.I. Sbr. Asem 29
+112 D.I. Sbr. Baru 8
+113 D.I. Sbr. Baru 1
+114 D.I. Sbr. Batu 6
+115 D.I. Sbr. Bendo 1
+116 D.I. Sbr. Benduman 9
+117 D.I. Sbr. Bringin 7
+118 D.I. Sbr. Bringin 3
+119 D.I. Sbr. Bringin 1
+120 D.I. Sbr. Burung 29
+121 D.I. Sbr. Caluk 11
+122 D.I. Sbr. Daleman 3
+123 D.I. Sbr. Dawuhan 13
+124 D.I. Sbr. Dulla 13
+125 D.I. Sbr. Dunung 59
+126 D.I. Sbr. Eden 5
+127 D.I. Sbr. Giantang 15
+128 D.I. Sbr. Glantang 6
+129 D.I. Sbr. Klompang 18
+130 D.I. Sbr. Kolpoh 42
+131 D.I. Sbr. Kolpoh 12
+#KANAN
+362
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+132 D.I. Sbr. Kolpoh 3
+133 D.I. Sbr. Konyet 9
+134 D.I. Sbr. Krangkeng 45
+135 D.I. Sbr. Lerek 2
+136 D.I. Sbr. Moya 19
+137 D.I. Sbr. Nam-nam 11
+138 D.I. Sbr. Pakel 5
+139 D.I. Sbr. Pancoran 20
+140 D.I. Sbr. Pandan 14
+141 D.I. Sbr. Pandan 1
+142 D.I. Sbr. Pareng 20
+143 D.I. Sbr. Pareng 13
+144 D.I. Sbr. Polay 13
+145 D.I. Sbr. Ra'as 1
+146 D.I. Sbr. Sabudin 9
+147 D.I. Sbr. Sageren 4
+148 D.I. Sbr. Sarbu 8
+149 D.I. Sbr. Sawiyah 2
+150 D.I. Sbr. Sira 11
+151 D.I. Sbr. Suani 5
+152 D.I. Sbr. Suri 5
+153 D.I. Sbr. Taman 45
+154 D.I. Sbr. Taman 6
+155 D.I. Sbr. Taman B 4
+156 D.I. Sbr. Taman Kursi 14
+157 D.I. Sbr. Teles 69
+158 D.I. Sbr. Tengah 6
+159 D.I. Sbr. Tmn. Burung 9
+160 D.I. Sbr. Waru 1
+161 D.I. Sbr. Wunut 84
+162 D.I. Sbr. Wunut 1
+163 D.I. Sekarputih 189
+164 D.I. Sekolahan 14
+165 D.I. Sengon 28
+166 D.I. Setimbo 203
+167 D.I. Sigepper 27
+168 D.I. Sokon 16
+169 D.I. Sokon 1
+170 D.I. Suren 3
+171 D.I. Suren 2
+172 D.I. Taker 10
+173 D.I. Taman A 1
+174 D.I. Taman Kursi 14
+175 D.I. Tambak Ukir-Siguwo 115
+176 D.I. Tanah Merah A 2
+177 D.I. Tanah Merah B 1
+178 D.I. Tareta 6
+179 D.I. Tenda 12
+180 D.I. Tobba 10
+181 D.I. Tunjang 414
+182 D.I. Wangkal A 18
+183 D.I. Wangkal B 31
+184 D.I. Wonoayu 16
+185 D.I. Wr. Anom 71
+186 D.I. Dawuhan-Cempaluk 372
+187 D.I. Bajulmati 308
+188 D.I. D. Tokelan 144
+189 D.I. Legung 110
+190 D.I. Manggar 104
+191 D.I. Gumbolo 98
+192 D.I. Sumber Pakem 96

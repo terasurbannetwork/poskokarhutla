@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+31 D.I. Brati 246
+32 D.I. Bubar 12
+33 D.I. Bugel 13
+34 D.I. Cabean 862
+35 D.I. Cangkring 60
+36 D.I. Cangkringan 45
+37 D.I. Cengkehan 42
+38 D.I. Cengklik 35
+39 D.I. Cepit 14
+40 D.I. Cikal 130
+41 D.I. Cili 16
+42 D.I. Cumpleng 31
+43 D.I. Demplo 13
+44 D.I. Dlingo 55
+45 D.I. Dongkol 32
+46 D.I. Dongkolan 19
+47 D.I. Doriyo 27
+48 D.I. Dungbuyut 19
+49 D.I. Dungdowo 40
+50 D.I. Dunggudel 64
+51 D.I. Dungguwosono 70
+52 D.I. Dungjangan 50
+53 D.I. Dungkurungan 100
+54 D.I. Dungsono 60
+55 D.I. Dungwuluh 59
+56 D.I. Gabus 308
+57 D.I. Gajah Obang 20
+58 D.I. Gandu 73
+59 D.I. Gandu 118
+60 D.I. Gayam 16
+61 D.I. Gedang 18
+62 D.I. Gempyong 14
+63 D.I. Gendol 240
+64 D.I. Gentong 12
+65 D.I. Glintiran 479
+66 D.I. Grasak 165
+67 D.I. Grasak 52
+68 D.I. Grogolan Kidul 17
+69 D.I. Grojogan 22
+70 D.I. Grumbulasu 10
+71 D.I. Guwo 20
+72 D.I. Guwolowo 110
+73 D.I. Husup 16
+74 D.I. Ingas 10
+75 D.I. Jabangbayi 31
+76 D.I. Jabrang | 37
+77 D.I. Jangkrikan 96
+78 D.I. Jaten 16
+79 D.I. Jati 16
+80 D.I. Jatinom 10
+81 D.I. Jerak 85
+82 D.I. Jerak II 57
+83 D.I. Jering 12
+84 D.I. Jeruk 226
+85 D.I. Jingkrung 32
+86 D.I. Jogan 400
+87 D.I. Joho 13
+88 D.I. Jokotuwo 83
+89 D.I. Jrabang II 13
+90 D.I. Jurangbengkung 51
+91 D.I. Jurug 15
+#KANAN
+254
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+92 D.I. Kaligawe 75
+93 D.I. Kampung 13
+94 D.I. Karangan 15
+95 D.I. Karanganyar 16
+96 D.I. Karangjati 30
+97 D.I. Karangwinong 90
+98 D.I. Kebonturi 50
+99 D.I. Kebowan 97
+100 D.I. Kedawung A 15
+101 D.I. Keden 462
+102 D.I. Kedondong 31
+103 D.I. Kedungbulus 15
+104 D.I. Kedungkere 10
+105 D.I. Kedungliwet 19
+106 D.I. Kedungtelo 136
+107 D.I. Kemadoh 33
+108 D.I. Kening 11
+109 D.I. Ketip 34
+110 D.I. Kinto 31
+111 D.I. Kisik'Gebang 12
+112 D.I. Klebut 22
+113 D.I. Klepon 18
+114 D.I. Klopo 10
+115 D.I. Klutuk 46
+116 D.I. Kluweh 60
+117 D.I. Koluro 10
+118 D.I. Kontrak 413
+119 D.I. Koripan 239
+120 D.I. Kowak 10
+121 D.I. Krasak 31
+122 D.I. Kretek 39
+123 D.I. Kudo 15
+124 D.I. Kuro 18
+125 D.I. Kuwang 67
+126 D.I. Kuweni 32
+127 D.I. Kuweni 19
+128 D.I. Landoh 51
+129 D.I. Larangan 80
+130 D.I. Lendoh 50
+131 D.I. Lenggi 521
+132 D.I. MA. Gayam 31
+133 D.I. MA. Pintahan 16
+134 D.I. MA. Plingiran 16
+135 D.I. Mangin 28
+136 D.I. Maridin 18
+137 D.I. Mintorahayu 172
+138 D.I. Modo 14
+139 D.I. Narukan 17
+140 D.I. Ngasemgempol 15
+141 D.I. Ngasemtempel 17
+142 D.I. Ngemplak 76
+143 D.I. Ngepreh 10
+144 D.I. Ngesong 20
+145 D.I. Ngipik 16
+146 D.I. Ngobak 15
+147 D.I. Ngoren 12
+148 D.I. Ngrayunan 30
+149 D.I. Ngrejeng 10
+150 D.I. Noyopupon 21
+151 D.I. Ori 17
+152 D.I. Pakel 32

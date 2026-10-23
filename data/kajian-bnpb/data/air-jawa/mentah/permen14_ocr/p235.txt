@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+109 D.I. Dadap 10
+110 D.I. Dadapan 9
+111 D.I. Dadapan 20
+112 D.I. Dawuhan 40
+113 D.I. Dawung 4
+114 D.I. Dawung 2
+115 D.I. Dawung 6
+116 D.I. Dawung 7
+117 D.I. Dawung 12
+118 D.I. Dawung 2
+119 D.I. Dawung 4
+120 D.I. Dengkeng 60
+121 D.I. Depok 2
+122 D.I. Dlimas 6
+123 D.I. Dlingseng 28
+124 D.I. Dluwang 16
+125 D.I. Dmbi Kerto 7
+126 D.I. Donomerto 28
+127 D.I. Doplang 10
+128 D.I. Doplang 10
+129 D.I. Dowo 9
+130 D.I. Dukuh 1
+131 D.I. Dung Jambe 4
+132 D.I. Dung Jambe 7
+133 D.I. Duren a 4
+134 D.I. Duren b 6
+135 D.I. Duwet 2
+136 D.I. Gagak 6
+137 D.I. Gajahan 6
+138 D.I. Gajahan 16
+139 D.I. Galbalak 24
+140 D.I. Gamblok 18
+141 D.I. Gamprit 7
+142 D.I. Gandu 11
+143 D.I. Gandu a 2
+144 D.I. Gandu b 2
+145 D.I. Gandu c 5
+146 D.I. Garung 16
+147 D.I. Gatak 16
+148 D.I. Gayam 3
+149 D.I. Gebang 5
+150 D.I. Gebangan 42
+151 D.I. Geblok 24
+152 D.I. Gedangan 14
+153 D.I. Gede 14
+154 D.I. Gede 15
+155 D.I. Gedengan 7
+156 D.I. Gedong Lengok 9
+157 D.I. Gedong Longok 9
+158 D.I. Gedong a 32
+159 D.I. Gedong b 2
+160 D.I. Gembenggeng 27
+161 D.I. Gembong 2
+162 D.I. Gembong 1
+163 D.I. Gembongan 5
+164 D.I. Gempor 40
+165 D.I. Gendring 42
+166 D.I. Gendring Ka 17
+167 D.I. Gendring Ki 1
+168 D.I. Geni 4
+169 D.I. Gerong 28
+#KANAN
+935 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+170 D.I. Gesing 8
+171 D.I. Gesing 4
+172 D.I. Getas 8
+173 D.I. Getas 11
+174 D.I. Getas Blawong 84
+175 D.I. Gintung 5
+176 D.I. Gintung 17
+177 D.I. Gintung 2
+178 D.I. Gintungan 12
+179 D.I. Glagah 15
+180 D.I. Glagah 10
+181 D.I. Glagah 2
+182 D.I. Glagah a 5
+183 D.I. Glagah b 2
+184 D.I. Glagah c 3
+185 D.I. Glompong 2
+186 D.I. Glugu 5
+187 D.I. Glutuk 1
+188 D.I. Glutuk 2
+189 D.I. Godang 2
+190 D.I. Gogor 34
+191 D.I. Golomat 16
+192 D.I. Gondang 2
+193 D.I. Gondoriyo 14
+194 D.I. Goro Gamping 9
+195 D.I. Gorok 10
+196 D.I. Gowah 20
+197 D.I. Gruyung 39
+198 D.I. Guci 16
+199 D.I. Gumawang 14
+200 D.I. Guntur 32
+201 D.I. Gunung 20
+202 D.I. Jajar 7
+203 D.I. Jamban 11
+204 D.I. Jamban 26
+205 D.I. Jamban 5
+206 D.I. Jamban 19
+207 D.I. Jamban 9
+208 D.I. Jamban 7
+209 D.I. Jamban 7
+210 D.I. Jamban a 6
+211 D.I. Jamban b 5
+212 D.I. Jamban.b 9
+213 D.I. Jamban/Kerto 10
+214 D.I. Jamban/Pakis 10
+215 D.I. Jamban/Peron 18
+216 D.I. Jamban/Medono 36
+217 D.I. Jamban/Medono 21
+218 D.I. Jamban/Rejo 16
+219 D.I. Jamban/Rejo 11
+220 D.I. Jambe 2
+221 D.I. Jambea 1
+222 D.I. Jambeb 3
+223 D.I. Jambu 17
+224 D.I. Jambu 2
+225 D.I. Jangan 4
+226 D.I. Janggan 10
+227 D.I. Janggan 2
+228 D.I. Janjang 42
+229 D.I. Jaten 12
+230 D.I. Jati 20

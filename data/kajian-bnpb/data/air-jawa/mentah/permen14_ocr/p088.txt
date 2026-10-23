@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+39 D.I. Bulu Mario 200
+40 D.I. Bulu Soma 120
+41 D.I. Bunga Bondar IX 151
+42 D.I. Bunga Bondar X 71
+43 D.I. Garoga 125
+44 D.I. Garonggang 50
+45 D.I. Gonting Pege 125
+46 D.I. Gunung Sari 60
+47 D.I. Gunung Tua 75
+48 D.I. Gunung Tua Baringin 76
+49 D.I. Hapesong 90
+50 D.I. Harambania 50
+51 D.I. Hasahatan 200
+52 D.I. Hasahatan Situmba 100
+53 D.I. Hasang Marsada 75
+54 D.I. Huraba Marancar 100
+55 D.I. Huraba Timur 100
+56 D.I. Huta Baru 80
+57 D.I. Huta Ginjang 50
+58 D.I. Huta Godang 200
+59 D.I. Huta Padang 100
+60 D.I. Huta Padang 100
+61 D.I. Hutabaru Tapus 145
+62 D.I. Jambur Batu Paran Julu 100
+63 D.I. Janji Manaon 100
+64 D.I. Janji Nauli 75
+65 D.I. Kantin 45
+66 D.I. Lobu Jelok 80
+67 D.I. Lobu Sipanae 180
+68 D.I. Lubuk Kerek 50
+69 D.I. Marancar Julu 700
+70 D.I. Pagaran Ri 70
+71 D.I. Panggulangan 70
+72 D.I. Paran Padang 75
+73 D.I. Paran Pisang 45
+74 D.I. Pardomuan 100
+75 D.I. Pargarutan Julu 100
+76 D.I. Paringgonan 100
+77 D.I. Pasir Ampolu 100
+78 D.I. Poken Arba 150
+79 D.I. Poldung 85
+80 D.I. Roncitan II/Siantar Tua 75
+81 D.I. Rumah Potong 152
+82 D.I. Saba Gonting/Hutasuhut 65
+83 D.I. Saba Goti/Saba Poldung 200
+84 D.I. Saba Jae 150
+85 D.I. Saba Rodang 74
+86 D.I. Saba Siangus 100
+87 D.I. Saba Tolang 80
+88 D.I. Sabungan/Aek Kuayan 100
+89 D.I. Siagian 100
+90 D.I. Sialogo 70
+91 D.I. Sibadoar 80
+92 D.I. Sibangkua 175
+93 D.I. Sibiobio Jae 80
+94 D.I. Sibiobio Julu 150
+95 D.I. Sibongbong Napa 209
+96 D.I. Sigiring-giring 40
+97 D.I. Sigolang 100
+98 D.I. Sigordang 80
+99 D.I. Sihopur 100
+#KANAN
+38
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+100 D.I. Sihuik-huik 65
+101 D.I. Sihulambu 100
+102 D.I. Sijjungkang 150
+103 D.I. Silinggom-linggom 220
+104 D.I. Siloung 80
+105 D.I. Simanosor Julu 150
+106 D.I. Simataniari 250
+107 D.I. Simatohir 70
+108 D.I. Simatorkis Sisoma 70
+109 D.I. Sipenggeng 75
+110 D.I. Sipogu 100
+111 D.I. Sitabotabo 100
+112 D.I. Sitandiang 200
+113 D.I. Sitanggiling 100
+114 D.I. Sitinjak 103
+115 D.I. Sugi Julu 100
+116 D.I. Suka Maju/Sipette 80
+117 D.I. Sumuran 100
+118 D.I. Tabusira 200
+119 D.I. Tabusira Komplek 850
+120 D.I. Tahalak Nangka 75
+121 D.I. Tandosan 75
+122 D.I. Tanjung Rompa 100
+123 D.I. Tapus Dolok 125
+124 D.I. Tobotan 75
+125 D.I. Tolang 130
+126 D.I. Tolang Aek Bilah 75
+v Kab. Tapanuli Tenaah 49 12.853
+1 D.I. Binjohara 195
+2 D.I. Horsik 25
+3 D.I. Hutaimbaru 295
+4 D.I. Hutanabolon 110
+5 D.I. Mandailing 350
+6 D.I. Manduamas 55
+7 D.I. Parlabian 62
+8 D.I. Parmaldoan 427
+9 D.I. Raso 190
+10 D.I. Rogas 480
+11 D.I. Saragi 225
+12 D.I. Sibintang 220
+13 D.I. Sibuluan 50
+14 D.I. Sigodung 370
+15 D.I. Sihapas 108
+16 D.I. Sihiong 255
+17 D.I. Sikoling-koling 543
+18 D.I. Silaga-laga 300
+19 D.I. Silali 67
+20 D.I. Simanosor 425
+21 D.I. Simulbas 270
+22 D.I. Sipalis 374
+23 D.I. Sipaubat 100
+24 D.I. Sipodang 110
+25 D.I. Sitakkurak 736
+26 D.I. Sitandiang 725
+27 D.I. Sitolbak 200
+28 D.I. Sorkam Kanan 200
+29 D.I. Sorkam Kiri 179
+30 D.I. Tolang 155
+31 D.I. Tumba 236
+32 D.I. Uratan 230

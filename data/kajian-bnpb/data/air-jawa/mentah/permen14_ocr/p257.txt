@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+68 D.I. Jogoloyo 70
+69 D.I. Jogrek 10
+70 D.I. Jugur 35
+71 D.I. Jukung 12
+72 D.I. Jumbleng 20
+73 D.I. Jurang 17
+74 D.I. Kajen 262
+75 D.I. Kajen Kidul I 5
+76 D.I. Kajen Kidul II 10
+77 D.I. Kali Genteng 7
+78 D.I. Kaliagung 40
+79 D.I. Kalijambu 11
+80 D.I. Kalijoyo 216
+81 D.I. Kalilo 20
+82 D.I. Kalimacan 21
+83 D.I. Kalirejo 16
+84 D.I. Kalisarak 45
+85 D.I. Kalisat 22
+86 D.I. Kaliwareng 58
+87 D.I. Kaliwinih 27
+88 D.I. Kaliwisnu 24
+89 D.I. Kancilan 21
+90 D.I. Karajan 40
+91 D.I. Karangkancil 25
+92 D.I. Karangmoncol 52
+93 D.I. Karangwetan 40
+94 D.I. Kasri 45
+95 D.I. Kawung 34
+96 D.I. Kd. Gondang 35
+97 D.I. Kecapi 23
+98 D.I. Kedunggebluk 9
+99 D.I. Kedungkebo 15
+100 D.I. Kedungkondang 25
+101 D.I. Kejomas 50
+102 D.I. Kenongo 30
+103 D.I. Kepoh/Sicepuk 23
+104 D.I. Klampok 28
+105 D.I. Klepu 7
+106 D.I. Klesem 24
+107 D.I. Kluntung | 8
+108 D.I. Kluntung II 21
+109 D.I. Kluwih 27
+110 D.I. Kramat 51
+111 D.I. Krandegan 40
+112 D.I. Kranji 30
+113 D.I. Krawang 35
+114 D.I. Krobokan 14
+115 D.I. Kuasen 21
+116 D.I. Kudu 45
+117 D.I. Kumenyep 32
+118 D.I. Kupang 33
+119 D.I. Kutonowo 12
+120 D.I. Kuwel 27
+121 D.I. Lateng 10
+122 D.I. Legokkalong 35
+123 D.I. Lengsar 61
+124 D.I. Longsong 50
+125 D.I. Lumeneng 57
+126 D.I. MA. Poh 23
+127 D.I. Manggis 13
+128 D.I. Maron 35
+#KANAN
+07 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+129 D.I. Mendolo 10
+130 D.I. Mindi/Sawangan 10
+131 D.I. Muncar 38
+132 D.I. Munggangasem 15
+133 D.I. Ngalian 65
+134 D.I. Ngampel 10
+135 D.I. Ngasem 25
+136 D.I. Ngebrekan 37
+137 D.I. Nolo 65
+138 D.I. Notogiwang 34
+139 D.I. Onar 10
+140 D.I. Paingan II 20
+141 D.I. Paninggaran 57
+142 D.I. Panjulan 10
+143 D.I. Parakan 19
+144 D.I. Pesut 15
+145 D.I. Petenggang 20
+146 D.I. Picis 48
+147 D.I. Pitut 9
+148 D.I. Ploso 25
+149 D.I. Plumbon 39
+150 D.I. Pododadi 26
+151 D.I. Pondok 20
+152 D.I. Pondok II 15
+153 D.I. Pucung 40
+154 D.I. Pucung Layangan 15
+155 D.I. Pundutan 11
+156 D.I. Pungangan 35
+157 D.I. Punggukan 20
+158 D.I. Purbo 18
+159 D.I. Rancah 20
+160 D.I. Rancah 13
+161 D.I. Rancah | 50
+162 D.I. Randu 3
+163 D.I. Rogoselo 333
+164 D.I. Rowobulus 22
+165 D.I. Rowoninis 47
+166 D.I. Rowoputih 30
+167 D.I. Rowotlogo 26
+168 D.I. Sabrang 105
+169 D.I. Sabrangblabar 27
+170 D.I. Sadang 10
+171 D.I. Salit 23
+172 D.I. Sangkanjoyo 87
+173 D.I. Sawah Tengah 35
+174 D.I. Sedo 12
+175 D.I. Sengare 72
+176 D.I. Sepeh 90
+177 D.I. Seprih 8
+178 D.I. Seruni 3
+179 D.I. Sibatur 9
+180 D.I. Sibedil 17
+181 D.I. Sibeluk 40
+182 D.I. Sibendo 26
+183 D.I. Siduda 30
+184 D.I. Sielo 31
+185 D.I. Sigalung 36
+186 D.I. Siglagah 18
+187 D.I. Sigolok 17
+188 D.I. Sijaran 9
+189 D.I. Sijati 40

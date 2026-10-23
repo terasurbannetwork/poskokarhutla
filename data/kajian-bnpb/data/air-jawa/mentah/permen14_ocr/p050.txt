@@ -1,0 +1,67 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 50
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+n Kab. Sumba Barat Daya
+1 D.I. Mataliku 1.089
+2 D.I. Waekeloh Sawah 2.500
+o Kab. Sumba Timur
+1 D.I. Mangili 2.666
+2 D.I. Mataiayang 1.579
+3 D.I. Melolo 1.215
+p Kab. Timor Tengah Selatan
+1 D.I. Oebelo 1.089
+g Kab. Timor Tengah Utara
+1 D.I. Ponu 1.430
+XVII PROVINSI KALIMANTAN BARAT 5 6.369
+a Kab. Bengkayang
+1 D.I. Madi 1.120
+2 D.I. Sanggau Ledo 1.552
+b Kab. Melawai
+1 D.I. Kenyikap 1.012
+c Kab. Sanggau
+1 D.I. Merowi 1.660
+d Kab. Sekadau
+1 D.I. Rawak Hulu 1.025
+XIX PROVINSI KALIMANTAN TENGAH 2 3.000
+a Kab. Barito Timur
+1 D.I. Tampa 2.000
+b Kab. Kotawaringin Barat
+1 D.I. Kumpai Batu Atas 1.000
+XX PROVINSI KALIMANTAN SELATAN 6 8.170
+a Kab. Hulu Sungai Tengah
+1 D.I. Haruyan Dayak 1.859
+2 D.I. Intangan 1.611
+3 D.I. Kahakan 1.077
+4 D.I. Mangunang 1.165
+b Kab. Tapin
+1 D.I. Belanti 1.050
+2 D.I. Binuang 1.408
+XXI PROVINSI KALIMANTAN TIMUR 8 12.060
+a Kab. Berau
+1 D.I. Biatau 1.779
+2 D.I. Labanan 1.100
+3 D.I. Merancang 1.200
+4 D.I. Semurut 1.089
+b Kab. Kutai Kartanegara
+1 D.I. Marangkayu 1.507
+2 D.I. Sungai Buluh 1.098
+c Kab. Kutai Timur
+1 D.I. Kali Orang 1.300
+2 D.I. Selangkau 2.987
+XXII PROVINSI SULAWESI UTARA 11 17.533
+a Kab. Bolaang Mogondow
+1 D.I. Ayong Bolangat Maelang 2.293
+2 D.I. Lolak, Pinogaluman, Monanow 2.040
+3 D.I. Pusian Molong 1171
+b Kab. Bolaang Mongondow Timur
+1 D.I. Tombolikat Sita 1.076
+c Kab. Bolaang Mongondow Utara
+1 D.I. Buko Tuntung 1.166
+d Kab. Minahasa
+1 D.I. Noongan 1.286
+e Kab. Minahasa Selatan
+1 D.I. Ranoyapo 2.059
+f Kab. Minahasa Tenggara
+1 D.I. Lahendong 1.059
+2 D.I. Ranombolay 1.157

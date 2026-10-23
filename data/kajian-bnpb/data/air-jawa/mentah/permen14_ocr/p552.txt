@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 559
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+135 D.LA.T. Tekad Makmur-Oesao DW - 036 10
+136 D.LA.T. Tetkolo-Pukdale DW - 037 10
+137 D.LA.T. Nggalana A-Oesao DW - 038 10
+138 D.LA.T. Tekad Makmur-Oesao DW - 039 10
+139 D.LA.T. Betamanu I-Oesao DW - 040 17
+140 D.LA.T. Kampung Alo rI-Oesao DW - 041 17
+141 D.LA.T. Tetebudale-Pukdale DW - 042 13
+142 D.LA.T. Tekad Makmur IV-Oesao DW - 043 11
+143 D.LA.T. Betamanu Il-Oesao DW - 044 12
+144 D.LA.T. Kampung Alor I-Oesao DW - 045 10
+145 D.LA.T. Kampung Sendiri-T uatuka DW - 046 11
+146 D.LA.T. Babau DW - 047 16
+147 D.LA.T. Felakdale-Pukdale DW - 048 12
+148 D.LA.T. Kampung Sendiri I-Tuatuka DW - 049 15
+149 D.LA.T. Lolonoah-Oesao DW - 050 15
+150 D.LA.T. Pukdale Tengah DW - 051 15
+151 D.LA.T. Lukman Timur I-Naibonat DW - 052 13
+152 D.LA.T. Lumbung-Naibonat DW - 053 12
+153 D.LA.T. Tekad Atas-Oesao DW - 054 14
+154 D.LA.T. Merdeka-Babau DW - 056 12
+155 D.LA.T. Oesao PLN-Oesao DW - 057 12
+156 D.LA.T. Bipolo DW - 058 12
+157 D.LA.T. Oebelo DW - 059 12
+158 D.ILA.T. Oeboboa DW - 060 12
+159 D.LA.T. Oeboboa DW - 061 12
+160 D.I.A.T. Merdeka DW - 062 12
+161 D.LA.T. Betamanu DW - 063 12
+162 D.LA.T. Merdeka DW - 064 12
+163 D.LA.T. Sumiili DW - 065 12
+164 D.LA.T. Oesao DW - 066 12
+165 D.LA.T. Oesao DW - 067 12
+166 D.LA.T. Oeoh DW - 068 12
+167 D.LA.T. Sumiili DW - 069 12
+168 D.LA.T. Sumiili DW - 070 12
+169 D.LA.T. Pukdale DW - 071 12
+170 D.I.A.T. Naibonat DW - 072 12
+171 D.LA.T. Pukdale DW - 073 12
+172 D.LA.T. Sumiili DW - 074 12
+173 D.LA.T. Sumiili DW - 075 12
+174 D.LA.T. Oebali DW - 076 12
+175 D.LA.T. Tanah Merah DW - 078 12
+176 D.LA.T. Fatuteta DW - 079 12
+177 D.LA.T. Nunkurus DW - 080 12
+178 D.LA.T. Vel Kampung-Nunkurus LIF - 006 2
+179 D.LA.T. Nunkurus Dalam-Nukurus LIF - 007 3
+180 D.LA.T. Tumpah Darah-Nunkurus LIF - 021 3
+181 D.LA.T. Vel Kampung-Nunkurus LIF - 022 2
+182 D.LA.T. Vel Kampung-Nunkurus LIF - 023 1
+183 D.LA.T. Vel Kampung-Nunkurus LIF - 024 3
+184 D.LA.T. Uel Kampung-Nunkurus LIF - 025 2
+185 D.L.A.T. Uel Kampung-Nunkurus LIF - 049 2
+186 D.LA.T. Tumpah Darah-Nunkurus LIF - 160 3
+187 D.LA.T. Tumpah Darah-Nunkurus LIF - 161 4
+188 D.LA.T. Tumpah Darah-Nunkurus LIF - 162 3
+189 D.LA.T. Vel Kampung-Nunkurus LIF - 177 3
+190 D.LA.T. Uel Kampung-Nunkurus LIF - 178 3
+191 D.LA.T. Uel Kampung-Nunkurus LIF - 179 3
+192 D.LA.T. Uel Kampung-Nunkurus LIF - 180 3
+193 D.LA.T. Vel Kampung-Nunkurus LIF - 181 4
+194 D.LA.T. Vel Kampung-Nunkurus LIF - 182 4
+195 D.LA.T. Vel Kampung-Nunkurus LIF - 183 3

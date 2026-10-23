@@ -1,0 +1,98 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 46
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+5 D.I. Cikarang Nguluwung 1.874
+6 D.I. Cimandiri 1.217
+7 D.I. Ciseureuh Cibeureum 1.303
+8 D.I. Parung Bongkong 2.157
+n Kab. Sumedang
+
+1 D.I. Sentig 1.167
+2 D.I. Ujung Jaya 1.603
+o Kab. Tasikmalaya
+
+1 D.I. Biuk 1.140
+2 D.I. Ciramajaya 1.303
+3 D.I. Padawaras 1.260
+
+XII PROVINSI JAWA TENGAH 31 51.894
+
+a Kab. Banyumas
+
+1 D.I. Andongbang Junjungan 1.204
+2 D.I. Banjaran 1.406
+3 D.I. Kedunglimus Arca 1.215
+b Kab. Batang
+
+1 D.I. Kedungdowo Kramat 1176
+c Kab. Boyolali
+
+1 D.I. Waduk Cengklik 1.957
+2 D.I. Waduk Klego 1.353
+d Kab. Brebes
+
+1 D.I. Kemaron 1.026
+e Kab. Cilacap
+
+1 D.I. Cijalu 1.368
+2 D.I. Cileumeuh 1.390
+f Kab. Demak
+
+1 D.I. Guntur 2.036
+2 D.I. Pelayaran Sayung Batu 2.059
+g Kab. Jepara
+
+1 D.I. Bakalan 1.379
+h Kab. Kendal
+
+1 D.I. Sojomerto 1.108
+2 D.I. Kd. Pengilon 2.492
+i Kab. Klaten
+
+1 D.I. Jaban 1191
+2 D.I. Ploso Wareng 1.100
+j Kab. Kudus
+
+1 D.I. Logung 2.805
+k Kab. Magelang
+
+1 D.I. Tangsi 1.448
+| Kab. Pati
+
+1 D.I. Sentul 1.536
+m Kab. Pekalongan
+
+1 D.I. Padurekso 2.388
+2 D.I. Sudikampir 1.521
+3 D.I. Tapak Menjangan 1.330
+n Kab. Pemalang
+
+1 D.I. Mejagong 2.525
+2 D.I. Widodaren 2.617
+o Kab. Purbalingga
+
+1 D.I. Krenceng 1.375
+p Kab. Purworejo
+
+1 D.I. Loning Kragilan 2.532
+g Kab. Rembang
+
+1 D.I. Kedung Sapen 1.590
+r Kab. Sragen
+
+1 D.I. Bapang 2.814
+2 D.I. Bonggo 1.811
+s Kab. Temanggung
+
+1 D.I. Catgawen 1, II, III, IV 1.049
+2 D.I. Galeh 1.093
+
+XIII PROVINSI D.I. YOGYAKARTA 6 9.078
+
+a Kab. Bantul
+
+1 D.I. Blawong 1.077
+2 D.I. Pendowo 1.251
+3 D.I. Pijenan/Kamijoro 2.563

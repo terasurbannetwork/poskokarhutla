@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+80 D.I. Laemaga Anggocci 175
+81 D.I. Lae Maletuk Sibongor 100
+82 D.I. Hutagodung 600
+83 D.I. Hutasaba 60
+84 D.I. Ambalo 112
+85 D.I. Lae Ardan 105
+86 D.I. Sisolpa 650
+87 D.I. Sihabong Habong 100
+88 D.I. Simonggo 100
+89 D.I. Sitinjo 125
+90 D.I. Marbatang 150
+91 D.I. Siduan Bilik 300
+92 D.I. Namo Takal 65
+93 D.I. Uruk Tolong 500
+94 D.I. Sikual Kual, Silali Bulu Gading 600
+95 D.I. Sibaruma, Sibira 156
+96 D.I. Sampe Tua 50
+97 D.I. Aek Arung 60
+98 D.I. Uruk Sakkalan 100
+99 D.I. Aek Sibulbulon 80
+100 D.I. Lae Angkole 50
+101 D.I. Aek Buaton 50
+102 D.I. Napagoring 40
+103 D.I. Torpangulu Balang 52
+104 D.I. Sampuran Sibabo 40
+105 D.I. Lae Sipinggih 75
+106 D.I. Aek Situa Tua 40
+107 D.I. Janji Pusuk 100
+108 D.I. Aek Soling/Huta Napa 50
+109 D.I. Namo Pali 60
+110 D.I. Aek Sitapean/Sosornipoan 225
+111 D.I. Parboli Bolian 100
+112 D.I. Dolok Nauli 60
+113 D.I. Hasang Bonan Dolok 150
+114 D.I. Sibuntuon 110
+115 D.I. Bonan Dolok, Tambok Sigarua 200
+116 D.I. Siburak Dolok 50
+117 D.I. Maranti 116
+118 D.I. Saba Sibatu Batu 140
+119 D.I. Tor Nauli 81
+120 D.I. Bondar Godang 100
+121 D.I. Napa 112
+122 D.I. Tambok Nagodang 116
+123 D.I. Napa Janji/Sim arsik 118
+124 D.I. Tambok Sipon 86
+125 D.I. Saba Pilar Siantarasa 85
+126 D.I. Aek Sipoti 120
+127 D.I. Batunagodang Siatas 100
+128 D.I. Sanggaran II 75
+129 D.I. Sihombu 250
+130 D.I. Labutua Barat 210
+131 D.I. Labu Tolong 150
+132 D.I. Siunong Unong 250
+133 D.I. Parinsoran 300
+134 D.I. Lobu Lobu 450
+135 D.I. Lumban Sonang 350
+f Kab. Karo 124 14.775
+1 D.I. Air Mas 50
+2 D.I. Aji Buhara 10
+3 D.I. Aji Julu 55
+#KANAN
+79 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+4 D.I. Aji Mbelang 30
+5 D.I. Badigulen Bulan Jahe 159
+6 D.I. Bandar Purba 72
+7 D.I. Barung Kersap 80
+8 D.I. Barus Jahe 65
+9 D.I. Beganding 80
+10 D.I. Belinun 140
+11 D.I. Berastepu 857
+12 D.I. Berastepu Tapin 170
+13 D.I. Beringin 45
+14 D.I. Berneh 35
+15 D.I. Biak Nampe Selakkar 20
+16 D.I. Buah Kitik 50
+17 D.I. Bunga Baru 140
+18 D.I. Bunuraya 200
+19 D.I. Dalu Julu 90
+20 D.I. Dokan 25
+21 D.I. Doulu 110
+22 D.I. Galumpang 40
+23 D.I. Garingging 50
+24 D.I. Gelang Teras 30
+25 D.I. Gerat Lok-lok 25
+26 D.I. Gunung Juhar 40
+27 D.I. Gunung Saribu/S. Maju 165
+28 D.I. Gurukinayan 75
+29 D.I. Juhar Tunggal 35
+30 D.I. Juma Padang 85
+31 D.I. Kabantua 45
+32 D.I. Kabung 20
+33 D.I. Kacinambun 15
+34 D.I. Kandibata 100
+35 D.I. Kandibata Kutagerat 294
+36 D.I. Kelumpang 221
+37 D.I. Kubu Simbelang 200
+38 D.I. Kuta Julu 30
+39 D.I. Kuta Kepar 15
+40 D.I. Kuta Male 20
+41 D.I. Kuta Mbaru 200
+42 D.I. Kuta Rayat 55
+43 D.I. Kuta Rayat 100
+44 D.I. Kutambelin 45
+45 D.I. Lau Anak Pakam 60
+46 D.I. Lau Anak Pangkis 45
+47 D.I. Lau Baleng Martelu 300
+48 D.I. Lau Galuh 40
+49 D.I. Lau Kemiri 50
+50 D.I. Lau Mbelin 35
+51 D.I. Lau Melas 110
+52 D.I. Lau Pakam Gali Masuk 150
+53 D.I. Lau Pengulu 180
+54 D.I. Lau Rambung 50
+55 D.I. Lau Solu 760
+56 D.I. Lingga Muda 20
+57 D.I. Mandah 75
+58 D.I. Mandah Sibelangkem 80
+59 D.I. Mardinding 185
+60 D.I. Mbal-Mbal Petarum 100
+61 D.I. Mulawari 50
+62 D.I. Munte 840
+63 D.I. Naga Lingga 90
+64 D.I. Nagara 48

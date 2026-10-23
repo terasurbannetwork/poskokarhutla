@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+374 D.I. Taji 35
+375 D.I. Taman 13
+376 D.I. Tambak romo 25
+377 D.I. Tambur 39
+378 D.I. Tanggar 25
+379 D.I. Tanggul 43
+380 D.I. Tanimulyo 11
+381 D.I. Tapen 15
+382 D.I. Tarso 10
+383 D.I. Tas An 14
+384 D.I. Tawar 16
+385 D.I. Tegiri 25
+386 D.I. Tekmin 15
+387 D.I. Temon 24
+388 D.I. Tempur 135
+389 D.I. Tempuran 13
+390 D.I. Tempuran 23
+391 D.I. Tempuran 10
+392 D.I. Tempuran 17
+393 D.I. Tengger/Setul 25
+394 D.I. Tepus 35
+395 D.I. Timbul 29
+396 D.I. Timpal 11
+397 D.I. Tlaseh 42
+398 D.I. Tohir 14
+399 D.I. Towo 10
+400 D.I. Tringsing 20
+401 D.I. Troso 165
+402 D.I. Tubanan 15
+403 D.I. Tuk Romo 13
+404 D.I. Tukjero 11
+405 D.I. Tukul 20
+406 D.I. Tulaksoro 40
+407 D.I. Tumpeng 43
+408 D.I. Tungkul 27
+409 D.I. Tunjang 30
+410 D.I. Urung-Urung 128
+411 D.I. Wadang 242
+412 D.I. Wagisan 10
+413 D.I. Wakidah 73
+414 D.I. Warto 16
+415 D.I. Waru 56
+416 D.I. Wates 15
+417 D.I. Watu Bluko 10
+418 D.I. Watu Gebyok 24
+419 D.I. Watu Gede 13
+420 D.I. Watu Salang 12
+421 D.I. Wedus 30
+422 D.I. Winong 18
+423 D.I. Winong 10
+424 D.I. Wirosari 50
+425 D.I. Wongso 18
+426 D.I. Wora-Wari 10
+427 D.I. Wuluh 15
+428 D.I. Wungu Sumur 14
+429 D.I. Bajing/Lengkoro 15
+430 D.I. Bakalan Giman 21
+431 D.I. Balem 12
+432 D.I. Balik Kambang 23
+433 D.I. Bantal 20
+434 D.I. Bantri 13
+#KANAN
+226
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+435 D.I. Barus/Dung Barus 44
+436 D.I. Basin 11
+437 D.I. Belik 15
+438 D.I. Belik 25
+439 D.I. Belik 18
+440 D.I. Belik Indah 12
+441 D.I. Bendo 10
+442 D.I. Bendo 36
+443 D.I. Bendo 15
+444 D.I. Bendo 10
+445 D.I. Bendo Sari 14
+446 D.I. Bengkok 10
+447 D.I. Bengkok Geyong 19
+448 D.I. Besole 30
+449 D.I. Blimbing 25
+450 D.I. Blitar 20
+451 D.I. Bodean Gecak 15
+452 D.I. Bogo 12
+453 D.I. Bograk 11
+454 D.I. Bolo 75
+455 D.I. Bongko 33
+456 D.I. Bongkongan 20
+457 D.I. Botohan 10
+458 D.I. Brongkol 35
+459 D.I. Bujel Kisik 30
+460 D.I. Bulu 29
+461 D.I. Bulu 20
+462 D.I. Bungkik 14
+463 D.I. Bungkuning 10
+464 D.I. Buyutan 60
+465 D.I. Cabe 17
+466 D.I. Cabuk 40
+467 D.I. Cambah 17
+468 D.I. Candi 50
+469 D.I. Candi Gong 30
+470 D.I. Cangkring 37
+471 D.I. Cangkring 17
+472 D.I. Cek Dam Kunir 50
+473 D.I. Celong I 10
+474 D.I. Celong II 11
+475 D.I. Ces 20
+476 D.I. Cilo 34
+477 D.I. Cimplung 13
+478 D.I. Congger 11
+479 D.I. Cuk Dawung 45
+480 D.I. Cungkup 40
+481 D.I. Danyangan 12
+482 D.I. Dlubang 15
+483 D.I. Doko 25
+484 D.I. Dongko 32
+485 D.I. Dongkol 12
+486 D.I. Dung Atis 14
+487 D.I. Dung Bengkah 10
+488 D.I. Dung Buyut Kapal 40
+489 D.I. Dung Guwo 17
+490 D.I. Dung Jambe 10
+491 D.I. Dung Jero 25
+492 D.I. Dung Lamping 15
+493 D.I. Dung Laos 14
+494 D.I. Dung Loko 30
+495 D.I. Dung Miri 35

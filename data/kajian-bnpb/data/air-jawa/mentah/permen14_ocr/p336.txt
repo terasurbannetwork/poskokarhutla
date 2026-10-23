@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+283 D.I. Sumber Singosari 71
+284 D.I. Sumber Suko (Kec. Tumpang) 66
+285 D.I. Sumber Suko (Ds. Patokpicis, Blayu) 58
+286 D.I. Sumber Suko (Ds. Sumbersuko) 20
+287 D.I. Sumber Suko A 11
+288 D.I. Sumber Suko B 21
+289 D.I. Sumber Suko Kecil 15
+290 D.I. Sumber Sukolilo 81
+291 D.I. Sumber Tangkil 5
+292 D.I. Sumber Tirtoyudo 10
+293 D.I. Sumber Tlebung 34
+294 D.I. Sumber Tlogo (Kec. Jabung) 18
+295 D.I. Sumber Tumpeng 15
+296 D.I. Sumber Wangkal 78
+297 D.I. Sumber Wangkit 6
+298 D.I. Sumber Waras 3
+299 D.I. Sumber Wedus 106
+300 D.I. Sumber Wuluh 38
+301 D.I. Sumber Wungu 2
+302 D.I. Sumberejo 9
+303 D.I. Sumberjo (Ds.Jambuwer) 8
+304 D.I. Sumberjo (Ds.Ngajum) 21
+305 D.I. Sumberkerto 98
+306 D.I. Sumbersari 15
+307 D.I. Supit Urang 2
+308 D.I. Surodadi 1
+309 D.I. Talok 175
+310 D.I. Tawangrejeni 179
+311 D.I. Tegalweru 21
+312 D.I. Tlogorejo 60
+313 D.I. Toyomarto | 46
+314 D.I. Toyomarto II 102
+315 D.I. Trabasan 1
+316 D.I. Tulung 18
+317 D.I. Tumpakrejo Kulon 13
+318 D.I. Tumpakrejo Wetan 11
+319 D.I. Tumpang 614
+320 D.I. Tumpukrenteng 98
+321 D.I. Tunggeng Kidul 2
+322 D.I. Tunggeng Lor 25
+323 D.I. Turi 51
+324 D.I. Ubalan 135
+325 D.I. Ubalan | 12
+326 D.I. Urek-Urek 178
+327 D.I. Wagir 25
+328 D.I. Wajak | 139
+329 D.I. Wangkal (Pujon Kidul) 12
+330 D.I. Wates 2
+331 D.I. Watu Banteng 40
+332 D.I. Watu Gede | 2
+333 D.I. Watugading 12
+334 D.I. Watugede (Gading Kulon/Dau) 79
+335 D.I. Watugel 48
+336 D.I. Watugugut 83
+337 D.I. Wiloso 74
+338 D.I. Wiyu 56
+339 D.I. Wonorejo 98
+340 D.I. Wuni 18
+341 D.I. Ampel 1
+342 D.I. Ampo 25
+343 D.I. Andong 5
+#KANAN
+336
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+344 D.I. Apus Kidul 30
+345 D.I. Apus Lor 18
+346 D.I. Aran-Aran 129
+347 D.I. Aren 2
+348 D.I. Arjosari I 15
+349 D.I. Arjosari II 113
+350 D.I. Babaan | 65
+351 D.I. Babaan II 89
+352 D.I. Bakul 2
+353 D.I. Balesari 33
+354 D.I. Balokan 70
+355 D.I. Bambang 152
+356 D.I. Banjarejo 2
+357 D.I. Bantaran 18
+358 D.I. Banturejo 12
+359 D.I. Baraan 1A 7
+360 D.I. Baraan 2A 9
+361 D.I. Barisan | 40
+362 D.I. Barisan II 60
+363 D.I. Batang 88
+364 D.I. Bedok 5
+365 D.I. Bendo Dampit 27
+366 D.I. Bentah 11
+367 D.I. Beringin 86
+368 D.I. Bleng 15
+369 D.I. Bletok 31
+370 D.I. Bon Gunung 6
+371 D.I. Borah 45
+372 D.I. Bringin 5
+373 D.I. Bulak Ampel 17
+374 D.I. Bulu (Kec. Donomulyo) 53
+375 D.I. Bulu (Kec. Ngantang) 1
+376 D.I. Bulu (Kec. Pujon) 37
+377 D.I. Bumirejo 39
+378 D.I. Buntung 15
+379 D.I. Buntung I 47
+380 D.I. Buntung II 53
+381 D.I. Butuh 3
+382 D.I. Cacing 2
+383 D.I. Cangkring 39
+384 D.I. Claket 1
+385 D.I. Coban 2
+386 D.I. Codo II 15
+387 D.I. Codo III 9
+388 D.I. Coh Growong 8
+389 D.I. Complang 5
+390 D.I. Congkeng 58
+391 D.I. Dali 1
+392 D.I. Dam Teguh 10
+393 D.I. Damean 9
+394 D.I. Dandang 9
+395 D.I. Dau 64
+396 D.I. Dawuhan (Kec. Pagak) 41
+397 D.I. Dempok (Kec. Kasembon) 2
+398 D.I. Deren 5
+399 D.I. Dersono 30
+400 D.I. Doblo 29
+401 D.I. Dompo 38
+402 D.I. Dompyong (Pait) 5
+403 D.I. Doni I (Ds.Jambuwer) 6
+404 D.I. Doni I (Ds.Kromengan) 7

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+510 D.I. Wadas Kelir 23
+511 D.I. Wali 11
+512 D.I. Wanakrapa 10
+513 D.I. Wanalaba 44
+514 D.I. Wanaan Cede 4
+515 D.I. Wangan Gede 14
+516 D.I. Wanganduren 28
+517 D.I. Warak 12
+518 D.I. Wareng 73
+519 D.I. Warin 10
+520 D.I. Waru 32
+521 D.I. Wates 13
+522 D.I. Watu Bancet 12
+523 D.I. Watu Pala 151
+524 D.I. Watugoyang 14
+525 D.I. Watukambang 53
+526 D.I. Watuwera 36
+527 D.I. Winong 2
+528 D.I. Wlahar 54
+529 D.I. Wlahar II 53
+530 D.I. Wringin 14
+531 D.I. Wringin 17
+532 D.I. Wulan 10
+533 D.I. Wuluh 20
+534 D.I. Wungkal Plered 45
+535 D.I. Wungu 36
+536 D.I. Wungu 18
+537 D.I. Yuda 10
+538 D.I. Ampel 13
+539 D.I. Bancet 20
+540 D.I. Bd. Bancet 28
+541 D.I. Bd. Cupiturang 18
+542 D.I. Bd. Karanglewas 81
+543 D.I. Bd. Kembang Koneng 15
+544 D.I. Bd. Mujul 25
+545 D.I. Bd. Pakumbang 23
+546 D.I. Bd. Perwaton 22
+547 D.I. Bebek 29
+548 D.I. Belaran 44
+549 D.I. Belaran 30
+550 D.I. Buyur 5
+551 D.I. Citudung 5
+552 D.I. Ciwunut 21
+553 D.I. Dam Pusaka 20
+554 D.I. Damdimyati 50
+555 D.I. Jombor 10
+556 D.I. Jumbul Wetan 10
+557 D.I. Kali Pinggir 17
+558 D.I. Kedungjaran 25
+559 D.I. Kendil Wesi 30
+560 D.I. Kluwih 24
+561 D.I. Lowano 12
+562 D.I. Muria II 11
+563 D.I. Penariban 29
+564 D.I. Pengilon 19
+565 D.I. Perwaton 21
+566 D.I. Pinggir 10
+567 D.I. Pining 12
+568 D.I. Rajegwesi 5
+569 D.I. Salak 12
+570 D.I. Sironggeng 7
+#KANAN
+203 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+571 D.I. Sirungge 14
+572 D.I. Sungawanten 25
+573 D.I. Watukelir 9
+c Kab. Batana 573 18.231
+1 D.I. Acian 61
+2 D.I. Adinuso 51
+3 D.I. Aji 26
+4 D.I. Aji Andap 53
+5 D.I. Aji I 118
+6 D.I. Aji II teh
+7 D.I. Aji Inggil 156
+8 D.I. Aji Jamban 121
+9 D.I. Aji Rejosari 186
+10 D.I. Arus 11
+11 D.I. Asem 10
+12 D.I. Balak 5
+13 D.I. Balong 16
+14 D.I. Balun 26
+15 D.I. Banaran 25
+16 D.I. Banaran 10
+17 D.I. Bancar 15
+18 D.I. Bancet 15
+19 D.I. Bandar 3
+20 D.I. Bandung 253
+21 D.I. Bandung 25
+22 D.I. Bangkat 1
+23 D.I. Bawang 40
+24 D.I. Bawang 7
+25 D.I. Beji 10
+26 D.I. Bendo 23
+27 D.I. Bendo 35
+28 D.I. Bendo 32
+29 D.I. Bengkok 25
+30 D.I. BengkokAWinong 25
+31 D.I. Bibit 123
+32 D.I. Bismo 15
+33 D.I. Blado 30
+34 D.I. Blender 17
+35 D.I. Blender 11
+36 D.I. Blewah 1 70
+37 D.I. Blewah 2 25
+38 D.I. Blewah B 35
+39 D.I. Blibar 28
+40 D.I. Bogol Tepuh 15
+41 D.I. Bogor 40
+42 D.I. Bolodewo 137
+43 D.I. Bondan 11
+44 D.I. Bongali 20
+45 D.I. Bringan 42
+46 D.I. Brongsong 66
+47 D.I. Bronto 10
+48 D.I. Buah/Jamban 20
+49 D.I. Bulungan 9
+50 D.I. Cablikan 20
+51 D.I. Candi 427
+52 D.I. Candi Wulung 8
+53 D.I. Cekluk 39
+54 D.I. Cempeh 27
+55 D.I. Cenggereng 11
+56 D.I. Centuko A 25

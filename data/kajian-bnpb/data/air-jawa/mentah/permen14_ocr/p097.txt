@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+175 D.I. Pulai 45
+176 D.I. Arah Tanjuang 30
+177 D.I. Batang Botuang 30
+178 D.I. Emp. Limo Kambiang 75
+179 D.I. Padang Tumpak 24
+180 D.I. Banda Sosai 30
+181 D.I. Sungai Simbek 42
+182 D.I. Tumpuan | 25
+183 D.I. Tumpuan II 40
+184 D.I. Tumpuan III 30
+185 D.I. Banda Sugak 45
+186 D.I. Banda Kosiak 30
+187 D.I. Batu Ampaian 25
+188 D.I. Banda Kubang 60
+189 D.I. Sawah Panjang 27
+190 D.I. Lurah Piliang 25
+191 D.I. Pamatang Aua 35
+192 D.I. Emp. Air Sarasah 48
+193 D.I. Emp. Plumpang 16
+194 D.I. Emp. Lurah Tanjuang 13
+195 D.I. Emp. Balai 10
+196 D.I. Emp. Basuang 12
+197 D.I. Emp. Masjid 15
+198 D.I. Tobek 40
+199 D.I. Lakuak Rimbo Tabek 48
+200 D.I. Bulakan Kapau 12
+201 D.I. Empang Kurai 16
+202 D.I. Lubuak Sati 16
+203 D.I. Nagurah 20
+204 D.I. Emp.Sipinang 28
+205 D.I. Bdr. Bawah 60
+206 D.I. Bdr. Kumbuah 36
+207 D.I. Sungai Sirah 35
+208 D.I. Sawah Guguak 12
+209 D.I. Titian Baru 16
+210 D.I. Talang 13
+211 D.I. Buan Kurai 11
+212 D.I. Empang Pinago 48
+213 D.I. Galogah II 150
+214 D.I. Sawah Laweh 14
+215 D.I. Rimbo Bodak 30
+216 D.I. Ngalau 15
+217 D.I. Emp.Sipanang 62
+218 D.I. Bandar Panjang 100
+219 D.I. Lurah Pandam 38
+220 D.I. Emp.Rumpuik Saruik 29
+221 D.I. Tanah Runtuah 48
+222 D.I. Aia Gemuruah 200
+223 D.I. Tara Sikumbang 35
+224 D.I. Tanah Runtuah 48
+225 D.I. Patarikan 15
+226 D.I. Emp. Malekuk 13
+227 D.I. Baruah Sungkok 19
+228 D.I. Emp. Rumpuik Suruik 29
+229 D.I. Sungai Pingai 25
+230 D.I. Emp. Balioek Guguak 26
+231 D.I. Emp. Lurah Pasir 88
+232 D.I. Sawah Laweh 13
+233 D.I. Batu Manjulua 15
+234 D.I. Aia Taganang 42
+235 D.I. Batu Godang 123
+#KANAN
+97 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+236 D.I. Jungguik Bukik 82
+237 D.I. Aia Taganang 42
+238 D.I. Kayu Barambai 50
+239 D.I. Buayan 22
+240 D.I. Boncah Pulai 35
+241 D.I. Empang Solok 35
+242 D.I. Emp. Tangah Taeh 14
+243 D.I. Rimbo Kanduang 25
+244 D.I. Tabiang Uba 30
+245 D.I. Empang Rawang 20
+246 D.I. Empang manggalogak 22
+247 D.I. Sumalantiek 20
+248 D.I. Bdr. Parik 20
+249 D.I. Lubuak Bongka 25
+250 D.I. Pincuran Ruyuang 25
+251 D.I. Bandar Kajai 18
+252 D.I. Rawang Sibarunguik 75
+253 D.I. Sungai Limau 40
+254 D.I. Bandar Sialang Dalam 35
+255 D.I. Baliak Parik 38
+256 D.I. Kampuang Pinang 40
+257 D.I. Lakuak Doda 33
+258 D.I. Surau Rumbai 22
+259 D.I. Bdr. Tabarau 15
+260 D.I. Emp. Pincuran 15
+261 D.I. Emp. Padang Kudu 18
+262 D.I. Emp. Padang Koteh 44
+263 D.I. Emp. Bilubuih 15
+264 D.I. Emp. Tarantang 12
+265 D.I. Emp. Solok 11
+266 D.I. Emp. Sawah Batang 11
+267 D.I. Emp.Bawah Basuang 78
+268 D.I. Lurah Sitajuak 35
+269 D.I. Lurah Batapuak 78
+270 D.I. Lurah Dama 34
+271 D.I. Lakuak Cinampek 25
+272 D.I. Tan Kaliang 25
+273 D.I. Lurah Gombang 22
+274 D.I. Lurah Batu Picak 29
+275 D.I. Lurah Danau 37
+276 D.I. Koto Baru 15
+277 D.I. Lurah Tobek 17
+278 D.I. Lurah Dalam 27
+279 D.I. Batang Koliang 18
+280 D.I. Tabek Songsang 100
+281 D.I. Ngalau Putiah 45
+282 D.I. Sawah Sibatu 165
+283 D.I. Dt. Paluga 110
+284 D.I. Kunci Patah 77
+285 D.I. Lurah Parakan 15
+286 D.I. Lakuak Sumua 50
+287 D.I. Padang Botuang 20
+288 D.I. Sungai Abang 24
+289 D.I. Bungo Tanjuang 25
+290 D.I. Solok Upiah 115
+291 D.I. Emp. Mudiak Sungai 24
+292 D.I. Emp. Bonjol 22
+293 D.I. Emp. Sigai 40
+294 D.I. Sawah Hilir 69
+295 D.I. Emp. Simantuang 15
+296 D.I. Emp. Rajo Mudo 20

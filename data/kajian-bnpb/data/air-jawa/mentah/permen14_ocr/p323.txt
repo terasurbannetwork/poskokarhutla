@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+203 D.I. Sbr. Soko 5
+204 D.I. Sbr. Soko 22
+205 D.I. Sbr. Soko 19
+206 D.I. Sbr. Sraten 7
+207 D.I. Sbr. Sumberjo 28
+208 D.I. Sbr. Sumur 6
+209 D.I. Sbr. Supit Urang 13
+210 D.I. Sbr. Supiturang 29
+211 D.I. Sbr. Talibroto 99
+212 D.I. Sbr. Tapan 74
+213 D.I. Sbr. Teduh 7
+214 D.I. Sbr. Tlogowono 26
+215 D.I. Sbr. Towo 54
+216 D.I. Sbr. Towo 66
+217 D.I. Sbr. Trate 20
+218 D.I. Sbr. Truneng 62
+219 D.I. Sbr. Tunge 54
+220 D.I. Sbr. Ubalan 4
+221 D.I. Sbr. Umbul 10
+222 D.I. Sbr. Ungkal 36
+223 D.I. Sbr. Untung 34
+224 D.I. Sbr. Urung-Urung 22
+225 D.I. Sbr. Weru 17
+226 D.I. Sbr. Weru 20
+227 D.I. Segaran | 33
+228 D.I. Segaran II 19
+229 D.I. Selodono I 92
+230 D.I. Selodono II 429
+231 D.I. Selosari 63
+232 D.I. Sempu 93
+233 D.I. Sidomulyo 96
+234 D.I. Sidorawuh 394
+235 D.I. Sobo 104
+236 D.I. Sukomoro 148
+237 D.I. Sumberjo I 97
+238 D.I. Sumberjo II 39
+239 D.I. Sumberjo III 55
+240 D.I. Tambakrejo 280
+241 D.I. Tanggul Angin 30
+242 D.I. Tawang | 15
+243 D.I. Tawang II 23
+244 D.I. Tawangrejo 11
+245 D.I. Tawangsari 178
+246 D.I. Toyoaning 231
+247 D.I. Turus 17
+248 D.I. Wonocatur 99
+249 D.I. Wonosari 149
+250 D.I. Wuni 46
+251 D.I. Ampel 45
+252 D.I. Babatan 45
+253 D.I. Babok 55
+254 D.I. Badung 39
+255 D.I. Bagendo I 9
+256 D.I. Bagendo II 41
+257 D.I. Bagendo III 21
+258 D.I. Bagendo IV 6
+259 D.I. Bajulan 7
+260 D.I. Bakalan 60
+261 D.I. Bakalan 52
+262 D.I. Balong jambe 127
+263 D.I. Banaran 137
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+264 D.I. Bangi 26
+265 D.I. Bangsal 61
+266 D.I. Banjarejo 79
+267 D.I. Banyuanyar 12
+268 D.I. Bapang 43
+269 D.I. Baran 17
+270 D.I. Baran 92
+271 D.I. Batuaji 3
+272 D.I. Belung | 40
+273 D.I. Belung II 20
+274 D.I. Bendolowo 7
+275 D.I. Bioro 101
+276 D.I. Biru | 11
+277 D.I. Biru II 6
+278 D.I. Biru III 2
+279 D.I. Blaru 153
+280 D.I. Blimbingrejo 68
+281 D.I. Bobosan 3
+282 D.I. Bodoro I 50
+283 D.I. Bodoro II 7
+284 D.I. Bolo | 31
+285 D.I. Bolo II 62
+286 D.I. Bolo III 166
+287 D.I. Bolo templek 33
+288 D.I. Bolodewo I 33
+289 D.I. Bolodewo II 37
+290 D.I. Bondo 33
+291 D.I. Brambang 93
+292 D.I. Brumbung | 21
+293 D.I. Brumbung II 38
+294 D.I. Bulurejo 42
+295 D.I. Bumirejo 100
+296 D.I. Canggu I 18
+297 D.I. Canggu II 13
+298 D.I. Cangkring 99
+299 D.I. Carikan 63
+300 D.I. Celep 10
+301 D.I. Centong 23
+302 D.I. Clumprit 60
+303 D.I. Cumplang 17
+304 D.I. Cumpleng 3
+305 D.I. Dadapan IV 9
+306 D.I. Damar Wulan 38
+307 D.I. Damar Wulan 44
+308 D.I. Darungan | 32
+309 D.I. Darungan II 17
+310 D.I. Darungan III 30
+311 D.I. Dawuhan 59
+312 D.I. Dawung 65
+313 D.I. Dedehan I 96
+314 D.I. Dedehan II 100
+315 D.I. Dedehan III 32
+316 D.I. Demangan 27
+317 D.I. Depok 197
+318 D.I. Deyeng 11
+319 D.I. Dileman | 3
+320 D.I. Dileman II 2
+321 D.I. Doko 71
+322 D.I. Dondong | 20
+323 D.I. Dondong II 16
+324 D.I. Dukuh 51

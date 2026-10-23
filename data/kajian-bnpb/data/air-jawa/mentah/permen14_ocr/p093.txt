@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+53 D.I. Batang Sianok 694
+54 D.I. MA Bapensi 82
+55 D.I. Gadang 80
+56 D.I. Pincuran VII 140
+57 D.I. Ranah 42
+58 D.I. Batang Manguih 120
+59 D.I. Batang Kandang 62
+60 D.I. Batang Janiah 67
+61 D.I. Sigiran 265
+62 D.I. Gadang Sini Air 54
+63 D.I. Gadang Ketek 62
+64 D.I. Durian 200
+65 D.I. Cingkariang. A 83
+66 D.I. Cingkariang. B 108
+67 D.I. Cingkariang. C 140
+68 D.I. Rakik 150
+69 D.I. Batu Ampa 100
+70 D.I. Kubu Banda 675
+71 D.I. Curing-Curing 50
+72 D.I. Tambuo 85
+73 D.I. M.A Tabek Sariak 193
+74 D.I. Jarungan 75
+75 D.I. Tiagan 100
+76 D.I. Badarun 124
+77 D.I. Sungai Jaring 31
+78 D.I. Lawang 4
+79 D.I. Sari Bulan 40
+80 D.I. Kampung Tingga Ateh 28
+81 D.I. Kampung Tingga Bawah 25
+82 D.I. Ruso 186
+83 D.I. Baapung 65
+84 D.I. Panji 50
+85 D.I. Gadang Panji 60
+86 D.I. Pasir Panjang 50
+87 D.I. Sarasah Baringin 53
+88 D.I. Air Gadang 83
+89 D.I. Limau Hantu 82
+90 D.I. Hulu Bambu 90
+91 D.I. Sungai Rangeh 105
+92 D.I. Kayu Kundua/Rumpuik Sirah 50
+93 D.I. Saleko 80
+94 D.I. Sungai Asam 87
+95 D.I. Rambai 148
+96 D.I. Kularian 48
+97 D.I. Dama Gadang 60
+98 D.I. Baru 700
+99 D.I. Usang 600
+100 D.I. Sibaraguang 600
+101 D.I. Siguhung 70
+102 D.I. Sangkir Lubuk Basung 300
+103 D.I. Batu Gajah/Batu Gajah II 62
+104 D.I. Batang Silayang 36
+105 D.I. Lubuk Siarang 161
+106 D.I. Jawi-Jawi 80
+107 D.I. Kundur 106
+108 D.I. Sawah Parik 83
+109 D.I. Padang Batu Tongga 300
+110 D.I. Kalulutan 200
+111 D.I. Sungai Pingai 130
+112 D.I. Kubu Anau 150
+113 D.I. Datuak Pono Labiah 127
+#KANAN
+93 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+114 D.I. Subarang 60
+115 D.I. Sikabu 490
+116 D.I. Gasan Kecil 80
+117 D.I. Gadang 60
+118 D.I. Sawah Kabun 68
+119 D.I. Durian Kapas 100
+120 D.I. Gadih Angik 200
+121 D.I. Cacang Tinggi 600
+122 D.I. Ipuh 70
+123 D.I. Padang Bamban 250
+124 D.I. Tantaman 70
+125 D.I. Silungkang 29
+126 D.I. Kayu Bakicuik BT 297
+127 D.I. Kayu Bakicuik BL 82
+128 D.I. Air Mondak 48
+129 D.I. Baringin 75
+130 D.I. Paciputan 154
+131 D.I. Gumarang BG 184
+132 D.I. Gumarang BA 385
+133 D.I. Gumarang BPL 324
+134 D.I. Gumarang BKA 485
+135 D.I. Gumarang BKT 200
+136 D.I. Padang Lawang 4
+137 D.I. Balai Badak 75
+138 D.I. Tompek 137
+139 D.I. Pasar Bawan 437
+140 D.I. Malabur BLD 156
+141 D.I. Malabur BM 167
+142 D.I. Malabur BP 85
+143 D.I. Batu Palano | 218
+144 D.I. Batu Palano II 130
+145 D.I. Subanak 47
+146 D.I. Air Papo 60
+147 D.I. Bukareh/Padang alai 80
+148 D.I. Bada-Bada 60
+149 D.I. Batu Kambiang 200
+150 D.I. Alahan Siriah 138
+151 D.I. Punago 111
+152 D.I. Sarasah 67
+153 D.I. Kapecong 138
+154 D.I. Gadang Simaung 75
+155 D.I. Kampuang PIli 40
+156 D.I. Pagadih Gadang 40
+157 D.I. Ngalau 50
+158 D.I. Panjang 40
+159 D.I. Lurah Dalam 40
+160 D.I. Surau Usang 40
+161 D.I. Waduk Baburai 50
+162 D.I. Pincuran Bancah 110
+163 D.I. Kasiak 45
+164 D.I. Dalam Koto 50
+165 D.I. Tembok Baru 42
+166 D.I. Pamanam Tungga 45
+167 D.I. Batu Bajolang 50
+168 D.I. Saga Buruak 40
+169 D.I. Rawang 40
+170 D.I. Aliran Tabek 40
+171 D.I. Tangah Sawah 40
+172 D.I. Nyiur 42
+173 D.I. Baburai 45
+174 D.I. Kubu 50

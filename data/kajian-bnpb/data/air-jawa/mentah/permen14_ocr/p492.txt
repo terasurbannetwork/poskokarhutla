@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20 5, No.638 499
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+5 D.LA.T. Jaya Mulya TW.54 29
+6 D.LA.T. Temiyangsari TW.57 26
+7 D.LA.T. Jaya Mulya TW.59 22
+8 D.LA.T. Tanjungkerta TW.86 43
+9 D.LA.T. Tanjungkerta TW.103 26
+10 D.I.A.T. Tanjungkerta TW.104 43
+11 D.LA.T. Sukaslamet TWE.115 34
+12 D.LA.T. Jaya Mulya TWE.116 26
+13 D.LA.T. Temiyangsari SD.IM.02 33
+14 D.LA.T. Tanjungkerta SD.IM.05 25
+15 D.LA.T. Jaya Mulya SM.IM.12 22
+16 D.LA.T. Sukaslamet SM.IM.20 22
+17 D.LA.T. Sukaslamet SM.IM.21 22
+18 D.LA.T. Sukaslamet SM.IM.23 23
+19 D.LA.T. Sukaslamet SM.IM.24 22
+20 D.LA.T. Sukaslamet SM.IM.25 22
+21 D.LA.T. Sukaslamet SM.IM.26 20
+22 D.LA.T. Sukaslamet SM.IM.27 21
+23 D.LA.T. Mekarjaya SM.IM.37 21
+24 D.LA.T. Temiang TW.217 20
+25 D.LA.T. Tanjungkerta TW.218 26
+26 D.I.A.T. Mekarjaya TW.219 22
+27 D.LA.T. Sumbon SM.IM.14 24
+28 D.LA.T. Sumbon SM.IM.15 24
+29 D.LA.T. Kroya SD.IM.04 25
+30 D.LA.T. Kroya SM.IM.04 22
+31 D.LA.T. Kroya SM.IM.05 22
+32 D.LA.T. Kroya TW.15 24
+33 D.LA.T. Kroya TW.109 25
+34 D.LA.T. Sukamelang SM.IM.13 23
+35 D.LA.T. Loyang SD.IM.07 24
+36 D.I.A.T. Loyang SD.IM.08 24
+37 D.LA.T. Amis SM.IM.16 22
+38 D.I.A.T. Amis SD.IM.06 24
+39 D.LA.T. Cikawung TW.253 21
+40 D.LA.T. Cikawung TW.254 21
+41 D.LA.T. Cikawung TW.260 21
+42 D.LA.T. Karangmulya SP1.07 22
+43 D.LA.T. Sekarmulya SPI.08 22
+44 D.LA.T. Kroya SPI.09 22
+45 D.LA.T. Kroya SPI.10 23
+46 D.I.A.T. Amis SPI.16 23
+47 D.LA.T. Amis SPL17 24
+48 D.LA.T. Karangmulya SP1.18 21
+49 D.LA.T. Sekarmulya SP119 22
+50 D.LA.T. Jayalaksana SPI.20 20
+51 D.LA.T. Jayalaksana SPI.21 20
+52 D.LA.T. Kroya TW.220 26
+
+f Kab. Kuninaan 9 204
+
+1 D.LA.T. Sukadana TW. 34 23
+2 D.LA.T. Cigarukgak TW. 77 24
+3 D.LA.T. Cihauer TW. 249 22
+4 D.LA.T. Mekarjaya TW. 250 24
+5 D.LA.T. Karangkamulyan TW. 251 23
+6 D.LA.T. Tenjolayar TW. 261 23
+7 D.LA.T. Cihirup TW. 262 25
+8 D.LA.T. Cihirup TW. 263 20
+9 D.LA.T. Ciniru TW. 264 20

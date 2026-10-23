@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+153 D.I. Pakis 167
+154 D.I. Palwadak 130
+155 D.I. Pancuran 18
+156 D.I. Pancuran 25
+157 D.I. Pancuran 42
+158 D.I. Pandansili 56
+159 D.I. Pandanwangi 26
+160 D.I. Pangkalan 850
+161 D.I. Pb. Ngembe 55
+162 D.I. Penceng 259
+163 D.I. Pendemgajah 36
+164 D.I. Pengarep 140
+165 D.I. Pilang 21
+166 D.I. Plosokuning 26
+167 D.I. Pondok 22
+168 D.I. Pondonegoro 10
+169 D.I. Pucung 21
+170 D.I. Pucung 18
+171 D.I. Punden 13
+172 D.I. Puring 179
+173 D.I. Purwosari 69
+174 D.I. Pusung 20
+175 D.I. Radiyah 17
+176 D.I. Reco 10
+177 D.I. Rejoso 14
+178 D.I. Resulo 31
+179 D.I. Resulo 10
+180 D.I. Roguno 23
+181 D.I. Sadang 14
+182 D.I. Sambidoyong 17
+183 D.I. Sanggrahan 16
+184 D.I. Santren 13
+185 D.I. Sarat 17
+186 D.I. Saripah 14
+187 D.I. Sarko 33
+188 D.I. Sarwolo 94
+189 D.I. Saryadi 20
+190 D.I. Sat 69
+191 D.I. Sawahgede 20
+192 D.I. Segaran 49
+193 D.I. Seloputih 12
+194 D.I. Semangeng 110
+195 D.I. Semendung 29
+196 D.I. Semeru 16
+197 D.I. Serut 28
+198 D.I. Setromulyo 18
+199 D.I. Sidorejo 74
+200 D.I. Sobo 20
+201 D.I. Socan 35
+202 D.I. Soko 121
+203 D.I. Sombron 339
+204 D.I. Sonorejo 371
+205 D.I. Sonorejo II 101
+206 D.I. Sorodan 20
+207 D.I. Sowo 12
+208 D.I. Sowo 20
+209 D.I. Sripanggung 28
+210 D.I. Sudi 27
+211 D.I. Sumber 10
+212 D.I. Sumberlawang 31
+213 D.I. Sumedang 731
+#KANAN
+95 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+214 D.I. Surolocok 10
+215 D.I. Suromanai 68
+216 D.I. Suromentolo 35
+217 D.I. Tambakromo 52
+218 D.I. Tapak 87
+219 D.I. Tapakmenjangan 10
+220 D.I. Tawangrejo 270
+221 D.I. Telenghaji 19
+222 D.I. Telogo 22
+223 D.I. Tempel 24
+224 D.I. Tempur 10
+225 D.I. Tendas 40
+226 D.I. Tinap 14
+227 D.I. Tolok 33
+228 D.I. Toyo 13
+229 D.I. Trenggulung 44
+230 D.I. Tretes 54
+231 D.I. Triguno 528
+232 D.I. Tritis 15
+233 D.I. Trodiwongso 17
+234 D.I. Trowongso 26
+235 D.I. Truno 43
+236 D.I. Tungkur 26
+237 D.I. Upyuk 34
+238 D.I. Waru 11
+239 D.I. Wates 19
+240 D.I. Watugajah 14
+241 D.I. Watujaran 10
+242 D.I. Watulawang 20
+243 D.I. Watupawon 20
+244 D.I. Waturante 20
+245 D.I. Watusumur 12
+246 D.I. Watutukang 15
+247 D.I. Weding 12
+248 D.I. Wedusan 10
+249 D.I. Widodaren 80
+250 D.I. Winong 12
+251 D.I. Winong 10
+252 D.I. Winong 11
+253 D.I. Wungu 10
+254 D.I. Wuni 20
+255 D.I. Yanti 10
+256 D.I. Bayan 11
+257 D.I. Bendo 547
+258 D.I. Berasan 15
+259 D.I. Bertek 234
+260 D.I. Besaran 10
+261 D.I. Blibis 100
+262 D.I. Blorong 10
+263 D.I. Blorong 16
+264 D.I. Bunuk kecil 20
+265 D.I. Dringo 105
+266 D.I. Dudoh 15
+267 D.I. Dung Guwo 10
+268 D.I. Dungatis 10
+269 D.I. Dungkembar 10
+270 D.I. Gantungan | 15
+271 D.I. Gentong Wasiat 197
+272 D.I. Gentungan 45
+273 D.I. Gogik 11
+274 D.I. Grenjengan 17

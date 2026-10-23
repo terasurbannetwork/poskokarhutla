@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+87 D.I. Kebon Nitas 150
+88 D.I. Kenam II 70
+89 D.I. Lifubatu | 50
+90 D.I. Lifubatu II 13
+91 D.I. Lunesi 80
+92 D.I. Manmoro 125
+93 D.I. Mere 25
+94 D.I. Modoaik 130
+95 D.I. Naifaku 120
+96 D.I. Naiheli II 90
+97 D.I. Nano 15
+98 D.I. Nautaus 90
+99 D.I. Nikbaun 25
+100 D.I. Niunbaun 50
+101 D.I. Noebiana 10
+102 D.I. Noelsinas 50
+103 D.I. Noetefa 18
+104 D.I. Nonbes 295
+105 D.I. Nunbaun 60
+106 D.I. Nunmafo 75
+107 D.I. Nunmafo Barat 40
+108 D.I. Nunumuti 200
+109 D.I. Oebola Dalam 60
+110 D.I. Oelbiteno 20
+111 D.I. Oelekam 25
+112 D.I. Oenaek 60
+113 D.I. Oeniko 60
+114 D.I. Oesao | 362
+115 D.I. Oesao II 401
+116 D.I. Oesuu | 65
+117 D.I. Oesuu II 35
+118 D.I. Oetobo 80
+119 D.I. Pariti 300
+120 D.I. Pawana 51
+121 D.I. Ponain 28
+122 D.I. Poto 150
+123 D.I. Pukdale 380
+124 D.I. Soliu 25
+125 D.I. Tekad Makmur 62
+126 D.I. Temkuna 50
+127 D.I. Tesbatan 45
+128 D.I. Tunggadea 40
+129 D.I. Uel 70
+f Kab. Lembata 15 1.305
+1 D.I. MahalAWai Pari 150
+2 D.I. Wai Dara 150
+3 D.I. Wai Eleng 150
+4 D.I. Wai Lolong 150
+5 D.I. Wai Meran 55
+6 D.I. Wai Nili 150
+7 D.I. Wai Ramai 100
+8 D.I. Krebeleu 50
+9 D.I. Labalekan 50
+10 D.I. Leu Hapu Wai Pae 50
+11 D.I. Lewolagan 50
+12 D.I. Libur/Penikene 50
+13 D.I. Wai Matan Puor 50
+14 D.I. Wai Ujan 50
+15 D.I. Wulan Kera 50
+#KANAN
+384
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+a Kab. Malaka 24 7.376
+1 D.I. Bakateu 100
+2 D.I. Eturaifou 125
+3 D.I. Lakekun 1 & II 250
+4 D.I. Raimea 800
+5 D.I. Tolok 600
+6 D.I. Tubaki 300
+7 D.I. Webua 100
+8 D.I. Wemaromak 200
+9 D.I. Wematek 215
+10 D.I. Bikane 100
+11 D.I. Haslot 386
+12 D.I. Haumalae 100
+13 D.I. Kakiun 300
+14 D.I. Leunfehan 350
+15 D.I. Motadelek 750
+16 D.I. Non'au 650
+17 D.I. Nukraek 125
+18 D.I. Rabasa 500
+19 D.I. Saluhu 250
+20 D.I. Tukuahu 350
+21 D.I. Weau 75
+22 D.I. Weharani 250
+23 D.I. Welakuran 250
+24 D.I. Wekanuku 250
+h Kab. Manaaarai 237 22.234
+1 D.I. Wae Ajang 100
+2 D.I. Wae Buang 200
+3 D.I. Wae Buka 25
+4 D.I. Wae Cangkat 100
+5 D.I. Wae Denger 100
+6 D.I. Wae Dese 150
+7 D.I. Wae Gara 100
+8 D.I. Wae Ireng 50
+9 D.I. Wae Ka 100
+10 D.I. Wae Kampas 50
+11 D.I. Wae Kang 100
+12 D.I. Wae Kengkong 75
+13 D.I. Wae Kokar 150
+14 D.I. Wae Kono 150
+15 D.I. Wae Kunce 100
+16 D.I. Wae Lampung 100
+17 D.I. Wae Lanta 150
+18 D.I. Wae Larena 100
+19 D.I. Wae Lega 150
+20 D.I. Wae Lega | 200
+21 D.I. Wae Lega II 98
+22 D.I. Wae Loro 75
+23 D.I. Wae Mangir 200
+24 D.I. Wae Muku 32
+25 D.I. Wae Ncuang 200
+26 D.I. Wae Ngencung 300
+27 D.I. Wae Nggawang 100
+28 D.I. Wae Ngkor 150
+29 D.I. Wae Ngok 100
+30 D.I. Wae Ngong 150
+31 D.I. Wae Nugi 150
+32 D.I. Wae Paka 100
+33 D.I. Wae Palo 200
+34 D.I. Wae Palo/Cacar 141

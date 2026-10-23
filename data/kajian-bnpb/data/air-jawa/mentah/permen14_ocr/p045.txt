@@ -1,0 +1,92 @@
+#TATA_LETAK satu-tabel lebar=2480
+45 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+X PROVINSI BANTEN 15 23.149
+a Kab. Lebak
+
+1 D.I. Cibinuangeun 2.570
+2 D.I. Cihara 2.000
+3 D.I. Cikamunding | 1.700
+4 D.I. Cikamunding II 1.030
+5 D.I. Cikoncang 1.805
+6 D.I. Cilangkahan | 1.798
+7 D.I. Cimanyangray 1.500
+8 D.I. Cipalabuh 1.020
+9 D.I. Cisiih 1.000
+b Kab. Pandeglang
+
+1 D.I. Cisata 2.112
+2 D.I. Pasir Eurih 1.245
+c Kab. Serang
+
+1 D.I. Cikalumpang 1.000
+2 D.I. Cipari/Ciwuni 1.644
+3 D.I. Cisangu Bawah 1.436
+d Kota Serang
+
+1 D.I. Cibanten 1.289
+XI PROVINSI JAWA BARAT 45 70.099
+a Kab. Bandung
+
+1 D.I. Ciherang 2.160
+2 D.I. Cirasea 2.471
+3 D.I. Wangisagara 1.687
+4 D.I. Wanir 1.880
+b Kab. Bogor
+
+1 D.I. Cihoe Cikumpeni 1.486
+2 D.I. Sasak 1.088
+c Kab. Ciamis
+
+1 D.I. Ciputra Haji 1.258
+2 D.I. Merjan 1.631
+d Kab. Cianjur
+
+1 D.I. Babancong 1113
+2 D.I. Cibalagung 1.106
+3 D.I. Ciheulang 1.494
+4 D.I. Cimenteng 1.332
+5 D.I. Cipadang Cibeleng 1.792
+6 D.I. Susukan Gede 1.007
+7 D.I. Tonjong Panto 1.332
+e Kab. Cirebon
+
+1 D.I. Ambit 1.543
+2 D.I. Jamblang 2.272
+3 D.I. Walahar 1.292
+f Kab. Garut
+
+1 D.I. Cipaleubuh 1.016
+g Kab. Indramayu
+
+1 D.I. Cipanas | 2.855
+2 D.I. Pedati 1.499
+h Kab. Karawang
+
+1 D.I. Waru 1.304
+i Kab. Kuningan
+
+1 D.I. Cijangkelok 1.160
+2 D.I. Lame 1.011
+j Kab. Majalengka
+
+1 D.I. Cibutul 1.525
+2 D.I. Cigasong 2.035
+3 D.I. Cikamangi 1.899
+4 D.I. Cikeruh 1.553
+k Kab. Purwakarta
+
+1 D.I. Cisomang 2A17
+2 D.I. Pondok Salam 1.553
+3 D.I. Wanayasa 1.074
+| Kab. Subang
+
+1 D.I. Curug Agung 1.996
+m Kab. Sukabumi
+
+1 D.I. Caringin 2.776
+2 D.I. Cidadali 1.219
+3 D.I. Cigangsa 1.514
+4 D.I. Cikarang Cigangsa 1.025

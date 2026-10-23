@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+397 D.I. Sirandu 11
+398 D.I. Siringin 11
+399 D.I. Sirondo 71
+400 D.I. Sisong 50
+401 D.I. Siwaru 11
+402 D.I. Slarongan 34
+403 D.I. Slegrengan 59
+404 D.I. Slentem 71
+405 D.I. Slindur 16
+406 D.I. Sobrah 24
+407 D.I. Soko 60
+408 D.I. Somopuro 57
+409 D.I. Soran 16
+410 D.I. Soronayan 31
+411 D.I. Sragon 115
+412 D.I. Srayon 40
+413 D.I. Srayu 71
+414 D.I. Srebegan 44
+415 D.I. Sribit 15
+416 D.I. Sribit Dukuh 32
+417 D.I. Sribit Krajan 17
+418 D.I. Sudimoro II 43
+419 D.I. Sukunan 10
+420 D.I. Sumur Gumuling 26
+421 D.I. Sumyang 188
+422 D.I. Suraboyo 12
+423 D.I. Suran 44
+424 D.I. Surung 22
+425 D.I. Susuhan 80
+426 D.I. Swanggrahan 26
+427 D.I. Talang 894
+428 D.I. Taman 211
+429 D.I. Tambas 85
+430 D.I. Tangkisan 95
+431 D.I. Tanjung 11
+432 D.I. Tanon 77
+433 D.I. Tegal Gading 84
+434 D.I. Tegal Kenceng 14
+435 D.I. Tegal Rejo 109
+436 D.I. Tegal Rejo 10
+437 D.I. Tegal Ringin 13
+438 D.I. Tegal Turi 31
+439 D.I. Temon Kidul 37
+440 D.I. Temon Lor 19
+441 D.I. Tempel 617
+442 D.I. Tempel 62
+443 D.I. Tempel 154
+444 D.I. Tempel 16
+445 D.I. Tempel 15
+446 D.I. Templik 14
+447 D.I. Tempur 64
+448 D.I. Tempuran 39
+449 D.I. Tinggen 33
+450 D.I. Titang 15
+451 D.I. Tlogo 17
+452 D.I. Tlogo Wungu 19
+453 D.I. Trasan 15
+454 D.I. Trate 282
+455 D.I. Trate 30
+456 D.I. Trembono 60
+457 D.I. Tuwuhan 34
+#KANAN
+943 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+458 D.I. Wantil 500
+459 D.I. Wd. Rw. Jombor 78
+460 D.I. Wetan Jombor 29
+461 D.I. Wetan Pacing 40
+462 D.I. Widoro 154
+463 D.I. Widoro 40
+464 D.I. Widoro 34
+465 D.I. Widoro 14
+466 D.I. Wiro 38
+467 D.I. Wojong I 95
+468 D.I. Wojong II 132
+469 D.I. Wonggo 100
+470 D.I. Wonoboyo 30
+471 D.I. Woro Kulon 13
+472 D.I. Woro Wetan 12
+473 D.I. Wringin 40
+474 D.I. Wungu 14
+475 D.I. Wunut Pendekan 19
+476 D.I. Wunut Wetan 15
+477 D.I. Bendo 36
+478 D.I. Gedaren 46
+o Kab. Kudus 231 10.295
+1 D.I. Babak 36
+2 D.I. Bandar 13
+3 D.I. Bantenan 63
+4 D.I. Banteng 17
+5 D.I. Beran 19
+6 D.I. Birowo 22
+7 D.I. Bon Agung 35
+8 D.I. Brengos 10
+9 D.I. Buk Wuluh 30
+10 D.I. Buwak 234
+11 D.I. Celik 17
+12 D.I. Dondong 10
+13 D.I. Druju 125
+14 D.I. Duk Lopo 15
+15 D.I. Dung Dowo 28
+16 D.I. Duren 20
+17 D.I. Durenan 10
+18 D.I. Elo 10
+19 D.I. Gandri 17
+20 D.I. Gayam A 12
+21 D.I. Gayam B 6
+22 D.I. Gede 11
+23 D.I. Gempol 20
+24 D.I. Genjah 29
+25 D.I. Gerangan 109
+26 D.I. Geseng 40
+27 D.I. Getas 304
+28 D.I. Gilingan 11
+29 D.I. Glagah 17
+30 D.I. Glugu 10
+31 D.I. Gondang Manis 52
+32 D.I. Goto 45
+33 D.I. Grenjengan 10
+34 D.I. Guwo 28
+35 D.I. Guwono 25
+36 D.I. Ingas 261
+37 D.I. Ingas Sekar Gading 32
+38 D.I. Ingas Sundeng 9

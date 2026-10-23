@@ -1,0 +1,70 @@
+#TATA_LETAK satu-tabel lebar=2480
+20 5, No.638 534
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+6 D.LA.T. Kepuhagung SDTB 072 56
+
+7 D.LA.T. Trutup SDTB 102 56
+
+8 D.ILA.T. Sumur jalak SDTB 107 49
+
+9 D.LA.T. Kesamben SDTB 108 46
+10 D.LA.T. Banjaragung SDTB 109 45
+11 D.LA.T. Kepuhagung SDTB 125 30
+12 D.LA.T. Sumber Agung SDTB 138 39
+13 D.LA.T. Sumur Jalak SDTB 140 32
+14 D.LA.T. Trutup SDTB 141 44
+15 D.LA.T. Banjar Agung SDTB 142 54
+16 D.ILA.T. Sumur Jalak SDTB 144 42
+17 D.LA.T. Punggul Rejo SDTB 145 27
+18 D.LA.T. Sumber Agung SDTB 146 44
+19 D.ILA.T. Sumur Jalak SDTB 147 42
+20 D.LA.T. Ngrayun SDTB 148 28
+21 D.LA.T. Kesamben SDTB 149 51
+22 D.LA.T. Pucangan SDTB 031 36
+23 D.LA.T. Tasikmadu SDTB 032 37
+24 D.LA.T. Temandang SDTB 033 42
+25 D.LA.T. Gesikerjo SDTB 037 44
+26 D.LA.T. Pucangan SDTB 038 32
+27 D.LA.T. Pongpongan SDTB 039 44
+28 D.LA.T. Sembungrejo SDTB 040 38
+29 D.LA.T. Senori SDTB 041 44
+30 D.LA.T. Temandang SDTB 042 38
+31 D.LA.T. Temandang SDTB 043 45
+32 D.LA.T. Pongpongan SDTB 044 38
+33 D.LA.T. Temandang SDTB 054 43
+34 D.LA.T. Temandang SDTB 055 25
+35 D.LA.T. Temandang SDTB 056 41
+36 D.LA.T. Temandang SDTB 057 38
+37 D.LA.T. Tobo SDTB 058 35
+38 D.LA.T. Tobo SDTB 059 55
+39 D.LA.T. Sugihan SDTB 060 43
+40 D.LA.T. Sugihan SDTB 061 35
+41 D.LA.T. Sugihan SDTB 062 40
+42 D.LA.T. Senori SDTB 065 45
+43 D.LA.T. Pucangan SDTB 073 33
+44 D.LA.T. Leren Kulon SDTB 074 8
+45 D.LA.T. Pucangan SDTB 086 42
+46 D.LA.T. Jetak SDTB 090 33
+47 D.LA.T. Jetak SDTB 100 46
+48 D.LA.T. Tlogowaru SDTB 104 27
+49 D.LA.T. Pucangan SDTB 110 36
+50 D.LA.T. Talun SDTB 123 25
+51 D.LA.T. Tegal Bang SDTB 139 26
+52 D.LA.T. Tahulu SDTB 341 25
+53 D.LA.T. Pucangan SMTB 163 8
+54 D.LA.T. Pucangan SMTB 164 7
+55 D.LA.T. Pucangan SMTB 165 9
+56 D.LA.T. Candoso SMTB 166 8
+57 D.LA.T. Candoso SMTB 167 8
+58 D.LA.T. Candoso SMTB 168 8
+59 D.LA.T. Cendoro SMTB 169 9
+60 D.ILA.T. Pucangan SMTB 171 8
+61 D.LA.T. Kradenan SMTB 268 8
+62 D.LA.T. Kradenan SMTB 269 8
+63 D.LA.T. Kradenan SMTB 270 6
+64 D.LA.T. Kradenan SMTB 271 10
+65 D.LA.T. Sumurgung SMTB 274 6
+66 D.I.A.T. Sumurgung SMTB 275 7

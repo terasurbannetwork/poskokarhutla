@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+31 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+11 D.I. Bdr. Garegeh 98 Kabupaten Agam z 73 Ha
+Kota Bukittinggi z 25 Ha
+12 D.I. Bdr. Pulai 66 Kabupaten Agam z 48 Ha
+Kota Bukittinggi -z 18 Ha
+13 D.I. Bdr. Durian 200 Kabupaten Agam z 198 Ha
+Kota Bukittinggi z 2 Ha
+14 D.I. Bdr. Rakik 97 Kabupaten Agam z 86 Ha
+Kota Bukittinggi z 11 Ha
+15 D.I. Bdr. Kubu Banda 675 Kabupaten Agam z 402 Ha
+Kota Bukittinggi z 273 Ha
+16 D.I. Bdr. Batu Hampa 100 Kabupaten Agam z 85 Ha
+Kota Bukittinggi z 15 Ha
+17 D.I. Bdr. Sibaragung 600 Kabupaten Agam z 560 Ha
+Kabupaten Padang Pariaman z 40 Ha
+18 D.I. Bandar Ipuh 70 Kabupaten Agam z 43 Ha
+Kabupaten Padang Pariaman z 27 Ha
+19 D.I. Gadang Sini Air 54 Kabupaten Agam z 54 Ha
+Kabupaten Padang Pariaman -z Bendung
+20 D.I. Batang Parika 339 Kabupaten Tanah Datar z 329 Ha
+Kota Padang Panjang - 10 Ha
+21 D.I. Bdr. Bulaan Dalam 140 Kabupaten Tanah Datar z 110 Ha
+Kota Padang Panjang z 30 Ha
+22 D.I. Bdr. Gadang Darek 138 Kabupaten Tanah Datar -z 120 Ha
+Kota Padang Panjang z 18 Ha
+23 D.I. Bdr. Gadang II Paninjauan 352 Kabupaten Tanah Datar z 252 Ha
+Kota Padang Panjang z 100 Ha
+24 D.I. Bdr. Rupik 42 Kabupaten Tanah Datar z 42 Ha
+Kota Padang Panjang z Bendung
+25 D.I. Bdr. Jambu 33 Kabupaten Tanah Datar z 7 Ha
+Kota Padang Panjang z 26 Ha
+26 D.I. Bdr. Sigando 56 Kabupaten Tanah Datar z 49 Ha
+Kota Padang Panjang z 7 Ha
+27 D.I. Bdr. Muka Air 56 Kabupaten Tanah Datar z 41 Ha
+Kota Padang Panjang z 15 Ha
+28 D.I. Bdr. Sangki II 581 Kabupaten Tanah Datar z 423 Ha
+Kota Padang Panjang z 158 Ha
+29 D.I. Sawah Aru 172 Kabupaten Padang Pariaman z 142 Ha
+Kota Pariaman -z 30 Ha
+
+IV PROVINSI BENGKULU 1 109
+1 D.I. Air Daup 109 Kabupaten Kepahiang z 100 Ha
+Kabupaten Rejang Lebong z 9 Ha
+
+V PROVINSI LAMPUNG 8 4.032
+1 D.I. Way Pujorahayu 250 Kabupaten Pesawaran z 161 Ha
+Kabupaten Pringsewu z 89 Ha
+2 D.I. Way Padang Ratu I 1.032 Kabupaten Pesawaran z 192 Ha
+Kabupaten Pringsewu z 840 Ha
+3 D.I. Bulok Sukamara III 170 Kabupaten Pringsewu z 50 Ha
+Kabupaten Tanggamus z 120 Ha
+4 D.I. Way Guring 550 Kabupaten Pringsewu z 375 Ha
+Kabupaten Tanggamus z 175 Ha
+5 D.I. Way Manak | 200 Kabupaten Pringsewu z 160 Ha
+Kabupaten Tanggamus z 40 Ha
+6 D.I. Way Mincang IV 200 Kabupaten Pesawaran z 80 Ha
+Kabupaten Pringsewu z 120 Ha
+7 D.I. Way Napal 1.081 Kabupaten Pesawaran z 1.081 Ha
+Kabupaten Pringsewu z Bendung
+8 D.I. Way Kandis 549 Kabupaten Lampung Selatan - 324 Ha
+Kota Bandar Lampung -z 225 Ha
+
+VI PROVINSI BANTEN 6 6.072
+1 D.I. Cisangu Atas 446 Kabupaten Lebak z 50 Ha
+Kabupaten Serang -z 396 Ha
+2 D.I. Cicinta 1.344 Kabupaten Lebak z 46 Ha
+Kabupaten Serang z 1.298 Ha
+3 D.I. Kadugenep 200 Kabupaten Pandeglang z 36 Ha
+Kabupaten Serang z 164 Ha
+4 D.I. Cikarang Udik 200 Kabupaten Serang z 60 Ha
+Kota Serang z 140 Ha

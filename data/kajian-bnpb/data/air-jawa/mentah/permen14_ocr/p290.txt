@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+26 D.I. Sicebong 29
+27 D.I. Siendok 5
+28 D.I. Sigandu 185
+29 D.I. Sigayam 7
+30 D.I. Sigondang (Ngijo) 40
+31 D.I. Sigotek 140
+32 D.I. Sijedot 25
+33 D.I. Sikalong 83
+34 D.I. Sikemenjingan 15
+35 D.I. Sikendil 10
+36 D.I. Simenjing 25
+37 D.I. Sirabut 5
+38 D.I. Sisabuk 23
+39 D.I. Sisalam 20
+40 D.I. Sitengah 8
+41 D.I. Sikapuk 10
+XIV PROVINSI Di. YOGYAKARTA 1.225 R7.OR
+a Kab. Bantul 100 8.633
+1 D.I. Balong 95
+2 D.I. Balong 52
+3 D.I. Bibis Donoloyo 37
+4 D.I. Bugelwaru 27
+5 D.I. Canden 721
+6 D.I. Colo 13
+7 D.I. Demen I 50
+8 D.I. Dodokan 45
+9 D.I. Dokaran 351
+10 D.I. Dung Gepeng 77
+11 D.I. Ewon 255
+12 D.I. Gatak 96
+13 D.I. Gayam 21
+14 D.I. Gempolan 79
+15 D.I. Grojogan 85
+16 D.I. Gunung Kunci 42
+17 D.I. Gupit 28
+18 D.I. Jotawang 160
+19 D.I. Kadibeso 50
+20 D.I. Kadisono 144
+21 D.I. Kajor 98
+22 D.I. Karangjati 18
+23 D.I. Karangasem 178
+24 D.I. Karangploso 485
+25 D.I. Kemiri 206
+26 D.I. Kenalan 85
+27 D.I. Kepuh Kulon 45
+28 D.I. Kertopaten 41
+29 D.I. Ketonggo Bibis 83
+30 D.I. Klegen 186
+31 D.I. Kuncen 66
+32 D.I. Mejing 409
+33 D.I. Merdiko 491
+34 D.I. Mergoyoso 39
+35 D.I. Mutihan 29
+36 D.I. Nglaren 62
+37 D.I. Ngori M
+38 D.I. Ngreboh 23
+39 D.I. Pacar 75
+40 D.I. Pandes 26
+41 D.I. Pranti | 59
+#KANAN
+290
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+42 D.I. Pranti II 61
+43 D.I. Putat 107
+44 D.I. Salakan 236
+45 D.I. Samas 189
+46 D.I. Semerangan 30
+47 D.I. Sindet 103
+48 D.I. Siraman 71
+49 D.I. Sono 170
+50 D.I. Sorogenen 54
+51 D.I. Sumberan 30
+52 D.I. Tegal 601
+53 D.I. Tengah 163
+54 D.I. Terong 125
+55 D.I. Timbulsari 49
+56 D.I. Titang M
+57 D.I. Tundan 23
+58 D.I. Wiyoro 68
+59 D.I. Bamban-Soko 10
+60 D.I. Bangeran 57
+61 D.I. Beii 35
+62 D.I. Bengkung 17
+63 D.I. Cerme 50
+64 D.I. Demen II 25
+65 D.I. Embung Ngentak 24
+66 D.I. Embung Pandansimo 58
+67 D.I. Gangin 13
+68 D.I. Guntur 20
+69 D.I. Kalidadap 30
+70 D.I. Karang 64
+71 D.I. Karangasem | 10
+72 D.I. Kembang 35
+73 D.I. Kepanjen 12
+74 D.I. Koripan 12
+75 D.I. Kretek 15
+76 D.I. Maladan 15
+77 D.I. Malangjiwan 23
+78 D.I. Mojo 76
+79 D.I. Nawungan 70
+80 D.I. Ngaglik 18
+81 D.I. Ngembong 15
+82 D.I. Nogosari 20
+83 D.I. Pacar I 61
+84 D.I. Pancuran 29
+85 D.I. Patukan 21
+86 D.I. Pompa Sindet 15
+87 D.I. Sambeng 100
+88 D.I. Sanggrahan 58
+89 D.I. Seropan 12
+90 D.I. Sewon 30
+91 D.I. Sikluwih 60
+92 D.I. Siloning 18
+93 D.I. Soko 15
+94 D.I. Sorowajan 24
+95 D.I. Sunten-A 18
+96 D.I. Surocolo 11
+97 D.I. Talak 15
+98 D.I. Tangkil 37
+99 D.I. Widodo 50
+100 D.I. Wonosari 42

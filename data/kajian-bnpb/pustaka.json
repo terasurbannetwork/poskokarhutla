@@ -1,0 +1,75 @@
+[
+  {
+    "id": "bnpb-2025-renas",
+    "type": "legislation",
+    "author": [{"literal": "Badan Nasional Penanggulangan Bencana", "singkatan": "BNPB"}],
+    "issued": {"date-parts": [[2025]]},
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+  },
+  {
+    "id": "bnpb-2025-renstra",
+    "type": "legislation",
+    "author": [{"literal": "Badan Nasional Penanggulangan Bencana", "singkatan": "BNPB"}],
+    "issued": {"date-parts": [[2025]]},
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+  },
+  {
+    "id": "ri-2007-uu24",
+    "type": "legislation",
+    "author": [{"literal": "Republik Indonesia"}],
+    "issued": {"date-parts": [[2007]]},
+    "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+    "verifikasi": "primer"
+  },
+  {
+    "id": "bnpb-irbi",
+    "type": "dataset",
+    "author": [{"literal": "Badan Nasional Penanggulangan Bencana", "singkatan": "BNPB"}],
+    "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "accessed": {"date-parts": [[2026, 10, 23]]},
+    "verifikasi": "primer"
+  },
+  {
+    "id": "bnpb-dibi",
+    "type": "dataset",
+    "author": [{"literal": "Badan Nasional Penanggulangan Bencana", "singkatan": "BNPB"}],
+    "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+    "genre": "Data set",
+    "URL": "https://dibi.bnpb.go.id",
+    "accessed": {"date-parts": [[2026, 10, 23]]},
+    "verifikasi": "primer"
+  },
+  {
+    "id": "haque-2012-siklon",
+    "type": "article-journal",
+    "author": [
+      {"family": "Haque", "given": "Ubydul"},
+      {"family": "Hashizume", "given": "Masahiro"},
+      {"family": "Kolivras", "given": "Korine N."},
+      {"family": "Overgaard", "given": "Hans J."},
+      {"family": "Das", "given": "Bivash"},
+      {"family": "Yamamoto", "given": "Taro"}
+    ],
+    "issued": {"date-parts": [[2012]]},
+    "title": "Reduced death rates from cyclones in Bangladesh: What more needs to be done?",
+    "container-title": "Bulletin of the World Health Organization",
+    "volume": "90",
+    "issue": "2",
+    "page": "150–156",
+    "DOI": "10.2471/BLT.11.088302",
+    "verifikasi": "primer",
+    "note": "abstrak dibaca di PMC3302549, 23 Oktober 2026"
+  }
+]

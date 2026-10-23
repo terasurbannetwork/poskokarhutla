@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+503 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+30 D.I.A.T. Hadiluwih PWS 073 15
+31 D.I.A.T. Hadiluwih PWS 074 34
+32 D.I.A.T. Kalangan PWS 078 17
+33 D.LA.T. Karangwaru PWS 079/250 30
+34 D.LA.T. Karungan PWS 080 39
+35 D.LA.T. Karangwaru PWS 094 28
+36 D.LA.T. Karangwaru PWS 095/302 35
+37 D.LA.T. Karangwaru PWS 096/268 39
+38 D.ILA.T. Gentanbanaran PWS 097 42
+39 D.LA.T. Karanganyar PWS 098/289 32
+40 D.LA.T. Gentanbanaran PWS 099/303 40
+41 D.LA.T. Karanganyar PWS 100 39
+42 D.LA.T. Plupuh PWS 101/297 42
+43 D.LA.T. Gedongan PWS 102 32
+44 D.LA.T. Jono PWS 103 38
+45 D.LA.T. Karanganyar PWS 104 34
+46 D.I.A.T. Padas PWS 105/300 32
+47 D.LA.T. Pengkol PWS 106 34
+48 D.LA.T. Kecik PWS 107 40
+49 D.I.LA.T. Padas PWS 108 45
+50 D.I.A.T. Tanon PWS 109 29
+51 D.LA.T. Gedongan PWS 134 33
+52 D.L.A.T. Gedongan PWS 135 31
+53 D.LA.T. Karanganyar PWS 136 33
+54 D.LA.T. Karangwaru PWS 138 37
+55 D.LA.T. Gentanbanaran PWS 139/298 35
+56 D.ILA.T. Gentanbanaran PWS 140/299 31
+57 D.I.A.T. Suatu PWS 141 R 43
+58 D.I.A.T. Suwatu PWS 142 39
+59 D.I.A.T. Jono PWS 143 30
+60 D.I.A.T. Jono PWS 144 40
+61 D.I.A.T. Jono PWS 145 36
+62 D.I.A.T. Padas PWS 146/304 33
+63 D.I.A.T. Padas PWS 147 35
+64 D.I.A.T. Kecik PWS 148/305 36
+65 D.I.A.T. Kecik PWS 149 27
+66 D.I.A.T. Kecik PWS 150 27
+67 D.I.A.T. Pengkol PWS 151 36
+68 D.I.A.T. Pengkol PWS 152 26
+69 D.I.A.T. Sidokerto PWS 153 19
+70 D.I.A.T. Pengkol PWS 154 31
+71 D.LA.T. Bendo PWS 155 31
+72 D.I.A.T. Kalimacan PWS 157 20
+73 D.I.A.T. Kalimacan PWS 158 20
+74 D.LA.T. Banaran PWS 160 22
+75 D.I.A.T. Trobayan PWS 161 30
+76 D.I.A.T. Suwatu PWS 172 40
+77 D.LA.T. Kecik PWS 173 33
+78 D.I.A.T. Kecik PWS 196 35
+79 D.LA.T. Kecik PWS 197 32
+80 D.I.A.T. Kecik PWS 198 24
+81 D.I.A.T. Pengkol PWS 199 30
+82 D.I.A.T. Pengkol PWS 200 28
+83 D.I.A.T. Singopadu PWS 201 22
+84 D.I.A.T. Singopadu PWS 202 25
+85 D.I.A.T. Plupuh PWS 203 19
+86 D.I.A.T. Plupuh PWS 204 31
+87 D.I.A.T. Jambanan PWS 205 26
+88 D.I.A.T. Gedongan PWS 206 23
+89 D.I.A.T. Gedongan PWS 207 33
+90 D.I.A.T. Gedongan PWS 208 35

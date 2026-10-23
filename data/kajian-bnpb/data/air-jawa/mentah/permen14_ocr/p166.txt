@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+706 D.I. Jati Nunggal 8
+707 D.I. Jaura 30
+708 D.I. Jayanti 20
+709 D.I. Jelegong 10
+710 D.I. Jenggot Girang 43
+711 D.I. Jogjogan 35
+712 D.I. Jontor 62
+713 D.I. Jugleg 25
+714 D.I. Kalapa Nunggal 28
+715 D.I. Kali Jati 50
+716 D.I. Kali Jati 60
+717 D.I. Kali Putih 29
+718 D.I. Kalong | 28
+719 D.I. Kampung Baru 50
+720 D.I. Kampung Bayur 7
+721 D.I. Kampung Bojong Terong 10
+722 D.I. Kampung Bojong Honje 15
+723 D.I. Kampung Cikeruh 10
+724 D.I. Kampung Cipanas 10
+725 D.I. Kampung Cisoro 10
+726 D.I. Kampung Endrek 50
+727 D.I. Kampung Gunung Sanggar 10
+728 D.I. Kampung Haur Seah 8
+729 D.I. Kampung Jawa 20
+730 D.I. Kampung Legok Nyenang 15
+731 D.I. Kampung Nyalindung 15
+732 D.I. Kampung Pamidahan 10
+733 D.I. Kampung Selawangi 75
+734 D.I. Kampung Situ 33
+735 D.I. Kampung Talaga 7
+736 D.I. Kampung Tegal Koneng 10
+737 D.I. Kampung Tegal Panjang 10
+738 D.I. Kampung Tengah 28
+739 D.I. Kananga 40
+740 D.I. Kasiman 25
+741 D.I. Kawung 26
+742 D.I. Kedaung 25
+743 D.I. Kedoya 20
+744 D.I. Keusal 70
+745 D.I. Ki Armaen 35
+746 D.I. Kienda 25
+747 D.I. Kirainah 20
+748 D.I. Kisuma 25
+749 D.I. Kondang 27
+750 D.I. Kopo 40
+751 D.I. Kosol 11
+752 D.I. Kubang 30
+753 D.I. Lebak Awi 35
+754 D.I. Lebak Picung Atas 23
+755 D.I. Lebak Picung Bawah 28
+756 D.I. Lebong 20
+757 D.I. Legok Andong I 35
+758 D.I. Legok Andong II 30
+759 D.I. Legok Leumeung 15
+760 D.I. Legok Mahmud 20
+761 D.I. Legok Nyenang 40
+762 D.I. Leles 150
+763 D.I. Lemah Anyar 10
+764 D.I. Lemah Duhur 38
+765 D.I. Lemah Hulur 32
+766 D.I. Lembur Situ 25
+#KANAN
+166
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+767 D.I. Lengkong 20
+768 D.I. Lengkong Jaya 10
+769 D.I. Leuleugok 15
+770 D.I. Leuweung Kolot 20
+771 D.I. Leuweung Larangan 20
+772 D.I. Leuwi Anjing 15
+773 D.I. Leuwi Asipah 31
+774 D.I. Leuwi Astam 16
+775 D.I. Leuwi Banen/Tiga 21
+776 D.I. Leuwi Batu 50
+777 D.I. Leuwi benda 25
+778 D.I. Leuwi Bitung 50
+779 D.I. Leuwi Ciguha 70
+780 D.I. Leuwi Cina 23
+781 D.I. Leuwi Ciung 60
+782 D.I. Leuwi Daim 25
+783 D.I. Leuwi Dukuh 10
+784 D.I. Leuwi Jawa 120
+785 D.I. Leuwi Kacapi 70
+786 D.I. Leuwi Kacapi 36
+787 D.I. Leuwi Kawung 20
+788 D.I. Leuwi Leutak 4
+789 D.I. Leuwi Mainin/Singa Maja 60
+790 D.I. Leuwi Makam 80
+791 D.I. Leuwi Malang 35
+792 D.I. Leuwi Maskam 30
+793 D.I. Leuwi Nangka 30
+794 D.I. Leuwi Olen 25
+795 D.I. Leuwi Panjang 18
+796 D.I. Leuwi Panjang 40
+797 D.I. Leuwi Panjang 38
+798 D.I. Leuwi Peuteuy 40
+799 D.I. Leuwi Sakir 50
+800 D.I. Leuwi Santri 15
+801 D.I. Leuwi Sempit 15
+802 D.I. Leuwi Senen 100
+803 D.I. Leuwi Timpug 40
+804 D.I. Leuwi Totog 40
+805 D.I. Leuwi Tundun 36
+806 D.I. Leuwi Urug I & II 61
+807 D.I. Leuwibolang 17
+808 D.I. Leuwikaso 25
+809 D.I. Leuwimalang I 15
+810 D.I. Leuwimalang II 12
+811 D.I. Leuwisadeng 80
+812 D.I. Malasari 60
+813 D.I. Malati 110
+814 D.I. Maniis 39
+815 D.I. Mantri 20
+816 D.I. Masjid 40
+817 D.I. Meumpelem 17
+818 D.I. Nairun 40
+819 D.I. Nangela Kulon 20
+820 D.I. Nanggela 60
+821 D.I. Nanggeleng 33
+822 D.I. Nanggerang I 25
+823 D.I. Neglasari 15
+824 D.I. Nyamplung 11
+825 D.I. Nyoman I 50
+826 D.I. Nyoman II 73
+827 D.I. Nyublek 25

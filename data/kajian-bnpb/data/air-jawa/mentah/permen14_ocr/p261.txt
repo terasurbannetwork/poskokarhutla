@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+122 D.I. Protok 50
+123 D.I. Pulosari 106
+124 D.I. Pulus 288
+125 D.I. Purwohadi 62
+126 D.I. Putat 37
+127 D.I. Rabak 416
+128 D.I. Rukem I 30
+129 D.I. Sabrangan 16
+130 D.I. Sangkanayu 25
+131 D.I. Sibayur 13
+132 D.I. Sibebek 30
+133 D.I. Siceting 93
+134 D.I. Siendep 25
+135 D.I. Sijati 108
+136 D.I. Sikumbang 20
+137 D.I. Silea 178
+138 D.I. Silintang 52
+139 D.I. Silompong 55
+140 D.I. Sinangka II 14
+141 D.I. Singa 40
+142 D.I. Sipetel 90
+143 D.I. Sirandu 98
+144 D.I. Sirembang 32
+145 D.I. Sitangkil 175
+146 D.I. Situmpang 53
+147 D.I. Situtirtomarto (MA) 721
+148 D.I. Siwadas 27
+149 D.I. Siwedus 49
+150 D.I. Slinga 430
+151 D.I. Sumberagung 65
+152 D.I. Suro 159
+153 D.I. Susukan 31
+154 D.I. Susukan I # II 55
+155 D.I. Tahun 5
+156 D.I. Tambra 47
+157 D.I. Tandon 40
+158 D.I. Tayur I 60
+159 D.I. Tengah 20
+160 D.I. Tinap 60
+161 D.I. Tinggar I 25
+162 D.I. Tirtayasa 55
+163 D.I. Tranggulasih 18
+164 D.I. Trowinangun 87
+165 D.I. Tuk arus | 280
+166 D.I. Tuk arus II (MA) 38
+167 D.I. Tuntang 130
+168 D.I. Wadansari 110
+169 D.I. Wadas | 45
+170 D.I. Wadastarum 95
+171 D.I. Warak 59
+172 D.I. Waringin | 8
+173 D.I. Waru 28
+174 D.I. Wilahar 28
+175 D.I. Winang 19
+176 D.I. Wuluh II 35
+177 D.I. Anyir 80
+178 D.I. Arus | 70
+179 D.I. Arus II 45
+180 D.I. Asinan II 14
+181 D.I. Baleraksa 35
+182 D.I. Bantarbarang 20
+#KANAN
+- 1015, No.638
+261 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+183 D.I. Barangwungkal 92
+184 D.I. Bedahan 49
+185 D.I. Blawong 15
+186 D.I. Blimbing 35
+187 D.I. Bugel 20
+188 D.I. Bungkanel 226
+189 D.I. Cangkring III 81
+190 D.I. Cempli 42
+191 D.I. Curug Sengon 105
+192 D.I. Deng 35
+193 D.I. Gembrung 30
+194 D.I. Gendangar 17
+195 D.I. Gentong 14
+196 D.I. Gowok | 109
+197 D.I. Gowok II 60
+198 D.I. Grayah 4
+199 D.I. Gugur 25
+200 D.I. Ideng I 45
+201 D.I. Ideng II 35
+202 D.I. Jahal 150
+203 D.I. Jambean | 52
+204 D.I. Kadung 10
+205 D.I. Karag 19
+206 D.I. Karangjambu 120
+207 D.I. Karangjati 22
+208 D.I. Karangkemiri 69
+209 D.I. Karangsari | 98
+210 D.I. Karangsentul 239
+211 D.I. Kedaung 11
+212 D.I. Kedungsela 45
+213 D.I. Kemangkang 59
+214 D.I. Keponto 25
+215 D.I. Kidang 15
+216 D.I. Laban | 31
+217 D.I. Laban II 38
+218 D.I. Lideng 45
+219 D.I. Ligung I 80
+220 D.I. Ligung II 40
+221 D.I. Makam 120
+222 D.I. Manggis 120
+223 D.I. Margoluhur 58
+224 D.I. Mayang 15
+225 D.I. Menjang 33
+226 D.I. Munggangsari 71
+227 D.I. Nambo | 40
+228 D.I. Nariban 50
+229 D.I. Onje 15
+230 D.I. Pengempon 11
+231 D.I. Pingit | 55
+232 D.I. Pingit II 60
+233 D.I. Pingit III 75
+234 D.I. Prabawulan (MA) 65
+235 D.I. Rukem II 26
+236 D.I. Selopradonggo 40
+237 D.I. Sibelak 30
+238 D.I. Sigra 40
+239 D.I. Sigupit 80
+240 D.I. Sikembang | 35
+241 D.I. Sikembang II 134
+242 D.I. Simbang 12
+243 D.I. Sinangka | 21

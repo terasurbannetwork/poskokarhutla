@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+102 D.I. Uma Kahang 34
+103 D.I. Uma Kaleran 68
+104 D.I. Uma Kanginan 15
+105 D.I. Uma Sangyang 31
+106 D.I. Umaya 79
+107 D.I. Waliang 18
+108 D.I. Yang Taluh 54
+109 D.I. Yeh Poh 18
+110 D.I. Yeh Sayang 152
+111 D.I. Celetiga 21
+112 D.I. Tangkup 66
+113 D.I. Ababi II 4
+114 D.I. Subagan V 20
+115 D.I. Subagan VI 10
+116 D.I. Andong II 3
+a Kab. Klunakuna 21 2.306
+1 D.I. Aan Dangin Desa M
+2 D.I. Aan Dauh Desa 126
+3 D.I. Cai 153
+4 D.I. Gembalan 68
+5 D.I. Getakan 135
+6 D.I. Giri 210
+7 D.I. Jero Kuta Kawan 22
+8 D.I. Jero Kuta Klod 61
+9 D.I. Lemek 59
+10 D.I. Manduang 114
+11 D.I. Nyanglan 74
+12 D.I. Pau 73
+13 D.I. Penasan 154
+14 D.I. Selisihan 183
+15 D.I. Sengkiding 40
+16 D.I. Sidayu 61
+17 D.I. Takmung-Lepang 197
+18 D.I. Tegehan 59
+19 D.I. Timuhun 105
+20 D.I. Togoh M
+21 D.I. Tunggak Alas 280
+h Kab. Tabanan 194 16.749
+1 D.I. Begawan Kaja 72
+2 D.I. Begawan Kelod 128
+3 D.I. Yeh Matan 532
+4 D.I. Kelepud 169
+5 D.I. Tingkih Tebel 170
+6 D.I. Nyat-Nyatan 48
+7 D.I. Bantas B.A. Kaja 59
+8 D.I. Batu Timpi 39
+9 D.I. Sesandan 38
+10 D.I. Dalang 17
+11 D.I. Belongyang 91
+12 D.I. Guniang 36
+13 D.I. Pk. Langkuas 18
+14 D.I. Serampingan 95
+15 D.I. Pupuan Luah 63
+16 D.I. Cepaka 17
+17 D.I. Celacar 16
+18 D.I. Soka Aseman 29
+19 D.I. Telaga 40
+20 D.I. Petebuan 60
+21 D.I. Timbul 85
+#KANAN
+376
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Kambingan 29
+23 D.I. Kulkul Batu 23
+24 D.I. Antosari-Bulung Daya 965
+25 D.I. Soka 362
+26 D.I. Yeh Bakung 107
+27 D.I. Selabih 93
+28 D.I. Menunggul 98
+29 D.I. Bantas 25
+30 D.I. Poh Gedang 52
+31 D.I. Samsaman 42
+32 D.I. Wanagiri 71
+33 D.I. Sawah 96
+34 D.I. Pendem 23
+35 D.I. Labak Suren 44
+36 D.I. Batu Sangian 51
+37 D.I. Gubug 666
+38 D.I. Tanah Peaat 65
+39 D.I. Sengauk 34
+40 D.I. Bongan Kapal 39
+41 D.I. Yeh Empas 495
+42 D.I. Legung 27
+43 D.I. Kota Pala 446
+44 D.I. Jangkahan 39
+45 D.I. Buruan 245
+46 D.I. Pasut 39
+47 D.I. Klode 106
+48 D.I. Subamia 62
+49 D.I. Dangin Sema 14
+50 D.I. Gunung Subamia 15
+51 D.I. Jangga 83
+52 D.I. Nyitdah 608
+53 D.I. Jadi 270
+54 D.I. Demung 129
+55 D.I. Senapahan 134
+56 D.I. Bengkel 375
+57 D.I. Kediri 182
+58 D.I. Gadon III 24
+59 D.I. Br. Anyar 51
+60 D.I. Delod Kukuh 37
+61 D.I. Pavanaan 302
+62 D.I. Mila 134
+63 D.I. Bena Gangsang 210
+64 D.I. Mumbul 14
+65 D.I. Tegal Linggah 31
+66 D.I. Penataran 288
+67 D.I. Saih 71
+68 D.I. Susut 58
+69 D.I. Pacung Belaluan 62
+70 D.I. Semingan 33
+71 D.I. Kalibalang 15
+72 D.I. Blanban 13
+73 D.I. Dayang 14
+74 D.I. Jaka 44
+75 D.I. Adeng 32
+76 D.I. Pengembungan 94
+77 D.I. Desa Cepik 13
+78 D.I. Bugbugan 14
+79 D.I. Kebon II 26
+80 D.I. Srinadi 44
+81 D.I. Srineka 24
+82 D.I. Cepik 58

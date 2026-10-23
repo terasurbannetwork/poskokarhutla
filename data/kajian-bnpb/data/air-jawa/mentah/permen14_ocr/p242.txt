@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+275 D.I. Mien 19
+276 D.I. Mipitan 12
+277 D.I. Miren 19
+278 D.I. Mlandang 56
+279 D.I. Mlese 78
+280 D.I. Mudal 58
+281 D.I. Mudal 16
+282 D.I. Munggur 32
+283 D.I. Muteran 203
+284 D.I. Nangsren 32
+285 D.I. Neketan 21
+286 D.I. Nengahan 30
+287 D.I. Ngalas 25
+288 D.I. Ngalian 71
+289 D.I. Ngalian 19
+290 D.I. Ngancar 57
+291 D.I. Ngangkruk 34
+292 D.I. Ngangkruk 14
+293 D.I. Ngaran 164
+294 D.I. Ngaren 22
+295 D.I. Ngaringan 40
+296 D.I. Ngasem 37
+297 D.I. Ngasem 27
+298 D.I. Ngasem 16
+299 D.I. Ngelo 16
+300 D.I. Ngentak 68
+301 D.I. Ngerangan 35
+302 D.I. Nggedaren 49
+303 D.I. Nglarangan 18
+304 D.I. Ngori 59
+305 D.I. Ngori 11
+306 D.I. Ngrahu 57
+307 D.I. Ngreco 16
+308 D.I. Ngrejo 17
+309 D.I. Nilo 128
+310 D.I. Nolojayan II 10
+311 D.I. Nongko 11
+312 D.I. Pace 12
+313 D.I. Padan 29
+314 D.I. Padangan 81
+315 D.I. Paingan 42
+316 D.I. Panasan 108
+317 D.I. Pancuran 10
+318 D.I. Pandan 178
+319 D.I. Pandan II 19
+320 D.I. Pandanan 15
+321 D.I. Paten I 11
+322 D.I. Paten II 65
+323 D.I. Paten II 20
+324 D.I. Pelem/Nganten 287
+325 D.I. Pencit 176
+326 D.I. Peng. Gaten 16
+327 D.I. Pengb. Birit 17
+328 D.I. Pengb. KI. Jombor 11
+329 D.I. Pepe 43
+330 D.I. Petung 42
+331 D.I. Pijinan 17
+332 D.I. Pisang 30
+333 D.I. Plaeng 28
+334 D.I. Plandakan 13
+335 D.I. Plaosan 32
+#KANAN
+212
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+336 D.I. Plawikan 28
+337 D.I. Plembangan 25
+338 D.I. Pleredan 13
+339 D.I. Plundungan 52
+340 D.I. Pluneng 60
+341 D.I. Pogong I 10
+342 D.I. Pogong II 58
+343 D.I. Poitan 19
+344 D.I. Pokak Lanang 42
+345 D.I. Pokak Wadon 68
+346 D.I. Pokakan 54
+347 D.I. Pokoh 22
+348 D.I. Pomah 14
+349 D.I. Pondok 44
+350 D.I. Ponggok 924
+351 D.I. Potro 20
+352 D.I. Potronalan 10
+353 D.I. Pradan 17
+354 D.I. Prayan Sp 46
+355 D.I. Pruso I 28
+356 D.I. Pruso II 79
+357 D.I. Pucangan 14
+358 D.I. Pucangan 13
+359 D.I. Pudak 72
+360 D.I. Pudak 22
+361 D.I. Pule 19
+362 D.I. Pule 31
+363 D.I. Pulo 115
+364 D.I. Pusur 22
+365 D.I. Randualas 95
+366 D.I. Randukucir 39
+367 D.I. Rangkang 4
+368 D.I. Sabuk 34
+369 D.I. Sagi 21
+370 D.I. Salam 11
+371 D.I. Saluhan 21
+372 D.I. Sanggrahan 28
+373 D.I. Sanggrahan 15
+374 D.I. Saren 16
+375 D.I. Sarimulyo 15
+376 D.I. Sawahan M
+377 D.I. Sawahan 24
+378 D.I. Sawo 424
+379 D.I. Segaran 12
+380 D.I. Seloleter 28
+381 D.I. Sempol Bomo 23
+382 D.I. Sempol Tempe 12
+383 D.I. Senden 37
+384 D.I. Senden 13
+385 D.I. Sentul 12
+386 D.I. Sepuluh 31
+387 D.I. Serut 26
+388 D.I. Sidowayah 30
+389 D.I. Siguwo 15
+390 D.I. Sikuning 19
+391 D.I. Simaling 58
+392 D.I. Simaling 25
+393 D.I. Simuneng 55
+394 D.I. Sindon 27
+395 D.I. Sindu 38
+396 D.I. Siragas 270

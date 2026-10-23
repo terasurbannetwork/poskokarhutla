@@ -1,0 +1,65 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 599
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+102 D.LA.T. Sumolawang SMMJ 402 13
+m Kab. Naaniuk 52 1.336
+1 D.LA.T. Ngrami SDNJ 007 14
+2 D.LA.T. Pacewetan SDNJ 017 21
+3 D.LA.T. Pacekulon SDNJ 038 21
+4 D.LA.T. Bodor SDNJ 065 20
+5 D.LA.T. Ja'an SDNJ 105 47
+6 D.I.A.T. Putukrejo SDNJ 116 20
+7 D.LA.T. Putukrejo SDNJ 117 22
+8 D.L.A.T. Putukrejo SDNJ 118 20
+9 D.LA.T. Putukrejo SDNJ 119 20
+10 D.LA.T. Nglaban SDNJ 135 27
+11 D.LA.T. Nglaban SDNJ 138 24
+12 D.LA.T. Putukrejo SDNJ 139 20
+13 D.LA.T. Sanggrahan SDNJ 150 29
+14 D.LA.T. Banjardowo SDNJ 151 41
+15 D.LA.T. Kepanjen SDNJ 153 33
+16 D.ILA.T. Kwagean SDNJ 154 47
+17 D.LA.T. Kepanjen SDNJ 155 46
+18 D.LA.T. Sukorejo SDNJ 156 30
+19 D.LA.T. Sombron SDNJ 159 28
+20 D.I.A.T. Jaan SDNJ 169 48
+21 D.LA.T. Jatipunggur SDNJ 172 40
+22 D.LA.T. Sumberagung SDNJ 174 44
+23 D.I.A.T. Ketawang SDNJ 176 42
+24 D.L.A.T. Ngujung SDNJ 177 42
+25 D.LA.T. Balonggebang SDNJ 178 34
+26 D.I.A.T. Balongrejo SDNJ 216 40
+27 D.I.A.T. Bulu SDNJ 217 69
+28 D.I.A.T. Sumberurip SDNJ 218 69
+29 D.I.A.T. Sanan SDNJ 511 35
+30 D.I.A.T. Loceret SDNJ 517 49
+31 D.L.A.T. Ja'an SDNJ 525 44
+32 D.I.A.T. Sumberurip SDNJ 530 24
+33 D.I.A.T. Batembat SDNJ 545 9
+34 D.I.LA.T. Kenep SDNJ 547 17
+35 D.I.A.T. Kwagean SDNJ 548 18
+36 D.I.A.T. Godean SDNJ 549 39
+37 D.I.A.T. Sumberurip SDNJ 563 15
+38 D.I.A.T. Sanan SMNJ 224 6
+39 D.I.A.T. Sanan SMNJ 225 9
+40 D.I.A.T. Babatan SMNJ 226 9
+41 D.L.A.T. Babatan SMNJ 227 9
+42 D.LA.T. Banaran SMNJ 228 9
+43 D.I.A.T. Sekaran SMNJ 230 9
+44 D.LA.T. Kwagean SMNJ 233 9
+45 D.I.LA.T. Sekaran SMNJ 236 8
+46 D.I.A.T. Sekaran SMNJ 237 8
+47 D.LA.T. Sekaran SMNJ 238 9
+48 D.I.A.T. Kenep SMNJ 239 8
+49 D.LA.T. Tanjungrejo SMNJ 240 9
+50 D.LA.T. Tanjungrejo SMNJ 241 8
+51 D.LA.T. Tanjungrejo SMNJ 242 8
+52 D.I.A.T. Sombron SMNJ 243 9
+n Kab. Naawi 160 4.428
+1 D.LA.T. Pacing SDNG 034 50
+2 D.LA.T. Gentong SDNG 035 55
+3 D.LA.T. Tambanromo SDNG 042 95
+4 D.LA.T. Jenggrik SDNG 045 61

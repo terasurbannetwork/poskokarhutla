@@ -1,0 +1,60 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 580
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+n Kab. Takalar 8 144
+1 D.LA.T. Padingin SMTK 181 15
+2 D.LA.T. Sombalabella SMTK 128 15
+3 D.LA.T. Sombalabella SMTK 130 20
+4 D.LA.T. Sombalabella SMTK 131 15
+5 D.LA.T. Sombalabella SMTK 183 20
+6 D.LA.T. Lassang SDTK 58 15
+7 D.LA.T. Lassang SDTK 59 29
+8 D.LA.T. Parapunganta SMTK 125 15
+o Kab. Waio 9 115
+1 D.LA.T. Ongkoe SMWJ 43 10
+2 D.LA.T. Ongkoe SMWJ 44 10
+3 D.LA.T. Ongkoe SMWJ 47 15
+4 D.LA.T. Ongkoe SMWJ 62 10
+5 D.LA.T. Welle SMWJ 63 20
+6 D.LA.T. Tangkoli SMWJ 61 12
+7 D.LA.T. Tangkoli SMWJ 64 20
+8 D.L.A.T. Sompe SMWJ 60 10
+9 D.LA.T. Sakoli SMWJ 48 8
+XVIII PROVINSI MALUKU 23 57
+a Kab. Maluku Tenaaara 20 26
+1 D.LA.T. Larat 1
+2 D.LA.T. Namar 1
+3 D.LA.T. Ohoinol 2
+4 D.LA.T. Lairngangas 1
+5 D.LA.T. Yatvav 3
+6 D.LA.T. Yamtimur 1
+7 D.LA.T. Tamangil 1
+8 D.LA.T. Ohoiluk 1
+9 D.LA.T. Warwut 2
+10 D.LA.T. Danar 1
+11 D.LA.T. Reyamru 1
+12 D.LA.T. Sather 1
+13 D.LA.T. Abean 2
+14 D.LA.T. Famnaung 2
+15 D.LA.T. Tutrean 1
+16 D.LA.T. Sathean 1
+17 D.LA.T. Kilwaer 1
+18 D.LA.T. Ngilngof 1
+19 D.LA.T. Ohoidertutu 1
+20 D.LA.T. Wearohoinam 1
+b Kab. Tual 3 31
+1 D.LA.T. Danau Fanil 01 22
+2 D.LA.T. Danau Ngadi 02 3
+3 D.LA.T. Kur 01 6
+XIX PROVINSI PAPUA 78 345
+a Kab. Javabura 8 36
+1 D.LA.T. Arso | 01 3
+2 D.LA.T. Arso II 01 5
+3 D.LA.T. Arso Kota 01 2
+4 D.LA.T. Arso V 01 5
+5 D.LA.T. Arso V 02 5
+6 D.LA.T. Arso VI 01 5
+7 D.LA.T. Arso VIII 01 4
+8 D.LA.T. Arso XII 01 7

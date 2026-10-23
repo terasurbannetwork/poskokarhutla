@@ -41,6 +41,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # berkas statis yang di-commit jangan digantikan versi cache (pola banjir.yml); pltu.json statis di public/udara/data
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
@@ -87,4 +91,5 @@ jobs:
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!public/udara/data' ':!data/raw'
           python3 scripts/terbit/versi.py || { echo "::error title=Versi gagal::scripts/terbit/versi.py gagal"; exit 1; }
           python3 scripts/terbit/jaga_segar.py
+          python3 scripts/terbit/isi_data.py buat
           npx --yes wrangler@4.42.0 deploy || { echo "::error title=Deploy gagal::wrangler deploy gagal"; exit 1; }

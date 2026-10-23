@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+423 D.I. Kebon 6
+424 D.I. Kedungdowo 36
+425 D.I. Kemejing 15
+426 D.I. Kijing 34
+427 D.I. Krikil 9
+428 D.I. Krobokan 25
+429 D.I. Kuripan 20
+430 D.I. Kuwung 59
+431 D.I. Larangan 13
+432 D.I. Larek 21
+433 D.I. Lemah Abang 20
+434 D.I. Lempong 6
+435 D.I. Liangan 10
+436 D.I. Loka 10
+437 D.I. Longopan 21
+438 D.I. Loyar 5
+439 D.I. Luwung 24
+440 D.I. MA. Bali Kembang 29
+441 D.I. MA. Banaran 4
+442 D.I. MA. Bawang 30
+443 D.I. MA. Bledo 4
+444 D.I. MA. Bugel 37
+445 D.I. MA. Bulung 4
+446 D.I. MA. Dandang 27
+447 D.I. MA. Dempet 2
+448 D.I. MA. Glendeng 20
+449 D.I. MA. Gondang 6
+450 D.I. MA. Gowaka M
+451 D.I. MA. Gupit 40
+452 D.I. MA. Guyangan 8
+453 D.I. MA. Joto I 10
+454 D.I. MA. Joto II 8
+455 D.I. MA. Jumleng 21
+456 D.I. MA. Juruk 3
+457 D.I. MA. Kali Gondang 10
+458 D.I. MA. Kalisari 5
+459 D.I. MA. Kamijoro 69
+460 D.I. MA. Karangbulung 15
+461 D.I. MA. Krengseng 5
+462 D.I. MA. Kuwarasan 4
+463 D.I. MA. Larung 10
+464 D.I. MA. Lebeng 14
+465 D.I. MA. Macan 2
+466 D.I. MA. Mandolo 1
+467 D.I. MA. Mekudu 9
+468 D.I. MA. Mertelu 60
+469 D.I. MA. Pemandian 36
+470 D.I. MA. Pucung 3
+471 D.I. MA. Rowo Lele 12
+472 D.I. MA. Sangen 5
+473 D.I. MA. Sidondong 15
+474 D.I. MA. Sikendil 5
+475 D.I. MA. Sikunir 13
+476 D.I. MA. Sirandu 15
+477 D.I. MA. Sirejuk 20
+478 D.I. MA. Suruan 4
+479 D.I. MA. Tulung 2
+480 D.I. Manggeran 15
+481 D.I. Manggis 14
+482 D.I. Mangli 50
+483 D.I. Mangli 10
+#KANAN
+207 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+484 D.I. Mangli 10
+485 D.I. Maos 17
+486 D.I. Maron 50
+487 D.I. Miri 10
+488 D.I. Mlobo 12
+489 D.I. Mpudang 66
+490 D.I. Mrigi 50
+491 D.I. Mubal 60
+492 D.I. Murogo 24
+493 D.I. Ngalian 10
+494 D.I. Niten 8
+495 D.I. Padongan 10
+496 D.I. Pagotan 20
+497 D.I. Pajaran 13
+498 D.I. Parangan A 34
+499 D.I. Pasang 10
+500 D.I. Pawon 5
+501 D.I. Pendokgiono 36
+502 D.I. Pereng 15
+503 D.I. Pete 3
+504 D.I. Petis 7
+505 D.I. Pinggir 13
+506 D.I. Pluang 8
+507 D.I. Posong 40
+508 D.I. Proyondoko 90
+509 D.I. Pucung 6
+510 D.I. Pucung 8
+511 D.I. Pucung/Kepudung 30
+512 D.I. Pule 24
+513 D.I. Pule 15
+514 D.I. Pule 4
+515 D.I. Pulung 15
+516 D.I. Rembul 25
+517 D.I. Ringin 4
+518 D.I. Rongkel 12
+519 D.I. Sani 50
+520 D.I. Sawit 9
+521 D.I. Segong 19
+522 D.I. Semampir 40
+523 D.I. Sendang 20
+524 D.I. Serang 10
+525 D.I. Setalang 20
+526 D.I. Siaji 63
+527 D.I. Siandul 210
+528 D.I. Sibatur 25
+529 D.I. Sicuil 12
+530 D.I. Siduren 10
+531 D.I. Sigelap 54
+532 D.I. Sigencer 25
+533 D.I. Sigondang 15
+534 D.I. Sigondong 13
+535 D.I. Sijambe 10
+536 D.I. Sikencur 40
+537 D.I. Sikendung 25
+538 D.I. Sikrikil 10
+539 D.I. Sikudi 30
+540 D.I. Sikuwung 20
+541 D.I. Silempong 6
+542 D.I. Silengkong 14
+543 D.I. Silombang 30
+544 D.I. Silumbu II 25

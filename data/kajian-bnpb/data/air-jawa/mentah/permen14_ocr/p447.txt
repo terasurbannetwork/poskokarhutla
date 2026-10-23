@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+115 D.I. Swadaya 97
+116 D.I. Syeping 25
+117 D.I. Tadi 79
+118 D.I. Tambaria 64
+119 D.I. Tambariang 64
+120 D.I. Tangkulu 99
+121 D.I. Tapillasa 40
+122 D.I. Tassala 37
+123 D.I. Tingkasae 45
+124 D.I. Tippulue-Kalobba 173
+125 D.I. Tobalo 25
+126 D.I. Tonasa 96
+127 D.I. Tonrong 30
+128 D.I. Topala-Tanatoa 15
+129 D.I. Toribi 36
+130 D.I. Bakung 15
+131 D.I. Balla Kengkeng 35
+132 D.I. Banda Banua Tobenni 25
+133 D.I. Barang 93
+134 D.I. Batu-lli 25
+135 D.I. Batu Liputang 23
+136 D.I. Batu Lotong 12
+137 D.I. Bikali 115
+138 D.I. Borong Kalukue 30
+139 D.I. Borong Pao 35
+140 D.I. Bulu-Bulu 55
+141 D.I. Ceppie Hilalang 68
+142 D.I. Galung Beru 35
+143 D.I. Harue 96
+144 D.I. Jira Bonto 11
+145 D.I. Kampala 71
+146 D.I. Kanyame 15
+147 D.I. Labacceng 22
+148 D.I. Lajang Hulu 15
+149 D.I. Lapparae 35
+150 D.I. Lompo Siri 57
+151 D.I. Luppereng 95
+152 D.I. Massesa 17
+153 D.I. Pappangkungan 56
+154 D.I. Paroppo Pettungge 50
+155 D.I. Patikalae 35
+156 D.I. Sahuneng 34
+157 D.I. Sampaga/Batu Santung 30
+158 D.I. Sengkatallu 42
+159 D.I. Tallua/Laminnya 30
+160 D.I. Tanassangge 30
+161 D.I. Ulu Galung 12
+a Kab. Sonbena 121 9.666
+1 D.I. Abekkae 40
+2 D.I. Abekkae | 50
+3 D.I. AjuaraE 20
+4 D.I. Alau BolaE 61
+5 D.I. Alau Sarasa 100
+6 D.I. Allaringe | 45
+7 D.I. Allaringe II 20
+8 D.I. Allimbangeng 90
+9 D.I. Ampalang 60
+10 D.I. Appalaringe 30
+11 D.I. Atakkah 56
+12 D.I. Attang Meru 67
+#KANAN
+447 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+13 D.I. Awo Banua 125
+14 D.I. Bacu-Bacue 50
+15 D.I. Barang 60
+16 D.I. Batu Sianre 75
+17 D.I. Belawa | 100
+18 D.I. Belawa II 60
+19 D.I. CempaE 102
+20 D.I. Cennae 60
+21 D.I. Cilekke 30
+22 D.I. Cimpolong 20
+23 D.I. Cimpurunge 47
+24 D.I. Cinebbeng 80
+25 D.I. Cinurung 20
+26 D.I. Cubbue 90
+27 D.I. Dao'e 500
+28 D.I. Datae 45
+29 D.I. Empagae 50
+30 D.I. Gellenge 100
+31 D.I. Ilampe 50
+32 D.I. Jompi Pitue 90
+33 D.I. Jompie 40
+34 D.I. Jurusua 80
+35 D.I. Kadeppe 50
+36 D.I. Kajuara-Kabaro 125
+37 D.I. Kajuara II 37
+38 D.I. Kampung Baru 50
+39 D.I. Kawue 30
+40 D.I. Kebo/Lokajawae 100
+41 D.I. Labawi | 32
+42 D.I. Labawi II 55
+43 D.I. Labawi III 45
+44 D.I. Labuleng 78
+45 D.I. Ladope 80
+46 D.I. Lagalimporo 106
+47 D.I. Laguliling 70
+48 D.I. Lajaroko 811
+49 D.I. Lamalampe 90
+50 D.I. Lamaloang 40
+51 D.I. Lamenra 100
+52 D.I. Lapakenna | 67
+53 D.I. Lapakenna II 70
+54 D.I. Lapanga 74
+55 D.I. Lapince 50
+56 D.I. Latappareng 80
+57 D.I. Latasi 70
+58 D.I. Lejja 50
+59 D.I. Lemo-Lemo Masing 100
+60 D.I. Leppanae 50
+61 D.I. Liu Tellana 40
+62 D.I. Lompoe 50
+63 D.I. Lompulle 100
+64 D.I. Lonrong I 47
+65 D.I. Lonrong II 150
+66 D.I. Macanre 150
+67 D.I. Maccope 30
+68 D.I. Madenra 45
+69 D.I. Mario M
+70 D.I. Nengke 60
+71 D.I. Nyele'e 50
+72 D.I. Ompo Pattojo 65
+73 D.I. Ongkoe 50

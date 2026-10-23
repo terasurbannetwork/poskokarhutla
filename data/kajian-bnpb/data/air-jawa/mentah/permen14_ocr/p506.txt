@@ -1,0 +1,63 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 506
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+61 D.LA.T. Semboja PWP163 24
+62 D.LA.T. Srengseng PWP164 25
+63 D.LA.T. Srengseng PWP165 27
+64 D.LA.T. Kedungsugih PWP166 23
+65 D.LA.T. Srengseng PWP167 24
+66 D.L.A.T. Srengseng PWP168/205 24
+67 D.LA.T. Pagerbarang PWP169 15
+68 D.I.A.T. Randusari PWP170 21
+69 D.L.A.T. Jatilaba PWP171 22
+70 D.LA.T. Jatilaba PWP172 26
+71 D.LA.T. Srengseng PWP173 36
+72 D.LA.T. Jatiwangi PWP174 24
+73 D.LA.T. Jatiwangi PWP175/230 29
+74 D.LA.T. Jatiwangi PWP176 24
+75 D.LA.T. Kedungsugih PWP177 23
+76 D.LA.T. Kertaharja PWP178 25
+77 D.LA.T. Karanganyar PWP179 28
+78 D.LA.T. Kedungsugih PWP180 24
+79 D.LA.T. Pagerbarang PWP181 34
+80 D.I.A.T. Pagerbarang PWP182/233 20
+81 D.L.A.T. Kertaharja PWP183 20
+82 D.LA.T. Karanganyar TW217 17
+83 D.LA.T. Randusari PWP184/TW179 24
+VII PROVINSI D.I. YOGYAKARTA 151 6.550
+a Kab. Bantul 18 735
+1 D.LA.T. Mutihan TW 001 20
+2 D.LA.T. Patalan TW 002 10
+3 D.LA.T. Gondowulung TW 003 10
+4 D.LA.T. Ganten TW 004 25
+5 D.LA.T. Pacar TW 005 30
+6 D.LA.T. Plumbungan TW 006 50
+7 D.LA.T. Mulyodadi TW 007 45
+8 D.LA.T. Samas | TW 009 10
+9 D.LA.T. Samas II TW 010 35
+10 D.LA.T. Glugo II TW 011 65
+11 D.LA.T. Tambak TW 013 35
+12 D.LA.T. Wonocatur TW 014 60
+13 D.LA.T. Karang Tengah II TW 018 70
+14 D.LA.T. Gasngin TW 020 10
+15 D.LA.T. Tegal senggotan TW 021 60
+16 D.I.A.T. Kaliputih TW 022 60
+17 D.LA.T. Gokerten, Srigading TW 023 70
+18 D.LA.T. Segoroyoso TW 024 70
+b Kab. Gununa Kidul 55 1.904
+1 D.LA.T. Sp. Baleharjo 25
+2 D.LA.T. Sp. Bandung 27
+3 D.LA.T. Sp. Blimbing 38
+4 D.LA.T. Sp. Bogor Kidul 46
+5 D.LA.T. Sp. Bolo Dukuh Kidul 45
+6 D.LA.T. Sp. Bulak Suren 30
+7 D.LA.T. Sp. Duwet 45
+8 D.LA.T. Sp. Jaranmati 30
+9 D.LA.T. Sp. Jatisari 42
+10 D.LA.T. Sp. Kalangan | 36
+11 D.LA.T. Sp. Kalangan II 20
+12 D.LA.T. Sp. Kalangbengi 46
+13 D.LA.T. Sp. Karang Ayu | 33
+14 D.LA.T. Sp. Karang Ayu II 53

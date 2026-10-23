@@ -1,0 +1,8217 @@
+{
+ "dibuat": "2026-10-23",
+ "arti": "per kode kab/kota Kemendagri 4 digit; gabungkan ke public/geo/kabupaten/<prov>.json lewat (prov, kab). Angka sama dengan CSV paket ini.",
+ "kab": {
+  "1101": {
+   "prov": "11",
+   "kab": "Aceh Selatan",
+   "nama": "Kab. Aceh Selatan",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 151.3,
+     "tiba_menit_sisi_aman": 108.6,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 59.2,
+     "tiba_menit_sisi_aman": 42.5,
+     "tinggi_hi_m": 9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1103": {
+   "prov": "11",
+   "kab": "Aceh Timur",
+   "nama": "Kab. Aceh Timur",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 138.7,
+     "tiba_menit_sisi_aman": 99.5,
+     "tinggi_hi_m": 3.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1104": {
+   "prov": "11",
+   "kab": "Aceh Tengah",
+   "nama": "Kab. Aceh Tengah",
+   "pulau": "Sumatra",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 2073,
+    "gunung": [
+     "bur-ni-telong"
+    ]
+   }
+  },
+  "1105": {
+   "prov": "11",
+   "kab": "Aceh Barat",
+   "nama": "Kab. Aceh Barat",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 88.9,
+     "tiba_menit_sisi_aman": 63.8,
+     "tinggi_hi_m": 6.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1106": {
+   "prov": "11",
+   "kab": "Aceh Besar",
+   "nama": "Kab. Aceh Besar",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 81.6,
+     "tiba_menit_sisi_aman": 58.6,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1107": {
+   "prov": "11",
+   "kab": "Pidie",
+   "nama": "Kab. Pidie",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 97.8,
+     "tiba_menit_sisi_aman": 70.2,
+     "tinggi_hi_m": 4.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1108": {
+   "prov": "11",
+   "kab": "Aceh Utara",
+   "nama": "Kab. Aceh Utara",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 116.9,
+     "tiba_menit_sisi_aman": 83.9,
+     "tinggi_hi_m": 4.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1109": {
+   "prov": "11",
+   "kab": "Simeulue",
+   "nama": "Kab. Simeulue",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 127.1,
+     "tiba_menit_sisi_aman": 91.2,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 35,
+     "tiba_menit_sisi_aman": 25.1,
+     "tinggi_hi_m": 10.5,
+     "jiwa_pesisir_rendah_lt30": 8138
+    }
+   }
+  },
+  "1110": {
+   "prov": "11",
+   "kab": "Aceh Singkil",
+   "nama": "Kab. Aceh Singkil",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 132.4,
+     "tiba_menit_sisi_aman": 95,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 40.4,
+     "tiba_menit_sisi_aman": 29,
+     "tinggi_hi_m": 11.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1111": {
+   "prov": "11",
+   "kab": "Bireuen",
+   "nama": "Kab. Bireuen",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 113,
+     "tiba_menit_sisi_aman": 81.1,
+     "tinggi_hi_m": 4.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1112": {
+   "prov": "11",
+   "kab": "Aceh Barat Daya",
+   "nama": "Kab. Aceh Barat Daya",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 160,
+     "tiba_menit_sisi_aman": 114.8,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 66.9,
+     "tiba_menit_sisi_aman": 48,
+     "tinggi_hi_m": 8.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1114": {
+   "prov": "11",
+   "kab": "Aceh Jaya",
+   "nama": "Kab. Aceh Jaya",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 69.9,
+     "tiba_menit_sisi_aman": 50.2,
+     "tinggi_hi_m": 6.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1115": {
+   "prov": "11",
+   "kab": "Nagan Raya",
+   "nama": "Kab. Nagan Raya",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 72.1,
+     "tiba_menit_sisi_aman": 51.7,
+     "tinggi_hi_m": 7.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1117": {
+   "prov": "11",
+   "kab": "Bener Meriah",
+   "nama": "Kab. Bener Meriah",
+   "pulau": "Sumatra",
+   "krb": {
+    "jiwa_krb3": 21,
+    "jiwa_krb2": 35795,
+    "jiwa_krb1": 13981,
+    "gunung": [
+     "bur-ni-telong"
+    ]
+   }
+  },
+  "1118": {
+   "prov": "11",
+   "kab": "Pidie Jaya",
+   "nama": "Kab. Pidie Jaya",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 109.1,
+     "tiba_menit_sisi_aman": 78.3,
+     "tinggi_hi_m": 4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1171": {
+   "prov": "11",
+   "kab": "Kota Banda Aceh",
+   "nama": "Kota Banda Aceh",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 95.5,
+     "tiba_menit_sisi_aman": 68.5,
+     "tinggi_hi_m": 3.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1172": {
+   "prov": "11",
+   "kab": "Kota Sabang",
+   "nama": "Kota Sabang",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 87.3,
+     "tiba_menit_sisi_aman": 62.7,
+     "tinggi_hi_m": 5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1173": {
+   "prov": "11",
+   "kab": "Kota Lhokseumawe",
+   "nama": "Kota Lhokseumawe",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 121.6,
+     "tiba_menit_sisi_aman": 87.3,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1201": {
+   "prov": "12",
+   "kab": "Tapanuli Tengah",
+   "nama": "Kab. Tapanuli Tengah",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
+    }
+   },
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 72.8,
+     "tiba_menit_sisi_aman": 52.2,
+     "tinggi_hi_m": 12.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1202": {
+   "prov": "12",
+   "kab": "Tapanuli Utara",
+   "nama": "Kab. Tapanuli Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1203": {
+   "prov": "12",
+   "kab": "Tapanuli Selatan",
+   "nama": "Kab. Tapanuli Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 11
+    }
+   },
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 85,
+     "tiba_menit_sisi_aman": 61,
+     "tinggi_hi_m": 12.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1204": {
+   "prov": "12",
+   "kab": "Nias",
+   "nama": "Kab. Nias",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 142.7,
+     "tiba_menit_sisi_aman": 102.4,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 50.6,
+     "tiba_menit_sisi_aman": 36.3,
+     "tinggi_hi_m": 15.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1206": {
+   "prov": "12",
+   "kab": "Karo",
+   "nama": "Kab. Karo",
+   "pulau": "Sumatra",
+   "krb": {
+    "jiwa_krb3": 3668,
+    "jiwa_krb2": 20467,
+    "jiwa_krb1": 2149,
+    "gunung": [
+     "sinabung"
+    ]
+   }
+  },
+  "1209": {
+   "prov": "12",
+   "kab": "Asahan",
+   "nama": "Kab. Asahan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1210": {
+   "prov": "12",
+   "kab": "Labuhanbatu",
+   "nama": "Kab. Labuhanbatu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1212": {
+   "prov": "12",
+   "kab": "Toba",
+   "nama": "Kab. Toba",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1213": {
+   "prov": "12",
+   "kab": "Mandailing Natal",
+   "nama": "Kab. Mandailing Natal",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      209.4
+     ],
+     "rb": 265
+    }
+   },
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 52.4,
+     "tiba_menit_sisi_aman": 37.6,
+     "tinggi_hi_m": 36.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 1,
+    "jiwa_krb2": 13,
+    "jiwa_krb1": 4041,
+    "gunung": [
+     "sorikmarapi"
+    ]
+   }
+  },
+  "1214": {
+   "prov": "12",
+   "kab": "Nias Selatan",
+   "nama": "Kab. Nias Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.4,
+     "jiwa_mmi7plus": 27095,
+     "korban_analog": [
+      1.5,
+      12.7,
+      64.7
+     ],
+     "rb": 273
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 104.7,
+     "tiba_menit_sisi_aman": 75.1,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 11.3,
+     "tiba_menit_sisi_aman": 8.1,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 10648
+    },
+    "sumba": {
+     "tiba_menit": 144.7,
+     "tiba_menit_sisi_aman": 103.8,
+     "tinggi_hi_m": 0.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1215": {
+   "prov": "12",
+   "kab": "Pakpak Bharat",
+   "nama": "Kab. Pakpak Bharat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1216": {
+   "prov": "12",
+   "kab": "Humbang Hasundutan",
+   "nama": "Kab. Humbang Hasundutan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1217": {
+   "prov": "12",
+   "kab": "Samosir",
+   "nama": "Kab. Samosir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1220": {
+   "prov": "12",
+   "kab": "Padang Lawas Utara",
+   "nama": "Kab. Padang Lawas Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "1221": {
+   "prov": "12",
+   "kab": "Padang Lawas",
+   "nama": "Kab. Padang Lawas",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 20
+    }
+   }
+  },
+  "1222": {
+   "prov": "12",
+   "kab": "Labuhanbatu Selatan",
+   "nama": "Kab. Labuhanbatu Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1223": {
+   "prov": "12",
+   "kab": "Labuhanbatu Utara",
+   "nama": "Kab. Labuhanbatu Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1224": {
+   "prov": "12",
+   "kab": "Nias Utara",
+   "nama": "Kab. Nias Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 118.4,
+     "tiba_menit_sisi_aman": 85,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 26.4,
+     "tiba_menit_sisi_aman": 18.9,
+     "tinggi_hi_m": 13.4,
+     "jiwa_pesisir_rendah_lt30": 25148
+    }
+   }
+  },
+  "1225": {
+   "prov": "12",
+   "kab": "Nias Barat",
+   "nama": "Kab. Nias Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 120.9,
+     "tiba_menit_sisi_aman": 86.8,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 28.8,
+     "tiba_menit_sisi_aman": 20.7,
+     "tinggi_hi_m": 15.1,
+     "jiwa_pesisir_rendah_lt30": 11803
+    }
+   }
+  },
+  "1273": {
+   "prov": "12",
+   "kab": "Kota Sibolga",
+   "nama": "Kota Sibolga",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "mentawai": {
+     "tiba_menit": 109.2,
+     "tiba_menit_sisi_aman": 78.4,
+     "tinggi_hi_m": 11.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1277": {
+   "prov": "12",
+   "kab": "Kota Padang Sidempuan",
+   "nama": "Kota Padangsidimpuan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 13
+    }
+   }
+  },
+  "1278": {
+   "prov": "12",
+   "kab": "Kota Gunungsitoli",
+   "nama": "Kota Gunungsitoli",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 140,
+     "tiba_menit_sisi_aman": 100.5,
+     "tinggi_hi_m": 0.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 47.9,
+     "tiba_menit_sisi_aman": 34.4,
+     "tinggi_hi_m": 6.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1301": {
+   "prov": "13",
+   "kab": "Pesisir Selatan",
+   "nama": "Kab. Pesisir Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.6,
+     "jiwa_mmi7plus": 457894,
+     "korban_analog": [
+      16.5,
+      214.6,
+      1230
+     ],
+     "rb": 3603
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 110.6,
+     "tiba_menit_sisi_aman": 79.4,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 9.3,
+     "tiba_menit_sisi_aman": 6.7,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 19250
+    },
+    "sumba": {
+     "tiba_menit": 150.6,
+     "tiba_menit_sisi_aman": 108.1,
+     "tinggi_hi_m": 0.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1302": {
+   "prov": "13",
+   "kab": "Solok",
+   "nama": "Kab. Solok",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      924.4
+     ],
+     "rb": 842
+    }
+   }
+  },
+  "1303": {
+   "prov": "13",
+   "kab": "Sijunjung",
+   "nama": "Kab. Sijunjung",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      79.6
+     ],
+     "rb": 161
+    }
+   }
+  },
+  "1304": {
+   "prov": "13",
+   "kab": "Tanah Datar",
+   "nama": "Kab. Tanah Datar",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      588.8
+     ],
+     "rb": 462
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 135,
+    "jiwa_krb2": 2850,
+    "jiwa_krb1": 36316,
+    "gunung": [
+     "marapi"
+    ]
+   }
+  },
+  "1305": {
+   "prov": "13",
+   "kab": "Padang Pariaman",
+   "nama": "Kab. Padang Pariaman",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.8,
+     "jiwa_mmi7plus": 405085,
+     "korban_analog": [
+      0,
+      189.8,
+      1116.6
+     ],
+     "rb": 2253
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 132,
+     "tiba_menit_sisi_aman": 94.7,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 25.8,
+     "tiba_menit_sisi_aman": 18.5,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 104053
+    }
+   }
+  },
+  "1306": {
+   "prov": "13",
+   "kab": "Agam",
+   "nama": "Kab. Agam",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.8,
+     "jiwa_mmi7plus": 128585,
+     "korban_analog": [
+      0,
+      60.3,
+      1047.2
+     ],
+     "rb": 1266
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 141.1,
+     "tiba_menit_sisi_aman": 101.3,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 31.3,
+     "tiba_menit_sisi_aman": 22.5,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 24594
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 11,
+    "jiwa_krb2": 1030,
+    "jiwa_krb1": 15516,
+    "gunung": [
+     "marapi"
+    ]
+   }
+  },
+  "1307": {
+   "prov": "13",
+   "kab": "Lima Puluh Kota",
+   "nama": "Kab. Lima Puluh Kota",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      23.4
+     ],
+     "rb": 221
+    }
+   }
+  },
+  "1308": {
+   "prov": "13",
+   "kab": "Pasaman",
+   "nama": "Kab. Pasaman",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      117.4
+     ],
+     "rb": 238
+    }
+   }
+  },
+  "1309": {
+   "prov": "13",
+   "kab": "Kepulauan Mentawai",
+   "nama": "Kab. Kepulauan Mentawai",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 8.7,
+     "jiwa_mmi7plus": 92831,
+     "korban_analog": [
+      15.3,
+      43.5,
+      213
+     ],
+     "rb": 6389
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 81.9,
+     "tiba_menit_sisi_aman": 58.8,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 0,
+     "tiba_menit_sisi_aman": 0,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 11016
+    },
+    "sumba": {
+     "tiba_menit": 121.9,
+     "tiba_menit_sisi_aman": 87.5,
+     "tinggi_hi_m": 0.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1310": {
+   "prov": "13",
+   "kab": "Dharmasraya",
+   "nama": "Kab. Dharmasraya",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 91
+    }
+   }
+  },
+  "1311": {
+   "prov": "13",
+   "kab": "Solok Selatan",
+   "nama": "Kab. Solok Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      363.7
+     ],
+     "rb": 348
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 1,
+    "jiwa_krb2": 8,
+    "jiwa_krb1": 3973,
+    "gunung": [
+     "kerinci"
+    ]
+   }
+  },
+  "1312": {
+   "prov": "13",
+   "kab": "Pasaman Barat",
+   "nama": "Kab. Pasaman Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.6,
+     "jiwa_mmi7plus": 101696,
+     "korban_analog": [
+      0,
+      47.7,
+      943.6
+     ],
+     "rb": 1235
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 147.1,
+     "tiba_menit_sisi_aman": 105.6,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 36.1,
+     "tiba_menit_sisi_aman": 25.9,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 12634
+    }
+   }
+  },
+  "1371": {
+   "prov": "13",
+   "kab": "Kota Padang",
+   "nama": "Kota Padang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.9,
+     "jiwa_mmi7plus": 579102,
+     "korban_analog": [
+      0,
+      271.4,
+      2176.3
+     ],
+     "rb": 4586
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 126.4,
+     "tiba_menit_sisi_aman": 90.7,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 21.5,
+     "tiba_menit_sisi_aman": 15.4,
+     "tinggi_hi_m": 36,
+     "jiwa_pesisir_rendah_lt30": 223143
+    }
+   }
+  },
+  "1372": {
+   "prov": "13",
+   "kab": "Kota Solok",
+   "nama": "Kota Solok",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      119
+     ],
+     "rb": 141
+    }
+   }
+  },
+  "1373": {
+   "prov": "13",
+   "kab": "Kota Sawahlunto",
+   "nama": "Kota Sawahlunto",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      64.3
+     ],
+     "rb": 62
+    }
+   }
+  },
+  "1374": {
+   "prov": "13",
+   "kab": "Kota Padang Panjang",
+   "nama": "Kota Padang Panjang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      61.2
+     ],
+     "rb": 43
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 927,
+    "gunung": [
+     "marapi"
+    ]
+   }
+  },
+  "1375": {
+   "prov": "13",
+   "kab": "Kota Bukittinggi",
+   "nama": "Kota Bukittinggi",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      246.1
+     ],
+     "rb": 193
+    }
+   }
+  },
+  "1376": {
+   "prov": "13",
+   "kab": "Kota Payakumbuh",
+   "nama": "Kota Payakumbuh",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 114
+    }
+   }
+  },
+  "1377": {
+   "prov": "13",
+   "kab": "Kota Pariaman",
+   "nama": "Kota Pariaman",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.9,
+     "jiwa_mmi7plus": 101184,
+     "korban_analog": [
+      0,
+      47.4,
+      232.2
+     ],
+     "rb": 639
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 126.3,
+     "tiba_menit_sisi_aman": 90.6,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 18.3,
+     "tiba_menit_sisi_aman": 13.1,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 73141
+    }
+   }
+  },
+  "1401": {
+   "prov": "14",
+   "kab": "Kampar",
+   "nama": "Kab. Kampar",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 37
+    }
+   }
+  },
+  "1402": {
+   "prov": "14",
+   "kab": "Indragiri Hulu",
+   "nama": "Kab. Indragiri Hulu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "1403": {
+   "prov": "14",
+   "kab": "Bengkalis",
+   "nama": "Kab. Bengkalis",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1404": {
+   "prov": "14",
+   "kab": "Indragiri Hilir",
+   "nama": "Kab. Indragiri Hilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1405": {
+   "prov": "14",
+   "kab": "Pelalawan",
+   "nama": "Kab. Pelalawan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   }
+  },
+  "1406": {
+   "prov": "14",
+   "kab": "Rokan Hulu",
+   "nama": "Kab. Rokan Hulu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 44
+    }
+   }
+  },
+  "1407": {
+   "prov": "14",
+   "kab": "Rokan Hilir",
+   "nama": "Kab. Rokan Hilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1408": {
+   "prov": "14",
+   "kab": "Siak",
+   "nama": "Kab. Siak",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1409": {
+   "prov": "14",
+   "kab": "Kuantan Singingi",
+   "nama": "Kab. Kuantan Singingi",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 32
+    }
+   }
+  },
+  "1410": {
+   "prov": "14",
+   "kab": "Kepulauan Meranti",
+   "nama": "Kab. Kepulauan Meranti",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1471": {
+   "prov": "14",
+   "kab": "Kota Pekanbaru",
+   "nama": "Kota Pekanbaru",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 10
+    }
+   }
+  },
+  "1472": {
+   "prov": "14",
+   "kab": "Kota Dumai",
+   "nama": "Kota Dumai",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1501": {
+   "prov": "15",
+   "kab": "Kerinci",
+   "nama": "Kab. Kerinci",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.8,
+     "jiwa_mmi7plus": 156118,
+     "korban_analog": [
+      0,
+      73.2,
+      611.7
+     ],
+     "rb": 1002
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 156,
+    "jiwa_krb1": 12375,
+    "gunung": [
+     "kerinci"
+    ]
+   }
+  },
+  "1502": {
+   "prov": "15",
+   "kab": "Merangin",
+   "nama": "Kab. Merangin",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      148.1
+     ],
+     "rb": 307
+    }
+   }
+  },
+  "1503": {
+   "prov": "15",
+   "kab": "Sarolangun",
+   "nama": "Kab. Sarolangun",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 103
+    }
+   }
+  },
+  "1504": {
+   "prov": "15",
+   "kab": "Batanghari",
+   "nama": "Kab. Batanghari",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "1505": {
+   "prov": "15",
+   "kab": "Muaro Jambi",
+   "nama": "Kab. Muaro Jambi",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1506": {
+   "prov": "15",
+   "kab": "Tanjung Jabung Barat",
+   "nama": "Kab. Tanjung Jabung Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1507": {
+   "prov": "15",
+   "kab": "Tanjung Jabung Timur",
+   "nama": "Kab. Tanjung Jabung Timur",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1508": {
+   "prov": "15",
+   "kab": "Bungo",
+   "nama": "Kab. Bungo",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      36.5
+     ],
+     "rb": 117
+    }
+   }
+  },
+  "1509": {
+   "prov": "15",
+   "kab": "Tebo",
+   "nama": "Kab. Tebo",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 34
+    }
+   }
+  },
+  "1571": {
+   "prov": "15",
+   "kab": "Kota Jambi",
+   "nama": "Kota Jambi",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   }
+  },
+  "1572": {
+   "prov": "15",
+   "kab": "Kota Sungai Penuh",
+   "nama": "Kota Sungai Penuh",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.7,
+     "jiwa_mmi7plus": 38983,
+     "korban_analog": [
+      0,
+      18.3,
+      233.4
+     ],
+     "rb": 402
+    }
+   }
+  },
+  "1601": {
+   "prov": "16",
+   "kab": "Ogan Komering Ulu",
+   "nama": "Kab. Ogan Komering Ulu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 15
+    }
+   }
+  },
+  "1602": {
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "nama": "Kab. Ogan Komering Ilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1603": {
+   "prov": "16",
+   "kab": "Muara Enim",
+   "nama": "Kab. Muara Enim",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 63
+    }
+   }
+  },
+  "1604": {
+   "prov": "16",
+   "kab": "Lahat",
+   "nama": "Kab. Lahat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      163.5
+     ],
+     "rb": 275
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 553,
+    "jiwa_krb1": 2621,
+    "gunung": [
+     "dempo"
+    ]
+   }
+  },
+  "1605": {
+   "prov": "16",
+   "kab": "Musi Rawas",
+   "nama": "Kab. Musi Rawas",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      111
+     ],
+     "rb": 288
+    }
+   }
+  },
+  "1606": {
+   "prov": "16",
+   "kab": "Musi Banyuasin",
+   "nama": "Kab. Musi Banyuasin",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 16
+    }
+   }
+  },
+  "1607": {
+   "prov": "16",
+   "kab": "Banyuasin",
+   "nama": "Kab. Banyuasin",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1608": {
+   "prov": "16",
+   "kab": "Ogan Komering Ulu Timur",
+   "nama": "Kab. Ogan Komering Ulu Timur",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "1609": {
+   "prov": "16",
+   "kab": "Ogan Komering Ulu Selatan",
+   "nama": "Kab. Ogan Komering Ulu Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 38
+    }
+   }
+  },
+  "1610": {
+   "prov": "16",
+   "kab": "Ogan Ilir",
+   "nama": "Kab. Ogan Ilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1611": {
+   "prov": "16",
+   "kab": "Empat Lawang",
+   "nama": "Kab. Empat Lawang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.7,
+     "jiwa_mmi7plus": 100550,
+     "korban_analog": [
+      0,
+      47.1,
+      801.3
+     ],
+     "rb": 966
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 2589,
+    "jiwa_krb1": 4472,
+    "gunung": [
+     "dempo"
+    ]
+   }
+  },
+  "1612": {
+   "prov": "16",
+   "kab": "Penukal Abab Lematang Ilir",
+   "nama": "Kab. Penukal Abab Lematang Ilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   }
+  },
+  "1613": {
+   "prov": "16",
+   "kab": "Musi Rawas Utara",
+   "nama": "Kab. Musi Rawas Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      92.9
+     ],
+     "rb": 108
+    }
+   }
+  },
+  "1671": {
+   "prov": "16",
+   "kab": "Kota Palembang",
+   "nama": "Kota Palembang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   }
+  },
+  "1672": {
+   "prov": "16",
+   "kab": "Kota Pagar Alam",
+   "nama": "Kota Pagar Alam",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      105.3
+     ],
+     "rb": 156
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "dempo"
+    ]
+   }
+  },
+  "1673": {
+   "prov": "16",
+   "kab": "Kota Lubuk Linggau",
+   "nama": "Kota Lubuk Linggau",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      556.9
+     ],
+     "rb": 379
+    }
+   }
+  },
+  "1674": {
+   "prov": "16",
+   "kab": "Kota Prabumulih",
+   "nama": "Kota Prabumulih",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "1701": {
+   "prov": "17",
+   "kab": "Bengkulu Selatan",
+   "nama": "Kab. Bengkulu Selatan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.6,
+     "jiwa_mmi7plus": 87277,
+     "korban_analog": [
+      0,
+      40.9,
+      391.8
+     ],
+     "rb": 608
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 74,
+     "tiba_menit_sisi_aman": 53.1,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 16.9,
+     "tiba_menit_sisi_aman": 12.1,
+     "tinggi_hi_m": 32,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 114,
+     "tiba_menit_sisi_aman": 81.8,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1702": {
+   "prov": "17",
+   "kab": "Rejang Lebong",
+   "nama": "Kab. Rejang Lebong",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.9,
+     "jiwa_mmi7plus": 219323,
+     "korban_analog": [
+      0,
+      102.8,
+      624
+     ],
+     "rb": 1280
+    }
+   }
+  },
+  "1703": {
+   "prov": "17",
+   "kab": "Bengkulu Utara",
+   "nama": "Kab. Bengkulu Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.8,
+     "jiwa_mmi7plus": 308507,
+     "korban_analog": [
+      37.2,
+      144.6,
+      726
+     ],
+     "rb": 4473
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 59.8,
+     "tiba_menit_sisi_aman": 42.9,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 14.8,
+     "tiba_menit_sisi_aman": 10.6,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 99.9,
+     "tiba_menit_sisi_aman": 71.7,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1704": {
+   "prov": "17",
+   "kab": "Kaur",
+   "nama": "Kab. Kaur",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      73.7
+     ],
+     "rb": 93
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 68.3,
+     "tiba_menit_sisi_aman": 49,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 24.6,
+     "tiba_menit_sisi_aman": 17.7,
+     "tinggi_hi_m": 28.2,
+     "jiwa_pesisir_rendah_lt30": 19300
+    },
+    "sumba": {
+     "tiba_menit": 108.3,
+     "tiba_menit_sisi_aman": 77.7,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1705": {
+   "prov": "17",
+   "kab": "Seluma",
+   "nama": "Kab. Seluma",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.5,
+     "jiwa_mmi7plus": 192184,
+     "korban_analog": [
+      17,
+      90.1,
+      494
+     ],
+     "rb": 2335
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 86.7,
+     "tiba_menit_sisi_aman": 62.2,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 23.9,
+     "tiba_menit_sisi_aman": 17.2,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 24614
+    },
+    "sumba": {
+     "tiba_menit": 126.7,
+     "tiba_menit_sisi_aman": 90.9,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1706": {
+   "prov": "17",
+   "kab": "Muko Muko",
+   "nama": "Kab. Mukomuko",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.8,
+     "jiwa_mmi7plus": 201154,
+     "korban_analog": [
+      29.5,
+      94.3,
+      461.6
+     ],
+     "rb": 3483
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 108,
+     "tiba_menit_sisi_aman": 77.5,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 10.2,
+     "tiba_menit_sisi_aman": 7.3,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 33929
+    },
+    "sumba": {
+     "tiba_menit": 148,
+     "tiba_menit_sisi_aman": 106.2,
+     "tinggi_hi_m": 0.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1707": {
+   "prov": "17",
+   "kab": "Lebong",
+   "nama": "Kab. Lebong",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.9,
+     "jiwa_mmi7plus": 26695,
+     "korban_analog": [
+      0,
+      12.5,
+      261.4
+     ],
+     "rb": 410
+    }
+   }
+  },
+  "1708": {
+   "prov": "17",
+   "kab": "Kepahiang",
+   "nama": "Kab. Kepahiang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 6.9,
+     "jiwa_mmi7plus": 167490,
+     "korban_analog": [
+      0,
+      78.5,
+      384.4
+     ],
+     "rb": 1057
+    }
+   }
+  },
+  "1709": {
+   "prov": "17",
+   "kab": "Bengkulu Tengah",
+   "nama": "Kab. Bengkulu Tengah",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.4,
+     "jiwa_mmi7plus": 118796,
+     "korban_analog": [
+      15.6,
+      55.7,
+      272.6
+     ],
+     "rb": 1456
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 112.3,
+     "tiba_menit_sisi_aman": 80.6,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 35.5,
+     "tiba_menit_sisi_aman": 25.5,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 29181
+    },
+    "sumba": {
+     "tiba_menit": 152.3,
+     "tiba_menit_sisi_aman": 109.3,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1771": {
+   "prov": "17",
+   "kab": "Kota Bengkulu",
+   "nama": "Kota Bengkulu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 7.6,
+     "jiwa_mmi7plus": 401395,
+     "korban_analog": [
+      66,
+      188.1,
+      921.2
+     ],
+     "rb": 7236
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 89.8,
+     "tiba_menit_sisi_aman": 64.4,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 14.4,
+     "tiba_menit_sisi_aman": 10.3,
+     "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 285942
+    },
+    "sumba": {
+     "tiba_menit": 129.8,
+     "tiba_menit_sisi_aman": 93.2,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1801": {
+   "prov": "18",
+   "kab": "Lampung Selatan",
+   "nama": "Kab. Lampung Selatan",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 60.5,
+     "tiba_menit_sisi_aman": 43.4,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 56.6,
+     "tiba_menit_sisi_aman": 40.6,
+     "tinggi_hi_m": 7.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 100.5,
+     "tiba_menit_sisi_aman": 72.1,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "anak-krakatau"
+    ]
+   }
+  },
+  "1802": {
+   "prov": "18",
+   "kab": "Lampung Tengah",
+   "nama": "Kab. Lampung Tengah",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1803": {
+   "prov": "18",
+   "kab": "Lampung Utara",
+   "nama": "Kab. Lampung Utara",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "1804": {
+   "prov": "18",
+   "kab": "Lampung Barat",
+   "nama": "Kab. Lampung Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
+    }
+   }
+  },
+  "1805": {
+   "prov": "18",
+   "kab": "Tulang Bawang",
+   "nama": "Kab. Tulang Bawang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1806": {
+   "prov": "18",
+   "kab": "Tanggamus",
+   "nama": "Kab. Tanggamus",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 55.6,
+     "tiba_menit_sisi_aman": 39.9,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 42.8,
+     "tiba_menit_sisi_aman": 30.7,
+     "tinggi_hi_m": 14.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 95.6,
+     "tiba_menit_sisi_aman": 68.6,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1807": {
+   "prov": "18",
+   "kab": "Lampung Timur",
+   "nama": "Kab. Lampung Timur",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 119.2,
+     "tiba_menit_sisi_aman": 85.5,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 115.3,
+     "tiba_menit_sisi_aman": 82.7,
+     "tinggi_hi_m": 6.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 159.2,
+     "tiba_menit_sisi_aman": 114.2,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1808": {
+   "prov": "18",
+   "kab": "Way Kanan",
+   "nama": "Kab. Way Kanan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "1809": {
+   "prov": "18",
+   "kab": "Pesawaran",
+   "nama": "Kab. Pesawaran",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 57.8,
+     "tiba_menit_sisi_aman": 41.5,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 53.8,
+     "tiba_menit_sisi_aman": 38.6,
+     "tinggi_hi_m": 7.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 97.8,
+     "tiba_menit_sisi_aman": 70.2,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1810": {
+   "prov": "18",
+   "kab": "Pringsewu",
+   "nama": "Kab. Pringsewu",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1811": {
+   "prov": "18",
+   "kab": "Mesuji",
+   "nama": "Kab. Mesuji",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1812": {
+   "prov": "18",
+   "kab": "Tulang Bawang Barat",
+   "nama": "Kab. Tulang Bawang Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "1813": {
+   "prov": "18",
+   "kab": "Pesisir Barat",
+   "nama": "Kab. Pesisir Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 57.3,
+     "tiba_menit_sisi_aman": 41.1,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 31.1,
+     "tiba_menit_sisi_aman": 22.3,
+     "tinggi_hi_m": 19.8,
+     "jiwa_pesisir_rendah_lt30": 14216
+    },
+    "sumba": {
+     "tiba_menit": 97.3,
+     "tiba_menit_sisi_aman": 69.8,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1871": {
+   "prov": "18",
+   "kab": "Kota Bandar Lampung",
+   "nama": "Kota Bandar Lampung",
+   "pulau": "Sumatra",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 85.9,
+     "tiba_menit_sisi_aman": 61.6,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 81.8,
+     "tiba_menit_sisi_aman": 58.7,
+     "tinggi_hi_m": 7.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 125.9,
+     "tiba_menit_sisi_aman": 90.4,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1905": {
+   "prov": "19",
+   "kab": "Bangka Barat",
+   "nama": "Kab. Bangka Barat",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "2102": {
+   "prov": "21",
+   "kab": "Karimun",
+   "nama": "Kab. Karimun",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "2104": {
+   "prov": "21",
+   "kab": "Lingga",
+   "nama": "Kab. Lingga",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "2171": {
+   "prov": "21",
+   "kab": "Kota Batam",
+   "nama": "Kota Batam",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 2.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3101": {
+   "prov": "31",
+   "kab": "Administrasi Kepulauan Seribu",
+   "nama": "Kab. Administrasi Kepulauan Seribu",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 141.3,
+     "tiba_menit_sisi_aman": 101.4,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 137.4,
+     "tiba_menit_sisi_aman": 98.6,
+     "tinggi_hi_m": 6.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3201": {
+   "prov": "32",
+   "kab": "Bogor",
+   "nama": "Kab. Bogor",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3202": {
+   "prov": "32",
+   "kab": "Sukabumi",
+   "nama": "Kab. Sukabumi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 33.4,
+     "tiba_menit_sisi_aman": 24,
+     "tinggi_hi_m": 7.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 52.1,
+     "tiba_menit_sisi_aman": 37.4,
+     "tinggi_hi_m": 5.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 77.5,
+     "tiba_menit_sisi_aman": 55.6,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3203": {
+   "prov": "32",
+   "kab": "Cianjur",
+   "nama": "Kab. Cianjur",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 25.3,
+     "tiba_menit_sisi_aman": 18.2,
+     "tinggi_hi_m": 8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 53.2,
+     "tiba_menit_sisi_aman": 38.2,
+     "tinggi_hi_m": 6.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 70.9,
+     "tiba_menit_sisi_aman": 50.9,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3204": {
+   "prov": "32",
+   "kab": "Bandung",
+   "nama": "Kab. Bandung",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 11
+    }
+   }
+  },
+  "3205": {
+   "prov": "32",
+   "kab": "Garut",
+   "nama": "Kab. Garut",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 30
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 23.8,
+     "tiba_menit_sisi_aman": 17.1,
+     "tinggi_hi_m": 11.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 59.8,
+     "tiba_menit_sisi_aman": 42.9,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 69.9,
+     "tiba_menit_sisi_aman": 50.2,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3206": {
+   "prov": "32",
+   "kab": "Tasikmalaya",
+   "nama": "Kab. Tasikmalaya",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 121
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 19.9,
+     "tiba_menit_sisi_aman": 14.3,
+     "tinggi_hi_m": 9.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 68.2,
+     "tiba_menit_sisi_aman": 48.9,
+     "tinggi_hi_m": 4.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 66.3,
+     "tiba_menit_sisi_aman": 47.6,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3207": {
+   "prov": "32",
+   "kab": "Ciamis",
+   "nama": "Kab. Ciamis",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 100
+    }
+   }
+  },
+  "3208": {
+   "prov": "32",
+   "kab": "Kuningan",
+   "nama": "Kab. Kuningan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 26
+    }
+   }
+  },
+  "3209": {
+   "prov": "32",
+   "kab": "Cirebon",
+   "nama": "Kab. Cirebon",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 25
+    }
+   }
+  },
+  "3210": {
+   "prov": "32",
+   "kab": "Majalengka",
+   "nama": "Kab. Majalengka",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   }
+  },
+  "3211": {
+   "prov": "32",
+   "kab": "Sumedang",
+   "nama": "Kab. Sumedang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "3212": {
+   "prov": "32",
+   "kab": "Indramayu",
+   "nama": "Kab. Indramayu",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "3213": {
+   "prov": "32",
+   "kab": "Subang",
+   "nama": "Kab. Subang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "3214": {
+   "prov": "32",
+   "kab": "Purwakarta",
+   "nama": "Kab. Purwakarta",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3215": {
+   "prov": "32",
+   "kab": "Karawang",
+   "nama": "Kab. Karawang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3216": {
+   "prov": "32",
+   "kab": "Bekasi",
+   "nama": "Kab. Bekasi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3217": {
+   "prov": "32",
+   "kab": "Bandung Barat",
+   "nama": "Kab. Bandung Barat",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   }
+  },
+  "3218": {
+   "prov": "32",
+   "kab": "Pangandaran",
+   "nama": "Kab. Pangandaran",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 143
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 23.3,
+     "tiba_menit_sisi_aman": 16.7,
+     "tinggi_hi_m": 14.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 73.2,
+     "tiba_menit_sisi_aman": 52.5,
+     "tinggi_hi_m": 5.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 69.8,
+     "tiba_menit_sisi_aman": 50.1,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3272": {
+   "prov": "32",
+   "kab": "Kota Sukabumi",
+   "nama": "Kota Sukabumi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "3273": {
+   "prov": "32",
+   "kab": "Kota Bandung",
+   "nama": "Kota Bandung",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "3274": {
+   "prov": "32",
+   "kab": "Kota Cirebon",
+   "nama": "Kota Cirebon",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "3277": {
+   "prov": "32",
+   "kab": "Kota Cimahi",
+   "nama": "Kota Cimahi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
+  "3278": {
+   "prov": "32",
+   "kab": "Kota Tasikmalaya",
+   "nama": "Kota Tasikmalaya",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 40
+    }
+   }
+  },
+  "3279": {
+   "prov": "32",
+   "kab": "Kota Banjar",
+   "nama": "Kota Banjar",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 26
+    }
+   }
+  },
+  "3301": {
+   "prov": "33",
+   "kab": "Cilacap",
+   "nama": "Kab. Cilacap",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1074
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 27.9,
+     "tiba_menit_sisi_aman": 20,
+     "tinggi_hi_m": 17.4,
+     "jiwa_pesisir_rendah_lt30": 1028616
+    },
+    "mentawai": {
+     "tiba_menit": 87.6,
+     "tiba_menit_sisi_aman": 62.9,
+     "tinggi_hi_m": 4.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 74.7,
+     "tiba_menit_sisi_aman": 53.6,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3302": {
+   "prov": "33",
+   "kab": "Banyumas",
+   "nama": "Kab. Banyumas",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 638
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 3,
+    "jiwa_krb1": 22738,
+    "gunung": [
+     "slamet"
+    ]
+   }
+  },
+  "3303": {
+   "prov": "33",
+   "kab": "Purbalingga",
+   "nama": "Kab. Purbalingga",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 257
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 65,
+    "jiwa_krb1": 13350,
+    "gunung": [
+     "slamet"
+    ]
+   }
+  },
+  "3304": {
+   "prov": "33",
+   "kab": "Banjarnegara",
+   "nama": "Kab. Banjarnegara",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 222
+    }
+   }
+  },
+  "3305": {
+   "prov": "33",
+   "kab": "Kebumen",
+   "nama": "Kab. Kebumen",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      871.4
+     ],
+     "rb": 1158
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 23.4,
+     "tiba_menit_sisi_aman": 16.8,
+     "tinggi_hi_m": 16.2,
+     "jiwa_pesisir_rendah_lt30": 360540
+    },
+    "mentawai": {
+     "tiba_menit": 89.9,
+     "tiba_menit_sisi_aman": 64.5,
+     "tinggi_hi_m": 3.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 68.2,
+     "tiba_menit_sisi_aman": 48.9,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3306": {
+   "prov": "33",
+   "kab": "Purworejo",
+   "nama": "Kab. Purworejo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      405.3
+     ],
+     "rb": 635
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 20.7,
+     "tiba_menit_sisi_aman": 14.9,
+     "tinggi_hi_m": 18.5,
+     "jiwa_pesisir_rendah_lt30": 261748
+    },
+    "mentawai": {
+     "tiba_menit": 88.6,
+     "tiba_menit_sisi_aman": 63.6,
+     "tinggi_hi_m": 4.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 64,
+     "tiba_menit_sisi_aman": 45.9,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3307": {
+   "prov": "33",
+   "kab": "Wonosobo",
+   "nama": "Kab. Wonosobo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 212
+    }
+   }
+  },
+  "3308": {
+   "prov": "33",
+   "kab": "Magelang",
+   "nama": "Kab. Magelang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 402
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 45477,
+    "pengungsi_radius20km": 488935,
+    "luas_sapuan_ha": 3453
+   },
+   "krb": {
+    "jiwa_krb3": 16688,
+    "jiwa_krb2": 35385,
+    "jiwa_krb1": 21214,
+    "gunung": [
+     "merapi"
+    ]
+   }
+  },
+  "3309": {
+   "prov": "33",
+   "kab": "Boyolali",
+   "nama": "Kab. Boyolali",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 229
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 0,
+    "pengungsi_radius20km": 437228,
+    "luas_sapuan_ha": 65
+   },
+   "krb": {
+    "jiwa_krb3": 99,
+    "jiwa_krb2": 10972,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "merapi"
+    ]
+   }
+  },
+  "3310": {
+   "prov": "33",
+   "kab": "Klaten",
+   "nama": "Kab. Klaten",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 677
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 22224,
+    "pengungsi_radius20km": 213924,
+    "luas_sapuan_ha": 2033
+   },
+   "krb": {
+    "jiwa_krb3": 3016,
+    "jiwa_krb2": 8581,
+    "jiwa_krb1": 3306,
+    "gunung": [
+     "merapi"
+    ]
+   }
+  },
+  "3311": {
+   "prov": "33",
+   "kab": "Sukoharjo",
+   "nama": "Kab. Sukoharjo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 423
+    }
+   }
+  },
+  "3312": {
+   "prov": "33",
+   "kab": "Wonogiri",
+   "nama": "Kab. Wonogiri",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      663.6
+     ],
+     "rb": 1009
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 16.5,
+     "tiba_menit_sisi_aman": 11.8,
+     "tinggi_hi_m": 12.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 95.9,
+     "tiba_menit_sisi_aman": 68.8,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 52.8,
+     "tiba_menit_sisi_aman": 37.9,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3313": {
+   "prov": "33",
+   "kab": "Karanganyar",
+   "nama": "Kab. Karanganyar",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 263
+    }
+   }
+  },
+  "3314": {
+   "prov": "33",
+   "kab": "Sragen",
+   "nama": "Kab. Sragen",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 139
+    }
+   }
+  },
+  "3315": {
+   "prov": "33",
+   "kab": "Grobogan",
+   "nama": "Kab. Grobogan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 59
+    }
+   }
+  },
+  "3316": {
+   "prov": "33",
+   "kab": "Blora",
+   "nama": "Kab. Blora",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 23
+    }
+   }
+  },
+  "3317": {
+   "prov": "33",
+   "kab": "Rembang",
+   "nama": "Kab. Rembang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
+    }
+   }
+  },
+  "3318": {
+   "prov": "33",
+   "kab": "Pati",
+   "nama": "Kab. Pati",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 10
+    }
+   }
+  },
+  "3319": {
+   "prov": "33",
+   "kab": "Kudus",
+   "nama": "Kab. Kudus",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   }
+  },
+  "3320": {
+   "prov": "33",
+   "kab": "Jepara",
+   "nama": "Kab. Jepara",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
+  "3321": {
+   "prov": "33",
+   "kab": "Demak",
+   "nama": "Kab. Demak",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 31
+    }
+   }
+  },
+  "3322": {
+   "prov": "33",
+   "kab": "Semarang",
+   "nama": "Kab. Semarang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 107
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 0,
+    "pengungsi_radius20km": 138414,
+    "luas_sapuan_ha": 0
+   }
+  },
+  "3323": {
+   "prov": "33",
+   "kab": "Temanggung",
+   "nama": "Kab. Temanggung",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 87
+    }
+   }
+  },
+  "3324": {
+   "prov": "33",
+   "kab": "Kendal",
+   "nama": "Kab. Kendal",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 41
+    }
+   }
+  },
+  "3325": {
+   "prov": "33",
+   "kab": "Batang",
+   "nama": "Kab. Batang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 29
+    }
+   }
+  },
+  "3326": {
+   "prov": "33",
+   "kab": "Pekalongan",
+   "nama": "Kab. Pekalongan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 43
+    }
+   }
+  },
+  "3327": {
+   "prov": "33",
+   "kab": "Pemalang",
+   "nama": "Kab. Pemalang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 70
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 70,
+    "jiwa_krb2": 1998,
+    "jiwa_krb1": 24116,
+    "gunung": [
+     "slamet"
+    ]
+   }
+  },
+  "3328": {
+   "prov": "33",
+   "kab": "Tegal",
+   "nama": "Kab. Tegal",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 75
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 1,
+    "jiwa_krb2": 4994,
+    "jiwa_krb1": 4597,
+    "gunung": [
+     "slamet"
+    ]
+   }
+  },
+  "3329": {
+   "prov": "33",
+   "kab": "Brebes",
+   "nama": "Kab. Brebes",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 100
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 7102,
+    "gunung": [
+     "slamet"
+    ]
+   }
+  },
+  "3371": {
+   "prov": "33",
+   "kab": "Kota Magelang",
+   "nama": "Kota Magelang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 27
+    }
+   }
+  },
+  "3372": {
+   "prov": "33",
+   "kab": "Kota Surakarta",
+   "nama": "Kota Surakarta",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 102
+    }
+   }
+  },
+  "3373": {
+   "prov": "33",
+   "kab": "Kota Salatiga",
+   "nama": "Kota Salatiga",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 26
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 0,
+    "pengungsi_radius20km": 8685,
+    "luas_sapuan_ha": 0
+   }
+  },
+  "3374": {
+   "prov": "33",
+   "kab": "Kota Semarang",
+   "nama": "Kota Semarang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 57
+    }
+   }
+  },
+  "3375": {
+   "prov": "33",
+   "kab": "Kota Pekalongan",
+   "nama": "Kota Pekalongan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 8
+    }
+   }
+  },
+  "3376": {
+   "prov": "33",
+   "kab": "Kota Tegal",
+   "nama": "Kota Tegal",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   }
+  },
+  "3401": {
+   "prov": "34",
+   "kab": "Kulon Progo",
+   "nama": "Kab. Kulon Progo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      822.8
+     ],
+     "rb": 547
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 21.3,
+     "tiba_menit_sisi_aman": 15.3,
+     "tinggi_hi_m": 19.3,
+     "jiwa_pesisir_rendah_lt30": 129359
+    },
+    "mentawai": {
+     "tiba_menit": 91.6,
+     "tiba_menit_sisi_aman": 65.7,
+     "tinggi_hi_m": 4.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 63.8,
+     "tiba_menit_sisi_aman": 45.8,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3402": {
+   "prov": "34",
+   "kab": "Bantul",
+   "nama": "Kab. Bantul",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1477
+     ],
+     "rb": 1424
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 20.2,
+     "tiba_menit_sisi_aman": 14.5,
+     "tinggi_hi_m": 16,
+     "jiwa_pesisir_rendah_lt30": 69587
+    },
+    "mentawai": {
+     "tiba_menit": 92.2,
+     "tiba_menit_sisi_aman": 66.2,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 62,
+     "tiba_menit_sisi_aman": 44.5,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3403": {
+   "prov": "34",
+   "kab": "Gunungkidul",
+   "nama": "Kab. Gunungkidul",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1391.3
+     ],
+     "rb": 1230
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 17.8,
+     "tiba_menit_sisi_aman": 12.8,
+     "tinggi_hi_m": 16.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 90.6,
+     "tiba_menit_sisi_aman": 65,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 54.3,
+     "tiba_menit_sisi_aman": 39,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3404": {
+   "prov": "34",
+   "kab": "Sleman",
+   "nama": "Kab. Sleman",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 854
+    }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 22006,
+    "pengungsi_radius20km": 264912,
+    "luas_sapuan_ha": 2442
+   },
+   "krb": {
+    "jiwa_krb3": 14779,
+    "jiwa_krb2": 30155,
+    "jiwa_krb1": 10814,
+    "gunung": [
+     "merapi"
+    ]
+   }
+  },
+  "3471": {
+   "prov": "34",
+   "kab": "Kota Yogyakarta",
+   "nama": "Kota Yogyakarta",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 147
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "merapi"
+    ]
+   }
+  },
+  "3501": {
+   "prov": "35",
+   "kab": "Pacitan",
+   "nama": "Kab. Pacitan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      956
+     ],
+     "rb": 1033
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 15.8,
+     "tiba_menit_sisi_aman": 11.3,
+     "tinggi_hi_m": 16.3,
+     "jiwa_pesisir_rendah_lt30": 132451
+    },
+    "mentawai": {
+     "tiba_menit": 95.3,
+     "tiba_menit_sisi_aman": 68.4,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 51.3,
+     "tiba_menit_sisi_aman": 36.8,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3502": {
+   "prov": "35",
+   "kab": "Ponorogo",
+   "nama": "Kab. Ponorogo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      83
+     ],
+     "rb": 676
+    }
+   }
+  },
+  "3503": {
+   "prov": "35",
+   "kab": "Trenggalek",
+   "nama": "Kab. Trenggalek",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1057.4
+     ],
+     "rb": 927
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 16.4,
+     "tiba_menit_sisi_aman": 11.8,
+     "tinggi_hi_m": 18.6,
+     "jiwa_pesisir_rendah_lt30": 118596
+    },
+    "mentawai": {
+     "tiba_menit": 98.3,
+     "tiba_menit_sisi_aman": 70.5,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 47.2,
+     "tiba_menit_sisi_aman": 33.9,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3504": {
+   "prov": "35",
+   "kab": "Tulungagung",
+   "nama": "Kab. Tulungagung",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1798.3
+     ],
+     "rb": 1466
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 14.7,
+     "tiba_menit_sisi_aman": 10.5,
+     "tinggi_hi_m": 22.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 96.9,
+     "tiba_menit_sisi_aman": 69.5,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 45,
+     "tiba_menit_sisi_aman": 32.3,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "kelud"
+    ]
+   }
+  },
+  "3505": {
+   "prov": "35",
+   "kab": "Blitar",
+   "nama": "Kab. Blitar",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      953.4
+     ],
+     "rb": 1363
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 16.2,
+     "tiba_menit_sisi_aman": 11.6,
+     "tinggi_hi_m": 15.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 101.2,
+     "tiba_menit_sisi_aman": 72.6,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 38.6,
+     "tiba_menit_sisi_aman": 27.7,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 107,
+    "jiwa_krb2": 893,
+    "jiwa_krb1": 43627,
+    "gunung": [
+     "kelud"
+    ]
+   }
+  },
+  "3506": {
+   "prov": "35",
+   "kab": "Kediri",
+   "nama": "Kab. Kediri",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 676
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 65,
+    "jiwa_krb2": 338,
+    "jiwa_krb1": 30186,
+    "gunung": [
+     "kelud"
+    ]
+   }
+  },
+  "3507": {
+   "prov": "35",
+   "kab": "Malang",
+   "nama": "Kab. Malang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1996.6
+     ],
+     "rb": 2403
+    },
+    "sumba": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 13.8,
+     "tiba_menit_sisi_aman": 9.9,
+     "tinggi_hi_m": 21.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 100.5,
+     "tiba_menit_sisi_aman": 72.1,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 31.9,
+     "tiba_menit_sisi_aman": 22.9,
+     "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 73,
+    "jiwa_krb2": 1744,
+    "jiwa_krb1": 5689,
+    "gunung": [
+     "semeru",
+     "bromo",
+     "kelud"
+    ]
+   }
+  },
+  "3508": {
+   "prov": "35",
+   "kab": "Lumajang",
+   "nama": "Kab. Lumajang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 396
+    },
+    "sumba": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 17.9,
+     "tiba_menit_sisi_aman": 12.8,
+     "tinggi_hi_m": 10.4,
+     "jiwa_pesisir_rendah_lt30": 70109
+    },
+    "mentawai": {
+     "tiba_menit": 105.8,
+     "tiba_menit_sisi_aman": 75.9,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 33,
+     "tiba_menit_sisi_aman": 23.7,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 70109
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 9231,
+    "jiwa_krb2": 21501,
+    "jiwa_krb1": 4914,
+    "gunung": [
+     "semeru",
+     "bromo"
+    ]
+   }
+  },
+  "3509": {
+   "prov": "35",
+   "kab": "Jember",
+   "nama": "Kab. Jember",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 479
+    },
+    "sumba": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 18.7,
+     "tiba_menit_sisi_aman": 13.4,
+     "tinggi_hi_m": 15,
+     "jiwa_pesisir_rendah_lt30": 225289
+    },
+    "mentawai": {
+     "tiba_menit": 105.9,
+     "tiba_menit_sisi_aman": 76,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 24.2,
+     "tiba_menit_sisi_aman": 17.4,
+     "tinggi_hi_m": 4.9,
+     "jiwa_pesisir_rendah_lt30": 225289
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 13,
+    "jiwa_krb2": 54,
+    "jiwa_krb1": 7220,
+    "gunung": [
+     "raung"
+    ]
+   }
+  },
+  "3510": {
+   "prov": "35",
+   "kab": "Banyuwangi",
+   "nama": "Kab. Banyuwangi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 48
+    },
+    "sumba": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 18
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 21.6,
+     "tiba_menit_sisi_aman": 15.5,
+     "tinggi_hi_m": 8.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 108.4,
+     "tiba_menit_sisi_aman": 77.8,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 16.4,
+     "tiba_menit_sisi_aman": 11.8,
+     "tinggi_hi_m": 7.4,
+     "jiwa_pesisir_rendah_lt30": 44692
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 12,
+    "jiwa_krb2": 2993,
+    "jiwa_krb1": 14641,
+    "gunung": [
+     "raung"
+    ]
+   }
+  },
+  "3511": {
+   "prov": "35",
+   "kab": "Bondowoso",
+   "nama": "Kab. Bondowoso",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 19
+    },
+    "sumba": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 12,
+    "jiwa_krb2": 842,
+    "jiwa_krb1": 11198,
+    "gunung": [
+     "raung"
+    ]
+   }
+  },
+  "3512": {
+   "prov": "35",
+   "kab": "Situbondo",
+   "nama": "Kab. Situbondo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 7
+    },
+    "sumba": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 69.5,
+     "tiba_menit_sisi_aman": 49.9,
+     "tinggi_hi_m": 4.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 154.2,
+     "tiba_menit_sisi_aman": 110.7,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 49.6,
+     "tiba_menit_sisi_aman": 35.6,
+     "tinggi_hi_m": 4.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3513": {
+   "prov": "35",
+   "kab": "Probolinggo",
+   "nama": "Kab. Probolinggo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 100
+    },
+    "sumba": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 128.3,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 3.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 108.4,
+     "tiba_menit_sisi_aman": 77.8,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 506,
+    "jiwa_krb2": 119,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "bromo"
+    ]
+   }
+  },
+  "3514": {
+   "prov": "35",
+   "kab": "Pasuruan",
+   "nama": "Kab. Pasuruan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 214
+    },
+    "sumba": {
+     "mmi_maks": 3.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 160.7,
+     "tiba_menit_sisi_aman": 115.3,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 140.8,
+     "tiba_menit_sisi_aman": 101,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 260,
+    "jiwa_krb2": 22,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "bromo"
+    ]
+   }
+  },
+  "3515": {
+   "prov": "35",
+   "kab": "Sidoarjo",
+   "nama": "Kab. Sidoarjo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 118
+    }
+   },
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 161.2,
+     "tiba_menit_sisi_aman": 115.7,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3516": {
+   "prov": "35",
+   "kab": "Mojokerto",
+   "nama": "Kab. Mojokerto",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 97
+    }
+   }
+  },
+  "3517": {
+   "prov": "35",
+   "kab": "Jombang",
+   "nama": "Kab. Jombang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 166
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "kelud"
+    ]
+   }
+  },
+  "3518": {
+   "prov": "35",
+   "kab": "Nganjuk",
+   "nama": "Kab. Nganjuk",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 215
+    }
+   }
+  },
+  "3519": {
+   "prov": "35",
+   "kab": "Madiun",
+   "nama": "Kab. Madiun",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 192
+    }
+   }
+  },
+  "3520": {
+   "prov": "35",
+   "kab": "Magetan",
+   "nama": "Kab. Magetan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 203
+    }
+   }
+  },
+  "3521": {
+   "prov": "35",
+   "kab": "Ngawi",
+   "nama": "Kab. Ngawi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 118
+    }
+   }
+  },
+  "3522": {
+   "prov": "35",
+   "kab": "Bojonegoro",
+   "nama": "Kab. Bojonegoro",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 50
+    }
+   }
+  },
+  "3523": {
+   "prov": "35",
+   "kab": "Tuban",
+   "nama": "Kab. Tuban",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 13
+    }
+   }
+  },
+  "3524": {
+   "prov": "35",
+   "kab": "Lamongan",
+   "nama": "Kab. Lamongan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 27
+    }
+   }
+  },
+  "3525": {
+   "prov": "35",
+   "kab": "Gresik",
+   "nama": "Kab. Gresik",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 30
+    }
+   }
+  },
+  "3526": {
+   "prov": "35",
+   "kab": "Bangkalan",
+   "nama": "Kab. Bangkalan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   },
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 158.3,
+     "tiba_menit_sisi_aman": 113.6,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3527": {
+   "prov": "35",
+   "kab": "Sampang",
+   "nama": "Kab. Sampang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 5
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 144.3,
+     "tiba_menit_sisi_aman": 103.6,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 124.4,
+     "tiba_menit_sisi_aman": 89.3,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3528": {
+   "prov": "35",
+   "kab": "Pamekasan",
+   "nama": "Kab. Pamekasan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 133.7,
+     "tiba_menit_sisi_aman": 95.9,
+     "tinggi_hi_m": 3.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 113.8,
+     "tiba_menit_sisi_aman": 81.7,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3529": {
+   "prov": "35",
+   "kab": "Sumenep",
+   "nama": "Kab. Sumenep",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    },
+    "sumba": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 61.6,
+     "tiba_menit_sisi_aman": 44.2,
+     "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 146.3,
+     "tiba_menit_sisi_aman": 105,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 41.7,
+     "tiba_menit_sisi_aman": 29.9,
+     "tinggi_hi_m": 4.7,
+     "jiwa_pesisir_rendah_lt30": 15412
+    }
+   }
+  },
+  "3571": {
+   "prov": "35",
+   "kab": "Kota Kediri",
+   "nama": "Kota Kediri",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 125
+    }
+   }
+  },
+  "3572": {
+   "prov": "35",
+   "kab": "Kota Blitar",
+   "nama": "Kota Blitar",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      250.4
+     ],
+     "rb": 146
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "kelud"
+    ]
+   }
+  },
+  "3573": {
+   "prov": "35",
+   "kab": "Kota Malang",
+   "nama": "Kota Malang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 406
+    }
+   }
+  },
+  "3574": {
+   "prov": "35",
+   "kab": "Kota Probolinggo",
+   "nama": "Kota Probolinggo",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 25
+    },
+    "sumba": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 148.9,
+     "tiba_menit_sisi_aman": 106.9,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 129,
+     "tiba_menit_sisi_aman": 92.6,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3575": {
+   "prov": "35",
+   "kab": "Kota Pasuruan",
+   "nama": "Kota Pasuruan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 21
+    }
+   },
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 153.3,
+     "tiba_menit_sisi_aman": 110,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3576": {
+   "prov": "35",
+   "kab": "Kota Mojokerto",
+   "nama": "Kota Mojokerto",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 11
+    }
+   }
+  },
+  "3577": {
+   "prov": "35",
+   "kab": "Kota Madiun",
+   "nama": "Kota Madiun",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 51
+    }
+   }
+  },
+  "3578": {
+   "prov": "35",
+   "kab": "Kota Surabaya",
+   "nama": "Kota Surabaya",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 77
+    }
+   }
+  },
+  "3579": {
+   "prov": "35",
+   "kab": "Kota Batu",
+   "nama": "Kota Batu",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 60
+    }
+   }
+  },
+  "3601": {
+   "prov": "36",
+   "kab": "Pandeglang",
+   "nama": "Kab. Pandeglang",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 39.2,
+     "tiba_menit_sisi_aman": 28.1,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 44.4,
+     "tiba_menit_sisi_aman": 31.9,
+     "tinggi_hi_m": 8.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 80.7,
+     "tiba_menit_sisi_aman": 57.9,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3602": {
+   "prov": "36",
+   "kab": "Lebak",
+   "nama": "Kab. Lebak",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 38.6,
+     "tiba_menit_sisi_aman": 27.7,
+     "tinggi_hi_m": 5.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 49.7,
+     "tiba_menit_sisi_aman": 35.7,
+     "tinggi_hi_m": 7.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 80.5,
+     "tiba_menit_sisi_aman": 57.8,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3603": {
+   "prov": "36",
+   "kab": "Tangerang",
+   "nama": "Kab. Tangerang",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 146.3,
+     "tiba_menit_sisi_aman": 105,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 142.4,
+     "tiba_menit_sisi_aman": 102.2,
+     "tinggi_hi_m": 6.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3604": {
+   "prov": "36",
+   "kab": "Serang",
+   "nama": "Kab. Serang",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 86.1,
+     "tiba_menit_sisi_aman": 61.8,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 82.2,
+     "tiba_menit_sisi_aman": 59,
+     "tinggi_hi_m": 6.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 126.1,
+     "tiba_menit_sisi_aman": 90.5,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3672": {
+   "prov": "36",
+   "kab": "Kota Cilegon",
+   "nama": "Kota Cilegon",
+   "pulau": "Jawa",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 94.6,
+     "tiba_menit_sisi_aman": 67.9,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 90.8,
+     "tiba_menit_sisi_aman": 65.2,
+     "tinggi_hi_m": 5.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 134.6,
+     "tiba_menit_sisi_aman": 96.6,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5101": {
+   "prov": "51",
+   "kab": "Jembrana",
+   "nama": "Kab. Jembrana",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    },
+    "sumba": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 5
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 35.4,
+     "tiba_menit_sisi_aman": 25.4,
+     "tinggi_hi_m": 7.4,
+     "jiwa_pesisir_rendah_lt30": 101813
+    },
+    "mentawai": {
+     "tiba_menit": 121.7,
+     "tiba_menit_sisi_aman": 87.3,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 23.3,
+     "tiba_menit_sisi_aman": 16.7,
+     "tinggi_hi_m": 7.3,
+     "jiwa_pesisir_rendah_lt30": 101813
+    }
+   }
+  },
+  "5102": {
+   "prov": "51",
+   "kab": "Tabanan",
+   "nama": "Kab. Tabanan",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 31
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 38.9,
+     "tiba_menit_sisi_aman": 27.9,
+     "tinggi_hi_m": 7.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 125.2,
+     "tiba_menit_sisi_aman": 89.8,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 26.8,
+     "tiba_menit_sisi_aman": 19.2,
+     "tinggi_hi_m": 7.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5103": {
+   "prov": "51",
+   "kab": "Badung",
+   "nama": "Kab. Badung",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 100
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 30,
+     "tiba_menit_sisi_aman": 21.5,
+     "tinggi_hi_m": 7.6,
+     "jiwa_pesisir_rendah_lt30": 71560
+    },
+    "mentawai": {
+     "tiba_menit": 115.8,
+     "tiba_menit_sisi_aman": 83.1,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 14.4,
+     "tiba_menit_sisi_aman": 10.3,
+     "tinggi_hi_m": 9.7,
+     "jiwa_pesisir_rendah_lt30": 71560
+    }
+   }
+  },
+  "5104": {
+   "prov": "51",
+   "kab": "Gianyar",
+   "nama": "Kab. Gianyar",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 49
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 43.3,
+     "tiba_menit_sisi_aman": 31.1,
+     "tinggi_hi_m": 5.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 128.4,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 25.7,
+     "tiba_menit_sisi_aman": 18.4,
+     "tinggi_hi_m": 7.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5105": {
+   "prov": "51",
+   "kab": "Klungkung",
+   "nama": "Kab. Klungkung",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 28
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 34.1,
+     "tiba_menit_sisi_aman": 24.5,
+     "tinggi_hi_m": 6.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 119.2,
+     "tiba_menit_sisi_aman": 85.5,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 15.8,
+     "tiba_menit_sisi_aman": 11.3,
+     "tinggi_hi_m": 8.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "agung"
+    ]
+   }
+  },
+  "5106": {
+   "prov": "51",
+   "kab": "Bangli",
+   "nama": "Kab. Bangli",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 9
+    }
+   }
+  },
+  "5107": {
+   "prov": "51",
+   "kab": "Karangasem",
+   "nama": "Kab. Karangasem",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 4.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 19
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 43.5,
+     "tiba_menit_sisi_aman": 31.2,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 128.2,
+     "tiba_menit_sisi_aman": 92,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 23.6,
+     "tiba_menit_sisi_aman": 16.9,
+     "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 30414,
+    "jiwa_krb2": 58610,
+    "jiwa_krb1": 94662,
+    "gunung": [
+     "agung"
+    ]
+   }
+  },
+  "5108": {
+   "prov": "51",
+   "kab": "Buleleng",
+   "nama": "Kab. Buleleng",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 7
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 51.5,
+     "tiba_menit_sisi_aman": 37,
+     "tinggi_hi_m": 4.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 136.2,
+     "tiba_menit_sisi_aman": 97.7,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 31.6,
+     "tiba_menit_sisi_aman": 22.7,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5171": {
+   "prov": "51",
+   "kab": "Kota Denpasar",
+   "nama": "Kota Denpasar",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "jawa": {
+     "mmi_maks": 3.8,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "sumba": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 117
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 39.3,
+     "tiba_menit_sisi_aman": 28.2,
+     "tinggi_hi_m": 6.3,
+     "jiwa_pesisir_rendah_lt30": 274971
+    },
+    "mentawai": {
+     "tiba_menit": 124.4,
+     "tiba_menit_sisi_aman": 89.3,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 21.5,
+     "tiba_menit_sisi_aman": 15.4,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 274971
+    }
+   }
+  },
+  "5201": {
+   "prov": "52",
+   "kab": "Lombok Barat",
+   "nama": "Kab. Lombok Barat",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 77
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 35.4,
+     "tiba_menit_sisi_aman": 25.4,
+     "tinggi_hi_m": 5.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 119.6,
+     "tiba_menit_sisi_aman": 85.8,
+     "tinggi_hi_m": 2.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 13.4,
+     "tiba_menit_sisi_aman": 9.6,
+     "tinggi_hi_m": 8.2,
+     "jiwa_pesisir_rendah_lt30": 93875
+    }
+   }
+  },
+  "5202": {
+   "prov": "52",
+   "kab": "Lombok Tengah",
+   "nama": "Kab. Lombok Tengah",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 177
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 38,
+     "tiba_menit_sisi_aman": 27.3,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 121.7,
+     "tiba_menit_sisi_aman": 87.3,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 13.6,
+     "tiba_menit_sisi_aman": 9.8,
+     "tinggi_hi_m": 10.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 6,
+    "gunung": [
+     "rinjani"
+    ]
+   }
+  },
+  "5203": {
+   "prov": "52",
+   "kab": "Lombok Timur",
+   "nama": "Kab. Lombok Timur",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 135
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 41.1,
+     "tiba_menit_sisi_aman": 29.5,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 124.6,
+     "tiba_menit_sisi_aman": 89.4,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 14.3,
+     "tiba_menit_sisi_aman": 10.3,
+     "tinggi_hi_m": 10.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 11,
+    "jiwa_krb2": 43,
+    "jiwa_krb1": 3237,
+    "gunung": [
+     "rinjani"
+    ]
+   }
+  },
+  "5204": {
+   "prov": "52",
+   "kab": "Sumbawa",
+   "nama": "Kab. Sumbawa",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 36
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 44.5,
+     "tiba_menit_sisi_aman": 31.9,
+     "tinggi_hi_m": 4.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 127,
+     "tiba_menit_sisi_aman": 91.1,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 13.1,
+     "tiba_menit_sisi_aman": 9.4,
+     "tinggi_hi_m": 10.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5205": {
+   "prov": "52",
+   "kab": "Dompu",
+   "nama": "Kab. Dompu",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 56.2,
+     "tiba_menit_sisi_aman": 40.3,
+     "tinggi_hi_m": 3.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 138.1,
+     "tiba_menit_sisi_aman": 99.1,
+     "tinggi_hi_m": 2.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 18.8,
+     "tiba_menit_sisi_aman": 13.5,
+     "tinggi_hi_m": 7.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 8,
+    "gunung": [
+     "tambora"
+    ]
+   }
+  },
+  "5206": {
+   "prov": "52",
+   "kab": "Bima",
+   "nama": "Kab. Bima",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 5
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 57.7,
+     "tiba_menit_sisi_aman": 41.4,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 139.6,
+     "tiba_menit_sisi_aman": 100.2,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 19.9,
+     "tiba_menit_sisi_aman": 14.3,
+     "tinggi_hi_m": 7.1,
+     "jiwa_pesisir_rendah_lt30": 48163
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 251,
+    "jiwa_krb2": 26,
+    "jiwa_krb1": 106,
+    "gunung": [
+     "sangeangapi",
+     "tambora"
+    ]
+   }
+  },
+  "5207": {
+   "prov": "52",
+   "kab": "Sumbawa Barat",
+   "nama": "Kab. Sumbawa Barat",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 18
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 41.1,
+     "tiba_menit_sisi_aman": 29.5,
+     "tinggi_hi_m": 4.8,
+     "jiwa_pesisir_rendah_lt30": 17905
+    },
+    "mentawai": {
+     "tiba_menit": 123.8,
+     "tiba_menit_sisi_aman": 88.8,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 11.8,
+     "tiba_menit_sisi_aman": 8.5,
+     "tinggi_hi_m": 9.2,
+     "jiwa_pesisir_rendah_lt30": 71935
+    }
+   }
+  },
+  "5208": {
+   "prov": "52",
+   "kab": "Lombok Utara",
+   "nama": "Kab. Lombok Utara",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 46.1,
+     "tiba_menit_sisi_aman": 33.1,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 130.8,
+     "tiba_menit_sisi_aman": 93.9,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 26.1,
+     "tiba_menit_sisi_aman": 18.7,
+     "tinggi_hi_m": 6.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 1,
+    "jiwa_krb2": 5,
+    "jiwa_krb1": 942,
+    "gunung": [
+     "rinjani"
+    ]
+   }
+  },
+  "5271": {
+   "prov": "52",
+   "kab": "Kota Mataram",
+   "nama": "Kota Mataram",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 44
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 49.2,
+     "tiba_menit_sisi_aman": 35.3,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 133.9,
+     "tiba_menit_sisi_aman": 96.1,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 29.1,
+     "tiba_menit_sisi_aman": 20.9,
+     "tinggi_hi_m": 7.1,
+     "jiwa_pesisir_rendah_lt30": 277892
+    }
+   }
+  },
+  "5272": {
+   "prov": "52",
+   "kab": "Kota Bima",
+   "nama": "Kota Bima",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 84.6,
+     "tiba_menit_sisi_aman": 60.7,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 53.2,
+     "tiba_menit_sisi_aman": 38.2,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5301": {
+   "prov": "53",
+   "kab": "Kupang",
+   "nama": "Kab. Kupang",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 92.1,
+     "tiba_menit_sisi_aman": 66.1,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 56.8,
+     "tiba_menit_sisi_aman": 40.8,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5302": {
+   "prov": "53",
+   "kab": "Timor Tengah Selatan",
+   "nama": "Kab. Timor Tengah Selatan",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 103.7,
+     "tiba_menit_sisi_aman": 74.4,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 68.4,
+     "tiba_menit_sisi_aman": 49.1,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5303": {
+   "prov": "53",
+   "kab": "Timor Tengah Utara",
+   "nama": "Kab. Timor Tengah Utara",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 101.1,
+     "tiba_menit_sisi_aman": 72.6,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 65.8,
+     "tiba_menit_sisi_aman": 47.2,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5304": {
+   "prov": "53",
+   "kab": "Belu",
+   "nama": "Kab. Belu",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 106.3,
+     "tiba_menit_sisi_aman": 76.3,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 71,
+     "tiba_menit_sisi_aman": 51,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5305": {
+   "prov": "53",
+   "kab": "Alor",
+   "nama": "Kab. Alor",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 101.3,
+     "tiba_menit_sisi_aman": 72.7,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 66,
+     "tiba_menit_sisi_aman": 47.4,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5306": {
+   "prov": "53",
+   "kab": "Flores Timur",
+   "nama": "Kab. Flores Timur",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 92.4,
+     "tiba_menit_sisi_aman": 66.3,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 57.1,
+     "tiba_menit_sisi_aman": 41,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 2768,
+    "jiwa_krb2": 3811,
+    "jiwa_krb1": 1171,
+    "gunung": [
+     "lewotobi-laki-laki"
+    ]
+   }
+  },
+  "5307": {
+   "prov": "53",
+   "kab": "Sikka",
+   "nama": "Kab. Sikka",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 88.2,
+     "tiba_menit_sisi_aman": 63.3,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 52.9,
+     "tiba_menit_sisi_aman": 38,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5308": {
+   "prov": "53",
+   "kab": "Ende",
+   "nama": "Kab. Ende",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 85.6,
+     "tiba_menit_sisi_aman": 61.4,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 50.3,
+     "tiba_menit_sisi_aman": 36.1,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 7,
+    "jiwa_krb2": 13,
+    "jiwa_krb1": 1480,
+    "gunung": [
+     "iya"
+    ]
+   }
+  },
+  "5309": {
+   "prov": "53",
+   "kab": "Ngada",
+   "nama": "Kab. Ngada",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 85.7,
+     "tiba_menit_sisi_aman": 61.5,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 50.4,
+     "tiba_menit_sisi_aman": 36.2,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5310": {
+   "prov": "53",
+   "kab": "Manggarai",
+   "nama": "Kab. Manggarai",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 3.5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 80.7,
+     "tiba_menit_sisi_aman": 57.9,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 41.6,
+     "tiba_menit_sisi_aman": 29.9,
+     "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 751,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "anak-ranakah"
+    ]
+   }
+  },
+  "5311": {
+   "prov": "53",
+   "kab": "Sumba Timur",
+   "nama": "Kab. Sumba Timur",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 57.1,
+     "tiba_menit_sisi_aman": 41,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 139,
+     "tiba_menit_sisi_aman": 99.8,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 21.8,
+     "tiba_menit_sisi_aman": 15.6,
+     "tinggi_hi_m": 6.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5312": {
+   "prov": "53",
+   "kab": "Sumba Barat",
+   "nama": "Kab. Sumba Barat",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.9,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 8
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 57.4,
+     "tiba_menit_sisi_aman": 41.2,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 139.3,
+     "tiba_menit_sisi_aman": 100,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 19,
+     "tiba_menit_sisi_aman": 13.6,
+     "tinggi_hi_m": 5.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5313": {
+   "prov": "53",
+   "kab": "Lembata",
+   "nama": "Kab. Lembata",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 96.5,
+     "tiba_menit_sisi_aman": 69.3,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 61.2,
+     "tiba_menit_sisi_aman": 43.9,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 830,
+    "jiwa_krb2": 5517,
+    "jiwa_krb1": 1824,
+    "gunung": [
+     "ili-lewotolok"
+    ]
+   }
+  },
+  "5314": {
+   "prov": "53",
+   "kab": "Rote Ndao",
+   "nama": "Kab. Rote Ndao",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 82.2,
+     "tiba_menit_sisi_aman": 59,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 46.9,
+     "tiba_menit_sisi_aman": 33.7,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5315": {
+   "prov": "53",
+   "kab": "Manggarai Barat",
+   "nama": "Kab. Manggarai Barat",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 3.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 67.4,
+     "tiba_menit_sisi_aman": 48.4,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 149.3,
+     "tiba_menit_sisi_aman": 107.1,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 28.5,
+     "tiba_menit_sisi_aman": 20.5,
+     "tinggi_hi_m": 5.7,
+     "jiwa_pesisir_rendah_lt30": 32272
+    }
+   }
+  },
+  "5316": {
+   "prov": "53",
+   "kab": "Nagekeo",
+   "nama": "Kab. Nagekeo",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 85.4,
+     "tiba_menit_sisi_aman": 61.3,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 50.1,
+     "tiba_menit_sisi_aman": 36,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5317": {
+   "prov": "53",
+   "kab": "Sumba Tengah",
+   "nama": "Kab. Sumba Tengah",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 4.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 59.8,
+     "tiba_menit_sisi_aman": 42.9,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 141.7,
+     "tiba_menit_sisi_aman": 101.7,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 23,
+     "tiba_menit_sisi_aman": 16.5,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5318": {
+   "prov": "53",
+   "kab": "Sumba Barat Daya",
+   "nama": "Kab. Sumba Barat Daya",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 5.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 31
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 56.6,
+     "tiba_menit_sisi_aman": 40.6,
+     "tinggi_hi_m": 3.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai": {
+     "tiba_menit": 138.5,
+     "tiba_menit_sisi_aman": 99.4,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 17.2,
+     "tiba_menit_sisi_aman": 12.3,
+     "tinggi_hi_m": 9.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5319": {
+   "prov": "53",
+   "kab": "Manggarai Timur",
+   "nama": "Kab. Manggarai Timur",
+   "pulau": "Bali-Nusa Tenggara",
+   "gempa": {
+    "sumba": {
+     "mmi_maks": 3.3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 85.8,
+     "tiba_menit_sisi_aman": 61.6,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 46.7,
+     "tiba_menit_sisi_aman": 33.5,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 5,
+    "jiwa_krb2": 121,
+    "jiwa_krb1": 764,
+    "gunung": [
+     "anak-ranakah"
+    ]
+   }
+  },
+  "5320": {
+   "prov": "53",
+   "kab": "Sabu Raijua",
+   "nama": "Kab. Sabu Raijua",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 74.7,
+     "tiba_menit_sisi_aman": 53.6,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 39.4,
+     "tiba_menit_sisi_aman": 28.3,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 22848
+    }
+   }
+  },
+  "5321": {
+   "prov": "53",
+   "kab": "Malaka",
+   "nama": "Kab. Malaka",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 108.7,
+     "tiba_menit_sisi_aman": 78,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 73.4,
+     "tiba_menit_sisi_aman": 52.7,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "5371": {
+   "prov": "53",
+   "kab": "Kota Kupang",
+   "nama": "Kota Kupang",
+   "pulau": "Bali-Nusa Tenggara",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 96.3,
+     "tiba_menit_sisi_aman": 69.1,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 61,
+     "tiba_menit_sisi_aman": 43.8,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "6402": {
+   "prov": "64",
+   "kab": "Kutai Kartanegara",
+   "nama": "Kab. Kutai Kartanegara",
+   "pulau": "Kalimantan",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 162.8,
+     "tiba_menit_sisi_aman": 116.8,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7102": {
+   "prov": "71",
+   "kab": "Minahasa",
+   "nama": "Kab. Minahasa",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 2,
+    "jiwa_krb1": 4506,
+    "gunung": [
+     "lokon",
+     "soputan"
+    ]
+   }
+  },
+  "7103": {
+   "prov": "71",
+   "kab": "Kepulauan Sangihe",
+   "nama": "Kab. Kepulauan Sangihe",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 17716,
+    "jiwa_krb1": 1742,
+    "gunung": [
+     "awu"
+    ]
+   }
+  },
+  "7105": {
+   "prov": "71",
+   "kab": "Minahasa Selatan",
+   "nama": "Kab. Minahasa Selatan",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 3,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 85,
+    "gunung": [
+     "soputan"
+    ]
+   }
+  },
+  "7107": {
+   "prov": "71",
+   "kab": "Minahasa Tenggara",
+   "nama": "Kab. Minahasa Tenggara",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 56,
+    "jiwa_krb2": 85,
+    "jiwa_krb1": 54,
+    "gunung": [
+     "soputan"
+    ]
+   }
+  },
+  "7109": {
+   "prov": "71",
+   "kab": "Kepulauan Siau Tagulandang Biaro",
+   "nama": "Kab. Kep. Siau Tagulandang Biaro",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 3002,
+    "jiwa_krb2": 9291,
+    "jiwa_krb1": 1101,
+    "gunung": [
+     "karangetang",
+     "ruang"
+    ]
+   }
+  },
+  "7171": {
+   "prov": "71",
+   "kab": "Kota Manado",
+   "nama": "Kota Manado",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "lokon"
+    ]
+   }
+  },
+  "7173": {
+   "prov": "71",
+   "kab": "Kota Tomohon",
+   "nama": "Kota Tomohon",
+   "pulau": "Sulawesi",
+   "krb": {
+    "jiwa_krb3": 144,
+    "jiwa_krb2": 2809,
+    "jiwa_krb1": 1802,
+    "gunung": [
+     "lokon"
+    ]
+   }
+  },
+  "7201": {
+   "prov": "72",
+   "kab": "Banggai",
+   "nama": "Kab. Banggai",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 137.9,
+     "tiba_menit_sisi_aman": 99,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7203": {
+   "prov": "72",
+   "kab": "Donggala",
+   "nama": "Kab. Donggala",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 151.4,
+     "tiba_menit_sisi_aman": 108.7,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7206": {
+   "prov": "72",
+   "kab": "Morowali",
+   "nama": "Kab. Morowali",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 121.8,
+     "tiba_menit_sisi_aman": 87.4,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7207": {
+   "prov": "72",
+   "kab": "Banggai Kepulauan",
+   "nama": "Kab. Banggai Kepulauan",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 134.9,
+     "tiba_menit_sisi_aman": 96.8,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7211": {
+   "prov": "72",
+   "kab": "Banggai Laut",
+   "nama": "Kab. Banggai Laut",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 118.9,
+     "tiba_menit_sisi_aman": 85.3,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7212": {
+   "prov": "72",
+   "kab": "Morowali Utara",
+   "nama": "Kab. Morowali Utara",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 139.5,
+     "tiba_menit_sisi_aman": 100.1,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7271": {
+   "prov": "72",
+   "kab": "Kota Palu",
+   "nama": "Kota Palu",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 156.4,
+     "tiba_menit_sisi_aman": 112.2,
+     "tinggi_hi_m": 0.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7301": {
+   "prov": "73",
+   "kab": "Kepulauan Selayar",
+   "nama": "Kab. Kepulauan Selayar",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 95.4,
+     "tiba_menit_sisi_aman": 68.5,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 56.6,
+     "tiba_menit_sisi_aman": 40.6,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7302": {
+   "prov": "73",
+   "kab": "Bulukumba",
+   "nama": "Kab. Bulukumba",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 112.5,
+     "tiba_menit_sisi_aman": 80.7,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 73.7,
+     "tiba_menit_sisi_aman": 52.9,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7303": {
+   "prov": "73",
+   "kab": "Bantaeng",
+   "nama": "Kab. Bantaeng",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 123.7,
+     "tiba_menit_sisi_aman": 88.8,
+     "tinggi_hi_m": 2.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 85.7,
+     "tiba_menit_sisi_aman": 61.5,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7304": {
+   "prov": "73",
+   "kab": "Jeneponto",
+   "nama": "Kab. Jeneponto",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 114.9,
+     "tiba_menit_sisi_aman": 82.5,
+     "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 77.6,
+     "tiba_menit_sisi_aman": 55.7,
+     "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7305": {
+   "prov": "73",
+   "kab": "Takalar",
+   "nama": "Kab. Takalar",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 113.5,
+     "tiba_menit_sisi_aman": 81.5,
+     "tinggi_hi_m": 2.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 76.2,
+     "tiba_menit_sisi_aman": 54.7,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7307": {
+   "prov": "73",
+   "kab": "Sinjai",
+   "nama": "Kab. Sinjai",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 116.7,
+     "tiba_menit_sisi_aman": 83.7,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 77.9,
+     "tiba_menit_sisi_aman": 55.9,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7308": {
+   "prov": "73",
+   "kab": "Bone",
+   "nama": "Kab. Bone",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 127.3,
+     "tiba_menit_sisi_aman": 91.4,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 88.5,
+     "tiba_menit_sisi_aman": 63.5,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7309": {
+   "prov": "73",
+   "kab": "Maros",
+   "nama": "Kab. Maros",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 174.2,
+     "tiba_menit_sisi_aman": 125,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 131.6,
+     "tiba_menit_sisi_aman": 94.4,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7310": {
+   "prov": "73",
+   "kab": "Pangkajene Kepulauan",
+   "nama": "Kab. Pangkajene dan Kepulauan",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 95.8,
+     "tiba_menit_sisi_aman": 68.8,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 61.1,
+     "tiba_menit_sisi_aman": 43.8,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7311": {
+   "prov": "73",
+   "kab": "Barru",
+   "nama": "Kab. Barru",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 144.8,
+     "tiba_menit_sisi_aman": 103.9,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 112.2,
+     "tiba_menit_sisi_aman": 80.5,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7313": {
+   "prov": "73",
+   "kab": "Wajo",
+   "nama": "Kab. Wajo",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 136.5,
+     "tiba_menit_sisi_aman": 98,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 97.7,
+     "tiba_menit_sisi_aman": 70.1,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7315": {
+   "prov": "73",
+   "kab": "Pinrang",
+   "nama": "Kab. Pinrang",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 146.1,
+     "tiba_menit_sisi_aman": 104.8,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 113.6,
+     "tiba_menit_sisi_aman": 81.5,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7317": {
+   "prov": "73",
+   "kab": "Luwu",
+   "nama": "Kab. Luwu",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 143.2,
+     "tiba_menit_sisi_aman": 102.8,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 104.5,
+     "tiba_menit_sisi_aman": 75,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7322": {
+   "prov": "73",
+   "kab": "Luwu Utara",
+   "nama": "Kab. Luwu Utara",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 127.5,
+     "tiba_menit_sisi_aman": 91.5,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7324": {
+   "prov": "73",
+   "kab": "Luwu Timur",
+   "nama": "Kab. Luwu Timur",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 129,
+     "tiba_menit_sisi_aman": 92.6,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7371": {
+   "prov": "73",
+   "kab": "Kota Makassar",
+   "nama": "Kota Makassar",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 152,
+     "tiba_menit_sisi_aman": 109.1,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 114.7,
+     "tiba_menit_sisi_aman": 82.3,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7372": {
+   "prov": "73",
+   "kab": "Kota Pare Pare",
+   "nama": "Kota Parepare",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 147.7,
+     "tiba_menit_sisi_aman": 106,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 115.2,
+     "tiba_menit_sisi_aman": 82.7,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7373": {
+   "prov": "73",
+   "kab": "Kota Palopo",
+   "nama": "Kota Palopo",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 128.4,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7401": {
+   "prov": "74",
+   "kab": "Kolaka",
+   "nama": "Kab. Kolaka",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 128.4,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 89.6,
+     "tiba_menit_sisi_aman": 64.3,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7402": {
+   "prov": "74",
+   "kab": "Konawe",
+   "nama": "Kab. Konawe",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 119.2,
+     "tiba_menit_sisi_aman": 85.5,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7403": {
+   "prov": "74",
+   "kab": "Muna",
+   "nama": "Kab. Muna",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 144.8,
+     "tiba_menit_sisi_aman": 103.9,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 106,
+     "tiba_menit_sisi_aman": 76.1,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7404": {
+   "prov": "74",
+   "kab": "Buton",
+   "nama": "Kab. Buton",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 128.3,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 89.5,
+     "tiba_menit_sisi_aman": 64.2,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7405": {
+   "prov": "74",
+   "kab": "Konawe Selatan",
+   "nama": "Kab. Konawe Selatan",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 151,
+     "tiba_menit_sisi_aman": 108.4,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 112.3,
+     "tiba_menit_sisi_aman": 80.6,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7406": {
+   "prov": "74",
+   "kab": "Bombana",
+   "nama": "Kab. Bombana",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 122.4,
+     "tiba_menit_sisi_aman": 87.8,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 83.6,
+     "tiba_menit_sisi_aman": 60,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7407": {
+   "prov": "74",
+   "kab": "Wakatobi",
+   "nama": "Kab. Wakatobi",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 126.5,
+     "tiba_menit_sisi_aman": 90.8,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 87.7,
+     "tiba_menit_sisi_aman": 62.9,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7408": {
+   "prov": "74",
+   "kab": "Kolaka Utara",
+   "nama": "Kab. Kolaka Utara",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 136.6,
+     "tiba_menit_sisi_aman": 98,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 97.8,
+     "tiba_menit_sisi_aman": 70.2,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7409": {
+   "prov": "74",
+   "kab": "Konawe Utara",
+   "nama": "Kab. Konawe Utara",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 128.6,
+     "tiba_menit_sisi_aman": 92.3,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7410": {
+   "prov": "74",
+   "kab": "Buton Utara",
+   "nama": "Kab. Buton Utara",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 137.6,
+     "tiba_menit_sisi_aman": 98.7,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 98.8,
+     "tiba_menit_sisi_aman": 70.9,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7412": {
+   "prov": "74",
+   "kab": "Konawe Kepulauan",
+   "nama": "Kab. Konawe Kepulauan",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 143.1,
+     "tiba_menit_sisi_aman": 102.7,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 104.3,
+     "tiba_menit_sisi_aman": 74.9,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7413": {
+   "prov": "74",
+   "kab": "Muna Barat",
+   "nama": "Kab. Muna Barat",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 126,
+     "tiba_menit_sisi_aman": 90.4,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7414": {
+   "prov": "74",
+   "kab": "Buton Tengah",
+   "nama": "Kab. Buton Tengah",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 120.7,
+     "tiba_menit_sisi_aman": 86.6,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 81.9,
+     "tiba_menit_sisi_aman": 58.8,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7415": {
+   "prov": "74",
+   "kab": "Buton Selatan",
+   "nama": "Kab. Buton Selatan",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 120.9,
+     "tiba_menit_sisi_aman": 86.8,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 82.1,
+     "tiba_menit_sisi_aman": 58.9,
+     "tinggi_hi_m": 1.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7471": {
+   "prov": "74",
+   "kab": "Kota Kendari",
+   "nama": "Kota Kendari",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 120.7,
+     "tiba_menit_sisi_aman": 86.6,
+     "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7472": {
+   "prov": "74",
+   "kab": "Kota Bau Bau",
+   "nama": "Kota Bau Bau",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 131.4,
+     "tiba_menit_sisi_aman": 94.3,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 92.6,
+     "tiba_menit_sisi_aman": 66.5,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7601": {
+   "prov": "76",
+   "kab": "Pasangkayu",
+   "nama": "Kab. Pasangkayu",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 133.9,
+     "tiba_menit_sisi_aman": 96.1,
+     "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7602": {
+   "prov": "76",
+   "kab": "Mamuju",
+   "nama": "Kab. Mamuju",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 146.4,
+     "tiba_menit_sisi_aman": 105.1,
+     "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 118.4,
+     "tiba_menit_sisi_aman": 85,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7604": {
+   "prov": "76",
+   "kab": "Polewali Mandar",
+   "nama": "Kab. Polewali Mandar",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 142.5,
+     "tiba_menit_sisi_aman": 102.3,
+     "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 112,
+     "tiba_menit_sisi_aman": 80.4,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7605": {
+   "prov": "76",
+   "kab": "Majene",
+   "nama": "Kab. Majene",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 140.2,
+     "tiba_menit_sisi_aman": 100.6,
+     "tinggi_hi_m": 2.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 110.2,
+     "tiba_menit_sisi_aman": 79.1,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "7606": {
+   "prov": "76",
+   "kab": "Mamuju Tengah",
+   "nama": "Kab. Mamuju Tengah",
+   "pulau": "Sulawesi",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 128,
+     "tiba_menit_sisi_aman": 91.9,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8101": {
+   "prov": "81",
+   "kab": "Maluku Tengah",
+   "nama": "Kab. Maluku Tengah",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 119.3,
+     "tiba_menit_sisi_aman": 85.6,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   },
+   "krb": {
+    "jiwa_krb3": 342,
+    "jiwa_krb2": 0,
+    "jiwa_krb1": 0,
+    "gunung": [
+     "banda-api"
+    ]
+   }
+  },
+  "8102": {
+   "prov": "81",
+   "kab": "Maluku Tenggara",
+   "nama": "Kab. Maluku Tenggara",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 141.4,
+     "tiba_menit_sisi_aman": 101.5,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8103": {
+   "prov": "81",
+   "kab": "Kepulauan Tanimbar",
+   "nama": "Kab. Kepulauan Tanimbar",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 129.5,
+     "tiba_menit_sisi_aman": 92.9,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8104": {
+   "prov": "81",
+   "kab": "Buru",
+   "nama": "Kab. Buru",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 119.8,
+     "tiba_menit_sisi_aman": 86,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8105": {
+   "prov": "81",
+   "kab": "Seram Bagian Timur",
+   "nama": "Kab. Seram Bagian Timur",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 129.2,
+     "tiba_menit_sisi_aman": 92.7,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8106": {
+   "prov": "81",
+   "kab": "Seram Bagian Barat",
+   "nama": "Kab. Seram Bagian Barat",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 121.6,
+     "tiba_menit_sisi_aman": 87.3,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8108": {
+   "prov": "81",
+   "kab": "Maluku Barat Daya",
+   "nama": "Kab. Maluku Barat Daya",
+   "pulau": "Maluku",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 117.2,
+     "tiba_menit_sisi_aman": 84.1,
+     "tinggi_hi_m": 1.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 81.9,
+     "tiba_menit_sisi_aman": 58.8,
+     "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8109": {
+   "prov": "81",
+   "kab": "Buru Selatan",
+   "nama": "Kab. Buru Selatan",
+   "pulau": "Maluku",
+   "tsunami": {
+    "jawa": {
+     "tiba_menit": 150.3,
+     "tiba_menit_sisi_aman": 107.9,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "sumba": {
+     "tiba_menit": 115,
+     "tiba_menit_sisi_aman": 82.5,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8171": {
+   "prov": "81",
+   "kab": "Kota Ambon",
+   "nama": "Kota Ambon",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 121.4,
+     "tiba_menit_sisi_aman": 87.1,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8172": {
+   "prov": "81",
+   "kab": "Kota Tual",
+   "nama": "Kota Tual",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 133.5,
+     "tiba_menit_sisi_aman": 95.8,
+     "tinggi_hi_m": 0.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8201": {
+   "prov": "82",
+   "kab": "Halmahera Barat",
+   "nama": "Kab. Halmahera Barat",
+   "pulau": "Maluku",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 51,
+    "jiwa_krb1": 6568,
+    "gunung": [
+     "ibu"
+    ]
+   }
+  },
+  "8203": {
+   "prov": "82",
+   "kab": "Halmahera Utara",
+   "nama": "Kab. Halmahera Utara",
+   "pulau": "Maluku",
+   "krb": {
+    "jiwa_krb3": 0,
+    "jiwa_krb2": 2,
+    "jiwa_krb1": 4,
+    "gunung": [
+     "dukono",
+     "ibu"
+    ]
+   }
+  },
+  "8204": {
+   "prov": "82",
+   "kab": "Halmahera Selatan",
+   "nama": "Kab. Halmahera Selatan",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 136.8,
+     "tiba_menit_sisi_aman": 98.2,
+     "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8205": {
+   "prov": "82",
+   "kab": "Kepulauan Sula",
+   "nama": "Kab. Kepulauan Sula",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 123.1,
+     "tiba_menit_sisi_aman": 88.3,
+     "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8208": {
+   "prov": "82",
+   "kab": "Pulau Taliabu",
+   "nama": "Kab. Pulau Taliabu",
+   "pulau": "Maluku",
+   "tsunami": {
+    "sumba": {
+     "tiba_menit": 121,
+     "tiba_menit_sisi_aman": 86.8,
+     "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "8271": {
+   "prov": "82",
+   "kab": "Kota Ternate",
+   "nama": "Kota Ternate",
+   "pulau": "Maluku",
+   "krb": {
+    "jiwa_krb3": 13,
+    "jiwa_krb2": 14040,
+    "jiwa_krb1": 39547,
+    "gunung": [
+     "gamalama"
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+D.I. Utuh Dalam Satu Desa
+
+210 D.I. Ngelo 10,07
+211 D.I. Bendo II 10,10
+212 D.I. Kuburan 10,10
+213 D.I. Lor Ngabean 10,10
+214 D.I. Ngelo 10,14
+215 D.I. Kemadoh 10,15
+216 D.I. Krangkungan 10,20
+217 D.I. Bendungan 10,23
+218 D.I. Kauman II 10,25
+219 D.I. Calukan 10,30
+220 D.I. Duren 10,31
+221 D.I. Glondong | 10,38
+222 D.I. Sentong 10,46
+223 D.I. Sogol 10,46
+224 D.I. Bendo 10,46
+225 D.I. Kawedan 10,50
+226 D.I. Cangkring 10,50
+227 D.I. Ngleri I 10,50
+228 D.I. Pule 10,50
+229 D.I. Tegalsari II 10,56
+230 D.I. Pojok 10,58
+231 D.I. Ratan 10,58
+232 D.I. Anyar 10,63
+233 D.I. Sempu I 10,67
+234 D.I. Situri 10,73
+235 D.I. Wadas 10,73
+236 D.I. Ngasem 10,74
+237 D.I. Pule Awar-Awar 10,79
+238 D.I. Sanggrahan 10,82
+239 D.I. Sikarang 10,82
+240 D.I. Pule II 10,83
+241 D.I. Bendo 11,00
+242 D.I. Bendo 11,00
+243 D.I. Jarakan 11,00
+244 D.I. Kabunan 11,00
+245 D.I. Karanganyar 11,00
+246 D.I. Mindi 11,00
+247 D.I. Penen 11,00
+248 D.I. Pule/Jetak 11,00
+249 D.I. Saren 11,00
+250 D.I. Sempol 11,00
+251 D.I. Jambe 11,01
+252 D.I. Kretek 11,05
+253 D.I. Lumut 11,08
+254 D.I. Kepitu 11,08
+255 D.I. Carikan 11,09
+256 D.I. Kretek 11,14
+257 D.I. Duren 11,18
+258 D.I. Nglengkong 11,20
+259 D.I. Babadan 11,26
+260 D.I. Jati 11,28
+261 D.I. Klampean 11,30
+262 D.I. Sigendong 11,30
+263 D.I. Bendo 11,32
+264 D.I. Wonolelo 11,38
+265 D.I. Brintik 11,40
+266 D.I. Jengkol 11,4
+267 D.I. Taraman 11,47
+268 D.I. Setan 11,55
+269 D.I. Bamban 12
+#KANAN
+295 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+270 D.I. Sidandang 11,66
+271 D.I. Tegalsari I 11,71
+272 D.I. Ngeles 11,71
+273 D.I. Gremeng 11,72
+274 D.I. Jambe 11,72
+275 D.I. Ngebok 11,77
+276 D.I. Sesek 11,79
+277 D.I. Ketonggo 11,81
+278 D.I. Kedong 11,92
+279 D.I. Jlegong 11,97
+280 D.I. Turgo 11,98
+281 D.I. Besi 12,00
+282 D.I. Cangkringan 12,00
+283 D.I. Gayam 12,00
+284 D.I. Gayam III 12,00
+285 D.I. Ngringin II 12,00
+286 D.I. Pleret 12,00
+287 D.I. Purwodadi 12,00
+288 D.I. Tanon 12,00
+289 D.I. Wuni 12,00
+290 D.I. Cengkirlegi 12,08
+291 D.I. Bendo 12,10
+292 D.I. Gayam 12,10
+293 D.I. Kawedan 12,10
+294 D.I. Jangkang 12,12
+295 D.I. Pleredan II 12,14
+296 D.I. Klepu 12,14
+297 D.I. Ploso 12,15
+298 D.I. Selorejo 1217
+299 D.I. Karanglo 12,18
+300 D.I. Nyamlung II 12,18
+301 D.I. Tangkil 12,21
+302 D.I. Siblimbing 12,23
+303 D.I. Ketingan 12,24
+304 D.I. Sipeh 12,24
+305 D.I. T. Kejambon 12,24
+306 D.I. Panjang 12,28
+307 D.I. Magersari 12,30
+308 D.I. Klurak 12,32
+309 D.I. Rewulu 12,32
+310 D.I. Tempuran 12,34
+311 D.I. Cangkring 12,35
+312 D.I. Randu 12,35
+313 D.I. Ligundi 12,40
+314 D.I. Gayam 12,43
+315 D.I. Kepanjen II 12,57
+316 D.I. Telo 12,57
+317 D.I. Siluduk 12,60
+318 D.I. Glondong II 12,61
+319 D.I. Cangkring II 12,61
+320 D.I. Turen | 12,66
+321 D.I. Ngebuk 12,74
+322 D.I. Kroco | 12,75
+323 D.I. Gandok 12,78
+324 D.I. Pringwulung 12,91
+325 D.I. Kreteg 12,93
+326 D.I. Mutihan 12,94
+327 D.I. Tempur 12,95
+328 D.I. Ngasem 13,00
+329 D.I. Tawang 13,00
+330 D.I. Widoro 13

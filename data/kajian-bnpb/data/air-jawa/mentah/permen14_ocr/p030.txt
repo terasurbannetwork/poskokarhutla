@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 30
+Status Daerah Irigasi Yang Men adi Wewen: ng Dan Tan ygung Jawab Pemerintah Provinsi
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+A LINTAS KABUPATEN/KOTA 356 163.687
+
+| PROVINSI ACEH 1 2.144
+1 D.I. Samalanga 2.144 Kabupaten Bireuen z 1.838 Ha
+Kabupaten Pidie z 306 Ha
+
+II PROVINSI SUMATERA UTARA 20 8.193
+1 D.I. Bekala 200 Kabupaten Deli Serdang z Bendung
+Kota Medan -z 200 Ha
+2 D.I. Rambung Merah/Simarimbun 1.104 Kabupaten Simalungun z Bendung
+Kota Pematang Siantar z 1.104 Ha
+3 D.I. Bah Korah II/N. Bosar 565 Kabupaten Simalungun - Bendung
+Kota Pematang Siantar z 565 Ha
+4 D.I. Sijambi 986 Kabupaten Asahan z 846 Ha
+Kota Tanjung Balai z 140 Ha
+5 D.I. Suka Makmur 125 Kabupaten Asahan - 125 Ha
+Kabupaten Batubara z Bendung
+6 D.I. Mombangboru 890 Kabupaten Tapanuli Selatan z 570 Ha
+Kabupaten Tapanuli Tengah z 320 Ha
+7 D.I. Hinalang 365 Kabupaten Tapanuli Utara z 160 Ha
+Kabupaten Toba Samosir z 205 Ha
+8 D.I. Sijambur 62 Kabupaten Tapanuli Utara - Bendung
+Kabupaten Toba Samosir z 62 Ha
+9 D.I. Meat 62 Kabupaten Tapanuli Utara - Bendung
+Kabupaten Toba Samosir z 62 Ha
+10 D.I. Tele Harian Boho 500 Kabupaten Humbang Hasundutan - 82 Ha
+Kabupaten Samosir z 418 Ha
+11 D.I. Sibulung Bira 200 Kabupaten Tapanuli Selatan z Bendung
+Kota Padang Sidempuan z 200 Ha
+12 D.I. Desa Gajah/Siluar 600 Kabupaten Asahan z 200 Ha
+Kabupaten Batubara z 400 Ha
+13 D.I. Bah Tonang 443 Kabupaten Serdang Bedagai z 443 Ha
+Kabupaten Simalungun z Bendung
+14 D.I. Lobu Tua 250 Kabupaten Humbang Hasundutan - Bendung
+Kabupaten Tapanuli Utara z 250 Ha
+15 D.I. Paya Lombang 1.180 Kabupaten Serdang Bedagai z 970 Ha
+Kota Tebing Tinggi z 210 Ha
+16 D.I. Tambun Barat 70 Kabupaten Simalungun z 70 Ha
+Kota Pematang Siantar z Bendung
+17 D.I. Sibatu-Batu 192 Kabupaten Simalungun -z 130 Ha
+Kota Pematang Siantar z 62 Ha
+18 D.I. Bah Kapul 179 Kabupaten Simalungun z 57 Ha
+Kota Pematang Siantar z 122 Ha
+19 D.I. Martoba Tanjung Pinggir 70 Kabupaten Simalungun z Bendung
+Kota Pematang Siantar z 70 Ha
+20 D.I. Martoba Tanjung Atas 150 Kabupaten Simalungun z 150 Ha
+Kota Pematang Siantar z Bendung
+
+Il PROVINSI SUMATERA BARAT 29 10.329
+1 D.I. Batang Lampasi 2.180 Kabupaten 50 Kota z 859 Ha
+Kota Payakumbuh z 1.321 Ha
+2 D.I. Batang Tabik 1.007 Kabupaten 50 Kota z 693 Ha
+Kota Payakumbuh z 314 Ha
+3 D.I. Batang Agam 633 Kabupaten 50 Kota z 40 Ha
+Kota Payakumbuh z 593 Ha
+4 D.I. Batang Talawi 200 Kabupaten 50 Kota z 40 Ha
+Kota Payakumbuh z 160 Ha
+5 D.I. Sei. Dareh 617 Kabupaten 50 Kota z 25 Ha
+Kota Payakumbuh z 592 Ha
+6 D.I. Bdr. Pamujan 190 Kabupaten Solok -z 75 Ha
+Kota Solok z 115 Ha
+7 D.I. Bdr. Panjang Selayo 128 Kabupaten Solok z 60 Ha
+Kota Solok -z 68 Ha
+8 D.I. Bdr. Batang Lembang 750 Kabupaten Solok z 601 Ha
+Kota Solok -z 149 Ha
+9 D.I. Bdr. Halim 657 Kabupaten Solok z 650 Ha
+Kota Solok z 7 Ha
+10 D.I. Pompa VII 98 Kabupaten Solok z 5 Ha
+Kota Solok z 93 Ha

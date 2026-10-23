@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+84 D.I. Pepalan 40
+85 D.I. Pepir 65
+86 D.I. Pertik 10
+87 D.I. Pinang Juling 35
+88 D.I. Porang 80
+89 D.I. Putri Betung 93
+90 D.I. Rak Lintang 30
+91 D.I. Rak Lintang Tiga Desa 80
+92 D.I. Rak Nunang 36
+93 D.I. Renggali Penggalangan 30
+94 D.I. Sekuelen 88
+95 D.I. Seneren 55
+96 D.I. Sesik 63
+97 D.I. Setul 42
+98 D.I. Tetingi Blang Pegayon 50
+99 D.I. Tetingi Remukut 45
+100 D.I. Ulumblang 30
+101 D.I. Ulun Tanoh | 50
+102 D.I. Ulun Tanoh II 50
+103 D.I. Ume Bete 120
+104 D.I. Uning Pune 56
+105 D.I. Uyem Ulu 40
+106 D.I. Agusen 34
+107 D.I. Aih Kurik 35
+108 D.I. Aih Lebah 30
+109 D.I. Aih Riuh 40
+110 D.I. Air Panas 70
+111 D.I. Akul 90
+112 D.I. Alur Nangka 30
+113 D.I. Anak Reje 45
+114 D.I. Arul Ngang 30
+115 D.I. Gele I 150
+116 D.I. Pucuk Padang 190
+Oo Kab. Naaan Rava 37 6.931
+1 D.I. Alue Buluh 150
+2 D.I. Alue Geureugah 200
+3 D.I. Alue Jamok 200
+4 D.I. Alue Paku 200
+5 D.I. Alue We 200
+6 D.I. Babah Dua 90
+7 D.I. Blang Meureundeh 80
+8 D.I. Blang Seunong 141
+9 D.I. Blang Teungku 75
+10 D.I. Bungong Talo 485
+11 D.I. Cot Mee 70
+12 D.I. Gunong Kupok 100
+13 D.I. Gunung Nagan 102
+14 D.I. Gunung Reubo 198
+15 D.I. Karian 100
+16 D.I. Kila 100
+17 D.I. Krueng Alem 200
+18 D.I. Puloe Raga 300
+19 D.I. Rambong 330
+20 D.I. Semambek 200
+21 D.I. Seuneuam 334
+22 D.I. Twi Meuleusong 200
+23 D.I. Twi Pongoh 100
+24 D.I. Alue Lahu 180
+25 D.I. Alue Mejein 200
+26 D.I. Alue Rambot 70
+#KANAN
+73 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+27 D.I. Blang Aman Tadu 200
+28 D.I. Blang Neuang 85
+29 D.I. Blang Puuk 200
+30 D.I. Gunong Langoe 175
+31 D.I. Krueng Mangkom 120
+32 D.I. Krueng Seumayam 200
+33 D.I. Lawa Batu 200
+34 D.I. Padang Rubek 65
+35 D.I. Pante Ara 431
+36 D.I. Suka Mulia 300
+37 D.I. Teuminyeu (Alue Seupeng) 350
+p Kab. Pidie 15 11.115
+1 D.I. Abah Kala 135
+2 D.I. Alue Badeuk 360
+3 D.I. Alue Baroh Geumpang 150
+4 D.I. Alue Billi 100
+5 D.I. Alue Breuh 40
+6 D.I. Alue Bu Gleiding 40
+7 D.I. Alue Drien | 50
+8 D.I. Alue Drien II 40
+9 D.I. Alue Glueh 35
+10 D.I. Alue Glumpang Paloh 50
+11 D.I. Alue le Bu Paloh 28
+12 D.I. Alue Igeuh 30
+13 D.I. Alue Jambe 50
+14 D.I. Alue Landong 22
+15 D.I. Alue Paki 120
+16 D.I. Alue Reuling 115
+17 D.I. Alue Rheu 385
+18 D.I. Beungga Atas 180
+19 D.I. Beungga Bawah 43
+20 D.I. Beungga Pulo le 60
+21 D.I. Biheue Kalee 300
+22 D.I. Binieb 200
+23 D.I. Blang Abeung 35
+24 D.I. Blang Baroh Kunyet 180
+25 D.I. Blang Beutong 50
+26 D.I. Blang Bidieng Kunyet 113
+27 D.I. Blang Blangong Mirah 70
+28 D.I. Blang Bungong 240
+29 D.I. Blang Cut 13
+30 D.I. Blang Dalam 60
+31 D.I. Blang Glee Kapho 25
+32 D.I. Blang Glok BI.Basah 7
+33 D.I. Blang Gunci 160
+34 D.I. Blang Krumbok/Bunot 125
+35 D.I. Blang Kubu 125
+36 D.I. Blang Kulam Ara 9
+37 D.I. Blang Kumot 50
+38 D.I. Blang Lam Kaca 60
+39 D.I. Blang Laweung 200
+40 D.I. Blang Lumpak 25
+41 D.I. Blang Malo 70
+42 D.I. Blang Mata le 25
+43 D.I. Blang Mei 50
+44 D.I. Blang Pandak 40
+45 D.I. Blang Panton 40
+46 D.I. Blang Paya Mie 30
+47 D.I. Blang Puuk Calong 70
+48 D.I. Blang Rinti 8

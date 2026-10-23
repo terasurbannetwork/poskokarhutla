@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+154 D.I. Sicangkring/Ploso 15
+155 D.I. Sicantrik 42
+156 D.I. Sicengkar 35
+157 D.I. Sicentong 20
+158 D.I. Sidalem 171
+159 D.I. Sidawe 28
+160 D.I. Sidengok 30
+161 D.I. Sidodadi 60
+162 D.I. Sidodadi 40
+163 D.I. Sidodadi 22
+164 D.I. Sidodadi 15
+165 D.I. Sidojoyo 27
+166 D.I. Sidomakmur Mergowati 103
+167 D.I. Sidomakmur Ngadimulyo 54
+168 D.I. Sidoyo 15
+169 D.I. Sidukun 71
+170 D.I. Siduren 40
+171 D.I. Siduren 8
+172 D.I. Siduwur 60
+173 D.I. Sigandul 45
+174 D.I. Siganjur 20
+175 D.I. Sigaron 4
+176 D.I. Sigaron 5
+177 D.I. Sigayam 26
+178 D.I. Sigedang/Silumbu 29
+179 D.I. Sigede 30
+180 D.I. Sigending 50
+181 D.I. Sigendull 11
+182 D.I. Sigenjik 95
+183 D.I. Sigetuk 25
+184 D.I. Sigintungan 31
+185 D.I. Siglodog II 74
+186 D.I. Siglutuk 30
+187 D.I. Sigogo 29
+188 D.I. Sigondang 20
+189 D.I. Sigondang 20
+190 D.I. Sigorok 26
+191 D.I. Sigorok 14
+192 D.I. Siguwo 37
+193 D.I. Sijambe (MA) 25
+194 D.I. Sijambon 20
+195 D.I. Sijanturan (MA) 26
+196 D.I. Sijembangan 20
+197 D.I. Sijurang 22
+198 D.I. Sikalong 5
+199 D.I. Sikarang 96
+200 D.I. Sikeji (MA) 8
+201 D.I. Sikembang | 13
+202 D.I. Sikembang II 4
+203 D.I. Sikendal 20
+204 D.I. Sikendal 37
+205 D.I. Sikenteng 45
+206 D.I. Sikenting 77
+207 D.I. Sikentong 20
+208 D.I. Sikere 9
+209 D.I. Siklewer 23
+210 D.I. Siklitik 15
+211 D.I. Sikliwon 15
+212 D.I. Siklotok 10
+213 D.I. Sikotok 26
+214 D.I. Sikreo 8
+#KANAN
+9177 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+215 D.I. Sikuncen 15
+216 D.I. Sikurak 17
+217 D.I. Sikuwok 21
+218 D.I. Silarut 16
+219 D.I. Silebong 144
+220 D.I. Silegen 47
+221 D.I. Silempong 55
+222 D.I. Silenging 40
+223 D.I. Sililin 226
+224 D.I. Silir 17
+225 D.I. Silumut Karangtejo 169
+226 D.I. Silumut Tegalrejo 65
+227 D.I. Silutut 13
+228 D.I. Simangut 13
+229 D.I. Simonggang 23
+230 D.I. Singabean 11
+231 D.I. Sinongko 20
+232 D.I. Sipacul 30
+233 D.I. Sipakel Purwodadi 35
+234 D.I. Sipandan Danurejo 20
+235 D.I. Sipandan Gandon 21
+236 D.I. Sipelem 32
+237 D.I. Sipelem Klepu (MA) 20
+238 D.I. Sipelem Muneng (MA) 1
+239 D.I. Sipelus Balerejo 30
+240 D.I. Sipelus Kaloran 28
+241 D.I. Sipelus Kandangan 18
+242 D.I. Sipenggung 16
+243 D.I. Sipengkol 70
+244 D.I. Sipereng 20
+245 D.I. Sipete (MA) 10
+246 D.I. Sipik 23
+247 D.I. Sipolo 92
+248 D.I. Siprecet 26
+249 D.I. Sipule 39
+250 D.I. Sipule 22
+251 D.I. Siragil 36
+252 D.I. Sirancah (MA) 9
+253 D.I. Sirancah Bulu 16
+254 D.I. Sirawu 31
+255 D.I. Sirebut I 25
+256 D.I. Sitalang Bulu 30
+257 D.I. Sitalang Jumo 158
+258 D.I. Sitalang Kedu 1
+259 D.I. Sitalang Ngadirejo 5
+260 D.I. Sitloso 22
+261 D.I. Situlung 73
+262 D.I. Siturunan 40
+263 D.I. Siwatu 37
+264 D.I. Siwatu-watu 17
+265 D.I. Siwesi 35
+266 D.I. Siwuluh 10
+267 D.I. Tangkah 21
+268 D.I. Tapen 14
+269 D.I. Tawangsari 15
+270 D.I. Tegalsari 26
+271 D.I. Tegalwungu 100
+272 D.I. Tegaron 43
+273 D.I. Teguru 1/Bejen 20
+274 D.I. Temonmloyo 25
+275 D.I. Tengah Sunggingsari 42

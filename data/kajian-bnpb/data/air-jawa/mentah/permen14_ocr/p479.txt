@@ -1,0 +1,55 @@
+#TATA_LETAK satu-tabel lebar=2480
+479 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+XIII PROVINSI KALIMANTAN TIMUR 44 12.257
+a Kab. Berau 5 1.850
+1 D.I.R. Bedaun 350
+2 D.I.R. Karangan/Bejo 500
+3 D.I.R. Pilanjau 300
+4 D.I.R. Sukan Pantai 500
+5 D.I.R. Teluk Semanting 200
+b Kab. Bontana 2 745
+1 D.I.R. Bontang Selatan 500
+2 D.I.R. Bontang Utara 245
+c Kab. Kutai Barat 8 1.360
+1 D.I.R. Bukit Baroh 160
+2 D.I.R. Galeo Asa 200
+3 D.I.R. Ma Jaipang 200
+4 D.I.R. Ma Jawag 100
+5 D.I.R. Melak 200
+6 D.I.R. Muara Asa 100
+7 D.I.R. Muara Ohong 200
+8 D.I.R. Tanjung Haur 200
+d Kab. Kutai Kartaneaara 11 3.725
+1 D.I.R. Anggana 500
+2 D.I.R. Kota Bangun 200
+3 D.I.R. Liang 150
+4 D.I.R. Limpahung 150
+5 D.I.R. Ma Aloh 450
+6 D.I.R. Ma Muntai 400
+7 D.I.R. Muara Kaman 200
+8 D.I.R. Perian 150
+9 D.I.R. Samboja 375
+10 D.I.R. Sebuntal 950
+11 D.I.R. Sei Meriam 200
+e Kab. Kutai Timur 6 2.050
+1 D.I.R. Perindan 200
+2 D.I.R. Rantau Pulung 500
+3 D.I.R. Rawa Indah Sangata 750
+4 D.I.R. Sangkulirang 300
+5 D.I.R. Tanjung Secang 200
+6 D.I.R. Teluk Pandan 100
+f Kab. Paser 6 1.267
+1 D.I.R. Batu Sopang 100
+2 D.I.R. Damit 230
+3 D.I.R. Gentung 80
+4 D.I.R. Jentik 100
+5 D.I.R. Jone Rantau Panjang 607
+6 D.I.R. Rawa Jone 150
+a Kab. Penaiam Paser Utara 1 110
+1 D.I.R. Labangka 110
+h Kota Balikpapan 3 750
+1 D.I.R. Balikpapan Barat 200
+2 D.I.R. Balikpapan Timur 500
+3 D.I.R. Balikpapan Utara 50

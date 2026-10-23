@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+13 D.I. Embuna Selante 470
+14 D.I. Embung Sepayung Dalam 300
+15 D.I. Embung Serading 150
+16 D.I. Kwang Rako 273
+17 D.I. Lekong 383
+18 D.I. Punaka 125
+19 D.I. Tarusan 342
+20 D.I. Tiwu Bulu 608
+21 D.I. Usar 204
+22 D.I. Aer Duri 150
+23 D.I. Ai Alu 165
+24 D.I. Ai Bengkal 150
+25 D.I. Ai Payung 125
+26 D.I. Ai Pet 170
+27 D.I. Arah Mano 900
+28 D.I. Ayan 192
+29 D.I. Babar 150
+30 D.I. Batu Bangka 400
+31 D.I. Beringin Sakti 200
+32 D.I. Brang Ipil 190
+33 D.I. Embung Kaswangi 600
+34 D.I. Embung Mata 144
+35 D.I. Embung Padasuka 300
+36 D.I. Jompang Ara 125
+37 D.I. Kelawis 125
+38 D.I. Kerekeh 130
+39 D.I. Krida 120
+40 D.I. Labu Kuris 175
+41 D.I. Liang Petang 265
+42 D.I. Lito Bawah 275
+43 D.I. Lowa 300
+44 D.I. Nemir 269
+45 D.I. Orong Bilang 182
+46 D.I. Orong Gola 250
+47 D.I. Orong Rea 181
+48 D.I. Orong Reban 200
+49 D.I. Pada Mara 168
+50 D.I. Panto Datang 156
+51 D.I. Paria 272
+52 D.I. Penyaung I 200
+53 D.I. Penvauna II 125
+54 D.I. Perempung 147
+55 D.I. Potor Bas 132
+56 D.I. Reban Aria 150
+57 D.I. Reban Kukir 144
+58 D.I. Reban Labangka III 250
+59 D.I. Reban Liang 150
+60 D.I. Reso 150
+61 D.I. Satempu 205
+62 D.I. Sengkorok 150
+63 D.I. Seseng Jangi 188
+64 D.I. Srikaya 200
+65 D.I. Tarik 325
+66 D.I. Tiu Angat 200
+67 D.I. Tiu Tola 150
+68 D.I. Tiu Tui 147
+69 D.I. Tobe 199
+70 D.I. Uma Balet 275
+71 D.I. Unter Pelam 150
+#KANAN
+381 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+h Kab. Sumbawa Barat 3 1.407
+1 D.I. E. Mantar 300
+2 D.I. Reban Batu 404
+3 D.I. Tiwu Kawa 703
+i Kota Bima 23 2.420
+1 D.I. Dodu 225
+2 D.I. Bangga Mbulu 68
+3 D.I. Dadi 99
+4 D.I. Fanda 50
+5 D.I. Kecintobo 160
+6 D.I. Lara 60
+7 D.I. Lela 65
+8 D.I. Mbolo 52
+9 D.I. Na'e 93
+10 D.I. Nggeru 100
+11 D.I. Nungga 241
+12 D.I. Prambanan 50
+13 D.I. Raba Cici 50
+14 D.I. Rabaponda 130
+15 D.I. Rangga 95
+16 D.I. Risa 60
+17 D.I. Rontu 433
+18 D.I. Salo 100
+19 D.I. Sangga 50
+20 D.I. Sari 62
+21 D.I. Satampa 33
+22 D.I. Tolo Kodo 74
+23 D.I. Tolo Tike 70
+i Kota Mataram 6 1.202
+1 D.I. Bertais 108
+2 D.I. Mataram 346
+3 D.I. Pamotan 135
+4 D.I. Pesongoran 240
+5 D.I. Tembelok 112
+6 D.I. Unus 261
+xyum PROVINSI |” 2n9n 494.5an
+NUSA 1 ENYOYARA 1IVUK
+
+a Kab. Alor 20 5.004
+1 D.I. Aimoli 264
+2 D.I. Bubunang 221
+3 D.I. Bukapiting 360
+4 D.I. Daro 350
+5 D.I. Eibiki 75
+6 D.I. Fanating 200
+7 D.I. Kamot 100
+8 D.I. Kiralela 300
+9 D.I. Kokar 199
+10 D.I. Kunatena 400
+11 D.I. Mainang 861
+12 D.I. Naumang 300
+13 D.I. Pailelang 400
+14 D.I. Alila 431
+15 D.I. Kabir 30
+16 D.I. Kalondama 105
+17 D.I. Kelaisi M
+18 D.I. Lembur 157
+19 D.I. Maritaing 150
+20 D.I. Muriabang 60

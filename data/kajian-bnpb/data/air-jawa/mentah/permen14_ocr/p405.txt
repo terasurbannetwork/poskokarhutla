@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+54 D.I. Tapal 150
+55 D.I. Temiang Mali | 146
+56 D.I. Temiang Mali II 500
+57 D.I. Temiang Taba 32
+58 D.I. Tokam Sami 215
+59 D.I. Tonye 102
+60 D.I. Balai Nanga 143
+61 D.I. Bulu Bala 68
+62 D.I. Empiyang 65
+63 D.I. Engkolai 200
+64 D.I. Ensibo 75
+65 D.I. Genis Majel 78
+66 D.I. Kelompu 100
+67 D.I. Lintang 45
+68 D.I. Melugai 55
+69 D.I. Mobui II 163
+70 D.I. Nek Bindang 100
+71 D.I. Nekan II 40
+72 D.I. Riyai 50
+73 D.I. Sebiding 55
+74 D.I. Sebude 60
+75 D.I. Sejotang 75
+76 D.I. Selayang 250
+77 D.I. Semombat 80
+78 D.I. Seramen 30
+79 D.I. Tapa II 54
+80 D.I. Tokam Tang Raya 85
+k Kab. Sekadau 64 3.595
+1 D.I. Semabi 150
+2 D.I. Ensali 125
+3 D.I. Mungguk Temiang 80
+4 D.I. Sei Ringin 60
+5 D.I. Gonis Rabu 204
+6 D.I. Selalong 98
+7 D.I. Tapang Semadak 97
+8 D.I. Entada 195
+9 D.I. Mungguk Pelancar 115
+10 D.I. Tapang Perodah 200
+11 D.I. Nanga Taman (Rirang Jati ) 115
+12 D.I. Gerinis I 150
+13 D.I. Nanga Koman 145
+14 D.I. Batu Pahat 70
+15 D.I. Sepoya (Nangan Suri) 95
+16 D.I. Nanga Gonis 98
+17 D.I. Mungguk Pelancar II (SP. 6) 37
+18 D.I. Teluk Pasir 32
+19 D.I. Ensalang 47
+20 D.I. Landau Kodah,Sp.1 (|) 14
+21 D.I. Landau Kodah,Sp.1 (II) 17
+22 D.I. Sopan Pelangkan Sp.2 (l) 19
+23 D.I. Sopan Pelangkan Sp.2 (Il) 25
+24 D.I. Timpuk (SP. 3) 36
+25 D.I. Tigor Jaya, Sp.4 (I) 12
+26 D.I. Tigor Jaya, Sp.4 (II) 14
+27 D.I. Tigor Jaya, Sp.4 (III) 11
+28 D.I. Setor Karya Sp.5 (Il) 16
+29 D.I. Setor Karya Sp.5 (Il) 18
+30 D.I. Bagam 53
+31 D.I. Tuba 75
+32 D.I. Sungai Akar I 19
+#KANAN
+405 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+33 D.I. Sungai Akar II 29
+34 D.I. Sengkabang | 21
+35 D.I. Sengkabang II 33
+36 D.I. Manjang 51
+37 D.I. Nanga Menterap 36
+38 D.I. Boti | 13
+39 D.I. Boti II 26
+40 D.I. Nanga Pembubuh 43
+41 D.I. Sejirak (SP. 5 Setapang) (l) 31
+42 D.I. Sejirak (SP. 5 Setapang) (II) 17
+43 D.I. Mondi I 12
+44 D.I. Mondi II 18
+45 D.I. Sunsong 42
+46 D.I. Setawar | 78
+47 D.I. Setawar II 42
+48 D.I. Nanga Taman II (Sei Tobuk) 51
+49 D.I. Kiungkang 60
+50 D.I. Sei Lawak 36
+51 D.I. Sei Tapang Panggung I 10
+52 D.I. Sei Tapang Panggung II 35
+53 D.I. Meragun I 15
+54 D.I. Meragun II 21
+55 D.I. Landau Apin 52
+56 D.I. Sebabas I 8
+57 D.I. Sebabas II 28
+58 D.I. Teluk Kebau 48
+59 D.I. Lembah Beringin 45
+60 D.I. Nanga Ansar 39
+61 D.I. Pinvak 90
+62 D.I. Sungai Hantu Hulu 75
+63 D.I. Ngelai I 14
+64 D.I. Ngelai II 34
+| Kab. Sintana 79 10.529
+1 D.I. Bengkuang 185
+2 D.I. Bukit Kelam 215
+3 D.I. Bukit Luid 125
+4 D.I. Buluh Merindu 72
+5 D.I. Emparu 85
+6 D.I. Gernis 55
+7 D.I. Kasai 70
+8 D.I. Kebong 140
+9 D.I. Kenukut 74
+10 D.I. Kumpang 125
+11 D.I. Lenggang 130
+12 D.I. Mangat 115
+13 D.I. Manter 90
+14 D.I. Paong Panding 119
+15 D.I. Peningsung 950
+16 D.I. Peribang Baru 80
+17 D.I. Samak 85
+18 D.I. Sebuluh 60
+19 D.I. Sei Buluh 67
+20 D.I. Sei Maram 115
+21 D.I. Sepulut SP. I SKPH 100
+22 D.I. Serang 100
+23 D.I. Setangen 200
+24 D.I. Sirang Setambang SP IV 100
+25 D.I. Sirang Setambang SP. V 115
+26 D.I. SP. II SKPH 50
+27 D.I. Suak 55

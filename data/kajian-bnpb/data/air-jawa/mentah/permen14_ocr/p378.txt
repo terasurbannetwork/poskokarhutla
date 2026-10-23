@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+9 D.I. Tukad badung 464
+xun PROVINSI aan 4017820
+NUSA 1 ENYOYARA DARAI
+a Kab. Bima 66 17.270
+1 D.I. Bontokape 505
+2 D.I. Diwu Sadundu 900
+3 D.I. Diwu Tangiri 500
+4 D.I. E. Oi Toi 228
+5 D.I. E. Roi 782
+6 D.I. E. Kore 125
+7 D.I. E. Kowo 220
+8 D.I. E. Ncera 329
+9 D.I. E. Ngira | 25
+10 D.I. E. Ngira II 35
+11 D.I. E. Waworada 125
+12 D.I. E. Wera | 75
+13 D.I. E. Wera II 200
+14 D.I. E. Woro 452
+15 D.I. Karanu Ntonggu 566
+16 D.I. Lebo 623
+17 D.I. Leka 350
+18 D.I. Mada Pangga 459
+19 D.I. Mori Rade 307
+20 D.I. Na'e Wera 600
+21 D.I. Ndano Rangga 520
+22 D.I. Nggaro Rangga 150
+23 D.I. Oikawa 300
+24 D.I. Sambu 100
+25 D.I. Sori Monca 300
+26 D.I. Taloko 341
+27 D.I. Tolotangga 485
+28 D.I. Tonggondoangali 750
+29 D.I. Woro 250
+30 D.I. Wuwu 346
+31 D.I. Amakari 150
+32 D.I. Cenggu 50
+33 D.I. Dorolopi 253
+34 D.I. Embung Wora 200
+35 D.I. Ina Kece 165
+36 D.I. Kakumi 150
+37 D.I. Keru Woro 120
+38 D.I. La Fanda 75
+39 D.I. La Kalo 160
+40 D.I. La Keda 75
+41 D.I. Lati 150
+42 D.I. Lewi Ruma 170
+43 D.I. Lumba 150
+44 D.I. Mada palama 100
+45 D.I. Mboda 125
+46 D.I. Meku Parado 110
+47 D.I. Mpungga 75
+48 D.I. Nggeru Wera 128
+49 D.I. Oi Saro 90
+50 D.I. Ompu Sao 160
+51 D.I. Peto 300
+52 D.I. Potu 75
+53 D.I. Rababou 368
+54 D.I. Rora Kecil 601
+55 D.I. Salampe 82
+56 D.I. Samampi 150
+#KANAN
+378
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+57 D.I. Samili Teke 75
+58 D.I. Sari 622
+59 D.I. Sera Tawoa 100
+60 D.I. So Nae 2179
+61 D.I. So Wuwu 150
+62 D.I. Sori Kenanga 500
+63 D.I. Sori Ncanga Parado 100
+64 D.I. Tolokanda Wera 130
+65 D.I. Tuta Rasa 63
+66 D.I. Wacakudi 75
+b Kab. Dombu 64 13.665
+1 D.I. E. Jambu 700
+2 D.I. E. Tonda Selatan 460
+3 D.I. E. Kempo 250
+4 D.I. E. Kesi 125
+5 D.I. E. Lanangga 300
+6 D.I. E. Soncolopi 100
+7 D.I. Kwangko 400
+8 D.I. Lae Ranggo 600
+9 D.I. Monggolenggo 800
+10 D.I. Nae Kempo 315
+11 D.I. Patula 356
+12 D.I. Roju 70
+13 D.I. Sakolo 187
+14 D.I. Sambana 400
+15 D.I. Ta'a 125
+16 D.I. Abu Siama 159
+17 D.I. Ale 350
+18 D.I. Ana Mina 300
+19 D.I. Doro Mbolo 400
+20 D.I. E. Mbani Jara 128
+21 D.I. E. Sanggo Pasante 400
+22 D.I. E. Saneo 300
+23 D.I. Enca 150
+24 D.I. Fo'o Mpoa 75
+25 D.I. Gerinci 103
+26 D.I. H. Arsyid 240
+27 D.I. H. Loi 75
+28 D.I. Hela Sori 50
+29 D.I. Kalate 75
+30 D.I. Kambu 75
+31 D.I. Kampodu Moro 420
+32 D.I. Kancu 200
+33 D.I. Konca 150
+34 D.I. La Boga 200
+35 D.I. La Meri 75
+36 D.I. La Rida 100
+37 D.I. Lo 100
+38 D.I. Mada Duwe 125
+39 D.I. Mada Karano 75
+40 D.I. Mada Riwo 150
+41 D.I. Madawa 147
+42 D.I. Manini 236
+43 D.I. Mbuju 250
+44 D.I. Mbung Lasi 100
+45 D.I. Mpolo 58
+46 D.I. Nanga Doro I 150
+47 D.I. Nanga Doro II 183
+48 D.I. Nanga Tumpu 220
+49 D.I. Ncangga 145

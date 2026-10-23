@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+513 D.I. Gintungan II 20
+514 D.I. Gogowen 25
+515 D.I. Grenjeng 12
+516 D.I. Grenjeng 15
+517 D.I. Grenjeng 25
+518 D.I. Grenjeng (Kanan) 331
+519 D.I. Grenjeng Kiri 419
+520 D.I. Isep-Isep 22
+521 D.I. Jambon 45
+522 D.I. Jengglong 10
+523 D.I. Jomblang 30
+524 D.I. Jumbleng 15
+525 D.I. Jurang Gunting 13
+526 D.I. K. Kembang 21
+527 D.I. Kadipiro 17
+528 D.I. Kali Duwur 15
+529 D.I. Kali Kedung 15
+530 D.I. Kali Kidang 10
+531 D.I. Kali Kuning 15
+532 D.I. Kali Lateng 16
+533 D.I. Kali Lunyu 40
+534 D.I. Kali Ulo 27
+535 D.I. Kalibabon 30
+536 D.I. Kaliduren 22
+537 D.I. Kaliguwo 10
+538 D.I. Kalikayen 150
+539 D.I. Kalikotes 11
+540 D.I. Kalingancar 35
+541 D.I. Kalisusuk 40
+542 D.I. Kaliulo 15
+543 D.I. Kaliwuni 55
+544 D.I. Karangtengah 7
+545 D.I. Kaseh 11
+546 D.I. Kauman 40
+547 D.I. Kedung Cangkring 25
+548 D.I. Kedung Doro 20
+549 D.I. Kedung Gondang 42
+550 D.I. Kedung Jambu 12
+551 D.I. Kedung Kendil 40
+552 D.I. Kedung Mbelik 25
+553 D.I. Kedung Menjangan 125
+554 D.I. Kedung Padas 50
+555 D.I. Kedung Panggung 30
+556 D.I. Kedung Patran 30
+557 D.I. Kedung Rawu 150
+558 D.I. Kedung Sajen 25
+559 D.I. Kedung Tolo 21
+560 D.I. Kedung Wirok 14
+561 D.I. Kemadu 53
+562 D.I. Keningan 30
+563 D.I. Kepoh S 43
+564 D.I. Kiran 30
+565 D.I. Klarak 35
+566 D.I. Klawah 25
+567 D.I. Kluwih 13
+568 D.I. Krakalan 15
+569 D.I. Kunci Putih 66
+570 D.I. Ledoksari 10
+571 D.I. Lembu 25
+572 D.I. Lempuyangan 17
+573 D.I. Lempuyangan 30
+#KANAN
+ori 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+574 D.I. Lengkang 15
+575 D.I. Leri 20
+576 D.I. Longan 45
+577 D.I. Mejing 30
+578 D.I. Mendohsari 68
+579 D.I. Mendur 35
+580 D.I. Ngancar 34
+581 D.I. Ngancar 15
+582 D.I. Ngonto 50
+583 D.I. Padas Klorot 660
+584 D.I. Pagasan 150
+585 D.I. Pancuran 60
+586 D.I. Parat 21
+587 D.I. Parean 13
+588 D.I. Parengputih 22
+589 D.I. Pecangakan 12
+590 D.I. Pelem 25
+591 D.I. Ploko 35
+592 D.I. Pucung 150
+593 D.I. Randu Alas 22
+594 D.I. Randu Kreng 32
+595 D.I. Rejoso 302
+596 D.I. Remas 35
+597 D.I. Santen Sari 50
+598 D.I. Santri Lulang 38
+599 D.I. Sebalakan 20
+600 D.I. Sebayanan 34
+601 D.I. Seduwet 40
+602 D.I. Sempu 60
+603 D.I. Senayu 13
+604 D.I. Sendang Klero 21
+605 D.I. Senden 20
+606 D.I. Senjoyo 2.024
+607 D.I. Senjoyo 270
+608 D.I. Sibenggol 25
+609 D.I. Sibleder 74
+610 D.I. Siblimbing 30
+611 D.I. Sibugel 19
+612 D.I. Sicangak 10
+613 D.I. Sicangkok 30
+614 D.I. Sicangkring 20
+615 D.I. Sicekel 48
+616 D.I. Sidandang 20
+617 D.I. Sidawung 20
+618 D.I. Sidowo 25
+619 D.I. Sigambang 22
+620 D.I. Sigetak 18
+621 D.I. Sigumpil 12
+622 D.I. Sijebluk 34
+623 D.I. Sijrakah 40
+624 D.I. Sikepyur 25
+625 D.I. Sikerep 20
+626 D.I. Sikrocokan 20
+627 D.I. Simiri 42
+628 D.I. Sinanas 76
+629 D.I. Sipakel 30
+630 D.I. Sipakel 11
+631 D.I. Sipasinan 90
+632 D.I. Sipete 34
+633 D.I. Siplem 20
+634 D.I. Siploso 16

@@ -1,0 +1,63 @@
+#TATA_LETAK satu-tabel lebar=2480
+573 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+39 D.I.A.T. Hukaeya P.36 BTN 6
+b Kab. Kolaka 16 243
+1 D.LA.T. Wolulu 001/KLK/2012 24
+2 D.L.A.T. Wolulu 002/KLK/2012 20
+3 D.LA.T. Lamunde 001/KLK/2012 24
+4 D.LA.T. Lamunde 002/KLK/2012 34
+5 D.L.A.T. Putemata 004/KLK/2012 8
+6 D.I.A.T. Putemata 005/KLK/2012 12
+7 D.LA.T. Putemata 006/KLK/2012 8
+8 D.ILA.T. Watubangga P.07 KLK 8
+9 D.LA.T. Watubangga P.08 KLK 10
+10 D.LA.T. Gunung Sari 001/KLK/2012 6
+11 D.LA.T. Gunung Sari 002/KLK/2012 14
+12 D.LA.T. Wulonggere 001/KLK/2012 13
+13 D.LA.T. Wulonggere 002/KLK/2012 11
+14 D.LA.T. Wulonggere 003/KLK/2012 20
+15 D.LA.T. Wulonggere 004/KLK/2012 11
+16 D.I.A.T. Wulonggere 005/KLK/2012 21
+c Kab. Konawe 37 351
+1 D.LA.T. Amonggedo P.52 KDI 10
+2 D.LA.T. Amonggedo P.54 KDI 10
+3 D.LA.T. Puasana P.55 KDI 10
+4 D.LA.T. Watulawu P.56 KDI 10
+5 D.LA.T. Watulawu P.57 KDI 10
+6 D.L.A.T. Watulawu P.79 KDI 10
+7 D.LA.T. Watulawu P.80 KDI 10
+8 D.L.A.T. Watulawu P.81 KDI 10
+9 D.L.A.T. Watulawu P.82 KDI 10
+10 D.ILA.T. Watulawu P.83 KDI 10
+11 D.LA.T. Watulawu P.84 KDI 10
+12 D.LA.T. Watulawu | P.68 KDI 10
+13 D.LA.T. Watulawu II P.69 KDI 10
+14 D.LA.T. Watulawu III P.70 KDI 10
+15 D.LA.T. Amandete P.85 KDI 10
+16 D.LA.T. Amandete P.86 KDI 10
+17 D.LA.T. Amandete P.87 KDI 10
+18 D.LA.T. Amandete P.88 KDI 10
+19 D.LA.T. Amandete P.89 KDI 10
+20 D.I.A.T. Amandete P.90 KDI 10
+21 D.I.A.T. Amandete P.91 KDI 10
+22 D.I.A.T. Amandete P.92 KDI 10
+23 D.I.A.T. Amesiu P.100 KDI 10
+24 D.L.A.T. Asolu P.97 KDI 5
+25 D.I.A.T. Asolu P.98 KDI 4
+26 D.I.A.T. Asolu P.99 KDI 8
+27 D.L.A.T. Sonay P.109 KDI 8
+28 D.I.A.T. Puusangi P.110 KDI 10
+29 D.I.A.T. Puusangi P.121 KDI 8
+30 D.I.A.T. Puusangi P.122 KDI 10
+31 D.I.A.T. Puusangi P.123 KDI 10
+32 D.I.A.T. Lalonggatu P.124 KDI 10
+33 D.LA.T. Lalonggatu P.142 KNW 10
+34 D.I.A.T. Tanggobu P.140 KNW 10
+35 D.I.A.T. Tanggobu P.141 KNW 10
+36 D.ILA.T. Anggalomoare P.51 KDI 8
+37 D.I.A.T. Alonua P.145 KNW 10
+d Kab. Konawe Selatan 104 910
+1 D.LA.T. Jati Bali P.11 KDI 10

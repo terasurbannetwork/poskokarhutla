@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+181 D.I. Sukolilo 145
+182 D.I. Sumber 14
+183 D.I. Sumber Batusari 13
+184 D.I. Sumber Bedali 36
+185 D.I. Sumber Betek Taman 74
+186 D.I. Sumber Braholo 50
+187 D.I. Sumber Bringin 6
+188 D.I. Sumber Bringin 8
+189 D.I. Sumber Bringin 15
+190 D.I. Sumber Bringin 18
+191 D.I. Sumber Bunut 7
+192 D.I. Sumber Burdin 6
+193 D.I. Sumber Dampol 22
+194 D.I. Sumber Duren 14
+195 D.I. Sumber Duren 18
+196 D.I. Sumber Duren 44
+197 D.I. Sumber Gayam 66
+198 D.I. Sumber Gedabang 18
+199 D.I. Sumber Guwo 84
+200 D.I. Sumber Jambang 22
+201 D.I. Sumber Jelun 28
+202 D.I. Sumber Jeruk 14
+203 D.I. Sumber Kare 84
+204 D.I. Sumber Keben 33
+205 D.I. Sumber Kedawung 215
+206 D.I. Sumber Kedung Banger 20
+207 D.I. Sumber Kemiri 10
+208 D.I. Sumber Kertakata 54
+209 D.I. Sumber Klampok 81
+210 D.I. Sumber Kletek 15
+211 D.I. Sumber Kokap 55
+212 D.I. Sumber Kokap 119
+213 D.I. Sumber Kokap | 12
+214 D.I. Sumber Kokap II 28
+215 D.I. Sumber Kola 2
+216 D.I. Sumber Kopi 22
+217 D.I. Sumber Kramat 3
+218 D.I. Sumber Kramat 29
+219 D.I. Sumber Kramat 45
+220 D.I. Sumber Lajuk 6
+221 D.I. Sumber Limus 27
+222 D.I. Sumber Lipah 9
+223 D.I. Sumber Lipang 5
+224 D.I. Sumber Makam 46
+225 D.I. Sumber Mandele 87
+226 D.I. Sumber Manggar 153
+227 D.I. Sumber Manggis 24
+228 D.I. Sumber Mata 15
+229 D.I. Sumber Mawar 28
+230 D.I. Sumber Medali 12
+231 D.I. Sumber Mendati 61
+232 D.I. Sumber Mudin 7
+233 D.I. Sumber Nyamplung 98
+234 D.I. Sumber Patrol M
+235 D.I. Sumber Penangan 9
+236 D.I. Sumber Petung 37
+237 D.I. Sumber Poreng 25
+238 D.I. Sumber Puring 14
+239 D.I. Sumber Ranon 22
+240 D.I. Sumber Rawa | 15
+241 D.I. Sumber Rowo II 29
+#KANAN
+360
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+242 D.I. Sumber Sari M
+243 D.I. Sumber Sijonggrang 10
+244 D.I. Sumber Sono 19
+245 D.I. Sumber Suko 11
+246 D.I. Sumber Sukun 11
+247 D.I. Sumber Taman 57
+248 D.I. Sumber Taman I 23
+249 D.I. Sumber Taman II 17
+250 D.I. Sumber Tambelang 72
+251 D.I. Sumber Tumpang 6
+252 D.I. Sumber Wates 12
+253 D.I. Sumber Watusudung 10
+254 D.I. Suren 49
+255 D.I. Talang 8
+256 D.I. Tanggulangin 165
+257 D.I. Tukul 12
+258 D.I. Tunggak 207
+259 D.I. Umbulan/Ngepung 4
+260 D.I. Wangkal 290
+261 D.I. Waru 20
+262 D.I. Waru 72
+263 D.I. Watu Gajah 158
+264 D.I. Winong 53
+265 D.I. Wonorejo 169
+266 D.I. Arah Gulur 20
+267 D.I. Asem Hilir 11
+268 D.I. Asem Hulu 37
+269 D.I. Batu Ampar 10
+270 D.I. Beruy/Tampol 50
+271 D.I. Duren 13
+272 D.I. Gabus 20
+273 D.I. Kayu Putih 27
+274 D.I. Kresek II 83
+275 D.I. Kuripan IX 11
+276 D.I. Lambang Kuning 89
+277 D.I. Legundi 76
+278 D.I. Loropan 122
+279 D.I. Lukas 211
+280 D.I. Nangkah 32
+281 D.I. Semek 38
+282 D.I. Seneng 6
+283 D.I. Siluman 18
+284 D.I. Sumber Gayam (D. Klompek) 35
+285 D.I. Sumber Rondoningo 55
+286 D.I. Sumber Sikangen 84
+287 D.I. Toyan 18
+288 D.I. Waru Rangkang 25
+289 D.I. Wringin/Siun/Karim 322
+w Kab. Sambana 41 2.284
+1 D.I. Banjar Tabulu 228
+2 D.I. Dam Baruh 125
+3 D.I. Dam Brambang 21
+4 D.I. Dam Brumbung 95
+5 D.I. Dam Dempo Abang 26
+6 D.I. Dam Kembang Jeruk 25
+7 D.I. Dam Ketapang Barat 68
+8 D.I. Dam Lembung 55
+9 D.I. Dam Panjegan 55
+10 D.I. Dam Tanah Merah 10
+11 D.I. Dam Torowan 74

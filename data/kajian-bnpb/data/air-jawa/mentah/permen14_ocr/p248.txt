@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+294 D.I. Kali Anyar 25
+295 D.I. Kali Bulu/Druju 15
+296 D.I. Kali Candi 30
+297 D.I. Kali Gede 12
+298 D.I. Kali Loro 330
+299 D.I. Kali Tengah 15
+300 D.I. Kaligatel 39
+301 D.I. Kalikuto | 85
+302 D.I. Kalikuto II 12
+303 D.I. Kalipan 30
+304 D.I. Kalisegoro 45
+305 D.I. Kaliurang 10
+306 D.I. Kalongan 9
+307 D.I. Kamal 18
+308 D.I. Kamongan 25
+309 D.I. Kancing 12
+310 D.I. Kantor 21
+311 D.I. Kapuhan 292
+312 D.I. Karang 12
+313 D.I. Karang Geneng 10
+314 D.I. Karang | 10
+315 D.I. Karang III 5
+316 D.I. Karang Kamal 12
+317 D.I. Karang Lo 19
+318 D.I. Karang Tengah 21
+319 D.I. Karanglo 4
+320 D.I. Karangtalun 10
+321 D.I. Karen 17
+322 D.I. Kaweron 405
+323 D.I. Kebo Kuning 39
+324 D.I. Kecapak 5
+325 D.I. Kedung Gupit 35
+326 D.I. Kedung Klumprit 15
+327 D.I. Kedung Kwali 20
+328 D.I. Kedung Merah 27
+329 D.I. Kedung Pelus 10
+330 D.I. Kemadu | 133
+331 D.I. Kemadu II 26
+332 D.I. Kembang A 21
+333 D.I. Kembang B 50
+334 D.I. Kembang | 13
+335 D.I. Kembang II 24
+336 D.I. Kembang Lampir 30
+337 D.I. Kemiren A 31
+338 D.I. Kemiren B 26
+339 D.I. Kemiri I 30
+340 D.I. Kemiri II 53
+341 D.I. Kemiri Ombo 20
+342 D.I. Kempit 23
+343 D.I. Kempong 12
+344 D.I. Kemukus I 15
+345 D.I. Kemukus II 18
+346 D.I. Kemuning 8
+347 D.I. Kenalan 10
+348 D.I. Kendal | 175
+349 D.I. Kendal II 17
+350 D.I. Kerekan 5
+351 D.I. Keron 20
+352 D.I. Kesaran 56
+353 D.I. Kesaran Kiri 26
+354 D.I. Ketawang 15
+#KANAN
+2:18
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+355 D.I. Ketekan 27
+356 D.I. Kimpul 10
+357 D.I. Klatak 13
+358 D.I. Klegen I 14
+359 D.I. Klegen II 7
+360 D.I. Klegen III 9
+361 D.I. Klopo | 56
+362 D.I. Klopo II 3
+363 D.I. Klumprit 20
+364 D.I. Kojor Semendi 801
+365 D.I. Kombangan 7
+366 D.I. Komboran 10
+367 D.I. Kopeng I 6
+368 D.I. Kopeng II 8
+369 D.I. Kotes 24
+370 D.I. Kr. Duren 13
+371 D.I. Kr. Gondang 37
+372 D.I. Kr. Kendal/Gandu A 16
+373 D.I. Kr. Pakis 24
+374 D.I. Kr. Warung 65
+375 D.I. Kradenan 22
+376 D.I. Krakalan 10
+377 D.I. Kramat | 20
+378 D.I. Kramat II 6
+379 D.I. Kramatan 17
+380 D.I. Kranggan 17
+381 D.I. Krapyak | 73
+382 D.I. Krapyak II 27
+383 D.I. Krasak Gajahan 86
+384 D.I. Krekelan 25
+385 D.I. Krembengan 25
+386 D.I. Krengsengan 40
+387 D.I. Kreo | 15
+388 D.I. Kreo II 25
+389 D.I. Kretegan 16
+390 D.I. Kretekan 10
+391 D.I. Kricakan 30
+392 D.I. Krincing 163
+393 D.I. Krinjing 26
+394 D.I. Krisik 31
+395 D.I. Krobyokan 40
+396 D.I. Krobyokan Srb 37
+397 D.I. Krogowanan 461
+398 D.I. Kromo Taruno 57
+399 D.I. Krutuk 18
+400 D.I. Kuning 25
+401 D.I. Kwadesan 18
+402 D.I. Kwayuhan A 28
+403 D.I. Kwayuhan B 15
+404 D.I. Lagaran Atas 25
+405 D.I. Lagaran Bawah 24
+406 D.I. Lamat 268
+407 D.I. Layur 23
+408 D.I. Legetan 19
+409 D.I. Lengkong 8
+410 D.I. Lenguk 31
+411 D.I. Lepang 10
+412 D.I. Liyangan 61
+413 D.I. Loning 658
+414 D.I. Losari 27
+415 D.I. Losari/Ngepreh 65

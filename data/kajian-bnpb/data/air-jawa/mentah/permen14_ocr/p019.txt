@@ -1,0 +1,87 @@
+#TATA_LETAK satu-tabel lebar=2480
+19 2015, No.638
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+c Kab. Pasaman Barat
+
+1 D.I. Batang Bayang 6.500
+2 D.I. Batang Tongar 6.644
+d Kab. Pesisir Selatan
+
+1 D.I. Batang Inderapura 6.040
+2 D.I. Kumbung 6.500
+3 D.I. Lubuk Buaya 3.260
+4 D.I. Malapang Ampang Tulak 3.000
+5 D.I. Rimbo-Pamapan 7.641
+V PROVINSI JAMBI 2 9.429
+a Kab. Kerinci
+
+1 D.I. Sei Batang Sangkir 3.628
+2 D.I. Sei Siulak Deras 5.801
+VI PROVINSI BENGKULU 6 33.649
+a Kab. Bengkulu Selatan
+
+1 D.I. Air Nipis Seginim 3.116
+b Kab. Bengkulu Utara
+
+1 D.I. Air Lais Kuro Tidur 6.063
+c Kab. Lebong
+
+1 D.I. Air Ketahun 3.010
+d Kab. Mukomuko
+
+1 D.I. Air Manjunto Mukomuko 9.493
+e Kab. Seluma
+
+1 D.I. Air Alas 4.500
+2 D.I. Air Seluma 7.467
+VII PROVINSI SUMATERA SELATAN 5 21.794
+a Kab. Empat Lawang
+
+1 D.I. Air Keruh 3.152
+2 D.I. Lintang Kanan 3.054
+3 D.I. Lintang Kiri 3.038 -
+b Kab. Musi Rawas
+
+1 D.I. Air Lakitan 9.500
+c Kota Pagar Alam
+
+1 D.I. Muara Riben 3.050
+
+VIII PROVINSI KEP. BANGKA BELITUNG 2 7.418
+
+a Kab. Bangka Selatan
+
+1 D.I. Rias 3.100
+b Kab. Belitung Timur
+
+2 D.I. Selingsing 4.318
+IX PROVINSI LAMPUNG 10 73.981
+a Kab. Lampung Tengah
+
+1 D.I. Way Seputih 20.201
+b Kab. Lampung Timur
+
+1 D.I. Jabung 7.288
+2 D.I. Karya Tani 5.187
+3 D.I. Way Curup 4.689
+4 D.I. Way Jepara 6.651
+c Kab. Lampung Utara
+
+1 D.I. Bumi Agung 5.240
+2 D.I. Way Tulung Mas 3.200
+d Kab. Way Kanan
+
+1 D.I. Way Umpu 7.500
+e Kab. Lampung Selatan
+
+1 D.I. Pisang 10.525
+2 D.I. Way Kandis II 3.500
+X PROVINSI BANTEN 2 12.995
+a Kab. Pandeglang
+
+1 D.I. Cibaliung 4.288
+b Kab. Tangerang
+
+2 D.I. Cidurian 8.707

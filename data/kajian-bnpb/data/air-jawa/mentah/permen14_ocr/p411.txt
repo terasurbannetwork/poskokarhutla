@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Resak 486
+52 D.I. Sakak Lotok 114
+53 D.I. Sakak Tada 150
+54 D.I. Sekolag Darat 140
+55 D.I. Sekolag Jolek 50
+56 D.I. Sekolag Mulia 106
+57 D.I. Sekolag Oday 85
+58 D.I. Sembuan 150
+59 D.I. Siram Jaya 250
+60 D.I. Sri Mulyo/Suko Mulyo 100
+61 D.I. Sungai Tampung 200
+62 D.I. Tanjung Haur 100
+63 D.I. Tanjung Isuy 300
+64 D.I. Tanjung Jari 300
+65 D.I. Tanjung Jone 250
+66 D.I. Tanjung Lauy 350
+67 D.I. Tanjung Manis 350
+68 D.I. Tanjung Ohong 100
+69 D.I. Tempulang 100
+70 D.I. Temula 85
+71 D.I. Tepian Ulak 200
+72 D.I. Tering 200
+73 D.I. Tering Seberang 200
+c Kab. Kutai Kartaneaara 121 20.762
+1 D.I. Aji Mas 100
+2 D.I. Alang Alang 150
+3 D.I. Amborawang 200
+4 D.I. Amborawang Darat 200
+5 D.I. Amborawang Laut 150
+6 D.I. Argosari 100
+7 D.I. Bangun Rejo 200
+8 D.I. Batug 50
+9 D.I. Benua Puhun 100
+10 D.I. Berinding Seberang 100
+11 D.I. Beringin Agung 100
+12 D.I. Bitung 100
+13 D.I. Buana Jaya 300
+14 D.I. Bukit Pariaman (Separi |) 500
+15 D.I. Bunga Putih 75
+16 D.I. Debag 100
+17 D.I. Embalut 100
+18 D.I. Genting Tanah 200
+19 D.I. Giri Agung 75
+20 D.I. Gunung Tampi 150
+21 D.I. Hambau 200
+22 D.I. Handil Baru 100
+23 D.I. Handil Baru Darat 75
+24 D.I. Jahug 100
+25 D.I. Jerangin 200
+26 D.I. Jilay 100
+27 D.I. Jonggon A 261
+28 D.I. Jonggon B 299
+29 D.I. Jonggon D 250
+30 D.I. Kahala 200
+31 D.I. Kayu Bunga 100
+32 D.I. Kejawi 200
+33 D.I. Kelekat 100
+34 D.I. Kembang Janggut 400
+35 D.I. Kemuda 100
+36 D.I. Kerta Buana (LIV) 300
+#KANAN
+AL 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+37 D.I. Kota Bangun Sbrg 100
+38 D.I. Kota Bangun VI 100
+39 D.I. Kutai Lama 200
+40 D.I. Lampe 100
+41 D.I. Lebaho Lais 100
+42 D.I. Lebak Mantan | 100
+43 D.I. Lebak Mantan II 100
+44 D.I. Liang 500
+45 D.I. Loa Gagak 100
+46 D.I. Loa Ipuh 100
+47 D.I. Loa Janan Ulu 125
+48 D.I. Loa Kulu Seberang 350
+49 D.I. Loa Lepu 100
+50 D.I. Loa Raya 150
+51 D.I. Loa Sakoh 190
+52 D.I. Loa Tebu 125
+53 D.I. Lok Sumber 400
+54 D.I. Loleng 100
+55 D.I. Long Beleh 90
+56 D.I. Long Lalang 100
+57 D.I. Manunggal Jaya 350
+58 D.I. Manunggal Jaya SP. II 200
+59 D.I. Marga Sari 200
+60 D.I. Margo Mulyo 100
+61 D.I. Mualap 200
+62 D.I. Muara Badak Ilir 75
+63 D.I. Muara Badak Ulu 75
+64 D.I. Muara Muntai 200
+65 D.I. Muara Sembilang 100
+66 D.I. Muara Wis 200
+67 D.I. Muhuran 300
+68 D.I. Mulawarman 300
+69 D.I. Ngadang 200
+70 D.I. Panji Sukarame 50
+71 D.I. Panorangan 266
+72 D.I. Perjiwa 100
+73 D.I. Purwajaya 100
+74 D.I. Rantau Hempang 75
+75 D.I. Rapak Kutai 75
+76 D.I. Rapak Lama 250
+77 D.I. Rapak Lambur 553
+78 D.I. Rapak Nyamuk 141
+79 D.I. Rempanga Bukit Biru 200
+80 D.I. Rimba Ayu 100
+81 D.I. Saka Ilir 200
+82 D.I. Saka Ulu 200
+83 D.I. Saliki 75
+84 D.I. Salok Palai 100
+85 D.I. Sangasanga Dalam | 100
+86 D.I. Sebelimbingan 300
+87 D.I. Sebemban 200
+88 D.I. Sebulu UPT. I 100
+89 D.I. Sebulu UPT. II 100
+90 D.I. Sebulu V 200
+91 D.I. Selerong Seberang 200
+92 D.I. Senipah Bawah 200
+93 D.I. Separi II 200
+94 D.I. Separi II 200
+95 D.I. Sindang Jaya 100
+96 D.I. Suku Dadi 100
+97 D.I. Sumber Rejeki 200

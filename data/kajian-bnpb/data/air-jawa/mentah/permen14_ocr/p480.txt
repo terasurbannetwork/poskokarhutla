@@ -1,0 +1,99 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638
+, 48)
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+i Kota Samarinda 2 400
+
+1 D.I.R. Makroman 200
+
+2 D.I.R. Palaran 200
+
+XIV PROVINSI KALIMANTAN UTARA 5 2.623
+
+a Kab. Bulunaan 3 1.673
+
+1 D.I.R. Sesayap 492
+
+2 D.I.R. Tanjung Barat 804
+
+3 D.I.R. Tanjung Timur 377
+
+b Kab. Malinau 1 200
+
+1 D.I.R. Tanjung Keranjang 200
+
+c Kab. Nunukan 1 750
+
+1 D.I.R. Nunukan 750
+
+XV PROVINSI SULAWESI TENGGARA 22 3.495
+
+a Kab. Buton 1 420
+
+1 D.I.R. Lasalimu/Kamaru 420
+
+b Kab. Kolaka Timur 1 600
+
+1 D.I.R. Horodopi 600
+
+c Kab. Konawe 19 2175
+
+1 D.I.R. Abuki 200
+
+2 D.I.R. Ae'pe 27
+
+3 D.I.R. Amonggedo 10
+
+4 D.I.R. Asiaka 15
+
+5 D.I.R. Asolu 50
+
+6 D.I.R. Awuliti 50
+
+7 D.I.R. Kewingia 20
+
+8 D.I.R. Kuambe 5
+
+9 D.I.R. Lahaumbuti 15
+
+10 D.I.R. Lamonae/Rauta 300
+
+11 D.ILR. LampeapiAWawonii 200
+
+12 D.I.R. Laosu/Puwatu 450
+
+13 D.I.R. Lasada 100
+
+14 D.I.R. Meluhu 200
+
+15 D.I.R. Meluhu 260
+
+16 D.I.R. Purianawatu 40
+
+17 D.I.R. Talu Mola 10
+
+18 D.I.R. Wawolemo 200
+
+19 D.I.R. Wekara 23
+
+d Kab. Konawe Utara 1 300
+
+1 D.I.R. Lamonae/Rauta 300
+
+XVI PROVINSI SULAWESI SELATAN 2 1.294
+
+a Kab. Sidenrena Ravbana 2 1.294
+
+1 D.LR. Biloka 953
+
+2 D.I.R. Wala 341
+
+XVII PROVINSI PAPUA BARAT 2 300
+
+a Kab. Sorona 2 800
+
+1 D.I.R. Walal 300
+
+2 D.I.R. Wonosobo 500

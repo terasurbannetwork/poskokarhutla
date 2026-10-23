@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+591 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+41 D.L.A.T. Pohkecik SDMJ 465 29
+42 D.LA.T. Brayung SDMJ 466 30
+43 D.I.A.T. Mojosulur SDMJ 473 31
+44 D.L.A.T. Pohkecik SDMJ 474 39
+45 D.LA.T. Sawo SDMJ 485 31
+46 D.I.A.T. Panggih SDMJ 487 25
+47 D.LA.T. Sambila wang SDMJ 488 29
+48 D.LA.T. Peterongan SDMJ 489 27
+49 D.I.A.T. Mlaten SDMJ 493 33
+50 D.LA.T. Sumbersono SDMJ 503 23
+51 D.I.A.T. Kepuhpandak SDMJ 508 26
+52 D.LA.T. Randugenengan SDMJ 509 30
+53 D.I.A.T. Ngastemi SDMJ 510 33
+54 D.I.A.T. Sambilawang SDMJ 518 31
+55 D.I.A.T. Randuharjo SDMJ 519 10
+56 D.LA.T. Peterongan SDMJ 520 19
+57 D.LA.T. Belahantengah SDMJ 521 25
+58 D.I.A.T. Kalipuro SDMJ 526 20
+59 D.I.A.T. Kalipuro SDMJ 528 31
+60 D.LA.T. Ketemasdungus SDMJ 529 28
+61 D.LA.T. Karangasem SDMJ 542 17
+62 D.I.A.T. Jotangan SDMJ 550 18
+63 D.I.A.T. Randubango SDMJ 551 18
+64 D.I.A.T. Purwojati SDMJ 552 18
+65 D.I.A.T. Randuharjo SDMJ 553 18
+66 D.ILA.T. Sumberkarang SDMJ 554 18
+67 D.I.A.T. Jrambe SDMJ 555 18
+68 D.I.A.T. Sawu SDMJ 556 18
+69 D.I.A.T. Talok SDMJ 557 18
+70 D.I.A.T. Sumbertebu SMMJ 244 8
+71 D.LA.T. Peterongan SMMJ 245 8
+72 D.I.A.T. Ngastemi SMMJ 246 8
+73 D.LA.T. Ngrowo SMMJ 247 9
+74 D.I.A.T. Mojosulur SMMJ 248 10
+75 D.LA.T. Peterongan SMMJ 250 8
+76 D.I.A.T. Ngastemi SMMJ 251 9
+77 D.I.A.T. Ngastemi SMMJ 252 9
+78 D.I.A.T. Sumbertebu SMMJ 253 9
+79 D.I.A.T. Sumbertebu SMMJ 254 9
+80 D.I.A.T. Ngrowo SMMJ 255 9
+81 D.L.A.T. Ngrowo SMMJ 256 8
+82 D.I.A.T. Kemanten SMMJ 270 7
+83 D.I.A.T. Kemanten SMMJ 271 9
+84 D.I.A.T. Ngastemi SMMJ 272 8
+85 D.LA.T. Peterongan SMMJ 273 7
+86 D.ILA.T. Peterongan SMMJ 274 9
+87 D.I.A.T. Ngrowo SMMJ 275 9
+88 D.I.A.T. Ngrowo SMMJ 276 9
+89 D.I.A.T. Ngrowo SMMJ 277 8
+90 D.I.A.T. Kemanten SMMJ 308 11
+91 D.L.A.T. Kemanten SMMJ 309 9
+92 D.I.A.T. Brayung SMMJ 314 12
+93 D.I.A.T. Brayung SMMJ 323 12
+94 D.I.A.T. Brayung SMMJ 324 11
+95 D.I.A.T. Puri SMMJ 325 10
+96 D.I.A.T. Kupang SMMJ 327 12
+97 D.I.A.T. Kejagan SMMJ 397 11
+98 D.I.A.T. Kejagan SMMJ 398 10
+99 D.I.A.T. Puri SMMJ 399 12
+100 D.LA.T. Sumbergirang SMMJ 400 12
+101 D.LA.T. Sumbergirang SMMJ 401 11

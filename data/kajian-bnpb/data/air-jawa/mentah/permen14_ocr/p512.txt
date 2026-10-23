@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 519
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+44 D.LA.T. Pugerwetan SKJE 033 10
+45 D.LA.T. Pugerwetan SKJE 034 10
+46 D.LA.T. Pugerwetan SKJE 035 10
+47 D.LA.T. Pugerwetan SKJE 036 10
+48 D.LA.T. Pugerwetan SKJE 037 10
+49 D.LA.T. Pugerwetan SKJE 038 10
+50 D.LA.T. Pugerwetan SKJE 039 10
+51 D.LA.T. Pugerwetan SKJE 040 10
+52 D.LA.T. Jambearum SMJE 072 10
+53 D.LA.T. Jambearum SMJE 073 10
+54 D.LA.T. Jambearum SMJE 074 10
+55 D.LA.T. Bagon SMJE 075 10
+56 D.LA.T. Grenden SMJE 076 10
+57 D.LA.T. Grenden SMJE 077 10
+
+a Kab. Jombana 89 2.215
+
+1 D.LA.T. Grobogan SDJB 003 20
+
+2 D.LA.T. Tambar SDJB 004 45
+
+3 D.LA.T. Rejoso SDJB 067 25
+
+4 D.LA.T. Wringinpitu SDJB 099 40
+
+5 D.LA.T. Johowinong SDJB 194 57
+
+6 D.I.A.T. Mancilan SDJB 195 52
+
+7 D.LA.T. Betek SDJB 196 55
+
+8 D.ILA.T. Karobelah SDJB 197 45
+
+9 D.LA.T. Segodorejo SDJB 198 45
+10 D.LA.T. Plemahan SDJB 199 45
+11 D.LA.T. Jogoroto SDJB 201 55
+12 D.LA.T. Palrejo SDJB 202 47
+13 D.LA.T. Murukan SDJB 203 45
+14 D.LA.T. Curahmalang SDJB 204 58
+15 D.LA.T. Mojowarno SDJB 215 35
+16 D.ILA.T. Kebondalem SDJB 405 25
+17 D.LA.T. Mayangan SDJB 414 35
+18 D.LA.T. Sambirejo SDJB 422 36
+19 D.LA.T. Grogol SDJB 423 36
+20 D.LA.T. Bandung SDJB 424 35
+21 D.LA.T. Gedangan SDJB 425 35
+22 D.LA.T. Mojoduwur SDJB 426 36
+23 D.LA.T. Karobelah SDJB 428 35
+24 D.LA.T. Mancar SDJB 429 35
+25 D.LA.T. Bandung SDJB 445 35
+26 D.I.LA.T. Gedangan SDJB 446 35
+27 D.LA.T. Dukuhmojo SDJB 448 25
+28 D.LA.T. Tanggalrejo SDJB 449 35
+29 D.LA.T. Johowinong SDJB 450 35
+30 D.LA.T. Sawiji SDJB 451 35
+31 D.LA.T. Sukosari SDJB 452 35
+32 D.LA.T. Menturo SDJB 453 35
+33 D.LA.T. Plosokerep SDJB 454 35
+34 D.LA.T. Brudu SDJB 455 40
+35 D.LA.T. Brambang SDJB 456 35
+36 D.IL.A.T. Watugaluh SDJB 457 35
+37 D.LA.T. Mojowarno SDJB 475 37
+38 D.LA.T. Wringinpitu SDJB 476 35
+39 D.LA.T. Kedawung SDJB 477 36
+40 D.LA.T. Madiopuro SDJB 490 35
+41 D.LA.T. Gondek SDJB 499 35
+42 D.LA.T. Plemahan SDJB 504 50
+43 D.LA.T. Gondek SDJB 522 31
+44 D.LA.T. Betek SDJB 525 35
+45 D.LA.T. Mojowangi SDJB 543 21

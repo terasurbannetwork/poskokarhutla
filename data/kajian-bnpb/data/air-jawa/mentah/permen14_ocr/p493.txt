@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+493 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+a Kab. Majalenaka 66 1.501
+
+1 D.LA.T. Palasah TW. 89 35
+
+2 D.LA.T. Palasah TW. 117 20
+
+3 D.LA.T. Palasah TW. 167 44
+
+4 D.LA.T. Mekarjaya TW. 137 33
+
+5 D.LA.T. Mekarjaya TW. 256 22
+
+6 D.L.A.T. Sukakerta TW. 135 22
+
+7 D.LA.T. Sukakerta TW. 142 22
+
+8 D.LA.T. Kertajati TW. 132 22
+
+9 D.LA.T. Kertajati TW. 139 22
+10 D.LA.T. Babakan TW. 108 35
+11 D.LA.T. Babakan TW. 146 30
+12 D.LA.T. Mekarmulya TW. 147 35
+13 D.LA.T. Mekarmulya TW. 164 35
+14 D.LA.T. Mekarmulya TW. 156 35
+15 D.L.A.T. Mekarmulya TW. 243 35
+16 D.LA.T. Mekarmulya TW. 241 35
+17 D.LA.T. Sukamulya TW. 144 44
+18 D.LA.T. Sukamulya TW. 165 35
+19 D.LA.T. Sukamulya TW. 166 35
+20 D.I.A.T. Sukamulya TW. 182 35
+21 D.I.A.T. Kertasari TW. 136 35
+22 D.I.A.T. Kertasari TW. 141 44
+23 D.I.A.T. Kertasari TW. 145 25
+24 D.I.A.T. Kertasari TW. 168 35
+25 D.I.A.T. Ranji Kulon TW. 114 20
+26 D.I.A.T. Ranji Wetan TW. 244 22
+27 D.I.A.T. Ranji Wetan TW. 181 35
+28 D.ILA.T. Sukaraja Wetan TW. 245 22
+29 D.LA.T. Argasari TW. 212 20
+30 D.I.A.T. Cikeusal TW. 163 20
+31 D.ILA.T. Cikeusal TW. 196 20
+32 D.LA.T. Talaga Kulon TW. 229 22
+33 D.I.A.T. Cisoka TW. 194 20
+34 D.I.A.T. Muktisari TW. 185 20
+35 D.I.A.T. Muktisari TW. 246 22
+36 D.I.A.T. Muktisari TW. 153 20
+37 D.I.A.T. Ciranjeng TW. 106 20
+38 D.I.A.T. Ciranjeng TW. 157 20
+39 D.I.A.T. Cingambul TW. 210 22
+40 D.LA.T. Cimanggu TW. 81 20
+41 D.LA.T. Cimanggu TW. 09 22
+42 D.LA.T. Wangkelang TW. 259 22
+43 D.LA.T. Cidadap TW. 195 26
+44 D.LA.T. Cidadap TW. 209 35
+45 D.I.A.T. Cintaasih TW. 228 20
+46 D.I.A.T. Muktisari SPM. 02 10
+47 D.LA.T. Ciranjeng SPM. 03 10
+48 D.L.A.T. Muktisari SPM. 05 10
+49 D.L.A.T. Leuwiliang SPM. 06 13
+50 D.I.A.T. Leuwiliang SPM. 07 12
+51 D.L.A.T. Leuwiliang SPM. 08 13
+52 D.I.A.T. Gandasari SPM. 10 12
+53 D.I.A.T. Majasari SPM. 11 12
+54 D.I.A.T. Kagok SPM. 12 12
+55 D.I.A.T. Kertasari SPM. 13 12
+56 D.LA.T. Campaga SPM. 16 12
+57 D.LA.T. Campaga SPM. 17 12
+58 D.I.A.T. Pasir SPM. 18 12
+59 D.I.A.T. Pasir SPM. 19 12
+60 D.I.A.T. Pasir SPM. 20 12

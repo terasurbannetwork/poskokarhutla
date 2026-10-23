@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+37 D.I. Mburukulu II 100
+38 D.I. Mekaminggit 150
+39 D.I. Nggurumuni 45
+40 D.I. Ngolung 100
+41 D.I. Okatehu 20
+42 D.I. Pahomba 100
+43 D.I. Palaomang 50
+44 D.I. Paruru Nggading 40
+45 D.I. Paulunga 100
+46 D.I. Prai Marada 20
+47 D.I. Praimbana 48
+48 D.I. Praing Kareha 150
+49 D.I. Pulupanjang 100
+50 D.I. Rakawatu 282
+51 D.I. Retiiawa 86
+52 D.I. Ri Iyang 30
+53 D.I. Rutung/Ukaehuk 100
+54 D.I. Taimanu 20
+55 D.I. Tamburi 50
+56 D.I. Tanabara 25
+57 D.I. Tanalingu 200
+58 D.I. Tanamiting 100
+59 D.I. Tandulalu'u 65
+60 D.I. Tangga Madita 45
+61 D.I. Tatung 310
+62 D.I. Tawui 100
+63 D.I. Tiring 50
+64 D.I. Waibara 55
+65 D.I. Waimbidi 30
+66 D.I. Watubara 100
+67 D.I. Watumanu 40
+68 D.I. Watumbelar 85
+69 D.I. Watumutu 100
+70 D.I. Wudi I 20
+84 D.I. Wula 543
+85 D.I. Analuku 40
+86 D.I. Anandjaki 150
+87 D.I. Benda 40
+88 D.I. Bidau/Mauleli 50
+89 D.I. Hambuang 100
+90 D.I. Haranggu Jangga 75
+91 D.I. Injung 75
+92 D.I. Kabaru/Matawai Pahaing 60
+93 D.I. Kahinggar 75
+94 D.I. Kahiri II 50
+95 D.I. Kalihi/Lainai 60
+96 D.I. Kalunga 75
+97 D.I. Kamarayau 60
+98 D.I. Ladawar 160
+99 D.I. Lai Hangabung 75
+100 D.I. Lai Payenu 50
+101 D.I. Lai Penda 50
+102 D.I. Laikotak 100
+103 D.I. Laimbonga II 50
+104 D.I. Lairota 75
+105 D.I. Laitairi 50
+106 D.I. Lambalu 60
+107 D.I. Mandjali 75
+108 D.I. Matawai Kataba 60
+109 D.I. Matawai Maloka 75
+110 D.I. Matawai Om ang 50
+#KANAN
+307 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+111 D.I. Matawai Pau 150
+112 D.I. Ndapayami 80
+113 D.I. Okandjara 250
+114 D.I. Palaomang II 75
+115 D.I. Parunung Kotakhau 70
+116 D.I. Taimanu II 45
+117 D.I. Tidas 500
+118 D.I. Uma Hapi 50
+119 D.I. Uma Kadambung 150
+120 D.I. Waitambutuh Latang 75
+121 D.I. Wanggambewa 200
+122 D.I. Prambuni 350
+123 D.I. Wudi II 150
+t Kab. Timor Tenaah Selatan 70 6.012
+1 D.I. Ajomnanu 40
+2 D.I. Ajomnasi 36
+3 D.I. Banli 70
+4 D.I. Benlutu 120
+5 D.I. Bibonak 30
+6 D.I. Boentuka 80
+7 D.I. Boni 70
+8 D.I. Bonle'u 200
+9 D.I. Bonle'u II 150
+10 D.I. Ekanaek 135
+11 D.I. Faelubu 60
+12 D.I. Fafioban 76
+13 D.I. Failet 60
+14 D.I. Fuka 45
+15 D.I. Kaekoli 80
+16 D.I. Koa 200
+17 D.I. Kune M
+18 D.I. Laob 60
+19 D.I. Laob 45
+20 D.I. Lilabatu/Pika 60
+21 D.I. Lilana 47
+22 D.I. Loli 202
+23 D.I. Lopon 60
+24 D.I. Maiskolen 200
+25 D.I. Matpunu 35
+26 D.I. Menu 200
+27 D.I. Napsanuna 75
+28 D.I. Noelaku 130
+29 D.I. Noemeto 160
+30 D.I. Noenoni I 35
+31 D.I. Noenoni II 45
+32 D.I. Noeolin 40
+33 D.I. Nualunat 70
+34 D.I. Nuimanikin 40
+35 D.I. Nule 40
+36 D.I. Oebiloe 60
+37 D.I. Oefonu 20
+38 D.I. Oehala | 40
+39 D.I. Oehala II 40
+40 D.I. Oemanas 25
+41 D.I. Oepunu 150
+42 D.I. Oetuke 60
+43 D.I. Oeusapi 125
+44 D.I. Siafu 110
+45 D.I. Sian 25
+46 D.I. Sonapolen 30

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Banjaran 35
+23 D.I. Banjaran Kawung 220
+24 D.I. Banyu Mudal 75
+25 D.I. Bardiman | 52
+26 D.I. Bardiman II 74
+27 D.I. Baron I 4
+28 D.I. Baron II M
+29 D.I. Batang Maung 134
+30 D.I. Batasari 143
+31 D.I. Baturmacan 20
+32 D.I. Baturmuntu 40
+33 D.I. Bawang 20
+34 D.I. Bayur 45
+35 D.I. Bd. Cipatan 12
+36 D.I. Bd. K Sema 25
+37 D.I. Bd. Kaliputih | 20
+38 D.I. Bd. Kaliputih II 30
+39 D.I. Bd. Rancajene 22
+40 D.I. Beber 50
+41 D.I. Benda 49
+42 D.I. Benda Sara 51
+43 D.I. Bendasari | 24
+44 D.I. Bendasari II 32
+45 D.I. Bengang 11
+46 D.I. Berem 242
+47 D.I. Berem I & II 46
+48 D.I. Berem III 50
+49 D.I. Besuki 60
+50 D.I. Biana 17
+51 D.I. Blembeng 10
+52 D.I. Bodag 25
+53 D.I. Bogem 20
+54 D.I. Bogor 48
+55 D.I. Bojong Sari 242
+56 D.I. Bonokeling 19
+57 D.I. Bragayuda 20
+58 D.I. Brajageni 37
+59 D.I. Brayan 40
+60 D.I. Brobot 33
+61 D.I. Brug 15
+62 D.I. Bulu 16
+63 D.I. Bulu Mas 53
+64 D.I. Bunton II 23
+65 D.I. Buntu 20
+66 D.I. Buton I 83
+67 D.I. Caban 15
+68 D.I. Candrangalih 10
+69 D.I. Canduk 88
+70 D.I. Canduk 50
+71 D.I. Cang Seng Koneng 103
+72 D.I. Cangkang 20
+73 D.I. Cangkok 77
+74 D.I. Cangkrama 25
+75 D.I. Cangkring 24
+76 D.I. Caning 32
+77 D.I. Cawitali 46
+78 D.I. Cemuris 81
+79 D.I. Cibalung 27
+80 D.I. Cibangkong 39
+81 D.I. Cibuek 12
+82 D.I. Cibutun 40
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Cidadap 13
+84 D.I. Cideng I 13
+85 D.I. Cideng II 13
+86 D.I. Cideng III 20
+87 D.I. Cikadu 45
+88 D.I. Cikokol 13
+89 D.I. Cikopeng 13
+90 D.I. Cilebur 43
+91 D.I. Cilibur 45
+92 D.I. Cimande 10
+93 D.I. Cingpingit 76
+94 D.I. Cipandan 28
+95 D.I. Cipecang 40
+96 D.I. Cipero 10
+97 D.I. Ciporol 20
+98 D.I. Cirebah 51
+99 D.I. Ciregeng 31
+100 D.I. Cireong 40
+101 D.I. Ciruas 47
+102 D.I. Citalang 73
+103 D.I. Ciwera 170
+104 D.I. Cukang Renggong 40
+105 D.I. Curug 221
+106 D.I. Curug 22
+107 D.I. Curug Gong 44
+108 D.I. Dai 65
+109 D.I. Dai 22
+110 D.I. Dakom 47
+111 D.I. Dalem | 102
+112 D.I. Dalem II 35
+113 D.I. Danayuda 337
+114 D.I. Dangir 19
+115 D.I. Dangiurang 30
+116 D.I. Datar 50
+117 D.I. Dawa 55
+118 D.I. Demong 348
+119 D.I. Denok 15
+120 D.I. Depok 15
+121 D.I. Derik 45
+122 D.I. Dermasari 12
+123 D.I. Desel 35
+124 D.I. Dewana 58
+125 D.I. Dewana | 59
+126 D.I. Dewana II 36
+127 D.I. Dewana II 36
+128 D.I. Dewana III 11
+129 D.I. Duda 24
+130 D.I. Dukuh 60
+131 D.I. Dukuh Ari 11
+132 D.I. Dukuh Manis 16
+133 D.I. Dukuh Sari 11
+134 D.I. Duren 12
+135 D.I. Duren Siton 128
+136 D.I. Dusinan 63
+137 D.I. Ente 84
+138 D.I. Galas 42
+139 D.I. Galas 42
+140 D.I. Gampit 31
+141 D.I. Gandarusa 19
+142 D.I. Gandasuli 51
+143 D.I. Gareng 38

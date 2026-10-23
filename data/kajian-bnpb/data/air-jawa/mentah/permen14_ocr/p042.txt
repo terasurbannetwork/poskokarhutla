@@ -1,0 +1,94 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 49
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+d Kab. Humbang Hasundutan
+
+1 D.I. Aek Sibundong 1.202
+2 D.I. Aek Silang 1.500
+3 D.I. Parmiahan/Hutapaung 1.000
+4 D.I. Sinamo 930
+e Kab. Langkat
+
+1 D.I. Secanggang 1.400
+f Kab. Mandailing Natal
+
+1 D.I. Banjar Paku 1.020
+2 D.I. Pakantan 1.300
+3 D.I. Roburan Maga 1.416
+4 D.I. Siulang Aling 1.300
+5 D.I. Tapus 1.400
+6 D.I. Terusan 1.300
+g Kab. Nias
+
+1 D.I. Gido Zebua 1.258
+h Kab. Pakpak Bharat
+
+1 D.I. Lae Ordi 1.200
+i Kab. Serdang Bedagai
+
+1 D.I. Langau 2.000
+2 D.I. Pekan Dolok 1.050
+3 D.I. Pekan Kamis 1.100
+j Kab. Simalungun
+
+1 D.I. Bah Horas Hulu/Tongah 1.050
+2 D.I. Bah Tongguran | 1.186
+3 D.I. Javacolonisasi/Purbogondo 1.030
+4 D.I. Naga Sompah 1.360
+5 D.I. Panambean/P. Tongah/B. Kata 1.723
+6 D.I. Pentara 1.034
+7 D.I. R. Hombang/T. Mangaraja 2.045
+8 D.I. Raja Maligas 1.000
+9 D.I. Simantin Pane Dame 1.000
+k Kab. Tanah Karo
+
+1 D.I. Parit Lompaten 1.242
+| Kab. Tapanuli Selatan
+
+1 D.I. Aek Silo Komplek 1.014
+2 D.I. Balangka Sitongkon/Napa Surom 1.016
+3 D.I. Siboma/Lubuk Godang S. Pasir II 1.350
+4 D.I. Sigorbus Komplek 2.100
+5 D.I. Sipirok Komplek 1.562
+6 D.I. Tabusira Komplek 1.200
+7 D.I. Napa Tanjung Beringin 1.200
+8 D.I. Padang Garugur Kiri/Kanan 1.050
+m Kab. Tapanuli Tengah
+
+1 D.I. Badiri Lopian 1.283
+2 D.I. Pandurungan/Sitandiang 1.769
+n Kab. Tapanuli Utara
+
+1 D.I. Aek Sigeaon 1.420
+2 D.I. Hasak I dan II 1.000
+3 D.I. Pasadahon Paduahon 1.000
+4 D.I. Sarulla/Lehu Pinasa 2.692
+5 D.I. Sidilantino Kiri- Kanan 1.000
+6 D.I. Simok-mok 1.003
+o Kab. Toba Samosir
+
+1 D.I. Aek Mandosi 1.060
+2 D.I. Simangatasi 1.515
+p Kota Padang Sidempuan
+
+1 D.I. Ujung Gurap/Batu Nadua 1.396
+Il PROVINSI RIAU 8 10.035
+a Kab. Kampar
+
+1 D.I. Bancah Labi Sei Silam 1.063
+2 D.I. Muara Jalai Sei Tanang Sawah 1.065
+3 DL Ranah Singkuang Sei Sirah 1.203
+
+Penyesawan
+
+4 D.I. Sei Paku 1123
+5 D.I. Sei Tibun Petapahan 1.105
+6 D.I. Uwai Pangoan 1.029
+b Kab. Kuantan Singingi
+
+1 D.I. Seberang Gunung Paing 1.293
+c Kab. Rokan Hulu
+
+1 D.I. Kaiti Samo 2.154

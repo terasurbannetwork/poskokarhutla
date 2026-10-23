@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+513 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+46 D.I.A.T. Mojojejer SDJB 544 20
+47 D.LA.T. Sumberingin SMJB 116 20
+48 D.I.A.T. Plemahan SMJB 299 15
+49 D.LA.T. Kedungpapar SMJB 300 11
+50 D.I.A.T. Murukan SMJB 301 10
+51 D.I.A.T. Segodorejo SMJB 302 10
+52 D.I.A.T. Segodorejo SMJB 303 12
+53 D.I.A.T. Brudu SMJB 304 12
+54 D.I.A.T. Sebani SMJB 305 10
+55 D.I.A.T. Kedungmlati SMJB 306 10
+56 D.LA.T. Purisemanding SMJB 307 11
+57 D.I.A.T. Sebani SMJB 310 12
+58 D.I.A.T. Dukuhdimoro SMJB 311 15
+59 D.I.A.T. Kedungmlati SMJB 312 10
+60 D.I.A.T. Dukuhdimoro SMJB 313 11
+61 D.I.A.T. Kendalsari SMJB 315 13
+62 D.I.A.T. Kendalsari SMJB 317 12
+63 D.I.A.T. Murukan SMJB 318 10
+64 D.I.A.T. Murukan SMJB 320 10
+65 D.I.A.T. Segodorejo SMJB 321 10
+66 D.I.A.T. Brudu SMJB 322 11
+67 D.I.A.T. Plemahan SMJB 326 12
+68 D.I.A.T. Mojotengah SMJB 373 12
+69 D.I.A.T. Menganto SMJB 374 12
+70 D.ILA.T. Alang-alang caruban SMJB 377 10
+71 D.L.A.T. Jarakkulon SMJB 378 10
+72 D.LA.T. Senden SMJB 379 12
+73 D.I.A.T. Ngrandulor SMJB 380 11
+74 D.LA.T. Tejo SMJB 381 12
+75 D.I.A.T. Janti SMJB 382 12
+76 D.I.A.T. Ngumpul SMJB 383 12
+77 D.I.LA.T. Bakalan SMJB 384 12
+78 D.LA.T. Trawasan SMJB 385 10
+79 D.L.A.T. Nglele SMJB 386 10
+80 D.I.A.T. Watudakon SMJB 387 11
+81 D.I.A.T. Wuluh SMJB 388 10
+82 D.LA.T. Plosogeneng SMJB 389 11
+83 D.I.A.T. Mojokrapak SMJB 390 10
+84 D.I.A.T. Pojokrejo SMJB 391 10
+85 D.I.A.T. Glagahan SMJB 392 12
+86 D.I.A.T. Gedangan SMJB 393 10
+87 D.I.A.T. Ngudirejo SMJB 394 12
+88 D.I.A.T. Kedawung SMJB 395 10
+89 D.I.A.T. Tejo SMJB 396 10
+
+h Kab. Kediri 138 5.934
+
+1 D.LA.T. Tegalwangi SDKD 001 EJ 20
+
+2 D.LA.T. Sumberejo SDKD 002 EJ 45
+
+3 D.LA.T. Kalirong SDKD 003 EJ 30
+
+4 D.LA.T. Ngadiluwih SDKD 004 EJ 45
+
+5 D.LA.T. Susuh Bango I SDKD 005 EJ 50
+
+6 D.LA.T. Susuh Bango II SDKD 008 EJ 45
+
+7 D.LA.T. Susuh Bango III SDKD 009 EJ 66
+
+8 D.LA.T. Sidowareg SDKD 010 EJ 55
+
+9 D.LA.T. Sisowareg SDKD 012 EJ 43
+10 D.LA.T. Butuh SDKD 015 EJ 73
+11 D.LA.T. Kanigoro SDKD 016 EJ 70
+12 D.LA.T. Jemekan SDKD 026 EJ 71
+13 D.LA.T. Jabang SDKD 027 EJ 63
+14 D.LA.T. Srikaton SDKD 028 EJ 67
+15 D.LA.T. Mojosdari SDKD 029 EJ 64

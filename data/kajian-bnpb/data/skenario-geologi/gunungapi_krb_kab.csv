@@ -1,0 +1,66 @@
+gunung_id,gunung,zona_sumber,kode,prov,provinsi,pulau,kab,jiwa_krb3,jiwa_krb2,jiwa_krb1,luas_krb3_ha,luas_krb2_ha,luas_krb1_ha,sekolah_krb3,sekolah_krb2,faskes_krb3,faskes_krb2,rumah_krb3,korban_analog_rendah,korban_analog_tinggi,rb_analog_rendah,rb_analog_tinggi,pengungsi_analog_rendah,pengungsi_analog_tinggi,kerugian_stimulan_rp_juta_rendah,kerugian_stimulan_rp_juta_tinggi,hari_mengungsi_30_rendah,hari_mengungsi_30_tinggi,yll_rendah,yll_tinggi
+anak-krakatau,Anak Krakatau,KRB PVMBG,1801,18,Lampung,Sumatra,Kab. Lampung Selatan,0,0,0,50,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+merapi,Merapi,KRB PVMBG,3309,33,Jawa Tengah,Jawa,Kab. Boyolali,99,10972,0,1042,1936,0,0,0,0,0,25,0.7,1.1,7,10,112,1280,435,627,3366,38396,17,50
+merapi,Merapi,KRB PVMBG,3308,33,Jawa Tengah,Jawa,Kab. Magelang,16688,35385,21214,5410,3201,1191,5,0,4,9,4279,114.8,186.3,1189.5,1689.6,18950,216184,73515,105953,568504,6485505,2870,8382
+merapi,Merapi,KRB PVMBG,3404,34,DI Yogyakarta,Jawa,Kab. Sleman,14779,30155,10814,4616,3176,1538,32,3,3,8,3789,101.7,165,1053.4,1496.3,16782,191445,65102,93828,503448,5743346,2541,7423
+merapi,Merapi,KRB PVMBG,3310,33,Jawa Tengah,Jawa,Kab. Klaten,3016,8581,3306,993,1290,372,0,0,1,0,773,20.7,33.7,215,305.4,3425,39072,13287,19150,102750,1172173,519,1515
+merapi,Merapi,KRB PVMBG,3471,34,DI Yogyakarta,Jawa,Kota Yogyakarta,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+semeru,Semeru,KRB PVMBG,3507,35,Jawa Timur,Jawa,Kab. Malang,73,1707,5052,2082,1214,1239,0,0,0,0,19,0.5,0.8,5.2,7.4,83,943,321,462,2480,28292,13,37
+semeru,Semeru,KRB PVMBG,3508,35,Jawa Timur,Jawa,Kab. Lumajang,9231,21501,4914,6642,6616,5055,5,8,0,5,2367,63.5,103,658,934.6,10482,119584,40666,58609,314473,3587522,1587,4637
+anak-ranakah,Anak Ranakah,KRB PVMBG,5319,53,Nusa Tenggara Timur,Bali-Nusa Tenggara,Kab. Manggarai Timur,5,121,764,99,743,198,0,0,0,0,1,0,0.1,0.4,0.5,6,65,22,32,170,1943,1,3
+anak-ranakah,Anak Ranakah,KRB PVMBG,5310,53,Nusa Tenggara Timur,Bali-Nusa Tenggara,Kab. Manggarai,0,751,0,0,173,25,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+awu,Awu,KRB PVMBG,7103,71,Sulawesi Utara,Sulawesi,Kab. Kepulauan Sangihe,0,17716,1742,949,9294,550,0,4,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0
+banda-api,Banda Api,KRB PVMBG,8101,81,Maluku,Maluku,Kab. Maluku Tengah,342,0,0,774,0,0,0,0,0,0,88,2.4,3.8,24.4,34.6,388,4430,1507,2171,11651,132910,59,172
+bromo,Bromo,KRB PVMBG,3514,35,Jawa Timur,Jawa,Kab. Pasuruan,260,22,0,223,1389,0,0,0,0,0,67,1.8,2.9,18.5,26.3,295,3368,1145,1651,8857,101043,45,131
+bromo,Bromo,KRB PVMBG,3513,35,Jawa Timur,Jawa,Kab. Probolinggo,506,119,0,942,1909,0,0,0,0,0,130,3.5,5.6,36.1,51.2,575,6556,2229,3213,17241,196684,87,254
+bromo,Bromo,KRB PVMBG,3507,35,Jawa Timur,Jawa,Kab. Malang,0,16,0,0,570,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+bromo,Bromo,KRB PVMBG,3508,35,Jawa Timur,Jawa,Kab. Lumajang,0,0,0,0,74,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+bur-ni-telong,Bur Ni Telong,KRB PVMBG,1117,11,Aceh,Sumatra,Kab. Bener Meriah,21,35795,13981,1372,7086,2744,0,14,0,0,5,0.1,0.2,1.5,2.1,24,269,92,132,709,8083,4,10
+bur-ni-telong,Bur Ni Telong,KRB PVMBG,1104,11,Aceh,Sumatra,Kab. Aceh Tengah,0,0,2073,0,0,399,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+dempo,Dempo,KRB PVMBG,1611,16,Sumatera Selatan,Sumatra,Kab. Empat Lawang,0,2589,4472,25,4596,1699,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+dempo,Dempo,KRB PVMBG,1604,16,Sumatera Selatan,Sumatra,Kab. Lahat,0,553,2621,125,1474,649,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+dempo,Dempo,KRB PVMBG,1672,16,Sumatera Selatan,Sumatra,Kota Pagar Alam,0,0,0,0,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+dukono,Dukono,KRB PVMBG,8203,82,Maluku Utara,Maluku,Kab. Halmahera Utara,0,2,4,175,2452,726,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+gamalama,Gamalama,KRB PVMBG,8271,82,Maluku Utara,Maluku,Kota Ternate,13,14040,39547,1026,1827,1051,0,1,0,0,3,0.1,0.1,0.9,1.3,14,165,56,81,433,4936,2,6
+ibu,Ibu,KRB PVMBG,8201,82,Maluku Utara,Maluku,Kab. Halmahera Barat,0,51,6568,976,3128,2878,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ibu,Ibu,KRB PVMBG,8203,82,Maluku Utara,Maluku,Kab. Halmahera Utara,0,0,0,0,0,325,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ili-lewotolok,Ili Lewotolok,KRB PVMBG,5313,53,Nusa Tenggara Timur,Bali-Nusa Tenggara,Kab. Lembata,830,5517,1824,1115,4088,520,0,0,0,0,213,5.7,9.3,59.1,84,942,10749,3655,5268,28268,322482,143,417
+iya,Iya,KRB PVMBG,5308,53,Nusa Tenggara Timur,Bali-Nusa Tenggara,Kab. Ende,7,13,1480,223,618,74,0,0,0,0,2,0,0.1,0.5,0.7,8,89,30,44,235,2682,1,3
+karangetang,Karangetang,KRB PVMBG,7109,71,Sulawesi Utara,Sulawesi,Kab. Kep. Siau Tagulandang Biaro,2385,9291,1101,2576,2201,0,0,0,0,0,612,16.4,26.6,170,241.5,2709,30900,10508,15144,81258,926989,410,1198
+kerinci,Kerinci,KRB PVMBG,1311,13,Sumatera Barat,Sumatra,Kab. Solok Selatan,1,8,3973,1276,2352,2352,0,0,0,0,0,0,0,0,0.1,1,9,3,4,24,272,0,0
+kerinci,Kerinci,KRB PVMBG,1501,15,Jambi,Sumatra,Kab. Kerinci,0,156,12375,676,1977,1426,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+lewotobi-laki-laki,Lewotobi Laki-laki,KRB PVMBG,5306,53,Nusa Tenggara Timur,Bali-Nusa Tenggara,Kab. Flores Timur,2768,3811,1171,3293,2674,1139,2,0,0,0,710,19,30.9,197.3,280.2,3143,35855,12193,17573,94288,1075639,476,1390
+lokon,Lokon,KRB PVMBG,7102,71,Sulawesi Utara,Sulawesi,Kab. Minahasa,0,0,4506,0,75,901,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+lokon,Lokon,KRB PVMBG,7173,71,Sulawesi Utara,Sulawesi,Kota Tomohon,144,2809,1802,551,1176,350,0,2,0,0,37,1,1.6,10.3,14.6,164,1871,636,917,4919,56118,25,73
+lokon,Lokon,KRB PVMBG,7171,71,Sulawesi Utara,Sulawesi,Kota Manado,0,0,0,0,0,75,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+marapi,Marapi,KRB PVMBG,1306,13,Sumatera Barat,Sumatra,Kab. Agam,11,1030,15516,1127,1302,1777,0,0,0,0,3,0.1,0.1,0.8,1.1,12,142,48,70,375,4275,2,6
+marapi,Marapi,KRB PVMBG,1304,13,Sumatera Barat,Sumatra,Kab. Tanah Datar,135,2850,36316,1652,2729,5157,0,3,0,0,35,0.9,1.5,9.6,13.7,153,1748,594,856,4596,52426,23,68
+marapi,Marapi,KRB PVMBG,1374,13,Sumatera Barat,Sumatra,Kota Padang Panjang,0,0,927,0,0,175,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+raung,Raung,KRB PVMBG,3511,35,Jawa Timur,Jawa,Kab. Bondowoso,12,842,11198,2553,5131,3223,0,0,0,0,3,0.1,0.1,0.8,1.2,13,149,51,73,392,4469,2,6
+raung,Raung,KRB PVMBG,3509,35,Jawa Timur,Jawa,Kab. Jember,13,54,7220,595,1834,2974,0,0,0,0,3,0.1,0.1,0.9,1.3,15,168,57,83,443,5052,2,7
+raung,Raung,KRB PVMBG,3510,35,Jawa Timur,Jawa,Kab. Banyuwangi,12,2993,14641,2057,16850,5871,0,0,0,0,3,0.1,0.1,0.9,1.2,14,157,53,77,412,4702,2,6
+rinjani,Rinjani,KRB PVMBG,5208,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Lombok Utara,1,5,942,1238,693,619,0,0,0,0,0,0,0,0.1,0.1,1,12,4,6,31,350,0,0
+rinjani,Rinjani,KRB PVMBG,5203,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Lombok Timur,11,43,3237,619,1808,1807,0,0,0,0,3,0.1,0.1,0.8,1.2,13,148,50,72,388,4430,2,6
+rinjani,Rinjani,KRB PVMBG,5202,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Lombok Tengah,0,0,6,0,0,891,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sangeangapi,Sangeangapi,KRB PVMBG,5206,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Bima,0,19,102,2527,6319,1115,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sinabung,Sinabung,KRB PVMBG,1206,12,Sumatera Utara,Sumatra,Kab. Karo,3668,20467,2149,3175,6599,1150,0,1,0,1,941,25.2,40.9,261.5,371.4,4165,47516,16158,23288,124954,1425480,631,1842
+slamet,Slamet,KRB PVMBG,3327,33,Jawa Tengah,Jawa,Kab. Pemalang,70,1998,24116,646,2086,1366,0,0,0,0,18,0.5,0.8,5,7.1,80,908,309,445,2388,27243,12,35
+slamet,Slamet,KRB PVMBG,3328,33,Jawa Tengah,Jawa,Kab. Tegal,1,4994,4597,745,621,447,0,0,0,0,0,0,0,0.1,0.1,1,12,4,6,31,350,0,0
+slamet,Slamet,KRB PVMBG,3329,33,Jawa Tengah,Jawa,Kab. Brebes,0,0,7102,0,25,720,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slamet,Slamet,KRB PVMBG,3303,33,Jawa Tengah,Jawa,Kab. Purbalingga,0,65,13350,25,1416,1664,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+slamet,Slamet,KRB PVMBG,3302,33,Jawa Tengah,Jawa,Kab. Banyumas,0,3,22738,298,2707,1912,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+soputan,Soputan,KRB PVMBG,7105,71,Sulawesi Utara,Sulawesi,Kab. Minahasa Selatan,3,0,85,876,350,375,0,0,0,0,1,0,0,0.2,0.3,3,32,11,16,85,972,0,1
+soputan,Soputan,KRB PVMBG,7102,71,Sulawesi Utara,Sulawesi,Kab. Minahasa,0,2,0,375,451,0,0,0,0,0,0,0,0,0,0,0,4,1,2,10,117,0,0
+soputan,Soputan,KRB PVMBG,7107,71,Sulawesi Utara,Sulawesi,Kab. Minahasa Tenggara,56,85,54,2028,1427,476,0,0,0,0,14,0.4,0.6,4,5.7,63,724,246,355,1904,21724,10,28
+sorikmarapi,Sorikmarapi,KRB PVMBG,1213,12,Sumatera Utara,Sumatra,Kab. Mandailing Natal,1,13,4041,1402,1777,1627,0,0,0,0,0,0,0,0.1,0.1,1,10,4,5,27,311,0,0
+tambora,Tambora,KRB PVMBG,5206,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Bima,251,7,4,3642,1982,694,0,0,0,0,64,1.7,2.8,17.9,25.4,285,3250,1105,1593,8547,97506,43,126
+tambora,Tambora,KRB PVMBG,5205,52,Nusa Tenggara Barat,Bali-Nusa Tenggara,Kab. Dompu,0,0,8,0,0,966,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+agung,Agung,KRB PVMBG,5107,51,Bali,Bali-Nusa Tenggara,Kab. Karangasem,30414,58610,94662,13029,10157,7479,4,7,1,2,7799,209.2,339.5,2167.9,3079.3,34536,393992,133980,193097,1036090,11819745,5230,15277
+agung,Agung,KRB PVMBG,5105,51,Bali,Bali-Nusa Tenggara,Kab. Klungkung,0,0,0,0,0,1287,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+kelud,Kelud,KRB PVMBG,3506,35,Jawa Timur,Jawa,Kab. Kediri,65,338,30186,1091,2381,11731,0,0,0,0,17,0.4,0.7,4.6,6.5,73,836,284,410,2197,25066,11,32
+kelud,Kelud,KRB PVMBG,3507,35,Jawa Timur,Jawa,Kab. Malang,0,21,637,298,1810,496,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+kelud,Kelud,KRB PVMBG,3505,35,Jawa Timur,Jawa,Kab. Blitar,107,893,43627,2232,3149,10188,0,0,0,0,27,0.7,1.2,7.6,10.8,121,1380,469,676,3628,41389,18,53
+kelud,Kelud,KRB PVMBG,3572,35,Jawa Timur,Jawa,Kota Blitar,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+kelud,Kelud,KRB PVMBG,3504,35,Jawa Timur,Jawa,Kab. Tulungagung,0,0,0,0,0,124,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+kelud,Kelud,KRB PVMBG,3517,35,Jawa Timur,Jawa,Kab. Jombang,0,0,0,0,0,1042,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+ruang,Ruang,KRB PVMBG,7109,71,Sulawesi Utara,Sulawesi,Kab. Kep. Siau Tagulandang Biaro,617,0,0,1401,0,0,0,0,0,0,158,4.2,6.9,44,62.5,701,7999,2720,3920,21036,239976,106,310

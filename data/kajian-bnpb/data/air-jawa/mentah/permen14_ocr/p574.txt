@@ -1,0 +1,74 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 574
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+2 D.LA.T. Ranomeeto I P.27 KDI 3
+
+3 D.LA.T. Ranomeeto II P.28 KDI 10
+
+4 D.LA.T. Ranomeeto P.38 KDI 9
+
+5 D.LA.T. Ranomeeto P.39 KDI 10
+
+6 D.LA.T. Ranomeeto P.40 KDI 10
+
+7 D.LA.T. Ranomeeto P.41 KDI 10
+
+8 D.LA.T. Ranomeeto P.42 KDI 10
+
+9 D.LA.T. Ranomeeto P.66 KDI 5
+10 D.LA.T. Ranomeeto P.71 KDI 5
+11 D.LA.T. Ranomeeto P.72 KDI 8
+12 D.LA.T. Ranomeeto P.73 KDI 6
+13 D.LA.T. Ranomeeto P.73 KDI 6
+14 D.LA.T. Ranomeeto P.74 KDI 6
+15 D.LA.T. Ranomeeto P. 02 JICA 10
+16 D.LA.T. Sindang Kasih P.43 KDI 3
+17 D.LA.T. Sindang Kasih P.03 KDI 10
+18 D.L.A.T. Sindang Kasih P.04 KDI 10
+19 D.LA.T. Sindang Kasih P.14 KDI 10
+20 D.I.A.T. Sindang Kasih P.16 KDI 8
+21 D.I.A.T. Ranooha P.01 JICA 10
+22 D.I.A.T. Lambusa P.18 KDI 10
+23 D.I.A.T. Lambusa P.67 KDI 8
+24 D.I.A.T. MAN Konda P.3 AB 8
+25 D.I.A.T. Lawoila P.129 KNS 10
+26 D.I.A.T. Lawoila P.130 KNS 10
+27 D.L.A.T. Lawoila P.131 KNS 10
+28 D.I.A.T. Lawoila P.132 KNS 10
+29 D.I.A.T. Lawoila P.133 KNS 10
+30 D.I.A.T. Lawoila P.134 KNS 8
+31 D.I.A.T. Mowila P.05 KDI 10
+32 D.I.A.T. Mowila P.17 KDI 10
+33 D.I.A.T. Mowila P.31 KDI 10
+34 D.I.A.T. Landono P.26 KDI 10
+35 D.I.A.T. Landono P.29 KDI 10
+36 D.I.A.T. Landono P.34 KDI 10
+37 D.I.A.T. Mulyasari | P.23 KDI 10
+38 D.I.A.T. Mulyasari II P.24 KDI 10
+39 D.I.A.T. Mulyasari P.35 KDI 6
+40 D.I.A.T. Lalosingi TW.05 8
+41 D.LA.T. Lapoa P.08 KDI 10
+42 D.LA.T. Lapoa P.09 KDI 10
+43 D.LA.T. Lanowulu P.10 KDI 10
+44 D.LA.T. Lanowulu P.19 KDI 10
+45 D.LA.T. Lanowulu P.20 KDI 9
+46 D.I.A.T. Roraya P.21 KDI 10
+47 D.LA.T. Roraya | P.32 KDI 15
+48 D.LA.T. Roraya II P.33 KDI 10
+49 D.L.A.T. Baito P.22 KDI 10
+50 D.I.A.T. Lapulu P.48 KDI 8
+51 D.I.A.T. Lapulu P.49 KDI 10
+52 D.I.A.T. Lapulu P.58 KDI 10
+53 D.I.A.T. Lapulu P.59 KDI 10
+54 D.I.A.T. Lapulu P.64 KDI 10
+55 D.I.A.T. Lapulu P.65 KDI 10
+56 D.I.A.T. Lapulu P.03 JICA 8
+57 D.I.A.T. Lapulu P.119 KNS 10
+58 D.I.A.T. Molo Indah P.04 JICA 10
+59 D.I.A.T. Molo Indah P.60 KDI 10
+60 D.I.A.T. Molo Indah P.61 KDI 10
+61 D.I.A.T. Molo Indah P.62 KDI 10
+62 D.I.A.T. Molo Indah P.139 KNS 10

@@ -1,0 +1,23 @@
+{
+ "id": "5049",
+ "url": "https://peraturan.bpk.go.id/Details/5049/pp-no-37-tahun-2010",
+ "judul": "Peraturan Pemerintah (PP) Nomor 37 Tahun 2010 tentang Bendungan",
+ "nomor": "37 Tahun 2010 tentang Bendungan T.E.U. Indonesia, Pemerintah Pusat Nomor 37",
+ "tanggal_penetapan": "18 Februari 2010",
+ "tanggal_berlaku": "18 Februari 2010",
+ "sumber": "LN. 2010 No. 45, TLN No. 5117, LL SETNEG : 69 HLM",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/35932/PP%2037%20Tahun%202010.pdf"
+ ],
+ "status_peraturan": "Belum Tersedia",
+ "abstrak": "2010 Peraturan Pemerintah (PP) NO. 37, LN. 2010 No. 45, TLN No. 5117, LL SETNEG : 69 HLM Peraturan Pemerintah (PP) TENTANG Bendungan ABSTRAK: CATATAN: Peraturan Pemerintah (PP) ini mulai berlaku pada tanggal 18 Februari 2010.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/35932/PP%2037%20Tahun%202010.pdf",
+ "pdf_sha1": "9cb52223251f08004178a4bf961d1b07d3c83c17",
+ "pdf_bytes": 350554,
+ "sid": "pp-37-2010",
+ "halaman_total": 105,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

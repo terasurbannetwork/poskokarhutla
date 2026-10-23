@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+360 D.I. Tasim 8
+361 D.I. Tawangalun 30
+362 D.I. Telepak 543
+363 D.I. Telepak 230
+364 D.I. Telepon 137
+365 D.I. Tembelang Ka/Ki 332
+366 D.I. Tojo Ka 126
+367 D.I. Tojo Ki 16
+368 D.I. Trongsing 22
+369 D.I. Trowongan 79
+370 D.I. Tugu Ka/Ki 286
+371 D.I. Tugung I 93
+372 D.I. Tugung II 98
+373 D.I. Tugung III 131
+374 D.I. Turus Ki 424
+375 D.I. Turus Ka 144
+376 D.I. Tutul 70
+377 D.I. Ubret Laos | 43
+378 D.I. Ubret Laos II 24
+379 D.I. Ubret Petang 13
+380 D.I. Umar 96
+381 D.I. Untung 70
+382 D.I. Untung 40
+383 D.I. Untung Ka 20
+384 D.I. Untung Ki 74
+385 D.I. Wadung 6
+386 D.I. Waru 213
+387 D.I. Watu Ulo 31
+388 D.I. Widani 20
+389 D.I. Wongso 170
+390 D.I. Wunut 13
+c Kab. Blitar 674 28.013
+1 D.I. Abang 5
+2 D.I. Ampelgading | 50
+3 D.I. Ampelgading II 79
+4 D.I. Awar-Awar 6
+5 D.I. Babadan 100
+6 D.I. Babadan 20
+7 D.I. Babadan 5
+8 D.I. Babadan | 10
+9 D.I. Babadan II 10
+10 D.I. Bacem | 27
+11 D.I. Bacem II 27
+12 D.I. Bacem III 35
+13 D.I. Bacin 15
+14 D.I. Badran 33
+15 D.I. Bajang A 322
+16 D.I. Bajang II 40
+17 D.I. Bakung 230
+18 D.I. Balong 23
+19 D.I. Balong 20
+20 D.I. Banaran | 24
+21 D.I. Banaran II 8
+22 D.I. Bangsri 50
+23 D.I. Banjarjo 55
+24 D.I. Banjarmlati 28
+25 D.I. Banjar Sari A 27
+26 D.I. Banjarsari | 96
+27 D.I. Banjarsari III 6
+28 D.I. Banjarsari III 25
+#KANAN
+304
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+29 D.I. Banyu Urip 57
+30 D.I. Baos 63
+31 D.I. Barakan | 10
+32 D.I. Barakan II 12
+33 D.I. Barakan III 15
+34 D.I. Barakan IV 30
+35 D.I. Barek II 6
+36 D.I. Barek Kn/Kr 71
+37 D.I. Barek Pagak 12
+38 D.I. Baroto 21
+39 D.I. Bebekan I 36
+40 D.I. Bebekan II 22
+41 D.I. Bekecek I 6
+42 D.I. Bekecek II 6
+43 D.I. Bekecek Ka 22
+44 D.I. Bekecek Ki 18
+45 D.I. Belah 35
+46 D.I. Bence | 19
+47 D.I. Bence | 19
+48 D.I. Bence II 34
+49 D.I. Bence Suren 133
+50 D.I. Bendelonje 72
+51 D.I. Bendo 34
+52 D.I. Bendo I 11
+53 D.I. Bendo II 17
+54 D.I. Bendo III 11
+55 D.I. Bendo IV 17
+56 D.I. Bendorejo I 69
+57 D.I. Bendorejo II 62
+58 D.I. Bendosari 53
+59 D.I. Bendosewu 151
+60 D.I. Bengkok 24
+61 D.I. Benina 577
+62 D.I. Bening 38
+63 D.I. Bening 6
+64 D.I. Berjo 21
+65 D.I. Beru 30
+66 D.I. Besuki 155
+67 D.I. Bintang | 19
+68 D.I. Bintang IA 31
+69 D.I. Birowo 30
+70 D.I. Blimbing 18
+71 D.I. Bmn IV 28
+72 D.I. Bodo 37
+73 D.I. Bolu 8
+74 D.I. Boro | 192
+75 D.I. Boro II 40
+76 D.I. Branggah Kn/Kr 9
+77 D.I. Branggak | 9
+78 D.I. Branggak II 15
+79 D.I. Brintik 145
+80 D.I. Bulu 8
+81 D.I. Bulu | 25
+82 D.I. Bulu II 20
+83 D.I. Bulurejo 10
+84 D.I. Bulusari 72
+85 D.I. Bumiayu 19
+86 D.I. Butun 51
+87 D.I. Candi 10
+88 D.I. Candirejo 9
+89 D.I. Cangkring 41

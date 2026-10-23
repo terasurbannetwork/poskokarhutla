@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+125 D.I. Wieh Lah Gele Lungi 150
+126 D.I. Wieh Ni Bakong 100
+i Kab. Aceh Tenaaara 83 15.028
+1 D.I. Alur Langsat 150
+2 D.I. Darul Amin 150
+3 D.I. Engkran Rumah Kampung 150
+4 D.I. Engkran Rumah Pasir 150
+5 D.I. Jongar 100
+6 D.I. Kampung Melayu 200
+7 D.I. Kandang Belang 375
+8 D.I. Kedataran 200
+9 D.I. Kuta Buluh/Galuh 150
+10 D.I. Kuta Cane Lama Atas 500
+11 D.I. Kuta Cingkam 300
+12 D.I. Kuta Seri 100
+13 D.I. Kuta Ujung 150
+14 D.I. Lawe Beringin 150
+15 D.I. Lawe Desky 150
+16 D.I. Lawe Dua 150
+17 D.I. Lawe Ijo 150
+18 D.I. Lawe Kihing 200
+19 D.I. Lawe Kisam 533
+20 D.I. Lawe Loning Sepakat 200
+21 D.I. Lawe Mengkudu 80
+22 D.I. Lawe Perbunga 75
+23 D.I. Lawe Sagu 500
+24 D.I. Lawe Saraf 200
+25 D.I. Lawe Sekeben 150
+26 D.I. Lawe Setul 50
+27 D.I. Lawe Sigala Gala 125
+28 D.I. Lawe Sigara Gara 50
+29 D.I. Lawe Sumur 200
+30 D.I. Liang Pangi 200
+31 D.I. Mandala 125
+32 D.I. Pangur 80
+33 D.I. Pasir Gala 150
+34 D.I. Penosan 150
+35 D.I. Polonas 300
+36 D.I. Pulo Perengge 100
+37 D.I. Pulo Sepang 200
+38 D.I. Rembalang 165
+39 D.I. Salang Alas 100
+40 D.I. Tanjung 400
+41 D.I. Tanjung Muda 150
+42 D.I. Tenembak Alas 200
+43 D.I. Tenembak Juhar 365
+44 D.I. Terutung Kute 200
+45 D.I. Terutung Pelarikan 80
+46 D.I. Titi Merangun 200
+47 D.I. Ujung Pulo 130
+48 D.I. Uning Sigugur 50
+49 D.I. Batu Mendokan 200
+50 D.I. Bunga Melur 100
+51 D.I. Gusung 50
+52 D.I. Kampung Nangka 220
+53 D.I. Kisam 100
+54 D.I. Kubu 100
+55 D.I. Kuta Bantil 200
+56 D.I. Kuta Batu 100
+57 D.I. Kuta Cingkam | 150
+#KANAN
+69 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+58 D.I. Kuta Cingkam II 150
+59 D.I. Kuta Pengkih 200
+60 D.I. Kutambaru 50
+61 D.I. Kute Rambe 150
+62 D.I. Lawe Kelang 100
+63 D.I. Lawe Polak 200
+64 D.I. Lawe Sempilang 200
+65 D.I. Lawe Sumur Baru 100
+66 D.I. Lembah Alas 200
+67 D.I. Likat 80
+68 D.I. Mamas 400
+69 D.I. Mendabe 50
+70 D.I. Muara Baru 600
+71 D.I. Mutiara Damai 100
+72 D.I. Namo Buluh 100
+73 D.I. Paya Munje 600
+74 D.I. Pedesi 150
+75 D.I. Perdomuan 325
+76 D.I. Pesayang 80
+77 D.I. Pulonos Baru 80
+78 D.I. Salang Sigate 150
+79 D.I. Tanjung Aman 80
+80 D.I. Terutung Pedi 150
+81 D.I. Titi Mas 300
+82 D.I. Titi Panjang 150
+83 D.I. Ujung Baru 80
+i Kab. Aceh Timur 47 6.970
+1 D.I. Alue Bu 80
+2 D.I. Alue Bu Tuha 100
+3 D.I. Alue Bu Tuha 80
+4 D.I. Alue Canang 250
+5 D.I. Alue Grong-Grong 400
+6 D.I. Alue le Mirah 200
+7 D.I. Alue Jruek 100
+8 D.I. Alue Kaul 300
+9 D.I. Alue Lhok 70
+10 D.I. Alue Lhok 100
+11 D.I. Alue Mbot Mbot 80
+12 D.I. Alue Nibong 200
+13 D.I. Alue Nibong Atas 300
+14 D.I. Alue Rangan 100
+15 D.I. Alue Raya 90
+16 D.I. Blang kumahang 180
+17 D.I. Blang Palah 500
+18 D.I. Julok Cut 230
+19 D.I. Julok Tunong 400
+20 D.I. Leles 125
+21 D.I. Pasir Putih 150
+22 D.I. Paya Dua 100
+23 D.I. Paya Enje 110
+24 D.I. Paya Keutapang 70
+25 D.I. Peudawa Puntong 100
+26 D.I. Peudawa Rayeuk 125
+27 D.I. Seunebok Dalam 100
+28 D.I. Alue Cantek 75
+29 D.I. Alue Dua 75
+30 D.I. Alue Gureb 110
+31 D.I. Alue Luddin 100
+32 D.I. Alue Rambong 70
+33 D.I. Alue Temerue 450

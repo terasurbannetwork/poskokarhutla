@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 524
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+66 D.I.A.T. Sambirejo SDNG 526 35
+67 D.LA.T. Walikakum SDNG 527 35
+68 D.L.A.T. Klitik SKNG 117 6
+69 D.LA.T. Klitik SKNG 118 5
+70 D.LA.T. Sidorejo SKNG 119 5
+71 D.LA.T. Sidorejo SKNG 120 5
+72 D.LA.T. Sidorejo SKNG 121 5
+73 D.LA.T. Sidorejo SKNG 122 5
+74 D.LA.T. Sidorejo SKNG 123 5
+75 D.LA.T. Sidorejo SKNG 124 5
+76 D.LA.T. Sambirejo SKNG 157 5
+77 D.LA.T. Sambirejo SKNG 158 5
+78 D.LA.T. Sambirejo SKNG 159 5
+79 D.LA.T. Sambirejo SKNG 160 5
+80 D.L.A.T. Pengkol SKNG 161 5
+81 D.LA.T. Pengkol SKNG 162 5
+82 D.LA.T. Pengkol SKNG 163 5
+83 D.LA.T. Pengkol SKNG 164 5
+84 D.LA.T. Sriwedari SKNG 165 5
+85 D.LA.T. Sriwedari SKNG 166 5
+86 D.LA.T. Sriwedari SKNG 167 5
+87 D.LA.T. Sriwedari SKNG 168 5
+88 D.I.A.T. Bangunrejo SKNG 169 5
+89 D.LA.T. Bangunrejo SKNG 170 5
+90 D.L.A.T. Sekarjati SKNG 171 5
+91 D.LA.T. Sekarjati SKNG 172 5
+92 D.LA.T. Sekarjati SKNG 173 5
+93 D.LA.T. Sekarjati SKNG 174 5
+94 D.LA.T. Legundi SKNG 175 5
+95 D.LA.T. Legundi SKNG 176 5
+96 D.LA.T. Legundi SKNG 177 5
+97 D.LA.T. Legundi SKNG 178 5
+98 D.LA.T. Denguk SKNG 179 5
+99 D.LA.T. Denguk SKNG 180 5
+100 D.LA.T. Denguk SKNG 181 5
+101 D.LA.T. Denguk SKNG 182 5
+102 D.LA.T. Campursari SKNG 183 5
+103 D.LA.T. Campursari SKNG 184 5
+104 D.LA.T. Campursari SKNG 185 5
+105 D.LA.T. Campursari SKNG 186 5
+106 D.LA.T. Krampol SKNG 187 5
+107 D.LA.T. Krampol SKNG 188 5
+108 D.LA.T. Krampol SKNG 189 5
+109 D.LA.T. Krampol SKNG 190 5
+110 D.LA.T. Dero SKNG 191 5
+111 D.LA.T. Dero SKNG 192 5
+112 D.LA.T. Dero SKNG 193 5
+113 D.LA.T. Dero SKNG 194 5
+114 D.LA.T. Legowetan SKNG 195 5
+115 D.LA.T. Legowetan SKNG 196 5
+116 D.LA.T. Legowetan SKNG 197 5
+117 D.LA.T. Legowetan SKNG 198 5
+118 D.LA.T. Klitik SKNG 391 5
+119 D.LA.T. Klitik SKNG 392 5
+120 D.I.A.T. Ngalih SKNG 393 5
+121 D.LA.T. Ngalih SKNG 394 5
+122 D.LA.T. Gemarang SKNG 395 5
+123 D.LA.T. Gemarang SKNG 396 5
+124 D.LA.T. Jenggrih SKNG 397 5
+125 D.LA.T. Jenggrih SKNG 398 5
+126 D.ILA.T. Ngancar SKNG 399 5

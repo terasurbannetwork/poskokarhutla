@@ -1,0 +1,72 @@
+#TATA_LETAK satu-tabel lebar=2480
+20 5, No.638 568
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+4 D.LA.T. WS. Limboto Bolango Bone SDGo 9 33
+
+5 D.LA.T. WS. Limboto Bolango Bone SDGo 12 35
+
+6 D.LA.T. WS. Limboto Bolango Bone SDGo 13 28
+
+7 D.LA.T. WS. Limboto Bolango Bone SDGo 18 24
+
+8 D.LA.T. WS. Limboto Bolango Bone SDGo 19 36
+
+9 D.LA.T. WS. Limboto Bolango Bone SDGo 21 20
+10 D.LA.T. WS. Limboto Bolango Bone SDGo 24 24
+11 D.LA.T. WS. Limboto Bolango Bone SDGo 27 30
+12 D.LA.T. WS. Limboto Bolango Bone SDGo 69 18
+13 D.LA.T. WS. Limboto Bolango Bone SDGo 70 48
+14 D.LA.T. WS. Limboto Bolango Bone SDGo 71 48
+15 D.LA.T. WS. Limboto Bolango Bone SDGo 73 36
+16 D.LA.T. WS. Limboto Bolango Bone SDGo 74 26
+17 D.LA.T. WS. Limboto Bolango Bone SDGo 75 R 25
+18 D.LA.T. WS. Limboto Bolango Bone SDGo 76 R 20
+19 D.LA.T. WS. Limboto Bolango Bone SDGo 77 35
+20 D.LA.T. WS. Limboto Bolango Bone SDGo 78 R 20
+21 D.LA.T. WS. Limboto Bolango Bone SDGo 79 34
+22 D.LA.T. WS. Limboto Bolango Bone SDGo 80 R 21
+23 D.LA.T. WS. Limboto Bolango Bone SDGo 81 30
+24 D.LA.T. WS. Limboto Bolango Bone SDGo 82 32
+25 D.LA.T. WS. Limboto Bolango Bone SDGo 83 33
+26 D.LA.T. WS. Limboto Bolango Bone SDGo 84 30
+27 D.LA.T. WS. Limboto Bolango Bone SDGo 86 33
+28 D.LA.T. WS. Limboto Bolango Bone SDGo 87 32
+29 D.LA.T. WS. Limboto Bolango Bone SDGo 88 27
+30 D.LA.T. WS. Limboto Bolango Bone SDGo 89 35
+31 D.LA.T. WS. Limboto Bolango Bone SDGo 90 36
+32 D.LA.T. WS. Limboto Bolango Bone SDGo M1 28
+33 D.LA.T. WS. Limboto Bolango Bone SDGo 92 24
+34 D.LA.T. WS. Limboto Bolango Bone SDGo 93 27
+35 D.LA.T. WS. Limboto Bolango Bone SDGo 94 41
+36 D.LA.T. WS. Limboto Bolango Bone SDGo 95 27
+37 D.LA.T. WS. Limboto Bolango Bone SDGo 96 37
+38 D.LA.T. WS. Limboto Bolango Bone SDGo 97 17
+39 D.LA.T. WS. Limboto Bolango Bone SDGo 98 33
+40 D.LA.T. WS. Limboto Bolango Bone SDGo 99 38
+41 D.LA.T. WS. Limboto Bolango Bone SDGo 100 34
+42 D.LA.T. WS. Limboto Bolango Bone SDGo 101 23
+43 D.LA.T. WS. Limboto Bolango Bone SDGo 102 23
+44 D.LA.T. WS. Limboto Bolango Bone SDGSo 110 25
+45 D.LA.T. WS. Limboto Bolango Bone SDGo 111 43
+46 D.LA.T. WS. Limboto Bolango Bone SDGo 114 34
+47 D.LA.T. WS. Limboto Bolango Bone SDGo 115 30
+48 D.LA.T. WS. Limboto Bolango Bone SDGo 116 36
+49 D.LA.T. WS. Limboto Bolango Bone SDGo 117 42
+50 D.LA.T. WS. Limboto Bolango Bone SDGo 118 12
+51 D.LA.T. WS. Limboto Bolango Bone SDGo 119 R 10
+52 D.LA.T. WS. Limboto Bolango Bone SDGo 120 R 10
+53 D.LA.T. WS. Limboto Bolango Bone SDGo 121 R 7
+54 D.LA.T. WS. Limboto Bolango Bone SDGoO 122 R 10
+55 D.LA.T. WS. Limboto Bolango Bone SDGo 129 25
+56 D.LA.T. WS. Limboto Bolango Bone SDGo 130 27
+57 D.LA.T. WS. Limboto Bolango Bone SDGo 131 25
+58 D.LA.T. WS. Limboto Bolango Bone SDGo 132 20
+59 D.LA.T. WS. Limboto Bolango Bone SDGo 133 25
+60 D.ILA.T. WS. Limboto Bolango Bone SDGo 134 23
+61 D.LA.T. WS. Limboto Bolango Bone SDGo 135 3
+62 D.LA.T. WS. Limboto Bolango Bone SDGo 138 R 23
+63 D.LA.T. WS. Limboto Bolango Bone SDGo 139 R 23
+64 D.I.A.T. WS. Limboto Bolango Bone SDGo 140 R 23

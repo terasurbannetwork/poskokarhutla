@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+950 D.I. Solokan Pasir 93
+951 D.I. Sukabakti 38
+952 D.I. Sukabakti 30
+953 D.I. Sukabirus | 40
+954 D.I. Sukamahi 20
+955 D.I. Sukamaju 25
+956 D.I. Sukamulya 29
+957 D.I. Sukarajin 61
+958 D.I. Sungapan 48
+959 D.I. Supa 25
+960 D.I. Taman 17
+961 D.I. Tanah Beureum 20
+962 D.I. Tanjung Sari 35
+963 D.I. Tanjung Sari 11
+964 D.I. Tarik Kolot 25
+965 D.I. Tarikolot 30
+966 D.I. Tegal Imbon 15
+967 D.I. Tegal Laja 20
+968 D.I. Tegal Panjang 10
+969 D.I. Tegal Panjang 15
+970 D.I. Tegal Wangun 26
+971 D.I. Tengah 13
+972 D.I. Tengek 20
+973 D.I. Teureup 59
+974 D.I. Tinggar Jaya I 25
+975 D.I. Tinggar Jaya II 10
+976 D.I. Toblongan I 30
+977 D.I. Toblongan II 70
+978 D.I. Tutul 28
+979 D.I. Waru Doyong 20
+980 D.I. Warung Asmani 40
+e Kab. Ciamis 296 16.990
+1 D.I. Alinayin 93
+2 D.I. Batukurung 9
+3 D.I. Cibatukurung 558
+4 D.I. Cibeurih 95
+5 D.I. Cidarmaga 11
+6 D.I. Cikaso 474
+7 D.I. Cikelebut 355
+8 D.I. Cimuncang | 80
+9 D.I. Cimuncang II 255
+10 D.I. Cimuncang III 100
+11 D.I. Cipalih/Nagawiru 641
+12 D.I. Citalahab 570
+13 D.I. Danasari Kanan 164
+14 D.I. Danasari Kiri 478
+15 D.I. Gunung Putri II 573
+16 D.I. Jagabaya 547
+17 D.I. Laksana Harja 143
+18 D.I. Leuwikeris 3
+19 D.I. Leuwirumpit 44
+20 D.I. Nanggela 340
+21 D.I. Sindangherang 49
+22 D.I. Akicongkrang 34
+23 D.I. Ampel 36
+24 D.I. Anjung 77
+25 D.I. Asna 93
+26 D.I. Babakan Cicau 48
+27 D.I. Bahara Bagian Kanan 771
+28 D.I. Bahara Bagian Kiri 74
+#KANAN
+168
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+29 D.I. Balekambang 5
+30 D.I. Bangong 33
+31 D.I. Baregbeg 43
+32 D.I. Basiji 49
+33 D.I. Batu Ampar 5
+34 D.I. Batugajah 54
+35 D.I. Batugajah 29
+36 D.I. Batukarut 139
+37 D.I. Bihblu/Cibulan 5
+38 D.I. Bingblu 5
+39 D.I. Bitung 9
+40 D.I. Bojongnagka 35
+41 D.I. Bojongsari 34
+42 D.I. Bojongsereh 34
+43 D.I. Bungur II 30
+44 D.I. Bunut 20
+45 D.I. Cadas Ampar 16
+46 D.I. Campaka 43
+47 D.I. Cangkudu 78
+48 D.I. Carik 13
+49 D.I. Cianda 20
+50 D.I. Cianem 65
+51 D.I. Cibabakan 19
+52 D.I. Cibelah 5
+53 D.I. Cibeureum 60
+54 D.I. Cibeureum/Awikiara 10
+55 D.I. Cibiru 33
+56 D.I. Cibitung/Cikahuripan 25
+57 D.I. Cibuntu II 25
+58 D.I. Cibuyut | 4 II 64
+59 D.I. Cibuyut II 10
+60 D.I. Cicadas 16
+61 D.I. Cicanakarena 35
+62 D.I. Cicarenang 8
+63 D.I. Ciceplok 6
+64 D.I. Ciceuri 48
+65 D.I. Cicurug 8
+66 D.I. Cidarma 29
+67 D.I. Cidarma 11
+68 D.I. Cidarma 8
+69 D.I. Cieurih 65
+70 D.I. Ciganda 69
+71 D.I. Cigayam 228
+72 D.I. Cigayam II 11
+73 D.I. Cigayam III 4
+74 D.I. Cigedang 18
+75 D.I. Cigembor 5
+76 D.I. Cigembung 14
+77 D.I. Cigerentel/Ciparay 13
+78 D.I. Cigintung | 115
+79 D.I. Cigintung II 145
+80 D.I. Cigorowong 32
+81 D.I. Cigorowong 54
+82 D.I. Ciguha/Cilalay 82
+83 D.I. Cigunung I 133
+84 D.I. Cigunung II 63
+85 D.I. Cigunung III 35
+86 D.I. Cihampelas 16
+87 D.I. Cihandaleum | 5
+88 D.I. Cihapit I 29
+89 D.I. Cihapit II 81

@@ -1,0 +1,33 @@
+kewenangan,prov_kode,jenis,rekap_n_di,rekap_ha,ocr_n_di,ocr_ha_teratribusi_kab,ha_tak_teratribusi,persen_tak_teratribusi,label_rekap
+pusat,32,Permukaan,20,405510,,405510,0,0.0,resmi
+pusat,33,Permukaan,33,347674,,347675,-1,-0.0003,resmi
+pusat,34,Permukaan,3,12460,,12460,0,0.0,resmi
+pusat,35,Permukaan,32,289508,,289508,0,0.0,resmi
+pusat,35,Tambak,1,3322,,3322,0,0.0,resmi
+pusat,36,Permukaan,5,62209,,62209,0,0.0,resmi
+provinsi,32,Permukaan,97,93736,,93736,0,0.0,resmi
+provinsi,32,Tambak,6,6864,,6864,0,0.0,resmi
+provinsi,33,Permukaan,108,86865,,86866,-1,-0.0012,resmi
+provinsi,34,Permukaan,41,13987,,13987.0,0.0,0.0,resmi
+provinsi,35,Permukaan,176,164823,,164763,60,0.0364,resmi
+provinsi,35,Pompa,2,2305,,2305,0,0.0,resmi
+provinsi,35,Tambak,5,6959,,6959,0,0.0,resmi
+provinsi,36,Permukaan,21,29221,,29221,0,0.0,resmi
+provinsi,36,Tambak,1,1635,,1635,0,0.0,resmi
+kabkota,32,Permukaan,4921,350798,4921,350800,-2,-0.0006,resmi
+kabkota,32,Air Tanah,234,5722,234,5722,0,0.0,resmi
+kabkota,32,Tambak,11,9057,11,9057,0,0.0,resmi
+kabkota,33,Permukaan,11401,519265,11401,519266,-1,-0.0002,resmi
+kabkota,33,Air Tanah,679,16872,679,16871,1,0.0059,resmi
+kabkota,33,Rawa,21,1556,21,1556,0,0.0,resmi
+kabkota,33,Tambak,73,6295,73,6295,0,0.0,resmi
+kabkota,34,Permukaan,1235,37986,1235,37986,0,0.0,resmi
+kabkota,34,Air Tanah,151,6550,151,6550,0,0.0,resmi
+kabkota,34,Pompa,3,45,3,45,0,0.0,resmi
+kabkota,35,Permukaan,8703,480352,8703,480352,0,0.0,resmi
+kabkota,35,Air Tanah,1573,45288,1573,45287,1,0.0022,resmi
+kabkota,35,Pompa,23,3870,23,3870,0,0.0,resmi
+kabkota,35,Tambak,12,3525,12,3525,0,0.0,resmi
+kabkota,36,Permukaan,1327,106938,1327,106938,0,0.0,resmi
+kabkota,36,Pompa,11,1283,11,1283,0,0.0,resmi
+kabkota,36,Tambak,54,12644,54,12644,0,0.0,resmi

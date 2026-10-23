@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 510
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+57 D.L.A.T. Alas kokon SDBK 200 5
+58 D.I.A.T. Kampao SDBK 201 30
+59 D.I.A.T. Ko'olan | SDBK 202 26
+60 D.I.A.T. Basanah SDBK 232 20
+61 D.I.A.T. Neroh SDBK100/502 46
+b Kab. Banvuwanai 17 560
+1 D.LA.T. Bajulmati SDBW 123 15
+2 D.LA.T. Bajulmati SDBW 171 35
+3 D.LA.T. Alasrejo SDBW 174 35
+4 D.LA.T. Bajulmati SDBW 175 35
+5 D.LA.T. Bajulmati SDBW 176 35
+6 D.LA.T. Bajulmati SDBW 184 35
+7 D.LA.T. Bajulmati SDBW 185 35
+8 D.LA.T. Bajulmati SDBW 188 35
+9 D.LA.T. Bajulmati SDBW 189 30
+10 D.I.A.T. Bajulmati SDBW 190 35
+11 D.LA.T. Alasrejo SDBW 101 35
+12 D.LA.T. Bajulmati SDBW 192 40
+13 D.LA.T. Bajulmati SDBW 198 35
+14 D.LA.T. Bajulmati SDBW 200 31
+15 D.LA.T. Alasrejo SDBW 222 31
+16 D.L.A.T. Bajulmati SDBW 223 32
+17 D.LA.T." K" Setail SDBW 235 30
+c Kab. Blitar 10 391
+1 D.LA.T. Besuki SDBL 100 EJ 45
+2 D.LA.T. Gogodeso SDBL 212 EJ 35
+3 D.LA.T. Gamperang SDBL 213 EJ 35
+4 D.LA.T. Sumberejo SDBL 214 EJ 35
+5 D.LA.T. Bendosari SDBL 221 EJ 46
+6 D.L.A.T. Pikatan SDBL 222 EJ 40
+7 D.LA.T. Satrean SDBL 420 EJ 43
+8 D.I.A.T. Bangle SDBL 421 EJ 35
+9 D.LA.T. Wonodadi SDBL 513 EJ 37
+10 D.LA.T. Sanan Kulon SDBL 532 EJ 40
+d Kab. Bondowoso 1 25
+1 D.LA.T. Tanggulangin SDBD 203 25
+e Kab. Gresik A7 733
+1 D.LA.T. Petung SDGR 082 60
+2 D.LA.T. Petung SDGR 101 42
+3 D.LA.T. Banyutengah SDGR 034 57
+4 D.LA.T. Babakbowo SDGR 035 42
+5 D.LA.T. Sambogunung SDGR 075 51
+6 D.LA.T. Sambogunung SDGR 076 43
+7 D.LA.T. Kertosono SDGR 080 55
+8 D.LA.T. Lasem SDGR 081 42
+9 D.LA.T. Sawo SDGR 083 46
+10 D.LA.T. Kertosono SDGR 084 45
+11 D.LA.T. Lasem SDGR 103 32
+12 D.LA.T. Sukorejo SMGR 172 8
+13 D.LA.T. Sukorejo SMGR 173 8
+14 D.LA.T. Sukorejo SMGR 174 8
+15 D.LA.T. Sukorejo SMGR 175 9
+16 D.LA.T. Sukorejo SMGR 176 9
+17 D.LA.T. Sukorejo SMGR 177 8
+18 D.LA.T. Kertosono SMGR 178 8
+19 D.LA.T. Kertosono SMGR 179 7
+20 D.I.A.T. Kertosono SMGR 180 8

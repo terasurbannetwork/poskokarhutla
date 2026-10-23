@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+37 D.I. Sb. Urung-urung 35
+38 D.I. Sb. Wiyu 20
+39 D.I. Sbr. Banteng 43
+40 D.I. Sbr. Dendeng 3
+41 D.I. Sbr. Klampis 43
+42 D.I. Ngemplak 66
+aa Kota Malana 10 276
+1 D.I. Mulyorejo 37
+2 D.I. Kemulan | 29
+3 D.I. Kemulan II 40
+4 D.I. Kajar Il C 25
+5 D.I. Kajar II D 31
+6 D.I. Kaiar II E 15
+7 D.I. Kajar II F 18
+8 D.I. Kajar II & 36
+9 D.I. Plaosan 30
+10 D.I. Pandanwangi 17
+ah Kota Pasuruan 1 32
+1 D.I. Blandongan 32
+ai Kota Probolinaao 16 1.438
+1 D.I. Belokan M
+2 D.I. Gladag Serang 110
+3 D.I. Kasbah 11
+4 D.I. Legundi 251
+5 D.I. Pilang Renes 30
+6 D.I. Randu 168
+7 D.I. Sumber Ardi 95
+8 D.I. Sumber Grinting 36
+9 D.I. Sumber Kareng 12
+10 D.I. Sumber Langse 27
+11 D.I. Umbut 35
+12 D.I. Wiroborang 24
+13 D.I. Wringin 157
+14 D.I. Kedung Galeng 387
+15 D.I. Kedung Kemiri 26
+16 D.I. Umbul 28
+XVI PROVINSI SAN 874 55.757
+a Kab. Baduna 30 2.285
+1 D.I. Apuan 36
+2 D.I. Batan Badung 126
+3 D.I. Batu Lantang 60
+4 D.I. Belong 4
+5 D.I. Blakiuh 15
+6 D.I. Blong Puitan 120
+7 D.I. MA. Dungus 74
+8 D.I. Buangga 312
+9 D.I. Bukian 115
+10 D.I. Bukti 21
+11 D.I. Dukun 54
+12 D.I. Gangga 156
+13 D.I. Guming 34
+14 D.I. Latu 155
+15 D.I. Nungnung 50
+16 D.I. Pacung I 85
+17 D.I. Pacung II 26
+18 D.I. Punggul 14
+#KANAN
+372
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+19 D.I. Sagu 17
+20 D.I. Sandakan 129
+21 D.I. Sangeh 18
+22 D.I. Sengempel 47
+23 D.I. Sulangai 40
+24 D.I. Taman | 31
+25 D.I. Taman II 99
+26 D.I. Tirta Manau 114
+27 D.I. Tirtayasa 128
+28 D.I. Ulun Uma 72
+29 D.I. Umapoh 36
+30 D.I. Pinikit 60
+b Kab. Banali 46 3.243
+1 D.I. Alis Bintang 35
+2 D.I. Aya 126
+3 D.I. Bangbang Let 102
+4 D.I. Bangkiang Sidem 85
+5 D.I. Bayung Cenik 15
+6 D.I. Bunutin 167
+7 D.I. Empelan 98
+8 D.I. Galiran 17
+9 D.I. Jala Gadina 14
+10 D.I. Juwuk Bali 38
+11 D.I. Kikian 22
+12 D.I. Lagaan 46
+13 D.I. Lumbuan 32
+14 D.I. Mandi 44
+15 D.I. Manuk 64
+16 D.I. Mengani 20
+17 D.I. Mundung 24
+18 D.I. Pembungan 27
+19 D.I. Penda 58
+20 D.I. Pengiangan Kangin 4
+21 D.I. Pengiangan Kawan 15
+22 D.I. Pukuh 17
+23 D.I. Sala 61
+24 D.I. Selat Nyuhan 29
+25 D.I. Selat Peken 143
+26 D.I. Setra Agung 15
+27 D.I. Sidembunut Kiri 102
+28 D.I. Sidembunut Kanan 332
+29 D.I. Sulahan 52
+30 D.I. Susut 19
+31 D.I. Taman Bali 345
+32 D.I. Tambahan 82
+33 D.I. Tampuagan | 110
+34 D.I. Tampuagan II 86
+35 D.I. Tanggahan Peken 158
+36 D.I. Tanggahan Tengah 111
+37 D.I. Tangkas 19
+38 D.I. Tingked Batu 28
+39 D.I. Tunggak Alas 70
+40 D.I. Umabila 26
+41 D.I. Umalawang 20
+42 D.I. Umedesa | 82
+43 D.I. Umedesa II 72
+44 D.I. Umeselat 100
+45 D.I. Yangapi 59
+46 D.I. Yeh Badung 15

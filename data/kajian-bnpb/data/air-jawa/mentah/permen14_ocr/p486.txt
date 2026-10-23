@@ -1,0 +1,94 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 486
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+9 D.LA.T. Kota Rantang IV SMDS - 019 10
+10 D.ILA.T. Kota Rantang IX SMDS - 024 9
+11 D.LA.T. Kota Rantang V SMDS - 020 11
+12 D.LA.T. Kota Rantang VI SMDS - 021 8
+13 D.LA.T. Kota Rantang VII SMDS - 022 10
+14 D.LA.T. Kota Rantang VIII SMDS - 023 12
+15 D.LA.T. Kota Lama I SDDS - 023 12
+16 D.LA.T. Kota Lama II SDDS - 024 10
+17 D.LA.T. Kota Rantang EITW - 001 DS 10
+18 D.ILA.T. Kota Rantang EITW - 002 DS 12
+19 D.LA.T. Kota Rantang EITW - 003 DS 11
+20 D.ILA.T. Mangga Dua SDDS - 019 47
+21 D.LA.T. Sei Rejo I SDDS - 016 15
+22 D.LA.T. Sei Rejo II SDDS - 017 20
+23 D.LA.T. Sei Rejo III SDDS - 001 9
+24 D.LA.T. Pematang Cermai I SEDS - 025 8
+25 D.LA.T. Pematang Cermai II SMDS - 026 9
+26 D.LA.T. Pematang Cermai III SMDS - 027 11
+27 D.LA.T. Pematang Cermai IV SMDS - 028 15
+28 D.LA.T. Pematang Cermai V SMDS - 029 9
+29 D.LA.T. Pematang Terang SDDS - 020 34
+
+c Kab. Lanakat 9 137
+
+1 D.LA.T. Marlintung E-017 LK 12
+
+2 D.LA.T. Perkotaan SDLK - 018 9
+
+3 D.LA.T. Perkotaan SDLK - 021 20
+
+4 D.LA.T. Sei cabang SDLK - 022 24
+
+5 D.LA.T. Kedondong Barat SDLK - 023 20
+
+6 D.LA.T. Kedondong Timur SDLK - 024 20
+
+7 D.LA.T. Stabat Lama | SDLK - 025 12
+
+8 D.I.A.T. Stabat Lama II SDLK - 026 10
+
+9 D.IL.A.T. Stabat Lama III SDLK - 027 10
+
+d Kab. Mandailina Natal 3 52
+
+1 D.LA.T. Nalintang Jae SDMDN - 001 14
+
+2 D.LA.T. Panyabungan Julu SDMDN - 003 14
+
+3 D.ILA.T. Huraba SDMDN - 002 24
+
+e Kab. Serdana Bedaaai 14 170
+
+1 D.LA.T. Bogak Besar Dsn. I SDDS - 011 5
+
+2 D.LA.T. Bogak Besar Dsn. III SDDS - 012 8
+
+3 D.LA.T. Mangga Dua SDDS - 019 25
+
+4 D.LA.T. Pematang Cermai EITW - 004 DS 10
+
+5 D.LA.T. Pematang Cermai I SDDS - 025 10
+
+6 D.LA.T. Pematang Cermai II SDDS - 026 8
+
+7 D.LA.T. Pematang Cermai III SDDS - 027 10
+
+8 D.LA.T. Pematang Cermai IV SDDS - 028 14
+
+9 D.LA.T. Pematang Cermai V SDDS - 029 10
+10 D.LA.T. Pematang Kuala SDDS - 013 10
+11 D.LA.T. Pematang Terang SDDS - 020 10
+12 D.LA.T. Sei Rejo Dsn. III SDDS - 001 15
+13 D.LA.T. Sei Rejo I SDDS - 016 15
+14 D.LA.T. Sei Rejo II SDDS - 017 20
+
+f Kab. Tapanuli Selatan 18 180
+
+1 D.LA.T. Sigalang SDTS-001 12
+
+2 D.LA.T. Tahajak SDTS-002 14
+
+3 D.LA.T. Hutaraja SDTS-003 13
+
+4 D.LA.T. Siunggam SDTS-004 10
+
+5 D.LA.T. Sialagundi SDTS-005 7
+
+6 D.I.A.T. Sibadoar SDTS-007 6

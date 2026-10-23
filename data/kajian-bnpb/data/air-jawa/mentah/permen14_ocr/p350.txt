@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+295 D.I. Sb. Ketos 5
+296 D.I. Sb. Kitri 5
+297 D.I. Sb. Klesem 1
+298 D.I. Sb. Kumbahan 9
+299 D.I. Sb. Linggomanik 20
+300 D.I. Sb. Morotonggo 12
+301 D.I. Sb. Ngaresan 15
+302 D.I. Sb. Ngemplak 3
+303 D.I. Sb. Nglaran 7
+304 D.I. Sb. Nglasep 15
+305 D.I. Sb. Ngrejang 5
+306 D.I. Sb. Ngrejo 3
+307 D.I. Sb. Ngringin 8
+308 D.I. Sb. Nguncar 15
+309 D.I. Sb. Pindol 6
+310 D.I. Sb. Plapar 5
+311 D.I. Sb. Ploso 9
+312 D.I. Sb. Prambon 5
+313 D.I. Sb. Pucangan 21
+314 D.I. Sb. Pule 15
+315 D.I. Sb. Puring 8
+316 D.I. Sb. Tahunan 9
+317 D.I. Sb. Tegalombo 7
+318 D.I. Sb. Turusan 13
+319 D.I. Sb. Ubalan 7
+320 D.I. Sb. Wangen 3
+321 D.I. Sb. Waru 9
+322 D.I. Sb. Wirati 16
+323 D.I. Sedeng 5
+324 D.I. Semanding 15
+325 D.I. Semen 1
+326 D.I. Sempu Kanan 58
+327 D.I. Sempu Kiri 15
+328 D.I. Sengon 15
+329 D.I. Sepatan 11
+330 D.I. Sewan 1
+331 D.I. Siama | 20
+332 D.I. Simbaton 70
+333 D.I. Sipen 20
+334 D.I. Sobo 10
+335 D.I. Sobo 7
+336 D.I. Sobo 7
+337 D.I. Sobo 2
+338 D.I. Soge 11
+339 D.I. Somopuro 6
+340 D.I. Sono 6
+341 D.I. Sringin 5
+342 D.I. Sriten 17
+343 D.I. Sukoharjo Ka 78
+344 D.I. Sukoharjo Ki 10
+345 D.I. Sumber 23
+346 D.I. Sundeng 8
+347 D.I. Suren 12
+348 D.I. Talang 9
+349 D.I. Talun 8
+350 D.I. Tambakan 15
+351 D.I. Tanggalan 20
+352 D.I. Tangkeban 6
+353 D.I. Tangkil 15
+354 D.I. Tanjung 7
+355 D.I. Tawang 11
+#KANAN
+350
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+356 D.I. Tegal 15
+357 D.I. Tejo 27
+358 D.I. Tekil 15
+359 D.I. Tempel 7
+360 D.I. Tempel 5
+361 D.I. Tempel 30
+362 D.I. Tempuran 45
+363 D.I. Tempuran 3
+364 D.I. Tonggo 9
+365 D.I. Tosari Kanan 32
+366 D.I. Tosari Kiri 50
+367 D.I. Tranggono 4
+368 D.I. Tulakan 10
+369 D.I. Tumalang 5
+370 D.I. Wareng 13
+371 D.I. Watu Bale 11
+372 D.I. Watu Batang 4
+373 D.I. Watu Kajang 11
+374 D.I. Wiyoro 3
+375 D.I. Wonosari 16
+376 D.I. Worawari 30
+377 D.I. Yoro 15
+378 D.I. Yuwono 34
+379 D.I. Yuwono 28
+380 D.I. Ngasem 3
+381 D.I. Gondang 5
+382 D.I. Mundu 15
+383 D.I. Ngricik 25
+384 D.I. Dungguyangan 5
+385 D.I. Salam Cengklok 15
+386 D.I. Sb. Pelem 5
+387 D.I. Jliro 30
+388 D.I. Sb. Seno 5
+389 D.I. Tanjung 20
+390 D.I. Sb. Grasak 20
+391 D.I. Sb. Marik 12
+392 D.I. Sb. Guwo 15
+393 D.I. Sb. Ngepoh 20
+394 D.I. Sb. Kalilo 15
+395 D.I. Sb. Dungtimo 15
+396 D.I. Puring 25
+397 D.I. Jambon 25
+398 D.I. Jublek 5
+399 D.I. Ngreco 2
+400 D.I. Srikulit 3
+401 D.I. Tumpeng 1
+402 D.I. Kalicabol 4
+403 D.I. Catho 2
+404 D.I. Bonpaing 1
+405 D.I. Belik 3
+406 D.I. Doplang 1
+407 D.I. S. Blawong 1
+408 D.I. Siama II 6
+409 D.I. D. Panjang 6
+410 D.I. Beder I 5
+411 D.I. Troudan 5
+412 D.I. Duduk 15
+413 D.I. Tanjung 17
+414 D.I. Sawah Lungguh 18
+415 D.I. Selojoyo 15
+416 D.I. Kalipasang 7

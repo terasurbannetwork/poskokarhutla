@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+581 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+b Kab. Merauke 70 309
+
+1 D.LA.T. Candra Jaya 01 4
+
+2 D.LA.T. Candra Jaya 02 5
+
+3 D.LA.T. Erom 01 6
+
+4 D.LA.T. Erom 02 6
+
+5 D.LA.T. H. Makmur 01 2
+
+6 D.I.A.T. H. Makmur 02 4
+
+7 D.LA.T. H. Makmur 03 4
+
+8 D.LA.T. Kuper 01 4
+
+9 D.LA.T. Kuprik 01 3
+10 D.LA.T. Kurik | 01 1
+11 D.LA.T. Kurik III 01 1
+12 D.LA.T. Kurik III 02 2
+13 D.LA.T. Kurik III 03 2
+14 D.LA.T. Kurik IV 01 2
+15 D.LA.T. Kurik IV 02 2
+16 D.LA.T. Kurik IV 03 2
+17 D.LA.T. Kurik V 01 5
+18 D.LA.T. Kurik V 02 4
+19 D.LA.T. Kurik V 03 5
+20 D.LA.T. Kurik VI 01 3
+21 D.I.A.T. Muram Sari 01 2
+22 D.LA.T. Muram Sari 02 2
+23 D.LA.T. Muram Sari 03 2
+24 D.LA.T. Muram Sari 04 4
+25 D.LA.T. Salor | 02 4
+26 D.LA.T. Salor III 01 4
+27 D.LA.T. Sarmayam | 01 6
+28 D.LA.T. Sarmayam | 02 4
+29 D.LA.T. Sarmayam | 03 1
+30 D.LA.T. Sarmayam | 04 5
+31 D.LA.T. Sarmayam II 01 3
+32 D.LA.T. Sarmayam II 02 4
+33 D.LA.T. Sarmayam II 03 4
+34 D.LA.T. Semangga | 02 6
+35 D.LA.T. Semangga | 03 6
+36 D.LA.T. Semangga | 04 4
+37 D.LA.T. Semangga II 02 6
+38 D.LA.T. Semangga II 03 6
+39 D.LA.T. Semangga 1I/40 01 4
+40 D.LA.T. Semangga III 01 6
+41 D.LA.T. Semangga III 02 6
+42 D.LA.T. Semangga III 03 6
+43 D.LA.T. Semangga III 04 5
+44 D.LA.T. Tanah Miring SP.2 02 5
+45 D.LA.T. Tanah Miring SP.2 03 6
+46 D.LA.T. Tanah Miring SP.2 04 10
+47 D.LA.T. Tanah Miring SP.2 05 10
+48 D.LA.T. Tanah Miring SP.3 01 3
+49 D.LA.T. Tanah Miring SP.3 02 3
+50 D.LA.T. Tanah Miring SP.3 03 5
+51 D.LA.T. Tanah Miring SP.4 01 6
+52 D.LA.T. Tanah Miring SP.4 02 6
+53 D.LA.T. Tanah Miring SP.4 03 15
+54 D.LA.T. Tanah Miring SP.4 04 5
+55 D.LA.T. Tanah Miring SP.5 01 6
+56 D.L.A.T. Tanah Miring SP.5 02 2
+57 D.LA.T. Tanah Miring SP.5 03 5
+58 D.L.A.T. Tanah Miring SP.6 01 6
+59 D.LA.T. Tanah Miring SP.6 02 4
+60 D.I.A.T. Tanah Miring SP.6 03 5

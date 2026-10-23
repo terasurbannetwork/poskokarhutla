@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+515 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+77 D.ILA.T. Kambing SDKD 126 EJ 40
+78 D.I.A.T. Sukoharjo SDKD 127 EJ 46
+79 D.I.A.T. Kambingan SDKD 128 EJ 44
+80 D.I.A.T. Mendung SDKD 129 EJ 45
+81 D.I.A.T. Tengger Kidul SDKD 130 EJ 50
+82 D.I.A.T. Rembang SDKD 131 EJ 20
+83 D.I.A.T. Tanjung SDKD 132 EJ 42
+84 D.I.A.T. Rembang SDKD 133 EJ 27
+85 D.I.A.T. Wonojoyo SDKD 136 EJ 38
+86 D.I.A.T. Gabru SDKD 140 EJ 38
+87 D.I.A.T. Wonojoyo SDKD 141 EJ 43
+88 D.LA.T. Sumbercengkring SDKD 142 EJ 22
+89 D.I.A.T. Bendo SDKD 143 EJ 40
+90 D.I.A.T. Togurejo SDKD 145 EJ 27
+91 D.I.A.T. Tempurejo SDKD 146 EJ 23
+92 D.I.A.T. Sambiresik SDKD 147 EJ 39
+93 D.I.A.T. Betek SDKD 149 EJ 31
+94 D.L.A.T. Sidowarek SDKD 157 EJ 45
+95 D.I.A.T. Ngasem SDKD 160 EJ 40
+96 D.I.A.T. Kepuh SDKD 162 EJ 35
+97 D.L.A.T. Sidoeareg SDKD 163 EJ 42
+98 D.I.A.T. Banjarjo SDKD 164 EJ 40
+99 D.I.A.T. Kayenlor SDKD 165 EJ 40
+100 D.I.A.T. Bulu SDKD 166 EJ 34
+101 D.L.A.T. Sukoharjo SDKD 168 EJ 33
+102 D.LA.T. Kapas SDKD 171 EJ 42
+103 D.LA.T. Pohjarak SDKD 173 EJ 33
+104 D.LA.T. Mojokerep SDKD 179 EJ 57
+105 D.LA.T. Tunglur SDKD 183 EJ 36
+106 D.LA.T. Sumberejo SDKD 184 EJ 42
+107 D.L.A.T. Ketapang SDKD 187 EJ 37
+108 D.LA.T. Woromarto SDKD 189 EJ 42
+109 D.LA.T. Meduretmo SDKD 190 EJ 43
+110 D.LA.T. Jambangan SDKD 191 EJ 35
+111 D.LA.T. Ngampel SDKD 192 EJ 39
+112 D.LA.T. Janti SDKD 193 EJ 49
+113 D.LA.T. Bajakan SDKD 206 EJ 33
+114 D.LA.T. Sermeharjo SDKD 207 EJ 45
+115 D.LA.T. Kaliboto SDKD 220 EJ 57
+116 D.LA.T. Ringin Pitu SDKD 269 EJ 44
+117 D.LA.T. Maesan SDKD 296 EJ 36
+118 D.LA.T. Kempleng SDKD 416 EJ 48
+119 D.LA.T. Wonocatur SDKD 418 EJ 32
+120 D.LA.T. Banyuanyar SDKD 479 EJ 30
+121 D.LA.T. Sidomulyo SDKD 480 EJ 31
+122 D.LA.T. Sidomulyo SDKD 492 EJ 36
+123 D.LA.T. Gadungan SDKD 497 EJ 26
+124 D.LA.T. Klepek SDKD 512 EJ 61
+125 D.I.A.T. Banjarejo SDKD 516 EJ 40
+126 D.L.A.T. Wonosari SDKD 523 EJ 59
+127 D.LA.T. Gempolan SDKD 524 EJ 33
+128 D.I.A.T. Ringinpitu SDKD 531 EJ 42
+129 D.LA.T. Gadungan SDKD 538 EJ 59
+130 D.L.A.T. Wonojoyo SDKD 539 EJ 57
+131 D.L.A.T. Pagu SDKD 540 EJ 51
+132 D.LA.T. Klampitan SDKD 541 EJ 50
+133 D.LA.T. Tugurejo SDKD 546 EJ 28
+134 D.LA.T. Dawuhan SDKD 558 EJ 18
+135 D.L.A.T. Maesan SDKD 559 EJ 15
+136 D.I.A.T. Mondo SDKD 560 EJ 18
+137 D.LA.T. Asmorobangun SDKD 561 EJ 15

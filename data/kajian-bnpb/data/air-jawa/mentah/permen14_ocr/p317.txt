@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+119 D.I. Karangwaru | 49
+120 D.I. Karangwaru II 162
+121 D.I. Karsono 39
+122 D.I. Kasmaran | 26
+123 D.I. Kasmaran II 60
+124 D.I. Kedung Pawon 78
+125 D.I. Keting 193
+126 D.I. Kebon Karet 27
+127 D.I. Kebun Gunung 755
+128 D.I. Kedawung 164
+129 D.I. Kedinding 150
+130 D.I. Kertas 4
+131 D.I. Kesambi 200
+132 D.I. Ketajek | 16
+133 D.I. Ketajek II 60
+134 D.I. Ketandan 26
+135 D.I. Kijingan 97
+136 D.I. Klabang 85
+137 D.I. Klanceng Mayang 50
+138 D.I. Klanceng Patrang 104
+139 D.I. Klatakan Bangsalsari 50
+140 D.I. Klatakan Rambipuji 446
+141 D.I. Klopogowok | 50
+142 D.I. Klopogowok II 65
+143 D.I. Klopogowok III 25
+144 D.I. Klorahan 95
+145 D.I. Kokap | 18
+146 D.I. Kolbuk 38
+147 D.I. Kolla 13
+148 D.I. Komina 101
+149 D.I. Kontrak 4
+150 D.I. Kopang 101
+151 D.I. Krajan | Patrang 183
+152 D.I. Krajan II Patrang 60
+153 D.I. Krajan III Patrang 60
+154 D.I. Krajan Rambipuji 82
+155 D.I. Kromo 328
+156 D.I. KTJKA 9
+157 D.I. Kucing 145
+158 D.I. Langkap | 45
+159 D.I. Langkap II 15
+160 D.I. Langkap III 114
+161 D.I. Langon Patrang 97
+162 D.I. Langon Tanggul 65
+163 D.I. Langsat 18
+164 D.I. Leprak | Tanggul 100
+165 D.I. Leprak II Tanggul 43
+166 D.I. Leprak Rambipuji 11
+167 D.I. Liyer 17
+168 D.I. Majid I 49
+169 D.I. Majid II 32
+170 D.I. Makam Ajung 122
+171 D.I. Makam Rambipuji 331
+172 D.I. Makam Sukowono 362
+173 D.I. Makam Sumbersari 123
+174 D.I. Manggis 180
+175 D.I. Minian 25
+176 D.I. Mluwo 16
+177 D.I. Mojan 52
+178 D.I. Mos 40
+179 D.I. Mudin 20
+#KANAN
+317 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+180 D.I. Mukmin 39
+181 D.I. Onjur 23
+182 D.I. Pace 35
+183 D.I. P. Bur 20
+184 D.I. P. Lantur 352
+185 D.I. P. Toyib 15
+186 D.I. Pacar 125
+187 D.I. Padasan | 33
+188 D.I. Padasan II 14
+189 D.I. Pakel Sukowono 37
+190 D.I. Pakel Tanggul 97
+191 D.I. Pakem | Sukowono 29
+192 D.I. Pakem II Sukowono 61
+193 D.I. Pakem Ambulu 78
+194 D.I. Pakis I 7
+195 D.I. Pakis II 6
+196 D.I. Pancung 50
+197 D.I. Pangepok 86
+198 D.I. Panjang Umur 50
+199 D.I. Pasirian 27
+200 D.I. Paseban 131
+201 D.I. Patok 33
+202 D.I. Patrang 5
+203 D.I. Payung 168
+204 D.I. Pekalongan 31
+205 D.I. Pelabuhan 193
+206 D.I. Pelindu 50
+207 D.I. Penang 19
+208 D.I. Pengarengan 10
+209 D.I. Penjalin 40
+210 D.I. Perbal 29
+211 D.I. Persil 27
+212 D.I. Petung I Sukowono 46
+213 D.I. Petung II Sukowono 173
+214 D.I. Petung Rambipuji 394
+215 D.I. Plalangan | Mayang 27
+216 D.I. Plalangan | Patrang 26
+217 D.I. Plalangan II Mayang 25
+218 D.I. Plalangan II Patrang 43
+219 D.I. Plalangan Kalisat 88
+220 D.I. Plendo Hilir 150
+221 D.I. Plendo Hulu 25
+222 D.I. Polo 100
+223 D.I. Pono 46
+224 D.I. Poring | 41
+225 D.I. Poring II 21
+226 D.I. Poring III 75
+227 D.I. Prasian | 20
+228 D.I. Prasian II 31
+229 D.I. Pringduri 82
+230 D.I. Pringgoloyo 54
+231 D.I. Pucangandap 86
+232 D.I. Raden 20
+233 D.I. Raimin 110
+234 D.I. Rampalan 18
+235 D.I. Rukem 93
+236 D.I. Sabita 86
+237 D.I. Sabrun 110
+238 D.I. Sakidin 6
+239 D.I. Salama | 145
+240 D.I. Salama II 154

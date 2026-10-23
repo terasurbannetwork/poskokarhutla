@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+541 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+21 D.LA.T. Dsn. Batu Keruk 66-I 12
+22 D.LA.T. Dsn. Batu Keruk 65-I 18
+23 D.LA.T. Dsn. Embar-Embar 79-1 10
+24 D.LA.T. Dsn. Embar-Embar 74-1 12
+25 D.LA.T. Dsn. Batu Gembung 75-1 10
+26 D.ILA.T. Dsn. Orong Bagik Ancak 83-1 18
+27 D.LA.T. Dsn. Embar-Embar 78-1 12
+28 D.LA.T. Dsn. Orong Bagik Ancak 86-1 22
+29 D.I.A.T. Dsn. Papak 10-1 18
+30 D.LA.T. Dsn. Lengkukun 18-1 22
+31 D.LA.T. Dsn. Labang Kara 90-1 18
+32 D.LA.T. Dsn. Labang Kara 92-1 18
+33 D.LA.T. Dsn. Labang Kara 94-1 17
+34 D.LA.T. Dsn. Labang Kara 98-1 22
+35 D.LA.T. Dsn. Labang Kara 97-1 18
+36 D.LA.T. Dsn. Labang Kara 96-1 18
+37 D.LA.T. Dsn. Labang Kara 95-1 12
+38 D.LA.T. Dsn. Lendang Mamben 105 - I 12
+39 D.LA.T. Dsn. Lendang Mamben 104- 1 12
+40 D.LA.T. Dsn. Lendang Mamben 106 - I 18
+41 D.LA.T. Dsn. Telaga Bagik 103 - I 10
+42 D.LA.T. Dsn. Lendang Mamben 102-1 18
+43 D.LA.T. Dsn. Lendang Mamben 101 - 1 18
+44 D.LA.T. Dsn. Lendang Mamben 100 - I 12
+45 D.LA.T. Dsn. Anyar 108 - I 18
+46 D.LA.T. Dsn. Lokok Reban 39-1 18
+47 D.LA.T. Dsn. Lengkukun 16-1 12
+48 D.LA.T. Dsn. Lengkukun 15-1 18
+49 D.LA.T. Dsn. Lengkukun 17-1 23
+50 D.LA.T. Dsn. Pemenang 1-1 18
+51 D.LA.T. Dsn. Lendang Galuh 2-1 18
+52 D.LA.T. Dsn. Ruak Bangket 21-1 16
+53 D.LA.T. Dsn. Ruak Bangket 89-1 18
+54 D.I.A.T. Dsn. Jugil 13-1 22
+55 D.LA.T. Dsn. Lempenge 20-1 12
+56 D.LA.T. Dsn. Sembaro 5-1 12
+57 D.LA.T. Dsn. Amor-Amor 26-1 22
+58 D.LA.T. Dsn. Lembah Berora 29-1 16
+59 D.LA.T. Dsn. Batu Gembung 70-1 16
+60 D.ILA.T. Dsn. Labang Kara 93-1 17
+61 D.LA.T. Dsn. Sengkukun 8-1 18
+62 D.LA.T. Dsn. Amor-Amor 24-1 20
+63 D.LA.T. Dsn. Lokok Reban 41 -1 18
+64 D.LA.T. Dsn. Amor-Amor 28-1 23
+65 D.LA.T. Dsn. Lendang Dangar 109 - I 18
+66 D.I.A.T. Dsn. Air Bari 25-1 18
+67 D.LA.T. Dsn. Amor-Amor 27 -1 32
+68 D.ILA.T. Dsn. Orong Bagik Ancak 84-1 22
+69 D.LA.T. Dsn. Boyotan 22-1 23
+70 D.LA.T. Dsn. Lokok Reban 40-1 22
+71 D.I.A.T. Dsn. Lokok Mumbul 47-1 23
+72 D.L.A.T. Dsn. Temuan Sari 50-1 22
+73 D.LA.T. Dsn. Lokok Mumbul 43-1 18
+74 D.LA.T. Dsn. Lokok Mumbul 42-1 23
+75 D.I.A.T. Dsn. Lokok Mumbul 37-1 24
+76 D.LA.T. Dsn. Orong Bagik Ancak 87-1 25
+77 D.LA.T. Dsn. Embar-Embar 77-1 22
+78 D.LA.T. Dsn. Arungan Bali 68 -I 22
+79 D.LA.T. Dsn. Arungan Bali 67-1 22
+80 D.I.A.T. Dsn. Air Bari 19-1 25
+81 D.LA.T. Dsn. Lokok Reban 38-1 23

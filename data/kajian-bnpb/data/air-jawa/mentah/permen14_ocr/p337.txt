@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+405 D.I. Doni II (Ds.Jambuwer) 22
+406 D.I. Doni II (Ds.Kromengan) 9
+407 D.I. Doni III (Ds.Jambuwer) 2
+408 D.I. Doni III (Ds.Kromengan) 10
+409 D.I. Druju 5
+410 D.I. Elo 1
+411 D.I. Embak 3
+412 D.I. Gading | 15
+413 D.I. Gading II 10
+414 D.I. Gading III 18
+415 D.I. Gading Kembar 14
+416 D.I. Gagar III 34
+417 D.I. Gajahrejo/Ngelo 32
+418 D.I. Gebyak 28
+419 D.I. Gendis 2
+420 D.I. Genting II 9
+421 D.I. Gesang 83
+422 D.I. Giling 7
+423 D.I. Sintungan 3
+424 D.I. Golek I (Kadalpang) 411
+425 D.I. Gombong 7
+426 D.I. Gombong I 55
+427 D.I. Gombong II 105
+428 D.I. Gondang 10
+429 D.I. Gondorejo 19
+430 D.I. Gowok 1
+431 D.I. Grangsil 30
+432 D.I. Handengan 53
+433 D.I. Jabon (Kec. Ngantang) 34
+434 D.I. Jabon (Kec. Donomulyo) 90
+435 D.I. Jali 1
+436 D.I. Jambesari 27
+437 D.I. Jambet 10
+438 D.I. Jambu 63
+439 D.I. Jangkung 39
+440 D.I. Jatisari 56
+441 D.I. Jeding 1
+442 D.I. Jegong 25
+443 D.I. Jegong | 6
+444 D.I. Jengglong 9
+445 D.I. Jokromo 84
+446 D.I. Jombok 14
+447 D.I. Judel 24
+448 D.I. Junggo 2
+449 D.I. Juwok 91
+450 D.I. Kadir 15
+451 D.I. Kajar | 21
+452 D.I. Kali Pait 32
+453 D.I. Kali Anget 22
+454 D.I. Kali Carang 22
+455 D.I. Kali Lemon 22
+456 D.I. Kali Peteng 50
+457 D.I. Kambal 3
+458 D.I. Karangampel II 43
+459 D.I. Karangmloko 3
+460 D.I. Karangrejo 25
+461 D.I. Karangsari 83
+462 D.I. Karto Ramin 70
+463 D.I. Kauman 10
+464 D.I. Kawit 81
+465 D.I. Kebon Ayu 21
+#KANAN
+337 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+466 D.I. Kecubung 1
+467 D.I. Kedung Ondo 42
+468 D.I. Kedungrejo 6
+469 D.I. Kedungrejo II 1
+470 D.I. Kemaduh 12
+471 D.I. Kembar 1
+472 D.I. Kemudinan 82
+473 D.I. Kepatihan 53
+474 D.I. Kepulungan 89
+475 D.I. Kerang 2
+476 D.I. Ketitang Kampung VII 35
+477 D.I. Klampok II 59
+478 D.I. Klampok III 183
+479 D.I. Klangon 18
+480 D.I. Kletek 3
+481 D.I. Klonjoran Kulon 18
+482 D.I. Klonjoran Wetan 2
+483 D.I. Krajan/Sumber Kerto II 12
+484 D.I. Kudu 9
+485 D.I. Ledong 1
+486 D.I. Lekso (Kec. Ngantang) 25
+487 D.I. Lingger 20
+488 D.I. Lo/Kumpul 42
+489 D.I. Lumbu 4
+490 D.I. Luring 136
+491 D.I. Made 28
+492 D.I. Mahardo 40
+493 D.I. Makmur (Kec. Donomulyo) 10
+494 D.I. Mangir 42
+495 D.I. Mangutan | 25
+496 D.I. Mangutan II 42
+497 D.I. Mangutan III 11
+498 D.I. Mbendo 20
+499 D.I. Melikan/Kemulan 126
+500 D.I. Mendalanwangi/Sumber Gong 220
+501 D.I. Morotanjek 74
+502 D.I. Mul 2
+503 D.I. Mulyosari 125
+504 D.I. Munjung 18
+505 D.I. Mustar 83
+506 D.I. Ngarungan 6
+507 D.I. Ngebyongan 6
+508 D.I. Ngelo I 2
+509 D.I. Ngelo II 1
+510 D.I. Ngembal Santren 10
+511 D.I. Ngembul 16
+512 D.I. Ngesong 1
+513 D.I. Ngroto 56
+514 D.I. Nongko 7
+515 D.I. Ongop-Ongop 1
+516 D.I. Padas 3
+517 D.I. Padasan 1
+518 D.I. Pakutukan 36
+519 D.I. Pamotan 200
+520 D.I. Pandankris 3
+521 D.I. Pandansari 49
+522 D.I. Pandean 15
+523 D.I. Panggung 57
+524 D.I. Parang 17
+525 D.I. Parang Gembong 90
+526 D.I. Paron 225

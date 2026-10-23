@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+257 D.I. Rambut Bali 2
+258 D.I. Randu Alas 14
+259 D.I. Randu Alas 12
+260 D.I. Ringin Putih 20
+261 D.I. Rondo Kuning 1
+262 D.I. Sabil 10
+263 D.I. Salak | 27
+264 D.I. Salak II 8
+265 D.I. Sambi 51
+266 D.I. Sambi 15
+267 D.I. Sambi Kalangan 127
+268 D.I. Sb. Andong 15
+269 D.I. Sb. Bandeng 12
+270 D.I. Sb. Banyu Utah 33
+271 D.I. Sb. Bawang 43
+272 D.I. Sb. Beji 5
+273 D.I. Sb. Beji 45
+274 D.I. Sb. Beji 12
+275 D.I. Sb. Belik Gayam 1
+276 D.I. Sb. Bopong 17
+277 D.I. Sb. Cangkring 30
+278 D.I. Sb. Cangkring 48
+279 D.I. Sb. Cemeng 10
+280 D.I. Sb. Gamping 3
+281 D.I. Sb. Gemblung 6
+282 D.I. Sb. Gondang 44
+283 D.I. Sb. Guntur 93
+284 D.I. Sb. Gunung Gede 12
+285 D.I. Sb. Gupit (Nglorok) 20
+286 D.I. Sb. Guyangan 9
+287 D.I. Sb. Jamusan 11
+288 D.I. Sb. Joso 40
+289 D.I. Sb. Kacangan 6
+290 D.I. Sb. Kaponan 133
+291 D.I. Sb. Karangan 159
+292 D.I. Sb. Kebolampang 4
+293 D.I. Sb. Kelung 3
+294 D.I. Sb. Ketogan 5
+295 D.I. Sb. Klereman 3
+296 D.I. Sb. Klumpit 4
+297 D.I. Sb. Krobyokan 2
+298 D.I. Sb. Pakem 16
+299 D.I. Sb. Papringan 1
+300 D.I. Sb. Petung Moncol 4
+301 D.I. Sb. Ploso 33
+302 D.I. Sb. Prapatan 14
+303 D.I. Sb. Pringgitan 3
+304 D.I. Sb. Sedodok 122
+305 D.I. Sb. Sepetung 16
+306 D.I. Sb. Seweru (Wates Krg) 4
+307 D.I. Sb. Sirikan 52
+308 D.I. Sb. Sooko 6
+309 D.I. Sb. Sooro 5
+310 D.I. Sb. Sumber 4
+311 D.I. Sb. Tlogowurung 17
+312 D.I. Sb. Tugunongko 15
+313 D.I. Sb. Tugurejo 15
+314 D.I. Sebendo 9
+315 D.I. Sedah 1
+316 D.I. Sedoyo 28
+317 D.I. Sejeruk 7
+#KANAN
+387 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+318 D.I. Sekebo 56
+319 D.I. Sekrekel 57
+320 D.I. Sekucur 2
+321 D.I. Selenguk 89
+322 D.I. Selodono 119
+323 D.I. Semanding 20
+324 D.I. Sembung 2
+325 D.I. Sembung 106
+326 D.I. Semojo 4
+327 D.I. Sepulo 45
+328 D.I. Serayu 35
+329 D.I. Setalang 7
+330 D.I. Setumbal 5
+331 D.I. Seweru 4
+332 D.I. Seweru (Janti Krg) 95
+333 D.I. Sirah Keteng 149
+334 D.I. Slamet 53
+335 D.I. Slendik 62
+336 D.I. Sono 6
+337 D.I. Suluh 21
+338 D.I. Sunggah 40
+339 D.I. Suru 5
+340 D.I. Suruh 12
+341 D.I. Tajem 2
+342 D.I. Tajem 14
+343 D.I. Talang 52
+344 D.I. Talun 13
+345 D.I. Tambak Kemangi 15
+346 D.I. Tambak Watu 436
+347 D.I. Tambong 21
+348 D.I. Tangkeban 6
+349 D.I. Tangkil 3
+350 D.I. Tawang 12
+351 D.I. Teklik 6
+352 D.I. Tenggar 2
+353 D.I. Tlayu 53
+354 D.I. Tontongan 4
+355 D.I. Toro 7
+356 D.I. Tranjang 13
+357 D.I. Trenggulun 18
+358 D.I. Tretes 48
+359 D.I. Tritis 2
+360 D.I. Tuban 17
+361 D.I. Tuking 8
+362 D.I. Tulaan 98
+363 D.I. Tundan 2
+364 D.I. Tunglur 17
+365 D.I. Turunsih 6
+366 D.I. Urung-Urung 112
+367 D.I. Wagir 1
+368 D.I. Waluh 9
+369 D.I. Warangan 15
+370 D.I. Wates 40
+371 D.I. Watu Dowo 4
+372 D.I. Watu Dukun 63
+373 D.I. Watu Maling 39
+374 D.I. Watugaleng 10
+375 D.I. Watugong 26
+376 D.I. Widodaren 2
+377 D.I. Asem Telu 44
+378 D.I. Bacak 18

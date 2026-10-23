@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+61 2015, Nc.638
+Status Daerah Irigasi Yang Menjadi Wewenang Dan Tangcung Jawab Pemerintah Provinsi
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+| PROVINSI ACEH 6 7.335
+a Kab. Aceh Selatan
+1 D.I.T. Pasi Sibadeh 1.200
+2 D.LT. Trumon 1.245
+b Kab. Aceh Timur
+1 D.LT. Julok 1.240
+2 DT. Simpang Ulim 1.050
+c Kab. Aceh Utara
+1 D.LT. Seuneudon 1.400
+d Kab. Bireuen
+1 D..T. Jeumpa Peusangan 1.200
+Il PROVINSI BANTEN 1 1.635
+a Kab. Pandeglang
+1 D.I.T. Mekarsari 1.635
+Il PROVINSI JAWA BARAT 6 6.864
+a Kab. Bekasi
+1 D.I.T. Muara Gembong 1.214
+b Kab. Karawang
+1 D.LT. Kapur Asem 1.100
+2 D.I.T. Muara Baru 1.050
+c Kab. Subang
+1 D.I.T. Bandeng 1.030
+2 D.I.T. Tanjung Tiga 1.120
+3 D.I.T. Blanakan 1.350
+IV PROVINSI JAWA TIMUR 5 6.959
+a Kab. Sidoarjo
+1 D.L.T. Afv. Buntung 1.342
+2 D.I.T. Bahkepuk 1.467
+3 D.I.T. Kali Alo 1.605
+4 D.LT. Kali Kendil 1.369
+5 D.I.T. Kuntulan 1.176
+V PROVINSI KALIMANTAN BARAT 1 1.350
+a Kab. Sambas
+Sambas (Sebangkau, Sei. Batang,
+1 D.I.T. Sarang Burung Nilam dan Sarang 1.350
+Burung Danau)
+VI PROVINSI KALIMANTAN UTARA 1 1.286
+a Kab. Bulungan
+1 D.LT. Tanah Kuning 1.286
+VII PROVINSI SULAWESI BARAT 12 17.500
+a Kab. Mamuju
+1 D.LT. Kalukku 2.000
+b Kab. Mamuju Tengah
+1 D.LT. Budong-Budong 1.500
+2 D.I.T. Pedanda 1.000
+3 D.I.T. Karossa 1.500
+c Kab. Mamuju Utara
+1 D.LT. Tikke 2.500
+d Kab. Majene
+1 D..T. Barane 1.000
+e Kab. Polewali Mandar
+1 D..T. Katumbangan 1.500
+2 D.I.T. Manding 1.000
+3 D.I.T. Nepo 1.000
+4 D.LT. Panyampa 1.500
+5 D.IlT. Patampanua 1.000
+6 D.I.T. Tonyaman 2.000

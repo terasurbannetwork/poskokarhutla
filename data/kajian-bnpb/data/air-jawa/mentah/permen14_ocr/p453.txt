@@ -1,0 +1,122 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Kelanit 60
+21 D.I. Kilwaer 7
+22 D.I. Kilwat 168
+23 D.I. Kolser 35
+24 D.I. Langgiar Feer 105
+25 D.I. Langgiar Haar 6
+26 D.I. Larat 171
+27 D.I. Ler Ohoilim 22
+28 D.I. Letman 39
+29 D.I. Letvuan 34
+30 D.I. Madwaer 56
+31 D.I. Mastur 4
+32 D.I. Mun Ohoitadium 80
+33 D.I. Namar 62
+34 D.I. Nerong 101
+35 D.I. Ngabub 29
+36 D.I. Ngayub 29
+37 D.I. Ngefuit 8
+38 D.I. Ngilngof 51
+39 D.I. Ngursoin 2
+40 D.I. Ohoidertawun 25
+41 D.I. Ohoidertutu 17
+42 D.I. Ohoiel 17
+43 D.I. Ohoilim 16
+44 D.I. Ohoinangan 17
+45 D.I. Ohoinol 2
+46 D.I. Ohoira 29
+47 D.I. Ohoiraut 20
+48 D.I. Ohoiren 9
+49 D.I. Ohoirenan 194
+50 D.I. Ohoiseb 3
+51 D.I. Ohoiwait 29
+52 D.I. Raat 1
+53 D.I. Rahareng 15
+54 D.I. Renfan 7
+55 D.I. Revav 4
+56 D.I. Reyamru 18
+57 D.I. Rumadian 9
+58 D.I. Rumat 4
+59 D.I. Sathean 22
+60 D.I. Sather 351
+61 D.I. Somlain 9
+62 D.I. Sungai 79
+63 D.I. Tamangil Nuhuten 134
+64 D.I. Tamangil Nuhuyanat 55
+65 D.I. Tanimbar Kev 35
+66 D.I. Tetoat 16
+67 D.I. Tutrean 131
+68 D.I. Ur Pulau 2
+69 D.I. Uwat 32
+70 D.I. Wab 14
+71 D.I. Wain 7
+72 D.I. Warbal 73
+73 D.I. Warwut 18
+74 D.I. Watlaar 2
+75 D.I. Waur 19
+76 D.I. Waurtahait 12
+77 D.I. Weduar 36
+78 D.I. Weduar Feer 66
+79 D.I. Weer Ohoinam 36
+80 D.I. Werka 20
+#KANAN
+453 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+81 D.I. Yamtel 30
+f Kab. Maluku Tenaaara Barat 3 450
+1 D.I. Lat Dalam 150
+2 D.I. Kandar 200
+3 D.I. Wesawak 100
+a Kab. Seram Baaian Barat 4 2.235
+1 D.I. Kairatu | 715
+2 D.I. Kairatu II 900
+3 D.I. Kawa 270
+4 D.I. Way Toso 350
+h Kab. Seram Baaian Timur 6 4.240
+1 D.I. Lola Besar 800
+2 D.I. Batu Asa 500
+3 D.I. Way Samet 720
+4 D.I. Jakarta Baru 750
+5 D.I. Sumber Agung 700
+6 D.I. Jembatan Basah 770
+i Kota Tual 3 300
+1 D.I. Danau Fanil 150
+2 D.I. Danau Ngadi 50
+3 D.I. Kur 100
+XXX! PROVINS! MALUKU UTARA 22 wAR7
+a Kab. Halmahera Barat 7 1.347
+1 D.I. Gamtala 170
+2 D.I. Lolori 60
+3 D.I. Taboso 59
+4 D.I. Gamomeng 150
+5 D.I. Hoku-Hoku 85
+6 D.I. Jano 623
+7 D.I. Porniti 200
+b Kab. Halmahera Selatan 1 800
+1 D.I. Wayana 800
+c Kab. Halmahera Timur 3 1.596
+1 D.I. Dodaga 675
+2 D.I. Mancalele 600
+3 D.I. Meja 321
+d Kab. Halmahera Utara 4 3.000
+1 D.I. Pediwang 800
+2 D.I. Tolabit 850
+3 D.I. Dorolamo 650
+4 D.I. Gagapok 700
+e Kab. Ken. Sula 6 844
+1 D.I. Buambono 128
+2 D.I. Sahu 166
+3 D.I. Pancado 150
+4 D.I. Tabona 150
+5 D.I. Air Kalimat 100
+6 D.I. Wahe 150
+f Kab. Pulau Morotai 7 1.150
+1 D.I. Buho-Buho 120

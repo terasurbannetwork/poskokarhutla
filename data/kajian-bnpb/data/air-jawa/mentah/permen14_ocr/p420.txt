@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+65 D.I. Mancarangi'i 140
+66 D.I. Marangka 140
+67 D.I. Masou 68
+68 D.I. Masula Atas 57
+69 D.I. Masula Bawah 200
+70 D.I. Matialemba 129
+71 D.I. Mavakeli 50
+72 D.I. Meko 500
+73 D.I. Mololawa 70
+74 D.I. Nandialo 155
+75 D.I. Owini 121
+76 D.I. Pada 200
+77 D.I. Palia 110
+78 D.I. Panjoka 100
+79 D.I. Parawesi 70
+80 D.I. Penanga 275
+81 D.I. Petirodongi 75
+82 D.I. Pinedapa 61
+83 D.I. Pombala'a 135
+84 D.I. Pomua Palandu 143
+85 D.I. Posunga 100
+86 D.I. Punggiori 106
+87 D.I. Rautolemba 155
+88 D.I. Rompo 160
+89 D.I. Salenda 100
+90 D.I. Salindu 126
+91 D.I. Salo 175
+92 D.I. Salukua 100
+93 D.I. Salumanange 168
+94 D.I. Saluopa 102
+95 D.I. Saluta'a 79
+96 D.I. Sampuruna 115
+97 D.I. Sange 120
+98 D.I. Sapa 51
+99 D.I. Sedoa 200
+100 D.I. Sepe 20
+101 D.I. Singkona 100
+102 D.I. Siwo 260
+103 D.I. Subak Merta 21
+104 D.I. Tadanci 100
+105 D.I. Taduade 100
+106 D.I. Tajo'e 175
+107 D.I. Tala 51
+108 D.I. Tamadue 650
+109 D.I. Tamalunce 100
+110 D.I. Tamboli 165
+111 D.I. Tanah Lanto 100
+112 D.I. Tando Bone 46
+113 D.I. Tandolala 100
+114 D.I. Tantombimbi 85
+115 D.I. Tinelala Atas 130
+116 D.I. Tinelala Tengah 158
+117 D.I. Tinelala Bawah 70
+118 D.I. Tolambo 124
+119 D.I. Tomehingki 100
+120 D.I. Tomehipi 69
+121 D.I. Torire 200
+122 D.I. Tuare 64
+123 D.I. Tumora Tobe 106
+124 D.I. Velene 156
+125 D.I. Velengu 95
+#KANAN
+420
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+126 D.I. Velincu 250
+127 D.I. Watumaeta 153
+128 D.I. Watutau 56
+129 D.I. Wayura 110
+130 D.I. Winowanga 152
+i Kab. Siai 27 6.551
+1 D.I. Baluase 150
+2 D.I. Bangga 310
+3 D.I. Bomba 264
+4 D.I. Gimpu 300
+5 D.I. Maenusi 160
+6 D.I. Pakuli 485
+7 D.I. Rogo 193
+8 D.I. Saluri 240
+9 D.I. Sambo 312
+10 D.I. Tongoa 435
+11 D.I. Wera 300
+12 D.I. Wuno 800
+13 D.I. Ampera 175
+14 D.I. Bahagia 200
+15 D.I. Bobo 175
+16 D.I. Jono 200
+17 D.I. Kamarora 180
+18 D.I. Menoo 275
+19 D.I. Moppe 190
+20 D.I. Pangana 150
+21 D.I. Petimbe 175
+22 D.I. Pulu 150
+23 D.I. Saluki 165
+24 D.I. Sopu 98
+25 D.I. Toro 133
+26 D.I. Tuva 185
+27 D.I. Wuna Kalora 150
+i Kab. Toio Una-Una 8 2.377
+1 D.I. Borone 604
+2 D.I. Kabalo 222
+3 D.I. Lemoro 400
+4 D.I. Mawomba 249
+5 D.I. Sabo/Uwetoli 171
+6 D.I. Tayawa 341
+7 D.I. Uekuli 290
+8 D.I. Betaua 100
+k Kab. Toli-Toli 53 8.747
+1 D.I. Bajugan 381
+2 D.I. Bambapula 250
+3 D.I. Bambapun 200
+4 D.I. Banagan 116
+5 D.I. Banagan/Salumbia 561
+6 D.I. Bangkir 353
+7 D.I. Binontoan 400
+8 D.I. Dongingis 644
+9 D.I. Kombo 265
+10 D.I. Malulu 324
+11 D.I. Pinjan 227
+12 D.I. Salumpaga 316
+13 D.I. Siapo 180
+14 D.I. Silondou 186
+15 D.I. Soni 850

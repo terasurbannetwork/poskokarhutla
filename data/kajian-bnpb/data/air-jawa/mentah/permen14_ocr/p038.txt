@@ -1,0 +1,78 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+43 D.I. Pesantren 69 Kabupaten Kediri z 49 Ha
+Kota Kediri z 20 Ha
+44 D.I. Betis/Ngreco 38 Kabupaten Kediri z 10 Ha
+Kota Kediri -z 28 Ha
+45 D.I. Badas 445 Kabupaten Jombang z 17 Ha
+Kabupaten Kediri z 428 Ha
+46 D.I. Tawangsari 62 Kabupaten Jombang z 34 Ha
+Kabupaten Mojokerto z 28 Ha
+47 D.I. Kejagan 288 Kabupaten Jombang z 211 Ha
+Kabupaten Mojokerto z 77 Ha
+48 D.I. Kaweden 69 Kabupaten Jombang z 46 Ha
+Kabupaten Mojokerto z 23 Ha
+49 D.I. Mernung 661 Kabupaten Mojokerto z 544 Ha
+Kabupaten Jombang z 117 Ha
+50 D.I. Subantoro 515 Kabupaten Mojokerto z 416 Ha
+Kota Mojokerto z 99 Ha
+51 D.I. Sinoman 293 Kabupaten Mojokerto z 55 Ha
+Kota Mojokerto -z 238 Ha
+52 D.I. Penewon 971 Kabupaten Mojokerto z 780 Ha
+Kota Mojokerto - 191 Ha
+53 D.I. Jati Kulon 638 Kabupaten Mojokerto z 586 Ha
+Kota Mojokerto z 52 Ha
+54 D.I. Candi Limo 1.911 Kabupaten Mojokerto -z 1.911 Ha
+Kota Mojokerto z Dam
+55 D.I. Cau 1.232 Kabupaten Madiun z 1.200 Ha
+Kota Madiun -z 32 Ha
+56 D.I. Mojopurno 50 Kabupaten Madiun z 48 Ha
+Kota Madiun -z 2 Ha
+57 D.I. Brangkal Bawah 1.155 Kabupaten Madiun z 1.026 Ha
+Kota Madiun z 129 Ha
+58 D.I. Blodro 422 Kabupaten Madiun z 421 Ha
+Kota Madiun z 1 Ha
+59 D.I. Piring I 194 Kabupaten Madiun z 56 Ha
+Kota Madiun z 138 Ha
+60 D.I. Sono 684 Kabupaten Madiun z 650 Ha
+Kota Madiun z 34 Ha
+61 D.I. Trate 461 Kabupaten Madiun z 137 Ha
+Kota Madiun -z 324 Ha
+62 D.I. Kedungrejo 1.554 Kabupaten Madiun z 1.436 Ha
+Kabupaten Ngawi z 118 Ha
+63 D.I. Gandongkerik 745 Kabupaten Madiun z 329 Ha
+Kabupaten Magetan z 416 Ha
+64 D.I. Margopadang 230 Kabupaten Magetan z 205 Ha
+Kabupaten Ponorogo z 25 Ha
+65 D.I. Turi 367 Kabupaten Magetan z 367 Ha
+Kabupaten Ngawi z Mata Air
+66 D.I. Dung Timun 215 Kabupaten Magetan z 128 Ha
+Kabupaten Ngawi z 87 Ha
+67 D.I. Dung Lo 165 Kabupaten Magetan z 132 Ha
+Kabupaten Ngawi z 33 Ha
+68 D.I. Klalung 629 Kabupaten Magetan z 196 Ha
+Kabupaten Ngawi z 433 Ha
+69 D.I. Kerep 2.340 Kabupaten Magetan z 2.334 Ha
+Kabupaten Ngawi z 6 Ha
+70 D.I. Taji 789 Kabupaten Magetan z 744 Ha
+Kabupaten Ngawi z 45 Ha
+71 D.I. Kuluhan 209 Kabupaten Magetan z 113 Ha
+Kabupaten Ngawi z 96 Ha
+72 D.I. Jabung 13 Kabupaten Ngawi z 13 Ha
+Kabupaten Magetan z Mata Air
+73 D.I. Kalongan 20 Kabupaten Magetan z Mata Air
+Kabupaten Ngawi -z 20 Ha
+74 D.I. Galok Atas/Soponyono 54 Kabupaten Magetan z 8 Ha
+Kabupaten Ponorogo z 46 Ha
+75 D.I. Rawa Jabung 2.143 Kabupaten Lamongan z 2.143 Ha
+Kabupaten Tuban z Dam
+76 D.I. Kali Corong 2.721 Kabupaten Gresik -z 979 Ha
+Kabupaten Lamongan z 1.742 Ha
+77 D.I. Waduk Sumengko 1.146 Kabupaten Gresik z 1.093 Ha
+Kabupaten Lamongan z 53 Ha
+78 D.I. Sbr. Pakem 1.151 Kabupaten Bondowoso z 985 Ha
+Kabupaten Jember z 166 Ha
+79 D.I. Arjasa 319 Kabupaten Bondowoso z 131 Ha
+Kabupaten Jember 3 188 Ha

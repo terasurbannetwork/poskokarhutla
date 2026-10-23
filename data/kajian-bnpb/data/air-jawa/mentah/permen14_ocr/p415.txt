@@ -1,0 +1,126 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+4 D.I. Kuma 150
+5 D.I. Peliang 20
+6 D.I. Salurang 75
+f Kab. Kepulauan Talaud 8 1.615
+1 D.I. Alo Nunuk 110
+2 D.I. Bantane 186
+3 D.I. Beo 425
+4 D.I. Bowongbaru 150
+5 D.I. Lalue 138
+6 D.I. Pulutan 226
+7 D.I. Tarohan 115
+8 D.I. Tarun 265
+a Kab. Minahasa 26 5.235
+1 D.I. Eris 103
+2 D.I. Kayuuwi 206
+3 D.I. Kembes 90
+4 D.I. Kulo 233
+5 D.I. Munte 280
+6 D.I. Niahwunan 210
+7 D.I. Nuay 169
+8 D.I. Panasen Hilir 320
+9 D.I. Panasen Hulu 108
+10 D.I. Rambunan 220
+11 D.I. Ranointenga-Sowa Ampera 471
+12 D.I. Ranoweleng 42
+13 D.I. Saluasem 60
+14 D.I. Seda Mata 320
+15 D.I. Sendow 196
+16 D.I. Taler 936
+17 D.I. Tombakar 804
+18 D.I. Tompaso 80
+19 D.I. Kawe 40
+20 D.I. Kolongan Kombi 80
+21 D.I. Makalonsow 60
+22 D.I. Naa 17
+23 D.I. Ranoilokon 47
+24 D.I. Sasanm Beringin 50
+25 D.I. Soklat 39
+26 D.I. Taraitak 54
+h Kab. Minahasa Selatan 48 5.548
+1 D.I. Aserliwason 30
+2 D.I. Kakenturan 150
+3 D.I. Kaluntai Atas 119
+4 D.I. Kaluntai Bawah 325
+5 D.I. Karowa 258
+6 D.I. Konarom 100
+7 D.I. Liandok 49
+8 D.I. Lindangan 258
+9 D.I. Moinit 40
+10 D.I. Mopolo 178
+11 D.I. Motondong 157
+12 D.I. Moyomboong 93
+13 D.I. Pangian 70
+14 D.I. Pentu 245
+15 D.I. Pinsan 250
+16 D.I. Ranotuana 316
+17 D.I. Sigitoy 70
+18 D.I. Sinduan 37
+#KANAN
+415 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+19 D.I. Sulu Paslaten 543
+20 D.I. Tongop 861
+21 D.I. Tumaluntung 35
+22 D.I. Tumicakal 212
+23 D.I. Waadan 60
+24 D.I. Wuwugayo 126
+25 D.I. Asam 25
+26 D.I. Dolimaan/Raratean 24
+27 D.I. Kaneyan 50
+28 D.I. Kolibatu/Lotung 60
+29 D.I. Kosokowal/Ritey 30
+30 D.I. Lalumpe 60
+31 D.I. Liandok Weru 32
+32 D.I. Lineleyan 50
+33 D.I. Lowian 30
+34 D.I. Makakilu 25
+35 D.I. Makasili 25
+36 D.I. Maliku 35
+37 D.I. Moat/Koladom 55
+38 D.I. Paku Ure 50
+39 D.I. Potote 23
+40 D.I. Ranoketang 30
+41 D.I. Ranomea 80
+42 D.I. Sapa 30
+43 D.I. Tewalen 60
+44 D.I. Tinana 40
+45 D.I. Tualan Bawah 40
+46 D.I. Ulunouw/Tangkuney 57
+47 D.I. Wanga 35
+48 D.I. Wasian 20
+i Kab. Minahasa Tenaaara 16 2.398
+1 D.I. Belang 309
+2 D.I. Kalelehe 258
+3 D.I. Mamaya 245
+4 D.I. Malebu 106
+5 D.I. Makalu 390
+6 D.I. Tababo 300
+7 D.I. Balao 35
+8 D.I. Karingas 30
+9 D.I. Kopi 120
+10 D.I. Kuyanga 110
+11 D.I. Manikapon 20
+12 D.I. Moko Watak 115
+13 D.I. Mundung 100
+14 D.I. Sue 25
+15 D.I. Surat 135
+16 D.I. Tawaang 100
+i Kab. Minahasa Utara 42 4.862
+1 D.I. Apela Wogis 181
+2 D.I. Araren 150
+3 D.I. Depolsela 130
+4 D.I. Dimembe 40
+5 D.I. Doud Poopo 100
+6 D.I. Doud Sela Tenga 30
+7 D.I. Doud Sukur 165
+8 D.I. Girian 40
+9 D.I. Kadumud 107
+10 D.I. Kapaya 40
+11 D.I. Kaput Tumatenden 70

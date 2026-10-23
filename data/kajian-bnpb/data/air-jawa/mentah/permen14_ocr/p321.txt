@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+157 D.I. Wonoayu 105
+158 D.I. Wonosalam | 2
+159 D.I. Wonosalam II 4
+160 D.I. Wonosalam III 5
+161 D.I. Wonosalam IV 3
+162 D.I. Wonosalam V 2
+163 D.I. Wonosalam VI 2
+164 D.I. Banyon 6
+165 D.I. Gondanglegi 9
+166 D.I. Grogol 46
+167 D.I. Jahe V 2
+168 D.I. Johowinong 385
+169 D.I. Jomburoto 7
+170 D.I. Karangan IV 156
+171 D.I. Kepuhsari 74
+172 D.I. Kulak XI 9
+173 D.I. Marmoyo II 52
+174 D.I. Marmoyo IV 97
+175 D.I. Marmoyo VI 67
+176 D.I. Marmoyo VII 186
+177 D.I. Mojowarno 229
+178 D.I. Ngeseng I 8
+179 D.I. Ngeseng II 5
+180 D.I. Ngeseng III 5
+181 D.I. Ngk. Pereng I (Nongko Pereng I) 2
+182 D.I. Ngrimbi III 22
+183 D.I. Sanggar 26
+184 D.I. Sebajing 16
+185 D.I. Sukorejo 24
+186 D.I. Sumber 45
+187 D.I. Sumberdadi 76
+188 D.I. Tanjung Wadung 79
+189 D.I. W. Banjaragung 7
+190 D.I. W. Banjardowo 20
+191 D.I. W. Grojogan 781
+192 D.I. W. Kalak 20
+193 D.I. W. Kapuhrejo II 76
+194 D.I. W. Ngabar 10
+195 D.I. W. Sidowayah 8
+196 D.I. W. Sumbergondang 150
+i Kab. Kediri 635 34.784
+1 D.I. Ampomangiran | 31
+2 D.I. Ampomangiran II 27
+3 D.I. Ampomangiran III 240
+4 D.I. Ampomangiran IV 530
+5 D.I. Ampomangiran V 137
+6 D.I. Ampomangiran VI 450
+7 D.I. Ampomangiran VII 123
+8 D.I. Babaan 189
+9 D.I. Bago 208
+10 D.I. Balong Manyar 20
+11 D.I. Bangkok 38
+12 D.I. Bangkok 307
+13 D.I. Banyuurip 13
+14 D.I. Baran 53
+15 D.I. Bendomongal 41
+16 D.I. Besuk 40
+17 D.I. Bloran 51
+18 D.I. Bogem 93
+19 D.I. Bolowono 291
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Botoputih 12
+21 D.I. Brenggolo 50
+22 D.I. Bulupasar 130
+23 D.I. Bungkul 144
+24 D.I. Cangkring 46
+25 D.I. Cendono 149
+26 D.I. Cerme 186
+27 D.I. Cukir 11
+28 D.I. Dadapan | 23
+29 D.I. Dadapan II 1
+30 D.I. Dadapan III 12
+31 D.I. Dawuhan 68
+32 D.I. Dempok 131
+33 D.I. Dungus 346
+34 D.I. Galuhan 387
+35 D.I. Glatik 110
+36 D.I. Grogol 365
+37 D.I. Guwo 127
+38 D.I. Jabalan 89
+39 D.I. Jagung M4
+40 D.I. Jambehan 17
+41 D.I. Jantok 230
+42 D.I. Jarak 52
+43 D.I. Jegles 15
+44 D.I. Joko Klontang 55
+45 D.I. Jurang Panjang 151
+46 D.I. Kajar 58
+47 D.I. Kalasan | 11
+48 D.I. Kalasan II 60
+49 D.I. Kalasan III 14
+50 D.I. Kalinanas | 3
+51 D.I. Kalinanas II 4
+52 D.I. Kalinanas III 4
+53 D.I. Kalipang | 14
+54 D.I. Kalipang II 1
+55 D.I. Kalipang III 6
+56 D.I. Kalipang IV 23
+57 D.I. Kandangan 137
+58 D.I. Karanganyar 5
+59 D.I. Karanganyar 174
+60 D.I. Kayunan | 24
+61 D.I. Kavunan II M
+62 D.I. Klitih 30
+63 D.I. Kopen 12
+64 D.I. Krandang 295
+65 D.I. Krebet 150
+66 D.I. Krecek 43
+67 D.I. Kromasan 387
+68 D.I. Kunir 82
+69 D.I. Mipitan | 16
+70 D.I. Mipitan II 15
+71 D.I. Munengan 144
+72 D.I. Nambaan 128
+73 D.I. Nepen 72
+74 D.I. Ngasem 57
+75 D.I. Ngelo 76
+76 D.I. Ngemplak 33
+77 D.I. Ngincengan I 3
+78 D.I. Ngincengan II 4
+79 D.I. Ngincengan III 2
+80 D.I. Ngincengan IV 3

@@ -1,0 +1,165 @@
+{
+  "_catatan": [
+    "Registri angka naskah: satu kunci = satu angka yang boleh tampil di DOCX, PPTX, dan peta web. Naskah memanggilnya dengan token {{angka:<kunci>|opsi}} (bangun/NASKAH-SPEK.md bagian Token angka); angka tidak diketik tangan (gerbang D-22).",
+    "Bentuk entri A (dari paket data): berkas (relatif ke folder ini, .json atau .csv) + jalur (titik untuk kunci, [nama.dengan.titik] untuk kunci bertitik, [3] untuk indeks, [kolom=nilai,kolom2=nilai2] untuk memilih tepat satu baris tabel). Rentang: jalur_rendah + jalur_tinggi, boleh bersama jalur.",
+    "Bentuk entri B (dari pustaka, bila tidak ada paket data): nilai (atau rendah + tinggi) + pustaka (kunci di pustaka.json, boleh dengan lokasi 'hlm. 52').",
+    "Wajib di tiap entri: keyakinan (resmi, terverifikasi, estimasi-model, asumsi-kebijakan; tambahan setelah titik koma, mis. 'estimasi-model; belum diuji balik'), sumber (teks baris Sumber, tanpa path internal), satuan (boleh kosong). Opsional: kali (pengali, mis. 100 untuk pecahan ke persen), catatan.",
+    "Kunci: huruf kecil, angka, titik, garis bawah, tanda hubung. Pola: <paket>.<wilayah>.<besaran>[.<tahun>]. Entri yang tidak dipakai naskah mana pun boleh dihapus; entri yang dipakai tidak boleh diganti maknanya, buat kunci baru."
+  ],
+  "angka": {
+    "irbi.nasional.2015": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_tren_2015_2024.csv].baris[tingkat=nasional,metode=rerata_sederhana].y2015",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2015",
+      "catatan": "rerata sederhana kab/kota ber-fix_values; cocok dengan Renstra BNPB 2025–2029"
+    },
+    "irbi.nasional.2024": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_tren_2015_2024.csv].baris[tingkat=nasional,metode=rerata_sederhana].y2024",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2024"
+    },
+    "irbi.nasional.persen_2015_2024": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_tren_2015_2024.csv].baris[tingkat=nasional,metode=rerata_sederhana].persen_2015_2024",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2015 dan 2024",
+      "catatan": "perubahan persen dihitung dari dua nilai resmi"
+    },
+    "irbi.jawa.2024": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_tren_2015_2024.csv].baris[tingkat=pulau,kode=JAW,metode=rerata_sederhana].y2024",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2024",
+      "catatan": "rerata sederhana kab/kota per pulau; pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.kab.tinggi.2023": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_hitung_kelas.csv].baris[tingkat=kab,tahun=2023].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renas PB 2025–2029"
+    },
+    "irbi.kab.dinilai.2023": {
+      "berkas": "irbi/irbi.json",
+      "jalur": "tabel[irbi_hitung_kelas.csv].baris[tingkat=kab,tahun=2023].n_dinilai",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023"
+    },
+    "hidromet.jawa.lanina.tahun_analog": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=musim_analog_tahun_awal].nilai",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB; NOAA CPC, indeks ONI",
+      "catatan": "musim hujan 2020/2021, 1 Oktober 2020 sampai 30 April 2021"
+    },
+    "hidromet.jawa.lanina.korban_jiwa": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur_rendah": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa].rendah",
+      "jalur_tinggi": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2008–2026"
+    },
+    "hidromet.jawa.lanina.mengungsi": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021"
+    },
+    "hidromet.jawa.lanina.rumah_rusak_berat": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=rumah_rusak_berat].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021"
+    },
+    "hidromet.jawa.lanina.rumah_rusak_sedang": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=rumah_rusak_sedang].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021"
+    },
+    "hidromet.jawa.lanina.rumah_rusak_ringan": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=rumah_rusak_ringan].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021"
+    },
+    "hidromet.jawa.lanina.luas_bahaya_tinggi_banjir": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=luas_bahaya_tinggi_banjir].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, kajian risiko bencana kab/kota"
+    },
+    "hidromet.jawa.lanina.materiil_batas_bawah": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur_rendah": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=materiil_batas_bawah].rendah",
+      "jalur_tinggi": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=materiil_batas_bawah].tinggi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan stimulan rumah BNPB",
+      "catatan": "batas bawah: rumah rusak dikali stimulan rumah, bukan kerugian penuh"
+    },
+    "hidromet.jawa.lanina.hari_mengungsi": {
+      "berkas": "skenario-hidromet/kartu_skenario.json",
+      "jalur": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=hari_mengungsi].nilai",
+      "jalur_rendah": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=hari_mengungsi].rendah",
+      "jalur_tinggi": "baris[skenario=musim_hujan_lanina,wilayah=jawa,metrik=hari_mengungsi].tinggi",
+      "satuan": "jiwa-hari",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB"
+    },
+    "hidromet.jawa.lanina.pd.cakupan_awal": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renstra_2025,cakupan_target=renas_2029].c0",
+      "kali": 100,
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029",
+      "catatan": "keterpenuhan peringatan dini masyarakat terpapar di kawasan risiko tinggi"
+    },
+    "hidromet.jawa.lanina.pd.cakupan_target": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renstra_2025,cakupan_target=renas_2029].c1",
+      "kali": 100,
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, indikator 1.c target 2029"
+    },
+    "hidromet.jawa.lanina.pd.korban_jiwa": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur_rendah": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renstra_2025,cakupan_target=renas_2029].korban_rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renstra_2025,cakupan_target=renas_2029].korban_tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
+      "catatan": "korban bila cakupan peringatan dini naik ke target Renas 2029; rasio lintas negara, bukan efek kausal"
+    },
+    "bukti.bangladesh_siklon.kematian_1970": {
+      "nilai": 500000,
+      "pustaka": "haque-2012-siklon",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Haque dkk. (2012)"
+    },
+    "bukti.bangladesh_siklon.kematian_2007": {
+      "nilai": 4234,
+      "pustaka": "haque-2012-siklon",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Haque dkk. (2012)"
+    }
+  }
+}

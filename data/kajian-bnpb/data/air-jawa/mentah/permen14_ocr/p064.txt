@@ -1,0 +1,123 @@
+#TATA_LETAK dua-tabel belah_x=1167 lebar=2480
+#KIRI
+20.5, No.638
+Status Daerah Irigasi Yant| Menjadi Wewenan! | D
+Provinsi/Kabupaten/Kota Jumlah Luasan
+No Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+| PROVINSL ACEH 1RSN TAK IR
+a Kab. Aceh Barat 92 15.555
+1 D.I. Alue Diam 200
+2 D.I. Alue Le Mirah 100
+3 D.I. Alue Lhok 700
+4 D.I. Alue Panjang 200
+5 D.I. Alue Penjaring 150
+6 D.I. Alue Tambo 100
+7 D.I. Alue Udeng Gleng 200
+8 D.I. Balee 100
+9 D.I. Blang Teungoh 200
+10 D.I. Cangge 100
+11 D.I. Cot Seulamat 200
+12 D.I. Gaseu 150
+13 D.I. Geunang Mata le 150
+14 D.I. Geunang Pulong 75
+15 D.I. Jambak 80
+16 D.I. Krueng Tujoh 120
+17 D.I. Kuala Bhe 616
+18 D.I. Kutambang Tunong 70
+19 D.I. Lam Balek 600
+20 D.I. Maunuang 100
+21 D.I. Meunasah Rayek I 200
+22 D.I. Mon Pasung 200
+23 D.I. Nek Dayem 200
+24 D.I. Padang Mancang 200
+25 D.I. Pasi Ara 35
+26 D.I. Pasie Teungoh 285
+27 D.I. Paya Baro 150
+28 D.I. Paya Lhok 300
+29 D.I. Paya Peunaga 150
+30 D.I. Peunaga Cut 175
+31 D.I. Peunia 150
+32 D.I. Pucok Laot 200
+33 D.I. Pucuk Pancu 200
+34 D.I. Pungki 150
+35 D.I. Reudup 100
+36 D.I. Sangkaden 175
+37 D.I. Seklemen 150
+38 D.I. Tanjong Semantok 473
+39 D.I. Tumpok Ladana 155
+40 D.I. Simpang 190
+41 D.I. Alue Reusak 150
+42 D.I. Krueng Tinggai 200
+43 D.I. Gunong Unyat 250
+44 D.I. Suak Lango 100
+45 D.I. Tamping 150
+46 D.I. Lhok Seuredam 198
+47 D.I. Blang Geunang 150
+48 D.I. Drien Caleu 150
+49 D.I. Geunang Geudong 250
+50 D.I. Lawet 104
+51 D.I. Kinco 180
+52 D.I. Alue Kambuk 154
+53 D.I. Alue Lhee 100
+#KANAN
+64
+ar Tanggung Jawab Pemerintah Kabupaten/Kota
+Provinsi/Kabupaten/Kota Jumlah Luasan
+No Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+54 D.I. Alue Peudeung 350
+55 D.I. Alue Raya 100
+56 D.I. Alue Tampak 65
+57 D.I. Anoe Puteh 75
+58 D.I. Baro Paya 200
+59 D.I. Cot Lampise 35
+60 D.I. Geunang Alue Lhok 125
+61 D.I. Geunang Meugo Cut 100
+62 D.I. Geunang Pasie Jambu 45
+63 D.I. Geunang Paya Baro 150
+64 D.I. Geunang Pucok Pungki 200
+65 D.I. Gunong Meurapet 250
+66 D.I. le Sayang 100
+az mi Karak-Lembah hn
+“' S" Pasie Ara ada
+68 D.I. Keuleumbah 100
+69 D.I. Keutambang 110
+70 D.I. Krueng Manggi 200
+71 D.I. Kuala Manyeu 150
+72 D.I. Leubok Beutong 150
+73 D.I. Leuhan 50
+74 D.I. Lhueng Baroe 200
+75 D.I. Lhung Kupree 200
+76 D.I. Lhung Kurap 125
+77 D.I. Meunasah Ara 130
+78 D.I. Meunasah Buloh 50
+79 D.I. Meunasah Rayeuk II 130
+80 D.I. Paya Geuregok 200
+81 D.I. Paya Lumpat 150
+82 D.I. Pinem 50
+83 D.I. Rambong 50
+84 D.I. Ramiti 100
+85 D.I. Sakuy 50
+86 D.I. Tangkeh 150
+87 D.I. Tanoh Mirah 75
+88 D.I. Teumikeut Ranom 125
+89 D.I. Teupin Panah 100
+90 D.I. Tuwi Saya 280
+91 D.I. Tuwie Eumpeuk 200
+92 D.I. Ujong Raja 200
+b Kab. Aceh Barat Dava 30 3.040
+1 D.I. Alue Batee Leukat 5
+2 D.I. Alue Buluh 13
+3 D.I. Alue Padee 56
+4 D.I. Alue Pisang 258
+5 D.I. Alue Sabong 23
+6 D.I. Alue Sungai Pinang 300
+7 D.I. Alue Tho 11
+8 D.I. Blang Dalam 20
+9 D.I. Cot Mane I 17
+10 D.I. Cot Mane II 9
+11 D.I. Gunong Cut 26
+12 D.I. Gunung Samarinda 74
+13 D.I. Kuta Jumpa 196
+14 D.I. Kuta Paya 17

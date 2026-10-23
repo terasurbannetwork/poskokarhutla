@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+77 D.I. Marubun Jaya 70
+78 D.I. Merek Raya 25
+79 D.I. Naga Dolok 224
+80 D.I. Naga Tongah 112
+81 D.I. Nagojor 437
+82 D.I. Nagur Sijoring 120
+83 D.I. Negeri Asih 700
+84 D.I. Negeri Dolok 116
+85 D.I. Negeri Malela 459
+86 D.I. P.Sidamanik/Parmahanan 190
+87 D.I. Pagar Jawa/8. Jambi I/Totap Majawa 590
+88 D.I. Palia Putar/Palia Naopat 219
+89 D.I. Panaborangan/dodoan 25
+90 D.I. Pangkalan Buntu Atas/Bawah 184
+91 D.I. Pangkalan Buntu Balata 140
+92 D.I. Pangkalan Buntu Panei 107
+93 D.I. Pantoan 261
+94 D.I. Parbeohan 100
+95 D.I. Pardagangan 504
+96 D.I. Parik Ganjang 185
+97 D.I. Pasar Baru Ujung Padang 200
+98 D.I. Pinang Ratus 292
+99 D.I. Porti 100
+100 D.I. Pulo Siborna 420
+101 D.I. Ranto 312
+102 D.I. Raya Bosi Parsinalihan 147
+103 D.I. Raya Timuran 465
+104 D.I. Sagala Tortoran 165
+105 D.I. Saran Padang 125
+106 D.I. Saribu Asih 240
+107 D.I. Saribu Laksa 6
+108 D.I. Sarimatondang Hilir 90
+109 D.I. Sarimatondang Udik 90
+110 D.I. Saut Pardamean 50
+111 D.I. Semangat Baris 742
+112 D.I. Serapuh 112
+113 D.I. Seribu Jawa Ujung Bondar 600
+114 D.I. Siborna Parhonongan 120
+115 D.I. Siborong-borong Nagori 100
+116 D.I. Siboulangit/T. Panei/K. Anom 355
+117 D.I. Sibunga-Bunga 144
+118 D.I. Sidamakmur 74
+119 D.I. Sidari Girsang 130
+120 D.I. Sihuting Bosar 80
+121 D.I. Silampuyang 193
+122 D.I. Silau Barus/Siharanjang 133
+123 D.I. Silau Bosar 50
+124 D.I. Silinduk 170
+125 D.I. Simanalih 46
+126 D.I. Simpang Raya/Sibual-bual 450
+127 D.I. Sinaman Tiga Urung 50
+128 D.I. Sitampulak 270
+129 D.I. Sorba Dolok I 30
+130 D.I. Sordang Bolon/Parlakitang 117
+131 D.I. Sukosari 100
+132 D.I. Taluk Lapian 166
+133 D.I. Talun Kondot 180
+134 D.I. Tambun Timur 50
+135 D.I. Tangga Batu 15
+136 D.I. Tanjung Selamat 115
+137 D.I. Taratak Nagodang 210
+#KANAN
+87 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+138 D.I. Tumorang 50
+139 D.I. Ujung Pait 933
+140 D.I. Bandar Manik 80
+141 D.I. Blok V 40
+142 D.I. Dusun Teladan | 70
+143 D.I. Hapasuk 6
+144 D.I. Lajangan 5
+145 D.I. Manik Rambung 74
+146 D.I. Paranginan 15
+147 D.I. Parbeohab Hulu 50
+148 D.I. Pulo Banjar Tiga Jadi 70
+149 D.I. Rapuan Hulu-Hilir 120
+150 D.I. Rondang 10
+151 D.I. Saba Tes 40
+152 D.I. Silau Tomuan 80
+153 D.I. Silou Raya 55
+154 D.I. Simanga Rambung 60
+155 D.I. Simpang Jambi/Sidoaman 5
+156 D.I. Sitabu 40
+157 D.I. Sitanggang 68
+158 D.I. Tondang Raya 70
+u Kab. Tapanuli Selatan 126 18.484
+1 D.I. Aek Huraba 412
+2 D.I. Batang Kumal 400
+3 D.I. Batang Miha Tabusira 220
+4 D.I. Napa Sibual-Buali 300
+5 D.I. Panobasan 434
+6 D.I. Pulo Godang 300
+7 D.I. Ramba Sihasur 300
+8 D.I. Saba Jae/Julu/Psr. Sempurna 450
+9 D.I. Saba Julu 300
+10 D.I. Saba Panompuan 510
+11 D.I. Sayur Matinggi 500
+12 D.I. Siala Gundi 400
+13 D.I. Sidapdap 100
+14 D.I. Aek Horsik 80
+15 D.I. Aek Lampesong 250
+16 D.I. Aek Latong / Siamporik 100
+17 D.I. Aek Mardugu/Gunung Manaon 100
+18 D.I. Aek Nauli 75
+19 D.I. Aek Pasir 65
+20 D.I. Aek Sabaon 100
+21 D.I. Aek Siala Lancat 65
+22 D.I. Aek Silo 400
+23 D.I. Aek Simatorkis 50
+24 D.I. Aek Suanon 103
+25 D.I. Aek Sulum 80
+26 D.I. Aek Toras 100
+27 D.I. Arse 388
+28 D.I. Arse Jae Dolok 50
+29 D.I. Banjar Toba 50
+30 D.I. Banua Rakyat 70
+31 D.I. Batang Miha Situmba 300
+32 D.I. Batu Horpak 51
+33 D.I. Batu Hula 55
+34 D.I. Batu Tunggal 150
+35 D.I. Binanga 110
+36 D.I. Biru 150
+37 D.I. Bondar Pangolat 150
+38 D.I. Bondar Salapan/Gapuk Julu 100

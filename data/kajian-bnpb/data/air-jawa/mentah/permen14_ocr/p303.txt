@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+238 D.I. Sbr. Kencono 48
+239 D.I. Sbr. Klampok 41
+240 D.I. Sbr. Kluntung 19
+241 D.I. Sbr. Kopek 22
+242 D.I. Sbr. Lalangan 15
+243 D.I. Sbr. Lawean 4
+244 D.I. Sbr. Lempot 2
+245 D.I. Sbr. Lengen 21
+246 D.I. Sbr. Lerek 3
+247 D.I. Sbr. Linggis 48
+248 D.I. Sbr. Madinah 1
+249 D.I. Sbr. Mailang 28
+250 D.I. Sbr. Mailang 6
+251 D.I. Sbr. Marsam 37
+252 D.I. Sbr. Melalu 11
+253 D.I. Sbr. Mengarang 105
+254 D.I. Sbr. Menggolo 9
+255 D.I. Sbr. Ori Ka/Ki 66
+256 D.I. Sbr. Pancoran 65
+257 D.I. Sbr. Pancoran 12
+258 D.I. Sbr. Patemon 22
+259 D.I. Sbr. Patimah 13
+260 D.I. Sbr. Peting 9
+261 D.I. Sbr. Plp. Enceng 196
+262 D.I. Sbr. Pring 29
+263 D.I. Sbr. Pring 12
+264 D.I. Sbr. Rachmat 12
+265 D.I. Sbr. Rejeng 152
+266 D.I. Sbr. Sap 24
+267 D.I. Sbr. Sawo 109
+268 D.I. Sbr. Sebani 20
+269 D.I. Sbr. Sengon I 8
+270 D.I. Sbr. Sengon II 8
+271 D.I. Sbr. Sladahan 32
+272 D.I. Sbr. Sodong 148
+273 D.I. Sbr. Sugihwaras 100
+274 D.I. Sbr. Sur | 26
+275 D.I. Sbr. Sur II 43
+276 D.I. Sbr. Suri | 47
+277 D.I. Sbr. Suri II 45
+278 D.I. Sbr. Tretes 12
+279 D.I. Sbr. Tumbu M
+280 D.I. Sbr. Tunglah 23
+281 D.I. Sbr. Tutul 14
+282 D.I. Sbr. Umbul 22
+283 D.I. Sbr. Umbulpule 172
+284 D.I. Sbr. Urip | 42
+285 D.I. Sbr. Urip II 35
+286 D.I. Sbr. Waginah 8
+287 D.I. Sbr. Waringin 49
+288 D.I. Sbr. Watu Ulo 35
+289 D.I. Sbr. Kamp. Anyar 4
+290 D.I. Sbr. Makari 16
+291 D.I. Sbr. Mangli 12
+292 D.I. Sbr. Setro Gudig 14
+293 D.I. Sbr. Umbul Sari 32
+294 D.I. Sbr. Wdr. Porong Ka 3
+295 D.I. Sbr. Wdr. Porong Ki 57
+296 D.I. Sebani 2
+297 D.I. Secang 2
+298 D.I. Sekidang 91
+#KANAN
+303 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+299 D.I. Selogiri 17
+300 D.I. Selorejo I 111
+301 D.I. Selorejo II 30
+302 D.I. Semail 15
+303 D.I. Sempol Kemapak 437
+304 D.I. Sempu 300
+305 D.I. Sepanjang I 99
+306 D.I. Sepanjang II 63
+307 D.I. Serut 13
+308 D.I. Setopel 47
+309 D.I. Simbar II 155
+310 D.I. Simbar III 100
+311 D.I. Singolatri 139
+312 D.I. Siran 13
+313 D.I. Sragi 282
+314 D.I. Srigunting | 16
+315 D.I. Srigunting XI 39
+316 D.I. Srono 115
+317 D.I. Sroyo 74
+318 D.I. Sruni 40
+319 D.I. Sruni 21
+320 D.I. Stengkol 153
+321 D.I. Sudimoro Ka/Ki 232
+322 D.I. Sujono 12
+323 D.I. Sukari 7
+324 D.I. Suko 112
+325 D.I. Suko 83
+326 D.I. Suko 5
+327 D.I. Sukomukti 87
+328 D.I. Sukun | 37
+329 D.I. Sukun II 69
+330 D.I. Sumber Blimbing I 58
+331 D.I. Sumber Blimbing II 11
+332 D.I. Sumber Blimbing III 7
+333 D.I. Sumber Buluh 19
+334 D.I. Sumber Cokol 8
+335 D.I. Sumber Dukuh 65
+336 D.I. Sumber Guwo 15
+337 D.I. Sumber Kedawung 42
+338 D.I. Sumber Mas 72
+339 D.I. Sumber Petung 7
+340 D.I. Sumber Seguling 3
+341 D.I. Sumber Talangseng 14
+342 D.I. Sumber Tublek 2
+343 D.I. Sumberbaru 14
+344 D.I. Sumbermulya 92
+345 D.I. Supar 17
+346 D.I. Suren 61
+347 D.I. Suropati 198
+348 D.I. Suti 30
+349 D.I. Takir 191
+350 D.I. Takir 118
+351 D.I. Talang Gantung 139
+352 D.I. Talunbayur 185
+353 D.I. Talunjeruk 110
+354 D.I. Taman Kepundung 64
+355 D.I. Taman Lugo 56
+356 D.I. Tamansari 178
+357 D.I. Tampaklembu 49
+358 D.I. Tampani 38
+359 D.I. Tangkup 116

@@ -1,0 +1,65 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, N5.638 14
+Status Daerah Irigasi Yan Menjadi Wewenang Dan Tanggung Jawab Pemerintah
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+A LINTAS NEGARA 3 18.311
+1 D.I. Haekesak 4.400 BWS Nusa Tenggara II :
+A. Indonesia z 4400 Ha
+Provinsi Nusa Tenggara
+Timur
+Kabupaten Belu
+B. Timor Leste - Sebagian
+Bendung
+2 D.I. Malaka 10.386 BWS Nusa Tenggara II :
+A. Indonesia z 10.386 Ha
+Provinsi Nusa Tenggara
+Timur
+Kabupaten Belu
+B. Timor Leste - Sebagian
+Bendung
+3 D.I. Mena 3.525 BWS Nusa Tenggara II :
+A. Indonesia z 3525 Ha
+Provinsi Nusa Tenggara
+Timur
+Kabupaten Timor Tengah
+Utara
+B. Timor Leste z Sebagian
+Bendung
+B LINTAS PROVINSI 10 126.961
+1 D.I. Batang Batahan 3.483 BWS Sumatera II :
+A. Provinsi Sumatera Utara
+1. Kabupaten Mandailing Natal z 483 Ha
+B. Provinsi Sumatera Barat
+1. Kabupaten Pasaman Barat z 3.000 Ha
+2 D.I. Batang Hari 5.782 BWS Sumatera VI :
+A. Provinsi Jambi
+1. Kabupaten Bungo z 400 Ha
+2. Kabupaten Tebo z 800 Ha
+B. Provinsi Sumatera Barat
+1. Kabupaten Dharmasraya z 4582 Ha
+3 D.I. Komering SelatanWay Komering 62.536 BBWS Sumatera VIII :
+A. Provinsi Sumatera Selatan
+1. Kabupaten Ogan Komering -z 9.500 Ha
+Ilir
+2. Kabupaten Ogan Komering -z 47.988 Ha
+Ulu Timur
+B. Provinsi Lampung
+1. Kabupaten Way Kanan z 5.048 Ha
+4 D.I. Manganti 26.153 BBWS Citanduy :
+A. Provinsi Jawa Barat
+1. Kabupaten Ciamis z 602 Ha
+2. Kabupaten Pangandaran z 4.014 Ha
+B. Provinsi Jawa Tengah
+1. Kabupaten Cilacap z 21.537 Ha
+5 D.I. Bantarheulang 1.498 BBWS Citanduy :
+A. Provinsi Jawa Barat
+1. Kabupaten Ciamis z 428 Ha
+2. Kota Banjar z 503 Ha
+B. Provinsi Jawa Tengah
+1. Kabupaten Cilacap z 567 Ha
+6 D.I. Cisanggarung 213 BBWS Cimanuk Cisanggarung :
+A. Provinsi Jawa Barat
+1. Kabupaten Cirebon z Air Baku
+B. Provinsi Jawa Tengah
+1. Kabupaten Brebes z 213 Ha

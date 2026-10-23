@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+157 D.I. Wae Paling 100
+158 D.I. Wae Pau 80
+159 D.I. Wae Pesi 100
+160 D.I. Wae Pocong 100
+161 D.I. Wae Pong 100
+162 D.I. Wae Pong Panas 100
+163 D.I. Wae Rahong 60
+164 D.I. Wae Ras 170
+165 D.I. Wae Ras 200
+166 D.I. Wae Rawang 100
+167 D.I. Wae Rebak 100
+168 D.I. Wae Rehak 50
+169 D.I. Wae Rembong 50
+170 D.I. Wae Rempo I 100
+171 D.I. Wae Rempo II 50
+172 D.I. Wae Renda 50
+173 D.I. Wae Renggeng I 100
+174 D.I. Wae Renggeng II 50
+175 D.I. Wae Rengkong 100
+176 D.I. Wae Rengkus 50
+177 D.I. Wae Reweng 100
+178 D.I. Wae Riwung 100
+179 D.I. Wae Rukus 50
+180 D.I. Wae Rura 50
+181 D.I. Wae Ruwuk 50
+182 D.I. Wae Sama 50
+183 D.I. Wae Sita 35
+184 D.I. Wae Sosor 25
+185 D.I. Wae Tadong 50
+186 D.I. Wae Tatong 150
+187 D.I. Wae Teke 50
+188 D.I. Wae Teku 100
+189 D.I. Wae Teku La'o 30
+190 D.I. Wae Teku Teong 50
+191 D.I. Wae Tengku Tok 100
+192 D.I. Wae Tengku Tok II 50
+193 D.I. Wae Terep 200
+194 D.I. Wae Timbu 50
+195 D.I. Wae Tiwu Cewe I 50
+196 D.I. Wae Tiwu Cewe II 100
+197 D.I. Wae Tiwu Rekok 100
+198 D.I. Wae Tobang 85
+199 D.I. Wae Tontong II 150
+200 D.I. Wae Wako 200
+201 D.I. Wae Wara 200
+202 D.I. Wae Waso 100
+203 D.I. Wae Watang 100
+204 D.I. Wae Welong 100
+205 D.I. Wae Wetot I 100
+206 D.I. Wae Wetot II 25
+207 D.I. Wae Wetot III 25
+208 D.I. Wae Wolu 50
+209 D.I. Wae Wowol 100
+210 D.I. Wae Wudi 50
+211 D.I. Wae Wunis | 100
+212 D.I. Wae Wunis II 50
+213 D.I. Wae Wunut 40
+214 D.I. Wae Beo Peko 50
+215 D.I. Wae Cigi 100
+216 D.I. Wae Dese 40
+217 D.I. Wae Kaap 520
+#KANAN
+386
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+218 D.I. Wae Kerkuak 47
+219 D.I. Wae Kilit 40
+220 D.I. Wae Labe 25
+221 D.I. Wae Lajo 65
+222 D.I. Wae Lawar | 50
+223 D.I. Wae Loleng 75
+224 D.I. Wae Mbeleng 30
+225 D.I. Wae Mera 25
+226 D.I. Wae Ngantol 50
+227 D.I. Wae Nio 50
+228 D.I. Wae Pael 25
+229 D.I. Wae Polor 50
+230 D.I. Wae Poru 40
+231 D.I. Wae Pu'ung 25
+232 D.I. Wae Ratung 30
+233 D.I. Wae Riung 25
+234 D.I. Wae Ros 25
+235 D.I. Wae Sae 40
+236 D.I. Wae Tiwu Ruteng 50
+237 D.I. Wae Tiwu Tembong 25
+i Kab. Manaaarai Barat 362 36.479
+1 D.I. Cuanca Galong 300
+2 D.I. Lipang 100
+3 D.I. Sepang (Wae Sepang) 100
+4 D.I. Wae Bakok Pa'a 50
+5 D.I. Wae Baling 100
+6 D.I. Wae Bangka 100
+7 D.I. Wae Betong 100
+8 D.I. Wae Bongko 100
+9 D.I. Wae Cacar 100
+10 D.I. Wae Cangkir 100
+11 D.I. Wae Cewe 200
+12 D.I. Wae Cie 100
+13 D.I. Wae Dange 100
+14 D.I. Wae Donor 50
+15 D.I. Wae Emas 100
+16 D.I. Wae Garit 150
+17 D.I. Wae Gunang 100
+18 D.I. Wae Hawe 100
+19 D.I. Wae Impor 100
+20 D.I. Wae Ka 100
+21 D.I. Wae Kaca 248
+22 D.I. Wae Kebang 100
+23 D.I. Wae Keli 100
+24 D.I. Wae Keloa 100
+25 D.I. Wae Kode 50
+26 D.I. Wae Kondo 150
+27 D.I. Wae Kwinda 150
+28 D.I. Wae Lakang 100
+29 D.I. Wae Lalong 50
+30 D.I. Wae Lambos 100
+31 D.I. Wae Lawi 100
+32 D.I. Wae Lebang 550
+33 D.I. Wae Lembung 100
+34 D.I. Wae Lencing 200
+35 D.I. Wae Lewing 100
+36 D.I. Wae Lia 100
+37 D.I. Wae Liang 100
+38 D.I. Wae Libo 30
+39 D.I. Wae Lonto 100

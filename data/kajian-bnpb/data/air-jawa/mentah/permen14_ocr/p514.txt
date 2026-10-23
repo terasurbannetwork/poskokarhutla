@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 514
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+16 D.I.A.T. Mojosari SDKD 030 EJ 72
+17 D.LA.T. Nyawangan SDKD 031 EJ 64
+18 D.LA.T. Ngadiluwih SDKD 032 EJ 40
+19 D.LA.T. Badas SDKD 035 EJ 45
+20 D.ILA.T. Kayen Kidul SDKD 039 EJ 60
+21 D.LA.T. Senden SDKD 040 EJ 45
+22 D.LA.T. Banjarejo SDKD 041 EJ 55
+23 D.LA.T. Nyawangan SDKD 042 EJ 67
+24 D.LA.T. Sukoharjo SDKD 043 EJ 50
+25 D.LA.T. Keras SDKD 046 EJ 45
+26 D.LA.T. Plemahan SDKD 047 EJ 45
+27 D.LA.T. Plemahan SDKD 048 EJ 52
+28 D.LA.T. Plemahan SDKD 049 EJ 55
+29 D.LA.T. Banjarejo SDKD 050 EJ 40
+30 D.L.A.T. Banjarejo SDKD 051 EJ 45
+31 D.LA.T. Plemahan SDKD 052 EJ 40
+32 D.LA.T. Sidowareg SDKD 054 EJ 35
+33 D.LA.T. Sidowareg SDKD 055 EJ 50
+34 D.LA.T. Sidowareg SDKD 057 EJ 30
+35 D.LA.T. Sidowareg SDKD 058 EJ 55
+36 D.I.A.T. Pohjarak SDKD 059 EJ 45
+37 D.LA.T. Sidowareg SDKD 061 EJ 45
+38 D.LA.T. Sukoharjo SDKD 063 EJ 50
+39 D.LA.T. Plemahan SDKD 066 EJ 35
+40 D.LA.T. Pohjarak SDKD 067 EJ 45
+41 D.LA.T. Sebet SDKD 068 EJ 45
+42 D.LA.T. Sekoto SDKD 069 EJ 35
+43 D.LA.T. Plemahan SDKD 070 EJ 35
+44 D.LA.T. Sidowareg SDKD 072 EJ 49
+45 D.LA.T. Sidowareg SDKD 073 EJ 50
+46 D.LA.T. Sidowareg SDKD 074 EJ 46
+47 D.LA.T. Sekoto SDKD 075 EJ 48
+48 D.LA.T. Sidowareg SDKD 076 EJ 49
+49 D.LA.T. Banjaranyar SDKD 077 EJ 55
+50 D.LA.T. Keras SDKD 084 EJ 49
+51 D.LA.T. Karangtalun SDKD 085 EJ 53
+52 D.LA.T. Peles SDKD 087 EJ 50
+53 D.LA.T. Setonorejo SDKD 088 EJ 56
+54 D.LA.T. Rejomulyo SDKD 089 EJ 45
+55 D.LA.T. Karangtalun SDKD 091 EJ 45
+56 D.LA.T. Ringinrejo SDKD 093 EJ 40
+57 D.LA.T. Pule SDKD 095 EJ 37
+58 D.LA.T. Purworejo SDKD 096 EJ 35
+59 D.LA.T. Ngreco SDKD 097 EJ 50
+60 D.L.A.T. Banjarejo SDKD 098 EJ 39
+61 D.LA.T. Kanigoro SDKD 102 EJ 30
+62 D.LA.T. Ringin Pitu SDKD 103 EJ 55
+63 D.LA.T. Dukuh SDKD 107 EJ 53
+64 D.LA.T. Ngadiluwih SDKD 108 EJ 35
+65 D.LA.T. Cendono SDKD 109 EJ 44
+66 D.LA.T. Cendono SDKD 110 EJ 35
+67 D.LA.T. Pule SDKD 111 EJ 35
+68 D.L.A.T. Pagu SDKD 113 EJ 35
+69 D.LA.T. Doko SDKD 114 EJ 30
+70 D.LA.T. Joho SDKD 115 EJ 30
+71 D.LA.T. Sambiro Biyong SDKD 120 EJ 35
+72 D.LA.T. Dukuh SDKD 121 EJ 49
+73 D.LA.T. Mukuh SDKD 122 EJ 48
+74 D.LA.T. Pagu SDKD 123 EJ 49
+75 D.LA.T. Pagu SDKD 124 EJ 48
+76 D.LA.T. Senden SDKD 125 EJ 31

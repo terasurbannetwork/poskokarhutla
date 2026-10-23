@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+34 D.I. Blang Barom 100
+35 D.I. Bukit Hitam 70
+36 D.I. Bukit Kuta 60
+37 D.I. Bukit Siraja 125
+38 D.I. Coco 150
+39 D.I. Lhok Rambong 80
+40 D.I. Mon Jim-Jim 100
+41 D.I. Pasir Putih 70
+42 D.I. Paya Pasi 100
+43 D.I. Paya Pua 200
+44 D.I. Paya Uno 100
+45 D.I. Sembuang 130
+46 D.I. Seunebok Jalan 85
+47 D.I. Seunebok Merdu 80
+k Kab. Aceh Utara 118 20.643
+1 D.I. Abeuk Reuling 200
+2 D.I. Alue Badai 120
+3 D.I. Alue Bing 25
+4 D.I. Alue le Mirah 300
+5 D.I. Alue le Puteh 50
+6 D.I. Alue Jengkari | 50
+7 D.I. Alue Jengkari II 100
+8 D.I. Alue Jungo I 200
+9 D.I. Alue Jungo II 100
+10 D.I. Alue Kareung 120
+11 D.I. Alue Kerenyai 150
+12 D.I. Alue Meuh 120
+13 D.I. Alue Meuriya 150
+14 D.I. Alue Ngom 180
+15 D.I. Alue Panah 200
+16 D.I. Alue Putro Mano 350
+17 D.I. Alue Sapi 75
+18 D.I. Alue Sijengkai 50
+19 D.I. Alue Tungo 200
+20 D.I. Babah Lueng 153
+21 D.I. Baje Kuneng 158
+22 D.I. Bare Blang 40
+23 D.I. Bendung Blang Manyak 120
+24 D.I. Bergang 268
+25 D.I. Bini Kasah 200
+26 D.I. Binje'e I 250
+27 D.I. Binje'e II 168
+28 D.I. Binje'e III 100
+29 D.I. Binjei Kuneng 158
+30 D.I. Blang Ara 175
+31 D.I. Blang Cirih 200
+32 D.I. Blang Cut 140
+33 D.I. Blang Drin 50
+34 D.I. Blang Hagu 75
+35 D.I. Blang Lada 200
+36 D.I. Blang Riek 200
+37 D.I. Bomban 75
+38 D.I. Brandang Asan 300
+39 D.I. Buket 105
+40 D.I. Buket Pidie 800
+41 D.I. Ceumeucet 150
+42 D.I. Ceumpedak 150
+43 D.I. Cot Gapeuh 200
+44 D.I. Cot Gelumpang 200
+45 D.I. Cot Keumuneng 75
+#KANAN
+70
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+46 D.I. Cot Lada 200
+47 D.I. Cot Mambong 490
+48 D.I. Cot Montahe 75
+49 D.I. Cot Neuhen I 150
+50 D.I. Cot Neuhen II 100
+51 D.I. Cot Rambideng 120
+52 D.I. Cot Seutui 153
+53 D.I. Cot Teumerui 60
+54 D.I. Cot Trieng 174
+55 D.I. Dayah Leupah 360
+56 D.I. Gampong Baro 80
+57 D.I. Gunci 180
+58 D.I. le Tarek I 75
+59 D.I. le Tarek II 120
+60 D.I. Jeulikat 50
+61 D.I. Kolam Gajah 125
+62 D.I. Kr. Buloh 75
+63 D.I. Kr. Peton 200
+64 D.I. Kr. Seunong 75
+65 D.I. Kreusek 400
+66 D.I. Krueng Merbo 75
+67 D.I. Krueng Mulieng 350
+68 D.I. Krueng Seuping 300
+69 D.I. Lamkuta 200
+70 D.I. Lancok 120
+71 D.I. Leubok Guha 600
+72 D.I. Leubok Tuwe 160
+73 D.I. Lhok Bayu 75
+74 D.I. Lhok Cut 140
+75 D.I. Lhok Gajah 100
+76 D.I. Lhok Jok 194
+77 D.I. Lhok Krek 100
+78 D.I. Lhok Merbo 75
+79 D.I. Lhok Weng 120
+80 D.I. Maddi 60
+81 D.I. Mancang 230
+82 D.I. Mbang 603
+83 D.I. Meunasah Blang 150
+84 D.I. Meunasah Cut 180
+85 D.I. Meunasah Dayah 200
+86 D.I. Mns. Alue 200
+87 D.I. Mns. Ranto 500
+88 D.I. Mns. Rayek 80
+89 D.I. Pante Breuh 150
+90 D.I. Panton 195
+91 D.I. Paya Alue Krub 200
+92 D.I. Paya Cuh 200
+93 D.I. Paya Gaboh 150
+94 D.I. Paya Leupah 360
+95 D.I. Paya Teungeh 99
+96 D.I. Peunayan 150
+97 D.I. Pulo Barat 100
+98 D.I. Pulo le Tho 50
+99 D.I. Pulo Keupiyah 175
+100 D.I. Riseh 200
+101 D.I. Rumbia 200
+102 D.I. Sara Maba 100
+103 D.I. Seuke Bengkuang 120
+104 D.I. Seunebok Punti 75
+105 D.I. Teupin Rusep 80
+106 D.I. Tgk. Didama 490

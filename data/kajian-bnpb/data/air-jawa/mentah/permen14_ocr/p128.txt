@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+61 D.I. Air Musi Kayu Manis 33
+62 D.I. Air Nangko 40
+63 D.I. Air Pikat Bawah 125
+64 D.I. Air Pikat Tengah 25
+65 D.I. Air Putih Kali Bandung 45
+66 D.I. Air Ringgau 40
+67 D.I. Air Sekelik 17
+68 D.I. Air Semumai Deras II 50
+69 D.I. Air Semumai Ulak 25
+70 D.I. Air Sengak Meles 60
+71 D.I. Air Sungai Tengah 60
+72 D.I. Air Tanjung Sebuto 20
+73 D.I. Air Tik Batas 25
+74 D.I. Air Tik Benuang 40
+75 D.I. Air Tik Binjai 40
+76 D.I. Air Tik Datar Atas 20
+77 D.I. Air Tik Datar Bawah 55
+78 D.I. Air Tik Datar Sukamarga 47
+79 D.I. Air Tik Geliwang 40
+80 D.I. Air Tik Kelitang 40
+81 D.I. Air Tik Lai 60
+82 D.I. Air Tik Merah 52
+83 D.I. Air Tik Milie 42
+84 D.I. Air Tik Sebuto 35
+85 D.I. Air Tik serdang 50
+86 D.I. Air Tik Suka Marga 30
+i Kab. Seluma 36 7.890
+
+1 D.I. Air Abang Pring Baru 250
+2 D.I. Air Anak Besar 60
+3 D.I. Air Batu Kuning 58
+4 D.I. Air Gelumbang Pd. Pelasan 75
+5 D.I. Air Hitam 138
+6 D.I. Air Kelampaian 27
+7 D.I. Air Maras Jambat Akar 250
+8 D.I. Air Merah Cahaya Negeri 130
+9 D.I. Air Merah Kembang Mumpo 200
+10 D.I. Air Ngalam 108
+11 D.I. Air Nikat 30
+12 D.I. Air Petai 127
+13 D.I. Air Pring Latakan 50
+14 D.I. Air Pring Masmambang 78
+15 D.I. Air Selayang 30
+16 D.I. Air Serian 250
+17 D.I. Air Simpang Pandan 81
+18 D.I. Air Simpur TI. Durian 21
+19 D.I. Air Suban 60
+20 D.I. Air Talo Kecil 361
+21 D.I. Air Talo Kernalo 70
+22 D.I. Air Talo Lubuk Penantian 75
+23 D.I. Air Talo Nanto 669
+24 D.I. Air Talo Pagar Banyu 50
+25 D.I. Air Tebat Ndawaran 204
+26 D.I. Air Temiang 55
+27 D.I. Air Teras 345
+28 D.I. Air Alas Kayu Elang Kanan 28
+29 D.I. Air Alas Napalan | 35
+30 D.I. Air Alas Napalan II 30
+31 D.I. Air Alas Napalan III 30
+32 D.I. Air Ataran Sawah Kapalan 65
+33 D.I. Air Kungkai Arang Sapat II 25
+#KANAN
+128
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+34 D.I. Air Kungkai Napal Jungur II 25
+35 D.I. Air Kuroan Lubuk Pilo 45
+36 D.I. Air Sindur Pd. Capo Hilir I 45
+37 D.I. Air Sindur Pd. Capo Hilir II 32
+38 D.I. Air Sindur Pd. Capo Ulu II 40
+39 D.I. Air Tebat Sekatoan 25
+40 D.I. Air Alas Gn. Megang 100
+41 D.I. Air Alas Kayu Ellang 80
+42 D.I. Air Alas Muara Dua 23
+43 D.I. Air Anak Sekalak 55
+44 D.I. Air Anak Talang Empat 35
+45 D.I. Air Badasan 30
+46 D.I. Air Batu Tugu 30
+47 D.I. Air Betungan 30
+48 D.I. Air Gunung Kanan 100
+49 D.I. Air Gunung Ulu Alas 250
+50 D.I. Air Kelompang Jenggalu 40
+51 D.I. Air Kukup 120
+52 D.I. Air Kungkai Arang Sapat | 90
+53 D.I. Air Kungkai Arang Sapat III 25
+54 D.I. Air Kungkai Ds. Tengah 37
+55 D.I. Air Kungkai Napal Jungur I 30
+56 D.I. Air Kuroan Kayu Elang 80
+57 D.I. Air Lubuk Betung 75
+58 D.I. Air Masegar 30
+59 D.I. Air Melancar 60
+60 D.I. Air Melancar 60
+61 D.I. Air Melintang Hilir 75
+62 D.I. Air Melintang Ulu 200
+63 D.I. Air Merah Nanti Agung 295
+64 D.I. Air Pagar Gasing 70
+65 D.I. Air Payangan 60
+66 D.I. Air Pelilingan 36
+67 D.I. Air Peneboaan 180
+68 D.I. Air Pengurungan 100
+69 D.I. Air Pisangan 30
+70 D.I. Air Pring Kayu Elang 48
+71 D.I. Air Pring Muara Dua 100
+72 D.I. Air Puaran 27
+73 D.I. Air Selinsingan 75
+74 D.I. Air Seluma Ulu 20
+75 D.I. Air Simpang Puguk 50
+76 D.I. Air Simpur Ijang 50
+77 D.I. Air Sindur Pd. Capo Ulu I 275
+78 D.I. Air Talang Marung 55
+79 D.I. Air Talang Pauh 30
+80 D.I. Air Talang Sukamaju 40
+81 D.I. Air Talo Muara Simpur 30
+82 D.I. Air Tebat Sibun 100
+83 D.I. Air Tebat Tedunan 170
+84 D.I. Air Tebat Temiang 25
+85 D.I. Air Tongayo 42
+86 D.I. Air Ulu Ngalam 50
+i Kota Benakulu 5 745
+1 D.I. Air Tebat Besar Surabaya 514
+2 D.I. Air Lagan 100
+3 D.I. Air Kayu Angus 100
+4 D.I. Air Napal 25
+5 D.I. Air Betungan 6

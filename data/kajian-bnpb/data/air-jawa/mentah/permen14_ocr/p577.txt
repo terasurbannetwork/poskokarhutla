@@ -1,0 +1,65 @@
+#TATA_LETAK satu-tabel lebar=2480
+877 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+d Kab. Bulukumba 13 129
+1 D.LA.T. JIAT Kirasa JK.01 10
+2 D.LA.T. JIAT Tanah Kongkong JTK.01 12
+3 D.LA.T. JIAT Jalanjang JJ.01 10
+4 D.LA.T. JIAT Bonto Haru JBH.01 10
+5 D.LA.T. JIAT Manjalling JM.01 10
+6 D.L.A.T. JIAT Balong JB.01 10
+7 D.LA.T. JIAT Kalumassang JKL.01 10
+8 D.LA.T. JIAT Cabalu JC.O1 10
+9 D.LA.T. JIAT Karassing JKR.01 10
+10 D.LA.T. JIAT Labahi JL.01 7
+11 D.LA.T. JIAT Manjalling | JM.02 10
+12 D.LA.T. JIAT Karama JKM.O1 10
+13 D.LA.T. JIAT Bulo-Bulo JBB.01 10
+e Kab. Gowa 70 1.067
+1 D.LA.T. Mapin Kebak SES 022 13
+2 D.LA.T. Rempe SPS 138 20
+3 D.LA.T. Limbung SDGW 217 20
+4 D.LA.T. Limbung SDGW 218 12
+5 D.LA.T. Maccini Baji SMGW 98 20
+6 D.I.A.T. Maccini Baji SMGW 99 20
+7 D.LA.T. Maccini Baji SMGW 101 20
+8 D.I.A.T. Maccini Baji SMGW 102 20
+9 D.I.A.T. Maccini Baji SMGW 103 20
+10 D.I.A.T. Maccini Baji SMGW 105 12
+11 D.LA.T. Pabentengan SDGW 71 10
+12 D.LA.T. Pabentengan SMGW 107 11
+13 D.LA.T. Pabentengan SMGW 111 11
+14 D.LA.T. Pabentengan SDGW 101 12
+15 D.LA.T. Pabentengan SDGW 204 20
+16 D.LA.T. Pabentengan SDGW 206 20
+17 D.LA.T. Pabentengan SDGW 207 20
+18 D.LA.T. Panyangkalang SMGW 108 20
+19 D.I.A.T. Panyangkalang SMGW 110 20
+20 D.LA.T. Panyangkalang SMGW 112 20
+21 D.LA.T. Panyangkalang SMGW 114 10
+22 D.LA.T. Panyangkalang SMGW 115 12
+23 D.LA.T. Panyangkalang SMGW 118 15
+24 D.LA.T. Panyangkalang SMGW 119 20
+25 D.LA.T. Tanah Bangka SDGW 219 20
+26 D.I.A.T. Tanah Bangka SDGW 220 20
+27 D.LA.T. Tanah Bangka SDGW 221 20
+28 D.LA.T. Tanah Bangka SDGW 222 20
+29 D.LA.T. Tanah Bangka SDGW 223 12
+30 D.LA.T. Tangkebajeng SDGW 216 20
+31 D.LA.T. B. Langkasa Sel. SMGW 29 8
+32 D.LA.T. B. Langkasa Sel. SMGW 30 8
+33 D.LA.T. B. Langkasa Sel. SMGW 31 8
+34 D.LA.T. B. Langkasa Sel. SMGW 32 15
+35 D.LA.T. B. Langkasa Sel. SMGW 33 8
+36 D.LA.T. B. Langkasa Sel. SMGW 134 20
+37 D.LA.T. Bontonompo SMGW 122 20
+38 D.LA.T. Bontonompo SMGW 126 20
+39 D.LA.T. Bontonompo SMGW 127 20
+40 D.LA.T. Bontonompo SDGW 214 20
+41 D.LA.T. Jipang SMGW 15 14
+42 D.LA.T. Jipang SMGW 16 10
+43 D.LA.T. Jipang SMGW 18 10
+44 D.LA.T. Jipang SMGW 19 8
+45 D.LA.T. Jipang SMGW 35 8

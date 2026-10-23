@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+71 D.I. Isa 10
+72 D.I. Jaranoko 50
+73 D.I. Kelewae 20
+74 D.I. Kotaperi 10
+75 D.I. Leguderu 20
+76 D.I. Liasesa 25
+77 D.I. Loba 30
+78 D.I. Lowomeli 10
+79 D.I. Lowopau 46
+80 D.I. Lowoto 10
+81 D.I. Lowotuu 10
+82 D.I. Madaaya 24
+83 D.I. Malangae 35
+84 D.I. Malanila 15
+85 D.I. Malawitu 100
+86 D.I. Matangae 70
+87 D.I. Maukeli 22
+88 D.I. Mburumere 10
+89 D.I. Meoao 20
+90 D.I. Mokemanu 10
+91 D.I. Obotiwu 35
+92 D.I. Oigore 25
+93 D.I. Oka 7
+94 D.I. Penginenu 150
+95 D.I. Pipipea 25
+96 D.I. Pocolodorawe 25
+97 D.I. Pomaboa 25
+98 D.I. Puuboa 10
+99 D.I. Ratedago 5
+100 D.I. Tiwuleza 21
+101 D.I. Tiwuwawi 11
+102 D.I. Togu 40
+103 D.I. Tomutaba 14
+104 D.I. Totomala 10
+105 D.I. Tukakota 15
+106 D.I. Ubu 15
+107 D.I. Wasi 15
+108 D.I. Watuajo 12
+109 D.I. Watudhoge 15
+110 D.I. Watugate 15
+111 D.I. Watujara 7
+112 D.I. Wembu 12
+113 D.I. Wiramenge 10
+114 D.I. Wolongela 75
+115 D.I. Wolowuwu 15
+| Kab. Naada 85 4.278
+1 D.I. Aesemi 10
+2 D.I. Alokolang 5
+3 D.I. Alolonggo 150
+4 D.I. Bhetomela 138
+5 D.I. Boti 35
+6 D.I. Kasa 25
+7 D.I. Kinde 10
+8 D.I. Kurusoka 25
+9 D.I. Malanaru 80
+10 D.I. Malanda 35
+11 D.I. Ngorakego A, B, C 35
+12 D.I. Pakupapan 29
+13 D.I. Paurowa 12
+14 D.I. Pomamana 25
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+15 D.I. Riok 135
+16 D.I. Riwu Lena 85
+17 D.I. Sudok 250
+18 D.I. Tabasigho 15
+19 D.I. TasikAWareng 250
+20 D.I. Tiwubele 200
+21 D.I. Tiwukela 23
+22 D.I. Wae Beli 8
+23 D.I. Wae Rea 40
+24 D.I. Waebana 76
+25 D.I. Waeneta 36
+26 D.I. Waeroa 20
+27 D.I. Alopering 30
+28 D.I. Bakit 20
+29 D.I. Blaswanging 35
+30 D.I. Dhake Rua 10
+31 D.I. Dupa 100
+32 D.I. Gonggong 150
+33 D.I. Gudu 10
+34 D.I. Hadonara 25
+35 D.I. Hobomaro 30
+36 D.I. Ije/Belaleo 175
+37 D.I. Ije/Yae Beo 60
+38 D.I. Kamarero 25
+39 D.I. Kojadhedhe 30
+40 D.I. Ledhi 15
+41 D.I. Lekorajo 20
+42 D.I. Lekosere 15
+43 D.I. Lewunguza 25
+44 D.I. Lewur Flu 40
+45 D.I. Lewur Mendar 20
+46 D.I. Lewurkue 24
+47 D.I. Liro 75
+48 D.I. Loba 19
+49 D.I. Lobara 30
+50 D.I. Maerera 32
+51 D.I. Maladanga 30
+52 D.I. Maladoro 10
+53 D.I. Malaki 11
+54 D.I. Malapau 20
+55 D.I. Malateme/Puumbo 100
+56 D.I. Marobhatong 6
+57 D.I. Matameo 10
+58 D.I. Mukis 30
+59 D.I. Nua Kua 200
+60 D.I. Ramba 35
+61 D.I. Ranolasa 12
+62 D.I. Riwu Lena 40
+63 D.I. Soa Hea 10
+64 D.I. Soafuti 50
+65 D.I. Tiwuleke 35
+66 D.I. Tiwumojo 45
+67 D.I. Turekupe 30
+68 D.I. Umalelu 25
+69 D.I. Umalonga 43
+70 D.I. Wae Molu 85
+71 D.I. Wae Ya 30
+72 D.I. Waebua 5
+73 D.I. Waekedhi 30
+74 D.I. Waekusi 5
+75 D.I. Waelowe 45

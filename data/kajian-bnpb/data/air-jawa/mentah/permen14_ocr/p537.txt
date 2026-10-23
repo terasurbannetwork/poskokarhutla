@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+537 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+40 D.I.A.T. Ekasari T.75 25
+41 D.L.A.T. Ekasari EKS.76 23
+42 D.LA.T. Gumbrih GMB.78 25
+43 D.I.A.T. Ekasari EKS.79 25
+44 D.LA.T. Ekasari EKS.80 25
+45 D.I.A.T. Kaliakah KLH.84 20
+46 D.I.A.T. Kaliakah KLH.85 23
+47 D.LA.T. Banyubiru BBR.86 25
+48 D.I.A.T. Manistutu MTT.87 24
+49 D.LA.T. Paswarsombang EKS.88 22
+50 D.I.A.T. Tukadaya JTW.A 16
+51 D.ILA.T. Kaliakah JTW.2 22
+52 D.I.A.T. Kaliakah JTW.3 22
+53 D.I.A.T. Tukadaya JW.4 14
+54 D.I.A.T. Tukadaya JW.5 31
+55 D.I.A.T. Tukadaya JW.6 18
+56 D.I.A.T. Tukadaya JW.7 10
+57 D.L.A.T. Tukadaya JW.8 20
+58 D.I.A.T. Kaliakah JW.9 17
+59 D.I.A.T. Kaliakah JW.10 17
+60 D.I.A.T. Kaliakah JW.A1 23
+61 D.I.A.T. Kaliakah JW.12 15
+62 D.I.A.T. Kaliakah JW.13 21
+63 D.I.A.T. Kaliakah JW.A14 15
+64 D.I.A.T. Kaliakah JW.15 23
+65 D.I.A.T. Kaliakah JW.16 18
+66 D.I.A.T. Kaliakah JW.A7 22
+67 D.I.A.T. Tukadaya JW.18 20
+68 D.I.A.T. Tukadaya JW.AI9R 19
+69 D.I.A.T. Kaliakah JW.20 11
+70 D.I.A.T. Tukadaya JW.21 22
+71 D.L.A.T. Kaliakah JW.22 20
+72 D.I.A.T. Kaliakah JW.23 21
+c Kab. Karanaasem 17 248
+1 D.LA.T. Amed II NB.21 10
+2 D.LAT. DWAT.T1 NB.40/TTM.27 13
+3 D.LA.T. D.W/T.T2 NB.41 10
+4D.LA.T. T. Teng/Tm. Sari NB.43 10
+5 D.LA.T. Amed/Purwa. K NB.39 10
+6 D.LA.T. Sukadana/T.T3 NB.42 10
+7 D.LA.T. Tianyar Timur TTM.19 15
+8 D.LA.T. Tianyar Timur TTM.18 17
+9 D.LA.T. Tianyar Barat TBT.27 19
+10 D.I.A.T. Tianyar Barat TBT.28 19
+11 D.LA.T. Tianyar Timur TTM.25 20
+12 D.LA.T. Tianyar Tengah TTG.06 20
+13 D.LA.T. Tianyar Tengah TTG.07 18
+14 D.LA.T. Tianyar Timur TTM.28 15
+15 D.LA.T. Tianyar Timur TTM.27 15
+16 D.I.LA.T. Tianyar Timur TTM.26a 15
+17 D.LA.T. Tulamben KTW.2 13
+d Kab. Tabanan 1 50
+1 D.LA.T. Gadungan SBE. 43/30 50
+X PROVINSI NUSA TENGGARA BARAT 485 7.767
+a Kab. Bima 95 1.336
+1 D.LA.T. Oi Saro OPW 001 12
+2 D.LA.T. Oi Saro OPW 002 12

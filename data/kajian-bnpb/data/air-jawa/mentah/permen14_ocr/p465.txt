@@ -1,0 +1,105 @@
+#TATA_LETAK satu-tabel lebar=2480
+465 2015, No.638
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+c Kab. Barito Utara 11 1.528
+
+1 D.I.R. Bintang Ninggi 75
+
+2 D.I.R. Buntok Baru 150
+
+3 D.I.R. Butong 100
+
+4 D.I.R. Kandui 50
+
+5 D.I.R. Paring Lahung 100
+
+6 D.I.R. Pepas 228
+
+7 D..R. Ruji 100
+
+8 D.I.R. Sikan 125
+
+9 D.I.R. Tumpung Laung 400
+10 D.I.R. Tumpung Laung I Telaga Biru 100
+11 D.I.R. Tumpung Laung II Balangiran 100
+d Kab. Kapuas 134 87.556
+
+1 D.I.R. Alai 472
+
+2 D.I.R. Aman 693
+
+3 D.I.R. Badandan 500
+
+4 D.I.R. Bahatap Besar 950
+
+5 D.I.R. Bakambat 895
+
+6 D.I.R. Bakung 826
+
+7 D.I.R. Banama | 700
+
+8 D.I.R. Bandaraya 682
+
+9 D.I.R. Basungkai 715
+10 D.I.R. Batang 400
+11 D.I.R. Batanjung 700
+12 D.I.R. Batas 700
+13 D.I.R. Beringin 900
+14 D.I.R. Biluhai 800
+15 D.I.R. Bunga mawar 300
+16 D.I.R. Bunga Tanjung 276
+17 D.I.R. Burak 900
+18 D.I.R. Cemara Labat 150
+19 D.I.R. Cempaka 800
+20 D.I.R. Dadahup Raya 815
+21 D.I.R. Dandang 950
+22 D.I.R. Desa Kaladan 500
+23 D.I.R. Desa Kalumpang 250
+24 D.I.R. Desa Katunjung 500
+25 D.I.R. Desa Pantai 150
+26 D.I.R. Desa Tajuk Lapetan 150
+27 D.I.R. Dinan 900
+28 D.I.R. Dim. Kota Kuala Kapuas 250
+29 D.I.R. Dusun Jaya Sari 950
+30 D.I.R. Dusun Marga Utama 400
+31 D.I.R. Dusun Sumber Sari 870
+32 D.I.R. Haji Gasi 800
+33 D.I.R. Handel | 950
+34 D.I.R. Handel VII 465
+35 D.I.R. Handil Pantunt 350
+36 D.I.R. Handiwung 200
+37 D.I.R. Haur 800
+38 D.I.R. Hiri 800
+39 D.I.R. Induk Pasar Minggu 954
+40 D.I.R. Kaderi 535
+41 D.I.R. Karang Paci 610
+42 D.LR. Karuhei 940
+43 D.I.R. Keluarga 650
+44 D.I.R. Keramat 700
+45 D.ILR. Kolam Kanan 960
+46 D.I.R. Kota 628
+47 D.I.R. Lamui 950
+48 D.I.R. Lasar 800
+49 D.I.R. Lima 765
+50 D.I.R. Lumbah 850
+51 D.I.R. Makmur 300
+52 D.I.R. Malang I 765
+53 D.I.R. Malang II 912
+54 D.I.R. Mampai 700
+55 D.I.R. Mangadam 625
+56 D.I.R. Mantangai 150
+57 D.I.R. Manusup 175
+58 D.I.R. Masnu 650
+59 D.I.R. Menteng Karya 880
+60 D.I.R. Mulus 780
+61 D.I.R. Murni 530
+62 D.I.R. Palambang 600
+63 D.I.R. Palampai 550
+64 D.I.R. Palinget Simpang 400
+65 D.I.R. Palingkau Besar 770
+66 D.I.R. Palingkau Kecil 990
+67 D.I.R. Palingkau Lam/Baru 150
+68 D.I.R. Palingkau Seberang | 500
+69 D.I.R. Palingkau Seberang II 350

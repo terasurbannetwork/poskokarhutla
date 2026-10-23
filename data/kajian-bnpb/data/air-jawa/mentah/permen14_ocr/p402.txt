@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+150 D.I. Sungai Mentabah 25
+151 D.I. Randum 30
+152 D.I. Sengongk 23
+153 D.I. Betung Amawang 70
+154 D.I. Sikocek 25
+155 D.I. Pabanti 35
+156 D.I. Kaca Raba 87
+157 D.I. Jungkung 102
+158 D.I. Silung Komplek 250
+159 D.I. Tanjam 30
+160 D.I. Sui Lame 100
+161 D.I. Peladis Betung 31
+162 D.I. Tabangan 40
+163 D.I. Santulangan 120
+164 D.I. Peladis Raba 60
+165 D.I. Payok 32
+166 D.I. Nyawan 179
+167 D.I. Muun 50
+168 D.I. Sebuak 34
+169 D.I. Ladangan Pal 20 120
+170 D.I. Mandor Kiru 43
+171 D.I. Sangku II 200
+172 D.I. Kayu Ara 200
+173 D.I. Palo 200
+174 D.I. Tubang Raeng 20
+175 D.I. Sekais 20
+176 D.I. Guna 100
+177 D.I. Kayu Ara | Lintah Betung 200
+178 D.I. Kayu Ara II Lintah Betung 43
+179 D.I. Lintah Betung 100
+180 D.I. Samade Hulu 125
+181 D.I. Angkaras 35
+182 D.I. Ongkol Padang 150
+183 D.I. Antabah 60
+184 D.I. Ringo Hilir 37
+185 D.I. Ringo Lojok 40
+186 D.I. Jelayan Semade Hilir 35
+187 D.I. Ampadan 25
+188 D.I. Moro Behe M
+189 D.I. Sunaai Munti 50
+190 D.I. Selange 45
+191 D.I. Sungai Nyabu 43
+192 D.I. Temoyok 115
+193 D.I. Sekendal 34
+194 D.I. Sepangah 85
+195 D.I. Jambu 9
+196 D.I. Nyanyum 42
+197 D.I. Padang Sebantik 100
+198 D.I. Entelolo 49
+a Kab. Melawi 48 2.552
+1 D.I. Tanjung Lai 74
+2 D.I. Teluk Batu 55
+3 D.I. Labai 52
+4 D.I. Batu Ampar 130
+5 D.I. Tekaban 135
+6 D.I. Pekawai 35
+7 D.I. Senain 85
+8 D.I. Hamuntai 30
+9 D.I. Tunjuk 100
+10 D.I. Madong 174
+#KANAN
+402
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+11 D.I. Sepan 57
+12 D.I. Duri 39
+13 D.I. Pekawai 45
+14 D.I. Sungai Besar 105
+15 D.I. Sungai Mayi 25
+16 D.I. Batu Menyawai 50
+17 D.I. Sungai Dahan 145
+18 D.I. Ranah Beladau 75
+19 D.I. Entubu 58
+20 D.I. Tapal Bunyau 250
+21 D.I. Empuyang 61
+22 D.I. Sungai Tuak 55
+23 D.I. Panggung Jaya 65
+24 D.I. Manggala 57
+25 D.I. Sungai Ubah 31
+26 D.I. Landau Beringin 40
+27 D.I. Ranah Ronok 15
+28 D.I. Batu Nanta 20
+29 D.I. Kabeh 30
+30 D.I. Mawang 15
+31 D.I. Sungai Temiang 25
+32 D.I. Paoh 15
+33 D.I. Lingkau 15
+34 D.I. Ketepang 24
+35 D.I. Omang 25
+36 D.I. Potai 15
+37 D.I. Melana 15
+38 D.I. Sungai Uban 15
+39 D.I. Domet 30
+40 D.I. Tanjung Beringin 25
+41 D.I. Senibung 15
+42 D.I. Manding 15
+43 D.I. Natai Panjang 15
+44 D.I. Engkurai 40
+45 D.I. Entibab 70
+46 D.I. Ulak Muid 30
+47 D.I. Kancung 30
+48 D.I. Kelampuk 25
+h Kab. Pontianak 191 1.936
+1 D.I. Takong I 3
+2 D.I. Takong II 5
+3 D.I. Dedayu I 38
+4 D.I. Dedayu II 4
+5 D.I. Dedayu III 4
+6 D.I. Dedayu IV 4
+7 D.I. Dedayu V 4
+8 D.I. Dedayu VI 4
+9 D.I. Dedayu VII 4
+10 D.I. Dedayu VIII 4
+11 D.I. Dedavu IX 7
+12 D.I. Kecurit | 56
+13 D.I. Kecurit II 36
+14 D.I. Kecurit III 14
+15 D.I. Kecurit IV 6
+16 D.I. Pinyuh Kersi 80
+17 D.I. Benuang Hilir I 10
+18 D.I. Benuang Hilir II 17
+19 D.I. Benuang Hilir III 1
+20 D.I. Benuang Hilir IV 12
+21 D.I. Benuang Hilir V 12

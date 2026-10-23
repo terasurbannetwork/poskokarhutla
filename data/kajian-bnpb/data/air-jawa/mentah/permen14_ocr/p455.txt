@@ -1,0 +1,74 @@
+#TATA_LETAK satu-tabel lebar=2480
+455 2(15, No.638
+Status Daerah Irigasi Yang Menjadi Wswenang Dan Tanggung Jawab Pemerintah Kabupaten/Kota
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+| PROVINSI SUMATERA UTARA 31 14.414
+a Kab. Asahan 1 500
+1 D.I.R. Panca Arga 500
+b Kab. Deli Serdana 4 2.400
+1 D.I.R. Bulu Cina 500
+2 D.I.R. Paluh Manan 700
+3 D.I.R. Sei Tuan 300
+4 D.I.R. Serdang 900
+c Kab. Labuhan Batu 14 6.594
+1 D.I.R. Aek Namolor 50
+2 D.I.R. Sei Tampang 100
+3 D.I.R. Babausalam 150
+4 D.I.R. Tapaian Nauli 200
+5 D.I.R. Aek Siala/Aek Merah 250
+6 D.I.R. Tanjung Selamat 400
+7 D.I.R. Nahodaris 500
+8 D.I.R. Negeri L. Seberang 500
+9 D.I.R. Aek Naetek 600
+10 D.I.R. Kualu Tani 600
+11 D.I.R. Suka Ramai 600
+12 D.I.R. Selat Besar Kecil 768
+13 D.I.R. Aek Bilah 926
+14 D.I.R. Sei Tarolat 950
+d Kab. Lanakat 3 2.085
+1 D.I.R. Secanggang 550
+2 D.I.R. Paya Kasih 685
+3 D.I.R. Pulau Kampai 850
+e Kab. Mandailina Natal 7 2.125
+1 D.I.R. Tabuyung 10
+2 D.I.R. Sikara-kara 15
+3 D.I.R. Pati Luban 250
+4 D.I.R. Muara Batang Gadis 350
+5 D.I.R. Batahan 500
+6 D.I.R. Batang Lobung 500
+7 D.I.LR. Singkuang 500
+f Kab. Serdana Bedaaai 2 710
+1 D.I.R. Belidahan 200
+2 D.I.R. Bandar Kalifah 510
+II PROVINSI RIAU 125 40.537
+a Kab. Benakalis 8 2.600
+1 D.I.R. Bantan 600
+2 D.I.R. Cingam 100
+3 D.I.R. KSP Api-Api Temiang 729
+4 D.I.R. KSP Sepotong 750
+5 D.I.R. Muntai 60
+6 D.I.R. Pematang Duku 231
+7 D.I.R. Penebal 50
+8 D.I.R. Titi Akar 80
+b Kab. Indraairi Hilir 41 20.842
+1 D.I.R. Bagan Negara/Suhada 250
+2 D.I.R. Bekawan 156
+3 D.I.R. Concong Dalam 20
+4 D.I.R. Concong Tengah 84
+5 D.I.R. Enok 250
+6 D.I.R. Karya Tunas Jaya 405
+7 D.I.R. Kuala Gaung 853
+8 D.I.R. Kuala Lahang 992
+9 D.I.R. Kuala Selat 278
+10 D.I.R. Lahang Baru 560
+11 D.I.R. Lahang Hulu 786
+12 D.I.R. Lahang Tengah 763
+13 D.I.R. Pekan Kemis 245
+14 D.I.R. Pekan Tua 954
+15 D.I.R. Pengalihan enok 560
+16 D.I.R. Perigi Raya 76
+17 D.I.R. Reteh Il/Bagan Jaya 876
+18 D.I.R. Reteh II dan Reteh Lokal 750
+19 D.I.R. Rotan semelur 295
+20 D.I.R. Sapat 800

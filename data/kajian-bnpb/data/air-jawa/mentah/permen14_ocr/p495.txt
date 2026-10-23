@@ -1,0 +1,67 @@
+#TATA_LETAK satu-tabel lebar=2480
+495 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+7 D.LA.T. Sumber PWJ84 34
+8 D.LA.T. Sumber PWJ85 32
+9 D.LA.T. Sumber PWJ86 27
+10 D.LA.T. Sumberejo PWJ103 35
+11 D.LA.T. Sumberejo PWJ104/323 29
+12 D.LA.T. Sumberejo PWJ105 21
+13 D.LA.T. Kutukan PWJ106 33
+14 D.LA.T. Kutukan PWJ108 22
+15 D.LA.T. Sumber PWJ109 30
+16 D.LA.T. Mojorembun PWJ111 34
+17 D.LA.T. Mendenrejo PWJ112/308 24
+18 D.LA.T. Mendenrejo PWJ113/309 21
+19 D.LA.T. Sumber PWJ115 29
+20 D.ILA.T. Sumber PWJ116 36
+21 D.LA.T. Sumber PWJ117 29
+22 D.LA.T. Sumber PWJ118 37
+23 D.LA.T. Sumber PWJ119 31
+24 D.L.A.T. Kutukan PWJ120 20
+25 D.L.A.T. Tanjung PWJ121 29
+26 D.I.A.T. Temulus PWJ124 42
+27 D.I.A.T. Kutukan PWJ127 20
+28 D.I.A.T. Kutukan PWJ128 20
+29 D.I.A.T. Kutukan PWJ129 17
+30 D.I.A.T. Sumber PWJ131 29
+31 D.LA.T. Sumber PWJ132 37
+32 D.I.A.T. Sumber PWJ134 31
+33 D.LA.T. Sumber PWJ138 37
+34 D.I.A.T. Tanjung PWJ140 27
+35 D.LA.T. Mojorembun PWJ144 23
+36 D.LA.T. Mojorembun PWJ145 39
+37 D.LA.T. Mojorembun PWJ147 31
+38 D.I.A.T. Pulo PWJ148 21
+39 D.I.A.T. Pulo PWJ149 19
+40 D.L.A.T. Sogo PWJ151 36
+41 D.LA.T. Tanjung PWJ152 31
+42 D.LA.T. Tanjung PWJ154/345 28
+43 D.LA.T. Sumberejo PWJ155 34
+44 D.LA.T. Sumberejo PWJ158 15
+45 D.LA.T. Sumberejo PWJ159 13
+46 D.I.A.T. Sumberejo PWJ160 18
+47 D.LA.T. Sumberejo PWJ161 19
+48 D.I.LA.T. Sumberejo PWJ162 17
+49 D.I.LA.T. Sumberejo PWJ163 15
+50 D.I.A.T. Sumberejo PWJ164/365 25
+51 D.LA.T. Tanjung PWJ165 31
+52 D.I.A.T. Sumberejo PWJ166/300 33
+53 D.ILA.T. Sumberejo PWJ167 20
+54 D.L.A.T. Sogo PWJ168 24
+55 D.I.A.T. Kediren PWJ172 12
+56 D.I.A.T. Kediren PWJ173 17
+57 D.I.A.T. Kutukan PWJ174 20
+58 D.I.A.T. Kutukan PWJ175 13
+59 D.I.A.T. Kutukan PWJ176 22
+60 D.I.A.T. Kutukan PWJ177 20
+61 D.I.A.T. Kutukan PWJ178 19
+62 D.I.A.T. Kutukan PWJ180 22
+63 D.I.A.T. Kutukan PWJ181 22
+64 D.I.A.T. Kutukan PWJ182 / 233 33
+65 D.I.A.T. Bajo PWJ184 21
+66 D.I.A.T. Bajo PWJ186 19
+67 D.I.A.T. Bajo PWJ188/343 19

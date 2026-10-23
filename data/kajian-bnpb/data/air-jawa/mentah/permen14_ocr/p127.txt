@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+66 D.I. Air Nyvudam Bawah 147
+67 D.I. Air Panjang 65
+68 D.I. Air Panjang 100
+69 D.I. Air Pauh Hulu 196
+70 D.I. Air Penyagu 97
+71 D.I. Air Piantan Kanan 100
+72 D.I. Air Piantan Kiri 150
+73 D.I. Air Racun 40
+74 D.I. Air Sapat 100
+75 D.I. Air Sebelengai 20
+76 D.I. Air Senapak 60
+77 D.I. Air Siapang Kiri 142
+78 D.I. Air Teluk Dien 25
+79 D.I. Air Tik Gelung 36
+80 D.I. Air Tik Gemiling 50
+81 D.I. Air Tik Telu 65
+82 D.I. Air Tik Telu Kanan 40
+83 D.I. Air Tik Telu Kiri 40
+84 D.I. Air Tik Telu Tengah 40
+85 D.I. Air Tik Tunggang 40
+86 D.I. Air Tikat 20
+87 D.I. Ait Tik Serdang Kanan 40
+88 D.I. Ait Tik Serdang Kiri 50
+a Kab. Mukomuko 35 3.179
+1 D.I. Air Benuang 40
+2 D.I. Air Besah Ipuh 50
+3 D.I. Air Payang | 250
+4 D.I. Air Payang II 100
+5 D.I. Air Putih Pondok Lunang 35
+6 D.I. Air Berau 15
+7 D.I. Air Boyo Boyo 15
+8 D.I. Air Buli Semundam 240
+9 D.I. Air Buluh 80
+10 D.I. Air Dikit Kecil 44
+11 D.I. Air Selagan Sungai Ipuh 400
+12 D.I. Air Tapak Gadis 45
+13 D.I. Air Sempit 40
+14 D.I. Air Sungai Gading Besar 400
+15 D.I. Air Sungai Gading Kecil 50
+16 D.I. Air Selagan Kecil 300
+17 D.I. Air Teramang Kecil 250
+18 D.I. Air Merah 30
+19 D.I. Air Nilam 25
+20 D.I. Air Pasar Bantal 25
+21 D.I. Air Padang Gading 35
+22 D.I. Air Pisang 20
+23 D.I. Air Tandikek 20
+24 D.I. Air Jangur 15
+25 D.I. Air Teluh 10
+26 D.I. Air Hitam SP.III 30
+27 D.I. Air Ipuh 100
+28 D.I. Air Tanjung Kejai 100
+29 D.I. Air Lubuk Bangko 150
+30 D.I. Air Arah Lubuk Nau 40
+31 D.I. Air Lubuk Angit 45
+32 D.I. Air Sungai Ulak 20
+33 D.I. Air Kandis 100
+34 D.I. D.I Lubuk Setakuk 50
+35 D.I. D.I Air Rengas 10
+#KANAN
+127 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+h Kab. Reiana Lebona 86 8.173
+1 D.I. Air Beliti Ds. Tanjung Agung 861
+2 D.I. Air Belumai | 44
+3 D.I. Air Belumai II 40
+4 D.I. Air Buluh Taba Padang 55
+5 D.I. Air DAUP Atas 60
+6 D.I. Air Dendan 60
+7 D.I. Air Dingin Babakan Baru 60
+8 D.I. Air Duku Dusun Curup 255
+9 D.I. Air Duku Kejalo 180
+10 D.I. Air Duku Sentral 50
+11 D.I. Air Duku Talang Benih 129
+12 D.I. Air kantong 50
+13 D.I. Air Kelingi Pelalo 689
+14 D.I. Air Latang 40
+15 D.I. Air Malas Durian Mas 350
+16 D.I. Air Merah Meles 70
+17 D.I. Air Merah Purwodadi 110
+18 D.I. Air Merah Rimbo Recap 280
+19 D.I. Air Mundu 250
+20 D.I. Air Musi Lubuk Kembang 132
+21 D.I. Air Penebat Ds. Babakan Baru 80
+22 D.I. Air Pikat atas 90
+23 D.I. Air Pranjau 50
+24 D.I. Air putih Cawang 207
+25 D.I. Air Putih Karang Anyar 80
+26 D.I. Air Putih Kesambe Baru 25
+27 D.I. Air Putih Suban Ayam 135
+28 D.I. Air Semumai Deras 207
+29 D.I. Air Sengak Air Rambai 40
+30 D.I. Air Simpang Seguring 152
+31 D.I. Air Tik Au Tempel Rejo 40
+32 D.I. Air Tik Datar Bawah 75
+33 D.I. Air Tik Kersip 25
+34 D.I. Air Tik Semut 60
+35 D.I. Air Been Kesambe Baru 50
+36 D.I. Air Beliti Are 122
+37 D.I. Air Beliti Besar Ds. Lawang Agung 60
+38 D.I. Air Beliti kecil Ds. Lawang Agung 60
+39 D.I. Air Belumai III Kanan 60
+40 D.I. Air Belumai III Kiri 28
+41 D.I. Air Bulak Apur 25
+42 D.I. Air Bulak Atas 25
+43 D.I. Air Bulak Duku Ilir 31
+44 D.I. Air Bulak Kesambe Lama 49
+45 D.I. Air Bulak Tengah 35
+46 D.I. Air Dam Lubuk Ketapang 35
+47 D.I. Air Danau Talang Kering Kanan 25
+48 D.I. Air Danau Talang Kering Kiri 60
+49 D.I. Air Dingin Ds. Air Bening 668
+50 D.I. Air Dingin Ds. Air Duku 30
+51 D.I. Air Duku Karang Anyar 65
+52 D.I. Air Duku Pal Batu 40
+53 D.I. Air Kasie 55
+54 D.I. Air Kejalo Atas 60
+55 D.I. Air Kejalo Duku Ilir 60
+56 D.I. Air Merah Bangun Jaya 60
+57 D.I. Air Merah Kampung Melayu 25
+58 D.I. Air Merah Sentral Baru 118
+59 D.I. Air Merah Simpang Macang 40
+60 D.I. Air Merah Tebat Lenong Luar 140

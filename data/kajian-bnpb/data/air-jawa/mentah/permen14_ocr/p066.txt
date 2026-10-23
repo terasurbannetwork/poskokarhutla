@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+105 D.I. Mon Pree 200
+106 D.I. Neubit 150
+107 D.I. Nya 195
+108 D.I. Peukan Biluy 150
+109 D.I. Rabo 50
+110 D.I. Sarah 100
+111 D.I. Tanoh Abee 230
+112 D.I. Tanoh Patah 60
+113 D.I. Teupin Batee 75
+114 D.I. Tui Sigulee 40
+115 D.I. Tuwi Geulumpana 800
+116 D.I. Ulee Paya 100
+117 D.I. Umong Seuribe 175
+d Kab. Aceh Java 55 10.549
+1 D.I. Alue Boat Sp. II Patek 400
+2 D.I. Alue Cureh 200
+3 D.I. Alue Gajah Sp. III Patek 400
+4 D.I. Alue Pantee 200
+5 D.I. Alue Punti 200
+6 D.I. Alue Raya 120
+7 D.I. Alue Tho 160
+8 D.I. Babah Awe 100
+9 D.I. Babah le 40
+10 D.I. Babah Ngom 56
+11 D.I. Blang Dalam Patek 100
+12 D.I. Blang Jempeuk 100
+13 D.I. Blang Ulee Gajah 80
+14 D.I. Bun Bum 124
+15 D.I. Buntha 100
+16 D.I. Geuni 100
+17 D.I. Jabie 150
+18 D.I. Kareung Ateuh 500
+19 D.I. Krueng Beb 150
+20 D.I. Krueng Inong 250
+21 D.I. Krueng Tunong 70
+22 D.I. Kuala Meurisi 50
+23 D.I. Kuala Unga 75
+24 D.I. Kulam Asan 37
+25 D.I. Kulam Tok Ha 50
+26 D.I. Lambaro 115
+27 D.I. Lhok Bot 100
+28 D.I. Meudhen 70
+29 D.I. Meulha 90
+30 D.I. Panghulee Hareukat 70
+31 D.I. Pante Cermin 200
+32 D.I. Patek 998
+33 D.I. Paya Laot 200
+34 D.I. Ranto Panyang 100
+35 D.I. Sampan 75
+36 D.I. Sango 75
+37 D.I. Sarah Raya 450
+38 D.I. Seumira 500
+39 D.I. Tanoh Mirah 200
+40 D.I. Panga Pucok 610
+41 D.I. Alue Baro 250
+42 D.I. Alue Meudang 125
+43 D.I. Alue Paku 164
+44 D.I. Alue Teungoh 100
+45 D.I. Blang Mon Lueng 200
+46 D.I. Bruwie 80
+#KANAN
+66
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+47 D.I. Krueng Itam (Rawa) 100
+48 D.I. Krueng Rundeng 200
+49 D.I. Kubu - Alue Meuraksa 500
+50 D.I. Lamdurian 550
+51 D.I. Masen 200
+52 D.I. Meunasah Rayeuk 50
+53 D.I. Pucok Alue Mon Mata 40
+54 D.I. Pulo Ie 75
+55 D.I. Sapek 250
+e Kab. Aceh Selatan 129 13.600
+1 D.I. Air Pinang 25
+2 D.I. Alahan Panjang 95
+3 D.I. Alue Bahagia 40
+4 D.I. Alue Bahaaia | 40
+5 D.I. Alue Buloh 70
+6 D.I. Alue Cot Rambot 97
+7 D.I. Alue Dua Mas 130
+8 D.I. Alue Kabut 50
+9 D.I. Alue Liang 30
+10 D.I. Alue Paku 200
+11 D.I. Alue Pinang 175
+12 D.I. Alue Sejahtera 84
+13 D.I. Alue Sumirah | 25
+14 D.I. Alue Sumirah II 25
+15 D.I. Bakau Hulu 50
+16 D.I. Banda Gadang 295
+17 D.I. Batee Tunggai 25
+18 D.I. Batu Timoh 79
+19 D.I. Blang Bladeh 60
+20 D.I. Blang carak 99
+21 D.I. Blang Gelayang 25
+22 D.I. Blang Geulinggang 60
+23 D.I. Blang Kuanji 35
+24 D.I. Blang Mesjid 35
+25 D.I. Blang Meukek 136
+26 D.I. Blang Rambot 200
+27 D.I. Ceurace 150
+28 D.I. Drien Jalo 164
+29 D.I. Gunung Kapur 150
+30 D.I. Gunung Rotan 150
+31 D.I. le Buboh I 200
+32 D.I. le Buboh II 192
+33 D.I. le Jernih 50
+34 D.I. Jambo Papeun 250
+35 D.I. Kampong Padang 27
+36 D.I. Kampong Teungoh 25
+37 D.I. Kampung Tinggi 200
+38 D.I. Kasik Putih 25
+39 D.I. Keude Pante I 61
+40 D.I. Keude Pante II 67
+41 D.I. Keumumu Sebrang 150
+42 D.I. Koto Indarung 538
+43 D.I. Krueng Baru 200
+44 D.I. Krueng Batee 200
+45 D.I. Krueng Kalee 112
+46 D.I. Kuta Trieng I 200
+47 D.I. Kuta Trieng II 200
+48 D.I. Labuhan Tarok 20
+49 D.I. Ladang Rimba 70
+50 D.I. Ladang teungoh 60

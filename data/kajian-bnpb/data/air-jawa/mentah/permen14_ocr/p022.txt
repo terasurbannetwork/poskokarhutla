@@ -1,0 +1,63 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 99
+NO Provinsi/Kabupaten'/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+f Kab. Manggarai Barat
+1 D.I. Lembor 4.430
+2 D.I. Nggorang 4.313
+g Kab. Manggarai Timur
+1 D.I. Satar Beleng 3.000
+2 D.I. Wae Dingin 4.016
+3 D.I. Wae Musur 3.391
+h Kab. Nagekeo
+1 D.I. Mbay 6.378
+i Kab. Ngada
+1 D.I. Ngada 6.458
+j Kab. Rote Ndao
+1 D.I. Danau Tua 4104
+k Kab. Sabu Raijua
+1 D.I. Lokopehapo 3.237
+| Kab. Sikka
+1 D.I. Magepanda 3.100
+m Kab. Sumba Timur
+1 D.I. Kambaniru 4.018
+2 D.I. Baing 3.343
+XVIII PROVINSI KALIMANTAN TENGAH 1 3.794
+a Kab. Barito Timur
+D.I. Karau 3.794
+XIX PROVINSI KALIMANTAN SELATAN 7 30.264
+a Kab. Balangan
+1 D.I. Pitap 4.000
+b Kab. Hulu Sungai Selatan
+1 D.I. Amandit 5.472
+2 D.I. Telaga Langsat 3.018
+c Kab. Hulu Sungai Tengah
+1 D.I. Batang Alai 5.692
+d Kab. Kotabaru
+1 D.I. Sungai Bungur 3.600
+e Kab. Tanah Bumbu
+1 D.I. Batu Licin 3.010
+f Kab. Tapin
+1 D.I. Tapin 5.472
+XX PROVINSI SULAWESI UTARA 3 16.782
+a Kab. Bolaang Mongondow
+1 D.I. Kosinggolan 5.381
+2 D.I. Toraut 7.800
+b Kab. Bolaang Mongondow Utara
+1 D.I. Sangkub 3.601
+XXI PROVINSI GORONTALO 1 3.160
+a Kab. Gorontalo
+1 D.I. Alopohu 3.160
+XXII PROVINSI SULAWESI TENGAH 6 30.309
+a Kab. Banggai
+1 D.I. Mentawa 3.100
+2 D.I. Singkoyo 3.037
+3 D.I. Sinorang Ombolu 3.150
+b Kab. Parigi Moutong
+1 D.I. Lambunu 6.000
+2 D.I. Sausu Atas 7.100
+c Kab. Sigi
+1 D.I. Gumbasa 7.922
+XXIII PROVINSI SULAWESI TENGGARA 7 43.974
+a Kab. Bombana
+1 D.I. Poleang 3.100

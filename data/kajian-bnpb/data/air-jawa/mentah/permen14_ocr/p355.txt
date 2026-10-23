@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+13 D.I. Banyu Anjok 50
+14 D.I. Banyu Putih | 7
+15 D.I. Banyu Putih II 5
+16 D.I. Banyu Putih III 6
+17 D.I. Banyu Towo 3
+18 D.I. Banyu Urip 2
+19 D.I. Banyu Lirang 1
+20 D.I. Banyuning 73
+21 D.I. Baraan 18
+22 D.I. Bareng 11
+23 D.I. Base 1
+24 D.I. Batokan 1
+25 D.I. Batu 14
+26 D.I. Bayem 10
+27 D.I. Bayeman 15
+28 D.I. Beji 2
+29 D.I. Beji Maron 24
+30 D.I. Belang 12
+31 D.I. Belik Umbul 31
+32 D.I. Bendorogo 7
+33 D.I. Bentis 13
+34 D.I. Bido 8
+35 D.I. Blimbing 18
+36 D.I. Blimbing 139
+37 D.I. Bodeh 25
+38 D.I. Bogem 448
+39 D.I. Boto 19
+40 D.I. Brajegan 4
+41 D.I. Brintik 2
+42 D.I. Bulu 58
+43 D.I. Bulu Sulur 6
+44 D.I. Bulus 44
+45 D.I. Bungas 1
+46 D.I. Bungkus 7
+47 D.I. Buntung 15
+48 D.I. Cakar 10
+49 D.I. Cakaran 12
+50 D.I. Caluk Petung 12
+51 D.I. Cangkring 116
+52 D.I. Cemer 833
+53 D.I. Centong 14
+54 D.I. Ciwung 94
+55 D.I. Claket 9
+56 D.I. Coban 9
+57 D.I. Cokromenggalan 288
+58 D.I. Culo 7
+59 D.I. Cupit Urang 9
+60 D.I. Dadapan 65
+61 D.I. Dagangan 8
+62 D.I. Dawung 60
+63 D.I. Dawung 3
+64 D.I. Depok 40
+65 D.I. Dilem 55
+66 D.I. Domas 150
+67 D.I. Doplang 34
+68 D.I. Dukur 16
+69 D.I. Dung Bendo 30
+70 D.I. Dung Cabe 20
+71 D.I. Dung Duren 12
+72 D.I. Dung Gudel 20
+73 D.I. Dung Lowo 1
+#KANAN
+355 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+74 D.I. Dung Rong 17
+75 D.I. Dung Unyer 20
+76 D.I. Dung Watu 37
+77 D.I. Dung Winong 5
+78 D.I. Dung Winong 11
+79 D.I. Dungwakul 17
+80 D.I. Duren 1
+81 D.I. Duri 46
+82 D.I. Gading 27
+83 D.I. Galih 25
+84 D.I. Galor 2
+85 D.I. Gambiran 7
+86 D.I. Gamping 60
+87 D.I. Sampingan 21
+88 D.I. Gandu 28
+89 D.I. Gayam Gayam 9
+90 D.I. Gelang 26
+91 D.I. Gending 3
+92 D.I. Gendis 3
+93 D.I. Gendol 250
+94 D.I. Gepeng 84
+95 D.I. Giling 8
+96 D.I. Gilingan 24
+97 D.I. Girimarto 2
+98 D.I. Slutuk 42
+99 D.I. Slutukan 16
+100 D.I. Godog 3
+101 D.I. Gondang 28
+102 D.I. Gondang Legi 17
+103 D.I. Gondangan 1
+104 D.I. Gondosari 9
+105 D.I. Gonjing 12
+106 D.I. Gungan 34
+107 D.I. Gupit 20
+108 D.I. Guyangan 48
+109 D.I. Hargo Ploso 4
+110 D.I. Jalen 35
+111 D.I. Jalinan 11
+112 D.I. Jambu 7
+113 D.I. Jamur 39
+114 D.I. Janti 120
+115 D.I. Jati 8
+116 D.I. Jati 21
+117 D.I. Jati | 29
+118 D.I. Jati II 25
+119 D.I. Jeblok Pakel 9
+120 D.I. Jeblok Sedodol 13
+121 D.I. Jemberan 1
+122 D.I. Jenangan 93
+123 D.I. Jogowangsan/Ngijon 94
+124 D.I. Joho 48
+125 D.I. Joketro 23
+126 D.I. Joloindu 18
+127 D.I. Jrambahan 1
+128 D.I. Jumok 23
+129 D.I. Jurang Uluh 3
+130 D.I. Jurug 15
+131 D.I. Kali Nongko 11
+132 D.I. Kali Piji 2
+133 D.I. Kali Tengah 9
+134 D.I. Kanten 57

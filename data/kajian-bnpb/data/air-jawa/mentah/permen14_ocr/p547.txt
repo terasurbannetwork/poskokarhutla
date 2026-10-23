@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+547 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+23 D.I.A.T. Angkaes ANG - 036 4
+24 D.I.A.T. Angkaes ANG - 037 4
+25 D.I.A.T. Angkaes ANG - 038 3
+26 D.I.A.T. Angkaes ANG - 039 3
+27 D.I.A.T. Angkaes ANG - 040 3
+28 D.I.A.T. Angkaes ANG - 041 3
+29 D.I.A.T. Angkaes ANG - 042 4
+30 D.I.A.T. Angkaes ANG - 043 3
+31 D.I.A.T. Leuntolu APZ - 008 14
+32 D.I.A.T. Leuntolu APZ - 010 15
+33 D.I.A.T. Bakiruk BBKI - 018 14
+34 D.LA.T. Manumutil, Umaklaran BBUI - 019 15
+35 D.I.A.T. Umakatahan BBUI - 020 15
+36 D.I.A.T. Umakatahan BBUI - 021 12
+37 D.I.A.T. Umakatahan BBUI - 022 10
+38 D.I.A.T. Umakatahan BBUI - 023 12
+39 D.I.A.T. Umakatahan BBUI - 025 12
+40 D.LA.T. Laran,Umakatahan BBUI - 025 11
+41 D.I.A.T. Umakatahan BBUI - 026 10
+42 D.ILA.T. Umalawain BBWI - 005 12
+43 D.LA.T. Weoe BBWI - 007 14
+44 D.L.A.T. Webriamata BBWI - 008 12
+45 D.LA.T. Weoe BBWI - 009 10
+46 D.LA.T. Keetaull,Webriamata BBWI - 013 11
+47 D.LA.T. Keetaulll,Webriamata BBWI - 014 13
+48 D.I.A.T. Raimanu BDI - 043 14
+49 D.L.A.T. Kabuna BHI - 028 12
+50 D.I.A.T. Raimanu BLI - 044 12
+51 D.I.A.T. Raimanu BMI - 042 12
+52 D.I.A.T. Umakatahan BTW - 003 8
+53 D.LA.T. Kamanasa BTW - 004 8
+54 D.I.A.T. Mandeu BTW - 005 10
+55 D.LA.T. Umanenlawalu DW - 001 6
+56 D.I.A.T. Rainawe DW - 001A 3
+57 D.LA.T. Umanenlawalu DW - 002 5
+58 D.LA.T. Umanenlawalu DW - 002A 2
+59 D.LA.T. Umanenlawalu DW - 003 6
+60 D.I.A.T. Umanenlawalu DW - 004 6
+61 D.LA.T. Umanenlawalu DW - 005 5
+62 D.LA.T. Umanenlawalu DW - 006 5
+63 D.I.A.T. Umanenlawalu DW - 007 5
+64 D.LA.T. Umanenlawalu DW - 008 5
+65 D.LA.T. Umanenlawalu DW - 009 5
+66 D.ILA.T. Umanenlawalu DW - 010 6
+67 D.LA.T. Umanenlawalu DW - 011 5
+68 D.I.A.T. Umanenlawalu DW - 012 6
+69 D.LA.T. Umanenlawalu DW - 013 5
+70 D.ILA.T. Umanenlawalu DW - 014 6
+71 D.LA.T. Umanenlawalu DW - 015 5
+72 D.LA.T. Umanenlawalu DW - 016 5
+73 D.L.A.T. Bakiruk DW - 017 5
+74 D.L.A.T. Bakiruk DW - 018 5
+75 D.I.A.T. Angkaes DW - 019 6
+76 D.I.A.T. Angkaes DW - 020 5
+77 D.L.A.T. Bakiruk DW - 021 5
+78 D.I.A.T. Bakiruk DW - 022 5
+79 D.L.A.T. Bakiruk DW - 023 6
+80 D.I.A.T. Bakiruk DW - 024 6
+81 D.I.A.T. Bakiruk DW - 025 5
+82 D.I.A.T. Angkaes DW - 026 5
+83 D.I.A.T. Tabene DW - 027 5

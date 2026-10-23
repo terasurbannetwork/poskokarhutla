@@ -1,0 +1,77 @@
+#TATA_LETAK satu-tabel lebar=2480
+35 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+49 D.I. Srambang 126 Kabupaten Karanganyar z 68 Ha
+Kabupaten Sragen z 58 Ha
+50 D.I. Sudangan 379 Kabupaten Karanganyar z 291 Ha
+Kabupaten Sragen -z 88 Ha
+51 D.I. Temantenan 215 Kabupaten Karanganyar z 185 Ha
+Kabupaten Sragen z 30 Ha
+52 D.I. Trani 1.896 Kabupaten Karanganyar z 668 Ha
+Kabupaten Sukoharjo z 1.228 Ha
+53 D.I. Tritis 450 Kabupaten Karanganyar z 436 Ha
+Kabupaten Sukoharjo z 14 Ha
+54 D.I. Walikan 325 Kabupaten Karanganyar z 21 Ha
+Kabupaten Wonogiri z 304 Ha
+55 D.I. Jumeneng 753 Kabupaten Klaten z 63 Ha
+Kabupaten Sukoharjo z 690 Ha
+56 D.I. Nyaen/Tirip 362 Kabupaten Klaten z 156 Ha
+Kabupaten Sukoharjo z 206 Ha
+57 D.I. Braholo 192 Kabupaten Karanganyar z 102 Ha
+Kabupaten Wonogiri -z 90 Ha
+58 D.I. Semanding 125 Kabupaten Sukoharjo z 100 Ha
+Kabupaten Wonogiri - 25 Ha
+59 D.I. Mantren 112 Kabupaten Karanganyar z 82 Ha
+Kabupaten Surakarta z 30 Ha
+60 D.I. Lantung 138 Kabupaten Karanganyar -z 1 Ha
+Kabupaten Wonogiri z 137 Ha
+61 D.I. Nglasem 348 Kabupaten Karanganyar z 346 Ha
+Kabupaten Wonogiri z 2 Ha
+62 D.I. Brajan 137 Kabupaten Boyolali z 21 Ha
+Kabupaten Karanganyar z 116 Ha
+63 D.I. Jetis 814 Kabupaten Karanganyar z 22 Ha
+Kabupaten Sragen z 792 Ha
+64 D.I. Mindi 32 Kabupaten Karanganyar z 13 Ha
+Kabupaten Sukoharjo z 19 Ha
+65 D.I. Cangkring 168 Kabupaten Karanganyar z 18 Ha
+Kabupaten Sukoharjo z 150 Ha
+66 D.I. Blingi 12 Kabupaten Karanganyar z 12 Ha
+Kabupaten Sragen - Bendung
+67 D.I. Pulo 60 Kabupaten Karanganyar z 26 Ha
+Kota Surakarta -z 34 Ha
+68 D.I. Soropadan 504 Kabupaten Magelang z 207 Ha
+Kabupaten Temanggung z 297 Ha
+69 D.I. Watu Jagir 270 Kabupaten Purworejo z 210 Ha
+Kabupaten Wonosobo z 60 Ha
+70 D.I. Kalibutek 107 Kabupaten Magelang z 9 Ha
+Kabupaten Purworejo z 98 Ha
+71 D.I. Kali Sapi 1119 Kabupaten Banjarnegara z 883 Ha
+Kabupaten Banyumas z 236 Ha
+72 D.I. Piasa 439 Kabupaten Banjarnegara z 108 Ha
+Kabupaten Banyumas z 331 Ha
+73 D.I. Kebasen 651 Kabupaten Banyumas z 486 Ha
+Kabupaten Cilacap z 165 Ha
+74 D.I. Pribadi/Keli Jompo 102 Kabupaten Banyumas z 3 Ha
+Kabupaten Purbalingga z 99 Ha
+75 D.I. Bodag | 57 Kabupaten Banyumas z 32 Ha
+Kabupaten Purbalingga z 25 Ha
+76 D.I. Dwicupaksari 100 Kabupaten Banyumas z 91 Ha
+Kabupaten Purbalingga z 9 Ha
+77 D.I. Buniayu 220 Kabupaten Banyumas z 80 Ha
+Kabupaten Kebumen z 140 Ha
+
+IX PROVINSI D.I. YOGYAKARTA 35 4.909
+1 D.I. Grembyangan/Tirtorejo 541 Kabupaten Bantul -z 209 Ha
+Kabupaten Sleman z 332 Ha
+2 D.I. Semoyo 30 Kabupaten Bantul z 2 Ha
+Kabupaten Sleman z 28 Ha
+3 D.I. Kucir 61 Kabupaten Sleman z 0,23 Ha
+Kabupaten Bantul z 60,77 Ha
+4 D.I. Kuton 113 Kabupaten Bantul z 50 Ha
+Kabupaten Sleman z 63 Ha
+5 D.I. Madugondo 104 Kabupaten Bantul z 98 Ha
+Kabupaten Sleman z 6 Ha
+6 D.I. Dadapan 38 Kabupaten Bantul z 31 Ha
+Kabupaten Sleman z 7 Ha

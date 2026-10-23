@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+b Kab. Belu 37 7.483
+1 D.I. Ainiba 150
+2 D.I. Bauatok 100
+3 D.I. Buitasik 150
+4 D.I. Derok 100
+5 D.I. Halileki 450
+6 D.I. Halilulik 200
+7 D.I. Haliwen 600
+8 D.I. Holeki 450
+9 D.I. Kimbana 50
+10 D.I. Lalosuk 50
+11 D.I. Nubelu 128
+12 D.I. Raimetan 150
+13 D.I. Salore 150
+14 D.I. Seopasar 100
+15 D.I. Taeksoruk 150
+16 D.I. Takirin 120
+17 D.I. Teun 100
+18 D.I. Webuni 100
+19 D.I. Wekari 50
+20 D.I. Weoan 100
+21 D.I. Beabo 200
+22 D.I. Buburlaran 350
+23 D.I. Daris 80
+24 D.I. Dualasi Raiulun 200
+25 D.I. Ekin 50
+26 D.I. Halimodok 340
+27 D.I. Halisikun 200
+28 D.I. Hasmetan 250
+29 D.I. Kalamesak 75
+30 D.I. Lahurus 175
+31 D.I. Lelowai 140
+32 D.I. Leowalu 250
+33 D.I. Lo'okeu 175
+34 D.I. Mausaka 450
+35 D.I. Raiikun 350
+36 D.I. Tulatudik 150
+37 D.I. Webot 600
+c Kab. Ende 94 4.876
+1 D.I. Aebela 100
+2 D.I. Aejelo 35
+3 D.I. Aerea 35
+4 D.I. Aeteu 50
+5 D.I. Aewora 45
+6 D.I. Bhetolepe 90
+7 D.I. Boamuku 50
+8 D.I. Detu Age 30
+9 D.I. Detu Kana 74
+10 D.I. Detu Mbuja 100
+11 D.I. Detu Oka 90
+12 D.I. Detuboti 50
+13 D.I. Detudepa 110
+14 D.I. Detukepi 45
+15 D.I. Detulapu 10
+16 D.I. Detumbawa 15
+17 D.I. Detuoka 40
+18 D.I. Detupera 30
+19 D.I. Doka 45
+20 D.I. Ekolea | & II 75
+21 D.I. Hangalande 30
+#KANAN
+382
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Hobatuwa 15
+23 D.I. Kojanara 100
+24 D.I. Kombo 30
+25 D.I. Kopo Nio 50
+26 D.I. Ledandori 30
+27 D.I. Lokalande 30
+28 D.I. Lokaoja 30
+29 D.I. Lowoketo 30
+30 D.I. Lowolengge I 75
+31 D.I. Lowolengge II 75
+32 D.I. Lowombangga 140
+33 D.I. Lowoone 90
+34 D.I. Marakisa 16
+35 D.I. Marambemba | & II 25
+36 D.I. Mausambi 40
+37 D.I. Mbira Ndawa 50
+38 D.I. Mulu Ola 75
+39 D.I. Murunggu 15
+40 D.I. Nangamboa 40
+41 D.I. Napundora 50
+42 D.I. Ndito 100
+43 D.I. Ndondo 100
+44 D.I. Ngalu Polo 60
+45 D.I. Nggela 25
+46 D.I. Nio Wula 50
+47 D.I. Niomapa 30
+48 D.I. Niopanda 30
+49 D.I. Nuwa one 100
+50 D.I. Onelako 50
+51 D.I. Pu U Tuga 50
+52 D.I. Ranga 30
+53 D.I. Ranga Ria 50
+54 D.I. Rano 50
+55 D.I. Rano Wawo 50
+56 D.I. Ratebobi 110
+57 D.I. Ratemapa 20
+58 D.I. Ria Raja 50
+59 D.I. Rowombojo 50
+60 D.I. Sokobajo 35
+61 D.I. Sokomaki Kiri 102
+62 D.I. Sokonaja 35
+63 D.I. Sua Taka 50
+64 D.I. Tanali/Tenda Leo 52
+65 D.I. Tendarea 48
+66 D.I. Tiwu Mboja 100
+67 D.I. Tiwu Tenda 50
+68 D.I. Tiwunaba 20
+69 D.I. Watu Mere 8
+70 D.I. Watuneso I-II 100
+71 D.I. Waturaka 50
+72 D.I. Wolo Mage 25
+73 D.I. Wolo Oja 100
+74 D.I. Wolo Tolo 100
+75 D.I. Woloara 30
+76 D.I. Wologawi 50
+77 D.I. Wolomuku 80
+78 D.I. Wolosambi 7
+79 D.I. Wonda 20
+80 D.I. Dile 15
+81 D.I. Eko Ae 40
+82 D.I. Kopo One 7

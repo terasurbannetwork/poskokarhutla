@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+388 D.I. Pudak 16
+389 D.I. Pule 15
+390 D.I. Putri 8
+391 D.I. Radem 15
+392 D.I. Rahburan 13
+393 D.I. Randu I 31
+394 D.I. Randu II 18
+395 D.I. Rangon 40
+396 D.I. Rangon I # II 57
+397 D.I. Raongan 78
+398 D.I. Rawadawa 38
+399 D.I. Rawatapen 52
+400 D.I. Rembe I 28
+401 D.I. Rina 42
+402 D.I. Sadipa 11
+403 D.I. Salam 23
+404 D.I. Salam | 23
+405 D.I. Salam II 20
+406 D.I. Sampak 30
+407 D.I. Sapi 16
+408 D.I. Sarangan | 9
+409 D.I. Sarangan II 22
+410 D.I. Sarangan III 22
+411 D.I. Sawangan 128
+412 D.I. Sawangan 26
+413 D.I. Sawunggati II 25
+414 D.I. Sawungjati I 32
+415 D.I. Seling 29
+416 D.I. Seling 29
+417 D.I. Selo 5
+418 D.I. Semar 17
+419 D.I. Sengang 22
+420 D.I. Sengker 55
+421 D.I. Sengon 89
+422 D.I. Sengon 98
+423 D.I. Serang 53
+424 D.I. Sereh 17
+425 D.I. Sero 14
+426 D.I. Sibrama 25
+427 D.I. Sidarata 36
+428 D.I. Sidodadi 11
+429 D.I. Sidomas 28
+430 D.I. Siduda 25
+431 D.I. Sigodog 10
+432 D.I. Sigupit 138
+433 D.I. Sijambu 26
+434 D.I. Sijopak 22
+435 D.I. Sikandang 10
+436 D.I. Sikepel 58
+437 D.I. Sikepel 37
+438 D.I. Siketeng 20
+439 D.I. Sikuda 51
+440 D.I. Sikuda M
+441 D.I. Silangan 40
+442 D.I. Simawut 26
+443 D.I. Sipiti 7
+444 D.I. Sirongge 44
+445 D.I. Sitieng 52
+446 D.I. Sitieng | 35
+447 D.I. Sitieng II 13
+448 D.I. Situwangi 13
+#KANAN
+202
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+449 D.I. Situwangi 11
+450 D.I. Siwulung 17
+451 D.I. Slekat | 13
+452 D.I. Slekat II 24
+453 D.I. Sogati 36
+454 D.I. Sogra 11
+455 D.I. Sogra Yuda 30
+456 D.I. Soka 51
+457 D.I. Sokawera 79
+458 D.I. Sompok 49
+459 D.I. Srengseng 20
+460 D.I. Sumarus 72
+461 D.I. Sumba I 16
+462 D.I. Sumba II 17
+463 D.I. Sumber 25
+464 D.I. Sumurup 20
+465 D.I. Sungkalan 13
+466 D.I. Supit Urang 34
+467 D.I. Supit Urang 30
+468 D.I. Supiti 7
+469 D.I. Supiurang 47
+470 D.I. Surakrama 15
+471 D.I. Surati 11
+472 D.I. Susukan 51
+473 D.I. Susukan 56
+474 D.I. Suwuk 26
+475 D.I. Taliwangsan 2
+476 D.I. Talun 34
+477 D.I. Taman 32
+478 D.I. Tambak 40
+479 D.I. Tambak Baya 20
+480 D.I. Tambaknegara 35
+481 D.I. Tangsen I 20
+482 D.I. Tangsen II & III 27
+483 D.I. Tanjung 64
+484 D.I. Tapen 29
+485 D.I. Taruk 12
+486 D.I. Tawa 51
+487 D.I. Tawa 15
+488 D.I. Teki 20
+489 D.I. Tembong 52
+490 D.I. Tengah 153
+491 D.I. Tengah I 17
+492 D.I. Tengah II 28
+493 D.I. Tengah Prok 44
+494 D.I. Tenggarong 12
+495 D.I. Tepi Barak 50
+496 D.I. Tipar 36
+497 D.I. Tipar 13
+498 D.I. Tirta Jiwa 11
+499 D.I. Tlaga 70
+500 D.I. Tlaga 70
+501 D.I. Tlogodadap 89
+502 D.I. Tuban | 13
+503 D.I. Tuban II 20
+504 D.I. Tuk 19
+505 D.I. Tuk 18
+506 D.I. Tumiyang 22
+507 D.I. Tumpangsari 29
+508 D.I. Umbul 2
+509 D.I. Urang 11

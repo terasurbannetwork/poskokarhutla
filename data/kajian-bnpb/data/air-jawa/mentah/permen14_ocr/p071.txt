@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+107 D.I. Trieng Gadeng 200
+108 D.I. Ubun Raya 300
+109 D.I. Ulee Buket 200
+110 D.I. Ulee Buket 250
+111 D.I. Ulee Geudong 100
+112 D.I. Ulee Nyeu 80
+113 D.I. Urong Kayee Mirah 80
+114 D.I. Urong Mutui 300
+115 D.I. Urong Paku 90
+116 D.I. Uteun Punti 170
+117 D.I. Cot Seumunyong 150
+118 D.I. Guha Ulee 105
+| Kab. Bener Meriah 72 14.617
+1 D.I. Alue Rongkoa I & II 350
+2 D.I. Alur Gading 650
+3 D.I. Bale Atu | & II 465
+4 D.I. Bandar Lampahan 200
+5 D.I. Belang Tampu 125
+6 D.I. Bener Lukup 75
+7 D.I. Bintang Baru 75
+8 D.I. Blang Kucak 175
+9 D.I. Blang Panas 50
+10 D.I. Blang Sentang 165
+11 D.I. Bur Bale Tunyang 100
+12 D.I. Degol 110
+13 D.I. Delona Tue 283
+14 D.I. Desa Bakti Gedok 20
+15 D.I. Gedok 118
+16 D.I. Peteri Pintu'Godang 250
+17 D.I. Reje Gajah 265
+18 D.I. Reje Guru 200
+19 D.I. Rimba Raya | & II 452
+20 D.I. Ronga Ronga 150
+21 D.I. Sayeng 150
+22 D.I. Sp. Tiga Redelong 150
+23 D.I. Uring 150
+24 D.I. Weh Ilang Gale 100
+25 D.I. Wehni Pongas 150
+26 D.I. Wih Nutung Kala Nempan 450
+27 D.I. Wih Tenang Uken 100
+28 D.I. ArulPutih 150
+29 D.I. Blang Kuyu 450
+30 D.I. Bale 150
+31 D.I. Bener Kelipah 400
+32 D.I. Bener Lukup 70
+33 D.I. Bener Meriah 10
+34 D.I. Berawang Bontok 200
+35 D.I. Blang Ara 75
+36 D.I. Blang Rongka 250
+37 D.I. Blang Rakal 400
+38 D.I. Bujang 200
+39 D.I. Buntul Kemumu 300
+40 D.I. Gerpa 250
+41 D.I. Goneng 200
+42 D.I. Gunung Teririt 150
+43 D.I. Isag Busur 150
+44 D.I. Jelobok 100
+45 D.I. Jepal 150
+46 D.I. Jalung 200
+47 D.I. KalaNempan 150
+#KANAN
+71 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+48 D.I. Kanis 100
+49 D.I. Keloang 75
+50 D.I. Kenawat 200
+51 D.I. Lane 285
+52 D.I. Mantam 200
+53 D.I. Pajar Harapan 170
+54 D.I. Pante Raya 325
+55 D.I. Paya Baning 150
+56 D.I. Paya Dulu 200
+57 D.I. Paya Gajah 75
+58 D.I. Rusip 150
+59 D.I. SamarKilang 250
+60 D.I. Serule Kayu 75
+61 D.I. Suku Wih Ilana 150
+62 D.I. Tembolon 150
+63 D.I. Tetanyung 250
+64 D.I. Timang Gajah I 200
+65 D.I. Timang Gajah II 280
+66 D.I. Tunyang I dan II 400
+67 D.I. Tingkem Benyer 100
+68 D.I. Tingkem Asli 274
+69 D.I. Ujung Gele 475
+70 D.I. UmelahTiitit 200
+71 D.I. Ume Gelime 150
+72 D.I. Uning Bersah 200
+m Kab. Bireuen 71 12.025
+1 D.I. Alue Crot 75
+2 D.I. Alue Igeuh 50
+3 D.I. Alue Kambuk 65
+4 D.I. Alue Krub 100
+5 D.I. Alue Meuh 284
+6 D.I. Alue Puno 100
+7 D.I. Alue Teungoh 120
+8 D.I. Alue Tok Ben 157
+9 D.I. Batee Cut Lem 200
+10 D.I. Beunot 120
+11 D.I. Bintasa 242
+12 D.I. Blang Cirih 200
+13 D.I. Blang Drien 175
+14 D.I. Blang Gurun 200
+15 D.I. Blang Paloh | 154
+16 D.I. Buket Sudan 50
+17 D.I. Cot Lada 346
+18 D.I. Cot Mane 185
+19 D.I. Cot Mee 186
+20 D.I. Cot Teube 75
+21 D.I. Garap 75
+22 D.I. Glee Mendong 165
+23 D.I. le Rhob Barat 200
+24 D.I. le Rhob Timur 172
+25 D.I. Jaba 130
+26 D.I. Jeumpa Sikureung 50
+27 D.I. Jrang Blang Paloh 700
+28 D.I. Kareung Teuphet 246
+29 D.I. Kolam Sapi 171
+30 D.I. Lapang Timu 120
+31 D.I. Leubu 530
+32 D.I. Lhok Batee 129
+33 D.I. Lhok Pisang Canggang 75
+34 D.I. Meunasah Mee Rayeuk 376

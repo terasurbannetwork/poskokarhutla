@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+98 D.I. Way Embung Mojokerto Dusun Empat 111
+99 D.I. Way Embung Payung Rejo 31
+100 D.I. Way Embung SMK Segala Mider 26
+101 D.I. Way Embung Tawang 34
+102 D.I. Way Endeng 125
+103 D.I. Way Jaling 22
+104 D.I. Wav Karana Jawa 25
+105 D.I. Way Kemang Rawa 22
+106 D.I. Way Kemang Sukajaya 28
+107 D.I. Way Kemiri 60
+108 D.I. Way Kesih 44
+109 D.I. Way Keting 31
+110 D.I. Way Kijang Pekandangan Dusun Lima 24
+111 D.I. Way Kijang Pekandangan Dusun Tiga 35
+112 D.I. Way Kramat Srimulyo 25
+113 D.I. Way Krengseng 35
+114 D.I. Way Kupang Kawasan 37
+115 D.I. Way Langsep Payung Makmur 42
+116 D.I. Way Langsep Sampah Kalirejo 13
+117 D.I. Way Lima Kutowinangun 60
+118 D.I. Way Lungguh Sendang Asih 250
+119 D.I. Way Lunik Sendang Ayu 155
+120 D.I. Way Mamis 125
+121 D.I. Way Menanga Wirata Agung 115
+122 D.I. Way Montir 150
+123 D.I. Way Mulya Asih 32
+124 D.I. Way Musang 70
+125 D.I. Way Nyukang Harjo Dusun Empat 51
+126 D.I. Way Nyukang Harjo Dusun Lima 28
+127 D.I. Way Nyukang Harjo Dusun Tiga 33
+128 D.I. Way Padang Rejo Dusun Tiga 25
+129 D.I. Way Patoman 79
+130 D.I. Way Payung Makmur Dusun Lima 34
+131 D.I. Way Payung Makmur Dusun Tiga 26
+132 D.I. Way Payung Mulya Dusun Dua 34
+133 D.I. Way Payung Rejo Dusun Lima 33
+134 D.I. Way Payung Rejo Dusun Tiga 37
+135 D.I. Way Petung Daratan 31
+136 D.I. Way Rejo Mukti 14
+137 D.I. Way Riau Priangan 39
+138 D.I. Way Riden 328
+139 D.I. Way Rotan 158
+140 D.I. Way Sangon Ratu Dusun Lima 100
+141 D.I. Way Sangun Ratu 97
+142 D.I. Way Segala Mider 35
+143 D.I. Way Segurau 93
+144 D.I. Way Sendang Aji 75
+145 D.I. Way Sendang Mukti 128
+146 D.I. Way Sendang Retno 105
+147 D.I. Way Sido Luhur 200
+148 D.I. Way Sipin Kota Batu 120
+149 D.I. Way Sri Rejeki Kota Batu 48
+150 D.I. Way Sukajaya 43
+151 D.I. Way Sukajaya Dusun Empat 41
+152 D.I. Way Sulusuban 76
+153 D.I. Way Tawang Negeri 28
+154 D.I. Way Telogo Rejo 36
+155 D.I. Way Tias Kampung 54
+156 D.I. Way Timbul Rejo 108
+157 D.I. Way Timo 103
+158 D.I. Way Trenggalok 27
+#KANAN
+138
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+159 D.I. Way Tulung Tumi 22
+160 D.I. Way Dempo MojoKerto 17
+161 D.I. Way Embung Way Kibang 20
+162 D.I. Way Karang Gading Tanjung Rejo Hulu 65
+163 D.I. Way Suka Jaya-e 17
+d Kab. Lambuna Timur 56 4.903
+1 D.I. Way Andak 168
+2 D.I. Way Areng I 29
+3 D.I. Way Areng II 40
+4 D.I. Way Batu Keting 374
+5 D.I. Way Bekarang 29
+6 D.I. Way Beringin 106
+7 D.I. Way Handak II 53
+8 D.I. Way Kerikil 38
+9 D.I. Way Lehan 35
+10 D.I. Way Negara Batin 345
+11 D.I. Way Penet 21
+12 D.I. Way Pugung Raharjo 33
+13 D.I. Way Tangkit 20
+14 D.I. Way Tanjung Kusuma 19
+15 D.I. Way Tulung Binjai 29
+16 D.I. Way Tulung Braja 36
+17 D.I. Way Dewi Ayu 16
+18 D.I. Way Tanjung Kencana 18
+19 D.I. Way Tegal Yoso II 25
+20 D.I. Way Tulung Pies 21
+21 D.I. Ratna Daya 30
+22 D.I. Way Bandar 115
+23 D.I. Way Bekarang Bawah 106
+24 D.I. Way Braja Caka 117
+25 D.I. Way Braja Dewa 69
+26 D.I. Way Buana Sakti 57
+27 D.I. Way Bumi Tinggi 125
+28 D.I. Way Campang Pasik 28
+29 D.I. Way Cibrak 50
+30 D.I. Way Donomulyo Guruh 78
+31 D.I. Way Donomulyo | 40
+32 D.I. Way Donomulyo II 57
+33 D.I. Way Gunung Mado 18
+34 D.I. Way Ham Napal | 13
+35 D.I. Way Ham Napal II 13
+36 D.I. Way Kandis 56
+37 D.I. Way Karang Anom 210
+38 D.I. Way Kawat 114
+39 D.I. Way Mekar Karya 297
+40 D.I. Way Sadar Sriwijaya 60
+41 D.I. Way Sido Rahayu 335
+42 D.I. Way Sumber Daya 135
+43 D.I. Way Sumber Jaya 289
+44 D.I. Way Sumber Rejo 208
+45 D.I. Way Sumber Sari I 49
+46 D.I. Way Sumber Sari II 100
+47 D.I. Way Susukan 160
+48 D.I. Way Tajung Kesuma II 60
+49 D.I. Way Tambah Luhur I 45
+50 D.I. Way Tambah Luhur II 75
+51 D.I. Way Tegal Ombo I 52
+52 D.I. Way Tegal Ombo II 70
+53 D.I. Way Tegal Yoso 60
+54 D.I. Way Tulung Braja 36

@@ -1,0 +1,59 @@
+#TATA_LETAK satu-tabel lebar=2480
+487 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+7 D.LA.T. Tusam SDTS-008 7
+8 D.LA.T. Silangge SDTS-009 5
+9 D.LA.T. Tanjung Medan SDTS-010 6
+10 D.LA.T. Hutasuhut SDTS-011 6
+11 D.LA.T. Sibalacat SDTS-012 5
+12 D.LA.T. Siboris Dolok | SDTS-013 7
+13 D.LA.T. Siboris Dolok II SDTS-014 6
+14 D.LA.T. Unte Rudang SDTS-015 6
+15 D.LA.T. Siboris Lombang SDTS-016 5
+16 D.LA.T. Sayur Matinggi SDTS-017 6
+17 D.LA.T. Sayur Maincat | SDTS-018 5
+18 D.LA.T. Sayur Maincat II SDTS-019 5
+19 D.L.A.T. Sayur Maincat III SDTS-020 5
+20 D.I.A.T. Aek Buaton I SDTS-021 6
+21 D.I.A.T. Aek Buaton II SDTS-022 7
+22 D.LA.T. Muara Siregar SDTS-023 10
+23 D.I.A.T. Parau Sorot SDTS-024 12
+24 D.LA.T. Batang Baruhar SDTS-025 9
+a Kab. Tapanuli Utara 4 48
+1 D.LA.T. Narumonda | SETU - 031 12
+2 D.LA.T. Narumonda II SMTU - 030 12
+3 D.LA.T. Narumonda III SMTU - 032 12
+4 D.LA.T. Narumonda IV SMTU - 033 12
+h Kota Padana Sidempuan 1 5
+1 D.LA.T. Sitataring SDPSP - 001 5
+Il PROVINSI SUMATERA BARAT 49 994
+a Kab. Aaam 18 586
+1 D.LA.T. Surau Laut SL.PW.01 36
+2 D.LA.T. Bukareh BK.PW.02 36
+3 D.I.A.T. Bonjo I BJ.PW.03 38
+4 D.LA.T. Cibuk Ameh CA.PW.05 32
+5 D.L.A.T. Pinang PN.PW.06 45
+6 D.LA.T. Lundang LD.PW.09 40
+7 D.LA.T. Limo Balai LB.PW.11 46
+8 D.LA.T. Koto baru I KB.PW.12 30
+9 D.LA.T. Bukit Kulirik BKL.PW.13 45
+10 D.L.A.T. Koto Marapak | KM.PW.14 40
+11 D.LA.T. Tanjung Alam TA.PW.17 20
+12 D.LA.T. Koto Hilalang KHL.PW.18 20
+13 D.LA.T. Cacang Randah CR.PW.19 30
+14 D.LA.T. Koto Baru II KB.PW.22 20
+15 D.LA.T. Koto Marapak II KM.PW.23 38
+16 D.L.A.T. Tabek Sarik TS. 10
+17 D.LA.T. Air Tabik AT.PW.27 30
+18 D.I.A.T. Durian DR.PW.28 30
+19 D.LA.T. Aia Tabik II AT.PW.29 30
+20 D.I.LA.T. Pakan Sinayan PS.PW.30 20
+b Kab. Dharmasrava 1 24
+1 D.LA.T. Padang Duri PD.PW.26 24
+c Kab. Lima Puluh Kota 3 85
+1 D.LA.T. Sungai Talang STT.PW.21 35
+2 D.LA.T. Sungai Talang STT.PW.24 30
+3 D.LA.T. Sungai Talang STT.PW.25 20
+4 D.LA.T. Bukik Apik BA. PW. 26 20

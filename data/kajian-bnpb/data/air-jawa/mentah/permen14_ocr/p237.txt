@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+353 D.I. Lengkong 5
+354 D.I. Leri 19
+355 D.I. Leses 18
+356 D.I. Limbangan 6
+357 D.I. Lingi 15
+358 D.I. Lingseng 20
+359 D.I. Lingseng 4
+360 D.I. Lingseng 4
+361 D.I. Logung 30
+362 D.I. Londer 10
+363 D.I. Londong 31
+364 D.I. Lopang 21
+365 D.I. MA. Adem 10
+366 D.I. MA. Ayem 5
+367 D.I. MA. Gaheng 5
+368 D.I. MA. Gembongan 5
+369 D.I. MA. Gintung 5
+370 D.I. MA. Gintungan 5
+371 D.I. MA. Gintungan 13
+372 D.I. MA. Glenyah 14
+373 D.I. MA. Gunung 10
+374 D.I. MA. Gunung Manggis 4
+375 D.I. MA. Jengkol 25
+376 D.I. MA. Kajoran 25
+377 D.I. MA. Kemiri 12
+378 D.I. MA. Ketro 10
+379 D.I. MA. Kintelan 7
+380 D.I. MA. Lante 2
+381 D.I. MA. Legik 5
+382 D.I. MA. Legok 15
+383 D.I. MA. Makam Dowo 17
+384 D.I. MA. Mangli 10
+385 D.I. MA. Mangli 26
+386 D.I. MA. Merdiko 9
+387 D.I. MA. Mudal 4
+388 D.I. MA. Nam Nam 14
+389 D.I. MA. Omah 2
+390 D.I. MA. Pandansari 21
+391 D.I. MA. Pucung 1
+392 D.I. MA. Putih 28
+393 D.I. MA. Ringin 3
+394 D.I. MA. Salaman 6
+395 D.I. MA. Samar 9
+396 D.I. MA. Sebelok 4
+397 D.I. MA. Semampir 3
+398 D.I. MA. Semelong 4
+399 D.I. MA. Siribut 5
+400 D.I. MA. Soaka Watu 7
+401 D.I. MA. Srutu 7
+402 D.I. MA. Tengah a 6
+403 D.I. MA. Tengah b 4
+404 D.I. MA. Tlogo 23
+405 D.I. MA. Tlogo 46
+406 D.I. MA. Truko 9
+407 D.I. MA. Tumpah 12
+408 D.I. MA. Waru 6
+409 D.I. MA. Wero 2
+410 D.I. MA. Winong 11
+411 D.I. MA. Winong 4
+412 D.I. MA. Balong Duwur 11
+413 D.I. MA. Kesit 4
+#KANAN
+237 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+414 D.I. MA. Klumprit 31
+415 D.I. MA. Mudal 36
+416 D.I. MA. Pendil 2
+417 D.I. MA. Rejo 12
+418 D.I. MA. Rendeng 11
+419 D.I. MA. Sipancur 8
+420 D.I. MA. Sipayung 20
+421 D.I. MA. Uwak 1
+422 D.I. MA. Wiyu 2
+423 D.I. Majaran 1
+424 D.I. Manggis 6
+425 D.I. Manggis 10
+426 D.I. Manggis 4
+427 D.I. Manggis 2
+428 D.I. Manggis 7
+429 D.I. Mangun Balan 15
+430 D.I. Mangunsari 29
+431 D.I. Maron 12
+432 D.I. Mendahane 20
+433 D.I. Mendek 3
+434 D.I. Mendek 9
+435 D.I. Miri 11
+436 D.I. Miri Ombo 1
+437 D.I. Mojo/Sekrambilan 11
+438 D.I. Mojosem 60
+439 D.I. Monggang 17
+440 D.I. Montong a 4
+441 D.I. Montong b 10
+442 D.I. Mudal 19
+443 D.I. Mudal 238
+444 D.I. Mulyosari 43
+445 D.I. Nandu 45
+446 D.I. Nandu 12
+447 D.I. Ngaglik 7
+448 D.I. Ngampel 15
+449 D.I. Ngampel 5
+450 D.I. Ngampel Gado 2
+451 D.I. Ngandong 6
+452 D.I. Ngasem 5
+453 D.I. Ngasinan 10
+454 D.I. Ngasinan 14
+455 D.I. Ngebruk 9
+456 D.I. Ngendok 4
+457 D.I. Ngetuk 11
+458 D.I. Ngganblok 2
+459 D.I. Ngipik 13
+460 D.I. Ngluwung 1
+461 D.I. Ngrancah 14
+462 D.I. Ngrono 4
+463 D.I. Nloyo 8
+464 D.I. Nongko 10
+465 D.I. Pacar 101
+466 D.I. Pacet 7
+467 D.I. Pacul Srampongan 21
+468 D.I. Panggung 11
+469 D.I. Parakan Ka 22
+470 D.I. Parikesit 5
+471 D.I. Pasar 12
+472 D.I. Pawadan 7
+473 D.I. Payung 6
+474 D.I. Pelem 8

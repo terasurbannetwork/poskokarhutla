@@ -1,0 +1,59 @@
+#TATA_LETAK satu-tabel lebar=2480
+485 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+7 D.LA.T. Lhok Dalam PP 008 LS 40
+8 D.L.A.T. Blang Bitra PP 009 LS 40
+9 D.LA.T. Kampung Baro SP 013 LS 20
+10 D.I.A.T. Paya Pasi SP 015 LS 20
+11 D.LA.T. Blang Jambee SP 016LS 20
+12 D.LA.T. Julok Tunong SP 017 LS 20
+13 D.LA.T. Ujung Tunong | SP 020 LS 15
+14 D.LA.T. Ujung Tunong II SP 021 LS 10
+15 D.LA.T. Tumpuk Tengoh SP 022 LS 10
+16 D.LA.T. Blang Sleum II SP 023 LS 10
+17 D.LA.T. Matang SP 025 LS 10
+18 D.LA.T. Sematang SP 026 LS 15
+19 D.LA.T. Blang Gleum | SP 027 LS 20
+20 D.LA.T. Alue Cekdoi SP 028 LS 20
+21 D.LA.T. Paya Pasi II SP 062 LS 20
+22 D.LA.T. Sineubok Dalam II TW 022LS 10
+23 D.LA.T. Kemuning III B TW 023 LS 10
+24 D.LA.T. Bukit Seroja TW 006 LS 18
+25 D.LA.T. Sineubok Dalam I TW 004 LS 20
+26 D.LA.T. Tunong Paya Kreup TW 014LS 20
+a Kab. Aceh Utara 7 245
+1 D.LA.T. Nga | PP 010 LSK 40
+2 D.LA.T. Nga II PP 011 LSK 40
+3 D.LA.T. Bintang Hue PP 012 LSK 35
+4 D.LA.T. Nga III PP 015 LSK 40
+5 D.LA.T. Nga IV PP 016 LSK 40
+6 D.LA.T. Leupee SP 011 LSM 25
+7 D.LA.T. Minyee VII SP 012 LSM 25
+h Kab. Bireuen 1 20
+1 D.LA.T. Paya Ru SP 045 BR 20
+i Kab. Pidie 1 20
+1 D.LA.T. Mee SP 067 P 20
+i Kab. Pidie Java 2 75
+1 D.LA.T. Paya Pisang Klat PP 013P 40
+2 D.LA.T. Babah Krueng PP 014P 35
+Il PROVINSI SUMATERA UTARA 86 1.139
+a Kab. Asahan 8 169
+1 D.LA.T. Simpang Empat E- 016AS 21
+2 D.LA.T. Panjang | SDAS - 002 24
+3 D.LA.T. Panjang II SDAS - 003 22
+4 D.LA.T. Panjang III SDAS - 004 20
+5 D.LA.T. Siumbut-umbut | SDAS - 005 20
+6 D.LA.T. Siumbut-umbut II SDAS - 006 20
+7 D.LA.T. Siumbut-umbut III SDAS - 007 20
+8 D.LA.T. Simpang Empat SMAS - 001 22
+b Kab. Deli Serdana 29 379
+1 D.LA.T. Bandar Tongah SDDS - 010 6
+2 D.LA.T. Kayu Besar SDDS - 009 6
+3 D.LA.T. Gelam Serimah SDDS - 008 10
+4 D.LA.T. Kota Datar | SDDS - 021 18
+5 D.LA.T. Kota Datar II SDDS - 022 20
+6 D.I.A.T. Kota Rantang | SEDS - 016 8
+7 D.LA.T. Kota Rantang II SMDS - 017 10
+8 D.IL.A.T. Kota Rantang III SEDS - 018 9

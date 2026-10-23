@@ -1,0 +1,72 @@
+#TATA_LETAK satu-tabel lebar=2480
+17 2015, No.638
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+X PROVINSI JAWA TIMUR 12 138.964
+1 D.I. Asin Bawah 6.741 Kabupaten Madiun z 2.803 Ha
+Kabupaten Ponorogo z 3.938 Ha
+2 D.I. Bondoyudo 11.784 Kabupaten Jember z 10.897 Ha
+Kabupaten Lumajang z 887 Ha
+3 D.I. Delta Brantas 17.942 Kabupaten Mojokerto z 176 Ha
+Kabupaten Sidoarjo z 17.766 Ha
+4 D.I. Is Kedung Kandang 5.160 Kabupaten Malang z 4573 Ha
+Kota Malang - 587 Ha
+5 D.I. Jejeruk 5.064 Kabupaten Madiun z 43 Ha
+Kabupaten Magetan z 5.021 Ha
+6 D.I. Lodoyo 12.217 Kabupaten Blitar z 1.637 Ha
+Kabupaten Tulungagung - 10.580 Ha
+7 D.I. Menturus 3.632 Kabupaten Jombang - 409 Ha
+Kabupaten Mojokerto z 3.223 Ha
+
+8 D.I. Mrican 30.341 Mrican Kiri (12.729 Ha)
+Kabupaten Kediri z 375 Ha
+Kabupaten Nganjuk z 12.354 Ha
+Mrican Kanan (17.612 Ha)
+
+Kabupaten Jombang z 13.660 Ha
+Kabupaten Kediri z 3.952 Ha
+9 D.I. Padi Pomahan 4.309 Kabupaten Mojokerto z 4256 Ha
+Kota Mojokerto z 53 Ha
+10 D.I. Sampean Baru 7.854 Kabupaten Bondowoso z 1.908 Ha
+Kabupaten Situbondo z 5.946 Ha
+11 D.I. Sim 10.860 Kabupaten Madiun z 2.831 Ha
+Kabupaten Magetan z 3.749 Ha
+Kabupaten Ngawi z 3.833 Ha
+Kota Madiun z 447 Ha
+12 D.I. Siman 23.060 Kabupaten Jombang z 17.893 Ha
+Kabupaten Kediri z 4852 Ha
+Kabupaten Malang - 315 Ha
+
+XI PROVINSI BALI 3 17.834
+1 D.I. Tukad Ayung 9.598 Kabupaten Badung z 5.682 Ha
+Kabupaten Gianyar - 1.250 Ha
+Kabupaten Tabanan z 172 Ha
+Kota Denpasar z 2.493 Ha
+2 D.I. Tukad Penet 4.056 Kabupaten Badung - 1.948 Ha
+Kabupaten Tabanan z 1.092 Ha
+3 D.I. Tukad Unda 4.180 Kabupaten Karangasem z 2.272 Ha
+Kabupaten Klungkung z 1.908 Ha
+
+XII PROVINSI NUSA TENGGARA BARAT 1 3.589
+1 D.I. Pengga 3.589 Kabupaten Lombok Barat z 3.589 Ha
+Kabupaten Lombok Tengah - Bendungan
+
+XIII PROVINSI NUSA TENGGARA TIMUR 4 13.266
+1 D.I. Bena 3.514 Kabupaten Kupang - 114 Ha
+Kabupaten Timor Tengah Selatan z 3.400 Ha
+2 D.I. Haekto 3.250 Kabupaten Timor Tengah Selatan z 150 Ha
+Kabupaten Timor Tengah Utara z 3.100 Ha
+3 D.I. Lurasik 3.305 Kabupaten Belu z 100 Ha
+Kabupaten Timor Tengah Utara z 3.205 Ha
+4 D.I. Manikin 3.197 Kabupaten Kupang - 3.000 Ha
+Kota Kupang - 197 Ha
+
+XIV PROVINSI KALIMANTAN SELATAN 1 6.000
+1 D.I. Riam Kanan 6.000 Kabupaten Banjar - 5.000 Ha
+Kota Banjarbaru z 1.000 ha
+
+XV PROVINSI SULAWESI UTARA 1 3.820
+1 D.I. Dataran Kotamobagu 3.820 Kabupaten Bolaang Mongondow z 445 Ha
+Kab. Bolaang Mongondow Timur z 927 Ha
+Kota Kotamobagu z 2.448 Ha

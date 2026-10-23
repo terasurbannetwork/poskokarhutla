@@ -1,0 +1,215 @@
+{
+  "_catatan": "Angka rujukan paket air-jawa yang disalin tangan dari dokumen (bukan hasil hitung). Tiap butir punya sumber + tanggal akses + label. Label: resmi (instansi pemerintah, dokumen dibuka), terverifikasi (sumber primer non-pemerintah dibuka), sekunder (dari riset B: berita/ringkasan, dokumen primer BELUM dibuka; jangan dipakai sebagai angka utama), olah (hitungan penyusun riset B). Diperiksa oleh data/kajian-bnpb/bangun/air-jawa.py.",
+  "permen14_rekap": {
+    "_sumber": "Permen PUPR 14/PRT/M/2015, Berita Negara 2015 No. 638, Lampiran I hlm 13, Lampiran II hlm 29, Lampiran III hlm 63 (rekapitulasi per provinsi). Dibaca dari pindaian halaman (crop 200 dpi) 23 Okt 2026; cocok dengan OCR dan dengan riset B §4.1. File: data/kajian-bnpb/riset/mentah/bn638.pdf (https://peraturan.go.id/files/bn638-2015.pdf).",
+    "_kolom": "[jumlah DI, luas ha] per jenis irigasi; DKI Jakarta tidak tercantum di rekap (tidak ada DI)",
+    "pusat": {
+      "36": {"Permukaan": [5, 62209]},
+      "32": {"Permukaan": [20, 405510]},
+      "33": {"Permukaan": [33, 347674]},
+      "34": {"Permukaan": [3, 12460]},
+      "35": {"Permukaan": [32, 289508], "Tambak": [1, 3322]}
+    },
+    "provinsi": {
+      "36": {"Permukaan": [21, 29221], "Tambak": [1, 1635]},
+      "32": {"Permukaan": [97, 93736], "Tambak": [6, 6864]},
+      "33": {"Permukaan": [108, 86865]},
+      "34": {"Permukaan": [41, 13987]},
+      "35": {"Permukaan": [176, 164823], "Pompa": [2, 2305], "Tambak": [5, 6959]}
+    },
+    "kabkota": {
+      "36": {"Permukaan": [1327, 106938], "Pompa": [11, 1283], "Tambak": [54, 12644]},
+      "32": {"Permukaan": [4921, 350798], "Air Tanah": [234, 5722], "Tambak": [11, 9057]},
+      "33": {"Permukaan": [11401, 519265], "Air Tanah": [679, 16872], "Rawa": [21, 1556], "Tambak": [73, 6295]},
+      "34": {"Permukaan": [1235, 37986], "Air Tanah": [151, 6550], "Pompa": [3, 45]},
+      "35": {"Permukaan": [8703, 480352], "Air Tanah": [1573, 45288], "Pompa": [23, 3870], "Tambak": [12, 3525]}
+    },
+    "total_provinsi_tercetak": {
+      "_catatan": "kolom TOTAL di rekap; Jatim kab/kota tercetak 533.034 padahal jumlah kolom per jenis 533.035 (selisih 1 ha di dokumen sumber)",
+      "pusat": {"36": 62209, "32": 405510, "33": 347674, "34": 12460, "35": 292830},
+      "provinsi": {"36": 30856, "32": 100600, "33": 86865, "34": 13987, "35": 174087},
+      "kabkota": {"36": 120865, "32": 365577, "33": 543988, "34": 44581, "35": 533034}
+    }
+  },
+  "permen14_koreksi": {
+    "_catatan": "Salah baca OCR yang dibetulkan setelah melihat pindaian halaman (pdftoppm 80-100 dpi), 23 Okt 2026. kunci = 'hlm|potongan teks OCR'. Selain butir ini tidak ada angka yang disunting tangan.",
+    "subtotal_kab": {
+      "275|Temanaauna": [577, 17711],
+      "510|Gresik": [47, 733],
+      "259|Pemala": [91, 7341]
+    },
+    "total_di": {
+      "20|Bodri Trompo": 8861,
+      "45|Cisomang": 2117
+    }
+  },
+  "ws_permen04_2015": {
+    "_sumber": "Permen PUPR 04/PRT/M/2015 tentang Kriteria dan Penetapan Wilayah Sungai, Lampiran I (Berita Negara 2015 No. 429), https://peraturan.go.id/files/bn429-2015.pdf, diakses 23 Okt 2026; teks: mentah/permen04_2015.txt. Kategori: A2 lintas provinsi, A3 strategis nasional, B lintas kab/kota, C dalam satu kab/kota. Kode dicetak berulang antarkategori (mis. 02.05.A2 dan 02.05.B), jadi kunci = kode lengkap dengan akhiran kategori. Tanda * di dokumen tidak dijelaskan di lampiran.",
+    "label": "resmi",
+    "daftar": [
+      ["02.01.B", "Cibaliung-Cisawarna", "B", ["36"], null, false],
+      ["02.02.B", "Ciliman-Cibungur", "B", ["36"], null, false],
+      ["02.03.A2", "Cidanau-Ciujung-Cidurian", "A2", ["36", "32"], null, true],
+      ["02.04.C", "Kepulauan Seribu", "C", ["31"], "3101", true],
+      ["02.05.A2", "Ciliwung-Cisadane", "A2", ["31", "36", "32"], null, true],
+      ["02.05.B", "Cisadea-Cibareno", "B", ["32"], null, false],
+      ["02.06.A3", "Citarum", "A3", ["32"], null, true],
+      ["02.06.B", "Ciwulan-Cilaki", "B", ["32"], null, false],
+      ["02.09.A2", "Cimanuk-Cisanggarung", "A2", ["32", "33"], null, false],
+      ["02.09.B", "Pemali-Comal", "B", ["33"], null, false],
+      ["02.10.A2", "Citanduy", "A2", ["32", "33"], null, false],
+      ["02.10.A3", "Serayu-Bogowonto", "A3", ["33"], null, false],
+      ["02.11.B", "Bodri-Kuto", "B", ["33"], null, false],
+      ["02.12.C", "Kepulauan Karimunjawa", "C", ["33"], "3320", false],
+      ["02.13.C", "Wiso-Gelis", "C", ["33"], "3320", false],
+      ["02.14.A3", "Jratunseluna", "A3", ["33"], null, false],
+      ["02.17.A2", "Progo-Opak-Serang", "A2", ["34", "33"], null, false],
+      ["02.17.A3", "Brantas", "A3", ["35"], null, false],
+      ["02.18.A2", "Bengawan Solo", "A2", ["35", "33"], null, false],
+      ["02.18.B", "Madura-Bawean", "B", ["35"], null, false],
+      ["02.19.B", "Welang-Rejoso", "B", ["35"], null, false],
+      ["02.20.B", "Bondoyudo-Bedadung", "B", ["35"], null, false],
+      ["02.21.B", "Pekalen-Sampean", "B", ["35"], null, false],
+      ["02.22.B", "Baru-Bajulmati", "B", ["35"], null, false]
+    ],
+    "_kolom_daftar": ["kode", "nama", "kategori", "provinsi (urutan seperti dicetak)", "kab (hanya kategori C)", "bertanda_bintang"]
+  },
+  "bbws_permen_pu1_2025": {
+    "_sumber": "Permen PU 1/2025 tentang Organisasi dan Tata Kerja UPT di Kementerian Pekerjaan Umum, Lampiran A.2 (Nama, Lokasi, Wilayah Kerja), hlm. 76-77, https://peraturan.bpk.go.id/Download/377958/2025pmpu1.pdf, diakses 23 Okt 2026; teks: mentah/permen_pu1_2025_bbws.txt. Mencabut Permen PUPR 16/2020, 26/2020, 9/2024.",
+    "label": "resmi",
+    "daftar": [
+      ["BBWS Cidanau-Ciujung-Cidurian", "A", "Serang", ["Cidanau-Ciujung-Cidurian"]],
+      ["BBWS Ciliwung-Cisadane", "A", "Jakarta", ["Ciliwung-Cisadane"]],
+      ["BBWS Citarum", "A", "Bandung", ["Citarum"]],
+      ["BBWS Cimanuk-Cisanggarung", "A", "Cirebon", ["Cimanuk-Cisanggarung"]],
+      ["BBWS Pemali-Juana", "A", "Semarang", ["Jratunseluna"]],
+      ["BBWS Serayu-Opak", "A", "Yogyakarta", ["Serayu-Bogowonto", "Progo-Opak-Serang"]],
+      ["BBWS Bengawan Solo", "A", "Surakarta", ["Bengawan Solo"]],
+      ["BBWS Brantas", "A", "Surabaya", ["Brantas"]],
+      ["BBWS Citanduy", "B", "Banjar", ["Citanduy"]]
+    ],
+    "_kolom_daftar": ["nama", "tipe", "lokasi", "wilayah kerja (WS)"]
+  },
+  "ipa_pulau_2010": {
+    "_sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia 2020, Gbr. 2.5, mengutip Radhika dkk. (2013); https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf; dibaca riset B 23 Okt 2026 [TERVERIFIKASI].",
+    "label": "resmi",
+    "_kolom": ["pulau", "ketersediaan_m3s", "kebutuhan_dg_aliran_pemeliharaan_m3s", "ipa_persen", "kategori", "kebutuhan_tanpa_aliran_pemeliharaan_m3s", "ipa_tanpa_persen", "kategori_tanpa"],
+    "baris": [
+      ["Jawa", 5004.64, 2681.41, 54, "Kritis sedang", 2078.52, 42, "Kritis ringan"],
+      ["Sumatera", 25511.72, 7924.79, 31, "Kritis ringan", 1799.78, 7, "Tidak kritis"],
+      ["Bali-Nusa Tenggara", 1705.53, 781.32, 46, "Kritis ringan", 502.87, 29, "Kritis ringan"]
+    ],
+    "ipa_per_ws": "TIDAK DITEMUKAN dalam bentuk tabel terbuka (riset B §1.4): perlu Pola/RPSDA tiap WS (BBWS) atau teks penuh Radhika dkk. (2013)"
+  },
+  "neraca_jawa": {
+    "_sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",
+    "label": "resmi",
+    "butir": [
+      ["air_permukaan_m3s", 5567, "m3/s", "TRMM 2003-2015"],
+      ["air_permukaan_juta_m3_th", 175558, "juta m3/th", "TRMM 2003-2015"],
+      ["porsi_air_permukaan_nasional_persen", 6.3, "%", "olah riset B: 175.558/2.783.228"],
+      ["luas_km2", 132698, "km2", "luas dalam perhitungan"],
+      ["cat_jumlah", 80, "CAT", "KLH 2008"],
+      ["cat_luas_km2", 80936, "km2", "KLH 2008"],
+      ["cat_potensi_juta_m3", 41334, "juta m3", "KLH 2008"],
+      ["per_kapita_2020_m3", 1227, "m3/kapita/th", "BPS & Ditjen SDA via PT SMI 2017"],
+      ["per_kapita_2025_m3", 1178, "m3/kapita/th", "proyeksi"],
+      ["per_kapita_2030_m3", 1142, "m3/kapita/th", "proyeksi"]
+    ]
+  },
+  "cat_rusak_2023": {
+    "_sumber": "Pernyataan Plt. Kepala Badan Geologi Nov 2023 dikutip CNBC/Katadata/IDX (riset B §6.2) [SEKUNDER]; peta zona konservasi air tanah resmi tidak ditemukan terbuka",
+    "label": "sekunder",
+    "daftar": [["CAT Jakarta", ["31"]], ["CAT Karawang-Bekasi", ["32"]], ["CAT Serang-Tangerang", ["36"]], ["CAT Bogor", ["32"]], ["CAT Bandung-Soreang", ["32"]], ["CAT Pekalongan-Pemalang", ["33"]], ["CAT Semarang", ["33"]]]
+  },
+  "bendungan_pj2021": {
+    "_sumber": "BBWS Pemali Juana (2021). Daftar Inventarisasi Bendungan di Lingkungan BBWS Pemali Juana, status Juli 2021. https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf (salinan riset: data/kajian-bnpb/riset/mentah/pj.pdf, teks pj.txt), dibuka 23 Okt 2026. Disalin tangan dari pj.txt; jumlah kolom dicek ke baris TOTAL dokumen.",
+    "label": "resmi",
+    "total_dokumen": {"luas_genangan_ha": 6420.62, "vol_normal_juta_m3": 898.44, "vol_efektif_juta_m3": 790.19, "luas_genangan_2021_ha": 6295.04, "tampungan_2021_juta_m3": 801.93, "sedimentasi_juta_m3": 96.51, "piezometer": 543, "piezometer_rusak": 87},
+    "_kolom": ["no", "nama", "desa", "kecamatan", "kab_kode", "lintang_teks", "bujur_teks", "tahun_bangun", "pemanfaatan_desain", "pemanfaatan_2021", "luas_genangan_ha", "vol_normal_juta_m3", "vol_efektif_juta_m3", "luas_genangan_2021_ha", "tampungan_2021_juta_m3", "sedimentasi_juta_m3", "piezometer", "piezometer_rusak"],
+    "baris": [
+      [1, "Penjalin", "Winduaji", "Paguyangan", "3329", "7°19'36.37\" LS", "109°03'18.63\" BT", "1930-1934", "Irigasi 29.000 Ha", "Irigasi 26.952 Ha", 119.42, 9.5, 8.992, 119.42, 7.77, 1.73, 51, 12],
+      [2, "Cacaban", "Penujah", "Kedung Banteng", "3328", "7°0'23.76\" LS", "109°11'5.74\" BT", "1952-1958", "Irigasi 17.481 Ha", "Irigasi 7.439 Ha", 790, 90, 89.9, 695.27, 45.13, 44.87, 54, 10],
+      [3, "Jatibarang", "Kandri", "Gunungpati", "3374", "7°02'12\" LS", "110°21'01\" BT", "2009-2014", "Banjir 170 m3/dt (reduksi 56,40% Q50), Air Baku 1.050 Lt/dt, PLTMH 1,5 MW, wisata", "idem", 110, 20.4, 13.6, 110, 18.53, 1.87, 39, 11],
+      [4, "Klego", "Bade", "Klego", "3309", "7°21'43.34\" LS", "110°42'15.10\" BT", "1943; 1967-1971; 1987-1990", "Irigasi 874 Ha", "Irigasi 1.353 Ha", 72.5, 2.74, 2.14, 68.6, 2.1, 0.64, 20, 0],
+      [5, "Kedungombo", "Rambat", "Geyer", "3315", "7°15'(13.37-46.35)\" LS", "110°50'(10.95-37.60)\" BT", "1985-1989", "Irigasi 64.365 Ha, Banjir 2.469 m3/dt (31%), AB 1.700 Lt/dt, PLTA 25,07 MW", "Irigasi 60.920 Ha, Banjir 3.124 m3/dt (81%), AB 1.400 Lt/dt, PLTA 22,5 MW", 4600, 723, 634.6, 4704.62, 683.19, 39.81, 58, 3],
+      [6, "Sanggeh", "Tambirejo", "Toroh", "3315", "6°59'19.47\" LS", "111°13'21.61\" BT", "1909", "Irigasi 263 Ha", "Irigasi 50 Ha", 13.0, 0.225, 0.2, 10.39, 0.05, 0.18, 12, 3],
+      [7, "Simo", "Simo", "Kradenan", "3315", "7°12'04\" LS", "110°05'58\" BT", "1904", "Irigasi 482 Ha", "Irigasi 482 Ha", 16.23, 0.44, 0.103, 16.23, 0.075, 0.37, 15, 2],
+      [8, "Nglangon", "Nglangon", "Kradenan", "3315", "7°10'13.91\" LS", "111°8'25.57\" BT", "1911-1914", "Irigasi 750 Ha", "Irigasi 750 Ha", 17.0, 2.184, 1.104, 19.98, 0.944, 1.24, 20, 3],
+      [9, "Butak", "Butak Pakis", "Kradenan", "3315", "7°10'33\" LS", "111°10'05\" BT", "1901-1903", "Irigasi 366 Ha", "Irigasi 366 Ha", 13.02, 1.6, null, 12.54, 0.209, 1.39, 14, 3],
+      [10, "Logung", "Tanjungrejo", "Jekulo", "3319", "6°45'28.38\" LS", "110°55'20.27\" BT", "2015-2018", "Irigasi 2.821 Ha, Air Baku 105 Lt/dt, PLTA 0,5 MW", "idem", 122.89, 20.15, 13.72, 122.89, 20.15, 0.0, 41, 4],
+      [11, "Gembong", "Gembong", "Gembong", "3318", "6°41'45.17\" LS", "110°57'27.25\" BT", "1930-1933", "Irigasi 3.855 Ha", "Irigasi 4.606 Ha", 110.0, 9.5, 9.0, 110.0, 8.3, 1.2, 17, 9],
+      [12, "Gunungrowo", "Sitiluhur (teks: Siti Luhur)", "Gunungwungkal? (teks rusak: 'Gunung Rowo')", "3318", "7°21'43.34\" LS", "110°42'15.10\" BT", "1918-1925", "Irigasi 6.052 Ha", "Irigasi 3.921 Ha", 56.0, 5.16, 5.0, 47.19, 5.09, 0.1, 25, 0],
+      [13, "Grawan", "Grawan", "Sumber", "3318", "6°(46'50.58\"-47'01.68\") LS", "111°17'(24.72-35.82)\" BT", "2004", "Irigasi 160 Ha, Air Baku 6,431 Lt/dt", "idem", 17.92, 0.474, 0.472, 17.92, 0.442, 0.03, 36, 4],
+      [14, "Greneng", "Greneng", "Tunjungan", "3316", "6°54'37.09\" LS", "110°21'16.33\" BT", "1919", "Irigasi 251 Ha", "Irigasi 251 Ha", 81.0, 2.3, 1.907, 48.37, 1.734, 0.57, 25, 5],
+      [15, "Tempuran", "Tempuran", "Blora", "3316", "6°54'22.76\" LS", "111°27'55.88\" BT", "1914-1916", "Irigasi 420 Ha", "Irigasi 420 Ha", 57.0, 2.143, 1.7, 44.7, 1.761, 0.38, 29, 6],
+      [16, "Panohan", "Panohan", "Gunem", "3317", "6°49'13.644\" LS", "111°25'58.71\" BT", "2005-2010", "Irigasi 530 Ha, Air Baku 9,72 Lt/dt", "Irigasi 329 Ha", 18.01, 0.814, 0.711, 17.75, 0.73, 0.08, 29, 7],
+      [17, "Banyukuwung", "Sudo dan Sukorejo", "Sumber dan Sulang", "3317", "6°46'(48.06-51)\" LS", "111°19'(08.07-18.90)\" BT", "1995-1996", "Irigasi 775 Ha, Air Baku 20 Lt/dt", "idem", 95.63, 2.416, 2.176, 40.17, 1.43, 0.99, 26, 5],
+      [18, "Lodan", "Lodan", "Sarang", "3317", "6°47'35.51\" LS", "111°36'29.27\" BT", "2005-2007", "Irigasi 380 Ha, Air Baku 100 Lt/dt", "Irigasi 380 Ha, Air Baku 20 Lt/dt", 111, 5.39, 4.86, 89, 4.295, 1.095, 32, 0]
+    ]
+  },
+  "bendungan_riset_b": {
+    "_sumber": "Riset B §3.1-3.2 (data/kajian-bnpb/riset/B-air-jawa.md), diakses 23 Okt 2026. Hampir semua angka SEKUNDER (berita/artikel/abstrak); sumber primer (PJT II, PLN IP, BBWS) BELUM dibuka. Disimpan semua versi berdampingan.",
+    "_kolom": ["id", "nama", "kab_kode atau null", "ws_dasar_nama_sungai", "status", "angka: [besaran, nilai, satuan, tahun, label, catatan]"],
+    "baris": [
+      ["jatiluhur", "Jatiluhur (Ir. H. Djuanda)", "3214", "Citarum", "operasi", [["kapasitas", 3000, "juta m3", null, "sekunder", "versi 1; bertentangan"], ["kapasitas", 2440, "juta m3", null, "sekunder", "versi 2; bertentangan; minta data PJT II"], ["luas_di", 237790, "ha", 2015, "resmi", "DI Jatiluhur, Permen PUPR 14/2015 Lampiran I hlm 16"], ["sedimentasi_laju", 20, "juta m3/th", "1995-2009", "sekunder", "rata-rata; abstrak kajian, inkonsistensi satuan"], ["sedimentasi_kumulatif", 522, "juta m3", "36 tahun", "sekunder", "idem"]]],
+      ["cirata", "Cirata", null, "Citarum", "operasi", [["kapasitas", 2165, "juta m3", null, "sekunder", "versi 1; bertentangan"], ["kapasitas", 1900, "juta m3", null, "sekunder", "versi 2; bertentangan"]]],
+      ["saguling", "Saguling", null, "Citarum", "operasi", [["kapasitas", 982, "juta m3", null, "sekunder", ""], ["sedimentasi_laju_desain", 4.0, "juta m3/th", null, "sekunder", "repositori UPI"], ["sedimentasi_laju_terukur", 4.3, "juta m3/th", null, "sekunder", "repositori UPI"], ["sedimentasi_laju_studi_2016_min", 2.1, "juta m3/th", 2016, "sekunder", "bertentangan dengan 4,3"], ["sedimentasi_laju_studi_2016_maks", 2.58, "juta m3/th", 2016, "sekunder", ""]]],
+      ["jatigede", "Jatigede", "3211", "Cimanuk", "operasi (PLTA diresmikan 20 Jan 2025)", [["kapasitas", 979.5, "juta m3", null, "sekunder", "Bisnis, detik"], ["kapasitas_efektif", 700, "juta m3", null, "sekunder", "sekitar"], ["layanan_irigasi", 90000, "ha", null, "sekunder", "DI Rentang, sekitar"], ["air_baku", 3500, "l/s", null, "sekunder", ""]]],
+      ["gajahmungkur", "Gajah Mungkur (Wonogiri)", "3312", "Bengawan Solo", "operasi", [["kapasitas_total_min", 730, "juta m3", null, "sekunder", "730-735; beda basis elevasi"], ["kapasitas_total_maks", 735, "juta m3", null, "sekunder", ""], ["kapasitas_efektif", 433, "juta m3", 1983, "sekunder", "JICA"], ["kapasitas_efektif", 375, "juta m3", 2005, "sekunder", "JICA; hilang 58 juta m3"]]],
+      ["sutami", "Sutami (Karangkates)", "3507", "Brantas", "operasi", [["kapasitas", 343, "juta m3", null, "sekunder", "desain"], ["kapasitas", 178.16, "juta m3", 2019, "sekunder", "echosounding 2019, makalah SNTI UGM; 51,94% tersisa"]]],
+      ["karian", "Karian", "3602", "Ciujung (Ciberang)", "operasi", [["kapasitas", 314.7, "juta m3", null, "sekunder", "RRI, Suara Surabaya"], ["air_baku", 14.6, "m3/s", null, "sekunder", "untuk 9 kab/kota Banten-DKI"]]],
+      ["cipanas", "Cipanas", null, "Cimanuk-Cisanggarung (sungai Cipanas)", "operasi", [["kapasitas", 250.81, "juta m3", null, "sekunder", "Bisnis 2023; lokasi Sumedang/Indramayu"]]],
+      ["wonorejo", "Wonorejo", "3504", "Brantas", "operasi", [["kapasitas", 122, "juta m3", null, "sekunder", "awal"]]],
+      ["bener", "Bener", "3306", "Bogowonto", "konstruksi (target selesai 2026; PSN)", [["kapasitas_min", 90.93, "juta m3", null, "sekunder", "90,93-92"], ["kapasitas_maks", 92, "juta m3", null, "sekunder", ""], ["layanan_irigasi", 15519, "ha", null, "sekunder", ""], ["tinggi", 169, "m", null, "sekunder", "bukan 159 m"]]],
+      ["leuwikeris", "Leuwikeris", null, "Citanduy", "operasi", [["kapasitas", 81.44, "juta m3", null, "sekunder", "lokasi Ciamis/Tasikmalaya"]]],
+      ["bendo", "Bendo", "3502", "Bengawan Solo (DAS Madiun)", "operasi", [["kapasitas", 43, "juta m3", null, "sekunder", ""]]],
+      ["semantok", "Semantok", "3518", "Brantas", "operasi (diresmikan 20 Des 2022)", [["kapasitas", 32.67, "juta m3", null, "sekunder", ""], ["layanan_irigasi", 1900, "ha", null, "sekunder", ""]]],
+      ["pidekso", "Pidekso", "3312", "Bengawan Solo", "operasi (jaringan irigasi target 2026)", [["kapasitas", 25, "juta m3", null, "sekunder", ""]]],
+      ["kuningan", "Kuningan", "3208", "Cimanuk-Cisanggarung", "operasi", [["kapasitas", 25, "juta m3", null, "olah", "riset B: dari 'Cipanas 10x Kuningan'; angka resmi belum ditemukan"]]],
+      ["jlantah", "Jlantah", "3313", "Bengawan Solo", "konstruksi/operasi (belum dipastikan)", [["kapasitas", 10.97, "juta m3", null, "sekunder", ""]]],
+      ["gondang", "Gondang (Karanganyar)", "3313", "Bengawan Solo", "operasi", [["kapasitas", 9.15, "juta m3", null, "sekunder", "jangan tertukar dengan Gondang Lamongan"]]],
+      ["ciawi", "Ciawi (bendungan kering)", "3201", "Ciliwung", "operasi", [["kapasitas", 6.05, "juta m3", null, "sekunder", ""], ["reduksi_debit_desain", 111.75, "m3/s", null, "sekunder", ""], ["reduksi_banjir_mar2025", 20.87, "%", 2025, "sekunder", "267,17 -> 211,41 m3/s; BBWS Cilcis via detik"]]],
+      ["sukamahi", "Sukamahi (bendungan kering)", "3201", "Ciliwung", "operasi", [["kapasitas", 1.68, "juta m3", null, "sekunder", ""], ["reduksi_debit_desain", 15.47, "m3/s", null, "sekunder", ""], ["reduksi_banjir_mar2025", 7, "%", 2025, "sekunder", ""]]],
+      ["kedungombo", "Kedungombo", "3315", "Jratunseluna (sungai Serang)", "operasi", [["kapasitas", 723, "juta m3", null, "resmi", "riset B mengutip BBWS PJ 2021 (sama dengan inventaris)"], ["kapasitas", 683.19, "juta m3", 2021, "resmi", "idem"]]],
+      ["cacaban", "Cacaban", "3328", "Pemali-Comal", "operasi", [["kapasitas", 90, "juta m3", null, "resmi", "riset B mengutip BBWS PJ 2021"], ["kapasitas", 45.13, "juta m3", 2021, "resmi", "~50% hilang"]]],
+      ["jatibarang", "Jatibarang", "3374", "Jratunseluna (Kali Kreo)", "operasi", [["kapasitas", 20.4, "juta m3", null, "resmi", "riset B mengutip BBWS PJ 2021"], ["kapasitas", 18.53, "juta m3", 2021, "resmi", ""]]],
+      ["logung", "Logung", "3319", "Jratunseluna", "operasi", [["kapasitas", 20.15, "juta m3", null, "resmi", "riset B mengutip BBWS PJ 2021; efektif 13,72"]]],
+      ["penjalin", "Penjalin", "3329", "Pemali-Comal", "operasi", [["kapasitas", 9.5, "juta m3", null, "resmi", "riset B mengutip BBWS PJ 2021"], ["kapasitas", 7.77, "juta m3", 2021, "resmi", ""]]]
+    ],
+    "tidak_ditemukan": "Selorejo, Tukul, Sadawarna, Gongseng, Lesti: kapasitas andal TIDAK DITEMUKAN (riset B)"
+  },
+  "wikidata_qid": {
+    "_catatan": "Koordinat bendungan dari Wikidata (query.wikidata.org, ditarik 23 Okt 2026, mentah/wikidata_bendungan.json). Bukan sumber resmi; tiap titik dicek jatuh di poligon kab yang disebut sumber (public/geo/kabupaten). Untuk 18 bendungan BBWS PJ, koordinat resmi dokumen diutamakan bila lolos cek poligon.",
+    "jatiluhur": "Q25165545", "cirata": "Q25162749", "saguling": "Q25162574", "jatigede": "Q6164572", "gajahmungkur": "Q48802911",
+    "sutami": "Q25284229", "karian": "Q125680573", "cipanas": "Q24989988", "wonorejo": "Q12475724", "bener": "Q110897946",
+    "leuwikeris": "Q125680902", "bendo": "Q25261783", "pidekso": "Q125680868", "kuningan": "Q109431043",
+    "kedungombo": "Q48785416", "cacaban": "Q11133631", "jatibarang": "Q28725174", "logung": "Q19744944", "penjalin": "Q25121708",
+    "gunungrowo": "Q12523796", "lodan": "Q26739460", "banyukuwung": "Q32694631", "nglangon": "Q25153868"
+  },
+  "subsiden_riset_b": {
+    "_sumber": "Riset B §6.1 (data/kajian-bnpb/riset/B-air-jawa.md), diakses 23 Okt 2026. Label terverifikasi = abstrak jurnal dibuka riset B; sekunder = berita/ringkasan. Satuan dinormalkan ke cm/th. Per kota: JANGAN diturunkan ke kab lain.",
+    "_kolom": ["kota_kunci", "wilayah_literatur", "kab_kode (yang disebut literatur)", "min_cm_th", "maks_cm_th", "besaran", "periode", "metode", "sitasi", "url", "label"],
+    "baris": [
+      ["jakarta", "Jakarta", [], 3, 10, "tipikal", "1982-2014", "leveling, GPS, InSAR", "Abidin dkk. (2015) PIAHS 370", "https://doi.org/10.5194/piahs-370-15-2015", "terverifikasi"],
+      ["jakarta", "Jakarta", [], 0.1, 8.0, "rentang", "2015-2020", "satelit (BRIN)", "BRIN via Tempo (2022)", "https://en.tempo.co/amp/1597858/brin-java-panturas-land-subsidence-up-to-20cm-per-year", "sekunder"],
+      ["jakarta", "Jakarta Utara dan Cikarang", ["3172", "3216"], null, null, "terbesar (tanpa angka)", "2017-2022", "SBAS InSAR C-band", "Harintaka dkk. (2024) Geocarto Int. 39", "https://doi.org/10.1080/10106049.2024.2364726", "terverifikasi"],
+      ["semarang", "Semarang utara-timur dan Demak", ["3374", "3321"], 10, 12, "maksimum 100-120 mm/th", "2015-2022", "SBAS InSAR Sentinel-1", "Aditiya & Ito (2023) JAG", "http://www.sciencedirect.com/science/article/pii/S156984322300403X", "terverifikasi"],
+      ["kendal", "Kendal", ["3324"], null, 5, "50 mm/th", "2015-2022", "SBAS InSAR Sentinel-1", "Aditiya & Ito (2023) JAG", "http://www.sciencedirect.com/science/article/pii/S156984322300403X", "terverifikasi"],
+      ["semarang", "Semarang", ["3374"], 0.9, 6.0, "rentang", "2015-2020", "satelit (BRIN)", "BRIN via Tempo (2022)", "https://en.tempo.co/amp/1597858/brin-java-panturas-land-subsidence-up-to-20cm-per-year", "sekunder"],
+      ["pekalongan", "Pekalongan", ["3375"], 10, 19, "rentang", "2014-2022", "PS-InSAR ALOS-2", "Widodo dkk. (2024) Urban Science 8(4) 234", "https://www.mdpi.com/2413-8851/8/4/234", "terverifikasi"],
+      ["pekalongan", "Pekalongan", ["3375"], 12, 30, "rentang", "pernyataan 13 Nov 2024", "pernyataan Deputi Bappenas", "Investor Trust (2024)", "https://investortrust.id/national/47409/bappenas-ungkap-penurunan-tanah-pantura-di-pekalongan-capai-30-cm-per-tahun", "sekunder"],
+      ["pekalongan", "Pekalongan", ["3375"], 2.1, 11.0, "rentang", "2015-2020", "satelit (BRIN)", "BRIN via Tempo (2022)", "https://en.tempo.co/amp/1597858/brin-java-panturas-land-subsidence-up-to-20cm-per-year", "sekunder"],
+      ["bandung", "Kab. Bandung dan Bandung Barat", ["3204", "3217"], null, 22.3, "tertinggi 0,223 dan 0,22 m/th", "Sentinel-1", "InSAR Sentinel-1", "Virtriana dkk. (2026) Geoenvironmental Disasters 13", "https://doi.org/10.1186/s40677-026-00420-5", "terverifikasi"],
+      ["bandung", "Cekungan Bandung", [], -13.3, 9.8, "rentang -133 s.d. +98 mm/th (konvensi tanda sumber, tidak ditafsirkan)", "2019", "PS-InSAR Sentinel-1A", "Sari dkk. (2024) Jurnal Elkomika 12(4)", "https://doi.org/10.26760/elkomika.v12i4.1116", "terverifikasi"],
+      ["bandung", "Cekungan Bandung", [], 8, 23, "rata-rata ~8, lokal ~23", "2000-2011", "GPS/InSAR", "ringkasan Abidin dkk.", null, "sekunder"],
+      ["surabaya", "Surabaya pesisir utara-timur", ["3578"], 0.02, 8.33, "rentang 0,2-83,3 mm/th", "studi 2022", "GPS", "ITS", null, "sekunder"],
+      ["surabaya", "Surabaya", ["3578"], -4, 3, "rentang -40 s.d. +30 mm/th LOS (konvensi tanda sumber, tidak ditafsirkan)", "2015-2017", "SBAS Sentinel-1", "ITS", null, "sekunder"],
+      ["pantura", "Pantura (Jakarta, Pekalongan, Semarang, Demak)", [], null, null, ">= ~9x laju kenaikan muka laut global", "2010-2021", "GNSS kontinu 20 stasiun", "Susilo dkk. (2023) Scientific Data 10", "https://doi.org/10.1038/s41597-023-02274-0", "terverifikasi"]
+    ]
+  },
+  "subsiden_kota_kab": {
+    "_catatan": "Kunci kota di public/banjir/data/subsiden_literatur.json -> kab yang disebut literatur (titik peraga = pusat kab berbobot penduduk dari scripts/udara/kota.json; untuk 'Jakarta' dipakai rerata pusat 5 kota administrasi DKI). Medan di luar Jawa, tidak dipakai.",
+    "jakarta": [], "semarang": ["3374"], "pekalongan": ["3375"], "surabaya": ["3578"], "cirebon": ["3274"], "kendal": ["3324"], "bandung": ["3273"], "pantura": []
+  }
+}

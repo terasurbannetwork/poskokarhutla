@@ -1,0 +1,84 @@
+#TATA_LETAK satu-tabel lebar=2480
+459 2015, No.638
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+6 D.I.R. Berdikari 500
+7 D.I.R. Buntoi 600
+8 D.I.R. Dandang I 525
+9 D.I.R. Dandang II 600
+10 D.I.R. Desa Pangkoh Hilir 675
+11 D.I.R. Desa Pangkoh Hulu 720
+12 D.I.R. Garong 325
+13 D.I.R. Garong Seberang 600
+14 D.I.R. Gohong 750
+15 D.I.R. Hambawang 450
+16 D.I.R. Handil Hambiye 300
+17 D.I.R. Henda 600
+18 D.I.R. Jabiren 450
+19 D.I.R. Kalawa 650
+20 D.I.R. Kanamit Kampung 550
+21 D.I.R. Karya Bersama 700
+22 D.I.R. Kiapak 250
+23 D.I.R. Maliku Lama 650
+24 D.I.R. Mantaren Seberang 400
+25 D.I.R. Mintin I 397
+26 D.I.R. Mintin II 425
+27 D.I.R. Pilang 420
+28 D.I.R. Saka Kajang 400
+29 D.I.R. Sebangau Permai I 650
+30 D.I.R. Sebangau Permai II 325
+31 D.I.R. Sei Baru Tewu 580
+32 D.I.R. Sei Gohong 500
+33 D.I.R. Simpur 200
+34 D.I.R. Talio Muara 450
+35 D.I.R. Terusan Batu Raya | 500
+36 D.I.R. Terusan Batu Raya II 345
+37 D.I.R. Tumbang Nusa 50
+38 D.I.R. Tuwumg Lama 50
+39 D.I.R. Unit Mantaren II 640
+40 D.I.R. Unit Paduran II 420
+41 D.I.R. Unit Paduran III 615
+i Kab. Seruvan 13 2.970
+1 D.I.R. Ayap Batu Haramaung 10
+2 D.I.R. Ayap Sepeda 30
+3 D.I.R. Bakung Permai 150
+4 D.I.R. Bangkal 200
+5 D.I.R. Keramat 400
+6 D.I.R. Pasipu 300
+7 D.I.R. Pematang Buluh 100
+8 D.I.R. Pembuang Hulu | 80
+9 D.I.R. Sebulu 50
+10 D.I.R. Seruyan I 300
+11 D.I.R. Seruyan II 750
+12 D.I.R. Seruyan III 200
+13 D.I.R. Seruyan IV 400
+k Kab. Sukamara 20 5.342
+1 D.I.R. Balai Riam 38
+2 D.I.R. Basarang Natai Sedawak 125
+3 D.I.R. Beruntung Jaya 879
+4 D.I.R. Bukit Sungkai (SPI) 50
+5 D.I.R. Danau Purun 220
+6 D.I.R. Lupu 100
+7 D.I.R. Pangkalan Muntai 35
+8 D.I.R. Pondok Panjang 50
+9 D.I.R. Pulau Nibung 600
+10 D.I.R. Sambas 35
+11 D.I.R. Sei Rampas 50
+12 D.I.R. Sepakat 50
+13 D.I.R. Sido Rukun 53
+14 D.I.R. Sungai Baru 265
+15 D.I.R. Sungai Baru 520
+16 D.I.R. Sungai Bundung 672
+17 D.I.R. Sungai Damar 845
+18 D.I.R. Sungai Raja 554
+19 D.I.R. Tajur Siku 50
+20 D.I.R. Terantang 151
+| Kota Palanaka Rava 11 2.637
+1 D.I.R. Bereng Bengkel 300
+2 D.I.R. Bukit Tunggal 130
+3 D.I.R. Gaung Baru 95
+4 D.I.R. Habaring Hurung 225
+5 D.I.R. Kalampangan 982
+6 D.I.R. Kameloh Baru 170
+7 D.I.R. Mungku Baru 75
+8 D.I.R. Petuk Bukit 50

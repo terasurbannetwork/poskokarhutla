@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+173 D.I. Komplang 21
+174 D.I. Komplang 3
+175 D.I. Konto 4
+176 D.I. Kopo 6
+177 D.I. Kracan 90
+178 D.I. Krai 14
+179 D.I. Krajan 17
+180 D.I. Krajan 4
+181 D.I. Krincing 15
+182 D.I. Menadi 17
+183 D.I. Mendang 18
+184 D.I. Menjangan 5
+185 D.I. Mentoro 14
+186 D.I. Menur 10
+187 D.I. Miri-Miri 10
+188 D.I. Mlati Kanan 87
+189 D.I. Mlati Kiri 51
+190 D.I. Mloko 6
+191 D.I. Montongan 8
+192 D.I. Mujing 16
+193 D.I. Mujing 10
+194 D.I. Nalangan 75
+195 D.I. Ngagik 13
+196 D.I. Ngagik 8
+197 D.I. Ngalian 23
+198 D.I. Ngamblo 20
+199 D.I. Ngampo 10
+200 D.I. Ngancar 13
+201 D.I. Ngapak 7
+202 D.I. Ngaren 40
+203 D.I. Ngelo 8
+204 D.I. Ngelo 5
+205 D.I. Ngepoh 30
+206 D.I. Ngepring 1
+207 D.I. Ngewer 1
+208 D.I. Ngile 19
+209 D.I. Nglegok 7
+210 D.I. Nglenjoh 6
+211 D.I. Ngremeng 2
+212 D.I. Ngreno 1
+213 D.I. Ngringin 12
+214 D.I. Ngumbul 29
+215 D.I. Nogosari I 28
+216 D.I. Nogosari li 25
+217 D.I. Nyemono 8
+218 D.I. P. Wulung 10
+219 D.I. Padi 49
+220 D.I. Padi 7
+221 D.I. Padi 6
+222 D.I. Pager 13
+223 D.I. Pagerlor 8
+224 D.I. Pagersari 61
+225 D.I. Pagersari 15
+226 D.I. Pagotan 24
+227 D.I. Pait 3
+228 D.I. Pakel 17
+229 D.I. Pakis Tangkil 8
+230 D.I. Pandaan 11
+231 D.I. Panjing 10
+232 D.I. Papringan 15
+233 D.I. Pasar Legi 15
+#KANAN
+349 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+234 D.I. Patok Suru 12
+235 D.I. Payungan 8
+236 D.I. Pelawan 12
+237 D.I. Pelem Sengir 8
+238 D.I. Pengkol 5
+239 D.I. Plelesan 55
+240 D.I. Pletes 33
+241 D.I. Plukisan 14
+242 D.I. Podang 24
+243 D.I. Pojok 6
+244 D.I. Pokbem 5
+245 D.I. Poko 17
+246 D.I. Poko 4
+247 D.I. Poletan 21
+248 D.I. Pondok 25
+249 D.I. Pucung 18
+250 D.I. Pucung 6
+251 D.I. Pucung 2
+252 D.I. Pule 3
+253 D.I. Punjung 16
+254 D.I. R. Asri Ki 3
+255 D.I. R. Asri Kn 1
+256 D.I. Randualas 20
+257 D.I. S. Agung 3
+258 D.I. S. Nginuman 20
+259 D.I. Salam 29
+260 D.I. Salam 7
+261 D.I. Salamrejo 27
+262 D.I. Sampang 8
+263 D.I. Sanggrahan 39
+264 D.I. Saren 10
+265 D.I. Sawahan 10
+266 D.I. Sawahlor 4
+267 D.I. Sawit 47
+268 D.I. Sb. Ampik-Ampik 5
+269 D.I. Sb. Balong 10
+270 D.I. Sb. Beji 14
+271 D.I. Sb. Beji 10
+272 D.I. Sb. Beji 6
+273 D.I. Sb. Blimbing 5
+274 D.I. Sb. Bogohan 22
+275 D.I. Sb. Bulu 12
+276 D.I. Sb. Bungur 1
+277 D.I. Sb. Ciger 21
+278 D.I. Sb. Dadapan 3
+279 D.I. Sb. Dondong 3
+280 D.I. Sb. Duren 8
+281 D.I. Sb. Duren 5
+282 D.I. Sb. Duren 3
+283 D.I. Sb. Gemaharjo 2
+284 D.I. Sb. Glinggangan 15
+285 D.I. Sb. Gondang 3
+286 D.I. Sb. Grejo 10
+287 D.I. Sb. Jambon 8
+288 D.I. Sb. Janglot 6
+289 D.I. Sb. Jaten 7
+290 D.I. Sb. Jurugmaling 5
+291 D.I. Sb. Kaliuni 12
+292 D.I. Sb. Kaliuni 2
+293 D.I. Sb. Kasihan 7
+294 D.I. Sb. Kendal 3

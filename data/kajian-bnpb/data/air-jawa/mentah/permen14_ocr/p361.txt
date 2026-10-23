@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+12 D.I. Dharma Camplong 44
+13 D.I. Malakah 30
+14 D.I. Montor 231
+15 D.I. Pompa Penyeburan 90
+16 D.I. Sumber Angsokah 3
+17 D.I. Sumber Batu Karang 42
+18 D.I. Sumber Bira Timur 70
+19 D.I. Sumber Dawuhan 10
+20 D.I. Sumber Dlupangan 5
+21 D.I. Sumber Jungkarang 3
+22 D.I. Sumber Karang Taman 5
+23 D.I. Sumber Kermata 5
+24 D.I. Sumber Kodas 90
+25 D.I. Sumber Nanga 33
+26 D.I. Sumber Napo Laok 35
+27 D.I. Sumber Nyukapah 15
+28 D.I. Sumber Omben 350
+29 D.I. Sumber Otok 10
+30 D.I. Sumber Pakes 10
+31 D.I. Sumber Penang 10
+32 D.I. Sumber Rabasan 15
+33 D.I. Sumber Rajah 10
+34 D.I. Sumber Rapa Day 10
+35 D.I. Sumber Rapa Laok 40
+36 D.I. Sumber Taman 22
+37 D.I. Sumber Telandung 144
+38 D.I. Sumber Umbul 25
+39 D.I. Asam Nonggal 40
+40 D.I. Dam Kotah 25
+41 D.I. Majengan 10
+x Kab. Sidoario 18 4.118
+1 D.I. Buntung 86
+2 D.I. Kragan 33
+3 D.I. Jomblong 42
+4 D.I. Karangbong | 46
+5 D.I. Karangbong II 136
+6 D.I. Buluhbendo 55
+7 D.I. Wilayit I 29
+8 D.I. Wilayit II 268
+9 D.I. Bader 392
+10 D.I. Kali Pucang 283
+11 D.I. Kedungnguling Kanan 691
+12 D.I. Kedungnguling Kiri 386
+13 D.I. Kedungpandan 186
+14 D.I. Jatianom 348
+15 D.I. Gedeg 139
+16 D.I. Kedungan 191
+17 D.I. Kaligawir 323
+18 D.I. Bahgepuk 484
+v Kab. Situbondo 232 9.311
+1 D.I. Acem 9
+2 D.I. Arah 10
+3 D.I. Arah 3
+4 D.I. Arbaman 58
+5 D.I. Asem 78
+6 D.I. Baderan 155
+7 D.I. Bales 2
+8 D.I. Basiyan 17
+9 D.I. Batu Ampar I 2
+#KANAN
+- 1015, No.638
+361 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+10 D.I. Batu Ampar II 1
+11 D.I. Batu Lawang 9
+12 D.I. Batu Ondo 16
+13 D.I. Batu Prao 10
+14 D.I. Batu Remuk 13
+15 D.I. Bayeman 774
+16 D.I. Bije 46
+17 D.I. Biser 20
+18 D.I. Biung 8
+19 D.I. Blindung 9
+20 D.I. Bluncong 16
+21 D.I. Bt. Koong 17
+22 D.I. Bujudan 27
+23 D.I. Bukor 10
+24 D.I. Bungor 56
+25 D.I. Bunut 54
+26 D.I. Burne 13
+27 D.I. Buteng 15
+28 D.I. Cangkreng 156
+29 D.I. Cempaluk 18
+30 D.I. Ceracap 32
+31 D.I. Cereme 18
+32 D.I. Corah 10
+33 D.I. Cr. Taman Kursi 43
+34 D.I. Curah suri 237
+35 D.I. D. Kusia 15
+36 D.I. Dakoan 33
+37 D.I. Dawuhan-Biting 469
+38 D.I. Deluwang 12
+39 D.I. Diprak 97
+40 D.I. Duren 28
+41 D.I. Duren 1
+42 D.I. Gadingan 70
+43 D.I. Gayam 67
+44 D.I. Glindung 11
+45 D.I. Gn. Dembuk 38
+46 D.I. Gua 11
+47 D.I. Gugur A 10
+48 D.I. Gugur B 3
+49 D.I. Jeruk 30
+50 D.I. Jeruk A 6
+51 D.I. Jeruk A 3
+52 D.I. Jeruk B 22
+53 D.I. Jeruk B 6
+54 D.I. Juglangan 33
+55 D.I. Kalorkoran 202
+56 D.I. Kedawung 11
+57 D.I. Kembang | 12
+58 D.I. Kembang II 13
+59 D.I. Kemiri 8
+60 D.I. Kemuning 11
+61 D.I. Kerbui 18
+62 D.I. Kesambi I 35
+63 D.I. Klatakan 23
+64 D.I. Klenang 12
+65 D.I. Klompang | 9
+66 D.I. Kokap 21
+67 D.I. Kolpoh 9
+68 D.I. Komis 15
+69 D.I. Koncean 25
+70 D.I. Kumbangsari 129

@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 546
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+74 D.L.A.T. Lab Haji SPS 189 20
+75 D.I.A.T. Lab Haji SPS 190 20
+76 D.I.A.T. Bantu Lanteh SPS 191 20
+77 D.L.A.T. Kalabeso SPS 230 20
+a Kab. Sumbawa Barat 2 33
+1 D.LA.T. Mapin Kebak SES 022 13
+2 D.LA.T. Rempe SPS 138 20
+XI PROVINSI NUSA TENGGARA TIMUR 1.049 7.413
+a Kab. Alor 25 250
+1 D.LA.T. Alor Besar AAM - 023 10
+2 D.LA.T. Alila | AEI - 010 10
+3 D.LA.T. Kaka Mauta | AEK - 020 10
+4 D.LA.T. Benlelang AEN - 013 10
+5 D.LA.T. Benlelang AEN - 014 10
+6 D.LA.T. Kokar AKM - 025 10
+7 D.L.A.T. Mali AMM - 026 10
+8 D.LA.T. Mola I APA - 007 10
+9 D.LA.T. Mola II APA - 011 10
+10 D.LA.T. Morba I APB - 007 10
+11 D.LA.T. Morba II APB - 009 10
+12 D.LA.T. Habeleng APH -15 10
+13 D.LA.T. Alila II API - 012 10
+14 D.LA.T. Kaka Mauta II APK - 021 10
+15 D.LA.T. Petleng APL - 001 10
+16 D.LA.T. Petleng APL - 003 10
+17 D.LA.T. Alor Besar APR - 017 10
+18 D.ILA.T. Watutuku APR - 018 10
+19 D.LA.T. Song Melong APS - 016 10
+20 D.I.A.T. Penating APT - 002 10
+21 D.I.A.T. Penating APT - 004 10
+22 D.I.A.T. Penating APT - 006 10
+23 D.I.A.T. Lebur APU - 019 10
+24 D.I.A.T. Watutuku AWM - 022 10
+25 D.I.A.T. Welai Timur (Ktr DPR) AWM - 024 10
+b Kab. Belu 154 766
+1 D.LA.T. Angkaes ANG - 001 3
+2 D.LA.T. Angkaes ANG - 002 3
+3 D.LA.T. Angkaes ANG - 003 3
+4 D.LA.T. Angkaes ANG - 004 3
+5 D.LA.T. Angkaes ANG - 005 3
+6 D.LA.T. Angkaes ANG - 006 3
+7 D.LA.T. Angkaes ANG - 007 3
+8 D.I.A.T. Angkaes ANG - 008 3
+9 D.LA.T. Angkaes ANG - 009 3
+10 D.I.A.T. Angkaes ANG - 010 3
+11 D.LA.T. Angkaes ANG - 011 3
+12 D.LA.T. Angkaes ANG - 014 3
+13 D.LA.T. Angkaes ANG - 015 3
+14 D.LA.T. Angkaes ANG - 016 3
+15 D.LA.T. Angkaes ANG - 017 3
+16 D.ILA.T. Angkaes ANG - 018 3
+17 D.LA.T. Angkaes ANG - 022 3
+18 D.ILA.T. Angkaes ANG - 023 4
+19 D.LA.T. Angkaes ANG - 028 3
+20 D.I.A.T. Angkaes ANG - 029 3
+21 D.I.A.T. Angkaes ANG - 034 3
+22 D.I.A.T. Angkaes ANG - 035 3

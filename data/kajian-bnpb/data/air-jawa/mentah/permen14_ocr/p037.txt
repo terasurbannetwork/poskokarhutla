@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+37 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+7 D.I. Kebalon 107 Kabupaten Malang z 10 Ha
+Kota Malang z 97 Ha
+8 D.I. Losawi 39 Kabupaten Malang z 37 Ha
+Kota Malang -z 2 Ha
+9 D.I. Ngukir 282 Kabupaten Malang z 168 Ha
+Kota Batu z 114 Ha
+10 D.I. Pakis 726 Kabupaten Malang z 723 Ha
+Kota Malang z 3 Ha
+11 D.I. Peniwen 63 Kabupaten Malang z 26 Ha
+Kota Malang z 37 Ha
+12 D.I. Podokaton 70 Kabupaten Malang z 15 Ha
+Kota Malang z 55 Ha
+13 D.I. Sedudut 53 Kabupaten Malang z 12 Ha
+Kota Malang z M1 Ha
+14 D.I. Sengkaling Kanan 193 Kabupaten Malang z 21 Ha
+Kota Malang z 172 Ha
+15 D.I. Sengkaling Kiri 455 Kabupaten Malang z 16 Ha
+Kota Malang -z 439 Ha
+16 D.I. Sumber Tekik 16 Kabupaten Malang z 15 Ha
+Kota Malang - 1 Ha
+17 D.I. Sumber Turus 32 Kabupaten Malang z 19 Ha
+Kota Malang z 13 Ha
+18 D.I. Trimo Semut 46 Kabupaten Malang -z 2 Ha
+Kota Malang z 44 Ha
+19 D.I. Urung-Urung 59 Kabupaten Malang z 56 Ha
+Kota Malang z 3 Ha
+20 D.I. Turi 119 Kabupaten Malang z 54 Ha
+Kota Malang z 65 Ha
+21 D.I. Sbr. Gayam 1.926 Kabupaten Trenggalek z 465 Ha
+Kabupaten Tulungagung z 1.461 Ha
+22 D.I. Kaliboto 165 Kabupaten Blitar z 157 Ha
+Kabupaten Tulungagung z 8 Ha
+23 D.I. Paingan 551 Kabupaten Trenggalek z 18 Ha
+Kabupaten Tulungagung z 533 Ha
+24 D.I. Widoro 2.946 Kabupaten Trenggalek z 1411 Ha
+Kabupaten Tulungagung z 1.535 Ha
+25 D.I. Sukorame 69 Kabupaten Blitar z 33 Ha
+Kota Blitar -z 36 Ha
+26 D.I. Jempor 54 Kabupaten Blitar z 2 Ha
+Kota Blitar z 52 Ha
+27 D.I. Tambakrejo I 23 Kabupaten Blitar z 2 Ha
+Kota Blitar z 21 Ha
+28 D.I. Rembang 42 Kabupaten Blitar z 33 Ha
+Kota Blitar -z 9 Ha
+29 D.I. Plosotengah 51 Kabupaten Blitar z 13 Ha
+Kota Blitar z 38 Ha
+30 D.I. Sawahan 82 Kabupaten Blitar z 18 Ha
+Kota Blitar z 64 Ha
+31 D.I. Ngrebo 62 Kabupaten Blitar z 10 Ha
+Kota Blitar z 52 Ha
+32 D.I. Jatinom 56 Kabupaten Blitar z 51 Ha
+Kota Blitar z 5 Ha
+33 D.I. Sumber Tulung 38 Kabupaten Blitar z 14 Ha
+Kota Blitar z 24 Ha
+34 D.I. Sumber Berjo 45 Kabupaten Blitar z 13 Ha
+Kota Blitar z 32 Ha
+35 D.I. Jaten Termas 461 Kabupaten Blitar z 34 Ha
+Kabupaten Kediri z 427 Ha
+36 D.I. Gunting 369 Kabupaten Kediri z 171 Ha
+Kota Kediri z 198 Ha
+37 D.I. Kembangan 281 Kabupaten Kediri z 196 Ha
+Kota Kediri -z 85 Ha
+38 D.I. Klitik Bendokrosok 332 Kabupaten Kediri z 186 Ha
+Kota Kediri z 146 Ha
+39 D.I. Klitih Kresek 108 Kabupaten Kediri z 75 Ha
+Kota Kediri z 33 Ha
+40 D.I. Ngaglik 98 Kabupaten Kediri -z 63 Ha
+Kota Kediri z 35 Ha
+41 D.I. Ngablak 245 Kabupaten Kediri z 209 Ha
+Kota Kediri -z 36 Ha
+42 D.I. Bujel 113 Kabupaten Kediri z 74 Ha
+Kota Kediri -z 39 Ha

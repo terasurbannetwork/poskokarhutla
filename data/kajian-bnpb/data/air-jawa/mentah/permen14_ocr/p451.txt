@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+119 D.I. Salu Batito'-Batu 47
+120 D.I. Salu Bone 35
+121 D.I. Salu Bulung 51
+122 D.I. Salu Gallo' 89
+123 D.I. Salu Kalimbung 55
+124 D.I. Salu Kanan 61
+125 D.I. Salu Kapa' 47
+126 D.I. Salu Kariango-Bu'buk 69
+127 D.I. Salu Lebani' 34
+128 D.I. salu Pandan 60
+129 D.I. Salu Roroan 65
+130 D.I. Salu Sekong 62
+131 D.I. Salu Se'pon 51
+132 D.I. Salu Sopai 60
+133 D.I. salu Tobabangan-Kalintaro 61
+134 D.I. Salu To'duran 60
+135 D.I. Salu To'karoa 90
+136 D.I. Salu Tolambun 21
+137 D.I. Salukoyan Kalembang 40
+138 D.I. Sapan 70
+139 D.I. Sarambu 37
+140 D.I. Sarambu Pollo' Tendok 40
+141 D.I. Saruang 60
+142 D.I. Sikuku 34
+143 D.I. Sumalu 40
+144 D.I. Tanete Appang 89
+145 D.I. Tangbanga Tatia' 58
+146 D.I. Tangdok Deata 75
+147 D.I. Tarra' Sarong 37
+148 D.I. Tei' (Doi) 40
+149 D.I. To' Nase 71
+150 D.I. To' Rante 53
+151 D.I. To'i Rangri 37
+152 D.I. Toloda 85
+153 D.I. Tomerauk 59
+154 D.I. Tosalu To'punti 60
+155 D.I. To'tabang 32
+156 D.I. To'ttuyu Limbonglangi- Tiromanda 67
+157 D.I. To'yasa Akung 97
+158 D.I. Tumpang 64
+159 D.I. Tumpang Ranteaa' 30
+160 D.I. Turunan 60
+161 D.I. Ulusalu-Lombok 90
+162 D.I. Urang-Urang 56
+Uu Kab. Waio 126 17.504
+1 D.I. Abaderange 500
+2 D.I. Amasengeng | 200
+3 D.I. Amasengeng II 300
+4 D.I. Bakke 80
+5 D.I. Bulupatila 240
+6 D.I. Labawang 113
+7 D.I. Lakatenni 300
+8 D.I. Pabbelle 308
+9 D.I. Salampi 200
+10 D.I. Salo Mapejie 100
+11 D.I. Teppo Balanda 200
+12 D.I. Ugi I/Manyili 300
+13 D.I. Uraiyang 108
+14 D.I. Wajo Wajo 200
+15 D.I. Abbolongeng 40
+#KANAN
+451 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+16 D.I. Aggattungeng 40
+17 D.I. Ajutalie 60
+18 D.I. Anasaloe 150
+19 D.I. Assorajang 60
+20 D.I. Batue 150
+21 D.I. Bulu Mallopie 300
+22 D.I. Bulu Seppang 20
+23 D.I. Bunga Jenne 65
+24 D.I. Cekke 85
+25 D.I. Ceppaga 150
+26 D.I. Cingki 100
+27 D.I. Ciromanie 100
+28 D.I. Cirowalie 50
+29 D.I. Aluppang 100
+30 D.I. Ana' Saloe 130
+31 D.I. Atapangnge 100
+32 D.I. Bali Elo 70
+33 D.I. Barangmamase 50
+34 D.I. Bontto Tanre 250
+35 D.I. Botto Benteng 300
+36 D.I. Bulutekaci 260
+37 D.I. Callaccu 30
+38 D.I. Cempalagi 70
+39 D.I. Cenrana 300
+40 D.I. Dori-Dori 30
+41 D.I. Genddongnge 275
+42 D.I. Ire'E 50
+43 D.I. Jarakania 80
+44 D.I. Kalidongnge 200
+45 D.I. Karamee 100
+46 D.I. Labbukang 100
+47 D.I. Labuangpatu 150
+48 D.I. Laceppung I 40
+49 D.I. Laceppung II 40
+50 D.I. Lakadaung 10
+51 D.I. Lamaggarang 60
+52 D.I. Lamalua 50
+53 D.I. Lamara Awotarae 30
+54 D.I. Lamate 200
+55 D.I. Lamessi 50
+56 D.I. Lapatoleng 500
+57 D.I. Laputeng 100
+58 D.I. Lare'E 200
+59 D.I. Larukkaeto 30
+60 D.I. Limpomajang 120
+61 D.I. Lompo Labawi Masara 80
+62 D.I. Lompo Labojo 400
+63 D.I. Lompo Towesse 500
+64 D.I. Macero 320
+65 D.I. Malingmongeng 100
+66 D.I. Maminasae 200
+67 D.I. Manri 200
+68 D.I. Manurung 20
+69 D.I. Maroanging 70
+70 D.I. Maroanging 130
+71 D.I. OngkoE/Salotengnga 100
+72 D.I. Palaguna 50
+73 D.I. Palalloi 350
+74 D.I. Pangempangnge 160
+75 D.I. Parigi 150
+76 D.I. Pasa-Pasa 70

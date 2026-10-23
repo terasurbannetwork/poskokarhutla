@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+161 D.I. Pandanrejo II 45
+162 D.I. Pandansari | 19
+163 D.I. Pandansari II 37
+164 D.I. Parang Klakah 2
+165 D.I. Paras 105
+166 D.I. Pasir 239
+167 D.I. Pateguhan 128
+168 D.I. Patok Picis 78
+169 D.I. Patuksari 42
+170 D.I. Pekalongan 5
+171 D.I. Peniwen (Kec. Kromengan) 173
+172 D.I. Permanu 67
+173 D.I. Petungsewu 85
+174 D.I. Pidek 414
+175 D.I. Plandungan 31
+176 D.I. Plaosan 77
+177 D.I. Pohgajih 11
+178 D.I. Precet 11
+179 D.I. Purworejo I (Kec. Singosari) 54
+180 D.I. Purworejo I (Kec. Donomulyo) 128
+181 D.I. Purworejo II (Kec. Singosari) 8
+182 D.I. Purworejo II (Kec. Donomulyo) 100
+183 D.I. Pusung Gendruo | 5
+184 D.I. Pusung Gendruo II 1
+185 D.I. Putat 136
+186 D.I. Putuk 81
+187 D.I. Rekesan 31
+188 D.I. Rowo Klampok 52
+189 D.I. Rukem 17
+190 D.I. Santren 50
+191 D.I. Sat 29
+192 D.I. Sedawun 10
+193 D.I. Segaran 18
+194 D.I. Sekaran 178
+195 D.I. Sekintel 19
+196 D.I. Selorejo I 34
+197 D.I. Selorejo II 35
+198 D.I. Semanding 15
+199 D.I. Sepanjang 177
+200 D.I. Seplupuh | 2
+201 D.I. Simping 13
+202 D.I. Slamet (Kec. Kromengan) 5
+203 D.I. Slampar 27
+204 D.I. Slatri I 7
+205 D.I. Slatri II 6
+206 D.I. Slatri II 5
+207 D.I. Slatri A 1
+208 D.I. Slatri B 1
+209 D.I. Sobrah I 26
+210 D.I. Sobrah II 6
+211 D.I. Soko 15
+212 D.I. Songko 1
+213 D.I. Songko Kidul 3
+214 D.I. Songko Lor 1
+215 D.I. Songko Lor B 1
+216 D.I. Sonosari 801
+217 D.I. Sringin 36
+218 D.I. Sudimoro 55
+219 D.I. Sukoharjo 25
+220 D.I. Sukorejo I 9
+221 D.I. Sukorejo II 15
+#KANAN
+335 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+222 D.I. Sumber Ampel II 37
+223 D.I. Sumber Aran-Aran 3
+224 D.I. Sumber Beji 72
+225 D.I. Sumber Bendo 25
+226 D.I. Sumber Bening 157
+227 D.I. Sumber Brangkang 96
+228 D.I. Sumber Buntu 127
+229 D.I. Sumber Buntung (Kec.Bululawang) 12
+230 D.I. Sumber Buntung (Kec. Poncokusumo) 98
+231 D.I. Sumber Buntung/Sumber Petung II 10
+232 D.I. Sumber Bureng I 367
+233 D.I. Sumber Bureng II 172
+234 D.I. Sumber Bureng III 355
+235 D.I. Sumber Cokro 8
+236 D.I. Sumber Dayang 57
+237 D.I. Sumber Dem 33
+238 D.I. Sumber Dempok 10
+239 D.I. Sumber Dewo 33
+240 D.I. Sumber Dukuh 36
+241 D.I. Sumber Empos 43
+242 D.I. Sumber Gedang 6
+243 D.I. Sumber Gelang 7
+244 D.I. Sumber Gempol 5
+245 D.I. Sumber Jae 6
+246 D.I. Sumber Jambe 231
+247 D.I. Sumber Jeding (Kec. Wajak) 86
+248 D.I. Sumber Jenon 82
+249 D.I. Sumber Jodo 7
+250 D.I. Sumber Jubel 59
+251 D.I. Sumber Kajar 24
+252 D.I. Sumber Kajaran 111
+253 D.I. Sumber Kebo 3
+254 D.I. Sumber Kemado 11
+255 D.I. Sumber Kembar 7
+256 D.I. Sumber Kepatihan 7
+257 D.I. Sumber Ketitang 14
+258 D.I. Sumber Kokopan 8
+259 D.I. Sumber Kotes (Segaran/Gedangan) 53
+260 D.I. Sumber Kotes (Ngajum/Ngajum) 20
+261 D.I. Sumber Lebak 109
+262 D.I. Sumber Manggis (Kec. Singosari) 46
+263 D.I. Sumber Manggis (Kec. Tirtoyudo) 4
+264 D.I. Sumber Mati 10
+265 D.I. Sumber Ngenep 45
+266 D.I. Sumber Nongko 37
+267 D.I. Sumber Pakem 30
+268 D.I. Sumber Pandanrejo (Kec. Jabung) 16
+269 D.I. Sumber Petungwulung 19
+270 D.I. Sumber Picis 26
+271 D.I. Sumber Pijetan 7
+272 D.I. Sumber Polaman (Kec. Dampit) 5
+273 D.I. Sumber Polaman (Kec. Lawang) 53
+274 D.I. Sumber Polo 2
+275 D.I. Sumber Pring 133
+276 D.I. Sumber Pucang 5
+277 D.I. Sumber Putuk 67
+278 D.I. Sumber Rampal (Kec. Poncokusumo) 51
+279 D.I. Sumber Rampal (Kec. Wajak) 16
+280 D.I. Sumber Rejo/Bekur 10
+281 D.I. Sumber Salam 2
+282 D.I. Sumber Sekaran 47

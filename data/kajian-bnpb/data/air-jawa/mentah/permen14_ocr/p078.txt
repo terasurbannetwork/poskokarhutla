@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+68 D.I. Negeri Gugung 32
+69 D.I. Paluh Kemiri 234
+70 D.I. Paluh Manan 450
+71 D.I. Paya Itik 570
+72 D.I. Pematang Biara 832
+73 D.I. Pematang Johar 530
+74 D.I. Petangguhan 487
+75 D.I. Petumbukan 100
+76 D.I. Pisang Pala 100
+77 D.I. Rumah Kinangkung 65
+78 D.I. Rumah Pil Pil 50
+79 D.I. Rumah Rih 211
+80 D.I. Rumah Sumbul 70
+81 D.I. Sala Bulan 33
+82 D.I. Sei Kaheng 43
+83 D.I. Sei Tuan 150
+84 D.I. Serba Jadi I 251
+85 D.I. Serbajadi II 78
+86 D.I. Sigara Gara 45
+87 D.I. Sikeben 60
+88 D.I. Silue Lue 45
+89 D.I. Suka Maju 4
+90 D.I. Suka Raya 180
+91 D.I. Suka Rende 150
+92 D.I. Sumber Mulyo Rejo 550
+93 D.I. Talun Kenas 34
+94 D.I. Tandem Hilir II 600
+95 D.I. Tanjung Beringin 40
+96 D.I. Tanjung Garbus Kpg 70
+97 D.I. Tanjung Mulia Baru 72
+98 D.I. Tanjung Mulia Lama 75
+99 D.I. Tanjung Selamat 40
+100 D.I. Tanjung Siporkis 450
+101 D.I. Telaga Tujuh 600
+102 D.I. Teratak 74
+103 D.I. Tiang Layar 60
+104 D.I. Tiga Juhar 56
+105 D.I. Tumpatan Nibung 150
+106 D.I. Ujung Labuhan 110
+107 D.I. Ujung Rambe 105
+108 D.I. Urug Sigedang 25
+e Kab. Humbana Hasundutan 135 21.279
+1 D.I. Dolok Sait/Pasaribu 60
+2 D.I. Gaman 40
+3 D.I. Lobu Tua 250
+4 D.I. Matiti 125
+5 D.I. Pea Raja Sihite 150
+6 D.I. Silaga-laga 150
+7 D.I. Aek tobing 118
+8 D.I. Hutabagasan 260
+9 D.I. Burburan 100
+10 D.I. Rura pea bolak 129
+11 D.I. Aek Lung I 165
+12 D.I. Aek Lung II 150
+13 D.I. Tali Bon Bon 100
+14 D.I. Situmandi 101
+15 D.I. Pakkat Toruan 165
+16 D.I. Hutgurgur 281
+17 D.I. Tambok P. Bangkitan 65
+18 D.I. Pea 185
+#KANAN
+18
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+19 D.I. Roba 175
+20 D.I. Sosor Sibaso 75
+21 D.I. Sianak Anak 190
+22 D.I. Bangkitan Sileang 100
+23 D.I. Tambok Lalo 75
+24 D.I. Tambok Sangge Sangge 80
+25 D.I. Sihomur Homur 50
+26 D.I. Sihora Hora 100
+27 D.I. Parsambilan 60
+28 D.I. Hutajulu 102
+29 D.I. Tambok Tolong 85
+30 D.I. Aek Sihatunggal 450
+31 D.I. Aek Rugi Rugi 700
+32 D.I. Aek Paung 162
+33 D.I. Tinombuk 300
+34 D.I. Sosor Napa 250
+35 D.I. Ria Ria 650
+36 D.I. Tambok Sampuran 200
+37 D.I. Tipang 350
+38 D.I. Simangira | 95
+39 D.I. Simangira II 150
+40 D.I. Siboltak Langit 500
+41 D.I. Sigaol Gaol 55
+42 D.I. Siponjot 110
+43 D.I. Tambok Kongsi/Torop 114
+44 D.I. Sitapongan 200
+45 D.I. Tomburan 116
+46 D.I. Lumban Sapa 115
+47 D.I. Sitapean Sitolu Bahal 80
+48 D.I. Sigalapang / Pulo-pulo 90
+49 D.I. Tambok Dolok, Pea, Simataniari 180
+50 D.I. Peasanggul 110
+51 D.I. Sipagabu 175
+52 D.I. Sigarang Garang 120
+53 D.I. Sitonggi Tonggi Aek Doras 150
+54 D.I. Sitapongan / Nagasaribu |, II 300
+55 D.I. Nababan Dolok Pargodungan 210
+56 D.I. Sitapean 175
+57 D.I. Aek Sigeaon 60
+58 D.I. Siarsam Arsam 50
+59 D.I. Tomburan Gambut 75
+60 D.I. Sigalapang 125
+61 D.I. Siiaranao/Sirahar 150
+62 D.I. Saba Temba 118
+63 D.I. Banuarea/Dolok Pinapan 135
+64 D.I. Aek Sopang 120
+65 D.I. Pakkat 100
+66 D.I. Hutaginjang 75
+67 D.I. Soripada Tukka 52
+68 D.I. Sabarimba, Napa, Saringar 70
+69 D.I. Karya 180
+70 D.I. Manalu 160
+71 D.I. Parmonangan 80
+72 D.I. Bulu Sona 45
+73 D.I. Aek Raja, Uram 125
+74 D.I. Batu Gaja 150
+75 D.I. Purba Baringin 200
+76 D.I. Sitanduk 143
+77 D.I. Tarabintang 124
+78 D.I. Aek Riman 150
+79 D.I. Sindabar 150

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+150 D.I. Bdr. Lembang Murai 60
+151 D.I. Bdr. Batu Gajah 62
+152 D.I. Bdr. Padang Laweh 73
+153 D.I. Bdr. Ula Lidi 30
+154 D.I. Bdr. Kapujan 44
+155 D.I. Bdr. Batu Biaro 63
+156 D.I. Bdr. Bancah Laweh 60
+157 D.I. Bdr. Rangkiang 60
+158 D.I. Bdr. Sungai Abu 70
+159 D.I. Bdr. Gantiang 80
+160 D.I. Bdr. Tigo Jangko 50
+161 D.I. Bdr. Sibatuang 75
+162 D.I. Bdr. Batang Pulai 60
+163 D.I. Bdr. Payo 45
+164 D.I. Bdr. Sariek Laweh 30
+165 D.I. Bdr. Tanjuang Balik 45
+166 D.I. Bdr. Sungai Dareh 44
+167 D.I. Bdr. Sungai Sariak 55
+168 D.I. Bdr. Tanjung Barisi 40
+169 D.I. Bdr. Batu Gantung 38
+170 D.I. Bdr. Muaro 32
+171 D.I. Bdr. Sijakik 38
+172 D.I. Bdr. Koto Lamo 78
+173 D.I. Bdr. Tatunggal 38
+174 D.I. Bdr. Sabik Air 50
+175 D.I. Bdr. Kunik Tamu 42
+176 D.I. Bdr. Pangka Pulai 43
+177 D.I. Bdr. Garabak 66
+178 D.I. Bdr. Batu Bagirik 29
+179 D.I. Bdr. Tanggalo 60
+180 D.I. Bdr. Sungai Karimba 60
+181 D.I. Bdr. Lubuak Tareh 40
+182 D.I. Bdr. Anjalai 172
+183 D.I. Bdr. Sawah Ujung 83
+184 D.I. Bdr. Sawah Talang 27
+185 D.I. Bdr. Guguak Baliang 76
+186 D.I. Bdr. Pinang Baririk 47
+187 D.I. Bdr. Koto Darek 51
+188 D.I. Bdr. Galuang 95
+189 D.I. Bdr. Tabek Sonsang 178
+190 D.I. Bdr. Lembang Duri 104
+191 D.I. Bdr. Panjang Kt.Hilalang 325
+192 D.I. Bdr. Sungai Buluh 100
+193 D.I. Bdr. Sawah Lurah 75
+194 D.I. Bdr. Sawah Lambeh 75
+195 D.I. Bdr. Kandang/Cingkuak 40
+196 D.I. Bdr. Sawah Kubang 36
+197 D.I. Bdr. Sawah Kuai 75
+198 D.I. Bdr. Padang laweh 60
+199 D.I. Bdr. Ampang 76
+200 D.I. Bdr. Sarang Gagak 30
+201 D.I. Bdr. Swh. Nyik Ganyek 28
+202 D.I. Bdr.Tangguak-Tangguak | 40
+203 D.I. Bdr. Kuluih 97
+204 D.I. Bdr. Ambacang 75
+205 D.I. Bdr. Padang Laweh 33
+206 D.I. Bdr. Nagari 100
+207 D.I. Bdr. Gurun Panjang 834
+208 D.I. Bdr. Air dingin 300
+209 D.I. Bdr. Batu Ampa 40
+210 D.I. Bdr. Pulau 45
+#KANAN
+109 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+211 D.I. Bdr. Jongah 40
+212 D.I. Bdr. Baliang 100
+213 D.I. Bdr. Banto Sawah Talang 65
+214 D.I. Bdr. Sawah Talang 75
+215 D.I. Bdr. Palupuah 44
+216 D.I. Bdr. Bawah Gunung 257
+217 D.I. Bdr. Air Angek Sonsang 329
+218 D.I. Bdr. Kilangan 256
+219 D.I. Bdr. Bukit Jaliang 291
+220 D.I. Bdr. Baruah Apa 55
+221 D.I. Bdr.Tabek Rajo 43
+222 D.I. Bdr. Musajik 170
+223 D.I. Bdr. Tabek Dangka 155
+224 D.I. Bdr. Sarang Bangau 50
+225 D.I. Bdr. Lembang 243
+226 D.I. Bdr. Jaro Batu 120
+227 D.I. Bdr. Ambacang Kuriang 50
+228 D.I. Bdr. Kampung Jawa 123
+229 D.I. Bdr. Garingging 85
+230 D.I. Bdr. Tabek Panjang 109
+231 D.I. Bdr. Madang 40
+232 D.I. Bdr. Batang Barus 125
+233 D.I. Bdr. Tuo Kayu Aro 45
+234 D.I. Bdr. Sungai Janiah | 50
+235 D.I. Bdr. Air Sapan 70
+236 D.I. Bdr. Air Sariak 75
+237 D.I. Bdr. Andaleh 35
+238 D.I. Bdr. Tuo Lubuk Selasih 45
+239 D.I. Bdr. Sungai Nyalo 40
+240 D.I. Bdr. Surau Lakuak 31
+241 D.I. Bdr. Air Jernih 50
+242 D.I. Bdr. Tabek Biduak 70
+243 D.I. Bdr. Ampek Ikua Koto 60
+244 D.I. Bdr. Koto Ateh 60
+245 D.I. Bdr. Gadang | 35
+246 D.I. Bdr. Subarang 54
+247 D.I. Bdr. Rawang 35
+248 D.I. Bdr. Koto Gaek 652
+249 D.I. Bdr. Gadang 87
+250 D.I. Bdr. Bukit Barampung 390
+251 D.I. Bdr. Air Dalik 93
+252 D.I. Bdr. Sungai Indarung 73
+253 D.I. Bdr. Batu Panjang 65
+254 D.I. Bdr. Limau Hantu 30
+255 D.I. Bdr. Air Sonsang 26
+256 D.I. Bdr. Kulemban 172
+257 D.I. Bdr. Timbulun 134
+258 D.I. Bdr. Payo 110
+259 D.I. Bdr. Tunggua Gadang 83
+260 D.I. Bdr. Sungai Baliang 40
+261 D.I. Bdr. Taratak Jarang 190
+262 D.I. Bdr. Silanjai 196
+263 D.I. Bdr. Surian 35
+264 D.I. Bdr. Tuo 45
+265 D.I. Bdr. Padang Laweh 37
+266 D.I. Bdr. Suguak Gadang 34
+267 D.I. Bdr. Bdr. Barusuang 47
+268 D.I. Bdr. Taman Talaok 35
+269 D.I. Bdr. Taratak Teleng 62
+270 D.I. Bdr. Taratak Batuang 48
+271 D.I. Bdr. Sianggai-anggai 130

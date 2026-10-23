@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+252 D.I. Onosari 24
+253 D.I. Oro 15
+254 D.I. Pace 12
+255 D.I. Padang 17
+256 D.I. Pakang 60
+257 D.I. Pakel 14
+258 D.I. Pancur 11
+259 D.I. Pasar 476
+260 D.I. Pasokan 209
+261 D.I. Pawon 30
+262 D.I. Payung 17
+263 D.I. Pecangaan 702
+264 D.I. Peci 22
+265 D.I. Pedut 19
+266 D.I. Pekeng 15
+267 D.I. Pendem 10
+268 D.I. Pendok 29
+269 D.I. Petet 20
+270 D.I. Pligen 13
+271 D.I. Ploso Rejo 10
+272 D.I. Prabotan 28
+273 D.I. Primbon 12
+274 D.I. Pucung 28
+275 D.I. Pule 15
+276 D.I. Pule Geyong 10
+277 D.I. Pulerejo 50
+278 D.I. Punden 20
+279 D.I. Punden Wetan II 15
+280 D.I. Rakijah 20
+281 D.I. Rambutan 20
+282 D.I. Randu 13
+283 D.I. Rau 408
+284 D.I. Rejo 30
+285 D.I. Rempon Brutu 11
+286 D.I. Resulo 14
+287 D.I. Rimong 14
+288 D.I. Ringin Putih 40
+289 D.I. Rojo 15
+290 D.I. Rombong 650
+291 D.I. Sabrangan 10
+292 D.I. Sadeso 20
+293 D.I. Sadirah 12
+294 D.I. Sadurah 10
+295 D.I. Sagirah 21
+296 D.I. Saki 29
+297 D.I. Sakirah 21
+298 D.I. Sal. Watu Tumpeng 200
+299 D.I. Salak 14
+300 D.I. Salam 19
+301 D.I. Salam | 17
+302 D.I. Salam II 19
+303 D.I. Salon 18
+304 D.I. Samak 25
+305 D.I. Sami 18
+306 D.I. Samong 19
+307 D.I. Sampok 36
+308 D.I. Santi 10
+309 D.I. Sarang 50
+310 D.I. Sarbini 13
+311 D.I. Sari Wongso 37
+312 D.I. Saridin 12
+#KANAN
+pn5 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+313 D.I. Sarini 30
+314 D.I. Sarno 21
+315 D.I. Sawah 20
+316 D.I. Sb. S. Wisah 14
+317 D.I. Sb. Tryeng 20
+318 D.I. Sb. Siwo I 11
+319 D.I. Sebagor 100
+320 D.I. Sebambyang 127
+321 D.I. Sebantal 40
+322 D.I. Sebubur 14
+323 D.I. Seceleng 38
+324 D.I. Sedodol 12
+325 D.I. Sehni 10
+326 D.I. Sejajar 12
+327 D.I. Sekelor 17
+328 D.I. Sekenong 10
+329 D.I. Seketung 10
+330 D.I. Seklabang 13
+331 D.I. Sekunir 20
+332 D.I. Sekutut 40
+333 D.I. Selengkong 21
+334 D.I. Selumbung 20
+335 D.I. Semanggeng 20
+336 D.I. Sempu 10
+337 D.I. Sempung 12
+338 D.I. Sendang 24
+339 D.I. Sendang 10
+340 D.I. Sentul 82
+341 D.I. Sepacar 15
+342 D.I. Sepacar 15
+343 D.I. Sepandan 810
+344 D.I. Seputut 79
+345 D.I. Serut 17
+346 D.I. Setanjung 134
+347 D.I. Setengu 43
+348 D.I. Setol 10
+349 D.I. Setro 20
+350 D.I. Setu 35
+351 D.I. Seyuyu 23
+352 D.I. Sidem 16
+353 D.I. Sidodol 34
+354 D.I. Sidorejo 10
+355 D.I. Sijaran 15
+356 D.I. Sirahan 21
+357 D.I. Sirondo 11
+358 D.I. Siwali 452
+359 D.I. Slamet 11
+360 D.I. Slampar 47
+361 D.I. Soka 11
+362 D.I. Songgolangit 10
+363 D.I. Sri suko 130
+364 D.I. Sridadi 65
+365 D.I. Sumur 10
+366 D.I. Sungapan 76
+367 D.I. Suradi 14
+368 D.I. Surat 14
+369 D.I. Surat 15
+370 D.I. Suwilah 10
+371 D.I. Suwono 13
+372 D.I. Suwoto 10
+373 D.I. Suwuk 20

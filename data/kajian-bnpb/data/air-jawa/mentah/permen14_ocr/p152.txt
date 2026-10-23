@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+456 D.I. Citapis 230
+457 D.I. Leuwi Teurep II 49
+458 D.I. Cisiih 7
+459 D.I. Cipeutey 37
+460 D.I. Cicincin 98
+461 D.I. Cintamanil 32
+462 D.I. Cipurang 11
+463 D.I. Ciherang 39
+464 D.I. Cipancar 32
+465 D.I. Cimandereyeun 32
+466 D.I. Cipicung 39
+467 D.I. Cipancar 66
+468 D.I. Cicangkok 72
+469 D.I. Cipasir Tenjo 66
+470 D.I. Cipasir Durung 44
+471 D.I. Cipasir Loa 52
+472 D.I. Cibuluheun 69
+473 D.I. Cikadu Malati 47
+474 D.I. Ciodeng 81
+475 D.I. Cinusa 39
+476 D.I. Ciculung 89
+477 D.I. Curug Langlang 49
+478 D.I. Cidileum 50
+479 D.I. Cihoe/Cilebak 32
+480 D.I. Sawah Hilir I 24
+481 D.I. Sawah Hilir II 49
+482 D.I. Cipahingeun 49
+483 D.I. Cibulakan 11
+484 D.I. Cikiray 19
+485 D.I. Cikarang Nunggal 19
+486 D.I. Cikatulampa/Cinusa 26
+487 D.I. Curug Paok 47
+488 D.I. Cibarat 49
+489 D.I. Cikarang Bolong 81
+490 D.I. Cibodas 75
+491 D.I. Cikadongdong 58
+492 D.I. Cimandahan 66
+493 D.I. Cihoe 90
+494 D.I. Ciseureheun 98
+495 D.I. Cibohari 164
+496 D.I. Citapis 44
+497 D.I. Situ Batu Hideung 46
+498 D.I. Cikaung Gading 14
+499 D.I. Cipasir Peutey 14
+500 D.I. Cijasi 5
+501 D.I. Cibiil 15
+502 D.I. Rorah Makam 8
+503 D.I. Cibatu Tungku 5
+504 D.I. Rorah Handap 6
+505 D.I. Legok Pancal 5
+506 D.I. Curug Tilu 49
+507 D.I. Cisakidin 31
+508 D.I. Cilengka 10
+509 D.I. Mahpar II 34
+510 D.I. Cikalong Hilir 10
+511 D.I. Cisarua 5
+512 D.I. Cimahpar I 14
+513 D.I. Rorah Batu 5
+514 D.I. Cimahpar II 34
+515 D.I. Pondok Panjang 42
+516 D.I. Cikasap | 5
+#KANAN
+152
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+517 D.I. Cikasap II 6
+518 D.I. Cikasap III 10
+519 D.I. Cihaur II 71
+520 D.I. Cibanteng 38
+521 D.I. Cikasap Hilir 10
+522 D.I. Batu Ranjang 18
+523 D.I. Cikasap 42
+524 D.I. Cisadang 8
+525 D.I. Ranca Malang 40
+526 D.I. Cikarang 14
+527 D.I. Citeluk 66
+528 D.I. Cigadung 34
+529 D.I. Citeluk II 125
+530 D.I. Cisarua I 5
+531 D.I. Cikalong 52
+532 D.I. Rorah Sandang 8
+533 D.I. Rorah Panjang 20
+534 D.I. Cicadas 56
+535 D.I. Cikarang Gede 56
+536 D.I. Cijalarang/Ciherang 112
+537 D.I. Cihandoyan 438
+538 D.I. Ciaer Jeruk 235
+539 D.I. Cipitak 45
+540 D.I. Citeluk Bojong 44
+541 D.I. Cicadas/Citangkil 49
+542 D.I. Cicangkeutek 66
+543 D.I. Cidaun 29
+544 D.I. Cikaung Gede 151
+545 D.I. Cibatu Hideung 34
+546 D.I. Cibarat | 36
+547 D.I. Cisiih Lembur 174
+548 D.I. Pasir Ranji 98
+549 D.I. Cigede 40
+550 D.I. Pasir Nangka 66
+551 D.I. Cikaret 32
+552 D.I. Cibarial 23
+553 D.I. Cibeber 15
+554 D.I. Cinengah 87
+555 D.I. Cijaralang 5
+556 D.I. Cijaralang/Muruy 132
+557 D.I. Cisiih 9
+558 D.I. Gunung Batu 5
+559 D.I. Ruyuk Seal 11
+560 D.I. Cibarat II 50
+561 D.I. Citangkil II 7
+562 D.I. Cimindi Cipatat 24
+563 D.I. Cileleuy 26
+564 D.I. Cicadas 36
+565 D.I. Cisakim 23
+566 D.I. Citeluk Bojong Girang 15
+567 D.I. Citugu 10
+568 D.I. Cijamlangan 35
+569 D.I. Cijeruk 15
+570 D.I. Cibadak 7
+571 D.I. Cilubang 31
+572 D.I. Cikarang Gede 49
+573 D.I. Cicangkeutek 66
+574 D.I. Cikuya 29
+575 D.I. Citeluk 32
+576 D.I. Ciraden 39
+577 D.I. Cijalarang Temen 60

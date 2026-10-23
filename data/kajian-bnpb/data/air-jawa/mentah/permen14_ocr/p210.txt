@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+29 D.I. Gempol 31
+30 D.I. Gempol Sari 36
+31 D.I. Genting 34
+32 D.I. Gombel 16
+33 D.I. Grenjeng 6
+34 D.I. Grogak 38
+35 D.I. Gurung 16
+36 D.I. Guwo 45
+37 D.I. Irobayan 384
+38 D.I. Jambe 16
+39 D.I. Jambean 9
+40 D.I. Jambu 65
+41 D.I. Jantung 17
+42 D.I. Jembluk 10
+43 D.I. Jetak 53
+44 D.I. Jugrug 61
+45 D.I. Jungkir 23
+46 D.I. Kadirejo 15
+47 D.I. Kajen 28
+48 D.I. Kalicinging 82
+49 D.I. Kalikiring 96
+50 D.I. Kalinanas 118
+51 D.I. Kaliondo | 11
+52 D.I. Kaliondo II 10
+53 D.I. Karang Andong 30
+54 D.I. Karang Anyar 78
+55 D.I. Karang Boyo 13
+56 D.I. Karang Duren 50
+57 D.I. Karang Gayam 10
+58 D.I. Karang Joho I 11
+59 D.I. Karang Joho II 44
+60 D.I. Karang Kulon 238
+61 D.I. Karang Tengah 15
+62 D.I. Kauman 75
+63 D.I. Kecu 24
+64 D.I. Kedung Banteng 142
+65 D.I. Kedung Dowo 112
+66 D.I. Kedung Jambe 97
+67 D.I. Kedung Jangan 114
+68 D.I. Kedung Loo 10
+69 D.I. Kedung Nongko 11
+70 D.I. Kedung Pereng 117
+71 D.I. Kedung Pilang 71
+72 D.I. Kedung Silo 13
+73 D.I. Kembaran 42
+74 D.I. Kengkeng 67
+75 D.I. Klampok 26
+76 D.I. Klepu 7
+77 D.I. Kopen 18
+78 D.I. Krajan 12
+79 D.I. Kramat 21
+80 D.I. Kukusan 95
+81 D.I. Ledok 36
+82 D.I. Loo 21
+83 D.I. Magangan 108
+84 D.I. Menoro 40
+85 D.I. Miliran 40
+86 D.I. Mliwis 14
+87 D.I. Mranggen 8
+88 D.I. Mudal 18
+89 D.I. Mutih 44
+#KANAN
+210
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+90 D.I. Nepen 410
+91 D.I. Ngemplak 5
+92 D.I. Nglayud 38
+93 D.I. Ngledok 15
+94 D.I. Ngledok I 46
+95 D.I. Ngudi Cukup 38
+96 D.I. Nogosari 118
+97 D.I. Nyamplung 42
+98 D.I. Pacoran 24
+99 D.I. Pakel 10
+100 D.I. Pandeyan 35
+101 D.I. Panggolo 12
+102 D.I. Pendem 27
+103 D.I. Pengging 7
+104 D.I. Penggung 407
+105 D.I. Penjalin 12
+106 D.I. Penjalinan 306
+107 D.I. Pete 22
+108 D.I. Petel 17
+109 D.I. Pule 57
+110 D.I. Pulung 303
+111 D.I. Pusung 42
+112 D.I. Rejoso I 27
+113 D.I. Rejoso II 57
+114 D.I. Sabrangkali 20
+115 D.I. Sapiyan I 10
+116 D.I. Sapiyan II 7
+117 D.I. Sekar 13
+118 D.I. Senden 52
+119 D.I. Seretan 50
+120 D.I. Serut 13
+121 D.I. Sidorejo 53
+122 D.I. Sigereng 40
+123 D.I. Sikidang 16
+124 D.I. Sikuwung 39
+125 D.I. Silenguk 14
+126 D.I. Simaron 122
+127 D.I. Simo I, II 50
+128 D.I. Simojo 35
+129 D.I. Singampon 34
+130 D.I. Sirahu 60
+131 D.I. Sorotan 117
+132 D.I. Sumber Blimbing 25
+133 D.I. Sumber Bonsiji 58
+134 D.I. Sumber Cepoko Sawit 33
+135 D.I. Sumber Gombang 80
+136 D.I. Sumber Gombangan 25
+137 D.I. Sumber Gondang 13
+138 D.I. Sumber Kebatan 69
+139 D.I. Sumber Kenteng 25
+140 D.I. Sumber Klego 12
+141 D.I. Sumber Majan 24
+142 D.I. Sumber Pinggir 11
+143 D.I. Sumber Sangge 15
+144 D.I. Sumber Sendang Songo 13
+145 D.I. Sumber Serah 10
+146 D.I. Sumber Soko 15
+147 D.I. Sumber Tanjung 11
+148 D.I. Sumber Tawangsari 7
+149 D.I. Talang 17
+150 D.I. Tempel 75

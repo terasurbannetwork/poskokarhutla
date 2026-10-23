@@ -1,0 +1,107 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 4654
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+63 D.I.R. Sepantai 170
+64 D.I.R. Sepingan 420
+65 D.I.R. Serindang Komplek 980
+66 D.I.R. Serumpun 170
+67 D.I.R. Sijang 180
+68 D.I.R. Suka Ramai 70
+69 D.I.R. Sulung 140
+70 D.I.R. Sumber Harapan 100
+71 D.I.R. Sungai Baru 460
+72 D.I.R. Sungai Serabe 110
+73 D.I.R. Tambatan 150
+74 D.I.R. Tangaran 140
+75 D.I.R. Tebas Sungai 340
+76 D.I.R. Teluk Kaseh 450
+77 D.I.R. Teluk Kembang 570
+78 D.I.R. Teluk Pandan 250
+79 D.I.R. Temajuk 200
+80 D.I.R. Tempapan Hulu 400
+81 D.I.R. Tempapan Kuala 420
+82 D.I.R. Tengguli 200
+83 D.I.R. Trigadu 100
+84 D.I.R. Trikembang 250
+85 D.I.R. Trimandayani 380
+XI PROVINSI KALIMANTAN TENGAH 459 165.662
+
+a Kab. Barito Selatan 42 11.611
+
+1 D.I.R. Desa Babai 450
+
+2 D.I.R. Desa Baru 150
+
+3 D.I.R. Desa Batilap 100
+
+4 D.I.R. Desa Bengkuang 200
+
+5 D.I.R. Desa Bintang Kurung 100
+
+6 D.I.R. Desa Damparan 700
+
+7 D.I.R. Desa Janggi 400
+
+8 D.I.R. Desa Jenamas 500
+
+9 D.I.R. Desa Kalahien 407
+10 D.I.R. Desa Kayumban 350
+11 D.I.R. Desa Keladan-Talio 400
+12 D.I.R. Desa Lehai 400
+13 D.I.R. Desa Lembeng 386
+14 D.I.R. Desa Mabaras 250
+15 D.I.R. Desa Mabuan 150
+16 D.I.R. Desa Mahajandau 300
+17 D.I.R. Desa Mangkatip 510
+18 D.I.R. Desa Mangkatir 50
+19 D.I.R. Desa Marawan Lama 250
+20 D.I.R. Desa Muka Haji 200
+21 D.I.R. Desa Pararapak 500
+22 D.I.R. Desa Penda Asem 150
+23 D.I.R. Desa Rangga Ilung 100
+24 D.I.R. Desa Rantau Bahuang 200
+25 D.I.R. Desa Rantau Kujang 480
+26 D.I.R. Desa Reong 130
+27 D.I.R. Desa Sanggu 150
+28 D.I.R. Desa Simpang Tiga Batampang 50
+29 D.I.R. Desa Sire 200
+30 D.I.R. Desa Tabak Kanilan 409
+31 D.I.R. Desa Talio 450
+32 D.I.R. Desa Tampijak 200
+33 D.I.R. Desa Tanjung Jawa 329
+34 D.I.R. Desa Teluk Betung 200
+35 D.I.R. Desa Teluk Timbau 580
+36 D.I.R. Lelek 150
+37 D.I.R. Marawan Baru 80
+38 D.I.R. Palui 150
+39 D.I.R. Pendang 250
+40 D.I.R. Rubang 100
+M1 D.I.R. Tarusan 200
+42 D.I.R. Teluk Telaga 300
+b Kab. Barito Timur 15 2.417
+
+1 D.I.R. Bambulung 150
+
+2 D.I.R. Baruyan 250
+
+3 D.I.R. Biwan 100
+
+4 D.I.R. Luaw Gambah 125
+
+5 D.I.R. Luaw Garasik 200
+
+6 D.I.R. Lubuk Garu 35
+
+7 D.I.R. Maduso 50
+
+8 D.I.R. Matabu 130
+
+9 D.I.R. Muara Plantau 750
+10 D.I.R. Pulau Padang 70
+11 D.I.R. Ramunia 300
+12 D.I.R. Sibung Malintut 37
+13 D.I.R. Tumpa Dayu 50
+14 D.I.R. Tuyau 100
+15 D.I.R. Wuran 70

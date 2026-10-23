@@ -1,0 +1,40 @@
+prov,nama,luas_2015_sipongi_ha,luas_2015_bank_dunia_ha,luas_2019_sipongi_ha,ispa_2015,ispa_2019,dibi_kejadian_2015,dibi_meninggal_hilang_2015,dibi_kejadian_2019,dibi_meninggal_hilang_2019
+11,Aceh,913.27,,730,,,0,0,43,0
+12,Sumatera Utara,6010.92,,2514,,,0,0,7,0
+13,Sumatera Barat,3940.14,,2133,,,0,0,6,0
+14,Riau,183808.59,139000,90550,65232,275793,1,4,38,0
+15,Jambi,115634.34,123000,56593,90747,63554,1,1,10,0
+16,Sumatera Selatan,646298.8,608000,336798,101332,291807,1,5,41,1
+17,Bengkulu,931.76,,11,,,1,0,5,0
+18,Lampung,71326.49,,35546,,,0,0,28,0
+19,Kep. Bangka Belitung,19770.81,,4778,,,0,0,3,0
+21,Kepulauan Riau,0,,6134,,,1,0,9,0
+31,DKI Jakarta,0,,0,,,0,0,0,0
+32,Jawa Barat,2886.03,,9552,,,4,0,63,0
+33,Jawa Tengah,2471.7,,4782,,,10,0,76,7
+34,DI Yogyakarta,0,,23,,,0,0,0,0
+35,Jawa Timur,7966.79,,23655,,,13,12,180,2
+36,Banten,250.02,,9,,,0,0,27,0
+51,Bali,373.46,,373,,,0,0,14,0
+52,Nusa Tenggara Barat,2565.71,,60234,,,0,0,4,0
+53,Nusa Tenggara Timur,85430.86,,136920,,,1,0,0,0
+61,Kalimantan Barat,93515.8,178000,151919,43477,180695,1,1,15,0
+62,Kalimantan Tengah,583833.44,429000,317749,52213,67293,1,1,33,0
+63,Kalimantan Selatan,196516.77,292000,137848,97430,40374,0,0,62,0
+64,Kalimantan Timur,69352.96,388000,68524,,,5,0,30,0
+65,Kalimantan Utara,14506.2,,8559,,,0,0,14,0
+71,Sulawesi Utara,4861.31,,4574,,,1,0,0,0
+72,Sulawesi Tengah,31679.88,,11551,,,0,0,2,0
+73,Sulawesi Selatan,10074.32,,15697,,,2,0,27,0
+74,Sulawesi Tenggara,31763.54,,16929,,,1,0,4,0
+75,Gorontalo,5225.89,,1909,,,2,0,1,0
+76,Sulawesi Barat,4989.38,,3029,,,0,0,0,0
+81,Maluku,43281.45,,27211,,,0,0,2,0
+82,Maluku Utara,13261.1,,2781,,,0,0,2,0
+91,Papua,350005.3,268000,108110,,,0,0,0,0
+92,Papua Barat,7964.41,,1533,,,0,0,0,0
+93,Papua Selatan,0,,0,,,0,0,0,0
+94,Papua Tengah,0,,0,,,0,0,0,0
+95,Papua Pegunungan,0,,0,,,0,0,0,0
+96,Papua Barat Daya,0,,0,,,0,0,0,0
+lainnya,provinsi lain (tabel Bank Dunia 2015),,186000,,,,,,,

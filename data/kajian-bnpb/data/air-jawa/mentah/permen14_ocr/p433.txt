@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+68 D.I. Tompo 50
+69 D.I. Ulo 300
+70 D.I. Wae Pubbu 95
+71 D.I. Waesai 100
+72 D.I. Wanawaru 50
+73 D.I. Watu 100
+74 D.I. Wira-Wirae 30
+75 D.I. Birue 20
+76 D.I. Bulu Sipitto 150
+77 D.I. Jilengnge 50
+78 D.I. Balusu 35
+79 D.I. Bontorea 90
+80 D.I. Ele 25
+81 D.I. Ere 150
+82 D.I. Labaka II 75
+83 D.I. Lisu 60
+84 D.I. Tile 23
+85 D.I. Kalukue 100
+86 D.I. Ajucoloe 30
+87 D.I. Galung II 25
+88 D.I. ArotengngE 30
+89 D.I. Palekkuseng 100
+90 D.I. Taboe 30
+91 D.I. Paterengnge 30
+92 D.I. Kamiri II 20
+93 D.I. Baera II 25
+94 D.I. Luppereng Kajoe 60
+95 D.I. Paccekke II 15
+96 D.I. Baruttungnge 80
+97 D.I. Tokkene 40
+98 D.I. Lappatemmu 50
+99 D.I. Passengereng 20
+100 D.I. Uluwae 30
+101 D.I. Cokkoe 25
+102 D.I. Batulumu 50
+103 D.I. Ongkoe 25
+c Kab. Bone 224 34.379
+1 D.I. Ajjalireng 150
+2 D.I. Alinge 319
+3 D.I. Angasangnge 120
+4 D.I. Apangnge 60
+5 D.I. Atakka 80
+6 D.I. Bendung Batua 120
+7 D.I. Bake 90
+8 D.I. Balubu 120
+9 D.I. Bana 100
+10 D.I. Bana | 94
+11 D.I. Barugae 102
+12 D.I. Bontojai 306
+13 D.I. Botto'e 58
+14 D.I. Bukku 97
+15 D.I. Bulo 150
+16 D.I. Cakulo 60
+17 D.I. Cako 100
+18 D.I. Calimpong 100
+19 D.I. Calirung 542
+20 D.I. Cempaniga 210
+21 D.I. Cenrana 200
+22 D.I. Cinnong 120
+23 D.I. Cirowali 270
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+24 D.I. Congko 150
+25 D.I. Coppo Melle 53
+26 D.I. Cuccoro 76
+27 D.I. Dekko 286
+28 D.I. Galung | 109
+29 D.I. Galung II 86
+30 D.I. Gattareng 44
+31 D.I. Gona 100
+32 D.I. Inru 240
+33 D.I. Itterung 252
+34 D.I. Jempo 200
+35 D.I. Kaduppae 76
+36 D.I. Kahu 60
+37 D.I. Kalu 216
+38 D.I. Kanango 60
+39 D.I. Karangeng/Padang loang 150
+40 D.I. Karoppa 146
+41 D.I. Katapang II 100
+42 D.I. Kawerang 146
+43 D.I. Kunang 52
+44 D.I. Labone 330
+45 D.I. Laccori 130
+46 D.I. Lacemme 175
+47 D.I. Lajang-Lajang 119
+48 D.I. Laliddong 158
+49 D.I. Lapince 70
+50 D.I. Lappa Jupeng 150
+51 D.I. Lappa Poro 100
+52 D.I. Lappa Talle 206
+53 D.I. Laputeng 297
+54 D.I. Lasina 140
+55 D.I. Leko Ballo 227
+56 D.I. Lerang 100
+57 D.I. Lonrong 100
+58 D.I. Lonru 75
+59 D.I. Madde Wattae 60
+60 D.I. Malaka 200
+61 D.I. Malaka II 220
+62 D.I. Mallinrung 464
+63 D.I. Mannagae 67
+64 D.I. Mannera 150
+65 D.I. Maroanging 110
+66 D.I. Melle 310
+67 D.I. Mico 83
+68 D.I. Moncong 82
+69 D.I. Paccing 286
+70 D.I. Pacekkeng 83
+71 D.I. Pada Idi 77
+72 D.I. Padang Lampe 146
+73 D.I. Padang Tengngae 100
+74 D.I. Pallengoreng 552
+75 D.I. Palongki 70
+76 D.I. Palongki I 83
+77 D.I. Pammusureng 110
+78 D.I. Pannampung 109
+79 D.I. Pangisoreng 217
+80 D.I. Panyili 273
+81 D.I. Parangeng II 500
+82 D.I. Parigi 137
+83 D.I. Pasempe 153
+84 D.I. Pationgi 150

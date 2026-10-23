@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+114 D.I. Waduk Wonokerto 112
+115 D.I. Waduk Wotan M
+a Kab. Jember 448 33.501
+1 D.I. Agung 34
+2 D.I. Alas 3
+3 D.I. Amsar 70
+4 D.I. Ancer 132
+5 D.I. Angsana 45
+6 D.I. Antirogo 156
+7 D.I. Antokan 52
+8 D.I. Antrokan I 36
+9 D.I. Antrokan II 38
+10 D.I. Antrokan III 45
+11 D.I. Antrokan IV 21
+12 D.I. Anwar 9
+13 D.I. Anyer 40
+14 D.I. Arah III Patrang 233
+15 D.I. Arah Sukowono 18
+16 D.I. Aren 48
+17 D.I. Arjasa | Patrang 188
+18 D.I. Arjasa II Patrang 35
+19 D.I. Arjasa Bangsalsari 200
+20 D.I. Arun 93
+21 D.I. Asmoya 48
+22 D.I. Bacem 54
+23 D.I. Bai 38
+24 D.I. Baih 67
+25 D.I. Balelo 47
+26 D.I. Banyubang 237
+27 D.I. Barno 30
+28 D.I. Batu Ampar 17
+29 D.I. Batu Kalisat 44
+30 D.I. Batu Pedang 20
+31 D.I. Batu Remuk 55
+32 D.I. Batu Sukowono 72
+33 D.I. Batulawang 149
+34 D.I. Bayur 68
+35 D.I. Bedus 267
+36 D.I. Bei I 60
+37 D.I. Bei II 5
+38 D.I. Beringin 35
+39 D.I. Besaran 75
+40 D.I. Besuk 35
+41 D.I. Betty 15
+42 D.I. Bintoro 47
+43 D.I. Bire | 36
+44 D.I. Bire II 13
+45 D.I. Biting 147
+46 D.I. Bluncong 20
+47 D.I. Budar 19
+48 D.I. Bulet 8
+49 D.I. Bulla 11
+50 D.I. Buntu 384
+51 D.I. Busia 61
+52 D.I. Candi 433
+53 D.I. Candri 170
+54 D.I. Cangkring 94
+55 D.I. Cemondong I 49
+56 D.I. Cemondong II 17
+57 D.I. Cempoko I 23
+#KANAN
+316
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+58 D.I. Cempoko II 208
+59 D.I. Curah Nongko 62
+60 D.I. Curah Takir 161
+61 D.I. Curahdami 107
+62 D.I. Curahkalong 49
+63 D.I. Curahputih 112
+64 D.I. Dampar 150
+65 D.I. Darungan | Patrang 21
+66 D.I. Darungan Rambipuji 45
+67 D.I. Dawuhan 224
+68 D.I. Domplang 220
+69 D.I. Dukuh I Bangsalsari 26
+70 D.I. Dukuh II Bangsalsari 112
+71 D.I. Dukuh III Bangsalsari 189
+72 D.I. Dukuh Rambipuji 34
+73 D.I. Durbugan 68
+74 D.I. Durian 12
+75 D.I. Gading 35
+76 D.I. Garahan 590
+77 D.I. Gayam 58
+78 D.I. Gedangan 25
+79 D.I. Genduk 87
+80 D.I. Gentong 128
+81 D.I. Gila | 31
+82 D.I. Gila II 27
+83 D.I. Gluduk I 24
+84 D.I. Gluduk II 16
+85 D.I. Gluduk III 98
+86 D.I. Slundengan 46
+87 D.I. Gondosari 127
+88 D.I. Grogol Kalisat 161
+89 D.I. Gudang 772
+90 D.I. Gudang 28
+91 D.I. Gugut 28
+92 D.I. Gumblung 50
+93 D.I. Haji 5
+94 D.I. Haji | 33
+95 D.I. Haji II 62
+96 D.I. Harjo mulyo I 10
+97 D.I. Harjo mulyo II 75
+98 D.I. Jajang 66
+99 D.I. Jaki 63
+100 D.I. Jamuk 30
+101 D.I. Jatisari 93
+102 D.I. Jegong 194
+103 D.I. Jereng 34
+104 D.I. Jonggrang 78
+105 D.I. Jonggrang 52
+106 D.I. Kaenah 220
+107 D.I. Kali Tengah 71
+108 D.I. Kalijambu 20
+109 D.I. Kalipakel 10
+110 D.I. Kalipring 15
+111 D.I. Kamsun 164
+112 D.I. Karang Anyar Ambulu 298
+113 D.I. Karang Silo 4
+114 D.I. Karanganom Rambipuji 142
+115 D.I. Karanganom Tanggul 65
+116 D.I. Karangasem 89
+117 D.I. Karangbayat | 527
+118 D.I. Karangbayat II 46

@@ -1,0 +1,109 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 :
+462
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+7 D.I.R. Medan Jaya 400
+
+8 D.I.R. Nipah Kuning 400
+
+9 D.I.R. Paduan/Gunung Tujuh 500
+10 D.I.R. Pemangkat 800
+11 D.I.R. Penjalaan 400
+12 D.I.R. Rantau Panjang 800
+13 D.I.R. Rantau Panjang Laut 400
+14 D.I.R. Satai Lestari 400
+15 D.I.R. Sei Kepuyu 400
+16 D.I.R. Sungai Paduan 800
+17 D.I.R. Tanjung Satai 400
+18 D.I.R. Teluk Batang 1/6 838
+19 D.I.R. Teluk Batang Selatan 400
+20 D.I.R. Teluk Batang Utara 400
+21 D.I.R. Teluk Suka Maju 400
+d Kab. Ketapana 10 4132
+
+1 D.I.R. Kali Nilam 250
+
+2 D.I.R. Keramat Jaya 450
+
+3 D.I.R. Ketapang Kecil 150
+
+4 D.I.R. Kuala Satong 850
+
+5 D.I.R. Suka Bangun Dalam 250
+
+6 D.I.R. Suka Bangun Luar 250
+
+7 D.I.R. Sukaharja 350
+
+8 D.I.R. Tanjung Baik Budi 935
+
+9 D.I.R. Tanjung Belandang 97
+10 D.I.R. Tanjung Pasar 550
+
+e Kab. Kubu Rava 64 12.213
+
+1 D.I.R. Air Putih 100
+
+2 D.I.R. Ambangah 700
+
+3 D.I.R. Ambarawa 150
+
+4 D.I.R. Arus Deras 250
+
+5 D.I.R. Bemban 150
+
+6 D.I.R. Benuah 20
+
+7 D.I.R. Biong 20
+
+8 D.I.R. Dabung 420
+
+9 D.I.R. Durian 50
+10 D.I.R. Dusun Obyek S. Durian 200
+11 D.I.R. Gunung Tamang 150
+12 D.I.R. Jalo 20
+13 D.I.R. Jangkang | # II 493
+14 D.I.R. Jawa Tengah 50
+15 D.I.R. Kapuas Kecil III 610
+16 D.I.R. Kapur 150
+17 D.I.R. Korek 25
+18 D.I.R. Kuala Dua 150
+19 D.I.R. Kuala Karang 500
+20 D.I.R. Kuala Mandor A 250
+21 D.I.R. Kuala Mandor B 200
+22 D.I.R. Kubu Padi 100
+23 D.I.R. Lais 50
+24 D.I.R. Lingga 100
+25 D.I.R. Lintang Batang 20
+26 D.I.R. Loncek 150
+27 D.I.R. Mengkalang 150
+28 D.I.R. Nipah Panjang 947
+29 D.I.R. Padang Tikar 150
+30 D.I.R. Padang Tikar | 150
+31 D.I.R. Padang Tikar II 150
+32 D.I.R. Pancaroba 50
+33 D.I.R. Pancaroba Sungai 50
+34 D.I.R. Pasak 25
+35 D.I.R. Pasak Piang 50
+36 D.I.R. Puguk 50
+37 D.I.R. Pulau Limbung 60
+38 D.I.R. Pulau Nyamuk 100
+39 D.I.R. Radak I # II 962
+40 D.I.R. Retok 50
+41 D.I.R. S. Jawi 150
+42 D.I.R. Selat Remis 250
+43 D.I.R. Sepuk Keladi 100
+44 D.I.R. Sepuk Laut 100
+45 D.I.R. Sepuk Perupok 100
+46 D.I.R. Simpang Kanan 50
+47 D.I.R. Suka Maju 150
+48 D.I.R. Sungai Ambawang Kuala 25
+49 D.I.R. Sungai Bulan 474
+50 D.I.R. Sungai Enau 100
+51 D.I.R. Sungai Nibung 250
+52 D.I.R. Sungai Nipah 563
+53 D.I.R. Sungai Selamat-Seruat 80
+54 D.I.R. Sungai Tempayan 250
+55 D.I.R. Tamang 100

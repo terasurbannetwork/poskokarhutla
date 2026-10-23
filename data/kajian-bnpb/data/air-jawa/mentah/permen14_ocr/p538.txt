@@ -1,0 +1,73 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 538
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+3 D.LA.T. Oi Saro OPW 003 14
+
+4 D.LA.T. Oi Saro OPW 004 13
+
+5 D.LA.T. Oi Saro OPW 005 14
+
+6 D.LA.T. Oi Saro OPW 006 12
+
+7 D.LA.T. Oi Saro OPW 007 13
+
+8 D.LA.T. Oi Saro OPW 008 12
+
+9 D.LA.T. Oi Saro OPW 009 13
+10 D.LA.T. Oi Saro OPW 010 12
+11 D.LA.T. Keli SEB 001 12
+12 D.LA.T. Keli SEB 002 13
+13 D.LA.T. Nggembe SEB 017 10
+14 D.LA.T. Pandai SIB 001 7
+15 D.LA.T. Pandai SIB 003 8
+16 D.LA.T. Risa SIB 005 7
+17 D.LA.T. Donggobolo SIB 006 8
+18 D.LA.T. Nggembe SIB 008 10
+19 D.LA.T. Nggembe SIB 009 10
+20 D.I.A.T. Nggembe SIB 010 11
+21 D.I.A.T. Rasabou SIB 011 10
+22 D.I.A.T. Rasabou SIB 012 10
+23 D.ILA.T. Rasabou SIB 013 8
+24 D.L.A.T. Nggembe SIB 017 10
+25 D.I.A.T. Nggembe SIB 018 10
+26 D.I.A.T. Nggembe SIB 019 10
+27 D.LA.T. Nggembe SIB 020 10
+28 D.LA.T. OiToi SIB 022 10
+29 D.LA.T. OiToi SIB 023 9
+30 D.I.A.T. Na'E SIB 037 20
+31 D.I.A.T. Rasabou SIB 041 9
+32 D.I.A.T. Rasabou SIB 042 10
+33 D.I.A.T. Rato SIB 043 8
+34 D.LA.T. Kenanga SIB 044 10
+35 D.LA.T. Kenanga SIB 045 10
+36 D.I.A.T. Na'E SIB 046 10
+37 D.LA.T. Na'E SIB 047 10
+38 D.I.A.T. Na'E SIB 048 9
+39 D.I.A.T. Na'E SIB 049 10
+40 D.L.A.T. Na'E SIB 050 10
+4M D.LA.T. OiToi SIB 051 9
+42 D.LA.T. Donggobolo SIB 053 13
+43 D.LA.T. Kenanga SIB 055 11
+44 D.LA.T. Rasabou SIB 056 10
+45 D.LA.T. Na'E SIB 057 8
+46 D.I.A.T. Nggembe SIB 058 10
+47 D.LA.T. Nggembe SIB 059 10
+48 D.L.LA.T. Nggembe SIB 060 10
+49 D.L.LA.T. Nggembe SIB 075 10
+50 D.I.A.T. Nggembe SIB 076 10
+51 D.I.A.T. Naru SPB 003 25
+52 D.LA.T. Risa SPB 006 19
+53 D.LA.T. Risa SPB 014 24
+54 D.LA.T. Risa SPB 017 19
+55 D.I.A.T. Naru SPB 018 19
+56 D.I.A.T. Naru SPB 020 19
+57 D.I.A.T. Dadibou SPB 033 23
+58 D.I.A.T. Dadibou SPB 034 1
+59 D.I.A.T. Rabakudo SPB 035 25
+60 D.I.A.T. Rasabou SPB 036 20
+61 D.I.A.T. Nae SPB 037 20
+62 D.I.A.T. Kaleo SPB 038 17
+63 D.L.A.T. Keli SPB 050 16

@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+10 D.I. Air Teluk 25
+11 D.I. Air Telun Bungsu 65
+12 D.I. Bandar Baru 30
+13 D.I. Bandar Gedang 40
+14 D.I. Bandar Panjang Pondok Tinggi 90
+15 D.I. Bandar Tuan Luak (Rawang) 25
+16 D.I. Desa Gedang 185
+17 D.I. Dusun Baru 65
+18 D.I. Dusun Baru Debai 20
+19 D.I. Jembatan | Talang Lindung 119
+20 D.I. Koto Baru 85
+21 D.I. Koto Bento 80
+22 D.I. Koto Beringin 85
+23 D.I. Koto Dua 65
+24 D.I. Koto Dumo 75
+25 D.I. Koto Keras 35
+26 D.I. Koto Lebu 75
+27 D.I. Koto Lolo 50
+28 D.I. Koto Padang 51
+29 D.I. Koto Panap 60
+30 D.I. Koto Pandan 100
+31 D.I. Koto Pudung 65
+32 D.I. Koto Renah 15
+33 D.I. Koto Teluh 85
+34 D.I. Koto Teluk 20
+35 D.I. Koto Teluk 30
+36 D.I. Koto Tengah 50
+37 D.I. Koto Tuo 45
+38 D.I. Kumun Hilir 30
+39 D.I. Lawang Agung 20
+40 D.I. Lubuk Mendung 100
+41 D.I. Muara jaya | 70
+42 D.I. Muara jaya II 80
+43 D.I. Muara jaya III 75
+44 D.I. Paling Serumpun 40
+45 D.I. Pematang Tampung 40
+46 D.I. Rawang 40
+47 D.I. Rio Jayo 25
+48 D.I. Sandaran Galeh 60
+49 D.I. Sei. Ampuh 25
+50 D.I. Sei. Bangko 80
+51 D.I. Sei. Jernih 60
+52 D.I. Sei. Liuk 40
+53 D.I. Sei. Nua 50
+54 D.I. Sei. Nua Depan SMAN II 80
+55 D.I. Sei. Sirih 30
+56 D.I. Sei. Talang Lindung 19
+57 D.I. Sei. Ulu Air 51
+58 D.I. Simpang Debai 51
+59 D.I. Simpang III 60
+60 D.I. Sipanjang 95
+61 D.I. Sipanjang | 70
+62 D.I. Sipanjang II 80
+63 D.I. Sipanjang III 75
+64 D.I. Sumur Anyir 70
+65 D.I. Taruko 35
+66 D.I. Ulu Air 35
+#KANAN
+122
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+UH PROVINSI DENCKULU 774 sa RRa
+a Kab. Benakulu Selatan 128 7.452
+1 D.I. Air Batu Panco 35
+2 D.I. Air Bengkenang Batu Balai 200
+3 D.I. Air Bengkenang Buntu 165
+4 D.I. Air Bengkenang Napal Cuguk 374
+5 D.I. Air Bengkenang Sukarami 85
+6 D.I. Air Buluh Telang 69
+7 D.I. Air Dekut 36
+8 D.I. Air Dataran Rangai 38
+9 D.I. Air Emban Burung 35
+10 D.I. Air Endelengau Ganjuh 295
+11 D.I. Air Jiput I 75
+12 D.I. Air Jangkang 60
+13 D.I. Air Karang Kinang 90
+14 D.I. Air Kedurang Genting Lirik 256
+15 D.I. Air Kedurang Lubuk Napalan 300
+16 D.I. Air Kedurang Lubuk Serdang 35
+17 D.I. Air Kelampaian Tanjung Aur II 50
+18 D.I. Air Kelampaian Tungkal 27
+19 D.I. Air Keluangan 60
+20 D.I. Air Kemang Manis 20
+21 D.I. Air Kerinjing Lubuk Tapi 40
+22 D.I. Air Melao 85
+23 D.I. Air Nganut Rantau Pinang 53
+24 D.I. Air Nganut Tanjung Aur | 3
+25 D.I. Air Nipis Lubuk Langkap 126
+26 D.I. Air Nipis Tanjung Tengah 150
+27 D.I. Air Rukam Pagar Gading 59
+28 D.I. Air Seblio 53
+29 D.I. Air Sebusuk 21
+30 D.I. Air Serian 150
+31 D.I. Air Sulihan 25
+32 D.I. Air Selali Pino 102
+33 D.I. Air Sepit Gaung 50
+34 D.I. Air Talang Tengah 25
+35 D.I. Air Talang Tinggi 41
+36 D.I. Air Tebat Besar Bandar Agung 80
+37 D.I. Air Tebat Durian 20
+38 D.I. Air Tebat Gelumpai 50
+39 D.I. Air Tebat Itik 25
+40 D.I. Air Tebat Lakaran 60
+41 D.I. Air Tebat Nenek 80
+42 D.I. Air Tebat Ratu 65
+43 D.I. Air Tebat Rukis 27
+44 D.I. Air Batu Ampar | 25
+45 D.I. Air Batu Ampar II 50
+46 D.I. Air Bebasan | 50
+47 D.I. Air Bebasan II 10
+48 D.I. Air Bengkenang Keban Jati 65
+49 D.I. Air Bengkenang Pematang Gambir 160
+50 D.I. Air Bengkenang Rimbo Hitam 273
+51 D.I. Air Binjai Talang Padang 35
+52 D.I. Air Buluh Nipis 25
+53 D.I. Air Buluh Telang 25
+54 D.I. Air Demid 60
+55 D.I. Air Gatal 15
+56 D.I. Air Ganis Keban Jati 15
+57 D.I. Air Gindo Suli 15
+58 D.I. Air Jiput II 138

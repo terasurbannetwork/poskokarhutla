@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+8 D.I. Balai Kambang 18
+9 D.I. Balai Kutu 18
+10 D.I. Balong 105
+11 D.I. Balongan 20
+12 D.I. Bandung 19
+13 D.I. Bandungan 14
+14 D.I. Bangkongan 29
+15 D.I. Bantri 11
+16 D.I. Bapangan 10
+17 D.I. Barikoso 22
+18 D.I. Bariyah (Barijah) 30
+19 D.I. Basimin Tengger 14
+20 D.I. Batak 24
+21 D.I. Bate 222
+22 D.I. Bawahan 26
+23 D.I. Bekepek 18
+24 D.I. Belik 43
+25 D.I. Bendo 84
+26 D.I. Bendol 10
+27 D.I. Bendung Gerak 14
+28 D.I. Bengkerek 12
+29 D.I. Bengkok 12
+30 D.I. Bengkrek 25
+31 D.I. Bening 15
+32 D.I. Bentung 22
+33 D.I. Besole 17
+34 D.I. Blimbing 38
+35 D.I. Blobo 12
+36 D.I. Blumbang 10
+37 D.I. Bopasang 20
+38 D.I. Boso 179
+39 D.I. Brongsang 12
+40 D.I. Bulus 15
+41 D.I. Bulus Ketileng 11
+42 D.I. Bulus Welahan 14
+43 D.I. Bungkik 16
+44 D.I. Cabat Turah 52
+45 D.I. CalokAWedus 25
+46 D.I. Caping 24
+47 D.I. Carikan Ngasem 14
+48 D.I. Ceblong 20
+49 D.I. Cengkirmanis 128
+50 D.I. Ceronggang 15
+51 D.I. Clering 60
+52 D.I. Cungkup 17
+53 D.I. Dapur 10
+54 D.I. Dasuki 27
+55 D.I. Datuk Riem 32
+56 D.I. Dawang 20
+57 D.I. Dayung 75
+58 D.I. Delep Tengger 25
+59 D.I. Delep Wuluh 13
+60 D.I. Dengenan 41
+61 D.I. Dermolo 40
+62 D.I. Dongko 12
+63 D.I. Dongkol 20
+64 D.I. Dopang 15
+65 D.I. Doro 15
+66 D.I. Drajatan 125
+67 D.I. Dubang/Gesing 35
+68 D.I. Dudak Awu Ngroco 12
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+69 D.I. Dung Bantal 19
+70 D.I. Dung Belik 15
+71 D.I. Dung Bendo 10
+72 D.I. Dung Bendo 17
+73 D.I. Dung Bnder 15
+74 D.I. Dung Doro 37
+75 D.I. Dung Gunting 30
+76 D.I. Dung Guwo 31
+77 D.I. Dung Jangan 15
+78 D.I. Dung Jumbleng 16
+79 D.I. Dung Kunci 30
+80 D.I. Dung Miri 24
+81 D.I. Dung Nongko 25
+82 D.I. Dung Pandan 28
+83 D.I. Dung Paras 21
+84 D.I. Dung Ranggas 10
+85 D.I. Dung Rapi 14
+86 D.I. Dung Sambi 19
+87 D.I. Dung Sigap 25
+88 D.I. Dung Tritis 10
+89 D.I. Dung Udan 10
+90 D.I. Dungdowo 39
+91 D.I. Dungtekuk 20
+92 D.I. Duren 27
+93 D.I. Duren 15
+94 D.I. Duren 10
+95 D.I. Ekrak 13
+96 D.I. Elim 53
+97 D.I. Gading 14
+98 D.I. Gading 39
+99 D.I. Gagel 92
+100 D.I. Gandu 178
+101 D.I. Gandumalang 49
+102 D.I. Gangging 10
+103 D.I. Ganteng 18
+104 D.I. Gapel 13
+105 D.I. Gayam 19
+106 D.I. Gayam 10
+107 D.I. Gayam 18
+108 D.I. Gembyak 20
+109 D.I. Gembyong 14
+110 D.I. Gempol 53
+111 D.I. Gendon 12
+112 D.I. Gendon 25
+113 D.I. Gendro 12
+114 D.I. Genuk 29
+115 D.I. Gerit 15
+116 D.I. Gesing 20
+117 D.I. Gesing 24
+118 D.I. Gili Kembang 30
+119 D.I. Gili Pule 29
+120 D.I. Giliplatar 50
+121 D.I. Gintungan 12
+122 D.I. Glagah 20
+123 D.I. Glangsing 74
+124 D.I. Glodok 47
+125 D.I. Glodug 15
+126 D.I. Gondang Kemiri 37
+127 D.I. Gondorio I 17
+128 D.I. Gondorio II 12
+129 D.I. Gondoriyo 34

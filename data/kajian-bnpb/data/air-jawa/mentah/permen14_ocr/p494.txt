@@ -1,0 +1,61 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 494
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+61 D.I.A.T. Palasah SPM. 21 12
+62 D.I.A.T. Kasokandel SPM. 22 12
+63 D.I.A.T. Kertasari SPM. 23 15
+64 D.I.A.T. Kertasari SPM. 24 15
+65 D.I.A.T. Sukakerta SPM. 28 15
+66 D.I.A.T. Sukakerta SPM. 29 15
+h Kab. Purwakarta 17 363
+1 D.LA.T. Suka Mulya TW.44 20
+2 D.LA.T. Sido Dadi TW.45 22
+3 D.LA.T. Weureu TW.46 20
+4 D.LA.T. Sihom Cot TW.48 18
+5 D.LA.T. Silhom Lhok | TW.49 19
+6 D.LA.T. Luthu Lamwau TW.51 22
+7 D.LA.T. Ulee Kareung TW.52 21
+8 D.LA.T. Empeh Awe TW.76 19
+9 D.LA.T. Atong TW.A10 23
+10 D.LA.T. Menasah manyang SD.PW.01 27
+11 D.LA.T. Lamcot | SD.PW.02 21
+12 D.LA.T. Lamcot II SD.PW.03 22
+13 D.LA.T. Silhom Lhok II TW.202 23
+14 D.LA.T. Cikumpai TW.203 23
+15 D.LA.T. Cikumpai TW.204 20
+16 D.LA.T. Campakasari TW.214 21
+17 D.LA.T. Cipancur TW.230 23
+i Kab. Subana 16 363
+1 D.LA.T. Salamjaya TW.60 17
+2 D.LA.T. Salamjaya TW.61 20
+3 D.LA.T. Siluman TW.64 19
+4 D.LA.T. Kedawung TW.65 17
+5 D.LA.T. Sukamulya TW.66 14
+6 D.LA.T. Siluman TW.67 16
+7 D.LA.T. Salamjaya TW.68 15
+8 D.LA.T. Salamjaya TW.71 21
+9 D.LA.T. Pringkasap TW.73 21
+10 D.LA.T. Pringkasap TW.76 20
+11 D.LA.T. Siluman TW.80 35
+12 D.LA.T. Siluman TWA11 36
+13 D.LA.T. Siluman TW.A112 38
+14 D.LA.T. Cihambulu TW.A113 26
+15 D.LA.T. Salamjaya TW.215 22
+16 D.LA.T. Siluman TW.216 26
+i Kab. Sumedana 6 182
+1 D.LA.T. Cibuluh TW. 101 35
+2 D.LA.T. Cibuluh TW. 105 35
+3 D.LA.T. Cibuluh TW. 227 30
+4 D.LA.T. Cibuluh TW. 247 30
+5 D.LA.T. Cibuluh TW. 255 32
+6 D.LA.T. Cijambe TW. 201 20
+VI PROVINSI JAWA TENGAH 679 16.872
+a Kab. Blora 138 3.903
+1 D.LA.T. Temulus PWJ71 24
+2 D.LA.T. Sumberejo PWJ74 20
+3 D.LA.T. Sumber PWJ75 19
+4 D.LA.T. Sumber PWJ77 38
+5 D.LA.T. Sumber PWJ78/ 342 41
+6 D.I.A.T. Mojorembun PW/J83/298 26

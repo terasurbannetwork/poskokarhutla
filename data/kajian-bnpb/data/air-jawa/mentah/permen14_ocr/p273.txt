@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+89 D.I. Pokoh 18
+90 D.I. Candirejo 80
+91 D.I. Banaran 35
+92 D.I. Konang 15
+93 D.I. Sejehe 30
+94 D.I. Candi 30
+95 D.I. Gondang Jirapan 20
+96 D.I. Sedukoh 10
+97 D.I. Pucang 14
+98 D.I. Segempol 12
+99 D.I. Sekalongan 10
+100 D.I. Kedung upit 30
+101 D.I. Tritis sambirejo 23
+102 D.I. Semodinan 12
+103 D.I. Donoloyo 8
+104 D.I. Jayan 30
+105 D.I. Grasak 12
+106 D.I. Belik Alas 16
+107 D.I. Jagir 10
+108 D.I. Duk Jirak 10
+109 D.I. Seploso 21
+110 D.I. Sewiyu 12
+111 D.I. Gendol I 25
+112 D.I. Gendol II 30
+113 D.I. Pelem-Pelem 8
+114 D.I. Cerme 15
+115 D.I. Pare 10
+116 D.I. Semen 10
+117 D.I. Tanjung Anom 25
+118 D.I. Sedawung 20
+v Kab. Sukohario 70 6.364
+1 D.I. Banteng 24
+2 D.I. Bareng 193
+3 D.I. Baseng 37
+4 D.I. Bedodo 109
+5 D.I. Bende 79
+6 D.I. Bendung 31
+7 D.I. Brau 162
+8 D.I. Brumbung 60
+9 D.I. Bugel 26
+10 D.I. Buret 16
+11 D.I. Dadap 12
+12 D.I. Dari 187
+13 D.I. Gangin 4
+14 D.I. Gentan 84
+15 D.I. Godong 185
+16 D.I. Gondang 40
+17 D.I. Grogol 550
+18 D.I. Jantran 29
+19 D.I. Jatimalang 156
+20 D.I. Jetis 14
+21 D.I. Kajoran 139
+22 D.I. Kalangan 190
+23 D.I. Kaliduren 124
+24 D.I. Kamal 20
+25 D.I. Karangasem 63
+26 D.I. Kedungbulus 70
+27 D.I. Kedungdowo 120
+28 D.I. Kepu 34
+29 D.I. Krecekan 68
+#KANAN
+973 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+30 D.I. Kubukan 37
+31 D.I. Kucing 15
+32 D.I. Kudusan 42
+33 D.I. Langkap/Sirahan 41
+34 D.I. Luang 263
+35 D.I. Madoh 14
+36 D.I. Malangan 78
+37 D.I. Mandungan 240
+38 D.I. Mantung 42
+39 D.I. Mindi II 32
+40 D.I. Ngabeyan 47
+41 D.I. Ngadiwarno 38
+42 D.I. Nglondo 140
+43 D.I. Pacinan 12
+44 D.I. Palur 30
+45 D.I. Papungan 78
+46 D.I. Pilang 134
+47 D.I. Prenggan 56
+48 D.I. Pucungan 60
+49 D.I. Sambeng II 55
+50 D.I. Sambiloro 30
+51 D.I. Sanan 39
+52 D.I. Sanggang 10
+53 D.I. Sangkalan 30
+54 D.I. Sidodadi 75
+55 D.I. Sidowayah 10
+56 D.I. Sumber 34
+57 D.I. Baki Tinggen 245
+58 D.I. Bd. Dayu 174
+59 D.I. Bulu 25
+60 D.I. Cendono 4
+61 D.I. Garotan 260
+62 D.I. Gowanan 34
+63 D.I. Mojorejo 50
+64 D.I. Plumbon 40
+65 D.I. Premban 128
+66 D.I. Senden 174
+67 D.I. Siluwur 400
+68 D.I. Tanjung 60
+69 D.I. Tegalgede 115
+70 D.I. Wirogunan 73
+z Kab. Teaal 229 14.285
+1 D.I. Antap 45
+2 D.I. Ares 70
+3 D.I. Arus 171
+4 D.I. Awar-Awar 35
+5 D.I. Awu 100
+6 D.I. Batu 67
+7 D.I. Batu 157
+8 D.I. Bawangan 32
+9 D.I. Beduk 27
+10 D.I. Beduk 37
+11 D.I. Bengkeng 35
+12 D.I. Biyombong 211
+13 D.I. Biyuk 21
+14 D.I. Blumbung 30
+15 D.I. Brete 15
+16 D.I. Brete 15
+17 D.I. Bumijawa 103
+18 D.I. Bungkaran 20

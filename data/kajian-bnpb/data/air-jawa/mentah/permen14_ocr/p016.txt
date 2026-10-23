@@ -1,0 +1,71 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 16
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+VI PROVINSI BANTEN 3 49.214
+1 D.I. Cisadane 22.441 Kabupaten Tangerang 23 21.007 Ha
+Kabupaten Serang z 484 Ha
+Kota Tangerang z 950 Ha
+2 D.I. Ciujung 21.350 Kabupaten Serang 3 21.091 Ha
+Kota Cilegon z 259 Ha
+3 D.I. Ciliman 5.423 Kabupaten Lebak z Bendung
+Kabupaten Pandeglang z 5.423 Ha
+
+VII PROVINSI JAWA BARAT 6 345.210
+1 D.I. Cikunten II 4.443 Kabupaten Tasikmalaya z 1.779 Ha
+Kota Tasikmalaya - 2.664 Ha
+2 D.I. Cipamingkis 4591 Kabupaten Bekasi - 3.220 Ha
+Kabupaten Bogor z 1.371 Ha
+3 D.I. Ciwaringin 4.364 Kabupaten Cirebon z 1103 Ha
+Kabupaten Majalengka z 3.261 Ha
+4 D.I. Jatiluhur 237.790 Kabupaten Bekasi - 52.728 Ha
+Kabupaten Indramayu 2 24511 Ha
+Kabupaten Karawang 2 100.049 Ha
+Kabupaten Subang 2 60.502 Ha
+Kabupaten Purwakarta z Dam
+5 D.I. Lakbok Utara 6.219 Kabupaten Ciamis z 4818 Ha
+Kota Banjar z 1.401 Ha
+6 D.I. Rentang 87.803 Kabupaten Cirebon 23 20.620 Ha
+Kabupaten Indramayu 23 66.612 Ha
+Kabupaten Majalengka z 571 Ha
+
+VIII PROVINSI JAWA TENGAH 14 189.624
+1 D.I. Banjarcahyana 5.001 Kabupaten Banjarnegara z 1.305 Ha
+Kabupaten Purbalingga z 3.696 Ha
+2 D.I. Glapan 18.740 Kabupaten Grobogan - 9277 Ha
+Kabupaten Demak - 9.463 Ha
+3 D.I. Kaliwadas 7.208 Kabupaten Pekalongan z 1.768 Ha
+Kabupaten Pemalang z 5.440 Ha
+4 D.I. Kedung Asem 4353 Kabupaten Batang z 1175 Ha
+Kabupaten Kendal - 3.178 Ha
+5 D.I. Klambu 37.451 Kabupaten Demak - 20.649 Ha
+Kabupaten Grobogan z 879 Ha
+Kabupaten Jepara z 60 Ha
+Kabupaten Kudus z 6.515 Ha
+Kabupaten Pati z 9.348 Ha
+6 D.I. Kumisik 3.940 Kabupaten Brebes z 260 Ha
+Kabupaten Tegal z 3.680 Ha
+7 D.I. Kupang Krompeng 3.040 Kabupaten Batang z 2.071 Ha
+Kabupaten Pekalongan z 50 Ha
+Kota Pekalongan z 919 Ha
+8 D.I. Pemali Bawah (Bd. Notog) 26.952 Kabupaten Brebes - 26.831 Ha
+Kabupaten Tegal z 121 Ha
+9 D.I. Pesantren Kletak 3.517 Kabupaten Pekalongan z 3.246 Ha
+Kota Pekalongan z 271 Ha
+10 D.I. Progo Manggis-Kalibening 3.633 Kabupaten Magelang - 3.366 Ha
+Kabupaten Temanggung z 53 Ha
+Kota Magelang z 214 Ha
+11 D.I. Sedadi 16.055 Kabupaten Demak z 8.975 Ha
+Kabupaten Grobogan z 7.080 Ha
+12 D.I. Serayu 20.795 Kabupaten Banyumas z 3.378 Ha
+Kabupaten Cilacap - 17.037 Ha
+Kabupaten Kebumen - 380 Ha
+13 D.I. Sungapan/Grogek 7.086 Kabupaten Pemalang z 6.873 Ha
+Kabupaten Tegal z 213 Ha
+14 D.I. Waduk Wadaslintang 31.853 Kabupaten Kebumen 5 21.422 Ha
+Kabupaten Purworejo - 10.431 Ha
+
+IX PROVINSI D.I. YOGYAKARTA 1 5.159
+1 D.I. Karangtalun 5.159 Kabupaten Bantul z 706 Ha
+Kabupaten Sleman z 4.453 Ha

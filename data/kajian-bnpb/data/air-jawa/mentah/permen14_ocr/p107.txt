@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+27 D.I. Sikoramir 25
+28 D.I. Bandar Gadang MS 19
+29 D.I. Batang Suo 808
+30 D.I. Batang Ambatan 53
+31 D.I. Batang Sampek 45
+32 D.I. Pincuran VII 70
+33 D.I. Sei. Tombang 40
+34 D.I. Batang Liau 272
+35 D.I. Batang Sikumbu 53
+36 D.I. Ulu Takung 98
+37 D.I. Batang Lango 60
+38 D.I. Batang Tinggolang 20
+39 D.I. Batang Patikin 44
+40 D.I. Batang Kumpai 76
+41 D.I. Batang Pulasan 50
+42 D.I. Padang Doto 40
+43 D.I. Batang Lagung 25
+44 D.I. Sungai Mani 65
+45 D.I. Batang Sao-Sao 33
+46 D.I. Batang Talaok 98
+47 D.I. Kalang Batang 27
+48 D.I. Tabek Lolo 23
+49 D.I. Mudik Latang 33
+50 D.I. Andopan 60
+51 D.I. Mudik Air 56
+52 D.I. Batang Lansek TL 28
+53 D.I. Batang Dareh 26
+54 D.I. Tabek Alai 27
+55 D.I. Tabek Taratak 53
+56 D.I. Sei. Belimbing 110
+57 D.I. Pangkal Jalan 27
+58 D.I. Lubuk Rimbo 27
+59 D.I. Batang Liambang 25
+60 D.I. Dataran Takuna 580
+61 D.I. Batang Talang TL 20
+62 D.I. Lindang Lawas 25
+63 D.I. Batang Telor 18
+64 D.I. Batang Moran 75
+65 D.I. Batang Sikayan 15
+66 D.I. Batu Hampar I 62
+67 D.I. Aie Amo 308
+68 D.I. Batu Hampar II 208
+69 D.I. Sungai Langkok 285
+70 D.I. Batang Talang LT 20
+71 D.I. Batang Samek 40
+72 D.I. Batang Kaban 100
+73 D.I. Sungai Betung 228
+74 D.I. Sungai Talang 115
+75 D.I. Batang Kariang 100
+76 D.I. Batang Mingkudu 25
+77 D.I. Batang Lansek SL 29
+78 D.I. Sungai Samek 508
+79 D.I. Batu Kapur 102
+80 D.I. Muaro Somo 100
+81 D.I. Sei. Kambing/Batang Sai. 30
+82 D.I. Cimanting Mudik 30
+83 D.I. Situgar I 12
+84 D.I. Situgar II 18
+85 D.I. Mudik Manui 30
+86 D.I. Kabun 70
+87 D.I. Batang Sariau 400
+#KANAN
+107 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+88 D.I. Bawah Rumah di Sp. Kudus 41
+89 D.I. Sawah Subarang 30
+90 D.I. Bawah Rumah di Manganti 35
+91 D.I. Agang Besar di Bukit Bual 30
+92 D.I. Ampang Buluh Rotan 30
+93 D.I. Batang Gozan | 15
+94 D.I. Batang Gozan II 13
+95 D.I. Batang Gozan III 5
+96 D.I. Sawah Laweh 35
+97 D.I. Sei. Jernih 50
+98 D.I. Lurah Batu Kudo 64
+99 D.I. Sungai Rambutan 35
+100 D.I. Batang Kuayan 35
+101 D.I. Mudik Kako 30
+102 D.I. Batang Lisikan 30
+103 D.I. Mudik Paru 60
+104 D.I. Mudik Simpang 30
+105 D.I. Palintangan 35
+106 D.I. Padang Bariang 30
+107 D.I. Lubuk Timbulun 30
+108 D.I. Ampang Tabek Surau 4
+109 D.I. Batang Dikat 38
+110 D.I. Mudik Ampalu 40
+111 D.I. Padang Laweh 30
+112 D.I. Lindang Lawas 30
+113 D.I. Sungai Sariek 50
+114 D.I. Antonangan 37
+115 D.I. Batang Barangan 40
+116 D.I. Batang Gobah 50
+117 D.I. Batang Sialangan 49
+118 D.I. Bandar Tuo 60
+119 D.I. Bdr. Kampung 30
+i Kab. Solok 308 31.139
+1 D.I. Bdr. Air Angek Sonsang 329
+2 D.I. Bdr. Air Dalik 93
+3 D.I. Bdr. Air Dingin 300
+4 D.I. Bdr. Air Jernih 30
+5 D.I. Bdr. Anjalai 172
+6 D.I. Bdr. Balerong Mudik 358
+7 D.I. Bdr. Baliang 100
+8 D.I. Bdr. Baru 75
+9 D.I. Bdr. Barusuang 47
+10 D.I. Bdr. Batang Simo 143
+11 D.I. Bdr. Batu Bagiriak 285
+12 D.I. Bdr. Bawah Gunung 257
+13 D.I. Bdr. Bukik Jaliang 291
+14 D.I. Bdr. Bukit Barampung 390
+15 D.I. Bdr. Bunian 97
+16 D.I. Bdr. Gadang 87
+17 D.I. Bdr. Gadang 172
+18 D.I. Bdr. Galuang 95
+19 D.I. Bdr. Gantiang 80
+20 D.I. Bdr. Garingging 85
+21 D.I. Bdr. Guguk Baliang 76
+22 D.I. Bdr. Guguk Bulek 109
+23 D.I. Bdr. Guguk Gayo 123
+24 D.I. Bdr. Guguk Manyalek 70
+25 D.I. Bdr. Guguk Rantau 450
+26 D.I. Bdr. Gurah 209
+27 D.I. Bdr. Gurun Panjang 834

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+120 D.I. Jangguk II 53
+121 D.I. Jati | 55
+122 D.I. Jati II 27
+123 D.I. Jati III 15
+124 D.I. Jati Koong 61
+125 D.I. Jeru 205
+126 D.I. Jeruk Sok Sok 45
+127 D.I. Jerukan 123
+128 D.I. Jiba 23
+129 D.I. Jibah 64
+130 D.I. Kabuaran | 63
+131 D.I. Kabuaran II 45
+132 D.I. Kacung I 34
+133 D.I. Kacung II 81
+134 D.I. Kamsira 33
+135 D.I. Kapuran | 10
+136 D.I. Kapuran II 53
+137 D.I. Kateken | 69
+138 D.I. Kateken II 11
+139 D.I. Kayu sapi 7
+140 D.I. Kayugede 26
+141 D.I. Kebon 24
+142 D.I. Kecik 163
+143 D.I. Kembar I 25
+144 D.I. Kembar I & II (UPTD Grujugan) 57
+145 D.I. Kembar II 32
+146 D.I. Kemiri 19
+147 D.I. Kemuningan 45
+148 D.I. Kenek 35
+149 D.I. Keramat 68
+150 D.I. Kesambi 90
+151 D.I. Klampokan 191
+152 D.I. Klompangan 68
+153 D.I. Klonceng 129
+154 D.I. Kokap 43
+155 D.I. Kokap (UPTD Prajekan) 64
+156 D.I. Kokap I 7
+157 D.I. Kokap II 4
+158 D.I. Kokap III 89
+159 D.I. Kolor 30
+160 D.I. Kolpoh 13
+161 D.I. Kolpoh 120
+162 D.I. Kramat 68
+163 D.I. Krasak 104
+164 D.I. Krocok I 22
+165 D.I. Krocok II 30
+166 D.I. Krocok III 23
+167 D.I. Kumbar 29
+168 D.I. Langsat I 23
+169 D.I. Langsat II 10
+170 D.I. Langsat III 37
+171 D.I. Langsat IV 11
+172 D.I. Lebak 51
+173 D.I. Leduk (UPTD Grujugan) 37
+174 D.I. Leng 26
+175 D.I. Lengket I 10
+176 D.I. Lengket II 49
+177 D.I. Leprak 26
+178 D.I. Letek 33
+179 D.I. Liati 31
+180 D.I. Libilian 120
+#KANAN
+311 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+181 D.I. Lipan 53
+182 D.I. Luci 24
+183 D.I. Lunggusari 46
+184 D.I. Majid (UPTD Bondowoso) 24
+185 D.I. Makam 191
+186 D.I. Makam 43
+187 D.I. Makam 19
+188 D.I. Makmur 38
+189 D.I. Mangun 1, II, III, IV 101
+190 D.I. Manting I 23
+191 D.I. Manting II M
+192 D.I. Masegit 5
+193 D.I. Masjid 110
+194 D.I. Mi'i 79
+195 D.I. Modus 15
+196 D.I. Muangan 71
+197 D.I. Muncar 58
+198 D.I. Nangger 137
+199 D.I. Nian 11
+200 D.I. Nito 273
+201 D.I. Nogosrono I 68
+202 D.I. Nogosrono II 40
+203 D.I. Nurbiha 22
+204 D.I. Nurijan 15
+205 D.I. Pa'ala 40
+206 D.I. Pabun 42
+207 D.I. Pace 82
+208 D.I. Pager Gunung 717
+209 D.I. Pager Gunung 100
+210 D.I. Pagungan I 15
+211 D.I. Pagungan II 22
+212 D.I. Pakel 83
+213 D.I. Pakem | 22
+214 D.I. Pakem II 17
+215 D.I. Pakem III 20
+216 D.I. Pakis A 13
+217 D.I. Pakis B 8
+218 D.I. Pakis | 8
+219 D.I. Pakis II 22
+220 D.I. Pakis III 47
+221 D.I. Pakis IV 5
+222 D.I. Pakisan 882
+223 D.I. Paleran 23
+224 D.I. Paleran | 52
+225 D.I. Paleran II 72
+226 D.I. Pandan 32
+227 D.I. Panggang 88
+228 D.I. Pao 23
+229 D.I. Pao (UPTD Bondowoso) 35
+230 D.I. Paras 17
+231 D.I. Paras | 28
+232 D.I. Paras II 25
+233 D.I. Parse 11
+234 D.I. Patemon 17
+235 D.I. Peh 152
+236 D.I. Pele 10
+237 D.I. Penang 20
+238 D.I. Penggung I 9
+239 D.I. Penggung II 136
+240 D.I. Pereng 10
+241 D.I. Pesaan | 14

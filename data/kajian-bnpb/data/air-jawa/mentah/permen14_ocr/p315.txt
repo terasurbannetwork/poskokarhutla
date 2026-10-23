@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+608 D.I. Temek II 62
+609 D.I. Temek II 15
+610 D.I. Tlagaran 56
+611 D.I. Umbul I 5
+612 D.I. Umbul II 12
+613 D.I. Umbul III 27
+614 D.I. Umbutan 25
+f Kab. Gresik 115 13.894
+1 D.I. Kali Balikterus 300
+2 D.I. Kali Bangkalan 120
+3 D.I. Kali Gondang 75
+4 D.I. Kali Guntung 92
+5 D.I. Kali Kastoba 828
+6 D.I. Kali Kebonagung 125
+7 D.I. Kali Kembang 65
+8 D.I. Kali Kenong 90
+9 D.I. Kali Kresek 180
+10 D.I. Kali Legungbulu 30
+11 D.I. Kali Legungmerem 563
+12 D.I. Kali Sangar 650
+13 D.I. Kali Solo 470
+14 D.I. Kali Teluk Jati 89
+15 D.I. Kali Topo 327
+16 D.I. Krikilan 506
+17 D.I. Leideng Delik 549
+18 D.I. Leideng Gawok 433
+19 D.I. Leideng Jono 603
+20 D.I. Pacempo 12
+21 D.I. Sungai Giring 35
+22 D.I. Sungai Raya 27
+23 D.I. Waduk Banjaranyar 757
+24 D.I. Waduk Gedang Kulud 708
+25 D.I. Waduk Joho 347
+26 D.I. Waduk Kaliombo 484
+27 D.I. Waduk Mentaras 185
+28 D.I. Waduk Ngabetan 311
+29 D.I. Waduk Siraman 136
+30 D.I. Waduk Abar-Abir 40
+31 D.I. Waduk Anom 20
+32 D.I. Waduk Babatan 15
+33 D.I. Waduk Bandung Sekaren 15
+34 D.I. Waduk Banjarsari 40
+35 D.I. Waduk Banter 40
+36 D.I. Waduk Belahan Rejo 100
+37 D.I. Waduk Betiting 75
+38 D.I. Waduk Bolo M
+39 D.I. Waduk Boteng 30
+40 D.I. Waduk Brangkal 46
+41 D.I. Waduk Bulangan 63
+42 D.I. Waduk Cagak Agung 20
+43 D.I. Waduk Cerme Lor 7
+44 D.I. Waduk Delegan 100
+45 D.I. Waduk Doho Agung 25
+46 D.I. Waduk Doudo 43
+47 D.I. Waduk Gluran Ploso 15
+48 D.I. Waduk Gredek 25
+49 D.I. Waduk Grogol 66
+50 D.I. Waduk Gunung Daten 15
+51 D.I. Waduk Hendro Sari 30
+52 D.I. Waduk Indro Delik 90
+#KANAN
+315 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+53 D.I. Waduk Jogodalu 70
+54 D.I. Waduk Kambingan 28
+55 D.I. Waduk Kandangan 50
+56 D.I. Waduk Katimoho 30
+57 D.I. Waduk Kedamean | 90
+58 D.I. Waduk Kedamean II 50
+59 D.I. Waduk Kedanyang 40
+60 D.I. Waduk Kedung Jati 15
+61 D.I. Waduk Keduna Sumber 20
+62 D.I. Waduk Kemangi 77
+63 D.I. Waduk Kepatihan 147
+64 D.I. Waduk Ketanen 52
+65 D.I. Waduk Ketapang 100
+66 D.I. Waduk Kisik 75
+67 D.I. Waduk Laban 30
+68 D.I. Waduk Melirang 148
+69 D.I. Waduk Menganti 142
+70 D.I. Waduk Mojo Gede 15
+71 D.I. Waduk Mojo Petung 30
+72 D.I. Waduk Mojopuro Gede 35
+73 D.I. Waduk Mojopuro Wetan 18
+74 D.I. Waduk Mojosari Rejo 15
+75 D.I. Waduk Mojotengah 40
+76 D.I. Waduk Mojowuku 55
+77 D.I. Waduk Ngampel 18
+78 D.I. Waduk Ngasin 57
+79 D.I. Waduk Ngepung | 119
+80 D.I. Waduk Ngepung II 74
+81 D.I. Waduk Pacuh 39
+82 D.I. Waduk Palem Watu 32
+83 D.I. Waduk Pandanan 100
+84 D.I. Waduk Pengalangan 252
+85 D.I. Waduk Pengundan 34
+86 D.I. Waduk Petung 35
+87 D.I. Waduk Pinggir 25
+88 D.I. Waduk Pranti 112
+89 D.I. Waduk Pundutrate 60
+90 D.I. Waduk Rabit 30
+91 D.I. Waduk Raci 36
+92 D.I. Waduk Raci Kulon 47
+93 D.I. Waduk Raci Wetan 110
+94 D.I. Waduk Randu Padang 90
+95 D.I. Waduk Sambo Gunung 50
+96 D.I. Waduk Sekar Putih 20
+97 D.I. Waduk Sido Jangkung 28
+98 D.I. Waduk Sido Raharjo 90
+99 D.I. Waduk Sido Wungu 38
+100 D.I. Waduk Sidomukti 75
+101 D.I. Waduk Slempet 55
+102 D.I. Waduk Suci 43
+103 D.I. Waduk Sukorejo 60
+104 D.I. Waduk Sumari 27
+105 D.I. Waduk Sumber Sooko 200
+106 D.I. Waduk Tanah Landeyan 25
+107 D.I. Waduk Tanjung 48
+108 D.I. Waduk Tenggor 15
+109 D.I. Waduk Tulung 65
+110 D.I. Waduk Turi Rejo 61
+111 D.I. Waduk Wadeng 35
+112 D.I. Waduk Wedani 50
+113 D.I. Waduk Wedoro 60

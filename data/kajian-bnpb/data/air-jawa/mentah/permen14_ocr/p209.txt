@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+92 D.I. Ngumbul 127
+93 D.I. Palon 150
+94 D.I. Panolan | 70
+95 D.I. Patihan 55
+96 D.I. Pelem Sengir 84
+97 D.I. Pengilon 43
+98 D.I. Pesantren 84
+99 D.I. Poh Gesik 20
+100 D.I. Porendeng 30
+101 D.I. Prantaan 40
+102 D.I. Rondokuning 50
+103 D.I. Sambeng 21
+104 D.I. Sambong 25
+105 D.I. Sarimulyo 20
+106 D.I. Semambit 89
+107 D.I. Sendang 50
+108 D.I. Sendang Rejo I 50
+109 D.I. Sendang Rejo II 20
+110 D.I. Sidorejo 50
+111 D.I. Singonegoro 12
+112 D.I. Sonorejo I 25
+113 D.I. Sukorejo 60
+114 D.I. Sumber Pitu 35
+115 D.I. Sumberejo 70
+116 D.I. Sumur Boto 75
+117 D.I. Tambakromo 40
+118 D.I. Tambi 10
+119 D.I. Tawang 20
+120 D.I. Temengeng 20
+121 D.I. Tempel Lemahbang 100
+122 D.I. Tempuran 820
+123 D.I. Tepus 10
+124 D.I. Waduk Bruk 267
+125 D.I. Wali 38
+126 D.I. Wanutengah 83
+127 D.I. Watesdolok 104
+128 D.I. Watu Lunyu 25
+129 D.I. Watulumbung 240
+130 D.I. Watumalang 124
+131 D.I. Wukir Sari | & II 30
+132 D.I. Wuloh 25
+133 D.I. Embung Keruk 200
+134 D.I. Jurangjero 200
+135 D.I. Sonorejo II 25
+136 D.I. Embung Kalangrejo 40
+137 D.I. Sonokidul 40
+138 D.I. Bentolo 59
+139 D.I. Gombang 20
+140 D.I. Ngampon 10
+141 D.I. Tempurejo 107
+142 D.I. Nglajo 20
+143 D.I. Kadengan 25
+144 D.I. Bekutuk 30
+145 D.I. Kebonharjo 60
+146 D.I. Bejirejo 45
+147 D.I. Biting 14
+148 D.I. Blimbing 20
+149 D.I. Bogorejo 50
+150 D.I. Cabak 13
+151 D.I. Damaran 10
+152 D.I. Gedangan 10
+#KANAN
+209 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+153 D.I. Gempolrejo 40
+154 D.I. Genjahan 10
+155 D.I. Getas 93
+156 D.I. Gondang 20
+157 D.I. Grojogan I 9
+158 D.I. Grojogan II 12
+159 D.I. Jepangrejo 15
+160 D.I. Kaliweden 55
+161 D.I. Karanggeneng 40
+162 D.I. Kauman 10
+163 D.I. Kembang 30
+164 D.I. Kemiri 75
+165 D.I. Ketuwan 300
+166 D.I. Klampok I 15
+167 D.I. Mejurang 10
+168 D.I. Nglamping 8
+169 D.I. PA. Gadu 35
+170 D.I. PA. Sidorejo 50
+171 D.I. Pelem 52
+172 D.I. Prantaan 10
+173 D.I. Pucung 12
+174 D.I. Pudak 20
+175 D.I. Reno 20
+176 D.I. Sambongrejo 40
+177 D.I. Saringan 9
+178 D.I. Sentonorejo 10
+179 D.I. Soko I 22
+180 D.I. Soko II 10
+181 D.I. Tambakrejo 25
+182 D.I. Trisinan 20
+183 D.I. Wuni 35
+e Kab. Bovolali 260 11.329
+1 D.I. Ajaran 50
+2 D.I. Andong 200
+3 D.I. Bekuning 10
+4 D.I. Bendo 13
+5 D.I. Bentangan 11
+6 D.I. Bentingan 19
+7 D.I. Bogo 18
+8 D.I. Bolo 22
+9 D.I. Bomati 485
+10 D.I. Boro 10
+11 D.I. Boto 11
+12 D.I. Brontok 35
+13 D.I. Bukur ireng 50
+14 D.I. Butul 64
+15 D.I. Candi 57
+16 D.I. Cekdam 10
+17 D.I. Dawang 11
+18 D.I. Dlimas 166
+19 D.I. Drono 180
+20 D.I. Dudan 15
+21 D.I. Gading 13
+22 D.I. Gambiran 13
+23 D.I. Gandrung 20
+24 D.I. Garat II 97
+25 D.I. Gayam 76
+26 D.I. Gayamprit 24
+27 D.I. Gebel 89
+28 D.I. Gedong 41

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+87 D.I. Cimutan II 37
+88 D.I. Cinangka | 72
+89 D.I. Cinangka Ia 25
+90 D.I. Cinangka II 120
+91 D.I. Cinangka III 185
+92 D.I. Cioray 20
+93 D.I. Cipabelah | 23
+94 D.I. Cipabelah II 31
+95 D.I. Cipabelah II 20
+96 D.I. Cipabuaran 71
+97 D.I. Cipadaringan 152
+98 D.I. Cipaku 20
+99 D.I. Cipalabuan Bulan 22
+100 D.I. Cipamenit I 25
+101 D.I. Cipamenit II 20
+102 D.I. Cipanaruban 111
+103 D.I. Cipanyuguan | 21
+104 D.I. Cipanyuguan II 52
+105 D.I. Ciparahu 30
+106 D.I. Cipari I 48
+107 D.I. Cipari II 28
+108 D.I. Cipatat 330
+109 D.I. Cipeusing 38
+110 D.I. Cipicung 675
+111 D.I. Cipiit 117
+112 D.I. Cirangkong 69
+113 D.I. Cirenggong 52
+114 D.I. Cireundeu 40
+115 D.I. Cisanca | 29
+116 D.I. Ciseureuh 22
+117 D.I. Citalutug 33
+118 D.I. Citapen 42
+119 D.I. Citepus 20
+120 D.I. Citisuk 89
+121 D.I. Civenteung 152
+122 D.I. Ciunem 59
+123 D.I. Ciwangun 35
+124 D.I. Curug Bitung 35
+125 D.I. Dangdeur 20
+126 D.I. Empang 23
+127 D.I. Garok 84
+128 D.I. Golok Menyon 99
+129 D.I. Hulusitu 26
+130 D.I. Jarian 23
+131 D.I. Jelebud 34
+132 D.I. Karang Toman 374
+133 D.I. Kawungluwuk 76
+134 D.I. Kukulu 20
+135 D.I. Leuwi Halang 75
+136 D.I. Leuwi Mulud 42
+137 D.I. Leuwi Tunggak 126
+138 D.I. Ma. Epen 20
+139 D.I. Markayi 36
+140 D.I. Nagrak III M
+141 D.I. Nangka 20
+142 D.I. Pajaratan 20
+143 D.I. Pakaldi 36
+144 D.I. Palasari 64
+145 D.I. Pangsor 636
+146 D.I. Parigi 34
+147 D.I. Patanya 54
+#KANAN
+179 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+148 D.I. Patenggeng 62
+149 D.I. Patiman | 22
+150 D.I. Pawelutan 892
+151 D.I. Peuntas 20
+152 D.I. Picung Pugur 22
+153 D.I. Ponggang I 47
+154 D.I. Ponggang III 112
+155 D.I. Ranca Kandong 250
+156 D.I. Sado 53
+157 D.I. Sawah Batu 28
+158 D.I. Sawah Lega | 32
+159 D.I. Sawah Randu 23
+160 D.I. Sawah Wetan 4
+161 D.I. Sengir 40
+162 D.I. Sindanglaya/Cikembang | 161
+163 D.I. Situ Anyar 56
+164 D.I. Situ Ardan 22
+165 D.I. Situ Atong 50
+166 D.I. Situ Bojongjeruk 35
+167 D.I. Situ Cikadongdong 46
+168 D.I. Situ Citapen 150
+169 D.I. Situ Kaliwadas 75
+170 D.I. Situ Malangbong 67
+171 D.I. Situ Sedayu 40
+172 D.I. Situ Sindangsari 80
+173 D.I. Sukajimat 34
+174 D.I. Sukanande 63
+175 D.I. Tambakdami 245
+176 D.I. Wangun 21
+177 D.I. Aki Mariah 9
+178 D.I. Arsadipura 12
+179 D.I. Astana Sindanglaya/Cikembang II 56
+180 D.I. Banceuy 10
+181 D.I. Barul 6
+182 D.I. Batu Karut 14
+183 D.I. Bawi 65
+184 D.I. Bendung Uyuh 192
+185 D.I. Bengkok 18
+186 D.I. Caringin 25
+187 D.I. Caringin/Mayang 10
+188 D.I. Ciancol 3
+189 D.I. Cianyar 32
+190 D.I. Cibanggala 80
+191 D.I. Cibanjaran 12
+192 D.I. Cibaregbeg 159
+193 D.I. Cibatu 72
+194 D.I. Cibeletok 118
+195 D.I. Cibial 50
+196 D.I. Cibodas II 46
+197 D.I. Cibogo 182
+198 D.I. Cibugang 150
+199 D.I. Cibulakan 145
+200 D.I. Cicurug 15
+201 D.I. Cidadawah 12
+202 D.I. Cigabah | 10
+203 D.I. Cigabah II 8
+204 D.I. Cigadog III-IV 44
+205 D.I. Cigayonggong 2 57
+206 D.I. Cigintung | 9
+207 D.I. Cigintung II 7
+208 D.I. Ciguha 20

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+76 D.I. Waemanu 10
+77 D.I. Waenanga 20
+78 D.I. Waerama 10
+79 D.I. Waewelu 54
+80 D.I. Waku 67
+81 D.I. Watulewa 50
+82 D.I. Watupirong 200
+83 D.I. Welas 30
+84 D.I. Wirong Meze 103
+85 D.I. Wuju 25
+m Kab. Rote Ndao 114 14.455
+1 D.I. Alas 230
+2 D.I. Balafia 300
+3 D.I. Baranusa 300
+4 D.I. Batu Lelete 105
+5 D.I. Batu Nggolo 120
+6 D.I. Batulilok 110
+7 D.I. Baulen 210
+8 D.I. Bebalain 40
+9 D.I. Bolatena 150
+10 D.I. Boni 120
+11 D.I. Busalangga 75
+12 D.I. Danofoeh 250
+13 D.I. Danokoli/Kolidanon 35
+14 D.I. Danonaluk 100
+15 D.I. Edalode I 120
+16 D.I. Edalode II 70
+17 D.I. Henendam 163
+18 D.I. Humatua 65
+19 D.I. Kaikfoklain 85
+20 D.I. Kandale 75
+21 D.I. Kapalangga 240
+22 D.I. Kimadale 50
+23 D.I. Kolobolon 250
+24 D.I. Kotadendan 250
+25 D.I. Kudameda 45
+26 D.I. Kuli 750
+27 D.I. Lanalona 155
+28 D.I. Lanamok 85
+29 D.I. Leadae 85
+30 D.I. Leina 160
+31 D.I. Lekobatu 350
+32 D.I. Letelangga 425
+33 D.I. Limakoli 60
+34 D.I. Livuhani 260
+35 D.I. Londa Lusi 70
+36 D.I. Mamen 90
+37 D.I. Manggis 80
+38 D.I. Mbafuan 85
+39 D.I. Mbokak 110
+40 D.I. Mondale 320
+41 D.I. Nasedanon 25
+42 D.I. Ndudale 350
+43 D.I. Netenain 120
+44 D.I. Nggeokekan 97
+45 D.I. Nggodimeda 300
+46 D.I. Noisek 60
+47 D.I. Nunukhun 105
+48 D.I. Oebafok 65
+49 D.I. Oebau 45
+#KANAN
+394
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Oebou 50
+51 D.I. Oebuni 50
+52 D.I. Oederas 70
+53 D.I. Oehandi 65
+54 D.I. Oehenak 120
+55 D.I. Oeina 150
+56 D.I. Oekupi 60
+57 D.I. Oelua 65
+58 D.I. Oelunggu I 150
+59 D.I. Oemaman 120
+60 D.I. Oemau 800
+61 D.I. Oenitas 125
+62 D.I. Oenoh I 60
+63 D.I. Oepao 75
+64 D.I. Oeseli 105
+65 D.I. Oeseli I 260
+66 D.I. Oeseli II 60
+67 D.I. Olafuliha'a 119
+68 D.I. Petenae 95
+69 D.I. Rutus Oe 125
+70 D.I. Su AI 60
+71 D.I. Su'uhu 60
+72 D.I. Takadaoen 200
+73 D.I. Temas 275
+74 D.I. Timadale 35
+75 D.I. Tuaknaklain 500
+76 D.I. Tuanatuk 36
+77 D.I. Tuatolo 185
+78 D.I. Umakapa 165
+79 D.I. Urus Aman Teten 50
+80 D.I. Aedaelain 65
+81 D.I. Amalou 102
+82 D.I. Balaoli 25
+83 D.I. Danombao 25
+84 D.I. Daudolu 136
+85 D.I. Dodaek 35
+86 D.I. Eal 45
+87 D.I. Faeanak 32
+88 D.I. Hahaibufu 20
+89 D.I. Ikudara 75
+90 D.I. Inaoe 20
+91 D.I. Ingupapan 32
+92 D.I. Kaikoran 70
+93 D.I. Landu 15
+94 D.I. Leli 27
+95 D.I. Londalusi 35
+96 D.I. Matasio 300
+97 D.I. Mbeimbian 90
+98 D.I. Nauina 127
+99 D.I. Ndao 15
+100 D.I. Nggelamalenum 116
+101 D.I. Oebatu 95
+102 D.I. Oekuleoka 35
+103 D.I. Oelifusole 35
+104 D.I. Oelulumbu 68
+105 D.I. Oemata 72
+106 D.I. Oenoh II 68
+107 D.I. Oetema 38
+108 D.I. Olakayo 168
+109 D.I. Piadale 42
+110 D.I. Silondale 65

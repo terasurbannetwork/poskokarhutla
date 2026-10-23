@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+292 D.I. Cinangka Girang 15
+293 D.I. Cinangka Hilir 15
+294 D.I. Cinangka | 4
+295 D.I. Cinila 10
+296 D.I. Cinila/Bojong 46
+297 D.I. Cinirib 25
+298 D.I. Ciomas 22
+299 D.I. Ciopat 30
+300 D.I. Cipadageng 15
+301 D.I. Cipaingan 15
+302 D.I. Cipakel 30
+303 D.I. Cipakel Girang 15
+304 D.I. Cipakel Girang | 15
+305 D.I. Cipakel Hilir 30
+306 D.I. Cipakel Hilir I 20
+307 D.I. Cipakel Hilir II 40
+308 D.I. Cipalasari 4
+309 D.I. Cipalayangan 10
+310 D.I. Cipangawaren 2
+311 D.I. Cipapar | 30
+312 D.I. Ciparug I-II 25
+313 D.I. Ciparuk 40
+314 D.I. Cipayitung 4
+315 D.I. Cipedageng 15
+316 D.I. Cipelah 16
+317 D.I. Cipenyusuhan 4
+318 D.I. Cipesing 10
+319 D.I. Cipetir 38
+320 D.I. Cipicung 281
+321 D.I. Cipicung 4
+322 D.I. Cipicung 20
+323 D.I. Cipicung/Ciawitali 62
+324 D.I. Cipicung | 5
+325 D.I. Ciporos 12
+326 D.I. Ciputih 45
+327 D.I. Ciraja 11
+328 D.I. Ciraja | 15
+329 D.I. Ciraja II 5
+330 D.I. Cirajamantri 10
+331 D.I. Ciranggon 40
+332 D.I. Ciranggon 30
+333 D.I. Ciranggon Girang 10
+334 D.I. Ciranggon Hilir 15
+335 D.I. Ciranggon | 1
+336 D.I. Ciranggon II 5
+337 D.I. Ciranggon III 3
+338 D.I. Ciranje/Ciranji 15
+339 D.I. Cirebah I-II 3
+340 D.I. Cirebah II 3
+341 D.I. Cireey I 15
+342 D.I. Cireey II 10
+343 D.I. Cireey/Cilingga 34
+344 D.I. Ciregejeg 15
+345 D.I. Cirehe 10
+346 D.I. Cirehe I-II 24
+347 D.I. Cirenda 10
+348 D.I. Cironggeng 50
+349 D.I. Cironggeng II 35
+350 D.I. Ciruyung 10
+351 D.I. Cisagu | 50
+352 D.I. Cisagu II 30
+#KANAN
+218
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+353 D.I. Cisalado 75
+354 D.I. Cisalak | 7
+355 D.I. Cisalak II 3
+356 D.I. Cisarongge 35
+357 D.I. Cisarua 13
+358 D.I. Ciseda 15
+359 D.I. Ciserang 12
+360 D.I. Ciserang 15
+361 D.I. Cisereh 10
+362 D.I. Cisurian 30
+363 D.I. Cisurian 10
+364 D.I. Cisurian 4
+365 D.I. Cisurian II-IV 8
+366 D.I. Citalaga | 23
+367 D.I. Citangkur 25
+368 D.I. Citanjung 30
+369 D.I. Citengah 10
+370 D.I. Citengah | 13
+371 D.I. Citengah II 100
+372 D.I. Citengah II 14
+373 D.I. Citengah III 60
+374 D.I. Citengah I-II 30
+375 D.I. Citengah IV 40
+376 D.I. Citengah V/Cikalapa 50
+377 D.I. Citengah V/Muara Cikan 50
+378 D.I. Citenjolaut 6
+379 D.I. Citonjong 50
+380 D.I. Citonjong/Cipetey 10
+381 D.I. Ciung 25
+382 D.I. Ciung II 18
+383 D.I. Ciuntung 19
+384 D.I. Ciuntung 15
+385 D.I. Ciuntung Girang 15
+386 D.I. Ciupas 9
+387 D.I. Ciuyah 20
+388 D.I. Ciwadas 12
+389 D.I. Ciwalang | 3
+390 D.I. Ciwalang II 13
+391 D.I. Ciwaseng 15
+392 D.I. Coblongan 8
+393 D.I. Cranggon Girang 10
+394 D.I. Cranggon Hilir 15
+395 D.I. Cungkup/Cihejocungkup 37
+396 D.I. Curug Bebek 20
+397 D.I. Curug Goong 15
+398 D.I. Curug Hawu 12
+399 D.I. Curug II 35
+400 D.I. Curugeulis 94
+401 D.I. Curugwedus 40
+402 D.I. Dalung 25
+403 D.I. Dangdeur 52
+404 D.I. Dangdeur 15
+405 D.I. Darma 4
+406 D.I. Datarwuni 50
+407 D.I. Dehem 649
+408 D.I. Depok 40
+409 D.I. Dermaji Girang 10
+410 D.I. Dermaji Hilir 10
+411 D.I. Dlewak | 15
+412 D.I. Dlewak II 90
+413 D.I. Dukuhanyar 4

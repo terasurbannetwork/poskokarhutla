@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+302 D.I. Supiturang 6
+303 D.I. Suren I 2
+304 D.I. Suren II 7
+305 D.I. Suwot 1
+306 D.I. Tameng | 3
+307 D.I. Tameng II 5
+308 D.I. Tanjung 8
+309 D.I. Tebon 13
+310 D.I. Teken 9
+311 D.I. Tirisan | 29
+312 D.I. Tirisan II 12
+313 D.I. Titang 24
+314 D.I. Tumpang 6
+315 D.I. Tumpang I 4
+316 D.I. Tumpang II 7
+317 D.I. Tumpang III 4
+318 D.I. Turus | 3
+319 D.I. Turus II 5
+320 D.I. Wagir I 35
+321 D.I. Wagir II 44
+322 D.I. Waru | 3
+323 D.I. Waru II 5
+324 D.I. Wates 9
+325 D.I. Wates | 22
+326 D.I. Wates II 43
+327 D.I. Watu Getuk 2
+328 D.I. Watubak | 11
+329 D.I. Watubak II 4
+330 D.I. Watuledok 1
+331 D.I. Wonosuci 6
+332 D.I. Kedungbrubus 521
+333 D.I. Gandong | 30
+334 D.I. Subang 1
+m Kab. Maaetan 169 14.072
+1 D.I. Babar 74
+2 D.I. Bajang 308
+3 D.I. Bakalan 7
+4 D.I. Banjarpanjang 34
+5 D.I. Barong 151
+6 D.I. Becokan 4
+7 D.I. Belang 45
+8 D.I. Bendo Cengkeh 7
+9 D.I. Bogo Kidul 54
+10 D.I. Bogo Lor 38
+11 D.I. Bondot 990
+12 D.I. Bowong 156
+13 D.I. Bringin 709
+14 D.I. Bulungan 710
+15 D.I. Cangkring 43
+16 D.I. Comboran 53
+17 D.I. Dagung 25
+18 D.I. Demangan 61
+19 D.I. Dengking 1
+20 D.I. Digal 12
+21 D.I. Dokare 274
+22 D.I. Dologan 50
+23 D.I. Doplang 18
+24 D.I. Dukuh 32
+25 D.I. Dungbiru 3
+26 D.I. Duren Cs 43
+#KANAN
+332
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+27 D.I. Galuh 47
+28 D.I. Gandu 60
+29 D.I. Gangging I 21
+30 D.I. Gangging II 5
+31 D.I. Gangging III 116
+32 D.I. Gangging IV 45
+33 D.I. Gangging V 166
+34 D.I. Gangging VI 49
+35 D.I. Gangging VII 148
+36 D.I. Sangging VIII 29
+37 D.I. Gemblung 10
+38 D.I. Gembong 176
+39 D.I. Genggong 17
+40 D.I. Genilangit 60
+41 D.I. Getas | 26
+42 D.I. Getas II 20
+43 D.I. Geyong 14
+44 D.I. Grombong 8
+45 D.I. Jabung I 47
+46 D.I. Jabung II 76
+47 D.I. Jabung III M
+48 D.I. Jabung IV 5
+49 D.I. Jaduran Cs 23
+50 D.I. Jambu 7
+51 D.I. Janggan 20
+52 D.I. Jungke 939
+53 D.I. Kembang 6
+54 D.I. Kenti 150
+55 D.I. Kidul Ngerong 101
+56 D.I. Klubuk 14
+57 D.I. Koco 58
+58 D.I. Koncangan 22
+59 D.I. Krajan 5
+60 D.I. Krau-Krau 106
+61 D.I. Kresekan 3
+62 D.I. Krowe 877
+63 D.I. Ledok 4
+64 D.I. Lordadi 154
+65 D.I. Maden 16
+66 D.I. Mategal IA 32
+67 D.I. Mategal I B 26
+68 D.I. Mategal IIA 35
+69 D.I. Mategal II B 29
+70 D.I. Mategal III A 14
+71 D.I. Mategal III B 35
+72 D.I. Menco 8
+73 D.I. Mendi 8
+74 D.I. Modang 5
+75 D.I. Mojosemi 37
+76 D.I. Molang | 8
+77 D.I. Molang II 28
+78 D.I. Molang III 24
+79 D.I. Molang IV 35
+80 D.I. Molang V 55
+81 D.I. Molang VI 89
+82 D.I. Molang VII 93
+83 D.I. Molang VIII 77
+84 D.I. Mudal 50
+85 D.I. Ngadiloyo 8
+86 D.I. Ngampin 4
+87 D.I. Ngampru 151

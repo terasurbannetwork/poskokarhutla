@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+101 D.I. Bd. Brogo 25
+102 D.I. Bd. Cabean 52
+103 D.I. Bd. Ceper 140
+104 D.I. Bd. Coban 9
+105 D.I. Bd. Dirjan 7
+106 D.I. Bd. Dongan 50
+107 D.I. Bd. Doro Selayar 35
+108 D.I. Bd. Druju 35
+109 D.I. Bd. Gempol 38
+110 D.I. Bd. Glebeg 25
+111 D.I. Bd. Goa 25
+112 D.I. Bd. Goak 90
+113 D.I. Bd. Grenjeng 15
+114 D.I. Bd. Jambeyan 10
+115 D.I. Bd. Jukung 7
+116 D.I. Bd. Juranggenteng 10
+117 D.I. Bd. Kalenpadas | 10
+118 D.I. Bd. Kalenpadas II 15
+119 D.I. Bd. Kaliombo 75
+120 D.I. Bd. Kedung Kamal 15
+121 D.I. Bd. Kedung Laban 30
+122 D.I. Bd. Kedung Linting 8
+123 D.I. Bd. Kedungdoro 15
+124 D.I. Bd. Kedungkuran 7
+125 D.I. Bd. Kemedu 50
+126 D.I. Bd. Kemloko Kerep 45
+127 D.I. Bd. Kesambi | 80
+128 D.I. Bd. Kesambi II 75
+129 D.I. Bd. Ketangi 30
+130 D.I. Bd. Kranggan 70
+131 D.I. Bd. Ledok 25
+132 D.I. Bd. Leran 10
+133 D.I. Bd. Maguan 49
+134 D.I. Bd. Majasem 35
+135 D.I. Bd. Manggar | 50
+136 D.I. Bd. Manggar II 30
+137 D.I. Bd. Menoro 85
+138 D.I. Bd. Mojorembun 173
+139 D.I. Bd. Ngedeng 60
+140 D.I. Bd. Ngelo I 105
+141 D.I. Bd. Ngelo II 75
+142 D.I. Bd. Nglentung 35
+143 D.I. Bd. Nyudan 20
+144 D.I. Bd. Pedak 20
+145 D.I. Bd. Petit 60
+146 D.I. Bd. Plangkiran 20
+147 D.I. Bd. Plawangan 50
+148 D.I. Bd. Rondan Gandeng 100
+149 D.I. Bd. Ropoh 25
+150 D.I. Bd. Sambong 40
+151 D.I. Bd. Sambong 40
+152 D.I. Bd. Segodek 10
+153 D.I. Bd. Semen 564
+154 D.I. Bd. Sendang Coyo 10
+155 D.I. Bd. Senok 25
+156 D.I. Bd. Sepengkok 15
+157 D.I. Bd. Serundan 25
+158 D.I. Bd. Seweru 45
+159 D.I. Bd. Striwul 22
+160 D.I. Bd. Sumber Mulyo 64
+161 D.I. Bd. Sumur Asin 45
+#KANAN
+- 2015, No.638
+265 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+162 D.I. Bd. Tambak Boyo 35
+163 D.I. Bd. Telawah 40
+164 D.I. Bd. Topar 18
+165 D.I. Bd. Tulis 20
+166 D.I. Bd. Ungkal 35
+167 D.I. Bd. Ungkal 35
+168 D.I. Bd. Waru 42
+169 D.I. Bd. Wuwur 28
+170 D.I. Cd. Glanggang 37
+171 D.I. Cd. Jatihadi 40
+172 D.I. Cd. Karang Asem 40
+173 D.I. Cd. Karas Kepoh 45
+174 D.I. Cd. Krikilan 50
+175 D.I. Cd. Lambangan Wetan 56
+176 D.I. Cd. Mojorembun 60
+177 D.I. Cd. Ngadem 27
+178 D.I. Cd. Pule 30
+179 D.I. Cd. Sambong Sandar 20
+180 D.I. Cd. Sambong Semar 20
+181 D.I. Cd. Sumber Mulyo 49
+182 D.I. Cd. Sumberan 46
+183 D.I. Cd. Tuyuhan 36
+184 D.I. Dam Bajingjiwo 26
+185 D.I. Dam Jatihadi 60
+186 D.I. Emb. Babadan 30
+187 D.I. Emb. Banyukuwung 110
+188 D.I. Emb. Besi 8
+189 D.I. Emb. Binangun 18
+190 D.I. Emb. Bogoharjo 20
+191 D.I. Emb. Brogo 25
+192 D.I. Emb. Bulu 44
+193 D.I. Emb. Candi Mulyo 34
+194 D.I. Emb. Cendono 30
+195 D.I. Emb. Dresi Kulon 25
+196 D.I. Emb. Dukoh 45
+197 D.I. Emb. Gedari 25
+198 D.I. Emb. Gingsir 40
+199 D.I. Emb. Grawan 10
+200 D.I. Emb. Gunem 14
+201 D.I. Emb. Gunting 55
+202 D.I. Emb. Gunungsari 25
+203 D.I. Emb. Jadi 10
+204 D.I. Emb. Jatihadi 39
+205 D.I. Emb. Jatimudo 25
+206 D.I. Emb. Kali Cempluk 28
+207 D.I. Emb. Kaliombo 4
+208 D.I. Emb. Kalipang 10
+209 D.I. Emb. Kalipang 29
+210 D.I. Emb. Kasreman 355
+211 D.I. Emb. Kasur 190
+212 D.I. Emb. Kedungmacan 37
+213 D.I. Emb. Kedungwatu 45
+214 D.I. Emb. Kemadu 50
+215 D.I. Emb. Kembang 30
+216 D.I. Emb. Kendal Agung 114
+217 D.I. Emb. Kerep 35
+218 D.I. Emb. Kliteh 50
+219 D.I. Emb. Kumendung 102
+220 D.I. Emb. Kuti 30
+221 D.I. Emb. Landoh 25
+222 D.I. Emb. Lodan 380

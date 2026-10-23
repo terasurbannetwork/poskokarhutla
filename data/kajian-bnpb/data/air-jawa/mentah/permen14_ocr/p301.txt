@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+72 D.I. Sbr. Tancak 10
+73 D.I. Sbr. Tancak 3
+74 D.I. Sbr. Tatadan 2
+75 D.I. Sbr. Telang 75
+76 D.I. Sbr. Agung 2
+b Kab. Banvuwanai 390 30.224
+1 D.I. Agul-Agul 130
+2 D.I. Amat 62
+3 D.I. Ampelgading 98
+4 D.I. Ancar Payaman 29
+5 D.I. Arsi 19
+6 D.I. Artani 40
+7 D.I. Asnapun 10
+8 D.I. Astiyar 354
+9 D.I. Astro 10
+10 D.I. Awat 35
+11 D.I. Awu-Awu 373
+12 D.I. Bun 5
+13 D.I. Badean Ka/Ki 117
+14 D.I. Badeng 52
+15 D.I. Bagong Ka/Ki 105
+16 D.I. Banjar 29
+17 D.I. Bardan 17
+18 D.I. Baru 159
+19 D.I. Barumanis Ka 54
+20 D.I. Barumanis Ki 380
+21 D.I. Bejong 187
+22 D.I. Benahan XI 12
+23 D.I. Benahan | 7
+24 D.I. Bendosardi 4
+25 D.I. Benel anyar 30
+26 D.I. Besaran 7
+27 D.I. Bloro 79
+28 D.I. Bodos 123
+29 D.I. Bolo | 10
+30 D.I. Bolo II 44
+31 D.I. Cangkring 95
+32 D.I. Cangkring 40
+33 D.I. Cangkring 35
+34 D.I. Cawang 41
+35 D.I. Cekaitan 36
+36 D.I. Cempogo A 41
+37 D.I. Cempogo B 58
+38 D.I. Cempogo I 6
+39 D.I. Cempogo II 5
+40 D.I. Cempogo III 12
+41 D.I. Cende 25
+42 D.I. Cerme 220
+43 D.I. Cerung Ka 63
+44 D.I. Cerung Ki 314
+45 D.I. Cetruk 15
+46 D.I. Citrowati 30
+47 D.I. Claket 14
+48 D.I. Concrong 622
+49 D.I. Cungking 44
+50 D.I. Dadap 77
+51 D.I. Dali 23
+52 D.I. Dam Urip 34
+53 D.I. Dani 4
+54 D.I. Darmiyun Ka/Ki 18
+#KANAN
+301 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+55 D.I. Derup 42
+56 D.I. Diman 68
+57 D.I. Edris Ka/Ki 87
+58 D.I. Gadok Kidul 1
+59 D.I. Ganggangan 92
+60 D.I. Garit 475
+61 D.I. Gedona 18
+62 D.I. Gempol 42
+63 D.I. Genitri 184
+64 D.I. Sintungan Ka/Ki 58
+65 D.I. Glengseran 131
+66 D.I. Glotak 29
+67 D.I. Gontoran 76
+68 D.I. Gulung 35
+69 D.I. Gumuk 73
+70 D.I. Gumuk Ka'/Ki 182
+71 D.I. Gumuk Silo 10
+72 D.I. H. Durachman Ka/Ki 37
+73 D.I. H. Manan 21
+74 D.I. H. Salam 18
+75 D.I. H. Saleh 30
+76 D.I. H. Sanusi 18
+77 D.I. H. Usman 50
+78 D.I. Inpres 3
+79 D.I. Jabon 69
+80 D.I. Jakpar 89
+81 D.I. Jalen | 192
+82 D.I. Jalen Il 161
+83 D.I. Jamal 10
+84 D.I. Jambean | 40
+85 D.I. Jambean II 9
+86 D.I. Jambewangi | 57
+87 D.I. Jambewangi II 146
+88 D.I. Jambu 8
+89 D.I. Jangkung 186
+90 D.I. Jantok 60
+91 D.I. Jelani 30
+92 D.I. Jlarum 135
+93 D.I. Kajar Ka 218
+94 D.I. Kajar Ki 160
+95 D.I. Kalijaran Ka 40
+96 D.I. Kalijaran Ki 43
+97 D.I. Kaliweni 260
+98 D.I. Kancil | 5
+99 D.I. Kancil II 30
+100 D.I. Karangtambak 300
+101 D.I. Karim 77
+102 D.I. Kawat | 236
+103 D.I. Kawat II 100
+104 D.I. Kayangan 57
+105 D.I. Kebontakir 34
+106 D.I. Kedawang 148
+107 D.I. Kedawung 41
+108 D.I. Kedawung I 34
+109 D.I. Kedawung II 22
+110 D.I. Kedungtuno 210
+111 D.I. Kelir 191
+112 D.I. Kempit I Ka 10
+113 D.I. Kempit I Ki 10
+114 D.I. Kempit II 72
+115 D.I. Kertosari 390

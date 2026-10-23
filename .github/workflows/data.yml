@@ -35,6 +35,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # cache public/data lama tidak boleh menimpa berkas yang di-commit tapi TIDAK dibuat ulang di sini: lapisan statis
       # (statis.yml) dan keluaran skrip lokal (sebaran/*, sejarah.py, riwayat_grid.py, lahan.py, osm.py, udara.py, daops.py,
       # musim.py, luas_satelit.py). ls-files membuang path yang tidak ada, jadi satu path hilang tidak menggagalkan semuanya.
@@ -415,7 +419,7 @@ jobs:
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/isi_data.py buat && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/data

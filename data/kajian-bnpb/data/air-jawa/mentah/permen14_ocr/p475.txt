@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+475 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+26 D.I.R. Sakadoyan 100
+27 D.I.R. Sakalimau 125
+28 D.I.R. Salino 200
+29 D.I.R. Sangking Tapaling 35
+30 D.I.R. Sebanti 90
+31 D.I.R. Sei Pinang 75
+32 D.I.R. Sei Punggawa 78
+33 D.I.R. Sekandis 200
+34 D.I.R. Selaru 100
+35 D.I.R. Sembilang 15
+36 D.I.R. Sepagar Kampung 45
+37 D.I.R. Subur Makmur 200
+38 D.I.R. Sukadana 100
+39 D.I.R. Sukamaju 100
+40 D.I.R. Sulangkit 48
+41 D.I.R. Sumber Sari 300
+42 D.I.R. Sungai Bahim 200
+43 D.I.R. Sungai Bulan 80
+44 D.I.R. Sungai Hanyar 85
+45 D.I.R. Sungai Kupang 122
+46 D.I.R. Sungai Limau 194
+47 D.I.R. Sungai Pasir 90
+48 D.I.R. Sungai Seluang 93
+49 D.I.R. Sungup Kanan 25
+50 D.I.R. Talusi 315
+51 D.I.R. Tanjung Batu 50
+52 D.I.R. Tanjung Pangga 50
+53 D.I.R. Tanjung Selayar 73
+54 D.I.R. Tanjung Seloka 200
+55 D.I.R. Tegal Rejo 45
+56 D.I.R. Teluk Aru 95
+57 D.I.R. Teluk Kemuning 120
+58 D.I.R. Teluk Mesjid 80
+59 D.I.R. Tg. Lalak Selatan 200
+60 D.I.R. Tg. Lalak Utara 200
+
+h Kab. Tanah Bumbu 28 7.366
+
+1 D.I.R. Anjir Baru 300
+
+2 D.I.R. Batu Behalang 950
+
+3 D.I.R. Beringin 200
+
+4 D.I.R. Betung 800
+
+5 D.I.R. Guntung 85
+
+6 D.I.R. Karang Jawa 25
+
+7 D.I.R. Karya Bakti 250
+
+8 D.I.R. Kepayang 100
+
+9 D.I.R. Kuranji 100
+10 D.I.R. Kuranji Kodeco/Desa Maju Bersama 150
+11 D.I.R. Kuranji Suka Maju 100
+12 D.I.R. Manurung 225
+13 D.I.R. Mudalang 325
+14 D.I.R. Peketelu 486
+15 D.I.R. Pulau Tanjung 200
+16 D.I.R. Rantau Panjang Hulu 160
+17 D.I.R. Sardangan 125
+18 D.I.R. Sari Gadung 75
+19 D.I.R. Sebamban Kampung 450
+20 D.I.R. Sei Bubu 375
+21 D.I.R. Sei Dua 50
+22 D.I.R. Sei Dua Laut 425
+23 D.I.R. Sei Lembu 300
+24 D.I.R. Sela Selilau 300

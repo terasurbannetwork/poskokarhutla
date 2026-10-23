@@ -1,0 +1,58 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 490
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+18 D.LA.T. Muji Rahayu/Spt. Agung SBP 53 25
+19 D.LA.T. Muji Rahayu/Spt.A gung SBP 54 25
+20 D.LA.T. Muji Rahayu/Spt. Agung SBP 55 30
+21 D.LA.T. Muji Rahayu/Tb. Besar SBP 56 35
+22 D.LA.T. Fajar Asri/Spt. Agung SBP 57 30
+23 D.LA.T. Fajar Asri/Spt. Agung SBP 58 25
+24 D.LA.T. Fajar Asri/Tb. Besar SBP. 59 35
+25 D.LA.T. Fajar Asri/Tb. Besar SBP. 60 25
+26 D.LA.T. Fajar Asri/Tb. Besar SBP. 61 30
+27 D.LA.T. Fajar Asri/Tb. Besar SBP. 62 30
+28 D.LA.T. Fajar Asri/Tb. Besar SBP. 63 25
+29 D.LA.T. Fajar Asri/Tb. Besar SBP.64 25
+30 D.ILA.T. Fajar Asri/Tb. Besar SBP. 65 24
+31 D.LA.T. N.B.Ilir/Pd. Ratu SBE. 18 20
+32 D.LA.T. Simpang Agung/Spt. Agung SBP 72 20
+33 D.LA.T. Ruki Harjo/Seputih Ramana SBE.42 20
+34 D.LA.T. Rukiharjo/Seputh Raman SBP 110 20
+e Kab. Pesawaran 2 40
+1 D.LA.T. Purworejo/Negeri Kedaton SBE.38 20
+2 D.LA.T. Purworejo/Negeri Kedaton SBP. 108 20
+f Kab. Prinasewu 5 100
+1 D.LA.T. Pujodadi/Padasuka SBP 36 20
+2 D.LA.T. Sukore/Padasuka SBE 37 20
+3 D.LA.T. Pujodadi/Pardasuka SBP.35 20
+4 D.LA.T. Karang Sari/Pagelaaran SBE. 41 20
+5 D.LA.T. Pujodadi/Pardasuka SBP.109 20
+a Kab. Tulana Bawana 4 110
+1 D.LA.T. Fajar Dewata/Menggala SBP1 35
+2 D.LA.T. Ujung Gn.llirIMenggala SBP 5 30
+3 D.LA.T. Gunung Tiga/Mesuji SBP 52 25
+4 D.LA.T. Tiuh Toho/Menggala SBP.111 20
+h Kab. Wav Kanan 4 75
+1 D.LA.T. Suka Maju/Bahuga SBP 13 15
+2 D.LA.T. SukaDana/Bahuga SBE 8 15
+3 D.LA.T. Sukadana/Bahuga SBP 24 15
+4 D.LA.T. Karang Agung/Pakuan Ratu PPS 1 30
+V PROVINSI JAWA BARAT 234 5.722
+a Kab. Banduna 4 76
+1 D.LA.T. Mekarjaya TW. 87 20
+2 D.LA.T. Cipatik TW. 126 22
+3 D.LA.T. Mekermutti TW. 130 19
+4 D.LA.T. Bb Sumedang TW. 131 15
+b Kab. Cianiur 2 25
+1 D.LA.T. Saganten TW. 03 10
+2 D.LA.T. Jayagiri TW. 07 15
+c Kab. Cirebon 12 273
+1 D.LA.T. Karangsembung Spc. 01 20
+2 D.LA.T. Karangsembung Spc. 04 22
+3 D.LA.T. Karangsembung Spc. 05 20
+4 D.LA.T. Susukan Lebak Spc. 09 25
+5 D.LA.T. Susukan Lebak Spc. 10 25
+6 D.LA.T. Susukan Lebak Spc. 11 25
+7 D.LA.T. Susukan Lebak Spc. 12 25

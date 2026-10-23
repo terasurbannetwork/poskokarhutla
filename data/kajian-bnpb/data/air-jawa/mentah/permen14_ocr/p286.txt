@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+266 D.I. Kedung Nongko 83
+267 D.I. Kedung Poh 25
+268 D.I. Kedung Tumpeng 318
+269 D.I. Kedungkalong 15
+270 D.I. Kedungminger 15
+271 D.I. Kedungpendem 27
+272 D.I. Kedungtan 29
+273 D.I. Kejajar 34
+274 D.I. Kejoran 30
+275 D.I. Kemadu 90
+276 D.I. Kemadu 13
+277 D.I. Kemantren 11
+278 D.I. Kembang 120
+279 D.I. Kembang 12
+280 D.I. Kemiri 23
+281 D.I. Kemiri 26
+282 D.I. Kemiri I 26
+283 D.I. Kemiri II 15
+284 D.I. Kemukus 18
+285 D.I. Keong 11
+286 D.I. Kepiran 27
+287 D.I. Kepiran I 22
+288 D.I. Kepiran II 22
+289 D.I. Kidang 11
+290 D.I. Kler 10
+291 D.I. Klesem 32
+292 D.I. Kletak 24
+293 D.I. Klitih 231
+294 D.I. Klitih 18
+295 D.I. Klopo 18
+296 D.I. Klotok 15
+297 D.I. Klotok 44
+298 D.I. Kole 15
+299 D.I. Kondang 10
+300 D.I. Koripan 18
+301 D.I. Koso 10
+302 D.I. Kotak Ombo 20
+303 D.I. Krinjing 35
+304 D.I. Krocok 10
+305 D.I. Kudi 39
+306 D.I. Kudi 40
+307 D.I. Kulon 45
+308 D.I. Kulon 26
+309 D.I. Kuning 15
+310 D.I. Kuning Hilir 34
+311 D.I. Lor 18
+312 D.I. Lanang 16
+313 D.I. Larangan 18
+314 D.I. Larangan 10
+315 D.I. Lebuh 54
+316 D.I. Lebuh 10
+317 D.I. Lebuh 10
+318 D.I. Lebuh 23
+319 D.I. Lebuh 21
+320 D.I. Lebuh 10
+321 D.I. Legok 14
+322 D.I. Lengkong 15
+323 D.I. Lindu 16
+324 D.I. Lingseng 28
+325 D.I. Lintang 31
+326 D.I. Losari 25
+#KANAN
+286
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+327 D.I. Lumpang 27
+328 D.I. Lungka 18
+329 D.I. Lurung 10
+330 D.I. Macan 14
+331 D.I. Made 25
+332 D.I. Manggis 35
+333 D.I. Mangir I 25
+334 D.I. Mangli 147
+335 D.I. Mangli 10
+336 D.I. Mecing 15
+337 D.I. Menjer 55
+338 D.I. Mergosono 10
+339 D.I. Mijen 35
+340 D.I. Mijen 15
+341 D.I. Mladi 15
+342 D.I. Mojosingi 28
+343 D.I. Mrico 11
+344 D.I. Mudal 14
+345 D.I. Mudal 11
+346 D.I. Mudalgondang 11
+347 D.I. Muncar 567
+348 D.I. Munggang 25
+349 D.I. Munggang 10
+350 D.I. Mungkung 574
+351 D.I. Naglik 18
+352 D.I. Nangkring 10
+353 D.I. Ngabean 12
+354 D.I. Ngadirogo 26
+355 D.I. Ngaglik 11
+356 D.I. Ngaglik I 15
+357 D.I. Ngalian 134
+358 D.I. Ngarenan 45
+359 D.I. Ngares 15
+360 D.I. Ngasinan 88
+361 D.I. Ngasinan | 15
+362 D.I. Ngemplak 12
+363 D.I. Ngempon 45
+364 D.I. Ngepal 16
+365 D.I. Ngewok 35
+366 D.I. Nongko 10
+367 D.I. Nyamat 15
+368 D.I. Pacul 11
+369 D.I. Paidin 28
+370 D.I. Pakis 25
+371 D.I. Palun 14
+372 D.I. Pandak 21
+373 D.I. Pandan 15
+374 D.I. Pandan A 25
+375 D.I. Pandan B 25
+376 D.I. Panongan 69
+377 D.I. Parakandowo 65
+378 D.I. Pasang 10
+379 D.I. Pasar 15
+380 D.I. Pasar | 20
+381 D.I. Pawonan 14
+382 D.I. Pawuhan M
+383 D.I. Pedodokan/Liyer 14
+384 D.I. Pelas 31
+385 D.I. Pelusan 16
+386 D.I. Penatus 42
+387 D.I. Pencar 10

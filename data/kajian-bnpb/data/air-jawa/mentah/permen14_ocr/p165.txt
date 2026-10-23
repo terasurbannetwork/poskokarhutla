@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+584 D.I. Cisamiun 20
+585 D.I. Cisampai I 25
+586 D.I. Cisampai II 15
+587 D.I. Cisangku 23
+588 D.I. Cisaninten 22
+589 D.I. Cisapi 34
+590 D.I. Cisarongge 60
+591 D.I. Cisarua 20
+592 D.I. Cisarua 25
+593 D.I. Cisarua 20
+594 D.I. Cisarua 50
+595 D.I. Cisarua 39
+596 D.I. Cisarua 10
+597 D.I. Cisarua 36
+598 D.I. Cisarua 30
+599 D.I. Cisarua 28
+600 D.I. Cisarua/Diong 27
+601 D.I. Cisarua Cibakatul 40
+602 D.I. Cisarua | 30
+603 D.I. Cisarua | 10
+604 D.I. Cisarua | 20
+605 D.I. Cisasah 42
+606 D.I. Cisasah Kanan 89
+607 D.I. Cisasah Kiri 55
+608 D.I. Cisawang 34
+609 D.I. Cisawer 27
+610 D.I. Cisela 26
+611 D.I. Cisengon 80
+612 D.I. Cisetu 15
+613 D.I. Cisetu 15
+614 D.I. Ciseueur 100
+615 D.I. Ciseupan 32
+616 D.I. Ciseuseupan 35
+617 D.I. Cisewu I 90
+618 D.I. Cisewu II 70
+619 D.I. Cisirah 23
+620 D.I. Cisodong/Cikalong 24
+621 D.I. Cisunar/Cikupa 50
+622 D.I. Cisunte 35
+623 D.I. Cisurapati 22
+624 D.I. Cisuren 27
+625 D.I. Cisurian Pasir Ipis 75
+626 D.I. Citalahab 40
+627 D.I. Citaman 17
+628 D.I. Citampian 40
+629 D.I. Citangkorak 20
+630 D.I. Citapos 31
+631 D.I. Citapos 60
+632 D.I. Citaruna 20
+633 D.I. Citempuan 39
+634 D.I. Citempuan II 40
+635 D.I. Citengah 30
+636 D.I. Citengah 20
+637 D.I. Citengah 25
+638 D.I. Citengah 50
+639 D.I. Citengah 5
+640 D.I. Citengah 55
+641 D.I. Citiis 30
+642 D.I. Citiis 26
+643 D.I. Citilu 20
+644 D.I. Citugu 18
+#KANAN
+165 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+645 D.I. Citugu I 76
+646 D.I. Citugu II 36
+647 D.I. Citumpuan 10
+648 D.I. Ciundang 35
+649 D.I. Ciwangi 38
+650 D.I. Ciwangun 30
+651 D.I. Ciwareng 35
+652 D.I. Coal I 45
+653 D.I. Coal IlfTaman 52
+654 D.I. Coal III 45
+655 D.I. Coblong 30
+656 D.I. Coblong 35
+657 D.I. Coblong 35
+658 D.I. Congcorang 35
+659 D.I. Coparenggong 15
+660 D.I. Cowal I/Bendung Usup 37
+661 D.I. Cowal IV 5
+662 D.I. Cukang Galeuh 65
+663 D.I. Curug 42
+664 D.I. Curug Ciherang 30
+665 D.I. Curug Pariuk 35
+666 D.I. Dalam 69
+667 D.I. Doseh 60
+668 D.I. Dramaga 50
+669 D.I. Dukuh Kawung 25
+670 D.I. Dukuh Manggu 32
+671 D.I. Dukuh Manis 54
+672 D.I. Embah Bangsa 55
+673 D.I. Embah Bongkrek 19
+674 D.I. Embah Dian 60
+675 D.I. Emboh 15
+676 D.I. Enkong 14
+677 D.I. Ento 67
+678 D.I. Gajud 38
+679 D.I. Galugur 15
+680 D.I. Garung 30
+681 D.I. Garung 15
+682 D.I. Gawir 20
+683 D.I. Gemblong 30
+684 D.I. Gunung Batu I 20
+685 D.I. Gunung Batu II 15
+686 D.I. Gunung Batu III 30
+687 D.I. Gunung bongkok 30
+688 D.I. Gunung Emeng 76
+689 D.I. Gunung Gantung 35
+690 D.I. Gunung Gedogan 15
+691 D.I. Gunung Menir 19
+692 D.I. Gunung Sabeulah 10
+693 D.I. Gunung Wiru 20
+694 D.I. H. Abing 25
+695 D.I. Handeuleum 23
+696 D.I. Jadipa 20
+697 D.I. Jaebah 10
+698 D.I. Jaemah 20
+699 D.I. Jaemah 40
+700 D.I. Jagapati 25
+701 D.I. Jailin I 60
+702 D.I. Jailin II 40
+703 D.I. Jambatan 15
+704 D.I. Jampang Bogel 29
+705 D.I. Jareged Pamupukan 150

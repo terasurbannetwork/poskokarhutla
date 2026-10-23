@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 508
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+14 D.LA.T. Malangan TW 011 15
+15 D.LA.T. Minggir TW 012 15
+16 D.LA.T. Cupuwatu TW 013 70
+17 D.LA.T. Brayut TW 014 15
+18 D.LA.T. Pundong TW 015 70
+19 D.L.A.T. Plataran TW 016 20
+20 D.LA.T. Pakembinangun TW 017 30
+21 D.LA.T. Bokoharjo TW 018 15
+22 D.LA.T. Dalem TW 019 50
+23 D.LA.T. Plembangan A TW 021 A 65
+24 D.LA.T. Plembangan €C TWO21C 65
+25 D.LA.T. Ledoknongko TW 022 55
+26 D.LA.T. Ganggong TW 023 15
+27 D.LA.T. Jurugan TW 024 60
+28 D.LA.T. Ngablak TW 025 50
+29 D.I.A.T. Wonosari TW 026 70
+30 D.I.A.T. Tegalsari TW 027 65
+31 D.LA.T. Nglebeng TW 028 14
+32 D.LA.T. Mangkudranan TW 029 50
+33 D.LA.T. Ngabean TW 030 40
+34 D.LA.T. Ringinsari TW 031 65
+35 D.LA.T. Banjeng TW 032 40
+36 D.LA.T. Klidon TW 033 50
+37 D.LA.T. Majegan TW 034 70
+38 D.ILA.T. Karang asem TW 035 75
+39 D.LA.T. Kenayan TW 036 75
+40 D.LA.T. Sambiroto TW 038 40
+41 D.LA.T. Klenggukan A TW 039 A 70
+42 D.LA.T. Klenggukan B TW 039 B 60
+43 D.LA.T. Timur TW 040 60
+44 D.LA.T. Kedulan TW 041 60
+45 D.LA.T. Karangnongko TW 042 50
+46 D.LA.T. Babatan TW 043 75
+47 D.LA.T. Karangmojo TW 044 50
+48 D.LA.T. Purwokerto TW 045 60
+49 D.LA.T. Toragan TW 046 65
+50 D.LA.T. Ngelo TW 047 70
+51 D.LA.T. Bulakukusan TW 048 55
+52 D.LA.T. Tegalrejo TW 049 60
+53 D.LA.T. Jamblangan TW 050 15
+54 D.LA.T. Karangbajang TW 051 40
+55 D.LA.T. Kertirejo TW 052 50
+56 D.I.A.T. Jelapan TW 053 60
+57 D.LA.T. Wonorejo TW 054 70
+58 D.LA.T. Bokesan TW 055 60
+59 D.LA.T. Jimat TW 057 65
+60 D.L.A.T. Jetak TW 058 30
+61 D.LA.T. Kauman TW 060 50
+62 D.LA.T. Sanggrahan TW 061 65
+63 D.LA.T. Ketingan TW 062 60
+64 D.LA.T. Ketingan TW 063 55
+65 D.LA.T. Kaliajir TW 064 65
+66 D.L.A.T. Salakan TW 065 60
+67 D.LA.T. Kaliwaru TW 066 50
+68 D.L.A.T. Kliwonan TW 067 35
+69 D.LA.T. Pelemsari TW 070 5
+70 D.LA.T. Jetis, Tirtomartani TW 071 55
+71 D.LA.T. Kadirojo TW 073 60
+72 D.LA.T. Mujen/Ngebo TW 074 35
+73 D.LA.T. Madurejo/Rejodani TW 075 45
+74 D.LA.T. Temulawak 40

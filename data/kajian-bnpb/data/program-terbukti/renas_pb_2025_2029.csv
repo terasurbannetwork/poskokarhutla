@@ -1,0 +1,74 @@
+tingkat,kode,nama,induk,fokus_ripb,halaman,label
+kebijakan,1,Penguatan Kerangka Regulasi untuk Mewujudkan Sistem Penanggulangan Bencana yang Efisien dan Efektif,,,33,resmi
+kebijakan,2,"Penguatan Kelembagaan, Pendanaan, dan Peningkatan Kolaborasi Multi-Pihak dalam Penanggulangan Bencana",,,34,resmi
+kebijakan,3,Penguatan Investasi Pengelolaan Risiko Bencana,,,34,resmi
+kebijakan,4,Peningkatan Ketangguhan Masyarakat dan Lembaga Usaha dalam Menghadapi Bencana,,,34,resmi
+kebijakan,5,Peningkatan Kapasitas dan Kapabilitas dalam Kesiapsiagaan dan Penanganan Kedaruratan,,,34,resmi
+kebijakan,6,Peningkatan Kualitas Rehabilitasi dan Rekonstruksi Pascabencana,,,34,resmi
+sasaran,1,"Mengurangi Jumlah Penduduk Terdampak Bencana melalui Peningkatan Kualitas Kesiapsiagaan, Peringatan Dini, dan Penanggulangan Kedaruratan Bencana",,,32,resmi
+sasaran,2,"Mengurangi Dampak Kerusakan dan Kerugian Akibat Bencana melalui Peningkatan Efektivitas Upaya Pencegahan, Mitigasi Bencana dan Adaptasi Perubahan Iklim",,,70-71,resmi
+sasaran,3,Meningkatkan Daya Lenting di Daerah Terdampak melalui Peningkatan Percepatan Rehabilitasi dan Rekonstruksi,,,37-38,resmi
+sasaran,4,Meningkatkan Pelayanan dan Kapasitas Penanggulangan Bencana melalui Transformasi Tata Kelola Kolaborasi Multi Pihak,,,32-33,resmi
+strategi,1.1,Meningkatkan Aksesibilitas Layanan dan Efektivitas Pengelolaan Sistem Peringatan Dini,1,,33-34,resmi
+strategi,1.2,Meningkatkan Investasi dan Kapasitas Sumber Daya dalam Kesiapsiagaan dan Penanggulangan Kedaruratan Bencana,1,,33-34,resmi
+strategi,1.3,Meningkatkan Kesiapan dan Keandalan Logistik Serta Peralatan Untuk Penanggulangan Kedaruratan Bencana,1,,33-34,resmi
+strategi,1.4,Meningkatkan Keterbukaan Data dan Informasi serta Literasi Kebencanaan Untuk Ketangguhan Masyarakat dan Lembaga Usaha,1,,65-66,resmi
+strategi,2.1,Meningkatkan Investasi Publik dan Lembaga Usaha Berketahanan Bencana & Perubahan Iklim,2,,33-34,resmi
+strategi,2.2,"Meningkatkan Pengembangan Pusat Pertumbuhan, Perdesaan, dan Kawasan Investasi Berketahanan Bencana & Perubahan Iklim",2,,33-34,resmi
+strategi,2.3,Meningkatkan Kepatuhan Terhadap/Kesesuaian Tata Ruang Darat dan Laut Serta Ketangguhan dan Keandalan Bangunan Gedung,2,,78-79,resmi
+strategi,2.4,Meningkatkan Pelindungan Ekosistem Laut dan Pesisir Yang Berisiko Bencana,2,,33-34,resmi
+strategi,2.5,Meningkatkan Pemanfaatan Skema Perlindungan Aset dan Transfer Risiko Bencana oleh Masyarakat & Lembaga Usaha,2,,33-34,resmi
+strategi,3.1,Meningkatkan Kualitas Perencanaan dan Percepatan Pelaksanaan Rehabilitasi dan Rekonstruksi Pascabencana Berbasis Tata Ruang dan Pengurangan Risiko Bencana,3,,33-34,resmi
+strategi,3.2,Meningkatkan Keterlibatan dan Sinergi Multipihak untuk Mempercepat Rehabilitasi dan Rekonstruksi Pasca Bencana pada Seluruh Aspek Secara Efektif,3,,33-34,resmi
+strategi,4.1,Membangun Sistem Regulasi yang Handal dan Terpadu dalam Mendukung Kinerja Sistem Penanggulangan Bencana,4,,33,resmi
+strategi,4.2,Meningkatkan Capaian Penerapan SPM Sub Urusan Bencana,4,,33-34,resmi
+strategi,4.3,Meningkatkan Ketersediaan SDM yang Memiliki Keahlian dan Profesional di Bidang Kebencanaan,4,,33-34,resmi
+strategi,4.4,Menciptakan Lingkungan yang Kondusif untuk Menumbuhkembangkan Industrialisasi Kebencanaan,4,,33-34,resmi
+strategi,4.5,"Meningkatkan Kolaborasi dalam Membangun Ketangguhan Individu, Keluarga, dan Masyarakat",4,,33-34,resmi
+strategi,4.6,Mengembangkan Skema Pendanaan Inovatif dalam Penanggulangan Bencana,4,,33-34,resmi
+strategi,4.7,"Meningkatkan Kualitas Pemantauan, Pengendalian, dan Evaluasi Penanggulangan Bencana",4,,33-34,resmi
+strategi,4.8,Meningkatkan Advokasi Resiliensi Berkelanjutan di Tingkat Nasional & Global,4,,33-34,resmi
+program,1.1.1,Pengembangan dan Pemanfaatan MHEWS,1.1,3,50,resmi
+program,1.1.2,Penguatan Implementasi Pengamatan dan Diseminasi Peringatan Dini Bencana,1.1,3,51,resmi
+program,1.2.1,Penguatan Kesiapsiagaan dan Kesiagaan Menghadapi Kedaruratan Bencana dan Krisis Kesehatan,1.2,7,55,resmi
+program,1.2.2,"Penguatan Sumber Daya untuk Operasi Pencarian, Pertolongan, dan Evakuasi Korban Bencana",1.2,7,58,resmi
+program,1.2.3,Penguatan Kapasitas SDM dalam Kesiapsiagaan dan Penanganan Kedaruratan,1.2,7,59,resmi
+program,1.2.4,Riset dan Pengembangan Terkait Peningkatan Kesiapsiagaan Bencana,1.2,7,61,resmi
+program,1.3.1,Pemenuhan Kebutuhan Logistik dan Peralatan Kesiapsiagaan,1.3,7,62,resmi
+program,1.3.2,Pembangunan Gudang dan Pemenuhan Logistik Dan Peralatan,1.3,7,64,resmi
+program,1.3.3,Pengembangan Sistem Logistik dan Peralatan Kebencanaan,1.3,7,65,resmi
+program,1.4.1,Pembangunan satu data bencana terintegrasi,1.4,6,66,resmi
+program,1.4.2,Peningkatan Diseminasi Data dan Informasi Kebencanaan Untuk Masyarakat,1.4,6,70,resmi
+program,2.1.1,Pengembangan Rumah Sakit dan Fasilitas Kesehatan Aman Bencana,2.1,12,71,resmi
+program,2.1.2,Pembangunan Fasilitas Publik Tangguh Bencana,2.1,12,72,resmi
+program,2.1.3,Riset dan Pengembangan Teknologi Infrastruktur Tahan Bencana dan Perubahan Iklim,2.1,2,73,resmi
+program,2.2.1,Pembangunan IKN Berketahanan Bencana dan Perubahan Iklim,2.2,4,73,resmi
+program,2.2.2,Pengembangan Kawasan Perkotaan dan Perdesaan Berketahanan Bencana dan Perubahan Iklim,2.2,4,74,resmi
+program,2.2.3,Pengembangan Investasi di Kawasan Strategis Ekonomi Berketahanan Bencana dan Perubahan Iklim,2.2,4,77,resmi
+program,2.3.1,Peningkatan Kepatuhan/Kesesuaian Tata Ruang,2.3,8,79,resmi
+program,2.3.2,Peningkatan Kualitas Rencana Tata Ruang,2.3,8,80,resmi
+program,2.3.3,"Peningkatan Kualitas Pengelolaan DAS, Hutan, dan Lahan",2.3,8,80,resmi
+program,2.3.4,Peningkatan Ketangguhan dan Keandalan Bangunan Gedung,2.3,8,81,resmi
+program,2.4.1,Pelindungan Ekosistem Pesisir dengan Solusi Berbasis Alam (Nature-Based Solution),2.4,9,83,resmi
+program,2.4.2,Pembangunan Bangunan Pengaman Pantai,2.4,9,84,resmi
+program,2.4.3,Peningkatan Partisipasi Masyarakat dalam Pelindungan Ekosistem Laut dan Pesisir,2.4,9,85,resmi
+program,2.4.4,Peningkatan Mitigasi dan Adaptasi Subsiden Tanah,2.4,9,86,resmi
+program,2.5.1,Peningkatan Perlindungan Aset Penghidupan Masyarakat terhadap Risiko Bencana,2.5,4,87,resmi
+program,3.1.1,Penguatan Kapasitas SDM untuk Perencanaan Rehabilitasi dan Rekonstruksi,3.1,11,88,resmi
+program,3.1.2,Percepatan Pelaksanaan Rehabilitasi dan Rekonstruksi,3.1,11,88,resmi
+program,3.2.1,Penguatan Keterlibatan dan Sinergi Multipihak dalam Rehabilitasi dan Rekonstruksi Pascabencana,3.2,11,93,resmi
+program,4.1.1,Penguatan Sistem Regulasi untuk Penanggulangan Bencana,4.1,1,94,resmi
+program,4.1.2,Pengarusutamaan KRB dan RPB dalam Rencana Pembangunan,4.1,1,100,resmi
+program,4.2.1,Penguatan Penerapan SPM Sub Urusan Bencana,4.2,5,101,resmi
+program,4.3.1,Peningkatan Kapasitas SDM Penanggulangan Bencana,4.3,10,103,resmi
+program,4.3.2,Pengembangan Standarisasi Kompetensi Bidang Kebencanaan,4.3,10,105,resmi
+program,4.4.1,Peningkatan Keterlibatan Multi Pihak dalam Industrialisasi Kebencanaan,4.4,2,106,resmi
+program,4.5.1,Peningkatan Ketangguhan Berbasis Komunitas,4.5,4,107,resmi
+program,4.5.2,Pengembangan Pendidikan & Edukasi Kebencanaan Bagi Masyarakat,4.5,6,108,resmi
+program,4.6.1,Pengembangan Skema Perlindungan Sosial Adaptif,4.6,4,109,resmi
+program,4.6.2,Optimasi Pemanfaatan Dana Bersama Penanggulangan Bencana,4.6,4,111,resmi
+program,4.6.3,Pengembangan Kebijakan Asuransi Bencana Dan Pembiayaan Risiko,4.6,4,112,resmi
+program,4.7.1,Pengembangan Sistem Pemantauan dan Evaluasi Penanggulangan Bencana,4.7,5,113,resmi
+program,4.8.1,Pengembangan Kebijakan dan Kerangka Hukum untuk Resiliensi Berkelanjutan,4.8,5,114,resmi
+program,4.8.2,Peningkatan Kapasitas dan Pengetahuan tentang Resiliensi Berkelanjutan,4.8,5,115,resmi
+program,4.8.3,Penguatan Kerja Sama dan Kemitraan untuk Resiliensi Berkelanjutan,4.8,5,115,resmi

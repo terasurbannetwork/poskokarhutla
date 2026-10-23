@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+597 D.I. Sewatu 9
+598 D.I. Siasem 12
+599 D.I. Siasem 18
+600 D.I. Siberuk/Ngrancah 7
+601 D.I. Sicepit 18
+602 D.I. Sidandang 6
+603 D.I. Sidayu 1
+604 D.I. Sigatel 3
+605 D.I. Sigeyong Kiri 7
+606 D.I. Sijaro M
+607 D.I. Sijo 5
+608 D.I. Silampar 11
+609 D.I. Silangen 14
+610 D.I. Sinatah 11
+611 D.I. Sinongko 2
+612 D.I. Sipek 5
+613 D.I. Sipreh 3
+614 D.I. Sipring 42
+615 D.I. Sipring 3
+616 D.I. Siribut 18
+617 D.I. Sirotangi 22
+618 D.I. Siroto 7
+619 D.I. Situlung 6
+620 D.I. Siwuluh 5
+621 D.I. Slam 5
+622 D.I. Soaka 9
+623 D.I. Soban 6
+624 D.I. Sogo 6
+625 D.I. Sogo Kulon 12
+626 D.I. Sono 12
+627 D.I. Srampongan 14
+628 D.I. Srengat 55
+629 D.I. Sriwulan 11
+630 D.I. Sudatan 22
+631 D.I. Sukomangli 2
+632 D.I. Sumedang 10
+633 D.I. Sumurpitu 2
+634 D.I. Sumyak 28
+635 D.I. Supit Urang 11
+636 D.I. Surokonto 145
+637 D.I. Suroloyo 80
+638 D.I. Susuh 10
+639 D.I. Susukan 10
+640 D.I. Susukan 10
+641 D.I. Tabunan 45
+642 D.I. Tadah a 6
+643 D.I. Tadah b 8
+644 D.I. Tadahan 6
+645 D.I. Tadahan 1
+646 D.I. Talang 10
+647 D.I. Talang a 2
+648 D.I. Talang a 6
+649 D.I. Talang b 5
+650 D.I. Tamansari 21
+651 D.I. Tanggulangin 17
+652 D.I. Tegal Temu 8
+653 D.I. Tegalsari/Talang 30
+654 D.I. Teguru/Jlegong 10
+655 D.I. Tempuran 6
+656 D.I. Tengah 14
+657 D.I. Tengah 10
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+658 D.I. Tengah 8
+659 D.I. Tengah 17
+660 D.I. Tinat 36
+661 D.I. Trenggo 28
+662 D.I. Trocoh 3
+663 D.I. Troso 2
+664 D.I. Tuk Bolodewo 22
+665 D.I. Tuk Daru 11
+666 D.I. Tukung 15
+667 D.I. Tukung 6
+668 D.I. Tumar/Tengah 6
+669 D.I. Tumo 2
+670 D.I. Tunggoro 25
+671 D.I. Turusan 2
+672 D.I. Wero 26
+673 D.I. Wadas Tinatar 4
+674 D.I. Wareng 8
+675 D.I. Watu Landak 17
+676 D.I. Werak a 3
+677 D.I. Werak b 3
+678 D.I. Widodo 2
+679 D.I. Winong 6
+680 D.I. Winong 24
+681 D.I. Winong 2
+682 D.I. Winong 35
+683 D.I. Wireng 6
+684 D.I. Wonorejo 137
+685 D.I. Wuni 9
+686 D.I. Yoso 17
+n Kab. Klaten 478 29.713
+1 D.I. Babadan 14
+2 D.I. Bagor 451
+3 D.I. Balong 45
+4 D.I. Balong 13
+5 D.I. Bancang 35
+6 D.I. Bandungan 17
+7 D.I. Banguna Rejo 31
+8 D.I. Bantengan 76
+9 D.I. Banyon 35
+10 D.I. Banyu Sri 24
+11 D.I. Banyu Urip 47
+12 D.I. Banyumalang 28
+13 D.I. Barap Suwing 12
+14 D.I. Barepan 18
+15 D.I. Barong II 18
+16 D.I. Batang 77
+17 D.I. Baturan 43
+18 D.I. Baturan 33
+19 D.I. Bendolole 36
+20 D.I. Berbahan 17
+21 D.I. Besaran 20
+22 D.I. Beser 22
+23 D.I. Besuki 26
+24 D.I. Beteng 15
+25 D.I. Biru 36
+26 D.I. Blanciran 66
+27 D.I. Bogem 290
+28 D.I. Bogo 26
+29 D.I. Bojong 15
+30 D.I. Bokongan 10

@@ -1,0 +1,23 @@
+{
+ "id": "39901",
+ "url": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+ "judul": "Undang-undang (UU) Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+ "nomor": "24 Tahun 2007 tentang Penanggulangan Bencana T.E.U. Indonesia, Pemerintah Pusat Nomor 24",
+ "tanggal_penetapan": "26 April 2007",
+ "tanggal_berlaku": "26 April 2007",
+ "sumber": "LN.2007/NO.66, TLN NO.4723, LL SETNEG : 34 HLM",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/29492/UU%20Nomor%2024%20Tahun%202007.pdf"
+ ],
+ "status_peraturan": "Belum Tersedia",
+ "abstrak": "bencana - penanggulangan 2007 Undang-undang (UU) NO. 24, LN.2007/NO.66, TLN NO.4723, LL SETNEG : 34 HLM Undang-undang (UU) TENTANG Penanggulangan Bencana ABSTRAK: Ketentuan peraturan perundang-undangan mengenai penanggulangan bencana yang ada belum dapat dijadikan landasan hukum yang kuat dan menyeluruh serta tidak sesuai dengan perkembangan keadaan masyarakat dan kebutuhan bangsa Indonesia sehingga menghambat upaya penanggulangan bencana secara terencana, terkoordinasi, dan terpadu sehingga perlu di tetapkan undang-undang tentang penanggulangan bencana. Dasar hukum undang-undang ini adalah Pasal 20 dan Pasal 21 UUD 1945. Undang-undang ini mengatur mengenai pokok-pokok berupa penyelenggaraan penanggulangan bencana merupakan tanggung jawab dan wewenang Pemerintah dan pemerintah daerah, yang dilaksanakan secara terencana, terpadu, terkoordinasi, dan menyeluruh; penyelenggaraan penanggulangan bencana dilakukan pada tahap pra bencana, saat tanggap darurat, dan pasca bencana, karena masing-masing tahapan mempunyai karakteristik penanganan yang berbeda; pada saat tanggap darurat, kegiatan penanggulangan bencana selain didukung dana APBN dan APBD juga disediakan dana siap pakai dengan pertanggungjawaban melalui mekanisme khusus; dan pengawasan yang dapat dilakukan oleh pemerintah dan masyarakat. CATATAN: Undang-undang (UU) ini mulai berlaku pada tanggal 26 April 2007.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/29492/UU%20Nomor%2024%20Tahun%202007.pdf",
+ "pdf_sha1": "982ec50f36bb804e82e116c33a56a0c56bcf2920",
+ "pdf_bytes": 67215,
+ "sid": "uu-24-2007",
+ "halaman_total": 50,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

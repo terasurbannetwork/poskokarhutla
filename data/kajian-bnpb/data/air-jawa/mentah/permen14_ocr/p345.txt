@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+82 D.I. Kampiran 2
+83 D.I. Kapungan 93
+84 D.I. Karanglo I 83
+85 D.I. Karanglo II 94
+86 D.I. Karangrejo 43
+87 D.I. Karoban 63
+88 D.I. Katikan 79
+89 D.I. Kauman 80
+90 D.I. Kawis 36
+91 D.I. Kayen 5
+92 D.I. Kayu Lawang 3
+93 D.I. Kedung Banyak 53
+94 D.I. Kedung Butak I 60
+95 D.I. Kedung Butak II 121
+96 D.I. Kedung Celeng 201
+97 D.I. Kedung Gogor 63
+98 D.I. Kedung Gudel 120
+99 D.I. Kedung Merak 711
+100 D.I. Kedung Merak 51
+101 D.I. Kedung Pangot 134
+102 D.I. Kedungdisil 9
+103 D.I. Kedungmenco 65
+104 D.I. Kembang 25
+105 D.I. Kenongo 441
+106 D.I. Kenteng | 26
+107 D.I. Kenteng II 10
+108 D.I. Kenteng III 1
+109 D.I. Kesumo | 2
+110 D.I. Kesumo II 6
+111 D.I. Kesumo III 7
+112 D.I. Kesumo IV 1
+113 D.I. Kesumo V 1
+114 D.I. Kionggo 158
+115 D.I. Klampok Atas 26
+116 D.I. Klampok | 95
+117 D.I. Klampok II 286
+118 D.I. Klebut 78
+119 D.I. Kleco 121
+120 D.I. Kliteh 107
+121 D.I. Koang 8
+122 D.I. Koso II 3
+123 D.I. Koso II 9
+124 D.I. Krawang 44
+125 D.I. Lemahbang 28
+126 D.I. Lempong 20
+127 D.I. Lerep 62
+128 D.I. Lodolo 8
+129 D.I. Lodro 21
+130 D.I. Lontok 98
+131 D.I. Manggisan 2
+132 D.I. Mangir 34
+133 D.I. Mangkleng I 19
+134 D.I. Mangkleng II 53
+135 D.I. Manjungsari 10
+136 D.I. Mendalan 39
+137 D.I. Miling 103
+138 D.I. Mojokopek 49
+139 D.I. Mojolodro 44
+140 D.I. Mrican 27
+141 D.I. Mudinan 1
+142 D.I. Mulur 5
+#KANAN
+3as 7015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+143 D.I. Muning 27
+144 D.I. Nadri 15
+145 D.I. Nepen 3
+146 D.I. Ngadi luwih I 19
+147 D.I. Ngadi luwih II 2
+148 D.I. Ngampel I 13
+149 D.I. Ngampel II 135
+150 D.I. Ngancar 145
+151 D.I. Ngancar 1
+152 D.I. Ngapit 203
+153 D.I. Ngarengan 325
+154 D.I. Ngariboyo 24
+155 D.I. Ngasem 60
+156 D.I. Ngegol I 7
+157 D.I. Ngegol II 16
+158 D.I. Ngegol Ila 14
+159 D.I. Ngegol III 62
+160 D.I. Ngejring 19
+161 D.I. Ngelo I 18
+162 D.I. Ngelo II 10
+163 D.I. Ngembang 26
+164 D.I. Ngepeh 73
+165 D.I. Ngesong 216
+166 D.I. Ngetrep 31
+167 D.I. Ngijo 14
+168 D.I. Nglarangan 6
+169 D.I. Nglencong I 62
+170 D.I. Nglencong II 96
+171 D.I. Nglorog 13
+172 D.I. Nglorok 18
+173 D.I. Ngunut 16
+174 D.I. Nogo | 12
+175 D.I. Nogo II 26
+176 D.I. Nritik 2
+177 D.I. Pagaran 179
+178 D.I. Panjang Goang 37
+179 D.I. Patakbanteng 40
+180 D.I. Payung I 5
+181 D.I. Payung II 7
+182 D.I. Pehmileng 137
+183 D.I. Pelemsawit 67
+184 D.I. Pengok 10
+185 D.I. Pengok I 5
+186 D.I. Pengok II 5
+187 D.I. Pengok III 12
+188 D.I. Pengok IV 4
+189 D.I. Pengok V 5
+190 D.I. Pesing 14
+191 D.I. Petung I 3
+192 D.I. Petung II 31
+193 D.I. Pilang Bango 40
+194 D.I. Pilang Bango 540
+195 D.I. Pilang Petek 261
+196 D.I. Pleret 334
+197 D.I. Pocol 83
+198 D.I. Pohawe 84
+199 D.I. Pohjenggel 70
+200 D.I. Pondok 29
+201 D.I. Pucangan 83
+202 D.I. Pucung 9
+203 D.I. Pule Pule 7

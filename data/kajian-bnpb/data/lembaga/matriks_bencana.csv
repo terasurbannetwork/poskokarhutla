@@ -1,0 +1,89 @@
+lembaga,singkatan,kategori,ancaman,pra,saat,pasca,lintas
+PRES,Presiden,lintas,semua,,R[R014],,
+PRES,Presiden,sosial,konflik_sosial,,R[R131],,
+KEMENKO_POLKAM,Kemenko Polkam,alam,karhutla,,,,K[R080]
+KEMENKO_POLKAM,Kemenko Polkam,sosial,konflik_sosial,,K[R137],,
+KEMENKO_PMK,Kemenko PMK,lintas,semua,P[R018],K[R017],,K[R016]
+KEMENKO_PMK,Kemenko PMK,sosial,konflik_sosial,,,,K[R138]
+KEMENKO_PANGAN,Kemenko Pangan,alam,kekeringan,K[R075],,,
+KEMENDAGRI,Kemendagri,lintas,semua,,,K[R023],P[R027]
+KEMENDAGRI,Kemendagri,alam,karhutla,P[R081],,,
+KEMENDAGRI,Kemendagri,nonalam,gagal_teknologi,R[R115],,,
+KEMENDAGRI,Kemendagri,sosial,konflik_sosial,,P[R140],,
+KEMLU,Kemlu,lintas,semua,,P[R031],,
+KEMENKEU,Kemenkeu,lintas,semua,,P[R030],,
+KEMENKEU,Kemenkeu,alam,karhutla,P[R102],,,
+KEMENKEU,Kemenkeu,sosial,konflik_sosial,,P[R142],,
+KEMENKES,Kemenkes,lintas,semua,,K[R021],,K[R024]
+KEMENKES,Kemenkes,alam,karhutla,,P[R082],,
+KEMENKES,Kemenkes,nonalam,epidemi,,R[R110],,K[R112]
+KEMENKES,Kemenkes,sosial,konflik_sosial,,P[R141],,
+KEMENSOS,Kemensos,lintas,semua,,K[R020],,
+KEMENSOS,Kemensos,alam,karhutla,,P[R083],,
+KEMENSOS,Kemensos,sosial,konflik_sosial,,P[R139],,
+KEMENDIKDASMEN,Kemendikdasmen,lintas,semua,,K[R022],,
+KEMEN_PU,Kementerian PU,lintas,semua,,P[R034],,
+KEMEN_PU,Kementerian PU,alam,banjir,R[R062],,,K[R060]
+KEMEN_PU,Kementerian PU,alam,longsor,R[R067],,,
+KEMEN_PU,Kementerian PU,alam,gelombang_abrasi,K[R071],,,
+KEMEN_PU,Kementerian PU,alam,kekeringan,,P[R077],,K[R073]
+KEMEN_PU,Kementerian PU,alam,karhutla,P[R084],,,
+KEMEN_PU,Kementerian PU,nonalam,kebakaran_tpa,P[R121],,,
+KEMEN_PKP,Kementerian PKP,lintas,semua,,,K[R028],
+KEMEN_ESDM,Kementerian ESDM,lintas,semua,,P[R035],,
+KEMEN_ESDM,Kementerian ESDM,alam,gempa,R[R051],,,
+KEMEN_ESDM,Kementerian ESDM,alam,tsunami,R[R053],,,
+KEMEN_ESDM,Kementerian ESDM,alam,gunungapi,I[R054],,,
+KEMEN_ESDM,Kementerian ESDM,alam,longsor,I[R055],,,
+KEMENHUT,Kemenhut,alam,karhutla,,,,K[R088]
+KLH_BPLH,KLH/BPLH,alam,karhutla,,,,K[R089]
+KLH_BPLH,KLH/BPLH,nonalam,gagal_teknologi,,,,P[R116]
+KLH_BPLH,KLH/BPLH,nonalam,kebakaran_tpa,R[R120],,,
+KEMENTAN,Kementan,alam,kekeringan,P[R076],,,
+KEMENTAN,Kementan,alam,karhutla,R[R087],,,
+KKP,KKP,alam,gelombang_abrasi,P[R070],,,
+ATR_BPN,ATR/BPN,lintas,semua,R[R038],,,
+ATR_BPN,ATR/BPN,alam,karhutla,R[R091],,,
+KEMEN_PPN,Kementerian PPN/Bappenas,lintas,semua,,,P[R008],
+KEMEN_PPN,Kementerian PPN/Bappenas,alam,karhutla,P[R103],,,
+KOMDIGI,Komdigi,lintas,semua,,P[R033],,
+KOMDIGI,Komdigi,alam,karhutla,,P[R086],,
+KEMENHUB,Kemenhub,lintas,semua,,P[R032],,
+KEMENHUB,Kemenhub,alam,karhutla,,P[R085],,
+KEMENDES,Kemendes PDT,alam,karhutla,P[R090],,,
+BNPB,BNPB,lintas,semua,I[R006],K[R002];K[R003];K[R004];K[R009],K[R007],K[R001];K[R005]
+BNPB,BNPB,alam,karhutla,,K[R094],,
+BNPB,BNPB,nonalam,epidemi,,,,P[R113]
+BNPB,BNPB,nonalam,gagal_teknologi,,,,P[R117]
+BNPB,BNPB,sosial,konflik_sosial,,P[R136],P[R135],
+BPBD,BPBD,lintas,semua,I[R011],,,K[R010]
+BPBD,BPBD,alam,karhutla,,,,K[R101]
+PEMDA,Pemda,lintas,semua,,R[R015],K[R029],K[R012];K[R013]
+PEMDA,Pemda,alam,banjir,R[R063],,,K[R061]
+PEMDA,Pemda,alam,kekeringan,,,,K[R074]
+PEMDA,Pemda,alam,karhutla,,K[R100],,
+PEMDA,Pemda,nonalam,epidemi,,R[R111],,
+PEMDA,Pemda,nonalam,gagal_teknologi,,,,K[R114]
+PEMDA,Pemda,nonalam,kebakaran_tpa,K[R118];K[R122],K[R119],,
+PEMDA,Pemda,sosial,konflik_sosial,,R[R130],K[R134],
+BMKG,BMKG,alam,gempa,I[R050],,,
+BMKG,BMKG,alam,tsunami,I[R052],,,
+BMKG,BMKG,alam,cuaca_ekstrem,I[R068],,,
+BMKG,BMKG,alam,gelombang_abrasi,I[R069],,,
+BMKG,BMKG,alam,kekeringan,I[R072],,,
+BMKG,BMKG,alam,karhutla,I[R095],P[R096],,
+BRIN,BRIN,lintas,semua,P[R037],,,
+BRIN,BRIN,alam,karhutla,I[R098],,,
+BIG,BIG,lintas,semua,I[R036],,,
+BIG,BIG,alam,karhutla,I[R097],,,
+BASARNAS,Basarnas,lintas,semua,,K[R019],,
+BASARNAS,Basarnas,alam,karhutla,,P[R099],,
+TNI,TNI,lintas,semua,,P[R025],,
+TNI,TNI,alam,karhutla,,P[R092],,
+TNI,TNI,sosial,konflik_sosial,,P[R133],,
+POLRI,Polri,lintas,semua,,P[R026],,
+POLRI,Polri,alam,karhutla,,P[R093],,
+POLRI,Polri,sosial,konflik_sosial,,K[R132],,
+BOP_PANTURA,BOP Pantura Jawa,alam,banjir,P[R066],,,
+PJT1,PJT I,alam,banjir,,,,P[R064]
+PJT2,PJT II,alam,banjir,,,,P[R065]

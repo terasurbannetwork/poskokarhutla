@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+291 D.I. Kaluang 12
+292 D.I. Lubuk Laban 22
+293 D.I. Lubuk Gadang 15
+294 D.I. Lakuak 12
+295 D.I. Lubang Batu 8
+296 D.I. Pibado I 19
+297 D.I. Pibado II 15
+298 D.I. Pinang Katiak/Anak Sipinang 26
+299 D.I. Punago 31
+300 D.I. Salodako 45
+301 D.I. Sawah Liek Kampung Koto 12
+302 D.I. Sawah Kareh 25
+303 D.I. Talago Pacah 81
+304 D.I. Tabek 26
+305 D.I. Padang Mantuang 81
+306 D.I. Sawah Gadang 18
+307 D.I. Ampang Jambu 18
+308 D.I. Ampang Binu 15
+309 D.I. Ampang Ulu Labuh 13
+310 D.I. Batang Tambiun 12
+311 D.I. Bukit Aneh 20
+312 D.I. Durian Paratian 31
+313 D.I. Ekor Pauh 15
+314 D.I. Lurah Apa 19
+315 D.I. Lurah Tampek 15
+316 D.I. Pintu Gabang 16
+317 D.I. Padang Gubalo 12
+318 D.I. Panyaguan 11
+319 D.I. Pompanisasi 30
+320 D.I. Sigaruntang 19
+321 D.I. Salayan 13
+322 D.I. Sawah Bawah 30
+323 D.I. Bdr Puding 15
+324 D.I. Tapakih Pusek 20
+325 D.I. Ulu Paman 20
+326 D.I. Ulu Tapakih 13
+327 D.I. Ampang Pakotan 15
+328 D.I. Ampang Kasai 22
+329 D.I. Guguk Jantan 22
+330 D.I. Kayu Bodoh 20
+331 D.I. Lundang Bajawek 20
+332 D.I. Lubuk Talang 7
+333 D.I. Pakotan Lukah 20
+334 D.I. Timbalun 32
+335 D.I. Rimbo Patai 25
+336 D.I. Berok 15
+337 D.I. Lb. Landue 15
+338 D.I. Bdr. Nan Gantiang 54
+339 D.I. Bdr. Kampung Padang 46
+340 D.I. Bdr. Kampung Jerong 55
+341 D.I. Bdr. Ganting Tandikat 67
+342 D.I. Bdr. Surau 15
+343 D.I. Bdr. Ngungun Indah 21
+344 D.I. Bdr. Ganting II 16
+345 D.I. Bdr. Sialang II 15
+346 D.I. Bdr. Nabu Bawah 20
+347 D.I. Bdr. Baru 61
+348 D.I. Bdr. Sikumbang 13
+349 D.I. Bdr. Surau Hilir 24
+350 D.I. Bdr. Surau Kabun 20
+351 D.I. Bdr. Lubuk Balik 35
+#KANAN
+101 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+352 D.I. Bdr. Mudik Balai 70
+353 D.I. Bdr. Ampalu 25
+354 D.I. Bdr. Apa 30
+355 D.I. Bdr. Lagan 20
+356 D.I. Bdr. Kampung Paneh 33
+357 D.I. Bdr. Sarang Gagak 25
+358 D.I. Bdr. Lubuk Kumbung 65
+359 D.I. Bdr. Sialang | 26
+360 D.I. Bdr. Sawah Data 50
+361 D.I. Bdr. Batu Kudo 11
+362 D.I. Bdr. Lambau 25
+363 D.I. Bdr. Kabun 16
+364 D.I. Bdr. Palak Kami 25
+365 D.I. Bdr. Kampung Guci 69
+366 D.I. Bdr. Aie Putiah 65
+367 D.I. Bdr. Aie Tajun 30
+368 D.I. Ampangan Mangor 40
+369 D.I. Sawah Kubu 20
+370 D.I. Tangah Padang 30
+371 D.I. Bdr. Rimbo Piatu 24
+372 D.I. Bdr. Sawah Kabun 20
+373 D.I. Bdr. Sawah Taruko 13
+374 D.I. Bdr. Aur Duri 48
+375 D.I. Tungka 100
+376 D.I. Sungai Ibur I 40
+377 D.I. Sungai Ibur II 18
+378 D.I. Limau Sundai 15
+379 D.I. Bdr. Gelugur 20
+380 D.I. Bdr. Ambung Kapur 28
+381 D.I. Bdr. Surau Ambacang 20
+382 D.I. Bdr. Kampung Jambak 15
+383 D.I. Bdr. Kulo 20
+384 D.I. Bdr. Kalu 110
+385 D.I. Toboh Baru 68
+386 D.I. Bdr. Apa 42
+387 D.I. Bdr. Padang Ampalu 40
+388 D.I. Bdr. Lubuk Napa 62
+389 D.I. Bdr. Guguak 23
+390 D.I. Bdr. Tonyok 26
+391 D.I. Bdr. Kasai Patamuan 95
+392 D.I. Bdr. Koto Runcing 40
+393 D.I. Bdr. Batang Pincungan 23
+394 D.I. Bdr. Toboh Binu 25
+395 D.I. Tanjung Dama 39
+396 D.I. Sungai Karuah 43
+397 D.I. Surau Bungo Tanjuang 34
+398 D.I. Acu Adih 20
+399 D.I. Pdg. Kandang Pulau Air 65
+400 D.I. Bdr. Tanjung Pisang 65
+401 D.I. Sawah Jambak 32
+402 D.I. Sawah Pulau 43
+403 D.I. Sakayan Pandan 41
+404 D.I. Lubuk Napa 55
+405 D.I. Bdr. Ganting 125
+406 D.I. Bdr. Tapian Puti 37
+407 D.I. Surantih 110
+408 D.I. Lagam Buih 55
+409 D.I. Batang Buluh 62
+410 D.I. Bdr. Tong Balau 46
+411 D.I. Bdr. Sarasah 56
+412 D.I. Bdr. Surau 37

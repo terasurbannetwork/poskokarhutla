@@ -29,6 +29,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
@@ -251,6 +255,7 @@ jobs:
         run: |
           python3 scripts/terbit/versi.py
           python3 scripts/terbit/jaga_segar.py
+          python3 scripts/terbit/isi_data.py buat
           npx --yes wrangler@4.42.0 deploy
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.

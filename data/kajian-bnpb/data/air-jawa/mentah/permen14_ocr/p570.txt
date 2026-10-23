@@ -1,0 +1,80 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 570
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+15 D.LA.T. Surumana SE 37 SBD - ST 12
+16 D.LA.T. Surumana SE 38 SBD - ST 12
+17 D.LA.T. Surumana SE 39 SBD - ST 10
+18 D.LA.T. Surumana SE 40 SBD - ST 10
+19 D.LA.T. Watatu SE 64 WBD- ST 10
+20 D.I.A.T. Watatu SE 65 WBD- ST 9
+21 D.I.A.T. Watatu SE 66 WBD- ST 10
+22 D.I.A.T. Watatu SE 68 WBD- ST 8
+23 D.I.A.T. Watatu SE 69 WBD- ST 8
+24 D.L.A.T. Budimukti SE 85 BDD- ST 15
+25 D.I.A.T. Malonas SE 81 MDD - ST 12
+26 D.I.A.T. Malonas SE 82 MDD - ST 10
+27 D.I.A.T. Malonas SE 83 MDD - ST 10
+28 D.I.A.T. Sioyong SE 84 SDD- ST 10
+29 D.I.A.T. Laone SD 49 LKD- ST 13
+30 D.I.A.T. Labuan Lelea SD 139 LTD - ST 20
+31 D.I.A.T. Labuan Lelea SD 140 LLD- ST 20
+32 D.I.A.T. Labuan Lelea SD 141 LLD- ST 20
+33 D.I.A.T. Labuan Lelea SD 144 LLD- ST 16
+34 D.I.A.T. Labuan Lelea SD 145 LLD- ST 15
+35 D.I.A.T. Labuan Lelea SD 146 LLD- ST 17
+36 D.I.A.T. Labuan Lelea SD 147 LLD- ST 5
+37 D.I.A.T. Labuan Lelea SD 150 LLD- ST 15
+38 D.I.A.T. Labuan Lelea SD 151 LLD- ST 15
+39 D.I.A.T. Labuan Lelea SD 152 LLD- ST 15
+40 D.I.A.T. Labuan Lelea SD 153 LLD- ST 20
+41 D.I.A.T. Labuan Panimba SD 155 LLD- ST 15
+42 D.I.A.T. Labuan Panimba SD 156 LLD- ST 15
+43 D.L.A.T. Dalaka SD 142 DSD - ST 18
+44 D.LA.T. Dalaka SD 116 DSD - ST 15
+45 D.I.A.T. Dalaka SD 117 DSD - ST 15
+46 D.L.A.T. Lero SD 154 LSD- ST 18
+47 D.LA.T. Lero SE 107 LSD - ST 15
+48 D.I.A.T. Wani SD 143 WTD - ST 15
+49 D.L.A.T. Wani SD 148 WTD- ST 20
+50 D.I.A.T. Wani SD 149 WTD - ST 15
+51 D.LA.T. Guntarano SD 134 GTD- ST 15
+52 D.LA.T. Kayumaluwe SE.06 LTD - ST 10
+53 D.LA.T. Kayumaluwe SE.07 KTD- ST 10
+54 D.LA.T. Kayumaluwe SE.08 KTD- ST 10
+55 D.LA.T. Kayumaluwe SE.09 KTD- ST 10
+56 D.LA.T. Kayumaluwe SE.10 KTD- ST 10
+
+c Kab. Pariai Moutona 17 147
+
+1 D.LA.T. Baliara SD 159 BPB - ST 15
+
+2 D.LA.T. Baliara SD 160 BPB-ST 15
+
+3 D.LA.T. Baliara SD 161 BPB-ST 15
+
+4 D.LA.T. Bambalemo SD 162 BPB-ST 15
+
+5 D.LA.T. Toga SE 93 TAP - ST 10
+
+6 D.LA.T. Toga SE 94 TAP - ST 10
+
+7 D.LA.T. Toga SE 101 TAP - ST 10
+
+8 D.LA.T. Sidole SE 87 SAP- ST 10
+
+9 D.LA.T. Mensung SD 47 MTD- ST 15
+10 D.ILA.T. Mensung SD 48 MTD- ST 18
+11 D.LA.T. Palasa SD 46 PTD - ST 15
+
+d Kab. Poso 5 49
+
+1 D.LA.T. Pamona U SE 88 PUP - ST 9
+
+2 D.LA.T. Pamona U SE 89 PPP- ST 8
+
+3 D.LA.T. Pamona U SE 90 PPP- ST 8
+
+4 D.LA.T. Buyunng P SE 91 BPP- ST 8

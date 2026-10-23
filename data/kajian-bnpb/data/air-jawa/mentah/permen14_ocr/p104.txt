@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+9 D.I. Batang Ingu 411
+10 D.I. Batang Kando 59
+11 D.I. Batang Kariang 75
+12 D.I. Batang Karumie 85
+13 D.I. Batang Kenaikan 220
+14 D.I. Batang Kinali 300
+15 D.I. Batang Lampang 64
+16 D.I. Batang Mandiangin 141
+17 D.I. Batang Nango 318
+18 D.I. Batang Paku 245
+19 D.I. Batang Pinagar 814
+20 D.I. Batang Sarik 90
+21 D.I. Batang Siau - Siau 40
+22 D.I. Batang Sopan 425
+23 D.I. Batang Talao Hilir 33
+24 D.I. Bdr. Partupangan 900
+25 D.I. Bdr. Rambah 70
+26 D.I. Btg. Alamanda 492
+27 D.I. Btg. Kinali Rantau Pjg 650
+28 D.I. Bunga Tanjung 66
+29 D.I. Bunga Tanjung 25
+30 D.I. Danau Karuah 400
+31 D.I. Durian Kepala Kambing 156
+32 D.I. Ladang Rimbo 85
+33 D.I. Lubuk Barantai 175
+34 D.I. Lubuk Lanai 165
+35 D.I. Lupak Subahan 300
+36 D.I. Pandulangan 115
+37 D.I. Pelita Sei. Abuk 51
+38 D.I. Punggai Bawah 625
+39 D.I. Talang Kuning 350
+40 D.I. Taming 180
+41 D.I. Tanjung Durian 375
+42 D.I. Tinggiran 105
+43 D.I. Guo 20
+44 D.I. Toro Gunung 15
+45 D.I. Btg. Betutu 25
+46 D.I. Kabau Alin 35
+47 D.I. Lb. Bintungan 15
+48 D.I. Subarang Nango 40
+49 D.I. Kampuang Karambia 50
+50 D.I. Tapi Nango 25
+51 D.I. Banja Pomdom 70
+52 D.I. Abuk Datar 35
+53 D.I. Bt. Limpato 30
+54 D.I. Bt. Kuranji 30
+55 D.I. Sawah Ambacang 45
+56 D.I. Lubuk Barantai 175
+57 D.I. Aia Puding 40
+58 D.I. Aia Salak 55
+59 D.I. Aia Dodok 45
+60 D.I. Ulu Sipokak 45
+61 D.I. Durian Daun 25
+62 D.I. Bt. Kularian 30
+63 D.I. Banda Tangah 40
+64 D.I. Banda Parik 30
+65 D.I. Banja Sikumbang 35
+66 D.I. Batang Simpang (III DI.) 117
+67 D.I. Bt. Paraman 44
+68 D.I. Bt. Aia Angek | 32
+69 D.I. Lingkin Jaya 30
+#KANAN
+104
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+70 D.I. Bt. Toman 85
+71 D.I. Sei. Abuk II 33
+72 D.I. Durian Silindik 30
+73 D.I. Kampung Pandan 70
+74 D.I. Air Mundak 30
+75 D.I. Situang 28
+76 D.I. Tapak Kandang 50
+77 D.I. Aie Garinggiang 75
+78 D.I. Tanjung Balik 72
+79 D.I. Anak Aia Putiah 50
+80 D.I. Bt. Ganggo 35
+81 D.I. Bt. Silambau 60
+82 D.I. Bancah Tuno 25
+83 D.I. Bt. Tambau | 35
+84 D.I. Bt. Tambau II 30
+85 D.I. Tanjung Medan 26
+86 D.I. Ujuang Pandang 90
+87 D.I. Banja Durian Gadang 90
+88 D.I. Durian Tabuang 25
+89 D.I. Durian Sabuik 30
+90 D.I. Banda Maruok 30
+91 D.I. Bdr. Gadang Drn Kandang 90
+92 D.I. Kampuang Lambah 45
+93 D.I. Koto Padang 75
+94 D.I. Pajo Anggang 40
+95 D.I. Sungai Balai 45
+h Kab. Pesisir Selatan 249 20.907
+1 D.I. Aia Singkarak 118
+2 D.I. Air Tambang 55
+3 D.I. Ambacang 30
+4 D.I. Banda Panjang 95
+5 D.I. Batang Jalamu 715
+6 D.I. Bukik Kaciak 425
+7 D.I. Dwikora 472
+8 D.I. Hilalang Panjang 656
+9 D.I. Koto Nan IV 113
+10 D.I. Limau Manih Kulam 158
+11 D.I. Lubuak Aguang 235
+12 D.I. Lubuak Aguang 304
+13 D.I. Lubuak Aua 280
+14 D.I. Lubuak Kasai 24
+15 D.I. Lubuak Nyiua 319
+16 D.I. Lumpo I 528
+17 D.I. Lumpo II 317
+18 D.I. Sungai Baling 150
+19 D.I. Sungai Barameh Ampuan 107
+20 D.I. Sungai Gadang Kumbung 550
+21 D.I. Sungai Kuyung 487
+22 D.I. Sungai Pinang 440
+23 D.I. Talang Kataping 167
+24 D.I. Tanjuang Durian 375
+25 D.I. Taratak Timbulun 413
+26 D.I. Lawik Kurao 24
+27 D.I. Tanah Melayu 24
+28 D.I. Sawah Rumah Gadang 33
+29 D.I. Kayu Marunduak 34
+30 D.I. Aia Kiek 32
+31 D.I. Aia Labak 35
+32 D.I. Sawah Gantiang 26
+33 D.I. Sawah Sumua 22

@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+15 2015, No.638
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+7 D.I. Tuk Kuning 264 BBWS Serayu Opak :
+A. Provinsi Jawa Tengah
+1. Kabupaten Klaten z 115 Ha
+B. Provinsi D.I. Yogyakarta
+1. Kabupaten Sleman z 149 Ha
+8 D.I. Colo 25.056 BBWS Bengawan Solo :
+A. Provinsi Jawa Tengah
+1. Kabupaten Wonogiri z 439 Ha
+2. Kabupaten Karanganyar z 1.945 Ha
+3. Kabupaten Klaten z 1.888 Ha
+4. Kabupaten Sragen z 9.717 Ha
+5. Kabupaten Sukohardjo - 10.565 Ha
+B. Provinsi Jawa Timur
+1. Kabupaten Ngawi z 502 Ha
+9 D.I. Semen/Krinjo 929 BBWS Bengawan Solo:
+A. Provinsi Jawa Tengah
+1. Kabupaten Rembang z 564 Ha
+B. Provinsi Jawa Timur
+1. Kabupaten Tuban z 365 Ha
+10 D.I. Paku 1.047 BBWS Pompengan Jeneberang :
+A. Provinsi Sulawesi Barat
+1. Kabupaten Polewali - pon” Ya
+Mandar Ke ann
+B. Provinsi Sulawesi Selatan
+1. Kabupaten Pinrang z 381 Ha
+C LINTAS KABUPATEN/KOTA 67 1.084.215
+| PROVINSI ACEH 2 26.397
+1 D.I. Jambo Aye Langkahan 19.473 Kabupaten Aceh Timur - 3.480 Ha
+Kabupaten Aceh Utara z 15.993 Ha
+2 D.I. Krueng Tiro 6.924 Kabupaten Pidie - 6.489 Ha
+Kabupaten Pidie Jaya z 435 Ha
+Il PROVINSI SUMATERA UTARA 4 36.350
+1 D.I. Batang Angkola 7.200 Kabupaten Mandailing Natal z 4155 Ha
+Kabupaten Tapanuli Selatan z 3.045 Ha
+2 D.I. Namu Sira-Sira 6.300 Kabupaten Langkat z 5.521 Ha
+Kota Binjai z 779 Ha
+3 D.I. Paya Sordang 4.350 Kabupaten Tapanuli Selatan z 3.737 Ha
+Kota Padang Sidempuan z 613 Ha
+4 D.I. Sungai Ular 18.500 Kabupaten Deli Serdang z 5.310 Ha
+Kabupaten Serdang Bedagai z 13.190 Ha
+Il PROVINSI SUMATERA BARAT 2 7.400
+1 D.I. Antokan 4.200 Kabupaten Agam z 3.600 Ha
+Kabupaten Padang Pariaman z 600 Ha
+2 D.I. Batang Sinamar 3.200 Kabupaten Sijunjung - 200 Ha
+Kabupaten Tanah Datar z 3.000 Ha
+IV PROVINSI SUMATERA SELATAN 1 10.163
+1 D.I. Kelingi Tugu Mulyo 10.163 Kabupaten Musi Rawas z 8.841 Ha
+Kota Lubuk Linggau - 1.322 Ha
+V PROVINSI LAMPUNG 4 106.304
+1 D.I. Way Pangubuan 5.000 Kabupaten Lampung Tengah - 4990 Ha
+Kabupaten Lampung Utara - 10 Ha
+2 D.I. Way Rarem 21110 Kabupaten Lampung Utara z 9.259 Ha
+Kabupaten Tulang Bawang z 11.851 Ha
+3 D.I. Way Sekampung 76.006 Kabupaten Lampung Tengah - 38.653 Ha
+Kabupaten Lampung Timur - 33587 Ha
+Kota Metro z 3.766 Ha
+4 D.I. Way Tebu Sistem 4.188 Kabupaten Pringsewu z 3.700 Ha
+Kabupaten Tanggamus z 488 Ha

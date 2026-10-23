@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+81 D.I. Sei Panggulaan 35
+82 D.I. Sei Pantai 37
+83 D.I. Sei Pihaung 35
+84 D.I. Sei Ranggas 165
+85 D.I. Sei Sarintan 20
+86 D.I. Sei Tabat Padang 50
+87 D.I. Sei Tabu Darat 30
+88 D.I. Sei Tarap 160
+89 D.I. Sei Tuhuran 73
+90 D.I. Sei Tukampit 23
+91 D.I. Sei Warik 40
+92 D.I. Senapati I 130
+93 D.I. Senapati II 125
+94 D.I. Setiap 30
+95 D.I. Suka Maju 240
+96 D.I. Sungai Lu'ung 45
+97 D.I. Sungai Muarak 175
+98 D.I. Tabu Darat Hilir 175
+99 D.I. Tabu Darat Tengah 175
+100 D.I. Tabu Darat Tengah 175
+101 D.I. Tamiyang Pauh 150
+102 D.I. Tanah Habang 70
+103 D.I. Tandui Baru 150
+104 D.I. Tanjung Hantakan 95
+105 D.I. Tapau 100
+106 D.I. Walatung 150
+107 D.I. Waringin 150
+e Kab. Kotabaru 1 553
+D.I. Megasari 553
+f Kab. Tabalona 37 7.202
+1 D.I. Bilas 250
+2 D.I. Gumba 269
+3 D.I. Hayup 80
+4 D.I. Jaro Atas 816
+5 D.I. Jaro Bawah 200
+6 D.I. Kadaman 100
+7 D.I. Kambitin 240
+8 D.I. Liang Tapah/Garagata 152
+9 D.I. Lumbang 600
+10 D.I. Mamas 450
+11 D.I. Salikong 100
+12 D.I. Tamiyang 300
+13 D.I. Luk Batu 80
+14 D.I. Namun 60
+15 D.I. Muang 295
+16 D.I. Pasar Batu 10
+17 D.I. Kampung Baru 30
+18 D.I. Uwie 25
+19 D.I. Marindi 320
+20 D.I. Baruh Balang 70
+21 D.I. Mambanin 30
+22 D.I. Nawin 100
+23 D.I. Halong 100
+24 D.I. Kupang Nunding 100
+25 D.I. Bongkang 50
+26 D.I. Mahe Pasar 200
+27 D.I. Saradang 100
+28 D.I. Baruh Kumpai 400
+29 D.I. Sei. Pimping 50
+#KANAN
+409 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+30 D.I. Puain Kiwa 75
+31 D.I. Gambah 100
+32 D.I. Pulau Ku'u 600
+33 D.I. Mangkusip 100
+34 D.I. Walangkir 100
+35 D.I. Keong 400
+36 D.I. Masingai Luar 100
+37 D.I. Masingai I 150
+a Kab. Tanah Bumbu 38 14.472
+1 D.I. Api-Api 625
+2 D.I. Bekarangan 500
+3 D.I. Baru Gelang 600
+4 D.I. Batarang 300
+5 D.I. Bayam Sari 100
+6 D.I. Betung 500
+7 D.I. Bukit Baru 200
+8 D.I. Bunati 200
+9 D.I. Darasan Binjai 200
+10 D.I. Dukuh Rejo 100
+11 D.I. Giri Mulya Sbb 6 135
+12 D.I. Han Tiif 500
+13 D.I. Harapan Jaya Sbb 6 300
+14 D.I. Jombang 200
+15 D.I. Kampung Baru 75
+16 D.I. Karang Bintang 500
+17 D.I. Kersik Putih 500
+18 D.I. Kusambi 500
+19 D.I. Mekar Java 300
+20 D.I. Pacakan 307
+21 D.I. Pintu H. Swidi 275
+22 D.I. Pondok Butun 300
+23 D.I. Pulau Wali 400
+24 D.I. Purwadadi 200
+25 D.I. Salimuran 500
+26 D.I. Saring Sei. Binjai 300
+27 D.I. Satui Barat 500
+28 D.I. Satui Timur 960
+29 D.I. Satui Timur Kampung 400
+30 D.I. Segumbang 900
+31 D.I. Sei Rasau Manunggal 320
+32 D.I. Sei Danau 250
+33 D.I. Sei Loban 500
+34 D.I. Sepunggur 485
+35 D.I. Serdangan 400
+36 D.I. Sumber Baru 500
+37 D.I. Tapus 300
+38 D.I. Tibarau Panjang 340
+h Kab. Tanah Laut 49 9.213
+1 D.I. Alur Kampung/Trans 350
+2 D.I. Banua Lawas 150
+3 D.I. Batilai 400
+4 D.I. Damit/Batalang 250
+5 D.I. Gunung Melati 150
+6 D.I. Kandangan Baru 60
+7 D.I. Kunyit 52
+8 D.I. Langsat Besar 262
+9 D.I. Lok Limau 265
+10 D.I. Mandila 176
+11 D.I. Martadah 65

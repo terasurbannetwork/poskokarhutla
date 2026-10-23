@@ -1,0 +1,21 @@
+#TATA_LETAK satu-tabel lebar=2480
+2915, No.638 60
+Ko Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+VII PROVINSI PAPUA 5 8.460
+a Kab. Merauke
+1 D.I.R. Gudang Arang-Serapu 1.400
+2 D.I.R. Kuprik-Sidomulyo 1.600
+3 D.I.R. Okaba 1.500
+4 D..LR. Salor 2.460
+5 D.I.R. Wasum-Nasem 1.500
+TOTAL 241 423.302
+Status Daerah Irigasi Yang Menjadi Wewenang Dar Tanggunj Jawab Pemerintah Provinsi
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+ND Keterangan
+Nama Daerah Irigasi Pompa Sumur D.I. (Ha)
+| PROVINSI JAWA TIMUR Z 2.305
+a Kab. Lamongan
+1 D.I. Butungan 1.185
+2 D.I. Kaligerman 1.120
+TOTAL a 2.305

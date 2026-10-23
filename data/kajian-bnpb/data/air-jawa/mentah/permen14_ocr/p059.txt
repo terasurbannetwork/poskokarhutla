@@ -1,0 +1,114 @@
+#TATA_LETAK satu-tabel lebar=2480
+59 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+f Kab. Hulu Sungai Utara
+
+1 D.ILR. Polder Bakar 1.560
+
+2 D.I.R. Polder Kaludan 1.440
+
+3 D.I.R. Polder Muara Bayur 1.050
+
+4 D.I.R. Polder Pakacangan 1.100
+
+5 D.I.R. Rawa Pinang Habang 1.200
+
+g Kab. Tanah Bumbu
+
+1 D.I.R. Parit Knm-Kr Pagatan-Batulicin 2.000
+
+h Kab. Tapin
+
+1 D.I.R. Sei Kalang Damar 1.000
+XII PROVINSI KALIMANTAN TIMUR 14 23.000
+
+a Kab. Berau
+
+1 D.I.R. Rantau Pangan 1.500
+
+2 D.I.R. Sei Kuran 1.000
+
+3 D.I.R. Sukan Tengah 1.000
+
+4 D.I.R. Tanjung Perengat 2.500
+
+5 D.ILR. Urutang 2.000
+
+b Kab. Kutai Barat
+
+1 D.LR. Resak 1.000
+
+c Kab. Kutai Kartanegara
+
+1 D.LR. Sebulu 1.000
+
+d Kab. Kutai Timur
+
+1 D.I.R. Bengalon 2.000
+
+e Kab. Paser
+
+1 D.ILR. Laburan Lama 2.000
+
+2 D.I.R. Padang Pangrapat 2.000
+
+3 D.I.R. Riwang 1.500
+
+4 D.I.R. Suliliran 1.500
+
+5 D.ILR. Tanjung Aru 2.000
+
+6 D.I.R. Tanjung Harapan 2.000
+XIV PROVINSI KALIMANTAN UTARA 5 8.500
+
+a Kab. Bulungan
+
+1 D.LR. Salim Batu 1.300
+
+2 D.I.R. Tanjung Keranjang 1.000
+
+b Kab. Nunukan
+
+1 D.I.R. Sembakung 1.500
+
+2 D.ILR. Simanggaris 2.700
+
+3 D.I.R. Sinualan Pantai 2.000
+XV PROVINSI SULAWESI TENGGARA 8 17.664
+
+a Kab. Kolaka
+
+1 D.I.R. Lamedae 2.300
+
+b Kab. Kolaka Timur
+
+1 D.I.R. Ladongi 2.900
+
+2 D.I.R. Tinondo 2.230
+
+c Kab. Konawe
+
+1 D.I.R. Lambuya 2.300
+
+2 D.ILR. Paku Jaya I 2.850
+
+d Kab. Konawe Selatan
+
+1 D.ILR. Ranomeeto 2.200
+
+2 D.I.R. Wuura 1.200
+
+e Kab. Konawe Utara
+
+1 D.LR. Lasolo | 1.684
+XVI PROVINSI SULAWESI SELATAN 2 3.100
+
+a Kab. Bone
+
+1 D.LR. Dua Boccoe 1.050
+
+b Kab. Wajo
+
+1 D.LR. Pammana 2.050

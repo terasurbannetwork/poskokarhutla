@@ -1,0 +1,72 @@
+#TATA_LETAK satu-tabel lebar=2480
+53 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+XXVIII PROVINSI MALUKU 18 22.570
+a Kab. Buru
+1 D.I. Kayeli 1.000
+2 D.I. Way Apu Kiri 1.000
+3 D.I. Way Bloey 1.000
+4 D.I. Way Lata 1.363
+5 D.I. Way Leman 1190
+6 D.I. Way Lo Atas 1.500
+7 D.I. Way Lo Bawah 1.000
+8 D.I. Way Meten 2.020
+9 D.I. Way Tele 1.000
+b Kab. Buru Selatan
+1 D.I. Way Mala 1.000
+2 D.I. Way Tina/Namrole 1.000
+c Kab. Maluku Barat Daya
+1 D.I. Kroing 1.000
+d Kab. Maluku Tengah
+1 D.I. Way Boti 1.300
+2 D.I. Way Sari putih 1.022
+3 D.I. Way Tonipa 1.000
+e Kab. Seram Bagian Timur
+1 D.I. Balansai 2.475
+2 D.I. Dawang 1.500
+3 D.I. Fufa 1.200
+XXIX PROVINSI MALUKU UTARA 29 37.209
+a Kab. Halmahera Barat
+1 D.I. Akediri 1.666
+2 D.I. Goal 1.000
+3 D.I. Jailolo 1.500
+4 D.I. Loloda 1.034
+5 D.I. Sahu 1.000
+6 D.I. Susupu 1.000
+7 D.I. Talaga 1.000
+8 D.I. Tosoa 1.000
+b Kab. Halmahera Selatan
+1 D.I. Bibinohi 1.500
+2 D.I. Gane Timur 1.300
+3 D.I. Geti 1.000
+4 D.I. Goro-Goro 1.000
+5 D.I. Sayoang 1.380
+6 D.I. Wayamiga 1.380
+c Kab. Halmahera Tengah
+1 D.I. Kobe 1.054
+2 D.I. Sagea 2.000
+3 D.I. Tilope 1.788
+d Kab. Halmahera Timur
+1 D.I. Akelamo 2.000
+2 D.I. Dorosagu I, II 1.000
+e Kab. Halmahera Utara
+1 D.I. Biang 1.500
+2 D.I. Lelesang 2.000
+3 D.I. Malifut 1.064
+4 D.I. Toboulamo 1.043
+5 D.I. Toliwang 1.000
+f Kab. Kepulauan Sula
+1 D.I. Jorjoga 1.000
+2 D.I. Kilo 1.000
+g Kab. Pulau Morotai
+1 D.I. Aha 1.000
+h Kota Tidore Kepulauan
+1 D.I. Cinga 2.000
+2 D.I. Maidi 1.000
+XXX PROVINSI PAPUA BARAT 11 15.010
+a Kab. Fak-Fak
+1 D.I. Bomberay 1.200
+b Kab. Manokwari
+1 D.I. Prafi 1.500
+2 D.I. Muturi 1.500

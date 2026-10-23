@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+149 D.I. Temba 50
+150 D.I. Tualang Pandan 350
+151 D.I. Tumpak Debata 20
+152 D.I. Alah 40
+153 D.I. Bandar Huta Usang 40
+154 D.I. Baparsi 35
+155 D.I. Batang Beru 20
+156 D.I. Bukit Leu 30
+157 D.I. Dos Arih 30
+158 D.I. Galapaksi 80
+159 D.I. Galian 75 60
+160 D.I. Gunung Sitember 35
+161 D.I. Habeahan 50
+162 D.I. Juma Sormin 50
+163 D.I. Juma Tukko 70
+164 D.I. Kaban Tengah 80
+165 D.I. Keccing 120
+166 D.I. Kenjulu 20
+167 D.I. Kuta Padang 15
+168 D.I. Lae Kasurat 60
+169 D.I. Lae Kemang 40
+170 D.I. Lae Mbaleh 100
+171 D.I. Lae Meang 15
+172 D.I. Lae Sering 25
+173 D.I. Lae Sirambon 35
+174 D.I. Lae Sokan 30
+175 D.I. Lau Machiho 20
+176 D.I. Lombang Nabagas 20
+177 D.I. Longkotan 80
+178 D.I. Lumban Gambiri 40
+179 D.I. Naga Timbul 86
+180 D.I. Namo Buah 40
+181 D.I. Pancur Nauli 60
+182 D.I. Pandan 100
+183 D.I. Panggargaran 60
+184 D.I. Panonjolan 40
+185 D.I. Peariman 80
+186 D.I. Pencinaran 113
+187 D.I. Sibela 45
+188 D.I. Sidekke I 60
+189 D.I. Sidekke II 50
+190 D.I. Sikaras Karas 80
+191 D.I. Silinggarung 40
+192 D.I. Silumboyah 20
+193 D.I. Simbereng 60
+194 D.I. Sitalmak 60
+195 D.I. Suhana 130
+196 D.I. Suku Mbelin 39
+197 D.I. Sumbul Kota 40
+198 D.I. Sungai Raya 50
+199 D.I. Tangga Rube 30
+200 D.I. Tanjung Beringin 50
+201 D.I. Ujung Teran 120
+d Kab. Deli Serdana 108 23.068
+
+1 D.I. Amplas 229
+2 D.I. Bandar Dolok 430
+
+3 D.I. Bandar Labuhan 730
+
+4 D.I. Kelahun Pinang 490
+
+5 D.I. Lau Simeme 220
+
+6 D.I. Naga Timbul 785
+#KANAN
+77 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+7 D.I. Namo Batang 131
+8 D.I. Paya Bakung I 136
+9 D.I. Paya Bakung II 241
+10 D.I. Paya Bakung III 164
+11 D.I. Paya Bakung IV 172
+12 D.I. Penara 310
+13 D.I. Perbarakan 820
+14 D.I. Serdang 402
+15 D.I. Sibolangit 217
+16 D.I. Wonosari 581
+17 D.I. Aji Baho 150
+18 D.I. Aras Kabu 585
+19 D.I. Bangun Mulia 360
+20 D.I. Batang Kuis 950
+21 D.I. Batu Gemuk 45
+22 D.I. Batu Mbelin 40
+23 D.I. Batu Sianggehen 150
+24 D.I. Belabon 500
+25 D.I. Bengkurung 30
+26 D.I. Bintang Meriah | 192
+27 D.I. Bintang Meriah II 228
+28 D.I. Bukum I 40
+29 D.I. Bukum II 40
+30 D.I. Bukum III 32
+31 D.I. Buluh Awar 35
+32 D.I. Buluh Nipes 27
+33 D.I. Cinta Rakyat 150
+34 D.I. Durian 937
+35 D.I. Durin Sirunggun 80
+36 D.I. Gunung Kelawas 34
+37 D.I. Gunung Manumpak 40
+38 D.I. Gunung Meriah 205
+39 D.I. Gunung Pangribuan 150
+40 D.I. Gunung Rintih 150
+41 D.I. Gunung Sinembah 170
+42 D.I. Huta Bayu 103
+43 D.I. Jaharun A 77
+44 D.I. Jaharun B 30
+45 D.I. Jati Baru 86
+46 D.I. Johar Baru 51
+47 D.I. Kampung Melayu 125
+48 D.I. Kampung Merdeka 30
+49 D.I. Kelapa 134
+50 D.I. Kolam 250
+51 D.I. Kota Datar 150
+52 D.I. Kota Rantang 890
+53 D.I. Kotangan 120
+54 D.I. Kotasan 100
+55 D.I. Kubah Sentang 478
+56 D.I. Kulasar 276
+57 D.I. Kuta Jurung 50
+58 D.I. Lantasan Baru 160
+59 D.I. Lau Bekeri 115
+60 D.I. Lau Kelumat 59
+61 D.I. Liana Pematana 30
+62 D.I. Marjanji Tongah 16
+63 D.I. Mba Ruai 47
+64 D.I. Namo Bintang 160
+65 D.I. Namo Pakam 24
+66 D.I. Namo Suro Baru 80
+67 D.I. Namoriam 130

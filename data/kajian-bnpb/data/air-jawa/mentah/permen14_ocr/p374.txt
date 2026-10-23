@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+122 D.I. Yeh Salak 17
+123 D.I. Asah Anyar 6
+124 D.I. Babakan Sanda 30
+125 D.I. Lanyahan Nagasepaha 15
+126 D.I. Lebah Pupuan 5
+127 D.I. Pasut Silangjana 22
+128 D.I. Pengodaran 8
+129 D.I. Sepang Kelod 21
+130 D.I. Tampekan Beten Dulang 110
+131 D.I. Tangis 131
+132 D.I. Tukad Sumaga 77
+d Kab. Gianvar 68 4.222
+1 D.I. Amo 11
+2 D.I. Babakan (Sianyar) 15
+3 D.I. Babakan Bada 36
+4 D.I. Bada 8
+5 D.I. Bakbakan Tulikup 4
+6 D.I. Batan Buah 19
+7 D.I. Belahpane 4
+8 D.I. Buahan 279
+9 D.I. Bukian 126
+10 D.I. Bunteh Sengkulung 129
+11 D.I. Cebok 37
+12 D.I. Celangu 18
+13 D.I. Dajan Angkling 103
+14 D.I. Dlod Blumbang 31
+15 D.I. Dlod Kepuh 8
+16 D.I. Sandalangu 82
+17 D.I. Gata 11
+18 D.I. Gelulung 15
+19 D.I. Gianyar 232
+20 D.I. Jelaung 15
+21 D.I. Kembengan 44
+22 D.I. Kupejelih 20
+23 D.I. Kutuh 18
+24 D.I. Labak 24
+25 D.I. Majangan 13
+26 D.I. Malung 53
+27 D.I. Manukaya 52
+28 D.I. Pacung 35
+29 D.I. Pakel 30
+30 D.I. Payal 227
+31 D.I. Penempahan (Gianyar) 11
+32 D.I. Penempahan (Tampaksiring) 18
+33 D.I. Pengalu 101
+34 D.I. Penginyahan 81
+35 D.I. Pengliklikan 47
+36 D.I. Penyabangan 148
+37 D.I. Penyembulan 15
+38 D.I. Petulu Gunung 83
+39 D.I. Ponggang 12
+40 D.I. Puakan Pakuseba 101
+41 D.I. Pupuan 13
+42 D.I. Puseh 26
+43 D.I. Samplangan 119
+44 D.I. Saraseda M
+45 D.I. Selasih (Payangan) 112
+46 D.I. Selasih (Tampaksiring) 45
+47 D.I. Selat (Gianyar) 37
+48 D.I. Selat (Payangan) 12
+#KANAN
+374
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+49 D.I. Seronggo 273
+50 D.I. Singaperang 90
+51 D.I. Tangkup (Tegallalang) 11
+52 D.I. Tangkup Baru 17
+53 D.I. Teba 24
+54 D.I. Tegal 57
+55 D.I. Tegal Suci 26
+56 D.I. Telaga 22
+57 D.I. Temesi 181
+58 D.I. Tengah Padang 31
+59 D.I. Tengkung 7
+60 D.I. Tinjak Kayu 365
+61 D.I. Tirta Petak 90
+62 D.I. Tiyingan 8
+63 D.I. Umadesa (Ubud) 166
+64 D.I. Sriteja 3
+65 D.I. Taro Kaja 5
+66 D.I. Bangketan 15
+67 D.I. Kesah 21
+68 D.I. Tangkup (Payangan) 15
+e Kab. Jembrana 58 7.875
+1 D.I. Babakan mendoyo 77
+2 D.I. Banjar Tengah 210
+3 D.I. Banyu Biru | 61
+4 D.I. Banyu Biru II 42
+5 D.I. Banyu Biru III 21
+6 D.I. Batu Sari 26
+7 D.I. Bayu 77
+8 D.I. Berawan Tangi 8
+9 D.I. Brangbang 128
+10 D.I. Dewa Sana 46
+11 D.I. Ekosantosa 53
+12 D.I. Gelar 157
+13 D.I. Jero Pengentuh 685
+14 D.I. Kaliakah Semen 40
+15 D.I. Medewi 282
+16 D.I. Merta Kara 84
+17 D.I. Merta Milis 97
+18 D.I. Merta Sari 115
+19 D.I. Merta Tirta Nadi 37
+20 D.I. Pancar Dewa 33
+21 D.I. Pangkung Jaka 50
+22 D.I. Pangkung Jelepung Atas 30
+23 D.I. Pangkung Jelepung Bawah 161
+24 D.I. Pangkung Medahan | 214
+25 D.I. Pangkung Medahan II 142
+26 D.I. Pangkung Serangsa | 50
+27 D.I. Pangkung Serangsa II 18
+28 D.I. Pangyangan 174
+29 D.I. Paswar Sombang 442
+30 D.I. Pecelengan 164
+31 D.I. Pendem 64
+32 D.I. Pengajaran 40
+33 D.I. Pengeragoan 107
+34 D.I. Penyaringan 13
+35 D.I. Pertanahan 407
+36 D.I. Pulukan 465
+37 D.I. Pusaka Barat 32
+38 D.I. Pusaka Hulu 157
+39 D.I. Pusaka Palarejo 76

@@ -1,0 +1,97 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 456
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+70 D.I.R. Palingkau Seberang III 400
+71 D.I.R. Palingkau Seberang IV 500
+72 D.I.R. Palingkau Seberang V 100
+73 D.I.R. Palundu 880
+74 D.I.R. Pamitai 700
+75 D.ILR. Panamas 900
+76 D.I.R. Pangkalan Sari 580
+77 D.I.R. Papuyu 750
+78 D.I.R. Pasar Minggu Seberang 960
+79 D.I.R. Primer B2 Batuah 940
+80 D.I.R. Primer B4 Maryo Utomo 800
+81 D.I.R. Primer B9 Tarung Manuah 920
+82 D.I.R. Pulau Kupang 500
+83 D.I.R. Pulau Petak 500
+84 D.I.R. Rambai Tiga 875
+85 D.I.R. Ray I Lunuk Ramba 560
+86 D.I.R. Ray III Maluen 930
+87 D.I.R. Rey I 775
+88 D.I.R. Rey 4 sd 20 Pangkin. Rekan 900
+89 D.I.R. Rigei 963
+90 D.I.R. Ringgit 950
+91 D.I.R. Rohong 630
+92 D.I.R. Roko 950
+93 D.I.R. Rumpiang 600
+94 D.I.R. S.Palangka 810
+95 D.I.R. Saka Batur 907
+96 D.I.R. Saka Lindung 750
+97 D.I.R. Saluran Tanggul 680
+98 D.I.R. Sei Ladang 360
+99 D.I.R. Sei Lunuk 100
+100 D.I.R. Sei Pagan 940
+101 D.I.R. Sei Pamantan 800
+102 D.I.R. Sei Panaga 840
+103 D.I.R. Sei Panampang 840
+104 D.I.R. Sei Pinang 490
+105 D.I.R. Sei Rangas 880
+106 D.I.R. Sei Tatumbu 900
+107 D.I.R. Sei Teras 150
+108 D.I.R. Sekata 750
+109 D.I.R. Sekawan 950
+110 D.I.R. Sekunder I 663
+111 D.LR. Sekunder II 756
+112 D.I.R. Sekunder III 839
+113 D.I.R. Semangat Jaya | 876
+114 D.I.R. Simpang Bungai 400
+115 D.I.R. Simpang Jaya 830
+116 D.I.R. Simpei 800
+117 D.I.R. Skd. Barasau 395
+118 D.I.R. Skd. Dahirang 625
+119 D.I.R. Skd. Enon 530
+120 D.I.R. Skd. Habib 360
+121 D.I.R. Skd. Hampatung 320
+122 D.I.R. Skd. Mantero B. 635
+123 D.I.R. Skd. 4 sd 14 Kn Batuah 940
+124 D.I.R. Skd. Pangkalan Rekan 500
+125 D..LR. SPI 738
+126 D.I.R. SP II 567
+127 D.I.R. Sungai Kayu 750
+128 D.I.R. Swarga 745
+129 D.I.R. Tajepan 950
+130 D.I.R. Tarantang 100
+131 D.I.R. Taya 750
+132 D.I.R. Tukung 900
+133 D.I.R. UPT Lamunti Dadahup 100
+134 D.I.R. UPT Palingkau 250
+e Kab. Katinaan 54 7.373
+
+1 D.I.R. Asem Kumbang 60
+
+2 D.I.R. Baun Bango 75
+
+3 D.I.R. Biling Pemaran 5
+
+4 D.I.R. Bina Pemaran 5
+
+5 D.I.R. Buntut Bali/Trans P Malan 5
+
+6 D.I.R. Dahian Tunggal 350
+
+7 D.I.R. Dehes I 75
+
+8 D.I.R. Dehes II 27
+
+9 D.I.R. Garagu 30
+10 D.I.R. Gelinggang 25
+11 D.I.R. Hampalam 90
+12 D.I.R. Handiwung 50
+13 D.I.R. Jahanjang 43
+14 D.I.R. Kampung Keramat 125
+15 D.I.R. Kampung Tengah 150
+16 D.I.R. Katingan III (Mekar Tani) 300
+17 D.I.R. Keruing 75

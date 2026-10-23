@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+158 D.I. Susukan Pasir 23
+159 D.I. Tegal lega 120
+160 D.I. Tipar 115
+161 D.I. Wangun Sari 104
+a Kab. Cirebon 55 10.034
+1 D.I. Agung 711
+2 D.I. Balong 76
+3 D.I. Cangkuang 806
+4D.I. Ciawi 378
+5 D.I. Cibinuang 23
+6 D.I. Cigembor 16
+7 D.I. Cigobang 173
+8 D.I. Cimanis 261
+9 D.I. Ciparigi 467
+10 D.I. Citelang | 9
+11 D.I. Ciwado 833
+12 D.I. Dalem 96
+13 D.I. Gedongan 15
+14 D.I. Gronggong 42
+15 D.I. Gunung Breg 8
+16 D.I. Harikukun 23
+17 D.I. Jatisawit 690
+18 D.I. Jengkol 27
+19 D.I. Karoya 7
+20 D.I. Kecepet 477
+21 D.I. Kenanga 51
+22 D.I. Keputon 446
+23 D.I. Loa 24
+24 D.I. Loakudang 113
+25 D.I. Mandalangit 46
+26 D.I. Panongan 952
+27 D.I. Pilang 15
+28 D.I. Plester 72
+29 D.I. R. Tunggal 10
+30 D.I. Rajadana 170
+31 D.I. Sawah Banjar 6
+32 D.I. Situan II 158
+33 D.I. Soka 282
+34 D.I. Suba 218
+35 D.I. Teaal 64
+36 D.I. Tegal Pucuk 36
+37 D.I. Wd. Sedong 168
+38 D.I. Cibuluh 248
+39 D.I. Ciliwotan 64
+40 D.I. Cirengas 237
+41 D.I. Cisamaya 63
+42 D.I. Ciwedus 159
+43 D.I. Dukuh Suwung 50
+44 D.I. Ketos 363
+45 D.I. Kleret 12
+46 D.I. Patapan 41
+47 D.I. Sendi 23
+48 D.I. Sigebang 182
+49 D.I. Sigong 99
+50 D.I. Situan | 150
+51 D.I. Soka Udik 152
+52 D.I. Suminta 19
+53 D.I. Telaga Remis 90
+54 D.I. Tonjong 107
+55 D.I. Umbar 6
+#KANAN
+172
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+h Kab. Garut 38 16.067
+1 D.I. Badama 555
+2 D.I. Baranang Siang 882
+3 D.I. Cianten 586
+4 D.I. Cibedug 517
+5 D.I. Cibuvutan Selatan 322
+6 D.I. Cibuyutan Utara 463
+7 D.I. Cicapar 386
+8 D.I. Cikamiri 765
+9 D.I. Cimanuk 874
+10 D.I. Cimaragas II 809
+11 D.I. Ciojar 303
+12 D.I. Cipacing 270
+13 D.I. Cipancar 520
+14 D.I. Cipancong 355
+15 D.I. Cipeujeuh 437
+16 D.I. Cirompang 847
+17 D.I. Ciroyom 762
+18 D.I. Citameng | 507
+19 D.I. Citameng II 341
+20 D.I. Citameng III 151
+21 D.I. Citameng IV 484
+22 D.I. Citikey 375
+23 D.I. Leuwi Bitung 327
+24 D.I. Leuwibolang 154
+25 D.I. Parigi 408
+26 D.I. Sindujaya 560
+27 D.I. Beulah Nagka 459
+28 D.I. Cadas Gantung 321
+29 D.I. Ciawi 344
+30 D.I. Cijayana 286
+31 D.I. Cikamiri II 354
+32 D.I. Cikuray 75
+33 D.I. Cimarijawa 437
+34 D.I. Cipandan 280
+35 D.I. Cisalak 61
+36 D.I. Cisangkan 118
+37 D.I. Curug Ngebul 136
+38 D.I. Simpangsari 236
+i Kab. Indramavu 10 3.503
+1 D.I. Cibelerang 325
+2 D.I. Lalanang 597
+3 D.I. Cipapan 240
+4 D.I. Cipondoh 698
+5 D.I. Lebiah 217
+6 D.I. Legeh 408
+7 D.I. Niwo 173
+8 D.I. Sangkep 98
+9 D.I. Situbolang 365
+10 D.I. Sumber Mas 382
+i Kab. Karawana 48 9.792
+1 D.I. Barugbug 769
+2 D.I. Cibarengkok 64
+3 D.I. Cibayat 105
+4 D.I. Cigunung Bubut 60
+5 D.I. Cijati 476
+6 D.I. Cijungkur 90
+7 D.I. Cimanggu 173
+8 D.I. Ciomas 77

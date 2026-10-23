@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+24 D.I. Watang 50
+e Kab. Bondowoso 614 28.451
+1 D.I. Agung (UPTD Bondowoso) 23
+2 D.I. Agung (UPTD Grujugan) 57
+3 D.I. Agung (UPTD Tlogosari) 45
+4 D.I. Agung Ampelan 18
+5 D.I. Agung Baratan 63
+6 D.I. Agung Cangkring 64
+7 D.I. Agung Kanan 10
+8 D.I. Agung Kiri 2
+9 D.I. Agung Patemon 22
+10 D.I. Agung Taman 10
+11 D.I. Andong | 5
+12 D.I. Andong II 4
+13 D.I. Andong III 15
+14 D.I. Andong IV 18
+15 D.I. Andong V 5
+16 D.I. Andong VI 20
+17 D.I. Andong VII 14
+18 D.I. Angsana 101
+19 D.I. Arah 15
+20 D.I. Arah (UPTD Bondowoso) 52
+21 D.I. Arah B 14
+22 D.I. Arah € 85
+23 D.I. Arah | 22
+24 D.I. Arah II 7
+25 D.I. Arah III 8
+26 D.I. Arah IV 10
+27 D.I. Arah Nampo 47
+28 D.I. Aren | 11
+29 D.I. Aren II 38
+30 D.I. Arpiah | 33
+31 D.I. Arpinah 51
+32 D.I. Arpinah II 42
+33 D.I. Asbin 17
+34 D.I. Asem 125
+35 D.I. Bang. Sambi 14
+36 D.I. Banyumas 50
+37 D.I. Banyurip 40
+38 D.I. Batu 13
+39 D.I. Batu (UPTD Bondowoso) 105
+40 D.I. Batu (UPTD Grujugan) 20
+41 D.I. Batu | 5
+42 D.I. Batu II 7
+43 D.I. Batu Ampar 9
+44 D.I. Batu Ampar II 87
+45 D.I. Batu Gede M
+46 D.I. Batu Lancing 62
+47 D.I. Batu Lawang 109
+48 D.I. Batu Remuk 362
+49 D.I. Baturaja 11
+50 D.I. Bayur 37
+51 D.I. Bd. Balud 15
+52 D.I. Beru 96
+53 D.I. Betekan 34
+54 D.I. Bila M
+55 D.I. Bile 30
+56 D.I. Bindung 37
+57 D.I. Bire 13
+58 D.I. Blikeran 53
+#KANAN
+310
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+59 D.I. Blimbing (UPTD Bondowoso) 290
+60 D.I. Blimbing (UPTD Prajekan) 26
+61 D.I. Blumban 34
+62 D.I. Bluncong 205
+63 D.I. Bulu I 12
+64 D.I. Bunut 30
+65 D.I. Bunutan 49
+66 D.I. Burneh 10
+67 D.I. Campoan 40
+68 D.I. Cangkring 135
+69 D.I. Canting I 14
+70 D.I. Canting II 15
+71 D.I. Capek 24
+72 D.I. Celeng 60
+73 D.I. Cermee | 42
+74 D.I. Cermee II 15
+75 D.I. Cermee III 11
+76 D.I. Clangap 910
+77 D.I. Cocong 45
+78 D.I. Crh. Mangir 20
+79 D.I. Dampit 40
+80 D.I. Deluwang I 10
+81 D.I. Deluwang II 4
+82 D.I. Deluwang III 15
+83 D.I. Deluwang IV 28
+84 D.I. Deluwang V 17
+85 D.I. Demang 27
+86 D.I. Dino 5
+87 D.I. Dira 25
+88 D.I. Dukuh 25
+89 D.I. Dulkarim 22
+90 D.I. Dulmajid 21
+91 D.I. Duren 14
+92 D.I. Duwe' 39
+93 D.I. Sambangan 126
+94 D.I. Gambar 89
+95 D.I. Garmo 15
+96 D.I. Garu 212
+97 D.I. Gayam 13
+98 D.I. Gedangan 35
+99 D.I. Gentong 22
+100 D.I. Gerdu I 19
+101 D.I. Gerdu II 63
+102 D.I. Gigir 9
+103 D.I. Ginten 25
+104 D.I. Gladak Kembar 126
+105 D.I. Glendengan 112
+106 D.I. Glintongan 14
+107 D.I. Glintongan (UPTD Bondowoso) 11
+108 D.I. Grinia 133
+109 D.I. Gruno 21
+110 D.I. Gundang 37
+111 D.I. Gunung Piring 161
+112 D.I. Gunungsari | 10
+113 D.I. Gunungsari II 90
+114 D.I. Habib 24
+115 D.I. Hajibas 66
+116 D.I. Ingas 47
+117 D.I. Ja'a 36
+118 D.I. Jago 55
+119 D.I. Jago Il 45

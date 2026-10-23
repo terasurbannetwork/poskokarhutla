@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Anyer Hulu 25
+23 D.I. Asem 14
+24 D.I. Bagor 10
+25 D.I. Bakulan 12
+26 D.I. Bakung 29
+27 D.I. Bancet 30
+28 D.I. Bandot 13
+29 D.I. Bandot 11
+30 D.I. Bandot 35
+31 D.I. Banger 13
+32 D.I. Banjaran 55
+33 D.I. Banjaran 15
+34 D.I. Banjaran 144
+35 D.I. Bantardowo | 35
+36 D.I. Bantardowo II 14
+37 D.I. Banteng 18
+38 D.I. Bantengkuripan 30
+39 D.I. Banyutarung 20
+40 D.I. Banyuwangi 10
+41 D.I. Bawang 73
+42 D.I. Bawang II 12
+43 D.I. Bedil 24
+44 D.I. Beji 31
+45 D.I. Belis 16
+46 D.I. Bendo 16
+47 D.I. Bener 16
+48 D.I. Bener 17
+49 D.I. Bengkok 12
+50 D.I. Bengkok 10
+51 D.I. Bening 18
+52 D.I. Bibis 25
+53 D.I. Bido 38
+54 D.I. Binangun 10
+55 D.I. Bismo 10
+56 D.I. Blaburan 97
+57 D.I. Blater 10
+58 D.I. Blawong 92
+59 D.I. Bleberkwarasan 64
+60 D.I. Blembeng 21
+61 D.I. Blembeng 60
+62 D.I. Blembeng II 17
+63 D.I. Blembeng III 10
+64 D.I. Blukang 26
+65 D.I. Bobos 26
+66 D.I. Bogowonto 17
+67 D.I. Bojong 10
+68 D.I. Boto I 15
+69 D.I. Boto II 21
+70 D.I. Brengosan 22
+71 D.I. Brujulan 23
+72 D.I. Buaran 12
+73 D.I. Budo 108
+74 D.I. Bulu 15
+75 D.I. Bungcilik 15
+76 D.I. Burik 10
+77 D.I. Buritan 25
+78 D.I. Buwan 12
+79 D.I. Cakar 18
+80 D.I. Canggal 13
+81 D.I. Capar 120
+82 D.I. Ceger 72
+#KANAN
+284
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Ceger 120
+84 D.I. Ceger I 12
+85 D.I. Cemplung 51
+86 D.I. Cina 21
+87 D.I. Clapar 12
+88 D.I. Contelan 11
+89 D.I. Cucuk Urang 35
+90 D.I. Curug 20
+91 D.I. Curug 14
+92 D.I. Curug 12
+93 D.I. Curug Bendung 24
+94 D.I. Dalam 11
+95 D.I. Damaran 13
+96 D.I. Dampit 60
+97 D.I. Dampit II 38
+98 D.I. Dawe 15
+99 D.I. Dawuhan 12
+100 D.I. Dawung 14
+101 D.I. Dawung 13
+102 D.I. Deles 20
+103 D.I. Dempel I 25
+104 D.I. Dempel II 25
+105 D.I. Dengkeng 12
+106 D.I. Depok 13
+107 D.I. Desel 68
+108 D.I. Desel 64
+109 D.I. Dlimas 16
+110 D.I. Dlimo 18
+111 D.I. Dlingo 16
+112 D.I. Dodok 40
+113 D.I. Dompon 14
+114 D.I. Dukuh 10
+115 D.I. Dukuh 10
+116 D.I. Dukuh I 13
+117 D.I. Dukuh II 15
+118 D.I. Dukuh III 20
+119 D.I. Dukuh IV 15
+120 D.I. Dulang 14
+121 D.I. Duren 10
+122 D.I. Gading 20
+123 D.I. Gajah 28
+124 D.I. Gambir 25
+125 D.I. Gambir 21
+126 D.I. Gamblog 12
+127 D.I. Gamblok 25
+128 D.I. Gandu 12
+129 D.I. Gandul 60
+130 D.I. Gandul 23
+131 D.I. Gantut 14
+132 D.I. Gapit 15
+133 D.I. Garung 14
+134 D.I. Geblog 12
+135 D.I. Geblog I 13
+136 D.I. Geblog II 33
+137 D.I. Geblok 110
+138 D.I. Geblok 47
+139 D.I. Gede 14
+140 D.I. Gelap 11
+141 D.I. Gemantung 55
+142 D.I. Gembelan 15
+143 D.I. Gembrosan 13

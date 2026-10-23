@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+b Kab. Gununa Kidul 182 5.818
+1 D.I. Bd. Batur 80
+2 D.I. Bd. Bayanan 35
+3 D.I. Bd. Bendo 25
+4 D.I. Bd. Bendo Mulyo 82
+5 D.I. Bd. Beton 14
+6 D.I. Bd. Bobung 25
+7 D.I. Bd. Bon Paing 15
+8 D.I. Bd. Bulu Bendo 10
+9 D.I. Bd. Bulu Setren 25
+10 D.I. Bd. Candi Pitu 3
+11 D.I. Bd. Ceme Gedangsari 35
+12 D.I. Bd. Daguran Hulu 17
+13 D.I. Bd. Doga Hilir 14
+14 D.I. Bd. Dringo 30
+15 D.I. Bd. Dung Dowo 32
+16 D.I. Bd. Duren 14
+17 D.I. Bd. Gadel 65
+18 D.I. Bd. Ganang 15
+19 D.I. Bd. Gari 17
+20 D.I. Bd. Garotan Hilir 21
+21 D.I. Bd. Garotan Hulu 5
+22 D.I. Bd. Garotan Kulon 36
+23 D.I. Bd. Garotan Wetan 46
+24 D.I. Bd. Gedangan 150
+25 D.I. Bd. Gelaran 103
+26 D.I. Bd. Gemawang Hulu 48
+27 D.I. Bd. Gemawang Silir 7
+28 D.I. Bd. Gempangan 20
+29 D.I. Bd. Gloto 7
+30 D.I. Bd. Gremeng 64
+31 D.I. Bd. Gubug 23
+32 D.I. Bd. Gunungmencu 58
+33 D.I. Bd. Jatikuning 20
+34 D.I. Bd. Kajar Wonosari 48
+35 D.I. Bd. Kali Jamus 40
+36 D.I. Bd. Kali Jaran 30
+37 D.I. Bd. Kampung 40
+38 D.I. Bd. Kanutan 15
+39 D.I. Bd. Karanganyar 83
+40 D.I. Bd. Katongan 40
+41 D.I. Bd. Kebo Kuning 115
+42 D.I. Bd. Kedung Salam 120
+43 D.I. Bd. Kembang 15
+44 D.I. Bd. Kepil 35
+45 D.I. Bd. Kroyo 25
+46 D.I. Bd. Kweni 5
+47 D.I. Bd. Logantung 30
+48 D.I. Bd. Macanan 21
+49 D.I. Bd. Mejing 25
+50 D.I. Bd. Mesjid 25
+51 D.I. Bd. Nawing 80
+52 D.I. Bd. Ngadipiro 35
+53 D.I. Bd. Ngasem 48
+54 D.I. Bd. Ngasinan 25
+55 D.I. Bd. Ngawis 30
+56 D.I. Bd. Ngembes 60
+57 D.I. Bd. Ngeposari 40
+58 D.I. Bd. Ngepreh Hilir 15
+59 D.I. Bd. Ngesrep 45
+60 D.I. Bd. Ngrahu 42
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+61 D.I. Bd. Paprinaan/Setro 25
+62 D.I. Bd. Petung 15
+63 D.I. Bd. Pilangrejo 90
+64 D.I. Bd. Plumbungan 20
+65 D.I. Bd. Pulutan 90
+66 D.I. Bd. Sambeng 45
+67 D.I. Bd. Sambi 15
+68 D.I. Bd. Selonjono 69
+69 D.I. Bd. Semingkar 15
+70 D.I. Bd. Senggotan 10
+71 D.I. Bd. Sentong 15
+72 D.I. Bd. Sidodadi 45
+73 D.I. Bd. Sinom 102
+74 D.I. Bd. Slempret 12
+75 D.I. Bd. Sri Mulyo 99
+76 D.I. Bd. Sri Tukul 56
+77 D.I. Bd. Srinten Hulu 22
+78 D.I. Bd. Sumberejo 50
+79 D.I. Bd. Suruhan 30
+80 D.I. Bd. Teken 42
+81 D.I. Bd. Tepus 23
+82 D.I. Bd. Wareng 75
+83 D.I. Bd. Wareng Nglipar 30
+84 D.I. Bd. Watu Lancip 13
+85 D.I. Bd. Watujoglo 35
+86 D.I. Bd. Wonosadi 80
+87 D.I. Tuk Banteng 34
+88 D.I. Tuk Banyuripan 50
+89 D.I. Tuk Beji 10
+90 D.I. Tuk Beji Gading 25
+91 D.I. Tuk Beji Patuk 10
+92 D.I. Tuk Beji Purwosari 25
+93 D.I. Tuk Bener 33
+94 D.I. Tuk Branjang 18
+95 D.I. Tuk Gayam 11
+96 D.I. Tuk Gedaren 56
+97 D.I. Tuk Gembirowati 8
+98 D.I. Tuk Guntur 7
+99 D.I. Tuk Jurang Jero 28
+100 D.I. Tuk Kerdon 24
+101 D.I. Tuk Kroya 15
+102 D.I. Tuk Mudal 12
+103 D.I. Tuk Mudal 68
+104 D.I. Tuk Ngawen 15
+105 D.I. Tuk Ngimbang 13
+106 D.I. Tuk Nglegi 15
+107 D.I. Tuk Ngoro-Oro 80
+108 D.I. Tuk Ngrati 10
+109 D.I. Tuk Panggang 7
+110 D.I. Tuk Petoyan 8
+111 D.I. Tuk Ponjong 54
+112 D.I. Tuk Putat 15
+113 D.I. Tuk Sambeng II 38
+114 D.I. Tuk Sanglor 21
+115 D.I. Tuk Semoyo 40
+116 D.I. Tuk Sentul 3
+117 D.I. Tuk Sukorejo 35
+118 D.I. Tuk Tangis 7
+119 D.I. Tuk Teleng 15
+120 D.I. Tuk Tirip 10
+121 D.I. Tuk Tlogo Mulyo 16

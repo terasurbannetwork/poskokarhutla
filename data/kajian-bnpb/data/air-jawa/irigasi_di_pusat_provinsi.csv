@@ -1,0 +1,552 @@
+kewenangan,jenis,prov_kode,nama_di,total_ha,bbws_disebut,bagian_per_kab,provinsi_bagian,hlm_bn638,label
+pusat,Permukaan,32,Manganti,26153,BBWS Citanduy,Ciamis=602; Pangandaran=4014; Cilacap=21537,32;33,14,resmi
+pusat,Permukaan,32,Bantarheulang,1498,BBWS Citanduy,Ciamis=428; Kota Banjar=503; Cilacap=567,32;33,14,resmi
+pusat,Permukaan,32,Cisanggarung,213,BBWS Cimanuk Cisanggarung,Cirebon=0; Brebes=213,32;33,14,resmi
+pusat,Permukaan,33,Tuk Kuning,264,BBWS Serayu Opak,Klaten=115; Sleman=149,33;34,15,resmi
+pusat,Permukaan,33,Colo,25056,BBWS Bengawan Solo,Wonogiri=439; Karanganyar=1945; Klaten=1888; Sragen=9717; Sukoharjo=10565; Ngawi=502,33;35,15,resmi
+pusat,Permukaan,33,Semen/Krinjo,929,BBWS Bengawan Solo,Rembang=564; Tuban=365,33;35,15,resmi
+pusat,Permukaan,36,Cisadane,22441,,Tangerang=21007; Serang=484; Kota Tangerang=950,36,16,resmi
+pusat,Permukaan,36,Ciujung,21350,,Serang=21091; Kota Cilegon=259,36,16,resmi
+pusat,Permukaan,36,Ciliman,5423,,Lebak=0; Pandeglang=5423,36,16,resmi
+pusat,Permukaan,32,Cikunten II,4443,,Tasikmalaya=1779; Kota Tasikmalaya=2664,32,16,resmi
+pusat,Permukaan,32,Cipamingkis,4591,,Bekasi=3220; Bogor=1371,32,16,resmi
+pusat,Permukaan,32,Ciwaringin,4364,,Cirebon=1103; Majalengka=3261,32,16,resmi
+pusat,Permukaan,32,Jatiluhur,237790,,Bekasi=52728; Indramayu=24511; Karawang=100049; Subang=60502; Purwakarta=0,32,16,resmi
+pusat,Permukaan,32,Lakbok Utara,6219,,Ciamis=4818; Kota Banjar=1401,32,16,resmi
+pusat,Permukaan,32,Rentang,87803,,Cirebon=20620; Indramayu=66612; Majalengka=571,32,16,resmi
+pusat,Permukaan,33,Banjarcahyana,5001,,Banjarnegara=1305; Purbalingga=3696,33,16,resmi
+pusat,Permukaan,33,Glapan,18740,,Grobogan=9277; Demak=9463,33,16,resmi
+pusat,Permukaan,33,Kaliwadas,7208,,Pekalongan=1768; Pemalang=5440,33,16,resmi
+pusat,Permukaan,33,Kedung Asem,4353,,Batang=1175; Kendal=3178,33,16,resmi
+pusat,Permukaan,33,Klambu,37451,,Demak=20649; Grobogan=879; Jepara=60; Kudus=6515; Pati=9348,33,16,resmi
+pusat,Permukaan,33,Kumisik,3940,,Brebes=260; Tegal=3680,33,16,resmi
+pusat,Permukaan,33,Kupang Krompeng,3040,,Batang=2071; Pekalongan=50; Kota Pekalongan=919,33,16,resmi
+pusat,Permukaan,33,Pemali Bawah (Bd. Notog),26952,,Brebes=26831; Tegal=121,33,16,resmi
+pusat,Permukaan,33,Pesantren Kletak,3517,,Pekalongan=3246; Kota Pekalongan=271,33,16,resmi
+pusat,Permukaan,33,Progo Manggis-Kalibening,3633,,Magelang=3366; Temanggung=53; Kota Magelang=214,33,16,resmi
+pusat,Permukaan,33,Sedadi,16055,,Demak=8975; Grobogan=7080,33,16,resmi
+pusat,Permukaan,33,Serayu,20795,,Banyumas=3378; Cilacap=17037; Kebumen=380,33,16,resmi
+pusat,Permukaan,33,Sungapan/Grogek,7086,,Pemalang=6873; Tegal=213,33,16,resmi
+pusat,Permukaan,33,Waduk Wadaslintang,31853,,Kebumen=21422; Purworejo=10431,33,16,resmi
+pusat,Permukaan,34,Karangtalun,5159,,Bantul=706; Sleman=4453,34,16,resmi
+pusat,Permukaan,35,Asin Bawah,6741,,Madiun=2803; Ponorogo=3938,35,17,resmi
+pusat,Permukaan,35,Bondoyudo,11784,,Jember=10897; Lumajang=887,35,17,resmi
+pusat,Permukaan,35,Delta Brantas,17942,,Mojokerto=176; Sidoarjo=17766,35,17,resmi
+pusat,Permukaan,35,Is Kedung Kandang,5160,,Malang=4573; Kota Malang=587,35,17,resmi
+pusat,Permukaan,35,Jejeruk,5064,,Madiun=43; Magetan=5021,35,17,resmi
+pusat,Permukaan,35,Lodoyo,12217,,Blitar=1637; Tulungagung=10580,35,17,resmi
+pusat,Permukaan,35,Menturus,3632,,Jombang=409; Mojokerto=3223,35,17,resmi
+pusat,Permukaan,35,Mrican,30341,,Kediri=375; Nganjuk=12354; Jombang=13660; Kediri=3952,35,17,resmi
+pusat,Permukaan,35,Padi Pomahan,4309,,Mojokerto=4256; Kota Mojokerto=53,35,17,resmi
+pusat,Permukaan,35,Sampean Baru,7854,,Bondowoso=1908; Situbondo=5946,35,17,resmi
+pusat,Permukaan,35,Sim,10860,,Madiun=2831; Magetan=3749; Ngawi=3833; Kota Madiun=447,35,17,resmi
+pusat,Permukaan,35,Siman,23060,,Jombang=17893; Kediri=4852; Malang=315,35,17,resmi
+pusat,Permukaan,36,Cibaliung,4288,,Pandeglang=4288,36,19,resmi
+pusat,Permukaan,36,Cidurian,8707,,Tangerang=8707,36,19,resmi
+pusat,Permukaan,32,Cihea,5484,,Cianjur=5484,32,20,resmi
+pusat,Permukaan,32,Cikeusik,6924,,Cirebon=6924,32,20,resmi
+pusat,Permukaan,32,Seuseupan,3897,,Cirebon=3897,32,20,resmi
+pusat,Permukaan,32,Cipanas II,3265,,Indramayu=3265,32,20,resmi
+pusat,Permukaan,32,Cipancuh,6318,,Indramayu=6318,32,20,resmi
+pusat,Permukaan,32,Kamun,8462,,Majalengka=8462,32,20,resmi
+pusat,Permukaan,32,Cileuleuy,5378,,Subang=5378,32,20,resmi
+pusat,Permukaan,32,Leuwi Nangka,4387,,Subang=4387,32,20,resmi
+pusat,Permukaan,32,Cikaranggeusan,4038,,Sukabumi=4038,32,20,resmi
+pusat,Permukaan,32,Ciletuh,3378,,Sukabumi=3378,32,20,resmi
+pusat,Permukaan,32,Cikunten,3222,,Tasikmalaya=3222,32,20,resmi
+pusat,Permukaan,33,Singomerto,5863,,Banjarnegara=5863,33,20,resmi
+pusat,Permukaan,33,Tajum,3200,,Banyumas=3200,33,20,resmi
+pusat,Permukaan,33,Waduk Malahayu,12486,,Brebes=12486,33,20,resmi
+pusat,Permukaan,33,Jragung,4053,,Demak=4053,33,20,resmi
+pusat,Permukaan,33,Bd. Dumpil,9818,,Grobogan=9818,33,20,resmi
+pusat,Permukaan,33,Sidorejo,7938,,Grobogan=7938,33,20,resmi
+pusat,Permukaan,33,Waduk Sempor,6478,,Kebumen=6478,33,20,resmi
+pusat,Permukaan,33,Bodri Trompo,8861,,Kendal=8861,33,20,resmi
+pusat,Permukaan,33,Waduk Gembong,4606,,Pati=4606,33,20,resmi
+pusat,Permukaan,33,Waduk Gunung Rowo,3922,,Pati=3922,33,20,resmi
+pusat,Permukaan,33,Sragi,3212,,Pekalongan=3212,33,20,resmi
+pusat,Permukaan,33,Comal/Sukawati,8882,,Pemalang=8882,33,20,resmi
+pusat,Permukaan,33,Boro,5136,,Purworejo=5136,33,20,resmi
+pusat,Permukaan,33,Kedung Putri,4341,,Purworejo=4341,33,20,resmi
+pusat,Permukaan,33,Cacaban (Bd. Dukuh Jati),7439,,Tegal=7439,33,20,resmi
+pusat,Permukaan,33,Cipero (Rambut),7634,,Tegal=7634,33,20,resmi
+pusat,Permukaan,33,Gung,6632,,Tegal=6632,33,20,resmi
+pusat,Permukaan,34,Kalibawang,7152,,Kulon Progo=7152,34,20,resmi
+pusat,Permukaan,35,Baru,15910,,Banyuwangi=15910,35,20,resmi
+pusat,Permukaan,35,(Setail),6422,,Banyuwangi=6422,35,20,resmi
+pusat,Permukaan,35,Porolinggo,3515,,Banyuwangi=3515,35,20,resmi
+pusat,Permukaan,35,Setail Teknik,5788,,Banyuwangi=5788,35,20,resmi
+pusat,Permukaan,35,Pacal,16688,,Bojonegoro=16688,35,20,resmi
+pusat,Permukaan,35,Bedadung,13202,,Jember=13202,35,20,resmi
+pusat,Permukaan,35,Pondok Waluh,7263,,Jember=7263,35,20,resmi
+pusat,Permukaan,35,Talang,8844,,Jember=8844,35,20,resmi
+pusat,Permukaan,35,Bengawan Jero,8230,,Lamongan=8230,35,21,resmi
+pusat,Permukaan,35,Gondang,10588,,Lamongan=10588,35,21,resmi
+pusat,Permukaan,35,Wa. Prijetan,4513,,Lamongan=4513,35,21,resmi
+pusat,Permukaan,35,Jatiroto,4342,,Lumajang=4342,35,21,resmi
+pusat,Permukaan,35,Is Molek,3883,,Malang=3883,35,21,resmi
+pusat,Permukaan,35,Waduk Bening,8752,,Nganjuk=8752,35,21,resmi
+pusat,Permukaan,35,Waduk Pondok,3450,,Ngawi=3450,35,21,resmi
+pusat,Permukaan,35,Sungkur,3065,,Ponorogo=3065,35,21,resmi
+pusat,Permukaan,35,Pekalen,6479,,Probolinggo=6479,35,21,resmi
+pusat,Permukaan,35,Banyuputih,3571,,Situbondo=3571,35,21,resmi
+pusat,Permukaan,35,Sampean,10208,,Situbondo=10208,35,21,resmi
+pusat,Permukaan,35,Beron,4964,,Tuban=4964,35,21,resmi
+pusat,Tambak,35,Afv. Kalang Anyar,3322,,Sidoarjo=3322,35,28,resmi
+provinsi,Permukaan,36,Cisangu Atas,446,,Lebak=50; Serang=396,36,31,resmi
+provinsi,Permukaan,36,Cicinta,1344,,Lebak=46; Serang=1298,36,31,resmi
+provinsi,Permukaan,36,Kadugenep,200,,Pandeglang=36; Serang=164,36,31,resmi
+provinsi,Permukaan,36,Cikarang Udik,200,,Serang=60; Kota Serang=140,36,31,resmi
+provinsi,Permukaan,36,Ciwaka Bawah,1210,,Serang=210; Kota Serang=1000,36,32,resmi
+provinsi,Permukaan,36,Cilemer,2672,,Lebak=150; Pandeglang=2522,36,32,resmi
+provinsi,Permukaan,32,Cijanggel,391,,Bandung Barat=371; Kota Cimahi=20,32,32,resmi
+provinsi,Permukaan,32,Cibeunying/Ciateul,124,,Bandung=111; Kota Bandung=13,32,32,resmi
+provinsi,Permukaan,32,Buahbatu,147,,Bandung=125; Kota Bandung=22,32,32,resmi
+provinsi,Permukaan,32,Ciyasana,1189,,Bandung=1070; Kota Bandung=119,32,32,resmi
+provinsi,Permukaan,32,Malang,425,,Bandung=400; Kota Cimahi=25,32,32,resmi
+provinsi,Permukaan,32,Ciregol,115,,Bandung=50; Kota Bandung=65,32,32,resmi
+provinsi,Permukaan,32,Depok,579,,Bandung=407; Sumedang=172,32,32,resmi
+provinsi,Permukaan,32,Cangkuang,403,,Bandung=375; Sumedang=28,32,32,resmi
+provinsi,Permukaan,32,Cisadane Empang,1049,,Bogor=789; Kota Bogor=4; Kota Depok=256,32,32,resmi
+provinsi,Permukaan,32,Parakanjati,119,,Bogor=49; Kota Depok=70,32,32,resmi
+provinsi,Permukaan,32,Ciliwung Katulampa,333,,Bogor=122; Kota Bogor=139; Kota Depok=72,32,32,resmi
+provinsi,Permukaan,32,Cibanon,510,,Bogor=473; Kota Bogor=37,32,32,resmi
+provinsi,Permukaan,32,Bantarjati,24,,Bogor=20; Kota Bogor=4,32,32,resmi
+provinsi,Permukaan,32,Kranji,151,,Bogor=53; Kota Depok=98,32,32,resmi
+provinsi,Permukaan,32,Cibalok,84,,Bogor=79; Kota Bogor=5,32,32,resmi
+provinsi,Permukaan,32,Angke V,252,,Kota Depok=252; Bogor=0,32,32,resmi
+provinsi,Permukaan,32,Cipager,1636,,Cirebon=1040; Kota Cirebon=70; Kuningan=526,32,32,resmi
+provinsi,Permukaan,32,Paniis Lebak,375,,Cirebon=312; Kuningan=63,32,32,resmi
+provinsi,Permukaan,32,Setupatok,1494,,Cirebon=1396; Kota Cirebon=98,32,32,resmi
+provinsi,Permukaan,32,Katiga,1010,,Cirebon=662; Kuningan=348,32,32,resmi
+provinsi,Permukaan,32,Mungkal Gajah,79,,Cirebon=27; Kuningan=52,32,32,resmi
+provinsi,Permukaan,32,Jawa,147,,Cirebon=111; Kuningan=36,32,32,resmi
+provinsi,Permukaan,32,Cipurut,325,,Cirebon=134; Kuningan=191,32,32,resmi
+provinsi,Permukaan,32,Cibacang,814,,Cirebon=259; Kuningan=555,32,32,resmi
+provinsi,Permukaan,32,Pundong,1111,,Karawang=1111; Purwakarta=0,32,32,resmi
+provinsi,Permukaan,32,Cisalada,632,,Sukabumi=632,32,32,resmi
+provinsi,Permukaan,32,Cimulu,1546,,Tasikmalaya=579; Kota Tasikmalaya=967,32,32,resmi
+provinsi,Permukaan,32,Cigede,542,,Tasikmalaya=203; Kota Tasikmalaya=339,32,32,resmi
+provinsi,Permukaan,32,Cibanjaran,595,,Tasikmalaya=260; Kota Tasikmalaya=335,32,32,resmi
+provinsi,Permukaan,32,Cikalang,108,,Tasikmalaya=108,32,32,resmi
+provinsi,Permukaan,32,Ciaro/Cisaat,355,,Bandung=243; Garut=112,32,32,resmi
+provinsi,Permukaan,32,Cisimpen,200,,Bandung=5; Garut=195,32,33,resmi
+provinsi,Permukaan,32,Batu,30,,Cirebon=0; Kota Cirebon=30,32,33,resmi
+provinsi,Permukaan,32,Cirongkob,197,,Cirebon=139; Kuningan=58,32,33,resmi
+provinsi,Permukaan,32,Cisamaya,228,,Cirebon=141; Kuningan=87,32,33,resmi
+provinsi,Permukaan,32,Cigolempang,244,,Cirebon=165; Kuningan=79,32,33,resmi
+provinsi,Permukaan,32,Leuwijawa,242,,Cirebon=210; Kuningan=32,32,33,resmi
+provinsi,Permukaan,32,Cikembang,663,,Kota Banjar=49; Ciamis=614,32,33,resmi
+provinsi,Permukaan,32,Gunung Putri,500,,Kota Banjar=30; Ciamis=470,32,33,resmi
+provinsi,Permukaan,32,Wangundireja,206,,Kota Banjar=4; Ciamis=202,32,33,resmi
+provinsi,Permukaan,32,Ciranjeng,75,,Bandung=50; Sumedang=25,32,33,resmi
+provinsi,Permukaan,32,Sukapura,140,,Bandung=120; Kota Bandung=20,32,33,resmi
+provinsi,Permukaan,32,Ranjeng,50,,Bandung=50,32,33,resmi
+provinsi,Permukaan,32,Sudiplak,220,,Bandung=210; Kota Bandung=10,32,33,resmi
+provinsi,Permukaan,32,Rancacili,398,,Bandung=300; Kota Bandung=98,32,33,resmi
+provinsi,Permukaan,32,Gempol,50,,Bandung=50; Kabupaten z Ha=None,32,33,resmi
+provinsi,Permukaan,32,Bongkok,170,,Bandung Barat=93; Kota Cimahi=77,32,33,resmi
+provinsi,Permukaan,32,Citopeng/Cikendal,34,,Kota Bandung=10; Kota Cimahi=24,32,33,resmi
+provinsi,Permukaan,32,Lagadar,325,,Bandung Barat=317; Kota Cimahi=8,32,33,resmi
+provinsi,Permukaan,32,Leuwi Kuya,2357,,Bandung=762; Bandung Barat=1595,32,33,resmi
+provinsi,Permukaan,32,Cibeureum,125,,Kota Sukabumi=25; Sukabumi=100,32,33,resmi
+provinsi,Permukaan,32,Cipeundeuy Kadulawang,519,,Kota Sukabumi=156; Sukabumi=363,32,33,resmi
+provinsi,Permukaan,33,Pesayangan,1870,,Tegal=1453; Kota Tegal=417,33,33,resmi
+provinsi,Permukaan,33,Sidapuma,600,,Tegal=103; Kota Tegal=497,33,33,resmi
+provinsi,Permukaan,33,Gangsa Lumingser,749,,Brebes=79; Tegal=653; Kota Tegal=17,33,33,resmi
+provinsi,Permukaan,33,Beji,236,,Brebes=46; Tegal=190,33,33,resmi
+provinsi,Permukaan,33,Gondang,824,,Brebes=424; Tegal=400,33,33,resmi
+provinsi,Permukaan,33,Lenggor,290,,Brebes=121; Tegal=169,33,33,resmi
+provinsi,Permukaan,33,Parakan Kidang,1704,,Brebes=20; Tegal=1684,33,33,resmi
+provinsi,Permukaan,33,Asem Siketek/Kesetu,500,,Pekalongan=238; Kota Pekalongan=262,33,33,resmi
+provinsi,Permukaan,33,Karanganyar,210,,Brebes=46; Tegal=164,33,33,resmi
+provinsi,Permukaan,33,Penggaron,1060,,Demak=1060; Kota Semarang=0,33,33,resmi
+provinsi,Permukaan,33,Sidopangus,719,,Kota Semarang=306; Semarang=413,33,33,resmi
+provinsi,Permukaan,33,Dolok,1296,,Demak=1296; Kota Semarang=0,33,33,resmi
+provinsi,Permukaan,33,Plumbon,464,,Kendal=174; Semarang=290,33,33,resmi
+provinsi,Permukaan,33,Padas Klorot,701,,Boyolali=41; Semarang=660,33,33,resmi
+provinsi,Permukaan,33,Rejoso,560,,Boyolali=158; Semarang=402,33,34,resmi
+provinsi,Permukaan,33,Senjoyo,2235,,Semarang=2194; Kota Salatiga=41,33,34,resmi
+provinsi,Permukaan,33,Sinongko,70,,Semarang=35; Kota Salatiga=35,33,34,resmi
+provinsi,Permukaan,33,Sucen,596,,Semarang=523; Kota Salatiga=73,33,34,resmi
+provinsi,Permukaan,33,Aji Getas,119,,Semarang=91; Kota Salatiga=28,33,34,resmi
+provinsi,Permukaan,33,Isep-Isep,40,,Semarang=22; Kota Salatiga=18,33,34,resmi
+provinsi,Permukaan,33,Medani,989,,Jepara=866; Pati=123,33,34,resmi
+provinsi,Permukaan,33,Bd. Kedungwaru,1302,,Blora=658; Grobogan=644,33,34,resmi
+provinsi,Permukaan,33,Siwayut,683,,Jepara=248; Kudus=435,33,34,resmi
+provinsi,Permukaan,33,Kramat,163,,Jepara=0; Kudus=163,33,34,resmi
+provinsi,Permukaan,33,Garat,113,,Boyolali=27; Semarang=86,33,34,resmi
+provinsi,Permukaan,33,Parean,653,,Boyolali=640; Semarang=13,33,34,resmi
+provinsi,Permukaan,33,Wonotoro,472,,Boyolali=331; Semarang=141,33,34,resmi
+provinsi,Permukaan,33,Baran,179,,Boyolali=77; Sukoharjo=102,33,34,resmi
+provinsi,Permukaan,33,Gisik,301,,Boyolali=254; Karanganyar=47,33,34,resmi
+provinsi,Permukaan,33,Glodog,82,,Boyolali=17; Karanganyar=52; Sukoharjo=13,33,34,resmi
+provinsi,Permukaan,33,Gunung Maling,82,,Boyolali=41; Sukoharjo=41,33,34,resmi
+provinsi,Permukaan,33,Kedung Boyo,706,,Boyolali=512; Sragen=194,33,34,resmi
+provinsi,Permukaan,33,Majegan,32,,Boyolali=8; Sukoharjo=25,33,34,resmi
+provinsi,Permukaan,33,Pakelan,26,,Boyolali=3; Sukoharjo=23,33,34,resmi
+provinsi,Permukaan,33,Pundung,609,,Boyolali=131; Klaten=206; Sukoharjo=272,33,34,resmi
+provinsi,Permukaan,33,Sb. Tlatar,149,,Boyolali=14; Semarang=135,33,34,resmi
+provinsi,Permukaan,33,Bakdalem II,62,,Karanganyar=22; Sukoharjo=40,33,34,resmi
+provinsi,Permukaan,33,Jetu,647,,Karanganyar=627; Sukoharjo=20,33,34,resmi
+provinsi,Permukaan,33,Kasihan II,61,,Karanganyar=18; Sragen=43,33,34,resmi
+provinsi,Permukaan,33,Kepoh,277,,Karanganyar=31; Sragen=246,33,34,resmi
+provinsi,Permukaan,33,Kwangsan,286,,Karanganyar=2; Sukoharjo=284,33,34,resmi
+provinsi,Permukaan,33,Lemahbang,748,,Karanganyar=100; Sukoharjo=648,33,34,resmi
+provinsi,Permukaan,33,Menggok,437,,Karanganyar=19; Wonogiri=418,33,34,resmi
+provinsi,Permukaan,33,Munggur,287,,Karanganyar=103; Sragen=184,33,34,resmi
+provinsi,Permukaan,33,Ngasem,153,,Karanganyar=90; Sukoharjo=63,33,34,resmi
+provinsi,Permukaan,33,Sedayu,237,,Karanganyar=140; Sragen=97,33,34,resmi
+provinsi,Permukaan,33,Seloromo,23,,Karanganyar=16; Sragen=7,33,34,resmi
+provinsi,Permukaan,33,Sidomakmur,156,,Karanganyar=28; Sukoharjo=128,33,34,resmi
+provinsi,Permukaan,33,Srambang,126,,Karanganyar=68; Sragen=58,33,35,resmi
+provinsi,Permukaan,33,Sudangan,379,,Karanganyar=291; Sragen=88,33,35,resmi
+provinsi,Permukaan,33,Temantenan,215,,Karanganyar=185; Sragen=30,33,35,resmi
+provinsi,Permukaan,33,Trani,1896,,Karanganyar=668; Sukoharjo=1228,33,35,resmi
+provinsi,Permukaan,33,Tritis,450,,Karanganyar=436; Sukoharjo=14,33,35,resmi
+provinsi,Permukaan,33,Walikan,325,,Karanganyar=21; Wonogiri=304,33,35,resmi
+provinsi,Permukaan,33,Jumeneng,753,,Klaten=63; Sukoharjo=690,33,35,resmi
+provinsi,Permukaan,33,Nyaen/Tirip,362,,Klaten=156; Sukoharjo=206,33,35,resmi
+provinsi,Permukaan,33,Braholo,192,,Karanganyar=102; Wonogiri=90,33,35,resmi
+provinsi,Permukaan,33,Semanding,125,,Sukoharjo=100; Wonogiri=25,33,35,resmi
+provinsi,Permukaan,33,Mantren,112,,Karanganyar=82; Kota Surakarta=30,33,35,resmi
+provinsi,Permukaan,33,Lantung,138,,Karanganyar=1; Wonogiri=137,33,35,resmi
+provinsi,Permukaan,33,Nglasem,348,,Karanganyar=346; Wonogiri=2,33,35,resmi
+provinsi,Permukaan,33,Brajan,137,,Boyolali=21; Karanganyar=116,33,35,resmi
+provinsi,Permukaan,33,Jetis,814,,Karanganyar=22; Sragen=792,33,35,resmi
+provinsi,Permukaan,33,Mindi,32,,Karanganyar=13; Sukoharjo=19,33,35,resmi
+provinsi,Permukaan,33,Cangkring,168,,Karanganyar=18; Sukoharjo=150,33,35,resmi
+provinsi,Permukaan,33,Blingi,12,,Karanganyar=12; Sragen=0,33,35,resmi
+provinsi,Permukaan,33,Pulo,60,,Karanganyar=26; Kota Surakarta=34,33,35,resmi
+provinsi,Permukaan,33,Soropadan,504,,Magelang=207; Temanggung=297,33,35,resmi
+provinsi,Permukaan,33,Watu Jagir,270,,Purworejo=210; Wonosobo=60,33,35,resmi
+provinsi,Permukaan,33,Kalibutek,107,,Magelang=9; Purworejo=98,33,35,resmi
+provinsi,Permukaan,33,Kali Sapi,1119,,Banjarnegara=883; Banyumas=236,33,35,resmi
+provinsi,Permukaan,33,Piasa,439,,Banjarnegara=108; Banyumas=331,33,35,resmi
+provinsi,Permukaan,33,Kebasen,651,,Banyumas=486; Cilacap=165,33,35,resmi
+provinsi,Permukaan,33,Pribadi/Keli Jompo,102,,Banyumas=3; Purbalingga=99,33,35,resmi
+provinsi,Permukaan,33,Bodag,57,,Banyumas=32; Purbalingga=25,33,35,resmi
+provinsi,Permukaan,33,Dwicupaksari,100,,Banyumas=91; Purbalingga=9,33,35,resmi
+provinsi,Permukaan,33,Buniayu,220,,Banyumas=80; Kebumen=140,33,35,resmi
+provinsi,Permukaan,34,Grembyangan/Tirtorejo,541,,Bantul=209; Sleman=332,34,35,resmi
+provinsi,Permukaan,34,Semoyo,30,,Bantul=2; Sleman=28,34,35,resmi
+provinsi,Permukaan,34,Kucir,61,,Sleman=0.23; Bantul=60.77,34,35,resmi
+provinsi,Permukaan,34,Kuton,113,,Bantul=50; Sleman=63,34,35,resmi
+provinsi,Permukaan,34,Madugondo,104,,Bantul=98; Sleman=6,34,35,resmi
+provinsi,Permukaan,34,Dadapan,38,,Bantul=31; Sleman=7,34,35,resmi
+provinsi,Permukaan,34,Pulodadi,176,,Bantul=88; Sleman=88,34,36,resmi
+provinsi,Permukaan,34,Glendongan,209,,Bantul=200; Sleman=9,34,36,resmi
+provinsi,Permukaan,34,Klampok,295,,Bantul=180; Sleman=115,34,36,resmi
+provinsi,Permukaan,34,Sekarsuli,145,,Bantul=123; Sleman=22,34,36,resmi
+provinsi,Permukaan,34,Nologaten,27,,Bantul=13; Sleman=14,34,36,resmi
+provinsi,Permukaan,34,Ngebruk,41,,Sleman=13; Kota Yogyakarta=28,34,36,resmi
+provinsi,Permukaan,34,Trini,152,,Bantul=69; Sleman=83,34,36,resmi
+provinsi,Permukaan,34,Cokrobedog,194,,Bantul=4; Sleman=190,34,36,resmi
+provinsi,Permukaan,34,Gamping,532,,Bantul=530; Sleman=2,34,36,resmi
+provinsi,Permukaan,34,Brongkol,16,,Bantul=9; Sleman=6,34,36,resmi
+provinsi,Permukaan,34,Tumut,44,,Bantul=1; Sleman=43,34,36,resmi
+provinsi,Permukaan,34,Timoho,121,,Bantul=119; Sleman=2,34,36,resmi
+provinsi,Permukaan,34,Engkuk-Engkuan,14,,Bantul=2; Sleman=12,34,36,resmi
+provinsi,Permukaan,34,Samben,60,,Bantul=57; Sleman=3,34,36,resmi
+provinsi,Permukaan,34,Mojo,48,,Bantul=40; Sleman=8,34,36,resmi
+provinsi,Permukaan,34,Sembuh,33,,Bantul=28; Sleman=6,34,36,resmi
+provinsi,Permukaan,34,Ponggok,132,,Bantul=11; Sleman=121,34,36,resmi
+provinsi,Permukaan,34,Kanoman,16,,Bantul=16; Sleman=0,34,36,resmi
+provinsi,Permukaan,34,Tanjung,776,,Bantul=776; Kota Yogyakarta=0,34,36,resmi
+provinsi,Permukaan,34,Bangeran,138,,Bantul=125; Kota Yogyakarta=13,34,36,resmi
+provinsi,Permukaan,34,Mrican,162,,Bantul=162; Kota Yogyakarta=0,34,36,resmi
+provinsi,Permukaan,34,Sidomulyo,160,,Bantul=155; Kota Yogyakarta=5,34,36,resmi
+provinsi,Permukaan,34,Prangkok,81,,Bantul=81; Sleman=0,34,36,resmi
+provinsi,Permukaan,34,Sidoraharjo,98,,Bantul=56; Sleman=42,34,36,resmi
+provinsi,Permukaan,34,Madean,328,,Bantul=328; Sleman=0,34,36,resmi
+provinsi,Permukaan,34,Pogong,1,,Bantul=1; Sleman=0,34,36,resmi
+provinsi,Permukaan,34,Minggiran,4,,Bantul=2; Kota Yogyakarta=2,34,36,resmi
+provinsi,Permukaan,34,Mendungan,4,,Bantul=3; Kota Yogyakarta=1,34,36,resmi
+provinsi,Permukaan,34,Mergangsan,15,,Bantul=8; Kota Yogyakarta=7,34,36,resmi
+provinsi,Permukaan,35,Bakalan,148,,Malang=53; Kota Malang=95,35,36,resmi
+provinsi,Permukaan,35,Bodo,156,,Malang=97; Kota Malang=59,35,36,resmi
+provinsi,Permukaan,35,Kadalpang,1212,,Malang=1106; Kota Malang=106,35,36,resmi
+provinsi,Permukaan,35,Kajar IIA,20,,Malang=10; Kota Malang=10,35,36,resmi
+provinsi,Permukaan,35,Kali Metro,527,,Malang=482; Kota Malang=45,35,36,resmi
+provinsi,Permukaan,35,Kalilanang,457,,Malang=243; Kota Batu=214,35,36,resmi
+provinsi,Permukaan,35,Kebalon,107,,Malang=10; Kota Malang=97,35,37,resmi
+provinsi,Permukaan,35,Losawi,39,,Malang=37; Kota Malang=2,35,37,resmi
+provinsi,Permukaan,35,Ngukir,282,,Malang=168; Kota Batu=114,35,37,resmi
+provinsi,Permukaan,35,Pakis,726,,Malang=723; Kota Malang=3,35,37,resmi
+provinsi,Permukaan,35,Peniwen,63,,Malang=26; Kota Malang=37,35,37,resmi
+provinsi,Permukaan,35,Podokaton,70,,Malang=15; Kota Malang=55,35,37,resmi
+provinsi,Permukaan,35,Sedudut,53,,Malang=12; Kota Malang=41,35,37,resmi
+provinsi,Permukaan,35,Sengkaling Kanan,193,,Malang=21; Kota Malang=172,35,37,resmi
+provinsi,Permukaan,35,Sengkaling Kiri,455,,Malang=16; Kota Malang=439,35,37,resmi
+provinsi,Permukaan,35,Sumber Tekik,16,,Malang=15; Kota Malang=1,35,37,resmi
+provinsi,Permukaan,35,Sumber Turus,32,,Malang=19; Kota Malang=13,35,37,resmi
+provinsi,Permukaan,35,Trimo Semut,46,,Malang=2; Kota Malang=44,35,37,resmi
+provinsi,Permukaan,35,Urung-Urung,59,,Malang=56; Kota Malang=3,35,37,resmi
+provinsi,Permukaan,35,Turi,119,,Malang=54; Kota Malang=65,35,37,resmi
+provinsi,Permukaan,35,Sbr. Gayam,1926,,Trenggalek=465; Tulungagung=1461,35,37,resmi
+provinsi,Permukaan,35,Kaliboto,165,,Blitar=157; Tulungagung=8,35,37,resmi
+provinsi,Permukaan,35,Paingan,551,,Trenggalek=18; Tulungagung=533,35,37,resmi
+provinsi,Permukaan,35,Widoro,2946,,Trenggalek=1411; Tulungagung=1535,35,37,resmi
+provinsi,Permukaan,35,Sukorame,69,,Blitar=33; Kota Blitar=36,35,37,resmi
+provinsi,Permukaan,35,Jempor,54,,Blitar=2; Kota Blitar=52,35,37,resmi
+provinsi,Permukaan,35,Tambakrejo I,23,,Blitar=2; Kota Blitar=21,35,37,resmi
+provinsi,Permukaan,35,Rembang,42,,Blitar=33; Kota Blitar=9,35,37,resmi
+provinsi,Permukaan,35,Plosotengah,51,,Blitar=13; Kota Blitar=38,35,37,resmi
+provinsi,Permukaan,35,Sawahan,82,,Blitar=18; Kota Blitar=64,35,37,resmi
+provinsi,Permukaan,35,Ngrebo,62,,Blitar=10; Kota Blitar=52,35,37,resmi
+provinsi,Permukaan,35,Jatinom,56,,Blitar=51; Kota Blitar=5,35,37,resmi
+provinsi,Permukaan,35,Sumber Tulung,38,,Blitar=14; Kota Blitar=24,35,37,resmi
+provinsi,Permukaan,35,Sumber Berjo,45,,Blitar=13; Kota Blitar=32,35,37,resmi
+provinsi,Permukaan,35,Jaten Termas,461,,Blitar=34; Kediri=427,35,37,resmi
+provinsi,Permukaan,35,Gunting,369,,Kediri=171; Kota Kediri=198,35,37,resmi
+provinsi,Permukaan,35,Kembangan,281,,Kediri=196; Kota Kediri=85,35,37,resmi
+provinsi,Permukaan,35,Klitik Bendokrosok,332,,Kediri=186; Kota Kediri=146,35,37,resmi
+provinsi,Permukaan,35,Klitih Kresek,108,,Kediri=75; Kota Kediri=33,35,37,resmi
+provinsi,Permukaan,35,Ngaglik,98,,Kediri=63; Kota Kediri=35,35,37,resmi
+provinsi,Permukaan,35,Ngablak,245,,Kediri=209; Kota Kediri=36,35,37,resmi
+provinsi,Permukaan,35,Bujel,113,,Kediri=74; Kota Kediri=39,35,37,resmi
+provinsi,Permukaan,35,Pesantren,69,,Kediri=49; Kota Kediri=20,35,38,resmi
+provinsi,Permukaan,35,Betis/Ngreco,38,,Kediri=10; Kota Kediri=28,35,38,resmi
+provinsi,Permukaan,35,Badas,445,,Jombang=17; Kediri=428,35,38,resmi
+provinsi,Permukaan,35,Tawangsari,62,,Jombang=34; Mojokerto=28,35,38,resmi
+provinsi,Permukaan,35,Kejagan,288,,Jombang=211; Mojokerto=77,35,38,resmi
+provinsi,Permukaan,35,Kaweden,69,,Jombang=46; Mojokerto=23,35,38,resmi
+provinsi,Permukaan,35,Mernung,661,,Mojokerto=544; Jombang=117,35,38,resmi
+provinsi,Permukaan,35,Subantoro,515,,Mojokerto=416; Kota Mojokerto=99,35,38,resmi
+provinsi,Permukaan,35,Sinoman,293,,Mojokerto=55; Kota Mojokerto=238,35,38,resmi
+provinsi,Permukaan,35,Penewon,971,,Mojokerto=780; Kota Mojokerto=191,35,38,resmi
+provinsi,Permukaan,35,Jati Kulon,638,,Mojokerto=586; Kota Mojokerto=52,35,38,resmi
+provinsi,Permukaan,35,Candi Limo,1911,,Mojokerto=1911; Kota Mojokerto=0,35,38,resmi
+provinsi,Permukaan,35,Cau,1232,,Madiun=1200; Kota Madiun=32,35,38,resmi
+provinsi,Permukaan,35,Mojopurno,50,,Madiun=48; Kota Madiun=2,35,38,resmi
+provinsi,Permukaan,35,Brangkal Bawah,1155,,Madiun=1026; Kota Madiun=129,35,38,resmi
+provinsi,Permukaan,35,Blodro,422,,Madiun=421; Kota Madiun=1,35,38,resmi
+provinsi,Permukaan,35,Piring I,194,,Madiun=56; Kota Madiun=138,35,38,resmi
+provinsi,Permukaan,35,Sono,684,,Madiun=650; Kota Madiun=34,35,38,resmi
+provinsi,Permukaan,35,Trate,461,,Madiun=137; Kota Madiun=324,35,38,resmi
+provinsi,Permukaan,35,Kedungrejo,1554,,Madiun=1436; Ngawi=118,35,38,resmi
+provinsi,Permukaan,35,Gandongkerik,745,,Madiun=329; Magetan=416,35,38,resmi
+provinsi,Permukaan,35,Margopadang,230,,Magetan=205; Ponorogo=25,35,38,resmi
+provinsi,Permukaan,35,Turi,367,,Magetan=367; Ngawi=0,35,38,resmi
+provinsi,Permukaan,35,Dung Timun,215,,Magetan=128; Ngawi=87,35,38,resmi
+provinsi,Permukaan,35,Dung Lo,165,,Magetan=132; Ngawi=33,35,38,resmi
+provinsi,Permukaan,35,Klalung,629,,Magetan=196; Ngawi=433,35,38,resmi
+provinsi,Permukaan,35,Kerep,2340,,Magetan=2334; Ngawi=6,35,38,resmi
+provinsi,Permukaan,35,Taji,789,,Magetan=744; Ngawi=45,35,38,resmi
+provinsi,Permukaan,35,Kuluhan,209,,Magetan=113; Ngawi=96,35,38,resmi
+provinsi,Permukaan,35,Jabung,13,,Ngawi=13; Magetan=0,35,38,resmi
+provinsi,Permukaan,35,Kalongan,20,,Magetan=0; Ngawi=20,35,38,resmi
+provinsi,Permukaan,35,Galok Atas/Soponyono,54,,Magetan=8; Ponorogo=46,35,38,resmi
+provinsi,Permukaan,35,Rawa Jabung,2143,,Lamongan=2143; Tuban=0,35,38,resmi
+provinsi,Permukaan,35,Kali Corong,2721,,Gresik=979; Lamongan=1742,35,38,resmi
+provinsi,Permukaan,35,Waduk Sumengko,1146,,Gresik=1093; Lamongan=53,35,38,resmi
+provinsi,Permukaan,35,Sbr. Pakem,1151,,Bondowoso=985; Jember=166,35,38,resmi
+provinsi,Permukaan,35,Arjasa,319,,Bondowoso=131; Jember=188,35,38,resmi
+provinsi,Permukaan,35,Nurbiha,309,,Bondowoso=272; Situbondo=37,35,39,resmi
+provinsi,Permukaan,35,Gumbolo/Dawuhan,350,,Bondowoso=252; Situbondo=98,35,39,resmi
+provinsi,Permukaan,35,Pringduri,63,,Bondowoso=18; Situbondo=45,35,39,resmi
+provinsi,Permukaan,35,Bajulmati,777,,Banyuwangi=469; Situbondo=308,35,39,resmi
+provinsi,Permukaan,35,Sbr. Nyamplong,80,,Bondowoso=0; Situbondo=80,35,39,resmi
+provinsi,Permukaan,35,LS Pakis,190,,Probolinggo=12; Kota Probolinggo=178,35,39,resmi
+provinsi,Permukaan,35,Lontong,151,,Probolinggo=31; Kota Probolinggo=120,35,39,resmi
+provinsi,Permukaan,35,Warujinggo,62,,Probolinggo=50; Kota Probolinggo=12,35,39,resmi
+provinsi,Permukaan,35,Taposan,696,,Probolinggo=678; Kota Probolinggo=18,35,39,resmi
+provinsi,Permukaan,35,Krasak,598,,Probolinggo=560; Kota Probolinggo=38,35,39,resmi
+provinsi,Permukaan,35,Mbok Siti,445,,Probolinggo=364; Kota Probolinggo=81,35,39,resmi
+provinsi,Permukaan,35,Bango,64,,Probolinggo=34; Kota Probolinggo=30,35,39,resmi
+provinsi,Permukaan,35,Grinting,695,,Pasuruan=662; Kota Pasuruan=33,35,39,resmi
+provinsi,Permukaan,35,Licin,463,,Pasuruan=322; Kota Pasuruan=141,35,39,resmi
+provinsi,Permukaan,35,Plered,296,,Pasuruan=35; Kota Pasuruan=261,35,39,resmi
+provinsi,Permukaan,35,Tanggulangin,2581,,Pasuruan=1780; Kota Pasuruan=801,35,39,resmi
+provinsi,Permukaan,35,Surak,876,,Malang=81; Pasuruan=795,35,39,resmi
+provinsi,Permukaan,36,Cibinuangeun,2570,,Lebak=2570,36,45,resmi
+provinsi,Permukaan,36,Cihara,2000,,Lebak=2000,36,45,resmi
+provinsi,Permukaan,36,Cikamunding,1700,,Lebak=1700,36,45,resmi
+provinsi,Permukaan,36,Cikamunding II,1030,,Lebak=1030,36,45,resmi
+provinsi,Permukaan,36,Cikoncang,1805,,Lebak=1805,36,45,resmi
+provinsi,Permukaan,36,Cilangkahan,1798,,Lebak=1798,36,45,resmi
+provinsi,Permukaan,36,Cimanyangray,1500,,Lebak=1500,36,45,resmi
+provinsi,Permukaan,36,Cipalabuh,1020,,Lebak=1020,36,45,resmi
+provinsi,Permukaan,36,Cisiih,1000,,Lebak=1000,36,45,resmi
+provinsi,Permukaan,36,Cisata,2112,,Pandeglang=2112,36,45,resmi
+provinsi,Permukaan,36,Pasir Eurih,1245,,Pandeglang=1245,36,45,resmi
+provinsi,Permukaan,36,Cikalumpang,1000,,Serang=1000,36,45,resmi
+provinsi,Permukaan,36,Cipari/Ciwuni,1644,,Serang=1644,36,45,resmi
+provinsi,Permukaan,36,Cisangu Bawah,1436,,Serang=1436,36,45,resmi
+provinsi,Permukaan,36,Cibanten,1289,,Kota Serang=1289,36,45,resmi
+provinsi,Permukaan,32,Ciherang,2160,,Bandung=2160,32,45,resmi
+provinsi,Permukaan,32,Cirasea,2471,,Bandung=2471,32,45,resmi
+provinsi,Permukaan,32,Wangisagara,1687,,Bandung=1687,32,45,resmi
+provinsi,Permukaan,32,Wanir,1880,,Bandung=1880,32,45,resmi
+provinsi,Permukaan,32,Cihoe Cikumpeni,1486,,Bogor=1486,32,45,resmi
+provinsi,Permukaan,32,Sasak,1088,,Bogor=1088,32,45,resmi
+provinsi,Permukaan,32,Ciputra Haji,1258,,Ciamis=1258,32,45,resmi
+provinsi,Permukaan,32,Merjan,1631,,Ciamis=1631,32,45,resmi
+provinsi,Permukaan,32,Babancong,1113,,Cianjur=1113,32,45,resmi
+provinsi,Permukaan,32,Cibalagung,1106,,Cianjur=1106,32,45,resmi
+provinsi,Permukaan,32,Ciheulang,1494,,Cianjur=1494,32,45,resmi
+provinsi,Permukaan,32,Cimenteng,1332,,Cianjur=1332,32,45,resmi
+provinsi,Permukaan,32,Cipadang Cibeleng,1792,,Cianjur=1792,32,45,resmi
+provinsi,Permukaan,32,Susukan Gede,1007,,Cianjur=1007,32,45,resmi
+provinsi,Permukaan,32,Tonjong Panto,1332,,Cianjur=1332,32,45,resmi
+provinsi,Permukaan,32,Ambit,1543,,Cirebon=1543,32,45,resmi
+provinsi,Permukaan,32,Jamblang,2272,,Cirebon=2272,32,45,resmi
+provinsi,Permukaan,32,Walahar,1292,,Cirebon=1292,32,45,resmi
+provinsi,Permukaan,32,Cipaleubuh,1016,,Garut=1016,32,45,resmi
+provinsi,Permukaan,32,Cipanas,2855,,Indramayu=2855,32,45,resmi
+provinsi,Permukaan,32,Pedati,1499,,Indramayu=1499,32,45,resmi
+provinsi,Permukaan,32,Waru,1304,,Karawang=1304,32,45,resmi
+provinsi,Permukaan,32,Cijangkelok,1160,,Kuningan=1160,32,45,resmi
+provinsi,Permukaan,32,Lame,1011,,Kuningan=1011,32,45,resmi
+provinsi,Permukaan,32,Cibutul,1525,,Majalengka=1525,32,45,resmi
+provinsi,Permukaan,32,Cigasong,2035,,Majalengka=2035,32,45,resmi
+provinsi,Permukaan,32,Cikamangi,1899,,Majalengka=1899,32,45,resmi
+provinsi,Permukaan,32,Cikeruh,1553,,Majalengka=1553,32,45,resmi
+provinsi,Permukaan,32,Cisomang,2117,,Purwakarta=2117,32,45,resmi
+provinsi,Permukaan,32,Pondok Salam,1553,,Purwakarta=1553,32,45,resmi
+provinsi,Permukaan,32,Wanayasa,1074,,Purwakarta=1074,32,45,resmi
+provinsi,Permukaan,32,Curug Agung,1996,,Subang=1996,32,45,resmi
+provinsi,Permukaan,32,Caringin,2776,,Sukabumi=2776,32,45,resmi
+provinsi,Permukaan,32,Cidadali,1219,,Sukabumi=1219,32,45,resmi
+provinsi,Permukaan,32,Cigangsa,1514,,Sukabumi=1514,32,45,resmi
+provinsi,Permukaan,32,Cikarang Cigangsa,1025,,Sukabumi=1025,32,45,resmi
+provinsi,Permukaan,32,Cikarang Nguluwung,1874,,Sukabumi=1874,32,46,resmi
+provinsi,Permukaan,32,Cimandiri,1217,,Sukabumi=1217,32,46,resmi
+provinsi,Permukaan,32,Ciseureuh Cibeureum,1303,,Sukabumi=1303,32,46,resmi
+provinsi,Permukaan,32,Parung Bongkong,2157,,Sukabumi=2157,32,46,resmi
+provinsi,Permukaan,32,Sentig,1167,,Sumedang=1167,32,46,resmi
+provinsi,Permukaan,32,Ujung Jaya,1603,,Sumedang=1603,32,46,resmi
+provinsi,Permukaan,32,Biuk,1140,,Tasikmalaya=1140,32,46,resmi
+provinsi,Permukaan,32,Ciramajaya,1303,,Tasikmalaya=1303,32,46,resmi
+provinsi,Permukaan,32,Padawaras,1260,,Tasikmalaya=1260,32,46,resmi
+provinsi,Permukaan,33,Andongbang Junjungan,1204,,Banyumas=1204,33,46,resmi
+provinsi,Permukaan,33,Banjaran,1406,,Banyumas=1406,33,46,resmi
+provinsi,Permukaan,33,Kedunglimus Arca,1215,,Banyumas=1215,33,46,resmi
+provinsi,Permukaan,33,Kedungdowo Kramat,1176,,Batang=1176,33,46,resmi
+provinsi,Permukaan,33,Waduk Cengklik,1957,,Boyolali=1957,33,46,resmi
+provinsi,Permukaan,33,Waduk Klego,1353,,Boyolali=1353,33,46,resmi
+provinsi,Permukaan,33,Kemaron,1026,,Brebes=1026,33,46,resmi
+provinsi,Permukaan,33,Cijalu,1368,,Cilacap=1368,33,46,resmi
+provinsi,Permukaan,33,Cileumeuh,1390,,Cilacap=1390,33,46,resmi
+provinsi,Permukaan,33,Guntur,2036,,Demak=2036,33,46,resmi
+provinsi,Permukaan,33,Pelayaran Sayung Batu,2059,,Demak=2059,33,46,resmi
+provinsi,Permukaan,33,Bakalan,1379,,Jepara=1379,33,46,resmi
+provinsi,Permukaan,33,Sojomerto,1108,,Kendal=1108,33,46,resmi
+provinsi,Permukaan,33,Kd. Pengilon,2492,,Kendal=2492,33,46,resmi
+provinsi,Permukaan,33,Jaban,1191,,Klaten=1191,33,46,resmi
+provinsi,Permukaan,33,Ploso Wareng,1100,,Klaten=1100,33,46,resmi
+provinsi,Permukaan,33,Logung,2805,,Kudus=2805,33,46,resmi
+provinsi,Permukaan,33,Tangsi,1448,,Magelang=1448,33,46,resmi
+provinsi,Permukaan,33,Sentul,1536,,Pati=1536,33,46,resmi
+provinsi,Permukaan,33,Padurekso,2388,,Pekalongan=2388,33,46,resmi
+provinsi,Permukaan,33,Sudikampir,1521,,Pekalongan=1521,33,46,resmi
+provinsi,Permukaan,33,Tapak Menjangan,1330,,Pekalongan=1330,33,46,resmi
+provinsi,Permukaan,33,Mejagong,2525,,Pemalang=2525,33,46,resmi
+provinsi,Permukaan,33,Widodaren,2617,,Pemalang=2617,33,46,resmi
+provinsi,Permukaan,33,Krenceng,1375,,Purbalingga=1375,33,46,resmi
+provinsi,Permukaan,33,Loning Kragilan,2532,,Purworejo=2532,33,46,resmi
+provinsi,Permukaan,33,Kedung Sapen,1590,,Rembang=1590,33,46,resmi
+provinsi,Permukaan,33,Bapang,2814,,Sragen=2814,33,46,resmi
+provinsi,Permukaan,33,Bonggo,1811,,Sragen=1811,33,46,resmi
+provinsi,Permukaan,33,"Catgawen 1, II, III, IV",1049,,Temanggung=1049,33,46,resmi
+provinsi,Permukaan,33,Galeh,1093,,Temanggung=1093,33,46,resmi
+provinsi,Permukaan,34,Blawong,1077,,Bantul=1077,34,46,resmi
+provinsi,Permukaan,34,Pendowo,1251,,Bantul=1251,34,46,resmi
+provinsi,Permukaan,34,Pijenan/Kamijoro,2563,,Bantul=2563,34,46,resmi
+provinsi,Permukaan,34,Bd. Simo,1247,,Gunungkidul=1247,34,47,resmi
+provinsi,Permukaan,34,Bd. Payaman,1040,,Gunungkidul=1040,34,47,resmi
+provinsi,Permukaan,34,Sapon,1900,,Kulon Progo=1900,34,47,resmi
+provinsi,Permukaan,35,Dam Ombul,1085,,Bangkalan=1085,35,47,resmi
+provinsi,Permukaan,35,Tunjung,1807,,Bangkalan=1807,35,47,resmi
+provinsi,Permukaan,35,Blambangan,1523,,Banyuwangi=1523,35,47,resmi
+provinsi,Permukaan,35,Gembleng,1736,,Banyuwangi=1736,35,47,resmi
+provinsi,Permukaan,35,Tenggoro,1074,,Banyuwangi=1074,35,47,resmi
+provinsi,Permukaan,35,Dermen,1763,,Blitar=1763,35,47,resmi
+provinsi,Permukaan,35,Cawak,1733,,Bojonegoro=1733,35,47,resmi
+provinsi,Permukaan,35,Pirang,1347,,Bojonegoro=1347,35,47,resmi
+provinsi,Permukaan,35,Wd. Leran,1144,,Bojonegoro=1144,35,47,resmi
+provinsi,Permukaan,35,Balud,1074,,Bondowoso=1074,35,47,resmi
+provinsi,Permukaan,35,Wonosroyo,1499,,Bondowoso=1499,35,47,resmi
+provinsi,Permukaan,35,Kali Wadak,1476,,Gresik=1476,35,47,resmi
+provinsi,Permukaan,35,Wd. Gogor,1054,,Gresik=1054,35,47,resmi
+provinsi,Permukaan,35,Wd. Lowayu,1430,,Gresik=1430,35,47,resmi
+provinsi,Permukaan,35,Bago,2188,,Jember=2188,35,47,resmi
+provinsi,Permukaan,35,Grogol,1239,,Jember=1239,35,47,resmi
+provinsi,Permukaan,35,Karanglo,2323,,Jember=2323,35,47,resmi
+provinsi,Permukaan,35,Kembar,1447,,Jember=1447,35,47,resmi
+provinsi,Permukaan,35,Kertosari,2056,,Jember=2056,35,47,resmi
+provinsi,Permukaan,35,Kottok,1879,,Jember=1879,35,47,resmi
+provinsi,Permukaan,35,Mrawan,1244,,Jember=1244,35,47,resmi
+provinsi,Permukaan,35,Sumber Nangka,1393,,Jember=1393,35,47,resmi
+provinsi,Permukaan,35,Jatimlerek,1812,,Jombang=1812,35,47,resmi
+provinsi,Permukaan,35,Slumbung,1182,,Jombang=1182,35,47,resmi
+provinsi,Permukaan,35,Rawa Cungkup,1274,,Lamongan=1274,35,47,resmi
+provinsi,Permukaan,35,Rawa Sekaran,1719,,Lamongan=1719,35,47,resmi
+provinsi,Permukaan,35,Rawa Semando,1661,,Lamongan=1661,35,47,resmi
+provinsi,Permukaan,35,Wd. Rande,1044,,Lamongan=1044,35,47,resmi
+provinsi,Permukaan,35,Brug Purwo,1094,,Lumajang=1094,35,47,resmi
+provinsi,Permukaan,35,Curah Menjangan/Kedungsangku,1867,,Lumajang=1867,35,47,resmi
+provinsi,Permukaan,35,Jurang Dawir,1088,,Lumajang=1088,35,47,resmi
+provinsi,Permukaan,35,Tekung,1920,,Lumajang=1920,35,47,resmi
+provinsi,Permukaan,35,Umbul Pringtali,1262,,Lumajang=1262,35,47,resmi
+provinsi,Permukaan,35,Ketandan,1637,,Kediri=1637,35,47,resmi
+provinsi,Permukaan,35,Pohblembem,1086,,Kediri=1086,35,47,resmi
+provinsi,Permukaan,35,Bedilan,1058,,Madiun=1058,35,47,resmi
+provinsi,Permukaan,35,Notopuro,2433,,Madiun=2433,35,47,resmi
+provinsi,Permukaan,35,Sarangan,1273,,Madiun=1273,35,47,resmi
+provinsi,Permukaan,35,Sewu,1332,,Madiun=1332,35,47,resmi
+provinsi,Permukaan,35,Wates,1045,,Madiun=1045,35,47,resmi
+provinsi,Permukaan,35,Kromong II,1055,,Mojokerto=1055,35,47,resmi
+provinsi,Permukaan,35,Bulakmojo,1211,,Nganjuk=1211,35,47,resmi
+provinsi,Permukaan,35,Kedung Gerit,1470,,Nganjuk=1470,35,47,resmi
+provinsi,Permukaan,35,Ngrambe,1185,,Nganjuk=1185,35,47,resmi
+provinsi,Permukaan,35,Bekoh,1921,,Ngawi=1921,35,47,resmi
+provinsi,Permukaan,35,Gurdo,1593,,Ngawi=1593,35,47,resmi
+provinsi,Permukaan,35,Guyung,1246,,Ngawi=1246,35,47,resmi
+provinsi,Permukaan,35,Kedung Bendo,1341,,Ngawi=1341,35,47,resmi
+provinsi,Permukaan,35,Kedungputri,1884,,Ngawi=1884,35,47,resmi
+provinsi,Permukaan,35,Pang,1046,,Ngawi=1046,35,47,resmi
+provinsi,Permukaan,35,Teguhan,1337,,Ngawi=1337,35,48,resmi
+provinsi,Permukaan,35,Widodaren,1372,,Ngawi=1372,35,48,resmi
+provinsi,Permukaan,35,Samiran,2462,,Pamekasan=2462,35,48,resmi
+provinsi,Permukaan,35,Baong,1843,,Pasuruan=1843,35,48,resmi
+provinsi,Permukaan,35,Bekacak,1613,,Pasuruan=1613,35,48,resmi
+provinsi,Permukaan,35,Domas,1057,,Pasuruan=1057,35,48,resmi
+provinsi,Permukaan,35,Klosod,1008,,Pasuruan=1008,35,48,resmi
+provinsi,Permukaan,35,Pateguan,1449,,Pasuruan=1449,35,48,resmi
+provinsi,Permukaan,35,Ranugrati,1085,,Pasuruan=1085,35,48,resmi
+provinsi,Permukaan,35,Selowongko,1090,,Pasuruan=1090,35,48,resmi
+provinsi,Permukaan,35,Telebuk,1132,,Pasuruan=1132,35,48,resmi
+provinsi,Permukaan,35,Cepogo,1000,,Ponorogo=1000,35,48,resmi
+provinsi,Permukaan,35,Dalem,1403,,Ponorogo=1403,35,48,resmi
+provinsi,Permukaan,35,Sampung,1370,,Ponorogo=1370,35,48,resmi
+provinsi,Permukaan,35,Sumorobangun,1787,,Ponorogo=1787,35,48,resmi
+provinsi,Permukaan,35,Watu Putih,1096,,Ponorogo=1096,35,48,resmi
+provinsi,Permukaan,35,Wilangan,1727,,Ponorogo=1727,35,48,resmi
+provinsi,Permukaan,35,Arah Makam Bawah,1523,,Probolinggo=1523,35,48,resmi
+provinsi,Permukaan,35,Jeruk Taman,1744,,Probolinggo=1744,35,48,resmi
+provinsi,Permukaan,35,Ramah Bawah,1126,,Probolinggo=1126,35,48,resmi
+provinsi,Permukaan,35,Sbr. Bendo Jeruk,1909,,Probolinggo=1909,35,48,resmi
+provinsi,Permukaan,35,Topi,1513,,Probolinggo=1513,35,48,resmi
+provinsi,Permukaan,35,Klampis,1799,,Sampang=1799,35,48,resmi
+provinsi,Permukaan,35,Nangger,2184,,Situbondo=2184,35,48,resmi
+provinsi,Permukaan,35,Jepun,1424,,Sumenep=1424,35,48,resmi
+provinsi,Permukaan,35,Kening,2522,,Tuban=2522,35,48,resmi
+provinsi,Permukaan,35,Maibit,1229,,Tuban=1229,35,48,resmi
+provinsi,Permukaan,35,Merak Urak,1475,,Tuban=1475,35,48,resmi
+provinsi,Permukaan,35,Nglirip,1292,,Tuban=1292,35,48,resmi
+provinsi,Permukaan,35,Gelang,1378,,Tulungagung=1378,35,48,resmi
+provinsi,Pompa,35,Butungan,1185,,Lamongan=1185,35,60,resmi
+provinsi,Pompa,35,Kaligerman,1120,,Lamongan=1120,35,60,resmi
+provinsi,Tambak,36,Mekarsari,1635,,Pandeglang=1635,36,61,resmi
+provinsi,Tambak,32,Muara Gembong,1214,,Bekasi=1214,32,61,resmi
+provinsi,Tambak,32,Kapur Asem,1100,,Karawang=1100,32,61,resmi
+provinsi,Tambak,32,Muara Baru,1050,,Karawang=1050,32,61,resmi
+provinsi,Tambak,32,Bandeng,1030,,Subang=1030,32,61,resmi
+provinsi,Tambak,32,Tanjung Tiga,1120,,Subang=1120,32,61,resmi
+provinsi,Tambak,32,Blanakan,1350,,Subang=1350,32,61,resmi
+provinsi,Tambak,35,Afv. Buntung,1342,,Sidoarjo=1342,35,61,resmi
+provinsi,Tambak,35,Bahkepuk,1467,,Sidoarjo=1467,35,61,resmi
+provinsi,Tambak,35,Kali Alo,1605,,Sidoarjo=1605,35,61,resmi
+provinsi,Tambak,35,Kali Kendil,1369,,Sidoarjo=1369,35,61,resmi
+provinsi,Tambak,35,Kuntulan,1176,,Sidoarjo=1176,35,61,resmi

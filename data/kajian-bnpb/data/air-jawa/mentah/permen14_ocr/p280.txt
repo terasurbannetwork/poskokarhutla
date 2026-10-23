@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+520 D.I. Silinasena 142
+521 D.I. Silombo 9
+522 D.I. Silumbu 5
+523 D.I. Silumut Ngadirejo 243
+524 D.I. Simindi 31
+525 D.I. Sindon 5
+526 D.I. Sinongko Gejagan 20
+527 D.I. Sinongko Paponan 14
+528 D.I. Sinongko Plosogaden 67
+529 D.I. Sipakel Bulu 22
+530 D.I. Sipanggung 10
+531 D.I. Sipendem Jumo 10
+532 D.I. Sipendem Margolelo (MA) 5
+533 D.I. Sipendem Pitrosari 26
+534 D.I. Sipentong 9
+535 D.I. Sipetung 10
+536 D.I. Sipontong 47
+537 D.I. Sirancah Ngadirejo 26
+538 D.I. Sirandu 8
+539 D.I. Sirawu (MA) 21
+540 D.I. Siriak 27
+541 D.I. Sironggeng 15
+542 D.I. Sirowo | (MA) 3
+543 D.I. Sirowo II (MA) 9
+544 D.I. Sisabuk Caruban 50
+545 D.I. Sisabuk Mento 15
+546 D.I. Sisemut 15
+547 D.I. Sisir 5
+548 D.I. Sisuren 8
+549 D.I. Sitanen 11
+550 D.I. Sitemon 35
+551 D.I. Sitlogo 9
+552 D.I. Sitlombo 8
+553 D.I. Sitokol 14
+554 D.I. Situk 15
+555 D.I. Situk 4
+556 D.I. Siwaduk (MA) 5
+557 D.I. Sunggingan 13
+558 D.I. Tapak 6
+559 D.I. Tegaltemu (MA) 10
+560 D.I. Tegesan 15
+561 D.I. Teguru II 43
+562 D.I. Tempuran 15
+563 D.I. Tengah Pakurejo 30
+564 D.I. Tening (MA) 8
+565 D.I. Tompak 3
+566 D.I. Trocoh (MA) 6
+567 D.I. Tuk Dandang 20
+568 D.I. Tuk Nggicik (MA) 6
+569 D.I. Tuk Rowo (MA) 8
+570 D.I. Tuk Wani 44
+571 D.I. Tuksari (MA) 3
+572 D.I. Wadas 35
+573 D.I. Wangan Aji 10
+574 D.I. Watu Kopyah 25
+575 D.I. Watu Tumpang (MA) 5
+576 D.I. Wonosari 30
+577 D.I. Wungkuk 39
+#KANAN
+280
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+ab Kab. Wonoairi 403 28.784
+1 D.I. Andong I 11
+2 D.I. Andong II 20
+3 D.I. Anggrung 26
+4 D.I. Badong 152
+5 D.I. Badut 10
+6 D.I. Bagor 62
+7 D.I. Bakalan 28
+8 D.I. Bakgede 13
+9 D.I. Bakon 20
+10 D.I. Balang 48
+11 D.I. Bale Kambang 116
+12 D.I. Balong 749
+13 D.I. Bandulan 71
+14 D.I. Banteng Wareng 98
+15 D.I. Beder 105
+16 D.I. Bejaman 32
+17 D.I. Beliklo 31
+18 D.I. Belungan 28
+19 D.I. Bendo Gajih 33
+20 D.I. Bendo | 39
+21 D.I. Bendo II 47
+22 D.I. Bendokerep 28
+23 D.I. Bening 4
+24 D.I. Berdawung 12
+25 D.I. Besole 69
+26 D.I. Beton 502
+27 D.I. Biru 92
+28 D.I. Blongan 12
+29 D.I. Blumbang 47
+30 D.I. Boyoloko 22
+31 D.I. Brecak 118
+32 D.I. Bringin 41
+33 D.I. Brubuh 94
+34 D.I. Brumbung 18
+35 D.I. Bulu | 55
+36 D.I. Butuh 10
+37 D.I. Cakelan 21
+38 D.I. Candi Muncar 61
+39 D.I. Cantel 20
+40 D.I. Caping 22
+41 D.I. Cegit 58
+42 D.I. Cereh 10
+43 D.I. Cinde 161
+44 D.I. Clino 15
+45 D.I. Condong 47
+46 D.I. Crabak 97
+47 D.I. Cungbali 18
+48 D.I. Cuwo 91
+49 D.I. Danyangan 10
+50 D.I. Dawe I 79
+51 D.I. Dawe II 97
+52 D.I. Dawung 72
+53 D.I. Dawungan 102
+54 D.I. Dawungan 102
+55 D.I. Dloyo 20
+56 D.I. Doko 43
+57 D.I. Dokombo 26
+58 D.I. Dompyong 25
+59 D.I. Dondong 29
+60 D.I. Dukuh 11

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+844 D.I. Curug Gonangi/Cilem bu 60
+845 D.I. Curug Gunul 20
+846 D.I. Curug Haji 20
+847 D.I. Curug Huut 30
+848 D.I. Curug II 2
+849 D.I. Curug Kacapi 2
+850 D.I. Curug Leungsir 80
+851 D.I. Curug Luhur 16
+852 D.I. Curug Luhur 2
+853 D.I. Curug Mencek 20
+854 D.I. Curug Neukteuk 8
+855 D.I. Curug Ngebul 50
+856 D.I. Curug Nini 25
+857 D.I. Curug Pipisan 50
+858 D.I. Curug samping 25
+859 D.I. Curug Samping 7
+860 D.I. Curug Seah 12
+861 D.I. Curug sintok 25
+862 D.I. Curughawu 8
+863 D.I. Curugsari 3
+864 D.I. Curugsigay 6
+865 D.I. Curugtelu 300
+866 D.I. CurugWalet 60
+867 D.I. CurugWalet 80
+868 D.I. Dadap Cangkring 25
+869 D.I. Dagor 100
+870 D.I. Dalil 8
+871 D.I. DAM Cibodas 150
+872 D.I. DAM Cutak Cilandeuh 60
+873 D.I. Dam Eoh 55
+874 D.I. DAM Eong 30
+875 D.I. DAM Leuwimunding 15
+876 D.I. Dam Sikate 60
+877 D.I. Dam Situ Galuh Taruna 70
+878 D.I. Dang Dang Layar 30
+879 D.I. Darawayang 75
+880 D.I. Darmaga 35
+881 D.I. Darmaga 40
+882 D.I. Darmaga 55
+883 D.I. Darto 1 30
+884 D.I. Darto 2 25
+885 D.I. Dasaleh 15
+886 D.I. Datar Gadog/Cimadura 60
+887 D.I. Datar Haji 6
+888 D.I. Datarleutik 5
+889 D.I. Dawuan 20
+890 D.I. Dawuan Embah 18
+891 D.I. Dawuan Tarok 30
+892 D.I. Desa kolot 30
+893 D.I. Dintu hek 15
+894 D.I. Dugaan 60
+895 D.I. Dusun Laksana 20
+896 D.I. Dusun Laksana Mekar 20
+897 D.I. Embah Dira 25
+898 D.I. Enol 15
+899 D.I. Gado Bangkong 60
+900 D.I. Gadog 40
+901 D.I. Gadog 40
+902 D.I. Gadog 12
+903 D.I. Galonggong 60
+904 D.I. Ganarum 17
+#KANAN
+190
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+905 D.I. Ganeni 30
+906 D.I. Gania/Cikupa 25
+907 D.I. Ganok 15
+908 D.I. Garunggang II 20
+909 D.I. Sarunggang III 30
+910 D.I. Gede 25
+911 D.I. Gelam 30
+912 D.I. Gelam 30
+913 D.I. Genteng 5
+914 D.I. Genteng 25
+915 D.I. Giati 20
+916 D.I. Simbal 15
+917 D.I. Gosali 38
+918 D.I. Gowong I 10
+919 D.I. Sowong II 30
+920 D.I. Gunung 40
+921 D.I. Gunung Cupu 50ha
+922 D.I. Gunung Gadog 30
+923 D.I. Gunung Goong 20
+924 D.I. Gunung Goong 17
+925 D.I. Gunung Nendeut 40
+926 D.I. Gunung Pulus 20
+927 D.I. Gunung putri 65
+928 D.I. Gunung Putri 50
+929 D.I. Gunung Tilu 35
+930 D.I. Sunungbatu 40
+931 D.I. H. Umar 53
+932 D.I. H. Ali 40
+933 D.I. Hanjaro 15
+934 D.I. Harimang 28
+935 D.I. Hasim 75
+936 D.I. Haur Seah 23
+937 D.I. Herang 40
+938 D.I. Huni 12
+939 D.I. Inung Amsi 15
+940 D.I. Irigasi Tadah Hujan 107
+941 D.I. Jaga Raksa | 20
+942 D.I. Jaga Raksa II 25
+943 D.I. Jajaway 150
+944 D.I. Jaka Ria 20
+945 D.I. Jakiam 70
+946 D.I. Jakin 25
+947 D.I. Jalan Cagak 150
+948 D.I. Jam Dipa 75
+949 D.I. Jamaludin 45
+950 D.I. Jambudipa 30
+951 D.I. Jaminampa 86
+952 D.I. Jangkar 5
+953 D.I. Jati 200
+954 D.I. Jati 9
+955 D.I. Jayanti 30
+956 D.I. Jeruk Nipis 50
+957 D.I. Jinten 30
+958 D.I. Joglo 100
+959 D.I. Joglo 17
+960 D.I. Jolok 6
+961 D.I. Juharya 20
+962 D.I. Jujung 72
+963 D.I. Julang Paong 15
+964 D.I. Kadu Kone 20
+965 D.I. Kadugede 50

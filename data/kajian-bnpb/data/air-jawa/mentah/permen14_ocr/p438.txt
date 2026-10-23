@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+191 D.I. Oran Bungin 70
+192 D.I. Pa'ja Malino 20
+193 D.I. Paleppang 60
+194 D.I. Pangtammuan Salu Lolak 14
+195 D.I. Paredok Bt. Katarrun 8
+196 D.I. Pariwang 5
+197 D.I. Pattondon Salu 10
+198 D.I. Pedallean 30
+199 D.I. Pedean Uru 5
+200 D.I. Penanian Lamba 10
+201 D.I. Pepandungan 18
+202 D.I. Petarian/Cambang 19
+203 D.I. Pok Cullin Lebani 5
+204 D.I. Pu Bakkang Batu Api 40
+205 D.I. Pundi Lemo 30
+206 D.I. Rante Tonggo 20
+207 D.I. Salu Bulo Uru 10
+208 D.I. Salu Dewata 60
+209 D.I. Salu Kalama Boiya 10
+210 D.I. Salu Ulo Lemo 20
+211 D.I. Sapan Talimbangan 5
+212 D.I. Sapiri 25
+213 D.I. Sarese Guali Sunge 8
+214 D.I. Siambo |, II, III 48
+215 D.I. Simpin 20
+216 D.I. So'do Tanete 5
+217 D.I. Talabangi Tanete 20
+218 D.I. Tanah Bakka 8
+219 D.I. Tangnga Dengen Mampu 75
+220 D.I. Tarubung/Duri-Duri 53
+221 D.I. Teppo Batu Salo Karaja 15
+222 D.I. Ti' Tok 40
+223 D.I. To' Kacoe 20
+224 D.I. To' Sipate 25
+225 D.I. Tombak Buntu Batuan 40
+226 D.I. Tondon 15
+227 D.I. Tondong Salu Pasang 20
+228 D.I. To'pae Talimbangan 13
+229 D.I. Tuncung 15
+230 D.I. Ulu Salu 15
+231 D.I. Uma-Uma 26
+232 D.I. Uru Mangkawani | 5
+233 D.I. Uru Mangkawani II 10
+234 D.I. Wadi Bungin 10
+235 D.I. Wa'duhaki 20
+236 D.I. Wai Takka/Kota 40
+237 D.I. Wasin Tuncung 30
+f Kab. Gowa 216 27.806
+1 D.I. Apakang/Apokang 20
+2 D.I. Asana/Assaya 100
+3 D.I. Balang Coro/Dampang Coro 74
+4 D.I. Balang Katammong 80
+5 D.I. Balang Labbua 200
+6 D.I. Balang Manappa 100
+7 D.I. Balang Sokko/Sapatallua 150
+8 D.I. Balangngingi 300
+9 D.I. Baliti 190
+10 D.I. Baliti/Leluasa 75
+11 D.I. Barana Kumpang/Baran Lampang 200
+12 D.I. Base-Base 16
+#KANAN
+438
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+13 D.I. Batu Lapisi 123
+14 D.I. Batu Rappe 70
+15 D.I. Bilangrengi 57
+16 D.I. Birampang 351
+17 D.I. Bonto Baddo 122
+18 D.I. Bonto Budong/Bonto Bu'dung 70
+19 D.I. Bonto Rampato/Bilareng 100
+20 D.I. Bonto Te'ne 150
+21 D.I. Bontoa 66
+22 D.I. Bontojai 75
+23 D.I. Bontoloe 409
+24 D.I. Bontosunggu 212
+25 D.I. Bori-Bori/Borilunggara 50
+26 D.I. Borisallo 80
+27 D.I. Borong Kaluku 100
+28 D.I. Buakang Labbua 180
+29 D.I. Buakang Moro 108
+30 D.I. Bulo-Bulo/Taring 136
+31 D.I. Campagaya/Balassuka 85
+32 D.I. Dandole 138
+33 D.I. Datara/Alaka 216
+34 D.I. Gantarang 175
+35 D.I. Jangang-Jangang 65
+36 D.I. Jawa Le'leng/Tala-Tala 80
+37 D.I. Je'ne Kampala 52
+38 D.I. Jengkopala/Batu Menteng 60
+39 D.I. Jonjo 55
+40 D.I. Julu Mate'ne 45
+41 D.I. Kaciping 57
+42 D.I. Kalengkang/Kulanglompoa 60
+43 D.I. Kalolo 305
+44 D.I. Kaluwe/Aloe 100
+45 D.I. Karalloe | 152
+46 D.I. Karalloe II 110
+47 D.I. Karampuang 55
+48 D.I. Kasimburang 57
+49 D.I. Kassi 20
+50 D.I. Keroang 123
+51 D.I. Kunjung 100
+52 D.I. Labbakkang Tambah/Tabeng 400
+53 D.I. Lanta/Lassa-lassa 217
+54 D.I. Leang Pa'nyikia 197
+55 D.I. Lebbasa Balassuka 125
+56 D.I. Lebbasa Bolaromang 217
+57 D.I. Lembang Bata 155
+58 D.I. Lembang Panai 190
+59 D.I. Lembaya 371
+60 D.I. Lemoa 151
+61 D.I. Liku Bili 45
+62 D.I. Likubili 45
+63 D.I. Madere Buki/Matere Buki 133
+64 D.I. Makabori 120
+65 D.I. Malanjo 200
+66 D.I. Manggunturu 251
+67 D.I. Matere 208
+68 D.I. Matere Kompania 275
+69 D.I. Matere Panting 97
+70 D.I. Mateze Panting/Parangta'joro 97
+71 D.I. Matteze Berua/Matere Berua 64
+72 D.I. Nyulu 50
+73 D.I. Pa'bundukang 300

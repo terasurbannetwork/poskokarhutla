@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+364 D.I. Sbr. Malang II 12
+365 D.I. Sbr. Malang III 14
+366 D.I. Sbr. Malang IV 7
+367 D.I. Sbr. Malang V 19
+368 D.I. Sbr. Malang VI 25
+369 D.I. Sbr. Malang VII 37
+370 D.I. Sbr. Manting 40
+371 D.I. Sbr. Manting 6
+372 D.I. Sbr. Mas I 42
+373 D.I. Sbr. Mas II 36
+374 D.I. Sbr. Mas III 22
+375 D.I. Sbr. Melati | 56
+376 D.I. Sbr. Melati II 8
+377 D.I. Sbr. Melati III 30
+378 D.I. Sbr. Melati IV 20
+379 D.I. Sbr. Paing 18
+380 D.I. Sbr. Pakem 7
+381 D.I. Sbr. Patirana 7
+382 D.I. Sbr. Pengaron 9
+383 D.I. Sbr. Pereng 6
+384 D.I. Sbr. Petaonan 37
+385 D.I. Sbr. Pringduri 2
+386 D.I. Sbr. Pringtali 47
+387 D.I. Sbr. Pudak 75
+388 D.I. Sbr. Rancang 70
+389 D.I. Sbr. Rendeng 45
+390 D.I. Sbr. Ringin 5
+391 D.I. Sbr. Saimah 21
+392 D.I. Sbr. Salak 6
+393 D.I. Sbr. Salak 1
+394 D.I. Sbr. Salam 55
+395 D.I. Sbr. Sari | 65
+396 D.I. Sbr. Sari II 43
+397 D.I. Sbr. Sembah 10
+398 D.I. Sbr. Sidin 8
+399 D.I. Sbr. Taman 11
+400 D.I. Sbr. Taman 10
+401 D.I. Sbr. Taman 56
+402 D.I. Sbr. Taman 78
+403 D.I. Sbr. Taman 60
+404 D.I. Sbr. Taman 56
+405 D.I. Sbr. Taman 44
+406 D.I. Sbr. Taman 38
+407 D.I. Sbr. Taman 36
+408 D.I. Sbr. Taman 30
+409 D.I. Sbr. Taman 11
+410 D.I. Sbr. Taman 8
+411 D.I. Sbr. Taman | 4
+412 D.I. Sbr. Taman II 15
+413 D.I. Sbr. Taman Lor 18
+414 D.I. Sbr. Taman Raba 36
+415 D.I. Sbr. Tarwi 30
+416 D.I. Sbr. Tengah 82
+417 D.I. Sbr. Tlogo 3
+418 D.I. Sbr. Udang 12
+419 D.I. Sbr. Wakap 39
+420 D.I. Sbr. Wakap (UPTD Bondowoso) 8
+421 D.I. Sbr. Wringin 31
+422 D.I. Sbr. Wringin 11
+423 D.I. Sbr. Wringin Cermee 4
+424 D.I. Selokambang 330
+#KANAN
+313 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+425 D.I. Selolembu 303
+426 D.I. Selolembu 8
+427 D.I. Semen 8
+428 D.I. Sengon 10
+429 D.I. Sengon 69
+430 D.I. Sepat I 43
+431 D.I. Sepat II 39
+432 D.I. Side 62
+433 D.I. Sidodadi 100
+434 D.I. Sidun 31
+435 D.I. Sipah II 73
+436 D.I. Sipah | 127
+437 D.I. Sladang | 76
+438 D.I. Sladang II 21
+439 D.I. Slea 92
+440 D.I. Sletreng I 10
+441 D.I. Suger 63
+442 D.I. Sukorejo 80
+443 D.I. Sukri 16
+444 D.I. Surti 17
+445 D.I. Tole III 38
+446 D.I. Tole V 11
+447 D.I. Ta'al 146
+448 D.I. Talep 25
+449 D.I. Talon 57
+450 D.I. Taman 17
+451 D.I. Taman 71
+452 D.I. Taman Cobik 49
+453 D.I. Taman | 19
+454 D.I. Taman II 9
+455 D.I. Taman II 23
+456 D.I. Taman III 12
+457 D.I. Taman IV 28
+458 D.I. Taman Kenek 89
+459 D.I. Taman Kolbuk 54
+460 D.I. Taman V 4
+461 D.I. Tancak 27
+462 D.I. Tanggul Angin | 10
+463 D.I. Tanggul Angin II 6
+464 D.I. Tanjak | 19
+465 D.I. Tanjak II 12
+466 D.I. Tasir 35
+467 D.I. Tasnan | 10
+468 D.I. Tasnan II 20
+469 D.I. Tasnan III 24
+470 D.I. Tasnan IV 15
+471 D.I. Tegalcina 44
+472 D.I. Telas 14
+473 D.I. Temek | 1
+474 D.I. Tengah 66
+475 D.I. Tgl. Ko'ong 57
+476 D.I. Tlogo 377
+477 D.I. Tole 19
+478 D.I. Tole 39
+479 D.I. Tole | 45
+480 D.I. Tole II 51
+481 D.I. Tole IV 120
+482 D.I. Tole VI 24
+483 D.I. Tole VII 126
+484 D.I. Trebung 22
+485 D.I. Umbul 49

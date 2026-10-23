@@ -1,0 +1,127 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+21 D.I. Pulau Mengkudu 450
+22 D.I. Seburung 250
+23 D.I. Selibah-Pulau Angkang 625
+24 D.I. Suatang Keteban 800
+25 D.I. Tajur 900
+26 D.I. Tepian Batang 150
+27 D.I. Belengkor 500
+f Kab. Penaiam Paser Utara 11 4.309
+1 D.I. Babulu Darat 578
+2 D.I. Guntung 520
+3 D.I. Lawe-Lawe 320
+4 D.I. Nenang 550
+5 D.I. Nipah-Nipah 320
+6 D.I. Rintik 525
+7 D.I. Waru 617
+8 D.I. Buluminung 200
+9 D.I. Sesulu Pantai 250
+10 D.I. Sukaraja 129
+11 D.I. Waru Masyarakat 300
+a Kota Balikpapan 2 350
+1 D.I. Balikpapan Utara 25
+2 D.I. Gunung Binjai 325
+h Kota Samarinda 19 3.545
+1 D.I. Bantuas Dalam 265
+2 D.I. Bukuan 190
+3 D.I. Lempake Jaya 172
+4 D.I. Sambutan 216
+5 D.I. Sindang Sari 327
+6 D.I. Sungai Siring 231
+7 D.I. Tanah Merah 250
+8 D.I. Balimau 100
+9 D.I. Bantuas Luar Kanan 26
+10 D.I. Bantuas Luar Kiri 26
+11 D.I. Bayur 135
+12 D.I. Handil Bakti 550
+13 D.I. Makroman 280
+14 D.I. Muang Dalam 100
+15 D.I. Muang Datu 58
+16 D.I. Pampang 142
+17 D.I. Simpang Arang 250
+18 D.I. Simpang Pasir 18
+19 D.I. Tani Aman 209
+um PROVINSI z2 ATAGA
+
+KALIMAN IAN UTARA
+
+a Kab. Bulunaan 38 12.840
+1 D.I. Bira 100
+2 D.I. Gunung Putih I 200
+3 D.I. Jelerai Selor 700
+4 D.I. Karang Jinawi 150
+5 D.I. Long Pari 400
+6 D.I. Mara | 300
+7 D.I. Panca Aauna 545
+8 D.I. Penjalin 300
+9 D.I. Sahbanar 300
+10 D.I. Sajau SP. III 200
+11 D.I. Salim Batu | 300
+12 D.I. Salim Batu II 200
+#KANAN
+413 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+13 D.I. Salim Batu Kampung 300
+14 D.I. Sekang 200
+15 D.I. Selimau II 300
+16 D.I. Selimau III 400
+17 D.I. Tanjung Selor Ilir 150
+18 D.I. Tengkapak 545
+19 D.I. Teras Baru 500
+20 D.I. Teras Nawang 500
+21 D.I. Ulu Teras 100
+22 D.I. Antutan 200
+23 D.I. Bunyu 100
+24 D.I. Gunung Sari 300
+25 D.I. Karang Agung 500
+26 D.I. Kelubir 600
+27 D.I. Long Lembu 500
+28 D.I. Long Sam 300
+29 D.I. Long Tungu 500
+30 D.I. Mangkupadi 100
+31 D.I. Mara Hilir 300
+32 D.I. Peso 150
+33 D.I. Ruhui Rahayu 500
+34 D.I. Saiau 300
+35 D.I. Silva Rahayu 500
+36 D.I. SP. Vil/Salimbatu Permai 300
+37 D.I. Tanah Kuning 500
+38 D.I. Teluk Selimau 500
+b Kab. Malinau 1 800
+1 D.I. Pulau Sapi 800
+c Kab. Nunukan 15 2.449
+1 D.I. Berian Baru 303
+2 D.I. Mansapa 524
+3 D.I. Tanjung Harapan 127
+4 D.I. Apuk 31
+5 D.I. Fatimah 51
+6 D.I. Kebakil 95
+7 D.I. Kp. Enrekang & Tellang 231
+8 D.I. Kp. Tator 113
+9 D.I. Liang Bunyu 47
+10 D.I. Long Api 100
+11 D.I. Pa' Nado 200
+12 D.I. Pa' Rupai 150
+13 D.I. Sei Jepun 82
+14 D.I. Tanjung Aru 269
+15 D.I. Tembaring Bawah 127
+d Kab. Tana Tiduna 4 1.319
+1 D.I. Sesavap 630
+2 D.I. Tana Merah 190
+3 D.I. Tengku Dacing 185
+4 D.I. Tideng Pale 370
+xx PROVINSI 228 A2 587
+DULAYVESI VTARKA
+
+a Kab. Bolaana Moaondow 70 9.498
+1 D.I. Ambang 110
+2 D.I. Bakan 175
+3 D.I. Bolaang 75
+4 D.I. Bombanon 70
+5 D.I. Bongkudu 225

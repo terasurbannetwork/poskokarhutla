@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+414 D.I. Dukuhjengkol 5
+415 D.I. Galanggong 10
+416 D.I. Gayam 15
+417 D.I. Gedog I 35
+418 D.I. Gedog II 15
+419 D.I. Gembonggirang 25
+420 D.I. Gembonghilir 40
+421 D.I. Sempalan 40
+422 D.I. Gentenghaur 25
+423 D.I. Gintung 35
+424 D.I. Gualalay 150
+425 D.I. Gunung Telu 20
+426 D.I. Jagang 77
+427 D.I. Jambeasem 20
+428 D.I. Jambeasem girang 40
+429 D.I. Jambeasemhilir 15
+430 D.I. Jambu 20
+431 D.I. Jambulluwuk 10
+432 D.I. Jampang Manggung 25
+433 D.I. Jangkar 18
+434 D.I. Kadu I-II 15
+435 D.I. Kaduluhur 28
+436 D.I. Kalimati 25
+437 D.I. Kapas 35
+438 D.I. Karangbirahi 22
+439 D.I. Karangsari 10
+440 D.I. Kebogoran 624
+441 D.I. Kebonsahang 18
+442 D.I. Kedungbunder 80
+443 D.I. Kedungrinjing 85
+444 D.I. Keleng 43
+445 D.I. Kemuning 15
+446 D.I. Kiadeg 15
+447 D.I. Kihujan 10
+448 D.I. Klapakerep 150
+449 D.I. Kr. Jembraung 15
+450 D.I. Kunci I 34
+451 D.I. Kunci II 7
+452 D.I. Kunci III 4
+453 D.I. Kwalahar 5
+454 D.I. Lamping 15
+455 D.I. Lampingan 10
+456 D.I. Larangan 20
+457 D.I. Laungsir 6
+458 D.I. Lengkong 40
+459 D.I. Leuwi Bihbul 20
+460 D.I. Leuwi Dadap 20
+461 D.I. Leuwi Heras 15
+462 D.I. Leuwi Jawa 50
+463 D.I. Leuwi Lisung 25
+464 D.I. Leuwi Santen 60
+465 D.I. Leuwih Tonjong 15
+466 D.I. Leuwih Urug 10
+467 D.I. Liangmaung 11
+468 D.I. Limaneung II 12
+469 D.I. Lirip 50
+470 D.I. Margasari 23
+471 D.I. Muara Cimindi 25
+472 D.I. Mungkal Bontang 30
+473 D.I. Mungkal Meong 338
+474 D.I. Mungkal Sengked 20
+#KANAN
+»19 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+475 D.I. Mungkal Wangsa 10
+476 D.I. Nagrak 40
+477 D.I. Nambo 35
+478 D.I. Nanggerang 25
+479 D.I. Nanggung 30
+480 D.I. Nangkabongkok 24
+481 D.I. Nangkapusar 24
+482 D.I. Nangkapusar II 29
+483 D.I. Nusalarang 30
+484 D.I. Padarame 5
+485 D.I. Pakiringan 10
+486 D.I. Pamahan 60
+487 D.I. Pananggapan 5
+488 D.I. Panembahan 13
+489 D.I. Panenjoan 10
+490 D.I. Panimbang 30
+491 D.I. Parakan Panjang 34
+492 D.I. Paremanan 21
+493 D.I. Pasarean 10
+494 D.I. Pasir | 5
+495 D.I. Pasir II 4
+496 D.I. Pasirtangkil 48
+497 D.I. Pasirtugu 15
+498 D.I. Pelayangan 10
+499 D.I. Penambangan 6
+500 D.I. Penanggapan 51
+501 D.I. Penapen 50
+502 D.I. Pendaidatar 80
+503 D.I. Pendey 5
+504 D.I. Pengasinan 14
+505 D.I. Penyarang | 20
+506 D.I. Penyarang II 35
+507 D.I. Planjan 50
+508 D.I. Pranji 30
+509 D.I. Puntanglalay 42
+510 D.I. Rambutpala 3
+511 D.I. Rancahkuya 35
+512 D.I. Rancahnangkep 27
+513 D.I. Rarangkasan 8
+514 D.I. Ririp 10
+515 D.I. Sadabumi 13
+516 D.I. Salebu 117
+517 D.I. Sawahgede 22
+518 D.I. Sawahkembang 15
+519 D.I. Sawahlega 65
+520 D.I. Sawahlega 6
+521 D.I. Sawahnusa 5
+522 D.I. Sedahayu 17
+523 D.I. Semak 27
+524 D.I. Serang 320
+525 D.I. Sesepan 30
+526 D.I. Sigitseto 350
+527 D.I. Simbar 25
+528 D.I. Sindanghela 12
+529 D.I. Sindangraja 6
+530 D.I. Singaraja/Cilulumpang 16
+531 D.I. Sukamandi 30
+532 D.I. Sukanampi II 3
+533 D.I. Sumpinghayu 23
+534 D.I. Susukan Gede 15
+535 D.I. Sutanala 40

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+80 D.I. Aek Sitakki Takki 110
+81 D.I. Aek Sitekkean 25
+82 D.I. Aek Situngkus 55
+83 D.I. Aek Siunggam Dolok/Siung 80
+84 D.I. Batang Ilung Batu Sundung 53
+85 D.I. Batang Ilung Saronggang 48
+86 D.I. Batang Ilung Hajoran 80
+87 D.I. Batu Gana 30
+88 D.I. Bendung Gunung Martua 30
+89 D.I. Bendung Saba Lubak 85
+90 D.I. Bondar Saba Masojid 45
+91 D.I. Dalihan Natolu 251
+92 D.I. Gomburan Godang 60
+93 D.I. Gomburan Godang 40
+94 D.I. Gomburan Muara 50
+95 D.I. Gunung Tua Julu 525
+96 D.I. Hajoran 150
+97 D.I. Hasambi 65
+98 D.I. Hotang Sasa 205
+99 D.I. Hutaimbaru/Saba Pulo 45
+100 D.I. Hutaimbaru Aek Hundur 35
+101 D.I. Janji Manahan 90
+102 D.I. Janji Matogu 50
+103 D.I. Lantosan/Sirumambe 199
+104 D.I. Mandasip 40
+105 D.I. Mangaledang Lama/Aek Sirumambe 70
+106 D.I. Pintu Padang 600
+107 D.I. Purba Tua 65
+108 D.I. Rura Sihapas 100
+109 D.I. Saba Aloban 75
+110 D.I. Saba Bangunan 70
+111 D.I. Saba Bolak 75
+112 D.I. Saba Bolak | 60
+113 D.I. Saba Bolak II 45
+114 D.I. Saba Kuburan 40
+115 D.I. Saba Langit 70
+116 D.I. Saba Lombang 100
+117 D.I. Saba Losung 35
+118 D.I. Saba Napa Lombang/Aek Sigama 80
+119 D.I. Saba Napa Lombang/4ek Sirumambe 110
+120 D.I. Saba Palas 78
+121 D.I. Saba Pijorkoling 100
+122 D.I. Salusuhan 20
+123 D.I. Sibumas 54
+124 D.I. Sihambeng 40
+125 D.I. Simangambat 55
+126 D.I. Siopuk Baru 75
+127 D.I. Sunaai Durian 42
+128 D.I. Tabu Bila 25
+129 D.I. Tahalak Biara / Aloban 50
+130 D.I. Tanjung Longat 130
+131 D.I. Torluk 30
+132 D.I. Waduk Aek Sopo 50
+a Kab. Pakpak Bharat 52 4.576
+1 D.I. Gabe Sasmi 125
+2 D.I. Jambu Rea 160
+3 D.I. Kuta Babo 130
+4 D.I. Kuta Meriah 120
+5 D.I. Kuta Tinggi 150
+6 D.I. Lae Mbara 65
+#KANAN
+85 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+7 D.I. Lae Mbereng 80
+8 D.I. Lae Mbulan 120
+9 D.I. Lae Mbuturen 70
+10 D.I. Lae Petulen 60
+11 D.I. Lae Saregar 100
+12 D.I. Lae Teppu 70
+13 D.I. Mersada/Prongil Jehe 125
+14 D.I. Mungkur Raden 200
+15 D.I. Namorambe 50
+16 D.I. Namuseng 60
+17 D.I. Nomoror 100
+18 D.I. Panjaratan 60
+19 D.I. Pardomuan 150
+20 D.I. Parongil Julu 145
+21 D.I. Pongkolen 105
+22 D.I. Ratar 80
+23 D.I. Silima Kuta 80
+24 D.I. Siperkas 80
+25 D.I. Sirebur Tinada 40
+26 D.I. Solfa 80
+27 D.I. Tanjung Rahu 80
+28 D.I. Ulu Merah 156
+29 D.I. Gabe Aman 100
+30 D.I. Galian Desa 60
+31 D.I. Kuta Batu/Lae Singgabit 55
+32 D.I. Kuta Geddang 50
+33 D.I. Lae Mpradah Jamburea 80
+34 D.I. Lae Sigarap 125
+35 D.I. Lae Sikessuk 60
+36 D.I. Lae Silembu 65
+37 D.I. Lae Sintebu 65
+38 D.I. Lembeng Kersik 60
+39 D.I. Maneas 60
+40 D.I. Lae Mbuturen Kuta Meriah 80
+41 D.I. Nambunga Buluh 70
+42 D.I. Parendeen 60
+43 D.I. Parisang Manuk 70
+44 D.I. Pea Lagat/Lae Alngit 40
+45 D.I. Santar Jehe 80
+46 D.I. Sarintua 80
+47 D.I. Sekata Pardomuan 45
+48 D.I. Simberuna 80
+49 D.I. Simenneng 100
+50 D.I. Sosor 100
+51 D.I. Sumbul Napa 70
+52 D.I. Sumbul uruk 80
+r Kab. Samosir 20 2.610
+1 D.I. Aek Siboras 100
+2 D.I. Binanga Aron 240
+3 D.I. Hairi 100
+4 D.I. Hairi Gorat 130
+5 D.I. Limbong 195
+6 D.I. Lontung/Aek Natonang 146
+7 D.I. Nainaaolan Parhusip 96
+8 D.I. Pangasean 60
+9 D.I. Rianiate 122
+10 D.I. Sibong-bong Siriaon 97
+11 D.I. Siguluan 322
+12 D.I. Sigumbang 111
+13 D.I. Sihotang 250

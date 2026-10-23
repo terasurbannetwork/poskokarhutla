@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+161 D.I. Wonokromo II 30
+162 D.I. Wonosari 60
+163 D.I. Wonotirto 50
+164 D.I. Caruban 60
+165 D.I. Kebapangan 70
+166 D.I. Kecot I 15
+167 D.I. Kecot II 18
+168 D.I. Kedungkeji 28
+169 D.I. Kr. Pucung 71
+170 D.I. Wadasmalang 30
+171 D.I. Wadasmalang II 25
+172 D.I. Wadasmalang III 25
+m Kab. Kendal 686 10.427
+1 D.I. Sidomukti 357
+2 D.I. Tuk Suruh I 8
+3 D.I. Tuk Suruh II 12
+4 D.I. Tlogomili 154
+5 D.I. Abang 13
+6 D.I. Aglik 22
+7 D.I. Aglik 13
+8 D.I. Aji 14
+9 D.I. Aji 5
+10 D.I. Aji 7
+11 D.I. Aji 21
+12 D.I. Aji Gede 17
+13 D.I. Aji I 20
+14 D.I. Aji Leban 38
+15 D.I. Aji Pakis 36
+16 D.I. Aji Semak 11
+17 D.I. Aji Tabet 40
+18 D.I. Aji Wonogiri 50
+19 D.I. Aji/Tlodas 18
+20 D.I. Angkrik 12
+21 D.I. Angkring a 2
+22 D.I. Angkring b 5
+23 D.I. Angkruk 13
+24 D.I. Anyar 13
+25 D.I. Anyar 14
+26 D.I. Anyar a 22
+27 D.I. Anyar b 12
+28 D.I. Ares 16
+29 D.I. Ayu ayu 8
+30 D.I. Babadan 2
+31 D.I. Bakalan 21
+32 D.I. Bakulan 18
+33 D.I. Bakung 6
+34 D.I. Bakung 2
+35 D.I. Balong 12
+36 D.I. Banaran 3
+37 D.I. Bang Kiri 13
+38 D.I. Banger 39
+39 D.I. Bangkong 8
+40 D.I. Banjaran 10
+41 D.I. Banjaran 6
+42 D.I. Banjaran 12
+43 D.I. Bantengan 11
+44 D.I. Banyu Amis 33
+45 D.I. Batang 8
+46 D.I. Batang 3
+47 D.I. Belang 6
+#KANAN
+234
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+48 D.I. Beluk 4
+49 D.I. Bende 20
+50 D.I. Bendo 6
+51 D.I. Beran 10
+52 D.I. Beran 15
+53 D.I. Bero 26
+54 D.I. Beruk 1
+55 D.I. Besaran 4
+56 D.I. Betetor 11
+57 D.I. Betro 15
+58 D.I. Betroa 7
+59 D.I. Biron 13
+60 D.I. Blawong/Brajan 15
+61 D.I. Blendo 11
+62 D.I. Blimbing 319
+63 D.I. Blimbing 6
+64 D.I. Blorong Salam 9
+65 D.I. Blumbang 18
+66 D.I. Bobang 18
+67 D.I. Bobo 13
+68 D.I. Bojangan 7
+69 D.I. Bongkah 1
+70 D.I. Bongkol 15
+71 D.I. Brantin/Bendo 3
+72 D.I. Bringin Getas 10
+73 D.I. Britan 20
+74 D.I. Britan Dondong 6
+75 D.I. Bronjong 5
+76 D.I. Brujulan 12
+77 D.I. Bubak 3
+78 D.I. Bubak b 4
+79 D.I. Bulu Pitu 6
+80 D.I. Bulung 3
+81 D.I. Bulung b 2
+82 D.I. Bulus 59
+83 D.I. Byombyang 16
+84 D.I. Cabe 10
+85 D.I. Canggal 6
+86 D.I. Cangkok 24
+87 D.I. Cangkring 5
+88 D.I. Carikan 13
+89 D.I. Cawang 18
+90 D.I. Celeng 7
+91 D.I. Cengis 10
+92 D.I. Cengkeh 14
+93 D.I. Cengkir Legi 40
+94 D.I. Centong 11
+95 D.I. Centong a 7
+96 D.I. Centong b 3
+97 D.I. Centong d 2
+98 D.I. Ces 5
+99 D.I. Ces 7
+100 D.I. Cetung 2
+101 D.I. Cinandi 3
+102 D.I. Cino 7
+103 D.I. Condong 84
+104 D.I. Cumbrangan 5
+105 D.I. Curug 2
+106 D.I. Curug 1
+107 D.I. Dadap 14
+108 D.I. Dadap 4

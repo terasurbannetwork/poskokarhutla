@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+212 D.I. Kihiang 10
+213 D.I. Kimaung 18
+214 D.I. Kiwiri 216
+215 D.I. Kope/Cikalagen 13
+216 D.I. Kopeng 9
+217 D.I. Kosambi 26
+218 D.I. Kubang 22
+219 D.I. Lebakjero 3
+220 D.I. Legoksupit/Cihideung 43
+221 D.I. Leles Hegarmanah 21
+222 D.I. Lengser 6
+223 D.I. Letermalang 93
+224 D.I. Leuwibenteng 8
+225 D.I. Leuwibiuk 148
+226 D.I. Leuwidalem 20
+227 D.I. Leuwigajah 18
+228 D.I. Leuwigaru Kanan 44
+229 D.I. Leuwigaru Kiri 21
+230 D.I. Leuwigoong 42
+231 D.I. Leuwihaur 40
+232 D.I. Leuwijengkol | 1
+233 D.I. Leuwisisir 19
+234 D.I. Lintung 18
+235 D.I. Mancagar 4
+236 D.I. Martaip 14
+237 D.I. Nambo 52
+238 D.I. Nanggerang 38
+239 D.I. Nangsi 44
+240 D.I. Nangsi 13
+241 D.I. Naringgul 43
+242 D.I. Nayakira 18
+243 D.I. Pacet 8
+244 D.I. Pacing/Sanghiang 8
+245 D.I. Pagerpatih | 2
+246 D.I. Pagerpatih II 9
+247 D.I. Paguyangan 36
+248 D.I. Pakuhaji 32
+249 D.I. Pangangonan 41
+250 D.I. Pangauban 30
+251 D.I. Paragpag 30
+252 D.I. Parakan Waru 50
+253 D.I. Parakanbadak 149
+254 D.I. Parakancina 3
+255 D.I. Parakanhaji 127
+256 D.I. Parakanpari 17
+257 D.I. Parakanpedang 20
+258 D.I. Parakansalam 29
+259 D.I. Parakantelu/Pakuwon 37
+260 D.I. Parang Kawan 28
+261 D.I. Pari (Leuwigawir) 12
+262 D.I. Pari (Leuwigawir) 37
+263 D.I. Pasirbunut 9
+264 D.I. Pasirkendi 29
+265 D.I. Peuteuy 3
+266 D.I. Pongporang 46
+267 D.I. Ranca Badak 40
+268 D.I. Rancakuda 12
+269 D.I. Rawa 23
+270 D.I. Rompe 25
+271 D.I. Rompe 33
+272 D.I. Saladah 16
+#KANAN
+170
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+273 D.I. Sanding 46
+274 D.I. Sawahlega 53
+275 D.I. Sawahlega 24
+276 D.I. Selaponteng 50
+277 D.I. Serang 18
+278 D.I. Siliwangi 40
+279 D.I. Simpur I 2
+280 D.I. Simpur Il/Nangka 2
+281 D.I. Simpur/Cikelewer 14
+282 D.I. Sindangirang 26
+283 D.I. Singkup I 37
+284 D.I. Singkup II 85
+285 D.I. Singkup III 60
+286 D.I. Situater 4
+287 D.I. Situhapa 34
+288 D.I. Situlengkong 69
+289 D.I. Situmandala 28
+290 D.I. Sorandil 40
+291 D.I. Sukaresik 24
+292 D.I. Tando 36
+293 D.I. Taneuhbeureum 22
+294 D.I. Tanjungsari 15
+295 D.I. Tirtajaya 76
+296 D.I. Turalek 19
+f Kab. Cianiur 161 31.798
+1 D.I. Cianjur Leutik 439
+2 D.I. Cibinonghilir 257
+3 D.I. Cidaun 355
+4 D.I. Cideukeut 31
+5 D.I. Cijambu 238
+6 D.I. Cijampang 950
+7 D.I. Cikarobeulah 199
+8 D.I. Cilumut/Pasir Kerud 863
+9 D.I. Cimanggu Kanan 548
+10 D.I. Cinangka 849
+11 D.I. Cipanyusuhan/Citalib 806
+12 D.I. Cipicung 376
+13 D.I. Ciraden/Cibalu 426
+14 D.I. Ciraden/Lw. Leungsir 809
+15 D.I. Cireundeu 279
+16 D.I. Cisalak/Batu Sahulu 957
+17 D.I. Cisalak/Citemen 230
+18 D.I. Cisarua/Lw. Jubleg 605
+19 D.I. Cisurian | 31
+20 D.I. Cumanggala 322
+21 D.I. Gunung Lanjung/Rw. Peuti 455
+22 D.I. Leuwi Bokor 521
+23 D.I. Leuwi Liang 223
+24 D.I. Leuwi Sodong 551
+25 D.I. Nagrog 942
+26 D.I. Pasirtuan 179
+27 D.I. Babakan Jati 200
+28 D.I. Balekambang 145
+29 D.I. Banceuy/Cimapag 126
+30 D.I. Batu Beureum 168
+31 D.I. Batu Ireng 114
+32 D.I. Bergala 110
+33 D.I. Binong 132
+34 D.I. Bojong Genteng 125
+35 D.I. Bojongloa 100

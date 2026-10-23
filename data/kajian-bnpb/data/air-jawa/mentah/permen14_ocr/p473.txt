@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+473 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+3 D.I.R. Tanggul Pengambau 600
+
+4 D.I.R. Taras 310
+
+f Kab. Hulu Sunaai Utara 91 9.126
+
+1 D.I.R. Air Tawar 20
+
+2 D.I.R. Ambahai 10
+
+3 D.I.R. Amuntai Selatan 15
+
+4 D.I.R. Babirik 200
+
+5 D.I.R. Bajawit 165
+
+6 D.I.R. Banjang 200
+
+7 D.I.R. Bararawa 15
+
+8 D.I.R. Baru 150
+
+9 D.I.R. Baruh Tabing 155
+10 D.I.R. Beringin 72
+11 D.I.R. Bitin 177
+12 D.I.R. Danau Panggang 102
+13 D.I.R. Darussalam 69
+14 D.I.R. Gampa Raya 10
+15 D.I.R. Garunggang 173
+16 D.I.R. Guntung 25
+17 D.I.R. Harus 25
+18 D.I.R. Haur Gading 13
+19 D.I.R. Hilir Mesjid 10
+20 D.I.R. Kalintamui 113
+21 D.I.R. Kamayahan 75
+22 D.I.R. Kandang Halang 125
+23 D.I.R. Kayakah 400
+24 D.I.R. Kebun Sari 40
+25 D.I.R. Kuangan 75
+26 D.I.R. Lok Bangkai 3
+27 D.I.R. Longkong 280
+28 D.I.R. Manarap 315
+29 D.I.R. Mawar Sari 275
+30 D.I.R. Muara Baruh 150
+31 D.I.R. Murung Kupang 105
+32 D.I.R. Murung Padang 70
+33 D.I.R. Murung Panggang 105
+34 D.I.R. Murung Sari 20
+35 D.I.R. Padang Luar 100
+36 D.I.R. Padang Tanggul 23
+37 D.I.R. Pajukungan 246
+38 D.I.R. Pal Batu 18
+39 D.I.R. Palanjungan Sari 30
+40 D.I.R. Palukahan 90
+41 D.I.R. Paminggir 85
+42 D.I.R. Paminggir Seberang 5
+43 D.I.R. Panangian 75
+44 D.I.R. Panawakan 100
+45 D.I.R. Pandamaan 88
+46 D.I.R. Pandawanan 50
+47 D.I.R. Pandulangan 130
+48 D.I.R. Panyaungan 75
+49 D.I.R. Pararain 75
+50 D.I.R. Pasar Sabtu 12
+51 D.I.R. Pematang Benteng 20
+52 D.I.R. Pihaung 70
+53 D.I.R. Pimping 75
+54 D.I.R. Pinang Kara 250
+55 D.I.R. Polder Padang Gusti 471
+56 D.I.R. Polder Simp. Empat 800
+57 D.I.R. Pulantani 95

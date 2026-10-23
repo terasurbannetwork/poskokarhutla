@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+438 D.I. Pasir Bungur 32
+439 D.I. Pasir Huni 24
+440 D.I. Pasir Jirak 37
+441 D.I. Pasir Kunci 14
+442 D.I. Pasir Nagara 32
+443 D.I. Pasir Panjang 15
+444 D.I. Pasir Sangiang 27
+445 D.I. Pasir Waru 31
+446 D.I. Pasirbanteng 20
+447 D.I. Pasireurih 20
+448 D.I. Pasirjambu 45
+449 D.I. Pasirkemir 26
+450 D.I. Pasirwaru/Cbds 30
+451 D.I. Patala 93
+452 D.I. Pataruman 14
+453 D.I. Patinggi 65
+454 D.I. Patrol 10
+455 D.I. Pawenang 15
+456 D.I. Pencak Suci 101
+457 D.I. Pereng 52
+458 D.I. Pereng Lebak 21
+459 D.I. Peuris 52
+460 D.I. Peuseuh Kaduriung 110
+461 D.I. Pisitan 45
+462 D.I. Ranca 15
+463 D.I. Raden 34
+464 D.I. Ragas 43
+465 D.I. Rahayu 30
+466 D.I. Ranca Belekok 23
+467 D.I. Ranca Gede 60
+468 D.I. Ranca Kangkung 50
+469 D.I. Rancabali/Pasir Angin 30
+470 D.I. Rancabango 15
+471 D.I. Rancabedil 10
+472 D.I. Rancagede/Madur 52
+473 D.I. Rancakeong 111
+474 D.I. Rancamalang 60
+475 D.I. Rancapanjang 60
+476 D.I. Rancasampih 30
+477 D.I. Rantaya 78
+478 D.I. Rawa Badak 43
+479 D.I. Reungas 80
+480 D.I. Rumbia 70
+481 D.I. Rumpil 39
+482 D.I. Sadakelir 15
+483 D.I. Sadakelir 159
+484 D.I. Salamungkal 26
+485 D.I. Sanding 21
+486 D.I. Sangiang 20
+487 D.I. Sangkan 43
+488 D.I. Saninten 62
+489 D.I. Sarongge 12
+490 D.I. Saronaae 25
+491 D.I. Sasak Padung 45
+492 D.I. Saung Kenteng 18
+493 D.I. Sawah Asem 52
+494 D.I. Sawah Gede 168
+495 D.I. Sawah Jeruk 25
+496 D.I. Sawah Lega 134
+497 D.I. Sawah Lega 67
+498 D.I. Sawah Tengah 19
+#KANAN
+159 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+499 D.I. Sawahlega 70
+500 D.I. Sayuran/Ciherang 48
+501 D.I. Seke 11
+502 D.I. Seke Mekar 20
+503 D.I. Seke Mendung 10
+504 D.I. Sekemekar 18
+505 D.I. Selajami 37
+506 D.I. Selamonyet 35
+507 D.I. Selong 20
+508 D.I. Selong 35
+509 D.I. Sembah 43
+510 D.I. Sempak/Baranangsiang 25
+511 D.I. Sinapel 10
+512 D.I. Sinapel 20
+513 D.I. Sinapeul 18
+514 D.I. Sindangsari 21
+515 D.I. Sipatahunan 35
+516 D.I. Situ Burung Herang 12
+517 D.I. Situ Pari 17
+518 D.I. Situhiang 12
+519 D.I. Situkuluwung 146
+520 D.I. Situkuluwung 102
+521 D.I. Situsari 21
+522 D.I. Situtarate 10
+523 D.I. Sodong 193
+524 D.I. Sudimampir 104
+525 D.I. Sudiplak 60
+526 D.I. Sukaresmi 20
+527 D.I. Sumelap 10
+528 D.I. Talang 30
+529 D.I. Talangbesi 40
+530 D.I. Talun 32
+531 D.I. Talun 19
+532 D.I. Tambakruyung 40
+533 D.I. Tambakruyung 1 23
+534 D.I. Tanjung 13
+535 D.I. Taraju 261
+536 D.I. Tari Kolot 13
+537 D.I. Tarikolot 23
+538 D.I. Tegal Sindangreret 21
+539 D.I. Tiis Dingin 134
+540 D.I. Tikukur 40
+541 D.I. Toblong 50
+542 D.I. Toblong 10
+543 D.I. Toblongan 111
+544 D.I. Tonjong/Cijaha 74
+545 D.I. Wadat I & II 12
+546 D.I. Wakap 66
+547 D.I. Winten | & II 45
+548 D.I. Wirahma/Cinangsi 54
+549 D.I. Wirog 50
+b Kab. Banduna Barat 10 4.545
+1 D.I. Cijenuk 239
+2 D.I. Cukang Kawung 100
+3 D.I. Pasir Angin 521
+4 D.I. Pasir Kuntul 176
+5 D.I. Rajamandala 854
+6 D.I. Centeng 100
+7 D.I. Cibodas 319
+8 D.I. Cidadap II 804

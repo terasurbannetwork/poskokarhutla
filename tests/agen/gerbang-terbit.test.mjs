@@ -27,6 +27,24 @@ test("setiap wrangler deploy didahului penjaga data segar (scripts/terbit/jaga_s
   assert.deepEqual(tanpa, [], `deploy tanpa penjaga data basi: ${tanpa.join(", ")}`);
 });
 
+test("tiap deploy menulis daftar isi untuk cadangan, dan tiap workflow yang menerbitkan memakai cadangan live sesudah memulihkan cache", () => {
+  const kurang = [];
+  for (const f of readdirSync(".github/workflows").filter(x => x.endsWith(".yml"))) {
+    const s = readFileSync(`.github/workflows/${f}`, "utf8"), baris = s.split("\n");
+    const deploy = baris.some(b => /wrangler@[\d.]+ deploy\b/.test(b) && !/^\s*#/.test(b));
+    if (!deploy) continue;
+    baris.forEach((b, i) => {
+      if (/wrangler@[\d.]+ deploy\b/.test(b) && !/^\s*#/.test(b) && !/isi_data\.py buat/.test(baris.slice(Math.max(0, i - 3), i + 1).join("\n"))) kurang.push(`${f}:${i + 1} tanpa isi_data.py buat`);
+      if (/^\s+restore-keys: data-\s*$/.test(b) && !/isi_data\.py perlu/.test(baris.slice(i, i + 6).join("\n"))) kurang.push(`${f}:${i + 1} pulihkan data- tanpa isi_data.py perlu`);
+    });
+  }
+  assert.deepEqual(kurang, [], kurang.join("; "));
+});
+
+test("cadangan live: isi rusak dan jalur '..' ditolak, cache yang lebih baru tidak ditimpa", () => {
+  assert.match(execFileSync("python3", ["scripts/terbit/isi_data.py", "uji"], {encoding: "utf8"}), /ok/);
+});
+
 test("penjaga menolak keadaan insiden (data 12 Okt saat 23 Okt)", () => {
   const out = execFileSync("python3", ["scripts/terbit/jaga_segar.py", "uji"], {encoding: "utf8"});
   assert.match(out, /ok/);

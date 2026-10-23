@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+145 D.I. Sadap Sentul 52
+146 D.I. Sapari 80
+147 D.I. Sarijo 158
+148 D.I. Selok Awar-Awar 200
+149 D.I. Selokambang 409
+150 D.I. Sempu I 637
+151 D.I. Sempu II 82
+152 D.I. Semut I 23
+153 D.I. Semut II 20
+154 D.I. Semut III 46
+155 D.I. Sengon 24
+156 D.I. Solekan 158
+157 D.I. Soponyono 548
+158 D.I. Srenteng 87
+159 D.I. Suco 64
+160 D.I. Sukorejo 179
+161 D.I. Sumber Banji 8
+162 D.I. Sumber Baung 19
+163 D.I. Sumber Bendo 174
+164 D.I. Sumber Bening 10
+165 D.I. Sumber Bentrong 4
+166 D.I. Sumber Berca 4
+167 D.I. Sumber Biting 20
+168 D.I. Sumber Bopong 68
+169 D.I. Sumber Brubi 88
+170 D.I. Sumber Bulak Wareng 60
+171 D.I. Sumber Bulus 43
+172 D.I. Sumber Bunting 4
+173 D.I. Sumber Buntung 23
+174 D.I. Sumber Buntung II 16
+175 D.I. Sumber Buntung III 24
+176 D.I. Sumber Bunyu 36
+177 D.I. Sumber Cabek | 68
+178 D.I. Sumber Cabek II 17
+179 D.I. Sumber Cemeng 21
+180 D.I. Sumber Cilik 2
+181 D.I. Sumber Ciri 49
+182 D.I. Sumber Dadi 8
+183 D.I. Sumber Dluwuk 48
+184 D.I. Sumber Dongki 3
+185 D.I. Sumber Dukuh 2
+186 D.I. Sumber Gebang 97
+187 D.I. Sumber Gebang 36
+188 D.I. Sumber Gebang 19
+189 D.I. Sumber Gendol 92
+190 D.I. Sumber Gentong 183
+191 D.I. Sumber Gentong 25
+192 D.I. Sumber Gentong 50
+193 D.I. Sumber Gledek 35
+194 D.I. Sumber Glendangan 54
+195 D.I. Sumber Glintungan 134
+196 D.I. Sumber Gogosan 364
+197 D.I. Sumber Gotehan 15
+198 D.I. Sumber Grimis 57
+199 D.I. Sumber Guci 64
+200 D.I. Sumber Gumuk Mas 20
+201 D.I. Sumber Jagal. 14
+202 D.I. Sumber Jajang | 61
+203 D.I. Sumber Jajang II 19
+204 D.I. Sumber Jajang III 78
+205 D.I. Sumber Jambe 117
+#KANAN
+328
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+206 D.I. Sumber Jebok 16
+207 D.I. Sumber Jengger 188
+208 D.I. Sumber Kadi 40
+209 D.I. Sumber Kajar Kuning 9
+210 D.I. Sumber Kaliputih 83
+211 D.I. Sumber Kalong 32
+212 D.I. Sumber Kalong 6
+213 D.I. Sumber Kamar A 62
+214 D.I. Sumber Kecambil 8
+215 D.I. Sumber Kedawung 29
+216 D.I. Sumber Kembang 50
+217 D.I. Sumber Kembar 30
+218 D.I. Sumber Kepuh 130
+219 D.I. Sumber Khutuk 110
+220 D.I. Sumber Klinting 53
+221 D.I. Sumber Klutuk 18
+222 D.I. Sumber Kokap 39
+223 D.I. Sumber Kolbek 7
+224 D.I. Sumber Kramat 36
+225 D.I. Sumber Kuning 68
+226 D.I. Sumber Kutuk 468
+227 D.I. Sumber Ledok 13
+228 D.I. Sumber Lengkong I 35
+229 D.I. Sumber Lengkong II 18
+230 D.I. Sumber Logong 6
+231 D.I. Sumber Lowo 18
+232 D.I. Sumber Mangarai 10
+233 D.I. Sumber Mijah 27
+234 D.I. Sumber Mojo 2
+235 D.I. Sumber Mualam 1
+236 D.I. Sumber Mujur 930
+237 D.I. Sumber Munder 16
+238 D.I. Sumber Muris 90
+239 D.I. Sumber Nah 4
+240 D.I. Sumber Ngambon 12
+241 D.I. Sumber Nongko I 53
+242 D.I. Sumber Nongko II 35
+243 D.I. Sumber Ojo Lali 25
+244 D.I. Sumber Onggomanik 5
+245 D.I. Sumber Pakel 64
+246 D.I. Sumber Pakem 89
+247 D.I. Sumber Pakis 131
+248 D.I. Sumber Pancoran 11
+249 D.I. Sumber Pandan 20
+250 D.I. Sumber Parang 3
+251 D.I. Sumber Pengangungan 4
+252 D.I. Sumber Penggung 25
+253 D.I. Sumber Pentung Sumur 34
+254 D.I. Sumber Persam 76
+255 D.I. Sumber Petung 55
+256 D.I. Sumber Poh 9
+257 D.I. Sumber Pule 15
+258 D.I. Sumber Puring 196
+259 D.I. Sumber Putri 89
+260 D.I. Sumber Rambak Pakis 40
+261 D.I. Sumber Rampal 20
+262 D.I. Sumber Ranu Glabak 14
+263 D.I. Sumber Ranu Wurung 227
+264 D.I. Sumber Ranuyoso 2
+265 D.I. Sumber Rojo 14
+266 D.I. Sumber Rowo M

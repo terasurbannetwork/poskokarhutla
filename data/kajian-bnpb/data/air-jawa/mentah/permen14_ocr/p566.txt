@@ -1,0 +1,77 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 566
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+52 D.I.A.T. Wasian TWM 042 24
+53 D.I.A.T. Totolan TWM 043 10
+54 D.LA.T. Ampreng TWM 044 22
+55 D.LA.T. Tonsewer TWM 045 25
+56 D.I.A.T. Toure TWM 046 27
+57 D.LA.T. Pinabetengan TWM 047 30
+58 D.LA.T. Noongan TWM 050 35
+59 D.LA.T. Noongan TWM 051 15
+60 D.I.A.T. Touliang TWM 053 25
+61 D.LA.T. Tondegesan TWM 054 26
+62 D.LA.T. Tonsea Lama TWM 055 27
+63 D.I.A.T. Talikuran TWM 058 28
+64 D.I.A.T. Toure TWM 059 27
+65 D.LA.T. Tumaratas TWM 061 20
+66 D.ILA.T. Ampreng TWM 062 19
+67 D.LA.T. Noongan TWM 072 19
+68 D.ILA.T. Parepey TWM 073 21
+69 D.L.A.T. Pinabetengan TWM 074 A 20
+70 D.ILA.T. Pinabetengan TWM 074B 20
+71 D.LA.T. Touliang TWM 078 A 21
+72 D.LA.T. Touliang TWM 078 B 21
+73 D.I.A.T. Wasian TWM 079 24
+74 D.LA.T. Liba TWM 080 23
+75 D.I.A.T. Talikuran TWM 081 17
+76 D.LA.T. Tonsewer TWM 082 25
+77 D.I.A.T. Kanonang III TWM 093 20
+78 D.LA.T. Parepey TWM 073 20
+79 D.LA.T. Tountimomor TWM 103 25
+80 D.I.A.T. Pahaleten TWM 077 20
+81 D.I.A.T. Tempok TWM 107 20
+82 D.I.A.T. Toure TWM 65 20
+83 D.I.A.T. Raringis TWM 106 20
+84 D.I.A.T. Kayu Uwi TWM 109 25
+85 D.I.A.T. Kayu Uwi TWM 112 25
+86 D.I.A.T. Kayu Uwi EWM 119 30
+87 D.LA.T. Tountimomor EWM 110 30
+88 D.I.A.T. Kopi Wangker TWM 111 30
+
+e Kab. Minahasa Selatan 17 359
+
+1 D.LA.T. Teep SMM 011 10
+
+2 D.LA.T. Palelon TWM 029 25
+
+3 D.LA.T. Pinasungkulan TWM 030 25
+
+4 D.LA.T. Linelean TWM 036 23
+
+5 D.LA.T. Makaaroyen TWM 037 23
+
+6 D.LA.T. Pinasungkulan TWM 048 23
+
+7 D.LA.T. Wulurmaatus TWM 049 25
+
+8 D.LA.T. Wulurmaatus TWM 063 20
+
+9 D.L.A.T. Palelon TWM 064 22
+10 D.LA.T. Makaaroyen TWM 065 21
+11 D.LA.T. Linelean TWM 066 19
+12 D.LA.T. Pontak TWM 069 20
+13 D.LA.T. Linelean TWM 070 23
+14 D.LA.T. Linelean TWM 085 20
+15 D.LA.T. Sinisir TWM 088 20
+16 D.LA.T. Sinisir TWM 089 20
+17 D.LA.T. Wulurmaatus TWM 094 20
+
+f Kab. Minahasa Tenaaara 2 22
+
+1 D.LA.T. Silian TWM 001 11
+
+2 D.LA.T. Silian TWM 002 11

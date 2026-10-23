@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 540
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+28 D.I.A.T. Napa SID 070 8
+29 D.I.A.T. Napa SID 071 6
+30 D.I.A.T. Napa SID 072 7
+31 D.I.A.T. Soriutu SPD 010 10
+32 D.I.A.T. Adu SPD 013 12
+33 D.I.A.T. Tolo Kalo SPD 021 8
+34 D.LA.T. Tolo Kalo SPD 022 9
+35 D.L.A.T. Tolo Kalo SPD 023 9
+36 D.I.A.T. Tolo Kalo SPD 024 9
+37 D.L.A.T. Tolo Kalo SPD 025 11
+38 D.L.A.T. Ta'a SPD 039 14
+39 D.L.A.T. Ta'a SPD 040 20
+40 D.LA.T. Ta'a SPD 041 16
+4 D.LA.T.Ta'a SPD 042 15
+42 D.LLA.T.Ta'a SPD 043 15
+43 D.LA.T. Ta'a SPD 044 17
+44 D.LA.T. Dorocanga SPD 055 10
+45 D.LA.T. Dorocanga SPD 056 10
+46 D.LA.T. Dorocanga SPD 057 10
+47 D.LA.T. Riwo SPD 108 20
+48 D.I.A.T. Adu SPD 109 20
+49 D.I.A.T. Adu SPD 110 20
+50 D.I.A.T. Adu SPD 111 18
+51 D.L.A.T. Riwo SPD 116 11
+52 D.L.A.T. Riwo SPD 117 11
+53 D.L.A.T. Riwo SPD 121 14
+54 D.I.A.T. Song Gajah SPD 129 11
+55 D.I.A.T. Song Gajah SPD 130 13
+56 D.I.A.T. So Nggajah SPD 131 14
+57 D.LA.T. So Nggajah SPD 132 12
+58 D.I.A.T. So Nggajah SPD 133 12
+59 D.I.A.T. So Nggajah SPD 134 9
+60 D.I.A.T. Pekat SPD 141 20
+61 D.I.A.T. Pekat SPD 142 20
+62 D.I.A.T. So Nggajah SPD 143 20
+63 D.I.A.T. Pekat SPD 160 20
+64 D.I.A.T. Pekat SPD 161 20
+65 D.I.A.T. Pekat SPD 162 20
+66 D.I.A.T. Wawonduru SPD 163 20
+
+c Kab. Lombok Utara 95 1.725
+
+1 D.LA.T. Dsn. Akar-Akar 54-1 12
+
+2 D.LA.T. Dsn. Akar-Akar 51-1 15
+
+3 D.LA.T. Dsn. Akar-Akar 52-1 12
+
+4 D.LA.T. Dsn. Akar-Akar 53-1 20
+
+5 D.LA.T. Dsn. Mumbul Sari 48-1 18
+
+6 D.LA.T. Dsn. Lokok Mumbul 45-1 18
+
+7 D.LA.T. Dsn. Lokok Mumbul 46-1 25
+
+8 D.LA.T. Dsn. Mumbul Sari 49-1 18
+
+9 D.LA.T. Dsn. Batu Sembung 76-1 12
+10 D.L.A.T. Dsn. Batu Gembung 80-1 12
+11 D.LA.T. Dsn. Batu Gembung 73-1 12
+12 D.LA.T. Dsn. Batu Gembung 72-1 12
+13 D.LA.T. Dsn. Batu Gembung 74-1 12
+14 D.LA.T. Dsn. Batu Gembung 81-1 12
+15 D.LA.T. Dsn. Tanjung Busur 56-I 14
+16 D.LA.T. Dsn. Tanjung Busur 59-1 12
+17 D.LA.T. Dsn. Batu Keruk 62-1 7
+18 D.LA.T. Dsn. Tanjung Busur 58-1 12
+19 D.LA.T. Dsn. Batu Keruk 63-1I 23
+20 D.LA.T. Dsn. Tanjung Busur 57-1 13

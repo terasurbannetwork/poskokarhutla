@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+457 2015, No.638
+A
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+23 D.I.R. Sei Nyamuk 115
+24 D.I.R. Sei Panji-Panji 305
+25 D.I.R. Sei Pinang 126
+26 D.I.R. Sei Rumbio 100
+27 D.I.R. Sei Segajah 892
+28 D.I.R. Sei Sialang 89
+29 D.I.R. Suak Air Hitam 53
+30 D.I.R. Suak Tumenggung 500
+31 D.I.R. Tanjung Leban 80
+32 D.I.R. Teluk Merbau 100
+33 D.I.R. Teluk Nilap 185
+34 D.I.R. Teluk Piyai 600
+a Kab. Siak 8 4.195
+1 D.I.R. Bandar Sungai 900
+2 D.I.R. Desa Selat Guntung 50
+3 D.I.R. Laksamana 500
+4 D.L.R. Parit I/II 200
+5 D.I.R. Pusako 200
+6 D.I.R. Rempak, Belading 950
+7 D.I.R. Sungai Mandau 975
+8 D.I.R. Teluk Mesjid/Sungai Tengah 420
+Il PROVINSI SUMATERA BARAT 14 5.520
+a Kab. Aaam 1 810
+1 D.I.R. Tiku 810
+b Kab. Dhamasrava 1 640
+1 D.I.R. Daerah Rawa Irigasi Batang Hari 640
+c Kab. Lima Puluh Kota 1 300
+1 D.I.R. Sari Lamak 300
+d Kab. Pasaman Barat 1 250
+1 D.I.R. Bunga Tanjung 250
+e Kab. Pesisir Selatan 10 3.520
+1 D.I.R. Bkt Kaciak Koto Nan Tigo 600
+2 D.I.R. Kambang Harapan 850
+3 D.I.R. Lasi 100
+4 D.I.R. Lumpo Barat 200
+5 D.I.R. Mande Rubiah 300
+6 D.I.R. Nanggalo Tarusan 400
+7 D.I.R. Sei Rumbai Tambunsu 100
+8 D.I.R. Sei Tunu 700
+9 D.I.R. Silaut 120
+10 D.I.R. Sindang Luar 150
+IV PROVINSI JAMBI 130 29.959
+a Kab. Batanahari 74 5.248
+1 D.I.R. Perumahan III 6
+2 D.I.R. Py. Aro 12
+3 D.I.R. Py. Awah 55
+4 D.I.R. Py. Belakang Dusun 10
+5 D.I.R. Py. Bencah 30
+6 D.I.R. Py. Bencah Kecil 65
+7 D.I.R. Py. Dam Lubuk Napal 30
+8 D.I.R. Py. Danau Abu 40
+9 D.I.R. Py. Danau Embat 5
+10 D.I.R. Py. Danau Sentul 7
+11 D.I.R. Py. Jajaran 15
+12 D.I.R. Py. Kacung 6
+13 D.I.R. Py. Kb.Seri/ Sei Aro 50
+14 D.I.R. Py. Kerikil Kambing 20
+15 D.ILR. Py. KNPI 5
+16 D.I.R. Py. Lebak Takar 25
+17 D.I.R. Py. Lebar 215
+18 D.I.R. Py. Lebar Belakang Dusun 15
+19 D.I.R. Py. Lebar Rantau Gedang 175
+20 D.I.R. Py. Lebar Sei Lais 170
+21 D.I.R. Py. Lebar Tebing Jaya I 108
+22 D.I.R. Py. Lebung Jawi 115
+23 D.I.R. Py. Lebung Rimbo 150
+24 D.I.R. Py. Lubang 30
+25 D.I.R. Py. Lubuk Buntar 60
+26 D.I.R. Py. Lubuk Cengal 65
+27 D.I.R. Py. Lubuk Jawi 180
+28 D.I.R. Py. Lubuk Jeramun 10
+29 D.I.R. Py. Lubuk Ruso 65
+30 D.I.R. Py. Malako Kecil 75
+31 D.I.R. Py. Membek 95
+32 D.I.R. Py. Napal Sisik 5
+33 D.I.R. Py. Olak Belakang Dusun 17

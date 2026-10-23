@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+69 D.I. Mareto 40
+70 D.I. Masandang/Bungin 55
+71 D.I. Membura 56
+72 D.I. Mundan 60
+73 D.I. Napo/Banca 16
+74 D.I. Paladang 18
+75 D.I. Palang Maliba 13
+76 D.I. Pallo Pok 22
+77 D.I. Palulun/Durian 40
+78 D.I. Pambantu 12
+79 D.I. Pantawanan 65
+80 D.I. Panyura 31
+81 D.I. Papi 25
+82 D.I. Pasang 47
+83 D.I. Pasu Batu 50
+84 D.I. Pasui 40
+85 D.I. Patokillin 13
+86 D.I. Pongde 15
+87 D.I. Pongko Rante Padang/Pongkc 21
+88 D.I. Pudete 50
+89 D.I. Pura Ceba/Baroko 140
+90 D.I. Pura Doke/Malua Lepu 9
+91 D.I. Rante Lemo 50
+92 D.I. Rante Limbong 25
+93 D.I. Rumbia 5
+94 D.I. Rumbo 11
+95 D.I. Salo Bulo/Salo Dua 168
+96 D.I. Salongge 56
+97 D.I. Salu Issong 80
+98 D.I. Salu Liang Pea 60
+99 D.I. Salu Passing 7
+100 D.I. Samaturu 105
+101 D.I. Sambua/Sangbua 6
+102 D.I. Sarong 40
+103 D.I. Sitodon/Malanying 33
+104 D.I. Sumbang | 6
+105 D.I. Sumbang II 6
+106 D.I. Sumbang Pasang 43
+107 D.I. Takke 25
+108 D.I. Talang Rilau 25
+109 D.I. Tampaan Bungin 150
+110 D.I. Tantido 4
+111 D.I. Tapong 50
+112 D.I. Tarauwe/Balombong 25
+113 D.I. Temban/Jalikko 350
+114 D.I. Tete Batu 100
+115 D.I. To Do Datu 75
+116 D.I. To Pao/Uru 9
+117 D.I. To Tanah/Puncak Harapan 25
+118 D.I. Totabang/S. Malino Alla 53
+119 D.I. Tuan Asaan 27
+120 D.I. Angin-Angin 120
+121 D.I. Baba Kanan 5
+122 D.I. Ba'ka 25
+123 D.I. Ba'ka II 5
+124 D.I. Bakka/Bungle 10
+125 D.I. Bala Tedong Mandalan/Perpip:tan 40
+126 D.I. Balombong Keak 9
+127 D.I. Balulang 16
+128 D.I. Balulang Sumandang 15
+129 D.I. Bangka Nase 33
+#KANAN
+437 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+130 D.I. Bangkan 10
+131 D.I. Barukka 25
+132 D.I. Batarang Malino 10
+133 D.I. Batu Tindak Gandeng 20
+134 D.I. Belalang 8
+135 D.I. Belalang Pepandungan 15
+136 D.I. Bolong Doi/Pangtammuan 3
+137 D.I. Bone-Bone 50
+138 D.I. Borrek Karangan 15
+139 D.I. Botto Malangga Kanan 47
+140 D.I. Botto Malangga Kiri 6
+141 D.I. Bubun Bia 20
+142 D.I. Bubun Lamba | 45
+143 D.I. Bubun Lamba II 30
+144 D.I. Bubun Salle 35
+145 D.I. Bulen 2
+146 D.I. Bunga Mendoe Parombean 40
+147 D.I. Buntu Kaloko 25
+148 D.I. Buntu Pokko Uru 10
+149 D.I. Cendana Bawah (Pompanisas ) 12
+150 D.I. Co'do 10
+151 D.I. Dante Ambong (Saibo) 12
+152 D.I. Dante Malua 30
+153 D.I. Dante Sepang Siambo 8
+154 D.I. Galung II 20
+155 D.I. Galung III 30
+156 D.I. Galung Temban 46
+157 D.I. Garassi Malino 30
+158 D.I. Garutu 120
+159 D.I. Kaduasik 14
+160 D.I. Kalo Kalambanan Leme 10
+161 D.I. Kalo Kanan II 40
+162 D.I. Kalo Penanian/Nene Sippo 40
+163 D.I. Kalo Tua 60
+164 D.I. Kamben Lemo 5
+165 D.I. Kamiri Buangin 14
+166 D.I. Kampung Baru Buntu Batuan 60
+167 D.I. Karangan 15
+168 D.I. Karoan 60
+169 D.I. Karuaja Rante Lemo 100
+170 D.I. Katangka Kanan'/Curio 115
+171 D.I. Kuini Dante Durian 8
+172 D.I. Labojang Bt. Malangga 30
+173 D.I. Lakunyi Tanete 20
+174 D.I. Lambanan Salo Rogo 5
+175 D.I. Lambe Langda 30
+176 D.I. Lambe Tanete 15
+177 D.I. Landoke 15
+178 D.I. Langda 12
+179 D.I. Leto' Bara 60
+180 D.I. Liba 60
+181 D.I. Lila Padang Serren 10
+182 D.I. Limbong/Salu Sarambi 25
+183 D.I. Limbong Cikki 15
+184 D.I. Loko' Bulan Benteng Alla 40
+185 D.I. Macandong 5
+186 D.I. Malea Bungin/Maka 40
+187 D.I. Mandalan 31
+188 D.I. Marena 30
+189 D.I. Matangon 25
+190 D.I. Mataran 40

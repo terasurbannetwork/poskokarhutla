@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+481 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+XVIII PROVINSI PAPUA 156 8.337
+a Kab. Mappi 27 837
+1 D.I.R. Amagatsu 5
+2 D.I.R. Asaren 5
+3 D.I.R. Bade 385
+4 D.I.R. Banamepe 30
+5 D.I.R. Eci 5
+6 D.I.R. Kabe 10
+7 D.I.R. Kadam Oyim 15
+8 D.I.R. Katage 5
+9 D.I.R. Kepi 10
+10 D.I.R. Koba 50
+11 D.I.R. Kofar 10
+12 D.I.R. Kogo 10
+13 D.I.R. Kopi 2
+14 D.I.R. Kotup 15
+15 D.I.R. Mur 50
+16 D.I.R. Rep 50
+17 D.ILR. Samtaipim 5
+18 D.I.R. Senggo 10
+19 D.I.R. Sigare 13
+20 D.I.R. Soba 25
+21 D.I.R. Sumuraman 10
+22 D.I.R. Tamanim 5
+23 D.I.R. Wagin 45
+24 D.I.R. Yagatsu 10
+25 D.I.R. Yame 8
+26 D.I.R. Yamui 25
+27 D.I.R. Yeloba 25
+b Kab. Merauke 129 7.500
+1 D.I.R. Blandin Kakayo 74
+2 D..LR. Bokem 35
+3 D.I.R. Gurinda Jaya 225
+4 D.I.R. Jemunaim Jaya 79
+5 D.I.R. Kaliki 10
+6 D.I.R. Kamnosari 156
+7 D.I.R. Kelapa Lima 64
+8 D.I.R. Kondo 39
+9 D.I.R. Kuler 92
+10 D.I.R. Maro 11
+11 D.I.R. Matara 21
+12 D.I.R. Melim Megikar 131
+13 D.I.R. Mimi Baru 264
+14 D.I.R. Nalkin 79
+15 D.I.R. Nasem 12
+16 D.I.R. Obathrow 99
+17 D.I.R. Onggaya 70
+18 D.I.R. Poo 15
+19 D.I.R. Rimba Jaya 122
+20 D.I.R. Soa/Senayu 58
+21 D.I.R. Tambat 51
+22 D.I.R. Tomer 152
+23 D.I.R. Tomerau 23
+24 D.I.R. Waninggap Nanggo/Yatom/Bahor 32
+25 D.I.R. Wasur I (Kampung) 17
+26 D.I.R. Wasur II 905
+27 D.I.R. Baad 63
+28 D.I.R. Wayau 28
+29 D.I.R. Koa 25

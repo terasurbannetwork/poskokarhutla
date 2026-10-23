@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+158 D.I. Kondo Batu 40
+159 D.I. Kondo Batu 40
+160 D.I. Kondo Kayu 20
+161 D.I. Kondo Roppok 5
+162 D.I. Kopian 40
+163 D.I. Ladi 50
+164 D.I. Ladi II 22
+165 D.I. Lakahang 50
+166 D.I. Lamarrang 20
+167 D.I. Lambanan 40
+168 D.I. Lantoya 45
+169 D.I. Lantuaya 20
+170 D.I. Lappa 45
+171 D.I. Lebani 56
+172 D.I. Ledo 18
+173 D.I. Leko 45
+174 D.I. Lelating 45
+175 D.I. Lembang 7
+176 D.I. Lembang 40
+177 D.I. Lembang 7
+178 D.I. Lembang Buda 10
+179 D.I. Lembang Kalua 60
+180 D.I. Lempangan 11
+181 D.I. Lemsa 30
+182 D.I. Lengke' 20
+183 D.I. Lengkong 4
+184 D.I. Leppan 85
+185 D.I. Liawan 40
+186 D.I. Lila 16
+187 D.I. Limba Rante 35
+188 D.I. Limbin 10
+189 D.I. Limbong 50
+190 D.I. Limboro 45
+191 D.I. Liosok 49
+192 D.I. Litak Sakka' 19
+193 D.I. Lombi 25
+194 D.I. Lombok 14
+195 D.I. Lombongan Indah 15
+196 D.I. Makau 35
+197 D.I. Makula' 20
+198 D.I. Mala' 58
+199 D.I. Malalunak 40
+200 D.I. Malalunak 20
+201 D.I. Malatiro 80
+202 D.I. Ma'Liko 10
+203 D.I. Mama 10
+204 D.I. Mangngi 75
+205 D.I. Manta 45
+206 D.I. Mapao 30
+207 D.I. Mapao Lombonan 30
+208 D.I. Marampan 25
+209 D.I. Marampan Ara' 39
+210 D.I. Masoso 30
+211 D.I. Masuppu 48
+212 D.I. Materu 20
+213 D.I. Ma'Tiran Ampalla 7
+214 D.I. Matuyu 48
+215 D.I. Mearrang 95
+216 D.I. Memungan 18
+217 D.I. Minake 50
+218 D.I. Minangnga 40
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+219 D.I. Mongin 35
+220 D.I. Ne'Amba 10
+221 D.I. Nek Kodo 60
+222 D.I. Ne'Ke' 15
+223 D.I. Nonok 45
+224 D.I. Opasoan Peu' 60
+225 D.I. Oromonpon 30
+226 D.I. Pabakka' 40
+227 D.I. Paken 9
+228 D.I. Pakkauru 56
+229 D.I. Paklak 20
+230 D.I. Paklambasan | 40
+231 D.I. Paklambasan II 40
+232 D.I. Pakto 15
+233 D.I. Paladan 56
+234 D.I. Palambasan 75
+235 D.I. Palampang 50
+236 D.I. Palampang 20
+237 D.I. Palampang II 54
+238 D.I. Palampang Kariango 50
+239 D.I. Palekokang 20
+240 D.I. Pamakka 25
+241 D.I. Pandodoan 45
+242 D.I. Pangandaran 40
+243 D.I. Pangandaran II 40
+244 D.I. Pangaro 35
+245 D.I. Panggallak II 1
+246 D.I. Pangi 25
+247 D.I. Pangka 10
+248 D.I. Pangkali 12
+249 D.I. Pangkali II 10
+250 D.I. Panglulukan 28
+251 D.I. Pangngallak I 15
+252 D.I. Pao 20
+253 D.I. Paranoan 55
+254 D.I. Paranta' 78
+255 D.I. Paredean Kanan 14
+256 D.I. Paredean Kiri 13
+257 D.I. Parendean 35
+258 D.I. Parinding 40
+259 D.I. Parrapan 15
+260 D.I. Pasang 15
+261 D.I. Pasang 55
+262 D.I. Pasarean 90
+263 D.I. Pasu'Beng 10
+264 D.I. Pasu'Beng II 8
+265 D.I. Patan 45
+266 D.I. Patottong 21
+267 D.I. Peba' 50
+268 D.I. Pembu' 30
+269 D.I. Pena' 32
+270 D.I. Pena' | 40
+271 D.I. Pena' II 30
+272 D.I. Pena Lambanan 66
+273 D.I. Peonan 35
+274 D.I. Pionan II 35
+275 D.I. Poko' 18
+276 D.I. Pongka 45
+277 D.I. Popanga 25
+278 D.I. Popanga 50
+279 D.I. Puang 15

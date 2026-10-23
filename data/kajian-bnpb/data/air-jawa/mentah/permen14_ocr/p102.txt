@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+413 D.I. Batang Bamban 26
+414 D.I. Bdr. Batang Barau 39
+415 D.I. Lubuk Kandih 47
+f Kab. Pasaman 229 16.100
+1 D.I. Air Abu 75
+2 D.I. Air Biso 32
+3 D.I. Air Dareh 241
+4 D.I. Air Geringging M4
+5 D.I. Air Manggis 54
+6 D.I. Air Salo 175
+7 D.I. Air Talo Binjai 58
+8 D.I. Air Tawar 146
+9 D.I. Bandar Air Talang 65
+10 D.I. Bandar Baluka Panjang 60
+11 D.I. Bandar Bangan 45
+12 D.I. Bandar Benteng 48
+13 D.I. Bandar Beringin 247
+14 D.I. Bandar Bindalik Kecil 70
+15 D.I. Bandar Bukit Putus 40
+16 D.I. Bandar Dalam 40
+17 D.I. Bandar Datuk Lintang 45
+18 D.I. Bandar Gadang Bonjol 228
+19 D.I. Bandar Gadang Jambak 109
+20 D.I. Bandar Gadang Malampah 198
+21 D.I. Bandar Guguk 32
+22 D.I. Bandar Gugung 129
+23 D.I. Bandar Kampung Kadok 30
+24 D.I. Bandar Kilangan 50
+25 D.I. Bandar Koto Tuo 45
+26 D.I. Bandar Langung 344
+27 D.I. Bandar Malandu 52
+28 D.I. Bandar Melayu 51
+29 D.I. Bandar Muntia 58
+30 D.I. Bandar Padang Bubus 46
+31 D.I. Bandar Padang Pauh Gadang 60
+32 D.I. Bandar Padang Tinggi 94
+33 D.I. Bandar Panso 21
+34 D.I. Bandar Pauh 64
+35 D.I. Bandar Sialang 80
+36 D.I. Bandar Tarok 168
+37 D.I. Bandar Tarok 30
+38 D.I. Bandar Ujung Karang 67
+39 D.I. Batang Andilan 206
+40 D.I. Batang Bahanon 84
+41 D.I. Batang Barangan 28
+42 D.I. Batang Bindalik 720
+43 D.I. Batang Kasok 40
+44 D.I. Batang Kuraba 30
+45 D.I. Batang Lasi 14
+46 D.I. Batang Maringging 31
+47 D.I. Batang Mauh 68
+48 D.I. Batang Musus 85
+49 D.I. Batang Pamikin 78
+50 D.I. Batang Pangauman 19
+51 D.I. Batang Paninggalan 60
+52 D.I. Batang Petok 250
+53 D.I. Batang Simp. Dingin Barilas 250
+54 D.I. Batang Sontang 679
+55 D.I. Batang Timaran 50
+56 D.I. Batu Ranai 59
+#KANAN
+102
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+57 D.I. Batu Ranai 59
+58 D.I. Durian Kadap 200
+59 D.I. Durian Taleh 92
+60 D.I. Garagah Tanjung 18
+61 D.I. Gununa Manahan 200
+62 D.I. Kampung Pasir 167
+63 D.I. Kati Mahar 50
+64 D.I. Koto Dalam 35
+65 D.I. Koto Mananti 67
+66 D.I. Koto Nopan 414
+67 D.I. Koto Rajo 315
+68 D.I. Limau Karetan 65
+69 D.I. Lubuk Ambacang 89
+70 D.I. Lubuk Aro 200
+71 D.I. Lubuk Durian 60
+72 D.I. Lubuk Gadang 12
+73 D.I. Lubuk Kalek 75
+74 D.I. Lubuk Layang 220
+75 D.I. Lubuk Rasam 382
+76 D.I. Lundang Hilir 79
+77 D.I. Mangkumang Datar 50
+78 D.I. Parit Batu Baru 78
+79 D.I. Parit Batu Tinggal 81
+80 D.I. Parit Lubang 136
+81 D.I. Pertanian II 60
+82 D.I. Sawah Padang 287
+83 D.I. Sawah Padang Malampah 90
+84 D.I. Sawah Talang 21
+85 D.I. Sungai Landai 250
+86 D.I. Tanjung Bunga 58
+87 D.I. Tanjung Medan 28
+88 D.I. Aek Rogas 60
+89 D.I. Air Kijang 27
+90 D.I. Air Sirah 60
+91 D.I. Air Abu Ateh 15
+92 D.I. Air Baling 26
+93 D.I. Air Betung 37
+94 D.I. Air Biso | 40
+95 D.I. Air Dadok 20
+96 D.I. Air Dalik 95
+97 D.I. Air Dondong 35
+98 D.I. Air Geringging | 26
+99 D.I. Air Kapunan 15
+100 D.I. Air Kasai 25
+101 D.I. Air Landu 32
+102 D.I. Air Lansek 45
+103 D.I. Air Luluih 16
+104 D.I. Air Mago 15
+105 D.I. Air Manggis 40
+106 D.I. Air Matundak 25
+107 D.I. Air Mundak 20
+108 D.I. Air Siburai 30
+109 D.I. Air Tabek | 45
+110 D.I. Air Tabek II 35
+111 D.I. Air Talang 65
+112 D.I. Anak Air Karonok | 34
+113 D.I. Anak Air Karonok II 25
+114 D.I. Anak Air Simpang Tonang 26
+115 D.I. Asik Kiri 50
+116 D.I. Bancah Balung 15
+117 D.I. Bandar Solok 165

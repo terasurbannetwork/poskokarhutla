@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+447 D.I. Nepen V 154
+448 D.I. Ngadiluwih I 45
+449 D.I. Ngadiluwih II 20
+450 D.I. Ngampak 11
+451 D.I. Ngampel I 53
+452 D.I. Ngampel II 67
+453 D.I. Ngasem 82
+454 D.I. Ngatup I 65
+455 D.I. Ngatup II 24
+456 D.I. Ngawen 125
+457 D.I. Ngemplak 8
+458 D.I. Nglaban 61
+459 D.I. Nglajo 48
+460 D.I. Nglangu I 1
+461 D.I. Nglangu II 19
+462 D.I. Nglangu III 104
+463 D.I. Nglemi 82
+464 D.I. Ngletih 130
+465 D.I. Nglorok 79
+466 D.I. Nglumbang 53
+467 D.I. Ngrancangan | 4
+468 D.I. Ngrancangan II 2
+469 D.I. Ngrangkok | 27
+470 D.I. Ngrangkok II 57
+471 D.I. Ngrangkok III 13
+472 D.I. Nyawangan 165
+473 D.I. Padas 23
+474 D.I. Pagu | 65
+475 D.I. Pagu II 42
+476 D.I. Pakel 3
+477 D.I. Pandantoyo 7
+478 D.I. Pandean 44
+479 D.I. Pati | 12
+480 D.I. Pati II 22
+481 D.I. Patilaler 18
+482 D.I. Payak | 100
+483 D.I. Payak II 12
+484 D.I. Pendem 23
+485 D.I. Plaosan 15
+486 D.I. Plelen 23
+487 D.I. Plingsangan I 2
+488 D.I. Plingsangan II 3
+489 D.I. Plingsangan III 34
+490 D.I. Ploso I 66
+491 D.I. Ploso II 13
+492 D.I. Plosokerep 23
+493 D.I. Plosorejo I 8
+494 D.I. Plosorejo II 17
+495 D.I. Plumpung Rejo 49
+496 D.I. Plumpungrejo 53
+497 D.I. Podang | 2
+498 D.I. Podang II 61
+499 D.I. Podang III 1
+500 D.I. Pogar 82
+501 D.I. Pojok 9
+502 D.I. Pojok 120
+503 D.I. Pojok 18
+504 D.I. Polosokerep 10
+505 D.I. Puhgading 28
+506 D.I. Puhjarak I 50
+507 D.I. Puhjarak II 12
+#KANAN
+395 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+508 D.I. Puhjarak III 17
+509 D.I. Pulo Rejol 47
+510 D.I. Pulo Rejoll 14
+511 D.I. Pulosari 12
+512 D.I. Punjulsari 43
+513 D.I. Purut 25
+514 D.I. Purworejo 31
+515 D.I. Purworejo 30
+516 D.I. Reayon 97
+517 D.I. Recosolo 114
+518 D.I. Rejomulyo 14
+519 D.I. Ringinrejo 81
+520 D.I. Ringinsari 61
+521 D.I. Sagi 47
+522 D.I. Sambirejo 64
+523 D.I. Sambiresik 34
+524 D.I. Sanan | 7
+525 D.I. Sanan II 3
+526 D.I. Sawur I 11
+527 D.I. Sawur Il 27
+528 D.I. Sbr. Bok Ireng 14
+529 D.I. Sbr. Botoll 8
+530 D.I. Sbr. Brontok 52
+531 D.I. Sbr. Buntung 28
+532 D.I. Sbr. Cariban 6
+533 D.I. Sbr. Complang 30
+534 D.I. Sbr. Dadap 15
+535 D.I. Sbr. Dandang 1
+536 D.I. Sbr. Dendeng 103
+537 D.I. Sbr. Gedang Suci 25
+538 D.I. Sbr. Jagul 5
+539 D.I. Sbr. Jalas 60
+540 D.I. Sbr. Jati 37
+541 D.I. Sbr. Jemekan 51
+542 D.I. Sbr. Kas 33
+543 D.I. Sbr. Kawaluhan 25
+544 D.I. Sbr. Kayu Sabel 18
+545 D.I. Sbr. Kemirahan | 12
+546 D.I. Sbr. Kemirahan II 21
+547 D.I. Sbr. Landak 10
+548 D.I. Sbr. Lingling 38
+549 D.I. Sbr. Mbah Kinjong 125
+550 D.I. Sbr. Ngemprak 9
+551 D.I. Sbr. Pakem 1
+552 D.I. Sbr. Pohijo 1
+553 D.I. Sbr. Pule 35
+554 D.I. Sbr. Ringin 21
+555 D.I. Sbr. Ringin 1
+556 D.I. Sbr. Sekintel 18
+557 D.I. Sbr. Sekolak 43
+558 D.I. Sbr. Selo Parang 1
+559 D.I. Sbr. Sinong 9
+560 D.I. Sbr. Sukorambil 142
+561 D.I. Sbr. Toyip 12
+562 D.I. Sekar Putih I 1
+563 D.I. Sekar Putih II 1
+564 D.I. Sekar Putih III 15
+565 D.I. Sekoto 117
+566 D.I. Selang 39
+567 D.I. Selomanen 50
+568 D.I. Semen 56

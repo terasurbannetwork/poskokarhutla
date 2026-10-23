@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+130 D.I. Gowak | 14
+131 D.I. Greng 170
+132 D.I. Grenjengan 15
+133 D.I. Grojogan 145
+134 D.I. Grojogan 34
+135 D.I. Guntur I 260
+136 D.I. Gunung 29
+137 D.I. H. Tumeko 30
+138 D.I. Harjo Tumeko 45
+139 D.I. Ingas 49
+140 D.I. Jambe 12
+141 D.I. Jambe Nongko 14
+142 D.I. Jarembak 15
+143 D.I. Jasiman 10
+144 D.I. Jati 14
+145 D.I. Jati Lanang 10
+146 D.I. Jeglug 15
+147 D.I. Jejen 53
+148 D.I. Jeruk Gulung 42
+149 D.I. Jerukan 20
+150 D.I. Jerukwangi 28
+151 D.I. Jirak 13
+152 D.I. Joho 15
+153 D.I. Joho 18
+154 D.I. Joho 14
+155 D.I. Jowo Pangeglang 18
+156 D.I. Jrakah 39
+157 D.I. Junar 10
+158 D.I. Juwet 30
+159 D.I. Juwoko 34
+160 D.I. Kajar 21
+161 D.I. Kajar 11
+162 D.I. Kaji 15
+163 D.I. Kali Gede 159
+164 D.I. Kalong 21
+165 D.I. Kaman 13
+166 D.I. Kamanilas 50
+167 D.I. Kamituwan 71
+168 D.I. Karang Bubar 12
+169 D.I. Karang Jibu 21
+170 D.I. Karangan 11
+171 D.I. Kartimah 32
+172 D.I. Kartinah 47
+173 D.I. Kasmin 40
+174 D.I. Kastono 12
+175 D.I. Kauman 18
+176 D.I. Kedawung 17
+177 D.I. Kedawung 20
+178 D.I. Kedondong 15
+179 D.I. Kedowo 264
+180 D.I. Kedung Ingas 221
+181 D.I. Kedung Paso 29
+182 D.I. Kedungbende 200
+183 D.I. Kedungboyo 61
+184 D.I. Kedungdowo 300
+185 D.I. Kedungleper 50
+186 D.I. Kedungwinong 20
+187 D.I. Kelampok 20
+188 D.I. Kembang Rawi 47
+189 D.I. Kemi 22
+190 D.I. Kemiren 15
+#KANAN
+224
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+191 D.I. Kempong 30
+192 D.I. Kempreng 40
+193 D.I. Kemudu 19
+194 D.I. Kenteng 27
+195 D.I. Kersulan 15
+196 D.I. Ketapang 22
+197 D.I. Kidang 24
+198 D.I. Kimpul 11
+199 D.I. Kintelan 18
+200 D.I. Kisik 22
+201 D.I. Klapan Gede 17
+202 D.I. Klentung 25
+203 D.I. Kleprak 27
+204 D.I. Klumprit 12
+205 D.I. Kluwih 150
+206 D.I. Kluwih 79
+207 D.I. Krembeng 22
+208 D.I. Kromo 28
+209 D.I. Krujas 30
+210 D.I. Kunci 30
+211 D.I. Kuniran 55
+212 D.I. Les 32
+213 D.I. Les Kintelan 48
+214 D.I. Leyas 13
+215 D.I. Mabal 22
+216 D.I. Mabodo 19
+217 D.I. Makam Dowo 14
+218 D.I. Makam dowo 14
+219 D.I. Mandar 123
+220 D.I. Manduko sempu 27
+221 D.I. Mliro 15
+222 D.I. Mlonggo 267
+223 D.I. Mojowali 155
+224 D.I. Mugiyo 10
+225 D.I. Murah 11
+226 D.I. Musen 11
+227 D.I. Mustajab 14
+228 D.I. Natah 13
+229 D.I. Ngadek 18
+230 D.I. Ngajok 42
+231 D.I. Ngancar 20
+232 D.I. Ngancar 10
+233 D.I. Ngancar 13
+234 D.I. Nganjun 30
+235 D.I. Ngarimah 22
+236 D.I. Ngasem 14
+237 D.I. Ngasem 25
+238 D.I. ngasem 15
+239 D.I. Ngasem 14
+240 D.I. Ngebuk 71
+241 D.I. Ngecis/Sepranak 29
+242 D.I. Ngembut 13
+243 D.I. Ngerpati 12
+244 D.I. Nglandoh 20
+245 D.I. Nglarangan 80
+246 D.I. Nglikon 13
+247 D.I. Ngrancah 14
+248 D.I. Ngreco 20
+249 D.I. Ngrumpukan 16
+250 D.I. Nguwok 213
+251 D.I. Nongko Ireng 20

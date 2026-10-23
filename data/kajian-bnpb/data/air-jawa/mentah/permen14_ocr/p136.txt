@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+79 D.I. Way Ringkih II 81
+80 D.I. Way Ringkih III 75
+81 D.I. Way Samang 444
+82 D.I. Way Sawah Lega 116
+83 D.I. Way Sebabuy 150
+84 D.I. Way Sebarus 12
+85 D.I. Way Sebukau I 62
+86 D.I. Way Sebukau II 35
+87 D.I. Way Seburas | 20
+88 D.I. Way Seburas II 22
+89 D.I. Way Selingkut 172
+90 D.I. Way Seluangan 100
+91 D.I. Way Sepalau 19
+92 D.I. Way Serut 25
+93 D.I. Way Sidomulyo 94
+94 D.I. Way Sindang Pagar 81
+95 D.I. Way Sindang Reja 25
+96 D.I. Way Sindi/Palimbang 50
+97 D.I. Way Suka Jaya 50
+98 D.I. Way Suka Jaya 16
+99 D.I. Way Suka Marga 200
+100 D.I. Way Sukamenanti 50
+101 D.I. Way Sukamenanti 30
+102 D.I. Way Sukaraja 12
+103 D.I. Way Talang Bandung 110
+104 D.I. Way Tandok 75
+105 D.I. Way Tanjung Raya 8
+106 D.I. Way Tapak Siring 28
+107 D.I. Way Tenam Bandung 100
+108 D.I. Way Tenong Pwt. 199
+109 D.I. Way Tribudi Syukur 82
+110 D.I. Way Tulung Sekanda 250
+111 D.I. Way Uluhan Liwa 197
+112 D.I. Way Warkuk 200
+113 D.I. Way Upang 49
+114 D.I. Way Semangka Hantatai 72
+115 D.I. Way Semangka 283
+116 D.I. Way Srimulyo 76
+117 D.I. Way Haru Sekunyir 218
+118 D.I. Way Uluhan II 120
+b Kab. Lampuna Selatan 103 15.355
+1 D.I. Way Asahan 500
+2 D.I. Way Bamban 34
+3 D.I. Way Belerang 150
+4 D.I. Way Belerang II 60
+5 D.I. Way Bojong 75
+6 D.I. Way Buha 60
+7 D.I. Way Canggu 80
+8 D.I. Way Cempaka 798
+9 D.I. Way Cidatuan 80
+10 D.I. Way Hamkawoan 777
+11 D.I. Way Hamsari 326
+12 D.I. Way Jembat Baru 30
+13 D.I. Way Kedaton 150
+14 D.I. Way Kekiling 157
+15 D.I. Way Kelau | 20
+16 D.I. Way Keroncong 100
+17 D.I. Way Kertosari 250
+18 D.I. Way Kesugihan I 150
+19 D.I. Way Kesugihan II 50
+#KANAN
+136
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Way Kupang Curup 105
+21 D.I. Way Kuripan 865
+22 D.I. Way Mahima 63
+23 D.I. Way Maja 53
+24 D.I. Way Memata 100
+25 D.I. Way Merak | 18
+26 D.I. Way Merak II 40
+27 D.I. Way Muli I 20
+28 D.I. Way Muli II 35
+29 D.I. Way Negeri Pandan 309
+30 D.I. Way Nyimut 161
+31 D.I. Way Panas 90
+32 D.I. Way Pancur Timah 176
+33 D.I. Way Pangkul 150
+34 D.I. Way Pardasuka 30
+35 D.I. Way Pelita Dewa 55
+36 D.I. Way Pematang | 200
+37 D.I. Way Pematang II 150
+38 D.I. Way Penengahan I 143
+39 D.I. Way Pisang Hulu 34
+40 D.I. Way Pisang I 972
+41 D.I. Way Rajabasa II 150
+42 D.I. Way Sededer 300
+43 D.I. Way Semambo 150
+44 D.I. Way Sendang Sari | 87
+45 D.I. Way Sendang Sari II 80
+46 D.I. Way Suban 217
+47 D.I. Way Suka Maju 100
+48 D.I. Way Sumber Agung 10
+49 D.I. Way Sumpuk 74
+50 D.I. Way Sumur 150
+51 D.I. Way Sumur Kumbang 122
+52 D.I. Way Supi 176
+53 D.I. Way Tajimalela 270
+54 D.I. Way Tanjung Iman 100
+55 D.I. Way Tuba Mati 265
+56 D.I. Way Tutung 150
+57 D.I. Way Asahan Hulu 125
+58 D.I. Way Asin 160
+59 D.I. Way Batu Agung 45
+60 D.I. Way Belajung 70
+61 D.I. Wav Betuna 40
+62 D.I. Way Buah Berak 150
+63 D.I. Way Canggung 21
+64 D.I. Way Cermin I 110
+65 D.I. Way Cermin II 101
+66 D.I. Way Cermin III 110
+67 D.I. Way Cugung I 25
+68 D.I. Way Cugung II 100
+69 D.I. Way Curup 58
+70 D.I. Way Gresik 40
+71 D.I. Way Jejor 45
+72 D.I. Way Kelau II 9
+73 D.I. Way Kelau III 17
+74 D.I. Way Kelau IV 169
+75 D.I. Way Kelau V 25
+76 D.I. Way Kunjir I 58
+77 D.I. Way Kunjir II 200
+78 D.I. Way Kunjir III 92
+79 D.I. Way Lappai Tengah 52
+80 D.I. Way Pahibungan | 25

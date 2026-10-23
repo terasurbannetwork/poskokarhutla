@@ -1,0 +1,16 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, N5.638 24
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+XXVIII PROVINSI PAPUA BARAT 3 9.666
+a Kab. Manokwari
+1 D.I. Aimasi Cs 3.200
+2 D.I. Oransbari 3.016
+3 D.I. Wariori 3.450
+XXIX PROVINSI PAPUA 3 14.600
+a Kota Jayapura
+1 D.I. Koya 5.000
+b Kab. Nabire
+1 D.I. Kalibumi 6.400
+2 D.I. Yahukimo 3.200
+TOTAL 283 2.376.521

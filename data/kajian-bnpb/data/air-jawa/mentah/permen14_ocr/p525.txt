@@ -1,0 +1,84 @@
+#TATA_LETAK satu-tabel lebar=2480
+595 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+127 D.LA.T. Jeblongan SKNG 400 5
+128 D.LA.T. Mangunharjo SKNG 401 5
+129 D.LA.T. Klitik SKNG 402 5
+130 D.LA.T. Klitik SKNG 403 5
+131 D.LA.T. Klitik SKNG 404 5
+132 D.LA.T. Bintoyo SKNG 405 5
+133 D.L.A.T. Bintoyo SKNG 406 5
+134 D.LA.T. Ngalik SKNG 407 5
+135 D.LA.T. Ngalik SKNG 408 5
+136 D.I.A.T. Bintoyo SKNG 409 5
+137 D.LA.T. Bintoyo SKNG 410 5
+138 D.LA.T. Semen SMNG 296 15
+139 D.LA.T. Semen SMNG 297 15
+140 D.LA.T. Semen SMNG 298 15
+141 D.LA.T. Jambangan SMNG 300 15
+142 D.LA.T. Jambangan SMNG 301 15
+143 D.LA.T. Kedunggalar SMNG 344 15
+144 D.LA.T. Kawu SMNG 345 15
+145 D.LA.T. Kedunggalar SMNG 346 15
+146 D.LA.T. Kedunggalar SMNG 347 15
+147 D.LA.T. Jatigembol SMNG 348 15
+148 D.LA.T. Jatigembol SMNG 349 15
+149 D.LA.T. Babadan SMNG 350 15
+150 D.LA.T. Babadan SMNG 351 15
+151 D.LA.T. Jambangan SMNG 352 15
+152 D.LA.T. Dawu SMNG 353 15
+153 D.LA.T. Gempol SMNG 354 15
+154 D.LA.T. Gempol SMNG 355 15
+155 D.LA.T. Kawu SMNG 431 15
+156 D.LA.T. Jemblogan SMNG 432 15
+157 D.LA.T. Jemblogan SMNG 433 15
+158 D.LA.T. Grudo SMNG 434 15
+159 D.LA.T. Jemblogan SMNG 435 15
+160 D.I.A.T. Sirigan SMNG 436 15
+o Kab. Pacitan 9 174
+
+1 D.LA.T. Belah SDPC 281 5
+
+2 D.LA.T. Belah SDPC 282 25
+
+3 D.LA.T. Hadi Luwih SDPC 288 10
+
+4 D.LA.T. Wiyoro SDPC 289 20
+
+5 D.LA.T. Ngadirejo SDPC 290 35
+
+6 D.I.A.T. Manadi SDPC 286 35
+
+7 D.LA.T. Arjowinangun SDPC 287 20
+
+8 D.I.A.T. Kendal SDPC 279 12
+
+9 D.LA.T. Warung SDPC 280 12
+
+p Kab. Pamekasan 52 1.678
+
+1 D.LA.T. Bulay I SDPM 066 30
+
+2 D.LA.T. Lebek I SDPM 075 40
+
+3 D.LA.T. Lebek II SDPM 077 32
+
+4 D.LA.T. Tatangoh SDPM 082 41
+
+5 D.LA.T. Trasak | SDPM 086 31
+
+6 D.LA.T. Bulangan Timur | SDPM 087 32
+
+7 D.LA.T. Trasak II SDPM 090 33
+
+8 D.L.A.T. Panaguhan II SDPM 092 39
+
+9 D.LA.T. Pagendingan | SDPM 093 58
+10 D.L.A.T. Peltong | SDPM 094 43
+11 D.LA.T. Tentenan Barat | SDPM 095 40
+12 D.LA.T. Kaduara Barat | SDPM 096 34
+13 D.LA.T. Ponteh | SDPM 097 40
+14 D.LA.T. Banyubuluh | SDPM 102 38

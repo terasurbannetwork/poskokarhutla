@@ -1,0 +1,67 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 516
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+138 D.L.A.T. Purwodadi SDKD 562 EJ 18
+i Kab. Lumaiana 69 970
+
+1 D.LA.T. Selok Awar-Awar SDLJ 080 32
+2 D.LA.T. Bago SDLJ 084 32
+3 D.LA.T. Bago SDLJ 085 41
+4 D.LA.T. Sumberjati SDLJ 086 29
+5 D.LA.T. Sumberjati SDLJ 177 30
+6 D.LA.T. Selok Awar-Awar SDLJ 178 30
+7 D.LA.T. Bago SDLJ179 30
+8 D.LA.T. Tempehkidul SDLJ 180 30
+9 D.LA.T. Munder SDLJ 204 30
+10 D.ILA.T. Munder SDLJ 205 30
+11 D.LA.T. Jatigono SDLJ 230 30
+12 D.LA.T. Karanglo SDLJ 231 33
+13 D.LA.T. Wonogriyo SMLJ 078 9
+14 D.LA.T. Wonogriyo SMLJ 079 8
+15 D.LA.T. Kaliwungu SMLJ 092 12
+16 D.LA.T. Kaliwungu SMLJ 093 11
+17 D.LA.T. Kunirlor SMLJ 094 10
+18 D.LA.T. Kunirlor SMLJ 095 10
+19 D.LA.T. Kunirlor SMLJ 096 10
+20 D.I.A.T. Kunirlor SMLJ 097 11
+21 D.I.A.T. Sukorejo SMLJ 098 11
+22 D.I.A.T. Sukorejo SMLJ 099 12
+23 D.I.A.T. Sukorejo SMLJ 100 11
+24 D.I.A.T. Sukorejo SMLJ 101 11
+25 D.LA.T. Karanganyar SMLJ 102 11
+26 D.ILA.T. Karanganyar SMLJ 103 11
+27 D.LA.T. Karanganyar SMLJ 104 10
+28 D.LA.T. Karanganyar SMLJ 105 10
+29 D.LA.T. Yosowilangun SMLJ 106 9
+30 D.ILLA.T. Yosowilangun SMLJ 107 11
+31 D.I.A.T. Nogosari SMLJ 108 9
+32 D.I.A.T. Nogosari SMLJ 109 12
+33 D.I.A.T. Nogosari SMLJ 110 7
+34 D.LA.T. Mangunsari SMLJ 111 11
+35 D.LA.T. Mangunsari SMLJ 112 10
+36 D.ILA.T. Mangunsari SMLJ 113 11
+37 D.I.A.T. Wonosari SMLJ 114 11
+38 D.I.A.T. Wonosari SMLJ 115 8
+39 D.I.A.T. Wonosari SMLJ 116 9
+40 D.I.A.T. Wonosari SMLJ 118 11
+41 D.LA.T. Karangrejo SMLJ 119 12
+42 D.LA.T. Karangrejo SMLJ 120 10
+43 D.LA.T. Karangrejo SMLJ 121 11
+44 D.LA.T. Kunirkidul SMLJ 136 10
+45 D.LA.T. Kunirkidul SMLJ 137 11
+46 D.I.A.T. Kunirkidul SMLJ 138 10
+47 D.LA.T. Kunirkidul SMLJ 139 10
+48 D.I.A.T. Jatigono SMLJ 140 10
+49 D.L.A.T. Jatigono SMLJ 141 11
+50 D.I.A.T. Jatigono SMLJ 143 10
+51 D.L.A.T. Jatirejo SMLJ 144 10
+52 D.L.A.T. Jatirejo SMLJ 145 10
+53 D.I.A.T. Jatirejo SMLJ 146 10
+54 D.L.A.T. Jatirejo SMLJ 147 10
+55 D.I.A.T. Sukosari SMLJ 148 11
+56 D.I.A.T. Sukosari SMLJ 149 10
+57 D.I.A.T. Sukosari SMLJ 150 10
+58 D.I.A.T. Sukosari SMLJ 151 10

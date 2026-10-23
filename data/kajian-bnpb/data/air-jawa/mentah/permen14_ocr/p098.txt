@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+297 D.I. Ngalau Nan Putiah 40
+298 D.I. Siaua Gadang 18
+299 D.I. Solok Silundang 28
+300 D.I. Mangunai Gadang 12
+301 D.I. Sei Air Dingin 29
+302 D.I. Tabek Songsang 30
+303 D.I. Sipundung 20
+304 D.I. Lokuk Solok 18
+305 D.I. Sei Uok 30
+306 D.I. Bdr Lolo Gadang 75
+307 D.I. Bdr Sadang 40
+308 D.I. Pincuran Lolo 71
+309 D.I. Pincuran Dt. Labu 200
+310 D.I. Empang Sungai Batuang 103
+311 D.I. Pincuran Bunao 144
+312 D.I. Bandar Limau 47
+313 D.I. Lurah Guguak 170
+314 D.I. Lakuak Sipasan 13
+315 D.I. Boncah Laweh 28
+316 D.I. Pincuran Rosam 32
+317 D.I. Kapalo Banda 26
+318 D.I. Bandar Tangah 87
+319 D.I. Sawah Laweh 25
+320 D.I. Simpang Galobah 21
+321 D.I. Salimpauang 24
+322 D.I. Empang Bitungan 29
+323 D.I. Bantar Anturo 120
+324 D.I. Sawah Boncah 32
+325 D.I. Bandar rasam 27
+326 D.I. Empang Kaik-Kaik 15
+327 D.I. Air Lulus 15
+328 D.I. Bintungan 26
+329 D.I. Emp. Buaan 10
+330 D.I. Batau Kabau 35
+331 D.I. Jemb. Limau 34
+332 D.I. Sawah Laweh 20
+333 D.I. Sei. Pimpiang 20
+334 D.I. Sei. Pangau 16
+335 D.I. Buluah Kasak 24
+336 D.I. Sei. Kuris 17
+337 D.I. Sei. Pacek 25
+338 D.I. Sei. Puigei 16
+339 D.I. Sei. Sopan 14
+340 D.I. Sei. Gantuang 18
+341 D.I. Pauh Saka 25
+342 D.I. Sialang Batu 10
+343 D.I. Bdr. Taluak 30
+344 D.I. Sukayan 28
+345 D.I. Pauh Auok 36
+346 D.I. Bend. Lubuak Gadang 20
+347 D.I. Emp. Sopan 30
+348 D.I. Emp. Panjang 22
+349 D.I. Sei. Liek 32
+350 D.I. Emp. Jambun 25
+351 D.I. Palintangan 20
+352 D.I. Lubuak Jao 25
+353 D.I. Emp. Lubuak Galak 18
+354 D.I. Emp. Muaro Jala 30
+355 D.I. Emp. Pulau Tangah 25
+356 D.I. Emp. Ronah 150
+357 D.I. Emp. Nyarok 50
+#KANAN
+98
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+358 D.I. Emp. Sopan 20
+359 D.I. Kaluaran 20
+360 D.I. Sei. Rambatan 20
+361 D.I. Emp. Sei. Naniang 20
+362 D.I. Batang Mutuang 30
+363 D.I. Emp. Batu Mangan 10
+364 D.I. Mudiak Mutuang 22
+365 D.I. Mudiak hayat 15
+366 D.I. Sei. Dingin 20
+367 D.I. Sei. Kubangan 15
+368 D.I. Lubuak Lolo 10
+369 D.I. Lubuak Lilik 16
+370 D.I. Sungai Jau 10
+e Kab. Padana Pariaman 415 25.611
+1 D.I. Anak Air Sijangek 111
+2 D.I. Kampung Sato 55
+3 D.I. Bdr. Koto Muaro 46
+4 D.I. Kamp. Manggis Barangan 56
+5 D.I. Bdr. Lubuk Gasan Gadang 28
+6 D.I. Bdr. Tanjung 200
+7 D.I. Batang Ceno 60
+8 D.I. Durian Dangka 46
+9 D.I. Bdr. Gadang Kalawi 300
+10 D.I. Bdr. Kubu Kuranji Hulu 33
+11 D.I. Bdr. Kalawi 45
+12 D.I. Bdr Lambeh Sei. Geringging 100
+13 D.I. Bdr. Sikapau 50
+14 D.I. Bdr. Sawah Laweh 107
+15 D.I. Bdr. Tanjung Alai 65
+16 D.I. Bdr. Batang Tiku 36
+17 D.I. Bdr. Baru Polongan 164
+18 D.I. Bdr. Baringin 60
+19 D.I. Bdr. Ganting | 102
+20 D.I. Kepala Bandar Koto 300
+21 D.I. Bdr. Piliang Aur Malintang 200
+22 D.I. Bdr. Padang Laring 112
+23 D.I. Bdr. Sibarasok Gadang 400
+24 D.I. Bdr. Sibarasok Ketek 600
+25 D.I. Bdr. Sibari 56
+26 D.I. Bdr. Tanjung Aur Malintang 553
+27 D.I. Bdr. Usang Aur Malintang 62
+28 D.I. Bdr. Paingan 34
+29 D.I. Duku I SP. I 186
+30 D.I. Duku I SP. II 343
+31 D.I. Kamumuan 12
+32 D.I. Lubuk Batung 20
+33 D.I. Padang Rumbio 35
+34 D.I. Bdr. Sibaruas 50
+35 D.I. Sungai Talang 14
+36 D.I. Sungai Baru Lohong 57
+37 D.I. Tabek Lakuak Bamban 42
+38 D.I. Kalawi 15
+39 D.I. Lambeh Lampanjang 50
+40 D.I. Sungai Rambai 20
+41 D.I. Durian Dangka 50
+42 D.I. Bdr. Durian Gadang 50
+43 D.I. Bdr. Kamp. Tangah Sikucur 54
+44 D.I. Bdr. Tanjung Sikucur 30
+45 D.I. Bdr. Lansano Koto Lalang 50
+46 D.I. Bdr. Bungo Tanjung 42

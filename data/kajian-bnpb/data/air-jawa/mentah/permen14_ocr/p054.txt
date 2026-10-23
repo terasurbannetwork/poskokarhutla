@@ -1,0 +1,21 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 54
+kp)
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+c Kab. Sorong
+1 D.I. Klasafet 1.500
+2 D.I. Klasagum 1.500
+3 D.I. Majaran 1.235
+4 D.I. Majener 1.235
+5 D.I. Makbusun 1.200
+6 D.I. Mariyat 1.500
+7 D.I. Matawolot 1.140
+8 D.I. Waigo/Moswaren 1.500
+XXXI PROVINSI PAPUA 3 4.425
+a Kab. Nabire
+1 D.I. Legare 1.150
+2 D.I. Maidey 1.075
+b Kab. Jayapura
+1 D.I. Lereh II 2.200
+TOTAL 984 1.105.474

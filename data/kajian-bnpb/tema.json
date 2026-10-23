@@ -1,0 +1,487 @@
+{
+  "_catatan": [
+    "Satu sumber token desain dua kajian BNPB, diturunkan dari PEDOMAN-DESAIN.md bagian B dengan keputusan KEPUTUSAN.md yang menang bila bertentangan (T1 judul bab kapital, T4 kaki halaman alamat BNPB, T8 kelas IRBI skala oranye, T10 istilah fase, P4 horizon 2026 sampai 2030). Slide mengikuti Buku Pegangan bab Selera presentasi (P14).",
+    "Generator DOCX, PPTX, perender peta dan grafik, dan peta web membaca berkas ini. Hex, ukuran huruf, margin, jarak, dan tebal garis tidak ditulis di kode.",
+    "Satuan ada di nama kunci: _pt poin, _cm sentimeter, _mm milimeter. Spasi huruf dalam poin (spc PPT 100 = 1,0 pt).",
+    "Di luar blok 'warna', warna dirujuk dengan NAMA token (mis. \"navy\", \"tint.api.pita\", \"kategori.api\", \"skala.air.4\"), bukan hex. Kunci perujuk: 'warna', 'warna_*', 'pil_*'. Pengurainya tema.py warna().",
+    "Sesudah menyunting, jalankan: python3 bangun/kontrak/tema.py. Validator menolak beda warna kategori di bawah ambang, kontras teks di bawah 4,5:1, rujukan token yang tidak ada, hex terlarang, huruf di bawah batas bawah, dan lebar kolom yang tidak menjumlah ke lebar isi."
+  ],
+  "versi": "1",
+  "diperbarui": "2026-10-23",
+
+  "font": {
+    "keluarga": "Roboto",
+    "berkas": {
+      "regular": "~/Library/Fonts/Roboto-Regular.ttf",
+      "medium": "~/Library/Fonts/Roboto-Medium.ttf",
+      "bold": "~/Library/Fonts/Roboto-Bold.ttf"
+    },
+    "angka_tabel": "tnum",
+    "butir_1": "•",
+    "butir_2": "huruf"
+  },
+
+  "warna": {
+    "inti": {
+      "teks": {"hex": "#1A1A1A", "pakai": "teks isi, teks di atas semua tint"},
+      "teks-2": {"hex": "#2E3440", "pakai": "sub-subbab, teks tabel sekunder, Sumber di dalam kotak bertint, ikon arah di halaman api atau basah"},
+      "teks-3": {"hex": "#6B7280", "pakai": "Sumber dan keterangan di latar putih, kepala kolom tabel lampiran, nilai 0%"},
+      "navy": {"hex": "#051C2C", "pakai": "identitas: kepala tabel, baris total, pil data, nomor peringkat, judul bab, label Tabel dan Gambar, sampul"},
+      "garis": {"hex": "#BFC5CC", "pakai": "garis panel 0,75 pt, garis baris tabel 0,5 pt, garis footer"},
+      "garis-kuat": {"hex": "#1A1A1A", "pakai": "garis header 0,75 pt, garis slide"},
+      "pembanding": {"hex": "#DCE1E7", "pakai": "batang pembanding grafik"},
+      "tanpa-data": {"hex": "#F1F3F6", "pakai": "wilayah atau sel tanpa data, selalu dengan arsir"},
+      "arsir-tanpa-data": {"hex": "#A9B4C2", "pakai": "arsir diagonal di atas tanpa-data"},
+      "wilayah": {"hex": "#D3DBE5", "pakai": "daratan bernilai netral di peta simbol; tidak di peta koroplet"},
+      "batas": {"hex": "#A9B4C2", "pakai": "batas provinsi 0,6 pt, garis pantai koroplet 0,4 pt"},
+      "kertas": {"hex": "#FFFFFF", "pakai": "latar halaman isi, teks di atas navy"}
+    },
+    "aksen": {
+      "oranye": {"hex": "#D9600B", "pakai": "naik; angka kunci judul >= 14 pt Bold; garis tegak header dan garis aksen"},
+      "biru": {"hex": "#2F86D1", "pakai": "turun"},
+      "merah": {"hex": "#C8102E", "pakai": "hanya bahaya atau perlu perhatian; garis sorot wilayah prioritas yang ditetapkan"},
+      "slate": {"hex": "#5B7A99", "pakai": "pil garis Terverifikasi dan peringatan BMKG, garis kiri kotak Catatan dan Koreksi"},
+      "biru-abu": {"hex": "#3F5F80", "pakai": "ukuran kedua: pil kolom luas, seri kedua grafik"},
+      "biru-lembaga": {"hex": "#00499D", "pakai": "nama tempat yang disorot di judul slide"},
+      "emas-teks": {"hex": "#8A6A2E", "pakai": "teks bernada kekeringan di bawah 14 pt"},
+      "sumber": {"hex": "#4A9BE0", "pakai": "bilah 3 pt di kiri catatan sumber slide; tanda grafis saja"}
+    },
+    "arah": {
+      "naik": "oranye",
+      "turun": "biru",
+      "nol": "teks-3",
+      "naik_di_navy": {"hex": "#F2A35E"},
+      "turun_di_navy": {"hex": "#8EC5F5"},
+      "_aturan": "arah = ikon segitiga vektor atau kata naik/turun, tidak pernah karakter segitiga atau panah; di halaman berkategori api atau basah ikon arah memakai teks-2 dan katanya ditulis"
+    },
+    "tint": {
+      "netral": {"pita": "#E6EAF0", "muda": "#F3F5F8"},
+      "api": {"pita": "#FBE7D6", "muda": "#FDF4EC"},
+      "bahaya": {"pita": "#F8DDE0", "muda": "#FCF1F2"},
+      "basah": {"pita": "#DCEBF8", "muda": "#EEF5FC"},
+      "kering": {"pita": "#F4ECDC", "muda": "#FBF8F2"},
+      "geologi": {"pita": "#F1E2D6"},
+      "nonalam": {"pita": "#E3EDE8"},
+      "luas": {"pita": "#E3EAF1"},
+      "sorot-baris": {"pita": "#FDF1E8"},
+      "_aturan": "teks di atas tint selalu teks; sosial memakai netral; tanpa gradien"
+    },
+    "kategori": {
+      "_aturan": "warna menandai keluarga bencana, jenis dibedakan ikon dan label; tidak pernah satu-satunya pembawa makna",
+      "geologi": {"hex": "#8A4B2A", "tint": "geologi", "label": "Geologi", "varian_skenario": "a", "jenis": ["gempa", "tsunami", "gunungapi", "likuefaksi"]},
+      "basah": {"hex": "#2F86D1", "tint": "basah", "label": "Hidrometeorologi basah", "varian_skenario": "a", "jenis": ["banjir", "longsor", "cuaca-ekstrem", "gelombang-abrasi", "rob"]},
+      "kering": {"hex": "#B08A3E", "tint": "kering", "label": "Kekeringan", "varian_skenario": "a", "jenis": ["kekeringan"]},
+      "api": {"hex": "#D9600B", "tint": "api", "label": "Kebakaran hutan dan lahan", "varian_skenario": "a", "jenis": ["karhutla"]},
+      "nonalam": {"hex": "#3D6B5A", "tint": "nonalam", "label": "Nonalam", "varian_skenario": "b", "jenis": ["pandemi", "kebakaran-industri", "kebakaran-tpa"]},
+      "sosial": {"hex": "#4B4F58", "tint": "netral", "label": "Sosial", "varian_skenario": "c", "jenis": ["konflik-sosial"]}
+    },
+    "skala": {
+      "_aturan": "lima kelas dari terang ke pekat; skala.<ramp>.<1..5>; status resmi lembaga (level PVMBG, peringatan BMKG, MMI) memakai warna dan kata asli lembaganya, tidak dipetakan ke sini",
+      "api": {"kelas": ["#FBE7D6", "#F4C3A0", "#E8894A", "#D9600B", "#8F3F07"], "dipakai": "karhutla; kelas IRBI (T8)"},
+      "air": {"kelas": ["#DCEBF8", "#A4CAEE", "#68A8E0", "#2F86D1", "#1B5A93"], "dipakai": "indeks platform banjir, longsor, cuaca ekstrem, gelombang, rob"},
+      "emas": {"kelas": ["#F4ECDC", "#DCC79C", "#C4A262", "#A07A32", "#6E5424"], "dipakai": "indeks platform kekeringan"},
+      "netral": {"kelas": ["#DCE3EB", "#AEBBCB", "#7F93AA", "#4F6A88", "#24384F"], "dipakai": "kapasitas, geologi, nonalam, multi-bahaya platform"},
+      "irbi": {
+        "ramp": "api",
+        "kelas": [1, 3, 5],
+        "label": ["Rendah", "Sedang", "Tinggi"],
+        "legenda": "Kelas IRBI BNPB",
+        "_aturan": "T8: skala oranye rumah BNPB dengan nama kelas resmi; merah tidak dipakai untuk kelas indeks"
+      },
+      "tanpa_data": {"isi": "tanpa-data", "arsir": "arsir-tanpa-data", "label": "Belum terdata"}
+    },
+    "terlarang": [
+      "#D9650B", "#0F1E2D", "#0B4EA2", "#A88A3C", "#FBEBDD", "#D5D9DE",
+      "#2F6FB5", "#4F6D8C", "#2E7D8C", "#6B4A2B", "#7A2E1E", "#A23B2A", "#F7F8FA",
+      "#0B2545", "#C9A227"
+    ]
+  },
+
+  "validasi": {
+    "_catatan": "ambang pedoman B1.3 dan B1.4; tema.py menolak tema yang melanggarnya",
+    "kategori_de_min": 15,
+    "kategori_kontras_min": 3.0,
+    "ramp_sebelah_de_min": 10,
+    "ramp_kelas1_vs_putih_de_min": 7,
+    "irbi_de_min": 20,
+    "teks_kontras_min": 4.5,
+    "token_teks": ["teks", "teks-2", "teks-3", "navy", "emas-teks"]
+  },
+
+  "kajian": {
+    "air": {
+      "judul": "Grand Design Ketahanan Air Pulau Jawa 2026–2030",
+      "subjudul": "Pengelolaan Air pada Musim Kemarau dan Musim Hujan untuk Pengurangan Risiko Bencana",
+      "judul_pendek": "Kajian Ketahanan Air Pulau Jawa",
+      "nama_berkas": "Kajian Ketahanan Air Pulau Jawa {DDMMYY}",
+      "batas_halaman_isi": 110,
+      "lampiran": "ABCDEFGH"
+    },
+    "mitigasi": {
+      "judul": "Grand Design Mitigasi Bencana Indonesia 2026–2030",
+      "subjudul": "Strategi Prabencana, Tanggap Darurat, dan Pascabencana",
+      "judul_pendek": "Kajian Mitigasi Bencana Indonesia",
+      "nama_berkas": "Kajian Mitigasi Bencana Indonesia {DDMMYY}",
+      "batas_halaman_isi": 150,
+      "lampiran": "ABCDEFGHI"
+    },
+    "penerbit": "Badan Nasional Penanggulangan Bencana",
+    "terbit": "Oktober 2026"
+  },
+
+  "halaman": {
+    "kertas": "A4",
+    "lebar_cm": 21.0,
+    "tinggi_cm": 29.7,
+    "margin_cm": {"kiri": 2.5, "kanan": 2.0, "atas": 2.5, "bawah": 2.0},
+    "header_dari_tepi_cm": 1.2,
+    "footer_dari_tepi_cm": 1.0,
+    "lebar_isi_cm": 16.5,
+    "sela_kolom_cm": 0.4,
+    "lanskap": "hanya lampiran bertabel lebar"
+  },
+
+  "objek": {
+    "lebar_cm": {"penuh": 16.5, "dua-kolom": 8.05, "tiga-kolom": 5.23},
+    "skala_render_png": 2,
+    "radius_mm": 2,
+    "radius_hanya_di": "PNG, SVG, HTML; kotak DOCX bersudut tegak",
+    "inset_panel_mm": 3,
+    "pita_kepala_panel_mm": 9,
+    "lingkaran_ikon_kartu_mm": 9,
+    "ikon_kartu_mm": 5,
+    "ikon_rasio_lingkaran": [0.55, 0.62],
+    "kartu_per_baris": [3, 4],
+    "logo_header_tinggi_mm": 8,
+    "header_blok_maks_mm": 10,
+    "sampul_foto_persen_tinggi": 55,
+    "maks_kolom_tabel_tegak": 8,
+    "maks_butir_daftar": 5,
+    "tabel_sisa_baris_min": 4,
+    "label_kartu_maks_huruf": 24,
+    "judul_blok_maks_huruf": 32,
+    "rincian_rekomendasi_huruf": 110,
+    "judul_maks_baris": 2,
+    "keterangan_maks_baris": 2
+  },
+
+  "spasi_pt": {
+    "skala": [3, 6, 12, 18, 24],
+    "baris_isi": 1.15,
+    "sesudah_paragraf": 6,
+    "sebelum_subbab": 18,
+    "sebelum_subsubbab": 12,
+    "sebelum_keterangan": 12,
+    "sesudah_sumber": 12,
+    "inden_toc2_mm": 7,
+    "inden_toc3_mm": 14,
+    "inden_gantung_pustaka_cm": 1.25
+  },
+
+  "garis_pt": {
+    "header": {"tebal_pt": 0.75, "warna": "garis-kuat"},
+    "footer": {"tebal_pt": 0.5, "warna": "garis"},
+    "panel": {"tebal_pt": 0.75, "warna": "garis"},
+    "baris_tabel": {"tebal_pt": 0.5, "warna": "garis"},
+    "kepala_tabel_lampiran": {"tebal_pt": 1.0, "warna": "teks-3"},
+    "aksen_header": {"tebal_pt": 2, "tinggi_mm": 7, "warna": "oranye"},
+    "aksen_label_bab": {"tebal_pt": 2, "lebar_mm": 12, "warna": "oranye"},
+    "aksen_sampul": {"tebal_pt": 3, "warna": "oranye"},
+    "kotak_kiri": {"tebal_pt": 3},
+    "diagram": {"tebal_pt": 0.75, "warna": "garis", "warna_penghubung": "teks-2"},
+    "sorot_prioritas": {"tebal_pt": 1.5, "warna": "merah"},
+    "batas_wilayah": {"tebal_pt": 0.4, "warna": "kertas"},
+    "batas_provinsi": {"tebal_pt": 0.6, "warna": "batas"},
+    "pantai": {"tebal_pt": 0.4, "warna": "batas"}
+  },
+
+  "tipografi_docx": {
+    "_catatan": "PEDOMAN B2; judul bab kapital sesuai KEPUTUSAN T1 (teks kapital ditulis literal oleh generator, w:caps tidak dipakai pada run bersatuan)",
+    "batas_bawah_pt": 8,
+    "judul_sampul": {"ukuran_pt": 32, "bobot": "bold", "warna": "kertas", "maks_baris": 3},
+    "subjudul_sampul": {"ukuran_pt": 14, "bobot": "regular", "warna": "kertas"},
+    "label_bab": {"ukuran_pt": 9, "bobot": "bold", "warna": "navy", "kapital": true, "spasi_huruf_pt": 1.0, "pola": "BAB {n}"},
+    "judul_bab": {"ukuran_pt": 20, "bobot": "bold", "warna": "navy", "kapital": true, "halaman_baru": true, "maks_baris": 2},
+    "pertanyaan_bab": {"ukuran_pt": 10.5, "bobot": "regular", "miring": true, "warna": "teks-2"},
+    "judul_bagian_depan": {"ukuran_pt": 20, "bobot": "bold", "warna": "navy", "kapital": true},
+    "subbab": {"ukuran_pt": 13, "bobot": "bold", "warna": "navy", "sebelum_pt": 18, "nomor_menggantung": true},
+    "subsubbab": {"ukuran_pt": 11.5, "bobot": "bold", "warna": "teks-2", "sebelum_pt": 12},
+    "tingkat4": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "teks", "masuk_toc": false},
+    "isi": {"ukuran_pt": 10.5, "bobot": "regular", "warna": "teks", "spasi_baris": 1.15, "sesudah_pt": 6, "rata": "kiri-kanan"},
+    "penekanan": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "navy"},
+    "istilah_asing": {"miring": true},
+    "keterangan": {"ukuran_pt": 9, "bobot_label": "bold", "warna_label": "navy", "warna_judul": "teks", "rata": "tengah", "sebelum_pt": 12, "pola": "{label} {nomor} {judul}"},
+    "sumber": {"ukuran_pt": 8.5, "bobot_label": "bold", "warna": "teks-3", "warna_dalam_tint": "teks-2", "rata": "kiri", "sesudah_pt": 12, "pola": "Sumber: {sumber}; data per {data_per}"},
+    "isi_tabel": {"ukuran_pt": 9, "bobot": "regular", "warna": "teks"},
+    "kepala_tabel": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "kertas", "warna_isi": "navy", "spasi_huruf_pt": 0.8, "kapital_literal": true, "maks_baris": 3},
+    "kepala_tabel_lampiran": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "teks-3"},
+    "nilai_kartu": {"ukuran_pt": 18, "bobot": "bold"},
+    "label_kartu": {"ukuran_pt": 8.5, "bobot": "regular", "warna": "teks-3"},
+    "pil": {"ukuran_pt": 8, "bobot": "bold", "kapital": true, "spasi_huruf_pt": 0.8},
+    "catatan_kaki": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks", "nomor": "per-bab"},
+    "header": {"ukuran_pt": 8, "bobot_baris1": "bold", "bobot_baris2": "regular", "warna": "teks"},
+    "footer": {"ukuran_pt": 8, "warna": "teks-3"},
+    "nomor_halaman": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+    "toc1": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "navy"},
+    "toc2": {"ukuran_pt": 10.5, "bobot": "regular", "warna": "teks"},
+    "toc3": {"ukuran_pt": 10.5, "bobot": "regular", "warna": "teks-2"},
+    "daftar_objek": {"ukuran_pt": 10.5, "bobot_label": "bold", "warna": "teks"},
+    "pustaka": {"ukuran_pt": 10, "bobot": "regular", "warna": "teks"},
+    "isi_kotak": {"ukuran_pt": 9.5, "bobot": "regular", "warna": "teks"},
+    "judul_kotak": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "teks"}
+  },
+
+  "header_footer": {
+    "header": {
+      "baris1": "{judul_pendek}",
+      "baris2": "BNPB | {terbit}",
+      "logo": "../../public/img/lembaga/sumber-bnpb.png",
+      "tanpa_di": ["sampul", "sampul-belakang", "pembatas-lampiran"]
+    },
+    "footer": {
+      "baris": [
+        "Badan Nasional Penanggulangan Bencana, Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+        "Call Center 117, www.bnpb.go.id"
+      ],
+      "nomor": "kanan, bidang PAGE",
+      "tanpa_di": ["sampul", "sampul-belakang", "pembatas-lampiran"],
+      "_aturan": "KEPUTUSAN T4; kaki dua baris menambah tinggi kaki sekitar 4 mm, masih di dalam margin bawah 2,0 cm"
+    },
+    "penomoran": {"sampul": "tanpa", "bagian_depan": "romawi-kecil", "isi": "arab", "mulai_arab": "bab-1", "objek": "per-bab", "objek_lampiran": "per-kode"},
+    "sampul_belakang": [
+      "Badan Nasional Penanggulangan Bencana",
+      "Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120",
+      "Call Center 117",
+      "www.bnpb.go.id",
+      "persuratan@bnpb.go.id"
+    ]
+  },
+
+  "kotak": {
+    "_catatan": "PEDOMAN B5.3, B5.5, B5.6; satu topik satu kotak, tanpa panel gelap",
+    "temuan": {"warna_latar": "tint.netral.muda", "warna_garis_kiri": "navy"},
+    "keputusan": {"warna_latar": "tint.api.muda", "warna_garis_kiri": "oranye"},
+    "koreksi": {"warna_latar": "tint.netral.muda", "warna_garis_kiri": "slate", "label": "Koreksi", "maks_per_bab": 1},
+    "catatan": {"warna_latar": "tint.netral.muda", "warna_garis_kiri": "slate", "label": "Catatan"},
+    "ringkasan-bab": {"warna_latar": "kertas", "warna_pita": "tint.netral.pita", "warna_garis": "garis", "judul": "Ringkasan bab", "ikon": "ringkasan"},
+    "program": {"warna_latar": "kertas", "warna_pita": "tint.netral.pita", "warna_garis": "garis", "ikon": "lembaga"},
+    "kartu-angka": {"warna_latar_grup": "tint.netral.muda", "warna_latar_kartu": "kertas", "warna_garis": "garis"},
+    "garis-waktu": {"warna_pita": "tint.netral.pita", "warna_pemisah": "garis"},
+    "pembatas-lampiran": {"warna_latar": "navy", "warna_judul": "kertas"}
+  },
+
+  "peta": {
+    "latar": "kertas",
+    "laut": "kertas",
+    "daratan_netral": "wilayah",
+    "simbol_garis": "kertas",
+    "simbol_di_koroplet": "navy",
+    "label_min_pt": 8,
+    "legenda_pt": 7.5,
+    "pil_label_garis": "garis"
+  },
+
+  "grafik": {
+    "batang_ujung_bulat": true,
+    "sumbu_y": false,
+    "nilai_di_atas": true,
+    "warna_pembanding": "pembanding",
+    "warna_garis_dasar": "garis",
+    "warna_rata_rata": "navy",
+    "warna_seri_kedua": "biru-abu"
+  },
+
+  "ikon": {
+    "_catatan": "registri konsep ke glif, satu glif satu arti (D-25). Sumber glif: 'deck:<nama>' = path di data/laporan-bnpb/harian-2026-10-23/ikon.mjs; 'lucide:<nama>' = ikon Lucide; 'khusus:<nama>' = glif gaya Lucide (viewBox 24, stroke 2, ujung bulat) yang digambar komponen ikon. Ikon selalu di dalam lingkaran.",
+    "gempa": "deck:gempa",
+    "tsunami": "khusus:tsunami",
+    "gunungapi": "lucide:mountain",
+    "likuefaksi": "khusus:likuefaksi",
+    "banjir": "deck:banjir",
+    "longsor": "khusus:longsor",
+    "cuaca-ekstrem": "lucide:cloud-lightning",
+    "gelombang-abrasi": "khusus:abrasi",
+    "rob": "khusus:rob",
+    "kekeringan": "lucide:sun",
+    "karhutla": "deck:api",
+    "pandemi": "lucide:virus",
+    "kebakaran-industri": "lucide:factory",
+    "kebakaran-tpa": "deck:sampah",
+    "konflik-sosial": "khusus:konflik",
+    "air-baku": "lucide:droplet",
+    "irigasi": "lucide:sprout",
+    "bendungan": "khusus:bendungan",
+    "air-tanah": "khusus:sumur",
+    "penurunan-muka-tanah": "khusus:gnss",
+    "jiwa": "deck:orang",
+    "rumah": "deck:rumah",
+    "pengungsi": "deck:tenda",
+    "kesehatan": "deck:hati",
+    "sekolah": "lucide:school",
+    "luas": "lucide:land-plot",
+    "wilayah": "lucide:map-pin",
+    "lembaga": "lucide:landmark",
+    "kalender": "deck:kalender",
+    "ringkasan": "lucide:list-checks",
+    "peringatan": "lucide:triangle-alert",
+    "prabencana": "lucide:shield-check",
+    "tanggap-darurat": "lucide:siren",
+    "pascabencana": "lucide:hammer",
+    "regulasi": "lucide:scale",
+    "data": "lucide:database",
+    "infrastruktur": "lucide:construction",
+    "kapasitas": "lucide:graduation-cap",
+    "pembiayaan": "lucide:banknote",
+    "naik": "khusus:segitiga-naik",
+    "turun": "khusus:segitiga-turun"
+  },
+
+  "kosakata": {
+    "_catatan": "kode yang ditulis di naskah (bangun/NASKAH-SPEK.md) dan label yang tampil; generator menolak kode di luar daftar ini",
+    "jenis_bencana": {
+      "gempa": "Gempa bumi",
+      "tsunami": "Tsunami",
+      "gunungapi": "Letusan gunung api",
+      "likuefaksi": "Likuefaksi",
+      "banjir": "Banjir dan banjir bandang",
+      "longsor": "Tanah longsor",
+      "cuaca-ekstrem": "Cuaca ekstrem",
+      "gelombang-abrasi": "Gelombang ekstrem dan abrasi",
+      "rob": "Rob",
+      "kekeringan": "Kekeringan",
+      "karhutla": "Kebakaran hutan dan lahan",
+      "pandemi": "Epidemi dan pandemi",
+      "kebakaran-industri": "Kebakaran industri",
+      "kebakaran-tpa": "Kebakaran TPA",
+      "konflik-sosial": "Kerusuhan dan konflik sosial"
+    },
+    "keyakinan": {
+      "resmi": {"label": "Resmi", "pil_isi": "navy", "pil_teks": "kertas"},
+      "terverifikasi": {"label": "Terverifikasi", "pil_garis": "slate", "pil_teks": "teks"},
+      "estimasi-model": {"label": "Estimasi model", "pil_garis": "oranye", "pil_teks": "teks", "tambahan": ["belum diuji balik", "uji balik gagal"]},
+      "asumsi-kebijakan": {"label": "Asumsi kebijakan", "pil_garis": "teks-3", "pil_teks": "teks"}
+    },
+    "status_usulan": {
+      "sudah-ada": {"label": "Sudah ada", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "dikembangkan": {"label": "Sudah ada, perlu dikembangkan", "pil_garis": "navy", "pil_teks": "teks"},
+      "baru": {"label": "Usulan baru", "pil_isi": "navy", "pil_teks": "kertas"}
+    },
+    "fase": {
+      "prabencana": {"label": "Prabencana", "kepala": "PRABENCANA"},
+      "tanggap-darurat": {"label": "Tanggap darurat", "kepala": "TANGGAP DARURAT"},
+      "pascabencana": {"label": "Pascabencana", "kepala": "PASCABENCANA"},
+      "_aturan": "T10; ketiga kolom bertint netral, dibedakan ikon dan label"
+    },
+    "jenis_aksi": {
+      "regulasi": "Regulasi",
+      "data": "Data",
+      "infrastruktur": "Infrastruktur",
+      "kapasitas": "Kapasitas",
+      "pembiayaan": "Pembiayaan"
+    },
+    "horizon": {
+      "100-hari": "100 hari",
+      "2026-2027": "2026–2027",
+      "2028-2030": "2028–2030"
+    },
+    "kelompok_rekomendasi": {"internal": "Internal BNPB", "lintas": "Lintas K/L"},
+    "sifat_temuan": {"fakta": "fakta", "penilaian": "penilaian"},
+    "nada_pil": {
+      "data": {"pil_isi": "navy", "pil_teks": "kertas"},
+      "perhatian": {"pil_isi": "merah", "pil_teks": "kertas"},
+      "bmkg": {"pil_garis": "slate", "pil_teks": "teks"}
+    },
+    "musim": {
+      "kemarau": {"label": "Musim kemarau", "tint": "kering"},
+      "hujan": {"label": "Musim hujan", "tint": "basah"}
+    },
+    "jenis_gambar": ["peta", "grafik", "diagram", "foto"],
+    "lisensi_foto": ["CC BY", "CC BY-SA", "CC0", "PD"],
+    "bagian_depan": {
+      "kata-pengantar": "Kata Pengantar",
+      "ringkasan-eksekutif": "Ringkasan Eksekutif"
+    },
+    "kemungkinan_5_tahun": {
+      "1": "< 0,2%",
+      "2": "0,2–1%",
+      "3": "1–5%",
+      "4": "5–25%",
+      "5": "> 25%"
+    },
+    "besaran_skenario_alam": [
+      "Korban jiwa",
+      "Luka",
+      "Pengungsi hari ke-7",
+      "Bangunan rusak berat",
+      "Bangunan rusak sedang",
+      "Bangunan rusak ringan",
+      "Luas terdampak",
+      "Kerugian materiil",
+      "DALY",
+      "Hari mengungsi",
+      "Sekolah terganggu",
+      "Faskes terganggu"
+    ],
+    "indikator_skenario_nonalam": {
+      "pandemi": ["Kasus", "Kematian", "Hari layanan kesehatan terganggu"],
+      "kebakaran-tpa": ["Luas terbakar", "Hari asap", "Kasus ISPA"],
+      "kebakaran-industri": ["Radius evakuasi", "Pengungsi", "Korban jiwa", "Luka"]
+    }
+  },
+
+  "slide": {
+    "_catatan": "Buku Pegangan bab Selera presentasi (P14); ukuran dalam pt, slide 960 x 540 pt",
+    "lebar_pt": 960,
+    "tinggi_pt": 540,
+    "margin_kiri_pt": 43.2,
+    "tepi_kanan_isi_pt": 916.8,
+    "lebar_isi_pt": 873.6,
+    "area_isi_y_pt": [101, 500],
+    "kata_per_slide": [180, 290],
+    "blok_per_slide": [3, 4],
+    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 823, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
+    "garis": {"y_pt": [95, 507.6], "tebal_pt": 0.75, "warna": "garis-kuat"},
+    "logo": {"x_pt": 889.4, "y_pt": 28.8, "lebar_pt": 27.4, "tinggi_pt": 34.6},
+    "footer": {"teks": "Badan Nasional Penanggulangan Bencana  |  Copyright 2026", "y_pt": 512.6, "ukuran_pt": 8.5, "warna": "teks"},
+    "layout": {"isi": "kertas", "gelap": "navy", "gelap_untuk": ["penutup", "pembatas-lampiran"]},
+    "tipografi": {
+      "batas_bawah_pt": 6,
+      "judul_temuan": {"ukuran_pt": [19, 22], "bobot": "bold", "warna": "teks", "warna_angka": "oranye", "warna_tempat": "biru-lembaga", "maks_baris": 2},
+      "subjudul": {"ukuran_pt": 12, "bobot": "regular", "warna": "teks-2"},
+      "nilai_kartu": {"ukuran_pt": 17, "bobot": "bold"},
+      "hitungan_panel": {"ukuran_pt": [16, 18], "bobot": "bold"},
+      "nilai_ubin": {"ukuran_pt": 15, "bobot": "bold"},
+      "judul_panel": {"ukuran_pt": 11, "bobot": "bold", "warna": "teks"},
+      "judul_grafik": {"ukuran_pt": 10, "bobot": "regular", "warna": "teks"},
+      "judul_kolom_pita": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+      "label_kartu": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks-2"},
+      "label_bagian": {"ukuran_pt": 7.5, "bobot": "bold", "spasi_huruf_pt": 1.0},
+      "isi_daftar": {"ukuran_pt": 7.2, "bobot": "regular", "warna": "teks"},
+      "rincian_rekomendasi": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks", "rata": "kiri-kanan"},
+      "kepala_kolom": {"ukuran_pt": 6.5, "bobot": "bold", "warna": "teks-3", "kapital": true, "spasi_huruf_pt": 0.8},
+      "pil_bagian": {"ukuran_pt": 6.6, "bobot": "bold", "warna": "kertas", "kapital": true, "spasi_huruf_pt": 1.0},
+      "pil_status": {"ukuran_pt": [6, 6.4], "bobot": "bold"},
+      "nilai_batang": {"ukuran_pt": 7.6, "bobot": "bold"},
+      "tanggal_batang": {"ukuran_pt": 6.5, "bobot": "regular", "warna": "teks-3"},
+      "persen_batang": {"ukuran_pt": 6, "bobot": "bold"},
+      "legenda": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks"},
+      "catatan_kaki": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks-3"},
+      "footer": {"ukuran_pt": 8.5, "bobot": "regular", "warna": "teks"},
+      "nomor_halaman": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "teks"},
+      "pengecualian_bawah": {"ukuran_pt": [5.2, 5.8], "hanya": "persen di tabel padat dan chip"}
+    },
+    "komponen": {
+      "kartu": {"lebar_pt": [132, 159], "tinggi_pt": 40, "radius_pt": 5.8, "lingkaran_pt": 26, "ikon_pt": 14, "jarak_pt": 7.2, "warna_garis": "garis"},
+      "grup_kartu": {"tinggi_pt": 73, "jarak_pt": 21},
+      "pil_bagian": {"tinggi_pt": 14.4, "ikon_pt": 9},
+      "panel": {"radius_pt": 4.3, "pita_pt": 36, "lingkaran_pt": 23, "ikon_pt": 14, "jarak_pt": 10.8, "warna_garis": "garis"},
+      "pita_bawah": {"lebar_pt": 874, "tinggi_pt": [61, 71], "lingkaran_pt": 26},
+      "baris_rekomendasi": {"tinggi_pt": 46.8, "lingkaran_pt": 26},
+      "tabel_peringkat": {"baris_pt": 17.3, "bulatan_pt": 13.7, "total_pt": 21, "warna_pemisah": "tint.netral.pita"},
+      "tabel_lampiran": {"baris_pt": [18, 21.6], "maks_baris": 24},
+      "cut_off": {"label": "CUT OFF DATA", "tinggi_pt": [16.6, 18], "lebar_pt": [186, 220], "warna_isi": "navy"},
+      "catatan_kaki": {"bilah_pt": [3, 15], "warna_bilah": "sumber"},
+      "jarak_isi_ke_tepi_panel_pt": 7
+    }
+  }
+}

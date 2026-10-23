@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+183 D.I. Tukaran 65
+184 D.I. Uma Tomatua Padakka 80
+t Kab. Toraia Utara 162 10.129
+1 D.I. Batu Alang 135
+2 D.I. Batupak | 117
+3 D.I. Bomboway 88
+4 D.I. Bonoran 65
+5 D.I. Bubun Batu 20
+6 D.I. Butang 48
+7 D.I. Daro 23
+8 D.I. Kalimbuang 52
+9 D.I. Karangan 42
+10 D.I. Lantang Batu 40
+11 D.I. Lewangan 38
+12 D.I. Londong Biang 117
+13 D.I. Marara 80
+14 D.I. Mata Salu 49
+15 D.I. Nonongan 242
+16 D.I. Pangli Palawa 200
+17 D.I. Pengkaroan Manuk 60
+18 D.I. Pirri' 65
+19 D.I. Pura Allo 90
+20 D.I. Salu Karruk 72
+21 D.I. Salu Silaga 60
+22 D.I. Salu Tabu 70
+23 D.I. Sampe 90
+24 D.I. Siba'ta Palangi/To'kua 81
+25 D.I. Singga 95
+26 D.I. T. Sumuluk 80
+27 D.I. To' Kalaa 47
+28 D.I. To' Otin/Kanan 107
+29 D.I. To' Karau' 77
+30 D.I. To' Wai 231
+31 D.I. Tuara 40
+32 D.I. Uru 80
+33 D.I. Wae Dalle 55
+34 D.I. Waerede 70
+35 D.I. Air Padudung 45
+36 D.I. Alla' Salu 40
+37 D.I. Alla Salu Tamuang 75
+38 D.I. Alla' Salu Tondon 73
+39 D.I. Ba'balang 41
+40 D.I. Bakke' 56
+41 D.I. Bamba 43
+42 D.I. Bangun Lipu | 40
+43 D.I. Bangun Lipu II 60
+44 D.I. Banteng Batu-Malenong 62
+45 D.I. Barereng 29
+46 D.I. Batu Lappa 44
+47 D.I. Batu Matanduk 50
+48 D.I. Batu Tedong 70
+49 D.I. Batu Tongkon 40
+50 D.I. Batukleong 45
+51 D.I. Batulappa-Sangpolo 44
+52 D.I. Batupak II 77
+53 D.I. Berre' 30
+54 D.I. Bila 55
+55 D.I. BokinfPadamaran 61
+56 D.I. Bombang 95
+57 D.I. Bombong 70
+#KANAN
+450
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+58 D.I. Bongli 123
+59 D.I. Bulu-Bulu" 35
+60 D.I. Buntu Lalia' 36
+61 D.I. Dusun Tondon 50
+62 D.I. Guririk 55
+63 D.I. Kakondongan 38
+64 D.I. Kalebu'-Indo'toding 25
+65 D.I. Kalo Pikung 50
+66 D.I. Kampuang Totabang 76
+67 D.I. Karangan Marante 42
+68 D.I. Kayu Angin 37
+69 D.I. Kendenan 65
+70 D.I. Laga Mafia 35
+71 D.I. Langdoan 40
+72 D.I. Langkan 46
+73 D.I. Langsa' 50
+74 D.I. Liku Lambe 56
+75 D.I. Limbong Deata 50
+76 D.I. Lokko'na Lamba Teklitak 60
+77 D.I. Lolai 36
+78 D.I. Lolai Baruppu' 36
+79 D.I. Lombo' Simparun 37
+80 D.I. Manakgallang 85
+81 D.I. Marura 72
+82 D.I. Massayo 68
+83 D.I. Mata Kanan 50
+84 D.I. Mau' (Buntu Lempong-To'bulan) 62
+85 D.I. Ne' Akkung 132
+86 D.I. Ne' Dido 65
+87 D.I. Ne' Sari Tiro Allo 30
+88 D.I. Pa'basean Doa 54
+89 D.I. Paka' Bi' 42
+90 D.I. Pangala' Patongloan 50
+91 D.I. Pangroro Tondon 37
+92 D.I. Pa'parukan 85
+93 D.I. Paressa 45
+94 D.I. Pasa' 83
+95 D.I. Pasamboan 59
+96 D.I. Pasang Tau'la'ba 38
+97 D.I. Patandi 79
+98 D.I. Pa'tondokan 77
+99 D.I. Pembangunan Tigaruk 49
+100 D.I. Penniroan 35
+101 D.I. Pokkao' 55
+102 D.I. Ponding Kanan 70
+103 D.I. Pong Toding 150
+104 D.I. Pulio 82
+105 D.I. Rangke 26
+106 D.I. Rano Kalua' Pongsakke 63
+107 D.I. Ranre Langda 47
+108 D.I. Rante Issong 56
+109 D.I. Rantebua 30
+110 D.I. Rongo 47
+111 D.I. S. Bulan 50
+112 D.I. S. Siba'ta 150
+113 D.I. S. Simpo 35
+114 D.I. Saloso 35
+115 D.I. Salu Alang 68
+116 D.I. Salu Asa 50
+117 D.I. Salu Aya 45
+118 D.I. Salu Baroko-Luba'ba 55

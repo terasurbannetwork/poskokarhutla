@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+39 D.I. Grigak 8
+40 D.I. Gua Lawa 85
+41 D.I. Gunung Tumpeng 25
+42 D.I. Gunungsari 50
+43 D.I. Indang Atas 35
+44 D.I. Indang Bawah 40
+45 D.I. Jamberata 44
+46 D.I. Jambreng 20
+47 D.I. Jatinegara/Bd. karet 859
+48 D.I. Jintung 20
+49 D.I. Jladri 56
+50 D.I. Jlegong 64
+51 D.I. Jogomulyo 30
+52 D.I. Jombret 40
+53 D.I. Kajoran 15
+54 D.I. Kalbut 10
+55 D.I. Kali Abang 33
+56 D.I. Kali Gandu 34
+57 D.I. Kali Gombong I 20
+58 D.I. Kali Gombong II 50
+59 D.I. Kali Ijo 30
+60 D.I. Kali Jirek 25
+61 D.I. Kali Kayan kanan 15
+62 D.I. Kali Kayan kiri 45
+63 D.I. Kali Kemit 25
+64 D.I. Kali Ketek 134
+65 D.I. Kali Petir 20
+66 D.I. Kali Salak 350
+67 D.I. Kali Sana | 40
+68 D.I. Kali Sana II 35
+69 D.I. Kali Trenggulun 20
+70 D.I. Kaligedang 36
+71 D.I. Kaligedong 33
+72 D.I. Kaligending | 36
+73 D.I. Kaligending II 14
+74 D.I. Kaligesing 29
+75 D.I. Kalikudu 30
+76 D.I. Kalipoh 15
+77 D.I. Kaliputih 30
+78 D.I. Karang Duwur 20
+79 D.I. Karang Joho 10
+80 D.I. Karang Mojo 55
+81 D.I. Karang Tengah 155
+82 D.I. Karangsambung 21
+83 D.I. Kayubancet 33
+84 D.I. Kebagoran 25
+85 D.I. Kebakalan | 25
+86 D.I. Kebakalan III 18
+87 D.I. Kebakalan IV 15
+88 D.I. Kebaturan 85
+89 D.I. Kebon Agung 31
+90 D.I. Kedoya 15
+91 D.I. Kedung Ijo 40
+92 D.I. Kedung Jati 27
+93 D.I. Kedung Kemiri 10
+94 D.I. Kedung Kucing 80
+95 D.I. Kedung Payung 27
+96 D.I. Kedung Singgih 149
+97 D.I. Kedung Wringin | 20
+98 D.I. Kedung Wringin II 25
+99 D.I. Kedungwaru 24
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+100 D.I. Kenteng 28
+101 D.I. Krandegan 109
+102 D.I. Langen Ujung 35
+103 D.I. Langse 19
+104 D.I. Lawa 60
+105 D.I. Logending 10
+106 D.I. Mengger 60
+107 D.I. Nonongsari 20
+108 D.I. Paras 20
+109 D.I. Pekuncen 28
+110 D.I. Pengempon 23
+111 D.I. Penimbun 10
+112 D.I. Peniron 64
+113 D.I. Penosogan 12
+114 D.I. Perkututan 51
+115 D.I. Plumbon | 130
+116 D.I. Plumbon II 45
+117 D.I. Pohkumbang II 11
+118 D.I. Pohkumbang IV 15
+119 D.I. Pondok Gowok 25
+120 D.I. Pringtutul 436
+121 D.I. Pucangan 25
+122 D.I. Pujotirto 130
+123 D.I. Purwoharjo 90
+124 D.I. Purwosari 150
+125 D.I. Rangkah 46
+126 D.I. Rembang 42
+127 D.I. Rembes 34
+128 D.I. Romo Kamal 15
+129 D.I. Rowokele 11
+130 D.I. Sampang | 18
+131 D.I. Sampang II 35
+132 D.I. Sanawi 26
+133 D.I. Sawangan 11
+134 D.I. Seboro I 13
+135 D.I. Seling 30
+136 D.I. Semali 20
+137 D.I. Semampir 186
+138 D.I. Sempor 15
+139 D.I. Sendang Pelus 68
+140 D.I. Sidobunder 70
+141 D.I. Sikayu 51
+142 D.I. Silodong 15
+143 D.I. Sirah 20
+144 D.I. Slirap 134
+145 D.I. Somagede I 26
+146 D.I. Somagede II 50
+147 D.I. Somagede III 27
+148 D.I. Srati 17
+149 D.I. Susuk | 60
+150 D.I. Tegal lempuyang 70
+151 D.I. Tilampok 17
+152 D.I. Tlepok 43
+153 D.I. Tratas 40
+154 D.I. Wagirpandan 10
+155 D.I. Wagirpandan II 36
+156 D.I. Wagirpandan III 38
+157 D.I. Watulawang | 15
+158 D.I. Widoro 10
+159 D.I. Wonoharjo 56
+160 D.I. Wonokromo I 155
