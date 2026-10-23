@@ -49,6 +49,17 @@ jobs:
         with:
           node-version: "22"
 
+      # Runner kadang mencoba IPv6 lebih dulu dan gagal "Network is unreachable" (Errno 101) ke FIRMS; utamakan IPv4
+      # untuk semua alat (getaddrinfo), lalu catat diagnosis koneksi TANPA kunci.
+      - name: Utamakan IPv4 dan cek koneksi FIRMS
+        continue-on-error: true
+        run: |
+          echo "precedence ::ffff:0:0/96  100" | sudo tee -a /etc/gai.conf > /dev/null
+          for v in 4 6; do
+            kode=$(curl -$v -sS -o /dev/null -m 30 -w '%{http_code}' https://firms.modaps.eosdis.nasa.gov/ 2>&1 || true)
+            echo "FIRMS lewat IPv$v: $kode" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+
       - name: Pustaka ilmiah (hanya job lab)
         run: pip install numpy rasterio pyshp fiona netCDF4  # netCDF4 hanya untuk GFED5 di lab_luas.py
 
@@ -157,6 +168,11 @@ jobs:
           menit="${LAB_MENIT:-30}"; gagal=0
           for f in $(ls scripts/data/lab_*.py 2>/dev/null | sort); do
             n=$(basename "$f" .py)
+            # kriteria dipra-registrasi di berkas terpisah yang ter-commit; tanpa berkas itu skrip TIDAK dijalankan
+            # (mencegah melihat hasil sebelum kriteria dikunci). Sha-nya dicatat skrip ke public/data/lab/jalan.jsonl.
+            if ! git ls-files --error-unmatch "scripts/data/lab_kriteria/$n.json" > /dev/null 2>&1; then
+              echo "$n dilewati: scripts/data/lab_kriteria/$n.json belum di-commit" | tee -a "$GITHUB_STEP_SUMMARY"; continue
+            fi
             lab_jalan "${n}_uji" timeout "$((menit * 60))" python3 "$f" uji || gagal=1
             lab_jalan "${n}_jalan" timeout "$((menit * 60))" python3 "$f" jalan || gagal=1
           done
@@ -169,14 +185,27 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # path spesifik, bukan git add -A; lapangan.json (data/raw) tidak pernah masuk
-          for p in public/data/ujibanding_firespot.json public/data/lab; do [ -e "$p" ] && git add -- "$p"; done
-          git diff --cached --quiet && { echo "tidak ada perubahan hasil"; exit 0; }
-          git commit -q -m "lab: hasil uji ${GITHUB_SHA::7}"
+          # Hasil disisihkan, cabang disamakan ke remote terbaru, hasil ditaruh lagi: tidak ada rebase yang bisa bentrok
+          # (putaran ulang commit lama dulu konflik add/add di log). jalan.jsonl digabung baris-unik supaya tetap append-only.
+          # path spesifik, bukan git add -A; lapangan.json ($RUNNER_TEMP) tidak pernah masuk.
+          simpan="$RUNNER_TEMP/hasil_lab"; rm -rf "$simpan"; mkdir -p "$simpan"
+          [ -e public/data/ujibanding_firespot.json ] && cp public/data/ujibanding_firespot.json "$simpan/"
+          [ -d public/data/lab ] && cp -r public/data/lab "$simpan/lab"
           for i in 1 2 3; do
+            git fetch -q origin "$CABANG" && git reset -q --hard "origin/$CABANG"
+            lama=""; [ -f public/data/lab/jalan.jsonl ] && lama=$(cat public/data/lab/jalan.jsonl)
+            [ -e "$simpan/ujibanding_firespot.json" ] && cp "$simpan/ujibanding_firespot.json" public/data/
+            if [ -d "$simpan/lab" ]; then
+              mkdir -p public/data/lab && cp -r "$simpan/lab/." public/data/lab/
+              if [ -n "$lama" ] && [ -f "$simpan/lab/jalan.jsonl" ]; then
+                { printf '%s\n' "$lama"; cat "$simpan/lab/jalan.jsonl"; } | awk 'NF && !seen[$0]++' > public/data/lab/jalan.jsonl
+              fi
+            fi
+            for p in public/data/ujibanding_firespot.json public/data/lab; do [ -e "$p" ] && git add -- "$p"; done
+            git diff --cached --quiet && { echo "tidak ada perubahan hasil"; exit 0; }
+            git commit -q -m "lab: hasil uji ${GITHUB_SHA::7}"
             git push -q origin "HEAD:refs/heads/$CABANG" && exit 0
-            echo "push ditolak (percobaan $i), rebase lalu ulang"
-            git pull -q --rebase origin "$CABANG" || { git rebase --abort 2>/dev/null; break; }
+            echo "push ditolak (percobaan $i), ulang dari remote terbaru"
           done
           echo "::error title=Lab::push hasil gagal setelah 3 percobaan"
           exit 1
