@@ -1,0 +1,29 @@
+name: Bersihkan cache lama
+
+# Insiden 23 Okt 2026: salinan cache data-<run_id> (~1,4 GB tiap jalan) menumpuk melewati batas gratis 10 GB, GitHub menggusur
+# cache, dan udara.yml menerbitkan data 12 Okt. Simpan 2 salinan terbaru per awalan (scripts/terbit/bersih_cache.py).
+on:
+  schedule:
+    - cron: "50 */3 * * *"   # 10 menit sesudah titik.yml, tiap 3 jam
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: bersih-cache
+  cancel-in-progress: false
+
+jobs:
+  bersih:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Uji aturan
+        run: python3 scripts/terbit/bersih_cache.py uji
+      - name: Hapus salinan lama
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/terbit/bersih_cache.py
