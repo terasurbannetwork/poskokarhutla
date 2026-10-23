@@ -88,6 +88,7 @@ else {
     await tab.tungguFungsi("!!document.querySelector('[data-urut=nama][data-t=w]')");   // tabel wilayah digambar lewat nanti(), sesudah corong
     await tab.klik("[data-urut=nama][data-t=w]"); await tab.tungguFungsi("document.querySelector('#kjIsiW tr td')?.innerText === 'Kalimantan Tengah' || document.querySelector('#kjIsiW tr td')?.innerText === 'Kalimantan Timur'");
     assert.equal(await tab.eval("document.querySelector('[data-urut=nama][data-t=w]').closest('th').getAttribute('aria-sort')"), "ascending");
+    await tab.tungguFungsi("document.querySelector('#kjIsiW tr td')?.innerText === 'Kalimantan Tengah'");   // tbody bisa kosong sesaat saat nanti() menggambar ulang (flaky di CI)
     assert.equal(await tab.eval("document.querySelector('#kjIsiW tr td')?.innerText"), "Kalimantan Tengah");
     await tab.tungguFungsi("!!document.querySelector(\"[data-prov='16']\")");   // baris wilayah digambar ulang lewat nanti() sesudah urut
     await tab.klik("[data-prov='16']"); await tab.tungguFungsi("location.search.includes('prov=16') && document.querySelectorAll('.kj-tw tbody tr').length === 2");
