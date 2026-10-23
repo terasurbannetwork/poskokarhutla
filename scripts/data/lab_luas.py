@@ -2378,7 +2378,7 @@ def ambil_kovariat(K, nama, fn, batas, ttl_hari=None, sidik=None, utuh=lambda: T
 
 def _tandai_terpotong(tahap):
     """luas.json yang masih 'berjalan' diubah jadi 'terpotong' (dengan penanda tahap), supaya tak menggantung selamanya."""
-    p_luas = os.path.join(OUT, "luas.json")
+    p_luas = os.path.join(OUT, "luas_berjalan.json")
     d = muat_json(p_luas)
     if isinstance(d, dict) and d.get("status") == "berjalan":
         d["status"] = "terpotong"
@@ -2418,7 +2418,8 @@ def _jalan(mulai):
     os.makedirs(OUT, exist_ok=True)
     p_luas, p_fit = os.path.join(OUT, "luas.json"), os.path.join(OUT, "luas_fitur.json")
     # 1. kriteria DIKUNCI sebelum menghitung apa pun
-    simpan_json(p_luas, {"versi": 2, "status": "berjalan", "dibuat": mulai, "kriteria": dict(KRITERIA, dikunci_pada=mulai), "kriteria_sha": sha_kriteria(), "jujur": JUJUR})
+    # status antara ke luas_berjalan.json: putaran terpotong tidak menimpa luas.json hasil putaran lengkap sebelumnya
+    simpan_json(p_luas.replace("luas.json", "luas_berjalan.json"), {"versi": 2, "status": "berjalan", "dibuat": mulai, "kriteria": dict(KRITERIA, dikunci_pada=mulai), "kriteria_sha": sha_kriteria(), "jujur": JUJUR})
     kunci = kunci_firms()
     dat_fit = muat_json(p_fit) or {}
     cache = dat_fit.get("unit", {})
@@ -3346,7 +3347,8 @@ def uji():
         g["OUT"], g["JALAN_JSONL"] = tmp, os.path.join(tmp, "jalan.jsonl")
 
         def _palsu(mulai):
-            simpan_json(os.path.join(tmp, "luas.json"), {"status": "berjalan", "dibuat": mulai})
+            simpan_json(os.path.join(tmp, "luas.json"), {"status": "selesai", "dibuat": "lama"})   # hasil putaran lengkap sebelumnya
+            simpan_json(os.path.join(tmp, "luas_berjalan.json"), {"status": "berjalan", "dibuat": mulai})
             TAHAP_KINI[0] = "hansen"
             os.kill(os.getpid(), signal.SIGTERM)
             time.sleep(5)
@@ -3359,7 +3361,8 @@ def uji():
             assert e.code == 143
         bar = [json.loads(x) for x in open(g["JALAN_JSONL"]).read().splitlines()]
         assert [b["fase"] for b in bar] == ["awal", "akhir"] and bar[-1]["status"] == "terpotong" and "hansen" in bar[-1]["vonis"]
-        lj = json.load(open(os.path.join(tmp, "luas.json")))
+        lj = json.load(open(os.path.join(tmp, "luas_berjalan.json")))
+        assert json.load(open(os.path.join(tmp, "luas.json"))) == {"status": "selesai", "dibuat": "lama"}, "putaran terpotong tak boleh menimpa hasil lama"
         assert lj["status"] == "terpotong" and "hansen" in lj["belum_dikerjakan"][0]
         assert signal.getsignal(signal.SIGTERM) in (signal.SIG_DFL, signal.default_int_handler, None) or callable(signal.getsignal(signal.SIGTERM))
     finally:

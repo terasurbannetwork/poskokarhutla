@@ -1067,7 +1067,10 @@ BATASAN = [
 
 
 def tulis(d, jalur=None):
-    jalur = jalur or KELUAR
+    # Tahap antara (kriteria_ditulis, km_selesai, ...) ke padam_berjalan.json: putaran yang dipotong/dibatalkan
+    # tidak boleh menimpa padam.json hasil putaran lengkap sebelumnya (terjadi 23 Okt, run 641bc89 dibatalkan).
+    if jalur is None:
+        jalur = KELUAR if (d or {}).get("tahap") == "selesai" else KELUAR.replace(".json", "_berjalan.json")
     os.makedirs(os.path.dirname(jalur), exist_ok=True)
     with open(jalur + ".tmp", "w") as f:
         json.dump(d, f, ensure_ascii=False, indent=1, default=lambda o: o.isoformat() if hasattr(o, "isoformat") else float(o))
@@ -1556,6 +1559,16 @@ def uji():
     assert {"aturan_batas", "ci_metode", "klaster", "versi", "pemilihan"} <= set(doc), doc
     assert "tak_dinyatakan_maks" in dibaca and "alasan" in KRITERIA and "tak_dinyatakan" in KRITERIA["alasan"]
 
+    # tahap antara tidak menimpa padam.json; tahap selesai menulis padam.json
+    with _tf2.TemporaryDirectory() as td_:
+        K0 = globals()["KELUAR"]
+        globals()["KELUAR"] = os.path.join(td_, "padam.json")
+        try:
+            tulis({"tahap": "selesai", "x": 1}); tulis({"tahap": "kriteria_ditulis"})
+            assert json.load(open(globals()["KELUAR"]))["x"] == 1 and os.path.exists(os.path.join(td_, "padam_berjalan.json"))
+        finally:
+            globals()["KELUAR"] = K0
+
     # --- F2: ringkas() memuat kriteria baru & penandaan pembanding, kolom batas_atas_gabungan / n klaster / tak dinyatakan
     with _tf2.TemporaryDirectory() as td_:
         K0, R0 = globals()["KELUAR"], globals()["RINGKAS"]
@@ -1563,7 +1576,7 @@ def uji():
         try:
             hh_ = uji_lipat(eps, eps, par)
             tulis({"tahap": "uji", "tahun_lengkap": [2019], "kriteria_sha": KRITERIA_SHA, "kriteria": KRITERIA, "batasan": BATASAN,
-                   "aturan": {"uji_murni": {"terpilih": "A3", "vonis": "lolos", "uji_hasil": hh_}}})
+                   "aturan": {"uji_murni": {"terpilih": "A3", "vonis": "lolos", "uji_hasil": hh_}}}, jalur=globals()["KELUAR"])
             import io as _io, contextlib as _cl
             with _cl.redirect_stdout(_io.StringIO()):
                 ringkas()
