@@ -182,7 +182,7 @@ const jangkarPK = () => pet.ref || PKD.hari.at(-1);
 const INFO_PK = {
   hot: {nm: "Hotspot", pil: "Hotspot", sat: "titik", jml: "jumlah titik panas", ada: "titik panas", kosong: "Tidak ada titik panas"},
   luas: {nm: "Luas terbakar", pil: "Luas terbakar", sat: "ha, satelit", jml: "luas area terbakar", ada: "area terbakar", kosong: "Tidak ada area terbakar terdeteksi satelit"},
-  belum: {nm: "Belum padam", pil: "Belum padam", sat: "ha, satelit", jml: "luas deteksi satelit yang bertahan", ada: "deteksi satelit yang bertahan", kosong: "Tidak ada deteksi satelit yang bertahan"}};
+  belum: {nm: "Masih terdeteksi (perkiraan satelit)", pil: "Masih terdeteksi", sat: "ha, satelit", jml: "luas deteksi satelit yang bertahan", ada: "deteksi satelit yang bertahan", kosong: "Tidak ada deteksi satelit yang bertahan"}};
 function modelPK(P) {
   const R = window.PetaKarhutla, m = pet.metrik, ref = jangkarPK(), I = INFO_PK[m], [, , warna, muda] = R.METRIK.find(x => x[0] === m);
   const r = R.rentang(PKD, pet.mode, ref, pet.a, pet.b) || {i0: PKD.n - 1, i1: PKD.n - 1}, [kw, lw] = R.waktuBagian(PKD, pet.mode, r.i0, r.i1, m);
@@ -198,7 +198,7 @@ function modelPK(P) {
   const tetap = t => [t, "."];   /* kalimat tetap: titik penutup di luar simpul, supaya kunci en.json tanpa titik */
   const kal = [tetap("NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21); batas wilayah BIG"), PKD.cutoff ? [`Cut-off ${jamWIB(PKD.cutoff)}.`] : null,
     tetap("Hari = kalender WIB 00.00–23.59; kartu lain di halaman ini memakai hari laporan s.d. 16.00 WIB, jadi angka tanggal yang sama bisa berbeda"),
-    m === "belum" ? tetap("Bukan \"luas belum padam\" BNPB yang dicek regu darat") : null,
+    m === "belum" ? tetap("Luas kejadian api yang masih terdeteksi satelit; bukan status regu dan bukan \"luas belum padam\" BNPB yang dicek regu darat") : null,
     m === "luas" && r.i0 !== r.i1 ? tetap("Luas periode = jumlah perkiraan harian; area yang sama bisa terhitung di beberapa hari") : null,
     m === "luas" ? tetap("Perkiraan satelit per provinsi memakai titik NOAA-20/21 x porsi; tidak sebanding dengan angka resmi BNPB") : null,
     mt[m] ? [I.pil + ":"] : null, mt[m] ? [mt[m]] : null, ...(mt.catatan || []).map(c => [c])].filter(Boolean);
@@ -365,9 +365,9 @@ function kartuLuas() {
   const th = tb.sd.slice(0, 4), tw = (tb.triwulan || []).slice(0, -1);
   let c = 0; const kum = tw.map(q => c += q.ha);
   const j = `Perkiraan luas terbakar sepanjang ${th} sekitar ${Kartu.hl(jt(tb.ha) + " juta")} ha (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta ha) hingga ${tgl(tb.sd)}; ini perkiraan dari titik panas, bukan angka resmi`;
-  const tabel = tw.length ? `<div class="tw lp-th"><table class="lp-tb"><thead><tr><th>Triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></th><th class="n">Perkiraan (ha)</th><th class="n">Perubahan</th><th class="n">Kumulatif (ha)</th></tr></thead><tbody>`
-    + tw.map((q, i) => `<tr><td><b>${q.nama} ${th}</b>${q.bulan_kosong?.length ? ` <small>(tanpa data: ${q.bulan_kosong.join(", ")})</small>` : ""}</td><td class="n">${fmt(q.ha)}</td><td class="n">${i ? ubah(q.ha, tw[i - 1].ha) : "–"}</td><td class="n">${fmt(kum[i])}</td></tr>`).reverse().join("")
-    + `<tr class="lp-gt"><td>Grand total s.d. ${tgl(tb.sd)} ${th}</td><td class="n">${fmt(tb.ha)}</td><td class="n">–</td><td class="n">${fmt(tb.ha)}</td></tr></tbody></table></div>` : "";
+  const tabel = tw.length ? `<div class="tw lp-th"><table class="lp-tb"><thead><tr><th>Triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></th><th class="n">Perkiraan (ribu ha)</th><th class="n">Perubahan</th><th class="n">Kumulatif (ribu ha)</th></tr></thead><tbody>`
+    + tw.map((q, i) => `<tr><td><b>${q.nama} ${th}</b>${q.bulan_kosong?.length ? ` <small>(tanpa data: ${q.bulan_kosong.join(", ")})</small>` : ""}</td><td class="n">${fmt(Math.round(q.ha / 1e3))}</td><td class="n">${i ? ubah(q.ha, tw[i - 1].ha) : "–"}</td><td class="n">${fmt(Math.round(kum[i] / 1e3))}</td></tr>`).reverse().join("")
+    + `<tr class="lp-gt"><td>Grand total s.d. ${tgl(tb.sd)} ${th}</td><td class="n">${fmt(Math.round(tb.ha / 1e3))}</td><td class="n">–</td><td class="n">${fmt(Math.round(tb.ha / 1e3))}</td></tr></tbody></table></div>` : "";
   return Kartu.kartu("Perkiraan luas terbakar tahun ini", j, `<p class="lp-cetak-n" style="font-size:13px">Per hari dan per wilayah hanya titik panas yang ditampilkan: faktor ${fmt(tb.ha_titik)} ha per titik hanya sahih sebagai rata-rata tahunan nasional (rentang ${fmt(tb.ha_titik_rendah)}–${fmt(tb.ha_titik_tinggi)} ha).</p>` + pasCetak("", tabel),
     tt(D.sumber.luas));
 }
@@ -563,7 +563,7 @@ function semua() {
   { const i = idx(), n = seri(), K = provKepala().length, pv = provAda(provKepala()).filter(o => o.titik[i] > 0).length, ub = (a, b) => i > 0 && b ? (v => (v > 0 ? "▲ " : v < 0 ? "▼ " : "") + fmt(Math.abs(v)) + "%")(Math.round((a - b) / b * 100)) : "–";
     $("#lpPokok").innerHTML = [["Titik panas", fmt(n.titik[i]), ub(n.titik[i], n.titik[i - 1]) + (i > 0 ? " dari " + fmt(n.titik[i - 1]) + " (" + tgl(D.hari[i - 1]) + ")" : "")], ["Kab/kota memiliki hotspot", fmt(n.kab[i]), K === 1 ? "di " + namaWil() : "di " + fmt(pv) + " provinsi"],
       K === 1 ? ["Tingkat perhatian", LEVEL[n.level ?? 0] || "–", "indeks platform, bukan status resmi"] : ["Kejadian api", fmt(Object.values(D.prov).reduce((a, o) => a + (o.kompleks || 0), 0)), "cluster titik panas, posisi laporan"],
-      D.tahun_berjalan && !K ? ["Perkiraan luas terbakar " + st.hari.slice(0, 4), "~" + (D.tahun_berjalan.ha / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " juta ha", "rentang " + (D.tahun_berjalan.rendah / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + "–" + (D.tahun_berjalan.tinggi / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " juta ha; bukan angka resmi"] : ["Kab/kota memiliki hotspot (7 hari)", fmt(n.kab.slice(Math.max(0, i - 6), i + 1).reduce((a, v) => Math.max(a, v), 0)), "terbanyak dalam sehari"]]
+      D.tahun_berjalan && !K ? ["Perkiraan luas terbakar " + st.hari.slice(0, 4), "sekitar " + (D.tahun_berjalan.ha / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " juta ha", "rentang " + (D.tahun_berjalan.rendah / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + "–" + (D.tahun_berjalan.tinggi / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " juta ha; bukan angka resmi"] : ["Kab/kota memiliki hotspot (7 hari)", fmt(n.kab.slice(Math.max(0, i - 6), i + 1).reduce((a, v) => Math.max(a, v), 0)), "terbanyak dalam sehari"]]
       .map(([l, v, k]) => `<div><span>${l}</span><b>${v}</b><small>${k}</small></div>`).join(""); }
   /* kepala dan kaki kertas cetak: kotak margin @page (menggantikan tanggal/URL bawaan browser), isinya mengikuti hari terpilih */
   const en = window.BAHASA === "en" && typeof window.T === "function", T = t => en ? window.T(t) : t;
@@ -722,16 +722,16 @@ function kartuCuaca() {
   const W = 940, L = 190, cw = (W - L) / hr.length, rh = 40, T = 30, H = T + pv.length * rh;
   let g = hr.map((t, j) => { const x = L + j * cw + cw / 2;
     return j === 0 ? `<rect x="${x - 34}" y="2" width="68" height="20" rx="10" fill="#0b2545"/><text x="${x}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" style="fill:#fff">${lab(t)}</text>`
-      : `<text x="${x}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" opacity=".7">${lab(t)}</text>`; }).join(""), sgt = pv.map(k => [k, porsi(k, hr.at(-1))]).filter(x => x[1] >= .1).sort((a, b) => b[1] - a[1]);
+      : `<text x="${x}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" opacity=".7">${lab(t)}</text>`; }).join(""), sgt = pv.filter(k => sel(k, hr.at(-1)).length >= 5).map(k => [k, porsi(k, hr.at(-1))]).filter(x => x[1] >= .1).sort((a, b) => b[1] - a[1]);
   pv.forEach((k, i) => { const y = T + i * rh; g += `<text x="${L - 10}" y="${y + 24}" text-anchor="end" font-size="13" font-weight="600">${esc(nmP(k))}</text>`;
     hr.forEach((t, j) => { const v = fwi(k, t);
       g += `<rect x="${L + j * cw + 3}" y="${y + 4}" width="${cw - 6}" height="${rh - 8}" rx="9" fill="${warnaFWI(v)}"/><text x="${L + j * cw + cw / 2}" y="${y + 25}" text-anchor="middle" font-size="13" font-weight="800" style="fill:#fff">${fmt(Math.round(v))}</text>`; }); });
   const sd = new Date(hr.at(-1) + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "UTC"});
   const dataF = new Date(F.hari_ini + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "UTC"});
-  return Kartu.kartu("Cuaca", sgt.length ? `Menurut prakiraan model, Fire Weather Index sangat tinggi (≥ 14) mencakup ${sgt.slice(0, 3).map(([k, p]) => `${Kartu.hl(Math.round(p * 100) + "%")} wilayah ${esc(nmP(k))}`).join(", ")} sampai ${sd} (porsi sel grid 0,5°, model Open-Meteo, data ${dataF})`
-    : `Menurut prakiraan model, tidak ada provinsi pantauan yang 10% wilayahnya atau lebih ber-Fire Weather Index sangat tinggi sampai ${sd} (model Open-Meteo, data ${dataF})`,
+  return Kartu.kartu("Cuaca", sgt.length ? `Menurut prakiraan model, Fire Weather Index sangat tinggi (≥ 14) mencakup ${sgt.slice(0, 3).map(([k, p]) => `${Kartu.hl(p >= .9 ? "hampir seluruh" : p >= .65 ? "sekitar tiga perempat" : p >= .4 ? "sekitar separuh" : p >= .2 ? "sekitar seperempat" : "sebagian kecil")} sel grid ${esc(nmP(k))}`).join(", ")} sampai ${sd} (sel grid 0,5° per provinsi, minimal 5 sel; model Open-Meteo, data ${dataF}${(Date.parse(new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)) - Date.parse(F.hari_ini)) / 864e5 > 2 ? ", belum diperbarui" : ""})`
+    : `Menurut prakiraan model, tidak ada provinsi pantauan yang sedikitnya 10% sel grid-nya ber-Fire Weather Index sangat tinggi sampai ${sd} (model Open-Meteo, data ${dataF})`,
     `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Prakiraan bahaya cuaca kebakaran">${g}</svg></div>`,
-    "Open-Meteo (ECMWF/ICON); FWI rumus Kanada (Van Wagner 1987). Kotak = median FWI sel provinsi, bukan maksimum; prakiraan hari ke-3 belum diverifikasi", "", [[warnaFWI(0), "rendah 0–1"], [warnaFWI(4), "sedang 2–6"], [warnaFWI(10), "tinggi 7–13"], [warnaFWI(25), "sangat tinggi > 13"]]);
+    "Open-Meteo (ECMWF/ICON); FWI rumus Kanada (Van Wagner 1987). Kotak = median FWI sel provinsi, bukan maksimum; prakiraan hari ke-3 belum diverifikasi", "", [[warnaFWI(0), "rendah < 2"], [warnaFWI(4), "sedang 2–< 7"], [warnaFWI(10), "tinggi 7–< 14"], [warnaFWI(25), "sangat tinggi ≥ 14"]]);
 }
 
 /* konsesi & gambut: porsi titik panas 7 hari di kompleks api per provinsi (kompleks_konsesi.json total.prov / total.gambut) */

@@ -265,17 +265,17 @@ slide("nasional", "Kondisi nasional", "situasi", c => c.D.laporan.luas_banding &
   const tambah = g.extra ? `, ditambah perkiraan nasional ${tglK(g.awal)} sampai ${tglK(c.tgl)}` : "";
   rangka(k, c, {
     panel: [
-      {a: `sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, k: `perkiraan: ${fmt(g.titik)} titik S-NPP s.d. ${tglK(g.batas)} x ${fmt(hat, 1)} ha${tambah} (${fmt(g.ha)} ha); rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha`, tinggi: 1.45},
+      {a: `sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, k: `perkiraan: ${fmt(g.titik)} titik S-NPP s.d. ${tglK(g.batas)} x ${fmt(hat, 1)} ha${tambah}; rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha`, tinggi: 1.45},
       {a: fmt(t26), k: `titik panas VIIRS S-NPP 2026 s.d. ${tglP(g.batas)}`},
       ...(i19 >= 0 ? [{a: selisih(t26, tn[i19]), k: `titik 2026 s.d. ${tglK(g.batas)} dibanding setahun penuh 2019 (${fmt(tn[i19])} titik)`}] : []),
       ...(t26 ? [{a: `${pct(agsep, t26)} persen`, k: `titik 2026 (s.d. ${tglK(g.batas)}) terjadi pada Agustus sampai September (${fmt(agsep)} titik)`}] : []),
     ],
-    judul: [R(`Sampai ${tglP(c.tgl)}, perkiraan luas lahan terbakar nasional `), R(`sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, C.jingga), R(` (rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha); ` + klaim)],
+    judul: [R(`Sampai ${tglP(c.tgl)}, perkiraan luas lahan terbakar nasional `), R(`sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, C.jingga), R(` (rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha, bukan angka resmi); ` + klaim)],
     sub: [R(c.namaProv, C.biru, true), R(" menyumbang "), R(pct(me, t26) + " persen", C.jingga, true), R(` titik panas nasional (${fmt(me)} titik s.d. ${tglP(g.batas)})`)],
     sumber: `NASA FIRMS VIIRS S-NPP 2015 sampai ${tglP(g.batas)} (arsip ${c.merek}); luas = titik x ${fmt(hat, 1)} ha${uji ? `; uji balik tahunan meleset sampai ${uji}` : ""}; batang bertanda * (2015-2017) = angka resmi BNPB, bukan perkiraan; perkiraan dan angka resmi berbeda definisi`,
   });
   judulBagian(k, 0.6, 1.6, 4.2, "Perkiraan luas terbakar per tahun (ha)");
-  batangV(k, 0.6, 2.1, 4.3, 4.6, th.map((y, i) => ({l: "'" + y.slice(2) + (dariResmi[i] ? "*" : ""), v: luas[i], on: i === th.length - 1, lab: i === th.length - 1 ? fmt(luas[i]) : undefined})));
+  batangV(k, 0.6, 2.1, 4.3, 4.6, th.map((y, i) => ({l: "'" + y.slice(2) + (dariResmi[i] ? "*" : ""), v: luas[i], on: i === th.length - 1, lab: i === th.length - 1 ? "sekitar " + fmt(luas[i] / 1e6, 1) + " juta" : undefined})));
   judulBagian(k, 5.2, 1.6, 4.15, "Titik panas 2026, delapan provinsi teratas");
   batangH(k, 5.2, 2.1, 4.15, 4.5, top.map(([p, v]) => ({l: namaProv(c, p), v, on: p === c.prov})), {lw: 1.55});
 });

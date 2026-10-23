@@ -1310,9 +1310,9 @@ section[hidden],[hidden]{display:none!important}
     const d2 = x => x.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const teks = "Diuji terutama pada musim 2026, jadi belum teruji lintas musim. "
       + (auc != null ? `Kemampuan membedakan titik api baru yang akan membesar dari yang tetap kecil: AUC <b>${d2(auc)}</b> (1 = sempurna, 0,5 = tebakan). ` : "")
-      + (ar ? `Arah sebar belum bisa diramal andal (meleset rata-rata ±${Math.round(ar[0])}°).` : "");
+      + (ar ? `Arah sebar belum bisa diramal andal (meleset rata-rata ${Math.round(ar[0])}°).` : "");
     $("#akurasi").innerHTML = teks;
-    $("#akurasiFaq").innerHTML = `cukup untuk menentukan prioritas (titik mana yang berpeluang membesar${auc != null ? `, AUC ${d2(auc)}` : ""}), tetapi belum untuk memastikan batas dan arah api${ar ? ` (arah meleset rata-rata ±${Math.round(ar[0])}°)` : ""}. Hasil uji lengkap ada di tab Insight`;
+    $("#akurasiFaq").innerHTML = `cukup untuk menentukan prioritas (titik mana yang berpeluang membesar${auc != null ? `, AUC ${d2(auc)}` : ""}), tetapi belum untuk memastikan batas dan arah api${ar ? ` (arah meleset rata-rata ${Math.round(ar[0])}°)` : ""}. Hasil uji lengkap ada di tab Insight`;
   }).catch(() => $("#akurasi").textContent = "Angka kinerja model ada di tab Insight.");
 
   /* ---------- 6. tim: public/data/tim.json ----------

@@ -24,7 +24,7 @@ const Ringkasan = (() => {
     kompleks: "Cluster: titik panas 7 hari digabung DBSCAN 1,5 km, status dari aturan keparahan + cuaca (tab Metode)",
     asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan cluster searah angin ≤ 300 km",
     ansambel: "Ansambel ECMWF 51 anggota (fwi_ansambel.json), rata-rata sel 0,5° per provinsi",
-    luas: "Titik MODIS sejak 1 Juni × rasio ha/titik GWIS MCD64A1 per provinsi",
+    luas: "laporan.json tahun_berjalan: titik VIIRS S-NPP × 4,3 ha (perkiraan nasional tahunan dengan rentang kalibrasi), bukan angka resmi",
     bnpb: "Laporan harian BNPB (bnpb.json), 6 provinsi pantauan",
     pesawat: "Kejadian dari judul berita Google News + METAR (penerbangan.json); batas bawah, bukan data resmi bandara",
     berita: "Judul Google News 120 hari, dinilai bot berita (berita.json)",
@@ -38,6 +38,7 @@ const Ringkasan = (() => {
   const lencana = lv => `<span class="rk-lv lv${lv}">${TINGKAT[lv]}</span>`;
   const KATA = ["Tidak ada", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh"];
   const kata = v => KATA[v] || fmt(v);
+  const jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const desimal = v => fmt(Math.round(v * 10) / 10);
   /* "naik 52% dari" / "turun 8% dari" / "sama dengan" — kalimat diakhiri pembandingnya ("kemarin") */
   /* bagian bergaya tab Metode: kepala <header class="rk-sh"> diubah jadi summary details.mt-sek (ikon, "N. judul", keterangan) */
@@ -57,16 +58,16 @@ const Ringkasan = (() => {
       const j = u => muatJSON(u).catch(() => null);
       /* ringkasan.json (scripts/data/ringkasan.py): potongan berita/penerbangan/musim_awal yang dibaca di sini saja; kunci hilang -> berkas asli */
       const rk = this.rk = await j("data/ringkasan.json") || {};
-      const [dp, ans, kp, ak, ud, pn, ma, ls] = await Promise.all([j("data/dampak.json"), j("data/fwi_ansambel.json"), Kp.d || j("data/keputusan.json"), j("data/akses.json"),
-        Lapis.cache?.udara || j("data/udara_rekom.json"), rk.penerbangan || j("data/penerbangan.json"), rk.musim_awal || j("data/musim_awal.json"), j("data/luas_satelit.json")]);
+      const [dp, ans, kp, ak, ud, pn, ma, lp] = await Promise.all([j("data/dampak.json"), j("data/fwi_ansambel.json"), Kp.d || j("data/keputusan.json"), j("data/akses.json"),
+        Lapis.cache?.udara || j("data/udara_rekom.json"), rk.penerbangan || j("data/penerbangan.json"), rk.musim_awal || j("data/musim_awal.json"), j("data/laporan.json")]);
       this.ops = typeof Operasi !== "undefined" && await Operasi.siap().catch(() => false);
       if (kp) Kp.d ||= kp; if (ud && Lapis.cache) Lapis.cache.udara = ud;
-      this.raw = {dp, ans, kp, ak, ud, pn, ma, ls};
+      this.raw = {dp, ans, kp, ak, ud, pn, ma, lp};
     },
 
     /* ================= semua angka halaman dihitung di sini ================= */
     hitung() {
-      const {dp, ans, ak, ud, pn, ma, ls} = this.raw, kp = Kp.d;
+      const {dp, ans, ak, ud, pn, ma, lp} = this.raw, kp = Kp.d;
       const P = {}, PROV = Object.keys(S.meta.provinsi);
       const tglData = S.meta.hari_wib, d0 = new Date(tglData + "T00:00:00Z"), doy = Math.floor((d0 - Date.UTC(d0.getUTCFullYear(), 0, 1)) / 864e5);
       for (const k of PROV) {
@@ -125,8 +126,6 @@ const Ringkasan = (() => {
       const h24 = sum(x => x.h24), hKmr = sum(x => x.hKmr), snpp = sum(x => x.snpp), norm = sum(x => x.norm);
       const k3 = L.flatMap(x => x.kom3), naik = k3.filter(p => p.ini > p.kmrn).length;
       const jiwaPrio = PRIO.reduce((a, k) => a + P[k].jiwa, 0), jiwaBesok = PRIO.reduce((a, k) => a + P[k].jiwaBesok, 0), jiwaNas = sum(x => x.jiwa);
-      const tahunLs = ls ? ls.tahun.map((t, i) => [t, Object.values(ls.ha).reduce((a, v) => a + (v[i] || 0), 0)]).filter(([t]) => +t < +ls.tahun.at(-1)).map(x => x[1]).sort((a, b) => a - b) : [];
-      const luasNormal = tahunLs.length ? tahunLs[Math.floor(tahunLs.length / 2)] : null;
       const bnpbHa = dp?.musim?.bnpb ? Object.values(dp.musim.bnpb).reduce((a, b) => a + (angkaID(b) || 0), 0) : null;
       const hariIni = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), mundur = h => new Date(Date.parse(hariIni) - h * 864e5).toISOString().slice(0, 10);
       const kj = pn?.kejadian || [], kj7 = kj.filter(x => x.tgl > mundur(7)), kjL = kj.filter(x => x.tgl > mundur(14) && x.tgl <= mundur(7));
@@ -147,7 +146,7 @@ const Ringkasan = (() => {
 
       this.D = {adaAsap: !!dp?.udara?.prov, P, L, PROV, lvNas, nD, nS, nW, hit, AK, bn, kab24, ansHari, dp, ud, kp,
         kpi: {h24, hKmr, snpp, titikHari: this.hariTitik(), norm, rasio: norm ? snpp / norm : null, k3: k3.length, k2: sum(x => x.p2), naik, turun: k3.length - naik,
-          jiwaPrio, jiwaBesok, jiwaNas, luas: dp?.musim?.ha, luasNormal, bnpbHa, kj7, kjL, bandara7: new Set(kj7.map(x => x.bandara)).size},
+          jiwaPrio, jiwaBesok, jiwaNas, luas: lp?.tahun_berjalan ? [lp.tahun_berjalan.rendah, lp.tahun_berjalan.ha, lp.tahun_berjalan.tinggi] : null, luasSd: lp?.tahun_berjalan?.sd, bnpbHa, kj7, kjL, bandara7: new Set(kj7.map(x => x.bandara)).size},
         segar: segarSumber, asOf: S.acuan || S.meta.dibuat};
       this.D.kartu = this.keputusan(this.D);
       return this.D;
@@ -312,13 +311,13 @@ const Ringkasan = (() => {
       const H = D.dp?.udara?.hari || [], aj = H.map((_, i) => PRIO.reduce((a, k) => { const j = D.dp.udara.prov?.[k]?.jiwa?.[i]; return a + (j ? j[2] + j[3] + j[4] : 0); }, 0)), am = Math.max(...aj, 1);
       const asap = D.adaAsap && aj.length ? `<div class="rk-cols" aria-hidden="true">${aj.map((v, i) => `<i style="--h:${Math.max(4, v / am * 100)}%" title="${hariN(H[i])}: ${rb(v)}"></i>`).join("")}</div><span>prakiraan ${fmt(aj.length)} hari</span>` : "";
       const tot = K.naik + K.turun, split = tot ? `<div class="rk-split" aria-hidden="true"><i style="flex:${K.naik}"></i><i style="flex:${K.turun}"></i></div><span>membesar · mengecil</span>` : "";
-      const sk = L ? Math.max(L[2], (K.luasNormal || 0) * 1.15) : 1, rng = L ? `<div class="rk-rng" aria-hidden="true"><i style="left:${L[0] / sk * 100}%;width:${(L[2] - L[0]) / sk * 100}%"></i><b style="left:${L[1] / sk * 100}%"></b>${K.luasNormal ? `<u style="left:${K.luasNormal / sk * 100}%"></u>` : ""}</div><span>rentang perkiraan${K.luasNormal ? " · garis = median tahunan" : ""}</span>` : "";
+      const sk = L ? L[2] * 1.05 : 1, rng = L ? `<div class="rk-rng" aria-hidden="true"><i style="left:${L[0] / sk * 100}%;width:${(L[2] - L[0]) / sk * 100}%"></i><b style="left:${L[1] / sk * 100}%"></b></div><span>rentang perkiraan, bukan angka resmi</span>` : "";
       return [
-        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(" · "), spark),
-        kp("kelompok", "Cluster prioritas", fmt(K.k3), "", "satelit", SUMBER.kompleks, `front membesar di ${fmt(K.naik)}, mengecil di ${fmt(K.turun)}`, split),
-        kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; provinsi yang sering mengalami karhutla; seluruh Indonesia ${rb(K.jiwaNas)}`,
+        kp("sensor", "Titik panas 24 jam", fmt(K.h24), "titik", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(" · "), spark),
+        kp("kelompok", "Cluster prioritas", fmt(K.k3), "cluster", "satelit", SUMBER.kompleks, `front membesar di ${fmt(K.naik)}, mengecil di ${fmt(K.turun)}`, split),
+        kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; provinsi yang sering mengalami karhutla; seluruh Indonesia ${rb(K.jiwaNas)} jiwa`,
           D.adaAsap ? `provinsi yang sering mengalami karhutla${jb != null ? ` · besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),
-        kp("grafik", "Luas terbakar musim ini", L ? rb(L[1]) : "–", L ? "ha" : "", "model", SUMBER.luas, L ? `${rb(L[0])}–${rb(L[2])} ha${K.luasNormal ? ` · ${desimal(L[1] / K.luasNormal)}× median tahunan` : ""}` : "", rng),
+        kp("grafik", "Perkiraan luas terbakar " + (K.luasSd || "").slice(0, 4), L ? "sekitar " + jt(L[1]) : "–", L ? "juta ha" : "", "model", SUMBER.luas, L ? `rentang ${jt(L[0])}–${jt(L[2])} juta ha, bukan angka resmi${K.luasSd ? " · sampai " + hariN(K.luasSd) : ""}` : "", rng),
       ].join("");
     },
     hSek(D) {
@@ -528,7 +527,7 @@ const Ringkasan = (() => {
           <tr><td>Cluster prioritas (satelit)</td><td>${fmt(K.k3)}; front membesar di ${fmt(K.naik)} cluster; ditambah ${fmt(K.k2)} cluster tingkat 2</td></tr>
           <tr><td>Provinsi tingkat perhatian 2 dan 3 (model)</td><td>${fmt(D.nD)} tingkat 3, ${fmt(D.nS)} tingkat 2, ${fmt(D.nW)} tingkat 1</td></tr>
           <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${fmt(K.jiwaPrio)} jiwa menghirup udara tidak sehat di provinsi yang sering mengalami karhutla (${fmt(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
-          <tr><td>Luas terbakar sejak 1 Juni</td><td>${K.luas ? `${rb(K.luas[1])} ha (rentang ${rb(K.luas[0])}–${rb(K.luas[2])} ha)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? rb(K.bnpbHa) + " ha (6 provinsi)" : "–"}</td></tr>
+          <tr><td>Perkiraan luas terbakar ${(K.luasSd || "").slice(0, 4)}</td><td>${K.luas ? `sekitar ${jt(K.luas[1])} juta ha (rentang ${jt(K.luas[0])}–${jt(K.luas[2])} juta ha, bukan angka resmi)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? fmt(Math.round(K.bnpbHa)) + " ha (6 provinsi)" : "–"}</td></tr>
           <tr><td>Gangguan penerbangan 7 hari (berita)</td><td>${fmt(K.kj7.length)} kejadian di ${fmt(K.bandara7)} bandara</td></tr></tbody></table>
         <h2>II. Faktor yang perlu dipertimbangkan hari ini</h2><ol class="rk-ckp">${kp}</ol>
         <p class="rk-cket">Angka bertanda satelit berasal dari pengamatan; model adalah perkiraan; resmi dari laporan BNPB; berita dari judul media.</p></section>
