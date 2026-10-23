@@ -262,6 +262,14 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .kartu .kb.penuh{grid-column:1 / -1}
 .kartu .kk{padding:6px 12px 10px;font-size:11px;color:var(--ink2);line-height:1.4}
 .kartu .kk button{margin-top:6px;width:100%}
+.aksi-lok{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:4px 12px 10px}
+.aksi-lok a{display:flex;align-items:center;justify-content:center;gap:5px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:11.5px;font-weight:700;text-decoration:none;white-space:nowrap}
+.aksi-lok a:hover{background:var(--surface)}
+.aksi-lok a.lapor{background:#1f9d55;border-color:#1f9d55;color:#fff}
+.aksi-lok.ikon{display:flex;gap:4px;padding:0}.aksi-lok.ikon a{width:28px;height:28px;padding:0}.aksi-lok.ikon span{display:none}
+.sp-ks.rata .sp-k.sp-kl,.sp-th.k.sp-kl{grid-template-columns:20px minmax(120px,1fr) 128px 50px 58px 78px 64px 60px 82px 92px}
+@media (max-width:560px){.sp-ks.rata .sp-k.sp-kl,.sp-th.k.sp-kl{grid-template-columns:18px minmax(0,1fr) 64px 54px 92px}}
+.aksi-lok svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .maplibregl-popup-close-button{color:#fff;font-size:18px;right:4px;top:3px}
 .row:hover{background:var(--surface)}
 .row .rk{font-size:11px;color:var(--ink2);font-weight:700;text-align:right}
@@ -2038,12 +2046,12 @@ const Peta = {
       if (hf && hf.length) { const f0 = hf[0], p = f0.properties, bar = +p.baru === 1, kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
         return new maplibregl.Popup({closeButton: false, maxWidth: "280px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#d946ef"><div><small>Himawari-9</small><b>Api baru</b></div></div>
           <div class="kg">${bar ? `<div class="kb penuh" style="justify-content:center"><span class="tp-pl" style="background:#d946ef">Belum tercatat FIRMS</span></div>` : ""}${kb("Pertama terlihat", hwLalu(+p.u0) + " lalu")}${kb("Fase api", {1: "Dingin", 2: "Membara", 3: "Menyala"}[p.lv] || "-")}${kb("Daya api", fmt(Math.round(+p.f)) + " MW")}${kb("Piksel 2 km", fmt(+p.px))}</div>
-          <div class="kk">Sumber: Himawari-9, JAXA</div></div>`).addTo(peta); }
+          ${aksiLokasi(e.lngLat.lat, e.lngLat.lng, "Api baru (Himawari-9)")}<div class="kk">Sumber: Himawari-9, JAXA</div></div>`).addTo(peta); }
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         const kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
         return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
           <div class="kg">${kb("Sebelum lintasan terakhir", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
-          <div class="kk">${p.s === "N21" ? "NOAA-21 tidak dihitung dalam jumlah titik. " : ""}Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
+          ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">${p.s === "N21" ? "NOAA-21 tidak dihitung dalam jumlah titik. " : ""}Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.PetaKab?.klik(e)) return;   /* overlay Luas terbakar / Belum padam: klik = popup kabupaten, bukan turun ke wilayah */
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
@@ -2148,7 +2156,7 @@ const Lapis = {
             : [kb("Landasan", fmt(x.landasan_m) + " m"), kb("Ke pusat api", fmt(x.jarak_ke_pusat_api) + " km"), kb("Pesawat", "CN-295 / CASA 212", 1)];
           new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${jn === "o" ? "#2f6f8f" : "#d06a33"},rgba(11,37,69,.95))">
             <small>${jn === "h" ? "Pangkalan helikopter water bombing" : jn === "a" ? "Pangkalan aju helikopter" : "Pangkalan modifikasi cuaca"}</small><b>${esc(x.nama)}${x.icao ? " · " + x.icao : ""}</b></div>
-            <div class="kg">${sel.join("")}</div><div class="kk">Siklus siram memakai asumsi sumber air 5 km dari api. Helikopter dan modifikasi cuaca diminta lewat BNPB.</div></div>`).addTo(peta); }); },
+            <div class="kg">${sel.join("")}</div>${aksiLokasi(e.lngLat.lat, e.lngLat.lng, x.nama)}<div class="kk">Siklus siram memakai asumsi sumber air 5 km dari api. Helikopter dan modifikasi cuaca diminta lewat BNPB.</div></div>`).addTo(peta); }); },
       asap: async () => { const d = this.cache.asap ||= await muatJSON("data/asap.json"); const g = gambarAsap(d);
         peta.addSource("asap", {type: "image", url: g.url, coordinates: g.kor});
         peta.addLayer({id: "asap", type: "raster", source: "asap", paint: {"raster-opacity": .6, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
@@ -2839,6 +2847,7 @@ const Laci = {
         <button class="ik-btn" id="bagiK" title="Bagikan cluster ini" aria-label="Bagikan cluster ini"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         <button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">
+      ${aksiLokasi(p.lat, p.lon, `Cluster ${p.id} (${S.meta.status[p.level]}) · ${p.kec}, ${p.kab}`).replace('class="aksi-lok"', 'class="aksi-lok" style="padding:0"')}
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah padam, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap padam."}</div>`}
       ${lipat("Api saat ini", `<div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>
         <table class="tb2"><tbody>${baris("Luas indikatif", `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`)}${baris("Deteksi VIIRS (7 hari)", fmt(p.n))}${baris("Daya radiasi api (FRP)", fmt(Math.round(p.frp)) + " MW")}
@@ -2898,6 +2907,19 @@ const fmtJam = j => j < 1 ? Math.round(j * 60) + " menit" : (Math.round(j * 2) /
 /* InaRISK: <= 0,33 rendah, <= 0,66 sedang, > 0,66 tinggi */
 const kelasInarisk = v => v == null ? "tidak ada data" : v <= .33 ? "rendah" : v <= .66 ? "sedang" : "tinggi";
 const bpbdDekat = (lat, lon) => (S.bpbd || []).map(b => ({...b, jarak: km(lat, lon, b.lat, b.lon)})).sort((a, b) => a.jarak - b.jarak)[0];
+/* tombol Google Maps · bagikan WA · lapor WA di pop-up. Lapor dikirim ke Pusdalops terdekat (≤ 150 km) yang nomornya HP;
+   kalau tidak ada, WA terbuka dengan teks laporan dan pelapor memilih kontaknya sendiri */
+function aksiLokasi(lat, lon, judul, ikon) {  /* ikon: tanpa teks, untuk baris tabel */
+  const ko = `${(+lat).toFixed(5)},${(+lon).toFixed(5)}`, g = "https://www.google.com/maps?q=" + ko, hp = b => String(b.pusdalops || "").replace(/\D/g, "");
+  const bp = (S.bpbd || []).filter(b => /^08\d{8,11}$/.test(hp(b))).map(b => ({...b, jarak: km(lat, lon, b.lat, b.lon)})).sort((a, b) => a.jarak - b.jarak)[0], ke = bp?.jarak <= 150 ? bp : null;
+  const waktu = new Date().toLocaleString("id-ID", {timeZone: "Asia/Jakarta", dateStyle: "medium", timeStyle: "short"}) + " WIB";
+  const wa = (no, t) => `https://wa.me/${no}?text=${encodeURIComponent(t)}`;
+  const tLapor = ke ? "Lapor ke Pusdalops " + esc(/^BPBD/i.test(ke.nama) ? ke.nama : "BPBD " + ke.nama) + " · " + fmt(Math.round(ke.jarak)) + " km" : "Lapor lewat WhatsApp, pilih kontaknya";
+  const lapor = `LAPORAN KEJADIAN\n${judul}\nKoordinat: ${ko}\nLokasi: ${g}\nWaktu: ${waktu}\nKeterangan: \n\n(dari Pantau Bencana)`;
+  return `<div class="aksi-lok${ikon ? " ikon" : ""}"><a href="${g}" target="_blank" rel="noopener" title="Buka di Google Maps" aria-label="Buka di Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Maps</span></a>
+    <a href="${wa("", judul + "\n" + g)}" target="_blank" rel="noopener" title="Bagikan lokasi lewat WhatsApp" aria-label="Bagikan lokasi lewat WhatsApp"><svg viewBox="0 0 24 24"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/></svg><span>WA</span></a>
+    <a class="lapor" href="${wa(ke ? "62" + hp(ke).slice(1) : "", lapor)}" target="_blank" rel="noopener" title="${tLapor}" aria-label="${tLapor}"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17v.5M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span>Lapor WA</span></a></div>`;
+}
 const daopsDekat = (lat, lon, n = 3) => S.daops.map(d => ({...d, jarak: km(lat, lon, d.lat, d.lon)})).sort((a, b) => a.jarak - b.jarak).slice(0, n);
 const arah = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(((d || 0) % 360) / 45) % 8];
 
@@ -4936,7 +4958,7 @@ const Posko = {
     const jalur = [ind2, ind].filter(Boolean).map(y => y.tingkat === 1 ? "Kab. " + y.kab : "Prov. " + y.nama).join(" → ");
     new maplibregl.Popup({closeButton: true, maxWidth: "340px"}).setLngLat(ll).setHTML(`<div class="kartu">
       <div class="kp putih" style="--aksen:${warna}">${x.tingkat === 0 ? lambang(x.prov) : lambang(x.prov, x.kab)}<div><small>${jenis}</small><b title="${esc(nama)}">${esc(nama)}</b></div></div>
-      <div class="kg">${sel.join("")}</div>
+      <div class="kg">${sel.join("")}</div>${aksiLokasi(ll[1], ll[0], jenis + " " + nama)}
       <div class="kk">${jalur ? "Melapor ke " + esc(jalur) : "Melapor ke BNPB dan KLHK"}<button class="btn sec" style="height:30px;font-size:12px" onclick="Posko.rinci('${x.id}')">Rincian alat, personel & anggaran</button></div></div>`).addTo(peta); },
   rinci(id) { this.pilih = id; bukaTab("posko"); nanti(() => { this.render(); $("#rinciPosko")?.scrollIntoView({behavior: "smooth", block: "start"}); }); },
   rinciHTML(x) { const a = anggaran(x), ind = x.induk && S.semuaPosko.get(x.induk);

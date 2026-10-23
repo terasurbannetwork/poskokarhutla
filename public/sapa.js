@@ -18,10 +18,11 @@
   const arahD = d => d ? `<small class="${d > 0 ? "naik" : "turun"}">${d > 0 ? "▲" : "▼"}${fmt(Math.abs(d))}</small>` : "";
   /* satu format baris kompleks (Bertahan paling lama, rincian provinsi, rincian gambut); kecN = kompleks menyala per kab|kec */
   let kecN = new Map();
-  const kepalaK = () => th("k", ["#", "Kabupaten, kecamatan", "Provinsi", "Sejak", "Titik 7 hari", "Hari ini", "Cluster di kec.", "Menyala", "Gambut"], [4, 5, 6], [2, 3, 4, 6, 8]);
-  const baris = (p, i) => `<button class="sp-k" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm1" translate="no"><b>${esc(p.kab)}</b>${p.kec ? `<span> · ${esc(p.kec)}</span>` : ""}</span>
+  const kepalaK = () => th("k sp-kl", ["#", "Kabupaten, kecamatan", "Provinsi", "Sejak", "Titik 7 hari", "Hari ini", "Cluster di kec.", "Menyala", "Gambut", "Lokasi"], [4, 5, 6], [2, 3, 4, 6, 8]);
+  /* baris = div berperan tombol, karena di dalamnya ada tautan Maps / WA / Lapor WA (aksiLokasi di index.html) */
+  const baris = (p, i) => `<div class="sp-k sp-kl" role="button" tabindex="0" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm1" translate="no"><b>${esc(p.kab)}</b>${p.kec ? `<span> · ${esc(p.kec)}</span>` : ""}</span>
     <em class="sp-p prov sp-mh">${esc(namaProv(p.prov))}</em><span class="sp-mh">${tgl(p.awal)}</span><b class="sp-ka sp-mh">${fmt(p.n)}</b><b class="sp-ka">${fmt(p.ini || 0)} ${arahD((p.ini || 0) - (p.kmrn || 0))}</b>
-    <b class="sp-ka sp-mh">${fmt(kecN.get(`${p.kab}|${p.kec}`) || 1)}</b><em class="sp-p merah">${fmt(p.hari)} hari</em>${p.gambut ? `<em class="sp-p gambut sp-mh">${ik("daun")}Gambut</em>` : `<em class="sp-mh"></em>`}</button>`;
+    <b class="sp-ka sp-mh">${fmt(kecN.get(`${p.kab}|${p.kec}`) || 1)}</b><em class="sp-p merah">${fmt(p.hari)} hari</em>${p.gambut ? `<em class="sp-p gambut sp-mh">${ik("daun")}Gambut</em>` : `<em class="sp-mh"></em>`}${aksiLokasi(p.lat, p.lon, `Cluster ${p.id} · ${p.kec ? p.kec + ", " : ""}${p.kab}`, true)}</div>`;
   const tabelK = (xs, N = 8) => `<div class="sp-ks rata">${kepalaK()}${xs.slice(0, N).map(baris).join("")}</div>${xs.length > N ? `<p>Dan ${fmt(xs.length - N)} cluster lain, semuanya tampil di peta.</p>` : ""}`;
   /* rincian provinsi: kategori pil -> [warna, ikon, kalimat] */
   const KAT = {api: ["oranye", "api", "cluster dengan titik panas hari ini"], baru: ["prov", "", "cluster baru muncul dalam 24 jam terakhir"],
@@ -109,7 +110,8 @@
     if (!(await siap()) || (!paksa && sudah())) return;
     const [per, asap] = await Promise.all([muatJSON("data/peringatan.json").catch(() => null), muatJSON("data/asap.json").catch(() => null)]);
     const h = hitung(per, asap);
-    SapaInti.dialog(html(h), (e, d) => {
+    const dlg = SapaInti.dialog(html(h), (e, d) => {
+      if (e.target.closest(".aksi-lok")) return true;   /* tautan Maps/WA jalan sendiri, pop-up tetap terbuka */
       const k = e.target.closest("[data-k]"); if (k) { d.close(); Laci.buka(k.dataset.k); return true; }
       /* pil provinsi: buka/tutup rincian kompleks kategori itu di bawah barisnya (satu terbuka sekaligus) */
       /* pil provinsi / kartu isu: buka-tutup rincian di bawahnya, satu terbuka sekaligus */
@@ -122,6 +124,7 @@
         det.dataset.kunci = kunci; det.hidden = false; (isu ? b : pr.querySelector(`button.sp-p[data-kat="${b.dataset.kat}"]`)).setAttribute("aria-expanded", "true"); }
       return true;
     });
+    dlg.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches(".sp-kl")) { e.preventDefault(); e.target.click(); } });
   }
 
   SapaInti.css();
