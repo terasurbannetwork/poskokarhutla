@@ -32,7 +32,13 @@ isi = json.load(open(ISIAN))['isi']; out = []
 for x in isi['kejadian']:
     y = dict(x)
     if x['jenis'] == 'karhutla': y['sat'] = kec(ARJ) if x['lokasi'] == 'Gunung Arjuno' else kab(KAB[x['lokasi']]) if x['lokasi'] else prov(x['prov'])
+    sisa = round(y['sat']['sisa']) if 'sat' in y else None
+    # sisa belum padam satelit 0 ha = selesai walau laporan lapangan belum menutupnya (pemilik 23 Okt: "udah nol ya masuk selesai dong")
+    y['tangani'] = x['status'] != 'selesai' and sisa != 0
+    # perlu perhatian = karhutla yang masih ditangani dengan sisa >= 100 ha atau dilapor BPBD api belum padam (pemilik 23 Okt)
+    # ponytail: ambang 100 ha tetap; pindahkan ke isian bila pemilik minta ambang lain per laporan
+    y['perhatian'] = y['tangani'] and sisa is not None and (sisa >= 100 or x['status'] == 'belum')
     out.append(y)
 json.dump({'hari': HARI, 'dibuat': P['dibuat'], 'kejadian': out, 'isi': {k: v for k, v in isi.items() if k != 'kejadian'}}, open('data.json', 'w'), ensure_ascii=False, indent=1)
 for y in out:
-    if 'sat' in y: print(y['prov'], y['lokasi'] or '(prov)', y['status'], y['sat'])
+    if 'sat' in y: print(y['prov'], y['lokasi'] or '(prov)', y['status'], 'ditangani' if y['tangani'] else 'selesai', 'PERHATIAN' if y['perhatian'] else '', y['sat'])

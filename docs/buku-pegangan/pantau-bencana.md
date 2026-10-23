@@ -30,6 +30,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Judul paling banyak dua baris** (*"Ukuran disesuaikan lah intinya cuma 2 baris"*) dan judul memakai bentuk deskriptif, misalnya "Sebaran Titik Panas dan Kebakaran di Jawa Timur per 22 Oktober".
    - **Data karhutla di deck = data website** (*"Karhutla udah pasti pakai data kita"*): hotspot dari tabel Real Time, luas terbakar dan belum padam dari lapisan peta. Fakta lapangan dari laporan BPBD atau Koordalops.
    - **Bencana lainnya di laporan harian dipisah per jenis dengan ikon berbeda**, mengikuti laporan 18–19 Okt: *"Dipisahin dong ... jadi orang tau mana gempa bumi mana bla bla bla coba cek yang laporan harian 18-19"*. Baris TOTAL kekeringan kini berikon rumah, orang, dan tetes air (*"Buat icon"*). Pembangun deck 231026 disimpan di `data/laporan-bnpb/harian-2026-10-23/` setelah scratchpad sempat terhapus dan pembangun Jatim hilang.
+   - **Status di laporan harian mengikuti sisa belum padam website.** Kota Tidore (sisa 0 ha) dipindah ke selesai: *"Bro ini Maluku Utara udah nol ya masuk selesai dong"*. Kartu PERLU PERHATIAN tidak lagi menyalin jumlah dalam penanganan (*"Emang semua perlu perhatian ya?"*). Pemilik memilih yang serius saja: sisa ≥100 ha atau dilapor BPBD belum padam, jadi 8 dari 10. Penunjuk "Lampiran (data rinci) mulai halaman 13" di penutup dibuang (*"Hilangkan"*).
 
 2. 22 Okt 2026 (lanjutan)
    - **Satu tujuan: api padam lebih cepat.** Rancangan `docs/bnpb/RANCANGAN-API-PADAM.md` Fase 0 dan 1 disetujui dan selesai: ID insiden stabil (`scripts/data/insiden.py`), Kartu Api di `/instansi` dengan teks WA dan cetak, tugas dibuat begitu data terbit. Keputusan pemilik: tugas otomatis untuk level 3 dan level 2 bersyarat (permukiman, konsesi, tumbuh); insiden Himawari ke Posko pusat saja sampai VIIRS mengonfirmasi; server rute berbayar boleh bila graf sendiri tidak cukup; surat akses data TMAT, SiPongi, Daops jalan. Radius permukiman 5 km dan nama perusahaan di tugas diambil sebagai bawaan.
@@ -117,6 +118,8 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Karhutla sisa 0 ha = selesai | 23 Okt 2026 | Sisa belum padam website 0 ha memindahkan karhutla ke selesai walau laporan lapangan belum menutupnya |
+| Perlu perhatian = sisa ≥100 ha atau BPBD belum padam | 23 Okt 2026 | Kartu PERLU PERHATIAN, tanda ! peta, dan garis merah provinsi memakai satu aturan; sisa kecil tetap dalam penanganan tanpa tanda ! |
 | Bencana lainnya per jenis berikon | 23 Okt 2026 | Slide 3 laporan harian memasang satu bagian per jenis (gempa bumi, kebakaran TPA, banjir, dan seterusnya) dengan ikon dan warna berbeda; tabel kekeringan ditutup baris TOTAL berikon |
 | Format laporan harian = deck 221026 | 23 Okt 2026 | 4 slide mengikuti deck 221026 (periode 21–22 Okt), menggantikan acuan 18–19 Okt dari 21 Okt; deck 18–19 Okt jadi penunjuk data yang boleh masuk dan pola panel Bencana lainnya |
 | Satu gaya rumah deck | 23 Okt 2026 | Kerangka BNPB (Roboto, PUTIH/GELAP, garis, logo, footer) di semua deck; deck lain hanya sumber isi |
@@ -363,7 +366,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - "Terima kasih" 54 pt, garis F28C28 2×374 pt.
   - Nama lembaga 18 pt bold (bukan nama pejabat), baris laporan 13 pt C9D1E3.
   - Tanpa kartu kontak.
-  - Penunjuk lampiran 11 pt F6B26B hanya dipasang bila lampirannya memang ada dan nomor halamannya benar.
+  - Penunjuk lampiran tidak dipasang di laporan harian 4 slide (*"Hilangkan"*). Di deck yang memang berlampiran, penunjuk 11 pt F6B26B boleh asal nomor halamannya benar.
 - **Penanganan (d6, d8).**
   - Langsung ke data dan tanpa slide penutup.
   - Pil CUT OFF dipasang di slide tabel dan peta. Slide operasi tidak memakainya, jadi tanggal datanya harus tertulis di judul.
@@ -453,6 +456,8 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - Pil status: belum padam F8DDE0/C8102E, berjalan atau pendataan FBE7D6/D9600B, kumulatif E6EAF0/051C2C.
   - Chip fakta 5,8 pt ditaruh di bawah nama. Jarak antarbaris rata.
   - Laporan harian hanya punya 2 status: selesai (navy dengan centang) dan dalam penanganan (oranye dengan titik tiga). Daftar diurutkan menurut sisa ha, terbesar dulu.
+  - **Karhutla dengan sisa belum padam 0 ha di website masuk selesai**, walau laporan lapangan belum menutupnya: *"udah nol ya masuk selesai dong"* (Kota Tidore, 23 Okt). Aksinya ikut dibuang dari pita YANG AKAN DILAKUKAN.
+  - **Perlu perhatian tidak sama dengan dalam penanganan** (*"Emang semua perlu perhatian ya?"*). Kartu PERLU PERHATIAN menghitung karhutla dalam penanganan yang sisa belum padamnya 100 ha atau lebih, atau yang dilapor BPBD apinya belum padam. Sisa kecil (Riau ±2 ha, Raja Ampat ±5 ha) tetap dalam penanganan, tapi tidak perlu perhatian. Kartunya berlabel "karhutla perlu perhatian". Di daftar dalam penanganan, baris yang perlu perhatian diberi tanda ! merah yang sama dengan peta.
 - **Tabel peringkat (d5 s1).**
   - Kepala metrik berupa pil berikon 57,6×16,6 pt: TITIK navy, LUAS (HA) 3F5F80, BELUM PADAM C8102E.
   - Baris 17,3 pt dengan pemisah EEF0F3.
@@ -473,7 +478,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - Peta wilayah: kab/kota bertitik D3DBE5, tanpa titik F1F3F6. Bulatan D9600B bergaris putih dengan luas sebanding jumlah titik.
   - Nomor peringkat berupa lingkaran putih bergaris oranye. Label berupa pil putih bergaris abu, misalnya "Jember 19".
   - Peta zoom kompleks: titik diwarnai menurut umur (B4BDC8 lama, F2A35E tengah, C8102E terbaru), dengan segitiga di puncak gunung.
-  - Peta harian: penanda shape 17/22/24 pt (untuk 1/2/≥3 kejadian) bergaris putih 1,25 pt, ditambah badge "!" merah 11 pt.
+  - Peta harian: penanda shape 17/22/24 pt (untuk 1/2/≥3 kejadian) bergaris putih 1,25 pt, ditambah badge "!" merah 11 pt di provinsi yang punya karhutla perlu perhatian. Provinsi itu juga bergaris merah di peta dasar, dan aturannya satu sumber dengan kartu PERLU PERHATIAN. Badge jumlah dan badge ! duduk di pinggir lingkaran (0,42 diameter dari pusat), jangan sampai menutupi angka.
   - **Tidak boleh ada yang bertumpuk**: *"Ini situbondo tumpang tindih"*.
   - **Wajib ada legenda** yang menerangkan arti bulatan dan warna: *"Ya apa itu lingkaran dan warnanya isinya apa legendanya"*. Teks legenda 7–7,5 pt.
 - **Grafik batang harian.**
@@ -511,7 +516,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
 - **Semua angka karhutla diambil dari data website.** Hotspot dari tabel Real Time; luas terbakar dan belum padam dari lapisan peta website. *"intinya semua data hotspot luas terbakar titik panas titik puncak belum padam ambil data kita"*, dan untuk laporan harian *"Karhutla udah pasti pakai data kita"*.
 - **Fakta lapangan diambil dari laporan BPBD atau Koordalops**: status, korban, kekeringan, gempa, operasi. *"laporan lapangan BPBD aja"*. Isi yang boleh masuk laporan harian bisa dilihat di d1: KK dan jiwa, liter air beserta sarananya, rumah rusak, pengungsi, pendaki, sortie WB.
 - **Peta di deck sama dengan peta app.** Kompleks prioritas disorot dan bernomor, kompleks kecil masuk legenda, dan jumlahnya sama dengan app.
-- **Angka harus cocok di seluruh deck.** Di d3, angka 9 "dalam penanganan" sama di judul, KPI, "(9)", 9 baris daftar, dan 9 ikon oranye di slide 3. Selesai + berjalan = kejadian menonjol. Jumlah penanda = jumlah provinsi di judul.
+- **Angka harus cocok di seluruh deck.** Di d3, angka 9 "dalam penanganan" sama di judul, KPI, "(9)", 9 baris daftar, dan 9 ikon oranye di slide 3. Selesai + berjalan = kejadian menonjol. Kartu PERLU PERHATIAN = jumlah tanda ! di daftar dalam penanganan. Jumlah penanda = jumlah provinsi di judul.
 - **Pembulatan berbeda per jenis.**
   - Harian: bulat tanpa desimal, "± 635.296 ha", "sisa ± 7.938 ha".
   - Templat BNPB dengan data lapangan: "±502,08 ha".

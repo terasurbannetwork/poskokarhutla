@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import { chromium } from '/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright/index.mjs';
 const g = JSON.parse(fs.readFileSync('/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public/geo/provinsi.json'));
-const D = JSON.parse(fs.readFileSync('data.json')), ada = new Set(D.kejadian.map(x => x.prov)), awas = new Set(D.kejadian.filter(x => x.status === 'belum').map(x => x.prov));
+const D = JSON.parse(fs.readFileSync('data.json')), ada = new Set(D.kejadian.map(x => x.prov)), awas = new Set(D.kejadian.filter(x => x.perhatian).map(x => x.prov));
 const B = [95.0, -11.0, 140.9, 6.2], PW = 1848, PH = 693, sx = PW / (B[2] - B[0]), sy = PH / (B[3] - B[1]);
 const pj = ([x, y]) => [(x - B[0]) * sx, (B[3] - y) * sy];
 let s = '', s2 = ''; const pusat = {};

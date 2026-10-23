@@ -40,8 +40,8 @@ for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender
 
 D = json.load(open('data.json')); KJ = D['kejadian']; ISI = D['isi']; TT = json.load(open('titik.json'))
 KH = [x for x in KJ if x['jenis'] == 'karhutla']; KR = [x for x in KJ if x['jenis'] == 'kekeringan']; LN = [x for x in KJ if x['jenis'] not in ('karhutla', 'kekeringan')]
-tangani = lambda x: x['status'] != 'selesai'
-KH_T = [x for x in KH if tangani(x)]; N_SEL = sum(1 for x in KJ if not tangani(x)); N_TOT = len(KJ); N_PROV = len({x['prov'] for x in KJ})
+tangani = lambda x: x['tangani']; serius = lambda x: x['perhatian']   # aturannya di data.py, dipakai juga peta.mjs
+KH_T = [x for x in KH if tangani(x)]; KH_S = [x for x in KH if serius(x)]; N_SEL = sum(1 for x in KJ if not tangani(x)); N_TOT = len(KJ); N_PROV = len({x['prov'] for x in KJ})
 NAMA = {'12': 'Sumatera Utara', '14': 'Riau', '15': 'Jambi', '16': 'Sumatera Selatan', '19': 'Kep. Bangka Belitung', '32': 'Jawa Barat', '33': 'Jawa Tengah', '35': 'Jawa Timur',
         '53': 'Nusa Tenggara Timur', '61': 'Kalimantan Barat', '62': 'Kalimantan Tengah', '71': 'Sulawesi Utara', '72': 'Sulawesi Tengah', '73': 'Sulawesi Selatan',
         '82': 'Maluku Utara', '96': 'Papua Barat Daya'}
@@ -71,7 +71,7 @@ def s2():
          ('api_o', T_ORG, f0(len(KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(KR)), 'kekeringan', KER), ('awas_b', T_SLATE, f0(len(LN)), 'bencana lainnya', SLATE)]
     kw = (8359811 - 4 * 91440) // 5
     for i, t in enumerate(T): o += kartu(658368 + i * (kw + 91440), 1591056, *t, w=kw)
-    o += kartu(9511955, 1591056, 'api_m', T_MERAH, f0(len(KH_T)), 'karhutla dalam penanganan', MERAH)
+    o += kartu(9511955, 1591056, 'api_m', T_MERAH, f0(len(KH_S)), 'karhutla perlu perhatian', MERAH)
     # peta + lingkaran per provinsi (karhutla jingga bernomor, kekeringan coklat, lainnya biru-abu, ! perlu perhatian)
     MX, MY, MW, MH = 502920, 2331720, 7680960, 2880360
     o += gambar(MX, MY, MW, MH, 'peta.png')
@@ -87,12 +87,12 @@ def s2():
         d = 219456 if utama <= 1 else 265176 if utama <= 3 else 310896
         o += kotak(cx - d / 2, cy - d / 2, d, d, warna, 'ellipse', ln='FFFFFF', lw=19050) + tx(cx - d / 2, cy - d / 2, d, d, [str(utama)], sz=850, b=True, c='FFFFFF', al='ctr', an='ctr')
         for n, w, sdx in ((nr, KER, 1), (nl if nk else 0, wl, -1)):
-            if n: s = 155448; o += kotak(cx + sdx * d * .36 - s / 2, cy + d * .36 - s / 2, s, s, w, 'ellipse', ln='FFFFFF', lw=12700) + tx(cx + sdx * d * .36 - s / 2, cy + d * .36 - s / 2, s, s, [str(n)], sz=650, b=True, c='FFFFFF', al='ctr', an='ctr')
-        if any(x['status'] == 'belum' for x in xs):
-            s = 137160; o += kotak(cx + d * .36 - s / 2, cy - d * .36 - s / 2, s, s, MERAH, 'ellipse', ln='FFFFFF', lw=12700) + tx(cx + d * .36 - s / 2, cy - d * .36 - s / 2, s, s, ['!'], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr')
-        nm = PENDEK.get(p, NAMA[p])
+            if n: s = 155448; o += kotak(cx + sdx * d * .42 - s / 2, cy + d * .42 - s / 2, s, s, w, 'ellipse', ln='FFFFFF', lw=12700) + tx(cx + sdx * d * .42 - s / 2, cy + d * .42 - s / 2, s, s, [str(n)], sz=650, b=True, c='FFFFFF', al='ctr', an='ctr')
+        if any(serius(x) for x in xs):
+            s = 137160; o += kotak(cx + d * .42 - s / 2, cy - d * .42 - s / 2, s, s, MERAH, 'ellipse', ln='FFFFFF', lw=12700) + tx(cx + d * .42 - s / 2, cy - d * .42 - s / 2, s, s, ['!'], sz=700, b=True, c='FFFFFF', al='ctr', an='ctr')
+        nm = PENDEK.get(p, NAMA[p]); yb = max(d / 2 + 27432, d * .42 + 77724 + 18288 if nr or (nl and nk) else 0)   # badge di pinggir lingkaran, tidak menutupi angka; label bawah turun di bawah badge
         o += (tx(cx - d / 2 - 54864 - 1463040, cy - 73152, 1463040, 146304, [nm], sz=750, b=True, al='r', an='ctr') if p in KIRI
-              else tx(cx - 731520, cy + d / 2 + 27432, 1463040, 146304, [nm], sz=750, b=True, al='ctr', an='ctr') if p in BAWAH
+              else tx(cx - 731520, cy + yb, 1463040, 146304, [nm], sz=750, b=True, al='ctr', an='ctr') if p in BAWAH
               else tx(cx + d / 2 + 54864, cy - 73152, 1463040, 146304, [nm], sz=750, b=True, an='ctr'))
     lx = 1371600
     for bentuk, w, t, seru in [('rect', ORG, 'karhutla', False), ('ellipse', KER, 'kekeringan', False)] + [('ellipse', v[2], v[0][0].lower() + v[0][1:], False) for k, v in JENIS_LAIN.items() if any(x['jenis'] == k for x in LN)] + [('ellipse', MERAH, 'perlu perhatian', True)]:
@@ -113,6 +113,8 @@ def s2():
         y = 3840480 + n * rp; s = int(rp * .8)
         if n: o += garis(8668512, y - (rp - s) // 2, 2809951, 'F1F2F4')
         o += kotak(8668512, y, s, s, ORG, 'ellipse') + gambar(8668512 + s * .19, y + s * .19, s * .62, s * .62, I['api_p'])
+        if serius(x):   # tanda ! sama dengan peta, supaya 10 baris ini terbaca 8 perlu perhatian
+            b = s * .55; o += kotak(8668512 + s * .7, y - s * .2, b, b, MERAH, 'ellipse', ln='FFFFFF', lw=6350) + tx(8668512 + s * .7, y - s * .2, b, b, ['!'], sz=500, b=True, c='FFFFFF', al='ctr', an='ctr')
         nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], TEKS, False)] if x['lokasi'] else [])
         o += tx(8869680, y - (164592 - s) // 2, 1758391, 164592, [nm], sz=680, an='ctr', wrap='none')
         sis = f"sisa ± {f0(x['sat']['sisa'])} ha" if x['sat']['sisa'] else 'sisa –'
@@ -235,7 +237,7 @@ DETAIL = {('53', ''): {'pil': [('Transisi s.d. 27 Des', T_ORG, ORG, 'kalender_or
           ('96', 'TPA Malkon, Sorong'): {'pil': [('± 7 ha', 'F7F8FA', INK, None), ('sisa ± 3 ha', T_ORG, ORG, 'api_oranye')]},
           ('12', 'Simalungun'): {'pil': [('±128 KK', 'F7F8FA', INK, 'orang_slate'), ('±90 rumah', 'F7F8FA', INK, 'rumah_slate'), ('surut', T_NAVY, NAVY, None)]}}
 KK_KER = sum(int(x['utama'].replace('±', '').replace('KK', '').replace('.', '').strip()) for x in KR)
-TINDAK = [('heli_p', 'Pemadaman prioritas', ['•  Water bombing dan penyekatan di Gunung Arjuno dan Karanganyar', '•  Pemadaman darat di Tojo Una-Una dan Kota Tidore']),
+TINDAK = [('heli_p', 'Pemadaman prioritas', ['•  Water bombing dan penyekatan di Gunung Arjuno dan Karanganyar', '•  Pemadaman darat di Tojo Una-Una']),
           ('pendaki_p', 'Keselamatan warga', ['Pendampingan 152 pendaki terdampak di Wonosobo; masker untuk warga di kota dengan PM2.5 Berbahaya (Palembang, Palangka Raya)']),
           ('daun_p', 'Air bersih', [f'Melanjutkan distribusi air bersih untuk ±{f0(KK_KER)} KK terdampak kekeringan di 5 kabupaten Jawa Tengah'])]
 N_LAIN = len(LN)
@@ -268,6 +270,9 @@ for i, gs in GANTI.items():
     s = F[f'ppt/slides/slide{i}.xml'].decode()
     for a_, b_ in gs: assert s.count(a_) == 1, a_; s = s.replace(a_, b_)
     F[f'ppt/slides/slide{i}.xml'] = s.encode()
+# penutup: penunjuk lampiran dibuang, deck ini tanpa lampiran (pemilik 23 Okt: "Hilangkan")
+s = F['ppt/slides/slide4.xml'].decode(); blk = [b for b in re.findall(r'<p:sp>.*?</p:sp>', s, re.S) if 'Lampiran (data rinci)' in b]
+assert len(blk) == 1; F['ppt/slides/slide4.xml'] = s.replace(blk[0], '').encode()
 for i in (1, 2, 3, 4):
     assert '·' not in re.sub(r'<[^>]+>', '', F[f'ppt/slides/slide{i}.xml'].decode()), f'titik tengah di slide {i}'
 dipakai = set()
@@ -276,4 +281,4 @@ for n, v in F.items():
 for n in [n for n in F if re.match(r'ppt/media/image-[23]-\d+\.png$', n) and n not in dipakai]: del F[n]
 zo = zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED)
 for n in ['[Content_Types].xml'] + [n for n in F if n != '[Content_Types].xml']: zo.writestr(n, F[n])
-zo.close(); print('ok', OUT, 'karhutla', len(KH), 'dalam penanganan', len(KH_T), 'selesai', N_SEL, '/', N_TOT, 'provinsi', N_PROV)
+zo.close(); print('ok', OUT, 'karhutla', len(KH), 'dalam penanganan', len(KH_T), 'perlu perhatian', [x['lokasi'] or x['prov'] for x in KH_S], 'selesai', N_SEL, '/', N_TOT, 'provinsi', N_PROV)
