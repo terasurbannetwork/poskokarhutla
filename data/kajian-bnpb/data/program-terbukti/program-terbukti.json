@@ -6475,7 +6475,7 @@
      "status_label": "Sudah ada, perlu dikembangkan",
      "keyakinan": "resmi",
      "renstra_program": "Program Ketangguhan Masyarakat terhadap Bencana",
-     "fokus_ripb": "3;3;7",
+     "fokus_ripb": "3;7",
      "jumlah_bukti": 7
     },
     {
@@ -6603,7 +6603,7 @@
      "status_label": "Sudah ada, perlu dikembangkan",
      "keyakinan": "terverifikasi",
      "renstra_program": "Program Rehabilitasi dan Rekonstruksi Pascabencana",
-     "fokus_ripb": "11;11",
+     "fokus_ripb": "11",
      "jumlah_bukti": 5
     },
     {
@@ -6697,7 +6697,7 @@
      "ripb_strategi": "3a",
      "catatan": "",
      "status_label": "Sudah ada, perlu dikembangkan",
-     "keyakinan": "",
+     "keyakinan": "terverifikasi",
      "renstra_program": "Program Ketangguhan Masyarakat terhadap Bencana",
      "fokus_ripb": "",
      "jumlah_bukti": 1
@@ -6857,9 +6857,9 @@
      "ripb_strategi": "4f",
      "catatan": "",
      "status_label": "Sudah ada, perlu dikembangkan",
-     "keyakinan": "",
+     "keyakinan": "terverifikasi",
      "renstra_program": "Program Ketangguhan Masyarakat terhadap Bencana",
-     "fokus_ripb": "9;9",
+     "fokus_ripb": "9",
      "jumlah_bukti": 1
     },
     {
@@ -7115,7 +7115,7 @@
      "status_label": "Sudah ada, perlu dikembangkan",
      "keyakinan": "terverifikasi;resmi",
      "renstra_program": "Program Koordinasi, Pembinaan, dan Dukungan Tata Kelola (Dukungan Manajemen)",
-     "fokus_ripb": "4;4;4",
+     "fokus_ripb": "4",
      "jumlah_bukti": 19
     },
     {

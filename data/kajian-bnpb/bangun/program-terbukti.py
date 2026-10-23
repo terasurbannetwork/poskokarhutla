@@ -1252,9 +1252,10 @@ def bangun():
     for p in K:
         r = dict(p)
         r["status_label"] = tema["status_usulan"][p["status"]]["label"]
-        r["keyakinan"] = ";".join(dict.fromkeys(b["label"] for b in bk if b["program"] == p["id"] and b["nilai"]))
+        lab = [b["label"] for b in bk if b["program"] == p["id"] and b["nilai"]] or [b["label"] for b in bk if b["program"] == p["id"]]
+        r["keyakinan"] = ";".join(dict.fromkeys(lab))  # label angka; program tanpa angka memakai label temuan kualitatifnya
         r["renstra_program"] = next(pr for k, pr, *_ in RENSTRA_PROGRAM if k == p["renstra"])
-        r["fokus_ripb"] = ";".join(str(RENAS_PROGRAM[c][1]) for c in p["renas"].split(";") if c)
+        r["fokus_ripb"] = ";".join(dict.fromkeys(str(RENAS_PROGRAM[c][1]) for c in p["renas"].split(";") if c))
         r["jumlah_bukti"] = sum(b["program"] == p["id"] for b in bk)
         kp.append(r)
     kol = ["id", "nama", "kelompok", "lokasi", "periode", "lembaga", "fase", "bencana", "aksi", "kajian", "apa", "dampak", "jenis_eval", "kekuatan",
@@ -1320,6 +1321,7 @@ def cek(t, tema, unit_berlaku, prov):
             assert p[f], f"{p['id']}: kolom {f} kosong"
         for f, v in vocab.items():
             assert set(p[f].split(";")) <= v, f"{p['id']}: {f} di luar kosakata tema.json: {set(p[f].split(';')) - v}"
+        assert p["keyakinan"] and set(p["keyakinan"].split(";")) <= LABEL, p["id"]
         assert p["status"] in tema["status_usulan"] and p["kekuatan"] in KEKUATAN and p["posisi"] in POSISI and p["jenis_eval"] in JENIS_EVAL, p["id"]
         assert set(p["unit"].split(";")) <= unit_berlaku, f"{p['id']}: unit bukan unit OTK berlaku: {set(p['unit'].split(';')) - unit_berlaku}"
         assert all(c in kode_renas for c in p["renas"].split(";") if c), p["id"]

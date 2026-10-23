@@ -93,7 +93,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Celah:** Mata rantai terakhir (sirene, Pusdalops 24 jam), tsunami nontektonik (Selat Sunda 2018), cakupan peringatan dini 6%; evaluasi UNDRR/UNESCO 2019 atas Palu belum dapat dibuka (HTTP 403).
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Peringatan Dini; Direktorat Koordinasi Pengendalian Operasi Darurat; Pusat Data, Informasi, dan Komunikasi Kebencanaan. **K/L:** BMKG; BPBD; Kementerian Komunikasi dan Digital.
-- **Tabel silang:** Renas 1.1.1, 1.1.2, 1.2.1 (fokus RIPB 3, 3, 7); strategi RIPB 2b; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
+- **Tabel silang:** Renas 1.1.1, 1.1.2, 1.2.1 (fokus RIPB 3, 7); strategi RIPB 2b; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 - **Catatan:** Nomenklatur Kementerian Komunikasi dan Digital belum dicek ke kabinet Okt 2026.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
@@ -189,7 +189,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Celah:** Pola pokmas dipakai lagi (Lombok, Palu, Cianjur) tanpa evaluasi mutu independen yang dipublikasikan.
 - **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Rehabilitasi dan Rekonstruksi Perumahan; Direktorat Rehabilitasi dan Rekonstruksi Sosial, Ekonomi, dan Lingkungan Hidup. **K/L:** Kementerian Perumahan dan Kawasan Permukiman; Kementerian Pekerjaan Umum; pemerintah daerah.
-- **Tabel silang:** Renas 3.1.2, 3.2.1 (fokus RIPB 11, 11); strategi RIPB 6c; Renstra: Program Rehabilitasi dan Rekonstruksi Pascabencana.
+- **Tabel silang:** Renas 3.1.2, 3.2.1 (fokus RIPB 11); strategi RIPB 6c; Renstra: Program Rehabilitasi dan Rekonstruksi Pascabencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -258,7 +258,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / kekeringan / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Penampungan air permukaan skala desa/pertanian untuk irigasi suplementer dan air baku musim kemarau.
 - **Dampak terukur:** Tidak ditemukan evaluasi dengan lahan pembanding. Pedoman Kementan menyatakan embung yang memenuhi kriteria teknis dapat menaikkan indeks pertanaman; angka kenaikan yang beredar berasal dari pernyataan dinas atau proyeksi pemerintah.
-- **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: -.
+- **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: terverifikasi.
 - **Syarat keberhasilan:** Lokasi dengan hujan cukup dan tanah tidak bocor; daerah layanan jelas; pemeliharaan dari sedimentasi; kelompok pengelola.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program Kementan dan Kementerian PU; Inpres 1/2018 tentang embung desa (kutipan riset B, sekunder).
 - **Celah:** Tidak ada inventaris volume dan fungsi embung terbuka (repo hanya jumlah objek OSM per kab); tidak ada evaluasi.
@@ -368,13 +368,13 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / banjir, rob / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Kawasan rendah dikelilingi tanggul, kolam retensi, dan pompa untuk membuang air ke laut.
 - **Dampak terukur:** Tidak ditemukan evaluasi kinerja kuantitatif. Kajian Polder Jati Pinggir (Jakarta) menemukan kapasitas saluran dan pompa kurang; di Pekalongan tanggul 2019 dilaporkan tenggelam pada 2022 karena penurunan tanah.
-- **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: -.
+- **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: terverifikasi.
 - **Syarat keberhasilan:** Penurunan tanah dihentikan; pompa dan listrik cadangan dipelihara; pengelola polder berbiaya tetap.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Proyek Kementerian PU dan pemda; Renas 2.4.2 dan 2.4.4.
 - **Celah:** Tanpa penghentian pengambilan air tanah, tanggul dan polder terus tenggelam (lihat P16).
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana. **K/L:** Kementerian Pekerjaan Umum; pemerintah daerah.
-- **Tabel silang:** Renas 2.4.2, 2.4.4 (fokus RIPB 9, 9); strategi RIPB 4f; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
+- **Tabel silang:** Renas 2.4.2, 2.4.4 (fokus RIPB 9); strategi RIPB 4f; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -556,7 +556,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Celah:** Klaim ABMN kecil dibanding premi (2024, sekunder); dampak pembayaran pada kecepatan pemulihan belum diukur; SEADRIF (ASEAN) tidak ditelusuri di sesi ini.
 - **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Pengembangan Strategi Penanggulangan Bencana; Biro Keuangan; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur. **K/L:** Kementerian Keuangan; BPDLH; Otoritas Jasa Keuangan.
-- **Tabel silang:** Renas 4.6.2, 4.6.3, 2.5.1 (fokus RIPB 4, 4, 4); strategi RIPB 3b; Renstra: Program Koordinasi, Pembinaan, dan Dukungan Tata Kelola (Dukungan Manajemen).
+- **Tabel silang:** Renas 4.6.2, 4.6.3, 2.5.1 (fokus RIPB 4); strategi RIPB 3b; Renstra: Program Koordinasi, Pembinaan, dan Dukungan Tata Kelola (Dukungan Manajemen).
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
