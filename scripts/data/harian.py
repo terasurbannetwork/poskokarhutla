@@ -11,6 +11,7 @@ import aturan as A
 import fwi as F
 import pfvi as P
 import gambut_bara as GB
+import firms_sumber as FS
 from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Poligon, Wilayah
 from garis_api import garis as garis_api
 from aturan import STATUS
@@ -131,7 +132,7 @@ def _ambil(url, coba=4, json_=False):
             return json.loads(teks) if json_ else teks
         except Exception as e:
             if i == coba - 1:
-                raise RuntimeError(f"{url.split('?')[0]}: {e}")
+                raise RuntimeError(f"{FS.sensor_url(url.split('?')[0])}: {FS.sensor_url(e)}")
             # kuota FIRMS (5000/10 menit) atau Open-Meteo habis: tunggu lebih lama
             time.sleep(90 if "429" in str(e) or "400" in str(e) else 10 * (i + 1))
 

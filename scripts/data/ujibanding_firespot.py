@@ -18,7 +18,8 @@ PAKAI
 BERKAS LAPANGAN (read-only, TANPA pic_nama/pic_wa/akun/foto; dummy dibuang):
   npx wrangler d1 execute poskowarga --remote --json --command "SELECT t.id, t.prov, t.lat, t.lon, t.level, t.dibuat, t.terdeteksi_awal, i.hasil, i.dibuat AS konf_dibuat, i.waktu_gps, i.luas_ha FROM tugas_api t JOIN tugas_isian i ON i.tugas_id = t.id AND i.langkah = 'konfirmasi' WHERE t.dummy = 0 AND i.dummy = 0" > data/raw/ujibanding/lapangan.json
   (database_name poskowarga di wrangler.jsonc; butuh CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID.) Mode `lapangan` memakai FIRMS NRT/SP
-  (FIRMS_MAP_KEY) 8 hari sebelum `dibuat` dalam kotak +-0,1 derajat tiap tugas, di-cache per tugas di data/raw/ujibanding/lapangan/.
+  (FIRMS_MAP_KEY) 8 hari sebelum `dibuat` dalam kotak +-0,1 derajat tiap tugas. Cache per tugas (memuat lokasi) ada di env LAB_CACHE_LAPANGAN
+  (bukan di data/raw; kosong = direktori sementara yang hilang bersama job). Angka dengan n_tugas < 5 atau n_ya < 5 per sel disembunyikan (null).
 
 SATUAN
   firespot-lokasi : kelompok titik kecil yang dinilai sendiri (R1: radius 375 m antarhari; R9: sel kisi 0,5/0,75/1,0 km; aturan lain: seluruh cluster = 1 lokasi).
@@ -31,7 +32,7 @@ DEFINISI ATURAN: lihat ATURAN_KET di bawah (ikut ditulis ke JSON). Penyaring F (
   tetap (titik_palsu.json), titik di area permukiman padat (proksi: >= 3 titik desa osm/desa.json dalam 2 km; data desa hanya 9 provinsi).
 KEPUTUSAN: aturan pengganti R0 hanya bila presisi (kejadian) naik dengan batas bawah selisih > 0, recall turun <= 5 poin, keterlambatan median tidak naik.
 """
-import collections, csv, datetime as dt, glob, json, math, os, random, subprocess, sys, time, urllib.request
+import collections, csv, datetime as dt, glob, json, math, os, random, subprocess, sys, tempfile, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
@@ -1142,9 +1143,14 @@ def tugas_dari_baris(baris):
     return t, dict(dikeluar)
 
 
+def cache_lapangan():
+    """Cache per tugas memuat lokasi tugas lapangan: JANGAN di bawah data/raw (ikut cache Actions). Env LAB_CACHE_LAPANGAN, selain itu direktori sementara."""
+    return os.environ.get("LAB_CACHE_LAPANGAN") or tempfile.mkdtemp(prefix="ujibanding_lap_")
+
+
 def titik_sekitar(tugas, ambil_firms, cache=None):
     """FIRMS VIIRS sebelum `dibuat`, di-cache per tugas. ambil_firms(tugas)->list titik (diinjeksi agar bisa diuji)."""
-    jalur = os.path.join(cache or os.path.join(CACHE, "lapangan"), f"{tugas['id']}.json")
+    jalur = os.path.join(cache or cache_lapangan(), f"{tugas['id']}.json")
     if os.path.exists(jalur):
         return [dict(p, t=dt.datetime.fromisoformat(p["t"])) for p in json.load(open(jalur))]
     pts = ambil_firms(tugas)
@@ -1178,12 +1184,17 @@ def ambil_firms_nyata(tugas):
     return pts
 
 
-def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH, amb=4, cache=None):
+def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH, amb=4, cache=None, minimal=5):
     perlu_numpy()
     R = daftar_aturan(amb)
-    rows, tanpa = [], 0
-    for t in tugas:
-        pts = tandai(titik_sekitar(t, ambil_firms, cache), penyaring)
+    rows, tanpa, gagal = [], 0, 0
+    cache = cache or cache_lapangan()
+    for i, t in enumerate(tugas):
+        try:
+            pts = tandai(titik_sekitar(t, ambil_firms, cache), penyaring)
+        except Exception as e:  # pesan galat bisa memuat URL berkunci/bbox: hanya kelas galat yang dicetak
+            print(f"gagal tugas ke-{i}: {type(e).__name__}", file=sys.stderr)
+            pts, gagal = [], gagal + 1
         best, bd = None, 1e9
         for ps in (kluster_titik(pts) if pts else []):
             d = min(math.hypot((p["lat"] - t["lat"]) * KM, (p["lon"] - t["lon"]) * KM * math.cos(math.radians(t["lat"]))) for p in ps)
@@ -1193,7 +1204,7 @@ def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH,
             tanpa += 1
             best = None
         rows.append((t, best))
-    out = {"n_tugas": len(tugas), "n_positif": sum(t["y"] for t in tugas), "n_negatif": sum(not t["y"] for t in tugas), "n_tanpa_cluster_firms": tanpa,
+    out = {"n_tugas": len(tugas), "n_positif": sum(t["y"] for t in tugas), "n_negatif": sum(not t["y"] for t in tugas), "n_tanpa_cluster_firms": tanpa, "n_gagal_tarik_firms": gagal,
            "catatan": "bias seleksi: tugas hanya untuk cluster yang lolos R0 saat itu; presisi = dari yang dinyatakan ya aturan itu; ketahanan_positif = porsi positif lapangan yang tetap ya", "aturan": {}}
     y = np.array([t["y"] for t, _ in rows], bool)
     ya_all = {}
@@ -1220,6 +1231,34 @@ def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH,
             j = ci[("R0", arm)]
             d["selisih_vs_R0"] = {"presisi": ci_selisih(S, i, i + 1, j, j + 1, V), "ketahanan_positif": ci_selisih(S, i + 2, i + 3, j + 2, j + 3, V)}
         out["aturan"].setdefault(nama, {})[arm] = d
+    return sembunyikan_kecil(out, minimal)
+
+
+def sembunyikan_kecil(out, minimal=5):
+    """Privasi: n_tugas < minimal -> semua angka aturan dibuang; n_ya < minimal -> presisi/Wilson/selisih presisi null; positif < minimal -> ketahanan null."""
+    if out["n_tugas"] < minimal:
+        out["aturan"] = {}
+        out["n_positif"] = out["n_negatif"] = out["n_tanpa_cluster_firms"] = None
+        out["disembunyikan"] = f"n terlalu kecil (n_tugas < {minimal})"
+        return out
+    kecil = False
+    for per in out["aturan"].values():
+        for d in per.values():
+            sel = d.get("selisih_vs_R0")
+            if d["n_ya"] < minimal:
+                d["presisi"] = d["wilson"] = None
+                if sel:
+                    sel["presisi"] = None
+                d["catatan"] = "n terlalu kecil"
+                kecil = True
+            if out["n_positif"] < minimal:
+                d["ketahanan_positif"] = d["ketahanan_wilson"] = None
+                if sel:
+                    sel["ketahanan_positif"] = None
+    if out["n_positif"] < minimal:
+        kecil = True
+    if kecil:
+        out["disembunyikan"] = f"sel dengan n < {minimal} ditulis null (n terlalu kecil)"
     return out
 
 
@@ -1409,10 +1448,28 @@ def uji():
     def palsu_firms(t):
         return {"t1": lambda: [_p(lat=0.0, lon=110.0 + 0.0034 * i, jam=3, t0=awal) for i in range(5)], "t2": lambda: [_p(lat=-5.0, lon=115.0, t0=awal)]}.get(t["id"], lambda: [])()
     import tempfile
-    ol = evaluasi_lapangan(tg, palsu_firms, None, B=50, cache=tempfile.mkdtemp())
+    ol = evaluasi_lapangan(tg, palsu_firms, None, B=50, cache=tempfile.mkdtemp(), minimal=1)
     assert ol["n_tugas"] == 3 and ol["n_tanpa_cluster_firms"] == 1
     assert ol["aturan"]["R0"]["off"]["presisi"] == 1.0 and ol["aturan"]["R0"]["off"]["n_ya"] == 1
     assert ol["aturan"]["R2"]["off"]["presisi"] == 0.5 and ol["aturan"]["R2"]["off"]["ketahanan_positif"] == 0.5
+    assert ol["n_gagal_tarik_firms"] == 0
+    ol3 = evaluasi_lapangan(tg, palsu_firms, None, B=50, cache=tempfile.mkdtemp())      # n_tugas 3 < 5: semua disembunyikan
+    assert ol3["aturan"] == {} and "n terlalu kecil" in ol3["disembunyikan"]
+    # S2: n kecil disembunyikan
+    ol2 = evaluasi_lapangan(tg[:2], palsu_firms, None, B=50, cache=tempfile.mkdtemp())
+    assert ol2["aturan"] == {} and ol2["n_positif"] is None
+    ol4 = sembunyikan_kecil(json.loads(json.dumps(ol)), 2)                               # n_ya R0 = 1 < 2
+    assert ol4["aturan"]["R0"]["off"]["presisi"] is None and ol4["aturan"]["R0"]["off"]["catatan"] == "n terlalu kecil" and ol4["aturan"]["R2"]["off"]["presisi"] == 0.5
+    # B1: kegagalan tarik FIRMS tidak membocorkan kunci/URL/bbox ke stderr, hanya kelas galat
+    import contextlib, io as _io
+    def meledak(t):
+        raise RuntimeError("HTTP 500 https://firms.modaps.eosdis.nasa.gov/api/area/csv/RAHASIA123/X/1,2,3,4/1/2026-01-01")
+    err = _io.StringIO()
+    with contextlib.redirect_stderr(err):
+        og = evaluasi_lapangan(tg, meledak, None, B=20, cache=tempfile.mkdtemp())
+    assert og["n_gagal_tarik_firms"] == 3 and "RAHASIA123" not in err.getvalue() and "1,2,3,4" not in err.getvalue() and "RuntimeError" in err.getvalue()
+    # H2: cache lapangan bukan di bawah data/raw
+    assert "data/raw" not in cache_lapangan()
     # tulis/ringkas tanpa menyentuh berkas produksi
     h = {"citra": {"himpunan": {"n_snpp_n20": {"aturan": {"R2": {"off": dd(-0.5, -0.6, 0, 0)}}, "titik_lemah_R0": {"x": 1}}}}}
     assert ringkas_keputusan(h)["putusan"] == "pertahankan R0"

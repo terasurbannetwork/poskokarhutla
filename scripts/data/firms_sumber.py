@@ -7,10 +7,17 @@ hari UTC D-1 dan D sukses untuk SEMUA famili sensor.
 
 Uji:  python3 scripts/data/firms_sumber.py
 """
-import csv, datetime as dt, io, json, os, sys
+import csv, datetime as dt, io, json, os, re, sys
 
 FAMILI = ("VIIRS_SNPP", "VIIRS_NOAA20", "MODIS")
 SENSOR = {"VIIRS_SNPP": "N", "VIIRS_NOAA20": "N20", "MODIS": "M"}
+
+
+def sensor_url(teks):
+    """Sensor kunci FIRMS dari teks/URL apa pun sebelum dicetak atau dimasukkan ke pesan galat: segmen sesudah `/csv/` -> `***`, juga nilai env FIRMS_MAP_KEY."""
+    teks = re.sub(r"(/csv/)[^/\s'\"]+", r"\1***", str(teks))
+    k = os.environ.get("FIRMS_MAP_KEY")
+    return teks.replace(k, "***") if k else teks
 
 
 def muat_ketersediaan(kunci, ambil, famili=FAMILI):
@@ -58,7 +65,7 @@ def unduh(u0, u1, kunci, ambil, bbox, ket, log=sys.stderr, famili=FAMILI):
                     for i in range(n):
                         ok.setdefault(d + dt.timedelta(days=i), set()).add(fam)
                 except Exception as e:
-                    print("firms_sumber: gagal", src, d, e, file=log)
+                    print("firms_sumber: gagal", src, d, sensor_url(f"{type(e).__name__}: {e}"), file=log)
             d += dt.timedelta(days=n)
     return baris, ok
 
@@ -103,6 +110,17 @@ def uji():
     for galat in (lambda u: "Invalid MAP_KEY.", lambda u: (_ for _ in ()).throw(RuntimeError("mati"))):
         b, ok = unduh(D("2026-01-01"), D("2026-01-02"), "K", galat, "b", ket, log=io.StringIO())
         assert not b and not ok
+    u = "https://firms.modaps.eosdis.nasa.gov/api/area/csv/RAHASIA123/VIIRS_SNPP_NRT/1,2,3,4/1/2026-01-01"
+    assert "RAHASIA123" not in sensor_url(u) and "RAHASIA123" not in sensor_url("x: " + u + " gagal") and "/csv/***/VIIRS" in sensor_url(u)
+    assert "RAHASIA123" not in sensor_url("https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/RAHASIA123/ALL")
+    os.environ["FIRMS_MAP_KEY"] = "KUNCIENV"
+    assert "KUNCIENV" not in sensor_url("galat KUNCIENV di sini")
+    del os.environ["FIRMS_MAP_KEY"]
+    log = io.StringIO()
+    def meledak(url):
+        raise RuntimeError("HTTP 500 " + url)
+    unduh(D("2026-01-02"), D("2026-01-02"), "RAHASIA123", meledak, "1,2,3,4", ket, log=log)
+    assert log.getvalue() and "RAHASIA123" not in log.getvalue(), log.getvalue()
     print("firms_sumber: uji lolos")
 
 
