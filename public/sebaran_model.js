@@ -179,15 +179,18 @@ function vektor(M, k, [d, a], terbakar, aktif, w, ev, lh, tahun = 9999) {
 
 /* ---------------- peluang membesar: model khusus (scripts/sebaran/lolos.py) ---------------- */
 /* Fitur sama persis dengan lolos.fitur_lolos. titik = deteksi sekitar [{t: ms, lat, lon, s: "N" (S-NPP) | "N20" | "N21"}], keyakinan >= nominal. */
-/* Sensor primer = prospektif.pilih_sensor: S-NPP, kecuali NOAA-20 masih mendeteksi > 36 jam sesudah deteksi S-NPP terakhir (S-NPP berhenti
-   1 Nov 2026) -> NOAA-20. Pendamping (n20_0/n20_14): NOAA-20 untuk S-NPP, NOAA-21 untuk NOAA-20; tak ada di titik -> -1 (= "tanpa data").
-   Tanpa S-NPP/NOAA-20 sama sekali -> model membesar diam (lolos null, lolos_status "tanpa_viirs"), bukan menebak dari konteks nol. */
-const PENDAMPING = {N: "N20", N20: "N21"}, MATI_MS = 36 * 36e5;
-function sensorTitik(titik) {
-  const akhir = {};
-  for (const p of titik) if (!(akhir[p.s] >= p.t)) akhir[p.s] = p.t;
-  const maks = Math.max(akhir.N ?? -Infinity, akhir.N20 ?? -Infinity), prim = ["N", "N20"].find(s => akhir[s] != null && maks - akhir[s] <= MATI_MS) || null;
-  return {prim, pend: prim && akhir[PENDAMPING[prim]] != null ? PENDAMPING[prim] : null};
+/* Sensor primer = prospektif.pilih_sensor (aturan TERKUNCI, sama untuk masukan yang sama): S-NPP; NOAA-20 hanya bila kini >= tanggal pensiun
+   S-NPP (1 Nov 2026) DAN S-NPP tak mendeteksi >= 36 jam DAN NOAA-20 >= 20 deteksi sesudah deteksi S-NPP terakhir. Celah S-NPP sebelum tanggal
+   itu = celah data (S-NPP tetap primer). Hanya titik t <= kini yang dihitung. Pendamping (n20_0/n20_14): NOAA-20 untuk S-NPP, NOAA-21 untuk
+   NOAA-20; tak ada -> -1. Tanpa primer -> model membesar diam (lolos null; lolos_status "tanpa_viirs" bila tak ada S-NPP/NOAA-20 sama sekali,
+   selain itu "tanpa_primer"), bukan menebak dari konteks nol. Peramban tak menyimpan keputusan (S-NPP tak akan kembali). */
+const PENDAMPING = {N: "N20", N20: "N21"}, MATI_MS = 36 * 36e5, MIN_N20 = 20, PENSIUN_SNPP = Date.UTC(2026, 10, 1);
+function sensorTitik(titik, kini, pensiun = PENSIUN_SNPP) {
+  const akhir = {}, rows = titik.filter(p => p.t <= kini);
+  for (const p of rows) if (!(akhir[p.s] >= p.t)) akhir[p.s] = p.t;
+  const aN = akhir.N ?? -Infinity;
+  const prim = kini >= pensiun && kini - aN >= MATI_MS && rows.filter(p => p.s === "N20" && p.t > aN).length >= MIN_N20 ? "N20" : akhir.N != null ? "N" : null;
+  return {prim, pend: prim && akhir[PENDAMPING[prim]] != null ? PENDAMPING[prim] : null, viirs: akhir.N != null || akhir.N20 != null};
 }
 const kmTitik = (lon, lat, x, y) => Math.hypot((x - lon) * 111.32 * Math.cos(lat * rad), (y - lat) * 110.57);
 function konteksTitik(titik, t0, lon, lat, prim = "N") {
@@ -209,7 +212,7 @@ function peluangLolos(L, v) { const x = L.fitur.map(f => v[f]); let z = L.bias; 
 function lolos(M, o, w, s0, sel0, t0, lon, lat, frp, iklim) {
   const ulang = o.ulang, L = ulang ? M.lolos_ulang : M.lolos;
   if (!L || !Array.isArray(o.titik)) return null;
-  const {prim, pend} = sensorTitik(o.titik);
+  const {prim, pend} = sensorTitik(o.titik, t0, o.pensiun);
   if (!prim) return null;
   const n0 = sel0.length, jl = ((t0 / 6e4 + lon * 4) / 60 % 24 + 24) % 24, tahun = new Date(t0).getUTCFullYear();
   const n20 = n20Sekitar(o.titik, sel0, t0 - 180 * 6e4, t0 + 181 * 6e4, pend);
@@ -291,7 +294,7 @@ function ramal(o) {
   return {waktu: new Date(t0).toISOString(), sel0, strata, geser, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
     p_lepas: pl ? pl.p : sel0.length >= (M.lepas_sel || 10) ? 1 : pmc, p_lepas_mc: pmc, lolos: pl, sudah_besar: sel0.length >= (M.lepas_sel || 10),
     /* kenapa lolos null: p_lepas lalu jatuh ke p_lepas_mc (cara lama), jadi pemanggil wajib membaca ini, bukan menganggap p_lepas = model membesar */
-    lolos_status: pl ? "ok" : n0 >= (M.lepas_sel || 10) ? "sudah_besar" : !(o.ulang ? M.lolos_ulang : M.lolos) ? "tanpa_model" : !Array.isArray(o.titik) ? "tanpa_titik" : "tanpa_viirs", luas, luasJam: perJam, arah: arahUtama, sel: sel_,
+    lolos_status: pl ? "ok" : n0 >= (M.lepas_sel || 10) ? "sudah_besar" : !(o.ulang ? M.lolos_ulang : M.lolos) ? "tanpa_model" : !Array.isArray(o.titik) ? "tanpa_titik" : sensorTitik(o.titik, t0, o.pensiun).viirs ? "tanpa_primer" : "tanpa_viirs", luas, luasJam: perJam, arah: arahUtama, sel: sel_,
     p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim};
 }
 
@@ -352,6 +355,6 @@ async function cuacaTanggal(lat, lon, waktu) {
   return {m0: Date.parse(h.time[0] + "Z"), tc: h.temperature_2m, rh: h.relative_humidity_2m, hujan: h.precipitation, ws: h.wind_speed_10m, wd: h.wind_direction_10m};
 }
 
-G.SebaranModel = {muat, cuaca, cuacaSel, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, konteksTitik, n20Sekitar, peluangLolos, versi: 2};
+G.SebaranModel = {muat, cuaca, cuacaSel, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, konteksTitik, n20Sekitar, sensorTitik, peluangLolos, versi: 2};
 if (typeof module !== "undefined") module.exports = G.SebaranModel;
 })(typeof window !== "undefined" ? window : globalThis);

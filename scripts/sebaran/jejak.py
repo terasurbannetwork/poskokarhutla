@@ -10,8 +10,9 @@ peluang >= AMBANG_P ditulis. Ini PRAKIRAAN MODEL, bukan pengamatan: kinerjanya d
 Setara SebaranModel.ramal (public/sebaran_model.js) KECUALI umur_jam: di sini umur sejak deteksi pertama kompleks (cocok dengan data latih),
 di peramban JS umur mulai 0 pada titik awal. Perbedaan lain: batas sel aktif sumber calon (JEJAK_AKTIF, bawaan tanpa batas; kompleks yang kena batas diberi
 "terpangkas": true dan tidak boleh dipakai untuk peringatan tertinggi). Tanpa p_lepas (model membesar untuk titik baru, bukan kompleks).
-Sensor primer = prospektif.pilih_sensor: S-NPP selama masih mengirim, sesudah S-NPP berhenti (1 Nov 2026) NOAA-20; dicatat di "sensor".
-Tanpa VIIRS sama sekali: status "tanpa_viirs" (src/ews.js mengabaikan jejak yang statusnya bukan "ok"), bukan daftar kosong diam-diam.
+Sensor primer = prospektif.pilih_sensor (aturan terkunci: NOAA-20 hanya sesudah pensiun S-NPP 1 Nov 2026 + S-NPP diam >= 36 jam + NOAA-20
+>= 20 deteksi, atau keputusan peralihan yang sudah disimpan prospektif.py); dicatat di "sensor". Tanpa primer: status "tanpa_viirs" (tak ada
+S-NPP/NOAA-20) atau "tanpa_primer" (src/ews.js mengabaikan jejak yang statusnya bukan "ok"), bukan daftar kosong diam-diam.
 Urutan kompleks: level, lalu penduduk sekitar (WorldPop 0,25 derajat, 3x3 sel di sekitar pusat kompleks), lalu skor: untuk peringatan dini
 yang diramal lebih dulu adalah api yang dekat orang. "cakupan" di JSON mencatat berapa kompleks aktif, berapa diramal, dan alasan dilewati.
 
@@ -221,7 +222,7 @@ def periksa(doc):
     """Kontrak jejak_api.json; lempar AssertionError bila rusak (dipakai sebelum menulis dan di uji)."""
     for k in ("dibuat", "model", "sumber", "ambang_p", "kompleks", "cakupan", "acuan", "sensor", "status"):
         assert k in doc, f"kunci {k} hilang"
-    assert doc["sensor"] in P.SENSOR_URUT or (doc["sensor"] is None and doc["status"] == "tanpa_viirs"), f"sensor {doc['sensor']} / status {doc['status']}"
+    assert doc["sensor"] in P.SENSOR_URUT or (doc["sensor"] is None and doc["status"] in ("tanpa_viirs", "tanpa_primer")), f"sensor {doc['sensor']} / status {doc['status']}"
     assert doc["status"] != "ok" or doc["kompleks"], "status ok tanpa kompleks"
     assert doc["dibuat"].endswith("+07:00") and 0 < doc["ambang_p"] < 1 and isinstance(doc["kompleks"], list)
     cv = doc["cakupan"]
@@ -272,7 +273,7 @@ def main():
     M = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
     hs = json.load(open(os.path.join(PUBLIK, "hotspot.json")))
     D, a0 = P.gabung([], hs)
-    prim, _, _ = P.pilih_sensor(D)
+    prim, _, _ = P.pilih_sensor(D, a0, (P.baca_peralihan() or {}).get("primer"))  # jejak tidak menulis keputusan peralihan; prospektif.py yang menyimpan
     t0 = int(max([r[0] for r in D if r[3] == prim] or [a0]))  # acuan = deteksi VIIRS sensor primer terbaru yang dipakai; horizon dihitung dari sini
     umur_jam = (dt.datetime.now(dt.timezone.utc) - (T0 + dt.timedelta(minutes=t0))).total_seconds() / 3600
     wib = dt.timezone(dt.timedelta(hours=7))
@@ -290,9 +291,10 @@ def main():
     aktif = kompleks_aktif(json.load(open(os.path.join(PUBLIK, "kluster.json")))["features"], pend)
     dilewati = {}
     if prim is None:
-        doc["status"] = "tanpa_viirs"
-        dilewati["tanpa_viirs"] = len(aktif)
-        log("hotspot.json tanpa deteksi VIIRS S-NPP/NOAA-20: tidak meramal")
+        st = "tanpa_viirs" if not any(r[3] in P.SENSOR_URUT for r in D) else "tanpa_primer"
+        doc["status"] = st
+        dilewati[st] = len(aktif)
+        log(f"hotspot.json {st} (sensor {sorted({r[3] for r in D})}): tidak meramal")
     elif umur_jam > BASI_JAM:
         doc["status"] = "data_basi"
         dilewati["data_basi"] = len(aktif)
@@ -429,15 +431,21 @@ def uji():
     import shutil
     acuan = dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=1)
     # S-NPP ada -> primer N; S-NPP hilang -> kompleks tetap diramal dari NOAA-20 (sensor ditandai); tanpa VIIRS -> status eksplisit
-    kasus = {"snpp": (["N", "N20"], "N", "ok"), "n20": (["N20", "N21"], "N20", "ok"), "tanpa": (["M"], None, "tanpa_viirs")}
-    asli = globals()["PUBLIK"], globals()["KELUAR"], globals()["CACHE"], globals()["CUACA_JAM"], globals()["N_MC"]
+    # sebelum tanggal pensiun S-NPP kosong = celah data -> "tanpa_primer" (bukan pindah). Tanggal pensiun digeser ke masa lalu untuk kasus N20.
+    kasus = {"snpp": (["N", "N20"], "N", "ok", None), "n20": (["N20", "N21"], "N20", "ok", 0), "celah": (["N20"], None, "tanpa_primer", 10 ** 12),
+             "tanpa": (["M"], None, "tanpa_viirs", None)}
+    asli = globals()["PUBLIK"], globals()["KELUAR"], globals()["CACHE"], globals()["CUACA_JAM"], globals()["N_MC"], P.PENSIUN_SNPP, P.PERALIHAN
     cla, clo = cuaca.sel05(-2.0, 114.0)
     nj = 40 * 24
     try:
-        for nama, (ss, harap_s, harap_st) in kasus.items():
+        for nama, (ss, harap_s, harap_st, pensiun) in kasus.items():
             with tempfile.TemporaryDirectory() as d:
                 shutil.copy(os.path.join(asli[0], "model_sebaran.json"), d)
-                json.dump({"acuan": acuan.isoformat(), "wilayah": ["62|X|Y"], "baris": [[-2.0, 114.0, -2.0, s, 3.0, 1, 0, ""] for s in ss]}, open(os.path.join(d, "hotspot.json"), "w"))
+                P.PENSIUN_SNPP = asli[5] if pensiun is None else pensiun
+                P.PERALIHAN = os.path.join(d, "sensor.json")
+                baris = [[-2.0, 114.0, -2.0, s, 3.0, 1, 0, ""] for s in ss]
+                baris += [[-2.0 - .001 * i, 114.0, -2.0, "N20", 3.0, 1, 0, ""] for i in range(1, P.MIN_N20 + 1) if "N20" in ss]  # NOAA-20 >= 20 deteksi
+                json.dump({"acuan": acuan.isoformat(), "wilayah": ["62|X|Y"], "baris": baris}, open(os.path.join(d, "hotspot.json"), "w"))
                 json.dump({"features": [{"properties": {"id": "K0001", "n24": 3, "jam_sejak": 2, "level": 2, "lat": -2.0, "lon": 114.0, "prov": "62"}}]},
                           open(os.path.join(d, "kluster.json"), "w"))
                 os.makedirs(os.path.join(d, "cuaca"))
@@ -446,11 +454,12 @@ def uji():
                 globals().update(PUBLIK=d, KELUAR=os.path.join(d, "jejak_api.json"), CACHE=os.path.join(d, "cache"), CUACA_JAM=os.path.join(d, "cuaca"), N_MC=3)
                 main()
                 j = json.load(open(KELUAR))
-                assert j["sensor"] == harap_s and j["status"] == harap_st and len(j["kompleks"]) == (0 if nama == "tanpa" else 1), (nama, j)
+                assert j["sensor"] == harap_s and j["status"] == harap_st and len(j["kompleks"]) == (1 if harap_st == "ok" else 0), (nama, j)
                 if nama == "tanpa":
                     assert j["cakupan"] == {"n_aktif": 1, "n_diramal": 0, "dilewati": {"tanpa_viirs": 1}}, j["cakupan"]
     finally:
         globals().update(PUBLIK=asli[0], KELUAR=asli[1], CACHE=asli[2], CUACA_JAM=asli[3], N_MC=asli[4])
+        P.PENSIUN_SNPP, P.PERALIHAN = asli[5], asli[6]
     print("ok")
 
 

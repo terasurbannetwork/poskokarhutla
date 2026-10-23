@@ -10,10 +10,11 @@ Titik api baru = komponen sensor PRIMER (<= 750 m & <= 24 jam, lacak.hubungkan) 
 anggaran bobot per jalan MAKS_BOBOT (kuota 10.000/hari). Model & ambang = model_sebaran.json "lolos" dan "lolos_ulang"
 (ramal ulang 14 jam setelah deteksi pertama). Label = sel 375 m sensor primer yang terhubung dengan titik itu dalam 72 jam >= 10.
 
-Sensor (pilih_sensor): S-NPP berhenti 1 Nov 2026. Primer = S-NPP selama masih mengirim, sesudahnya NOAA-20; pendamping (fitur n20_0/n20_14)
-= NOAA-20 untuk S-NPP, NOAA-21 untuk NOAA-20 (selisih orbit ~50 menit sama). Tiap ramalan menyimpan "sensor"/"pendamping" dan dinilai dengan
-sensor yang SAMA; ringkasan dipecah per sensor. Tanpa VIIRS sama sekali: status "tanpa_viirs" di prospektif.json, tidak ada ramalan baru,
-dan tidak ada yang ditandai kedaluwarsa. Uji arsip 2024-2026 (S-NPP vs NOAA-20 pada peristiwa sama): SEBARAN_MODEL.md bagian sensor.
+Sensor (pilih_sensor, aturan TERKUNCI): S-NPP pensiun 1 Nov 2026. Primer = S-NPP; pindah ke NOAA-20 hanya bila acuan >= 1 Nov 2026 DAN S-NPP
+diam >= 36 jam DAN NOAA-20 >= 20 deteksi sesudahnya; keputusan disimpan di sensor.json (ikut arsip) dan tak berbalik. Pendamping (n20_0/n20_14)
+= NOAA-20 untuk S-NPP, NOAA-21 untuk NOAA-20. Tiap ramalan menyimpan "sensor"/"pendamping" dan dinilai dengan sensor yang SAMA; angka "mode"
+dan gerbang hanya dari sensor primer sekarang (per_sensor memuat semua). Tanpa primer: status "tanpa_viirs"/"tanpa_primer", tidak ada
+ramalan baru, tidak ada yang ditandai kedaluwarsa. Uji arsip 2024-2026 (S-NPP vs NOAA-20 pada peristiwa sama): SEBARAN_MODEL.md bagian sensor.
 
 Catatan: data/raw/sebaran/prospektif/ramalan.jsonl, nilai.jsonl (append-only); ringkasan: public/data/prospektif.json.
 Pakai:  python3 scripts/sebaran/prospektif.py  |  ... uji  |  ... arsip <tujuan.jsonl.gz>  |  ... pulih <sumber.jsonl.gz>
@@ -180,31 +181,51 @@ def muat_gudang():
 
 SENSOR_URUT = ("N", "N20")  # primer: S-NPP, lalu NOAA-20. NOAA-21 bukan primer: tak ada arsipnya untuk uji balik (hanya pendamping)
 PENDAMPING = {"N": "N20", "N20": "N21"}
-MATI_JAM = 36  # S-NPP dianggap berhenti bila NOAA-20 masih mendeteksi > 36 jam sesudah deteksi S-NPP terakhir (normal: lintasan tiap ~12 jam);
-# dibandingkan dengan NOAA-20, bukan jam dinding: musim hujan tanpa titik sama sekali tidak boleh memindahkan sensor
+# Aturan peralihan TERKUNCI (tinjauan validasi-model 23 Okt 2026): "NOAA-20 > 36 jam lebih baru dari S-NPP" terjadi saat S-NPP masih hidup
+# (arsip Jul 2024: 29,8% langkah 3 jam), jadi celah S-NPP sebelum tanggal pensiun = celah data, bukan pensiun. Primer pindah ke NOAA-20 hanya
+# bila acuan >= PENSIUN_SNPP DAN S-NPP tak mendeteksi >= MATI_JAM DAN NOAA-20 >= MIN_N20 deteksi sejak deteksi S-NPP terakhir. Keputusan disimpan
+# (PERALIHAN, ikut arsip) dan tidak pernah berbalik. Padanan JS: sensorTitik di public/sebaran_model.js (tanpa berkas keadaan).
+PENSIUN_SNPP = menit_dari(dt.datetime(2026, 11, 1, tzinfo=dt.timezone.utc))
+MATI_JAM = 36
+MIN_N20 = 20
+PERALIHAN = os.path.join(FOLDER, "sensor.json")
 
 
-def pilih_sensor(D):
-    """D = baris gudang [menit, lat, lon, sensor, ...] -> (primer | None, pendamping | None, {sensor: menit deteksi terakhir}).
-    primer None = tidak ada deteksi VIIRS S-NPP/NOAA-20 sama sekali (status eksplisit "tanpa_viirs", bukan hasil kosong)."""
+def baca_peralihan():
+    return json.load(open(PERALIHAN)) if os.path.exists(PERALIHAN) else None
+
+
+def akhir_sensor(D):
     akhir = {}
     for r in D:
         if r[0] > akhir.get(r[3], -math.inf):
             akhir[r[3]] = r[0]
-    prim = None
-    for s in SENSOR_URUT:
-        if s not in akhir:
-            continue
-        if max(akhir.get(x, -math.inf) for x in SENSOR_URUT) - akhir[s] <= MATI_JAM * 60:
-            prim = s
-            break
+    return akhir
+
+
+def pilih_sensor(D, kini, kunci=None, pensiun=None):
+    """D = baris [menit, lat, lon, sensor, ...]; kini = menit acuan data; kunci = primer yang sudah dikunci (berkas PERALIHAN) atau None.
+    -> (primer | None, pendamping | None, beralih). beralih = True hanya pada jalan yang memutuskan pindah ke NOAA-20 (pemanggil menyimpannya).
+    primer None: tak ada deteksi primer (S-NPP belum pensiun tapi kosong, atau NOAA-20 kosong sesudah pensiun) -> status eksplisit."""
+    pensiun = PENSIUN_SNPP if pensiun is None else pensiun
+    rows = [r for r in D if r[0] <= kini]
+    akhir = akhir_sensor(rows)
+    beralih = False
+    if kunci == "N20":
+        prim = "N20" if "N20" in akhir else None
+    else:
+        aN = akhir.get("N", -math.inf)
+        if kini >= pensiun and kini - aN >= MATI_JAM * 60 and sum(1 for r in rows if r[3] == "N20" and r[0] > aN) >= MIN_N20:
+            prim, beralih = "N20", True
+        else:
+            prim = "N" if "N" in akhir else None
     pend = PENDAMPING.get(prim)
-    return prim, pend if pend in akhir else None, akhir
+    return prim, pend if pend in akhir else None, beralih
 
 
-def mati(s, akhir):
-    """Sensor s sudah berhenti (ada sensor VIIRS lain yang masih mendeteksi > MATI_JAM sesudah deteksi terakhir s)?"""
-    return max(akhir.get(x, -math.inf) for x in SENSOR_URUT) - akhir.get(s, -math.inf) > MATI_JAM * 60
+def mati(s, kunci):
+    """Sensor s sudah dipensiunkan (primer dikunci ke sensor lain)? Hanya S-NPP sesudah peralihan."""
+    return kunci == "N20" and s == "N"
 
 
 def gabung(lama, hs):
@@ -316,12 +337,13 @@ def baca_jsonl(j):
     return [json.loads(l) for l in open(j)] if os.path.exists(j) else []
 
 
-def nilai_baru(ramalan, dinilai, D, a0, t_awal, acuan):
+def nilai_baru(ramalan, dinilai, D, a0, t_awal, acuan, kunci=None):
     """Baris nilai.jsonl baru untuk ramalan yang 72 jam (+ jeda NRT) sudah lewat. Deteksi awal dicocokkan menurut LOKASI (lat, lon persis)
     dan menit +-1, bukan menit pecahan persis: gudang & ramalan lama bisa berbeda pembulatan menit.
     D = gudang semua sensor; tiap ramalan dinilai dengan sensornya sendiri (r["sensor"], catatan lama = S-NPP). Sensor yang sudah berhenti
-    sebelum 72 jam-nya lengkap -> kedaluwarsa + sensor_berhenti (label tak lengkap, bukan "tidak lolos")."""
-    _, _, akhir = pilih_sensor(D)
+    sebelum 72 jam-nya lengkap -> kedaluwarsa + sensor_berhenti (label tak lengkap, bukan "tidak lolos"). Sensor yang deteksi terakhirnya
+    < t0 + 72 jam tetapi BELUM dipensiunkan -> dilewati (tak ditulis), dinilai lagi di jalan berikutnya: label terpotong tak boleh jadi permanen."""
+    akhir = akhir_sensor(D)
     per_s, per_lok = {}, {}
     for x in D:
         rows = per_s.setdefault(x[3], [])
@@ -336,11 +358,12 @@ def nilai_baru(ramalan, dinilai, D, a0, t_awal, acuan):
             continue
         s = r.get("sensor", "N")
         snpp = per_s.get(s, [])
-        if mati(s, akhir) and akhir.get(s, -math.inf) < t0 + 72 * 60:
-            out.append({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True, "sensor_berhenti": True, "sensor": s})
-            continue
         if t0 < t_awal:
             out.append({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True})
+            continue
+        if akhir.get(s, -math.inf) < t0 + 72 * 60:  # 72 jam belum tertutup deteksi sensor ini
+            if mati(s, kunci):
+                out.append({"kunci": r["kunci"], "mode": r["mode"], "kedaluwarsa": True, "sensor_berhenti": True, "sensor": s})
             continue
         awal = sorted({i for m, la, lo in r["awal"] for i in per_lok.get(s, {}).get((la, lo), ()) if abs(snpp[i][0] - m) <= 1})
         if not awal:  # titik awal tak ketemu di gudang sesudah jeda: tak akan membaik, jangan dibuang diam-diam
@@ -360,11 +383,24 @@ def main():
     D, a0 = gabung(muat_gudang(), hs)
     with gzip.open(GUDANG, "wt") as f:
         json.dump(D, f, separators=(",", ":"))
-    prim, pend, akhir = pilih_sensor(D)
+    per = baca_peralihan()
+    kunci_s = (per or {}).get("primer")
+    prim, pend, beralih = pilih_sensor(D, a0, kunci_s)
+    akhir = akhir_sensor(D)
+    if beralih:  # sekali, tak berbalik. Jendela buta: dari deteksi S-NPP terakhir sampai peralihan tak ada titik baru yang diramal
+        aN = akhir.get("N")
+        per = {"kunci": "peralihan", "mode": "sensor", "primer": "N20", "dari": "N", "beralih": (T0 + dt.timedelta(minutes=a0)).isoformat()[:16],
+               "snpp_terakhir": (T0 + dt.timedelta(minutes=aN)).isoformat()[:16] if aN is not None else None,
+               "buta_jam": round((a0 - aN) / 60, 1) if aN is not None else None,
+               "catatan": "titik api baru yang mulai di jendela buta dan berumur > 24 jam saat peralihan tidak pernah diramal"}
+        json.dump(per, open(PERALIHAN, "w"))
+        kunci_s = "N20"
+        log("PERALIHAN sensor primer S-NPP -> NOAA-20 dikunci:", json.dumps(per))
     ramalan = baca_jsonl(RAMALAN)
-    if prim is None:  # tidak ada VIIRS: status eksplisit; ramalan lama TIDAK dinilai (akan dinilai saat data kembali), tidak ada yang kedaluwarsa
-        log(f"TANPA VIIRS: gudang {len(D)} deteksi tanpa S-NPP/NOAA-20, acuan {hs['acuan']}")
-        ringkas({"status": "tanpa_viirs", "sensor": None, "pendamping": None})
+    if prim is None:  # tanpa primer: status eksplisit; ramalan lama TIDAK dinilai (akan dinilai saat data kembali), tidak ada yang kedaluwarsa
+        st = "tanpa_viirs" if not any(s in akhir for s in SENSOR_URUT) else "tanpa_primer"
+        log(f"{st.upper()}: gudang {len(D)} deteksi, sensor {sorted(akhir)}, primer terkunci {kunci_s}, acuan {hs['acuan']}")
+        ringkas({"status": st, "sensor": None, "pendamping": None, "peralihan": per})
         return
     snpp = [r for r in D if r[3] == prim]
     n20 = [r for r in D if r[3] == pend] if pend else []
@@ -414,11 +450,11 @@ def main():
                                     "fitur": {k: round(x, 3) for k, x in v.items()}}, separators=(",", ":")) + "\n")
     # nilai: ramalan yang 72 jam (+ jeda NRT) sudah lewat
     nilai = baca_jsonl(NILAI)
-    baru = nilai_baru(ramalan, {(r["kunci"], r["mode"]) for r in nilai}, D, a0, t_awal, hs["acuan"][:16])
+    baru = nilai_baru(ramalan, {(r["kunci"], r["mode"]) for r in nilai}, D, a0, t_awal, hs["acuan"][:16], kunci_s)
     with open(NILAI, "a") as f:
         for r in baru:
             f.write(json.dumps(r) + "\n")
-    ringkas({"status": "ok", "sensor": prim, "pendamping": pend, "sensor_akhir": {s: (T0 + dt.timedelta(minutes=m)).isoformat()[:16] for s, m in sorted(akhir.items())}})
+    ringkas({"status": "ok", "sensor": prim, "pendamping": pend, "peralihan": per, "sensor_akhir": {s: (T0 + dt.timedelta(minutes=m)).isoformat()[:16] for s, m in sorted(akhir.items())}})
 
 
 # ---------------- arsip permanen ----------------
@@ -428,7 +464,7 @@ def main():
 def arsip(tujuan):
     n = 0
     with gzip.open(tujuan, "wt") as f:
-        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI)), ("g", baca_jsonl(GERBANG))):
+        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI)), ("g", baca_jsonl(GERBANG)), ("s", [baca_peralihan()] if baca_peralihan() else [])):
             for r in baris:
                 f.write(json.dumps({"j": j, **r}, separators=(",", ":")) + "\n")
                 n += 1
@@ -439,8 +475,8 @@ def pulih(sumber):
     """Gabungkan arsip ke ramalan.jsonl / nilai.jsonl: tambah baris yang (kunci, mode)-nya belum ada. Mengembalikan (ramalan+, nilai+)."""
     os.makedirs(FOLDER, exist_ok=True)
     ada = {"r": {(r["kunci"], r["mode"]) for r in baca_jsonl(RAMALAN)}, "n": {(r["kunci"], r["mode"]) for r in baca_jsonl(NILAI)},
-           "g": {(r["kunci"], r["mode"]) for r in baca_jsonl(GERBANG)}}
-    tambah = {"r": [], "n": [], "g": []}
+           "g": {(r["kunci"], r["mode"]) for r in baca_jsonl(GERBANG)}, "s": {("peralihan", "sensor")} if baca_peralihan() else set()}
+    tambah = {"r": [], "n": [], "g": [], "s": []}
     with gzip.open(sumber, "rt") as f:
         for l in f:
             r = json.loads(l)
@@ -448,6 +484,8 @@ def pulih(sumber):
             if (r["kunci"], r["mode"]) not in ada[j]:
                 ada[j].add((r["kunci"], r["mode"]))
                 tambah[j].append(r)
+    if tambah["s"]:  # keputusan peralihan sensor: dipulihkan bila hilang, tak pernah menimpa
+        json.dump(tambah["s"][0], open(PERALIHAN, "w"))
     for j, berkas in (("r", RAMALAN), ("n", NILAI), ("g", GERBANG)):
         with open(berkas, "a") as f:
             for r in tambah[j]:
@@ -456,13 +494,18 @@ def pulih(sumber):
 
 
 def ringkas(keadaan=None):
-    """keadaan = {"status": "ok" | "tanpa_viirs", "sensor": primer, "pendamping", ...} dari jalan ini; ditulis apa adanya ke prospektif.json."""
-    R = baca_jsonl(RAMALAN)
+    """keadaan = {"status": "ok" | "tanpa_viirs" | "tanpa_primer", "sensor": primer, "pendamping", "peralihan", ...} dari jalan ini; ditulis apa
+    adanya ke prospektif.json. Semua angka "mode" dan gerbang (teruji, kalibrasi_ok, berturut) dihitung HANYA pada ramalan sensor primer
+    sekarang (gerbang_sensor): peluang di layar berasal dari sensor itu. per_sensor memuat semua sensor."""
+    keadaan = keadaan or {}
+    sg = keadaan.get("sensor") or (keadaan.get("peralihan") or {}).get("primer") or "N"
+    R_semua = baca_jsonl(RAMALAN)
+    R = [r for r in R_semua if r.get("sensor", "N") == sg]
     semua_n = baca_jsonl(NILAI)
     N = {(r["kunci"], r["mode"]): r for r in semua_n if not r.get("kedaluwarsa")}
     out = {"diperbarui": dt.datetime.now(dt.timezone.utc).isoformat()[:16], "definisi": "lolos = >= 10 sel VIIRS 375 m (~140 ha) dalam 72 jam sejak deteksi pertama",
            "catatan": "ramalan dicatat saat titik api baru muncul (cuaca = prakiraan Open-Meteo), dinilai 72 jam kemudian dengan FIRMS NRT; tidak bisa disetel ulang sesudahnya",
-           "mode": {}, **(keadaan or {})}
+           "mode": {}, **keadaan, "gerbang_sensor": sg}
     for mode in ("awal", "ulang"):
         rs = [r for r in R if r["mode"] == mode]
         dn = [(r, N[(r["kunci"], mode)]) for r in rs if (r["kunci"], mode) in N]
@@ -483,8 +526,9 @@ def ringkas(keadaan=None):
                                "tepat": sum(1 for r, n in dn if r["strata"] == st and n["lolos"] and r["waspada"]),
                                "waspada": sum(1 for r, _ in dn if r["strata"] == st and r["waspada"])} for st in ("gambut", "mineral", "sabana")}
         o["per_sensor"] = {}  # evaluasi dipisah per sensor primer (S-NPP vs NOAA-20 sesudah 1 Nov 2026); catatan tanpa "sensor" = S-NPP
-        for s in sorted({r.get("sensor", "N") for r, _ in dn}):
-            ds = [(r, n) for r, n in dn if r.get("sensor", "N") == s]
+        dn_semua = [(r, N[(r["kunci"], mode)]) for r in R_semua if r["mode"] == mode and (r["kunci"], mode) in N]
+        for s in sorted({r.get("sensor", "N") for r, _ in dn_semua}):
+            ds = [(r, n) for r, n in dn_semua if r.get("sensor", "N") == s]
             o["per_sensor"][s] = metrik_set([r["p"] for r, _ in ds], [1 if n["lolos"] else 0 for _, n in ds], [1 if r["waspada"] else 0 for r, _ in ds])
         out["mode"][mode] = o
     out["n_min"] = N_MIN_DINILAI
@@ -493,8 +537,8 @@ def ringkas(keadaan=None):
     A["recall_bawah95"] = round(wilson_bawah(A["tepat"], A["lolos"]), 3) if A["lolos"] else None
     out["recall_min"] = round(klaim - TOLERANSI_RECALL, 3) if klaim is not None else None
     out["n_min_lolos"] = N_MIN_LOLOS
-    out["tak_cocok"] = sum(1 for r in semua_n if r.get("tak_cocok") and r["mode"] == "awal")
-    out["sensor_berhenti"] = sum(1 for r in semua_n if r.get("sensor_berhenti") and r["mode"] == "awal")  # ramalan yang sensornya berhenti sebelum 72 jam  # ramalan yang titik awalnya tak ditemukan lagi saat dinilai
+    out["tak_cocok"] = sum(1 for r in semua_n if r.get("tak_cocok") and r["mode"] == "awal")  # ramalan yang titik awalnya tak ditemukan lagi saat dinilai
+    out["sensor_berhenti"] = sum(1 for r in semua_n if r.get("sensor_berhenti") and r["mode"] == "awal")  # ramalan yang sensornya pensiun sebelum 72 jam
     out["teruji_recall"] = bool(A["dinilai"] >= N_MIN_DINILAI and A["lolos"] >= N_MIN_LOLOS and out["recall_min"] is not None
                                 and A["recall_bawah95"] is not None and A["recall_bawah95"] >= out["recall_min"])
     out["kalibrasi_ok"] = kalibrasi_lolos(A.get("kalibrasi"))
@@ -509,64 +553,82 @@ def ringkas(keadaan=None):
     # layar menyembunyikan peluang "akan membesar" selama false: recall prospektif lolos, peluangnya terkalibrasi (ECE persentil-90 bootstrap, kalibrasi
     # secara umum, Brier skill > 0), laju dasar sejalan DAN semua itu lulus pada dua evaluasi berturut-turut (n dinilai bertambah di antaranya).
     # Uji balik historis (prospektif_historis.json) TIDAK ikut menentukan: ia hanya ditampilkan terpisah.
-    out["lulus_sekarang"] = bool(out["teruji_recall"] and out["kalibrasi_ok"] and out["laju_dasar_ok"])
-    riwayat = baca_jsonl(GERBANG)
+    ok = keadaan.get("status", "ok") == "ok"  # jalan tanpa data primer: tak lulus dan tak mencatat vonis (tak memutus/menyambung "berturut")
+    out["lulus_sekarang"] = bool(ok and out["teruji_recall"] and out["kalibrasi_ok"] and out["laju_dasar_ok"])
+    riwayat = [r for r in baca_jsonl(GERBANG) if r.get("sensor", "N") == sg]  # berturut tak pernah menyeberangi peralihan sensor
     out["lulus_berturut"], catat = berturut(riwayat, A["dinilai"], out["lulus_sekarang"])
-    if catat and A.get("kalibrasi") and A["dinilai"] >= N_MIN_DINILAI:
+    if ok and catat and A.get("kalibrasi") and A["dinilai"] >= N_MIN_DINILAI:
         with open(GERBANG, "a") as f:
-            f.write(json.dumps({"kunci": f"n{A['dinilai']}", "mode": "gerbang", "n": A["dinilai"], "lulus": out["lulus_sekarang"], "dinilai": out["diperbarui"]}) + "\n")
+            f.write(json.dumps({"kunci": f"n{A['dinilai']}" if sg == "N" else f"{sg}_n{A['dinilai']}", "mode": "gerbang", "n": A["dinilai"], "sensor": sg,
+                                "lulus": out["lulus_sekarang"], "dinilai": out["diperbarui"]}) + "\n")
     out["teruji"] = out["lulus_berturut"]
-    out["mulai"] = min((r["t0"] for r in R), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
+    if sg != "N" and not out["teruji"]:
+        out["catatan_gerbang"] = f"belum teruji untuk {'NOAA-20' if sg == 'N20' else sg}: {A['dinilai']} ramalan dinilai (perlu >= {N_MIN_DINILAI} dan dua evaluasi berturut)"
+    out["mulai"] = min((r["t0"] for r in R_semua), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
     out["terbaru"] = [{"t0": r["t0"], "lat": r["lat"], "lon": r["lon"], "prov": r["prov"], "p": r["p"], "waspada": r["waspada"], "sensor": r.get("sensor", "N"),
-                       "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
+                       "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R_semua if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
     json.dump(out, open(RINGKAS, "w"), ensure_ascii=False, separators=(",", ":"))
     log("ringkasan", json.dumps(out["mode"].get("awal", {}))[:300])
 
 
 def uji_sensor():
-    """S-NPP berhenti 1 Nov 2026: pilih_sensor, penilaian per sensor, dan main() ujung-ke-ujung tanpa jaringan (cuaca dari cache palsu)
-    untuk tiga keadaan: S-NPP ada (primer N), S-NPP hilang (primer N20, ditandai), tanpa VIIRS (status eksplisit, tanpa ramalan)."""
+    """S-NPP pensiun 1 Nov 2026: aturan peralihan terkunci, penilaian per sensor, gerbang per sensor primer, dan main() ujung-ke-ujung tanpa
+    jaringan (cuaca dari cache palsu): S-NPP ada (primer N), S-NPP pensiun (primer N20, dikunci & tak berbalik), tanpa VIIRS (status eksplisit)."""
     import shutil, tempfile
-    km = 1 / 111.32
-    # pilih_sensor: aturan dibandingkan dengan sensor lain, bukan jam dinding
-    assert pilih_sensor([[0, 0, 0, "N"], [10, 0, 0, "N20"], [20, 0, 0, "N21"]])[:2] == ("N", "N20")
-    assert pilih_sensor([[0, 0, 0, "N"], [MATI_JAM * 60 + 1, 0, 0, "N20"]])[:2] == ("N20", None), "S-NPP > 36 jam di belakang NOAA-20 = berhenti"
-    assert pilih_sensor([[0, 0, 0, "N"], [MATI_JAM * 60, 0, 0, "N20"], [5, 0, 0, "N21"]])[:2] == ("N", "N20"), "tepat 36 jam: belum berhenti"
-    assert pilih_sensor([[0, 0, 0, "N20"], [9, 0, 0, "N21"]])[:2] == ("N20", "N21")
-    assert pilih_sensor([[0, 0, 0, "N"]])[:2] == ("N", None) and pilih_sensor([])[:2] == (None, None)
-    assert pilih_sensor([[0, 0, 0, "N21"]])[:2] == (None, None), "NOAA-21 saja bukan primer (tak ada arsip untuk uji balik)"
-    # nilai_baru: ramalan N20 dinilai dengan deteksi N20 (deteksi S-NPP di tempat sama tidak ikut), ramalan S-NPP yang sensornya berhenti
-    # sebelum 72 jam -> sensor_berhenti (bukan "tidak lolos"); catatan lama tanpa "sensor" = S-NPP
-    gud = [[1000, -2.0, 114.0, "N20", 5, "62"], [1500, -2.0, 114.0 + .5 * km, "N20", 5, "62"], [1600, -2.0, 114.0 + 1.0 * km, "N", 5, "62"],
-           [500, -3.0, 113.0, "N", 5, "62"], [9000, -1.0, 110.0, "N20", 5, "62"]]
-    ram = [{"kunci": "1000_-2.0000_114.0000", "mode": "awal", "sensor": "N20", "awal": [[1000, -2.0, 114.0]]},
-           {"kunci": "500_-3.0000_113.0000", "mode": "awal", "awal": [[500, -3.0, 113.0]]}]
-    nb = {r["kunci"]: r for r in nilai_baru(ram, set(), gud, 1000 + JEDA_NILAI + 5, 0, "x")}
-    assert nb["1000_-2.0000_114.0000"]["n72"] == 2 and nb["1000_-2.0000_114.0000"]["sensor"] == "N20", nb
-    assert nb["500_-3.0000_113.0000"] == {"kunci": "500_-3.0000_113.0000", "mode": "awal", "kedaluwarsa": True, "sensor_berhenti": True, "sensor": "N"}, nb
-    # S-NPP masih hidup (deteksi terakhir tak > 36 jam di belakang NOAA-20): ramalan S-NPP dinilai biasa
-    gud2 = gud + [[9000 - 60, -4.0, 112.0, "N", 5, "62"]]
-    assert nilai_baru(ram[1:], set(), gud2, 1000 + JEDA_NILAI + 5, 0, "x")[0]["n72"] == 1
+    km, H, P0 = 1 / 111.32, 60, PENSIUN_SNPP
+    n20s = lambda t_a, n: [[t_a + i, 0, 0, "N20"] for i in range(n)]
+    # sebelum tanggal pensiun: celah S-NPP berapa pun = celah data, S-NPP tetap primer
+    assert pilih_sensor([[P0 - 10 * 24 * H, 0, 0, "N"]] + n20s(P0 - 2 * H, 100), P0 - H) == ("N", "N20", False)
+    assert pilih_sensor(n20s(P0 - 2 * H, 100), P0 - H)[0] is None, "S-NPP kosong sebelum pensiun: tanpa primer, bukan pindah"
+    # sesudah: pindah hanya bila S-NPP diam >= 36 jam DAN NOAA-20 >= 20 deteksi sesudahnya
+    aN = P0 - 30 * H
+    assert pilih_sensor([[aN, 0, 0, "N"]] + n20s(aN + 1, MIN_N20), P0 + 10 * H) == ("N20", None, True)
+    assert pilih_sensor([[aN, 0, 0, "N"], [aN + 5, 0, 0, "N21"]] + n20s(aN + 1, MIN_N20), P0 + 10 * H) == ("N20", "N21", True)
+    assert pilih_sensor([[aN, 0, 0, "N"]] + n20s(aN + 1, MIN_N20 - 1), P0 + 10 * H)[0] == "N", "NOAA-20 < 20 deteksi: belum pindah"
+    assert pilih_sensor([[aN, 0, 0, "N"]] + n20s(aN + 1, MIN_N20), aN + MATI_JAM * H - 1)[0] == "N", "S-NPP diam < 36 jam: belum pindah"
+    assert pilih_sensor([[aN, 0, 0, "N"]] + n20s(aN + 1, MIN_N20), aN + MATI_JAM * H, pensiun=aN + 1)[0] == "N20", "tepat 36 jam: pindah"
+    # terkunci: S-NPP muncul lagi tidak membalikkan; NOAA-20 kosong -> tanpa primer
+    assert pilih_sensor([[P0 + 9 * H, 0, 0, "N"], [P0, 0, 0, "N20"]], P0 + 10 * H, "N20") == ("N20", None, False)
+    assert pilih_sensor([[P0 + 9 * H, 0, 0, "N"]], P0 + 10 * H, "N20")[0] is None
+    assert pilih_sensor([], P0)[:2] == (None, None) and pilih_sensor([[0, 0, 0, "N21"]], P0)[0] is None, "NOAA-21 saja bukan primer"
+    assert pilih_sensor([[P0 + 99 * H, 0, 0, "N"]], P0)[0] is None, "deteksi sesudah acuan tak dihitung"
+    # nilai_baru: S-NPP yang 72 jamnya melewati deteksi S-NPP terakhir L (t0 = L - 60 jam) dan belum dipensiunkan -> DILEWATI (dinilai lagi
+    # nanti), bukan label terpotong permanen; sesudah dikunci ke N20 -> sensor_berhenti. Ramalan N20 dinilai dengan deteksi N20.
+    t0 = 1000
+    gud = [[t0, -3.0, 113.0, "N", 5, "62"], [t0 + 60 * H, -3.0, 113.0 + .5 * km, "N", 5, "62"],
+           [t0, -2.0, 114.0, "N20", 5, "62"], [t0 + 500, -2.0, 114.0 + .5 * km, "N20", 5, "62"], [t0 + 80 * H, -1.0, 110.0, "N20", 5, "62"]]
+    ram = [{"kunci": f"{t0}_-2.0000_114.0000", "mode": "awal", "sensor": "N20", "awal": [[t0, -2.0, 114.0]]},
+           {"kunci": f"{t0}_-3.0000_113.0000", "mode": "awal", "awal": [[t0, -3.0, 113.0]]}]
+    a0 = t0 + JEDA_NILAI + 5
+    nb = nilai_baru(ram, set(), gud, a0, 0, "x")
+    assert len(nb) == 1 and nb[0]["kunci"] == f"{t0}_-2.0000_114.0000" and nb[0]["n72"] == 2 and nb[0]["sensor"] == "N20", nb
+    nb = {r["kunci"]: r for r in nilai_baru(ram, set(), gud, a0, 0, "x", "N20")}
+    assert nb[f"{t0}_-3.0000_113.0000"] == {"kunci": f"{t0}_-3.0000_113.0000", "mode": "awal", "kedaluwarsa": True, "sensor_berhenti": True, "sensor": "N"}, nb
+    gud2 = gud + [[t0 + 75 * H, -4.0, 112.0, "N", 5, "62"]]  # S-NPP menutup 72 jam: dinilai biasa
+    assert nilai_baru(ram[1:], set(), gud2, a0, 0, "x")[0]["n72"] == 1  # deteksi t0+60 jam > 24 jam dari t0: tak tersambung
     # main() ujung-ke-ujung (model & lahan asli, cuaca palsu di cache): gudang + hotspot.json sintetis di folder sementara
     acuan = dt.datetime(2026, 11, 5, 6, 0, tzinfo=dt.timezone.utc)
     la0, lo0 = -2.3, 113.9  # Kalimantan Tengah (62)
 
-    def hotspot(sensor_baru, sensor_lama):
+    def hotspot(sensor_baru, sensor_lama, tambah20=False):
         b = [[la0 + .5, lo0 + .5, -8 * 24.0, s, 3.0, 1, 0, ""] for s in sensor_lama]  # deteksi tua: riwayat gudang >= 7 hari (indeks pendamping juga)
         b += [[la0, lo0, -10.0, s, 6.0, 2, 0, ""] for s in sensor_baru]  # titik api baru 10 jam lalu (jendela umur 6-24 jam)
         b += [[la0 + 1, lo0 + 1, -1.0, s, 2.0, 1, 0, ""] for s in sensor_baru]
+        if tambah20:  # NOAA-20 >= 20 deteksi sesudah S-NPP terakhir (titik muda, terpisah: bukan calon)
+            b += [[la0 - 1 - .05 * i, lo0, -1.0, "N20", 2.0, 1, 0, ""] for i in range(MIN_N20)]
         return {"acuan": acuan.isoformat(), "wilayah": ["62|Pulang Pisau|X"], "sensor_utama": ["M", "N", "N20"], "baris": b}
 
-    asli = {k: globals()[k] for k in ("PUBLIK", "FOLDER", "GUDANG", "RAMALAN", "NILAI", "GERBANG", "CUACA", "RINGKAS")}
+    asli = {k: globals()[k] for k in ("PUBLIK", "FOLDER", "GUDANG", "RAMALAN", "NILAI", "GERBANG", "CUACA", "RINGKAS", "PERALIHAN")}
     hasil = {}
     try:
-        for nama, hs in (("snpp", hotspot(["N", "N20"], ["N", "N20"])), ("n20", hotspot(["N20", "N21"], ["N", "N20", "N21"])), ("tanpa", hotspot(["M"], ["M"]))):
+        for nama, daf in (("snpp", [hotspot(["N", "N20"], ["N", "N20"])]),
+                          ("n20", [hotspot(["N20", "N21"], ["N", "N20", "N21"], True), hotspot(["N", "N20"], ["N", "N20"], True)]),
+                          ("tanpa", [hotspot(["M"], ["M"])])):
             with tempfile.TemporaryDirectory() as td:
                 pub, fol = os.path.join(td, "pub"), os.path.join(td, "fol")
                 os.makedirs(pub)
                 os.makedirs(os.path.join(fol, "cuaca"))
                 shutil.copy(os.path.join(asli["PUBLIK"], "model_sebaran.json"), pub)
-                json.dump(hs, open(os.path.join(pub, "hotspot.json"), "w"))
                 import cuaca as CU
                 cla, clo = CU.sel05(la0, lo0)
                 n = 40 * 24
@@ -575,19 +637,56 @@ def uji_sensor():
                           open(os.path.join(fol, "cuaca", f"{acuan.date().isoformat()}_{cla:.2f}_{clo:.2f}.json"), "w"))
                 globals().update(PUBLIK=pub, FOLDER=fol, GUDANG=os.path.join(fol, "titik.json.gz"), RAMALAN=os.path.join(fol, "ramalan.jsonl"),
                                  NILAI=os.path.join(fol, "nilai.jsonl"), GERBANG=os.path.join(fol, "gerbang.jsonl"), CUACA=os.path.join(fol, "cuaca"),
-                                 RINGKAS=os.path.join(pub, "prospektif.json"))
-                main()
-                hasil[nama] = (baca_jsonl(RAMALAN), json.load(open(RINGKAS)))
+                                 RINGKAS=os.path.join(pub, "prospektif.json"), PERALIHAN=os.path.join(fol, "sensor.json"))
+                hasil[nama] = []
+                for hs in daf:
+                    json.dump(hs, open(os.path.join(pub, "hotspot.json"), "w"))
+                    main()
+                    hasil[nama].append((baca_jsonl(RAMALAN), json.load(open(RINGKAS)), baca_peralihan()))
+                if nama == "n20":  # keputusan peralihan ikut arsip dan pulih bila hilang
+                    arsip(os.path.join(td, "a.gz"))
+                    os.remove(PERALIHAN)
+                    pulih(os.path.join(td, "a.gz"))
+                    assert baca_peralihan()["primer"] == "N20"
     finally:
         globals().update(asli)
-    r, o = hasil["snpp"]
-    assert len(r) == 1 and r[0]["sensor"] == "N" and r[0]["pendamping"] == "N20" and o["status"] == "ok" and o["sensor"] == "N", (r, o)
-    assert r[0]["fitur"]["n20_0"] >= 1, "pendamping N20 di sel awal harus terhitung"
-    r, o = hasil["n20"]
+    r, o, per = hasil["snpp"][0]
+    assert len(r) == 1 and r[0]["sensor"] == "N" and r[0]["pendamping"] == "N20" and o["status"] == "ok" and o["sensor"] == "N" and per is None, (r, o)
+    assert r[0]["fitur"]["n20_0"] >= 1 and o["gerbang_sensor"] == "N", "pendamping N20 di sel awal harus terhitung"
+    r, o, per = hasil["n20"][0]
     assert len(r) == 1 and r[0]["sensor"] == "N20" and r[0]["pendamping"] == "N21" and o["sensor"] == "N20" and 0 <= r[0]["p"] <= 1, (r, o)
-    assert r[0]["fitur"]["n20_0"] >= 1 and r[0]["fitur"]["n0"] == 1, "S-NPP hilang: titik dari NOAA-20, pendamping NOAA-21"
-    r, o = hasil["tanpa"]
+    assert r[0]["fitur"]["n20_0"] >= 1 and r[0]["fitur"]["n0"] == 1, "S-NPP pensiun: titik dari NOAA-20, pendamping NOAA-21"
+    assert per["primer"] == "N20" and o["peralihan"]["buta_jam"] == 8 * 24 and o["gerbang_sensor"] == "N20" and not o["teruji"] and "NOAA-20" in o["catatan_gerbang"], o
+    r2, o2, per2 = hasil["n20"][1]
+    assert o2["sensor"] == "N20" and per2 == per, "S-NPP muncul lagi: peralihan tidak berbalik"
+    r, o, per = hasil["tanpa"][0]
     assert r == [] and o["status"] == "tanpa_viirs" and o["sensor"] is None and "mode" in o, o
+    # gerbang per sensor primer: 400 ramalan S-NPP dinilai tidak membuka gerbang untuk NOAA-20 (10 dinilai); vonis gerbang bersensor
+    with tempfile.TemporaryDirectory() as td:
+        globals().update(RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"), GERBANG=os.path.join(td, "g.jsonl"), RINGKAS=os.path.join(td, "p.json"))
+        try:
+            rnd = random.Random(5)
+            with open(RAMALAN, "w") as fr, open(NILAI, "w") as fn:
+                for i in range(410):
+                    s_ = "N" if i < 400 else "N20"
+                    q = rnd.random() * .3
+                    fr.write(json.dumps({"kunci": f"{i}_0_0", "mode": "awal", "sensor": s_, "p": q, "waspada": q > .1, "t0": "2026-10-01T00:00", "strata": "gambut",
+                                         "lat": 0, "lon": 0, "prov": "62"}) + "\n")
+                    fn.write(json.dumps({"kunci": f"{i}_0_0", "mode": "awal", "n72": 1, "lolos": rnd.random() < q, "sensor": s_}) + "\n")
+            ringkas({"status": "ok", "sensor": "N20"})
+            o = json.load(open(RINGKAS))
+            assert o["mode"]["awal"]["dinilai"] == 10 and not o["teruji_recall"] and not o["teruji"] and o["mode"]["awal"]["per_sensor"]["N"]["dinilai"] == 400, o["mode"]["awal"]
+            ringkas({"status": "ok", "sensor": "N"})
+            o = json.load(open(RINGKAS))
+            assert o["mode"]["awal"]["dinilai"] == 400 and baca_jsonl(GERBANG)[-1]["sensor"] == "N", baca_jsonl(GERBANG)
+            # vonis S-NPP lulus tak boleh dihitung sebagai "evaluasi sebelumnya" untuk NOAA-20
+            open(GERBANG, "w").write(json.dumps({"kunci": "n300", "mode": "gerbang", "n": 300, "lulus": True}) + "\n")
+            assert berturut([r for r in baca_jsonl(GERBANG) if r.get("sensor", "N") == "N20"], 400, True)[0] is False
+            ringkas({"status": "tanpa_primer", "sensor": None, "peralihan": {"primer": "N20"}})
+            o = json.load(open(RINGKAS))
+            assert o["gerbang_sensor"] == "N20" and not o["lulus_sekarang"] and len(baca_jsonl(GERBANG)) == 1, "jalan tanpa primer tak lulus & tak mencatat vonis"
+        finally:
+            globals().update(asli)
 
 
 if __name__ == "__main__":
@@ -607,7 +706,8 @@ if __name__ == "__main__":
         g2, _ = gabung(g, hs)
         assert len(g2) == 1
         # kasus 0-dinilai: ramalan memuat menit pecahan (.4) yang tak sama dengan gudang sekarang; harus tetap dinilai lewat lokasi
-        gud = [[1000, -2.0, 114.0, "N", 5, "62"], [1500, -2.0, 114.0 + .5 * km, "N", 5, "62"], [2000, -2.0, 114.0 + 1.0 * km, "N", 5, "62"]]
+        gud = [[1000, -2.0, 114.0, "N", 5, "62"], [1500, -2.0, 114.0 + .5 * km, "N", 5, "62"], [2000, -2.0, 114.0 + 1.0 * km, "N", 5, "62"],
+               [1000 + 75 * 60, -6.0, 106.0, "N", 5, "31"]]  # deteksi S-NPP jauh sesudah 72 jam: jendela label tertutup
         ram = [{"kunci": "1000_-2.0000_114.0000", "mode": "awal", "awal": [[1000.4, -2.0, 114.0]]},
                {"kunci": "9999_-1.0000_100.0000", "mode": "awal", "awal": [[9999.0, -1.0, 100.0]]}]
         nb = nilai_baru(ram, set(), gud, 1000 + JEDA_NILAI + 5, 0, "x")
