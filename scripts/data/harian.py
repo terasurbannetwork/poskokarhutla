@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/data/harian.py
 Butuh FIRMS_MAP_KEY (env atau .env). Open-Meteo dan BNPB tidak butuh kunci.
 """
-import csv, datetime as dt, io, json, math, os, sys, time, urllib.request
+import csv, datetime as dt, io, json, math, os, socket, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -122,6 +122,18 @@ def ambil(url, coba=4, json_=False):
     return ambil.__wrapped__(url, coba, json_)
 
 
+# AAAA firms.modaps.eosdis.nasa.gov = fd00:aa:bb:2080::c676:c222 (alamat IPv6 privat, tak terjangkau dari internet). Runner GitHub
+# kadang gagal "[Errno 101] Network is unreachable" (data.yml 20 dan 22 Okt 2026). Urutkan alamat IPv4 lebih dulu; IPv6 tetap cadangan.
+_getaddrinfo_asli = socket.getaddrinfo
+
+
+def _ipv4_dulu(*a, **k):
+    return sorted(_getaddrinfo_asli(*a, **k), key=lambda r: r[0] != socket.AF_INET)
+
+
+socket.getaddrinfo = _ipv4_dulu
+
+
 def _ambil(url, coba=4, json_=False):
     for i in range(coba):
         try:
@@ -132,8 +144,9 @@ def _ambil(url, coba=4, json_=False):
         except Exception as e:
             if i == coba - 1:
                 raise RuntimeError(f"{url.split('?')[0]}: {e}")
-            # kuota FIRMS (5000/10 menit) atau Open-Meteo habis: tunggu lebih lama
-            time.sleep(90 if "429" in str(e) or "400" in str(e) else 10 * (i + 1))
+            # kuota FIRMS (5000/10 menit) atau Open-Meteo habis: tunggu lebih lama; jaringan putus: 30/60/90 dtk (dulu 10/20/30, terlalu pendek)
+            jaringan = isinstance(e, OSError) and not isinstance(e, urllib.error.HTTPError)
+            time.sleep(90 if "429" in str(e) or "400" in str(e) else 30 * (i + 1) if jaringan else 10 * (i + 1))
 
 
 ambil.__wrapped__ = _ambil
@@ -771,6 +784,15 @@ def hitung_otomatis():
 
 
 def uji():
+    # IPv4 didahulukan, IPv6 tetap ada sebagai cadangan
+    palsu = [(socket.AF_INET6, 1, 6, "", ("fd00::1", 443, 0, 0)), (socket.AF_INET, 1, 6, "", ("198.118.194.34", 443))]
+    asli, socket.getaddrinfo = _getaddrinfo_asli, None
+    try:
+        globals()["_getaddrinfo_asli"] = lambda *a, **k: palsu
+        assert [r[0] for r in _ipv4_dulu("firms", 443)] == [socket.AF_INET, socket.AF_INET6]
+    finally:
+        globals()["_getaddrinfo_asli"] = asli
+        socket.getaddrinfo = _ipv4_dulu
     sq = {"type": "Polygon", "coordinates": [[[1, 1], [2, 1], [2, 2], [1, 1]]]}
     F = [{"type": "Feature", "geometry": sq, "properties": {"id": "K1", "lat": 1.5, "lon": 1.6, "level": 3, "api24": [[1.5, 1.5]]}},
          {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3, 3]}, "properties": {"id": "K2", "lat": 3, "lon": 3, "level": 0}}]

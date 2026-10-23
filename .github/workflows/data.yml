@@ -67,10 +67,15 @@ jobs:
           PIPA_URL: ${{ vars.PIPA_URL }}
         run: python3 scripts/data/kalibrasi.py uji && python3 scripts/data/kalibrasi.py
 
+      # FIRMS kadang tak terjangkau dari runner (20 & 22 Okt 2026): jangan jatuhkan seluruh jalan harian (berita, cuaca, udara, dll).
+      # Langkah sesudahnya memakai titik/kompleks terakhir dari cache (titik.yml memperbaruinya tiap 3 jam). Deploy tetap dijaga
+      # scripts/terbit/jaga_segar.py: data basi atau lebih tua dari yang tayang tidak pernah terbit.
       - name: Titik panas, kompleks, FWI, BNPB
+        id: harian
+        continue-on-error: true
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-        run: python3 scripts/data/harian.py
+        run: python3 scripts/data/harian.py || { echo "::error title=harian.py gagal::FIRMS/BNPB tidak terjangkau; langkah lain lanjut dengan titik terakhir dari cache"; exit 1; }
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py
