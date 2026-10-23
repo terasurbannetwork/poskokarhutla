@@ -221,3 +221,27 @@ Waktu jalan: `api` 70 dtk; `lahan` 2 mnt; `cuaca` 65 mnt (1.097 sel, ~3,5 dtk/se
 lipatan 290-560 dtk, nilai 8 mnt); ablasi 75 mnt. Mesin 8 GB, puncak memori lipatan ~1,6 GB. Berkas: `risiko_mingguan_uji.json`
 69 KB; cache `data/raw/risiko/` 3,3 GB (`tetap_<th>.npy` 11 x 242 MB, `cuaca_harian.npz` 235 MB, `cuaca_merra2/` 242 MB,
 `lipat_*.npz` ~10 MB, `model_<th>.json` ~745 KB). `data/raw/risiko/cuaca/` (54 MB) = unduhan x24 yang salah, aman dihapus.
+
+## Koreksi audit validasi-model (23 Okt 2026)
+
+Tidak ada kebocoran (fitur api dan riwayat dihitung ulang dari CSV FIRMS mentah: 0 beda; maju-berantai = LOYO). Tetapi:
+
+- **Pembanding terdaftar lemah.** Logistik dari ~20 fitur riwayat api milik model sendiri (tanpa cuaca, ENSO, lahan) sudah
+  AUC 0,902 (Jul-Nov). Tambahan GBDT + ENSO + cuaca + lahan di atasnya: Brier skill 0,030 [0,016; 0,042] (blok tahun),
+  menang 9 dari 11 tahun dan di 30 dari 30 provinsi dengan >= 2.000 positif. **Angka "0,915 vs 0,759" tidak dipakai di
+  teks pengguna.**
+- **Angka utama yang dipakai:** AUC di dalam provinsi-minggu (cara tim lapangan memilah) model 0,847, logistik riwayat
+  0,840, pembanding terdaftar 0,750. Recall bila 10% sel teratas per provinsi-minggu ditandai: 0,414 / 0,408 / 0,343.
+  Top-1%: presisi 28%, recall 7,8%. Level peluang bergeser antar tahun (rasio rata-rata peluang / laju 0,88-1,41).
+- **Selang:** blok tahun (11 blok), bukan provinsi x tahun: Brier skill Jul-Nov [0,090; 0,160]. Syarat 1 tetap lolos.
+- **Bahaya produksi:** NaN cuaca/ONI/DMI lewat diam-diam dan menggandakan peluang (cuaca NaN di 2023: rasio 2,15).
+  Produksi wajib menolak NaN dan dilatih pada fitur yang benar-benar diterima.
+- **Cuaca nyaris tak dipakai** sebagai dinamika (cuaca diganti klimatologi: -0,001 sampai -0,006 AUC). Varian tanpa
+  cuaca dan tanpa ONI/DMI setara di 2026 (AUC dalam provinsi-minggu 0,855 vs 0,854).
+- **Sumber panas statis** (smelter, tambang, kilang; 108 sel menyala > 20% minggu) masih di target: wajib ditapis.
+- **Prosedural:** keputusan sensor/HP tertulis di commit hasil, bukan sebelum menjalankan; La Nina hanya satu tahun
+  (2022, Brier skill 0,049 [-0,010; 0,091]).
+
+Konsekuensi: model produksi = model BARU (tanpa cuaca, sel statis ditapis, tolak NaN), didaftarkan dulu dengan logistik
+riwayat sebagai pembanding wajib. LOYO 2015-2025 dan 2026 s.d. minggu 39 sudah dilihat, jadi bukti konfirmasinya hanya
+dari catatan prospektif mingguan mulai sekarang.
