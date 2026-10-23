@@ -21,7 +21,7 @@ pemilihan model memakai tahun seleksi, tahun uji akhir (daftar di berkas kriteri
 
 URL berkunci FIRMS TIDAK pernah dicetak: semua pesan galat lewat redaksi().
 """
-import bisect, csv, datetime as dt, glob, gzip, hashlib, io, json, math, os, random, re, statistics, sys, time, urllib.error, urllib.request, zipfile
+import bisect, csv, datetime as dt, glob, gzip, hashlib, io, json, math, os, random, re, signal, statistics, sys, time, urllib.error, urllib.request, zipfile
 
 sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
@@ -148,6 +148,29 @@ class Anggaran:
 
     def lewat(self, porsi):
         return self.terpakai() > porsi * self.total
+
+    def cap(self):
+        """Stempel waktu UTC + terpakai + sisa anggaran, untuk log tahap."""
+        return "%s UTC | terpakai %.0f dtk | sisa %.0f dtk" % (dt.datetime.now(dt.timezone.utc).strftime("%H:%M:%S"), self.terpakai(), self.sisa())
+
+
+class Terpotong(BaseException):
+    """SIGTERM (mis. `timeout`): BaseException agar tak tertelan `except Exception` di tahap mana pun."""
+
+
+TAHAP_KINI = ["awal"]          # tahap yang sedang jalan, untuk pesan SIGTERM
+GDAL_ENV = {"GDAL_HTTP_TIMEOUT": "30", "GDAL_HTTP_CONNECTTIMEOUT": "15", "GDAL_HTTP_MAX_RETRY": "2",
+            "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": ".tif"}
+
+
+def atur_gdal():
+    """Batas HTTP GDAL untuk /vsicurl (tanpa ini satu ubin yang menggantung menahan putaran berpuluh menit)."""
+    os.environ.update(GDAL_ENV)
+
+
+def log_tahap(ang, nama, ket=""):
+    TAHAP_KINI[0] = nama
+    log("[%s] %s%s" % (ang.cap(), nama, (" " + ket) if ket else ""))
 
 
 def kuantil(xs, q):
@@ -1751,28 +1774,38 @@ def oni_per_tahun():
     return jas, aso
 
 
-def dmi_jas(catatan, tenggat):
-    """DMI Jul-Sep dari NOAA PSL (dmi.had.long.data); cadangan: dmi mingguan iklim.json (2024-2026 saja)."""
+def dmi_psl(catatan):
+    """DMI Jul-Sep dari NOAA PSL (dmi.had.long.data). Melempar bila unduhan gagal (tidak ada cadangan di sini, supaya hasil cadangan tak masuk cache)."""
     out = {}
-    try:
-        teks = ambil_teks("https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data", coba=2)
-        for b in teks.splitlines():
-            p = b.split()
-            if len(p) == 13 and p[0].isdigit():
-                v = [float(x) for x in p[1:]]
-                if all(x > -90 for x in v[6:9]):
-                    out[int(p[0])] = sum(v[6:9]) / 3
-        catatan["dmi"] = "NOAA PSL dmi.had.long.data, %d tahun" % len(out)
-    except Exception as e:  # noqa: BLE001
-        catatan["dmi"] = "PSL gagal (%s); cadangan iklim.json mingguan hanya 2024-2026" % redaksi(e)[:80]
-        d = muat_json(os.path.join(PUB, "iklim.json")) or {}
-        per = {}
-        for r in d.get("dmi", []):
-            y, m = int(r["tgl"][:4]), int(r["tgl"][5:7])
-            if 7 <= m <= 9:
-                per.setdefault(y, []).append(r["nilai"])
-        out = {y: sum(v) / len(v) for y, v in per.items() if len(v) >= 6}
+    teks = ambil_teks("https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data", coba=2)
+    for b in teks.splitlines():
+        p = b.split()
+        if len(p) == 13 and p[0].isdigit():
+            v = [float(x) for x in p[1:]]
+            if all(x > -90 for x in v[6:9]):
+                out[int(p[0])] = sum(v[6:9]) / 3
+    catatan["dmi"] = "NOAA PSL dmi.had.long.data, %d tahun" % len(out)
     return out
+
+
+def dmi_jas_cadangan(catatan, alasan="PSL gagal atau lewat batas waktu"):
+    """Cadangan: dmi mingguan iklim.json (2024-2026 saja)."""
+    catatan["dmi"] = "%s; cadangan iklim.json mingguan hanya 2024-2026" % redaksi(alasan)[:80]
+    d = muat_json(os.path.join(PUB, "iklim.json")) or {}
+    per = {}
+    for r in d.get("dmi", []):
+        y, m = int(r["tgl"][:4]), int(r["tgl"][5:7])
+        if 7 <= m <= 9:
+            per.setdefault(y, []).append(r["nilai"])
+    return {y: sum(v) / len(v) for y, v in per.items() if len(v) >= 6}
+
+
+def dmi_jas(catatan, tenggat):
+    """DMI Jul-Sep dari NOAA PSL; cadangan: dmi mingguan iklim.json (2024-2026 saja)."""
+    try:
+        return dmi_psl(catatan)
+    except Exception as e:  # noqa: BLE001
+        return dmi_jas_cadangan(catatan, "PSL gagal (%s)" % e)
 
 
 def chirps_tahun(peta, th, catatan, tenggat):
@@ -2301,15 +2334,82 @@ def kunci_cache(sensor, y, sampai):
     return "%s|%d" % (sensor, y) + ("|%s" % sampai[5:].replace("-", "") if sampai else "")
 
 
+def ambil_kovariat(K, nama, fn, batas, ttl_hari=None, sidik=None, utuh=lambda: True, restore=None, coba=True):
+    """K = {ang, kovc, catatan, belum, lewati, simpan}. fn(tenggat) -> nilai. Cache -> pakai. Tanpa cache: jalankan dengan batas keras `batas` dtk; gagal/lewat batas -> None (diimputasi, dicatat)."""
+    ang, kovc, catatan, belum = K["ang"], K["kovc"], K["catatan"], K["belum"]
+    ent = kovc.get(nama)
+    sah = bool(ent) and ent.get("sidik") == sidik
+    if sah and ttl_hari is not None:
+        try:
+            umur = (dt.datetime.now(UTC) - dt.datetime.fromisoformat(ent["dibuat"])).total_seconds() / 86400
+            sah = umur < ttl_hari
+        except (KeyError, ValueError, TypeError):
+            sah = False
+    nilai_cache = (restore(ent["nilai"]) if restore else ent["nilai"]) if ent and ent.get("sidik") == sidik else None
+    if sah:
+        log_tahap(ang, nama, "dari cache (dibuat %s)" % ent.get("dibuat"))
+        return nilai_cache
+    if not coba:
+        return nilai_cache
+    if K["lewati"] or ang.lewat(0.75):
+        belum.append("kovariat %s (dilewati: anggaran; dilanjutkan putaran berikut)" % nama)
+        log_tahap(ang, nama, "DILEWATI (anggaran)")
+        return nilai_cache
+    log_tahap(ang, nama, "mulai (batas %d dtk)" % batas)
+    akhir = time.time() + batas
+    try:
+        selesai, nilai = dengan_batas(lambda: fn(lambda: time.time() > akhir), batas + 20)
+    except Terpotong:
+        raise
+    except BaseException as e:  # noqa: BLE001
+        catatan.setdefault("kovariat_galat", []).append("%s: %s" % (nama, redaksi(type(e).__name__ + " " + str(e))[:80]))
+        log_tahap(ang, nama, "GALAT " + redaksi(e)[:80])
+        return nilai_cache
+    if not selesai:
+        catatan.setdefault("kovariat_lewat_batas", []).append("%s: %d dtk -> diimputasi" % (nama, batas))
+        log_tahap(ang, nama, "LEWAT BATAS %d dtk (diimputasi)" % batas)
+        return nilai_cache
+    if nilai and utuh():
+        kovc[nama] = {"nilai": nilai, "dibuat": dt.datetime.now(UTC).isoformat(timespec="seconds"), "sidik": sidik}
+        K["simpan"]()
+    log_tahap(ang, nama, "selesai" + ("" if nilai else " (kosong)") + ("" if utuh() else " (tak utuh, tak di-cache)"))
+    return nilai
+
+
+def _tandai_terpotong(tahap):
+    """luas.json yang masih 'berjalan' diubah jadi 'terpotong' (dengan penanda tahap), supaya tak menggantung selamanya."""
+    p_luas = os.path.join(OUT, "luas.json")
+    d = muat_json(p_luas)
+    if isinstance(d, dict) and d.get("status") == "berjalan":
+        d["status"] = "terpotong"
+        d["belum_dikerjakan"] = list(d.get("belum_dikerjakan") or []) + ["terpotong SIGTERM (batas waktu job) saat tahap: %s" % tahap]
+        simpan_json(p_luas, d)
+
+
 def jalan():
-    """Bungkus: baris awal ke jalan.jsonl SEBELUM menghitung apa pun, baris penutup (status + vonis) di akhir, juga bila gagal."""
+    """Bungkus: baris awal ke jalan.jsonl SEBELUM menghitung apa pun, baris penutup (status + vonis) di akhir, juga bila gagal atau dipotong SIGTERM."""
     mulai = dt.datetime.now(UTC).isoformat(timespec="seconds")
     catat_jalan(baris_jalan("awal", mulai, "berjalan"))
+
+    def _term(signum, frame):
+        raise Terpotong("SIGTERM")
+    lama = signal.signal(signal.SIGTERM, _term)
     try:
         J = _jalan(mulai)
+    except Terpotong:
+        tahap = TAHAP_KINI[0]
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)   # `timeout` bisa mengirim lagi; penutupan jangan terputus
+        try:
+            _tandai_terpotong(tahap)
+        finally:
+            catat_jalan(baris_jalan("akhir", mulai, "terpotong", "dipotong SIGTERM saat tahap: " + tahap))
+        log("DIPOTONG SIGTERM saat tahap %s; baris penutup ditulis" % tahap)
+        raise SystemExit(143)
     except BaseException as e:  # noqa: BLE001
         catat_jalan(baris_jalan("akhir", mulai, "gagal", "galat: " + redaksi(type(e).__name__ + ": " + str(e))[:200]))
         raise
+    finally:
+        signal.signal(signal.SIGTERM, lama)
     catat_jalan(baris_jalan("akhir", mulai, J["status"], J.get("vonis")))
 
 
@@ -2320,7 +2420,10 @@ def _jalan(mulai):
     # 1. kriteria DIKUNCI sebelum menghitung apa pun
     simpan_json(p_luas, {"versi": 2, "status": "berjalan", "dibuat": mulai, "kriteria": dict(KRITERIA, dikunci_pada=mulai), "kriteria_sha": sha_kriteria(), "jujur": JUJUR})
     kunci = kunci_firms()
-    cache = (muat_json(p_fit) or {}).get("unit", {})
+    dat_fit = muat_json(p_fit) or {}
+    cache = dat_fit.get("unit", {})
+    kovc = dat_fit.get("kovariat", {})      # cache kovariat {nama: {nilai, dibuat, sidik}}; dipakai ulang antarputaran
+    atur_gdal()
     catatan, status, belum = {}, {}, []
     log("memuat peta ...")
     peta = Peta.dari_repo()
@@ -2331,18 +2434,24 @@ def _jalan(mulai):
     def _tenggat_gav():
         if ang.lewat(0.25):
             raise TimeoutError("anggaran Gaveau habis")
+    log_tahap(ang, "gaveau", "mulai (batas %d dtk)" % (0.25 * ang.total))
     try:
         selesai, gav = dengan_batas(lambda: gaveau_dari_zenodo(peta, _tenggat_gav, catatan), 0.25 * ang.total)
         if not selesai:
             catatan["gaveau"] = "GAGAL: lewat batas waktu %d dtk (pembaca citra tidak dapat diinterupsi)" % (0.25 * ang.total)
+    except Terpotong:
+        raise
     except BaseException as e:  # noqa: BLE001
         gav = None
         catatan["gaveau"] = "GAGAL: " + redaksi(e)[:160]
+    log_tahap(ang, "gaveau", "selesai: " + str(catatan.get("gaveau", "ok"))[:80])
     if gav:
         ref["gaveau"] = gav["prov"]
         ref["gaveau_sel"] = gav["sel"]
         catatan["gaveau"] = "Zenodo 4551243: %d petak, total %.0f ha" % (gav["n"], gav["total"])
+    log_tahap(ang, "gfed5", "mulai")
     ref["gfed5"] = gfed5_prov(peta, catatan, lambda: ang.lewat(0.3))
+    log_tahap(ang, "gfed5", "selesai: " + str(catatan.get("gfed5", "?"))[:80])
     # 3. titik FIRMS
     for s, y, kl, sampai in tugas_titik():
         kc = kunci_cache(s, y, sampai)
@@ -2351,6 +2460,7 @@ def _jalan(mulai):
         if ang.sisa() < 0.45 * ang.total or habis_data():
             belum.append("titik %s" % kc)
             continue
+        log_tahap(ang, "titik " + kc, "mulai")
         titik = titik_sensor_tahun(s, y, kunci, habis_data, status, sampai)
         if titik is None:
             belum.append("titik %s (%s)" % (kc, status.get("%s|%d" % (s, y), "?")[:60]))
@@ -2362,36 +2472,76 @@ def _jalan(mulai):
             continue
         e["dibuat"] = dt.datetime.now(UTC).isoformat(timespec="seconds")
         cache[kc] = e
-        simpan_json(p_fit, {"versi": 1, "unit": cache})
-        log("selesai", kc, e["n_total"], "titik; sisa %.0f dtk" % ang.sisa())
-    # 4. kovariat
-    kov = {"luas_km2": luas_provinsi_km2(peta, lambda: ang.lewat(0.6))}
+        simpan_json(p_fit, {"versi": 1, "unit": cache, "kovariat": kovc})
+        log("[%s] selesai titik %s" % (ang.cap(), kc), e["n_total"], "titik")
+    # 4. kovariat: tiap langkah punya batas keras + cache antarputaran (kovc); model WAJIB kebagian waktu
+    lewati_kov = ang.sisa() < 0.40 * ang.total
+    log_tahap(ang, "titik", "selesai (%d unit di cache)%s" % (len(cache), "; sisa < 40%: kovariat yang belum ter-cache dilewati" if lewati_kov else ""))
+
+    K = {"ang": ang, "kovc": kovc, "catatan": catatan, "belum": belum, "lewati": lewati_kov,
+         "simpan": lambda: simpan_json(p_fit, {"versi": 1, "unit": cache, "kovariat": kovc})}
+
+    def kovariat(*a, **k):
+        return ambil_kovariat(K, *a, **k)
+
+    def _ik1(d):   # {"2019": v} -> {2019: v}
+        return {int(k): v for k, v in d.items()}
+
+    def _ik2(d):   # {g: {"2019": v}} -> {g: {2019: v}}
+        return {g: _ik1(v) for g, v in d.items()}
+
+    luas_utuh = [True]
+
+    def _tg_luas(tg):
+        def f():
+            r = tg() or ang.lewat(0.6)
+            luas_utuh[0] = luas_utuh[0] and not r
+            return r
+        return f
+    kov = {"luas_km2": kovariat("luas_km2", lambda tg: luas_provinsi_km2(peta, _tg_luas(tg)), 240, sidik="v1", utuh=lambda: luas_utuh[0])}
+    kov["luas_km2"] = kov["luas_km2"] or {}
     kov["oni_jas"], kov["oni_aso"] = oni_per_tahun()
-    kov["dmi"] = dmi_jas(catatan, None)
-    statis = statis_lahan(peta, catatan)
-    hujan = {}
-    for y in range(2001, dt.datetime.now(UTC).year + 1):
+    kov["dmi"] = kovariat("dmi", lambda tg: dmi_psl(catatan), 30, ttl_hari=7, sidik="v1", restore=_ik1) or {}
+    kov["dmi"] = kov["dmi"] or dmi_jas_cadangan(catatan)
+    ukuran = []
+    for nm in ("gambut.geojson", "konsesi.geojson", "kawasan.geojson"):
+        pj = os.path.join(PUB, "lahan", nm)
+        ukuran.append(os.path.getsize(pj) if os.path.exists(pj) else 0)
+    kn_p = os.path.join(PUB, "kanal.json")
+    ukuran.append(os.path.getsize(kn_p) if os.path.exists(kn_p) else 0)
+    statis = kovariat("statis", lambda tg: statis_lahan(peta, catatan), 120, sidik="u" + ",".join(map(str, ukuran))) or {}
+    hujan, kini = {}, dt.datetime.now(UTC).year
+    gagal_beruntun = 0
+    for y in range(2001, kini + 1):
         if ang.lewat(0.65):
             catatan["chirps"] = "dihentikan anggaran di %d" % y
             break
-        try:
-            for g, v in chirps_tahun(peta, y, catatan, None).items():
-                hujan.setdefault(g, {})[y] = v
-        except Exception as e:  # noqa: BLE001
-            catatan.setdefault("chirps_tahun_gagal", []).append("%d: %s" % (y, redaksi(e)[:60]))
+        coba = gagal_beruntun < 3
+        v = kovariat("chirps|%d" % y, lambda tg, y=y: chirps_tahun(peta, y, catatan, None), 60, ttl_hari=7 if y == kini else None, sidik="v1", coba=coba)
+        if v:
+            gagal_beruntun = 0
+            for g, x in v.items():
+                hujan.setdefault(g, {})[y] = x
+        elif coba:
+            gagal_beruntun += 1
+            if gagal_beruntun == 3:
+                catatan["chirps"] = "dihentikan: 3 tahun berturut-turut gagal/lewat batas di %d (ERDDAP bermasalah); sisanya hanya dari cache" % y
     kov["hujan"] = hujan
     catatan.setdefault("chirps", "ERDDAP coastwatch chirps20GlobalMonthlyP05, stride 5 (0,25 derajat), jumlah Jul-Okt" if hujan else "tak terbaca")
-    kov["hilang"] = hansen_hilang(peta, lambda: ang.lewat(0.7), catatan)
-    kov["wc"] = worldcover_porsi(peta, lambda: ang.lewat(0.75), catatan)
+    kov["hilang"] = kovariat("hansen", lambda tg: hansen_hilang(peta, lambda: tg() or ang.lewat(0.7), catatan), 300, sidik="v1", restore=_ik2,
+                             utuh=lambda: "dihentikan" not in str(catatan.get("hansen", "")))
+    kov["wc"] = kovariat("worldcover", lambda tg: worldcover_porsi(peta, lambda: tg() or ang.lewat(0.75), catatan), 240, sidik="v1",
+                         utuh=lambda: "dihentikan" not in str(catatan.get("worldcover", "")))
     catatan["dem"] = "dilewati (prioritas rendah)"
     # 5. model
+    log_tahap(ang, "model", "mulai")
     J = susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav)
     J["data"]["peta"] = peta.stat
     assert J["kriteria_sha"] == sha_kriteria()
     simpan_json(p_luas, J)
     with open(os.path.join(OUT, "luas_ringkas.md"), "w") as f:
         f.write(tulis_md(J))
-    log("selesai; %s" % J["status"])
+    log_tahap(ang, "model", "selesai; status %s" % J["status"])
     return J
 
 
@@ -2406,10 +2556,12 @@ def susun_hasil(cache, ref, kov, statis, ang, catatan, status, belum, mulai, gav
             continue
         ctx = {"seri": seri, "faktor_setara": faktor_setara(cache), "rasio_nm": rasio_setara_tahun(cache), "oni_jas": kov["oni_jas"]}
         ctx_seri[seri] = ctx
+        log_tahap(ang, "model seri " + seri, "mulai (%d baris)" % len(baris))
         h, p, inf = evaluasi_seri(seri, baris, ref, ctx, tenggat=lambda: ang.lewat(0.92))
         hasil_all += h
         preds_all.update(p)
         info_seri[seri] = inf
+        log_tahap(ang, "model seri " + seri, "selesai (%d entri)" % len(h))
     terpilih, pemenang = pilih_model(hasil_all)
     pakai = terpilih or pemenang
     pred_seri = {}
@@ -3154,6 +3306,70 @@ def uji():
     assert "| 2019 |" in md and "Uji kekuatan" in md and "kriteria_sha" in md
     assert tulis_md({"status": "uji", "dibuat": "x", "model": hs, "terpilih": None, "terbaik_tak_lolos": pem, "tabel": tabel, "jujur": JUJUR, "belum_dikerjakan": ["x"], "n_kandidat": 12})
     assert "Belum dikerjakan" in tulis_md({"status": "uji", "dibuat": "x", "model": hs, "terpilih": None, "tabel": tabel, "jujur": JUJUR, "belum_dikerjakan": ["x"]})
+    # --- ketahanan waktu: kovariat menggantung dihentikan batas; cache dipakai ulang; anggaran sempit melewati; SIGTERM menulis baris penutup
+    def _K(lewati=False, kovc=None, menit=50):
+        k = {"ang": Anggaran(menit), "kovc": {} if kovc is None else kovc, "catatan": {}, "belum": [], "lewati": lewati, "simpan": lambda: k.__setitem__("n_simpan", k.get("n_simpan", 0) + 1)}
+        return k
+    import threading
+    gantung = threading.Event()
+    K1 = _K()
+    t1 = time.time()
+    r1 = ambil_kovariat(K1, "gantung", lambda tg: gantung.wait(30) or {"a": 1}, 1, sidik="v1")
+    assert r1 is None and time.time() - t1 < 25 and "gantung" in K1["catatan"]["kovariat_lewat_batas"][0] and "gantung" not in K1["kovc"], "kovariat menggantung harus dihentikan batas"
+    gantung.set()
+    K2 = _K()
+    r2 = ambil_kovariat(K2, "ok", lambda tg: {"ID-JA": {2019: 1.5}}, 5, sidik="v1", restore=lambda d: {g: {int(y): v for y, v in x.items()} for g, x in d.items()})
+    assert r2 == {"ID-JA": {2019: 1.5}} and K2["kovc"]["ok"]["sidik"] == "v1" and K2.get("n_simpan") == 1
+    kc2 = json.loads(json.dumps(K2["kovc"]))               # lewat JSON: kunci tahun jadi str
+    panggil = []
+    K3 = _K(kovc=kc2)
+    r3 = ambil_kovariat(K3, "ok", lambda tg: panggil.append(1) or {}, 5, sidik="v1", restore=lambda d: {g: {int(y): v for y, v in x.items()} for g, x in d.items()})
+    assert r3 == {"ID-JA": {2019: 1.5}} and not panggil, "cache kovariat harus dipakai ulang tanpa menghitung"
+    K3b = _K(kovc=json.loads(json.dumps(kc2)))
+    ambil_kovariat(K3b, "ok", lambda tg: panggil.append(1) or {"x": 1}, 5, sidik="v2")
+    assert panggil == [1], "sidik berubah -> hitung ulang"
+    K4 = _K(lewati=True)
+    assert ambil_kovariat(K4, "baru", lambda tg: panggil.append(2) or {"x": 1}, 5, sidik="v1") is None and 2 not in panggil and K4["belum"] and "baru" in K4["belum"][0]
+    K5 = _K(lewati=True, kovc=kc2)
+    assert ambil_kovariat(K5, "ok", lambda tg: panggil.append(3), 5, sidik="v1") == {"ID-JA": {"2019": 1.5}} and not K5["belum"] and 3 not in panggil
+    K6 = _K()
+    assert ambil_kovariat(K6, "galat", lambda tg: 1 / 0, 5, sidik="v1") is None and K6["catatan"]["kovariat_galat"], "galat kovariat -> imputasi, bukan crash"
+    K7 = _K()
+    ambil_kovariat(K7, "tak_utuh", lambda tg: {"x": 1}, 5, sidik="v1", utuh=lambda: False)
+    assert "tak_utuh" not in K7["kovc"], "hasil tak utuh tidak di-cache"
+    # SIGTERM: jalan() menulis baris penutup 'terpotong' dan menandai luas.json
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="lab_uji_")
+    g = globals()
+    asli = {k: g[k] for k in ("OUT", "JALAN_JSONL", "_jalan")}
+    try:
+        g["OUT"], g["JALAN_JSONL"] = tmp, os.path.join(tmp, "jalan.jsonl")
+
+        def _palsu(mulai):
+            simpan_json(os.path.join(tmp, "luas.json"), {"status": "berjalan", "dibuat": mulai})
+            TAHAP_KINI[0] = "hansen"
+            os.kill(os.getpid(), signal.SIGTERM)
+            time.sleep(5)
+            raise AssertionError("SIGTERM tidak memutus")
+        g["_jalan"] = _palsu
+        try:
+            jalan()
+            raise AssertionError("jalan() harus keluar")
+        except SystemExit as e:
+            assert e.code == 143
+        bar = [json.loads(x) for x in open(g["JALAN_JSONL"]).read().splitlines()]
+        assert [b["fase"] for b in bar] == ["awal", "akhir"] and bar[-1]["status"] == "terpotong" and "hansen" in bar[-1]["vonis"]
+        lj = json.load(open(os.path.join(tmp, "luas.json")))
+        assert lj["status"] == "terpotong" and "hansen" in lj["belum_dikerjakan"][0]
+        assert signal.getsignal(signal.SIGTERM) in (signal.SIG_DFL, signal.default_int_handler, None) or callable(signal.getsignal(signal.SIGTERM))
+    finally:
+        g.update(asli)
+        import shutil
+        shutil.rmtree(tmp, ignore_errors=True)
+    assert all(os.environ.get(k) is None or True for k in GDAL_ENV)
+    atur_gdal()
+    assert os.environ["GDAL_HTTP_TIMEOUT"] == "30" and os.environ["GDAL_HTTP_CONNECTTIMEOUT"] == "15" and os.environ["GDAL_HTTP_MAX_RETRY"] == "2" and os.environ["CPL_VSIL_CURL_ALLOWED_EXTENSIONS"] == ".tif"
+
     # tugas titik: 2019 pertama, semua sensor sah
     tt = tugas_titik()
     assert tt[0][:2] == ("N", 2019) and ("N20", 2019, False, None) in tt and not any(t[0] == "N21" and t[1] < 2023 for t in tt)

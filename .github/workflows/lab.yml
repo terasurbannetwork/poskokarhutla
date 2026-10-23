@@ -40,6 +40,18 @@ jobs:
     timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50   # riwayat pendek untuk membandingkan umur skrip uji banding dengan hasilnya
+
+      # Uji banding firespot sudah final bila hasilnya di-commit SESUDAH perubahan terakhir skripnya: lewati langkah
+      # 2-5 (+-17 menit) pada push biasa supaya waktu job untuk skrip lab_*.py. Dispatch dengan tugas eksplisit tetap jalan.
+      - name: Perlu uji banding ulang?
+        run: |
+          s=$(git log -1 --format=%ct -- scripts/data/ujibanding_firespot.py 2>/dev/null || echo 0)
+          h=$(git log -1 --format=%ct -- public/data/ujibanding_firespot.json 2>/dev/null || echo 0)
+          if [ -n "$h" ] && [ "${h:-0}" -gt "${s:-0}" ]; then perlu=0; else perlu=1; fi
+          echo "UJIBANDING_PERLU=$perlu" >> "$GITHUB_ENV"
+          echo "uji banding ulang: $perlu (skrip $s, hasil $h)" | tee -a "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/setup-python@v5
         with:
@@ -84,7 +96,11 @@ jobs:
             local k="${FIRMS_MAP_KEY:-@@tanpa-kunci@@}"
             sed -E -e "s#(/csv/)[^/ ]+#\1***#g" -e "s#${k}#***#g" -e 's#[A-Za-z0-9_-]{30,}#***#g' -e 's#(Bearer|Authorization)[^ ]*.*#\1 ***#Ig'
           }
-          lab_boleh() { [ "$TUGAS" = "semua" ] || [[ ",$TUGAS," == *",$1,"* ]]; }
+          lab_boleh() {
+            if [ "$TUGAS" = "semua" ]; then
+              case "$1" in citra|lapangan|ringkas) [ "${UJIBANDING_PERLU:-1}" = 1 ];; *) true;; esac
+            else [[ ",$TUGAS," == *",$1,"* ]]; fi
+          }
           lab_jalan() {
             local nama="$1"; shift
             local log="public/data/lab/log/$nama.txt" tmp="$RUNNER_TEMP/lab_$nama.txt" rc
