@@ -7,7 +7,7 @@ numpy dipakai (job lab menyediakannya; produksi tetap stdlib).
 PERTANYAAN
   Aturan produksi: kompleks aktif bila terdeteksi <= 72 jam, <= 168 jam di gambut DC > 350 (harian.py AKTIF_JAM/AKTIF_GAMBUT_JAM); verifikasi padam instansi
   (src/instansi.js) = 48 jam tanpa titik dalam 2 km. Tak ada rujukan terbitan untuk 168 jam. Seberapa sering api yang "tak terdeteksi" X jam ternyata muncul lagi <= 7 hari,
-  dan adakah aturan berbasis LINTASAN BERSIH (bukan jam) yang menekan "padam palsu" tanpa menunda pernyataan padam terlalu lama?
+  dan adakah aturan berbasis LINTASAN BERSIH (bukan jam) yang menekan "muncul ulang dalam R km (bisa api baru di dekatnya)" tanpa menunda pernyataan padam terlalu lama?
 
 DATA (diunduh di `jalan`, di-cache di data/raw/lab/padam/)
   FIRMS VIIRS S-NPP + NOAA-20 arsip SP, 1 Jul..20 Des, tahun 2019 + 2023 (El Nino, kering) dan 2020 + 2022 (basah), kotak Indonesia, keyakinan nominal+tinggi (kunci FEDS).
@@ -15,23 +15,27 @@ DATA (diunduh di `jalan`, di-cache di data/raw/lab/padam/)
   Hanya SEL SAMPEL (peringkat jumlah titik, setengah gambut) yang ditarik cuacanya: kuota Open-Meteo gratis 5.000 bobot/jam (bobot = lokasi x hari/14); tiap `jalan` dibatasi
   KUOTA_BOBOT. Kejadian di sel tanpa cuaca dibuang dan dilaporkan.
 
-METODE
-  1. Kejadian = harian.dbscan(jam=48) per tahun (episode). t_akhir = deteksi terakhir. Jejak = titik 24 jam terakhir.
-  2. "Lintasan": tiap satelit (S-NPP, NOAA-20) x {siang ~13:30, malam ~01:30 waktu surya setempat} = satu kesempatan pengamatan (jam surya dikalibrasi dari acq_time).
-     Lintasan BERAWAN bila ERA5 cloud_cover jam lintas >= ambang (60/80/90 disetel); lintasan <= 1,5 jam sesudah t_akhir tak dihitung (itu lintasan deteksinya sendiri).
-  3. Muncul ulang = deteksi pertama sesudah t_akhir dalam <= 1 km dari jejak. Kaplan-Meier (tersensor di akhir data) -> P(muncul ulang <= 7 hari | tak terdeteksi g jam) dan
-     P(... | k lintasan bersih berturut-turut tanpa deteksi), dipisah gambut/mineral, kelas DC, tahun kering/basah, ukuran; selang bootstrap kejadian.
-  4. Aturan: A0 produksi; A1 48 jam; A2 k lintasan bersih (k=2..8); A3 k terpisah gambut/mineral; A4 A3 + kelas DC. Dinyatakan padam pada waktu D (jam sesudah t_akhir).
-     Padam palsu = dinyatakan padam (D < muncul ulang) lalu muncul ulang <= D + 168 jam. Keterlambatan = rata-rata D pada padam benar, dibanding A0 BERPASANGAN.
-  5. Kriteria DIPRA-TULIS (KRITERIA) dan ditulis ke JSON sebelum angka dihitung. Parameter disetel di satu pasang tahun dan diuji di pasangan lain, dua arah.
-  6. Luas: tiga angka (aktif teramati, tak teramati, kandidat padam), BUKAN satu, pada beberapa snapshot.
+METODE (v2: proses pembaruan kausal; lihat scripts/data/lab_kriteria/lab_padam.json untuk SEMUA ambang)
+  1. Pengamatan = CELAH antar-deteksi. Tiap lintasan terakhir yang berdeteksi (rantai deteksi <= 3 jam) dalam sebuah lokasi adalah calon "deteksi terakhir" t_i; waktu sampai deteksi
+     berikutnya dalam R km dari jejak = satu pengamatan, tersensor bila tak ada sampai akhir jendela. Aturan dinilai di tiap celah dengan informasi sampai t_i + D saja.
+     Lokasi (identitas) dari harian.dbscan(jam=48), tetapi dbscan TIDAK menggabungkan celah: sebelumnya kejadian dibentuk dengan jam=48 sehingga populasi sudah dikondisikan "tidak muncul
+     ulang dalam 48 jam" dan aturan D < 48 jam diremehkan secara mekanis.
+  2. "Lintasan": tiap satelit (S-NPP, NOAA-20) x {siang ~13:30, malam ~01:30 waktu surya setempat}. Berawan bila PROKSI AWAN ERA5 (cloud_cover titik tengah sel 0,5 derajat) >= ambang
+     (60/80/90 disetel); lintasan <= 1,5 jam sesudah t_i tak dihitung. Proksi ini TIDAK menangkap asap dan BUKAN masker VIIRS.
+  3. Muncul ulang = deteksi pertama sesudah t_i dalam <= R km dari jejak (R utama 1 km; 0,5 dan 2 km sebagai kepekaan). Bisa api baru di dekatnya, bukan pasti kebangkitan api lama.
+     Kaplan-Meier (tersensor di akhir data), dipisah gambut/mineral, kelas DC, tahun, ukuran; selang bootstrap.
+  4. Aturan: A0 produksi; A1 48 jam; A2 k lintasan bersih; A3 k terpisah gambut/mineral; A4 A3 + kelas DC; dinyatakan padam pada D jam sesudah t_i.
+     "Muncul ulang dalam R km" = dinyatakan padam (D < muncul ulang) lalu muncul ulang <= D + 168 jam.
+  5. UJI MURNI: setel di (2019+2020), pilih aturan HANYA dari data setel, uji SEKALI di (2022+2023). Arah sebaliknya hanya kepekaan. Kriteria: maks(Wilson 95%, bootstrap klaster sel x tahun B=1000 p97,5), >= 20 klaster, dan tak-dinyatakan <= 20%.
+     Parameter gabungan dan semua keluaran in-sample diberi label in-sample.
+  6. Luas: tiga angka pada beberapa snapshot, hanya memakai informasi <= waktu snapshot, hanya SEL SAMPEL (acak berstrata, benih tetap, dipilih dari tahun setel), luas piksel bukan luas terbakar.
   7. Sentinel-2 (opsional, <= 30 kejadian): dNBR antara dua citra bersih berurutan sesudah dinyatakan padam; dilewati bila STAC tak terjangkau.
 
 Pakai:  python3 scripts/data/lab_padam.py uji       self-check sintetis, tanpa jaringan
         python3 scripts/data/lab_padam.py jalan     unduh + hitung (FIRMS_MAP_KEY; LAB_MENIT = anggaran menit, bawaan 30)
         python3 scripts/data/lab_padam.py ringkas   tulis ulang padam_ringkas.md dari padam.json
 """
-import bisect, collections, datetime as dt, gzip, json, math, os, random, statistics, sys, time, urllib.request
+import bisect, collections, datetime as dt, gzip, hashlib, inspect, json, math, os, random, statistics, sys, time, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -44,6 +48,8 @@ from wilayah import AKAR, Poligon  # noqa: E402
 
 KELUAR = os.path.join(AKAR, "public/data/lab/padam.json")
 RINGKAS = os.path.join(AKAR, "public/data/lab/padam_ringkas.md")
+JALAN_LOG = os.path.join(AKAR, "public/data/lab/jalan.jsonl")        # append-only, dipakai bersama lab_luas.py
+KRITERIA_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab_kriteria", "lab_padam.json")
 LUAS_JSON = os.path.join(AKAR, "public/data/lab/luas.json")
 GAMBUT = os.path.join(AKAR, "public/data/lahan/gambut.geojson")
 CACHE = os.path.join(AKAR, "data/raw/lab/padam")
@@ -51,50 +57,43 @@ UTC = dt.timezone.utc
 BBOX = H.BBOX
 FAMILI = ("VIIRS_SNPP", "VIIRS_NOAA20")
 
-TAHUN = {2019: "kering", 2023: "kering", 2020: "basah", 2022: "basah"}
-LIPAT = [{"setel": [2019, 2020], "uji": [2022, 2023]}, {"setel": [2022, 2023], "uji": [2019, 2020]}]
-AKHIR_DATA = (12, 20)        # unduhan sampai 20 Des; kejadian dinilai bila t_akhir <= 30 Nov (tindak lanjut >= 20 hari)
-AKHIR_KEJADIAN = (11, 30)
-AWAL_CUACA = (3, 1)
-AMBANG_AWAN = (60, 80, 90)
-AMBANG_UTAMA = 80
-KMAKS = 12
-CAP_JAM = 240                # D lebih dari 10 hari = tak dinyatakan
-HORIZON_PALSU = 168          # muncul ulang <= 7 hari sesudah dinyatakan
-RADIUS_KM = 1.0
-LINTAS_MIN_JAM = 1.5
-NMIN = 30                    # kejadian dinyatakan per strata agar vonis laju padam palsu dihitung
-KUOTA_BOBOT = 4600           # per jalan; batas Open-Meteo 5.000/jam (dan 10.000/hari)
-SEL_G, SEL_M = 26, 26        # sel sampel gambut / mineral
-MAKS_KEJADIAN_TAHUN = 30000
-BOOT = 100
-PX_UTAMA = 3
-SEED = 20261023
 
-# DIPRA-TULIS: dipakai apa adanya; ditulis ke JSON sebelum satu angka hasil dihitung (jalan, tahap "kriteria").
-KRITERIA = {
-    "padam_palsu_maks": 0.10,
-    "padam_palsu_di": "gambut DAN mineral, pada tahun UJI (titik, bukan batas atas)",
-    "keterlambatan_maks_vs_A0_jam": 24,
-    "keterlambatan_cara": "rata-rata selisih D(aturan) - D(A0) BERPASANGAN pada kejadian yang kedua aturannya menyatakan padam benar",
-    "uji_silang": "setel di 2019+2020 uji di 2022+2023, dan sebaliknya; aturan lolos bila lolos di KEDUA arah",
-    "n_min_dinyatakan_per_strata": NMIN,
-    "populasi_utama": "kejadian dengan >= %d piksel unik (harian.pix); semua ukuran hanya kepekaan" % PX_UTAMA,
-    "pemilihan": "dari yang lolos: keterlambatan uji terkecil; seri: A2 < A3 < A4 (lebih sederhana)",
-    "ambang_awan_disetel": list(AMBANG_AWAN),
-    "ambang_awan_awal": AMBANG_UTAMA,
-    "definisi": {
-        "padam_palsu": "dinyatakan padam (D < muncul ulang) lalu muncul ulang <= %d jam kemudian dalam <= %.0f km dari jejak" % (HORIZON_PALSU, RADIUS_KM),
-        "lintasan_bersih": "lintasan satelit (S-NPP/NOAA-20 x siang/malam) dengan cloud_cover ERA5 jam lintas < ambang; berawan bila >= ambang",
-        "A0": "72 jam; 168 jam bila gambut dan DC > 350 (harian.py)", "A1": "48 jam (src/instansi.js)",
-        "A2": "k lintasan bersih berturut-turut tanpa deteksi, k sama untuk semua (k=2..8)",
-        "A3": "k_gambut dan k_mineral berbeda (k=2..%d)" % KMAKS, "A4": "A3 + k per kelas DC (<200, 200-350, >350) x gambut/mineral",
-    },
-}
+def kriteria_kanonik(K):
+    return json.dumps(K, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def muat_kriteria(jalur=None):
+    """-> (dict kriteria, sha256 kanonik). Semua ambang dari berkas terpisah; skrip tak punya angka kriteria sendiri."""
+    with open(jalur or KRITERIA_JSON, encoding="utf-8") as f:
+        K = json.load(f)
+    return K, hashlib.sha256(kriteria_kanonik(K).encode("utf-8")).hexdigest()
+
+
+KRITERIA, KRITERIA_SHA = muat_kriteria()
+_K = KRITERIA
+TAHUN = {int(k): v for k, v in _K["tahun"].items()}
+SETEL_TAHUN, UJI_TAHUN = list(_K["tahun_setel"]), list(_K["tahun_uji"])
+LIPAT = [{"setel": SETEL_TAHUN, "uji": UJI_TAHUN}, {"setel": UJI_TAHUN, "uji": SETEL_TAHUN}]    # [0] = satu-satunya yang boleh memilih; [1] kepekaan
+AKHIR_DATA, AKHIR_KEJADIAN, AWAL_CUACA = tuple(_K["akhir_data"]), tuple(_K["akhir_kejadian"]), tuple(_K["awal_cuaca"])
+SNAPSHOT = [tuple(x) for x in _K["snapshot"]]
+AMBANG_AWAN, AMBANG_UTAMA = tuple(_K["ambang_awan_disetel"]), _K["ambang_awan_awal"]
+KMAKS, K_A2 = _K["k_maks"], range(_K["k_a2_min"], _K["k_a2_maks"] + 1)
+K_MIN = _K["k_min_setel"]
+CAP_JAM, HORIZON_PALSU = _K["cap_jam"], _K["horizon_muncul_ulang_jam"]
+RADIUS_KM, RADIUS_KEPEKAAN = _K["radius_km_utama"], tuple(_K["radius_km_kepekaan"])
+LINTAS_MIN_JAM, RANTAI_JAM = _K["lintas_min_jam"], _K["peristiwa_rantai_jam"]
+NMIN, PX_UTAMA = _K["n_min_per_strata"], _K["px_utama_min"]
+WILSON_Z, WILSON_SETEL, WILSON_UJI = _K["wilson_z"], _K["wilson_batas_atas_setel_maks"], _K["wilson_batas_atas_uji_maks"]
+TELAT_MAKS = _K["keterlambatan_maks_vs_A0_jam"]
+TAK_MAKS = _K["tak_dinyatakan_maks"]
+KLASTER_B, KLASTER_Q, NKL = _K["bootstrap_klaster_B"], _K["ci_batas_atas_kuantil"], _K["n_klaster_min"]
+PEMBANDING = tuple(_K["laporan_pembanding"])
+SEL_G, SEL_M, SEL_N_MIN = _K["sel_gambut"], _K["sel_mineral"], _K["sel_n_min_titik"]
+KUOTA_BOBOT, MAKS_KEJADIAN_TAHUN, BOOT, SEED = _K["kuota_bobot_per_jalan"], _K["maks_pengamatan_per_tahun"], _K["bootstrap"], _K["benih"]
 
 
 # ---------------------------------------------------------------- murni (diuji)
-def wilson(x, n, z=1.959964):
+def wilson(x, n, z=WILSON_Z):
     if n <= 0:
         return None
     p = x / n
@@ -178,6 +177,8 @@ def D_aturan(ep, ar):
         return 168.0 if ep["gb"] and A.kelas_dc(ep["dc"]) == 3 else 72.0
     if t == "A1":
         return 48.0
+    if t == "AJ":
+        return float(ar["jam"])
     cp = ep["cp"][ar["thr"]]
     if t == "A2":
         k = ar["k"]
@@ -192,30 +193,76 @@ def kunci_dc(ep):
     return ("g" if ep["gb"] else "m") + "|" + kelas_dc3(ep["dc"])
 
 
+def ci_atas_klaster(pk, B=None, q=None, benih=None):
+    """Batas atas persentil q (bawaan 97,5) dari rasio muncul-ulang/dinyatakan, bootstrap KLASTER: resample klaster dengan pengembalian.
+    pk {klaster: [n_dinyatakan, n_muncul_ulang]}; rng berbenih (deterministik). None bila < 2 klaster atau tak ada replikasi dengan n > 0."""
+    import numpy as np
+    if len(pk) < 2:
+        return None
+    a = np.array([v for _, v in sorted(pk.items())], dtype=float)
+    rng = np.random.default_rng(SEED if benih is None else benih)
+    ii = rng.integers(0, len(a), (B or KLASTER_B, len(a)))
+    N, X = a[ii, 0].sum(1), a[ii, 1].sum(1)
+    ok = N > 0
+    if not ok.any():
+        return None
+    return round(float(np.percentile(X[ok] / N[ok], (KLASTER_Q if q is None else q) * 100)), 4)
+
+
+def batas_atas(n, x, pk):
+    """aturan_batas: maks(batas atas Wilson, batas atas bootstrap klaster sel x tahun). None bila klaster kurang dari NKL atau n < NMIN."""
+    if n < NMIN or len(pk) < NKL:
+        return None
+    b = ci_atas_klaster(pk)
+    return None if b is None else max(wilson(x, n)[1], b)
+
+
 def metrik(eps, Ds, thr=AMBANG_UTAMA):
     c = collections.Counter(klasif(e, D) for e, D in zip(eps, Ds))
+    pk, pks = {}, {}
+    pen = [(e, D) for e, D in zip(eps, Ds) if e["Tn"] is None or e["Tn"] > CAP_JAM]     # penyebut tak-dinyatakan: tak muncul ulang sampai cap
+    n_tak_pen = sum(1 for e, D in pen if klasif(e, D) == "tak")
+    for e, D in zip(eps, Ds):
+        k_ = klasif(e, D)
+        if k_ in ("palsu", "benar"):
+            for d, key in ((pk, e["klaster"]), (pks, e["klaster"][0])):
+                r_ = d.setdefault(key, [0, 0])
+                r_[0] += 1
+                r_[1] += k_ == "palsu"
     dec = c["palsu"] + c["benar"]
     tel = [D for e, D in zip(eps, Ds) if klasif(e, D) == "benar"]
     ada = [(e, D) for e, D in zip(eps, Ds) if D is not None and D <= CAP_JAM]
     tb = sum(1 for e, D in ada if not any(o <= D for o in e["cp"][thr]))
-    return {"n": len(eps), "n_dinyatakan": dec, "n_palsu": c["palsu"], "palsu": round(c["palsu"] / dec, 4) if dec else None,
-            "palsu_wilson": wilson(c["palsu"], dec), "n_muncul_sebelum_dinyatakan": c["sebelum"], "n_tak_dinyatakan": c["tak"],
+    return {"n": len(eps), "n_dinyatakan": dec, "n_muncul_ulang": c["palsu"], "laju_muncul_ulang": round(c["palsu"] / dec, 4) if dec else None,
+            "muncul_ulang_wilson": wilson(c["palsu"], dec), "n_muncul_sebelum_dinyatakan": c["sebelum"], "n_tak_dinyatakan": c["tak"],
             "telat_jam": round(sum(tel) / len(tel), 1) if tel else None,
-            "aktif_tanpa_bersih": round(tb / len(ada), 4) if ada else None, "n_aktif_dinyatakan_dalam_cap": len(ada)}
+            "aktif_tanpa_bersih": round(tb / len(ada), 4) if ada else None, "n_aktif_dinyatakan_dalam_cap": len(ada),
+            "n_klaster": len(pk), "muncul_ulang_bootstrap_klaster": ci_atas_klaster(pk) if len(pk) >= 2 else None,
+            "n_klaster_sel": len(pks), "muncul_ulang_bootstrap_sel_saja": ci_atas_klaster(pks) if len(pks) >= 2 else None,
+            "batas_atas_gabungan": batas_atas(dec, c["palsu"], pk),
+            "n_penyebut_tak_dinyatakan": len(pen), "tak_dinyatakan": round(n_tak_pen / len(pen), 4) if pen else None}
 
 
 def tabel_k(eps, thr):
-    """{kunci_strata: {k: [n_dinyatakan, n_palsu, jumlah_D_benar, n_benar]}} untuk k=1..KMAKS; strata 'g'/'m' dan 'g|kelas'/'m|kelas'."""
-    t = collections.defaultdict(lambda: {k: [0, 0, 0.0, 0] for k in range(1, KMAKS + 1)})
+    """{kunci_strata: {k: [n_dinyatakan, n_palsu, jumlah_D_benar, n_benar, {klaster: [n, palsu]}, n_tak, n_penyebut]}} untuk k=1..KMAKS; strata 'g'/'m' dan 'g|kelas'/'m|kelas'."""
+    t = collections.defaultdict(lambda: {k: [0, 0, 0.0, 0, {}, 0, 0] for k in range(1, KMAKS + 1)})
     for e in eps:
         cp = e["cp"][thr]
-        for k in range(1, min(KMAKS, len(cp)) + 1):
-            c = klasif(e, cp[k - 1])
+        pen = e["Tn"] is None or e["Tn"] > CAP_JAM            # penyebut tak-dinyatakan (r[6]); pembilang r[5] = tak dinyatakan pada k itu
+        for k in range(1, KMAKS + 1):
+            c = klasif(e, cp[k - 1] if k <= len(cp) else None)
+            if pen:
+                for s in ("g" if e["gb"] else "m", kunci_dc(e)):
+                    t[s][k][6] += 1
+                    t[s][k][5] += c == "tak"
             if c in ("palsu", "benar"):
                 for s in ("g" if e["gb"] else "m", kunci_dc(e)):
                     r = t[s][k]
                     r[0] += 1
                     r[1] += c == "palsu"
+                    kl = r[4].setdefault(e["klaster"], [0, 0])
+                    kl[0] += 1
+                    kl[1] += c == "palsu"
                     if c == "benar":
                         r[2] += cp[k - 1]
                         r[3] += 1
@@ -223,25 +270,32 @@ def tabel_k(eps, thr):
 
 
 def _ok(r, batas):
-    return r[0] >= NMIN and r[1] / r[0] <= batas
+    """Strata memenuhi bila n >= NMIN, >= NKL klaster (sel x tahun), dan maks(batas atas Wilson 95%, batas atas bootstrap klaster) <= batas (bukan titik taksiran).
+    Wilson diperiksa dahulu (murah); bootstrap hanya bila Wilson lolos."""
+    if r[0] < NMIN or len(r[4]) < NKL or wilson(r[1], r[0])[1] > batas:
+        return False
+    if r[6] and r[5] / r[6] > TAK_MAKS:      # F3: terlalu sering tak menyatakan padam = aman secara palsu
+        return False
+    b = ci_atas_klaster(r[4])
+    return b is not None and b <= batas
 
 
-def setel(eps, batas=KRITERIA["padam_palsu_maks"]):
-    """Setel A2, A3, A4 pada kejadian `eps`. -> {'A2': param|None, 'A3': ..., 'A4': ...}; None = tak ada k <= KMAKS yang memenuhi."""
+def setel(eps, batas=WILSON_SETEL):
+    """Setel A2, A3, A4 pada pengamatan `eps` (HANYA tahun setel). Tiap k = k TERKECIL dengan batas atas Wilson <= batas di gambut DAN mineral.
+    -> {'A2': param|None, 'A3': ..., 'A4': ...}; None = tak ada k <= KMAKS yang memenuhi."""
     hasil = {"A2": None, "A3": None, "A4": None}
     best = {"A2": None, "A3": None, "A4": None}
     for thr in AMBANG_AWAN:
         t = tabel_k(eps, thr)
-        # A2: k sama, k=2..8, gambut DAN mineral
-        for k in range(2, 9):
+        for k in K_A2:
             g, m = t["g"][k], t["m"][k]
             if _ok(g, batas) and _ok(m, batas):
                 tel = (g[2] + m[2]) / max(1, g[3] + m[3])
                 if best["A2"] is None or tel < best["A2"]:
                     best["A2"], hasil["A2"] = tel, {"tipe": "A2", "thr": thr, "k": k, "telat_setel_jam": round(tel, 1)}
                 break
-        kg = next((k for k in range(2, KMAKS + 1) if _ok(t["g"][k], batas)), None)
-        km = next((k for k in range(2, KMAKS + 1) if _ok(t["m"][k], batas)), None)
+        kg = next((k for k in range(K_MIN, KMAKS + 1) if _ok(t["g"][k], batas)), None)
+        km = next((k for k in range(K_MIN, KMAKS + 1) if _ok(t["m"][k], batas)), None)
         if kg and km:
             g, m = t["g"][kg], t["m"][km]
             tel = (g[2] + m[2]) / max(1, g[3] + m[3])
@@ -251,7 +305,7 @@ def setel(eps, batas=KRITERIA["padam_palsu_maks"]):
             for gb in ("g", "m"):
                 for kd in ("<200", "200-350", ">350"):
                     s = gb + "|" + kd
-                    k = next((k for k in range(2, KMAKS + 1) if s in t and _ok(t[s][k], batas)), None)
+                    k = next((k for k in range(K_MIN, KMAKS + 1) if s in t and _ok(t[s][k], batas)), None)
                     kk[s] = k if k else (kg if gb == "g" else km)   # strata tipis: pakai k A3
                     r = t[s][kk[s]] if s in t else [0, 0, 0.0, 0]
                     jml, nb = jml + r[2], nb + r[3]
@@ -262,14 +316,15 @@ def setel(eps, batas=KRITERIA["padam_palsu_maks"]):
 
 
 def uji_lipat(setel_eps, uji_eps, params, thr_utama=AMBANG_UTAMA):
-    """Evaluasi di tahun uji. -> {aturan: {param, metrik: {semua, gambut, mineral}, palsu_gambut, palsu_mineral, lolos_palsu, selisih_telat_vs_A0_jam, lolos_telat, lolos}}"""
+    """Evaluasi di tahun uji. -> {aturan: {param, metrik: {semua, gambut, mineral}, lolos_muncul_ulang, selisih_telat_vs_A0_jam, lolos_telat, lolos}}
+    Lolos muncul ulang = n dinyatakan >= NMIN dan batas atas Wilson <= WILSON_UJI di gambut DAN mineral. TIDAK memilih apa pun: hanya menilai."""
     import numpy as np
     A0 = {"tipe": "A0"}
     D0 = [D_aturan(e, A0) for e in uji_eps]
     out = {}
     for nama, ar in [("A0", A0), ("A1", {"tipe": "A1"})] + [(k, v) for k, v in params.items()]:
         if ar is None:
-            out[nama] = {"param": None, "lolos": False, "alasan": "tak ada k <= %d yang memenuhi laju padam palsu di data setel" % KMAKS}
+            out[nama] = {"param": None, "lolos": False, "alasan": "tak ada k <= %d yang memenuhi batas atas Wilson di data setel" % KMAKS}
             continue
         Ds = [D_aturan(e, ar) for e in uji_eps]
         thr = ar.get("thr", thr_utama)
@@ -278,37 +333,62 @@ def uji_lipat(setel_eps, uji_eps, params, thr_utama=AMBANG_UTAMA):
             idx = [i for i, e in enumerate(uji_eps) if f(e)]
             m[s] = metrik([uji_eps[i] for i in idx], [Ds[i] for i in idx], thr)
         pg, pm = m["gambut"], m["mineral"]
-        cukup = pg["n_dinyatakan"] >= NMIN and pm["n_dinyatakan"] >= NMIN
-        lp = bool(cukup and pg["palsu"] <= KRITERIA["padam_palsu_maks"] and pm["palsu"] <= KRITERIA["padam_palsu_maks"])
+        cukup = pg["n_dinyatakan"] >= NMIN and pm["n_dinyatakan"] >= NMIN and pg["n_klaster"] >= NKL and pm["n_klaster"] >= NKL
+        bg, bm = pg["batas_atas_gabungan"], pm["batas_atas_gabungan"]      # None = n < NMIN atau klaster < NKL
+        lp = bool(cukup and bg is not None and bm is not None and bg <= WILSON_UJI and bm <= WILSON_UJI)
+        ltak = all(x["tak_dinyatakan"] is None or x["tak_dinyatakan"] <= TAK_MAKS for x in (pg, pm))
         sel = [Ds[i] - D0[i] for i, e in enumerate(uji_eps) if klasif(e, Ds[i]) == "benar" and klasif(e, D0[i]) == "benar"]
         mean = float(np.mean(sel)) if sel else None
-        lt = bool(mean is not None and mean <= KRITERIA["keterlambatan_maks_vs_A0_jam"])
-        out[nama] = {"param": ar, "metrik": m, "data_cukup": cukup, "lolos_palsu": lp, "selisih_telat_vs_A0_jam": round(mean, 1) if mean is not None else None,
-                     "n_berpasangan": len(sel), "lolos_telat": lt, "lolos": lp and lt}
+        lt = bool(mean is not None and mean <= TELAT_MAKS)
+        out[nama] = {"param": ar, "metrik": m, "data_cukup": cukup, "lolos_muncul_ulang": lp, "selisih_telat_vs_A0_jam": round(mean, 1) if mean is not None else None,
+                     "n_berpasangan": len(sel), "lolos_telat": lt, "lolos_tak_dinyatakan": ltak, "lolos": lp and lt and ltak,
+                     "selisih_telat_label": "bersyarat pada hasil (evaluasi): hanya pengamatan yang kedua aturannya menyatakan padam benar",
+                     "laporan_saja": nama in PEMBANDING}
     return out
 
 
-def pilih_akhir(hasil_lipat):
-    """hasil_lipat: [uji_lipat per arah]. Aturan lolos di SEMUA arah; terkecil keterlambatan uji; seri A2<A3<A4 (A0/A1 pembanding ikut dinilai)."""
-    urut = {"A1": 0, "A0": 0, "A2": 1, "A3": 2, "A4": 3}
-    lolos = []
-    for nama in hasil_lipat[0]:
-        if all(h.get(nama, {}).get("lolos") for h in hasil_lipat):
-            tel = statistics.mean(h[nama]["metrik"]["semua"]["telat_jam"] or 0 for h in hasil_lipat)
-            lolos.append((tel, urut.get(nama, 9), nama))
-    return min(lolos)[2] if lolos else None
+def pilih_setel(params):
+    """Pilih aturan HANYA dari parameter hasil setel (data setel; tak ada data uji yang dilihat): keterlambatan setel terkecil, seri A2 < A3 < A4.
+    -> nama atau None. A0/A1 pembanding, tak pernah dipilih."""
+    urut = {"A2": 1, "A3": 2, "A4": 3}
+    ada = [(v["telat_setel_jam"], urut[n], n) for n, v in params.items() if v]
+    return min(ada)[2] if ada else None
+
+
+def vonis_uji(hasil, nama):
+    """Vonis SEKALI untuk aturan terpilih pada tahun uji. -> 'lolos' | 'tidak_lolos' | 'tidak_ada_aturan'."""
+    if nama is None:
+        return "tidak_ada_aturan"
+    return "lolos" if hasil.get(nama, {}).get("lolos") else "tidak_lolos"
+
+
+def kepekaan_radius(uji_eps, ar, radius=RADIUS_KEPEKAAN, thr_utama=AMBANG_UTAMA):
+    """Laju muncul ulang aturan `ar` bila radius muncul ulang R = 0,5 / 1 / 2 km (ep['TnR'][R], ep['Tn'] = 1 km). Kepekaan saja."""
+    out = {}
+    if not ar:
+        return out
+    Ds = [D_aturan(e, ar) for e in uji_eps]
+    thr = ar.get("thr", thr_utama)
+    for R in sorted(set(radius) | {RADIUS_KM}):
+        ee = [dict(e, Tn=(e["Tn"] if R == RADIUS_KM else e["TnR"][R])) for e in uji_eps]
+        r = {}
+        for nm, f in (("gambut", lambda e: e["gb"]), ("mineral", lambda e: not e["gb"])):
+            idx = [i for i, e in enumerate(ee) if f(e)]
+            mm = metrik([ee[i] for i in idx], [Ds[i] for i in idx], thr)
+            r[nm] = {k: mm[k] for k in ("n_dinyatakan", "n_muncul_ulang", "laju_muncul_ulang", "muncul_ulang_wilson", "muncul_ulang_bootstrap_klaster", "muncul_ulang_bootstrap_sel_saja", "batas_atas_gabungan", "tak_dinyatakan")}
+        out["muncul_ulang_dalam_%s_km" % ("%g" % R)] = r
+    return out
 
 
 # ---------------------------------------------------------------- luas, tiga angka
 def status_luas(ep, ar, S):
-    """Status kejadian pada waktu S (datetime UTC) menurut aturan `ar`: 'aktif_teramati' | 'tak_teramati' | 'kandidat_padam' | 'padam' | None (belum ada / sudah muncul ulang)."""
-    if S < ep["t_awal"]:
+    """Status lokasi pada waktu S (datetime UTC) menurut aturan `ar`, memakai HANYA informasi <= S. `ep` = pengamatan pada deteksi terakhir <= S
+    (bukan t_akhir episode penuh): 'aktif_teramati' | 'tak_teramati' | 'kandidat_padam' | 'padam' | None (belum ada / deteksi terakhir sesudah S / sudah muncul ulang)."""
+    if S < ep["t_awal"] or ep["t_akhir"] > S:
         return None
-    if S <= ep["t_akhir"]:
-        return "aktif_teramati"
     umur = (S - ep["t_akhir"]).total_seconds() / 3600
     if ep["Tn"] is not None and ep["Tn"] <= umur:
-        return None    # sudah muncul ulang: kejadian lanjutannya dihitung sendiri
+        return None    # sudah muncul ulang (terjadi <= S): lokasi lanjutannya dihitung sendiri
     if umur <= 24:
         return "aktif_teramati"
     D = D_aturan(ep, ar)
@@ -317,10 +397,20 @@ def status_luas(ep, ar, S):
     return "kandidat_padam" if umur <= D + HORIZON_PALSU else "padam"
 
 
+def terakhir_per_lokasi(eps, S):
+    """Dari pengamatan banyak per lokasi (kunci ep['lok']): yang deteksi terakhirnya <= S, satu per lokasi."""
+    best = {}
+    for e in eps:
+        if e["t_akhir"] <= S and (e["lok"] not in best or e["t_akhir"] > best[e["lok"]]["t_akhir"]):
+            best[e["lok"]] = e
+    return list(best.values())
+
+
 def luas_tiga(eps, ar, S):
+    """Tiga angka pada S. Luas = piksel unik SAMPAI S x ha/piksel (luas piksel, bukan luas terbakar); hanya sel sampel."""
     c = {k: [0, 0.0] for k in ("aktif_teramati", "tak_teramati", "kandidat_padam")}
     berawan = 0
-    for e in eps:
+    for e in terakhir_per_lokasi(eps, S):
         s = status_luas(e, ar, S)
         if s in c:
             c[s][0] += 1
@@ -455,32 +545,55 @@ def baca_cuaca(thn, lat, lon):
     return {"utc0": dt.datetime.fromisoformat(d["utc0"]), "cc": d["cc"], "dc": d["dc"]}
 
 
+def selang_seling(sel, peat_share):
+    """Urutkan sel berselang-seling gambut/mineral (stabil), supaya pemotongan kuota tidak menghapus satu strata."""
+    g = [s for s in sel if peat_share.get(s, 0) >= .5]
+    m = [s for s in sel if peat_share.get(s, 0) < .5]
+    out = []
+    for i in range(max(len(g), len(m))):
+        out += g[i:i + 1] + m[i:i + 1]
+    return out
+
+
+def urut_tarik(sel, tahun, batch, ada=lambda thn, s: False):
+    """Urutan tarikan [(tahun, [sel])]: potongan sel (yang sudah berselang-seling gambut/mineral) x tahun BERGILIR, jadi potongan kuota/waktu
+    menghapus ekor semua tahun & strata secara merata, bukan satu tahun atau satu strata."""
+    out = []
+    for i in range(0, len(sel), batch):
+        for thn in tahun:
+            grup = [s for s in sel[i:i + batch] if not ada(thn, s)]
+            if grup:
+                out.append((thn, grup))
+    return out
+
+
+def cuaca_lengkap(sel, tahun):
+    return all(baca_cuaca(thn, *s) is not None for thn in tahun for s in sel)
+
+
 def tarik_cuaca(sel, tahun, anggaran, batch=8):
-    """Tarik sel x tahun yang belum ada di cache, dibatasi KUOTA_BOBOT dan `anggaran()`. -> (bobot_terpakai, kuota_habis)."""
+    """Tarik sel x tahun yang belum ada di cache, dibatasi KUOTA_BOBOT dan `anggaran()`; urutan bergilir tahun x (gambut/mineral). -> (bobot_terpakai, kuota_habis)."""
     sys.path.insert(0, os.path.join(AKAR, "scripts/banjir"))
     from umum import ambil, KuotaHabis  # noqa: E402
     bobot, habis = 0.0, False
-    for thn in tahun:
+    for thn, grup in urut_tarik(sel, tahun, batch, lambda t, s: baca_cuaca(t, *s) is not None):
         d_awal, d_akhir = dt.date(thn, *AWAL_CUACA), dt.date(thn, *AKHIR_DATA)
         per_lokasi = (d_akhir - d_awal).days / 14
-        todo = [s for s in sel if baca_cuaca(thn, *s) is None]
-        for i in range(0, len(todo), batch):
-            grup = todo[i:i + batch]
-            if bobot + per_lokasi * len(grup) > KUOTA_BOBOT or anggaran():
-                return bobot, True
-            url = ("https://archive-api.open-meteo.com/v1/archive?latitude=" + ",".join(str(s[0]) for s in grup) + "&longitude=" + ",".join(str(s[1]) for s in grup)
-                   + f"&start_date={d_awal}&end_date={d_akhir}&timezone=auto&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,cloud_cover")
-            try:
-                res = ambil(url, batas_waktu=300)
-            except KuotaHabis as e:
-                print("lab_padam: kuota Open-Meteo habis:", str(e)[:100])
-                return bobot, True
-            except Exception as e:
-                print("lab_padam: cuaca gagal:", FS.sensor_url(e))
-                continue
-            bobot += per_lokasi * len(grup)
-            for s, r in zip(grup, res if isinstance(res, list) else [res]):
-                simpan_cuaca(thn, s[0], s[1], cuaca_dari_respons(r, thn))
+        if bobot + per_lokasi * len(grup) > KUOTA_BOBOT or anggaran():
+            return bobot, True
+        url = ("https://archive-api.open-meteo.com/v1/archive?latitude=" + ",".join(str(s[0]) for s in grup) + "&longitude=" + ",".join(str(s[1]) for s in grup)
+               + f"&start_date={d_awal}&end_date={d_akhir}&timezone=auto&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,cloud_cover")
+        try:
+            res = ambil(url, batas_waktu=300)
+        except KuotaHabis as e:
+            print("lab_padam: kuota Open-Meteo habis:", str(e)[:100])
+            return bobot, True
+        except Exception as e:
+            print("lab_padam: cuaca gagal:", FS.sensor_url(e))
+            continue
+        bobot += per_lokasi * len(grup)
+        for s, r in zip(grup, res if isinstance(res, list) else [res]):
+            simpan_cuaca(thn, s[0], s[1], cuaca_dari_respons(r, thn))
     return bobot, habis
 
 
@@ -520,8 +633,14 @@ def muncul_ulang(jejak, t_akhir, idx, ukuran=0.01, km=RADIUS_KM, hingga=None):
     return None if terbaik is None else (terbaik - t_akhir).total_seconds() / 3600
 
 
-def bangun_kejadian(pts, thn, jam_lokal, gambut, cuaca, ha_px, dalam=lambda lon, lat: True, cap=MAKS_KEJADIAN_TAHUN, rng=None):
-    """pts: titik tahun `thn` (urut waktu). cuaca[(lat,lon)] = cw. -> (episode list, hitung dict)."""
+def bangun_kejadian(pts, thn, jam_lokal, gambut, cuaca, ha_px, dalam=lambda lon, lat: True, cap=MAKS_KEJADIAN_TAHUN, rng=None, snaps=()):
+    """PROSES PEMBARUAN kausal. pts: titik tahun `thn` (urut waktu). cuaca[(lat,lon)] = cw.
+    Lokasi (identitas) = harian.dbscan(jam=48); dbscan TIDAK menggabungkan celah. Dalam tiap lokasi, tiap lintasan terakhir yang berdeteksi (rantai deteksi <= RANTAI_JAM)
+    = calon 'deteksi terakhir' t_i = SATU pengamatan: Tn = jam sampai deteksi berikutnya dalam R km dari jejak (dicari di SEMUA titik, juga lokasi lain), None = tersensor.
+    Aturan dinilai per pengamatan dengan informasi <= t_i + D. KOVARIAT (sel cuaca, gambut, lon lintasan, DC) dari titik tengah JEJAK pada t_i, bukan rerata seluruh lokasi;
+    gambut = mayoritas piksel jejak; cuaca per pengamatan (tanpa cuaca = dibuang dan dihitung 'tanpa_cuaca').
+    snaps: daftar datetime; -> deteksi terakhir <= S (titik terakhir dengan t <= S, bukan ujung rantai) per lokasi; px = piksel unik sampai S; awan72 dipotong di S.
+    -> (pengamatan list, hitung dict, {S: [pengamatan]})."""
     rng = rng or random.Random(SEED)
     label, _ = H.dbscan(pts, jam=48)
     grup = collections.defaultdict(list)
@@ -530,63 +649,129 @@ def bangun_kejadian(pts, thn, jam_lokal, gambut, cuaca, ha_px, dalam=lambda lon,
     idx = bangun_indeks(pts)
     akhir_data = dt.datetime(thn, *AKHIR_DATA, 23, 59, tzinfo=UTC)
     batas_ep = dt.datetime(thn, *AKHIR_KEJADIAN, 23, 59, tzinfo=UTC)
-    hit = collections.Counter(klaster=len(grup))
-    kand = []
-    for l, ids in grup.items():
-        ps = [pts[i] for i in ids]
-        t_akhir = max(p["t"] for p in ps)
-        if t_akhir > batas_ep:
-            hit["di_luar_jendela"] += 1
-            continue
-        kand.append(ps)
-    if len(kand) > cap:
-        hit["disampel_dari"] = len(kand)
-        kand = rng.sample(kand, cap)
-    eps = []
-    for ps in kand:
-        lat0, lon0 = sum(p["lat"] for p in ps) / len(ps), sum(p["lon"] for p in ps) / len(ps)
+    hingga = dt.timedelta(days=(CAP_JAM + HORIZON_PALSU) / 24 + 3)
+    hit = collections.Counter(lokasi=len(grup))
+    gcache = {}
+
+    def gmb(p):
+        k = (round(p["lat"] / .004), round(p["lon"] / .004))
+        if k not in gcache:
+            gcache[k] = gambut.cari(p["lon"], p["lat"]) is not None
+        return gcache[k]
+    lokasi = []
+    for l, ids in sorted(grup.items()):
+        ps = [pts[i] for i in sorted(ids)]
+        akhir, lihat, pxc = [], set(), []
+        for j, p in enumerate(ps):
+            lihat.add(H.pix(p))
+            pxc.append(len(lihat))
+            if j + 1 == len(ps) or (ps[j + 1]["t"] - p["t"]).total_seconds() / 3600 > RANTAI_JAM:
+                akhir.append(j + 1)          # rantai berakhir: ps[j] = deteksi terakhir t_i
+        lokasi.append({"lok": (thn, l), "ps": ps, "ts": [p["t"] for p in ps], "akhir": akhir, "pxc": pxc})
+
+    def buat(Lk, j, S=None, h=None):
+        """Pengamatan pada titik ke-j (1-based) lokasi Lk. S = waktu snapshot (awan72 dipotong di S) atau None. h = Counter penghitung."""
+        h = hit if h is None else h
+        ps = Lk["ps"]
+        t_i = ps[j - 1]["t"]
+        jej, lihat = [], set()
+        for p in reversed(ps[:j]):              # 24 jam terakhir sampai t_i, paling baru dahulu
+            if p["t"] < t_i - dt.timedelta(hours=24) or len(jej) >= 12:
+                break
+            k = (round(p["lat"] / .004), round(p["lon"] / .004))
+            if k not in lihat:
+                lihat.add(k)
+                jej.append(p)
+        lat0, lon0 = sum(p["lat"] for p in jej) / len(jej), sum(p["lon"] for p in jej) / len(jej)      # titik tengah jejak pada t_i
         if not dalam(lon0, lat0):
-            hit["di_luar_negeri_atau_laut"] += 1
-            continue
-        cw = cuaca.get(sel_05(lat0, lon0))
+            h["di_luar_negeri_atau_laut"] += 1
+            return None
+        sel = sel_05(lat0, lon0)
+        cw = cuaca.get(sel)
         if cw is None:
-            hit["tanpa_cuaca"] += 1
-            continue
-        t_awal, t_akhir = min(p["t"] for p in ps), max(p["t"] for p in ps)
-        tglok = (t_akhir + dt.timedelta(hours=lon0 / 15)).date().isoformat()
+            h["tanpa_cuaca"] += 1
+            return None
+        tglok = (t_i + dt.timedelta(hours=lon0 / 15)).date().isoformat()
         dc = cw["dc"].get(tglok)
         if dc is None:
-            hit["tanpa_dc"] += 1
-            continue
-        gb = gambut.cari(lon0, lat0) is not None or any(gambut.cari(p["lon"], p["lat"]) for p in ps[:20])
-        jej, lihat = [], set()
-        for p in ps:
-            if p["t"] >= t_akhir - dt.timedelta(hours=24):
-                k = (round(p["lat"] / .004), round(p["lon"] / .004))
-                if k not in lihat:
-                    lihat.add(k)
-                    jej.append(p)
-        Tn = muncul_ulang(jej[:12], t_akhir, idx, hingga=t_akhir + dt.timedelta(days=(CAP_JAM + HORIZON_PALSU) / 24 + 3))
-        pas = lintasan(t_akhir, lon0, jam_lokal)
-        cp = {thr: lintas_bersih(pas, cw, t_akhir, thr)[:KMAKS] for thr in AMBANG_AWAN}
-        awan72 = [awan_jam(cw, t_akhir + dt.timedelta(hours=o)) for o, _, _ in pas if o <= 72]
-        px = len({H.pix(p) for p in ps})
-        eps.append({"thn": thn, "lat": round(lat0, 4), "lon": round(lon0, 4), "t_awal": t_awal, "t_akhir": t_akhir, "gb": bool(gb), "dc": dc, "px": px,
-                    "ha": px * ha_px, "Tn": Tn, "fu": (akhir_data - t_akhir).total_seconds() / 3600, "cp": cp,
-                    "awan72": (sum(1 for c in awan72 if c is None or c >= AMBANG_UTAMA) / len(awan72)) if awan72 else 1.0,
-                    "jejak": [[p["lon"], p["lat"]] for p in jej[:30]]})
-    hit["kejadian_dipakai"] = len(eps)
-    return eps, dict(hit)
+            h["tanpa_dc"] += 1
+            return None
+        gb = sum(1 for p in jej if gmb(p)) * 2 > len(jej)
+        Tn = muncul_ulang(jej, t_i, idx, hingga=t_i + hingga)
+        TnR = {R: muncul_ulang(jej, t_i, idx, km=R, hingga=t_i + hingga) for R in RADIUS_KEPEKAAN}
+        pas = lintasan(t_i, lon0, jam_lokal)
+        cp = {thr: lintas_bersih(pas, cw, t_i, thr)[:KMAKS] for thr in AMBANG_AWAN}
+        maks_o = 72 if S is None else min(72, (S - t_i).total_seconds() / 3600)
+        awan72 = [awan_jam(cw, t_i + dt.timedelta(hours=o)) for o, _, _ in pas if o <= maks_o]
+        if S is not None and not awan72:
+            fa = 0.0      # belum ada lintasan sampai S: deskriptif saja
+        else:
+            fa = (sum(1 for c in awan72 if c is None or c >= AMBANG_UTAMA) / len(awan72)) if awan72 else 1.0
+        px = Lk["pxc"][j - 1]
+        return {"thn": thn, "lok": Lk["lok"], "klaster": (sel, thn), "lat": round(lat0, 4), "lon": round(lon0, 4), "t_awal": ps[0]["t"], "t_akhir": t_i, "gb": bool(gb), "dc": dc,
+                "px": px, "ha": px * ha_px, "Tn": Tn, "TnR": TnR, "fu": (akhir_data - t_i).total_seconds() / 3600, "cp": cp, "awan72": fa,
+                "jejak": [[p["lon"], p["lat"]] for p in jej[:30]]}
+    kand = []
+    for Lk in lokasi:
+        for j in Lk["akhir"]:
+            if Lk["ps"][j - 1]["t"] > batas_ep:
+                hit["di_luar_jendela"] += 1
+            else:
+                kand.append((Lk, j))
+    hit["pengamatan_calon"] = len(kand)
+    if len(kand) > cap:
+        kand = rng.sample(kand, cap)             # sampel acak seragam atas pengamatan: laju tak bias
+        hit["disampel_ke"] = cap
+    eps = [e for e in (buat(Lk, j) for Lk, j in kand) if e is not None]
+    snap, h_snap = {}, collections.Counter()
+    for S in snaps:
+        lst = []
+        for Lk in lokasi:
+            if Lk["ts"][0] > S:
+                continue
+            j = bisect.bisect_right(Lk["ts"], S)          # deteksi terakhir <= S: titik terakhir dengan t <= S, bukan ujung rantai
+            e = buat(Lk, j, S, h_snap)
+            if e is not None:
+                lst.append(e)
+        snap[S] = lst
+    hit["pengamatan_dipakai"] = len(eps)
+    hit["snapshot_tanpa_cuaca"] = h_snap["tanpa_cuaca"]
+    return eps, dict(hit), snap
+
+
+def olah_tahun(tahun_ok, pts, sel, jam_lokal, gambut, ha_px, dalam, sisa):
+    """Bangun pengamatan + snapshot per tahun sampai waktu habis (sisa() < 120). -> (pengamatan, [(S, daftar)], hitungan per tahun, tahun yang DIPROSES)."""
+    semua, snapsemua, ringkas_hit, diproses = [], [], {}, []
+    for thn in tahun_ok:
+        cuaca = {s: c for s in sel if (c := baca_cuaca(thn, *s))}
+        pt = [p for p in pts[thn] if sel_05(p["lat"], p["lon"]) in cuaca]
+        t1 = time.time()
+        S_thn = [dt.datetime(thn, mm, dd, 12, tzinfo=UTC) for mm, dd in SNAPSHOT]
+        eps, hit_t, snap = bangun_kejadian(pt, thn, jam_lokal, gambut, cuaca, ha_px, dalam=dalam, snaps=S_thn)
+        hit_t["titik_di_sel_dengan_cuaca"] = len(pt)
+        hit_t["sel_dengan_cuaca"] = len(cuaca)
+        ringkas_hit[str(thn)] = hit_t
+        semua += eps
+        snapsemua += [(S, lst) for S, lst in snap.items()]
+        diproses.append(thn)
+        print("lab_padam: tahun", thn, hit_t, "%.0f dtk" % (time.time() - t1))
+        if sisa() < 120:
+            break
+    return semua, snapsemua, ringkas_hit, diproses
+
+
+def tahun_belum_diolah(diproses):
+    """Tahun setel/uji yang belum diproses (dipotong waktu)."""
+    return sorted(set(SETEL_TAHUN + UJI_TAHUN) - set(diproses))
 
 
 def faktor_luas():
-    """ha per piksel unik: model terpilih di lab/luas.json bila ada (kunci ha_per_piksel / faktor_ha_per_piksel di mana pun), selain itu garis_api.PIKSEL_HA."""
+    """ha per piksel unik: kunci `ha_per_piksel` di lab/luas.json bila ada, selain itu garis_api.PIKSEL_HA. Selalu LUAS PIKSEL, bukan luas terbakar."""
     try:
         def cari(o):
             if isinstance(o, dict):
-                for k in ("ha_per_piksel", "faktor_ha_per_piksel"):
-                    if isinstance(o.get(k), (int, float)) and o[k] > 0:
-                        return float(o[k])
+                if isinstance(o.get("ha_per_piksel"), (int, float)) and o["ha_per_piksel"] > 0:
+                    return float(o["ha_per_piksel"])
                 for v in o.values():
                     r = cari(v)
                     if r:
@@ -594,10 +779,10 @@ def faktor_luas():
             return None
         v = cari(json.load(open(LUAS_JSON)))
         if v:
-            return v, "public/data/lab/luas.json"
+            return v, "public/data/lab/luas.json (ha_per_piksel; luas piksel, bukan luas terbakar)"
     except (OSError, ValueError):
         pass
-    return GA.PIKSEL_HA, "garis_api.PIKSEL_HA (faktor sementara produksi; lab/luas.json belum ada atau tanpa faktor)"
+    return GA.PIKSEL_HA, "garis_api.PIKSEL_HA (luas piksel, bukan luas terbakar; lab/luas.json belum ada atau tanpa ha_per_piksel)"
 
 
 # ---------------------------------------------------------------- analisis KM
@@ -694,25 +879,30 @@ def sentinel2(eps_padam, anggaran, maks=30):
             m = L.topeng(e["lat"], e["lon"], km, [], e["jejak"], pusat)
             ha, cak, nb = L.luas(baca[0][1], baca[1][1], m, km)
             hasil.append({"id": f"{e['thn']}_{e['lat']}_{e['lon']}", "gambut": e["gb"], "tgl": [baca[0][0], baca[1][0]], "luas_baru_ha": ha, "cakupan_pct": cak,
-                          "meluas": bool(ha is not None and ha >= 1.0), "palsu_menurut_firms": e.get("palsu", False)})
+                          "meluas": bool(ha is not None and ha >= 1.0), "muncul_ulang_menurut_firms": e.get("palsu", False)})
         except Exception as x:
             hasil.append({"id": f"{e['thn']}_{e['lat']}_{e['lon']}", "status": "galat_" + type(x).__name__})
     n = [h for h in hasil if "meluas" in h]
     return {"dicoba": len(hasil), "dinilai": len(n), "meluas": sum(h["meluas"] for h in n),
             "porsi_meluas": round(sum(h["meluas"] for h in n) / len(n), 3) if n else None, "rinci": hasil,
-            "catatan": "dNBR antar dua adegan SESUDAH dinyatakan padam; bekas bakar yang masih bertambah = bukti tambahan padam palsu. Gambut bawah permukaan tak selalu mengubah NBR."}
+            "catatan": "dNBR antar dua adegan SESUDAH dinyatakan padam; bekas bakar yang masih bertambah = bukti tambahan muncul ulang. Gambut bawah permukaan tak selalu mengubah NBR."}
 
 
 # ---------------------------------------------------------------- orkestrasi
 BATASAN = [
-    "Proksi awan = ERA5 cloud_cover total pada jam lintas (sel 0,25 derajat), BUKAN masker VIIRS VNP14IMG (kelas 4 awan / 5 daratan bersih; butuh token LAADS yang tak tersedia). Asap/kabut tebal (dominan di Agu-Okt) tidak tercakup.",
-    "'Lintasan bersih' tidak menjamin api terdeteksi: api kecil/dingin di bawah kanopi, di bawah ambang piksel 375 m, atau di tepi sapuan bisa lolos. Jadi laju padam palsu di sini BATAS BAWAH.",
+    "Aturan berlaku untuk PROKSI AWAN ERA5 (cloud_cover total di titik tengah sel 0,5 derajat pada jam lintas), BUKAN masker VIIRS VNP14IMG; proksi ini tidak menangkap asap/kabut tebal (dominan Agu-Okt). "
+    "Tidak boleh dikutip sebagai 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS.",
+    "'Lintasan bersih' tidak menjamin api terdeteksi: api kecil/dingin di bawah kanopi, di bawah ambang piksel 375 m, atau di tepi sapuan bisa lolos. Jadi laju muncul ulang di sini BATAS BAWAH.",
     "Bara gambut bawah permukaan tak terlihat satelit mana pun; 'tak muncul ulang' tidak membuktikan padam. Kebenaran akhir = konfirmasi lapangan (/uji-lapangan Q5), yang belum dipakai di sini.",
-    "Muncul ulang diukur dengan deteksi FIRMS yang sama (satu sumber): deteksi baru dalam 1 km mungkin api tetangga/baru, bukan kebangkitan api lama (condong menaikkan padam palsu).",
+    "'Muncul ulang dalam R km' diukur dengan deteksi FIRMS yang sama (satu sumber): deteksi baru dalam R km bisa API BARU di dekatnya, bukan kebangkitan api lama. Radius 0,5/1/2 km disajikan sebagai kepekaan.",
+    "Pengamatan = celah antar-deteksi (proses pembaruan) dan pengamatan satu sel berkorelasi: batas atas = maks(Wilson, bootstrap klaster sel x tahun B=%d persentil %.1f), strata wajib >= %d klaster (setel DAN uji). Lokasi besar yang terbakar lama tetap menyumbang lebih banyak celah." % (KLASTER_B, KLASTER_Q * 100, NKL),
+    "DC dihitung dari cuaca jam 12 setempat pada tanggal t_i; untuk lintasan malam (sekitar 10 jam sebelumnya) DC itu adalah hari yang sama dan tidak berisi informasi sesudah t_i yang bocor ke vonis, tetapi kasar sekitar setengah hari.",
+    "Bootstrap 20 klaster sempit untuk rasio langka (persentil 97,5 dari 20 sel kasar): sebab itu ditambal dengan maks(Wilson, bootstrap), dan 'tidak_ada_aturan' adalah hasil sah.",
     "Jam lintas diidealkan (satu lintasan siang + satu malam per satelit, jam surya median dari acq_time); tumpang-tindih sapuan di khatulistiwa dan bukan-lintasan diabaikan.",
-    "Cuaca hanya untuk sel sampel (peringkat jumlah titik): luas absolut di snapshot adalah luas di sel sampel, BUKAN nasional; porsi antar-tiga-angka yang bermakna. Kejadian di sel tanpa cuaca dibuang.",
+    "Cuaca hanya untuk SEL SAMPEL (acak berstrata, benih tetap, dipilih dari titik tahun SETEL saja): luas di tiga angka adalah luas di sel sampel, BUKAN nasional. Pengamatan di sel tanpa cuaca dibuang.",
     "Dua tahun kering + dua basah: kesimpulan musiman bergantung pada empat musim saja; strata dengan n < %d dinyatakan tak cukup." % NMIN,
-    "Luas kejadian = piksel unik seluruh kejadian x faktor ha/piksel sementara, bukan luas sesaat.",
+    "Luas = piksel unik sampai waktu snapshot x faktor ha/piksel: LUAS PIKSEL, bukan luas terbakar.",
+    "Populasi utama: berlaku untuk kejadian >= %d piksel unik; semua ukuran hanya kepekaan." % PX_UTAMA,
 ]
 
 
@@ -724,14 +914,41 @@ def tulis(d, jalur=None):
     os.replace(jalur + ".tmp", jalur)
 
 
-def pilih_sel_sampel(hit, peat_share, n_g=SEL_G, n_m=SEL_M):
-    """hit {sel: n titik}, peat_share {sel: 0..1}. -> daftar sel: n_g gambut (share >= .5) + n_m mineral terbanyak titiknya."""
-    g = sorted((s for s in hit if peat_share.get(s, 0) >= .5), key=lambda s: -hit[s])[:n_g]
-    m = sorted((s for s in hit if peat_share.get(s, 0) < .5), key=lambda s: -hit[s])[:n_m]
-    return g + m
+def catat_jalan(skrip, status, vonis, kriteria_sha, jalur=None, waktu=None):
+    """Tambah SATU baris ke jalan.jsonl (append-only; baris lama tak pernah ditimpa; berkas/direktori dibuat bila belum ada).
+    Format sama dengan lab_luas.py: {skrip, waktu, kriteria_sha, git_commit (env GITHUB_SHA), status, vonis}."""
+    jalur = jalur or JALAN_LOG
+    os.makedirs(os.path.dirname(jalur), exist_ok=True)
+    baris = {"skrip": skrip, "waktu": waktu or dt.datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"), "kriteria_sha": kriteria_sha,
+             "git_commit": os.environ.get("GITHUB_SHA"), "status": status, "vonis": vonis}
+    with open(jalur, "a", encoding="utf-8") as f:
+        f.write(json.dumps(baris, ensure_ascii=False, sort_keys=True) + "\n")
+    return baris
+
+
+def pilih_sel_sampel(hit, peat_share, n_g=SEL_G, n_m=SEL_M, n_min=SEL_N_MIN, benih=SEED):
+    """Sampel berstrata ACAK (benih tetap) atas sel dengan titik >= n_min: n_g gambut (share >= .5) dan n_m mineral; semua sel bila kuota cukup.
+    hit {sel: n titik TAHUN SETEL}, peat_share {sel: 0..1}."""
+    rng = random.Random(benih)
+    ok = sorted(s for s, n in hit.items() if n >= n_min)
+    g = [s for s in ok if peat_share.get(s, 0) >= .5]
+    m = [s for s in ok if peat_share.get(s, 0) < .5]
+    pilih = lambda daftar, n: daftar if len(daftar) <= n else sorted(rng.sample(daftar, n))
+    return pilih(g, n_g) + pilih(m, n_m)
 
 
 def jalan():
+    """Bungkus _jalan: catat baris awal dan akhir ke jalan.jsonl (append-only), juga bila gagal."""
+    catat_jalan("lab_padam.py", "mulai", None, KRITERIA_SHA)
+    try:
+        vonis = _jalan()
+    except BaseException as e:
+        catat_jalan("lab_padam.py", "gagal", "%s: %s" % (type(e).__name__, FS.sensor_url(str(e))[:200]), KRITERIA_SHA)
+        raise
+    catat_jalan("lab_padam.py", "selesai", vonis, KRITERIA_SHA)
+
+
+def _jalan():
     t0 = time.time()
     menit = float(os.environ.get("LAB_MENIT") or 30)
     sisa = lambda: menit * 60 - 150 - (time.time() - t0)
@@ -739,7 +956,7 @@ def jalan():
     if not kunci:
         sys.exit("lab_padam: FIRMS_MAP_KEY tidak ada (jalan hanya di GitHub Actions)")
     out = {"_catatan": "LAB, bukan produksi. Kriteria ditulis SEBELUM angka dihitung.", "dibuat": dt.datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ"),
-           "tahap": "kriteria_ditulis", "kriteria": KRITERIA, "batasan": BATASAN, "tahun": {str(k): v for k, v in TAHUN.items()}}
+           "tahap": "kriteria_ditulis", "kriteria_sha": KRITERIA_SHA, "kriteria": KRITERIA, "batasan": BATASAN, "tahun": {str(k): v for k, v in TAHUN.items()}}
     tulis(out)    # kriteria ada di berkas sebelum satu angka hasil dihitung
     print("lab_padam: kriteria ditulis")
 
@@ -768,100 +985,112 @@ def jalan():
     if not tahun_ok:
         out["tahap"] = "firms_belum_lengkap"
         tulis(out)
-        return
+        return "firms_belum_lengkap"
     jam_lokal = kalibrasi_lintas([p for v in pts.values() for p in v[::7]])
     out["lintasan_jam_surya"] = {"%s_%s" % k: v for k, v in jam_lokal.items()}
 
-    # 2. sel sampel
+    # 2. sel sampel: acak berstrata (benih tetap), dipilih dari titik tahun SETEL saja
     gambut = Poligon(GAMBUT)
-    kering = [t for t in tahun_ok if TAHUN[t] == "kering"] or tahun_ok
+    dasar = [t for t in SETEL_TAHUN if t in tahun_ok] or tahun_ok
     hit = collections.Counter()
     contoh = collections.defaultdict(list)
-    for t in kering:
+    for t in dasar:
         for p in pts[t]:
             s = sel_05(p["lat"], p["lon"])
             hit[s] += 1
             if hit[s] % 40 == 0:
                 contoh[s].append((p["lon"], p["lat"]))
     share = {s: sum(1 for x in v if gambut.cari(*x)) / len(v) for s, v in contoh.items() if v}
-    sel = pilih_sel_sampel({s: n for s, n in hit.items() if n >= 200}, share)
-    out["sel_sampel"] = {"n": len(sel), "gambut": sum(1 for s in sel if share.get(s, 0) >= .5)}
+    sel = selang_seling(pilih_sel_sampel(hit, share), share)
+    out["sel_sampel"] = {"n": len(sel), "gambut": sum(1 for s in sel if share.get(s, 0) >= .5), "dipilih_dari_tahun": dasar, "cara": "acak berstrata gambut/mineral, benih %d, sel dengan >= %d titik; semua sel bila kuota cukup" % (SEED, SEL_N_MIN),
+                         "cakupan_luas": "tiga angka hanya untuk sel sampel ini, BUKAN nasional"}
     print("lab_padam: sel sampel", len(sel))
 
     # 3. cuaca
     bobot, habis = tarik_cuaca(sel, tahun_ok, lambda: sisa() < menit * 60 * 0.15)
     out["cuaca"] = {"bobot_terpakai": round(bobot), "kuota_bobot_per_jalan": KUOTA_BOBOT, "terpotong_kuota_atau_waktu": habis}
-    print("lab_padam: bobot Open-Meteo", round(bobot), "terpotong", habis)
+    terpotong = bool(habis or not cuaca_lengkap(sel, tahun_ok))
+    out["cuaca"]["terpotong"] = terpotong
+    out["vonis_bila_cuaca_terpotong"] = KRITERIA["vonis_bila_cuaca_terpotong"]
+    print("lab_padam: bobot Open-Meteo", round(bobot), "terpotong", terpotong)
 
-    # 4. kejadian
+    # 4. pengamatan (proses pembaruan)
     from wilayah import Wilayah
     wil = Wilayah()
     ha_px, sumber_ha = faktor_luas()
-    out["luas"] = {"ha_per_piksel": ha_px, "sumber": sumber_ha}
-    semua, ringkas_hit = [], {}
-    for thn in tahun_ok:
-        cuaca = {s: c for s in sel if (c := baca_cuaca(thn, *s))}
-        pt = [p for p in pts[thn] if sel_05(p["lat"], p["lon"]) in cuaca]
-        t1 = time.time()
-        eps, hit_t = bangun_kejadian(pt, thn, jam_lokal, gambut, cuaca, ha_px, dalam=lambda lon, lat: wil.cari(lon, lat) is not None)
-        hit_t["titik_di_sel_dengan_cuaca"] = len(pt)
-        hit_t["sel_dengan_cuaca"] = len(cuaca)
-        ringkas_hit[str(thn)] = hit_t
-        semua += eps
-        print("lab_padam: tahun", thn, hit_t, "%.0f dtk" % (time.time() - t1))
-        if sisa() < 120:
-            break
-    out["kejadian"] = {"per_tahun": ringkas_hit, "total": len(semua), "gambut": sum(e["gb"] for e in semua)}
+    out["luas"] = {"ha_per_piksel": ha_px, "sumber": sumber_ha, "catatan": "luas piksel, bukan luas terbakar"}
+    semua, snapsemua, ringkas_hit, diproses = olah_tahun(tahun_ok, pts, sel, jam_lokal, gambut, ha_px, lambda lon, lat: wil.cari(lon, lat) is not None, sisa)
+    kurang = tahun_belum_diolah(diproses)
+    if kurang:      # waktu habis di tengah loop tahun: tahun setel/uji yang tak terolah = terpotong, bukan diam-diam
+        terpotong = True
+        out["cuaca"]["terpotong"] = True
+        out["cuaca"]["terpotong_waktu_olah"] = kurang
+        print("lab_padam: waktu habis, tahun belum diolah:", kurang)
+    out["kejadian"] = {"per_tahun": ringkas_hit, "total_pengamatan": len(semua), "gambut": sum(e["gb"] for e in semua),
+                       "satuan": "pengamatan = celah antar-deteksi (proses pembaruan), bukan kejadian utuh"}
     utama = [e for e in semua if e["px"] >= PX_UTAMA]
 
-    # 5. KM
+    # 5. KM (semua tahun: deskriptif, bukan pemilihan)
     if utama:
-        out["survival_km"] = {"populasi": "px >= %d" % PX_UTAMA, "B": BOOT, "strata": km_strata(utama)}
+        out["survival_km"] = {"label": "PARSIAL: cuaca/waktu terpotong, tahun tak lengkap" if terpotong else "deskriptif, semua tahun yang diolah", "populasi": "berlaku untuk kejadian >= %d piksel (sampai t_i)" % PX_UTAMA, "B": BOOT, "strata": km_strata(utama)}
     out["tahap"] = "km_selesai"
     tulis(out)
 
-    # 6. aturan, uji silang
-    lipat = []
-    for L_ in LIPAT:
-        a = [e for e in utama if e["thn"] in L_["setel"]]
-        b = [e for e in utama if e["thn"] in L_["uji"]]
-        if not a or not b:
-            lipat.append({"setel": L_["setel"], "uji": L_["uji"], "status": "data_tidak_cukup", "n_setel": len(a), "n_uji": len(b)})
-            continue
-        par = setel(a)
-        lipat.append({"setel": L_["setel"], "uji": L_["uji"], "n_setel": len(a), "n_uji": len(b), "parameter": par, "uji_hasil": uji_lipat(a, b, par)})
-    ok = [l for l in lipat if "uji_hasil" in l]
-    pilih = pilih_akhir([l["uji_hasil"] for l in ok]) if len(ok) == len(LIPAT) else None
-    out["aturan"] = {"lipat": lipat, "terpilih": pilih or "tidak ada yang lolos" if len(ok) == len(LIPAT) else "tidak dapat dinilai: data uji silang tidak lengkap"}
-    sem_semua = uji_lipat(utama, semua, setel(utama)) if utama and semua else None
-    out["aturan"]["kepekaan_semua_ukuran"] = {k: {"palsu_gambut": v["metrik"]["gambut"]["palsu"], "palsu_mineral": v["metrik"]["mineral"]["palsu"],
-                                                  "telat_vs_A0": v["selisih_telat_vs_A0_jam"]} for k, v in (sem_semua or {}).items() if v.get("metrik")}
-    out["aturan"]["parameter_akhir_gabungan"] = setel(utama) if utama else None
+    # 6. UJI MURNI: setel di tahun setel -> pilih dari data setel -> uji SEKALI di tahun uji
+    ada = all(t in tahun_ok for t in SETEL_TAHUN + UJI_TAHUN) and not terpotong
+    a_ = [e for e in utama if e["thn"] in SETEL_TAHUN]
+    b_ = [e for e in utama if e["thn"] in UJI_TAHUN]
+    pilih, vonis, par = None, KRITERIA["vonis_bila_cuaca_terpotong"] if terpotong else "tidak_dapat_dinilai", {}
+    AR = {"label": "UJI MURNI: parameter disetel dan aturan dipilih HANYA dari tahun setel; diuji SEKALI di tahun uji. Populasi: berlaku untuk kejadian >= %d piksel." % PX_UTAMA,
+          "kriteria_sha": KRITERIA_SHA, "tahun_setel": SETEL_TAHUN, "tahun_uji": UJI_TAHUN}
+    if ada and a_ and b_:
+        par = setel(a_)
+        pilih = pilih_setel(par)
+        h = uji_lipat(a_, b_, par)
+        vonis = vonis_uji(h, pilih)
+        AR["uji_murni"] = {"n_setel": len(a_), "n_uji": len(b_), "parameter_dari_setel": par, "pemilihan_dari": "data setel saja", "terpilih": pilih, "vonis": vonis, "uji_hasil": h,
+                           "kepekaan_radius_muncul_ulang": {"terpilih": kepekaan_radius(b_, par.get(pilih)) if pilih else None, "A0": kepekaan_radius(b_, {"tipe": "A0"})},
+                           "aturan_berlaku_untuk": "PROKSI AWAN ERA5 (titik tengah sel 0,5 derajat), tidak menangkap asap; bukan 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS"}
+        # kepekaan: arah sebaliknya (BUKAN untuk memilih)
+        par2 = setel(b_)
+        AR["kepekaan_arah_sebaliknya"] = {"label": "KEPEKAAN saja, tidak dipakai memilih: setel di %s, uji di %s" % (UJI_TAHUN, SETEL_TAHUN), "parameter": par2, "uji_hasil": uji_lipat(b_, a_, par2)}
+        # kepekaan: semua ukuran, parameter dari setel, dinilai di tahun uji
+        uji_semua = [e for e in semua if e["thn"] in UJI_TAHUN]
+        sem = uji_lipat(a_, uji_semua, par)
+        AR["kepekaan_semua_ukuran"] = {"label": "parameter dari set SETEL (bukan in-sample), dinilai di tahun UJI %s untuk semua ukuran (1+ piksel)" % UJI_TAHUN,
+                                       "hasil": {k: {"muncul_ulang_wilson_gambut": v["metrik"]["gambut"]["muncul_ulang_wilson"], "muncul_ulang_wilson_mineral": v["metrik"]["mineral"]["muncul_ulang_wilson"],
+                                                     "telat_vs_A0": v["selisih_telat_vs_A0_jam"]} for k, v in sem.items() if v.get("metrik")}}
+        AR["parameter_akhir_gabungan"] = {"label": "IN-SAMPLE: disetel di SEMUA tahun, bukan bukti kinerja; hanya rujukan bentuk parameter", "parameter": setel(utama)}
+        out["vonis_aturan"] = {"terpilih": pilih, "vonis": vonis}
+    else:
+        out["vonis_aturan"] = {"terpilih": None, "vonis": vonis, "alasan": "cuaca terpotong" if terpotong else "data setel/uji tidak lengkap"}
+        AR["status"] = ("tidak_dapat_dinilai, alasan: cuaca terpotong (kuota/waktu/galat); tidak ada vonis dari data parsial. " if terpotong else "") + "tidak dapat dinilai: tahun setel/uji belum lengkap atau tanpa pengamatan (setel %s, uji %s, lengkap %s)" % (len(a_), len(b_), tahun_ok)
+    out["aturan"] = AR
     out["tahap"] = "aturan_selesai"
     tulis(out)
 
-    # 7. tiga angka
-    par_akhir = out["aturan"]["parameter_akhir_gabungan"] or {}
-    ar_pilih = (par_akhir.get(pilih) if pilih in par_akhir else {"tipe": pilih}) if pilih in ("A0", "A1", "A2", "A3", "A4") else None
-    ar_baik = ar_pilih or par_akhir.get("A3") or par_akhir.get("A2") or {"tipe": "A0"}
+    # 7. tiga angka: aturan dari set SETEL saja; label tahun uji/tahun setel
+    ar_baik = par.get(pilih) if pilih else {"tipe": "A0"}
+    ar_baik = ar_baik or {"tipe": "A0"}
     snaps = []
-    for thn in tahun_ok:
-        for (mm, dd) in ((9, 15), (10, 1), (10, 15)):
-            S = dt.datetime(thn, mm, dd, 12, tzinfo=UTC)
-            ep = [e for e in utama if e["thn"] == thn]
-            snaps.append({"tgl": S.strftime("%Y-%m-%d"), "A0": luas_tiga(ep, {"tipe": "A0"}, S), "aturan_terpilih_atau_terbaik": luas_tiga(ep, ar_baik, S)})
+    for S, lst in sorted(snapsemua, key=lambda x: x[0]):
+        ep = [e for e in lst if e["px"] >= PX_UTAMA]
+        snaps.append({"tgl": S.strftime("%Y-%m-%d"), "peran_tahun": "uji" if S.year in UJI_TAHUN else "setel", "A0": luas_tiga(ep, {"tipe": "A0"}, S),
+                      "aturan_terpilih_atau_A0": luas_tiga(ep, ar_baik, S)})
     out["tiga_angka"] = {"definisi": {
-        "aktif_teramati": "kejadian dengan deteksi <= 24 jam sebelum snapshot",
+        "aktif_teramati": "lokasi dengan deteksi terakhir <= 24 jam sebelum snapshot",
         "tak_teramati": "tanpa deteksi > 24 jam tetapi belum memenuhi aturan padam (menunggu lintasan bersih / tertutup awan); tak_teramati_awan_n = yang >= 50% lintasan 72 jam berawan",
         "kandidat_padam": "sudah memenuhi aturan padam dalam 7 hari terakhir: layak diverifikasi (lapangan/Sentinel-2), belum pasti padam",
-        "luas": "Σ piksel unik kejadian x ha/piksel (sel sampel saja, bukan nasional)"},
-        "aturan_dipakai": ar_baik, "aturan_lolos": ar_pilih is not None, "snapshot": snaps}
+        "luas": "piksel unik SAMPAI waktu snapshot x ha/piksel = LUAS PIKSEL, bukan luas terbakar; HANYA sel sampel (acak berstrata dari tahun setel), BUKAN nasional",
+        "informasi": "status tiap lokasi memakai hanya informasi <= waktu snapshot (deteksi terakhir <= snapshot, bukan t_akhir episode)"},
+        "label": "parameter aturan dipilih dari set SETEL (%s); snapshot tiap tahun diberi peran_tahun uji/setel" % SETEL_TAHUN,
+        "aturan_dipakai": ar_baik, "aturan_lolos_uji": vonis == "lolos", "snapshot": snaps}
 
-    # 8. Sentinel-2
+    # 8. Sentinel-2 (tahun uji, aturan terpilih)
     if sisa() > 240 and ar_baik.get("tipe") != "A0":
         pad = []
         rng = random.Random(SEED)
-        for e in utama:
+        for e in b_:
             D = D_aturan(e, ar_baik)
             if klasif(e, D) in ("benar", "palsu") and e["px"] >= 5:
                 pad.append(dict(e, D=D, palsu=klasif(e, D) == "palsu"))
@@ -869,11 +1098,12 @@ def jalan():
         t1 = time.time()
         out["sentinel2"] = sentinel2(pad, lambda: sisa() < 60 or time.time() - t1 > 600)
     else:
-        out["sentinel2"] = {"dilewati": "waktu tersisa tidak cukup atau aturan terpilih A0"}
+        out["sentinel2"] = {"dilewati": "waktu tersisa tidak cukup atau aturan terpilih A0/tidak ada"}
     out["tahap"] = "selesai"
     out["detik"] = round(time.time() - t0)
     tulis(out)
     ringkas()
+    return "%s %s" % (pilih or "tidak_ada_aturan", vonis)
 
 
 def ringkas():
@@ -882,32 +1112,40 @@ def ringkas():
     except (OSError, ValueError):
         print("lab_padam: padam.json belum ada")
         return
-    L = ["# Lab: luas masih terdeteksi / belum padam", "", "Tahap: %s. Tahun lengkap: %s. LAB, bukan produksi." % (d.get("tahap"), d.get("tahun_lengkap")), "",
-         "## Kriteria (dipra-tulis)", ""]
     k = d["kriteria"]
-    L += ["- Padam palsu <= %.0f%% di %s" % (k["padam_palsu_maks"] * 100, k["padam_palsu_di"]),
-          "- Keterlambatan vs A0 <= %d jam (%s)" % (k["keterlambatan_maks_vs_A0_jam"], k["keterlambatan_cara"]), "- Uji silang: %s" % k["uji_silang"], ""]
-    a = d.get("aturan")
-    if a:
-        L += ["## Aturan terpilih", "", "**%s**" % a["terpilih"], ""]
-        for l in a["lipat"]:
-            L.append("Setel %s, uji %s (n setel %s, n uji %s)" % (l["setel"], l["uji"], l.get("n_setel"), l.get("n_uji")))
-            L += ["", "| aturan | padam palsu gambut | padam palsu mineral | selisih telat vs A0 (jam) | lolos |", "|---|---|---|---|---|"]
-            for n, v in (l.get("uji_hasil") or {}).items():
-                m = v.get("metrik")
-                L.append("| %s | %s | %s | %s | %s |" % (n, m and m["gambut"]["palsu"], m and m["mineral"]["palsu"], v.get("selisih_telat_vs_A0_jam"), v.get("lolos")))
-            L.append("")
+    L = ["# Lab: luas masih terdeteksi / belum padam", "", "Tahap: %s. Tahun lengkap: %s. kriteria_sha: %s. LAB, bukan produksi." % (d.get("tahap"), d.get("tahun_lengkap"), d.get("kriteria_sha")), "",
+         "> %s" % k["label_proksi_awan"], "", "## Kriteria (dipra-tulis, scripts/data/lab_kriteria/lab_padam.json)", "",
+         "- Pilih k terkecil dengan aturan_batas <= %.0f%% di set setel: aturan_batas = maks(Wilson 95%%, bootstrap klaster sel x tahun B=%d p%.1f), gambut DAN mineral, n >= %d, >= %d klaster"
+         % (k["wilson_batas_atas_setel_maks"] * 100, k["bootstrap_klaster_B"], k["ci_batas_atas_kuantil"] * 100, k["n_min_per_strata"], k["n_klaster_min"]),
+         "- Lolos bila aturan_batas <= %.0f%% di set uji (gambut DAN mineral, sama: n >= %d, >= %d klaster)" % (k["wilson_batas_atas_uji_maks"] * 100, k["n_min_per_strata"], k["n_klaster_min"]),
+         "- Tak dinyatakan padam dalam %d jam <= %.0f%% pengamatan (setel DAN uji, gambut DAN mineral)" % (k["cap_jam"], k["tak_dinyatakan_maks"] * 100),
+         "- Keterlambatan vs A0 <= %d jam (berpasangan; bersyarat pada hasil)" % k["keterlambatan_maks_vs_A0_jam"], "- Setel %s, uji %s, SEKALI; arah sebaliknya hanya kepekaan" % (k["tahun_setel"], k["tahun_uji"]), ""]
+    a = d.get("aturan") or {}
+    um = a.get("uji_murni")
+    if um:
+        L += ["## Uji murni (tahun uji %s, parameter dari tahun setel %s)" % (k["tahun_uji"], k["tahun_setel"]), "", "**Terpilih: %s. Vonis: %s.**" % (um["terpilih"], um["vonis"]), "",
+              "| aturan | batas atas gabungan gambut | mineral | n klaster g/m | tak dinyatakan g/m | selisih telat vs A0 (jam) | lolos |", "|---|---|---|---|---|---|---|"]
+        for n, v in um["uji_hasil"].items():
+            m = v.get("metrik")
+            nm = n + (" (pembanding, laporan saja)" if v.get("laporan_saja") else "")
+            L.append("| %s | %s | %s | %s/%s | %s/%s | %s | %s |" % (nm, m and m["gambut"]["batas_atas_gabungan"], m and m["mineral"]["batas_atas_gabungan"],
+                                                              m and m["gambut"]["n_klaster"], m and m["mineral"]["n_klaster"], m and m["gambut"]["tak_dinyatakan"], m and m["mineral"]["tak_dinyatakan"],
+                                                              v.get("selisih_telat_vs_A0_jam"), v.get("lolos") if not v.get("laporan_saja") else "-"))
+        L += [""]
+    elif a.get("status"):
+        L += ["## Aturan", "", a["status"], ""]
     t = d.get("tiga_angka")
     if t:
-        L += ["## Tiga angka (bukan satu)", ""] + ["- %s: %s" % (x, y) for x, y in t["definisi"].items()] + ["", "| snapshot | aturan | aktif teramati (ha) | tak teramati (ha) | kandidat padam (ha) |", "|---|---|---|---|---|"]
+        L += ["## Tiga angka (bukan satu; sel sampel saja, luas piksel bukan luas terbakar)", ""] + ["- %s: %s" % (x, y) for x, y in t["definisi"].items()] + ["", "- %s" % t.get("label"), "",
+              "| snapshot | peran tahun | aturan | aktif teramati (ha) | tak teramati (ha) | kandidat padam (ha) |", "|---|---|---|---|---|---|"]
         for s in t["snapshot"]:
-            for n in ("A0", "aturan_terpilih_atau_terbaik"):
+            for n in ("A0", "aturan_terpilih_atau_A0"):
                 v = s[n]
-                L.append("| %s | %s | %s | %s | %s |" % (s["tgl"], n, v["aktif_teramati_ha"], v["tak_teramati_ha"], v["kandidat_padam_ha"]))
+                L.append("| %s | %s | %s | %s | %s | %s |" % (s["tgl"], s.get("peran_tahun"), n, v["aktif_teramati_ha"], v["tak_teramati_ha"], v["kandidat_padam_ha"]))
         L.append("")
     km = (d.get("survival_km") or {}).get("strata", {})
     if km.get("semua", {}).get("g"):
-        L += ["## P(muncul ulang <= 7 hari | tak terdeteksi g jam), semua kejadian", ""] + ["- g=%s jam: %s" % (g, v and v.get("p")) for g, v in km["semua"]["g"].items()] + [""]
+        L += ["## P(muncul ulang <= 7 hari | tak terdeteksi g jam), semua pengamatan (deskriptif)", ""] + ["- g=%s jam: %s" % (g, v and v.get("p")) for g, v in km["semua"]["g"].items()] + [""]
     s2 = d.get("sentinel2")
     if s2:
         L += ["## Sentinel-2", "", json.dumps({x: y for x, y in s2.items() if x != "rinci"}, ensure_ascii=False), ""]
@@ -957,8 +1195,11 @@ def uji():
     assert p_muncul(km_s([9, 9, 9], [False] * 3, 30), 0, 10) == 0.0
 
     # --- klasifikasi + A0..A2 pada kejadian rakitan tangan
-    def ep(gb, dc, Tn, cp80, px=5):
-        return {"gb": gb, "dc": dc, "Tn": Tn, "cp": {60: cp80[:1], 80: cp80, 90: cp80}, "px": px, "thn": 2019, "fu": 400.0}
+    cnt_ = [0]
+    def ep(gb, dc, Tn, cp80, px=5, klaster=None):
+        cnt_[0] += 1      # klaster bergilir: 30 sel (sel x tahun) kecuali ditentukan
+        return {"gb": gb, "dc": dc, "Tn": Tn, "cp": {60: cp80[:1], 80: cp80, 90: cp80}, "px": px, "thn": 2019, "fu": 400.0,
+                "klaster": klaster or ((cnt_[0] % 30) * .5 + .25, 2019)}
     e1 = ep(True, 400, 100.0, [12, 24, 36, 48, 60, 72])      # gambut kering: A0 = 168 jam; muncul ulang 100 jam < 168 -> 'sebelum'
     e2 = ep(False, 100, 90.0, [12, 24, 36, 48, 60, 72])      # mineral: A0 = 72, muncul ulang 90 -> A0 benar? 90 > 72 dan <= 72+168 -> palsu
     e3 = ep(False, 100, None, [12, 24, 36, 48, 60, 72])      # tak muncul ulang -> benar
@@ -969,7 +1210,7 @@ def uji():
     a2b = {"tipe": "A2", "thr": 80, "k": 8}
     assert klasif(e3, D_aturan(e3, a2b)) == "tak"       # hanya 6 lintasan bersih -> tak dinyatakan
     m = metrik([e1, e2, e3], [D_aturan(e, {"tipe": "A0"}) for e in (e1, e2, e3)])
-    assert m["n_dinyatakan"] == 2 and m["n_palsu"] == 1 and m["palsu"] == .5 and m["telat_jam"] == 72.0 and m["n_muncul_sebelum_dinyatakan"] == 1, m
+    assert m["n_dinyatakan"] == 2 and m["n_muncul_ulang"] == 1 and m["laju_muncul_ulang"] == .5 and m["telat_jam"] == 72.0 and m["n_muncul_sebelum_dinyatakan"] == 1, m
     assert kelas_dc3(199.9) == "<200" and kelas_dc3(350) == "200-350" and kelas_dc3(350.1) == ">350" and kelas_ukuran(4) == "2-4" and kelas_ukuran(20) == ">=20"
 
     # --- setel: gambut muncul ulang 20% setelah lintasan bersih ke-5 (61 jam), mineral tidak pernah.
@@ -985,46 +1226,197 @@ def uji():
     # --- uji silang: tahun uji = salinan; A3 harus lolos kedua kriteria, A1 (48 jam, k setara 4) gagal palsu gambut
     h = uji_lipat(eps, eps, par)
     assert h["A3"]["lolos"] and h["A2"]["lolos"], h["A3"]
-    assert h["A1"]["metrik"]["gambut"]["palsu"] == .2 and not h["A1"]["lolos_palsu"] and not h["A1"]["lolos"], h["A1"]["metrik"]["gambut"]
+    assert h["A1"]["metrik"]["gambut"]["laju_muncul_ulang"] == .2 and not h["A1"]["lolos_muncul_ulang"] and not h["A1"]["lolos"], h["A1"]["metrik"]["gambut"]
     assert h["A3"]["selisih_telat_vs_A0_jam"] < 0 and h["A3"]["lolos_telat"]
-    assert pilih_akhir([h, h]) in ("A0", "A3", "A4", "A2"), pilih_akhir([h, h])
+    assert pilih_setel(par) == "A3" and vonis_uji(h, "A3") == "lolos" and vonis_uji(h, "A1") == "tidak_lolos" and vonis_uji(h, None) == "tidak_ada_aturan"
+    assert pilih_setel({"A2": None, "A3": None, "A4": None}) is None
     # telat tak lolos bila k besar: paksa A2 k=12 -> D=144 vs A0=72: selisih > 24
     ar = {"A2": {"tipe": "A2", "thr": 80, "k": 12}, "A3": None, "A4": None}
     hh = uji_lipat(eps, eps, ar)
-    assert not hh["A2"]["lolos_telat"] and hh["A2"]["lolos_palsu"] and hh["A3"]["alasan"], hh["A2"]
+    assert not hh["A2"]["lolos_telat"] and hh["A2"]["lolos_muncul_ulang"] and hh["A3"]["alasan"], hh["A2"]
     # data kurang (n dinyatakan < NMIN) -> bukan lolos
     assert not uji_lipat(eps[:10], eps[:10], par)["A3"]["lolos"]
     # kriteria hanya menyentuh gambut DAN mineral: mineral palsu tinggi menggagalkan
     eps_m = [ep(True, 300, None, cp) for _ in range(60)] + [ep(False, 100, 50.0 if i < 20 else None, cp) for i in range(60)]
     assert not uji_lipat(eps_m, eps_m, {"A2": {"tipe": "A2", "thr": 80, "k": 2}, "A3": None, "A4": None})["A2"]["lolos"]
 
-    # --- pipeline kejadian sintetis (harian.dbscan + muncul ulang + DC + awan + gambut): dua api
+    # --- pipeline PROSES PEMBARUAN sintetis (harian.dbscan identitas + celah antar-deteksi + DC + awan + gambut)
     class FakeGambut:
         def cari(self, lon, lat):
             return {} if lat < -2.5 else None
     def P(lat, lon, jam, sen="N"):
         return {"lat": lat, "lon": lon, "t": dt.datetime(2023, 9, 1, tzinfo=UTC_) + dt.timedelta(hours=jam), "px": .4, "dn": "D", "s": sen, "c": 1}
-    pts = [P(-3.0, 110.0, 6), P(-3.0, 110.001, 7), P(-3.0, 110.0, 30)]            # api A (gambut): berhenti jam 30, muncul ulang jam 30+150 ...
-    pts += [P(-3.0, 110.002, 30 + 150)]                                              # ... 150 jam sesudah t_akhir, dalam 1 km
-    pts += [P(-1.0, 105.0, 10), P(-1.0, 105.0, 20)]                                  # api B (mineral): tak pernah muncul ulang, t_akhir jam 20
+    # api A (gambut): rantai jam 6-7 (t_i=7); muncul ulang jam 37 = 30 jam sesudah t_i (24-36 jam); lalu jam 37+150 = muncul ulang 150 jam; 1 piksel kecil digeser ~220 m
+    pts = [P(-3.0, 110.0, 6), P(-3.0, 110.001, 7), P(-3.0, 110.0, 37), P(-3.0, 110.002, 37 + 150)]
+    pts += [P(-1.0, 105.0, 10), P(-1.0, 105.0, 20)]                                  # api B (mineral): dua lintasan; t_i=20 tak pernah muncul ulang
     pts += [P(-1.0, 105.02, 24 * 30)]                                                 # titik jauh >1 km di waktu lain: bukan muncul ulang api B
     pts.sort(key=lambda p: p["t"])
+    jl = {("N", "D"): 13.5, ("N", "N"): 1.5}
     cwf = {"utc0": dt.datetime(2023, 3, 1, tzinfo=UTC_), "cc": [20] * (24 * 300), "dc": {"2023-09-%02d" % i: 410.0 + i for i in range(1, 31)} | {"2023-10-%02d" % i: 440.0 for i in range(1, 31)}}
     cuaca = {sel_05(-3.0, 110.0): cwf, sel_05(-1.0, 105.0): cwf}
-    eps_s, hit = bangun_kejadian(pts, 2023, {("N", "D"): 13.5, ("N", "N"): 1.5}, FakeGambut(), cuaca, 14.0625)
-    byl = {e["gb"]: e for e in eps_s}
-    assert len(eps_s) == 4 and sum(e["gb"] for e in eps_s) == 2, (len(eps_s), hit)   # A, A' (muncul ulang), B, B' (titik jauh)
-    a_ = [e for e in eps_s if e["gb"] and abs((e["t_akhir"] - dt.datetime(2023, 9, 2, 6, tzinfo=UTC_)).total_seconds()) < 1][0]
-    assert abs(a_["Tn"] - 150.0) < 1e-6 and a_["px"] >= 1 and a_["dc"] == 412.0, (a_["Tn"], a_["dc"])
-    b_ = [e for e in eps_s if not e["gb"] and e["t_akhir"] == dt.datetime(2023, 9, 1, 20, tzinfo=UTC_)][0]
-    assert b_["Tn"] is None and len(b_["cp"][80]) == KMAKS and b_["cp"][80][0] > LINTAS_MIN_JAM and b_["cp"][60] == b_["cp"][80], b_["Tn"]
+    t0_ = dt.datetime(2023, 9, 1, tzinfo=UTC_)
+    # B17: dbscan(jam=48) lama menyatukan 6,7,37 jadi satu kejadian (celah 30 jam HILANG); pembaruan menjadikannya pengamatan sendiri
+    lab_lama, _ = H.dbscan([p for p in pts if p["lat"] < -2.5][:3], jam=48)
+    assert len(set(lab_lama)) == 1, lab_lama
+    eps_s, hit, snap = bangun_kejadian(pts, 2023, jl, FakeGambut(), cuaca, 14.0625)
+    A_ = sorted((e for e in eps_s if e["gb"]), key=lambda e: e["t_akhir"])
+    B_ = sorted((e for e in eps_s if not e["gb"]), key=lambda e: e["t_akhir"])
+    assert [e["t_akhir"] for e in A_] == [t0_ + dt.timedelta(hours=h_) for h_ in (7, 37, 187)], [e["t_akhir"] for e in A_]
+    assert [round(e["Tn"], 3) if e["Tn"] is not None else None for e in A_] == [30.0, 150.0, None], [e["Tn"] for e in A_]
+    assert [e["Tn"] for e in B_] == [10.0, None, None] and len(B_) == 3, [e["Tn"] for e in B_]     # t_i=10 -> jam 20 (10 jam); t_i=20 tak muncul; titik jauh tak muncul
+    assert A_[0]["dc"] == 411.0, A_[0]["dc"]       # t_i 7 UTC = 14:18 setempat 1 Sep
+    assert A_[0]["px"] >= 1 and A_[1]["px"] >= A_[0]["px"] and A_[0]["fu"] > 0 and len(B_[1]["cp"][80]) == KMAKS and B_[1]["cp"][80][0] > LINTAS_MIN_JAM and B_[1]["cp"][60] == B_[1]["cp"][80]
+    # aturan 24 jam kini mencatat muncul ulang jam 37 (30 jam sesudah t_i) sebagai PALSU; aturan 48 jam tidak (belum dinyatakan)
+    aj24, aj48 = {"tipe": "AJ", "jam": 24}, {"tipe": "AJ", "jam": 48}
+    assert klasif(A_[0], D_aturan(A_[0], aj24)) == "palsu" and klasif(A_[0], D_aturan(A_[0], aj48)) == "sebelum"
+    assert klasif(A_[1], D_aturan(A_[1], aj24)) == "palsu" and klasif(A_[2], 24.0) == "benar"       # 150 jam: 24 < 150 <= 24+168 -> palsu; tanpa muncul ulang -> benar
+    assert metrik(A_, [24.0] * 3)["n_muncul_ulang"] == 2 and metrik(A_, [48.0] * 3)["n_muncul_ulang"] == 1
+    # pembaruan kausal: SEMUA celah ada; tak ada pengelompokan yang membuang 'celah < 48 jam'
+    assert len(eps_s) == 6 and hit["pengamatan_dipakai"] == 6 and all(e["lok"][0] == 2023 for e in eps_s), hit
+    # kepekaan radius: titik 1,5 km dari jejak = muncul ulang pada 2 km, bukan pada 1 km / 0,5 km
+    pr = [P(-1.0, 105.0, 10), P(-1.0, 105.0 + 1.5 / 111.32, 60)]
+    er, _, _ = bangun_kejadian(pr, 2023, jl, FakeGambut(), cuaca, 14.0625)
+    e0r = [e for e in er if e["t_akhir"] == t0_ + dt.timedelta(hours=10)][0]
+    assert e0r["Tn"] is None and e0r["TnR"][0.5] is None and abs(e0r["TnR"][2.0] - 50.0) < 1e-6, (e0r["Tn"], e0r["TnR"])
+    kr = kepekaan_radius([dict(e0r, gb=True, dc=100.0, cp={60: [12.0], 80: [12.0], 90: [12.0]})], aj24)
+    assert set(kr) == {"muncul_ulang_dalam_0.5_km", "muncul_ulang_dalam_1_km", "muncul_ulang_dalam_2_km"} and kr["muncul_ulang_dalam_2_km"]["gambut"]["n_muncul_ulang"] == 1 and kr["muncul_ulang_dalam_1_km"]["gambut"]["n_muncul_ulang"] == 0
+    # snapshot kausal: S = jam 20 -> deteksi terakhir <= S saja (lokasi A: t_i=7; Tn=30 > umur 13 -> belum muncul ulang), px sampai S
+    S_ = t0_ + dt.timedelta(hours=20)
+    es, _, sn = bangun_kejadian(pts, 2023, jl, FakeGambut(), cuaca, 14.0625, snaps=[S_])
+    ls = {e["gb"]: e for e in sn[S_]}
+    assert ls[True]["t_akhir"] == t0_ + dt.timedelta(hours=7) and ls[False]["t_akhir"] == t0_ + dt.timedelta(hours=20) and all(e["t_akhir"] <= S_ for e in sn[S_]), sn[S_]
+    assert ls[True]["px"] == len({H.pix(p) for p in pts[:2]}), ls[True]["px"]
     # awan 100% -> tak ada lintasan bersih
     cwc = dict(cwf, cc=[100] * (24 * 300))
-    ec, _ = bangun_kejadian(pts, 2023, {("N", "D"): 13.5, ("N", "N"): 1.5}, FakeGambut(), {sel_05(-3.0, 110.0): cwc, sel_05(-1.0, 105.0): cwc}, 14.0625)
+    ec, _, _ = bangun_kejadian(pts, 2023, jl, FakeGambut(), {sel_05(-3.0, 110.0): cwc, sel_05(-1.0, 105.0): cwc}, 14.0625)
     assert all(e["cp"][80] == [] and e["cp"][90] == [] for e in ec) and all(e["awan72"] == 1.0 for e in ec)
     # tanpa cuaca sel -> dibuang dan dihitung
-    e0, h0 = bangun_kejadian(pts, 2023, {("N", "D"): 13.5}, FakeGambut(), {sel_05(-1.0, 105.0): cwf}, 14.0625)
-    assert h0.get("tanpa_cuaca") == 2 and all(not e["gb"] for e in e0), h0
+    e0, h0, _ = bangun_kejadian(pts, 2023, {("N", "D"): 13.5}, FakeGambut(), {sel_05(-1.0, 105.0): cwf}, 14.0625)
+    assert h0.get("tanpa_cuaca") == 3 and all(not e["gb"] for e in e0), h0
+    # cap: sampel acak pengamatan, benih tetap
+    ecap1, hc, _ = bangun_kejadian(pts, 2023, jl, FakeGambut(), cuaca, 14.0625, cap=3)
+    ecap2, _, _ = bangun_kejadian(pts, 2023, jl, FakeGambut(), cuaca, 14.0625, cap=3)
+    assert len(ecap1) == 3 and hc["disampel_ke"] == 3 and [e["t_akhir"] for e in ecap1] == [e["t_akhir"] for e in ecap2]
+
+    # --- B2: kovariat dari titik tengah JEJAK pada t_i. Api merayap melewati batas sel 100,5: tiap pengamatan di selnya sendiri, tanpa cuaca = dibuang & dihitung
+    def Q(lat, lon, jam):
+        return dict(P(lat, lon, jam), px=1.0)
+    dr = [Q(-1.0, 100.495, 6), Q(-1.0, 100.500, 40), Q(-1.0, 100.505, 74), Q(-1.0, 100.510, 108)]
+    c1 = sel_05(-1.0, 100.495)
+    assert sel_05(-1.0, 100.500) != c1
+    ed, hd, _ = bangun_kejadian(dr, 2023, jl, FakeGambut(), {c1: cwf}, 14.0625)
+    assert len(ed) == 1 and hd["tanpa_cuaca"] == 3 and ed[0]["klaster"] == (c1, 2023) and abs(ed[0]["lon"] - 100.495) < 1e-9, (hd, [e["lon"] for e in ed])
+    ed2, hd2, _ = bangun_kejadian(dr, 2023, jl, FakeGambut(), {c1: cwf, sel_05(-1.0, 100.5): cwf}, 14.0625)
+    assert len(ed2) == 4 and {e["klaster"][0] for e in ed2} == {c1, sel_05(-1.0, 100.5)} and abs(ed2[3]["lon"] - 100.510) < 1e-9
+    # gambut = mayoritas piksel jejak (3 titik serentak: 2 gambut -> True; 1 gambut -> False); bukan titik tengah lokasi
+    gb2 = [Q(-2.4985, 110.0, 6), Q(-2.5045, 110.0, 6), Q(-2.5085, 110.0, 6)]
+    gb1 = [Q(-2.4985, 110.0, 6), Q(-2.4945, 110.0, 6), Q(-2.5045, 110.0, 6)]
+    cg = {sel_05(-2.504, 110.0): cwf, sel_05(-2.499, 110.0): cwf}
+    assert [e["gb"] for e in bangun_kejadian(gb2, 2023, jl, FakeGambut(), cg, 14.0625)[0]] == [True]
+    assert [e["gb"] for e in bangun_kejadian(gb1, 2023, jl, FakeGambut(), cg, 14.0625)[0]] == [False]
+
+    # --- B3: snapshot di tengah rantai deteksi: 'deteksi terakhir' = titik terakhir t <= S (bukan ujung rantai); piksel & awan72 sampai S
+    ch = [Q(-1.0, 105.000, 6), Q(-1.0, 105.005, 7), Q(-1.0, 105.010, 8)]
+    S3 = t0_ + dt.timedelta(hours=7, minutes=30)
+    _, _, sn3 = bangun_kejadian(ch, 2023, jl, FakeGambut(), cuaca, 14.0625, snaps=[S3])
+    assert len(sn3[S3]) == 1 and sn3[S3][0]["t_akhir"] == t0_ + dt.timedelta(hours=7) and sn3[S3][0]["px"] == len({H.pix(p) for p in ch[:2]}) == 2, sn3[S3]
+    assert sn3[S3][0]["Tn"] == 1.0 and sn3[S3][0]["t_akhir"] <= S3        # titik jam 8 ada di masa depan S: hanya muncul sebagai Tn > umur
+    # awan sesudah S tidak boleh mempengaruhi awan72 snapshot: bersih sampai S+30 jam, berawan sesudahnya
+    S4 = t0_ + dt.timedelta(hours=7 + 30)
+    nS = int((S4 - dt.datetime(2023, 3, 1, tzinfo=UTC_)).total_seconds() / 3600)
+    cwk = dict(cwf, cc=[20] * nS + [100] * (24 * 300 - nS))
+    ck = {sel_05(-1.0, 105.0): cwk}
+    e_pen, _, sn4 = bangun_kejadian(ch, 2023, jl, FakeGambut(), ck, 14.0625, snaps=[S4])
+    assert sn4[S4][0]["awan72"] == 0.0 and [e for e in e_pen if e["t_akhir"] == t0_ + dt.timedelta(hours=8)][0]["awan72"] > 0, (sn4[S4][0]["awan72"])
+
+    # --- B4: urutan tarik cuaca bergilir tahun x strata; potongan tak menghapus satu strata/tahun; terpotong = tidak lengkap
+    sh = {(float(i), 100.25): (1.0 if i % 2 == 0 else 0.0) for i in range(8)}
+    sl = selang_seling(sorted(sh)[::-1][:4] + sorted(sh)[:4], sh)
+    assert [sh[x] >= .5 for x in sl[:4]] == [True, False, True, False] and sorted(sl) == sorted(sh)
+    ur = urut_tarik(sl, [2019, 2020], 2)
+    assert [t for t, _ in ur[:4]] == [2019, 2020, 2019, 2020] and all({sh[x] >= .5 for x in g} == {True, False} for _, g in ur) and len(ur) == 8
+    assert urut_tarik(sl, [2019, 2020], 2, lambda thn, x: thn == 2019 and x == sl[0])[0] == (2019, [sl[1]])
+    import tempfile as _tf
+    _lama = globals()["CACHE"]
+    with _tf.TemporaryDirectory() as td_:
+        globals()["CACHE"] = td_
+        try:
+            assert not cuaca_lengkap([(1.25, 100.25)], [2019])
+            simpan_cuaca(2019, 1.25, 100.25, cwf)
+            assert cuaca_lengkap([(1.25, 100.25)], [2019]) and not cuaca_lengkap([(1.25, 100.25)], [2019, 2020])
+        finally:
+            globals()["CACHE"] = _lama
+    assert KRITERIA["vonis_bila_cuaca_terpotong"] == "tidak_dapat_dinilai" and "terpotong" in inspect.getsource(_jalan) and "vonis_bila_cuaca_terpotong" in inspect.getsource(_jalan)
+
+    # --- B5/B6: A0/A1 laporan saja; label selisih; arah sebaliknya TIDAK memilih
+    hl = uji_lipat(eps, eps, par)
+    assert hl["A0"]["laporan_saja"] and hl["A1"]["laporan_saja"] and not hl["A3"]["laporan_saja"] and "bersyarat" in hl["A3"]["selisih_telat_label"] and set(PEMBANDING) == {"A0", "A1"}
+    src_ = inspect.getsource(_jalan)
+    assert list(inspect.signature(pilih_setel).parameters) == ["params"] and src_.count("pilih_setel(") == 1 and "pilih_setel(par)" in src_ and "LIPAT[1]" not in src_ and "pilih_setel(par2)" not in src_
+    assert LIPAT[1]["setel"] == UJI_TAHUN and KRITERIA["arah_sebaliknya_hanya_kepekaan"] is True and "arah_sebaliknya_hanya_kepekaan" in KRITERIA["_catatan"]
+
+    # --- F1: waktu habis di tengah loop tahun -> tahun tak terolah dilaporkan (jalur nyata olah_tahun), bukan diam-diam
+    import tempfile as _tf2
+    def Py(thn, lat, lon, jam):
+        return {"lat": lat, "lon": lon, "t": dt.datetime(thn, 9, 1, tzinfo=UTC_) + dt.timedelta(hours=jam), "px": .4, "dn": "D", "s": "N", "c": 1}
+    selx = [sel_05(-1.0, 105.0)]
+    ptsy = {thn: [Py(thn, -1.0, 105.0, 10), Py(thn, -1.0, 105.0, 20)] for thn in (2019, 2020)}
+    _lama = globals()["CACHE"]
+    with _tf2.TemporaryDirectory() as td_:
+        globals()["CACHE"] = td_
+        try:
+            for thn in (2019, 2020):
+                simpan_cuaca(thn, *selx[0], {"utc0": dt.datetime(thn, 3, 1, tzinfo=UTC_), "cc": [20] * (24 * 300), "dc": {"%d-09-%02d" % (thn, i): 400.0 for i in range(1, 31)}})
+            r_cepat = olah_tahun([2019, 2020], ptsy, selx, jl, FakeGambut(), 14.0, lambda lon, lat: True, lambda: 0)         # waktu sudah habis sesudah tahun pertama
+            r_penuh = olah_tahun([2019, 2020], ptsy, selx, jl, FakeGambut(), 14.0, lambda lon, lat: True, lambda: 1000)
+        finally:
+            globals()["CACHE"] = _lama
+    assert r_cepat[3] == [2019] and r_penuh[3] == [2019, 2020] and set(r_cepat[2]) == {"2019"} and len(r_cepat[0]) < len(r_penuh[0])
+    assert tahun_belum_diolah(r_cepat[3]) == [2020, 2022, 2023] and tahun_belum_diolah(r_penuh[3]) == [2022, 2023] and tahun_belum_diolah([2019, 2020, 2022, 2023]) == []
+
+    # --- F3: gerbang tak-dinyatakan (setel DAN uji, gambut DAN mineral); penyebut = pengamatan tanpa muncul ulang sampai cap
+    cp_pdk, cp_pjg = [12.0, 24.0, 36.0], [12.0 * i for i in range(1, 13)]
+    def campur(frac):
+        out_ = []
+        for gb_ in (True, False):
+            out_ += [ep(gb_, 300, None, cp_pdk if i < int(100 * frac) else cp_pjg) for i in range(100)]
+        return out_
+    t30, t15 = tabel_k(campur(.30), 80), tabel_k(campur(.15), 80)
+    assert t30["g"][4][5] == 30 and t30["g"][4][6] == 100 and not _ok(t30["g"][4], WILSON_SETEL) and _ok(t15["g"][4], WILSON_SETEL) and _ok(t15["m"][4], WILSON_SETEL)
+    pr4 = {"A2": {"tipe": "A2", "thr": 80, "k": 4}}
+    u30, u15 = uji_lipat(campur(.30), campur(.30), pr4)["A2"], uji_lipat(campur(.15), campur(.15), pr4)["A2"]
+    assert u30["metrik"]["gambut"]["tak_dinyatakan"] == .3 and not u30["lolos_tak_dinyatakan"] and not u30["lolos"] and u30["lolos_muncul_ulang"] and u30["lolos_telat"]
+    assert u15["lolos_tak_dinyatakan"] and u15["lolos"] and TAK_MAKS == .20
+    # yang muncul ulang cepat tidak masuk penyebut (sudah jelas tak padam)
+    assert metrik([ep(True, 300, 50.0, cp_pdk)], [None])["n_penyebut_tak_dinyatakan"] == 0
+    # setel tak pernah memilih k yang membuat >20% tak dinyatakan (k >= 4 gugur, k terkecil dipilih)
+    assert setel(campur(.30))["A2"]["k"] == 2 and setel(campur(.30))["A3"]["kg"] <= 3 and all(not _ok(t30["g"][k_], WILSON_SETEL) for k_ in range(4, 13))
+
+    # --- F4: setiap kunci kriteria yang tidak dibaca kode disebut di _catatan
+    import re as _re
+    src_kode = open(os.path.abspath(__file__), encoding="utf-8").read().split("def uji():")[0]
+    dibaca = set(_re.findall(r'(?:_K|KRITERIA)\["([A-Za-z0-9_]+)"\]', src_kode)) | {"_catatan"}
+    doc = [k_ for k_ in KRITERIA if k_ not in dibaca]
+    assert doc and all(k_ in KRITERIA["_catatan"] for k_ in doc), [k_ for k_ in doc if k_ not in KRITERIA["_catatan"]]
+    assert {"aturan_batas", "ci_metode", "klaster", "versi", "pemilihan"} <= set(doc), doc
+    assert "tak_dinyatakan_maks" in dibaca and "alasan" in KRITERIA and "tak_dinyatakan" in KRITERIA["alasan"]
+
+    # --- F2: ringkas() memuat kriteria baru & penandaan pembanding, kolom batas_atas_gabungan / n klaster / tak dinyatakan
+    with _tf2.TemporaryDirectory() as td_:
+        K0, R0 = globals()["KELUAR"], globals()["RINGKAS"]
+        globals()["KELUAR"], globals()["RINGKAS"] = os.path.join(td_, "padam.json"), os.path.join(td_, "r.md")
+        try:
+            hh_ = uji_lipat(eps, eps, par)
+            tulis({"tahap": "uji", "tahun_lengkap": [2019], "kriteria_sha": KRITERIA_SHA, "kriteria": KRITERIA, "batasan": BATASAN,
+                   "aturan": {"uji_murni": {"terpilih": "A3", "vonis": "lolos", "uji_hasil": hh_}}})
+            import io as _io, contextlib as _cl
+            with _cl.redirect_stdout(_io.StringIO()):
+                ringkas()
+            md = open(globals()["RINGKAS"]).read()
+        finally:
+            globals()["KELUAR"], globals()["RINGKAS"] = K0, R0
+    assert "bootstrap klaster sel x tahun B=1000 p97.5" in md and ">= 20 klaster" in md and "A0 (pembanding, laporan saja)" in md and "A1 (pembanding, laporan saja)" in md
+    assert "batas atas gabungan" in md and "n klaster g/m" in md and "tak dinyatakan g/m" in md and "Tak dinyatakan padam dalam 240 jam <= 20%" in md and "A3 |" in md
 
     # --- cuaca_dari_respons: indeks UTC dari utc_offset, DC naik pada hari kering dan turun oleh hujan lebat
     jamjam = [(dt.datetime(2023, 3, 1) + dt.timedelta(hours=i)).strftime("%Y-%m-%dT%H:%M") for i in range(24 * 6)]
@@ -1037,15 +1429,20 @@ def uji():
     assert d[2][1] > d[1][1] > d[0][1] and d[3][1] < d[2][1] - 20 and d[4][1] > d[3][1], d     # kering naik; hujan 60 mm menurunkan DC
 
     # --- tiga angka pada satu kejadian: aktif teramati (<=24 j), tak teramati, kandidat padam, padam, sudah muncul ulang
-    e = dict(ep(False, 100, None, [24.0, 48.0, 72.0, 96.0]), t_awal=dt.datetime(2023, 9, 1, tzinfo=UTC_), t_akhir=dt.datetime(2023, 9, 2, tzinfo=UTC_), ha=100.0)
+    e = dict(ep(False, 100, None, [24.0, 48.0, 72.0, 96.0]), t_awal=dt.datetime(2023, 9, 1, tzinfo=UTC_), t_akhir=dt.datetime(2023, 9, 2, tzinfo=UTC_), ha=100.0, lok=1)
     a3 = {"tipe": "A2", "thr": 80, "k": 3}                    # D = 72 jam
     ss = lambda jam_: status_luas(e, a3, e["t_akhir"] + dt.timedelta(hours=jam_))
-    assert [ss(x) for x in (-5, 10, 30, 71, 72, 72 + 168, 72 + 169)] == ["aktif_teramati", "aktif_teramati", "tak_teramati", "tak_teramati", "kandidat_padam", "kandidat_padam", "padam"]
+    assert [ss(x) for x in (-5, 10, 30, 71, 72, 72 + 168, 72 + 169)] == [None, "aktif_teramati", "tak_teramati", "tak_teramati", "kandidat_padam", "kandidat_padam", "padam"]    # S < deteksi terakhir = informasi belum ada
     assert status_luas(e, a3, e["t_awal"] - dt.timedelta(hours=1)) is None
     ee = dict(e, Tn=40.0)
     assert status_luas(ee, a3, ee["t_akhir"] + dt.timedelta(hours=41)) is None
-    t3 = luas_tiga([e, dict(e, ha=50.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=30)), dict(e, ha=7.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=60))], a3, e["t_akhir"] + dt.timedelta(hours=72))
+    t3 = luas_tiga([e, dict(e, lok=2, ha=50.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=30)), dict(e, lok=3, ha=7.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=60))], a3, e["t_akhir"] + dt.timedelta(hours=72))
     assert t3["kandidat_padam_ha"] == 100 and t3["aktif_teramati_ha"] == 7 and t3["tak_teramati_ha"] == 50, t3
+    # S22: lokasi sama, dua pengamatan; pada S hanya yang deteksi terakhirnya <= S yang dipakai (yang sesudah S = masa depan, diabaikan); luas = piksel sampai S
+    awal_ = dict(e, lok=9, ha=30.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=10))
+    akhir_ = dict(e, lok=9, ha=80.0, t_akhir=e["t_akhir"] + dt.timedelta(hours=100))
+    S9 = e["t_akhir"] + dt.timedelta(hours=40)
+    assert terakhir_per_lokasi([akhir_, awal_], S9) == [awal_] and luas_tiga([akhir_, awal_], a3, S9)["tak_teramati_ha"] == 30 and luas_tiga([akhir_], a3, S9)["tak_teramati_n"] == 0
 
     # --- muncul ulang: jarak > 1 km tidak dihitung, tepat di atas ambang
     jej = [{"lat": 0.0, "lon": 100.0}]
@@ -1062,12 +1459,67 @@ def uji():
     assert kms["semua"]["n"] == 300 and 0.4 < kms["semua"]["g"]["24"]["p"] < 0.6, kms["semua"]["g"]["24"]   # 60 & 120 dari 4 pilihan = 50%
     assert kms["gambut"]["k"]["80"]["2"]["n"] > 0 and kms["ukuran5-19"]["n"] == 300
 
-    # --- sampel sel: dua gambut, dua mineral
-    pilih = pilih_sel_sampel({(0.25, 100.25): 500, (0.75, 100.25): 400, (1.25, 100.25): 300, (1.75, 100.25): 200}, {(0.25, 100.25): .9, (1.25, 100.25): .1, (0.75, 100.25): .6, (1.75, 100.25): 0}, 1, 1)
-    assert pilih == [(0.25, 100.25), (1.25, 100.25)], pilih
+    # --- sampel sel: acak berstrata, benih tetap, hanya sel dengan titik >= n_min; semua sel bila kuota cukup
+    hit_ = {(0.25, 100.25): 500, (0.75, 100.25): 400, (1.25, 100.25): 300, (1.75, 100.25): 200, (2.25, 100.25): 50}
+    sh_ = {(0.25, 100.25): .9, (1.25, 100.25): .1, (0.75, 100.25): .6, (1.75, 100.25): 0, (2.25, 100.25): .9}
+    assert pilih_sel_sampel(hit_, sh_, 5, 5) == [(0.25, 100.25), (0.75, 100.25), (1.25, 100.25), (1.75, 100.25)]      # kuota cukup: semua, minus sel < n_min
+    big = {(i * .5 + .25, 100.25): 300 for i in range(40)}
+    pg_ = pilih_sel_sampel(big, {s: 1.0 for s in big}, 10, 10)
+    assert len(pg_) == 10 and pg_ == pilih_sel_sampel(big, {s: 1.0 for s in big}, 10, 10) and pg_ != sorted(big)[:10] and set(pg_) <= set(big)     # acak (bukan 10 teratas), deterministik
+    assert pg_ != pilih_sel_sampel(big, {s: 1.0 for s in big}, 10, 10, benih=1)
 
-    # --- kriteria pra-tulis utuh dan tertulis sebelum angka
-    assert KRITERIA["padam_palsu_maks"] == .10 and KRITERIA["keterlambatan_maks_vs_A0_jam"] == 24 and set(KRITERIA["definisi"]) >= {"A0", "A1", "A2", "A3", "A4"}
+    # --- kriteria: dari berkas terpisah, kunci terurut, tanpa angka hasil, sha kanonik stabil; semua ambang masuk sha
+    assert KRITERIA["wilson_batas_atas_setel_maks"] == .10 and KRITERIA["wilson_batas_atas_uji_maks"] == .15 and KRITERIA["n_min_per_strata"] == 60 and KRITERIA["keterlambatan_maks_vs_A0_jam"] == 24
+    assert set(KRITERIA["definisi"]) >= {"A0", "A1", "A2", "A3", "A4"} and "VIIRS" in KRITERIA["label_proksi_awan"] and "asap" in KRITERIA["label_proksi_awan"]
+    assert open(KRITERIA_JSON, encoding="utf-8").read() == json.dumps(KRITERIA, sort_keys=True, indent=1, ensure_ascii=False) + "\n", "kriteria/lab_padam.json harus kunci terurut"
+    assert KRITERIA_SHA == hashlib.sha256(kriteria_kanonik(KRITERIA).encode("utf-8")).hexdigest() and len(KRITERIA_SHA) == 64
+    assert muat_kriteria()[1] == KRITERIA_SHA and hashlib.sha256(kriteria_kanonik(dict(KRITERIA, wilson_batas_atas_uji_maks=.2)).encode()).hexdigest() != KRITERIA_SHA
+    assert not any(k in KRITERIA for k in ("hasil", "terpilih", "padam_palsu"))
+    assert SETEL_TAHUN == [2019, 2020] and UJI_TAHUN == [2022, 2023] and LIPAT[0] == {"setel": [2019, 2020], "uji": [2022, 2023]} and RADIUS_KEPEKAAN == (0.5, 2.0)
+
+    # --- H5/H6: uji murni. Aturan dipilih dari setel saja; data uji TIDAK mengubah pilihan. Wilson H10: titik 0% di n kecil bukan lolos.
+    assert wilson(0, 30)[1] > WILSON_SETEL and wilson(0, 60)[1] <= WILSON_SETEL and wilson(9, 60)[1] > WILSON_UJI and wilson(3, 60)[1] < WILSON_UJI
+    kl = lambda n, x=0: {(i * .5, 2019): [n // 20, x if i == 0 else 0] for i in range(20)}       # 20 klaster
+    assert not _ok([30, 0, 0.0, 30, kl(30), 0, 0], .10) and _ok([60, 0, 0.0, 60, kl(60), 0, 0], .10) and not _ok([59, 0, 0.0, 59, kl(59), 0, 0], .10) and not _ok([100, 8, 0.0, 92, kl(100, 8), 0, 0], .10)
+    # B1: klaster < NKL ditolak walau n besar dan titik 0%
+    assert not _ok([600, 0, 0.0, 600, {(i, 2019): [30, 0] for i in range(19)}, 0, 0], .10) and _ok([600, 0, 0.0, 600, {(i, 2019): [30, 0] for i in range(20)}, 0, 0], .10)
+    # B1: Wilson lolos (5% pada n=2000, batas atas ~6%) tetapi SEMUA muncul ulang menumpuk di 1 dari 20 sel -> bootstrap klaster menggagalkan
+    pk_tumpuk = {(i, 2019): [100, 100 if i == 0 else 0] for i in range(20)}
+    assert wilson(100, 2000)[1] <= .10 and ci_atas_klaster(pk_tumpuk) > .10 and not _ok([2000, 100, 0.0, 1900, pk_tumpuk, 0, 0], .10)
+    pk_rata = {(i, 2019): [100, 5] for i in range(20)}       # 5% merata di semua sel: lolos
+    assert ci_atas_klaster(pk_rata) == 0.05 and _ok([2000, 100, 0.0, 1900, pk_rata, 0, 0], .10) and ci_atas_klaster(pk_rata) == ci_atas_klaster(pk_rata)      # deterministik
+    assert ci_atas_klaster({(0, 0): [5, 1]}) is None and batas_atas(2000, 100, pk_tumpuk) > .10 and batas_atas(59, 0, kl(59)) is None
+    # kepekaan sel saja: klaster sel x tahun dua tahun -> sel saja menggabungkan tahun (klaster lebih sedikit)
+    mm_ = metrik([ep(True, 100, None, cp_ := [12.0 * i for i in range(1, 13)], klaster=((i % 3) * .5, 2019 + i % 2)) for i in range(60)], [24.0] * 60)
+    assert mm_["n_klaster"] == 6 and mm_["n_klaster_sel"] == 3 and "muncul_ulang_bootstrap_sel_saja" in mm_
+    # setel pada data yang titik-taksirannya 7% (n=100) TIDAK lolos 10% karena batas atas Wilson 13,6% -> k diteruskan ke yang lebih besar
+    cp2 = [12.0 * i for i in range(1, 13)]
+    e7 = [ep(True, 300, 30.0 if i < 7 else None, cp2) for i in range(100)] + [ep(False, 100, None, cp2) for _ in range(100)]
+    assert setel(e7)["A3"]["kg"] == 3 and setel(e7)["A3"]["km"] == 2
+    # pilih dari setel saja: pilih_setel hanya menerima parameter; uji dengan data uji berlawanan tak mengubah pilihan
+    pil = pilih_setel(par)
+    ujiA = uji_lipat(eps, eps, par)
+    ujiB = uji_lipat(eps, [ep(True, 300, 30.0, cp) for _ in range(100)] + [ep(False, 100, 30.0, cp) for _ in range(100)], par)
+    assert pilih_setel(par) == pil and vonis_uji(ujiA, pil) == "lolos" and vonis_uji(ujiB, pil) == "tidak_lolos"
+
+    # --- B8: jalan.jsonl append-only, aman bila berkas/direktori belum ada, format seragam dengan lab_luas, tak menimpa baris lama, tak menulis ke jalur asli
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        jj = os.path.join(td, "belum", "ada", "jalan.jsonl")
+        os.environ["GITHUB_SHA"] = "abc123"
+        b1 = catat_jalan("lab_padam.py", "mulai", None, KRITERIA_SHA, jalur=jj)
+        open(jj, "a").write(json.dumps({"skrip": "lab_luas.py", "status": "selesai"}) + "\n")
+        b2 = catat_jalan("lab_padam.py", "selesai", "A3 lolos", KRITERIA_SHA, jalur=jj)
+        del os.environ["GITHUB_SHA"]
+        b3 = catat_jalan("lab_padam.py", "gagal", "x", KRITERIA_SHA, jalur=jj)
+        baris = [json.loads(x) for x in open(jj)]
+        assert len(baris) == 4 and baris[0] == b1 and baris[2] == b2 and baris[3] == b3 and baris[1]["skrip"] == "lab_luas.py", baris
+        assert set(b1) == {"skrip", "waktu", "kriteria_sha", "git_commit", "status", "vonis"} and b1["git_commit"] == "abc123" and b3["git_commit"] is None and b2["vonis"] == "A3 lolos"
+        assert b1["kriteria_sha"] == KRITERIA_SHA and b1["waktu"].endswith("Z")
+        # tulis() ke jalur sementara; jalur asli tak tersentuh
+        tulis({"kriteria_sha": KRITERIA_SHA}, jalur=os.path.join(td, "padam.json"))
+        assert json.load(open(os.path.join(td, "padam.json")))["kriteria_sha"] == KRITERIA_SHA
+
     # --- kunci tak bocor lewat pesan galat
     os.environ["FIRMS_MAP_KEY"] = "RAHASIA999"
     assert "RAHASIA999" not in FS.sensor_url("https://firms.modaps.eosdis.nasa.gov/api/area/csv/RAHASIA999/VIIRS_SNPP_SP/1,2,3,4/5/2019-07-01")
