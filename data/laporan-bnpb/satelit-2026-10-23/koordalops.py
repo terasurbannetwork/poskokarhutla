@@ -1,4 +1,4 @@
-"""Isi bagian deck yang bersumber laporan BNPB dari Laporan Harian Dit. Koordalops BNPB 21102026 (data 21 Okt 2026).
+"""Isi bagian deck yang bersumber laporan BNPB: PM2.5 dan cuaca dari Laporan Harian Dit. Koordalops 22102026, operasi dari ringkasan WA 23 Okt (data 22 Okt).
 Pakai: python3 -I koordalops.py <masuk.pptx> <keluar.pptx>
 - slide tabel (slide1.xml): pil PM2.5 = konsentrasi tertinggi stasiun BMKG di provinsi itu (daftar 10 tertinggi, 22 Okt 06.00 WIB);
   provinsi di luar daftar = "PM2.5 < nilai ke-10". Pil cuaca = potensi cuaca sepekan BMKG (periode 20-26 Okt).
@@ -84,28 +84,28 @@ def ubah_sp(s, x, y, teks_baru=None, x_baru=None, cx=None, semua=True):
 def lebar_pil(t): return round(72000 * len(t) + 130000)   # sejalan dengan pil yang ada: 'BELUM HUJAN' 925.373, 'HUJAN RINGAN–LEBAT' 1.386.230
 
 
-# ringkasan WA Koordalops 22 Okt (data 21 Okt): patroli/CASA/OMC ; heli WB, urut total menurun
-ARMADA = [('Kalimantan Selatan', 7, 7), ('Kalimantan Barat', 3, 7), ('Kalimantan Tengah', 2, 8), ('Sumatera Selatan', 4, 5),
-          ('Riau', 1, 4), ('Jambi', 2, 3), ('Lampung', 1, 1), ('Kalimantan Timur/IKN', 0, 1)]
-# perkiraan: registrasi sipil = sewa BNPB, nomor militer (A-, H-, HA-) = TNI; Kalsel tidak punya bagian di PDF, 9 unit diasumsikan sipil
-PEMILIK = [('BNPB', 44), ('TNI', 10), ('Kemenhut', 1), ('PT Sinarmas', 1)]
+# ringkasan WA "Laporan Penanganan Karhutla di Enam Provinsi Prioritas" 23 Okt (data 22 Okt): patroli/CASA/OMC ; heli WB, urut total menurun.
+# Baris PEMILIK templat dibuang: pembagian BNPB/TNI 21 Okt adalah perkiraan dan tidak bisa diperbarui dari laporan 22 Okt.
+ARMADA = [('Kalimantan Selatan', 8, 7), ('Kalimantan Barat', 3, 7), ('Kalimantan Tengah', 2, 8), ('Sumatera Selatan', 4, 5),
+          ('Riau', 1, 4), ('Jambi', 2, 3), ('Lampung', 1, 1), ('Kalimantan Timur/IKN', 0, 1), ('Papua Selatan', 1, 0)]
 
 
 def ganti_operasi(s):
-    s = teks(s, '20', '21')                          # judul: '... per Tanggal ' + '20' + ' Oktober ' + '2026' (run terpisah)
+    s = teks(s, '20', '22')                          # judul: '... per Tanggal ' + '20' + ' Oktober ' + '2026' (run terpisah)
     pat, wb = sum(r[1] for r in ARMADA), sum(r[2] for r in ARMADA)
-    s = teks(s, '51', str(pat + wb))                 # subjudul: "... 56 armada udara"
-    s = teks(s, '3 provinsi', '2 provinsi')          # subjudul: OMC di 4 provinsi dengan hujan di 2 provinsi (Kalbar, Kalteng)
+    s = teks(s, '51', str(pat + wb))                 # subjudul: "... 58 armada udara"
+    s = teks(s, '4 provinsi', '2 provinsi'); s = teks(s, '3 provinsi', '1 provinsi')   # OMC di Kalteng dan Sumsel; hujan di Kalteng (Murung Raya)
     s = teks(s, '15', str(pat))                      # kotak PENANGANAN: pesawat patroli/OMC
     assert wb == 36; s = teks(s, '51 unit', f'{pat + wb} unit')
     s = teks(s, '15 ', f'{pat} ')                   # '15 ' + 'patroli/CASA/OMC'
-    # ---- hujan setelah OMC 21 Okt (laporan: OMC menghasilkan hujan di Kalbar dan Kalteng; Sumsel dan Kalsel tidak ada laporan hujan)
-    s = teks(s, '19 Okt', '21 Okt'); s = teks(s, '3 dari 4 provinsi hujan', '2 dari 4 provinsi hujan')
-    s = ubah_sp(s, 3561885, 3170682, 'HUJAN RINGAN–SEDANG', cx=lebar_pil('HUJAN RINGAN–SEDANG'))
-    s = teks(s, '13 kab/kota, termasuk 2 sasaran', '8 kab/kota, termasuk Ketapang')
-    s = teks(s, 'Barito Selatan, Seruyan, Kotawaringin Timur dan Barat', 'Palangka Raya, Kotawaringin Timur dan Barat, Seruyan, dll.')
-    s = teks(s, 'di 4 kabupaten sasaran', 'di Kotawaringin Barat')
-    s = teks(s, 'Ogan Ilir, OKI, Banyuasin, Palembang', 'Palembang, Banyuasin')
+    # ---- hujan setelah OMC 22 Okt: sortie hanya di Kalteng (7) dan Sumsel (9); Kalbar dan Kalsel tanpa sortie
+    s = teks(s, '19 Okt', '22 Okt'); s = teks(s, '3 dari 4 provinsi hujan', 'OMC di 2 provinsi')
+    s = teks(s, 'Ketapang, Kayong Utara', 'tidak ada sortie, awan belum mendukung')
+    s = ubah_sp(s, 3561885, 3170682, 'HUJAN RINGAN', cx=lebar_pil('HUJAN RINGAN'))
+    s = teks(s, '13 kab/kota, termasuk 2 sasaran', 'Sambas, Singkawang, Mempawah, Sintang')
+    s = teks(s, 'Barito Selatan, Seruyan, Kotawaringin Timur dan Barat', 'Murung Raya, Gunung Mas, Palangka Raya, TNTP')
+    s = teks(s, 'di 4 kabupaten sasaran', 'di Murung Raya')
+    s = teks(s, 'Ogan Ilir, OKI, Banyuasin, Palembang', 'Palembang, lintas Lampung–OKU Timur')
     # Sumsel: pil biru HUJAN SANGAT RINGAN -> pil abu BELUM HUJAN (salin jenis dari baris Kalsel), titik biru -> abu
     a, b = sp_di(s, 3561885, 4501134)[0], sp_di(s, 3561885, 4501134)[-1]
     donor = re.sub(r'y="4501134"', 'y="4057650"', s[a[0]:b[1]])
@@ -113,31 +113,44 @@ def ganti_operasi(s):
     ids = re.findall(r'<p:cNvPr id="(\d+)"', s[c[0]:d[1]]); donor = re.sub(r'<p:cNvPr id="\d+"', lambda m, it=iter(ids): f'<p:cNvPr id="{next(it)}"', donor)
     s = s[:c[0]] + donor + s[d[1]:]
     (e, f), = sp_di(s, 676656, 4181094); s = s[:e] + s[e:f].replace('val="4A9BE0"', 'val="C4CAD3"') + s[f:]
-    s = teks(s, 'Ogan Ilir dan Lahat', 'belum ada laporan hujan 21 Okt')
-    s = teks(s, 'Tabalong, Banjar, Barito Kuala', 'Tabalong, Kotabaru, Tanah Bumbu, Banjar, Barito Kuala')
-    s = teks(s, 'radar BMKG 24 jam', 'belum ada laporan hujan 21 Okt')
-    # ---- semai dry ice 21 Okt: Kalteng 5 sortie 4.400 kg (PK-SNL, PK-SNC, A-2103, A-2107 x2); Sumsel 5 sortie 4.000 kg (A-2117 x3, A-2104, PK-SNP)
-    s = teks(s, '20 Okt', '21 Okt', 2)   # pil tanggal SEMAI DRY ICE dan ARMADA UDARA
-    cx = lebar_pil('10 sortie, 8.400 kg') - 60000   # tepi kanan pil tetap (4.856.836 + 1.042.416), pil melebar ke kiri
-    s = ubah_sp(s, 4856836, 4983480, '10 sortie, 8.400 kg', x_baru=4856836 + 1042416 - cx, cx=cx)
-    s = teks(s, '3.900 kg', '4.400 kg'); s = teks(s, '800 kg', '4.000 kg'); s = teks(s, '1 sortie', '5 sortie')
-    s = ubah_sp(s, 3561885, 5401818, 'BELUM DILAPORKAN', cx=lebar_pil('BELUM DILAPORKAN'))
-    (g, h), = [x for x in sp_di(s, 3561885, 5401818) if '<a:t>' not in s[x[0]:x[1]]]
-    s = s[:g] + s[g:h].replace('val="4A9BE0"', 'val="E6EAF0"') + s[h:]
-    i0 = s.find('<a:t>BELUM DILAPORKAN</a:t>'); j0 = s.rfind('<a:srgbClr val="FFFFFF"/>', 0, i0); s = s[:j0] + '<a:srgbClr val="2E3440"/>' + s[j0 + 25:]
-    s = teks(s, 'pagi, 1.907 ke 1.200', 'ISPU Palangka Raya 1.293, berbahaya')
-    s = teks(s, 'Palembang, 700 m ke 7.000 m', 'Palembang, 200 m ke 2,5 km')
+    s = teks(s, 'Ogan Ilir dan Lahat', 'jarak pandang naik, PM2,5 turun')
+    s = teks(s, 'Tabalong, Banjar, Barito Kuala', 'tidak ada sortie, armada siaga')
+    s = teks(s, 'radar BMKG 24 jam', 'tidak ada laporan hujan 22 Okt')
+    # ---- semai 22 Okt: Kalteng 7 sortie (5.000 kg dry ice + 1.000 kg NaCl); Sumsel 9 sortie (5.800 kg dry ice + 1.800 kg NaCl)
+    s = teks(s, 'SEMAI DRY ICE', 'SEMAI OMC'); s = teks(s, 'BAHAN SEMAI', 'DRY ICE + NaCl')
+    s = teks(s, '20 Okt', '22 Okt', 2)   # pil tanggal SEMAI dan ARMADA UDARA
+    cx = lebar_pil('16 sortie, 13.600 kg') - 60000   # tepi kanan pil tetap (4.856.836 + 1.042.416), pil melebar ke kiri
+    s = ubah_sp(s, 4856836, 4983480, '16 sortie, 13.600 kg', x_baru=4856836 + 1042416 - cx, cx=cx)
+    s = teks(s, '3.900 kg', '6.000 kg'); s = teks(s, '800 kg', '7.600 kg'); s = teks(s, '5 sortie', '7 sortie'); s = teks(s, '1 sortie', '9 sortie')
+    s = ubah_sp(s, 3561885, 5401818, 'HUJAN', cx=lebar_pil('HUJAN'))
+    s = teks(s, 'pagi, 1.907 ke 1.200', 'Murung Raya, 22 Okt')
+    s = teks(s, 'Palembang, 700 m ke 7.000 m', 'PM2,5 turun siang–sore')
     return armada(s)
 
 
 def armada(s):
-    """Batang armada per provinsi: skala satu unit = panjang 10 unit lama / unit terbanyak, supaya batang terpanjang tetap selebar dulu."""
-    Y = [2898648, 3282696, 3666744, 4050792, 4434840, 4818888, 5202936, 5586984]
+    """Batang armada per provinsi: skala satu unit = panjang 10 unit lama / unit terbanyak. Baris PEMILIK dibuang, tempatnya dipakai
+    baris ke-9 (salinan baris Riau)."""
+    Y = [2898648, 3282696, 3666744, 4050792, 4434840, 4818888, 5202936, 5586984, 5971032]
     X0, U = 7792060, 2863440 / max(p + w for _, p, w in ARMADA)
+    # buang baris PEMILIK + garis pemisahnya
+    s = re.sub(r'<p:sp>(?:(?!</p:sp>).)*?<a:off x="\d+" y="(?:6108192|6044184)"/>(?:(?!</p:sp>).)*?</p:sp>', '', s, flags=re.S)
+    s = re.sub(r'<p:pic>(?:(?!</p:pic>).)*?<a:off x="\d+" y="6140196"/>(?:(?!</p:pic>).)*?</p:pic>', '', s, flags=re.S)
+    assert 'PEMILIK' not in s
+    # salin baris Riau ke baris ke-9
+    dy = Y[8] - Y[4]; nid = [max(map(int, re.findall(r'<p:cNvPr id="(\d+)"', s)))]
+    def salin(m):
+        nid[0] += 1; b = m.group(0)
+        b = re.sub(r'<a:off x="(\d+)" y="(\d+)"/>', lambda q: f'<a:off x="{q.group(1)}" y="{int(q.group(2)) + dy}"/>', b, count=1)
+        return re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid[0]}"', b, count=1)
+    riau = [m for m in re.finditer(r'<p:sp>(?:(?!</p:sp>).)*?</p:sp>', s, re.S)
+            if re.search(r'<a:off x="(\d+)" y="(4434840|4489704)"/>', m.group(0)) and int(re.search(r'<a:off x="(\d+)"', m.group(0)).group(1)) >= 6329020]
+    assert len(riau) == 6, len(riau)
+    s = s.replace('</p:spTree>', ''.join(salin(m) for m in riau) + '</p:spTree>')
     lama = {}
-    for y in Y:   # baca teks lama tiap baris
+    for y in Y:
         (a, b), = sp_di(s, 6329020, y); lama[y] = re.findall(r'<a:t>([^<]*)</a:t>', s[a:b])[0]
-    assert [lama[y] for y in Y] == ['Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Sumatera Selatan', 'Riau', 'Jambi', 'Lampung', 'Kalimantan Timur/IKN']
+    assert [lama[y] for y in Y] == ['Kalimantan Barat', 'Kalimantan Tengah', 'Kalimantan Selatan', 'Sumatera Selatan', 'Riau', 'Jambi', 'Lampung', 'Kalimantan Timur/IKN', 'Riau']
     for y, (nama, p, w) in zip(Y, ARMADA):
         yb = y + 54864
         s = ubah_sp(s, 6329020, y, nama)
@@ -145,15 +158,15 @@ def armada(s):
         if p:
             assert navy, nama
             wn = round(p * U); s = ubah_sp(s, X0, yb, str(p), cx=wn)
-            # oranye: cari bentuk di baris ini selain navy
             xo = int(re.search(rf'<a:off x="(\d+)" y="{yb}"/>(?:(?!</p:sp>).)*?val="D9600B"', s, re.S).group(1))
         else:
             assert not navy, nama; wn = 0; xo = X0
-        s = ubah_sp(s, xo, yb, str(w), x_baru=X0 + wn, cx=round(w * U))
+        if w:
+            s = ubah_sp(s, xo, yb, str(w), x_baru=X0 + wn, cx=round(w * U))
+        else:   # tanpa heli WB: batang oranye dibuang
+            for a_, b_ in reversed(sp_di(s, xo, yb)): s = s[:a_] + s[b_:]
         xt = int(re.search(rf'<a:off x="(\d+)" y="{y}"/>(?:(?!</p:sp>).)*?<a:t> unit</a:t>', s, re.S).group(1))
         s = ubah_sp(s, xt, y, str(p + w), x_baru=X0 + wn + round(w * U) + 91443)
-    for lab, n in PEMILIK:   # '<lab>  ' + '<n>' (run terpisah)
-        s, k = re.subn(rf'(<a:t>{lab}  </a:t>(?:(?!</p:sp>).)*?<a:t>)\d+(</a:t>)', rf'\g<1>{n}\g<2>', s, count=1, flags=re.S); assert k == 1, lab
     return s
 
 
