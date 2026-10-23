@@ -30,7 +30,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Judul paling banyak dua baris** (*"Ukuran disesuaikan lah intinya cuma 2 baris"*) dan judul memakai bentuk deskriptif, misalnya "Sebaran Titik Panas dan Kebakaran di Jawa Timur per 22 Oktober".
    - **Data karhutla di deck = data website** (*"Karhutla udah pasti pakai data kita"*): hotspot dari tabel Real Time, luas terbakar dan belum padam dari lapisan peta. Fakta lapangan dari laporan BPBD atau Koordalops.
    - **Bencana lainnya di laporan harian dipisah per jenis dengan ikon berbeda**, mengikuti laporan 18–19 Okt: *"Dipisahin dong ... jadi orang tau mana gempa bumi mana bla bla bla coba cek yang laporan harian 18-19"*. Baris TOTAL kekeringan kini berikon rumah, orang, dan tetes air (*"Buat icon"*). Pembangun deck 231026 disimpan di `data/laporan-bnpb/harian-2026-10-23/` setelah scratchpad sempat terhapus dan pembangun Jatim hilang.
-   - **Status di laporan harian mengikuti sisa belum padam website.** Kota Tidore (sisa 0 ha) dipindah ke selesai: *"Bro ini Maluku Utara udah nol ya masuk selesai dong"*. Kartu PERLU PERHATIAN tidak lagi menyalin jumlah dalam penanganan (*"Emang semua perlu perhatian ya?"*). Pemilik memilih yang serius saja: sisa ≥100 ha atau dilapor BPBD belum padam, jadi 8 dari 10. Penunjuk "Lampiran (data rinci) mulai halaman 13" di penutup dibuang (*"Hilangkan"*).
+   - **Status di laporan harian mengikuti sisa belum padam website.** Kota Tidore (sisa 0 ha) dipindah ke selesai: *"Bro ini Maluku Utara udah nol ya masuk selesai dong"*. Kartu PERLU PERHATIAN tidak lagi menyalin jumlah dalam penanganan (*"Emang semua perlu perhatian ya?"*). Pemilik memilih yang serius saja: sisa ≥100 ha atau dilapor BPBD belum padam, jadi 8 dari 10. Penunjuk "Lampiran (data rinci) mulai halaman 13" di penutup dibuang (*"Hilangkan"*), lalu sampul dan penutup sekalian dibuang: *"Hilangkan cover dan terimakasih kirim ppt dan pdf"*. Laporan harian kini 2 slide, dikirim sebagai PPTX dan PDF.
 
 2. 22 Okt 2026 (lanjutan)
    - **Satu tujuan: api padam lebih cepat.** Rancangan `docs/bnpb/RANCANGAN-API-PADAM.md` Fase 0 dan 1 disetujui dan selesai: ID insiden stabil (`scripts/data/insiden.py`), Kartu Api di `/instansi` dengan teks WA dan cetak, tugas dibuat begitu data terbit. Keputusan pemilik: tugas otomatis untuk level 3 dan level 2 bersyarat (permukiman, konsesi, tumbuh); insiden Himawari ke Posko pusat saja sampai VIIRS mengonfirmasi; server rute berbayar boleh bila graf sendiri tidak cukup; surat akses data TMAT, SiPongi, Daops jalan. Radius permukiman 5 km dan nama perusahaan di tugas diambil sebagai bawaan.
@@ -118,6 +118,7 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Laporan harian 2 slide | 23 Okt 2026 | Tanpa sampul dan tanpa penutup; nomor halaman 1 dan 2; dikirim PPTX dan PDF |
 | Karhutla sisa 0 ha = selesai | 23 Okt 2026 | Sisa belum padam website 0 ha memindahkan karhutla ke selesai walau laporan lapangan belum menutupnya |
 | Perlu perhatian = sisa ≥100 ha atau BPBD belum padam | 23 Okt 2026 | Kartu PERLU PERHATIAN, tanda ! peta, dan garis merah provinsi memakai satu aturan; sisa kecil tetap dalam penanganan tanpa tanda ! |
 | Bencana lainnya per jenis berikon | 23 Okt 2026 | Slide 3 laporan harian memasang satu bagian per jenis (gempa bumi, kebakaran TPA, banjir, dan seterusnya) dengan ikon dan warna berbeda; tabel kekeringan ditutup baris TOTAL berikon |
@@ -336,7 +337,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
 
 | Jenis | Isi | Sampul / penutup |
 | --- | --- | --- |
-| Laporan Kejadian Bencana Harian | Tepat 4 slide: sampul, ringkasan dan peta, rincian per jenis, penutup | Ya / ya (GELAP) |
+| Laporan Kejadian Bencana Harian | 2 slide: ringkasan dan peta, rincian per jenis. Sampul dan penutup dibuang pemilik 23 Okt (*"Hilangkan cover dan terimakasih"*), nomor halaman mulai 1 | Tidak / tidak |
 | Laporan Penanganan Pengendalian Karhutla | 3 slide: peta nasional, tabel provinsi, operasi. Versi Lengkap ditambah konsesi, pembatas, A1–A11, dan B1–B5 | Tidak / tidak |
 | Paparan wilayah | 5 slide yang makin menyempit: provinsi, kabupaten fokus, kompleks api, risiko lanjutan, RTL 7 hari | Tidak / tidak |
 | Paparan Presiden | Versi Utama 7 slide: sampul, 4 temuan, Kesimpulan, Terima kasih. Versi Lengkap ditambah pembatas Lampiran dan lampiran A/B | Ya / ya, penutup ditaruh sebelum lampiran |
@@ -352,7 +353,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - Panel kosong tidak dipasang (d2 menampilkan "0").
   - **Bencana lainnya dipisah per jenis**, seperti d1, setiap kali ada kejadiannya: *"Dipisahin dong ... jadi orang tau mana gempa bumi mana bla bla bla"*. Setiap jenis punya kepala sendiri dengan ikon dan warna berbeda (gempa bumi slate 5B7A99, kebakaran TPA A23B2A, banjir 2F6FB5), pil fakta, dan angka korban, pengungsi, atau rumah rusak berikon. Penanda peta slide 2 memakai warna jenisnya dan legendanya per jenis.
   - **Tabel kekeringan ditutup baris TOTAL berikon** (rumah untuk KK, orang untuk jiwa, tetes untuk air) berisi jumlah liter dan tangki: *"Buat icon"*.
-- **Harian, sampul.**
+- **Harian, sampul** (sejak 23 Okt tidak dipasang; ukuran ini hanya dipakai bila pemilik memintanya kembali).
   - Foto kanan x497–960 dengan fade putih ke kiri.
   - Logo dalam lingkaran putih 79 pt.
   - Judul 34 pt bold, 2 baris, patah setelah "Bencana".
@@ -361,7 +362,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - "DISAMPAIKAN OLEH" 9 pt D9600B spc100, nama dan gelar 14 pt bold, jabatan 12 pt 6B7280.
   - Pil tanggal navy 230×30 berisi `Kamis, 22 Oktober 2026`.
   - Kredit foto 7 pt.
-- **Harian, penutup.**
+- **Harian, penutup** (sejak 23 Okt tidak dipasang).
   - Foto dengan gradasi navy.
   - "Terima kasih" 54 pt, garis F28C28 2×374 pt.
   - Nama lembaga 18 pt bold (bukan nama pejabat), baris laporan 13 pt C9D1E3.

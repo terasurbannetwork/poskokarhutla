@@ -1,8 +1,8 @@
-"""Laporan Kejadian Bencana Harian 22-23 Okt 2026 dalam format deck 221026 (berkas pemilik). Sampul dan penutup = slide 221026 dengan tanggal
-diganti; slide 2 (ringkasan + peta + status + yang akan dilakukan) dan 3 (rincian karhutla, kekeringan, bencana lainnya per jenis) digambar ulang
+"""Laporan Kejadian Bencana Harian 22-23 Okt 2026 dalam format deck 221026 (berkas pemilik). Tanpa sampul dan penutup (pemilik 23 Okt):
+hanya slide 2 (ringkasan + peta + status + yang akan dilakukan) dan 3 (rincian karhutla, kekeringan, bencana lainnya per jenis) digambar ulang, bernomor 1-2,
 dengan posisi, warna, ukuran huruf, dan ikon dari 221026; panel Bencana lainnya dipecah per jenis berikon seperti laporan 18-19 Okt.
 Angka karhutla = data website (data.py). Tanpa titik tengah di teks tampil. Pakai: python3 -I buat.py ref.pptx keluar.pptx"""
-import json, re, sys, zipfile
+import json, posixpath, re, sys, zipfile
 from xml.sax.saxutils import escape
 REF, OUT = sys.argv[1], sys.argv[2]
 NAVY, ORG, MERAH, KER, SLATE, INK, ABU, TEKS = '051C2C', 'D9600B', 'C8102E', 'B08A3E', '5B7A99', '1A1A1A', '6B7280', '2E3440'
@@ -255,6 +255,7 @@ for i, judul, fn, szj in ((2, J2, s2, 2000), (3, J3, s3, 2200)):   # judul selal
     for blk in re.findall(r'<p:sp>.*?</p:sp>|<p:pic>.*?</p:pic>|<p:cxnSp>.*?</p:cxnSp>', sk[a:b], re.S):
         g = re.search(GEO, blk); g = tuple(map(int, g.groups())) if g else None
         if blk.startswith('<p:pic>') and 'r:embed="rId1"' in blk: simpan.append(blk); continue
+        if g and g[1] == 6510528: blk = re.sub(r'<a:t>(\d+)</a:t>', lambda m: f'<a:t>{int(m.group(1)) - 1}</a:t>', blk)   # nomor halaman: sampul dibuang
         if g and ((g[3] == 0 and g[1] in (1207008, 6446520)) or g[1] == 6510528): simpan.append(blk)
     body = fn()
     jd = tx(548640, 292608, 10454335, 822960, [[(t, c, True) for t, c, _ in judul]], sz=szj, an='b')
@@ -264,21 +265,27 @@ for i, judul, fn, szj in ((2, J2, s2, 2000), (3, J3, s3, 2200)):   # judul selal
     F[f'ppt/slides/_rels/slide{i}.xml.rels'] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + lain
         + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/h23-{nm.replace("/", "-")}"/>' for nm, r in MED.items()) + '</Relationships>').encode()
     for nm in MED: F[f'ppt/media/h23-{nm.replace("/", "-")}'] = open(nm, 'rb').read()
-GANTI = {1: [('21 Okt 2026, 07.00  –  22 Okt 2026, 07.00 WIB', '22 Okt 2026, 07.00  –  23 Okt 2026, 07.00 WIB'), ('Kamis, 22 Oktober 2026', 'Jumat, 23 Oktober 2026')],
-         4: [('Laporan Kejadian Bencana Harian, 21–22 Oktober 2026', 'Laporan Kejadian Bencana Harian, 22–23 Oktober 2026')]}
-for i, gs in GANTI.items():
-    s = F[f'ppt/slides/slide{i}.xml'].decode()
-    for a_, b_ in gs: assert s.count(a_) == 1, a_; s = s.replace(a_, b_)
-    F[f'ppt/slides/slide{i}.xml'] = s.encode()
-# penutup: penunjuk lampiran dibuang, deck ini tanpa lampiran (pemilik 23 Okt: "Hilangkan")
-s = F['ppt/slides/slide4.xml'].decode(); blk = [b for b in re.findall(r'<p:sp>.*?</p:sp>', s, re.S) if 'Lampiran (data rinci)' in b]
-assert len(blk) == 1; F['ppt/slides/slide4.xml'] = s.replace(blk[0], '').encode()
-for i in (1, 2, 3, 4):
+# tanpa sampul dan penutup (pemilik 23 Okt: "Hilangkan cover dan terimakasih"): deck = slide 2 dan 3 templat
+pres_rel = F['ppt/_rels/presentation.xml.rels'].decode(); pres = F['ppt/presentation.xml'].decode()
+for i in (1, 4):
+    rid = re.search(rf'<Relationship Id="(rId\d+)"[^>]*Target="slides/slide{i}\.xml"/>', pres_rel)
+    pres_rel = pres_rel.replace(rid.group(0), ''); pres = re.sub(rf'<p:sldId id="\d+" r:id="{rid.group(1)}"/>', '', pres)
+    for nt in re.findall(r'notesSlides/(notesSlide\d+\.xml)', F[f'ppt/slides/_rels/slide{i}.xml.rels'].decode()):
+        del F[f'ppt/notesSlides/{nt}'], F[f'ppt/notesSlides/_rels/{nt}.rels']
+    del F[f'ppt/slides/slide{i}.xml'], F[f'ppt/slides/_rels/slide{i}.xml.rels']
+F['ppt/_rels/presentation.xml.rels'] = pres_rel.encode(); F['ppt/presentation.xml'] = pres.encode()
+NS = pres.count('<p:sldId '); assert NS == 2, NS
+app = re.sub(r'<Slides>\d+</Slides>', f'<Slides>{NS}</Slides>', F['docProps/app.xml'].decode())
+F['docProps/app.xml'] = re.sub(r'<Notes>\d+</Notes>', f'<Notes>{sum(1 for n in F if re.match(r"ppt/notesSlides/notesSlide\d+\.xml$", n))}</Notes>', app).encode()
+for i in (2, 3):
     assert '·' not in re.sub(r'<[^>]+>', '', F[f'ppt/slides/slide{i}.xml'].decode()), f'titik tengah di slide {i}'
-dipakai = set()
+dipakai = set()   # media yang tidak dirujuk rels mana pun (foto sampul/penutup, ikon templat yang diganti) dibuang
 for n, v in F.items():
-    if n.endswith('.rels'): dipakai |= {'ppt/' + t.decode().split('../', 1)[-1] for t in re.findall(rb'Target="([^"]+)"', v)}
-for n in [n for n in F if re.match(r'ppt/media/image-[23]-\d+\.png$', n) and n not in dipakai]: del F[n]
+    if n.endswith('.rels'):
+        dipakai |= {t[1:] if t.startswith('/') else posixpath.normpath(posixpath.join(posixpath.dirname(posixpath.dirname(n)), t)) for t in re.findall(r'Target="([^"]+)"', v.decode())}
+for n in [n for n in F if n.startswith('ppt/media/') and n not in dipakai]: del F[n]
+ct = F['[Content_Types].xml'].decode()
+F['[Content_Types].xml'] = re.sub(r'<Override PartName="/([^"]+)"[^>]*/>', lambda m: m.group(0) if m.group(1) in F else '', ct).encode()
 zo = zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED)
 for n in ['[Content_Types].xml'] + [n for n in F if n != '[Content_Types].xml']: zo.writestr(n, F[n])
 zo.close(); print('ok', OUT, 'karhutla', len(KH), 'dalam penanganan', len(KH_T), 'perlu perhatian', [x['lokasi'] or x['prov'] for x in KH_S], 'selesai', N_SEL, '/', N_TOT, 'provinsi', N_PROV)

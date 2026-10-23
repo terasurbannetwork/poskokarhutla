@@ -10,4 +10,4 @@ Bangun ulang (dari folder ini, berkas web/*.json ditarik dulu dari https://centu
     mkdir -p tpl && (cd tpl && unzip -oq ../templat-221026.pptx)   # ikon dan media templat dibaca dari tpl/ppt/media
     python3 data.py && node peta.mjs && node ikon.mjs && python3 -I buat.py templat-221026.pptx keluar.pptx
 
-`buat.py` menolak titik tengah " · " di teks tampil. Sampul dan penutup = slide templat dengan tanggal diganti.
+`buat.py` menolak titik tengah " · " di teks tampil. Hasilnya 2 slide (ringkasan dan rincian): sampul dan penutup templat dibuang atas permintaan pemilik 23 Okt.
