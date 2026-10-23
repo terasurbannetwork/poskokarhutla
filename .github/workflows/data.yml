@@ -46,14 +46,14 @@ jobs:
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
       # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
       - name: Pulihkan musim_harian dari repo bila latar cache bukan median
         run: |
           python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
-            || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
+            || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
 
       # koefisien operasi dikalibrasi dari isian lapangan (Bearer PIPA_TOKEN); token kosong = dilewati dengan log, berkas lama/bawaan dipakai
       - name: Kalibrasi koefisien dari isian lapangan (boleh gagal)
@@ -415,7 +415,7 @@ jobs:
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/data

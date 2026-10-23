@@ -45,7 +45,7 @@ jobs:
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/sekolah.json public/udara/data/pltu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       - name: Uji aturan
         run: |
@@ -86,4 +86,5 @@ jobs:
           [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "tanpa token Cloudflare: terbit lewat build lain"; exit 0; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!public/udara/data' ':!data/raw'
           python3 scripts/terbit/versi.py || { echo "::error title=Versi gagal::scripts/terbit/versi.py gagal"; exit 1; }
+          python3 scripts/terbit/jaga_segar.py
           npx --yes wrangler@4.42.0 deploy || { echo "::error title=Deploy gagal::wrangler deploy gagal"; exit 1; }

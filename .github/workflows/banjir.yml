@@ -52,7 +52,7 @@ jobs:
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       - name: Uji aturan
         run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
@@ -153,7 +153,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/banjir/data data/raw/banjir/sungai_ambang.json data/raw/banjir/rob/ambang.json data/raw/banjir/rob/titik.json

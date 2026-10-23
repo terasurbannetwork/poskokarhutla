@@ -38,14 +38,14 @@ jobs:
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
       # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
       - name: Pulihkan musim_harian dari repo bila latar cache bukan median
         run: |
           python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
-            || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
+            || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
 
       - name: Titik panas, kompleks (FWI dipakai ulang)
         env:
@@ -84,7 +84,7 @@ jobs:
           git show HEAD:public/data/peta_karhutla.json > /tmp/pk_repo.json 2>/dev/null || true
           if [ ! -f public/data/peta_karhutla_kab.json ] || [ ! -f public/data/peta_karhutla_wil.json ] \
              || [[ "$(akhir /tmp/pk_repo.json)" > "$(akhir public/data/peta_karhutla.json)" ]]; then
-            f=$(git ls-files 'public/data/peta_karhutla*.json'); [ -z "$f" ] || git checkout HEAD -- $f
+            f=$(git ls-files 'public/data/peta_karhutla*.json'); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
           fi
           python3 scripts/data/peta_karhutla.py --uji
           python3 scripts/data/peta_karhutla.py
@@ -250,6 +250,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           python3 scripts/terbit/versi.py
+          python3 scripts/terbit/jaga_segar.py
           npx --yes wrangler@4.42.0 deploy
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
