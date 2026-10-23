@@ -6,6 +6,7 @@
   const JEDA = 60e3, KUNCI = "pb_alarm", MAKS_INGAT = 300;
   const RUTE = {karhutla: "/", banjir: "/banjir/", gempa: "/gempa/", tsunami: "/gempa/", cuaca: "/cuaca/"};
   const WARNA = {Waspada: "#e3b94e", Siaga: "#e58a45", Awas: "#c9503a"};
+  const PRIORITAS = {Waspada: 1, Siaga: 2, Awas: 3};
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const baca = () => { try { return JSON.parse(localStorage.getItem(KUNCI) || "[]"); } catch (e) { return []; } };
   const tandai = k => { try { const a = baca().filter(x => x !== k); a.push(k); localStorage.setItem(KUNCI, JSON.stringify(a.slice(-MAKS_INGAT))); } catch (e) {} };
@@ -51,7 +52,9 @@
     try {
       const r = await fetch(`/api/peringatan/aktif?sejak=${sejak}`, {cache: "no-store"}); if (!r.ok) return;
       const j = await r.json(), sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci));
-      for (const a of (j.peringatan || []).slice().reverse()) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci)) antre.push(a);
+      for (const a of (j.peringatan || [])) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci)) antre.push(a);
+      // Tingkat tertinggi tampil dulu (Awas > Siaga > Waspada), lalu yang terbaru.
+      antre.sort((x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
       (window.requestIdleCallback || setTimeout)(berikut);
     } catch (e) {}
   }
