@@ -10,7 +10,7 @@ const U = await siapkan("uji-mcp", {r2: true});
 const {DB, api, n, mf} = U;
 const R2 = await mf.getR2Bucket("MEDIA");
 const PUBLIK = ["titik_api_terkini", "status_kabupaten", "laporan_harian", "kualitas_udara", "peringatan_aktif", "daftar_wilayah", "riwayat_lokasi", "cari_peraturan_bnpb", "baca_peraturan_bnpb", "relasi_peraturan_bnpb"];
-const KUNCI = ["rumah_rusak", "rumah_rusak_rekap", "bangunan_terpapar", "laporan_bnpb"];
+const KUNCI = ["rumah_rusak", "rumah_rusak_rekap", "bangunan_terpapar", "konsesi_perusahaan", "laporan_bnpb"];
 const BATAS_KB = 24000;
 let ipN = 0, id = 0;
 const ip = () => ({"cf-connecting-ip": `203.0.113.${++ipN % 250}`});
@@ -109,7 +109,7 @@ uji("berkunci tanpa kunci: tidak ada di tools/list, tools/call → isError yang 
 });
 
 uji("berkunci dengan kunci bercakupan: tools/list menyesuaikan cakupan; tools/call menjalankan logika v1", async () => {
-  semua = await terbit("Mitra MCP", ["rumah_rusak", "bangunan", "laporan_bnpb"]); rumah = await terbit("Mitra MCP Rumah", ["rumah_rusak"]);
+  semua = await terbit("Mitra MCP", ["rumah_rusak", "bangunan", "laporan_bnpb", "konsesi"]); rumah = await terbit("Mitra MCP Rumah", ["rumah_rusak"]);
   const kr = {"x-api-key": rumah.kunci}, ks = {"x-api-key": semua.kunci};
   assert.deepEqual((await rpc("tools/list", undefined, kr)).j.result.tools.map(t => t.name), [...PUBLIK, "rumah_rusak", "rumah_rusak_rekap"]);
   assert.deepEqual((await rpc("tools/list", undefined, ks)).j.result.tools.map(t => t.name), [...PUBLIK, ...KUNCI]);
@@ -128,6 +128,12 @@ uji("berkunci dengan kunci bercakupan: tools/list menyesuaikan cakupan; tools/ca
   assert.deepEqual(isi(await panggil("laporan_bnpb", {jenis: "harian", tanggal: "2026-10-20"}, ks)).isi, {rumah_rusak: 5});
   assert.equal((await panggil("laporan_bnpb", {jenis: "lain"}, ks)).j.result.isError, true);
   assert.equal((await panggil("laporan_bnpb", {}, ks)).j.result.isError, true, "jenis wajib");
+  const kon = await panggil("konsesi_perusahaan", {prov: "62", limit: 5}, ks); assert.ok(!kon.j.result.isError, kon.t); const kd = isi(kon);
+  assert.ok(kd.perusahaan.length > 0 && kd.perusahaan.length <= 5 && kd.perusahaan.every((p, i, a) => p.nama && !("geom" in p) && !("harian" in p) && (!i || a[i - 1].titik >= p.titik)), "ringkas, terurut titik menurun");
+  assert.ok(kon.j.result.content[0].text.length < BATAS_KB);
+  const nama = kd.perusahaan[0].nama.slice(3, 9).toUpperCase(), sar = isi(await panggil("konsesi_perusahaan", {prov: "62", nama}, ks)); assert.ok(sar.jumlah_cocok >= 1 && sar.perusahaan.some(p => p.nama === kd.perusahaan[0].nama), "saring nama tanpa beda huruf");
+  for (const a of [{}, {prov: "00"}, {prov: "62", nama: "x"}, {prov: "62", limit: 51}]) assert.equal((await panggil("konsesi_perusahaan", a, ks)).j.result.isError, true, JSON.stringify(a));
+  const tanpa = await panggil("konsesi_perusahaan", {prov: "62"}, kr); assert.equal(tanpa.j.result.isError, true); assert.match(tanpa.j.result.content[0].text, /konsesi/);
 });
 
 uji("kunci dicabut: tools/list langsung 401; laju MCP anonim per hash IP 429 setelah 600 per jam", async () => {

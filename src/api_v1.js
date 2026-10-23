@@ -12,7 +12,7 @@ import {kirim, PROV} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
 
 const JAM = 3600e3, BATAS_KUNCI = [[JAM, 1000]], MAKS_GAGAL = 300, RE_KUNCI = /^pb_[0-9a-f]{64}$/;
-export const CAKUPAN = ["rumah_rusak", "bangunan", "laporan_bnpb"];
+export const CAKUPAN = ["rumah_rusak", "bangunan", "laporan_bnpb", "konsesi"];
 /* nama stabil -> berkas aset. Daftar putih: path bebas tidak pernah dipakai. */
 export const DATA = {
   titik24: "/data/titik24.json", hotspot24: "/data/hotspot24.json", hotspot72: "/data/hotspot72.json", laporan: "/data/laporan.json",
@@ -29,8 +29,26 @@ const BERKUNCI = {   // sisa jalur -> [cakupan, pembaca(env, url, kini)]
   "/bangunan/terpapar": ["bangunan", env => kirim(env, "bangunan/terpapar.json")],
   "/bangunan/kec": ["bangunan", env => kirim(env, "bangunan/kec.json")],
   "/bangunan/grid": ["bangunan", (env, url) => { const p = url.searchParams.get("prov"); return PROV.has(p) ? kirim(env, `bangunan/grid_${p}.json`) : gagal(400, "prov harus kode provinsi 2 digit"); }],
+  "/konsesi": ["konsesi", (env, url) => konsesi(env, url)],
   "/laporan-bnpb": ["laporan_bnpb", (env, url) => bacaLaporan(env, url, true)],   // tanpa nama moderator (oleh)
 };
+/* Konsesi perusahaan per provinsi (public/data/konsesi2026/<prov>.json, 2-3 MB). prov wajib dan dicocokkan ke index.json (bukan jalur dari pengguna);
+   nama = saring PT (potongan nama, tanpa beda besar-kecil) supaya mitra tidak menarik seluruh provinsi. Tanpa prov = daftar provinsi yang tersedia. */
+async function aset(env, url, jalur) { const r = await env.ASSETS.fetch(new Request(new URL(jalur, url))); if (!r.ok) { r.body?.cancel(); return null; } return r; }
+export async function konsesi(env, url, ringkas = false) {   // ringkas = selalu <prov>.ringkas.json (dipakai MCP)
+  const idx = await aset(env, url, "/data/konsesi2026/index.json"); if (!idx) return gagal(404, "data konsesi belum tersedia");
+  const ix = await idx.json(), prov = url.searchParams.get("prov");
+  if (prov === null) return json({dibuat: ix.dibuat, sampai: ix.sampai, sumber_titik: ix.sumber_titik, sumber_konsesi: ix.sumber_konsesi, provinsi: ix.prov.map(p => ({kode: p.kode, nama: p.nama, perusahaan: p.perusahaan}))});
+  if (!/^\d{2}$/.test(prov) || !ix.prov.some(p => p.kode === prov)) return gagal(400, "prov harus kode provinsi 2 digit yang tersedia: " + ix.prov.map(p => p.kode).join(", "));
+  const nama = url.searchParams.get("nama")?.trim().toLowerCase();
+  if (nama !== undefined && (nama.length < 2 || nama.length > 80)) return gagal(400, "nama harus 2 sampai 80 huruf");
+  /* dengan nama (dan untuk MCP): baca <prov>.ringkas.json (~65 KB), bukan berkas penuh 2-3 MB yang terlalu mahal diurai di batas CPU Workers */
+  ringkas ||= nama !== undefined;
+  const r = await aset(env, url, `/data/konsesi2026/${prov}${ringkas ? ".ringkas" : ""}.json`); if (!r) return gagal(404, "berkas provinsi belum tersedia");
+  if (!ringkas) return new Response(r.body, {headers: {"content-type": "application/json; charset=utf-8"}});
+  const d = await r.json().catch(() => null); if (!d) return gagal(404, "berkas provinsi belum tersedia");
+  return json(nama === undefined ? d : {...d, perusahaan: d.perusahaan.filter(x => String(x.nama).toLowerCase().includes(nama))});
+}
 const tabelBelum = e => /no such table: kunci_api/i.test(String(e?.message || e));
 
 /* kunci sah -> {id, cakupan: [...]}; selain itu Response galat. Urutan: kunci ada -> hitungan gagal per IP -> cari hash -> batas per kunci.

@@ -309,12 +309,24 @@ def bangun():
         rs.sort(key=lambda r: -r["titik"])
         with open(os.path.join(KELUAR, f"{kd}.json"), "w") as f:
             json.dump({"prov": kd, "nama": nama_prov.get(kd, kd), "perusahaan": rs}, f, ensure_ascii=False, separators=(",", ":"))
+        tulis_ringkas(kd, nama_prov.get(kd, kd), rs)
         idx["prov"].append({"kode": kd, "nama": nama_prov.get(kd, kd), "perusahaan": len(rs), "titik": sum(r["titik"] for r in rs),
                             "luas_bakar_ha": sum(r["luas_bakar_ha"] for r in rs),
                             "jenis": {j: sum(1 for r in rs if r["jenis"] == j) for j in ("sawit", "hti", "hph", "tambang")}})
     with open(os.path.join(KELUAR, "index.json"), "w") as f:
         json.dump(idx, f, ensure_ascii=False, separators=(",", ":"))
     print(f"konsesi2026: {sum(p['perusahaan'] for p in idx['prov'])} perusahaan, {len(idx['prov'])} provinsi, s.d. {idx['sampai']}", file=sys.stderr)
+
+
+RINGKAS = ("id", "nama", "jenis", "grup", "negara", "kab", "titik", "titik_7h", "terakhir")
+
+
+def tulis_ringkas(kd, nama, rs):
+    """<prov>.ringkas.json: baris pendek untuk API /api/v1/konsesi?nama= dan tool MCP konsesi_perusahaan,
+    supaya Worker tidak mengurai berkas provinsi 2-3 MB (batas CPU Workers)."""
+    baris = [{k: r.get(k) for k in RINGKAS} | {"kompleks_aktif": len(r.get("kompleks") or [])} for r in rs]
+    with open(os.path.join(KELUAR, f"{kd}.ringkas.json"), "w") as f:
+        json.dump({"prov": kd, "nama": nama, "perusahaan": baris}, f, ensure_ascii=False, separators=(",", ":"))
 
 
 def uji():
@@ -337,4 +349,9 @@ def uji():
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else (bangun(), uji())
+    if sys.argv[1:] == ["ringkas"]:   # buat ulang <prov>.ringkas.json dari berkas provinsi yang sudah ada, tanpa membangun ulang
+        for p in json.load(open(os.path.join(KELUAR, "index.json")))["prov"]:
+            d = json.load(open(os.path.join(KELUAR, f"{p['kode']}.json")))
+            tulis_ringkas(d["prov"], d["nama"], d["perusahaan"])
+    else:
+        uji() if sys.argv[1:] == ["uji"] else (bangun(), uji())

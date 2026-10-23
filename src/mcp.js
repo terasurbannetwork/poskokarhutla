@@ -9,7 +9,7 @@
    - CORS terbuka seperti /api/v1, tanpa Allow-Credentials. Ditangani di fetch() worker.js sebelum gerbang centurisk97.id: terbuka di semua host. */
 import {bacaBytes, ipHash} from "./worker.js";
 import {laju} from "./bnpb.js";
-import {kunciSah, DATA, riwayatSel} from "./api_v1.js";
+import {kunciSah, DATA, riwayatSel, konsesi} from "./api_v1.js";
 import {bacaDaftar, bacaRekap, KOLOM_V1} from "./rumah_rusak.js";
 import {kirim} from "./bangunan.js";
 import {bacaLaporan} from "./laporan_bnpb.js";
@@ -154,6 +154,15 @@ async function laporanBnpb(env, url, a) {
   const { isi, buang } = ringkas(j, 20); return {...isi, _dipotong_elemen: buang, _catatan: "Isi besar: larik dipotong 20 elemen pertama."};
 }
 
+async function konsesiPerusahaan(env, url, a) {   // ringkas: tanpa geometri, harian, dan riwayat kompleks
+  const q = new URLSearchParams({prov: a.prov}); if (a.nama) q.set("nama", a.nama);
+  const j = await dariRespons(await konsesi(env, new URL("/x?" + q, url), true));   // selalu berkas ringkas: berkas penuh terlalu mahal diurai di Workers
+  const pt = j.perusahaan.map(x => ({nama: x.nama, jenis: x.jenis, grup: x.grup || null, negara: x.negara, kabupaten: x.kab, titik: x.titik, titik_7h: x.titik_7h, kompleks_aktif: x.kompleks_aktif ?? 0, terakhir: x.terakhir}))
+    .sort((x, y) => (y.titik ?? 0) - (x.titik ?? 0));
+  return {prov: j.prov, provinsi: j.nama, jumlah_cocok: pt.length, ditampilkan: Math.min(pt.length, a.limit), urut: "titik menurun", perusahaan: pt.slice(0, a.limit),
+    catatan: "titik = titik panas VIIRS di dalam konsesi sejak awal tahun; titik_7h = tujuh hari terakhir; kompleks_aktif = kelompok titik aktif terkini. Titik panas bukan bukti kebakaran dan bukan bukti kesalahan perusahaan. Batas konsesi dari data publik lama (lihat sumber di /api/v1/konsesi)."};
+}
+
 /* Pustaka Hukum BNPB: pembaca D1 yang sama dengan rute /api/hukum (src/hukum.js) */
 const hukumOk = d => { if (d.galat) tolak(d.galat); return d; };
 const P_IDDOK = {type: "string", pattern: "^[a-z0-9-]{3,60}$", description: "Id dokumen kanonik, mis. perban-1-2026 (hasil cari_peraturan_bnpb, kolom dok)."};
@@ -196,6 +205,8 @@ const TOOLS = [
     skema: {properties: {bencana: {type: "string", pattern: "^[a-z0-9_]{2,30}$", description: "Id bencana."}, prov: P_PROV, dari: P_TGL("Awal rentang YYYY-MM-DD."), sampai: P_TGL("Akhir rentang YYYY-MM-DD.")}}, jalan: rumahRusakRekap},
   {nama: "bangunan_terpapar", cakupan: "bangunan", deskripsi: "Jumlah bangunan (Google Open Buildings) yang terpapar bahaya aktif (karhutla, banjir, gempa, gunung api), ringkasan nasional. Larik dipotong sebanyak limit. Butuh kunci API bercakupan bangunan.",
     skema: {properties: {limit: P_LIMIT(100, 20)}}, jalan: bangunanTerpapar},
+  {nama: "konsesi_perusahaan", cakupan: "konsesi", deskripsi: "Perusahaan pemegang konsesi (sawit, HTI, HPH, tambang) di satu provinsi beserta titik panas di dalam konsesinya: nama PT, grup, negara induk, kabupaten, jumlah titik dan kompleks aktif. Terurut dari titik terbanyak. Butuh kunci API bercakupan konsesi.",
+    skema: {required: ["prov"], properties: {prov: P_PROV, nama: {type: "string", minLength: 2, maxLength: 80, description: "Potongan nama PT (tak peka huruf besar), mis. Sangkowong."}, limit: P_LIMIT(50, 20)}}, jalan: konsesiPerusahaan},
   {nama: "laporan_bnpb", cakupan: "laporan_bnpb", deskripsi: "Laporan Harian atau Paparan Presiden BNPB yang diketik tim. Tanpa tanggal: daftar tanggal tersimpan; dengan tanggal: isi laporan. Butuh kunci API bercakupan laporan_bnpb.",
     skema: {required: ["jenis"], properties: {jenis: {type: "string", enum: ["harian", "presiden"], description: "Jenis laporan."}, tanggal: P_TGL("Tanggal laporan YYYY-MM-DD; kosong = daftar tanggal.")}}, jalan: laporanBnpb},
 ];
@@ -227,7 +238,7 @@ async function proses(env, url, kunci, m, kini) {
     case "initialize": {
       const minta = m.params?.protocolVersion;
       return hasil(id, {protocolVersion: PROTOKOL.includes(minta) ? minta : PROTOKOL[0], capabilities: {tools: {}}, serverInfo: {name: "pantau-bencana", version: VERSI_SERVER},
-        instructions: "Data bencana Indonesia (karhutla, cuaca, kualitas udara). Tool publik tanpa kunci; tool rumah_rusak, bangunan, laporan BNPB butuh header X-API-Key dari admin. Dokumentasi: /api."});
+        instructions: "Data bencana Indonesia (karhutla, cuaca, kualitas udara). Tool publik tanpa kunci; tool rumah_rusak, bangunan, laporan BNPB, konsesi butuh header X-API-Key dari admin. Dokumentasi: /api."});
     }
     case "ping": return hasil(id, {});
     case "tools/list": return hasil(id, {tools: TOOLS.filter(t => terlihat(kunci, t)).map(t => ({name: t.nama, description: t.deskripsi, inputSchema: skemaLengkap(t.skema)}))});

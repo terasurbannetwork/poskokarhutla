@@ -7,7 +7,7 @@
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
   const tgl = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"}) : "belum pernah";
-  const LABEL = {rumah_rusak: "Rumah rusak", bangunan: "Bangunan (Open Buildings)", laporan_bnpb: "Laporan BNPB"};
+  const LABEL = {rumah_rusak: "Rumah rusak", bangunan: "Bangunan (Open Buildings)", laporan_bnpb: "Laporan BNPB", konsesi: "Konsesi perusahaan"};
   const gagalJaringan = {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}};
   let D = null, baru = null;
 

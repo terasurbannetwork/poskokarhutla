@@ -12,7 +12,7 @@ const uji = berantai();
 const U = await siapkan("uji-api-v1", {r2: true});
 const {DB, api, n, mf} = U;
 const R2 = await mf.getR2Bucket("MEDIA");
-const SQL = readFileSync(path.join(AKAR, "migrations/0040_kunci_api.sql"), "utf8");
+const SQL = readFileSync(path.join(AKAR, "migrations/0040_kunci_api.sql"), "utf8"), SQL54 = readFileSync(path.join(AKAR, "migrations/0054_kunci_api_konsesi.sql"), "utf8");
 const K = k => ({"x-api-key": k});
 let ipN = 0;
 const ip = () => ({"cf-connecting-ip": `203.0.113.${++ipN % 250}`});
@@ -30,8 +30,22 @@ uji("migrasi 0040 idempoten; trigger dan CHECK menolak cakupan, nama, dan hash y
   await assert.rejects(sisip('["bangunan"]', "ab"), /CHECK/);
   await assert.rejects(sisip('["bangunan"]', "Mitra Uji", "XYZ"), /CHECK/);
   assert.equal(await n("kunci_api"), 0);
-  const diTrigger = SQL.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
-  assert.deepEqual(diTrigger, CAKUPAN, "cakupan di trigger sama dengan CAKUPAN di src/api_v1.js");
+  const diTrigger = SQL54.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
+  assert.deepEqual(diTrigger, CAKUPAN, "cakupan di trigger (0054) sama dengan CAKUPAN di src/api_v1.js");
+});
+
+uji("migrasi 0054 idempoten; kunci lama selamat, cakupan asing ditolak, 'konsesi' sah, maksimal 4 cakupan", async () => {
+  const sisip = (id, cakupan) => DB.prepare("INSERT INTO kunci_api (id, nama, kunci_sha, cakupan, dibuat, oleh) VALUES (?, 'Mitra Lama', ?, ?, 1, 'moderator1')").bind(id.repeat(16), id.repeat(64), cakupan).run();
+  await sisip("c", '["bangunan","laporan_bnpb"]');
+  for (let i = 0; i < 2; i++) await DB.batch(pecah(SQL54).map(s => DB.prepare(s)));
+  const b = await DB.prepare("SELECT * FROM kunci_api WHERE id = ?").bind("c".repeat(16)).first(); assert.equal(b.cakupan, '["bangunan","laporan_bnpb"]'); assert.equal(b.kunci_sha, "c".repeat(64));
+  await sisip("d", '["rumah_rusak","bangunan","laporan_bnpb","konsesi"]');
+  await assert.rejects(sisip("e", '["rumah_rusak","bangunan","laporan_bnpb","konsesi","x"]'), /CHECK|tidak sah/);
+  await assert.rejects(sisip("e", '["konsesi","admin"]'), /cakupan kunci api tidak sah/);
+  await assert.rejects(sisip("e", '["konsesi","konsesi"]'), /cakupan kunci api tidak sah/);
+  await assert.rejects(DB.prepare("UPDATE kunci_api SET cakupan = '[\"admin\"]' WHERE id = ?").bind("c".repeat(16)).run(), /cakupan kunci api tidak sah/);
+  assert.equal(await n("kunci_api"), 2); await DB.prepare("DELETE FROM kunci_api").run();
+  assert.equal(await n("sqlite_master", "name = 'kunci_api_baru'"), 0, "tabel sementara sudah berganti nama");
 });
 
 uji("preflight OPTIONS 204 dengan CORS, tanpa Allow-Credentials, di semua jalur /api/v1", async () => {
@@ -260,6 +274,21 @@ uji("privasi v1: koordinat rumah rusak 4 desimal, tanpa catatan; laporan BNPB ta
   const hd = await mf.dispatchFetch("http://bnpb.lokal/api/v1/data/meta", {method: "HEAD"}); assert.equal(hd.status, 200); assert.equal(await hd.text(), ""); assert.equal(hd.headers.get("access-control-allow-origin"), "*");
   const hk = await mf.dispatchFetch("http://bnpb.lokal/api/v1/rumah-rusak/rekap", {method: "HEAD", headers: {...K(semua.kunci), ...ip()}}); assert.equal(hk.status, 200); assert.equal(await hk.text(), "");
   assert.equal((await api("PUT", "/api/v1/data/meta", {})).s, 405);
+});
+
+uji("konsesi: tanpa kunci 401, cakupan lain 403, kunci konsesi 200 (private no-store); prov dan nama divalidasi; saring nama", async () => {
+  const kon = await terbit("Mitra Konsesi", ["konsesi"]), j = "/api/v1/konsesi?prov=62";
+  assert.equal((await api("GET", j, undefined, ip())).s, 401);
+  assert.equal((await api("GET", j, undefined, {...ip(), ...K(hanyaRumah.kunci)})).s, 403, "kunci cakupan lain");
+  assert.equal((await api("GET", "/api/v1/rumah-rusak/rekap", undefined, {...ip(), ...K(kon.kunci)})).s, 403, "kunci konsesi tidak membuka cakupan lain");
+  const r = await api("GET", j, undefined, K(kon.kunci)); assert.equal(r.s, 200, r.t.slice(0, 100)); assert.equal(r.j.prov, "62"); assert.ok(r.j.perusahaan.length > 0);
+  assert.equal(r.h.get("cache-control"), "private, no-store"); assert.equal(r.h.get("access-control-allow-origin"), "*");
+  const nama = r.j.perusahaan[0].nama, s = await api("GET", `/api/v1/konsesi?prov=62&nama=${encodeURIComponent(nama.slice(3, 10).toUpperCase())}`, undefined, K(kon.kunci));
+  assert.equal(s.s, 200); assert.ok(s.j.perusahaan.length >= 1 && s.j.perusahaan.length < r.j.perusahaan.length && s.j.perusahaan.some(p => p.nama === nama)); assert.ok(s.t.length < r.t.length);
+  assert.equal((await api("GET", "/api/v1/konsesi?prov=62&nama=zzzzzzzz", undefined, K(kon.kunci))).j.perusahaan.length, 0);
+  const d = await api("GET", "/api/v1/konsesi", undefined, K(kon.kunci)); assert.equal(d.s, 200); assert.ok(d.j.provinsi.some(p => p.kode === "62"));
+  for (const q of ["prov=00", "prov=6", "prov=abc", "prov=..%2F62", "prov=62&nama=x", "prov=62&nama="]) assert.equal((await api("GET", "/api/v1/konsesi?" + q, undefined, K(kon.kunci))).s, 400, q);
+  assert.equal((await api("GET", "/api/v1")).j.endpoint.find(e => e.jalur === "/api/v1/konsesi")?.kunci, true);
 });
 
 uji("koreksi rumah rusak: catatan dibersihkan seperti saat buat (tautan, nomor HP dibuang; kata kasar 400)", async () => {
