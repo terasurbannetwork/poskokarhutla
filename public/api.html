@@ -109,12 +109,8 @@ const {jumlah, laporan} = await r.json();</code></pre>
 <tr><td><code>bangunan_terpapar</code></td><td>Bangunan terpapar bahaya aktif, ringkasan</td><td><code>bangunan</code></td></tr>
 <tr><td><code>laporan_bnpb</code></td><td>Laporan Harian dan Paparan Presiden BNPB</td><td><code>laporan_bnpb</code></td></tr>
 </table></div>
-<h3>Claude Code</h3>
-<pre><code>claude mcp add --transport http pantau-bencana https://centurisk97.id/mcp \
-  --header "X-API-Key: pb_GANTI_DENGAN_KUNCI_ANDA"</code></pre>
-<p>Tanpa kunci, hapus baris <code>--header</code>; yang tersedia tool publik saja.</p>
-<h3>Cursor</h3>
-<p>Di <code>~/.cursor/mcp.json</code> atau <code>.cursor/mcp.json</code> proyek:</p>
+<h3>Memasang di klien MCP</h3>
+<p>Tambahkan server MCP jenis HTTP di pengaturan klien Anda. Bentuk umumnya:</p>
 <pre><code>{
   "mcpServers": {
     "pantau-bencana": {
@@ -123,7 +119,8 @@ const {jumlah, laporan} = await r.json();</code></pre>
     }
   }
 }</code></pre>
-<div class="catatan">Connector kustom di claude.ai belum bisa mengirim header kunci (server ini belum memakai OAuth), jadi di sana hanya tool publik yang tersedia. Untuk tool berkunci, pakai Claude Code, Cursor, atau klien lain yang bisa mengatur header.</div>
+<p>Tanpa kunci, hapus bagian <code>headers</code>; yang tersedia tool publik saja.</p>
+<div class="catatan">Klien yang hanya menerima alamat server (tanpa pengaturan header) cuma mendapat tool publik, karena server ini belum memakai OAuth. Untuk tool berkunci, pakai klien yang bisa mengatur header.</div>
 <p>Panggilan dari halaman web di localhost atau jaringan privat ditolak (perlindungan DNS rebinding); klien desktop dan baris perintah tidak terpengaruh.</p>
 
 <h2>Kode galat</h2>
