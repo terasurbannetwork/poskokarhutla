@@ -1,60 +1,60 @@
-zenodo berkas: [('2019_burnedarea_indonesia.zip', 72837547), ('Reference_dataset.zip', 31020)]
-  unduh 2019_burnedarea_indonesia.zip
-  unduh Reference_dataset.zip
-citra: shapefile 2 berkas
-  vektor 181728 poligon
-selesai N|2019 421516 titik; sisa 2341 dtk
-selesai M|2019 86334 titik; sisa 2336 dtk
-selesai N|2015 856031 titik; sisa 2287 dtk
-selesai M|2015 161514 titik; sisa 2280 dtk
-selesai N|2023 233126 titik; sisa 2268 dtk
-selesai M|2023 47528 titik; sisa 2266 dtk
-selesai N|2018 179670 titik; sisa 2257 dtk
-selesai M|2018 35246 titik; sisa 2255 dtk
-selesai N|2020 79539 titik; sisa 2252 dtk
-selesai M|2020 13350 titik; sisa 2251 dtk
-selesai N|2021 57260 titik; sisa 2248 dtk
-selesai M|2021 11545 titik; sisa 2247 dtk
-selesai N|2022 46060 titik; sisa 2244 dtk
-selesai M|2022 8742 titik; sisa 2243 dtk
-selesai N|2024 88413 titik; sisa 2239 dtk
-selesai M|2024 19247 titik; sisa 2238 dtk
-selesai N|2025 82030 titik; sisa 2234 dtk
-selesai M|2025 14739 titik; sisa 2233 dtk
-selesai N|2016 106696 titik; sisa 2228 dtk
-selesai M|2016 22437 titik; sisa 2227 dtk
-selesai N|2017 82001 titik; sisa 2223 dtk
-selesai M|2017 16311 titik; sisa 2222 dtk
-selesai N|2014 535657 titik; sisa 2197 dtk
-selesai M|2014 107831 titik; sisa 2192 dtk
-selesai N|2013 248178 titik; sisa 2179 dtk
-selesai M|2013 52423 titik; sisa 2176 dtk
-selesai N|2012 307237 titik; sisa 2163 dtk
-selesai M|2012 69476 titik; sisa 2160 dtk
-selesai M|2011 61370 titik; sisa 2157 dtk
-selesai M|2010 19529 titik; sisa 2156 dtk
-selesai M|2009 99528 titik; sisa 2152 dtk
-selesai M|2008 39808 titik; sisa 2149 dtk
-selesai M|2007 41752 titik; sisa 2147 dtk
-selesai M|2006 147296 titik; sisa 2140 dtk
-selesai M|2005 64176 titik; sisa 2137 dtk
-selesai M|2004 103202 titik; sisa 2133 dtk
-selesai M|2003 60410 titik; sisa 2129 dtk
-selesai M|2002 120607 titik; sisa 2124 dtk
-selesai M|2001 13631 titik; sisa 2123 dtk
-selesai N20|2018 169463 titik; sisa 2120 dtk
-selesai N20|2019 418669 titik; sisa 2113 dtk
-selesai N20|2020 81247 titik; sisa 2111 dtk
-selesai N20|2021 59798 titik; sisa 2110 dtk
-selesai N20|2022 51963 titik; sisa 2108 dtk
-selesai N20|2023 230457 titik; sisa 2104 dtk
-selesai N21|2023 228188 titik; sisa 2030 dtk
-selesai N20|2024 98998 titik; sisa 2027 dtk
-selesai N21|2024 96860 titik; sisa 1970 dtk
-selesai N20|2025 80328 titik; sisa 1968 dtk
-selesai N21|2025 78795 titik; sisa 1916 dtk
-selesai N20|2026 595751 titik; sisa 1853 dtk
-selesai N21|2026 594012 titik; sisa 1795 dtk
-selesai N|2026 583569 titik; sisa 1714 dtk
-selesai M|2026 129414 titik; sisa 1656 dtk
-selesai N|2026|0930 400085 titik; sisa 1638 dtk
+[09:19:28 UTC | terpakai 274 dtk | sisa 2426 dtk] chirps|2002 mulai (batas 60 dtk)
+[09:19:31 UTC | terpakai 278 dtk | sisa 2422 dtk] chirps|2002 selesai
+[09:19:31 UTC | terpakai 278 dtk | sisa 2422 dtk] chirps|2003 mulai (batas 60 dtk)
+[09:19:31 UTC | terpakai 278 dtk | sisa 2422 dtk] chirps|2003 selesai
+[09:19:31 UTC | terpakai 278 dtk | sisa 2422 dtk] chirps|2004 mulai (batas 60 dtk)
+[09:19:32 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2004 selesai
+[09:19:32 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2005 mulai (batas 60 dtk)
+[09:19:32 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2005 selesai
+[09:19:32 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2006 mulai (batas 60 dtk)
+[09:19:33 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2006 selesai
+[09:19:33 UTC | terpakai 279 dtk | sisa 2421 dtk] chirps|2007 mulai (batas 60 dtk)
+[09:19:33 UTC | terpakai 280 dtk | sisa 2420 dtk] chirps|2007 selesai
+[09:19:33 UTC | terpakai 280 dtk | sisa 2420 dtk] chirps|2008 mulai (batas 60 dtk)
+[09:19:33 UTC | terpakai 280 dtk | sisa 2420 dtk] chirps|2008 selesai
+[09:19:33 UTC | terpakai 280 dtk | sisa 2420 dtk] chirps|2009 mulai (batas 60 dtk)
+[09:19:34 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2009 selesai
+[09:19:34 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2010 mulai (batas 60 dtk)
+[09:19:34 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2010 selesai
+[09:19:34 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2011 mulai (batas 60 dtk)
+[09:19:35 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2011 selesai
+[09:19:35 UTC | terpakai 281 dtk | sisa 2419 dtk] chirps|2012 mulai (batas 60 dtk)
+[09:19:35 UTC | terpakai 282 dtk | sisa 2418 dtk] chirps|2012 selesai
+[09:19:35 UTC | terpakai 282 dtk | sisa 2418 dtk] chirps|2013 mulai (batas 60 dtk)
+[09:19:35 UTC | terpakai 282 dtk | sisa 2418 dtk] chirps|2013 selesai
+[09:19:35 UTC | terpakai 282 dtk | sisa 2418 dtk] chirps|2014 mulai (batas 60 dtk)
+[09:19:36 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2014 selesai
+[09:19:36 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2015 mulai (batas 60 dtk)
+[09:19:36 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2015 selesai
+[09:19:36 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2016 mulai (batas 60 dtk)
+[09:19:37 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2016 selesai
+[09:19:37 UTC | terpakai 283 dtk | sisa 2417 dtk] chirps|2017 mulai (batas 60 dtk)
+[09:19:39 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2017 selesai
+[09:19:39 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2018 mulai (batas 60 dtk)
+[09:19:39 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2018 selesai
+[09:19:39 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2019 mulai (batas 60 dtk)
+[09:19:40 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2019 selesai
+[09:19:40 UTC | terpakai 286 dtk | sisa 2414 dtk] chirps|2020 mulai (batas 60 dtk)
+[09:19:41 UTC | terpakai 288 dtk | sisa 2412 dtk] chirps|2020 GALAT HTTPError: HTTP Error 503: 
+[09:19:41 UTC | terpakai 288 dtk | sisa 2412 dtk] chirps|2021 mulai (batas 60 dtk)
+[09:19:43 UTC | terpakai 289 dtk | sisa 2411 dtk] chirps|2021 selesai
+[09:19:43 UTC | terpakai 289 dtk | sisa 2411 dtk] chirps|2022 mulai (batas 60 dtk)
+[09:19:43 UTC | terpakai 290 dtk | sisa 2410 dtk] chirps|2022 selesai
+[09:19:43 UTC | terpakai 290 dtk | sisa 2410 dtk] chirps|2023 mulai (batas 60 dtk)
+[09:19:43 UTC | terpakai 290 dtk | sisa 2410 dtk] chirps|2023 selesai
+[09:19:43 UTC | terpakai 290 dtk | sisa 2410 dtk] chirps|2024 mulai (batas 60 dtk)
+[09:19:44 UTC | terpakai 291 dtk | sisa 2409 dtk] chirps|2024 selesai
+[09:19:44 UTC | terpakai 291 dtk | sisa 2409 dtk] chirps|2025 mulai (batas 60 dtk)
+[09:19:46 UTC | terpakai 293 dtk | sisa 2407 dtk] chirps|2025 GALAT HTTPError: HTTP Error 404: 
+[09:19:46 UTC | terpakai 293 dtk | sisa 2407 dtk] chirps|2026 mulai (batas 60 dtk)
+[09:19:48 UTC | terpakai 295 dtk | sisa 2405 dtk] chirps|2026 GALAT HTTPError: HTTP Error 404: 
+[09:19:48 UTC | terpakai 295 dtk | sisa 2405 dtk] hansen mulai (batas 300 dtk)
+[09:23:57 UTC | terpakai 544 dtk | sisa 2156 dtk] hansen selesai
+[09:23:57 UTC | terpakai 544 dtk | sisa 2156 dtk] worldcover mulai (batas 240 dtk)
+[09:25:01 UTC | terpakai 608 dtk | sisa 2092 dtk] worldcover selesai
+[09:25:01 UTC | terpakai 608 dtk | sisa 2092 dtk] model mulai
+[09:25:01 UTC | terpakai 608 dtk | sisa 2092 dtk] model seri N mulai (462 baris)
+[09:27:12 UTC | terpakai 739 dtk | sisa 1961 dtk] model seri N selesai (24 entri)
+[09:27:12 UTC | terpakai 739 dtk | sisa 1961 dtk] model seri M mulai (749 baris)
+[09:36:35 UTC | terpakai 1301 dtk | sisa 1399 dtk] model seri M selesai (24 entri)
+DIPOTONG SIGTERM saat tahap model seri M; baris penutup ditulis

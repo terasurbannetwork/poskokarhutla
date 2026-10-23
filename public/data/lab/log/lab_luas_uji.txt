@@ -1,18 +1,18 @@
 + timeout 2700 python3 scripts/data/lab_luas.py uji
-[09:09:21 UTC | terpakai 0 dtk | sisa 3000 dtk] model seri N mulai (112 baris)
-[09:09:22 UTC | terpakai 1 dtk | sisa 2999 dtk] model seri N selesai (12 entri)
-[09:09:22 UTC | terpakai 0 dtk | sisa 3000 dtk] gantung mulai (batas 1 dtk)
-[09:09:43 UTC | terpakai 21 dtk | sisa 2979 dtk] gantung LEWAT BATAS 1 dtk (diimputasi)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok mulai (batas 5 dtk)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok selesai
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok dari cache (dibuat 2026-10-23T09:09:43+00:00)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok mulai (batas 5 dtk)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok selesai
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] baru DILEWATI (anggaran)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] ok dari cache (dibuat 2026-10-23T09:09:43+00:00)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] galat mulai (batas 5 dtk)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] galat GALAT division by zero
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] tak_utuh mulai (batas 5 dtk)
-[09:09:43 UTC | terpakai 0 dtk | sisa 3000 dtk] tak_utuh selesai (tak utuh, tak di-cache)
+[09:14:31 UTC | terpakai 0 dtk | sisa 3000 dtk] model seri N mulai (112 baris)
+[09:14:32 UTC | terpakai 1 dtk | sisa 2999 dtk] model seri N selesai (12 entri)
+[09:14:32 UTC | terpakai 0 dtk | sisa 3000 dtk] gantung mulai (batas 1 dtk)
+[09:14:53 UTC | terpakai 21 dtk | sisa 2979 dtk] gantung LEWAT BATAS 1 dtk (diimputasi)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok mulai (batas 5 dtk)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok selesai
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok dari cache (dibuat 2026-10-23T09:14:53+00:00)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok mulai (batas 5 dtk)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok selesai
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] baru DILEWATI (anggaran)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] ok dari cache (dibuat 2026-10-23T09:14:53+00:00)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] galat mulai (batas 5 dtk)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] galat GALAT division by zero
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] tak_utuh mulai (batas 5 dtk)
+[09:14:53 UTC | terpakai 0 dtk | sisa 3000 dtk] tak_utuh selesai (tak utuh, tak di-cache)
 DIPOTONG SIGTERM saat tahap hansen; baris penutup ditulis
 lab_luas uji ok (34.5 dtk)

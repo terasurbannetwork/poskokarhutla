@@ -2,4 +2,10 @@
 lab_padam: tahun 2019 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
 lab_padam: tahun 2019 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
 lab_padam: tahun 2020 {'lokasi': 1, 'pengamatan_calon': 2, 'pengamatan_dipakai': 2, 'snapshot_tanpa_cuaca': 0, 'titik_di_sel_dengan_cuaca': 2, 'sel_dengan_cuaca': 1} 0 dtk
+lab_padam: arsip 2020 gagal (arsip N gagal: RuntimeError: Network is unreachable (kunci ***)); area API jadi cadangan
+lab_padam: cadangan API, potongan belum ada: 35
+lab_padam: arsip 2020 gagal (arsip N gagal: tanpa alasan); area API jadi cadangan
+lab_padam: arsip 2022 gagal (arsip N gagal: tanpa alasan); area API jadi cadangan
+lab_padam: data_availability gagal, cadangan API dilewati: Network is unreachable
+lab_padam: arsip 2022 gagal (arsip N kosong di jendela); area API jadi cadangan
 lab_padam uji: ok
