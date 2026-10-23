@@ -321,6 +321,47 @@ def nilai_lokasi(aturan, lok):
     return None
 
 
+# ---------------------------------------------------------------- penyaring wilayah (hanya daratan Indonesia)
+def kotak_kasar(lat, lon):
+    """label kasar untuk titik di luar poligon provinsi (hanya untuk pelaporan)."""
+    if lat < -10.5 and lon >= 125:
+        return "Australia utara"
+    if lon >= 141 and lat > -10:
+        return "Papua Nugini"
+    if 124.8 <= lon <= 127.5 and -10 <= lat <= -8.0:
+        return "Timor-Leste"
+    if lat >= 3.5 and lon >= 118:
+        return "Filipina selatan"
+    if lat >= 1.3 and lon <= 104.5:
+        return "Malaysia/Singapura (semenanjung)"
+    if lat >= 0.8 and 109 <= lon <= 119.5:
+        return "Malaysia/Brunei (Sabah, Sarawak)"
+    return "laut/lain-lain"
+
+
+def saring_wilayah(pts, wilayah):
+    """Buang titik di luar poligon provinsi Indonesia (mekanisme produksi: wilayah.Wilayah.cari, seperti harian.hotspot). -> (titik, info)."""
+    dalam, luar = [], collections.Counter()
+    for p in pts:
+        if wilayah.cari(p["lon"], p["lat"]):
+            dalam.append(p)
+        else:
+            luar[kotak_kasar(p["lat"], p["lon"])] += 1
+    return dalam, {"titik_masuk": len(pts), "titik_dipakai": len(dalam), "titik_dibuang": sum(luar.values()), "dibuang_per_kotak_kasar": dict(luar.most_common()),
+                   "mekanisme": "wilayah.Wilayah.cari (poligon kecamatan 38 provinsi), sebelum clustering"}
+
+
+def saring_citra(citra, wilayah):
+    """Buang petak Gaveau yang pusat kotaknya di luar poligon provinsi (Gaveau memetakan Indonesia saja; petak tepi pantai bisa terbuang bila batas poligon kasar)."""
+    ada = np.array([bool(wilayah.cari(float(lo), float(la))) for la, lo in citra.pusat])
+    info = {"petak_masuk": int(len(ada)), "petak_dibuang_luar_wilayah": int((~ada).sum()), "ha_dibuang": round(float(citra.ha[~ada].sum()), 1)}
+    if ada.all():
+        return citra, info
+    baru = np.cumsum(ada) - 1
+    m = ada[citra.sel_pid]
+    return Citra(citra.ha[ada], citra.kotak[ada], citra.sel_lat[m], citra.sel_lon[m], baru[citra.sel_pid[m]]), info
+
+
 # ---------------------------------------------------------------- penyaring F
 class Penyaring:
     def __init__(self, padat=(3, 2.0)):
@@ -1082,8 +1123,13 @@ def mode_citra(tahun=2019, maks_menit=40, maks_petak=30000):
     for sumber, sen in (("VIIRS_SNPP", "N"), ("VIIRS_NOAA20", "N20")):
         pts_semua += baca_csv(tarik_firms(sumber, sen, mulai, akhir), sen, mulai, akhir)
     cek()
+    from wilayah import Wilayah
+    wil = Wilayah()
+    pts_semua, info_titik = saring_wilayah(pts_semua, wil)
+    print("penyaring wilayah:", info_titik, file=sys.stderr)
     unduh_zenodo(os.path.join(CACHE, "gaveau"))
     citra = muat_citra(os.path.join(CACHE, "gaveau"), cek)
+    citra, info_petak = saring_citra(citra, wil)
     cek()
     indeks = Indeks(citra.sel_lat, citra.sel_lon, citra.sel_pid)
     m = (citra.ha >= 25)[citra.sel_pid]
@@ -1092,7 +1138,8 @@ def mode_citra(tahun=2019, maks_menit=40, maks_petak=30000):
     gambut = Poligon(os.path.join(AKAR, "public/data/lahan/gambut.geojson"))
     pny = Penyaring()
     out = {"tahun": tahun, "rentang": [mulai, akhir], "petak_total": int(len(citra.ha)), "petak_ha_total": round(float(citra.ha.sum()), 1),
-           "petak_per_kelas": {nm: int(((citra.ha >= lo) & (citra.ha < hi)).sum()) for nm, lo, hi in KELAS_UKURAN}, "himpunan": {}, "belum_dikerjakan": []}
+           "petak_per_kelas": {nm: int(((citra.ha >= lo) & (citra.ha < hi)).sum()) for nm, lo, hi in KELAS_UKURAN}, "himpunan": {}, "belum_dikerjakan": [],
+           "penyaring_wilayah": {"titik": info_titik, "petak": info_petak}}
     for nama, sens in (("n_snpp_n20", {"N", "N20"}), ("n20_n21", {"N20"})):
         pts = tandai([dict(p) for p in pts_semua if p["s"] in sens], pny)
         print(f"himpunan {nama}: {len(pts)} titik", file=sys.stderr)
@@ -1197,14 +1244,20 @@ def ambil_firms_nyata(tugas):
     return pts
 
 
-def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH, amb=4, cache=None, minimal=5):
+def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH, amb=4, cache=None, minimal=5, wilayah=None):
     perlu_numpy()
     R = daftar_aturan(amb)
     rows, tanpa, gagal = [], 0, 0
+    luar_total, masuk_total = collections.Counter(), 0
     cache = cache or cache_lapangan()
     for i, t in enumerate(tugas):
         try:
-            pts = tandai(titik_sekitar(t, ambil_firms, cache), penyaring)
+            pts = titik_sekitar(t, ambil_firms, cache)
+            if wilayah is not None:
+                pts, info = saring_wilayah(pts, wilayah)
+                masuk_total += info["titik_masuk"]
+                luar_total.update(info["dibuang_per_kotak_kasar"])
+            pts = tandai(pts, penyaring)
         except Exception as e:  # pesan galat bisa memuat URL berkunci/bbox: hanya kelas galat yang dicetak
             print(f"gagal tugas ke-{i}: {type(e).__name__}", file=sys.stderr)
             pts, gagal = [], gagal + 1
@@ -1218,6 +1271,7 @@ def evaluasi_lapangan(tugas, ambil_firms, penyaring=None, B=B_BOOT, benih=BENIH,
             best = None
         rows.append((t, best))
     out = {"n_tugas": len(tugas), "n_positif": sum(t["y"] for t in tugas), "n_negatif": sum(not t["y"] for t in tugas), "n_tanpa_cluster_firms": tanpa, "n_gagal_tarik_firms": gagal,
+           "penyaring_wilayah": {"titik_masuk": masuk_total, "titik_dibuang": sum(luar_total.values()), "dibuang_per_kotak_kasar": dict(luar_total)} if wilayah is not None else None,
            "catatan": "bias seleksi: tugas hanya untuk cluster yang lolos R0 saat itu; presisi = dari yang dinyatakan ya aturan itu; ketahanan_positif = porsi positif lapangan yang tetap ya", "aturan": {}}
     y = np.array([t["y"] for t, _ in rows], bool)
     ya_all = {}
@@ -1277,7 +1331,8 @@ def sembunyikan_kecil(out, minimal=5):
 
 def mode_lapangan(jalur, ambil_firms=None):
     tugas, dikeluar = tugas_dari_baris(baca_wrangler(jalur))
-    out = evaluasi_lapangan(tugas, ambil_firms or ambil_firms_nyata, Penyaring())
+    from wilayah import Wilayah
+    out = evaluasi_lapangan(tugas, ambil_firms or ambil_firms_nyata, Penyaring(), wilayah=Wilayah())
     out["dikeluarkan"] = dikeluar
     out["definisi_label"] = "api_ada=positif; bukan_api=negatif; sudah_padam=positif bila luas_ha terlapor > 0, selain itu dikeluarkan dan dihitung terpisah"
     return out
@@ -1308,6 +1363,7 @@ def tulis(h):
     h.setdefault("meta", {}).update({"dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "benih": BENIH, "bootstrap_B": B_BOOT, "bootstrap_B_pr_auc": B_AP,
                                     "aturan": ATURAN_KET, "batasan": BATASAN, "dugaan_satuan_kemenhut": "per lokasi (BELUM terkonfirmasi dari dokumen resmi)",
                                     "sumber_citra": "Gaveau dkk. 2021 ESSD 13:5353, Zenodo doi:10.5281/zenodo.4551243", "ambang_nyata_km": {"utama": R_NYATA, "ketat": R_NYATA_KETAT}})
+    h["meta"]["penyaring_wilayah"] = {"citra": h.get("citra", {}).get("penyaring_wilayah"), "lapangan": h.get("lapangan", {}).get("penyaring_wilayah")}
     h["keputusan"] = ringkas_keputusan(h)
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     with open(KELUAR, "w") as f:
@@ -1483,6 +1539,32 @@ def uji():
     assert og["n_gagal_tarik_firms"] == 3 and "RAHASIA123" not in err.getvalue() and "1,2,3,4" not in err.getvalue() and "RuntimeError" in err.getvalue()
     # H2: cache lapangan bukan di bawah data/raw
     assert "data/raw" not in cache_lapangan()
+    # penyaring wilayah: titik Australia/Malaysia/PNG/Timor-Leste/laut dibuang, titik Indonesia dipertahankan
+    class _W:
+        def cari(self, lo, la):
+            return ("62",) if (-8 < la < 5 and 95 < lo < 141 and (la, lo) != (2.0, 113.0)) else None
+    asing = [(-11.49, 130.25, "Australia utara"), (2.0, 113.0, "Malaysia/Brunei (Sabah, Sarawak)"), (-5.0, 142.0, "Papua Nugini"), (-8.8, 126.0, "Timor-Leste"), (5.0, 120.0, "Filipina selatan")]
+    for la, lo, nm in asing:
+        assert kotak_kasar(la, lo) == nm, (la, lo, kotak_kasar(la, lo))
+    ps = [_p(lat=la, lon=lo) for la, lo, _ in asing] + [_p(lat=-2.2, lon=113.9), _p(lat=0.5, lon=110.0)]
+    dalam, inf = saring_wilayah(ps, _W())
+    assert inf["titik_dibuang"] == 5, inf
+    assert all(-8 < p["lat"] < 5 for p in dalam) and len(dalam) == inf["titik_dipakai"] and inf["titik_masuk"] == 7 and inf["dibuang_per_kotak_kasar"]
+    try:
+        from wilayah import Wilayah
+        W = Wilayah()
+    except Exception:
+        W = None
+    if W:   # poligon provinsi nyata: Australia utara, Sabah, Timor-Leste, PNG dibuang; Palangka Raya dan Palembang dipertahankan
+        pp = [_p(lat=-11.49, lon=130.25), _p(lat=5.9, lon=116.1), _p(lat=-8.55, lon=125.57), _p(lat=-6.0, lon=143.0), _p(lat=-2.21, lon=113.92), _p(lat=-2.98, lon=104.75)]
+        d2, i2 = saring_wilayah(pp, W)
+        assert [round(p["lat"], 2) for p in d2] == [-2.21, -2.98] and i2["titik_dibuang"] == 4, i2
+        ct2 = citra_dari_sel(np.array([int(kunci_sel([-2.21], [113.92])[0]), int(kunci_sel([-11.49], [130.25])[0])]), np.full(2, 1.2))
+        c3, i3 = saring_citra(ct2, W)
+        assert len(c3.ha) == 1 and i3["petak_dibuang_luar_wilayah"] == 1 and c3.sel_pid.max() == 0
+    # lapangan memakai penyaring wilayah yang sama
+    ol5 = evaluasi_lapangan(tg, lambda t: [_p(lat=-11.49, lon=130.25, t0=awal)], None, B=20, cache=tempfile.mkdtemp(), minimal=1, wilayah=_W())
+    assert ol5["penyaring_wilayah"]["titik_dibuang"] == 3 and ol5["n_tanpa_cluster_firms"] == 3
     # tulis/ringkas tanpa menyentuh berkas produksi
     h = {"citra": {"himpunan": {"n_snpp_n20": {"aturan": {"R2": {"off": dd(-0.5, -0.6, 0, 0)}}, "titik_lemah_R0": {"x": 1}}}}}
     assert ringkas_keputusan(h)["putusan"] == "pertahankan R0"
