@@ -101,12 +101,20 @@
       /* kuartil baru bermakna dari >= 8 episode; di bawah itu cukup median dan terlama */
       a.lama = {median: median(r), p75: r.length >= 8 ? kuantil(r, .75) : null, n: r.length, sisa: lanjut.length >= 3 ? Math.max(0, Math.round(mTot - h)) : null};
       prakira.push(["Lama kebakaran", `median ${ang(a.lama.median)} hari`, `${ang(r.length)} episode ${dasarM}${a.lama.p75 ? `; 1 dari 4 lebih dari ${ang(a.lama.p75)} hari` : ""}, terlama ${ang(r[r.length - 1])} hari`]);
-      if (opsi.lamaUnggul && a.lama.sisa != null && p.teramati !== false) prakira.push(   /* hanya bila uji balik membuktikan lebih tepat dari median nasional */["Perkiraan sisa", a.lama.sisa ? `sekitar ${ang(a.lama.sisa)} hari lagi` : "mendekati akhir",
+      a.lama.sisaTampil = !!(opsi.lamaUnggul && a.lama.sisa != null && p.teramati !== false);
+      if (a.lama.sisaTampil) prakira.push(   /* hanya bila uji balik membuktikan lebih tepat dari median nasional */["Perkiraan sisa", a.lama.sisa ? `sekitar ${ang(a.lama.sisa)} hari lagi` : "mendekati akhir",
         `episode yang sudah bertahan ${ang(h)} hari di sini biasanya total ${ang(Math.round(mTot))} hari (${ang(lanjut.length)} kejadian)`]);
     }
-    if (R.s) {
-      a.sisaMusim = R.s[1] - doyIni;
-      prakira.push(["Akhir musim", a.sisaMusim > 0 ? `sekitar ${tglDoy(R.s[1])}` : "biasanya sudah lewat", a.sisaMusim > 0 ? `${ang(a.sisaMusim)} hari lagi menurut median ${dasarM}` : `median akhir musim ${tglDoy(R.s[1])}; separuh tahun di sini api masih menyala sesudah tanggal itu`]);
+    /* model bertingkat (opsi.hier dari isi): hanya bila lolos uji balik (riwayat_sel_uji.json hierarki), dan analog El Niño tidak aktif */
+    const Hb = !an && opsi.hier, mae = opsi.hierMae || {};
+    if (Hb && opsi.hierLama && Hb.sisa != null && p.teramati !== false && !a.lama?.sisaTampil)
+      prakira.push(["Perkiraan sisa", Hb.sisa ? `sekitar ${ang(Hb.sisa)} hari lagi` : "mendekati akhir",
+        `model bertingkat: pola ${Hb.tingkat} dan riwayat ~16 km di sekitarnya${mae.lama ? `; pada uji musim 2019 dan 2023 meleset rata-rata ${mae.lama} hari` : ""}`]);
+    const akhirD = Hb && opsi.hierMusim && Hb.akhir ? Hb.akhir : R.s?.[1];
+    if (akhirD) {
+      a.sisaMusim = akhirD - doyIni;
+      const dasarA = Hb && opsi.hierMusim ? `model bertingkat (${Hb.tingkat})${mae.musim ? `, meleset rata-rata ${mae.musim} hari pada uji` : ""}` : `median ${dasarM}`;
+      prakira.push(["Akhir musim", a.sisaMusim > 0 ? `sekitar ${tglDoy(akhirD)}` : "biasanya sudah lewat", a.sisaMusim > 0 ? `${ang(a.sisaMusim)} hari lagi menurut ${dasarA}` : `${dasarA}: ${tglDoy(akhirD)}; separuh tahun di sini api masih menyala sesudah tanggal itu`]);
     }
     if (R.k >= 2) prakira.push(["Kekambuhan", `${ang(R.k, 1)} episode/tahun`, "di tahun terbakar, api biasanya muncul lagi setelah sempat padam"]);
 
@@ -151,6 +159,36 @@
     }).filter(Boolean).sort((x, y) => y.rasio - x.rasio);
   }
 
+  /* model bertingkat (scripts/data/riwayat_sel.py hierarki_produksi -> riwayat_hierarki.json; docs/riset/HIERARKI-WILAYAH.md):
+     unit wilayah terdalam yang ada (kecamatan, lalu kabupaten, provinsi, nasional) sudah disusut ke induknya di pipeline; tingkat terakhir
+     (jendela ~16 km) disusut di sini dengan rumus yang sama: B = (n*mentah + k*B_induk)/(n + k), lama dalam log hari, akhir musim dalam
+     hari-dalam-tahun. Episode jendela dari ubin (episode yang masih menyala tidak ikut). Lolos uji balik 2019 & 2023 (lama dan akhir musim). */
+  function bertingkat(H, rec, p, h) {
+    if (!H?.nasional) return null;
+    const unit = [["Kec.", H.kec?.[`${p.prov}|${p.kab}|${p.kec}`], p.kec], ["Kab.", H.kab?.[`${p.prov}|${p.kab}`], p.kab], ["Prov.", H.prov?.[p.prov], null]]
+      .find(([, u]) => u) || ["nasional", H.nasional, null];
+    const [lv, u, nama] = unit, out = {tingkat: nama ? `${lv} ${nama}` : lv === "Prov." ? "provinsi" : "nasional"};
+    const hh = Math.max(1, Math.round(h || 1));
+    if (hh <= 14) {
+      const dInduk = u.d?.[hh - 1] ?? H.nasional.d[hh - 1], kw = H.k?.[hh]?.w ?? 1e9, rw = (rec?.r || []).filter(v => v >= hh);
+      const B = rw.length ? (rw.length * Math.log(median(rw)) + kw * Math.log(dInduk)) / (rw.length + kw) : Math.log(dInduk);
+      out.total = Math.exp(B); out.sisa = Math.max(0, Math.round(out.total - hh));
+    }
+    const sInduk = u.s ?? H.nasional.s, km = H.k?.musim?.w ?? 1e9;
+    const nw = rec?.s ? (rec.y || []).slice(0, -1).filter(v => v >= TAHUN_AKTIF).length : 0;
+    out.akhir = Math.round(nw ? (nw * rec.s[1] + km * sInduk) / (nw + km) : sInduk);
+    return out;
+  }
+
+  /* pola wilayah (riwayat_wilayah.py: public/data/riwayat_wilayah/{prov,kab,kec_<prov>}.json, MODIS 2003-2025 per unit sendiri):
+     kecamatan, kabupaten, provinsi berdampingan supaya angka tidak dari rata-rata Indonesia. Deskriptif, bukan ramalan. */
+  function wilayahBaris(kec, kab, prov) {
+    const TR = {naik: "naik", turun: "turun", datar: "relatif sama"};
+    return [["Kecamatan", kec], ["Kabupaten", kab], ["Provinsi", prov]].filter(([, r]) => r).map(([t, r]) => ({
+      tingkat: t, nama: r.nama, m: r.m, rk: r.rk, el: r.el, tr: r.tr ? TR[r.tr] + (r.rt && r.tr !== "datar" ? ` ${kali(r.rt)}×` : "") : null,
+      ini: r.yd && r.yd[1] >= 1 && r.yd[0] >= 20 ? r.yd[0] / r.yd[1] : null}));
+  }
+
   function batang(nilai, label, sorot, judul) {
     const m = Math.max(...nilai, 1), n = nilai.length, w = 100 / n, lb = x => x >= 1000 ? (Math.round(x / 100) / 10 + "rb").replace(".", ",") : x;
     return `<svg viewBox="0 0 100 32" width="100%" role="img" aria-label="${esc(judul)}">${nilai.map((x, i) => { const h = Math.max(.6, x / m * 18);
@@ -166,10 +204,12 @@
     if (!l.length) return "";
     const mae = l.map(x => x.mae), pemb = l.map(x => x.mae_pembanding);
     const rg = xs => Math.min(...xs) === Math.max(...xs) ? ang(xs[0], 1) : `${ang(Math.min(...xs), 1)}–${ang(Math.max(...xs), 1)}`;
+    const HL = u.hierarki?.lama && Object.values(u.hierarki.lama), HM = u.hierarki?.musim;
+    const teksH = HL?.length ? ` Model bertingkat (kecamatan, kabupaten, provinsi) ${u.hierarki.lama_unggul_hierarki ? "lebih tepat" : "tidak lebih tepat"}: lama meleset ${rg(HL.map(x => x.mae_hierarki))} hari vs ${rg(HL.map(x => x.mae_nasional))} hari median nasional${HM ? `; akhir musim ${ang(HM.mae_hierarki, 1)} vs ${ang(HM.mae_mentah, 1)} hari` : ""}${u.hierarki.lama_unggul_hierarki ? ", jadi model ini yang dipakai" : ""}.` : "";
     const E = u.el_nino, el = E && Object.values(E.lama || {}), em = E?.musim;
     const teksEl = el?.length ? ` Di musim El Niño, memakai musim El Niño sebelumnya saja: lama meleset ${rg(el.map(x => x.mae_analog))} hari vs ${rg(el.map(x => x.mae_umum))} hari dengan semua tahun${em ? `; akhir musim ${ang(em.mae_analog)} vs ${ang(em.mae_umum)} hari` : ""} (kasus yang sama).` : "";
     const nas = l.map(x => x.mae_nasional).filter(x => x != null);
-    return `Uji pada musim ${th}: perkiraan lama kebakaran dari riwayat lokasi meleset rata-rata ${rg(mae)} hari, ${u.lama_unggul ? "lebih tepat dari" : "tidak lebih tepat dari"} median nasional${nas.length ? ` (${rg(nas)} hari)` : ""}${u.lama_unggul ? "" : ", jadi sisa hari tidak ditampilkan"}; tebakan 2 kali umur api ${rg(pemb)} hari${m ? `; akhir musim meleset rata-rata ${ang(m.mae)} hari (tebakan umum ${ang(m.mae_pembanding)} hari)` : ""}.${teksEl} Pakai sebagai gambaran, bukan jadwal.`;
+    return `Uji pada musim ${th}: perkiraan lama kebakaran dari riwayat lokasi meleset rata-rata ${rg(mae)} hari, ${u.lama_unggul ? "lebih tepat dari" : "tidak lebih tepat dari"} median nasional${nas.length ? ` (${rg(nas)} hari)` : ""}${u.lama_unggul || u.hierarki?.lama_unggul_hierarki ? "" : ", jadi sisa hari tidak ditampilkan"}; tebakan 2 kali umur api ${rg(pemb)} hari${m ? `; akhir musim meleset rata-rata ${ang(m.mae)} hari (tebakan umum ${ang(m.mae_pembanding)} hari)` : ""}.${teksH}${teksEl} Pakai sebagai gambaran, bukan jadwal.`;
   }
 
   function html(a, u) {
@@ -180,6 +220,8 @@
       <p class="fnd" style="margin:0">${a.thIni} sampai ${esc(new Date(a.sd + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}))}.</p>
       ${sub("Titik per bulan, semua tahun")}${batang(a.m, ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], i => i === a.bulanPuncak, "Titik per bulan")}
       ${a.prakira.length ? sub("Prakiraan dari pola lokasi ini") + `<table class="tb2 br"><tbody>${a.prakira.map(([k, v, d]) => `<tr><td>${esc(k)}<small style="display:block;color:var(--ink2)">${esc(d)}</small></td><td class="n"><b>${esc(v)}</b></td></tr>`).join("")}</tbody></table>` : ""}
+      ${a.wilayah?.length ? sub("Pola wilayah, MODIS 2003–2025") + `<table class="tb2 br" style="font-size:11.5px;table-layout:fixed"><colgroup><col style="width:34%"><col><col><col><col></colgroup><thead><tr><th></th><th class="n">Titik /th</th><th class="n">El Niño</th><th class="n">Tren</th><th class="n">${a.thIni}</th></tr></thead><tbody>${a.wilayah.map(w => `<tr><td>${esc(w.tingkat)}<small style="display:block;color:var(--ink2)">${esc(w.nama)}${w.rk ? `, peringkat ${ang(w.rk[0])} dari ${ang(w.rk[1])}` : ""}</small></td><td class="n">${w.m != null ? ang(w.m >= 100 ? Math.round(w.m / 10) * 10 : Math.round(w.m)) : "–"}</td><td class="n">${w.el != null ? kali(w.el) + "×" : "–"}</td><td class="n">${esc(w.tr || "–")}</td><td class="n">${w.ini != null ? kali(w.ini) + "×" : "–"}</td></tr>`).join("")}</tbody></table>
+        <p class="fnd" style="margin:4px 0 0">Tiap baris memakai data unitnya sendiri. Titik /th = rata-rata titik MODIS tahun penuh; tren = 2016–2025 dibanding 2003–2012; El Niño = rata-rata titik di tahun El Niño dibanding tahun biasa; ${a.thIni} = titik VIIRS tahun ini dibanding rata-rata tahun lalu pada tanggal yang sama; peringkat di antara unit setingkat dalam induknya.</p>` : ""}
       ${a.faktor?.length ? sub("Kondisi di sini yang biasanya menyertai api membesar") + `<table class="tb2 br"><tbody>${a.faktor.map(f => `<tr><td>${esc(f.nama)}<small style="display:block;color:var(--ink2)">kondisi ${esc(f.kelas)}, dibanding ${esc(f.acuan)}${f.terkoreksi ? `; setelah dikoreksi variabel lain (tanpa koreksi ${kali(f.mentah)}×)` : "; belum dikoreksi variabel lain"}</small></td><td class="n"><b style="color:${f.rasio >= 1.2 ? "var(--bad)" : f.rasio <= 0.8 ? "#3f7f5a" : "inherit"}">${kali(f.rasio)}×</b></td></tr>`).join("")}</tbody></table>
         <p class="fnd" style="margin:4px 0 0">Bukan sebab. Laju api baru menjadi ≥ 140 ha dalam 72 jam, dari ${ang(a.nPeristiwa || 0)} peristiwa di 9 provinsi, Juli–November 2012–2026. Hanya kondisi yang diukur sama dan arahnya tetap setelah dikoreksi variabel lain; model terlatih di bawah memakai 40 variabel sekaligus.</p>` : ""}
       ${a.saran.length ? sub("Saran dari tren") + li(a.saran) : ""}
@@ -187,19 +229,26 @@
       <p class="fnd" style="margin-top:8px">Sumber: NASA FIRMS ${a.sen === "MODIS" ? `MODIS ${a.th[0]}–${a.thIni} (seri panjang) dan VIIRS S-NPP 2012–${a.thIni} (minggu ini, musim, lama, arah)` : `VIIRS S-NPP ${a.th[0]}–${a.thIni}`}, jendela ~16 km di sekitar pusat cluster. Prakiraan diambil dari kejadian masa lalu di lokasi ini, bukan simulasi; arah hari ini dari angin.</p>${teksUji(u) ? `<p class="fnd" style="margin-top:4px">${esc(teksUji(u))}</p>` : ""}`;
   }
 
-  const ubin = {}, iklim = {}, ujiB = {}, dorong = {};
+  const ubin = {}, iklim = {}, ujiB = {}, dorong = {}, wil = {};
+  const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
   async function isi(wadah, p) {
     const k = kunci(p.lat, p.lon);
     const [d, ik, ub, pd] = await Promise.all([ubin[k.ubin] ||= fetch(`data/riwayat_sel/${k.ubin}.json`).then(r => r.ok ? r.json() : null).catch(() => null),
       iklim.j ||= fetch("data/iklim.json").then(r => r.ok ? r.json() : null).catch(() => null),
       ujiB.j ||= fetch("data/riwayat_sel_uji.json").then(r => r.ok ? r.json() : null).catch(() => null),
       dorong.j ||= fetch("data/sebaran_pendorong.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
+    const [wp, wk, H, wc] = await Promise.all([wil.prov ||= ambil("data/riwayat_wilayah/prov.json"), wil.kab ||= ambil("data/riwayat_wilayah/kab.json"), wil.hier ||= ambil("data/riwayat_hierarki.json"),
+      wil["kec" + p.prov] ||= ambil(`data/riwayat_wilayah/kec_${p.prov}.json`)]);
     if (!wadah.isConnected) return;
     const rec = d?.c?.[k.sel];
     /* gerbang analog El Niño: hanya bila uji balik (kasus yang sama) membuktikan analog lebih tepat untuk lama DAN akhir musim */
     const E = ub?.el_nino, lolosAnalog = !!(E && Object.values(E.lama || {}).length && Object.values(E.lama).every(x => x.mae_analog < x.mae_umum) && (!E.musim || E.musim.mae_analog < E.musim.mae_umum));
-    const A = rec && analisa(rec, d, p, ik?.status, {analog: lolosAnalog, lamaUnggul: ub?.lama_unggul === true, kini: Date.now()});
-    if (A) { A.faktor = faktor(pd, p); A.nPeristiwa = pd?.n_peristiwa; }
+    const UH = ub?.hierarki, hm = x => x == null ? null : ang(x, 0);
+    const A = rec && analisa(rec, d, p, ik?.status, {analog: lolosAnalog, lamaUnggul: ub?.lama_unggul === true, kini: Date.now(),
+      hier: bertingkat(H, rec, p, p.hari), hierLama: UH?.lama_unggul_hierarki === true, hierMusim: UH?.musim_unggul_hierarki === true,
+      hierMae: {lama: UH?.lama ? `${hm(Math.min(...Object.values(UH.lama).map(x => x.mae_hierarki)))}–${hm(Math.max(...Object.values(UH.lama).map(x => x.mae_hierarki)))}` : null, musim: hm(UH?.musim?.mae_hierarki)}});
+    if (A) { A.faktor = faktor(pd, p); A.nPeristiwa = pd?.n_peristiwa;
+      A.wilayah = wilayahBaris(wc?.kec?.[`${p.prov}|${p.kab}|${p.kec}`], wk?.kab?.[`${p.prov}|${p.kab}`], wp?.prov?.[p.prov]); }
     wadah.innerHTML = !d ? `<p class="fnd">Riwayat lokasi gagal dimuat. Coba buka ulang cluster ini.</p>`
       : rec ? html(A, ub) : `<p class="fnd">Lokasi ini tidak punya riwayat titik VIIRS sejak 2012 (kurang dari 20 titik dalam ~16 km): kebakaran di sini tidak biasa, pastikan dengan ground-check.</p>`;
     /* model terlatih (sebaran_model.js lewat SimData, sama dengan tab Simulasi): dijalankan hanya saat diminta karena memuat lahan + cuaca beberapa MB */
@@ -221,7 +270,7 @@
     };
   }
 
-  const RiwayatSel = {kunci, analisa, html, isi, teksUji, faktor};
+  const RiwayatSel = {kunci, analisa, html, isi, teksUji, faktor, wilayahBaris, bertingkat};
   if (typeof window !== "undefined") window.RiwayatSel = RiwayatSel;
   if (typeof module !== "undefined") module.exports = RiwayatSel;
 })();

@@ -14,13 +14,17 @@ prioritas saja); kab/kec dari centroid desa lewat wilayah.Wilayah.
 Konsesi dikunci seperti konsesi_laporan.bangun: satu perusahaan = (kunci(nama) atau id, jenis, prov); kunci keluaran = id fitur
 pertama perusahaan itu = field "id" tiap perusahaan di konsesi2026/<prov>.json. Hanya perusahaan dengan >= 1 titik yang ditulis.
 
-Pakai:  python3 scripts/data/riwayat_wilayah.py        # bangun
+Wilayah administrasi (prov, kab, kec seluruh Indonesia): tiap sel 0,01 derajat berposisi rata-rata ke SATU kecamatan lewat
+wilayah.Wilayah (public/geo/kecamatan); sel di luar semua poligon ditolak. -> public/data/riwayat_wilayah/{prov,kab,kec_<prov>}.json
+
+Pakai:  python3 scripts/data/riwayat_wilayah.py        # bangun semua
+        python3 scripts/data/riwayat_wilayah.py wilayah  # hanya prov/kab/kec
         python3 scripts/data/riwayat_wilayah.py uji    # self-check logika rangkum()
 """
 import csv, datetime as dt, glob, json, math, os, re, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from wilayah import AKAR, Wilayah  # noqa: E402
+from wilayah import AKAR, PROVINSI, Wilayah  # noqa: E402
 from riwayat_grid import bukan_vegetasi, vegetasi  # noqa: E402
 from riwayat_sel import X0, X1, Y0, Y1, TH0, THM0, AKTIF_MODIS  # noqa: E402  (kotak, tahun awal, ambang sama dengan riwayat_sel)
 from aktor_walhi import Indeks, kunci  # noqa: E402
@@ -28,6 +32,7 @@ from aktor_walhi import Indeks, kunci  # noqa: E402
 CELL = 0.01
 EL_NINO = (2004, 2006, 2009, 2015, 2019, 2023)   # seri panjang MODIS
 TAHUN_AKTIF = AKTIF_MODIS   # titik MODIS per tahun penuh yang dihitung "terbakar" (3, sama dengan riwayat_grid/riwayat_sel)
+MIN_KEC = 20       # titik total agar kecamatan ditulis di kec_<prov>.json
 MIN_DESA = 20      # titik total (VIIRS atau MODIS, semua tahun) agar desa ditulis
 TH_PENUH0 = 2013   # S-NPP mulai 19 Jan 2012: 2012 sebagian, bukan tahun penuh (hanya untuk rata-rata yd VIIRS)
 DESA_KODE = ["14", "15", "16", "53", "61", "62", "63", "64", "93"]
@@ -175,7 +180,120 @@ def desa_fitur(prov):
     return out
 
 
-def main():
+def per_unit(sel, selm, cari, ny, nym):
+    """Tiap sel 0,01 derajat ke SATU kecamatan lewat `cari(lon, lat) -> (prov, kab, kec) | None` pada posisi rata-rata sel
+    (pendekatan: sel yang membelah batas menyumbang seluruh titiknya ke satu sisi, galat batas <= ~1 km). Sel di luar semua
+    poligon (laut, luar negeri) DITOLAK: tidak dihitung di unit mana pun.
+    -> ({(prov, kab, kec): [Akum VIIRS, Akum MODIS]}, titik ditolak VIIRS, titik ditolak MODIS)"""
+    kec, tolak = {}, [0, 0]
+    for j, (s, ny_) in enumerate(((sel, ny), (selm, nym))):
+        for (sx, sy, y, yd) in s.values():
+            n = sum(y)
+            if not n:
+                continue
+            w = cari(sx / n, sy / n)
+            if w is None:
+                tolak[j] += n
+                continue
+            e = kec.setdefault(w, [Akum(ny), Akum(nym)])[j]
+            e.tambah(y, yd)
+    return kec, tolak[0], tolak[1]
+
+
+def gulung(kec, tingkat):
+    """Jumlahkan akumulator kecamatan ke induknya: tingkat = fungsi ident -> kunci induk."""
+    out = {}
+    for ident, (a, am) in kec.items():
+        e = out.setdefault(tingkat(ident), [Akum(len(a.y)), Akum(len(am.y))])
+        e[0].tambah(a.y, a.yd); e[1].tambah(am.y, am.yd)
+    return out
+
+
+def rata_tahunan(ym, th1):
+    penuh = ym[:th1 - THM0]
+    return sum(penuh) / len(penuh)
+
+
+def rekam(a, am, th1):
+    r = rangkum(a.y, a.yd, th1, am.y)
+    r["m"] = round(rata_tahunan(am.y, th1), 1)
+    return r
+
+
+def beri_rank(rows, induk, rasio_induk):
+    """rows: {kunci: rec}; induk: kunci -> kunci induk; rasio_induk: kunci induk -> el induk (atau None).
+    rk = [peringkat rata-rata titik MODIS tahun penuh (m) di antara saudara bertitik, jumlah saudara] (peringkat 1 = terbanyak, seri berbagi peringkat);
+    er = el unit / el induk (null bila salah satunya null atau 0)."""
+    grup = {}
+    for k, r in rows.items():
+        grup.setdefault(induk(k), []).append(k)
+    for g, ks in grup.items():
+        ms = [rows[k]["m"] for k in ks]
+        for k in ks:
+            rows[k]["rk"] = [1 + sum(1 for m in ms if m > rows[k]["m"]), len(ks)]
+            e, ei = rows[k]["el"], rasio_induk(g)
+            rows[k]["er"] = round(e / ei, 2) if e and ei else None
+
+
+def wilayah_main(sel, selm, th1, meta, df):
+    t0 = time.time()
+    ny, nym = th1 - TH0 + 1, th1 - THM0 + 1
+    wil = Wilayah()
+    kec, tv, tm = per_unit(sel, selm, wil.cari, ny, nym)
+    print(f"wilayah: {len(kec)} kecamatan bertitik, ditolak (di luar poligon) {tv} titik VIIRS + {tm} MODIS, {time.time() - t0:.0f} dtk", file=sys.stderr)
+    df = dict(df)
+    df.update({"m": "rata-rata titik MODIS per tahun penuh (rank dasar)",
+               "rk": "[peringkat m di antara unit saudara dalam induk yang sama (1 = terbanyak), jumlah saudara bertitik]; kecamatan: saudara = semua kecamatan bertitik dalam kabupaten, sebelum saringan >= " + str(MIN_KEC) + " titik",
+               "er": "el unit dibagi el induk (kecamatan -> kabupaten, kabupaten -> provinsi, provinsi -> seluruh Indonesia); null bila salah satu null/0",
+               "kunci": "prov: kode Kemendagri 2 digit; kab: 'kode prov|nama kab'; kec (kec_<prov>.json): 'nama kab|nama kec' (poligon batas tidak memuat kode kab/kec)",
+               "sel": "sel 0,01 derajat berposisi rata-rata titik, satu kecamatan per sel; sel di luar semua poligon ditolak"})
+    m2 = {**meta, "definisi": df}
+    nas = [Akum(ny), Akum(nym)]
+    for a, am in kec.values():
+        nas[0].tambah(a.y, a.yd); nas[1].tambah(am.y, am.yd)
+    el_nas = rekam(nas[0], nas[1], th1)["el"]
+    prov = {k: rekam(*e, th1) for k, e in gulung(kec, lambda i: i[0]).items()}
+    kab = {f"{k[0]}|{k[1]}": rekam(*e, th1) for k, e in gulung(kec, lambda i: i[:2]).items()}
+    kc = {f"{k[0]}|{k[1]}|{k[2]}": rekam(*e, th1) for k, e in kec.items()}
+    for k, r in prov.items():
+        r["nama"] = PROVINSI.get(k, k)
+    for k, r in kab.items():
+        r["prov"], r["nama"] = k.split("|")
+    for k, r in kc.items():
+        r["prov"], r["kab"], r["nama"] = k.split("|")
+    beri_rank(prov, lambda k: "", lambda g: el_nas)
+    beri_rank(kab, lambda k: k.split("|")[0], lambda g: prov[g]["el"])
+    beri_rank(kc, lambda k: "|".join(k.split("|")[:2]), lambda g: kab[g]["el"])
+    uji_total(prov, kab, kc)
+    d = os.path.join(AKAR, "public/data/riwayat_wilayah")
+    os.makedirs(d, exist_ok=True)
+    tulis = lambda nm, o: (json.dump({**m2, **o}, open(os.path.join(d, nm), "w"), ensure_ascii=False, separators=(",", ":")), os.path.getsize(os.path.join(d, nm)))[1]
+    ukuran = {"prov.json": tulis("prov.json", {"prov": prov}), "kab.json": tulis("kab.json", {"kab": kab})}
+    nk = 0
+    for pk in sorted({r["prov"] for r in kc.values()}):
+        ada = {k: r for k, r in kc.items() if r["prov"] == pk and sum(r["y"]) + sum(r["ym"]) >= MIN_KEC}
+        if ada:
+            nk += len(ada)
+            ukuran[f"kec_{pk}.json"] = tulis(f"kec_{pk}.json", {"kec": ada})
+    print(f"wilayah: {len(prov)} prov, {len(kab)} kab, {nk} kec (>= {MIN_KEC} titik, dari {len(kc)} bertitik) di {len(ukuran) - 2} berkas, "
+          f"{sum(ukuran.values()) / 1e6:.1f} MB, {time.time() - t0:.0f} dtk", file=sys.stderr)
+
+
+def uji_total(prov, kab, kc):
+    """Invarian: jumlah titik anak <= induknya (kec <= kab <= prov) pada tiap tahun; gagal = pemetaan ganda."""
+    for anak, induk, kk in ((kc, kab, lambda k: k.rsplit("|", 1)[0]), (kab, prov, lambda k: k.split("|")[0])):
+        tot = {}
+        for k, r in anak.items():
+            t = tot.setdefault(kk(k), [[0] * len(r["y"]), [0] * len(r["ym"])])
+            for i, v in enumerate(r["y"]): t[0][i] += v
+            for i, v in enumerate(r["ym"]): t[1][i] += v
+        for g, (ty, tm) in tot.items():
+            r = induk[g]
+            if any(a > b for a, b in zip(ty, r["y"])) or any(a > b for a, b in zip(tm, r["ym"])):
+                raise AssertionError(f"jumlah anak melebihi induk {g}: VIIRS {sum(ty)} > {sum(r['y'])} atau MODIS {sum(tm)} > {sum(r['ym'])}")
+
+
+def main(only=False):
     t0 = time.time()
     raw = os.path.join(AKAR, "data/raw/firms")
     sel, akhir = baca_sel([os.path.join(raw, "viirs_2012_2014.csv"), os.path.join(raw, "viirs.csv")])
@@ -187,6 +305,9 @@ def main():
     df = definisi(th1, doy)
     df["sd"] = akhir.isoformat()
     meta = {"sumber": f"NASA FIRMS MODIS Terra+Aqua {THM0}-{th1} (keyakinan >= 30) + VIIRS S-NPP {TH0}-{th1} (keyakinan n/h), api vegetasi", "sd": akhir.isoformat(), "definisi": df}
+
+    if only:
+        return wilayah_main(sel, selm, th1, meta, df)
 
     # --- konsesi
     lahan = os.path.join(AKAR, "public/data/lahan/konsesi.geojson")
@@ -232,6 +353,7 @@ def main():
         p = os.path.join(kel, f"{kode}.json")
         json.dump({**meta, "desa": rows}, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
         print(f"desa {kode}: {len(fd)} desa, {len(rows)} ditulis, {sum(r['lg'] for r in rows)} langganan, {os.path.getsize(p) / 1e3:.0f} KB, {time.time() - t0:.0f} dtk", file=sys.stderr)
+    wilayah_main(sel, selm, th1, meta, df)
 
 
 def uji():
@@ -294,8 +416,37 @@ def uji():
     assert list(per) == ["A"] and per["A"].y[0] == 2, per["A"].y
     per = petakan(sel, ind, ny, lambda i: i)
     assert per[0].y[0] == 2 and per[1].y[0] == 1
+    # wilayah: titik di luar semua poligon DITOLAK; kec <= kab <= prov
+    kab_a, kab_b = [[0, 0], [1, 0], [1, 1], [0, 1], [0, 0]], [[1, 0], [2, 0], [2, 1], [1, 1], [1, 0]]
+    zona = [("11", "A", "k1", kab_a), ("11", "A", "k2", kab_b)]
+    def cari(lon, lat):
+        for pv, kb, kc_, r in zona:
+            if r[0][0] <= lon <= r[2][0] and 0 <= lat <= 1:
+                return (pv, kb, kc_)
+    ym1 = [0] * nym; ym1[2010 - THM0] = 7
+    sw = {(0, 0): (0.5 * 3, 0.5 * 3, [3] + [0] * (ny - 1), [3] + [0] * (ny - 1)),    # 3 titik di k1
+          (1, 1): (3.0, 1.0, [2] + [0] * (ny - 1), [2] + [0] * (ny - 1)),            # 2 titik di k2
+          (2, 2): (5.0 * 4, 5.0 * 4, [4] + [0] * (ny - 1), [4] + [0] * (ny - 1))}    # 4 titik di (5,5): luar poligon
+    sm = {(0, 0): (3.5, 3.5, ym1, ym1)}
+    kc, tv, tm = per_unit(sw, sm, cari, ny, nym)
+    assert tv == 4 and tm == 0 and sum(kc[("11", "A", "k1")][0].y) == 3 and sum(kc[("11", "A", "k2")][0].y) == 2, (tv, kc)
+    assert sum(sum(e[0].y) for e in kc.values()) == 5, "titik di luar poligon ikut terhitung"
+    assert sum(kc[("11", "A", "k1")][1].y) == 7 and ("11", "A", "k2") in kc
+    kk = {f"{i[0]}|{i[1]}|{i[2]}": rekam(*e, 2026) for i, e in kc.items()}
+    kb = {"11|A": rekam(*gulung(kc, lambda i: i[:2])[("11", "A")], 2026)}
+    pv = {"11": rekam(*gulung(kc, lambda i: i[0])["11"], 2026)}
+    uji_total(pv, kb, kk)
+    kk["11|A|k2"]["y"][0] += 1     # anak melebihi induk harus ditolak
+    try:
+        uji_total(pv, kb, kk)
+    except AssertionError:
+        pass
+    else:
+        raise AssertionError("kec > kab tidak ditolak")
+    beri_rank(kk, lambda k: "|".join(k.split("|")[:2]), lambda g: kb[g]["el"])
+    assert kk["11|A|k1"]["rk"] == [1, 2] and kk["11|A|k2"]["rk"] == [2, 2], kk
     print("ok")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    uji() if sys.argv[1:] == ["uji"] else main(only=sys.argv[1:] == ["wilayah"])

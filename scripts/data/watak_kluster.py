@@ -35,7 +35,35 @@ def bulat(x):
     return math.floor(x + .5)
 
 
-def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True):
+def bertingkat(H, rec, p, h):
+    """Sama persis dengan public/riwayat_sel.js `bertingkat`: unit wilayah terdalam dari riwayat_hierarki.json, lalu jendela ~16 km disusut
+    B = (n*mentah + k*B_induk)/(n + k) (lama dalam log hari, akhir musim dalam hari-dalam-tahun). -> {tingkat, sisa, akhir} atau None."""
+    if not H or not H.get("nasional"):
+        return None
+    for lv, u, nama in (("Kec.", (H.get("kec") or {}).get(f"{p.get('prov')}|{p.get('kab')}|{p.get('kec')}"), p.get("kec")),
+                        ("Kab.", (H.get("kab") or {}).get(f"{p.get('prov')}|{p.get('kab')}"), p.get("kab")),
+                        ("Prov.", (H.get("prov") or {}).get(p.get("prov")), None)):
+        if u:
+            break
+    else:
+        lv, u, nama = "nasional", H["nasional"], None
+    out = {"tingkat": f"{lv} {nama}" if nama else ("provinsi" if lv == "Prov." else "nasional")}
+    hh = max(1, bulat(h or 1))
+    if hh <= 14:
+        d = (u.get("d") or [None] * 14)[hh - 1] or H["nasional"]["d"][hh - 1]
+        kw = (H.get("k", {}).get(str(hh)) or {}).get("w", 1e9)
+        rw = [v for v in rec.get("r") or [] if v >= hh]
+        B = (len(rw) * math.log(st.median(rw)) + kw * math.log(d)) / (len(rw) + kw) if rw else math.log(d)
+        out["sisa"] = max(0, bulat(math.exp(B) - hh))
+    s_ = u.get("s") or H["nasional"]["s"]
+    km = (H.get("k", {}).get("musim") or {}).get("w", 1e9)
+    nw = sum(1 for v in rec.get("y", [])[:-1] if v >= TAHUN_AKTIF) if rec.get("s") else 0
+    out["akhir"] = bulat((nw * rec["s"][1] + km * s_) / (nw + km)) if nw else bulat(s_)
+    return out
+
+
+def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True, hier=None):
+    """hier = hasil bertingkat() bila model bertingkat lolos uji (main memeriksa riwayat_sel_uji.json hierarki), selain itu None."""
     """rec = rekaman riwayat_sel; sd = tanggal arsip (ISO); n7 = titik S-NPP sedang/tinggi 7 hari di jendela; hari = umur api;
     lama_unggul = hasil uji balik (main membacanya dari riwayat_sel_uji.json)."""
     th1 = int(sd[:4])
@@ -51,9 +79,11 @@ def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True):
     w = {"a": a, "n": len(penuh), "rt": rt, "n7": n7, "rs": bulat(n7 / rt * 10) / 10 if rt >= 1 and n7 else None,
          "md": bulat(st.median(r)) if len(r) >= 3 else None,
          "sisa": max(0, bulat(st.median(lanjut) - h)) if lama_unggul and len(lanjut) >= 3 else None,
-         "akhir": (dt.date(th1, 1, 1) + dt.timedelta(days=rec["s"][1] - 1)).isoformat() if rec.get("s") else None,
+         "akhir": (dt.date(th1, 1, 1) + dt.timedelta(days=(hier["akhir"] if hier and hier.get("akhir_ok") else rec["s"][1]) - 1)).isoformat() if rec.get("s") or (hier and hier.get("akhir_ok")) else None,
          "k": rec.get("k"), "lg": a >= math.ceil(len(penuh) / 3) if penuh else False,
          "x": rec["x"][0] if rec.get("x") else None}
+    if hier and hier.get("sisa_ok") and hier.get("sisa") is not None:
+        w["sisa"], w["tk"] = hier["sisa"], hier["tingkat"]
     return w
 
 
@@ -64,6 +94,11 @@ def main():
         unggul = bool(json.load(open(os.path.join(DATA, "riwayat_sel_uji.json"))).get("lama_unggul"))
     except FileNotFoundError:
         unggul = False
+    try:
+        uji_ = json.load(open(os.path.join(DATA, "riwayat_sel_uji.json"))).get("hierarki") or {}
+        H = json.load(open(os.path.join(DATA, "riwayat_hierarki.json")))
+    except FileNotFoundError:
+        uji_, H = {}, None
     hs = json.load(open(os.path.join(DATA, "hotspot.json")))
     K = {k: i for i, k in enumerate(hs["kolom"])}
     snpp = {}   # (ix, iy) -> titik S-NPP keyakinan sedang/tinggi 7 hari terakhir
@@ -85,7 +120,10 @@ def main():
         if rec:
             ix, iy = map(int, s.split("_"))
             n7 = sum(snpp.get((ix + a, iy + b), 0) for a in (-1, 0, 1) for b in (-1, 0, 1))
-            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], n7, p.get("hari"), d.get("thm0"), unggul)
+            hb = bertingkat(H, rec, p, p.get("hari"))
+            if hb:
+                hb["sisa_ok"], hb["akhir_ok"] = uji_.get("lama_unggul_hierarki") is True, uji_.get("musim_unggul_hierarki") is True
+            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], n7, p.get("hari"), d.get("thm0"), unggul, hb)
     json.dump(kl, open(os.path.join(DATA, "kluster.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     jalur = os.path.join(DATA, "kluster_awal.json")   # muatan pertama halaman (harian.pecah_kluster): properti sama, tanpa api24
     if os.path.exists(jalur):
@@ -122,6 +160,19 @@ def uji():
     # uji balik tidak unggul: sisa tidak boleh ditulis; pembulatan .5 ke atas seperti layar
     assert watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False)["sisa"] is None
     assert watak({"y": [1, 0] * 7 + [0], "r": []}, 2012, "2026-10-12", 10, 1)["rt"] == 1, "rata 0,5 harus jadi 1 (JS Math.round)"
+    # bertingkat: sama dengan uji JS (tests/agen/riwayat-sel.test.mjs)
+    H = {"nasional": {"d": [6] * 14, "s": 305}, "prov": {"62": {"d": [8] * 14, "s": 300}}, "kab": {"62|Seruyan": {"d": [10] * 14, "s": 298}},
+         "kec": {"62|Seruyan|Seruyan Hilir": {"d": [12] * 14, "s": 296}}, "k": {"3": {"w": 4}, "musim": {"w": 4}}}
+    pp = {"prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir"}
+    b = bertingkat(H, {"r": [1, 2], "y": [0, 0]}, pp, 3)
+    assert (b["tingkat"], b["sisa"], b["akhir"]) == ("Kec. Seruyan Hilir", 9, 296), b
+    assert round(math.exp((4 * math.log(20) + 4 * math.log(12)) / 8), 1) == 15.5
+    assert bertingkat(H, {"r": []}, {**pp, "kec": "Lain"}, 3)["tingkat"] == "Kab. Seruyan"
+    assert bertingkat(None, {}, pp, 3) is None
+    w = watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False, hier={**b, "sisa_ok": False, "akhir_ok": False})
+    assert w["sisa"] is None and w["akhir"] == "2026-11-01", "bertingkat yang tidak lolos uji DITOLAK"
+    w = watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False, hier={**b, "sisa_ok": True, "akhir_ok": True})
+    assert (w["sisa"], w["tk"], w["akhir"]) == (9, "Kec. Seruyan Hilir", "2026-10-23"), w
     print("ok")
 
 

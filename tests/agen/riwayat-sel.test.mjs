@@ -96,3 +96,38 @@ test("seri panjang MODIS dipakai untuk kekerapan dan El Niño, VIIRS tetap untuk
   const tanpaN7 = R.analisa({...rec, ym}, m, {hari: 3, n: 1300}, null);
   assert.equal(tanpaN7.rs, null, "tanpa n7 S-NPP, rasio DITOLAK (p.n 4 sensor tidak sebanding dengan rata-rata S-NPP)");
 });
+
+test("pola wilayah: tiap tingkat memakai datanya sendiri; unit tanpa data DILEWATI, tahun ini kecil DITOLAK", () => {
+  const ctx2 = vm.createContext({window: {}}); vm.runInContext(readFileSync(new URL("../../public/riwayat_sel.js", import.meta.url), "utf8"), ctx2);
+  const W = (...x) => structuredClone(ctx2.window.RiwayatSel.wilayahBaris(...x));
+  const kec = {nama: "Seruyan Hilir", a: 23, el: 10.7, tr: "turun", rt: 0.32, rk: [1, 10], yd: [9070, 1257.8]};
+  const kab = {nama: "Seruyan", a: 23, el: 7.8, tr: "datar", rt: 1.1, rk: [4, 14], yd: [10, 2]};
+  const b = W(kec, kab, null);
+  assert.deepEqual(b.map(x => x.tingkat), ["Kecamatan", "Kabupaten"]);
+  assert.deepEqual([b[0].el, b[0].tr, Math.round(b[0].ini * 10) / 10], [10.7, "turun 0,3×", 7.2]);
+  assert.equal(b[1].ini, null, "10 titik tahun ini terlalu sedikit untuk rasio");
+  assert.equal(b[1].tr, "relatif sama", "datar tidak diberi angka rasio");
+  assert.deepEqual(W(null, null, null), []);
+});
+
+test("model bertingkat: unit terdalam dipakai, jendela disusut dengan rumus pipeline, tanpa data = induk", () => {
+  const ctx3 = vm.createContext({window: {}}); vm.runInContext(readFileSync(new URL("../../public/riwayat_sel.js", import.meta.url), "utf8"), ctx3);
+  const B = (...x) => structuredClone(ctx3.window.RiwayatSel.bertingkat(...x));
+  const d14 = v => Array(14).fill(v);
+  const H = {nasional: {d: d14(6), s: 305}, prov: {"62": {d: d14(8), s: 300}}, kab: {"62|Seruyan": {d: d14(10), s: 298}},
+    kec: {"62|Seruyan|Seruyan Hilir": {d: d14(12), s: 296}}, k: {"3": {w: 4}, musim: {w: 4}}};
+  const p = {prov: "62", kab: "Seruyan", kec: "Seruyan Hilir"};
+  // jendela tanpa episode >= 3 hari: ikut kecamatan persis
+  const a = B(H, {r: [1, 2], y: [0, 0]}, p, 3);
+  assert.equal(a.tingkat, "Kec. Seruyan Hilir");
+  assert.equal(Math.round(a.total * 10) / 10, 12);
+  assert.equal(a.sisa, 9);
+  assert.equal(a.akhir, 296, "jendela tanpa tahun aktif: akhir musim = kecamatan");
+  // 4 episode jendela median 20 hari, k 4: exp((4 ln 20 + 4 ln 12)/8) = sqrt(240) = 15,5
+  const b = B(H, {r: [18, 19, 21, 22], y: [0, 0]}, p, 3);
+  assert.equal(Math.round(b.total * 10) / 10, 15.5);
+  // kecamatan tidak dikenal: turun ke kabupaten, bukan rata-rata nasional
+  assert.equal(B(H, {r: []}, {...p, kec: "Lain"}, 3).tingkat, "Kab. Seruyan");
+  assert.equal(B(null, {r: []}, p, 3), null, "tanpa berkas bertingkat DITOLAK, bukan dikarang");
+  assert.equal(B(H, {r: []}, p, 20).sisa, undefined, "umur > 14 hari di luar tabel: tidak meramal sisa");
+});

@@ -26,10 +26,10 @@ Pakai:  python3 scripts/data/riwayat_sel.py        # baca data/raw/firms/viirs_2
         python3 scripts/data/riwayat_sel.py langganan   # -> public/data/riwayat_langganan.json dari ubin (main juga memanggilnya)
         python3 scripts/data/riwayat_sel.py ujibalik   # -> public/data/riwayat_sel_uji.json (musim 2019 & 2023, data latih sebelum musim uji)
 """
-import csv, datetime as dt, glob, json, math, os, statistics as st, sys
+import csv, datetime as dt, glob, json, math, os, random, statistics as st, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from wilayah import AKAR  # noqa: E402
+from wilayah import AKAR, Wilayah  # noqa: E402
 from riwayat_grid import bukan_vegetasi, vegetasi  # noqa: E402
 
 X0, X1, Y0, Y1, SEL = 94.5, 141.5, -11.5, 6.5, 0.05
@@ -191,6 +191,7 @@ def main():
         json.dump({**meta, "c": c}, open(os.path.join(KELUAR, f"{tx}_{ty}.json"), "w"), separators=(",", ":"))
     print(f"{sum(len(c) for c in ubin.values())} rekaman, {len(ubin)} ubin", file=sys.stderr)
     langganan()
+    hierarki_produksi(hari, akhir)
 
 
 def langganan():
@@ -221,16 +222,19 @@ def langganan():
 UJI_TAHUN, UJI_UMUR = (2019, 2023), (3, 7)
 
 
-def nilai_balik(gab, T, pilih=None):
+def nilai_balik(gab, T, pilih=None, bahan=None):
     """Uji balik satu jendela untuk musim T, HANYA dengan data sebelum 1 Januari T; pilih = himpunan tahun latih (analog), None = semua.
+    bahan (dict, opsional) diisi data latih/uji mentah untuk model bertingkat: "ep" [(tahun mulai, lama)], "ak" [(tahun, doy akhir)], "uji" [lama].
     -> ([(umur, ramalan_total, sebenarnya, dasar_2x_umur, hari_mulai_episode)], (ramalan_akhir_doy, akhir_sebenarnya_doy) atau None)"""
     awal = dt.date(T, 1, 1).toordinal()
     latih = {d: v for d, v in gab.items() if d < awal and (pilih is None or dt.date.fromordinal(d).year in pilih)}
     uji_ = {d: v for d, v in gab.items() if awal <= d < dt.date(T + 1, 1, 1).toordinal()}
     besar = lambda h, e: sum(h[d][0] for d in e) >= MIN_TITIK
-    r = [e[-1] - e[0] + 1 for e in episode(latih) if besar(latih, e)]
+    eps = [(dt.date.fromordinal(e[0]).year, e[-1] - e[0] + 1) for e in episode(latih) if besar(latih, e)]
+    r = [L for _, L in eps]
     lama = []
-    for e in episode(uji_):
+    ep_uji = episode(uji_)
+    for e in ep_uji:
         L = e[-1] - e[0] + 1
         if not besar(uji_, e):
             continue
@@ -243,10 +247,247 @@ def nilai_balik(gab, T, pilih=None):
     for d, (n, _, _) in latih.items():
         per_th.setdefault(dt.date.fromordinal(d).year, []).append((d, n))
     akhir = [doy(max(d for d, _ in v)) for v in per_th.values() if sum(n for _, n in v) >= TAHUN_AKTIF]
+    if bahan is not None:
+        bahan.update(ep=eps, uji=[e[-1] - e[0] + 1 for e in ep_uji if besar(uji_, e)],
+                     ak=[(t, doy(max(d for d, _ in v))) for t, v in per_th.items() if sum(n for _, n in v) >= TAHUN_AKTIF])
     musim = None
     if len(akhir) >= (1 if pilih else 2) and sum(v[0] for v in uji_.values()) >= TAHUN_AKTIF:
         musim = (st.median(akhir), doy(max(uji_)))
     return lama, musim
+
+# ---- Model bertingkat (docs/riset/HIERARKI-WILAYAH.md): nasional -> provinsi -> kabupaten -> kecamatan -> jendela ----
+TINGKAT = ("p", "a", "c", "w")                      # provinsi, kabupaten, kecamatan, jendela ~16 km
+K_GRID = (0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 1e9)   # 1e9 = ikut induk sepenuhnya
+UMUR_PRODUKSI = tuple(range(1, 15))
+
+
+def jendela(hari, semua=False):
+    """Hasilkan ((ix, iy), gab): jendela 3x3 tak tumpang tindih. Uji balik: pusat (ix, iy = 1 mod 3) yang selnya sendiri bertitik.
+    semua=True (produksi): setiap blok 3x3 yang punya titik."""
+    if semua:
+        pusat = sorted({(3 * (ix // 3) + 1, 3 * (iy // 3) + 1) for ix, iy in hari})
+    else:
+        pusat = [c for c in hari if c[0] % 3 == 1 and c[1] % 3 == 1]
+    for (ix, iy) in pusat:
+        gab = {}
+        for c in [(ix + a, iy + b) for a in (-1, 0, 1) for b in (-1, 0, 1)]:
+            for d, (n, sa, so) in hari.get(c, {}).items():
+                g = gab.setdefault(d, [0, 0.0, 0.0]); g[0] += n; g[1] += sa; g[2] += so
+        yield (ix, iy), gab
+
+
+def rantai(wil, ix, iy):
+    """[(tingkat, kunci)] dari provinsi ke jendela, menurut pusat jendela; di laut/luar negeri hanya jendela (induknya nasional)."""
+    r = wil.cari(X0 + (ix + .5) * SEL, Y1 - (iy + .5) * SEL)
+    pre = [("p", (r[0],)), ("a", (r[0], r[1])), ("c", (r[0], r[1], r[2]))] if r else []
+    return pre + [("w", (ix, iy))]
+
+
+def fit(obs):
+    """obs [(rantai, nilai)] -> (statistik {kunci: (n, median)}, median nasional). Nilai sudah di skala model (log hari / hari-dalam-tahun)."""
+    d = {}
+    for ch, v in obs:
+        for _, kunci in ch:
+            d.setdefault(kunci, []).append(v)
+    return {k: (len(v), st.median(v)) for k, v in d.items()}, st.median(v for _, v in obs)
+
+
+def taksir(stat, nat, ch, ks):
+    """Susut berurutan dari atas: B_u = (n_u * mentah_u + k * B_induk) / (n_u + k). Unit tanpa data = induknya."""
+    b = nat
+    for lv, kunci in ch:
+        n, m = stat.get(kunci, (0, 0))
+        if n:
+            k = ks.get(lv, 1e9)
+            b = (n * m + k * b) / (n + k)
+    return b
+
+
+def pilih_k(data, T, balik=lambda x: x):
+    """Pilih k per tingkat dengan tinggalkan-satu-tahun HANYA di tahun latih. data {tahun: [(rantai, nilai)]}; menolak tahun >= T (kebocoran musim uji).
+    Berurutan provinsi -> jendela, tingkat di bawahnya ikut induk selama belum dipilih; seri -> k lebih besar. Galat = MAE dalam satuan asli (balik)."""
+    assert all(t < T for t in data), f"kebocoran: data tahun {sorted(t for t in data if t >= T)} >= musim uji {T}"
+    tahun, lipatan = sorted(data), []
+    for y in tahun:
+        latih = [o for t in tahun if t != y for o in data[t]]
+        if not data[y] or not latih:
+            continue
+        per = {}
+        for ch, v in data[y]:
+            per.setdefault(ch[-1][1], (ch, []))[1].append(balik(v))
+        lipatan.append((*fit(latih), list(per.values())))
+    ks, total = {}, sum(len(v) for *_, ev in lipatan for _, v in ev)
+    for lv in TINGKAT:
+        terbaik = None
+        for k in sorted(K_GRID, reverse=True):
+            kk = {**ks, lv: k}
+            g = 0.0
+            for stat, nat, ev in lipatan:
+                for ch, vs in ev:
+                    p = balik(taksir(stat, nat, ch, kk))
+                    g += sum(abs(p - x) for x in vs)
+            if terbaik is None or g < terbaik[0]:
+                terbaik = (g, k)
+        ks[lv] = terbaik[1]
+    return ks
+
+
+def data_durasi(bahan_T, h):
+    """-> {tahun mulai: [(rantai, log lama)]} untuk episode latih >= h hari."""
+    out = {}
+    for b in bahan_T.values():
+        for t, L in b["ep"]:
+            if L >= h:
+                out.setdefault(t, []).append((b["rantai"], math.log(L)))
+    return out
+
+
+def data_musim(bahan_T):
+    out = {}
+    for b in bahan_T.values():
+        for t, dy in b["ak"]:
+            out.setdefault(t, []).append((b["rantai"], dy))
+    return out
+
+
+def selang_pasang(psg, rng):
+    """Bootstrap blok per jendela (1.000 ulangan) atas selisih galat berpasangan psg [(jendela, selisih)] -> (rata-rata, bawah, atas) tak dibulatkan."""
+    per = {}
+    for w, d in psg:
+        a = per.setdefault(w, [0.0, 0]); a[0] += d; a[1] += 1
+    v = list(per.values())
+    hasil = sorted(sum(a[0] for a in pk) / sum(a[1] for a in pk) for pk in ([v[rng.randrange(len(v))] for _ in v] for _ in range(1000)))
+    return sum(d for _, d in psg) / len(psg), hasil[25], hasil[974]
+
+
+def hierarki_uji(kasus, musim, bhn, nas, rng):
+    """Uji balik model bertingkat pada kasus & musim yang SAMA dengan ujibalik. kasus (jendela, T, h, mentah, sebenarnya, 2h); musim [(jendela, T, (ramalan, nyata))]."""
+    ks_all, pred, pred_m = {}, {}, {}
+    for T in UJI_TAHUN:
+        bT = {w: b for w, b in bhn[T].items()}
+        for h in UJI_UMUR:
+            data = data_durasi(bT, h)
+            ks = ks_all.setdefault(str(T), {})[str(h)] = pilih_k(data, T, math.exp)
+            stat, nat = fit([o for v in data.values() for o in v])
+            for w, b in bT.items():
+                pred[(w, T, h)] = math.exp(taksir(stat, nat, b["rantai"], ks))
+        data = data_musim(bT)
+        ks = ks_all[str(T)]["musim"] = pilih_k(data, T)
+        stat, nat = fit([o for v in data.values() for o in v])
+        for w, b in bT.items():
+            pred_m[(w, T)] = taksir(stat, nat, b["rantai"], ks)
+    prov = lambda w, T: (bhn[T][w]["rantai"][0][1][0] if bhn[T][w]["rantai"][0][0] == "p" else "?")
+    out = {"definisi": "Model bertingkat (docs/riset/HIERARKI-WILAYAH.md) pada kasus yang SAMA dengan ujibalik. Susut B_u = (n*mentah + k*B_induk)/(n+k) dari nasional ke provinsi, "
+                       "kabupaten, kecamatan, jendela; k per tingkat dipilih dengan tinggalkan-satu-tahun di tahun latih saja. Lama dalam log hari lalu dikembalikan; mentah_u = median. "
+                       "Selang 95% = bootstrap blok per jendela atas selisih galat berpasangan (negatif = bertingkat lebih tepat).",
+           "k_terpilih": ks_all, "lama": {}, "musim": None}
+    prb = {}   # per provinsi: {"3": [nas, mentah, hier], ...}
+    unggul = []
+    for h in UJI_UMUR:
+        xs = [k for k in kasus if k[2] == h]
+        if not xs:
+            continue
+        gh = [(k[0], abs(pred[(k[0], k[1], h)] - k[4])) for k in xs]
+        gn = [abs(nas[(k[1], h)] - k[4]) for k in xs]
+        gm = [abs(k[3] - k[4]) for k in xs]
+        vs_nas = selang_pasang([(k[0], a - b) for k, (_, a), b in zip(xs, gh, gn)], rng)
+        vs_m = selang_pasang([(k[0], a - b) for k, (_, a), b in zip(xs, gh, gm)], rng)
+        out["lama"][str(h)] = {"n": len(xs), "mae_hierarki": round(st.mean(a for _, a in gh), 2), "mae_nasional": round(st.mean(gn), 2), "mae_mentah": round(st.mean(gm), 2),
+                               "selisih_nasional_ci95": [round(vs_nas[1], 2), round(vs_nas[2], 2)], "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)]}
+        unggul.append(vs_nas[2] < 0)
+        for k, (_, a), b, c in zip(xs, gh, gn, gm):
+            prb.setdefault(prov(k[0], k[1]), {}).setdefault(f"lama{h}", []).append((b, c, a))
+    out["lama_unggul_hierarki"] = bool(unggul) and all(unggul)
+    # tambahan (bukan kriteria): SEMUA episode uji >= h hari, termasuk jendela yang riwayatnya < 3 episode (mentah tidak bisa meramal di sana)
+    semua = {h: [] for h in UJI_UMUR}
+    for T in UJI_TAHUN:
+        for w, b in bhn[T].items():
+            for h in UJI_UMUR:
+                semua[h] += [(w, pred[(w, T, h)], nas[(T, h)], L) for L in b["uji"] if L >= h]
+    out["lama_semua_kasus"] = {}
+    for h, xs in semua.items():
+        if xs:
+            ci = selang_pasang([(w, abs(a - L) - abs(n - L)) for w, a, n, L in xs], rng)
+            out["lama_semua_kasus"][str(h)] = {"n": len(xs), "mae_hierarki": round(st.mean(abs(a - L) for _, a, _, L in xs), 2), "mae_nasional": round(st.mean(abs(n - L) for _, _, n, L in xs), 2),
+                                               "selisih_nasional_ci95": [round(ci[1], 2), round(ci[2], 2)]}
+    if musim:
+        dasar = st.median(m[0] for _, _, m in musim)
+        gh = [abs(pred_m[(w, T)] - m[1]) for w, T, m in musim]
+        gm = [abs(m[0] - m[1]) for _, _, m in musim]
+        gn = [abs(dasar - m[1]) for _, _, m in musim]
+        vs_m = selang_pasang([(x[0], a - b) for x, a, b in zip(musim, gh, gm)], rng)
+        vs_n = selang_pasang([(x[0], a - b) for x, a, b in zip(musim, gh, gn)], rng)
+        out["musim"] = {"n": len(musim), "mae_hierarki": round(st.mean(gh), 2), "mae_mentah": round(st.mean(gm), 2), "mae_nasional": round(st.mean(gn), 2),
+                        "selisih_mentah_ci95": [round(vs_m[1], 2), round(vs_m[2], 2)], "selisih_nasional_ci95": [round(vs_n[1], 2), round(vs_n[2], 2)]}
+        out["musim_unggul_hierarki"] = bool(vs_m[2] < 0)
+        for (w, T, m), a, b, c in zip(musim, gh, gn, gm):
+            prb.setdefault(prov(w, T), {}).setdefault("musim", []).append((b, c, a))
+    from wilayah import PROVINSI
+    out["per_provinsi"] = {}
+    for pk, d in sorted(prb.items()):
+        row = {"nama": PROVINSI.get(pk, "luar batas")}
+        for nm, v in d.items():
+            mae = [round(st.mean(x[i] for x in v), 2) for i in range(3)]
+            row[nm] = {"n": len(v), "mae_nasional": mae[0], "mae_mentah": mae[1], "mae_hierarki": mae[2], "menang": ("nasional", "mentah", "hierarki")[mae.index(min(mae))]}
+        out["per_provinsi"][pk] = row
+    return out
+
+
+def hierarki_produksi(hari, akhir):
+    """-> public/data/riwayat_hierarki.json: taksiran bertingkat dari SEMUA tahun penuh (< tahun arsip). Episode yang masih menyala di tanggal arsip
+    tidak ada di sini karena hanya hari < 1 Januari tahun arsip yang dipakai."""
+    wil, T, bj = Wilayah(), akhir.year, {}
+    petak = {}
+    for (ix, iy), gab in jendela(hari, semua=True):
+        b = {}
+        nilai_balik(gab, T, bahan=b)
+        b["rantai"] = rantai(wil, ix, iy)
+        bj[(ix, iy)] = b
+        if b["rantai"][0][0] == "p":
+            petak[f"{ix}_{iy}"] = b["rantai"][2][1]
+    out = {"dibuat": dt.date.today().isoformat(), "sd": akhir.isoformat(), "tahun_latih": [TH0, T - 1],
+           "definisi": "Taksiran bertingkat (partial pooling) dari tahun penuh: d[h-1] = ramalan total hari episode yang sudah berumur h (h = 1..14), n[h-1] = jumlah episode >= h hari; "
+                       "s = ramalan hari-dalam-tahun deteksi terakhir, ns = jumlah jendela-tahun. Kunci: provinsi = kode Kemendagri, kabupaten 'kode|kab', kecamatan 'kode|kab|kec'. "
+                       "w memetakan jendela 'ix_iy' (pusat blok 3x3, ix, iy = 1 mod 3; sel lain = 3*(i//3)+1) ke indeks di 'kl'. k = kekuatan tarikan per tingkat (p,a,c,w) per umur.",
+           "k": {}, "nasional": None, "prov": {}, "kab": {}, "kec": {}}
+    nodes, per_h = {}, []
+    for h in UMUR_PRODUKSI:
+        data = data_durasi(bj, h)
+        ks = out["k"][str(h)] = pilih_k(data, T, math.exp)
+        stat, nat = fit([o for v in data.values() for o in v])
+        B = _node(stat, nat, ks)
+        out.setdefault("_nat", []).append(math.exp(nat))
+        per_h.append({kunci: (round(math.exp(B[kunci]), 1), n) for kunci, (n, _) in stat.items() if isinstance(kunci[0], str)})
+        out.setdefault("_nn", []).append(sum(len(v) for v in data.values()))
+    for kunci in {k for d in per_h for k in d}:   # d = null bila tak ada episode >= h di unit itu
+        nodes[kunci] = {"d": [d.get(kunci, (None, 0))[0] for d in per_h], "n": [d.get(kunci, (None, 0))[1] for d in per_h]}
+    data = data_musim(bj)
+    ks = out["k"]["musim"] = pilih_k(data, T)
+    stat, nat = fit([o for v in data.values() for o in v])
+    B = _node(stat, nat, ks)
+    for kunci, (n, _) in stat.items():
+        if isinstance(kunci[0], str):
+            nodes.setdefault(kunci, {"d": [None] * len(per_h), "n": [0] * len(per_h)}).update(s=round(B[kunci], 1), ns=n)
+    out["nasional"] = {"d": [round(x, 1) for x in out.pop("_nat")], "n": out.pop("_nn"), "s": round(nat, 1), "ns": sum(len(v) for v in data.values())}
+    kl = sorted(k for k in nodes if len(k) == 3)
+    idx = {k: i for i, k in enumerate(kl)}
+    for k, v in nodes.items():
+        out[{1: "prov", 2: "kab", 3: "kec"}[len(k)]]["|".join(k)] = v
+    out["kl"] = ["|".join(k) for k in kl]
+    out["w"] = {w: idx[k] for w, k in petak.items() if k in idx}
+    json.dump(out, open(os.path.join(AKAR, "public/data/riwayat_hierarki.json"), "w"), ensure_ascii=False, separators=(",", ":"))
+    print(f"hierarki: {len(out['prov'])} prov, {len(out['kab'])} kab, {len(out['kec'])} kec, {len(out['w'])} jendela; k {json.dumps(out['k'])}", file=sys.stderr)
+
+
+def _node(stat, nat, ks):
+    """B tiap unit wilayah (kunci tuple string panjang 1-3) dengan susut berurutan dari induknya."""
+    B = {}
+    for kunci in sorted((k for k in stat if isinstance(k[0], str)), key=len):
+        n, m = stat[kunci]
+        b = B.get(kunci[:-1], nat)
+        k = ks.get("pac"[len(kunci) - 1], 1e9)
+        B[kunci] = (n * m + k * b) / (n + k)
+    return B
 
 
 def ujibalik():
@@ -256,23 +497,24 @@ def ujibalik():
     import random
     raw = os.path.join(AKAR, "data/raw/firms")
     hari, _, _, _ = baca([os.path.join(raw, "viirs_2012_2014.csv"), os.path.join(raw, "viirs.csv")])
-    kasus, musim, latih_nas = [], [], {}   # kasus: (jendela, T, h, ramalan_lokasi, sebenarnya, 2h)
+    kasus, musim, musim_T, latih_nas = [], [], [], {}   # kasus: (jendela, T, h, ramalan_lokasi, sebenarnya, 2h)
     an_lama, an_musim = {h: [] for h in UJI_UMUR}, []   # (ramalan_umum, ramalan_analog, sebenarnya) pada kasus yang SAMA
-    for (ix, iy) in hari:
-        if ix % 3 != 1 or iy % 3 != 1:
-            continue
-        gab = {}
-        for c in [(ix + a, iy + b) for a in (-1, 0, 1) for b in (-1, 0, 1)]:
-            for d, (n, sa, so) in hari.get(c, {}).items():
-                g = gab.setdefault(d, [0, 0.0, 0.0]); g[0] += n; g[1] += sa; g[2] += so
+    wil, bhn = Wilayah(), {T: {} for T in UJI_TAHUN}   # bhn[T][(ix,iy)] = bahan model bertingkat
+    rant = {}
+    for (ix, iy), gab in jendela(hari):
+        rant[(ix, iy)] = rantai(wil, ix, iy)
         for T in UJI_TAHUN:
             awal = dt.date(T, 1, 1).toordinal()
             latih = {d: v for d, v in gab.items() if d < awal}
             latih_nas.setdefault(T, []).extend(e[-1] - e[0] + 1 for e in episode(latih) if sum(latih[d][0] for d in e) >= MIN_TITIK)
-            l, m = nilai_balik(gab, T)
+            bj = {}
+            l, m = nilai_balik(gab, T, bahan=bj)
+            bj["rantai"] = rant[(ix, iy)]
+            bhn[T][(ix, iy)] = bj
             kasus += [((ix, iy), T, h, p, L, b) for h, p, L, b, _ in l]
             if m:
                 musim.append(((ix, iy), m))
+                musim_T.append(((ix, iy), T, m))
             pilih = {t for t in EL_NINO_V if t < T}
             if T in EL_NINO_V and pilih:
                 la, ma = nilai_balik(gab, T, pilih)
@@ -325,6 +567,7 @@ def ujibalik():
     out["el_nino"] = {"definisi": f"Musim El Nino {', '.join(map(str, [t for t in UJI_TAHUN if t in EL_NINO_V]))} diramal dua cara pada kasus yang SAMA: "
                                   "umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya). Uji ini memakai 1-2 tahun analog; produksi memakai 3.",
                       "lama": {str(h): banding(xs, 3) for h, xs in an_lama.items() if xs}, "musim": banding(an_musim, 14) if an_musim else None}
+    out["hierarki"] = hierarki_uji(kasus, musim_T, bhn, nas, random.Random(11))
     json.dump(out, open(os.path.join(AKAR, "public/data/riwayat_sel_uji.json"), "w"), ensure_ascii=False, indent=1)
     print(json.dumps(out, ensure_ascii=False), file=sys.stderr)
 
@@ -371,6 +614,27 @@ def uji():
     assert episode(g2) == [[o, o + 9]], episode(g2)
     CELAH.clear()
     assert episode(g2) == [[o], [o + 9]]
+    # model bertingkat: susut berurutan
+    ch = [("p", ("1",)), ("a", ("1", "a")), ("c", ("1", "a", "k")), ("w", (1, 1))]
+    assert taksir({}, 5.0, ch, {"p": 2, "a": 2, "c": 2, "w": 2}) == 5.0   # unit tanpa data = induknya
+    stat = {("1",): (50, 4.0), ("1", "a"): (20, 6.0), ("1", "a", "k"): (10, 7.0), (1, 1): (10 ** 6, 9.0)}
+    assert abs(taksir(stat, 5.0, ch, {"p": 1e9, "a": 1e9, "c": 1e9, "w": 1e9}) - 5.0) < 1e-2  # k = tak hingga: ikut nasional walau data ada
+    assert abs(taksir(stat, 5.0, ch, {"p": 1, "a": 1, "c": 1, "w": 4}) - 9.0) < 1e-3          # n sangat besar: mendekati mentah
+    assert taksir(stat, 5.0, ch[:1], {"p": 50}) == 4.5                                         # (50*4 + 50*5) / 100
+    assert taksir({("1",): (0, 0)}, 5.0, ch[:1], {"p": 1}) == 5.0
+    # pilih_k: data bocor dari tahun uji DITOLAK; tanpa kebocoran, noise murni -> tarik kuat, sinyal lokal konsisten -> tarik lemah
+    rg = random.Random(3)
+    W = [[("p", ("1",)), ("w", (i, i))] for i in range(20)]
+    bising = {t: [(c, rg.gauss(5, 2)) for c in W for _ in range(2)] for t in range(2015, 2019)}
+    lokal = {t: [(c, 2.0 + 0.5 * i + rg.gauss(0, .01)) for i, c in enumerate(W)] for t in range(2015, 2019)}
+    assert pilih_k(bising, 2019)["w"] >= 16, pilih_k(bising, 2019)
+    assert pilih_k(lokal, 2019)["w"] <= 1, pilih_k(lokal, 2019)
+    try:
+        pilih_k({**lokal, 2019: lokal[2018]}, 2019)
+        raise SystemExit("kebocoran musim uji lolos")
+    except AssertionError as e:
+        assert "kebocoran" in str(e)
+    assert pilih_k({**bising}, 2019) == pilih_k({t: v for t, v in {**bising, 2019: lokal[2018]}.items() if t < 2019}, 2019)   # penyaring tahun < T = tak ada pengaruh data uji
     print("ok")
 
 
