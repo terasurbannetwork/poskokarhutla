@@ -236,8 +236,8 @@ Akun instansi aktif menugaskan orang (driver, ketua regu, anggota) ke tugas api 
 
 Dokumentasi untuk pihak luar: `/api` (public/api.html). Data publik: `GET /api/v1/data/<nama>` tanpa kunci (daftar putih `DATA` di src/api_v1.js; tiap nama harus berkas
 yang ada di public/). Data yang di situs wajib login (rumah rusak, bangunan, laporan BNPB) dibuka HANYA-BACA lewat `/api/v1/*` dengan header `X-API-Key`
-(kunci di query string diabaikan). Kunci tidak membuka rute lama dan tidak butuh cookie. `/api/v1/*`, `/api`, dan `POST /mcp` ditangani di `fetch()` sebelum gerbang
-centurisk97.id, jadi terjangkau di semua host dan tidak dicatat sebagai halaman pemirsa. CORS `*` tanpa credentials.
+(kunci di query string diabaikan). Kunci tidak membuka rute lama dan tidak butuh cookie. `/api/v1/*` dan `POST /mcp` ditangani di `fetch()` sebelum gerbang
+centurisk97.id, jadi terjangkau di semua host dan tidak dicatat sebagai halaman pemirsa. CORS `*` tanpa credentials. Halaman dokumentasi `/api` di centurisk97.id hanya untuk admin yang masuk (pemilik 23 Okt 2026); di *.workers.dev tetap terbuka.
 
 **Menerbitkan kunci:** buka `/admin/kunci-api` (admin), isi nama pemegang dan centang cakupan (`rumah_rusak`, `bangunan`, `laporan_bnpb`), lalu salin kunci `pb_...` yang
 tampil SEKALI. D1 hanya menyimpan sha256-nya, jadi kunci yang hilang tidak bisa dilihat ulang: cabut dan terbitkan baru. **Mencabut:** tombol Cabut di halaman yang sama

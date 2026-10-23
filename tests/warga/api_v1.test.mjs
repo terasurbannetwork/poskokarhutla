@@ -197,7 +197,10 @@ uji("batas laju: kunci salah dihitung per hash IP (300 per jam, 429); 1.000 per 
 
 uji("terbuka di semua host: centurisk97.id tanpa masuk tetap melayani /api, /api/v1, dan data; halaman lain tetap dikunci", async () => {
   const situs = (j, h = {}) => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "192.0.2.9", ...h}});
-  for (const j of ["/api", "/api/v1", "/api/v1/data/meta"]) { const r = await situs(j); assert.equal(r.status, 200, j); await r.arrayBuffer(); }
+  for (const j of ["/api/v1", "/api/v1/data/meta"]) { const r = await situs(j); assert.equal(r.status, 200, j); await r.arrayBuffer(); }
+  /* dokumentasi /api di centurisk97.id hanya untuk admin yang masuk (pemilik 23 Okt 2026) */
+  const dok = await situs("/api"); assert.equal(dok.status, 303, "/api tanpa masuk dialihkan"); assert.match(dok.headers.get("location"), /^\/admin\/masuk/); await dok.arrayBuffer();
+  const dokAdmin = await situs("/api", ADMIN); assert.equal(dokAdmin.status, 200, "/api untuk admin"); assert.match(dokAdmin.headers.get("cache-control"), /no-store/); await dokAdmin.arrayBuffer();
   const kunci = await situs("/api/v1/rumah-rusak/rekap", {"x-api-key": hanyaRumah.kunci}); assert.equal(kunci.status, 200); await kunci.arrayBuffer();
   const tertutup = await situs("/laporan"); assert.equal(tertutup.status, 303, "gerbang halaman tidak dilonggarkan"); await tertutup.arrayBuffer();
 });
