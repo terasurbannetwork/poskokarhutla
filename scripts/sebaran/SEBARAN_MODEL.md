@@ -42,6 +42,10 @@ Port Python `simfisika.py` sudah memakai 50 (`efek_bui`). Bila index.html diperb
 
 - `python3 scripts/sebaran/uji_js.py` — kesetaraan Python ↔ JS (fitur & peluang hari-1 pada titik awal nyata, selisih
   maks harus < 1e-4) + penolakan masukan di luar jangkauan.
+- `python3 scripts/sebaran/uji_js.py sensor` — sebagian yang tidak butuh data mentah: VIIRS utama sadar waktu (S-NPP/N21) Python ↔ JS.
+- `python3 scripts/sebaran/{sensor,prospektif,jejak,gerbang}.py uji` — sensor utama, pra-registrasi/vonis/kesehatan prospektif, kontrak jejak, gerbang pembanding.
+- `python3 scripts/sebaran/gerbang.py` menulis `public/data/gerbang_model.json` (boleh_tampil per keluaran: model_sel, mesin_fisika, jejak_api, lolos). Jalankan ulang
+  setiap `sebaran_kasus.json`/`model_sebaran.json`/`prospektif.json` berubah. Pembaca gagal-tertutup (hilang/rusak = sembunyikan).
 - `public/_uji_model.html` dipakai sekali di peramban lalu dihapus (lihat RISET-SEBARAN.md).
 
 ## 4. Memperbarui model
@@ -69,35 +73,44 @@ python3 scripts/sebaran/prospektif.py     # uji prospektif (CI tiap 3 jam, titik
 Mesin 8 GB: `lolos.py` berjalan satu proses (LOLOS_PROSES=1) dan memakai 5% negatif (bobot 20); selang memakai 2 proses.
 Tiap skrip punya `uji` (asersi invarian) kecuali tahap berat.
 
-## 5. Per jam sungguhan: Himawari-9 (JAXA P-Tree) — belum dipasang
+## 5. Sensor: pergantian S-NPP -> NOAA-21, dan Himawari-9 (JAXA P-Tree) yang SUDAH terpasang
 
-VIIRS S-NPP melihat Indonesia ± 2 kali sehari (13:30 & 01:30 waktu setempat). Arsip FIRMS di repo ini HANYA S-NPP
-(NOAA-20/21 belum diunduh); menambah NOAA-20 (`VIIRS_NOAA20_NRT`/`_SP`) dan NOAA-21 lewat `scripts/data/firms.py`
-memberi 4–6 lintasan, masih bukan per jam. Per jam (10 menit) butuh satelit geostasioner Himawari-9.
+### 5a. VIIRS utama sadar waktu (dipasang 23 Okt 2026)
 
-Yang harus dibuat pemilik (sekali, gratis, tidak bisa diwakilkan):
-1. Daftar di JAXA Himawari Monitor P-Tree: https://www.eorc.jaxa.jp/ptree/registration_top.html — isi nama, email,
-   afiliasi, tujuan (non-komersial/riset/kebencanaan), setujui ketentuan (atribusi "Himawari data supplied by P-Tree
-   System, JAXA").
-2. JAXA mengirim akun FTP lewat email (ID = alamat email dengan `@` diganti `_`, plus kata sandi).
-3. Simpan sebagai rahasia: `PTREE_USER`, `PTREE_PASS` di `.env` lokal (sudah di-.gitignore) dan GitHub Actions secrets.
-   Jangan pernah di-commit.
+Model dilatih pada VIIRS S-NPP ("N", lintas ~13:30/01:30 waktu setempat). FIRMS berhenti mendistribusikan S-NPP pada 1 Nov 2026 13:00 UTC
+(`SNPP_AKHIR` di `scripts/data/peta_karhutla.py`, milik pipa-data, yang memakai NOAA-21 sebagai pengganti). Tanpa penanganan, jalur prediksi yang
+mengunci sensor "N" (`prospektif.py`, `jejak.py`, `sebaran_model.js`) akan sunyi tanpa error. Sekarang semuanya memakai "VIIRS utama":
+`N` sebelum `SNPP_AKHIR`, `N21` sesudahnya (satu bidang orbit dan jam lintas dengan NOAA-20, paling mirip S-NPP; semua VIIRS TIDAK digabung karena
+distribusi fitur berubah dan model dilatih per S-NPP).
+- Sumber tunggal: `scripts/sebaran/sensor.py` (`SNPP_AKHIR`, `utama_pada`, `baris_utama`, `peralihan`, `kelompok`); self-check `sensor.py uji` membaca teks
+  `peta_karhutla.py` dan menolak bila konstantanya beda. Sisi JS: `SNPP_AKHIR_MS`/`sensorUtama` di `sebaran_model.js`, dibuktikan setara Python lewat
+  `python3 scripts/sebaran/uji_js.py sensor` (tanpa data mentah; `uji_js.py` penuh butuh cache `data/raw/firms/viirs.csv`).
+- `hotspot.json` (harian.py) membawa semua sensor termasuk `N21` (`titik_json(lambda p: True)`); `SENSOR_UTAMA` di harian.py hanya mengatur hitungan ringkasan
+  provinsi, bukan isi `hotspot.json`.
+- Keluaran: `prospektif.json` (`sensor_utama`, `per_sensor.N21|peralihan`, tiap ramalan di `ramalan.jsonl` membawa `sensor_utama` dan `kelompok`), `jejak_api.json`
+  (`sensor_utama`, `peralihan`), hasil `SebaranModel.ramal` (`sensor_utama`, `peralihan`). Kelompok `peralihan` = jendela fitur 7 hari atau label 72 jam memuat
+  batas, jadi campuran S-NPP dan N21; ia dan `N21` dinilai TERPISAH, tidak masuk metrik S-NPP (`mode.*`, gerbang, vonis).
+- BELUM DIUKUR: pergeseran distribusi fitur N21 vs S-NPP (jumlah titik per lintasan, FRP, piksel di tepi sapuan). Ramalan memakai N21 adalah ekstrapolasi.
+  Usulan skrip pembanding (`banding_n21.py`, belum ditulis/dijalankan; butuh `FIRMS_MAP_KEY`): arsip `VIIRS_NOAA21_SP` vs `VIIRS_SNPP_SP` 2023-03 s.d. 2026 untuk
+  9 provinsi prioritas, bandingkan per hari deteksi nominal/tinggi, FRP median, sel 375 m unik dan fitur `lolos.konteks` pada titik api yang sama, dengan selang
+  bootstrap. Bila bermakna, `lolos.py` harus disetel ulang pada N21 sebelum ramalan N21 boleh dihitung teruji.
 
-Produk yang dipakai: Himawari L2 Wild Fire (`/pub/himawari/L2/WLF/` di `ftp.ptree.jaxa.jp`, 10 menit, piksel ±2 km,
-CSV per pindaian berisi lat, lon, FRP, keyakinan). Periksa nama versi direktori setelah login; strukturnya
-`.../YYYYMM/DD/HH/` per jam.
+### 5b. Himawari-9 (JAXA P-Tree): terpasang, belum diarsip
 
-Rancangan colokan (belum ditulis karena butuh kredensial):
-- `scripts/sebaran/himawari.py`: `ftplib` (stdlib) + `PTREE_USER/PASS` dari lingkungan → unduh CSV 10 menit untuk N jam
-  terakhir → saring kotak Indonesia → baris dengan skema yang sama dengan `muat_viirs()` (`t` menit, `lat`, `lon`, `frp`,
-  `dn`) tetapi `sumber="H9"` dan piksel 2 km.
-- Pelacak: `lacak.hubungkan(t, lat, lon, jarak=2000, jeda=3*60)` untuk Himawari saja; peristiwa VIIRS dicocokkan ke
-  peristiwa Himawari bila ≤ 2 km & ≤ 1 jam, jadi tiap peristiwa punya urutan per 10 menit (awal lebih presisi) dan sel
-  375 m dari VIIRS.
-- Model: tambah langkah 1 jam (`calon` dari piksel Himawari aktif, target = sel VIIRS/ Himawari baru dalam 1 jam) dan fitur
-  `jam_lokal`; evaluator JS sudah menerima `hari` 1–3, cukup ditambah `langkah_jam`.
-- Alternatif tanpa pendaftaran: data mentah Himawari L1b di AWS Open Data (`noaa-himawari9`), tetapi itu radiansi; deteksi
-  api harus dibangun sendiri (algoritme kontekstual 3,9/11 µm). Lebih berat, tidak disarankan.
+Per jam (10 menit) butuh satelit geostasioner. Sudah terpasang: `scripts/data/himawari.py` (L2 WLF v010, `ftplib`, secret `PTREE_USER`/`PTREE_PASS` di
+GitHub Actions) dijalankan `.github/workflows/himawari.yml` tiap 30 menit (menit 7 dan 37), jendela 3 jam terhadap pindaian terbaru (`HIMAWARI_JAM`),
+keluaran `public/data/himawari.json` diunggah langsung ke R2 (tidak dikomit, tidak ada di `public/data` lokal). Belum diarsip: tiap putaran menimpa jendela 3 jam,
+jadi riwayat per jam TIDAK ADA untuk melatih apa pun. Atribusi: "Himawari data supplied by P-Tree System, JAXA". Piksel ±2 km, `Reliability 1` dan titik
+gunung api dibuang oleh parser.
+
+Belum dikerjakan (rancangan; butuh arsip dulu, lalu persetujuan pemilik):
+- Arsip bergulir `himawari.json` (mis. gz per hari ke R2/git) supaya ada riwayat 10 menit.
+- Pelacak: `lacak.hubungkan(t, lat, lon, jarak=2000, jeda=3*60)` untuk Himawari saja; peristiwa VIIRS dicocokkan bila ≤ 2 km & ≤ 1 jam.
+- Model langkah 1 jam (`calon` dari piksel Himawari aktif; evaluator JS sudah menerima `hari` 1-3, cukup `langkah_jam`) dilatih hanya setelah arsip cukup panjang
+  dan melewati uji prospektif pra-registrasi yang sama (`prospektif.json` `kriteria`).
+- Alternatif tanpa akun: Himawari L1b di AWS Open Data (`noaa-himawari9`), tetapi radiansi mentah; deteksi api harus dibangun sendiri. Tidak disarankan.
+
+NOAA-20 sudah ada di arsip latih (`data/raw/firms/viirs_noaa20.csv`, fitur `n20_0`/`n20_14`); NOAA-21 belum diarsip untuk pelatihan.
 
 ## Melanjutkan di perangkat lain
 

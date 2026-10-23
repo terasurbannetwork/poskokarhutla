@@ -1,0 +1,203 @@
+{
+ "dibuat": "2026-10-23",
+ "versi": 1,
+ "aturan": "boleh_tampil hanya bila selisih > 0 (model lebih baik dari pembanding sederhana) DAN batas bawah selang 95% bootstrap berpasangan > 0; tanpa selang = false ('belum ada selang'). lolos juga wajib vonis prospektif = 'lolos'. Pembaca gagal-tertutup: berkas hilang/rusak = sembunyikan.",
+ "pembanding": "persistensi: hanya sel/luas awal kasus yang dianggap terbakar (tanpa sel baru); lolos: laju dasar himpunan yang sama (klimatologi).",
+ "model_sel": {
+  "metrik": "IoU sel terbakar 24 jam (tiap kasus uji balik)",
+  "arah": "tinggi lebih baik",
+  "pembanding": "persistensi (sel awal tetap)",
+  "n": 123,
+  "skor_model": 0.5842,
+  "skor_pembanding": 0.6726,
+  "selisih": -0.0883,
+  "selang95": [
+   -0.1296,
+   -0.0494
+  ],
+  "boleh_tampil": false,
+  "alasan": "selisih -0.0883 <= 0: pembanding sederhana menang atau seri",
+  "sumber_berkas": [
+   "public/data/sebaran_kasus.json"
+  ],
+  "catatan": "123 kasus, tiap kasus dari deteksi pertama, model tak pernah melihat tahun kasus, cuaca reanalisis (prakiraan sempurna, optimistis). F1 sel baru 24 jam model 0.4372 tidak punya pembanding persistensi (persistensi tidak memprediksi sel baru), jadi tidak dipakai menghalalkan peta.",
+  "rincian": {
+   "iou": {
+    "24j": {
+     "model": 0.5842,
+     "pembanding": 0.6726,
+     "selisih": -0.0883,
+     "selang95": [
+      -0.1296,
+      -0.0494
+     ]
+    },
+    "48j": {
+     "model": 0.5606,
+     "pembanding": 0.6215,
+     "selisih": -0.0609,
+     "selang95": [
+      -0.106,
+      -0.0186
+     ]
+    },
+    "72j": {
+     "model": 0.5485,
+     "pembanding": 0.6081,
+     "selisih": -0.0597,
+     "selang95": [
+      -0.1053,
+      -0.0172
+     ]
+    }
+   },
+   "galat_luas": {
+    "24j": {
+     "model": 0.5979,
+     "pembanding": 0.6675,
+     "selisih": 0.0695,
+     "selang95": [
+      0.0315,
+      0.1079
+     ]
+    },
+    "48j": {
+     "model": 0.7625,
+     "pembanding": 0.8919,
+     "selisih": 0.1294,
+     "selang95": [
+      0.0741,
+      0.1837
+     ]
+    },
+    "72j": {
+     "model": 0.8413,
+     "pembanding": 1.0085,
+     "selisih": 0.1672,
+     "selang95": [
+      0.1072,
+      0.2287
+     ]
+    }
+   }
+  }
+ },
+ "mesin_fisika": {
+  "metrik": "galat luas 72 jam |ln((1+prediksi)/(1+teramati))|",
+  "arah": "rendah lebih baik",
+  "pembanding": "persistensi (luas awal tetap)",
+  "n": 123,
+  "skor_model": 3.5017,
+  "skor_pembanding": 1.0085,
+  "selisih": -2.4932,
+  "selang95": [
+   -3.0095,
+   -1.9925
+  ],
+  "boleh_tampil": false,
+  "alasan": "selisih -2.4932 <= 0: pembanding sederhana menang atau seri",
+  "sumber_berkas": [
+   "public/data/sebaran_kasus.json"
+  ],
+  "catatan": "mesin fisika = port Python simfisika.py (model_lain.sim, tanpa kalibrasi); mesin di layar Simulasi (index.html) memakai kalibrasi pertumbuhan teramati dan belum punya uji balik terpisah di berkas ini.",
+  "rincian": {
+   "iou": {
+    "24j": {
+     "model": 0.2698,
+     "pembanding": 0.6726,
+     "selisih": -0.4028,
+     "selang95": [
+      -0.4734,
+      -0.3349
+     ]
+    },
+    "48j": {
+     "model": 0.1939,
+     "pembanding": 0.6215,
+     "selisih": -0.4276,
+     "selang95": [
+      -0.5058,
+      -0.3521
+     ]
+    },
+    "72j": {
+     "model": 0.179,
+     "pembanding": 0.6081,
+     "selisih": -0.4291,
+     "selang95": [
+      -0.5071,
+      -0.3535
+     ]
+    }
+   }
+  }
+ },
+ "jejak_api": {
+  "metrik": "IoU sel terbakar 72 jam (bukti tidak langsung: mesin sama dengan model_sel)",
+  "arah": "tinggi lebih baik",
+  "pembanding": "persistensi (sel awal tetap)",
+  "n": 123,
+  "skor_model": 0.5485,
+  "skor_pembanding": 0.6081,
+  "selisih": -0.0597,
+  "selang95": [
+   -0.1053,
+   -0.0172
+  ],
+  "boleh_tampil": false,
+  "alasan": "selisih -0.0597 <= 0: pembanding sederhana menang atau seri",
+  "sumber_berkas": [
+   "public/data/sebaran_kasus.json"
+  ],
+  "catatan": "jejak_api.json dari jejak.py memakai model dan Monte Carlo yang sama; belum ada uji balik khusus jejak (ambang p >= 5%, kompleks aktif bukan titik baru).",
+  "rincian": {
+   "galat_luas_72j": {
+    "model": 0.8413,
+    "pembanding": 1.0085,
+    "selisih": 0.1672,
+    "selang95": [
+     0.1072,
+     0.2287
+    ]
+   }
+  }
+ },
+ "lolos": {
+  "metrik": "Brier skill terhadap laju dasar (uji balik historis tanpa bocoran, kelompok 2024-2026)",
+  "arah": "tinggi lebih baik",
+  "pembanding": "laju dasar himpunan yang sama (klimatologi, skill 0)",
+  "n": 10675,
+  "skor_model": 0.364,
+  "skor_pembanding": 0.0,
+  "selisih": 0.364,
+  "selang95": null,
+  "boleh_tampil": false,
+  "alasan": "belum ada selang; vonis prospektif = 'belum_cukup_data', wajib 'lolos'",
+  "vonis_prospektif": "belum_cukup_data",
+  "sumber_berkas": [
+   "public/data/prospektif_historis.json",
+   "public/data/prospektif.json",
+   "public/data/sebaran_kasus.json"
+  ],
+  "catatan": "Selang per titik tidak tersedia di prospektif_historis.json (hanya agregat); sampai ada selang atau prospektif cukup data, peluang membesar tidak ditampilkan sebagai kemampuan teruji.",
+  "rincian": {
+   "historis": {
+    "kelompok": "2024-2026",
+    "dinilai": 10675,
+    "lolos": 46,
+    "brier_skill": 0.364,
+    "ece": 0.0011,
+    "laju_dasar": 0.0043
+   },
+   "kasus_123": {
+    "brier_skill": -0.1287,
+    "selang95": [
+     -0.4234,
+     0.1178
+    ],
+    "n": 123,
+    "catatan": "123 kasus dipilih dari api besar (laju lolos ~47%) sedangkan model dikalibrasi pada laju ~3%: populasi tidak sesuai, hanya sebagai peringatan"
+   }
+  }
+ }
+}

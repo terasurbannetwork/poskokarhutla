@@ -118,5 +118,55 @@ def main(n_kasus=6):
     print("ok", r)
 
 
+JS_SENSOR = r"""
+const fs = require("fs"), vm = require("vm"), ctx = {console, Math, Date, Map, Set, JSON};
+vm.createContext(ctx); vm.runInContext(fs.readFileSync(process.argv[2], "utf8"), ctx);
+const M = ctx.SebaranModel, c = JSON.parse(fs.readFileSync(process.argv[3]));
+console.log(JSON.stringify({akhir: M.SNPP_AKHIR_MS, sensor: c.t.map(t => M.sensorUtama(t)), peralihan: c.t.map(t => M.peralihanSensor(t)),
+  konteks: c.kasus.map(k => M.konteksTitik(k.titik, k.t0, k.lon, k.lat))}));
+"""
+
+
+def uji_sensor():
+    """Tanpa data mentah: VIIRS utama sadar waktu Python (sensor.py + prospektif.gabung/lolos.konteks) == JS (sebaran_model.js). Sebelum SNPP_AKHIR hanya 'N',
+    sesudahnya hanya 'N21' yang dihitung; konteks titik membesar harus sama persis di kedua sisi, juga untuk jendela 7 hari yang melintasi batas."""
+    import lolos as LL
+    import sensor as SN
+    a = SN.menit_akhir()
+    t_cek = [a - 100000, a - 1, a, a + 1, a + 5000]
+    kasus_py, kasus_js = [], []
+    # titik di ~1-8 km dari pusat; campuran N/N21/N20 sebelum dan sesudah batas
+    baris = []
+    for k, dm in enumerate((-9000, -5000, -2000, -400, -1, 0, 1, 300, 1500, 4000, 9000)):
+        for q, sen in enumerate(("N", "N21", "N20")):
+            baris.append((a + dm - q, -2.0 + .004 * k + .001 * q, 110.0 + .006 * q, sen))
+    for t0 in (a - 3000, a + 60, a + 2000, a + 9000):
+        utama = [(t, la, lo) for t, la, lo, s_ in baris if SN.baris_utama([t, la, lo, s_])]
+        idx = LL.Indeks(*zip(*utama)) if utama else LL.Indeks([], [], [])
+        kasus_py.append(LL.konteks(idx, t0, 110.0, -2.0))
+        kasus_js.append({"t0": (SN.T0.timestamp() + t0 * 60) * 1000, "lon": 110.0, "lat": -2.0,
+                         "titik": [{"t": (SN.T0.timestamp() + t * 60) * 1000, "lat": la, "lon": lo, "s": s_} for t, la, lo, s_ in baris]})
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fx, tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as js:
+        json.dump({"t": [(SN.T0.timestamp() + t * 60) * 1000 for t in t_cek], "kasus": kasus_js}, fx)
+        js.write(JS_SENSOR)
+    try:
+        out = subprocess.run(["node", js.name, os.path.join(PUBLIK, "..", "sebaran_model.js"), fx.name], capture_output=True, text=True, timeout=120)
+    finally:
+        os.unlink(fx.name)
+        os.unlink(js.name)
+    if out.returncode:
+        sys.exit("GAGAL (sensor): " + out.stderr[-2000:])
+    r = json.loads(out.stdout)
+    assert r["akhir"] == (SN.T0.timestamp() + a * 60) * 1000, "SNPP_AKHIR JS beda dengan sensor.py"
+    assert r["sensor"] == [SN.utama_pada(t) for t in t_cek] == ["N", "N", "N21", "N21", "N21"], r["sensor"]
+    assert r["peralihan"] == [SN.peralihan(t) for t in t_cek], r["peralihan"]
+    for py, js_ in zip(kasus_py, r["konteks"]):
+        assert py["titik5_3h"] == js_["titik5_3h"] and py["titik10_3h"] == js_["titik10_3h"] and py["hari_aktif10"] == js_["hari_aktif10"] and abs(py["jarak_aktif_km"] - js_["jarak_aktif_km"]) < 1e-6, (py, js_)
+    assert any(k["titik10_3h"] > 0 for k in kasus_py), "uji tak bermakna: tak ada titik terhitung"
+    print("ok sensor", {"py": kasus_py[2], "js": r["konteks"][2]})
+
+
 if __name__ == "__main__":
-    main()
+    uji_sensor()
+    if sys.argv[1:] != ["sensor"]:
+        main()

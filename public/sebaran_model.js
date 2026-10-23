@@ -178,11 +178,18 @@ function vektor(M, k, [d, a], terbakar, aktif, w, ev, lh, tahun = 9999) {
 }
 
 /* ---------------- peluang membesar: model khusus (scripts/sebaran/lolos.py) ---------------- */
-/* Fitur sama persis dengan lolos.fitur_lolos. titik = deteksi sekitar [{t: ms, lat, lon, s: "N" (S-NPP) | "N20"}], keyakinan >= nominal. */
+/* VIIRS "utama" sadar waktu (setara scripts/sebaran/sensor.py): S-NPP ("N") sebelum SNPP_AKHIR, NOAA-21 ("N21") sesudahnya. FIRMS berhenti mendistribusikan S-NPP
+   1 Nov 2026 13:00 UTC; model dilatih pada S-NPP, jadi seri utama TIDAK menggabung semua VIIRS. Pergeseran distribusi N21 vs S-NPP BELUM diukur: hasil dengan
+   sensor_utama "N21" atau peralihan=true adalah ekstrapolasi, bukan kinerja teruji. Nilai ini harus sama dengan SNPP_AKHIR di sensor.py dan peta_karhutla.py (uji_js.py sensor). */
+const SNPP_AKHIR_MS = Date.UTC(2026, 10, 1, 13, 0);
+const sensorUtama = ms => ms < SNPP_AKHIR_MS ? "N" : "N21";
+/* jendela fitur (7 hari sebelum) + label/horizon (72 jam sesudah) memuat batas pergantian sensor -> campuran S-NPP dan N21 */
+const peralihanSensor = ms => ms - 7 * 864e5 < SNPP_AKHIR_MS && SNPP_AKHIR_MS < ms + 72 * 36e5;
+/* Fitur sama persis dengan lolos.fitur_lolos. titik = deteksi sekitar [{t: ms, lat, lon, s: "N" (S-NPP) | "N21" | "N20"}], keyakinan >= nominal; hanya sensorUtama(p.t) yang dihitung. */
 const kmTitik = (lon, lat, x, y) => Math.hypot((x - lon) * 111.32 * Math.cos(lat * rad), (y - lat) * 110.57);
 function konteksTitik(titik, t0, lon, lat) {
   let t5 = 0, t10 = 0, jarak = 10; const hari = new Set();
-  for (const p of titik) { if (p.s !== "N") continue; const dt = (t0 - p.t) / 6e4; if (!(dt > 0 && dt <= 7 * 1440)) continue;
+  for (const p of titik) { if (p.s !== sensorUtama(p.t)) continue; const dt = (t0 - p.t) / 6e4; if (!(dt > 0 && dt <= 7 * 1440)) continue;
     const d = kmTitik(lon, lat, p.lon, p.lat); if (d > 10) continue;
     hari.add(Math.min(6, Math.floor(dt / 1440))); if (dt <= 3 * 1440) { t10++; if (d <= 5) t5++; } if (dt <= 1440 && d < jarak) jarak = d; }
   return {titik5_3h: t5, titik10_3h: t10, jarak_aktif_km: jarak, hari_aktif10: hari.size};
@@ -203,7 +210,7 @@ function lolos(M, o, w, s0, sel0, t0, lon, lat, frp, iklim) {
   const v = {...w, ...s0, sanksi: s0.sanksi_th <= tahun ? 1 : 0, n0, frp0: frp, frp_jml0: o.frpJumlah != null ? +o.frpJumlah : frp * n0, malam: jl >= 6 && jl < 18 ? 0 : 1,
     oni: iklim.oni, dmi: iklim.dmi, ...konteksTitik(o.titik, t0, lon, lat), n20_0: n20, ...(ulang || {n14: n0, frp14: 0, lagi14: 0, n20_14: n20})};
   const p = peluangLolos(L, v);
-  return {p, waspada: p >= L.ambang, ambang: L.ambang, mode: ulang ? "ulang" : "awal", fitur: v};
+  return {p, waspada: p >= L.ambang, ambang: L.ambang, mode: ulang ? "ulang" : "awal", fitur: v, sensor_utama: sensorUtama(t0), peralihan: peralihanSensor(t0)};
 }
 /* selang luas terkalibrasi (konformal, lolos.selang): [P10, P90] sel baru dilebarkan q (log 1 + sel) per lahan & hari */
 const lebarkan = (lo, hi, q) => [Math.max(0, (1 + lo) * Math.exp(-q) - 1), (1 + hi) * Math.exp(q) - 1];
@@ -277,8 +284,15 @@ function ramal(o) {
   const pmc = nmc ? kalLepas(M, runs.filter(r => r[hari - 1] >= (M.lepas_sel || 10)).length / nmc) : null;
   return {waktu: new Date(t0).toISOString(), sel0, strata, geser, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
     p_lepas: pl ? pl.p : sel0.length >= (M.lepas_sel || 10) ? 1 : pmc, p_lepas_mc: pmc, lolos: pl, sudah_besar: sel0.length >= (M.lepas_sel || 10), luas, luasJam: perJam, arah: arahUtama, sel: sel_,
-    p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim};
+    p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim, sensor_utama: sensorUtama(t0), peralihan: peralihanSensor(t0)};
 }
+
+/* Gerbang "harus menang lawan pembanding sederhana" (scripts/sebaran/gerbang.py -> data/gerbang_model.json), GAGAL-TERTUTUP: berkas hilang/rusak/kunci tak ada
+   atau boleh_tampil bukan true persis = false. kunci: model_sel | mesin_fisika | jejak_api | lolos. */
+async function muatGerbang(url = "data/gerbang_model.json") { try { const r = await fetch(url); if (!r.ok) return null; const g = await r.json(); return g && typeof g === "object" ? g : null; } catch (e) { return null; } }
+const gerbangBoleh = (g, kunci) => !!g && typeof g === "object" && g[kunci]?.boleh_tampil === true;
+const gerbangAlasan = (g, kunci) => g?.[kunci]?.alasan || "gerbang model tidak terbaca: disembunyikan";
+const LABEL_EKSPERIMENTAL = "eksperimental, belum mengalahkan pembanding";
 
 /* peluang lolos Monte Carlo dikalibrasi (Platt, titik awal validasi 2023) */
 function kalLepas(M, p) { const K = M.kal_lepas; if (!K) return p; const q = Math.min(Math.max(p, .01), .99), z = Math.log(q / (1 - q));
@@ -337,6 +351,7 @@ async function cuacaTanggal(lat, lon, waktu) {
   return {m0: Date.parse(h.time[0] + "Z"), tc: h.temperature_2m, rh: h.relative_humidity_2m, hujan: h.precipitation, ws: h.wind_speed_10m, wd: h.wind_direction_10m};
 }
 
-G.SebaranModel = {muat, cuaca, cuacaSel, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, konteksTitik, n20Sekitar, peluangLolos, versi: 2};
+G.SebaranModel = {muat, cuaca, cuacaSel, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, konteksTitik, n20Sekitar, peluangLolos, sensorUtama, peralihanSensor, SNPP_AKHIR_MS,
+  muatGerbang, gerbangBoleh, gerbangAlasan, LABEL_EKSPERIMENTAL, versi: 2};
 if (typeof module !== "undefined") module.exports = G.SebaranModel;
 })(typeof window !== "undefined" ? window : globalThis);
