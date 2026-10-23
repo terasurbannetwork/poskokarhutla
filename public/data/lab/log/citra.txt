@@ -1,0 +1,22 @@
++ python3 scripts/data/ujibanding_firespot.py citra --tahun 2019 --maks-menit 40
+Traceback (most recent call last):
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/firms.py", line 84, in <module>
+    main(*sys.argv[1:3])
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/firms.py", line 43, in main
+    for b in csv.DictReader(io.StringIO(ambil(f"{API}/data_availability/csv/***/all"))):
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/firms.py", line 36, in ambil
+    raise RuntimeError(sensor_url(f"{url}: {type(e).__name__}: {e}")) from None
+RuntimeError: https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/***/all: URLError: <urlopen error [Errno 101] Network is unreachable>
+Traceback (most recent call last):
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/ujibanding_firespot.py", line 1493, in <module>
+    h["citra"] = mode_citra(**kw)
+                 ^^^^^^^^^^^^^^^^
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/ujibanding_firespot.py", line 1070, in mode_citra
+    pts_semua += baca_csv(tarik_firms(sumber, sen, mulai, akhir), sen, mulai, akhir)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/ujibanding_firespot.py", line 1059, in tarik_firms
+    subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), "firms.py"), mulai, akhir], stdout=f, env=dict(os.environ, SENSOR=sumber), check=True)
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/opt/hostedtoolcache/Python/3.12.15/x64/bin/python3', '/home/runner/work/poskokarhutla/poskokarhutla/scripts/data/firms.py', '2019-08-01', '2019-11-30']' returned non-zero exit status 1.

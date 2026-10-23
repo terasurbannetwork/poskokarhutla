@@ -1,0 +1,2 @@
++ python3 scripts/data/ujibanding_firespot.py ringkas
+belum ada /home/runner/work/poskokarhutla/poskokarhutla/scripts/data/../../public/data/ujibanding_firespot.json
