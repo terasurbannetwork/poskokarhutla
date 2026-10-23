@@ -592,9 +592,20 @@ def unduh_zenodo(dir_, rec="4551243"):
         if not nama.lower().endswith((".tif", ".tiff", ".shp", ".shx", ".dbf", ".prj", ".cpg", ".geojson", ".gpkg", ".zip")):
             continue
         tujuan = os.path.join(dir_, os.path.basename(nama))
+        # URL dan ukuran dari respons luar: hanya https host Zenodo, <= 4 GiB, disalin bertahap dengan batas
+        if not (url or "").startswith("https://zenodo.org/") or (f.get("size") or 0) > 4 * 2 ** 30:
+            sys.exit("berkas Zenodo ditolak (host/ukuran): " + nama)
         if not os.path.exists(tujuan):
             print("  unduh", nama, file=sys.stderr)
-            urllib.request.urlretrieve(url, tujuan)
+            with urllib.request.urlopen(url, timeout=120) as r, open(tujuan + ".bagian", "wb") as o:
+                while True:
+                    b = r.read(1 << 20)
+                    if not b:
+                        break
+                    o.write(b)
+                    if o.tell() > 4 * 2 ** 30:
+                        o.close(); os.remove(tujuan + ".bagian"); sys.exit("unduhan Zenodo lewat 4 GiB: " + nama)
+            os.replace(tujuan + ".bagian", tujuan)
         if nama.lower().endswith(".zip"):
             sub = os.path.join(dir_, os.path.splitext(os.path.basename(nama))[0])
             if not os.path.isdir(sub):
@@ -602,6 +613,8 @@ def unduh_zenodo(dir_, rec="4551243"):
                     for m in z.namelist():  # tolak jalur keluar
                         if m.startswith("/") or ".." in m.split("/"):
                             sys.exit("zip berisi jalur mencurigakan: " + m)
+                    if sum(i.file_size for i in z.infolist()) > 12 * 2 ** 30:  # bom zip
+                        sys.exit("zip mengembang > 12 GiB: " + nama)
                     z.extractall(sub)
 
 

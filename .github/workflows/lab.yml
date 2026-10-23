@@ -30,7 +30,7 @@ permissions:
 
 env:
   TUGAS: ${{ inputs.tugas || 'semua' }}
-  LAB_MENIT: "30"
+  LAB_MENIT: "45"  # per skrip lab_*.py; skrip menyimpan kemajuan (public/data/lab) dan melanjutkan di putaran berikutnya
 
 jobs:
   lab:
@@ -50,7 +50,7 @@ jobs:
           node-version: "22"
 
       - name: Pustaka ilmiah (hanya job lab)
-        run: pip install numpy rasterio pyshp fiona
+        run: pip install numpy rasterio pyshp fiona netCDF4  # netCDF4 hanya untuk GFED5 di lab_luas.py
 
       - name: Cache unduhan lab
         uses: actions/cache@v4
