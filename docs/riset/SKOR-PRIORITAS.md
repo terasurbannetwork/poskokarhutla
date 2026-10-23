@@ -114,3 +114,19 @@ Batas: base rate lolos 2,8%; omisi awan/asap membuat D rendah palsu di gambut; p
 (S-NPP saja di sini, NOAA-20 dari 2018 tidak dipakai model B); 2020-2022 sedikit karena cakupan cuaca (50-132 hari);
 faktor gambut ada di D dan di S2 sekaligus (sirkular, karena itu K_GAMBUT 1 dilaporkan); Platt dipasang pada gabungan
 luar-lipatan 2015-2023 (monoton, urutan S1 tidak berubah, perkalian S2 sedikit terpengaruh).
+
+## Pendaftaran v2 (23 Okt 2026, di-commit SEBELUM dijalankan)
+
+Alasan: v1 mengukur dampak termasuk FRP lintasan pertama, yang sudah terlihat oleh S0. Keputusan prioritas menyangkut
+yang BELUM terjadi.
+
+- **Hasil utama:** `D72 = jumlah FRP deteksi SESUDAH lintasan pertama sampai 72 jam x K_GAMBUT (3)`. Sekunder: FRP sesudah
+  lintasan pertama sepanjang hidup api; label lolos.
+- **Kandidat utama (satu, supaya tidak ada perbandingan berganda):** `S4 = aturan.skor x P(membesar) x paparan`
+  (yang sudah terlihat + ramalan model + gambut/asap, w_jiwa 0,5). Dilaporkan juga S0, S1, S2, `S3 = aturan.skor x P`.
+- **Himpunan uji:** api baru 2024-01-01 s.d. arsip terakhir 2026, peluang dari model "lolos" produksi yang dilatih
+  hanya sampai 2023. Belum pernah dipakai untuk memilih skor prioritas. Dijalankan SATU kali.
+- **Syarat lolos (sama dengan v1, tidak dilonggarkan):** S4 - S0 `tangkap@10` >= 10 poin persen, batas bawah selang 95%
+  bootstrap blok tahun x provinsi > 0, dan tidak kalah dari S0 di provinsi mana pun dengan >= 30 hari-keputusan.
+- **Bila lolos:** mode bayangan prospektif musim 2027 sebelum tampil sebagai saran. **Bila gagal:** ditulis, tidak tampil,
+  dan tidak ada v3 di himpunan yang sama.
