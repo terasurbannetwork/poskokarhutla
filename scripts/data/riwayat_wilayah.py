@@ -42,13 +42,15 @@ def definisi(th1, doy):
         "y": f"titik VIIRS S-NPP per tahun {TH0}..{th1} (keyakinan n/h); {th1} belum lengkap, {TH0} sebagian (sensor mulai 19 Jan 2012)",
         "a": f"jumlah tahun penuh {penuh[0]}-{penuh[-1]} dengan >= {TAHUN_AKTIF} titik MODIS (dari n tahun penuh)",
         "tr": f"tren dari ym: rata-rata 10 tahun penuh terakhir ({th1 - 10}-{th1 - 1}) dibanding 10 tahun pertama ({THM0}-{THM0 + 9}); naik bila rasio >= 1,5, turun bila <= 0,67, selain itu datar; "
-              "tidak dinilai (null) bila 20 tahun itu < 10 titik; rt = rasio (null bila pembagi 0)",
+              "tidak dinilai (null) bila 20 tahun itu < " + str(MIN_TREN) + " titik; rt = rasio (null bila pembagi 0)",
         "el": f"rata-rata titik MODIS tahun El Nino {', '.join(map(str, EL_NINO))} dibanding rata-rata tahun penuh lainnya; null bila pembagi 0",
         "yd": f"[titik VIIRS {th1} s.d. hari ke-{doy} tahun, rata-rata VIIRS tahun penuh {TH_PENUH0}-{th1 - 1} pada rentang hari yang sama]",
         "pk": "[tahun, titik MODIS] tahun penuh dengan titik terbanyak (seri: tahun paling awal)",
         "lg": f"desa langganan: a >= ceil(n/3) = {math.ceil(len(penuh) / 3)} tahun penuh",
     }
 
+
+MIN_TREN = 30   # titik MODIS minimal di dua blok 10 tahun sebelum tren dinilai
 
 def rangkum(y, yd, th1, ym):
     """y, yd = titik VIIRS per tahun TH0..th1 (yd terpotong di hari-dalam-tahun arsip); ym = titik MODIS per tahun THM0..th1."""
@@ -59,7 +61,7 @@ def rangkum(y, yd, th1, ym):
     r = {"ym": ym, "y": y, "a": sum(1 for v in penuh.values() if v >= TAHUN_AKTIF)}
     akhir10 = [penuh[t] for t in range(th1 - 10, th1)]
     awal10 = [penuh[t] for t in range(THM0, THM0 + 10)]
-    if sum(akhir10) + sum(awal10) >= 10:
+    if sum(akhir10) + sum(awal10) >= MIN_TREN:   # audit validasi-model 23 Okt 2026: 10 titik dalam 20 tahun terlalu sedikit untuk menyebut "naik"
         a, b = rata(akhir10), rata(awal10)
         rt = a / b if b else None
         r["tr"] = "datar" if rt is None and not a else "naik" if rt is None or rt >= 1.5 else "turun" if rt <= 0.67 else "datar"
@@ -257,8 +259,10 @@ def uji():
     z = [3] * nym
     assert rangkum(y, y, th1, z)["tr"] == "datar"
     z = [0] * nym; z[2025 - THM0] = 9
-    assert rangkum(y, y, th1, z)["tr"] is None       # < 10 titik di 20 tahun: tidak dinilai
-    z[2025 - THM0] = 15
+    assert rangkum(y, y, th1, z)["tr"] is None       # < MIN_TREN titik di 20 tahun: tidak dinilai
+    z[2025 - THM0] = 29
+    assert rangkum(y, y, th1, z)["tr"] is None       # 29 titik, semua di blok akhir: tetap tidak dinilai
+    z[2025 - THM0] = 35
     q = rangkum(y, y, th1, z)
     assert (q["tr"], q["rt"], q["el"]) == ("naik", None, 0.0), q   # awal 0 -> naik tanpa rasio
     assert rangkum(y, y, th1, [0] * nym).get("pk") is None

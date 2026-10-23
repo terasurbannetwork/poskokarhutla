@@ -4,35 +4,53 @@
   2019,
   2023
  ],
- "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu yang >= h hari; pembanding = 2 x umur. Akhir musim: median hari deteksi terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi.",
+ "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu di jendela itu yang >= h hari; pembanding = 2 x umur dan median NASIONAL episode lalu yang >= h hari. Akhir musim: median hari deteksi terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi. Selang 95% = bootstrap blok per jendela ~16 km.",
  "lama": {
   "3": {
-   "n": 13548,
+   "n": 13550,
+   "n_jendela": 3164,
    "mae": 5.0,
    "tepat": 58,
    "toleransi": 3,
-   "mae_pembanding": 5.0
+   "mae_pembanding": 5.0,
+   "mae_nasional": 5.0,
+   "selisih_nasional_ci95": [
+    0.01,
+    0.08
+   ]
   },
   "7": {
-   "n": 6626,
+   "n": 6649,
+   "n_jendela": 2195,
    "mae": 6.4,
    "tepat": 49,
    "toleransi": 3,
-   "mae_pembanding": 6.8
+   "mae_pembanding": 6.8,
+   "mae_nasional": 6.2,
+   "selisih_nasional_ci95": [
+    0.05,
+    0.26
+   ]
   }
  },
  "musim": {
   "n": 6739,
+  "n_jendela": 3956,
   "mae": 22.8,
   "tepat": 44,
   "toleransi": 14,
-  "mae_pembanding": 29.2
+  "mae_pembanding": 29.2,
+  "selisih_pembanding_ci95": [
+   -6.97,
+   -5.8
+  ]
  },
+ "lama_unggul": false,
  "el_nino": {
-  "definisi": "Musim El Nino 2019, 2023 diramal dua cara pada kasus yang SAMA: umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya, 2015, 2019, 2023).",
+  "definisi": "Musim El Nino 2019, 2023 diramal dua cara pada kasus yang SAMA: umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya). Uji ini memakai 1-2 tahun analog; produksi memakai 3.",
   "lama": {
    "3": {
-    "n": 10893,
+    "n": 10891,
     "mae_umum": 5.1,
     "mae_analog": 5.8,
     "tepat_umum": 58,
@@ -40,7 +58,7 @@
     "toleransi": 3
    },
    "7": {
-    "n": 4126,
+    "n": 4140,
     "mae_umum": 6.6,
     "mae_analog": 7.4,
     "tepat_umum": 48,

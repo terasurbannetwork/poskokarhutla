@@ -5,7 +5,7 @@
    RiwayatSel.html(a); RiwayatSel.isi(wadah, p) memuat ubin lalu menggambar. Prakiraan = pola masa lalu, bukan model fisika. */
 (() => {
   "use strict";
-  const X0 = 94.5, Y1 = 6.5, SEL = 0.05, TAHUN_AKTIF = 10, EL_NINO = [2004, 2006, 2009, 2015, 2019, 2023]   /* El Niño moderat ke atas (ONI) sejak 2003 */;
+  const X0 = 94.5, Y1 = 6.5, SEL = 0.05, TAHUN_AKTIF = 10, EL_NINO = [2004, 2006, 2009, 2015, 2019, 2023];   /* El Niño lemah sampai kuat sejak 2003 (2004, 2006, 2019 lemah; 2015, 2023 kuat): rasionya didominasi 2015 */
   const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const ARAH = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -24,7 +24,9 @@
 
   /* rec = rekaman sel; meta = {th0, sd}; p = properti cluster (hari, wd, ws, fwi, dc, gambut, teramati); enso = status iklim.json atau null */
   function analisa(rec, meta, p, enso, opsi = {}) {
-    const th0 = meta.th0, sd = new Date(meta.sd + "T00:00:00Z"), thIni = sd.getUTCFullYear(), doyIni = Math.round((sd - Date.UTC(thIni, 0, 1)) / 864e5) + 1;
+    /* sd = tanggal arsip (dasar "tahun ini s.d. tanggal sama"); kini = hari ini (dasar sisa musim). Arsip lokal bisa tertinggal beberapa hari. */
+    const th0 = meta.th0, sd = new Date(meta.sd + "T00:00:00Z"), thIni = sd.getUTCFullYear(), doySd = Math.round((sd - Date.UTC(thIni, 0, 1)) / 864e5) + 1;
+    const kini = opsi.kini ? new Date(opsi.kini) : sd, doyIni = kini.getUTCFullYear() === thIni ? Math.round((Date.UTC(thIni, kini.getUTCMonth(), kini.getUTCDate()) - Date.UTC(thIni, 0, 1)) / 864e5) + 1 : doySd;
     const th = rec.y.map((_, i) => th0 + i), penuh = th.filter(t => t < thIni), y = t => rec.y[t - th0], yd = t => rec.yd[t - th0];
     /* seri panjang: MODIS 2003-... (ym) bila ada, selain itu VIIRS. Kekerapan, tren, El Niño, dan grafik memakai seri ini;
        deteksi minggu ini dan "tahun ini s.d. tanggal sama" tetap VIIRS (sensor yang sama dengan cluster) */
@@ -41,22 +43,25 @@
 
     /* 1b. di luar kebiasaan: deteksi VIIRS 7 hari cluster vs rata-rata titik VIIRS setahun (rumus sama dengan watak_kluster.py `rs`) */
     const rt = Math.round(rata(penuh.map(y)));
-    a.rs = rt >= 1 && p.n ? Math.round(p.n / rt * 10) / 10 : null;
-    if (a.rs >= 1) fakta.push(`Seminggu ini ${ang(p.n)} deteksi, ${kali(a.rs)} kali rata-rata setahun di sini (${ang(rt)} titik VIIRS ${th0}–${thIni - 1}): di luar kebiasaan.`);
+    /* pembilang WAJIB titik S-NPP sedang/tinggi di jendela yang sama (watak_kluster.py `n7`); `p.n` cluster = 4 sensor semua keyakinan, tidak sebanding */
+    const n7 = p.wt?.n7;
+    a.rs = rt >= 1 && n7 ? Math.round(n7 / rt * 10) / 10 : null;
+    if (a.rs >= 1) fakta.push(`Seminggu ini ${ang(n7)} titik S-NPP di sekitar sini, ${kali(a.rs)} kali rata-rata setahun (${ang(rt)} titik ${th0}–${thIni - 1}): di luar kebiasaan.`);
 
     /* 2. tahun ini vs tahun-tahun lalu sampai tanggal yang sama (VIIRS) */
     const lalu = penuh.map(yd), rLalu = rata(lalu), ini = yd(thIni);
     const peringkat = 1 + lalu.filter(v => v > ini).length;
     if (ini > 0) {
       const banding = rLalu >= 1 ? `, ${kali(ini / rLalu)} kali rata-rata ${th0}–${thIni - 1}` : "";
-      fakta.push(`${thIni} sampai ${tglDoy(doyIni)}: ${ang(ini)} titik VIIRS${banding}; ${peringkat === 1 ? "tertinggi sejak " + th0 : "urutan ke-" + peringkat + " dari " + (penuh.length + 1) + " tahun"}.`);
+      fakta.push(`${thIni} sampai ${tglDoy(doySd)}: ${ang(ini)} titik VIIRS${banding}; ${peringkat === 1 ? "tertinggi sejak " + th0 : "urutan ke-" + peringkat + " dari " + (penuh.length + 1) + " tahun"}.`);
     }
     a.tahunIni = {ini, rLalu, peringkat};
 
     /* 3. tren: dua blok tahun penuh sama panjang (seri panjang MODIS: 10 vs 10 tahun; VIIRS: 5 vs 5) */
     const w = penuhL.length >= 20 ? 10 : 5, b5 = penuhL.slice(-w), s5 = w === 10 ? penuhL.slice(0, w) : penuhL.slice(-10, -5), rb = rata(b5.map(yL)), rs = rata(s5.map(yL));
-    if (s5.length === w && penuhL.length >= 2 * w && rs + rb >= pj.amb) {
+    if (s5.length === w && penuhL.length >= 2 * w && (rs + rb) * w >= 30) {   /* >= 30 titik di dua blok: 0,5 -> 2,5 titik/tahun bukan "naik 5x" */
       const r = rs ? rb / rs : Infinity;
+      a.trenW = w;
       a.tren = r >= 1.5 ? "naik" : r <= 0.67 ? "turun" : "datar";
       fakta.push(`Tren: rata-rata ${b5[0]}–${b5[w - 1]} ${ang(Math.round(rb))} titik ${pj.sen}/tahun, ${s5[0]}–${s5[w - 1]} ${ang(Math.round(rs))} (${a.tren === "naik" ? "naik" : a.tren === "turun" ? "turun" : "relatif sama"}${rs && a.tren !== "datar" ? ", " + kali(r) + "×" : ""}).`);
     }
@@ -82,7 +87,7 @@
     const elNow = !!(enso && /El Ni/.test(enso)), an = opsi.analog !== false && elNow && rec.en?.r?.length >= 3, R = an ? {...rec, ...rec.en} : rec, dasarM = an ? "musim El Niño 2015, 2019, 2023" : `musim ${th0}–${thIni - 1}`;
     a.analog = an;
     if (an) fakta.push(`Prakiraan di bawah memakai musim El Niño saja (2015, 2019, 2023) di lokasi ini, karena ${thIni} tahun El Niño.`);
-    else if (elNow && opsi.analog === false && rec.en?.r?.length >= 3) fakta.push(`${thIni} tahun El Niño, tetapi prakiraan memakai semua tahun: diuji pada musim El Niño 2019 dan 2023, memakai musim El Niño saja meleset lebih jauh (episodenya terlalu sedikit).`);
+    else if (elNow && opsi.analog === false && rec.en?.r?.length >= 3) fakta.push(`${thIni} tahun El Niño, tetapi prakiraan memakai semua tahun: memakai musim El Niño saja tidak terbukti lebih tepat pada uji musim 2019 dan 2023.`);
     const turun = p.wd != null && p.ws != null ? (p.wd + 180) % 360 : null;
     if (turun != null && p.ws >= 5) prakira.push(["Arah jalar hari ini", `ke ${arahDari(turun)}`, `angin ${ang(p.ws)} km/jam dari ${arahDari(p.wd)}`]);
     if (R.v && R.v[1] >= 0.3) prakira.push(["Arah jalar historis", `ke ${arahDari(R.v[0])}`, `${ang(R.v[3])} pergeseran harian, konsistensi ${ang(Math.round(R.v[1] * 100))}%`]);
@@ -96,46 +101,53 @@
       /* kuartil baru bermakna dari >= 8 episode; di bawah itu cukup median dan terlama */
       a.lama = {median: median(r), p75: r.length >= 8 ? kuantil(r, .75) : null, n: r.length, sisa: lanjut.length >= 3 ? Math.max(0, Math.round(mTot - h)) : null};
       prakira.push(["Lama kebakaran", `median ${ang(a.lama.median)} hari`, `${ang(r.length)} episode ${dasarM}${a.lama.p75 ? `; 1 dari 4 lebih dari ${ang(a.lama.p75)} hari` : ""}, terlama ${ang(r[r.length - 1])} hari`]);
-      if (a.lama.sisa != null && p.teramati !== false) prakira.push(["Perkiraan sisa", a.lama.sisa ? `sekitar ${ang(a.lama.sisa)} hari lagi` : "mendekati akhir",
+      if (opsi.lamaUnggul && a.lama.sisa != null && p.teramati !== false) prakira.push(   /* hanya bila uji balik membuktikan lebih tepat dari median nasional */["Perkiraan sisa", a.lama.sisa ? `sekitar ${ang(a.lama.sisa)} hari lagi` : "mendekati akhir",
         `episode yang sudah bertahan ${ang(h)} hari di sini biasanya total ${ang(Math.round(mTot))} hari (${ang(lanjut.length)} kejadian)`]);
     }
     if (R.s) {
       a.sisaMusim = R.s[1] - doyIni;
-      prakira.push(["Akhir musim", a.sisaMusim > 0 ? `sekitar ${tglDoy(R.s[1])}` : "biasanya sudah lewat", a.sisaMusim > 0 ? `${ang(a.sisaMusim)} hari lagi menurut median ${dasarM}` : `median akhir musim ${tglDoy(R.s[1])}; api ini terlambat dari kebiasaan`]);
+      prakira.push(["Akhir musim", a.sisaMusim > 0 ? `sekitar ${tglDoy(R.s[1])}` : "biasanya sudah lewat", a.sisaMusim > 0 ? `${ang(a.sisaMusim)} hari lagi menurut median ${dasarM}` : `median akhir musim ${tglDoy(R.s[1])}; separuh tahun di sini api masih menyala sesudah tanggal itu`]);
     }
     if (R.k >= 2) prakira.push(["Kekambuhan", `${ang(R.k, 1)} episode/tahun`, "di tahun terbakar, api biasanya muncul lagi setelah sempat padam"]);
 
     /* SARAN dari pola di atas */
     const lamaPanjang = a.lama && a.lama.median >= 7, gambut = p.gambut || rec.nm >= 40;
-    if (lamaPanjang) saran.push(`Siapkan operasi panjang: api di sini biasanya ${ang(a.lama.median)} hari. Atur rotasi regu dan logistik minimal ${ang(a.lama.p75 || a.lama.median)} hari.`);
+    if (lamaPanjang) saran.push(`Siapkan operasi panjang (gambaran dari riwayat, bukan ramalan): kebakaran sebelumnya di sini rata-rata ${ang(a.lama.median)} hari${a.lama.p75 ? `, seperempatnya lebih dari ${ang(a.lama.p75)} hari` : ""}. Atur rotasi regu dan logistik untuk itu.`);
     if (gambut && (p.dc > 300 || rec.nm >= 40)) saran.push("Gambut kering dan api membara malam: pasang sumur bor dan embung di tepi api, lakukan injeksi gambut, jangan tinggalkan lokasi setelah api permukaan padam.");
     if (turun != null && p.ws >= 5) saran.push(`Bangun sekat bakar dan tempatkan regu di sisi ${arahDari(turun)}${R.v && R.v[1] >= 0.3 && arahDari(R.v[0]) !== arahDari(turun) ? ` dan ${arahDari(R.v[0])} (arah jalar historis)` : ""}, searah angin.`);
     else if (R.v && R.v[1] >= 0.3) saran.push(`Jaga sisi ${arahDari(R.v[0])}: api di lokasi ini berulang kali bergerak ke sana.`);
     const radius = R.x && (banyak ? R.x[1] : R.x[0]);
     if (radius >= 5) saran.push(`Siagakan desa dan kebun dalam radius ${ang(Math.ceil(radius))} km; sejauh itu api di sini biasa meluas.`);
     if (R.k >= 2) saran.push("Api di sini sering kambuh: lanjutkan mop-up dan patroli minimal 14 hari setelah dinyatakan padam.");
-    if (a.tahunIni.ini && a.tahunIni.rLalu >= 1 && a.tahunIni.ini / a.tahunIni.rLalu >= 2) saran.push(`Tahun ini sudah ${kali(a.tahunIni.ini / a.tahunIni.rLalu)} kali rata-rata: tambah alokasi regu dan anggaran untuk lokasi ini.`);
+    if (a.tahunIni.ini >= 20 && a.tahunIni.rLalu >= 1 && a.tahunIni.ini / a.tahunIni.rLalu >= 2) saran.push(`Tahun ini sudah ${kali(a.tahunIni.ini / a.tahunIni.rLalu)} kali rata-rata: tambah alokasi regu dan anggaran untuk lokasi ini.`);
     if (a.sisaMusim > 14) saran.push(`Jaga kesiagaan sampai ${tglDoy(R.s[1])}; musim di sini biasanya belum berakhir sebelum itu.`);
     if (a.aktif >= Math.ceil(a.penuh / 3)) saran.push(`Lokasi langganan: masukkan ke patroli pencegahan rutin mulai ${R.s ? BULAN[new Date(Date.UTC(2026, 0, Math.max(1, R.s[0] - 30))).getUTCMonth()] : "Juni"}, sebulan sebelum musim di sini biasanya mulai.`);
     if (a.rs >= 5 && aktif.length <= 2) saran.push("Api besar di tempat yang jarang terbakar: periksa izin dan pembukaan lahan baru bersama Gakkum dan pemilik lahan.");
-    if (a.tren === "naik") saran.push("Kebakaran di sini makin sering 5 tahun terakhir: cari penyebabnya (pembukaan lahan, kanal baru) bersama pemilik lahan.");
+    if (a.tren === "naik") saran.push(`Kebakaran di sini makin sering ${a.trenW} tahun terakhir: cari penyebabnya (pembukaan lahan, kanal baru) bersama pemilik lahan.`);
     if (!aktif.length) saran.push("Lokasi tanpa riwayat: pastikan dengan ground-check, bisa api baru dari pembukaan lahan.");
     return a;
   }
 
-  /* faktor pendorong untuk kondisi cluster ini: kelas tiap variabel dicocokkan ke tabel sebaran_pendorong.json (370 ribu peristiwa VIIRS,
-     laju "membesar >= 10 sel dalam 72 jam" per kelas dibagi kelas acuan). Rasio satu variabel, belum dikoreksi variabel lain. */
-  function faktor(pd, p, a, ik) {
-    if (!pd?.kelas) return [];
-    const ke = (v, batas) => batas.filter(x => v >= x).length;
-    const daftar = [["fwi", p.fwi, [2, 7, 14]], ["dc", p.dc, [100, 200]], ["ws", p.ws, [10, 15, 20]], ["rh_min", p.rh, [40, 50, 60]],
-      ["gambut", p.gambut == null ? null : +!!p.gambut], ["oni", ik?.oni_terakhir?.nilai, [-0.5, 0.5, 1]], ["dmi", ik?.dmi_8_minggu, [-0.4, 0.4]],
-      ["riwayat_f", a.sen === "MODIS" ? a.aktif : null, [1, 5, 10]]];
+  /* kondisi cluster yang menurut data lalu menyertai api membesar (sebaran_pendorong.json: api BARU, 9 provinsi, Juli-November 2012-2026,
+     label ">= 10 sel dalam 72 jam"). Audit validasi-model 23 Okt 2026: hanya variabel yang (1) diukur dengan definisi yang sama di cluster
+     (fwi, dc, gambut; angin & RH cluster = siang, tabel = rata-rata/minimum 24 jam), (2) nilainya di dalam rentang latih (DC latih hanya
+     sampai kelas 200-300), dan (3) arahnya tetap sesudah dikoreksi variabel lain (logistik `or_per_sd`, selang 95% tidak memuat 1).
+     ONI/DMI (efek tahun) dan riwayat_f (memuat tahun sesudah kejadian) dibuang. Bukan sebab. */
+  const RENTANG_LATIH = {dc: 300};
+  const PROV_PENDORONG = ["14", "15", "16", "53", "61", "62", "63", "64", "93"];   // tabel dilatih di 9 provinsi ini saja
+  function faktor(pd, p) {
+    if (!pd?.kelas || (p.prov && !PROV_PENDORONG.includes(p.prov))) return [];
+    const ke = (v, batas) => batas.filter(x => v >= x).length, adj = Object.fromEntries((pd.logistik?.fitur || []).map(f => [f.fitur, f]));
+    const daftar = [["fwi", p.fwi, [2, 7, 14]], ["dc", p.dc, [100, 200]], ["gambut", p.gambut == null ? null : +!!p.gambut]];
     return daftar.map(([k, v, batas]) => {
-      const K = pd.kelas[k], T = K?.tabel; if (!T?.length || v == null || !Number.isFinite(+v)) return null;
+      const K = pd.kelas[k], T = K?.tabel, L = adj[k]; if (!T?.length || v == null || !Number.isFinite(+v) || !L?.ci) return null;
+      if (RENTANG_LATIH[k] != null && +v >= RENTANG_LATIH[k]) return null;
       const row = T[Math.min(T.length - 1, batas ? ke(+v, batas) : +v)];
-      /* kondisi = kelas acuan: tidak ada yang dibandingkan */
-      return row && row !== T[0] && Number.isFinite(row.rasio) ? {nama: K.nama, kelas: row.kelas, rasio: row.rasio, acuan: T[0].kelas} : null;
+      if (!row || row === T[0] || !Number.isFinite(row.rasio)) return null;   // kondisi = kelas acuan: tidak ada yang dibandingkan
+      const tetap = row.rasio > 1 ? L.ci[0] > 1 : L.ci[1] < 1;   // arah sesudah dikoreksi sama dan selangnya tidak memuat 1
+      /* angka tampil = rasio TERKOREKSI per satu kelas biner (or_per_sd^(1/sd)); rasio mentah ikut sebagai keterangan */
+      const koreksi = batas ? null : L.sd ? Math.round(L.or_per_sd ** (1 / L.sd) * 10) / 10 : null;
+      return tetap ? {nama: K.nama, kelas: row.kelas, rasio: koreksi ?? row.rasio, mentah: row.rasio, terkoreksi: koreksi != null, acuan: T[0].kelas} : null;
     }).filter(Boolean).sort((x, y) => y.rasio - x.rasio);
   }
 
@@ -152,11 +164,12 @@
     if (!u || !u.lama) return "";
     const l = Object.values(u.lama), m = u.musim, th = (u.tahun_uji || []).join(" dan ");
     if (!l.length) return "";
-    const mae = l.map(x => x.mae), pemb = l.map(x => x.mae_pembanding), unggul = l.every(x => x.mae < x.mae_pembanding - 0.5);
+    const mae = l.map(x => x.mae), pemb = l.map(x => x.mae_pembanding);
     const rg = xs => Math.min(...xs) === Math.max(...xs) ? ang(xs[0], 1) : `${ang(Math.min(...xs), 1)}–${ang(Math.max(...xs), 1)}`;
     const E = u.el_nino, el = E && Object.values(E.lama || {}), em = E?.musim;
     const teksEl = el?.length ? ` Di musim El Niño, memakai musim El Niño sebelumnya saja: lama meleset ${rg(el.map(x => x.mae_analog))} hari vs ${rg(el.map(x => x.mae_umum))} hari dengan semua tahun${em ? `; akhir musim ${ang(em.mae_analog)} vs ${ang(em.mae_umum)} hari` : ""} (kasus yang sama).` : "";
-    return `Uji pada musim ${th}: perkiraan lama kebakaran meleset rata-rata ${rg(mae)} hari, ${unggul ? "lebih baik dari" : "tidak lebih baik dari"} tebakan sederhana (2 kali umur api, ${rg(pemb)} hari)${m ? `; akhir musim meleset rata-rata ${ang(m.mae)} hari (tebakan umum ${ang(m.mae_pembanding)} hari)` : ""}.${teksEl} Pakai sebagai gambaran, bukan jadwal.`;
+    const nas = l.map(x => x.mae_nasional).filter(x => x != null);
+    return `Uji pada musim ${th}: perkiraan lama kebakaran dari riwayat lokasi meleset rata-rata ${rg(mae)} hari, ${u.lama_unggul ? "lebih tepat dari" : "tidak lebih tepat dari"} median nasional${nas.length ? ` (${rg(nas)} hari)` : ""}${u.lama_unggul ? "" : ", jadi sisa hari tidak ditampilkan"}; tebakan 2 kali umur api ${rg(pemb)} hari${m ? `; akhir musim meleset rata-rata ${ang(m.mae)} hari (tebakan umum ${ang(m.mae_pembanding)} hari)` : ""}.${teksEl} Pakai sebagai gambaran, bukan jadwal.`;
   }
 
   function html(a, u) {
@@ -167,8 +180,8 @@
       <p class="fnd" style="margin:0">${a.thIni} sampai ${esc(new Date(a.sd + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}))}.</p>
       ${sub("Titik per bulan, semua tahun")}${batang(a.m, ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], i => i === a.bulanPuncak, "Titik per bulan")}
       ${a.prakira.length ? sub("Prakiraan dari pola lokasi ini") + `<table class="tb2 br"><tbody>${a.prakira.map(([k, v, d]) => `<tr><td>${esc(k)}<small style="display:block;color:var(--ink2)">${esc(d)}</small></td><td class="n"><b>${esc(v)}</b></td></tr>`).join("")}</tbody></table>` : ""}
-      ${a.faktor?.length ? sub("Faktor yang memengaruhi peluang api membesar di sini") + `<table class="tb2 br"><tbody>${a.faktor.map(f => `<tr><td>${esc(f.nama)}<small style="display:block;color:var(--ink2)">kondisi ${esc(f.kelas)}, dibanding ${esc(f.acuan)}</small></td><td class="n"><b style="color:${f.rasio >= 1.2 ? "var(--bad)" : f.rasio <= 0.8 ? "#3f7f5a" : "inherit"}">${kali(f.rasio)}×</b></td></tr>`).join("")}</tbody></table>
-        <p class="fnd" style="margin:4px 0 0">Laju api membesar (≥ 140 ha dalam 72 jam) per kondisi, dari ${ang(a.nPeristiwa || 0)} peristiwa VIIRS 2012–2026. Satu variabel per baris, belum dikoreksi variabel lain; model terlatih di bawah memakai semuanya sekaligus (40 variabel).</p>` : ""}
+      ${a.faktor?.length ? sub("Kondisi di sini yang biasanya menyertai api membesar") + `<table class="tb2 br"><tbody>${a.faktor.map(f => `<tr><td>${esc(f.nama)}<small style="display:block;color:var(--ink2)">kondisi ${esc(f.kelas)}, dibanding ${esc(f.acuan)}${f.terkoreksi ? `; setelah dikoreksi variabel lain (tanpa koreksi ${kali(f.mentah)}×)` : "; belum dikoreksi variabel lain"}</small></td><td class="n"><b style="color:${f.rasio >= 1.2 ? "var(--bad)" : f.rasio <= 0.8 ? "#3f7f5a" : "inherit"}">${kali(f.rasio)}×</b></td></tr>`).join("")}</tbody></table>
+        <p class="fnd" style="margin:4px 0 0">Bukan sebab. Laju api baru menjadi ≥ 140 ha dalam 72 jam, dari ${ang(a.nPeristiwa || 0)} peristiwa di 9 provinsi, Juli–November 2012–2026. Hanya kondisi yang diukur sama dan arahnya tetap setelah dikoreksi variabel lain; model terlatih di bawah memakai 40 variabel sekaligus.</p>` : ""}
       ${a.saran.length ? sub("Saran dari tren") + li(a.saran) : ""}
       <div style="margin-top:10px"><button type="button" class="btn btn-gelap" data-model-latih>Jalankan model terlatih, 72 jam</button><div data-model-hasil style="margin-top:8px"></div></div>
       <p class="fnd" style="margin-top:8px">Sumber: NASA FIRMS ${a.sen === "MODIS" ? `MODIS ${a.th[0]}–${a.thIni} (seri panjang) dan VIIRS S-NPP 2012–${a.thIni} (minggu ini, musim, lama, arah)` : `VIIRS S-NPP ${a.th[0]}–${a.thIni}`}, jendela ~16 km di sekitar pusat cluster. Prakiraan diambil dari kejadian masa lalu di lokasi ini, bukan simulasi; arah hari ini dari angin.</p>${teksUji(u) ? `<p class="fnd" style="margin-top:4px">${esc(teksUji(u))}</p>` : ""}`;
@@ -185,9 +198,10 @@
     const rec = d?.c?.[k.sel];
     /* gerbang analog El Niño: hanya bila uji balik (kasus yang sama) membuktikan analog lebih tepat untuk lama DAN akhir musim */
     const E = ub?.el_nino, lolosAnalog = !!(E && Object.values(E.lama || {}).length && Object.values(E.lama).every(x => x.mae_analog < x.mae_umum) && (!E.musim || E.musim.mae_analog < E.musim.mae_umum));
-    const A = rec && analisa(rec, d, p, ik?.status, {analog: lolosAnalog});
-    if (A) { A.faktor = faktor(pd, p, A, ik); A.nPeristiwa = pd?.n_peristiwa; }
-    wadah.innerHTML = rec ? html(A, ub) : `<p class="fnd">Lokasi ini tidak punya riwayat titik VIIRS sejak 2012 (kurang dari 20 titik dalam ~16 km): kebakaran di sini tidak biasa, pastikan dengan ground-check.</p>`;
+    const A = rec && analisa(rec, d, p, ik?.status, {analog: lolosAnalog, lamaUnggul: ub?.lama_unggul === true, kini: Date.now()});
+    if (A) { A.faktor = faktor(pd, p); A.nPeristiwa = pd?.n_peristiwa; }
+    wadah.innerHTML = !d ? `<p class="fnd">Riwayat lokasi gagal dimuat. Coba buka ulang cluster ini.</p>`
+      : rec ? html(A, ub) : `<p class="fnd">Lokasi ini tidak punya riwayat titik VIIRS sejak 2012 (kurang dari 20 titik dalam ~16 km): kebakaran di sini tidak biasa, pastikan dengan ground-check.</p>`;
     /* model terlatih (sebaran_model.js lewat SimData, sama dengan tab Simulasi): dijalankan hanya saat diminta karena memuat lahan + cuaca beberapa MB */
     const tb = wadah.querySelector("[data-model-latih]"), out = wadah.querySelector("[data-model-hasil]");
     if (tb) tb.onclick = async () => {

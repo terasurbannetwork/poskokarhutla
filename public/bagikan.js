@@ -269,7 +269,7 @@ const Bagikan = {
       ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : []),
       /* pola lokasi (watak_kluster.py `wt`, VIIRS 2012-2025 jendela ~16 km); bagian yang datanya kosong tidak ditulis */
       ...(p.wt ? [{lv: p.wt.lg || p.wt.k >= 2 ? 2 : 1, t: [p.wt.lg ? `Lokasi langganan: terbakar ${p.wt.a} dari ${p.wt.n} tahun` : p.wt.a ? `Terbakar ${p.wt.a} dari ${p.wt.n} tahun` : `Tidak pernah terbakar besar dalam ${p.wt.n} tahun terakhir`,
-        p.wt.rs >= 1 ? `seminggu ini ${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun` : null, p.wt.md ? `biasanya ${fmt(p.wt.md)} hari` : null,
+        p.wt.rs >= 1 ? `seminggu ini ${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun` : null, p.wt.md ? `dulu rata-rata ${fmt(p.wt.md)} hari` : null,
         p.wt.akhir ? `musim sampai ${new Date(p.wt.akhir + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"})}` : null,
         p.wt.k >= 2 ? "sering kambuh, mop-up 14 hari" : null].filter(Boolean).join(", ") + "."}] : [])];
     return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Cluster ${p.id}`, judul: `${p.kec}, ${p.kab}`,

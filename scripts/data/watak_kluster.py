@@ -3,9 +3,14 @@
 Jalan di CI SESUDAH harian.py, taktik.py, dan insiden.py (yang menulis ulang kedua berkas). Hanya membaca ubin riwayat_sel yang sudah di-commit,
 tidak butuh arsip FIRMS. Rumus sama dengan public/riwayat_sel.js `analisa` (laci): ubah keduanya bersamaan.
   a   tahun terbakar dari n tahun penuh: seri MODIS 2003-... (>= 3 titik) bila ada, selain itu VIIRS 2012-... (>= 10 titik)
-  rt  rata-rata titik per tahun penuh di jendela ~16 km
-  rs  deteksi 7 hari cluster / rt: > 1 berarti seminggu ini sudah melebihi setahun biasa (api di luar kebiasaan)
-  md  median lama episode (hari); sisa = median episode lalu yang sudah bertahan >= umur api, dikurangi umur (>= 3 episode)
+  rt  rata-rata titik VIIRS S-NPP (keyakinan sedang/tinggi) per tahun penuh di jendela ~16 km
+  n7  titik S-NPP keyakinan sedang/tinggi 7 hari terakhir (hotspot.json) di jendela 3x3 yang SAMA: sebanding dengan rt
+      (cluster `n` memuat 4 sensor semua keyakinan, ~2,5x lebih banyak: tidak boleh dibagi rt; temuan validasi-model 23 Okt 2026).
+      Penyaring api vegetasi arsip (sel industri) tidak tersedia untuk NRT; diukur 23 Okt 2026 n7 justru ~0,9x arsip (median per jendela 1,00).
+  rs  n7 / rt: > 1 berarti seminggu ini sudah melebihi setahun biasa (api di luar kebiasaan)
+  md  median lama episode lalu (hari; episode yang masih menyala tidak ikut)
+  sisa  median episode lalu yang sudah bertahan >= umur api, dikurangi umur; HANYA bila uji balik (riwayat_sel_uji.json `lama_unggul`)
+      membuktikan ramalan lokasi lebih tepat dari median nasional, selain itu null
   akhir  median akhir musim, tanggal di tahun berjalan; k = episode per tahun terbakar (kekambuhan); lg = a >= sepertiga n; x = median jangkauan km
 
 Pakai:  python3 scripts/data/watak_kluster.py        # tulis ulang kluster.json + tugas_kompleks.json
@@ -25,11 +30,17 @@ def kunci(lat, lon):
     return f"{int(ix * SEL)}_{int(iy * SEL)}", f"{ix}_{iy}"
 
 
-def watak(rec, th0, sd, n7, hari, thm0=None):
-    """rec = rekaman riwayat_sel; sd = tanggal arsip (ISO); n7 = deteksi 7 hari cluster; hari = umur api."""
+def bulat(x):
+    """pembulatan setengah ke atas, sama dengan Math.round di layar (round() Python = ke genap)"""
+    return math.floor(x + .5)
+
+
+def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True):
+    """rec = rekaman riwayat_sel; sd = tanggal arsip (ISO); n7 = titik S-NPP sedang/tinggi 7 hari di jendela; hari = umur api;
+    lama_unggul = hasil uji balik (main membacanya dari riwayat_sel_uji.json)."""
     th1 = int(sd[:4])
     penuh = [(th0 + i, v) for i, v in enumerate(rec["y"]) if th0 + i < th1]
-    rt = round(st.mean(v for _, v in penuh)) if penuh else 0   # VIIRS: sebanding dengan deteksi VIIRS 7 hari cluster
+    rt = bulat(st.mean(v for _, v in penuh)) if penuh else 0   # S-NPP sedang/tinggi: sebanding dengan n7
     if rec.get("ym") and thm0:   # kekerapan dari seri panjang MODIS (2003-...), ambang 3 titik/tahun = riwayat_grid
         penuh = [(thm0 + i, v) for i, v in enumerate(rec["ym"]) if thm0 + i < th1]
         a = sum(1 for _, v in penuh if v >= AKTIF_MODIS)
@@ -37,9 +48,9 @@ def watak(rec, th0, sd, n7, hari, thm0=None):
         a = sum(1 for _, v in penuh if v >= TAHUN_AKTIF)
     r, h = rec.get("r") or [], max(1, hari or 1)
     lanjut = [v for v in r if v >= h]
-    w = {"a": a, "n": len(penuh), "rt": rt, "rs": round(n7 / rt, 1) if rt >= 1 and n7 else None,
-         "md": round(st.median(r)) if len(r) >= 3 else None,
-         "sisa": max(0, round(st.median(lanjut) - h)) if len(lanjut) >= 3 else None,
+    w = {"a": a, "n": len(penuh), "rt": rt, "n7": n7, "rs": bulat(n7 / rt * 10) / 10 if rt >= 1 and n7 else None,
+         "md": bulat(st.median(r)) if len(r) >= 3 else None,
+         "sisa": max(0, bulat(st.median(lanjut) - h)) if lama_unggul and len(lanjut) >= 3 else None,
          "akhir": (dt.date(th1, 1, 1) + dt.timedelta(days=rec["s"][1] - 1)).isoformat() if rec.get("s") else None,
          "k": rec.get("k"), "lg": a >= math.ceil(len(penuh) / 3) if penuh else False,
          "x": rec["x"][0] if rec.get("x") else None}
@@ -49,6 +60,17 @@ def watak(rec, th0, sd, n7, hari, thm0=None):
 def main():
     kl = json.load(open(os.path.join(DATA, "kluster.json")))
     ubin, tw = {}, {}
+    try:
+        unggul = bool(json.load(open(os.path.join(DATA, "riwayat_sel_uji.json"))).get("lama_unggul"))
+    except FileNotFoundError:
+        unggul = False
+    hs = json.load(open(os.path.join(DATA, "hotspot.json")))
+    K = {k: i for i, k in enumerate(hs["kolom"])}
+    snpp = {}   # (ix, iy) -> titik S-NPP keyakinan sedang/tinggi 7 hari terakhir
+    for b in hs["baris"]:
+        if b[K["sensor"]] == "N" and b[K["keyakinan"]] >= 1 and b[K["jam"]] >= -168:
+            c = (int((b[K["lon"]] - X0) / SEL), int((Y1 - b[K["lat"]]) / SEL))
+            snpp[c] = snpp.get(c, 0) + 1
     for f in kl["features"]:
         p = f["properties"]
         u, s = kunci(p["lat"], p["lon"])
@@ -61,7 +83,9 @@ def main():
         rec = d and d["c"].get(s)
         p.pop("wt", None)
         if rec:
-            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], p.get("n") or 0, p.get("hari"), d.get("thm0"))
+            ix, iy = map(int, s.split("_"))
+            n7 = sum(snpp.get((ix + a, iy + b), 0) for a in (-1, 0, 1) for b in (-1, 0, 1))
+            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], n7, p.get("hari"), d.get("thm0"), unggul)
     json.dump(kl, open(os.path.join(DATA, "kluster.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     jalur = os.path.join(DATA, "kluster_awal.json")   # muatan pertama halaman (harian.pecah_kluster): properti sama, tanpa api24
     if os.path.exists(jalur):
@@ -95,6 +119,9 @@ def uji():
     rec["ym"] = [5] * 12 + [0] * 11 + [40]   # 2003..2026: 12 tahun terbakar dari 23
     w = watak(rec, 2012, "2026-10-12", 3000, 8, 2003)
     assert (w["a"], w["n"], w["rt"], w["lg"]) == (12, 23, 34, True), w
+    # uji balik tidak unggul: sisa tidak boleh ditulis; pembulatan .5 ke atas seperti layar
+    assert watak(rec, 2012, "2026-10-12", 3000, 8, lama_unggul=False)["sisa"] is None
+    assert watak({"y": [1, 0] * 7 + [0], "r": []}, 2012, "2026-10-12", 10, 1)["rt"] == 1, "rata 0,5 harus jadi 1 (JS Math.round)"
     print("ok")
 
 

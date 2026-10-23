@@ -49,11 +49,14 @@ def km(a1, o1, a2, o2):
     return 12742 * math.asin(math.sqrt(h))
 
 
+CELAH = set()   # hari arsip S-NPP tanpa satu pun deteksi nasional (lubang data, mis. 2022-07-27 15 hari): tidak memutus episode. Diisi baca().
+
+
 def episode(hari):
-    """hari = {ordinal: [n, slat, slon]} -> daftar episode, tiap episode = daftar ordinal urut (jeda <= JEDA hari)."""
+    """hari = {ordinal: [n, slat, slon]} -> daftar episode, tiap episode = daftar ordinal urut (jeda <= JEDA hari; hari CELAH tidak dihitung jeda)."""
     ep, cur = [], []
     for d in sorted(hari):
-        if cur and d - cur[-1] > JEDA + 1:
+        if cur and d - cur[-1] - 1 - sum(1 for x in range(cur[-1] + 1, d) if x in CELAH) > JEDA:
             ep.append(cur)
             cur = []
         cur.append(d)
@@ -63,19 +66,21 @@ def episode(hari):
 def watak(hari, frp, malam, akhir):
     """Rangkuman satu jendela. hari = {ordinal: [n, slat, slon]}; akhir = tanggal arsip terakhir."""
     th1, doy_akhir = akhir.year, akhir.timetuple().tm_yday
+    berjalan = akhir.toordinal() - (JEDA + 1)   # episode yang berakhir sesudah ini mungkin masih menyala: bukan "riwayat" (api hari ini sendiri)
     y, yd, m = [0] * (th1 - TH0 + 1), [0] * (th1 - TH0 + 1), [0] * 12
     per_th = {}
     for d, (n, _, _) in hari.items():
         t = dt.date.fromordinal(d)
         y[t.year - TH0] += n
-        m[t.month - 1] += n
+        if t.year < th1:   # bulan dari tahun penuh saja; tahun berjalan berisi api hari ini sendiri
+            m[t.month - 1] += n
         if t.timetuple().tm_yday <= doy_akhir:
             yd[t.year - TH0] += n
         per_th.setdefault(t.year, []).append(d)
     pusat = lambda d: (hari[d][1] / hari[d][0], hari[d][2] / hari[d][0])
     lama, jauh, langkah, ep_th = [], [], [], {}
     for e in episode(hari):
-        if sum(hari[d][0] for d in e) < MIN_TITIK:
+        if sum(hari[d][0] for d in e) < MIN_TITIK or e[-1] >= berjalan:
             continue
         lama.append(e[-1] - e[0] + 1)
         ep_th[dt.date.fromordinal(e[0]).year] = ep_th.get(dt.date.fromordinal(e[0]).year, 0) + 1
@@ -109,7 +114,7 @@ def watak(hari, frp, malam, akhir):
 
 def baca(berkas):
     """-> ({(ix,iy): {ordinal: [n, slat, slon]}}, {(ix,iy): [frp]}, {(ix,iy): n_malam}, tanggal terakhir)"""
-    hari, frp, malam, akhir = {}, {}, {}, dt.date(TH0, 1, 1)
+    hari, frp, malam, akhir, ada = {}, {}, {}, dt.date(TH0, 1, 1), set()
     for b in berkas:
         nonveg = bukan_vegetasi(b)
         for r in csv.DictReader(open(b)):
@@ -123,12 +128,15 @@ def baca(berkas):
             if w.year < TH0:
                 continue
             c, d = sel(lon, lat), w.date().toordinal()
+            ada.add(d)
             akhir = max(akhir, w.date())
             h = hari.setdefault(c, {}).setdefault(d, [0, 0.0, 0.0])
             h[0] += 1; h[1] += lat; h[2] += lon
             frp.setdefault(c, []).append(float(r["frp"] or 0))
             if r["daynight"] == "N":
                 malam[c] = malam.get(c, 0) + 1
+    CELAH.clear()
+    CELAH.update(d for d in range(min(ada), max(ada)) if d not in ada)
     return hari, frp, malam, akhir
 
 
@@ -242,10 +250,13 @@ def nilai_balik(gab, T, pilih=None):
 
 
 def ujibalik():
-    """-> public/data/riwayat_sel_uji.json. Jendela 3x3 TIDAK tumpang tindih (pusat ix, iy = 1 mod 3) supaya satu kebakaran tidak dihitung berkali-kali."""
+    """-> public/data/riwayat_sel_uji.json. Jendela 3x3 TIDAK tumpang tindih (pusat ix, iy = 1 mod 3) supaya satu kebakaran tidak dihitung berkali-kali.
+    Pembanding lama: (a) 2 x umur, (b) median NASIONAL episode tahun sebelumnya yang >= umur (data latih sama). Selang 95% = bootstrap blok per jendela
+    (1.000 ulangan) atas selisih galat berpasangan; `lama_unggul` = ramalan lokasi lebih tepat dari median nasional di SEMUA umur (batas atas selang < 0)."""
+    import random
     raw = os.path.join(AKAR, "data/raw/firms")
     hari, _, _, _ = baca([os.path.join(raw, "viirs_2012_2014.csv"), os.path.join(raw, "viirs.csv")])
-    lama, musim = {h: [] for h in UJI_UMUR}, []
+    kasus, musim, latih_nas = [], [], {}   # kasus: (jendela, T, h, ramalan_lokasi, sebenarnya, 2h)
     an_lama, an_musim = {h: [] for h in UJI_UMUR}, []   # (ramalan_umum, ramalan_analog, sebenarnya) pada kasus yang SAMA
     for (ix, iy) in hari:
         if ix % 3 != 1 or iy % 3 != 1:
@@ -255,11 +266,13 @@ def ujibalik():
             for d, (n, sa, so) in hari.get(c, {}).items():
                 g = gab.setdefault(d, [0, 0.0, 0.0]); g[0] += n; g[1] += sa; g[2] += so
         for T in UJI_TAHUN:
+            awal = dt.date(T, 1, 1).toordinal()
+            latih = {d: v for d, v in gab.items() if d < awal}
+            latih_nas.setdefault(T, []).extend(e[-1] - e[0] + 1 for e in episode(latih) if sum(latih[d][0] for d in e) >= MIN_TITIK)
             l, m = nilai_balik(gab, T)
-            for h, p, L, b, _ in l:
-                lama[h].append((p, L, b))
+            kasus += [((ix, iy), T, h, p, L, b) for h, p, L, b, _ in l]
             if m:
-                musim.append(m)
+                musim.append(((ix, iy), m))
             pilih = {t for t in EL_NINO_V if t < T}
             if T in EL_NINO_V and pilih:
                 la, ma = nilai_balik(gab, T, pilih)
@@ -269,23 +282,48 @@ def ujibalik():
                         an_lama[h].append((umum[(h, e0)], p, L))
                 if m and ma:
                     an_musim.append((m[0], ma[0], m[1]))
-    ukur = lambda xs, tol: {"n": len(xs), "mae": round(st.mean(abs(p - a) for p, a in xs), 1),
-                            "tepat": round(100 * sum(abs(p - a) <= tol for p, a in xs) / len(xs)), "toleransi": tol}
+    nas = {(T, h): st.median([v for v in latih_nas[T] if v >= h]) for T in UJI_TAHUN for h in UJI_UMUR}
+    rng = random.Random(7)
+
+    def selang(baris, galat):
+        """bootstrap blok per jendela: baris = [(jendela, ...)], galat(baris) -> selisih galat rata-rata."""
+        per = {}
+        for b in baris:
+            per.setdefault(b[0], []).append(b)
+        kunci_ = list(per)
+        hasil = sorted(galat([b for _ in kunci_ for b in per[rng.choice(kunci_)]]) for _ in range(1000))
+        return [round(hasil[25], 2), round(hasil[974], 2)]
+
     out = {"dibuat": dt.date.today().isoformat(), "tahun_uji": list(UJI_TAHUN),
-           "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu "
-                       "yang >= h hari; pembanding = 2 x umur. Akhir musim: median hari deteksi terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi.",
+           "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu di "
+                       "jendela itu yang >= h hari; pembanding = 2 x umur dan median NASIONAL episode lalu yang >= h hari. Akhir musim: median hari deteksi "
+                       "terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi. Selang 95% = bootstrap blok per jendela ~16 km.",
            "lama": {}, "musim": None}
-    for h, xs in lama.items():
-        if xs:
-            out["lama"][str(h)] = {**ukur([(p, a) for p, a, _ in xs], 3), "mae_pembanding": round(st.mean(abs(b - a) for _, a, b in xs), 1)}
+    unggul = []
+    for h in UJI_UMUR:
+        xs = [k for k in kasus if k[2] == h]
+        if not xs:
+            continue
+        mae = lambda bs, f: st.mean(abs(f(b) - b[4]) for b in bs)
+        lok, n2, nn = (lambda b: b[3]), (lambda b: b[5]), (lambda b: nas[(b[1], h)])
+        ci = selang(xs, lambda bs: mae(bs, lok) - mae(bs, nn))
+        out["lama"][str(h)] = {"n": len(xs), "n_jendela": len({k[0] for k in xs}), "mae": round(mae(xs, lok), 1),
+                               "tepat": round(100 * sum(abs(k[3] - k[4]) <= 3 for k in xs) / len(xs)), "toleransi": 3,
+                               "mae_pembanding": round(mae(xs, n2), 1), "mae_nasional": round(mae(xs, nn), 1), "selisih_nasional_ci95": ci}
+        unggul.append(ci[1] < 0)
+    out["lama_unggul"] = bool(unggul) and all(unggul)
     if musim:
-        dasar = st.median(p for p, _ in musim)
-        out["musim"] = {**ukur(musim, 14), "mae_pembanding": round(st.mean(abs(dasar - a) for _, a in musim), 1)}
+        dasar = st.median(m[0] for _, m in musim)
+        mae_m = lambda bs: st.mean(abs(m[0] - m[1]) for _, m in bs)
+        out["musim"] = {"n": len(musim), "n_jendela": len({w for w, _ in musim}), "mae": round(mae_m(musim), 1),
+                        "tepat": round(100 * sum(abs(m[0] - m[1]) <= 14 for _, m in musim) / len(musim)), "toleransi": 14,
+                        "mae_pembanding": round(st.mean(abs(dasar - m[1]) for _, m in musim), 1),
+                        "selisih_pembanding_ci95": selang(musim, lambda bs: mae_m(bs) - st.mean(abs(dasar - m[1]) for _, m in bs))}
     banding = lambda xs, tol: {"n": len(xs), "mae_umum": round(st.mean(abs(u - a) for u, _, a in xs), 1), "mae_analog": round(st.mean(abs(g - a) for _, g, a in xs), 1),
                                "tepat_umum": round(100 * sum(abs(u - a) <= tol for u, _, a in xs) / len(xs)),
                                "tepat_analog": round(100 * sum(abs(g - a) <= tol for _, g, a in xs) / len(xs)), "toleransi": tol}
     out["el_nino"] = {"definisi": f"Musim El Nino {', '.join(map(str, [t for t in UJI_TAHUN if t in EL_NINO_V]))} diramal dua cara pada kasus yang SAMA: "
-                                  "umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya, " + ", ".join(map(str, EL_NINO_V)) + ").",
+                                  "umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya). Uji ini memakai 1-2 tahun analog; produksi memakai 3.",
                       "lama": {str(h): banding(xs, 3) for h, xs in an_lama.items() if xs}, "musim": banding(an_musim, 14) if an_musim else None}
     json.dump(out, open(os.path.join(AKAR, "public/data/riwayat_sel_uji.json"), "w"), ensure_ascii=False, indent=1)
     print(json.dumps(out, ensure_ascii=False), file=sys.stderr)
@@ -320,6 +358,19 @@ def uji():
     # tahun berjalan tidak ikut median musim; yd memotong di hari-dalam-tahun tanggal arsip
     r = watak({dt.date(2026, 9, 1).toordinal(): [12, -24.0, 1356.0], dt.date(2025, 11, 1).toordinal(): [12, -24.0, 1356.0]}, [1.0], 0, dt.date(2026, 10, 1))
     assert r["s"] == [305, 305] and r["yd"][-1] == 12 and r["yd"][-2] == 0
+    # episode yang masih menyala di tanggal arsip bukan riwayat; hari celah data tidak memutus episode
+    akhir = dt.date(2026, 10, 12)
+    h = {dt.date(2025, 8, 1).toordinal() + i: [3, -6.0, 339.0] for i in range(4)}
+    h.update({akhir.toordinal() - i: [3, -6.0, 339.0] for i in range(10)})
+    r = watak(h, [1.0], 0, akhir)
+    assert r["r"] == [4], r["r"]
+    assert sum(r["m"]) == 12, "bulan dari tahun berjalan tidak boleh ikut"
+    o = dt.date(2022, 7, 20).toordinal()
+    g2 = {o: [5, -2.0, 113.0], o + 9: [5, -2.0, 113.0]}
+    CELAH.update(range(o + 1, o + 8))
+    assert episode(g2) == [[o, o + 9]], episode(g2)
+    CELAH.clear()
+    assert episode(g2) == [[o], [o + 9]]
     print("ok")
 
 

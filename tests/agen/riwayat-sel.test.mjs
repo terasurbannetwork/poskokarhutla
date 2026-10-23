@@ -62,15 +62,23 @@ test("analog El Niño hanya dipakai saat tahun berjalan El Niño dan episode El 
   const ditolak = R.analisa({...rec, en}, meta, {hari: 3}, "El Niño", {analog: false});
   assert.equal(ditolak.analog, false);
   assert.equal(ditolak.lama.median, 10);
-  assert.ok(ditolak.fakta.some(f => /memakai semua tahun: diuji pada musim El Niño/.test(f)), ditolak.fakta.join(" | "));
+  assert.ok(ditolak.fakta.some(f => /memakai semua tahun: memakai musim El Niño saja tidak terbukti lebih tepat/.test(f)), ditolak.fakta.join(" | "));
 });
 
 test("faktor pendorong: kelas dicocokkan ke tabel, variabel tanpa data DITOLAK", () => {
   const pd = {kelas: {fwi: {nama: "FWI", tabel: [{kelas: "rendah", rasio: 1}, {kelas: "sedang", rasio: 1.2}, {kelas: "tinggi", rasio: 1.5}, {kelas: "sangat tinggi", rasio: 1.7}]},
     gambut: {nama: "di gambut", tabel: [{kelas: "mineral", rasio: 1}, {kelas: "gambut", rasio: 3.6}]},
     dc: {nama: "DC", tabel: [{kelas: "< 100", rasio: 1}, {kelas: "100-200", rasio: 2.5}, {kelas: "200-300", rasio: 2.7}]}}};
+  // audit validasi-model: DC 712 di luar rentang latih (kelas teratas 200-300) DITOLAK; FWI berbalik arah sesudah dikoreksi (OR 0,65) DITOLAK
+  pd.logistik = {fitur: [{fitur: "gambut", or_per_sd: 1.445, ci: [1.327, 1.572]}, {fitur: "fwi", or_per_sd: 0.654, ci: [0.569, 0.751]}, {fitur: "dc", or_per_sd: 1.117, ci: [1.01, 1.37]}]};
   const f = R.faktor(pd, {fwi: 28, gambut: true, dc: 712, rh: null}, {sen: "VIIRS"}, null);
-  assert.deepEqual(f.map(x => [x.nama, x.kelas, x.rasio]), [["di gambut", "gambut", 3.6], ["DC", "200-300", 2.7], ["FWI", "sangat tinggi", 1.7]]);
+  assert.deepEqual(f.map(x => [x.nama, x.kelas, x.rasio]), [["di gambut", "gambut", 3.6]]);
+  assert.deepEqual(R.faktor(pd, {dc: 250}, {}, null).map(x => x.kelas), ["200-300"], "DC di dalam rentang latih dan arahnya tetap: boleh");
+  // angka tampil gambut = rasio terkoreksi per kelas biner (1,445^(1/0,5) = 2,1), bukan rasio mentah 3,6; di luar 9 provinsi latih DITOLAK
+  pd.logistik.fitur[0].sd = 0.5;
+  const g = R.faktor(pd, {gambut: true, prov: "62"}, {}, null)[0];
+  assert.deepEqual([g.rasio, g.mentah, g.terkoreksi], [2.1, 3.6, true]);
+  assert.deepEqual(R.faktor(pd, {gambut: true, prov: "35"}, {}, null), [], "Jawa Timur di luar provinsi latih tabel");
   assert.deepEqual(R.faktor(null, {fwi: 28}, {}, null), []);
   assert.deepEqual(R.faktor(pd, {fwi: NaN, gambut: null}, {sen: "VIIRS"}, null), [], "angka rusak atau kosong tidak boleh jadi faktor");
 });
@@ -79,10 +87,12 @@ test("seri panjang MODIS dipakai untuk kekerapan dan El Niño, VIIRS tetap untuk
   const m = {...meta, thm0: 2003, aktif_modis: 3};
   // MODIS 2003..2026: terbakar (>= 3) hanya di tahun El Niño 2004/2006/2009/2015/2019/2023
   const ym = Array.from({length: 24}, (_, i) => [2004, 2006, 2009, 2015, 2019, 2023].includes(2003 + i) ? 30 : 1);
-  const a = R.analisa({...rec, ym}, m, {hari: 3, n: 500}, null);
+  const a = R.analisa({...rec, ym}, m, {hari: 3, n: 1300, wt: {n7: 500}}, null);
   assert.match(a.fakta[0], /Terbakar 6 dari 23 tahun \(2003–2025, MODIS\)/);
   assert.equal(a.sen, "MODIS");
   assert.equal(a.th[0], 2003);
   assert.ok(a.fakta.some(f => /El Niño \(2004, 2006, 2009, 2015, 2019, 2023\).*30 kali tahun biasa/.test(f)), a.fakta.join(" | "));
-  assert.ok(a.fakta.some(f => /Seminggu ini 500 deteksi.*VIIRS 2012–2025/.test(f)), "rasio minggu ini harus tetap VIIRS");
+  assert.ok(a.fakta.some(f => /Seminggu ini 500 titik S-NPP.*2012–2025/.test(f)), "rasio minggu ini harus dari titik S-NPP jendela yang sama (n7), bukan p.n 4 sensor");
+  const tanpaN7 = R.analisa({...rec, ym}, m, {hari: 3, n: 1300}, null);
+  assert.equal(tanpaN7.rs, null, "tanpa n7 S-NPP, rasio DITOLAK (p.n 4 sensor tidak sebanding dengan rata-rata S-NPP)");
 });
