@@ -1,0 +1,15 @@
+/* Buku kontak (/admin/kontak): tambahan di atas akun.css (ak-*). */
+#app{display:grid;gap:14px}
+.kt-ringkas{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kt-angka{background:var(--card);border-radius:14px;box-shadow:var(--bayang);padding:12px 14px;display:grid;gap:2px}
+.kt-angka b{font-size:22px;font-variant-numeric:tabular-nums}.kt-angka small{color:var(--ink2);font-size:12px;font-weight:600}
+.kt-filter{display:grid;gap:8px;grid-template-columns:2fr repeat(3,1fr)}
+.kt-filter input,.kt-filter select,.ak-form select,.ak-form textarea{min-height:42px;border:0;border-radius:10px;background:var(--soft);padding:0 12px;font:inherit;font-size:14px;color:var(--ink);min-width:0}
+.ak-form textarea{padding:10px 12px;resize:vertical}
+.kt-cek{display:flex;gap:8px 18px;flex-wrap:wrap}
+.kt-aksi{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.kt-kontak{display:grid;gap:2px}.kt-tabel a[href^="https://wa.me"]{white-space:nowrap}.kt-tabel a{color:var(--c5);font-weight:600;overflow-wrap:anywhere}
+.kt-tabel td span+span{margin-left:4px}
+.kt-sembunyi{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.kt-pesan{white-space:pre-wrap;background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0 0;font:600 12.5px ui-monospace,Menlo,monospace;color:var(--c1)}.kt-pesan.ok{color:var(--c4)}
+@media (max-width:720px){.kt-filter{grid-template-columns:1fr 1fr}.kt-filter input{grid-column:1/-1}}

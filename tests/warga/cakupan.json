@@ -1,6 +1,17 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "table kontak_pemangku": "migrasi 0053: CHECK menolak baris tanpa WA dan email",
+    "GET /api/kontak/admin": "rute admin kontak: tanpa admin 403",
+    "POST /api/kontak/admin": "admin tambah, ubah, hapus",
+    "POST /api/kontak/admin/:id": "admin tambah, ubah, hapus",
+    "POST /api/kontak/admin/hapus/:id": "admin tambah, ubah, hapus",
+    "POST /api/kontak/admin/impor": "impor CSV: satu baris salah",
+    "POST /api/kontak/admin/setujui/:id": "admin menyetujui registrasi",
+    "POST /api/kontak/daftar": "registrasi publik: tanpa persetujuan PDP DITOLAK",
+    "GET /api/kontak/konfig": "registrasi publik: tanpa persetujuan PDP DITOLAK",
+    "GET /daftar-kontak": "registrasi publik: tanpa persetujuan PDP DITOLAK",
+    "GET /admin/kontak": "rute admin kontak: tanpa admin 403",
     "table hukum_dok": "migrasi 0052 idempoten",
     "table hukum_segmen": "CHECK: jenis segmen dan jenis relasi",
     "table hukum_relasi": "CHECK: jenis segmen dan jenis relasi",
