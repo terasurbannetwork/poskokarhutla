@@ -28,17 +28,27 @@ KAB = {'Bangka Tengah': '19|Bangka Tengah', 'Sumedang': '32|Sumedang', 'Karangan
        'Probolinggo': '35|Probolinggo', 'Magetan': '35|Magetan', 'Jombang': '35|Jombang', 'Tojo Una-Una': '72|Tojo Una Una', 'Sidenreng Rappang': '73|Sidenreng Rappang',
        'Luwu': '73|Luwu', 'Sinjai': '73|Sinjai', 'Minahasa': '71|Minahasa', 'Kota Tidore': '82|Kota Tidore Kepulauan', 'Raja Ampat': '96|Raja Ampat'}
 for kk in KAB.values(): assert kk in K['kab'] or kk in H['kab'], kk
-isi = json.load(open(ISIAN))['isi']; out = []
-for x in isi['kejadian']:
+isi = json.load(open(ISIAN))['isi']; kej = list(isi['kejadian'])
+# pedoman pemilik 23 Okt: tiap provinsi berstatus Prioritas di website (ada cluster level 3) wajib masuk laporan. Yang belum ada di isian
+# Koordalops ditambahkan sebagai baris provinsi, sesudah baris provinsi isian, urut sisa belum padam terbesar
+KL = json.load(open(W + 'kluster_awal.json')); PRIO = {f['properties']['prov'] for f in KL['features'] if f['properties']['level'] == 3}
+ada = {x['prov'] for x in kej if x['jenis'] == 'karhutla'}
+baru = [{'jenis': 'karhutla', 'prov': k, 'lokasi': '', 'status': 'berjalan', 'catatan': 'website: provinsi berstatus Prioritas'}
+        for k in sorted(PRIO - ada, key=lambda k: -(prov(k)['sisa']))]
+n = max(n for n, x in enumerate(kej) if x['jenis'] == 'karhutla' and not x['lokasi']) + 1; kej[n:n] = baru
+out = []
+for x in kej:
     y = dict(x)
     if x['jenis'] == 'karhutla': y['sat'] = kec(ARJ) if x['lokasi'] == 'Gunung Arjuno' else kab(KAB[x['lokasi']]) if x['lokasi'] else prov(x['prov'])
     sisa = round(y['sat']['sisa']) if 'sat' in y else None
     # sisa belum padam satelit 0 ha = selesai walau laporan lapangan belum menutupnya (pemilik 23 Okt: "udah nol ya masuk selesai dong")
-    y['tangani'] = x['status'] != 'selesai' and sisa != 0
+    # sisa < 10 ha tanpa laporan BPBD api belum padam juga selesai (pemilik 23 Okt soal Riau ±2 ha, Raja Ampat ±5 ha: "gausah deh kan dikit aja")
+    y['tangani'] = x['status'] != 'selesai' and sisa != 0 and not (sisa is not None and sisa < 10 and x['status'] != 'belum')
     # perlu perhatian = karhutla yang masih ditangani dengan sisa >= 100 ha atau dilapor BPBD api belum padam (pemilik 23 Okt)
     # ponytail: ambang 100 ha tetap; pindahkan ke isian bila pemilik minta ambang lain per laporan
     y['perhatian'] = y['tangani'] and sisa is not None and (sisa >= 100 or x['status'] == 'belum')
     out.append(y)
 json.dump({'hari': HARI, 'dibuat': P['dibuat'], 'kejadian': out, 'isi': {k: v for k, v in isi.items() if k != 'kejadian'}}, open('data.json', 'w'), ensure_ascii=False, indent=1)
+print('prioritas website', sorted(PRIO), 'ditambahkan', [x['prov'] for x in baru])
 for y in out:
     if 'sat' in y: print(y['prov'], y['lokasi'] or '(prov)', y['status'], 'ditangani' if y['tangani'] else 'selesai', 'PERHATIAN' if y['perhatian'] else '', y['sat'])

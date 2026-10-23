@@ -44,9 +44,11 @@ tangani = lambda x: x['tangani']; serius = lambda x: x['perhatian']   # aturanny
 KH_T = [x for x in KH if tangani(x)]; KH_S = [x for x in KH if serius(x)]; N_SEL = sum(1 for x in KJ if not tangani(x)); N_TOT = len(KJ); N_PROV = len({x['prov'] for x in KJ})
 NAMA = {'12': 'Sumatera Utara', '14': 'Riau', '15': 'Jambi', '16': 'Sumatera Selatan', '19': 'Kep. Bangka Belitung', '32': 'Jawa Barat', '33': 'Jawa Tengah', '35': 'Jawa Timur',
         '53': 'Nusa Tenggara Timur', '61': 'Kalimantan Barat', '62': 'Kalimantan Tengah', '71': 'Sulawesi Utara', '72': 'Sulawesi Tengah', '73': 'Sulawesi Selatan',
-        '82': 'Maluku Utara', '96': 'Papua Barat Daya'}
+        '82': 'Maluku Utara', '96': 'Papua Barat Daya', '52': 'Nusa Tenggara Barat', '63': 'Kalimantan Selatan',
+        '64': 'Kalimantan Timur', '93': 'Papua Selatan', '95': 'Papua Pegunungan'}
 PENDEK = {'12': 'Sum. Utara', '16': 'Sum. Selatan', '19': 'Kep. Babel', '53': 'NTT', '61': 'Kal. Barat', '62': 'Kal. Tengah', '71': 'Sul. Utara', '72': 'Sul. Tengah',
-          '73': 'Sul. Selatan', '82': 'Maluku Utara', '96': 'Papua Barat Daya'}
+          '73': 'Sul. Selatan', '82': 'Maluku Utara', '96': 'Papua Barat Daya', '52': 'NTB', '63': 'Kal. Selatan',
+          '64': 'Kal. Timur'}
 H = lambda t: (t, ORG, True); P = lambda t: (t, INK, True)
 
 def kartu(x, y, ikon, tint, nilai, lab, warna, w=2021373):
@@ -77,7 +79,7 @@ def s2():
     o += gambar(MX, MY, MW, MH, 'peta.png')
     per = {}
     for x in KJ: per.setdefault(x['prov'], []).append(x)
-    KIRI = {'15', '16', '61', '12', '32', '71'}; BAWAH = {'33'}   # label di kiri / di bawah lingkaran supaya tidak menabrak tetangga
+    KIRI = {'15', '16', '61', '12', '32', '71', '64', '93', '95'}; BAWAH = {'33'}   # label di kiri / di bawah lingkaran supaya tidak menabrak tetangga
     GESER = {'19': (40, 25), '32': (0, 10), '35': (40, 0), '96': (-30, 0), '73': (0, 30), '72': (-20, 0)}
     for p, xs in per.items():
         px, py = TT['pusat'][p]; dx, dy = GESER.get(p, (0, 0)); cx = MX + (px + dx) / TT['PW'] * MW; cy = MY + (py + dy) / TT['PH'] * MH
