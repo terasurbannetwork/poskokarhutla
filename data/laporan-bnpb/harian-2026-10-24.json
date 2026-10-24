@@ -1,0 +1,219 @@
+{
+ "jenis": "harian",
+ "tanggal": "2026-10-24",
+ "isi": {
+  "mulai": "2026-10-23",
+  "jam": "07.00",
+  "laporan_masuk": 23,
+  "penyaji": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)",
+  "jabatan": "Kepala Badan Nasional Penanggulangan Bencana",
+  "instansi": "Badan Nasional Penanggulangan Bencana",
+  "singkatan": "BNPB",
+  "perhatian_tambahan": [
+   {
+    "jenis": "gunungapi",
+    "judul": "Gunung api: Anak Krakatau, Merapi, Semeru",
+    "isi": "Level III (Siaga); 0 Awas, 24 Waspada, 42 Normal",
+    "status": "berjalan"
+   },
+   {
+    "jenis": "lainnya",
+    "judul": "Kualitas udara: PM2.5 Berbahaya",
+    "isi": "Pangkalan Bun 603, Kota Jambi 418,3, Palangka Raya 399,1, Muaro Jambi 337,8, Palembang 284,4 µg/m³ (BMKG 24 Okt 06.00 WIB)",
+    "status": "berjalan"
+   }
+  ],
+  "tindak": [],
+  "judul_ringkasan": "",
+  "judul_rincian": "",
+  "kejadian": [
+   {
+    "jenis": "karhutla",
+    "prov": "62",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "berjalan",
+    "perhatian": "BPBD: sisa belum padam 367,96 ha"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "63",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "61",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "64",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "15",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "14",
+    "lokasi": "",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "18",
+    "lokasi": "Lampung Timur",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "belum",
+    "perhatian": "TNWK: sisa belum padam 29,8 ha"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Karanganyar",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "belum",
+    "perhatian": "±875 ha; masih pemadaman"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Wonosobo",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Sukoharjo",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Gunung Arjuno",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "72",
+    "lokasi": "Sigi",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "belum",
+    "perhatian": "±60 ha; padam 7 dari 13 titik"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "76",
+    "lokasi": "Majene",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "73",
+    "lokasi": "Luwu Timur",
+    "utama": "",
+    "kedua": "",
+    "ket": "",
+    "catatan": "website: terbakar 1 Jan–23 Okt, titik dan sisa 23 Okt",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Pekalongan",
+    "utama": "± 11.202 KK",
+    "kedua": "36.144 jiwa",
+    "ket": "71.000 liter",
+    "catatan": "SD s.d. 31 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "gempabumi",
+    "prov": "53",
+    "lokasi": "",
+    "utama": "±27.563 jiwa mengungsi",
+    "kedua": "156 jiwa meninggal",
+    "ket": "193 huntara selesai",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "lainnya",
+    "prov": "35",
+    "lokasi": "TPA Supit Urang",
+    "utama": "± 15,5 ha",
+    "kedua": "kebakaran TPA",
+    "ket": "pendinginan lapisan bawah",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "Kebakaran TPA ±15,5 ha; pendinginan cegah api muncul lagi"
+   }
+  ]
+ }
+}
