@@ -109,16 +109,24 @@ def s2():
     for x0, f, w, ik, n, lab in ((8668512, T_NAVY, NAVY, 'cek_p', N_SEL, 'selesai'), (10110064, T_ORG, ORG, 'titik3_p', N_TOT - N_SEL, 'dalam penanganan')):
         o += kotak(x0, 2971800, 1368400, 512064, f, 'roundRect', adj=9000) + kotak(x0 + 109728, 3063240, 329184, 329184, w, 'ellipse') + gambar(x0 + 192024, 3145536, 164592, 164592, I[ik])
         o += tx(x0 + 512064, 2990088, 819760, 292608, [[(f0(n), w, True), (f'  / {f0(N_TOT)}', TEKS, False)]], sz=1700, an='ctr') + tx(x0 + 512064, 3273552, 840000, 164592, [lab], sz=680, b=True, c=w)
-    o += garis(8668512, 3557016, 2809951, 'E5E7EB') + tx(8668512, 3621024, 2864815, 182880, [f'KARHUTLA DALAM PENANGANAN ({len(KH_T)})'], sz=750, b=True, c=MERAH, spc=100)
-    daftar = sorted(KH_T, key=lambda x: -x['sat']['sisa']); rp = min(164592, (5300000 - 3840480) // max(1, len(daftar)))
+    o += garis(8668512, 3557016, 2809951, 'E5E7EB') + tx(8668512, 3621024, 2864815, 182880, [f'DALAM PENANGANAN ({N_TOT - N_SEL})'], sz=750, b=True, c=MERAH, spc=60)
+    # keterangan tanda !: jumlahnya = kartu PERLU PERHATIAN
+    bx = 11478463 - 1000000; o += kotak(bx, 3648456, 128016, 128016, MERAH, 'ellipse') + tx(bx, 3648456, 128016, 128016, ['!'], sz=550, b=True, c='FFFFFF', al='ctr', an='ctr')
+    o += tx(bx + 173736, 3621024, 1000000, 182880, [[('perlu perhatian ', TEKS, False), (f0(len(KH_S)), MERAH, True)]], sz=680, an='ctr', wrap='none')
+    LAIN_T = [x for x in KJ if x['jenis'] != 'karhutla' and tangani(x)]   # kekeringan, gempa, TPA yang masih ditangani ikut tercantum: jumlah baris = kotak dalam penanganan
+    daftar = sorted(KH_T, key=lambda x: -x['sat']['sisa']) + LAIN_T; rp = min(164592, (5300000 - 3840480) // max(1, len(daftar)))
     for n, x in enumerate(daftar):
         y = 3840480 + n * rp; s = int(rp * .8)
         if n: o += garis(8668512, y - (rp - s) // 2, 2809951, 'F1F2F4')
-        o += kotak(8668512, y, s, s, ORG, 'ellipse') + gambar(8668512 + s * .19, y + s * .19, s * .62, s * .62, I['api_p'])
+        kar = x['jenis'] == 'karhutla'
+        wj, ij = (ORG, 'api_p') if kar else (KER, 'daun_p') if x['jenis'] == 'kekeringan' else (JENIS_LAIN[x['jenis']][2], JENIS_LAIN[x['jenis']][1] + '_putih')
+        o += kotak(8668512, y, s, s, wj, 'ellipse') + gambar(8668512 + s * .19, y + s * .19, s * .62, s * .62, I[ij])
         if serius(x):   # tanda ! sama dengan peta, supaya 10 baris ini terbaca 8 perlu perhatian
             b = s * .55; o += kotak(8668512 + s * .7, y - s * .2, b, b, MERAH, 'ellipse', ln='FFFFFF', lw=6350) + tx(8668512 + s * .7, y - s * .2, b, b, ['!'], sz=500, b=True, c='FFFFFF', al='ctr', an='ctr')
         nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], TEKS, False)] if x['lokasi'] else [])
         o += tx(8869680, y - (164592 - s) // 2, 1758391, 164592, [nm], sz=680, an='ctr', wrap='none')
+        if not kar:
+            o += kotak(10545775, y, 932688, s, 'F3F5F8', 'roundRect', adj=50000) + tx(10545775, y, 932688, s, [x['utama'].replace('jiwa ', '').replace('± ', '±')], sz=620, b=True, c=INK, al='ctr', an='ctr', wrap='none'); continue
         sis = f"sisa ± {f0(x['sat']['sisa'])} ha" if x['sat']['sisa'] else 'sisa –'
         o += kotak(10545775, y, 932688, s, T_ORG, 'roundRect', adj=50000) + gambar(10609783, y + s * .16, s * .68, s * .68, I['api_o2']) + tx(10746943, y, 713232, s, [sis], sz=620, b=True, c=ORG, an='ctr', wrap='none')
     # yang akan dilakukan
@@ -241,8 +249,8 @@ DETAIL = {('53', ''): {'pil': [('Transisi s.d. 27 Des', T_ORG, ORG, 'kalender_or
           ('35', 'TPA Supit Urang'): {'pil': [('± 15,5 ha', 'F7F8FA', INK, None), ('pendinginan', T_ORG, ORG, 'api_oranye')]}}
 KK_KER = sum(int(x['utama'].replace('±', '').replace('KK', '').replace('.', '').strip()) for x in KR)
 TINDAK = [('heli_p', 'Pemadaman prioritas', [f"•  Kalteng: sisa ±{f0(next(x['sat']['sisa'] for x in KH if x['prov'] == '62' and not x['lokasi']))} ha, TN Tanjung Puting lewat udara", '•  Karanganyar dan Lampung Timur (TNWK) masih pemadaman']),
-          ('pendaki_p', 'Keselamatan warga', ['Masker dan layanan ISPA di kota dengan PM2.5 Berbahaya: Pangkalan Bun, Kota Jambi, Palangka Raya, Palembang (BMKG 24 Okt 06.00)']),
-          ('daun_p', 'Air bersih', [f'Melanjutkan distribusi air bersih untuk ±{f0(KK_KER)} KK terdampak kekeringan di Kab. Pekalongan (17 tangki, 71.000 liter)'])]
+          ('pendaki_p', 'Keselamatan warga', ['•  Masker dan layanan ISPA di 4 kota dengan PM2.5 Berbahaya', '•  Pangkalan Bun, Kota Jambi, Palangka Raya, Palembang']),
+          ('daun_p', 'Air bersih', [f'•  Distribusi air bersih untuk ±{f0(KK_KER)} KK di Kab. Pekalongan', '•  Sudah tersalur 17 tangki, 71.000 liter'])]
 N_LAIN = len(LN)
 J2 = [P('Laporan 23–24 Oktober 2026: '), H(f0(N_TOT)), P(' kejadian menonjol di '), H(f'{N_PROV} provinsi'), P(', terdiri atas '), H(f0(len(KH))), P(' karhutla, '),
       H(f0(len(KR))), P(' kekeringan, dan '), H(f0(N_LAIN)), P(' bencana lainnya; '), H(f0(len(KH_T))), P(' karhutla masih dalam proses penanganan')]
