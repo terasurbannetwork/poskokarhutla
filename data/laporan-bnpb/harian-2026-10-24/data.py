@@ -45,7 +45,8 @@ for x in kej:
     y['tangani'] = (x['status'] != 'selesai') if sisa is None else False if sisa == 0 else True if sisa >= 10 else x['status'] == 'belum'
     # perlu perhatian = karhutla yang masih ditangani dengan sisa >= 100 ha atau dilapor BPBD api belum padam (pemilik 23 Okt)
     # ponytail: ambang 100 ha tetap; pindahkan ke isian bila pemilik minta ambang lain per laporan
-    y['perhatian'] = y['tangani'] and sisa is not None and (sisa >= 100 or x['status'] == 'belum')
+    # karhutla: sisa >= 100 ha atau BPBD belum padam; jenis lain: BPBD melapor kejadian belum tertangani (pemilik 24 Okt: perlu perhatian semua jenis)
+    y['perhatian'] = y['tangani'] and ((sisa >= 100 or x['status'] == 'belum') if sisa is not None else x['status'] == 'belum')
     out.append(y)
 json.dump({'hari': HARI, 'dibuat': P['dibuat'], 'kejadian': out, 'isi': {k: v for k, v in isi.items() if k != 'kejadian'}}, open('data.json', 'w'), ensure_ascii=False, indent=1)
 print('prioritas website', sorted(PRIO), 'ditambahkan', [x['prov'] for x in baru])

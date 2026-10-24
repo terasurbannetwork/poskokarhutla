@@ -41,7 +41,8 @@ for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender
 D = json.load(open('data.json')); KJ = D['kejadian']; ISI = D['isi']; TT = json.load(open('titik.json'))
 KH = [x for x in KJ if x['jenis'] == 'karhutla']; KR = [x for x in KJ if x['jenis'] == 'kekeringan']; LN = [x for x in KJ if x['jenis'] not in ('karhutla', 'kekeringan')]
 tangani = lambda x: x['tangani']; serius = lambda x: x['perhatian']   # aturannya di data.py, dipakai juga peta.mjs
-KH_T = [x for x in KH if tangani(x)]; KH_S = [x for x in KH if serius(x)]; N_SEL = sum(1 for x in KJ if not tangani(x)); N_TOT = len(KJ); N_PROV = len({x['prov'] for x in KJ})
+KH_T = [x for x in KH if tangani(x)]; KH_S = [x for x in KJ if serius(x)];   # perlu perhatian semua jenis
+N_SEL = sum(1 for x in KJ if not tangani(x)); N_TOT = len(KJ); N_PROV = len({x['prov'] for x in KJ})
 NAMA = {'12': 'Sumatera Utara', '14': 'Riau', '15': 'Jambi', '16': 'Sumatera Selatan', '19': 'Kep. Bangka Belitung', '32': 'Jawa Barat', '33': 'Jawa Tengah', '35': 'Jawa Timur',
         '53': 'Nusa Tenggara Timur', '61': 'Kalimantan Barat', '62': 'Kalimantan Tengah', '71': 'Sulawesi Utara', '72': 'Sulawesi Tengah', '73': 'Sulawesi Selatan',
         '82': 'Maluku Utara', '96': 'Papua Barat Daya', '18': 'Lampung', '76': 'Sulawesi Barat', '74': 'Sulawesi Tenggara', '52': 'Nusa Tenggara Barat', '63': 'Kalimantan Selatan',
@@ -73,7 +74,7 @@ def s2():
          ('api_o', T_ORG, f0(len(KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(KR)), 'kekeringan', KER), ('awas_b', T_SLATE, f0(len(LN)), 'bencana lainnya', SLATE)]
     kw = (8359811 - 4 * 91440) // 5
     for i, t in enumerate(T): o += kartu(658368 + i * (kw + 91440), 1591056, *t, w=kw)
-    o += kartu(9511955, 1591056, 'api_m', T_MERAH, f0(len(KH_S)), 'karhutla perlu perhatian', MERAH)
+    o += kartu(9511955, 1591056, 'api_m', T_MERAH, f0(len(KH_S)), 'kejadian perlu perhatian', MERAH)
     # peta + lingkaran per provinsi (karhutla jingga bernomor, kekeringan coklat, lainnya biru-abu, ! perlu perhatian)
     MX, MY, MW, MH = 502920, 2331720, 7680960, 2880360
     o += gambar(MX, MY, MW, MH, 'peta.png')
@@ -104,13 +105,16 @@ def s2():
     # status penanganan
     o += kotak(8503920, 2331720, 3139135, 3017520, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + tx(8668512, 2441448, 2864815, 182880, ['STATUS PENANGANAN'], sz=750, b=True, c=NAVY, spc=100)
     # padat (pemilik 24 Okt): kotak selesai/dalam penanganan dilebur ke batang berlabel, ruangnya untuk daftar
-    BW = 2809951; ws = max(640080, round(BW * N_SEL / N_TOT)); YB, HB = 2697480, 256032
-    for x0, w0, c, n, lab in ((8668512, ws, NAVY, N_SEL, 'selesai'), (8668512 + ws, BW - ws, ORG, N_TOT - N_SEL, 'dalam penanganan')):
-        o += kotak(x0, YB, w0, HB, c) + tx(x0, YB, w0, HB, [[(f0(n), 'FFFFFF', True), (f' {lab}', 'FFFFFF', False)]], sz=800, al='ctr', an='ctr', wrap='none')
+    BW = 2809951; YB, HB = 2697480, 256032
+    SEG = [(N_SEL, NAVY, 'selesai'), (len(KH_T), ORG, 'karhutla ditangani'), (N_TOT - N_SEL - len(KH_T), SLATE, 'lainnya')]
+    lw = [max(731520, round(BW * n / N_TOT)) if n else 0 for n, _, _ in SEG]; lw[1] = BW - lw[0] - lw[2]; x0 = 8668512
+    for (n, c, lab), w0 in zip(SEG, lw):
+        if n: o += kotak(x0, YB, w0, HB, c) + tx(x0, YB, w0, HB, [[(f0(n), 'FFFFFF', True), (f' {lab}', 'FFFFFF', False)]], sz=800, al='ctr', an='ctr', wrap='none')
+        x0 += w0
     YH = YB + HB + 91440; YL = YH + 228600
-    o += tx(8668512, YH, 2864815, 182880, [f'KARHUTLA PERLU PERHATIAN ({len(KH_S)})'], sz=750, b=True, c=MERAH, spc=60)   # pemilik 24 Okt: daftar hanya yang perlu perhatian
+    o += tx(8668512, YH, 2864815, 182880, [f'PERLU PERHATIAN ({len(KH_S)})'], sz=750, b=True, c=MERAH, spc=60)   # pemilik 24 Okt: daftar hanya yang perlu perhatian
     LAIN_T = [x for x in KJ if x['jenis'] != 'karhutla' and tangani(x)]   # kekeringan, gempa, TPA yang masih ditangani ikut tercantum: jumlah baris = kotak dalam penanganan
-    daftar = sorted(KH_S, key=lambda x: -x['sat']['sisa']); rp = min(164592, (5280000 - YL) // max(1, len(daftar)))
+    daftar = sorted([x for x in KH_S if 'sat' in x], key=lambda x: -x['sat']['sisa']) + [x for x in KH_S if 'sat' not in x]; rp = min(164592, (5280000 - YL) // max(1, len(daftar)))
     for n, x in enumerate(daftar):
         y = YL + n * rp; s = int(rp * .8)
         if n: o += garis(8668512, y - (rp - s) // 2, 2809951, 'F1F2F4')
