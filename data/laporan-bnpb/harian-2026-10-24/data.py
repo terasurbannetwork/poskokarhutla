@@ -40,9 +40,9 @@ for x in kej:
     y = dict(x)
     if x['jenis'] == 'karhutla': y['sat'] = kec(ARJ) if x['lokasi'] == 'Gunung Arjuno' else kab(KAB[x['lokasi']]) if x['lokasi'] else prov(x['prov'])
     sisa = round(y['sat']['sisa']) if 'sat' in y else None
-    # sisa belum padam satelit 0 ha = selesai walau laporan lapangan belum menutupnya (pemilik 23 Okt: "udah nol ya masuk selesai dong")
-    # sisa < 10 ha tanpa laporan BPBD api belum padam juga selesai (pemilik 23 Okt soal Riau ±2 ha, Raja Ampat ±5 ha: "gausah deh kan dikit aja")
-    y['tangani'] = x['status'] != 'selesai' and sisa != 0 and not (sisa is not None and sisa < 10 and x['status'] != 'belum')
+    # status karhutla mengikuti sisa belum padam website (pemilik 24 Okt: "data sisa pakai punya kita"): 0 ha = selesai; >= 10 ha = dalam penanganan
+    # walau BPBD melapor padam; di bawah 10 ha = selesai kecuali BPBD melapor api belum padam
+    y['tangani'] = (x['status'] != 'selesai') if sisa is None else False if sisa == 0 else True if sisa >= 10 else x['status'] == 'belum'
     # perlu perhatian = karhutla yang masih ditangani dengan sisa >= 100 ha atau dilapor BPBD api belum padam (pemilik 23 Okt)
     # ponytail: ambang 100 ha tetap; pindahkan ke isian bila pemilik minta ambang lain per laporan
     y['perhatian'] = y['tangani'] and sisa is not None and (sisa >= 100 or x['status'] == 'belum')

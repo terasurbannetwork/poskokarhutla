@@ -103,20 +103,19 @@ def s2():
         o += tx(lx + s + 54864, 5184648, 1100000, 192024, [t], sz=750, an='ctr'); lx += s + 54864 + len(t) * 52000 + 228600
     # status penanganan
     o += kotak(8503920, 2331720, 3139135, 3017520, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + tx(8668512, 2441448, 2864815, 182880, ['STATUS PENANGANAN'], sz=750, b=True, c=NAVY, spc=100)
-    BW = 2809951; ws = round(BW * N_SEL / N_TOT); pct = round(N_SEL / N_TOT * 100)
-    o += kotak(8668512, 2697480, ws, 201168, NAVY) + tx(8668512, 2697480, ws, 201168, [f'{pct}%'], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr')
-    o += kotak(8668512 + ws, 2697480, BW - ws, 201168, ORG) + tx(8668512 + ws, 2697480, BW - ws, 201168, [f'{100 - pct}%'], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr')
-    for x0, f, w, ik, n, lab in ((8668512, T_NAVY, NAVY, 'cek_p', N_SEL, 'selesai'), (10110064, T_ORG, ORG, 'titik3_p', N_TOT - N_SEL, 'dalam penanganan')):
-        o += kotak(x0, 2971800, 1368400, 512064, f, 'roundRect', adj=9000) + kotak(x0 + 109728, 3063240, 329184, 329184, w, 'ellipse') + gambar(x0 + 192024, 3145536, 164592, 164592, I[ik])
-        o += tx(x0 + 512064, 2990088, 819760, 292608, [[(f0(n), w, True), (f'  / {f0(N_TOT)}', TEKS, False)]], sz=1700, an='ctr') + tx(x0 + 512064, 3273552, 840000, 164592, [lab], sz=680, b=True, c=w)
-    o += garis(8668512, 3557016, 2809951, 'E5E7EB') + tx(8668512, 3621024, 2864815, 182880, [f'DALAM PENANGANAN ({N_TOT - N_SEL})'], sz=750, b=True, c=MERAH, spc=60)
+    # padat (pemilik 24 Okt): kotak selesai/dalam penanganan dilebur ke batang berlabel, ruangnya untuk daftar
+    BW = 2809951; ws = max(640080, round(BW * N_SEL / N_TOT)); YB, HB = 2697480, 256032
+    for x0, w0, c, n, lab in ((8668512, ws, NAVY, N_SEL, 'selesai'), (8668512 + ws, BW - ws, ORG, N_TOT - N_SEL, 'dalam penanganan')):
+        o += kotak(x0, YB, w0, HB, c) + tx(x0, YB, w0, HB, [[(f0(n), 'FFFFFF', True), (f' {lab}', 'FFFFFF', False)]], sz=800, al='ctr', an='ctr', wrap='none')
+    YH = YB + HB + 91440; YL = YH + 228600
+    o += tx(8668512, YH, 2864815, 182880, [f'DALAM PENANGANAN ({N_TOT - N_SEL})'], sz=750, b=True, c=MERAH, spc=60)
     # keterangan tanda !: jumlahnya = kartu PERLU PERHATIAN
-    bx = 11478463 - 1000000; o += kotak(bx, 3648456, 128016, 128016, MERAH, 'ellipse') + tx(bx, 3648456, 128016, 128016, ['!'], sz=550, b=True, c='FFFFFF', al='ctr', an='ctr')
-    o += tx(bx + 173736, 3621024, 1000000, 182880, [[('perlu perhatian ', TEKS, False), (f0(len(KH_S)), MERAH, True)]], sz=680, an='ctr', wrap='none')
+    bx = 11478463 - 1000000; o += kotak(bx, YH + 27432, 128016, 128016, MERAH, 'ellipse') + tx(bx, YH + 27432, 128016, 128016, ['!'], sz=550, b=True, c='FFFFFF', al='ctr', an='ctr')
+    o += tx(bx + 173736, YH, 1000000, 182880, [[('perlu perhatian ', TEKS, False), (f0(len(KH_S)), MERAH, True)]], sz=680, an='ctr', wrap='none')
     LAIN_T = [x for x in KJ if x['jenis'] != 'karhutla' and tangani(x)]   # kekeringan, gempa, TPA yang masih ditangani ikut tercantum: jumlah baris = kotak dalam penanganan
-    daftar = sorted(KH_T, key=lambda x: -x['sat']['sisa']) + LAIN_T; rp = min(164592, (5300000 - 3840480) // max(1, len(daftar)))
+    daftar = sorted(KH_T, key=lambda x: -x['sat']['sisa']) + LAIN_T; rp = min(164592, (5280000 - YL) // max(1, len(daftar)))
     for n, x in enumerate(daftar):
-        y = 3840480 + n * rp; s = int(rp * .8)
+        y = YL + n * rp; s = int(rp * .8)
         if n: o += garis(8668512, y - (rp - s) // 2, 2809951, 'F1F2F4')
         kar = x['jenis'] == 'karhutla'
         wj, ij = (ORG, 'api_p') if kar else (KER, 'daun_p') if x['jenis'] == 'kekeringan' else (JENIS_LAIN[x['jenis']][2], JENIS_LAIN[x['jenis']][1] + '_putih')
@@ -177,11 +176,12 @@ def s3():
             o += kotak(5864742, yy, 1155436, ph, T_ORG, 'roundRect', adj=50000) + gambar(5937894, yy + (ph - ic) / 2, ic, ic, I['api_o2']) + tx(6111630, yy, 899404, ph, [sis], sz=sz_p, b=True, c=ORG, an='ctr', wrap='none')
     QX, QW = 7406640, 4236415; XL, XR = 7571232, 11478463
     # bencana lainnya (dibangun dulu untuk tahu tingginya): satu bagian per jenis, tiap bagian berpita ikon + jumlah, kejadian di bawahnya
-    lain, yy = '', 0
+    lain, yy, SEK = '', 0, []
     for jn, (nama, ikon, warna, tint) in JENIS_LAIN.items():
         xs = [x for x in LN if x['jenis'] == jn]
         if not xs: continue
         if yy: yy += 54864
+        SEK.append(yy)
         lain += f'@{yy}@' + kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + gambar(XL + 73152, 45720, 91440, 91440, I[f'{ikon}_putih'])
         p_, w_ = pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, sz=580, h=128016)
         lain += tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
@@ -204,7 +204,14 @@ def s3():
                     sx += sw + 45720
                 lain += '@@'; yy += 320040 + 18288
             yy += 9144
-    LH = 411480 + yy + 64008; LY = 6007608 - LH
+    LH = 411480 + yy + 64008
+    # pemilik 24 Okt: ruang kosong di dalam kontainer dipadatkan. Panel kekeringan setinggi isinya; sisa ruang dibagi rata sebagai jarak antarjenis
+    # di panel bencana lainnya
+    KB_isi = 2304288 + 320040 * (len(KR) + (len(KR) > 1)) + 137160
+    if KR and 6007608 - (KB_isi + 91440) >= LH:
+        LY = KB_isi + 91440; extra = 0   # panel lainnya langsung di bawah, setinggi isinya
+    else: LY = 6007608 - LH; extra = 0
+    tambah = lambda y0: extra * sum(1 for s0 in SEK[1:] if s0 <= y0) // len(SEK) + extra // (2 * len(SEK)) if SEK else 0
     # kekeringan: baris per kabupaten (lokasi, terdampak, bantuan air) di atas panel bencana lainnya
     KB = LY - 91440
     o += kotak(QX, 1325880, QW, KB - 1325880, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + kepala(QX, 1325880, QW, KER, T_KER, 'daun2_p', 'Kekeringan', len(KR))
@@ -233,11 +240,13 @@ def s3():
             o += kotak(10241280, y + (rp - 155448) / 2, 1237183, 155448, 'FFFFFF', 'roundRect', ln='E2D3B5', adj=50000) + gambar(10296144, y + (rp - 155448) / 2 + 27432, 100584, 100584, I['tetes_k'])
             o += tx(10424160, y + (rp - 155448) / 2, 1030000, 155448, [[(x['ket'], INK, True), (f", {TANGKI.get(x['lokasi'], '')}", TEKS, False)]], sz=700, an='ctr', wrap='none')
     o += kotak(QX, LY, QW, LH, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=4000) + kepala(QX, LY, QW, SLATE, T_SLATE, 'awas_p2', 'Bencana lainnya', len(LN), h=365760)
-    o += re.sub(r'@(\d+)@(.*?)@@', lambda m: geser(m.group(2), LY + 411480 + int(m.group(1))), lain, flags=re.S)
+    o += re.sub(r'@(\d+)@(.*?)@@', lambda m: geser(m.group(2), LY + 411480 + int(m.group(1)) + tambah(int(m.group(1)))), lain, flags=re.S)
     # keterangan
-    o += kotak(QX, 6080760, QW, 274320, 'F7F8FA', 'roundRect', adj=30000) + tx(7974025, 6080760, 868680, 274320, ['KETERANGAN'], sz=680, b=True, spc=100, an='ctr')
+    ket = ''
+    ket += kotak(QX, 6080760, QW, 274320, 'F7F8FA', 'roundRect', adj=30000) + tx(7974025, 6080760, 868680, 274320, ['KETERANGAN'], sz=680, b=True, spc=100, an='ctr')
     for x0, w, ik, t in ((9117025, NAVY, 'cek_p', 'selesai'), (10011308, ORG, 'titik3_p', 'dalam penanganan')):
-        o += kotak(x0, 6140196, 155448, 155448, w, 'ellipse') + gambar(x0 + 32004, 6172200, 91440, 91440, I[ik]) + tx(x0 + 210312, 6080760, 1064362, 274320, [t], sz=750, an='ctr')
+        ket += kotak(x0, 6140196, 155448, 155448, w, 'ellipse') + gambar(x0 + 32004, 6172200, 91440, 91440, I[ik]) + tx(x0 + 210312, 6080760, 1064362, 274320, [t], sz=750, an='ctr')
+    o += geser(ket, LY + LH + 73152 - 6080760)   # keterangan menempel di bawah panel lainnya
     return o
 def geser(xml, dy):   # baris bencana lainnya digambar relatif y=0, lalu digeser ke tempatnya
     return re.sub(r'<a:off x="(\d+)" y="(-?\d+)"/>', lambda m: f'<a:off x="{m.group(1)}" y="{int(m.group(2)) + dy}"/>', xml)
