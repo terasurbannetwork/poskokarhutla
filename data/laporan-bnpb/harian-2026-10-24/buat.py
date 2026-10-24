@@ -106,8 +106,8 @@ def s2():
     o += kotak(8503920, 2331720, 3139135, 3017520, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + tx(8668512, 2441448, 2864815, 182880, ['STATUS PENANGANAN'], sz=750, b=True, c=NAVY, spc=100)
     # padat (pemilik 24 Okt): kotak selesai/dalam penanganan dilebur ke batang berlabel, ruangnya untuk daftar
     BW = 2809951; YB, HB = 2697480, 256032
-    SEG = [(N_SEL, NAVY, 'selesai', 'cek_p'), (len(KH_T), ORG, 'karhutla ditangani', 'api_p'), (N_TOT - N_SEL - len(KH_T), SLATE, 'lainnya', 'awas_p2')]
-    lw = [max(731520, round(BW * n / N_TOT)) if n else 0 for n, _, _, _ in SEG]; lw[1] = BW - lw[0] - lw[2]; x0 = 8668512
+    SEG = [(N_SEL, NAVY, 'selesai', 'cek_p'), (N_TOT - N_SEL, ORG, 'belum selesai', 'titik3_p')]   # pemilik 24 Okt: selesai dan belum selesai saja
+    lw = [max(731520, round(BW * SEG[0][0] / N_TOT))]; lw.append(BW - lw[0]); x0 = 8668512
     for (n, c, lab, ik), w0 in zip(SEG, lw):
         lt = 52000 * (len(lab) + len(f0(n)) + 1); xi = x0 + max(64008, (w0 - lt - 164592) // 2)   # ikon + teks di tengah segmen
         if n: o += kotak(x0, YB, w0, HB, c) + gambar(xi, YB + (HB - 118872) / 2, 118872, 118872, I[ik]) + tx(xi + 164592, YB, lt + 40000, HB, [[(f0(n), 'FFFFFF', True), (f' {lab}', 'FFFFFF', False)]], sz=800, an='ctr', wrap='none')
