@@ -240,7 +240,7 @@ DETAIL = {('53', ''): {'pil': [('Transisi s.d. 27 Des', T_ORG, ORG, 'kalender_or
                        'stat': [('±27.563', 'jiwa mengungsi', 'tenda_slate', SLATE), ('156', 'jiwa meninggal', 'hati_merah', MERAH), ('118.834', 'rumah rusak', 'rumah_slate', SLATE)]},
           ('35', 'TPA Supit Urang'): {'pil': [('± 15,5 ha', 'F7F8FA', INK, None), ('pendinginan', T_ORG, ORG, 'api_oranye')]}}
 KK_KER = sum(int(x['utama'].replace('±', '').replace('KK', '').replace('.', '').strip()) for x in KR)
-TINDAK = [('heli_p', 'Pemadaman prioritas', ['•  Kalteng: sisa ±368 ha (BPBD), TN Tanjung Puting lewat udara', '•  Karanganyar, Lampung Timur (TNWK), dan Sigi masih pemadaman']),
+TINDAK = [('heli_p', 'Pemadaman prioritas', [f"•  Kalteng: sisa ±{f0(next(x['sat']['sisa'] for x in KH if x['prov'] == '62' and not x['lokasi']))} ha, TN Tanjung Puting lewat udara", '•  Karanganyar dan Lampung Timur (TNWK) masih pemadaman']),
           ('pendaki_p', 'Keselamatan warga', ['Masker dan layanan ISPA di kota dengan PM2.5 Berbahaya: Pangkalan Bun, Kota Jambi, Palangka Raya, Palembang (BMKG 24 Okt 06.00)']),
           ('daun_p', 'Air bersih', [f'Melanjutkan distribusi air bersih untuk ±{f0(KK_KER)} KK terdampak kekeringan di Kab. Pekalongan (17 tangki, 71.000 liter)'])]
 N_LAIN = len(LN)
