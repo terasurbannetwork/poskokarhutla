@@ -35,7 +35,7 @@ I = {'papan_p': M + 'image-2-2.png', 'awas_p': M + 'image-2-3.png', 'papan_n': M
      'api_o2': M + 'image-2-13.png', 'heli_p': M + 'image-2-30.png', 'pendaki_p': M + 'image-2-31.png', 'daun_p': M + 'image-2-32.png', 'api_n': M + 'image-3-4.png',
      'rumah_k': M + 'image-3-36.png', 'orang_k': M + 'image-3-37.png', 'tetes_k': M + 'image-3-38.png', 'daun2_p': M + 'image-3-34.png',
      'awas_p2': IK + 'awas-putih.png', 'awas_b': IK + 'awas-baja.png'}
-for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender', 'sampah'):
+for n in ('gempa', 'api', 'banjir', 'tenda', 'rumah', 'orang', 'hati', 'kalender', 'sampah', 'awas'):
     for w in ('putih', 'slate', 'merah', 'oranye', 'navy'): I[f'{n}_{w}'] = IK + f'{n}-{w}.png'
 
 D = json.load(open('data.json')); KJ = D['kejadian']; ISI = D['isi']; TT = json.load(open('titik.json'))
@@ -74,7 +74,7 @@ def s2():
          ('api_o', T_ORG, f0(len(KH)), 'karhutla', ORG), ('daun_k', T_KER, f0(len(KR)), 'kekeringan', KER), ('awas_b', T_SLATE, f0(len(LN)), 'bencana lainnya', SLATE)]
     kw = (8359811 - 4 * 91440) // 5
     for i, t in enumerate(T): o += kartu(658368 + i * (kw + 91440), 1591056, *t, w=kw)
-    o += kartu(9511955, 1591056, 'api_m', T_MERAH, f0(len(KH_S)), 'kejadian perlu perhatian', MERAH)
+    o += kartu(9511955, 1591056, 'awas_merah', T_MERAH, f0(len(KH_S)), 'kejadian perlu perhatian', MERAH)
     # peta + lingkaran per provinsi (karhutla jingga bernomor, kekeringan coklat, lainnya biru-abu, ! perlu perhatian)
     MX, MY, MW, MH = 502920, 2331720, 7680960, 2880360
     o += gambar(MX, MY, MW, MH, 'peta.png')
@@ -126,7 +126,8 @@ def s2():
         nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], TEKS, False)] if x['lokasi'] else [])
         o += tx(8869680, y - (164592 - s) // 2, 1758391, 164592, [nm], sz=680, an='ctr', wrap='none')
         if not kar:
-            o += kotak(10545775, y, 932688, s, 'F3F5F8', 'roundRect', adj=50000) + tx(10545775, y, 932688, s, [x['utama'].replace('jiwa ', '').replace('± ', '±')], sz=620, b=True, c=INK, al='ctr', an='ctr', wrap='none'); continue
+            ikp = {'kekeringan': 'daun_k', 'gempabumi': 'gempa_slate', 'banjir': 'banjir_slate'}.get(x['jenis'], 'sampah_slate')
+            o += kotak(10545775, y, 932688, s, 'F3F5F8', 'roundRect', adj=50000) + gambar(10609783, y + s * .16, s * .68, s * .68, I[ikp]) + tx(10746943, y, 713232, s, [x['utama'].replace('jiwa ', '').replace('± ', '±')], sz=620, b=True, c=INK, an='ctr', wrap='none'); continue
         sis = f"sisa ± {f0(x['sat']['sisa'])} ha" if x['sat']['sisa'] else 'sisa –'
         o += kotak(10545775, y, 932688, s, T_ORG, 'roundRect', adj=50000) + gambar(10609783, y + s * .16, s * .68, s * .68, I['api_o2']) + tx(10746943, y, 713232, s, [sis], sz=620, b=True, c=ORG, an='ctr', wrap='none')
     # yang akan dilakukan
@@ -162,8 +163,8 @@ def s3():
             tot = sum(x['sat']['kum'] for x in xs); ph = int(rp * .62)
             o += kotak(676656, y + rp * .06, 6464808, rp * .88, 'F7F8FA') + tx(749808, y, 1645920, rp, [NAMA[p]], sz=sz_n, b=True, an='ctr')
             wn = 1645920 if len(NAMA[p]) > 14 else 1040000
-            o += kotak(749808 + wn - 80000, y + (rp - ph) / 2, 638251, ph, T_ORG, 'roundRect', adj=50000) + tx(749808 + wn - 80000, y + (rp - ph) / 2, 638251, ph, [f'{len(xs)} kejadian'], sz=int(sz_p * .9), b=True, c=ORG, al='ctr', an='ctr')
-            o += kotak(3291840, y + (rp - ph) / 2, 1005840, ph, 'FFFFFF', 'roundRect', ln='F2C9A8', adj=50000) + tx(3291840, y + (rp - ph) / 2, 1005840, ph, [f'total ± {f0(tot)} ha'], sz=int(sz_p * .95), b=True, al='ctr', an='ctr')
+            o += kotak(749808 + wn - 80000, y + (rp - ph) / 2, 638251, ph, T_ORG, 'roundRect', adj=50000) + gambar(749808 + wn - 80000 + ph * .35, y + (rp - ph) / 2 + ph * .2, ph * .6, ph * .6, I['api_o2']) + tx(749808 + wn - 80000 + ph * .8, y + (rp - ph) / 2, 638251 - ph * .8, ph, [f'{len(xs)} kejadian'], sz=int(sz_p * .9), b=True, c=ORG, al='ctr', an='ctr')
+            o += kotak(3291840, y + (rp - ph) / 2, 1005840, ph, 'FFFFFF', 'roundRect', ln='F2C9A8', adj=50000) + gambar(3291840 + ph * .4, y + (rp - ph) / 2 + ph * .2, ph * .6, ph * .6, I['api_o2']) + tx(3291840 + ph * .8, y + (rp - ph) / 2, 1005840 - ph * .8, ph, [f'total ± {f0(tot)} ha'], sz=int(sz_p * .95), b=True, al='ctr', an='ctr')
             continue
         x = xs[0]; s = x['sat']; ind = 164592 if jenis == 'anak' else 0; d = int(min(201168, rp * .66))
         o += status_ikon(676656 + ind, y + (rp - d) / 2, d, tangani(x))
@@ -184,7 +185,7 @@ def s3():
         if yy: yy += 54864
         SEK.append(yy)
         lain += f'@{yy}@' + kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + gambar(XL + 73152, 45720, 91440, 91440, I[f'{ikon}_putih'])
-        p_, w_ = pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, sz=580, h=128016)
+        p_, w_ = pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, ikon={'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy'}[ikon], sz=580, h=128016)
         lain += tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
         yy += 182880 + 18288
         for x in xs:
@@ -220,7 +221,7 @@ def s3():
         xs = [x for x in KR if x['prov'] == p]
         angka = lambda t: int(re.sub(r'[^0-9]', '', t) or 0)
         tkk, tjw, tl = sum(angka(x['utama']) for x in xs), sum(angka(x['kedua']) for x in xs), sum(angka(x['ket']) for x in xs)
-        o += tx(XL, 1856232, 1828800, 201168, [NAMA[p]], sz=950, b=True, an='ctr') + kotak(8458200, 1883664, 640080, 146304, T_KER, 'roundRect', adj=50000) + tx(8458200, 1883664, 640080, 146304, [f'{len(xs)} kejadian'], sz=620, b=True, c='8A6A2E', al='ctr', an='ctr')
+        o += tx(XL, 1856232, 1828800, 201168, [NAMA[p]], sz=950, b=True, an='ctr') + kotak(8458200, 1883664, 640080, 146304, T_KER, 'roundRect', adj=50000) + gambar(8458200 + 51206, 1883664 + 29261, 87782, 87782, I['daun_k']) + tx(8458200 + 117043, 1883664, 640080 - 117043, 146304, [f'{len(xs)} kejadian'], sz=620, b=True, c='8A6A2E', al='ctr', an='ctr')
         pass   # total jadi baris pertama tabel (gaya 18-19), lihat di bawah
         for t, x0 in (('LOKASI', XL), ('TERDAMPAK', 8686800), ('BANTUAN AIR', 10241280)): o += tx(x0, 2121408, 1200000, 146304, [t], sz=620, b=True, c=ABU, spc=60)
         o += garis(XL, 2286000, XR - XL, INK)
@@ -256,7 +257,7 @@ TANGKI = {'Pekalongan': '17 tangki'}
 JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5')}
 DETAIL = {('53', ''): {'pil': [('Transisi s.d. 27 Des', T_ORG, ORG, 'kalender_oranye'), ('193 huntara', T_NAVY, NAVY, 'rumah_navy')],
                        'stat': [('±27.563', 'jiwa mengungsi', 'tenda_slate', SLATE), ('156', 'jiwa meninggal', 'hati_merah', MERAH), ('118.834', 'rumah rusak', 'rumah_slate', SLATE)]},
-          ('35', 'TPA Supit Urang'): {'pil': [('± 15,5 ha', 'F7F8FA', INK, None), ('pendinginan', T_ORG, ORG, 'api_oranye')]}}
+          ('35', 'TPA Supit Urang'): {'pil': [('± 15,5 ha terbakar', 'F7F8FA', INK, 'sampah_slate'), ('pendinginan', T_ORG, ORG, 'api_oranye')]}}
 KK_KER = sum(int(x['utama'].replace('±', '').replace('KK', '').replace('.', '').strip()) for x in KR)
 TINDAK = [('heli_p', 'Pemadaman prioritas', [f"•  Kalteng: sisa ±{f0(next(x['sat']['sisa'] for x in KH if x['prov'] == '62' and not x['lokasi']))} ha, TN Tanjung Puting lewat udara", '•  Karanganyar dan Lampung Timur (TNWK) masih pemadaman']),
           ('pendaki_p', 'Keselamatan warga', ['•  Masker dan layanan ISPA di 4 kota dengan PM2.5 Berbahaya', '•  Pangkalan Bun, Kota Jambi, Palangka Raya, Palembang']),
