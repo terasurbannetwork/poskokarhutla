@@ -238,7 +238,7 @@ def s3():
             y = 2304288 + (n + tot) * rp; kk = x['utama'].replace('±', '').strip(); jw = x['kedua'] or 'dalam pendataan'
             if n: o += garis(XL, y, XR - XL, 'EEF0F3')
             o += status_ikon(XL, y + (rp - 164592) / 2, 164592, True) + tx(XL + 228600, y, 1100000, rp, [x['lokasi']], sz=850, b=True, an='ctr')
-            o += gambar(8686800, y + (rp - 109728) / 2, 109728, 109728, I['rumah_k']) + tx(8832000, y, 1380000, rp, [[(kk, INK, True), ('  ' + jw, TEKS, False)]], sz=800, an='ctr', wrap='none')
+            o += gambar(8686800, y + (rp - 109728) / 2, 109728, 109728, I['rumah_k']) + tx(8832000, y, 640000, rp, [kk], sz=800, b=True, an='ctr', wrap='none') + gambar(8832000 + 676656, y + (rp - 109728) / 2, 109728, 109728, I['orang_k']) + tx(8832000 + 822960, y, 760000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
             o += kotak(10241280, y + (rp - 155448) / 2, 1237183, 155448, 'FFFFFF', 'roundRect', ln='E2D3B5', adj=50000) + gambar(10296144, y + (rp - 155448) / 2 + 27432, 100584, 100584, I['tetes_k'])
             o += tx(10424160, y + (rp - 155448) / 2, 1030000, 155448, [[(x['ket'], INK, True), (f", {TANGKI.get(x['lokasi'], '')}", TEKS, False)]], sz=700, an='ctr', wrap='none')
     o += kotak(QX, LY, QW, LH, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=4000) + kepala(QX, LY, QW, SLATE, T_SLATE, 'awas_p2', 'Bencana lainnya', len(LN), h=365760)
@@ -259,8 +259,8 @@ DETAIL = {('53', ''): {'pil': [('Transisi s.d. 27 Des', T_ORG, ORG, 'kalender_or
                        'stat': [('±27.563', 'jiwa mengungsi', 'tenda_slate', SLATE), ('156', 'jiwa meninggal', 'hati_merah', MERAH), ('118.834', 'rumah rusak', 'rumah_slate', SLATE)]},
           ('35', 'TPA Supit Urang'): {'pil': [('± 15,5 ha terbakar', 'F7F8FA', INK, 'sampah_slate'), ('pendinginan', T_ORG, ORG, 'api_oranye')]}}
 KK_KER = sum(int(x['utama'].replace('±', '').replace('KK', '').replace('.', '').strip()) for x in KR)
-TINDAK = [('heli_p', 'Pemadaman prioritas', [f"•  Kalteng: sisa ±{f0(next(x['sat']['sisa'] for x in KH if x['prov'] == '62' and not x['lokasi']))} ha, TN Tanjung Puting lewat udara", '•  Karanganyar dan Lampung Timur (TNWK) masih pemadaman']),
-          ('pendaki_p', 'Keselamatan warga', ['•  Masker dan layanan ISPA di 4 kota dengan PM2.5 Berbahaya', '•  Pangkalan Bun, Kota Jambi, Palangka Raya, Palembang']),
+TINDAK = [('heli_p', 'Pemadaman prioritas', ['•  TN Tanjung Puting masih terbakar ±1.407 ha, pemadaman udara', '•  Karanganyar dan Lampung Timur (TNWK) masih pemadaman']),
+          ('pendaki_p', 'Keselamatan warga', ['•  Masker dan layanan ISPA di Pangkalan Bun, Kota Jambi, Palangka Raya, dan Palembang, kota dengan PM2.5 Berbahaya']),
           ('daun_p', 'Air bersih', [f'•  Distribusi air bersih untuk ±{f0(KK_KER)} KK di Kab. Pekalongan', '•  Sudah tersalur 17 tangki, 71.000 liter'])]
 N_LAIN = len(LN)
 J2 = [P('Laporan 23–24 Oktober 2026: '), H(f0(N_TOT)), P(' kejadian menonjol di '), H(f'{N_PROV} provinsi'), P(', terdiri atas '), H(f0(len(KH))), P(' karhutla, '),
