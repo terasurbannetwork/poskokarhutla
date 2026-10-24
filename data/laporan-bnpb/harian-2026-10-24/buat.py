@@ -108,19 +108,16 @@ def s2():
     for x0, w0, c, n, lab in ((8668512, ws, NAVY, N_SEL, 'selesai'), (8668512 + ws, BW - ws, ORG, N_TOT - N_SEL, 'dalam penanganan')):
         o += kotak(x0, YB, w0, HB, c) + tx(x0, YB, w0, HB, [[(f0(n), 'FFFFFF', True), (f' {lab}', 'FFFFFF', False)]], sz=800, al='ctr', an='ctr', wrap='none')
     YH = YB + HB + 91440; YL = YH + 228600
-    o += tx(8668512, YH, 2864815, 182880, [f'DALAM PENANGANAN ({N_TOT - N_SEL})'], sz=750, b=True, c=MERAH, spc=60)
-    # keterangan tanda !: jumlahnya = kartu PERLU PERHATIAN
-    bx = 11478463 - 1000000; o += kotak(bx, YH + 27432, 128016, 128016, MERAH, 'ellipse') + tx(bx, YH + 27432, 128016, 128016, ['!'], sz=550, b=True, c='FFFFFF', al='ctr', an='ctr')
-    o += tx(bx + 173736, YH, 1000000, 182880, [[('perlu perhatian ', TEKS, False), (f0(len(KH_S)), MERAH, True)]], sz=680, an='ctr', wrap='none')
+    o += tx(8668512, YH, 2864815, 182880, [f'KARHUTLA PERLU PERHATIAN ({len(KH_S)})'], sz=750, b=True, c=MERAH, spc=60)   # pemilik 24 Okt: daftar hanya yang perlu perhatian
     LAIN_T = [x for x in KJ if x['jenis'] != 'karhutla' and tangani(x)]   # kekeringan, gempa, TPA yang masih ditangani ikut tercantum: jumlah baris = kotak dalam penanganan
-    daftar = sorted(KH_T, key=lambda x: -x['sat']['sisa']) + LAIN_T; rp = min(164592, (5280000 - YL) // max(1, len(daftar)))
+    daftar = sorted(KH_S, key=lambda x: -x['sat']['sisa']); rp = min(164592, (5280000 - YL) // max(1, len(daftar)))
     for n, x in enumerate(daftar):
         y = YL + n * rp; s = int(rp * .8)
         if n: o += garis(8668512, y - (rp - s) // 2, 2809951, 'F1F2F4')
         kar = x['jenis'] == 'karhutla'
         wj, ij = (ORG, 'api_p') if kar else (KER, 'daun_p') if x['jenis'] == 'kekeringan' else (JENIS_LAIN[x['jenis']][2], JENIS_LAIN[x['jenis']][1] + '_putih')
         o += kotak(8668512, y, s, s, wj, 'ellipse') + gambar(8668512 + s * .19, y + s * .19, s * .62, s * .62, I[ij])
-        if serius(x):   # tanda ! sama dengan peta, supaya 10 baris ini terbaca 8 perlu perhatian
+        if False:   # tanda ! sama dengan peta, supaya 10 baris ini terbaca 8 perlu perhatian
             b = s * .55; o += kotak(8668512 + s * .7, y - s * .2, b, b, MERAH, 'ellipse', ln='FFFFFF', lw=6350) + tx(8668512 + s * .7, y - s * .2, b, b, ['!'], sz=500, b=True, c='FFFFFF', al='ctr', an='ctr')
         nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], TEKS, False)] if x['lokasi'] else [])
         o += tx(8869680, y - (164592 - s) // 2, 1758391, 164592, [nm], sz=680, an='ctr', wrap='none')
