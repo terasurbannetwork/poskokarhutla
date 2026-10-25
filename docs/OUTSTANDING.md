@@ -25,6 +25,30 @@ Daftar pekerjaan yang masih terbuka. Coret atau hapus baris saat selesai. Bagian
 | B2 | Salinan nyasar sinkronisasi | `migrations/0053_kontak 2.sql` (jangan dipakai; hapus lewat higiene-repo) |
 | B3 | Berkas kajian BNPB mitigasi belum di-commit | `data/kajian-bnpb/naskah/mitigasi/*`, `keluaran/qa/*`, `rehab/` (milik sesi kajian) |
 
+## D. Sesi yang mungkin mati di tengah (koneksi putus) atau berhenti di pertanyaan yang belum dijawab
+
+Dari pencarian transkrip sesi 25 Okt 2026. "Putus" = transkrip memuat galat API ENOTFOUND/ECONNREFUSED/koneksi
+hilang; belum dicek apakah pekerjaannya sempat dilanjutkan sesi lain.
+
+| # | Sesi | Keadaan |
+|---|---|---|
+| D1 | Sistem bisnis karbon dengan satelit (23 Okt) | Putus. Kerja otonom MRV karbon 15 jam; rancangan di `docs/karbon/RANCANGAN.md`. Hasil belum pernah ditinjau pemilik |
+| D2 | BNPB regulations knowledge system (22-23 Okt) | Putus. Pustaka Hukum `/bnpb/hukum`; cek migrasi D1 remote 0052 |
+| D3 | Buat ID dalops (22 Okt) | Koneksi hilang di tengah jawaban; akun pemirsa dalops sudah dibuat menurut catatan |
+| D4 | Dashboard Karhutla dengan export otomatis (20 Okt) | Putus; terakhir bertanya "jalankan migrasi dan git push sekarang?" |
+| D5 | Laporan konsesi Kalimantan Selatan dan Tengah (19 Okt) | Putus (ECONNREFUSED); PDF konsesi semua PT Kalsel/Kalteng belum pernah ditinjau pemilik |
+| D6 | Laporan konsesi lahan Karhutla 2026 (18 Okt) | Berhenti di pertanyaan "Mau saya jalankan yang mana?" |
+| D7 | Pengaruh data karhutla (21 Okt) | Usulan belum dijawab: uji `vapour_pressure_deficit` sebagai fitur model sebaran |
+| D8 | API untuk koneksi data eksternal (23 Okt) | Putus; pertanyaan "poin 3 dibereskan sekalian?" belum dijawab |
+| D9 | Banjir, rob & longsor (18 Okt) | Putus; usulan "catat temuan untuk ketiganya" belum dijawab |
+| D10 | TERAS GIZ INMOTION komunikasi (12 Okt, ethtj) | Versi Indonesia untuk 13-15 Nov: "commit dan push ke main?" belum dijawab. Tenggat ETH4D 13-15 Nov 2026 |
+| D11 | Kenapa ga bisa (worth-it, 21 Okt) | Putus; spec tur denah 3D belum di-push |
+| D12 | Sesi pangantara / mbg-kdmp (Sep 2026) | Berhenti di usulan (cek-kelengkapan pangantara, `notification_feed()` dan `cermin-e2e` mbg-kdmp) |
+
+Hasil kerja yang sudah dibuat tapi belum pernah dikomentari pemilik (menurut catatan): kajian AIR final (DOCX/PDF 211 hlm +
+PPTX, 24 Okt), paparan Karhutla Jambi 241026, deck metode 25 Okt, laporan PDF konsesi semua PT Kalsel/Kalteng, rancangan
+bisnis karbon, catatan prospektif mingguan model risiko 7 hari.
+
 ## C. Dari catatan lama (perlu dicek ulang)
 
 | # | Pekerjaan | Menunggu |
