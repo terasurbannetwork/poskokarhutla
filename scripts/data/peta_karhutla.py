@@ -11,7 +11,7 @@ Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/sate
   titik N20 n/h per tahun, median 4,12; N21 2024-2025 median 4,16; uji Jan-Jul 2026 vs SiPongi 202.011 ha: lihat UJI_SIPONGI, cara lama (PORSI x 4,3) +20%).
   SARINGAN: titik di sel sumber panas tetap (titik_palsu.sel_industri(): smelter, tambang, kilang, pembangkit, lepas pantai; kawah tidak) dibuang dari det
   (luas, belum, padam, dan pengecekan "bertahan"), SAMA dengan yang dipakai kalibrasi_noaa.py untuk faktor, karena faktor dibagi titik tersaring. Tanpa saringan
-  16,7% titik N20/N21 n/h Jan-Jul 2026 tercampur panas bukan api lahan dan luas Jan-Jul melonjak ke +26% vs SiPongi. Kolom hot TIDAK disaring (definisi SiPongi, paritas
+  10,5% titik N20/N21 n/h Jan-Jul 2026 (12.506 dari 118.545 di dalam batas wilayah, hitungan validasi-model 25 Okt dari viirs_noaa20/21.csv) tercampur panas bukan api lahan dan luas Jan-Jul melonjak ke +26% vs SiPongi. Kolom hot TIDAK disaring (definisi SiPongi, paritas
   deck BNPB); celah dan bobot() memakai hitungan bd yang juga tak disaring.
   Dua satelit dirata-rata (/2). Hari tanpa salah satu satelit (lintasan nasional hilang: satelit itu 0 titik di provinsi sementara yang lain >= CELAH_MIN)
   memakai satelit yang ada saja, TANPA dibagi 2 (bobot()).
@@ -429,8 +429,8 @@ def metode():
         "hot": "Titik panas MODIS (Terra+Aqua) + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan, per hari kalender WIB. "
                "Definisi sama dengan SiPongi; kesesuaian jumlah per provinsi baru diuji untuk Papua Selatan.",
         "luas": f"(titik NOAA-20 x {koma(F20, 2)} ha + titik NOAA-21 x {koma(F21, 2)} ha) / 2, titik berkeyakinan nominal/tinggi. Faktor tiap satelit = luas resmi BNPB "
-                f"2019–2025 dibagi titik NOAA-20 (median {koma(F20, 2)} ha per titik; NOAA-21 2024–2025: {koma(F21, 2)} ha). Titik di sel sumber panas tetap (smelter, tambang, kilang, pembangkit) dibuang karena faktor dihitung dari titik tersaring (tanpa saringan 16,7% titik Jan–Jul 2026 bukan api lahan). Uji Jan–Jul 2026: jumlah luas nasional "
-                f"{ribu(UJI_SIPONGI['kita'])} ha vs SiPongi {ribu(UJI_SIPONGI['sipongi'])} ha (+{UJI_SIPONGI['selisih']}%); cara lama (titik x porsi x 4,3 ha) +{UJI_SIPONGI['lama']}%. "
+                f"2019–2025 dibagi titik NOAA-20 (median {koma(F20, 2)} ha per titik; NOAA-21 2024–2025: {koma(F21, 2)} ha). Titik di sel sumber panas tetap (smelter, tambang, kilang, pembangkit) dibuang karena faktor dihitung dari titik tersaring (tanpa saringan 10,5% titik Jan–Jul 2026 bukan api lahan). Uji Jan–Jul 2026: jumlah luas nasional "
+                f"{ribu(UJI_SIPONGI['kita'])} ha vs SiPongi {ribu(UJI_SIPONGI['sipongi'])} ha (+{UJI_SIPONGI['selisih']}%); cara lama (titik x porsi x 4,3 ha) +{UJI_SIPONGI['lama']}%. Saringan dipilih sesudah uji ini dilihat, jadi angka ini bukan uji luar contoh murni; uji tinggalkan satu tahun 2019–2025 meleset rata-rata 13,5%. "
                 f"Hari tanpa salah satu satelit (lintasannya hilang di FIRMS) memakai satelit yang ada saja, tanpa dibagi 2.",
         "belum": "Luas titik NOAA-20/21 hari itu (rumus yang sama) yang lokasinya (sel 3x3, sampai 375 m dari titik) sudah terdeteksi 12–36 jam sebelumnya oleh salah satu satelit. "
                  "Cadangan pada hari itu, bukan dijumlahkan antarhari.",
