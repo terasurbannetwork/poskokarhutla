@@ -112,7 +112,7 @@
 </div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
-      ${h.provAwas.length || h.provAsap.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel${h.A ? " as" : ""}">${th("p", ["Provinsi", "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut", ...(h.A ? ["Asap (PM2,5 24 jam)"] : [])])}${h.provAwas.map(barisPv).join("")}${h.provAsap.length ? `<p class="sp-ct">Tanpa titik panas berarti, tapi udaranya tidak sehat karena asap kebakaran:</p>${h.provAsap.map(barisPv).join("")}` : ""}</div>`) : ""}
+      ${h.provAwas.length || h.provAsap.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel${h.A ? " as" : ""}">${th("p", ["Provinsi", "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut", ...(h.A ? ["Asap (PM2,5 24 jam)"] : [])])}${h.provAwas.map(barisPv).join("")}${h.provAsap.length ? `<p class="sp-ct">Di luar lima besar titik panas, tapi udaranya tidak sehat karena asap kebakaran:</p>${h.provAsap.map(barisPv).join("")}` : ""}</div>`) : ""}
       ${kab.length ? sek("Cluster baru terbanyak", `<div class="sp-bs sp-panel rata">${th("b", ["Kabupaten", "Provinsi", "", "Kemarin", "Hari ini"], [3, 4])}${bar}</div>`) : ""}
       ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel rata">${kepalaK()}${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
       ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel rata">${th("c", ["Isu", "Rincian"])}${awas}</div>`) : ""}
