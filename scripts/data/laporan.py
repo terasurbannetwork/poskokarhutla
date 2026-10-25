@@ -402,6 +402,10 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
     per = dt.date.fromisoformat(operasi["per"]) if operasi and operasi.get("per") else None
     bn = f"Rekap BNPB operasi karhutla {akhir.year} s.d. {per.day} {BULAN[per.month - 1]} {per.year}, belum diverifikasi ke dokumen resmi BNPB" if per else None
     tb = tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun, titik_tahun, nas["titik"])
+    # per provinsi: luas saja (titik_tahun.json cuma nasional), dipakai halaman saat satu provinsi dipilih
+    for p, o in prov.items():
+        if sejarah and p in sejarah.get("prov", {}):
+            o["tahun_berjalan"] = tahun_berjalan({**sejarah, "prov": {p: sejarah["prov"][p]}}, hari_iso, o["luas"], tahun)
     return {
         "dibuat": dibuat.astimezone(WIB).isoformat(timespec="minutes"),
         "cutoff": acuan.isoformat(timespec="minutes"),
@@ -511,6 +515,11 @@ def uji():
     assert tb["ha"] == round(10000 * HA_TITIK + 7) and tb["rendah"] < tb["ha"] < tb["tinggi"], tb
     assert tb["triwulan"] == [{"nama": "Jan–Mar", "ha": tb["ha"], "titik_snpp": 10002, "prov_aktif": 1, "bulan_kosong": []}], tb["triwulan"]
     assert tahun_berjalan(None, [], [], "2026") is None
+    # per provinsi: semua titik uji di provinsi 14, jadi tahun berjalan provinsi = nasional; provinsi tanpa sejarah tidak diberi kunci
+    lapS = build(hs, None, meta, None, None, None, sejarah={**sj, "prov": {**sj["prov"], "99": {"2026": [0] * 12}}})
+    tp = lapS["prov"]["14"]["tahun_berjalan"]
+    assert tp["ha"] == lapS["tahun_berjalan"]["ha"] and tp["triwulan"][0]["ha"] == tp["ha"] and "titik" not in tp, (tp, lapS["tahun_berjalan"])
+    assert "99" not in lapS["prov"], "provinsi tanpa titik tetap tidak masuk prov"
     # titik semua satelit: titik_tahun.json sebelum arsip harian (02-01 dst.), baris harian sesudahnya; celah -> None
     tt = {"tahun": "2026", "sd": "2026-01-02", "harian": [3, 4], "prov": {"14": [7] + [0] * 11}}
     tb = tahun_berjalan(sj, ["2026-01-02", "2026-01-03"], [4, 7], "2026", tt, [5, 6])

@@ -295,9 +295,9 @@ function kartuProvGrafik() {
 /* baris riwayat per triwulan: judul bagian + satu baris per triwulan yang sudah genap, terbaru di atas.
    Triwulan berjalan tidak ditampilkan (pemilik, 17 Okt 2026): bulan berjalan sudah ada di baris harian di atasnya.
    sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
-function riwayatTw(sel, snpp = true) {
-  const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
-  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
+function riwayatTw(sel, snpp = true, tb = D.tahun_berjalan) {
+  const tw = (tb?.triwulan || []).slice(0, -1); if (!tw.length) return "";
+  const th = tb.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
   return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th}${snpp ? ' <span class="lp-co">VIIRS S-NPP</span>' : ""}</td></tr>`
     + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
       + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
@@ -362,16 +362,17 @@ function kartuLuas() {
   /* perkiraan luas = titik S-NPP x 4,3 ha (kalibrasi seri resmi 2015-2025, lihat scripts/data/laporan.py) */
   /* kumulatif sejak 1 Januari = total tahun berjalan dikurangi luas hari-hari sesudahnya */
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(P.length ? n.baru : n.luas, i))   /* provinsi: seri "baru" = kolom Kumulatif di tabel kab/kota */;
-  const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
-    return P.length ? "" : riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i]), "–"]); };
+  const triwulan = () => { let c = 0; const kum = (tb?.triwulan || []).map(q => c += q.ha);
+    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i]), "–"], true, tb); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
-  const tb = P.length ? null : D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  /* tahun berjalan: nasional, atau satu provinsi (laporan.py, luas saja); beberapa provinsi tidak dijumlah */
+  const tb = !P.length ? D.tahun_berjalan : P.length === 1 ? D.prov[P[0]].tahun_berjalan || null : null, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}), besar = v => v >= 1e6 ? jt(v) + " juta" : fmt(Math.round(v / 100) * 100);
   /* luas terdampak = piksel VIIRS bertitik x 14,06 ha, harian saja (piksel sama terdampak berhari-hari, tidak dijumlah); arsip lama = null */
   const dp = i => n.dampak?.[i] ?? null;
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
     + (dp(i) != null ? `; luas terdampak ${Kartu.hl(fmt(dp(i)))} ha` : "")
-    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta)` : "");
+    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(besar(tb.ha))} ha (rentang ${besar(tb.rendah)}–${besar(tb.tinggi)})` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, pasCetak(batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}), tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1], ["Luas terdampak (ha)", i => fmt(dp(i)), 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–", "–"],
