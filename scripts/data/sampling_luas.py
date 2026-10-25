@@ -17,7 +17,7 @@ Pakai:  python3 scripts/data/sampling_luas.py kerangka [tahun]     # kisi + stra
         python3 scripts/data/sampling_luas.py uji                  # self-check tanpa jaringan
 Butuh hanya stdlib. Ganti tahun = ganti argumen + entri TAHUN (berkas titik, sensor citra).
 """
-import array, bisect, csv, datetime as dt, json, math, os, random, re, sys, time
+import array, bisect, csv, datetime as dt, hashlib, json, math, os, random, re, sys, time
 from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -37,13 +37,41 @@ RESMI = {2015: 2611411, 2019: 1649258, 2023: 1161193}
 ALOKASI = {"A": 400, "B": 300, "C": 300}
 MIN_SEL = 50
 F20 = 4.12
-DNBR, NBR_PASCA, DNBR_BAWAH = 0.27, 0.2, 0.1
+DNBR, NBR_PASCA, DNBR_BAWAH = 0.27, 0.1, 0.1
+NIR_MIN = 0.02                    # B8A pasca harus lebih rendah dari pra sekurangnya segini (reflektans)
+MAKS_CELAH = 60                   # hari antara adegan pra dan pasca
+MUSIM_BC = 7                      # strata B,C: adegan pasca harus bulan >= 7 (musim kemarau-pasca)
+REF_MIN, REF_MAKS = -0.02, 1.5    # reflektans wajar sesudah skala + offset; di luar ini = tak sah
+RING_MIN = 80                     # piksel cincin sah minimum untuk kontrol latar
+THUMB_TIDAK_PER_MIL = 115         # ~100 titik 'tidak' dari ~870 ikut dibuatkan gambar
 NP = 65                           # tambalan 65 x 65 piksel 20 m (1,3 km); piksel tengah = indeks 32
 PUSAT = (31, 34)
 SUM_MIN = 0.05                    # B8A + B12 minimum agar NBR bermakna (air/bayangan gelap memberi penyebut ~0 dan dNBR > 2)
 BURUK_PIKSEL = {0, 1, 3, 6, 8, 9, 10}
 BURUK_AWAN = {0, 3, 8, 9, 10}
+RING_IDX = [y * 65 + x for y in range(65) for x in range(65) if 25 <= math.hypot(y - 32, x - 32) <= 45]      # cincin 500-900 m dari titik
 STAC = "https://earth-search.aws.element84.com/v1/search"
+
+
+def _pasang_ulang():
+    """citra.ambil (STAC + COG) dicoba ulang 4x dengan jeda 3, 6, 9 dtk di atas 3x bawaannya: putus jaringan sesaat tidak menggagalkan titik."""
+    import citra as C
+    if getattr(C.ambil, "ulang", False):
+        return
+    asli = C.ambil
+    def ambil(*a, **k):
+        for i in range(4):
+            try:
+                return asli(*a, **k)
+            except Exception:
+                if i == 3:
+                    raise
+                time.sleep(3 * (i + 1))
+    ambil.ulang = True
+    C.ambil = ambil
+
+
+_pasang_ulang()
 IO = ThreadPoolExecutor(int(os.environ.get("SAMPLING_IO", 16)))      # hanya tugas daun (satu bacaan COG); tidak boleh menunggu tugas IO lain
 
 
@@ -304,7 +332,7 @@ def adegan_titik(lat, lon, dari, sampai):
 
 
 class Titik:
-    """Penanda satu titik: cache SCL/NBR per adegan; pasangan pra/pasca dicoba berurutan."""
+    """Penanda satu titik: cache SCL/pita per adegan."""
     def __init__(self, lat, lon):
         self.lat, self.lon, self.scl, self.nb = lat, lon, {}, {}
 
@@ -315,103 +343,100 @@ class Titik:
         return self.scl[k]
 
     def pita(self, it):
+        """(B8A, B12) reflektans per piksel; None = nodata (DN 0) atau di luar rentang wajar. Skala dan BOA_ADD_OFFSET (-0,1 sejak baseline 04.00) dari raster:bands aset."""
         k = it["id"]
         if k not in self.nb:
             with ThreadPoolExecutor(2) as ex:
                 (b8, s8, o8), (b12, s12, o12) = ex.map(lambda a: tambal(it, a, self.lat, self.lon), ("nir08", "swir22"))
-            self.nb[k] = ([None if d == 0 else d * s8 + o8 for d in b8[0]], [None if d == 0 else d * s12 + o12 for d in b12[0]])
+            f = lambda v, sk, of: [None if d == 0 or not (REF_MIN <= d * sk + of <= REF_MAKS) else max(0.0, d * sk + of) for d in v[0]]
+            self.nb[k] = (f(b8, s8, o8), f(b12, s12, o12))
         return self.nb[k]
 
-    def calon(self, daftar, maks=2, lote=6, tinjau=18):
-        """generator adegan bersih (SCL) dalam urutan `daftar`; SCL dibaca serentak per lote (jaringan memakan waktu, bukan CPU)."""
-        n = 0
-        for i in range(0, min(len(daftar), tinjau), lote):
-            blok = daftar[i:i + lote]
-            list(IO.map(lambda x: self.bersih(x[1]), blok))
-            for d, it in blok:
-                if scl_bersih(self.scl[it["id"]]):
-                    n += 1
-                    yield d, it
-                    if n >= maks:
-                        return
-
     def ukur(self, pra, pasca):
-        """-> dict {dnbr, nbr_pasca, n_bersih} pada 3x3 piksel tengah (piksel sah: SCL bagus di kedua adegan, B8A + B12 >= SUM_MIN; nilai = median piksel sah)."""
+        """-> {dnbr (mentah), nbr_pasca, dnir, latar, n_bersih}. Pusat: 3x3 piksel tengah; piksel sah = SCL bagus di kedua adegan dan B8A + B12 >= SUM_MIN di keduanya; nilai = median.
+        latar = median dNBR cincin 500-900 m (RING_IDX; kontrol perubahan musiman seluruh bentang), None bila < RING_MIN piksel sah. dnir = median (B8A pra - B8A pasca)."""
         with ThreadPoolExecutor(2) as ex:
             (a1, c1), (a2, c2) = ex.map(self.pita, (pra, pasca))
         s1, s2 = self.bersih(pra), self.bersih(pasca)
-        dn, nb = [], []
-        for y in range(*PUSAT):
-            for x in range(*PUSAT):
-                i = y * NP + x
-                if s1[i] in BURUK_PIKSEL or s2[i] in BURUK_PIKSEL or None in (a1[i], c1[i], a2[i], c2[i]) or a1[i] + c1[i] < SUM_MIN or a2[i] + c2[i] < SUM_MIN:
-                    continue
-                n1, n2 = (a1[i] - c1[i]) / (a1[i] + c1[i]), (a2[i] - c2[i]) / (a2[i] + c2[i])
-                dn.append(n1 - n2)
-                nb.append(n2)
-        if len(dn) < 5:
-            return {"dnbr": None, "nbr_pasca": None, "n_bersih": len(dn)}
-        mid = lambda v: sorted(v)[len(v) // 2]       # median: tahan satu piksel pencilan
-        return {"dnbr": mid(dn), "nbr_pasca": mid(nb), "n_bersih": len(dn)}
+        def px(i):
+            if s1[i] in BURUK_PIKSEL or s2[i] in BURUK_PIKSEL or None in (a1[i], c1[i], a2[i], c2[i]) or a1[i] + c1[i] < SUM_MIN or a2[i] + c2[i] < SUM_MIN:
+                return None
+            n1, n2 = (a1[i] - c1[i]) / (a1[i] + c1[i]), (a2[i] - c2[i]) / (a2[i] + c2[i])
+            return n1 - n2, n2, a1[i] - a2[i]
+        mid = lambda v: sorted(v)[len(v) // 2]       # median: tahan piksel pencilan
+        pu = [q for q in (px(y * NP + x) for y in range(*PUSAT) for x in range(*PUSAT)) if q]
+        rg = [q[0] for q in (px(i) for i in RING_IDX) if q]
+        latar = mid(rg) if len(rg) >= RING_MIN else None
+        if len(pu) < 5:
+            return {"dnbr": None, "nbr_pasca": None, "dnir": None, "latar": latar, "n_bersih": len(pu)}
+        return {"dnbr": mid([q[0] for q in pu]), "nbr_pasca": mid([q[1] for q in pu]), "dnir": mid([q[2] for q in pu]), "latar": latar, "n_bersih": len(pu)}
 
 
-def label(dnbr, nbr_pasca, ambang=DNBR):
-    """-> ('terbakar'|'tidak'|'ragu', sebab). Aturan pemilik; ragu bila tak ada ukuran atau dNBR di [0,1; ambang); dNBR >= ambang dengan NBR pasca >= 0,2 = tidak (sebab 'nbr_pasca_tinggi')."""
+def label(dnbr, nbr_pasca, dnir, musim_ok=True, ambang=DNBR):
+    """-> ('terbakar'|'tidak'|'ragu', sebab). dnbr = dNBR yang sudah dikoreksi latar. Terbakar: dnbr >= ambang DAN NBR pasca < NBR_PASCA DAN B8A turun >= NIR_MIN DAN musim pasca sah.
+    dnbr >= ambang tetapi salah satu syarat lain gagal = tidak (sebab 'bukan_api': panen, savana kering, air). dnbr < DNBR_BAWAH = tidak; di antaranya = ragu (dnbr_sedang); tanpa ukuran = ragu (tanpa_pasangan)."""
     if dnbr is None:
         return "ragu", "tanpa_pasangan"
-    if dnbr >= ambang and nbr_pasca < NBR_PASCA:
-        return "terbakar", ""
-    if dnbr < DNBR_BAWAH:
-        return "tidak", ""
-    return ("ragu", "dnbr_sedang") if dnbr < ambang else ("tidak", "nbr_pasca_tinggi")
+    if dnbr >= ambang:
+        return ("terbakar", "") if nbr_pasca < NBR_PASCA and dnir >= NIR_MIN and musim_ok else ("tidak", "bukan_api")
+    return ("tidak", "") if dnbr < DNBR_BAWAH else ("ragu", "dnbr_sedang")
 
 
-def urutan_pasangan(n_pra, n_pasca, maks=4):
-    return sorted(((i, j) for i in range(n_pra) for j in range(n_pasca)), key=lambda p: (p[0] + p[1], p[0]))[:maks]
+def pasangan(bersih, t, celah=MAKS_CELAH):
+    """bersih: [(tanggal, x)] urut. -> (pra, pasca) terdekat yang mengapit t (pra < t < pasca) dengan jeda <= celah hari; None bila tak ada."""
+    pre, post = [b for b in bersih if b[0] < t], [b for b in bersih if b[0] > t]
+    if not pre or not post or (post[0][0] - pre[-1][0]).days > celah:
+        return None
+    return pre[-1], post[0]
 
 
-def jendela_cari(strata, tahun, d_pertama, d_terakhir):
-    """-> (daftar_pra_fungsi, daftar_pasca_fungsi, dari, sampai): filter tanggal untuk adegan pra (terdekat dulu) dan pasca."""
+def jangkar(strata, tahun, d_pertama, d_terakhir):
+    """tanggal-tanggal tempat kebakaran 'diandaikan' terjadi, berurutan prioritas. A,B: deteksi pertama, terakhir, tengah; C: tanpa deteksi, musim puncak Sep, Agu, Okt, Jul, Nov."""
     if strata == "C":
-        y = dt.date
-        pra = [(y(tahun, 5, 1), y(tahun, 7, 31)), (y(tahun, 1, 1), y(tahun, 4, 30))]
-        pasca = [(y(tahun, 10, 1), y(tahun, 12, 31)), (y(tahun, 9, 1), y(tahun, 9, 30))]
-        return pra, pasca, y(tahun, 1, 1), y(tahun, 12, 31)
+        return [dt.date(tahun, m, 15) for m in (9, 8, 10, 7, 11)]
     a, b = dt.date.fromisoformat(d_pertama), dt.date.fromisoformat(d_terakhir)
-    return [(a - dt.timedelta(180), a - dt.timedelta(1))], [(b + dt.timedelta(1), b + dt.timedelta(180))], a - dt.timedelta(180), b + dt.timedelta(180)
+    out = [a, b] + ([a + (b - a) / 2] if (b - a).days > 30 else [])
+    return list(dict.fromkeys(out))
 
 
 def tandai_titik(row, tahun, simpan_thumb=True):
     """satu baris rancangan -> dict hasil. Galat jaringan dilempar (tidak disimpan, dicoba lagi)."""
-    lat, lon = float(row["lat"]), float(row["lon"])
-    pra_w, pasca_w, dari, sampai = jendela_cari(row["strata"], tahun, row["d_pertama"], row["d_terakhir"])
-    ad = adegan_titik(lat, lon, dari, sampai)
+    lat, lon, st = float(row["lat"]), float(row["lon"]), row["strata"]
+    ja = jangkar(st, tahun, row["d_pertama"], row["d_terakhir"])
+    ad = adegan_titik(lat, lon, min(ja) - dt.timedelta(MAKS_CELAH), max(ja) + dt.timedelta(MAKS_CELAH))
     T = Titik(lat, lon)
-    def urut(ws, turun):
-        out = []
-        for a, b in ws:
-            out += sorted([x for x in ad if a <= x[0] <= b], key=lambda x: x[0], reverse=turun)
-        return out
-    pra_l, pasca_l = urut(pra_w, True), urut(pasca_w, False)
-    pra, pasca = list(T.calon(pra_l)), list(T.calon(pasca_l))
-    hasil = {"id": row["id"], "label": "ragu", "sebab": "tanpa_pasangan", "dnbr": None, "nbr_pasca": None, "n_bersih": 0, "tgl_pra": "", "tgl_pasca": "", "n_adegan": len(ad), "percobaan": []}
-    pilih = None
-    for i, j in urutan_pasangan(len(pra), len(pasca)):
-        m = T.ukur(pra[i][1], pasca[j][1])
-        lb, sb = label(m["dnbr"], m["nbr_pasca"])
-        hasil["percobaan"].append({"pra": pra[i][0].isoformat(), "pasca": pasca[j][0].isoformat(), "dnbr": m["dnbr"] and round(m["dnbr"], 4), "label": lb})
-        if pilih is None or (m["dnbr"] is not None and pilih[2]["dnbr"] is None):
-            pilih = (pra[i], pasca[j], m)
-        if lb != "ragu":
-            pilih = (pra[i], pasca[j], m)
+    dekat = lambda x: min(abs((x[0] - t).days) for t in ja)
+    perlu = sorted([x for x in ad if dekat(x) <= MAKS_CELAH], key=dekat)[:40]
+    list(IO.map(lambda x: T.bersih(x[1]), perlu))                         # SCL serentak: jaringan, bukan CPU
+    bersih = sorted([x for x in perlu if scl_bersih(T.scl[x[1]["id"]])], key=lambda x: x[0])
+    hasil = {"id": row["id"], "label": "ragu", "sebab": "tanpa_pasangan", "dnbr": None, "dnbr_mentah": None, "latar": None, "nbr_pasca": None, "dnir": None, "musim_ok": True, "n_bersih": 0,
+             "tgl_pra": "", "tgl_pasca": "", "n_adegan": len(ad), "n_bersih_adegan": len(bersih), "percobaan": []}
+    pilih, dicoba = None, set()
+    rank = {"terbakar": 3, "ragu": 2, "tidak": 1}
+    for t in ja:
+        pr = pasangan(bersih, t)
+        if not pr or (pr[0][0], pr[1][0]) in dicoba or len(dicoba) >= 4:
+            continue
+        dicoba.add((pr[0][0], pr[1][0]))
+        (d1, i1), (d2, i2) = pr
+        m = T.ukur(i1, i2)
+        eff = m["dnbr"] if m["dnbr"] is None or st == "A" or m["latar"] is None else m["dnbr"] - max(0.0, m["latar"])
+        musim = st == "A" or d2.month >= MUSIM_BC
+        lb, sb = label(eff, m["nbr_pasca"], m["dnir"], musim)
+        hasil["percobaan"].append({"pra": d1.isoformat(), "pasca": d2.isoformat(), "dnbr": eff and round(eff, 4), "label": lb})
+        sk = (rank.get(lb, 0), eff if eff is not None else -9)
+        if pilih is None or sk > pilih[0]:
+            pilih = (sk, d1, i1, d2, i2, m, eff, musim, lb, sb)
+        if lb == "terbakar":
             break
     if pilih:
-        (dp, ip), (dq, iq), m = pilih
-        lb, sb = label(m["dnbr"], m["nbr_pasca"])
-        hasil.update(label=lb, sebab=sb, dnbr=m["dnbr"] and round(m["dnbr"], 4), nbr_pasca=m["nbr_pasca"] and round(m["nbr_pasca"], 4), n_bersih=m["n_bersih"], tgl_pra=dp.isoformat(), tgl_pasca=dq.isoformat())
-        if simpan_thumb:
-            thumb(T, row["id"], "pra", ip)
-            thumb(T, row["id"], "pasca", iq)
+        _, d1, i1, d2, i2, m, eff, musim, lb, sb = pilih
+        r4 = lambda v: v if v is None else round(v, 4)
+        hasil.update(label=lb, sebab=sb, dnbr=r4(eff), dnbr_mentah=r4(m["dnbr"]), latar=r4(m["latar"]), nbr_pasca=r4(m["nbr_pasca"]), dnir=r4(m["dnir"]), musim_ok=musim, n_bersih=m["n_bersih"], tgl_pra=d1.isoformat(), tgl_pasca=d2.isoformat())
+        if simpan_thumb and (lb != "tidak" or int(hashlib.md5(row["id"].encode()).hexdigest(), 16) % 1000 < THUMB_TIDAK_PER_MIL):
+            thumb(T, row["id"], "pra", i1)
+            thumb(T, row["id"], "pasca", i2)
+            hasil["thumb"] = True
     return hasil
 
 
@@ -457,10 +482,11 @@ def tandai(tahun, shard=0, n=1, maks=10 ** 9):
 
 
 # ------------------------------------------------------------------ ringkasan
-def label_ambang(r, ambang):
-    if r["dnbr"] is None:
+def label_ambang(r, ambang, nbr_maks=NBR_PASCA, kontrol=True):
+    dn = r["dnbr"] if kontrol else (r["dnbr_mentah"] if r["strata"] == "A" or r["latar"] is None else r["dnbr_mentah"])
+    if dn is None:
         return "ragu"
-    return "terbakar" if r["dnbr"] >= ambang and r["nbr_pasca"] < NBR_PASCA else "tidak"
+    return "terbakar" if dn >= ambang and r["nbr_pasca"] < nbr_maks and r["dnir"] >= NIR_MIN and r["musim_ok"] else "tidak"
 
 
 def skenario(baris, strata_tab, nama):
@@ -471,8 +497,8 @@ def skenario(baris, strata_tab, nama):
         "ragu_dikeluarkan": lambda r: (r["label"] != "ragu", r["label"] == "terbakar"),
         "ragu_sedang_terbakar": lambda r: ((False, False) if (r["label"] == "ragu" and r["sebab"] == "tanpa_pasangan") else (True, r["label"] in ("terbakar",) or (r["label"] == "ragu" and r["sebab"] != "tanpa_pasangan"))),
     }
-    gap = lambda r: (dt.date.fromisoformat(r["tgl_pasca"]) - dt.date.fromisoformat(r["tgl_pra"])).days if r["tgl_pra"] and r["tgl_pasca"] else None
-    S["celah_maks_60hari"] = lambda r: (False, False) if r["label"] == "ragu" or gap(r) is None or gap(r) > 60 else (True, r["label"] == "terbakar")
+    S["tanpa_kontrol_latar"] = lambda r: (r["dnbr_mentah"] is not None, label_ambang(r, DNBR, kontrol=False) == "terbakar")
+    S["nbr_pasca_0,2"] = lambda r: (r["dnbr"] is not None, label_ambang(r, DNBR, nbr_maks=0.2) == "terbakar")
     S["hanya_dekat_titik_AB"] = lambda r: (False, False) if (r["label"] == "ragu" and r["sebab"] == "tanpa_pasangan") else (True, r["label"] == "terbakar" and r["strata"] in "AB")
     for t in (0.1, 0.27, 0.44):
         S["dnbr_%s" % str(t).replace(".", ",")] = (lambda t: lambda r: (r["dnbr"] is not None, label_ambang(r, t) == "terbakar"))(t)
@@ -502,12 +528,12 @@ def ringkas(tahun):
         baris.append({**h, "strata": r["strata"], "gambut": r["gambut"], "lat": r["lat"], "lon": r["lon"]})
     with open(os.path.join(KELUAR, "sampel_%d.csv" % tahun), "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["id", "strata", "gambut", "lat", "lon", "label", "sebab_ragu", "dnbr", "nbr_pasca", "tgl_pra", "tgl_pasca", "n_bersih"])
+        w.writerow(["id", "strata", "gambut", "lat", "lon", "label", "sebab", "dnbr", "nbr_pasca", "tgl_pra", "tgl_pasca", "n_bersih", "dnbr_mentah", "latar", "dnir", "musim_ok", "gambar"])
         for r in baris:
-            w.writerow([r["id"], r["strata"], r["gambut"], r["lat"], r["lon"], r["label"], r["sebab"], r["dnbr"] if r["dnbr"] is not None else "", r["nbr_pasca"] if r["nbr_pasca"] is not None else "", r["tgl_pra"], r["tgl_pasca"], r["n_bersih"]])
+            w.writerow([r["id"], r["strata"], r["gambut"], r["lat"], r["lon"], r["label"], r["sebab"], r["dnbr"] if r["dnbr"] is not None else "", r["nbr_pasca"] if r["nbr_pasca"] is not None else "", r["tgl_pra"], r["tgl_pasca"], r["n_bersih"]] + [("" if r[k] is None else r[k]) for k in ("dnbr_mentah", "latar", "dnir", "musim_ok")] + [int(bool(r.get("thumb")))])
     tabel_luas = {k: v for k, v in luas.items()}
     hasil = {}
-    for nm in ("utama", "ragu_tidak_terbakar", "ragu_dikeluarkan", "ragu_sedang_terbakar", "celah_maks_60hari", "hanya_dekat_titik_AB", "dnbr_0,1", "dnbr_0,27", "dnbr_0,44"):
+    for nm in ("utama", "ragu_tidak_terbakar", "ragu_dikeluarkan", "ragu_sedang_terbakar", "tanpa_kontrol_latar", "nbr_pasca_0,2", "hanya_dekat_titik_AB", "dnbr_0,1", "dnbr_0,27", "dnbr_0,44"):
         s, _ = skenario(baris, tabel_luas, nm)
         L, se = taksir(s)
         _, se2 = taksir(s, adj=True)
@@ -522,14 +548,38 @@ def ringkas(tahun):
     strata_out = [{"strata": s["strata"], "gambut": s["gambut"], "luas_ha": s["luas_ha"], "n_rancangan": s["n"], "n_ditandai": sum(per.get((s["strata"], str(s["gambut"])), {}).values()),
                    **per.get((s["strata"], str(s["gambut"])), {})} for s in tab["strata"] if s["strata"] != "D"]
     bk = [r for r in baris if r["label"] == "terbakar"]
-    cel = [(dt.date.fromisoformat(r["tgl_pasca"]) - dt.date.fromisoformat(r["tgl_pra"])).days for r in bk]
-    diag = {"terbakar_total": len(bk), "terbakar_strata": {h: sum(r["strata"] == h for r in bk) for h in "ABC"}, "terbakar_celah_gt_90_hari": sum(c > 90 for c in cel), "median_celah_hari_terbakar": sorted(cel)[len(cel) // 2] if cel else None,
-            "terbakar_dnbr_gt_1": sum(r["dnbr"] > 1 for r in bk), "dnbr_di_luar_0_2": sum(r["dnbr"] is not None and abs(r["dnbr"]) > 2 for r in baris)}
+    diag = {"terbakar_total": len(bk), "terbakar_strata": {h: sum(r["strata"] == h for r in bk) for h in "ABC"}, "bukan_api": sum(r["sebab"] == "bukan_api" for r in baris),
+            "tanpa_pasangan": sum(r["sebab"] == "tanpa_pasangan" for r in baris), "tanpa_latar_BC": sum(r["latar"] is None for r in baris if r["strata"] in "BC" and r["dnbr"] is not None),
+            "abs_dnbr_gt_2": sum(r["dnbr_mentah"] is not None and abs(r["dnbr_mentah"]) > 2 for r in baris)}
     out = {"tahun": tahun, "dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "n_ditandai": len(baris), "n_belum": belum, "resmi_ha": RESMI.get(tahun), "metode_web_ha": tab["metode_web_ha"],
            "luas_tanpa_deteksi_ha": round(sum(s["luas_ha"] for s in tab["strata"] if s["strata"] == "D")), "provinsi_tanpa_deteksi": tab["provinsi_tanpa_deteksi"], "strata": strata_out, "diagnosa": diag, "estimasi": hasil}
     json.dump(out, open(os.path.join(KELUAR, "ringkasan_%d.json" % tahun), "w"), ensure_ascii=False, indent=1)
     tulis_md(out, tab)
+    tulis_html(tahun, baris)
     print(json.dumps(out, ensure_ascii=False, indent=1))
+
+
+def tulis_html(tahun, baris):
+    """periksa_<tahun>.html: grid titik bergambar (terbakar, ragu, dan contoh 'tidak') + pilihan manusia + unduh CSV. Tanpa pustaka luar; pilihan disimpan di localStorage."""
+    d = [{"id": r["id"], "s": r["strata"], "g": r["gambut"], "l": r["label"], "sb": r["sebab"], "n": r["dnbr"], "nb": r["nbr_pasca"], "a": r["tgl_pra"], "b": r["tgl_pasca"], "lat": r["lat"], "lon": r["lon"]}
+         for r in baris if r.get("thumb") and r["dnbr"] is not None]
+    d.sort(key=lambda r: ({"terbakar": 0, "ragu": 1, "tidak": 2}[r["l"]], r["s"], r["id"]))
+    h = """<!doctype html><meta charset="utf-8"><title>Periksa titik %d</title>
+<style>body{font:13px system-ui;margin:12px}.k{display:inline-block;margin:6px;padding:6px;border:1px solid #bbb;border-radius:4px;vertical-align:top}.k img{width:128px;height:128px;image-rendering:pixelated}
+.t{font-size:11px;color:#444}.terbakar{background:#fde8e0}.ragu{background:#fff6d6}.tidak{background:#eef6ee}</style>
+<h3>Periksa titik sampel %d <button id=u>Unduh CSV</button> <select id=f><option value="">semua</option><option>terbakar</option><option>ragu</option><option>tidak</option></select> <span id=c></span></h3>
+<p>Tiap titik: pra RGB, pra SWIR (B12/B8A/merah), pasca RGB, pasca SWIR. Titik ada di tengah gambar (64 px x 20 m = 1,28 km). Pilih terbakar / tidak / ragu menurut penglihatan Anda.</p><div id=g></div>
+<script>
+const D=%s,K='periksa%d';let P=JSON.parse(localStorage.getItem(K)||'{}');
+function r(){const f=document.getElementById('f').value;document.getElementById('g').innerHTML=D.filter(x=>!f||x.l==f).map(x=>`<div class="k ${x.l}"><b>${x.id}</b> ${x.s}${x.g=='1'?' gambut':''} <i>otomatis: ${x.l}${x.sb?' ('+x.sb+')':''}</i><br><span class=t>dNBR ${x.n} NBRpasca ${x.nb} | ${x.a} -> ${x.b} | ${x.lat},${x.lon}</span><br>
+${['pra_rgb','pra_swir','pasca_rgb','pasca_swir'].map(n=>`<img loading=lazy src="thumb/${x.id}_${n}.png" title="${n}">`).join('')}<br>
+${['terbakar','tidak','ragu'].map(v=>`<label><input type=radio name="${x.id}" value="${v}" ${P[x.id]==v?'checked':''} onchange="P['${x.id}']=this.value;localStorage.setItem(K,JSON.stringify(P));h()"> ${v}</label>`).join(' ')}</div>`).join('');h()}
+function h(){document.getElementById('c').textContent=Object.keys(P).length+' / '+D.length+' diperiksa'}
+document.getElementById('f').onchange=r;
+document.getElementById('u').onclick=()=>{const t='id,strata,label_otomatis,label_manusia\\n'+D.map(x=>[x.id,x.s,x.l,P[x.id]||''].join(',')).join('\\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='periksa_%d.csv';a.click()};
+r();
+</script>""" % (tahun, tahun, json.dumps(d), tahun, tahun)
+    open(os.path.join(KELUAR, "periksa_%d.html" % tahun), "w").write(h)
 
 
 def tulis_md(o, tab):
@@ -540,8 +590,9 @@ def tulis_md(o, tab):
          "## Metode", "",
          "- Kerangka: daratan Indonesia pada kisi 0,003375 derajat (~375 m), batas dari `public/geo/kecamatan` (bagian luar poligon, sederhana; garis pantai kasar).",
          "- A = sel dengan >= 1 deteksi VIIRS n/h tahun %d (S-NPP + NOAA-20), tanpa sel sumber panas tetap; B = cincin <= 2 km di luar A; C = sisa daratan di provinsi yang punya deteksi. Tiap strata dibagi gambut / mineral. Luas = jumlah sel x luas sel (cos lintang)." % t,
-         "- Titik acak seragam dalam strata (seed tetap, `rancangan_%d.csv`). Label: Sentinel-2 L2A, jendela 3x3 piksel 20 m, dNBR = NBR pra - NBR pasca; terbakar bila dNBR >= 0,27 dan NBR pasca < 0,2; tidak terbakar bila dNBR < 0,1; selain itu 'ragu'." % t,
-         "- Pra/pasca: A,B = bersih terakhir sebelum deteksi pertama / bersih pertama sesudah deteksi terakhir dalam 2 km (<= 180 hari); C = Mei-Jul / Okt-Des. Bersih = SCL tanpa awan/bayangan di 7x7 piksel tengah dan <= 15% awan di 21x21. Sampai 4 pasangan dicoba bila 'ragu'.",
+         "- Titik acak seragam dalam strata (seed tetap, `rancangan_%d.csv`). Label: Sentinel-2 L2A, jendela 3x3 piksel 20 m, dNBR = NBR pra - NBR pasca (median 3x3, piksel B8A+B12 >= 0,05). Terbakar bila dNBR >= 0,27 DAN NBR pasca < 0,1 DAN B8A pasca turun >= 0,02 dari pra (dan, di B/C, adegan pasca bulan >= Juli); dNBR >= 0,27 yang gagal syarat itu = tidak (perubahan non-api); dNBR < 0,1 = tidak; 0,1-0,27 dan tanpa pasangan = 'ragu'." % t,
+         "- Pra/pasca: pasangan adegan bersih terdekat yang MENGAPIT tanggal jangkar dengan jeda <= 60 hari. A,B: jangkar = deteksi pertama, terakhir, dan tengah dalam 2 km; C: 15 Sep, Agu, Okt, Jul, Nov. Sampai 4 pasangan; terbakar bila ada pasangan yang memenuhi aturan. Bersih = SCL tanpa awan/bayangan di 7x7 piksel tengah dan <= 15% awan di 21x21.",
+         "- Kontrol latar (B dan C): dNBR dikurangi median dNBR cincin 500-900 m di sekitar titik (perubahan musiman seluruh bentang, mis. padi/savana, tidak terbaca sebagai bakar). Tidak dipakai di A (cincin bisa ikut terbakar).",
          "- Estimator: stratified (Olofsson dkk. 2014): L = sum A_h p_h; Var = sum A_h^2 p_h(1-p_h)/(n_h-1); selang 95% = L +- 1,96 SE. Utama: 'ragu' karena tanpa citra bersih dikeluarkan, 'ragu' karena dNBR sedang dihitung tidak terbakar.", "",
          "## Strata", "", "| strata | gambut | luas (ha) | n rancangan | n ditandai | terbakar | tidak | ragu (tanpa citra) | ragu (dNBR) |", "|---|---|---|---|---|---|---|---|---|"]
     for s in o["strata"]:
@@ -551,14 +602,14 @@ def tulis_md(o, tab):
     for k, v in o["estimasi"].items():
         L.append("| %s | %s | %s | %s - %s | %s - %s |" % (k, format(v["luas_ha"], ","), format(v["se_ha"], ","), format(v["ci95_ha"][0], ","), format(v["ci95_ha"][1], ","), format(v["ci95_konservatif_ha"][0], ","), format(v["ci95_konservatif_ha"][1], ",")))
     L += ["", "Pembanding: luas resmi BNPB/KLHK %s ha; metode web kita (titik NOAA-20 n/h tersaring x 4,12) %s ha." % (format(o["resmi_ha"] or 0, ","), format(o["metode_web_ha"] or 0, ",")),
-          "Diagnosa titik 'terbakar' (n=%d: A %d, B %d, C %d): celah pra-pasca > 90 hari pada %d, median %s hari; dNBR > 1 pada %d; |dNBR| > 2 (tak mungkin per piksel; penyebut NBR mendekati nol) pada %d titik." % (
-              o["diagnosa"]["terbakar_total"], o["diagnosa"]["terbakar_strata"]["A"], o["diagnosa"]["terbakar_strata"]["B"], o["diagnosa"]["terbakar_strata"]["C"], o["diagnosa"]["terbakar_celah_gt_90_hari"], o["diagnosa"]["median_celah_hari_terbakar"], o["diagnosa"]["terbakar_dnbr_gt_1"], o["diagnosa"]["dnbr_di_luar_0_2"]),
-          "Skenario: `celah_maks_60hari` hanya pasangan pra-pasca <= 60 hari (ragu keluar); `hanya_dekat_titik_AB` terbakar hanya dihitung di A dan B (butuh deteksi VIIRS <= 2 km), C dianggap 0; `ragu_tidak_terbakar` semua ragu = tidak; `ragu_dikeluarkan` semua ragu keluar dari penyebut; `ragu_sedang_terbakar` (batas atas) ragu karena dNBR sedang = terbakar; `dnbr_x` ambang dNBR x (NBR pasca < 0,2 tetap).", "",
+          "Diagnosa (n=%d): 'terbakar' %d (A %d, B %d, C %d); lolos dNBR tetapi gagal syarat bukan-api (NBR pasca, B8A, musim) %d; tanpa pasangan bersih <= 60 hari %d; B,C tanpa kontrol latar %d; |dNBR| > 2 pada %d titik." % (
+              o["n_ditandai"], o["diagnosa"]["terbakar_total"], o["diagnosa"]["terbakar_strata"]["A"], o["diagnosa"]["terbakar_strata"]["B"], o["diagnosa"]["terbakar_strata"]["C"], o["diagnosa"]["bukan_api"], o["diagnosa"]["tanpa_pasangan"], o["diagnosa"]["tanpa_latar_BC"], o["diagnosa"]["abs_dnbr_gt_2"]),
+          "Skenario: `tanpa_kontrol_latar` dNBR mentah tanpa koreksi cincin 500-900 m; `nbr_pasca_0,2` batas NBR pasca dilonggarkan ke 0,2; `hanya_dekat_titik_AB` terbakar hanya dihitung di A dan B (butuh deteksi VIIRS <= 2 km), C dianggap 0; `ragu_tidak_terbakar` semua ragu = tidak; `ragu_dikeluarkan` semua ragu keluar dari penyebut; `ragu_sedang_terbakar` (batas atas) ragu karena dNBR sedang = terbakar; `dnbr_x` ambang dNBR x (syarat NBR pasca, B8A, musim tetap). `ragu_sedang_terbakar` praktis tak informatif: ragu tanpa citra dikeluarkan sehingga strata C yang luas dikalikan proporsi ragu.", "",
           "## Keterbatasan", "",
           "- Label otomatis satu aturan dNBR, belum dipastikan manusia (potongan 64x64 di `thumb/` untuk pemeriksaan). Tanpa matriks kesalahan acuan, selang hanya galat sampling, BUKAN galat label.",
           "- dNBR 0,27 mengukur bekas bakar permukaan; bara gambut bawah tanah dan api < 1 piksel 20 m bisa luput (bias rendah). Panen, banjir, gugur daun, dan bayangan awan yang lolos SCL bisa menaikkan dNBR (bias tinggi).",
-          "- Aturan dNBR tidak membedakan api dari perubahan non-api: panen/olah padi, savana kering musim kemarau, pembukaan lahan tanpa api, dan celah pra-pasca panjang menaikkan dNBR. Pada titik B dan C (jauh dari deteksi) hampir semua 'terbakar' mungkin positif palsu; baca estimasi utama sebagai BATAS ATAS aturan, dan periksa potongan `thumb/` sebelum dipakai.",
-          "- Strata C memakai pra Mei-Jul dan pasca Okt-Des: kebakaran Jan-Apr atau Nov-Des di luar deteksi tidak tertangkap. Strata C berprevalensi rendah: strata dengan 0 terbakar memberi SE 0 pada rumus baku (lihat selang konservatif).",
+          "- Aturan dNBR tetap tidak membedakan semua perubahan non-api (pembukaan lahan tanpa api, panen, banjir). Pada titik B dan C (jauh dari deteksi) positif palsu masih mungkin; periksa potongan `thumb/` lewat `periksa_%d.html` sebelum estimasi dipakai." % t,
+          "- Strata C hanya memeriksa pasangan yang mengapit 15 Jul-15 Nov: kebakaran Jan-Jun atau akhir tahun tidak tertangkap (bias rendah). Pasangan <= 60 hari tak selalu ada di daerah berawan: titik itu 'ragu tanpa citra' dan dikeluarkan (asumsi acak). Strata C berprevalensi rendah: strata dengan 0 terbakar memberi SE 0 pada rumus baku (lihat selang konservatif).",
           "- Titik acak di dalam sel 375 m; titik tidak ditimbang cos lintang di dalam strata (galat < 1%). Garis pantai dan batas provinsi dari poligon kecamatan yang disederhanakan.",
           "- Deteksi VIIRS tahun %d memakai arsip standar (SP); sel industri dibuang memakai daftar titik_palsu (disusun dari arsip yang sama)." % t]
     open(os.path.join(KELUAR, "RINGKASAN.md"), "w").write("\n".join(L) + "\n")
@@ -610,9 +661,15 @@ def uji():
     # alokasi: minimum 50 per sel strata, proporsional di atasnya
     al = alokasi({("A", 0): 750., ("A", 1): 250., ("B", 0): 990., ("B", 1): 10., ("C", 0): 600., ("C", 1): 400.})
     assert al[("A", 1)] == 100 and al[("A", 0)] == 300 and al[("B", 1)] == 50 and al[("C", 1)] == 120, al
-    # label & pasangan
-    assert label(0.30, 0.1) == ("terbakar", "") and label(0.05, 0.3) == ("tidak", "") and label(0.2, 0.1) == ("ragu", "dnbr_sedang") and label(0.3, 0.25) == ("tidak", "nbr_pasca_tinggi") and label(None, None)[1] == "tanpa_pasangan"
-    assert urutan_pasangan(3, 3)[:3] == [(0, 0), (0, 1), (1, 0)] and urutan_pasangan(0, 2) == []
+    # label: syarat tambahan NBR pasca < 0,1, B8A turun, musim; dNBR tinggi tanpa syarat itu = tidak (bukan api)
+    assert label(0.30, 0.05, 0.1) == ("terbakar", "") and label(0.05, 0.3, 0.1) == ("tidak", "") and label(0.2, 0.0, 0.1) == ("ragu", "dnbr_sedang") and label(None, None, None)[1] == "tanpa_pasangan"
+    assert label(0.3, 0.15, 0.1) == ("tidak", "bukan_api") and label(0.3, 0.05, 0.0) == ("tidak", "bukan_api") and label(0.3, 0.05, 0.1, musim_ok=False) == ("tidak", "bukan_api")
+    # pasangan: mengapit t, jeda <= 60 hari, terdekat
+    d = dt.date
+    bs = [(d(2023, 7, 1), "a"), (d(2023, 7, 20), "b"), (d(2023, 9, 10), "c"), (d(2023, 12, 1), "e")]
+    assert pasangan(bs, d(2023, 8, 1)) == ((d(2023, 7, 20), "b"), (d(2023, 9, 10), "c")) and pasangan(bs, d(2023, 10, 15)) is None and pasangan(bs, d(2023, 6, 1)) is None and pasangan(bs, d(2023, 7, 20)) is None
+    assert jangkar("C", 2023, "", "")[0] == d(2023, 9, 15) and jangkar("A", 2023, "2023-08-01", "2023-08-01") == [d(2023, 8, 1)] and len(jangkar("B", 2023, "2023-02-01", "2023-10-01")) == 3
+    assert 700 < len(RING_IDX) < 2400 and all(abs(i // NP - 32) <= 45 for i in RING_IDX)
     # SCL bersih: awan di 7x7 tengah menolak; awan jauh di luar 21x21 tidak
     v = [4] * (NP * NP)
     assert scl_bersih(v)
@@ -620,12 +677,15 @@ def uji():
     assert not scl_bersih(v2)
     v3 = list(v); v3[2 * NP + 2] = 9
     assert scl_bersih(v3)
-    # skenario: ragu tanpa citra dikeluarkan pada 'utama'; semua ragu keluar pada 'ragu_dikeluarkan'
-    br = [{"strata": "A", "gambut": "0", "label": "terbakar", "sebab": "", "dnbr": .4, "nbr_pasca": .1}, {"strata": "A", "gambut": "0", "label": "tidak", "sebab": "", "dnbr": .0, "nbr_pasca": .5},
-          {"strata": "A", "gambut": "0", "label": "ragu", "sebab": "tanpa_pasangan", "dnbr": None, "nbr_pasca": None}, {"strata": "A", "gambut": "0", "label": "ragu", "sebab": "dnbr_sedang", "dnbr": .2, "nbr_pasca": .3}]
+    # skenario: ragu tanpa citra dikeluarkan pada 'utama'; semua ragu keluar pada 'ragu_dikeluarkan'; tanpa kontrol latar memakai dNBR mentah
+    mk = lambda lb, sb, dn, nb, mentah=None, strata="A", latar=None: {"strata": strata, "gambut": "0", "label": lb, "sebab": sb, "dnbr": dn, "dnbr_mentah": mentah if mentah is not None else dn, "latar": latar, "nbr_pasca": nb, "dnir": .1, "musim_ok": True}
+    br = [mk("terbakar", "", .4, .0), mk("tidak", "", .0, .5), mk("ragu", "tanpa_pasangan", None, None), mk("ragu", "dnbr_sedang", .2, .0)]
     tl = {("A", "0"): 100.}
     assert skenario(br, tl, "utama")[0] == [(100., 3, 1)] and skenario(br, tl, "ragu_tidak_terbakar")[0] == [(100., 4, 1)]
-    assert skenario(br, tl, "ragu_dikeluarkan")[0] == [(100., 2, 1)] and skenario(br, tl, "ragu_sedang_terbakar")[0] == [(100., 3, 2)] and skenario(br, tl, "dnbr_0,1")[0] == [(100., 3, 1)]
+    assert skenario(br, tl, "ragu_dikeluarkan")[0] == [(100., 2, 1)] and skenario(br, tl, "ragu_sedang_terbakar")[0] == [(100., 3, 2)] and skenario(br, tl, "dnbr_0,1")[0] == [(100., 3, 2)]
+    assert skenario(br, tl, "dnbr_0,44")[0] == [(100., 3, 0)] and skenario(br, tl, "nbr_pasca_0,2")[0] == [(100., 3, 1)]
+    bb = [mk("tidak", "", .1, .0, mentah=.5, strata="B", latar=.4)]
+    assert skenario(bb, {("B", "0"): 10.}, "tanpa_kontrol_latar")[0] == [(10., 1, 1)] and skenario(bb, {("B", "0"): 10.}, "utama")[0] == [(10., 1, 0)]
     print("sampling_luas uji: OK")
 
 
