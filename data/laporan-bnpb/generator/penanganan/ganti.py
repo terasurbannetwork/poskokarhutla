@@ -259,8 +259,11 @@ hari_s1 = sorted(set(re.findall(r'<a:t>(\d{1,2} [A-Z][a-z]{2})</a:t>', s1)))
 assert hari_s1 == sorted(set(PAR['kolom'])), f'label hari slide1 {hari_s1}, harusnya {sorted(set(PAR["kolom"]))}'
 for hr in PAR['kolom']:
     assert s1.count(f'<a:t>{hr}</a:t>') == len(GRUP), f'label {hr} muncul {s1.count(f"<a:t>{hr}</a:t>")} kali, harusnya {len(GRUP)}'
-s1 = rep(s1, '<a:t>21</a:t>', f'<a:t>{PAR["hari"]}</a:t>')   # judul: per Tanggal 22 Oktober
-s1 = rep(s1, '<a:t>20</a:t>', f'<a:t>{PAR["hari"]}</a:t>')
+# tanggal judul (21) dan subjudul (20) sama-sama jadi hari laporan; lewat penanda supaya deck 20 atau 21 Okt
+# tidak menghitung angka yang baru saja ditulis sebagai token templat yang belum diganti
+for a in ('21', '20'):
+    s1 = rep(s1, f'<a:t>{a}</a:t>', '<a:t>@hari@</a:t>')
+s1 = s1.replace('<a:t>@hari@</a:t>', f'<a:t>{PAR["hari"]}</a:t>')
 s1 = rep(s1, '<a:t> Oktober </a:t>', f'<a:t> {PAR["bulan"]} </a:t>')   # bulan judul   # subjudul: '... telah padam pada 21 Okt'
 for a in (' teratas; ±', ') dari ±', ' Okt, belum padam ±'):   # selera pemilik: tanpa ± (22 Okt 2026)
     s1 = rep(s1, f'<a:t>{a}</a:t>', f'<a:t>{a[:-1]}</a:t>')
