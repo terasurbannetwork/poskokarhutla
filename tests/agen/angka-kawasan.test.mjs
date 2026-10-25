@@ -1,5 +1,5 @@
 // Gerbang angka kawasan di kotak cari (public/angka_kawasan.js): luas terbakar dan belum padam di dalam poligon harus memakai rumus
-// scripts/data/peta_karhutla.py (PORSI, 4,3 ha, sel 3x3, jendela 720-2160 menit). Paritas dibuktikan dengan menjalankan bertahan()/sel() Python sungguhan.
+// scripts/data/peta_karhutla.py (faktor per satelit F20/F21, sel 3x3, jendela 720-2160 menit). Paritas dibuktikan dengan menjalankan bertahan()/sel() Python sungguhan.
 // Indeks kawasan (public/data/kawasan_cari.json) diuji lewat invarian: tiap item bersumber, poligon OSM-nya ada, nama contoh pemilik bisa dicari.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -14,8 +14,8 @@ const semua = () => true
 const BB = [100, -2, 102, 0]
 
 test('konstanta sama dengan peta_karhutla.py', () => {
-  const py = JSON.parse(execFileSync('python3', ['-c', 'import sys,json; sys.path.insert(0,"scripts/data"); import peta_karhutla as P; print(json.dumps([P.PORSI,P.G,P.HA]))'], { cwd: akar }).toString())
-  assert.deepEqual([A.PORSI, A.G, A.HA], py, `PORSI/G/HA JS ${[A.PORSI, A.G, A.HA]} vs Python ${py}`)
+  const py = JSON.parse(execFileSync('python3', ['-c', 'import sys,json; sys.path.insert(0,"scripts/data"); import peta_karhutla as P; print(json.dumps([P.F20,P.F21,P.G]))'], { cwd: akar }).toString())
+  assert.deepEqual([A.F.N20, A.F.N21, A.G], py, `F20/F21/G JS ${[A.F.N20, A.F.N21, A.G]} vs Python ${py}`)
 })
 
 test('luas dan belum: hanya N20/N21 n/h hari terpilih; bertahan = sel 3x3 terdeteksi 12-36 jam sebelumnya', () => {
@@ -30,8 +30,12 @@ test('luas dan belum: hanya N20/N21 n/h hari terpilih; bertahan = sel 3x3 terdet
     [-1, 103, -0, 'N20', 1, 2, 0, '10-24'],            // di luar kotak
   ]
   const r = A.hitung(b, BB, semua, new Set(['N', 'N20', 'M']), '10-24')
-  assert.deepEqual(r, { hot: 3, titik: 2, bertahan: 1, luas: Math.floor(2 * A.PORSI * 4.3 + 0.5), belum: Math.floor(A.PORSI * 4.3 + 0.5) },
+  // luas = (1 titik N20 x F20 + 1 titik N21 x F21) / 2; belum = titik N20 yang bertahan x F20 / 2
+  assert.deepEqual(r, { hot: 3, titik: 2, bertahan: 1, luas: Math.floor((A.F.N20 + A.F.N21) / 2 + 0.5), belum: Math.floor(A.F.N20 / 2 + 0.5) },
     `hot = N/N20 hari ini di kotak (N21 bukan sensor utama), titik = N20/N21 n/h: ${JSON.stringify(r)}`)
+  // hari tanpa lintasan NOAA-21 se-Indonesia: NOAA-20 dipakai sendiri, tidak dibagi 2
+  const tanpa21 = A.hitung(b.filter(x => x[3] !== 'N21'), BB, semua, new Set(['N20']), '10-24')
+  assert.equal(tanpa21.luas, Math.floor(A.F.N20 + 0.5), `satelit hilang harus tidak ikut dirata-rata: ${JSON.stringify(tanpa21)}`)
   const tolak = A.hitung(b, BB, () => false, new Set(['N20']), '10-24')
   assert.equal(tolak.hot + tolak.titik, 0, 'titik di luar poligon (dalam() false) tetap terhitung')
 })
@@ -50,9 +54,11 @@ import sys, json; sys.path.insert(0, "scripts/data"); import peta_karhutla as P
 b = json.load(sys.stdin); det = {}
 for r in b:
     if r[3] in ("N20", "N21") and r[5] >= 1: det.setdefault(P.sel(r[1], r[0]), []).append(r[2] * 60)
-L = [(P.sel(r[1], r[0]), r[2] * 60) for r in b if r[3] in ("N20", "N21") and r[5] >= 1 and r[7] == "10-24"]
-t = sum(1 for c, m in L if P.bertahan(det, c, m))
-print(json.dumps([len(L), t, P.bul(len(L) * P.PORSI * P.HA), P.bul(t * P.PORSI * P.HA)]))`], { cwd: akar, input: JSON.stringify(b) }).toString())
+L = [(P.sel(r[1], r[0]), r[2] * 60, r[3]) for r in b if r[3] in ("N20", "N21") and r[5] >= 1 and r[7] == "10-24"]
+F = {"N20": P.F20, "N21": P.F21}; ada = {s for _, _, s in L}
+ha = lambda s: F[s] / len(ada)
+tb = [(c, m, s) for c, m, s in L if P.bertahan(det, c, m)]
+print(json.dumps([len(L), len(tb), P.bul(sum(ha(s) for _, _, s in L)), P.bul(sum(ha(s) for _, _, s in tb))]))`], { cwd: akar, input: JSON.stringify(b) }).toString())
   assert.ok(py[1] > 0 && py[1] < py[0], `fikstur harus memuat titik bertahan dan tidak: ${py}`)
   assert.deepEqual([r.titik, r.bertahan, r.luas, r.belum], py, `JS ${[r.titik, r.bertahan, r.luas, r.belum]} vs Python ${py}`)
 })

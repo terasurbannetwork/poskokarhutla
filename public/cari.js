@@ -119,7 +119,7 @@
       /* mesin yang sama dengan Luas terbakar / Belum padam panel peta (peta_karhutla.py), dihitung di dalam batas ini */
       const a = AngkaKawasan.hitung(S.titik, b, (x, y) => dalamPoli(x, y, P), S.utama, S.hariPilih);
       for (const f of S.kluster.features) { const p = f.properties; if (p.lon >= b[0] && p.lon <= b[2] && p.lat >= b[1] && p.lat <= b[3] && dalamPoli(p.lon, p.lat, P)) kp++; }
-      const tl = `<span title="Titik NOAA-20/21 × 0,534 × 4,3 ha, per hari kalender WIB. Bukan angka regu darat">`;
+      const tl = `<span title="(Titik NOAA-20 × 4,22 ha + titik NOAA-21 × 4,36 ha) ÷ 2, per hari kalender WIB. Bukan angka regu darat">`;
       bd = tab("Di dalam batas", [ren[0].toUpperCase() + ren.slice(1)], [[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],
         [`<span title="Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]])
         + (catatan && !KAW.has(T.i.t) ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }

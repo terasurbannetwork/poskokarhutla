@@ -31,7 +31,7 @@ def bangun(D, jam, wa, bmkg, out):
     a = satelit.hitung(D, jam, 4)
     prov = {k: {m: o[m] for m in ('hot', 'luas', 'belum', 'padam', 'fs')} for k, o in a['prov'].items()}
     for f in ('angka.json', 'angka_nasional.json'):
-        json.dump({'hari': a['hari'], 'prov': prov, 'porsi': a['porsi'], 'metode': 'generator/satelit.py ' + a['cutoff']}, open(os.path.join(kerja, f), 'w'))
+        json.dump({'hari': a['hari'], 'prov': prov, 'faktor': a['faktor'], 'metode': 'generator/satelit.py ' + a['cutoff']}, open(os.path.join(kerja, f), 'w'))
     top6 = sorted(prov, key=lambda k: -prov[k]['hot'][3])[:6]
     tanpa = [k for k in top6 if k not in ADA_BARIS]
     if tanpa:

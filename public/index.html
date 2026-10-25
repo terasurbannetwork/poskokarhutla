@@ -2465,6 +2465,14 @@ function grafikTren(kunci) { const sr = seriHarian(kunci, Math.max(7, S.trenN)),
     <svg viewBox="0 0 ${W} ${N <= 14 ? H + 12 : H}" width="100%" aria-hidden="true">${sr.v.map((x, i) => bar(x, i, i >= n - t.w ? vonis[1] : "#e58a45", i >= n - t.w ? 1 : .4) + persen(i, i >= n - t.w ? 1 : .4)).join("")}${kini == null ? "" : bar(kini, n, "#8a94a6", .35) + persen(n, .35)}
     <polyline points="${rr.map((v, i) => `${(i + .5) * bw},${H - v / m * (H - 14)}`).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="1.3" opacity=".6"/></svg>
     <div class="tp-tr-x"><span>${tg(sr.hari[0])}</span><span>${t.w} hari terakhir vs ${t.w} sebelumnya</span><span>${kini == null ? tg(sr.hari[n - 1]) : "hari ini*"}</span></div></div>`; }
+/* kolom Cluster/Firespot/Status tabel wilayah ikut hari kolom pertama: hari data terbaru = kluster.json; hari lampau = arsip
+   data/kluster_hari/<hari>.json dari harian.py ({kunci: [jumlah, firespot, level maks]}). null = pakai kluster.json, false = tidak ada arsip ("–") */
+const KLH = new Map();
+function klusterHari(h) {
+  if (!h || h === S.meta.hari_wib) return null;
+  if (!KLH.has(h)) { KLH.set(h, false); muatJSON(`data/kluster_hari/${h}.json`).then(d => { KLH.set(h, d.w); if (S.panel === "wil") renderDaftar(); }, () => {}); }
+  return KLH.get(h);
+}
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.panel === "riw") return renderDaftarRiw();
@@ -2472,8 +2480,10 @@ function renderDaftar() {
   const j = S.jalur;
   let item = (S.fiturWil || []).map(f => ({kunci: f.properties.kunci, nama: f.properties.nama, v: nilaiWil(f.properties.kunci)}));
   const gabung = new Map(); item.forEach(i => { const g = gabung.get(i.kunci); if (g) g.v = Math.max(g.v, i.v); else gabung.set(i.kunci, i); });
-  /* [jumlah cluster, firespot, level maks] wilayah */
-  const klW = k => { const kl = klusterDi(k); return [kl.length, kl.filter(f => f.properties.firespot === "ya").length, Math.max(-1, ...kl.map(f => f.properties.level))]; };
+  const u = ukurAktif(), arsip = klusterHari(u === "hot" ? tglRentang() : u === "baru" ? null : S.pk.hari[pkHari()]);
+  /* [jumlah cluster, firespot, level maks] wilayah pada hari kolom pertama; tanpa arsip = [null, null, -1] */
+  const klW = k => { if (arsip === false) return [null, null, -1]; if (arsip) return arsip[k] || [0, 0, -1];
+    const kl = klusterDi(k); return [kl.length, kl.filter(f => f.properties.firespot === "ya").length, Math.max(-1, ...kl.map(f => f.properties.level))]; };
   muatAsap();
   /* urutan memakai tingkat terberat antara api (cluster) dan asap: wilayah tanpa titik tapi udaranya siaga tetap naik */
   item = [...gabung.values()]; item.forEach(i => { i.kw = klW(i.kunci); i.as = asapDi(i.kunci); i.lv = Math.max(i.kw[2], i.as?.lv || 0); });
@@ -2481,7 +2491,7 @@ function renderDaftar() {
   const maks = Math.max(1, ...item.map(i => i.v));
   const prio = new Set(S.meta.prioritas);
   const G = "grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(54px,.8fr) minmax(58px,.8fr) minmax(70px,1fr)";
-  const u = ukurAktif(), pilUkur = `<div class="tr-sw"><span>Indikator</span><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
+  const pilUkur =`<div class="tr-sw"><span>Indikator</span><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "baru" ? `<div class="tr-hari" title="Api Himawari-9 (JAXA) per 10 menit; piksel berdekatan digabung jadi satu api, sama dengan lingkaran di peta">Api baru Himawari-9: <b>pukul ${new Date(Lapis.cache.hwMeta.acuan).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"})} WIB</b></div>`

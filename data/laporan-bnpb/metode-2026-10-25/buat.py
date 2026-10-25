@@ -264,7 +264,7 @@ wadah_kartu(s, X0, Y1, 7170725, 'DATA SATELIT', [('pesawat', 'oranye', '4', 'sat
 wadah_kartu(s, 7810000, Y1, XK - 7810000, 'PERLU DIINGAT', [('awas', 'merah', 'Perkiraan', 'bukan luas resmi'), ('mata', 'merah', 'Harian', 'dihitung ulang terus')],
             latar='FCF1F2', warna_pil=MERAH, ik_pil='awas')
 yi = panel(s, X0, Y2, 7170725, 4000000, 'Alur perhitungan', ORANYE, 'FBE7D6', 'putar', 5)
-L = [('Titik panas', 'oranye', 'api', [('MODIS + S-NPP + NOAA-20', 'navy', 'pesawat'), ('semua keyakinan', 'navy', 'centang'), ('hari WIB', 'navy', 'kalender')]),
+L = [('Titik panas', 'oranye', 'api', [('MODIS 1 km + VIIRS 375 m (S-NPP, NOAA-20)', 'navy', 'pesawat'), ('semua keyakinan', 'navy', 'centang'), ('hari WIB', 'navy', 'kalender')]),
      ('Saringan', 'navy', 'awas', [('industri, tambang', 'merah', 'awas'), ('PLTU', 'merah', 'awas'), ('kawah gunung api', 'merah', 'awas')]),
      ('Luas terbakar', 'oranye', 'luas', [('titik NOAA-20/21', 'navy', 'pesawat'), ('x 0,534 x 4,3 ha', 'oranye', 'luas'), ('perkiraan', 'merah', 'awas')]),
      ('Belum padam dan padam', 'merah', 'awas', [('bertahan 12 s.d. 36 jam', 'merah', 'api'), ('padam = 48 jam tanpa titik', 'navy', 'centang')]),
@@ -294,10 +294,10 @@ wadah_kartu(s, X0, Y1, 7170725, 'DEFINISI', [('pesawat', 'oranye', '3', 'satelit
 wadah_kartu(s, 7810000, Y1, XK - 7810000, 'PERLU DIINGAT', [('awas', 'merah', '1 Nov', 'S-NPP berhenti'), ('api', 'merah', 'Titik', 'bukan jumlah api')],
             latar='FCF1F2', warna_pil=MERAH, ik_pil='awas')
 yi = panel(s, X0, Y2, 7170725, 4000000, 'Satelit yang dipakai', ORANYE, 'FBE7D6', 'pesawat', 4)
-SAT = [('MODIS Terra dan Aqua', [('piksel 1 km', 'navy', 'luas'), ('seri sejak 2001', 'navy', 'kalender')], ('dihitung', 'oranye', 'centang'), ORANYE),
-       ('VIIRS S-NPP', [('piksel 375 m', 'navy', 'luas'), ('berhenti 1 Nov 2026, 20.00 WIB', 'merah', 'awas')], ('dihitung', 'oranye', 'centang'), ORANYE),
-       ('VIIRS NOAA-20', [('piksel 375 m', 'navy', 'luas'), ('juga dasar luas terbakar', 'oranye', 'luas')], ('dihitung', 'oranye', 'centang'), ORANYE),
-       ('VIIRS NOAA-21', [('piksel 375 m', 'navy', 'luas'), ('pengganti S-NPP mulai 1 Nov', 'navy', 'putar'), ('dasar luas terbakar', 'oranye', 'luas')], ('peta saja', 'abu', 'mata'), BAJA)]
+SAT = [('Sensor MODIS, satelit Terra dan Aqua', [('resolusi 1 km = 100 ha', 'navy', 'luas'), ('seri sejak 2001', 'navy', 'kalender')], ('dihitung', 'oranye', 'centang'), ORANYE),
+       ('Sensor VIIRS, satelit S-NPP', [('resolusi 375 m = 14,06 ha', 'navy', 'luas'), ('berhenti 1 Nov 2026, 20.00 WIB', 'merah', 'awas')], ('dihitung', 'oranye', 'centang'), ORANYE),
+       ('Sensor VIIRS, satelit NOAA-20', [('resolusi 375 m = 14,06 ha', 'navy', 'luas'), ('juga dasar luas terbakar', 'oranye', 'luas')], ('dihitung', 'oranye', 'centang'), ORANYE),
+       ('Sensor VIIRS, satelit NOAA-21', [('resolusi 375 m', 'navy', 'luas'), ('pengganti S-NPP mulai 1 Nov', 'navy', 'putar'), ('dasar luas terbakar', 'oranye', 'luas')], ('peta saja', 'abu', 'mata'), BAJA)]
 for k, (j, ch, st, bl) in enumerate(SAT):
     baris(s, X0 + 400000, yi + 160000 + k * 820000, X0 + 7170725 - 140000, j, ch, st, bl, 'pesawat')
 yi = panel(s, 7810000, Y2, XK - 7810000, 4000000, 'Cocok dengan GIS BNPB', NAVY, 'E6EAF0', 'centang')
@@ -319,8 +319,8 @@ cara('Cara menghitung titik panas', ('Cara menghitung',),
      ('Ubah ke jam WIB', 'jam akuisisi satelit (UTC) + 7 jam; ambil titik yang jatuh 00.00 s.d. 24.00 WIB hari itu.'),
      ('Tentukan wilayah', 'cocokkan koordinat tiap titik dengan batas provinsi, kabupaten/kota, dan kecamatan.'),
      ('Saring lalu hitung', 'buang titik di sel sumber panas tetap (industri, PLTU, kawah); hitung semua sisanya, tanpa hapus titik ganda antarsatelit.')],
-    [('Titik MODIS', '66'), ('Titik VIIRS S-NPP', '110'), ('Titik VIIRS NOAA-20', '23'), ('Titik sumber panas tetap dibuang', '0')],
-    '199 titik', 'titik panas Jambi, 24 Okt 2026 (66 + 110 + 23)', 'Titik panas = titik MODIS + S-NPP + NOAA-20, semua keyakinan, hari WIB, tanpa sumber panas tetap', ik='api')
+    [('Titik MODIS (resolusi 1 km)', '66'), ('Titik VIIRS di S-NPP (375 m)', '110'), ('Titik VIIRS di NOAA-20 (375 m)', '23'), ('Titik sumber panas tetap dibuang', '0')],
+    '199 titik', 'titik panas Jambi, 24 Okt 2026 (66 + 110 + 23)', 'Titik panas = MODIS (1 km) + VIIRS (375 m) di S-NPP dan NOAA-20, semua keyakinan, hari WIB, tanpa sumber panas tetap', ik='api')
 
 # ================================================================== 4 saringan
 s = slide('Titik panas yang bukan kebakaran vegetasi dibuang',
@@ -372,6 +372,93 @@ K5 = [('Titik = piksel yang panas', 'Satelit melihat panas di dalam kotak 14,06 
 for k, (j, d_, ik, bl) in enumerate(K5):
     baris(s, xp, yi + 160000 + k * 820000, XK - 140000, j, None, bulat=bl, ik=ik, sub=d_)
 kaki(s)
+
+# ================================================================== 5b riwayat tahunan: dasar 4,3 ha
+import json as _json
+RW = _json.load(open(os.path.join(SINI, 'riwayat.json')))   # factsheet_karhutla.json + laporan.json + sejarah.json website, 25 Okt 2026
+rows = RW['rows']; tb = RW['tb']; f0 = lambda v: f"{int(round(v)):,}".replace(',', '.')
+rasio = [r[3] for r in rows if r[3]]; urut = sorted(rasio); med = urut[len(urut) // 2]
+lebih = [r for r in rows[1:-1] if r[1] > rows[-1][1]]
+jt = lambda v: f"{v / 1e6:.1f}".replace('.', ',')
+s = slide('Titik dan luas terbakar per tahun: dari sinilah angka 4,3 hektare',
+    'Tabel ini dasar angka 4,3 hektare. Untuk tiap tahun 2015 sampai 2025, luas terbakar resmi dibagi jumlah titik VIIRS S-NPP keyakinan sedang '
+    'atau tinggi pada tahun yang sama. Hasilnya berkisar 2,1 sampai 6,5 hektare per titik. Nilai tengah sebelas tahun itu 4,3 hektare, dan separuh '
+    'tahun berada di antara 3,2 dan 4,6. Tahun 2026 belum punya angka resmi, jadi luasnya diperkirakan dari titik kali 4,3 hektare: sekitar 2,4 juta '
+    'hektare hingga 25 Oktober, dengan rentang 1,8 sampai 2,6 juta hektare memakai kuartil bawah dan atas. Ini tertinggi kedua sejak 2015, di '
+    'bawah 2015. Angka 1997 sampai 1998 adalah perkiraan kumulatif dua tahun dan belum ada satelit VIIRS.', ('4,3 hektare',))
+wadah_kartu(s, X0, Y1, 7170725, 'DASAR 4,3 HA', [('lapis', 'oranye', f"{str(med).replace('.', ',')} ha", 'median 2015 s.d. 2025'),
+            ('luas', 'navy', '3,2 s.d. 4,6', 'rentang separuh tahun'), ('kalender', 'navy', '11 tahun', 'dibandingkan'), ('pesawat', 'navy', 'S-NPP', 'sedang/tinggi, 375 m')])
+wadah_kartu(s, 7810000, Y1, XK - 7810000, '2026 HINGGA 25 OKT', [('luas', 'merah', f"{jt(tb['ha'])} juta ha", 'perkiraan, bukan resmi'), ('api', 'merah', f"ke-{len(lebih) + 1}", 'tertinggi sejak 2015')],
+            latar='FCF1F2', warna_pil=MERAH, ik_pil='awas')
+yi = panel(s, X0, Y2, W, 4000000, 'Titik panas dan luas terbakar Indonesia per tahun', ORANYE, 'FBE7D6', 'kalender', len(rows))
+xT, xTB, xL, xLB, xR = X0 + 200000, X0 + 1150000, X0 + 4300000, X0 + 4300000, XK - 200000
+wT, wL = 2200000, 5200000; MXT = max(r[2] or 0 for r in rows); MXL = 2.8e6
+tx(s, xTB, yi + 70000, 2000000, 160000, [('TITIK S-NPP SETAHUN', 6.5, True, ABU)], spc=80)
+tx(s, xLB, yi + 70000, 3000000, 160000, [('LUAS TERBAKAR (HA)', 6.5, True, ABU)], spc=80)
+tx(s, xR - 900000, yi + 70000, 900000, 160000, [('HA PER TITIK', 6.5, True, ABU)], al='r', spc=80)
+rh = (4000000 - 457200 - 330000) / len(rows)
+for i, (th, ha, t, ra) in enumerate(rows):
+    y = yi + 270000 + i * rh; ini = i == len(rows) - 1
+    tx(s, xT, y, 900000, rh, [(th, 7.5, True, TUA)])
+    if t:
+        w = max(20000, t / MXT * wT); bentuk(s, xTB, y + rh * 0.2, w, rh * 0.6, 'F4C3A0' if ini else 'E08A3C', prst=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.2)
+        tx(s, xTB + w + 50000, y, 900000, rh, [(f0(t), 7, True, TUA)])
+    else:
+        tx(s, xTB, y, 1500000, rh, [('belum ada satelit', 7, False, ABU)])
+    w = max(20000, min(ha, MXL) / MXL * wL); c = 'F2B8AE' if ini else (MERAH if ha >= 1e6 else NAVY)
+    bentuk(s, xLB, y + rh * 0.2, w, rh * 0.6, c, prst=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.2)
+    lab = (f"± {jt(ha)} juta ha" if ha > MXL else f"{f0(ha)} ha") + (f"   perkiraan {jt(tb['rendah'])} s.d. {jt(tb['tinggi'])} juta" if ini else '')
+    if ha > MXL: tx(s, xLB + w - 1500000, y, 1450000, rh, [(lab, 7, True, 'FFFFFF')], al='r')
+    else: tx(s, xLB + w + 50000, y, 3000000, rh, [(lab, 7, True, MERAH if ha >= 1e6 or ini else TUA)])
+    tx(s, xR - 900000, y, 900000, rh, [(str(ra).replace('.', ',') if ra else '-', 7.5, True, ORANYE if ra == med else NAVY)], al='r')
+    if i < len(rows) - 1: garis(s, X0 + 150000, y + rh, XK - 150000, y + rh, GARIS)
+kaki(s, '*Titik: NASA FIRMS VIIRS S-NPP keyakinan sedang/tinggi setahun. Luas 2015 s.d. 2025: BNPB (Bakom RI, Infografis Data Karhutla 2026). 2026: titik x 4,3 ha, bukan angka resmi.')
+
+# ================================================================== 5c porsi 0,534: rasio harian S-NPP : NOAA-20+21
+PH = [r for r in _json.load(open(os.path.join(SINI, 'porsi_harian.json'))) if '2026-10-15' <= r[0] <= '2026-10-24']   # hari WIB lengkap di cache FIRMS
+ACU = ('2026-10-16', '2026-10-17', '2026-10-18', '2026-10-19')
+ra = sorted(r[3] for r in PH if r[0] in ACU); porsi = (ra[1] + ra[2]) / 2
+assert abs(porsi - 0.5338) < 0.001, porsi   # sama dengan PORSI peta_karhutla.py
+kom = lambda v, n=3: f"{v:.{n}f}".replace('.', ',')
+s = slide('Dari mana angka 0,534: rasio titik S-NPP terhadap NOAA',
+    'Angka 0,534 didapat dengan cara yang mirip dengan 4,3 hektare, tetapi per hari. Untuk tiap hari, jumlah titik S-NPP keyakinan sedang atau '
+    'tinggi di Indonesia dibagi jumlah titik NOAA-20 ditambah NOAA-21 dengan keyakinan yang sama. Dua satelit NOAA melihat kira-kira dua kali titik '
+    'S-NPP, jadi rasionya sekitar setengah. Kami pilih 16 sampai 19 Oktober, empat hari ketika semua satelit lengkap. Rasionya 0,516, 0,590, 0,552, '
+    'dan 0,436. Diurutkan, dua angka tengahnya 0,516 dan 0,552, rata-ratanya 0,534. Tanggal 20 Oktober rasionya jatuh ke 0,261 karena lintasan siang '
+    'S-NPP hilang di FIRMS, itu sebabnya S-NPP tidak bisa diandalkan. Sebagai pembanding, median 264 hari tanpa celah sepanjang 2026 adalah 0,50, jadi '
+    'luas dengan 0,534 sekitar 5 persen lebih tinggi dibanding basis S-NPP setahun.', ('0,534',))
+wadah_kartu(s, X0, Y1, 7170725, 'PORSI', [('lapis', 'oranye', '0,534', 'median 16 s.d. 19 Okt'), ('kalender', 'navy', '4 hari', 'semua satelit lengkap'),
+            ('centang', 'navy', '0,50', 'median 264 hari 2026'), ('luas', 'navy', '2,30 ha', 'per titik NOAA-20/21')])
+wadah_kartu(s, 7810000, Y1, XK - 7810000, 'PERLU DIINGAT', [('awas', 'merah', '0,261', '20 Okt, S-NPP hilang'), ('lapis', 'merah', '± 5%', 'luas di atas basis S-NPP')],
+            latar='FCF1F2', warna_pil=MERAH, ik_pil='awas')
+yi = panel(s, X0, Y2, 7170725, 4000000, 'Titik sedang/tinggi per hari, Indonesia', ORANYE, 'FBE7D6', 'kalender', len(PH))
+MX = max(r[2] for r in PH); xb = X0 + 1150000; wb = 4300000; xr = X0 + 7170725 - 200000
+tx(s, X0 + 200000, yi + 70000, 900000, 160000, [('TANGGAL', 6.5, True, ABU)], spc=80)
+tx(s, xb, yi + 70000, 3000000, 160000, [('S-NPP (OREN)  DAN  NOAA-20 + NOAA-21 (NAVY)', 6.5, True, ABU)], spc=60)
+tx(s, xr - 900000, yi + 70000, 900000, 160000, [('RASIO', 6.5, True, ABU)], al='r', spc=80)
+rh = (4000000 - 457200 - 330000) / len(PH)
+for i, (d, sn, no, r) in enumerate(PH):
+    y = yi + 270000 + i * rh; acu = d in ACU
+    if acu: bentuk(s, X0 + 120000, y, 7170725 - 240000, rh, 'FDF1E8')
+    tx(s, X0 + 200000, y, 900000, rh, [(f"{int(d[8:])} Okt", 7.5, True, TUA)])
+    h = rh * 0.32
+    w1 = max(20000, sn / MX * wb); bentuk(s, xb, y + rh * 0.15, w1, h, 'E08A3C', prst=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.2)
+    tx(s, xb + w1 + 40000, y + rh * 0.15 - 20000, 900000, h + 40000, [(f0(sn), 6.5, True, TUA)])
+    w2 = max(20000, no / MX * wb); bentuk(s, xb, y + rh * 0.53, w2, h, NAVY, prst=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.2)
+    tx(s, xb + w2 + 40000, y + rh * 0.53 - 20000, 900000, h + 40000, [(f0(no), 6.5, True, TUA)])
+    ket = 'acuan' if acu else ('S-NPP siang hilang' if d == '2026-10-20' else '')
+    tx(s, xr - 2100000, y, 1150000, rh, [(ket, 6.5, True, ORANYE if acu else MERAH)], al='r')
+    tx(s, xr - 900000, y, 900000, rh, [(kom(r), 8, True, ORANYE if acu else (MERAH if d == '2026-10-20' else NAVY))], al='r')
+    if i < len(PH) - 1: garis(s, X0 + 150000, y + rh, X0 + 7170725 - 150000, y + rh, GARIS)
+yi = panel(s, 7810000, Y2, XK - 7810000, 4000000, 'Cara mendapat 0,534', NAVY, 'E6EAF0', 'lapis', 3)
+xp = 7810000 + 400000
+baris(s, xp, yi + 180000, XK - 140000, 'Hitung rasio tiap hari', None, bulat=NAVY, ik='kalender', sub='titik S-NPP dibagi titik NOAA-20 + NOAA-21, keyakinan sedang/tinggi, seluruh Indonesia')
+baris(s, xp, yi + 900000, XK - 140000, 'Urutkan 4 hari acuan', None, bulat=NAVY, ik='lapis', sub=' < '.join(kom(v) for v in ra))
+baris(s, xp, yi + 1620000, XK - 140000, 'Ambil nilai tengah', None, bulat=ORANYE, ik='centang', sub=f'({kom(ra[1])} + {kom(ra[2])}) / 2 = {kom(porsi)}')
+bentuk(s, 7960000, yi + 2400000, XK - 7810000 - 300000, 1000000, 'FDF1E8', prst=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.12)
+tx(s, 8100000, yi + 2470000, 3300000, 480000, [('0,534 x 4,3 = 2,30 ha', 15, True, ORANYE)])
+tx(s, 8100000, yi + 2950000, 3300000, 400000, [('luas per titik NOAA-20/21, dipakai tetap sesudah S-NPP berhenti 1 Nov', 7, False, TEKS)], an='t')
+kaki(s, '*Titik VIIRS keyakinan sedang/tinggi dari NASA FIRMS NRT, hari WIB, di dalam batas wilayah Indonesia. Median 2026: 264 hari tanpa celah data.')
 
 # ================================================================== 6 rumus luas
 s = slide('Luas terbakar harian: titik NOAA-20 dan NOAA-21 dikali 2,30 hektare',
@@ -523,6 +610,44 @@ cara('Cara menghitung cluster', ('Cara menghitung',),
      ('Saring yang aktif, beri status', 'aktif bila titik terakhir <= 72 jam (168 jam di gambut kering); status Prioritas, Siaga, Patroli, atau Rutin.')],
     [('Prioritas pemadaman', '3'), ('Siaga pemadaman awal', '31'), ('Patroli terpadu', '97'), ('Pencegahan rutin', '49')],
     '180 cluster', 'cluster aktif Jambi, 24 Okt 2026', 'Cluster = titik VIIRS 7 hari yang berjarak <= 1,5 km; aktif bila titik terakhir <= 72 jam (168 jam di gambut)', warna=NAVY, latar='E6EAF0', ik='pin')
+
+# ================================================================== 10a keyakinan: tingkat titik (NASA) dan kelas harian cluster
+s = slide('Keyakinan titik dan kelas harian cluster: dasar firespot',
+    'Ada dua tingkat keyakinan. Pertama, keyakinan tiap titik dari NASA. VIIRS memakai tiga kode: rendah untuk titik siang dengan selisih panas kecil '
+    'atau terkena pantulan matahari, sedang untuk selisih panas yang jelas tanpa pantulan, dan tinggi untuk piksel yang jenuh karena panasnya sangat '
+    'kuat. MODIS memakai angka 0 sampai 100 yang kami kelompokkan menjadi rendah 0 sampai 29, sedang 30 sampai 79, dan tinggi 80 sampai 100. Kedua, '
+    'kelas harian cluster dari kami: High bila ada satu titik keyakinan tinggi atau empat piksel unik keyakinan sedang, selain itu Medium. Titik '
+    'keyakinan rendah tidak dipakai untuk cluster. Piksel unik dipakai supaya satu api yang dilihat tiga satelit tidak terhitung tiga kali. Titik '
+    'tinggi jarang di malam hari, jadi api malam biasanya menjadi High lewat jalur empat piksel.', ('Keyakinan titik',))
+wadah_kartu(s, X0, Y1, 7170725, 'KEYAKINAN TITIK (NASA)', [('awas', 'abu', 'Rendah', 'VIIRS l, MODIS 0-29'), ('centang', 'oranye', 'Sedang', 'VIIRS n, MODIS 30-79'),
+            ('api', 'merah', 'Tinggi', 'VIIRS h, MODIS 80-100'), ('mata', 'navy', '1 s.d. 3%', 'titik tinggi di malam')])
+wadah_kartu(s, 7810000, Y1, XK - 7810000, 'PERLU DIINGAT', [('awas', 'merah', 'Rendah', 'tidak dipakai cluster'), ('luas', 'merah', 'Piksel', 'unik, bukan titik')],
+            latar='FCF1F2', warna_pil=MERAH, ik_pil='awas')
+yi = panel(s, X0, Y2, 7170725, 4000000, 'Tingkat 1: keyakinan tiap titik, dari algoritma NASA', NAVY, 'E6EAF0', 'pesawat', 3)
+for k, (j, ch, st, bl, d_) in enumerate((
+        ('Rendah', [('VIIRS: l', 'abu', 'pesawat'), ('MODIS: 0 s.d. 29', 'abu', 'pesawat')], ('sering bukan api', 'abu', 'awas'), ABU,
+         'titik siang dengan selisih panas kecil (kurang dari sekitar 15 K dari latar) atau di daerah pantulan matahari'),
+        ('Sedang (nominal)', [('VIIRS: n', 'oranye', 'pesawat'), ('MODIS: 30 s.d. 79', 'oranye', 'pesawat')], ('hampir pasti api', 'oranye', 'centang'), ORANYE,
+         'selisih panas jelas (lebih dari sekitar 15 K) dan bebas pantulan matahari, siang maupun malam'),
+        ('Tinggi', [('VIIRS: h', 'merah', 'pesawat'), ('MODIS: 80 s.d. 100', 'merah', 'pesawat')], ('api kuat', 'merah', 'api'), MERAH,
+         'piksel jenuh: panas sangat kuat sampai sensor mentok; jarang di malam hari (1 s.d. 3% vs 10 s.d. 13% siang)'))):
+    y = yi + 170000 + k * 1150000
+    baris(s, X0 + 400000, y, X0 + 7170725 - 140000, j, ch, st, bl, 'api')
+    tx(s, X0 + 400000, y + 340000, 6500000, 400000, [(d_, 7, False, TEKS)], an='t')
+tx(s, X0 + 400000, yi + 3350000, 6500000, 200000, [('Pembagian MODIS mengikuti BRIN; nilai bukan angka dianggap rendah, kode VIIRS lain dianggap sedang.', 6.5, False, ABU)])
+yi = panel(s, 7810000, Y2, XK - 7810000, 4000000, 'Tingkat 2: kelas harian cluster', ORANYE, 'FBE7D6', 'lapis', 2)
+xp = 7810000 + 400000
+baris(s, xp, yi + 160000, XK - 140000, 'High', None, ('firespot bila berulang', 'merah', 'api'), MERAH, 'api', '>= 1 titik keyakinan tinggi, atau >= 4 piksel unik keyakinan sedang')
+baris(s, xp, yi + 760000, XK - 140000, 'Medium', None, ('perlu bukti hari lain', 'oranye', 'mata'), ORANYE, 'api', 'selain itu: 1 s.d. 3 piksel sedang tanpa titik tinggi')
+tx(s, 7960000, yi + 1380000, 3400000, 160000, [('CONTOH ISI CLUSTER SEHARI', 6.5, True, ABU)], spc=80)
+for k, (a, c_) in enumerate((('1 titik keyakinan tinggi', 'High'), ('5 piksel keyakinan sedang', 'High'), ('3 piksel keyakinan sedang', 'Medium'),
+                             ('6 titik sedang, 2 piksel (3 satelit)', 'Medium'))):
+    y = yi + 1600000 + k * 330000
+    tx(s, 7960000, y, 2700000, 300000, [(a, 7.2, False, TUA)])
+    pil(s, XK - 140000 - lebar_pil(c_), y + 80000, c_, 'merah' if c_ == 'High' else 'oranye', 'api')
+    garis(s, 7960000, y + 320000, XK - 140000, y + 320000, GARIS)
+tx(s, 7960000, yi + 3000000, 3450000, 400000, [('Titik rendah tidak masuk cluster. Piksel unik: satu api di piksel yang sama dilihat 3 satelit dihitung 1.', 6.8, False, ABU)], an='t')
+kaki(s)
 
 # ================================================================== 10 firespot
 s = slide('Firespot: saringan api nyata, diadaptasi dari SIPANTAU Kemenhut',
@@ -680,7 +805,7 @@ wadah_kartu(s, 7810000, Y1, XK - 7810000, 'DASAR FAKTOR', [('centang', 'oranye',
             latar='FCF1F2', warna_pil=ORANYE, ik_pil='luas')
 yi = panel(s, X0, Y2, W, 4000000, 'Perbandingan per aspek', NAVY, 'E6EAF0', 'jabat', 7)
 tabel(s, X0 + 150000, yi + 100000, W - 300000, [('ASPEK', 2, 'l'), ('METODE INI', 4, 'l'), ('SIPANTAU KEMENHUT', 4, 'l')],
-      [['Titik panas', 'MODIS + S-NPP + NOAA-20, semua keyakinan, hari WIB', 'VIIRS dan MODIS, keyakinan Medium atau High'],
+      [['Titik panas', 'MODIS 1 km + VIIRS 375 m (S-NPP, NOAA-20), semua keyakinan, hari WIB', 'VIIRS dan MODIS, keyakinan Medium atau High'],
        ['Cluster', 'DBSCAN, jarak adaptif sampai 1,5 km', 'radius 750 m dari titik tengah'],
        ['Persistensi', 'cluster yang sama, sambungan 48 jam', 'H-1 dalam 750 m; H-2 dalam 375 m'],
        ['Firespot', 'pola High dan Medium 3 hari, dihitung per piksel unik', 'pola yang sama, dihitung per titik'],

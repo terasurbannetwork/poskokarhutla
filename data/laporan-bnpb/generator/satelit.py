@@ -1,6 +1,6 @@
 """Angka satelit karhutla untuk deck, dengan jam cut-off pada hari laporan (hari terakhir = angka sementara s.d. jam itu).
 
-Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, hitung, hitung_wil; PORSI konstan), jadi untuk hari yang sudah
+Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, hitung, hitung_wil; luas per titik F20/F21 per satelit), jadi untuk hari yang sudah
 lengkap hasilnya sama dengan public/data/peta_karhutla*.json. Yang ditambah di sini hanya: tarikan FIRMS mentah per hari UTC (cache CSV),
 pemotongan di jam cut-off WIB, dan hot_bersih (tanpa titik sumber panas industri, sama dengan harian30.json / tabel Real Time website).
 
@@ -8,14 +8,14 @@ API:
     hitung(tanggal: date, jam='15:00', hari_n=4, kunci=None) -> {
         'hari': ['YYYY-MM-DD', ...]            # hari_n hari WIB, berakhir di tanggal
         'cutoff': 'YYYY-MM-DDTHH:MM+07:00',
-        'porsi': PORSI,
+        'faktor': PK.FAKTOR,
         'prov': {'62': {'hot': [..], 'hot_bersih': [..], 'luas': [..], 'belum': [..], 'padam': [..], 'fs': [0, ..]}},
         'kab':  {'62|Kotawaringin Barat': {... sama ...}},       # kunci persis properties.kunci layar
         'kec':  {'62|Kotawaringin Barat|Kumai': {... sama ...}},
     }   # luas/belum/padam float belum dibulatkan (bulatkan sekali di deck), hot int
 CLI:
     python3 satelit.py --tanggal 2026-10-25 [--jam 15:00] [--hari 4] [--keluar angka.json]
-    python3 satelit.py --uji      # hari lengkap 23 Okt (jam 23:59) harus sama dengan berkas website
+    python3 satelit.py --uji      # hari lengkap 23 Okt (jam 23:59) harus sama dengan public/data/peta_karhutla.json lokal (bangun --penuh dengan rumus F20/F21)
 Butuh FIRMS_MAP_KEY (env atau .env repo). CSV mentah di cache/raw/ (di-ignore git)."""
 import csv, datetime as dt, io, json, os, re, sys, urllib.request
 from collections import defaultdict
@@ -86,28 +86,31 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
         o['hot'][i], o['luas'][i], o['belum'][i], o['padam'][i] = hot, luas, belum, padam
         o['hot_bersih'][i] = hot - hot_ind
     for i, d in enumerate(hari):
-        for k, (h, l, b, p) in PK.hitung(hd, d, PK.PORSI).items():
+        for k, (h, l, b, p) in PK.hitung(hd, d).items():
             isi('prov', k, i, h, l, b, p, hd_ind[d]['hot'].get(k, 0))
         ind_w = defaultdict(int)
         for kk, n in hd_ind[d]['hotw'].items():
             ind_w[kk] += n; ind_w[kk.rsplit('|', 1)[0]] += n
-        for k, (h, l, b, p) in PK.hitung_wil(hd, d, PK.PORSI).items():
+        for k, (h, l, b, p) in PK.hitung_wil(hd, d).items():
             isi('kec' if k.count('|') == 2 else 'kab', k, i, h, l, b, p, ind_w.get(k, 0))
-    return {'hari': [d.isoformat() for d in hari], 'cutoff': cutoff.isoformat(timespec='minutes'), 'porsi': PK.PORSI, **out}
+    return {'hari': [d.isoformat() for d in hari], 'cutoff': cutoff.isoformat(timespec='minutes'), 'faktor': PK.FAKTOR, **out}
 
 
 def uji():
-    """Hari lengkap 23 Okt 2026 = berkas website (peta_karhutla.json luas/belum/padam per provinsi, harian30.json hot bersih per provinsi)."""
+    """Hari lengkap 23 Okt 2026 = berkas website lokal (public/data/peta_karhutla.json luas/belum/padam per provinsi, rumus F20/F21 yang sama); hot bersih = harian30.json
+    di website (jaringan). Berkas lokal harus dibangun ulang penuh dengan peta_karhutla.py bila F20/F21 berubah."""
     a = hitung(dt.date(2026, 10, 23), '23:59', 3)
+    P = json.load(open(os.path.join(AKAR, 'public/data/peta_karhutla.json')))
+    assert P['faktor'] == PK.FAKTOR, f"berkas lokal memakai faktor {P['faktor']}, mesin {PK.FAKTOR}: bangun ulang penuh"
     ambil = lambda f: json.load(urllib.request.urlopen(urllib.request.Request(f'https://centurisk97.id/data/{f}', headers={'User-Agent': 'curl/8'}), timeout=60))
-    P, H = ambil('peta_karhutla.json'), ambil('harian30.json')
+    H = ambil('harian30.json')
     ip, ih = P['hari'].index('2026-10-23'), H['hari'].index('2026-10-23')
     beda = [(k, m, PK.bul(o[m][-1]), P['prov'][k][m][ip]) for k, o in a['prov'].items() if k in P['prov']
             for m in ('luas', 'belum', 'padam') if abs(PK.bul(o[m][-1]) - (P['prov'][k][m][ip] or 0)) > 1]
     hb = [(k, o['hot_bersih'][-1], H['prov'].get(k, [0] * 99)[ih]) for k, o in a['prov'].items() if o['hot_bersih'][-1] != H['prov'].get(k, [0] * 99)[ih]]
-    assert not beda, f'luas/belum/padam beda dengan website: {beda[:8]}'
+    assert not beda, f'luas/belum/padam beda dengan berkas website: {beda[:8]}'
     assert len(hb) <= 2 and all(abs(x - y) <= 3 for _, x, y in hb), f'hot bersih beda dengan harian30: {hb[:8]}'
-    print('uji lolos: 23 Okt sama dengan website untuk', len(a['prov']), 'provinsi; hot_bersih selisih', hb)
+    print('uji lolos: 23 Okt sama dengan berkas website lokal untuk', len(a['prov']), 'provinsi; hot_bersih selisih', hb)
 
 
 if __name__ == '__main__':

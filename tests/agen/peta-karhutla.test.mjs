@@ -14,7 +14,7 @@ assert.equal(typeof R.kontrol, 'function', 'peta_karhutla.js harus mengekspor wi
 // 31 hari 2026-09-21 .. 2026-10-21 (Senin 19 Okt = indeks 28); hot = i+1, luas = 10(i+1), belum = 100(i+1); satu provinsi tambahan serba nol
 const hari = Array.from({ length: 31 }, (_, i) => R.tambah('2026-09-21', i))
 const deret = f => hari.map((_, i) => f(i))
-const J = () => ({ versi: 1, dibuat: '2026-10-21T22:00:00+07:00', cutoff: '2026-10-21T07:00:00+07:00', hari: [...hari], porsi: 0.534, celah: ['2026-10-20'],
+const J = () => ({ versi: 1, dibuat: '2026-10-21T22:00:00+07:00', cutoff: '2026-10-21T07:00:00+07:00', hari: [...hari], faktor: { N20: 4.22, N21: 4.36 }, celah: ['2026-10-20'],
   metode: { hot: 'a', luas: 'b', belum: 'c', padam: 'd', catatan: [] },
   prov: { 62: { nama: 'Kalimantan Tengah', hot: deret(i => i + 1), luas: deret(i => 10 * (i + 1)), belum: deret(i => 100 * (i + 1)), padam: deret(() => 0) },
           14: { nama: 'Riau', hot: deret(() => 0), luas: deret(() => 0), belum: deret(() => 0), padam: deret(() => 0) } } })
