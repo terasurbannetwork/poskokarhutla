@@ -55,14 +55,17 @@ th = RW['jenis']['banjir']['tahun_cakup']
 ms = RW['musim']['banjir']['15']['rata']; bulan = [round(sum(ms[i * 3:i * 3 + 3]), 1) for i in range(12)]
 banjir = {'kab': BJ, 'kec_waspada_b': sum(1 for v in st.values() if max(v['b'][1:]) >= 1), 'kec_waspada_l': sum(1 for v in st.values() if max(v['l'][1:]) >= 1),
           'kec_waspada': sum(1 for v in st.values() if max(v['b'][1:] + v['l'][1:]) >= 1), 'n_kec': len(st),
-          'dibi': {'banjir': rb['total'], 'longsor': rl['total'], 'th0': th[0], 'th1': th[-1], 'v': dict(zip([str(t) for t in range(int(th[0]), int(th[0]) + len(rb['v']))], rb['v']))},
+          'dibi': {'banjir': rb['total'], 'longsor': rl['total'], 'th0': th[0], 'th1': th[-1], 'v': dict(zip([str(t) for t in range(int(th[0]), int(th[0]) + len(rb['v']))], rb['v'])),
+                   'v_longsor': dict(zip([str(t) for t in range(int(th[0]), int(th[0]) + len(rl['v']))], rl['v']))},
           'bulan': bulan, 'dibuat_status': ST.get('dibuat')}
+NAS = {m: sorted(S['prov'], key=lambda k: -S['prov'][k][m][-1]).index('15') + 1 for m in ('hot_bersih', 'luas', 'belum')}
+NAS['n_prov'] = len(S['prov'])
 A = {'HARI': HARI, 'prov': prov, 'kab': KAB, 'rank': rank, 'level': {str(k): v for k, v in lvl.items()}, 'n_komp': len(KL),
      'prio': [{k: c.get(k) for k in ('id', 'kab', 'kec', 'n24', 'n', 'luas', 'lat', 'lon', 'level', 'awal', 'gambut')} for c in prio],
      'mj_kec': kec_mj, 'gambut_kec': sorted(['|'.join(x) for x in gambut_kec]),
      'kaw': kaw, 'kaw_kec': {'|'.join(k): v for k, v in kaw_kec.items()}, 'kaw_komp': len(kl_kaw), 'kaw_prio': sum(1 for c in kl_kaw if c['level'] == 3),
      'kaw_luas_klaster': round(sum(c.get('luas', 0) for c in kl_kaw if c['level'] == 3)),
-     'banjir': banjir, 'dibuat': H30['dibuat']}
+     'banjir': banjir, 'nasional': NAS, 'dibuat': H30['dibuat']}
 json.dump(A, open('angka.json', 'w'), ensure_ascii=False, indent=1)
 if __name__ == '__main__':
     print('prov', prov)

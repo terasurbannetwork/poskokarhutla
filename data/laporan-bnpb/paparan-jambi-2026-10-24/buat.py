@@ -32,7 +32,7 @@ def rel(i, target):
 ik = lambda i, n, w: rel(i, f'lpg-ik-{n}-{w}.png')
 GAYA = {'merah': ('F8DDE0', 'C8102E', 'merah'), 'navy': ('E6EAF0', '051C2C', 'navy'), 'oranye': ('FBE7D6', 'D9600B', 'oranye'), 'abu': ('E6EAF0', '051C2C', 'navy'),
         'biru': ('DCEBF8', '2F86D1', 'biru')}
-STATUS = {'belum padam': ('merah', 'api'), 'berjalan': ('oranye', 'putar'), 'pantau': ('navy', 'mata'), 'kumulatif': ('navy', 'lapis'), 'selesai': ('navy', 'centang')}
+STATUS = {'belum padam': ('merah', 'api'), 'prioritas': ('merah', 'awas'), 'berjalan': ('oranye', 'putar'), 'pantau': ('navy', 'mata'), 'kumulatif': ('navy', 'lapis'), 'selesai': ('navy', 'centang')}
 
 
 def pil(i, x, y, t, gaya, ikon, h=137160, sz=600, kar=None, w=None):
@@ -88,6 +88,13 @@ def grafik(i, x0, x1, base, maxh, vals, hari, lab_y, pct_y, bw_frac=0.62, sz_v=7
     return o
 
 
+def label_bahaya(s, i):
+    """Pil BERBAHAYA di kanan angka PM2.5 kartu Perlu Perhatian (kategori ISPU BMKG 24 Okt 19.00)."""
+    x, y, w, h = 10376154 + 640000, 1673352 + 68580, 470000, 137160
+    assert x + w < 9864090 + 1669237, 'pil keluar kartu'
+    s.tambah(bentuk(x, y, w, h, 'C8102E', 'roundRect', {'adj': 50000}) + tx(x, y, w, h, [('BERBAHAYA', 520, True, 'FFFFFF')], al='ctr', spc=40))
+
+
 # ================================================================== umum
 for i in (1, 2, 3):
     S[i].T('23 Okt 2026, 06.25 WIB', CUT)
@@ -101,8 +108,8 @@ s1.T('261', f0(P['hot'][-1]), at=(1170432, 1673352)); s1.T('titik panas s.d. 06.
 s1.T('482 ha', f'{f0(P["luas"][-1])} ha'); s1.T('luas terbakar s.d. 06.25', 'luas terbakar 24 Okt')
 s1.T('223 ha', f'{f0(P["belum"][-1])} ha'); s1.T('belum padam s.d. 06.25', 'belum padam 24 Okt')
 s1.T('4.345', f0(sum(P['hot']))); s1.T('titik panas 16–23 Okt', 'titik panas 17–24 Okt')
-s1.T('Semeru', PM); s1.warna(10376154, 1673352, '8A4B2A', 'C8102E'); s1.T('gunung api Level III', 'PM2.5 Muaro Jambi, berbahaya')
-s1.warna(9973818, 1746504, 'F1E2D6', 'F8DDE0'); ganti_ikon(s1, 1, 10046970, 1819656, 'lpg-ik-sinyal-merah.png')
+s1.T('Semeru', PM); s1.warna(10376154, 1673352, '8A4B2A', 'C8102E'); s1.T('gunung api Level III', 'PM2.5 Muaro Jambi')
+s1.warna(9973818, 1746504, 'F1E2D6', 'F8DDE0'); ganti_ikon(s1, 1, 10046970, 1819656, 'lpg-ik-sinyal-merah.png'); label_bahaya(s1, 1)
 # peta + label 3 cluster Prioritas
 RELS[1] = RELS[1].replace('../media/jt-jatim5.png', '../media/jmb-peta-jambi.png'); F['ppt/media/jmb-peta-jambi.png'] = open('peta-jambi.png', 'rb').read()
 s1.hapus(lambda b: (g := geom(b)) and 3100000 <= g[0] < 3400000 and 3150000 <= g[1] < 3600000)
@@ -155,12 +162,12 @@ for yy in YR + [4837176]:
 s1.hapus(lambda b: (g := geom(b)) and 8820000 <= g[0] and 2850000 <= g[1] < 5200000 and not b.startswith('<p:cxnSp>'))
 BARIS = [('Kumpeh, Muaro Jambi', [(f"{f0(KUM['luas'][-1])} ha terbakar 24 Okt", 'merah', 'luas'), (f"belum padam {f0(KUM['belum'][-1])} ha", 'merah', 'awas')], 'belum padam', 'D9600B', 'api'),
          ('Sadu, Tanjung Jabung Timur', [(f"{f0(SADU['hot'][-1])} titik 24 Okt", 'oranye', 'api'), (f"belum padam {f0(SADU['belum'][-1])} ha", 'merah', 'awas')], 'belum padam', 'D9600B', 'api'),
-         ('Berbak, Tanjung Jabung Timur', [(f"{f0(BERBAK['hot'][-1])} titik 24 Okt", 'oranye', 'api'), ('cluster Prioritas', 'merah', 'pin')], 'pantau', '5B7A99', 'mata'),
+         ('Berbak, Tanjung Jabung Timur', [(f"{f0(BERBAK['hot'][-1])} titik 24 Okt", 'oranye', 'api'), ('cluster Prioritas', 'merah', 'pin')], 'prioritas', 'C8102E', 'awas'),
          ('Satgas darat, 23 Okt', [('17 dari 30 FS padam', 'navy', 'centang'), ('+160 personel', 'navy', 'orang')], 'berjalan', '051C2C', 'orang'),
          ('Water bombing, 23 Okt', [('tidak terbang', 'merah', 'pesawat'), ('2 heli siaga, 1 perawatan', 'navy', 'pesawat')], 'pantau', '5B7A99', 'tetes'),
          ('Siaga Darurat Prov. Jambi', [('27 Apr s.d. 30 Nov 2026', 'navy', 'kalender')], 'berjalan', '051C2C', 'perisai'),
          ('Karhutla 2026', [(f"{f0(P['kum'])} ha terbakar", 'oranye', 'luas'), ('1 Jan–24 Okt', 'navy', 'kalender')], 'kumulatif', '051C2C', 'lapis')]
-s1.T('4', str(sum(1 for b in BARIS if b[2] == 'belum padam')), at=(8615477, 1673352))
+s1.T('4', str(A['level'].get('3', 0)), at=(8615477, 1673352)); s1.T('kebakaran belum padam', 'cluster Prioritas')
 o = ''
 for k, (j, ch, st, bl, ikb) in enumerate(BARIS):
     o += baris(1, 9089136, 2862072 + k * 335280, 11505895, j, ch, st, bl, ikb)
@@ -182,9 +189,9 @@ s2.T('20', f0(MJ['hot'][-1]), at=(1170432, 1673352)); s2.T('titik panas s.d. 06.
 s2.T('37 ha', f"{f0(MJ['luas'][-1])} ha"); s2.T('luas terbakar s.d. 06.25', 'luas terbakar 24 Okt')
 s2.T('7 ha', f"{f0(MJ['belum'][-1])} ha"); s2.T('belum padam s.d. 06.25', 'belum padam 24 Okt')
 s2.T('389', f0(sum(MJ['hot'])), at=(6452463, 1673352)); s2.T('titik panas 16–23 Okt', 'titik panas 17–24 Okt')
-s2.T('2', f"{f0(KUM['belum'][-1])} ha", at=(8615477, 1655064)); s2.T('kebakaran belum padam di Malang Raya', 'belum padam Kumpeh, 24 Okt')
-s2.T('9.527', PM); s2.warna(10376154, 1673352, '5B7A99', 'C8102E'); s2.T('jiwa kekeringan', 'PM2.5 Muaro Jambi, berbahaya')
-s2.warna(9973818, 1746504, 'E3EAF1', 'F8DDE0'); ganti_ikon(s2, 2, 10046970, 1819656, 'lpg-ik-sinyal-merah.png')
+s2.T('2', f"{f0(KUM['belum'][-1])} ha", at=(8615477, 1655064)); s2.T('kebakaran belum padam di Malang Raya', 'belum padam Kumpeh')
+s2.T('9.527', PM); s2.warna(10376154, 1673352, '5B7A99', 'C8102E'); s2.T('jiwa kekeringan', 'PM2.5 Muaro Jambi')
+s2.warna(9973818, 1746504, 'E3EAF1', 'F8DDE0'); ganti_ikon(s2, 2, 10046970, 1819656, 'lpg-ik-sinyal-merah.png'); label_bahaya(s2, 2)
 s2.T('Tren harian 16–23 Oktober', 'Tren Harian')
 s2.hapus(lambda b: (g := geom(b)) and g[0] < 6000000 and 2800000 <= g[1] < 6150000)
 o = ''
@@ -237,10 +244,16 @@ s2.tambah(o)
 s3 = S[3]
 s3.T('Sebaran Titik Panas dan Kebakaran di Arjuno–Welirang per 23 Oktober', ['Sebaran Titik Panas dan Kebakaran di ', 'Gambut Kumpeh–Sadu', ' per 24 Oktober'])
 s3.ubah(lambda b: 'Gambut Kumpeh' in teks(b) and geom(b)[1] == 274320, lambda b: b.replace('sz="2000"', 'sz="1800"'), 1)
-s3.T('1.090 ha', f"{f0(KW['luas'][-1])} ha"); s3.T('terbakar 16–23 Okt', 'terbakar 24 Okt')
+# urutan kartu pemilik: 1 titik panas, 2 luas terbakar, 3 belum padam
+def cat(s, x, y, baru):
+    s.ubah(Slide.di(x, y), lambda b: re.sub(r'(<a:solidFill><a:srgbClr val=")\w+', rf'\g<1>{baru}', b, count=1))
+s3.T('1.090 ha', f0(KW['hot'][-1])); s3.T('terbakar 16–23 Okt', 'titik panas 24 Okt')
+cat(s3, 1170432, 1673352, 'D9600B'); cat(s3, 768096, 1746504, 'FBE7D6'); ganti_ikon(s3, 3, 841248, 1819656, 'jt-ik-api-oranye.png')
 s3.T('945', f0(sum(KW['hot']))); s3.T('titik panas 16–23 Okt', 'titik panas 17–24 Okt')
-s3.T('291', f"{f0(KW['belum'][-1])} ha"); s3.T('titik puncak, 19 Okt', 'belum padam 24 Okt'); s3.warna(4691786, 1673352, '051C2C', 'C8102E'); s3.warna(4289450, 1746504, 'E6EAF0', 'F8DDE0'); ganti_ikon(s3, 3, 4362602, 1819656, 'jt-ik-belum-merah.png')
-s3.T('16 ha', f0(KW['hot'][-1]), at=(6452463, 1673352)); s3.T('belum padam s.d. 06.25', 'titik panas 24 Okt')
+s3.T('291', f"{f0(KW['luas'][-1])} ha"); s3.T('titik puncak, 19 Okt', 'luas terbakar 24 Okt')
+cat(s3, 4691786, 1673352, '051C2C'); cat(s3, 4289450, 1746504, 'E6EAF0'); ganti_ikon(s3, 3, 4362602, 1819656, 'jt-ik-luas-navy.png')
+s3.T('16 ha', f"{f0(KW['belum'][-1])} ha", at=(6452463, 1673352)); s3.T('belum padam s.d. 06.25', 'belum padam 24 Okt')
+cat(s3, 6452463, 1673352, 'C8102E'); cat(s3, 6050127, 1746504, 'F8DDE0'); ganti_ikon(s3, 3, 6123279, 1819656, 'jt-ik-belum-merah.png')
 s3.ubah(lambda b: b.startswith('<p:pic>') and 'r:embed="rIdM1"' in b and geom(b)[0] < 1000000, lambda b: b.replace('r:embed="rIdM1"', f'r:embed="{rel(3, "jt-ik-pohon-putih.png")}"'))
 s3.T('Bumiaji, Kota Batu', 'Kumpeh dan Sadu')
 s3.T('11 titik 23 Okt dini hari; sisi Malang masih ada titik api (BPBD)',
@@ -257,12 +270,20 @@ for (k, sub, x0, y0) in (('Kumpeh', 'Kab. Muaro Jambi', 4654296, 2834640), ('Sad
     o += grafik(3, x0, x0 + 1850000, y0 + 1078992, 560000, v, HARI, y0 + 1106424, 0, bw_frac=0.62, sz_v=700, sz_d=600, pct_on=False, lab_akhir=False)
 s3.tambah(o)
 s3.hapus(lambda b: (g := geom(b)) and g[1] == 5715000)
-xa, ya, o = 4654296, 5700000, ''
-for t_, gy in [('Kumpeh, Sadu 18', 'abu'), ('Kumpeh 21', 'oranye'), ('Sadu 21', 'oranye'), ('Kumpeh 23–24', 'merah'), ('Sadu 23–24', 'merah')]:
-    w = pil(3, 0, 0, t_, gy, 'api', h=164592, sz=560)[1]
-    if xa + w > 8595360: xa, ya = 4654296, ya + 201168
-    o += pil(3, xa, ya, t_, gy, 'api', h=164592, sz=560)[0]; xa += w + 64008
-assert ya < 6000000, ya
+s3.T('ALUR API', 'ALUR API, URUTAN WAKTU')
+s3.ubah(lambda b: teks(b) == 'ALUR API, URUTAN WAKTU', lambda b: re.sub(r'<a:ext cx="\d+"', '<a:ext cx="3000000"', b, count=1).replace('wrap="square"', 'wrap="none"'), 1)
+# garis waktu: tanggal di atas, tempat di bawah, panah antartahap (bukan pil tanggal+tempat yang tercampur)
+TAHAP = [('18 Okt', ['Kumpeh, Sadu'], 'abu'), ('21 Okt, puncak', ['Kumpeh, Sadu'], 'oranye'), ('23–24 Okt, terbaru', ['Kumpeh, Sadu, Berbak'], 'merah')]
+X0, X1, ya, o = 4654296, 8595360, 5660000, ''
+lebar = [sum(pil(3, 0, 0, t_, gy, 'pin', h=164592, sz=560)[1] for t_ in ts) + 45720 * (len(ts) - 1) for _, ts, gy in TAHAP]
+celah = (X1 - X0 - sum(lebar)) / (len(TAHAP) - 1); assert celah > 250000, celah
+xa = X0
+for k, ((tgl, ts, gy), w) in enumerate(zip(TAHAP, lebar)):
+    o += tx(xa, ya, w, 140000, [(tgl, 650, True, {'abu': '6B7280', 'oranye': 'D9600B', 'merah': 'C8102E'}[gy])])
+    o += pil(3, xa, ya + 160000, ts[0], gy, 'pin', h=164592, sz=560)[0]
+    if k < len(TAHAP) - 1:
+        o += bentuk(xa + w + celah / 2 - 60000, ya + 160000 + 32296, 120000, 100000, 'BFC5CC', 'rightArrow')
+    xa += w + celah
 s3.tambah(o)
 s3.hapus(lambda b: (g := geom(b)) and g[0] >= 8860000 and 2870000 <= g[1] < 6150000)
 pk = max(range(len(HARI)), key=lambda i: P['hot'][i])
@@ -279,7 +300,7 @@ for k, (j, ch, bl, ikb) in enumerate(EV):
     o += tx(9134856, y, 2371039, 146304, [(j, 760, True, '1A1A1A')])
     o += deret(3, 9134856, y + 160020, ch, 11550000, lipat=True)
 UNSUR = [('5.984 personel satgas', 'orang'), ('penebalan 160 personel', 'satu'), ('3 heli water bombing', 'pesawat'), ('1 pesawat patroli', 'pesawat'),
-         ('Mini Striker, Waterax', 'tetes'), ('Shibaura, Tohatsu', 'tetes'), ('pompa apung, jinjing', 'tetes'), ('drone pemantau', 'mata'), ('alat berat', 'lapis'), ('mobil tangki', 'tetes')]
+         ('pompa pemadam portabel', 'tetes'), ('pompa apung dan jinjing', 'tetes'), ('selang dan nozzle', 'tetes'), ('drone pemantau', 'mata'), ('alat berat', 'lapis'), ('mobil tangki air', 'tetes')]
 yu = Y0 + PIT * len(EV) - 60000
 o += tx(8869680, yu, 2636215, 182880, [(f'KEKUATAN DAN SARANA SATGAS JAMBI', 750, True, '051C2C')], spc=100)
 CW = (11505895 - 8869680 - 91440) // 2; RH = 190000; RG = 54864
@@ -294,36 +315,37 @@ s3.tambah(o)
 s4 = S[4]
 s4.T('Waspada saat peralihan musim: 9 kawasan di Jawa Timur berisiko banjir bandang, longsor, dan lahar',
      ['Waspada peralihan musim: ', f"{BJ['kec_waspada']} dari {BJ['n_kec']}", ' kecamatan di Jambi berstatus Waspada banjir atau longsor 25–27 Okt'])
-s4.T('PERINGATAN BMKG', 'PRAKIRAAN CUACA')
-s4.T('Kering', 'Sedang'); s4.T('hingga pertengahan Nov', 'hujan Jambi, 23–25 Okt (BMKG)')
-s4.T('Hujan lokal', 'Lebat'); s4.T('petir, angin kencang', 'Kerinci, Sungai Penuh, Merangin')
+s4.T('PERINGATAN BMKG', 'PRAKIRAAN HUJAN')
+s4.T('Kering', 'Sedang'); s4.T('hingga pertengahan Nov', 'hujan Jambi, 23–25 Okt')
+s4.T('Hujan lokal', 'Lebat'); s4.T('petir, angin kencang', 'hujan Kerinci, S. Penuh')
 h3 = max(v['h3'] for v in BJ['kab'].values())
-s4.T('Longsor', f"{f0(h3)} mm"); s4.T('material dan genangan', 'hujan 3 hari terbesar (ECMWF)')
-s4.T('Lahar', 'Awan >70%'); s4.warna(6452463, 1673352, '8A4B2A', '051C2C'); s4.T('Semeru saat hujan', 'peluang awan hujan sepekan (BMKG)')
+s4.T('Longsor', f"{f0(h3)} mm"); s4.T('material dan genangan', 'hujan 3 hari, 25–27 Okt')
+s4.T('Lahar', '>70%'); s4.warna(6452463, 1673352, '8A4B2A', '051C2C'); s4.T('Semeru saat hujan', 'peluang hujan sepekan')
 s4.warna(6050127, 1746504, 'F1E2D6', 'E6EAF0'); ganti_ikon(s4, 4, 6123279, 1819656, 'jt-ik-air-navy.png')
 D = BJ['dibi']
-s4.T('Banjir bandang dari lereng terbakar', 'Banjir Jambi naik mulai November')
+s4.T('Banjir bandang dari lereng terbakar', 'Banjir Jambi mulai naik November')
 s4.hapus(lambda b: (g := geom(b)) and g[1] == 1938528 and g[0] >= 8615477)
-s4.tambah(deret(4, 8615477, 1938528, [(f"{f0(D['banjir'])} banjir {D['th0']}–{D['th1']}", 'merah', 'tetes'), (f"Januari rerata {str(BJ['bulan'][0]).replace('.', ',')} kejadian", 'merah', 'kalender')], 11450000, h=155448))
+s4.tambah(deret(4, 8615477, 1938528, [(f"{f0(D['banjir'])} banjir sejak {D['th0']}", 'merah', 'tetes'), (f"puncak Januari, {str(BJ['bulan'][0]).replace('.', ',')}/tahun", 'merah', 'kalender')], 11450000, h=155448))
 # tabel kabupaten berstatus Waspada
 s4.T('Wilayah hilir berisiko', 'Kabupaten/kota berstatus Waspada, 25–27 Okt')
 s4.hapus(lambda b: (g := geom(b)) and 2840000 < g[1] < 5200000 and g[0] < 7900000)
 rows = sorted(BJ['kab'].items(), key=lambda x: (-len({n for n, _ in x[1]['banjir'] + x[1]['longsor']}), -x[1]['h3']))
 lama = [teks(b) for b in s4.cari(Slide.di(6763840, 2386584, True))][0]; s4.T(lama, str(len(rows)), at=(6763840, 2386584))
-XN, XW, XC, XD, XA = 886968, 2560320, 3291840, 5800000, 6400800
-o = ''.join(tx(x, 2852928, 1900000, 164592, [(t, 600, True, '6B7280')], spc=100) for x, t in
-            ((676656, 'KAB/KOTA'), (XW, 'KEC.'), (XC, 'KECAMATAN, HUJAN 3 HARI TERBESAR'), (XD, 'DIBI*'), (XA, 'ANCAMAN')))
+XN, XC, XH, XD, XA = 886968, 2650000, 4900000, 5800000, 6400800
+KOLOM = [(676656, 2600000, 'KAB/KOTA'), (XC, 4850000, 'KECAMATAN HUJAN TERBESAR'), (XH, 5750000, 'HUJAN 3 HARI'), (XD, 6350000, 'DIBI*'), (XA, 7735824, 'ANCAMAN')]
+o = ''.join(tx(x0, 2852928, x1 - x0, 164592, [(t, 600, True, '6B7280')], al='ctr', spc=100) for x0, x1, t in KOLOM)   # judul kolom rata tengah
 o += f'<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="9400" name="L"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr><p:spPr><a:xfrm><a:off x="676656" y="3035808"/><a:ext cx="7059168" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="9525"><a:solidFill><a:srgbClr val="1A1A1A"/></a:solidFill></a:ln></p:spPr></p:cxnSp>'
 y, RH = 3063240, 171000
 for no, (k, v) in enumerate(rows, 1):
     nw = len({n for n, _ in v['banjir'] + v['longsor']}); top = [n for n, _ in sorted(v['banjir'] + v['longsor'], key=lambda x: -x[1])]
     top = list(dict.fromkeys(top))[:3]
     o += bentuk(676656, y + (RH - 128016) / 2, 128016, 128016, '051C2C', 'ellipse') + tx(676656, y + (RH - 128016) / 2, 128016, 128016, [(str(no), 480, True, 'FFFFFF')], al='ctr')
-    o += tx(XN, y, 1650000, RH, [(k, 700, True, '1A1A1A')]) + tx(XW, y, 700000, RH, [(f"{nw} dari {v['n_kec']}", 680, True, '051C2C')])
-    o += tx(XC, y, 2450000, RH, [(', '.join(top), 680, False, '051C2C'), (f"  {f0(v['h3'])} mm", 680, True, '2F86D1')])
-    o += tx(XD, y, 500000, RH, [(f0(v['dibi_banjir'] + v['dibi_longsor']), 680, True, '051C2C')])
+    o += tx(XN, y, 1700000, RH, [(k, 700, True, '1A1A1A')])
+    o += tx(XC, y, 2200000, RH, [(', '.join(top), 680, False, '051C2C')]) + tx(XH, y, 850000, RH, [(f"{f0(v['h3'])} mm", 700, True, '2F86D1')], al='ctr')
+    o += tx(XD, y, 550000, RH, [(f0(v['dibi_banjir'] + v['dibi_longsor']), 680, True, '051C2C')], al='ctr')
     ch = ([('banjir', 'biru', 'tetes')] if v['banjir'] else []) + ([('longsor', 'oranye', 'awas')] if v['longsor'] else [])
-    o += deret(4, XA, y + (RH - 128016) / 2, ch, 7800000, h=128016)
+    lebar = sum(pil(4, 0, 0, t_, g_, i_, h=128016)[1] for t_, g_, i_ in ch) + 45720 * (len(ch) - 1)
+    o += deret(4, XA + (7735824 - XA - lebar) / 2, y + (RH - 128016) / 2, ch, 7800000, h=128016)
     y += RH
     if no < len(rows): o += f'<p:cxnSp><p:nvCxnSpPr><p:cNvPr id="{9500 + no}" name="L"/><p:cNvCxnSpPr/><p:nvPr/></p:nvCxnSpPr><p:spPr><a:xfrm><a:off x="676656" y="{y}"/><a:ext cx="7059168" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:ln w="6350"><a:solidFill><a:srgbClr val="EEF0F3"/></a:solidFill></a:ln></p:spPr></p:cxnSp>'
 assert y < 4960000, y
@@ -335,12 +357,13 @@ for t_, gy, ikn, ket in (('banjir', 'biru', 'tetes', 'luapan sungai dan genangan
 o += tx(xl, 4983480, 7863840 - xl, 164592, [(f"*DIBI = kejadian banjir dan longsor {D['th0']}–{D['th1']}", 600, False, '6B7280')])
 s4.tambah(o)
 # panel kanan: riwayat kejadian Jambi (DIBI BNPB)
-s4.T('Kesiapan BPBD Jatim', 'Riwayat kejadian Jambi (DIBI)')
+s4.T('Kesiapan BPBD Jatim', 'Jumlah kejadian di Jambi (DIBI BNPB)')
 ganti_ikon(s4, 4, 8183880, 2468880, 'jt-ik-kalender-putih.png')
 KB = BJ['kab']; tk = sorted(KB, key=lambda k: -KB[k]['dibi_banjir'])
-SAR = [(f0(D['banjir']), f"banjir {D['th0']}–{D['th1']}", 'jt-ik-air-navy.png'), (f0(D['v'][D['th1']]), f"banjir tahun {D['th1']}", 'jt-ik-kalender-navy.png'),
-       (f0(KB[tk[0]]['dibi_banjir']), f'banjir {tk[0]}', 'lpg-ik-pin-navy.png'), (f0(KB[tk[1]]['dibi_banjir']), f'banjir {tk[1]}', 'lpg-ik-pin-navy.png'),
-       (f0(sum(KB[k]['dibi_longsor'] for k in KB)), f"longsor {D['th0']}–{D['th1']}", 'lpg-ik-awas-navy.png'), (str(BJ['bulan'][-1]).replace('.', ','), 'rerata banjir Desember', 'jt-ik-kalender-navy.png')]
+tl = sorted(KB, key=lambda k: -KB[k]['dibi_longsor'])
+SAR = [(f0(D['banjir']), f"banjir {D['th0']}–{D['th1']}", 'jt-ik-air-navy.png'), (f0(D['longsor']), f"longsor {D['th0']}–{D['th1']}", 'lpg-ik-awas-navy.png'),
+       (f0(D['v'][D['th1']]), f"banjir tahun {D['th1']}", 'jt-ik-kalender-navy.png'), (f0(D['v_longsor'][D['th1']]), f"longsor tahun {D['th1']}", 'jt-ik-kalender-navy.png'),
+       (f0(KB[tk[0]]['dibi_banjir']), f'banjir di {tk[0]}', 'lpg-ik-pin-navy.png'), (f0(KB[tl[0]]['dibi_longsor']), f'longsor di {tl[0]}', 'lpg-ik-pin-navy.png')]
 for (xv, yv), (v, l, ikn) in zip(((8622792, 2990088), (10360152, 2990088), (8622792, 3685032), (10360152, 3685032), (8622792, 4379976), (10360152, 4379976)), SAR):
     for yy, isi_ in ((yv, v), (yv + 274320, l)):
         lama = [teks(b) for b in s4.cari(Slide.di(xv, yy, True))][0]; s4.T(lama, isi_, at=(xv, yy))
@@ -350,11 +373,20 @@ for (j0, i0), (j, i) in zip((('Bersihkan alur sungai', 'Material dan kayu terbak
                              ('Pengamat dan sirene', 'Pengamat hujan di hulu; sirene banjir bandang Bumiaji, Prigen, Panti'),
                              ('Jalur evakuasi desa hilir', 'Peta evakuasi dan titik kumpul desa di bawah kawasan terbakar'),
                              ('Siaga lahar Semeru', 'Patuhi larangan 13 km Besuk Kobokan saat hujan di puncak')),
-                            (('Siaga hulu Kerinci–Merangin', 'Pengamat hujan dan sirene di hulu; longsor dan banjir bandang Kerinci, Sungai Penuh, Merangin'),
-                             ('Pantau muka air Batanghari', f"Kota Jambi {len(kj['banjir'])} dari {kj['n_kec']} kecamatan Waspada banjir; Muaro Jambi dan Batanghari di hilir"),
-                             ('Gambut tetap dibasahi', 'Hujan sedang belum tentu memadamkan api bawah di Kumpeh dan Sadu; pembasahan jalan terus'),
-                             ('Perahu dan jalur evakuasi', 'Peta evakuasi dan titik kumpul desa bantaran Batanghari, Tebo, Bungo, Merangin'))):
+                            (('Siaga longsor dan banjir bandang', 'Kerinci, Sungai Penuh, dan Merangin di pegunungan: pasang pengamat hujan dan sirene peringatan di desa rawan'),
+                             ('Pantau muka air Sungai Batanghari', f"Seluruh {kj['n_kec']} kecamatan Kota Jambi Waspada banjir; luapan dari hulu juga mengalir ke Muaro Jambi dan Batanghari") if len(kj['banjir']) == kj['n_kec'] else ('Pantau muka air Sungai Batanghari', f"{len(kj['banjir'])} dari {kj['n_kec']} kecamatan Kota Jambi Waspada banjir; luapan dari hulu juga mengalir ke Muaro Jambi dan Batanghari"),
+                             ('Gambut tetap dibasahi', 'DIBUANG'),
+                             ('Siapkan perahu dan jalur evakuasi', 'Tetapkan titik kumpul dan jalur evakuasi untuk desa di tepi sungai: Batanghari, Tebo, Bungo, dan Merangin'))):
     s4.T(j0, j); s4.T(i0, i)
+# kolom ketiga (Gambut tetap dibasahi) dibuang atas permintaan pemilik; tiga kolom sisa diregang selebar pita
+P0, P4 = 694944, 2736927; P3 = P4 * 4 // 3
+s4.hapus(lambda b: (g := geom(b)) and 5500000 < g[1] < 6200000 and (P0 + 2 * P4 - 100000 <= g[0] < P0 + 3 * P4 - 100000))
+def regang(b):
+    g = GEO.search(b); x, w = int(g.group(1)), int(g.group(4))
+    k = (x - P0 + 100000) // P4; dx = x - (P0 + k * P4); k2 = k - 1 if k == 3 else k
+    nw = w + (P3 - P4) if w == 2137027 else w
+    return b[:g.start()] + f'<a:off x="{P0 + k2 * P3 + dx}" y="{g.group(2)}"/>{g.group(3)}<a:ext cx="{nw}" cy="{g.group(5)}"/>' + b[g.end():]
+s4.ubah(lambda b: (g := geom(b)) and 5500000 < g[1] < 6200000 and g[0] >= P0 - 100000, regang)
 
 
 # ================================================================== kartu DATA SATELIT: kartu total jendela dibuang, sisa kartu dibagi rata
@@ -405,12 +437,23 @@ def kepala(s, sz, ada_pil=True):
 
 for i, sz in ((1, 2000), (2, 1800), (3, 1800), (4, 2000)):
     print('slide', i, 'judul/garis', kepala(S[i], sz, i != 4))
+NS = A['nasional']; pc = lambda a, b_: round(a / b_ * 100)
+SUB = {1: [(f"Peringkat ke-{NS['luas']} nasional", 1000, True, 'C8102E'), (f" untuk luas terbakar dan ke-{NS['belum']} untuk belum padam, 24 Okt (dari {NS['n_prov']} provinsi); ke-{NS['hot_bersih']} untuk titik panas", 1000, False, '2E3440')],
+       2: [('Kab/kota urutan pertama di Jambi:', 1000, True, 'C8102E'), (f" {pc(MJ['hot'][-1], P['hot'][-1])}% titik, {pc(MJ['luas'][-1], P['luas'][-1])}% luas terbakar, {pc(MJ['belum'][-1], P['belum'][-1])}% belum padam Jambi, 24 Okt", 1000, False, '2E3440')],
+       3: [(f"Lokasi {A['kaw_prio']} cluster Prioritas Jambi, semua di gambut:", 1000, True, 'C8102E'), (f" {pc(KW['hot'][-1], P['hot'][-1])}% titik dan {pc(KW['belum'][-1], P['belum'][-1])}% belum padam Jambi, 24 Okt", 1000, False, '2E3440')]}
+for i, runs in SUB.items():
+    S[i].tambah(tx(548640, 690000, 8200000, 190000, runs, an='t'))
 
 # ------------------------------------------------------------------ tulis + cek
 for i in (1, 2, 3, 4):
+    for blk in S[i].blok():
+        g = geom(blk)
+        if g and 1800000 < g[1] < 2050000 and g[3] <= 160000 and 'b="1"' not in blk and len(teks(blk)) > 24:
+            raise SystemExit(f'slide {i}: label kartu terlalu panjang, melipat dan menabrak bingkai: {teks(blk)!r}')
+for i in (1, 2, 3, 4):
     tt = re.sub(r'<[^>]+>', '', S[i].s)
     assert '·' not in tt and '—' not in tt, f'titik tengah / em dash di slide {i}'
-    for x in ('32,50', '72,50', '105,00', '±', 'Jawa Timur', 'Jatim', 'Malang', 'Arjuno', 'Semeru'):
+    for x in ('32,50', '72,50', '105,00', '±', 'DIBUANG', 'Jawa Timur', 'Jatim', 'Malang', 'Arjuno', 'Semeru'):
         assert x not in tt, f'{x!r} tersisa di slide {i}'
     F[f'ppt/slides/slide{i}.xml'] = S[i].s.encode(); F[f'ppt/slides/_rels/slide{i}.xml.rels'] = RELS[i].encode()
 for n in ('ppt/media/jt-jatim5.png', 'ppt/media/jt-arjuno4.png'): F.pop(n, None)
