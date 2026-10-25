@@ -16,6 +16,9 @@ S-NPP/NOAA-20) atau "tanpa_primer" (src/ews.js mengabaikan jejak yang statusnya 
 Urutan kompleks: level, lalu penduduk sekitar (WorldPop 0,25 derajat, 3x3 sel di sekitar pusat kompleks), lalu skor: untuk peringatan dini
 yang diramal lebih dulu adalah api yang dekat orang. "cakupan" di JSON mencatat berapa kompleks aktif, berapa diramal, dan alasan dilewati.
 
+GERBANG: doc.boleh_tampil = gerbang_model.json["jejak_api"].boleh_tampil (gerbang.py: harus mengalahkan pembanding persistensi pada uji balik); berkas gerbang
+hilang/rusak = false. src/ews.js (milik warga-api) HARUS membaca medan ini sebelum menampilkan/memakai jejak; jejak_api.json tetap ditulis untuk audit.
+
 Pakai:  python3 scripts/sebaran/jejak.py  |  ... uji        Stdlib saja. Boleh gagal di CI (titik.yml).
 Env: JEJAK_MAKS (kompleks, 300) JEJAK_MC (20) JEJAK_DETIK (anggaran total, 900) JEJAK_BASI_JAM (12) JEJAK_AKTIF (0 = tanpa batas) JEJAK_KELUAR (berkas keluaran)
 """

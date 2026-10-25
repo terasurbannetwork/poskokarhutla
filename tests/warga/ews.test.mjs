@@ -37,7 +37,7 @@ const luar = async req => {
 const fx = {};
 let kecKunci = null;         // "prov|kab|kec" Palangka Raya, diisi setelah langganan pertama
 /* jejak_api.json: satu kompleks K0012 (Palangka Raya); o = {24: [[km, p], ...], 48: ..., 72: ...} sel di utara PAL sejauh km */
-const jejakFx = (o, acuan, id = "K0012", nama = "Kec. Pahandut, Kota Palangka Raya", extra = {}, atas = {}) => ({dibuat: new Date(acuan + 8 * JAM).toISOString(), acuan: new Date(acuan).toISOString(), status: "ok", model: "uji", sumber: "uji", ambang_p: 0.05,
+const jejakFx = (o, acuan, id = "K0012", nama = "Kec. Pahandut, Kota Palangka Raya", extra = {}, atas = {}) => ({dibuat: new Date(acuan + 8 * JAM).toISOString(), acuan: new Date(acuan).toISOString(), status: "ok", boleh_tampil: true, model: "uji", sumber: "uji", ambang_p: 0.05,
   cakupan: {n_aktif: 10, n_diramal: 8, dilewati: {}}, ...atas,
   kompleks: [{id, nama, prov: "62", lat: -2.2, lon: 113.9, titik_24j: 3, p_lepas: 0.5, ...extra, hari: [24, 48, 72].map(jam => ({jam, p_maks: 0.5, luas_p50_ha: 10, sel: (o[jam] || []).map(([k, p]) => [-2.21 + k / 111.2, 113.92, p])}))}]});
 function muat(t, o = {}) {   // data bahaya untuk hari WIB dari waktu t
@@ -429,7 +429,7 @@ uji("/api/ews/cek: peringatan lokasi dengan nilaiTitik yang sama, wilayah, 3 har
 });
 
 uji("sumberBasi: sumber yang tidak mencakup hari ini ditandai; cek melaporkan basi", async () => {
-  const d = {fwi: {hari_ini: "2026-10-20"}, status: {hari: ["2026-10-20"]}, cuacaDibuat: "2026-10-20T03:00:00Z", rob: {hari: ["2026-10-20"]}, titikDibuat: "2026-10-20T02:00:00Z", jejakAcuan: "2026-10-20T02:00:00Z", jejakStatus: "ok"};
+  const d = {fwi: {hari_ini: "2026-10-20"}, status: {hari: ["2026-10-20"]}, cuacaDibuat: "2026-10-20T03:00:00Z", rob: {hari: ["2026-10-20"]}, titikDibuat: "2026-10-20T02:00:00Z", jejakAcuan: "2026-10-20T02:00:00Z", jejakStatus: "ok", jejakBoleh: true};
   const t = Date.parse("2026-10-20T03:00:00Z");
   assert.deepEqual(E.sumberBasi(d, t), []);
   assert.deepEqual(E.sumberBasi(d, t + HARI + MENIT), ["banjir", "cuaca", "rob", "titik"], "besoknya: fwi masih sehari tertinggal = boleh; jejak harian masih dalam SIM_UMUR; sisanya tidak mencakup hari ini");
@@ -673,4 +673,21 @@ uji("simulasi e2e: Awas terkirim, dedupe, kenaikan terkirim, acuan basi diabaika
   assert.deepEqual(Object.keys(s).sort(), "bencana,hari,jam_sisa,jarak_maks_km,judul,kalimat,kompleks,peluang,rincian,sumber,sumber_jenis,tingkat".split(","));
   assert.deepEqual([s.tingkat, s.hari, s.kompleks, s.jarak_maks_km, s.peluang], [3, 0, "K0012", 2, 0.7]);
   assert.ok(s.jam_sisa % 6 === 0 && s.kalimat.includes("dalam 2 km"));
+});
+
+uji("simulasi gagal-tertutup: boleh_tampil bukan true (false atau hilang) = jejak diabaikan, 'jejak' masuk basi_sumber, tanpa butir simulasi; true = dipakai", async () => {
+  const opt = {kecKunci, f1: 3, tanpaBanjir: true}, cek = async (jejak) => {
+    muat(T0 + 300 * JAM, opt); await cron(JAM_CRON, T0 + 300 * JAM, mf5);   // waktu jauh dari Date.now(): cache data isolat dibuang
+    muat(Date.now(), {...opt, jejak: {24: [[1, 0.7]]}}); jejak(fx.jejak);
+    const r = await panggil("GET", "/api/ews/cek?lat=-2.21&lon=113.92", undefined, ipBaru(), {}, mf5); assert.equal(r.s, 200, r.t); return r.j;
+  };
+  const salah = await cek(j => { j.boleh_tampil = false; });
+  assert.ok(salah.basi_sumber.includes("jejak")); assert.equal(salah.simulasi, null); assert.ok(!salah.peringatan.some(x => x.sumber_jenis === "simulasi"));
+  const hilang = await cek(j => { delete j.boleh_tampil; });
+  assert.ok(hilang.basi_sumber.includes("jejak"), "medan hilang = diabaikan"); assert.equal(hilang.simulasi, null);
+  const teks = await cek(j => { j.boleh_tampil = "true"; });
+  assert.ok(teks.basi_sumber.includes("jejak"), "hanya boolean true");
+  const ok = await cek(() => {});
+  assert.ok(!ok.basi_sumber.includes("jejak")); assert.ok(ok.peringatan.some(x => x.sumber_jenis === "simulasi"));
+  assert.equal(E.jejakSegar({jejakBoleh: false, jejakStatus: "ok", jejakAcuan: new Date().toISOString()}, Date.now()), false);
 });

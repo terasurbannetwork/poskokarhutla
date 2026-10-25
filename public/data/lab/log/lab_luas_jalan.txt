@@ -1,0 +1,59 @@
++ timeout 6780 python3 scripts/data/lab_luas.py jalan
+memuat peta ...
+[10:11:14 UTC | terpakai 2 dtk | sisa 6598 dtk] gaveau mulai (batas 1650 dtk)
+citra: shapefile 2 berkas
+  vektor 181728 poligon
+[10:14:27 UTC | terpakai 196 dtk | sisa 6404 dtk] gaveau selesai: ok
+[10:14:27 UTC | terpakai 196 dtk | sisa 6404 dtk] gfed5 mulai
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] gfed5 selesai: tak ada berkas yang dapat dibaca
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] titik selesai (55 unit di cache)
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] luas_km2 dari cache (dibuat 2026-10-23T09:19:23+00:00)
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] dmi dari cache (dibuat 2026-10-23T09:19:24+00:00)
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] statis dari cache (dibuat 2026-10-23T09:19:26+00:00)
+[10:14:29 UTC | terpakai 197 dtk | sisa 6403 dtk] chirps|2001 mulai (batas 60 dtk)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2001 selesai
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2002 dari cache (dibuat 2026-10-23T09:19:31+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2003 dari cache (dibuat 2026-10-23T09:19:31+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2004 dari cache (dibuat 2026-10-23T09:19:31+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2005 dari cache (dibuat 2026-10-23T09:19:32+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2006 dari cache (dibuat 2026-10-23T09:19:32+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2007 dari cache (dibuat 2026-10-23T09:19:33+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2008 dari cache (dibuat 2026-10-23T09:19:33+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2009 dari cache (dibuat 2026-10-23T09:19:34+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2010 dari cache (dibuat 2026-10-23T09:19:34+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2011 dari cache (dibuat 2026-10-23T09:19:34+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2012 dari cache (dibuat 2026-10-23T09:19:35+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2013 dari cache (dibuat 2026-10-23T09:19:35+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2014 dari cache (dibuat 2026-10-23T09:19:36+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2015 dari cache (dibuat 2026-10-23T09:19:36+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2016 dari cache (dibuat 2026-10-23T09:19:36+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2017 dari cache (dibuat 2026-10-23T09:19:39+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2018 dari cache (dibuat 2026-10-23T09:19:39+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2019 dari cache (dibuat 2026-10-23T09:19:39+00:00)
+[10:14:31 UTC | terpakai 200 dtk | sisa 6400 dtk] chirps|2020 mulai (batas 60 dtk)
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2020 GALAT HTTPError: HTTP Error 503: 
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2021 dari cache (dibuat 2026-10-23T09:19:42+00:00)
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2022 dari cache (dibuat 2026-10-23T09:19:43+00:00)
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2023 dari cache (dibuat 2026-10-23T09:19:43+00:00)
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2024 dari cache (dibuat 2026-10-23T09:19:44+00:00)
+[10:14:33 UTC | terpakai 201 dtk | sisa 6399 dtk] chirps|2025 mulai (batas 60 dtk)
+[10:14:34 UTC | terpakai 202 dtk | sisa 6398 dtk] chirps|2025 GALAT HTTPError: HTTP Error 503: 
+[10:14:34 UTC | terpakai 202 dtk | sisa 6398 dtk] chirps|2026 mulai (batas 60 dtk)
+[10:14:36 UTC | terpakai 204 dtk | sisa 6396 dtk] chirps|2026 GALAT HTTPError: HTTP Error 404: 
+[10:14:36 UTC | terpakai 204 dtk | sisa 6396 dtk] hansen dari cache (dibuat 2026-10-23T09:23:57+00:00)
+[10:14:36 UTC | terpakai 204 dtk | sisa 6396 dtk] worldcover dari cache (dibuat 2026-10-23T09:25:01+00:00)
+[10:14:36 UTC | terpakai 204 dtk | sisa 6396 dtk] model mulai
+[10:14:36 UTC | terpakai 204 dtk | sisa 6396 dtk] model seri N mulai (462 baris)
+[10:16:20 UTC | terpakai 308 dtk | sisa 6292 dtk] model seri N selesai (24 entri)
+[10:16:20 UTC | terpakai 308 dtk | sisa 6292 dtk] model seri M mulai (749 baris)
+[10:23:37 UTC | terpakai 745 dtk | sisa 5855 dtk] model seri M selesai (24 entri)
+[10:23:37 UTC | terpakai 745 dtk | sisa 5855 dtk] pilih model terpilih=False pemenang=M3
+[10:23:37 UTC | terpakai 745 dtk | sisa 5855 dtk] prediksi unit N mulai
+[10:23:37 UTC | terpakai 745 dtk | sisa 5855 dtk] prediksi unit M mulai
+[10:23:38 UTC | terpakai 746 dtk | sisa 5854 dtk] prediksi 2026 N mulai
+[10:23:38 UTC | terpakai 746 dtk | sisa 5854 dtk] prediksi 2026 M mulai
+[10:23:38 UTC | terpakai 746 dtk | sisa 5854 dtk] tabel tally mulai
+[10:23:38 UTC | terpakai 746 dtk | sisa 5854 dtk] 2026 Jan-Sep mulai
+[10:23:38 UTC | terpakai 747 dtk | sisa 5853 dtk] sel Gaveau 2019 mulai
+[11:45:12 UTC | terpakai 5640 dtk | sisa 960 dtk] ha per piksel mulai
+[11:45:12 UTC | terpakai 5640 dtk | sisa 960 dtk] model selesai; status sebagian

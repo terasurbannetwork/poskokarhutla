@@ -640,7 +640,7 @@ function putar() {
 /* ---------- pasang DOM sekali ---------- */
 if (hal && wk) {
   hal.insertAdjacentHTML("beforeend", `<div class="s3-mode s3-m" id="s3Mode" role="group" aria-label="Tampilan peta"><button type="button" data-m="2d" aria-pressed="true">2D</button><button type="button" data-m="3d" aria-pressed="false">3D</button><button type="button" id="s3Citra" aria-pressed="false" hidden>Citra</button><span class="s3-ex" id="s3Ex" hidden></span></div>
-    <div class="s3-label" id="s3Label" hidden title="Data insiden buatan; cuaca dari prakiraan nyata"><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI · insiden buatan</span></div>
+    <div class="s3-label" id="s3Label" hidden title="Data insiden buatan; cuaca dari prakiraan nyata"><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI, BUKAN PENGAMATAN · insiden buatan</span></div>
     <div class="s3-bar s3f-only" id="s3Bar"><b class="s3-nm" id="s3Nm">Insiden simulasi</b><span class="s3-info" id="s3Lok"></span><span class="s3-info" id="s3Rg"></span>
       <div class="s3-tabs" id="s3Tabs" role="tablist" aria-label="Tab insiden"></div><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI</span><span class="s3-sp"></span>
       <button type="button" class="s3-pill" id="s3Gear" aria-pressed="false" title="Pengaturan skenario">${ik(P.atur)}Skenario</button>

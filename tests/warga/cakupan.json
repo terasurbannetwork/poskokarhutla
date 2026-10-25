@@ -1,6 +1,12 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "table uji_tugas": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "table uji_isian": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "table uji_sampel": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "table uji_terlewat": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "GET /api/uji-lapangan": "uji lapangan: API menghitung Q1-Q5 dari data sintetis",
+    "cron jalankanUji": "uji lapangan: cron memilih sampel kontrol sekali per minggu",
     "table kontak_pemangku": "migrasi 0053: CHECK menolak baris tanpa WA dan email",
     "GET /api/kontak/admin": "rute admin kontak: tanpa admin 403",
     "POST /api/kontak/admin": "admin tambah, ubah, hapus",

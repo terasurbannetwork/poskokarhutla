@@ -288,7 +288,7 @@
   }
   /* cek ulang lapangan sesudah dilaporkan padam: foto kedua di lokasi (satelit tidak melihat bara bawah permukaan) */
   const formCekUlang = t => `<form id="fLapor" class="in-form in-blok" data-tugas="${esc(t.id)}" data-langkah="cekulang" novalidate><h2>Cek ulang lapangan</h2>
-    <p class="lp-kecil">Laporan padam ditutup dengan foto kedua di lokasi. Periksa tanah dan gambut dengan tangan atau tongkat, lalu foto lokasi yang sudah padam.</p>${mediaWidget()}
+    <p class="lp-kecil">Laporan padam ditutup dengan foto kedua di lokasi. Periksa tanah dan gambut dengan tangan atau tongkat, lalu foto lokasi yang sudah padam.</p>${mediaWidget()}${apiTugas(t) && window.UjiLapangan ? window.UjiLapangan.bidangCek() : ""}
     <div class="in-bar"><ul id="progBerkas" class="in-up"></ul><p id="progres" class="in-progres" role="status" aria-live="polite"></p><button type="submit" id="kirim" class="lp-tombol utama besar">Kirim foto cek ulang</button></div></form>`;
   const KENDALA_API = ["air_jauh", "akses_sulit_rawa", "air_tidak_cukup", "asap_tebal"];   // kendala khas pemadaman; bahaya lain memakai sisanya
   const langkahHtml = (n, teks) => `<h3 class="in-langkah"><i>${n}</i>${esc(teks)}</h3>`;
@@ -313,6 +313,7 @@
         ${api ? `<label>Luas terbakar di lokasi (hektare)<input id="luas" inputmode="decimal"></label><label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal"></label>` : ""}
         ${bidangPemadaman(api)}${api ? gambutBidang() : ""}
         ${konf && api ? `<h3 class="in-sub">Perusahaan konsesi</h3><div id="ptWadah" class="in-baris-isi"><p class="lp-kecil">Dicocokkan dengan peta konsesi saat bagian ini dibuka.</p></div>` : ""}</details>
+      ${api && window.UjiLapangan ? window.UjiLapangan.bidang(t.id, konf) : ""}
       ${langkahHtml(3, "Kirim")}
       <div class="in-bar"><ul id="progBerkas" class="in-up"></ul><p id="progres" class="in-progres" role="status" aria-live="polite"></p>
         <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button></div></form>`;
@@ -651,7 +652,7 @@
       if ((konf || cek) && !berkas.length) throw new Error("Ambil minimal satu foto atau video di lokasi.");
       if (!konf && !cek && sapi === "padam" && !berkas.length) throw new Error(`Melaporkan ${tg ? kam(tg).selesai : "padam"} wajib berfoto: ambil foto lokasi.`);
       if (!sapi && !cek) throw new Error(`Pilih ${(tg ? kam(tg).kondisi : "Kondisi api").toLowerCase()}: ketuk salah satu tombol besar.`);
-      if (cek) body = {klien_id: idAcak()};
+      if (cek) { body = {klien_id: idAcak()}; if (tg && apiTugas(tg) && window.UjiLapangan) window.UjiLapangan.bacaCek(body); }
       else {
       if (konf && (!nilai("picNama") || !nilai("picJabatan") || !nilai("picWa"))) { $("picNama")?.closest("details")?.setAttribute("open", ""); throw new Error("PIC lapangan wajib: nama, jabatan, dan nomor WhatsApp."); }
       body = {klien_id: idAcak()};
@@ -664,6 +665,7 @@
       if (pk != null && lk != null && pk > lk) throw new Error("Luas padam tidak boleh melebihi luas terbakar.");
       if (!konf) { const ai = [...document.querySelectorAll('input[name="alatInv"]:checked')].map(i => i.value); if (ai.length) body.alat_inventaris = ai; }
       bacaGambut(body); bacaPemadaman(body); if (konf && $("ptWadah")) { const pt = bacaPT("pt", false); if (pt) body.pt = pt; }
+      if (tg && apiTugas(tg) && window.UjiLapangan) window.UjiLapangan.baca(body, body.luas_ha != null);   // uji lapangan: tutupan + metode luas wajib bila luas diisi
       }
     } catch (x) { const g = $("progres"); if (g) { g.className = "in-progres galat"; g.textContent = x.message; g.scrollIntoView({block: "nearest"}); } return; }
     sibuk = true; t.disabled = true; pesan(""); const prog = $("progres"), it = {id: idAcak(), tugasId: tid, langkah, body, dibuat: Date.now(), nama: tg ? tg.kab : "tugas", berkas: []}; prog.className = "in-progres";
@@ -675,7 +677,7 @@
       if (konf && tg) it.pic = {kunci: ingatKunci(tg), nilai: {nama: body.pic_nama, jabatan: body.pic_jabatan, wa: body.pic_wa}};
       try { await simpanAntrean(it); } catch (x) { /* tanpa IndexedDB: tetap dikirim langsung, tidak tahan luring */ }
     } catch (x) { sibuk = false; t.disabled = false; prog.textContent = ""; return pesan(x.message, "galat"); }
-    sibuk = false; t.disabled = false; prog.textContent = "Tersimpan di ponsel, mengirim…"; draf.delete(tid); berkas = []; pratinjau();
+    sibuk = false; t.disabled = false; prog.textContent = "Tersimpan di ponsel, mengirim…"; draf.delete(tid); berkas = []; pratinjau(); window.UjiLapangan?.lepas();
     if (!window.indexedDB) { const h = await kirimItem(it); if (h.ok) { pesan("Terkirim.", "ok"); await muatTugas(); } else pesan(h.tolak || h.tunda, "galat"); return gantiTab("tugas"); }
     await prosesAntrean(); tampilBanner(); pilihTugas(null); gantiTab("tugas");
   }
