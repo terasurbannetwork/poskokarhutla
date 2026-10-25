@@ -1484,7 +1484,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-m="kom" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg>Cluster api</button><button data-m="posko" aria-pressed="false" hidden>Posko (Ajuan)</button></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, kecamatan, atau K001" autocomplete="off" aria-label="Cari wilayah">
+            <input id="cari" type="search" placeholder="Cari wilayah, taman nasional, gunung, konsesi, atau K001" autocomplete="off" aria-label="Cari wilayah">
             <div class="hasil card" id="hasil" hidden></div>
           </div>
         </div>
@@ -5905,6 +5905,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["METAR", "aviationweather.gov (NOAA)", "tidak dicantumkan", "25 bandara", "harian", "metar.json"],
       ["Gambut", "GFW Global peatland extent v20230315 (Miettinen dkk. 2016 + Gumbricht dkk. 2017)", "CC BY 4.0", "ubin z8 ± 600 m, sel 2 × 2 piksel ± 1,2 km (gambut bila ≥ 2 dari 4 piksel)", "manual", "lahan/gambut.geojson"],
       ["Kesatuan Hidrologis Gambut (KHG)", "BRGM, PRIMS (prims.brgm.go.id), GeoServer WFS prims:khg", "boleh di luar PRIMS dengan tautan ke wali data; non-komersial", "518 KHG, poligon disederhanakan ± 220 m", "manual", "lahan/khg.geojson"],
+      ["Kawasan bernama di kotak cari (taman nasional, tahura, suaka margasatwa, cagar alam, TWA, danau)", "OpenStreetMap via Overpass; gunung api: katalog MAGMA (lingkaran 10 km); metropolitan: gabungan kab/kota", "ODbL, (c) kontributor OpenStreetMap", "batas digitasi OSM, bukan SK penetapan; disederhanakan ± 110 m", "manual (scripts/scrape/kawasan_cari.py)", "kawasan_cari.json, kawasan_cari.geojson"],
       ["Konsesi sawit, HTI, HPH, tambang", "GFW (data KLHK; sawit & HPH ± 2014), Trase (HTI 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
       ["Kawasan hutan", "KLHK versi 2017 lewat akun GFW di ArcGIS Online", "tidak dicantumkan", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
       ["Luas terbakar resmi 2018–2026", "KLHK SiPongi (2018–2023 sama dengan kutipan Tulisan Hukum JDIH BPK 2024)", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
@@ -6551,6 +6552,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="lapisan5.js"></script>
 <link rel="stylesheet" href="banding.css">
 <link rel="stylesheet" href="cari.css">
+<script src="angka_kawasan.js"></script>
 <script src="cari.js"></script>
 <link rel="stylesheet" href="timelapse.css">
 <script src="timelapse.js"></script>
