@@ -20,7 +20,7 @@
   let S = null, tab = "kaji_cepat", F = {prov: "", kab: "", status: "", bahaya: false}, daftar = [], rekapD = null, urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), kodeBaru = null, dummyIkut = false, gudangOps = [], E = {dari: "", sampai: ""};
 
   const kirim = async (u, b) => { const r = await Admin.kirim(u, b); return {...r, s: r.status}; };
-  const ambilJ = async u => { const r = await fetch(u); if (r.status === 403) { location.href = "/admin/masuk"; throw new Error("perlu masuk"); } return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))}; };
+  const ambilJ = async u => { const r = await fetch(u); if (r.status === 403) await Admin.keMasuk(); return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))}; };
   const catat = (t, ok) => { const p = document.getElementById("mjPesan"); if (p) { p.textContent = t; p.className = "mj-pesan " + (ok ? "ok" : "galat"); } };
   const M = () => S.meja.find(m => m.id === tab);
 
