@@ -236,7 +236,8 @@ test('data/peta_karhutla.json (bila sudah terbit): kontrak v1, 38 provinsi, nasi
   const d = JSON.parse(readFileSync(nyata, 'utf8'))
   assert.equal(R.cek(d), '')
   assert.equal(Object.keys(d.prov).length, 38, 'harus 38 provinsi')
-  assert.ok(Number.isFinite(d.porsi) && d.porsi > 0 && d.porsi < 2, `porsi ${d.porsi}`)
+  assert.equal(d.porsi, undefined, 'bentuk lama (porsi) tidak boleh terbit lagi')
+  for (const s of ['N20', 'N21']) assert.ok(Number.isFinite(d.faktor?.[s]) && d.faktor[s] > 1 && d.faktor[s] < 10, `faktor ${s} ${d.faktor?.[s]} ha/titik`)
   for (const m of ['hot', 'luas', 'belum', 'padam']) {
     assert.ok(Array.isArray(d.nasional[m]) && d.nasional[m].length === d.hari.length, `nasional.${m} sejajar hari`)
     d.hari.forEach((h, k) => {
