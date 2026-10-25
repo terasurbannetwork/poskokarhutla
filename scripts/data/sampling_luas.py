@@ -40,6 +40,7 @@ F20 = 4.12
 DNBR, NBR_PASCA, DNBR_BAWAH = 0.27, 0.2, 0.1
 NP = 65                           # tambalan 65 x 65 piksel 20 m (1,3 km); piksel tengah = indeks 32
 PUSAT = (31, 34)
+SUM_MIN = 0.05                    # B8A + B12 minimum agar NBR bermakna (air/bayangan gelap memberi penyebut ~0 dan dNBR > 2)
 BURUK_PIKSEL = {0, 1, 3, 6, 8, 9, 10}
 BURUK_AWAN = {0, 3, 8, 9, 10}
 STAC = "https://earth-search.aws.element84.com/v1/search"
@@ -286,16 +287,19 @@ def scl_bersih(v):
 
 
 def adegan_titik(lat, lon, dari, sampai):
-    """semua adegan S2 L2A yang menutup tambalan, satu per tanggal: [(date, item)] urut tanggal."""
+    """semua adegan S2 L2A yang menutup tambalan, satu per tanggal: [(date, item)] urut tanggal. Rentang dipecah <= 120 hari per permintaan (rentang panjang memberi 502)."""
     import citra as C
-    q = {"collections": ["sentinel-2-l2a"], "bbox": C.kotak(lat, lon, 1.2), "limit": 400, "datetime": f"{dari}T00:00:00Z/{sampai}T23:59:59Z", "query": {"eo:cloud_cover": {"lt": 90}}}
-    per = {}
-    for it in json.loads(C.ambil(C.STAC, data=json.dumps(q).encode()))["features"]:
-        if not C.menutup(it["geometry"], C.kotak(lat, lon, 1.4)) or not all(it["assets"].get(k, {}).get("href", "").endswith(".tif") for k in ("scl", "nir08", "swir22", "visual")):
-            continue        # sebagian adegan 2023 hanya berupa JP2 di bucket requester-pays (s3://sentinel-s2-l2a): dilewati
-        d = it["properties"]["datetime"][:10]
-        if d not in per or it["properties"].get("eo:cloud_cover", 100) < per[d]["properties"].get("eo:cloud_cover", 100):
-            per[d] = it
+    per, a, akhir = {}, dt.date.fromisoformat(str(dari)), dt.date.fromisoformat(str(sampai))
+    while a <= akhir:
+        z = min(akhir, a + dt.timedelta(119))
+        q = {"collections": ["sentinel-2-l2a"], "bbox": C.kotak(lat, lon, 1.2), "limit": 200, "datetime": f"{a}T00:00:00Z/{z}T23:59:59Z", "query": {"eo:cloud_cover": {"lt": 90}}}
+        for it in json.loads(C.ambil(C.STAC, data=json.dumps(q).encode()))["features"]:
+            if not C.menutup(it["geometry"], C.kotak(lat, lon, 1.4)) or not all(it["assets"].get(k, {}).get("href", "").endswith(".tif") for k in ("scl", "nir08", "swir22", "visual")):
+                continue        # sebagian adegan 2023 hanya berupa JP2 di bucket requester-pays (s3://sentinel-s2-l2a): dilewati
+            d = it["properties"]["datetime"][:10]
+            if d not in per or it["properties"].get("eo:cloud_cover", 100) < per[d]["properties"].get("eo:cloud_cover", 100):
+                per[d] = it
+        a = z + dt.timedelta(1)
     return [(dt.date.fromisoformat(d), per[d]) for d in sorted(per)]
 
 
@@ -332,7 +336,7 @@ class Titik:
                         return
 
     def ukur(self, pra, pasca):
-        """-> dict {dnbr, nbr_pasca, n_bersih} pada 3x3 piksel tengah (piksel sah: SCL bagus di kedua adegan, pita > 0)."""
+        """-> dict {dnbr, nbr_pasca, n_bersih} pada 3x3 piksel tengah (piksel sah: SCL bagus di kedua adegan, B8A + B12 >= SUM_MIN; nilai = median piksel sah)."""
         with ThreadPoolExecutor(2) as ex:
             (a1, c1), (a2, c2) = ex.map(self.pita, (pra, pasca))
         s1, s2 = self.bersih(pra), self.bersih(pasca)
@@ -340,14 +344,15 @@ class Titik:
         for y in range(*PUSAT):
             for x in range(*PUSAT):
                 i = y * NP + x
-                if s1[i] in BURUK_PIKSEL or s2[i] in BURUK_PIKSEL or None in (a1[i], c1[i], a2[i], c2[i]) or a1[i] + c1[i] <= 0 or a2[i] + c2[i] <= 0:
+                if s1[i] in BURUK_PIKSEL or s2[i] in BURUK_PIKSEL or None in (a1[i], c1[i], a2[i], c2[i]) or a1[i] + c1[i] < SUM_MIN or a2[i] + c2[i] < SUM_MIN:
                     continue
                 n1, n2 = (a1[i] - c1[i]) / (a1[i] + c1[i]), (a2[i] - c2[i]) / (a2[i] + c2[i])
                 dn.append(n1 - n2)
                 nb.append(n2)
         if len(dn) < 5:
             return {"dnbr": None, "nbr_pasca": None, "n_bersih": len(dn)}
-        return {"dnbr": sum(dn) / len(dn), "nbr_pasca": sum(nb) / len(nb), "n_bersih": len(dn)}
+        mid = lambda v: sorted(v)[len(v) // 2]       # median: tahan satu piksel pencilan
+        return {"dnbr": mid(dn), "nbr_pasca": mid(nb), "n_bersih": len(dn)}
 
 
 def label(dnbr, nbr_pasca, ambang=DNBR):
@@ -466,6 +471,9 @@ def skenario(baris, strata_tab, nama):
         "ragu_dikeluarkan": lambda r: (r["label"] != "ragu", r["label"] == "terbakar"),
         "ragu_sedang_terbakar": lambda r: ((False, False) if (r["label"] == "ragu" and r["sebab"] == "tanpa_pasangan") else (True, r["label"] in ("terbakar",) or (r["label"] == "ragu" and r["sebab"] != "tanpa_pasangan"))),
     }
+    gap = lambda r: (dt.date.fromisoformat(r["tgl_pasca"]) - dt.date.fromisoformat(r["tgl_pra"])).days if r["tgl_pra"] and r["tgl_pasca"] else None
+    S["celah_maks_60hari"] = lambda r: (False, False) if r["label"] == "ragu" or gap(r) is None or gap(r) > 60 else (True, r["label"] == "terbakar")
+    S["hanya_dekat_titik_AB"] = lambda r: (False, False) if (r["label"] == "ragu" and r["sebab"] == "tanpa_pasangan") else (True, r["label"] == "terbakar" and r["strata"] in "AB")
     for t in (0.1, 0.27, 0.44):
         S["dnbr_%s" % str(t).replace(".", ",")] = (lambda t: lambda r: (r["dnbr"] is not None, label_ambang(r, t) == "terbakar"))(t)
     f = S[nama]
@@ -499,7 +507,7 @@ def ringkas(tahun):
             w.writerow([r["id"], r["strata"], r["gambut"], r["lat"], r["lon"], r["label"], r["sebab"], r["dnbr"] if r["dnbr"] is not None else "", r["nbr_pasca"] if r["nbr_pasca"] is not None else "", r["tgl_pra"], r["tgl_pasca"], r["n_bersih"]])
     tabel_luas = {k: v for k, v in luas.items()}
     hasil = {}
-    for nm in ("utama", "ragu_tidak_terbakar", "ragu_dikeluarkan", "ragu_sedang_terbakar", "dnbr_0,1", "dnbr_0,27", "dnbr_0,44"):
+    for nm in ("utama", "ragu_tidak_terbakar", "ragu_dikeluarkan", "ragu_sedang_terbakar", "celah_maks_60hari", "hanya_dekat_titik_AB", "dnbr_0,1", "dnbr_0,27", "dnbr_0,44"):
         s, _ = skenario(baris, tabel_luas, nm)
         L, se = taksir(s)
         _, se2 = taksir(s, adj=True)
@@ -513,8 +521,12 @@ def ringkas(tahun):
         a["terbakar" if r["label"] == "terbakar" else "tidak" if r["label"] == "tidak" else "ragu_tanpa_pasangan" if r["sebab"] == "tanpa_pasangan" else "ragu_dnbr"] += 1
     strata_out = [{"strata": s["strata"], "gambut": s["gambut"], "luas_ha": s["luas_ha"], "n_rancangan": s["n"], "n_ditandai": sum(per.get((s["strata"], str(s["gambut"])), {}).values()),
                    **per.get((s["strata"], str(s["gambut"])), {})} for s in tab["strata"] if s["strata"] != "D"]
+    bk = [r for r in baris if r["label"] == "terbakar"]
+    cel = [(dt.date.fromisoformat(r["tgl_pasca"]) - dt.date.fromisoformat(r["tgl_pra"])).days for r in bk]
+    diag = {"terbakar_total": len(bk), "terbakar_strata": {h: sum(r["strata"] == h for r in bk) for h in "ABC"}, "terbakar_celah_gt_90_hari": sum(c > 90 for c in cel), "median_celah_hari_terbakar": sorted(cel)[len(cel) // 2] if cel else None,
+            "terbakar_dnbr_gt_1": sum(r["dnbr"] > 1 for r in bk), "dnbr_di_luar_0_2": sum(r["dnbr"] is not None and abs(r["dnbr"]) > 2 for r in baris)}
     out = {"tahun": tahun, "dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "n_ditandai": len(baris), "n_belum": belum, "resmi_ha": RESMI.get(tahun), "metode_web_ha": tab["metode_web_ha"],
-           "luas_tanpa_deteksi_ha": round(sum(s["luas_ha"] for s in tab["strata"] if s["strata"] == "D")), "provinsi_tanpa_deteksi": tab["provinsi_tanpa_deteksi"], "strata": strata_out, "estimasi": hasil}
+           "luas_tanpa_deteksi_ha": round(sum(s["luas_ha"] for s in tab["strata"] if s["strata"] == "D")), "provinsi_tanpa_deteksi": tab["provinsi_tanpa_deteksi"], "strata": strata_out, "diagnosa": diag, "estimasi": hasil}
     json.dump(out, open(os.path.join(KELUAR, "ringkasan_%d.json" % tahun), "w"), ensure_ascii=False, indent=1)
     tulis_md(out, tab)
     print(json.dumps(out, ensure_ascii=False, indent=1))
@@ -539,10 +551,13 @@ def tulis_md(o, tab):
     for k, v in o["estimasi"].items():
         L.append("| %s | %s | %s | %s - %s | %s - %s |" % (k, format(v["luas_ha"], ","), format(v["se_ha"], ","), format(v["ci95_ha"][0], ","), format(v["ci95_ha"][1], ","), format(v["ci95_konservatif_ha"][0], ","), format(v["ci95_konservatif_ha"][1], ",")))
     L += ["", "Pembanding: luas resmi BNPB/KLHK %s ha; metode web kita (titik NOAA-20 n/h tersaring x 4,12) %s ha." % (format(o["resmi_ha"] or 0, ","), format(o["metode_web_ha"] or 0, ",")),
-          "Skenario: `ragu_tidak_terbakar` semua ragu = tidak; `ragu_dikeluarkan` semua ragu keluar dari penyebut; `ragu_sedang_terbakar` (batas atas) ragu karena dNBR sedang = terbakar; `dnbr_x` ambang dNBR x (NBR pasca < 0,2 tetap).", "",
+          "Diagnosa titik 'terbakar' (n=%d: A %d, B %d, C %d): celah pra-pasca > 90 hari pada %d, median %s hari; dNBR > 1 pada %d; |dNBR| > 2 (tak mungkin per piksel; penyebut NBR mendekati nol) pada %d titik." % (
+              o["diagnosa"]["terbakar_total"], o["diagnosa"]["terbakar_strata"]["A"], o["diagnosa"]["terbakar_strata"]["B"], o["diagnosa"]["terbakar_strata"]["C"], o["diagnosa"]["terbakar_celah_gt_90_hari"], o["diagnosa"]["median_celah_hari_terbakar"], o["diagnosa"]["terbakar_dnbr_gt_1"], o["diagnosa"]["dnbr_di_luar_0_2"]),
+          "Skenario: `celah_maks_60hari` hanya pasangan pra-pasca <= 60 hari (ragu keluar); `hanya_dekat_titik_AB` terbakar hanya dihitung di A dan B (butuh deteksi VIIRS <= 2 km), C dianggap 0; `ragu_tidak_terbakar` semua ragu = tidak; `ragu_dikeluarkan` semua ragu keluar dari penyebut; `ragu_sedang_terbakar` (batas atas) ragu karena dNBR sedang = terbakar; `dnbr_x` ambang dNBR x (NBR pasca < 0,2 tetap).", "",
           "## Keterbatasan", "",
           "- Label otomatis satu aturan dNBR, belum dipastikan manusia (potongan 64x64 di `thumb/` untuk pemeriksaan). Tanpa matriks kesalahan acuan, selang hanya galat sampling, BUKAN galat label.",
           "- dNBR 0,27 mengukur bekas bakar permukaan; bara gambut bawah tanah dan api < 1 piksel 20 m bisa luput (bias rendah). Panen, banjir, gugur daun, dan bayangan awan yang lolos SCL bisa menaikkan dNBR (bias tinggi).",
+          "- Aturan dNBR tidak membedakan api dari perubahan non-api: panen/olah padi, savana kering musim kemarau, pembukaan lahan tanpa api, dan celah pra-pasca panjang menaikkan dNBR. Pada titik B dan C (jauh dari deteksi) hampir semua 'terbakar' mungkin positif palsu; baca estimasi utama sebagai BATAS ATAS aturan, dan periksa potongan `thumb/` sebelum dipakai.",
           "- Strata C memakai pra Mei-Jul dan pasca Okt-Des: kebakaran Jan-Apr atau Nov-Des di luar deteksi tidak tertangkap. Strata C berprevalensi rendah: strata dengan 0 terbakar memberi SE 0 pada rumus baku (lihat selang konservatif).",
           "- Titik acak di dalam sel 375 m; titik tidak ditimbang cos lintang di dalam strata (galat < 1%). Garis pantai dan batas provinsi dari poligon kecamatan yang disederhanakan.",
           "- Deteksi VIIRS tahun %d memakai arsip standar (SP); sel industri dibuang memakai daftar titik_palsu (disusun dari arsip yang sama)." % t]

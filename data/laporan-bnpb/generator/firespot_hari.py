@@ -39,33 +39,45 @@ KODE = {'VIIRS_SNPP_NRT': 'N', 'VIIRS_NOAA20_NRT': 'N20', 'VIIRS_NOAA21_NRT': 'N
 LAT0, LON0, SEL = -11.25, 94.75, 0.5   # kisi grid_darat
 
 
+_HARI_UTC = {}   # (src, hari UTC) -> titik terpakai hari itu; 14 deck memakai hari UTC yang sama berulang kali
+
+
+def titik_utc(src, u, kini, kunci, sel_ind, w):
+    """Titik VIIRS satu berkas FIRMS (satu sumber, satu hari UTC) yang lolos saringan harian.hotspot():
+    keyakinan >= nominal, bukan sel industri, bukan gunung api, dan jatuh di wilayah Indonesia."""
+    if (src, u) in _HARI_UTC:
+        return _HARI_UTC[(src, u)]
+    out, lihat = [], set()
+    for r in csv.DictReader(io.StringIO(S.csv_hari(src, u, kini, kunci))):
+        kc = {'l': 0, 'n': 1, 'h': 2}.get(r.get('confidence', ''), 1)
+        if kc < 1:
+            continue
+        jam = r['acq_time'].zfill(4)
+        t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
+        lat, lon = round(float(r['latitude']), 4), round(float(r['longitude']), 4)
+        if (lat, lon, t) in lihat:
+            continue
+        lihat.add((lat, lon, t))
+        if TP.palsu(lat, lon, sel_ind) or A.gunung_api(lat, lon):
+            continue
+        adm = w.cari(lon, lat)
+        if not adm:
+            continue
+        out.append({'lat': lat, 'lon': lon, 't': t, 's': KODE[src], 'c': kc, 'adm': adm,
+                    'px': max(float(r.get('scan') or .4), float(r.get('track') or .4))})
+    _HARI_UTC[(src, u)] = out
+    return out
+
+
 def titik(kini, kunci, sel_ind, w):
     """Titik VIIRS dalam jendela harian.JENDELA_HARI sebelum `kini`, bentuk sama dengan harian.hotspot()."""
     batas = kini - dt.timedelta(days=H.JENDELA_HARI)
-    out, lihat = [], set()
+    out = []
     u = batas.astimezone(UTC).date() - dt.timedelta(days=1)
     akhir_u = kini.astimezone(UTC).date()
     while u <= akhir_u:
         for src in VIIRS:
-            for r in csv.DictReader(io.StringIO(S.csv_hari(src, u, kini, kunci))):
-                jam = r['acq_time'].zfill(4)
-                t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
-                if not batas <= t < kini:
-                    continue
-                lat, lon = round(float(r['latitude']), 4), round(float(r['longitude']), 4)
-                if (lat, lon, t, src) in lihat:
-                    continue
-                lihat.add((lat, lon, t, src))
-                if TP.palsu(lat, lon, sel_ind) or A.gunung_api(lat, lon):
-                    continue
-                kc = {'l': 0, 'n': 1, 'h': 2}.get(r.get('confidence', ''), 1)
-                if kc < 1:
-                    continue
-                adm = w.cari(lon, lat)
-                if not adm:
-                    continue
-                out.append({'lat': lat, 'lon': lon, 't': t, 's': KODE[src], 'c': kc, 'adm': adm,
-                            'px': max(float(r.get('scan') or .4), float(r.get('track') or .4))})
+            out += [p for p in titik_utc(src, u, kini, kunci, sel_ind, w) if batas <= p['t'] < kini]
         u += dt.timedelta(days=1)
     out.sort(key=lambda p: p['t'])
     return out

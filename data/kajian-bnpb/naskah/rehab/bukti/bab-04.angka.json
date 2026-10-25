@@ -383,6 +383,15 @@
    "sumber": "DIBI BNPB",
    "catatan": "olah(resmi): kab dengan rumah_rusak > 0 di tiap tahun 2015–2025, jenis hidromet tanpa kekeringan dan karhutla; DIBI 2024 tidak lengkap untuk lima jenis (README paket)"
   },
+  "rehab.dibi.kab.rumah_rusak_hidromet_tercatat": {
+   "nilai": 497,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "skenario-hidromet/dibi_kab_tahun.csv",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): kab dengan Σ rumah_rusak ≥ 1, 2015–2025, jenis hidromet tanpa kekeringan dan karhutla; 509 kab punya baris apa pun"
+  },
   "rehab.dibi.kab.acehutara.rumah_rusak_hidromet.2015_2025": {
    "nilai": 92450,
    "pustaka": "bnpb-dibi",
@@ -398,7 +407,7 @@
    "satuan": "unit",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, kejadian besar",
-   "catatan": "jendela 30 Sep–31 Okt 2009 pilihan penyusun"
+   "catatan": "jendela 30 Sep–31 Okt 2009 pilihan penyusun; RS 0 (tidak dicatat terpisah 2008–2009), jadi RB 119.005 mungkin memuat RS; rumah rusak total dipakai sebagai lantai yang setara kelas"
   },
   "rehab.lantai.gempa.lombok2018.rumah_rb": {
    "berkas": "dibi/kejadian_besar.csv",
@@ -440,13 +449,22 @@
    "sumber": "DIBI BNPB, kejadian besar",
    "catatan": "jendela 3–30 Apr 2021; banjir, longsor, cuaca ekstrem"
   },
-  "rehab.lantai.tsunami.aceh2004.rumah_brr": {
+  "rehab.lantai.tsunami.aceh2004.rumah_rb": {
+   "nilai": 139195,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias, The Scattered Beads",
+   "catatan": "rumah hancur atau rusak berat (besaran kerusakan, dipakai sebagai lantai gempa-tsunami); nilai sama dengan kunci utama brr.aceh2004.rumah_rusak",
+   "lokasi": "hlm. xiii (PDF 15)"
+  },
+  "rehab.keluaran.aceh2004.rumah_dibangun": {
    "nilai": 140304,
    "pustaka": "brr-2009-scattered-beads",
    "satuan": "unit",
    "keyakinan": "resmi",
    "sumber": "BRR NAD–Nias, The Scattered Beads",
-   "catatan": "rumah permanen dibangun dalam 4 tahun; laporan keluaran pelaksana sendiri (kompendium P08, kekuatan lemah)",
+   "catatan": "rumah permanen dibangun dalam 4 tahun; keluaran, bukan lantai; laporan pelaksana sendiri (kompendium P08, kekuatan lemah)",
    "lokasi": "hlm. xiii (PDF 15)"
   },
   "rehab.pulih.sumatra2025.jembatan_daerah_terdampak": {
@@ -519,7 +537,7 @@
    "satuan": "SPAM",
    "keyakinan": "resmi",
    "sumber": "Kementerian PU, data per 2 Feb 2026",
-   "catatan": "dari 176; judul rilis menulis 142; versi 153 (media) sekunder"
+   "catatan": "dari 176; judul rilis menulis 142; versi 153 (media) sekunder; target permanen Agustus 2028 hanya disebut untuk Sumatera Barat"
   },
   "rehab.pulih.sumatra2025.rumah_rusak_bnpb_2025_12": {
    "nilai": 147000,
@@ -543,7 +561,7 @@
    "satuan": "unit",
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK 15 Jun 2024",
-   "catatan": "huntap korban gempa dan likuefaksi Sulawesi Tengah 2018"
+   "catatan": "huntap yang ditetapkan Kementerian PUPR untuk korban gempa dan likuefaksi di Palu, bukan seluruh huntap Sulawesi Tengah"
   },
   "rehab.pelajaran.sulteng.huntap_sisa_jun2024": {
    "nilai": 382,
@@ -551,7 +569,7 @@
    "satuan": "unit",
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK 15 Jun 2024",
-   "catatan": "belum selesai per Juni 2024; \"tertunda cukup lama 6 tahun\""
+   "catatan": "belum selesai per Juni 2024 dari 5.598 huntap PUPR di Palu; target huni Oktober 2024; status sesudahnya belum diperiksa; \"tertunda cukup lama 6 tahun\""
   },
   "rehab.pulih.lombok2018.rumah_selesai_2020_03": {
    "nilai": 170559,

@@ -1,7 +1,10 @@
 """Isi bagian deck Penanganan yang bersumber laporan BNPB/BMKG dari teks WA yang diurai wa_operasi.py (dipanggil penanganan.py).
 - slide tabel (slide1.xml): pil PM2.5 = stasiun BMKG tertinggi per provinsi; di luar daftar = "PM2.5 < nilai ke-10". Pil cuaca dari potensi cuaca BMKG.
   Jenis pil (warna + ikon) disalin dari pustaka pil templat 211026 (slide1 dan slide2 sumber), jadi tak bergantung provinsi mana yang ada di baris.
-- slide operasi (slide3.xml): armada, OMC 4 provinsi templat (Kalbar, Kalteng, Sumsel, Kalsel), semai 2 provinsi berbahan terbanyak."""
+- slide operasi (slide3.xml): armada, OMC 4 provinsi templat (Kalbar, Kalteng, Sumsel, Kalsel), semai 2 provinsi berbahan terbanyak.
+  TIDAK DIPAKAI sejak 25 Okt 2026: halaman operasi dibuang dari deck (tambah_peta.buang_slide) karena sumbernya teks WA satgas
+  yang tidak diarsipkan, jadi hari lampau tak bisa diisi. ganti_operasi() dan kawannya ditahan di sini supaya halaman itu bisa
+  dihidupkan lagi kalau teks WA-nya tersedia; jangan dipanggil tanpa mengembalikan slide3 ke deck."""
 import re
 
 X_PM, X_CU = 2798064, 3767328   # x pil PM2.5 dan pil cuaca di tiap baris
