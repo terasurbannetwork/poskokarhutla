@@ -12,13 +12,13 @@ target_halaman: 4
 ::: ringkasan-bab
 **Temuan:**
 
-- Data dan Informasi Bencana Indonesia (DIBI) mencatat {{angka:dibi.alam.meninggal_hilang.2025}} korban meninggal dan hilang akibat bencana alam pada 2025, tertinggi sejak 2018. Angka itu {{angka:dibi.alam.rasio_proyeksi_1a.2025|fmt=1}} kali proyeksi Rencana Nasional Penanggulangan Bencana (Renas PB) 1.a ({{angka:renas.indikator_1a.rasio_dibi_2025|fmt=1}} kali untuk semua klasifikasi), padahal Indeks Risiko Bencana (IRB) nasional {{angka:irbi.nasional.persen_2019_2024|fmt=2|persen|arah}} dari 2019 ke 2024.
+- Data dan Informasi Bencana Indonesia (DIBI) Badan Nasional Penanggulangan Bencana (BNPB) mencatat {{angka:dibi.alam.meninggal_hilang.2025}} korban meninggal dan hilang akibat bencana alam pada 2025, tertinggi sejak 2018. Angka itu {{angka:dibi.alam.rasio_proyeksi_1a.2025|fmt=1}} kali proyeksi Rencana Nasional Penanggulangan Bencana (Renas PB) 1.a ({{angka:renas.indikator_1a.rasio_dibi_2025|fmt=1}} kali untuk semua klasifikasi), padahal Indeks Risiko Bencana (IRB) nasional {{angka:irbi.nasional.persen_2019_2024|fmt=2|persen|arah}} dari 2019 ke 2024.
 - Musim hujan 2025/2026 mencatat {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang, lantai skenario Rencana Aksi Musim Hujan 2026/2027 dan di atas batas atas pita model La Niña {{angka:hidromet.nasional.lanina.korban_jiwa|satuan}} (estimasi model, belum diuji balik).
-- Kapasitas daerah minimal sedang tercatat {{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025|persen}} provinsi pada 2025 terhadap target {{angka:rpjmn.kp_kapasitas.target_2025|persen}}, dan Indikator Kinerja Program (IKP) peringatan dini {{angka:bnpb.lkip2025.pd.rerata_persen.2025|fmt=2|persen}} ternyata rerata sederhana cakupan tsunami {{angka:bnpb.lkip2025.pd.tsunami_persen.2025|fmt=2|persen}} dan banjir {{angka:bnpb.lkip2025.pd.banjir_persen.2025|fmt=2|persen}}.
+- Kapasitas daerah minimal sedang tercatat {{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025|persen}} provinsi pada 2025 terhadap target {{angka:rpjmn.kp_kapasitas.target_2025|persen}}, dan Indikator Kinerja Program (IKP) peringatan dini {{angka:bnpb.lkip2025.pd.rerata_persen.2025|fmt=2|persen}} adalah rerata sederhana cakupan tsunami {{angka:bnpb.lkip2025.pd.tsunami_persen.2025|fmt=2|persen}} dan banjir {{angka:bnpb.lkip2025.pd.banjir_persen.2025|fmt=2|persen}}.
 
 **Angka kunci:**
 
-- {{angka:bnpb.lkip2025.meninggal.2025}} meninggal dan {{angka:bnpb.lkip2025.hilang.2025}} hilang akibat bencana pada 2025 menurut data terverifikasi Laporan Kinerja (LKIP) BNPB 2025 [@bnpb-2026-lkip2025].
+- {{angka:bnpb.lkip2025.meninggal.2025}} meninggal dan {{angka:bnpb.lkip2025.hilang.2025}} hilang akibat bencana pada 2025 menurut data terverifikasi Laporan Kinerja (LKIP) BNPB 2025 [@bnpb-2026-lkip2025], berdampingan dengan {{angka:dibi.alam.meninggal.2025}} meninggal dan {{angka:dibi.alam.hilang.2025}} hilang akibat bencana alam menurut DIBI per 23 Oktober 2026 [@bnpb-dibi].
 - {{angka:mitigasi.sel_program.tanpa_kuat_sedang}} dari {{angka:mitigasi.sel_program.total}} sel fase dan jenis bencana tanpa program berbukti kuat atau sedang [@pantaubencana-2026-program-terbukti].
 - {{angka:bpk.ihps2_2024.bnpb.peraturan_belum_disahkan}} peraturan pelaksana belum disahkan dan {{angka:bpk.ihps2_2024.bnpb.peraturan_belum_diinisiasi}} belum diinisiasi BNPB menurut Badan Pemeriksa Keuangan (BPK) [@bpk-2025-ihps2-2024].
 
@@ -27,9 +27,9 @@ target_halaman: 4
 
 ## Kesimpulan {#sub:kesimpulan}
 
-Tesis kajian ini bertumpu pada DIBI Badan Nasional Penanggulangan Bencana (BNPB) dan sumber resmi lain. {{angka:tesis.mitigasi.alam|teks}}
+Tesis kajian ini bertumpu pada DIBI BNPB dan sumber resmi lain. {{angka:tesis.mitigasi.alam|teks}}
 
-**Delapan kesimpulan berangka tentang bencana Indonesia 2015–2026 menopang tesis itu, dan masing-masing berujung pada satu keputusan atau rekomendasi (@tbl:kisi-kesimpulan).** Angka DIBI ditarik 23 Oktober 2026 dan angka 2026 masih sementara [@bnpb-dibi]. Laporan Kinerja (LKIP) BNPB 2025, yang terbit Februari 2026 dari data terverifikasi, mencatat {{angka:bnpb.lkip2025.meninggal.2025}} meninggal dan {{angka:bnpb.lkip2025.hilang.2025}} hilang untuk tahun yang sama [@bnpb-2026-lkip2025]. Kedua angka resmi itu ditulis berdampingan dengan tanggal datanya, dan keduanya tetap tertinggi sejak 2018. Selisihnya belum dapat dijelaskan dari bahan kajian dan menjadi permintaan data kepada Pusat Data, Informasi, dan Komunikasi Kebencanaan (@tbl:belum-diketahui).
+**Delapan kesimpulan berangka tentang bencana Indonesia 2015–2026 menopang tesis itu, dan masing-masing berujung pada satu keputusan atau rekomendasi (@tbl:kisi-kesimpulan).** Angka DIBI ditarik 23 Oktober 2026 dan angka 2026 masih sementara [@bnpb-dibi]. LKIP BNPB 2025, yang terbit Februari 2026 dari data terverifikasi, mencatat {{angka:bnpb.lkip2025.meninggal.2025}} meninggal dan {{angka:bnpb.lkip2025.hilang.2025}} hilang untuk tahun yang sama [@bnpb-2026-lkip2025]. Kedua angka resmi itu sama-sama tertinggi sejak 2018. Selisihnya belum dapat dijelaskan dari bahan kajian dan menjadi permintaan data kepada Pusat Data, Informasi, dan Komunikasi Kebencanaan (@tbl:belum-diketahui).
 
 ::: tabel {#tbl:kisi-kesimpulan}
 judul: Kisi kesimpulan Grand Design Mitigasi Bencana Indonesia, 2015–2026
@@ -48,7 +48,7 @@ catatan: Angka tercatat ditulis lebih dulu; pita model La Niña berlabel estimas
 
 ## Keputusan yang Diminta dari Kepala BNPB {#sub:keputusan}
 
-Tiga keputusan yang diminta (KD) menyangkut dokumen yang ditetapkan Kepala BNPB sendiri atau jalur yang hanya dapat diwakilinya. Renas PB ditetapkan Kepala BNPB menurut Perpres 87/2020 Pasal 4 ayat (2) sebagai Perban BNPB 1/2025, ditinjau berkala tiap dua tahun dan sewaktu-waktu bila terjadi bencana (Pasal 7 ayat (1) dan ayat (2)) [@ri-2020-perpres87; @bnpb-2025-renas]. Perubahan Renstra BNPB (Perban BNPB 5/2025) wajib konsisten dengan Rencana Pembangunan Jangka Menengah Nasional (RPJMN) dan disetujui Kementerian PPN/Bappenas setelah Pertemuan Dua Pihak [@ri-2025-perpres80, Pasal 22 dan Pasal 26–29]. Rancangan peraturan di luar Progsun dapat disusun setelah izin prakarsa Kepala BNPB (Perka BNPB 6/2014 Pasal 8 ayat (2)); Perka itu sendiri dijadwalkan diubah dalam Progsun 2026, sehingga jalur ini berlaku sampai perubahannya ditetapkan [@bnpb-2014-produkhukum; @bnpb-2025-progsun].
+Tiga keputusan yang diminta (KD) menyangkut dokumen yang ditetapkan Kepala BNPB sendiri atau jalur yang hanya dapat diwakilinya. Renas PB ditetapkan Kepala BNPB menurut Perpres 87/2020 Pasal 4 ayat (2) sebagai Perban BNPB 1/2025, ditinjau berkala tiap dua tahun dan sewaktu-waktu bila terjadi bencana (Pasal 7 ayat (1) dan ayat (2)) [@ri-2020-perpres87; @bnpb-2025-renas]. Perubahan Rencana Strategis (Renstra) BNPB (Perban BNPB 5/2025) wajib konsisten dengan Rencana Pembangunan Jangka Menengah Nasional (RPJMN) dan disetujui Kementerian PPN/Bappenas setelah Pertemuan Dua Pihak [@ri-2025-perpres80, Pasal 22 dan Pasal 26–29]. Rancangan peraturan di luar Program Penyusunan Peraturan (Progsun) dapat disusun setelah izin prakarsa Kepala BNPB (Perka BNPB 6/2014 Pasal 8 ayat (2)); Perka itu sendiri dijadwalkan diubah dalam Progsun 2026, sehingga jalur ini berlaku sampai perubahannya ditetapkan [@bnpb-2014-produkhukum; @bnpb-2025-progsun].
 
 ::: keputusan
 judul: Keputusan yang diminta dari Kepala BNPB
@@ -57,14 +57,14 @@ judul: Keputusan yang diminta dari Kepala BNPB
   - Bila ditetapkan dalam November 2026, kaji ulang rencana kontinjensi banjir dan longsor berjalan sebelum puncak Januari–Februari 2027 di Jawa, Bali, Nusa Tenggara, dan Papua. Wilayah yang memuncak Desember 2026 di {{angka:bmkg.musim_2026.zom_puncak_desember|satuan}}, terutama sebagian besar Sumatera dan Kalimantan, didahulukan. Hari ke-100 jatuh antara {{angka:peta_jalan.hari100.hari0_1nov2026|teks}} dan {{angka:peta_jalan.hari100.hari0_30nov2026|teks}}. Usulan perubahan target Renas PB tiba untuk evaluasi tahunan 2026 dan perubahan berkala yang paling lambat {{angka:renas.perubahan_berkala.tahun_maks|tahun}}.
   - Bila ditunda, hari ke-0 makin dekat atau melewati puncak Desember di Sumatera dan Kalimantan, sehingga kaji ulang rencana kontinjensi di sana jatuh di tengah musim. Sesudah {{angka:renas.perubahan_berkala.tahun_maks|tahun}} perubahan Renas PB hanya lewat jalur bencana sampai {{angka:renas.perubahan_bencana.tahun_maks|tahun}} dan terbatas pada program dan kegiatan, sehingga perubahan target peringatan dini dan baseline IRB tidak lagi dapat masuk Renas PB periode ini. Jalur pengendalian untuk saran perubahan lokasi tetap terbuka.
 - KD-2. Menyelaraskan target cakupan peringatan dini antara Renstra BNPB dan Renas PB.
-  - Bila rumus dan target IKP Renstra direvisi menjadi porsi penduduk terpapar yang tercakup untuk lebih dari dua jenis, mendekati lintasan Renas PB 1.c, capaian 2025 turun dari {{angka:bnpb.lkip2025.pd.rerata_persen.2025|fmt=2|persen}} ke {{angka:bnpb.lkip2025.pd.tertimbang_persen.2025|fmt=2|persen}} bila dihitung tertimbang untuk dua jenis yang sama. Karena itu angka target ditetapkan ulang dari rumus baru. Usulan diajukan atas evaluasi tahun ketiga Renstra ({{angka:renstra.evaluasi_tahun_ke3.tahun|tahun}}) dan wajib konsisten dengan RPJMN {{angka:rpjmn.kp080402.peringatan_dini_2029|fmt=2|persen}} pada 2029; definisi tercakup dan baseline per daerah belum ada.
+  - Bila rumus dan target IKP Renstra direvisi menjadi porsi penduduk terpapar yang tercakup untuk lebih dari dua jenis, mendekati lintasan Renas PB 1.c, capaian 2025 yang dihitung tertimbang untuk dua jenis yang sama turun dari {{angka:bnpb.lkip2025.pd.rerata_persen.2025|fmt=2|persen}} ke {{angka:bnpb.lkip2025.pd.tertimbang_persen.2025|fmt=2|persen}}. Karena itu angka target ditetapkan ulang dari rumus baru. Usulan diajukan atas evaluasi tahun ketiga Renstra ({{angka:renstra.evaluasi_tahun_ke3.tahun|tahun}}) dan wajib konsisten dengan RPJMN {{angka:rpjmn.kp080402.peringatan_dini_2029|fmt=2|persen}} pada 2029; definisi tercakup dan baseline per daerah belum ada.
   - Bila IKP Renstra dipertahankan, target naik {{angka:renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029|fmt=2}} poin persen dan dapat tercapai lewat sekitar {{angka:pd.ikp_2029.tambahan_tsunami_jiwa}} jiwa tambahan di cakupan tsunami tanpa kemajuan cakupan banjir ({{angka:bnpb.lkip2025.pd.banjir_tercakup.2025}} dari {{angka:bnpb.lkip2025.pd.banjir_terpapar.2025|ringkas}} jiwa terpapar), pembacaan rumus berlabel asumsi kebijakan. Renas PB 1.c ({{angka:renas.indikator_1c.kelipatan_2025_2029|fmt=1}} kali) dinyatakan sebagai target lintas K/L yang capaian hilirnya bergantung pada sebelas K/L pemegang aksi sarana diseminasi di desa.
 - KD-3. Memilih penyebut alat ukur kapasitas daerah untuk sasaran {{angka:renstra.iks_kapasitas_minimal_sedang.2029|persen}} pada 2029.
-  - Bila Manual IKU (Kepka BNPB 318/2025) dipertahankan, ukurannya porsi provinsi berkategori IKD minimal sedang: {{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025|persen}} pada 2025 ({{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_n.2025}}  provinsi), target {{angka:rpjmn.kp_kapasitas.target_2025|persen}} tidak tercapai, dan jarak ke {{angka:renstra.iks_kapasitas_minimal_sedang.2029|persen}} {{angka:kapasitas.jarak_90.lkip_prov_poin|satuan}}. Ukuran ini sederhana diukur tiap tahun, tetapi rerata provinsi dapat menutupi kab/kota berkapasitas rendah, sebagaimana diakui LKIP sendiri.
-  - Bila penyebut diganti ke kab/kota, capaian menjadi {{angka:bnpb.lkip2025.ikd.kab_minimal_sedang_persen.2025|fmt=1|persen}} menurut IKD 2025 (kurang {{angka:kapasitas.jarak_90.ikd_kab_tambahan|satuan}}) atau {{angka:krb.nasional.kab_kapasitas_minimal_sedang_persen|fmt=1|persen}} menurut kelas kapasitas KRB (kurang {{angka:kapasitas.jarak_90.krb_kab_tambahan|satuan}}). Ukuran ini lebih dekat ke lokasi korban, tetapi {{angka:bnpb.lkip2025.ikd.kab_menilai.2025}} kab/kota yang menilai IKD 2025 belum mencakup semua kab/kota. Penyebut dan alat ukur dapat diubah Kepala BNPB dengan perubahan Kepka kapan saja, sedangkan angka target {{angka:rpjmn.kp_kapasitas.target_2025|persen}} sampai {{angka:renstra.iks_kapasitas_minimal_sedang.2029|persen}} ikut evaluasi tahun ketiga Renstra dan wajib konsisten dengan RPJMN; baseline RPJMN {{angka:rpjmn.kp_kapasitas.baseline_2023|persen}} (2023) tidak menyebut penyebutnya di halaman yang dibuka.
+  - Bila Manual Indikator Kinerja Utama (IKU) dalam Kepka BNPB 318/2025 dipertahankan, ukurannya porsi provinsi berkategori Indeks Ketahanan Daerah (IKD) minimal sedang: {{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025|persen}} pada 2025 ({{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_n.2025}} provinsi), target {{angka:rpjmn.kp_kapasitas.target_2025|persen}} tidak tercapai, dan jaraknya ke {{angka:renstra.iks_kapasitas_minimal_sedang.2029|persen}} sebesar {{angka:kapasitas.jarak_90.lkip_prov_poin|satuan}}. Ukuran ini sederhana diukur tiap tahun, tetapi rerata provinsi dapat menutupi kab/kota berkapasitas rendah, sebagaimana diakui LKIP sendiri.
+  - Bila penyebut diganti ke kab/kota, capaian menjadi {{angka:bnpb.lkip2025.ikd.kab_minimal_sedang_persen.2025|fmt=1|persen}} menurut IKD 2025 (kurang {{angka:kapasitas.jarak_90.ikd_kab_tambahan|satuan}}) atau {{angka:krb.nasional.kab_kapasitas_minimal_sedang_persen|fmt=1|persen}} menurut kelas kapasitas Kajian Risiko Bencana (KRB) (kurang {{angka:kapasitas.jarak_90.krb_kab_tambahan|satuan}}). Ukuran ini lebih dekat ke lokasi korban, tetapi baru {{angka:bnpb.lkip2025.ikd.kab_menilai.2025}} dari {{angka:irbi.kab.dinilai.2025}} kab/kota yang menilai IKD 2025. Penyebut dan alat ukur dapat diubah Kepala BNPB dengan perubahan Kepka kapan saja, sedangkan angka target {{angka:rpjmn.kp_kapasitas.target_2025|persen}} sampai {{angka:renstra.iks_kapasitas_minimal_sedang.2029|persen}} ikut evaluasi tahun ketiga Renstra dan wajib konsisten dengan RPJMN; baseline RPJMN {{angka:rpjmn.kp_kapasitas.baseline_2023|persen}} (2023) tidak menyebut penyebutnya di halaman yang dibuka.
 :::
 
-**Catatan metode IRBI 2025 (KD-4) diajukan sebagai rekomendasi 100 hari, bukan keputusan di pita, karena nilai baseline {{angka:bnpb.lkip2025.irb.baseline_2026_2029|fmt=2}} sudah dinyatakan BNPB untuk 2026–2029 [@bnpb-2026-lkip2025].** Yang belum ada adalah catatan metode yang dapat diulang per kab/kota dan rekonsiliasi IRB 2024, yang tercatat {{angka:irbi.nasional.2024|fmt=2}} pada seri IRBI 2015–2024 dan {{angka:bnpb.lkip2025.irb.nasional_2024_krb2021|fmt=2}} pada perhitungan LKIP dengan komponen KRB 2021 (@rek:r-m01). Dua perhitungan itu memakai komponen berbeda untuk tahun yang sama, sehingga keduanya ditulis berdampingan dan tidak dirata-rata. Keputusan lain milik Kepala BNPB berjalan kasus per kasus dengan instrumen yang ada: penetapan risiko berdampak luas sebagai dasar Dana Siap Pakai (DSP) [@bnpb-2020-dsp, Pasal 2 ayat (1) dan Pasal 20 ayat (1)], rekomendasi penyaluran Dana Bersama kepada Menteri Keuangan [@ri-2021-perpres75, Pasal 8], dan pedoman keadaan tertentu [@ri-2026-perpres46, Pasal 3 ayat (4)].
+**Catatan metode Indeks Risiko Bencana Indonesia (IRBI) 2025 (KD-4) diajukan sebagai rekomendasi 100 hari, bukan keputusan di pita, karena nilai baseline {{angka:bnpb.lkip2025.irb.baseline_2026_2029|fmt=2}} sudah dinyatakan BNPB untuk 2026–2029 [@bnpb-2026-lkip2025].** Yang belum ada adalah catatan metode yang dapat diulang per kab/kota dan rekonsiliasi IRB 2024, yang tercatat {{angka:irbi.nasional.2024|fmt=2}} pada seri IRBI 2015–2024 dan {{angka:bnpb.lkip2025.irb.nasional_2024_krb2021|fmt=2}} pada perhitungan LKIP dengan komponen KRB 2021 (@rek:r-m01). Dua perhitungan itu memakai komponen berbeda untuk tahun yang sama, sehingga keduanya tidak dapat dirata-rata. Keputusan lain milik Kepala BNPB berjalan kasus per kasus dengan instrumen yang ada: penetapan risiko berdampak luas sebagai dasar Dana Siap Pakai (DSP) [@bnpb-2020-dsp, Pasal 2 ayat (1) dan Pasal 20 ayat (1)], rekomendasi penyaluran Dana Bersama kepada Menteri Keuangan [@ri-2021-perpres75, Pasal 8], dan pedoman keadaan tertentu [@ri-2026-perpres46, Pasal 3 ayat (4)].
 
 Keputusan empat belas hari pertama hanya memakai instrumen yang berlaku dan menjadi satu daftar untuk kedua kajian (@tbl:keputusan-14-hari).
 
@@ -82,11 +82,12 @@ keyakinan: asumsi-kebijakan
 | @rek:r-a05 | Surat ke Kemenko PMK untuk rakor peninjauan Renas PB | Biro Perencanaan |
 | @rek:r-m01 | Penugasan catatan metode IRBI 2025 | Direktorat Pemetaan dan Evaluasi Risiko Bencana |
 | @rek:r-m02 | Permohonan izin prakarsa peraturan di luar Progsun 2026 | Biro Hukum, Organisasi, dan Kerja Sama |
+| @rek:r-a05 | Penugasan memuat rekomendasi kedua kajian, dipisah jalur berkala dan jalur bencana, ke evaluasi tahunan Renas PB 2026 | Direktorat Pengembangan Strategi Penanggulangan Bencana; Biro Perencanaan |
 :::
 
 ## Rekomendasi Internal BNPB {#sub:rek-internal}
 
-**Direktorat Kesiapsiagaan memimpin delapan dari tiga puluh enam rekomendasi, termasuk sebagai unit BNPB pada rekomendasi lintas K/L, sehingga beban empat belas hari sampai 100 hari jatuh pada Deputi Bidang Pencegahan dan Deputi Bidang Penanganan Darurat bersamaan dengan puncak musim hujan.** Unit mengikuti Perban BNPB 6/2025 jo. 11/2025 [@bnpb-2025-otk; @bnpb-2025-otk-ubah]. Dua puluh tujuh rekomendasi masuk kelompok internal karena instrumennya ditetapkan atau dijalankan BNPB, dan sembilan masuk kelompok lintas K/L karena pemimpin programnya bukan BNPB. Kode rekomendasi disusun menurut horizon dan kelas dampak pada @tbl:kisi-prioritas; kisi itu masih sementara karena hampir semua rekomendasi menyasar jenis berkelas dampak tertinggi atau bersifat lintas jenis.
+**Direktorat Kesiapsiagaan memimpin delapan dari tiga puluh enam rekomendasi, termasuk sebagai unit BNPB pada rekomendasi lintas K/L, dan tiga di antaranya (@rek:r-a02, @rek:r-a08, @rek:r-a09) jatuh dalam 100 hari pertama yang bertepatan dengan puncak musim hujan.** Nama unit mengikuti Perban BNPB 6/2025 jo. 11/2025 [@bnpb-2025-otk; @bnpb-2025-otk-ubah]. Dua puluh tujuh rekomendasi masuk kelompok internal karena instrumennya ditetapkan atau dijalankan BNPB, dan sembilan masuk kelompok lintas K/L karena pemimpin programnya bukan BNPB. Kode rekomendasi disusun menurut horizon dan kelas dampak pada @tbl:kisi-prioritas; kisi itu masih sementara karena tiga puluh dua dari tiga puluh enam rekomendasi menyasar jenis berkelas dampak tertinggi atau bersifat lintas jenis.
 
 ::: tabel {#tbl:kisi-prioritas}
 judul: Kisi prioritas rekomendasi menurut horizon dan kelas dampak, 2026–2030
@@ -101,9 +102,9 @@ catatan: Kunci dampak = kelas tertinggi di antara jenis yang disasar (kelas satu
 | Sedang | @rek:r-a03, @rek:r-a09 | @rek:r-m11, @rek:r-m15 | – |
 :::
 
-**Tidak satu pun dari {{angka:program.kompendium.n}} program dalam kompendium yang berbukti kuat berasal dari dalam negeri, sehingga tidak ada program dalam negeri yang diusulkan diperluas sebagai program terbukti [@pantaubencana-2026-program-terbukti].** Destana dan SPAB belum ditemukan bukti dampaknya meski berjalan lebih dari sepuluh tahun, dan InaTEWS berbukti sedang dari kronologi satu kejadian; ketiganya masuk sebagai garis dasar dan agenda evaluasi dampak (@rek:r-a15 dan @rek:r-m19). Paket kesiapsiagaan siklon Bangladesh, satu dari dua program berbukti kuat, hanya masuk lewat padanannya di Indonesia, yaitu Destana dan sistem peringatan dini tsunami beserta relawannya.
+**Kedua program berbukti kuat di antara {{angka:program.kompendium.n}} program dalam kompendium berasal dari luar negeri, sehingga tidak ada program dalam negeri yang diusulkan diperluas sebagai program terbukti [@pantaubencana-2026-program-terbukti].** Bukti dampak Desa Tangguh Bencana (Destana) dan Satuan Pendidikan Aman Bencana (SPAB) belum ditemukan meski keduanya berjalan lebih dari sepuluh tahun. *Indonesia Tsunami Early Warning System* (InaTEWS) berbukti sedang dari kronologi satu kejadian. Ketiganya masuk sebagai garis dasar dan agenda evaluasi dampak (@rek:r-a15 dan @rek:r-m19). Paket kesiapsiagaan siklon Bangladesh, satu dari dua program berbukti kuat, hanya masuk lewat padanannya di Indonesia, yaitu Destana dan sistem peringatan dini tsunami beserta relawannya.
 
-Kurung di akhir tiap rincian memuat dua keterangan yang dipisahkan titik koma. Yang pertama adalah kode dan peran BNPB dari paket lembaga [@pantaubencana-2026-paket-lembaga]; kode K menandai koordinator dan kode P pelaksana atau pendukung. Kode R dipakai untuk penetapan norma atau status, sedangkan kode I untuk penyedia informasi. Yang kedua adalah jalur daerah atau keterangan hanya pusat.
+Kode peran BNPB dalam kurung di akhir tiap rekomendasi mengikuti paket lembaga [@pantaubencana-2026-paket-lembaga]. Huruf K menandai peran koordinator dan P peran pelaksana atau pendukung; R menandai penetap norma atau status, sedangkan I menandai penyedia informasi. Kata sesudah huruf menyebut fungsi, misalnya norma, standar, prosedur, dan kriteria (NSPK), dan keterangan sesudah titik koma menyebut jalur daerah atau hanya pusat.
 
 :::: matriks-rekomendasi {#tbl:rek-internal}
 judul: Rekomendasi internal BNPB untuk Grand Design Mitigasi Bencana Indonesia, 2026–2030
@@ -134,12 +135,12 @@ unit: Direktorat Kesiapsiagaan; Direktorat Peringatan Dini
 kl: BMKG
 waktu: 100-hari
 indikator: surat terkirim dalam empat belas hari pertama ke BPBD provinsi dengan zona musim berawal musim November ({{angka:bmkg.musim_2026.zom_awal_november|satuan}}) dan Desember ({{angka:bmkg.musim_2026.zom_awal_desember|satuan}}); jumlah rencana kontinjensi banjir dan longsor yang dikaji ulang sebelum puncak musim
-dasar: Temuan A.2; Perban BNPB 2/2023 Pasal 21 [@bnpb-2023-renkon]; prakiraan musim hujan BMKG [@bmkg-2026-siaran-musim-hujan]
+dasar: Temuan A.2; Perban BNPB 2/2023 Pasal 21 [@bnpb-2023-renkon]; prakiraan musim hujan BMKG [@bmkg-2026-musim-hujan]
 butuh: @rek:r-a01
 
-Rencana kontinjensi dikaji ulang paling sedikit tiap {{angka:perban2_2023.renkon_reviu_bulan|satuan}}, sehingga BPBD perlu diminta sebelum awal musim (K NSPK dan I informasi; BPBD provinsi dan kab/kota).
+Rencana kontinjensi dikaji ulang paling sedikit tiap {{angka:perban2_2023.renkon_reviu_bulan|satuan}}, sehingga Badan Penanggulangan Bencana Daerah (BPBD) perlu diminta sebelum awal musim (K NSPK dan I informasi; BPBD provinsi dan kab/kota).
 
-**Langkah pelaksanaan:** Direktorat Peringatan Dini meneruskan prakiraan awal dan puncak musim BMKG per provinsi; Direktorat Kesiapsiagaan meminta kaji ulang ke BPBD provinsi dalam empat belas hari pertama, mendahulukan wilayah yang memuncak Desember, dan mencatat hasilnya per provinsi.
+**Langkah pelaksanaan:** Direktorat Peringatan Dini meneruskan prakiraan awal dan puncak musim dari Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) per provinsi; Direktorat Kesiapsiagaan meminta kaji ulang ke BPBD provinsi dalam empat belas hari pertama, mendahulukan wilayah yang memuncak Desember, dan mencatat hasilnya per provinsi.
 
 **Risiko pelaksanaan:** BPK menemukan pemda tanpa rencana kontinjensi per jenis, dan {{angka:kemenkopmk.daerah_belum_spm_bencana}} daerah belum menuntaskan Standar Pelayanan Minimal (SPM) sub-urusan bencana [@bpk-2025-ihps2-2024; @kemenkopmk-2025-sinkronisasi-irb], sehingga dokumen yang akan dikaji ulang bisa belum ada; indikator diukur dari nol.
 :::
@@ -179,7 +180,7 @@ status: baru
 unit: Biro Perencanaan; Direktorat Pengembangan Strategi Penanggulangan Bencana
 kl: Kemenko PMK
 waktu: 100-hari
-indikator: rakor terjadwal dan notula rapat memuat usulan perubahan target peringatan dini (KD-2) dan baseline IRB (KD-4)
+indikator: rakor terjadwal dan notula rapat memuat usulan perubahan target peringatan dini (KD-2) dan baseline IRB (KD-4); penugasan tertulis memuat rekomendasi kedua kajian, dipisah jalur berkala dan jalur bencana, ke evaluasi tahunan Renas PB 2026
 dasar: Temuan C.1; KD-1; Perban BNPB 1/2025 Pasal 7 [@bnpb-2025-renas]; Perpres 1/2019 Pasal 6 [@ri-2019-perpres1]
 membuka: @rek:r-a10; @rek:r-m04; @rek:r-m09
 
@@ -229,11 +230,11 @@ unit: Direktorat Peringatan Dini; Direktorat Kesiapsiagaan
 kl: BMKG; Kementerian PU
 waktu: 100-hari
 indikator: jumlah kab/kota daftar perhatian banjir ({{angka:perhatian.mitigasi.banjir.n}}) dan longsor ({{angka:perhatian.mitigasi.longsor.n}}) yang mencatat uji pesan sampai warga dan umpan balik BPBD
-dasar: Temuan C.1; Perban BNPB 2/2024 Pasal 29 [@bnpb-2024-spdb]
+dasar: Temuan C.1; Perban BNPB 2/2024 Pasal 29 [@bnpb-2024-peringatan-dini]
 butuh: @rek:r-a01
 membuka: @rek:r-a11
 
-Hanya {{angka:bpk.bmkg.ibf_banjir_terperingatkan_persen|fmt=2|persen}} kejadian banjir mendapat peringatan berbasis dampak menurut ringkasan atas pemeriksaan BPK 2022, dan sistem peringatan dini dievaluasi paling sedikit sekali dalam empat bulan (K informasi dan NSPK; BPBD daftar perhatian).
+Hanya {{angka:bpk.bmkg.ibf_banjir_terperingatkan_persen|fmt=2|persen}} kejadian banjir mendapat peringatan berbasis dampak menurut ringkasan Badan Keahlian DPR atas pemeriksaan BPK 2022 [@dpr-2022-deteksi-dini], dan sistem peringatan dini dievaluasi paling sedikit sekali dalam empat bulan (K informasi dan NSPK; BPBD daftar perhatian).
 :::
 
 ::: rek {#rek:r-a08}
@@ -254,8 +255,7 @@ Skenario dan asumsi dampak lima aspek adalah muatan rencana kontinjensi menurut 
 ::: rek {#rek:r-m03}
 langkah: Susun pedoman keadaan tertentu Perpres 46/2026
 jenis: regulasi
-status: dikembangkan
-program: Perban BNPB 5/2018 tentang keadaan tertentu
+status: baru
 unit: Deputi Bidang Penanganan Darurat; Direktorat Koordinasi Pengendalian Operasi Darurat; Biro Hukum, Organisasi, dan Kerja Sama
 kl: Kemenko PMK; Kementerian Dalam Negeri; Kementerian Sosial; Kementerian Keuangan
 waktu: 100-hari
@@ -263,9 +263,9 @@ indikator: rancangan perubahan Perban BNPB 5/2018 selesai dibahas antarkedeputia
 dasar: Temuan C.2; Perpres 46/2026 Pasal 3 ayat (2) dan ayat (4) [@ri-2026-perpres46]; PMK 97/2025 [@kemenkeu-2025-pmk97]
 butuh: @rek:r-m02
 
-Perban BNPB 5/2018 hanya memuat {{angka:perban5_2018.jenis_ancaman|satuan}} ancaman alam dan nonalam, sedangkan Perpres 46/2026 memperluas keadaan tertentu ke faktor sosial dan daerah berkapasitas fiskal rendah dalam rekonsiliasi pascakonflik [@bnpb-2018-keadaan-tertentu] (R NSPK dan komando darurat; pemda dalam rekonsiliasi pascakonflik).
+Perban BNPB 5/2018 hanya memuat {{angka:perban5_2018.jenis_ancaman|satuan}} ancaman alam dan nonalam, sedangkan Perpres 46/2026 memperluas keadaan tertentu ke faktor sosial dan daerah berkapasitas fiskal rendah dalam rekonsiliasi pascakonflik [@bnpb-2018-perban5] (R NSPK dan komando darurat; pemda dalam rekonsiliasi pascakonflik).
 
-**Langkah pelaksanaan:** Deputi Bidang Penanganan Darurat menyusun rancangan bersama Biro Hukum, Organisasi, dan Kerja Sama, lalu membahasnya dalam rakor Kemenko PMK dengan Kementerian Dalam Negeri, Kementerian Sosial, dan Kementerian Keuangan untuk peta kapasitas fiskal.
+**Langkah pelaksanaan:** Deputi Bidang Penanganan Darurat menyusun rancangan bersama Biro Hukum, Organisasi, dan Kerja Sama, lalu membahasnya dalam rakor Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) dengan Kementerian Dalam Negeri, Kementerian Sosial, dan Kementerian Keuangan untuk peta kapasitas fiskal.
 
 **Risiko pelaksanaan:** Rancangan tidak ada di Progsun 2026, sehingga bergantung pada izin prakarsa (@rek:r-m02) dan jadwal rakor Kemenko PMK.
 :::
@@ -292,7 +292,7 @@ unit: Direktorat Peringatan Dini; Pusat Data, Informasi, dan Komunikasi Kebencan
 kl: BMKG; Kementerian Dalam Negeri
 waktu: 2026-2027
 indikator: nilai cakupan per provinsi dan kab/kota per jenis bencana terbit pada 2027, dengan definisi tercakup LKIP BNPB 2025 (penduduk tercakup layanan per jiwa terpapar KRB) sebagai titik awal
-dasar: Temuan C.1; Perban BNPB 2/2024 Pasal 25 dan Pasal 29 [@bnpb-2024-spdb]; LKIP BNPB 2025 [@bnpb-2026-lkip2025]
+dasar: Temuan C.1; Perban BNPB 2/2024 Pasal 25 dan Pasal 29 [@bnpb-2024-peringatan-dini]; LKIP BNPB 2025 [@bnpb-2026-lkip2025]
 butuh: @rek:r-a06; @rek:r-m12
 
 Cakupan nasional hanya tersedia untuk tsunami ({{angka:bnpb.lkip2025.pd.tsunami_tercakup.2025}} dari {{angka:renas.krb.terpapar_tsunami}} jiwa terpapar) dan banjir, sedangkan baseline Renas PB 1.c per daerah tidak ada (I data; BPBD kab/kota).
@@ -308,7 +308,7 @@ waktu: 2026-2027
 indikator: lampiran data per kab/kota kajian diserahkan dengan pernyataan produsen untuk portal Satu Data Bencana
 dasar: Temuan C.3; Perban BNPB 1/2023 [@bnpb-2023-satudata]
 
-Keluaran simulasi platform bukan Data Bencana menurut Perban BNPB 1/2023, sehingga lampiran per kab/kota diserahkan beserta pernyataan produsen (K data/KRB; hanya pusat).
+Produsen Data Bencana menurut Perban BNPB 1/2023 hanya unit kerja BNPB, sehingga keluaran simulasi platform tidak berstatus Data Bencana dan lampiran per kab/kota diserahkan beserta pernyataan produsen (K data/KRB; hanya pusat).
 :::
 
 ::: rek {#rek:r-m05}
@@ -375,10 +375,10 @@ program: Klaster nasional penanggulangan bencana
 unit: Biro Hukum, Organisasi, dan Kerja Sama; Direktorat Koordinasi Pengendalian Operasi Darurat; Biro Perencanaan
 kl: –
 waktu: 2026-2027
-indikator: SK klaster nasional terbuka di JDIH dengan nomenklatur Perpres 90/2025; Perban BNPB 2/2024, Renstra, dan Perban BNPB 5/2018 menyebut unit organisasi berlaku
+indikator: SK klaster nasional terbuka di JDIH dengan nomenklatur kementerian yang berlaku; Perban BNPB 2/2024, Renstra, dan Perban BNPB 5/2018 menyebut unit organisasi berlaku
 dasar: Temuan C.2; Perban BNPB 11/2025 [@bnpb-2025-otk-ubah]
 
-Koordinator enam klaster nasional adalah Basarnas, Kementerian Sosial, BNPB, Kementerian Kesehatan, Kementerian Pendidikan Dasar dan Menengah, dan Kementerian Dalam Negeri, sedangkan teks SK klaster belum dibuka (K koordinasi; hanya pusat, klaster daerah).
+Koordinator enam klaster nasional adalah Badan Nasional Pencarian dan Pertolongan (Basarnas), Kementerian Sosial, BNPB, Kementerian Kesehatan, Kementerian Pendidikan Dasar dan Menengah, dan Kementerian Dalam Negeri, sedangkan teks SK klaster belum dibuka (K koordinasi; hanya pusat, klaster daerah).
 :::
 
 ::: rek {#rek:r-m11}
@@ -392,7 +392,7 @@ waktu: 2026-2027
 indikator: Perban ditetapkan dan memuat fasilitas minyak dan gas bumi serta industri yang berisiko kebakaran industri
 dasar: Temuan C.3; UU 24/2007 Pasal 40 ayat (3), Pasal 41, dan Pasal 75–76 [@ri-2007-uu24]; Progsun 2026 [@bnpb-2025-progsun]
 
-BNPB menetapkan persyaratan analisis risiko, sedangkan keselamatan industri tetap menjadi mandat tertulis Menteri ESDM, Menteri Perindustrian, dan Menteri Ketenagakerjaan, bukan BNPB (R NSPK; pelaku usaha berisiko tinggi dan BPBD sebagai pemantau).
+BNPB menetapkan persyaratan analisis risiko, sedangkan keselamatan industri tetap menjadi mandat tertulis Menteri Energi dan Sumber Daya Mineral, Menteri Perindustrian, dan Menteri Ketenagakerjaan, bukan BNPB (R NSPK; pelaku usaha berisiko tinggi dan BPBD sebagai pemantau).
 :::
 
 ::: rek {#rek:r-m12}
@@ -422,7 +422,7 @@ indikator: jumlah dari {{angka:krb_irbi.kab_kapasitas_rendah_tinggi}} kab/kota b
 dasar: Temuan B.1; Temuan B.2; IHPS II 2024 [@bpk-2025-ihps2-2024]
 butuh: @rek:r-m04
 
-{{angka:kemenkopmk.daerah_belum_krb}} daerah belum mengaktifkan KRB dan {{angka:kemenkopmk.daerah_belum_ikd_2024}} belum menyusun IKD 2024 [@kemenkopmk-2025-sinkronisasi-irb]; status kapasitas sendiri ikut membentuk status IRBI, sehingga silang ini bukan dua bukti bebas (K NSPK; BPBD).
+Sebanyak {{angka:kemenkopmk.daerah_belum_krb}} daerah belum mengaktifkan KRB dan {{angka:kemenkopmk.daerah_belum_ikd_2024}} belum menyusun IKD 2024 [@kemenkopmk-2025-sinkronisasi-irb]; status kapasitas sendiri ikut membentuk status IRBI, sehingga silang ini bukan dua bukti bebas (K NSPK; BPBD).
 :::
 
 ::: rek {#rek:r-m16}
@@ -434,9 +434,9 @@ unit: Pusat Pendidikan dan Pelatihan Penanggulangan Bencana; Direktorat Kesiapsi
 kl: –
 waktu: 2026-2027
 indikator: gladi berbasis kartu skenario lantai di tiap wilayah Direktorat Penanganan Darurat tercatat tiap tahun
-dasar: Temuan A.2; Temuan A.3; Perban BNPB 9/2025 Pasal 27; Juklak SPM 2026 [@bnpb-2026-juklak-spm]
+dasar: Temuan A.2; Temuan A.3; Perban BNPB 9/2025 Pasal 27; Juklak SPM 2026 [@bnpb-2026-juklak-gladi]
 
-Gladi sudah diwajibkan untuk RPKB dan SPM, tetapi belum memakai skenario yang tidak lebih ringan dari kejadian tercatat terburuk (P NSPK dan komando darurat; BPBD provinsi).
+Gladi sudah diwajibkan untuk Rencana Penanggulangan Kedaruratan Bencana (RPKB) dan SPM, tetapi belum memakai skenario yang tidak lebih ringan dari kejadian tercatat terburuk (P NSPK dan komando darurat; BPBD provinsi).
 :::
 
 ::: rek {#rek:r-m17}
@@ -462,7 +462,7 @@ unit: Direktorat Kesiapsiagaan; Direktorat Peringatan Dini
 kl: BMKG
 waktu: 2028-2030
 indikator: kalender bahaya bulanan per pulau terbit tiap tahun sebelum awal musim, dengan kalender tersendiri untuk Maluku yang memuncak Juni–Juli
-dasar: Temuan A.2; prakiraan musim BMKG [@bmkg-2026-siaran-musim-hujan]; DIBI [@bnpb-dibi]
+dasar: Temuan A.2; prakiraan musim BMKG [@bmkg-2026-musim-hujan]; DIBI [@bnpb-dibi]
 
 November menyumbang {{angka:hidromet.nasional.kalender.porsi_mh_november|fmt=1|persen}} korban musim hujan nasional dan {{angka:hidromet.nasional.kalender.porsi_kekeringan_jun_sep|persen}} kejadian kekeringan jatuh pada Juni–September, sehingga kesiapan dapat dijadwalkan dari prakiraan El Niño-Southern Oscillation (ENSO) (K NSPK; rencana kontinjensi BPBD).
 :::
@@ -507,13 +507,13 @@ indikator: masukan tertulis memuat sasaran korban Renas PB 1.a dan Renas PB 1.b,
 dasar: Temuan A.1; Temuan B.2; Perpres 87/2020 Pasal 6–7 [@ri-2020-perpres87]; Progsun 2026 [@bnpb-2025-progsun]
 butuh: @rek:r-m01
 
-RIPB ditinjau berkala lima tahunan atau sewaktu-waktu, dan monev tahunannya dilaporkan ke Presiden melalui Menko PMK (K monev; hanya pusat).
+Rencana Induk Penanggulangan Bencana (RIPB) ditinjau berkala lima tahunan atau sewaktu-waktu, dan monev tahunannya dilaporkan ke Presiden melalui Menko PMK (K monev; hanya pusat).
 :::
 ::::
 
 ## Rekomendasi Lintas K/L {#sub:rek-lintas}
 
-**Sembilan rekomendasi lintas K/L dipimpin kementerian atau lembaga lain, dan BNPB membawanya lewat rakor Kemenko PMK dan forum penanggung jawab Renas PB sesuai kode perannya.** BNPB dikoordinasikan Kemenko PMK [@ri-2019-perpres1, Pasal 6]. Kewenangan mengikuti peraturan sektor: status KLB dan wabah tunduk pada UU 17/2023 [@ri-2023-uu17], sistem tanggap darurat sampah menjadi lini pertama pemerintah kab/kota [@ri-2008-uu18, Pasal 9], dan penanganan konflik dikoordinasikan Menteri Dalam Negeri dengan BNPB sebagai unsur Satuan Tugas skala nasional [@ri-2012-uu7, Pasal 49].
+**Sembilan rekomendasi lintas K/L dipimpin kementerian atau lembaga lain, dan BNPB membawanya lewat rakor Kemenko PMK dan forum penanggung jawab Renas PB sesuai kode perannya.** BNPB dikoordinasikan Kemenko PMK [@ri-2019-perpres1, Pasal 6]. Kewenangan mengikuti peraturan sektor: status "kejadian luar biasa" (KLB) dan wabah tunduk pada UU 17/2023 [@ri-2023-uu17], sistem tanggap darurat sampah menjadi lini pertama pemerintah kab/kota [@ri-2008-uu18, Pasal 9], dan penanganan konflik dikoordinasikan Menteri Dalam Negeri [@ri-2015-pp2, Pasal 97] dengan BNPB sebagai unsur Satuan Tugas Penyelesaian Konflik Sosial skala nasional [@ri-2012-uu7, Pasal 49 ayat (2)].
 
 :::: matriks-rekomendasi {#tbl:rek-lintas}
 judul: Rekomendasi lintas K/L untuk Grand Design Mitigasi Bencana Indonesia, 2026–2030
@@ -617,7 +617,7 @@ indikator: daftar TPA pembuangan terbuka per kab/kota diterima, dan kab/kota den
 dasar: Temuan A.2; Temuan C.3; UU 18/2008 Pasal 9 [@ri-2008-uu18]
 membuka: @rek:r-a09
 
-UU 18/2008 mewajibkan penutupan TPA pembuangan terbuka paling lambat {{angka:nonalam.tpa.tenggat_tutup_uu18|teks}}, tetapi sebagian besar TPA belum berhenti [@klh-2026-open-dumping], dan {{angka:nonalam.tpa.terbakar_2023|satuan}} terbakar serentak pada 2023 (P data/KRB dan komando darurat bila status ditetapkan; renkon kemarau BPBD).
+UU 18/2008 mewajibkan penutupan tempat pemrosesan akhir (TPA) pembuangan terbuka paling lambat {{angka:nonalam.tpa.tenggat_tutup_uu18|teks}}, tetapi {{angka:nonalam.tpa.belum_berhenti_porsi|teks}} TPA belum berhenti beroperasi terbuka pada akhir 2025 [@klh-2026-open-dumping], dan {{angka:nonalam.tpa.terbakar_2023|satuan}} terbakar serentak pada 2023 (P data/KRB dan komando darurat bila status ditetapkan; renkon kemarau BPBD).
 :::
 
 ::: rek {#rek:r-m23}
@@ -631,7 +631,7 @@ indikator: usulan peninjauan target {{angka:renas.aksi_312c.target_2029|satuan}}
 dasar: Temuan A.1; Temuan C.3; Renas PB hlm. 90, 124–125 [@bnpb-2025-renas]
 butuh: @rek:r-m09; @rek:r-m17
 
-DIBI mencatat {{angka:dibi.sumatra2025.rumah_rusak_berat}} rumah rusak berat dalam rangkaian Sumatra 2025, dan target ini berupa program rencana aksi sehingga masih dalam jangkauan jalur bencana paling lambat {{angka:renas.perubahan_bencana.tahun_maks|tahun}} (P monev sebagai kontributor; R3P Aceh, Sumatera Utara, dan Sumatera Barat).
+DIBI mencatat {{angka:dibi.sumatra2025.rumah_rusak_berat}} rumah rusak berat dalam rangkaian Sumatra 2025, dan target ini berupa program rencana aksi sehingga masih dalam jangkauan jalur bencana paling lambat {{angka:renas.perubahan_bencana.tahun_maks|tahun}} (P monev sebagai kontributor; Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Aceh, Sumatera Utara, dan Sumatera Barat).
 :::
 
 ::: rek {#rek:r-m19}
@@ -652,7 +652,7 @@ Program berjalan diberi evaluasi dampak karena bukti dampaknya belum ditemukan a
 
 ## Yang Sengaja Tidak Direkomendasikan {#sub:tidak-direkomendasikan}
 
-Sepuluh usulan sengaja tidak direkomendasikan; alasan dan dasarnya tertulis per baris pada @tbl:tidak-direkomendasikan.
+Sebelas usulan sengaja tidak direkomendasikan; alasan dan dasarnya tertulis per baris pada @tbl:tidak-direkomendasikan.
 
 ::: tabel {#tbl:tidak-direkomendasikan}
 judul: Usulan yang sengaja tidak direkomendasikan beserta alasannya, 2026–2030
@@ -665,17 +665,18 @@ keyakinan: asumsi-kebijakan
 | DSP untuk mitigasi prabencana | DSP terikat pada status keadaan darurat, keadaan tertentu, dan risiko berdampak luas yang ditetapkan Kepala BNPB, dan dipakai selama masa itu [@bnpb-2020-dsp, Pasal 2 ayat (1) dan Pasal 20 ayat (1)]; kesiapsiagaan prabencana memakai dana kontinjensi bencana [@ri-2008-pp22, Pasal 6] dan jendela prabencana Dana Bersama [@bnpb-2026-dana-bersama, Pasal 2 ayat (2)]. |
 | Angka korban titik dari model gempa platform | Galat validasi silang mesin korban {{angka:geologi.mesin.faktor_loo|fmt=1}} kali; model memberi {{angka:geologi.mesin.yogya2006_model}} korban untuk Yogyakarta 2006, padahal tercatat {{angka:usgs.yogya2006.meninggal}} [@usgs-usp000ej1c], dan pita korban megathrust Jawa lebih lebar dari satu orde [@pantaubencana-2026-skenario-geologi]. |
 | Proyeksi korban konflik sosial | Nonalam dan sosial memakai kartu analog berangka tanpa perkalian dan tanpa proyeksi per wilayah; seri konflik DIBI diragukan, dan Potensi Desa 2024 menghitung semua jenis perkelahian massal, termasuk yang di luar konflik antarkelompok [@bps-2024-podes; @pantaubencana-2026-paket-nonalam-sosial]. |
+| Perubahan target dan indikator Renas PB lewat jalur bencana | Perubahan karena bencana paling lambat {{angka:renas.perubahan_bencana.tahun_maks|tahun}} terbatas pada program dan kegiatan rencana aksi, sedangkan target dan alat ukur hanya berubah lewat peninjauan berkala paling lambat {{angka:renas.perubahan_berkala.tahun_maks|tahun}} [@bnpb-2025-renas]; usulan target peringatan dini dan baseline IRB karena itu dibawa ke evaluasi tahunan 2026 (@rek:r-a05), dan hanya target perumahan Renas PB 3.1.2.c, yang berupa program rencana aksi, diajukan lewat jalur bencana (@rek:r-m23). |
 | Perluasan Destana dan SPAB sebagai program terbukti | Bukti dampak keduanya belum ditemukan meski berjalan lebih dari sepuluh tahun; yang direkomendasikan adalah garis dasar dan evaluasi dampak (@rek:r-a15 dan @rek:r-m19) [@pantaubencana-2026-program-terbukti]. |
 | Angka korban tsunami dari platform | Proksi pesisir rendah bukan genangan dan melewatkan {{angka:geologi.jawa.lubang_proksi_kab|satuan}} pada skenario megathrust Jawa yang lebih kecil daripada magnitudo maksimum, termasuk pantai selatan Jawa Barat; angka korban menunggu genangan InaRISK dikalikan penduduk. |
 | Efek peringatan dini dari koefisien asosiasi lintas negara di tesis, keputusan, atau judul | Koefisien itu rasio asosiasi lintas negara, bukan efek kausal, dan belum ada uji kausal untuk Indonesia; angkanya hanya tampil di kartu dan grafik berlabel asumsi kebijakan (Bab 7). |
 | Pita model La Niña sebagai skenario terburuk 2026/2027, atau klaim musim 2026/2027 lebih ringan | Batas atas pita model di bawah lantai tercatat {{angka:hidromet.nasional.lantai.meninggal_hilang}}; tiga musim selama El Niño kuat adalah ekspektasi, sehingga kajian tidak menyimpulkan musim 2026/2027 lebih ringan. |
 | Capaian IRB sebagai bukti penurunan korban, atau perbandingan IRBI 2025 dengan 2015–2024 | IRB turun serempak di sembilan bahaya sementara korban hidrometeorologi naik, dan LKIP BNPB 2025 mengakui perbedaan signifikan antara IRB 2013–2024 dan IRB 2025 [@bnpb-2026-lkip2025]; kajian tidak menyimpulkan hubungan arah antara indeks dan korban. |
-| Kematian asap model sebagai angka tercatat | Kematian berlebih akibat asap 2015 {{angka:koplitz.asap2015.kematian_berlebih|satuan}} adalah estimasi model peneliti [@koplitz-2016-asap], sedangkan DIBI mencatat {{angka:dibi.alam.karhutla.meninggal_hilang_maks_tahun|satuan}} meninggal dan hilang karhutla pada 2015; keduanya ditulis berdampingan dengan label berbeda. |
+| Kematian asap model sebagai angka tercatat | Kematian berlebih akibat asap 2015 {{angka:koplitz.asap2015.kematian_berlebih|satuan}} adalah estimasi model peneliti [@koplitz-2016-haze], sedangkan DIBI mencatat {{angka:dibi.alam.karhutla.meninggal_hilang_maks_tahun|satuan}} meninggal dan hilang karhutla pada 2015; angka model hanya tampil di samping angka tercatat dengan label estimasi model. |
 :::
 
 ## Yang Belum Diketahui {#sub:belum-diketahui}
 
-Delapan kelompok data yang belum diketahui sudah tertaut rekomendasi, dan empat kelompok sisanya belum punya pemilik di BNPB sehingga tetap sebagai permintaan data ke lembaga pemegangnya (@tbl:belum-diketahui).
+Sembilan kelompok data yang belum diketahui sudah tertaut rekomendasi, dan empat kelompok sisanya belum punya pemilik di BNPB sehingga tetap sebagai permintaan data ke lembaga pemegangnya (@tbl:belum-diketahui).
 
 ::: tabel {#tbl:belum-diketahui}
 judul: Data yang belum diketahui dan lembaga pemegangnya, status Oktober 2026
@@ -685,6 +686,7 @@ keyakinan: asumsi-kebijakan
 | YANG BELUM DIKETAHUI | PEMEGANG DATA | TINDAK LANJUT |
 | --- | --- | --- |
 | Volume distribusi air bersih, desa terdampak, dan status darurat per kab/kota kemarau 2026 | BPBD provinsi; Kementerian Pertanian | @rek:r-a03 |
+| Stok logistik per gudang BNPB dan BPBD terhadap lantai pengungsi per Direktorat Penanganan Darurat Wilayah | Deputi Bidang Logistik dan Peralatan; Pusat Data, Informasi, dan Komunikasi Kebencanaan | @rek:r-a04 |
 | Baseline cakupan peringatan dini Renas PB 1.c per provinsi dan kab/kota untuk jenis selain tsunami dan banjir | Direktorat Peringatan Dini | @rek:r-a11 |
 | Catatan metode IRB 2025 yang dapat diulang, nilai per kab/kota, dan rekonsiliasi IRB 2024 | Kedeputian Bidang Sistem dan Strategi; Direktorat Pemetaan dan Evaluasi Risiko Bencana | @rek:r-m01 |
 | IKD per kab/kota per tahun, penyebut baseline RPJMN 2023, dan teks Kepka BNPB 318/2025 | Direktorat Pemetaan dan Evaluasi Risiko Bencana; Kementerian PPN/Bappenas | @rek:r-m04 |

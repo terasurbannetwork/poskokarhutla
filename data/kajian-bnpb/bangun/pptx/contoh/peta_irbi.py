@@ -3,7 +3,7 @@
 
 Pengganti sementara sampai bangun/visual menghasilkan PNG peta resmi; warna dari tema.json (skala.irbi, T8),
 data dari data/irbi/irbi_kab_2015_2025.csv, batas dari public/geo. Label dan legenda TIDAK dibakar ke PNG:
-deck menggambarnya native. Keluaran: ../keluaran/peta-irbi-2023.png dan manifest perender di sebelahnya
+deck menggambarnya native. Keluaran: ../keluaran/peta-irbi-<tahun>.png (argumen: [tahun] [keluaran.png]) dan manifest perender di sebelahnya
 (.json: unsur peta resmi untuk kaki legenda, hash masukan untuk cek basi). Poligon tanpa kelas menggagalkan
 render, karena tanpa arsir ia tampak sebagai lubang putih (PEDOMAN B1.4).
 """
@@ -48,7 +48,7 @@ def jalur(geom):
     return ''.join(d)
 
 
-def main(tahun='2023'):
+def main(tahun='2023', out=None):
     t = muat()
     ir = t['warna']['skala']['irbi']
     isi = {lab: warna(t, f'skala.{ir["ramp"]}.{k}') for lab, k in zip(ir['label'], ir['kelas'])}
@@ -76,7 +76,7 @@ def main(tahun='2023'):
     for ft in json.loads(prov.read_text(encoding='utf-8'))['features']:
         s.append(f'<path d="{jalur(ft["geometry"])}" fill="none" stroke="{batas}" stroke-width="1"/>')
     svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{PW}" height="{PH}" viewBox="0 0 {PW} {PH}">{"".join(s)}</svg>'
-    out = AKAR / 'bangun/pptx/keluaran/peta-irbi-2023.png'
+    out = Path(out).resolve() if out else AKAR / f'bangun/pptx/keluaran/peta-irbi-{tahun}.png'
     out.parent.mkdir(parents=True, exist_ok=True)
     pymupdf.open('svg', svg.encode())[0].get_pixmap(alpha=True).save(out)
     man = {'png': out.name, 'tahun': tahun, 'poligon_kab': n_kab, 'tanpa_data': 0, 'unsur_peta': UNSUR,
@@ -86,4 +86,4 @@ def main(tahun='2023'):
 
 
 if __name__ == '__main__':
-    main()
+    main(*sys.argv[1:3])  # [tahun] [keluaran.png]; bawaan 2023 ke ../keluaran/

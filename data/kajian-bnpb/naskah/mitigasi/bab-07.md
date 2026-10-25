@@ -13,13 +13,13 @@ target_halaman: 19
 **Temuan:**
 
 - Musim hujan 2025/2026 mencatat {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang, {{angka:hidromet.nasional.lantai.rasio_musim_kedua|fmt=1|satuan}} musim terberat kedua, dan {{angka:hidromet.sumatra2025.porsi_musim_2025|fmt=1|persen}} di antaranya berasal dari banjir dan longsor Sumatra November 2025; angka tercatat itu menjadi lantai skenario hidrometeorologi nasional.
-- Musim hujan 2026/2027 dimulai di bawah El Niño dengan ONI Juli–September {{angka:oni.jas_2026|fmt=2}}, tertinggi sejak 1950; tiga musim El Niño kuat sebelumnya mencatat {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2015}} sampai {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2009}} meninggal dan hilang, angka ekspektasi yang tetap di bawah lantai.
-- Karhutla 2015 membakar {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} dengan kerugian US${{angka:bankdunia.karhutla2015.kerugian_usd|ringkas}}; DIBI mencatat {{angka:dibi.karhutla2015.meninggal_prov_asap}} meninggal di provinsi asap, sedangkan model memperkirakan {{angka:koplitz.asap2015.kematian_berlebih}} kematian dewasa berlebih akibat asap.
+- Musim hujan 2026/2027 dimulai di bawah El Niño dengan *Oceanic Niño Index* (ONI) Juli–September {{angka:oni.jas_2026|fmt=2}}, tertinggi sejak 1950; tiga musim El Niño kuat sebelumnya mencatat {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2015}} sampai {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2009}} meninggal dan hilang, angka ekspektasi yang tetap di bawah lantai.
+- Karhutla 2015 membakar {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} dengan kerugian US${{angka:bankdunia.karhutla2015.kerugian_usd|ringkas}}; Data dan Informasi Bencana Indonesia (DIBI) mencatat {{angka:dibi.karhutla2015.meninggal_prov_asap}} meninggal di provinsi asap, sedangkan model Koplitz dkk. memperkirakan {{angka:koplitz.asap2015.kematian_berlebih}} kematian dewasa berlebih akibat asap (estimasi model, belum diuji balik terhadap data kematian Indonesia).
 
 **Angka kunci:**
 
-- {{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa mengungsi tercatat sepanjang musim hujan 2025/2026, jumlah semusim dan bukan pengungsi serentak [@bnpb-2026-dibi].
-- {{angka:bmkg.musim_2026.zom_awal_mundur}} zona musim dengan awal musim hujan 2026/2027 mundur, meliputi {{angka:bmkg.musim_2026.persen_awal_mundur|fmt=2|persen}} luas wilayah [@bmkg-2026-siaran-musim-hujan].
+- {{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa mengungsi tercatat sepanjang musim hujan 2025/2026, jumlah semusim dan bukan pengungsi serentak [@bnpb-dibi].
+- {{angka:bmkg.musim_2026.zom_awal_mundur}} zona musim dengan awal musim hujan 2026/2027 mundur, meliputi {{angka:bmkg.musim_2026.persen_awal_mundur|fmt=2|persen}} luas wilayah [@bmkg-2026-musim-hujan].
 - {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2025|fmt=2|satuan}} penduduk daerah berisiko tercakup peringatan dini pada proyeksi 2025, lawan target {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|satuan}} pada 2029 [@bnpb-2025-renas, hlm. 32].
 
 **Rekomendasi:** @rek:r-a02, @rek:r-a04, @rek:r-a08, @rek:r-a09, @rek:r-a11
@@ -27,7 +27,7 @@ target_halaman: 19
 
 ## Banjir dan Banjir Bandang {#sub:hm-banjir}
 
-**Indeks Risiko Bencana Indonesia (IRBI) 2025 tidak menilai banjir di {{angka:irbi.nasional.2025.banjir_kosong}} kab/kota, tanah longsor di {{angka:irbi.nasional.2025.longsor_kosong}}, dan karhutla di {{angka:irbi.nasional.2025.karhutla_kosong}}.** Kekeringan dinilai di semua kab/kota [@bnpb-irbi]. Sel kosong pada @gbr:hm-irbi ditulis "tidak dinilai" dan tidak dibaca sebagai risiko rendah. Nilai IRBI 2025 per bahaya tidak sebanding dengan seri 2015–2024, sehingga peta memakai lima kelas nilai tanpa peringkat kab/kota (Bab 3). Kajian Risiko Bencana (KRB) 2022–2026 mencatat {{angka:renas.krb.terpapar_banjir}} jiwa terpapar bahaya banjir [@bnpb-2025-renas]. Angka itu batas atas paparan, bukan jejak kejadian, karena luas genangan per kejadian dan debit sungai tidak tersedia secara nasional.
+**Indeks Risiko Bencana Indonesia (IRBI) 2025 tidak menilai banjir di {{angka:irbi.nasional.2025.banjir_kosong}} kab/kota, tanah longsor di {{angka:irbi.nasional.2025.longsor_kosong}}, dan karhutla di {{angka:irbi.nasional.2025.karhutla_kosong}}.** Kekeringan dinilai di semua kab/kota [@bnpb-irbi]. Sel kosong pada @gbr:hm-irbi ditulis "tidak dinilai" dan tidak dibaca sebagai risiko rendah. Nilai IRBI 2025 per bahaya tidak sebanding dengan seri 2015–2024, sehingga peta memakai lima kelas nilai tanpa peringkat kab/kota (Bab 3). Kajian Risiko Bencana (KRB) 2022–2026 dalam Rencana Nasional Penanggulangan Bencana (Renas PB) 2025–2029 mencatat {{angka:renas.krb.terpapar_banjir}} jiwa terpapar bahaya banjir [@bnpb-2025-renas]. Angka itu batas atas paparan, bukan jejak kejadian, karena luas genangan per kejadian dan debit sungai tidak tersedia secara nasional.
 
 ::: gambar {#gbr:hm-irbi}
 berkas: gambar/mitigasi/bab07-g19-irbi-hidromet.png
@@ -40,15 +40,15 @@ data_per: 23 Okt 2026
 catatan: Sel abu-abu berarti tidak dinilai. Skala 2025 tidak sebanding dengan IRBI 2015–2024 dan tidak dipakai untuk memeringkat kab/kota.
 :::
 
-**Banjir menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} dari {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim hujan 2025/2026, musim terberat dalam Data dan Informasi Bencana Indonesia (DIBI) sejak 2008/2009.** Sisanya terbagi atas tanah longsor {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}}, cuaca ekstrem {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_cuaca_ekstrem}}, banjir bandang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_bandang}}, serta gabungan banjir dan tanah longsor {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_longsor}} [@bnpb-2026-dibi]. Musim hujan di bab ini adalah 1 Oktober sampai 30 April. Banjir bandang dan gabungan banjir dan tanah longsor baru menjadi kategori DIBI pada 2018 dan kosong pada 2024, sehingga kedua jenis itu tidak sebanding antartahun.
+**Banjir menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} dari {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim hujan 2025/2026, musim terberat dalam DIBI sejak 2008/2009.** Sisanya terbagi atas tanah longsor {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}}, cuaca ekstrem {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_cuaca_ekstrem}}, banjir bandang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_bandang}}, serta gabungan banjir dan tanah longsor {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_longsor}} [@bnpb-dibi]. Musim hujan dihitung dari 1 Oktober sampai 30 April. Banjir bandang dan gabungan banjir dan tanah longsor baru menjadi kategori DIBI pada 2018 dan kosong pada 2024, sehingga kedua jenis itu tidak sebanding antartahun.
 
-**Banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat pada 15 November sampai 31 Desember 2025 tercatat {{angka:dibi.sumatra2025.meninggal}} meninggal dan {{angka:dibi.sumatra2025.hilang}} hilang.** Kejadian itu terberat di antara kejadian hidrometeorologi besar dalam DIBI, dengan {{angka:dibi.sumatra2025.mengungsi}} jiwa mengungsi, {{angka:hidromet.sumatra2025.menderita}} jiwa menderita, dan {{angka:hidromet.sumatra2025.rumah_rusak_berat}} rumah rusak berat [@bnpb-2026-dibi]. Angka pengungsi itu jumlah lintas laporan kab/kota, sehingga tidak sama dengan pengungsi serentak. Daftar kejadian besar DIBI dengan jendela 22 November sampai 31 Desember mencatat {{angka:dibi.sumatra2025.rumah_rusak_berat}} rumah rusak berat di {{angka:dibi.sumatra2025.kab}} kab/kota; kedua jendela pilihan penyusun paket data dan ditulis berdampingan. Paket data tidak memisahkan korban banjir dari korban longsor pada kejadian ini, sehingga kejadian itu masuk ke kedua kartu sebagai kejadian majemuk. Pemicu meteorologisnya tidak disebut, karena laporan kejadian BMKG tidak ditemukan dan sumber yang ada hanya pers.
+**Banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat pada 15 November sampai 31 Desember 2025 tercatat {{angka:dibi.sumatra2025.meninggal}} meninggal dan {{angka:dibi.sumatra2025.hilang}} hilang.** Kejadian itu terberat dalam daftar kejadian hidrometeorologi besar DIBI yang dihimpun paket data, dengan {{angka:dibi.sumatra2025.mengungsi}} jiwa mengungsi, {{angka:hidromet.sumatra2025.menderita}} jiwa menderita, dan {{angka:hidromet.sumatra2025.rumah_rusak_berat}} rumah rusak berat [@bnpb-dibi]. Angka pengungsi itu jumlah lintas laporan kab/kota, sehingga tidak sama dengan pengungsi serentak. Daftar kejadian besar DIBI dengan jendela 22 November sampai 31 Desember mencatat {{angka:dibi.sumatra2025.rumah_rusak_berat}} rumah rusak berat di {{angka:dibi.sumatra2025.kab}} kab/kota; kedua jendela pilihan penyusun paket data dan ditulis berdampingan. Paket data tidak memisahkan korban banjir dari korban longsor pada kejadian ini, sehingga kejadian itu masuk ke kedua kartu sebagai kejadian majemuk. Pemicu meteorologisnya belum dapat dinyatakan karena laporan kejadian Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) tidak ditemukan dan sumber yang ada hanya pemberitaan pers.
 
-**Banjir bandang Wasior Oktober 2010 tercatat {{angka:dibi.wasior2010.meninggal}} meninggal dan {{angka:dibi.wasior2010.hilang}} hilang, dan DIBI mencatatnya sebagai banjir karena kategori banjir bandang baru ada sejak 2018.** Banjir Jabodetabek awal 2020 tercatat {{angka:dibi.jabodetabek2020.meninggal}} meninggal di DIBI dan {{angka:renstra.jabodetabek2020.meninggal}} di Renstra BNPB 2025–2029 [@bnpb-2026-dibi; @bnpb-2025-renstra, hlm. 11]. Daftar kejadian besar itu dipilih penyusun paket data, bukan hasil pemindaian seluruh peristiwa DIBI, sehingga tidak dipakai sebagai lantai per jenis.
+**Banjir bandang Wasior Oktober 2010 tercatat {{angka:dibi.wasior2010.meninggal}} meninggal dan {{angka:dibi.wasior2010.hilang}} hilang, dan DIBI mencatatnya sebagai banjir karena kategori banjir bandang baru ada sejak 2018.** Banjir Jabodetabek awal 2020 tercatat {{angka:dibi.jabodetabek2020.meninggal}} meninggal di DIBI dan {{angka:renstra.jabodetabek2020.meninggal}} di Rencana Strategis Badan Nasional Penanggulangan Bencana (Renstra BNPB) 2025–2029 [@bnpb-dibi; @bnpb-2025-renstra, hlm. 11]. Daftar kejadian besar itu dipilih penyusun paket data, bukan hasil pemindaian seluruh peristiwa DIBI, sehingga tidak dipakai sebagai lantai per jenis.
 
-**Kerugian banjir yang punya penilaian resmi dalam bahan kajian hanya banjir Jabodetabek Februari 2007, {{angka:bukti.dala_jabodetabek_2007.kerugian|rupiah}} kerusakan dan kerugian menurut *Damage and Loss Assessment* (DaLA) Bappenas.** Angka itu berasal dari Tabel III.1 dokumen DaLA [@bappenas-2007-dala, hlm. 33]. Penilaian kebutuhan pascabencana (PDNA) dan Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Sumatra 2025 tidak ditemukan, sehingga kerugian kejadian terberat itu belum dapat dinyatakan (@rek:r-m17). Rumah rusak per jenis untuk musim 2025/2026 juga tidak ada di paket data, padahal stimulan rumah di antara jenis banjir hanya berlaku untuk banjir bandang.
+**Kerugian banjir yang punya penilaian resmi dalam bahan kajian hanya banjir Jabodetabek Februari 2007, {{angka:bukti.dala_jabodetabek_2007.kerugian|rupiah}} kerusakan dan kerugian menurut *Damage and Loss Assessment* (DaLA) Badan Perencanaan Pembangunan Nasional (Bappenas).** Angka itu berasal dari Tabel III.1 dokumen DaLA [@bappenas-2007-dala, hlm. 33]. Penilaian kebutuhan pascabencana (*Post-Disaster Needs Assessment*, PDNA) dan Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Sumatra 2025 tidak ditemukan, sehingga kerugian kejadian terberat itu belum dapat dinyatakan (@rek:r-m17). Rumah rusak per jenis untuk musim 2025/2026 juga tidak ada di paket data, padahal stimulan rumah di antara jenis banjir hanya berlaku untuk banjir bandang.
 
-**Lantai kejadian tunggal dan tahun tercatat terburuk per jenis belum diketik di kartu banjir, karena turunan lantai per jenis paket data belum dibangun per 24 Oktober 2026.** Pemutakhirannya tercakup dalam @rek:r-m20, dan kartu pada @tbl:hm-kartu-banjir karena itu memakai korban banjir musim 2025/2026 dan kejadian majemuk Sumatra 2025.
+**Lantai kejadian tunggal dan tahun tercatat terburuk per jenis belum diketik di kartu banjir, karena turunan lantai per jenis paket data belum dibangun per 24 Oktober 2026.** Untuk sementara, kartu pada @tbl:hm-kartu-banjir memakai korban banjir musim 2025/2026 dan kejadian majemuk Sumatra 2025; pemutakhirannya tercakup dalam @rek:r-m20. Korban satu musim itu bukan lantai per jenis dan dapat lebih ringan daripada tahun tercatat terburuk untuk banjir, sehingga kartu banjir belum menjadi skenario terburuk banjir sampai turunan itu tersedia.
 
 :::: skenario {#tbl:hm-kartu-banjir}
 jenis: banjir
@@ -57,7 +57,7 @@ dasar: Kartu per jenis; lantai kejadian tunggal dan tahun tercatat terburuk menu
 kemungkinan: tidak dinilai: tidak ada dasar peluang per jenis; peluang musim agregat ada di kartu musim hujan tercatat terburuk
 peta: gambar/mitigasi/bab07-kartu-banjir.png
 lembaga: Deputi Bidang Penanganan Darurat; BMKG; Kementerian Pekerjaan Umum; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; DaLA Bappenas [@bappenas-2007-dala]
+sumber: DIBI BNPB [@bnpb-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; DaLA Bappenas [@bappenas-2007-dala]
 kaki: Angka tercatat DIBI; pita model rasio belum diuji balik dan hanya pembanding; lantai per jenis final menunggu turunan paket data.
 data_per: 23 Okt 2026
 
@@ -91,7 +91,7 @@ Bila cakupan peringatan dini naik dari proyeksi 2025 ke target 2029 Renas PB ind
 :::
 
 ::: respons
-- BPBD provinsi mengkaji ulang rencana kontinjensi banjir dengan prakiraan awal musim per zona musim (@rek:r-a02).
+- Badan Penanggulangan Bencana Daerah (BPBD) provinsi mengkaji ulang rencana kontinjensi banjir dengan prakiraan awal musim per zona musim (@rek:r-a02).
 - Rantai peringatan dini banjir diuji di kab/kota daftar perhatian sebelum puncak musim (@rek:r-a06).
 - Pengungsi dicatat dengan tanggal rekap per kejadian supaya puncak serentak dapat dihitung.
 :::
@@ -105,9 +105,9 @@ Bila cakupan peringatan dini naik dari proyeksi 2025 ke target 2029 Renas PB ind
 
 ## Tanah Longsor {#sub:hm-longsor}
 
-**Tanah longsor menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}} dari {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim hujan 2025/2026.** Pada musim La Niña 2020/2021 korban longsor tercatat {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat_longsor}}, sedangkan model rasio memberi {{angka:hidromet.nasional.lanina.korban_jiwa_longsor|rentang}} untuk musim yang sama [@bnpb-2026-dibi]. Batas rendah model sudah di atas angka tercatat, sehingga pita longsor tidak dipakai sebagai angka kartu. KRB 2022–2026 mencatat {{angka:renas.krb.terpapar_longsor}} jiwa terpapar bahaya tanah longsor [@bnpb-2025-renas].
+**Tanah longsor menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}} dari {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim hujan 2025/2026.** Pada musim La Niña 2020/2021 korban longsor tercatat {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat_longsor}}, sedangkan model rasio memberi {{angka:hidromet.nasional.lanina.korban_jiwa_longsor|rentang}} untuk musim yang sama [@bnpb-dibi]. Batas rendah model sudah di atas angka tercatat, sehingga pita longsor tidak dipakai sebagai angka kartu. KRB 2022–2026 mencatat {{angka:renas.krb.terpapar_longsor}} jiwa terpapar bahaya tanah longsor [@bnpb-2025-renas].
 
-**Seri tanah longsor DIBI patah pada 2024: jenis itu hanya tercatat {{angka:dibi.nasional.longsor.kejadian.2024}} kejadian pada cakupan kejadian bencana, tetapi dengan {{angka:dibi.nasional.longsor.meninggal.2024}} meninggal.** Cakupan semua laporan mencatat {{angka:dibi.nasional.longsor.kejadian_semua_laporan.2024}} kejadian untuk tahun yang sama, dan empat kategori hidrometeorologi yang muncul sejak 2018 juga kosong pada 2024 [@bnpb-2026-dibi]. Tahun 2024 karena itu tidak dipakai untuk analog atau rasio longsor. Peringatan dini tidak dihitung untuk longsor, sebab waktu tunggunya pendek dan koefisien asosiasi lintas negara hampir pasti melebih-lebihkan manfaatnya (@sub:hm-peringatan).
+**Seri tanah longsor DIBI patah pada 2024: jenis itu hanya tercatat {{angka:dibi.nasional.longsor.kejadian.2024}} kejadian pada cakupan kejadian bencana, tetapi dengan {{angka:dibi.nasional.longsor.meninggal.2024}} meninggal.** Cakupan semua laporan mencatat {{angka:dibi.nasional.longsor.kejadian_semua_laporan.2024}} kejadian untuk tahun yang sama, dan empat kategori hidrometeorologi yang muncul sejak 2018 juga kosong pada 2024 [@bnpb-dibi]. Oleh sebab itu, tahun 2024 tidak dipakai untuk analog atau rasio longsor. Peringatan dini tidak dihitung untuk longsor, sebab waktu tunggunya pendek (@sub:hm-peringatan).
 
 :::: skenario {#tbl:hm-kartu-longsor}
 jenis: longsor
@@ -116,7 +116,7 @@ dasar: Kartu per jenis; lantai kejadian tunggal dan tahun tercatat terburuk menu
 kemungkinan: tidak dinilai: tidak ada dasar peluang per jenis; patahan kategori 2018 dan 2024 memotong seri
 peta: gambar/mitigasi/bab07-kartu-longsor.png
 lembaga: Deputi Bidang Penanganan Darurat; Kementerian Energi dan Sumber Daya Mineral; Kementerian Pekerjaan Umum; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]
+sumber: DIBI BNPB [@bnpb-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]
 kaki: Angka tercatat DIBI; pita model longsor tidak ditampilkan karena batas rendahnya di atas korban tercatat musim analog.
 data_per: 23 Okt 2026
 
@@ -143,7 +143,7 @@ Kartu longsor tidak memuat tuas peringatan dini: waktu tunggu longsor pendek, da
 | TUAS | NILAI DASAR | NILAI DIGESER | KORBAN JIWA | KERUGIAN MATERIIL |
 | --- | ---: | ---: | ---: | --- |
 | Cakupan data kejadian longsor 2024 | {{angka:dibi.nasional.longsor.kejadian.2024}} | {{angka:dibi.nasional.longsor.kejadian_semua_laporan.2024}} | {{angka:dibi.nasional.longsor.meninggal.2024}} pada kedua cakupan | tidak dihitung |
-| Musim acuan, terberat lawan La Niña 2020/2021 | {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}} | {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat_longsor}} | lantai tetap musim 2025/2026 | tidak dihitung |
+| Musim acuan, terberat lawan La Niña 2020/2021 | {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor}} | {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat_longsor}} | angka kartu tetap musim 2025/2026; lantai per jenis menunggu turunan | tidak dihitung |
 | Peringatan dini | – | – | tidak dihitung: waktu tunggu pendek | tidak berubah |
 :::
 
@@ -162,9 +162,9 @@ Kartu longsor tidak memuat tuas peringatan dini: waktu tunggu longsor pendek, da
 
 ## Cuaca Ekstrem {#sub:hm-cuaca}
 
-**KRB 2022–2026 mencatat {{angka:renas.krb.terpapar_cuaca_ekstrem}} jiwa terpapar cuaca ekstrem dan potensi kerugian {{angka:renas.krb.kerugian_cuaca_ekstrem_rp|rupiah}}, terbesar di antara bahaya KRB.** Potensi kerugian itu nilai aset terpapar yang tidak dijumlahkan dengan bahaya lain dan tidak sama dengan kerugian kejadian [@bnpb-2025-renas]. Pada musim hujan 2025/2026 cuaca ekstrem menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_cuaca_ekstrem}} meninggal dan hilang [@bnpb-2026-dibi]. Pada 2018–2023 kejadian sejenis juga tercatat di kategori Puting Beliung dan Angin Kencang, sehingga pilihan tahun analog diuji dengan dan tanpa tahun berpatahan kategori.
+**KRB 2022–2026 mencatat {{angka:renas.krb.terpapar_cuaca_ekstrem}} jiwa terpapar cuaca ekstrem dan potensi kerugian {{angka:renas.krb.kerugian_cuaca_ekstrem_rp|rupiah}}, terbesar di antara bahaya KRB.** Potensi kerugian itu nilai aset terpapar yang tidak dijumlahkan dengan bahaya lain dan tidak sama dengan kerugian kejadian [@bnpb-2025-renas]. Pada musim hujan 2025/2026 cuaca ekstrem menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_cuaca_ekstrem}} meninggal dan hilang [@bnpb-dibi]. Pada 2018–2023 kejadian sejenis juga tercatat di kategori Puting Beliung dan Angin Kencang, sehingga pilihan tahun analog diuji dengan dan tanpa tahun berpatahan kategori.
 
-**Siklon Tropis Seroja April 2021 tercatat {{angka:dibi.seroja2021.meninggal}} meninggal dan {{angka:dibi.seroja2021.hilang}} hilang di DIBI, sedangkan Renstra BNPB 2025–2029 menulis {{angka:renstra.seroja2021.meninggal}} meninggal dan {{angka:renstra.seroja2021.hilang}} hilang.** Kedua versi ditulis berdampingan karena sumber tidak menjelaskan selisihnya [@bnpb-2026-dibi; @bnpb-2025-renstra, hlm. 11]. Seroja menjadi pembanding kejadian besar, bukan lantai, sampai turunan lantai per jenis memeriksa seluruh peristiwa cuaca ekstrem DIBI.
+**Siklon Tropis Seroja April 2021 tercatat {{angka:dibi.seroja2021.meninggal}} meninggal dan {{angka:dibi.seroja2021.hilang}} hilang di DIBI, sedangkan Renstra BNPB 2025–2029 menulis {{angka:renstra.seroja2021.meninggal}} meninggal dan {{angka:renstra.seroja2021.hilang}} hilang.** Kedua versi ditulis berdampingan karena sumber tidak menjelaskan selisihnya [@bnpb-dibi; @bnpb-2025-renstra, hlm. 11]. Seroja menjadi pembanding kejadian besar, bukan lantai, sampai turunan lantai per jenis memeriksa seluruh peristiwa cuaca ekstrem DIBI.
 
 :::: skenario {#tbl:hm-kartu-cuaca}
 jenis: cuaca-ekstrem
@@ -173,7 +173,7 @@ dasar: Kartu per jenis ringkas; lantai kejadian tunggal dan tahun tercatat terbu
 kemungkinan: tidak dinilai: tidak ada dasar peluang per jenis; kategori DIBI bergeser 2018–2023
 peta: gambar/mitigasi/bab07-kartu-cuaca.png
 lembaga: Deputi Bidang Penanganan Darurat; BMKG; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; Renstra BNPB 2025–2029 [@bnpb-2025-renstra]
+sumber: DIBI BNPB [@bnpb-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; Renstra BNPB 2025–2029 [@bnpb-2025-renstra]
 kaki: Angka tercatat DIBI; potensi kerugian KRB adalah batas atas aset terpapar, bukan kerugian kejadian.
 data_per: 23 Okt 2026
 
@@ -218,11 +218,11 @@ Bila cakupan peringatan dini naik ke target 2029 Renas PB indikator 1.c, korban 
 
 ## Gelombang Ekstrem, Abrasi, dan Rob {#sub:hm-gelombang}
 
-**Tahun gelombang ekstrem dan abrasi tercatat terburuk adalah 2011 dengan {{angka:hidromet.nasional.gelombang.lantai_meninggal_hilang}} meninggal dan hilang, termasuk {{angka:dibi.jepara2011.gelombang.hilang}} orang hilang dalam satu kejadian di Kabupaten Jepara.** Kartu paket data memakai tahun 2021 sebagai analog karena kejadiannya terbanyak, {{angka:hidromet.nasional.gelombang.analog_2021.kejadian}} kejadian, tetapi tahun itu hanya mencatat {{angka:hidromet.nasional.gelombang.analog_2021.meninggal_hilang}} meninggal dan hilang [@bnpb-2026-dibi]. Kartu dengan korban 2021 lebih ringan daripada 2011 dan melanggar aturan lantai, sehingga @tbl:hm-kartu-gelombang memakai 2011 untuk korban jiwa dan 2021 untuk kejadian dan rumah rusak. Angka 2011 tetap kandidat sampai turunan lantai per jenis tersedia. DIBI mencatat kejadian Jepara sebagai gelombang pasang dan abrasi tanpa membedakan korban di laut dan di darat.
+**Tahun gelombang ekstrem dan abrasi tercatat terburuk adalah 2011 dengan {{angka:hidromet.nasional.gelombang.lantai_meninggal_hilang}} meninggal dan hilang, termasuk {{angka:dibi.jepara2011.gelombang.hilang}} orang hilang dalam satu kejadian di Kabupaten Jepara.** Kartu paket data memakai tahun 2021 sebagai analog karena kejadiannya terbanyak, {{angka:hidromet.nasional.gelombang.analog_2021.kejadian}} kejadian, tetapi tahun itu hanya mencatat {{angka:hidromet.nasional.gelombang.analog_2021.meninggal_hilang}} meninggal dan hilang [@bnpb-dibi]. Kartu dengan korban 2021 lebih ringan daripada 2011 dan melanggar aturan lantai, sehingga @tbl:hm-kartu-gelombang memakai 2011 untuk korban jiwa dan 2021 untuk kejadian dan rumah rusak. Angka 2011 tetap kandidat sampai turunan lantai per jenis tersedia. DIBI mencatat kejadian Jepara sebagai gelombang pasang dan abrasi tanpa membedakan korban di laut dan di darat.
 
-**Paparan gelombang ekstrem dan abrasi punya tiga versi resmi: {{angka:renas.krb.terpapar_gelombang_abrasi}} jiwa di Renas PB, {{angka:inarisk.krb.gelombang.terpapar_api_nasional}} di API KRB nasional, dan {{angka:inarisk.krb.gelombang.terpapar_jumlah_kab}} dari jumlah kab/kota.** Potensi kerugiannya {{angka:renas.krb.kerugian_gelombang_abrasi_rp|rupiah}} di Renas PB dan {{angka:inarisk.krb.gelombang.kerugian_jumlah_kab|rupiah}} dari jumlah kab/kota [@bnpb-2025-renas; @bnpb-2026-krb]. Ketiga versi ditulis berdampingan karena sumber tidak menjelaskan selisihnya. IRBI 2025 tidak menilai abrasi di {{angka:irbi.nasional.2025.abrasi_kosong}} kab/kota [@bnpb-irbi].
+**Paparan gelombang ekstrem dan abrasi punya tiga versi resmi: {{angka:renas.krb.terpapar_gelombang_abrasi}} jiwa di Renas PB, {{angka:inarisk.krb.gelombang.terpapar_api_nasional}} di antarmuka pemrograman aplikasi (API) KRB nasional, dan {{angka:inarisk.krb.gelombang.terpapar_jumlah_kab}} dari jumlah kab/kota.** Potensi kerugiannya {{angka:renas.krb.kerugian_gelombang_abrasi_rp|rupiah}} di Renas PB dan {{angka:inarisk.krb.gelombang.kerugian_jumlah_kab|rupiah}} dari jumlah kab/kota [@bnpb-2025-renas; @bnpb-2026-krb]. Ketiga versi ditulis berdampingan karena sumber tidak menjelaskan selisihnya. IRBI 2025 tidak menilai abrasi di {{angka:irbi.nasional.2025.abrasi_kosong}} kab/kota [@bnpb-irbi].
 
-**Rob tidak pernah mencatat korban jiwa di DIBI, dan luas rawan rob resmi hanya tersedia untuk Wilayah Sungai Jratunseluna, {{angka:airjawa.rob.jratunseluna.luas_rawan_ha|satuan}} dari simulasi pasang.** DIBI baru mencatat rob sejak 2018 dan kosong pada 2019 dan 2024; tahun 2021 mencatat {{angka:hidromet.nasional.rob.analog_2021.kejadian}} kejadian rob [@bnpb-2026-dibi]. Luas Jratunseluna berasal dari Rencana Pengelolaan Sumber Daya Air yang memakai simulasi pasang [@pupr-2024-rpsda-jratunseluna, hlm. 27–28], dan luas genangan rob di wilayah sungai lain tidak dikuantifikasi.
+**Rob tidak pernah mencatat korban jiwa di DIBI, dan luas rawan rob resmi hanya tersedia untuk Wilayah Sungai Jratunseluna, {{angka:airjawa.rob.jratunseluna.luas_rawan_ha|satuan}} dari simulasi pasang.** DIBI baru mencatat rob sejak 2018 dan kosong pada 2019 dan 2024; tahun 2021 mencatat {{angka:hidromet.nasional.rob.analog_2021.kejadian}} kejadian rob [@bnpb-dibi]. Luas Jratunseluna berasal dari Rencana Pengelolaan Sumber Daya Air yang memakai simulasi pasang [@pupr-2024-rpsda-jratunseluna, hlm. 27–28], dan luas genangan rob di wilayah sungai lain tidak dikuantifikasi.
 
 :::: skenario {#tbl:hm-kartu-gelombang}
 jenis: gelombang-abrasi
@@ -231,7 +231,7 @@ dasar: Kartu per jenis ringkas; korban dari tahun tercatat terburuk 2011 (kandid
 kemungkinan: tidak dinilai: tidak ada dasar peluang per jenis
 peta: gambar/mitigasi/bab07-kartu-gelombang.png
 lembaga: Deputi Bidang Penanganan Darurat; BMKG; Kementerian Kelautan dan Perikanan; BPBD provinsi pesisir
-sumber: DIBI BNPB [@bnpb-2026-dibi]; KRB 2022–2026 [@bnpb-2026-krb]; Renas PB 2025–2029 [@bnpb-2025-renas]; RPSDA WS Jratunseluna [@pupr-2024-rpsda-jratunseluna]
+sumber: DIBI BNPB [@bnpb-dibi]; KRB 2022–2026 [@bnpb-2026-krb]; Renas PB 2025–2029 [@bnpb-2025-renas]; RPSDA WS Jratunseluna [@pupr-2024-rpsda-jratunseluna]
 kaki: Angka tercatat DIBI; luas rawan rob Jratunseluna hasil simulasi dalam dokumen resmi Kementerian Pekerjaan Umum.
 data_per: 23 Okt 2026
 
@@ -277,11 +277,11 @@ Bila cakupan peringatan dini naik ke target 2029 Renas PB indikator 1.c, korban 
 
 ## Kekeringan {#sub:hm-kekeringan}
 
-**Kekeringan 2018 mencatat {{angka:hidromet.nasional.kekeringan.dibi_terdampak_2018}} jiwa terdampak, terbesar dalam DIBI 2008–2025, padahal ONI Juli–September 2018 hanya {{angka:oni.jas_2018|fmt=2}}.** Jumlah kejadian dan terdampak kekeringan DIBI mengukur intensitas pelaporan, bukan keparahan, sehingga angka 2018 menjadi lantai terdampak tanpa dibaca sebagai kemarau terberat [@bnpb-2026-dibi; @noaa-2026-oni]. KRB 2022–2026 mencatat {{angka:hidromet.nasional.kekeringan.luas_bahaya_tinggi|satuan}} luas bahaya tinggi kekeringan dan {{angka:renas.krb.terpapar_kekeringan}} jiwa terpapar [@bnpb-2025-renas].
+**Kekeringan 2018 mencatat {{angka:hidromet.nasional.kekeringan.dibi_terdampak_2018}} jiwa terdampak, terbesar dalam DIBI 2008–2025, padahal ONI Juli–September 2018 hanya {{angka:oni.jas_2018|fmt=2}}.** Jumlah kejadian dan terdampak kekeringan DIBI mengukur intensitas pelaporan, bukan keparahan, sehingga angka 2018 menjadi lantai terdampak tanpa dibaca sebagai kemarau terberat [@bnpb-dibi; @noaa-2026-oni]. KRB 2022–2026 mencatat {{angka:hidromet.nasional.kekeringan.luas_bahaya_tinggi|satuan}} luas bahaya tinggi kekeringan dan {{angka:renas.krb.terpapar_kekeringan}} jiwa terpapar [@bnpb-2025-renas].
 
-**DIBI mencatat {{angka:dibi.puncak2023.kekeringan.meninggal}} meninggal akibat kekeringan dalam satu kejadian di Kabupaten Puncak, Papua Tengah, pada 2023.** Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan mengonfirmasi kekeringan dan embun beku di Distrik Agandugume, Lambewi, dan Oneri yang menyebabkan gagal panen hingga kekurangan pangan dan kelaparan, tanpa menyebut angka korban [@kemenkopmk-2023-puncak]. Rumusan bahwa korban jiwa kekeringan tidak berlaku karena itu tidak dipakai; kartu memakai angka Puncak sebagai korban tercatat terbesar, berkelas dampak kependudukan satu, dan kandidat lantai sampai turunan lantai per jenis tersedia.
+**DIBI mencatat {{angka:dibi.puncak2023.kekeringan.meninggal}} meninggal akibat kekeringan dalam satu kejadian di Kabupaten Puncak, Papua Tengah, pada 2023.** Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan mengonfirmasi kekeringan dan embun beku di Distrik Agandugume, Lambewi, dan Oneri yang menyebabkan gagal panen hingga kekurangan pangan dan kelaparan, tanpa menyebut angka korban [@kemenkopmk-2023-puncak]. Korban jiwa kekeringan jarang, tetapi tidak nol; kartu memakai angka Puncak sebagai korban tercatat terbesar, berkelas dampak kependudukan satu, dan kandidat lantai sampai turunan lantai per jenis tersedia.
 
-**Model neraca air dan padi platform belum lolos uji balik terhadap kejadian kekeringan DIBI, sehingga tidak masuk kartu.** Keluarannya hanya ada di lampiran metode paket data [@bnpb-2026-dibi]. Puso per kab/kota belum ditarik, dan data operasional kemarau 2026 belum masuk ke BNPB (@rek:r-a03).
+**Model neraca air dan padi platform belum lolos uji balik terhadap kejadian kekeringan DIBI, sehingga tidak masuk kartu.** Keluarannya hanya ada di lampiran metode paket data skenario hidrometeorologi. Puso per kab/kota belum ditarik, dan data operasional kemarau 2026 belum masuk ke BNPB (@rek:r-a03).
 
 :::: skenario {#tbl:hm-kartu-kekeringan}
 jenis: kekeringan
@@ -290,7 +290,7 @@ dasar: Kartu per jenis; lantai dari tercatat terburuk DIBI 2008–2025 per metri
 kemungkinan: tidak dinilai: prakiraan fase ENSO resmi untuk Juli–September 2027 tidak ada, dan dua analog tahun kedua tidak memberi peluang
 peta: gambar/mitigasi/bab07-kartu-kekeringan.png
 lembaga: Direktorat Kesiapsiagaan; BMKG; Kementerian Pekerjaan Umum; Kementerian Pertanian; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; NOAA CPC, ONI [@noaa-2026-oni]
+sumber: DIBI BNPB [@bnpb-dibi]; KRB 2022–2026 lewat Renas PB 2025–2029 [@bnpb-2025-renas]; NOAA CPC, ONI [@noaa-2026-oni]
 kaki: Angka tercatat DIBI; 2026 sementara sampai 23 Oktober 2026; terdampak DIBI mengukur intensitas pelaporan.
 data_per: 23 Okt 2026
 
@@ -333,11 +333,11 @@ Pemicu Kesiapan Musim Kemarau 2027 memakai lantai tercatat {{angka:hidromet.nasi
 
 ## Kebakaran Hutan dan Lahan {#sub:hm-karhutla}
 
-**Karhutla 2015 membakar {{angka:sipongi.karhutla2015.luas_ha|fmt=2|satuan}} menurut SiPongi Kementerian Kehutanan, terluas dalam seri SiPongi 2015–2024.** Bank Dunia menghitung kerugiannya US${{angka:bankdunia.karhutla2015.kerugian_usd|ringkas}}, setara {{angka:bankdunia.karhutla2015.pct_pdb|fmt=1|persen}} produk domestik bruto (PDB) 2015, untuk delapan provinsi dan tanpa biaya regional dan global [@sipongi-luas; @worldbank-2016-cost-fire, hlm. 3, 6]. Luas SiPongi adalah indikasi dari titik panas dan verifikasi, bukan hitungan citra. Karhutla 2019 membakar {{angka:sipongi.karhutla2019.luas_ha|satuan}} dengan kerugian US${{angka:bankdunia.karhutla2019.kerugian_usd|ringkas}} atau {{angka:bankdunia.karhutla2019.pct_pdb|fmt=1|persen}} PDB [@worldbank-2019-ieq, hlm. 7–8], dan karhutla 2023 membakar {{angka:sipongi.karhutla2023.luas_ha|fmt=1|satuan}}. Analisis Bank Dunia 2016 dan 2019 adalah satu-satunya penilaian kerugian utuh untuk kejadian hidrometeorologi nasional dalam bahan kajian.
+**Karhutla 2015 membakar {{angka:sipongi.karhutla2015.luas_ha|fmt=2|satuan}} menurut SiPongi Kementerian Kehutanan, terluas dalam seri SiPongi 2015–2024.** Bank Dunia menghitung kerugiannya US${{angka:bankdunia.karhutla2015.kerugian_usd|ringkas}}, setara {{angka:bankdunia.karhutla2015.pct_pdb|fmt=1|persen}} produk domestik bruto (PDB) 2015, untuk delapan provinsi dan tanpa biaya regional dan global [@sipongi-luas; @worldbank-2016-cost-fire, hlm. 3, 6]. Luas SiPongi adalah indikasi dari titik panas dan verifikasi, bukan hitungan citra. Karhutla 2019 membakar {{angka:sipongi.karhutla2019.luas_ha|satuan}} dengan kerugian US${{angka:bankdunia.karhutla2019.kerugian_usd|ringkas}} atau {{angka:bankdunia.karhutla2019.pct_pdb|fmt=1|persen}} PDB [@worldbank-2019-ieq, hlm. 7–8], dan karhutla 2023 membakar {{angka:sipongi.karhutla2023.luas_ha|fmt=1|satuan}}. Analisis Bank Dunia 2016 dan 2019 adalah satu-satunya penilaian kerugian ekonomi berskala nasional untuk kejadian hidrometeorologi dalam bahan kajian (@sub:hm-banjir).
 
-**DIBI mencatat {{angka:dibi.karhutla2015.meninggal_prov_asap}} meninggal karhutla 2015 di provinsi asap, sedangkan model Koplitz dkk. memperkirakan {{angka:koplitz.asap2015.kematian_berlebih}} kematian dewasa berlebih di Indonesia ({{angka:koplitz.asap2015.kematian_berlebih|rentang}}).** Angka model itu {{angka:koplitz.asap2015.rasio_tercatat|satuan}} angka tercatat di provinsi asap, sehingga keduanya selalu ditulis berdampingan dengan label berbeda [@bnpb-2026-dibi; @koplitz-2016-asap]. Model itu menghitung paparan partikel halus asap sepanjang Juli–Oktober 2015 dan hanya kematian dewasa, jadi hasilnya bukan beban kematian total. Di semua provinsi DIBI mencatat {{angka:dibi.karhutla2015.meninggal}} meninggal karhutla 2015; selisihnya berasal dari Magetan dan Ponorogo, kebakaran hutan setempat di luar provinsi asap. Kelas dampak kependudukan karhutla dihitung dari angka tercatat, yaitu kelas dua.
+**DIBI mencatat {{angka:dibi.karhutla2015.meninggal_prov_asap}} meninggal karhutla 2015 di provinsi asap, sedangkan model Koplitz dkk. memperkirakan {{angka:koplitz.asap2015.kematian_berlebih}} kematian dewasa berlebih di Indonesia ({{angka:koplitz.asap2015.kematian_berlebih|rentang}}).** Angka model itu {{angka:koplitz.asap2015.rasio_tercatat|satuan}} angka tercatat di provinsi asap, sehingga keduanya selalu ditulis berdampingan dengan label berbeda [@bnpb-dibi; @koplitz-2016-haze]. Model itu menghitung paparan partikel halus asap sepanjang Juli–Oktober 2015 dan hanya kematian dewasa, jadi hasilnya bukan beban kematian total. Di semua provinsi DIBI mencatat {{angka:dibi.karhutla2015.meninggal}} meninggal karhutla 2015; selisihnya berasal dari Magetan dan Ponorogo, kebakaran hutan setempat di luar provinsi asap. Kelas dampak kependudukan karhutla dihitung dari angka tercatat, yaitu kelas dua.
 
-**Paparan resmi karhutla dalam KRB 2022–2026 adalah {{angka:renas.krb.luas_karhutla|satuan}} luas bahaya, {{angka:renas.krb.luas_tinggi_karhutla|satuan}} di antaranya kelas tinggi, dengan potensi kerugian {{angka:renas.krb.kerugian_karhutla_rp|rupiah}}.** Penduduk terpapar karhutla tidak disajikan di Renas PB, dan API KRB per kab/kota untuk karhutla membalas nol [@bnpb-2025-renas]. Sebaran per provinsi asap untuk 2015 dan 2019 tampil pada @tbl:hm-karhutla-provinsi. Kasus infeksi saluran pernapasan akut (ISPA) tidak dimuat di tabel maupun kartu, karena semua versi yang ditemukan bersumber pers dan rilis BNPB aslinya tidak ditemukan pada penelusuran 24 Oktober 2026 (@tbl:hm-celah).
+**Paparan resmi karhutla dalam KRB 2022–2026 adalah {{angka:renas.krb.luas_karhutla|satuan}} luas bahaya, {{angka:renas.krb.luas_tinggi_karhutla|satuan}} di antaranya kelas tinggi, dengan potensi kerugian {{angka:renas.krb.kerugian_karhutla_rp|rupiah}}.** Penduduk terpapar karhutla tidak disajikan di Renas PB, dan API KRB per kab/kota untuk karhutla mengembalikan nilai nol [@bnpb-2025-renas]. Sebaran per provinsi asap untuk 2015 dan 2019 tampil pada @tbl:hm-karhutla-provinsi. Kasus infeksi saluran pernapasan akut (ISPA) tidak dimuat di tabel maupun kartu, karena semua versi yang ditemukan bersumber pers dan rilis BNPB aslinya tidak ditemukan pada penelusuran 24 Oktober 2026 (@tbl:hm-celah).
 
 ::: tabel {#tbl:hm-karhutla-provinsi}
 judul: Luas terbakar dan korban karhutla di provinsi asap, 2015 dan 2019
@@ -349,7 +349,7 @@ total: ya
 sumber: Kementerian Kehutanan, SiPongi; Bank Dunia (2016), tabel luas bersumber BPPT; BNPB, DIBI dasbor publik
 keyakinan: resmi
 data_per: 23 Okt 2026
-catatan: Luas Papua memakai batas sebelum pemekaran 2022, kolom DIBI memakai batas 2025; sel Bank Dunia kosong berarti provinsi tidak dirinci; luas Bank Dunia berlabel terverifikasi. ISPA tidak dimuat karena versi pers dan versi Badan Keahlian DPR saling bertentangan per provinsi.
+catatan: Luas Papua memakai batas sebelum pemekaran 2022, kolom DIBI memakai batas 2025; sel Bank Dunia kosong berarti provinsi tidak dirinci; luas Bank Dunia berlabel terverifikasi. ISPA tidak dimuat karena semua versi yang ditemukan bersumber pers, termasuk rangkuman Badan Keahlian DPR, dan angka per provinsinya saling bertentangan.
 :::
 
 :::: skenario {#tbl:hm-kartu-karhutla}
@@ -359,7 +359,7 @@ dasar: Kartu per jenis; lantai dari tahun tercatat terburuk 2015 (luas SiPongi, 
 kemungkinan: tidak dinilai: prakiraan fase ENSO resmi untuk kemarau 2027 tidak ada
 peta: gambar/mitigasi/bab07-kartu-karhutla.png
 lembaga: Kementerian Kehutanan; BMKG; Kementerian Kesehatan; Deputi Bidang Penanganan Darurat; BPBD provinsi asap
-sumber: SiPongi [@sipongi-luas]; Bank Dunia [@worldbank-2016-cost-fire; @worldbank-2019-ieq]; DIBI BNPB [@bnpb-2026-dibi]; @koplitz-2016-asap; Renas PB 2025–2029 [@bnpb-2025-renas]
+sumber: SiPongi [@sipongi-luas]; Bank Dunia [@worldbank-2016-cost-fire; @worldbank-2019-ieq]; DIBI BNPB [@bnpb-dibi]; @koplitz-2016-haze; Renas PB 2025–2029 [@bnpb-2025-renas]
 kaki: Luas dan korban tercatat resmi; kerugian Bank Dunia terverifikasi; kematian berlebih adalah model yang belum diuji balik terhadap data kematian Indonesia.
 data_per: 23 Okt 2026
 
@@ -386,7 +386,7 @@ Kerugian karhutla 2015 sebesar US${{angka:bankdunia.karhutla2015.kerugian_usd|ri
 | --- | ---: | ---: | ---: | --- |
 | Tahun analog luas, 2015 lawan 2019 (ha) | {{angka:sipongi.karhutla2015.luas_ha|fmt=0}} | {{angka:sipongi.karhutla2019.luas_ha}} | {{angka:dibi.karhutla2015.meninggal_prov_asap}} ke {{angka:dibi.karhutla2019.meninggal_prov_asap}} di provinsi asap | US${{angka:bankdunia.karhutla2015.kerugian_usd|ringkas}} ke US${{angka:bankdunia.karhutla2019.kerugian_usd|ringkas}} |
 | Korban jiwa, tercatat lawan model asap 2015 | {{angka:dibi.karhutla2015.meninggal_prov_asap}} | {{angka:koplitz.asap2015.kematian_berlebih}} | label berbeda, tidak dijumlah | tidak berubah |
-| Kemarau tahun kedua 2027, analog 2015 (ha) | {{angka:sipongi.karhutla2015.luas_ha|fmt=0}} | {{angka:sipongi.karhutla2015.luas_ha|fmt=0}} | lantai tetap | tidak berubah |
+| Kemarau tahun kedua 2027, analog 2015 (ha) | {{angka:sipongi.karhutla2015.luas_ha|fmt=0}} | {{angka:sipongi.karhutla2015.luas_ha|fmt=0}} | lantai tetap: 2015 adalah tahun kedua El Niño 2014–2016 sekaligus tahun lantai | tidak berubah |
 :::
 
 ::: respons
@@ -404,7 +404,7 @@ Kerugian karhutla 2015 sebesar US${{angka:bankdunia.karhutla2015.kerugian_usd|ri
 
 ## Kartu Agregat Musim Hujan {#sub:hm-musim-hujan}
 
-**Lantai {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim 2025/2026 setara {{angka:hidromet.nasional.lantai.rasio_musim_kedua|fmt=1|satuan}} musim terberat kedua dan {{angka:hidromet.nasional.lantai.rasio_median|fmt=1|satuan}} median delapan belas musim.** Musim terberat kedua adalah 2018/2019 dengan {{angka:hidromet.nasional.musim.kedua_terberat_meninggal_hilang}} meninggal dan hilang, dan mediannya {{angka:hidromet.nasional.musim.median_meninggal_hilang|fmt=1}} [@bnpb-2026-dibi]. Musim 2025/2026 juga mencatat pengungsi dan rumah rusak berat terbesar di seri itu, yaitu {{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa dan {{angka:hidromet.nasional.musim_2025.rumah_rb}} unit. Tanpa kejadian Sumatra 2025 musim itu bernilai {{angka:hidromet.nasional.musim_2025.tanpa_sumatra}} meninggal dan hilang, sedikit di atas median. Kajian ini menilai risiko korban hidrometeorologi nasional didorong ekor kejadian tunggal berskala provinsi, sejalan dengan lemahnya kaitan jumlah kejadian dan korban di Bab 4. Seri delapan belas musim tampil pada @gbr:hm-musim-hujan.
+**Lantai {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang pada musim 2025/2026 setara {{angka:hidromet.nasional.lantai.rasio_musim_kedua|fmt=1|satuan}} musim terberat kedua dan {{angka:hidromet.nasional.lantai.rasio_median|fmt=1|satuan}} median delapan belas musim.** Musim terberat kedua adalah 2018/2019 dengan {{angka:hidromet.nasional.musim.kedua_terberat_meninggal_hilang}} meninggal dan hilang, dan mediannya {{angka:hidromet.nasional.musim.median_meninggal_hilang|fmt=1}} [@bnpb-dibi]. Musim 2025/2026 juga mencatat pengungsi dan rumah rusak berat terbesar di seri itu, yaitu {{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa dan {{angka:hidromet.nasional.musim_2025.rumah_rb}} unit. Tanpa kejadian Sumatra 2025 musim itu bernilai {{angka:hidromet.nasional.musim_2025.tanpa_sumatra}} meninggal dan hilang, sedikit di atas median. Kajian ini menilai risiko korban hidrometeorologi nasional didorong ekor kejadian tunggal berskala provinsi, sejalan dengan lemahnya kaitan jumlah kejadian dan korban di Bab 4. Seri delapan belas musim tampil pada @gbr:hm-musim-hujan.
 
 ::: gambar {#gbr:hm-musim-hujan}
 berkas: gambar/mitigasi/bab07-g01-musim-hujan.png
@@ -417,9 +417,9 @@ data_per: 23 Okt 2026
 catatan: Musim hujan 1 Oktober sampai 30 April, lima jenis hidrometeorologi musim hujan. Batang 2025/2026 dipecah atas kasus Sumatra 2025 dan sisanya. Musim 2025/2026 bukan episode La Niña. ONI berlabel terverifikasi.
 :::
 
-**Musim 2025/2026 bukan musim La Niña: ONI November–Januari bernilai {{angka:hidromet.nasional.musim_2025.oni|fmt=2}} dan tidak memenuhi definisi episode *Climate Prediction Center* (CPC) NOAA.** Dari delapan belas musim acuan, {{angka:hidromet.nasional.musim_lanina.n}} berada dalam episode La Niña, sehingga fase ENSO tidak cukup sebagai penanda musim terburuk [@noaa-2026-oni].
+**Musim 2025/2026 bukan musim La Niña: ONI November–Januari bernilai {{angka:hidromet.nasional.musim_2025.oni|fmt=2}} dan tidak memenuhi definisi episode *Climate Prediction Center* (CPC) *National Oceanic and Atmospheric Administration* (NOAA).** Dari delapan belas musim acuan, {{angka:hidromet.nasional.musim_lanina.n}} berada dalam episode La Niña, sehingga fase *El Niño-Southern Oscillation* (ENSO) tidak cukup sebagai penanda musim terburuk [@noaa-2026-oni].
 
-**Model rasio paket data memberi {{angka:hidromet.nasional.terberat.korban_jiwa|rentang}} korban jiwa untuk musim 2025/2026, sehingga angka tercatat {{angka:hidromet.nasional.lantai.rasio_batas_tinggi_model|fmt=2|satuan}} batas tingginya.** Untuk banjir saja model memberi {{angka:hidromet.nasional.terberat.korban_jiwa_banjir|rentang}} lawan {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} tercatat. Pada musim La Niña 2020/2021 arahnya terbalik: model {{angka:hidromet.nasional.lanina.korban_jiwa|rentang}} lawan {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat}} tercatat [@bnpb-2026-dibi]. Metode ini tidak menangkap kejadian katastrofik, karena batas tingginya dibuat dengan menyisihkan tahun terburuk tercatat, padahal aturan kajian hanya membolehkan penyisihan untuk peluang lima tahun di bawah {{angka:nrr_2025.pita1_batas_persen|fmt=1|persen}} (Bab 3). Model karena itu hanya menjadi baris pembanding di kartu.
+**Model rasio paket data memberi {{angka:hidromet.nasional.terberat.korban_jiwa|rentang}} korban jiwa untuk musim 2025/2026, sehingga angka tercatat {{angka:hidromet.nasional.lantai.rasio_batas_tinggi_model|fmt=2|satuan}} batas tingginya.** Untuk banjir saja model memberi {{angka:hidromet.nasional.terberat.korban_jiwa_banjir|rentang}} lawan {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} tercatat. Pada musim La Niña 2020/2021 arahnya terbalik: model {{angka:hidromet.nasional.lanina.korban_jiwa|rentang}} lawan {{angka:hidromet.nasional.lanina.meninggal_hilang_tercatat}} tercatat [@bnpb-dibi]. Metode ini tidak menangkap kejadian katastrofik, karena batas tingginya dibuat dengan menyisihkan tahun terburuk tercatat, padahal aturan kajian hanya membolehkan penyisihan untuk peluang lima tahun di bawah {{angka:nrr_2025.pita1_batas_persen|fmt=1|persen}} (Bab 3). Model karena itu hanya menjadi baris pembanding di kartu.
 
 **Peluang paling sedikit satu musim seburuk 2025/2026 dalam lima musim adalah {{angka:hidromet.nasional.lantai.peluang_5_musim|fmt=1|persen}} menurut posisi plot Weibull, pita kemungkinan empat.** Peluang La Niña dalam jendela lima tahun dari catatan ONI adalah {{angka:enso.lanina_ndj_porsi_jendela5|fmt=1|persen}} [@noaa-2026-oni]. Lantai nasional dan kasus Sumatra jatuh di kelas dampak kependudukan lima pada pita fatalitas yang dipilih Bab 3 [@cabinetoffice-2025-nrr, hlm. 14]. Musim terberat tetap 2025/2026 dengan atau tanpa rekaman Kota Bekasi 1 Januari 2020, yang menaikkan pengungsi musim 2019/2020 dari {{angka:hidromet.nasional.musim_2019.mengungsi_tanpa_bekasi}} menjadi {{angka:hidromet.nasional.musim_2019.mengungsi}} jiwa.
 
@@ -430,7 +430,7 @@ dasar: Lantai = musim hujan tercatat terburuk dalam delapan belas musim DIBI 200
 kemungkinan: 4
 peta: gambar/mitigasi/bab07-g19-irbi-hidromet.png
 lembaga: Deputi Bidang Penanganan Darurat; Deputi Bidang Logistik dan Peralatan; Direktorat Kesiapsiagaan; Direktorat Peringatan Dini; BMKG; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; NOAA CPC, ONI [@noaa-2026-oni]; Perban BNPB 2/2023 [@bnpb-2023-renkon]; paket skenario hidrometeorologi kajian ini
+sumber: DIBI BNPB [@bnpb-dibi]; NOAA CPC, ONI [@noaa-2026-oni]; Perban BNPB 2/2023 [@bnpb-2023-renkon]; paket skenario hidrometeorologi kajian ini
 kaki: Lantai dari DIBI resmi; pita model rasio belum diuji balik; kemungkinan dari posisi plot Weibull atas delapan belas musim; tidak menggantikan kartu per jenis.
 data_per: 23 Okt 2026
 
@@ -453,7 +453,7 @@ data_per: 23 Okt 2026
 :::
 
 ::: kebijakan
-Bila cakupan peringatan dini naik dari proyeksi 2025 ke target 2029 Renas PB indikator 1.c, korban lantai tanpa longsor sebanyak {{angka:hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang|satuan}} dihitung turun menjadi {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa|satuan}}; lintasan IKP Renstra memberi {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renstra.korban_jiwa|satuan}}. Kedua angka bergantung pada koefisien asosiasi lintas negara dan berlabel asumsi kebijakan.
+Bila cakupan peringatan dini naik dari proyeksi 2025 ke target 2029 Renas PB indikator 1.c, korban lantai tanpa longsor sebanyak {{angka:hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang|satuan}} dihitung turun menjadi {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa|satuan}}; lintasan indikator kinerja program (IKP) Renstra memberi {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renstra.korban_jiwa|satuan}}. Kedua angka bergantung pada koefisien asosiasi lintas negara dan berlabel asumsi kebijakan.
 :::
 
 ::: kepekaan
@@ -477,13 +477,13 @@ Bila cakupan peringatan dini naik dari proyeksi 2025 ke target 2029 Renas PB ind
 :::
 ::::
 
-**Musim hujan 2026/2027 dimulai di bawah El Niño sangat kuat: ONI Juli–September 2026 bernilai {{angka:oni.jas_2026|fmt=2}}, tertinggi dalam seri Juli–September sejak 1950.** Nilai berikutnya adalah 1997 ({{angka:oni.jas_1997|fmt=2}}) dan 2015 ({{angka:oni.jas_2015|fmt=2}}) [@noaa-2026-oni]. Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) mencatat indeks ENSO Juli–September {{angka:bmkg.musim_2026.enso_jas|fmt=2}} dan Agustus–Oktober {{angka:bmkg.dasarian_okt1_2026.enso_aso|fmt=2}}, serta Niño 3.4 dasarian I Oktober {{angka:bmkg.dasarian_okt1_2026.nino34|fmt=2}} [@bmkg-2026-siaran-musim-hujan; @bmkg-2026-dinamika-okt1]. Indeks itu berbeda periode dan metode, sehingga masing-masing ditulis dengan namanya. CPC pada 8 Oktober 2026 memprakirakan El Niño kuat sampai sangat kuat bertahan sampai Januari–Maret 2027, dengan peluang {{angka:cpc.ensodisc_2026_10.peluang_historis_ond|persen}} untuk kejadian berkekuatan historis pada Oktober–Desember 2026 [@noaa-cpc-2026-ensodisc].
+**Musim hujan 2026/2027 dimulai di bawah El Niño sangat kuat: ONI Juli–September 2026 bernilai {{angka:oni.jas_2026|fmt=2}}, tertinggi dalam seri Juli–September sejak 1950.** Nilai berikutnya adalah 1997 ({{angka:oni.jas_1997|fmt=2}}) dan 2015 ({{angka:oni.jas_2015|fmt=2}}) [@noaa-2026-oni]. BMKG mencatat indeks ENSO Juli–September {{angka:bmkg.musim_2026.enso_jas|fmt=2}} dan Agustus–Oktober {{angka:bmkg.dasarian_okt1_2026.enso_aso|fmt=2}}, serta Niño 3.4 dasarian I Oktober {{angka:bmkg.dasarian_okt1_2026.nino34|fmt=2}} [@bmkg-2026-musim-hujan; @bmkg-2026-dinamika-okt1]. Indeks itu berbeda periode dan metode, sehingga masing-masing ditulis dengan namanya. CPC pada 8 Oktober 2026 memprakirakan El Niño kuat sampai sangat kuat bertahan sampai Januari–Maret 2027, dengan peluang {{angka:cpc.ensodisc_2026_10.peluang_historis_ond|persen}} untuk kejadian berkekuatan historis pada Oktober–Desember 2026 [@noaa-cpc-2026-ensodisc].
 
-**BMKG memprakirakan awal musim hujan 2026/2027 mundur di {{angka:bmkg.musim_2026.zom_awal_mundur}} zona musim (ZOM), meliputi {{angka:bmkg.musim_2026.persen_awal_mundur|fmt=2|persen}} luas wilayah.** Awal musim jatuh pada November di {{angka:bmkg.musim_2026.zom_awal_november}} ZOM dan Desember di {{angka:bmkg.musim_2026.zom_awal_desember}} ZOM, sedangkan puncak musim terbanyak jatuh pada Februari 2027 di {{angka:bmkg.musim_2026.zom_puncak_februari}} ZOM [@bmkg-2026-siaran-musim-hujan]. Di Jawa awal musim terbanyak jatuh pada Desember dan puncaknya pada Februari 2027. Sifat hujan atas normal diprakirakan di {{angka:bmkg.musim_2026.zom_sifat_atas_normal}} ZOM, atau {{angka:bmkg.musim_2026.persen_atas_normal|fmt=2|persen}} luas daratan; semua persentase siaran adalah persen luas, bukan persen jumlah ZOM. Siaran itu merekomendasikan kesiapan evakuasi banjir dan longsor pemerintah daerah pada awal dan puncak musim.
+**BMKG memprakirakan awal musim hujan 2026/2027 mundur di {{angka:bmkg.musim_2026.zom_awal_mundur}} zona musim (ZOM), meliputi {{angka:bmkg.musim_2026.persen_awal_mundur|fmt=2|persen}} luas wilayah.** Awal musim jatuh pada November di {{angka:bmkg.musim_2026.zom_awal_november}} ZOM dan Desember di {{angka:bmkg.musim_2026.zom_awal_desember}} ZOM, sedangkan puncak musim terbanyak jatuh pada Februari 2027 di {{angka:bmkg.musim_2026.zom_puncak_februari}} ZOM [@bmkg-2026-musim-hujan]. Di Jawa awal musim terbanyak jatuh pada Desember dan puncaknya pada Februari 2027. Sifat hujan atas normal diprakirakan di {{angka:bmkg.musim_2026.zom_sifat_atas_normal}} ZOM, atau {{angka:bmkg.musim_2026.persen_atas_normal|fmt=2|persen}} luas daratan; semua persentase siaran adalah persen luas, bukan persen jumlah ZOM. Siaran itu merekomendasikan kesiapan evakuasi banjir dan longsor pemerintah daerah pada awal dan puncak musim.
 
-**Tiga musim hujan dengan El Niño kuat, 2009/2010, 2015/2016, dan 2023/2024, mencatat {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2009}}, {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2015}}, dan {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2023}} meninggal dan hilang, semuanya di bawah lantai.** Ketiganya musim dengan El Niño kuat yang sedang berlangsung, sama dengan posisi 2026/2027 [@bnpb-2026-dibi]. Kartu pada @tbl:hm-kartu-2026 karena itu memisahkan ekspektasi dari skenario terburuk sebesar lantai, sebab tidak ada dasar peluang untuk menyisihkan musim 2025/2026.
+**Tiga musim hujan dengan El Niño kuat, 2009/2010, 2015/2016, dan 2023/2024, mencatat {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2009}}, {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2015}}, dan {{angka:hidromet.nasional.pasca_elnino.meninggal_hilang_2023}} meninggal dan hilang, semuanya di bawah lantai.** Ketiganya musim dengan El Niño kuat yang sedang berlangsung, sama dengan posisi 2026/2027 [@bnpb-dibi]. Dengan demikian, kartu pada @tbl:hm-kartu-2026 memisahkan ekspektasi dari skenario terburuk sebesar lantai, sebab tidak ada dasar peluang untuk menyisihkan musim 2025/2026.
 
-**Pada musim sesudah El Niño kuat, jumlah kejadian naik {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2016|fmt=1|persen}} pada 2016/2017 dan {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2024|fmt=1|persen}} pada 2024/2025, tetapi {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2010|fmt=1|persen|arah}} pada 2010/2011.** Pola tercatat dari tiga pasang musim ini dipengaruhi patahan kategori 2018 dan 2024 [@bnpb-2026-dibi]. Kalender kesiapan karena itu juga perlu menjangkau musim 2027/2028.
+**Pada musim sesudah El Niño kuat, jumlah kejadian naik {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2016|fmt=1|persen}} pada 2016/2017 dan {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2024|fmt=1|persen}} pada 2024/2025, tetapi {{angka:hidromet.nasional.musim_berikut.kenaikan_kejadian_2010|fmt=1|persen|arah}} pada 2010/2011.** Pola tercatat dari tiga pasang musim ini dipengaruhi patahan kategori 2018 dan 2024 [@bnpb-dibi]. Atas dasar itu, kalender kesiapan juga perlu menjangkau musim 2027/2028.
 
 :::: skenario {#tbl:hm-kartu-2026}
 jenis: banjir
@@ -493,7 +493,7 @@ analog: Musim hujan 2009/2010, 2015/2016, dan 2023/2024
 kemungkinan: 4
 peta: gambar/mitigasi/bab07-g19-irbi-hidromet.png
 lembaga: Direktorat Kesiapsiagaan; Direktorat Peringatan Dini; Deputi Bidang Logistik dan Peralatan; BMKG; BPBD provinsi
-sumber: DIBI BNPB [@bnpb-2026-dibi]; BMKG [@bmkg-2026-siaran-musim-hujan]; NOAA CPC [@noaa-cpc-2026-ensodisc]
+sumber: DIBI BNPB [@bnpb-dibi]; BMKG [@bmkg-2026-musim-hujan]; NOAA CPC [@noaa-cpc-2026-ensodisc]
 kaki: Kemungkinan adalah peluang paling sedikit satu musim seburuk lantai dalam lima musim (posisi plot Weibull); persen BMKG adalah persen luas, bukan persen jumlah ZOM.
 data_per: 23 Okt 2026
 
@@ -524,7 +524,7 @@ Peluang paling sedikit satu musim seburuk lantai dalam lima musim {{angka:hidrom
 
 ::: respons
 - Kaji ulang rencana kontinjensi didahulukan untuk ZOM yang awal musimnya November, lalu Desember (@rek:r-a02).
-- Peta jalan menempatkan hari ke-100 pada Desember 2026 sampai Februari 2027, bertepatan dengan puncak musim di Jawa [@bmkg-2026-siaran-musim-hujan].
+- Peta jalan menempatkan hari ke-100 pada Desember 2026 sampai Februari 2027, bertepatan dengan puncak musim di Jawa [@bmkg-2026-musim-hujan].
 - Logistik disiapkan terhadap lantai, bukan terhadap ekspektasi musim El Niño (@rek:r-a04).
 :::
 
@@ -535,7 +535,7 @@ Peluang paling sedikit satu musim seburuk lantai dalam lima musim {{angka:hidrom
 :::
 ::::
 
-**November menyumbang {{angka:hidromet.nasional.kalender.porsi_mh_november|fmt=1|persen}} meninggal dan hilang lima jenis musim hujan nasional 2008–2026, porsi bulanan terbesar, meskipun porsi itu dipengaruhi kuat oleh Sumatra 2025.** Kalender yang sama menunjukkan {{angka:hidromet.nasional.kalender.porsi_kekeringan_jun_sep|persen}} kejadian kekeringan menumpuk pada Juni–September dan {{angka:hidromet.nasional.kalender.porsi_karhutla_jul_okt|persen}} kejadian karhutla pada Juli–Oktober [@bnpb-2026-dibi]. Porsi November tanpa 2025 tidak dapat dihitung dari berkas kalender. Kalender bulanan tampil pada @gbr:hm-kalender.
+**November menyumbang {{angka:hidromet.nasional.kalender.porsi_mh_november|fmt=1|persen}} meninggal dan hilang lima jenis musim hujan nasional 2008–2026, porsi bulanan terbesar, meskipun porsi itu dipengaruhi kuat oleh Sumatra 2025.** Kalender yang sama menunjukkan {{angka:hidromet.nasional.kalender.porsi_kekeringan_jun_sep|persen}} kejadian kekeringan menumpuk pada Juni–September dan {{angka:hidromet.nasional.kalender.porsi_karhutla_jul_okt|persen}} kejadian karhutla pada Juli–Oktober [@bnpb-dibi]. Porsi November tanpa 2025 tidak dapat dihitung dari berkas kalender. Kalender bulanan tampil pada @gbr:hm-kalender.
 
 ::: gambar {#gbr:hm-kalender}
 berkas: gambar/mitigasi/bab07-g16-kalender.png
@@ -550,7 +550,7 @@ catatan: Tabel peta panas. Porsi November dipengaruhi banjir dan longsor Sumatra
 
 ## Kartu Agregat Musim Kemarau {#sub:hm-kemarau}
 
-**Kemarau 2026 mencatat {{angka:dibi.nasional.kekeringan.kejadian.2026}} kejadian kekeringan dengan {{angka:dibi.nasional.kekeringan.terdampak.2026}} jiwa terdampak dan {{angka:dibi.nasional.karhutla.kejadian.2026}} kejadian karhutla sampai 23 Oktober 2026.** Karhutla tahun itu mencatat {{angka:dibi.nasional.karhutla.meninggal.2026}} meninggal dan {{angka:dibi.nasional.karhutla.hilang.2026}} hilang; semua angka masih sementara [@bnpb-2026-dibi]. SiPongi mencatat {{angka:sipongi.karhutla2026.luas_juli|fmt=2|satuan}} terbakar sampai Juli 2026, sebelum puncak kebakaran Agustus–Oktober, sehingga luas itu tidak dibandingkan dengan tahun penuh [@sipongi-luas]. Pada 20 Oktober 2026 BMKG melakukan penyemaian es kering untuk mengurai asap karhutla di Sumatra dan Kalimantan dengan dukungan koordinasi BNPB [@bmkg-2026-siaran-asap].
+**Kemarau 2026 mencatat {{angka:dibi.nasional.kekeringan.kejadian.2026}} kejadian kekeringan dengan {{angka:dibi.nasional.kekeringan.terdampak.2026}} jiwa terdampak dan {{angka:dibi.nasional.karhutla.kejadian.2026}} kejadian karhutla sampai 23 Oktober 2026.** Karhutla tahun itu mencatat {{angka:dibi.nasional.karhutla.meninggal.2026}} meninggal dan {{angka:dibi.nasional.karhutla.hilang.2026}} hilang; semua angka masih sementara [@bnpb-dibi]. SiPongi mencatat {{angka:sipongi.karhutla2026.luas_juli|fmt=2|satuan}} terbakar sampai Juli 2026, sebelum puncak kebakaran Agustus–Oktober, sehingga luas itu tidak dibandingkan dengan tahun penuh [@sipongi-luas]. Pada 20 Oktober 2026 BMKG melakukan penyemaian es kering untuk mengurai asap karhutla di Sumatra dan Kalimantan dengan dukungan koordinasi BNPB [@bmkg-2026-siaran-asap].
 
 **BMKG menetapkan peringatan dini kekeringan meteorologis kategori Awas di sebagian kab/kota pada {{angka:bmkg.pdkm_okt2_2026.prov_awas_nasional}} provinsi untuk dasarian II Oktober 2026.** Provinsi itu meliputi Sumatera Selatan, Bangka Belitung, Lampung, seluruh provinsi di Jawa, Bali, Nusa Tenggara Barat, Nusa Tenggara Timur, Kalimantan Tengah, Kalimantan Selatan, Sulawesi Utara, Gorontalo, Sulawesi Tengah, Sulawesi Selatan, Sulawesi Tenggara, Maluku, Maluku Utara, dan Papua Selatan [@bmkg-2026-dinamika-okt1].
 
@@ -573,13 +573,13 @@ keyakinan: resmi
 
 ## Kepekaan Peringatan Dini {#sub:hm-peringatan}
 
-**Renas PB 2025–2029 indikator 1.c memproyeksikan {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2025|fmt=2|satuan}} penduduk daerah berisiko tercakup peringatan dini pada 2025 dan menargetkan {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|satuan}} pada 2029.** Kolom 2025 bernama proyeksi, bukan capaian terukur [@bnpb-2025-renas, hlm. 32]. Renstra BNPB menetapkan indikator kinerja program (IKP) cakupan layanan peringatan dini dari {{angka:hidromet.nasional.lanina.pd_renstra.cakupan_2025|fmt=2|satuan}} pada 2025 menjadi {{angka:hidromet.nasional.lanina.pd_renstra.cakupan_2029|fmt=2|satuan}} pada 2029 [@bnpb-2025-renstra, hlm. 133, 161]. Rencana Pembangunan Jangka Menengah Nasional (RPJMN) 2025–2029 memuat baseline {{angka:rpjmn.peringatan_dini.baseline|fmt=2|satuan}} untuk indikator yang sama [@ri-2025-perpres12-rpjmn, hlm. 913].
+**Renas PB 2025–2029 indikator 1.c memproyeksikan {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2025|fmt=2|satuan}} penduduk daerah berisiko tercakup peringatan dini pada 2025 dan menargetkan {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|satuan}} pada 2029.** Kolom 2025 bernama proyeksi, bukan capaian terukur [@bnpb-2025-renas, hlm. 32]. Renstra BNPB menetapkan IKP cakupan layanan peringatan dini dari {{angka:hidromet.nasional.lanina.pd_renstra.cakupan_2025|fmt=2|satuan}} pada 2025 menjadi {{angka:hidromet.nasional.lanina.pd_renstra.cakupan_2029|fmt=2|satuan}} pada 2029 [@bnpb-2025-renstra, hlm. 133, 161]. Rencana Pembangunan Jangka Menengah Nasional (RPJMN) 2025–2029 memuat baseline {{angka:rpjmn.peringatan_dini.baseline|fmt=2|satuan}} untuk indikator yang sama [@ri-2025-perpres12-rpjmn, hlm. 913].
 
-**Selisih kedua lintasan adalah selisih definisi: IKP Renstra naik {{angka:renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029|fmt=2}} poin persen dalam lima tahun, sedangkan Renas 1.c berpenyebut penduduk daerah berisiko.** Renstra juga mengutip isu RPJMN bahwa keterpenuhan sistem peringatan dini baru {{angka:renstra.peringatan_dini.keterpenuhan_persen|persen}} dari masyarakat terpapar di kawasan berisiko tinggi, penyebut ketiga yang berbeda lagi [@bnpb-2025-renstra, hlm. 70]. Perban BNPB 2/2024 menetapkan platform peringatan dini multiancaman di bawah Deputi Bidang Pencegahan (Pasal 3) dan analisis dampak berupa potensi jiwa dan aset terpapar (Pasal 11), tetapi tidak mendefinisikan cara menghitung cakupan [@bnpb-2024-spdb]. Garis dasar cakupan per provinsi dan kab/kota karena itu belum ada (@rek:r-a11), dan penyelarasan target menjadi keputusan KD-2 Kepala BNPB (@rek:r-a10).
+**Selisih kedua lintasan adalah selisih definisi: IKP Renstra naik {{angka:renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029|fmt=2}} poin persen dalam lima tahun, sedangkan Renas 1.c berpenyebut penduduk daerah berisiko.** Renstra juga mengutip isu RPJMN bahwa keterpenuhan sistem peringatan dini baru {{angka:renstra.peringatan_dini.keterpenuhan_persen|persen}} dari masyarakat terpapar di kawasan berisiko tinggi, penyebut ketiga yang berbeda lagi [@bnpb-2025-renstra, hlm. 70]. Perban BNPB 2/2024 menetapkan platform peringatan dini multiancaman di bawah Deputi Bidang Pencegahan (Pasal 3) dan analisis dampak berupa potensi jiwa dan aset terpapar (Pasal 11), tetapi tidak mendefinisikan cara menghitung cakupan [@bnpb-2024-peringatan-dini]. Garis dasar cakupan per provinsi dan kab/kota karena itu belum ada (@rek:r-a11), dan penyelarasan target menjadi keputusan KD-2 Kepala BNPB (@rek:r-a10).
 
-**Dengan koefisien yang sama, lintasan Renas 1.c menurunkan korban lantai {{angka:hidromet.nasional.pd_renas.penurunan_persen|fmt=1|persen}}, sedangkan lintasan IKP Renstra hanya {{angka:hidromet.nasional.pd_renstra.penurunan_persen|fmt=1|persen}}.** Rumus kepekaan memberi penduduk tercakup mortalitas seperdelapan penduduk tak tercakup. Koefisien itu berasal dari laporan UNDRR dan WMO yang mencatat mortalitas bencana di negara bercakupan peringatan dini terbatas {{angka:wmo.2022.rasio_mortalitas|satuan}} negara bercakupan substansial atau lebih [@wmo-2022-peringatan-dini]. Koefisien itu asosiasi lintas negara, bukan efek kausal. Uji kausal untuk korban banjir di Indonesia tidak ada. Hasilnya batas atas ilustratif berlabel asumsi kebijakan yang hanya tampil di kartu dan @gbr:hm-peringatan.
+**Kepekaan peringatan dini memakai koefisien asosiasi lintas negara: laporan *United Nations Office for Disaster Risk Reduction* (UNDRR) dan Organisasi Meteorologi Dunia (*World Meteorological Organization*, WMO) mencatat mortalitas bencana di negara bercakupan peringatan dini terbatas {{angka:wmo.2022.rasio_mortalitas|satuan}} negara bercakupan substansial atau lebih.** Dalam rumus kepekaan, penduduk tercakup diberi mortalitas seperdelapan penduduk tak tercakup [@wmo-2022-peringatan-dini]. Koefisien itu asosiasi, bukan efek kausal. Uji kausal untuk korban banjir di Indonesia tidak ada. Dengan koefisien yang sama, lintasan Renas 1.c menurunkan korban lantai {{angka:hidromet.nasional.pd_renas.penurunan_persen|fmt=1|persen}} dan lintasan IKP Renstra {{angka:hidromet.nasional.pd_renstra.penurunan_persen|fmt=1|persen}}. Hasil per jenis adalah batas atas ilustratif berlabel asumsi kebijakan dan tampil pada baris kepekaan tiap kartu serta @gbr:hm-peringatan.
 
-**Pada lantai 2025/2026 tanpa longsor, korban {{angka:hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang}} jiwa dihitung turun menjadi {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa}} pada lintasan Renas dan {{angka:hidromet.nasional.lantai_tanpa_longsor.pd_renstra.korban_jiwa}} pada lintasan Renstra.** Banjir menyumbang hampir seluruh penurunan, dari {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} menjadi {{angka:hidromet.nasional.lantai.pd_renas.korban_jiwa_banjir}} pada lintasan Renas. Cuaca ekstrem turun menjadi {{angka:hidromet.nasional.lantai.pd_renas.korban_jiwa_cuaca_ekstrem}}, banjir bandang {{angka:hidromet.nasional.lantai.pd_renas.korban_jiwa_banjir_bandang}}, dan gelombang ekstrem pada lantai 2011 menjadi {{angka:hidromet.nasional.gelombang.lantai.pd_renas.korban_jiwa}}. Paket data menghitung total termasuk longsor, yaitu {{angka:hidromet.nasional.lantai.pd_renas.korban_jiwa}} pada lintasan Renas dan {{angka:hidromet.nasional.lantai.pd_renstra.korban_jiwa}} pada lintasan Renstra; angka itu tidak dipakai karena aturan kajian mengecualikan longsor. Peringatan dini tidak mengurangi rumah rusak dan pengungsi, sehingga faktor hanya diterapkan pada korban jiwa.
+**Banjir menyumbang {{angka:hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir}} dari {{angka:hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang}} korban lantai 2025/2026 di luar tanah longsor, sehingga hampir seluruh selisih antarlintasan berasal dari banjir.** Faktor diterapkan pada semua jenis kecuali tanah longsor, termasuk gelombang ekstrem pada lantai 2011. Paket data juga menghitung total termasuk longsor; total itu tidak dipakai karena koefisien yang sama melebih-lebihkan manfaat untuk longsor yang waktu tunggunya pendek. Peringatan dini tidak mengurangi rumah rusak dan pengungsi, sehingga faktor hanya diterapkan pada korban jiwa.
 
 ::: gambar {#gbr:hm-peringatan}
 berkas: gambar/mitigasi/bab07-g14-peringatan-dini.png
@@ -592,17 +592,17 @@ data_per: 23 Okt 2026
 catatan: Longsor tidak dihitung. Penyebut kedua indikator berbeda. Koefisien {{angka:wmo.2022.rasio_mortalitas|satuan}} adalah asosiasi lintas negara, bukan efek kausal; gelombang memakai lantai 2011.
 :::
 
-**Di hulu rantai, ringkasan Badan Keahlian DPR atas pemeriksaan kinerja BPK 2022 mencatat hanya {{angka:bpk.bmkg.ibf_banjir_terperingatkan_persen|fmt=2|persen}} kejadian banjir yang mendapat peringatan dini berbasis dampak.** Akurasi prakiraan cuaca tercatat {{angka:bpk.bmkg.akurasi_prakiraan_persen|fmt=2|persen}} terhadap target {{angka:bpk.bmkg.akurasi_prakiraan_target_persen|persen}}, dengan kekurangan {{angka:bpk.bmkg.kekurangan_radar}} radar, {{angka:bpk.bmkg.kekurangan_aws}} stasiun cuaca otomatis, dan {{angka:bpk.bmkg.kekurangan_arg}} penakar hujan otomatis [@dpr-2022-deteksi-dini, hlm. 3–4]. Laporan hasil pemeriksaan BPK sendiri tidak dibuka dan periode datanya tidak disebut. Angka hulu dan hilir berbeda ukuran tetapi searah, sehingga faktor kepekaan tidak dibaca sebagai capaian yang sudah dekat.
+**Di hulu rantai, ringkasan Badan Keahlian Dewan Perwakilan Rakyat (DPR) atas pemeriksaan kinerja Badan Pemeriksa Keuangan (BPK) 2022 mencatat hanya {{angka:bpk.bmkg.ibf_banjir_terperingatkan_persen|fmt=2|persen}} kejadian banjir yang mendapat peringatan dini berbasis dampak.** Akurasi prakiraan cuaca tercatat {{angka:bpk.bmkg.akurasi_prakiraan_persen|fmt=2|persen}} terhadap target {{angka:bpk.bmkg.akurasi_prakiraan_target_persen|persen}}, dengan kekurangan {{angka:bpk.bmkg.kekurangan_radar}} radar, {{angka:bpk.bmkg.kekurangan_aws}} stasiun cuaca otomatis, dan {{angka:bpk.bmkg.kekurangan_arg}} penakar hujan otomatis [@dpr-2022-deteksi-dini, hlm. 3–4]. Laporan hasil pemeriksaan BPK sendiri tidak dibuka dan periode datanya tidak disebut. Angka hulu dan hilir berbeda ukuran tetapi searah, sehingga faktor kepekaan tidak dibaca sebagai capaian yang sudah dekat.
 
-**Tidak satu pun program peringatan dini hidrometeorologi Indonesia dalam kompendium program kajian ini berkekuatan bukti kuat.** InaTEWS berkekuatan sedang dengan posisi program berjalan yang wajib dievaluasi dampaknya, dan Sekolah Lapang Iklim berkekuatan lemah. Kesiapsiagaan siklon Bangladesh berkekuatan kuat di luar negeri: Haque dkk. mencatat kematian siklon turun lebih dari {{angka:haque.siklon.penurunan_kali|satuan}} pada 1970–2007, tetapi efek tiap komponennya belum terpisah [@haque-2012-siklon]. Program luar negeri itu tidak diberi status Indonesia.
+**Kematian siklon di Bangladesh turun lebih dari {{angka:haque.siklon.penurunan_kali|satuan}} pada 1970–2007, tetapi tidak satu pun program Indonesia yang terkait peringatan dini dalam kompendium program kajian ini berkekuatan bukti kuat.** Kesiapsiagaan siklon Bangladesh berkekuatan kuat, meskipun efek tiap komponennya belum terpisah [@haque-2012-siklon], dan kekuatan bukti itu tidak dialihkan ke program Indonesia. Sistem peringatan dini tsunami *Indonesia Tsunami Early Warning System* (InaTEWS) berkekuatan sedang dengan posisi program berjalan yang wajib dievaluasi dampaknya; Sekolah Lapang Iklim berkekuatan lemah.
 
 ## Kesenjangan Spesifik dan Implikasi {#sub:hm-kesenjangan}
 
-**Enam kartu per jenis belum memuat lantai final, karena turunan lantai per jenis paket skenario hidrometeorologi belum dibangun per 24 Oktober 2026.** Sel lantai kartu banjir dan longsor karena itu kosong beralasan, begitu pula kartu cuaca ekstrem, sedangkan angka {{angka:hidromet.nasional.gelombang.lantai_meninggal_hilang}} meninggal dan hilang gelombang 2011, {{angka:dibi.puncak2023.kekeringan.meninggal}} meninggal kekeringan 2023, dan {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} karhutla 2015 berstatus kandidat. Rumah rusak per jenis juga tidak ada di paket data, sehingga stimulan rumah longsor dan banjir bandang belum dapat dihitung. Pemutakhiran lantai tercakup dalam @rek:r-m20, dan pemuatan lantai ke rencana kontinjensi provinsi dalam @rek:r-a08.
+**Enam kartu per jenis belum memuat lantai final, karena turunan lantai per jenis paket skenario hidrometeorologi belum dibangun per 24 Oktober 2026.** Sel lantai tiga kartu musim hujan per jenis karena itu kosong beralasan. Korban musim 2025/2026 di ketiga kartu itu dapat lebih ringan daripada tahun tercatat terburuk per jenis, sedangkan angka {{angka:hidromet.nasional.gelombang.lantai_meninggal_hilang}} meninggal dan hilang gelombang 2011, {{angka:dibi.puncak2023.kekeringan.meninggal}} meninggal kekeringan 2023, dan {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} karhutla 2015 berstatus kandidat. Rumah rusak per jenis juga tidak ada di paket data, sehingga stimulan rumah longsor dan banjir bandang belum dapat dihitung. Pemutakhiran lantai tercakup dalam @rek:r-m20, dan pemuatan lantai ke rencana kontinjensi provinsi dalam @rek:r-a08.
 
-**DIBI menjumlahkan pengungsi per laporan, sehingga kebutuhan respons untuk musim lantai ({{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa) dan kasus Sumatra ({{angka:dibi.sumatra2025.mengungsi}} jiwa) hanya dapat ditulis sebagai batas atas.** Aturan kartu kajian meminta pengungsi tercatat puncak tanggap darurat, tetapi angka puncak itu tidak tersedia di DIBI [@bnpb-2026-dibi]. Inventarisasi logistik terhadap lantai (@rek:r-a04) dihitung dari batas atas itu sampai data puncak per kejadian diterima dari BPBD.
+**DIBI menjumlahkan pengungsi per laporan, sehingga kebutuhan respons untuk musim lantai ({{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa) dan kasus Sumatra ({{angka:dibi.sumatra2025.mengungsi}} jiwa) hanya dapat ditulis sebagai batas atas.** Aturan kartu kajian meminta pengungsi tercatat puncak tanggap darurat, tetapi angka puncak itu tidak tersedia di DIBI [@bnpb-dibi]. Inventarisasi logistik terhadap lantai (@rek:r-a04) dihitung dari batas atas itu sampai data puncak per kejadian diterima dari BPBD.
 
-**Kemarau 2027 belum punya dasar prakiraan resmi, dan data operasional kemarau 2026 belum masuk ke BNPB, padahal keduanya menjadi dasar Kesiapan Musim Kemarau 2027.** Tabel prakiraan per ZOM belum tersedia dalam format data, dan puso per kab/kota belum ditarik [@bmkg-2026-siaran-musim-hujan]. Pemicu kemarau 2027 karena itu memakai lantai tercatat {{angka:hidromet.nasional.kekeringan.dibi_terdampak_2018}} jiwa terdampak dan {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} terbakar (@rek:r-a09), sedangkan permintaan data kemarau 2026 ke BPBD provinsi menjadi langkah empat belas hari pertama (@rek:r-a03). Daftar kesenjangan lengkap dan pemegang datanya ada pada @tbl:hm-celah.
+**Kemarau 2027 belum punya dasar prakiraan resmi, dan data operasional kemarau 2026 belum masuk ke BNPB, padahal keduanya menjadi dasar Kesiapan Musim Kemarau 2027.** Tabel prakiraan per ZOM belum tersedia dalam format data, dan puso per kab/kota belum ditarik [@bmkg-2026-musim-hujan]. Untuk sementara, pemicu kemarau 2027 memakai lantai tercatat {{angka:hidromet.nasional.kekeringan.dibi_terdampak_2018}} jiwa terdampak dan {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} terbakar (@rek:r-a09), sedangkan permintaan data kemarau 2026 ke BPBD provinsi menjadi langkah empat belas hari pertama (@rek:r-a03). Daftar kesenjangan lengkap dan pemegang datanya ada pada @tbl:hm-celah.
 
 ::: tabel {#tbl:hm-celah}
 judul: Kesenjangan data hidrometeorologi nasional dan lembaga pemegangnya, status Oktober 2026
@@ -611,7 +611,7 @@ keyakinan: asumsi-kebijakan
 
 | YANG BELUM TERSEDIA | AKIBAT BAGI KARTU | PEMEGANG DATA | TINDAK LANJUT |
 | --- | --- | --- | --- |
-| Lantai kejadian tunggal dan tahun tercatat terburuk per jenis | sel lantai kartu banjir, longsor, dan cuaca ekstrem kosong | pengerja paket skenario hidrometeorologi kajian ini | @rek:r-m20 |
+| Lantai kejadian tunggal dan tahun tercatat terburuk per jenis | sel lantai kartu banjir, longsor, dan cuaca ekstrem kosong | tim penyusun kajian ini, turunan paket data skenario hidrometeorologi | @rek:r-m20 |
 | Rumah rusak per jenis untuk musim 2025/2026 dan Sumatra 2025 | stimulan rumah longsor dan banjir bandang tidak dihitung | Pusat Data, Informasi, dan Komunikasi Kebencanaan | @rek:r-m20 |
 | PDNA atau R3P Sumatra 2025 | kerugian kejadian terberat tidak dinyatakan | Deputi Bidang Rehabilitasi dan Rekonstruksi | @rek:r-m17 |
 | Pengungsi puncak serentak per kejadian | kebutuhan respons hanya batas atas | BPBD provinsi | @rek:r-a04 |
@@ -623,121 +623,3 @@ keyakinan: asumsi-kebijakan
 | Luas genangan rob di luar WS Jratunseluna; debit sungai dan luas genangan banjir per kejadian | luas terdampak banjir dan rob tidak dikuantifikasi | Kementerian Pekerjaan Umum; BMKG | permintaan data |
 | Laporan kejadian dan rekaman peringatan BMKG untuk Sumatra 2025 | pemicu meteorologis tidak disebut | BMKG, Kedeputian Bidang Meteorologi | permintaan data |
 :::
-
-:::: matriks-rekomendasi {#tbl:rekomendasi-hidromet}
-judul: Rekomendasi internal BNPB untuk bencana hidrometeorologi
-kelompok: internal
-sumber: Register rekomendasi bersama kajian ini; analisis Bab 7
-
-::: rek {#rek:r-a02}
-langkah: Kirim prakiraan, minta kaji ulang rencana kontinjensi
-jenis: kapasitas
-status: sudah-ada
-program: Rencana kontinjensi menurut Perban BNPB 2/2023
-unit: Direktorat Kesiapsiagaan; Direktorat Peringatan Dini
-kl: BMKG
-waktu: 100-hari
-indikator: surat ke BPBD provinsi terkirim dalam empat belas hari pertama, didahulukan untuk {{angka:bmkg.musim_2026.zom_awal_november}} ZOM berawal musim November dan {{angka:bmkg.musim_2026.zom_awal_desember}} ZOM berawal Desember; jumlah rencana kontinjensi banjir dan longsor yang dikaji ulang sebelum Januari 2027
-dasar: Perban BNPB 2/2023 Pasal 21 [@bnpb-2023-renkon]; prakiraan musim hujan 2026/2027 [@bmkg-2026-siaran-musim-hujan]
-
-Awal musim hujan 2026/2027 mundur di {{angka:bmkg.musim_2026.zom_awal_mundur}} ZOM, dan siaran BMKG meminta pemerintah daerah menyiapkan evakuasi banjir dan longsor pada awal dan puncak musim.
-:::
-
-::: rek {#rek:r-a03}
-langkah: Minta data operasional kemarau 2026
-jenis: data
-status: baru
-unit: Pusat Data, Informasi, dan Komunikasi Kebencanaan; Direktorat Penanganan Darurat Wilayah I; Direktorat Penanganan Darurat Wilayah II; Direktorat Penanganan Darurat Wilayah III
-kl: –
-waktu: 100-hari
-indikator: surat keputusan status darurat, volume distribusi air, dan desa terdampak per kab/kota kemarau 2026 diterima dari semua BPBD provinsi
-dasar: celah data kemarau di Subbab 7.5; Perban BNPB 1/2023
-
-DIBI sementara mencatat {{angka:dibi.nasional.kekeringan.kejadian.2026}} kejadian kekeringan dengan {{angka:dibi.nasional.kekeringan.terdampak.2026}} jiwa terdampak, tanpa volume air tersalur dan desa terdampak.
-:::
-
-::: rek {#rek:r-a04}
-langkah: Inventarisasi logistik terhadap lantai musim hujan
-jenis: kapasitas
-status: dikembangkan
-program: Standar pemenuhan kebutuhan dasar Perka BNPB 7/2008
-unit: Deputi Bidang Logistik dan Peralatan; Direktorat Penanganan Darurat Wilayah I; Direktorat Penanganan Darurat Wilayah II; Direktorat Penanganan Darurat Wilayah III
-kl: –
-waktu: 100-hari
-indikator: daftar cadangan logistik dan peralatan per Direktorat Penanganan Darurat Wilayah dibandingkan kebutuhan skenario yang tidak lebih ringan dari {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang dan {{angka:hidromet.nasional.musim_2025.mengungsi}} jiwa mengungsi
-dasar: Perka BNPB 7/2008; Perban BNPB 3/2018; Perban BNPB 2/2023 Pasal 7 [@bnpb-2023-renkon]
-
-DIBI menjumlah pengungsi per laporan, sehingga kebutuhan ini batas atas sampai data puncak serentak per kejadian diterima dari BPBD.
-:::
-
-::: rek {#rek:r-a06}
-langkah: Uji rantai peringatan dini banjir dan longsor
-jenis: kapasitas
-status: dikembangkan
-program: Sistem peringatan dini menurut Perban BNPB 2/2024
-unit: Direktorat Peringatan Dini; Direktorat Kesiapsiagaan
-kl: BMKG; Kementerian Pekerjaan Umum
-waktu: 100-hari
-indikator: jumlah kab/kota daftar perhatian banjir dan longsor yang mencatat uji pesan sampai warga dan umpan balik BPBD lewat platform
-dasar: Perban BNPB 2/2024 Pasal 29 [@bnpb-2024-spdb]; ringkasan pemeriksaan kinerja BPK atas BMKG [@dpr-2022-deteksi-dini]
-membuka: @rek:r-a11
-
-Hanya {{angka:bpk.bmkg.ibf_banjir_terperingatkan_persen|fmt=2|persen}} kejadian banjir mendapat peringatan dini berbasis dampak menurut ringkasan pemeriksaan BPK, dan efek uji pada korban longsor tidak dihitung.
-:::
-
-::: rek {#rek:r-a08}
-langkah: Masukkan lantai skenario ke rencana kontinjensi provinsi
-jenis: kapasitas
-status: dikembangkan
-program: Rencana kontinjensi menurut Perban BNPB 2/2023
-unit: Direktorat Kesiapsiagaan; Direktorat Pemetaan dan Evaluasi Risiko Bencana
-kl: –
-waktu: 100-hari
-indikator: rencana kontinjensi provinsi memuat skenario dan asumsi dampak lima aspek dengan lantai nasional {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang untuk musim hujan dan lantai per jenis dari kartu bab ini
-dasar: Perban BNPB 2/2023 Pasal 7 [@bnpb-2023-renkon]; aturan lantai kajian (Bab 3)
-butuh: @rek:r-m20
-
-Batas tinggi model rasio untuk musim 2025/2026 ({{angka:hidromet.nasional.terberat.korban_jiwa|tinggi}}) di bawah angka tercatat, sehingga rencana kontinjensi yang memakai model akan lebih ringan daripada musim yang sudah terjadi.
-:::
-
-::: rek {#rek:r-a09}
-langkah: Siapkan pemicu Kesiapan Musim Kemarau 2027
-jenis: kapasitas
-status: baru
-unit: Direktorat Kesiapsiagaan; Direktorat Mitigasi Bencana; Pusat Data, Informasi, dan Komunikasi Kebencanaan
-kl: BMKG; Kementerian Pekerjaan Umum; Kementerian Pertanian
-waktu: 100-hari
-indikator: dokumen pemicu terbit sebelum Mei 2027 dengan skenario yang tidak lebih ringan dari {{angka:hidromet.nasional.kekeringan.dibi_terdampak_2018}} jiwa terdampak kekeringan, {{angka:dibi.puncak2023.kekeringan.meninggal}} meninggal akibat kekeringan, dan {{angka:sipongi.karhutla2015.luas_ha|fmt=0|satuan}} terbakar
-dasar: Perban BNPB 2/2023 [@bnpb-2023-renkon]; prakiraan fase ENSO resmi untuk kemarau 2027 belum ada [@noaa-cpc-2026-ensodisc]
-butuh: @rek:r-a03
-
-Delapan El Niño kuat sejak 1950 tidak satu pun bertahan ke Juli–September tahun berikutnya, tetapi catatan itu bukan prakiraan, sehingga kemungkinan kemarau tahun kedua tidak dinilai dan lantai tercatat tetap dipakai.
-:::
-
-::: rek {#rek:r-a10}
-langkah: Selaraskan target cakupan peringatan dini
-jenis: regulasi
-status: baru
-unit: Biro Perencanaan; Direktorat Peringatan Dini; Direktorat Pengembangan Strategi Penanggulangan Bencana
-kl: Kementerian Perencanaan Pembangunan Nasional/Bappenas
-waktu: 2026-2027
-indikator: putusan KD-2 tertulis dengan penyebut indikator; usulan perubahan Renstra disampaikan pada evaluasi tahun ketiga, atau Renas PB 1.c dinyatakan sebagai target lintas K/L
-dasar: KD-2; Renas PB 2025–2029 [@bnpb-2025-renas, hlm. 32]; Renstra BNPB 2025–2029 [@bnpb-2025-renstra, hlm. 133]
-
-IKP Renstra naik {{angka:renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029|fmt=2}} poin persen sampai 2029, sedangkan Renas PB 1.c naik dari {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2025|fmt=2|satuan}} ke {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|satuan}} dengan penyebut berbeda.
-:::
-
-::: rek {#rek:r-a11}
-langkah: Bentuk garis dasar cakupan peringatan dini
-jenis: data
-status: baru
-unit: Direktorat Peringatan Dini; Pusat Data, Informasi, dan Komunikasi Kebencanaan
-kl: BMKG; Kementerian Dalam Negeri
-waktu: 2026-2027
-indikator: nilai Renas PB 1.c per provinsi dan kab/kota terbit pada 2027 dengan definisi penduduk tercakup tertulis
-dasar: Perban BNPB 2/2024 [@bnpb-2024-spdb]; Renas PB 2025–2029 [@bnpb-2025-renas, hlm. 32]
-butuh: @rek:r-a06
-
-Renas PB dan Perban BNPB 2/2024 tidak menulis cara menghitung penduduk tercakup, sehingga kepekaan peringatan dini bab ini hanya berlaku di tingkat nasional.
-:::
-::::

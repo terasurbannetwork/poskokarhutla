@@ -284,7 +284,7 @@ class Konteks:
         for ks in grup.values():
             if len(ks) > 1:
                 for i, k in enumerate(sorted(ks, key=lambda k: self.pustaka[k]['title'])):
-                    akh[k] = 'abcdefghij'[i]
+                    akh[k] = 'abcdefghijklmnopqrstuvwxyz'[i]
         return akh
 
     @staticmethod
@@ -1033,7 +1033,8 @@ def _uji_diri():
     assert utama <= pakai, f'contoh belum memakai direktif: {sorted(utama - pakai)}'
     assert any(b['jenis'] == 'halaman-baru' for b in n['blok']), 'contoh belum memakai {{halaman-baru}}'
     teks = json.dumps(n, ensure_ascii=False)
-    for harap in ('Badan Nasional Penanggulangan Bencana [BNPB], 2025b', '(BNPB, 2025b, 2025d)', 'Haque dkk. (2012)',  # huruf tahun ikut pustaka.json
+    ra, rs = k.tahun('bnpb-2025-renas'), k.tahun('bnpb-2025-renstra')  # huruf tahun ikut isi pustaka.json, bukan potret
+    for harap in (f'Badan Nasional Penanggulangan Bencana [BNPB], {ra}', f'(BNPB, {ra}, {rs})', 'Haque dkk. (2012)',
                   'Gambar 6.1', 'Tabel 6.1', 'Subbab 6.2'):
         assert harap in teks, f'contoh tidak menghasilkan "{harap}"'
     # invarian, bukan potret data: tiap angka tersuntik tampil apa adanya, rentang ber-en dash, rupiah besar bersatuan
