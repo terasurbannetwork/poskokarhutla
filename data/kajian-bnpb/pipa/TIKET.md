@@ -1,10 +1,10 @@
 # TIKET SIPPA: daftar kerja berurutan
 
-Versi 1, 25 Oktober 2026. Daftar lengkap tiket untuk membangun seluruh SIPPA: tugas P0 pilot, aplikasi web `/pipa`, pipeline data, buku kajian, deck, dokumen program, commit, dan deploy. Satu sesi mengambil satu tiket, mengerjakan hanya cakupannya, lalu menandai statusnya di §2.
+Versi 1.1, 25 Oktober 2026 (diselaraskan dengan dokumen saudara; rincian di `PENYELARASAN.md`). Daftar lengkap tiket untuk membangun seluruh SIPPA: tugas P0 pilot, aplikasi web `/pipa`, pipeline data, buku kajian, deck, dokumen program, commit, dan deploy. Satu sesi mengambil satu tiket, mengerjakan hanya cakupannya, lalu menandai statusnya di §2.
 
 Urutan otoritas (AGENTS.md §2.1): `KEPUTUSAN-SIPPA.md` > `PRD.md` > `DESIGN-SYSTEM.md` > `DESAIN-TEKNIS.md` > `KERANGKA-BUKU.md` > `RENCANA-UJI.md` > berkas ini. Berkas ini hanya mengatur urutan, pembagian kerja, dan bukti selesai; isi teknis tetap di dokumen di atasnya. Bila tiket bertentangan dengan dokumen di atasnya, dokumen di atasnya menang dan tiket diperbaiki lebih dulu oleh sesi induk.
 
-Keempat dokumen saudara (`DESIGN-SYSTEM.md`, `DESAIN-TEKNIS.md`, `KERANGKA-BUKU.md`, `RENCANA-UJI.md`) ditulis paralel dengan berkas ini. Rujukan ke dokumen itu ditulis menurut nama bagian (mis. "DESAIN-TEKNIS.md bagian skema D1"), bukan nomor, sampai nomornya tetap; sesi induk menyelaraskan nomor setelah keempatnya selesai (lihat §10).
+Keempat dokumen saudara (`DESIGN-SYSTEM.md`, `DESAIN-TEKNIS.md`, `KERANGKA-BUKU.md`, `RENCANA-UJI.md`) sudah selesai dan diselaraskan 25 Okt 2026; rujukan ke dokumen itu ditulis dengan nomor bagian (mis. "DT §3.2"). PRD sudah memuat isi yang sama dengan DT (skema, rute, rumus) dan KB (buku, deck); nilai persis diambil dari DT dan KB.
 
 Singkatan: PRD = `PRD.md`; DS = `DESIGN-SYSTEM.md`; DT = `DESAIN-TEKNIS.md`; KB = `KERANGKA-BUKU.md`; RU = `RENCANA-UJI.md`; `kajian/` = `data/kajian-bnpb/`.
 
@@ -24,20 +24,25 @@ Singkatan: PRD = `PRD.md`; DS = `DESIGN-SYSTEM.md`; DT = `DESAIN-TEKNIS.md`; KB 
 
 | Batasan | Nilai |
 | --- | --- |
-| Rute halaman / rute API | `/pipa` dan `/pipa/:layar` dengan `LAYAR_SIPPA = ["peta","hitung","pemicu","kit","log","ab","studio","3d","telemetri","laporan","data"]`; API `/api/sippa/*`; awalan `/api/pipa/*` milik `src/pipa.js` tidak disentuh |
-| Akses | hanya staf BNPB: admin (`adminOK`) atau staf berperan `pusdalops`, `koordalops` (tulis) dan `pimpinan` (baca); satu-satunya pintu tanpa akun `/pipa/lapangan` dengan kode penugasan 26 heks di header `x-kode`, kedaluwarsa ≤ 30 hari, hanya sha256 disimpan |
-| Data | tidak ada data SIPPA di `public/`; data turunan hanya lewat `GET /api/sippa/data/:nama` bersesi |
-| Migrasi | `0055_sippa_inti.sql`, `0056_sippa_ab_skenario.sql`, `0057_sippa_telemetri.sql`; idempoten; tidak disunting setelah diterapkan; tiap tabel punya kolom `dummy` |
-| Batas injeksi | kedalaman lance 0–5 m; > 5 m ditolak di semua masukan (kalkulator, Studio, 3D, form, CHECK D1 `kedalaman_cm` ≤ 500); 3–5 m berpil "lengan uji" |
-| Ambang zona | air ≤ 2,5 km, jalan ≤ 5 km (keputusan 30) |
-| Vonis | hanya NO-GO, HOLD, KONDISIONAL; tidak ada "GO"; skor tidak pernah meluluskan NO-GO |
+| Rute halaman / rute API | `/pipa` dan `/pipa/:layar` dengan `LAYAR_SIPPA = ["peta","hitung","pemicu","kit","log","ab","studio","3d","telemetri","laporan","data"]`, `/pipa/kit/:id`, `/pipa/lapangan`; API `/api/sippa/*` dengan aksi sebelum id (`/api/sippa/gerak/:id`, DT §4.3, ADR-04); awalan `/api/pipa/*` milik `src/pipa.js` tidak disentuh |
+| Akses | hanya staf BNPB: admin (`adminOK`) atau staf berperan `pusdalops`, `koordalops` (tulis) dan `pimpinan` (baca); tamu `/pipa*` 303 ke `/admin/pantau?ke=<jalur>`; satu-satunya pintu tanpa akun `/pipa/lapangan` dengan kode penugasan 26 heks di header `x-kode`, kedaluwarsa ≤ 30 hari, hanya sha256 disimpan |
+| Data | tidak ada data SIPPA di `public/`; data turunan hanya lewat `GET /api/sippa/data/<nama>` bersesi (tamu 401 identik untuk ada dan tidak ada) |
+| Migrasi | `0055_sippa_inti.sql`, `0056_sippa_ab_skenario.sql`, `0057_sippa_telemetri.sql` persis DT §3.2–§3.4; idempoten; `ON CONFLICT(id) DO NOTHING`, tidak pernah `INSERT OR IGNORE`; tidak disunting setelah diterapkan; tiap tabel punya kolom `dummy` |
+| Batas tulis D1 | batas laju hanya di rute tulis dan kegagalan autentikasi (ADR-06); telemetri satu baris per pesan (ADR-07, T-J) |
+| Batas injeksi | kedalaman lance 0–5 m; > 5 m ditolak di semua masukan (kalkulator, Studio, 3D, form, CHECK D1 `kedalaman_cm` ≤ 500); angka 5 m hanya di `KONST.dalam_maks_m` (DT §5.2); 3–5 m berpil "lengan uji" |
+| Ambang zona | air < 2,5 km, jalan < 5 km (keputusan 30 dan 51; tepat 2,50 atau 5,00 km = jauh); tiga versi: `kendala.json` A188/B418/C89/D170, jalan utama OSM A198/B429/C81/D157, semua jalan OSM A469/B158/C167/D71 |
+| Warna zona | web: palet PRD (A `--ok`, B `--info`, C `--warn`, D `--bad`) + huruf A–D + pola wajib; buku dan deck: biru dan emas + huruf + pola yang sama (keputusan 52) |
+| Kalkulator | debit bawaan 300 L/min dengan 8 lance (serapan 320 L/min); 600 L/min dengan 8 lance = kasus ajar NO-GO H-SERAP; jumlah lance dikonfirmasi bench G2 |
+| Vonis | kalkulator dan Studio hanya NO-GO, HOLD, KONDISIONAL; tidak ada "GO"; skor tidak pernah meluluskan NO-GO. Vonis pilot keputusan 53: DAPAT DIPAKAI, DAPAT DIPAKAI BERSYARAT, BELUM DAPAT DIPAKAI (`vonisPilot`, DT §5.5.2) |
 | Label keyakinan | resmi, terverifikasi, estimasi-model, asumsi-kebijakan, menunggu, hipotesis; tiap angka bersumber dan berwaktu |
+| Kode buku | kajian `sippa`: naskah `data/kajian-bnpb/naskah/sippa/` (`00-depan-*.md`, `bab-01.md` s.d. `bab-17.md`, `90-lampiran-a.md` s.d. `90-lampiran-l.md`, `deck.json`), paket `data/kajian-bnpb/data/sippa/`, kunci `sippa.*`, keluaran `keluaran/sippa*.{docx,pdf,pptx}`, `--kajian sippa` |
 | Batas data buku | 23 Okt 2026 23.59 WIB |
-| Bahasa dan teks | Bahasa Indonesia saja, sapaan "kamu", tanpa em dash, tanpa titik tengah U+00B7, en dash hanya rentang, "titik panas" untuk data satelit, tanpa "terbukti" untuk SIPPA, angka lewat `fmt` id-ID (tanpa `toFixed` di teks tampil) |
+| Bahasa dan teks | Bahasa Indonesia saja, sapaan "kamu", tanpa em dash, tanpa titik tengah U+00B7, en dash hanya rentang, "titik panas" untuk data satelit, tanpa "terbukti" untuk SIPPA, angka lewat `fmt` id-ID (tanpa `toFixed` di teks tampil); huruf web Inter dan Plus Jakarta Sans, Roboto hanya untuk buku, deck, dan PDF |
 | Identitas | hanya nama dan logo BNPB; alat ditulis sebagai kelas kinerja "atau setara", merek hanya di kolom rujukan datasheet; tanpa nama perusahaan konsesi |
 | Pustaka luar | tanpa CDN (CSP `script-src 'self'`); vendor di `public/vendor/` |
 | INP dan aksesibilitas | tidak ada interaksi > 200 ms (form lapangan < 100 ms); kerja berat lewat `nanti()` atau Web Worker; WCAG 2.2 AA; target sentuh ≥ 44 px, form lapangan ≥ 56 px |
-| Pipeline | Python 3.12 stdlib, self-check `__main__`, tanpa workflow baru (langkah di `data.yml`), tanpa jadwal cron baru (batas 5 jadwal akun Free) |
+| Pipeline | Python 3.12 stdlib, self-check `python3 <skrip>.py uji`, tanpa workflow baru (langkah di `data.yml`), tanpa jadwal cron baru (batas 5 jadwal akun Free) |
+| Deploy | hanya tiket [induk]: migrasi remote, push `staging` (terbit.yml pratinjau), uji asap, merge `main` (terbit.yml deploy); merge ke `main` = tayang (titik.yml, banjir.yml, data.yml juga men-deploy `main`, paling lambat 21.20 WIB); rollback = `wrangler rollback` + revert di `main` (PRD §10.6, DT §8.4) |
 | Model armada | pengerja sonnet, pemindai haiku, opus hanya sesi induk |
 
 ---
@@ -137,35 +142,37 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-055 | Gerbang SIPPA lengkap, aksesibilitas, tema gelap, ponsel | `sippa` | 14 | M | belum |
 | SP-056 | Tinjauan penuh rilis lengkap | pemeriksa | 15 | M | belum |
 | SP-057 | [induk] Commit dan deploy R3 (rilis lengkap) | sesi induk | 15 | S | belum |
-| SP-058 | Berkas bukti bab 1–5 | penulis (`general-purpose`) | 6 | M | belum |
-| SP-059 | Berkas bukti bab 6–10 | penulis (`general-purpose`) | 8 | M | belum |
-| SP-060 | Berkas bukti bab 11–15 | penulis (`general-purpose`) | 8 | M | belum |
-| SP-061 | Pustaka dicek ke naskah asli | penulis riset (`general-purpose`) | 9 | M | belum |
-| SP-062 | Tabel harga dan `sippa_keuangan.py` | `pipa-data` | 6 | M | belum |
+| SP-058 | Berkas bukti bab 1–5 | `penulis-kajian` | 6 | M | belum |
+| SP-059 | Berkas bukti bab 6–11 | `penulis-kajian` | 8 | M | belum |
+| SP-060 | Berkas bukti bab 12–17 | `penulis-kajian` | 8 | M | belum |
+| SP-061 | Pustaka dicek ke naskah asli | `penulis-kajian` (riset) | 9 | M | belum |
+| SP-062 | Paket data `data/sippa/`, tabel harga, dan `sippa_keuangan.py` | `pipa-data` | 6 | M | belum |
 | SP-063 | Registri angka `sippa_angka.py` | `pipa-data` | 9 | M | belum |
 | SP-064 | Gambar peta dan grafik buku | `pipa-data` | 10 | M | belum |
 | SP-065 | Gambar teknik SIPPA-G-01 s.d. G-06 | `pipa-data` | 5 | L | belum |
 | SP-066 | Gambar teknik SIPPA-G-07 s.d. G-12 | `pipa-data` | 9 | L | belum |
-| SP-067 | Surat permintaan data (Lampiran C) | penulis (`general-purpose`) | 9 | M | belum |
-| SP-068 | Naskah bab 1–4 | penulis (`general-purpose`) | 11 | L | belum |
-| SP-069 | Naskah bab 5–8 | penulis (`general-purpose`) | 11 | L | belum |
-| SP-070 | Naskah bab 9–12 | penulis (`general-purpose`) | 11 | L | belum |
-| SP-071 | Naskah bab 13–15 | penulis (`general-purpose`) | 12 | M | belum |
-| SP-072 | Bab 11: hasil pilot dari D1 | penulis (`general-purpose`) | 12 | S | belum |
-| SP-073 | Lampiran A, B, E–K | penulis (`general-purpose`) | 12 | L | belum |
-| SP-074 | Bagian depan dan Ringkasan Eksekutif | penulis (`general-purpose`) | 13 | M | belum |
-| SP-075 | Sunting substansi | penyunting (`general-purpose`) | 13 | M | belum |
-| SP-076 | Sunting bahasa dan anti-slop | penyunting (`general-purpose`) | 14 | M | belum |
+| SP-067 | Surat permintaan data (Lampiran I) | `penulis-kajian` | 9 | M | belum |
+| SP-068 | Naskah bab 1–5 | `penulis-kajian` | 11 | L | belum |
+| SP-069 | Naskah bab 6–9 | `penulis-kajian` | 11 | L | belum |
+| SP-070 | Naskah bab 10–13 | `penulis-kajian` | 11 | L | belum |
+| SP-071 | Naskah bab 14–17 | `penulis-kajian` | 12 | M | belum |
+| SP-072 | Bab 12.3 dan 11.4: hasil pilot dan banjir dari D1 | `penulis-kajian` + `pipa-data` | 12 | S | belum |
+| SP-073 | Lampiran tertulis A–H, J, K, L | `penulis-kajian` | 12 | L | belum |
+| SP-074 | Bagian depan dan Ringkasan Eksekutif | `penulis-kajian` | 13 | M | belum |
+| SP-075 | Sunting substansi | penyunting (`general-purpose` baru) | 13 | M | belum |
+| SP-076 | Sunting bahasa dan anti-slop | penyunting (`general-purpose` baru) | 14 | M | belum |
 | SP-077 | Bangun DOCX dan PDF | `pipa-data` | 15 | M | belum |
-| SP-078 | Spek deck dan bangun PPTX dan PDF | `pipa-data` | 15 | M | belum |
+| SP-078 | Spek deck dan bangun PPTX dan PDF | `penulis-kajian` (spek), `pipa-data` (bangun) | 15 | M | belum |
 | SP-079 | QA lima lapis dan proofread render | pemeriksa | 15 | M | belum |
 | SP-080 | [induk] Commit dan serah buku dan deck | sesi induk | 15 | S | belum |
 | SP-081 | [induk] Operasi banjir Nov–Des 2026 | sesi induk + lapangan | 7–18 | M | belum |
-| SP-082 | Protokol A/B pra-registrasi dan KAK pilot 2027 | penulis (`general-purpose`) | 17 | M | belum |
-| SP-083 | Rekap 2026 dan errata angka | penulis (`general-purpose`) | 18 | S | belum |
-| SP-084 | [induk] Penyelarasan dokumen saudara dan penutupan | sesi induk | 0 dan 18 | S | belum |
+| SP-082 | Protokol A/B pra-registrasi dan KAK pilot 2027 | `penulis-kajian` | 17 | M | belum |
+| SP-083 | Rekap 2026 dan errata angka | `penulis-kajian` + `pipa-data` | 18 | S | belum |
+| SP-084 | [induk] Penyelarasan dokumen saudara dan penutupan | sesi induk | 0 dan 18 | S | awal selesai 25 Okt (PENYELARASAN.md); akhir belum |
+| SP-085 | Agent baru `penulis-kajian` | `mekanik-mesin` | 1 | S | belum |
+| SP-086 | Gerbang buku SIPPA: T-12 dan D-33 s.d. D-38 | `penulis-gerbang` | 9 | M | belum |
 
-Jumlah: 84 tiket.
+Jumlah: 86 tiket.
 
 ---
 
@@ -199,7 +206,7 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 
 #### SP-003 Agent baru `sippa`, pemilik berkas, skrip `uji:sippa`
 - **Tujuan:** memberi `public/pipa/**` dan `tests/sippa/**` satu pemilik (AGENTS.md §1.5: berkas tanpa pemilik dan kelas kerja berulang sampai 2030), memastikan `data/sippa/**` jatuh ke `pipa-data`, dan menyediakan perintah uji.
-- **Berkas:** `scripts/agents/roster.json` (entri `sippa`: `kelas: "pengerja"`, `model: "sonnet"`, `milik: ["public/pipa/**", "tests/sippa/**"]`, `larangan`: tidak menyentuh `src/**`, `migrations/**`, tidak deploy, tidak commit, tidak melonggarkan gerbang; tambah `data/sippa/**` ke `milik` `pipa-data`), keluaran `npm run agents:build` (`.claude/agents/sippa.md`, `.claude/ilmu-agent/KATALOG.md`), `.claude/ilmu-agent/sippa.md` (diisi dari PRD §9, DS, DT; belum ada kode), `AGENTS.md` (baris peta modul "SIPPA `/pipa`" di §2 dan baris router "Layar `/pipa`" di §1), `package.json` (`"uji:sippa": "node --test tests/sippa/*.test.mjs"`, dirangkai ke `"uji"` dengan pola kode keluar yang sama), `.gitignore` (tambah `.superpowers/` supaya buku besar, ringkasan, dan laporan tiket §1.1 tidak pernah ter-commit).
+- **Berkas:** `scripts/agents/roster.json` (entri `sippa`: `kelas: "pengerja"`, `model: "sonnet"`, `milik: ["public/pipa/**", "tests/sippa/**"]`, `larangan`: tidak menyentuh `src/**`, `migrations/**`, tidak deploy, tidak commit, tidak melonggarkan gerbang; tambah `data/sippa/**` ke `milik` `pipa-data`), keluaran `npm run agents:build` (`.claude/agents/sippa.md`, `.claude/ilmu-agent/KATALOG.md`), `.claude/ilmu-agent/sippa.md` (diisi dari PRD §9, DS, DT; belum ada kode), `AGENTS.md` (baris peta modul "SIPPA `/pipa`" di §2 dan baris router "Layar `/pipa`" di §1), `package.json` (`"uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs"`, dirangkai ke `"uji"` dengan pola kode keluar yang sama), `.github/workflows/terbit.yml` (langkah "Uji SIPPA" `npm run uji:sippa` sesudah `uji:warga` dan sebelum terbit, RU §0.4), `tests/sippa/cakupan.json` (registri kosong berbentuk RU §7.2, dibuat sebelum berkas `public/pipa/**` pertama), `.gitignore` (tambah `.superpowers/` supaya buku besar, ringkasan, dan laporan tiket §1.1 tidak pernah ter-commit).
 - **Antarmuka:** Hasil: agent `sippa` (dipanggil `subagent_type: "sippa"`), perintah `npm run uji:sippa`.
 - **Di luar:** isi `public/pipa/**`; `docs/sippa/**` (tidak dibuat sampai ada isinya).
 - **Pengerja / pemeriksa:** `mekanik-mesin` / `higiene-repo`, `penulis-gerbang` (gerbang ilmu tidak dilonggarkan).
@@ -207,11 +214,11 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 - **Dependensi:** SP-002. **Paralel dengan:** SP-004, SP-006, SP-020. **Isolasi:** worktree ya.
 - **Selesai bila:** katalog segar; `ilmu.mjs pemilik public/pipa/app.js` menjawab `sippa`; `ilmu.mjs pemilik data/sippa/keluaran/zona.json` menjawab `pipa-data`; `uji:sippa` jalan (nol berkas uji = lulus atau dilewati tanpa galat).
 - **Bukti:** `npm run uji:agen`; `npm run agents:check`.
-- **Rujukan:** PRD §9.12.1, §10.1 P0-03; AGENTS.md §1.3, §1.5, §2. **Ukuran:** S
+- **Rujukan:** PRD §9.12.1, §10.1 P0-03; DT §2.1, §2.2; RU §0.4, §7.2; AGENTS.md §1.3, §1.5, §2. **Ukuran:** S
 
 #### SP-004 Mesin buku menerima kajian `sippa`
 - **Tujuan:** pipeline buku saat ini hanya mengenal `air` dan `mitigasi`; tiket ini membuat kontrak, pembangun, dan QA menerima `sippa` tanpa melonggarkan gerbang apa pun.
-- **Berkas:** `data/kajian-bnpb/tema.json` (entri `kajian.sippa`: judul, cakupan sampul, lampiran A–K, pustaka minimum ≥ 50, tanpa batas halaman), `data/kajian-bnpb/bangun/kontrak/naskah.py` (daftar kajian sah), `data/kajian-bnpb/bangun/kontrak/tema.py` (bila memvalidasi daftar kajian), `data/kajian-bnpb/bangun/docx/bangun.py` (`choices` argumen `kajian`), `data/kajian-bnpb/qa/periksa.py` (`--kajian` `choices`), `data/kajian-bnpb/bangun/pptx/deck.py` (hanya bila `kajian` divalidasi), `data/kajian-bnpb/data/glosarium.json` (`varian_terlarang`: "terbukti efektif" tanpa rujukan), uji diri yang sudah ada di berkas tersebut.
+- **Berkas:** `data/kajian-bnpb/tema.json` (entri `kajian.sippa` persis KB §1: judul, subjudul, cakupan sampul, `lampiran: "ABCDEFGHIJKLMN"`, `qa.pustaka.kajian_min.sippa = 50`, tanpa batas halaman; token warna zona biru dan emas DS §2.1.3; `kosakata.keyakinan` + `menunggu`, `hipotesis`), `data/kajian-bnpb/bangun/kontrak/naskah.py` (daftar kajian sah), `data/kajian-bnpb/bangun/kontrak/tema.py` (bila memvalidasi daftar kajian), `data/kajian-bnpb/bangun/docx/bangun.py` (`choices` argumen `kajian`), `data/kajian-bnpb/qa/periksa.py` (`--kajian` `choices`), `data/kajian-bnpb/bangun/pptx/deck.py` (hanya bila `kajian` divalidasi), `data/kajian-bnpb/data/glosarium.json` (singkatan KB §3.6; `varian_terlarang` KB §8.1 M7), kontrak `angka.json` mengenali status `menunggu` (KB §8.1 M14), uji diri yang sudah ada di berkas tersebut.
 - **Antarmuka:** Hasil: `bangun.py sippa`, `periksa.py --kajian sippa`, kunci `tema.json` `kajian.sippa`. Dipakai SP-009, SP-058 s.d. SP-080.
 - **Di luar:** naskah, angka, gambar; mengubah aturan QA untuk kajian lain.
 - **Pengerja / pemeriksa:** `pipa-data` / `penulis-gerbang` (tidak ada gerbang yang melemah).
@@ -219,129 +226,141 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 - **Dependensi:** SP-002, KB (daftar bab dan lampiran). **Paralel dengan:** SP-003, SP-006, SP-020. **Isolasi:** worktree ya.
 - **Selesai bila:** uji diri kontrak lolos; `bangun.py --help` menerima `sippa`; `periksa.py --kajian sippa` diterima; uji QA kajian `air` dan `mitigasi` tetap hijau.
 - **Bukti:** `cd data/kajian-bnpb/bangun/kontrak && python3 tema.py && python3 naskah.py`; `cd data/kajian-bnpb && .venv/bin/python qa/uji.py && .venv/bin/python bangun/docx/uji.py`.
-- **Rujukan:** PRD §8.4 langkah 1, §10.3 B-01; KB bagian struktur dan lampiran. **Ukuran:** M
+- **Rujukan:** PRD §8.4, §10.3 B-01; KB §1, §8.1 M1–M5, M7, M14. **Ukuran:** M
 
 #### SP-005 Workflow naskah dan rakit bercabang `sippa`
-- **Tujuan:** skrip workflow `naskah-kajian.js` dan `rakit-kajian.js` hanya bercabang `air`/`mitigasi` (judul, `BAGIAN` KERANGKA, batas halaman). Tambahkan cabang `sippa`: judul PRD §8.1, otoritas `KEPUTUSAN-SIPPA.md` > PRD §8 > KB (bukan `KERANGKA.md` bagian 4/5), tanpa batas halaman (keputusan 11), tanpa bab kritik (keputusan 20), larangan keputusan 50.
+- **Tujuan:** skrip workflow `naskah-kajian.js` dan `rakit-kajian.js` hanya bercabang `air`/`mitigasi` (judul, `BAGIAN` KERANGKA, batas halaman). Tambahkan cabang `sippa` persis KB §8.1 M6: judul KB §1, otoritas `KEPUTUSAN-SIPPA.md` > `KEPUTUSAN.md` (KB §0.2) > Buku Pegangan > `pipa/KERANGKA-BUKU.md` (bab §4, register §6, butir terbuka §10, deck §11), KD-1 sampai KD-7, 15 slide isi, tanpa batas halaman (keputusan 11), tanpa bab kritik (keputusan 20), larangan keputusan 50; naskah ditulis sebagai satu berkas per front matter (`00-depan-kata-pengantar.md`, `00-depan-ringkasan-eksekutif.md`, `bab-NN.md`, `90-lampiran-<huruf>.md`; `bangun/docx/bangun.py:430` mengurutkan dari front matter), bukan `00-depan.md` dan `90-lampiran.md` tunggal; `agentType` penulis menjadi `penulis-kajian`, penyunting dan proofread tetap agent baru berkonteks bersih.
 - **Berkas:** `~/.claude/projects/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/6b4ae72d-ad19-4e2b-b9ca-73f12c9d80a1/workflows/scripts/naskah-kajian.js`, `.../rakit-kajian.js` (di luar repo, tidak di-commit).
 - **Di luar:** skrip workflow lain; menjalankan workflow.
 - **Pengerja / pemeriksa:** `mekanik-mesin` / `general-purpose` berkonteks bersih (membaca diff: cabang `air` dan `mitigasi` tidak berubah perilaku).
 - **Model:** sonnet.
-- **Dependensi:** SP-002, SP-004, KB. **Paralel dengan:** SP-007, SP-013, SP-021. **Isolasi:** tidak (di luar repo).
-- **Selesai bila:** `args.kajian = 'sippa'` menghasilkan prompt yang merujuk PRD/KB dan tanpa batas halaman; cabang lama identik.
+- **Dependensi:** SP-002, SP-004, SP-085. **Paralel dengan:** SP-007, SP-013, SP-021. **Isolasi:** tidak (di luar repo).
+- **Selesai bila:** `args.kajian = 'sippa'` menghasilkan prompt yang merujuk KB dan tanpa batas halaman, memakai `penulis-kajian`, dan menulis berkas naskah per front matter; cabang lama identik.
 - **Bukti:** `node --check <berkas>` untuk kedua skrip; diff ditinjau.
-- **Rujukan:** PRD §8.2, §8.4; KB. **Ukuran:** S
+- **Rujukan:** PRD §8.4; KB §1, §8.1 M6, §10 O3. **Ukuran:** S
+
+#### SP-085 Agent baru `penulis-kajian`
+- **Tujuan:** penulisan naskah buku kajian sudah berulang kali jatuh ke `general-purpose` (kajian air, mitigasi, SIPPA); AGENTS.md §1.5 memberi otoritas membuat agent tanpa izin per kasus. Agent ini menulis berkas bukti, naskah bab, bagian depan, lampiran tertulis, dan spek deck; penyunting tetap agent lain.
+- **Berkas:** `scripts/agents/roster.json` (entri persis DT §2.3: `kelas: "pengerja"`, `model: "sonnet"`, `milik: ["data/kajian-bnpb/naskah/**"]`), keluaran `npm run agents:build` (`.claude/agents/penulis-kajian.md`, `.claude/ilmu-agent/KATALOG.md`), `.claude/ilmu-agent/penulis-kajian.md` (diisi dari naskah nyata `naskah/air/`, `bangun/NASKAH-SPEK.md`, `bangun/kontrak/naskah.py`, `ANTI-SLOP.md`, KB §2, §4, §9.3), `AGENTS.md` (baris router "Naskah buku kajian" di §1 dan peta modul §2).
+- **Antarmuka:** Hasil: `subagent_type: "penulis-kajian"`, dipakai SP-005 (workflow), SP-058 s.d. SP-061, SP-067 s.d. SP-074, SP-078 (spek), SP-082, SP-083.
+- **Di luar:** isi naskah; `bangun/**`, `qa/**`, `data/angka.json` (tetap `pipa-data`).
+- **Pengerja / pemeriksa:** `mekanik-mesin` / `higiene-repo`, `penulis-gerbang` (gerbang ilmu tidak dilonggarkan).
+- **Model:** sonnet; pemeriksa haiku dan sonnet.
+- **Dependensi:** SP-002. **Paralel dengan:** SP-003, SP-004, SP-006, SP-020. **Isolasi:** worktree ya (berkas `roster.json` juga disentuh SP-003: kerjakan berurutan sesudah SP-003 di worktree yang sama, atau gabungkan dalam satu putaran `mekanik-mesin`).
+- **Selesai bila:** katalog segar; `node scripts/agents/ilmu.mjs pemilik data/kajian-bnpb/naskah/sippa/bab-01.md` menjawab `penulis-kajian`; `ilmu.mjs pemilik data/kajian-bnpb/bangun/sippa_angka.py` tetap menjawab `pipa-data`; ilmu terisi (gerbang ilmu hijau); agent baru disebut di laporan akhir sesi induk.
+- **Bukti:** `npm run uji:agen`; `npm run agents:check`.
+- **Rujukan:** AGENTS.md §1.3, §1.5; DT §2.3; PRD §9.12.1; KB §9.2. **Ukuran:** S
 
 ### 3.B P0 siap pilot (25–27 Okt)
 
 #### SP-006 Migrasi 0055 SIPPA inti dan uji skema
-- **Tujuan:** sembilan tabel P0 (`sippa_kit`, `sippa_komponen`, `sippa_gerak`, `sippa_tugas`, `sippa_log_gelar`, `sippa_probe`, `sippa_bbm`, `sippa_jalan_cek`, `sippa_aoi_usul`) dengan CHECK, indeks, dan trigger; idempoten.
+- **Tujuan:** sepuluh tabel P0 (`sippa_kit`, `sippa_komponen`, `sippa_gerak`, `sippa_tugas`, `sippa_log_gelar`, `sippa_probe`, `sippa_bbm`, `sippa_foto`, `sippa_jalan_cek`, `sippa_aoi_usul`) dengan CHECK, indeks, dan trigger persis DT §3.2; idempoten.
 - **Berkas:** `migrations/0055_sippa_inti.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Hasil: tabel dan kolom persis PRD §9.7.2 (0055); semua tabel punya `dummy INTEGER NOT NULL DEFAULT 0`. Dipakai SP-007 (batas CHECK), SP-008, SP-034, SP-050.
+- **Antarmuka:** Hasil: tabel dan kolom persis DT §3.2 (termasuk medan vonis pilot keputusan 53, `jam_klien_meleset`, `prov`, tahap probe `sesudah`); semua tabel punya `dummy INTEGER NOT NULL DEFAULT 0`. Dipakai SP-007 (batas CHECK), SP-008, SP-034, SP-050.
 - **Di luar:** rute; 0056 dan 0057; menyunting migrasi lama atau `migrations/0053_kontak 2.sql`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `penulis-gerbang` (bentuk uji: yang salah ditolak).
 - **Model:** sonnet; `migrasi-idempoten` haiku.
-- **Dependensi:** SP-002, DT bagian skema D1. **Paralel dengan:** SP-003, SP-004, SP-020. **Isolasi:** worktree ya.
-- **Selesai bila:** migrasi dijalankan dua kali tanpa galat; CHECK menolak status kit liar, kedalaman probe 600 cm, suhu 1.000 °C, tugas > 30 hari; trigger menolak UPDATE/DELETE `sippa_gerak` dan `sippa_bbm` (kecuali dummy) dan urutan waktu log terbalik, dan `banjir_m3` pada jenis bukan banjir; semua tabel dan trigger di `cakupan.json`.
+- **Dependensi:** SP-002, DT §3.2–§3.5. **Paralel dengan:** SP-003, SP-004, SP-020. **Isolasi:** worktree ya.
+- **Selesai bila:** semua baris RU §3.1 dan §3.2 hijau: migrasi dijalankan dua kali tanpa galat; CHECK menolak status kit liar, pasangan transisi tidak sah, kode `SIPPA-9xx` bukan dummy, kedalaman probe 600 cm, suhu 1.000 °C, tugas > 30 hari, foto PNG; trigger menolak `dari_status` basi dan gerak saat rencana terbuka, UPDATE/DELETE `sippa_gerak`, `sippa_log_gelar`, `sippa_bbm` (kecuali hapus dummy dan isi `tiba` dari kosong), urutan waktu log terbalik, dan `banjir_m3` pada jenis bukan banjir; semua tabel dan trigger di `cakupan.json`.
 - **Bukti:** `node --test tests/warga/sippa_skema.test.mjs`; `node --test tests/warga/migrasi_beku.test.mjs`.
-- **Rujukan:** PRD §9.7.2 (0055), §9.12.2 baris skema D1, §10.1 P0-04; DT bagian skema D1; RU bagian skema D1. **Ukuran:** M
+- **Rujukan:** PRD §9.7.2 (0055), §9.12.2 baris skema D1, §10.1 P0-04; DT §3.2–§3.5; RU §3. **Ukuran:** M
 
 #### SP-007 Daftar medan formulir lapangan
 - **Tujuan:** satu sumber medan dan batas untuk form lapangan, validasi server, dan formulir kertas.
-- **Berkas:** `public/pipa/formulir.js` (data medan: log gelar 6 tahap, angka sesi, probe 10/30/50/100 cm dan 150–500 cm hanya `lengan_dalam`, BBM, gerak; batas sama dengan CHECK 0055), `tests/sippa/formulir.test.mjs` (batas = CHECK; kedalaman > 500 cm tidak ada di daftar).
-- **Antarmuka:** Konsumsi: CHECK `migrations/0055_sippa_inti.sql`. Hasil: modul ES `public/pipa/formulir.js` mengekspor `MEDAN` (objek per jenis butir `log`, `probe`, `bbm`, `gerak`; tiap medan `{nama, tipe, min, maks, pilihan, wajib}`) dan `KEDALAMAN_MAKS_CM = 500`. Dipakai SP-008, SP-009, SP-011.
-- **Di luar:** UI form (SP-011); salinan server (SP-008).
+- **Berkas:** `public/pipa/formulir.js` (ES module tanpa DOM, diimpor langsung oleh `src/sippa.js`, ADR-03; data medan: log gelar 6 tahap, angka sesi, medan vonis pilot keputusan 53, probe tahap `sebelum`/`sesudah`/`24j`/`72j`/`7h`/`30h`/`90h` di 10/30/50/100 cm dan 150–500 cm hanya `lengan_dalam`, BBM, gerak; fungsi `cekButir(jenis, butir, {lengan_dalam})`; batas sama dengan CHECK 0055), `tests/sippa/formulir.test.mjs` (batas = CHECK; kedalaman > 500 cm tidak ada di daftar).
+- **Antarmuka:** Konsumsi: CHECK `migrations/0055_sippa_inti.sql`. Hasil: modul ES `public/pipa/formulir.js` mengekspor `MEDAN` (objek per jenis butir `log`, `probe`, `bbm`, `gerak`; tiap medan `{nama, tipe, min, maks, pilihan, wajib}`), `cekButir`, dan `FORMULIR_VERSI`; batas kedalaman diturunkan dari `KONST.dalam_maks_m` (`hitung.js`), bukan konstanta kedua. Dipakai SP-008, SP-009, SP-011.
+- **Di luar:** UI form (SP-011); rute (SP-008). Tidak ada salinan `src/sippa_formulir.js`.
 - **Pengerja / pemeriksa:** `sippa` / `penulis-gerbang`.
 - **Model:** sonnet.
 - **Dependensi:** SP-003, SP-006 (batas CHECK). **Paralel dengan:** SP-005, SP-013, SP-021. **Isolasi:** worktree ya.
-- **Selesai bila:** daftar medan lengkap sesuai PRD §9.9; uji memastikan tiap batas sama dengan CHECK migrasi 0055 (dibaca dari berkas SQL, bukan disalin).
+- **Selesai bila:** daftar medan lengkap sesuai PRD §9.9 dan DT §5.5.2; uji memastikan tiap batas sama dengan CHECK migrasi 0055 (dibaca dari berkas SQL, bukan disalin) dan berkas tidak menyentuh DOM atau global peramban.
 - **Bukti:** `node --test tests/sippa/formulir.test.mjs`.
-- **Rujukan:** PRD §9.9 (validasi klien = server), §9.12.2 baris formulir; DT bagian formulir; RU bagian formulir. **Ukuran:** S
+- **Rujukan:** PRD §9.9 (validasi klien = server), §9.12.2 baris formulir; DT §5.5.2, §6.1, ADR-03; RU §6.2. **Ukuran:** S
 
 #### SP-008 Worker SIPPA P0: cangkang, gerbang host, rute kit, tugas, lapangan, log
 - **Tujuan:** semua rute yang dibutuhkan pilot, di balik sesi, dengan kode penugasan untuk operator.
-- **Berkas:** `src/sippa.js` (baru: `RUTE_SIPPA` P0, `P_SIPPA_BACA`, `P_SIPPA_TULIS`, `LAYAR_SIPPA`, transisi status kit, `RANTAI_DUMMY` untuk Kit dan Log, 503 sopan tanpa migrasi), `src/sippa_formulir.js` (salinan persis data medan `public/pipa/formulir.js`, sesuai PRD §9.9; kesamaan dijaga `tests/warga/sippa.test.mjs`), `src/worker.js` (gabung `RUTE_SIPPA`; regex `halamanTerkunci` ditambah `pipa`; `/pipa/lapangan` di `PUBLIK_TANPA_SESI` dengan alasan T-H), `src/admin_halaman.js` (`halamanSippa(ctx)`, `HAL.pipa`, `HALAMAN_STAF.pipa`, `GET /admin/pipa` 303), `tests/warga/sippa.test.mjs` (bagian P0), `tests/warga/staf_halaman.test.mjs` (`HALAMAN_STAF.pipa` = `P_SIPPA_BACA`), `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0055, `MEDAN` (SP-007), `stafOK`, `jejakStmt` (`src/staf.js`), `laju()` dan pola `kodeBaru` (`src/bnpb.js`), `bersihMedia`, `jenisBerkas`, `gagal`. Hasil: `RUTE_SIPPA`, `P_SIPPA_BACA = ["pusdalops","koordalops","pimpinan"]`, `P_SIPPA_TULIS = ["pusdalops","koordalops"]`, `LAYAR_SIPPA` (11 nama PRD §9.1.2), `RANTAI_DUMMY`, `halamanSippa(ctx)`; bentuk jawaban `POST /api/sippa/lapangan/kirim` = `{diterima:[id], ganda:[id], ditolak:[{id, alasan}]}`. Dipakai SP-010 s.d. SP-012, SP-029, SP-035, SP-050, SP-052.
-- **Rute:** `GET /pipa`, `/pipa/:layar`, `/pipa/kit/:id`, `/pipa/lapangan`, `/admin/pipa`; `GET/POST /api/sippa/kit`, `GET/POST /api/sippa/kit/:id`, `POST .../komponen`, `POST .../gerak`, `POST .../gerak/:gid/tiba`; `POST /api/sippa/tugas`, `POST /api/sippa/tugas/:id/cabut`; `GET /api/sippa/lapangan/saya`, `POST /api/sippa/lapangan/kirim`, `POST /api/sippa/lapangan/foto`; `GET/POST /api/sippa/log`, `GET /api/sippa/log.csv`; `POST /api/sippa/dummy/isi` (layar `kit`, `log`, `lapangan`), `POST /api/sippa/dummy/hapus`.
+- **Berkas:** `src/sippa.js` (baru: `RUTE_SIPPA` P0, `bungkusSippa` 503 sopan, `P_SIPPA_BACA`, `P_SIPPA_TULIS`, `LAYAR_SIPPA`, `ALASAN_TRANSISI`, `RANTAI_DUMMY` untuk Kit, Log, Lapangan; impor `public/pipa/formulir.js`), `src/worker.js` (spread `RUTE_SIPPA` di `RUTE`; regex pengecualian `halamanTerkunci` ditambah `pipa`, DT §1.4; `PUBLIK_TANPA_SESI` tidak diubah), `src/admin_halaman.js` (`HAL.pipa`, `HALAMAN_STAF.pipa`, `halamanSippa(layar, ctx)`, `halamanSippaLapangan()`, `CSP_SIPPA`, `GET /admin/pipa` 303), `src/posko.js` (`export` pada `CSP_LAPANGAN` saja), `public/admin/pantau.js` (sesudah masuk staf, `ke` yang cocok `^/pipa(/|$)` dialihkan; ADR-05), `tests/warga/sippa.test.mjs` (bagian P0), `tests/warga/staf_halaman.test.mjs` (`HALAMAN_STAF.pipa` = `P_SIPPA_BACA`), `tests/warga/posko.test.mjs` (regex pemindai baris 647 ditambah `pipa`), `tests/warga/admin-403-pantul.test.mjs` (juga memindai `public/pipa/*.js`), `tests/warga/gerbang.test.mjs` (`"sippa"` ditambah ke daftar modul `bn`), `tests/warga/cakupan.json`.
+- **Antarmuka:** Konsumsi: tabel 0055, `MEDAN` dan `cekButir` (SP-007), `stafOK`, `jejakStmt`, `dalamWilayahStaf`, `stafNyata` (`src/staf.js`), `laju()`, `kodeBaru`, `pemegangKode` (`src/bnpb.js`), `modOK`, `superOK` (`src/posko.js`), `bersihMedia`, `jenisBerkas`, `gagal`, `bacaBody`. Hasil: `RUTE_SIPPA`, `P_SIPPA_BACA = ["pusdalops","koordalops","pimpinan"]`, `P_SIPPA_TULIS = ["pusdalops","koordalops"]`, `LAYAR_SIPPA` (11 nama), `RANTAI_DUMMY`, `halamanSippa`; bentuk jawaban `POST /api/sippa/lapangan/kirim` = `{diterima:[id], ganda:[id], ditolak:[{id, alasan}], jam_server}`. Dipakai SP-010 s.d. SP-012, SP-029, SP-035, SP-050, SP-052.
+- **Rute (DT §4.2, §4.3):** `GET /pipa`, `/pipa/<layar>`, `/pipa/kit/:id`, `/pipa/lapangan`, `/admin/pipa`; `GET /api/sippa/kit`, `GET /api/sippa/kit/:id`, `POST /api/sippa/kit`, `POST /api/sippa/kit/:id`, `POST /api/sippa/komponen/:id`, `POST /api/sippa/gerak/:id`, `POST /api/sippa/tiba/:id`; `POST /api/sippa/tugas`, `POST /api/sippa/tugas-cabut/:id`; `GET /api/sippa/lapangan/saya`, `POST /api/sippa/lapangan/kirim` (dengan `jam_kirim` dan penurunan `jam_klien_meleset`, DT §6.1.5), `POST /api/sippa/lapangan/foto` (tabel `sippa_foto`, JPEG/WebP), `GET /api/sippa/foto/:id`; `GET /api/sippa/log`, `GET /api/sippa/log.csv`, `GET /api/sippa/probe.csv`, `POST /api/sippa/log`; `POST /api/sippa/dummy/isi` (layar `kit`, `log`, `lapangan`), `POST /api/sippa/dummy/hapus`.
 - **Di luar:** rute data R2, A/B, skenario, laporan, telemetri (SP-029, SP-035, SP-050); `src/pipa.js` dan awalan `/api/pipa/*` (milik pipeline Python, tidak disentuh).
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
 - **Model:** sonnet; `guard-api` haiku, `security-reviewer` sonnet.
-- **Dependensi:** SP-006, SP-007, DT bagian rute. **Paralel dengan:** SP-009, SP-010, SP-023. **Isolasi:** worktree ya.
-- **Selesai bila:** matriks hak P0 hijau (tamu 303 di halaman, 401/403 di API; `verifikator` 403; `pimpinan` POST 403; perencana 201; kode salah 403 dan dihitung; > 300/jam 429; kode dicabut atau kedaluwarsa 403; kode hanya menggerakkan kit tugasnya dan hanya alasan gelar/bongkar/kembali); kirim lapangan dua kali = satu baris; badan 300 KB = 413; staf berwilayah 61 tidak melihat kit 62; staf nyata tidak melihat dummy; tanpa migrasi = 503 sopan; sesi tanpa peran SIPPA = 403 polos tanpa pengalihan; CSV log beraman injeksi rumus.
+- **Dependensi:** SP-006, SP-007, DT §4.3. **Paralel dengan:** SP-009, SP-010, SP-023. **Isolasi:** worktree ya.
+- **Selesai bila:** baris RU §2.4 untuk rute P0 hijau (tamu 303 ke `/admin/pantau?ke=` di halaman dan 401 di API; `verifikator` 403 polos; `pimpinan` POST 403; perencana 201; moderator untuk `hilang`/`pensiun`/`ditemukan`; kode salah 403 dan dihitung; > 300/jam 429; kode dicabut atau kedaluwarsa 403; kode hanya menggerakkan kit tugasnya dan hanya alasan gelar/bongkar/kembali; GET tanpa laju); `pantau.js` tidak mengalihkan ke URL luar; kirim lapangan dua kali = satu baris dan butir pelanggar CHECK masuk `ditolak`; badan 262.145 byte = 413; staf berwilayah 61 tidak melihat kit 62; staf nyata tidak melihat dummy; tanpa migrasi = 503 sopan; sesi tanpa peran SIPPA = 403 polos tanpa pengalihan; CSV log dan probe beraman injeksi rumus; di host `centurisk97.id` `/pipa` tamu 303 dan `/pipa/lapangan` 200.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §3.1, §9.1.2, §9.7.3, §9.8, §9.12.2 baris rute, §10.1 P0-05; DT bagian rute dan akses; RU bagian rute dan hak. **Ukuran:** L
+- **Rujukan:** PRD §3.1, §9.1.2, §9.7.3, §9.8, §9.12.2 baris rute, §10.1 P0-05; DT §1.3, §1.4, §4, §6.1.5, ADR-03, ADR-05, ADR-06, ADR-08, ADR-09, ADR-13; RU §2.4. **Ukuran:** L
 
 #### SP-009 Formulir kertas G3-lite dan probe
-- **Tujuan:** cadangan wajib pilot bila web belum lolos uji: satu halaman A4 per sesi gelar dan satu per petak probe, medan identik dengan `formulir.js`.
+- **Tujuan:** cadangan wajib pilot bila web belum lolos uji: satu halaman A4 per sesi gelar (termasuk medan vonis pilot keputusan 53) dan satu per petak probe (tahap sebelum, sesudah, 24 jam), medan identik dengan `formulir.js`.
 - **Berkas:** `data/kajian-bnpb/bangun/sippa_formulir.py` (pembangkit dari medan `public/pipa/formulir.js`, dibaca sebagai teks; pola `bangun/kontrak/lembar.py`/`pdf.mjs`), `data/kajian-bnpb/pipa/formulir/G3-lite.pdf`, `data/kajian-bnpb/pipa/formulir/probe.pdf`.
-- **Antarmuka:** Konsumsi: `MEDAN` (SP-007), dibaca sebagai teks. Hasil: `G3-lite.pdf`, `probe.pdf`; dipakai SP-018 dan Lampiran E (SP-073).
-- **Di luar:** formulir BBM dan gerak kit (masuk Lampiran E di SP-073).
+- **Antarmuka:** Konsumsi: `MEDAN` (SP-007), dibaca sebagai teks. Hasil: `G3-lite.pdf`, `probe.pdf`; dipakai SP-018 dan Lampiran G (SP-073).
+- **Di luar:** formulir BBM dan gerak kit (masuk Lampiran G di SP-073).
 - **Pengerja / pemeriksa:** `pipa-data` / sesi induk (memeriksa cetak), `selera-angka` (satuan, tanpa titik tengah).
 - **Model:** sonnet; `selera-angka` haiku.
 - **Dependensi:** SP-007, SP-004. **Paralel dengan:** SP-008, SP-010, SP-023. **Isolasi:** worktree ya.
-- **Selesai bila:** dua PDF tercetak; tiap medan `formulir.js` muncul; hanya logo BNPB; tidak ada medan kedalaman > 500 cm.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_formulir.py` (self-check membandingkan daftar medan PDF dengan `formulir.js`).
-- **Rujukan:** PRD §4.1 minggu 44, §9.9, §10.1 P0-06; DS bagian formulir lapangan. **Ukuran:** S
+- **Selesai bila:** dua PDF tercetak; tiap medan `formulir.js` muncul (RU §6.2); hanya logo BNPB, huruf Roboto; tidak ada medan kedalaman > 500 cm.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_formulir.py uji && .venv/bin/python bangun/sippa_formulir.py` (self-check membandingkan daftar medan PDF dengan `formulir.js`).
+- **Rujukan:** PRD §4.1 minggu 44, §9.9, §10.1 P0-06; DS §3.7.2, §4.7; RU §6.2; KEPUTUSAN-SIPPA 53. **Ukuran:** S
 
 #### SP-010 Cangkang klien `/pipa`, keadaan, tema, hitung inti, layar Log
 - **Tujuan:** kerangka aplikasi staf: router History API dengan modul layar malas, navigasi tiga lebar, bilah konteks, enam keadaan standar, token tema terang dan gelap, ikon, fungsi hitung inti, dan layar rekap time-motion.
-- **Berkas:** `public/pipa/app.js`, `public/pipa/keadaan.js`, `public/pipa/pipa.css` (satu-satunya lembar gaya layar `/pipa` selain `adegan.css`; token dari DS, memakai `public/inti/tema.css` dan `public/admin/admin.css`), `public/pipa/ikon.js`, `public/pipa/hitung.js` (subset P0: `kuantil`, `zona`, `idHdpe`, `idLayflat`, `hfHW`, `hidraulika`, `gerbangHidraulika`, `vonis`, `bbm`, `co2`), `public/pipa/layar_log.js`, `tests/sippa/hitung.test.mjs`, `tests/sippa/fixtures/acuan.json` (lima nilai acuan PRD §9.3).
-- **Antarmuka:** Konsumsi: rute P0 (SP-008, kontrak di DT), `public/inti/format.js` (`fmt`), `tabel.js`, `pilih.js` (`PilihCantik`), `tip.js` (`rapikanTip`), `nanti.js` (`nanti`), `kartu.js`. Hasil: `globalThis.SippaHitung` dengan fungsi bernama persis PRD §9.3 dan konstanta `KEDALAMAN_MAKS_M = 5`; router `app.js` yang memuat `layar_<nama>.js` lewat `import()` dan memanggil `export async function pasang(akar, konteks)` dan `export function lepas()` tiap modul layar; `keadaan.js` mengekspor `memuat()`, `kosong(teks)`, `galat(status, pesan, ulang)`, `luring(per)`, `basi(per)`, `menunggu(alasan)`. Semua tiket layar berikutnya memakai kontrak `pasang`/`lepas` ini.
+- **Berkas:** `public/pipa/app.js`, `public/pipa/keadaan.js`, `public/pipa/pipa.css` (satu-satunya lembar gaya layar `/pipa` selain `adegan.css`; token dari DS, memakai `public/inti/tema.css` dan `public/admin/admin.css`), `public/pipa/ikon.js`, `public/pipa/hitung.js` (ES module + `globalThis.SippaHitung`; subset P0: `KONST`, `KELAS_POMPA`, `kuantil`, `nKecil`, `durasiLog`, `zona`, `idHdpe`, `idLayflat`, `hfHW`, `fSuhu`, `batasTekanan`, `pRating`, `hidraulika`, `gerbangHidraulika`, `pesanGerbang`, `vonis`, `bbmJam`, `co2`, `vonisPilot`), `public/pipa/layar_log.js`, `tests/sippa/hitung.test.mjs`, `tests/sippa/keadaan.test.mjs`, `tests/sippa/fixtures/acuan.json` (kasus H1–H8, Z1–Z5, F1–F4, Q1, V1–V3 DT §5.8).
+- **Antarmuka:** Konsumsi: rute P0 (SP-008, kontrak di DT), `public/inti/format.js` (`fmt`), `tabel.js`, `pilih.js` (`PilihCantik`), `tip.js` (`rapikanTip`), `nanti.js` (`nanti`), `kartu.js`. Hasil: `globalThis.SippaHitung` dengan fungsi bernama persis DT §5 dan konstanta `KONST.dalam_maks_m = 5` (satu-satunya tempat angka 5 m, DT §5.2); router `app.js` yang memuat `layar_<nama>.js` lewat `import()` dan memanggil `export async function pasang(akar, konteks)` dan `export function lepas()` tiap modul layar; `keadaan.js` mengekspor `memuat()`, `kosong(teks)`, `galat(status, pesan, ulang)`, `luring(per)`, `basi(per)`, `menunggu(alasan)`. Semua tiket layar berikutnya memakai kontrak `pasang`/`lepas` ini.
 - **Di luar:** layar lain; fungsi hitung sisanya (SP-030); `public/inti/**` (dipakai, tidak disalin atau diubah).
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `selera-angka`.
 - **Model:** sonnet; `selera-angka` haiku.
-- **Dependensi:** SP-003, DS (token, navigasi, keadaan), DT (kontrak rute P0). **Paralel dengan:** SP-008, SP-009, SP-023. **Isolasi:** worktree ya.
-- **Selesai bila:** lima nilai acuan cocok (toleransi 1%); OD160 SDR11 NO-GO, sisa < 1 bar NO-GO, kedalaman 5,1 m ditolak, zona tepat 2,5/5,0 km masuk A; `kuantil` sama dengan numpy tipe 7; layar Log menampilkan p50/p90 per kelas dengan pil "n kecil" bila n < 5; Ringkas tidak memuat MapLibre atau Three.js; mode gelap bekerja.
+- **Dependensi:** SP-003, DS §2, §3.0, §3.1; DT §4.3. **Paralel dengan:** SP-008, SP-009, SP-023. **Isolasi:** worktree ya.
+- **Selesai bila:** kasus acuan cocok (toleransi 1%; tanda `hisap` eksplisit); OD160 SDR11 NO-GO, sisa < 1 bar NO-GO, bawaan 300 L/min KONDISIONAL dan 600 L/min dengan 8 lance NO-GO H-SERAP, kedalaman 5,1 m ditolak, zona tepat 2,5 atau 5,0 km = jauh (keputusan 51); `vonisPilot` V1–V3 memberi tiga vonis; `kuantil` sama dengan numpy tipe 7; layar Log menampilkan p50/p90 per kelas dengan pil "n kecil" bila n < 5 dan penanda `jam_klien_meleset`; Ringkas tidak memuat MapLibre atau Three.js; mode gelap bekerja.
 - **Bukti:** `node --test tests/sippa/hitung.test.mjs`.
-- **Rujukan:** PRD §9.1, §9.2, §9.2.1, §9.3, §9.4.6, §10.1 P0-07; DS bagian token, navigasi, keadaan, layar Log; DT bagian fungsi hitung; RU bagian fungsi murni. **Ukuran:** M
+- **Rujukan:** PRD §9.1, §9.2, §9.2.1, §9.3, §9.4.6, §10.1 P0-07; DS §2, §3.0, §3.1, §4.6; DT §5, §5.8; RU §2.1. **Ukuran:** M
 
 #### SP-011 Layar Lapangan luring dan antrean
 - **Tujuan:** form ponsel satu tangan yang bekerja tanpa sinyal dan mengirim saat ada sinyal, tanpa menggandakan kiriman.
-- **Berkas:** `public/pipa/layar_lapangan.js`, `public/pipa/antre.js` (IndexedDB `sippa-antre`, jatuh ke `localStorage` untuk teks), `public/pipa/pipa.css` (gaya form lapangan).
-- **Antarmuka:** Konsumsi: `MEDAN`, kontrak `pasang`/`lepas`, `GET /api/sippa/lapangan/saya`, `POST /api/sippa/lapangan/kirim`, `POST /api/sippa/lapangan/foto`, header `x-kode`. Hasil: `antre.js` mengekspor `tambah(butir)`, `kirimSemua()`, `jumlah()`.
+- **Berkas:** `public/pipa/lapangan.js` (layar form luring yang dimuat cangkang `halamanSippaLapangan`, bukan modul `layar_*.js` router; DT §2.1), `public/pipa/antre.js` (IndexedDB `sippa-antre`, jatuh ke `localStorage` untuk teks, DT §6.1.3), `public/pipa/pipa.css` (gaya form lapangan), `tests/sippa/antre.test.mjs`.
+- **Antarmuka:** Konsumsi: `MEDAN`, kontrak `pasang`/`lepas`, `GET /api/sippa/lapangan/saya`, `POST /api/sippa/lapangan/kirim`, `POST /api/sippa/lapangan/foto`, header `x-kode`, kontrak kirim DT §6.1.4 (dengan `jam_kirim`). Hasil: `antre.js` mengekspor `tambah(butir)`, `kirimSemua()`, `jumlah()`.
 - **Di luar:** `public/sw-lapangan.js` (SP-013); rute (SP-008).
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `security-reviewer` (kode di fragmen dihapus dari alamat, penyisipan teks).
 - **Model:** sonnet.
 - **Dependensi:** SP-007, SP-010, SP-013. **Paralel dengan:** SP-012, SP-014, SP-022. **Isolasi:** worktree ya.
-- **Selesai bila:** mode pesawat, isi satu sesi gelar 6 tahap + probe + BBM, kembali daring, terkirim satu kali; butir ditolak tetap di antrean dengan alasan; selisih jam > 10 menit tertandai; tombol ≥ 56 px; status antrean `aria-live`.
+- **Selesai bila:** RU §2.3 F1–F8 hijau: mode pesawat, isi satu sesi gelar 6 tahap dengan medan vonis pilot + probe (tahap sesudah) + BBM, kembali daring, terkirim satu kali; butir ditolak tetap di antrean dengan alasan; foto PNG ditolak dengan pesan; fragmen `#k=` dihapus dari alamat; tombol ≥ 56 px; status antrean `aria-live`.
 - **Bukti:** `node --test tests/sippa/*.test.mjs`; uji tangan lewat `preview_start` mode ponsel (dicatat di laporan tiket).
-- **Rujukan:** PRD §9.9, §9.13, §10.1 P0-07; DS bagian formulir lapangan; RU bagian luring. **Ukuran:** M
+- **Rujukan:** PRD §9.9, §9.13, §10.1 P0-07; DS §3.7.2, §4.7; DT §6.1; RU §2.3 (F1–F8). **Ukuran:** M
 
 #### SP-012 Layar Kit: daftar, rincian, tugaskan, QR
 - **Tujuan:** inventaris dan lacak kit (keputusan 35) untuk pilot dan pemindahan ke banjir.
 - **Berkas:** `public/pipa/layar_kit.js` (daftar, rincian dengan tab Komponen, Gerak, Pemakaian, BBM, Penugasan; form tugaskan dengan kode tampil sekali; label QR A6; pindai `BarcodeDetector` atau isian manual).
-- **Antarmuka:** Konsumsi: rute kit, komponen, gerak, tugas (SP-008); `globalThis.qrcode` (SP-013). Hasil: form gerak yang dipakai ulang SP-043 lewat `export function formGerak(kit, {rencana})`.
+- **Antarmuka:** Konsumsi: rute `GET/POST /api/sippa/kit`, `POST /api/sippa/komponen/:id`, `POST /api/sippa/gerak/:id`, `POST /api/sippa/tiba/:id`, `POST /api/sippa/tugas` (SP-008); `globalThis.qrcode` (SP-013). Hasil: form gerak yang dipakai ulang SP-043 lewat `export function formGerak(kit, {rencana})`.
 - **Di luar:** vendor QR (SP-013); peta kecil gerak boleh menyusul di SP-032 bila MapLibre belum dimuat.
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `selera-angka`, `security-reviewer` (kode penugasan tampil sekali, tidak disimpan klien).
 - **Model:** sonnet.
 - **Dependensi:** SP-010, SP-013. **Paralel dengan:** SP-011, SP-014, SP-022. **Isolasi:** worktree ya.
-- **Selesai bila:** transisi status sesuai tabel PRD §9.4.5 (tombol yang tidak sah tidak ditawarkan); persen kehilangan dihitung; QR terbaca.
+- **Selesai bila:** transisi status sesuai DT §6.2 menurut peran (tombol yang tidak sah tidak ditawarkan; `hilang`/`pensiun`/`ditemukan` hanya tampil untuk moderator); persen kehilangan dihitung (DT §6.2); QR terbaca dan tidak memuat kode penugasan (RU T5).
 - **Bukti:** `node --test tests/sippa/*.test.mjs`; uji tangan `preview_start`.
-- **Rujukan:** PRD §9.4.5, §10.1 P0-07; DS bagian layar Kit. **Ukuran:** M
+- **Rujukan:** PRD §9.4.5, §10.1 P0-07; DS §3.13, §3.14, §4.5. **Ukuran:** M
 
 #### SP-013 Vendor QR dan scope `sw-lapangan.js`
 - **Tujuan:** pustaka QR lokal (CSP menolak CDN) dan service worker yang sama melayani `/pipa/lapangan`.
-- **Berkas:** `public/vendor/qrcode/qrcode.min.js`, `public/vendor/qrcode/LICENSE`, `public/vendor/qrcode/README.md` (versi, sumber), `public/sw-lapangan.js` (`JALUR_API` dan `KUNCI_KREDENSIAL` ditambah `"/api/sippa/lapangan/saya": "x-kode"`, `HALAMAN` ditambah `/pipa/lapangan`, `VERSI` naik; POST tetap tidak disentuh).
+- **Berkas:** `public/vendor/qrcode/qrcode.min.js`, `public/vendor/qrcode/LICENSE`, `public/vendor/qrcode/README.md` (versi, sumber), `public/sw-lapangan.js` (persis DT §6.1.1: `VERSI = 3`; `JALUR_API` dan `KUNCI_KREDENSIAL` ditambah `"/api/sippa/lapangan/saya": "x-kode"`; `HALAMAN` ditambah `/pipa/lapangan`; penentuan halaman dari scope diganti peta jalur `TAMBAHAN` supaya scope `/pipa/lapangan` tidak memasang cangkang `/lapangan`; POST tetap tidak disentuh), `tests/warga/regu_luring.test.mjs` (kasus install scope `https://x/pipa/lapangan/` mengambil `/pipa/lapangan`).
 - **Antarmuka:** Hasil: `globalThis.qrcode` (qrcode-generator, MIT); scope SW `/pipa/lapangan`.
 - **Di luar:** `public/lapangan.js`.
 - **Pengerja / pemeriksa:** `layar-peta` / `higiene-repo` (lisensi, ukuran), `security-reviewer`.
 - **Model:** haiku (salin berkas dan tambahan tertulis); pemeriksa haiku dan sonnet.
 - **Dependensi:** SP-002. **Paralel dengan:** SP-005, SP-007, SP-021. **Isolasi:** worktree ya.
-- **Selesai bila:** `/lapangan` dan `/lacak` tetap bekerja; `/pipa/lapangan` tersimpan luring.
+- **Selesai bila:** `/lapangan` dan `/lacak` tetap bekerja; `/pipa/lapangan` tersimpan luring dengan cangkangnya sendiri.
 - **Bukti:** `node --test tests/warga/regu_luring.test.mjs`; `npm run uji:agen` (gerbang header).
-- **Rujukan:** PRD §9.4.5 (QR), §9.9; DT bagian luring. **Ukuran:** S
+- **Rujukan:** PRD §9.4.5 (QR), §9.9; DT §6.1. **Ukuran:** S
 
 #### SP-014 Gerbang SIPPA awal
 - **Tujuan:** gerbang tanpa basis data yang dipasang sedini mungkin supaya semua tiket layar berikutnya tertahan olehnya.
-- **Berkas:** `tests/sippa/gerbang-sippa.test.mjs` (butir 1–5 PRD §9.12.2: tanpa "terbukti", tanpa em dash dan titik tengah di teks antarmuka, batas kedalaman 5 m di satu konstanta dipakai semua pemakai, tanpa `toFixed(` di teks tampil, tanpa URL CDN di `public/pipa/**`).
-- **Antarmuka:** Konsumsi: `KEDALAMAN_MAKS_M` (SP-010), `KEDALAMAN_MAKS_CM` (SP-007). Hasil: gerbang yang diperluas SP-055.
+- **Berkas:** `tests/sippa/gerbang-sippa.test.mjs` (butir 1–5 PRD §9.12.2 dan RU §2.8 butir 1–6, 8: tanpa "terbukti", tanpa em dash dan titik tengah di teks antarmuka, batas kedalaman 5 m hanya di `KONST.dalam_maks_m`, tanpa `toFixed(` di teks tampil, tanpa URL CDN dan import map sebaris, tanpa berkas data di `public/pipa/`), `tests/sippa/gerbang-cakupan.test.mjs` (RU §7.3, termasuk uji penolakannya sendiri).
+- **Antarmuka:** Konsumsi: `KONST.dalam_maks_m` (SP-010), `tests/sippa/cakupan.json` (SP-003). Hasil: gerbang yang diperluas SP-055.
 - **Di luar:** butir 6 (handler INP per handler), menyusul di SP-055.
 - **Pengerja / pemeriksa:** `sippa` / `penulis-gerbang`.
 - **Model:** sonnet.
 - **Dependensi:** SP-010. **Paralel dengan:** SP-011, SP-012, SP-022. **Isolasi:** worktree ya.
 - **Selesai bila:** gerbang hijau pada kode P0 dan merah bila disisipi pelanggaran contoh (diuji dengan fixture).
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §1.5, §9.12.2 baris gerbang SIPPA; RU bagian gerbang. **Ukuran:** S
+- **Rujukan:** PRD §1.5, §9.12.2 baris gerbang SIPPA; RU §2.8, §7.3. **Ukuran:** S
 
 #### SP-015 Tinjauan P0
 - **Tujuan:** tinjauan paralel permukaan P0 sebelum deploy.
@@ -356,7 +375,7 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 
 #### SP-016 [induk] Commit P0
 - **Tujuan:** satu commit per tiket P0 dengan path spesifik.
-- **Berkas:** berkas tiket SP-003, SP-004, SP-006 s.d. SP-014.
+- **Berkas:** berkas tiket SP-003, SP-004, SP-006 s.d. SP-014, SP-085.
 - **Di luar:** berkas sesi lain yang ada di `git status` (daftar awal sesi memuat banyak perubahan milik pekerjaan lain; tidak ikut).
 - **Pengerja / pemeriksa:** sesi induk / `higiene-repo`.
 - **Model:** opus (sesi induk).
@@ -368,76 +387,76 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 #### SP-017 [induk] Deploy P0, uji asap, kit SIPPA-001, kode regu pilot
 - **Tujuan:** `/pipa/lapangan` siap di ponsel regu pilot.
 - **Berkas:** `tests/warga/migrasi_beku.json` (0055 dicatat lewat `warga-api` sesudah diterapkan, masuk commit berikutnya).
-- **Langkah:** PRD §10.6 langkah 1–7: `npm run uji`; `npm run uji:sippa`; `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`; `npx --yes wrangler@4.42.0 deploy`; uji asap (`/pipa` tamu 303, staf pusdalops 200, `/pipa/lapangan` 200, `GET /api/sippa/kit` tamu 401/403); buat kit `SIPPA-001` jenis `pinjam_pilot` dengan `pemilik_asal` dari T-C; buat kode penugasan regu pilot dan serahkan tautan ke pemilik; satu kiriman dummy lalu `dummy/hapus`.
+- **Langkah:** PRD §10.6 langkah 1–8 dan RU §8.2: `npm run uji`; `npm run uji:sippa`; `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`; push ke `staging` (terbit.yml pratinjau) dan uji asap di URL pratinjau dengan baris dummy; merge ke `main` (terbit.yml `wrangler deploy`; merge = tayang); uji asap produksi RU §8.3 A1–A12 (`/pipa` tamu 303 ke `/admin/pantau?ke=%2Fpipa`, staf pusdalops 200, `/pipa/lapangan` 200, `GET /api/sippa/kit` tamu 401); buat kit `SIPPA-001` jenis `pinjam_pilot` dengan `pemilik_asal` dari T-C; buat kode penugasan regu pilot dan serahkan tautan ke pemilik; satu kiriman dummy lalu `dummy/hapus`.
 - **Di luar:** rute selain P0.
 - **Pengerja / pemeriksa:** sesi induk / pemilik (menerima tautan regu).
 - **Model:** opus.
 - **Dependensi:** SP-016, SP-001 (T-B, T-C). **Paralel dengan:** tidak. **Isolasi:** tidak.
-- **Selesai bila:** semua uji asap lolos; kit dan kode ada; bila gagal, `wrangler rollback` dan pilot memakai kertas (SP-009).
+- **Selesai bila:** semua uji asap lolos; kit dan kode ada; bila gagal, `wrangler rollback` lalu revert di `main` (RU §8.4), dan pilot memakai kertas (SP-009).
 - **Bukti:** log deploy; `GET /api/sippa/kit` dengan sesi staf memuat `SIPPA-001`.
-- **Rujukan:** PRD §10.1 P0-09, §10.6. **Ukuran:** S
+- **Rujukan:** PRD §10.1 P0-09, §10.6; DT §8.4; RU §8.2–§8.4. **Ukuran:** S
 
 #### SP-018 [induk] Pilot lapangan dan entri formulir kertas
-- **Tujuan:** 2–3 sesi gelar di AOI T-B, probe sebelum dan 24 jam, dan vonis "dapat dipakai" pada 1 Nov; vonis "lebih baik" dipisah dan hanya bila ada api dan petak berdampingan.
+- **Tujuan:** 2–3 sesi gelar di AOI T-B, probe sebelum, sesudah, dan 24 jam, dan vonis "dapat dipakai" pada 1 Nov menurut tujuh butir keputusan 53 (`vonisPilot`, RU §6.3); vonis "lebih baik" dipisah dan tidak diputus dari pilot.
 - **Berkas:** tidak ada di repo selain data D1; formulir kertas dipindai dan dimasukkan staf lewat `POST /api/sippa/log` bila web terlambat.
 - **Di luar:** vonis G4 (pilot tidak pernah dipakai untuk G4).
 - **Pengerja / pemeriksa:** Satgas, Manggala Agni, BPBD (lapangan); sesi induk mencatat / pemilik memutus.
 - **Model:** tidak berlaku.
-- **Dependensi:** SP-009 (wajib), SP-017 (bila siap), T-B. **Paralel dengan:** gelombang 6. **Isolasi:** tidak.
-- **Selesai bila:** tiap sesi punya log 6 tahap dan probe; keputusan pemilik lanjut ke banjir atau tidak (minggu 45).
-- **Bukti:** `GET /api/sippa/log`; pindaian kertas.
-- **Rujukan:** PRD §1.3 U3–U4, §4.1 minggu 44–45, §10.1 P0-10. **Ukuran:** M
+- **Dependensi:** SP-009 (wajib), SP-017 (bila siap), SP-019 (`pilot_cek.py`), T-B. **Paralel dengan:** gelombang 6. **Isolasi:** tidak.
+- **Selesai bila:** `python3 scripts/data/sippa/pilot_cek.py` atas ekspor `log.csv` dan `probe.csv` keluar 0 (RU §6.1 PL1–PL9); vonis tercatat; keputusan pemilik lanjut ke banjir atau tidak (minggu 45; DAPAT DIPAKAI BERSYARAT = perbaikan tertulis sebelum banjir).
+- **Bukti:** `GET /api/sippa/log.csv`, `GET /api/sippa/probe.csv`, keluaran `pilot_cek.py`; pindaian kertas.
+- **Rujukan:** PRD §1.3 U3–U4, §4.1 minggu 44–45, §10.1 P0-10; KEPUTUSAN-SIPPA 53; DT §5.5.2; RU §6. **Ukuran:** M
 
 ### 3.C Pipeline data (25 Okt–13 Des)
 
 Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/sippa/keluaran/*.json` (kunci pertama `dibuat`, lalu `per`, `ambang`, `sumber`, `catatan`), batas 8 MB per berkas. Tidak ada salinan di `public/` (keputusan 32).
 
-#### SP-019 Kembar Python `hidraulika.py` dan `respons.py`
-- **Tujuan:** kembar Python fungsi hitung JS untuk pipeline dan buku: hidraulika, gerbang, BBM, CO2, neraca air, Joukowsky, `saranSarana`, `matriksRespons`.
-- **Berkas:** `scripts/data/sippa/hidraulika.py`, `scripts/data/sippa/respons.py`.
-- **Antarmuka:** Konsumsi: `tests/sippa/fixtures/acuan.json` (SP-010). Hasil: fungsi Python bernama sama dengan JS dalam snake_case (`hidraulika`, `gerbang_hidraulika`, `vonis`, `saran_sarana`, `matriks_respons`), dipanggil SP-026 lewat CLI `python3 -I scripts/data/sippa/hidraulika.py --json <berkas>` yang mencetak hasil JSON.
+#### SP-019 Kembar Python `hidraulika.py`, `respons.py`, `bersama.py`, dan pemeriksa pilot
+- **Tujuan:** kembar Python fungsi hitung JS untuk pipeline dan buku (DT §5.1): hidraulika, gerbang, BBM, CO2, neraca air, Joukowsky, `saran_sarana`, `matriks_respons`, `tingkat_pemicu`, statistik, finansial, `vonis_pilot`; dan `pilot_cek.py` untuk pilot minggu 44.
+- **Berkas:** `scripts/data/sippa/hidraulika.py`, `scripts/data/sippa/respons.py`, `scripts/data/sippa/bersama.py` (termasuk `vonis_pilot`), `scripts/data/sippa/kembar_cli.py`, `scripts/data/sippa/pilot_cek.py`.
+- **Antarmuka:** Konsumsi: `tests/sippa/fixtures/acuan.json` (SP-010). Hasil: fungsi Python bernama sama dengan JS dalam snake_case (`hidraulika`, `gerbang_hidraulika`, `vonis`, `saran_sarana`, `matriks_respons`, `vonis_pilot`), dipanggil SP-026 lewat `python3 -I scripts/data/sippa/kembar_cli.py` yang membaca kasus dari stdin dan mencetak hasil JSON (DT §5.1).
 - **Di luar:** `public/pipa/hitung.js`; uji kembar (SP-026).
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
-- **Dependensi:** SP-010 (`acuan.json`). **Paralel dengan:** SP-025, SP-065. **Isolasi:** worktree ya.
-- **Selesai bila:** self-check mereproduksi lima nilai acuan `tests/sippa/fixtures/acuan.json` (toleransi 1%) dan empat tingkat `matriksRespons`, enam aturan `saranSarana`.
-- **Bukti:** `python3 scripts/data/sippa/hidraulika.py`; `python3 scripts/data/sippa/respons.py`.
-- **Rujukan:** PRD §5.4, §6.4, §9.3, §9.12.2 baris skrip Python; DT bagian fungsi hitung. **Ukuran:** M
+- **Dependensi:** SP-010 (`acuan.json`). **Paralel dengan:** SP-025, SP-065. Harus selesai sebelum sesi pilot pertama (SP-018). **Isolasi:** worktree ya.
+- **Selesai bila:** self-check mereproduksi kasus `tests/sippa/fixtures/acuan.json` (H1–H8, Z1–Z5, F1–F4, Q1, W1, P1, N1, A1, T1–T4, V1–V3; toleransi 1%), empat tingkat `matriks_respons`, enam aturan `saran_sarana`; `pilot_cek.py uji` lolos fixture V1–V3 dan menolak fixture tanpa probe `sesudah`.
+- **Bukti:** `for s in bersama hidraulika respons pilot_cek; do python3 scripts/data/sippa/$s.py uji || exit 1; done`.
+- **Rujukan:** PRD §5.4, §6.4, §9.3, §9.12.2 baris skrip Python; DT §5, §5.8, §7.2; RU §4.1, §6.1. **Ukuran:** M
 
 #### SP-020 `sel22.py` kekerapan sel 2,2 km
 - **Tujuan:** kekerapan 2012–2025 per sel 2,2 km dari VIIRS mentah.
 - **Berkas:** `scripts/data/sippa/sel22.py`, `data/sippa/keluaran/sel22.json`.
-- **Antarmuka:** Hasil: `sel22.json` dengan medan PRD §9.7.1. Dipakai SP-021, SP-063.
+- **Antarmuka:** Hasil: `sel22.json` dengan medan DT §3.1.4. Dipakai SP-021, SP-063.
 - **Di luar:** zona.
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-002. **Paralel dengan:** SP-003, SP-004, SP-006. **Isolasi:** worktree ya.
 - **Selesai bila:** porsi deteksi 2019 dan 2023 di sel berulang direproduksi (72% dan 85%, KD §1) sebagai invarian rentang, bukan potret; ringkasan ≥ 3/5/7/10 tahun.
-- **Bukti:** `python3 scripts/data/sippa/sel22.py`.
+- **Bukti:** `python3 scripts/data/sippa/sel22.py uji && python3 scripts/data/sippa/sel22.py`.
 - **Rujukan:** PRD §7.1, §7.2, §9.7.1. **Ukuran:** S
 
 #### SP-021 `zona.py` kelayakan kompleks, sel, ringkasan zona
-- **Tujuan:** zona A–D dua versi (konservatif, optimistis) dan kolom terverifikasi per kompleks Kalteng, kelayakan per sel 2,2 km, dan ringkasan per provinsi dan kabupaten.
+- **Tujuan:** zona A–D tiga versi (`zona_k` versi `kendala.json`, `zona_u` jalan utama OSM, `zona_o` semua jalan OSM; aturan `<`, keputusan 51) per kompleks Kalteng, kelayakan per sel 2,2 km, dan ringkasan per provinsi dan kabupaten.
 - **Berkas:** `scripts/data/sippa/zona.py`, `data/sippa/keluaran/kelayakan_kompleks.json`, `data/sippa/keluaran/kelayakan_sel.json`, `data/sippa/keluaran/zona.json`.
-- **Antarmuka:** Konsumsi: `sel22.json`, `kajian/pipa/data/*.csv`, `public/data/kendala.json`, `khg_prioritas.json`, `kompleks_konsesi.json`, `akses.json`. Hasil: tiga JSON dengan medan PRD §9.7.1 (`zona_k`, `zona_o`, `keyakinan{}`). Dipakai SP-023, SP-029, SP-032, SP-063, SP-064.
+- **Antarmuka:** Konsumsi: `sel22.json`, `kajian/pipa/data/*.csv`, `public/data/kendala.json`, `khg_prioritas.json`, `kompleks_konsesi.json`, `akses.json`. Hasil: tiga JSON dengan medan DT §3.1.1–§3.1.3 (`zona_k`, `zona_u`, `zona_o`, `kolom_keyakinan`). Dipakai SP-023, SP-029, SP-032, SP-063, SP-064.
 - **Di luar:** jalan cek staf (data D1, dibaca layar).
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-020. **Paralel dengan:** SP-005, SP-007, SP-013. **Isolasi:** worktree ya.
-- **Selesai bila:** invarian: jumlah zona = jumlah kompleks, tiap kompleks tepat satu zona per versi; dari data 24–25 Okt menghasilkan A188/B418/C89/D170 dan A469/B158/C167/D71 (dicek sebagai pencocokan terhadap `matriks_jarak.md`, bukan konstanta di skrip); tanpa nama perusahaan konsesi.
-- **Bukti:** `python3 scripts/data/sippa/zona.py`.
-- **Rujukan:** PRD §5.1, §7.2, §9.7.1, §9.12.2; DT bagian data turunan. **Ukuran:** M
+- **Selesai bila:** invarian: jumlah zona = jumlah kompleks, tiap kompleks tepat satu zona per versi; dari data 24–25 Okt menghasilkan A188/B418/C89/D170, A198/B429/C81/D157, dan A469/B158/C167/D71 (dicek sebagai pencocokan terhadap `matriks_jarak.md` dengan sha256 masukan tercatat, RU §4.1, §4.3, bukan konstanta di skrip); tanpa nama perusahaan konsesi.
+- **Bukti:** `python3 scripts/data/sippa/zona.py uji && python3 scripts/data/sippa/zona.py`.
+- **Rujukan:** PRD §5.1, §7.2, §9.7.1, §9.12.2; DT §3.1, §7.2. **Ukuran:** M
 
 #### SP-022 `nasional.py` kit per provinsi
 - **Berkas:** `scripts/data/sippa/nasional.py`, `data/sippa/keluaran/kit_nasional.json`.
-- **Antarmuka:** Hasil: `kit_nasional.json` (PRD §9.7.1). Dipakai SP-062, SP-063.
+- **Antarmuka:** Hasil: `kit_nasional.json` (DT §3.1.5). Dipakai SP-062, SP-063.
 - **Tujuan:** 18 provinsi, kelompok gambut/mineral, kit per provinsi dengan `ha_per_kit: 22700` berlabel asumsi, berlabel "rencana bersyarat, bukan pengadaan".
 - **Di luar:** RAB nasional (SP-062).
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-002. **Paralel dengan:** SP-011, SP-012, SP-014. **Isolasi:** worktree ya.
 - **Selesai bila:** dari `luas_resmi.json` saat ini total 81 dan gambut 56; porsi tiap provinsi ≥ 0; invarian jumlah = total.
-- **Bukti:** `python3 scripts/data/sippa/nasional.py`.
+- **Bukti:** `python3 scripts/data/sippa/nasional.py uji && python3 scripts/data/sippa/nasional.py`.
 - **Rujukan:** PRD §5.2, §9.7.1. **Ukuran:** S
 
 #### SP-023 `pemicu.py` tingkat pemicu harian
@@ -449,8 +468,8 @@ Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/s
 - **Model:** sonnet.
 - **Dependensi:** SP-021. **Paralel dengan:** SP-008, SP-009, SP-010. **Isolasi:** worktree ya.
 - **Selesai bila:** tingkat tidak naik ke PRA-POSISI/GELAR bila ansambel lebih tua dari 36 jam; semua ambang berlabel asumsi-kebijakan dan "belum diuji balik".
-- **Bukti:** `python3 scripts/data/sippa/pemicu.py`.
-- **Rujukan:** PRD §9.4.4, §9.7.1, §9.12.2. **Ukuran:** S
+- **Bukti:** `python3 scripts/data/sippa/pemicu.py uji && python3 scripts/data/sippa/pemicu.py`.
+- **Rujukan:** PRD §9.4.4, §9.7.1, §9.12.2; DT §3.1.6, §5.4, §7.2. **Ukuran:** S
 
 #### SP-024 Tinjauan zona, pemicu, respons
 - **Tujuan:** kejujuran ambang dan klaim (tidak ada "diuji" tanpa uji balik; label keyakinan lengkap).
@@ -463,7 +482,7 @@ Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/s
 - **Rujukan:** PRD §10.2 W-02. **Ukuran:** S
 
 #### SP-025 Langkah `data.yml` dan unggah R2 `sippa/`
-- **Tujuan:** `pemicu.py` harian setelah `ansambel.py`/`fwi.py`; `zona.py` saat `kendala.json` berubah; unggah `data/sippa/keluaran/*.json` ke R2 `poskokarhutla-foto/sippa/` dengan pola langkah `risiko/`.
+- **Tujuan:** langkah persis DT §7.4: `pemicu.py uji` lalu `pemicu.py` harian (boleh gagal, `::error` bila swauji merah); unggah `pemicu.json` ke R2 `poskokarhutla-foto/sippa/` tiap jalan; berkas tahunan (`kelayakan_kompleks`, `kelayakan_sel`, `zona`, `sel22`, `kit_nasional`, `aoi_calon`) diunggah hanya pada `workflow_dispatch` dengan masukan `sippa_tahunan=1`; pola langkah `risiko/`.
 - **Berkas:** `.github/workflows/data.yml`.
 - **Antarmuka:** Hasil: objek R2 `poskokarhutla-foto/sippa/<nama>.json`. Dipakai SP-029.
 - **Di luar:** workflow baru (dilarang, PRD §7.3); `sel22.py` dan `nasional.py` tetap manual/tahunan.
@@ -471,18 +490,18 @@ Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/s
 - **Model:** sonnet; pemeriksa haiku.
 - **Dependensi:** SP-020, SP-021, SP-022, SP-023. **Paralel dengan:** SP-019, SP-065. **Isolasi:** worktree ya.
 - **Selesai bila:** satu jalan manual `workflow_dispatch` (dijalankan sesi induk setelah commit) memunculkan berkas di R2; langkah gagal tidak menghentikan langkah data lain yang sudah ada.
-- **Bukti:** `npm run uji:agen` (gerbang workflow bila ada); log Actions (sesi induk).
-- **Rujukan:** PRD §7.2, §7.3, §10.2 W-03. **Ukuran:** S
+- **Bukti:** `npm run uji:agen` (gerbang workflow bila ada); log Actions (sesi induk) mencetak sha berkas yang diunggah (RU §4.3).
+- **Rujukan:** PRD §7.2, §7.3, §10.2 W-03; DT §7.3, §7.4. **Ukuran:** S
 
 #### SP-026 Uji kembar JS dan Python
 - **Berkas:** `tests/sippa/kembar.test.mjs`.
-- **Tujuan:** `hitung.js` dan `scripts/data/sippa/*.py` memberi hasil sama untuk semua kasus `acuan.json` (memanggil `python3 -I`).
+- **Tujuan:** `hitung.js` dan `scripts/data/sippa/*.py` memberi hasil sama untuk semua kasus `acuan.json` berlabel `kembar: true` (memanggil `python3 -I scripts/data/sippa/kembar_cli.py`).
 - **Pengerja / pemeriksa:** `sippa` / `penulis-gerbang`.
 - **Model:** sonnet.
 - **Dependensi:** SP-019, SP-030. **Paralel dengan:** SP-031, SP-032, SP-033, SP-035. **Isolasi:** worktree ya.
-- **Selesai bila:** toleransi 1% untuk semua kasus; kasus baru yang diekspor kalkulator otomatis ikut.
+- **Selesai bila:** tiap bahasa dalam 1% dari nilai harapan dan JS dalam 0,1% dari Python (RU §2.1); string, kode gerbang, dan vonis sama persis; kasus baru yang diekspor kalkulator otomatis ikut.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.3, §9.12.2 baris kembar; RU bagian kembar. **Ukuran:** S
+- **Rujukan:** PRD §9.3, §9.12.2 baris kembar; RU §1.1 L2, §2.1. **Ukuran:** S
 
 #### SP-027 Matriks jarak gudang dan pelengkapan `akses.json`
 - **Tujuan:** jarak kompleks ke Daops/gudang (`harus dihitung`) dan waktu tempuh posko ke kompleks Kalteng yang belum ada (`harus dilengkapi`), untuk rincian Peta dan pemicu.
@@ -497,13 +516,13 @@ Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/s
 
 #### SP-028 Calon AOI 2027 `aoi_calon.json`
 - **Tujuan:** tiga AOI pilot 2027 dari lapisan kelayakan dan usulan staf (`sippa_aoi_usul`), minggu 50.
-- **Berkas:** `scripts/data/sippa/zona.py` (subperintah `--aoi`), `data/sippa/keluaran/aoi_calon.json`.
+- **Berkas:** `scripts/data/sippa/aoi.py` (DT §7.2), `data/sippa/keluaran/aoi_calon.json`.
 - **Di luar:** keputusan AOI (pemilik, G0).
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-021, SP-029 (usulan staf terekspor), SP-018. **Paralel dengan:** gelombang 16. **Isolasi:** worktree ya.
-- **Selesai bila:** saringan G0 (sel aktif ≥ 7 dari 14 tahun, gambut, air ≤ 2,5 km) tertulis di `ambang`; tanpa nama perusahaan.
-- **Bukti:** `python3 scripts/data/sippa/zona.py --aoi`.
+- **Selesai bila:** saringan G0 (sel aktif ≥ 7 dari 14 tahun, gambut, air < 2,5 km) tertulis di `ambang`; ≥ 1 calon pada data uji; tanpa nama perusahaan.
+- **Bukti:** `python3 scripts/data/sippa/aoi.py uji && python3 scripts/data/sippa/aoi.py`.
 - **Rujukan:** PRD §4.1 minggu 50, §4.4 G0, §9.7.1. **Ukuran:** S
 
 ### 3.D Web rilis R1 (28 Okt–8 Nov): perencanaan dasar, A/B, laporan pilot
@@ -511,105 +530,105 @@ Semua skrip Python 3.12 stdlib dengan self-check `__main__`, keluaran di `data/s
 R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari W-07, karena minggu 45 butuh `/pipa/ab` berisi hasil pilot ("n kecil") dan minggu 46 butuh Laporan pilot PDF (PRD §4.1).
 
 #### SP-029 Rute data, ringkas, cek jalan, usul AOI
-- **Berkas:** `src/sippa.js` (rute `GET /api/sippa/data/:nama` dengan hak dicek sebelum R2 dan daftar nama tetap, `GET /api/sippa/ringkas`, `GET/POST /api/sippa/jalan-cek`, `POST /api/sippa/aoi`; dummy layar `peta`, `ringkas`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: R2 `sippa/`, tabel 0055. Hasil: `GET /api/sippa/data/:nama` (nama ∈ `kelayakan_kompleks`, `kelayakan_sel`, `zona`, `sel22`, `kit_nasional`, `pemicu`, `aoi_calon`), `GET /api/sippa/ringkas`.
+- **Berkas:** `src/sippa.js` (rute `GET /api/sippa/data/<nama>` dengan hak dicek sebelum R2 dan daftar nama tetap `DATA_SIPPA`, `GET /api/sippa/ringkas`, `GET/POST /api/sippa/jalan-cek`, `POST /api/sippa/aoi`; dummy layar `peta`, `ringkas`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
+- **Antarmuka:** Konsumsi: R2 `sippa/`, tabel 0055. Hasil: `GET /api/sippa/data/<nama>` (nama ∈ `kelayakan_kompleks`, `kelayakan_sel`, `zona`, `sel22`, `kit_nasional`, `pemicu`, `aoi_calon`), `GET /api/sippa/ringkas`.
 - **Tujuan:** data turunan R2 hanya lewat sesi; tamu tidak tahu berkas ada atau tidak.
 - **Di luar:** layar.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
 - **Model:** sonnet; `guard-api` haiku.
 - **Dependensi:** SP-008, SP-025. **Paralel dengan:** SP-030, SP-034, SP-058, SP-062. **Isolasi:** worktree ya.
-- **Selesai bila:** 403 sama untuk berkas ada dan tidak ada; 404 untuk staf bila belum diunggah; batas laju 600/jam; cakupan terdaftar.
+- **Selesai bila:** tamu 401 identik untuk berkas ada dan tidak ada; 404 `{status:"belum_ada"}` untuk staf bila belum diunggah; GET tanpa batas laju (ADR-06); `ringkas` memuat `pemicu_dibuat` dari `MEDIA.head` (DT §8.3); cakupan terdaftar.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.7.1, §9.7.3, §10.2 W-04; DT bagian rute; RU bagian rute dan hak. **Ukuran:** M
+- **Rujukan:** PRD §9.7.1, §9.7.3, §10.2 W-04; DT §4.3; RU §2.4. **Ukuran:** M
 
 #### SP-030 `hitung.js` lengkap dan `batas.js`
-- **Berkas:** `public/pipa/hitung.js` (sisa fungsi PRD §9.3: `neracaAir`, `joukowsky`, `zonaTerverifikasi`, `saranSarana`, `matriksRespons`, `bandingRerata`, `bandingProporsi`, `crf`, `biayaPerHa`, `npv`, `bcr`, `impas`, gerbang H-DAYA, H-KECEPATAN, H-PANAS, H-AIR, H-DSM), `public/pipa/batas.js` (teks "Batas pemakaian alat", sumber tunggal untuk layar Data dan Lampiran K), `tests/sippa/hitung.test.mjs`, `tests/sippa/fixtures/acuan.json`.
-- **Antarmuka:** Konsumsi: `SippaHitung` (SP-010). Hasil: sisa fungsi PRD §9.3 di `SippaHitung`; `batas.js` mengekspor `BATAS_ALAT` (larik paragraf), dibaca SP-031 dan SP-073.
+- **Berkas:** `public/pipa/hitung.js` (sisa fungsi DT §5: `neracaAir`, `joukowsky`, `zonaTerverifikasi`, `saranSarana` versi `k|u|o|v`, `matriksRespons`, `tingkatPemicu`, `bandingRerata`, `bandingProporsi`, `vonisG4`, `af`, `crf`, `biayaPerHa`, `npv`, `bcr`, `impas`, gerbang H-RATING, H-DAYA, H-KECEPATAN, H-PANAS, H-AIR, H-DSM, H-UJI), `public/pipa/batas.js` (teks "Batas pemakaian alat", sumber tunggal untuk layar Data dan Lampiran L buku), `tests/sippa/hitung.test.mjs`, `tests/sippa/fixtures/acuan.json`.
+- **Antarmuka:** Konsumsi: `SippaHitung` (SP-010). Hasil: sisa fungsi PRD §9.3 di `SippaHitung`; `batas.js` mengekspor `BATAS_ALAT` (larik paragraf), dibaca SP-031 dan SP-073 (Lampiran L).
 - **Tujuan:** satu sumber rumus untuk kalkulator, peta, Studio, 3D, laporan, dan buku.
 - **Di luar:** mesin Studio (SP-041).
 - **Pengerja / pemeriksa:** `sippa` / `validasi-model` (rumus statistik dan biaya), `penulis-gerbang`.
 - **Model:** sonnet.
 - **Dependensi:** SP-010. **Paralel dengan:** SP-029, SP-034, SP-058, SP-062. **Isolasi:** worktree ya.
-- **Selesai bila:** `saranSarana` enam aturan; `matriksRespons` empat tingkat; `bandingRerata` cocok hitung tangan dan n < 8 = "belum bisa diputus"; Agresti-Caffo cocok contoh; impas semi Rp3,19 M (baca-C).
+- **Selesai bila:** `saranSarana` enam aturan; `matriksRespons` empat tingkat dengan `bara_regu` dari `operasi.json`; `tingkatPemicu` T1–T4; `bandingRerata` W1 dan n < 8 = "belum bisa diputus"; Agresti-Caffo P1; finansial N1; impas semi Rp3,19 M (baca-C); `vonisG4` tiga vonis dan data pilot tidak pernah diberi vonis G4.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.3, §9.4.8, §9.12.2 baris fungsi murni; DT bagian fungsi hitung; RU bagian fungsi murni. **Ukuran:** M
+- **Rujukan:** PRD §9.3, §9.4.8, §9.12.2 baris fungsi murni; DT §5; RU §2.1. **Ukuran:** M
 
 #### SP-031 Layar Ringkas dan Data
 - **Berkas:** `public/pipa/layar_ringkas.js`, `public/pipa/layar_data.js`.
-- **Tujuan:** empat kartu Insight (Kit, Pemicu, Pilot, Zona) yang memuat sendiri-sendiri; daftar dataset, rumus, gerbang, dan batas alat dari `batas.js`.
+- **Tujuan:** empat kartu Insight (Kit, Pemicu, Pilot, Zona tiga versi) yang memuat sendiri-sendiri; daftar dataset, rumus, gerbang, beda angka mesin Studio lawan `hidraulika()` (DT §5.7), dan batas alat dari `batas.js`.
 - **Di luar:** angka yang dihitung ulang di klien (diambil dari JSON/rute).
 - **Pengerja / pemeriksa:** `sippa` / `selera-angka`, `inp-reviewer`.
 - **Model:** sonnet; `selera-angka` haiku.
 - **Dependensi:** SP-029, SP-030. **Paralel dengan:** SP-026, SP-032, SP-033, SP-035. **Isolasi:** worktree ya.
 - **Selesai bila:** satu kartu galat tidak menghentikan kartu lain; pil basi dan menunggu tampil; tiap angka bersumber dan berwaktu.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.4.1, §9.4.8; DS bagian layar Ringkas dan Data. **Ukuran:** M
+- **Rujukan:** PRD §9.4.1, §9.4.8; DS §4.1, §4.13. **Ukuran:** M
 
 #### SP-032 Layar Peta kelayakan dan saran sarana
 - **Berkas:** `public/pipa/layar_peta.js`, `public/pipa/pipa.css` (gaya peta).
-- **Tujuan:** keputusan 30 dan 44: sakelar per kompleks dan per sel 2,2 km, tiga versi zona, pil zona dengan pola untuk buta warna, rincian kompleks, saran sarana dengan alasan berangka, tautan ke Hitung, aksi cek jalan dan usul AOI, daftar alternatif berpaginasi 50, basemap gelap.
+- **Tujuan:** keputusan 30, 44, 51, 52: sakelar per kompleks dan per sel 2,2 km, segmen versi zona (Konservatif = versi `kendala.json`, Optimistis = semua jalan OSM, Terverifikasi) dan ringkasan zona empat kolom (termasuk jalan utama OSM), simbol zona berwarna palet PRD dengan huruf A–D dan pola wajib, rincian kompleks, saran sarana dengan alasan berangka, tautan ke Hitung, aksi cek jalan dan usul AOI, daftar alternatif berpaginasi 50, basemap gelap.
 - **Di luar:** vendor MapLibre (sudah ada di `public/vendor/maplibre/`).
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `selera-angka`, `security-reviewer` (penyisipan teks dari data).
 - **Model:** sonnet.
 - **Dependensi:** SP-021, SP-029, SP-030. **Paralel dengan:** SP-026, SP-031, SP-033, SP-035. **Isolasi:** worktree ya.
-- **Selesai bila:** sakelar hanya `setLayoutProperty`/`setFilter`; tidak ada interaksi > 200 ms; versi Terverifikasi berbeda dari Konservatif bila ada cek jalan lolos; kartu judul memakai angka `zona.json`.
+- **Selesai bila:** RU §2.3 P1–P7 hijau: sakelar hanya `setLayoutProperty`/`setFilter`; tidak ada interaksi > 200 ms; versi Terverifikasi berbeda dari Konservatif bila ada cek jalan lolos; kartu judul dan ringkasan memakai angka `zona.json` (A188, A198, A469); gerbang memastikan tiap lapisan zona memasang huruf dan pola.
 - **Bukti:** `npm run uji:sippa`; laporan `inp-reviewer`.
-- **Rujukan:** PRD §9.4.2, §9.13; DS bagian layar Peta. **Ukuran:** L
+- **Rujukan:** PRD §9.4.2, §9.13; DS §3.6, §4.2. **Ukuran:** L
 
 #### SP-033 Layar Hitung
 - **Berkas:** `public/pipa/layar_hitung.js`.
-- **Tujuan:** kalkulator hidraulika dengan masukan dan batas PRD §9.4.3, kartu vonis, kartu angka, grafik tekanan sepanjang trase dan head loss per diameter, salin tautan, simpan sebagai skenario Studio (aktif setelah SP-035), ekspor acuan (Admin).
+- **Tujuan:** kalkulator hidraulika dengan masukan dan batas PRD §9.4.3 (debit bawaan 300 L/min, 8 lance, debit pemakai lain 0; 600 L/min dengan 8 lance tampil NO-GO H-SERAP), kartu vonis, kartu angka, grafik tekanan sepanjang trase dan head loss per diameter, salin tautan, simpan sebagai skenario Studio (aktif setelah SP-035), ekspor acuan (Admin).
 - **Di luar:** Studio.
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `selera-angka`.
 - **Model:** sonnet.
 - **Dependensi:** SP-029 (parameter `?kompleks=`), SP-030. **Paralel dengan:** SP-026, SP-031, SP-032, SP-035. **Isolasi:** worktree ya.
-- **Selesai bila:** kedalaman > 5 m ditolak di masukan dengan pesan PRD; 3–5 m berpil "lengan uji"; grafik lewat `nanti()`; ponsel memakai akordeon dengan vonis menempel.
+- **Selesai bila:** RU §2.3 H1–H6 hijau: kedalaman > 5 m ditolak di masukan dengan pesan PRD; 3–5 m berpil "lengan uji"; bawaan memberi KONDISIONAL; grafik lewat `nanti()`; ponsel memakai akordeon dengan vonis menempel.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.4.3, §6.4; DS bagian layar Hitung. **Ukuran:** M
+- **Rujukan:** PRD §9.4.3, §6.4; DS §4.3. **Ukuran:** M
 
 #### SP-034 Migrasi 0056 A/B, skenario, laporan dan uji skema
 - **Berkas:** `migrations/0056_sippa_ab_skenario.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Hasil: tabel 0056 persis PRD §9.7.2. Dipakai SP-035.
+- **Antarmuka:** Hasil: tabel 0056 persis DT §3.3. Dipakai SP-035.
 - **Tujuan:** `sippa_ab_unggah`, `sippa_petak`, `sippa_skenario`, `sippa_laporan`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `penulis-gerbang`.
 - **Model:** sonnet; `migrasi-idempoten` haiku.
 - **Dependensi:** SP-006. **Paralel dengan:** SP-029, SP-030, SP-058, SP-062. **Isolasi:** worktree ya.
-- **Selesai bila:** idempoten; CHECK menolak surfaktan > 0 di lengan bukan surfaktan, state skenario bukan JSON atau > 32 KB, tanggal bukan YYYY-MM-DD, `UNIQUE (aoi, petak_id)` ganda.
+- **Selesai bila:** RU §3.3 hijau: idempoten; CHECK menolak surfaktan > 0 di lengan bukan surfaktan, state skenario bukan objek JSON atau > 32 KB, tanggal bukan YYYY-MM-DD, `UNIQUE (aoi, petak_id)` ganda, sha unggahan ganda, `ada_berkas = 1` tanpa sha.
 - **Bukti:** `node --test tests/warga/sippa_skema.test.mjs`.
-- **Rujukan:** PRD §9.7.2 (0056), §10.2 W-06; DT bagian skema D1; RU bagian skema D1. **Ukuran:** S
+- **Rujukan:** PRD §9.7.2 (0056), §10.2 W-06; DT §3.2–§3.5; RU §3. **Ukuran:** S
 
 #### SP-035 Rute A/B, skenario, laporan
-- **Berkas:** `src/sippa.js` (`GET /api/sippa/ab`, `POST /api/sippa/ab/unggah`, `POST /api/sippa/ab/unggah/:id/status`, `GET /api/sippa/ab.csv`, `GET/POST /api/sippa/skenario`, `POST /api/sippa/skenario/:id/hapus`, `GET/POST /api/sippa/laporan`, `GET /api/sippa/laporan/:id/berkas`; dummy layar `ab`, `studio`, `laporan`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0056, `SippaHitung.bandingRerata`/`bandingProporsi` hanya di klien (server tidak menghitung statistik). Hasil: rute A/B, skenario, laporan PRD §9.7.3.
+- **Berkas:** `src/sippa.js` (`GET /api/sippa/ab`, `POST /api/sippa/ab/unggah`, `POST /api/sippa/ab-status/:id`, `GET /api/sippa/ab.csv`, `GET/POST /api/sippa/skenario`, `POST /api/sippa/skenario-hapus/:id`, `GET/POST /api/sippa/laporan`, `GET /api/sippa/laporan-berkas/:id`; dummy layar `ab`, `studio`, `laporan`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
+- **Antarmuka:** Konsumsi: tabel 0056, `SippaHitung.bandingRerata`/`bandingProporsi` hanya di klien (server tidak menghitung statistik). Hasil: rute A/B, skenario, laporan DT §4.3.
 - **Tujuan:** unggah CSV petak dengan tolak-semua bila satu baris salah; arsip PDF di R2 `sippa-laporan/`.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer` (unggah CSV dan PDF, injeksi rumus).
 - **Model:** sonnet.
 - **Dependensi:** SP-034, SP-008. **Paralel dengan:** SP-026, SP-031, SP-032, SP-033. **Isolasi:** worktree ya.
-- **Selesai bila:** CSV satu baris salah = 400 dengan nomor baris dan 0 baris tersimpan; sha sama = 409; PDF tanpa `%PDF-` ditolak; hapus skenario hanya pembuat atau Admin.
+- **Selesai bila:** baris RU §2.4 untuk rute ini hijau: CSV satu baris salah = 400 dengan nomor baris dan 0 baris tersimpan; sha sama = 409; PDF tanpa `%PDF-` ditolak dan PDF disajikan `attachment` + `content-security-policy: sandbox`; hapus skenario hanya pembuat atau moderator; status evaluator hanya moderator.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.4.7, §9.7.3, §10.2 W-06; DT bagian rute; RU bagian rute dan hak. **Ukuran:** M
+- **Rujukan:** PRD §9.4.7, §9.7.3, §10.2 W-06; DT §4.3; RU §2.4. **Ukuran:** M
 
 #### SP-036 Layar A/B
 - **Berkas:** `public/pipa/layar_ab.js`.
-- **Tujuan:** unggah CSV, ringkasan per lengan dibanding konvensional (Welch, Agresti-Caffo, biaya per ha dua definisi), kartu vonis G4 tiga nilai, grafik titik dan batang nyala ulang 7/30/90 hari, pil "hipotesis" dan "pilot, n kecil".
+- **Tujuan:** unggah CSV, ringkasan per lengan dibanding konvensional (Welch, Agresti-Caffo, biaya per ha dua definisi), kartu vonis G4 tiga nilai, kartu vonis pilot keputusan 53 tujuh butir (DS §4.8), grafik titik dan batang nyala ulang 7/30/90 hari, pil "hipotesis" dan "pilot, n kecil".
 - **Pengerja / pemeriksa:** `sippa` / `validasi-model` (vonis dan CI), `selera-angka`, `inp-reviewer`.
 - **Model:** sonnet.
 - **Dependensi:** SP-030, SP-035. **Paralel dengan:** SP-037, SP-040, SP-059, SP-060. **Isolasi:** worktree ya.
-- **Selesai bila:** hasil pilot tidak pernah memberi vonis G4; n < 8 = "belum bisa diputus"; daftar galat unggahan per baris dan kolom.
+- **Selesai bila:** RU §2.3 B1–B3 dan G6 hijau: hasil pilot tidak pernah memberi vonis G4; vonis pilot tampil terpisah dengan tiga nilai; n < 8 = "belum bisa diputus"; daftar galat unggahan per baris dan kolom.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.4.7, §1.3 U4, U7; DS bagian layar A/B. **Ukuran:** M
+- **Rujukan:** PRD §9.4.7, §1.3 U4, U7; DS §3.8, §4.8. **Ukuran:** M
 
 #### SP-037 Layar Laporan dan templat Laporan pilot
 - **Berkas:** `public/pipa/layar_laporan.js`, `public/pipa/laporan_isi.js` (fungsi murni `isiLaporan(jenis, data)`), `tests/sippa/laporan_isi.test.mjs`.
-- **Antarmuka:** Konsumsi: `public/vendor/jspdf/`, `public/inti/roboto.js`, `POST /api/sippa/laporan`. Hasil: `laporan_isi.js` mengekspor `isiLaporan(jenis, data)` yang mengembalikan larik blok `{jenis: "judul"|"paragraf"|"tabel"|"kartu", ...}`; dipakai SP-044, SP-054.
-- **Tujuan:** PDF di peramban dengan jsPDF dan Roboto yang sudah divendor (pola `public/laporan_bnpb.js`), arsip lewat `POST /api/sippa/laporan`; templat pertama: Laporan pilot (dua vonis dipisah).
+- **Antarmuka:** Konsumsi: `public/vendor/jspdf/`, `public/inti/roboto.js`, `POST /api/sippa/laporan`. Hasil: `laporan_isi.js` mengekspor `isiLaporan(jenis, data, {per, prov})` yang mengembalikan `{judul, nama_berkas, blok: [{tipe: "judul"|"paragraf"|"tabel"|"angka"|"foto"|"pil", ...}], kaki}` (DT §6.4); dipakai SP-044, SP-054.
+- **Tujuan:** PDF di peramban dengan jsPDF lokal `public/vendor/jspdf/` dan Roboto `public/inti/roboto.js` (pola `public/laporan_karhutla_deck.js`; `public/laporan_bnpb.js` TIDAK disalin karena memuat jsPDF dari CDN, DT §6.4), arsip lewat `POST /api/sippa/laporan`; templat pertama: Laporan pilot (tujuh butir `vonisPilot` dan vonis "lebih baik" dipisah). Uji tangan CSP jsPDF (butir teknis BT-05).
 - **Di luar:** templat kejadian, mingguan, musim, skenario (SP-044).
 - **Pengerja / pemeriksa:** `sippa` / `selera-angka`, `security-reviewer`.
 - **Model:** sonnet.
 - **Dependensi:** SP-010, SP-035. **Paralel dengan:** SP-036, SP-040, SP-059, SP-060. **Isolasi:** worktree ya.
 - **Selesai bila:** hanya logo BNPB; tiap angka bersumber dan berwaktu; tanpa "terbukti", em dash, titik tengah; nama berkas `sippa-pilot-<prov>-<YYYYMMDD>.pdf`; kaki "Dibuat otomatis ...".
 - **Bukti:** `node --test tests/sippa/laporan_isi.test.mjs`.
-- **Rujukan:** PRD §9.10, §4.1 minggu 46, §10.2 W-07; DS bagian layar Laporan; RU bagian laporan. **Ukuran:** M
+- **Rujukan:** PRD §9.10, §4.1 minggu 46, §10.2 W-07; DS §3.18, §4.12; DT §6.4, §9.2 BT-05; RU §2.3 (L1–L3, G6). **Ukuran:** M
 
 #### SP-038 Tinjauan R1
 - **Pengerja / pemeriksa:** `guard-api`, `migrasi-idempoten`, `selera-angka`, `higiene-repo` (haiku); `security-reviewer`, `inp-reviewer`, `validasi-model` (sonnet).
@@ -646,14 +665,14 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 #### SP-041 Mesin Studio dan `gerbangSippa`
 - **Berkas:** `public/pipa/studio_mesin.js`, `tests/sippa/studio_mesin.test.mjs`.
 - **Antarmuka:** Konsumsi: sumber SP-040, `SippaHitung`, `sippa.rab.*` (SP-062). Hasil: `globalThis.KarhutlaEngine` dengan `defaultState`, `getBase`, `buildBoQ`, `assess`, `compare`, `drawRiskMC` tidak berubah, ditambah `gerbangSippa(state, hasil)`. Dipakai SP-042, SP-044.
-- **Tujuan:** port mesin pemilik dengan angka dan rumus tidak berubah; hanya tiga jenis perubahan bertanda `SIPPA:` (pembungkus `globalThis.KarhutlaEngine` tanpa `localStorage`; `gerbangSippa` yang hanya menambah hambatan: H-SERAP, H-DALAM, `jaringan_permanen` > 2 koridor, H-AIR 1,5x; perbaikan cacat G23 termasuk slot heli `menunggu`); preset S0 dan S0B dari BOM dan `sippa.rab` (SP-062).
+- **Tujuan:** port mesin pemilik dengan angka dan rumus tidak berubah; hanya tiga jenis perubahan bertanda `SIPPA:` (DT §5.7: pembungkus skrip klasik tanpa `localStorage`; `gerbangSippa` yang hanya menambah hambatan: H-SERAP dan H-DALAM hanya untuk keadaan ber-blok `sippa` (BT-01), `jaringan_permanen` > 2 koridor, H-AIR 1,5x; perbaikan cacat G23 termasuk slot heli `menunggu`); preset S0 dan S0B dari BOM dan `sippa.rab` (SP-062).
 - **Di luar:** UI (SP-042).
 - **Pengerja / pemeriksa:** `sippa` / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-030, SP-040, SP-062. **Paralel dengan:** SP-027, SP-043, SP-048, SP-064. **Isolasi:** worktree ya.
 - **Selesai bila:** angka jalan-ulang baca-C C1.4 dari `defaultState` dan tiga preset cocok toleransi 0,5% (CAPEX S1/S2/S3, OPEX, TCO 5 tahun, tekanan semi 5,39 bar, impas semi, Monte Carlo P10/P50/P90); properti 200 keadaan acak berbenih: keras sesudah ≥ keras sebelum; MC deterministik; tidak ada status "GO".
-- **Bukti:** `node --test tests/sippa/studio_mesin.test.mjs`.
-- **Rujukan:** PRD §9.5.1, §9.5.2, §12.1 G01, G04, G10, G11, G13, G22, G23; DT bagian Studio; RU bagian Studio. **Ukuran:** M
+- **Bukti:** `node --test tests/sippa/studio_mesin.test.mjs` (termasuk `tests/sippa/fixtures/studio_konstanta.json`, RU §2.2).
+- **Rujukan:** PRD §9.5.1, §9.5.2, §12.1 G01, G04, G10, G11, G13, G22, G23; DT §5.7; RU §2.2. **Ukuran:** M
 
 #### SP-042 Layar Studio, Web Worker, simpan skenario
 - **Berkas:** `public/pipa/layar_studio.js`, `public/pipa/studio_pekerja.js`, `public/pipa/pipa.css` (gaya Studio).
@@ -664,17 +683,17 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Dependensi:** SP-041, SP-035. **Paralel dengan:** SP-044, SP-068, SP-069, SP-070. **Isolasi:** worktree ya.
 - **Selesai bila:** geser slider tidak membekukan layar (MC di Web Worker; jatuh ke `nanti()` dengan pita bila tidak ada); kolom NO-GO tetap tampil dengan alasan; nilai terbaik hanya disorot di antara kolom bukan NO-GO; impor berkas `karhutla-decision-v1` berhasil.
 - **Bukti:** `npm run uji:sippa`; laporan `inp-reviewer`.
-- **Rujukan:** PRD §9.5, §1.3 U10; DS bagian layar Studio. **Ukuran:** L
+- **Rujukan:** PRD §9.5, §1.3 U10; DS §3.9, §3.10, §4.9. **Ukuran:** L
 
 #### SP-043 Layar Pemicu dan rencana pra-posisi
 - **Berkas:** `public/pipa/layar_pemicu.js`.
-- **Tujuan:** kartu judul, tabel kabupaten, grafik 7 hari P(FWI ≥ 14), aksi "Buat rencana pra-posisi" (gerak `rencana: 1`).
+- **Tujuan:** kartu judul, tabel kabupaten, grafik 7 hari P(FWI ≥ 14), aksi "Buat rencana pra-posisi" (`POST /api/sippa/gerak/:id` dengan `rencana: 1`, konfirmasi `POST /api/sippa/tiba/:id`), mode jelajah ambang lewat `tingkatPemicu` tanpa menyimpan.
 - **Pengerja / pemeriksa:** `sippa` / `selera-angka`, `inp-reviewer`.
 - **Model:** sonnet.
 - **Dependensi:** SP-012, SP-023, SP-025, SP-029. **Paralel dengan:** SP-027, SP-041, SP-048, SP-064. **Isolasi:** worktree ya.
 - **Selesai bila:** ansambel basi = PRA-POSISI/GELAR tampil "–, data ansambel basi"; gerak rencana tampil di layar Kit sampai dikonfirmasi tiba.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.4.4, §10.2 W-09; DS bagian layar Pemicu. **Ukuran:** M
+- **Rujukan:** PRD §9.4.4, §10.2 W-09; DS §4.4. **Ukuran:** M
 
 #### SP-044 Templat laporan kejadian, mingguan, musim, skenario
 - **Berkas:** `public/pipa/laporan_isi.js`, `public/pipa/layar_laporan.js`, `tests/sippa/laporan_isi.test.mjs`.
@@ -688,14 +707,15 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Rujukan:** PRD §9.10, §4.1 minggu 48–52. **Ukuran:** M
 
 #### SP-045 Pengingat mingguan SIPPA di Meja Pantau
-- **Berkas:** `src/pengingat.js` (`buatPengingat`, dipanggil cron 00.40 UTC = 07.40 WIB di `src/worker.js`; tambah sumber SIPPA yang hanya aktif hari Senin), `tests/warga/sippa.test.mjs`.
-- **Tujuan:** Senin 07.40 WIB, selama ada kit berstatus `banjir` atau `gelar`, butir pengingat "Buat laporan mingguan SIPPA" masuk Meja Pantau; tanpa jadwal cron baru.
+- **Berkas:** `src/pantau.js` (`JENIS.sippa_mingguan`, detektor di `DETEKTOR`, `sippa_` di regex tabel-belum; ADR-11), `public/admin/pantau.js` (`JENIS` sama dengan server), `tests/warga/sippa.test.mjs`.
+- **Tujuan:** butir terhitung `sippa_mingguan` di Meja Pantau: muncul Senin sejak 07.40 WIB bila ada kit berstatus `banjir` atau `gelar` dan tidak ada `sippa_laporan` jenis `mingguan` dalam 7 hari terakhir; tanpa tabel baru (tabel `pengingat` 0028 punya CHECK jenis tertutup) dan tanpa jadwal cron baru.
+- **Di luar:** `src/pengingat.js` dan email ringkas (tidak dipakai, ADR-11).
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`.
 - **Model:** sonnet; pemeriksa haiku.
-- **Dependensi:** SP-008. **Paralel dengan:** SP-050, SP-071, SP-072, SP-073. **Isolasi:** worktree ya.
-- **Selesai bila:** tanpa kit aktif tidak ada butir; dengan kit `banjir` ada satu butir per minggu.
+- **Dependensi:** SP-008, SP-034 (tabel `sippa_laporan`). **Paralel dengan:** SP-050, SP-071, SP-072, SP-073. **Isolasi:** worktree ya.
+- **Selesai bila:** tanpa kit aktif tidak ada butir; dengan kit `banjir` dan tanpa laporan mingguan 7 hari ada satu butir hari Senin; sesudah laporan mingguan diarsipkan butir hilang; peran `pusdalops` melihatnya.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.10. **Ukuran:** S
+- **Rujukan:** PRD §9.10; DT §6.4 butir 5, §8.3, ADR-11. **Ukuran:** S
 
 #### SP-046 Tinjauan R2
 - **Pengerja / pemeriksa:** `guard-api`, `selera-angka`, `higiene-repo` (haiku); `security-reviewer`, `inp-reviewer`, `validasi-model` (sonnet).
@@ -728,26 +748,26 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-049 Layar 3D
 - **Berkas:** `public/pipa/adegan.js` (atas: logika murni diekspor; bawah: runtime malas), `public/pipa/adegan.css`, `public/pipa/layar_3d.js`, `tests/sippa/adegan_logika.test.mjs`.
-- **Antarmuka:** Konsumsi: `SippaHitung.hidraulika`, kompleks terpilih dari query `?kompleks=`. Hasil: `adegan.js` mengekspor logika murni `tataKit()`, `profilTekanan(p)`, `frontBasah(Q, t, h, ne)` untuk uji.
+- **Antarmuka:** Konsumsi: `SippaHitung.hidraulika`, kompleks terpilih dari query `?kompleks=`. Hasil: `adegan.js` mengekspor logika murni `tataKomponen()`, `profilWarna(hasil)`, `frontBasah(t_s, Q_ls, h_m, ne)`, `cekKedalaman(m)` untuk uji (DT §6.5).
 - **Tujuan:** tiga adegan (susunan kit, jalur air dengan warna tekanan dari `hidraulika()`, injeksi dengan front basah ilustratif), panel teks berangka sama, jatuh ke SVG 2D tanpa WebGL, label "Ilustrasi, bukan model panas terkalibrasi".
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `selera-angka`.
 - **Model:** sonnet.
 - **Dependensi:** SP-030, SP-032, SP-048. **Paralel dengan:** SP-051, SP-074, SP-075. **Isolasi:** worktree ya.
 - **Selesai bila:** komponen tidak saling tumpuk; profil tekanan = `hidraulika()`; front basah monoton naik; kedalaman > 5 ditolak; render hanya saat berubah; `prefers-reduced-motion` dihormati; `dispose` saat pindah layar.
 - **Bukti:** `node --test tests/sippa/adegan_logika.test.mjs`.
-- **Rujukan:** PRD §9.6, §10.2 W-10; DS bagian layar 3D; RU bagian 3D. **Ukuran:** L
+- **Rujukan:** PRD §9.6, §10.2 W-10; DS §3.17, §4.10; RU §2.3 (D1–D3). **Ukuran:** L
 
 #### SP-050 Migrasi 0057 dan rute telemetri, alarm, ringkas harian
-- **Berkas:** `migrations/0057_sippa_telemetri.sql`, `src/sippa.js` (`POST/GET /api/sippa/telemetri`, `GET/POST /api/sippa/perangkat`, `POST /api/sippa/perangkat/:id/cabut`, `GET /api/sippa/alarm`, `POST /api/sippa/alarm/:id/tutup`, `dariDatar()`, aturan alarm; dummy layar `telemetri`), `src/worker.js` (ringkas harian dan hapus mentah > 30 hari di tugas bersih-bersih cron menit 17 yang ada), `tests/warga/sippa_skema.test.mjs`, `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0055, cron menit 17 yang ada. Hasil: tabel 0057 PRD §9.11; `dariDatar(pesan)`; rute telemetri PRD §9.7.3.
+- **Berkas:** `migrations/0057_sippa_telemetri.sql` (persis DT §3.4: satu baris per pesan, T-J), `src/sippa.js` (`POST/GET /api/sippa/telemetri`, `GET/POST /api/sippa/perangkat`, `POST /api/sippa/perangkat-cabut/:id`, `GET /api/sippa/alarm`, `POST /api/sippa/alarm-tutup/:id`, `dariDatar()` dengan `tag_datar`, `AMBANG_ALARM`, `bersihkanSippa`; dummy layar `telemetri`), `src/worker.js` (`bersihkanSippa` di `bersihSemua` cron menit 17 yang ada), `src/pantau.js` (`JENIS.sippa_alarm` dan detektornya), `public/admin/pantau.js` (`JENIS` sama), `tests/warga/sippa_skema.test.mjs`, `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
+- **Antarmuka:** Konsumsi: tabel 0055, cron menit 17 yang ada. Hasil: tabel 0057 DT §3.4; `dariDatar(o)`; rute telemetri DT §4.3; butir Meja Pantau `sippa_alarm`.
 - **Tujuan:** kerangka telemetri siap menerima data (keputusan 38).
 - **Di luar:** jadwal cron baru (batas 5 jadwal akun Free).
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `guard-api`, `security-reviewer` (token perangkat).
 - **Model:** sonnet; haiku untuk dua pemeriksa pertama.
 - **Dependensi:** SP-006, SP-008. **Paralel dengan:** SP-045, SP-071, SP-072, SP-073. **Isolasi:** worktree ya.
-- **Selesai bila:** token salah 401; nilai di luar rentang tersimpan `mutu = 2`; waktu 1 jam di depan ditolak; PK menolak ganda; > 500 bacaan atau > 64 KB ditolak; token tampil sekali dan hanya sha256 tersimpan.
+- **Selesai bila:** RU §2.3 E1–E3, §2.4 baris telemetri, dan §3.4 hijau: token salah 401; > 300 token salah per jam 429; pesan ke-121 dalam sejam 429 (dihitung dari baris tabel, tanpa tulisan tambahan); nilai di luar rentang tersimpan mutu 2; waktu 6 menit di depan ditolak; pesan sama dikirim ulang = `ganda`; > 500 bacaan atau > 65.536 byte ditolak; token tampil sekali dan hanya sha256 tersimpan; tiap kode alarm terbuka sekali dan tertutup saat pulih; ringkas harian dan hapus > 30 hari jalan di cron yang ada.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.7.2 (0057), §9.11, §10.2 W-11; DT bagian telemetri; RU bagian telemetri. **Ukuran:** M
+- **Rujukan:** PRD §9.7.2 (0057), §9.11, §10.2 W-11; DT §3.4, §6.3, ADR-07; RU §2.4, §3.4; PRD §2.2 T-J, T-K. **Ukuran:** M
 
 #### SP-051 Layar Telemetri
 - **Berkas:** `public/pipa/layar_telemetri.js`.
@@ -755,20 +775,20 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Pengerja / pemeriksa:** `sippa` / `selera-angka`, `inp-reviewer`.
 - **Model:** sonnet.
 - **Dependensi:** SP-050. **Paralel dengan:** SP-049, SP-074, SP-075. **Isolasi:** worktree ya.
-- **Selesai bila:** daftar perangkat Admin menampilkan token sekali; tag identik dengan P&ID SIPPA-G-02.
+- **Selesai bila:** daftar perangkat moderator menampilkan token sekali; tag identik dengan P&ID SIPPA-G-02; seri 24 jam dari `json_each` per pesan.
 - **Bukti:** `npm run uji:sippa`.
-- **Rujukan:** PRD §9.11; DS bagian layar Telemetri. **Ukuran:** S
+- **Rujukan:** PRD §9.11; DS §4.11. **Ukuran:** S
 
 #### SP-052 Rantai dummy semua layar
-- **Berkas:** `src/sippa.js` (`RANTAI_DUMMY` untuk semua layar PRD §9.14), `tests/warga/sippa.test.mjs`.
-- **Antarmuka:** Konsumsi: semua tabel 0055–0057. Hasil: `RANTAI_DUMMY[layar]` untuk 12 layar (11 `LAYAR_SIPPA` + `lapangan`).
+- **Berkas:** `src/sippa.js` (`RANTAI_DUMMY` untuk semua layar persis DT §8.5: kit `SIPPA-901` s.d. `SIPPA-907` satu per status, periode dari layar, A/B tiga vonis, satu log `jam_klien_meleset`, alarm aktif dan tertutup), `tests/warga/sippa.test.mjs`.
+- **Antarmuka:** Konsumsi: semua tabel 0055–0057. Hasil: `RANTAI_DUMMY[layar]` untuk 13 kunci (11 `LAYAR_SIPPA` + `ringkas` + `lapangan`).
 - **Tujuan:** tiap layar terisi tanpa nol palsu; vonis A/B tiga nilai muncul; hapus tidak menyentuh baris nyata.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `penulis-gerbang`.
 - **Model:** sonnet. Baca `~/.claude/DUMMY.md` dulu.
 - **Dependensi:** SP-029, SP-035, SP-050. **Paralel dengan:** SP-053, SP-054, SP-055, SP-076. **Isolasi:** worktree ya.
-- **Selesai bila:** untuk tiap layar, `dummy/isi` lalu endpoint penyuapnya: tiap kolom angka bukan nol; `dummy/hapus` lalu nol baris dummy dan baris nyata utuh.
+- **Selesai bila:** untuk tiap layar, `dummy/isi` lalu endpoint penyuapnya: tiap kolom angka bukan nol; isi kedua untuk periode sama 409; pengisi hilir tanpa hulu melapor 0 baris; `dummy/hapus` lalu nol baris dummy (termasuk objek R2 dummy) dan baris nyata utuh (RU §7.5).
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.14, §10.2 W-12; RU bagian dummy. **Ukuran:** M
+- **Rujukan:** PRD §9.14, §10.2 W-12; RU §7.5; DT §8.5. **Ukuran:** M
 
 #### SP-053 Tombol isi dan hapus dummy di semua layar
 - **Berkas:** `public/pipa/app.js` (dua ikon Super Admin di tempat yang sama tiap layar, muat ulang penuh sesudahnya).
@@ -787,17 +807,17 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Dependensi:** SP-008, SP-035, SP-044. **Paralel dengan:** SP-052, SP-053, SP-055, SP-076. **Isolasi:** worktree ya.
 - **Selesai bila:** uji hijau dan merah bila satu langkah dilanggar (mis. transisi tidak sah).
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.12.2 baris alur lintas-tabel, §10.2 W-13; RU bagian alur. **Ukuran:** M
+- **Rujukan:** PRD §9.12.2 baris alur lintas-tabel, §10.2 W-13; RU §2.5. **Ukuran:** M
 
 #### SP-055 Gerbang SIPPA lengkap, aksesibilitas, tema gelap, ponsel
-- **Berkas:** `tests/sippa/gerbang-sippa.test.mjs` (butir 6: tiap handler `click`/`input` di `public/pipa/layar_*.js` yang memanggil fungsi gambar berat terdaftar memanggilnya lewat `nanti(`), perbaikan kecil di `public/pipa/**` yang ditemukan sapuan.
+- **Berkas:** `tests/sippa/gerbang-sippa.test.mjs` (RU §2.6 empat butir INP per handler, §2.8 butir 7, 9, 10: `innerHTML` hanya dengan `esc(`, tanpa "100%" probabilitas, tanpa nama perusahaan; lapisan zona `layar_peta.js` memasang huruf dan pola (DT §8.2); tanpa warna tertanam di `public/pipa/*.css` dan string gaya), `tests/sippa/kontras.test.mjs` (RU §2.7), perbaikan kecil di `public/pipa/**` yang ditemukan sapuan.
 - **Tujuan:** WCAG 2.2 AA (PRD §9.13), tema gelap di semua layar, tampilan ponsel, INP.
 - **Pengerja / pemeriksa:** `sippa` / `inp-reviewer`, `penulis-gerbang`. Baca `~/.claude/INP.md` dulu.
 - **Model:** sonnet.
 - **Dependensi:** semua tiket layar (SP-010 s.d. SP-012, SP-031 s.d. SP-033, SP-036, SP-037, SP-042, SP-043, SP-049, SP-051). **Paralel dengan:** SP-052, SP-053, SP-054, SP-076. **Isolasi:** worktree ya.
-- **Selesai bila:** gerbang enam butir hijau; papan ketik menjangkau semua kontrol; kontras terang dan gelap lolos; target sentuh ≥ 44 px (lapangan ≥ 56 px).
+- **Selesai bila:** semua butir gerbang hijau dan merah bila disisipi pelanggaran contoh; RU §2.7 hijau (papan ketik menjangkau semua kontrol; kontras terang dan gelap lolos; target sentuh ≥ 44 px, lapangan ≥ 56 px); angka INP terukur RU §2.6 di laporan.
 - **Bukti:** `npm run uji:sippa`; laporan `inp-reviewer`.
-- **Rujukan:** PRD §9.12.2 baris gerbang, §9.13, §1.3 U10; DS bagian aksesibilitas dan tema; RU bagian INP dan aksesibilitas. **Ukuran:** M
+- **Rujukan:** PRD §9.12.2 baris gerbang, §9.13, §1.3 U10; DS §2.1.5, §3.0, §7.3; RU §2.6, §2.7. **Ukuran:** M
 
 #### SP-056 Tinjauan penuh rilis lengkap
 - **Pengerja / pemeriksa:** `guard-api`, `migrasi-idempoten`, `selera-angka`, `higiene-repo` (haiku); `security-reviewer`, `inp-reviewer`, `validasi-model` (sonnet).
@@ -812,249 +832,261 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Berkas:** berkas SP-048 s.d. SP-055; `tests/warga/migrasi_beku.json` (0057).
 - **Pengerja / pemeriksa:** sesi induk / `higiene-repo`. **Model:** opus.
 - **Dependensi:** SP-056. **Paralel dengan:** SP-077, SP-078. **Isolasi:** tidak.
-- **Selesai bila:** uji asap tiap rute halaman `LAYAR_SIPPA` 200 dengan sesi; satu pesan telemetri uji diterima dan ditandai di luar rentang lalu dihapus.
+- **Selesai bila:** jalur PRD §10.6 (staging lalu `main`); uji asap RU §8.3 dan tiap rute halaman `LAYAR_SIPPA` 200 dengan sesi; satu pesan telemetri uji diterima dan ditandai di luar rentang lalu dihapus.
 - **Bukti:** log deploy.
 - **Rujukan:** PRD §10.2 W-15, §10.6. **Ukuran:** S
 
 ### 3.G Buku kajian dan deck (28 Okt–6 Des)
 
-Semua berkas di `data/kajian-bnpb/**` dimiliki `pipa-data` (PRD §9.12.1). Tiket menulis naskah dikerjakan subagent penulis `general-purpose` (diturunkan ke sonnet oleh `CLAUDE_CODE_SUBAGENT_MODEL`) lewat workflow `naskah-kajian.js`/`rakit-kajian.js` cabang `sippa` (SP-005); penyunting dan pemeriksa selalu agent baru, bukan penulisnya (AGENTS.md §3.2). Nama berkas naskah mengikuti pola repo yang dibaca `bangun.py`: `kajian/naskah/sippa/00-depan.md`, `bab-NN.md`, `90-lampiran.md`, `deck.json`, `bukti/bab-NN.md`. Isi per bab mengikuti KB; PRD §8.2 sebagai kerangka. Aturan bab: front matter `kajian: sippa`, `pertanyaan`, `ringkasan-bab`; semua angka lewat `{{angka:sippa.*}}`; pustaka APA 7; tanpa bab kritik; tanpa "terbukti" untuk SIPPA.
+Semua berkas di `data/kajian-bnpb/**` dimiliki `pipa-data`, kecuali `data/kajian-bnpb/naskah/**` yang dimiliki `penulis-kajian` (SP-085; glob paling spesifik menang). Naskah ditulis `penulis-kajian` lewat workflow `naskah-kajian.js`/`rakit-kajian.js` cabang `sippa` (SP-005); penyunting dan pemeriksa selalu agent baru, bukan penulisnya (AGENTS.md §3.2). Isi per bab mengikuti KB §4 (17 bab) dan KB §5 (Lampiran A–N); PRD §8 hanya ringkasan. Nama berkas mengikuti pembangun repo (`bangun/docx/bangun.py:430` mengurutkan satu front matter per berkas): `data/kajian-bnpb/naskah/sippa/00-depan-kata-pengantar.md`, `00-depan-ringkasan-eksekutif.md`, `bab-01.md` s.d. `bab-17.md`, `90-lampiran-a.md` s.d. `90-lampiran-l.md` (M dan N dibangkitkan), `deck.json`, `bukti/bab-NN.md` (+ `.angka.json`, `.pustaka.json`). Aturan bab: front matter `kajian: sippa`, `bab`, `pertanyaan`; pembuka `::: ringkasan-bab`; semua angka lewat `{{angka:sippa.*}}`; pustaka APA 7; tanpa bab kritik; tanpa "terbukti" untuk SIPPA; zona biru dan emas berhuruf dan berpola (keputusan 52).
+
+Perintah bersama (dari `data/kajian-bnpb/`): kontrak `python3 bangun/kontrak/naskah.py <berkas>`; slop `.venv/bin/python qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md <berkas>`; QA `.venv/bin/python qa/periksa.py --kajian sippa --berkas-saja --semua`.
 
 #### SP-058 Berkas bukti bab 1–5
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-01.md` s.d. `bab-05.md`.
-- **Tujuan:** tiap bab punya Inti, Temuan bersumber, Inferensi, Celah, dari KD, baca-A/B/C, data `kajian/pipa/data/`, dan JSON SP-020/SP-021.
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-01.md` s.d. `bab-05.md` (+ `.angka.json`, `.pustaka.json`).
+- **Tujuan:** tiap bab punya Inti, Temuan bersumber, Inferensi, Celah (L56, L57) dari KD, baca-A/B/C, data `kajian/pipa/data/`, dan JSON SP-020/SP-021/SP-022; nilai acuan KB §4 BAB 1–5 dicocokkan.
 - **Di luar:** naskah bab.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / `validasi-model` (klaim angka cocok dengan data), penyunting `general-purpose` baru (QA lapis 1).
+- **Pengerja / pemeriksa:** `penulis-kajian` / `validasi-model` (klaim angka cocok dengan data, tiga versi zona), penyunting `general-purpose` baru (QA lapis a).
 - **Model:** sonnet.
-- **Dependensi:** SP-004, SP-005, SP-021, KB. **Paralel dengan:** SP-029, SP-030, SP-034, SP-062. **Isolasi:** worktree ya.
-- **Selesai bila:** tiap temuan menyebut berkas sumber dan baris/kunci; celah ditulis, bukan ditutup dengan tebakan.
-- **Bukti:** `cd data/kajian-bnpb/bangun/kontrak && python3 naskah.py ../../naskah/sippa/bukti/bab-0[1-5].md` (bila kontrak memeriksa bukti; bila tidak, QA lapis 1 tertulis di laporan).
-- **Rujukan:** PRD §8.2 bab 1–5, §8.4 langkah 2, §10.3 B-02; KB bab 1–5. **Ukuran:** M
+- **Dependensi:** SP-004, SP-005, SP-021, SP-022, SP-085. **Paralel dengan:** SP-029, SP-030, SP-034, SP-062. **Isolasi:** worktree ya.
+- **Selesai bila:** tiap temuan menyebut berkas sumber dan baris/kunci; celah ditulis, bukan ditutup dengan tebakan; kunci angka memakai nama KB §4.
+- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/bukti/bab-0[1-5].md` (bila kontrak memeriksa bukti; bila tidak, QA lapis a tertulis di laporan).
+- **Rujukan:** PRD §8.2, §10.3 B-02; KB §4 BAB 1–5, §9.2 S5. **Ukuran:** M
 
-#### SP-059 Berkas bukti bab 6–10
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-06.md` s.d. `bab-10.md`.
-- **Tujuan:** sama dengan SP-058 untuk hidraulika, komponen dan gambar, operasi dan SOP, kelembagaan dan RACI, pemakaian ganda banjir dan irigasi.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / `validasi-model`, penyunting `general-purpose` baru.
+#### SP-059 Berkas bukti bab 6–11
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-06.md` s.d. `bab-11.md`.
+- **Tujuan:** sama dengan SP-058 untuk desain, hidraulika (debit kerja 300 L/min, kasus ajar 600 L/min, angka acuan DT §5.8), komponen dan gambar, operasi dan SOP, kelembagaan dan RACI, pemakaian ganda banjir dan irigasi.
+- **Pengerja / pemeriksa:** `penulis-kajian` / `validasi-model`, penyunting `general-purpose` baru.
 - **Model:** sonnet.
-- **Dependensi:** SP-004, SP-005, SP-019 (angka hidraulika). **Paralel dengan:** SP-036, SP-037, SP-040, SP-060. **Isolasi:** worktree ya.
+- **Dependensi:** SP-004, SP-005, SP-019 (angka hidraulika), SP-085. **Paralel dengan:** SP-036, SP-037, SP-040, SP-060. **Isolasi:** worktree ya.
 - **Selesai bila:** seperti SP-058; RACI satu A per baris; syarat keras anti de-watering tertulis untuk banjir dan irigasi.
-- **Bukti:** seperti SP-058 untuk `bab-0[6-9].md bab-10.md`.
-- **Rujukan:** PRD §3.3, §5.4–5.8, §6, §8.2 bab 6–10; KB bab 6–10. **Ukuran:** M
+- **Bukti:** seperti SP-058 untuk `bab-0[6-9].md bab-1[01].md`.
+- **Rujukan:** PRD §3.3, §5.4–§5.8, §6; KB §4 BAB 6–11. **Ukuran:** M
 
-#### SP-060 Berkas bukti bab 11–15
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-11.md` s.d. `bab-15.md`.
-- **Tujuan:** pilot dan program uji, anggaran dan NPV/BCR/Monte Carlo, risiko, peta jalan, keputusan yang diminta.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / `validasi-model`, penyunting `general-purpose` baru.
+#### SP-060 Berkas bukti bab 12–17
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bukti/bab-12.md` s.d. `bab-17.md`.
+- **Tujuan:** pilot dan program uji (vonis keputusan 53), anggaran dan NPV/BCR/Monte Carlo, risiko, sistem data dan pemantauan (web `/pipa`), peta jalan, kesimpulan dan keputusan yang diminta (KD-1 sampai KD-7).
+- **Pengerja / pemeriksa:** `penulis-kajian` / `validasi-model`, penyunting `general-purpose` baru.
 - **Model:** sonnet.
-- **Dependensi:** SP-004, SP-005. **Paralel dengan:** SP-036, SP-037, SP-040, SP-059. **Isolasi:** worktree ya.
-- **Selesai bila:** seperti SP-058; hasil pilot ditulis sebagai slot sampai SP-072; harga heli slot `menunggu` (T-A).
-- **Bukti:** seperti SP-058 untuk `bab-1[1-5].md`.
-- **Rujukan:** PRD §4, §8.2 bab 11–15, §11; KB bab 11–15. **Ukuran:** M
+- **Dependensi:** SP-004, SP-005, SP-085. **Paralel dengan:** SP-036, SP-037, SP-040, SP-059. **Isolasi:** worktree ya.
+- **Selesai bila:** seperti SP-058; hasil pilot ditulis sebagai slot `menunggu` sampai SP-072; harga heli slot `menunggu` (T-A).
+- **Bukti:** seperti SP-058 untuk `bab-1[2-7].md`.
+- **Rujukan:** PRD §4, §9, §11; KB §4 BAB 12–17, §3.5. **Ukuran:** M
 
 #### SP-061 Pustaka dicek ke naskah asli
-- **Berkas:** `data/kajian-bnpb/pustaka.json`.
-- **Tujuan:** sumber PRD §8.3 (Page 2002, Ballhorn 2009, Santoso 2021, Mulyasih UI, PP 57/2016, Permen LHK P.32/2016, datasheet, BNPB 2023, Kemenhut OMC 2026, BRGM 2021, LPDS 2016, Mongabay 2015, CHIRPS, WorldCover, FIRMS, SiPongi) dicek ke naskah asli; sumber berita ditandai; benchmark luar negeri berlabel "belum diverifikasi" sampai dikutip dari aslinya (G18).
-- **Pengerja / pemeriksa:** penulis riset `general-purpose` / `general-purpose` baru (cek acak 10 rujukan ke asli).
+- **Berkas:** `data/kajian-bnpb/pustaka.json`, `data/kajian-bnpb/kandidat-foto-commons.csv` (baris `kajian=sippa`, KB §7.1).
+- **Tujuan:** sumber KB §8.1 M8 dicek ke naskah asli; sumber berita ditandai; benchmark luar negeri berlabel "belum diverifikasi" sampai dikutip dari aslinya (G18); foto Commons F1–F9 berlisensi CC BY, CC BY-SA, CC0, atau PD.
+- **Pengerja / pemeriksa:** `penulis-kajian` (riset) / `general-purpose` baru (cek acak 10 rujukan ke asli).
 - **Model:** sonnet.
-- **Dependensi:** SP-004. **Paralel dengan:** SP-063, SP-066, SP-067. **Isolasi:** worktree ya.
-- **Selesai bila:** ≥ 50 sumber, separuh resmi/primer, ≥ 8 per bab atau nilai `tema.json qa.pustaka` kajian `sippa`.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/periksa.py --kajian sippa --berkas-saja --semua` (bagian pustaka).
-- **Rujukan:** PRD §8.3, §10.3 B-04; KB bagian pustaka. **Ukuran:** M
+- **Dependensi:** SP-004, SP-085. **Paralel dengan:** SP-063, SP-066, SP-067. **Isolasi:** worktree ya.
+- **Selesai bila:** ≥ 50 sumber, separuh resmi/primer, ≥ 8 per bab (`tema.json` `qa.pustaka.kajian_min.sippa`).
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/periksa.py --kajian sippa --berkas-saja --semua` (bagian pustaka, T-11, D-19, D-15).
+- **Rujukan:** PRD §8.3, §10.3 B-04; KB §7.1, §8.1 M8, M9. **Ukuran:** M
 
-#### SP-062 Tabel harga dan `sippa_keuangan.py`
-- **Berkas:** `data/sippa/harga.csv`, `data/kajian-bnpb/bangun/sippa_keuangan.py`.
-- **Antarmuka:** Hasil: `data/sippa/harga.csv` (kolom `kode, uraian, satuan, harga_rp, sumber, tanggal, keyakinan, rentang_rendah, rentang_tinggi, per` dengan `per` ∈ kit/lokasi/depot/program), kunci `sippa.rab.*`, `sippa.npv.*` yang dibaca `sippa_angka.py`. Dipakai SP-041 (preset S0, S0B), SP-063, SP-070.
-- **Tujuan:** RAB dihitung ulang (keputusan 13) bertingkat T0/T0B, T1, T2, T3, T4; OPEX kering/basah; TCO nominal dan terdiskonto 8%; NPV/BCR tiga skenario manfaat (0, regu terhindar, heli-hari terhindar `menunggu`) dan varian + banjir, + banjir + irigasi; Monte Carlo P10/P50/P90 berbenih; kepekaan 22.700 ha/kit ±50%.
+#### SP-062 Paket data `data/sippa/`, tabel harga, dan `sippa_keuangan.py`
+- **Berkas:** `data/kajian-bnpb/bangun/pipa_data.py` (langkah baru `paket`, KB §8.2 M11), paket `data/kajian-bnpb/data/sippa/` (KB §8.2 M10, termasuk `README.md`, `harga.csv`, `parameter.csv`, `zona_versi.csv`, `kelayakan_kompleks.csv`), `data/kajian-bnpb/bangun/sippa_keuangan.py` (KB §8.2 M13).
+- **Antarmuka:** Hasil: `data/kajian-bnpb/data/sippa/harga.csv` (kolom `kode, uraian, satuan, harga_rp, sumber, tanggal, keyakinan, rentang_rendah, rentang_tinggi, per` dengan `per` ∈ kit/lokasi/depot/program), `keuangan*.csv/json`, kunci `sippa.rab.*`, `sippa.npv.*` yang dibaca `sippa_angka.py`. Dipakai SP-041 (preset S0, S0B), SP-063, SP-070.
+- **Tujuan:** paket data beku per batas data (salinan `pipa/data/*.csv` dan keluaran `data/sippa/keluaran/*.json`); RAB dihitung ulang (keputusan 13) bertingkat T0/T0B, T1, T2, T3, T4; OPEX kering/basah; TCO nominal dan terdiskonto 8%; NPV/BCR tiga skenario manfaat (0, regu terhindar, heli-hari terhindar `menunggu`) dan varian + banjir, + banjir + irigasi; Monte Carlo 800 sampel berbenih; kepekaan 22.700 ha/kit ±50%.
 - **Di luar:** angka heli kontrak (T-A); nilai manfaat resmi (T-F).
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`.
 - **Model:** sonnet.
-- **Dependensi:** SP-004, SP-022. **Paralel dengan:** SP-029, SP-030, SP-034, SP-058. **Isolasi:** worktree ya.
-- **Selesai bila:** self-check mereproduksi urutan besaran contoh T2 PRD §11.1 (Rp13,7–18,9 M dipinjam; Rp16,2–21,4 M dibeli) sebagai rentang; manfaat bawaan 0; manfaat irigasi 0 bila syarat keras tidak dicentang; tidak memakai Rp364 M.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_keuangan.py`.
-- **Rujukan:** PRD §11.1, §9.3 (`npv`, `bcr`, `impas`), §12.1 G02, G06–G10; DT bagian keuangan. **Ukuran:** M
+- **Dependensi:** SP-004, SP-021, SP-022. **Paralel dengan:** SP-029, SP-030, SP-034, SP-058. **Isolasi:** worktree ya.
+- **Selesai bila:** self-check `pipa_data.py paket` mereproduksi A188/B418/C89/D170 dan jumlah 865; `sippa_keuangan.py uji` mereproduksi urutan besaran contoh T2 PRD §11.1 (Rp13,7–18,9 M dipinjam; Rp16,2–21,4 M dibeli) sebagai rentang, menolak item di dua satuan alokasi dan kontingensi ganda; manfaat bawaan 0; manfaat irigasi 0 bila syarat keras tidak dicentang; tidak memakai Rp364 M.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/pipa_data.py paket && .venv/bin/python bangun/sippa_keuangan.py uji && .venv/bin/python bangun/sippa_keuangan.py`.
+- **Rujukan:** PRD §11.1, §9.3; KB §8.2 M10, M11, M13; DT §5.6. **Ukuran:** M
 
 #### SP-063 Registri angka `sippa_angka.py`
-- **Berkas:** `data/kajian-bnpb/bangun/sippa_angka.py`, `data/kajian-bnpb/data/angka.json` (kunci `sippa.*` saja).
-- **Antarmuka:** Konsumsi: semua JSON `data/sippa/keluaran/`, CSV `kajian/pipa/data/`, keluaran SP-019 dan SP-062, ekspor D1 pilot (diperbarui di SP-072). Hasil: kunci `sippa.*` (dua versi zona, jarak, DEM, GSW, MCD64A1, CHIRPS, VIIRS, sel22, kit, hid, rab, npv, pilot) masing-masing berlabel keyakinan dan sumber.
+- **Berkas:** `data/kajian-bnpb/bangun/sippa_angka.py` (KB §8.2 M12), `data/kajian-bnpb/data/angka.json` (kunci `sippa.*` saja).
+- **Antarmuka:** Konsumsi: paket `data/kajian-bnpb/data/sippa/` (SP-062), keluaran SP-019, ekspor D1 pilot (diperbarui di SP-072). Hasil: kunci `sippa.*` KB §4 dan §11 (tiga versi zona, jarak, DEM, GSW, MCD64A1, CHIRPS, VIIRS, sel22, kit, hid, rab, npv, pilot, rek) masing-masing berlabel keyakinan dan sumber, `berkas` relatif ke `data/`.
 - **Tujuan:** tiap angka buku dan deck punya satu kunci (U2).
 - **Di luar:** kunci kajian lain di `angka.json`.
 - **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`, `selera-angka`.
 - **Model:** sonnet.
 - **Dependensi:** SP-019, SP-021, SP-022, SP-023, SP-024, SP-062. **Paralel dengan:** SP-061, SP-066, SP-067. **Isolasi:** worktree ya.
-- **Selesai bila:** self-check: tiap kunci berlabel dan bersumber; slot kosong berlabel `menunggu` dengan alasan; kunci kajian lain tidak berubah (dibandingkan sebelum dan sesudah).
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_angka.py`.
-- **Rujukan:** PRD §7.2, §8.3, §10.3 B-03. **Ukuran:** M
+- **Selesai bila:** self-check: tiap kunci berlabel dan bersumber; `sippa.zona.kalteng.konservatif.a.n` dihitung ulang dari `zona.json` (RU §4.3); slot kosong berlabel `menunggu` dengan alasan; kunci kajian lain tidak berubah (dibandingkan sebelum dan sesudah).
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_angka.py uji && .venv/bin/python bangun/sippa_angka.py`.
+- **Rujukan:** PRD §7.2, §8.3, §10.3 B-03; KB §4 (angka wajib tiap bab), §8.2 M12, M14, §11. **Ukuran:** M
 
 #### SP-064 Gambar peta dan grafik buku
-- **Berkas:** spek di `data/kajian-bnpb/bangun/visual/spek-sippa/*.json` (pola spek yang ada), keluaran `data/kajian-bnpb/gambar/sippa/*.png`.
-- **Tujuan:** peta zona Kalteng dua versi, peta sel 2,2 km, peta Indonesia kit per provinsi (`peta.mjs`); grafik VIIRS per tahun, CHIRPS anomali, histogram MCD64A1, kurva head loss, serap lance, CAPEX bertingkat, kipas Monte Carlo (`dasar.mjs`).
+- **Berkas:** `data/kajian-bnpb/bangun/visual/data_sippa.py`, spek `data/kajian-bnpb/bangun/visual/spek-sippa/sippa-01.json` s.d. `sippa-18.json` dan `sippa-p-<kode>.json` (KB §7.2), perubahan `bangun/visual/peta.mjs` dan `grafik.mjs` (KB §8.3 M16–M18), keluaran `data/kajian-bnpb/gambar/sippa/*.png`.
+- **Tujuan:** peta zona Kalteng dua panel (versi `kendala.json`, semua jalan OSM), peta sel 2,2 km, peta Indonesia kit per provinsi, 18 peta provinsi; grafik VIIRS, CHIRPS, MCD64A1, jarak, beda elevasi, head loss, waktu gelar, CAPEX bertingkat, kipas Monte Carlo, tornado, matriks risiko, matriks respons.
 - **Pengerja / pemeriksa:** `pipa-data` / `selera-angka`, `general-purpose` baru (D-8, D-21, D-24, D-28 lewat `periksa.py --visual`).
 - **Model:** sonnet.
 - **Dependensi:** SP-063. **Paralel dengan:** SP-027, SP-041, SP-043, SP-048. **Isolasi:** worktree ya.
-- **Selesai bila:** PNG 300 dpi; tiap gambar punya Sumber dan legenda; warna zona disertai pola dan huruf A–D.
-- **Bukti:** `cd data/kajian-bnpb && node bangun/visual/render.mjs <spek>` lalu `.venv/bin/python qa/periksa.py --visual bangun/visual/keluaran --kajian sippa --berkas-saja`.
-- **Rujukan:** PRD §8.2 kolom Gambar, §8.4 langkah 4, §10.3 B-05; KB daftar gambar. **Ukuran:** M
+- **Selesai bila:** PNG 300 dpi; tiap gambar punya Sumber, legenda, dan label keyakinan; zona biru dan emas dengan huruf A–D dan pola (keputusan 52, DS §2.1.3); validator palet `dataviz` terang dan gelap tercatat; render dilihat (lembar bukti).
+- **Bukti:** `cd data/kajian-bnpb && node bangun/visual/render.mjs --lembar <spek>` lalu `.venv/bin/python qa/periksa.py --visual bangun/visual/keluaran --kajian sippa --berkas-saja`.
+- **Rujukan:** PRD §8.2, §10.3 B-05; KB §7.2, §8.3; DS §5.1–§5.3. **Ukuran:** M
 
 #### SP-065 Gambar teknik SIPPA-G-01 s.d. G-06
-- **Berkas:** `data/kajian-bnpb/bangun/visual/teknik/blok.mjs` (blok judul dan blok pengesahan kosong bersama), `data/kajian-bnpb/bangun/visual/teknik/g01.mjs` s.d. `g06.mjs`, keluaran `data/kajian-bnpb/gambar/sippa/teknik/SIPPA-G-0[1-6].png` dan `.pdf` (A3).
-- **Tujuan:** GA kit relay, P&ID, detail lance 1,5 m dan teleskopik 3–5 m, manifold DN100 ke 4 x DN65, depot depan, gudang induk YonTP, tingkat konstruksi dengan catatan "Wajib verifikasi dan pengesahan insinyur berlisensi sebelum dibangun".
+- **Berkas:** `data/kajian-bnpb/bangun/visual/teknik/blok_judul.mjs` (blok judul dan blok pengesahan kosong bersama), `kit_ga.mjs` (G-01), `pid.mjs` (G-02), `lance.mjs` (G-03), `manifold.mjs` (G-04), `depot.mjs` (G-05), `gudang.mjs` (G-06), `uji.mjs`; keluaran `data/kajian-bnpb/gambar/sippa/teknik/SIPPA-G-0[1-6].png` dan `.pdf` (A3).
+- **Tujuan:** GA kit relay, P&ID, detail lance 1,5 m dan teleskopik 3–5 m, manifold DN100 ke 4 x DN65, depot depan, gudang induk YonTP, tingkat konstruksi dengan catatan "Wajib verifikasi dan pengesahan insinyur berlisensi sebelum dibangun" (KB §7.3, DS §5.4).
 - **Di luar:** mengisi blok pengesahan.
 - **Pengerja / pemeriksa:** `pipa-data` / `general-purpose` baru (daftar periksa kriteria terima PRD §6.9 per gambar).
 - **Model:** sonnet.
-- **Dependensi:** SP-004, DT (BOM dan tag P&ID). **Paralel dengan:** SP-019, SP-025. **Isolasi:** worktree ya.
-- **Selesai bila:** kriteria terima PRD §6.9 tercentang untuk G-01 s.d. G-06; tag G-02 identik dengan daftar tag PRD §9.11.
-- **Bukti:** `cd data/kajian-bnpb && node bangun/visual/teknik/g01.mjs` (dan seterusnya; tiap berkas self-check blok judul lengkap).
-- **Rujukan:** PRD §6.1, §6.9, §10.3 B-06. **Ukuran:** L
+- **Dependensi:** SP-004, PRD §6.1, DT §6.3 (BOM dan tag P&ID). **Paralel dengan:** SP-019, SP-025. **Isolasi:** worktree ya.
+- **Selesai bila:** kriteria terima PRD §6.9 tercentang untuk G-01 s.d. G-06; tag G-02 identik dengan daftar tag PRD §9.11; T-12 (SP-086) hijau untuk enam lembar ini.
+- **Bukti:** `cd data/kajian-bnpb && node bangun/visual/teknik/uji.mjs` (blok judul lengkap, blok pengesahan kosong, satuan dimensi).
+- **Rujukan:** PRD §6.1, §6.9, §10.3 B-06; KB §7.3, §8.3 M19; DS §5.4; RU §5.4. **Ukuran:** L
 
-#### SP-066 Gambar teknik SIPPA-G-07 s.d. G-12
-- **Berkas:** `data/kajian-bnpb/bangun/visual/teknik/g07.mjs` s.d. `g12.mjs`, keluaran `data/kajian-bnpb/gambar/sippa/teknik/SIPPA-G-07..12.png` dan `.pdf`.
-- **Tujuan:** rumah pompa panggung (koridor, bila dibuka), profil trase dari DEMNAS, modul banjir GA dan P&ID, skema telemetri dan daya, diagram zona dan alur keputusan sarana (identik `saranSarana`), tata letak petak A/B dan grid probe.
+#### SP-066 Gambar teknik SIPPA-G-07 s.d. G-12 dan diagram buku
+- **Berkas:** `data/kajian-bnpb/bangun/visual/teknik/rumah_pompa.mjs` (G-07), `profil.mjs` (G-08), `pid.mjs` (G-09, G-10), `zona.mjs` (G-11, membaca aturan `saranSarana` dari `public/pipa/hitung.js`), `petak.mjs` (G-12), diagram buku `lapis.mjs`, `siklus.mjs`, `penampang.mjs`, `alur.mjs`, `lembaga.mjs`, `gerbang.mjs`, `alur_data.mjs`; keluaran `data/kajian-bnpb/gambar/sippa/teknik/SIPPA-G-07..12.png` dan `.pdf`.
+- **Tujuan:** rumah pompa panggung (koridor, bila dibuka), profil trase, modul banjir GA dan P&ID, skema telemetri dan daya, diagram zona dan alur keputusan sarana (identik `saranSarana`), tata letak petak A/B dan grid probe; diagram bab KB §4.
 - **Pengerja / pemeriksa:** `pipa-data` / `general-purpose` baru.
 - **Model:** sonnet.
 - **Dependensi:** SP-065, SP-030 (`saranSarana`). **Paralel dengan:** SP-061, SP-063, SP-067. **Isolasi:** worktree ya.
-- **Selesai bila:** kriteria PRD §6.9 tercentang; G-08 **tertahan** sampai DEMNAS AOI tersedia (kriteria "dari DEMNAS nyata, bukan sintetis"); sementara G-08 tidak dirender dan Lampiran D mencatatnya sebagai "menunggu DEMNAS" (lihat §10).
-- **Bukti:** `node bangun/visual/teknik/g07.mjs` dst.
-- **Rujukan:** PRD §6.9, §5.4, §9.3 `saranSarana`. **Ukuran:** L
+- **Selesai bila:** kriteria PRD §6.9 tercentang; G-08 memakai DEMNAS AOI bila sudah diterima, bila belum memakai data nyata Copernicus GLO-30 berlabel "terverifikasi; DSM berkanopi" (bukan sintetis; KB §7.3, O7) dan diganti saat DEMNAS tiba; T-12 hijau untuk enam lembar ini.
+- **Bukti:** `cd data/kajian-bnpb && node bangun/visual/teknik/uji.mjs`.
+- **Rujukan:** PRD §6.9, §5.4, §9.3 `saranSarana`; KB §7.3, §10 O7; DS §5.4. **Ukuran:** L
 
-#### SP-067 Surat permintaan data (Lampiran C)
-- **Berkas:** `data/kajian-bnpb/pipa/surat/big.md`, `bws-kalimantan-ii.md`, `walidata-khg-brgm.md`, `bmkg.md`, `bpbd-kalteng.md`, `manggala-agni.md`, `badan-geologi.md`, `atr-bpn-pemda.md`, `lkpp-oem.md`, `bnpb-internal.md`.
-- **Tujuan:** 10 draf kop BNPB, ID data D01–D36 pemilik dipertahankan, siap kirim minggu 47.
+#### SP-067 Surat permintaan data (Lampiran I)
+- **Berkas:** `data/kajian-bnpb/pipa/surat/big.md`, `bws-kalimantan-ii.md`, `walidata-khg-brgm.md`, `bmkg.md`, `bpbd-kalteng.md`, `manggala-agni.md`, `badan-geologi.md`, `atr-bpn-pemda.md`, `lkpp-oem.md`, `bnpb-internal.md`; `data/kajian-bnpb/naskah/sippa/90-lampiran-i.md`.
+- **Tujuan:** 10 draf kop BNPB, ID data D01–D36 pemilik dipertahankan, siap kirim minggu 47; Lampiran I memuat kesepuluhnya.
 - **Di luar:** mengirim surat (pemilik).
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru (slop dan bahasa).
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru (slop dan bahasa).
 - **Model:** sonnet.
-- **Dependensi:** SP-004. **Paralel dengan:** SP-061, SP-063, SP-066. **Isolasi:** worktree ya.
+- **Dependensi:** SP-004, SP-085. **Paralel dengan:** SP-061, SP-063, SP-066. **Isolasi:** worktree ya.
 - **Selesai bila:** satu surat per instansi PRD §7.5 dengan daftar data, format, dan tenggat; tanpa nama perusahaan.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/slop.py --ambang --laporan pipa/surat/*.md`.
-- **Rujukan:** PRD §7.5, §4.1 minggu 47, §10.3 B-11. **Ukuran:** M
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/slop.py --ambang --laporan keluaran/qa/slop-sippa-surat.md pipa/surat/*.md && python3 bangun/kontrak/naskah.py naskah/sippa/90-lampiran-i.md`.
+- **Rujukan:** PRD §7.5, §4.1 minggu 47, §10.3 B-11; KB §5 Lampiran I. **Ukuran:** M
 
-#### SP-068 Naskah bab 1–4
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-01.md` s.d. `bab-04.md`.
-- **Tujuan:** Pendahuluan; Bara gambut; Pola api; Kelayakan kit per zona dan provinsi (dua versi zona, 81 kit "rencana bersyarat, bukan pengadaan").
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting substansi `general-purpose` baru (SP-075 menjalankan per bab).
+#### SP-068 Naskah bab 1–5
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-01.md` s.d. `bab-05.md`.
+- **Tujuan:** Pendahuluan; Bara Gambut; Pola Api; Kelayakan Kit di Kalteng (tiga versi zona, aturan `<`); Kebutuhan Kit 18 Provinsi (81 kit "rencana bersyarat, bukan pengadaan", 18 profil bertemplat).
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting substansi `general-purpose` baru (SP-075 menjalankan per bab).
 - **Model:** sonnet.
 - **Dependensi:** SP-058, SP-061, SP-063, SP-064. **Paralel dengan:** SP-042, SP-044, SP-069, SP-070. **Isolasi:** worktree ya.
-- **Selesai bila:** dialek NASKAH-SPEK lolos; token angka saja; slop LULUS.
-- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/bab-0[1-4].md && .venv/bin/python qa/slop.py --ambang --laporan naskah/sippa/bab-0[1-4].md`.
-- **Rujukan:** PRD §8.2 bab 1–4; KB bab 1–4. **Ukuran:** L
+- **Selesai bila:** pertanyaan kunci KB §4 terjawab berurutan; komponen bernomor KB ada; dialek NASKAH-SPEK lolos; token angka saja; slop LULUS.
+- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/bab-0[1-5].md && .venv/bin/python qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md naskah/sippa/bab-0[1-5].md`.
+- **Rujukan:** PRD §8.2; KB §4 BAB 1–5. **Ukuran:** L
 
-#### SP-069 Naskah bab 5–8
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-05.md` s.d. `bab-08.md`.
-- **Tujuan:** Desain SIPPA (empat lapis, yang ditutup sebagai batas desain); Hidraulika dan titik kerja; Spesifikasi komponen dan gambar teknik; Operasi (6 SOP bernomor, matriks respons, K3, logistik YonTP, pelatihan 58 jam, G6).
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru.
+#### SP-069 Naskah bab 6–9
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-06.md` s.d. `bab-09.md`.
+- **Tujuan:** Desain SIPPA (empat lapis, batas desain termasuk debit kerja 300 L/min); Hidraulika dan Titik Kerja (angka acuan DT §5.8, neraca debit Tabel 7.3); Spesifikasi Komponen dan Gambar Teknik; Operasi (pemicu, matriks respons, 6 SOP bernomor, K3, logistik YonTP, pelatihan 58 jam, G6).
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru, `validasi-model` (bab 7).
 - **Model:** sonnet.
-- **Dependensi:** SP-058 (bab 5), SP-059, SP-063, SP-064, SP-065. **Paralel dengan:** SP-042, SP-044, SP-068, SP-070. **Isolasi:** worktree ya.
+- **Dependensi:** SP-058, SP-059, SP-063, SP-064, SP-065. **Paralel dengan:** SP-042, SP-044, SP-068, SP-070. **Isolasi:** worktree ya.
 - **Selesai bila:** seperti SP-068; tiap SOP punya tujuan, pelaku, prasyarat, langkah, titik berhenti, formulir, rujukan.
-- **Bukti:** seperti SP-068 untuk `bab-0[5-8].md`.
-- **Rujukan:** PRD §5.3–5.8, §6, §8.2 bab 5–8; KB bab 5–8. **Ukuran:** L
+- **Bukti:** seperti SP-068 untuk `bab-0[6-9].md`.
+- **Rujukan:** PRD §5.3–§5.8, §6; KB §4 BAB 6–9. **Ukuran:** L
 
-#### SP-070 Naskah bab 9–12
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-09.md` s.d. `bab-12.md`.
-- **Tujuan:** Kelembagaan (RACI, BMN pinjam pakai, opsi konsesi); Pemakaian ganda banjir dan irigasi (BCR inti, + banjir, + banjir + irigasi); Pilot 2026 dan program uji 2027–2028 (hasil pilot sebagai slot); Anggaran, NPV, BCR, Monte Carlo.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru, `validasi-model` (bab 12).
+#### SP-070 Naskah bab 10–13
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-10.md` s.d. `bab-13.md`.
+- **Tujuan:** Kelembagaan dan Tata Kelola Aset (RACI, BMN pinjam pakai, opsi konsesi); Pemakaian Ganda Banjir dan Irigasi (BCR inti, + banjir, + banjir + irigasi); Pilot 2026 dan Program Uji 2027–2028 (dua vonis, keputusan 53, hasil pilot sebagai slot sampai SP-072); Anggaran, NPV, BCR, Monte Carlo.
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru, `validasi-model` (bab 12 dan 13).
 - **Model:** sonnet.
 - **Dependensi:** SP-059, SP-060, SP-062, SP-063. **Paralel dengan:** SP-042, SP-044, SP-068, SP-069. **Isolasi:** worktree ya.
 - **Selesai bila:** seperti SP-068; tanpa bab dasar hukum TNI; heli `menunggu` dengan pembanding resmi > Rp200 juta per sorti.
-- **Bukti:** seperti SP-068 untuk `bab-09.md bab-1[0-2].md`.
-- **Rujukan:** PRD §3.3, §3.4, §5.6, §5.7, §8.2 bab 9–12, §11.1; KB bab 9–12. **Ukuran:** L
+- **Bukti:** seperti SP-068 untuk `bab-1[0-3].md`.
+- **Rujukan:** PRD §3.3, §3.4, §5.6, §5.7, §11.1; KB §4 BAB 10–13. **Ukuran:** L
 
-#### SP-071 Naskah bab 13–15
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-13.md` s.d. `bab-15.md`.
-- **Tujuan:** Risiko dan mitigasi (register L x I); Peta jalan 2026–2030 dengan rekomendasi `@rek:`; Kesimpulan dan keputusan yang diminta (tiga keputusan, tanpa ulangan).
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru.
+#### SP-071 Naskah bab 14–17
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-14.md` s.d. `bab-17.md`.
+- **Tujuan:** Risiko dan Mitigasi (register L x I); Sistem Data dan Pemantauan (web `/pipa`, telemetri, data terbuka); Peta Jalan 2026–2030 dengan rekomendasi `::: rek` SR-01 s.d. SR-20 (KB §6); Kesimpulan dan Keputusan yang Diminta (KD-1 sampai KD-7, tanpa ulangan).
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru.
 - **Model:** sonnet.
 - **Dependensi:** SP-060, SP-063. **Paralel dengan:** SP-045, SP-050, SP-072, SP-073. **Isolasi:** worktree ya.
-- **Selesai bila:** seperti SP-068.
-- **Bukti:** seperti SP-068 untuk `bab-1[3-5].md`.
-- **Rujukan:** PRD §4, §11.2, §8.2 bab 13–15; KB bab 13–15. **Ukuran:** M
+- **Selesai bila:** seperti SP-068; tiap SR tampil sekali di bab asal sebagai rujukan dan lengkap hanya di Bab 16 dan 17.
+- **Bukti:** seperti SP-068 untuk `bab-1[4-7].md`.
+- **Rujukan:** PRD §4, §11.2; KB §4 BAB 14–17, §3.5, §6. **Ukuran:** M
 
-#### SP-072 Bab 11: hasil pilot dari D1
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-11.md` (bagian hasil pilot), `data/kajian-bnpb/pipa/data/pilot-2026.csv` (ekspor `GET /api/sippa/log.csv` dan probe oleh sesi induk, koordinat dibulatkan 0,01°), `data/kajian-bnpb/bangun/sippa_angka.py` (kunci `sippa.pilot.*`).
-- **Tujuan:** Tabel 11.3 hasil pilot Okt; dua vonis dipisah; pil "pilot, n kecil".
-- **Pengerja / pemeriksa:** penulis `general-purpose` (naskah) dan `pipa-data` (kunci angka) berurutan dalam satu worktree / `validasi-model`.
+#### SP-072 Bab 12.3 dan 11.4: hasil pilot dan operasi banjir dari D1
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/bab-12.md` (bagian 12.3), `bab-11.md` (bagian 11.4), `data/kajian-bnpb/bangun/sippa_pilot.py` (KB §8.2 M15), `data/kajian-bnpb/data/sippa/pilot_2026.csv` (ekspor `GET /api/sippa/log.csv` dan `GET /api/sippa/probe.csv` oleh sesi induk, koordinat dibulatkan 0,01°), `data/kajian-bnpb/bangun/sippa_angka.py` (kunci `sippa.pilot.*`).
+- **Tujuan:** Tabel 12.3 hasil pilot Okt; vonis keputusan 53 tujuh butir dari fungsi yang sama dengan web; vonis "lebih baik" tidak diputus; pil "pilot, n kecil".
+- **Pengerja / pemeriksa:** `penulis-kajian` (naskah) dan `pipa-data` (kunci angka) berurutan dalam satu worktree / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-018, SP-037, SP-070. **Paralel dengan:** SP-045, SP-050, SP-071, SP-073. **Isolasi:** worktree ya.
-- **Selesai bila:** angka pilot lewat `angka.json`; tidak ada vonis G4 dari pilot.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_angka.py && python3 bangun/kontrak/naskah.py naskah/sippa/bab-11.md`.
-- **Rujukan:** PRD §1.3 U3–U4, §8.2 bab 11, §10.3 B-10. **Ukuran:** S
+- **Selesai bila:** angka pilot lewat `angka.json`; vonis sama dengan keluaran `pilot_cek.py`; tidak ada vonis G4 dari pilot.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_pilot.py uji && .venv/bin/python bangun/sippa_angka.py && python3 bangun/kontrak/naskah.py naskah/sippa/bab-11.md naskah/sippa/bab-12.md`.
+- **Rujukan:** PRD §1.3 U3–U4, §10.3 B-10; KB §4 BAB 11, BAB 12, §8.2 M15; RU §6.3. **Ukuran:** S
 
-#### SP-073 Lampiran A, B, E–K
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/90-lampiran.md`.
-- **Tujuan:** A metode dan data (PRD §7.1, lineage, tanggal tarik, batas 23 Okt 2026 23.59 WIB); B tabel kelayakan per kompleks Kalteng dan per kabupaten 9 provinsi (`csv:` dari `kelayakan_kompleks.json`); C dirujuk dari SP-067; D dirujuk dari SP-065/SP-066; E SOP-01 s.d. SOP-06 lengkap dan formulir (G3-lite, probe, BBM, gerak kit); F BOM rinci dan kriteria terima, ukuran gudang; G protokol A/B pra-registrasi versi buku (diturunkan dari PRD §4.4 dan §9.4.7; versi KAK di SP-082); H rumus dan uji invarian hidraulika dari `acuan.json`; I benchmark luar negeri berlabel; J glosarium dan singkatan; K batas pemakaian alat `/pipa` disalin dari `public/pipa/batas.js` `BATAS_ALAT` (sumber tunggal).
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru, `validasi-model` (G dan H).
+#### SP-073 Lampiran tertulis A–H, J, K, L
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/90-lampiran-a.md`, `-b.md`, `-c.md`, `-d.md`, `-e.md`, `-f.md`, `-g.md`, `-h.md`, `-j.md`, `-k.md`, `-l.md`.
+- **Tujuan:** isi persis KB §5: A Metode, Data, dan Rekonsiliasi (termasuk rekonsiliasi tiga versi zona dan aturan `<`); B Kelayakan per Kompleks (`csv:`); C Dasbor 18 Provinsi; D Daftar Bahan sampai Baut dan Kriteria Terima; E RAB Rinci; F pengantar dan daftar gambar teknik (lembar disisipkan); G SOP-01 s.d. SOP-06 dan formulir (G3-lite, probe, BBM, gerak kit, survei trase); H Protokol Pilot dan Uji A/B (versi buku; KAK di SP-082); J Rumus dan Uji Invarian Hidraulika (nilai acuan DT §5.8); K Rujukan Praktik Luar Negeri; L Batas Pemakaian Alat `/pipa` disalin dari `public/pipa/batas.js` `BATAS_ALAT`. Lampiran I dari SP-067; M dan N dibangkitkan pembangun.
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru, `validasi-model` (H dan J).
 - **Model:** sonnet.
-- **Dependensi:** SP-009, SP-021, SP-030, SP-065, SP-066, SP-067, SP-069. **Paralel dengan:** SP-045, SP-050, SP-071, SP-072. **Isolasi:** worktree ya.
-- **Selesai bila:** sebelas lampiran ada; teks K identik dengan `BATAS_ALAT` (diperiksa dengan `diff` setelah ekstrak).
-- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/90-lampiran.md`.
-- **Rujukan:** PRD §8.2 Lampiran A–K, §9.4.8; KB lampiran. **Ukuran:** L
+- **Dependensi:** SP-009, SP-021, SP-030, SP-062, SP-065, SP-066, SP-067, SP-069. **Paralel dengan:** SP-045, SP-050, SP-071, SP-072. **Isolasi:** worktree ya.
+- **Selesai bila:** sebelas berkas ada; teks L identik dengan `BATAS_ALAT` (RU §2.3 A1, diperiksa hash teks); tiap lampiran data memuat pernyataan produsen.
+- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/90-lampiran-*.md`.
+- **Rujukan:** PRD §8.2; KB §5; RU §2.3 A1. **Ukuran:** L
 
 #### SP-074 Bagian depan dan Ringkasan Eksekutif
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/00-depan.md`.
-- **Tujuan:** sampul, kolofon dengan batas data, Kata Pengantar Kepala BNPB (draf berpenanda periksa pemilik bila T-G belum dijawab), Ringkasan Eksekutif dua lapis (Pesan Kunci 6–8 temuan berangka + pita tiga keputusan, lalu ringkasan per bab), singkatan yang benar-benar dipakai.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / penyunting `general-purpose` baru.
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/00-depan-kata-pengantar.md`, `00-depan-ringkasan-eksekutif.md`.
+- **Tujuan:** Kata Pengantar Kepala BNPB (draf berpenanda periksa pemilik bila T-G belum dijawab, KB §3.3); Ringkasan Eksekutif dua lapis (Pesan Kunci dengan tesis dan tujuh temuan KB §3.4, pita KD-1 sampai KD-3, lalu lapis rincian); sampul, kolofon, daftar, singkatan dibangkitkan pembangun.
+- **Pengerja / pemeriksa:** `penulis-kajian` / penyunting `general-purpose` baru.
 - **Model:** sonnet.
 - **Dependensi:** SP-068 s.d. SP-073. **Paralel dengan:** SP-049, SP-051, SP-075. **Isolasi:** worktree ya.
-- **Selesai bila:** tidak ada angka atau klaim yang tidak ada di bab; slop LULUS.
-- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/00-depan.md && .venv/bin/python qa/slop.py --ambang --laporan naskah/sippa/00-depan.md`.
-- **Rujukan:** PRD §8.2 baris Depan, §2.2 T-G; KB bagian depan. **Ukuran:** M
+- **Selesai bila:** tidak ada angka atau klaim yang tidak ada di bab; temuan 6 memakai angka acuan baru (19,06 m per km, 320 L/min, 300 L/min); slop LULUS.
+- **Bukti:** `cd data/kajian-bnpb && python3 bangun/kontrak/naskah.py naskah/sippa/00-depan-*.md && .venv/bin/python qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md naskah/sippa/00-depan-*.md`.
+- **Rujukan:** PRD §2.2 T-G, §8.1; KB §3. **Ukuran:** M
 
 #### SP-075 Sunting substansi
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/*.md`, `data/kajian-bnpb/bangun/sippa_angka.py` (hanya menambah kunci untuk angka yang ditemukan tanpa token).
-- **Tujuan:** tiap angka ke `angka.json`, tiap klaim ke sumber, paragraf kosong dipotong (QA lapis 2).
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/*.md`, `data/kajian-bnpb/bangun/sippa_angka.py` (hanya menambah kunci untuk angka yang ditemukan tanpa token), `data/kajian-bnpb/keluaran/qa/substansi-sippa-bab-NN.md`.
+- **Tujuan:** tiap angka ke `angka.json`, tiap klaim ke sumber, paragraf kosong dipotong (QA lapis b, KB §9.3).
 - **Pengerja / pemeriksa:** penyunting `general-purpose` baru per kelompok bab (bukan penulisnya) / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-068 s.d. SP-074 (boleh per bab segera setelah bab itu selesai). **Paralel dengan:** antar kelompok bab; SP-049, SP-051, SP-074. **Isolasi:** worktree ya.
 - **Selesai bila:** nol angka ketikan (D-22).
 - **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/periksa.py --kajian sippa --berkas-saja --semua` (gerbang D-22).
-- **Rujukan:** PRD §8.3, §10.3 B-08. **Ukuran:** M
+- **Rujukan:** PRD §8.3, §10.3 B-08; KB §9.3. **Ukuran:** M
 
 #### SP-076 Sunting bahasa dan anti-slop
 - **Berkas:** `data/kajian-bnpb/naskah/sippa/*.md`, `data/kajian-bnpb/keluaran/qa/slop-sippa.md`.
-- **Tujuan:** PUEBI, glosarium, ANTI-SLOP sampai semua bab LULUS (QA lapis 3).
-- **Pengerja / pemeriksa:** penyunting bahasa `general-purpose` (sonnet untuk tulis ulang, haiku untuk pindai) / `general-purpose` baru.
+- **Tujuan:** PUEBI, glosarium, ANTI-SLOP sampai semua bab LULUS, ditambah enam cek pendamping `anti-ai-checker` (QA lapis c, KB §9.3).
+- **Pengerja / pemeriksa:** penyunting bahasa `general-purpose` baru (sonnet untuk tulis ulang, haiku untuk pindai) / `general-purpose` baru.
 - **Model:** sonnet / haiku.
 - **Dependensi:** SP-075. **Paralel dengan:** SP-052 s.d. SP-055. **Isolasi:** worktree ya.
 - **Selesai bila:** laporan `slop-sippa.md` LULUS semua berkas.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/slop.py --ambang --laporan naskah/sippa/*.md`.
-- **Rujukan:** PRD §8.4 langkah 5 dan 8, §10.3 B-09. **Ukuran:** M
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md naskah/sippa/*.md`.
+- **Rujukan:** PRD §8.4, §10.3 B-09; KB §9.3. **Ukuran:** M
 
 #### SP-077 Bangun DOCX dan PDF
-- **Berkas:** `data/kajian-bnpb/keluaran/sippa.docx`, `sippa.pdf`, `sippa.manifest.json`; perbaikan mesin di `data/kajian-bnpb/bangun/docx/bangun.py` hanya bila gerbang gagal karena mesin.
+- **Berkas:** `data/kajian-bnpb/keluaran/sippa.docx`, `sippa.pdf`, `sippa.manifest.json`; perbaikan mesin di `data/kajian-bnpb/bangun/docx/bangun.py` hanya bila gerbang gagal karena mesin (termasuk penyisipan A3 Lampiran F, KB §10 O6).
 - **Tujuan:** buku A4 tegak Roboto, logo BNPB saja, foto Commons beratribusi, tanpa batas halaman.
 - **Pengerja / pemeriksa:** `pipa-data` / `general-purpose` baru.
 - **Model:** sonnet.
-- **Dependensi:** SP-064, SP-065, SP-066, SP-073, SP-074, SP-076. **Paralel dengan:** SP-057, SP-078. **Isolasi:** worktree ya.
-- **Selesai bila:** `periksa.py --ketat` nol gagal; halaman PDF = halaman DOCX.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/docx/bangun.py sippa && .venv/bin/python qa/periksa.py --docx keluaran/sippa.docx --pdf keluaran/sippa.pdf --manifest-docx keluaran/sippa.manifest.json --visual bangun/visual/keluaran --kajian sippa --ketat`.
-- **Rujukan:** PRD §8.4 langkah 6, §10.3 B-12. **Ukuran:** M
+- **Dependensi:** SP-064, SP-065, SP-066, SP-073, SP-074, SP-076, SP-086. **Paralel dengan:** SP-057, SP-078. **Isolasi:** worktree ya.
+- **Selesai bila:** `periksa.py --ketat` nol gagal (D-1 s.d. D-38, T-1 s.d. T-12); halaman PDF = halaman DOCX.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/docx/bangun.py sippa && .venv/bin/python qa/periksa.py --docx keluaran/sippa.docx --pdf keluaran/sippa.pdf --visual bangun/visual/keluaran --kajian sippa --ketat`.
+- **Rujukan:** PRD §8.4, §10.3 B-12; KB §9.2 S11, §9.3; RU §5.1. **Ukuran:** M
 
 #### SP-078 Spek deck dan bangun PPTX dan PDF
-- **Berkas:** `data/kajian-bnpb/naskah/sippa/deck.json` (spek; pola repo, menggantikan jalur `bangun/pptx/spek/sippa-deck.json` di PRD §8.4 yang tidak ada), `data/kajian-bnpb/keluaran/sippa-deck.pptx`, `sippa-deck.pdf`, `sippa-deck.manifest.json`.
-- **Tujuan:** sekitar 15 slide sesuai PRD §8.5 (16 + L1–L3), S1–S39, angka deck = angka DOCX (token sama), pil CUT OFF `23 Okt 2026, 23.59 WIB`.
-- **Pengerja / pemeriksa:** `pipa-data` / `general-purpose` baru.
+- **Berkas:** `data/kajian-bnpb/naskah/sippa/deck.json` (spek, `penulis-kajian`), `data/kajian-bnpb/keluaran/sippa-deck.pptx`, `sippa-deck.pdf`, `sippa-deck.manifest.json` (`pipa-data`).
+- **Tujuan:** 15 slide isi persis KB §11 (slide 1 Pesan Kunci deskriptif; slide 2–15 judul temuan berangka), sampul, penutup, L1–L4; S1–S39; angka deck = angka DOCX (token sama); pil CUT OFF `23 Okt 2026, 23.59 WIB`; zona biru dan emas berhuruf dan berpola; tata letak DS §5.5.
+- **Pengerja / pemeriksa:** `penulis-kajian` (spek) lalu `pipa-data` (bangun) / `general-purpose` baru.
 - **Model:** sonnet.
-- **Dependensi:** SP-063, SP-064, SP-076. **Paralel dengan:** SP-057, SP-077. **Isolasi:** worktree ya.
-- **Selesai bila:** `jenis_slide` berurutan tidak berulang (S35); stem berbeda dari DOCX; QA nol gagal.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf && .venv/bin/python qa/periksa.py --pptx keluaran/sippa-deck.pptx --pptx-pdf keluaran/sippa-deck.pdf --manifest-pptx keluaran/sippa-deck.manifest.json --kajian sippa --ketat`.
-- **Rujukan:** PRD §8.5, §10.3 B-13; KB bagian deck. **Ukuran:** M
+- **Dependensi:** SP-063, SP-064, SP-071, SP-076, SP-086. **Paralel dengan:** SP-057, SP-077. **Isolasi:** worktree ya.
+- **Selesai bila:** `jenis_slide` berurutan tidak berulang (S35); jumlah slide isi 15; stem berbeda dari DOCX; QA nol gagal.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf && (cd bangun/pptx && ../../.venv/bin/python periksa.py --serah ../../keluaran/sippa-deck.pptx) && .venv/bin/python qa/periksa.py --pptx keluaran/sippa-deck.pptx --pptx-pdf keluaran/sippa-deck.pdf --kajian sippa --ketat`.
+- **Rujukan:** PRD §8.5, §10.3 B-13; KB §11; DS §5.5; RU §5.2. **Ukuran:** M
 
 #### SP-079 QA lima lapis dan proofread render
-- **Berkas:** `data/kajian-bnpb/keluaran/qa/sippa.md` (laporan); perbaikan dikembalikan ke tiket asal.
-- **Tujuan:** lima lapis (pemindai, substansi, bahasa, proofread render halaman utuh dibagi tiga pembaca, gerbang mekanis).
-- **Pengerja / pemeriksa:** tiga proofreader `general-purpose` baru + pemindai haiku; pembetul `pipa-data`/penulis.
+- **Berkas:** `data/kajian-bnpb/keluaran/qa/sippa.md`, `sippa-deck.md` (laporan); perbaikan dikembalikan ke tiket asal.
+- **Tujuan:** lima lapis KB §9.3 (penulis, substansi, bahasa, proofread render halaman utuh dibagi tiga pembaca, gerbang mekanis).
+- **Pengerja / pemeriksa:** tiga proofreader `general-purpose` baru + pemindai haiku; pembetul `pipa-data`/`penulis-kajian`.
 - **Model:** sonnet (proofread), haiku (pindai).
 - **Dependensi:** SP-077, SP-078. **Paralel dengan:** antar pembaca. **Isolasi:** tidak (baca saja).
-- **Selesai bila:** U1 dan U2 terpenuhi; daftar periksa serah PRD §12.3 bagian buku tercentang.
-- **Bukti:** `keluaran/qa/sippa.md`; ulang perintah bukti SP-077 dan SP-078.
-- **Rujukan:** PRD §1.3 U1–U2, §8.4 langkah 8, §10.3 B-14, §12.3. **Ukuran:** M
+- **Selesai bila:** U1 dan U2 terpenuhi; RU §5.3 tiap baris lulus; daftar periksa serah PRD §12.3 bagian buku tercentang.
+- **Bukti:** `keluaran/qa/sippa.md`, `keluaran/qa/sippa-deck.md`; ulang perintah bukti SP-077 dan SP-078.
+- **Rujukan:** PRD §1.3 U1–U2, §10.3 B-14, §12.3; KB §9.3; RU §5. **Ukuran:** M
 
 #### SP-080 [induk] Commit dan serah buku dan deck
-- **Tujuan:** versi serah di `kajian/keluaran/` minggu 49 (paling lambat 6 Des).
-- **Berkas:** semua berkas SP-058 s.d. SP-079; `data/sippa/harga.csv`.
+- **Tujuan:** versi serah di `data/kajian-bnpb/keluaran/` minggu 49 (paling lambat 6 Des), dengan salinan bernama "Kajian SIPPA {DDMMYY}" (KB §1).
+- **Berkas:** semua berkas SP-058 s.d. SP-079 dan SP-086; paket `data/kajian-bnpb/data/sippa/`.
 - **Pengerja / pemeriksa:** sesi induk / `higiene-repo` (ukuran berkas, tanpa `* 2.*`).
 - **Model:** opus. **Dependensi:** SP-079. **Paralel dengan:** tidak. **Isolasi:** tidak.
 - **Selesai bila:** commit per tiket buku dengan path spesifik; manifest ada; pemilik menerima berkas.
 - **Bukti:** `git log --oneline`; manifest.
 - **Rujukan:** PRD §10.3 B-15, §10.7. **Ukuran:** S
+
+#### SP-086 Gerbang buku SIPPA: T-12 dan D-33 s.d. D-38
+- **Berkas:** `data/kajian-bnpb/qa/periksa.py` (T-12 RU §5.4; D-33 merek dan perusahaan, D-34 kedalaman > 5 m, D-35 keterangan gambar teknik, D-36 slot `menunggu`, D-37 "rencana bersyarat", D-38 "terbukti" tanpa kutipan, KB §9.4), `data/kajian-bnpb/qa/uji.py` (fixture negatif dan positif tiap gerbang), `data/kajian-bnpb/qa/cakupan.json` (`diuji`), `data/kajian-bnpb/bangun/pptx/periksa.py` (jumlah slide isi 14–16, slide 2–15 `judul_bentuk: temuan`, RU §5.3).
+- **Tujuan:** tiap bab dan deck diperiksa mesin untuk larangan keputusan 50, blok pengesahan gambar teknik, dan bentuk deck, tanpa melonggarkan gerbang kajian lain.
+- **Pengerja / pemeriksa:** `penulis-gerbang` / `pipa-data` (pemilik berkas, membaca diff), `higiene-repo`.
+- **Model:** sonnet.
+- **Dependensi:** SP-004. **Paralel dengan:** SP-029, SP-030, SP-034, SP-058, SP-062. **Isolasi:** worktree ya.
+- **Selesai bila:** tiap gerbang merah pada fixture negatif dan hijau pada fixture positif; uji QA kajian `air` dan `mitigasi` tetap hijau; siklus merah-hijau RU §7.4 tercatat.
+- **Bukti:** `cd data/kajian-bnpb && python3 qa/uji.py`.
+- **Rujukan:** KB §9.4; RU §5.3, §5.4, §7.4. **Ukuran:** M
 
 ### 3.H Program dan pasca-serah (Nov 2026–Jan 2027)
 
@@ -1071,9 +1103,9 @@ Semua berkas di `data/kajian-bnpb/**` dimiliki `pipa-data` (PRD §9.12.1). Tiket
 #### SP-082 Protokol A/B pra-registrasi dan KAK pilot 2027
 - **Berkas:** `data/kajian-bnpb/pipa/protokol-ab.md`.
 - **Tujuan:** empat lengan (konvensional, kit + lance, kit + surfaktan bebas PFAS, sekat kanal/rewetting) dan lengan uji `lance_dalam` 3–5 m; outcome, n ≥ 8 per lengan, 95% CI, titik cek 24 jam, 72 jam, 7, 30, 90 hari; KAK pilot 2027 dengan gerbang G0–G6.
-- **Pengerja / pemeriksa:** penulis `general-purpose` / `validasi-model`, penyunting `general-purpose` baru.
+- **Pengerja / pemeriksa:** `penulis-kajian` / `validasi-model`, penyunting `general-purpose` baru.
 - **Model:** sonnet.
-- **Dependensi:** SP-080, SP-036 (kolom CSV identik). **Paralel dengan:** gelombang 17. **Isolasi:** worktree ya.
+- **Dependensi:** SP-080, SP-036 (kolom CSV identik), SP-073 (Lampiran H versi buku). **Paralel dengan:** gelombang 17. **Isolasi:** worktree ya.
 - **Selesai bila:** kolom data protokol identik dengan kolom CSV PRD §9.4.7; tanpa klaim efikasi.
 - **Bukti:** `cd data/kajian-bnpb && .venv/bin/python qa/slop.py --ambang --laporan pipa/protokol-ab.md`.
 - **Rujukan:** PRD §4.1 minggu 51, §4.4, §9.4.7, §10.3 B-16. **Ukuran:** M
@@ -1081,21 +1113,21 @@ Semua berkas di `data/kajian-bnpb/**` dimiliki `pipa-data` (PRD §9.12.1). Tiket
 #### SP-083 Rekap 2026 dan errata angka
 - **Berkas:** `data/kajian-bnpb/pipa/rekap-2026.md`; `data/kajian-bnpb/bangun/sippa_angka.py` dan `data/kajian-bnpb/data/angka.json` bila ada angka berubah; errata buku bila perlu.
 - **Tujuan:** jam pompa, m3, kehilangan komponen, pelajaran 2026.
-- **Pengerja / pemeriksa:** penulis `general-purpose` + `pipa-data` (angka) / `validasi-model`.
+- **Pengerja / pemeriksa:** `penulis-kajian` + `pipa-data` (angka) / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** SP-081. **Paralel dengan:** SP-084 bagian akhir. **Isolasi:** worktree ya.
 - **Selesai bila:** angka rekap dari D1, berlabel; errata menyebut halaman dan nilai lama/baru.
-- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_angka.py`.
+- **Bukti:** `cd data/kajian-bnpb && .venv/bin/python bangun/sippa_angka.py uji && .venv/bin/python bangun/sippa_angka.py`.
 - **Rujukan:** PRD §4.1 minggu 53. **Ukuran:** S
 
 #### SP-084 [induk] Penyelarasan dokumen saudara dan penutupan
-- **Tujuan:** bagian awal (gelombang 0): setelah DS, DT, KB, RU selesai, ganti rujukan "bagian X" di berkas ini dengan nomor bagian, cek tidak ada tiket yang bertentangan dengan keempatnya, tambah tiket bila RU memuat area uji tanpa tiket. Bagian akhir (gelombang 18): semua status `selesai` atau `tertahan` beralasan; daftar `Ruling:` dari buku besar dilaporkan ke pemilik; buku besar `.superpowers/sdd/TIKET/` dihapus.
+- **Tujuan:** bagian awal (gelombang 0, **selesai 25 Okt 2026** lewat `PENYELARASAN.md`): rujukan "bagian X" diganti nomor bagian, tiket diselaraskan dengan DS, DT, KB, RU, tiket SP-085 dan SP-086 ditambah untuk area tanpa tiket. Bagian akhir (gelombang 18): semua status `selesai` atau `tertahan` beralasan; daftar `Ruling:` dari buku besar dilaporkan ke pemilik; buku besar `.superpowers/sdd/TIKET/` dihapus.
 - **Berkas:** `data/kajian-bnpb/pipa/TIKET.md`.
 - **Pengerja / pemeriksa:** sesi induk / pemilik.
 - **Model:** opus.
 - **Dependensi:** DS, DT, KB, RU (awal); semua tiket (akhir). **Paralel dengan:** SP-002. **Isolasi:** tidak.
-- **Selesai bila:** §9 berkas ini tanpa baris "tanpa tiket".
-- **Bukti:** `grep -n "bagian " data/kajian-bnpb/pipa/TIKET.md` hanya menyisakan rujukan bernomor.
+- **Selesai bila:** §9 berkas ini tanpa baris "tanpa tiket"; semua status `selesai` atau `tertahan` beralasan.
+- **Bukti:** `grep -nE "(DT|RU|DS|KB) bagian" data/kajian-bnpb/pipa/TIKET.md` kosong; matriks cakupan `PENYELARASAN.md` §2 tanpa celah.
 - **Rujukan:** AGENTS.md §2.1. **Ukuran:** S
 
 ---
@@ -1107,6 +1139,7 @@ Panah = "harus selesai sebelum". `[I]` = tiket sesi induk. Garis ganda `══>`
 ```
 FONDASI DAN P0 (25-27 Okt)
 SP-001 ══> SP-002 ══> SP-003 ══> SP-007 ══> SP-008 ══> SP-011 ══> SP-015 ══> SP-016[I] ══> SP-017[I] ══> SP-018[I] pilot
+(SP-010 ─> SP-019 pilot_cek.py ─> SP-018)
               │          │          ▲ │          ▲         ▲            ▲
               │          │   SP-006─┘ └> SP-009 ═╪═════════╪════════════╪══════════════════════> SP-018 (kertas, wajib)
               │          ├─> SP-010 ─────────────┴> SP-012 ┤            │
@@ -1146,21 +1179,23 @@ semua layar ─> SP-053, SP-055 ──────┼─> SP-056 ─> SP-057[I]
 SP-008 + SP-035 + SP-044 ─> SP-054 ─┘
 
 BUKU DAN DECK (6 Des)
-SP-004 + SP-005 ─> SP-058, SP-059, SP-060, SP-061, SP-067
-SP-004 + SP-022 ─> SP-062 ─> SP-063 ─> SP-064
-SP-004 ─> SP-065 ─> SP-066 (G-08 tertahan DEMNAS)
-SP-058 + SP-061 + SP-063 + SP-064 ─> SP-068 ─┐
-SP-059 + SP-065 ─────────────────> SP-069 ───┤
-SP-059 + SP-060 + SP-062 ────────> SP-070 ───┼─> SP-072 (+ SP-018, SP-037)
-SP-060 ──────────────────────────> SP-071 ───┤
-SP-009 + SP-030 + SP-065..067 + SP-069 ─> SP-073
+SP-002 ─> SP-085 (agent penulis-kajian) ─> SP-005
+SP-004 + SP-005 + SP-085 ─> SP-058, SP-059, SP-060, SP-061, SP-067
+SP-004 + SP-021 + SP-022 ─> SP-062 ─> SP-063 ─> SP-064
+SP-004 ─> SP-086 (gerbang buku) ─> SP-077, SP-078
+SP-004 ─> SP-065 ─> SP-066 (G-08 DSM sampai DEMNAS tiba)
+SP-058 + SP-061 + SP-063 + SP-064 ─> SP-068 (bab 1–5) ─┐
+SP-059 + SP-065 ─────────────────> SP-069 (bab 6–9) ───┤
+SP-059 + SP-060 + SP-062 ────────> SP-070 (bab 10–13) ─┼─> SP-072 (+ SP-018, SP-037)
+SP-060 ──────────────────────────> SP-071 (bab 14–17) ─┤
+SP-009 + SP-030 + SP-062 + SP-065..067 + SP-069 ─> SP-073
 SP-068..SP-073 ─> SP-074 ─> SP-075 ─> SP-076 ─┬─> SP-077 ─┬─> SP-079 ─> SP-080[I]
                                               └─> SP-078 ─┘
 
 PROGRAM
 SP-017 + SP-018 + T-D ─> SP-081[I] (laporan mingguan butuh SP-047) ─> SP-083
 SP-080 + SP-036 ─> SP-082
-DS, DT, KB, RU ─> SP-084[I] (awal); semua ─> SP-084[I] (akhir)
+DS, DT, KB, RU ─> SP-084[I] (awal, selesai 25 Okt); semua ─> SP-084[I] (akhir)
 ```
 
 ---
@@ -1171,8 +1206,8 @@ Paling banyak 4–5 pengerja menulis bersamaan (kolom "Penulis"); pemeriksa dan 
 
 | Gel. | Tanggal | Penulis bersamaan | Pemeriksa dan [induk] |
 | --- | --- | --- | --- |
-| 0 | 25 Okt pagi | tidak ada | SP-001, SP-002, SP-084 (awal) |
-| 1 | 25 Okt siang | SP-003, SP-004, SP-006, SP-020 | |
+| 0 | 25 Okt pagi | tidak ada | SP-001, SP-002, SP-084 (awal, selesai) |
+| 1 | 25 Okt siang | SP-003, SP-004, SP-006, SP-020, SP-085 (sesudah SP-003, worktree sama) | |
 | 2 | 25 Okt malam | SP-005, SP-007, SP-013, SP-021 | |
 | 3 | 26 Okt pagi | SP-008, SP-009, SP-010, SP-023 | |
 | 4 | 26 Okt sore–27 Okt pagi | SP-011, SP-012, SP-014, SP-022 (SP-008 berlanjut) | |
@@ -1180,7 +1215,7 @@ Paling banyak 4–5 pengerja menulis bersamaan (kolom "Penulis"); pemeriksa dan 
 | 6 | 28 Okt–1 Nov | SP-029, SP-030, SP-034, SP-058, SP-062 | SP-018, SP-024 |
 | 7 | 2–4 Nov | SP-026, SP-031, SP-032, SP-033, SP-035 | SP-081 mulai |
 | 8 | 5–7 Nov | SP-036, SP-037, SP-040, SP-059, SP-060 | |
-| 9 | 8 Nov | SP-061, SP-063, SP-066, SP-067 | SP-038, SP-039 |
+| 9 | 8 Nov | SP-061, SP-063, SP-066, SP-067, SP-086 | SP-038, SP-039 |
 | 10 | 9–13 Nov | SP-027, SP-041, SP-043, SP-048, SP-064 | |
 | 11 | 14–18 Nov | SP-042, SP-044, SP-068, SP-069, SP-070 | |
 | 12 | 18–22 Nov | SP-045, SP-050, SP-071, SP-072, SP-073 | SP-046, SP-047 |
@@ -1194,7 +1229,7 @@ Paling banyak 4–5 pengerja menulis bersamaan (kolom "Penulis"); pemeriksa dan 
 ### Sprint 0: Siap pilot (25–27 Okt)
 - **Tujuan sprint:** regu pilot memegang formulir kertas dan, bila uji lolos, tautan `/pipa/lapangan` yang tercatat di D1 produksi.
 - **Kapasitas:** 3 hari x 4–5 pengerja paralel; beban direncanakan sekitar 75% supaya ada ruang putaran perbaikan tinjauan.
-- **Wajib:** SP-001 s.d. SP-017, SP-020, SP-021, SP-023. **Regang (boleh pindah ke Sprint 1):** SP-019, SP-022, SP-025, SP-065, SP-005.
+- **Wajib:** SP-001 s.d. SP-017, SP-019 (`pilot_cek.py` untuk pilot), SP-020, SP-021, SP-023, SP-085. **Regang (boleh pindah ke Sprint 1):** SP-022, SP-025, SP-065, SP-005.
 - **Tanggal kunci:** 25 Okt siang gelombang 1; 26 Okt pagi pemeriksaan tengah (SP-006, SP-007 hijau); 27 Okt sore tinjauan SP-015; 27 Okt malam putusan deploy atau kertas.
 
 ### Sprint 1: R1 perencanaan, A/B, laporan pilot (28 Okt–8 Nov)
@@ -1204,7 +1239,7 @@ Paling banyak 4–5 pengerja menulis bersamaan (kolom "Penulis"); pemeriksa dan 
 
 ### Sprint 2: R2 Studio, Pemicu, laporan operasi (9–22 Nov)
 - **Tujuan sprint:** sebelum kit dipindah ke banjir (minggu 48), lima templat laporan dan pengingat mingguan berjalan, Studio membandingkan semua skenario.
-- **Wajib:** SP-040 s.d. SP-047, SP-063, SP-064, SP-066, SP-067, SP-068 s.d. SP-070. **Regang:** SP-027, SP-048, SP-071 s.d. SP-073.
+- **Wajib:** SP-040 s.d. SP-047, SP-063, SP-064, SP-066, SP-067, SP-068 s.d. SP-070, SP-086. **Regang:** SP-027, SP-048, SP-071 s.d. SP-073.
 - **Tanggal kunci:** 9–15 Nov Laporan pilot ke pimpinan; 16–22 Nov surat data terkirim (SP-067); 22 Nov deploy R2.
 
 ### Sprint 3: R3 dan buku versi serah (23 Nov–6 Des)
@@ -1256,21 +1291,23 @@ Kebutuhan banjir yang sudah dipenuhi P0: status `banjir`, alasan `pindah_banjir`
 
 | Kode | Pertanyaan | Tiket yang tertahan atau memakai bawaan | Bawaan bila belum dijawab |
 | --- | --- | --- | --- |
-| T-A | Harga heli BNPB | SP-041, SP-042 (slot `sippa.heli.biaya_jam` `menunggu`), SP-062, SP-063, SP-070 (bab 12), SP-078 (slide 13) | slot kosong, pembanding resmi "> Rp200 juta per sorti satu jam"; buku tetap bisa diserahkan |
+| T-A | Harga heli BNPB | SP-041, SP-042 (slot `sippa.heli.biaya_jam` `menunggu`), SP-062, SP-063, SP-070 (bab 13), SP-078 (slide 13) | slot kosong, pembanding resmi "> Rp200 juta per sorti satu jam"; buku tetap bisa diserahkan |
 | T-B | Lokasi, tanggal, alat pilot | SP-017 (kode penugasan regu), SP-018 (pilot); SP-009 (kepala formulir lokasi kosong) | AOI mudah Palangka Raya, 2 lance, 2 termometer |
 | T-C | Pemilik pompa pilot, penanda tangan pinjam pakai | SP-017 (`pemilik_asal` kit SIPPA-001) | dicatat apa adanya di `pemilik_asal`, tanpa dokumen formal |
-| T-D | Provinsi/kabupaten banjir penerima kit | SP-081; SP-070 (Tabel 10.1); SP-044 (isi laporan mingguan) | tujuan bebas di layar Kit; tabel buku memakai provinsi pasangan dari data |
+| T-D | Provinsi/kabupaten banjir penerima kit | SP-081; SP-070 (Bab 11); SP-044 (isi laporan mingguan) | tujuan bebas di layar Kit; tabel buku memakai provinsi pasangan dari data |
 | T-E | OPEX regu konvensional Manggala Agni | SP-062, SP-036 (garis dasar biaya), SP-070 | koefisien `bara_regu` 0,5–2,8 ha/regu/hari dari `operasi.json` |
 | T-F | Nilai manfaat untuk NPV/BCR | SP-062, SP-042, SP-070 | manfaat 0 + dua skenario berlabel asumsi-kebijakan |
 | T-G | Penanda tangan Kata Pengantar dan kolofon | SP-074, SP-080 | sama dengan deck BNPB 21 Okt 2026, draf berpenanda periksa pemilik |
 | T-H | `/pipa` untuk akun instansi | SP-008 (hak akses) | hanya admin dan staf BNPB; operator memakai kode penugasan; bila berubah, tiket baru setelah SP-057 |
 | T-I | Deep Research pemilik | tidak ada | tidak dirujuk |
+| T-J | Telemetri satu baris per pesan | SP-050 (skema 0057) | satu baris per pesan, interval 60 detik (DT ADR-07) |
+| T-K | Paket D1 berbayar sebelum telemetri > 30 kit | tidak ada tiket 2026 (kerangka saja); keputusan 2027 | interval 60 detik sampai 30 kit |
 
-Penghambat lain di luar T-A s.d. T-I:
+Penghambat lain di luar T-A s.d. T-K:
 
 | Penghambat | Tiket | Bawaan |
 | --- | --- | --- |
-| DEMNAS AOI dari BIG | SP-066 (G-08), SP-049 (profil 3D) | G-08 tertahan; 3D memakai `dem_elevasi.csv` berlabel DSM |
+| DEMNAS AOI dari BIG | SP-066 (G-08), SP-049 (profil 3D) | G-08 dan 3D memakai GLO-30 (`dem_elevasi.csv`) berlabel DSM berkanopi sampai DEMNAS tiba |
 | Akun CDS (`CDSAPI_KEY`) untuk GloFAS | SP-063, SP-073 (Lampiran A) | dicatat "belum ditarik" |
 | Balasan surat data (BWS, walidata KHG, Manggala Agni, LKPP) | SP-083, revisi buku 2027 | label keyakinan tetap; tidak memblokir serah |
 | Persetujuan pemilik atas putusan arah produk dari §1.1 | tiket yang memunculkan `Ruling:` berarah produk | tiket berhenti sampai dijawab (AGENTS.md §2.1) |
@@ -1281,7 +1318,7 @@ Penghambat lain di luar T-A s.d. T-I:
 
 | Tiket | Isi | Kapan | Syarat |
 | --- | --- | --- | --- |
-| SP-016 | commit P0 (SP-003, SP-004, SP-006 s.d. SP-014) | 27 Okt | SP-015 bersih |
+| SP-016 | commit P0 (SP-003, SP-004, SP-006 s.d. SP-014, SP-085) | 27 Okt | SP-015 bersih |
 | SP-017 | migrasi 0055 remote, deploy P0, uji asap, kit SIPPA-001, kode regu | 27 Okt malam | SP-016; `npm run uji` dan `uji:sippa` hijau |
 | SP-039 | commit R1 + data turunan terpisah + `migrasi_beku.json` (0055, 0056); migrasi 0056; deploy; `workflow_dispatch` `data.yml` | 8 Nov | SP-038 bersih |
 | SP-047 | commit dan deploy R2 | 22 Nov | SP-046 bersih |
@@ -1290,142 +1327,157 @@ Penghambat lain di luar T-A s.d. T-I:
 | SP-018, SP-081 | entri staf, ekspor D1, pemantauan operasi | 28 Okt–3 Jan | tidak ada commit kode |
 | SP-084 | penyelarasan berkas ini; penutupan | 25 Okt dan 3 Jan | commit `data/kajian-bnpb/pipa/TIKET.md` saja |
 
-Langkah deploy selalu PRD §10.6 butir 1–7 (`npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`, `npx --yes wrangler@4.42.0 deploy`, nama worker `centurisk97`, rollback bila asap gagal). Aturan commit PRD §10.7: satu commit per tiket, `git commit -m "SIPPA SP-0NN: ..." -- <berkas>`, tanpa `git add -A`, data turunan terpisah dari kode, tanpa berkas `* 2.*`. Skrip workflow di luar repo (SP-005) tidak di-commit.
+Langkah deploy selalu PRD §10.6 butir 1–8 (DT §8.4, RU §8.2): migrasi remote `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`; push ke `staging` (terbit.yml menguji lalu `wrangler versions upload --preview-alias staging`); uji asap di URL pratinjau dengan baris dummy; merge ke `main` (terbit.yml menguji lalu `wrangler deploy`, worker `centurisk97`). Merge ke `main` sama dengan tayang: `titik.yml`, `banjir.yml`, dan `data.yml` juga men-deploy `main`, paling lambat 21.20 WIB hari itu. Rollback = `npx --yes wrangler@4.42.0 rollback` lalu revert di `main`. Aturan commit PRD §10.7: satu commit per tiket, `git commit -m "SIPPA SP-0NN: ..." -- <berkas>`, tanpa `git add -A`, data turunan terpisah dari kode, tanpa berkas `* 2.*`. Skrip workflow di luar repo (SP-005) tidak di-commit.
 
 ---
 ## 9. Pemeriksaan kelengkapan
+
+Matriks lintas dokumen (fitur dan bab terhadap PRD, DS, DT, KB, RU, TIKET) ada di `PENYELARASAN.md` §2; tabel di bawah adalah sisi tiket.
 
 ### 9.1 Fitur web PRD §9 ke tiket
 
 | PRD | Fitur | Tiket |
 | --- | --- | --- |
 | §9.1.1 | peta layar 14 rute | SP-008 (cangkang), SP-010 (router) dan tiket layar di baris bawah |
-| §9.1.2 | cangkang worker, gerbang host, `PUBLIK_TANPA_SESI`, `/admin/pipa` | SP-008 |
+| §9.1.2 | cangkang worker, gerbang host, tamu ke `/admin/pantau?ke=`, `/admin/pipa` | SP-008 |
 | §9.1.3 | navigasi tiga lebar, bilah konteks provinsi dan versi zona | SP-010, SP-055 |
 | §9.2 | gaya Pantau Bencana, Bahasa Indonesia, angka `fmt`, pil keyakinan, mode gelap, desktop/ponsel | SP-010, SP-055; gerbang SP-014 |
 | §9.2.1 | enam keadaan standar | SP-010 |
-| §9.3 | fungsi hitung bersama dan gerbang kalkulator | SP-010, SP-030; kembar SP-019, SP-026 |
+| §9.3 | fungsi hitung bersama, gerbang kalkulator, `vonisPilot` | SP-010, SP-030; kembar SP-019, SP-026 |
 | §9.4.1 | Ringkas | SP-029, SP-031 |
-| §9.4.2 | Peta kelayakan dan saran sarana | SP-021, SP-029, SP-032 |
-| §9.4.3 | Kalkulator hidraulika | SP-033 |
+| §9.4.2 | Peta kelayakan, tiga versi zona, saran sarana | SP-021, SP-029, SP-032 |
+| §9.4.3 | Kalkulator hidraulika (bawaan 300 L/min) | SP-033 |
 | §9.4.4 | Pemicu pra-posisi | SP-023, SP-025, SP-043 |
 | §9.4.5 | Inventaris dan lacak kit, QR, tugaskan, kehilangan | SP-008, SP-012, SP-013 |
 | §9.4.6 | Rekap time-motion | SP-008, SP-010 |
-| §9.4.7 | Dashboard A/B | SP-034, SP-035, SP-036 |
+| §9.4.7 | Dashboard A/B dan kartu vonis pilot | SP-034, SP-035, SP-036 |
 | §9.4.8 | Data dan metode, batas alat | SP-030 (`batas.js`), SP-031 |
 | §9.5 | Simulator keputusan (mesin, `gerbangSippa`, semua skenario, NPV/BCR/MC) | SP-040, SP-041, SP-042, SP-062 |
 | §9.6 | Simulasi 3D | SP-048, SP-049 |
 | §9.7.1 | data turunan R2 | SP-019 s.d. SP-025, SP-028 |
 | §9.7.2 | skema D1 0055–0057 | SP-006, SP-034, SP-050 |
-| §9.7.3 | rute worker | SP-008, SP-029, SP-035, SP-045, SP-050, SP-052 |
+| §9.7.3 | rute worker (termasuk `probe.csv`, `foto/:id`) | SP-008, SP-029, SP-035, SP-050, SP-052 |
 | §9.8 | akses, peran, CSP, privasi | SP-008, SP-015, SP-038, SP-046, SP-056 |
-| §9.9 | form lapangan luring | SP-007, SP-009, SP-011, SP-013 |
-| §9.10 | laporan PDF lima templat, pengingat | SP-037, SP-044, SP-045 |
-| §9.11 | telemetri | SP-050, SP-051 |
-| §9.12.1 | pemilik berkas dan agent `sippa` | SP-003 |
+| §9.9 | form lapangan luring, `jam_klien_meleset`, medan vonis pilot | SP-007, SP-008, SP-009, SP-011, SP-013 |
+| §9.10 | laporan PDF lima templat, pengingat mingguan Meja Pantau | SP-037, SP-044, SP-045 |
+| §9.11 | telemetri, alarm Meja Pantau | SP-050, SP-051 |
+| §9.12.1 | pemilik berkas, agent `sippa` dan `penulis-kajian` | SP-003, SP-085 |
 | §9.12.2 | uji per lapisan | lihat §9.3 di bawah |
 | §9.13 | INP dan aksesibilitas | SP-055; `inp-reviewer` di tiap tiket layar |
 | §9.14 | data dummy | SP-008 (Kit, Log, Lapangan), SP-029, SP-035, SP-050, SP-052, SP-053 |
 
 Tidak ada fitur §9 tanpa tiket.
 
-### 9.2 Buku dan deck ke tiket
+### 9.2 Buku dan deck ke tiket (KB §4, §5, §11)
 
 | Bagian | Bukti | Naskah | Pendukung |
 | --- | --- | --- | --- |
-| Depan, Kata Pengantar, Ringkasan Eksekutif | dari bab | SP-074 | T-G |
+| Depan: Kata Pengantar, Ringkasan Eksekutif | dari bab | SP-074 | T-G |
 | Bab 1 Pendahuluan | SP-058 | SP-068 | SP-061 |
-| Bab 2 Bara gambut | SP-058 | SP-068 | SP-061, SP-064 |
-| Bab 3 Pola api | SP-058 | SP-068 | SP-020, SP-063, SP-064 |
-| Bab 4 Kelayakan kit | SP-058 | SP-068 | SP-021, SP-022, SP-064 |
-| Bab 5 Desain SIPPA | SP-058 | SP-069 | |
-| Bab 6 Hidraulika | SP-059 | SP-069 | SP-019, SP-063, SP-064, SP-066 (G-08) |
-| Bab 7 Komponen dan gambar teknik | SP-059 | SP-069 | SP-065, SP-066 |
-| Bab 8 Operasi dan SOP | SP-059 | SP-069 | SP-019 (`matriksRespons`) |
-| Bab 9 Kelembagaan | SP-059 | SP-070 | |
-| Bab 10 Banjir dan irigasi | SP-059 | SP-070 | SP-062, T-D |
-| Bab 11 Pilot dan program uji | SP-060 | SP-070, SP-072 | SP-018 |
-| Bab 12 Anggaran, NPV, BCR, Monte Carlo | SP-060 | SP-070 | SP-062, T-A, T-E, T-F |
-| Bab 13 Risiko | SP-060 | SP-071 | |
-| Bab 14 Peta jalan | SP-060 | SP-071 | |
-| Bab 15 Kesimpulan dan keputusan | SP-060 | SP-071 | |
-| Lampiran A, B, E, F, G, H, I, J, K | | SP-073 | SP-009, SP-021, SP-030 |
-| Lampiran C surat | | SP-067 | |
-| Lampiran D gambar teknik | | SP-065, SP-066 | DEMNAS (G-08) |
-| Deck sekitar 15 slide | | SP-078 | SP-063, SP-064 |
-| Sunting, QA, bangun, serah | | SP-075, SP-076, SP-077, SP-079, SP-080 | SP-004, SP-005 |
+| Bab 2 Bara Gambut | SP-058 | SP-068 | SP-061, SP-064, SP-066 (penampang) |
+| Bab 3 Pola Api | SP-058 | SP-068 | SP-020, SP-063, SP-064 |
+| Bab 4 Kelayakan Kit Kalteng | SP-058 | SP-068 | SP-021, SP-062, SP-064 |
+| Bab 5 Kebutuhan Kit 18 Provinsi | SP-058 | SP-068 | SP-022, SP-064 |
+| Bab 6 Desain SIPPA | SP-059 | SP-069 | SP-066 (lapis, siklus, G-11) |
+| Bab 7 Hidraulika | SP-059 | SP-069 | SP-019, SP-063, SP-064, SP-066 (G-08) |
+| Bab 8 Komponen dan Gambar Teknik | SP-059 | SP-069 | SP-065, SP-066 |
+| Bab 9 Operasi | SP-059 | SP-069 | SP-019 (`matriks_respons`) |
+| Bab 10 Kelembagaan | SP-059 | SP-070 | SP-066 (lembaga) |
+| Bab 11 Pemakaian Ganda | SP-059 | SP-070, SP-072 (11.4) | SP-062, SP-081, T-D |
+| Bab 12 Pilot dan Program Uji | SP-060 | SP-070, SP-072 (12.3) | SP-018, SP-066 (gerbang, G-12) |
+| Bab 13 Anggaran, NPV, BCR, Monte Carlo | SP-060 | SP-070 | SP-062, T-A, T-E, T-F |
+| Bab 14 Risiko | SP-060 | SP-071 | SP-064 (matriks risiko) |
+| Bab 15 Sistem Data dan Pemantauan | SP-060 | SP-071 | SP-066 (alur_data), web R1–R3 |
+| Bab 16 Peta Jalan | SP-060 | SP-071 | register SR KB §6 |
+| Bab 17 Kesimpulan dan Keputusan | SP-060 | SP-071 | KD-1 s.d. KD-7 |
+| Lampiran A, B, C, D, E, F (pengantar), G, H, J, K, L | | SP-073 | SP-009, SP-021, SP-030, SP-062, SP-065, SP-066 |
+| Lampiran I surat | | SP-067 | |
+| Lampiran F lembar A3 | | SP-065, SP-066 | SP-077 (penyisipan) |
+| Lampiran M glosarium, N atribusi foto | | dibangkitkan SP-077 | SP-004 (glosarium), SP-061 (foto) |
+| Deck 15 slide isi | | SP-078 | SP-063, SP-064 |
+| Gerbang buku (T-12, D-33 s.d. D-38) | | SP-086 | SP-004 |
+| Sunting, QA, bangun, serah | | SP-075, SP-076, SP-077, SP-079, SP-080 | SP-004, SP-005, SP-085 |
 | Dokumen program (formulir, surat, protokol, rekap) | | SP-009, SP-067, SP-082, SP-083 | |
 
 Tidak ada bab atau lampiran tanpa tiket.
 
-### 9.3 Area uji ke tiket
-
-RU ditulis paralel; area di bawah adalah lapisan PRD §9.12.2 dan ukuran U1–U10. SP-084 menambah baris bila RU memuat area lain.
+### 9.3 Area uji ke tiket (RU)
 
 | Area uji | Berkas atau perintah | Tiket |
 | --- | --- | --- |
-| fungsi murni JS | `tests/sippa/hitung.test.mjs` | SP-010, SP-030 |
-| mesin Studio | `tests/sippa/studio_mesin.test.mjs` | SP-041 |
-| logika 3D, laporan, formulir | `adegan_logika`, `laporan_isi`, `formulir` | SP-049, SP-037, SP-044, SP-007 |
-| kembar JS dan Python | `tests/sippa/kembar.test.mjs` | SP-026 |
-| self-check Python | `scripts/data/sippa/*.py`, `sippa_keuangan.py`, `sippa_angka.py`, `sippa_formulir.py` | SP-019 s.d. SP-023, SP-028, SP-062, SP-063, SP-009 |
-| skema D1 (CHECK, trigger, PK) | `tests/warga/sippa_skema.test.mjs` | SP-006, SP-034, SP-050 |
-| rute dan hak | `tests/warga/sippa.test.mjs` | SP-008, SP-029, SP-035, SP-045, SP-050, SP-052 |
-| alur lintas-tabel | `tests/warga/sippa_alur.test.mjs` | SP-054 |
-| registri cakupan | `tests/warga/cakupan.json` | tiap tiket `warga-api` |
-| gerbang SIPPA | `tests/sippa/gerbang-sippa.test.mjs` | SP-014, SP-055 |
-| luring dan kirim ulang | uji tangan + rute | SP-011, SP-008 |
-| dummy tiap layar | `tests/warga/sippa.test.mjs` | SP-052, SP-053 |
-| gerbang ilmu agent dan pemilik berkas | `npm run uji:agen` | SP-003 |
+| fungsi murni JS (RU §2.1) | `tests/sippa/hitung.test.mjs`, `keadaan.test.mjs` | SP-010, SP-030 |
+| mesin Studio (RU §2.2) | `tests/sippa/studio_mesin.test.mjs`, `fixtures/studio_konstanta.json` | SP-041 |
+| logika 3D, laporan, formulir, antrean | `adegan_logika`, `laporan_isi`, `formulir`, `antre` | SP-049, SP-037, SP-044, SP-007, SP-011 |
+| kembar JS dan Python (RU §1.1 L2) | `tests/sippa/kembar.test.mjs` | SP-026 |
+| self-check Python (RU §4.1) | `scripts/data/sippa/*.py uji`, `sippa_keuangan.py`, `sippa_angka.py`, `sippa_formulir.py`, `sippa_pilot.py` | SP-019 s.d. SP-023, SP-028, SP-062, SP-063, SP-009, SP-072 |
+| garis keturunan (RU §4.3) | `tests/sippa/garis_keturunan.test.mjs` | SP-021, SP-025, SP-063 |
+| skema D1 (RU §3) | `tests/warga/sippa_skema.test.mjs` | SP-006, SP-034, SP-050 |
+| rute dan hak (RU §2.4) | `tests/warga/sippa.test.mjs` | SP-008, SP-029, SP-035, SP-045, SP-050, SP-052 |
+| alur lintas-tabel (RU §2.5) | `tests/warga/sippa_alur.test.mjs` | SP-054 |
+| registri cakupan (RU §7) | `tests/warga/cakupan.json`, `tests/sippa/cakupan.json`, `gerbang-cakupan.test.mjs` | tiap tiket `warga-api` dan `sippa`; SP-003, SP-014 |
+| gerbang SIPPA (RU §2.6, §2.8) | `tests/sippa/gerbang-sippa.test.mjs` | SP-014, SP-055 |
+| aksesibilitas dan kontras (RU §2.7) | `tests/sippa/kontras.test.mjs`, peramban | SP-055 |
+| luring dan kirim ulang (RU §2.3 F1–F8) | `antre.test.mjs` + rute + peramban | SP-011, SP-008 |
+| dummy tiap layar (RU §7.5) | `tests/warga/sippa.test.mjs` | SP-052, SP-053 |
+| gerbang ilmu agent dan pemilik berkas | `npm run uji:agen` | SP-003, SP-085 |
 | migrasi beku | `tests/warga/migrasi_beku.test.mjs` | SP-017, SP-039, SP-057 |
-| uji asap produksi | PRD §10.6 butir 6 | SP-017, SP-039, SP-047, SP-057 |
-| U1, U2 buku dan deck | `qa/periksa.py --ketat`, `qa/slop.py` | SP-075 s.d. SP-079 |
+| uji asap produksi (RU §8.3) | PRD §10.6 langkah 7 | SP-017, SP-039, SP-047, SP-057 |
+| data pilot (RU §6) | `pilot_cek.py`, `vonisPilot` | SP-019, SP-018, SP-036, SP-072 |
+| U1, U2 buku dan deck (RU §5) | `qa/periksa.py --ketat`, `qa/slop.py`, `qa/uji.py` | SP-075 s.d. SP-079, SP-086 |
 | U3, U4 pilot | `/pipa/log`, `/pipa/ab` | SP-018, SP-036 |
 | U5 web di produksi | log deploy | SP-057 |
 | U6 waktu gelar | `/pipa/log` | SP-010, SP-081 (data 2027) |
 | U7 efikasi | `/pipa/ab` | SP-036, SP-082 (protokol) |
 | U8, U9 aset dan banjir | `sippa_komponen`, `sippa_gerak`, laporan mingguan | SP-012, SP-044, SP-054, SP-081 |
-| U10 INP | `inp-reviewer` | SP-055, SP-056 |
+| U10 INP (RU §2.6) | `inp-reviewer`, angka terukur | SP-055, SP-056 |
 
 ### 9.4 Rencana kerja PRD §10 ke tiket
 
 | PRD | Tiket | PRD | Tiket | PRD | Tiket |
 | --- | --- | --- | --- | --- | --- |
-| P0-01 | SP-001 | W-01 | SP-019 s.d. SP-023 | B-01 | SP-004 |
-| P0-02 | SP-002 | W-02 | SP-024 | B-02 | SP-058, SP-059, SP-060 |
-| P0-03 | SP-003 | W-03 | SP-025 | B-03 | SP-063 |
-| P0-04 | SP-006 | W-04 | SP-029 | B-04 | SP-061 |
-| P0-05 | SP-008 | W-05 | SP-030 s.d. SP-033 | B-05 | SP-064 |
-| P0-06 | SP-009 | W-06 | SP-034, SP-035 | B-06 | SP-065, SP-066 |
-| P0-07 | SP-007, SP-010 s.d. SP-014 | W-07 | SP-036, SP-037, SP-044 | B-07 | SP-068 s.d. SP-071, SP-073, SP-074 |
-| P0-08 | SP-015 | W-08 | SP-040, SP-041, SP-042 | B-08 | SP-075 |
-| P0-09 | SP-016, SP-017 | W-09 | SP-043 | B-09 | SP-076 |
-| P0-10 | SP-018 | W-10 | SP-048, SP-049 | B-10 | SP-072 |
-| | | W-11 | SP-050, SP-051 | B-11 | SP-067 |
-| | | W-12 | SP-052, SP-053 | B-12 | SP-077 |
-| | | W-13 | SP-054, SP-055 (+ SP-014) | B-13 | SP-078 |
-| | | W-14 | SP-056 | B-14 | SP-079 |
-| | | W-15 | SP-057 | B-15 | SP-080 |
+| P0-01 | SP-001 | W-01 | SP-019 s.d. SP-023 | B-00 | SP-085 |
+| P0-02 | SP-002 | W-02 | SP-024 | B-01 | SP-004 |
+| P0-03 | SP-003 | W-03 | SP-025 | B-02 | SP-058, SP-059, SP-060 |
+| P0-04 | SP-006 | W-04 | SP-029 | B-03 | SP-062, SP-063 |
+| P0-05 | SP-008 | W-05 | SP-030 s.d. SP-033 | B-04 | SP-061 |
+| P0-06 | SP-009 | W-06 | SP-034, SP-035 | B-05 | SP-064 |
+| P0-07 | SP-007, SP-010 s.d. SP-014 | W-07 | SP-036, SP-037, SP-044 | B-06 | SP-065, SP-066 |
+| P0-08 | SP-015 | W-08 | SP-040, SP-041, SP-042 | B-07 | SP-068 s.d. SP-071, SP-073, SP-074 |
+| P0-09 | SP-016, SP-017 | W-09 | SP-043 | B-08 | SP-075 |
+| P0-10 | SP-018 | W-10 | SP-048, SP-049 | B-09 | SP-076 |
+| | | W-11 | SP-050, SP-051 | B-10 | SP-072 |
+| | | W-12 | SP-052, SP-053 | B-11 | SP-067 |
+| | | W-13 | SP-054, SP-055 (+ SP-014) | B-12 | SP-077 |
+| | | W-14 | SP-056 | B-13 | SP-078 |
+| | | W-15 | SP-057 | B-14 | SP-079 |
+| | | | | B-15 | SP-080 |
 | | | | | B-16 | SP-082 |
 
-Tambahan di luar §10 PRD: SP-005 (workflow `sippa`), SP-026 (kembar), SP-027 (gudang dan akses, PRD §7.1), SP-028 (AOI, PRD §4.1 minggu 50), SP-045 (pengingat, PRD §9.10), SP-062 (`sippa_keuangan.py`, PRD §11.1), SP-081 (operasi banjir, PRD §4.1), SP-083 (rekap, PRD §4.1 minggu 53), SP-084 (penyelarasan). Daftar periksa serah PRD §12.3 diperiksa di SP-056 (web) dan SP-079 (buku).
+Tambahan di luar §10 PRD: SP-005 (workflow `sippa`), SP-026 (kembar), SP-027 (gudang dan akses, PRD §7.1), SP-028 (AOI, PRD §4.1 minggu 50), SP-045 (pengingat, PRD §9.10), SP-081 (operasi banjir, PRD §4.1), SP-083 (rekap, PRD §4.1 minggu 53), SP-084 (penyelarasan), SP-086 (gerbang buku, KB §9.4, RU §5.4). Daftar periksa serah PRD §12.3 diperiksa di SP-056 (web) dan SP-079 (buku).
 
 ---
 
-## 10. Hal yang belum terselesaikan
+## 10. Hal yang sudah diselesaikan dan yang tersisa
 
-1. **Nomor bagian dokumen saudara.** DS, DT, KB, RU ditulis bersamaan; rujukan di sini memakai nama bagian. SP-084 menggantinya dengan nomor dan menambah tiket bila RU atau DT memuat sesuatu yang tidak ada di sini.
-2. **Jalur buku di PRD tidak cocok dengan mesin repo.** PRD §8.4 dan §8.6 menyebut `bangun/pptx/spek/sippa-deck.json`, `deck.py sippa-deck`, `kata-pengantar.md`, `lampiran-X.md`; mesin repo memakai `deck.py <spek.json> <keluaran.pptx> --pdf` dan pola `naskah/<kajian>/00-depan.md`, `90-lampiran.md`, `deck.json`. Tiket mengikuti mesin repo (SP-073, SP-074, SP-078). PRD perlu dikoreksi pemilik atau KB menetapkan.
-3. **Mesin buku hanya menerima `air` dan `mitigasi`** (`bangun.py` dan `periksa.py` `choices`); diselesaikan di SP-004, harus selesai sebelum tiket buku mana pun.
-4. **Skrip workflow di luar repo** (`naskah-kajian.js`, `rakit-kajian.js`) bercabang tetap ke dua kajian dan tidak terlacak git; SP-005 mengubahnya tanpa commit.
-5. **Sumber Studio pemilik ada di `~/Downloads`**, bukan di repo; SP-040 menyalinnya. Bila pemilik tidak ingin berkas itu masuk repo, port SP-041 membaca langsung dari Unduhan dan sumber tidak terlacak.
-6. **SIPPA-G-08 butuh DEMNAS nyata**; tertahan sampai BIG menjawab surat (minggu 47 ke atas). Buku versi serah mungkin terbit dengan G-08 berstatus "menunggu DEMNAS".
-7. **Lampiran G (protokol A/B) di buku 6 Des, sedangkan protokol pra-registrasi PRD dijadwalkan minggu 51** (SP-082). Ditangani dengan versi buku di SP-073 dan versi KAK di SP-082; pemilik perlu menerima bahwa Lampiran G adalah draf.
-8. **Penulis buku jatuh berulang ke `general-purpose`.** AGENTS.md §1.5 memberi otoritas membuat agent baru (mis. `penulis-kajian`) bila kelas kerja yang sama dua kali jatuh ke `general-purpose`. Tidak dibuat di sini; sesi induk memutus di SP-002.
-9. **`.superpowers/` belum diabaikan git**; SP-003 menambahkannya ke `.gitignore` sebelum buku besar §1.1 dipakai.
-10. **Konflik skill dan AGENTS.md** diputus mengikuti AGENTS.md: implementer tidak commit; implementer paralel diizinkan di worktree; putusan berarah produk dibawa ke pemilik.
-11. **Tanggal pilot.** Permintaan menyebut pilot 27 Okt; PRD §4.1 menjadwalkan pilot 28 Okt–1 Nov dengan web siap 27 Okt malam. Berkas ini memakai "siap 27 Okt".
-12. **Pemilik gerbang SIPPA.** PRD §10.2 W-13 menyebut `penulis-gerbang` untuk bentuk; PRD §9.12.1 memberi `tests/sippa/**` ke `sippa`. Tiket mengikuti §9.12.1 (pengerja `sippa`, pemeriksa `penulis-gerbang`).
-13. **R1 menarik W-06 dan sebagian W-07 lebih awal** dari P2 PRD supaya `/pipa/ab` (minggu 45) dan Laporan pilot (minggu 46) tersedia. Target rilis lain tetap.
-14. **Banyak perubahan pekerjaan lain di `git status` awal sesi** (laporan BNPB, harian30, dll.); tiket commit hanya menyentuh berkas tiketnya.
-15. **Jalur pembangkit formulir kertas** (`data/kajian-bnpb/bangun/sippa_formulir.py`) tidak dinamai PRD; DT boleh menggantinya, SP-084 menyelaraskan.
+Diselesaikan pada penyelarasan 25 Okt 2026 (`PENYELARASAN.md`):
+
+1. Rujukan menurut nama bagian diganti nomor bagian (DS, DT, KB, RU).
+2. Jalur buku: kode `sippa`, naskah satu front matter per berkas (`00-depan-*.md`, `bab-NN.md`, `90-lampiran-<huruf>.md`), `deck.py <spek.json> <keluaran.pptx> --pdf` (SP-005, SP-073, SP-074, SP-078).
+3. Penulis buku: agent `penulis-kajian` dibuat (SP-085) dengan otoritas AGENTS.md §1.5.
+4. Formulir kertas: pembangkit `data/kajian-bnpb/bangun/sippa_formulir.py` (KB §8 menamai `sippa_*`).
+5. Bab 17 dan Lampiran A–N mengikuti KB (PRD §8 diselaraskan).
+6. G-08 tidak lagi tertahan: GLO-30 berlabel DSM sampai DEMNAS tiba (KB §7.3).
+7. Pengingat mingguan = butir Meja Pantau (SP-045, ADR-11); rute mengikuti DT §4.3; deploy lewat terbit.yml staging lalu `main`.
+
+Tersisa (tidak menghalangi eksekusi; bawaan tertulis):
+
+1. **Mesin buku hanya menerima `air` dan `mitigasi`** (`bangun.py` dan `periksa.py` `choices`); SP-004 wajib selesai sebelum tiket buku mana pun.
+2. **Skrip workflow di luar repo** (`naskah-kajian.js`, `rakit-kajian.js`) tidak terlacak git; SP-005 mengubahnya tanpa commit; sampai selesai, workflow tidak dijalankan untuk `sippa` (KB §10 O3).
+3. **Sumber Studio pemilik ada di `~/Downloads`**; SP-040 menyalinnya. Bila pemilik tidak ingin berkas itu masuk repo, port SP-041 membaca langsung dari Unduhan dan sumber tidak terlacak.
+4. **Lampiran H (protokol A/B) di buku 6 Des adalah versi buku**; KAK pra-registrasi minggu 51 (SP-082).
+5. **`.superpowers/` belum diabaikan git**; SP-003 menambahkannya ke `.gitignore` sebelum buku besar §1.1 dipakai.
+6. **Konflik skill dan AGENTS.md** diputus mengikuti AGENTS.md: implementer tidak commit; implementer paralel diizinkan di worktree; putusan berarah produk dibawa ke pemilik.
+7. **Tanggal pilot.** PRD §4.1 menjadwalkan pilot 28 Okt–1 Nov dengan web siap 27 Okt malam; berkas ini memakai "siap 27 Okt".
+8. **Pemilik gerbang SIPPA web**: pengerja `sippa`, pemeriksa `penulis-gerbang` (PRD §9.12.1). Gerbang buku SP-086 dikerjakan `penulis-gerbang` di berkas milik `pipa-data` dengan pemilik berkas sebagai pemeriksa.
+9. **R1 menarik W-06 dan sebagian W-07 lebih awal** dari P2 PRD supaya `/pipa/ab` (minggu 45) dan Laporan pilot (minggu 46) tersedia.
+10. **Banyak perubahan pekerjaan lain di `git status` awal sesi**; tiket commit hanya menyentuh berkas tiketnya.

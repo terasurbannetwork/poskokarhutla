@@ -620,7 +620,14 @@ $("#tema").onclick = () => { const t = document.documentElement.dataset.theme ==
   S.laporan = L; S.geo = geo;
   if (L) { for (const [k, v] of Object.entries(L.prov)) S.prov[k] = v.nama; PROV_OPSI = Object.entries(S.prov).sort((a, b) => a[1].localeCompare(b[1], "id")); }
   $("#upd").textContent = "Laporan BNPB";
-  aturOut(); await muatDaftar(); await buka(S.daftar[0]?.tanggal || kini());
+  /* Tautan dalam dari arsip tab Laporan: ?tanggal= membuka laporan hari itu, ?out= memilih keluaran,
+     ?unduh=pptx|pdf langsung menyusun berkasnya begitu isiannya termuat. */
+  const q = new URLSearchParams(location.search);
+  const tglQ = q.get("tanggal"), outQ = q.get("out"), unduhQ = q.get("unduh");
+  if (outQ && [...$("#lbOut").children].some(b => b.dataset.o === outQ)) S.out = outQ;
+  aturOut(); await muatDaftar();
+  await buka(/^\d{4}-\d\d-\d\d$/.test(tglQ || "") ? tglQ : S.daftar[0]?.tanggal || kini());
+  if (unduhQ === "pptx" || unduhQ === "pdf") { await pratinjau(); unduh(unduhQ); }
 })().catch(e => { console.error(e); status("Halaman gagal dimuat: " + e.message); });
 window.__lb = S;
 })();

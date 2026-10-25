@@ -10,8 +10,9 @@ tanggal 25 Oktober 2026, menang atas semua berkas lain); (2) `KEPUTUSAN.md` (P1�
 `docs/buku-pegangan/pantau-bencana.md` (L1–L72, S1–S39); (4) berkas ini; (5) `pipa/PRD.md`; (6) `PEDOMAN-DESAIN.md`,
 `bangun/NASKAH-SPEK.md`, `tema.json`, `ANTI-SLOP.md`. Bahan isi: `pipa/KRITIK-DAN-KEPUTUSAN.md` (disingkat KD),
 `pipa/baca-A.md`, `baca-B.md`, `baca-C.md` (celah G01–G28), `pipa/data/README.md`, `pipa/data/matriks_jarak.md`, dan
-data repo yang didaftar di tiap bab. Bila berkas ini mengubah isi PRD §8, berkas ini berlaku untuk buku dan PRD
-diperbarui pemiliknya (§0.3).
+data repo yang didaftar di tiap bab. Penyesuaian berkas ini terhadap PRD §8 (§0.3) sudah diterapkan ke PRD pada
+penyelarasan 25 Oktober 2026, sehingga keduanya sama isinya; bila kelak ditemukan beda baru, penulis berhenti dan
+bertanya ke sesi induk (AGENTS.md §2.1).
 
 **Konvensi.** Path relatif ke `data/kajian-bnpb/` kecuali diawali `public/`, `scripts/`, `src/`, atau `data/raw/`
 (relatif ke akar repo). Angka di berkas ini adalah **nilai acuan** yang sudah dibaca dari sumbernya pada 24–25
@@ -724,8 +725,8 @@ Tiap bab dibuka `::: ringkasan-bab` (Temuan, Angka kunci, Rekomendasi) dengan BL
   - 9.8 Kurikulum operator inti 58 jam (ekologi 4, FWI dan GIS 6, pompa dan hidraulika 8, pipa dan selang 6, injeksi
     dan probing 8, drone 4, HSE 6, lapangan terpadu 8, malam 4, asesmen 4); modul YonTP 8 jam teori + 12 jam latihan;
     latihan basah gabungan tanpa membakar tiap tahun (gerbang G6).
-- **Angka wajib:** `sippa.respons.bara_regu.rendah/.tengah/.tinggi` (0,5/1,2/2,8 ha/regu/hari, resmi kasus Manggala
-  Agni 2026 di `operasi.json`); `sippa.respons.orang_regu` (15); `sippa.respons.jam_tiba_heli` (6 jam,
+- **Angka wajib:** `sippa.respons.bara_regu.rendah/.tengah/.tinggi` (0,5/1,0/2,8 ha/regu/hari, kasus Manggala
+  Agni 2026 di `operasi.json` `koef.bara_regu` hi/mid/lo, dibaca saat bangun); `sippa.respons.orang_regu` (15); `sippa.respons.jam_tiba_heli` (6 jam,
   asumsi-kebijakan); `sippa.respons.tingkat<n>.*` (regu, hari dari `respons.py`); `sippa.pelatihan.jam_inti` (58);
   `sippa.pelatihan.jam_yontp` (20); `sippa.latihan.biaya_lokasi_tahun` (Rp52–95 juta, asumsi-kebijakan);
   `sippa.bbm.cadangan_kali` (1,25).

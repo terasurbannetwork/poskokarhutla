@@ -36,7 +36,7 @@ butir Selera presentasi dan Selera laporan di `docs/buku-pegangan/pantau-bencana
    kerja berat lewat `nanti()` atau Web Worker (`~/.claude/INP.md`, PRD §9.13).
 6. **Satu angka, satu sumber.** Angka di web, laporan PDF, buku, dan deck dibaca dari JSON
    atau D1 yang sama lewat fungsi hitung yang sama (`public/pipa/hitung.js` dan kembar
-   Pythonnya, PRD §9.3; `angka.json` kunci `pipa.*`, PRD §8.3).
+   Pythonnya, PRD §9.3; `angka.json` kunci `sippa.*`, PRD §8.3).
 
 ### 1.2 Peta sumber token
 
@@ -1881,7 +1881,7 @@ Desktop:
 +-----------------------------------------------------------------------------------------+
 |(Dataset) [3.4 tabel] Nama | Berkas | Sumber dan lisensi | Ditarik | Batas data |         |
 |          Keterbatasan | Keyakinan [pil]                                                 |
-|(Rumus) daftar fungsi §9.3: nama, rumus dalam .sp-rumus (monospace), satuan             |
+|(Rumus) daftar fungsi PRD §9.3: nama, rumus dalam .sp-rumus (monospace), satuan             |
 |(Gerbang) tabel kode, syarat, tingkat [pil], pesan layar                                 |
 |(Batas) teks batas.js, sama dengan Lampiran K                                            |
 +-----------------------------------------------------------------------------------------+
@@ -1918,7 +1918,7 @@ kotaknya sendiri, bukan halaman.
 
 Semua gambar buku dan deck dirender dari `kajian/bangun/visual/` (peta `peta.mjs`, grafik
 `dasar.mjs`, gambar teknik `teknik/*.mjs` baru) dengan token `tema.json`; angka dari
-`angka.json` kunci `pipa.*` (PRD §8.3–8.4). Peta dan grafik deck adalah render yang sama
+`angka.json` kunci `sippa.*` (PRD §8.3–8.4). Peta dan grafik deck adalah render yang sama
 dengan DOCX, label dan legenda dibangun native di PPTX (PEDOMAN §B7.2).
 
 ### 5.1 Peta
@@ -2206,7 +2206,7 @@ hanya dengan label §2.1.3.
 
 ### 7.1 `selera-angka` (kartu, pop-up, laporan PDF, buku, deck)
 
-- [ ] Semua angka tampil lewat `fmt`/`fmt.durasi`/`jamWIB` (web) atau token `{{angka:pipa.*}}` (buku, deck); tidak ada `toFixed(` di teks tampil `public/pipa/**`.
+- [ ] Semua angka tampil lewat `fmt`/`fmt.durasi`/`jamWIB` (web) atau token `{{angka:sippa.*}}` (buku, deck); tidak ada `toFixed(` di teks tampil `public/pipa/**`.
 - [ ] Titik ribuan, koma desimal, ≤ 1 desimal; persen ≤ 1 desimal; "–" untuk kosong; tidak ada "NaN", "null", "undefined", "-0".
 - [ ] Satuan tertulis di tiap angka dan termasuk daftar satuan baku §6.2.
 - [ ] Tiap kartu, tabel, grafik, peta punya "Sumber:" (tanpa path internal) dan waktu data WIB.
@@ -2250,15 +2250,18 @@ hanya dengan label §2.1.3.
 
 ---
 
-## 8. Butir yang belum bisa diputus dari sumber yang ada
+## 8. Butir desain dengan bawaan tertulis
+
+Pertanyaan untuk pemilik hanya T-A sampai T-K di PRD §2.2; tidak ada yang berasal dari dokumen ini. Butir di bawah
+adalah butir desain yang memakai bawaan tertulis dan diputus pengerja yang disebut.
 
 | No | Butir | Keadaan dan usulan bawaan | Yang memutus |
 | --- | --- | --- | --- |
 | 1 | Warna zona di buku dan deck | **diputus** keputusan 52 (25 Okt 2026): biru dan emas dengan huruf A–D dan pola sama dengan web (§2.1.3); web tetap palet PRD + huruf + pola wajib | selesai |
-| 2 | Kunci `hipotesis` dan `menunggu` di `tema.json kosakata.keyakinan` | belum ada; rupa diusulkan di §2.1.3 (garis putus oranye, garis putus teks-3). Penambahan oleh pemilik berkas `data/kajian-bnpb/**` (`pipa-data`) | pemilik / `pipa-data` |
+| 2 | Kunci `hipotesis` dan `menunggu` di `tema.json kosakata.keyakinan` | belum ada; rupa diusulkan di §2.1.3 (garis putus oranye, garis putus teks-3). Penambahan oleh pemilik berkas `data/kajian-bnpb/**` (`pipa-data`) di TIKET SP-004 | `pipa-data` (SP-004) |
 | 3 | z-index 12 untuk rel dan bilah bawah | tidak ada nilai repo di antara 10 dan 20 untuk navigasi lengket bawah; diusulkan 12 | pengerja `sippa` saat membangun |
 | 4 | Glif ikon `khusus:` (api-pompa, pompa, selang, lance, manifold, heli, drone, probe-gambut) | belum digambar; aturan stroke 2 viewBox 24 | pengerja `sippa` + `pipa-data` (tema) |
 | 5 | Logo BNPB untuk header laporan PDF dan blok judul gambar teknik | berkas `public/img/lembaga/sumber-bnpb.png` dirujuk `tema.json header_footer`; versi vektor untuk A3 belum diperiksa | `pipa-data` |
 | 6 | Skala gambar teknik per lembar | ditentukan saat gambar dibuat dari dimensi BOM; blok judul punya slot | penggambar + insinyur berlisensi |
-| 7 | Tampilan teks pil berwarna di deck (D9600B di FBE7D6, 3,1:1) | aturan rumah deck dipertahankan untuk S; di D dan PDF diganti teks `teks` (§2.1.5) | pemilik bila ingin diseragamkan |
-| 8 | Kontras `.ad-galat` dan `.seg` aktif gelap di kode bersama | di bawah 4,5:1 (3,8 dan sekitar 4,2); `/pipa` menimpa lewat `pipa.css`; perbaikan di sumbernya milik `layar-peta`/`warga-api` | pemilik berkas bersama |
+| 7 | Tampilan teks pil berwarna di deck (D9600B di FBE7D6, 3,1:1) | aturan rumah deck dipertahankan untuk S; di D dan PDF diganti teks `teks` (§2.1.5) | bawaan berlaku |
+| 8 | Kontras `.ad-galat` dan `.seg` aktif gelap di kode bersama | di bawah 4,5:1 (3,8 dan sekitar 4,2); `/pipa` menimpa lewat `pipa.css`; perbaikan di sumbernya milik `layar-peta`/`warga-api` | `layar-peta`, `warga-api` (di luar cakupan SIPPA) |

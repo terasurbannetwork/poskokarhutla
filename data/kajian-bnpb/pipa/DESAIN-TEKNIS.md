@@ -131,7 +131,7 @@ Pemilik dari `node scripts/agents/ilmu.mjs pemilik <berkas>` (diperiksa 25 Okt 2
 | `data/sippa/keluaran/*.json` | baru | keluaran yang di-commit | pipa-data |
 | `data/kajian-bnpb/pipa/sumber/Karhutla_Decision_Dashboard.html` | baru | salinan berkas pemilik dari `~/Downloads` (sumber port Studio, SP-040) | pipa-data |
 | `.github/workflows/data.yml` | ubah | langkah pemicu + unggah R2 (§7.4) | mekanik-mesin |
-| `package.json` | ubah | `"uji:sippa": "node --test tests/sippa/*.test.mjs"`, dirangkai ke `"uji"` | mekanik-mesin |
+| `package.json` | ubah | `"uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs"`, dirangkai ke `"uji"` | mekanik-mesin |
 | `scripts/agents/roster.json`, `AGENTS.md` §2 | ubah | agent `sippa` (§2.2) dan agent `penulis-kajian` (§2.3), baris modul | mekanik-mesin |
 | `.claude/ilmu-agent/sippa.md`, `.claude/ilmu-agent/penulis-kajian.md` | baru | ilmu awal dari kode dan naskah nyata | sippa*, penulis-kajian* |
 
@@ -812,7 +812,7 @@ Catatan untuk baris `jalan-cek` di tabel: `prov` dikirim klien dari `kelayakan_k
 ### 5.1 Bentuk modul
 
 - **JS:** `public/pipa/hitung.js` adalah ES module tanpa DOM: `export const KONST`, `export const KELAS_POMPA`, `export function ...`. Dimuat layar dengan `import`, diuji Node dengan `import` langsung (package.json `"type": "module"`), dan diimpor `src/sippa.js` bila rute butuh (pola worker.js:6). Juga menulis `globalThis.SippaHitung = {...}` di baris akhir supaya Web Worker dan konsol bisa memakainya. Tidak ada `toFixed`; pembulatan tampilan urusan `fmt`.
-- **Python:** `scripts/data/sippa/hidraulika.py` (hidraulika, gerbang, BBM, CO2, neraca, Joukowsky), `respons.py` (zona, saran sarana, matriks respons, pemicu), `bersama.py` (kuantil, statistik banding, finansial). Nama fungsi sama dengan JS dalam snake_case (`hf_hw`, `saran_sarana`, `banding_rerata`). Stdlib saja.
+- **Python:** `scripts/data/sippa/hidraulika.py` (hidraulika, gerbang, BBM, CO2, neraca, Joukowsky), `respons.py` (zona, saran sarana, matriks respons, pemicu), `bersama.py` (kuantil, statistik banding, finansial, `vonis_pilot`). Nama fungsi sama dengan JS dalam snake_case (`hf_hw`, `saran_sarana`, `banding_rerata`). Stdlib saja.
 - **Kembar:** pola yang sudah ada scripts/data/operasi.py:384-401 (Python memanggil `node` lewat `vm` atas public/operasi.js:15) dibalik arahnya untuk SIPPA: `tests/sippa/kembar.test.mjs` membaca `tests/sippa/fixtures/acuan.json`, menjalankan tiap kasus di JS, lalu memanggil `python3 -I scripts/data/sippa/kembar_cli.py` yang membaca kasus yang sama dari stdin dan mencetak hasil JSON; kedua hasil dibandingkan dengan nilai harapan, toleransi relatif 1% (bilangan) dan sama persis (string, kode gerbang, vonis). Self-check `python3 scripts/data/sippa/hidraulika.py uji` menjalankan kasus yang sama tanpa Node.
 
 ### 5.2 Konstanta
@@ -1047,7 +1047,7 @@ Sumber: `~/Downloads/Karhutla_Decision_Dashboard.html` (119.474 byte) disalin ke
    - H-SERAP dan H-DALAM hanya untuk keadaan yang punya blok `state.sippa = {n_lance, dalam_m, koridor}` (preset S0, S0B, skenario SIPPA pengguna). Preset pemilik S1–S3 adalah jaringan hidran tanpa lance; menerapkan H-SERAP ke sana akan membuat semuanya NO-GO karena debit 2.000 L/min (butir teknis BT-01, §9.2).
    - `jaringan_permanen`: `state.strategy === "backbone" && (state.sippa?.koridor ?? 1) > 2` → hard; S3 selalu membawa catatan "ditutup sampai G5".
    - H-AIR faktor 1,5: `hasil.hyd.availableLPMin < 1,5 x state.flowLPM` → conditional.
-3. Perbaikan teks G23 tanpa mengubah angka: hitungan dimensi dari skema (32/100), nama item `ELEC`/`GEN`, harga heli Rp130 juta/jam diganti slot `pipa.heli.biaya_jam` berstatus `menunggu`.
+3. Perbaikan teks G23 tanpa mengubah angka: hitungan dimensi dari skema (32/100), nama item `ELEC`/`GEN`, harga heli Rp130 juta/jam diganti slot `sippa.heli.biaya_jam` berstatus `menunggu`.
 
 Monte Carlo = `drawRiskMC` mesin tanpa perubahan (baris 284-295): benih FNV-1a 32-bit atas `JSON.stringify(state)`, xorshift32, 800 iterasi, pengali c 0,78–1,28, BBM 0,65–1,40, upah 0,70–1,45, operasi 0,75–1,35; TCO = capex x c + opex' x horizon; P10/P50/P90 = `out[floor((n − 1) p)]` (BUKAN `kuantil` tipe 7; sengaja dibiarkan seperti aslinya). Dijalankan di `studio_pekerja.js`: pesan masuk `{id, state}` (state sudah lewat `gerbangSippa`), keluar `{id, low, mid, high, samples}`; utas utama membuang jawaban yang `id`-nya bukan permintaan terakhir.
 
@@ -1277,8 +1277,8 @@ Python 3.12 stdlib saja (tidak ada pip di Actions; roster pipa-data). Tiap skrip
 
 | Skrip | Masukan | Keluaran | Self-check (`uji`) | Dijalankan |
 | --- | --- | --- | --- | --- |
-| `bersama.py` | | pustaka: `baca_csv`, `tulis_json`, `zona`, `kuantil`, `banding_rerata`, `banding_proporsi`, `af`, `npv`, `bcr`, `impas`, `crf` | kasus Z1–Z5, Q1, W1, P1, N1 §5.8 | diimpor |
-| `hidraulika.py` | | pustaka + `uji` | H1–H7, F1–F4, A1 | diimpor, `uji` |
+| `bersama.py` | | pustaka: `baca_csv`, `tulis_json`, `zona`, `kuantil`, `banding_rerata`, `banding_proporsi`, `af`, `npv`, `bcr`, `impas`, `crf`, `vonis_pilot` | kasus Z1–Z5, Q1, W1, P1, N1, V1–V3 §5.8 | diimpor, `uji` |
+| `hidraulika.py` | | pustaka + `uji` | H1–H8, F1–F4, A1 | diimpor, `uji` |
 | `respons.py` | `public/data/operasi.json` (`koef`) | pustaka `saran_sarana`, `matriks_respons`, `tingkat_pemicu` | enam aturan saran, empat tingkat respons, T1–T4 | diimpor |
 | `kembar_cli.py` | stdin JSON kasus | stdout JSON hasil | | dipanggil `tests/sippa/kembar.test.mjs` |
 | `sel22.py` | `data/raw/firms/viirs*.csv` (gitignore, lokal) kolom `latitude, longitude, acq_date, confidence`; deteksi `confidence` ∈ {n, h} 2012–2025 di kotak Kalteng (lat −3,6..0,8; lon 110,7..115,9) | `sel22.json`, dan tabel sel untuk `zona.py --sel` | indeks sel bolak-balik (pusat sel kembali ke sel sama); `tahun_aktif ≤ 14`; jumlah deteksi = baris tersaring | lokal, tahunan Januari |
@@ -1506,7 +1506,7 @@ Format ringkas: Konteks, Keputusan, Opsi yang ditimbang, Konsekuensi. Status sem
 
 ### ADR-13 Header kode `x-kode` dan `pemegangKode` apa adanya
 
-- **Konteks:** PRD menulis `x-kode-sippa`; src/bnpb.js:26-35 sudah menyediakan pemeriksa kode dengan hitung tebakan, tetapi membaca header `x-kode`.
+- **Konteks:** PRD versi 1 menulis header kode khusus SIPPA (`x-kode-` + `sippa`); src/bnpb.js:26-35 sudah menyediakan pemeriksa kode dengan hitung tebakan, tetapi membaca header `x-kode`.
 - **Keputusan:** pakai `x-kode` dan `pemegangKode(env, req, "sippa", cari)`. **Konsekuensi:** tidak ada kode baru untuk autentikasi; service worker memetakan jalur SIPPA ke `x-kode`.
 
 ### 9.2 Pertanyaan terbuka

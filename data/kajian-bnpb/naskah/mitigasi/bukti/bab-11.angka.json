@@ -43,7 +43,7 @@
   },
   "dibi.alam.per100rb.median_2015_2024_sp2020": {
    "nilai": 0.216,
-   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "pustaka": "bnpb-2026-dibi, bps-2021-sp2020",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS SP2020",
@@ -51,7 +51,7 @@
   },
   "dibi.alam.per100rb.median_2015_2024_bps2026": {
    "nilai": 0.203,
-   "pustaka": "bnpb-2026-dibi; bps-2026-penduduk",
+   "pustaka": "bnpb-2026-dibi, bps-2026-penduduk",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS 2026",
@@ -59,7 +59,7 @@
   },
   "dibi.alam.per100rb.2025_sp2020": {
    "nilai": 0.724,
-   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "pustaka": "bnpb-2026-dibi, bps-2021-sp2020",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS SP2020",
@@ -67,7 +67,7 @@
   },
   "dibi.alam.per100rb.2018_sp2020": {
    "nilai": 2.309,
-   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "pustaka": "bnpb-2026-dibi, bps-2021-sp2020",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018 dan BPS SP2020",
@@ -83,7 +83,7 @@
   },
   "dibi.nasional.per100rb.median_2015_2024_sp2020": {
    "nilai": 0.223,
-   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "pustaka": "bnpb-2026-dibi, bps-2021-sp2020",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS SP2020",
@@ -189,7 +189,7 @@
   },
   "sumatra2025.r3p_aceh_hari_selesai": {
    "nilai": 35,
-   "pustaka": "kemenkopmk-2026-r3p-aceh; bnpb-2026-dibi",
+   "pustaka": "kemenkopmk-2026-r3p-aceh, bnpb-2026-dibi",
    "satuan": "hari",
    "keyakinan": "resmi",
    "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
@@ -197,7 +197,7 @@
   },
   "sumatra2025.r3p_aceh_hari_ke_bnpb": {
    "nilai": 41,
-   "pustaka": "kemenkopmk-2026-r3p-aceh; bnpb-2026-dibi",
+   "pustaka": "kemenkopmk-2026-r3p-aceh, bnpb-2026-dibi",
    "satuan": "hari",
    "keyakinan": "resmi",
    "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
@@ -496,7 +496,7 @@
   },
   "respons.w1.geologi_rbrs_puncak30": {
    "nilai": 245961,
-   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "pustaka": "bnpb-2026-dibi, pantaubencana-2026-skenario-geologi",
    "satuan": "jiwa",
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
@@ -504,7 +504,7 @@
   },
   "respons.w2.geologi_rbrs_puncak30": {
    "nilai": 425233,
-   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "pustaka": "bnpb-2026-dibi, pantaubencana-2026-skenario-geologi",
    "satuan": "jiwa",
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
@@ -512,7 +512,7 @@
   },
   "respons.w3.geologi_rbrs_puncak30": {
    "nilai": 464120,
-   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "pustaka": "bnpb-2026-dibi, pantaubencana-2026-skenario-geologi",
    "satuan": "jiwa",
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
@@ -724,7 +724,7 @@
   },
   "respons.w1.beras_ton_hari": {
    "nilai": 381.7,
-   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
    "satuan": "ton per hari",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
@@ -732,7 +732,7 @@
   },
   "respons.w1.jamban": {
    "nilai": 47715,
-   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
    "satuan": "jamban",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
@@ -740,7 +740,7 @@
   },
   "respons.w2.beras_ton_hari": {
    "nilai": 187.6,
-   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
    "satuan": "ton per hari",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
@@ -748,7 +748,7 @@
   },
   "respons.w3.beras_ton_hari": {
    "nilai": 185.6,
-   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
    "satuan": "ton per hari",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
@@ -756,11 +756,212 @@
   },
   "respons.w3.jamban": {
    "nilai": 23206,
-   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
    "satuan": "jamban",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
    "catatan": "olah: 464.120 / 20"
+  },
+  "respons.w1.air_minum_juta_liter_hari": {
+   "nilai": 2.39,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 954.305 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w1_stok.puncak30": {
+   "nilai": 364071,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan; kepekaan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan Buletin Info Bencana BNPB Desember 2025",
+   "catatan": "rekaman Aceh Nov–Des 2025 diskalakan ke stok Buletin (356.655 dari 946.889), jendela 6 Nov–5 Des 2025; mencampur stok dan jumlah kumulatif, hanya kepekaan (bab-11 T5.8)"
+  },
+  "respons.w1_stok.beras_ton_hari": {
+   "nilai": 179.2,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 447.982 × 0,4 kg; kepekaan stok Aceh, lantai jatuh ke erupsi Merapi 2010 (bab-11 T5.8)"
+  },
+  "respons.w1_stok.air_minum_juta_liter_hari": {
+   "nilai": 1.12,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 447.982 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w1_stok.jamban": {
+   "nilai": 22399,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 447.982 / 20 (bab-11 T5.8)"
+  },
+  "respons.w2.air_minum_juta_liter_hari": {
+   "nilai": 1.17,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 468.967 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w2.jamban": {
+   "nilai": 23448,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 468.967 / 20 (bab-11 T5.8)"
+  },
+  "respons.w2_rumah.beras_ton_hari": {
+   "nilai": 170.1,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 425.233 × 0,4 kg; Lombok 2018, penghuni rumah RB + RS × 3,9 (bab-11 T5.8)"
+  },
+  "respons.w2_rumah.air_minum_juta_liter_hari": {
+   "nilai": 1.06,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 425.233 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w2_rumah.jamban": {
+   "nilai": 21262,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 425.233 / 20 (bab-11 T5.8)"
+  },
+  "respons.w2_lombok.beras_ton_hari": {
+   "nilai": 162.5,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 406.202 × 0,4 kg; Lombok 2018, pengungsi tercatat DIBI (bab-11 T5.8)"
+  },
+  "respons.w2_lombok.air_minum_juta_liter_hari": {
+   "nilai": 1.02,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 406.202 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w2_lombok.jamban": {
+   "nilai": 20310,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 406.202 / 20 (bab-11 T5.8)"
+  },
+  "respons.w3.air_minum_juta_liter_hari": {
+   "nilai": 1.16,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 464.120 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w3_ambon.beras_ton_hari": {
+   "nilai": 92.4,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 230.965 × 0,4 kg; Ambon 2019, pengungsi tercatat DIBI (bab-11 T5.8)"
+  },
+  "respons.w3_ambon.air_minum_juta_liter_hari": {
+   "nilai": 0.58,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "juta liter per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 230.965 × 2,5 l (bab-11 T5.8)"
+  },
+  "respons.w3_ambon.jamban": {
+   "nilai": 11548,
+   "pustaka": "bnpb-2008-kebutuhan-dasar, bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 230.965 / 20 (bab-11 T5.8)"
+  },
+  "dibi.padang2009.mengungsi": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=padang2009,metrik=mengungsi,versi=DIBI].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, gempa Sumatera Barat 30 Sep 2009",
+   "catatan": "pengungsi tercatat hanya Agam; pencatatan pengungsi 2009 tidak lengkap (bab-11 T5.3)"
+  },
+  "hidromet.kalender.jawa.gelombang_kejadian": {
+   "nilai": 95,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv; riset/mentah/dibi_hidromet.json)",
+   "catatan": "gelombang_abrasi Jawa, 16 tahun 2008–2025 tanpa 2010 dan 2023 (bab-11 T4.3)"
+  },
+  "hidromet.kalender.jawa.gelombang_kejadian_jul2018": {
+   "nilai": 18,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv; riset/mentah/dibi_hidromet.json)",
+   "catatan": "kejadian gelombang_abrasi Jawa pada Juli 2018 saja (bab-11 T4.3)"
+  },
+  "hidromet.kalender.jawa.gelombang_porsi_mei_agu_tanpa_jul2018": {
+   "nilai": 42.9,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv; riset/mentah/dibi_hidromet.json)",
+   "catatan": "uji tanpa Juli 2018: 33/77 kejadian Mei–Agustus (bab-11 T4.3)"
+  },
+  "hidromet.kalender.jawa.gelombang_porsi_nov_apr_tanpa_jul2018": {
+   "nilai": 44.2,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv; riset/mentah/dibi_hidromet.json)",
+   "catatan": "uji tanpa Juli 2018: 34/77 kejadian November–April (bab-11 T4.3)"
+  },
+  "bmkg.musim_2026.zom_puncak_desember": {
+   "nilai": 155,
+   "pustaka": "bmkg-2026-siaran-musim-hujan",
+   "satuan": "ZOM",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers prakiraan musim hujan 2026/2027 (22 Sep 2026)",
+   "catatan": "subtotal per kategori tidak dijumlah (riset E §E9; bab-11 T4.5)"
+  },
+  "bmkg.musim_2026.zom_puncak_januari": {
+   "nilai": 162,
+   "pustaka": "bmkg-2026-siaran-musim-hujan",
+   "satuan": "ZOM",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers prakiraan musim hujan 2026/2027 (22 Sep 2026)",
+   "catatan": "subtotal per kategori tidak dijumlah (riset E §E9; bab-11 T4.5)"
+  },
+  "rpjmn.kp080403.pascabencana_masif.baseline": {
+   "nilai": 100,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 12/2025 RPJMN 2025–2029 Lampiran III",
+   "catatan": "garis dasar KP 08.04.03 daerah pascabencana masif yang ditangani; target 2025 dan 2029 juga 100 (bab-11 T1.2)",
+   "lokasi": "Lampiran III hlm. 913"
   }
  }
 }

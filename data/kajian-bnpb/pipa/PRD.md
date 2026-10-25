@@ -10,7 +10,7 @@ Konvensi berkas ini:
 - "Pemilik" = pemilik repo dan program (staf ahli BNPB). "Sesi induk" = sesi Claude utama yang memegang kontrak, commit, dan deploy.
 - Tanggal sidang: Sabtu 25 Oktober 2026. Batas data buku: 23 Oktober 2026 pukul 23.59 WIB (keputusan 28).
 - Kode: buku memakai kode kajian `sippa` (naskah `kajian/naskah/sippa/`, paket data `kajian/data/sippa/`, kunci angka `sippa.*`, keluaran `kajian/keluaran/sippa*`, bendera QA `--kajian sippa`); web memakai halaman `/pipa`, API `/api/sippa/*`, tabel `sippa_*`, pipeline `scripts/data/sippa/` dan `data/sippa/keluaran/`. Awalan `/api/pipa/*` milik `src/pipa.js`.
-- Dokumen turunan yang mengikat untuk pelaksanaan: `DESIGN-SYSTEM.md` (tampilan), `DESAIN-TEKNIS.md` (skema, rute, rumus; menang atas tabel teknis PRD bila berbeda), `KERANGKA-BUKU.md` (buku dan deck; menang atas §8), `RENCANA-UJI.md` (kriteria terima), `TIKET.md` (urutan kerja).
+- Dokumen turunan (urutan otoritas AGENTS.md §2.1): `DESIGN-SYSTEM.md` (tampilan), `DESAIN-TEKNIS.md` (SQL, rute, rumus lengkap), `KERANGKA-BUKU.md` (buku dan deck rinci), `RENCANA-UJI.md` (kriteria terima), `TIKET.md` (urutan kerja). PRD ini sudah diselaraskan dengan keenamnya pada 25 Okt 2026; tabel teknis dan §8 di sini adalah ringkasan yang isinya sama dengan DESAIN-TEKNIS dan KERANGKA-BUKU. Bila kelak ditemukan beda baru, pengerja berhenti dan bertanya (AGENTS.md §2.1), tidak memilih sendiri.
 
 Daftar isi
 
@@ -341,7 +341,7 @@ Pemakaian: ekstrapolasi nasional ditulis sebagai rencana bersyarat (hanya setela
 
 FRP hanya penanda api menyala di permukaan, bukan kedalaman bara (G17). Matriks memakai koefisien `operasi.json` (`bara_regu` 0,5–2,8 ha/regu/hari, `orang_regu` 15, `jam_tiba`, `air_bara`) dan zona §5.1. Tiga sumbu: FRP maksimum 24 jam di kompleks (MW, dari VIIRS), luas bara terindikasi (ha, dari piksel 24 jam di gambut), dan zona. Keluaran: regu, hari, sarana, dan pemicu heli.
 
-| Tingkat | FRP maks 24 jam | Luas bara (ha) | Regu (15 orang) | Hari kerja (tengah `bara_regu` 1,2 ha/regu/hari) | Sarana | Heli |
+| Tingkat | FRP maks 24 jam | Luas bara (ha) | Regu (15 orang) | Hari kerja (tengah `bara_regu` dibaca dari `operasi.json`, saat ini 1,0 ha/regu/hari) | Sarana | Heli |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | < 10 MW | ≤ 2 | 1 | ≤ 2 | pompa jinjing + selang 500 m + 2 lance; sumur dangkal bila zona C | tidak |
 | 2 | 10–30 MW | 2–10 | 2 | 1–5 | 1 kit relay; 8 lance; flowmeter; probe | tidak, kecuali `jam_tiba` > 6 |
@@ -485,7 +485,7 @@ Tingkat konstruksi dengan blok judul standar: nomor gambar, revisi, skala, satua
 | SIPPA-G-05 | Depot depan (kontainer 20 kaki) | rak gulungan, bin QR, tangki BBM dinding ganda, ventilasi, kunci | kapasitas 1–2 kit; jarak BBM dari pompa |
 | SIPPA-G-06 | Gudang induk YonTP | denah, lantai 3 ton/m2 (asumsi A1, diverifikasi), zona servis, dekontaminasi | menampung kit per depot sesuai §5.2 |
 | SIPPA-G-07 | Rumah pompa panggung (hanya koridor semi-permanen, bila dibuka) | elevasi di atas muka banjir, ventilasi, knalpot keluar, tray tumpahan | di atas muka banjir rujukan |
-| SIPPA-G-08 | Profil trase relay contoh dari DEMNAS | elevasi per 5–20 m, titik booster bila ada, tekanan sepanjang trase | dari DEMNAS nyata AOI (bukan sintetis) |
+| SIPPA-G-08 | Profil trase relay contoh dari DEMNAS | elevasi per 5–20 m, titik booster bila ada, tekanan sepanjang trase | dari elevasi nyata AOI, bukan sintetis: DEMNAS bila sudah diterima dari BIG, sebelumnya Copernicus GLO-30 berlabel "DSM berkanopi" dan diganti saat DEMNAS tiba (KERANGKA-BUKU §7.3, O7) |
 | SIPPA-G-09 | Modul banjir GA dan P&ID | pompa, intake terapung, DN150, katup cek | debit dan head rating |
 | SIPPA-G-10 | Skema telemetri dan daya (PV, baterai, gateway) | | tag sama dengan G-02 |
 | SIPPA-G-11 | Diagram zona A–D dan alur keputusan sarana | | identik dengan aturan `saranSarana` |
@@ -581,7 +581,7 @@ Templat dari paket pemilik (sheet FORM dan Lamp E-2) diadaptasi ke kop BNPB; sat
 
 Judul: **Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) 2026–2030** (subjudul dan identitas lengkap di KERANGKA-BUKU §1). Penerbit BNPB saja, pembaca Kepala BNPB, A4 tegak Roboto, logo BNPB, foto Commons beratribusi, tanpa ilustrasi AI (KEPUTUSAN kajian P1, P12). Bentuk buku keputusan: BLUF (L59), pita keputusan KD-1 sampai KD-7 di Pesan Kunci, Bab 17, dan deck. Tanpa batas halaman (keputusan 11). Warna zona di buku dan deck biru dan emas dengan huruf A–D dan pola arsiran yang sama dengan web (keputusan 52; DESIGN-SYSTEM §2.1.3). Roboto hanya untuk buku, deck, dan PDF; layar web memakai Inter dan Plus Jakarta Sans (DESIGN-SYSTEM §2.2).
 
-**KERANGKA-BUKU.md menang atas bagian ini** untuk urutan bab, pertanyaan kunci, angka wajib dan kuncinya, objek bernomor, lampiran, register rekomendasi, deck, dan urutan produksi. Bagian 8.2–8.6 di bawah hanya ringkasan supaya PRD tetap terbaca utuh.
+Rincian urutan bab, pertanyaan kunci, angka wajib dan kuncinya, objek bernomor, lampiran, register rekomendasi, deck, dan urutan produksi ada di KERANGKA-BUKU.md; bagian 8.2–8.6 di bawah adalah ringkasan yang isinya sama (17 bab, Lampiran A–N, kode `sippa`).
 
 ### 8.2 Kerangka bab (ringkasan KERANGKA-BUKU §4 dan §5)
 
@@ -617,7 +617,7 @@ Lampiran A–N (KERANGKA §5): A Metode, Data, dan Rekonsiliasi; B Kelayakan per
 
 ### 8.4 Pipeline bangun buku
 
-Urutan produksi S1–S14, perubahan mesin M1–M19, dan QA lima lapis ada di KERANGKA §8 dan §9. Perintah inti (dari `data/kajian-bnpb/`): `.venv/bin/python bangun/docx/bangun.py sippa` (keluaran `keluaran/sippa.docx`, `sippa.pdf`, `sippa.manifest.json`); `.venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf`; `python3 qa/periksa.py --docx keluaran/sippa.docx --pdf keluaran/sippa.pdf --pptx keluaran/sippa-deck.pptx --pptx-pdf keluaran/sippa-deck.pdf --visual bangun/visual/keluaran --kajian sippa --ketat`; `python3 qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md`. Naskah ditulis agent `penulis-kajian` (TIKET SP-085) lewat workflow `naskah-kajian.js` dan `rakit-kajian.js` cabang `sippa` (TIKET SP-005).
+Urutan produksi S1–S14, perubahan mesin M1–M19, dan QA lima lapis ada di KERANGKA §8 dan §9. Perintah inti (dari `data/kajian-bnpb/`): `.venv/bin/python bangun/docx/bangun.py sippa` (keluaran `keluaran/sippa.docx`, `sippa.pdf`, `sippa.manifest.json`); `.venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf`; `python3 qa/periksa.py --docx keluaran/sippa.docx --pdf keluaran/sippa.pdf --pptx keluaran/sippa-deck.pptx --pptx-pdf keluaran/sippa-deck.pdf --visual bangun/visual/keluaran --kajian sippa --ketat`; `python3 qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md naskah/sippa/*.md`. Naskah ditulis agent `penulis-kajian` (TIKET SP-085) lewat workflow `naskah-kajian.js` dan `rakit-kajian.js` cabang `sippa` (TIKET SP-005).
 
 ### 8.5 Deck sekitar 15 slide (keputusan 19)
 
@@ -1033,7 +1033,7 @@ Keputusan 37: form bekerja tanpa sinyal dan mengirim saat ada sinyal. Pola `publ
 
 ### 9.10 Laporan PDF otomatis (`/pipa/laporan`)
 
-Keputusan 39. PDF dibuat di peramban dengan jsPDF yang sudah divendor (`public/vendor/jspdf/`) dan huruf Roboto (`public/inti/roboto.js`), pola `public/laporan_bnpb.js`. "Otomatis" berarti isi laporan disusun dari data tanpa diketik: staf memilih jenis dan rentang, lalu satu tombol menghasilkan PDF, dan arsipnya tersimpan di R2 lewat `POST /api/sippa/laporan`. Pengingat mingguan adalah butir terhitung `sippa_mingguan` di Meja Pantau (tanpa tabel baru; tabel `pengingat` 0028 punya CHECK jenis tertutup, DESAIN-TEKNIS ADR-11): muncul Senin sejak 07.40 WIB bila ada kit berstatus `banjir` atau `gelar` dan belum ada laporan jenis `mingguan` dalam 7 hari terakhir.
+Keputusan 39. PDF dibuat di peramban dengan jsPDF yang sudah divendor (`public/vendor/jspdf/`) dan huruf Roboto (`public/inti/roboto.js`; Roboto hanya untuk PDF, layar tetap Inter dan Plus Jakarta Sans), pola `public/laporan_karhutla_deck.js` (bukan `public/laporan_bnpb.js`, yang memuat jsPDF dari CDN dan ditolak CSP staf; DESAIN-TEKNIS §6.4). "Otomatis" berarti isi laporan disusun dari data tanpa diketik: staf memilih jenis dan rentang, lalu satu tombol menghasilkan PDF, dan arsipnya tersimpan di R2 lewat `POST /api/sippa/laporan`. Pengingat mingguan adalah butir terhitung `sippa_mingguan` di Meja Pantau (tanpa tabel baru; tabel `pengingat` 0028 punya CHECK jenis tertutup, DESAIN-TEKNIS ADR-11): muncul Senin sejak 07.40 WIB bila ada kit berstatus `banjir` atau `gelar` dan belum ada laporan jenis `mingguan` dalam 7 hari terakhir.
 
 | Templat | Rentang | Isi minimum |
 | --- | --- | --- |

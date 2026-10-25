@@ -38,7 +38,7 @@ Yang tidak dihitung sebagai bukti: unit test bermock untuk perilaku di luar JS (
 | `tests/sippa/`, `public/pipa/`, `scripts/data/sippa/`, `data/sippa/` | belum ada | semua berkas uji di bawah ini baru |
 | `migrations/0055–0057` | belum ada; migrasi terakhir `0054_kunci_api_konsesi.sql` | uji skema §3 ditulis bersamaan dengan migrasinya (P0-04) |
 | Skrip `uji:sippa` di `package.json` | belum ada; yang ada `uji:agen`, `uji:warga`, `uji:banjir`, `uji:udara`, `uji:layar`, `uji` | `mekanik-mesin` menambah `"uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs"` dan merangkainya ke `uji` |
-| `tests/warga/gerbang.test.mjs` | daftar modul yang dipindai (`const bn = [...]`) memuat `"pipa"` tetapi tidak `"sippa"` | tanpa menambah `"sippa"`, rute `src/sippa.js` lolos dari gerbang cakupan tanpa satu pun peringatan; ini butir pertama P0-05 |
+| `tests/warga/gerbang.test.mjs` | daftar modul yang dipindai (`const bn = [...]`) memuat `"pipa"` tetapi tidak `"sippa"` | tanpa menambah `"sippa"`, rute `src/sippa.js` lolos dari gerbang cakupan tanpa satu pun peringatan; ini butir pertama P0-05 (TIKET SP-008) |
 | `.github/workflows/terbit.yml` | menjalankan `npm run uji:agen` dan `npm run uji:warga` sebelum `wrangler deploy` | langkah `npm run uji:sippa` ditambahkan di antara keduanya dan langkah terbit |
 | `data/kajian-bnpb/qa/periksa.py` | `--kajian` hanya menerima `air`, `mitigasi` | B-01 (TIKET SP-004) menambah `sippa`; tanpa itu T-11 tidak membaca ambang pustaka SIPPA |
 | `tema.json`, `bangun/kontrak/naskah.py` | belum mengenal `sippa` | B-01 (TIKET SP-004) |
@@ -104,7 +104,7 @@ Nilai di bawah dihitung ulang 25 Okt 2026 dengan rumus PRD §9.3 dan DESAIN-TEKN
 | K1 HDPE OD160 SDR11 | OD 160, SDR 11, Q 2.000 L/min, L 2.000 m, Δz +10 m, sisa 2 bar, ΣK 5, C 130, η 0,65, T 35 °C, `hisap: false` | `id_mm` 130,91; `v` 2,477 m/s; `hf` 95,45 m; `tdh` 127,41 m; `p_pompa_bar` 12,49; batas kerja 11,12 bar (0,88 x 16 x 0,79); `vonis` NO-GO; `gerbang` memuat H-TEKANAN keras | ID 130,9; h_f sekitar 96; sekitar 12,4 bar; NO-GO | cocok dalam 1% bila `hisap: false`. Dengan `hisap: true` tekanan 12,84 bar (3,5% dari 12,4): acuan wajib menulis tanda `hisap` secara eksplisit |
 | K2 HDPE OD200 SDR11 | sama dengan K1, OD 200 | `id_mm` 163,64; `hf` 32,19 m; `tdh` 63,23 m (`hisap: false`) atau 66,73 m (`hisap: true`); `p_pompa_bar` 6,20 atau 6,54; tidak ada H-TEKANAN | sekitar 6,3 bar | **tidak cocok 1%** pada kedua tanda hisap (1,6% dan 3,8%). Acuan memakai angka hitung ini; teks PRD dan buku dibetulkan |
 | K3 contoh G-2 paket pemilik | D 0,16 m, C 130, Q 2.000 L/min, L 2.000 m, Δz +10 m, ΣK 5, sisa 2 bar, η 0,65, `hisap: false` | `hf` 35,91 m; `tdh` 67,01 m; `p_pompa_bar` 6,57; `hp` 45,2; solar 10,03 L/jam | 35,91; 67,00; 6,57; 45,2; 10,03 | cocok |
-| K4 relay DN100 | ID 100 mm, Q 10 L/s, L 1.000 m, C 130 | `hf` 19,06 m | sekitar 17 m | **tidak cocok 1%** (12%). 17 m hanya keluar pada C sekitar 140 (16,6 m). Acuan memakai 19,06 m pada C 130; judul slide C2 dan teks buku memakai token `{{angka:sippa.hidraulika.relay_dn100_hf}}`, bukan "17" |
+| K4 relay DN100 | ID 100 mm, Q 10 L/s, L 1.000 m, C 130 | `hf` 19,06 m | sekitar 17 m | **tidak cocok 1%** (12%). 17 m hanya keluar pada C sekitar 140 (16,6 m). Acuan memakai 19,06 m pada C 130; slide C2 dan teks buku memakai token `{{angka:sippa.hid.dn100_10ls.hf_m_per_km}}` (KB Bab 7), bukan "17" |
 | K5 volume isi DN100 | ID 100 mm, L 1.000 m, Q 10 L/s | `v_isi_m3` 7,854; `t_tiba_menit` 13,09 | 7,85 m3; 13 menit | cocok |
 | K6 = H7 bawaan kalkulator | layflat DN100 ID asumsi 96 mm, Q 300 L/min, L 1.000 m, Δz +2, ΣK 5, sisa 3 bar, `hisap: true`, pompa kelas 1.500, 8 lance | `p_pompa_bar` 4,183; `p_ujung_bar` 8,817; `serap_lpm` 320; tanpa gerbang keras; `vonis` KONDISIONAL | 600 L/min (selalu NO-GO) | bawaan diputus 300 L/min (PENYELARASAN butir 6) |
 | K7 = H8 kasus ajar | K6 dengan Q 600 L/min | `p_pompa_bar` 5,868; gerbang H-SERAP keras; `vonis` NO-GO | | wajib ada sebagai uji penolakan |
@@ -181,7 +181,7 @@ Format: Diberikan (keadaan awal) / Ketika (aksi) / Maka (hasil terukur). Kolom B
 | H1 | masukan K1 | dihitung | kartu vonis NO-GO merah dengan pesan H-TEKANAN berangka "Tekanan 12,5 bar melewati batas kerja 11,1 bar …" dalam format id-ID | `hitung.test.mjs` |
 | H2 | kotak kedalaman | pengguna mengetik 5,1 | nilai ditolak dengan pesan "Injeksi lebih dari 5 m tidak termasuk SIPPA (keputusan 50)"; hasil tidak dihitung | `formulir.test.mjs` + `gerbang-sippa.test.mjs` butir (3) |
 | H3 | kedalaman 3–5 m | dihitung | pil "lengan uji" tampil | `hitung.test.mjs` |
-| H4 | tiap masukan tabel §9.4.3 | nilai di bawah rentang, di atas rentang, bukan angka, kosong pada medan wajib | ditolak dengan pesan rentang; rentang di klien sama dengan rentang fungsi murni (satu konstanta) | `formulir.test.mjs` iterasi semua medan |
+| H4 | tiap masukan tabel PRD §9.4.3 | nilai di bawah rentang, di atas rentang, bukan angka, kosong pada medan wajib | ditolak dengan pesan rentang; rentang di klien sama dengan rentang fungsi murni (satu konstanta) | `formulir.test.mjs` iterasi semua medan |
 | H5 | "Salin tautan" | tautan dibuka di tab baru | semua masukan pulih identik dan hasil identik | `hitung.test.mjs` round-trip query |
 | H6 | pengguna mengubah debit | ketikan | hasil berubah; grafik digambar lewat `nanti()`; interaksi ≤ 200 ms laptop, ≤ 100 ms tidak diwajibkan (bukan form lapangan) | `gerbang-sippa.test.mjs` + peramban |
 
@@ -250,7 +250,7 @@ Format: Diberikan (keadaan awal) / Ketika (aksi) / Maka (hasil terukur). Kolom B
 | E1 | belum ada perangkat | layar Telemetri | Kosong "Belum ada perangkat terdaftar. Telemetri dipasang mulai 2027 (§6.6)." | `keadaan.test.mjs` |
 | E2 | pesan uji gateway dan bentuk datar pemilik | POST telemetri | `dariDatar()` menghasilkan baris identik dengan bentuk bersarang | `sippa.test.mjs` |
 | E3 | dry-run 30 detik, debit < 20% 2 menit, tekanan > 0,88 x PN x f, suhu > 50 °C tahap 24 jam, CO > 35 ppm 15 menit, BBM < 20%, diam > 3 x interval | seri uji | tiap alarm terbuka sekali dan tertutup saat pulih | `sippa.test.mjs` (satu kasus per kode alarm) |
-| L1 | lima templat | `isiLaporan(jenis, data)` | blok terstruktur memuat tiap isi minimum §9.10; tiap angka punya sumber dan waktu; tanpa "terbukti", em dash, U+00B7; nama berkas `sippa-<jenis>-<prov>-<YYYYMMDD>.pdf`; kaki halaman persis | `laporan_isi.test.mjs` |
+| L1 | lima templat | `isiLaporan(jenis, data)` | blok terstruktur memuat tiap isi minimum PRD §9.10; tiap angka punya sumber dan waktu; tanpa "terbukti", em dash, U+00B7; nama berkas `sippa-<jenis>-<prov>-<YYYYMMDD>.pdf`; kaki halaman persis | `laporan_isi.test.mjs` |
 | L2 | laporan mingguan dari alur §2.5 | `isiLaporan('mingguan', …)` | jam pompa, m3 banjir, dan kehilangan sama persis dengan tabel D1 | `sippa_alur.test.mjs` |
 | L3 | PDF hasil | dibuka | hanya logo BNPB (satu gambar logo, hash sama dengan `public/inti` logo BNPB) | `laporan_isi.test.mjs` daftar aset gambar |
 | A1 | `/pipa/data` | dimuat | teks "Batas pemakaian alat" dibaca dari `public/pipa/batas.js`; Lampiran K buku dibangun dari berkas yang sama (hash teks sama) | `gerbang-sippa.test.mjs` |
@@ -339,7 +339,7 @@ Gerbang mekanis (tanpa peramban) di `tests/sippa/gerbang-sippa.test.mjs`, diperi
 | Tanpa warna tertanam | mekanis | `gerbang-sippa.test.mjs`: tidak ada `#hex`, `rgb(`, `hsl(` di `public/pipa/*.css` dan di string gaya `public/pipa/*.js` selain `var(--…)` dan `currentColor` | nol temuan |
 | Peta gelap | peramban | tombol tema; peta memakai gaya gelap lewat `setStyle(…, {diff: false})`, lapisan dipasang ulang sesudah `style.load` | lapisan zona tetap tampil sesudah tiga kali ganti tema |
 | Label isian | peramban + mekanis | `read_page`: tiap `input`/`select` punya nama aksesibel; `formulir.test.mjs`: tiap medan punya `label` dan id pesan galat untuk `aria-describedby` | nol isian tanpa nama |
-| Pola kontrol | peramban | `read_page`: segmen `role="radiogroup"`, tab `role="tablist"`, akordeon `aria-expanded` | semua kontrol §9.13 |
+| Pola kontrol | peramban | `read_page`: segmen `role="radiogroup"`, tab `role="tablist"`, akordeon `aria-expanded` | semua kontrol PRD §9.13 |
 | Papan ketik | peramban | Tab melewati semua kontrol tiap layar; fokus terlihat; Enter/Spasi mengaktifkan | tidak ada jebakan fokus |
 | Target sentuh | peramban | ukur kotak elemen interaktif di preset `mobile` | ≥ 44 px; form lapangan ≥ 56 px |
 | Gerak berkurang | peramban | `prefers-reduced-motion: reduce` | partikel 3D berhenti; tidak ada animasi transisi panjang |
@@ -357,7 +357,7 @@ Gerbang mekanis (tanpa peramban) di `tests/sippa/gerbang-sippa.test.mjs`, diperi
 5. URL CDN (`https://cdn`, `unpkg`, `jsdelivr`, `cdnjs`) dan import map sebaris.
 6. Berkas data (`*.json`, `*.csv`, `*.geojson`) di bawah `public/pipa/`, karena `public/` terbit sebagai aset statis tanpa sesi.
 7. `innerHTML`/`insertAdjacentHTML`/`outerHTML` yang menerima nilai di luar literal templat statis atau `esc(`.
-8. Konstanta kedalaman maksimum lebih dari satu definisi: satu `KEDALAMAN_MAKS_M = 5` di `hitung.js`, dipakai kalkulator, Studio, 3D, dan formulir (grep angka `5.1`, `> 5` di luar konstanta).
+8. Konstanta kedalaman maksimum lebih dari satu definisi: satu `KONST.dalam_maks_m = 5` di `hitung.js` (DT §5.2), dipakai kalkulator, Studio, 3D, dan formulir (grep angka `5.1`, `> 5` di luar konstanta).
 9. Teks "100%" untuk probabilitas.
 10. Nama perusahaan konsesi: daftar nama dari `public/data/kendala.json` atau sumber konsesi tidak muncul di `data/sippa/keluaran/*.json` maupun `public/pipa/**`.
 
@@ -602,7 +602,7 @@ python3 qa/slop.py --final keluaran/sippa-deck.pptx
 | Tanpa merek alat di luar kolom sumber | D-33 baru (KERANGKA §9.4): daftar merek di `glosarium.json` tidak muncul di luar Daftar Pustaka dan kolom RUJUKAN DATASHEET Lampiran D | nol merek di prosa dan judul |
 | Gerbang khusus SIPPA lain | D-34 (kedalaman injeksi > 5 m), D-35 (keterangan gambar teknik), D-36 (slot `menunggu` tampil "–" dengan alasan), D-37 ("rencana bersyarat" di tabel, peta, slide kit nasional dan T3/T4), D-38 ("terbukti"/"teruji" tanpa kutipan) dengan fixture negatif di `qa/uji.py` | nol |
 | Tiga versi zona | D-6: kunci `sippa.zona.kalteng.konservatif.*`, `sippa.zona.kalteng.utama.*`, `sippa.zona.kalteng.optimistis.*` muncul di DOCX (Tabel 4.1); dua versi peta (konservatif, optimistis) di deck slide 4 | semuanya ada |
-| Warna zona buku dan deck | `qa/periksa.py --visual` (D-9 hex hanya dari `tema.json`): simbol zona memakai hex biru dan emas §2.1.3 DESIGN-SYSTEM, dan tiap legenda zona memuat huruf A–D (keputusan 52) | nol pelanggaran |
+| Warna zona buku dan deck | `qa/periksa.py --visual` (D-9 hex hanya dari `tema.json`): simbol zona memakai hex biru dan emas DESIGN-SYSTEM §2.1.3, dan tiap legenda zona memuat huruf A–D (keputusan 52) | nol pelanggaran |
 
 ### 5.4 Gerbang baru T-12: gambar teknik
 
@@ -614,10 +614,10 @@ Pemilik `pipa-data`, ditambah ke `qa/periksa.py` dengan fixture negatif dan posi
 | T-12b blok pengesahan | teks "Pengesahan insinyur berlisensi" beserta medan nama, nomor STRA/SKA, tanda tangan, tanggal tidak ada, **atau medannya terisi** (wajib kosong, keputusan 12) |
 | T-12c catatan wajib | teks "Wajib verifikasi dan pengesahan insinyur berlisensi sebelum dibangun" tidak ada |
 | T-12d nomor | himpunan nomor ≠ {SIPPA-G-01 … SIPPA-G-12} |
-| T-12e konsistensi | tag di G-02 dan G-10 ≠ daftar tag `sippa_perangkat` §9.11 (dibaca dari satu berkas data bersama); aturan di G-11 ≠ tabel `saranSarana` (dibaca dari ekspor `SippaHitung.ATURAN_SARANA`); G-01 tidak memuat semua kode BOM §6.1 |
+| T-12e konsistensi | tag di G-02 dan G-10 ≠ daftar tag `sippa_perangkat` PRD §9.11 (dibaca dari satu berkas data bersama); aturan di G-11 ≠ tabel `saranSarana` (dibaca dari ekspor `SippaHitung.ATURAN_SARANA`); G-01 tidak memuat semua kode BOM §6.1 |
 | T-12f larangan | relief di G-02 > 88% PN; kedalaman lance di G-03 > 5 m; merek alat di luar kolom rujukan |
 
-Kriteria terima §6.9 yang tidak bisa dimesinkan (misalnya "tanpa baut yang tidak terdefinisi", "berat per gulungan ≤ batas angkat 2 orang" bila tidak tertulis sebagai angka) diisi pengulas di daftar periksa §6.9 dan dicatat di `qa/cakupan.json` `dikecualikan` dengan alasan.
+Kriteria terima PRD §6.9 yang tidak bisa dimesinkan (misalnya "tanpa baut yang tidak terdefinisi", "berat per gulungan ≤ batas angkat 2 orang" bila tidak tertulis sebagai angka) diisi pengulas di daftar periksa PRD §6.9 dan dicatat di `qa/cakupan.json` `dikecualikan` dengan alasan.
 
 ---
 
@@ -636,9 +636,8 @@ Pemeriksa: `scripts/data/sippa/pilot_cek.py` (pemilik `pipa-data`, self-check `u
 | PL5 | sumber isian | tiap baris bertanda `oleh` (`tugas:` atau `staf:`); isian kertas punya pindaian yang tercatat di `foto_id` (tabel `sippa_foto`) atau `catatan` |
 | PL6 | bukan dummy | nol baris `dummy = 1` di ekspor |
 | PL7 | jam klien | butir `jam_klien_meleset = 1` (diturunkan server, DESAIN-TEKNIS §6.1.5) dihitung terpisah, tidak dibuang |
-| PL9 | medan vonis | tiap sesi punya `petak_id`, `air_sampai_lance`, `p_ujung_bar`, `p_ujung_menit`, `p_ujung_sumber`, `kecelakaan`, `bocor_henti_menit`; kit pilot punya cek komponen sesudah gerak `kembali` terakhir | 
-
 | PL8 | pasangan A/B (bila ada api) | ≥ 1 petak `lance` dan ≥ 1 petak `konvensional` berdampingan dengan `pasangan_id` sama; bila tidak ada api aktif (R02), pemeriksa mencetak "vonis lebih baik ditunda" dan tidak gagal |
+| PL9 | medan vonis | tiap sesi punya `petak_id`, `air_sampai_lance`, `p_ujung_bar`, `p_ujung_menit`, `p_ujung_sumber`, `kecelakaan`, `bocor_henti_menit`; kit pilot punya cek komponen sesudah gerak `kembali` terakhir |
 
 ### 6.2 Kesamaan kertas dan layar
 
@@ -674,7 +673,7 @@ Vonis "lebih baik" tidak pernah diputus dari pilot (n < 8 per lengan): `bandingR
 
 | Registri | Isi | Gerbang | Status |
 | --- | --- | --- | --- |
-| `tests/warga/cakupan.json` | tiap rute `src/sippa.js` (kunci "METODE /jalur"), tiap tabel dan trigger 0055–0057 (kunci "table x", "trigger x"), cron ringkas telemetri | `tests/warga/gerbang.test.mjs` (sudah ada; `BATAS_ANTRE = 2`, hanya boleh turun) | ada; wajib ditambah `"sippa"` ke daftar modul `bn` dan `src/sippa_formulir.js` ke pemindaian bila memuat rute |
+| `tests/warga/cakupan.json` | tiap rute `src/sippa.js` (kunci "METODE /jalur"), tiap tabel dan trigger 0055–0057 (kunci "table x", "trigger x"), cron ringkas telemetri | `tests/warga/gerbang.test.mjs` (sudah ada; `BATAS_ANTRE = 2`, hanya boleh turun) | ada; wajib ditambah `"sippa"` ke daftar modul `bn` |
 | `tests/sippa/cakupan.json` | logika klien dan pipeline yang tidak tinggal di worker atau D1 | `tests/sippa/gerbang-cakupan.test.mjs` | baru, dibuat di P0-03 sebelum berkas `public/pipa/**` pertama |
 | `data/kajian-bnpb/qa/cakupan.json` | gerbang buku dan deck, termasuk T-12 | `qa/uji.py` | ada; ditambah T-12 |
 
@@ -708,7 +707,7 @@ Penemuan otomatis, bukan daftar tangan:
 1. Memuat `public/pipa/hitung.js` lewat `vm` dan mengambil `Object.keys(globalThis.SippaHitung)` yang bertipe fungsi; tiap kunci menjadi `SippaHitung.<nama>`.
 2. Memuat `public/pipa/studio_mesin.js` dan mengambil fungsi `KarhutlaEngine` serta `gerbangSippa`.
 3. Mengurai `export function` dan `globalThis.<X> = {…}` di `public/pipa/*.js` lain (`formulir`, `keadaan`, `antre`, `adegan` bagian logika, `laporan`, `batas`).
-4. Mendaftar `public/pipa/layar_*.js` sebagai `layar:<nama>` dan mencocokkan dengan `LAYAR_SIPPA` + `lapangan` (layar tanpa modul atau modul tanpa layar gagal).
+4. Mendaftar `public/pipa/layar_*.js` sebagai `layar:<nama>` dan mencocokkan dengan `LAYAR_SIPPA` + `ringkas` (layar tanpa modul atau modul tanpa layar gagal); `public/pipa/lapangan.js` (cangkang sendiri, DT §2.1) dicatat sebagai `layar:lapangan`.
 5. Mendaftar `scripts/data/sippa/*.py` sebagai `py:<berkas>` dan memastikan tiap berkas punya `def uji(` dan percabangan argumen `uji`.
 
 Asersi, masing-masing satu `test` dengan pesan berangka:
@@ -771,7 +770,7 @@ Urutan, berhenti di langkah pertama yang gagal:
 4. Laporan pengulas §8.1 untuk permukaan yang berubah, nol temuan kritis terbuka.
 5. Migrasi baru diterapkan dulu: `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`, lalu hash dicatat ke `tests/warga/migrasi_beku.json` di commit yang sama dengan migrasinya atau commit berikutnya.
 6. Pratinjau di cabang `staging` (`terbit.yml` menjalankan `wrangler versions upload --preview-alias staging`), uji asap §8.3 di URL pratinjau. Staging memakai D1/R2 produksi yang sama, jadi semua tulisan uji asap memakai `dummy = 1` dan diakhiri `POST /api/sippa/dummy/hapus`.
-7. Promosi dengan merge ke `main`; `terbit.yml` menjalankan uji lagi lalu `wrangler deploy`. PRD §10.6 menyebut `wrangler deploy` dari sesi; jalur repo yang berlaku adalah `terbit.yml` (komentar workflow: terbit lewat sini, bukan dari laptop), sehingga data harian tidak mundur.
+7. Promosi dengan merge ke `main`; `terbit.yml` menjalankan uji lagi lalu `wrangler deploy` (PRD §10.6, DESAIN-TEKNIS §8.4). Merge ke `main` sama dengan tayang: `titik.yml` (tiap 3 jam), `banjir.yml` (07.20 WIB), dan `data.yml` (21.20 WIB) juga men-deploy `main`, jadi kode tayang paling lambat 21.20 WIB hari itu walau terbit.yml gagal, dan rollback wajib diikuti revert di `main`.
 8. Uji asap §8.3 di produksi.
 
 ### 8.3 Uji asap sesudah deploy
@@ -780,22 +779,22 @@ Dijalankan sesi induk dengan `curl -s -o /dev/null -w "%{http_code}"` (atau Clau
 
 | No | Permintaan | Harapan |
 | --- | --- | --- |
-| A1 | `GET /pipa` tanpa sesi | 303, `Location` berawalan `/admin/masuk?ke=/pipa` |
-| A2 | `GET /pipa` sesi staf `pusdalops` | 200, `cache-control` memuat `no-store`, header CSP memuat `tiles.openfreemap.org` dan tidak memuat CDN |
+| A1 | `GET /pipa` tanpa sesi | 303, `Location` = `/admin/pantau?ke=%2Fpipa` |
+| A2 | `GET /pipa` sesi staf `pusdalops` | 200, `cache-control` memuat `no-store`, header CSP memuat `openfreemap.org` dan tidak memuat CDN atau `unsafe-inline` |
 | A3 | `GET /pipa` sesi staf `verifikator` | 403 tanpa `Location` |
 | A4 | `GET /pipa/lapangan` tanpa sesi | 200 |
 | A5 | `GET /pipa/tidakada` sesi staf | 404 |
-| A6 | `GET /api/sippa/kit` tanpa sesi | 401 atau 403 |
+| A6 | `GET /api/sippa/kit` tanpa sesi | 401 |
 | A7 | `GET /api/sippa/data/zona` tanpa sesi dan `GET /api/sippa/data/tidakada` tanpa sesi | status dan panjang badan identik |
 | A8 | `GET /api/sippa/data/zona` sesi staf | 200 (sha badan = sha `data/sippa/keluaran/zona.json` yang diunggah) atau 404 bila belum diunggah |
-| A9 | Super Admin `POST /api/sippa/dummy/isi?layar=lapangan`, satu kiriman lapangan dummy, `GET /api/sippa/log` sebagai staf nyata | kiriman diterima; staf nyata tidak melihat baris dummy |
+| A9 | Super Admin `POST /api/sippa/dummy/isi` `{layar: "lapangan"}`, satu kiriman lapangan dummy, `GET /api/sippa/log` sebagai staf nyata | kiriman diterima; staf nyata tidak melihat baris dummy |
 | A10 | `POST /api/sippa/dummy/hapus` | `dihapus` > 0; `SELECT count(*) FROM sippa_log_gelar WHERE dummy = 1` di D1 remote = 0 |
 | A11 | rute lama: `GET /api/titik`, `POST /api/pipa/lapangan` tanpa token, `/lapangan` | tetap sama dengan sebelum deploy (200, 401/403, 200) |
 | A12 | sesudah migrasi baru, tanpa kode baru (urutan terbalik yang mungkin) | rute lain repo tidak terganggu; `/api/sippa/*` 503 sopan bila kode lama |
 
 ### 8.4 Pemicu rollback
 
-Rollback (`npx --yes wrangler@4.42.0 rollback` ke versi sebelumnya, dicatat di jejak) dilakukan segera bila satu dari ini terjadi, tanpa menunggu diagnosis:
+Rollback (`npx --yes wrangler@4.42.0 rollback` ke versi sebelumnya LALU revert commit di `main`, dicatat di jejak; tanpa revert, deploy terjadwal berikutnya menayangkan ulang kode rusak) dilakukan segera bila satu dari ini terjadi, tanpa menunggu diagnosis:
 
 - A1, A3, A6, atau A7 gagal (kebocoran hak atau data SIPPA terbaca tanpa sesi);
 - A11 gagal (rute lain repo rusak);
@@ -806,23 +805,25 @@ Migrasi tidak dibalik: tabel baru tidak dibaca rute lain, dan migrasi yang sudah
 
 ---
 
-## 9. Butir belum selesai (perlu keputusan atau perbaikan dokumen lain)
+## 9. Butir yang dulu terbuka dan penyelesaiannya
 
-| No | Butir | Dampak bila dibiarkan | Usul |
-| --- | --- | --- | --- |
-| 1 | PRD §5.1 dan §9.12.2 menulis ambang `≤`; semua angka acuan (A188/B418/C89/D170, A469/B158/C167/D71) hanya keluar dengan `<` (§4.2) | uji zona merah atau angka buku dan web berbeda 1–3 kompleks per zona | pemilik mengesahkan `<`; PRD §5.1 dan §9.12.2 dibetulkan |
-| 2 | Label "konservatif = jalan utama (tersier ke atas)" tidak cocok dengan data: A188 berasal dari `air_km_lama` x `jalan_km_lama` (`kendala.json`, rute lama, 134 kompleks tanpa data jalan); jalan utama OSM x semua air memberi A198/B429/C81/D157 | kartu judul dan buku menyebut sumber yang salah untuk angka 188 | label konservatif ditulis "jalan dan air `kendala.json`"; versi jalan utama OSM dicatat sebagai versi ketiga atau dihapus |
-| 3 | Acuan K2 (OD200 "sekitar 6,3 bar") dan K4 (relay DN100 "sekitar 17 m") tidak cocok dalam 1% dengan rumus §9.3 (6,20/6,54 bar; 19,06 m pada C 130) | `hitung.test.mjs` dan `kembar.test.mjs` merah pada hari pertama, atau toleransi dilonggarkan (dilarang) | `acuan.json` memakai angka hitung §2.1; PRD §9.3, slide C2, dan bab hidraulika memakai token angka |
-| 4 | Tanda `hisap` untuk K1 dan K2 tidak tertulis di PRD | acuan ambigu 3,5 m head | `acuan.json` menulis `hisap` eksplisit tiap kasus |
-| 5 | `jam_klien_meleset` disebut di rute dan rekap tetapi tidak ada kolomnya di skema `sippa_log_gelar` | rekap tidak bisa menandai butir | turunkan dari `diterima - waktu_klien > 600000` di kueri, atau tambah kolom di 0055 sebelum diterapkan |
-| 6 | Tidak ada rute ekspor probe (hanya `log.csv` dan `ab.csv`), padahal B-10 dan `pilot_cek.py` butuh probe | pemeriksa pilot PL4 tidak bisa jalan dari ekspor | tambah `GET /api/sippa/probe.csv` (B, 60/jam, CSV aman) ke §9.7.3 |
-| 7 | "Dapat dipakai" tanpa definisi berangka | vonis 1 Nov bergantung pendapat | pemilik memutus usulan §6.3 |
-| 8 | Kolom `dummy` untuk `sippa_telemetri` dan `sippa_telemetri_harian` tidak ditulis di §9.11, padahal §9.7.2 mewajibkan semua tabel | dummy Telemetri tidak bisa dihapus bersih | tambah kolom, atau hapus dummy telemetri lewat `perangkat_id` dummy (dicatat di `dikecualikan` beralasan) |
-| 9 | `periksa.py --kajian` belum menerima `pipa`; `tema.json` dan `naskah.py` belum mengenal `pipa` | T-11 dan kontrak naskah tidak berlaku untuk buku SIPPA | B-01 |
-| 10 | Gerbang T-12 gambar teknik belum ada | blok pengesahan dan konsistensi tag tidak dijaga mesin | dibangun `pipa-data` dengan fixture di `qa/uji.py` |
-| 11 | `tests/warga/gerbang.test.mjs` tidak memindai `src/sippa.js` | rute SIPPA lolos gerbang cakupan tanpa peringatan | tambah `"sippa"` ke daftar `bn` di P0-05 |
-| 12 | `terbit.yml` belum menjalankan `uji:sippa` | deploy bisa lolos dengan uji klien merah | `mekanik-mesin` menambah langkah di P0-03 |
-| 13 | PRD §10.6 menyebut `wrangler deploy` dari sesi; jalur repo adalah `terbit.yml` dan cabang `staging` | dua jalur deploy, data harian bisa mundur bila deploy dari laptop | §8.2 memakai `terbit.yml`; PRD §10.6 diselaraskan |
-| 14 | PRD menulis lokasi `kajian/…`; repo memakai `data/kajian-bnpb/…` | perintah bukti PRD gagal ditemukan | baca `kajian/` = `data/kajian-bnpb/` di semua perintah |
-| 15 | Salinan nyasar `migrations/0053_kontak 2.sql` ikut dibaca `migrasi()` di uji | idempoten hari ini, tetapi salinan yang berbeda isi akan membuat uji skema berbeda dari D1 | `higiene-repo` melapor; pemilik menghapus salinan (di luar cakupan SIPPA) |
-| 16 | Harga heli dan sewa pompa banjir berstatus `menunggu` | baris NPV/BCR terkait tampil "–" | bukan cacat; uji memastikan tampil "menunggu" dengan alasan sampai angka diserahkan |
+Semua butir di bawah diselesaikan pada penyelarasan 25 Okt 2026 (rincian di `PENYELARASAN.md`). Tidak ada butir uji yang masih terbuka; pertanyaan pemilik hanya T-A sampai T-K di PRD §2.2.
+
+| No | Butir | Penyelesaian |
+| --- | --- | --- |
+| 1 | Ambang `≤` di PRD §5.1 dan §9.12.2 | keputusan 51: `<`; PRD dibetulkan; §4.2 |
+| 2 | Label "konservatif = jalan utama" tidak cocok dengan data | tiga versi berlabel benar: versi `kendala.json` (A188), jalan utama OSM (A198), semua jalan OSM (A469); PRD §5.1, DESAIN-TEKNIS §3.1, KERANGKA Bab 4 |
+| 3 | K2 dan K4 tidak cocok 1% | angka hitung dipakai di `acuan.json` dan PRD §6.2, §9.3, KERANGKA Bab 7, DESIGN-SYSTEM slide C2 |
+| 4 | Tanda `hisap` tidak tertulis | ditulis eksplisit di tiap kasus (PRD §9.3, DESAIN-TEKNIS §5.8) |
+| 5 | `jam_klien_meleset` tanpa kolom | kolom ada di 0055; penurunan dari `jam_kirim` dan `waktu_klien` di DESAIN-TEKNIS §6.1.5; uji G5, PL7 |
+| 6 | Tidak ada rute ekspor probe | `GET /api/sippa/probe.csv` (B, 60/jam) di DESAIN-TEKNIS §4.3 dan rencana ini §2.4; TIKET SP-008 |
+| 7 | "Dapat dipakai" tanpa definisi berangka | keputusan 53; §6.3; `vonisPilot` |
+| 8 | Kolom `dummy` telemetri | ada di kedua tabel (DESAIN-TEKNIS §3.4); §3.1 tanpa pengecualian |
+| 9 | `periksa.py`, `tema.json`, `naskah.py` belum mengenal kajian | B-01 / TIKET SP-004 dengan kode `sippa` |
+| 10 | Gerbang T-12 belum ada | dibangun `pipa-data` (§5.4), TIKET SP-086 |
+| 11 | `gerbang.test.mjs` tidak memindai `src/sippa.js` | TIKET SP-008 menambah `"sippa"` ke `bn` |
+| 12 | `terbit.yml` belum menjalankan `uji:sippa` | TIKET SP-003 (DESAIN-TEKNIS §2.1) |
+| 13 | Dua jalur deploy | satu jalur `terbit.yml` via `staging` lalu `main` (PRD §10.6, §8.2) |
+| 14 | `kajian/` lawan `data/kajian-bnpb/` | konvensi PRD: `kajian/` = `data/kajian-bnpb/` |
+| 15 | Salinan nyasar `migrations/0053_kontak 2.sql` | di luar cakupan SIPPA; `higiene-repo` melapor tiap commit besar (TIKET SP-016) |
+| 16 | Harga heli dan sewa pompa banjir `menunggu` | bukan cacat; uji memastikan tampil "menunggu" dengan alasan (T-A) |

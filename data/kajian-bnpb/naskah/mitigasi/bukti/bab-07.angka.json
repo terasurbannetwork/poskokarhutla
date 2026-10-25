@@ -766,6 +766,14 @@
       "pustaka": "haque-2012-siklon",
       "sumber": "Haque dkk. (2012), Bull. WHO 90: 150–156",
       "catatan": "kematian siklon Bangladesh turun lebih dari 100 kali 1970–2007; efek tiap komponen belum terpisah; bab-07 P3 temuan 11"
+    },
+    "dibi.nasional.longsor.meninggal.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,kode_jenis_juklak=102,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tanah longsor 2024 hanya 207 kejadian (cakupan bencana) tetapi 213 meninggal; tanda patahan pencatatan 2024 (bukti bab-07 bahan subbab butir 6); ditambah penulis bab 25 Okt 2026"
     }
   }
 }

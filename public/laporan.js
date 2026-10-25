@@ -30,6 +30,7 @@ function ubah(n, p) {
 const ubahTeks = (n, p) => { if (!p) return ""; const v = Math.round((n - p) / p * 100); return v > 0 ? `<span class="naik">▲ ${fmt(v)}%</span>` : v < 0 ? `<span class="turun">▼ ${fmt(-v)}%</span>` : "tetap"; };
 
 const idx = () => D.hari.indexOf(st.hari);
+const hariQ = new URLSearchParams(location.search).get("hari") || "";
 /* mode provinsi (?prov=62,63): satu atau beberapa provinsi; [] = Indonesia (nasional, perilaku lama).
    Pilihan di kepala jadi bawaan semua pemilih kartu; kartu yang pemilihnya diubah sendiri memakai st.pk[kunci] sampai kepala diganti lagi.
    Beberapa provinsi = seri dijumlah per hari. Kartu yang hanya bermakna nasional disembunyikan (NAS); jumlah kab/kota dari baris D.kab. */
@@ -769,9 +770,15 @@ async function muat(ulang) {
   if (ulang && D && d.dibuat === D.dibuat && d.cutoff === D.cutoff) return;
   D = d;
   st.prov = kodeSah(st.prov).join(",");   /* ?prov= tak dikenal dibuang; tak tersisa = Indonesia */
+  /* ?hari= dari arsip tab Laporan: hari itu dipakai bila datanya ada, dan dihitung sebagai pilihan
+     manual supaya muat ulang berkala tidak menariknya kembali ke hari terbaru. */
+  if (!st.hari && hariQ && D.hari.includes(hariQ)) { st.hari = hariQ; st.manual = true; }
   if (!st.manual || !D.hari.includes(st.hari)) st.hari = awal();
   if (ulang) PKmuat = false;   /* peta_karhutla.json ikut dimuat ulang pada render berikutnya */
   ulang ? nanti(semua) : semua();
+  /* ?cetak=1 dari arsip tab Laporan: dialog cetak dibuka SEKALI sesudah laporan tergambar penuh,
+     bukan tiap kali data dimuat ulang. */
+  if (!ulang && new URLSearchParams(location.search).get("cetak") === "1") nanti(() => setTimeout(print, 400));
 }
 pasangTip(); PilihCantik.pasang(); muatTambahan();
 muat(false).catch(() => { $("#lpKepala").innerHTML = '<div class="kosong">Laporan belum tersedia. Coba muat ulang beberapa menit lagi.</div>'; $("#upd").textContent = "Data belum tersedia"; });
