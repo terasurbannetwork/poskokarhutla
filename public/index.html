@@ -1343,6 +1343,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 </style>
 <link rel="stylesheet" href="/inti/kartu.css">
 <link rel="stylesheet" href="/inti/peringatan-berita.css">
+<link rel="stylesheet" href="/arsip_laporan.css">
 <link href="lapisan5.css" rel="stylesheet">
 <link href="peta_kab.css" rel="stylesheet">
 <link href="risiko7.css" rel="stylesheet">
@@ -1592,7 +1593,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
   <section class="page scroll" id="p-posko" aria-label="Posko, sarana, dan operasi"><div class="wrap"><div class="seg" id="poskoSub" role="group" aria-label="Bagian" style="margin-bottom:14px"><button data-s="posko" aria-pressed="true">Posko</button><button data-s="sarana" aria-pressed="false">Sarana & alat</button><button data-s="operasi" aria-pressed="false">Operasi & kebutuhan</button><button data-s="keputusan" aria-pressed="false">Keputusan</button></div>
     <div id="posko"></div><div id="sarana" hidden></div><div id="operasi" hidden></div><div id="keputusan" hidden></div></div></section>
   <!-- ================= LAPORAN: pintu ke tiga generator yang sudah ada (pemilik 25 Okt 2026) ================= -->
-  <section class="page scroll" id="p-pelaporan" aria-label="Laporan"><div class="wrap lp-wrap"><h2 class="lp-jd">Laporan</h2><p class="lp-sub">Pilih laporan yang mau dibuat. Angkanya diambil dari data situs ini.</p><div class="lp-grid"><a class="box lp-k" href="/laporan-bnpb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan bencana harian</b><span>Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.</span><small>PPTX · PDF</small></a><a class="box lp-k" href="/laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan karhutla harian</b><span>Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.</span><small>Cetak · PDF</small></a><a class="box lp-k" href="/paparan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan per daerah</b><span>Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.</span><small>PPTX · PDF</small></a></div></div></section>
+  <section class="page scroll" id="p-pelaporan" aria-label="Laporan"><div class="wrap lp-wrap"><h2 class="lp-jd">Laporan</h2><p class="lp-sub">Pilih laporan yang mau dibuat. Angkanya diambil dari data situs ini.</p><div class="lp-grid"><a class="box lp-k" href="/laporan-bnpb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan bencana harian</b><span>Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.</span><small>PPTX · PDF</small></a><a class="box lp-k" href="/laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan karhutla harian</b><span>Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.</span><small>Cetak · PDF</small></a><a class="box lp-k" href="/paparan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan per daerah</b><span>Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.</span><small>PPTX · PDF</small></a></div><div id="arsipLaporan"></div></div></section>
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
@@ -1611,6 +1612,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
 <script src="/inti/tip.js"></script>
 <script src="/inti/peluang.js"></script>
 <script src="/inti/tabel.js"></script>
+<script src="/arsip_laporan.js" defer></script>
 <script src="/riwayat_nasional.js"></script>
 <script src="/riwayat_sel.js" defer></script>
 <script src="/inti/peringatan-berita.js"></script>
@@ -1718,6 +1720,7 @@ function bukaTab(id, dorong = true) {
     if (id === "dampak") Dampak.render();
     if (id === "ringkasan") Ringkasan.render();
     if (id === "tren") Tren.render();
+    if (id === "pelaporan") window.ArsipLaporan?.muat();
     if (id === "metode" && !sudah.metode) { sudah.metode = 1; lengkapiKluster().then(renderMetode); }
   });
 }
