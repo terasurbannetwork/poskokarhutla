@@ -131,6 +131,9 @@ def kepala_tabel(s, nid):
     return s.replace('</p:spTree>', ''.join(out) + '</p:spTree>')
 def rep(s, a, b):
     assert s.count(a) == 1, (a, s.count(a)); return s.replace(a, b)
+def sp_di_y(s, y):
+    """(awal, akhir) tiap <p:sp> yang offsetnya di baris y; dipakai untuk mengecilkan huruf catatan kaki."""
+    return [m.span() for m in re.finditer(r'<p:sp>.*?</p:sp>', s, re.S) if (lambda g: g and g[1] == y)(geom(m.group(0)))]
 P5 = ['62', '16', '63', '15', '61', '14']; P3 = ['93', '72', '64']; P8 = P5 + P3   # P5 = 6 provinsi prioritas BNPB (nama variabel lama)
 s2 = open(SP + '/deck/x/ppt/slides/slide2.xml').read()
 nid = [5000]
@@ -233,7 +236,10 @@ s2 = rep(s2, '<a:t>3 provinsi tambahan masuk prioritas karena peningkatan hotspo
 CAT = '**Perkiraan satelit VIIRS S-NPP (NASA FIRMS), 4,3 ha per titik; belum padam = titik yang bertahan ≥1 hari di lokasi sama.'
 s1 = rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>',
          '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS). '
-         'Firespot = titik panas yang sudah terkonfirmasi api (syarat Kemenhut SIPANTAU), bagian dari hotspot.</a:t>')
+         'Firespot = titik panas terkonfirmasi api, bagian dari hotspot.</a:t>')
+# catatan kaki bertambah satu kalimat dan satu lagi disisipkan sementara.py: hurufnya dikecilkan supaya tetap satu baris
+for a_, b_ in reversed(sp_di_y(s1, 6172200)):
+    s1 = s1[:a_] + re.sub(r'sz="(\d+)"', lambda m: f'sz="{round(int(m.group(1)) * 0.9)}"', s1[a_:b_]) + s1[b_:]
 s2 = rep(s2, '<a:t>Fire spot belum termasuk Papua Selatan dan Sulawesi Tengah.</a:t>', '<a:t>Lokasi api bertahan = kluster titik api satelit yang menyala ≥1 hari di tempat sama; berbeda dari Fire Spot BNPB.</a:t>')
 s2 = rep(s2, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System). NA: belum ada data laporan lapangan.</a:t>', '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).</a:t>')
 CUTOFF = PAR['cutoff']
@@ -241,10 +247,18 @@ for s_ in ('s1', 's2'):
     globals()[s_] = rep(globals()[s_], '<a:t>21 Okt 2026, 07.00 WIB</a:t>', f'<a:t>{CUTOFF}</a:t>')
 # kolom tanggal slide2 18/19/20 -> kolom laporan (urutan ganti: 20 dulu supaya tidak terganti dua kali).
 # slide1 tidak ikut: label harinya sudah dibangun bertanggal oleh kepala_tabel().
-for a, b in (('20 Okt', PAR['kolom'][2]), ('19 Okt', PAR['kolom'][1]), ('18 Okt', PAR['kolom'][0])):
+# Lewat penanda dulu, bukan langsung: untuk deck 18-20 Okt tanggal barunya SAMA dengan tanggal templat, jadi
+# penggantian beruntun akan menghitung ulang label yang baru saja ditulis.
+for j, a in enumerate(('18 Okt', '19 Okt', '20 Okt')):
     assert s2.count(f'<a:t>{a}</a:t>') == 3, (a, s2.count(f'<a:t>{a}</a:t>'))
-    s2 = s2.replace(f'<a:t>{a}</a:t>', f'<a:t>{b}</a:t>')
-assert not re.search(r'<a:t>1[89] Okt</a:t>', s1), 'masih ada label hari templat di slide1'
+    s2 = s2.replace(f'<a:t>{a}</a:t>', f'<a:t>@kolom{j}@</a:t>')
+for j in range(3):
+    s2 = s2.replace(f'<a:t>@kolom{j}@</a:t>', f'<a:t>{PAR["kolom"][j]}</a:t>')
+# slide1: satu-satunya label hari yang boleh ada adalah ketiga kolom laporan, masing-masing sekali per kelompok
+hari_s1 = sorted(set(re.findall(r'<a:t>(\d{1,2} [A-Z][a-z]{2})</a:t>', s1)))
+assert hari_s1 == sorted(set(PAR['kolom'])), f'label hari slide1 {hari_s1}, harusnya {sorted(set(PAR["kolom"]))}'
+for hr in PAR['kolom']:
+    assert s1.count(f'<a:t>{hr}</a:t>') == len(GRUP), f'label {hr} muncul {s1.count(f"<a:t>{hr}</a:t>")} kali, harusnya {len(GRUP)}'
 s1 = rep(s1, '<a:t>21</a:t>', f'<a:t>{PAR["hari"]}</a:t>')   # judul: per Tanggal 22 Oktober
 s1 = rep(s1, '<a:t>20</a:t>', f'<a:t>{PAR["hari"]}</a:t>')
 s1 = rep(s1, '<a:t> Oktober </a:t>', f'<a:t> {PAR["bulan"]} </a:t>')   # bulan judul   # subjudul: '... telah padam pada 21 Okt'

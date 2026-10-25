@@ -65,7 +65,7 @@ def bangun(D, jam, bmkg, out):
         zo.writestr(it, d)
     zo.close()
     nama = f'Laporan Penanganan Pengendalian Karhutla {D:%d%m%y}.pptx'
-    jalankan('python3', '-I', os.path.join(P, 'sementara.py'), 't2.pptx', nama, f'Angka {hb(D)} sementara, data s.d. {jam.replace(":", ".")} WIB.', cwd=kerja)
+    jalankan('python3', '-I', os.path.join(P, 'sementara.py'), 't2.pptx', nama, f'Angka {hb(D)} sementara, s.d. {jam.replace(":", ".")} WIB.', cwd=kerja)
     print(jalankan('python3', '-I', os.path.join(P, 'cek6.py'), nama, cwd=kerja).strip())
     z = zipfile.ZipFile(os.path.join(kerja, nama))
     for n in z.namelist():
