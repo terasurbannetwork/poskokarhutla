@@ -1,45 +1,92 @@
-/* Cari: perluasan kotak cari peta (kawasan bernama, pabrik sawit, konsesi sawit/HTI/HPH/tambang, tempat lain lewat Photon).
-   Indeks dari data/cari.json + data/kawasan_cari.json (scripts/scrape/kawasan_cari.py) dimuat malas saat kotak cari pertama difokus.
-   Pabrik: buffer 10/25/50 km; konsesi dan kawasan: poligon disorot, angka di dalamnya lewat AngkaKawasan (angka_kawasan.js, rumus peta_karhutla.py).
+/* Cari: perluasan kotak cari peta (kawasan bernama, desa, pabrik sawit, konsesi sawit/HTI/HPH/tambang, Daops, posko, BPBD, faskes, sekolah, bandara,
+   tempat lain lewat Photon).
+   Indeks dari data/cari.json + data/kawasan_cari.json (scripts/scrape/kawasan_cari.py) dimuat malas saat kotak cari pertama difokus;
+   indeks besar (desa_cari.json dari scripts/scrape/desa_cari.py, sekolah.json, daops/posko/bpbd/fasilitas/metar) baru saat ketikan pertama >= 3 huruf.
+   Titik (pabrik, Daops, posko, ...): buffer per jenis (BUF); konsesi, kawasan, desa: poligon disorot, angka di dalamnya lewat AngkaKawasan (angka_kawasan.js, rumus peta_karhutla.py).
    Hitungan titik panas hanya saat memilih atau rentang berganti (bukan per ketikan). Global dari index.html: S, peta, muatJSON, Lapis, kiriPad, nanti, esc, fmt, namaProv, Laci. */
 (() => {
-  const GRUP = [["tn", "Taman nasional"], ["tahura sm ca twa tb", "Kawasan konservasi"], ["gunung", "Gunung api"], ["danau", "Danau"], ["metro", "Wilayah metropolitan"],
-    ["khg", "Kesatuan hidrologis gambut"], ["pabrik", "Pabrik sawit"], ["sawit", "Konsesi sawit"], ["hti", "HTI"], ["hph", "HPH"], ["tambang", "Tambang"]];
+  const GRUP = [["desa", "Desa / kelurahan"], ["tn", "Taman nasional"], ["tahura sm ca twa tb", "Kawasan konservasi"], ["gunung", "Gunung api"], ["danau", "Danau"], ["metro", "Wilayah metropolitan"],
+    ["khg", "Kesatuan hidrologis gambut"], ["restorasi", "Target restorasi gambut"], ["hl hp", "Kawasan hutan"], ["sungai", "Sungai"], ["daops", "Daops Manggala Agni"], ["posko", "Posko"], ["bpbd", "BPBD"], ["bandara", "Bandara"], ["faskes", "Fasilitas kesehatan"],
+    ["sekolah", "Sekolah"], ["pabrik", "Pabrik sawit"], ["sawit", "Konsesi sawit"], ["hti", "HTI"], ["hph", "HPH"], ["tambang", "Tambang"]];
   const JENIS = {sawit: "Konsesi sawit", hti: "HTI", hph: "HPH", tambang: "Tambang", tn: "Taman nasional", tahura: "Taman hutan raya", sm: "Suaka margasatwa",
-    ca: "Cagar alam", twa: "Taman wisata alam", tb: "Taman buru", gunung: "Gunung api", danau: "Danau", metro: "Wilayah metropolitan", khg: "Kesatuan hidrologis gambut"};
+    ca: "Cagar alam", twa: "Taman wisata alam", tb: "Taman buru", gunung: "Gunung api", danau: "Danau", metro: "Wilayah metropolitan", khg: "Kesatuan hidrologis gambut",
+    hl: "Hutan lindung", hp: "Hutan produksi", sungai: "Sungai (koridor 2 km kiri-kanan)", restorasi: "Target restorasi gambut BRGM",
+    desa: "Desa / kelurahan", pabrik: "Pabrik sawit", daops: "Daops Manggala Agni", posko: "Posko karhutla", bpbd: "Kantor BPBD", faskes: "Fasilitas kesehatan", sekolah: "Sekolah", bandara: "Bandara"};
   /* singkatan yang biasa diketik (TN Berbak, Tahura, SM, KHG) + kata "kawasan" (Kawasan Bromo Tengger Semeru) */
   const SINGKAT = {tn: [/^Taman Nasional/, "TN"], tahura: [/^Taman Hutan Raya/, "Tahura"], sm: [/^Suaka Margasatwa/, "SM"], ca: [/^Cagar Alam/, "CA"], twa: [/^Taman Wisata Alam/, "TWA"], tb: [/^Taman Buru/, "TB"]};
-  const KAW = new Set(Object.keys(JENIS).filter(t => !(t in {sawit: 1, hti: 1, hph: 1, tambang: 1})));
-  const BUF = [10, 25, 50], R = 6371;
+  const GRUP_T = Object.fromEntries(GRUP.flatMap(([t]) => t.split(" ").map(x => [x, t])));   /* jenis -> kunci grup */
+  /* titik: buffer km per jenis; kawasan: poligon; sisanya konsesi */
+  const BUFJ = {pabrik: [10, 25, 50], daops: [10, 25, 50], bpbd: [10, 25, 50], bandara: [10, 25, 50], posko: [5, 15, 30], faskes: [5, 10, 25], sekolah: [5, 10, 25]};
+  const TITIK = new Set(Object.keys(BUFJ));
+  const KAW = new Set(Object.keys(JENIS).filter(t => !(t in {sawit: 1, hti: 1, hph: 1, tambang: 1}) && !TITIK.has(t)));
+  const R = 6371;
   const PHOTON = "https://photon.komoot.io/api/";
-  let item = [], siap = null, pabrik = null, kons = null, kwGeo = null, khg = null, catatan = "", terpilih = null, buka = new Set(), qTerakhir = "", foto = [], tFoto = 0, ctrl = null;
+  let item = [], siap = null, lain = null, pabrik = null, kons = null, kwGeo = null, khg = null, catatan = "", terpilih = null, buka = new Set(), qTerakhir = "", foto = [], tFoto = 0, ctrl = null;
 
   const norm = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\b(pt|cv|tbk)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
   const muat = () => siap ||= Promise.all([muatJSON("data/cari.json"), muatJSON("data/kawasan_cari.json").catch(e => (console.warn("kawasan", e), {item: []}))]).then(([d, kw]) => {
     for (const i of kw.item) { const s = SINGKAT[i.t]; i.a = (s ? i.n.replace(s[0], s[1]) : "") + (i.t === "khg" ? "" : " kawasan"); }
-    item = [...kw.item, ...d.item]; for (const i of item) i.s = " " + norm(i.n + " " + (i.g || "") + " " + (i.a || "")) + " "; $("#cari").dispatchEvent(new Event("input")); }).catch(e => { siap = null; console.warn("cari", e); });
+    item = [...kw.item, ...d.item]; for (const i of item) { i.s = " " + norm(i.n + " " + (i.g || "") + " " + (i.a || "")) + " "; i.nn = norm(i.n); } $("#cari").dispatchEvent(new Event("input")); }).catch(e => { siap = null; console.warn("cari", e); });
   document.addEventListener("focusin", e => { if (e.target.id === "cari") muat(); });
+  /* indeks besar: tiap sumber berdiri sendiri (satu gagal, yang lain tetap masuk); selesai memuat memicu ulang hasil ketikan */
+  const kap = s => (s || "").toLowerCase().replace(/(^|[\s(.\/-])\p{Ll}/gu, c => c.toUpperCase());
+  const SUMBER = {
+    "data/desa_cari.json": d => d.baris.map(([kd, n, kc]) => ({t: "desa", n, p: kd.slice(0, 2), k: [kc && "Kec. " + kc, d.kab[kd.slice(0, 5)]].filter(Boolean).join(" · "), id: kd})),
+    "data/daops.json": d => d.map(x => ({t: "daops", n: x.nama, p: x.prov, k: x.kab, c: [x.lon, x.lat], x: [["Balai", x.balai], ["Brigdalkarhutla", x.brigdal], ["Regu", x.regu], ["Alamat", x.alamat]]})),
+    "data/posko.json": d => [...d.pusat.map(x => ({t: "posko", n: "Posko Pusat " + x.nama, p: x.prov, c: [x.lon, x.lat], x: [["Tingkat", "Pusat (provinsi)"]]})),
+      ...d.menengah.map(x => ({t: "posko", n: "Posko Menengah " + x.nama, p: x.prov, k: x.kab, c: [x.lon, x.lat], x: [["Tingkat", "Menengah (kabupaten)"]]})),
+      ...d.posko.map(x => ({t: "posko", n: "Posko " + x.nama.split(",")[0], p: x.prov, k: [x.nama.split(", ")[1], x.kab].filter(Boolean).join(" · "), c: [x.lon, x.lat],
+        x: [["Tingkat", x.jenis_posko === "aju" ? "Lapangan (aju)" : "Lapangan"]]}))],
+    "data/bpbd.json": d => d.kantor.filter(x => x.prov).map(x => ({t: "bpbd", n: /provinsi/i.test(x.nama) ? "BPBD Provinsi " + namaProv(x.prov) : "BPBD " + kap(x.nama).replace(/^Kab\.?\s+/, ""), p: x.prov, k: x.kab,
+      c: [x.lon, x.lat], x: [["Alamat", x.alamat], ["Pusdalops", /^[\d\s()+'/-]{6,}$/.test(x.pusdalops) ? x.pusdalops.replace(/'/g, "") : ""]]})),
+    "data/fasilitas.json": d => d.filter(x => (x.t === "rs" || x.t === "faskes") && x.nama && x.nama.length > 5 && !/tanpa nama|^klini[ck]$/i.test(x.nama))
+      .map(x => ({t: "faskes", n: x.nama.length > 12 && x.nama === x.nama.toUpperCase() ? kap(x.nama) : x.nama, p: x.prov, c: [x.lon, x.lat], x: [["Data", "OpenStreetMap"]]})),
+    "data/metar.json": d => d.map(x => ({t: "bandara", n: x.nama, p: x.prov, c: [x.lon, x.lat], x: [["ICAO", x.icao], ["Jarak pandang", x.vis_m != null ? `${fmt(x.vis_m / 1000)} km (METAR ${x.waktu?.slice(11, 16)} UTC)` : ""]]})),
+    "data/sekolah.json": d => { const K = Object.fromEntries(d.kolom.map((c, k) => [c, k]));
+      return d.baris.map(r => ({t: "sekolah", n: r[K.nama], p: r[K.prov], k: [r[K.desa] === r[K.desa]?.toUpperCase() ? kap(r[K.desa]) : r[K.desa], r[K.kab]].filter(Boolean).join(" · "), c: [r[K.lon], r[K.lat]],
+        x: [["Jenjang", r[K.jenjang]], ["Status", {N: "Negeri", S: "Swasta"}[r[K.status]] || r[K.status]], ["Siswa", r[K.siswa] ? fmt(r[K.siswa]) : ""], ["NPSN", r[K.npsn]]]})); },
+  };
+  /* fetch langsung, bukan muatJSON: data wilayah/fasilitas tanpa teks WALHI, dan tanpaWalhi atas 240 ribu baris makan ratusan ms */
+  const ambil = u => fetch(u).then(r => r.ok ? r.json() : Promise.reject(new Error(u + " " + r.status)));
+  const jeda = () => new Promise(r => setTimeout(r));
+  /* norm per potongan 3.000 dengan jeda supaya ketikan tetap terlayani saat indeks besar dibangun */
+  const muatLain = () => lain ||= Promise.all(Object.entries(SUMBER).map(([u, f]) => ambil(u).then(async d => { const xs = f(d);
+    for (let a = 0; a < xs.length; a += 3000) { for (const i of xs.slice(a, a + 3000)) { i.s = " " + norm(i.n + " " + (i.k || "")) + " "; i.nn = norm(i.n); item.push(i); } await jeda(); }
+  }).catch(e => console.warn("cari", u, e)))).then(() => ulang());
 
   /* ---------- hasil ---------- */
   function cocok(q) {
     const t = norm(q).split(" ").filter(Boolean), n = norm(q), out = [];
     if (n.length < 3) return out;
-    for (const i of item) { if (!t.every(w => i.s.includes(w))) continue; out.push([i.s.indexOf(" " + t[0]) >= 0 ? (i.s.startsWith(" " + n) ? 0 : 1) : 2, i]); }
-    return out.sort((a, b) => a[0] - b[0] || a[1].n.length - b[1].n.length).map(x => x[1]);
+    /* peringkat: -1 nama persis, 0 diawali ketikan, 1 kata pertama di awal kata, 2 sisanya; disimpan di i.rk untuk mengurutkan grup */
+    for (const i of item) { if (!t.every(w => i.s.includes(w))) continue; out.push([i.nn === n ? -1 : i.s.indexOf(" " + t[0]) >= 0 ? (i.s.startsWith(" " + n) ? 0 : 1) : 2, i]); }
+    return out.sort((a, b) => a[0] - b[0] || a[1].n.length - b[1].n.length).map(x => (x[1].rk = x[0], x[1]));
   }
   /* chip tengah: jenis hanya di grup campuran (Kawasan konservasi); grup sejenis sudah bernama di judulnya */
   const chip = s => s ? `<span class="hs-in"><i>${esc(s)}</i></span>` : "<span></span>";
-  const baris = (i, k) => `<button class="hs-c" data-cari="${k}"><b>${esc(i.n)}</b>${chip(KAW.has(i.t) ? (GRUP.some(g => g[0] === i.t) ? "" : JENIS[i.t]) : [i.g, i.k].filter(Boolean).join(" · "))}<span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
-  let daftar = [];
-  /* dipanggil dari penanganan input di index.html; mengembalikan HTML tambahan untuk #hasil */
+  const baris = (i, k) => `<button class="hs-c" data-cari="${k}"><b>${esc(i.n)}</b>${chip(KAW.has(i.t) && !i.k ? (GRUP.some(g => g[0] === i.t) ? "" : JENIS[i.t]) : [i.g, i.k].filter(Boolean).join(" · "))}<span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
+  let daftar = [], tRender = 0, qJadi = "", hJadi = "", segera = false;
+  /* dipanggil dari penanganan input di index.html; mengembalikan HTML tambahan untuk #hasil.
+     Pindai 240 ribu nama ditunda 120 ms setelah ketikan terakhir (wadah #cariLain diisi kemudian); picu dari dalam (Lihat semua, indeks selesai dimuat) langsung */
+  const ulang = () => { segera = true; $("#cari").dispatchEvent(new Event("input")); };
   window.Cari = {
     html(q, nWil) {
-      clearTimeout(tFoto);
+      clearTimeout(tFoto); clearTimeout(tRender);
       if (norm(q).length < 3) return "";
       if (!siap) { muat(); return ""; }   /* cadangan bila fokus tak terpicu */
+      siap.then(muatLain);
+      if (segera && q === qJadi) { segera = false; return `<div id="cariLain">${hJadi = this.isi(q, nWil)}</div>`; }
+      tRender = setTimeout(() => { const w = document.getElementById("cariLain"); if (w && $("#cari").value.trim() === q) { qJadi = q; w.innerHTML = hJadi = this.isi(q, nWil); } }, 120);
+      return `<div id="cariLain"></div>`;
+    },
+    isi(q, nWil) {
       if (q !== qTerakhir) { buka = new Set(); qTerakhir = q; foto = []; }
       const m = cocok(q); daftar = []; let h = "";
-      for (const [t, nama] of GRUP) { const ts = t.split(" "), xs = m.filter(i => ts.includes(i.t)); if (!xs.length) continue;
+      /* grup dengan kecocokan terbaik naik ("sungai kapuas": Sungai Kapuas di atas desa Sungai Alai, Kec. Kapuas); seri: urutan GRUP */
+      const ember = new Map(); for (const i of m) { const t = GRUP_T[i.t]; if (t) (ember.get(t) || ember.set(t, []).get(t)).push(i); }
+      const G = GRUP.map(([t, nama], k) => { const xs = ember.get(t) || []; return [t, nama, xs, xs.length ? xs[0].rk * 100 + k : 1e9]; })
+        .filter(g => g[2].length).sort((a, b) => a[3] - b[3]);
+      for (const [t, nama, xs] of G) {
         const semua = buka.has(t), tampil = xs.slice(0, semua ? 30 : 5);
         h += `<div class="hs-jd">${nama}<small>${fmt(xs.length)}</small></div>` + tampil.map(i => baris(i, daftar.push(i) - 1)).join("")
           + (xs.length > 5 ? `<button class="hs-lagi" data-cari-semua="${t}">${semua ? "Tampilkan sedikit" : `Lihat semua ${fmt(xs.length)}`}</button>` : ""); }
@@ -49,7 +96,7 @@
     },
     foto(q) { clearTimeout(tFoto); tFoto = setTimeout(() => cariFoto(q), 300); },
     klik(b) {
-      if (b.dataset.cariSemua) { const t = b.dataset.cariSemua; buka.has(t) ? buka.delete(t) : buka.add(t); $("#cari").dispatchEvent(new Event("input")); return true; }
+      if (b.dataset.cariSemua) { const t = b.dataset.cariSemua; buka.has(t) ? buka.delete(t) : buka.add(t); ulang(); return true; }
       if (b.dataset.cariFoto) { b.hidden = true; cariFoto(qTerakhir); return true; }
       if (b.dataset.cari != null) { pilih(daftar[+b.dataset.cari]); return false; }
       if (b.dataset.foto != null) { terbangFoto(foto[+b.dataset.foto]); return false; }
@@ -106,7 +153,7 @@
   function gambar() { if (!terpilih) return; try { lapis(); } catch (e) { return; }   /* gaya belum siap: style.load memanggil ulang */
     const T = terpilih, ks = T.poli ? {type: "FeatureCollection", features: [T.poli]} : KOSONG;
     peta.getSource("cari-ks").setData(ks);
-    if (T.i.t === "pabrik") { const [lo, la] = T.i.c;
+    if (TITIK.has(T.i.t)) { const [lo, la] = T.i.c, BUF = BUFJ[T.i.t];
       peta.getSource("cari-buf").setData({type: "FeatureCollection", features: BUF.map(km => ({type: "Feature", properties: {}, geometry: {type: "LineString", coordinates: cincin(la, lo, km)}}))});
       peta.getSource("cari-lab").setData({type: "FeatureCollection", features: [...BUF.map(km => ({type: "Feature", properties: {t: km + " km"}, geometry: {type: "Point", coordinates: tujuan(la, lo, km, 0)}})), {type: "Feature", properties: {t: ""}, geometry: {type: "Point", coordinates: [lo, la]}}]}); }
     else { peta.getSource("cari-buf").setData(KOSONG); peta.getSource("cari-lab").setData(KOSONG); } }
@@ -115,12 +162,12 @@
 
   /* ---------- kartu info ---------- */
   function kartu() { let k = document.getElementById("cariKartu"); if (!k) { k = document.createElement("div"); k.id = "cariKartu"; k.className = "box"; k.hidden = true;
-    k.onclick = e => { if (e.target.closest("[data-hapus]")) hapusGaris(); else if (e.target.closest("[data-timelapse]") && terpilih) { const T = terpilih, b = T.i.t === "pabrik" ? [tujuan(T.i.c[1], T.i.c[0], 25, 270)[0], tujuan(T.i.c[1], T.i.c[0], 25, 180)[1], tujuan(T.i.c[1], T.i.c[0], 25, 90)[0], tujuan(T.i.c[1], T.i.c[0], 25, 0)[1]] : (T.bb || T.i.b); b ? window.Timelapse?.buka({bbox: b, nama: T.i.n}) : window.Timelapse?.buka(); } }; $("#p-peta").appendChild(k); } return k; }
+    k.onclick = e => { if (e.target.closest("[data-hapus]")) hapusGaris(); else if (e.target.closest("[data-timelapse]") && terpilih) { const T = terpilih, b = TITIK.has(T.i.t) ? [tujuan(T.i.c[1], T.i.c[0], 25, 270)[0], tujuan(T.i.c[1], T.i.c[0], 25, 180)[1], tujuan(T.i.c[1], T.i.c[0], 25, 90)[0], tujuan(T.i.c[1], T.i.c[0], 25, 0)[1]] : (T.bb || T.i.b); b ? window.Timelapse?.buka({bbox: b, nama: T.i.n}) : window.Timelapse?.buka(); } }; $("#p-peta").appendChild(k); } return k; }
   const tab = (judul, kolom, baris) => `<table class="ck-t"><thead><tr><th>${judul}</th>${kolom.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map((c, k) => k ? `<td>${c}</td>` : `<th>${c}</th>`).join("")}</tr>`).join("")}</tbody></table>`;
   function statistik() {
-    const T = terpilih; if (!T || (T.i.t !== "pabrik" && T.poli === undefined)) return; const k = kartu(); let bd = "";
+    const T = terpilih; if (!T || (!TITIK.has(T.i.t) && T.poli === undefined)) return; const k = kartu(); let bd = "";
     const ren = namaRentang();   /* satu hari WIB terpilih: "hari ini" | "kemarin" | "Sen 19 Okt" */
-    if (T.i.t === "pabrik") { const [lo, la] = T.i.c, t = BUF.map(() => 0), kp = BUF.map(() => 0);
+    if (TITIK.has(T.i.t)) { const [lo, la] = T.i.c, BUF = BUFJ[T.i.t], t = BUF.map(() => 0), kp = BUF.map(() => 0);
       const dl = .5, dlo = .5 / Math.max(.2, Math.cos(la * rad));
       for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.utama.has(b[3]) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
       for (const f of S.kluster.features) { const p = f.properties; if (Math.abs(p.lat - la) > dl || Math.abs(p.lon - lo) > dlo) continue; const d = jarak(la, lo, p.lat, p.lon); BUF.forEach((km, j) => d <= km && kp[j]++); }
@@ -137,7 +184,7 @@
     k.querySelector(".ck-b").innerHTML = bd; }
   function bukaKartu(judul, baris, atr) {
     const k = kartu(); k.hidden = false;
-    k.innerHTML = `<div class="ck-h"><b>${esc(judul)}</b><button type="button" data-hapus aria-label="Hapus buffer dan tutup" title="${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}"><span class="ck-tx">${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}</span><span class="ck-x" aria-hidden="true">&times;</span></button></div>`
+    k.innerHTML = `<div class="ck-h"><b>${esc(judul)}</b><button type="button" data-hapus aria-label="Hapus buffer dan tutup" title="${TITIK.has(terpilih.i.t) ? "Hapus buffer" : "Tutup"}"><span class="ck-tx">${TITIK.has(terpilih.i.t) ? "Hapus buffer" : "Tutup"}</span><span class="ck-x" aria-hidden="true">&times;</span></button></div>`
       + `<dl class="ck-d">${baris.filter(r => r[1]).map(([a, b]) => `<dt>${a}</dt><dd>${esc(String(b))}</dd>`).join("")}</dl><div class="ck-b"></div><button type="button" class="ck-tl" data-timelapse>Timelapse citra harian</button><div class="hs-atr">${atr}</div>`; }
 
   async function pilih(i) {
@@ -152,13 +199,18 @@
       peta.fitBounds([tujuan(la, lo, 55, 270), tujuan(la, lo, 55, 90)].reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds()).extend(tujuan(la, lo, 55, 0)).extend(tujuan(la, lo, 55, 180)), {padding: kiriPad(), duration: 700});
       bukaKartu(i.n, [["Perusahaan", p.perusahaan], ["Grup", p.grup || i.g], ["Kapasitas", p.kapasitas ? `${fmt(p.kapasitas)} ${p.kapasitas_satuan || ""}` : ""], ["Tahun (data Trase)", p.tahun], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], "Trase (CC BY 4.0) · titik panas: NASA FIRMS");
       gambar(); nanti(statistik); return; }
+    if (TITIK.has(i.t)) { const [lo, la] = i.c, km = BUFJ[i.t][2] + 5;
+      peta.fitBounds([tujuan(la, lo, km, 270), tujuan(la, lo, km, 90)].reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds()).extend(tujuan(la, lo, km, 0)).extend(tujuan(la, lo, km, 180)), {padding: kiriPad(), duration: 700});
+      bukaKartu(i.n, [["Jenis", JENIS[i.t]], ...i.x, ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], ATR[i.t] + " · titik panas: NASA FIRMS");
+      gambar(); nanti(statistik); return; }
     kartuMuat(i);
     if (KAW.has(i.t)) {
       const f = await poliKawasan(i).catch(e => (console.warn("kawasan", e), null));
       if (!terpilih || terpilih.i !== i) return;
       terpilih.poli = f; terpilih.bb = f ? bboxPoli(polys(f.geometry)) : i.b;
       const b = terpilih.bb; peta.fitBounds([[b[0], b[1]], [b[2], b[3]]], {padding: kiriPad(), maxZoom: 12, duration: 700});
-      bukaKartu(i.n, [["Jenis", JENIS[i.t] + (i.r ? `, radius ${i.r} km dari puncak` : "")], ["Provinsi", namaProv(i.p)]], `Batas: ${esc(i.sb)} · titik panas: NASA FIRMS`);
+      bukaKartu(i.n, [["Jenis", JENIS[i.t] + (i.r ? `, radius ${i.r} km dari puncak` : "")], ["Lokasi", i.t === "desa" ? i.k : ""], ["Provinsi", namaProv(i.p)]],
+        `Batas: ${esc(i.t === "desa" ? "Kepmendagri 300.2.2-2430/2025 lewat cahyadsn/wilayah_boundaries (MIT), disederhanakan" : i.sb)} · titik panas: NASA FIRMS`);
       gambar(); nanti(statistik); muatTitik(168); return; }   /* belum padam butuh 36 jam ke belakang: hotspot.json 7 hari; selesai memuat memanggil Cari.segar */
     try { kons ||= await (Lapis.cache.konsesiP ||= muatJSON("data/lahan/konsesi.geojson").then(d => Lapis.cache.konsesi = d));
       if (!catatan) catatan = await muatJSON("data/kompleks_konsesi.json").then(d => d.catatan || "").catch(() => "");
@@ -173,6 +225,7 @@
   async function poliKawasan(i) {
     const F = coords => ({type: "Feature", properties: {}, geometry: {type: "MultiPolygon", coordinates: coords}});
     if (i.t === "gunung") return F([[cincin(i.c[1], i.c[0], i.r)]]);
+    if (i.t === "desa") { const u = `geo/desa/${i.id.slice(0, 5)}.json`, fc = await (desaGeo[u] ||= ambil(u).catch(e => { delete desaGeo[u]; throw e; })); return fc.features.find(f => f.properties.kd === i.id) || null; }
     if (i.t === "khg") { khg ||= Lapis.cache.khg ||= await muatJSON("data/lahan/khg.geojson"); return khg.features.find(f => "khg:" + f.properties.kode === i.id) || null; }
     if (i.t === "metro") { const out = [];
       for (const k of i.kab) { const [p, kb] = k.split("|"), fc = S.geo.kab[p] ||= await muatJSON(`geo/kabupaten/${p}.json`), f = fc.features.find(f => f.properties.kab === kb);
@@ -181,5 +234,8 @@
     kwGeo ||= await muatJSON("data/kawasan_cari.geojson");
     return kwGeo.features.find(f => f.properties.id === i.id) || null;
   }
+  const desaGeo = {};
+  const ATR = {daops: "Daops: SiPongi opsroom KLHK", posko: "Posko: rancangan posko Pantau Bencana (scripts/data/posko.py)", bpbd: "Kantor BPBD: gis.bnpb.go.id",
+    faskes: "Faskes: OpenStreetMap (ODbL)", sekolah: "Sekolah: Dapodik Kemendikbud, EMIS Kemenag", bandara: "Bandara dan jarak pandang: METAR (NOAA AWC)"};
   function kartuMuat(i) { bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], ""); kartu().querySelector(".ck-b").innerHTML = `<p class="ck-n">Memuat…</p>`; }
 })();
