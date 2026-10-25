@@ -24,7 +24,8 @@ Bahan yang dibaca: `rehab/riset/A-hukum-kelembagaan.md` (§1–§8), `F-data-rep
 `data/dibi` (README dibaca utuh; `rekap_nasional_tahunan.csv`, `rekap_provinsi_tahunan.csv`, `kejadian_besar.csv`),
 registri `data/angka.json`. Korpus peraturan `data/raw/hukum/teks` (Perban 5/2017, 6/2017, 4/2024, 4/2020, Perka 12/2010,
 Juklak 3/2023) dan `data/lembaga/mentah/teks/uu-24-2007.json.gz`; status dari `public/data/bnpb/hukum/katalog.json`. Semua
-hitungan DIBI di berkas ini dijalankan ulang sesi ini (Python stdlib, filter `klasifikasi=alam`, `cakupan=bencana`).
+hitungan DIBI di berkas ini dijalankan ulang sesi ini (Python stdlib, filter `klasifikasi=alam`, `cakupan=bencana`),
+kecuali angka kejadian Sumatra 2025 dari `dibi/kejadian_besar.csv` (P1 butir 7) yang bercakupan `semua_laporan`.
 Sumber web dibuka 25 Oktober 2026: dua rilis ePPID Kementerian PU (5 Februari dan 11 Mei 2026), rilis Bina Marga BPJN Aceh
 (3 Desember 2025), rilis Setneg (13 Agustus 2026), Info Singkat Badan Keahlian DPR (Januari 2026), halaman dan PDF salinan
 Keppres 1/2026 di JDIH Kemenko Infrastruktur (teks dibaca utuh lewat `pdftotext`).
@@ -72,8 +73,9 @@ Keppres 1/2026 di JDIH Kemenko Infrastruktur (teks dibaca utuh lewat `pdftotext`
 5. **Ada angka resmi jembatan daerah Sumatra yang belum ada di KERANGKA.** Rilis PU 11 Mei 2026 (data 7 Mei 2026): sekitar
    67% dari 1.181 unit jembatan daerah terdampak sudah dapat difungsikan kembali; 94% dari 2.421 ruas jalan daerah terdampak
    fungsional; jalan dan jembatan nasional terdampak fungsional 100%. Ini angka resmi primer (Kementerian PU) dan dapat
-   menggantikan angka sekunder "jembatan daerah Aceh 58,93%" untuk titik Mei 2026. Angka 1.181 berbeda dengan DIBI 2025 tiga
-   provinsi (744); ditulis berdampingan (lihat P1).
+   menggantikan angka sekunder "jembatan daerah Aceh 58,93%" untuk titik Mei 2026. Angka 1.181 berlaku untuk "wilayah Pulau
+   Sumatera" tanpa rincian provinsi dan tanpa jendela kejadian, sedangkan DIBI 744 adalah semua kejadian alam 2025 di tiga
+   provinsi. Cakupannya tidak sama, jadi keduanya ditulis berdampingan tanpa menghitung selisih (lihat P1 butir 13, Kotak 1.2).
 6. **Keppres 1/2026 sudah dibuka (salinan PDF JDIH Kemenko Infrastruktur).** Ketua tim pelaksana Menteri Dalam Negeri;
    Kepala BNPB Wakil Ketua II tim pelaksana; ketua tim pengarah Menko PMK; Bidang Infrastruktur dikoordinasikan Menteri PU
    (anggota Menteri Perhubungan); Bidang Pengelolaan Data dikoordinasikan Kepala BPS. Celah KERANGKA §10 butir 10 untuk
@@ -93,9 +95,10 @@ Keppres 1/2026 di JDIH Kemenko Infrastruktur (teks dibaca utuh lewat `pdftotext`
 
 DIBI mencatat 3.833 jembatan rusak akibat bencana alam pada 2018–2025, dan 1.088 di antaranya (28%) terjadi pada 2025,
 2,8 kali rerata tahunan 2018–2024; rangkaian Sumatra November 2025 menambah 62.956 rumah rusak berat dan 970.876 orang
-mengungsi. Sementara layanan nasional pulih cepat (jalan dan jembatan nasional 100% fungsional dan sekitar 95,5% dari 178
-SPAM terdampak berfungsi pada Mei 2026), jembatan daerah baru sekitar 67% dari 1.181 unit, dan kerusakan sistem air sama
-sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada di instrumen BNPB.
+mengungsi. Pada 7 Mei 2026 jalan dan jembatan nasional terdampak sudah 100% fungsional, sedangkan jembatan daerah baru
+sekitar 67% dari 1.181 unit. Sekitar 95,5% dari 178 SPAM terdampak juga sudah fungsional, tetapi rilis tidak merinci status
+kepemilikan SPAM itu. Kerusakan sistem air tidak tercatat terpisah di DIBI (bila ada, tercampur dalam fasilitas umum
+rusak), sehingga ukuran pemulihan air dan akses belum ada di instrumen BNPB.
 
 ### Temuan bersumber
 
@@ -130,18 +133,24 @@ sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada
    `[kode=sumatra2025,versi=DIBI]`, jendela 15 November–31 Desember 2025 pilihan penyusun (kunci lama
    `dibi.sumatra2025.rumah_rusak_berat`, `dibi.sumatra2025.mengungsi`, `dibi.sumatra2025.meninggal`,
    `dibi.sumatra2025.hilang`, `dibi.sumatra2025.kab_terdampak`; kunci baru `rehab.lantai.banjir.sumatra2025.rumah_rusak`).
-   Label resmi, primer, turunan penyusun (jendela).
+   Label resmi, primer, turunan penyusun (jendela). **Cakupan `semua_laporan`**, bukan `bencana`: 71 baris kelompok DIBI,
+   termasuk 4 baris `is_bencana=false` (0 meninggal). Cakupan ini berbeda dengan angka jembatan DIBI (butir 1–6, cakupan
+   `bencana`), jadi keduanya tidak dijumlah atau dibagi satu sama lain.
 8. **Rumah rusak berat akibat bencana alam 2025: 70.391**, tertinggi sesudah 2018 (117.655); 2019–2024 berkisar 4.870
    sampai 21.335. Sumber: `dibi/rekap_nasional_tahunan.csv` (alam, bencana) (kunci `rehab.dibi.rumah_rb.2025`). Label resmi
    (olah).
 9. **SPAM Sumatra: 143 dari 176 SPAM terdampak berfungsi per 2 Februari 2026; kapasitas dipulihkan lebih dari 5.300 l/detik;
-   537 unit sarana darurat disiagakan; 128 sumur bor (SDA 25 sumur air dalam; Cipta Karya 17 sumur dangkal dan 86 sumur
-   dalam).** Sumber: Kementerian PU, ePPID, "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU
+   537 unit sarana darurat disiagakan; 37 sumur bor selesai dari 128 yang direncanakan atau dikerjakan.** Rincian sumur:
+   Aceh selesai 37 (SDA 11 dari 24; Cipta Karya dangkal 9 dari 17; Cipta Karya dalam 17, dengan 46 masih dikerjakan); Sumut
+   5 sumur dalam Cipta Karya masih dikerjakan; Sumbar 1 sumur dalam SDA dikerjakan dan 18 sumur dalam Cipta Karya baru tahap
+   survei dan geolistrik. 128 = SDA 25 + Cipta Karya 103 (hitungan penyusun; rilis tidak menulis total gabungan). Rilis tidak
+   memberi tanggal data khusus sumur ("hingga saat ini"). Sumber: Kementerian PU, ePPID, "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU
    Fungsionalkan 142 SPAM", terbit 5 Februari 2026,
    https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam,
    diakses 25 Oktober 2026 (pustaka `pu-2026-spam-sumatera-feb`; kunci `rehab.pipa.sumatra2025.spam_berfungsi_feb2026`,
    `rehab.pipa.sumatra2025.spam_terdampak_feb2026`, `rehab.pipa.sumatra2025.sarana_darurat_feb2026`,
-   `rehab.pipa.sumatra2025.sumur_bor_feb2026`). Label resmi, primer. Judul rilis menulis 142, isi 143; angka isi dipakai.
+   `rehab.pipa.sumatra2025.sumur_bor_feb2026`, `rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026`). Label resmi, primer.
+   Judul rilis menulis 142, isi 143; angka isi dipakai.
 10. **Penanganan permanen SPAM Sumatera Barat ditargetkan selesai bertahap hingga Agustus 2028.** Sumber: rilis yang sama
     (kunci `rehab.pipa.sumbar.target_permanen`). Label resmi, primer. Hanya Sumbar; target Aceh dan Sumut tidak disebut.
 11. **Per 7 Mei 2026: sekitar 95,5% dari 178 SPAM terdampak kembali fungsional; jalan dan jembatan nasional terdampak 100%
@@ -153,7 +162,9 @@ sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada
     `rehab.pipa.sumatra2025.persen_fungsi_mei2026`, `rehab.akses.sumatra2025.jembatan_daerah_terdampak`,
     `rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026`, `rehab.akses.sumatra2025.jalan_daerah_ruas_terdampak`,
     `rehab.akses.sumatra2025.jalan_daerah_persen_fungsi_mei2026`). Label resmi, primer. "Fungsional" tidak didefinisikan
-    (sementara atau permanen).
+    (sementara atau permanen). Rilis tidak menyebut status kepemilikan 178 SPAM (pusat, pemda, PDAM, atau desa), jadi SPAM
+    tidak digolongkan sebagai layanan nasional maupun daerah. Lokasi hanya "wilayah Pulau Sumatera", tanpa rincian provinsi
+    dan tanpa jendela kejadian.
 12. **Angka SPAM terdampak berbeda versi: 176 (Februari 2026) dan 178 (Mei 2026).** Sumber: butir 9 dan 11. Ditulis
     berdampingan dengan tanggal datanya. Versi 153 dari 176 (11 Februari 2026, Investortrust mengutip Menteri PU,
     `E-pelajaran-program.md` [28]) berstatus sekunder, hanya lampiran rekonsiliasi.
@@ -163,7 +174,9 @@ sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada
     https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh,
     diakses 25 Oktober 2026; pustaka `binamarga-2025-jembatan-aceh`; kunci `rehab.akses.aceh.jembatan_putus_des2025`; label
     resmi, primer); BNPB 498 jembatan rusak per 10 Desember 2025 (Kontan, `B-jembatan.md` [36]; resmi, sekunder, lampiran
-    saja). Empat angka ditulis berdampingan; tidak dipilih satu.
+    saja). Empat angka ditulis berdampingan; tidak dipilih satu. Cakupannya tidak sama (DIBI: tiga provinsi, semua kejadian
+    alam 2025; PU: Pulau Sumatera, kejadian tidak dirinci, hanya jembatan daerah; BPJN: Aceh, inspeksi per 1 Desember 2025),
+    jadi selisih antarangka tidak boleh ditafsirkan sebagai kekurangan catat salah satu pihak.
 14. **Rumah rusak Sumatra berbeda versi:** DIBI 228.006 (butir 7); BNPB sekitar 147.000 per 17 Desember 2025 dan Kementerian
     PKP sekitar 189.308 rumah terdampak per 9 Januari 2026, dengan catatan "proses pemutakhiran yang belum sepenuhnya sinkron"
     (Badan Keahlian DPR RI, Info Singkat Vol. XVIII No. 2, Januari 2026, Rafika Sari,
@@ -173,15 +186,17 @@ sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada
 15. **DIBI tidak memiliki kolom kerusakan SPAM, pipa, sumur, atau waktu pulih layanan.** Sumber: daftar kolom
     `dibi/rekap_nasional_tahunan.csv` (kejadian, korban, rumah, `pendidikan_rusak`, `rumah_ibadat_rusak`, `fasyankes_rusak`,
     `fasum_rusak`, `kantor_rusak`, `jembatan_rusak`); `F-data-repo.md` §4 butir 1. Label resmi (struktur data). Fasilitas
-    umum rusak 2015–2025: 21.703 (kategori DIBI, tidak memisah SPAM; kunci `rehab.dibi.fasum_rusak.2015_2025`).
+    umum rusak 2015–2025: 21.703 (kategori DIBI, tidak memisah SPAM; kunci `rehab.dibi.fasum_rusak.2015_2025`). Artinya
+    kerusakan SPAM tidak tercatat terpisah; bila tercatat, ia tercampur dalam fasilitas umum rusak dan tidak dapat dipisahkan.
 16. **Preseden kerusakan sistem air pada gempa:** Lombok 2018, 37 titik SPAM rusak (Buku Satgas Penanganan Gempa Lombok,
     Kementerian PUPR, data sampai 31 Maret 2019; pustaka `kemenpupr-2019-satgas-lombok`; kunci `rehab.pipa.lombok.spam_rusak`);
     Cianjur 2022, 10 titik area kerusakan pipa SPAM (Penanganan Gempa Cianjur 2022, Kementerian PUPR, status 25 September
     2023; pustaka `kemenpupr-2023-cianjur`; kunci `rehab.pipa.cianjur.titik_kerusakan_pipa`). Label resmi, primer (dibaca
     utuh oleh riset D; tidak dibuka ulang sesi ini).
 17. **Program jembatan K/L berskala ribuan berjalan bersamaan:** TNI AD 3.008 titik jembatan dikerjakan, 2.500 selesai,
-    508 dalam proses, 798 titik di wilayah bencana; Polri (Jembatan Merah Putih Presisi) 895 unit di 30 Polda, 874 selesai,
-    17 dibangun; TNI AD 3.000 sumber air bersih (Kementerian Sekretariat Negara, 13 Agustus 2026,
+    508 dalam proses, "dan juga 798 di daerah bencana" (karena 2.500 + 508 = 3.008, rilis tidak menjelaskan apakah 798
+    bagian dari 3.008 atau tambahan); Polri (Jembatan Merah Putih Presisi) 895 unit di 30 Polda, 874 selesai, 17 dalam
+    pembangunan, 4 dalam perencanaan; TNI AD 3.000 sumber air bersih (Kementerian Sekretariat Negara, 13 Agustus 2026,
     https://www.setneg.go.id/baca/index/resmikan_3395_jembatan_tni_polri_dan_3000_sumber_air_bersih_tni_ad_presiden_prabowo_misi_bakti_kepada_rakyat,
     diakses 25 Oktober 2026; pustaka `setneg-2026-jembatan-tni-polri`; kunci `rehab.jembatan.garuda.titik_2026_08`,
     `rehab.jembatan.garuda.selesai_2026_08`, `rehab.jembatan.garuda.titik_wilayah_bencana_2026_08`,
@@ -201,14 +216,15 @@ sekali tidak tercatat di DIBI, sehingga ukuran pemulihan air dan akses belum ada
   angka program (2.500 selesai TNI AD, 874 Polri) dan angka kerusakan (1.088 DIBI 2025, 1.181 PU jembatan daerah Sumatra)
   tidak dapat dicocokkan per lokasi, sehingga tidak diketahui berapa jembatan rusak akibat bencana yang sudah diganti oleh
   program mana. Ini dasar KD-R3 dan R-RR-04.
-- **[Inferensi tim]** Pola "nasional cepat, daerah tertinggal" terlihat di satu kejadian dengan angka resmi: jalan dan
-  jembatan nasional 100% pada 7 Mei 2026 lawan jembatan daerah sekitar 67%. Pola yang sama dicatat riset E di Sulteng
+- **[Inferensi tim]** Pola "nasional cepat, daerah tertinggal" terlihat di satu kejadian dengan angka resmi, dan hanya untuk
+  akses: jalan dan jembatan nasional 100% pada 7 Mei 2026 lawan jembatan daerah sekitar 67%. Angka SPAM (95,5%) tidak dipakai
+  untuk pola ini karena status kepemilikan SPAM tidak dirinci rilis. Pola yang sama dicatat riset E di Sulteng
   (huntap tersisa 382 dari 5.598 per Juni 2024; resmi, Kemenko PMK, `E-pelajaran-program.md` [14]), tetapi Bab 1 hanya
   menyebutnya sebagai pengantar Bab 4.5.
 - **[Inferensi tim]** "SPAM berfungsi" mengukur unit, bukan orang terlayani atau liter per orang per hari; 95,5% unit
   berfungsi tidak menjawab berapa jiwa masih bergantung pada 537 sarana darurat. Ini dasar lensa layanan (KERANGKA prinsip
   4) dan R-RR-09.
-- **[Inferensi tim]** Ketiadaan kolom SPAM di DIBI berarti Grand Design tidak dapat menetapkan sasaran waktu pulih air
+- **[Inferensi tim]** Ketiadaan kolom SPAM terpisah di DIBI berarti Grand Design tidak dapat menetapkan sasaran waktu pulih air
   berangka sekarang; yang dapat ditetapkan adalah baseline paling lambat 2027 (Q11, KD-R1).
 - **[Inferensi tim]** Kebutuhan "sekarang" juga datang dari kalender: R3P paling lama 3 tahun (Perban 5/2017 Pasal 10)
   berarti R3P Sumatra 2025 berjalan sampai sekitar akhir 2028, sejalan dengan target Sumbar Agustus 2028, dan musim hujan
@@ -239,8 +255,10 @@ Rantai norma sudah menamai air dan akses di ketiga tahap: pemenuhan air bersih d
 tanggap darurat (UU 24/2007 Pasal 48 huruf f, 53 huruf a, 56), perbaikan prasarana umum dan pembangunan kembali tahan
 bencana pascabencana (Pasal 58, 59), R3P paling lama 90 hari dan berlaku paling lama 3 tahun dengan sektor "sumber daya air,
 air bersih dan sanitasi" dan "transportasi darat" (Perban 5/2017), dan hibah RR untuk konstruksi (Perban 4/2024). Yang
-belum diatur: ukuran atau standar waktu pulih layanan air dan akses, pembiayaan hibah RR untuk aset desa, lahan, serta
-operasi dan pemeliharaan (Perban 4/2024 Pasal 5), dan pengikatan program K/L di luar R3P.
+belum ditemukan pengaturannya di korpus yang terunduh: ukuran atau standar waktu pulih layanan air dan akses, dan
+pengikatan program K/L di luar R3P. Perban 4/2024 Pasal 5 mengecualikan dari hibah RR antara lain aset rusak milik
+pemerintah desa dan pembelian lahan; apakah pengecualian itu juga mengenai aset kelompok masyarakat atau BUMDes, dan
+operasi serta pemeliharaan aset sesudah selesai, masih tafsir yang perlu dikonfirmasi.
 
 ### Temuan bersumber
 
@@ -301,14 +319,16 @@ operasi dan pemeliharaan (Perban 4/2024 Pasal 5), dan pengikatan program K/L di 
     Label resmi, primer (ringkasan halaman; PDF Inpres tidak dibuka).
 12. **Tidak ditemukan standar waktu pulih (hari) untuk air perpipaan atau akses jalan dan jembatan di peraturan BNPB yang
     terunduh**; tidak ada templat R3P yang mewajibkan baris waktu pulih layanan air atau daftar jembatan sementara yang harus
-    diganti permanen. Sumber: `A-hukum-kelembagaan.md` §1 Celah dan §3 Celah (pencarian korpus `data/raw/hukum/teks`). Label
-    resmi (temuan ketiadaan dari korpus).
+    diganti permanen. Sumber: `A-hukum-kelembagaan.md` §1 Celah dan §3 Celah (pencarian korpus `data/raw/hukum/teks`).
+    **[Temuan penyusun]**, bukan pernyataan instansi: "tidak ditemukan di korpus JDIH yang terunduh per 25 Oktober 2026";
+    korpus lokal belum tentu lengkap.
 13. **Tidak ditemukan ketentuan BNPB yang mewajibkan sumber air huntap ditetapkan sebelum lokasi huntap disahkan**; Juklak
     3/2023 hanya mensyaratkan lokasi huntara "harus memiliki akses pada layanan kesehatan, air bersih dan sanitasi" (teks
     OCR hlm. 7). Sumber: `data/raw/hukum/teks/juklak-nomor-3-tahun-2023.json` (pustaka `bnpb-2023-huntara`);
     `A-hukum-kelembagaan.md` §5. Label resmi, primer (OCR).
 14. **Keputusan Kepala BNPB yang merinci kegiatan hibah RR (Perban 4/2024 Pasal 2 ayat (2)) dan kegiatan DSP (Perban 4/2020
-    Pasal 11) tidak ditemukan di korpus.** Sumber: `A-hukum-kelembagaan.md` §4 Celah. Label resmi (temuan ketiadaan).
+    Pasal 11) tidak ditemukan di korpus.** Sumber: `A-hukum-kelembagaan.md` §4 Celah. **[Temuan penyusun]**, bukan
+    pernyataan instansi: "tidak ditemukan di korpus JDIH yang terunduh per 25 Oktober 2026"; korpus lokal belum tentu lengkap.
 15. **Ketidakselarasan dokumen BNPB:** Perban 6/2017 Pasal 9 ayat (1) di bawah "Bagian Kedua Rekonstruksi" berbunyi
     "Penyelenggaraan Rehabilitasi Pascabencana" (hlm. 9, dicek sesi ini); katalog JDIH masih menandai Perka 17/2010 BERLAKU
     padahal Perban 5/2017 Pasal 12 mencabutnya (hlm. 10, dicek sesi ini). Sumber: korpus dan
@@ -319,9 +339,13 @@ operasi dan pemeliharaan (Perban 4/2024 Pasal 5), dan pengikatan program K/L di 
 - **[Inferensi tim]** Celah terbesar bukan ketiadaan norma, melainkan ketiadaan ukuran: Perban 6/2017 Pasal 10 huruf d
   sudah meminta outcome "manfaat yang dirasakan", tetapi tidak ada indikator outcome untuk air dan akses. Grand Design
   mengisi celah ukuran, bukan menulis ulang kewenangan (KD-R1).
-- **[Inferensi tim]** Perban 4/2024 Pasal 5 huruf b dan e mengenai inti topik: jembatan desa dan SPAM desa berada di luar
-  hibah RR, dan biaya operasi dan pemeliharaan sistem pipa dan sumur yang dibangun saat RR juga di luar hibah RR, sehingga
-  keberlanjutan bergantung pada APBD, PDAM, atau pengelola desa (dasar KD-R2, R-RR-07).
+- **[Inferensi tim, tafsir belum diuji]** Perban 4/2024 Pasal 5 huruf b dan e mungkin mengenai inti topik, tetapi bunyinya
+  lebih sempit dari kesimpulan yang sering ditarik. Huruf e hanya menyebut "aset rusak milik pemerintah desa": jembatan atau
+  SPAM milik pemerintah desa jelas di luar hibah RR, sedangkan aset milik kelompok masyarakat (misalnya KPSPAMS) atau BUMDes
+  tidak disebut dan statusnya belum jelas. Huruf b ("biaya perencanaan, pengawasan, operasional, dan pemeliharaan
+  Rehabilitasi dan Rekonstruksi pascabencana") dapat dibaca sebagai biaya pengelolaan proyek RR, belum tentu operasi dan
+  pemeliharaan aset pipa atau sumur sesudah selesai dibangun. Kedua tafsir perlu dikonfirmasi ke Biro Hukum atau Deputi
+  RR BNPB sebelum dipakai sebagai dasar KD-R2 dan R-RR-07.
 - **[Inferensi tim]** Pasal 26 ayat (2) Perban 4/2024 menyulitkan perubahan trase pipa atau lokasi jembatan sesudah survei
   ulang; ini tafsir penyusun atas bunyi pasal, belum diuji dengan kasus.
 - **[Inferensi tim]** Pada kejadian besar, koordinasi RR dapat keluar dari rantai Perban 6/2017: Keppres 1/2026 menempatkan
@@ -340,6 +364,9 @@ operasi dan pemeliharaan (Perban 4/2024 Pasal 5), dan pengikatan program K/L di 
 - **Petunjuk pelaksanaan turunan Perban 6/2017 (Pasal 8 ayat (2), 9 ayat (2), 13 ayat (7), 14 ayat (6)) tidak ditemukan di
   korpus.** Naskah menulis "petunjuk pelaksanaan yang diamanatkan belum ditemukan di korpus JDIH yang terunduh", bukan
   "belum ada".
+- **Tafsir Perban 4/2024 Pasal 5 huruf b dan e belum dikonfirmasi.** Permintaan ke Biro Hukum, Organisasi, dan Kerja Sama
+  atau Deputi RR BNPB: (1) apakah huruf b mencakup operasi dan pemeliharaan aset sesudah serah terima atau hanya biaya
+  pengelolaan proyek RR; (2) apakah huruf e mencakup aset milik KPSPAMS, kelompok masyarakat, atau BUMDes.
 - **Perban 4/2020 hanya tersedia sebagai teks OCR.** Kutipan final dicek ke PDF resmi
   (`https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf`).
 
@@ -427,8 +454,8 @@ permanen (masa R3P paling lama 3 tahun, Perban 5/2017 Pasal 10), masing-masing d
 | Gambar 1.1 | Jembatan rusak akibat bencana alam per tahun, Indonesia, 2018–2025 (unit) | Batang per tahun 275; 433; 487; 505; 342; 258; 445; 1.088; anotasi 2025 (28,4% dari total; 2,8 kali rerata 2018–2024); garis rerata 2018–2024 (392,1); penanda patahan seri 2024; catatan kaki "kolom bernilai 0 untuk 2008–2017" | `dibi/rekap_nasional_tahunan.csv` `[klasifikasi=alam,cakupan=bencana].jembatan_rusak`, dijumlah per tahun | G1 (batang waktu), B5 keterangan deskriptif U4 | siap; satu warna tambal banjir tidak dipakai karena satu seri |
 | Kartu angka 1.1 (grup, opsional di 1.1) | Tiga kartu: 3.833 jembatan 2018–2025; 89,2% karena banjir; Aceh 480 pada 2025 | idem | `dibi/rekap_*_tahunan.csv` | B5.4, satu baris kaki "Sumber: DIBI BNPB, diolah; Resmi" | siap |
 | Kotak 1.1 | Definisi operasional dan tiga lapis waktu | Rehabilitasi, rekonstruksi (UU 24/2007 Pasal 1 angka 11–12), membangun kembali lebih baik dan lebih aman (Perban 6/2017 Pasal 1 angka 5), lapis darurat / sementara / permanen dengan dasar status (Perban 4/2020 Pasal 1; Perban 5/2017 Pasal 2, 10), standar lapis darurat (Perka 7/2008; Perka 12/2010) dan titik serah per sektor | korpus `data/raw/hukum/teks`, `uu-24-2007.json.gz` | B5.5 kotak catatan; label "fakta" untuk definisi pasal, "penilaian" untuk lapis | siap |
-| Tabel 1.1 | Lingkup jenis bencana × sektor | Baris: gempa bumi, tsunami, likuefaksi, banjir dan banjir bandang, tanah longsor, erupsi, cuaca ekstrem, kekeringan (konteks akuifer); kolom: akses (jembatan, jalan penghubung), air perpipaan (SPAM), air tanah (sumur, mata air), perumahan (beban dan pengikat lokasi); sel berisi jembatan rusak 2018–2025 DIBI per jenis bila ada (banjir 3.419; longsor 246; gempa 52; erupsi 51; cuaca ekstrem 37; gelombang 28) dan "tidak dicatat DIBI" untuk air | `dibi/rekap_nasional_tahunan.csv`; KEPUTUSAN-AWAL Q3, Q5 | B5.7 | siap (likuefaksi dan tsunami tidak terpisah di kolom jembatan DIBI: tsunami 0, likuefaksi masuk gempa) |
-| Kotak 1.2 (usulan, di 1.2) | Perbandingan angka Sumatra 2025 | Jembatan: DIBI 744 / PU 1.181 jembatan daerah / BPJN Aceh 14; SPAM: 176 lawan 178; rumah: DIBI 228.006 dengan catatan versi BNPB dan PKP di lampiran | butir P1.6, P1.11–14 | B5.5 "Perbandingan dengan sumber lain" (L22) | siap; versi sekunder hanya dirujuk ke Lampiran D |
+| Tabel 1.1 | Lingkup jenis bencana × sektor | Baris: gempa bumi, tsunami, likuefaksi, banjir dan banjir bandang, tanah longsor, erupsi, cuaca ekstrem, kekeringan (konteks akuifer); kolom: akses (jembatan, jalan penghubung), air perpipaan (SPAM), air tanah (sumur, mata air), perumahan (beban dan pengikat lokasi); sel berisi jembatan rusak 2018–2025 DIBI per jenis bila ada (banjir 3.419; longsor 246; gempa 52; erupsi 51; cuaca ekstrem 37; gelombang 28) dan "tidak tercatat terpisah di DIBI" untuk air | `dibi/rekap_nasional_tahunan.csv`; KEPUTUSAN-AWAL Q3, Q5 | B5.7 | siap (likuefaksi dan tsunami tidak terpisah di kolom jembatan DIBI: tsunami 0, likuefaksi masuk gempa) |
+| Kotak 1.2 (usulan, di 1.2) | Perbandingan angka Sumatra 2025 | Jembatan: DIBI 744 (tiga provinsi, semua kejadian alam 2025, semua jenis jembatan) / PU 1.181 jembatan daerah (Pulau Sumatera, kejadian tidak dirinci) / BPJN Aceh 14 (inspeksi per 1 Desember 2025), dengan catatan wajib "cakupan wilayah dan kejadian berbeda; selisih tidak boleh ditafsirkan"; SPAM: 176 lawan 178 (status kepemilikan tidak dirinci); sumur: 37 selesai dari 128 direncanakan atau dikerjakan; rumah: DIBI 228.006 (cakupan semua_laporan) dengan catatan versi BNPB dan PKP di lampiran | butir P1.6, P1.11–14 | B5.5 "Perbandingan dengan sumber lain" (L22) | siap; versi sekunder hanya dirujuk ke Lampiran D |
 
 ## Angka untuk registri
 
@@ -455,12 +482,13 @@ diulang: `dibi.sumatra2025.meninggal`, `dibi.sumatra2025.hilang`, `dibi.sumatra2
 | rehab.dibi.jembatan_rusak.sumatra3prov.2025 | 744 unit | olah (Aceh 480 + Sumbar 182 + Sumut 82) | resmi | DIBI BNPB |
 | rehab.dibi.rumah_rb.2025 | 70.391 unit | olah `dibi/rekap_nasional_tahunan.csv` | resmi | DIBI BNPB |
 | rehab.dibi.fasum_rusak.2015_2025 | 21.703 unit | olah, idem | resmi | DIBI BNPB |
-| rehab.lantai.banjir.sumatra2025.rumah_rusak | 228.006 unit | `dibi/kejadian_besar.csv` [kode=sumatra2025,metrik=rumah_rusak,versi=DIBI].nilai | resmi | DIBI BNPB |
+| rehab.lantai.banjir.sumatra2025.rumah_rusak | 228.006 unit | `dibi/kejadian_besar.csv` [kode=sumatra2025,metrik=rumah_rusak,versi=DIBI].nilai; cakupan semua_laporan | resmi | DIBI BNPB |
 | rehab.lantai.banjir.sumatra2025.rumah_rb | 62.956 unit | `dibi/kejadian_besar.csv` [kode=sumatra2025,metrik=rumah_rusak_berat,versi=DIBI].nilai | resmi | DIBI BNPB (setara `dibi.sumatra2025.rumah_rusak_berat`) |
 | rehab.pipa.sumatra2025.spam_terdampak_feb2026 | 176 SPAM | pustaka `pu-2026-spam-sumatera-feb` | resmi | Kementerian PU |
 | rehab.pipa.sumatra2025.spam_berfungsi_feb2026 | 143 SPAM | idem | resmi | Kementerian PU |
 | rehab.pipa.sumatra2025.sarana_darurat_feb2026 | 537 unit | idem | resmi | Kementerian PU |
-| rehab.pipa.sumatra2025.sumur_bor_feb2026 | 128 unit | idem (SDA 25 + Cipta Karya 103) | resmi | Kementerian PU |
+| rehab.pipa.sumatra2025.sumur_bor_feb2026 | 128 unit (direncanakan atau dikerjakan) | idem (SDA 25 + Cipta Karya 103) | resmi | Kementerian PU |
+| rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026 | 37 unit | idem (SDA 11 + CK dangkal 9 + CK dalam 17, semua Aceh) | resmi | Kementerian PU |
 | rehab.pipa.sumbar.target_permanen | Agustus 2028 | idem | resmi | Kementerian PU |
 | rehab.pipa.sumatra2025.spam_terdampak | 178 SPAM | pustaka `pu-2026-infrastruktur-sumatera-mei` | resmi | Kementerian PU |
 | rehab.pipa.sumatra2025.persen_fungsi_mei2026 | 95,5% | idem | resmi | Kementerian PU |
@@ -510,3 +538,24 @@ dokumen instansi lain): `ri-2007-uu24`, `ri-2008-pp21`, `bnpb-2017-r3p`, `bnpb-2
 6. Kunci `rehab.dibi.*` hasil olah ditulis sebagai `nilai` + catatan hitungan, karena registri belum bisa menjumlah baris;
    skrip `bangun/rehab_angka.py` (KERANGKA §12) sebaiknya menghasilkan dan menguji semuanya, termasuk uji diri jumlah per
    kategori = jumlah nasional (yang akan menangkap selisih riset F).
+
+## Catatan perbaikan sesudah pemeriksaan (25 Oktober 2026)
+
+Delapan temuan pemeriksa dicek ke sumber; semuanya benar dan sudah diterapkan, tidak ada yang ditolak.
+
+1. SPAM dikeluarkan dari "layanan nasional" (Inti P1, butir 11, Inferensi butir 2). Rilis PU 11 Mei 2026 dibuka ulang: tidak
+   menyebut kepemilikan SPAM; pola nasional lawan daerah dibatasi pada jalan dan jembatan.
+2. Sumur: rilis PU 5 Februari 2026 dibuka ulang. Selesai 37 (SDA Aceh 11, Cipta Karya dangkal Aceh 9, Cipta Karya dalam
+   Aceh 17); sisanya dikerjakan, dan 18 sumur dalam Sumbar baru survei dan geolistrik. Angka utama butir 9 kini 37 dari 128;
+   kunci baru `rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026`. Rilis tidak memberi tanggal data khusus sumur.
+3. Setneg 13 Agustus 2026 dibuka ulang: kata penghubungnya "dan juga 798 di daerah bencana"; hubungan dengan 3.008 ditulis
+   tidak jelas; Polri 4 unit perencanaan ditambahkan.
+4. Label "resmi" pada temuan ketiadaan (P2 butir 12 dan 14) diganti [Temuan penyusun] dengan tanggal korpus.
+5. Perban 4/2024 Pasal 5 huruf b dan e ditandai tafsir belum diuji; aset pemdes dibedakan dari aset kelompok masyarakat atau
+   BUMDes; permintaan konfirmasi ditambahkan di Celah P2. Inti P2 disesuaikan.
+6. Cakupan `semua_laporan` angka Sumatra 2025 dicek di `dibi/kejadian_besar.csv` (kolom catatan: 71 baris, 4 baris
+   is_bencana=false); ditulis di metode, butir 7, tabel registri, dan catatan kunci JSON.
+7. "Sama sekali tidak tercatat" diganti "tidak tercatat terpisah (bila ada, tercampur dalam fasilitas umum rusak)" di Inti,
+   butir 15, Inferensi, dan Tabel 1.1.
+8. Kotak 1.2 dan butir 13 kini menulis perbedaan cakupan (pulau lawan tiga provinsi; kejadian tidak dirinci lawan semua
+   kejadian alam 2025) dan larangan menafsirkan selisih.

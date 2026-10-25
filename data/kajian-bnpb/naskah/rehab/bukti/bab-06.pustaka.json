@@ -308,7 +308,8 @@
   },
   "verifikasi": "primer",
   "note": "dibaca utuh oleh riset D [10] 25 Okt 2026, tidak dibuka ulang di bab ini; data sampai 31 Mar 2019; 37 titik SPAM rusak; halaman tim penyusun berisi nama pengganti (tanda draf)",
-  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 37 titik SPAM (hlm. cetak 11, 61); 83 sumur bor JIAT diaktifkan 1.314 l/dt (Tabel 4, hlm. 50); hidran 242 @2.000 L dan 65 @1.000 L, 28 mobil tangki @4.000 L (Tabel 5, hlm. 51-52); 26 IPA 358 l/dt (Tabel 6); pemantauan mutu Dinkes NTB dan BBTKL Surabaya (hlm. 59)"
+  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 37 titik SPAM (hlm. cetak 11, 61); 83 sumur bor JIAT diaktifkan 1.314 l/dt (Tabel 4, hlm. 50); hidran 242 @2.000 L dan 65 @1.000 L, 28 mobil tangki @4.000 L (Tabel 5, hlm. 51-52); 26 IPA 358 l/dt (Tabel 6); pemantauan mutu Dinkes NTB dan BBTKL Surabaya (hlm. 59)",
+  "note_revisi": "Lampiran II hlm. cetak 139-140: 37 titik kerusakan pipa HDPE, 32 di Lombok Utara dan Lombok Timur, 5 di Sumbawa dan Sumbawa Barat; Tabel 5 hlm. 52 memuat baris Gudang Regional"
  },
  {
   "id": "kemenpupr-2023-cianjur",
@@ -340,7 +341,8 @@
   },
   "verifikasi": "primer",
   "note": "dibaca utuh oleh riset D [12], tidak dibuka ulang di bab ini; status sampai 25 Sep 2023; 10 titik area kerusakan pipa SPAM",
-  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 57 alat dasar dari Depo Cipta Karya Bekasi, distribusi satu pintu di posko PDAM, 10 mobil tangki PDAM x 5 rit (hlm. cetak 41-42); hidran 200 L puncak 172 unit 18 Des 2022, turun ke 59 unit '21 Maret 2022' (kemungkinan 2023) (hlm. 43); sumber daya puncak 406 unit 14 Des 2022, 202 kembali per 21 Mar 2023 (hlm. 44); 10 titik kerusakan pipa SPAM (hlm. 59); rehab 5 SPAM, progres MK 98,31% per 25 Sep 2023 (hlm. 60)"
+  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 57 alat dasar dari Depo Cipta Karya Bekasi, distribusi satu pintu di posko PDAM, 10 mobil tangki PDAM x 5 rit (hlm. cetak 41-42); hidran 200 L puncak 172 unit 18 Des 2022, turun ke 59 unit '21 Maret 2022' (kemungkinan 2023) (hlm. 43); sumber daya puncak 406 unit 14 Des 2022, 202 kembali per 21 Mar 2023 (hlm. 44); 10 titik kerusakan pipa SPAM (hlm. 59); rehab 5 SPAM, progres MK 98,31% per 25 Sep 2023 (hlm. 60)",
+  "note_revisi": "hlm. cetak 60: total progres fisik lima SPAM rencana 99,56%, realisasi 94,45%, deviasi -5,11%; 98,31% adalah progres manajemen konstruksi"
  },
  {
   "id": "cianjur-2022-r3p",
@@ -408,7 +410,8 @@
   },
   "verifikasi": "primer",
   "note": "Air Kobe 90% 38 hari, 95% 43 hari, 100% 81 hari; Tohoku 90% 36 hari, 95% 41 hari; dibaca riset rehab D [36]",
-  "note_bab06": "dibuka ulang dan diekstrak (pdftotext) 25 Okt 2026: air Tohoku 90% 36 hari, 95% 41 hari; Kobe 90% 38, 95% 43, 100% 81 hari; gangguan awal Tohoku lebih dari 2 juta, Kobe 1,26 juta (Hyogo)"
+  "note_bab06": "dibuka ulang dan diekstrak (pdftotext) 25 Okt 2026: air Tohoku 90% 36 hari, 95% 41 hari; Kobe 90% 38, 95% 43, 100% 81 hari; gangguan awal Tohoku lebih dari 2 juta, Kobe 1,26 juta (Hyogo)",
+  "note_revisi": "cek ulang 25 Okt 2026: grafik air berjudul 'Restoration ratio in municipalities'; tabel Initial Outage air tanpa satuan; kata households hanya pada listrik"
  },
  {
   "id": "bnpb-dibi",
@@ -594,7 +597,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "korpus perka-nomor-17-tahun-2009.json hlm. 7 (jenis alat: mobile water treatment, mobil tangki air, water pillow, instalasi penjernih air) dan lampiran per wilayah; status BERLAKU"
+  "note": "korpus perka-nomor-17-tahun-2009.json hlm. 7 (standar minimal semua bencana: mobile water treatment, mobil tangki air, water pillow, instalasi penjernih air), hlm. 10 (standar bencana kekeringan: alat deteksi sumber air, mesin pompa air, tangki air, water pillow, selang/pipa paralon), hlm. 8 (gempa: tanpa alat air), hlm. 11 (banjir: mesin pompa air dan mesin penyedot air, tanpa selang); lampiran per wilayah; status BERLAKU"
  },
  {
   "id": "sphere-2018-handbook",
@@ -972,7 +975,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "dari riset D [4], tidak dibuka ulang: kebutuhan pokok minimal air minum 60 liter/orang/hari; menurunkan Permen PUPR 13/2023"
+  "note": "dari riset D [4], tidak dibuka ulang: kebutuhan pokok minimal air minum 60 liter/orang/hari; turunan daerah. Sumber primer nasional kini kemenpupr-2023-permen13-spm"
  },
  {
   "id": "kemenpupr-2016-permen27",
@@ -1034,5 +1037,59 @@
   },
   "verifikasi": "primer",
   "note": "dari riset D [33], tidak dibuka ulang: sekitar 24,4 juta orang akses air, 35.443 desa per Desember 2021"
+ },
+ {
+  "id": "kemenpupr-2023-permen13-spm",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 13 Tahun 2023 tentang Standar Teknis Standar Pelayanan Minimal Bidang Pekerjaan Umum dan Bidang Perumahan Rakyat",
+  "URL": "https://peraturan.bpk.go.id/Details/286159",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak 25 Okt 2026 (berkas 2023pmpupr13_Lamp.pdf, 181 hlm.); status Berlaku sejak 18 Des 2023, mencabut Permen PUPR 29/PRT/M/2018; Pasal 6 ayat (2) hlm. 7: ukuran kuantitas air minum 60 liter/orang/hari melalui SPAM"
+ },
+ {
+  "id": "mhlw-tohoku-air-survei",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Ministry of Health, Labour and Welfare",
+    "singkatan": "MHLW"
+   }
+  ],
+  "title": "東日本大震災水道施設被害状況調査の概要 (Ringkasan Survei Kerusakan Fasilitas Air Minum Gempa Besar Jepang Timur), Shiryō 2",
+  "publisher": "Ministry of Health, Labour and Welfare, Japan",
+  "URL": "https://www.mhlw.go.jp/stf/shingi/2r9852000002qek5-att/2r9852000002qep4.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak 25 Okt 2026; tanggal terbit tidak tercetak di halaman yang dibaca; total rumah tangga putus air (総断水戸数) sekitar 2,57 juta 戸, 19 prefektur, 264 penyelenggara"
  }
 ]

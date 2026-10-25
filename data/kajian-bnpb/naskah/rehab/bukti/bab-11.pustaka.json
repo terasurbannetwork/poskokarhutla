@@ -453,7 +453,16 @@
   "title": "Pembangunan Jembatan Bailey dan Operasional Personil TNI di Kawasan Terdampak Bencana Dibiayai oleh Negara",
   "URL": "https://www.bnpb.go.id/berita/pembangunan-jembatan-bailey-dan-operasional-personil-tni-di-kawasan-terdampak-bencana-dibiayai-oleh-negara",
   "verifikasi": "primer",
-  "note": "dari riset B [33] dan riset A [20]; tidak dibuka ulang sesi ini"
+  "note": "dari riset B [33] dan riset A [20]; dibuka ulang 25 Okt 2026 (perbaikan Bab 11): bailey 'digunakan saat tanggap darurat bencana', dihibahkan ke daerah; pembayaran setelah BNPB menerima hasil audit kelaikan harga oleh BPKP; DSP disebut dapat dipakai di daerah berstatus siaga/tanggap 'hingga transisi darurat' (pernyataan aturan, bukan contoh kegiatan)",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
  },
  {
   "id": "oag-2016-scirt",
@@ -628,7 +637,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "PDF diunduh dan dibaca lewat pdftotext (SHA-1 25b415088baab62eab5b480a4edf3b6a848bc46e); Pasal 2 hlm. cetak 4, Pasal 8 hlm. 5, Lampiran huruf B hlm. 13; Bab 11 rehab: PDF peraturan.go.id dibuka 25 Okt 2026; Pasal 2 ayat (1) hlm. 4 (delapan fokus; huruf b desa tangguh bencana, huruf f infrastruktur desa lewat Padat Karya Tunai Desa); Lampiran huruf B hlm. 13; Lampiran huruf F angka 5 huruf a hlm. 18 (upah paling sedikit 50%)"
+  "note": "PDF diunduh dan dibaca lewat pdftotext (SHA-1 25b415088baab62eab5b480a4edf3b6a848bc46e); Pasal 2 hlm. cetak 4, Pasal 8 hlm. 5, Lampiran huruf B hlm. 13; Bab 11 rehab: PDF peraturan.go.id dibuka 25 Okt 2026; Pasal 2 ayat (1) hlm. 4 (delapan fokus; huruf b desa tangguh bencana, huruf f infrastruktur desa lewat Padat Karya Tunai Desa); Lampiran huruf B hlm. 13; Lampiran huruf F angka 5 huruf a hlm. 18 (upah paling sedikit 50%); Lampiran huruf B hlm. 13 (sumur bor/sumur pompa untuk kebakaran hutan, lahan, rob); Lampiran huruf C hlm. 15-16 (akses air minum layak dan aman bagi rumah tangga; pengelolaan sanitasi dan air minum)"
  },
  {
   "id": "ri-2015-pp122",
@@ -657,7 +666,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10); Bab 11 rehab: data/kajian-bnpb/data/lembaga/mentah/teks/pp-122-2015.json.gz; Pasal 36 hlm. 16, Pasal 38 huruf d hlm. 17 dan Penjelasannya hlm. 43 (bersifat khusus dapat meliputi penanganan bencana alam), Pasal 40-42 hlm. 18-19"
+  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10); Bab 11 rehab: data/kajian-bnpb/data/lembaga/mentah/teks/pp-122-2015.json.gz; Pasal 36 hlm. 16, Pasal 38 huruf d hlm. 17 dan Penjelasannya hlm. 43 (bersifat khusus dapat meliputi penanganan bencana alam), Pasal 40-42 hlm. 18-19; Pasal 42 ayat (1) huruf c hlm. 19 dan Pasal 49 hlm. 23 (SPAM Kelompok Masyarakat)"
  },
  {
   "id": "bnpb-2025-progsun",
@@ -845,6 +854,36 @@
   "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 557",
   "URL": "https://jdih.bnpb.go.id/storage/file/2014pkbnpb006.pdf",
   "verifikasi": "primer",
-  "note": "Bab 11 rehab: dibaca dari data/raw/hukum/teks/perka-nomor-6-tahun-2014.json; Pasal 1 angka 7 hlm. 3 (Proleg PB); Pasal 4 hlm. 4 (ditetapkan Keputusan Kepala BNPB, jangka 1 tahun, wajib analisis PRB, gender, disabilitas); Pasal 5 hlm. 5; Pasal 8 ayat (2) hlm. 6 (rancangan di luar Proleg PB dengan izin prakarsa Kepala BNPB). URL mengikuti pola JDIH, belum dicek"
+  "note": "Bab 11 rehab: dibaca dari data/raw/hukum/teks/perka-nomor-6-tahun-2014.json; Pasal 1 angka 7 hlm. 3 (Proleg PB); Pasal 4 hlm. 4 (ditetapkan Keputusan Kepala BNPB, jangka 1 tahun, wajib analisis PRB, gender, disabilitas); Pasal 5 hlm. 5; Pasal 8 ayat (2) hlm. 6 (rancangan di luar Proleg PB dengan izin prakarsa Kepala BNPB). URL mengikuti pola JDIH, belum dicek; Pasal 1 angka 1 hlm. 3 (produk hukum termasuk dokumen kebijakan non-perundang-undangan); Pasal 16-17 hlm. 7-8 (Keputusan Kepala BNPB, Sestama, Deputi, Irtama; Petunjuk Pelaksanaan). Sedang diubah lewat Progsun 2026 butir 7"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c); Penjelasan (TLN 6405) dibuka di https://peraturan.go.id/files/uu17-2019pjl.pdf 25 Okt 2026, hlm. 29: 'sumur bor berdiameter lebih dari 2 (dua) inci atau lebih dari 5 (lima) sentimeter atau lebih dari 25 (dua puluh lima) meter kubik per bulan per kepala keluarga' (Penjelasan Pasal 45 huruf a angka 2 menurut riset C [7]); Bab 11 rehab: dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-17-2019.json.gz (OCR) Pasal 10-11 hlm. 9-11, Pasal 13-17 hlm. 12-16, Pasal 28 hlm. 22, Pasal 31 hlm. 23, Pasal 35 hlm. 24, Penjelasan Pasal 31 hlm. 72"
  }
 ]

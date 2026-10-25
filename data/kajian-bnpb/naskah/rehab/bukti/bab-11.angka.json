@@ -28,10 +28,10 @@
    "nilai": 1099,
    "pustaka": "bnpb-2025-renas",
    "satuan": "unit/kilometer",
-   "keyakinan": "resmi",
+   "keyakinan": "estimasi-model",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), olahan penyusun",
    "lokasi": "aksi 3.1.2.d, hlm. 90",
-   "catatan": "46.182 dikurangi 45.083; turunan hitung, satuan campuran unit dan km sehingga tidak dapat ditafsir sebagai jumlah jembatan"
+   "catatan": "olahan penyusun: 46.182 dikurangi 45.083. Renas tidak menyatakan target 2029 kumulatif terhadap baseline 2024 dan kolom target 2025-2028 kosong; selisih tidak dapat dibaca sebagai tambahan aset. Satuan campuran unit dan km, tidak dapat ditafsir sebagai jumlah jembatan"
   },
   "rehab.renas.aksi_312a.baseline_2024": {
    "nilai": 42,

@@ -62,7 +62,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "Id sama dengan riset/E-pustaka.json. Rubrik berita, Humas Pusat Air Tanah dan Geologi Tata Lingkungan; teks dibuka dengan 'Jakarta, CNBC Indonesia' (tulisan media dimuat ulang). Daftar CAT rusak (pernyataan Plt. Kepala Badan Geologi, konferensi pers 13 November 2023): Jakarta, Karawang Bekasi, Semarang, Bandung-Soreang, Bogor, Serang-Tangerang, Palangkaraya. Pernyataan instansi, bukan dokumen penetapan status"
+  "note": "Dibuka ulang 25 Okt 2026. Rubrik berita Humas PATGL; teks dibuka dengan 'Jakarta, CNBC Indonesia' (tulisan media dimuat ulang). Daftar CAT rusak (narasi artikel atas pernyataan Plt. Kepala Badan Geologi Muhammad Wafid, konferensi pers 13 November 2023, 'Ini semua termasuk yang dalam kondisi mengalami kerusakan'): Jakarta, Karawang Bekasi, Semarang, Bandung-Soreang, Bogor, Serang-Tangerang, Palangkaraya. Pekalongan disebut terpisah hanya sebagai contoh implikasi subsiden. Pernyataan instansi, bukan dokumen penetapan status"
  },
  {
   "id": "badangeologi-2025-capaian",
@@ -257,7 +257,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c); Penjelasan (TLN 6405) dibuka di https://peraturan.go.id/files/uu17-2019pjl.pdf 25 Okt 2026, hlm. 29: 'sumur bor berdiameter lebih dari 2 (dua) inci atau lebih dari 5 (lima) sentimeter atau lebih dari 25 (dua puluh lima) meter kubik per bulan per kepala keluarga' (Penjelasan Pasal 45 huruf a angka 2 menurut riset C [7])"
  },
  {
   "id": "bps-2024-sumber-air-minum-prov",
@@ -389,6 +389,38 @@
   "note": "dibaca utuh oleh riset D [10] 25 Okt 2026, tidak dibuka ulang di bab ini; data sampai 31 Mar 2019; 37 titik SPAM rusak; halaman tim penyusun berisi nama pengganti (tanda draf)"
  },
  {
+  "id": "setkab-2018-pupr-lombok",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     10
+    ]
+   ]
+  },
+  "title": "Inilah Langkah Kementerian PUPR Perbaiki Fasilitas yang Rusak Akibat Gempa di Lombok",
+  "URL": "https://setkab.go.id/inilah-langkah-kementerian-pupr-perbaikii-fasilitas-yang-rusak-akibat-gempa-di-lombok/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "riset D [11]; dibuka 25 Okt 2026: Menteri PUPR Basuki Hadimuljono, 'contoh di Lombok Utara khususnya itu ada 12 sumur bor yang sekarang, sudah diaktifkan semua'; baru atau eksisting tidak disebut ('diaktifkan' menyiratkan eksisting); juga sekitar 13 mobil tangki"
+ },
+ {
   "id": "setneg-2026-jembatan-tni-polri",
   "type": "webpage",
   "author": [
@@ -418,7 +450,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "TNI AD 3.008 titik, 2.500 selesai, 508 proses, 798 titik wilayah bencana; Polri 895 unit di 30 Polda, 874 selesai, 17 dibangun; 3.000 sumber air bersih TNI AD. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]; dibuka ulang 25 Okt 2026 untuk Bab 7 rehab"
+  "note": "Dibuka ulang 25 Okt 2026 (pemeriksaan kedua). Angka 3.008 titik, 2.500 selesai, 508 proses, 798 titik di daerah bencana adalah JEMBATAN TNI AD (kutipan KSAD Maruli Simanjuntak), bukan sumber air; Polri 895 jembatan Merah Putih Presisi. Untuk air artikel hanya menulis '3.000 sumber air bersih TNI Angkatan Darat' tanpa jenis, lokasi, atau kaitan bencana; tidak tentu sumur bor. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]"
  },
  {
   "id": "mdf-2011-progress",
@@ -999,7 +1031,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "dibuka ulang 25 Okt 2026: 1.102 unit di 65,3 ha; masih pakai sumur bor; IPA dari Sungai Lewara dibangun; teks menulis kunjungan (6/7/22)"
+  "note": "Dibuka ulang 25 Okt 2026 (pemeriksaan kedua): Sahabuddin, Kepala Balai Prasarana Permukiman Wilayah Sulawesi Tengah: '65,3 hektar akan dibangun huntap 1.102 unit' (rencana, bukan huntap jadi). Suko Wiyono, Kepala Balai P2P Sulawesi II, Ditjen Perumahan PUPR: 'Di sini kapasitasnya agak kurang', 'selama ini masih pakai sumur bor', instalasi pengolahan air dari Sungai Lewara. Teks menulis kunjungan (6/7/22)"
  },
  {
   "id": "sphere-2018",
@@ -1180,24 +1212,37 @@
  },
  {
   "id": "bradley-2019-palu",
-  "type": "webpage",
+  "type": "article-journal",
   "author": [
    {
-    "literal": "Nanyang Technological University",
-    "singkatan": "NTU"
+    "family": "Bradley",
+    "given": "Kyle"
+   },
+   {
+    "family": "Mallick",
+    "given": "Rishav"
+   },
+   {
+    "literal": "dkk."
+   },
+   {
+    "family": "Hill",
+    "given": "Emma M."
    }
   ],
   "issued": {
    "date-parts": [
     [
      2019,
-     10,
-     8
+     11
     ]
    ]
   },
-  "title": "Rice irrigation intensified landslides in the deadliest earthquake of 2018 (rilis atas Bradley dkk., Nature Geoscience, doi 10.1038/s41561-019-0444-1)",
-  "URL": "https://www.ntu.edu.sg/science/news-and-events/news/detail/-rice-irrigation-intensified-landslides-in-the-deadliest-earthquake-of-2018-finds-ntu-study",
+  "title": "Earthquake-triggered 2018 Palu Valley landslides enabled by wet rice cultivation",
+  "container-title": "Nature Geoscience",
+  "page": "935",
+  "DOI": "10.1038/s41561-019-0444-1",
+  "URL": "https://doi.org/10.1038/s41561-019-0444-1",
   "accessed": {
    "date-parts": [
     [
@@ -1207,8 +1252,8 @@
     ]
    ]
   },
-  "verifikasi": "rilis-lembaga",
-  "note": "riset C [31]; rilis lembaga, makalah asli belum dibaca"
+  "verifikasi": "abstrak",
+  "note": "Makalah asli (menggantikan rilis NTU 8 Okt 2019 sebagai rujukan). Abstrak dibaca 25 Okt 2026 lewat indeks ospro.usk.ac.id/article/wos/70843 dan cuplikan ScienceDaily; teks penuh di nature.com berbayar (303 ke idp). Abstrak: budidaya sawah bersaluran akuaduk menaikkan muka air tanah hampir ke permukaan, menjenuhkan aluvium pasir yang melikuefaksi; penulis menilai kerusakan 'probably' tidak terjadi tanpa muka air tanah yang dinaikkan. Daftar penulis lengkap dan halaman akhir belum diverifikasi"
  },
  {
   "id": "itb-palu-flowslide",

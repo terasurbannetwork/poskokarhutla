@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 5
 judul: Profil Risiko Nasional
 pertanyaan: Di wilayah mana, dari pulau sampai kab/kota, risiko terkonsentrasi menurut IRBI dan DIBI, dan berapa daerah berkapasitas minimal sedang menurut dua ukuran resmi? Mengapa capaian IRB tidak diikuti penurunan korban? Jenis bencana apa yang berada di kelas dampak tertinggi, dan untuk jenis mana kemungkinan lima tahun dapat dinilai?
-status: draf
+status: final
 target_halaman: 15
 ---
 

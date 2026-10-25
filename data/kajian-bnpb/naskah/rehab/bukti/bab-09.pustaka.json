@@ -595,7 +595,7 @@
   "title": "Petunjuk Pelaksanaan Nomor 1 Tahun 2025 tentang Penelaahan, Verifikasi, dan Evaluasi Penyaluran Dana Bersama Penanggulangan Bencana Tahap Pascabencana",
   "URL": "https://jdih.bnpb.go.id/storage/file/2025juklakbnpb001.pdf",
   "verifikasi": "primer",
-  "note": "dibaca dari data/raw/hukum/teks/juklak-nomor-1-tahun-2025.json hlm. 3; merujuk Perban 1/2024 yang dicabut Perban 1/2026"
+  "note": "dibaca dari data/raw/hukum/teks/juklak-nomor-1-tahun-2025.json hlm. 3; merujuk Perban 1/2024 yang dicabut Perban 1/2026; Lampiran I hlm. 18-19: 2.1 jalan dan/atau jembatan, 2.5 sanitasi, 2.10 jaringan air baku; air minum/SPAM tidak disebut; dokumen Kelompok Masyarakat khusus nonkonstruksi (hlm. 9, 39)"
  },
  {
   "id": "bnpb-2026-dana-bersama",
@@ -652,7 +652,16 @@
   "title": "Pembangunan Jembatan Bailey dan Operasional Personil TNI di Kawasan Terdampak Bencana Dibiayai oleh Negara",
   "URL": "https://www.bnpb.go.id/berita/pembangunan-jembatan-bailey-dan-operasional-personil-tni-di-kawasan-terdampak-bencana-dibiayai-oleh-negara",
   "verifikasi": "primer",
-  "note": "dari riset B [33] dan riset A [20]; tidak dibuka ulang sesi ini"
+  "note": "dibuka ulang 25 Okt 2026: DSP untuk pengadaan barang yang dihibahkan ke daerah (bailey, selimut, matras); audit BPKP dan BPK; pembayaran setelah audit kelayakan harga BPKP; penggantian 2 bailey (2024) dan 5 bailey (2025), di luar Aceh, Sumut, Sumbar. Riset B [33], riset A [20]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
  },
  {
   "id": "bnpb-2025-juklak15",
@@ -1054,5 +1063,28 @@
   },
   "verifikasi": "primer (metadata)",
   "note": "Bab 9 rehab: status BERLAKU menurut public/data/bnpb/hukum/katalog.json; teks tidak ada di korpus lokal, isi tidak dibaca"
+ },
+ {
+  "id": "bnpb-2024-juklak9-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     11,
+     13
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 9 Tahun 2024 tentang Mekanisme Pelaksanaan, Pelaporan, Pemantauan, dan Evaluasi Kegiatan Konstruksi Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024juklakbnpb009.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/juklak-nomor-9-tahun-2024.json hlm. 3, 5-7, 11, 13, 36, 44 (25 Okt 2026); status BERLAKU di katalog JDIH; turunan Perban 4/2024; Aplikasi E-Pelaporan dan Aplikasi Mapping Aset (Format 15: nama, jenis aset termasuk jembatan, volume, nilai, koordinat, foto geotag); APBD untuk perencanaan, pengawasan, operasional lain"
  }
 ]

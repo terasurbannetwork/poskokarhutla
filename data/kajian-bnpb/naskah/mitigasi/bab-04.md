@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 4
 judul: Histori Bencana Indonesia
 pertanyaan: Bagaimana kejadian dan korban berubah pada 2015–2025 bila patahan seri diperhitungkan? Kejadian besar apa yang menjadi analog skenario terburuk per jenis bencana? Pelajaran apa yang konsisten muncul dari kejadian besar?
-status: draf
+status: final
 target_halaman: 11
 ---
 

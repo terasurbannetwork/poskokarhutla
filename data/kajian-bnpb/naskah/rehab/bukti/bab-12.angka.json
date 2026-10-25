@@ -2,7 +2,9 @@
   "_catatan": [
     "Usulan kunci baru untuk BAB 12 kajian rehab, disusun 25 Oktober 2026 dari naskah/rehab/bukti/bab-12.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
     "Hitungan register dijalankan ulang dari tabel KERANGKA §6 dengan assert. Kunci angka bab lain yang dipakai Bab 12 tidak diulang (bab-01 sampai bab-08 .angka.json).",
-    "Koreksi atas KERANGKA yang dibawa: tesis porsi banjir 89,2 (kunci rehab.dibi.jembatan_rusak.porsi_banjir_persen); Dana Bersama merujuk Perban 1/2026 Pasal 14 ayat (5); status R-RR-01 diusulkan Sudah ada, perlu dikembangkan."
+    "Koreksi atas KERANGKA yang dibawa: tesis porsi banjir 89,2 (kunci rehab.dibi.jembatan_rusak.porsi_banjir_persen); Dana Bersama merujuk Perban 1/2026 Pasal 14 ayat (5); status R-RR-01 diusulkan Sudah ada, perlu dikembangkan.",
+    "Revisi 25 Oktober 2026 atas temuan pemeriksa: catatan dua kunci olahan dipersempit (khusus jembatan; n=1). Nilai tidak berubah.",
+    "Ditambahkan penulis naskah Bab 12 (25 Oktober 2026): rehab.tesis sebagai entri teks bertoken, dari P1 Inferensi berkas bukti, dengan porsi banjir memakai token 89,2% (bukan 'sekitar 89%')."
   ],
   "angka": {
     "rehab.rekomendasi.jumlah": {
@@ -102,7 +104,7 @@
       "satuan": "poin persen",
       "keyakinan": "resmi",
       "sumber": "Pengolahan dari rilis Kementerian PU 11 Mei 2026 (data 7 Mei 2026)",
-      "catatan": "olah(resmi): rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026 (100) dikurangi rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026 (67)"
+      "catatan": "olah(resmi): rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026 (100) dikurangi rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026 (67); khusus jembatan daerah (1.181 jembatan); jalan daerah 94% dari 2.421 ruas, selisih 6 poin, jadi tidak boleh dibaca sebagai selisih semua aset daerah"
     },
     "rehab.pulih.palu4_kali_masa_r3p": {
       "nilai": 2.5,
@@ -110,7 +112,15 @@
       "satuan": "kali",
       "keyakinan": "asumsi-kebijakan",
       "sumber": "Pengolahan dari OC Global 2026 dan Perban BNPB 5/2017 Pasal 10",
-      "catatan": "olah: rehab.akses.palu4.tahun_runtuh_ke_buka (7,4) dibagi masa R3P paling lama 3 tahun (bnpb-2017-r3p)"
+      "catatan": "olah: rehab.akses.palu4.tahun_runtuh_ke_buka (7,4) dibagi masa R3P paling lama 3 tahun (bnpb-2017-r3p); satu jembatan (n=1), tidak boleh disajikan sebagai rasio umum aset permanen; dari tiga contoh tercatat dua melampaui masa R3P (Palu IV, huntap Sulteng) dan target SPAM Sumbar Agustus 2028 masih di dalamnya"
+    },
+    "rehab.tesis": {
+      "nilai": "Pada 2018–2025 DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak akibat bencana alam, {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} karena banjir dan {{angka:rehab.dibi.jembatan_rusak.2025}} pada 2025 saja, sedangkan kerusakan sistem air minum tidak tercatat di DIBI dan aset desa berada di luar hibah rehabilitasi dan rekonstruksi; Grand Design 2026–2030 menjadikan waktu pulih akses dan air sebagai ukuran keberhasilan rehabilitasi dan rekonstruksi, mengikat program jembatan dan sumur bor TNI, Polri, dan Kementerian PU ke R3P, dan membentuk baseline kerusakan dan pemulihan layanan air per kab/kota paling lambat 2027.",
+      "pustaka": "bnpb-dibi",
+      "satuan": "",
+      "keyakinan": "resmi; asumsi-kebijakan untuk komitmen",
+      "sumber": "DIBI BNPB 2018–2025 (bencana alam, cakupan bencana); Perban BNPB 4/2024 Pasal 5 huruf e",
+      "catatan": "kalimat tesis kajian rehab (KERANGKA rehab §3) dengan koreksi porsi banjir 89,2% (bukti bab-12 §0.1 K1, P1 Inferensi); dipanggil {{angka:rehab.tesis|teks}} di Bab 12 dan Ringkasan Eksekutif supaya identik (D-6)"
     }
   }
 }

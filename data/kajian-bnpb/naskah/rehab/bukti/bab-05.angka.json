@@ -3,7 +3,9 @@
   "Kunci angka baru Bab 5 kajian rehab (naskah/rehab/bukti/bab-05.md), belum digabung ke data/angka.json. Bentuk nilai + pustaka (id di bab-05.pustaka.json); olahan dicatat di medan catatan.",
   "Kunci yang sudah ada di berkas bukti Bab 1–4 tidak diulang (lihat bab-05.md bagian Angka untuk registri). Angka sekunder (media) dan angka yang laman sumbernya belum terbuka tidak dimasukkan.",
   "Awalan rehab.jembatan.tniad.* dipakai karena rilis resmi tidak memakai nama Satgas atau Jembatan Garuda; bab-01 memakai rehab.jembatan.garuda.* untuk kunci 13 Agu 2026.",
-  "Disusun 25 Oktober 2026."
+  "Disusun 25 Oktober 2026.",
+  "Diperbaiki 25 Okt 2026 sesuai temuan pemeriksa: Krueng Beutong (oprit, kelas jalan, 18/20 ton), 7.000 sebagai harapan lisan, porsi bencana Maret, Palu IV laporan pelaksana.",
+  "Diperbaiki penulis naskah Bab 5, 25 Okt 2026: keyakinan berkurung diubah ke bentuk \"label; tambahan\" agar terbaca naskah.py (laporan pelaksana OCG = terverifikasi menurut PEDOMAN C6.2, sumber primer non-resmi dibaca langsung, dengan tambahan); imbal hasil Rwanda jadi rendah+tinggi; tambah polda_2026_08 dan rwanda_jembatan_registri."
  ],
  "angka": {
   "rehab.jembatan.tniad.proses_2026_08": {
@@ -76,15 +78,23 @@
    "satuan": "unit",
    "keyakinan": "resmi",
    "sumber": "Sekretariat Kabinet, 9 Maret 2026",
-   "catatan": "target \"awal tahun depan 7.000 jembatan\"; berbeda dengan target lain di media (300.000; 6.900; 2.838; 3.008)"
+   "catatan": "harapan lisan KSAD (\"mudah-mudahan awal tahun depan 7.000 jembatan bisa selesai\"), bukan target kebijakan yang ditetapkan dokumen; label resmi untuk kutipannya. Rilis yang sama: harapan jembatan daerah bencana selesai Agustus 2026; Setneg 13 Agu 2026 mencatat Aceh, Sumut, Padang masih ditargetkan rampung tahun ini (2.500 dari 3.008 selesai nasional). Berbeda dengan angka lain di media (300.000; 6.900; 2.838)"
   },
   "rehab.jembatan.tniad.porsi_wilayah_bencana_persen_2026_08": {
    "nilai": 26.5,
    "pustaka": "setneg-2026-jembatan-tni-polri",
    "satuan": "%",
-   "keyakinan": "resmi (olahan)",
+   "keyakinan": "resmi; olahan penyusun dari dua tanggal atau dua angka resmi",
    "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
    "catatan": "olah(resmi): 798 / 3.008 x 100"
+  },
+  "rehab.jembatan.tniad.porsi_wilayah_bencana_persen_2026_03": {
+   "nilai": 66.5,
+   "pustaka": "setkab-2026-218-jembatan",
+   "satuan": "%",
+   "keyakinan": "resmi; olahan penyusun dari dua tanggal atau dua angka resmi",
+   "sumber": "Sekretariat Kabinet, 9 Maret 2026",
+   "catatan": "olah(resmi): 145 selesai di wilayah bencana / 218 diresmikan x 100; rilis tidak menyatakan 145 bagian dari 218; disandingkan dengan 26,5% Agustus"
   },
   "rehab.jembatan.polri_mpp.dibangun_2026_08": {
    "nilai": 17,
@@ -244,7 +254,7 @@
    "satuan": "m",
    "keyakinan": "resmi",
    "sumber": "Kementerian PU (ePPID), 19 Januari 2026",
-   "catatan": "bailey Krueng Beutong, lebar 4,2 m"
+   "catatan": "bailey Krueng Beutong, lebar 4,2 m; kelas jalan tidak disebut tegas di sumber resmi (status jalan nasional hanya di NU Online Apr 2026, sekunder)"
   },
   "rehab.akses.sumatra2025.krueng_beutong_beban_ton": {
    "nilai": 20,
@@ -252,15 +262,15 @@
    "satuan": "ton",
    "keyakinan": "resmi",
    "sumber": "Kementerian PU (ePPID), 19 Januari 2026",
-   "catatan": "kapasitas beban maksimal"
+   "catatan": "kapasitas beban maksimal menurut PU; versi BNPB (Abdul Muhari 10 Jan 2026, via media, sekunder) 18 ton; ditulis berdampingan"
   },
   "rehab.akses.sumatra2025.krueng_beutong_hari_ke_fungsi": {
    "nilai": 39,
    "pustaka": "pu-2026-bailey-odol",
    "satuan": "hari",
-   "keyakinan": "resmi (olahan)",
+   "keyakinan": "resmi; olahan penyusun dari dua tanggal atau dua angka resmi",
    "sumber": "Bina Marga BPJN Aceh 3 Des 2025; Kementerian PU 19 Jan 2026",
-   "catatan": "olah(resmi): 1 Des 2025 (oprit tercatat putus) sampai 9 Jan 2026 (difungsionalkan); batas bawah, satu jembatan",
+   "catatan": "olah(resmi): 1 Des 2025 (Oprit Jembatan Krueng Beutong tercatat putus; yang tercatat oprit, bukan jembatan) sampai 9 Jan 2026 (bailey difungsionalkan); batas bawah, satu titik; kelas jalan tidak disebut tegas di sumber resmi",
    "pustaka_lain": "binamarga-2025-jembatan-aceh"
   },
   "rehab.akses.sumatra2025.garoga_bentang_m": {
@@ -283,7 +293,7 @@
    "nilai": 26,
    "pustaka": "jatengprov-2026-bailey-plosogaden",
    "satuan": "hari",
-   "keyakinan": "resmi (olahan)",
+   "keyakinan": "resmi; olahan penyusun dari dua tanggal atau dua angka resmi",
    "sumber": "Pemprov Jawa Tengah, 12 Juni 2026",
    "catatan": "olah(resmi): Jembatan Kalijaran putus 16 Mei 2026; per 11 Jun 2026 perakitan berjalan sekitar dua minggu, belum berfungsi; tahun disimpulkan dari tanggal terbit"
   },
@@ -307,23 +317,23 @@
    "nilai": 250,
    "pustaka": "ocg-2026-palu4",
    "satuan": "m",
-   "keyakinan": "terverifikasi",
+   "keyakinan": "terverifikasi; laporan pelaksana (konsultan proyek), bukan evaluasi independen",
    "sumber": "Oriental Consultants Global, 19 Februari 2026",
-   "catatan": "gelagar kotak beton prategang tiga bentang; kekuatan bukti program lemah"
+   "catatan": "gelagar kotak beton prategang tiga bentang; OCG konsultan proyek itu sendiri; kekuatan bukti lemah"
   },
   "rehab.akses.palu4.jalan_pesisir_km": {
    "nilai": 5,
    "pustaka": "ocg-2026-palu4",
    "satuan": "km",
-   "keyakinan": "terverifikasi",
+   "keyakinan": "terverifikasi; laporan pelaksana (konsultan proyek), bukan evaluasi independen",
    "sumber": "Oriental Consultants Global, 19 Februari 2026",
-   "catatan": "\"approximately five kilometers\", ditinggikan sebagai tanggul pelindung"
+   "catatan": "\"approximately five kilometers of coastal roadway\" dibuka untuk lalu lintas; secara terpisah jalan akses ditinggikan sebagai tanggul pelindung, panjang bagian yang ditinggikan tidak disebut"
   },
   "rehab.akses.palu4.tahun_runtuh_ke_buka": {
    "nilai": 7.4,
    "pustaka": "ocg-2026-palu4",
    "satuan": "tahun",
-   "keyakinan": "terverifikasi (olahan)",
+   "keyakinan": "terverifikasi; olahan penyusun dari laporan pelaksana (konsultan proyek)",
    "sumber": "Oriental Consultants Global, 19 Februari 2026",
    "catatan": "olah: 28 Sep 2018 sampai 13 Feb 2026, sekitar 7 tahun 4,5 bulan"
   },
@@ -352,12 +362,13 @@
    "catatan": "RCT stepped-wedge"
   },
   "rehab.pembanding.rwanda_imbal_hasil_persen": {
-   "nilai": "78–98",
    "pustaka": "jpal-2026-rwanda",
    "satuan": "%",
    "keyakinan": "estimasi-model",
    "sumber": "J-PAL/CEGA, 6 Mei 2026",
-   "catatan": "imbal hasil selama umur jembatan sekitar 40 tahun; makalah hasil belum dibuka"
+   "catatan": "imbal hasil selama umur jembatan sekitar 40 tahun; makalah hasil belum dibuka",
+   "rendah": 78,
+   "tinggi": 98
   },
   "rehab.pembanding.nicaragua_turun_pendapatan_persen": {
    "nilai": 18,
@@ -366,6 +377,22 @@
    "keyakinan": "terverifikasi",
    "sumber": "Brooks dan Donovan, Econometrica 88(5), 2020",
    "catatan": "banjir menurunkan pendapatan pasar kerja 18% tanpa jembatan; jembatan menghapus efek; 15 desa"
+  },
+  "rehab.jembatan.polri_mpp.polda_2026_08": {
+   "nilai": 30,
+   "pustaka": "setneg-2026-jembatan-tni-polri",
+   "satuan": "Polda",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "catatan": "Polda tempat Jembatan Merah Putih Presisi dibangun swadaya (kutipan Kapolri dalam rilis)"
+  },
+  "rehab.pembanding.rwanda_jembatan_registri": {
+   "nilai": 94,
+   "pustaka": "aea-2024-rwanda",
+   "satuan": "jembatan",
+   "keyakinan": "terverifikasi",
+   "sumber": "AEA RCT Registry AEARCTR-0013478",
+   "catatan": "versi registri; J-PAL menyebut 97 (rehab.pembanding.rwanda_jembatan_rct); ditulis berdampingan (berkas bukti Bab 2 dan 5)"
   }
  }
 }

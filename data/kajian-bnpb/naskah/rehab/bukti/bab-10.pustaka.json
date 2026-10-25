@@ -1284,5 +1284,160 @@
   },
   "verifikasi": "primer",
   "note": "Dibuka sesi 25 Okt 2026 (pdftotext). Pembaruan metadata 2024-12-20. Layanan dasar yang diukur termasuk 'Water supply: drinking water supply system' dan 'Transport system: road networks'; D5 setara indikator Sendai D-5; pelaporan per kejadian lewat DesInventar-Sendai. Dipakai Bab 10 PK1 butir 10"
+ },
+ {
+  "id": "pu-2025-jembatan-gantung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Kementerian PU Genjot Pembangunan 43 Jembatan Gantung Tahun 2025, Progres Fisik Capai 81 Persen",
+  "container-title": "ePPID Kementerian PU",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-genjot-pembangunan-43-jembatan-gantung-tahun-2025-progres-fisik-capai-81-persen",
+  "verifikasi": "primer",
+  "note": "dari riset B [25], tidak dibuka ulang sesi ini: Rp246,36 miliar untuk 43 jembatan gantung 2025; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan; Bab 5 rehab: dibuka 25 Okt 2026; progres 81% per e-Monitoring awal Okt 2025; lebih dari 300 ribu penerima; rencana 2026 sekitar Rp920 miliar 122 unit; bentang 40–120 m, lebar 1,8 m; tidak menyebut bencana",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "unicef-2024-afrika-timur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "UNICEF"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6
+    ]
+   ]
+  },
+  "title": "Securing cost-effective, sustainable water services for refugees and host communities in Eastern Africa",
+  "publisher": "UNICEF, IRC, KfW, UNHCR",
+  "URL": "https://www.unicef.org/esa/reports/securing-cost-effective-sustainable-water-services-refugees-host-communities-eastern-africa",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [45], tidak dibuka ulang: biaya air Ethiopia turun 92% setelah peralihan dari truk"
+ },
+ {
+  "id": "hsu-2022-perbup-tarif",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Hulu Sungai Utara"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     1
+    ]
+   ]
+  },
+  "title": "Peraturan Bupati Hulu Sungai Utara Nomor 3 Tahun 2022 tentang Tarif Air Minum PDAM",
+  "URL": "https://peraturan.bpk.go.id/Download/282907/3.%20PERBUP%20TAHUN%202022%20TTG%20TARIF%20AIR%20MINUM%20PDAM%20edit.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [32], tidak dibuka ulang: Pasal 12 mobil tangki 5.000 L dalam 10 km pertama Rp95.000, tanpa pajak"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c); Penjelasan (TLN 6405) dibuka di https://peraturan.go.id/files/uu17-2019pjl.pdf 25 Okt 2026, hlm. 29: 'sumur bor berdiameter lebih dari 2 (dua) inci atau lebih dari 5 (lima) sentimeter atau lebih dari 25 (dua puluh lima) meter kubik per bulan per kepala keluarga' (Penjelasan Pasal 45 huruf a angka 2 menurut riset C [7])"
+ },
+ {
+  "id": "setneg-2022-huntap-tondo",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     1,
+     6
+    ]
+   ]
+  },
+  "title": "Tinjau Huntap Tondo I dan II, Wapres harap dapat segera diselesaikan",
+  "URL": "https://setneg.go.id/baca/index/tinjau_huntap_tondo_i_dan_ii_wapres_harap_dapat_segera_diselesaikan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka ulang 25 Okt 2026 (pemeriksaan kedua): Sahabuddin, Kepala Balai Prasarana Permukiman Wilayah Sulawesi Tengah: '65,3 hektar akan dibangun huntap 1.102 unit' (rencana, bukan huntap jadi). Suko Wiyono, Kepala Balai P2P Sulawesi II, Ditjen Perumahan PUPR: 'Di sini kapasitasnya agak kurang', 'selama ini masih pakai sumur bor', instalasi pengolahan air dari Sungai Lewara. Teks menulis kunjungan (6/7/22)"
  }
 ]

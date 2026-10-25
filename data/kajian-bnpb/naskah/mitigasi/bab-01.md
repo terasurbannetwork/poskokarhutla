@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 1
 judul: Pendahuluan
 pertanyaan: Mengapa korban bencana 2025 menuntut Grand Design sekarang, meskipun nilai IRB 2024 turun? Bagaimana kajian ini menjadi masukan peninjauan Renas PB 2025–2029? Jenis bencana apa yang dicakup, dan apa arti kerusuhan sosial dan mitigasi dalam kajian ini?
-status: draf
+status: final
 target_halaman: 7
 ---
 

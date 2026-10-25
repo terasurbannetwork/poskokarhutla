@@ -84,7 +84,7 @@
   "issued": {
    "date-parts": [
     [
-     2022
+     2023
     ]
    ]
   },
@@ -101,7 +101,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "dibuka ulang 25 Okt 2026 (pdftotext): rumah rusak 114.315 (20.969 RB, 24.584 RS, 68.762 RR) menurut SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II hasil reviu BNPB, hlm. PDF 55–56; subsektor air bersih dan sanitasi kerusakan Rp1,90 miliar, kerugian Rp0,40 miliar (Tabel 3.8); SPAM perkotaan dalam subsektor SDA Rp41,60 miliar; jembatan kabupaten Rp6,69 miliar dan jembatan desa Rp19,71 miliar kerusakan (Tabel 3.6); semua dalam rupiah, bukan unit atau jiwa; tanpa nomor penetapan"
+  "note": "dibuka ulang 25 Okt 2026 (pdftotext). Ditetapkan Keputusan Bupati Cianjur No 360/KEP.118-BAPPERIDA/2023 (halaman awal); sumber tabel 'Hasil Analisi Tim Jitupasna Kabupaten Cianjur, 2023'. Rumah rusak 114.315 (20.969 RB, 24.584 RS, 68.762 RR) menurut SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II hasil reviu BNPB (SK data rumah, bukan penetapan R3P), hlm. PDF 55–56; subsektor air bersih dan sanitasi kerusakan Rp1,90 miliar, kerugian Rp0,40 miliar (Tabel 3.8); SPAM perkotaan dalam subsektor SDA Rp41,60 miliar; Tabel 3.9 subsektor SDA berjumlah Rp53,2 miliar tetapi baris totalnya memakai total sektor infrastruktur Rp214,60 miliar (Tabel 3.5); teks 3.1.2.4 salah ketik kerugian 690,57 untuk 90,57 miliar; jembatan kabupaten Rp6,69 miliar dan jembatan desa Rp19,71 miliar kerusakan (Tabel 3.6); semua dalam rupiah, bukan unit atau jiwa"
  },
  {
   "id": "bnpb-2017-r3p",
@@ -360,8 +360,8 @@
     ]
    ]
   },
-  "verifikasi": "primer",
-  "note": "BNPB sekitar 147.000 rumah rusak sampai 17 Desember 2025; Kementerian PKP sekitar 189.308 rumah terdampak per 9 Januari 2026; selisih disebut pemutakhiran yang belum sepenuhnya sinkron. Angka BNPB dan PKP di dokumen ini kutipan kedua (lembaga negara mengutip), verifikasi primer untuk dokumen DPR, sekunder untuk angka asal"
+  "verifikasi": "sekunder",
+  "note": "Agregator: angka BNPB sekitar 147.000 'hingga 17 Desember 2025' dan PKP sekitar 189.308 per 9 Januari 2026 dirujuk DPR ke berita media (menurut pemeriksa: Antara 16 Des 2025 dan housingestate.id 14 Jan 2026), jadi rantainya lembaga, media, DPR. Primer hanya untuk penilaian DPR (selisih 'pemutakhiran yang belum sepenuhnya sinkron'). PDF menolak akses saat dicek ulang 25 Okt 2026."
  },
  {
   "id": "kontan-2025-bnpb-498-jembatan",
@@ -455,5 +455,139 @@
   "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-genjot-pembangunan-43-jembatan-gantung-tahun-2025-progres-fisik-capai-81-persen",
   "verifikasi": "primer",
   "note": "dari riset B [25], tidak dibuka ulang sesi ini: Rp246,36 miliar untuk 43 jembatan gantung 2025; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "bappenas-2006-dala-yogya",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Perencanaan Pembangunan Nasional",
+    "singkatan": "Bappenas"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota D.I. Yogyakarta"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     6
+    ]
+   ]
+  },
+  "title": "Preliminary Damage and Loss Assessment: Yogyakarta and Central Java Natural Disaster",
+  "publisher": "Disajikan pada Pertemuan ke-15 Consultative Group on Indonesia, Jakarta, 14 Juni 2006; diterbitkan daring oleh Bank Dunia",
+  "URL": "http://documents.worldbank.org/curated/en/581581468041086975/pdf/407120ENGLISH01507190Yogya01PUBLIC1.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Laporan bersama Bappenas, pemda DIY, pemda Jawa Tengah, dan mitra internasional; dibaca dari versi teks dokumen yang sama (.../text/407120ENGLISH01507190Yogya01PUBLIC1.txt). Kata pengantar: lebih dari 5.700 meninggal, 40.000–60.000 luka; Tabel 1: 5.716 meninggal; Section II hlm. 12: kerusakan dan kerugian Rp29,1 T (kerusakan Rp22,75 T, kerugian Rp6,40 T); hlm. 15: perumahan Rp15,3 T, 157.000 rumah hancur dan 202.000 rusak; bagian Key Sectoral Facts: 154.000 hancur dan 260.000 rusak. Versi Bahasa Indonesia: http://documents.worldbank.org/curated/en/209611468269394159/pdf/407120INDONESI1ogya1Bahasa01PUBLIC1.pdf"
+ },
+ {
+  "id": "jawapos-2025-bnpb-147-ribu-rumah",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Dinarsa Kurniawan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     17
+    ]
+   ]
+  },
+  "title": "BNPB: Sebanyak 147 ribu lebih rumah rusak akibat bencana di 3 provinsi",
+  "container-title": "JawaPos.com",
+  "URL": "https://www.jawapos.com/nasional/2512160331/bnpb-sebanyak-147-ribu-lebih-rumah-rusak-akibat-bencana-di-3-provinsi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Media; dibuka 25 Okt 2026. Kapusdatinkom BNPB Abdul Muhari di Banda Aceh: lebih dari 147 ribu rumah rusak, data sampai Selasa 16 Des 2025; Aceh 106.058 (RR 46.779, RS 22.951, RB 36.328), Sumut 28.708 (19.651/3.899/5.158), Sumbar 12.451 (6.933/2.959/2.559). Terverifikasi (media); lampiran saja"
+ },
+ {
+  "id": "investortrust-2026-pkp-189308-rumah",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Investortrust"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     11
+    ]
+   ]
+  },
+  "title": "Menteri Ara siapkan 197 titik lahan huntap untuk warga terdampak bencana Sumatra",
+  "container-title": "Investortrust.id",
+  "URL": "https://investortrust.id/national/90976/menteri-ara-siapkan-197-titik-lahan-huntap-untuk-warga-terdampak-bencana-sumatra",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Media; dibuka 25 Okt 2026. Menteri PKP Maruarar Sirait di depan Satgas DPR, Banda Aceh 10 Jan 2026: 189.308 rumah terdampak, data 9 Jan 2026 pukul 17.00 WIB; Aceh RR 64.740, RS 40.103, RB 29.527, hanyut 13.969; Sumut 18.341/3.616/5.149/937; Sumbar 6.627/2.842/2.666/791. Terverifikasi (media); lampiran saja"
  }
 ]

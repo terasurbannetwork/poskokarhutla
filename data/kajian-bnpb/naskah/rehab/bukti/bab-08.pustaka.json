@@ -495,7 +495,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "51.591 dari 102.384 data awal (50,39%) terverifikasi: RB 2.382, RS 7.276, RR 14.177, tidak rusak 27.756; data dinamis"
+  "note": "51.591 dari 102.384 data awal (50,39%) terverifikasi: RB 2.382, RS 7.276, RR 14.177, tidak rusak 27.756; data dinamis; dibuka ulang 25 Okt 2026: Nagekeo data awal 15.929, RB 218, RS 1.523, RR 3.475, tidak rusak 10.713"
  },
  {
   "id": "bmkg-2026-flores",
@@ -660,7 +660,7 @@
   "title": "Partnerships for Sustainability: MDF Progress Report December 2011",
   "URL": "https://www.locjkt.or.id/application/docliblcjkt/upload/MDF-Progress-Report-2011.pdf",
   "verifikasi": "primer",
-  "note": "riset rehab E [4]: US$655 juta, 15 donor; hampir 20.000 rumah; hampir 8.000 sumur; laporan pengelola dana sendiri"
+  "note": "riset rehab E [4]: US$655 juta, 15 donor; hampir 20.000 rumah; hampir 8.000 sumur; laporan pengelola dana sendiri; angka sumur adalah keluaran program RR, bukan kerusakan; tidak dibuka ulang"
  },
  {
   "id": "marohn-2012-aceh-barat",

@@ -614,7 +614,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan penyusun dari Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:103"
   },
   {
    "kunci": "irbi.skala.spearman_2025",
@@ -625,7 +625,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
    "sumber": "InaRISK BNPB, IRBI 2015–2025; pengolahan data Pantau Bencana",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
   },
   {
    "kunci": "hidromet.nasional.lantai.meninggal_hilang",
@@ -636,7 +636,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
   },
   {
    "kunci": "hidromet.nasional.lantai.peluang_5_musim",
@@ -647,7 +647,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, 18 musim hujan 2008/2009–2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
   },
   {
    "kunci": "perhatian.mitigasi.banjir.n",
@@ -658,7 +658,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
   },
   {
    "kunci": "perhatian.mitigasi.kekeringan.n",
@@ -669,7 +669,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:105"
   },
   {
    "kunci": "dibi.kejadian_besar.lima_teratas_porsi_meninggal.2015_2025",
@@ -680,7 +680,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "dibi.nasional.kejadian_geologi_porsi.2015_2025",
@@ -691,7 +691,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "dibi.nasional.meninggal_geologi_porsi.2015_2025",
@@ -702,7 +702,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "nonalam.covid19.meninggal",
@@ -713,7 +713,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "irbi_dibi.nasional.spearman.total_kejadian",
@@ -724,7 +724,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
    "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "irbi.pulau.papua.kab_tinggi.2025",
@@ -735,7 +735,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "irbi.pulau.papua.kab.2025",
@@ -746,7 +746,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "airjawa.jawa.irbi2025.n_tinggi",
@@ -757,7 +757,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "irbi.pulau.jawa.kab.2025",
@@ -768,7 +768,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "dibi.alam.hidromet.meninggal_hilang_rerata_2015_2019",
@@ -779,7 +779,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "dibi.alam.hidromet.meninggal_hilang_rerata_2020_2024",
@@ -790,7 +790,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "dibi.alam.hidromet.meninggal_hilang.2025",
@@ -801,7 +801,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:107"
   },
   {
    "kunci": "pusgen.jawa.mmaks",
@@ -812,7 +812,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
   },
   {
    "kunci": "pusgen.jawa.periode_ulang",
@@ -823,7 +823,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
   },
   {
    "kunci": "renas.krb.terpapar_tsunami",
@@ -834,7 +834,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
   },
   {
    "kunci": "usgs.yogya2006.meninggal",
@@ -845,7 +845,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "USGS, halaman event usp000ej1c (via factsheet_gempa.json)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
   },
   {
    "kunci": "usgs.pangandaran2006.meninggal",
@@ -856,7 +856,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "USGS usp000ensm impact-text",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:109"
   },
   {
    "kunci": "hidromet.nasional.lantai.meninggal_hilang",
@@ -867,7 +867,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "oni.jas_2026",
@@ -878,7 +878,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "sipongi.karhutla2015.luas_ha",
@@ -889,7 +889,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "SiPongi Kementerian Kehutanan, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "koplitz.asap2015.kematian_berlebih",
@@ -900,7 +900,7 @@
    "tinggi": 159200,
    "keyakinan": "estimasi-model",
    "sumber": "Koplitz dkk. (2016), Environmental Research Letters 11: 094023, bagian 3.4",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "nonalam.covid19.meninggal",
@@ -911,7 +911,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "nonalam.covid19.kematian_berlebih",
@@ -922,7 +922,7 @@
    "tinggi": 1343849.0,
    "keyakinan": "estimasi-model",
    "sumber": "WHO, estimasi kematian berlebih COVID-19 2020–2021",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2026_tercatat",
@@ -933,7 +933,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): Jatiwaringin, Galuga, Putri Cempo, Jatibarang (BNPB dan KLH, sampai 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:111"
   },
   {
    "kunci": "sosial.maluku.meninggal_bawah",
@@ -944,7 +944,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "ICG Asia Report N°31, 2002",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:119"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
   },
   {
    "kunci": "sosial.maluku.pengungsi",
@@ -955,7 +955,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "ICG Asia Report N°31, 2002",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:119"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:113"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2025",
@@ -966,7 +966,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2029",
@@ -977,7 +977,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "renas.indikator_1c.2025",
@@ -988,7 +988,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "renas.indikator_1c.2029",
@@ -999,7 +999,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "mitigasi.sel_program.total",
@@ -1010,7 +1010,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "mitigasi.sel_program.nonalam_sosial_tanpa",
@@ -1021,7 +1021,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "mitigasi.sel_posisi.aksi_wajib_saja",
@@ -1032,7 +1032,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "mitigasi.sel_posisi.total",
@@ -1043,7 +1043,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "respons.w1.hidromet_puncak30",
@@ -1054,7 +1054,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "respons.w2.hidromet_puncak30",
@@ -1065,7 +1065,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "respons.w3.geologi_rbrs_puncak30",
@@ -1076,7 +1076,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:115"
   },
   {
    "kunci": "lembaga.peran.ancaman_tanpa_tertulis",
@@ -1087,7 +1087,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "idem",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
   },
   {
    "kunci": "lembaga.matriks.ancaman_n",
@@ -1098,7 +1098,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
   },
   {
    "kunci": "dibi.sumatra2025.mh_di_lokus_renas_persen",
@@ -1109,7 +1109,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "idem",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
   },
   {
    "kunci": "kerugian.nasional.lapisan_sering",
@@ -1120,7 +1120,7 @@
    "tinggi": 2045595000000.0,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
   },
   {
    "kunci": "kerugian.nasional.lapisan_berat",
@@ -1131,7 +1131,7 @@
    "tinggi": 8570160000000.0,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:117"
   },
   {
    "kunci": "irbi.kab.tinggi.2025",
@@ -1142,7 +1142,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:131"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
   },
   {
    "kunci": "irbi.kab.dinilai.2025",
@@ -1153,7 +1153,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:131"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:123"
   },
   {
    "kunci": "hidromet.nasional.lantai.meninggal_hilang",
@@ -1164,7 +1164,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:155"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:147"
   },
   {
    "kunci": "pusgen.jawa.mmaks",
@@ -1175,7 +1175,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:148"
   },
   {
    "kunci": "krb_irbi.kab_kapasitas_rendah_tinggi",
@@ -1186,7 +1186,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (KRB 2022–2026, IRBI 2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:157"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:149"
   },
   {
    "kunci": "bmkg.musim_2026.zom_awal_mundur",
@@ -1197,7 +1197,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BMKG, siaran pers Prediksi Musim Hujan 2026/2027 (22 September 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:162"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:154"
   },
   {
    "kunci": "bmkg.musim_2026.zom_puncak_desember",
@@ -1208,7 +1208,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BMKG, siaran pers prakiraan musim hujan 2026/2027 (22 Sep 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:162"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:154"
   },
   {
    "kunci": "bmkg.musim_2026.zom_puncak_februari",
@@ -1219,7 +1219,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BMKG, prakiraan musim hujan 2026/2027 (siaran pers 22 Sep 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:162"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:154"
   },
   {
    "kunci": "hidromet.nasional.musim_2025.meninggal",
@@ -1230,7 +1230,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:164"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
   },
   {
    "kunci": "hidromet.nasional.musim_2025.hilang",
@@ -1241,7 +1241,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 1 Okt 2025–30 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:164"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
   },
   {
    "kunci": "hidromet.nasional.musim_2025.mengungsi",
@@ -1252,7 +1252,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:164"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
   },
   {
    "kunci": "hidromet.nasional.pasca_elnino.meninggal_hilang_2015",
@@ -1263,7 +1263,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:164"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
   },
   {
    "kunci": "hidromet.nasional.pasca_elnino.meninggal_hilang_2009",
@@ -1274,7 +1274,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:164"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:156"
   },
   {
    "kunci": "hidromet.nasional.kekeringan.dibi_terdampak_2018",
@@ -1285,7 +1285,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:166"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:158"
   },
   {
    "kunci": "sipongi.karhutla2015.luas_ha",
@@ -1296,7 +1296,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "SiPongi Kementerian Kehutanan, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:166"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:158"
   },
   {
    "kunci": "renas.perubahan_berkala.tahun_maks",
@@ -1307,7 +1307,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), §4.6, hlm. 125",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:170"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:162"
   },
   {
    "kunci": "renas.indikator_1a.proyeksi_2025",
@@ -1318,7 +1318,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8, hlm. 32",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:180"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:172"
   },
   {
    "kunci": "renas.indikator_1b.proyeksi_2025",
@@ -1329,7 +1329,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8, hlm. 32",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:180"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:172"
   },
   {
    "kunci": "renas.indikator_1c.2025",
@@ -1340,7 +1340,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:181"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:173"
   },
   {
    "kunci": "renas.indikator_1c.2029",
@@ -1351,7 +1351,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:181"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:173"
   },
   {
    "kunci": "renas.indikator_4c.proyeksi_2025",
@@ -1362,7 +1362,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:182"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:174"
   },
   {
    "kunci": "renas.lokus_prioritas.entri_unik",
@@ -1373,7 +1373,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 Tabel 2.3",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:183"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:175"
   },
   {
    "kunci": "renas.aksi_312c.target_2029",
@@ -1384,7 +1384,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 hlm. 90",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:184"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:176"
   },
   {
    "kunci": "bnpb.lkip2025.meninggal.2025",
@@ -1395,7 +1395,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:189"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:181"
   },
   {
    "kunci": "bnpb.lkip2025.hilang.2025",
@@ -1406,7 +1406,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:189"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/00-depan-ringkasan-eksekutif.md:181"
   },
   {
    "kunci": "dibi.alam.meninggal_hilang.2025",
@@ -22451,7 +22451,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:43"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:45"
   },
   {
    "kunci": "nonalam.covid19.selisih_kkm_bencana_hari",
@@ -22462,7 +22462,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): Keppres 11/2020 (31 Mar 2020) ke Keppres 12/2020 (13 Apr 2020)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:46"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:48"
   },
   {
    "kunci": "nonalam.covid19.durasi_status_hari",
@@ -22473,7 +22473,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Keppres 12/2020 (13 Apr 2020) dan Keppres 17/2023 (berlaku 21 Jun 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:46"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:48"
   },
   {
    "kunci": "nonalam.covid19.kasus",
@@ -22484,7 +22484,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029 hlm. 14",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.meninggal",
@@ -22495,7 +22495,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.meninggal_who",
@@ -22506,7 +22506,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO COVID-19 dashboard (data dilaporkan negara), laporan terakhir berisi 25 Mei 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.meninggal.2020",
@@ -22517,7 +22517,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (arsip 27 Okt 2022)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.meninggal.2021",
@@ -22528,7 +22528,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (arsip 27 Okt 2022)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.kematian_minggu_puncak",
@@ -22539,7 +22539,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO COVID-19 dashboard, pekan 26 Jul s.d. 1 Agt 2021",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.prov_meninggal_per100rb_maks",
@@ -22550,7 +22550,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (data 30 Sep 2022); penyebut penduduk KRB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.prov_meninggal_terbanyak",
@@ -22561,7 +22561,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (data 30 Sep 2022)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:63"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
   },
   {
    "kunci": "nonalam.covid19.kematian_berlebih",
@@ -22572,7 +22572,7 @@
    "tinggi": 1343849.0,
    "keyakinan": "estimasi-model",
    "sumber": "WHO, estimasi kematian berlebih COVID-19 2020–2021",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:67"
   },
   {
    "kunci": "nonalam.covid19.rasio_berlebih_terlapor.2020_2021",
@@ -22583,7 +22583,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model",
    "sumber": "olah: 806.815 dan 1.343.849 dibagi 144.094",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:67"
   },
   {
    "kunci": "nonalam.covid19.meninggal_terlapor.2020_2021",
@@ -22594,7 +22594,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): 22.138 + 121.956",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:67"
   },
   {
    "kunci": "nonalam.covid19.kematian_berlebih.2020",
@@ -22605,7 +22605,7 @@
    "tinggi": 521585.0,
    "keyakinan": "estimasi-model",
    "sumber": "WHO, estimasi kematian berlebih terkait pandemi COVID-19 (rilis 19 Mei 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:67"
   },
   {
    "kunci": "nonalam.covid19.kematian_berlebih.2021",
@@ -22616,7 +22616,7 @@
    "tinggi": 891605.0,
    "keyakinan": "estimasi-model",
    "sumber": "WHO, estimasi kematian berlebih terkait pandemi COVID-19 (rilis 19 Mei 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:65"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:67"
   },
   {
    "kunci": "nonalam.covid19.dtp3.2019",
@@ -22627,7 +22627,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "nonalam.covid19.dtp3.2021",
@@ -22638,7 +22638,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "nonalam.covid19.mcv1.2019",
@@ -22649,7 +22649,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "nonalam.covid19.mcv1.2021",
@@ -22660,7 +22660,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "nonalam.covid19.tb_notifikasi.2019",
@@ -22671,7 +22671,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO Global TB Programme via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "nonalam.covid19.tb_notifikasi.2020",
@@ -22682,7 +22682,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO Global TB Programme via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:78"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:80"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_tinggi_ha",
@@ -22693,7 +22693,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:82"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:84"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_tinggi_jawa_ha",
@@ -22704,7 +22704,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK apiv4 kajian-summary covid-19, jumlah kab di Jawa",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:82"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:84"
   },
   {
    "kunci": "krb.covid19.luas_risiko_tinggi_papua_ha",
@@ -22715,7 +22715,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK apiv4 kajian-summary covid-19, jumlah kab di Papua",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:82"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:84"
   },
   {
    "kunci": "krb.covid19.terpapar",
@@ -22726,7 +22726,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:90"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:92"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_total_ha",
@@ -22737,7 +22737,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:94"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
   },
   {
    "kunci": "krb.epidemi.luas_bahaya_total_ha",
@@ -22748,7 +22748,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:94"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
   },
   {
    "kunci": "krb.gagal_teknologi.luas_bahaya_total_ha",
@@ -22759,7 +22759,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:94"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_sedang_ha",
@@ -22770,7 +22770,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:95"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:97"
   },
   {
    "kunci": "krb.epidemi.luas_bahaya_sedang_ha",
@@ -22781,7 +22781,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:95"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:97"
   },
   {
    "kunci": "krb.gagal_teknologi.luas_bahaya_sedang_ha",
@@ -22792,7 +22792,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:95"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:97"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_tinggi_ha",
@@ -22803,7 +22803,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
   },
   {
    "kunci": "krb.epidemi.luas_bahaya_tinggi_ha",
@@ -22814,7 +22814,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
   },
   {
    "kunci": "krb.gagal_teknologi.luas_bahaya_tinggi_ha",
@@ -22825,7 +22825,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:96"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
   },
   {
    "kunci": "nonalam.gagal_teknologi.terpapar",
@@ -22836,7 +22836,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:97"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:99"
   },
   {
    "kunci": "krb.covid19.terpapar_umur_rentan",
@@ -22847,7 +22847,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
   },
   {
    "kunci": "krb.epidemi.terpapar_umur_rentan",
@@ -22858,7 +22858,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
   },
   {
    "kunci": "krb.gagal_teknologi.terpapar_umur_rentan",
@@ -22869,7 +22869,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:98"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
   },
   {
    "kunci": "krb.covid19.terpapar_miskin",
@@ -22880,7 +22880,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:99"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:101"
   },
   {
    "kunci": "krb.epidemi.terpapar_miskin",
@@ -22891,7 +22891,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:99"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:101"
   },
   {
    "kunci": "krb.gagal_teknologi.terpapar_miskin",
@@ -22902,7 +22902,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:99"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:101"
   },
   {
    "kunci": "krb.covid19.terpapar_disabilitas",
@@ -22913,7 +22913,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:102"
   },
   {
    "kunci": "krb.epidemi.terpapar_disabilitas",
@@ -22924,7 +22924,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:102"
   },
   {
    "kunci": "krb.gagal_teknologi.terpapar_disabilitas",
@@ -22935,7 +22935,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:100"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:102"
   },
   {
    "kunci": "renas.krb.kerugian_gagal_teknologi",
@@ -22946,7 +22946,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:101"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:103"
   },
   {
    "kunci": "nonalam.covid19.meninggal",
@@ -22957,7 +22957,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:120"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:122"
   },
   {
    "kunci": "krb.covid19.luas_bahaya_tinggi_ha",
@@ -22968,7 +22968,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:121"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:123"
   },
   {
    "kunci": "nonalam.covid19.durasi_status_hari",
@@ -22979,7 +22979,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Keppres 12/2020 (13 Apr 2020) dan Keppres 17/2023 (berlaku 21 Jun 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:123"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:125"
   },
   {
    "kunci": "nonalam.covid19.dtp3.2019",
@@ -22990,7 +22990,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:124"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:126"
   },
   {
    "kunci": "nonalam.covid19.dtp3.2021",
@@ -23001,7 +23001,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:124"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:126"
   },
   {
    "kunci": "nonalam.covid19.tb_notifikasi.2019",
@@ -23012,7 +23012,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO Global TB Programme via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:124"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:126"
   },
   {
    "kunci": "nonalam.covid19.tb_notifikasi.2020",
@@ -23023,7 +23023,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO Global TB Programme via WHO GHO",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:124"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:126"
   },
   {
    "kunci": "nonalam.covid19.kematian_berlebih",
@@ -23034,7 +23034,7 @@
    "tinggi": 1343849.0,
    "keyakinan": "estimasi-model",
    "sumber": "WHO, estimasi kematian berlebih COVID-19 2020–2021",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:127"
   },
   {
    "kunci": "nonalam.covid19.rasio_berlebih_terlapor.2020_2021",
@@ -23045,7 +23045,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model",
    "sumber": "olah: 806.815 dan 1.343.849 dibagi 144.094",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:127"
   },
   {
    "kunci": "nonalam.covid19.meninggal_terlapor.2020_2021",
@@ -23056,7 +23056,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): 22.138 + 121.956",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:125"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:127"
   },
   {
    "kunci": "nonalam.covid19.meninggal_who",
@@ -23067,7 +23067,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO COVID-19 dashboard (data dilaporkan negara), laporan terakhir berisi 25 Mei 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:126"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:128"
   },
   {
    "kunci": "renas.epidemi.psc.target_2029",
@@ -23078,7 +23078,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 kegiatan 1.2.1.f, hlm. 57",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:132"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:134"
   },
   {
    "kunci": "renas.epidemi.gladi_rs.target_2029",
@@ -23089,7 +23089,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 kegiatan 1.2.1.g, hlm. 57",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:132"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:134"
   },
   {
    "kunci": "nonalam.plumpang2023.meninggal_pemprov_18mar",
@@ -23100,7 +23100,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pemprov DKI Jakarta (Berita Jakarta 18 Mar 2023): Kalaksa BPBD DKI, data Dinkes DKI",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:146"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:148"
   },
   {
    "kunci": "nonalam.plumpang2023.meninggal",
@@ -23111,7 +23111,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:146"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:148"
   },
   {
    "kunci": "nonalam.plumpang2023.hilang",
@@ -23122,7 +23122,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:146"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:148"
   },
   {
    "kunci": "nonalam.plumpang2023.pengungsi",
@@ -23133,7 +23133,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:146"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:148"
   },
   {
    "kunci": "nonalam.balongan2021.pengungsi",
@@ -23144,7 +23144,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 30 Mar 2021 09.23 WIB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:148"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:150"
   },
   {
    "kunci": "dibi.gagal_teknologi.kejadian.2018_2026",
@@ -23155,7 +23155,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2018–2026, gagal teknologi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:150"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
   },
   {
    "kunci": "dibi.gagal_teknologi.meninggal.2018_2026",
@@ -23166,7 +23166,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2018–2026, gagal teknologi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:150"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
   },
   {
    "kunci": "nonalam.alkhoziny2025.meninggal_dibi",
@@ -23177,7 +23177,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, dasbor publik 1, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:150"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
   },
   {
    "kunci": "nonalam.alkhoziny2025.meninggal_dibi",
@@ -23188,7 +23188,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, dasbor publik 1, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:150"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
   },
   {
    "kunci": "krb.gagal_teknologi.luas_bahaya_total_ha",
@@ -23199,7 +23199,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:154"
   },
   {
    "kunci": "nonalam.gagal_teknologi.terpapar",
@@ -23210,7 +23210,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Kajian Risiko Bencana 2022–2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:152"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:154"
   },
   {
    "kunci": "nonalam.plumpang2023.meninggal_pemprov_18mar",
@@ -23221,7 +23221,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pemprov DKI Jakarta (Berita Jakarta 18 Mar 2023): Kalaksa BPBD DKI, data Dinkes DKI",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:168"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:170"
   },
   {
    "kunci": "nonalam.plumpang2023.meninggal",
@@ -23232,7 +23232,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:169"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:171"
   },
   {
    "kunci": "nonalam.plumpang2023.hilang",
@@ -23243,7 +23243,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:169"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:171"
   },
   {
    "kunci": "renas.krb.kerugian_gagal_teknologi",
@@ -23254,7 +23254,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:171"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:173"
   },
   {
    "kunci": "nonalam.plumpang2023.pengungsi",
@@ -23265,7 +23265,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:172"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:174"
   },
   {
    "kunci": "nonalam.balongan2021.pengungsi",
@@ -23276,7 +23276,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 30 Mar 2021 09.23 WIB",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:173"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:175"
   },
   {
    "kunci": "nonalam.alkhoziny2025.meninggal_dibi",
@@ -23287,7 +23287,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, dasbor publik 1, ditarik 23 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:174"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:176"
   },
   {
    "kunci": "nonalam.jee2023.ce1",
@@ -23298,7 +23298,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:192"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:194"
   },
   {
    "kunci": "nonalam.jee2023.ce2",
@@ -23309,7 +23309,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:192"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:194"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2023",
@@ -23320,7 +23320,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, rakor Bali 21 Jun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:217"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2026_tercatat",
@@ -23331,7 +23331,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): Jatiwaringin, Galuga, Putri Cempo, Jatibarang (BNPB dan KLH, sampai 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:217"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_persen_lahan",
@@ -23342,7 +23342,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023 (Pusdalops s.d. 25 Agt 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:221"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_kk_asap",
@@ -23353,7 +23353,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:221"
   },
   {
    "kunci": "nonalam.tpa.suwung_luas_ha",
@@ -23364,7 +23364,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 22 Jun 2024 (Kepala BNPB)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:221"
   },
   {
    "kunci": "nonalam.tpa.jatiwaringin_luas_ha",
@@ -23375,7 +23375,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 1 Jul 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:221"
   },
   {
    "kunci": "nonalam.tpa.jatiwaringin_hari_padam",
@@ -23386,7 +23386,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 1 dan 10 Jul 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:219"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:221"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2023",
@@ -23397,7 +23397,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, rakor Bali 21 Jun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:226"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:228"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_persen_lahan",
@@ -23408,7 +23408,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023 (Pusdalops s.d. 25 Agt 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:230"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:232"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_kk_asap",
@@ -23419,7 +23419,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:230"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:232"
   },
   {
    "kunci": "nonalam.tpa.kopiluhur_luas_ha",
@@ -23430,7 +23430,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 11 Sep 2023 (BPBD Kota Cirebon)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:231"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:233"
   },
   {
    "kunci": "nonalam.tpa.kopiluhur_kk_sekitar",
@@ -23441,7 +23441,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPBD Kota Cirebon, dikutip BNPB 11 Sep 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:231"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:233"
   },
   {
    "kunci": "nonalam.tpa.putricempo2023_luas_ha",
@@ -23452,7 +23452,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pusdalops BPBD Kota Surakarta, dikutip BNPB 18 Sep 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:232"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:234"
   },
   {
    "kunci": "nonalam.tpa.putricempo2023_jiwa_asap",
@@ -23463,7 +23463,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 18 Sep 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:232"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:234"
   },
   {
    "kunci": "nonalam.tpa.suwung_luas_ha",
@@ -23474,7 +23474,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 22 Jun 2024 (Kepala BNPB)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:233"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:235"
   },
   {
    "kunci": "nonalam.tpa.rawakucing_luas_ha",
@@ -23485,7 +23485,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 21 Okt 2023 (Pusdalops)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:234"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:236"
   },
   {
    "kunci": "nonalam.tpa.jalupang_luas_ha",
@@ -23496,7 +23496,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 30 Okt 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:235"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:237"
   },
   {
    "kunci": "nonalam.tpa.jalupang_desa_asap",
@@ -23507,7 +23507,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 30 Okt 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:235"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:237"
   },
   {
    "kunci": "nonalam.tpa.jatiwaringin_luas_ha",
@@ -23518,7 +23518,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 1 Jul 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:236"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:238"
   },
   {
    "kunci": "nonalam.tpa.jatiwaringin_mengungsi",
@@ -23529,7 +23529,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 1 Jul 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:236"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:238"
   },
   {
    "kunci": "nonalam.tpa.putricempo2026_luas_ha",
@@ -23540,7 +23540,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB, Perkembangan Situasi per 25 Sep 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:238"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:240"
   },
   {
    "kunci": "nonalam.tpa.jatibarang2026_luas_ha",
@@ -23551,7 +23551,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPBD Prov. Jawa Tengah, dikutip BNPB 1 Okt 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:239"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:241"
   },
   {
    "kunci": "nonalam.tpa.tenggat_tutup_uu18",
@@ -23562,7 +23562,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): UU 18/2008 berlaku 7 Mei 2008 + 5 tahun (Pasal 44 ayat (2))",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:244"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:246"
   },
   {
    "kunci": "nonalam.tpa.open_dumping",
@@ -23573,7 +23573,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:244"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:246"
   },
   {
    "kunci": "nonalam.tpa.jumlah",
@@ -23584,7 +23584,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:244"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:246"
   },
   {
    "kunci": "nonalam.tpa.belum_berhenti_porsi",
@@ -23595,7 +23595,7 @@
    "tinggi": null,
    "keyakinan": "resmi; olah",
    "sumber": "olah(resmi): 100% dikurangi \"sekitar 30 persen\" yang telah berhenti (sekitar 70%), dan 369 / 485 (76%)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:244"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:246"
   },
   {
    "kunci": "nonalam.tpa.disanksi",
@@ -23606,7 +23606,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "KLH/BPLH, berita 26 Feb 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:244"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:246"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2023",
@@ -23617,7 +23617,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kepala BNPB, rakor Bali 21 Jun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:267"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:269"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_persen_lahan",
@@ -23628,7 +23628,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023 (Pusdalops s.d. 25 Agt 2023)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:268"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:270"
   },
   {
    "kunci": "nonalam.tpa.suwung_luas_ha",
@@ -23639,7 +23639,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 22 Jun 2024 (Kepala BNPB)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:271"
   },
   {
    "kunci": "nonalam.tpa.sarimukti_kk_asap",
@@ -23650,7 +23650,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BNPB 26 Agt 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:271"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:273"
   },
   {
    "kunci": "nonalam.tpa.terbakar_2026_tercatat",
@@ -23661,7 +23661,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah(resmi): Jatiwaringin, Galuga, Putri Cempo, Jatibarang (BNPB dan KLH, sampai 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:272"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:274"
   },
   {
    "kunci": "program.kompendium.nonalam",
@@ -23672,7 +23672,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "olah: baris kompendium_program.csv yang kolom bencana memuat epidemi, gagal teknologi, atau kebakaran TPA",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:290"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:292"
   },
   {
    "kunci": "renas.epidemi.psc.target_2029",
@@ -23683,7 +23683,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 kegiatan 1.2.1.f, hlm. 57",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:290"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:292"
   },
   {
    "kunci": "dibi.epidemi.meninggal.2025",
@@ -23694,7 +23694,7 @@
    "tinggi": null,
    "keyakinan": "resmi; olah",
    "sumber": "olah(resmi): rekap DIBI 2025 kode 201 = 28 dikurangi entri ganda Nias Selatan 9 Jan 2025 (14) yang tercatat di subjenis 'Epidemi dan Wabah Penyakit' dan 'Wabah Penyakit'",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:294"
   },
   {
    "kunci": "nonalam.tpa.open_dumping",
@@ -23705,7 +23705,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:303"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:305"
   },
   {
    "kunci": "nonalam.tpa.jumlah",
@@ -23716,7 +23716,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:303"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-08.md:305"
   },
   {
    "kunci": "sosial.desa_perkelahian.2024",
@@ -25509,7 +25509,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:127"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:129"
   },
   {
    "kunci": "bpk.ihps2_2024.basarnas.kesiapan_sarpras_target_persen",
@@ -25520,7 +25520,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:127"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:129"
   },
   {
    "kunci": "lembaga.klaster.kepka308",
@@ -25531,7 +25531,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari paket lembaga (klaster.csv), mengutip Juklak BNPB 16/2025 hlm. 1",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:130"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:132"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2025",
@@ -25542,7 +25542,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2029",
@@ -25553,7 +25553,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renas.indikator_1c.kelipatan_2025_2029",
@@ -25564,7 +25564,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Tabel 2.8, hlm. 32",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029",
@@ -25575,7 +25575,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029, hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "rpjmn.kp_peringatan_dini.baseline",
@@ -25586,7 +25586,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RPJMN 2025–2029 (Perpres 12/2025), Lampiran III hlm. 913",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renas.indikator_1c.2025",
@@ -25597,7 +25597,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renas.indikator_1c.2029",
@@ -25608,7 +25608,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:154"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:156"
   },
   {
    "kunci": "renstra.pd_keterpenuhan_persen",
@@ -25619,7 +25619,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 70, mengutip isu RPJMN",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:166"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:168"
   },
   {
    "kunci": "rpjmn.kp_peringatan_dini.baseline",
@@ -25630,7 +25630,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RPJMN 2025–2029 (Perpres 12/2025), Lampiran III hlm. 913",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:167"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:169"
   },
   {
    "kunci": "rpjmn.kp080402.peringatan_dini_2029",
@@ -25641,7 +25641,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:167"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:169"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2025",
@@ -25652,7 +25652,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:168"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:170"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2029",
@@ -25663,7 +25663,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:168"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:170"
   },
   {
    "kunci": "renas.indikator_1c.2025",
@@ -25674,7 +25674,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:169"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:171"
   },
   {
    "kunci": "renas.indikator_1c.2029",
@@ -25685,7 +25685,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:169"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:171"
   },
   {
    "kunci": "renas.indikator_1c.2025_persen",
@@ -25696,7 +25696,7 @@
    "tinggi": null,
    "keyakinan": "resmi; olah",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), indikator 1.c",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:172"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:174"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2025",
@@ -25707,7 +25707,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:172"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:174"
   },
   {
    "kunci": "renstra.pd_keterpenuhan_persen",
@@ -25718,7 +25718,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 70, mengutip isu RPJMN",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:172"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:174"
   },
   {
    "kunci": "hidromet.nasional.lantai.meninggal_hilang",
@@ -25729,7 +25729,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.pd_renas.penurunan_persen",
@@ -25740,7 +25740,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana; Renas 1.c, WMO 2022",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.pd_renstra.penurunan_persen",
@@ -25751,7 +25751,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana; IKP Renstra, WMO 2022",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.musim_2025.meninggal",
@@ -25762,7 +25762,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 2025/2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.musim_2025.hilang",
@@ -25773,7 +25773,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, musim hujan 1 Okt 2025–30 Apr 2026",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.lantai.pd_renas.korban_jiwa",
@@ -25784,7 +25784,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "hidromet.nasional.lantai.pd_renstra.korban_jiwa",
@@ -25795,7 +25795,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:176"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
   },
   {
    "kunci": "dibi.nasional.nonalam_sosial_lainnya.kejadian_maks.2018_2023",
@@ -25806,7 +25806,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2018–2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:180"
   },
   {
    "kunci": "dibi.nasional.nonalam_sosial_lainnya.kejadian.2025",
@@ -25817,7 +25817,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:180"
   },
   {
    "kunci": "dibi.nasional.nonalam_sosial_lainnya.meninggal.2025",
@@ -25828,7 +25828,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:178"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:180"
   },
   {
    "kunci": "dibi.nasional.kejadian.2023",
@@ -25839,7 +25839,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:181"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:183"
   },
   {
    "kunci": "dibi.nasional.kejadian.2024",
@@ -25850,7 +25850,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:181"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:183"
   },
   {
    "kunci": "renstra.ikp_peringatan_dini.2025",
@@ -25861,7 +25861,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:187"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:189"
   },
   {
    "kunci": "renas.indikator_1c.2025_persen",
@@ -25872,7 +25872,7 @@
    "tinggi": null,
    "keyakinan": "resmi; olah",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), indikator 1.c",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:187"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:189"
   },
   {
    "kunci": "rpjmn.kp_kapasitas_minimal_sedang.baseline_2023",
@@ -25883,7 +25883,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RPJMN 2025–2029 (Perpres 12/2025), Lampiran III hlm. 913",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "krb.nasional.kab_kapasitas_minimal_sedang_persen",
@@ -25894,7 +25894,7 @@
    "tinggi": null,
    "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
    "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "renstra.iks_kapasitas_minimal_sedang.awal",
@@ -25905,7 +25905,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 128",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "renstra.iks_kapasitas_minimal_sedang.2029",
@@ -25916,7 +25916,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 128",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "krb.nasional.kab_kapasitas_rendah",
@@ -25927,7 +25927,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "krb.nasional.kab_kapasitas_sedang",
@@ -25938,7 +25938,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "krb.nasional.kab_kapasitas_tinggi",
@@ -25949,7 +25949,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:199"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
   },
   {
    "kunci": "kemenkopmk.daerah_belum_spm_bencana",
@@ -25960,7 +25960,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:203"
   },
   {
    "kunci": "kemenkopmk.daerah_belum_krb",
@@ -25971,7 +25971,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:203"
   },
   {
    "kunci": "kemenkopmk.daerah_belum_ikd_2024",
@@ -25982,7 +25982,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:201"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:203"
   },
   {
    "kunci": "bpksulut.2024.lhp_pb.permasalahan",
@@ -25993,7 +25993,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPK Perwakilan Sulawesi Utara, siaran pers 23 Desember 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:203"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:205"
   },
   {
    "kunci": "bpk.ihps2_2024.kemendagri.target_kehilangan_pdb_2023_persen",
@@ -26004,7 +26004,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:205"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:207"
   },
   {
    "kunci": "perban2_2023.renkon_masa_berlaku_tahun",
@@ -26015,7 +26015,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perban BNPB 2/2023 tentang Penyusunan Rencana Kontingensi Bencana, Pasal 21 ayat (1)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:207"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:209"
   },
   {
    "kunci": "krb.nasional.kab_kapasitas_rendah",
@@ -26026,7 +26026,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:210"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:212"
   },
   {
    "kunci": "kemenkopmk.daerah_belum_spm_bencana",
@@ -26037,7 +26037,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:213"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:215"
   },
   {
    "kunci": "bpk.ihps2_2024.pb.objek_pemda",
@@ -26048,7 +26048,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:213"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:215"
   },
   {
    "kunci": "renstra.ikp_logistik.2025",
@@ -26059,7 +26059,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:222"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:224"
   },
   {
    "kunci": "renstra.ikp_logistik.2029",
@@ -26070,7 +26070,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:222"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:224"
   },
   {
    "kunci": "renstra.ikp_logistik.2025",
@@ -26081,7 +26081,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:225"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:227"
   },
   {
    "kunci": "renstra.ikp_logistik.2029",
@@ -26092,7 +26092,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:225"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:227"
   },
   {
    "kunci": "mitigasi.sel_program.total",
@@ -26103,7 +26103,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_kuat",
@@ -26114,7 +26114,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_kuat_dalam_negeri",
@@ -26125,7 +26125,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "program.kompendium.n",
@@ -26136,7 +26136,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemilihan program oleh penyusun",
    "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "program.kompendium.kuat",
@@ -26147,7 +26147,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; rubrik kekuatan bukti paket program-terbukti",
    "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_kuat_sedang",
@@ -26158,7 +26158,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_program",
@@ -26169,7 +26169,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.lemah_belum_terbukti",
@@ -26180,7 +26180,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.sedang_dalam_negeri",
@@ -26191,7 +26191,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:269"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
   },
   {
    "kunci": "mitigasi.sel_program.nonalam_sosial_tanpa",
@@ -26202,7 +26202,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
   },
   {
    "kunci": "mitigasi.sel_program.tanggap_darurat_tanpa",
@@ -26213,7 +26213,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
   },
   {
    "kunci": "mitigasi.sel_program.pascabencana_tanpa",
@@ -26224,7 +26224,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
   },
   {
    "kunci": "mitigasi.sel_program.jenis_tanpa_kuat_sedang",
@@ -26235,7 +26235,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:271"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_program",
@@ -26246,7 +26246,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:275"
   },
   {
    "kunci": "mitigasi.sel_program.kepekaan_p03.tanpa_program",
@@ -26257,7 +26257,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:273"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:275"
   },
   {
    "kunci": "mitigasi.sel_program.kepekaan_p03.tanpa_program",
@@ -26268,7 +26268,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:283"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:285"
   },
   {
    "kunci": "mitigasi.sel_program.tanpa_kuat",
@@ -26279,7 +26279,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:289"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:291"
   },
   {
    "kunci": "mitigasi.sel_program.total",
@@ -26290,7 +26290,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:289"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:291"
   },
   {
    "kunci": "mitigasi.sel_program.nonalam_sosial_tanpa",
@@ -26301,7 +26301,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
    "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:289"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:291"
   },
   {
    "kunci": "program.kompendium.n",
@@ -26312,7 +26312,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; pemilihan program oleh penyusun",
    "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:294"
   },
   {
    "kunci": "program.kompendium.kuat_dalam_negeri",
@@ -26323,7 +26323,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; rubrik kekuatan bukti paket program-terbukti",
    "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:294"
   },
   {
    "kunci": "renas.aksi_121c.pusdalops.2024",
@@ -26334,7 +26334,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 1.2.1.c, hlm. 56",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:301"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:303"
   },
   {
    "kunci": "renas.aksi_121c.pusdalops.2029",
@@ -26345,7 +26345,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 1.2.1.c, hlm. 56",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:301"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-10.md:303"
   },
   {
    "kunci": "mitigasi.sel_posisi.aksi_wajib_saja",
@@ -28391,7 +28391,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "BRR NAD–Nias (2009)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:270"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:272"
   },
   {
    "kunci": "respons.w1.hidromet_puncak30",
@@ -28402,7 +28402,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:281"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
   },
   {
    "kunci": "respons.w1.beras_ton_hari",
@@ -28413,7 +28413,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:281"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
   },
   {
    "kunci": "respons.w1.air_minum_juta_liter_hari",
@@ -28424,7 +28424,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:281"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
   },
   {
    "kunci": "respons.w1.jamban",
@@ -28435,7 +28435,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:281"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
   },
   {
    "kunci": "bappenas.yogya2006.kehilangan_rumah",
@@ -28446,7 +28446,7 @@
    "tinggi": 1000000,
    "keyakinan": "resmi; penilaian awal",
    "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:282"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:284"
   },
   {
    "kunci": "dibi.merapi2010.mengungsi",
@@ -28457,7 +28457,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, erupsi Merapi 2010",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
   },
   {
    "kunci": "respons.w1_stok.beras_ton_hari",
@@ -28468,7 +28468,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
   },
   {
    "kunci": "respons.w1_stok.air_minum_juta_liter_hari",
@@ -28479,7 +28479,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
   },
   {
    "kunci": "respons.w1_stok.jamban",
@@ -28490,7 +28490,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:283"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
   },
   {
    "kunci": "respons.w2.hidromet_puncak30",
@@ -28501,7 +28501,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:284"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
   },
   {
    "kunci": "respons.w2.beras_ton_hari",
@@ -28512,7 +28512,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:284"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
   },
   {
    "kunci": "respons.w2.air_minum_juta_liter_hari",
@@ -28523,7 +28523,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:284"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
   },
   {
    "kunci": "respons.w2.jamban",
@@ -28534,7 +28534,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:284"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
   },
   {
    "kunci": "respons.w2.geologi_rbrs_puncak30",
@@ -28545,7 +28545,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
   },
   {
    "kunci": "respons.w2_rumah.beras_ton_hari",
@@ -28556,7 +28556,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
   },
   {
    "kunci": "respons.w2_rumah.air_minum_juta_liter_hari",
@@ -28567,7 +28567,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
   },
   {
    "kunci": "respons.w2_rumah.jamban",
@@ -28578,7 +28578,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:285"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
   },
   {
    "kunci": "dibi.lombok2018.mengungsi",
@@ -28589,7 +28589,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, rangkaian gempa Lombok 2018",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
   },
   {
    "kunci": "respons.w2_lombok.beras_ton_hari",
@@ -28600,7 +28600,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
   },
   {
    "kunci": "respons.w2_lombok.air_minum_juta_liter_hari",
@@ -28611,7 +28611,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
   },
   {
    "kunci": "respons.w2_lombok.jamban",
@@ -28622,7 +28622,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:286"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
   },
   {
    "kunci": "respons.w3.geologi_rbrs_puncak30",
@@ -28633,7 +28633,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:289"
   },
   {
    "kunci": "respons.w3.beras_ton_hari",
@@ -28644,7 +28644,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:289"
   },
   {
    "kunci": "respons.w3.air_minum_juta_liter_hari",
@@ -28655,7 +28655,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:289"
   },
   {
    "kunci": "respons.w3.jamban",
@@ -28666,7 +28666,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:287"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:289"
   },
   {
    "kunci": "dibi.ambon2019.mengungsi",
@@ -28677,7 +28677,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB, gempa Ambon–Maluku Tengah 2019",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:290"
   },
   {
    "kunci": "respons.w3_ambon.beras_ton_hari",
@@ -28688,7 +28688,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:290"
   },
   {
    "kunci": "respons.w3_ambon.air_minum_juta_liter_hari",
@@ -28699,7 +28699,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:290"
   },
   {
    "kunci": "respons.w3_ambon.jamban",
@@ -28710,7 +28710,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:288"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:290"
   },
   {
    "kunci": "respons.model.mentawai.pengungsi_w3",
@@ -28721,7 +28721,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
    "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:289"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:291"
   },
   {
    "kunci": "perka_2008.beras_gram_hari",
@@ -28732,7 +28732,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.kkal_hari",
@@ -28743,7 +28743,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.air_minum_liter_hari",
@@ -28754,7 +28754,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.jamban_orang",
@@ -28765,7 +28765,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.hunian_m2_orang",
@@ -28776,7 +28776,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.air_bersih_awal_liter_hari",
@@ -28787,7 +28787,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "perka_2008.air_bersih_liter_hari",
@@ -28798,7 +28798,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perka BNPB 7/2008",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "juklak2023_3.huntara_m2_orang",
@@ -28809,7 +28809,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Juklak BNPB 3/2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:292"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
   },
   {
    "kunci": "juklak2024_3.buffer_stock_persen",
@@ -28820,7 +28820,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Juklak BNPB 3/2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
   },
   {
    "kunci": "renstra.ikp_logistik.2025",
@@ -28831,7 +28831,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
   },
   {
    "kunci": "renstra.ikp_logistik.2029",
@@ -28842,7 +28842,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:294"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
   },
   {
    "kunci": "respons.model.mentawai.pengungsi_w3",
@@ -28853,7 +28853,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
    "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:298"
   },
   {
    "kunci": "respons.w3.geologi_rbrs_puncak30",
@@ -28864,7 +28864,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:298"
   },
   {
    "kunci": "respons.model.jawa_mmaks.pengungsi_w1",
@@ -28875,7 +28875,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
    "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:298"
   },
   {
    "kunci": "respons.model.jawa_mmaks.pengungsi_w3",
@@ -28886,7 +28886,7 @@
    "tinggi": null,
    "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
    "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:296"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:298"
   },
   {
    "kunci": "renas.aksi_451a.baseline_2024",
@@ -28897,7 +28897,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "renas.aksi_451a.target_2029",
@@ -28908,7 +28908,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "renstra.desa_rawan",
@@ -28919,7 +28919,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029, hlm. 69, mengutip isu RPJMN",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "renstra.ikk_destana.2025",
@@ -28930,7 +28930,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025) hlm. 135–136",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "renstra.ikk_destana.2029",
@@ -28941,7 +28941,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025) hlm. 135–136",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "perban2025_7.destana.penilaian_tahun",
@@ -28952,7 +28952,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perban BNPB 7/2025 Pasal 14 ayat (5)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "renas.aksi_451a.target_2029",
@@ -28963,7 +28963,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:300"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
   },
   {
    "kunci": "bukti.p02.spab_2024",
@@ -28974,7 +28974,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.1.2.a hlm. 72",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:304"
   },
   {
    "kunci": "bukti.p02.spab_2029",
@@ -28985,7 +28985,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.1.2.a hlm. 72",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:304"
   },
   {
    "kunci": "kemendagri.spm_bencana_belum_tuntas_2025",
@@ -28996,7 +28996,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemendagri (Direktur MPBG) dalam siaran Kemenko PMK 12 September 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:304"
   },
   {
    "kunci": "kemendagri.krb_belum_aktif_2025",
@@ -29007,7 +29007,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemendagri (Direktur MPBG) dalam siaran Kemenko PMK 12 September 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:304"
   },
   {
    "kunci": "kemendagri.ikd2024_belum_2025",
@@ -29018,7 +29018,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Kemendagri (Direktur MPBG) dalam siaran Kemenko PMK 12 September 2025",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:302"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:304"
   },
   {
    "kunci": "juklak2023_1.dth_rp_bulan",
@@ -29029,7 +29029,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Juklak BNPB 1/2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:308"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:310"
   },
   {
    "kunci": "juklak2023_1.dth_bulan",
@@ -29040,7 +29040,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Juklak BNPB 1/2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:308"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:310"
   },
   {
    "kunci": "juklak2023_3.huntara_m2_orang",
@@ -29051,7 +29051,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Juklak BNPB 3/2023",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:308"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:310"
   },
   {
    "kunci": "perban2017_5.r3p_hari_maks",
@@ -29062,7 +29062,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perban BNPB 5/2017",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:308"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:310"
   },
   {
    "kunci": "sumatra2025.r3p_aceh_hari_selesai",
@@ -29073,7 +29073,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:310"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:312"
   },
   {
    "kunci": "perban2024_4.laporan_berkala_bulan",
@@ -29084,7 +29084,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Perban BNPB 4/2024",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:312"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:314"
   },
   {
    "kunci": "renstra.peringatan_dini.keterpenuhan_persen",
@@ -29095,7 +29095,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029, isu strategis",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:316"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:318"
   },
   {
    "kunci": "renstra.sirene_terpasang.2025",
@@ -29106,7 +29106,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029, hlm. 162",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:316"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:318"
   },
   {
    "kunci": "renstra.sirene_terpasang.2029",
@@ -29117,7 +29117,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renstra BNPB 2025–2029, hlm. 162",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:316"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:318"
   },
   {
    "kunci": "bukti.p19.kematian_1970",
@@ -29128,7 +29128,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2), Tabel 1",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:340"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:342"
   },
   {
    "kunci": "bukti.p19.kematian_2009",
@@ -29139,7 +29139,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:340"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:342"
   },
   {
    "kunci": "bukti.p19.kematian_1970",
@@ -29150,7 +29150,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2), Tabel 1",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:344"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:346"
   },
   {
    "kunci": "bukti.p19.kematian_1991",
@@ -29161,7 +29161,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:344"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:346"
   },
   {
    "kunci": "bukti.p19.kematian_1997",
@@ -29172,7 +29172,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:344"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:346"
   },
   {
    "kunci": "bukti.bangladesh_siklon.kematian_2007",
@@ -29183,7 +29183,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:344"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:346"
   },
   {
    "kunci": "bukti.p19.kematian_2009",
@@ -29194,7 +29194,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:344"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:346"
   },
   {
    "kunci": "bukti.p19.kematian_1970",
@@ -29205,7 +29205,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2), Tabel 1",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:349"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:351"
   },
   {
    "kunci": "bukti.p19.relawan",
@@ -29216,7 +29216,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:351"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:353"
   },
   {
    "kunci": "bukti.p19.faktor_penurunan",
@@ -29227,7 +29227,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:355"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:357"
   },
   {
    "kunci": "bukti.p20.phailin_meninggal",
@@ -29238,7 +29238,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pemerintah Odisha, ADB, Bank Dunia (2013), RDNA Phailin",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:361"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:363"
   },
   {
    "kunci": "bukti.p20.phailin_evakuasi_juta",
@@ -29249,7 +29249,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RDNA Phailin 2013",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:361"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:363"
   },
   {
    "kunci": "bukti.p20.phailin_jam_evakuasi",
@@ -29260,7 +29260,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RDNA Phailin 2013",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:361"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:363"
   },
   {
    "kunci": "bukti.p20.super1999_meninggal",
@@ -29271,7 +29271,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RDNA Phailin 2013, Background",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:365"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:367"
   },
   {
    "kunci": "bukti.p20.phailin_meninggal",
@@ -29282,7 +29282,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pemerintah Odisha, ADB, Bank Dunia (2013), RDNA Phailin",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:365"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:367"
   },
   {
    "kunci": "bukti.p20.super1999_meninggal",
@@ -29293,7 +29293,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RDNA Phailin 2013, Background",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:370"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:372"
   },
   {
    "kunci": "bukti.p20.phailin_evakuasi_juta",
@@ -29304,29 +29304,29 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "RDNA Phailin 2013",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:374"
-  },
-  {
-   "kunci": "bukti.p20.phailin_jam_evakuasi",
-   "opsi": "|satuan",
-   "tampil": "36 jam",
-   "nilai": 36.0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "RDNA Phailin 2013",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:374"
-  },
-  {
-   "kunci": "bukti.p20.phailin_meninggal",
-   "opsi": "|satuan",
-   "tampil": "44 jiwa",
-   "nilai": 44.0,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "resmi",
-   "sumber": "Pemerintah Odisha, ADB, Bank Dunia (2013), RDNA Phailin",
    "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:376"
+  },
+  {
+   "kunci": "bukti.p20.phailin_jam_evakuasi",
+   "opsi": "|satuan",
+   "tampil": "36 jam",
+   "nilai": 36.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "RDNA Phailin 2013",
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:376"
+  },
+  {
+   "kunci": "bukti.p20.phailin_meninggal",
+   "opsi": "|satuan",
+   "tampil": "44 jiwa",
+   "nilai": 44.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pemerintah Odisha, ADB, Bank Dunia (2013), RDNA Phailin",
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:378"
   },
   {
    "kunci": "bukti.p20.phailin_meninggal_72jam",
@@ -29337,7 +29337,7 @@
    "tinggi": null,
    "keyakinan": "terverifikasi",
    "sumber": "Bank Dunia (2013), feature Phailin",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:376"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:378"
   },
   {
    "kunci": "respons.w3.geologi_rbrs_puncak30",
@@ -29348,7 +29348,7 @@
    "tinggi": null,
    "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:410"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:412"
   },
   {
    "kunci": "respons.w1.hidromet_puncak30",
@@ -29359,7 +29359,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:410"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:412"
   },
   {
    "kunci": "hidromet.kalender.maluku.hujan_mh_porsi_jun_okt",
@@ -29370,7 +29370,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:423"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:425"
   },
   {
    "kunci": "renas.aksi_451a.baseline_2024",
@@ -29381,7 +29381,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:444"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:446"
   },
   {
    "kunci": "renas.aksi_451a.target_2029",
@@ -29392,7 +29392,7 @@
    "tinggi": null,
    "keyakinan": "resmi",
    "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
-   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:444"
+   "naskah": "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/data/kajian-bnpb/naskah/mitigasi/bab-11.md:446"
   },
   {
    "kunci": "lembaga.peran.baris_tertulis",
@@ -88798,7 +88798,7 @@
  ],
  "pustaka": {
   "kajian": "mitigasi",
-  "status": "draf",
+  "status": "final",
   "bab": {
    "1": [
     "bnpb-2014-produkhukum",

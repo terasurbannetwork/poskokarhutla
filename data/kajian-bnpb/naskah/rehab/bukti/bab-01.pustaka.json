@@ -280,7 +280,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa); Bab 1 rehab: jembatan_rusak, rumah_rusak_berat, fasum_rusak dari dibi/rekap_nasional_tahunan.csv dan rekap_provinsi_tahunan.csv; kejadian sumatra2025 dari dibi/kejadian_besar.csv; ditarik 23 Okt 2026"
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa); Bab 1 rehab: jembatan_rusak, rumah_rusak_berat, fasum_rusak dari dibi/rekap_nasional_tahunan.csv dan rekap_provinsi_tahunan.csv; kejadian sumatra2025 dari dibi/kejadian_besar.csv (cakupan semua_laporan); ditarik 23 Okt 2026"
  },
  {
   "id": "kemenkoinfra-2026-inpres18",
@@ -476,7 +476,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "data per 7 Mei 2026: sekitar 95,5% dari 178 SPAM fungsional; jalan dan jembatan nasional terdampak 100%; 94% dari 2.421 ruas jalan daerah; sekitar 67% dari 1.181 unit jembatan daerah; provinsi tidak dirinci. Riset D [22]"
+  "note": "data per 7 Mei 2026: sekitar 95,5% dari 178 SPAM fungsional; jalan dan jembatan nasional terdampak 100%; 94% dari 2.421 ruas jalan daerah; sekitar 67% dari 1.181 unit jembatan daerah; lokasi 'wilayah Pulau Sumatera', provinsi dan jendela kejadian tidak dirinci; kepemilikan SPAM tidak dirinci. Riset D [22]"
  },
  {
   "id": "binamarga-2025-jembatan-aceh",
@@ -540,7 +540,7 @@
    ]
   },
   "verifikasi": "primer",
-  "note": "TNI AD 3.008 titik, 2.500 selesai, 508 proses, 798 titik wilayah bencana; Polri 895 unit di 30 Polda, 874 selesai, 17 dibangun; 3.000 sumber air bersih TNI AD. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]"
+  "note": "TNI AD 3.008 titik, 2.500 selesai, 508 proses, \"dan juga 798 di daerah bencana\" (hubungan dengan 3.008 tidak dijelaskan); Polri 895 unit di 30 Polda, 874 selesai, 17 dibangun, 4 perencanaan; 3.000 sumber air bersih TNI AD. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]"
  },
  {
   "id": "dpr-2026-infosingkat-rumah-sumatra",

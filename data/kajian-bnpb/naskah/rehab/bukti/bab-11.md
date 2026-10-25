@@ -41,12 +41,14 @@ tidak memuat pagu, total program, NPV, atau BCR (P5); pagu indikatif Renas diseb
 
 **Koreksi atas kerangka yang wajib dibawa penulis.**
 
-1. **Progsun 2026 sudah memuat dua dari empat instrumen BNPB yang diusulkan Bab 11, tetapi tidak memuat perubahan Perban
-   4/2024.** Keputusan Kepala BNPB 327/2025 menetapkan sebelas rancangan, di antaranya perubahan Perban 6/2017
-   (penyelenggaraan RR, pemrakarsa Deputi Bidang RR), perubahan "Peraturan BNPB Nomor 5 Tahun 2024 tentang Perencanaan
-   Rehabilitasi dan Rekonstruksi Pascabencana" (pemrakarsa Deputi Bidang RR, Direktorat Perencanaan RR), dan perubahan
-   Perban 4/2018 (sistem manajemen logistik dan peralatan). Perubahan Perban 4/2024 (hibah RR) dan pembaruan Perka 12/2010
-   tidak ada di daftar. Kolom Progsun Tabel 11.4 ditulis menurut ini, bukan menurut KERANGKA.
+1. **Dari empat instrumen usulan KERANGKA (perubahan Perban 4/2024, pembaruan Perka 12/2010, juklak sumur bor, templat
+   R3P), hanya satu yang punya kendaraan di Progsun 2026: templat R3P, lewat butir 4.** Keputusan Kepala BNPB 327/2025
+   menetapkan sebelas rancangan, di antaranya perubahan "Peraturan BNPB Nomor 5 Tahun 2024 tentang Perencanaan
+   Rehabilitasi dan Rekonstruksi Pascabencana" (butir 4, pemrakarsa Deputi Bidang RR, Direktorat Perencanaan RR),
+   perubahan Perban 6/2017 (butir 5, penyelenggaraan RR, pemrakarsa Deputi Bidang RR), dan perubahan Perban 4/2018 (butir
+   6, sistem manajemen logistik dan peralatan). Perubahan Perban 6/2017 adalah kendaraan tambahan yang tidak disebut
+   KERANGKA. Perka 12/2010 hanya dapat menumpang sebagian lewat butir 6 (materi stok bailey). Perubahan Perban 4/2024 (hibah
+   RR) dan juklak sumur bor tidak ada di Progsun. Kolom Progsun Tabel 11.4 ditulis menurut ini, bukan menurut KERANGKA.
 2. **Nomor peraturan perencanaan RR di Progsun bertentangan dengan katalog JDIH.** Butir 4 Progsun menulis Perban 5/2024
    tentang Perencanaan RR, sedangkan katalog JDIH lokal dan teks korpus mencatat Perban 5/2024 sebagai Kamus Kompetensi
    Teknis Bidang Penanggulangan Bencana, dan peraturan perencanaan RR yang berlaku adalah Perban 5/2017. Kedua catatan resmi
@@ -78,7 +80,9 @@ Mandat tertulis untuk air dan akses sudah lengkap di tingkat "siapa pemilik dan 
 RR kecuali prasarana kewenangan pusat (PP 21/2008 Pasal 57, 76), BNPB dan BPBD menjadi penanggung jawab, koordinator, dan
 pemantau (Perban 6/2017 Pasal 12–14), Kementerian PU memegang jalan nasional (UU 2/2022 Pasal 14) dan SPAM bersifat khusus
 termasuk penanganan bencana alam (PP 122/2015 Pasal 38 huruf d), kab/kota memegang jalan kabupaten dan SPAM di wilayahnya,
-dan desa memegang jalan desa dengan pengambilalihan oleh kab/kota bila belum mampu (UU 2/2022 Pasal 16A). Yang belum
+dan desa memegang jalan desa dengan pengambilalihan oleh kab/kota bila belum mampu (UU 2/2022 Pasal 16A). Untuk air baku,
+UU 17/2019 membagi jaminan kebutuhan pokok air menurut wilayah sungai dan menugasi kab/kota memenuhi kebutuhan pokok air
+warganya (Pasal 10, 13, 15, 17). Yang belum
 bermandat tertulis ada empat: pembangunan jembatan oleh TNI AD dan Polri di luar R3P (dasar hukumnya tidak ditemukan),
 serah terima aset darurat ke pemilik, protokol sumur bor RR bersama Badan Geologi, dan standar waktu pulih layanan. Keempatnya
 masuk Tabel 11.1 dan 11.2 sebagai Usulan baru.
@@ -129,7 +133,9 @@ masuk Tabel 11.1 dan 11.2 sebagai Usulan baru.
 8. Perban 4/2020 Pasal 14: pengguna DSP meliputi BNPB, K/L, "Tentara Nasional Indonesia/Kepolisian Negara Republik
    Indonesia", pemprov, pemkab/pemkot, dan lembaga kemanusiaan atas persetujuan Kepala BNPB. Sumber:
    `data/raw/hukum/teks/perban-nomor-4-tahun-2020.json` hlm. 12 (OCR) [@bnpb-2020-dsp]. Label: resmi. Bailey Sumatra 2025
-   diadakan DSP sebagai barang hibah ke daerah dan dibayar setelah audit BPKP [@bnpb-2025-bailey-dsp]. Label: resmi.
+   diadakan DSP sebagai barang yang dihibahkan ke daerah, "digunakan saat tanggap darurat bencana", dan dibayar setelah BNPB
+   menerima hasil audit kelaikan harga oleh BPKP; pembayaran sesudah kegiatan selesai diatur Perban 4/2020 Pasal 20 ayat (2)
+   (hlm. 16). Sumber: berita BNPB 31 Des 2025, dibuka 25 Okt 2026 [@bnpb-2025-bailey-dsp; @bnpb-2020-dsp]. Label: resmi.
 
 **Air perpipaan dan air tanah**
 
@@ -145,6 +151,19 @@ masuk Tabel 11.1 dan 11.2 sebagai Usulan baru.
 11. Air tanah: penetapan CAT di Pusat (Kementerian ESDM, Badan Geologi); penerbit persetujuan penggunaan air tanah dan izin
     sumur darurat belum dapat dipastikan dan tidak diatur khusus untuk keadaan darurat. Dipakai dari berkas bukti Bab 2 T2.12
     dan C2.5 serta berkas bukti Bab 7. Label: resmi (penetapan CAT); belum pasti (izin).
+11a. UU 17/2019 (Sumber Daya Air): Pemerintah Pusat menjamin penyediaan air baku untuk kebutuhan pokok minimal sehari-hari
+    serta mengelola SPAM lintas provinsi dan strategis nasional pada wilayah sungai lintas negara, lintas provinsi, dan
+    strategis nasional (Pasal 10 huruf d, g, h), dan menetapkan zona konservasi air tanah di wilayah sungai tersebut (Pasal 11
+    huruf e); provinsi untuk wilayah sungai lintas kab/kota (Pasal 13 huruf d, g, i; Pasal 14 huruf e); kab/kota bertugas
+    "memenuhi kebutuhan pokok minimal sehari-hari atas Air bagi masyarakat" di wilayahnya dan mengelola SPAM kab/kota (Pasal
+    15 huruf i, k); pemerintah desa membantu kab/kota memenuhi kebutuhan pokok air warga desa (Pasal 17 huruf d). Pasal 28
+    ayat (1): pendayagunaan SDA dengan "prioritas utama untuk pemenuhan Air bagi kebutuhan pokok sehari-hari masyarakat";
+    Pasal 31: dalam keadaan memaksa (Penjelasan: keadaan darurat) Pemerintah Pusat dan/atau pemda mengatur penggunaan SDA
+    untuk pemenuhan prioritas; Pasal 35 ayat (5)–(7): penanggulangan daya rusak air yang dinyatakan bencana mengikuti
+    peraturan perundang-undangan, gubernur dan/atau bupati/wali kota berwenang mengambil tindakan darurat, dan pemulihan
+    lewat rehabilitasi dan rekonstruksi. Sumber: `data/kajian-bnpb/data/lembaga/mentah/teks/uu-17-2019.json.gz` hlm. 9–16,
+    22–24, 72 (OCR) [@ri-2019-uu17]. Label: resmi. Teks UU 17/2019 tidak memuat ketentuan izin sumur darurat pascabencana
+    (dicari: "darurat", "bencana"; lihat butir 11 dan berkas bukti Bab 7 butir 8–10).
 
 **Kejadian besar dan forum**
 
@@ -186,7 +205,8 @@ masuk Tabel 11.1 dan 11.2 sebagai Usulan baru.
   | BPBD | K | K, P | K | K (koordinator pelaksanaan) | K | - | PP 21/2008 Ps 60, 79 |
   | Kementerian PU Bina Marga | P (rangka baja) | - | P | P jalan/jembatan nasional; pengambilalihan jalan provinsi | - | - | UU 2/2022 Ps 14–15; Perka 12/2010 |
   | Kementerian PU Cipta Karya | - | P (SPAM khusus bencana) | P | - | P SPAM khusus, strategis, lintas provinsi | - | PP 122/2015 Ps 38 huruf d |
-  | Kementerian ESDM (Badan Geologi) | - | - | - | - | - | R (CAT); izin: belum pasti | berkas bukti Bab 2 T2.12 |
+  | Kementerian ESDM (Badan Geologi) | - | - | - | - | - | R (CAT; zona konservasi air tanah di wilayah sungai kewenangan Pusat); izin: belum pasti | berkas bukti Bab 2 T2.12; UU 17/2019 Ps 11 huruf e |
+  | Kementerian PU Sumber Daya Air | - | - | - | - | air baku untuk kebutuhan pokok di wilayah sungai kewenangan Pusat | - | UU 17/2019 Ps 10 huruf h (UU menyebut Pemerintah Pusat; penempatan ke Kementerian PU adalah pemetaan tim) |
   | Pemprov | P | P | P | P jalan provinsi; pengambilalihan jalan kab/desa | P SPAM lintas kab/kota | - | UU 2/2022 Ps 15–16A; UU 23/2014 |
   | Pemkab/pemkot, PDAM | P | P | P | P jalan kab/kota; pengaturan dan pembinaan jalan desa; pengambilalihan jalan desa | P SPAM di wilayahnya | - | UU 2/2022 Ps 16–16A; PP 122/2015 Ps 40 |
   | Pemerintah desa, Kelompok Masyarakat | - | - | - | P jalan desa (termasuk jembatan desa sebagai bangunan penghubung) | P SPAM Kelompok Masyarakat (lapor ke kab/kota) | - | UU 2/2022 Ps 16A; PP 122/2015 Ps 41–42 |
@@ -242,9 +262,11 @@ masuk Tabel 11.1 dan 11.2 sebagai Usulan baru.
 Lapis darurat dan sementara sudah berdana untuk semua jenis aset lewat DSP BNPB selama status darurat (termasuk transisi
 darurat ke pemulihan) dan keadaan tertentu, dengan air bersih dan sanitasi disebut eksplisit di daftar pengadaan DSP, ditambah
 BTT APBD yang mencakup kerusakan prasarana yang mengganggu layanan publik. Di lapis permanen, aset nasional dibiayai APBN K/L,
-aset pemda dibiayai APBD, hibah RR, dan Dana Bersama yang wajib merujuk R3P, sedangkan aset desa tidak dapat dibiayai hibah RR
-(Perban 4/2024 Pasal 5 huruf e) dan bergantung pada APBDes, dana desa, bantuan keuangan khusus kab/kota ke desa, atau
-pengambilalihan pembangunan oleh kab/kota. Dua beban lain tidak punya sumber RR sama sekali: operasi dan pemeliharaan sistem
+aset pemda dibiayai APBD, hibah RR, dan Dana Bersama yang wajib merujuk R3P, sedangkan aset rusak milik pemerintah desa tidak
+dapat dibiayai hibah RR (Perban 4/2024 Pasal 5 huruf e) dan bergantung pada APBDes, dana desa (termasuk fokus akses air minum
+rumah tangga), bantuan keuangan khusus kab/kota ke desa, atau pengambilalihan pembangunan oleh kab/kota. Untuk SPAM Kelompok
+Masyarakat, berlaku tidaknya larangan Pasal 5 huruf e bergantung pada status kepemilikannya (penilaian tim; perlu telaah Biro
+Hukum). Dua beban lain tidak punya sumber RR sama sekali: operasi dan pemeliharaan sistem
 yang dibangun saat RR, serta lahan.
 
 ### Temuan bersumber
@@ -317,11 +339,15 @@ yang dibangun saat RR, serta lahan.
 **Aset desa**
 
 11. Permendes PDT 16/2025 Pasal 2 ayat (1): delapan fokus Dana Desa 2026 (kunci `permendes2025_16.fokus.jumlah`), termasuk
-    huruf b "penguatan Desa berketahanan iklim dan tangguh bencana" dan huruf f "pembangunan dan pemeliharaan infrastruktur desa
-    melalui program Padat Karya Tunai Desa"; Lampiran huruf B: kegiatan adaptasi dan penanggulangan bencana "sesuai dengan
-    kewenangan Desa dan diputuskan dalam Musyawarah Desa"; Lampiran huruf F angka 5 huruf a: upah paling sedikit 50% dari biaya
-    kegiatan Padat Karya Tunai Desa. Jembatan dan SPAM desa tidak disebut namanya. Sumber:
-    https://www.peraturan.go.id/filespengundangan/permendespdt-no-16-tahun-2025.pdf hlm. 4, 13, 18, diakses 25 Okt 2026; kunci
+    huruf b "penguatan Desa berketahanan iklim dan tangguh bencana", huruf c (layanan dasar kesehatan skala desa), dan huruf f
+    "pembangunan dan pemeliharaan infrastruktur desa melalui program Padat Karya Tunai Desa"; Lampiran huruf B: kegiatan adaptasi
+    dan penanggulangan bencana "sesuai dengan kewenangan Desa dan diputuskan dalam Musyawarah Desa", termasuk
+    "pembangunan/pemeliharaan sumur bor/sumur pompa" dalam konteks pencegahan dan penanggulangan kebakaran hutan, lahan, dan rob
+    (hlm. 13); Lampiran huruf C: "penyediaan akses air minum layak dan aman bagi rumah tangga" dan "pengelolaan sanitasi dan air
+    minum yang baik untuk pencegahan penyakit" (hlm. 15–16); Lampiran huruf F angka 5 huruf a: upah paling sedikit 50% dari biaya
+    kegiatan Padat Karya Tunai Desa. SPAM dan jembatan desa tidak disebut, tetapi akses air minum rumah tangga dan sumur bor
+    disebut. Sumber:
+    https://www.peraturan.go.id/filespengundangan/permendespdt-no-16-tahun-2025.pdf hlm. 4, 13, 15–16, 18, diakses 25 Okt 2026; kunci
     baru `rehab.dana.dana_desa_pktd_upah_min_persen` [@kemendes-2025-permendes16]. Label: resmi.
 12. PP 21/2008 Pasal 66: perbaikan prasarana umum "dilakukan secara gotong royong, dengan bimbingan dan/atau bantuan teknis"
     pemerintah (berkas bukti Bab 2 T1.13) [@ri-2008-pp21]. Label: resmi.
@@ -353,7 +379,7 @@ yang dibangun saat RR, serta lahan.
   |---|---|---|---|
   | Darurat (status tanggap darurat) | DIPA K/L (PP 22/2008 Ps 15–16); DSP BNPB, termasuk pengguna K/L dan TNI/Polri | DSP BNPB; DSP BPBD bila dianggarkan; BTT APBD | DSP BNPB untuk air bersih (Ps 17 ayat (2) huruf d); BTT kab/kota; dana desa untuk logistik dan transportasi respons |
   | Sementara (transisi darurat ke pemulihan, keadaan tertentu) | DIPA K/L; DSP selama status (Perban 4/2020 Ps 20) | DSP; BTT (kerusakan prasarana yang mengganggu layanan, PP 12/2019 Ps 69) | DSP; BTT kab/kota; bantuan keuangan khusus kab/kota ke desa |
-  | Permanen (masa R3P, paling lama 3 tahun) | APBN K/L; Dana Bersama (pemohon K/L, wajib R3P) | APBD; hibah RR (bila kebutuhan R3P melebihi anggaran PB APBD); Dana Bersama (pemohon pemda) | kosong di hibah RR (Ps 5 huruf e); tersisa APBDes, dana desa (fokus b dan f), bantuan keuangan khusus (PP 12/2019 Ps 67), pengambilalihan oleh kab/kota (UU 2/2022 Ps 16A) yang kembali terbentur Ps 5 huruf e bila dibiayai hibah RR |
+  | Permanen (masa R3P, paling lama 3 tahun) | APBN K/L; Dana Bersama (pemohon K/L, wajib R3P) | APBD; hibah RR (bila kebutuhan R3P melebihi anggaran PB APBD); Dana Bersama (pemohon pemda) | aset milik pemerintah desa (jalan dan jembatan desa): kosong di hibah RR (Ps 5 huruf e); tersisa APBDes, dana desa (fokus b, c, dan f: Lampiran huruf C akses air minum rumah tangga; huruf B sumur bor/sumur pompa untuk kebakaran hutan, lahan, rob), bantuan keuangan khusus (PP 12/2019 Ps 67), pengambilalihan oleh kab/kota (UU 2/2022 Ps 16A) yang kembali terbentur Ps 5 huruf e bila dibiayai hibah RR. SPAM Kelompok Masyarakat (PP 122/2015 Ps 42 ayat (1) huruf c, Ps 49): status kepemilikan menentukan apakah Ps 5 huruf e berlaku; perlu telaah Biro Hukum, Organisasi, dan Kerja Sama (penilaian tim) |
   | Sesudah RR: operasi dan pemeliharaan | APBN K/L | APBD, tarif PDAM | APBDes, iuran Kelompok Masyarakat |
 
   Operasi dan pemeliharaan serta lahan tidak dapat dibiayai hibah RR (Ps 5 huruf b dan d) di kolom mana pun.
@@ -365,7 +391,11 @@ yang dibangun saat RR, serta lahan.
   (a2) mengubah Perban 4/2024 Pasal 5 huruf e; (a1) lebih cepat, (a2) lebih pasti.
 - **(penilaian tim)** Perbedaan PP 22/2008 Pasal 1 angka 5 (DSP sampai tanggap darurat berakhir) dan Perban 4/2020 (DSP selama
   transisi dan keadaan tertentu) menentukan apakah perpipaan sementara dan jembatan darurat yang dipasang setelah tanggap darurat
-  sah dibiayai DSP. Praktik bailey Sumatra (dibayar setelah audit BPKP) menunjukkan BNPB memakai tafsir Perban 4/2020. Bab 11
+  sah dibiayai DSP. Berita BNPB menyebut bailey Sumatra dipakai saat tanggap darurat dan dibayar setelah audit kelaikan harga
+  oleh BPKP (pembayaran sesudah kegiatan, Perban 4/2020 Ps 20 ayat (2)); berita yang sama menyebut DSP dapat dipakai di daerah
+  berstatus siaga/tanggap "hingga transisi darurat", tetapi itu pernyataan aturan, bukan contoh kegiatan. Belum ada contoh
+  terdokumentasi DSP yang dipakai untuk akses atau air sesudah tanggap darurat berakhir, sehingga praktik ini tidak membedakan
+  kedua tafsir. Bab 11
   menulis kedua norma berdampingan dan merekomendasikan telaah Biro Hukum, Organisasi, dan Kerja Sama, tidak memilih tafsir.
 - **(penilaian tim)** Pemutus lapis permanen bukan hanya BNPB: alokasi hibah RR ditetapkan kementerian keuangan (Perban 4/2024
   Ps 22), dan rekomendasi Dana Bersama disampaikan ke Menteri Keuangan (Perpres 75/2021 Ps 8 ayat (4)). Indikator yang hanya
@@ -395,13 +425,16 @@ yang dibangun saat RR, serta lahan.
 
 ### Inti
 
-Dari empat instrumen BNPB yang diusulkan KERANGKA, dua sudah punya kendaraan di Progsun 2026 (perubahan Perban 6/2017 dan
-perubahan peraturan perencanaan RR, keduanya diprakarsai Deputi Bidang RR), satu dapat menumpang perubahan Perban 4/2018 tentang
-logistik dan peralatan, dan satu tidak ada di Progsun: perubahan Perban 4/2024 untuk aset desa dan perubahan lokasi. Perubahan
-yang tidak ada di Progsun dapat masuk Progsun 2027 atau disusun di luar Proleg PB dengan izin prakarsa Kepala BNPB (Perka 6/2014
-Pasal 8 ayat (2)). Juklak protokol sumur bor dan keputusan rincian kegiatan hibah RR atau DSP adalah produk Kepala BNPB yang
-tidak tercantum di Progsun peraturan, dan Renas sudah menyediakan slot NSPK pemulihan fisik (aksi 3.2.1.c) dan NSPK BTT untuk RR
-(aksi 3.1.2.j) tempat instrumen ini dihitung.
+Dari empat instrumen BNPB yang diusulkan KERANGKA, satu (templat R3P) punya kendaraan di Progsun 2026 butir 4 (perubahan
+peraturan perencanaan RR, pemrakarsa Deputi Bidang RR). Pembaruan Perka 12/2010 hanya dapat menumpang sebagian lewat butir 6
+(perubahan Perban 4/2018 tentang logistik dan peralatan, untuk materi stok bailey). Perubahan Perban 4/2024 (aset desa dan
+perubahan lokasi) dan juklak sumur bor tidak ada di Progsun. Perubahan Perban 6/2017 (butir 5) adalah kendaraan tambahan yang
+tidak disebut KERANGKA, tempat waktu pulih dan serah terima aset darurat dapat dimasukkan. Perubahan peraturan yang tidak ada di
+Progsun dapat masuk Progsun 2027 atau disusun di luar Proleg PB dengan izin prakarsa Kepala BNPB (Perka 6/2014 Pasal 8 ayat
+(2)), dengan catatan Progsun 2026 butir 7 sedang mengubah Perka 6/2014 itu sendiri. Keputusan
+rincian kegiatan hibah RR atau DSP adalah Keputusan Kepala BNPB, yang menurut Perka 6/2014 Pasal 4 dan 16 berada di luar Proleg
+PB; juklak protokol sumur bor tidak disebut eksplisit di Pasal 16, sehingga statusnya terhadap Proleg masih tafsir tim. Renas
+sudah menyediakan slot NSPK pemulihan fisik (aksi 3.2.1.c) dan NSPK BTT untuk RR (aksi 3.1.2.j) tempat instrumen ini dihitung.
 
 ### Temuan bersumber
 
@@ -428,6 +461,14 @@ tidak tercantum di Progsun peraturan, dan Renas sudah menyediakan slot NSPK pemu
    menyusun rancangan "di luar Proleg PB, setelah terlebih dahulu mengajukan permohonan izin prakarsa kepada Kepala BNPB". Sumber:
    `data/raw/hukum/teks/perka-nomor-6-tahun-2014.json` hlm. 3–6; kunci baru `rehab.hukum.proleg_jangka_tahun`
    [@bnpb-2014-perka6-produk-hukum]. Label: resmi. Progsun 2026 merujuk Perka 6/2014 di bagian Mengingat.
+5a. Perka BNPB 6/2014 Pasal 1 angka 1: produk hukum adalah "peraturan perundang-undangan maupun dokumen kebijakan
+   non-perundang-undangan"; Pasal 1 angka 7: Proleg PB adalah perencanaan pembentukan peraturan perundang-undangan; BAB IV
+   Pasal 16: untuk kebijakan "yang bersifat menetapkan dan tidak bersifat mengatur" dapat disusun Keputusan Kepala BNPB,
+   Keputusan Sekretaris Utama, Keputusan Deputi, atau Keputusan Inspektur Utama; Pasal 17: pembentukannya diatur lebih lanjut
+   dalam Petunjuk Pelaksanaan. Sumber: `data/raw/hukum/teks/perka-nomor-6-tahun-2014.json` hlm. 3, 7–8
+   [@bnpb-2014-perka6-produk-hukum]. Label: resmi. Progsun 2026 butir 7 adalah rancangan perubahan Perka 6/2014 (pemrakarsa
+   Sekretariat Utama, Biro Hukum, Organisasi, dan Kerja Sama; `keputusan-kepala-nomor-327-tahun-2025.json` hlm. 4)
+   [@bnpb-2025-progsun]; rujukan Pasal 8 ayat (2) dan Pasal 16 perlu dicek ulang setelah perubahan itu terbit.
 6. Renas aksi 3.2.1.c: naskah akademis, RIA, urgensi, atau NSPK pemulihan dan peningkatan fisik daerah terdampak, 2 (2024) menjadi
    6 (2029), penanggung jawab BNPB, kontributor Kementerian Hukum dan Kemenkeu; aksi 3.2.1.b untuk sosial ekonomi dan sumber daya
    alam, N/A menjadi 4. Sumber: PDF Renas hlm. 94; kunci baru `rehab.renas.aksi_321c.*` [@bnpb-2025-renas]. Label: resmi.
@@ -458,9 +499,11 @@ tidak tercantum di Progsun peraturan, dan Renas sudah menyediakan slot NSPK pemu
   | Keputusan Kepala BNPB rincian kegiatan hibah RR dan DSP | menyebut eksplisit jembatan darurat, perpipaan sementara, IPA mobile, sumur darurat | Deputi Bidang RR; Deputi Bidang Penanganan Darurat | Sudah ada, perlu dikembangkan (norma induk ada, keputusan rinci belum ditemukan) | keputusan Kepala BNPB (Perban 4/2024 Ps 2 ayat (2); Perban 4/2020 Ps 11) | 2026–2027 |
   | Standar data DIBI (kolom SPAM, jiwa tanpa air perpipaan, jembatan per status jalan, hari pulih) | D1 | Pusdatinkom | Usulan baru | instrumen Satu Data (Perban 1/2023); Renas 3.1.2.k | 100 hari: rancangan kolom |
 
-- **(penilaian tim)** Status juklak terhadap Progsun tidak tertulis eksplisit: Progsun 2026 hanya mendaftar "Rancangan Peraturan
-  BNPB", dan Perka 6/2014 mengatur Peraturan Kepala BNPB. Tim menafsirkan juklak dan keputusan Kepala BNPB berada di luar Progsun
-  peraturan; tafsir ini perlu dikonfirmasi Biro Hukum, Organisasi, dan Kerja Sama.
+- **(penilaian tim)** Keputusan Kepala BNPB berada di luar Proleg PB menurut teks: Proleg hanya untuk peraturan perundang-undangan
+  (Perka 6/2014 Pasal 1 angka 7 dan Pasal 4), sedangkan keputusan yang menetapkan diatur terpisah di Pasal 16–17. Yang masih tafsir
+  tim hanya juklak: Pasal 16 tidak menyebutnya, dan bila juklak protokol sumur bor disusun sebagai Keputusan Kepala BNPB, ia ikut
+  jalur Pasal 16. Petunjuk Pelaksanaan Pasal 17 belum ditelaah. Tafsir ini perlu dikonfirmasi Biro Hukum, Organisasi, dan Kerja
+  Sama, terutama setelah perubahan Perka 6/2014 (Progsun 2026 butir 7) terbit.
 - **(penilaian tim)** Karena butir 4 dan 5 Progsun 2026 sudah berjalan dan Progsun berlaku satu tahun, jendela termurah untuk
   memasukkan ukuran waktu pulih dan serah terima aset darurat adalah sebelum rancangan perubahan Perban 6/2017 dan peraturan
   perencanaan RR difinalkan pada 2026. Bila jendela ini lewat, instrumen yang sama menunggu Progsun 2027. Ini alasan masukan materi
@@ -470,9 +513,12 @@ tidak tercantum di Progsun peraturan, dan Renas sudah menyediakan slot NSPK pemu
   sementara dan jembatan darurat menambah aksi 3.1.2.j (target 12). Kunci asal: `rehab.renas.aksi_321c.target_2029`,
   `rehab.renas.aksi_312j.target_2029`.
 - **(penilaian tim) Bahan subbab 11.4 (Tabel 11.3, yang berubah dari Renas PB dan praktik R3P).** Renas aksi 3.1.2.d mengukur
-  infrastruktur RR dalam satuan campuran unit/kilometer, 45.083 pada 2024 dan 46.182 pada 2029 (selisih 1.099, kunci
-  `rehab.renas.aksi_312d.*`); Renstra P4 mengukur "persentase daerah pascabencana masif yang ditangani" yang sudah 100% sejak garis
-  dasar (kunci `rpjmn.kp080403.pascabencana_masif.baseline` dan `.2029`). Keduanya tidak membedakan jembatan dari jalan, tidak
+  infrastruktur RR dalam satuan campuran unit/kilometer, 45.083 pada 2024 dan 46.182 pada 2029 (kunci `rehab.renas.aksi_312d.*`);
+  Renas tidak menyatakan target 2029 kumulatif terhadap baseline 2024 dan kolom 2025–2028 kosong, sehingga selisih 1.099 adalah
+  olahan penyusun yang tidak dapat dibaca sebagai tambahan aset. Indikator "persentase daerah pascabencana masif yang ditangani"
+  sudah 100% sejak garis dasar di RPJMN KP 08.04.03 (kunci `rpjmn.kp080403.pascabencana_masif.baseline` dan `.2029`),
+  sedangkan di Renstra Program P4 indikator yang sama tidak punya baseline (N/A) dan targetnya 100% tiap tahun 2025–2029
+  (`data/program-terbukti/renstra_bnpb_2025_2029.csv` baris P4). Keduanya tidak membedakan jembatan dari jalan, tidak
   memuat air, dan tidak memuat hari. Yang berubah menurut Grand Design: ukuran ditambah (bukan diganti) dengan jiwa terlayani air
   dan hari sampai akses darurat terbuka (KD-R1), dan R3P memuat baris waktu pulih serta daftar jembatan darurat yang harus diganti.
   Angka Renas 3.1.2.d tidak boleh ditafsirkan sebagai jumlah jembatan.
@@ -485,7 +531,8 @@ tidak tercantum di Progsun peraturan, dan Renas sudah menyediakan slot NSPK pemu
   "berjalan menurut Progsun; isi rancangan belum terbuka".
 - **C3.3** Progsun 2027 belum terbit atau tidak ditemukan di korpus.
 - **C3.4** Instrumen Kementerian ESDM untuk sumur darurat dan PP pelaksana pengambilalihan jalan desa tidak ditelaah.
-- **C3.5** Mekanisme penetapan juklak BNPB (siapa menetapkan, apakah perlu harmonisasi) tidak ditemukan di Perka 6/2014.
+- **C3.5** Juklak tidak disebut eksplisit di Perka 6/2014 Pasal 16; Petunjuk Pelaksanaan Pasal 17 belum ditelaah. Perka 6/2014
+  sedang diubah (Progsun 2026 butir 7), jadi rujukan Pasal 8 ayat (2) dan Pasal 16 perlu dicek setelah perubahan itu terbit.
 
 ---
 
@@ -497,8 +544,8 @@ Bagian ini bukan pertanyaan kunci; disusun dengan empat bagian yang sama supaya 
 
 Siklus pelaporan yang sudah tertulis berlapis dan berbeda frekuensi: DSP bulanan (tanggal 5) dengan pertanggungjawaban 3 bulan
 setelah status berakhir, hibah RR tiga bulanan kepada BNPB, Kemenkeu, dan Kemendagri, Satgas Sumatra dua bulanan kepada Presiden,
-dan Progsun triwulan. Indikator RR resmi saat ini (RPJMN KP 08.04.03 dan Renstra P4) sudah 100% sejak garis dasar dan tidak memuat
-air, akses, atau hari, sehingga indikator Grand Design harus dibentuk dari baseline 2027 (Q11) dan berlabel asumsi-kebijakan sampai
+dan Progsun triwulan. Indikator RR resmi saat ini tidak dapat menunjukkan perbaikan: di RPJMN KP 08.04.03 sudah 100% sejak garis
+dasar, dan di Renstra P4 tidak punya baseline (N/A) dengan target 100% tiap tahun. Keduanya tidak memuat air, akses, atau hari, sehingga indikator Grand Design harus dibentuk dari baseline 2027 (Q11) dan berlabel asumsi-kebijakan sampai
 itu.
 
 ### Temuan bersumber
@@ -515,7 +562,7 @@ itu.
    [@ri-2026-keppres1]. Label: resmi.
 5. RPJMN KP 08.04.03 "daerah pascabencana masif yang ditangani": garis dasar 100%, target 2029 100% (kunci
    `rpjmn.kp080403.pascabencana_masif.baseline`, `rpjmn.kp080403.pascabencana_masif.2029`) [@ri-2025-perpres12-rpjmn]. Renstra
-   BNPB Program P4: indikator yang sama 100% tiap tahun 2025–2029 (hlm. 130, 132–133); sasaran kegiatan "persentase daerah yang
+   BNPB Program P4: indikator yang sama tanpa baseline (N/A), target 100% tiap tahun 2025–2029 (hlm. 130, 132–133); sasaran kegiatan "persentase daerah yang
    melaksanakan pemulihan fisik dengan baik sesuai standar" 70% (2025) menjadi 90% (2029), unit Renstra Direktorat Pemulihan dan
    Peningkatan Fisik (OTK lama; padanan berlaku Direktorat RR Perumahan dan Direktorat RR Infrastruktur menurut pemetaan penyusun
    paket); "persentase daerah yang mendapatkan rekomendasi bantuan pendanaan pascabencana" 50% menjadi 70% (kunci
@@ -546,7 +593,8 @@ itu.
   BPBD dan BNPB menurut Perban 6/2017 Pasal 14 ayat (4); BNPB menyatukan ke DIBI dan sistem informasi RR (Perban 4/2024 Pasal 30,
   Renas 3.1.2.k); keluaran ke Kemenko PMK (forum dana), Kemenkeu dan Kemendagri (hibah RR), dan Presiden lewat Satgas bila ada.
   Usulan intinya: laporan pelaksana non-BNPB yang membangun jembatan atau sumur di daerah bencana ikut masuk alur ini (A2, G2).
-- **(penilaian tim)** Indikator resmi yang sudah 100% sejak garis dasar tidak dapat menunjukkan perbaikan; ini argumen utama KD-R1
+- **(penilaian tim)** Indikator resmi yang sudah 100% sejak garis dasar (RPJMN) atau tanpa baseline dengan target 100% tiap tahun
+  (Renstra P4) tidak dapat menunjukkan perbaikan; ini argumen utama KD-R1
   di Pesan Kunci. Argumen tandingan (L63): menambah indikator hari dan jiwa menambah beban pelaporan daerah yang sudah melapor di
   empat siklus berbeda; posisi kajian: kolom baru masuk DIBI (satu pintu), bukan laporan baru.
 
@@ -564,7 +612,7 @@ itu.
 
 | Kode | Judul kerja | Bentuk (PEDOMAN §B5) | Kode G | Sumber data | Label |
 |---|---|---|---|---|---|
-| Tabel 11.1 | Matriks mandat tertulis lembaga × lapis × sektor, kode K/P/R/I | B5.7, S22 | - (tabel) | PK1 Temuan 1–16; rancangan di PK1 Inferensi | resmi (sel tertulis); asumsi-kebijakan (sel usulan) |
+| Tabel 11.1 | Matriks mandat tertulis lembaga × lapis × sektor, kode K/P/R/I | B5.7, S22 | - (tabel) | PK1 Temuan 1–16 dan 11a; rancangan di PK1 Inferensi | resmi (sel tertulis); asumsi-kebijakan (sel usulan) |
 | Tabel 11.2 | Usulan penugasan unit BNPB dan instrumen penetapannya | B5.7 | - | KERANGKA §4 Bab 10 kerangka program; Perban 11/2025 Ps 86–87; `organisasi_bnpb.csv` | asumsi-kebijakan |
 | Gambar 11.1 | Forum koordinasi dan jalur adopsi: rakor Kemenko PMK, Satgas per kejadian, BNPB/BPBD | B5.23 | - (diagram) | Perpres 75/2021 Ps 8; Perban 1/2026 Ps 7; Keppres 1/2026; Renas 3.1.2.a | resmi (simpul); asumsi-kebijakan (jalur usulan) |
 | Tabel 11.3 | Yang berubah dari Renas PB dan praktik R3P | B5.7 | - | Renas 3.1.1.b, 3.1.2.a, 3.1.2.d, 3.1.2.i, 3.1.2.j, 3.1.2.n, 3.2.1.c; Renstra P4; RPJMN KP 08.04.03 | resmi (kolom kini); asumsi-kebijakan (kolom usulan) |
@@ -584,7 +632,7 @@ disunting).
 |---|---|---|---|---|
 | rehab.renas.aksi_312d.baseline_2024 | 45.083 unit/kilometer | PDF Renas, aksi 3.1.2.d, hlm. 90 | resmi | Perban BNPB 1/2025 |
 | rehab.renas.aksi_312d.target_2029 | 46.182 unit/kilometer | idem | resmi | idem |
-| rehab.renas.aksi_312d.selisih_2024_2029 | 1.099 unit/kilometer | olahan dari dua kunci di atas | resmi (turunan) | idem |
+| rehab.renas.aksi_312d.selisih_2024_2029 | 1.099 unit/kilometer | olahan penyusun dari dua kunci di atas; Renas tidak menyatakan target 2029 kumulatif, selisih tidak dapat dibaca sebagai tambahan aset | estimasi-model (olahan penyusun) | idem |
 | rehab.renas.aksi_312a.baseline_2024 | 42 rekomendasi | PDF Renas, aksi 3.1.2.a, hlm. 89 | resmi | idem |
 | rehab.renas.aksi_312a.target_2029 | 52 rekomendasi | idem | resmi | idem |
 | rehab.renas.aksi_311b.baseline_2024 | 3 dokumen | PDF Renas, aksi 3.1.1.b, hlm. 89 | resmi | idem |
@@ -623,10 +671,36 @@ premi Asuransi BMN 2024 (sekunder).
 
 ## Pustaka
 
-Entri CSL-JSON lengkap di `naskah/rehab/bukti/bab-11.pustaka.json` (29 entri). Yang dibuka atau dibaca ulang sesi ini:
+Entri CSL-JSON lengkap di `naskah/rehab/bukti/bab-11.pustaka.json` (30 entri). Yang dibuka atau dibaca ulang sesi ini:
 `ri-2008-pp22`, `ri-2021-perpres75`, `ri-2019-pp12`, `ri-2022-uu2-jalan` (baru), `kemendes-2025-permendes16`, `bnpb-2025-renas`
 (PDF), `bnpb-2025-progsun`, `bnpb-2014-perka6-produk-hukum` (baru), `bnpb-2020-dsp`, `bnpb-2024-hibah-rr`, `bnpb-2026-dana-bersama`,
-`bnpb-2017-r3p`, `bnpb-2017-rr`, `bnpb-2025-otk-ubah`, `ri-2015-pp122`. Dipakai lewat berkas bukti atau paket lain tanpa dibuka
+`bnpb-2017-r3p`, `bnpb-2017-rr`, `bnpb-2025-otk-ubah`, `ri-2015-pp122`, `bnpb-2025-bailey-dsp` (dibuka ulang saat perbaikan),
+`ri-2019-uu17` (teks korpus `lembaga/mentah/teks/uu-17-2019.json.gz`, baru di berkas ini). Dipakai lewat berkas bukti atau paket lain tanpa dibuka
 ulang: `ri-2008-pp21`, `ri-2014-uu23`, `ri-2026-keppres1`, `kemenkoinfra-2026-inpres18`, `bnpb-2023-satudata`,
 `bnpb-2025-otk`, `bnpb-2025-renstra`, `ri-2025-perpres12-rpjmn`, `kemenkeu-2025-pmk28`, `djkn-2021-abmn`,
-`bnpb-2010-perka12-perbaikan-darurat`, `bnpb-2025-bailey-dsp`, `oag-2016-scirt`, `kemenkopmk-2021-sulteng`.
+`bnpb-2010-perka12-perbaikan-darurat`, `oag-2016-scirt`, `kemenkopmk-2021-sulteng`.
+
+## Catatan perbaikan atas temuan pemeriksa (25 Oktober 2026)
+
+Delapan temuan dicek ke sumber; semuanya terbukti dan diterapkan.
+
+1. Bailey dan tafsir DSP (tinggi): berita BNPB dibuka ulang. Bailey "digunakan saat tanggap darurat bencana" dan dibayar setelah
+   audit kelaikan harga BPKP; pembayaran sesudah kegiatan sesuai Perban 4/2020 Pasal 20 ayat (2) (hlm. 16, dicek di korpus).
+   Kalimat "menunjukkan BNPB memakai tafsir Perban 4/2020" dihapus. Berita juga menulis DSP dapat dipakai "hingga transisi
+   darurat"; dicatat sebagai pernyataan aturan, bukan contoh kegiatan. PK1 butir 8 kini memakai istilah audit kelaikan harga.
+2. Renstra P4 (sedang): `renstra_bnpb_2025_2029.csv` baris P4 memuat baseline N/A, target 100% tiap tahun. Ditulis terpisah dari
+   RPJMN KP 08.04.03 (baseline 100%) di PK3 Inferensi, Inti dan Temuan 5 bahan 11.7–11.9. Tahun garis dasar RPJMN tidak ditulis
+   karena tidak dicek ke Lampiran RPJMN.
+3. Hitungan instrumen Progsun (sedang): Koreksi 1 dan Inti PK3 dirumuskan ulang; satu dari empat (templat R3P, butir 4).
+4. Perka 6/2014 (sedang): Pasal 1 angka 1, Pasal 16–17 (hlm. 3, 7–8) dan Progsun 2026 butir 7 (hlm. 4) dicek; Temuan 5a ditambah,
+   Inferensi dan C3.5 disempitkan.
+5. Permendes PDT 16/2025 (sedang): Lampiran huruf C (hlm. 15–16) dan sumur bor huruf B (hlm. 13) dicek di PDF teks. Catatan: sumur
+   bor di huruf B disebut dalam konteks pencegahan dan penanggulangan kebakaran hutan, lahan, dan rob, bukan air minum; ditulis
+   apa adanya.
+6. SPAM Kelompok Masyarakat (sedang): Perban 4/2024 Pasal 5 huruf e ("aset rusak milik pemerintah desa", hlm. 4) dan PP 122/2015
+   Pasal 42, 49 dicek; sel Gambar 11.2 dan Inti PK2 dipisah dan diberi label penilaian tim.
+7. UU 17/2019 (sedang): teks korpus ternyata tersedia; Temuan 11a dan dua baris Tabel 11.1 ditambah, pustaka `ri-2019-uu17` disalin
+   dari berkas bukti Bab 7.
+8. Selisih Renas 3.1.2.d (sedang): label diturunkan menjadi estimasi-model (olahan penyusun) di tabel registri dan
+   `bab-11.angka.json`, dengan catatan bahwa Renas tidak menyatakan target 2029 kumulatif. PDF hlm. 90 tidak dibuka ulang; kolom
+   kosong 2025–2028 sudah tercatat di kunci target_2029.

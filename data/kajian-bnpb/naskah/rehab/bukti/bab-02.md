@@ -35,7 +35,7 @@ lalu `KEPUTUSAN.md`, lalu `rehab/KERANGKA.md`.
 | Rantai norma UU 24/2007, PP 21/2008, Perban 5/2017, 6/2017, 4/2024, 4/2020, Perka 12/2010, 15/2011, Juklak 1/2023, 3/2023, 15/2025, 1/2025 | Terkonfirmasi per pasal di korpus (T1.1–T1.14). Koreksi: Juklak 1/2025 adalah turunan Perban 1/2024 yang dicabut Perban 1/2026 pada 10 Maret 2026; norma Dana Bersama pascabencana yang terkini adalah Perban 1/2026 Pasal 14 ayat (5) (T1.12) |
 | Perka 12/2010 menyebut rangka baja dari PU; Perka 15/2011 memuat baris bailey | Terkonfirmasi (T1.9, T1.13). Ditambah: Perka 12/2010 membolehkan penunjukan langsung perbaikan darurat sampai masa transisi (T1.10) |
 | Satgas Sumatra "diketuai Mendagri menurut media" (KEPUTUSAN-AWAL Q7) | Dikoreksi oleh teks Keppres 1/2026: Mendagri adalah Ketua Tim Pelaksana, Menko PMK Ketua Tim Pengarah, Kepala BNPB Wakil Ketua II Tim Pelaksana, Menteri PU koordinator Bidang Infrastruktur (T2.8) |
-| Pembanding: SCIRT sedang, Nepal sedang, ERRA lemah, Kobe dan Tohoku sedang untuk kurva pulih, Chile sedang, Haiyan pelajaran negatif sedang, Turki lemah, Rwanda RCT dan Nicaragua | Terkonfirmasi untuk SCIRT, Nepal, ERRA, Chile, Turki. Kobe: riset E menilai lemah, riset D sedang; ditulis berdampingan (T3.6). Haiyan: angka bersumber media yang mengutip COA, jadi sekunder (R3) dan tidak masuk badan teks (C3.2). Rwanda: menurut rubrik `program-terbukti` berposisi sedang, bukan kuat, karena makalahnya belum dibuka dan jumlah jembatan berbeda antara J-PAL (97) dan registri AEA (94) (T3.8) |
+| Pembanding: SCIRT sedang, Nepal sedang, ERRA lemah, Kobe dan Tohoku sedang untuk kurva pulih, Chile sedang, Haiyan pelajaran negatif sedang, Turki lemah, Rwanda RCT dan Nicaragua | Terkonfirmasi untuk SCIRT, ERRA, Chile, Turki. Nepal dikoreksi ke lemah: setelah angka NRA dari media dikeluarkan (R3), yang tersisa hanya Results Brief mitra pembiaya (laporan sendiri), ICR tidak dapat dibuka (T3.5, C3.4). Kobe: riset E menilai lemah, riset D sedang; ditulis berdampingan (T3.6). Haiyan: angka bersumber media yang mengutip COA, jadi sekunder (R3) dan tidak masuk badan teks (C3.2). Rwanda: belum dapat dinilai menurut rubrik `program-terbukti`, karena yang dibuka hanya ringkasan sekunder (blog J-PAL/CEGA) dan registri yang didaftarkan retrospektif, bukan makalah evaluasinya; jumlah jembatan berbeda antara J-PAL (97) dan registri AEA (94) (T3.8). Dipakai hanya sebagai rancangan evaluasi (R-RR-13) |
 
 ## 0.1 Konvensi
 
@@ -44,6 +44,10 @@ lalu `KEPUTUSAN.md`, lalu `rehab/KERANGKA.md`.
 - **Kekuatan bukti program** mengikuti rubrik `data/program-terbukti/README.md` (kuat, sedang, lemah) dan posisinya
   (Program dengan syarat hanya untuk sedang; Rujukan tata kelola dan Pelajaran, bukan teladan untuk sedang atau lemah).
   Tidak ada satu pun program RR yang berbukti kuat (T3.1). Kata "terbukti" tidak dipakai untuk program berbukti lemah.
+  Rubrik riset E berbeda dari rubrik repo: riset E menerima "survei terstruktur" atau laporan mitra pembiaya untuk
+  "sedang", sedangkan rubrik repo hanya membolehkan "lemah" untuk `laporan-sendiri` (pelaksana, proyek, atau mitra
+  pembiaya proyek) dan mensyaratkan dokumen evaluasi independen atau peer-review **dibuka** untuk "sedang". Karena itu
+  setiap label kekuatan yang berasal dari riset E dipetakan ulang ke rubrik repo di berkas ini, bukan disalin.
 - **Kunci registri** ditulis `kunci`. Kunci yang sudah ada di `data/angka.json` dipakai ulang dan tidak diulang di
   `bab-02.angka.json` (mis. `perban2017_5.r3p_hari_maks`, `perban2017_5.r3p_masa_tahun`,
   `perban2024_4.laporan_berkala_bulan`, `perban2024_4.hibah_tahapan`, `perka_2008.air_bersih_awal_liter_hari`,
@@ -67,8 +71,9 @@ vital di tanggap darurat (Pasal 53 huruf a, Pasal 48 huruf f, Pasal 56), perbaik
 rekonstruksi (Pasal 59 ayat (1)). Turunannya berlaku per Oktober 2026 dan bertenggat: R3P paling lama 90 hari dan
 dimulai saat tanggap darurat, berjangka paling lama 3 tahun (Perban 5/2017), dibiayai hibah RR yang mengecualikan aset
 desa, lahan, serta perencanaan sampai pemeliharaan (Perban 4/2024 Pasal 5), atau Dana Bersama yang wajib merujuk R3P
-yang masih berlaku (Perban 1/2026 Pasal 14 ayat (5)). Yang tidak ada di norma mana pun adalah ukuran waktu pulih layanan
-air dan akses dalam hari.
+yang masih berlaku (Perban 1/2026 Pasal 14 ayat (5)). Ukuran waktu pulih layanan air dan akses dalam hari tidak
+ditemukan di peraturan BNPB yang diperiksa (C1.1); SPM air minum, PP SPAM, dan regulasi jalan dan jembatan belum
+diperiksa untuk ketentuan itu (C1.8).
 
 ### Temuan bersumber
 
@@ -90,8 +95,17 @@ air dan akses dalam hari.
   BNPB" (Pasal 11, hlm. 11); pengguna DSP termasuk "Tentara Nasional Indonesia/Kepolisian Negara Republik Indonesia"
   (Pasal 14 huruf c, hlm. 12). Sumber: `data/raw/hukum/teks/perban-nomor-4-tahun-2020.json` [@bnpb-2020-dsp]. Label:
   resmi. Catatan: seluruh 21 halaman teks dibaca OCR; untuk kutipan final cek PDF JDIH.
-- **T1.5** Bailey untuk Sumatra 2025 diadakan dengan DSP sebagai barang yang dihibahkan ke daerah dan dibayar setelah
-  audit BPKP. Sumber: rilis BNPB 31 Des 2025 (riset B [33], riset A [20]) [@bnpb-2025-bailey-dsp]. Label: resmi.
+- **T1.5** Rilis BNPB 31 Des 2025 (dibuka ulang sesi ini): DSP untuk Aceh, Sumut, Sumbar dapat membiayai "pengadaan barang
+  yang akan dihibahkan ke daerah seperti jembatan bailey, selimut, matras dan lain-lain"; untuk pengadaan, "pembayaran akan
+  dilakukan setelah BNPB menerima hasil audit kelaikan harga" dari BPKP setelah pekerjaan selesai. Sumber:
+  https://www.bnpb.go.id/berita/pembangunan-jembatan-bailey-dan-operasional-personil-tni-di-kawasan-terdampak-bencana-dibiayai-oleh-negara,
+  diakses 25 Okt 2026 [@bnpb-2025-bailey-dsp]. Label: resmi (rilis instansi, bukan norma).
+- **T1.26** Perban BNPB 4/2020 Pasal 13 ayat (4) (penomoran ayat dari OCR): "Untuk pelaksanaan kegiatan sebagaimana dimaksud
+  pada ayat (3) yang sudah diserahterimakan dengan perjanjian kerja sama ke penerima, sepenuhnya baik fisik maupun keuangannya
+  menjadi tanggung jawab penerima DSP." Ayat (3) mengatur tanggung jawab KPA atas pelaksanaan kegiatan dan penggunaan anggaran.
+  Sumber: `data/raw/hukum/teks/perban-nomor-4-tahun-2020.json` hlm. 12 [@bnpb-2020-dsp]. Label: resmi (teks OCR). Ini norma
+  BNPB yang mengatur peralihan tanggung jawab fisik dan keuangan kegiatan DSP ke penerima lewat perjanjian kerja sama, dan
+  dapat menjadi dasar serah terima hasil DSP seperti bailey.
 
 **Peralihan darurat ke pemulihan**
 
@@ -197,8 +211,9 @@ air dan akses dalam hari.
   dapat diisi tanpa norma baru di tingkat Perban (dasar KD-R1, R-RR-02, R-RR-03).
 - **(penilaian tim)** Perka 12/2010 dan Perka 15/2011 adalah satu-satunya norma BNPB yang menyebut jembatan rangka baja atau
   bailey; keduanya berumur lebih dari 15 tahun dan Perka 12/2010 masih bernomenklatur "Departemen Pekerjaan Umum". Di
-  lapis darurat, dasar bailey DSP saat ini lebih banyak bertumpu pada rilis dan praktik (T1.5) daripada norma BNPB yang
-  mutakhir (dasar R-RR-05, R-RR-15).
+  lapis darurat, pembiayaan dan serah terima bailey DSP punya dasar umum di Perban 4/2020 (Pasal 11, Pasal 13 ayat (4),
+  Pasal 14; T1.4, T1.26), tetapi jenis barangnya (bailey) dan pola hibah ke daerah hanya tertulis di rilis (T1.5) dan di
+  Keputusan Kepala BNPB yang belum ditemukan (C1.2). Norma teknis bailey yang mutakhir belum ada (dasar R-RR-05, R-RR-15).
 - **(penilaian tim)** Kombinasi Perban 4/2024 Pasal 26 ayat (2) (lokasi tidak boleh berubah) dan Pasal 3 huruf c (konstruksi
   boleh berubah karena pola aliran sungai) berarti jembatan boleh didesain ulang di titik yang sama, tetapi tidak boleh
   dipindah ke lokasi yang lebih aman setelah survei ulang. Ini perlu diuji dengan Biro Hukum, Organisasi, dan Kerja Sama
@@ -214,7 +229,7 @@ air dan akses dalam hari.
 
 - **C1.1** Tidak ditemukan standar waktu pulih (hari) untuk air perpipaan atau akses jalan dan jembatan di peraturan BNPB
   yang terunduh (dicari: "hari", "waktu pulih", "paling lama" di Perban 5/2017, 6/2017, 4/2024, Perka 12/2010). Penyajian:
-  "belum diatur", bukan angka dugaan.
+  "tidak ditemukan di peraturan BNPB yang diperiksa", bukan "tidak ada di norma mana pun", dan bukan angka dugaan.
 - **C1.2** Keputusan Kepala BNPB yang merinci kegiatan hibah RR (Perban 4/2024 Pasal 2 ayat (2)) dan kegiatan DSP (Perban
   4/2020 Pasal 11) tidak ditemukan di korpus. Permintaan ke Biro Hukum, Organisasi, dan Kerja Sama.
 - **C1.3** Status keberlakuan Juklak 1/2025 setelah Perban 1/2026 tidak dinyatakan di Perban 1/2026 (tidak ada frasa
@@ -226,6 +241,9 @@ air dan akses dalam hari.
 - **C1.6** Pedoman resmi Kementerian PU untuk SPAM darurat dan status keberlakuan SE Menteri PU 02/SE/M/2010 (jembatan
   gantung) belum dibuka; keduanya bukan norma BNPB dan dibahas di Bab 5–6.
 - **C1.7** Izin air tanah keadaan darurat tidak diatur (riset C §1; riset A §6). Disajikan di Bab 7 dan 9.
+- **C1.8** Regulasi SPM air minum, PP tentang SPAM, dan regulasi jalan dan jembatan belum diperiksa untuk ketentuan waktu
+  pemulihan layanan, padahal Perban 6/2017 Pasal 7 ayat (4) huruf e merujuk ke "standar pelayanan minimal" (T1.12). Sampai
+  diperiksa, kesimpulan "belum diatur" hanya berlaku untuk peraturan BNPB.
 
 ---
 
@@ -233,19 +251,23 @@ air dan akses dalam hari.
 
 ### Inti
 
-Penyelenggaraan RR tanggung jawab pemda yang terkena bencana, kecuali prasarana kewenangan Pemerintah (PP 21/2008 Pasal 57
-ayat (1), Pasal 76 ayat (1)); BNPB dan/atau BPBD adalah lembaga penanggung jawab dan koordinator, sedangkan K/L dan perangkat
-daerah teknis adalah pelaksana (Perban 6/2017 Pasal 12–13). Pemilik aset mengikuti kewenangan: SPAM dibagi pusat, provinsi,
+Tanggung jawab dibedakan per tahap. Rehabilitasi adalah tanggung jawab Pemerintah dan/atau pemda yang terkena bencana
+(PP 21/2008 Pasal 57 ayat (1)); rekonstruksi adalah tanggung jawab pemda, kecuali prasarana dan sarana yang menjadi tanggung
+jawab Pemerintah (Pasal 76 ayat (1)). BNPB dan/atau BPBD adalah lembaga penanggung jawab pelaksanaan RR (Perban 6/2017
+Pasal 12 ayat (1)); BPBD mengoordinasikan sekaligus melaksanakan kegiatan RR (Pasal 13 ayat (1)) dengan melibatkan K/L dan
+perangkat daerah teknis (Pasal 13 ayat (3)). Pemilik aset mengikuti kewenangan: SPAM dibagi pusat, provinsi,
 dan kab/kota (UU 23/2014 Lampiran), hasil RR menjadi aset Pemerintah, pemda, dan/atau masyarakat (Perban 6/2017 Pasal 13
 ayat (6)), dan aset desa berada di luar hibah RR (Perban 4/2024 Pasal 5 huruf e). Pada kejadian sebesar Sumatra 2025,
-penyelenggaraan dipindah ke Satgas lintas K/L di bawah Presiden: Kepala BNPB Wakil Ketua II Tim Pelaksana, Menteri PU
-koordinator Bidang Infrastruktur (Keppres 1/2026).
+RR dikoordinasikan oleh Satgas di bawah Presiden; pelaksanaan dan usulan anggaran program tetap pada K/L dan pemda (Keppres
+1/2026 Pasal 2 dan Pasal 8 huruf b). Kepala BNPB Wakil Ketua II Tim Pelaksana, Menteri PU koordinator Bidang Infrastruktur.
+Air minum atau SPAM tidak disebut tegas dalam tugas bidang mana pun (C2.6).
 
 ### Temuan bersumber
 
 - **T2.1** PP 21/2008 Pasal 57 ayat (1): rehabilitasi "merupakan tanggungjawab Pemerintah dan/atau pemerintah daerah yang
   terkena bencana" (hlm. 29); Pasal 76 ayat (1): rekonstruksi tanggung jawab pemda, "kecuali prasarana dan sarana yang
-  merupakan tanggung jawab Pemerintah" (hlm. 38). Sumber: PDF JDIH BPK [@ri-2008-pp21]. Label: resmi.
+  merupakan tanggung jawab Pemerintah" (hlm. 38). Sumber: PDF JDIH BPK [@ri-2008-pp21]. Label: resmi. Catatan: pengecualian
+  prasarana Pemerintah hanya ada di Pasal 76 (rekonstruksi); Pasal 57 (rehabilitasi) menyebut Pemerintah dan/atau pemda.
 - **T2.2** PP 21/2008 Pasal 58 ayat (4) dan Pasal 77 ayat (4): kab/kota dapat meminta bantuan berupa "tenaga ahli",
   "peralatan", dan "pembangunan prasarana"; Pasal 59 ayat (1) dan Pasal 78 ayat (1): usulan diverifikasi tim
   antardepartemen yang dikoordinasikan BNPB; Pasal 60 dan Pasal 79: RR dilaksanakan satuan kerja pemda dan instansi terkait,
@@ -253,7 +275,9 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
 - **T2.3** Perban 6/2017 Pasal 12 ayat (1): lembaga penanggung jawab pelaksanaan RR adalah BNPB di tingkat nasional dan/atau
   BPBD (hlm. 11); ayat (4): kelompok kerja koordinatif sementara ditetapkan Kepala BNPB dan/atau kepala daerah "paling lama
   3 (tiga) tahun" (hlm. 12). Kunci baru `rehab.hukum.pokja_rr_tahun_maks` [@bnpb-2017-rr]. Label: resmi.
-- **T2.4** Perban 6/2017 Pasal 13 ayat (3): BNPB dan/atau BPBD "melibatkan Kementerian/Lembaga dan/atau perangkat daerah
+- **T2.4** Perban 6/2017 Pasal 13 ayat (1): BPBD provinsi/kabupaten/kota sesuai urusan kewenangannya "mengoordinasikan
+  dan melaksanakan kegiatan Rehabilitasi dan Rekonstruksi Pascabencana dengan melibatkan perangkat daerah terkait yang
+  ditetapkan dalam Tim Teknis" (hlm. 12). Pasal 13 ayat (3): BNPB dan/atau BPBD "melibatkan Kementerian/Lembaga dan/atau perangkat daerah
   teknis terkait sesuai dengan tugas dan fungsinya"; ayat (6): hasil RR "menjadi aset Pemerintah, pemerintah daerah,
   dan/atau masyarakat" (hlm. 12). Pasal 14 ayat (1)–(2): monev mengacu R3P yang ditetapkan, dikoordinasikan BNPB dan/atau
   BPBD (hlm. 13). Sumber: idem. Label: resmi.
@@ -264,7 +288,9 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
   (1): penerima hibah harus sudah membentuk BPBD lewat perda dan memiliki kebutuhan RR (hlm. 4–5) [@bnpb-2024-hibah-rr].
   Label: resmi.
 - **T2.7** Perban 4/2020 Pasal 14: pengguna DSP adalah BNPB, K/L, TNI/Polri, pemprov, pemkab/pemkot, dan lembaga kemanusiaan
-  atas persetujuan Kepala BNPB (hlm. 12, OCR) [@bnpb-2020-dsp]. Bailey DSP dihibahkan ke daerah (T1.5). Label: resmi.
+  atas persetujuan Kepala BNPB (hlm. 12, OCR) [@bnpb-2020-dsp]. Pasal 13 ayat (4): kegiatan yang sudah diserahterimakan
+  dengan perjanjian kerja sama ke penerima menjadi tanggung jawab fisik dan keuangan penerima DSP (T1.26). Bailey DSP
+  dihibahkan ke daerah (T1.5). Label: resmi.
 - **T2.8** Keppres 1/2026 (8 Jan 2026), Satgas Percepatan RR Pascabencana Alam di Aceh, Sumut, Sumbar: Satgas di bawah dan
   bertanggung jawab kepada Presiden (Pasal 1 ayat (2)); bertugas menyusun dan menetapkan kebijakan umum termasuk rencana
   induk dan/atau rencana aksi, mengoordinasikan perencanaan sampai evaluasi (Pasal 2); Tim Pengarah diketuai Menko PMK
@@ -273,8 +299,12 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
   Ketua III Dankor Brimob, Wakil Ketua IV Kepala BPI Danantara (Pasal 4 ayat (2) huruf a–e); sepuluh bidang (huruf f–o),
   termasuk Bidang Infrastruktur dengan koordinator Menteri Pekerjaan Umum dan anggota Menteri Perhubungan (huruf j), Bidang
   Pengelolaan Data dengan koordinator Kepala BPS (huruf h), dan Bidang Penyediaan Lahan dengan koordinator Menteri ATR/BPN
-  (huruf g). Bidang Infrastruktur bertugas atas "prasarana dan sarana transportasi, sumber daya air" dan lainnya (Pasal 5
-  huruf e). Ketua Tim Pelaksana dapat menetapkan pedoman teknis RR (Pasal 9); laporan ke Presiden "setiap 2 (dua) bulan
+  (huruf g). Bidang Infrastruktur bertugas "melaksanakan perbaikan, peningkatan, dan pembangunan kembali prasarana dan sarana
+  transportasi, sumber daya air", bangunan gedung pemerintah, fasilitas layanan, "serta prasarana lingkungan permukiman"
+  (Pasal 5 huruf e, hlm. 6); Bidang Permukiman bertugas atas "hunian terdampak bencana" (Pasal 5 huruf f). Air minum atau
+  SPAM tidak disebut tegas. Anggaran operasional Satgas diusulkan Ketua Tim Pelaksana, sedangkan anggaran program diusulkan
+  "menteri dan/atau pimpinan lembaga terkait kepada Menteri Keuangan" berdasarkan rencana induk atau rencana aksi (Pasal 8
+  huruf a–b, hlm. 7). Tidak ada pasal yang mencabut tanggung jawab pemda atau peran BNPB menurut PP 21/2008. Ketua Tim Pelaksana dapat menetapkan pedoman teknis RR (Pasal 9); laporan ke Presiden "setiap 2 (dua) bulan
   sekali" (Pasal 10); bencana susulan ditangani Kepala BNPB lewat mekanisme tanggap darurat (Pasal 11); tidak ada pasal masa
   berlaku Satgas selain mulai berlaku pada tanggal ditetapkan (Pasal 13). Sumber: PDF
   https://jdih.kemenkoinfra.go.id/dokumen/file/keputusan-presiden-republik-indonesia/2026/keppres-nomor-1-tahun-2026.pdf,
@@ -305,13 +335,17 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
   SPAM daerah, desa untuk aset desa). Pemetaan nomenklatur direktorat jenderal adalah pemetaan penyusun (riset A §2).
 - **(penilaian tim)** Celah pemilik yang paling tajam ada di dua sambungan: (1) aset desa yang tidak dapat dibiayai hibah RR
   dan bergantung pada APBDes atau program K/L, dan (2) jembatan darurat yang dibangun pelaksana yang bukan pemilik aset (TNI
-  AD, Polri, Satgas) tanpa serah terima tertulis ke pemilik. Butir (2) didukung Perban 6/2017 Pasal 13 ayat (6) yang menyebut
-  aset hasil RR harus ditatausahakan, tetapi tidak menyebut aset yang dibangun di luar R3P.
+  AD, Polri, Satgas). Untuk butir (2) mekanismenya ada: kegiatan DSP yang diserahterimakan dengan perjanjian kerja sama
+  menjadi tanggung jawab fisik dan keuangan penerima (Perban 4/2020 Pasal 13 ayat (4); T1.26), dan hasil RR ditatausahakan
+  sebagai aset (Perban 6/2017 Pasal 13 ayat (6)). Yang belum diketahui adalah apakah perjanjian kerja sama serah terima itu
+  benar dipakai untuk bailey TNI/Polri di Sumatra, dan bagaimana jembatan yang dibangun di luar DSP dan di luar R3P
+  diserahkan (C2.7).
 - **(penilaian tim)** Keppres 1/2026 menempatkan BNPB sebagai wakil ketua pelaksana, bukan pemimpin, dan memberi Bidang
   Pengelolaan Data kepada BPS. Bagi Grand Design, artinya kolom DIBI baru (R-RR-01) perlu disepakati dengan bidang data Satgas
   supaya tidak lahir dua basis data pemulihan untuk Sumatra. Keppres 1/2026 tidak memuat masa berlaku Satgas, sedangkan R3P
   dibatasi 3 tahun. Di Sulteng (T3.9) masalahnya terbalik: dasar hukum percepatan berakhir sebelum pekerjaan selesai. Untuk
-  Sumatra, risikonya adalah ketidakjelasan kapan kewenangan Satgas kembali ke rantai biasa (BNPB, BPBD, pemilik aset).
+  Sumatra, risikonya adalah ketidakjelasan kapan koordinasi Satgas berakhir dan rantai biasa (BNPB, BPBD, pemilik aset)
+  kembali memegang koordinasi; pelaksanaan oleh K/L dan pemda tidak berpindah (T2.8).
 - **(penilaian tim)** Pasal 11 Keppres 1/2026 menjaga peran komando darurat Kepala BNPB untuk bencana susulan. Ini penting
   untuk musim hujan 2026/2027 di wilayah yang sama (Bab 10.9).
 
@@ -326,6 +360,12 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
 - **C2.4** Rencana induk RR Sumatra 2026–2028 yang ditetapkan Ketua Tim Pengarah (Keppres 1/2026 Pasal 7 huruf b) tidak
   dibuka; angka Rp100,1 triliun hanya dari media (sekunder, riset E [29]).
 - **C2.5** Status PP 43/2008 dan penerbit izin air tanah belum pasti (KERANGKA induk celah 32).
+- **C2.6** Penanggung jawab air minum/SPAM di Satgas Keppres 1/2026 tidak tegas: Pasal 5 huruf e menyebut "sumber daya air"
+  dan "prasarana lingkungan permukiman", tidak menyebut air minum atau SPAM. Kemungkinan masuk "prasarana lingkungan
+  permukiman" di Bidang Infrastruktur atau Bidang Permukiman; perlu dikonfirmasi ke sekretariat Tim Pelaksana atau pedoman
+  teknis Pasal 9.
+- **C2.7** Perjanjian kerja sama serah terima DSP (Perban 4/2020 Pasal 13 ayat (4)) untuk bailey TNI/Polri Sumatra 2025 tidak
+  ditemukan di sumber terbuka. Permintaan ke Deputi Bidang Penanganan Darurat dan Deputi Bidang RR.
 
 ---
 
@@ -334,11 +374,12 @@ koordinator Bidang Infrastruktur (Keppres 1/2026).
 ### Inti
 
 Tidak ada program RR, di Indonesia maupun luar negeri, yang berbukti kuat menurut rubrik `program-terbukti`; posisi tertinggi
-adalah sedang: aliansi pipa dan jalan SCIRT Christchurch (audit negara 2016), hibah rumah bertermin terkunci inspeksi Nepal,
-huntap CSRRP Sulteng (bersyarat), dan tinjauan perumahan Chile. Bukti dampak paling ketat untuk akses justru dari luar RR:
-jembatan pejalan kaki perdesaan (RCT Rwanda dan kuasi-eksperimen Nicaragua), yang dapat dialihkan sebagai rancangan evaluasi
-dampak, bukan sebagai program RR. Program dalam negeri (Rekompak, BRR, Lombok) berbukti lemah dan ditulis sebagai rujukan tata
-kelola atau pelajaran; untuk air, pembanding waktu pulih Jepang (Kobe 90% dalam 38 hari, Tohoku 90% dalam 36 hari) dipakai
+adalah sedang: aliansi pipa dan jalan SCIRT Christchurch (audit negara 2016) dan tinjauan perumahan Chile. Hibah rumah
+bertermin terkunci inspeksi Nepal dan huntap CSRRP Sulteng berbukti lemah (laporan mitra pembiaya atau survei proyek sendiri)
+dan ditulis sebagai rujukan tata kelola. Bukti dampak untuk akses justru dari luar RR: jembatan pejalan kaki perdesaan
+(kuasi-eksperimen Nicaragua yang terbit di jurnal bertinjauan; RCT Rwanda yang makalahnya belum dibuka), yang dapat dialihkan
+sebagai rancangan evaluasi dampak, bukan sebagai program RR. Program dalam negeri (Rekompak, BRR, Lombok, CSRRP) berbukti
+lemah dan ditulis sebagai rujukan tata kelola atau pelajaran; untuk air, pembanding waktu pulih Jepang (Kobe 90% dalam 38 hari, Tohoku 90% dalam 36 hari) dipakai
 sebagai acuan sasaran berlabel, bukan sebagai program.
 
 ### Temuan bersumber
@@ -363,14 +404,19 @@ sebagai acuan sasaran berlabel, bukan sebagai program.
   pipa air limbah, drainase, air bersih, jalan, dan jembatan (riset E [35]) [@scirt-2018-value]. Label: terverifikasi (dokumen
   aliansi). Audit lanjutan Controller and Auditor-General Selandia Baru, 5 Mei 2016 (dibuka sesi ini): "SCIRT has made solid
   progress in repairing damaged pipes and roads"; pengaturan dana "took up to 19 months to confirm", sehingga sekitar 30 proyek
-  air limbah dan drainase tidak pasti dananya lebih dari delapan bulan; perpindahan data aset ke dewan kota semula lambat.
+  air limbah dan drainase tidak pasti dananya lebih dari delapan bulan; perencanaan perpindahan data aset ke dewan kota
+  semula lambat, kemudian "there has recently been promising progress"; kesimpulan umum audit: "good progress" atas
+  rekomendasinya. Kata "kegagalan" tidak dipakai audit.
   Sumber: https://ao.parliament.nz/2016/scirt [@oag-2016-scirt]. Kunci baru `rehab.pembanding.scirt_*`. Label: terverifikasi.
   Kekuatan: sedang (audit negara independen, tanpa kontrafaktual).
 - **T3.5** Nepal, hibah rumah bertermin: NPR 300.000 dalam tiga termin (NPR 50.000 saat perjanjian; NPR 150.000 setelah lantai
-  pertama lolos inspeksi insinyur lapangan; NPR 100.000 setelah atap lolos inspeksi); "more than 3,000 engineers"; 211.985 rumah
-  tahan gempa direkonstruksi per September 2020 terhadap target proyek 335.700. Sumber: Bank Dunia, Results Brief 29 Sep 2020
-  (dibuka sesi ini) [@worldbank-2020-nepal]. Kunci baru `rehab.pembanding.nepal_*`. Label: terverifikasi. Kekuatan: sedang (riset
-  E). **Angka lain:** 611.241 rumah selesai per 1 Juli 2021 menurut data NRA yang dikutip The Himalayan Times (riset E [33]),
+  pertama lolos inspeksi insinyur lapangan; NPR 100.000 setelah atap lolos inspeksi); 211.985 rumah tahan gempa direkonstruksi
+  per September 2020 terhadap target proyek 335.700. Angka insinyur adalah angka nasional, bukan proyek: "Nationwide, 8 percent
+  of the more than 3,000 engineers employed for housing reconstruction are women." Sumber: Bank Dunia, Results Brief 29 Sep 2020
+  (dibuka ulang 25 Okt 2026; laman tidak merujuk evaluasi independen) [@worldbank-2020-nepal]. Kunci baru
+  `rehab.pembanding.nepal_*`. Label: terverifikasi. Kekuatan: **lemah** (laporan hasil mitra pembiaya proyek, jenis
+  `laporan-sendiri`; riset E menilai sedang dengan rubriknya sendiri dan bersandar juga pada angka NRA dari media; ICR akhir
+  tidak dapat dibuka, C3.4). Posisi: Rujukan tata kelola. **Angka lain:** 611.241 rumah selesai per 1 Juli 2021 menurut data NRA yang dikutip The Himalayan Times (riset E [33]),
   sekunder, cakupan nasional NRA, bukan proyek Bank Dunia saja; tidak masuk badan teks.
 - **T3.6** Pemulihan air Jepang: Kobe 1995 90% dalam 38 hari, 95% dalam 43 hari, 100% dalam 81 hari; Tohoku 2011 90% dalam 36
   hari, 95% dalam 41 hari, 100% belum tercapai saat paparan Juni 2011. Sumber: JSCE, Prof. Nojima, *Lifeline Restoration
@@ -390,16 +436,22 @@ sebagai acuan sasaran berlabel, bukan sebagai program.
   to 98 percent" atas umur jembatan sekitar 40 tahun; konsumsi rumah tangga naik pada tahun kedua. Sumber: ringkasan J-PAL/CEGA,
   6 Mei 2026 (dibuka sesi ini) [@jpal-2026-rwanda]. Label: terverifikasi untuk desain dan biaya; imbal hasil estimasi-model.
   **Angka berdampingan:** registri AEA AEARCTR-0013478 (dibuka sesi ini) menyebut acak waktu pembangunan "94 trail bridges",
-  rencana 150 klaster, 50 jembatan kontrol jangka panjang, status selesai (Apr 2020 sampai Agu 2024), didaftarkan 23 Mei 2024,
-  tanpa makalah hasil terlampir [@aea-2024-rwanda]. **Dibantah sebagian:** riset B menilai bukti Rwanda "cukup kuat"; menurut
-  rubrik `program-terbukti`, kuat butuh dokumen evaluasi yang dibuka dan paling sedikit dua angka; makalah hasil belum dibuka,
-  jadi posisinya sedang sampai makalah dibuka.
+  rencana 150 klaster, 50 jembatan kontrol jangka panjang, tanpa makalah hasil terlampir (yang terlampir hanya hasil uji
+  pendahuluan dan rencana pra-analisis) [@aea-2024-rwanda]. **Catatan mutu registri:** pendaftaran retrospektif, didaftarkan
+  23 Mei 2024 padahal uji dimulai 1 Apr 2020 dan intervensi 1 Apr 2021 sampai 1 Apr 2024; status "Completed" tetapi
+  "Is the intervention completed? No"; peneliti utama tiga orang (Wyatt Brooks, Kevin Donovan, Evan Thomas). **Dibantah
+  sebagian:** riset B menilai bukti Rwanda "cukup kuat". Menurut rubrik `program-terbukti`, kuat maupun sedang untuk
+  peer-review atau evaluasi independen mensyaratkan dokumennya dibuka; yang dibuka hanya blog ringkasan J-PAL/ATAI (terbit
+  awal di CEGA) dan registri. Kekuatan: **belum dapat dinilai (ringkasan sekunder)** sampai makalah hasil dibuka. Pemakaian
+  dibatasi sebagai rancangan evaluasi (R-RR-13), bukan angka dampak.
 - **T3.9** Sulawesi Tengah 2018: Inpres 10/2018 dan Keppres 28/2018 dinyatakan berakhir per Februari 2021 sementara validasi data
   penerima dan revisi R3P masih terbuka (riset E [13]); Juni 2024, 5.598 huntap ditetapkan dan 382 belum selesai, dengan
   pernyataan Menko PMK bahwa penanganannya "sudah tertunda cukup lama 6 tahun" (riset E [14]) [@kemenkopmk-2021-sulteng;
   @kemenkopmk-2024-huntap-sulteng]. Kunci baru `rehab.pelajaran.sulteng.huntap_target`,
   `rehab.pelajaran.sulteng.huntap_sisa_jun2024`. Label: resmi. Indikator CSRRP: 96,72% sasaran tinggal di hunian aman (target
-  90), kepuasan 90,30% (N=778), survei proyek sendiri (riset E [15]). Kekuatan: sedang bersyarat.
+  90), kepuasan 90,30% (N=778), dari halaman SITABA Kementerian PU tanpa tanggal; riset E menyebutnya "Survei kepuasan oleh
+  proyek sendiri" (riset E [15]). Kekuatan: **lemah** menurut rubrik repo (`laporan-sendiri` pelaksana; riset E memberi sedang
+  karena rubriknya menerima survei terstruktur, lihat §0.1). Posisi: Rujukan tata kelola atau Pelajaran, bukan teladan.
 - **T3.10** Jembatan Palu IV dibangun ulang 250 m dengan jalan pesisir sekitar 5 km yang juga berfungsi pelindung tsunami, dibuka
   13 Feb 2026, lebih dari tujuh tahun setelah runtuh (riset E [18]) [@ocg-2026-palu4]. Kunci baru
   `rehab.pelajaran.sulteng.palu4_panjang`. Label: terverifikasi (konsultan pengawas). Kekuatan: lemah (keluaran).
@@ -418,11 +470,13 @@ sebagai acuan sasaran berlabel, bukan sebagai program.
 
 ### Inferensi
 
-- **(penilaian tim)** Yang dapat dialihkan dari SCIRT bukan bentuk aliansinya, melainkan dua kegagalan yang diaudit: kepastian dana
-  multi-tahun (19 bulan menahan 30 proyek) dan serah terima data aset ke pemilik. Keduanya berpadanan langsung dengan risiko
-  Perban 1/2026 Pasal 14 ayat (5) huruf b (dana terikat masa R3P) dan dengan jembatan darurat tanpa pemilik tertulis (PK2).
-  Posisi: Rujukan tata kelola (bukti sedang).
-- **(penilaian tim)** Nepal relevan untuk mutu, bukan kecepatan: pencairan dikunci inspeksi per tahap dapat dialihkan ke
+- **(penilaian tim)** Yang dapat dialihkan dari SCIRT bukan bentuk aliansinya, melainkan dua risiko yang dicatat audit, yang
+  secara keseluruhan menilai "good progress": (1) pengaturan pendanaan antara pemerintah pusat dan dewan kota yang perlu sampai
+  19 bulan untuk dikonfirmasi, sehingga sekitar 30 proyek air limbah dan drainase tidak pasti dananya lebih dari delapan bulan;
+  dan (2) serah data aset ke dewan kota yang semula lambat, lalu dinilai menunjukkan kemajuan yang menjanjikan. Padanannya
+  dengan Perban 1/2026 Pasal 14 ayat (5) huruf b (dana terikat masa R3P) dan dengan serah terima jembatan darurat ke pemilik
+  (PK2) adalah penilaian tim, bukan temuan audit. Posisi: Rujukan tata kelola (bukti sedang).
+- **(penilaian tim)** Nepal (bukti lemah, Rujukan tata kelola) relevan untuk mutu, bukan kecepatan: pencairan dikunci inspeksi per tahap dapat dialihkan ke
   stimulan rumah, tetapi rumah adalah pengikat lokasi dalam kajian ini (Q3), jadi Bab 2 cukup menyebutnya sebagai pola pengunci
   mutu yang juga berlaku untuk serah terima sumur dan pipa (uji fungsi sebelum termin akhir).
 - **(penilaian tim)** Bukti jembatan pedesaan (Rwanda, Nicaragua) mengukur jembatan baru di sungai tanpa jembatan, bukan
@@ -460,7 +514,7 @@ sebagai acuan sasaran berlabel, bukan sebagai program.
 | --- | --- | --- | --- | --- | --- |
 | Tabel 2.1 | Kronologi regulasi RR air dan akses | Baris per instrumen, kolom tahun, nomor, judul pendek, lapis, pasal kunci air/akses, status katalog: UU 24/2007 (2007); PP 21/2008 (2008); Perka 7/2008 (2008); Perka 12/2010 (2010); Perka 17/2010 (2010, dicabut Perban 5/2017, katalog masih BERLAKU); Perka 15/2011 (2011); UU 23/2014 (2014); Perban 5/2017; Perban 6/2017; UU 17/2019; Perban 4/2020; Perban 1/2023; Juklak 1/2023; Juklak 3/2023; Perban 4/2024 (ganti Perban 3/2019); Juklak 5/2024 (berkas tidak ada); Juklak 1/2025 (induk Perban 1/2024 dicabut); Perban 6/2025 jo. 11/2025; Juklak 15/2025; Inpres 18/2025; Keppres 1/2026; Perban 1/2026 | T1.1–T1.25, T2.8–T2.10; `katalog.json` (status, tgl_tetap, relasi) | B5.31, L32 (garis waktu tabel) | ada |
 | Tabel 2.2 | Pemilik aset dan penanggung jawab per lapis | Baris: jembatan nasional, jembatan daerah, jembatan desa, SPAM nasional/provinsi/kab-kota, SPAM desa, sumur bor darurat; kolom: lapis darurat, sementara, permanen; isi: pelaksana, pemilik, dana (DSP, hibah RR, Dana Bersama, APBN K/L, APBD, APBDes), pasal; peran BNPB kode K/P/R/I | T2.1–T2.12; inferensi PK2 | B5.7 | sebagian (sub-urusan jalan UU 23/2014 belum terbaca, C2.1) |
-| Tabel 2.3 | Praktik pembanding dan padanan di Indonesia | Kolom: program, negara, sektor, kekuatan bukti (kuat/sedang/lemah), posisi, dampak terukur (angka berlabel), yang dialihkan, padanan di Indonesia, sumber. Baris: SCIRT, Nepal, CSRRP Sulteng, Chile, Kobe/Tohoku (pembanding waktu pulih), Rwanda, Nicaragua, BRR/MDF, Rekompak, Lombok 2018, ERRA, Palu IV; Haiyan dan Turki di catatan kaki sebagai sekunder | T3.1–T3.13; `kompendium_program.csv`; riset E Kompendium calon | B5.7 | ada |
+| Tabel 2.3 | Praktik pembanding dan padanan di Indonesia | Kolom: program, negara, sektor, kekuatan bukti (kuat/sedang/lemah/belum dapat dinilai) menurut rubrik repo, bukan rubrik riset E, posisi, dampak terukur (angka berlabel), yang dialihkan, padanan di Indonesia, sumber. Baris: SCIRT, Nepal, CSRRP Sulteng, Chile, Kobe/Tohoku (pembanding waktu pulih), Rwanda, Nicaragua, BRR/MDF, Rekompak, Lombok 2018, ERRA, Palu IV; Haiyan dan Turki di catatan kaki sebagai sekunder | T3.1–T3.13; `kompendium_program.csv`; riset E Kompendium calon | B5.7 | ada |
 | Gambar 2.1 | Tiga lapis waktu dan titik serah | Rantai: darurat (status tanggap darurat; Perka 7/2008, Perka 12/2010, DSP) → titik serah 1 (akhir status; penunjukan langsung sampai transisi) → sementara (transisi sampai R3P berjalan; R3P paling lama 90 hari dimulai saat tanggap darurat) → titik serah 2 (R3P ditetapkan) → permanen (masa R3P paling lama 3 tahun; hibah RR, Dana Bersama dalam masa R3P) → serah aset ke pemilik (Perban 6/2017 Pasal 13 ayat (6)); tiga jalur sektor: bailey ke jembatan permanen, truk tangki dan sumur darurat ke SPAM, huntara ke huntap bersumber air | T1.1–T1.17, T2.4; kunci `perban2017_5.r3p_hari_maks`, `perban2017_5.r3p_masa_tahun` | B5.23, G21 (rantai tahap) | ada |
 | Kotak 2.1 (usulan) | Status dokumen yang perlu diselaraskan | Perka 17/2010 di katalog; Perban 6/2017 Pasal 9; Perka 12/2010 nomenklatur; Juklak 1/2025 setelah Perban 1/2026 | T1.16, T1.20, T1.21, T1.9 | B5.5 | ada; rujukan ke Lampiran K |
 
@@ -483,10 +537,10 @@ Kunci baru (juga di `bab-02.angka.json`; berkas `data/angka.json` utama tidak di
 | `rehab.pembanding.scirt_biaya_nzd_miliar` | 2,2 | miliar NZ$ | terverifikasi | `scirt-2018-value` (riset E [35]) |
 | `rehab.pembanding.scirt_proyek` | 600 | proyek (lebih dari) | terverifikasi | `scirt-2018-value` |
 | `rehab.pembanding.scirt_kepastian_dana_bulan_maks` | 19 | bulan | terverifikasi | `oag-2016-scirt` |
-| `rehab.pembanding.scirt_proyek_dana_tertahan` | 30 | proyek (sekitar) | terverifikasi | `oag-2016-scirt` |
+| `rehab.pembanding.scirt_proyek_dana_tertahan` | 30 | proyek (sekitar) tanpa kepastian dana lebih dari 8 bulan | terverifikasi | `oag-2016-scirt` |
 | `rehab.pembanding.nepal_hibah_npr` | 300000 | NPR per rumah | terverifikasi | `worldbank-2020-nepal` |
 | `rehab.pembanding.nepal_termin` | 3 | termin | terverifikasi | `worldbank-2020-nepal` |
-| `rehab.pembanding.nepal_insinyur` | 3000 | insinyur (lebih dari) | terverifikasi | `worldbank-2020-nepal` |
+| `rehab.pembanding.nepal_insinyur` | 3000 | insinyur (lebih dari), nasional untuk rekonstruksi perumahan, bukan proyek | terverifikasi | `worldbank-2020-nepal` |
 | `rehab.pembanding.nepal_rumah_sep2020` | 211985 | rumah | terverifikasi | `worldbank-2020-nepal` |
 | `rehab.pembanding.nepal_target_proyek` | 335700 | rumah | terverifikasi | `worldbank-2020-nepal` |
 | `rehab.pipa.pulih.kobe_90` | 38 | hari | terverifikasi | `jsce-2011-lifeline` |
@@ -515,3 +569,13 @@ dan catatan "sama dengan pustaka.json utama". Entri baru: `ri-2026-keppres1`, `b
 `oag-2016-scirt`, `worldbank-2020-nepal`, `jsce-2011-lifeline`, `kaken-2000-kobe`, `brooks-2020-nicaragua`,
 `jpal-2026-rwanda`, `aea-2024-rwanda`, `kemenkopmk-2021-sulteng`, `kemenkopmk-2024-huntap-sulteng`, `ocg-2026-palu4`,
 `comerio-2013-chile`, `erra-presentasi`, `un-2025-renk`.
+
+## 7. Catatan pemeriksaan (25 Okt 2026)
+
+Delapan temuan pemeriksa dicek ke sumber dan semuanya diterima: laman OAG 2016, Results Brief Bank Dunia Nepal, registri AEA
+AEARCTR-0013478, rilis BNPB 31 Des 2025, dan PDF Keppres 1/2026 dibuka ulang; Perban 4/2020 hlm. 12, Perban 6/2017 hlm. 12,
+dan riset E baris 50 dan 67 dibaca di korpus. Satu nuansa: Perban 4/2020 Pasal 13 ayat (4) mengatur peralihan tanggung jawab
+fisik dan keuangan "pelaksanaan kegiatan" DSP ke penerima, bukan kata "aset" secara harfiah; karena itu T1.26 menulisnya
+sebagai dasar yang dapat dipakai untuk serah terima hasil DSP, bukan sebagai norma serah aset yang eksplisit. Kunci
+`rehab.pembanding.scirt_proyek_dana_tertahan` dan `rehab.pembanding.nepal_insinyur` tidak diganti nama karena dirujuk
+`bab-10.md`; maknanya dibetulkan di satuan dan catatan.

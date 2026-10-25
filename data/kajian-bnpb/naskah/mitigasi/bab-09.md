@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 9
 judul: Bencana Sosial
 pertanyaan: Konflik apa yang masuk bencana sosial menurut UU 24/2007 dan UU 7/2012, dan di provinsi mana perkelahian massal antarkelompok paling sering terjadi? Berapa korban dan pengungsi pada kejadian analog terburuk? Apa peran BNPB, dan instrumen apa yang belum ada untuk melaksanakan Perpres 46/2026?
-status: draf
+status: final
 target_halaman: 7
 ---
 

@@ -111,7 +111,7 @@
    "keyakinan": "terverifikasi",
    "sumber": "Controller and Auditor-General Selandia Baru 2016",
    "lokasi": "laman audit",
-   "catatan": "dibuka 25 Okt 2026"
+   "catatan": "dibuka 25 Okt 2026; pengaturan dana pusat dan dewan kota took up to 19 months to confirm"
   },
   "rehab.pembanding.scirt_proyek_dana_tertahan": {
    "nilai": 30,
@@ -120,7 +120,7 @@
    "keyakinan": "terverifikasi",
    "sumber": "Controller and Auditor-General Selandia Baru 2016",
    "lokasi": "laman audit",
-   "catatan": "proyek air limbah dan drainase tanpa kepastian dana lebih dari delapan bulan"
+   "catatan": "audit: funding uncertainty for about 30 wastewater and stormwater projects for more than eight months; nama kunci lama, maknanya tidak pasti dana, bukan tertahan"
   },
   "rehab.pembanding.nepal_hibah_npr": {
    "nilai": 300000,
@@ -142,10 +142,11 @@
   "rehab.pembanding.nepal_insinyur": {
    "nilai": 3000,
    "pustaka": "worldbank-2020-nepal",
-   "satuan": "insinyur (lebih dari)",
+   "satuan": "insinyur (lebih dari), nasional",
    "keyakinan": "terverifikasi",
    "sumber": "Bank Dunia Results Brief 2020",
-   "lokasi": "laman"
+   "lokasi": "laman, bagian Results",
+   "catatan": "angka nasional untuk rekonstruksi perumahan ('Nationwide ... employed for housing reconstruction'), bukan angka proyek EHRP; laporan mitra pembiaya, kekuatan lemah"
   },
   "rehab.pembanding.nepal_rumah_sep2020": {
    "nilai": 211985,
@@ -207,7 +208,7 @@
    "keyakinan": "terverifikasi",
    "sumber": "J-PAL/CEGA 2026",
    "lokasi": "laman",
-   "catatan": "registri AEA AEARCTR-0013478 menyebut 94; ditulis berdampingan"
+   "catatan": "registri AEA AEARCTR-0013478 menyebut 94; ditulis berdampingan; sumber ringkasan sekunder, makalah hasil belum dibuka, registri didaftarkan retrospektif 23 Mei 2024; kekuatan belum dapat dinilai"
   },
   "rehab.pembanding.rwanda_biaya_usd": {
    "nilai": 100000,
@@ -297,6 +298,15 @@
    "sumber": "Oriental Consultants Global 2026",
    "lokasi": "laman",
    "catatan": "dibuka 13 Feb 2026; riset E [18]"
+  },
+  "rehab.pembanding.rwanda_jembatan_registri": {
+   "nilai": 94,
+   "pustaka": "aea-2024-rwanda",
+   "satuan": "jembatan",
+   "keyakinan": "terverifikasi",
+   "sumber": "AEA RCT Registry AEARCTR-0013478",
+   "lokasi": "laman registri",
+   "catatan": "versi registri; J-PAL menyebut 97 (rehab.pembanding.rwanda_jembatan_rct); ditulis berdampingan; entri sama dengan bab-05.angka.json"
   }
  }
 }

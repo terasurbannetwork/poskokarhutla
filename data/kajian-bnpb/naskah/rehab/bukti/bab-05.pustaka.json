@@ -180,8 +180,8 @@
   },
   "title": "Opening ceremony, Programme for the Reconstruction of Palu 4 Bridges and its Access Road",
   "URL": "https://ocglobal.jp/news/260218-indonesia-en/",
-  "verifikasi": "primer",
-  "note": "dari riset E [18]; konsultan pengawas proyek JICA; Bab 5 rehab: dibuka 25 Okt 2026; gelagar kotak PC tiga bentang; balkon evakuasi; kerja sama teknis JICA (pinjaman tidak disebut)",
+  "verifikasi": "laporan pelaksana",
+  "note": "dari riset E [18]; OCG adalah konsultan proyek itu sendiri (survei persiapan, desain rinci, pengawasan konstruksi), jadi laporan pelaksana; Bab 5 rehab: dibuka 25 Okt 2026; gelagar kotak PC tiga bentang; jalan pesisir sekitar 5 km dibuka, jalan akses ditinggikan sebagai tanggul (panjang tidak disebut); balkon evakuasi; kerja sama teknis JICA (pinjaman tidak disebut)",
   "accessed": {
    "date-parts": [
     [
@@ -580,7 +580,7 @@
   "container-title": "Sekretariat Kabinet",
   "URL": "https://setkab.go.id/ocze",
   "verifikasi": "primer",
-  "note": "dibuka 25 Okt 2026; 218 diresmikan dalam 2,5 bulan; 1.072 dikerjakan; wilayah bencana 480 disurvei, 145 selesai; target 7.000 awal tahun depan; tanpa kata Garuda, Satgas, bailey, armco, perintis. Riset B [15]",
+  "note": "dibuka 25 Okt 2026; 218 diresmikan dalam 2,5 bulan; 1.072 dikerjakan; wilayah bencana 480 disurvei, 145 selesai; harapan lisan KSAD: jembatan daerah bencana selesai Agustus, sekolah Oktober, dan \"mudah-mudahan awal tahun depan 7.000 jembatan\" (bukan target dokumen); laporan dari Aceh Utara; tanpa kata Garuda, Satgas, bailey, armco, perintis. Riset B [15]",
   "accessed": {
    "date-parts": [
     [
@@ -676,7 +676,7 @@
   "container-title": "ePPID Kementerian Pekerjaan Umum",
   "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-imbau-kendaraan-odol-tidak-melintasi-jembatan-bailey-di-lokasi-bencana-sumatera",
   "verifikasi": "primer",
-  "note": "dibuka 25 Okt 2026; puluhan bailey fungsional per 18 Jan 2026 di sembilan kabupaten Aceh; Krueng Beutong 30 m x 4,2 m, 20 ton, fungsional 9 Jan 2026; permanen bertahap. Riset B [30]",
+  "note": "dibuka 25 Okt 2026; puluhan bailey fungsional per 18 Jan 2026 pada ruas jalan nasional terdampak; Krueng Beutong disebut di antara contoh (\"antara lain\"), kelas jalannya tidak disebut tegas; 30 m x 4,2 m, 20 ton, fungsional 9 Jan 2026; permanen bertahap. Riset B [30]",
   "accessed": {
    "date-parts": [
     [
@@ -881,5 +881,69 @@
   },
   "verifikasi": "sekunder",
   "note": "SEKUNDER: 498 jembatan rusak (data BNPB dikutip media); lampiran rekonsiliasi saja"
+ },
+ {
+  "id": "republika-2026-270-bailey",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Republika"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     10
+    ]
+   ]
+  },
+  "title": "270 Jembatan Bailey Dibangun untuk Pulihkan Akses Pascabanjir dan Longsor Sumatera",
+  "container-title": "Republika",
+  "URL": "https://news.republika.co.id/berita/t8n18n370/270-jembatan-bailey-dibangun-untuk-pulihkan-akses-pascabanjir-dan-longsor-sumatera",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER: konferensi pers BNPB (Abdul Muhari) Jakarta 10 Jan 2026, 270 bailey di Aceh, Sumut, Sumbar; dibuka 25 Okt 2026. Rincian 137/27/106, 20 terpasang, 10 proses, 117 armco Aceh, dan 18 ton Beutong Ateuh dari RCTI+ dan IDX Channel (cuplikan pencarian, tidak dibuka). Rilis primer bnpb.go.id tidak ditemukan. Lampiran rekonsiliasi saja"
+ },
+ {
+  "id": "nuonline-2026-beutong-ateuh",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "NU Online"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     4,
+     19
+    ]
+   ]
+  },
+  "title": "Lima Bulan Pascabanjir, PWNU Aceh Desak Jembatan di Beutong Ateuh Segera Dibangun Permanen",
+  "container-title": "NU Online",
+  "URL": "https://www.nu.or.id/nasional/lima-bulan-pascabanjir-pwnu-aceh-desak-jembatan-di-beutong-ateuh-segera-dibangun-permanen-NsmUe",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER: jalan nasional lintas Nagan Raya–Aceh Tengah di Beutong Ateuh masih memakai bailey per 19 Apr 2026; PWNU Aceh mendesak jembatan permanen; dibuka 25 Okt 2026. Lampiran rekonsiliasi saja"
  }
 ]

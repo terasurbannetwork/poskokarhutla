@@ -66,11 +66,12 @@ dan cocok); pencarian progres Satgas PRR Oktober 2026 (hanya ditemukan media, li
 
 Tesis bertahan dengan dua koreksi angka: kerusakan akses akibat bencana alam besar dan naik tajam (3.833 jembatan pada
 2018–2025, 1.088 pada 2025, sekitar 89% karena banjir), sedangkan kerusakan sistem air tidak tercatat sama sekali di
-DIBI dan aset desa berada di luar hibah RR. Wawasan yang hanya terlihat setelah semua bab dirangkai adalah bahwa
-hambatan pemulihan bukan kecepatan lapis darurat, melainkan serah ke lapis permanen untuk aset daerah dan desa: aset
-nasional pulih penuh dalam bulan, aset daerah tertinggal sepertiga, dan aset permanen yang tercatat selesai jauh
-melampaui masa R3P tiga tahun, sementara tidak ada satu pun program RR air atau akses di Indonesia yang berbukti di atas
-"lemah".
+DIBI dan aset desa berada di luar hibah RR. Wawasan yang hanya terlihat setelah semua bab dirangkai adalah bahwa titik
+lemah yang tercatat ada di serah ke lapis permanen untuk aset daerah dan desa: jalan dan jembatan nasional Sumatra
+berfungsi 100% per Mei 2026, jembatan daerah tertinggal sekitar sepertiga (67%) sementara jalan daerah 94%, dan dua dari
+tiga contoh lapis permanen yang tercatat (Jembatan Palu IV dan huntap Sulawesi Tengah) melampaui masa R3P tiga tahun,
+sementara program RR air atau akses Indonesia (Palu IV, DI Gumbasa) belum pernah dievaluasi secara independen. Apakah
+lapis darurat cukup cepat tidak dapat dinilai dari data yang ada (lihat butir 6).
 
 ### Temuan bersumber
 
@@ -79,8 +80,10 @@ melampaui masa R3P tiga tahun, sementara tidak ada satu pun program RR air atau 
    `klasifikasi=alam`, `cakupan=bencana`; kunci `rehab.dibi.jembatan_rusak.2018_2025`, `rehab.dibi.jembatan_rusak.2025`,
    `rehab.dibi.jembatan_rusak.rasio_2025_rerata`, `rehab.dibi.jembatan_rusak.porsi_banjir_persen` (bab-01.angka.json);
    pustaka `bnpb-dibi`. Label: resmi. **Dibantah oleh** angka riset F dan KERANGKA (banjir 3.490, porsi sekitar 91%),
-   yang menjumlah 3.947 dan tidak dapat direproduksi (bab-01 §0.1 butir 1). Catatan: patahan seri 2024 (Juklak 7/2023)
-   hanya dapat menurunkan angka pasca-2024, jadi arah kenaikan 2025 tidak berubah.
+   yang menjumlah 3.947 dan tidak dapat direproduksi (bab-01 §0.1 butir 1). Catatan patahan seri 2024: Juklak 7/2023
+   menambah ambang kejadian (dapat menurunkan angka) tetapi formulirnya juga mulai meminta jembatan per RB, RS, RR (hlm.
+   12, 23–24; dapat menaikkan pencatatan), jadi arah pengaruhnya tidak pasti. Dasar yang kuat adalah besarnya: 1.088 pada
+   2025 jauh di atas rentang 2018–2024.
 2. **Air tidak tercatat di DIBI.** Dari 19 kolom dampak DIBI tidak ada kolom air minum, SPAM, sumur, status jalan, desa
    terputus, atau hari pulih; padahal Juklak BNPB 7/2023 butir 5e mendaftar jaringan air bersih/minum dan jalan-jembatan
    sebagai prasarana vital, dan formulirnya meminta jembatan menurut RB, RS, RR. Sumber: `dibi/README.md`;
@@ -98,33 +101,41 @@ melampaui masa R3P tiga tahun, sementara tidak ada satu pun program RR air atau 
    `rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026`,
    `rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026`, `rehab.pipa.sumatra2025.persen_fungsi_mei2026`
    (bab-01.angka.json); pustaka `pu-2026-infrastruktur-sumatera-mei` (diakses 25 Oktober 2026 oleh penyusun Bab 1).
-   Label: resmi. Selisih nasional lawan jembatan daerah 33 poin persen: kunci baru
-   `rehab.pulih.sumatra2025.selisih_nasional_daerah_poin` (olahan). **Dibantah sebagian oleh** DIBI 2025 tiga provinsi
+   Label: resmi. Selisih nasional lawan jembatan daerah 33 poin persen (khusus jembatan; untuk jalan daerah selisihnya 6
+   poin): kunci baru `rehab.pulih.sumatra2025.selisih_nasional_daerah_poin` (olahan). **Dibantah sebagian oleh** DIBI 2025 tiga provinsi
    744 jembatan (`rehab.dibi.jembatan_rusak.sumatra3prov.2025`); keduanya ditulis berdampingan, karena PU menghitung
    jembatan daerah terdampak dan DIBI jembatan rusak semua status.
-5. **Aset permanen melampaui masa R3P.** Masa R3P paling lama 3 tahun (Perban 5/2017 Pasal 10, dicek sesi ini, hlm.
-   9–10). Yang tercatat: huntap Sulawesi Tengah tersisa 382 dari 5.598 per Juni 2024, hampir enam tahun setelah bencana
-   (pustaka `kemenkopmk-2024-huntap-sulteng`, kunci `rehab.pelajaran.sulteng.huntap_sisa_jun2024`, resmi); Jembatan Palu
-   IV dibuka sekitar 7,4 tahun setelah runtuh (pustaka `ocg-2026-palu4`, kunci `rehab.akses.palu4.tahun_runtuh_ke_buka`,
-   terverifikasi olahan); target permanen SPAM Sumatera Barat Agustus 2028, sekitar 2 tahun 9 bulan setelah kejadian
-   (pustaka `pu-2026-spam-sumatera-feb`, kunci `rehab.pipa.sumbar.target_permanen`, resmi). Rasio Palu IV terhadap masa
-   R3P sekitar 2,5 kali: kunci baru `rehab.pulih.palu4_kali_masa_r3p` (asumsi-kebijakan, olahan).
-6. **Lapis darurat dan sementara bergerak cepat dan dalam orde kebutuhan.** Sumatra 2025: 537 sarana air darurat dan 128
-   sumur bor PU (25 Ditjen SDA, 103 Cipta Karya) per Februari 2026 (pustaka `pu-2026-spam-sumatera-feb`, kunci
-   `rehab.pipa.sumatra2025.sarana_darurat_feb2026`, `rehab.pipa.sumatra2025.sumur_bor_feb2026`, resmi); kebutuhan model
-   lantai banjir sekitar 14.563 m³ per hari, setara sekitar 486 sumur atau 729 truk (kunci
-   `rehab.darurat.banjir.air_m3_hari`, `rehab.darurat.banjir.sumur_setara`, `rehab.darurat.banjir.truk_setara`,
-   bab-08.angka.json, asumsi-kebijakan dari Perka 7/2008 dan rasio Badan Geologi). Angka model disandingkan dengan
-   tercatat: 128 sumur PU saja, belum termasuk sumur TNI AD dan Polri yang tidak berdaftar.
-7. **Bukti program.** Tidak ada program RR air atau akses berbukti kuat. Di Indonesia: BRR Aceh-Nias, Rekompak, dan RR
-   Lombok berkekuatan "lemah" (`program-terbukti/kompendium_program.csv` P08, P07, P09; posisi Rujukan tata kelola
-   atau Pelajaran, bukan teladan); PAMSIMAS "sedang" dan bukan program darurat (P13). Luar negeri tertinggi "sedang":
-   SCIRT Christchurch, hibah bertermin Nepal, CSRRP huntap Sulteng (bersyarat) (`rehab/riset/E-pelajaran-program.md`
-   tabel kompendium). Program jembatan TNI AD dan Polri belum punya evaluasi dampak sehingga berposisi "Program
-   berjalan, wajib evaluasi dampak" (KERANGKA prinsip 9). Label: resmi (penilaian rubrik dari paket repo).
+5. **Durasi lapis permanen terhadap masa R3P.** Masa R3P paling lama 3 tahun (Perban 5/2017 Pasal 10, dicek sesi ini,
+   hlm. 9–10), dihitung sejak R3P ditetapkan. Dua dari tiga contoh tercatat melampauinya: huntap Sulawesi Tengah tersisa
+   382 dari 5.598 per Juni 2024, sekitar lima tahun delapan bulan setelah bencana dan belum selesai (pustaka
+   `kemenkopmk-2024-huntap-sulteng`, kunci `rehab.pelajaran.sulteng.huntap_sisa_jun2024`, resmi); Jembatan Palu IV dibuka
+   sekitar 7,4 tahun setelah runtuh (pustaka `ocg-2026-palu4`, kunci `rehab.akses.palu4.tahun_runtuh_ke_buka`,
+   terverifikasi olahan), sekitar 2,5 kali masa R3P (kunci baru `rehab.pulih.palu4_kali_masa_r3p`, asumsi-kebijakan,
+   olahan, n=1). Contoh ketiga masih di dalam masa R3P: target permanen SPAM Sumatera Barat Agustus 2028, sekitar 2 tahun
+   9 bulan setelah kejadian dan lebih pendek lagi bila dihitung dari penetapan R3P (pustaka `pu-2026-spam-sumatera-feb`,
+   kunci `rehab.pipa.sumbar.target_permanen`, resmi); ini target, bukan durasi tercatat.
+6. **Lapis darurat Sumatra: angka tercatat lawan model.** Sumatra 2025: 128 sumur bor PU (25 Ditjen SDA, 103 Cipta
+   Karya), 37 di antaranya selesai per 2 Februari 2026, dan 537 sarana air darurat yang jenisnya tidak dirinci rilis PU
+   (pustaka `pu-2026-spam-sumatera-feb`, kunci `rehab.pipa.sumatra2025.sumur_bor_feb2026`,
+   `rehab.akuifer.sumatra2025.pu_sumur_selesai_feb2026`, `rehab.pipa.sumatra2025.sarana_darurat_feb2026`, resmi).
+   Kebutuhan model lantai banjir sekitar 14.563 m³ per hari, setara sekitar 486 sumur atau 729 truk, dengan basis 970.876
+   jiwa mengungsi (DIBI, jumlah per laporan) (kunci `rehab.darurat.banjir.air_m3_hari`, `rehab.darurat.banjir.sumur_setara`,
+   `rehab.darurat.banjir.truk_setara`, bab-08.angka.json, asumsi-kebijakan dari Perka 7/2008 dan rasio Badan Geologi).
+   Berdampingan: 128 sumur PU setara sekitar 26% dari 486 sumur-setara model (37 selesai, sekitar 8%); sumur TNI AD dan
+   Polri tidak berdaftar. Tidak ada data waktu pemasangan, jadi kecepatan lapis darurat tidak dapat dinilai.
+7. **Bukti program air dan akses.** Tidak ada program RR air atau akses berbukti kuat. Di Indonesia: Jembatan Palu IV
+   (jembatan) dan rehabilitasi DI Gumbasa (air) berkekuatan "lemah", hanya keluaran dan klaim peresmian, tanpa evaluasi
+   independen. Luar negeri: SCIRT Christchurch (air dan jembatan) "sedang"; pemulihan air Kobe "lemah"
+   (`rehab/riset/E-pelajaran-program.md` tabel Kompendium calon dan bagian 4). Untuk konteks rumah dan tata kelola, bukan
+   air atau akses: BRR Aceh-Nias (lintas), Rekompak, dan rumah Lombok "lemah" (`program-terbukti/kompendium_program.csv`
+   P08, P07, P09); CSRRP huntap Sulteng (Indonesia) "sedang (bersyarat)"; hibah bertermin Nepal "sedang". PAMSIMAS
+   "sedang" tetapi program reguler prabencana (P13). Program jembatan TNI AD dan Polri belum punya evaluasi dampak sehingga
+   berposisi "Program berjalan, wajib evaluasi dampak" (KERANGKA prinsip 9). Label: asumsi-kebijakan (analisis penyusun
+   dengan rubrik kompendium; rubrik bukan penilaian resmi pemerintah).
 8. **Lantai skenario berubah setelah KERANGKA.** Gempa Mw 7,7 Flores 15 Agustus 2026: DIBI tarik 23 Oktober 2026 mencatat
-   131.331 rumah rusak dan 29.303 RB serta 36 jembatan rusak di NTT, tiga kali lantai provinsi-tahun gempa 2018–2025
-   (10). Sumber: kunci `rehab.lantai.gempa.flores2026.rumah_rusak_dibi`, `rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026`,
+   131.331 rumah rusak dan 29.303 RB di 11 kab/kota. DIBI juga mencatat 36 jembatan rusak di NTT sepanjang 2026 untuk
+   kategori gempa, termasuk gempa Flores (angka provinsi-tahun, juga memuat gempa NTT lain 2026 dan tidak memuat Bima,
+   Kota Bima, dan Selayar; sementara), lebih dari tiga kali (3,6) lantai provinsi-tahun gempa 2018–2025 (10). Sumber: kunci `rehab.lantai.gempa.flores2026.rumah_rusak_dibi`, `rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026`,
    `rehab.dibi.jembatan_rusak.gempa.prov_tahun_maks_2018_2025` (bab-08.angka.json); pustaka `bnpb-dibi`. Label: resmi,
    sementara. **Dibantah oleh** rilis BNPB 22 Agustus 2026 (53.971 rumah rusak) dan rilis verifikasi (51.591 rumah
    terverifikasi dari 102.384 data awal) (pustaka `bnpb-2026-flores-hari8`, `bnpb-2026-flores-verifikasi`); ditulis
@@ -138,10 +149,15 @@ melampaui masa R3P tiga tahun, sementara tidak ada satu pun program RR air atau 
   2026–2030 menjadikan waktu pulih akses dan air sebagai ukuran keberhasilan rehabilitasi dan rekonstruksi, mengikat
   program jembatan dan sumur bor TNI, Polri, dan Kementerian PU ke R3P, dan membentuk baseline kerusakan dan pemulihan
   layanan air per kab/kota paling lambat 2027." Label: resmi untuk angka dan pasal; asumsi-kebijakan untuk komitmen.
-- **[Inferensi tim]** Pola tiga kecepatan (darurat cepat, nasional cepat, daerah dan desa lambat) menunjuk satu titik
-  tekan: titik serah lapis sementara ke permanen untuk aset non-nasional. Itulah tempat jalur dana tertutup (Pasal 5
-  huruf b dan e), pemilik aset darurat tidak tertulis, dan pencatatan berhenti. Wawasan ini menjadi alasan KD-R2 dan
-  KD-R3 didahulukan di atas penambahan stok darurat.
+- **[Inferensi tim]** Pola dua kecepatan yang tercatat (aset nasional cepat; jembatan daerah, desa, dan lapis permanen
+  lambat) menunjuk satu titik tekan: titik serah lapis sementara ke permanen untuk aset non-nasional. Itulah tempat jalur
+  dana tertutup (Pasal 5 huruf b dan e), pemilik aset darurat tidak tertulis, dan pencatatan berhenti. Lapis darurat
+  tampak bergerak (128 sumur PU dan 537 sarana dalam sekitar dua bulan), tetapi menilainya "cepat" atau "dalam orde
+  kebutuhan" belum didukung data waktu dan daftar sumur TNI AD dan Polri (butir 6). Wawasan ini menjadi alasan KD-R2 dan
+  KD-R3 didahulukan; penambahan stok darurat ditunda penilaiannya, bukan ditolak.
+- **[Inferensi tim]** Kalimat "program RR air atau akses Indonesia belum pernah dievaluasi secara independen" lebih jujur
+  daripada "berbukti lemah": label lemah di rubrik berarti tidak ada evaluasi, bukan bahwa evaluasi menunjukkan dampak
+  kecil.
 - **[Inferensi tim]** Karena ukuran pemulihan air yang tersedia hanya unit SPAM berfungsi, angka 95,5% tidak boleh dibaca
   sebagai 95,5% jiwa pulih; kesimpulan menulisnya sebagai unit dan menyebut bahwa jiwa terlayani tidak diketahui.
 - **[Inferensi tim]** Satu-satunya bukti dampak ketat untuk akses (RCT jembatan pejalan kaki Rwanda) berasal dari luar
@@ -160,33 +176,39 @@ melampaui masa R3P tiga tahun, sementara tidak ada satu pun program RR air atau 
 
 ### Inti
 
-Empat keputusan (KD-R1 sampai KD-R4) dan lima keputusan 14 hari pertama, semuanya dalam kewenangan Kepala BNPB untuk
-diambil atau diajukan, karena masing-masing bertumpu pada pasal yang memberi BNPB peran koordinasi, data, penetapan, atau
-usul perubahan peraturan sendiri. Dua keputusan perlu dibetulkan dasarnya: KD-R2 merujuk Perban 1/2026 (bukan Juklak
-1/2025), dan KD-R3 dapat menumpang Satgas Keppres 1/2026 yang menempatkan Kepala BNPB sebagai Wakil Ketua II Tim
-Pelaksana.
+Empat keputusan (KD-R1 sampai KD-R4) dan lima keputusan 14 hari pertama. KD-R1, KD-R3, dan keputusan 14 hari dapat
+diambil Kepala BNPB dengan instrumen yang ada (koordinasi monev, walidata, penetapan R3P, forum Satgas); KD-R2 hanya dapat
+diusulkan Kepala BNPB bersama Kemenkeu dan Kemendesa, karena hibah RR dan Dana Bersama melibatkan Kemenkeu dan dasar
+larangan aset desa di atas Perban belum diperiksa; KD-R4 memerlukan kesepakatan dengan Kementerian ESDM. Dua keputusan
+perlu dibetulkan dasarnya: KD-R2 merujuk Perban 1/2026 (bukan Juklak 1/2025), dan KD-R3 dapat menumpang Satgas Keppres
+1/2026 yang menempatkan Kepala BNPB sebagai Wakil Ketua II Tim Pelaksana.
 
 ### Temuan bersumber
 
 1. **KD-R1 (waktu pulih sebagai ukuran).** Dasar: Perban 6/2017 Pasal 10 mendefinisikan keluaran (outcome) RR sebagai
    "manfaat yang dirasakan oleh masyarakat korban bencana dan lingkungan" (`perban-nomor-6-tahun-2017.json` hlm. 10,
-   bab-02 T1.12); Pasal 14 ayat (2) BNPB dan/atau BPBD mengoordinasikan monev (dicek sesi ini, hlm. 12); Perban 1/2023
+   bab-02 T1.12); Pasal 14 ayat (2) BNPB dan/atau BPBD mengoordinasikan monev (dicek sesi ini, hlm. 13); Perban 1/2023
    Pasal 7–8: walidata bencana adalah unit kerja BNPB yang bertugas memastikan ketersediaan data dan menyiapkan standar
    (dicek sesi ini, hlm. 5–6). Tidak ditemukan standar waktu pulih air atau akses di peraturan BNPB (bab-02 C1.1). Pustaka
    `bnpb-2017-rr`, `bnpb-2023-satudata`. Label: resmi.
-2. **KD-R2 (jalur dana aset desa).** Dasar masalah: Perban 4/2024 Pasal 5 huruf b, d, e (butir P1.3). Jalur pengisi yang
-   ada: Perban 1/2026 Pasal 14 ayat (5): permohonan Dana Bersama tahap pascabencana "wajib merujuk" R3P yang ditetapkan dan
-   diajukan pada masa keberlakuan R3P (`perban-nomor-1-tahun-2026.json` hlm. 7, dicek sesi ini; bab-02 T1.16). Pustaka
-   `bnpb-2026-dana-bersama`, `bnpb-2024-hibah-rr`. Label: resmi. **Dibantah sebagian oleh** katalog JDIH lokal yang masih
+2. **KD-R2 (jalur dana aset desa).** Dasar masalah: Perban 4/2024 Pasal 5 huruf b, d, e (butir P1.3). Perban 1/2026
+   tidak menyebut dan tidak melarang aset desa. Pasal 14 ayat (5) hanya kriteria penelaahan: permohonan tahap
+   pascabencana wajib merujuk R3P yang ditetapkan dan diajukan pada masa keberlakuan R3P (hlm. 6–7). Pasal 9 ayat (2):
+   pemohon terdiri atas kementerian/lembaga dan Pemerintah Daerah (hlm. 5); Pasal 12: kelompok masyarakat dapat
+   mengajukan melalui Pemerintah Daerah (hlm. 6); desa tidak tercantum sebagai pemohon. Pasal 25 ayat (1): rekomendasi
+   disampaikan Kepala BNPB kepada menteri keuangan dan pemohon (hlm. 10). Sumber: `perban-nomor-1-tahun-2026.json`,
+   dicek sesi ini; bab-02 T1.16. Pustaka `bnpb-2026-dana-bersama`, `bnpb-2024-hibah-rr`. Label: resmi. **Dibantah sebagian oleh** katalog JDIH lokal yang masih
    menandai Juklak 1/2025 BERLAKU padahal induknya dicabut (bab-02 T1.16, C1.3).
 3. **KD-R3 (ikat program jembatan TNI AD dan Polri ke R3P).** Skala: TNI AD 3.008 titik, 2.500 selesai, 508 proses, 798
    di daerah bencana; Polri 895 unit, 874 selesai, 17 dibangun, 4 rencana, swadaya di 30 Polda; per 13 Agustus 2026.
    Sumber: rilis Setneg 13 Agustus 2026, dibuka ulang sesi ini 25 Oktober 2026, angka cocok; kunci
    `rehab.jembatan.garuda.titik_2026_08`, `rehab.jembatan.garuda.selesai_2026_08`,
    `rehab.jembatan.garuda.titik_wilayah_bencana_2026_08`, `rehab.jembatan.polri_mpp.jumlah_total_2026_08`,
-   `rehab.jembatan.polri_mpp.selesai_2026_08`; pustaka `setneg-2026-jembatan-tni-polri`. Label: resmi. Dasar kewajiban
-   lapor: Perban 6/2017 Pasal 14 ayat (4) "Setiap pelaksana kegiatan Rehabilitasi dan Rekonstruksi Pascabencana wajib
-   menyusun dan menyampaikan laporan" kepada BPBD dan/atau BNPB (dicek sesi ini, hlm. 12). Jalur forum: Keppres 1/2026,
+   `rehab.jembatan.polri_mpp.selesai_2026_08`; pustaka `setneg-2026-jembatan-tni-polri`. Label: resmi. Kedua program
+   adalah program reguler (TNI AD hanya 798 dari 3.008 titik di daerah bencana), bukan kegiatan RR dalam R3P. Norma
+   pelaporan: Perban 6/2017 Pasal 14 ayat (4) "Setiap pelaksana kegiatan Rehabilitasi dan Rekonstruksi Pascabencana wajib
+   menyusun dan menyampaikan laporan" kepada BPBD dan/atau BNPB (dicek sesi ini, hlm. 13); pasal ini hanya mengikat
+   pelaksana kegiatan RR, jadi tidak berlaku otomatis bagi program jembatan TNI AD dan Polri. Jalur forum: Keppres 1/2026,
    Kepala BNPB Wakil Ketua II Tim Pelaksana, Menteri PU koordinator Bidang Infrastruktur (pustaka `ri-2026-keppres1`;
    bab-01 §0.1 butir 6). Label: resmi. Catatan nama (R2): rilis resmi TNI AD tidak memakai "Garuda" maupun "Satgas"
    (bab-09 PK2 butir 1); kunci `rehab.jembatan.garuda.*` tetap dipakai sebagai nama kunci, naskah menulis "program
@@ -211,6 +233,14 @@ Pelaksana.
   hanya memerlukan penetapan dan forum yang sudah ada (Perban 6/2017, Perban 1/2023, Keppres 1/2026); KD-R2 memerlukan
   perubahan Perban 4/2024 atau koordinasi Kemenkeu (Perban 4/2024 Pasal 2 ayat (2)) dan Kemendesa; KD-R4 memerlukan
   kesepakatan dengan Kementerian ESDM. Urutan KERANGKA (R1, R2, R3) tidak salah, tetapi waktu tempuh R2 paling panjang.
+- **[Inferensi tim]** KD-R3: pengikatan jembatan TNI AD dan Polri di daerah bencana ke R3P adalah syarat agar kewajiban
+  lapor Perban 6/2017 Pasal 14 ayat (4) berlaku, bukan akibat dari kewajiban itu. Begitu jembatan dicantumkan sebagai
+  kegiatan RR dalam R3P, pelaksananya menjadi "pelaksana kegiatan RR" dan wajib melapor ke BNPB atau BPBD.
+- **[Inferensi tim]** KD-R2: jalur Dana Bersama untuk aset desa baru mungkin bila Pemerintah Daerah mengajukan
+  permohonan atas jembatan atau SPAM desa yang tercantum di R3P (Perban 1/2026 Pasal 9 ayat (2), Pasal 14 ayat (5)).
+  Keputusan akhirnya melewati rekomendasi Kepala BNPB ke Menteri Keuangan (Pasal 25), jadi KD-R2 dirumuskan sebagai usul
+  Kepala BNPB bersama Kemenkeu dan Kemendesa, bukan keputusan yang dapat diambil BNPB sendiri. Bila larangan aset desa
+  Perban 4/2024 Pasal 5 huruf e ternyata turunan PP atau PMK hibah daerah, mengubah Perban saja tidak membuka jalur itu.
 - **[Inferensi tim]** Akibat pilihan (b) "tidak" untuk KD-R3 kini dapat diberi besaran: 798 titik TNI AD di daerah
   bencana dan jembatan Polri di daerah bencana berjalan tanpa pemilik aset tertulis di R3P; besaran ini resmi, sedangkan
   risikonya (aset yatim) adalah penilaian.
@@ -228,6 +258,9 @@ Pelaksana.
 - Inpres 18/2025 belum dibuka utuh (hanya ringkasan halaman JDIH Kemenko Infrastruktur, pustaka
   `kemenkoinfra-2026-inpres18`). Naskah tidak mengutip isinya.
 - Dasar hukum pembentukan program jembatan TNI AD tidak ditemukan.
+- Dasar larangan pembiayaan aset rusak milik pemerintah desa (Perban 4/2024 Pasal 5 huruf e) di atas Perban, yaitu PP
+  atau PMK tentang hibah daerah, belum diperiksa. Sampai diperiksa, ruang KD-R2 yang dapat dibuka lewat perubahan Perban
+  saja tidak diketahui.
 
 ---
 
@@ -317,7 +350,8 @@ untuk yang nasional.
 1. **Batas mandat.** RR tanggung jawab pemda kecuali prasarana kewenangan Pemerintah (PP 21/2008 Pasal 57 ayat (1), Pasal
    76 ayat (1)); BNPB dan/atau BPBD penanggung jawab dan koordinator, K/L dan perangkat daerah teknis pelaksana (Perban
    6/2017 Pasal 12–13). Pustaka `ri-2008-pp21`, `bnpb-2017-rr`; bab-02 PK2. Label: resmi.
-2. **R-RR-04.** Lihat P2 butir 3 (skala program, kewajiban lapor Pasal 14 ayat (4), forum Keppres 1/2026). Tambahan:
+2. **R-RR-04.** Lihat P2 butir 3 (skala program, norma lapor Pasal 14 ayat (4) yang hanya mengikat pelaksana kegiatan
+   RR, forum Keppres 1/2026); penerapannya ke program TNI AD dan Polri lewat pencantuman di R3P ada di P2 Inferensi. Tambahan:
    biaya per unit TNI AD dan Polri tidak diumumkan; PU jembatan gantung 2025 43 unit Rp246,36 miliar (rata-rata sekitar
    Rp5,73 miliar per unit, asumsi-kebijakan) (kunci `rehab.jembatan.pu.gantung_2025_unit`,
    `rehab.jembatan.pu.gantung_biaya_rata2_2025`; pustaka `pu-2025-jembatan-gantung`). Label: resmi; asumsi-kebijakan
@@ -410,9 +444,11 @@ program tunggal; dan unit SPAM berfungsi sebagai ukuran tunggal pemulihan.
 ### Inferensi
 
 - **[Inferensi tim]** Tambahan yang sebaiknya masuk 12.5 (usulan, belum di KERANGKA): (6) menambah stok darurat sebagai
-  jawaban utama. Lapis darurat Sumatra sudah berada di orde kebutuhan model (P1 butir 6), sedangkan hambatan ada di serah
-  permanen; menaruh dana tambahan di stok tanpa jalur permanen mengulang pola Sulteng. (7) menyebut program mana pun
-  "terbukti" berdampak; tidak ada program RR air atau akses berbukti kuat (P1 butir 7).
+  jawaban utama, **bersyarat**: butir ini baru layak dikunci setelah jumlah sumur TNI AD dan Polri serta waktu
+  pemasangan lapis darurat diketahui (R-RR-11). Yang tercatat baru 128 sumur PU lawan 486 sumur-setara model (P1 butir
+  6), jadi kecukupan lapis darurat belum dapat dinyatakan; alasan yang sudah berdiri hanyalah bahwa stok tanpa jalur
+  permanen tidak menutup titik serah (pola Sulteng). (7) menyebut program mana pun "terbukti" berdampak; tidak ada
+  program RR air atau akses berbukti kuat, dan program Indonesia belum pernah dievaluasi independen (P1 butir 7).
 - **[Inferensi tim]** Tiap butir 12.5 ditulis dengan satu baris "mengapa tidak" dan pasal atau keputusan yang
   menahannya, bukan sekadar daftar, supaya terbaca sebagai pilihan, bukan kelalaian (L63 argumen tandingan).
 
@@ -475,7 +511,7 @@ data yang dapat dimintai dalam 14 hari pertama.
 
 | Kode | Objek | Isi | Sumber data | G/B | Status |
 |---|---|---|---|---|---|
-| Kotak 12.1 | Temuan kunci kesimpulan | Kalimat tesis terkunci (P1 Inferensi); 3 kartu angka: jembatan rusak 2018–2025, selisih pemulihan nasional lawan jembatan daerah Mei 2026 (33 poin), aset permanen 2,5 kali masa R3P | `dibi/rekap_nasional_tahunan.csv`; `pu-2026-infrastruktur-sumatera-mei`; `ocg-2026-palu4`; kunci di bab-12.angka.json | B5.5, B5.4 | ada |
+| Kotak 12.1 | Temuan kunci kesimpulan | Kalimat tesis terkunci (P1 Inferensi); 3 kartu angka: jembatan rusak 2018–2025; jembatan daerah 67% lawan nasional 100% Mei 2026 (selisih 33 poin, khusus jembatan; jalan daerah 94%); Jembatan Palu IV: 7,4 tahun, sekitar 2,5 kali masa R3P (satu jembatan, bukan ukuran umum aset permanen) | `dibi/rekap_nasional_tahunan.csv`; `pu-2026-infrastruktur-sumatera-mei`; `ocg-2026-palu4`; kunci di bab-12.angka.json | B5.5, B5.4 | ada |
 | Gambar 12.1 | Kisi prioritas 3×3 rekomendasi R-RR-01 sampai R-RR-15 | Wajib karena 15 > 9 (L31). Sumbu: horizon (100 hari, 2026–2027, 2028–2030; P4) lawan dasar (aksi wajib menurut peraturan, sudah ada perlu dikembangkan, usulan baru) | KERANGKA §6, dengan koreksi status R-RR-01 (P3) | G18 | ada |
 | Tabel 12.1 | Keputusan yang diminta | KD-R1 sampai KD-R4: keputusan, pilihan (a)/(b), akibat, pasal dasar (P2) | KERANGKA §6; Perban 6/2017, 1/2023, 4/2024, 1/2026; Keppres 1/2026 | B5.5 keputusan, B5.25 | ada |
 | Tabel 12.2 | Rekomendasi internal BNPB | 8 baris (R-RR-01, 02, 03, 05, 06, 09, 11, 15): langkah, lapis, status P7, unit, waktu, dasar | KERANGKA §6; P3 | B5.13 | ada |
@@ -519,3 +555,28 @@ Entri CSL-JSON di `naskah/rehab/bukti/bab-12.pustaka.json` (43 entri). Dibuka at
 `bnpb-2020-dsp`; web `setneg-2026-jembatan-tni-polri`; paket `pantau-program-terbukti`. Entri lain disalin dari pustaka
 Bab 1–8 dengan catatan verifikasi dan tanggal akses aslinya. `cnn-2026-satgas-prr` berverifikasi sekunder dan hanya
 menopang bagian Celah.
+
+---
+
+## Catatan revisi atas temuan pemeriksa (25 Oktober 2026)
+
+Sembilan temuan dicek ke sumber; semuanya diterima, tidak ada yang ditolak.
+
+1. SPAM Sumbar dikeluarkan dari daftar "melampaui" (P1 butir 5): target Agustus 2028 masih di dalam masa R3P. Inti
+   kini "dua dari tiga contoh tercatat"; kartu Kotak 12.1 menjadi "Jembatan Palu IV: 7,4 tahun, sekitar 2,5 kali masa
+   R3P"; catatan kunci `rehab.pulih.palu4_kali_masa_r3p` diberi n=1.
+2. P1 butir 7 ditulis ulang dengan program air dan akses yang tepat (dicek ke tabel Kompendium calon riset E): Palu IV,
+   DI Gumbasa (lemah), SCIRT (sedang), Kobe (lemah). Nepal dan CSRRP (Indonesia, rumah) dipindah ke konteks rumah. Label
+   diturunkan ke asumsi-kebijakan (rubrik penyusun).
+3. Perban 6/2017 Pasal 14 ayat (4) dicek: hanya mengikat pelaksana kegiatan RR, tercetak hlm. 13 (juga ayat (2); hlm.
+   12 dikoreksi di P2 butir 1 dan 3). Penerapan ke program TNI AD dan Polri dipindah ke P2 Inferensi.
+4. Perban 1/2026 Pasal 9 ayat (2), 12, 14 ayat (5), 25 dicek; P2 butir 2 tidak lagi menyebut "jalur pengisi yang ada".
+   Ditambahkan Pasal 12 (kelompok masyarakat melalui Pemda), yang tidak disebut pemeriksa tetapi relevan.
+5. P1 butir 6 kini hanya angka berdampingan (128 sumur, 37 selesai, lawan 486 sumur-setara model, basis 970.876 jiwa
+   per bab-08.angka.json); "cepat" dan "orde kebutuhan" dipindah ke Inferensi; usul 12.5 (6) diberi syarat.
+6. "Aset daerah tertinggal sepertiga" menjadi "jembatan daerah 67%, jalan daerah 94%".
+7. Flores: 36 jembatan ditulis sebagai provinsi-tahun NTT 2026 kategori gempa, termasuk Flores, 3,6 kali (cocok dengan
+   bab-08.md dan catatan kunci).
+8. Patahan seri Juklak 7/2023 ditulis dua arah.
+9. Celah P2 ditambah dasar larangan aset desa di atas Perban; KD-R2 dirumuskan sebagai usul bersama Kemenkeu dan
+   Kemendesa (P2 Inti dan Inferensi).

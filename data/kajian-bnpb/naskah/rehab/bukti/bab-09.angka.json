@@ -2,7 +2,8 @@
  "_catatan": [
   "Kunci angka baru Bab 9 kajian rehab (naskah/rehab/bukti/bab-09.md), belum digabung ke data/angka.json. Bentuk nilai + pustaka (id di bab-09.pustaka.json); olahan dicatat di medan catatan.",
   "Kunci yang sudah ada di berkas bukti Bab 1–5 dan registri utama tidak diulang (lihat bab-09.md bagian Angka untuk registri). Angka sekunder tidak dimasukkan.",
-  "Disusun 25 Oktober 2026."
+  "Disusun 25 Oktober 2026.",
+  "Revisi 25 Okt 2026: kunci rehab.jembatan.tniad.porsi_luar_wilayah_bencana_persen_2026_08 (73,5) dihapus karena rilis Setneg tidak menyatakan apakah 798 titik wilayah bencana bagian dari 3.008; kunci bab-05 porsi_wilayah_bencana_persen_2026_08 (26,5) perlu ditinjau pemilik bab-05. Tiga kunci sumur bor PU ditambahkan."
  ],
  "angka": {
   "rehab.hukum.hibah_rr_ubah_rka_larangan_n": {
@@ -81,7 +82,7 @@
    "nilai": 4,
    "pustaka": "bnpb-2017-rr",
    "satuan": "petunjuk pelaksanaan",
-   "keyakinan": "resmi (hitungan pasal)",
+   "keyakinan": "resmi; hitungan pasal",
    "sumber": "Perban BNPB 6/2017",
    "lokasi": "Pasal 8 ayat (2), 9 ayat (2), 13 ayat (7), 14 ayat (6)",
    "catatan": "dihitung dari frasa 'diatur dengan Petunjuk Pelaksanaan'; tidak satu pun juklak ditemukan di korpus lokal"
@@ -90,20 +91,55 @@
    "nilai": 0,
    "pustaka": "bnpb-dibi",
    "satuan": "kolom",
-   "keyakinan": "resmi (olahan)",
+   "keyakinan": "resmi; olahan",
    "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
-   "lokasi": "medan kolom tabel pdsi_staging.mv_dibi_dampak_by_kejadian",
-   "catatan": "dari 19 kolom dampak tidak ada kolom air minum, SPAM, sumur, jalan, status jalan, desa terputus, atau hari pulih",
-   "berkas": "dibi/mentah/dibi_nasional.json"
+   "lokasi": "medan kolom tabel pdsi_staging.mv_dibi_dampak_by_kejadian; berkas dibi/mentah/dibi_nasional.json",
+   "catatan": "dari 19 kolom dampak tidak ada kolom air minum, SPAM, sumur, jalan, status jalan, desa terputus, atau hari pulih"
   },
-  "rehab.jembatan.tniad.porsi_luar_wilayah_bencana_persen_2026_08": {
-   "nilai": 73.5,
-   "pustaka": "setneg-2026-jembatan-tni-polri",
-   "satuan": "%",
-   "keyakinan": "resmi (olahan)",
-   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
-   "lokasi": "rilis 13 Agu 2026",
-   "catatan": "olah(resmi): (3.008 − 798) / 3.008 × 100"
+  "rehab.pipa.sumatra2025.sumur_bor_sda_feb2026": {
+   "nilai": 25,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data hingga 2 Februari 2026), dibuka ulang 25 Okt 2026",
+   "lokasi": "paragraf bidang Sumber Daya Air",
+   "catatan": "'pembangunan 25 unit sumur bor air dalam'; bagian dari 128 (rehab.pipa.sumatra2025.sumur_bor_feb2026)"
+  },
+  "rehab.pipa.sumatra2025.sumur_bor_ck_feb2026": {
+   "nilai": 103,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data hingga 2 Februari 2026), dibuka ulang 25 Okt 2026",
+   "lokasi": "paragraf Ditjen Cipta Karya",
+   "catatan": "'pembangunan 103 unit sumur bor' = 17 dangkal (Aceh) + 86 dalam; 25 + 103 = 128, total tidak ditulis rilis (penjumlahan penyusun)"
+  },
+  "rehab.pipa.sumatra2025.sumur_bor_dalam_ck_feb2026": {
+   "nilai": 86,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data hingga 2 Februari 2026), dibuka ulang 25 Okt 2026",
+   "lokasi": "paragraf Ditjen Cipta Karya, sumur bor dalam",
+   "catatan": "'untuk sumur bor dalam, Kementerian PU menangani pembangunan 86 unit'; direncanakan atau dikerjakan, bukan semuanya selesai"
+  },
+  "rehab.hukum.dth_rp_bulan": {
+   "nilai": 600000,
+   "pustaka": "bnpb-2025-juklak15",
+   "satuan": "Rp per bulan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 15/2025",
+   "lokasi": "ketentuan besaran DTH",
+   "catatan": "ditambahkan penulis naskah Bab 9 dari bukti PK4 butir 4; setara juklak2023_1.dth_rp_bulan (Juklak 1/2023, nilai maksimal); Juklak 15/2025 menulis 'sebesar' Rp600.000 untuk Aceh, Sumut, Sumbar"
+  },
+  "rehab.hukum.dth_sumatra_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2025-juklak15",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 15/2025",
+   "lokasi": "ketentuan jangka waktu DTH",
+   "catatan": "ditambahkan penulis naskah Bab 9 dari bukti PK4 butir 4; dapat diberikan selama 3 bulan untuk Aceh, Sumut, Sumbar; disalurkan BNPB ke rekening penerima"
   }
  }
 }
