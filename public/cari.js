@@ -27,7 +27,9 @@
     for (const i of item) { if (!t.every(w => i.s.includes(w))) continue; out.push([i.s.indexOf(" " + t[0]) >= 0 ? (i.s.startsWith(" " + n) ? 0 : 1) : 2, i]); }
     return out.sort((a, b) => a[0] - b[0] || a[1].n.length - b[1].n.length).map(x => x[1]);
   }
-  const baris = (i, k) => `<button data-cari="${k}"><b>${esc(i.n)}</b><span class="hs-in"><i>${esc(KAW.has(i.t) ? JENIS[i.t] : [i.g, i.k].filter(Boolean).join(" · "))}</i></span><span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
+  /* chip tengah: jenis hanya di grup campuran (Kawasan konservasi); grup sejenis sudah bernama di judulnya */
+  const chip = s => s ? `<span class="hs-in"><i>${esc(s)}</i></span>` : "<span></span>";
+  const baris = (i, k) => `<button class="hs-c" data-cari="${k}"><b>${esc(i.n)}</b>${chip(KAW.has(i.t) ? (GRUP.some(g => g[0] === i.t) ? "" : JENIS[i.t]) : [i.g, i.k].filter(Boolean).join(" · "))}<span class="hs-lv hs-provinsi">${esc(namaProv(i.p))}</span></button>`;
   let daftar = [];
   /* dipanggil dari penanganan input di index.html; mengembalikan HTML tambahan untuk #hasil */
   window.Cari = {
@@ -57,12 +59,20 @@
   };
 
   /* ---------- Photon: hanya Indonesia, hanya teks ketikan, tanpa data lain ---------- */
+  /* jenis OSM ke bahasa Indonesia: nilai dulu, lalu kunci; selebihnya "Tempat" (jangan tampilkan kode mentah) */
+  const OSM = {national_park: "Taman nasional", nature_reserve: "Cagar alam", protected_area: "Kawasan lindung", city: "Kota", town: "Kota", village: "Desa", hamlet: "Dusun",
+    suburb: "Kelurahan", neighbourhood: "Lingkungan", county: "Kabupaten", state: "Provinsi", island: "Pulau", peak: "Gunung", volcano: "Gunung api", lake: "Danau",
+    river: "Sungai", aerodrome: "Bandara", parking: "Parkir", school: "Sekolah", hospital: "Rumah sakit", place_of_worship: "Rumah ibadah", forest: "Hutan", wood: "Hutan",
+    highway: "Jalan", waterway: "Sungai", natural: "Alam", building: "Bangunan", amenity: "Fasilitas", tourism: "Wisata", landuse: "Lahan", leisure: "Rekreasi", boundary: "Wilayah", shop: "Toko", office: "Kantor"};
+  const jenisOsm = p => OSM[p.osm_value] || OSM[p.osm_key] || "Tempat";
+  const kapital = s => (s || "").replace(/(^|\s)\p{Ll}/gu, c => c.toUpperCase());
   function fotoHtml() { return foto.length ? `<div class="hs-jd">Cari tempat</div>` + foto.map((f, k) => { const p = f.properties;
-    return `<button data-foto="${k}"><b>${esc(p.name || "")}</b><span class="hs-in"><i>${esc([p.city || p.county, p.state].filter(Boolean).join(" · "))}</i></span><span class="hs-lv hs-kecamatan">${esc(p.osm_value || "")}</span></button>`; }).join("") + `<div class="hs-atr">© OpenStreetMap, Photon</div>` : ""; }
+    return `<button class="hs-c" data-foto="${k}"><b>${esc(p.name || "")}</b>${chip([p.city || p.county, p.state].filter(Boolean).map(kapital).join(" · "))}<span class="hs-lv hs-kecamatan">${esc(jenisOsm(p))}</span></button>`; }).join("") + `<div class="hs-atr">© OpenStreetMap, Photon</div>` : ""; }
   async function cariFoto(q) {
     if (norm(q).length < 3) return; ctrl?.abort(); ctrl = new AbortController();
     try { const r = await fetch(`${PHOTON}?q=${encodeURIComponent(q)}&lat=-2&lon=118&limit=5&lang=default&bbox=94,-11.5,141.5,6.5`, {signal: ctrl.signal});
-      if (!r.ok) throw new Error(r.status); foto = (await r.json()).features.filter(f => (f.properties.countrycode || "ID") === "ID");
+      if (!r.ok) throw new Error(r.status); const ada = new Set(cocok(q).map(i => norm(i.n)));   /* yang sudah tampil di grup lokal tidak diulang */
+      foto = (await r.json()).features.filter(f => (f.properties.countrycode || "ID") === "ID" && !ada.has(norm(f.properties.name)));
       const w = document.getElementById("cariFoto"); if (w && q === qTerakhir) { w.innerHTML = fotoHtml() || `<div class="hs-atr">Tempat tidak ditemukan. © OpenStreetMap, Photon</div>`; $("#hasil").hidden = false; }
     } catch (e) { if (e.name !== "AbortError") console.warn("photon", e); } }
   function terbangFoto(f) { const p = f.properties, e = p.extent; $("#hasil").hidden = true; $("#cari").value = "";

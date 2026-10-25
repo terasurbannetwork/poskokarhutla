@@ -25,6 +25,7 @@ export default {
         "sim",
         "informasi",
         "foto",
+        "pelaporan",
         "tentang"
       ],
       "tab_sembunyi": [

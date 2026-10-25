@@ -1,6 +1,9 @@
 .hs-jd{display:flex;justify-content:space-between;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:8px 8px 3px}
 .hs-jd small{font-weight:700}
 .hasil button.hs-lagi{display:block;color:var(--brand2);font-size:11.5px;font-weight:700;padding:6px 8px}
+/* baris Cari: nama melebar, dua chip rapat di kanan supaya sejajar antarbaris */
+.hasil button.hs-c{grid-template-columns:minmax(0,1fr) auto auto}
+.hasil button.hs-c .hs-in{max-width:180px;justify-content:flex-end}
 .hs-atr{font-size:10px;color:var(--ink2);padding:4px 8px}
 #cariKartu{position:absolute;z-index:9;top:12px;right:304px;width:300px;max-height:calc(100% - 24px);overflow:auto;font-size:12px}
 #cariKartu[hidden]{display:none}
@@ -8,7 +11,7 @@
 .ck-h b{font-size:13.5px}
 .ck-h button{flex:none;border:0;border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;min-height:28px}
 .ck-d{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0 0 8px}.ck-d dt{color:var(--ink2)}.ck-d dd{margin:0;font-weight:600}
-.ck-t{width:100%;border-collapse:collapse;font-size:11.5px}.ck-t th,.ck-t td{padding:4px 6px;text-align:right;border-top:1px solid var(--line)}.ck-t th:first-child{text-align:left}.ck-t thead th{font-size:10px;color:var(--ink2);border-top:0}
+.ck-t{width:100%;border-collapse:collapse;font-size:11.5px}.ck-t th,.ck-t td{padding:4px 6px;text-align:right;border-top:1px solid var(--line)}.ck-t th:first-child{text-align:left}.ck-t thead th{font-size:10px;border-top:0}
 .ck-n{font-size:10.5px;color:var(--ink2);margin:6px 0 0}
 @media (max-width:900px){#cariKartu{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:38%}}
 .ck-x{display:none}

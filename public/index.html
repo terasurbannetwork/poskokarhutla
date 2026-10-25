@@ -125,6 +125,10 @@ main{position:fixed;inset:var(--top) 0 0 0}
 .page.on{display:block}
 .scroll{overflow-y:auto;padding:22px 18px 60px}
 .wrap{max-width:1240px;margin:0 auto}
+.lp-wrap{padding:24px 16px}.lp-jd{margin:0 0 4px;font-size:22px}.lp-sub{margin:0 0 16px;color:var(--ink2)}
+.lp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.lp-k{display:grid;gap:6px;align-content:start;color:var(--ink);text-decoration:none;padding:18px;transition:border-color .15s}.lp-k:hover{border-color:var(--brand2)}
+.lp-k svg{width:26px;height:26px;color:var(--brand2)}.lp-k b{font-size:15.5px}.lp-k span{color:var(--ink2);font-size:13px;line-height:1.45}.lp-k small{font-weight:700;color:var(--brand2);font-size:11.5px}
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
 .pad{padding:18px}
 .grid{display:grid;gap:14px}
@@ -1586,6 +1590,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
   <!-- ================= POSKO ================= -->
   <section class="page scroll" id="p-posko" aria-label="Posko, sarana, dan operasi"><div class="wrap"><div class="seg" id="poskoSub" role="group" aria-label="Bagian" style="margin-bottom:14px"><button data-s="posko" aria-pressed="true">Posko</button><button data-s="sarana" aria-pressed="false">Sarana & alat</button><button data-s="operasi" aria-pressed="false">Operasi & kebutuhan</button><button data-s="keputusan" aria-pressed="false">Keputusan</button></div>
     <div id="posko"></div><div id="sarana" hidden></div><div id="operasi" hidden></div><div id="keputusan" hidden></div></div></section>
+  <!-- ================= LAPORAN: pintu ke tiga generator yang sudah ada (pemilik 25 Okt 2026) ================= -->
+  <section class="page scroll" id="p-pelaporan" aria-label="Laporan"><div class="wrap lp-wrap"><h2 class="lp-jd">Laporan</h2><p class="lp-sub">Pilih laporan yang mau dibuat. Angkanya diambil dari data situs ini.</p><div class="lp-grid"><a class="box lp-k" href="/laporan-bnpb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan bencana harian</b><span>Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.</span><small>PPTX · PDF</small></a><a class="box lp-k" href="/laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan karhutla harian</b><span>Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.</span><small>Cetak · PDF</small></a><a class="box lp-k" href="/paparan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan per daerah</b><span>Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.</span><small>PPTX · PDF</small></a></div></div></section>
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
@@ -1667,7 +1673,7 @@ const SINGKAT_PROV = {12: "Sumut", 13: "Sumbar", 16: "Sumsel", 19: "Babel", 21: 
 const namaProvHtml = k => SINGKAT_PROV[k] ? `<span class="nm-pjg">${esc(namaProv(k))}</span><span class="nm-pdk" title="${esc(namaProv(k))}">${SINGKAT_PROV[k]}</span>` : esc(namaProv(k));
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["tentang", "Tentang"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["pelaporan", "Laporan"], ["tentang", "Tentang"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
@@ -1717,7 +1723,7 @@ function bukaTab(id, dorong = true) {
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 /* disembunyikan sementara dari menu atas (permintaan pemilik 13 Okt 2026); halamannya tetap bisa dibuka lewat tautan langsung */
 const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode"]); /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
-const IK_TAB = {foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
+const IK_TAB = {pelaporan: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
   tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
   posko: IKON.posko, informasi: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ringkasan: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'};
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`, TB = TABS.filter(t => PEMIRSA ? PEMIRSA.includes(t[0]) : !TAB_SEMBUNYI.has(t[0]));
