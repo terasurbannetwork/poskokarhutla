@@ -1,6 +1,7 @@
 """Uji usulan: kalibrasi luas langsung ke NOAA-20 dan NOAA-21 (tanpa porsi S-NPP 0,534). Analisis saja, website tidak diubah.
 
-Titik per tahun = aturan sejarah.py (keyakinan n/h, vegetasi: type 0 atau sel bukan tipe 1/2/3, di dalam batas wilayah, tahun WIB), untuk
+Titik per tahun = keyakinan n/h, di dalam batas wilayah, tahun WIB, TANPA titik di sel sumber panas tetap (titik_palsu.sel_industri(): smelter, tambang, kilang,
+pembangkit, lepas pantai; kawah tetap dihitung) = saringan YANG SAMA dengan mesin luas scripts/data/peta_karhutla.py (sebelum 25 Okt 2026 aturan sejarah.vegetasi), untuk
 data/raw/firms/viirs_noaa20.csv (SP 2018-04-01..) dan viirs_noaa21.csv (SP 2023-03-01..). S-NPP dari sejarah.json website (sumber faktor 4,3).
 Luas resmi 2015-2025: riwayat.json (factsheet_karhutla.json website, Bakom/BNPB). 2026 Jan-Jul: SiPongi 202.011 ha (laporan.py, uji luar contoh).
 Keluaran: kalibrasi_noaa.json + ringkasan di stdout.
@@ -11,15 +12,17 @@ R = '/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/'
 sys.path.insert(0, R + 'scripts/data')
 from wilayah import Wilayah
 import sejarah
+import titik_palsu
+INDUSTRI, _ = titik_palsu.sel_industri()
 SINI = os.path.dirname(os.path.abspath(__file__))
 W = Wilayah()
 
 
 def hitung(path):
     """-> (titik per tahun WIB, titik per bulan 2026, titik per (hari, provinsi) 2026)."""
-    nonveg = sejarah.bukan_vegetasi(path); th, bl, hp = Counter(), Counter(), Counter()
+    th, bl, hp = Counter(), Counter(), Counter()
     for r in csv.DictReader(open(path)):
-        if (r.get('confidence') or '') not in ('n', 'h') or not sejarah.vegetasi(r, nonveg):
+        if (r.get('confidence') or '') not in ('n', 'h') or titik_palsu.palsu(r['latitude'], r['longitude'], INDUSTRI):
             continue
         j = r['acq_time'].zfill(4); t = dt.datetime.fromisoformat(f"{r['acq_date']}T{j[:2]}:{j[2:]}") + sejarah.WIB
         adm = W.cari(float(r['longitude']), float(r['latitude']))

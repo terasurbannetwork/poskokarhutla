@@ -9,7 +9,7 @@
    Beda yang diketahui dengan peta_karhutla.py: hotspot.json sudah membuang titik sumber panas tetap (titik_palsu.py) dan hanya memuat 7 hari terakhir,
    jadi kawasan berisi smelter/PLTU bisa sedikit lebih rendah; jam dibulatkan 0,01 jam. Diuji di tests/agen/angka-kawasan.test.mjs (paritas dengan bertahan() Python). */
 (function (g) {
-const G = 0.003375, LEBAR = 8192, F = {N20: 4.22, N21: 4.36};   /* F = peta_karhutla.F20/F21; uji menjaga keduanya sama */
+const G = 0.003375, LEBAR = 8192, F = {N20: 4.12, N21: 4.16};   /* F = peta_karhutla.F20/F21; uji menjaga keduanya sama */
 const NB = [-1, 0, 1].flatMap(i => [-1, 0, 1].map(j => i * LEBAR + j));
 const sel = (lon, lat) => Math.round(lon / G) * LEBAR + Math.round(lat / G) + LEBAR / 2;
 const bul = v => Math.floor(v + 0.5);

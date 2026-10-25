@@ -74,7 +74,7 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
                 if r['satellite'] in PK.HOT and TP.palsu(r['latitude'], r['longitude'], sel_ind):
                     ind.append((src, r))
     w = Wilayah()
-    rek, rek_ind = PK.rekam(semua, w, ''), PK.rekam(ind, w, '')
+    rek, rek_ind = PK.rekam(semua, w, '', sel_ind), PK.rekam(ind, w, '')
     for r in (rek, rek_ind):
         for u in utc:
             r.setdefault(u.isoformat(), PK.baru_rekaman(''))
