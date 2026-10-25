@@ -14,7 +14,13 @@
 .ar-len{border-radius:999px;background:var(--line);padding:2px 8px;font:800 10.5px var(--font);font-variant-numeric:tabular-nums;color:var(--ink)}
 .ar-tengah{display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
 .ar-plabel{font:800 11px var(--font);color:var(--brand2)}
-.ar-tengah input[type=date]{height:34px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:0 10px;font:700 12.5px var(--font)}
+.ar-pickw{position:relative;display:inline-flex}
+.ar-pick{display:inline-flex;align-items:center;gap:6px;height:34px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);
+  padding:0 12px;font:700 12.5px var(--font);cursor:pointer}
+.ar-pick:hover{border-color:var(--brand2)}
+.ar-pick svg{width:15px;height:15px;color:var(--brand2)}
+/* input tanggal hanya pembawa kalender peramban; labelnya ditulis tombol di atasnya */
+.ar-pickw input[type=date]{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;padding:0;pointer-events:none}
 .ar-ini{border-radius:999px;background:color-mix(in oklab,var(--brand2) 14%,transparent);color:var(--brand2);padding:3px 9px;font:800 10.5px var(--font)}
 .ar-balik{border:0;border-radius:999px;background:var(--line);color:var(--ink2);padding:3px 9px;font:700 10.5px var(--font);cursor:pointer}
 .ar-balik:hover{color:var(--ink)}
@@ -32,9 +38,13 @@
 .ar-hari.on{background:var(--brand2);border-color:var(--brand2);color:#fff}
 .ar-hari.kini{border-color:var(--brand2);color:var(--brand2)}
 
-.ar-tabel{margin-top:14px;overflow-x:auto}
-.ar-tabel table{width:100%}
-.ar-tabel td{padding:7px 6px;vertical-align:middle}
+/* tabelnya berdiri sendiri: index.html tidak memuat inti/tabel.css */
+.ar-tabel{margin-top:14px;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.ar-tabel table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ar-tabel th{text-align:left;font:800 10px var(--font);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);
+  padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.ar-tabel td{padding:8px 12px;vertical-align:middle;border-bottom:1px solid var(--line);white-space:nowrap}
+.ar-tabel tr:last-child td{border-bottom:0}
 .ar-tabel tr.ar-on td{background:color-mix(in oklab,var(--brand2) 8%,transparent)}
 .ar-no{color:var(--ink2);font-size:11.5px}
 .ar-ik{display:inline-flex;align-items:center;gap:4px;margin-right:6px;border:1px solid var(--line);border-radius:10px;padding:4px 8px;

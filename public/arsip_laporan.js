@@ -28,6 +28,7 @@ const geser = (s, n) => iso(new Date(Date.parse(s + "T00:00:00Z") + n * 864e5));
 const hariIni = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);   // tanggal WIB
 const tglPendek = s => { const d = d0(s); return `${d.getUTCDate()} ${BULAN[d.getUTCMonth()]}`; };
 const tglPanjang = s => { const d = d0(s); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BULAN_PJG[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
+const tglPanjangPendek = s => { const d = d0(s); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BULAN[d.getUTCMonth()]} ${d.getUTCFullYear()}`; };
 const tglLencana = s => { const d = d0(s); return `${HARI[d.getUTCDay()].slice(0, 3)}, ${d.getUTCDate()} ${BULAN[d.getUTCMonth()]}`; };
 /* Senin pekan yang memuat s */
 const senin = s => geser(s, -((d0(s).getUTCDay() + 6) % 7));
@@ -35,9 +36,10 @@ const senin = s => geser(s, -((d0(s).getUTCDay() + 6) % 7));
 /* ikon: dokumen bersudut lipat, hurufnya dipisah supaya PDF dan PPT terbaca tanpa warna saja */
 const IKON_DOK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5"/></svg>';
 const IKON_CETAK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4v-6h16v6h-2M8 14h8v7H8z"/></svg>';
+const IKON_KAL = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
 const IKON_BUKA = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-const S = {hari: hariIni(), karhutla: new Set(), bnpb: new Set(), kunci: "", akses: "memuat"};
+const S = {hari: hariIni(), karhutla: new Set(), bnpb: new Set(), kunci: "", akses: "memuat", manual: false};
 
 /* tombol berkas: ikon dokumen + nama format, sebagai tautan supaya bisa dibuka di tab baru */
 const tombol = (url, label, judul, ikon = IKON_DOK, kelas = "") =>
@@ -72,7 +74,10 @@ function gambar() {
       <button type="button" class="ar-langkah" data-h="${kemarin}"><b>&lsaquo; Kemarin</b><span class="ar-len">${esc(tglLencana(kemarin))}</span></button>
       <div class="ar-tengah">
         <span class="ar-plabel">Periode</span>
-        <input type="date" id="arTgl" value="${h}" max="${ini}" aria-label="Tanggal laporan">
+        <span class="ar-pickw">
+          <button type="button" class="ar-pick" id="arPick" aria-label="Pilih tanggal laporan">${IKON_KAL}<b>${esc(tglPanjangPendek(h))}</b></button>
+          <input type="date" id="arTgl" value="${h}" max="${ini}" tabindex="-1" aria-hidden="true">
+        </span>
         ${h === ini ? `<span class="ar-ini">Hari ini</span>` : `<button type="button" class="ar-balik" data-h="${ini}">&#8634; Hari ini</button>`}
       </div>
       <button type="button" class="ar-langkah ar-kanan" data-h="${besok}" ${besok > ini ? "disabled" : ""}><span class="ar-len">${esc(tglLencana(besok))}</span><b>Besok &rsaquo;</b></button>
@@ -84,12 +89,17 @@ function gambar() {
       <button type="button" class="ar-ujung" data-h="${geser(h, 7)}" title="${esc(labelPekan(geser(h, 7)))}" ${geser(h, 7) > ini ? "disabled" : ""}>${esc(labelPekan(geser(h, 7)))} &rsaquo;</button>
     </div>
   </div>
-  <div class="ar-tabel"><table class="tb3"><thead><tr><th>Tanggal</th><th>Laporan bencana harian</th><th>Laporan karhutla harian</th></tr></thead><tbody>
+  <div class="ar-tabel"><table><thead><tr><th>Tanggal</th><th>Laporan bencana harian</th><th>Laporan karhutla harian</th></tr></thead><tbody>
     ${baris.map(d => `<tr class="${d === h ? "ar-on" : ""}"><td>${esc(tglPanjang(d))}</td><td>${selBencana(d)}</td><td>${selKarhutla(d)}</td></tr>`).join("")}
   </tbody></table></div>`;
-  $("#arTgl").onchange = e => { if (e.target.value) pilih(e.target.value); };
+  const inp = $("#arTgl");
+  inp.onchange = e => { if (e.target.value) pilih(e.target.value); };
+  /* Tombol berlabel Indonesia, bukan <input type="date"> telanjang: tanggalnya ditulis sendiri supaya
+     tidak muncul "10/19/2026" bawaan Chrome. Kalendernya tetap kalender peramban, dipanggil lewat
+     showPicker() dari input yang disembunyikan di belakang tombol. */
+  $("#arPick").onclick = () => { try { inp.showPicker(); } catch (e) { inp.focus(); inp.click(); } };
 }
-function pilih(h) { if (h > hariIni()) return; S.hari = h; gambar(); }
+function pilih(h) { if (h > hariIni()) return; S.hari = h; S.manual = true; gambar(); }
 
 $("#arsipLaporan")?.addEventListener("click", e => {
   const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return;
@@ -112,9 +122,19 @@ async function muat() {
     else if (!r.ok) S.akses = "gagal";
     else { const j = await r.json(); S.bnpb = new Set((j.daftar || []).map(x => x.tanggal)); S.akses = "ok"; }
   } catch (e) { S.akses = "gagal"; }
+  /* Hari terpilih awal = hari terbaru yang BENAR-BENAR punya laporan, bukan hari ini. Data satelit
+     kadang tertinggal sehari dua, dan arsip yang terbuka pada deretan "tidak ada data" tidak berguna. */
+  if (!S.manual) {
+    const ada = [...S.karhutla, ...S.bnpb].filter(h => h <= hariIni()).sort();
+    if (ada.length && ada.at(-1) < S.hari) S.hari = ada.at(-1);
+  }
   gambar();
 }
 
 window.ArsipLaporan = {gambar, muat, pilih, S};
 gambar();
+/* Berkas ini `defer`, jadi skrip utama index.html sudah memanggil bukaTab() sebelum ArsipLaporan ada.
+   Kalau tab Laporan yang sedang terbuka (mis. masuk langsung ke /pelaporan), daftarnya dimuat di sini;
+   perpindahan tab berikutnya dipanggil dari bukaTab. */
+if (document.querySelector("#p-pelaporan")?.classList.contains("on")) muat();
 })();
