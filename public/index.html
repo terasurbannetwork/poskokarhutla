@@ -295,9 +295,6 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .l1{background:oklch(66% .13 235 / .14);color:oklch(46% .12 240)}
 .l2{background:oklch(76% .16 75 / .2);color:oklch(48% .12 65)}
 .l3{background:oklch(57% .21 27 / .14);color:oklch(50% .2 27)}
-.pill.as1{background:oklch(70% .05 70 / .2);color:oklch(45% .05 65)}
-.pill.as2{background:oklch(55% .07 55 / .22);color:oklch(38% .07 50)}
-.pill.as3{background:oklch(40% .08 340 / .2);color:oklch(38% .12 340)}
 .as-ik{display:inline-block;width:14px;height:14px;vertical-align:-3px;margin-left:4px}
 .asap-k{padding:10px 10px 8px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 .asap-k b{color:var(--ink)}
@@ -2527,7 +2524,7 @@ function renderDaftar() {
   /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
   const chip = (k, w, s, l) => `<span class="lg-c" style="--w:${w}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${k}</svg><b>${s}</b>${l}</span>`;
   const legenda = `<span class="lg-hs nm-pdk">${u === "hot" || u === "fs" ? chip('<circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/>', "#e58a45", "HS", "Hotspot") : ""}${chip(IKON.api, "#c9503a", "FS", "Firespot")}${chip(IKON.titik, "#1d4e89", "CL", "Cluster")}</span>`;
-  const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : u === "fs" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Jumlah cluster titik panas"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span><span style="text-align:right">Status</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
+  const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : u === "fs" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Jumlah cluster titik panas"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span><span style="text-align:right" title="Status api dari cluster titik panas">Api</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const [nk, fs] = i.kw, lv = i.lv;
     const t = j.length === 0 ? trenProv(i.kunci) : null;
@@ -2561,11 +2558,12 @@ function asapDi(k) { if (!S.asap) return null; const l = k.split("|").length;
   if (l === 1) { const P = S.asap.prov[k]; return P && {...P.buruk, lv: P.lv, jiwa: P.jiwa, n: P.n, prov: 1}; }
   return S.asap.kab[k.split("|").slice(0, 2).join("|")] || null; }
 const IK_ASAP = `<svg class="as-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg>`;
-/* api dan asap kolom terpisah, skala sama (1 patroli/waspada, 2 siaga, 3 prioritas/awas) */
-function pilStatus(lvApi) { return lvApi >= 1 ? `<span class="pill l${lvApi}">${["Rutin", "Patroli", "Siaga", "Prioritas"][lvApi]}</span>` : "–"; }
-function pilAsap(as) { const la = as?.lv || 0; if (!la) return "–";
+/* api dan asap kolom terpisah, skala dan warna sama (biru patroli/waspada, kuning siaga, merah prioritas/awas); tanpa status = hijau Aman */
+const AMAN = `<span class="pill l0">Aman</span>`;
+function pilStatus(lvApi) { return lvApi >= 1 ? `<span class="pill l${lvApi}">${["Rutin", "Patroli", "Siaga", "Prioritas"][lvApi]}</span>` : AMAN; }
+function pilAsap(as) { const la = as?.lv || 0; if (!as) return "–"; if (!la) return AMAN;
   const tip = `PM2,5 rata-rata 24 jam ${fmt(as.r24[S.asap.hi])} µg/m³ (${NM_ASAP[la].toLowerCase()})${as.prov ? " di " + as.nama : ""}`;
-  return `<span class="pill as${la}" title="${esc(tip)}">${PIL_ASAP[la]}</span>`; }
+  return `<span class="pill l${la}" title="${esc(tip)}">${PIL_ASAP[la]}</span>`; }
 /* kartu asap di atas tabel saat masuk ke provinsi/kabupaten: angka hari ini, 3 hari, grafik 72 jam, dan dari mana asapnya datang */
 function kartuAsap(k) { const as = asapDi(k); if (!as || !as.lvH.some(v => v > 0)) return "";
   const A = S.asap, hi = A.hi, titik = hariIniWil(k), nmW = k.split("|").length === 1 ? namaProv(k) : k.split("|").pop();
@@ -2576,10 +2574,10 @@ function kartuAsap(k) { const as = asapDi(k); if (!as || !as.lvH.some(v => v > 0
   const garis = pm.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
   const batasHari = A.jam.map((j, i) => [new Date(j).getUTCHours() === 17, i]).filter(([b]) => b).map(([, i]) => `<line x1="${X(i)}" x2="${X(i)}" y1="4" y2="${B}" stroke="currentColor" opacity=".2"/>`).join("");
   const asal = as.asal;
-  return `<div class="asap-k"><div class="lbl"><span style="font-weight:700;color:var(--ink)">${IK_ASAP} Asap di ${esc(nmW)}</span>${as.lv ? `<span class="pill as${as.lv}">Asap ${PIL_ASAP[as.lv]}</span>` : ""}</div>
+  return `<div class="asap-k"><div class="lbl"><span style="font-weight:700;color:var(--ink)">${IK_ASAP} Asap di ${esc(nmW)}</span>${as.lv ? `<span class="pill l${as.lv}">Asap ${PIL_ASAP[as.lv]}</span>` : ""}</div>
     <div>Titik panas hari ini <b>${titik == null ? "–" : fmt(titik)}</b>. PM2,5 rata-rata 24 jam${as.prov ? ` tertinggi di <b>${esc(as.nama)}</b>` : ""}: <b>${fmt(as.r24[hi])} µg/m³</b> (${NM_ASAP[as.lv].toLowerCase()})${as.prov && as.n ? `; <b>${fmt(as.n)}</b> kab/kota berstatus waspada ke atas, dihuni <b>${fmt(as.jiwa)}</b> jiwa` : ""}.</div>
     <table><tr><td></td><td class="n">PM2,5 24 jam</td><td class="n" title="Bagian PM2,5 dari kebakaran menurut model sebaran asap (atribusi); kosong = tidak dihitung">dari api</td><td></td></tr>
-      ${A.hari.map((d, i) => `<tr><td>${hr(d)}${i === hi ? " (hari ini)" : ""}</td><td class="n"><b>${fmt(as.r24[i])}</b> µg/m³</td><td class="n">${as.api[i] == null ? "–" : fmt(Math.round(as.api[i] * 100)) + "%"}</td><td style="text-align:right">${as.lvH[i] ? `<span class="pill as${as.lvH[i]}">${PIL_ASAP[as.lvH[i]]}</span>` : as.r24[i] > 55.4 ? `<span title="PM2,5 tinggi, tapi bagian kebakaran di bawah 30% atau jalur angin tidak melewati api">Sebagian besar bukan api</span>` : "Normal"}</td></tr>`).join("")}</table>
+      ${A.hari.map((d, i) => `<tr><td>${hr(d)}${i === hi ? " (hari ini)" : ""}</td><td class="n"><b>${fmt(as.r24[i])}</b> µg/m³</td><td class="n">${as.api[i] == null ? "–" : fmt(Math.round(as.api[i] * 100)) + "%"}</td><td style="text-align:right">${as.lvH[i] ? `<span class="pill l${as.lvH[i]}">${PIL_ASAP[as.lvH[i]]}</span>` : as.r24[i] > 55.4 ? `<span title="PM2,5 tinggi, tapi bagian kebakaran di bawah 30% atau jalur angin tidak melewati api">Sebagian besar bukan api</span>` : "Normal"}</td></tr>`).join("")}</table>
     ${pm.length ? `<div class="lbl"><span>PM2,5 per jam, 72 jam${as.prov ? " · " + esc(as.nama) : ""}</span><span>µg/m³</span></div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="PM2,5 per jam 72 jam">${pita}${batasHari}<path d="${garis}" fill="none" stroke="oklch(42% .08 50)" stroke-width="1.6"/>
       ${[55.4, 150.4, 250.4].filter(v => v < m).map(v => `<text x="${W - 2}" y="${Y(v) - 2}" text-anchor="end" font-size="8" fill="currentColor" opacity=".6">${fmt(Math.round(v))}</text>`).join("")}</svg>` : ""}
