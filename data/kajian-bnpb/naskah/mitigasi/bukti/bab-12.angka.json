@@ -122,20 +122,20 @@
       "catatan": "olah: versi semua klasifikasi; DIBI 2025 meninggal+hilang 0,80 per 100.000 (kunci dibi.nasional.per100rb.2025_supas) / proyeksi Renas 1.a 0,22 (kunci renas.indikator_1a.proyeksi_2025); versi alam di renas.indikator_1a.rasio_dibi_alam_2025; rumus resmi 1.a tidak tertulis di Renas"
     },
     "renas.aksi_312c.target_2029": {
-      "berkas": "program-terbukti/renas_aksi_terkait.csv",
-      "jalur": "[kode=3.1.2.c].target_2029",
+      "nilai": 5802,
+      "pustaka": "bnpb-2025-renas",
       "satuan": "rumah/unit/paket",
       "keyakinan": "resmi",
       "sumber": "Renas PB 2025–2029 hlm. 90",
-      "catatan": "PJ Kementerian PKP; kontributor BNPB, ATR/BPN, Kementerian BUMN (nomenklatur Renas); satuan rumah/unit/paket mencakup sarpras permukiman; pembanding DIBI Sumatra 2025 RB 62.956 berbeda satuan dan cakupan (rumah rusak berat satu kejadian), hanya [Inferensi tim], bukan ukuran kekurangan target"
+      "catatan": "PJ Kementerian PKP; kontributor BNPB, ATR/BPN, Kementerian BUMN (nomenklatur Renas); satuan rumah/unit/paket mencakup sarpras permukiman; pembanding DIBI Sumatra 2025 RB 62.956 berbeda satuan dan cakupan (rumah rusak berat satu kejadian), hanya [Inferensi tim], bukan ukuran kekurangan target; diubah ke bentuk nilai+pustaka 25 Okt 2026 oleh penulis bab: sel CSV program-terbukti/renas_aksi_terkait.csv memakai titik ribuan (\"5.802\", \"1.160\") sehingga pembaca kontrak membacanya sebagai pecahan 5,802 dan 1,16; nilai disalin dari Renas hlm. 90 lewat CSV yang sama"
     },
     "renas.aksi_312c.baseline_2024": {
-      "berkas": "program-terbukti/renas_aksi_terkait.csv",
-      "jalur": "[kode=3.1.2.c].baseline_2024",
+      "nilai": 1160,
+      "pustaka": "bnpb-2025-renas",
       "satuan": "rumah/unit/paket",
       "keyakinan": "resmi",
       "sumber": "Renas PB 2025–2029 hlm. 90",
-      "catatan": "baseline 2024"
+      "catatan": "baseline 2024; diubah ke bentuk nilai+pustaka 25 Okt 2026 oleh penulis bab: sel CSV program-terbukti/renas_aksi_terkait.csv memakai titik ribuan (\"5.802\", \"1.160\") sehingga pembaca kontrak membacanya sebagai pecahan 5,802 dan 1,16; nilai disalin dari Renas hlm. 90 lewat CSV yang sama"
     },
     "renas.aksi_411c.target_2029": {
       "nilai": 2,

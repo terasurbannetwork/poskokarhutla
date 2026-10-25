@@ -3,7 +3,8 @@
   "Kunci angka baru Bab 10 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-10.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: nilai + pustaka (id di bab-10.pustaka.json), dengan lokasi halaman bila ada.",
   "Kunci yang sudah ada di data/angka.json atau diusulkan berkas bukti lain tidak diulang (diperiksa mesin terhadap semua naskah/*/bukti/*.angka.json pada 24 Oktober 2026). Angka sekunder tidak dimasukkan.",
   "Kunci mitigasi.sel_program.* adalah pemetaan penyusun tanpa berkas data paket; usul pipa-data menulis program-terbukti/sel_mitigasi.csv lalu mengubah entri ini ke bentuk berkas + jalur.",
-  "Disusun 24 Oktober 2026."
+  "Disusun 24 Oktober 2026.",
+  "Ditambah penulis naskah bab-10 (25 Oktober 2026): 11 entri disalin apa adanya dari berkas bukti bab-03, bab-04, dan bab-07 (dibi.nasional.kejadian.2023, .2024; dibi.nasional.nonalam_sosial_lainnya.*; hidromet.nasional.musim_2025.hilang; hidromet.nasional.pd_renas/pd_renstra.penurunan_persen; krb.nasional.kab_kapasitas_rendah/sedang/tinggi) karena dipakai naskah dan belum ada di data/angka.json; isinya sama dengan sumbernya, jadi penggabungan cukup memakai salah satu."
  ],
  "angka": {
   "mitigasi.sel_program.total": {
@@ -285,6 +286,93 @@
    "keyakinan": "resmi; olah",
    "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), indikator 1.c",
    "catatan": "olah: 11.060 per 100.000 dibagi 1.000; berdampingan dengan IKP Renstra 6,10% (2025), penyebut berbeda"
+  },
+  "dibi.nasional.kejadian.2023": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2023,klasifikasi=semua,cakupan=bencana].kejadian",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2023",
+   "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+  },
+  "dibi.nasional.kejadian.2024": {
+   "berkas": "dibi/rekap_nasional_tahunan.csv",
+   "jalur": "[tahun=2024,klasifikasi=semua,cakupan=bencana].kejadian",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2024",
+   "catatan": "cakupan kejadian bencana (Juklak 7/2023)"
+  },
+  "dibi.nasional.nonalam_sosial_lainnya.kejadian.2025": {
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "nilai": 363,
+   "catatan": "olah: kode 201, 202, 203, 301, 999, cakupan bencana; 2018–2023 hanya 0–15 per tahun"
+  },
+  "dibi.nasional.nonalam_sosial_lainnya.kejadian_maks.2018_2023": {
+   "nilai": 15,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2018–2023",
+   "catatan": "olah semua klasifikasi dikurangi alam; maksimum tahun 2019"
+  },
+  "dibi.nasional.nonalam_sosial_lainnya.meninggal.2025": {
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "nilai": 295,
+   "catatan": "olah: idem; termasuk entri ganda epidemi Nias Selatan"
+  },
+  "hidromet.nasional.musim_2025.hilang": {
+   "berkas": "skenario-hidromet/musim_hujan.csv",
+   "jalur": "[wilayah=nasional,musim=2025/2026].hilang",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 1 Okt 2025–30 Apr 2026"
+  },
+  "hidromet.nasional.pd_renas.penurunan_persen": {
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "pustaka": "bnpb-2025-renas",
+   "sumber": "Pengolahan Pantau Bencana; Renas 1.c, WMO 2022",
+   "catatan": "1 − faktor; faktor = ((1−0,52)+0,52/8)/((1−0,1106)+0,1106/8) = 0,6034",
+   "nilai": 39.7
+  },
+  "hidromet.nasional.pd_renstra.penurunan_persen": {
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "pustaka": "bnpb-2025-renstra",
+   "sumber": "Pengolahan Pantau Bencana; IKP Renstra, WMO 2022",
+   "catatan": "1 − faktor; faktor = ((1−0,0632)+0,0632/8)/((1−0,061)+0,061/8) = 0,9980; penyebut berbeda dengan Renas 1.c",
+   "nilai": 0.2
+  },
+  "krb.nasional.kab_kapasitas_rendah": {
+   "berkas": "nonalam-sosial/krb_covid19_wilayah.csv",
+   "jalur": "[tingkat=nasional_api].kab_kapasitas_rendah",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
+   "catatan": "dari 508 unit kab KRB; ditarik dari endpoint ringkasan bahaya COVID-19, bukan ringkasan multibahaya; dicek ulang ke ringkasan banjir, banjir bandang, cuaca ekstrem, gelombang dan abrasi, kekeringan, longsor (riset/mentah/krb_kab/): kelas kapasitas kab identik (314/190/3, 7 kosong; selisih 1 karena Kab. Fakfak ditarik ulang di paket nonalam-sosial)"
+  },
+  "krb.nasional.kab_kapasitas_sedang": {
+   "berkas": "nonalam-sosial/krb_covid19_wilayah.csv",
+   "jalur": "[tingkat=nasional_api].kab_kapasitas_sedang",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
+   "catatan": "dari 508 unit kab KRB; ditarik dari endpoint ringkasan bahaya COVID-19, bukan ringkasan multibahaya; dicek ulang ke ringkasan banjir, banjir bandang, cuaca ekstrem, gelombang dan abrasi, kekeringan, longsor (riset/mentah/krb_kab/): kelas kapasitas kab identik (314/190/3, 7 kosong; selisih 1 karena Kab. Fakfak ditarik ulang di paket nonalam-sosial)"
+  },
+  "krb.nasional.kab_kapasitas_tinggi": {
+   "berkas": "nonalam-sosial/krb_covid19_wilayah.csv",
+   "jalur": "[tingkat=nasional_api].kab_kapasitas_tinggi",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, apiv4/kajian-summary/covid-19 (baris nasional)",
+   "catatan": "dari 508 unit kab KRB; ditarik dari endpoint ringkasan bahaya COVID-19, bukan ringkasan multibahaya; dicek ulang ke ringkasan banjir, banjir bandang, cuaca ekstrem, gelombang dan abrasi, kekeringan, longsor (riset/mentah/krb_kab/): kelas kapasitas kab identik (314/190/3, 7 kosong; selisih 1 karena Kab. Fakfak ditarik ulang di paket nonalam-sosial)"
   }
  }
 }

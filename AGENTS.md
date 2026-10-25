@@ -99,7 +99,7 @@ ulang yang berubah.
 Sebelum menyentuh apa pun tentang SIPPA (halaman `/pipa`, buku kajian pipa,
 data pipa), baca dokumen di `data/kajian-bnpb/pipa/` dengan urutan otoritas ini:
 
-1. `KEPUTUSAN-SIPPA.md`: 50 keputusan pemilik, menang atas semuanya.
+1. `KEPUTUSAN-SIPPA.md`: keputusan pemilik 1–53, menang atas semuanya.
 2. `PRD.md`: lingkup, fitur, larangan.
 3. `DESIGN-SYSTEM.md`: token, komponen, wireframe tiap layar.
 4. `DESAIN-TEKNIS.md`: berkas, model data, skema D1, rute, rumus.

@@ -34,7 +34,7 @@
   },
   "dibi.alam.per100rb.2025_bps2026": {
    "nilai": 0.68,
-   "pustaka": "bnpb-dibi; bps-2026-penduduk",
+   "pustaka": "bnpb-dibi, bps-2026-penduduk",
    "satuan": "per 100.000 penduduk",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS 2026",
@@ -42,7 +42,7 @@
   },
   "dibi.alam.rasio_proyeksi_1a.2025": {
    "nilai": 3.1,
-   "pustaka": "bnpb-dibi; bnpb-2025-renas hlm. 32",
+   "pustaka": "bnpb-dibi, bnpb-2025-renas, hlm. 32",
    "satuan": "kali",
    "keyakinan": "resmi",
    "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan Renas PB 2025–2029 Tabel 2.8",
@@ -106,7 +106,7 @@
   },
   "kapasitas.jarak_90.krb_kab_poin": {
    "nilai": 52.0,
-   "pustaka": "bnpb-2026-krb; ri-2025-perpres12-rpjmn",
+   "pustaka": "bnpb-2026-krb, ri-2025-perpres12-rpjmn",
    "satuan": "poin persen",
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026 dan RPJMN 2025–2029",
@@ -130,7 +130,7 @@
   },
   "perka2014_6.proleg.jangka_tahun": {
    "nilai": 1,
-   "pustaka": "bnpb-2014-produkhukum hlm. 4",
+   "pustaka": "bnpb-2014-produkhukum, hlm. 4",
    "satuan": "tahun",
    "keyakinan": "resmi",
    "sumber": "Peraturan Kepala BNPB 6/2014 Pasal 4 ayat (4)",
@@ -138,7 +138,7 @@
   },
   "progsun.2026.jangka_tahun": {
    "nilai": 1,
-   "pustaka": "bnpb-2025-progsun hlm. 2",
+   "pustaka": "bnpb-2025-progsun, hlm. 2",
    "satuan": "tahun",
    "keyakinan": "resmi",
    "sumber": "Keputusan Kepala BNPB 327/2025 Diktum KEDUA",
@@ -146,7 +146,7 @@
   },
   "bnpb.lkip2025.meninggal.2025": {
    "nilai": 1666,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 7",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 7",
    "satuan": "jiwa",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -154,7 +154,7 @@
   },
   "bnpb.lkip2025.hilang.2025": {
    "nilai": 214,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 7",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 7",
    "satuan": "jiwa",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -162,7 +162,7 @@
   },
   "bnpb.lkip2025.irb.penurunan_persen.2025": {
    "nilai": 1.03,
-   "pustaka": "bnpb-2026-lkip2025 hlm. x, 19",
+   "pustaka": "bnpb-2026-lkip2025, hlm. x, 19",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, IKSS 1.1",
@@ -170,7 +170,7 @@
   },
   "bnpb.lkip2025.irb.nasional_2025_kerentanan2021": {
    "nilai": 170.17,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 19",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 19",
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -178,7 +178,7 @@
   },
   "bnpb.lkip2025.irb.nasional_2024_krb2021": {
    "nilai": 171.95,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 19",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 19",
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -186,7 +186,7 @@
   },
   "bnpb.lkip2025.irb.baseline_2026_2029": {
    "nilai": 147.95,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 7, 19",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 7, 19",
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -194,7 +194,7 @@
   },
   "bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025": {
    "nilai": 50,
-   "pustaka": "bnpb-2026-lkip2025 hlm. x, 20",
+   "pustaka": "bnpb-2026-lkip2025, hlm. x, 20",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, IKSS 1.2",
@@ -202,7 +202,7 @@
   },
   "bnpb.lkip2025.kapasitas.prov_minimal_sedang_n.2025": {
    "nilai": 19,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 112-113",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 112-113",
    "satuan": "provinsi",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, Lampiran 2",
@@ -210,7 +210,7 @@
   },
   "bnpb.lkip2025.ikd.kab_rendah.2025": {
    "nilai": 225,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 22",
    "satuan": "kab/kota",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -218,7 +218,7 @@
   },
   "bnpb.lkip2025.ikd.kab_sedang.2025": {
    "nilai": 274,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 22",
    "satuan": "kab/kota",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -226,7 +226,7 @@
   },
   "bnpb.lkip2025.ikd.kab_tinggi.2025": {
    "nilai": 15,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 22",
    "satuan": "kab/kota",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -234,7 +234,7 @@
   },
   "bnpb.lkip2025.ikd.kab_minimal_sedang_persen.2025": {
    "nilai": 56.2,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 22",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -242,7 +242,7 @@
   },
   "bnpb.lkip2025.ikd.kab_menilai.2025": {
    "nilai": 469,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 22",
    "satuan": "kab/kota",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -250,7 +250,7 @@
   },
   "bnpb.lkip2025.pd.tsunami_persen.2025": {
    "nilai": 12.19,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -258,7 +258,7 @@
   },
   "bnpb.lkip2025.pd.tsunami_tercakup.2025": {
    "nilai": 651000,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "jiwa",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -266,7 +266,7 @@
   },
   "bnpb.lkip2025.pd.banjir_persen.2025": {
    "nilai": 0.01,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -274,7 +274,7 @@
   },
   "bnpb.lkip2025.pd.banjir_tercakup.2025": {
    "nilai": 10800,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "jiwa",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -282,7 +282,7 @@
   },
   "bnpb.lkip2025.pd.banjir_terpapar.2025": {
    "nilai": 113829496,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "jiwa",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -290,7 +290,7 @@
   },
   "bnpb.lkip2025.pd.rerata_persen.2025": {
    "nilai": 6.1,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, IKP Direktorat Peringatan Dini",
@@ -298,7 +298,7 @@
   },
   "bnpb.lkip2025.pd.tertimbang_persen.2025": {
    "nilai": 0.56,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 35, Tabel 3.4",
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -306,7 +306,7 @@
   },
   "bnpb.lkip2025.kerugian_pdb_persen.2025": {
    "nilai": 0.217,
-   "pustaka": "bnpb-2026-lkip2025 hlm. x, 18",
+   "pustaka": "bnpb-2026-lkip2025, hlm. x, 18",
    "satuan": "% PDB",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, Indikator Tujuan",
@@ -314,7 +314,7 @@
   },
   "bnpb.lkip2025.kerugian_rp.2025": {
    "nilai": 51.3,
-   "pustaka": "bnpb-2026-lkip2025 hlm. 18",
+   "pustaka": "bnpb-2026-lkip2025, hlm. 18",
    "satuan": "triliun rupiah",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
@@ -351,6 +351,14 @@
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Pengolahan dari LKIP BNPB 2025 dan Renstra BNPB 2025-2029",
    "catatan": "olah: tambahan jiwa tercakup tsunami agar rerata IKP = 6,32% (target 2029) dengan banjir tetap: 2 x 6,32 - 0,0095 = 12,6305%; x 5.341.282 - 651.000 = 23.631 (23.604 bila banjir dibulatkan 0,01%); dibulatkan; pembacaan rumus, bukan perkiraan"
+  },
+  "tesis.mitigasi.alam": {
+   "nilai": "Pada 2025 DIBI mencatat {{angka:dibi.alam.meninggal.2025}} korban meninggal dan {{angka:dibi.alam.hilang.2025}} hilang akibat bencana alam, tertinggi sejak 2018, dengan {{angka:dibi.sumatra2025.meninggal}} meninggal dan {{angka:dibi.sumatra2025.hilang}} hilang dalam satu rangkaian banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat pada akhir November 2025; Grand Design 2026–2030 menetapkan indikator korban Renas PB 1.a dan 1.b, yang langsung terukur dari DIBI, sebagai sasaran utama sampai catatan metode IRBI 2025 diterbitkan.",
+   "pustaka": "bnpb-dibi",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2025 (bencana alam, tarik 23 Okt 2026); Renas PB 2025–2029",
+   "catatan": "tesis kajian mitigasi versi alam (KERANGKA §1.2 V06) dengan klausa akhir yang diusulkan berkas bukti Bab 13 (Koreksi pemutakhiran: LKIP BNPB 2025 sudah menyatakan baseline 147,95); dipakai kalimat pertama Bab 13. Usul untuk pemilik registri: ganti nilai tesis.mitigasi dengan teks ini lalu hapus kunci ini, supaya RE, Bab 13, dan slide Pesan Kunci identik (D-6)"
   }
  }
 }
