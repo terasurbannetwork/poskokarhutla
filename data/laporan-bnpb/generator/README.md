@@ -15,6 +15,8 @@ tabel **Status darurat daerah** (rekapitulasi SK darurat, bagian I laphar).
   Workers AI). Tiap nilai yang dikembalikan model wajib benar-benar ada di teks sumber (`periksaSalinan`
   di `src/laporan_bnpb_spek.js`); yang tidak ada dibuang, jadi angka tidak pernah dikarang.
 - Uji: `node --test tests/warga/laporan_urai.test.mjs` (bahan asli 24 Okt 2026 di `tests/warga/fixtures/`).
+- Peta bentuk bahannya (kerangka laphar, semua ejaan label, kolom tabel bagian I, bentuk rekap WA):
+  **`BAHAN-PUSDALOPS.md`**. Kalau bentuk bahannya berubah, ubah di sana dulu.
 
 Jalur Python di bawah tetap dipakai untuk membuat decknya.
 
