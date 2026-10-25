@@ -1,0 +1,281 @@
+{
+ "nama": "bab05-batang-karhutla-provinsi",
+ "keterangan": "Luas karhutla di Pulau Jawa, 2015–2026 (ha)",
+ "sumber": "SiPongi Kementerian Kehutanan, luas kebakaran per provinsi, data sampai Juli 2026",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "2026, sampai Juli",
+   "jenis": "kotak",
+   "warna": "#B7B0A6"
+  },
+  {
+   "label": "Jumlah enam provinsi, 2015–2025",
+   "jenis": "kotak",
+   "warna": "#D9600B"
+  }
+ ],
+ "hex": {
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#D9600B": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 62.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "2026, sampai Juli"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 76.48,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "2026, sampai Juli"
+  },
+  {
+   "x": 102.48,
+   "y": 3,
+   "w": 123.3,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-88",
+   "teks": "Jumlah enam provinsi, 2015–2025"
+  },
+  {
+   "x": 88.48,
+   "y": 2,
+   "w": 137.3,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-88",
+   "teks": "Jumlah enam provinsi, 2015–2025"
+  },
+  {
+   "x": 7.9,
+   "y": 144.59,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "13.575"
+  },
+  {
+   "x": 12.34,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015"
+  },
+  {
+   "x": 57.53,
+   "y": 173.98,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0"
+  },
+  {
+   "x": 50.98,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016"
+  },
+  {
+   "x": 85.18,
+   "y": 148.45,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "11.793"
+  },
+  {
+   "x": 89.62,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2017"
+  },
+  {
+   "x": 123.82,
+   "y": 145.14,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "13.323"
+  },
+  {
+   "x": 128.27,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 162.47,
+   "y": 91.67,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "38.021"
+  },
+  {
+   "x": 166.91,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 201.11,
+   "y": 110.79,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "29.191"
+  },
+  {
+   "x": 205.55,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 239.75,
+   "y": 136.41,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "17.356"
+  },
+  {
+   "x": 244.2,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 280.83,
+   "y": 164.26,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "4.492"
+  },
+  {
+   "x": 282.84,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 317.04,
+   "y": 20.04,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "71.110"
+  },
+  {
+   "x": 321.48,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 355.68,
+   "y": 109.8,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "29.648"
+  },
+  {
+   "x": 360.12,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 396.76,
+   "y": 167.36,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "3.059"
+  },
+  {
+   "x": 398.77,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  },
+  {
+   "x": 432.97,
+   "y": 144.36,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "13.685"
+  },
+  {
+   "x": 437.41,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2026"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 12
+}

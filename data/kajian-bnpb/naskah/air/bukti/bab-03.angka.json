@@ -1,0 +1,1274 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 3 kajian air (Grand Design Ketahanan Air Pulau Jawa 2026–2030). Disusun 23 Oktober 2026 dari berkas bukti naskah/air/bukti/bab-03.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Bentuk entri sama dengan data/angka.json: berkas (relatif ke data/) + jalur, atau nilai + pustaka (kunci di bab-03.pustaka.json atau bab-01.pustaka.json). Entri bernilai yang berasal dari hitungan atas paket data menulis cara hitungnya di catatan; sebelum naskah final, hitungan itu sebaiknya dipindah ke skrip bangun paket (pemilik pipa-data) supaya bisa diulang.",
+    "Kunci lama dan kunci BAB 1 yang dipakai ulang BAB 3 (tidak diulang di sini): airjawa.jawa.penduduk_krb, airjawa.nasional.penduduk_krb, airjawa.jawa.penduduk_worldpop_2026, airjawa.kekeringan.kab_2015, airjawa.kekeringan.kab_2019, airjawa.kekeringan.kab_2023, hidromet.jawa.kekeringan.dibi_kejadian_2018, hidromet.jawa.kekeringan.dibi_terdampak_2018, hidromet.jawa.kekeringan.luas_bahaya_tinggi, airjawa.irigasi.n_subtotal_kab, airjawa.irigasi.n_subtotal_cocok, airjawa.bendungan.n_paket, airjawa.bendungan.n_resmi_pj2021, airjawa.air_minum.n_kab_jateng, airjawa.ws.jumlah, renas.indikator_1c.2025, renas.indikator_1c.2029, renstra.ikp_peringatan_dini.2025, renstra.ikp_peringatan_dini.2029, hidromet.jawa.lanina.korban_jiwa, hidromet.jawa.lanina.meninggal_tercatat, hidromet.jawa.lanina.materiil_batas_bawah, hidromet.jawa.musim_2025.meninggal, hidromet.jawa.musim_2019.meninggal, hidromet.jawa.musim_2019.mengungsi, airjawa.turun_tanah.pekalongan.widodo2024, airjawa.turun_tanah.pekalongan.sidiq2023, airjawa.turun_tanah.semarang_demak.aditiya2023, airjawa.jawa.porsi_penduduk_persen, airjawa.jawa.porsi_penduduk_krb_persen, airjawa.jawa.porsi_penduduk_sp2020_persen, airjawa.jawa.ipa_2010_persen, airjawa.jawa.cat_jumlah, airjawa.irigasi.jawa_total_ha, oni.jas_2015, oni.jas_2026, dibi.jawa.kekeringan.meninggal_2015_2026.",
+    "Catatan untuk pemilik data/angka.json (tidak disunting di sini): hidromet.jawa.lanina.tahun_analog masih berkeyakinan resmi, padahal paket skenario-hidromet melabeli tahun analog asumsi-kebijakan; hidromet.jawa.lanina.pd.cakupan_awal masih menunjuk Renstra 6% (lintas indikator), sedangkan pasangan utama paket adalah Renas 1.c; hidromet.jawa.lanina.materiil_batas_bawah memuat rumah rusak banjir genangan, yang menurut KERANGKA §2 butir 9 huruf (c) tidak boleh disebut kerugian materiil. Ditambah 24 Okt 2026: hidromet.jawa.lanina.pd_renas.korban_jiwa di data/angka.json (153–330) mengalikan faktor peringatan dini ke korban longsor, melanggar KERANGKA §2 butir 10; berkas ini mengusulkan nilai pengganti 218,5–466,5 dengan kunci yang sama, dan kepekaan_peringatan_dini.csv perlu dibangun ulang per jenis oleh pemilik paket skenario-hidromet. Nama kunci hidromet.jawa.lanina.* menyiratkan pemicu La Niña yang kaitannya dengan dampak musim hujan Jawa tidak terdeteksi (bab-03.md P3); usul ganti nama ke musim analog.",
+    "Perbaikan 24 Oktober 2026 atas temuan pemeriksa: label nilai hasil hitung dinaikkan ke \"resmi; turunan\"; kapasitas Jatiluhur dan Cirata berlabel \"sekunder\" (ditolak pembaca registri, sengaja); rentang kekeringan 25–59; 11 kunci baru (pd_renas.korban_jiwa pengganti, pembanding meninggal dan hilang tercatat, korban longsor, rerata musim La Niña lawan lain, kemungkinan lantai).",
+    "Ditambah penulis bab 24 Oktober 2026: 61 kunci untuk angka berkas bukti yang dipakai naskah bab-03.md (varian dan uji geser daftar perhatian, uji permutasi musim La Niña, rasio longsor, rekonsiliasi Kedung Ombo, sedimentasi, Renstra sirine dan keterpenuhan 6%, pengungsi DKI dan rekaman Bekasi 2020, IRBI provinsi 2023, meninggal nasional 2025 per cakupan, standar air bersih tiga hari pertama, batas pita NRR, faktor peringatan dini tanpa jenis gabungan). Nilai 73, 118, 96, 58, 37 dicek ulang dari air-jawa/*.csv."
+  ],
+  "angka": {
+    "airjawa.kab3471.penduduk_worldpop": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3471].penduduk_worldpop_2026",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "WorldPop R2025A, penduduk 2026",
+      "catatan": "Kota Yogyakarta; 42% dari penduduk KRB (174.017 / 415.382), sebab belum diperiksa (air-jawa README §6)"
+    },
+    "airjawa.kab3471.penduduk_krb": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3471].penduduk_krb_inarisk",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.kab3101.penduduk_worldpop": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3101].penduduk_worldpop_2026",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "WorldPop R2025A, penduduk 2026",
+      "catatan": "Kep. Seribu; 19% dari penduduk KRB, pulau kecil jatuh di luar poligon kecamatan"
+    },
+    "airjawa.kab3101.penduduk_krb": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3101].penduduk_krb_inarisk",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.jawa.irbi2025.n_tinggi": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=JAW,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "satu-satunya: Kab. Sukabumi (3202)"
+    },
+    "airjawa.jawa.irbi2025.n_sedang": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=JAW,tahun=2025].n_sedang",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)"
+    },
+    "airjawa.jawa.irbi2025.kekeringan_nilai_unik": {
+      "nilai": 15,
+      "pustaka": "bnpb-irbi",
+      "satuan": "nilai",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "dihitung penyusun bukti 23 Okt 2026 dari air-jawa/kab_jawa.csv kolom irbi2025_<bahaya> (119 kab, sel kosong dikeluarkan); pindahkan ke bangun/air-jawa.py sebelum dipakai naskah; rentang 5 sampai 19, semua bilangan bulat"
+    },
+    "airjawa.jawa.irbi2025.kekeringan_median": {
+      "nilai": 10,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "dihitung penyusun bukti 23 Okt 2026 dari air-jawa/kab_jawa.csv kolom irbi2025_<bahaya> (119 kab, sel kosong dikeluarkan); pindahkan ke bangun/air-jawa.py sebelum dipakai naskah"
+    },
+    "airjawa.jawa.irbi2025.banjir_nilai_unik": {
+      "nilai": 19,
+      "pustaka": "bnpb-irbi",
+      "satuan": "nilai",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "dihitung penyusun bukti 23 Okt 2026 dari air-jawa/kab_jawa.csv kolom irbi2025_<bahaya> (119 kab, sel kosong dikeluarkan); pindahkan ke bangun/air-jawa.py sebelum dipakai naskah; 118 kab bernilai, Kep. Seribu kosong"
+    },
+    "airjawa.jawa.irbi2025.longsor_nilai_unik": {
+      "nilai": 17,
+      "pustaka": "bnpb-irbi",
+      "satuan": "nilai",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "dihitung penyusun bukti 23 Okt 2026 dari air-jawa/kab_jawa.csv kolom irbi2025_<bahaya> (119 kab, sel kosong dikeluarkan); pindahkan ke bangun/air-jawa.py sebelum dipakai naskah; 96 kab bernilai"
+    },
+    "airjawa.jawa.irbi2025.longsor_kosong": {
+      "nilai": 23,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "jumlah anggota air-jawa/air-jawa.json meta.irbi.kosong_2025.longsor; sel kosong = tidak dinilai, bukan nol"
+    },
+    "airjawa.jawa.irbi2025.longsor_kosong_berkejadian": {
+      "nilai": 15,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025; DIBI BNPB 2015–2025",
+      "catatan": "dari 23 kab dengan IRBI longsor kosong, 15 punya dibi1525_kejadian_longsor > 0 (air-jawa/kab_jawa.csv), mis. Jakarta Selatan 15, Jakarta Timur 13, Kota Yogyakarta 11"
+    },
+    "airjawa.jawa.spearman_irbi_dibi.kekeringan": {
+      "nilai": 0.178,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "Spearman (peringkat rata-rata untuk nilai kembar) IRBI 2025 lawan dibi1525_kejadian_<bahaya> di air-jawa/kab_jawa.csv, sel IRBI kosong dikeluarkan; dihitung penyusun bukti 23 Okt 2026; tampil fmt=2; n = 119"
+    },
+    "airjawa.jawa.spearman_irbi_dibi.banjir": {
+      "nilai": 0.187,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "Spearman (peringkat rata-rata untuk nilai kembar) IRBI 2025 lawan dibi1525_kejadian_<bahaya> di air-jawa/kab_jawa.csv, sel IRBI kosong dikeluarkan; dihitung penyusun bukti 23 Okt 2026; tampil fmt=2; n = 118"
+    },
+    "airjawa.jawa.spearman_irbi_dibi.longsor": {
+      "nilai": 0.199,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "Spearman (peringkat rata-rata untuk nilai kembar) IRBI 2025 lawan dibi1525_kejadian_<bahaya> di air-jawa/kab_jawa.csv, sel IRBI kosong dikeluarkan; dihitung penyusun bukti 23 Okt 2026; tampil fmt=2; n = 96"
+    },
+    "airjawa.perhatian.syarat_b.banjir": {
+      "nilai": 114,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "jumlah kab yang punya kejadian DIBI (is_bencana = 1, n_baris > 0) pada >= 3 dari 11 tahun 2015–2025, air-jawa/dibi_kab_tahun.csv; dihitung penyusun bukti 23 Okt 2026; dari 119"
+    },
+    "airjawa.perhatian.syarat_b.longsor": {
+      "nilai": 93,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "jumlah kab yang punya kejadian DIBI (is_bencana = 1, n_baris > 0) pada >= 3 dari 11 tahun 2015–2025, air-jawa/dibi_kab_tahun.csv; dihitung penyusun bukti 23 Okt 2026"
+    },
+    "airjawa.perhatian.syarat_b.kekeringan": {
+      "nilai": 54,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "jumlah kab yang punya kejadian DIBI (is_bencana = 1, n_baris > 0) pada >= 3 dari 11 tahun 2015–2025, air-jawa/dibi_kab_tahun.csv; dihitung penyusun bukti 23 Okt 2026"
+    },
+    "airjawa.perhatian.syarat_a.banjir_interval_sama": {
+      "nilai": 1,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.syarat_a.banjir_kuantil": {
+      "nilai": 36,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.syarat_a.longsor_interval_sama": {
+      "nilai": 3,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.syarat_a.longsor_kuantil": {
+      "nilai": 32,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.syarat_a.kekeringan_interval_sama": {
+      "nilai": 8,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.syarat_a.kekeringan_kuantil": {
+      "nilai": 32,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "kab di kelas teratas dari 5 kelas nilai IRBI 2025 untuk 119 kab Jawa; dua cara batas kelas: interval sama (EI) dan kuantil (nilai >= persentil 80, kembar ikut)"
+    },
+    "airjawa.perhatian.rentang_varian.banjir": {
+      "rendah": 27,
+      "tinggi": 97,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "rentang jumlah kab di daftar perhatian menurut 6 sampai 10 varian aturan yang belum diputus KERANGKA (cara batas kelas syarat a, ambang syarat b >= 3 tahun lawan kuartil atas, ukuran syarat c untuk kekeringan, pemetaan syarat d per bahaya); rincian di bab-03.md P2; dihitung penyusun bukti 23 Okt 2026"
+    },
+    "airjawa.perhatian.rentang_varian.longsor": {
+      "rendah": 31,
+      "tinggi": 80,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "rentang jumlah kab di daftar perhatian menurut 6 sampai 10 varian aturan yang belum diputus KERANGKA (cara batas kelas syarat a, ambang syarat b >= 3 tahun lawan kuartil atas, ukuran syarat c untuk kekeringan, pemetaan syarat d per bahaya); rincian di bab-03.md P2; dihitung penyusun bukti 23 Okt 2026"
+    },
+    "airjawa.perhatian.rentang_varian.kekeringan": {
+      "rendah": 25,
+      "tinggi": 59,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "rentang jumlah kab di daftar perhatian menurut 6 sampai 10 varian aturan yang belum diputus KERANGKA (cara batas kelas syarat a, ambang syarat b >= 3 tahun lawan kuartil atas, ukuran syarat c untuk kekeringan, pemetaan syarat d per bahaya); rincian di bab-03.md P2; dihitung penyusun bukti 23 Okt 2026; diperbaiki 24 Okt 2026: rentang memuat semua varian, termasuk syarat (c) persis teks KERANGKA pada baris kuartil atas tahun (25 interval sama, 41 kuantil); semula 37–59 hanya untuk varian (c) menderita dan mengungsi"
+    },
+    "hidromet.jawa.kekeringan.dibi_kejadian_2015": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=dibi_kejadian_2015].nilai",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015",
+      "catatan": "3 kab; tahun El Nino kuat dengan pencatatan sangat sedikit"
+    },
+    "hidromet.jawa.kekeringan.dibi_terdampak_2015": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=dibi_terdampak_2015].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015",
+      "catatan": "kolom menderita; pencatatan antartahun tidak seragam"
+    },
+    "hidromet.jawa.kekeringan.terpapar_krb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=terpapar_krb_kekeringan].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "99,97% penduduk KRB Jawa; tidak membedakan wilayah"
+    },
+    "hidromet.jawa.kekeringan.kerugian_potensi_krb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=kerugian_potensi_krb_kekeringan].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "nilai aset terpapar seluruh kelas; batas atas; tidak dijumlah antarbahaya"
+    },
+    "hidromet.jawa.banjir.terpapar_krb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=terpapar_krb_banjir].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "hidromet.jawa.banjir.kerugian_potensi_krb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_banjir].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "nilai aset terpapar; tidak dijumlah antarbahaya"
+    },
+    "hidromet.jawa.longsor.kerugian_potensi_krb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_longsor].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "nilai aset terpapar; tidak dijumlah antarbahaya"
+    },
+    "hidromet.jawa.musim_2008.meninggal": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=jawa,tahun_awal=2008].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2008/2009"
+    },
+    "hidromet.jawa.musim_2008.hilang": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=jawa,tahun_awal=2008].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2008/2009"
+    },
+    "hidromet.jawa.lantai.meninggal_hilang": {
+      "nilai": 270,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, musim hujan 2008/2009",
+      "catatan": "meninggal 173 + hilang 97 (skenario-hidromet/musim_hujan.csv baris jawa 2008); terbesar dari 18 musim 2008/2009–2025/2026; registri belum bisa menjumlah"
+    },
+    "hidromet.jawa.musim_2013.mengungsi": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=jawa,tahun_awal=2013].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2013/2014",
+      "catatan": "terbesar kedua; terbesar bila rekaman Kota Bekasi 1 Jan 2020 dikeluarkan"
+    },
+    "hidromet.jawa.musim_2019.mengungsi_tanpa_bekasi": {
+      "nilai": 166047,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan; penyisihan rekaman Kota Bekasi asumsi-kebijakan",
+      "sumber": "DIBI BNPB, musim hujan 2019/2020",
+      "catatan": "532.321 dikurangi rekaman Kota Bekasi 366.274 yang berstatus tidak terbukti (dibi/README.md, Jabodetabek 2020); penyisihan rekaman adalah keputusan tim (uji kepekaan), bukan putusan penerbit data"
+    },
+    "hidromet.jawa.musim_2009.rumah_rb": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=jawa,tahun_awal=2009].rumah_rb",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2009/2010",
+      "catatan": "rumah rusak berat terbanyak dari 18 musim"
+    },
+    "hidromet.jawa.lanina.korban_jiwa_banjir": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_banjir].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_banjir].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025"
+    },
+    "hidromet.jawa.lanina.meninggal_hilang_tercatat_banjir": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=meninggal_hilang_tercatat_banjir].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan analog"
+    },
+    "hidromet.jawa.lanina.korban_jiwa_banjir_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_banjir_longsor].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_banjir_longsor].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025"
+    },
+    "hidromet.jawa.lanina.meninggal_hilang_tercatat_banjir_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=meninggal_hilang_tercatat_banjir_longsor].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan analog"
+    },
+    "hidromet.jawa.terberat.korban_jiwa_banjir": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa_banjir].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa_banjir].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025"
+    },
+    "hidromet.jawa.terberat.meninggal_hilang_tercatat_banjir": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=meninggal_hilang_tercatat_banjir].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan analog"
+    },
+    "hidromet.jawa.terberat.korban_jiwa_banjir_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa_banjir_longsor].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa_banjir_longsor].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025"
+    },
+    "hidromet.jawa.terberat.meninggal_hilang_tercatat_banjir_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=meninggal_hilang_tercatat_banjir_longsor].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan analog"
+    },
+    "hidromet.jawa.terberat.korban_jiwa": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_terberat_tercatat,wilayah=jawa,metrik=korban_jiwa].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025",
+      "catatan": "musim analog 2019/2020; batas bawah di bawah lantai 270"
+    },
+    "hidromet.jawa.lanina.pd_renas.faktor": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renas_2025,cakupan_target=renas_2029].faktor",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
+      "catatan": "faktor pengali korban bila cakupan naik 11,06% ke 52% (Renas 1.c), R = 8; batas atas manfaat"
+    },
+    "hidromet.jawa.lanina.pd_renstra_ikp.faktor": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renstra_ikp_2025,cakupan_target=renstra_ikp_2029].faktor",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
+      "catatan": "lintasan IKP Renstra 6,10% ke 6,32%; penyebut beda dengan Renas 1.c"
+    },
+    "hidromet.jawa.lanina.pd_renas.korban_jiwa": {
+      "rendah": 218.5119,
+      "tinggi": 466.4641,
+      "pustaka": "wmo-2022-peringatan-dini",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
+      "catatan": "MENGGANTIKAN entri data/angka.json (jalur kepekaan_peringatan_dini.csv korban_rendah/korban_tinggi = 153–330, faktor dikalikan ke semua jenis termasuk longsor, melanggar KERANGKA §2 butir 10). Nilai = korban_jiwa_longsor + faktor 0,6034 × (korban_jiwa − korban_jiwa_longsor), kartu_skenario.csv baris musim_hujan_lanina jawa: rendah (254,354 − 163,9803) × 0,6034 + 163,9803; tinggi (546,9468 − 344,0152) × 0,6034 + 344,0152. Banjir dan tanah longsor (gabungan) tetap dikalikan; bila ikut dikeluarkan 222,8–470,8. Dihitung penyusun bukti 24 Okt 2026; sementara sampai pemilik paket skenario-hidromet membangun ulang kepekaan per jenis; rasio lintas negara, bukan efek kausal"
+    },
+    "hidromet.jawa.lanina.meninggal_hilang_tercatat": {
+      "nilai": 156,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021",
+      "catatan": "meninggal_tercatat 146 + hilang_tercatat 10 (skenario-hidromet/kartu_skenario.csv baris musim_hujan_lanina jawa); pembanding sebanding untuk pita korban_jiwa (meninggal + hilang); registri belum bisa menjumlah"
+    },
+    "hidromet.jawa.terberat.meninggal_hilang_tercatat": {
+      "nilai": 127,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, musim hujan 2019/2020",
+      "catatan": "meninggal_tercatat 124 + hilang_tercatat 3 (kartu_skenario.csv baris musim_hujan_terberat_tercatat jawa); pembanding sebanding untuk pita korban_jiwa"
+    },
+    "hidromet.jawa.lanina.korban_jiwa_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur_rendah": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_longsor].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=korban_jiwa_longsor].tinggi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010–2025",
+      "catatan": "671 kejadian longsor musim analog × rasio Jawa median 0,2444 dan tinggi 0,5127 (rasio_korban.csv); rasio musim itu sendiri 89/671 = 0,13"
+    },
+    "hidromet.jawa.lanina.meninggal_hilang_tercatat_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=meninggal_hilang_tercatat_longsor].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan analog"
+    },
+    "hidromet.jawa.musim_lanina.rerata_meninggal_hilang": {
+      "nilai": 148.0,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, 7 musim hujan La Niña Jawa 2008/2009–2025/2026",
+      "catatan": "rerata (meninggal + hilang) baris jawa la_nina=true di skenario-hidromet/musim_hujan.csv (2008, 2010, 2011, 2017, 2020, 2021, 2022); uji permutasi dua sisi lawan 11 musim lain p = 0,98; dihitung penyusun bukti 24 Okt 2026"
+    },
+    "hidromet.jawa.musim_lain.rerata_meninggal_hilang": {
+      "nilai": 149.0,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, 11 musim hujan Jawa bukan La Niña 2008/2009–2025/2026",
+      "catatan": "rerata (meninggal + hilang) baris jawa la_nina=false di skenario-hidromet/musim_hujan.csv; dihitung penyusun bukti 24 Okt 2026"
+    },
+    "hidromet.jawa.musim_lanina.rerata_mengungsi": {
+      "nilai": 73458.6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, 7 musim hujan La Niña Jawa 2008/2009–2025/2026",
+      "catatan": "rerata mengungsi baris jawa la_nina=true di skenario-hidromet/musim_hujan.csv; uji permutasi dua sisi lawan musim lain p = 0,20, arah berlawanan; dihitung penyusun bukti 24 Okt 2026"
+    },
+    "hidromet.jawa.musim_lain.rerata_mengungsi": {
+      "nilai": 173976.5,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "DIBI BNPB, 11 musim hujan Jawa bukan La Niña 2008/2009–2025/2026",
+      "catatan": "rerata mengungsi baris jawa la_nina=false di skenario-hidromet/musim_hujan.csv; memuat rekaman Kota Bekasi 2020 (366.274, tidak terbukti); dihitung penyusun bukti 24 Okt 2026"
+    },
+    "hidromet.jawa.musim.kemungkinan_lantai_5th": {
+      "nilai": 24.3,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan dari DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, 18 musim hujan Jawa 2008/2009–2025/2026",
+      "catatan": "peluang paling sedikit satu musim menyamai atau melampaui lantai per metrik dalam 5 tahun: 1 − e^(−5/18), laju Poisson 1/18 per musim (tiap metrik lantai tercapai 1 kali dalam 18 musim); Weibull 1/(n + 1) memberi 23,7%; pita NRR 4 (5–25%), dekat batas pita 5; frekuensi 1/18 terjadi menurut konstruksi (lantai = nilai terbesar seri); dihitung penyusun bukti 24 Okt 2026"
+    },
+    "bukti.wmo_2022.rasio_mortalitas": {
+      "berkas": "skenario-hidromet/kepekaan_peringatan_dini.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,cakupan_awal=renas_2025,cakupan_target=renas_2029].R",
+      "satuan": "kali",
+      "keyakinan": "terverifikasi",
+      "sumber": "UNDRR dan WMO (2022), Global Status of Multi-Hazard Early Warning Systems",
+      "catatan": "asosiasi lintas negara, bukan efek kausal; hanya di kartu dan grafik berpil Asumsi kebijakan (KERANGKA §2 butir 10)"
+    },
+    "airjawa.bendungan.jatiluhur.kapasitas_v1": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=jatiluhur,besaran=kapasitas,catatan=versi 1; bertentangan].nilai",
+      "satuan": "juta m3",
+      "keyakinan": "sekunder",
+      "sumber": "riset B §3.1 (artikel dan jurnal berbeda)",
+      "catatan": "hanya untuk tabel rekonsiliasi; naskah final menolak sekunder; minta data PJT II; label paket sekunder (sumber primer belum dibuka); bukan satu dari lima label, sehingga pembaca registri (bangun/kontrak/naskah.py, suntik) menolak menyuntiknya: sengaja, angka sekunder tidak masuk naskah final (KERANGKA §2 butir 5)"
+    },
+    "airjawa.bendungan.jatiluhur.kapasitas_v2": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=jatiluhur,besaran=kapasitas,catatan=versi 2; bertentangan; minta data PJT II].nilai",
+      "satuan": "juta m3",
+      "keyakinan": "sekunder",
+      "sumber": "riset B §3.1 (artikel dan jurnal berbeda)",
+      "catatan": "hanya untuk tabel rekonsiliasi; label paket sekunder (sumber primer belum dibuka); bukan satu dari lima label, sehingga pembaca registri (bangun/kontrak/naskah.py, suntik) menolak menyuntiknya: sengaja, angka sekunder tidak masuk naskah final (KERANGKA §2 butir 5)"
+    },
+    "airjawa.bendungan.cirata.kapasitas_v1": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=cirata,besaran=kapasitas,catatan=versi 1; bertentangan].nilai",
+      "satuan": "juta m3",
+      "keyakinan": "sekunder",
+      "sumber": "riset B §3.1",
+      "catatan": "hanya untuk tabel rekonsiliasi; pemegang data PLN atau pengelola waduk; label paket sekunder (sumber primer belum dibuka); bukan satu dari lima label, sehingga pembaca registri (bangun/kontrak/naskah.py, suntik) menolak menyuntiknya: sengaja, angka sekunder tidak masuk naskah final (KERANGKA §2 butir 5)"
+    },
+    "airjawa.bendungan.cirata.kapasitas_v2": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=cirata,besaran=kapasitas,catatan=versi 2; bertentangan].nilai",
+      "satuan": "juta m3",
+      "keyakinan": "sekunder",
+      "sumber": "riset B §3.1",
+      "catatan": "hanya untuk tabel rekonsiliasi; label paket sekunder (sumber primer belum dibuka); bukan satu dari lima label, sehingga pembaca registri (bangun/kontrak/naskah.py, suntik) menolak menyuntiknya: sengaja, angka sekunder tidak masuk naskah final (KERANGKA §2 butir 5)"
+    },
+    "airjawa.irigasi.jatiluhur.luas_di": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=jatiluhur,besaran=luas_di].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Permen PUPR 14/PRT/M/2015 Lampiran I",
+      "catatan": "52.728 + 24.511 + 100.049 + 60.502"
+    },
+    "airjawa.irigasi.jatiluhur.bekasi_ha": {
+      "nilai": 52728,
+      "pustaka": "pupr-2015-permen14, hlm. 16",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Permen PUPR 14/PRT/M/2015 Lampiran I",
+      "catatan": "pindaian hlm. 16; riset B §4.1 menulis 82.728 (salah salin); bagian per kab di air-jawa/irigasi_di_pusat_provinsi.csv kolom bagian_per_kab"
+    },
+    "hidromet.jawa.jabodetabek2020.mengungsi_dibi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kasus_jabodetabek_2020,wilayah=jawa,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, 31 Des 2019–8 Jan 2020, 14 kab/kota Jabodetabek",
+      "catatan": "84,5% dari satu rekaman Kota Bekasi 366.274 yang berstatus tidak terbukti"
+    },
+    "hidromet.jawa.jabodetabek2020.mengungsi_dibi_lebak": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kasus_jabodetabek_2020,wilayah=jawa,metrik=mengungsi_jabodetabek_lebak].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Jabodetabek dan Lebak"
+    },
+    "hidromet.jawa.jabodetabek2020.pengungsi_renstra": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kasus_jabodetabek_2020,wilayah=jawa,metrik=pengungsi_renstra].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029",
+      "catatan": "cakupan wilayah tidak disebut Renstra"
+    },
+    "bukti.dala_jabodetabek_2007.kerugian": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=nasional,metrik=pembanding_rugi_banjir_jabodetabek_2007].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Bappenas (2007), penilaian kerusakan dan kerugian banjir Jabodetabek",
+      "catatan": "kerusakan Rp1.765,89 M + kerugian Rp3.418,70 M, Tabel III.1"
+    },
+    "ncicd.fase_a.trase_kritis_km": {
+      "nilai": 39,
+      "pustaka": "dsda-2025-ncicd",
+      "satuan": "km",
+      "keyakinan": "resmi",
+      "sumber": "Dinas SDA DKI Jakarta, data 17 Juli 2025",
+      "catatan": "versi lain 43,9 km beredar tanpa tanggal (riset B §7, sekunder, tidak dibuka)"
+    },
+    "ncicd.fase_a.kewenangan_dki_km": {
+      "nilai": 20.9,
+      "pustaka": "dsda-2025-ncicd",
+      "satuan": "km",
+      "keyakinan": "resmi",
+      "sumber": "Dinas SDA DKI Jakarta, data 17 Juli 2025",
+      "catatan": "versi lain 28,279 km (sekunder)"
+    },
+    "ncicd.fase_a.terbangun_km": {
+      "nilai": 9.4,
+      "pustaka": "dsda-2025-ncicd",
+      "satuan": "km",
+      "keyakinan": "resmi",
+      "sumber": "Dinas SDA DKI Jakarta, data 17 Juli 2025",
+      "catatan": "versi lain 11,820 km (sekunder)"
+    },
+    "juklak_2023.ambang.meninggal": {
+      "nilai": 1,
+      "pustaka": "bnpb-2023-standar-data, hlm. 7",
+      "satuan": "orang",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana",
+      "catatan": "ambang kejadian bencana; cukup satu kriteria; dasar cakupan bencana (is_bencana) DIBI sejak data 2024"
+    },
+    "juklak_2023.ambang.terdampak": {
+      "nilai": 50,
+      "pustaka": "bnpb-2023-standar-data, hlm. 7",
+      "satuan": "orang",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana",
+      "catatan": "ambang kejadian bencana; cukup satu kriteria; dasar cakupan bencana (is_bencana) DIBI sejak data 2024"
+    },
+    "juklak_2023.ambang.rumah_rusak": {
+      "nilai": 5,
+      "pustaka": "bnpb-2023-standar-data, hlm. 7",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana",
+      "catatan": "ambang kejadian bencana; cukup satu kriteria; dasar cakupan bencana (is_bencana) DIBI sejak data 2024"
+    },
+    "juklak_2023.ambang.lahan": {
+      "nilai": 1,
+      "pustaka": "bnpb-2023-standar-data, hlm. 7",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana",
+      "catatan": "ambang kejadian bencana; cukup satu kriteria; dasar cakupan bencana (is_bencana) DIBI sejak data 2024"
+    },
+    "perka_2008.air_bersih_liter_hari": {
+      "nilai": 15,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "liter per orang per hari",
+      "keyakinan": "resmi",
+      "sumber": "Perka BNPB 7/2008",
+      "catatan": "7 liter pada tiga hari pertama"
+    },
+    "perka_2008.air_minum_liter_hari": {
+      "nilai": 2.5,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "liter per orang per hari",
+      "keyakinan": "resmi",
+      "sumber": "Perka BNPB 7/2008"
+    },
+    "nrr_2025.periode_kemungkinan_tahun": {
+      "nilai": 5,
+      "pustaka": "cabinetoffice-2025-nrr, hlm. 12",
+      "satuan": "tahun",
+      "keyakinan": "terverifikasi",
+      "sumber": "Cabinet Office (2025), National Risk Register",
+      "catatan": "risiko nonmalisius"
+    },
+    "nrr_2025.pita1_batas_persen": {
+      "nilai": 0.2,
+      "pustaka": "cabinetoffice-2025-nrr, hlm. 16",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "Cabinet Office (2025), National Risk Register",
+      "catatan": "pita kemungkinan terendah < 0,2% dalam 5 tahun; dipakai KERANGKA §2 butir 9 sebagai batas yang boleh disisihkan"
+    },
+    "nrr_2025.pita5_batas_persen": {
+      "nilai": 25,
+      "pustaka": "cabinetoffice-2025-nrr, hlm. 12",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "Cabinet Office (2025), National Risk Register",
+      "catatan": "pita kemungkinan tertinggi > 25%"
+    },
+    "enso.lanina_ndj_porsi_jendela5": {
+      "nilai": 84.7,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan dari ONI",
+      "sumber": "Pengolahan data Pantau Bencana dari NOAA CPC, indeks ONI",
+      "catatan": "dihitung penyusun bukti dari riset/mentah/oni_cpc.txt (1950–2025): episode CPC = >= 5 musim tumpang berturut ONI <= -0,5 (La Nina) atau >= 0,5 (El Nino); porsi jendela 5 tahun berturut (72 jendela) yang memuat paling sedikit satu kejadian; laju dasar historis, bukan prakiraan; 24 dari 76 tahun NDJ berada dalam episode La Nina"
+    },
+    "enso.elnino_kuat_porsi_jendela5": {
+      "nilai": 38.9,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan dari ONI",
+      "sumber": "Pengolahan data Pantau Bencana dari NOAA CPC, indeks ONI",
+      "catatan": "dihitung penyusun bukti dari riset/mentah/oni_cpc.txt (1950–2025): episode CPC = >= 5 musim tumpang berturut ONI <= -0,5 (La Nina) atau >= 0,5 (El Nino); porsi jendela 5 tahun berturut (72 jendela) yang memuat paling sedikit satu kejadian; laju dasar historis, bukan prakiraan; El Nino kuat = ONI >= 1,5 pada JJA sampai SON dalam episode: 1965, 1972, 1982, 1997, 2015, 2023"
+    },
+    "dibi.provinsi_tahun.meninggal_hilang.p50": {
+      "nilai": 4,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.meninggal_hilang.p90": {
+      "nilai": 41,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.meninggal_hilang.p99": {
+      "nilai": 391,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.meninggal_hilang.maks": {
+      "nilai": 4845,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.mengungsi.p50": {
+      "nilai": 1402,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.mengungsi.p90": {
+      "nilai": 32484,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.mengungsi.p99": {
+      "nilai": 239158,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.mengungsi.maks": {
+      "nilai": 947399,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.rumah_rusak.p50": {
+      "nilai": 414,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.rumah_rusak.p90": {
+      "nilai": 5521,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.rumah_rusak.p99": {
+      "nilai": 44445,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "dibi.provinsi_tahun.rumah_rusak.maks": {
+      "nilai": 271693,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "persentil (inklusif) jumlah per provinsi per tahun, DIBI klasifikasi alam, cakupan bencana, 2008–2025, 648 provinsi-tahun, dibi/rekap_provinsi_tahunan.csv; dihitung penyusun bukti 23 Okt 2026; masukan Tabel 3.4, ambang kelas tetap asumsi kebijakan"
+    },
+    "airjawa.jawa.n_kab": {
+      "nilai": 119,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB dan InaRISK BNPB, kab/kota Pulau Jawa menurut kode wilayah Kepmendagri",
+      "catatan": "jumlah baris air-jawa/kab_jawa.csv (enam provinsi); dicek penulis bab 24 Okt 2026"
+    },
+    "airjawa.irigasi.n_kab_di_pusat": {
+      "nilai": 73,
+      "pustaka": "pupr-2015-permen14",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR Nomor 14/PRT/M/2015",
+      "catatan": "kab dengan irigasi_pusat_ha > 0 di air-jawa/kab_jawa.csv; bab-03.md P1 Komponen 2; dicek ulang penulis bab 24 Okt 2026"
+    },
+    "airjawa.jawa.irbi2025.banjir_n_dinilai": {
+      "nilai": 118,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "kab dengan irbi2025_banjir terisi di air-jawa/kab_jawa.csv (Kep. Seribu kosong); dicek penulis bab 24 Okt 2026"
+    },
+    "airjawa.jawa.irbi2025.longsor_n_dinilai": {
+      "nilai": 96,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; turunan",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "kab dengan irbi2025_longsor terisi (119 dikurangi 23 kosong); dicek penulis bab 24 Okt 2026"
+    },
+    "airjawa.jawa.irbi2025.abrasi_kosong": {
+      "nilai": 58,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "sel irbi2025_abrasi kosong = tidak dinilai, bukan nol; air-jawa/air-jawa.json meta.irbi.kosong_2025; dicek penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian1.banjir": {
+      "nilai": 48,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian1.longsor": {
+      "nilai": 45,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian1.kekeringan": {
+      "nilai": 42,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian1.kekeringan_c_terdampak": {
+      "nilai": 52,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) >= 3 tahun; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian2.banjir": {
+      "nilai": 91,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian2.longsor": {
+      "nilai": 76,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian2.kekeringan": {
+      "nilai": 45,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian2.kekeringan_c_terdampak": {
+      "nilai": 53,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian3.banjir": {
+      "nilai": 67,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil (nilai >= persentil 80, kembar ikut), syarat (d) per bahaya, (b) >= 3 tahun; varian yang dipakai naskah bab 3; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian3.longsor": {
+      "nilai": 57,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil (nilai >= persentil 80, kembar ikut), syarat (d) per bahaya, (b) >= 3 tahun; varian yang dipakai naskah bab 3; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian3.kekeringan": {
+      "nilai": 53,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil (nilai >= persentil 80, kembar ikut), syarat (d) per bahaya, (b) >= 3 tahun; varian yang dipakai naskah bab 3; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian3.kekeringan_c_terdampak": {
+      "nilai": 58,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil (nilai >= persentil 80, kembar ikut), syarat (d) per bahaya, (b) >= 3 tahun; varian yang dipakai naskah bab 3; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian4.banjir": {
+      "nilai": 97,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian4.longsor": {
+      "nilai": 80,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian4.kekeringan": {
+      "nilai": 54,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian4.kekeringan_c_terdampak": {
+      "nilai": 59,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) semua penanda untuk semua bahaya, (b) >= 3 tahun; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian5.banjir": {
+      "nilai": 27,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian5.longsor": {
+      "nilai": 31,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian5.kekeringan": {
+      "nilai": 25,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian5.kekeringan_c_terdampak": {
+      "nilai": 37,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "interval sama, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian6.banjir": {
+      "nilai": 35,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian6.longsor": {
+      "nilai": 38,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian6.kekeringan": {
+      "nilai": 41,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) persis aturan; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.varian6.kekeringan_c_terdampak": {
+      "nilai": 47,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "kuantil, syarat (d) per bahaya, (b) kuartil atas tahun Jawa; syarat (c) menderita dan mengungsi kuartil atas; air-jawa/kab_jawa.csv dan air-jawa/dibi_kab_tahun.csv is_bencana = 1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.geser.b2_kekeringan": {
+      "nilai": 56,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "uji kepekaan aturan: (b) digeser ke >= 2 tahun pada varian1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.geser.b4_kekeringan": {
+      "nilai": 25,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "uji kepekaan aturan: (b) digeser ke >= 4 tahun pada varian1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.geser.a_banjir": {
+      "nilai": 3,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "uji kepekaan aturan: tambahan kab bila batas (a) diturunkan satu kelas pada varian1; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.geser.a_longsor": {
+      "nilai": 12,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "uji kepekaan aturan: idem, tanah longsor; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.geser.a_kekeringan": {
+      "nilai": 7,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari IRBI dan DIBI resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan DIBI BNPB 2015–2025",
+      "catatan": "uji kepekaan aturan: idem, kekeringan; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "airjawa.perhatian.banjir_tiap_tahun": {
+      "nilai": 37,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "kab dengan kejadian banjir is_bencana = 1 pada 11 dari 11 tahun 2015–2025 (n_baris > 0); dicek ulang penulis bab 24 Okt 2026"
+    },
+    "dibi.nasional.longsor_kejadian_2024": {
+      "nilai": 219,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tanah longsor nasional 2024",
+      "catatan": "patahan seri 2024; dibi/README.md bagian Patahan seri 2024"
+    },
+    "dibi.nasional.longsor_kejadian_tahun_lain": {
+      "rendah": 584,
+      "tinggi": 1251,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tanah longsor nasional per tahun selain 2024",
+      "catatan": "rentang tahun lain; dibi/README.md bagian Patahan seri 2024"
+    },
+    "hidromet.jawa.musim_lanina.uji_permutasi_p_meninggal_hilang": {
+      "nilai": 0.98,
+      "pustaka": "bnpb-dibi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA CPC (ONI), 18 musim hujan Jawa",
+      "catatan": "uji permutasi dua sisi selisih rerata, semua 31.824 susunan 7 dari 18 musim; skenario-hidromet/musim_hujan.csv; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "hidromet.jawa.musim_lanina.uji_permutasi_p_mengungsi": {
+      "nilai": 0.2,
+      "pustaka": "bnpb-dibi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA CPC (ONI), 18 musim hujan Jawa",
+      "catatan": "idem, mengungsi; dihitung penyusun bukti 23-24 Okt 2026 (bab-03.md); didaftarkan penulis bab 24 Okt 2026"
+    },
+    "hidromet.jawa.lanina.kejadian": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kejadian].nilai",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021",
+      "catatan": "terbanyak dari 18 musim hujan Jawa 2008/2009–2025/2026 (bab-03.md P3)"
+    },
+    "hidromet.jawa.lanina.kejadian_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kejadian_longsor].nilai",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 2020/2021"
+    },
+    "hidromet.jawa.rasio_longsor_median_2010_2025": {
+      "nilai": 0.2444,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per kejadian",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2010–2025",
+      "catatan": "median rasio (meninggal + hilang)/kejadian tanah longsor Jawa per tahun 2010–2025 yang dipakai batas rendah model; = korban_jiwa_longsor rendah 163,9803 / 671 kejadian; bab-03.md P3"
+    },
+    "hidromet.jawa.lanina.rasio_longsor_musim": {
+      "nilai": 0.13,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per kejadian",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, musim hujan 2020/2021",
+      "catatan": "89 meninggal dan hilang / 671 kejadian tanah longsor = 0,1326; bab-03.md P3"
+    },
+    "airjawa.jawa.ipa_2010_tanpa_pemeliharaan_persen": {
+      "berkas": "air-jawa/ipa_pulau_2010.csv",
+      "jalur": "[pulau=Jawa].ipa_tanpa_persen",
+      "satuan": "%",
+      "keyakinan": "estimasi-model",
+      "sumber": "BPS (2020) mengutip Radhika dkk. (2013), Pulau Jawa 2010, tanpa aliran pemeliharaan"
+    },
+    "airjawa.bendungan.kedungombo.vol_normal": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=kedungombo,besaran=vol_normal_juta_m3].nilai",
+      "satuan": "juta m³",
+      "keyakinan": "resmi",
+      "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+    },
+    "airjawa.bendungan.kedungombo.vol_efektif": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=kedungombo,besaran=vol_efektif_juta_m3].nilai",
+      "satuan": "juta m³",
+      "keyakinan": "resmi",
+      "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+    },
+    "airjawa.bendungan.kedungombo.tampungan_2021": {
+      "berkas": "air-jawa/bendungan_angka.csv",
+      "jalur": "[id=kedungombo,besaran=tampungan_2021_juta_m3].nilai",
+      "satuan": "juta m³",
+      "keyakinan": "resmi",
+      "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+    },
+    "airjawa.bendungan.pj.sedimentasi_jumlah_baris": {
+      "berkas": "air-jawa/bendungan_rekonsiliasi.csv",
+      "jalur": "[kolom=sedimentasi_juta_m3].jumlah_18_baris",
+      "satuan": "juta m³",
+      "keyakinan": "resmi; turunan",
+      "sumber": "Pengolahan data Pantau Bencana dari inventaris bendungan BBWS Pemali-Juana 2021",
+      "catatan": "jumlah 18 baris; total tercetak dokumen 96,51"
+    },
+    "renstra.sistem_pd_keterpenuhan_persen": {
+      "nilai": 6,
+      "pustaka": "bnpb-2025-renstra, hlm. 70",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029",
+      "catatan": "keterpenuhan sistem peringatan dini \"baru mencapai 6 persen dari total potensi masyarakat yang terpapar di kawasan yang berisiko tinggi\"; penyebut berbeda dengan IKP"
+    },
+    "renstra.ikp_sirine.2025": {
+      "nilai": 6.09,
+      "pustaka": "bnpb-2025-renstra, hlm. 161",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029",
+      "catatan": "persentase layanan sistem diseminasi peringatan dini bencana berbasis sirine yang memadai, 2025"
+    },
+    "renstra.ikp_sirine.2029": {
+      "nilai": 6.29,
+      "pustaka": "bnpb-2025-renstra, hlm. 161",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029",
+      "catatan": "idem, target 2029"
+    },
+    "hidromet.jawa.jabodetabek2020.mengungsi_dki": {
+      "nilai": 36424,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir awal 2020, DKI Jakarta",
+      "catatan": "pembanding Renstra memakai DKI saja; dibi/README.md bagian Kejadian besar"
+    },
+    "hidromet.jawa.jabodetabek2020.mengungsi_bekasi": {
+      "nilai": 366274,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, rekaman Kota Bekasi 1 Januari 2020",
+      "catatan": "status tidak terbukti; 84,5% dari 433.628; dibi/README.md bagian Kejadian besar"
+    },
+    "irbi.prov2023.kepri": {
+      "nilai": 107.79,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 Tabel 1.1 dan InaRISK BNPB, IRBI provinsi 2023",
+      "catatan": "irbi/README.md §5; bertentangan dengan Renas hlm. 19"
+    },
+    "irbi.prov2023.diy": {
+      "nilai": 108.15,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 Tabel 1.1 dan InaRISK BNPB, IRBI provinsi 2023",
+      "catatan": "irbi/README.md §5"
+    },
+    "dibi.nasional.meninggal.2025_semua_laporan": {
+      "nilai": 2037,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, semua laporan",
+      "catatan": "dibi/README.md bagian Rekonsiliasi"
+    },
+    "dibi.nasional.meninggal.2025_bencana_alam": {
+      "nilai": 1735,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, bencana alam",
+      "catatan": "dibi/README.md bagian Rekonsiliasi"
+    },
+    "perka_2008.air_bersih_awal_liter_hari": {
+      "nilai": 7,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "liter per orang per hari",
+      "keyakinan": "resmi",
+      "sumber": "Perka BNPB 7/2008",
+      "catatan": "tiga hari pertama; sesudahnya 15 liter"
+    },
+    "nrr_2025.pita2_atas_persen": {
+      "nilai": 1,
+      "pustaka": "cabinetoffice-2025-nrr, hlm. 16",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "Cabinet Office (2025), National Risk Register",
+      "catatan": "batas atas pita 2 (0,2–1%) dalam 5 tahun"
+    },
+    "nrr_2025.pita4_bawah_persen": {
+      "nilai": 5,
+      "pustaka": "cabinetoffice-2025-nrr, hlm. 16",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "Cabinet Office (2025), National Risk Register",
+      "catatan": "batas bawah pita 4 (5–25%) dalam 5 tahun"
+    },
+    "hidromet.jawa.lanina.pd_renas.korban_jiwa_tanpa_gabungan": {
+      "rendah": 222.78,
+      "tinggi": 470.84,
+      "pustaka": "wmo-2022-peringatan-dini",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana; rasio mortalitas UNDRR-WMO 2022",
+      "catatan": "faktor Renas 0,6034 tidak dikalikan ke tanah longsor (163,9803–344,0152) maupun jenis gabungan banjir dan tanah longsor (10,7573–11,0339); bab-03.md P3 Analisis kepekaan"
+    }
+  }
+}

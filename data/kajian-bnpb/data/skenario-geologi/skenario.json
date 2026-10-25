@@ -3,13 +3,15 @@
  "dibuat": "2026-10-23",
  "skrip": "data/kajian-bnpb/bangun/skenario-geologi.mjs",
  "mesin": "Pantau Bencana: public/gempa/{guncangan,kerusakan,tsunami}.js; public/gunungapi/{sim_lahar,sim_tanggap}.js",
- "prinsip": "Angka utama kajian = resmi (KRB 2022-2026, KRB PVMBG, DIBI). Hasil mesin platform = ilustrasi berlabel, selalu rentang. Tidak ada genangan tsunami.",
+ "bingkai": "Skenario ILUSTRATIF platform (magnitudo sim.js di bawah Mmaks), BUKAN skenario terburuk. Kepekaan Mmaks (jawa-mmaks M9,1; mentawai-mmaks M8,9) memakai geometri yang sama; Sumba M8,3 tanpa sumber dan tanpa Mmaks.",
+ "prinsip": "Angka utama kajian = resmi (KRB 2022-2026, KRB PVMBG, DIBI). Hasil mesin platform = ilustrasi berlabel, selalu rentang. Korban tsunami = orde besaran, belum layak dikutip. Tidak ada genangan tsunami.",
  "skenario": [
   {
    "id": "jawa",
    "nama": "Megathrust selatan Jawa",
    "jenis": "megathrust (antarmuka)",
    "m": 8.5,
+   "status_magnitudo": "M8,5 sim.js, di bawah Mmaks 9,1; tanpa sumber per baris",
    "dalam_km": 25,
    "strike": 278.03,
    "pusat_bidang": [
@@ -49,6 +51,7 @@
    "nama": "Megathrust Mentawai",
    "jenis": "megathrust (antarmuka)",
    "m": 8.8,
+   "status_magnitudo": "M8,8 sim.js, di bawah Mmaks 8,9; tanpa sumber per baris",
    "dalam_km": 25,
    "strike": 320.53,
    "pusat_bidang": [
@@ -88,6 +91,7 @@
    "nama": "Megathrust selatan Bali-Sumba",
    "jenis": "megathrust (antarmuka)",
    "m": 8.3,
+   "status_magnitudo": "M8,3 sim.js TANPA SUMBER; Mmaks Bali-Sumba tidak ditemukan",
    "dalam_km": 25,
    "strike": 275.32,
    "pusat_bidang": [
@@ -123,6 +127,86 @@
    ]
   },
   {
+   "id": "jawa-mmaks",
+   "nama": "Megathrust selatan Jawa (kepekaan Mmaks)",
+   "jenis": "megathrust (antarmuka)",
+   "m": 9.1,
+   "status_magnitudo": "M9,1 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)",
+   "dalam_km": 25,
+   "strike": 278.03,
+   "pusat_bidang": [
+    -9.5436,
+    110.7612
+   ],
+   "titik_palung": [
+    -10.3745,
+    110.6421
+   ],
+   "panjang_km": 702.3,
+   "lebar_proyeksi_km": 186.6,
+   "slip_m": 13.82,
+   "jendela_km": 751.1,
+   "sumber_parameter": "public/gempa/sim.js DIKENAL (jejak dari peta PuSGeN 2017/literatur menurut komentar berkas; magnitudo tidak bersumber per baris); m diganti Mmaks Peta Gempa 2024 (sekunder, riset A §6)",
+   "okupansi": 0.85,
+   "kepatuhan_bangunan": [
+    {
+     "varian": "dasar (40/30/30)",
+     "korban_mesin_tengah": 16132.4,
+     "rb_tengah": 896686
+    },
+    {
+     "varian": "kepatuhan naik (20/50/30)",
+     "korban_mesin_tengah": 10908.6,
+     "rb_tengah": 684998
+    },
+    {
+     "varian": "kepatuhan penuh (0/70/30)",
+     "korban_mesin_tengah": 5684.7,
+     "rb_tengah": 473310
+    }
+   ]
+  },
+  {
+   "id": "mentawai-mmaks",
+   "nama": "Megathrust Mentawai (kepekaan Mmaks)",
+   "jenis": "megathrust (antarmuka)",
+   "m": 8.9,
+   "status_magnitudo": "M8,9 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)",
+   "dalam_km": 25,
+   "strike": 320.53,
+   "pusat_bidang": [
+    -2.9874,
+    99.899
+   ],
+   "titik_palung": [
+    -3.4694,
+    99.3127
+   ],
+   "panjang_km": 536.4,
+   "lebar_proyeksi_km": 168.6,
+   "slip_m": 10.03,
+   "jendela_km": 668.2,
+   "sumber_parameter": "public/gempa/sim.js DIKENAL (jejak dari peta PuSGeN 2017/literatur menurut komentar berkas; magnitudo tidak bersumber per baris); m diganti Mmaks Peta Gempa 2024 (sekunder, riset A §6)",
+   "okupansi": 0.85,
+   "kepatuhan_bangunan": [
+    {
+     "varian": "dasar (40/30/30)",
+     "korban_mesin_tengah": 1565.5,
+     "rb_tengah": 84335
+    },
+    {
+     "varian": "kepatuhan naik (20/50/30)",
+     "korban_mesin_tengah": 1078,
+     "rb_tengah": 65215
+    },
+    {
+     "varian": "kepatuhan penuh (0/70/30)",
+     "korban_mesin_tengah": 590.5,
+     "rb_tengah": 46096
+    }
+   ]
+  },
+  {
    "id": "merapi2010",
    "nama": "Erupsi Merapi setara 2010",
    "V_m3": 10000000,
@@ -139,7 +223,7 @@
   {
    "id": "krb-30-gunung",
    "nama": "Paparan KRB PVMBG 30 gunung (paparan.json)",
-   "catatan": "paparan, bukan skenario erupsi; korban/rumah/pengungsi dari rasio Semeru 2021 dan Merapi 2010 per jiwa KRB III"
+   "catatan": "paparan, bukan skenario erupsi; korban/rumah/pengungsi dari rasio Semeru 2021 dan Merapi 2010 per jiwa KRB III; pengungsi dibatasi penduduk <= 20 km"
   },
   {
    "id": "sesar-darat",
@@ -171,6 +255,7 @@
    90
   ],
   "okupansi_tanpa_jam": 0.85,
+  "okupansi_malam": 0.99,
   "nankai": {
    "e20": 215000,
    "e70": 94000,
@@ -182,18 +267,96 @@
    },
    "catatan": "50% = interpolasi linear (asumsi)"
   },
-  "sisa_harapan_hidup_dasar": "Asumsi kebijakan. BPS 2024: UHH laki-laki 70,32 / perempuan 74,21 (ringkasan pencarian bps.go.id, tabel tidak terbuka langsung); umur rata-rata korban tidak tersedia, dipakai sisa 35 tahun (25-45)."
+  "sisa_harapan_hidup_dasar": "Asumsi kebijakan 25/35/45 tahun; umur rata-rata korban tidak tersedia. UHH BPS hanya KONTEKS, tidak masuk hitungan: seri lama 2024 70,32 laki-laki / 74,21 perempuan (ringkasan pencarian bps.go.id, dikutip media, tabel belum dibuka); pemeriksa 23 Okt 2026 mencatat rilis IPM 2024 metode baru memakai UHH total 74,15 (belum dibuka)."
  },
  "rasio_analog": {
   "guncangan": {
-   "min": 0.00016440658357030208,
-   "median": 0.0004685972895324959,
-   "maks": 0.0022949082894929604
+   "min": 0.00015527288448306307,
+   "median": 0.00046925199236796467,
+   "maks": 0.0019703758041101174,
+   "catatan": "dinormalkan ke okupansi 0,85 dari jam kejadian (analog.csv catatan_rasio)"
   },
   "tsunami": {
-   "min": 0.0003060392356106334,
-   "rerata_geometrik": 0.0009107856648515742,
-   "maks": 0.002710536528572815
+   "dipakai": 0.04057734204793029,
+   "catatan": "rerata geometrik analog yang lolos uji pencocokan wilayah (>= 80% korban di kab ber-p30 > 0); kini hanya Mentawai 2010. Orde besaran, belum layak dikutip.",
+   "analog": [
+    {
+     "id": "mentawai-2010",
+     "meninggal": 447,
+     "meninggal_di_kab_berpaparan": 447,
+     "porsi": 1,
+     "p30_kab_berkorban": 11016,
+     "rasio_cocok": 0.04057734204793028,
+     "dipakai": true,
+     "rincian": [
+      {
+       "nama": "Kepulauan Mentawai",
+       "meninggal": 447,
+       "p30": 11016
+      }
+     ],
+     "rasio_lama_lintas_wilayah": 0.002710536528572815,
+     "p30_semua_kab": 164912
+    },
+    {
+     "id": "pangandaran-2006",
+     "meninggal": 665,
+     "meninggal_di_kab_berpaparan": 170,
+     "porsi": 0.256,
+     "p30_kab_berkorban": 1458743,
+     "rasio_cocok": 0.00011653869118823535,
+     "dipakai": false,
+     "rincian": [
+      {
+       "nama": "Ciamis",
+       "meninggal": 413,
+       "p30": 0
+      },
+      {
+       "nama": "Tasikmalaya",
+       "meninggal": 62,
+       "p30": 0
+      },
+      {
+       "nama": "Banjar",
+       "meninggal": 15,
+       "p30": 0
+      },
+      {
+       "nama": "Garut",
+       "meninggal": 1,
+       "p30": 0
+      },
+      {
+       "nama": "Cilacap",
+       "meninggal": 157,
+       "p30": 1028616
+      },
+      {
+       "nama": "Kebumen",
+       "meninggal": 10,
+       "p30": 360540
+      },
+      {
+       "nama": "Banyumas",
+       "meninggal": 1,
+       "p30": 0
+      },
+      {
+       "nama": "Gunung Kidul",
+       "meninggal": 3,
+       "p30": 0
+      },
+      {
+       "nama": "Bantul",
+       "meninggal": 3,
+       "p30": 69587
+      }
+     ],
+     "rasio_lama_lintas_wilayah": 0.0003160312932760897,
+     "p30_semua_kab": 2104222
+    }
+   ]
   },
   "gunung_krb3": {
    "korban": [
@@ -218,10 +381,93 @@
    ]
   }
  },
+ "lubang_proksi_tsunami": {
+  "jawa": [
+   "Kab. Malang (Jawa Timur): tiba 9.9 mnt, tinggi atas 21.4 m",
+   "Kab. Tulungagung (Jawa Timur): tiba 10.5 mnt, tinggi atas 22.3 m",
+   "Kab. Blitar (Jawa Timur): tiba 11.6 mnt, tinggi atas 15.1 m",
+   "Kab. Wonogiri (Jawa Tengah): tiba 11.8 mnt, tinggi atas 12.2 m",
+   "Kab. Gunungkidul (DI Yogyakarta): tiba 12.8 mnt, tinggi atas 16.4 m",
+   "Kab. Tasikmalaya (Jawa Barat): tiba 14.3 mnt, tinggi atas 9.8 m",
+   "Kab. Banyuwangi (Jawa Timur): tiba 15.5 mnt, tinggi atas 8.7 m",
+   "Kab. Pangandaran (Jawa Barat): tiba 16.7 mnt, tinggi atas 14.2 m",
+   "Kab. Garut (Jawa Barat): tiba 17.1 mnt, tinggi atas 11.4 m",
+   "Kab. Cianjur (Jawa Barat): tiba 18.2 mnt, tinggi atas 8 m",
+   "Kab. Sukabumi (Jawa Barat): tiba 24 mnt, tinggi atas 7.1 m",
+   "Kab. Klungkung (Bali): tiba 24.5 mnt, tinggi atas 6.5 m",
+   "Kab. Lombok Barat (Nusa Tenggara Barat): tiba 25.4 mnt, tinggi atas 5.1 m",
+   "Kab. Lombok Tengah (Nusa Tenggara Barat): tiba 27.3 mnt, tinggi atas 5.6 m",
+   "Kab. Lebak (Banten): tiba 27.7 mnt, tinggi atas 5.8 m",
+   "Kab. Tabanan (Bali): tiba 27.9 mnt, tinggi atas 7.4 m",
+   "Kab. Pandeglang (Banten): tiba 28.1 mnt, tinggi atas 5.6 m",
+   "Kab. Lombok Timur (Nusa Tenggara Barat): tiba 29.5 mnt, tinggi atas 5.4 m"
+  ],
+  "mentawai": [
+   "Kab. Bengkulu Utara (Bengkulu): tiba 10.6 mnt, tinggi atas 37.8 m",
+   "Kab. Bengkulu Selatan (Bengkulu): tiba 12.1 mnt, tinggi atas 32 m",
+   "Kab. Aceh Singkil (Aceh): tiba 29 mnt, tinggi atas 11.2 m"
+  ],
+  "sumba": [
+   "Kab. Sumbawa (Nusa Tenggara Barat): tiba 9.4 mnt, tinggi atas 10.6 m",
+   "Kab. Lombok Tengah (Nusa Tenggara Barat): tiba 9.8 mnt, tinggi atas 10.5 m",
+   "Kab. Lombok Timur (Nusa Tenggara Barat): tiba 10.3 mnt, tinggi atas 10.4 m",
+   "Kab. Klungkung (Bali): tiba 11.3 mnt, tinggi atas 8.7 m",
+   "Kab. Sumba Barat Daya (Nusa Tenggara Timur): tiba 12.3 mnt, tinggi atas 9.1 m",
+   "Kab. Dompu (Nusa Tenggara Barat): tiba 13.5 mnt, tinggi atas 7.9 m",
+   "Kab. Sumba Barat (Nusa Tenggara Timur): tiba 13.6 mnt, tinggi atas 5.5 m",
+   "Kab. Sumba Timur (Nusa Tenggara Timur): tiba 15.6 mnt, tinggi atas 6.2 m",
+   "Kab. Sumba Tengah (Nusa Tenggara Timur): tiba 16.5 mnt, tinggi atas 5.4 m",
+   "Kab. Karangasem (Bali): tiba 16.9 mnt, tinggi atas 4.4 m",
+   "Kab. Gianyar (Bali): tiba 18.4 mnt, tinggi atas 7.3 m",
+   "Kab. Lombok Utara (Nusa Tenggara Barat): tiba 18.7 mnt, tinggi atas 6.6 m",
+   "Kab. Tabanan (Bali): tiba 19.2 mnt, tinggi atas 7.8 m",
+   "Kab. Buleleng (Bali): tiba 22.7 mnt, tinggi atas 5.4 m",
+   "Kab. Malang (Jawa Timur): tiba 22.9 mnt, tinggi atas 4.4 m",
+   "Kab. Blitar (Jawa Timur): tiba 27.7 mnt, tinggi atas 2.9 m",
+   "Kab. Manggarai (Nusa Tenggara Timur): tiba 29.9 mnt, tinggi atas 4.4 m"
+  ],
+  "jawa-mmaks": [
+   "Kab. Malang (Jawa Timur): tiba 5.2 mnt, tinggi atas 53.3 m",
+   "Kab. Tulungagung (Jawa Timur): tiba 5.7 mnt, tinggi atas 49.8 m",
+   "Kab. Tasikmalaya (Jawa Barat): tiba 5.8 mnt, tinggi atas 46.6 m",
+   "Kab. Garut (Jawa Barat): tiba 6.5 mnt, tinggi atas 53.3 m",
+   "Kab. Cianjur (Jawa Barat): tiba 7 mnt, tinggi atas 53.3 m",
+   "Kab. Blitar (Jawa Timur): tiba 7 mnt, tinggi atas 38.9 m",
+   "Kab. Wonogiri (Jawa Tengah): tiba 7.7 mnt, tinggi atas 28.6 m",
+   "Kab. Gunungkidul (DI Yogyakarta): tiba 8.4 mnt, tinggi atas 43.2 m",
+   "Kab. Pangandaran (Jawa Barat): tiba 9.1 mnt, tinggi atas 53.3 m",
+   "Kab. Klungkung (Bali): tiba 12.6 mnt, tinggi atas 53 m",
+   "Kab. Sukabumi (Jawa Barat): tiba 12.8 mnt, tinggi atas 49.8 m",
+   "Kab. Tabanan (Bali): tiba 15.6 mnt, tinggi atas 51.9 m",
+   "Kab. Lombok Tengah (Nusa Tenggara Barat): tiba 15.7 mnt, tinggi atas 40.6 m",
+   "Kab. Lebak (Banten): tiba 16.6 mnt, tinggi atas 41.6 m",
+   "Kab. Lombok Timur (Nusa Tenggara Barat): tiba 18.2 mnt, tinggi atas 36.6 m",
+   "Kab. Gianyar (Bali): tiba 19.2 mnt, tinggi atas 44.7 m",
+   "Kab. Karangasem (Bali): tiba 19.4 mnt, tinggi atas 23.8 m",
+   "Kab. Sumbawa (Nusa Tenggara Barat): tiba 20.6 mnt, tinggi atas 28.1 m",
+   "Kab. Lombok Utara (Nusa Tenggara Barat): tiba 21.3 mnt, tinggi atas 37 m",
+   "Kab. Buleleng (Bali): tiba 25.1 mnt, tinggi atas 30.6 m"
+  ],
+  "mentawai-mmaks": [
+   "Kab. Bengkulu Utara (Bengkulu): tiba 8.1 mnt, tinggi atas 42.4 m",
+   "Kab. Bengkulu Selatan (Bengkulu): tiba 9.1 mnt, tinggi atas 42.4 m",
+   "Kab. Aceh Singkil (Aceh): tiba 27.6 mnt, tinggi atas 15.1 m",
+   "Kab. Tanggamus (Lampung): tiba 27.6 mnt, tinggi atas 19.9 m"
+  ]
+ },
+ "pengungsi_gunung_terpotong_radius20km": {},
  "kamus_kolom": {
+  "status_magnitudo": {
+   "label": "-",
+   "sumber": "di bawah Mmaks = magnitudo sim.js lebih kecil dari Mmaks Peta Gempa 2024 (sekunder); tanpa sumber = Sumba 8,3 tanpa rujukan dan tanpa Mmaks; Mmaks (sekunder) = varian kepekaan"
+  },
   "jiwa_mmi_*": {
    "label": "estimasi-model",
    "sumber": "public/data/penduduk.json kec (WorldPop R2025A 2026) x MMI guncangan.js (BSSA14/Zhao06 + Worden 2012, Vs30 kemiringan DEM)"
+  },
+  "mmi_maks": {
+   "label": "estimasi-model",
+   "sumber": "MMI tertinggi di pusat kecamatan kab, 2 desimal (di bawah 6,5 = belum VII, jiwa_mmi7plus 0)"
   },
   "jiwa_mmi7plus_rendah/tinggi": {
    "label": "estimasi-model",
@@ -233,7 +479,7 @@
   },
   "rumah_dalam_jendela, rb_*, rs_*, rr_*": {
    "label": "estimasi-model",
-   "sumber": "rumah = jiwa/3,9 (kerusakan.js JIWA_PER_RUMAH, bukan data bangunan); kurva HAZUS pre-code + kalib 3,0586; pita [rendah,tengah,tinggi]"
+   "sumber": "rumah = jiwa/3,9 (kerusakan.js JIWA_PER_RUMAH, bukan data bangunan); kurva HAZUS pre-code + kalib 3,0586; pita [rendah,tengah,tinggi]; pita per kab tidak aditif"
   },
   "korban_mesin_*": {
    "label": "estimasi-model",
@@ -241,7 +487,7 @@
   },
   "korban_analog_*": {
    "label": "estimasi-model",
-   "sumber": "jiwa MMI>=VII x rasio meninggal/terpapar analog (analog.csv): rendah = min x pita rendah, tengah = median x tengah, tinggi = maks x pita tinggi"
+   "sumber": "jiwa MMI>=VII x rasio meninggal/terpapar analog dinormalkan ke okupansi 0,85 (analog.csv); rendah = min(rasio min x paparan tengah, median x pita rendah), tinggi = maks(rasio maks x paparan tengah, median x pita tinggi)"
   },
   "pengungsi (gempa)": {
    "label": "asumsi-kebijakan",
@@ -281,15 +527,15 @@
   },
   "jiwa_pesisir_rendah_*": {
    "label": "estimasi-model",
-   "sumber": "penduduk kecamatan dengan pusat di sel ETOPO <= 10 m dan pantai terdekat tinggi atas >= 0,5 m (aturan sim.js); batas atas, bukan genangan"
+   "sumber": "penduduk kecamatan dengan pusat di sel ETOPO <= 10 m dan pantai terdekat tinggi atas >= 0,5 m (aturan sim.js), hanya di kab yang punya sel pantai tercapai; batas atas, bukan genangan; lubang: lubang_proksi_tsunami"
   },
   "jiwa_tak_sempat_jalan_kaki": {
    "label": "estimasi-model",
    "sumber": "jalan kaki 4 km/jam, jarak lurus x1,3 ke tanah >= 20 m (Tsunami.tempatTinggi) lebih lama dari tiba sisi aman"
   },
-  "korban_e20/e50/e70_*": {
-   "label": "estimasi-model + asumsi-kebijakan",
-   "sumber": "jiwa_pesisir_rendah_lt30 x rasio tsunami analog [min, rerata geometrik, maks] x faktor Nankai"
+  "korban_e20/e50/e70_orde, yll_e20_orde": {
+   "label": "estimasi-model + asumsi-kebijakan; ORDE BESARAN, BELUM LAYAK DIKUTIP",
+   "sumber": "jiwa_pesisir_rendah_lt30 x rasio tsunami Mentawai 2010 dicocokkan per kab x faktor Nankai; satu analog, tanpa pita"
   },
   "jiwa_sapuan_*": {
    "label": "estimasi-model",
@@ -301,11 +547,11 @@
   },
   "dibi2010_*": {
    "label": "resmi",
-   "sumber": "DIBI 26 Okt 2010"
+   "sumber": "DIBI 26 Okt 2010; baris = kab model GABUNG kab DIBI (Kota Magelang ikut, nilai model 0)"
   },
   "jiwa_krb*": {
    "label": "resmi (zona) x terverifikasi (penduduk)",
-   "sumber": "KRB PVMBG 2018 (paparan_geo.json, poligon diperhalus) x pop/<id>.json, piksel <= 20 km dari puncak (aturan paparan.py)"
+   "sumber": "data/raw/gunungapi/krb.geojson (poligon utuh) x pop_piksel.json (WorldPop 1 km tak dibulatkan), aturan paparan.py pilih_krb, piksel <= 20 km dari puncak (gunungapi_status.json)"
   },
   "luas_krb*_ha": {
    "label": "resmi",
@@ -314,6 +560,10 @@
   "*_analog_* (gunung)": {
    "label": "estimasi-model",
    "sumber": "jiwa KRB III x rasio Semeru 2021 / Merapi 2010 (analog.csv)"
+  },
+  "pengungsi_analog_*, hari_mengungsi_30_* (gunung)": {
+   "label": "estimasi-model (batas atas)",
+   "sumber": "jiwa KRB III x mengungsi/jiwa KRB III, dibatasi penduduk_radius20km_gunung (pop_piksel.json <= 20 km dari puncak), dibagi ke kab menurut porsi KRB III"
   }
  },
  "krb_selisih_terhadap_paparan_json": {

@@ -1,0 +1,210 @@
+{
+ "nama": "bab05-garis-oni-2008-2026",
+ "keterangan": "Oceanic Niño Index tiga bulanan dan musim El Niño kuat, 2008–2026 (°C)",
+ "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "ONI",
+   "jenis": "label-ujung",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#2E3440": [
+   "anotasi",
+   "teks"
+  ],
+  "#FFFFFF": [
+   "latar",
+   "garis"
+  ],
+  "#051C2C": [
+   "seri",
+   "legenda"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 3,
+   "y": 202.65,
+   "w": 12.76,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "-2,0"
+  },
+  {
+   "x": 5.21,
+   "y": 121.58,
+   "w": 10.55,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0,0"
+  },
+  {
+   "x": 5.21,
+   "y": 40.5,
+   "w": 10.55,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2,0"
+  },
+  {
+   "x": 3.75,
+   "y": 214.5,
+   "w": 34.03,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "DJF 2008"
+  },
+  {
+   "x": 41.91,
+   "y": 214.5,
+   "w": 36.4,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "OND 2009"
+  },
+  {
+   "x": 83.31,
+   "y": 214.5,
+   "w": 35.9,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "SON 2011"
+  },
+  {
+   "x": 123.44,
+   "y": 214.5,
+   "w": 34.33,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "JAS 2013"
+  },
+  {
+   "x": 162.08,
+   "y": 214.5,
+   "w": 35.76,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "MJJ 2015"
+  },
+  {
+   "x": 202.82,
+   "y": 214.5,
+   "w": 36.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "AMJ 2017"
+  },
+  {
+   "x": 245.75,
+   "y": 214.5,
+   "w": 36.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "AMJ 2019"
+  },
+  {
+   "x": 288.68,
+   "y": 214.5,
+   "w": 36.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "AMJ 2021"
+  },
+  {
+   "x": 331.61,
+   "y": 214.5,
+   "w": 36.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "AMJ 2023"
+  },
+  {
+   "x": 402.49,
+   "y": 214.5,
+   "w": 34.33,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "JAS 2026"
+  },
+  {
+   "x": 64.9,
+   "y": 8,
+   "w": 74.73,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "El Niño kuat 2009/10"
+  },
+  {
+   "x": 193.69,
+   "y": 8,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015/16"
+  },
+  {
+   "x": 365.41,
+   "y": 8,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023/24"
+  },
+  {
+   "x": 432.05,
+   "y": 34.01,
+   "w": 13.38,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-ONI",
+   "teks": "ONI"
+  },
+  {
+   "x": 447.41,
+   "y": 33.76,
+   "w": 16.71,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-ONI",
+   "teks": "2,16"
+  },
+  {
+   "x": 20.76,
+   "y": 185.06,
+   "w": 20,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "-1,76"
+  }
+ ],
+ "jenis": "garis",
+ "pesan": "G2",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_periode": 224,
+ "acuan": 3,
+ "anotasi": 3,
+ "pita": false,
+ "label_ujung": true
+}

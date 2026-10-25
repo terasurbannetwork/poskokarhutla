@@ -51,7 +51,6 @@ kode,nama,kode_ws,nama_ws,kategori,jenis_tautan,label
 3673,Kota Serang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3674,Kota Tangerang Selatan,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3101,Administrasi Kepulauan Seribu,02.04.C,Kepulauan Seribu,C,disebut langsung di Lampiran I (kategori C),resmi
-3101,Administrasi Kepulauan Seribu,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3171,Kota Administrasi Jakarta Pusat,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3172,Kota Administrasi Jakarta Utara,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3173,Kota Administrasi Jakarta Barat,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
@@ -780,18 +779,18 @@ kode,nama,kode_ws,nama_ws,kategori,jenis_tautan,label
 3577,Kota Madiun,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3578,Kota Surabaya,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
 3579,Kota Batu,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
-3207,Ciamis,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3218,Pangandaran,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3279,Kota Banjar,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3301,Cilacap,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3310,Klaten,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3310,Klaten,,,,BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3311,Sukoharjo,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3312,Wonogiri,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3313,Karanganyar,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3314,Sragen,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3317,Rembang,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3329,Brebes,,,,BBWS Cimanuk Cisanggarung memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3404,Sleman,,,,BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3521,Ngawi,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
-3523,Tuban,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3207,Ciamis,,,,"BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3218,Pangandaran,,,,"BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3279,Kota Banjar,,,,"BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3301,Cilacap,,,,"BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3310,Klaten,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3310,Klaten,,,,"BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3311,Sukoharjo,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3312,Wonogiri,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3313,Karanganyar,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3314,Sragen,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3317,Rembang,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3329,Brebes,,,,"BBWS Cimanuk Cisanggarung memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3404,Sleman,,,,"BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3521,Ngawi,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi
+3523,Tuban,,,,"BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I); tautan BBWS-DI, bukan keanggotaan WS",resmi

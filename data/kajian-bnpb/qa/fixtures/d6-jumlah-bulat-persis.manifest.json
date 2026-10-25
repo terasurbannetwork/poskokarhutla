@@ -1,0 +1,146 @@
+{
+ "angka": [
+  {
+   "kunci": "irbi.nasional.2015",
+   "opsi": "fmt=2",
+   "tampil": "156,43",
+   "nilai": 156.4305,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "InaRISK BNPB, IRBI 2015",
+   "naskah": "uji:isi"
+  },
+  {
+   "kunci": "irbi.nasional.2024",
+   "opsi": "fmt=2",
+   "tampil": "128,52",
+   "nilai": 128.524,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2024",
+   "naskah": "uji:isi"
+  },
+  {
+   "kunci": "irbi.nasional.persen_2015_2024",
+   "opsi": "fmt=1|persen|arah",
+   "tampil": "turun 17,8%",
+   "nilai": -17.8396,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2015 dan 2024",
+   "naskah": "uji:isi"
+  },
+  {
+   "kunci": "bukti.bangladesh_siklon.kematian_1970",
+   "opsi": "",
+   "tampil": "500.000",
+   "nilai": 500000,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012)",
+   "naskah": "uji:isi"
+  },
+  {
+   "kunci": "bukti.bangladesh_siklon.kematian_2007",
+   "opsi": "",
+   "tampil": "4.234",
+   "nilai": 4234,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012)",
+   "naskah": "uji:isi"
+  },
+  {
+   "kunci": "irbi.kab.tinggi.2023",
+   "opsi": "satuan",
+   "tampil": "168 kab/kota",
+   "nilai": 168,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2023; Renas PB 2025–2029",
+   "naskah": "uji:kartu"
+  },
+  {
+   "kunci": "irbi.kab.dinilai.2023",
+   "opsi": "satuan",
+   "tampil": "514 kab/kota",
+   "nilai": 514,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2023",
+   "naskah": "uji:kartu"
+  },
+  {
+   "kunci": "irbi.prov.tinggi.2023",
+   "opsi": "satuan",
+   "tampil": "13 provinsi",
+   "nilai": 13,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2023; Renas PB 2025–2029",
+   "naskah": "uji:kartu"
+  },
+  {
+   "kunci": "hidromet.jawa.lanina.tahun_analog",
+   "opsi": "tahun",
+   "tampil": "2020",
+   "nilai": 2020,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; NOAA CPC, indeks ONI",
+   "naskah": "uji:skenario"
+  },
+  {
+   "kunci": "hidromet.jawa.lanina.korban_jiwa",
+   "opsi": "rentang|satuan",
+   "tampil": "250–550 jiwa",
+   "nilai": null,
+   "rendah": 254.354,
+   "tinggi": 546.9468,
+   "keyakinan": "estimasi-model; belum diuji balik",
+   "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2008–2026",
+   "naskah": "uji:skenario"
+  },
+  {
+   "kunci": "hidromet.jawa.lanina.mengungsi",
+   "opsi": "satuan",
+   "tampil": "178.620 jiwa",
+   "nilai": 178620,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2020/2021",
+   "naskah": "uji:skenario"
+  },
+  {
+   "kunci": "hidromet.jawa.lanina.rumah_rusak_berat",
+   "opsi": "satuan",
+   "tampil": "2.058 unit",
+   "nilai": 2058,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2020/2021",
+   "naskah": "uji:skenario"
+  }
+ ],
+ "pustaka": {
+  "kajian": "air",
+  "status": "draf",
+  "bab": {
+   "1": [
+    "bnpb-2025-renas",
+    "haque-2012-siklon"
+   ]
+  }
+ }
+}

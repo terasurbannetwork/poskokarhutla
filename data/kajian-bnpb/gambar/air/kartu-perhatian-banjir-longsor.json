@@ -1,0 +1,238 @@
+{
+ "nama": "kartu-perhatian-banjir-longsor",
+ "keterangan": "Kab/kota daftar perhatian banjir dan tanah longsor di Pulau Jawa, 2025",
+ "sumber": "Daftar perhatian kajian ini (jumlah bahaya yang memenuhi daftar perhatian)",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  158.4
+ ],
+ "ukuran_cm": [
+  5.23,
+  5.59
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Di luar daftar (33)",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Satu bahaya (48)",
+   "jenis": "kotak",
+   "warna": "#68A8E0"
+  },
+  {
+   "label": "Banjir dan longsor (38)",
+   "jenis": "kotak",
+   "warna": "#1B5A93"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#68A8E0": [
+   "skala",
+   "legenda"
+  ],
+  "#DCEBF8": [
+   "skala",
+   "legenda"
+  ],
+  "#1B5A93": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 12.03,
+   "y": 56.4,
+   "w": 124.19,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-12",
+   "teks": "Daftar perhatian (jumlah kab/kota)"
+  },
+  {
+   "x": 12.03,
+   "y": 55.4,
+   "w": 124.19,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-12",
+   "teks": "Daftar perhatian (jumlah kab/kota)"
+  },
+  {
+   "x": 49.95,
+   "y": 69.4,
+   "w": 62.35,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-35",
+   "teks": "Di luar daftar (33)"
+  },
+  {
+   "x": 35.95,
+   "y": 68.4,
+   "w": 76.35,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-35",
+   "teks": "Di luar daftar (33)"
+  },
+  {
+   "x": 50.97,
+   "y": 82.4,
+   "w": 60.32,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-36",
+   "teks": "Satu bahaya (48)"
+  },
+  {
+   "x": 36.97,
+   "y": 81.4,
+   "w": 74.32,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-36",
+   "teks": "Satu bahaya (48)"
+  },
+  {
+   "x": 40.71,
+   "y": 95.4,
+   "w": 80.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg3-26",
+   "teks": "Banjir dan longsor (38)"
+  },
+  {
+   "x": 26.71,
+   "y": 94.4,
+   "w": 94.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg3-26",
+   "teks": "Banjir dan longsor (38)"
+  },
+  {
+   "x": 3,
+   "y": 107.4,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 117,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 126.6,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 136.2,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 145.8,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "air",
+  "batas": [
+   0,
+   1
+  ],
+  "label": [
+   "Di luar daftar",
+   "Satu bahaya",
+   "Banjir dan longsor"
+  ],
+  "warna": [
+   "skala.air.1",
+   "skala.air.3",
+   "skala.air.5"
+  ],
+  "rumus": "jumlah bahaya yang memenuhi daftar perhatian",
+  "resmi": false,
+  "jumlah": [
+   33,
+   48,
+   38
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

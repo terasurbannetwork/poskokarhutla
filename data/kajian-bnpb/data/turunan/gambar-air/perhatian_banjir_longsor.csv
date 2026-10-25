@@ -1,0 +1,120 @@
+kode,nama,n_bahaya
+3101,Administrasi Kepulauan Seribu,0
+3171,Kota Administrasi Jakarta Pusat,0
+3172,Kota Administrasi Jakarta Utara,1
+3173,Kota Administrasi Jakarta Barat,1
+3174,Kota Administrasi Jakarta Selatan,1
+3175,Kota Administrasi Jakarta Timur,1
+3201,Bogor,2
+3202,Sukabumi,2
+3203,Cianjur,2
+3204,Bandung,2
+3205,Garut,2
+3206,Tasikmalaya,2
+3207,Ciamis,1
+3208,Kuningan,1
+3209,Cirebon,2
+3210,Majalengka,0
+3211,Sumedang,1
+3212,Indramayu,1
+3213,Subang,2
+3214,Purwakarta,2
+3215,Karawang,2
+3216,Bekasi,2
+3217,Bandung Barat,2
+3218,Pangandaran,1
+3271,Kota Bogor,2
+3272,Kota Sukabumi,0
+3273,Kota Bandung,1
+3274,Kota Cirebon,0
+3275,Kota Bekasi,1
+3276,Kota Depok,0
+3277,Kota Cimahi,0
+3278,Kota Tasikmalaya,0
+3279,Kota Banjar,0
+3301,Cilacap,2
+3302,Banyumas,2
+3303,Purbalingga,1
+3304,Banjarnegara,1
+3305,Kebumen,2
+3306,Purworejo,2
+3307,Wonosobo,1
+3308,Magelang,2
+3309,Boyolali,0
+3310,Klaten,1
+3311,Sukoharjo,0
+3312,Wonogiri,1
+3313,Karanganyar,1
+3314,Sragen,0
+3315,Grobogan,1
+3316,Blora,1
+3317,Rembang,1
+3318,Pati,1
+3319,Kudus,1
+3320,Jepara,2
+3321,Demak,1
+3322,Semarang,0
+3323,Temanggung,1
+3324,Kendal,1
+3325,Batang,2
+3326,Pekalongan,2
+3327,Pemalang,2
+3328,Tegal,1
+3329,Brebes,2
+3371,Kota Magelang,0
+3372,Kota Surakarta,1
+3373,Kota Salatiga,0
+3374,Kota Semarang,2
+3375,Kota Pekalongan,1
+3376,Kota Tegal,0
+3401,Kulon Progo,0
+3402,Bantul,1
+3403,Gunungkidul,1
+3404,Sleman,0
+3471,Kota Yogyakarta,1
+3501,Pacitan,2
+3502,Ponorogo,2
+3503,Trenggalek,2
+3504,Tulungagung,2
+3505,Blitar,1
+3506,Kediri,2
+3507,Malang,2
+3508,Lumajang,0
+3509,Jember,2
+3510,Banyuwangi,0
+3511,Bondowoso,0
+3512,Situbondo,0
+3513,Probolinggo,1
+3514,Pasuruan,1
+3515,Sidoarjo,1
+3516,Mojokerto,1
+3517,Jombang,2
+3518,Nganjuk,2
+3519,Madiun,2
+3520,Magetan,0
+3521,Ngawi,1
+3522,Bojonegoro,2
+3523,Tuban,0
+3524,Lamongan,0
+3525,Gresik,1
+3526,Bangkalan,1
+3527,Sampang,1
+3528,Pamekasan,0
+3529,Sumenep,0
+3571,Kota Kediri,0
+3572,Kota Blitar,0
+3573,Kota Malang,1
+3574,Kota Probolinggo,0
+3575,Kota Pasuruan,1
+3576,Kota Mojokerto,0
+3577,Kota Madiun,1
+3578,Kota Surabaya,1
+3579,Kota Batu,2
+3601,Pandeglang,1
+3602,Lebak,2
+3603,Tangerang,0
+3604,Serang,2
+3671,Kota Tangerang,1
+3672,Kota Cilegon,1
+3673,Kota Serang,1
+3674,Kota Tangerang Selatan,0

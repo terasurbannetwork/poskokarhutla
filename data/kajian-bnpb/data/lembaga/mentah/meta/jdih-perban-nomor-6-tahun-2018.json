@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Badan",
+ "Judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2018 tentang Penerimaan Bantuan Internasional Dalam Keadaan Darurat Bencana",
+ "Nomor": "6",
+ "Tahun": "2018",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Penerimaan Bantuan Internasional",
+ "Tanggal Penetapan": "27 September 2018",
+ "Tanggal Pengundangan": "13 December 2018",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "BN 2018 (1645); 51 Hlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERBAN",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2018pbbnpb006.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-6-tahun-2018",
+ "tipe": "Peraturan",
+ "slug": "perban-nomor-6-tahun-2018",
+ "teks": [
+  "perban-nomor-6-tahun-2018.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "146cec6e5269aad33eed5f856c4af98f4bc3e4c7",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "ee0612c7cc6c5ee92d021680d0212517952dbd38",
+ "asal_teks": "data/raw/hukum/teks/perban-nomor-6-tahun-2018.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

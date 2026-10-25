@@ -1,12 +1,15 @@
 // Tarik tabel BPS (situs Next.js, dirender di peramban) untuk paket `air-jawa`. Dipanggil oleh `air-jawa.py tarik`.
 // node data/kajian-bnpb/bangun/air_jawa_bps.mjs <keluaran_dir> <nama>=<url> ...
-// Playwright diimpor dari path absolut (tidak ada di package.json repo ini), pola sama dengan data/laporan-bnpb/*/peta.mjs.
-import { chromium } from '/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright/index.mjs';
+// Playwright tidak ada di package.json repo ini. Path-nya dari lingkungan supaya langkah tarik bisa diulang di mesin lain:
+//   PLAYWRIGHT_MJS=/path/ke/node_modules/playwright/index.mjs  CHROMIUM_PATH=/path/ke/chrome-headless-shell (kosong = bawaan Playwright)
+// Bawaan = mesin penyusun (23 Okt 2026).
 import fs from 'fs';
 import path from 'path';
 const [out, ...pasangan] = process.argv.slice(2);
 fs.mkdirSync(out, { recursive: true });
-const b = await chromium.launch({ executablePath: '/Users/alfatehanseptianta/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell' });
+const { chromium } = await import(process.env.PLAYWRIGHT_MJS || '/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright/index.mjs');
+const exe = process.env.CHROMIUM_PATH ?? '/Users/alfatehanseptianta/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell';
+const b = await chromium.launch(exe ? { executablePath: exe } : {});
 const p = await b.newPage({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36' });
 for (const s of pasangan) {
   const i = s.indexOf('=');

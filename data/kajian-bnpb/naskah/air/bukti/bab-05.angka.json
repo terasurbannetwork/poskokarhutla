@@ -1,0 +1,866 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 5 kajian air (berkas bukti naskah/air/bukti/bab-05.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur, atau nilai + pustaka (id di bab-05.pustaka.json, digabung ke pustaka.json saat registri disatukan).",
+    "Kunci yang sudah ada di data/angka.json atau di bab-01 sampai bab-04.angka.json tidak diulang. Angka sekunder tidak dimasukkan.",
+    "Disusun 24 Oktober 2026.",
+    "Diperbarui 24 Oktober 2026 atas temuan pemeriksa: korelasi jiwa terdampak, ENSO ASO, peluang El Niño BMKG 10 Juni, korban karhutla per tahun, produksi padi 2015, 2024, dan terhadap rerata 2021–2022.",
+    "Ditambah penulis bab 24 Oktober 2026: kunci tabel banding lima kab/kota, komposisi syarat daftar perhatian, ambang IRBI dan El Niño kuat, luas karhutla 2015 dan porsi Jawa Timur 2023, korban karhutla per kejadian, dan turunan kebutuhan air per seratus ribu jiwa."
+  ],
+  "angka": {
+    "perhatian.air.kekeringan.n_b2": {
+      "berkas": "turunan/daftar_perhatian_kepekaan.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,varian=syarat_b_2_tahun].n_masuk",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "kepekaan: ambang syarat (b) diturunkan ke >= 2 dari 11 tahun"
+    },
+    "perhatian.air.kekeringan.n_b4": {
+      "berkas": "turunan/daftar_perhatian_kepekaan.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,varian=syarat_b_4_tahun].n_masuk",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "kepekaan: ambang syarat (b) dinaikkan ke >= 4 dari 11 tahun"
+    },
+    "perhatian.air.kekeringan.n_a2": {
+      "berkas": "turunan/daftar_perhatian_kepekaan.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,varian=syarat_a_dua_kelas_teratas].n_masuk",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "kepekaan: syarat (a) dua kelas kuintil teratas"
+    },
+    "perhatian.air.kekeringan.n_syarat_d": {
+      "nilai": 48,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: jumlah baris turunan/daftar_perhatian.csv [kajian=air,bahaya=kekeringan,masuk=True] dengan syarat_d=True (dari 53); syarat d = daerah irigasi kewenangan pusat; dihitung penyusun bukti 24 Okt 2026"
+    },
+    "perhatian.air.kekeringan.n_tanpa_d": {
+      "nilai": 18,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: kab dengan >= 2 dari syarat a, b, c (c kosong untuk kekeringan), yaitu a dan b; belum dibangun turunan.py"
+    },
+    "perhatian.air.kekeringan.n_c_terdampak": {
+      "nilai": 58,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: syarat c diganti menderita+mengungsi 2015–2025 >= kuartil atas Jawa (perhatian.air.kekeringan.c_terdampak_ambang); tambahan Garut, Blora, Kendal, Gunungkidul, Pandeglang; sama dengan angka dalam kurung bukti Bab 3; belum dibangun turunan.py"
+    },
+    "perhatian.air.kekeringan.c_terdampak_ambang": {
+      "nilai": 83509,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): nilai ke-floor(3n/4) dari 119 jumlah menderita_mengungsi kekeringan per kab 2015–2025 di air-jawa/dibi_kab_tahun.csv (rumus batas_kuartil_atas turunan.py); 30 kab >= ambang; bukti Bab 3 menulis 82.123 dengan cara hitung lain"
+    },
+    "perhatian.air.kekeringan.dibi2026_dalam_daftar": {
+      "nilai": 32,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: dari 55 kab yang mencatat kekeringan DIBI 2026 (sementara, sampai 23 Okt 2026), 32 masuk daftar varian dasar"
+    },
+    "airjawa.kekeringan.terdampak_2015_2025": {
+      "nilai": 11857516,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; intensitas pelaporan"
+    },
+    "airjawa.kekeringan.kab_2008": {
+      "nilai": 73,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2008",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, jumlah_kejadian > 0; 155 kejadian; terdampak tidak dicatat"
+    },
+    "airjawa.kekeringan.kab_2018": {
+      "nilai": 67,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2018",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, jumlah_kejadian > 0; 90 kejadian; ONI JAS 0,30"
+    },
+    "airjawa.kekeringan.kab_2024": {
+      "nilai": 45,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2024",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, jumlah_kejadian > 0; 63 kejadian; 908.603 terdampak"
+    },
+    "airjawa.kekeringan.terdampak_2019": {
+      "nilai": 1963378,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2019",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, jumlah menderita_mengungsi"
+    },
+    "airjawa.kekeringan.terdampak_2023": {
+      "nilai": 3265382,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2023",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, jumlah menderita_mengungsi"
+    },
+    "airjawa.kekeringan.kab_2026_jateng": {
+      "nilai": 25,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2026 (sementara, sampai 23 Oktober 2026)",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, prov_kode=33"
+    },
+    "airjawa.kekeringan.terdampak_2026_jateng": {
+      "nilai": 738353,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2026 (sementara, sampai 23 Oktober 2026)",
+      "catatan": "olah(resmi): air-jawa/dibi_kab_tahun.csv kelompok=kekeringan, is_bencana=1, prov_kode=33; 56,8% dari Jawa"
+    },
+    "airjawa.kekeringan.spearman_kab_dmi": {
+      "nilai": 0.553,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi dan terverifikasi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA PSL (DMI HadISST1.1)",
+      "catatan": "Spearman jumlah kab berkejadian kekeringan per tahun 2008–2025 (n=18) lawan rerata DMI Jul–Sep; dihitung penyusun bukti; sampel kecil, hanya isyarat"
+    },
+    "airjawa.kekeringan.spearman_kab_oni": {
+      "nilai": 0.321,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi dan terverifikasi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA CPC (ONI)",
+      "catatan": "Spearman jumlah kab berkejadian kekeringan per tahun 2008–2025 (n=18) lawan ONI JAS; dihitung penyusun bukti"
+    },
+    "airjawa.gunungkidul.irbi2025_kekeringan": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3403].irbi2025_kekeringan",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "terendah di Jawa bersama Kota Probolinggo; tidak untuk memeringkat"
+    },
+    "airjawa.gunungkidul.krb_kekeringan_luas_tinggi": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3403,bahaya=kekeringan].krb_luas_tinggi_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "nol; seluruh luas bahaya kekeringan Gunungkidul berkelas sedang"
+    },
+    "airjawa.gunungkidul.krb_kekeringan_luas_sedang": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3403,bahaya=kekeringan].krb_luas_sedang_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.gunungkidul.dibi_tahun_kekeringan_1525": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3403].n_tahun_dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025",
+      "catatan": "tahun berkejadian: 2017, 2018, 2019, 2023, 2024"
+    },
+    "airjawa.gunungkidul.terdampak_kekeringan_1525": {
+      "nilai": 566351,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kode=3403 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; terbanyak keenam di Jawa"
+    },
+    "airjawa.gunungkidul.terdampak_2019": {
+      "nilai": 220429,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2019",
+      "catatan": "olah(resmi): kode=3403; 28,5% dari penduduk KRB 774.296"
+    },
+    "airjawa.jawa.krb_kekeringan_kab_tinggi_nol": {
+      "nilai": 68,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): jumlah kab Jawa dengan krb_luas_tinggi_ha = 0 di skenario-hidromet/paparan_kab.csv [bahaya=kekeringan], dari 119; 27 di antaranya berkejadian DIBI >= 3 tahun 2015–2025"
+    },
+    "airjawa.jawa.spearman_irbi_kekeringan.luas_tinggi": {
+      "nilai": 0.43,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025, KRB 2022–2026)",
+      "catatan": "Spearman (peringkat rata-rata untuk nilai kembar) irbi2025_kekeringan (air-jawa/kab_jawa.csv) lawan krb_luas_tinggi_ha (skenario-hidromet/paparan_kab.csv), n=119; dihitung penyusun bukti 24 Okt 2026"
+    },
+    "airjawa.jawa.spearman_irbi_kekeringan.terpapar": {
+      "nilai": 0.119,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025, KRB 2022–2026)",
+      "catatan": "Spearman irbi2025_kekeringan lawan krb_terpapar_jiwa, n=119; paparan 97,5–100% penduduk per kab sehingga tidak membedakan; membantah paragraf penjelas KERANGKA Bab 5"
+    },
+    "oni.jas_2018": {
+      "nilai": 0.3,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+      "catatan": "JAS 2018, riset/mentah/oni_cpc.txt"
+    },
+    "oni.jas_2019": {
+      "nilai": 0.2,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+      "catatan": "JAS 2019; El Niño lemah ASO 2018–MJJ 2019 berakhir sebelum puncak kemarau"
+    },
+    "oni.jas_2023": {
+      "nilai": 1.25,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+      "catatan": "JAS 2023"
+    },
+    "oni.ndj_2009": {
+      "nilai": 1.5,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+      "catatan": "NDJ 2009/10"
+    },
+    "enso.elnino_kuat_musim_2008_2025": {
+      "nilai": 3,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "musim",
+      "keyakinan": "asumsi-kebijakan; turunan dari ONI",
+      "sumber": "Pengolahan data Pantau Bencana dari NOAA CPC, indeks ONI",
+      "catatan": "olah: musim 2008/09–2025/26 dengan ONI NDJ >= 1,5: 2009/10 (1,50), 2015/16 (2,59), 2023/24 (1,99); dari 18 musim"
+    },
+    "enso.elnino_kuat_jas_berikut_maks": {
+      "nilai": 0.32,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "asumsi-kebijakan; turunan dari ONI",
+      "sumber": "Pengolahan data Pantau Bencana dari NOAA CPC, indeks ONI",
+      "catatan": "olah: ONI JAS tertinggi pada tahun sesudah 8 episode ONI NDJ >= 1,5 (1957, 1965, 1972, 1982, 1997, 2009, 2015, 2023); nilai 0,32 = JAS 1958; tidak satu pun >= 0,5"
+    },
+    "dmi.jas_2015": {
+      "nilai": 0.36,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA PSL, DMI HadISST1.1",
+      "catatan": "olah: rerata Juli–September 2015 (0,225; 0,568; 0,294)"
+    },
+    "dmi.jas_2018": {
+      "nilai": 0.26,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA PSL, DMI HadISST1.1",
+      "catatan": "olah: rerata Juli–September 2018 (0,053; 0,121; 0,604)"
+    },
+    "dmi.jas_2019": {
+      "nilai": 0.64,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA PSL, DMI HadISST1.1",
+      "catatan": "olah: rerata Juli–September 2019 (0,597; 0,436; 0,892)"
+    },
+    "dmi.jas_2023": {
+      "nilai": 0.76,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "°C",
+      "keyakinan": "terverifikasi",
+      "sumber": "NOAA PSL, DMI HadISST1.1",
+      "catatan": "olah: rerata Juli–September 2023 (0,498; 0,826; 0,946)"
+    },
+    "bmkg.dasarian_okt1_2026.nino34": {
+      "nilai": 3.33,
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "satuan": "°C",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, Analisis Dinamika Atmosfer Dasarian I Oktober 2026 (13 Oktober 2026)",
+      "catatan": "anomali suhu muka laut Niño 3.4 dasarian; berbeda dengan indeks ENSO JAS +2,63 (bmkg.musim_2026.enso_jas) dan ONI JAS 2,16"
+    },
+    "bmkg.dasarian_okt1_2026.iod": {
+      "nilai": 0.703,
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, Analisis Dinamika Atmosfer Dasarian I Oktober 2026 (13 Oktober 2026)",
+      "catatan": "indeks IOD dasarian; September +0,72"
+    },
+    "bmkg.pdkm_okt2_2026.prov_awas_jawa": {
+      "nilai": 6,
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, peringatan dini kekeringan meteorologis dasarian II Oktober 2026",
+      "catatan": "Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur masuk kategori Awas (sebagian atau seluruh wilayah; nama kab/kota tidak tercantum)"
+    },
+    "karhutla.jawa.luas_2019": {
+      "nilai": 38021,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari SiPongi Kementerian Kehutanan",
+      "catatan": "olah(resmi): jumlah enam provinsi Jawa di riset/mentah/sipongi_luas_2015_2026.json"
+    },
+    "karhutla.jawa.luas_2023": {
+      "nilai": 71109.63,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari SiPongi Kementerian Kehutanan",
+      "catatan": "olah(resmi): jumlah enam provinsi Jawa; terbesar 2015–2026"
+    },
+    "karhutla.jatim.luas_2023": {
+      "nilai": 49498.32,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "SiPongi Kementerian Kehutanan",
+      "catatan": "Jawa Timur 2023; 69,6% dari luas Jawa"
+    },
+    "karhutla.jawa.luas_2026_juli": {
+      "nilai": 13684.5,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari SiPongi Kementerian Kehutanan",
+      "catatan": "olah(resmi): 2026 sampai Juli (field last)"
+    },
+    "dibi.jawa.karhutla.kejadian_2023": {
+      "nilai": 480,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla 2023",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv jenis=karhutla, kode prov 31–36; 70 kab"
+    },
+    "dibi.jawa.karhutla.kejadian_2026": {
+      "nilai": 364,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla 2026 (sementara)",
+      "catatan": "olah(resmi): idem 2026"
+    },
+    "dibi.jawa.karhutla.kab_2026": {
+      "nilai": 70,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla 2026 (sementara)",
+      "catatan": "olah(resmi): idem, kejadian > 0"
+    },
+    "dibi.jawa.karhutla.meninggal_2026": {
+      "nilai": 6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla 2026 (sementara)",
+      "catatan": "olah(resmi): Kab. Probolinggo 5 (baris 10 September 2026, juga 4 hilang), Kab. Banyumas 1; sebab belum diverifikasi; berita kejadian Bromo 15 Oktober (4 meninggal) tidak cocok dengan baris DIBI"
+    },
+    "dibi.jawa.karhutla.hilang_2026": {
+      "nilai": 4,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla 2026 (sementara)",
+      "catatan": "olah(resmi): Kab. Probolinggo 4"
+    },
+    "bps.padi.jateng_2023_persen": {
+      "nilai": -2.91,
+      "pustaka": "bps-jateng-2024-padi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS Provinsi Jawa Tengah, angka tetap 2023 (1 Maret 2024)",
+      "catatan": "produksi 9,08 juta ton GKG lawan 9,36 juta ton (2022)"
+    },
+    "bps.padi.jatim_2023_persen": {
+      "nilai": 1.93,
+      "pustaka": "bps-jatim-2024-padi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS, angka tetap Jawa Timur 2023 (26 Maret 2024)",
+      "catatan": "produksi 9,71 juta ton GKG lawan 9,53 juta ton (2022)"
+    },
+    "bps.padi.nasional_2023_sementara_persen": {
+      "nilai": -2.05,
+      "pustaka": "bps-2023-padi-sementara",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS, angka sementara 2023 (16 Oktober 2023)",
+      "catatan": "53,63 lawan 54,75 juta ton GKG; angka tetap 2023 53,98 juta ton (bps-2024-padi-tetap)"
+    },
+    "perka_2008.air_bersih_3hari_liter": {
+      "nilai": 7,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "liter per orang per hari",
+      "keyakinan": "resmi",
+      "sumber": "Perka BNPB 7/2008",
+      "catatan": "tiga hari pertama; sesudahnya 15 liter (perka_2008.air_bersih_liter_hari)"
+    },
+    "perka_2008.jarak_sumber_air_m": {
+      "nilai": 500,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "m",
+      "keyakinan": "resmi",
+      "sumber": "Perka BNPB 7/2008",
+      "catatan": "jarak terjauh sumber air dari penampungan sementara ke titik air terdekat"
+    },
+    "nonalam.tpa.jawa_2023_tercatat": {
+      "nilai": 5,
+      "pustaka": "bnpb-2024-tpa-suwung",
+      "satuan": "TPA",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari berita resmi BNPB per kejadian",
+      "catatan": "olah(resmi): kode unik jenis=kebakaran_tpa, tahun 2023, prov 31–36 di nonalam-sosial/peristiwa.csv: Sarimukti, Kopi Luhur, Putri Cempo, Rawa Kucing, Jalupang; bagian dari 16 TPA nasional (nonalam.tpa.terbakar_2023)"
+    },
+    "nonalam.tpa.jawa_2026_tercatat": {
+      "nilai": 3,
+      "pustaka": "bnpb-2026-jatiwaringin",
+      "satuan": "TPA",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari berita resmi BNPB per kejadian",
+      "catatan": "olah(resmi): Jatiwaringin, Putri Cempo, Jatibarang (nonalam-sosial/peristiwa.csv, sampai 23 Okt 2026)"
+    },
+    "renas.aksi_141e.target_2029": {
+      "nilai": 1,
+      "pustaka": "bnpb-2025-renas, hlm. 67",
+      "satuan": "dokumen/peta",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 1/2025 (Renas PB 2025–2029), aksi 1.4.1.e",
+      "catatan": "IGT integrasi bahaya kekeringan; baseline 2024 N/A; PJ BMKG dan Kementerian Pertanian"
+    },
+    "renas.aksi_121i.trc_2024": {
+      "nilai": 80,
+      "pustaka": "bnpb-2025-renas, hlm. 58",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 1/2025 (Renas PB 2025–2029), aksi 1.2.1.i",
+      "catatan": "daerah yang memiliki TRC operasi kedaruratan karhutla, banjir, kekeringan, longsor; baseline 2024"
+    },
+    "renas.aksi_121i.trc_2029": {
+      "nilai": 84,
+      "pustaka": "bnpb-2025-renas, hlm. 58",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 1/2025 (Renas PB 2025–2029), aksi 1.2.1.i",
+      "catatan": "target 2029"
+    },
+    "airjawa.kekeringan.spearman_terdampak_oni": {
+      "nilai": 0.66,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi dan terverifikasi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA CPC (ONI)",
+      "catatan": "Spearman jiwa terdampak kekeringan Jawa per tahun 2012–2025 (n=14) lawan ONI JAS; wajib disandingkan dengan spearman_terdampak_dmi dan spearman_kab_*; sampel kecil"
+    },
+    "airjawa.kekeringan.spearman_terdampak_dmi": {
+      "nilai": 0.666,
+      "pustaka": "noaa-psl-dmi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi dan terverifikasi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan NOAA PSL (DMI HadISST1.1)",
+      "catatan": "Spearman jiwa terdampak kekeringan Jawa per tahun 2012–2025 (n=14) lawan rerata DMI Jul–Sep; setara dengan ONI (0,660)"
+    },
+    "bmkg.dasarian_okt1_2026.enso_aso": {
+      "nilai": 3.08,
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, Analisis Dinamika Atmosfer Dasarian I Oktober 2026 (13 Oktober 2026)",
+      "catatan": "indeks ENSO tiga bulan ASO; El Niño sangat kuat; kunci dan nilai sama dengan naskah/mitigasi/bukti/bab-07.angka.json; lebih baru daripada indeks ENSO JAS +2,63 (bmkg.musim_2026.enso_jas, 22 September)"
+    },
+    "bmkg.dasarian_okt2_2026.enso_aso": {
+      "nilai": 3.05,
+      "pustaka": "bmkg-2026-dinamika-okt2",
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, Analisis Dinamika Atmosfer Dasarian II Oktober 2026 (23 Oktober 2026)",
+      "catatan": "pemutakhiran indeks ENSO tiga bulan ASO; ditulis berdampingan dengan +3,08 (13 Oktober)"
+    },
+    "bmkg.pdkm_okt3_2026.prov_awas_jawa": {
+      "nilai": 4,
+      "pustaka": "bmkg-2026-dinamika-okt2",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, peringatan dini kekeringan meteorologis dasarian III Oktober 2026",
+      "catatan": "Awas di beberapa kab/kota Banten, Jawa Barat, DI Yogyakarta, Jawa Timur; Siaga Banten dan Jawa Timur; Waspada Banten dan Jawa Tengah"
+    },
+    "bmkg.musim_2026.elnino_peluang_moderat": {
+      "nilai": 98,
+      "pustaka": "bmkg-2026-musim-kemarau",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, siaran pers 10 Juni 2026",
+      "catatan": "peluang intensitas El Niño mencapai kategori moderat menurut prediksi Juni; bukan peluang skenario dampak Kartu 5.1"
+    },
+    "bmkg.musim_2026.elnino_peluang_kuat": {
+      "nilai": 62,
+      "pustaka": "bmkg-2026-musim-kemarau",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BMKG, siaran pers 10 Juni 2026",
+      "catatan": "peluang intensitas El Niño mencapai kategori kuat menurut prediksi Juni; bukan peluang skenario dampak Kartu 5.1"
+    },
+    "dibi.jawa.karhutla.meninggal_2015": {
+      "nilai": 12,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla Jawa 2015",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv jenis=karhutla, kode prov 31–36; Magetan 7 (18 Okt), Ponorogo 5; kebakaran hutan/gunung setempat menurut README skenario-hidromet; lantai tahun Kartu 5.2"
+    },
+    "dibi.jawa.karhutla.meninggal_2018": {
+      "nilai": 3,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla Jawa 2018",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv jenis=karhutla, kode prov 31–36; Pangandaran 1, Sragen 1, Magelang 1; sebab belum diverifikasi"
+    },
+    "dibi.jawa.karhutla.meninggal_2019": {
+      "nilai": 9,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla Jawa 2019",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv jenis=karhutla, kode prov 31–36; delapan kab di Jawa Tengah dan Jawa Timur; sebab belum diverifikasi"
+    },
+    "dibi.jawa.karhutla.meninggal_2015_2026": {
+      "nilai": 32,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla Jawa 2015–2026 (2026 sementara)",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv jenis=karhutla, kode prov 31–36; 2015 12, 2018 3, 2019 9, 2023 1, 2024 1, 2026 6; hilang 4 (2026); sama dengan KERANGKA Kartu 5.2"
+    },
+    "bps.padi.jateng_2024_persen": {
+      "nilai": -2.12,
+      "pustaka": "bps-jateng-2025-padi-2024",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS Provinsi Jawa Tengah, angka tetap 2024 (3 Maret 2025)",
+      "catatan": "produksi 8,89 juta ton GKG lawan 9,08 (2023), turun 0,19 juta ton"
+    },
+    "bps.padi.jatim_2024_persen": {
+      "nilai": -4.53,
+      "pustaka": "bps-jatim-2025-padi-2024",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS Provinsi Jawa Timur, angka tetap 2024 (3 Maret 2025)",
+      "catatan": "produksi 9,27 juta ton GKG lawan 9,71 (2023), turun 0,44 juta ton"
+    },
+    "bps.padi.jateng_2015_persen": {
+      "nilai": 17.14,
+      "pustaka": "bps-jateng-2016-padi-2015",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS Provinsi Jawa Tengah, angka tetap 2015 (1 Juli 2016)",
+      "catatan": "produksi 11,30 juta ton GKG lawan 9,65 (2014); seri sebelum 2018, kesebandingan metode dengan seri 2021–2024 belum diperiksa"
+    },
+    "bps.padi.jatim_2015_persen": {
+      "nilai": 6.11,
+      "pustaka": "bps-jatim-2016-padi-2015",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS Provinsi Jawa Timur, angka tetap 2015 (1 Juli 2016)",
+      "catatan": "produksi 13,15 juta ton GKG, naik 757,92 ribu ton; kesebandingan metode dengan seri 2021–2024 belum diperiksa"
+    },
+    "bps.padi.jawa_2015_naik_juta_ton": {
+      "nilai": 2.31,
+      "pustaka": "bps-2016-padi-2015",
+      "satuan": "juta ton GKG",
+      "keyakinan": "resmi",
+      "sumber": "BPS, rilis 1 Juli 2016",
+      "catatan": "kenaikan produksi padi Pulau Jawa 2015 dari 2014; nasional 75,40 juta ton GKG, naik 6,42%"
+    },
+    "bps.padi.jateng_2023_vs_rerata2122": {
+      "nilai": -4.3,
+      "pustaka": "bps-jateng-2024-padi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari angka tetap BPS",
+      "catatan": "olah(resmi): perubahan terhadap rerata dua tahun sebelumnya sebagai pendekatan tren sederhana; 9,08 lawan rerata (9,62 + 9,36)/2 = 9,49 juta ton GKG; pustaka 2021: bps-jateng-2022-padi-2021; atribusi ke El Niño belum diuji"
+    },
+    "bps.padi.jateng_2024_vs_rerata2122": {
+      "nilai": -6.3,
+      "pustaka": "bps-jateng-2025-padi-2024",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari angka tetap BPS",
+      "catatan": "olah(resmi): perubahan terhadap rerata dua tahun sebelumnya sebagai pendekatan tren sederhana; 8,89 lawan rerata 2021–2022 9,49 juta ton GKG; pustaka 2021: bps-jateng-2022-padi-2021, 2022: bps-jateng-2024-padi; atribusi ke El Niño belum diuji"
+    },
+    "bps.padi.jatim_2023_vs_rerata2122": {
+      "nilai": 0.5,
+      "pustaka": "bps-jatim-2024-padi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari angka tetap BPS",
+      "catatan": "olah(resmi): perubahan terhadap rerata dua tahun sebelumnya sebagai pendekatan tren sederhana; 9,71 lawan rerata (9,789 + 9,53)/2 = 9,66 juta ton GKG; pustaka 2021: bps-jatim-2022-padi-2021; atribusi ke El Niño belum diuji"
+    },
+    "bps.padi.jatim_2024_vs_rerata2122": {
+      "nilai": -4.0,
+      "pustaka": "bps-jatim-2025-padi-2024",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari angka tetap BPS",
+      "catatan": "olah(resmi): perubahan terhadap rerata dua tahun sebelumnya sebagai pendekatan tren sederhana; 9,27 lawan rerata 2021–2022 9,66 juta ton GKG; pustaka 2021: bps-jatim-2022-padi-2021, 2022: bps-jatim-2024-padi; atribusi ke El Niño belum diuji"
+    },
+    "perhatian.air.kekeringan.ambang_irbi": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3202].ambang_irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "batas bawah kelas kuintil teratas IRBI 2025 kekeringan untuk 119 kab/kota (syarat a); nilai sama di semua baris"
+    },
+    "perhatian.air.kekeringan.n_bd": {
+      "nilai": 26,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: baris turunan/daftar_perhatian.csv [kajian=air,bahaya=kekeringan,masuk=True] yang memenuhi tepat syarat (b) dan (d); dihitung penulis bab 24 Okt 2026 (T1.4)"
+    },
+    "perhatian.air.kekeringan.n_abd": {
+      "nilai": 13,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: baris turunan/daftar_perhatian.csv [kajian=air,bahaya=kekeringan,masuk=True] yang memenuhi tepat syarat (a), (b), dan (d); dihitung penulis bab 24 Okt 2026 (T1.4)"
+    },
+    "perhatian.air.kekeringan.n_ad": {
+      "nilai": 9,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: baris turunan/daftar_perhatian.csv [kajian=air,bahaya=kekeringan,masuk=True] yang memenuhi tepat syarat (a) dan (d); dihitung penulis bab 24 Okt 2026 (T1.4)"
+    },
+    "perhatian.air.kekeringan.n_ab": {
+      "nilai": 5,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: baris turunan/daftar_perhatian.csv [kajian=air,bahaya=kekeringan,masuk=True] yang memenuhi tepat syarat (a) dan (b); dihitung penulis bab 24 Okt 2026 (T1.4)"
+    },
+    "airjawa.sukabumi.irbi2025_kekeringan": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3202].irbi2025_kekeringan",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "tidak untuk memeringkat"
+    },
+    "airjawa.sukabumi.krb_kekeringan_luas_tinggi": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3202,bahaya=kekeringan].krb_luas_tinggi_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.sukabumi.dibi_tahun_kekeringan_1525": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3202].n_tahun_dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025"
+    },
+    "airjawa.sukabumi.terdampak_kekeringan_1525": {
+      "nilai": 118207,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kode=3202 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; dihitung penulis bab 24 Okt 2026"
+    },
+    "airjawa.blora.irbi2025_kekeringan": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3316].irbi2025_kekeringan",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "tidak untuk memeringkat"
+    },
+    "airjawa.blora.krb_kekeringan_luas_tinggi": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3316,bahaya=kekeringan].krb_luas_tinggi_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.blora.dibi_tahun_kekeringan_1525": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3316].n_tahun_dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025"
+    },
+    "airjawa.blora.terdampak_kekeringan_1525": {
+      "nilai": 363157,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kode=3316 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; dihitung penulis bab 24 Okt 2026"
+    },
+    "airjawa.kendal.irbi2025_kekeringan": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3324].irbi2025_kekeringan",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "tidak untuk memeringkat"
+    },
+    "airjawa.kendal.krb_kekeringan_luas_tinggi": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3324,bahaya=kekeringan].krb_luas_tinggi_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.kendal.dibi_tahun_kekeringan_1525": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3324].n_tahun_dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025"
+    },
+    "airjawa.kendal.terdampak_kekeringan_1525": {
+      "nilai": 915097,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kode=3324 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; dihitung penulis bab 24 Okt 2026"
+    },
+    "airjawa.kota_semarang.irbi2025_kekeringan": {
+      "berkas": "air-jawa/kab_jawa.csv",
+      "jalur": "[kode=3374].irbi2025_kekeringan",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "tidak untuk memeringkat"
+    },
+    "airjawa.kota_semarang.krb_kekeringan_luas_tinggi": {
+      "berkas": "skenario-hidromet/paparan_kab.csv",
+      "jalur": "[kode=3374,bahaya=kekeringan].krb_luas_tinggi_ha",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026"
+    },
+    "airjawa.kota_semarang.dibi_tahun_kekeringan_1525": {
+      "berkas": "turunan/daftar_perhatian.csv",
+      "jalur": "[kajian=air,bahaya=kekeringan,kode=3374].n_tahun_dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025"
+    },
+    "airjawa.kota_semarang.terdampak_kekeringan_1525": {
+      "nilai": 1460,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): jumlah menderita_mengungsi kode=3374 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv; dihitung penulis bab 24 Okt 2026"
+    },
+    "airjawa.sumedang.terdampak_kekeringan_1525": {
+      "nilai": 912478,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kekeringan 2015–2025",
+      "catatan": "olah(resmi): kode=3211 kelompok=kekeringan 2015–2025 di air-jawa/dibi_kab_tahun.csv (T1.9)"
+    },
+    "karhutla.jawa.luas_2015": {
+      "nilai": 13574.54,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari SiPongi Kementerian Kehutanan",
+      "catatan": "olah(resmi): jumlah enam provinsi Jawa 2015 dari riset/mentah/sipongi_luas_2015_2026.json (T4.7)"
+    },
+    "karhutla.jatim.porsi_2023_persen": {
+      "nilai": 69.6,
+      "pustaka": "kemenhut-sipongi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari SiPongi Kementerian Kehutanan",
+      "catatan": "olah(resmi): 49.498,32 / 71.109,63 ha (T4.7)"
+    },
+    "dibi.jawa.karhutla.magetan_2015": {
+      "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+      "jalur": "[kode=3520,jenis=karhutla,tahun=2015].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla",
+      "catatan": "Kab. Magetan, 18 Oktober 2015 (T4.13)"
+    },
+    "dibi.jawa.karhutla.ponorogo_2015": {
+      "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+      "jalur": "[kode=3502,jenis=karhutla,tahun=2015].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla",
+      "catatan": "Kab. Ponorogo, 29 dan 31 Oktober 2015 (T4.13)"
+    },
+    "dibi.jawa.karhutla.probolinggo_2026_meninggal": {
+      "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+      "jalur": "[kode=3513,jenis=karhutla,tahun=2026].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, karhutla",
+      "catatan": "Kab. Probolinggo, baris bertanggal 10 September 2026; sementara; sebab belum diverifikasi (T4.13)"
+    },
+    "perka_2008.air_bersih_m3_per_100rb_jiwa": {
+      "nilai": 1500,
+      "pustaka": "bnpb-2008-kebutuhan-dasar, hlm. 10",
+      "satuan": "m³ per hari",
+      "keyakinan": "resmi",
+      "sumber": "Turunan dari standar Perka BNPB 7/2008",
+      "catatan": "olah: 100.000 jiwa x 15 liter per orang per hari; tidak dikalikan dengan total jiwa terdampak DIBI (T3 inferensi, matriks P4 kode Turunan)"
+    },
+    "enso.ambang_elnino_kuat": {
+      "nilai": 1.5,
+      "pustaka": "noaa-2026-oni",
+      "satuan": "°C",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Ambang El Niño kuat kajian ini atas ONI NOAA CPC",
+      "catatan": "ONI November–Januari >= 1,5 (KERANGKA prinsip 9, T2.3)"
+    }
+  }
+}

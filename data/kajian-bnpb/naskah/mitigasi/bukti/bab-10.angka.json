@@ -1,0 +1,290 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 10 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-10.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: nilai + pustaka (id di bab-10.pustaka.json), dengan lokasi halaman bila ada.",
+  "Kunci yang sudah ada di data/angka.json atau diusulkan berkas bukti lain tidak diulang (diperiksa mesin terhadap semua naskah/*/bukti/*.angka.json pada 24 Oktober 2026). Angka sekunder tidak dimasukkan.",
+  "Kunci mitigasi.sel_program.* adalah pemetaan penyusun tanpa berkas data paket; usul pipa-data menulis program-terbukti/sel_mitigasi.csv lalu mengubah entri ini ke bentuk berkas + jalur.",
+  "Disusun 24 Oktober 2026."
+ ],
+ "angka": {
+  "mitigasi.sel_program.total": {
+   "nilai": 39,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "13 jenis lingkup Kajian 2 (rob ke banjir, likuefaksi ke gempa) x 3 fase (prabencana, tanggap darurat, pascabencana)"
+  },
+  "mitigasi.sel_program.kuat_luar_negeri": {
+   "nilai": 5,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "P16 (banjir prabencana) dan P19 (cuaca ekstrem dan gelombang, prabencana dan tanggap darurat); keduanya luar negeri"
+  },
+  "mitigasi.sel_program.sedang_dalam_negeri": {
+   "nilai": 5,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "InaTEWS P03 (gempa dan tsunami, prabencana dan tanggap darurat) dan PAMSIMAS P13 (kekeringan prabencana); tidak ada sel dalam negeri berbukti kuat"
+  },
+  "mitigasi.sel_program.sedang_luar_negeri": {
+   "nilai": 5,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "P20 Odisha (banjir tanggap darurat) dan P23 asuransi CCRIF/ARC (pascabencana gempa, banjir, cuaca ekstrem, kekeringan)"
+  },
+  "mitigasi.sel_program.lemah_belum_terbukti": {
+   "nilai": 4,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "gunung api, longsor, karhutla prabencana; tsunami pascabencana (hanya program lemah atau belum terbukti)"
+  },
+  "mitigasi.sel_program.tanpa_program": {
+   "nilai": 20,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "12 sel nonalam dan sosial ditambah 8 sel alam di tanggap darurat dan pascabencana"
+  },
+  "mitigasi.sel_program.tanpa_kuat": {
+   "nilai": 34,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "jawaban utama pertanyaan kunci 5: 'terbukti' dibaca 'berbukti kuat'; 39 dikurangi 5 sel berprogram kuat (semuanya luar negeri, P16 dan P19)"
+  },
+  "mitigasi.sel_program.tanpa_kuat_dalam_negeri": {
+   "nilai": 39,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "tidak ada program dalam negeri berbukti kuat di kompendium, jadi seluruh 39 sel tanpa program dalam negeri berbukti kuat"
+  },
+  "mitigasi.sel_program.tanpa_kuat_sedang": {
+   "nilai": 24,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "tanpa program (20) ditambah lemah atau belum terbukti saja (4)"
+  },
+  "mitigasi.sel_program.tanpa_kuat_sedang_dalam_negeri": {
+   "nilai": 34,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "39 dikurangi 5 sel bersandar program dalam negeri berbukti sedang"
+  },
+  "mitigasi.sel_program.nonalam_sosial_tanpa": {
+   "nilai": 12,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "epidemi, kebakaran industri, kebakaran TPA, konflik sosial x 3 fase"
+  },
+  "mitigasi.sel_program.tanggap_darurat_tanpa": {
+   "nilai": 8,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "dari 13 sel tanggap darurat"
+  },
+  "mitigasi.sel_program.pascabencana_tanpa": {
+   "nilai": 8,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "dari 13 sel pascabencana; tidak ada sel pascabencana dengan program dalam negeri berbukti kuat atau sedang"
+  },
+  "mitigasi.sel_program.jenis_tanpa_kuat_sedang": {
+   "nilai": 7,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "jenis",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "gunung api, longsor, karhutla, epidemi, kebakaran industri, kebakaran TPA, konflik sosial"
+  },
+  "mitigasi.sel_program.kepekaan_p03.tanpa_program": {
+   "nilai": 21,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "catatan": "uji kepekaan: InaTEWS P03 dibatasi ke tsunami; sel dalam negeri kuat atau sedang turun dari 5 ke 3"
+  },
+  "bpk.ihps2_2024.pb.objek": {
+   "nilai": 30,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Ringkasan Eksekutif hlm. 11",
+   "satuan": "objek pemeriksaan",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "pemeriksaan kinerja atas kegiatan prioritas penanggulangan bencana"
+  },
+  "bpk.ihps2_2024.pb.objek_pusat": {
+   "nilai": 5,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Ringkasan Eksekutif hlm. 11",
+   "satuan": "objek pemeriksaan",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "Kemendagri, Kemenkes, BMKG, Basarnas, BNPB (Bab IV hlm. 176–177)"
+  },
+  "bpk.ihps2_2024.pb.objek_pemda": {
+   "nilai": 25,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Ringkasan Eksekutif hlm. 11",
+   "satuan": "objek pemeriksaan",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "pemda yang disebut contoh antara lain Pemerintah Aceh, Pemprov Sumatera Barat, Pemprov Jambi"
+  },
+  "bpk.ihps2_2024.bnpb.peraturan_belum_disahkan": {
+   "nilai": 6,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 188",
+   "satuan": "peraturan pelaksana",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "peraturan pelaksana yang belum disahkan BNPB; judul tidak disebut IHPS"
+  },
+  "bpk.ihps2_2024.bnpb.peraturan_belum_diinisiasi": {
+   "nilai": 11,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 188–189",
+   "satuan": "peraturan pelaksana",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "peraturan pelaksana yang belum diinisiasi BNPB; judul tidak disebut IHPS"
+  },
+  "bpk.ihps2_2024.basarnas.kesiapan_sarpras_persen": {
+   "nilai": 92.86,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 182",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "tingkat kesiapan sarana prasarana dan sistem komunikasi pencarian dan pertolongan"
+  },
+  "bpk.ihps2_2024.basarnas.kesiapan_sarpras_target_persen": {
+   "nilai": 93.91,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 182",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "target pembanding untuk kesiapan sarpras Basarnas"
+  },
+  "bpk.ihps2_2024.kemenkes.renkon_kesehatan_dinkes_prov": {
+   "nilai": 3,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 185",
+   "satuan": "dinkes provinsi",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "advokasi, pemantauan, evaluasi penyusunan renkon sektor kesehatan oleh Puskriskes 2023–2024; klaster kesehatan nasional belum dibentuk"
+  },
+  "bpk.ihps2_2024.kemendagri.target_kehilangan_pdb_2023_persen": {
+   "nilai": 1.1,
+   "pustaka": "bpk-2025-ihps2-2024",
+   "lokasi": "Bab IV hlm. 184",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "catatan": "target nasional persentase potensi kehilangan PDB akibat dampak bencana 2023 yang menurut BPK tidak tercapai"
+  },
+  "bpksulut.2024.lhp_pb.permasalahan": {
+   "nilai": 4,
+   "pustaka": "bpksulut-2024-lhp-pb",
+   "satuan": "permasalahan signifikan",
+   "keyakinan": "resmi",
+   "sumber": "BPK Perwakilan Sulawesi Utara, siaran pers 23 Desember 2024",
+   "catatan": "pemeriksaan kinerja penanggulangan bencana tahap prabencana TA 2023 s.d. triwulan III 2024 pada Pemprov Sulawesi Utara"
+  },
+  "uu24.pasal7.indikator": {
+   "nilai": 5,
+   "pustaka": "mk-2026-putusan261",
+   "lokasi": "amar butir 2, hlm. 240",
+   "satuan": "indikator",
+   "keyakinan": "resmi",
+   "sumber": "UU 24/2007 Pasal 7 ayat (2) sebagaimana dikutip amar Putusan MK 261/PUU-XXIII/2025",
+   "catatan": "jumlah korban, kerugian harta benda, kerusakan prasarana dan sarana, cakupan luas wilayah, dampak sosial ekonomi"
+  },
+  "mk.putusan261_2025.indikator_minimal": {
+   "nilai": 3,
+   "pustaka": "mk-2026-putusan261",
+   "lokasi": "amar butir 2, hlm. 240",
+   "satuan": "indikator",
+   "keyakinan": "resmi",
+   "sumber": "Putusan MK 261/PUU-XXIII/2025 (diucapkan 28 Agustus 2026)",
+   "catatan": "status dan tingkat bencana nasional sekurang-kurangnya 3 indikator dengan jumlah korban sebagai indikator utama yang harus dipenuhi"
+  },
+  "lembaga.klaster.kepka308": {
+   "nilai": 6,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "klaster",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari paket lembaga (klaster.csv), mengutip Juklak BNPB 16/2025 hlm. 1",
+   "catatan": "olah: jumlah baris versi 'Kepka BNPB 308/2024'; teks SK tidak dibuka"
+  },
+  "renstra.ikp_logistik.2025": {
+   "nilai": 35,
+   "pustaka": "bnpb-2025-renstra",
+   "lokasi": "hlm. 130–133",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
+   "catatan": "persentase daerah yang difasilitasi logistik dan peralatan PB serta SDM yang mampu mengelola; baseline N/A (program-terbukti/renstra_bnpb_2025_2029.csv baris P5)"
+  },
+  "renstra.ikp_logistik.2029": {
+   "nilai": 75,
+   "pustaka": "bnpb-2025-renstra",
+   "lokasi": "hlm. 130–133",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), IKP Program 5",
+   "catatan": "target 2029; deret 35, 45, 55, 65, 75"
+  },
+  "renstra.swot.kelemahan": {
+   "nilai": 28,
+   "pustaka": "bnpb-2025-renstra",
+   "lokasi": "Tabel 1.13 hlm. 73–75",
+   "satuan": "butir",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029, analisis SWOT",
+   "catatan": "olah: hitung butir bernomor kolom Kelemahan"
+  },
+  "renstra.swot.ancaman": {
+   "nilai": 11,
+   "pustaka": "bnpb-2025-renstra",
+   "lokasi": "Tabel 1.13 hlm. 75–76",
+   "satuan": "butir",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029, analisis SWOT",
+   "catatan": "olah: hitung butir bernomor kolom Ancaman"
+  },
+  "renas.indikator_1c.2025_persen": {
+   "nilai": 11.06,
+   "pustaka": "bnpb-2025-renas",
+   "lokasi": "Tabel 2.8 hlm. 32",
+   "satuan": "%",
+   "keyakinan": "resmi; olah",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), indikator 1.c",
+   "catatan": "olah: 11.060 per 100.000 dibagi 1.000; berdampingan dengan IKP Renstra 6,10% (2025), penyebut berbeda"
+  }
+ }
+}

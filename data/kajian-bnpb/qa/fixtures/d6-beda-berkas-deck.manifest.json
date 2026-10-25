@@ -1,0 +1,77 @@
+{
+ "angka": [
+  {
+   "kunci": "irbi.nasional.2015",
+   "opsi": "fmt=2",
+   "tampil": "156,43",
+   "nilai": 156.4305,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "InaRISK BNPB, IRBI 2015",
+   "naskah": "uji:slide1"
+  },
+  {
+   "kunci": "irbi.nasional.2024",
+   "opsi": "fmt=2",
+   "tampil": "128,5",
+   "nilai": 128.524,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2024",
+   "naskah": "uji:slide1"
+  },
+  {
+   "kunci": "irbi.nasional.persen_2015_2024",
+   "opsi": "fmt=1|persen|arah",
+   "tampil": "turun 17,8%",
+   "nilai": -17.8396,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2015 dan 2024",
+   "naskah": "uji:slide1"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_kab_2025.csv#penduduk_2026",
+   "tampil": "470.913",
+   "nilai": 470913.0,
+   "naskah": "uji-tabel:9",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "WorldPop 2026"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_kab_2025.csv#penduduk_2026",
+   "tampil": "1.208.541",
+   "nilai": 1208541.0,
+   "naskah": "uji-tabel:9",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "WorldPop 2026"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_kab_2025.csv#penduduk_2026",
+   "tampil": "810.910",
+   "nilai": 810910.0,
+   "naskah": "uji-tabel:9",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "WorldPop 2026"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_kab_2025.csv#penduduk_2026",
+   "tampil": "1.249.372",
+   "nilai": 1249372.0,
+   "naskah": "uji-tabel:9",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "WorldPop 2026"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_kab_2025.csv#penduduk_2026",
+   "tampil": "174.017",
+   "nilai": 174017.0,
+   "naskah": "uji-tabel:9",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "WorldPop 2026"
+  }
+ ]
+}

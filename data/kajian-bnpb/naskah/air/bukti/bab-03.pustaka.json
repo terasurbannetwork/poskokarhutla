@@ -1,0 +1,585 @@
+[
+  {
+    "id": "bnpb-2025-renas",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+  },
+  {
+    "id": "bnpb-2025-renstra",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+  },
+  {
+    "id": "bnpb-irbi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer"
+  },
+  {
+    "id": "bnpb-dibi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+    "genre": "Data set",
+    "URL": "https://dibi.bnpb.go.id",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer"
+  },
+  {
+    "id": "worldpop-2025",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "WorldPop"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "WorldPop R2025A, constrained UN-adjusted population 2026",
+    "genre": "Data set",
+    "publisher": "University of Southampton",
+    "URL": "https://www.worldpop.org",
+    "verifikasi": "primer",
+    "note": "dijumlah per kecamatan di public/data/penduduk.json; porsi Jawa dihitung Pantau Bencana"
+  },
+  {
+    "id": "bnpb-2023-satudata",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2023 tentang Satu Data Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 21",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "Pasal 1 angka 3 dan 6 dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2023.json"
+  },
+  {
+    "id": "bnpb-2026-krb",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+  },
+  {
+    "id": "bps-2020-slhi",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Badan Pusat Statistik",
+        "singkatan": "BPS"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "title": "Statistik Lingkungan Hidup Indonesia 2020",
+    "publisher": "Badan Pusat Statistik",
+    "URL": "https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf",
+    "verifikasi": "primer",
+    "note": "Gambar 2.4 (mengutip Radhika, Firmansyah, dan Hatmoko 2017, Jurnal Sumber Daya Air 13(2): 115–130), Gambar 2.5 (IPA, Radhika dkk. 2013), Gambar 2.6 (CAT, KLH 2008), Gambar 2.8 (per kapita, proyeksi). Teks lokal riset/mentah/slh.txt baris 2105–2150"
+  },
+  {
+    "id": "pupr-2015-permen14",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 638",
+    "URL": "https://peraturan.go.id/files/bn638-2015.pdf",
+    "verifikasi": "primer",
+    "note": "lampiran pindaian dibaca OCR (paket air-jawa §5); rekap hlm. 13, 29, 63"
+  },
+  {
+    "id": "pupr-2015-permen04",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 04/PRT/M/2015 tentang Kriteria dan Penetapan Wilayah Sungai",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 429",
+    "URL": "https://peraturan.go.id/files/bn429-2015.pdf",
+    "verifikasi": "primer",
+    "note": "Lampiran I; teks di data/kajian-bnpb/data/air-jawa/mentah/permen04_2015.txt"
+  },
+  {
+    "id": "bbwspj-2021-bendungan",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Balai Besar Wilayah Sungai Pemali Juana"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "title": "Daftar inventarisasi bendungan di lingkungan BBWS Pemali Juana (status Juli 2021)",
+    "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "URL": "https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf",
+    "verifikasi": "primer",
+    "note": "18 bendungan di paket air-jawa berlabel resmi"
+  },
+  {
+    "id": "noaa-2026-oni",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "NOAA Climate Prediction Center"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Oceanic Niño Index (ONI), ERSSTv5",
+    "genre": "Data set",
+    "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026"
+  },
+  {
+    "id": "bnpb-2023-renkon",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2023 tentang Penyusunan Rencana Kontingensi Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 469",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb002.pdf",
+    "verifikasi": "primer",
+    "note": "Pasal 7 ayat (1) sampai (5) dibaca di halaman PDF 4 dan Lampiran (pertimbangan sejarah kejadian terburuk, lima aspek dampak) di halaman PDF 14, korpus data/raw/hukum/teks/perban-nomor-2-tahun-2023.json"
+  },
+  {
+    "id": "bnpb-2023-standar-data",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Petunjuk Pelaksanaan Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+    "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juknis-nomor-7-tahun-2023",
+    "verifikasi": "primer",
+    "note": "ditetapkan 29 Desember 2023. Ambang kejadian bencana dan metode hitung dibaca di halaman PDF 7 korpus data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json. JDIH BNPB tidak memuat PDF; teks korpus berasal dari salinan dokumen di indonesia.unfpa.org (data/raw/hukum/indeks.json kunci sumber_tidak_resmi). Ganti dengan salinan Pusdatinkom atau JDIH sebelum status final"
+  },
+  {
+    "id": "bnpb-2012-pengkajian-risiko",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2012 tentang Pedoman Umum Pengkajian Risiko Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1096",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2012pbbnpb002.pdf",
+    "verifikasi": "primer",
+    "note": "korpus lokal hanya memuat batang tubuh 3 halaman; lampiran metode (rumus risiko) tidak dibuka"
+  },
+  {
+    "id": "bnpb-2008-kebutuhan-dasar",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2008
+        ]
+      ]
+    },
+    "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+    "verifikasi": "primer",
+    "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+  },
+  {
+    "id": "bnpb-2018-pengungsi",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 3 Tahun 2018 tentang Penanganan Pengungsi pada Keadaan Darurat Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2018 Nomor 827",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2018pbbnpb003.pdf",
+    "verifikasi": "primer",
+    "note": "judul dan nomor BN dibaca di korpus data/raw/hukum/teks/perban-nomor-3-tahun-2018.json; pasal standar belum dikutip di bab ini"
+  },
+  {
+    "id": "cabinetoffice-2025-nrr",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Cabinet Office"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          1,
+          16
+        ]
+      ]
+    },
+    "title": "National Risk Register 2025",
+    "publisher": "HM Government",
+    "URL": "https://assets.publishing.service.gov.uk/media/67b5f85732b2aab18314bbe4/National_Risk_Register_2025.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "definisi skenario terburuk yang masuk akal (hlm. 11); kemungkinan = peluang skenario itu sendiri terjadi paling sedikit sekali dalam 5 tahun untuk risiko nonmalisius, pita <0,2%, 0,2–1%, 1–5%, 5–25%, >25% (hlm. 12 dan 16); dampak: tiap dimensi 0–5, digabung menjadi skor 1–5 logaritmik (hlm. 13, 15), contoh indikator kematian Tabel 3 hlm. 14; dibuka ulang 24 Okt 2026; halaman terbitan gov.uk/government/publications/national-risk-register-2025"
+  },
+  {
+    "id": "wmo-2022-peringatan-dini",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "World Meteorological Organization",
+        "singkatan": "WMO"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022,
+          10,
+          13
+        ]
+      ]
+    },
+    "title": "UN warns that half the world is not prepared for disasters",
+    "URL": "https://wmo.int/media/news/un-warns-half-world-not-prepared-disasters",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "siaran pers laporan UNDRR dan WMO Global Status of Multi-Hazard Early Warning Systems: Target G; mortalitas bencana delapan kali lebih tinggi di negara bercakupan peringatan dini terbatas; asosiasi lintas negara, bukan efek kausal"
+  },
+  {
+    "id": "bappenas-2007-dala",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Badan Perencanaan Pembangunan Nasional",
+        "singkatan": "Bappenas"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "title": "Laporan Perkiraan Kerusakan dan Kerugian Pasca Bencana Banjir Awal Februari 2007 di Wilayah JABODETABEK",
+    "URL": "https://www.locjkt.or.id/application/docliblcjkt/upload/Laporan%20penilaian%20Kerusakan%20dan%20kerugian%20JABODETABEK.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "dibuka paket skenario-hidromet 23 Okt 2026: Tabel III.1 hlm. 33 (PDF hlm. 42). Salinan di locjkt.or.id, bukan domain Bappenas; ganti dengan salinan penerbit bila tersedia"
+  },
+  {
+    "id": "dsda-2025-ncicd",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Dinas Sumber Daya Air Provinsi DKI Jakarta"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          7,
+          23
+        ]
+      ]
+    },
+    "title": "Update progres pekerjaan NCICD: Ini tanggul terbangun per Juli 2025",
+    "URL": "https://dsda.jakarta.go.id/detail-artikel/update-progres-pekerjaan-ncicd-ini-tanggul-terbangun-per-juli-2025/85",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "trase kritis 39 km, kewenangan Pemprov DKI 20,9 km, terbangun 9,4 km, sisa 11,5 km, data sampai 17 Juli 2025"
+  },
+  {
+    "id": "yamamoto-1984-tokyo",
+    "type": "report",
+    "author": [
+      {
+        "family": "Yamamoto",
+        "given": "S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          1984
+        ]
+      ]
+    },
+    "title": "Case history 9.4: Tokyo, Japan",
+    "container-title": "Guidebook to Studies of Land Subsidence due to Ground-Water Withdrawal",
+    "publisher": "UNESCO",
+    "URL": "https://wwwrcamnl.wr.usgs.gov/rgws/Unesco/PDF-Chapters/Chapter9-4.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "dibuka paket program-terbukti (bukti_dampak.csv B095 sampai B099): laju maksimum 27 cm per tahun, turun tiap tahun sejak 1972"
+  },
+  {
+    "id": "tanaka-2013-bangkok",
+    "type": "report",
+    "author": [
+      {
+        "family": "Tanaka",
+        "given": "A."
+      },
+      {
+        "family": "Mio",
+        "given": "A."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2013
+        ]
+      ]
+    },
+    "title": "Ground deformation signals detected by SAR interferometry along the Chao Praya River",
+    "container-title": "Japan Geoscience Union Meeting 2013, abstrak STT57-01",
+    "URL": "https://www2.jpgu.org/meeting/2013/session/PDF/S-TT57/STT57-01.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "sekunder",
+    "note": "abstrak dibuka ulang 24 Okt 2026: angka Bangkok 120 mm per tahun (1981, timur) dan 20 mm per tahun \"in recent years\" (tanpa periode) beserta kaitannya dengan undang-undang pembatasan pompa sejak akhir 1980-an dikutip dari Phien-wej dkk. (2006) dan studi sebelumnya, bukan ukuran penulis; ukuran penulis sendiri (ALOS PALSAR 2007–2010, sekitar Sungai Tha Chin) maksimum sekitar 20 mm per tahun. Sumber primer Phienwej, Giao, Nutalaya (2006), Engineering Geology 82(4): 187–201, doi:10.1016/j.enggeo.2005.10.004, belum dibuka (ScienceDirect 403; OpenAlex tanpa abstrak, 24 Okt 2026), sehingga entri ini sekunder untuk angka Bangkok; salinan entri di bab lain masih \"primer\" dan perlu diselaraskan saat penggabungan"
+  }
+]

@@ -10,8 +10,8 @@ Python 3 stdlib saja. Silsilah, label, dan keterbatasan: data/kajian-bnpb/data/n
 Masukan:
   dibi.bnpb.go.id      Superset dasbor publik 1: baris id_tipe_bencana >= 2000 (epidemi, kebakaran permukiman, gagal teknologi,
                        konflik sosial, lainnya) per tanggal x kab                       -> mentah/dibi_nonalam_sosial.json
-  inarisk.bnpb.go.id   apiv4/kajian-summary/covid-19/<kab>?level=kabupaten (KRB 2022-2026), kajian=bahaya dan risiko
-                                                                                       -> mentah/krb_covid19_kab.json
+  inarisk.bnpb.go.id   apiv4/kajian-summary/covid-19/<kab>?level=kabupaten (KRB 2022-2026), kajian=bahaya dan risiko;
+                       Fakfak lewat kode InaRISK 9101 (KRB_ALIAS)                       -> mentah/krb_covid19_kab.json
   WHO                  COVID-19 dashboard CSV (Indonesia), excess mortality 2020-2021 (rilis 19 Mei 2023), GHO OData
                        (imunisasi WUENIC, notifikasi TB, skor SPAR IHR)                 -> mentah/who_*.json|csv
   web.archive.org      arsip data.covid19.go.id (Satgas COVID-19): prov.json (data 30 Sep 2022) dan update.json (27 Okt 2022)
@@ -21,12 +21,13 @@ Masukan:
   bangun/nonalam-sosial_rujukan.json   angka pustaka yang disalin tangan + URL + tanggal akses + label (peristiwa, TPA,
                        konflik, Podes, regulasi, skenario)
   scripts/udara/kota.json              514 kab/kota (Kepmendagri 300.2.2-2138/2025)
-  data/kajian-bnpb/data/dibi/mentah/dibi_nasional.json, dibi_prov.json  pembanding total DIBI paket `dibi`
+  data/kajian-bnpb/data/dibi/mentah/dibi_nasional.json  pembanding total DIBI paket `dibi` (dilewati bila tidak ada)
+  data/kajian-bnpb/data/irbi/irbi_kab_2025.csv           penduduk_2026 pembanding untuk kab yang tergabung di KRB (dilewati bila tidak ada)
 Kueri DIBI dipakai ulang dari scripts/banjir/kejadian.py (superset) dan pola kab InaRISK dari bangun/skenario-hidromet.py.
 """
-import csv, datetime as dt, gzip, io, json, os, re, sys, time, urllib.request, zipfile
+import csv, datetime as dt, gzip, io, json, os, re, sys, time, urllib.parse, urllib.request, zipfile
 import xml.etree.ElementTree as ET
-from collections import defaultdict
+from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
@@ -45,6 +46,7 @@ DIBI_KOLOM = ["dt", "tahun", "id_provinsi_bps", "provinsi", "id_kab_bps", "kabup
 DIBI_ANGKA = ["jumlah_kejadian", "meninggal", "hilang", "luka_sakit", "menderita", "mengungsi", "rumah_rusak_berat",
               "rumah_rusak_sedang", "rumah_rusak_ringan", "pendidikan_rusak", "fasyankes_rusak", "fasum_rusak"]
 KRB_URL = "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/{k}?level={lv}&kajian={kj}"
+KRB_ALIAS = {"9203": "9101"}   # Kab. Fakfak: InaRISK memakai kode BPS 9101, bukan Kepmendagri 9203 (9203 membalas nol)
 WHO_CSV = "https://srhdpeuwpubsa.blob.core.windows.net/whdh/COVID/WHO-COVID-19-global-data.csv"
 WHO_GEM = ("https://cdn.who.int/media/docs/default-source/world-health-data-platform/covid-19-excessmortality/"
            "2023-05-19_covid-19_gem.zip?sfvrsn=9a95fc1a_4")
@@ -97,13 +99,13 @@ def tarik_dibi():
 
 def tarik_krb():
     kota = [r[0] for r in json.load(open(P("scripts/udara/kota.json"), encoding="utf-8"))["baris"]]
-    out = {"sumber": KRB_URL, "tarik": TGL_TARIK, "nasional": {}, "kab": {"bahaya": {}, "risiko": {}}}
+    out = {"sumber": KRB_URL, "tarik": TGL_TARIK, "alias_kode": KRB_ALIAS, "nasional": {}, "kab": {"bahaya": {}, "risiko": {}}}
     for kj in ("bahaya", "risiko"):
         out["nasional"][kj] = json.loads(ambil(KRB_URL.format(k="ALL", lv="nasional", kj=kj), batas=90))
 
         def satu(k):
             try:
-                return k, json.loads(ambil(KRB_URL.format(k=k, lv="kabupaten", kj=kj), batas=90))
+                return k, json.loads(ambil(KRB_URL.format(k=KRB_ALIAS.get(k, k), lv="kabupaten", kj=kj), batas=90))
             except Exception as e:
                 print(f"  krb {kj} {k}: {e}", file=sys.stderr)
                 return k, None
@@ -230,8 +232,12 @@ def tulis(nama, kolom, baris):
     return baris
 
 
+HARI_METODE = "hari kalender inklusif (tanggal awal dan tanggal akhir ikut dihitung)"
+
+
 def hari(a, b):
-    return (dt.date.fromisoformat(b) - dt.date.fromisoformat(a)).days
+    """Satu konvensi untuk semua durasi paket ini: inklusif, seperti masa status 'terhitung sejak ... sampai dengan ...'."""
+    return (dt.date.fromisoformat(b) - dt.date.fromisoformat(a)).days + 1
 
 
 # ---------------------------------------------------------------- Renas PB 2025-2029: tabel KRB 2022-2026 per jenis bahaya
@@ -282,7 +288,10 @@ def krb_nonalam():
             out.append({"bahaya": bahaya, "metrik": m, "nilai": v, "satuan": sat,
                         "sumber": f"Renas PB 2025-2029 (Perban BNPB 1/2025) {tabel[t][0]}, sumber asli Kajian Risiko Bencana 2022-2026",
                         "url": f"data/raw/hukum/teks/perban-nomor-1-tahun-2025.json#halaman={tabel[t][1]}", "label": "resmi",
-                        "catatan": "'-' di tabel ditulis 0" if v == 0 else ""})
+                        "catatan": "'-' di tabel ditulis 0" if v == 0 else
+                        "angka ini (= terpapar COVID-19 API InaRISK) melebihi penduduk KRB karena terpapar Sulbar terhitung ganda di API "
+                        "(lihat rekonsiliasi); tulis 'praktis seluruh penduduk'"
+                        if m == "penduduk_terpapar" and v > 2e8 else ""})
     return out
 
 
@@ -304,8 +313,8 @@ def dibi_baris():
     kunci = defaultdict(list)
     for r in out:
         kunci[(r["tanggal"], r["id_kab_bps"], r["kode_jenis_juklak"], r["meninggal"], r["luka_sakit"], r["mengungsi"])].append(r)
-    for rs in kunci.values():
-        if len(rs) > 1 and len({r["id_tipe_bencana"] for r in rs}) > 1 and any(r["meninggal"] or r["luka_sakit"] for r in rs):
+    for rs in kunci.values():   # termasuk dampak nol (Bima 16 Mar 2025): kejadiannya tetap terhitung dua kali
+        if len(rs) > 1 and len({r["id_tipe_bencana"] for r in rs}) > 1:
             for r in rs:
                 r["catatan_penyusun"] = "dugaan entri ganda: dampak identik tercatat di dua subjenis; rekap DIBI menjumlah keduanya"
     # entri identik beda tahun (Maluku Tengah 3 Apr 2025 dan 3 Apr 2026)
@@ -359,17 +368,38 @@ def cek_dibi_paket(rekap):
 
 
 # ---------------------------------------------------------------- KRB COVID-19 per kab
+# 6 kab lama yang tidak ada sebagai unit di KRB 2022-2026 (508 unit; API membalas nol semua): kode -> kab yang barisnya memuat wilayahnya.
+# Dasar: penduduk dan luas wilayah API baris tetangga setara jumlah keduanya (diperiksa terhadap penduduk_2026 paket irbi di bangun()).
+KRB_TANPA_UNIT = {"1212": "1206", "7109": "7108", "7111": "7110", "7310": "7309", "7504": "7503", "7601": "7605"}
+# kab dengan terpapar > penduduk di API (Sulbar persis 2x; sisanya selisih 1 sampai 19.040 jiwa). Daftar tertutup: kab baru = gagal.
+KRB_TERPAPAR_LEBIH = {"1106", "1107", "1206", "1409", "1503", "1505", "1704", "2104", "3210", "5204", "6471", "7271", "7309", "7403", "7413",
+                      "7602", "7603", "7604", "7605", "7606", "9406", "9504", "9506", "9603", "9605"}
+
+
 def krb_covid():
     d = baca("krb_covid19_kab.json")
     kota = {r[0]: r for r in json.load(open(P("scripts/udara/kota.json"), encoding="utf-8"))["baris"]}
     assert set(d["kab"]["bahaya"]) == set(kota) == set(d["kab"]["risiko"]), "KRB COVID: kab tidak lengkap"
+    assert d.get("alias_kode") == KRB_ALIAS, f"KRB COVID: mentah ditarik tanpa alias kode {KRB_ALIAS} (Fakfak akan nol)"
+    nol = {k for k, v in d["kab"]["bahaya"].items() if not v["summary"]["penduduk"]}
+    assert nol == set(KRB_TANPA_UNIT), f"KRB COVID: kab berpenduduk 0 {sorted(nol)} != daftar putih {sorted(KRB_TANPA_UNIT)}"
+    assert all(kota[a][2] == kota[b][2] for a, b in KRB_TANPA_UNIT.items()), "KRB COVID: kab tergabung harus satu provinsi dengan barisnya"
     dom = lambda s: "" if not s["total_luas"] else max(("rendah", "sedang", "tinggi"), key=lambda c: s[c + "_luas"])
+    nm = lambda k: kota[k][1].strip()
+    memuat = defaultdict(list)
+    for a, b in KRB_TANPA_UNIT.items():
+        memuat[b].append(nm(a))
     kab = []
     for k in sorted(kota):
         b, r = d["kab"]["bahaya"][k], d["kab"]["risiko"][k]
         sb, sr = b["summary"], r["summary"]
         kap = [c for c in ("rendah", "sedang", "tinggi") if sb["kapasitas_kabupaten"].get(c)]
-        kab.append({"kode": k, "nama": kota[k][1].strip(), "kode_prov": kota[k][2], "provinsi": PROVINSI[kota[k][2]],
+        cat = [f"memuat wilayah {', '.join(memuat[k])} (penduduk dan luas wilayah API setara jumlah keduanya)"] if k in memuat else []
+        if k in KRB_ALIAS:
+            cat.append(f"API memakai kode InaRISK {KRB_ALIAS[k]} (kode BPS), bukan {k}")
+        if sb["terpapar"] > sb["penduduk"]:
+            cat.append("terpapar API > penduduk API" + (" (persis 2x: terhitung ganda di seluruh Sulbar)" if sb["terpapar"] == 2 * sb["penduduk"] else ""))
+        kab.append({"kode": k, "nama": nm(k), "kode_prov": kota[k][2], "provinsi": PROVINSI[kota[k][2]],
                     "pulau": PULAU_PROV[kota[k][2]], "penduduk": sb["penduduk"], "terpapar": sb["terpapar"], "jiwa_terpapar": sb["jiwa_terpapar"],
                     "bahaya_luas_rendah": sb["rendah_luas"], "bahaya_luas_sedang": sb["sedang_luas"], "bahaya_luas_tinggi": sb["tinggi_luas"],
                     "risiko_luas_rendah": sr["rendah_luas"], "risiko_luas_sedang": sr["sedang_luas"], "risiko_luas_tinggi": sr["tinggi_luas"],
@@ -377,7 +407,16 @@ def krb_covid():
                     "rs_bahaya_sedang": b["assets"]["rumah_sakit"]["sedang"], "rs_bahaya_tinggi": b["assets"]["rumah_sakit"]["tinggi"],
                     "puskesmas_bahaya_sedang": b["assets"]["puskesmas"]["sedang"], "puskesmas_bahaya_tinggi": b["assets"]["puskesmas"]["tinggi"],
                     "sekolah_bahaya_sedang": b["assets"]["sekolah"]["sedang"], "sekolah_bahaya_tinggi": b["assets"]["sekolah"]["tinggi"],
-                    "sumber": KRB_SUMBER, "tarik": d["tarik"], "label": "resmi"})
+                    "sumber": KRB_SUMBER, "tarik": d["tarik"], "label": "resmi", "catatan": "; ".join(cat)})
+        if k in KRB_TANPA_UNIT:   # nol API = bukan data; ditulis kosong (None), bukan 0
+            kab[-1].update({m: None for m in KRB_JUMLAH}, kelas_bahaya_dominan="", kelas_risiko_dominan="", kapasitas_kab="",
+                           catatan=f"tidak ada sebagai unit di KRB 2022-2026 (API membalas nol); tergabung dalam baris {nm(KRB_TANPA_UNIT[k])}")
+    lebih = {r["kode"] for r in kab if r.get("penduduk") and r["terpapar"] > r["penduduk"]}
+    assert lebih == KRB_TERPAPAR_LEBIH, f"KRB COVID: kab terpapar > penduduk berubah: baru {sorted(lebih - KRB_TERPAPAR_LEBIH)}, hilang {sorted(KRB_TERPAPAR_LEBIH - lebih)}"
+    for r in kab:   # peringatan (bukan assert): penduduk KRB jauh di atas kolom jiwa kota.json
+        j = kota[r["kode"]][5]
+        if r.get("penduduk") and j and r["penduduk"] / j > 1.6:
+            print(f"  peringatan KRB {r['kode']} {r['nama']}: penduduk {r['penduduk']} = {r['penduduk'] / j:.2f}x jiwa kota.json {j}", file=sys.stderr)
     return kab, d["nasional"]
 
 
@@ -408,25 +447,43 @@ def krb_wilayah(kab, nas):
         for k in (sorted(g) if tingkat != "pulau" else list(PULAU)):
             rs = g[k]
             out.append({"tingkat": tingkat, "kode": k if tingkat != "pulau" else "", "nama": nf(k),
-                        **{m: sum(r[m] for r in rs) for m in KRB_JUMLAH}, "n_kab": len(rs),
+                        **{m: sum(r[m] or 0 for r in rs) for m in KRB_JUMLAH}, "n_kab": len(rs),
                         "kab_kapasitas_rendah": sum(r["kapasitas_kab"] == "rendah" for r in rs),
                         "kab_kapasitas_sedang": sum(r["kapasitas_kab"] == "sedang" for r in rs),
                         "kab_kapasitas_tinggi": sum(r["kapasitas_kab"] == "tinggi" for r in rs),
                         "kab_risiko_dominan_sedang_tinggi": sum(r["kelas_risiko_dominan"] in ("sedang", "tinggi") for r in rs)})
     for r in out:
-        r.update({"sumber": KRB_SUMBER, "label": "resmi", "metode": "jumlah kab penyusun" if r["tingkat"] != "nasional_api" else "API"})
+        r.update({"sumber": KRB_SUMBER, "label": "resmi", "metode": "jumlah kab penyusun" if r["tingkat"] != "nasional_api" else "API",
+                  "catatan": "" if r["terpapar"] <= r["penduduk"] else
+                  "terpapar > penduduk: API menghitung ganda terpapar 5 kab Sulbar (persis 2x) dan selisih 1-19.040 jiwa di 20 kab lain; "
+                  "tulis 'praktis seluruh penduduk', bukan angka presisi" if r["kode"] == "00" else
+                  "terpapar > penduduk di API untuk kab penyusun (lihat catatan krb_covid19_kab.csv)"})
     return out
 
 
 # ---------------------------------------------------------------- COVID-19
+EXCESS_METODE = ("estimasi model WHO: kematian berlebih semua sebab dikurangi kematian akibat guncangan lain (konflik/bencana alam), "
+                 "Methods §7; dibulatkan")
+EXCESS_CATATAN = ("selalu tulis sebagai rentang (rerata dengan selang 95%); galat = selang 95% di baris batas_bawah/batas_atas; Indonesia tidak punya "
+                  "data kematian semua sebab bulanan nasional, WHO memodelkan dari data bulanan Jakarta dan data tahunan historis (Methods §5.1); "
+                  "WHO: bukan statistik resmi nasional")
+
+
 def covid_tabel(rj, krb_kab):
     out = []
     tambah = lambda **k: out.append({"metrik": "", "periode": "", "tanggal_data": "", "nilai": None, "satuan": "", "sumber": "", "url": "",
                                      "diakses": TGL_TARIK, "label": "", "metode": "", "catatan": "", **k})
+    who = list(csv.DictReader(open(os.path.join(MENTAH, "who_covid19_idn.csv"), encoding="utf-8")))
     for v in rj["covid_versi"]:
         cek_korpus(*v["cek_korpus"])
+        # Renstra tidak menyebut tanggal potong: pekan WHO yang mengapit angka itu dicatat sebagai pembanding
+        kk = "Cumulative_cases" if v["metrik"] == "kasus_terkonfirmasi" else "Cumulative_deaths"
+        i = next(i for i, r in enumerate(who) if int(r[kk]) >= v["nilai"])
+        a, b = who[i - 1], who[i]
+        assert "2023-06-01" <= a["Date_reported"] < b["Date_reported"] <= "2023-07-31", f"COVID {v['metrik']}: tanggal potong WHO bergeser dari akhir Jun 2023"
         tambah(metrik=v["metrik"], periode=v["periode"], nilai=v["nilai"], satuan=v["satuan"], sumber=v["sumber"], url=v["url"],
-               label=v["label"], metode="dicek ke korpus JDIH lokal", catatan=v["catatan"])
+               label=v["label"], metode="dicek ke korpus JDIH lokal",
+               catatan=f"{v['catatan']}; pembanding WHO: kumulatif {a['Date_reported']} = {a[kk]}, {b['Date_reported']} = {b[kk]}")
     # Satgas COVID-19 (data.covid19.go.id), arsip Wayback
     up = baca("covid19goid_update.json")
     u, url_up = up["isi"]["update"], up["sumber"]
@@ -444,7 +501,8 @@ def covid_tabel(rj, krb_kab):
         if tgl == "2022-09-30":
             kum930 = (h["jumlah_positif_kum"]["value"], h["jumlah_meninggal_kum"]["value"])
     akhir = u["harian"][-1]
-    assert akhir["jumlah_positif_kum"]["value"] == sum(v[0] for v in th.values()), "covid19.go.id: kumulatif != jumlah harian"
+    assert akhir["jumlah_positif_kum"]["value"] == sum(v[0] for v in th.values()) == u["total"]["jumlah_positif"], "covid19.go.id: kumulatif kasus != jumlah harian"
+    assert akhir["jumlah_meninggal_kum"]["value"] == sum(v[1] for v in th.values()) == u["total"]["jumlah_meninggal"], "covid19.go.id: kumulatif meninggal != jumlah harian"
     for y in sorted(th):
         per = f"{y} (s.d. {akhir['key_as_string'][:10]})" if y == akhir["key_as_string"][:4] else y
         tambah(metrik="kasus_baru_per_tahun", periode=per, nilai=th[y][0], satuan="kasus", sumber=sat, url=url_up, label="resmi",
@@ -456,8 +514,7 @@ def covid_tabel(rj, krb_kab):
     tambah(metrik="meninggal", periode="kumulatif", tanggal_data="2022-09-30", nilai=kum930[1], satuan="jiwa", sumber=sat, url=url_up,
            label="resmi", catatan="tanggal yang sama dengan data per provinsi")
     # WHO dashboard
-    who = list(csv.DictReader(open(os.path.join(MENTAH, "who_covid19_idn.csv"), encoding="utf-8")))
-    ws = "WHO COVID-19 dashboard (data dilaporkan negara), WHO-COVID-19-global-data.csv"
+    ws ="WHO COVID-19 dashboard (data dilaporkan negara), WHO-COVID-19-global-data.csv"
     nb = lambda r, k: int(r[k] or 0)
     assert int(who[-1]["Cumulative_cases"]) == sum(nb(r, "New_cases") for r in who), "WHO: kumulatif kasus != jumlah mingguan"
     assert int(who[-1]["Cumulative_deaths"]) == sum(nb(r, "New_deaths") for r in who), "WHO: kumulatif kematian != jumlah mingguan"
@@ -477,8 +534,14 @@ def covid_tabel(rj, krb_kab):
             tambah(metrik="meninggal_per_tahun", periode=y, nilai=wy[y][1], satuan="jiwa", sumber=ws, url=WHO_CSV, label="terverifikasi",
                    metode="jumlah mingguan menurut tanggal laporan")
     pk = max(who, key=lambda r: nb(r, "New_deaths"))
-    tambah(metrik="meninggal_minggu_puncak", periode="minggu", tanggal_data=pk["Date_reported"], nilai=nb(pk, "New_deaths"), satuan="jiwa/minggu",
-           sumber=ws, url=WHO_CSV, label="terverifikasi", catatan="gelombang Delta")
+    pk_akhir = dt.date.fromisoformat(pk["Date_reported"])
+    pk_awal = pk_akhir - dt.timedelta(days=6)
+    # tanggal laporan WHO = hari terakhir pekan; cocokkan dengan jumlah harian covid19.go.id pekan yang sama
+    harian = {h["key_as_string"][:10]: h["jumlah_meninggal"]["value"] for h in u["harian"]}
+    assert sum(harian[(pk_awal + dt.timedelta(days=i)).isoformat()] for i in range(7)) == nb(pk, "New_deaths"), "WHO minggu puncak != jumlah harian covid19.go.id"
+    tambah(metrik="meninggal_minggu_puncak", periode=f"pekan {pk_awal} s.d. {pk_akhir}", tanggal_data=pk["Date_reported"], nilai=nb(pk, "New_deaths"),
+           satuan="jiwa/minggu", sumber=ws, url=WHO_CSV, label="terverifikasi",
+           catatan=f"gelombang Delta; tanggal laporan WHO {pk_akhir} = hari terakhir pekan; jumlah harian covid19.go.id {pk_awal} s.d. {pk_akhir} sama persis")
     # WHO excess mortality
     ex = baca("who_excess_idn.json")
     nilai_ex = {}
@@ -487,20 +550,20 @@ def covid_tabel(rj, krb_kab):
         for c, nm in zip("DEF", ("rerata", "batas_bawah_95", "batas_atas_95")):
             tambah(metrik=f"kematian_berlebih_{nm}", periode=r["C"], nilai=round(float(r[c])), satuan="jiwa",
                    sumber="WHO, Estimates of excess mortality associated with COVID-19 pandemic (as of 5 April 2023), rilis 19 Mei 2023",
-                   url=WHO_GEM, label="terverifikasi", metode="estimasi model WHO (semua sebab), dibulatkan",
-                   catatan="WHO: estimasi dapat berbeda dari dan bukan statistik resmi nasional")
+                   url=WHO_GEM, label="estimasi-model", metode=EXCESS_METODE, catatan=EXCESS_CATATAN)
     assert abs(nilai_ex["2020"][0] + nilai_ex["2021"][0] - nilai_ex["2020-2021"][0]) < 1, "WHO excess: 2020+2021 != 2020-2021"
     # durasi status bencana nasional nonalam
     reg = {r["regulasi"].split()[0] + " " + r["regulasi"].split()[1]: r for r in rj["regulasi"]}
     a, b = reg["Keppres 12/2020"]["tanggal_penetapan"], reg["Keppres 17/2023"]["tanggal_berlaku"]
     tambah(metrik="durasi_status_bencana_nasional", periode=f"{a} s.d. {b}", nilai=hari(a, b), satuan="hari",
            sumber="Keppres 12/2020 (ditetapkan 13 Apr 2020) dan Keppres 17/2023 (berlaku 21 Jun 2023)", url=reg["Keppres 17/2023"]["url"],
-           label="resmi", metode="selisih tanggal")
+           label="resmi", metode=HARI_METODE,
+           catatan=f"tanggal akhir = tanggal berlaku Keppres 17/2023; bila hari berlakunya tidak dihitung sebagai hari berstatus: {hari(a, b) - 1}")
     # per provinsi (34 provinsi lama, data 30 Sep 2022)
     pv = baca("covid19goid_prov.json")
     pen = defaultdict(int)
     for r in krb_kab:
-        pen[PAPUA_LAMA.get(r["kode_prov"], r["kode_prov"])] += r["penduduk"]
+        pen[PAPUA_LAMA.get(r["kode_prov"], r["kode_prov"])] += r["penduduk"] or 0   # kab tanpa unit KRB: penduduknya ada di baris tetangga provinsi yang sama
     prov = []
     for x in pv["isi"]["list_data"]:
         k = prov_kode(x["key"])
@@ -522,16 +585,31 @@ def covid_tabel(rj, krb_kab):
 
 
 # ---------------------------------------------------------------- indikator (IHR, layanan kesehatan, TPA, konflik nasional)
+JEE_BEDA = {"P3.3", "P8.3", "R4.1"}   # PDF JEE 2023 tidak konsisten: tabel ringkasan 3/5/3, bagian rinci 4/4/4
+
+
+def jee_sebaran(kunci):
+    c = Counter(r[kunci] for r in baca("who_jee2023_idn.json")["indikator"])
+    return {f"skor_{s}": c.get(s, 0) for s in range(5, 0, -1)}
+
+
 def indikator_tabel(rj):
     out = []
     j = baca("who_jee2023_idn.json")
     assert len(j["indikator"]) == 56 and len({r["area"] for r in j["indikator"]}) == 19, "JEE 2023: harus 56 indikator di 19 area"
-    assert all(1 <= r["skor"] <= 5 for r in j["indikator"])
+    assert all(1 <= r["skor"] <= 5 and 1 <= r["skor_tabel_ringkasan"] <= 5 for r in j["indikator"])
+    beda = {r["kode"] for r in j["indikator"] if r["skor"] != r["skor_tabel_ringkasan"]}
+    assert beda == JEE_BEDA, f"JEE 2023: indikator yang beda antara bagian rinci dan tabel ringkasan {sorted(beda)} != {sorted(JEE_BEDA)}"
     for r in j["indikator"]:
+        cat = ["skor dari bagian rinci 'Indicators and scores' (skor berdampingan dengan dasar penilaiannya)",
+               "tidak boleh dibandingkan dengan JEE 2017 (edisi 1) menurut WHO"]
+        if r["kode"] in JEE_BEDA:
+            cat.insert(1, f"tabel ringkasan 'Indonesia: scores and priority actions' di PDF yang sama memberi {r['skor_tabel_ringkasan']} (lihat rekonsiliasi)")
+        if r.get("catatan_who"):
+            cat.insert(1, r["catatan_who"])
         out.append({"tema": "pandemi_kesiapsiagaan", "indikator": f"JEE {r['kode']} {r['area_nama']}: {r['indikator']}", "kode": r["kode"],
                     "tahun": 2023, "nilai": r["skor"], "satuan": "skor 1-5", "sumber": "WHO, JEE IHR Indonesia 16-20 Okt 2023 (terbit 8 Nov 2024), alat edisi 3",
-                    "url": "https://www.who.int/publications/i/item/9789240095151", "label": "terverifikasi",
-                    "catatan": "tidak boleh dibandingkan dengan JEE 2017 (edisi 1) menurut WHO"})
+                    "url": "https://www.who.int/publications/i/item/9789240095151", "label": "terverifikasi", "catatan": "; ".join(cat)})
     g = baca("who_gho_idn.json")
     gho_url = "https://ghoapi.azureedge.net/api/{}?$filter=SpatialDim eq 'IDN'"
     for kode, ed in (("SDGIHR2018", "edisi 1"), ("SDGIHR2021", "edisi 2")):
@@ -552,6 +630,9 @@ def indikator_tabel(rj):
             out.append({"tema": "pandemi_dampak_layanan", "indikator": GHO_IND["TB_notif_num"], "kode": "TB_notif_num", "tahun": x["TimeDim"],
                         "nilai": angka(x["NumericValue"]), "satuan": "orang", "sumber": "WHO Global TB Programme, via WHO GHO",
                         "url": gho_url.format("TB_notif_num"), "label": "terverifikasi", "catatan": "semua tipe kasus"})
+    tpa = {r["indikator"]: r["nilai"] for r in rj["tpa_open_dumping"]}
+    assert tpa["tpa_wajib_hentikan_open_dumping"] + tpa["tpa_dihentikan_operasionalnya"] + tpa["kewajiban_memiliki_tpa"] \
+        == tpa["tpa_disanksi_2025"] + tpa["tpa_disanksi_jan2026"] == tpa["tpa_disanksi_administratif"], "TPA: jenis sanksi tidak menjumlah ke 273"
     for r in rj["tpa_open_dumping"]:
         out.append({"tema": "tpa_open_dumping", "indikator": r["indikator"], "kode": "", "tahun": r["tahun"], "nilai": r["nilai"],
                     "satuan": r["satuan"], "sumber": r["sumber"], "url": r["url"], "label": r["label"],
@@ -599,13 +680,25 @@ DIBI_PERISTIWA = [("meninggal", "jiwa"), ("hilang", "jiwa"), ("luka_sakit", "jiw
                   ("rumah_rusak_berat", "unit")]
 
 
+# KERANGKA M01 dan §10: kerusuhan sosial = konflik antarkelompok (UU 24/2007 Pasal 1 angka 4; UU 7/2012 Pasal 1 angka 1). Baris di bawah
+# tetap disimpan sebagai catatan, ditandai luar_lingkup, dan tidak boleh dipakai di kartu skenario (dicek skenario_tabel).
+LUAR_LINGKUP = {"mei1998": "kerusuhan berhadapan dengan aparat/negara dan dugaan pelanggaran HAM (Komnas HAM), bukan konflik antarkelompok (KERANGKA M01)",
+                "kerusuhan2025": "unjuk rasa berhadapan dengan aparat (urusan keamanan dan ketertiban, UU 2/2002 Pasal 13); hanya celah pencatatan DIBI (KERANGKA M01)"}
+METRIK_TIDAK_DIPAKAI = {"korban_perkosaan_terverifikasi": "metrik perkosaan tidak dipakai kajian (KERANGKA M01)"}
+
+
 def peristiwa_tabel(rj, dibi):
     out = []
     kol = ["jenis", "kode", "nama", "tanggal", "prov", "lokasi", "metrik", "nilai", "nilai_teks", "satuan", "sumber", "url", "diakses",
-           "label", "asal", "catatan"]
+           "label", "asal", "lingkup", "catatan"]
     for r in rj["peristiwa"]:
+        if r["metrik"] in METRIK_TIDAK_DIPAKAI:
+            continue
         base = {k: r.get(k, "") for k in kol}
-        base.update({"diakses": TGL_TARIK, "asal": "rujukan", "nilai_teks": r.get("nilai_teks", "")})
+        base.update({"diakses": TGL_TARIK, "asal": "rujukan", "nilai_teks": r.get("nilai_teks", ""),
+                     "lingkup": "luar_lingkup" if r["kode"] in LUAR_LINGKUP else "dalam"})
+        if r["kode"] in LUAR_LINGKUP:
+            base["catatan"] = "; ".join(x for x in (LUAR_LINGKUP[r["kode"]], base["catatan"]) if x)
         if r["metrik"] == "dibi":
             p = r["dibi"]
             cocok = [x for x in dibi if x["id_kab_bps"] == p["id_kab_bps"] and x["tanggal"] == p["tanggal"] and x["id_tipe_bencana"] in p["id_tipe"]]
@@ -617,26 +710,16 @@ def peristiwa_tabel(rj, dibi):
                                 "sumber": f"{DIBI_SUMBER}; baris {x['tanggal']} {x['kabupaten']}, jenis '{x['jenis_bencana']}', cakupan {x['cakupan']}"})
             continue
         if r.get("hitung"):
+            assert r["satuan"] == "hari" and "nilai" not in r, f"peristiwa {r['kode']} {r['metrik']}: durasi dihitung skrip, jangan diketik"
             base["nilai"] = hari(*r["hitung"])
+            base["catatan"] = "; ".join(x for x in (f"durasi {r['hitung'][0]} s.d. {r['hitung'][1]}, {HARI_METODE}", r.get("catatan", "")) if x)
         out.append(base)
-    # versi pustaka dari paket dibi (kejadian_besar.csv) yang belum ada di rujukan
-    jalur = P("data/kajian-bnpb/data/dibi/kejadian_besar.csv")
-    if os.path.exists(jalur):
-        ada = {(o["kode"], o["metrik"], o["nilai"]) for o in out}
-        nama = {o["kode"]: (o["jenis"], o["nama"], o["tanggal"], o["prov"], o["lokasi"]) for o in out}
-        for r in csv.DictReader(open(jalur, encoding="utf-8")):
-            if r["kode"] in ("plumpang2023", "wamena2019") and r["versi"] != "DIBI" and r["metrik"] != "baris_dibi":
-                v = angka(r["nilai"])
-                if (r["kode"], r["metrik"], v) in ada:
-                    continue
-                j, n, t, pv, lk = nama[r["kode"]]
-                out.append({"jenis": j, "kode": r["kode"], "nama": n, "tanggal": t, "prov": pv, "lokasi": lk, "metrik": r["metrik"], "nilai": v,
-                            "nilai_teks": "", "satuan": r["satuan"], "sumber": r["sumber"], "url": r["url_atau_berkas"], "diakses": r["diakses"],
-                            "label": r["label"], "asal": "paket dibi (kejadian_besar.csv)", "catatan": r.get("catatan", "")})
     for o in out:
         assert o["label"] in LABEL | {"narasi"}, f"label tidak sah: {o}"
         assert (o["nilai"] in (None, "")) == (o["label"] == "narasi"), f"baris narasi harus tanpa angka dan sebaliknya: {o['kode']} {o['metrik']}"
         assert o["sumber"], o
+        assert o["metrik"] not in METRIK_TIDAK_DIPAKAI, o
+    assert {o["kode"] for o in out if o["lingkup"] == "luar_lingkup"} == set(LUAR_LINGKUP), "kode LUAR_LINGKUP tidak cocok dengan rujukan"
     return kol, out
 
 
@@ -663,6 +746,7 @@ def skenario_tabel(rj, covid, krbn, ind, podes_nas, rekap, peristiwa):
     def ambil(rows, **f):
         x = [r for r in rows if all(r.get(k) == v for k, v in f.items())]
         assert len(x) == 1, f"skenario: {f} cocok {len(x)}"
+        assert x[0].get("lingkup") != "luar_lingkup", f"skenario: baris luar lingkup dipakai di kartu: {f} ({LUAR_LINGKUP.get(x[0].get('kode'))})"
         return x[0]
 
     def dari(jenis, komponen, r, nilai_key="nilai", teks="", dasar="analog"):
@@ -670,16 +754,18 @@ def skenario_tabel(rj, covid, krbn, ind, podes_nas, rekap, peristiwa):
                     "sumber": r["sumber"], "url": r.get("url", ""), "label": r["label"], "dasar": dasar})
 
     c = lambda **f: ambil(covid, **f)
-    dari("epidemi_pandemi", "korban_jiwa_resmi_analog_covid19", c(metrik="meninggal", periode="Mar 2020 - Mar 2023"))
+    per = rj["covid_versi"][0]["periode"]
+    dari("epidemi_pandemi", "korban_jiwa_resmi_analog_covid19", c(metrik="meninggal", periode=per))
     dari("epidemi_pandemi", "korban_jiwa_berlebih_analog_covid19_rerata", c(metrik="kematian_berlebih_rerata", periode="2020-2021"),
-         teks="semua sebab, 2020-2021; selang 95% di baris berikut")
+         teks="estimasi model WHO 2020-2021, tanpa kematian akibat konflik/bencana alam; selalu tulis sebagai rentang (selang 95% di dua baris berikut)")
     dari("epidemi_pandemi", "korban_jiwa_berlebih_analog_covid19_batas_bawah", c(metrik="kematian_berlebih_batas_bawah_95", periode="2020-2021"))
     dari("epidemi_pandemi", "korban_jiwa_berlebih_analog_covid19_batas_atas", c(metrik="kematian_berlebih_batas_atas_95", periode="2020-2021"))
-    dari("epidemi_pandemi", "kasus_analog_covid19", c(metrik="kasus_terkonfirmasi", periode="Mar 2020 - Mar 2023"))
+    dari("epidemi_pandemi", "kasus_analog_covid19", c(metrik="kasus_terkonfirmasi", periode=per))
     dari("epidemi_pandemi", "kematian_minggu_puncak", c(metrik="meninggal_minggu_puncak"))
     dari("epidemi_pandemi", "durasi_status_bencana_nasional", c(metrik="durasi_status_bencana_nasional"))
     k = lambda b, m: ambil(krbn, bahaya=b, metrik=m)
-    dari("epidemi_pandemi", "penduduk_terpapar_krb", k("COVID-19", "penduduk_terpapar"), dasar="KRB 2022-2026")
+    dari("epidemi_pandemi", "penduduk_terpapar_krb", k("COVID-19", "penduduk_terpapar"), dasar="KRB 2022-2026",
+         teks="tulis 'praktis seluruh penduduk', bukan angka presisi: terpapar KRB melebihi penduduk KRB (271.680.290) karena terpapar 5 kab Sulbar terhitung ganda")
     dari("epidemi_pandemi", "luas_bahaya_tinggi_krb", k("COVID-19", "luas_bahaya_tinggi"), dasar="KRB 2022-2026")
     dari("epidemi_pandemi", "luas_bahaya_sedang_krb", k("COVID-19", "luas_bahaya_sedang"), dasar="KRB 2022-2026")
     i = lambda **f: ambil(ind, **f)
@@ -714,32 +800,39 @@ def skenario_tabel(rj, covid, krbn, ind, podes_nas, rekap, peristiwa):
     if k26:
         for m, sat in (("meninggal", "jiwa"), ("mengungsi", "jiwa")):
             out.append({"jenis": "konflik_sosial", "komponen": f"dibi_2026_{m}", "nilai": k26[0][m], "satuan": sat,
-                        "nilai_teks": f"konflik sosial 2026 (sementara, {angka(k26[0]['jumlah_kejadian'])} kejadian); memuat baris Jayawijaya 7 Mei 2026 yang bertanggal hari jembatan Wouma putus",
+                        "nilai_teks": f"konflik sosial 2026 (sementara, {angka(k26[0]['jumlah_kejadian'])} kejadian); memuat baris Jayawijaya 7 Mei 2026 yang bertanggal hari jembatan Wouma putus (kemungkinan memuat korban jembatan) dan dugaan entri ganda Maluku Tengah 3 Apr 2026 (4 meninggal)",
                         "sumber": DIBI_SUMBER, "url": DIBI_URL, "label": "resmi", "dasar": "tren"})
     for o in out:
         assert o["label"] in LABEL | {"narasi"} and o["sumber"], o
         assert (o["nilai"] in (None, "")) == (o["label"] == "narasi"), o
+        assert "cfr" not in o["komponen"] or o["label"] == "narasi", f"skenario: CFR berangka di samping penduduk terpapar mengundang perkalian: {o}"
+    kom = {o["komponen"] for o in out}
+    for o in out:   # estimasi kematian berlebih tidak boleh tampil tanpa selangnya
+        if "berlebih" in o["komponen"]:
+            akar = re.sub(r"_(rerata|batas_bawah|batas_atas)$", "", o["komponen"])
+            assert o["label"] == "estimasi-model" and {f"{akar}_{b}" for b in ("rerata", "batas_bawah", "batas_atas")} <= kom, o
     return out
 
 
 # ---------------------------------------------------------------- rekonsiliasi
-def rekonsiliasi_tabel(covid, prov_cek, peristiwa, ind, dibi, krb_w):
+def rekonsiliasi_tabel(covid, prov_cek, peristiwa, ind, dibi, krb_w, kab):
     out = []
     tambah = lambda topik, versi, nilai, satuan, sumber, label, penjelasan: out.append(
         {"topik": topik, "versi": versi, "nilai": nilai, "satuan": satuan, "sumber": sumber, "label": label, "penjelasan": penjelasan})
     for m in ("meninggal", "kasus_terkonfirmasi"):
         for r in covid:
-            if r["metrik"] == m and r["periode"] in ("kumulatif", "Mar 2020 - Mar 2023"):
+            if r["metrik"] == m and r["periode"].startswith("kumulatif"):
                 tambah(f"COVID-19 {m} kumulatif", r["tanggal_data"] or r["periode"], r["nilai"], r["satuan"], r["sumber"], r["label"],
                        "beda tanggal potong dan pemutakhiran; angka utama = Kemenkes 2024 (Renstra)")
     for r in covid:
         if r["metrik"].startswith("kematian_berlebih_rerata"):
             tambah("COVID-19 meninggal: terkonfirmasi lawan kematian berlebih", r["periode"], r["nilai"], r["satuan"], r["sumber"], r["label"],
-                   "kematian berlebih semua sebab (estimasi model WHO) mencakup kematian tak terdiagnosis dan dampak tidak langsung; bukan statistik resmi")
+                   "estimasi model WHO (selang 95% di covid19_nasional.csv; selalu tulis sebagai rentang): kematian berlebih semua sebab dikurangi kematian "
+                   "akibat konflik/bencana alam; mencakup kematian tak terdiagnosis dan dampak tidak langsung; bukan statistik resmi")
     tambah("COVID-19 per provinsi lawan nasional (30 Sep 2022)", "jumlah 34 provinsi: kasus", prov_cek["prov_kasus"], "kasus",
            "data.covid19.go.id prov.json", "resmi", f"nasional {prov_cek['nas_kasus_20220930']}; 'tanpa_provinsi' = {prov_cek['tanpa_provinsi']}")
     tambah("COVID-19 per provinsi lawan nasional (30 Sep 2022)", "jumlah 34 provinsi: meninggal", prov_cek["prov_meninggal"], "jiwa",
-           "data.covid19.go.id prov.json", "resmi", f"nasional {prov_cek['nas_meninggal_20220930']}; selisih kecil dari pemutakhiran domisili")
+           "data.covid19.go.id prov.json", "resmi", f"nasional {prov_cek['nas_meninggal_20220930']}; selisih tidak dijelaskan sumber")
     g = defaultdict(list)
     for r in peristiwa:
         if r["nilai"] not in (None, ""):
@@ -767,14 +860,47 @@ def rekonsiliasi_tabel(covid, prov_cek, peristiwa, ind, dibi, krb_w):
            "kebakaran kilang/depo (Balongan 2021, Plumpang 2023) dan smelter Morowali 2023 tidak ada barisnya; kebakaran TPA tidak punya jenis tersendiri")
     nas_api = next(r for r in krb_w if r["tingkat"] == "nasional_api")
     nas_kab = next(r for r in krb_w if r["tingkat"] == "nasional_jumlah_kab")
-    for m in ("penduduk", "bahaya_luas_tinggi", "kab_kapasitas_rendah"):
-        tambah(f"KRB COVID-19 {m}: API nasional lawan jumlah 514 kab", "API ALL", nas_api[m], "", KRB_SUMBER, "resmi",
-               f"jumlah 514 kab = {nas_kab[m]}; selisih = wilayah di luar 514 kode Kepmendagri 2025 dan kab tanpa kelas kapasitas")
+    ff = next(r for r in kab if r["kode"] in KRB_ALIAS)
+    gabung = ", ".join(f"{r['nama']} -> {next(x['nama'] for x in kab if x['kode'] == KRB_TANPA_UNIT[r['kode']])}" for r in kab if r["kode"] in KRB_TANPA_UNIT)
+    for m, sat in (("penduduk", "jiwa"), ("bahaya_luas_rendah", "ha"), ("bahaya_luas_tinggi", "ha"), ("kab_kapasitas_rendah", "kab")):
+        tambah(f"KRB COVID-19 {m}: API nasional lawan jumlah 514 kab", "API ALL", nas_api[m], sat, KRB_SUMBER, "resmi",
+               f"jumlah 514 kab = {nas_kab[m]} (selisih {nas_api[m] - nas_kab[m]}; luas berselisih <= 5 ha karena pembulatan per kab). "
+               f"Tanpa alias kode, selisihnya sama dengan baris {ff['nama']} (kode InaRISK {KRB_ALIAS[ff['kode']]}): {ff['penduduk']} jiwa, "
+               f"{ff['bahaya_luas_rendah']} ha bahaya rendah (luas +-1 ha pembulatan), 1 kab kapasitas {ff['kapasitas_kab']}. "
+               f"6 kab lama tanpa unit KRB terhitung di baris lain: {gabung}")
+    sul = [r for r in kab if r.get("penduduk") and r["terpapar"] == 2 * r["penduduk"]]
+    assert {r["kode_prov"] for r in sul} == {"76"} and len(sul) == 5, "KRB COVID: pola terpapar 2x harus tepat 5 kab Sulbar yang punya unit"
+    tambah("KRB COVID-19 terpapar lawan penduduk", "API ALL: terpapar", nas_api["terpapar"], "jiwa", KRB_SUMBER, "resmi",
+           f"penduduk API {nas_api['penduduk']}; terpapar 5 kab Sulbar persis 2x penduduk (kelebihan {sum(r['penduduk'] for r in sul)} jiwa) dan 20 kab lain "
+           f"selisih kecil, sehingga terpapar nasional (= Renas Tabel 2.5) melebihi penduduk. Di naskah: 'praktis seluruh penduduk', bukan 272,6 juta sebagai angka presisi")
+    js = {r["kode"]: r for r in baca("who_jee2023_idn.json")["indikator"]}
+    for kd in sorted(JEE_BEDA):
+        for versi, kunci in (("bagian rinci 'Indicators and scores' (dipakai)", "skor"), ("tabel ringkasan 'Indonesia: scores and priority actions'", "skor_tabel_ringkasan")):
+            tambah(f"JEE 2023 {kd}: tabel ringkasan lawan bagian rinci", versi, js[kd][kunci], "skor 1-5", "WHO 2024, JEE IHR Indonesia (PDF sha256 39d3ceca...)",
+                   "terverifikasi", "PDF tidak konsisten di dalam dirinya, WHO tidak menjelaskan; paket memakai bagian rinci karena skornya berdampingan dengan dasar penilaian")
+    for versi, kunci in (("bagian rinci (dipakai)", "skor"), ("tabel ringkasan", "skor_tabel_ringkasan")):
+        sb = jee_sebaran(kunci)
+        tambah("JEE 2023 sebaran skor 56 indikator", versi, None, "", "WHO 2024, JEE IHR Indonesia", "narasi",
+               ", ".join(f"{n} {k.replace('_', ' ')}" for k, n in sb.items() if n))
     tambah("JEE 2017 lawan JEE 2023", "edisi alat 1 lawan 3", None, "", "WHO 2024", "narasi", "WHO: membandingkan skor kedua JEE 'invalid and contraindicated'")
     return out
 
 
 # ---------------------------------------------------------------- utama
+def cek_tergabung(kab):
+    """Bukti KRB_TANPA_UNIT: penduduk API baris tetangga ~ penduduk_2026 (paket irbi) tetangga + kab yang tergabung, dan jauh di atas tetangga sendiri."""
+    jalur = P("data/kajian-bnpb/data/irbi/irbi_kab_2025.csv")
+    if not os.path.exists(jalur):
+        print("  lewati cek kab tergabung: irbi_kab_2025.csv tidak ada", file=sys.stderr)
+        return 0
+    pen = {r["kode"]: float(r["penduduk_2026"]) for r in csv.DictReader(open(jalur, encoding="utf-8"))}
+    api = {r["kode"]: r["penduduk"] for r in kab}
+    for a, b in KRB_TANPA_UNIT.items():
+        gab, sendiri = api[b] / (pen[a] + pen[b]), api[b] / pen[b]
+        assert 0.85 <= gab <= 1.1 and sendiri >= 1.3, f"KRB {b} memuat {a}? rasio gabungan {gab:.2f}, sendiri {sendiri:.2f}"
+    return len(KRB_TANPA_UNIT)
+
+
 def cek_baris(nama, kolom, baris, wajib_angka=()):
     for b in baris:
         for k in kolom:
@@ -786,6 +912,10 @@ def cek_baris(nama, kolom, baris, wajib_angka=()):
             assert b["label"] in LABEL | {"narasi"}, f"{nama}: label tidak sah {b['label']}"
         if "sumber" in kolom:
             assert b.get("sumber"), f"{nama}: sumber kosong: {b}"
+        u = b.get("url") or ""
+        if u.startswith("http"):   # URL harus menunjuk halaman yang bisa dibuka, bukan akar domain
+            p = urllib.parse.urlparse(u)
+            assert p.path.strip("/") or p.query, f"{nama}: url hanya akar domain: {u}"
 
 
 def bangun():
@@ -808,8 +938,10 @@ def bangun():
     assert all(kab_per_prov[r["kode_prov"]] == r["kab_kota"] for r in podes if r["kode_prov"] != "00"), "jumlah kab per provinsi: kota.json != BPS Podes 2024"
     krbw = krb_wilayah(kab, nas)
     na, nk = krbw[0], krbw[1]
-    for m in ("penduduk", "terpapar", "bahaya_luas_tinggi", "bahaya_luas_sedang", "risiko_luas_sedang"):
-        assert 0.99 <= nk[m] / na[m] <= 1.0, f"KRB COVID {m}: jumlah kab {nk[m]} vs API {na[m]}"
+    for m in KRB_JUMLAH + ["kab_kapasitas_rendah", "kab_kapasitas_sedang", "kab_kapasitas_tinggi"]:   # jumlah 514 kab (dengan alias) = API ALL
+        toleransi = 5 if "luas" in m else 0   # luas: pembulatan ha per kab (selisih terukur 1-4 ha)
+        assert abs(nk[m] - na[m]) <= toleransi, f"KRB COVID {m}: jumlah 514 kab {nk[m]} != API nasional {na[m]} (selisih {na[m] - nk[m]})"
+    n_tergabung = cek_tergabung(kab)
     for m_api, m_renas in (("terpapar", "penduduk_terpapar"), ("bahaya_luas_rendah", "luas_bahaya_rendah"),
                            ("bahaya_luas_sedang", "luas_bahaya_sedang"), ("bahaya_luas_tinggi", "luas_bahaya_tinggi")):
         rv = next(r["nilai"] for r in krbn if r["bahaya"] == "COVID-19" and r["metrik"] == m_renas)
@@ -825,7 +957,8 @@ def bangun():
     simpan_tabel("covid19_nasional", list(covid[0]), covid, ["nilai"])
     simpan_tabel("covid19_provinsi", list(cprov[0]), cprov, ["kasus", "meninggal", "cfr_persen", "meninggal_per_100rb"])
     simpan_tabel("indikator", list(ind[0]), ind)
-    simpan_tabel("krb_covid19_kab", list(kab[0]), kab, ["penduduk", "bahaya_luas_tinggi", "risiko_luas_tinggi"])
+    cek_baris("krb_covid19_kab", list(kab[0]), [r for r in kab if r["kode"] not in KRB_TANPA_UNIT], ["penduduk", "bahaya_luas_tinggi", "risiko_luas_tinggi"])
+    simpan_tabel("krb_covid19_kab", list(kab[0]), kab)
     simpan_tabel("krb_covid19_wilayah", list(krbw[1]), krbw, ["penduduk", "terpapar"])
     simpan_tabel("krb_nonalam_nasional", list(krbn[0]), krbn, ["nilai"])
     dibi_tulis = [{**r, **{k: angka(r[k]) for k in DIBI_ANGKA}} for r in dibi]
@@ -836,22 +969,30 @@ def bangun():
     simpan_tabel("regulasi", kr, reg)
     sk = skenario_tabel(rj, covid, krbn, ind, podes_nas, rekap, pr)
     simpan_tabel("skenario_terburuk", ["jenis", "komponen", "nilai", "satuan", "nilai_teks", "dasar", "sumber", "url", "label"], sk)
-    rk = rekonsiliasi_tabel(covid, cprov_cek, pr, ind, dibi, krbw)
+    rk = rekonsiliasi_tabel(covid, cprov_cek, pr, ind, dibi, krbw, kab)
     simpan_tabel("rekonsiliasi", list(rk[0]), rk)
 
-    meta = {"paket": "nonalam-sosial", "dibangun": dt.datetime.now(WIB).isoformat(timespec="seconds"), "tarik": TGL_TARIK,
+    meta = {"paket": "nonalam-sosial", "tarik": TGL_TARIK,   # tanpa jam bangun: keluaran deterministik, uji ulang tidak mengotori tree
             "skrip": "data/kajian-bnpb/bangun/nonalam-sosial.py", "rujukan": "data/kajian-bnpb/bangun/nonalam-sosial_rujukan.json",
             "label": {"resmi": "instansi pemerintah RI", "terverifikasi": "sumber primer non-pemerintah RI yang dibuka (WHO, ICG, HRW, Brookings)",
-                      "estimasi-model": "tidak dipakai (tidak ada keluaran mesin platform)", "asumsi-kebijakan": "tidak dipakai",
+                      "estimasi-model": "estimasi model statistik yang belum diuji balik di paket ini: kematian berlebih WHO 2020-2021 (galat = selang 95%)",
+                      "asumsi-kebijakan": "tidak dipakai",
                       "sekunder": "berita yang mengutip pejabat; bukan angka utama", "narasi": "baris tanpa angka"},
-            "cek_silang_dibi_kunci": n_cek, "covid_provinsi_lawan_nasional": cprov_cek,
+            "cek_silang_dibi_kunci": n_cek, "covid_provinsi_lawan_nasional": cprov_cek, "krb_kab_tergabung_dicek_irbi": n_tergabung,
+            "jee2023_sebaran": {"bagian_rinci_dipakai": jee_sebaran("skor"), "tabel_ringkasan": jee_sebaran("skor_tabel_ringkasan")},
             "jumlah_baris": {k: len(v) for k, v in tabel.items()}}
     with open(os.path.join(OUT, "nonalam_sosial.json"), "w", encoding="utf-8") as f:
         json.dump({"meta": meta, "kolom": kolom, "tabel": tabel}, f, ensure_ascii=False, indent=1)
-    # JSON = CSV (satu sumber): baca ulang CSV dan bandingkan jumlah baris
-    for nama, rows in tabel.items():
+    # JSON = CSV (satu sumber): baca ulang keduanya dari disk dan bandingkan per sel
+    js = json.load(open(os.path.join(OUT, "nonalam_sosial.json"), encoding="utf-8"))
+    sel = lambda v: "" if v is None else str(v)
+    for nama, rows in js["tabel"].items():
         with open(os.path.join(OUT, nama + ".csv"), encoding="utf-8") as f:
-            assert sum(1 for _ in csv.DictReader(f)) == len(rows), f"{nama}: CSV != JSON"
+            cs = list(csv.DictReader(f))
+        assert len(cs) == len(rows) and list(cs[0]) == js["kolom"][nama], f"{nama}: CSV != JSON (baris/kolom)"
+        for i, (c, j) in enumerate(zip(cs, rows)):
+            for k in js["kolom"][nama]:
+                assert c[k] == sel(j.get(k)), f"{nama} baris {i} kolom {k}: CSV {c[k]!r} != JSON {j.get(k)!r}"
     print(json.dumps(meta["jumlah_baris"], ensure_ascii=False), file=sys.stderr)
     print("self-check hijau", file=sys.stderr)
 

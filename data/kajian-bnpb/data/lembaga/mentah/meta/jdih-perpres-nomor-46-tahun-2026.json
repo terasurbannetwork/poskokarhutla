@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Presiden",
+ "Judul": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+ "Nomor": "46",
+ "Tahun": "2026",
+ "Tajuk Entri Utama": "Indonesia. Presiden Republik Indonesia",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Keadaan Tertentu",
+ "Tanggal Penetapan": "16 July 2026",
+ "Tanggal Pengundangan": "16 July 2026",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "LN 2026 (83); 4 Hlm",
+ "Bahasa": "Bahasa Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi, dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERPRES",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perpres-nomor-46-tahun-2026",
+ "tipe": "Peraturan",
+ "slug": "perpres-nomor-46-tahun-2026",
+ "teks": [
+  "perpres-nomor-46-tahun-2026.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "79a0c8494cdbad0411018077995d8d5524c31853",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "974cfafc39573628e76cef899666c38e201eb353",
+ "asal_teks": "data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

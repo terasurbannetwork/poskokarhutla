@@ -1,0 +1,47 @@
+{
+  "nama": "peta-irbi-banjir-2024-jawa",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "penuh",
+  "keterangan": "Indeks risiko banjir IRBI per kab/kota dan bendungan di Pulau Jawa, 2024",
+  "sumber": "InaRISK BNPB, IRBI 2024; kelas IRBI banjir kab/kota Jawa buatan penyusun karena IRBI tidak punya ambang kelas per bahaya ({rumus_kelas}); bendungan dari paket air-jawa (koordinat titik peraga tidak digambar)",
+  "cakupan": "jawa",
+  "tingkat": "kab",
+  "koroplet": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2015_2025.csv",
+      "saring": {
+        "tahun": "2024"
+      },
+      "kunci": "kode",
+      "nilai": "banjir"
+    },
+    "kelas": {
+      "ramp": "api",
+      "kuantil": 5,
+      "desimal": 1
+    },
+    "judul_legenda": "IRBI banjir 2024, kuintil kab/kota Jawa (jumlah kab/kota)"
+  },
+  "titik": [
+    {
+      "nama": "Bendungan",
+      "judul_legenda": "Bendungan, kapasitas desain (juta m³)",
+      "bentuk": "persegi",
+      "warna": "navy",
+      "sumber": {
+        "berkas": "data/kajian-bnpb/data/air-jawa/peta_bendungan.geojson",
+        "kecuali": {
+          "koordinat_cek": "PERAGA"
+        }
+      },
+      "nilai": "kapasitas_desain_juta_m3",
+      "label": "nama",
+      "label_teratas": 4
+    }
+  ],
+  "label": {
+    "provinsi": true
+  }
+}

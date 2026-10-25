@@ -1,0 +1,2617 @@
+Strategi Pembiayaan
+dan Asuransi Risiko Bencana
+Strategi Pembiayaan
+dan Asuransi Risiko Bencana
+
+
+
+
+        BADAN KEBIJAKAN FISKAL
+        KEMENTERIAN KEUANGAN
+                2018
+Strategi Pembiayaan
+dan Asuransi Risiko Bencana
+   2018, Badan Kebijakan Fiskal Kementerian Keuangan
+   Edisi Revisi
+
+
+Pengarah:
+Suahasil Nazara, Kepala Badan Kebijakan Fiskal Kementerian Keuangan
+Arif Baharudin, Staf Ahli Menteri Keuangan Bidang Kebijakan dan Regulasi Jasa Keuangan dan
+Pasar Modal Kementerian Keuangan
+
+
+Penanggung Jawab:
+Irfa Ampri, Kepala Pusat Kebijakan Regional dan Bilateral
+Badan Kebijakan Fiskal Kementerian Keuangan
+
+
+Tim Penyusun:
+Kristiyanto , Vincentius Krisna Juli Wicaksono, Risnandar, Devi Yanti Bangun, Evan Oktavianus,
+Sausan Afifah Muti
+
+
+Desain Layout:
+Arif Taufiq Nugroho
+
+
+Kontributor:
+Didik Kusnaeni (Direktorat Jenderal Anggaran), Sutarso (Direktorat Jenderal Pengelolaan
+Pembiayaan dan Risiko), Fatchur Berlianto (Direktorat Jenderal Kekayaan Negara), Benedikt Signer
+(Group Bank Dunia), Cynthia Clarita R. Kusharto (Group Bank Dunia)
+
+
+Penerbit:
+Badan Kebijakan Fiskal Kementerian Keuangan
+
+
+Hak Cipta dilindungi oleh undang-undang
+Dilarang memperbanyak, mencetak ataupun menerbitkan sebagian atau seluruh isi buku ini
+tanpa izin tertulis dari penerbit.
+
+
+ISBN 978-602-53083-2-1
+                    DAFTAR ISI
+
+Daftar Isi                                                                  i
+Daftar Gambar Tabel dan Grafik                                             ii
+Kata Pengantar Menteri Keuangan                                            v
+Ucapan Terima Kasih Kepala BKF                                             ix
+Ringkasan Eksekutif                                                        xi
+BAB I Pendahuluan                                                           1
+      A. Bencana Alam dan Rencana Pembangunan Nasional                      2
+      B. Pembiayaan Penanggulangan Bencana                                 4
+      C. Kerangka Regulasi Utama pada Pengelolaan Bencana dan Pembiayaan    6
+        Risiko Bencana
+      D. Tantangan dan Peluang Skema Pembiayaan Risiko Bencana Saat Ini     8
+BAB II Risiko Bencana                                                      15
+      A.Kerugian Akibat Bencana yang Pernah Terjadi                        15
+      B. Potensi Kerugian di Masa Mendatang                                16
+      C. Konsentrasi Persebaran BMN                                        21
+      D.Risiko Fiskal Akibat Bencana                                       22
+BAB III Strategi Pembiayaan Dan Asuransi Risiko Bencana                    31
+      A. Prioritas Pembiayaan dan Asuransi Risiko Bencana                  31
+      B. Prinsip-prinsip Utama Pembiayaan dan Asuransi Risiko Bencana      32
+      C. Strategi Pembiayaan dan Asuransi Risiko Bencana                   34
+BAB IV Peta Jalan Pelaksanaan Strategi Pembiayaan dan                      49
+       Asuransi Risiko Bencana
+      A. Jangka Pendek (2018 – 2019)                                       49
+      B. Jangka Menengah (2019 – 2023)                                     51
+GLOSARIUM                                                                  57
+DAFTAR PUSTAKA                                                             59
+
+
+
+
+                                                                                i
+                         DAFTAR GAMBAR
+                         TABEL DAN GRAFIK
+Daftar Gambar
+      Gambar 1 Peta Indeks Risiko Bencana                                       2
+      Gambar 2 Peta Sebaran Tingkat Bahaya Gempa Bumi                           17
+      Gambar 3 Peta Sebaran Tingkat Bahaya Banjir                               20
+      Gambar 4 Peta Persebaran BMN Berdasarkan Nilai Pasar Tahun 2017           21
+      Gambar 5 Strategi Pembiayaan dan Asuransi Risiko Bencana                  35
+      Gambar 6 Opsi Skema Pooling Fund                                          38
+
+
+Daftar Tabel
+
+
+      Tabel 1 Kerugian Ekonomi dan Fisik                                        18
+      Tabel 2 Kerugian Ekonomi Fisik dan Ekonomi Akibat Tsunami                 19
+
+
+Daftar Grafik
+
+
+      Grafik 1 Karakterisitik Kebutuhan Pembiayaan Setelah Terjadi Bencana      4
+      Grafik 2 Perkembangan dan Proyeksi Belanja Wajib, 2013-2021               10
+      Grafik 3 Rata-rata Kerugian Ekonomi Langsung Terhadap Bangunan dan Non-
+               Bangunan 2000-2016                                               15
+      Grafik 4 Skenario Kerugian Ekonomi Akibat Banjir                          20
+      Grafik 5 Alokasi dan Serapan Dana Cadangan Bencana 2005-2017              25
+      Grafik 6 Kesenjangan Pembiayaan Bencana                                   27
+
+
+
+
+ ii
+Halaman dikosongkan
+
+
+
+
+                      iii
+     Halaman dikosongkan
+
+
+
+
+iv
+  KATA PENGANTAR
+  MENTERI KEUANGAN
+
+
+I
+    ndonesia sebagai negara yang dikenal sebagai supermarket bencana alam
+    acap kali mengalami kejadian bencana yang mengakibatkan korban jiwa,
+    kerugian ekonomi dan kerusakan fisik yang sangat besar. Beberapa kejadian
+    bencana alam seperti gempa bumi dan tsunami di Aceh dan Sumatera
+bagian utara tahun 2004, gempa bumi besar yang bersusulan di Lombok tahun
+2018, dan gempa bumi yang diiringi tsunami di Palu dan Donggala di akhir
+September 2018 memberikan gambaran dan fakta yang jelas betapa rentannya
+negeri ini terhadap bencana alam.
+
+
+Kami di Kementerian Keuangan, dalam berbagai kesempatan sering kali
+bertanya: Mengapa dana yang disediakan Pemerintah selalu terlihat kecil
+dibandingkan dengan kerugian yang dialami Pemerintah dan masyarakat ketika
+terjadi bencana besar? Mengapa masih ada bangunan publik yang belum juga
+dibangun kembali beberapa tahun setelah bencana? Mengapa pembangunan
+kembali rumah-rumah penduduk terealisasi lama setelah selesainya masa
+tanggap darurat? Banyak sekali pertanyaan-pertanyaan yang muncul yang
+belum terjawab tuntas dan tidak semuanya terkait langsung dengan tugas kami
+di Kementerian Keuangan. Namun, suatu kondisi yang selalu menjadi perhatian
+kami adalah selama ini Pemerintah hanya mengandalkan pembiayaan bencana
+dari Anggaran Pendapatan dan Belanja Negara (APBN) untuk menanggung
+semua kerugian tersebut. Ketergantungan tersebut memiliki risiko munculnya
+kesenjangan pembiayaan apabila dampak bencana yang terjadi nilainya
+melampaui kemampuan APBN.
+
+
+Menyadari risiko yang tinggi apabila bergantung semata kepada APBN,
+Pemerintah memutuskan untuk mencari solusi dan inovasi keuangan yang
+mampu memberikan alternatif pembiayaan untuk membantu APBN dalam
+pembiayaan bencana. Berbagai solusi dan inovasi tersebut tercermin dalam
+Strategi Pembiayaan dan Asuransi Risiko Bencana.
+
+
+
+
+                                                                            v
+     Dalam menyusun strategi tersebut, kami melakukan diskusi dan konsultasi
+     yang intensif dengan para pemangku kepentingan terkait yang berasal dari
+     kementerian/lembaga, pemerintah daerah, akademisi, sektor swasta, dan
+     lembaga internasional. Beberapa agenda utama yang didiskusikan adalah:
+     pertama, penelahaan model, dasar hukum dan juga tantangan dari skema
+     pembiayaan yang selama ini digunakan oleh Pemerintah. Kedua, identifikasi
+     berbagai bencana yang pernah terjadi, lokasi kejadian, kerugiannya, dan
+     skenario yang akan terjadi apabila Indonesia kembali mengalami kejadian
+     bencana besar di masa mendatang. Ketiga, Pemerintah menentukan prioritas
+     pihak dan objek yang perlu dilindungi serta pelibatan pemangku kepentingan
+     secara optimal dalam pembiayaan risiko bencana.
+
+
+     Pemerintah menilai perlindungan atas masyarakat yang berpotensi terdampak
+     bencana, khususnya mereka yang rentan secara ekonomi adalah prioritas
+     utama. Selanjutnya, aset-aset negara yang menunjang pelayanan publik seperti
+     jalan, jembatan, rumah sakit, sekolah, pelabuhan juga harus dapat dibangun
+     kembali dengan lebih baik dan tepat waktu setelah mengalami kerusakan akibat
+     bencana. Pemerintah harus pula memikirkan bagaimana Pemerintah Pusat
+     dapat bekerja bersama-sama dengan pemerintah daerah dan swasta dalam
+     agenda ini.
+
+
+     Kami melihat bahwa terdapat beberapa prinsip mendasar yang perlu
+     diperhatikan dalam pembiayaan risiko bencana ini. Pertama, ketepatan waktu
+     dan besaran dana menjadi sangat krusial. Ketika terjadi bencana, kecepatan
+     penyaluran dana menjadi penting, namun yang tidak kalah penting adalah
+     besaran dana yang sesuai untuk setiap periode bencana. Pemerintah harus
+     dapat mengelola pembiayaan bencana untuk beragam program seperti
+     kesiapsiagaan, tanggap darurat, rehabilitasi dan rekonstruksi. Selanjutnya, kami
+     melakukan pembagian (layering) bencana sesuai dengan frekuensi dan besaran
+     dampaknya, sehingga Pemerintah dapat mengambil kebijakan pembiayaan
+     yang tepat untuk masing-masing layer tersebut. Seringkali kementerian/
+     lembaga (K/L) terkait telah mengalokasikan dana yang cukup untuk bencana,
+     namun tantangan dan kesulitan timbul pada saat penyaluran dana tersebut.
+     Oleh karena itu, kita harus mampu mencari mekanisme agar dana bencana
+     dapat disalurkan tepat waktu dan sasaran secara efisien. Terakhir, Pemerintah
+     menyadari urgensi ketersediaan data dan informasi mengenai kebencanaan
+     yang lengkap dan akurat, karena akan sangat membantu para pengambil
+     kebijakan dalam menghasilkan keputusan pembiayaan yang efisien dan optimal
+     yang dapat dipertanggungjawabkan.
+
+
+
+
+vi
+Strategi Pembiayaan dan Asuransi Risiko Bencana disusun dengan merujuk
+pula pada kebijakan dan praktik terbaik yang dilakukan oleh banyak
+negara. Namun demikian prioritas dan implementasi di negara kita tercinta
+perlu disesuaikan dengan dinamika perkembangan regulasi, kebijakan, dan
+kesiapan (enabling environment) pada pihak-pihak terkait. Oleh karena itu, kami
+mengharapkan masukan dan saran dari para pemangku kepentingan dalam
+rangka perbaikan strategi dan pelaksanaannya di masa mendatang. Semoga
+Strategi ini dapat digunakan sebagai pedoman dalam mendukung terciptanya
+bangsa dan masyarakat yang tangguh terhadap bencana.
+
+
+
+
+                                      Jakarta, Desember 2018
+                                      Menteri Keuangan Republik Indonesia
+
+
+
+
+                                     Sri Mulyani Indrawati
+
+
+
+
+                                                                           vii
+       Halaman dikosongkan
+
+
+
+
+viii
+UCAPAN TERIMA KASIH
+KEPALA BKF
+
+S
+        trategi Pembiayaan dan Asuransi Risiko Bencana (Strategi PARB)
+        merupakan salah satu prioritas utama Pemerintah mengingat Indonesia
+        merupakan negara yang rawan terhadap berbagai jenis bencana. Sebagai
+        konsekuensinya, Indonesia menghadapi risiko fiskal yang besar akibat
+dampak bencana. Beberapa bencana besar, seperti gempa bumi dan tsunami yang
+terjadi di Sulawesi Tengah beberapa waktu yang lalu, memiliki dampak fiskal
+yang cukup signifikan dengan adanya kebutuhan pembiayaan yang besar dalam
+waktu cepat. Oleh karena itu, adanya Strategi PARB yang komprehensif dengan
+sumber pembiayaan publik dan nonpublik seperti asuransi mutlak diperlukan
+untuk terciptanya bangsa dan masyarakat Indonesia yang tangguh terhadap
+bencana.
+
+
+Penyusunan Strategi PARB ini tidak terlepas dari kecemasan yang mendalam
+dari Menteri Keuangan atas belum optimalnya kebijakan pembiayaan bencana
+yang dimiliki Pemerintah. Pandangan luas Beliau atas urgensi pembiayaan yang
+cukup dan berkelanjutan dengan tata kelola yang baik mendorong rangkaian
+diskusi intensif di lingkungan Kementerian Keuangan (Kemenkeu) dalam
+menghasilkan kebijakan pembiayaan yang lebih komprehensif dan relevan bagi
+Indonesia. Hasil diskusi-diskusi tersebut menjadi sumber pengetahuan bagi kami
+dan Staf Ahli Menteri Keuangan Bidang Kebijakan dan Regulasi Jasa Keuangan
+dan Pasar Modal serta tim dalam menyusun Strategi PARB ini.
+
+
+Kami menyampaikan terima kasih dan penghargaan yang tinggi kepada
+seluruh pihak yang terlibat dalam penyusunan Strategi PARB ini baik dari
+internal dan eksternal Kemenkeu. Dari internal Kemenkeu, bantuan kami
+peroleh dari Direktorat Jenderal (Ditjen) Anggaran, Ditjen Kekayaan Negara,
+Ditjen Perimbangan Keuangan, dan Ditjen Pengelolaan Pembiayaan dan
+Risiko. Dari eksternal Kemenkeu, kami mendapatkan sumbangan pemikiran
+
+
+
+
+                                                                              ix
+    dan informasi yang relevan dari Badan Nasional Penanggulangan
+    Bencana, Kementerian Perencanaan Pembangunan Nasional/
+    Bappenas, Kementerian Dalam Negeri, kementerian/lembaga
+    terkait lainnya (seperti Kementerian Pertanian, Kementerian Sosial,
+    dan Kementerian Kelautan dan Perikanan), pemerintah daerah
+    (diantaranya Pemerintah Kota Padang dan Pemerintah Provinsi
+    Daerah Istimewa Yogyakarta), akademisi (Institut Teknologi Bandung
+    dan Universitas Syiah Kuala), Otoritas Jasa Keuangan, Industri
+    Asuransi (PT. Maipark), World Bank Group, Asian Development
+    Bank dan kontributor lainnya yang tidak dapat kami sebutkan satu
+    persatu.
+
+
+    Akhir kata, kami menyampaikan apresiasi kepada tim penyusun dari
+    Badan kebijakan Fiskal atas dedikasi waktu, tenaga, dan pemikiran
+    dalam penyusunan Strategi ini
+
+
+
+                                     Jakarta, Desember 2018
+                                     Kepala Badan Kebijakan Fiskal
+
+
+
+
+                                     Suahasil Nazara
+
+
+
+
+x
+  RINGKASAN EKSEKUTIF
+
+Indonesia merupakan salah satu negara yang memiliki risiko tinggi akibat
+dampak bencana. Menurut Bank Dunia, Indonesia termasuk 35 negara di dunia
+dengan risiko tinggi terjadinya korban jiwa dan kerugian ekonomi akibat
+dampak berbagai jenis bencana. Hampir seluruh wilayah di Indonesia terpapar
+risiko atas sembilan bencana utama, yaitu gempa bumi, tsunami, banjir, tanah
+longsor, letusan gunung api, kebakaran, cuaca ekstrim, gelombang ekstrim dan
+kekeringan.
+
+
+Antara tahun 2000-2016, rata-rata kerugian ekonomi langsung berupa rusaknya
+bangunan dan bukan bangunan akibat bencana alam yang terjadi di Indonesia
+setiap tahunnya mencapai sekitar Rp. 22,8 triliun. Di masa mendatang, kerugian
+akibat bencana akan semakin membesar, apabila tidak dilakukan upaya mitigasi,
+kesiapsiagaan dan transfer risiko.
+
+
+Kemampuan Pemerintah dalam menyediakan pembiayaan untuk bencana
+dengan dampak yang besar cenderung terbatas pada saat terjadi bencana. Setiap
+tahunnya Pemerintah rata-rata menyediakan dana cadangan bencana sebesar
+Rp. 3,1 triliun (USD 214 juta). Sementara kerugian akibat bencana alam besar,
+seperti gempa dan tsunami Aceh di tahun 2004 mencapai Rp. 51,4 triliun (USD
+3,5 miliar) sehingga membutuhkan waktu lebih dari 5 tahun untuk pemulihan
+seperti kondisi sebelum bencana. Kesenjangan pembiayaan tersebut yang
+menyebabkan Indonesia terpapar risiko fiskal yang tinggi akibat bencana alam.
+Oleh karena itu, alternatif pembiayaan dengan melibatkan sumber pembiayaan
+di luar APBN, diantaranya asuransi, diperlukan agar Indonesia dapat memiliki
+ketahanan atas bencana.
+
+
+
+
+                                                                            xi
+      Mengingat tingginya risiko bencana dan fiskal terkait bencana tersebut,
+      Pemerintah menyusun Strategi Pembiayaan dan Asuransi Risiko Bencana
+      (PARB) atau Disaster Risk Financing and Insurance (DRFI) dalam rangka
+      mewujudkan bangsa dan masyarakat yang tangguh dalam menghadapi bencana
+      dan terjaminnya keberlangsungan berbagai program pembangunan. Kerangka
+      strategi Pemerintah ini diharapkan dapat memenuhi kebutuhan pembiayaan
+      yang besar, terencana, tepat waktu dan sasaran, berkelanjutan, yang dikelola
+      dengan transparan untuk melindungi keuangan negara. Strategi ini perlu
+      didukung oleh sinergi yang kuat antara pemerintah, swasta dan masyarakat
+      dalam pembiayaan risiko bencana.
+
+
+      Prioritas Pemerintah dalam Strategi PARB adalah: (1) Perlindungan terhadap
+      Barang Milik Negara (BMN) dan Barang Milik Daerah (BMD); (2) Perlindungan
+      terhadap rumah tangga dan masyarakat yang terkena dampak bencana,
+      khususnya kelompok masyarakat yang berpenghasilan rendah: (3) Pemulihan
+      kehidupan sosial dan masyarakat yang terkena dampak bencana; (4) Penguatan
+      peran pemerintah daerah (pemda), swasta dan masyarakat dalam pembiayaan
+      risiko bencana; (5) Pemberdayaan industri asuransi dalam negeri; dan (6)
+      Perlindungan terhadap keuangan negara. Pemerintah menerapkan lima prinsip
+      utama, yaitu: (1) sinergi/kolaborasi Pemerintah Pusat, pemerintah daerah
+      (pemda), swasta, dan masyarakat dalam pembiayaan risiko bencana; (2) layering
+      risiko dan bauran kebijakan/instrumen; (3) ketepatan waktu dan besaran dana;
+      (4) ketepatan pilihan mekanisme penyaluran dana; dan (5) data dan informasi
+      yang akurat.
+
+
+      Strategi PARB terdiri atas lima strategi utama, yaitu:
+
+           1.   Pemerintah mengkombinasikan instrumen pembiayaan untuk
+                mendapatkan skema pembiayaan yang efisien dan efektif.
+           2.   Pemerintah menanggung atau menyerap risiko melalui pembiayaan
+                APBN dan/atau APBD untuk bencana yang sering terjadi dan atau
+                berdampak kerugian kecil.
+           3.   Pemerintah menggunakan instrumen pembiayaan kontijensi sebagai
+                komplementer APBN dalam menanggung risiko bencana dengan
+                dampak kerugian sedang sampai dengan tinggi.
+           4.   Pemerintah membangun skema pooling fund untuk memperkuat peran
+                APBN
+
+
+
+
+xii
+    5.   Pemerintah memindahkan (transfer) risiko melalui asuransi untuk
+         pembiayaan bencana yang jarang terjadi namun memberikan dampak
+         kerugian besar.
+
+Dalam Strategi ini juga disusun peta jalan atau roadmap pelaksanaan strategi
+dalam jangka pendek dan menengah, termasuk langkah-langkah dan
+penyesuaian-penyesuaian yang dibutuhkan. Untuk periode jangka pendek
+(2018-19), beberapa kebijakan dan program yang akan dilakukan adalah:
+(1) Implementasi Proyek Percontohan Asuransi BMN; (2) Pemilihan Skema
+dan Pembentukan Pooling Fund Bencana; (3) Penguatan dan Pengembangan
+Instrumen Asuransi Perlindungan Masyarakat; (4) Eksplorasi Kerja sama
+Pemerintah Pusat dan Pemerintah Daerah (Pemda); (5) Eksplorasi Skema
+Pembiayaan Alternatif; dan (6) Edukasi dan Penguatan Kapasitas Sumber Daya
+Manusia Terkait Pembiayaan dan Asuransi Risiko Bencana.
+
+
+Dalam periode jangka menengah, agenda kebijakan dan program yang akan
+dilakukan adalah: (1) Monitoring dan Evaluasi implementasi Asuransi BMN,
+serta Perluasan Skema Pembiayaan untuk Perlindungan BMN dan BMD; (2)
+Penguatan Kelembagaan Pooling Fund Bencana; (3) Penerbitan Instrumen
+Pinjaman Siaga; (4) Penguatan Kerangka Kebijakan Fiskal Pembiayaan Risiko
+Bencana; (5) Pemanfaatan Skema Pembiayaan Risiko Bencana Alternatif Lainnya;
+(6) Peningkatan Efisiensi Penyaluran Dana; dan (7) Sinergi dengan Pemangku
+Kepentingan yang Terkait.
+
+
+Kebijakan dan program yang tercermin dalam peta jalan tersebut diyakini akan
+memperkuat ketahanan fiskal dan intervensi Pemerintah dalam kesiapsiagaan
+dan mitigasi risiko bencana. Keberhasilan peta jalan memerlukan komitmen
+bersama seluruh pelaku kepentingan terkait untuk melakukan sinergi dan
+berbagi risiko sesuai kapasitas masing-masing baik di lingkungan Pemerintah
+Pusat (kementerian/lembaga terkait), pemda (provinsi, kabupaten, dan kota),
+industri perbankan dan asuransi, pelaku usaha, dan masyarakat.
+
+
+
+
+                                                                          xii
+       Halaman dikosongkan
+
+
+
+
+xiii
+Kompas/ Zulkarnaini
+
+
+
+
+             xiv
+Halaman dikosongkan
+BAB 1    PENDAHULUAN
+
+
+        K
+                   ementerian Keuangan menerbitkan Strategi Pembiayaan dan
+                   Asuransi Risiko Bencana (Strategi PARB) yang berisi rekomendasi
+                   bauran kebijakan dan instrumen pembiayaan risiko bencana dalam
+                   jangka pendek dan menengah. Strategi ini meliputi kebijakan dan
+        instrumen pembiayaan untuk pembiayaan pada periode tidak terjadi bencana,
+        tanggap darurat, serta rehabilitasi dan rekonstruksi.
+
+
+        Strategi PARB diharapkan dapat berperan sebagai pedoman dalam penyusunan
+        program-program terkait pembiayaan dan asuransi risiko bencana yang
+        relevan yang dilakukan oleh kementerian/lembaga (K/L), pemerintah daerah
+        (pemda), maupun masyarakat dalam mewujudkan pemerintah dan masyarakat
+        Indonesia yang tangguh terhadap bencana untuk mendukung terlaksananya
+        pembangunan berkelanjutan. Adapun manfaat utama dari Strategi ini adalah
+        tersedianya berbagai rekomendasi kebijakan, skema dan instrumen pembiayaan
+        dan asuransi bencana yang dapat memenuhi kebutuhan pembiayaan yang
+        besar, terencana, tepat waktu dan sasaran, berkelanjutan dengan tata-
+        pemerintahan yang baik dalam melindungi keuangan negara.
+
+
+        Strategi ini disusun dalam 4 bab utama. Bab I Pendahuluan berisi paparan
+        mengenai kebijakan, regulasi, dan kondisi pembiayaan risiko bencana saat
+        ini termasuk tantangan dan peluang serta rencana pembangunan nasional.
+        Bab II Risiko Bencana menjelaskan tentang risiko bencana dan risiko fiskal
+        akibat bencana baik berdasarkan data historis maupun data proyeksi. Risiko
+        fiskal tersebut terutama berkenaan dengan adanya kesenjangan pembiayaan
+        (financing gap) akibat besarnya kerugian yang terjadi tidak berbanding lurus
+        dengan kemampuan Pemerintah dalam menyediakan pembiayaan. Bab III
+        Strategi Pembiayaan dan Asuransi Risiko Bencana merupakan bab inti
+        yang menjelaskan tentang prioritas, prinsip, hingga rekomendasi bauran
+        kebijakan dan kombinasi instrumen pembiayaan risiko bencana. Bab IV Peta
+
+
+
+
+                                                                                       1
+    Jalan Pelaksanaan Strategi Pembiayaan dan Asuransi Risiko Bencana
+    menguraikan rencana implementasi Strategi PARB dalam jangka pendek
+    maupun menengah.
+
+
+    A. Bencana Alam dan Rencana Pembangunan Nasional
+
+    Indonesia adalah salah satu negara yang memiliki risiko tinggi akibat dampak
+    bencana alam yang mengakibatkan kerugian ekonomi, kerugian fisik dan
+    jumlah korban jiwa yang besar. Indonesia termasuk dalam daftar 35 negara di
+    dunia dengan risiko tinggi terjadinya korban jiwa akibat dari dampak berbagai
+    jenis bencana. Tingginya risiko dikarenakan lebih dari 200 juta penduduk
+    tinggal di daerah rawan bencana. Risiko tersebut antara lain juga disebabkan
+    oleh kualitas infrastruktur publik dan non-publik yang tidak tahan terhadap
+    bencana.
+
+
+    Gambar 1 Peta Indeks Risiko Bencana
+
+
+
+
+    Sumber: BNPB, 2017
+
+
+    Hampir seluruh wilayah di Indonesia terpapar risiko atas sembilan bencana
+    alam utama, yaitu gempa bumi, tsunami, banjir, tanah longsor, letusan gunung
+    api, kebakaran, cuaca ekstrim, gelombang ekstrim, dan kekeringan. Beberapa
+    bencana alam terjadi dengan intensitas kejadian yang tinggi, seperti banjir
+    dan tanah longsor. Gambar 1 menunjukkan penyebaran risiko bencana di
+    Indonesia dan tingginya risiko bencana di berbagai wilayah Indonesia.
+
+
+    Pada periode tahun 2000 sampai dengan 2016, setiap tahunnya rata-rata
+    kerugian ekonomi langsung akibat rusaknya bangunan dan bukan bangunan
+    akibat bencana alam yang terjadi di Indonesia mencapai sekitar Rp. 22,8
+
+
+
+
+2
+triliun1. Satu kejadian bencana alam besar, seperti gempa bumi dan tsunami
+di Pulau Sumatera bagian utara pada tahun 2004, menimbulkan kerugian
+ekonomi sekitar Rp. 51,4 triliun. Sementara itu, gempa bumi di Daerah Istimewa
+Yogyakarta pada tahun 2006 menimbulkan kerugian ekonomi senilai Rp. 26,1
+triliun. Nilai kerugian ekonomi yang tercatat biasanya tidak mencerminkan
+kerugian yang sesungguhnya terjadi. Bank Dunia memperkirakan kerugian
+ekonomi yang dapat diidentifikasi akibat bencana alam hanya menggambarkan
+sekitar 60% dari nilai kerugian ekonomi yang sesungguhnya terjadi.
+
+
+Kondisi ini menjadikan kebijakan penanggulangan bencana, termasuk di
+dalamnya kebijakan pengurangan risiko bencana dan pembiayaan dalam
+mendukung upaya mitigasi dan kesiapsiagaan Pemerintah dan masyarakat,
+menjadi salah satu prioritas Pemerintah. Rencana Pembangunan Jangka
+Panjang Nasional (RPJPN) 2005-2025 mencantumkan program penanggulangan
+bencana sebagai bagian dari delapan misi pembangunan nasional. Agenda
+penanggulangan bencana juga tercantum pada Rencana Pembangunan
+Jangka Menengah Nasional (RPJMN) 2010-2014 dan RPJMN 2015-2019. Di
+samping itu, secara khusus pemerintah telah menerbitkan Rencana Nasional
+Penanggulangan Bencana (Renas PB) secara berkala, dengan Renas PB
+terakhir mencakup periode 2015-2019. Renas PB 2015-2019 mencanangkan
+visi “Menjadikan Bangsa yang Tangguh Menghadapi Bencana” dengan empat
+misi yaitu: (i) membangun efektivitas dalam upaya pengurangan risiko
+bencana pada kawasan yang memiliki risiko bencana, terutama pada pusat-
+pusat pertumbuhan pembangunan; (ii) meningkatkan efektivitas penanganan
+tanggap darurat; (iii) melakukan optimalisasi dan percepatan pemulihan
+wilayah pascabencana dan masyarakat yang terkena bencana untuk lebih
+mandiri; dan (iv) meningkatkan kemampuan dan akuntabilitas dalam tata kelola
+penanggulangan bencana.
+
+
+Rancangan kebijakan dalam RPJMN dan Renas PB sejalan dengan kontrak
+politik Pemerintah sebagaimana tercantum dalam Nawa Cita, khususnya
+pada Nawa Cita ke-7, yaitu: Mewujudkan kemandirian ekonomi dengan
+menggerakkan sektor-sektor strategis ekonomi domestik. Kebijakan
+penanggulangan bencana dalam RPJMN 2015-2019 diarahkan untuk
+mengurangi risiko bencana dan meningkatkan ketangguhan Pemerintah Pusat,
+pemda, dan masyarakat dalam menghadapi bencana. Kesiapan Pemerintah
+Pusat dan pemda serta masyarakat dalam penanggulangan dan mitigasi
+bencana berkontribusi bagi perwujudan kemandirian ekonomi.
+
+
+1. Meilano, Irwan, dkk, 2018. Basis Data Historis Bencana dan Estimasi Potensi Kerusakan serta Kerugian Akibat Bencana
+di Indonesia
+
+
+
+
+                                                                                                                   3
+    B. Pembiayaan Penanggulangan Bencana
+
+    Pembiayaan penanggulangan bencana adalah bagian dari kebijakan
+    penanggulangan bencana dalam rangka melindungi pemerintah, masyarakat,
+    dan sektor swasta terhadap dampak bencana. Pemerintah Pusat dan pemda
+    memiliki kewajiban untuk menyediakan dana yang cukup melalui Anggaran
+    Pendapatan dan Belanja Negara (APBN) dan Anggaran Pendapatan dan Belanja
+    Daerah (APBD). Masyarakat dan sektor swasta yang memiliki kemampuan
+    keuangan menyediakan dana untuk melindungi usaha dan aset-aset yang
+    dimiliki terhadap risiko dan dampak bencana.
+
+
+    Pembiayaan penanggulangan bencana mencakup pembiayaan untuk periode
+    tidak terjadi bencana (pembiayaan prabencana), pembiayaan tanggap darurat
+    ketika terjadi bencana, dan pembiayaan rehabilitasi dan rekonstruksi yang
+    dilakukan setelah selesainya masa tanggap darurat (pembiayaan pascabencana).
+
+
+    Grafik 1 menunjukkan karakteristik kebutuhan pembiayaan setelah terjadi
+    bencana. Pembiayaan pada saat darurat bencana tidak sebesar pembiayaan
+    pada tahap rehabilitasi dan rekonstruksi, namun pembiayaan untuk tanggap
+    darurat bencana perlu disediakan dan didistribusikan dengan cepat dan tepat
+    kepada korban bencana. Tahap rekonstruksi memerlukan pembiayaan terbesar
+    dengan durasi waktu lebih panjang untuk pembangunan kembali infrastruktur
+    yang rusak dan hancur.
+
+
+    Grafik 1 Karakterisitik Kebutuhan Pembiayaan Setelah Terjadi Bencana
+
+
+                       Rehabilitasi
+
+
+
+
+4
+1. Pembiayaan pada Periode Tidak Terjadi Bencana (Prabencana)
+
+
+
+Pembiayaan prabencana dimaksudkan untuk membiayai kegiatan atau program
+pada masa tidak terjadi bencana dan pada masa terdapat potensi bencana.
+Pembiayaan pada masa tidak terjadi bencana digunakan antara lain untuk
+kegiatan atau program pengurangan risiko bencana, program pencegahan
+bencana, edukasi bencana dan pembiayaan transfer risiko bencana untuk
+keperluan tersedianya dana di saat terjadi bencana di masa akan datang.
+Sedangkan pembiayaan ketika terjadi potensi bencana digunakan untuk
+kegiatan kesiapsiagaan, pembangunan sistem peringatan dini, dan kegiatan
+mitigasi bencana.
+
+
+Pembiayaan yang digunakan untuk kegiatan pada masa prabencana sebagian
+besar telah disediakan dalam APBN dalam bentuk alokasi dana untuk K/L
+terkait. Namun, pembiayaan transfer risiko bencana seperti asuransi belum
+sepenuhnya diatur secara komprehensif dan sesuai kebutuhan. Skema
+pembiayaan asuransi yang ada lebih ditujukan untuk mendukung program dari
+beberapa K/L dan bukan dalam konteks penurunan risiko bencana. Alokasi
+anggaran untuk pembiayaan transfer risiko juga masih jauh dari jumlah yang
+memadai.
+
+
+Beberapa program bantuan Pemerintah Pusat untuk transfer risiko berwujud
+subsidi premi asuransi untuk perlindungan masyarakat, rumah tangga dan
+usaha kecil pada Asuransi Usaha Tani Padi (AUTP), Asuransi Usaha Ternak Sapi
+(AUTS), Asuransi Nelayan Tangkap, dan Asuransi Budidaya Ikan Kecil. Namun,
+skema-skema pembiayaan tersebut belum dikemas dalam kerangka pembiayaan
+risiko terhadap bencana. Program subsidi premi asuransi sebesar 80% untuk
+petani padi dengan lahan kurang dari 2 hektar, digunakan untuk perlindungan
+lahan pertanian terhadap risiko gagal panen yang disebabkan oleh serangan
+hama, bencana alam dan dampak perubahan iklim. Sementara itu, Asuransi
+Nelayan Tangkap didesain sebagai skema perlindungan nelayan terhadap
+kecelakaan kerja.
+
+
+Status program-program tersebut masih dalam tahap uji coba (pilot project)
+dengan cakupan yang masih terbatas dan bersifat eksklusif. Hal ini terlihat
+dari kecilnya proporsi jumlah petani yang mendapat manfaat AUTP, dimana
+pada tahun 2017 baru 1,5 juta orang petani peserta program Pemerintah yang
+terlindungi, atau sekitar 3,5% dari rumah tangga petani yang mencapai sekitar
+43 juta. Kondisi yang sama juga terjadi pada peternak yang mengikuti program
+AUTS berjumlah sekitar 58 ribu orang dengan jumlah sapi sekitar 91.800 ekor.
+
+
+
+
+                                                                                5
+    Beberapa pemda seperti Pemerintah Kota Padang dan Pemerintah Kota
+    Semarang telah berinisiatif untuk pembiayaan transfer risiko melalui
+    pembelian premi asuransi untuk melindungi Barang Milik Daerah (BMD).
+    Namun, kebijakan ini dilakukan secara parsial dengan didorong atas kesadaran
+    dan kebijakan pimpinan daerah, dan belum menjadi kebijakan nasional yang
+    berlaku luas.
+
+
+    2. Pembiayaan Darurat Bencana
+
+
+    Pembiayaan pada periode ini antara lain digunakan untuk kegiatan
+    penyelamatan, perlindungan, pemenuhan kebutuhan korban bencana, dan
+    pemulihan kembali sarana dan prasarana vital dengan sumber dari APBN dan
+    APBD. Pembiayaan tanggap darurat dilakukan antara lain melalui mekanisme
+    Dana Cadangan Bencana dan alokasi/realokasi APBN pada K/L terkait seperti
+    Badan Nasional Penanggulangan Bencana (BNPB), Kementerian Sosial, dan
+    Kementerian Kesehatan. Bantuan donor nasional dan internasional juga
+    digunakan dalam periode ini.
+
+    Dana cadangan bencana, khususnya dana siap pakai, dapat dicairkan dengan
+    cepat dan mudah antara 1 (satu) sampai dengan 3 (tiga) hari setelah pengajuan
+    karena telah tercatat dalam Daftar Isian Pelaksanaan Anggaran (DIPA) BNPB.
+    Penggunaannya pun tidak dibatasi untuk jenis bencana alam tertentu. Pemerin-
+    tah dapat pula menyediakan dana pada periode ini dengan mekanisme penga-
+    juan anggaran tambahan.
+
+
+    3. Pembiayaan Rehabilitasi dan Rekonstruksi (Pascabencana)
+
+
+    Pembiayaan pascabencana ditujukan untuk membiayai program-program
+    rehabilitasi dan rekonstruksi melalui alokasi dan realokasi APBN/APBD.
+    Kegiatan rehabilitasi yang dibiayai antara lain kegiatan perbaikan lingkungan,
+    pemberian bantuan perbaikan rumah masyarakat, pemulihan sosial dan
+    psikologis, perbaikan prasarana dan sarana, dan peningkatan kondisi sosial,
+    ekonomi, dan budaya. Sementara pembiayaan untuk rekonstruksi digunakan
+    untuk pembangunan kembali prasarana dan sarana publik dan rumah tangga
+    yang rusak atau hancur akibat bencana.
+
+
+    C. Kerangka Regulasi Utama pada Pengelolaan Bencana dan
+    Pembiayaan Risiko Bencana
+
+    Pemerintah bertanggung jawab dalam penyelenggaraan penanggulangan
+    bencana. Tanggung jawab tersebut diatur dalam Undang-undang Nomor 24
+    Tahun 2007 tentang Penanggulangan Bencana (UU 24/2007). Tanggung jawab
+
+
+
+
+6
+Pemerintah meliputi:
+
+    a.   pengurangan risiko bencana dan pemaduan pengurangan risiko ben-
+         cana dengan program pembangunan;
+    b.   perlindungan masyarakat dari dampak bencana;
+    c.   penjaminan pemenuhan hak masyarakat dan pengungsi yang terkena
+         bencana secara adil dan sesuai dengan standar pelayanan minimum;
+    d.   pemulihan kondisi dari dampak bencana;
+    e.   pengalokasian anggaran penanggulangan bencana dalam APBN yang
+         memadai;
+    f.   pengalokasian anggaran penanggulangan bencana dalam bentuk dana
+         siap pakai; dan
+    g.   pemeliharaan arsip/dokumen otentik dan kredibel dari ancaman dan
+         dampak bencana.
+
+
+UU 24/2007 juga menyebutkan bahwa yang dimaksudkan dengan risiko
+bencana adalah potensi kerugian yang ditimbulkan akibat bencana pada
+suatu wilayah dan kurun waktu tertentu yang dapat berupa kematian, luka,
+sakit, jiwa terancam, hilangnya rasa aman, dampak mengungsi, kerusakan
+atau kehilangan harta, dan gangguan kegiatan masyarakat. Di sisi lain, UU
+24/2017 juga mengatur tahapan penyelenggaraan penanggulangan bencana
+yang meliputi prabencana, saat tanggap darurat dan pascabencana. Maksud
+penyelenggaraan penanggulangan bencana dalam UU tersebut termasuk
+penyediaan dana dan pengelolaan bantuan bencana dalam ketiga tahapan
+dimaksud. UU ini juga menjadi dasar bagi berdirinya BNPB.
+
+
+Untuk mendukung implementasi UU ini, diterbitkan pula Peraturan Pemerintah
+(PP) Nomor 21 tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana
+yang diantaranya mengatur mekanisme pengalokasian dan realokasi anggaran
+untuk memenuhi kebutuhan pembiayaan bencana. Di samping itu, Pemerintah
+juga mengatur secara khusus pembiayaan penanggulangan bencana dalam PP
+Nomor 22 tahun 2008 tentang Pendanaan dan Pengelolaan Bantuan Bencana.
+PP ini dengan jelas menyatakan bahwa APBN dan APBD wajib menyediakan
+dana atas tiga periode sebagaimana disebutkan dalam UU 24/2007.
+
+
+Pembiayaan penanggulangan bencana juga tercantum pada beberapa regulasi
+lainnya seperti UU Nomor 33 Tahun 2004 tentang Perimbangan Keuangan
+antara Pemerintah Pusat dan Pemerintah Daerah. UU ini mengatur mengenai
+dana darurat yang berasal dari APBN untuk dialokasikan kepada daerah
+yang mengalami bencana yang dinyatakan sebagai bencana nasional, yang
+tidak dapat ditanggulangi oleh daerah dengan menggunakan sumber APBD.
+Selanjutnya, PP Nomor 44 Tahun 2012 tentang Dana Darurat, mengatur
+
+
+
+
+                                                                            7
+    pembiayaan bencana oleh Pemerintah Pusat dan pemda, yaitu alokasi APBN
+    yang disediakan untuk rekonstruksi dan rehabilitasi setelah terjadinya
+    bencana, termasuk untuk pemulihan layanan publik yang dilakukan oleh
+    Badan Usaha Milik Daerah.
+
+
+    Dalam konteks pengelolaan Barang Milik Negara (BMN), Peraturan Menteri
+    Keuangan (PMK) Nomor 247/PMK.06/2016 tentang Pengasuransian BMN,
+    menyebutkan bahwa dalam rangka pengamanan BMN dan mendukung
+    kelancaran fungsi penyelenggaraan pemerintahan, maka Pemerintah dapat
+    mengasuransikan BMN yang berlokasi di daerah rawan bencana alam yang
+    akan berpengaruh besar terhadap pelayanan masyarakat apabila rusak atau
+    hilang. PMK ini merupakan aturan tingkat teknis dari PP Nomor 27 Tahun
+    2016 tentang Pengelolaan BMN dan BMD. Untuk pelaksanaan pengasuransian
+    BMN ini penjelasan Pasal 37 UU Nomor 40 tahun 2014 tentang Perasuransian
+    dapat digunakan sebagai rujukan dalam pengembangan produk asuransi.
+    Dalam penjelasan tersebut disebutkan bahwa pemerintah dan/atau Otoritas
+    Jasa Keuangan dapat memberikan fasilitas untuk pembentukan pool atau
+    konsorsium asuransi untuk risiko tertentu, misalnya bencana alam.
+
+
+    Dalam kerangka hubungan Pemerintah Pusat dan pemda, terdapat pula
+    Peraturan Menteri Dalam Negeri Nomor 46 tahun 2008 tentang Pedoman
+    Organisasi dan Tata Kerja Badan Penanggulangan Bencana Daerah (BPBD).
+    Dalam aturan ini dijelaskan mengenai pembiayaan BPBD yang bersumber
+    dari APBD dan hubungan antara BPBD dengan BNPB dalam kegiatan
+    penanggulangan bencana.
+
+
+    D. Tantangan dan Peluang Skema Pembiayaan Risiko Bencana
+    Saat Ini
+
+    Pelaksanaan kebijakan dan skema pembiayaan risiko bencana saat ini
+    menghadapi beberapa tantangan khususnya berkaitan dengan kapasitas fiskal
+    yang terbatas. Namun, terdapat pula peluang-peluang yang dapat dimanfaatkan
+    dalam perbaikan tata kelola pembiayaan bencana yang relevan bagi Indonesia
+    di masa depan.
+
+
+    1. Tantangan
+
+
+    Terdapat tiga tantangan utama yang berdampak pada kecukupan pembiayaan
+    bencana.
+
+
+
+
+8
+a.   Pendekatan pembiayaan yang selama ini dilakukan oleh Pemerintah
+     lebih cenderung reaktif dengan sebagian besar pembiayaan bencana
+     difokuskan pada fase setelah terjadi bencana. Pendekatan pembiayaan
+     reaktif tersebut dilakukan pada periode tanggap darurat, rehabilitasi
+     dan rekonstruksi, dengan mayoritas pembiayaan berasal dari APBN.
+     Walaupun UU Penanggulangan Bencana mengamanatkan bahwa
+     penanggulangan bencana, termasuk pembiayaannya, dapat dilakukan
+     untuk masa tidak terjadi bencana dan masa terdapat potensi bencana,
+     masa terjadi dan setelah bencana, namun regulasi yang mengatur
+     pembiayaan sebelum bencana belum dirumuskan dengan komprehensif.
+     Mengingat belum ada regulasi yang mengatur detil pembiayaan atas
+     barang atau jasa yang tidak berwujud seperti pembelian premi asuransi
+     atas bencana, maka Pemerintah tidak melakukan belanja dalam rangka
+     transfer risiko terhadap bencana. Di masa lalu, pembelian premi tersebut
+     dapat dianggap sebagai kerugian negara apabila tidak terjadi pemba-
+     yaran klaim (payout) di masa mendatang.
+
+b.   Terdapat keterbatasan pembiayaan apabila pendekatan reaktif melalui
+     siklus APBN terus dilakukan:
+
+       •    Pertama, kapasitas APBN yang terbatas sebagai dampak realisasi
+            dan proyeksi belanja wajib (mandatory spending), membatasi Pe-
+            merintah untuk menambahkan alokasi dana untuk pembiayaan
+            risiko bencana. Grafik 2 menjelaskan perkembangan dan proyek-
+            si belanja wajib selama periode 2013-2021 yang meningkat
+            seiring dengan peningkatan jumlah APBN. Di sisi lain kebutuhan
+            pembiayaan bencana umumnya lebih besar dari dana anggaran
+            yang dialokasikan.
+
+       •    Kedua, pendekatan belanja APBN mempunyai karakteristik yang
+            berbeda dengan kebutuhan belanja untuk penanggulangan ben-
+            cana. Pendekatan APBN yang merupakan perencanaan operasi
+            pemerintah tahunan di tingkat pusat dan daerah relatif kaku
+            karena melalui tahapan teknis, politis, dan penilaian kinerja be-
+            lanja (performance based budget) dan mempunyai batasan-batasan
+            kewenangan berdasarkan regulasi. Sementara dampak bencana
+            yang masif dan mendadak tidak dibatasi sekat-sekat wilayah ad-
+            ministrasi yang membutuhkan keterlibatan banyak pihak dalam
+            seluruh periode penanggulangan bencana.
+
+c.   Banyaknya pihak yang terlibat dalam pembiayaan bencana ini me-
+     nimbulkan tantangan dan risiko dalam penyaluran dana pada saat
+     tanggap darurat dan setelah terjadi bencana. Risiko tersebut berupa
+
+
+
+
+                                                                                9
+                                              batas kewenangan dan tanggung jawab, tantangan koordinasi, kete-
+                                              patan penyaluran (waktu dan sasaran), serta transparansi tata kelola.
+                                              Risiko juga terjadi pada periode tidak terjadi bencana dalam upaya
+                                              untuk mendanai kegiatan mitigasi dan kesiapsiagaan yang terintegrasi
+                                              dengan penanggulangan bencana secara nasional. Salah satu contoh
+                                              adalah hubungan antara BNPB dan BPBD, dimana BNPB adalah institusi
+                                              pemerintah di tingkat pusat, sementara BPBD adalah perangkat daerah
+                                              di tingkat provinsi dan kabupaten/kota yang bertanggung kepada kepala
+                                              daerah. Pembiayaan BNPB berasal dari APBN sementara BPBD berasal
+                                              dari APBD.
+Grafik 2
+Perkembangan dan Proyeksi Belanja Wajib, 2013-2021
+
+
+
+
+Catatan: * Tahun 2018 – 2021 angka proyeksi
+
+Sumber: Kementerian Keuangan
+
+
+
+                               2. Peluang
+
+
+                               Perbedaan karakteristik pendekatan APBN dengan kebutuhan pembiayaan
+                               bencana alam membuka peluang bagi upaya perbaikan tata kelola pembiayaan
+                               risiko bencana di masa mendatang. Dalam rangka penurunan risiko bencana
+                               dan kesiapsiagaan, pembiayaan risiko bencana dapat dilakukan secara
+                               terencana baik untuk memindahkan (transfer) risiko maupun menanggung
+                               (retain) risiko. Selanjutnya, rigiditas dalam proses anggaran dapat digunakan
+                               dalam membantu disiplin perencanaan dan pelaksanaan pembiayaan
+
+
+
+
+10
+bencana. Tersedianya informasi bencana dapat membantu pemerintah dalam
+merencanakan pembiayaan bencana yang lebih sesuai, tepat waktu, dan tepat
+sasaran.
+
+
+Keterbatasan APBN dalam pembiayaan bencana juga memunculkan peluang
+bagi Pemerintah, untuk membangun strategi pembiayaan yang menghasilkan
+manfaat bersama (co-benefit) bagi Pemerintah Pusat, pemda, masyarakat dan
+sektor swasta. “Pelaksanaan strategi dengan pendekatan menyeluruh akan
+membantu pencapaian beberapa tujuan pembangunan sekaligus, seperti
+terwujudnya masyarakat tangguh bencana dengan tujuan pembangunan
+nasional, ketahanan fiskal, perlindungan sosial, dan adaptasi perubahan iklim.”
+
+
+
+
+                                                                             11
+     Halaman dikosongkan
+
+
+
+
+12
+Kompas/Agus Susanto
+
+
+
+
+               13
+     Halaman dikosongkan
+
+
+
+
+14
+BAB 2       RISIKO BENCANA
+
+
+
+        P
+                      osisi geografis Indonesia yang terletak pada pergerakan tiga lempeng
+                      dunia (Eurasia, Indo-Australia dan Pasifik) dan gugusan gunung berapi,
+                      menyebabkan Indonesia terpapar risiko bencana yang tinggi. Menurut
+                      BNPB terdapat sembilan jenis bencana yang sering terjadi di Indonesia
+        meliputi gempa bumi, tsunami, letusan gunung api, banjir dan banjir bandang,
+        tanah longsor, kebakaran hutan dan lahan, cuaca ekstrim, gelombang ekstrim, dan
+        kekeringan. Gempa, tsunami, banjir, kebakaran, longsor dan gunung berapi adalah
+        jenis bencana yang memberikan dampak kerugian besar di Indonesia.
+
+
+        A. Kerugian Akibat Bencana Yang Pernah Terjadi
+
+        Rencana Nasional Penanggulangan Bencana (RENAS PB) mencatat bahwa dalam
+        kurun waktu 2004–2013 Indonesia mengalami beragam bencana dengan total
+        kerugian sebesar Rp. 126,7 triliun. Sementara itu, rata-rata nilai kerugian ekonomi
+        langsung berupa kerusakan bangunan dan non-bangunan akibat multi bencana
+        yang dialami Indonesia, dari tahun 2000 hingga 2016 mencapai Rp. 22,85 triliun
+        per tahunnya1.
+
+
+        Grafik 3 . Rata-rata Kerugian Ekonomi Langsung Terhadap Bangunan dan Non-
+        Bangunan 2000-2016
+
+
+
+
+        Sumber: Meilano, 2018
+
+        1. Meilano dkk., Buku Laporan Penelitian Insinas-Maipark ITB: Basis Data Historis Bencana dan
+        Estimasi Potensi Kerussakan serta Kerugian Akibat Bencana di Indonesia
+                                                                                                        15
+     Gempa bumi merupakan bencana yang menyebabkan kerugian ekonomi
+     terbesar di Indonesia dengan rata-rata kerugian sebesar Rp. 7,56 triliun per
+     tahunnya, disusul oleh kebakaran hutan dan lahan sebesar Rp. 5,32 triliun per
+     tahun, dan banjir sebesar Rp. 4,64 triliun (Grafik 3). Bencana gempa dan tsunami
+     Aceh yang terjadi di tahun 2004 misalnya mengakibatkan kerugian langsung
+     sebesar Rp. 51,40 triliun.
+     Kerugian yang dialami oleh daerah-daerah di Indonesia bervariasi antara satu
+     provinsi dengan provinsi lainnya. Provinsi Nanggroe Aceh Darusalam (NAD)
+     merupakan wilayah yang mengalami kerugian paling besar, yaitu sekitar Rp.
+     4,7 triliun per tahun (utamanya diakibatkan oleh gempa dan tsunami tahun
+     2004) dengan Kalimantan Utara sebagai sebagai provinsi yang kerugiannya
+     paling kecil.
+
+
+     B. Potensi Kerugian di Masa Mendatang
+
+     Bencana alam diperkirakan mengakibatkan kerugian ekonomi dan fisik
+     yang terus meningkat di masa mendatang apabila tidak dilakukan perbaikan
+     kebijakan dan peningkatan upaya mitigasi, kesiapsiagaan dan transfer risiko
+     secara menyeluruh. Besarnya kerugian tersebut disebabkan oleh pertambahan
+     jumlah penduduk, pembangunan infrastruktur yang masif, peningkatan lahan
+     produksi, perluasan wilayah, dan konsentrasi penduduk di perkotaan. Upaya
+     perbaikan dan peningkatan daya dukung lingkungan dan perbaikan kualitas
+     infrastruktur yang tahan terhadap bencana memiliki peran besar dalam
+     mitigasi dampak bencana.
+
+
+     Berdasarkan penilaian yang dilakukan oleh Kementerian Perencanaan
+     Pembangunan Nasional/Bappenas dan BNPB, potensi risiko dari korban jiwa
+     dan kerugian yang ditimbulkan akibat bencana yang terjadi Indonesia akan
+     terus meningkat dimana sekitar 246 juta jiwa terpapar risiko bencana di tahun
+     2015. Selanjutnya, Pulau Sumatera, Jawa-Bali, dan Sulawesi Tengah adalah
+     wilayah yang mempunyai risiko kerugian ekonomi yang tinggi apabila terjadi
+     bencana dengan mempertimbangkan persebaran penduduk di wilayah-wilayah
+     tersebut. Perkiraan kerugian yang besar berdasarkan persebaran tersebut
+     sejalan dengan proyeksi Badan Pusat Statistik (BPS) yang menyebutkan bahwa
+     sampai dengan tahun 2035 penduduk Indonesia akan terkonsentrasi di Pulau
+     Jawa-Bali (54,7%) dan Pulau Sumatera (22,4%).
+
+
+     Bencana gempa bumi, tsunami serta banjir adalah bencana alam yang
+     berpotensi memberikan dampak kerugian ekonomi yang besar apabila terjadi di
+     masa mendatang. Skenario kerugian fisik dan ekonomi akibat bencana sampai
+     tahun 2045 untuk ketiga jenis bencana tersebut dijabarkan sebagai berikut:
+
+
+
+
+16
+1. Gempa Bumi
+
+
+Risiko gempa bumi merujuk kepada letak sumber gempa (zona subduksi dan
+sesar aktif), terutama di wilayah Sumatera bagian barat, Jawa, Sulawesi,
+Kepulauan Maluku bagian utara, dan Papua bagian tengah dan utara (Gambar
+2). Gempa bumi mulai menimbulkan dampak negatif atau merusak apabila
+terjadi pada percepatan minimal 0.1 g atau setara dengan intensitas VI skala
+Modified Mercalli Intensity (MMI).
+
+
+Gambar 2 Peta Sebaran Tingkat Bahaya Gempa Bumi
+
+
+
+
+Sumber: BNPB, 2018
+
+
+
+Gempa bumi besar merupakan bencana alam dengan frekuensi kejadian yang
+jarang. Namun, apabila terjadi gempa bumi besar dengan estimasi tingkat
+kerusakan bangunan pada kisaran 20-44% di Pulau Sumatera, Jawa, Nusa
+Tenggara, dan Sulawesi, maka skenario kerugian ekonomi dan fisik sampai
+dengan tahun 2045 akan cukup besar sebagaimana tersaji pada Tabel 1. Dari
+skenario tersebut di atas terlihat bahwa Pulau Jawa, Sumatera bagian barat,
+dan sebagian Sulawesi adalah wilayah-wilayah yang terpapar risiko kerugian
+ekonomi yang besar. Sementara Papua meskipun berada dalam kawasan bahaya
+gempa bumi diperkirakan tidak mengalami kerugian ekonomi sebesar Pulau
+Jawa dan Sumatera. Hal ini antara lain disebabkan oleh persebaran populasi
+rumah sakit, gedung sekolah dan bangunan pemerintahan yang terkonsentrasi
+di Pulau Jawa-Bali, Sumatera, Sulawesi dan Nusa Tenggara.
+
+
+
+
+                                                                               17
+     Tabel 1 Kerugian Ekonomi dan Fisik Akibat Gempa (2015-2045)
+
+
+     No      Provinsi                      Kerugian Fisik        Kerugian Ekonomi Langsung
+                                          (Triliun Rupiah)       Akibat Rusaknya Bangunan
+                                                                   Sekolah, Rumah Sakit dan
+                                                                      Bangunan Pemerintah
+                                                                            (Triliun Rupiah)
+     1.      NAD                               1,65 - 13,67                            1,92
+     2.      Sumatera Utara                   2,52 - 9,227                             1,97
+     3.      Sumatera Barat                     2,88 - 9,26                            2,20
+     4.      Riau                               1,45 - 2,28                            1,35
+     5.      Jawa Barat                       3,76 - 18,43                             4,40
+     6.      Banten                             2,02 – 5,72                            2,61
+     7.      DIY                                3,00 – 3,78                            1,80
+     8.      NTB                                0,83 – 5,17                            2,04
+     9.      NTT                                0,96 – 2,67                             1,17
+     10.     Sulawesi Utara                     4,15 – 5,03                            1,36
+     11.     Sulawesi                         2,20 – 5,24                              2,64
+             Tengah
+     12.     Sulawesi -                       2,44 – 3,56                              1,35
+             Barat
+     13.     Gorontalo                        2,34 – 3,14                              1,39
+     14.     Sulawesi                         1,76 – 2,61                              1,02
+             Selatan
+     Sumber: RIPB 2015 – 2045 dan Meilano et.al, 2018, diolah.
+
+
+
+     2. Tsunami
+
+
+     Bahaya tsunami dipresentasikan dengan inundasi (tergenangnya suatu area)
+     akibat tsunami sebagai hasil konversi indeks bahaya tsunami pada RBI 2016,
+     peta penggunaan lahan, tinggi air yang terdorong ke pantai yang melebihi
+     dari ketinggian normal (run-up tsunami), dan garis pantai. Tsunami berpotensi
+     terjadi di wilayah pesisir pantai Indonesia seperti pesisir barat Pulau Sumatera
+     dan pesisir selatan Pulau Jawa, Bali dan wilayah Nusa Tenggara.
+
+
+
+
+18
+Tabel 2 Kerugian Fisik dan Ekonomi Akibat Tsunami
+
+
+ No      Provinsi                      Kerugian Fisik      Kerugian Ekonomi Langsung Akibat
+                                      (Triliun Rupiah)          Rusaknya Bangunan Sekolah,
+                                                                  Rumah Sakit dan Bangunan
+                                                                  Pemerintah (Triliun Rupiah)
+ 1.      NAD                                0,15 – 3,36                                 1,85
+ 2.      Sumatera Barat                     0,12 – 3,48                                 1,85
+ 3.      Jawa Timur                         0,28 – 3,00                                  3,13
+ 4.      Jawa Tengah                        2,66 – 3,12                                 2,32
+ 5.      NTB                                0,12 – 3,68                                  1,38
+ 6.      NTT                                0,25 – 3,14                                  1,73
+ 7.      Sulawesi Utara                     0,50 – 2,75                                 0,60
+ 8.      Sulawesi Tengah                    2,35 – 3,16                                 1,06
+Sumber: RIPB 2015 – 2045 dan Meilano dkk., 2018, diolah.
+
+
+
+Hampir 90% kejadian tsunami disebabkan oleh gempa bumi di laut, 9%
+diakibatkan oleh letusan gunung api, dan 1% karena tanah longsor bawah laut.
+Sementara berdasarkan mekanisme sumber, 75% kejadian disebabkan oleh sesar
+naik, 20% karena sesar geser, dan 5% karena sesar normal 2 . Skenario kerugian
+fisik dan ekonomi akibat tsunami sampai dengan tahun 2045 pada daerah-
+daerah yang paling terdampak dijelaskan pada Tabel 2.
+
+
+3. Banjir
+
+
+Banjir adalah bencana dengan frekuensi kejadian tinggi. Risiko banjir
+dipresentasikan dengan kedalaman genangan berdasarkan data indeks
+bahaya banjir yang didapatkan dari data daerah rawan banjir3. Sebagian besar
+risiko banjir menyebar pada daerah berketinggian rendah yang berada di
+sekitar jaringan sungai. Banjir dengan risiko tinggi berpotensi terjadi di Pulau
+Sumatera bagian timur, pantai utara Jawa dan sebagian selatan Jawa Tengah,
+sebagian wilayah Kalimantan bagian selatan dan tengah, dan bagian selatan
+Papua (Gambar 3).
+
+
+2. Risiko Bencana Indonesia, 2016
+3. Badan Nasional Penanggulangan Bencana, 2016
+
+
+
+
+                                                                                         19
+     Gambar 3 Peta Sebaran Tingkat Bahaya Banjir
+
+
+
+
+     Sumber: BNPB
+
+
+     Grafik 4 menyajikan skenario potensi kerugian ekonomi akibat banjir di berbagai
+     provinsi. Banjir berpotensi berdampak pada kerugian ekonomi langsung senilai leb-
+     ih dari Rp. 1 triliun apabila terjadi di wilayah Pulau Jawa seperti DKI Jakarta, Jawa
+     Timur, Jawa Barat, dan Jawa Tengah.
+
+     Grafik 4 Skenario Kerugian Ekonomi Akibat Banjir
+
+
+
+
+     * kerugian langsung akibat kerusakan rumah sakit, sekolah dan bangunan pemerintahan
+
+     Sumber: Meilano dkk., 2018
+
+
+
+
+20
+Sementara ancaman bencana yang lain seperti tanah longsor, cuaca ekstrim,
+kebakaran hutan dan lahan, gelombang ekstrim dan abrasi, letusan gunung api,
+dan banjir bandang merupakan bencana alam dengan frekuensi kejadian jarang
+sampai sedang dengan potensi kerugian ekonomi langsung dinilai rendah
+apabila terjadi di satu wilayah di Indonesia.
+
+
+C. Konsentrasi Persebaran BMN
+
+Persebaran BMN di wilayah terpapar bahaya bencana dapat menggambarkan
+pula risiko kerugian ekonomi langsung apabila terjadi bencana. Persebaran
+BMN mayoritas berada di Pulau Jawa, Pulau Sumatera dan wilayah Bali dan
+Nusa Tenggara. Nilai BMN, berdasarkan nilai pasar (market value) tahun 2017,
+yang berada di pulau-pulau utama di Indonesia tersebut mewakili sekitar
+81% dari total seluruh nilai BMN di Indonesia. Gambar 4 menyajikan data
+persebaran BMN di seluruh wilayah Indonesia.
+
+
+BMN di Pulau Jawa nilainya mencapai Rp. 2.652,46 triliun dengan nilai aset
+untuk gedung bangunan dan jalan, jembatan dan irigasi masing-masing secara
+berurutan sebesar Rp. 168,48 triliun dan Rp. 242,40 triliun. Nilai total BMN di
+Pulau Sumatera mencapai Rp. 597,26 triliun. Nilai aset untuk gedung bangunan
+dan jalan, jembatan dan irigasi di wilayah tersebut masing-masing sebesar Rp.
+51,48 triliun dan Rp. 141,15 triliun. Di Bali dan Nusa Tenggara, total nilai BMN
+mencapai Rp. 185,24 triliun dengan nilai aset untuk gedung bangunan dan
+jalan; dan jembatan dan irigasi sebesar Rp. 12,12 triliun dan Rp. 41,59 triliun.
+
+
+Gambar 4 Peta Persebaran BMN Berdasarkan Nilai Pasar Tahun 2017
+(triliun rupiah)
+
+
+
+
+Sumber: Kementerian Keuangan, 2018
+
+
+
+
+                                                                                   21
+     D. Risiko Fiskal Akibat Bencana
+
+     1. Risiko Fiskal
+
+
+     Risiko fiskal didefinisikan sebagai segala sesuatu yang dapat menimbulkan
+     tekanan fiskal terhadap APBN di masa mendatang. Esensi risiko fiskal
+     adalah kondisi tertekannya ketahanan fiskal yang berdampak pada
+     berkurangnya atau tidak memadainya kemampuan fiskal dalam mendukung
+     pencapaian target-target pembangunan4. Risiko fiskal yang besar dan tidak
+     dapat diperkirakan sebelumnya akan membahayakan keberlangsungan fiskal
+     dan stabilitas makro ekonomi.
+
+
+     Adapun kondisi tertekannya ketahanan fiskal tersebut utamanya dipicu oleh:
+     (i) kurang optimalnya pencapaian target pendapatan negara; (ii) bertambahnya
+     belanja negara untuk mendukung pencapaian target pembangunan; (iii)
+     kejadian yang mengakibatkan pemerintah harus memenuhi kewajiban sebagai
+     akibat komitmen yang terikat dalam perjanjian atau regulasi; dan (iv) kejadian
+     yang mengakibatkan Pemerintah harus memenuhi kewajibannya (seperti
+     penjaminan, bencana alam, dan perang).
+
+
+     Dalam Nota Keuangan dan APBN, risiko fiskal dikelompokkan dalam lima
+     kategori yaitu: (1) dinamika perekonomian; (2) kebijakan yang ditempuh dalam
+     APBN baik dari sisi pendapatan, belanja, maupun pembiayaan; (3) kewajiban
+     kontijensi Pemerintah Pusat; (4) kewajiban menjaga modal minimum lembaga
+     keuangan tertentu; serta (5) faktor-faktor lainnya seperti bencana alam.
+
+
+     2. Risiko Fiskal Akibat Bencana
+
+
+     Pemerintah, masyarakat, dan seluruh pemangku kepentingan perlu memahami
+     dan melakukan pengelolaan risiko fiskal akibat bencana, khususnya dampak
+     bencana alam, secara komprehensif dan konsisten. Risiko fiskal dampak
+     bencana alam terjadi ketika perbedaan antara kemampuan pemerintah dalam
+     menyediakan dana bencana dengan kerugian ekonomi akibat bencana sangat
+     lebar sehingga menimbulkan kesenjangan pembiayaan (financing gap).
+
+
+     Kesenjangan pembiayaan yang lebar mendorong pemerintah untuk
+     melakukan pengalihan anggaran belanja pos-pos lainnya kepada pemenuhan
+     kewajiban terhadap masyarakat yang menjadi korban dan pembangunan
+     kembali infrastruktur yang rusak atau hancur. Realokasi anggaran seringkali
+     berdampak pada tertundanya atau tidak tercapainya target-target yang telah
+     ditetapkan pada program-program lainnya. Pada tingkat Pemerintah Pusat,
+     4. Kebijakan EKonomi Makro – Pokok-Pokok Kebijakan Fiskal APBN 2019
+
+
+
+
+22
+relokasi anggaran untuk rehabilitasi dan rekonstruksi bencana di Kementerian
+Pekerjaan Umum dan Perumahan Rakyat misalnya akan berdampak pada
+tertundanya penyelesaian proyek konstruksi yang sudah direncanakan.
+Demikian pula di daerah, beberapa fasilitas publik yang rusak mengalami
+penundaan pembangunan kembali karena anggaran pemda digunakan terlebih
+dahulu untuk program tanggap darurat serta rehabilitasi 5.
+
+
+Risiko fiskal akibat bencana juga dapat terjadi ketika pemerintah tidak
+mempunyai saluran distribusi dana yang tepat waktu, sasaran dan efisien,
+dimana kondisi ini dapat menimbulkan dampak pada bertambahnya biaya-
+biaya lain yang tidak diperkirakan sebelumnya. Sebagai contoh apabila
+pembangunan rumah penduduk yang rusak tidak dapat dilakukan tepat waktu,
+maka akan muncul tambahan biaya yang harus dikeluarkan pemerintah untuk
+membiayai hidup masyarakat yang masih tinggal di tempat-tempat pengungsian
+atau perlindungan. Selain itu, faktor lain yang menyebabkan terjadinya risiko
+fiskal akibat bencana adalah kualitas infrastruktur yang tidak sesuai dengan
+kualifikasi bangunan tahan bencana dan dibangun tanpa memperhatikan daya
+dukungnya terhadap lingkungan.
+
+
+Pemahaman risiko fiskal akibat bencana merupakan pemahaman yang
+menyeluruh terhadap beberapa indikator sebagai berikut:
+     a.     Jenis dan frekuensi bencana yang pernah terjadi dan kemungkinan
+            akan terjadi di seluruh Indonesia.
+     b.     Eksposur bencana tersebut kepada masyarakat dan pemerintah,
+            termasuk distribusi risiko, lokasi bencana, serta jenis dan nilai BMN,
+            BMD, dan aset masyarakat yang berada di daerah rawan bencana.
+     c.     Kerentanan yang dihadapi oleh pemerintah dan masyarakat terhadap
+            bencana. Hal ini dilakukan dengan melakukan identifikasi
+            kemungkinan kerusakan jika terjadi bencana besar.
+     d.     Dampak yang terjadi akibat bencana, khususnya bencana besar, dengan
+            melakukan evaluasi dan penilaian potensi kerugian ekonomi baik
+            langsung maupun tidak langsung terhadap aset publik dan masyarakat
+            terhadap satu kejadian bencana besar.
+     e.     Kemampuan keuangan pemerintah (APBN/APBD) dalam membiayai
+            kegiatan mitigasi, kesiapsiagaan, tanggap darurat, rehabilitasi dan
+            rekonstruksi.
+
+
+Dengan pendekatan dan kebijakan pembiayaan bencana yang dilakukan
+saat ini, ketika terjadi bencana dengan skala besar, Pemerintah Pusat harus
+menanggung biaya yang besar untuk:
+
+5. Wakil Gubernur Sumatera Barat pada Pembukaan Acara APEC Seminar on Disaster Risk Financing and Insurance (DRFI) di
+Padang tanggal 4-6 Desember 2017
+
+
+
+
+                                                                                                                23
+        a.    Membiayai kegiatan tanggap darurat bagi masyarakat yang terkena
+              dampak bencana, seperti tempat berlindung sementara, makanan,
+              pakaian, dan obat-obatan.
+        b.    Kegiatan pemulihan tahap awal setelah terjadinya bencana untuk
+              mencegah terjadinya kerugian yang lebih besar dan untuk memastikan
+              agar kegiatan rekonstruksi dapat segera dimulai. Kegiatan ini termasuk
+              perbaikan yang bersifat darurat untuk infrastruktur listrik, air bersih
+              dan jaringan transportasi, serta pembersihan puing-puing.
+        c.    Kegiatan rehabilitasi dan rekonstruksi sarana dan prasarana umum,
+              termasuk dukungan kepada pemda jika kapasitas pembiayaan di daerah
+              tidak mencukupi.
+        d.    Pemerintah juga menanggung kerugian akibat kehilangan potensi
+              pendapatan pajak yang muncul akibat terganggunya kegiatan ekonomi
+              dan pemberian insentif perpajakan di daerah yang terkena dampak
+              bencana.
+
+
+
+     3. APBN dalam Pembiayaan Bencana dan Kesenjangan Pembiayaan
+
+         a.    Pembiayaan Bencana dalam APBN
+
+     APBN adalah siklus tahunan yang terdiri dari perencanaan dan penganggaran,
+     pembahasan, penetapan, pelaksanaan, dan pelaporan. Alokasi APBN untuk
+     pembiayaan penanggulangan bencana utamanya dikelola oleh BNPB sebagai
+     lembaga yang menjadi ujung tombak dalam pengelolaan risiko bencana. Di
+     samping itu, dalam APBN juga disediakan dana cadangan bencana dalam
+     bentuk dana siap pakai dan dana rehabilitasi dan rekonstruksi. Dalam
+     pelaksanaannya, terdapat fleksibilitas yang dimiliki oleh Pemerintah dalam
+     alokasi dan realokasi APBN, khususnya ketika terjadi kejadian-kejadian luar
+     biasa yang perlu mendapatkan tambahan alokasi dana seperti bencana alam
+     dalam skala besar.
+
+
+     Fleksibilitas dalam pengelolaan pembiayaan penanggulangan bencana besar
+     juga dilakukan dengan skema yang berbeda sesuai dengan kesiapan fiskal
+     Pemerintah dan kebutuhan pembiayaan. Sebagai contoh, ketika terjadi bencana
+     gempa bumi dan tsunami di Nanggroe Aceh Darussalam (NAD) dan Nias pada
+     tahun 2004, Pemerintah membentuk Badan Rekonstruksi dan Rehabilitasi
+     (BRR) Aceh dan Nias. Pendirian BRR diatur dalam UU Nomor 10 tahun
+     2005 tentang Badan Rehabilitasi dan Rekonstruksi Wilayah dan Kehidupan
+     Masyarakat Provinsi Nanggroe Aceh Darussalam dan Kepulauan Nias Provinsi
+     Sumatera Utara. BRR mempunyai tugas pokok dan fungsi untuk melaksanakan
+     rehabilitasi dan rekonstruksi dengan pembiayaan berasal dari APBN dan non
+
+
+
+
+24
+APBN dari berbagai institusi dalam dan luar negeri, dan mengoordinasikan
+pelaksanaan rehabilitasi dan rekonstruksi yang dilakukan oleh Pemerintah
+Pusat atau daerah dan pihak lain.
+
+
+Pembentukan BRR dilandasi oleh keterbatasan fiskal Pemerintah dan juga
+karena bencana alam tersebut terjadi di akhir tahun serta besarnya nilai
+kerugian bencana yang memerlukan bantuan pembiayaan dari sumber
+non APBN. Sementara itu, pada bencana gempa bumi dan letusan gunung
+api di Daerah Istimewa Yogyakarta (DIY) dan sekitarnya di tahun 2006
+dan 2010, Pemerintah mengadopsi skema Java Reconstruction Fund (JRF).
+Pada pengelolaan bencana di DIY, salah satu contoh mekanisme yang
+cukup berhasil dalam penyaluran dana untuk rehabilitasi dan rekonstruksi
+adalah pemberdayaan masyarakat dalam berbagai program rehabilitasi dan
+rekontruksi secara gotong royong.
+
+     b.    Kesenjangan Pembiayaan Bencana
+
+Kerugian ekonomi dan fisik akibat bencana tersebar pada kerusakan aset
+publik, aset masyarakat, sosial dan swasta. Kerugian ekonomi yang besar
+disebabkan antara lain oleh kualitas infrastruktur yang tidak tahan terhadap
+bencana serta belum adanya kebijakan pembiayaan untuk transfer risiko secara
+menyeluruh. Oleh karena itu, ketika terjadi bencana, sebagian besar kerugian
+ekonomi ditanggung oleh pemerintah, swasta dan masyarakat. Selain kerugian
+ekonomi, bencana alam juga berpotensi menurunkan penerimaan pajak pada
+wilayah yang terkena bencana dalam beberapa tahun setelah terjadinya
+bencana.
+
+
+Grafik 5 Alokasi dan Serapan Dana Cadangan Bencana 2005-2017
+
+
+
+
+Sumber: Kementerian Keuangan, 2018
+
+
+
+
+                                                                           25
+     Grafik 5 menyajikan alokasi dan penyerapan dana cadangan bencana selama
+     periode 2005 – 2017. Kapasitas APBN dalam menyediakan dana cadangan
+     untuk pengelolaan bencana nilainya relatif stagnan dan terlihat kecil apabila
+     dibandingkan dengan nilai kerugian ekonomi yang terjadi. Selama 12 tahun
+     terakhir, alokasi APBN untuk dana cadangan bencana rata-rata sebesar Rp. 3,1
+     triliun dengan alokasi tertinggi adalah sebesar Rp. 4,4 triliun atau secara rata-
+     rata di bawah 20% dari nilai kerugian ekonomi.
+
+
+     Penyerapan dana cadangan bencana, khususnya setelah terjadinya bencana
+     besar tidak selalu terealisasi seluruhnya karena adanya sumber pembiayaan
+     lainnya berupa hibah yang berasal dari bantuan negara-negara sahabat.
+     Pada gempa dan tsunami di Provinsi NAD, penyerapan dana darurat pada
+     tahun 2005 lebih rendah dari alokasi disebabkan sebagian besar pembiayaan
+     pascabencana dikelola oleh BRR. Sepanjang periode 2005-2009, BRR NAD dan
+     Nias berhasil memobilisasi dana dari Pemerintah Pusat dan Multi Donor Trust
+     Fund berurutan sebesar Rp. 21 dan Rp. 24 triliun.
+
+
+     Sementara dalam penanganan bencana gempa bumi tahun 2006 dan letusan
+     gunung Merapi tahun 2010 di DIY dan sekitarnya, Pemerintah bersama dengan
+     mitra pembangunan membentuk Java Reconstruction Fund (JRF). JRF mengelola
+     dana hibah sebesar USD 94 juta yang digunakan untuk pembiayaan lima
+     proyek dalam rangka rehabilitasi dan rekonstruksi rumah dan fasilitas sosial
+     pasca gempa bumi dan satu proyek bernama Rehabilitasi dan Rekonstruksi
+     Masyarakat dan Permukiman Berbasis Komunitas (Rekompak) untuk
+     pembangunan rumah yang tahan bencana setelah letusan Gunung Merapi.
+
+
+     Dari berbagai pengalaman pengelolaan pembiayaan dana cadangan pada
+     kejadian bencana-bencana skala besar untuk horison waktu pada satu dekade
+     terakhir, dapat disimpulkan bahwa kapasitas pembiayaan APBN secara
+     rata-rata mendekati atau di bawah 20% dari nilai kerugian ekonomi. Grafik
+     6 menampilkan kesenjangan pembiayaan bencana yang cukup besar sebagai
+     selisih rata-rata kerugian dengan rata-rata dana cadangan yang dialokasikan
+     dalam APBN.
+
+
+
+
+26
+           Grafik 6 Kesenjangan Pembiayaan Bencana (Triliun Rupiah)
+
+
+
+
+         Sumber: Kementerian Keuangan dan Meilano dkk., diolah.
+
+
+
+Di samping jumlah nominal dana yang terbatas, APBN mempunyai
+keterbatasan lain seperti mekanisme pencairan yang kurang cepat, khususnya
+bagi penambahan anggaran, dengan pengajuannya perlu didukung dengan
+kelengkapan data. Penyaluran dana dari APBN juga kurang fleksibel karena
+mengikuti siklus anggaran yang berlaku.
+
+
+Birokrasi dan regulasi anggaran yang berlaku mengurangi kecepatan
+respons pemerintah terhadap bencana dan kemampuan untuk memenuhi
+prinsip membangun kembali dengan lebih baik (build back better). Kondisi ini
+mengakibatkan tidak semua infrastruktur yang rusak akibat bencana dapat
+diperbaiki sesuai rencana yang berdampak lanjutan pada penurunan kualitas
+pelayanan publik dan pemulihan ekonomi masyarakat dan sektor usaha.
+
+
+Di sisi lain, kebijakan pembiayaan dan asuransi risiko bencana berpeluang
+menghasilkan dampak positif bagi kebijakan lainnya (co-benefit). Pelaksanaan
+kebijakan yang holistik dalam satu waktu sekaligus akan menghasilkan
+pencapaian beberapa tujuan pembangunan, seperti selarasnya tujuan
+manajemen risiko bencana dengan tujuan pembangunan, ketahanan fiskal,
+pembangunan infrastruktur yang berkualitas, pendalaman pasar keuangan dan
+adaptasi perubahan iklim.
+
+
+
+
+                                                                               27
+     Halaman dikosongkan
+
+
+
+
+28
+Kompas/Wisnu Widiantoro
+
+
+
+
+                29
+     Halaman dikosongkan
+
+
+
+
+30
+         STRATEGI PEMBIAYAAN
+         DAN ASURANSI
+BAB 3    RISIKO BENCANA
+
+
+        D
+                   ari analisis dan pembahasan atas kebijakan dan skema pembiayaan
+                   risiko bencana yang digunakan oleh Pemerintah selama ini dan
+                   penilaian atas risiko bencana dan risiko fiskal akibat bencana
+                   sebagaimana diuraikan pada bab-bab sebelumnya, dapat
+        disimpulkan bahwa terdapat kesenjangan pembiayaan (financing gap) bencana.
+        Kesenjangan ini disebabkan oleh masih belum memadainya kemampuan
+        pemerintah dalam menanggung (retain) pembiayaan bencana dari sumber
+        APBN/APBD dan masih rendahnya pembiayaan untuk transfer risiko baik
+        yang dilakukan oleh pemerintah, swasta, maupun masyarakat. Di samping itu,
+        tingginya kerugian ekonomi akibat bencana, yang antara lain disebabkan oleh
+        kualitas bangunan atau infrastruktur yang belum tahan bencana, juga menjadi
+        penyebab lebarnya kesenjangan pembiayaan.
+
+
+        Kesenjangan pembiayaan ini perlu dipersempit melalui peningkatan
+        kemampuan pemerintah dalam menyediakan pembiayaan bencana,
+        meningkatkan pembiayaan untuk transfer risiko, dan mengurangi kerugian
+        ekonomi dan fisik melalui peningkatan kualitas dan kuantitas kegiatan
+        kesiapsiagaan dan mitigasi, termasuk membangun infrastruktur yang
+        berkualitas dan tahan bencana. Upaya-upaya mempersempit kesenjangan
+        pembiayaan ini perlu dilakukan secara terstruktur dengan mengacu pada
+        Strategi Pembiayaan and Asuransi Risiko Bencana (PARB).
+
+
+        A. Prioritas Pembiayaan dan Asuransi Risiko Bencana
+
+        Pemerintah perlu menetapkan prioritas pembiayaan risiko bencana agar
+        kebijakan atau intervensi yang dilakukan lebih fokus dan memberikan hasil
+        yang optimal dalam upaya melindungi masyarakat, aset publik dan keuangan
+        negara. Penentuan prioritas dalam Strategi PARB diperlukan agar terjadi
+        pembagian peran antara Pemerintah Pusat, pemda, masyarakat, dan sektor
+        swasta dalam pembiayaan risiko bencana.
+
+
+                                                                                    31
+     Mengacu pada mandat-mandat pengelolaan bencana sebagaimana dibahas pada
+     bagian Kerangka Regulasi Utama pada Pengelolaan Bencana dan Pembiayaan
+     Risiko Bencana pada bab sebelumnya, terdapat enam prioritas Pemerintah
+     dalam pembiayaan risiko bencana sebagai berikut;
+     1.   Melindungi BMN dan BMD;
+     2.   Melindungi rumah tangga dan masyarakat yang terpapar bencana,
+          khususnya rumah tangga berpenghasilan rendah;
+     3.   Memulihkan kehidupan sosial masyarakat yang terkena dampak bencana;
+     4.   Mendorong peran pemda, masyarakat dan swasta dalam pembiayaan risiko
+          bencana;
+     5.   Mengembangkan pasar asuransi domestik; dan
+     6.   Melindungi keuangan negara.
+
+
+     B. Prinsip-prinsip Utama Pembiayaan dan Asuransi Risiko
+     Bencana
+
+     Dalam Strategi PARB, Pemerintah mengadopsi beberapa prinsip utama sebagai
+     berikut:
+
+     1.   Sinergi/kolaborasi Pemerintah Pusat, Pemda, Swasta, dan Masyarakat
+          dalam Pembiayaan Risiko Bencana
+
+     Bencana memberikan dampak berupa korban jiwa, kerugian ekonomi, dan
+     kerugian fisik kepada seluruh masyarakat, swasta, dan pemerintah di daerah
+     terpapar bencana tanpa mengenal batas wilayah, administrasi, dan kondisi
+     sosial ekonomi. Melihat besarnya dampak dan sebaran risiko bencana yang
+     merata di seluruh wilayah Indonesia dan kemampuan fiskal Pemerintah yang
+     terbatas, maka upaya untuk menciptakan masyarakat dan bangsa yang tangguh
+     terhadap bencana akan sulit terwujud apabila pembiayaan risiko bencana
+     hanya dilakukan oleh Pemerintah Pusat. Pemda, masyarakat, dan sektor swasta
+     dapat berperan dalam pembiayaan bencana sesuai dengan kapasitasnya.
+
+     2. Layering Risiko dan Bauran Kebijakan/Instrumen
+
+     Layering atau klasifikasi risiko adalah pembagian jenis risiko berdasarkan
+     frekuensi terjadinya bencana dan dampak yang diakibatkan oleh berbagai
+     bencana yang dibagi menjadi layer rendah, sedang, dan tinggi. Pendekatan
+     layering dilakukan untuk membantu mendapatkan instrumen pembiayaan
+     yang tepat dan efisien sesuai klasifikasi risiko, baik pembiayaan risiko yang
+     ditanggung atau ditransfer. Dalam konteks Indonesia, layering risiko juga
+     mempertimbangkan keterbatasan kapasitas fiskal, sebaran risiko bencana, dan
+     kondisi sosial ekonomi masyarakat yang beragam. Oleh karena itu diperlukan
+     bauran kebijakan dan instrumen pembiayaan, mengingat satu instrumen tidak
+     mampu menjadi solusi untuk berbagai layer bencana.
+
+
+
+
+32
+3.   Ketepatan Waktu dan Besaran Dana
+
+Waktu penyaluran dan besaran dana untuk periode tidak terjadi bencana,
+tanggap darurat, rehabilitasi dan rekonstruksi perlu ditentukan sesuai
+dengan karakteristik kebutuhan setiap periode-periode tersebut. Kecepatan
+dalam penyediaan dana pada periode tanggap darurat misalnya memiliki
+urgensi yang tinggi agar Pemerintah dapat segera membiayai dan melakukan
+kegiatan-kegiatan penanggulangan bencana seperti evakuasi, penyelamatan,
+pengobatan, membangun tempat perlindungan sementara, dan penyediaan
+pakaian dan makanan. Semakin cepat sumber daya dikerahkan pada masa
+tanggap darurat, semakin banyak masyarakat yang akan terselamatkan dan
+semakin berkurang biaya-biaya yang mungkin muncul akibat terlambatnya
+penyaluran dana.
+
+
+Kebutuhan pembiayaan cenderung akan meningkat tajam pada periode
+setelah tanggap darurat. Pada pembiayaan rekonstruksi, kebutuhan dana akan
+jauh lebih besar nilainya dibandingkan pada masa tanggap darurat, namun
+kecepatan penyaluran tidak menjadi faktor yang menentukan. Peningkatan
+jumlah dana ini terkait dengan pembiayaan pemulihan kehidupan sosial
+masyarakat dan pembangunan kembali infrastruktur-infrastruktur yang rusak.
+
+4. Ketepatan Pilihan Mekanisme Penyaluran Dana
+
+Dari penelaahan praktik pengelolaan pembiayaan bencana selama ini dan
+melihat pengalaman beberapa negara lain dalam pengelolaan pembiayaan
+bencana, dapat disimpulkan bahwa tantangan utama yang dihadapi tidak hanya
+pada bagaimana memiliki dana bencana yang cukup. Tantangan besar lainnya
+terdapat pada penentuan skema dan saluran distribusi dana yang tepat waktu
+dan sasaran, transparan, dan efisien. Dana bagi pembiayaan bencana, baik
+dari Pemerintah Pusat, pemda, masyarakat, dan sektor swasta sering kali tidak
+didistribusikan tepat waktu dan sasaran, antara lain disebabkan oleh birokrasi
+yang panjang, basis data kependudukan yang tidak akurat, dan penyelewengan
+penggunaan dana. Proses penyaluran dan penerimaan dana bencana harus
+dilakukan dengan tata kelola yang baik dan dapat dipertanggungjawabkan
+kepada masyarakat. Pilihan mekanisme penyaluran dana akan dipengaruhi
+oleh skala kejadian bencana, kondisi sosial ekonomi wilayah terpapar bencana,
+dan pilihan kebijakan yang diambil oleh Pemerintah.
+
+5.   Data dan Informasi yang Akurat
+
+Basis data dan informasi yang akurat dibutuhkan sebagai dasar kebijakan dan
+strategi pembiayaan serta pemilihan instrumen keuangan risiko bencana untuk
+memastikan implementasi yang tepat dan efisien. Akurasi data dan informasi
+akan berdampak lurus dengan efisiensi pembiayaan. Basis data dan informasi
+terkait dengan potensi bencana (hazard), kerentanan (exposure), dan dampak
+
+
+
+
+                                                                             33
+     kerugian (loss), termasuk catatan klaim asuransi (claim history) perlu dikelola
+     dengan baik dan diperbarui secara periodik agar bermanfaat bagi peningkatan
+     efisiensi pembiayaan risiko bencana. Di samping itu, basis data bencana yang
+     akurat akan membantu pemerintah dan sektor asuransi dalam mengembangkan
+     model-model risiko bencana yang berguna bagi perencanaan pembiayaan risiko
+     bencana yang lebih baik.
+
+
+     C. Strategi Pembiayaan dan Asuransi Risiko Bencana
+
+     Dengan mempertimbangkan kesenjangan pembiayaan bencana dan prioritas
+     Pemerintah dalam agenda ini, maka strategi PARB perlu dirumuskan secara
+     menyeluruh dan terintegrasi dengan kebijakan pengelolaan risiko bencana.
+     Penyusunan Strategi PARB melalui pula proses identifikasi kebijakan dan
+     instrumen pembiayaan risiko bencana yang ada saat ini, penelaahan risiko
+     bencana dan risiko fiskal akibat bencana, dan evaluasi prioritas beserta
+     tantangan dan peluang yang dihadapi Indonesia dalam pembiayaan risiko
+     bencana.
+
+
+     Strategi PARB menitikberatkan pada strategi Pemerintah untuk: (i) penyediaan
+     dana bagi pembiayaan risiko bencana yang memadai dan berkelanjutan; (ii)
+     pembiayaan prioritas Pemerintah dalam PARB, (iii) perbaikan pengelolaan
+     fiskal bencana dan saluran distribusi dana yang optimal dan transparan; dan
+     (iv) mendorong keterlibatan peran pemda, swasta dan masyarakat dalam skema
+     pembiayaan yang lebih luas.
+
+     1.   Strategi Penyediaan Dana
+
+
+     Strategi penyediaan dana terkait erat dengan layering risiko bencana. Terdapat
+     dua faktor penting terkait dengan layering tersebut. Pertama, faktor frekuensi
+     terjadinya bencana yang dibagi menjadi kategori jarang dan sering terjadi.
+     Bencana yang sering terjadi di Indonesia, berdasarkan kejadian bencana yang
+     didokumentasikan oleh BNPB dari tahun 2009 sampai dengan 2018 adalah
+     banjir, tanah longsor, dan cuaca ekstrim (puting beliung). Sementara gempa
+     bumi, tsunami, gunung meletus, gelombang ekstrim (abrasi), kekeringan, dan
+     kebakaran hutan adalah jenis-jenis bencana yang tercatat jarang terjadi.
+
+
+
+
+34
+Faktor kedua adalah dampak kerugian ekonomi dan fisik yang diakibatkan oleh
+bencana yang dikelompokkan menjadi bencana dengan dampak yang besar
+dan kecil. Gempa bumi, tsunami, dan banjir adalah bencana dengan dampak
+kerugian yang besar (di atas Rp. 4 triliun). Sementara jenis-jenis bencana
+lainnya tercatat memberikan dampak kerugian ekonomi yang kecil.
+
+
+Dengan melihat karakteristik bencana pada dua faktor tersebut dan mengingat
+bahwa satu instrumen pembiayaan tidak dapat menjadi solusi pembiayaan bagi
+seluruh layer bencana, maka strategi PARB ini mengombinasikan beberapa
+skema atau instrumen pembiayaan yang berbeda untuk mendapatkan skema
+pembiayaan yang efisien (Gambar 5). Strategi PARB dibagi ke dalam dua
+kelompok besar. Pertama adalah kelompok pembiayaan yang ditanggung
+oleh Pemerintah (retain) melalui pembiayaan yang bersumber dari APBN/
+APBD, pooling fund dan pinjaman kontijensi. Kedua adalah skema pemindahan
+(transfer) risiko kerugian kepada pihak lain melalui asuransi. Strategi ini juga
+mengakomodasi pembiayaan berupa bantuan dari luar pemerintah, khususnya
+ketika terjadi bencana dengan skala yang sangat besar (risiko residual).
+
+
+Gambar 5 Strategi Pembiayaan dan Asuransi Risiko Bencana
+
+
+
+
+Strategi penyediaan dana bagi pembiayaan risiko bencana sebagaimana Gambar
+5 dapat dijabarkan dengan penjelasan sebagai berikut:
+
+
+
+
+                                                                                   35
+     a.   Kombinasi instrumen pembiayaan untuk mendapatkan skema pembiayaan
+          yang efisien dan efektif.
+
+     Berdasarkan jenis dan frekuensi bencana di Indonesia, serta belajar dari
+     pengalaman negara-negara yang telah mempunyai strategi nasional
+     pembiayaan risiko bencana seperti Meksiko, Filipina, Jepang, dan Kolombia,
+     maka skema pembiayaan risiko bencana yang efektif dan efisien memerlukan
+     kombinasi instrumen dan kebijakan pembiayaan yang tepat. Tepat bukan
+     hanya dari sisi jumlah dana yang dibutuhkan, namun tepat pula dalam waktu
+     pencairan dan pemilihan mekanisme dan sasaran penyaluran. Oleh karena
+     itu, diperlukan instrumen pembiayaan yang berbeda untuk setiap layer risiko
+     bencana.
+
+     b. Pemerintah menanggung atau menyerap risiko melalui pembiayaan APBN
+          dan/atau APBD untuk bencana yang sering terjadi dan/atau menghasilkan
+          dampak kerugian kecil.
+
+     Untuk bencana-bencana yang sering terjadi atau bencana yang mengakibatkan
+     kerugian kecil seperti gempa bumi dengan skala rendah, pembiayaan risiko
+     bencana akan lebih optimal apabila bersumber dari APBN dan/atau APBD.
+     Dalam hal ini, pembiayaan risiko bencana dapat berasal dari Dana Cadangan
+     Bencana, alokasi dan realokasi belanja untuk K/L terkait, dan APBD. Dana yang
+     dialokasikan dari APBN/APBD dinilai cukup untuk memenuhi pembiayaan
+     bencana dalam layer ini.
+
+     c.   Pemerintah menggunakan instrumen pembiayaan kontijensi sebagai komple-
+          menter APBN dalam menanggung risiko bencana dengan dampak kerugian
+          sedang sampai dengan tinggi.
+
+     Pembiayaan atau pinjaman kontijensi (contingency credit) dapat berasal dari dana
+     siaga yang disediakan oleh bank pembangunan multilateral seperti Grup Bank
+     Dunia (World Bank Group, WBG), Bank Pembangunan Asia (Asian Development
+     Bank, ADB), dan negara-negara mitra. Pinjaman siaga ini digunakan untuk
+     membantu APBN, apabila diperlukan, dalam membiayai dampak bencana
+     dalam skala yang masif yang mengakibatkan kerugian ekonomi, fisik, dan jiwa
+     yang besar. Pinjaman siaga dapat dicairkan dengan cepat setelah Pemerintah
+     mengaktifkan skema ini sebagai akibat terpenuhinya indikator pencairan
+     pinjaman (triggers) yang telah disepakati. Dengan skema ini, Pemerintah
+     mendapatkan jaminan atas tersedianya dana dalam waktu yang cepat segera
+     setelah terjadinya bencana.
+
+
+
+
+36
+Pinjaman siaga digunakan untuk pembiayaan anggaran (budget support)
+sehingga dapat menambah ketersediaan dana penanggulangan bencana. Oleh
+karena itu, pemerintah dapat menggunakan dana tersebut dengan fleksibel
+sesuai dengan prioritas kebutuhan dan waktu penggunaan.
+
+d. Pemerintah membangun skema pooling fund untuk memperkuat
+   peran APBN
+
+Pooling fund bencana adalah sebuah skema pengelolaan dana khusus bencana
+oleh sebuah lembaga pengelola dana yang berperan sebagai komplementer
+APBN. Skema ini menjadi salah satu terobosan kebijakan pembiayaan risiko
+bencana karena kemampuannya untuk menyediakan dana bagi pembiayaan
+prabencana, tanggap darurat, dan pascabencana secara berkelanjutan.
+
+
+Lembaga pengelola dana memiliki peran ganda sebagai pengelola investasi dan
+pembiayaan. Dana yang dikelola oleh lembaga pengelola dana dapat bersumber
+dari penyertaan dana atau alokasi tahunan dari APBN, pemda, hasil investasi
+atas dana yang dikelola, hasil pembayaran klaim asuransi, dan sumbangan dari
+donor nasional dan internasional. Lembaga pengelola dana dapat pula berperan
+dalam menyalurkan dana kepada K/L terkait, pemda, masyarakat, dan sektor
+swasta untuk pembiayaan tanggap darurat, rehabilitasi dan rekonstruksi.
+
+
+Lembaga pengelola dana dapat berperan sebagai pengelola dana dan wakil
+Pemerintah dalam berhubungan dengan berbagai pihak terkait. Lembaga
+pengelola dana dapat berhubungan dengan industri asuransi nasional dan
+internasional untuk pembiayaan dengan skema transfer risiko.
+
+
+Pooling fund dapat dilakukan dengan dua opsi kelembagaan, yaitu: (1) dengan
+pembentukan institusi baru, misalnya lembaga dengan pengelolaan keuangan
+Badan Layanan Umum (BLU); atau (2) dengan menugaskan suatu institusi
+Pemerintah atau badan usaha milik negara (BUMN) yang sudah ada untuk
+menjalankan peran sebagai pengelola dana. Pemilihan salah satu dari dua opsi
+tersebut memerlukan kajian yang dalam, khususnya mengenai peran pengelola
+dana, biaya dan manfaat atas opsi yang dipilih, ada tidaknya institusi yang
+memiliki kemiripan peran, model bisnis, output, dan outcome pengelola dana
+bencana. Gambar 6 menjelaskan salah satu opsi proses bisnis lembaga pengelola
+dana bencana.
+
+
+
+
+                                                                              37
+     Gambar 6 Opsi Skema Pooling fund
+
+
+
+
+     e.    Pemerintah memindahkan (transfer) risiko melalui asuransi untuk pembiayaan
+           bencana yang jarang terjadi namun memberikan dampak kerugian besar
+
+
+     Bencana-bencana besar yang jarang terjadi seperti gempa bumi dan tsunami
+     yang umumnya berdampak ekonomi besar, merupakan bencana yang sebagian
+     pembiayaannya perlu ditransfer ke pihak lain (asuransi). Berdasarkan data
+     historis, Pemerintah mengalami keterbatasan anggaran untuk menanggung
+     seluruh atau sebagian besar nilai kerugian ekonomi dan fisik yang diakibatkan
+     oleh bencana besar. Pemindahan risiko ini akan memudahkan Pemerintah
+     dalam mendapatkan dana yang dibutuhkan dari sumber pembiayaan lain.
+     Skema transfer risiko dengan asuransi dapat digunakan untuk perlindungan
+     masyarakat, perlindungan terhadap aset publik, dan perlindungan lainnya.
+
+
+     2. Strategi Pembiayaan Risiko Bencana bagi Prioritas Pemerintah
+
+          a.   Perlindungan BMN dan BMD
+
+     Perlindungan BMN dan BMD dilakukan untuk seluruh aset publik karena
+     berkaitan dengan keberlanjutan penyelenggaraan pelayanan publik setelah
+     terjadi bencana. Namun, dengan mempertimbangkan kapasitas fiskal, prioritas
+     aset yang dilindungi difokuskan pada aset dan infrastruktur yang mempunyai
+     nilai ekonomis dan kemanfaatan yang tinggi (valuable) serta berkaitan dengan
+     pelayanan masyarakat dan kegiatan ekonomi, seperti bangunan kantor
+
+
+
+
+38
+pemerintah, bangunan sekolah, bangunan rumah sakit, pasar, jalan, jembatan,
+sumber energi, irigasi, penyedia air minum, serta pelabuhan.
+
+
+Pembiayaan untuk perlindungan aset negara dapat dilakukan dengan tiga
+skema. Pertama, Pemerintah menanggung pembiayaan dengan APBN/APBD,
+dana kelolaan pooling fund, dan menggunakan pinjaman kontijensi. Dengan
+skema ini, pemerintah perlu menyediakan dana dalam jumlah yang besar
+dalam periode waktu yang cukup panjang (multiyears). Kedua, perlindungan
+BMN dan BMD dapat dilakukan dengan pendekatan transfer risiko melalui
+asuransi. Skema ini akan melibatkan swasta dalam menciptakan produk
+asuransi bencana yang optimal dan efisien, baik bagi pemerintah maupun
+perusahaan asuransi.
+
+
+Untuk tahap awal, Pemerintah Pusat akan mengasuransikan BMN yang
+dikelola oleh Kementerian Keuangan (Kemenkeu) sebagai proyek percontohan
+(pilot project). Dari percontohan tersebut, akan diperoleh pembelajaran
+dalam mendapatkan produk asuransi bencana yang optimal dan efisien
+ketika diterapkan untuk seluruh aset negara. Pertimbangan pemilihan BMN
+Kemenkeu sebagai pilot project adalah:
+
+    a)    Proses   revaluasi    BMN   yang   dikelola   Kemenkeu    telah   selesai
+          dilaksanakan pada tahun 2017; dan
+    b)    BMN yang dikelola Kemenkeu berada di seluruh wilayah Indonesia,
+          sehingga cukup menggambarkan risiko yang dihadapi seluruh BMN da-
+          lam rangka mendapatkan pembelajaran yang menyeluruh.
+
+Pembelian premi asuransi oleh pemerintah untuk BMN/BMD dapat dilakukan
+dengan pendekatan satu polis atau multi polis. Pendekatan satu polis adalah pem-
+belian premi asuransi oleh satu unit pemerintah sebagai pemegang polis utama
+(single policy holder)/pengelola asuransi untuk seluruh aset publik. Sementara itu,
+skema multi polis adalah skema dengan pendekatan setiap pengelola aset menja-
+di pemegang polis. Pendekatan satu polis memiliki kelebihan dibandingkan den-
+gan multi polis, antara lain:
+         a)   Biaya premi yang lebih efisien karena adanya pooling risiko dan
+              hukum bilangan besar;
+         b)   Memudahkan pembuatan standarisasi produk dan cakupannya;
+         c)   Pengetahuan risiko yang menyeluruh menjadikan pengelolaan
+              risiko yang terintegrasi dan lebih komprehensif;
+         d)   Mendorong pembentukan suatu konsorsium perusahaan asuransi
+              untuk menanggung risiko yang besar;
+         e)   Sejalan dengan strategi pooling fund, yang memungkinkan pula
+              sinkronisasi kebijakan transfer risiko dengan kemampuan untuk
+              menanggung risiko; dan
+         f)   Biaya pengelolaan risiko yang lebih efisien.
+
+                                                                                39
+        Sedangkan, kekurangan pendekatan satu-polis dibandingkan dengan multi
+        polis antara lain:
+        a)   Unit-unit pemerintah/pengelola aset lainnya tidak mendapatkan
+             kesempatan yang luas untuk penguatan kapasitas pengelolaan risiko
+             langsung atas aset yang dikelola;
+        b)   Kemungkinan terjadinya perbedaan kebijakan antara pemegang polis
+             asuransi dengan unit-unit pengelola aset;
+        c)   Mengurangi kompetisi antara penyedia produk asuransi; dan
+        d)   Proses penyaluran klaim yang lebih lama karena prosedur yang lebih
+             banyak.
+
+
+     Di beberapa negara maju, seperti Selandia Baru yang telah memiliki kedalaman
+     pasar asuransi dan reasuransi serta meratanya kapasitas penilai risiko pada
+     setiap unit pemerintah, pendekatan multi polis cenderung menjadi pilihan
+     yang sesuai. Namun, bagi negara dengan pasar keuangan yang belum dalam,
+     penggunaan skema satu polis dapat menjadi pilihan pada jangka pendek dan
+     menengah.
+
+
+     Dalam membeli produk asuransi, skema asuransi yang dipilih dapat disesuaikan
+     dengan karakteristik risiko dan kebutuhan. Untuk kebutuhan perbaikan atau
+     pembangunan kembali aset yang terkena dampak bencana, skema asuransi yang
+     dapat digunakan adalah skema indemnity atau total loss, yaitu kontrak asuransi
+     dimana perusahaan asuransi akan memberikan ganti rugi sesuai dengan nilai
+     kerugian dengan memperhatikan isi kontrak yang telah disepakati. Pada skema
+     ini, pembayaran klaim membutuhkan waktu yang cukup lama karena penilai
+     kerugian, baik dari perusahaan asuransi maupun pihak ketiga (loss adjuster),
+     harus melakukan penilaian atau valuasi terlebih dahulu atas aset yang rusak.
+
+
+     Untuk kebutuhan pembangunan kembali infrastruktur secara cepat dan
+     pembiayaan pada masa tanggap darurat, misalnya untuk pembangunan
+     infrastruktur layanan darurat bagi masyarakat dan membangun kembali
+     infrastruktur dasar dan vital, maka skema asuransi yang lebih sesuai adalah
+     parametric. Pembayaran klaim dalam skema ini dapat dilakukan segera setelah
+     terpenuhinya syarat atau pemicu (triggers) pembayaran klaim. Salah satu contoh
+     pemicunya adalah ukuran skala gempa bumi yang disepakati, misalnya VII skala
+     MMI. Skema ini cocok digunakan untuk perlindungan terhadap rumah sakit,
+     jalan, jembatan, sekolah, dan kantor pelayanan. Pemerintah dapat pula memilih
+     kombinasi dari dua skema asuransi dimaksud dalam perlindungan aset BMN dan
+     BMD.
+
+
+
+
+40
+Ketiga, perlindungan BMN dan BMD dapat pula dilakukan melalui upaya-
+upaya penurunan risiko kerusakan melalui penyediaan infrastruktur publik
+yang berkualitas. Perlindungan aset negara dan aset daerah dalam strategi ini
+difokuskan untuk mendorong upaya-upaya membangun infrastruktur publik
+yang berkualitas melalui:
+   a)   Pembangunan aset yang tahan terhadap bencana atau menjadikan aset
+        yang sudah ada menjadi aset tahan bencana;
+   b)   Pengembalian fungsi aset yang terdampak bencana untuk menjamin
+        pulihnya pelayanan publik segera setelah terjadinya bencana;
+   c)   Pembangunan kembali aset yang rusak dengan lebih baik (build back
+        better);
+   d)   Inovasi pengelolaan basis data BMN agar mampu menghasilkan data
+        dan informasi yang dibutuhkan pengambil kebijakan, khususnya untuk
+        menghasilkan produk pembiayaan yang efisien; dan
+   e)   Pembangunan basis data BMD yang akurat.
+
+  b.    Perlindungan Rumah Tangga dan Kehidupan Sosial Masyarakat
+
+Seluruh masyarakat yang terpapar bencana rentan terhadap dampak bencana
+sehingga salah satu prioritas Pemerintah adalah pembiayaan bagi perlindungan
+kelompok masyarakat tersebut. Intervensi Pemerintah bertujuan untuk
+menurunkan risiko terjadinya korban jiwa, kerugian ekonomi, kerugian
+fisik, dukungan untuk membangun kembali rumah tinggal dan usaha, dan
+membantu masyarakat dalam melindungi diri mereka terhadap dampak
+bencana.
+
+
+Masyarakat miskin, berpenghasilan rendah, dan masyarakat yang masuk
+kategori sedikit di atas batas kemiskinan adalah kelompok masyarakat yang
+perlu mendapatkan perlindungan lebih dari Pemerintah. Masyarakat dalam
+kategori ini termasuk petani dan peternak kecil, nelayan kecil, pembudidaya
+ikan, dan masyarakat miskin yang tinggal di pedesaan dan perkotaan.
+Pemerintah perlu menjaga kelompok masyarakat ini agar dapat bertahan atau
+tidak kembali masuk dalam kategori miskin setelah terjadinya bencana.
+
+
+Dukungan pembiayaan Pemerintah dapat dilakukan melalui mekanisme
+menanggung risiko dan transfer risiko. Asuransi dapat digunakan untuk
+pembiayaan pembangunan kembali rumah tinggal yang telah hancur, dan
+mengembalikan modal usaha yang hilang atau berkurang akibat bencana.
+
+
+Sebagaimana perlindungan terhadap aset publik, skema asuransi yang
+dipilih untuk perlindungan rumah tangga dan pulihnya kehidupan sosial
+masyarakat dapat berupa indemnity, parametric, atau gabungan keduanya, dan
+
+
+
+
+                                                                              41
+     asuransi berbasis indeks. Jenis asuransi lain yang dapat digunakan adalah
+     asuransi mikro, yaitu produk asuransi yang diperuntukkan bagi masyarakat
+     berpenghasilan rendah atau usaha mikro, kecil dan menengah, dengan fitur dan
+     administrasi yang sederhana, mudah didapat, murah atau ekonomis, serta cepat
+     dalam penyelesaian pembayaran klaim atau santunan.
+
+
+     Untuk mendorong penggunaan instrumen transfer risiko dalam pembiayaan
+     bencana bagi perlindungan masyarakat, Pemerintah dapat memperluas dan
+     memperkuat cakupan berbagai program asuransi perlindungan masyarakat
+     yang telah ada seperti Asuransi Usaha Tani Padi, Asuransi Usaha Ternak
+     Sapi, dan Asuransi Budidaya Ikan Kecil. Penetrasi asuransi-asuransi ini dapat
+     ditingkatkan dengan:
+        a)    Mewajibkan petani, peternak, nelayan dan pembudidaya ikan yang
+              mendapatkan manfaat dari program Pemerintah dan yang tidak
+              termasuk kategori usaha mikro, kecil, dan menengah (UMKM).
+        b)    Pengembangan produk jasa keuangan mikro
+        c)    Pemanfaatan pengembangan teknologi
+
+
+     Pemerintah perlu membantu petani, peternak dan nelayan yang masuk kategori
+     UMKM melalui subsidi premi. Subsidi tersebut secara gradual dapat dikurangi
+     seiring dengan meningkatnya pendapatan petani, peternak, dan nelayan.
+
+
+     Pemerintah dapat pula mengembangkan asuransi perlindungan rumah tinggal.
+     Pemerintah dapat mendorong pembelian premi asuransi rumah tinggal
+     bagi masyarakat yang memiliki lahan dan bangunan dengan nilai dan luas
+     tertentu dengan harga premi yang terjangkau. Beberapa opsi kebijakan yang
+     dapat dilakukan Pemerintah seperti memasukkan pembelian asuransi rumah
+     tinggal dalam pengurusan ijin pembangunan rumah atau digabungkan dengan
+     komponen pembayaran pajak bumi dan bangunan (PBB). Skema kewajiban
+     membeli asuransi jiwa dalam pembayaran pajak kendaraan bermotor dapat
+     menjadi salah satu opsi kebijakan yang bisa direplikasikan dalam asuransi
+     rumah tinggal.
+
+
+
+         3.   Strategi Pengelolaan Fiskal Bencana dan Saluran Distribusi Dana yang
+              Optimal dan Transparan
+
+     Dengan adanya keterbatasan fiskal, Strategi PARB diharapkan dapat mendorong
+     inovasi sumber-sumber pembiayaan alternatif, meningkatkan efisiensi
+     pembiayaan bencana, dan perbaikan pengelolaan risiko fiskal.
+
+
+     Dalam hal inovasi sumber pembiayaan, Pemerintah memperkenalkan
+     paradigma investasi dalam mendapatkan sumber pembiayaan alternatif untuk
+
+
+
+
+42
+mendukung APBN. Skema pooling fund, pinjaman siaga, dan asuransi bencana
+merupakan beberapa opsi skema pembiayaan alternatif risiko bencana.
+
+
+Dalam meningkatkan efisiensi dan kualitas belanja terkait bencana, Pemerintah
+dapat mengembangkan suatu mekanisme budget tagging dan tracking terkait
+belanja bencana. Tujuan dari budget tagging dan tracking adalah untuk:
+   a) Membangun data dan sistem pengelolaan yang akurat dalam melacak dan
+        melaporkan belanja terkait bencana;
+   b) Membantu Pemerintah untuk menyusun kebijakan dan prioritas dalam
+        pembiayaan risiko bencana;
+   c)   Mengintensifkan pengumpulan data terkait dan berbagi data di antara
+        pemangku kepentingan; dan
+   d) Meningkatkan tranparansi dan akuntabilitas alokasi dan belanja terkait
+        bencana.
+
+
+Salah satu elemen utama dalam upaya penurunan kerugian bencana
+adalah infrastruktur berkualitas yang tahan terhadap bencana. Untuk
+mendorong pembangunan infrastruktur publik yang berkualitas tersebut,
+Pemerintah dapat menerapkan persyaratan atau safeguard dalam memastikan
+pembangunan infrastruktur tahan bencana dalam pengajuan anggaran
+pembangunan infrastruktur publik oleh K/L terkait. Melalui mekanisme ini,
+pengajuan anggaran untuk pembangunan infrastuktur perlu dilengkapi dengan
+jaminan bahwa infrastuktur yang dibangun akan memenuhi kualifikasi
+tahan bencana (misalnya gempa) dan selaras dengan daya dukung lingkungan.
+Mekanisme ini dapat dimulai pada pengajuan anggaran tambahan untuk
+rekonstruksi aset publik yang rusak akibat bencana.
+
+
+Pemilihan strategi penyaluran distribusi dana bencana yang optimal dengan
+transparansi tata kelola memiliki urgensi yang tinggi untuk dilakukan oleh
+Pemerintah. Pemilihan strategi dapat dilakukan dengan mempertimbangkan
+faktor-faktor sebagai berikut:
+
+a. Besaran skala dan dampak bencana.
+
+Sumber pembiayaan dan distribusi dana bagi penanggulangan bencana dengan
+skala dan dampak kecil (bencana lokal) berbeda dengan bencana dengan
+dampak masif. Sumber utama pembiayaan untuk bencana skala kecil di satu
+wilayah kota/kabupaten atau dalam satu provinsi berasal dari APBD dengan
+bantuan Pemerintah Pusat sebagai pelengkap. Sementara itu, atas bencana
+dengan dampak besar, sumber utama pembiayaan berasal dari Pemerintah
+Pusat dan sumber dana lainnya.
+
+
+
+
+                                                                             43
+     Penyaluran dana bencana untuk bencana lokal berskala kecil hingga sedang
+     dapat disalurkan oleh pemda yang terpapar bencana dengan pendekatan daerah
+     setempat. Sedangkan untuk bencana dengan skala besar, Pemerintah Pusat (K/L
+     terkait) dapat membantu pemda dalam penyaluran pembiayaan bencana dengan
+     koordinasi oleh pemda di tingkat teknis. Saluran distribusi dapat memanfaatkan
+     saluran yang telah ada seperti melalui BNPB, Badan Penanggulangan Bencana
+     Daerah, program perlindungan sosial seperti Program Keluarga Harapan (PKH),
+     dan program rekonstruksi yang dilaksanakan oleh Pemerintah Pusat.
+
+
+     Untuk bencana besar yang juga berdampak pada lumpuhnya peran pemda atau
+     beberapa pemda yang berada dalam wilayah bencana yang lebih luas, terdapat
+     beberapa pilihan koordinasi penyaluran dana, seperti koordinasi penyaluran
+     dana oleh satu K/L tertentu, pembentukan badan khusus yang bersifat
+     sementara seperti BRR, atau lembaga pooling fund yang dapat ditunjuk untuk
+     mengkoordinasikan penyaluran dana.
+
+
+     b. Kondisi sosial dan ekonomi masyarakat terpapar bencana.
+
+
+     Kondisi sosial dan ekonomi masyarakat akan berpengaruh pada bentuk peran
+     masyarakat dalam penyaluran dan pamanfaatan dana bencana. Pendekatan
+     partisipasi masyarakat (community based) seperti Program Rehabilitasi dan
+     Rekonstruksi Masyarakat dan Permukiman Berbasis Komunitas (Rekompak)
+     dapat diimplementasikan pada masyarakat dengan kultur gotong royong yang
+     kuat.
+
+
+     Pemerintah dapat memutuskan mekanisme penyaluran dana berdasarkan
+     skala bencana, kondisi sosial dan ekonomi masyarakat, penilaian kondisi
+     pascabencana, dan hasil musyawarah dengan pemangku kepentingan terkait.
+     Kajian mengenai saluran distribusi yang efisien dengan tata kelola yang
+     transparan perlu dilakukan di masa mendatang.
+
+
+     4. Strategi Penguatan Peran Pemda, Swasta, dan Masyarakat dalam
+     Pembiayaan Risiko Bencana dan Pengembangan Pasar Asuransi Domestik
+
+
+     Dalam upaya membangun bangsa dan masyarakat yang tangguh terhadap
+     bencana, Pemerintah perlu mencari mekanisme pembiayaan yang memberikan
+     keseimbangan peran antara Pemerintah Pusat, pemda, swasta, dan masyarakat
+     dalam pengurangan risiko bencana. Pemerintah perlu menyusun berbagai
+     kebijakan dan insentif, dan menyediakan berbagai opsi instrumen dan distribusi
+     pembiayaan risiko bencana yang dapat mendorong peran pemda, swasta dan
+     masyarakat dalam pembiayaan risiko bencana.
+
+
+
+
+44
+Pemerintah Pusat dan pemda perlu memperkuat kolaborasi mengingat bencana
+alam tidak memperhatikan batas-batas wilayah dan administratif. Pemda
+secara gradual dapat meningkatkan kapasitasnya dalam pembiayaan untuk
+kesiapsiagaan, mitigasi, dan transfer risiko dalam melindungi masyarakat dan
+aset milik daerah, dan berperan dalam penyaluran dana bencana. Hal tersebut
+dilandasi oleh pengetahuan pemda yang lebih komprehensif terhadap wilayah
+dan kultur penduduk yang terpapar bencana.
+
+
+Pemerintah Pusat dapat mempertimbangkan adanya skema insentif bagi pemda
+yang terlibat dalam pembiayaan dan asuransi risiko bencana. Insentif dapat
+diberikan pada periode tidak terjadi bencana ataupun ketika suatu daerah
+terpapar bencana. Dalam hal ini, pemda didorong untuk mengembangkan
+kebijakan dan regulasi transfer risiko yang efisien, baik sendiri maupun
+bersama-sama dengan pemda lain (risk pool).
+
+
+Masyarakat berpenghasilan menengah dan swasta dapat melindungi diri
+sendiri, keluarga, komunitas, masyarakat, dan usaha yang dimiliki melalui
+asuransi. Pemerintah, Otoritas Jasa Keuangan (OJK), dan asosiasi terkait
+berperan penting untuk mendorong peningkatan kapasitas industri asuransi
+dalam negeri dalam menyerap dan mengelola risiko bencana dan peningkatan
+kedalaman pasar asuransi. Industri asuransi perlu menyediakan produk
+pembiayaan transfer risiko bencana dengan harga terjangkau kepada
+Pemerintah Pusat, pemda, masyarakat, dan sektor swasta. Pihak swasta,
+termasuk lembaga keuangan dan perbankan, dapat pula berperan dalam
+konteks corporate social responsibility (CSR) untuk membantu korban bencana.
+
+
+
+
+                                                                             45
+     Halaman dikosongkan
+
+
+
+
+46
+Kompas/Agus Susanto
+
+
+
+
+         47
+     Halaman dikosongkan
+
+
+
+
+48
+      PETA JALAN PELAKSANAAN
+      STRATEGI PEMBIAYAAN
+      DAN ASURANSI
+BAB 4 RISIKO BENCANA
+
+
+
+
+    P
+                eta Jalan pelaksanaan Strategi PARB berisikan berbagai opsi kebijakan
+                dan program yang dapat dilaksanakan Pemerintah dalam jangka
+                pendek dan menengah sebagai implementasi Strategi PARB. Peta
+                jalan disusun berdasarkan prioritas strategi pembiayaan dengan
+    mempertimbangkan risiko, karakteristik bencana, dan kesiapan para pemangku
+    kepentingan. Adapun implementasi strategi akan dilakukan melalui serangkaian
+    rencana aksi sebagai berikut:
+
+
+    A. Jangka Pendek (2018 – 2019)
+
+    Program aksi yang akan dilakukan dalam periode tahun 2018 dan 2019 adalah:
+
+
+    1. Implementasi Proyek Percontohan Asuransi BMN
+
+
+    Pada tahun 2019, akan dilakukan implementasi proyek percontohan (pilot project)
+    asuransi BMN yang akan difokuskan kepada BMN di bawah pengelolalan
+    Kemenkeu dengan prioritas pada gedung perkantoran, pendidikan, dan fasilitas
+    kesehatan. Beberapa program yang dilakukan untuk persiapan pilot project
+    adalah:
+      a.      Penyusunan dan/atau penyesuaian regulasi yang diperlukan untuk imple-
+              mentasi asuransi BMN;
+      b.      Pengajuan alokasi untuk belanja premi pada APBN 2019;
+      c.      Penentuan objek BMN yang akan diasuransikan;
+      d.      Pengembangan produk asuransi termasuk penentuan nilai premi oleh OJK
+              dan industri asuransi;
+      e.      Belanja asuransi (procurement); dan
+      f.      Diseminasi, pelatihan, dan simulasi asuransi BMN, khususnya pada unit-
+              unit kerja terkait di lingkungan Kemenkeu.
+
+
+
+
+                                                                                  49
+     2. Pemilihan Skema dan Pembentukan Pooling Fund Bencana
+
+
+     Untuk mempersiapkan rencana pembentukan pooling fund pembiayaan risiko
+     bencana di Indonesia, akan dilakukan studi atas beberapa model pooling fund.
+     Dari studi tersebut akan diperoleh berbagai rekomendasi terkait sumber
+     pembiayaan dan besaran dana pooling fund yang optimal, bentuk/struktur
+     institusi, fungsi dan tanggung jawab, manfaat dan biaya, efektifitas dan efisiensi
+     berbagai skema pembiayaan, dan kebutuhan aturan hukum bagi institusi pooling
+     fund yang sesuai. Pemerintah diharapkan dapat membentuk pooling fund di tahun
+     2019.
+
+
+     3. Penguatan dan Pengembangan Instrumen Asuransi Perlindungan
+     Masyarakat
+
+
+     Program penguatan dan pengembangan instrumen perlindungan masyarakat
+     mencakup asuransi sektor pertanian, perikanan, dan rumah tinggal sebagai
+     berikut:
+       a.   Reviu atas regulasi dan skema asuransi yang berjalan;
+       b.   Perluasan cakupan dan skema asuransi yang ada, penentuan target petani,
+            peternak, nelayan, dan rumah tangga yang mendapatkan bantuan
+            pembiayaan dari Pemerintah, dan proporsi pembiayaan dari Pemerintah dan
+            masyarakat; dan
+       c.   Regulasi yang diperlukan dalam mendorong keterlibatan peran perbankan,
+            asuransi, dan pihak terkait pada asuransi pertanian, perikanan, dan rumah
+            tinggal.
+
+     4. Kerja Sama Pemerintah Pusat dan Daerah
+
+
+     Pemerintah Pusat perlu terlibat dalam peningkatan kapasitas pemda dalam
+     pembiayaan risiko bencana, termasuk formulasi model saluran distribusi dana
+     bencana, khususnya untuk masa tanggap darurat, rehabilitasi dan rekonstruksi.
+     Beberapa program yang dapat dilakukan di antaranya adalah:
+
+
+     Penyiapan model risk pooling antar daerah;
+       a.    Penyiapan model kontribusi daerah dalam pembiayaan risiko bencana, seperti
+             kontribusi dalam pooling fund; dan
+       b.    Kajian inovasi model saluran distribusi dana bencana.
+
+
+     5. Eksplorasi Potensi Skema Pembiayaan Alternatif
+
+
+     Program aksi yang akan dilakukan mencakup hal-hal berikut:
+       a.    Pemetaan dan pendalaman skema dan produk-produk pembiayaan siaga
+             yang tersedia pada bank pembangunan mutilateral seperti Bank Dunia,
+
+
+
+
+50
+       Bank Pembangunan Asia, dan mitra pembangunan bilateral;
+  b.   Pemetaan dan pendalaman skema dan produk-produk pembiayaan
+       asuransi catastrophic;
+  c.   Kajian biaya dan manfaat (cost and benefit) dari pilihan instrumen-
+       instrumen pembiayaan alternatif yang ada, termasuk membandingkan
+       instrumen pinjaman dengan asuransi; dan
+  d.   Kajian regulasi dan perbaikan kebijakan yang dibutuhkan dalam men-
+       dukung pembiayaan alternatif.
+
+6. Edukasi dan Penguatan Kapasitas Sumber Daya Manusia terkait
+Pembiayaan dan Asuransi Risiko Bencana
+
+
+Berbagai program edukasi, sosialisasi, dan peningkatan kapasitas institusi dan
+sumber daya manusia atas pembiayaan dan asuransi risiko bencana berupa
+seminar, workshop, dan pelatihan akan dilaksanakan dengan melibatkan
+pemangku kepentingan terkait seperti K/L, pemda, lembaga legislatif, penegak
+hukum, akademisi, dan pihak terkait lainnya. Program-program tersebut
+diharapkan dapat berkontribusi dalam peningkatan pemahaman dan
+dukungan atas pelaksanaan dan perbaikan Strategi PARB di Indonesia.
+
+
+B. Jangka Menengah (2019 – 2023)
+
+Program aksi yang direncanakan dalam periode 2019 hingga 2023 adalah:
+
+
+1. Monitoring dan Evaluasi Implementasi Asuransi BMN serta Perluasan
+Pembiayaan untuk Perlindungan BMN dan BMD
+
+
+Dalam jangka menengah pembiayaan perlindungan BMN akan diperluas
+cakupannya dengan rincian program aksi sebagai berikut:
+  a)   Pengasuransian BMN di seluruh K/L akan dilakukan secara bertahap
+       khususnya untuk aset yang terkait dengan pelayanan publik serta
+       infrastruktur. Seluruh K/L diharapkan telah mengasuransikan seluruh
+       BMN pada tahun 2021;
+  b)   Pemerintah akan melakukan evaluasi terhadap pilot project asuransi
+       BMN di Kemenkeu, dan melakukan perbaikan atas skema dan pelaksa-
+       naannya berdasarkan pembelajaran yang didapatkan;
+  c)   Pemerintah akan melakukan kajian model perlindungan BMN/BMD
+       yang lebih luas, misalnya melalui skema self insurance;
+  d)   Untuk mendapatkan skema pembiayaan yang optimal, diperlukan
+       inovasi dalam memperbaiki pengelolaan BMN dengan penyempurnaan
+       basis data yang dibutuhkan dalam penentuan premi asuransi. Basis
+       data yang akan ditingkatkan antara lain data risiko, kode bangunan,
+       spesifikasi bangunan, isi bangunan, dan kelas bangunan;
+
+
+
+
+                                                                             51
+       e)   Inovasi juga dilakukan dengan mengembangkan sistem informasi yang mam-
+            pu menghasilkan informasi yang dibutuhkan dalam pengambilan kebijakan
+            secara cepat dan akurat berdasarkan basis data BMN yang dimiliki oleh Pe-
+            merintah saat ini;
+       f)   Pemerintah dan OJK dapat mendorong peningkatan peran dan kapasitas in-
+            dustri asuransi nasional dalam asuransi BMN dan BMD;
+       g)   Pembiayaan untuk peningkatan kualitas BMN; dan
+       h)   Pemerintah Pusat membantu pembangunan basis data BMD.
+
+
+     2. Penguatan Lembaga Pengelola Dana (Pooling Fund) Bencana Indonesia
+
+
+     Sebagai tindak lanjut dari hasil studi model pooling fund pada program jangka
+     pendek di atas, lembaga pooling fund pembiayaan risiko bencana di Indonesia
+     diharapkan telah berdiri dan beroperasi. Pooling fund secara bertahap dapat
+     meningkatkan kapasitas pembiayaan, jenis layanan, dan instrumen pembiayaan
+     yang sesuai dengan kebutuhan.
+
+
+     3. Penerbitan Instrumen Pinjaman Siaga
+
+
+     Menindaklanjuti kajian atas pinjaman siaga yang disediakan oleh mitra
+     pembangunan seperti lembaga keuangan multilateral dan negara mitra,
+     Pemerintah dapat merealisasikan pinjaman siaga ketika terjadi bencana untuk
+     memperkuat pembiayaan risiko bencana apabila diperlukan.
+
+
+     4. Penguatan Kerangka Kebijakan Fiskal Pembiayaan Risiko Bencana
+
+
+     Penguatan dilakukan atas pengelolaan risiko fiskal terkait pembiayaan
+     risiko bencana dan tata kelola anggaran. Dalam hal ini, Pemerintah akan
+     mengembangkan sistem tracking dan tagging pembiayaan risiko bencana dan
+     pedoman (safeguard) pengajuan anggaran untuk pembangunan infrastruktur
+     yang berkualitas.
+
+
+     5. Pemanfaatan Skema Pembiayaan Risiko Bencana Alternatif Lainnya
+
+
+     Berdasarkan eksplorasi potensi dan tantangan atas skema pembiayaan
+     alternatif pada rencana jangka pendek di atas, pemerintah akan memanfaatkan
+     fasilitas pembiayaan risiko bencana alternatif secara bertahap selain pinjaman
+     siaga seperti asuransi katastropik (Cat-Bonds). Langkah ini dilakukan dengan
+     mempertimbangkan aspek efektivitas dan efisiensi pembiayaan, kebutuhan,
+     kesiapan legal dan institusi terkait, dan kesesuaian dengan karakteristik risiko
+     bencana di Indonesia.
+
+
+
+
+52
+6. Peningkatan Efisiensi Penyaluran Dana
+
+
+Dalam rangka peningkatan efisiensi dan efektivitas penyaluran dana yang
+tepat waktu dan tepat sasaran, Pemerintah melakukan eksplorasi terhadap
+opsi-opsi saluran distribusi dana yang tepat. Hal ini dapat dilakukan dengan
+memanfaatkan saluran distribusi yang ada atau membangun saluran distribusi
+yang baru.
+
+
+7. Sinergi dengan Pemangku Kepentingan yang Terkait
+
+
+Pengembangan Strategi PARB secara komprehensif memerlukan sinergi yang
+erat antar seluruh pemangku kepentingan (stakeholders) terkait yang meliputi
+pengambil kebijakan baik di tingkat Pemerintah Pusat maupun pemda, sektor
+swasta, lembaga penelitian/akademik, komunitas internasional, dan masyarakat
+umum. Sinergi di antaranya dapat dilakukan atas hal-hal berikut:
+
+
+  a) Sinergi dalam proses penganggaran
+Sinergi dapat dilakukan dengan Bappenas dan K/L terkait guna memastikan
+bahwa anggaran yang diajukan digunakan untuk pembangunan infrastruktur
+yang berkualitas. Sinergi juga dapat dilakukan dalam upaya untuk
+meningkatkan kemampuan Pemerintah dalam menyusun basis data belanja
+untuk penanggu langan bencana yang lebih akurat.
+
+
+  b) Sinergi kebijakan sektor keuangan dan industri asuransi
+Kemenkeu, OJK, dan Bank Indonesia serta industri perbankan dan asuransi
+perlu bersinergi dalam menyusun skema pembiayaan yang efisien, dan
+pengembangan pasar keuangan dalam negeri yang dapat menyerap risiko
+bencana, termasuk potensi penyelarasan dengan program pendalaman sektor
+keuangan dan program keuangan inklusi. Dari sinergi tersebut, diharapkan
+dapat dihasilkan data dan informasi yang komprehensif dan panduan dalam
+pendalaman sektor keuangan.
+
+
+  c) Sinergi dengan inisiatif terkait PARB di tingkat regional dan global
+Pemerintah dapat memanfaatkan kerja sama regional dan internasional, baik
+dalam kerangka tukar pengalaman, pengetahuan dan keahlian maupun dalam
+kerangka inisiatif modalitas keuangan. Beberapa inisiatif kerja sama regional
+dan internasional, seperti Understanding Risk Forum, APEC Working Group on
+DRFI, dan inisiatif baru Southeast Asia Disaster Risk Financing Facility (SEADRIF),
+dapat dimanfaatkan Indonesia dalam memperkaya berbagai program aksi
+Strategi PARB.
+
+
+
+
+                                                                                53
+     Halaman dikosongkan
+
+
+
+
+54
+Kompas/ Raditya Helabumi
+
+
+
+
+                55
+     Halaman dikosongkan
+
+
+
+
+56
+     GLOSARIUM
+ADB                Asian Development Bank
+APBD               Anggaran Pendapatan dan Belanja Daerah
+APBN               Anggaran Pendapatan dan Belanja Negara
+Asuransi CAT       Asuransi Catastrophe
+AUTP               Asuransi Usaha Tani Padi
+AUTS               Asuransi Usaha Ternak Sapi
+Bappenas           Badan Perencanaan Pembangunan Nasional
+BI                 Bank Indonesia
+BKF                Badan Kebijakan Fiskal
+BLU                Badan Layanan Umum
+BMD                Barang Milik Daerah
+BMKG               Badan Meteorologi, Klimatologi, dan Geofisika
+BMN                Barang Milik Negara
+BNPB               Badan Nasional Penanggulangan Bencana
+BPBD               Badan Penanggulangan Bencana Daerah
+BPS                Badan Pusat Statistik
+CSR                corporate social responsibility
+DIPA               Daftar Isian Pelaksanaan Anggaran
+DRFI               Disaster Risk Financing and Insurance
+FGD                Focus Group Discussion
+GDP                Gross Domestic Product
+K/L                Kementerian/Lembaga
+                   Kementerian Pekerjaan Umum dan Perumahan
+Kementerian PUPR
+                   Rakyat
+                   Kebijakan Ekonomi Makro dan Pokok-pokok Kebija-
+KEM-PPKF
+                   kan Fiskal
+MMI                Modified Mercalli Intensity
+NAD                Nanggroe Aceh Darusalam
+OJK                Otoritas Jasa Keuangan
+PARB               Pembiayaan dan Asuransi Risiko Bencana
+PGA                Peak Ground Acceleration
+PMK                Peraturan Menteri Keuangan
+PP                 Peraturan Pemerintah
+RBI                Risiko Bencana Indonesia
+
+
+
+
+                                                                   57
+     Renas PB   Rencana Nasional Penanggulangan Bencana
+     RIPB       Rencana Induk Penanggulangan Bencana
+     RPJMN      Rencana Pembangunan Jangka Menengah Nasional
+     SBN        Surat Berharga Negara
+     SEADRIF    Southeast Asia Disaster Risk Insurance Facility
+     UMKM       Usaha Mikro, Kecil, dan Menengah
+     UU         Undang-undang
+     WBG        World Bank Group
+
+
+
+
+58
+   DAFTAR PUSTAKA
+
+Badan Kebijakan Fiskal. (2018). Diskusi Panel Konsultasi Strategi Kebijakan
+Pembiayaan Risiko Bencana. Bogor.
+
+
+Badan Kebijakan Fiskal. (2018). Focus Group Discussion (FGD) Pengembangan
+Kebijakan Disaster Risk Financing and Insurance (DRFI). Bogor.
+
+
+Badan Kebijakan Fiskal. (2018). Focus Group Discussion (FGD) Pengembangan
+Kebijakan Disaster Risk Financing and Insurance (DRFI). Jakarta.
+
+
+Badan Kebijakan Fiskal. (2018). Focus Group Discussion (FGD) Pengembangan
+Kerangka Kebijakan Pembiayaan Risiko Bencana. Jakarta.
+
+
+Badan Kebijakan Fiskal. (2017). Seminar Disaster Risk Financing and Insurance
+(DRFI). Padang.
+
+
+Gunawan, I., & Mahul, O. (2011). Indonesia - Advancing a National Disaster Risk
+Financing Strategy - Options for Consideration.
+
+
+Kementerian Keuangan. (2018). Kebijakan Ekonomi Makro - Pokok-Pokok
+Kebijakan Fiskal APBN 2019. Jakarta.
+
+
+Kementerian Perencanaan Pembangunan Nasional & Badan Nasional
+Penanggulangan Bencana. (2018). Rencana Induk Penanggulangan Bencana 2015
+- 2045. Jakarta. (belum diterbitkan)
+
+
+Mechler, R., Mochizuki, J., & Hochrainer-Stigler, S. (2016). Disaster Risk
+Management and Fiscal Policy: Narratives, Tools, and Evidence Associated with
+Assessing Fiscal Risk and Building Resilience.
+
+
+
+
+                                                                              59
+     Meilano, I. dkk (2018). Buku Laporan Penelitian Insinas-Maipark ITB: Basis
+     Data Historis Bencana dan Estimasi Potensi Kerussakan serta Kerugian Akibat
+     Bencana di Indonesia. Jakarta: belum diterbitkan.
+
+
+     Mohd., A. R. (2016). Risiko Bencana Indonesia. BNPB. Jakarta. (belum diterbitkan)
+
+
+     OECD. (2017). OECD Recommendation on Disaster Risk Financing Strategies.
+
+
+     Pusat Studi Gempa Nasional. 2017. Peta Sumber dan Bahaya Gempa Indonesia
+     Tahun 2017. Kementerian Pekerjaan Umum dan Perumahan Rakyat.
+
+
+     University of Cambridge. (2018, July 16-20). Analysis to Action: Disaster Risk
+     Financing and Financial Protection. Cambridge.
+
+
+     UR. (2018). Understanding Risk for Financial Resiliece: Partnership Day. Mexico
+     City.
+
+
+     World Bank. (2018) Catastrotophe Insurane Programs for Public Assets
+     Operational Framework, Washington.
+
+
+     World Bank. (2018) Developing Parametric Insurance for Weather Related Risks
+     for Indonesia.
+
+
+
+
+60
+Halaman dikosongkan
+
+
+
+
+                      61
+     Halaman dikosongkan
+
+
+
+
+62
+Gd. R.M. Notohamiprodjo
+Jl. Dr Wahidin Raya No.1 Jakarta Pusat - 10710
+Telp. +62 21 3441484
+
+www.fiskal.kemenkeu.go.id
+

@@ -1,0 +1,393 @@
+{
+ "nama": "bab05-batang-kab-kekeringan-2008-2026",
+ "keterangan": "Kab/kota di Pulau Jawa yang mencatat kekeringan per tahun, 2008–2026",
+ "sumber": "DIBI BNPB 2008–2026, kejadian bencana",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "2026, sementara sampai 23 Oktober",
+   "jenis": "kotak",
+   "warna": "#B7B0A6"
+  },
+  {
+   "label": "Kab/kota berkejadian kekeringan, 2008–2025",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 128.93,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "2026, sementara sampai 23 Oktober"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 142.93,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "2026, sementara sampai 23 Oktober"
+  },
+  {
+   "x": 168.93,
+   "y": 3,
+   "w": 161.54,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-154",
+   "teks": "Kab/kota berkejadian kekeringan, 2008–2025"
+  },
+  {
+   "x": 154.93,
+   "y": 2,
+   "w": 175.54,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-154",
+   "teks": "Kab/kota berkejadian kekeringan, 2008–2025"
+  },
+  {
+   "x": 9.33,
+   "y": 26.12,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "73"
+  },
+  {
+   "x": 5.22,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2008"
+  },
+  {
+   "x": 33.73,
+   "y": 121.32,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "26"
+  },
+  {
+   "x": 29.62,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2009"
+  },
+  {
+   "x": 60.58,
+   "y": 165.88,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "4"
+  },
+  {
+   "x": 54.03,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2010"
+  },
+  {
+   "x": 82.54,
+   "y": 64.6,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "54"
+  },
+  {
+   "x": 78.44,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2011"
+  },
+  {
+   "x": 106.95,
+   "y": 44.35,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "64"
+  },
+  {
+   "x": 102.84,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2012"
+  },
+  {
+   "x": 131.36,
+   "y": 88.91,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "42"
+  },
+  {
+   "x": 127.25,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2013"
+  },
+  {
+   "x": 158.2,
+   "y": 163.85,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5"
+  },
+  {
+   "x": 151.66,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2014"
+  },
+  {
+   "x": 182.61,
+   "y": 167.9,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "3"
+  },
+  {
+   "x": 176.06,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015"
+  },
+  {
+   "x": 207.01,
+   "y": 173.98,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0"
+  },
+  {
+   "x": 200.47,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016"
+  },
+  {
+   "x": 231.42,
+   "y": 159.8,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7"
+  },
+  {
+   "x": 224.87,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2017"
+  },
+  {
+   "x": 253.39,
+   "y": 38.27,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "67"
+  },
+  {
+   "x": 249.28,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 277.79,
+   "y": 20.04,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "76"
+  },
+  {
+   "x": 273.69,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 302.2,
+   "y": 149.67,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "12"
+  },
+  {
+   "x": 298.09,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 329.04,
+   "y": 159.8,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7"
+  },
+  {
+   "x": 322.5,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 353.45,
+   "y": 167.9,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "3"
+  },
+  {
+   "x": 346.9,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 375.42,
+   "y": 86.88,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "43"
+  },
+  {
+   "x": 371.31,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 399.82,
+   "y": 82.83,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "45"
+  },
+  {
+   "x": 395.72,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 424.23,
+   "y": 137.52,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "18"
+  },
+  {
+   "x": 420.12,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  },
+  {
+   "x": 448.64,
+   "y": 62.58,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "55"
+  },
+  {
+   "x": 444.53,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2026"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 19
+}

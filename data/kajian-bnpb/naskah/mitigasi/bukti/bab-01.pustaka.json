@@ -1,0 +1,652 @@
+[
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007,
+     4,
+     26
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan entri pustaka.json utama dan bab air; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz. Bab 1 mitigasi memakai Pasal 1 angka 1–4, 6, 9, 16 (hlm. 2–4), Pasal 33–35 (hlm. 17–18), Pasal 44 (hlm. 21), Pasal 47–48 (hlm. 22–23)"
+ },
+ {
+  "id": "ri-2012-uu7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     5,
+     10
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 7 Tahun 2012 tentang Penanganan Konflik Sosial",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2012 Nomor 116",
+  "URL": "https://peraturan.bpk.go.id/Details/39049/uu-no-7-tahun-2012",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku (JDIH BPK); Pasal 1 angka 1–4 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-7-2012.json.gz hlm. 2"
+ },
+ {
+  "id": "ri-2002-uu2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2002 Nomor 2",
+  "URL": "https://peraturan.bpk.go.id/Details/44418/uu-no-2-tahun-2002",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 13 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-2-2002.json.gz hlm. 6; diubah terakhir UU 5/2026 (17 Juni 2026), yang mengubah Pasal 9, 14, 19, 21, 26, 28, 30, 37, 39 dan menyisipkan pasal baru, tanpa mengubah Pasal 13 (uu-5-2026.json.gz)"
+ },
+ {
+  "id": "ri-2014-uu23",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2014 Nomor 244",
+  "URL": "https://peraturan.bpk.go.id/Details/38685/uu-no-23-tahun-2014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran huruf E (Ketenteraman dan Ketertiban Umum serta Perlindungan Masyarakat), sub-urusan 2 Bencana dan 3 Kebakaran, PDF hlm. 332–333 (lampiran hlm. 19–20), dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-23-2014.json.gz; LN dari teks relasi JDIH BPK"
+ },
+ {
+  "id": "ri-1999-uu39",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     1999
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 39 Tahun 1999 tentang Hak Asasi Manusia",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 1999 Nomor 165",
+  "URL": "https://peraturan.bpk.go.id/Details/45361/uu-no-39-tahun-1999",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hanya metadata dan status Berlaku yang dibaca di JDIH BPK; teks pasal tentang fungsi Komnas HAM belum dibuka (Celah PK3)"
+ },
+ {
+  "id": "ri-2008-pp21",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 21 Tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2008 Nomor 42",
+  "URL": "https://peraturan.bpk.go.id/Details/4833/pp-no-21-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan riset/E-pustaka.json; Pasal 6 ayat (2)–(7) menurut riset E §E11(d); teks tidak ada di korpus lokal"
+ },
+ {
+  "id": "ri-2019-perpres1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 1",
+  "URL": "https://peraturan.bpk.go.id/Details/100440/perpres-no-1-tahun-2019",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan bab air; Pasal 6, 7, 10, 11 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-1-2019.json.gz hlm. 4–5; diubah Perpres 29/2021"
+ },
+ {
+  "id": "ri-2020-perpres87",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 87 Tahun 2020 tentang Rencana Induk Penanggulangan Bencana Tahun 2020–2044",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2020 Nomor 204",
+  "URL": "https://peraturan.bpk.go.id/Details/146481/perpres-no-87-tahun-2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan riset/E-pustaka.json; Pasal 3 ayat (3), 4 ayat (2), 6, 7 menurut riset E §E11(a)"
+ },
+ {
+  "id": "ri-2025-perpres12-rpjmn",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 12 Tahun 2025 tentang Rencana Pembangunan Jangka Menengah Nasional Tahun 2025–2029",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 19",
+  "URL": "https://peraturan.bpk.go.id/Details/314638/perpres-no-12-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan riset/E-pustaka.json; Lampiran III hlm. 913 (Matriks Kinerja BNPB) dan Lampiran I hlm. 201 menurut riset E §E11(b), dicek dari gambar halaman"
+ },
+ {
+  "id": "ri-2026-perpres46",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     16
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2026 Nomor 83",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 3 ayat (1)–(2) dibaca dari data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json hlm. 3; LN dari katalog JDIH BNPB"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     6
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json: Pasal 7 hlm. 4, penetapan hlm. 5, ancaman hlm. 6, nonalam dan sosial hlm. 29–30, Tabel 2.2 hlm. 22, Tabel 2.8 hlm. 32, §4.5–4.6 hlm. 123–125"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json: hlm. 5 (sembilan ancaman IRBI), hlm. 23–24 (Tabel 1.4 tren NAR 2023), hlm. 52 (Tabel 1.6 dan penurunan IRB 10,76%)"
+ },
+ {
+  "id": "bnpb-2025-progsun",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     31
+    ]
+   ]
+  },
+  "title": "Keputusan Kepala Badan Nasional Penanggulangan Bencana Nomor 327 Tahun 2025 tentang Program Penyusunan Peraturan Badan Nasional Penanggulangan Bencana Tahun 2026",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025kepkabnpb327.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan bab air; dibaca dari data/raw/hukum/teks/keputusan-kepala-nomor-327-tahun-2025.json (penetapan hlm. 3, Lampiran butir 11 hlm. 5)"
+ },
+ {
+  "id": "bnpb-2023-juklak7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     29
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juknis-nomor-7-tahun-2023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status BERLAKU di katalog JDIH BNPB; katalog tidak memuat PDF, teks dibaca dari salinan bercap 'Salinan sesuai dengan aslinya' di https://indonesia.unfpa.org/sites/default/files/pub-pdf/juklak_standar_data_kejadian_dan_dampak_bencana.pdf (korpus data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json): hlm. 5–6 (13 jenis), hlm. 7 (ambang kejadian), hlm. 28 (definisi korban)"
+ },
+ {
+  "id": "bnpb-2014-perka6",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014,
+     4,
+     1
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2014 tentang Pembentukan Produk Hukum di Lingkungan Badan Nasional Penanggulangan Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 557",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2014pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status berlaku menurut JDIH BNPB (data/raw/hukum/indeks.json); dibaca dari data/raw/hukum/teks/perka-nomor-6-tahun-2014.json (Pasal 8, hlm. 5–6); dijadwalkan diubah menurut Progsun 2026 butir 7"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi: rekap_nasional_tahunan.csv, kejadian_besar.csv; paket skenario-hidromet: kartu_skenario.csv)"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; paket irbi (irbi_agregat_provinsi.csv, README §4–5)"
+ },
+ {
+  "id": "bnpb-2026-krb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan bab air; penduduk nasional 271.680.290 jiwa sebagai penyebut alternatif (nonalam-sosial/krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+ },
+ {
+  "id": "bps-2026-penduduk",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     6,
+     30
+    ]
+   ]
+  },
+  "title": "Jumlah Penduduk Pertengahan Tahun (Ribu Jiwa), 2026",
+  "genre": "Tabel statistik",
+  "URL": "https://www.bps.go.id/id/statistics-table/2/MTk3NSMy/jumlah-penduduk-menurut-provinsi.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ditarik 23 Okt 2026 09.03 UTC; salinan data/kajian-bnpb/data/air-jawa/mentah/bps/penduduk_nasional_2026.txt baris 48–72 (Indonesia 287.198.383,0; judul menulis Ribu Jiwa, nilainya jiwa)"
+ },
+ {
+  "id": "bps-bengkulu-2026-supas",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Bengkulu",
+    "singkatan": "BPS Provinsi Bengkulu"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     8
+    ]
+   ]
+  },
+  "title": "Survei Penduduk Antar Sensus (SUPAS) 2025: Perubahan Arah Demografi Indonesia",
+  "URL": "https://bengkulu.bps.go.id/id/news/2026/05/08/981/survei-penduduk-antar-sensus--supas--2025--perubahan-arah-demografi-indonesia.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kalimat: penduduk Indonesia pertengahan 2025 berisi 284,67 juta jiwa. Publikasi nasional 'Penduduk dan Indikator Kependudukan Hasil SUPAS 2025' (BPS, 30 Juni 2026, katalog 2101048) belum dibuka isinya"
+ },
+ {
+  "id": "wrr-2025",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Bündnis Entwicklung Hilft"
+   },
+   {
+    "literal": "Institute for International Law of Peace and Armed Conflict (IFHV), Ruhr-Universität Bochum"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "WorldRiskReport 2025: Focus floods",
+  "publisher": "Welthungerhilfe (halaman publikasi)",
+  "URL": "https://www.welthungerhilfe.org/news/publications/detail/worldriskreport-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "halaman penerbit memuat: Filipina WRI 46,56 peringkat teratas, India 40,73, Indonesia 39,80; WorldRiskIndex 2025 untuk 193 negara. Penerbit ganda menurut riset A; halaman Welthungerhilfe tidak menyebut penerbit bersama. Indeks lembaga nonpemerintah, label terverifikasi"
+ }
+]

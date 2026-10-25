@@ -1,0 +1,421 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 12 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-12.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur (atau jalur_rendah/jalur_tinggi), atau nilai (atau rendah/tinggi) + pustaka (id di bab-12.pustaka.json).",
+    "Kunci yang sudah ada di data/angka.json atau berkas bukti lain tidak diulang. Bentuk A diperiksa skrip: tiap jalur menunjuk tepat satu baris. Angka sekunder dan nominal anggaran tidak dimasukkan.",
+    "Kunci ckan.* bersumber respons CKAN yang belum masuk paket dibi (ditarik ulang 24 Okt 2026, respons SHA-1 a4f23da0041b); kunci lembaga.* dihitung dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f); kunci kemenkeu.parb2018.* dari PDF Strategi PARB (SHA-1 8911e1f7a590).",
+    "Disusun 24 Oktober 2026; dimutakhirkan hari yang sama mengikuti KERANGKA versi 3 final."
+  ],
+  "angka": {
+    "lembaga.peran.lembaga_n": {
+      "nilai": 35,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "lembaga",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci; kode lembaga dengan paling sedikit satu baris peran; memuat 9 lembaga yang hanya punya baris dipetakan penyusun tanpa satu pun baris tertulis (BRIN, KEMENDES, KEMENHUT, KEMENKO_PANGAN, KEMENKO_POLKAM, KEMEN_PKP, KEMEN_PU, KLH_BPLH, KOMDIGI); bukan jumlah lembaga bermandat tertulis (itu lembaga.peran.lembaga_tertulis_n = 26); slot {a} deck E3 wajib dua lapis: 35 lembaga, 26 bermandat tertulis"
+    },
+    "lembaga.peran.lembaga_tertulis_n": {
+      "nilai": 26,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "lembaga",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci; lembaga dengan paling sedikit satu baris jenis_bukti = tertulis"
+    },
+    "lembaga.peran.semua.baris": {
+      "nilai": 50,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci; norma lintas jenis (ancaman = semua); memuat 9 baris dipetakan penyusun (tertulis 41 di lembaga.peran.semua.tertulis); jangan disajikan tanpa lapis tertulis"
+    },
+    "lembaga.peran.semua.tertulis": {
+      "nilai": 41,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci"
+    },
+    "lembaga.peran.spesifik.baris": {
+      "nilai": 79,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci; baris khusus satu jenis ancaman"
+    },
+    "lembaga.peran.spesifik.tertulis": {
+      "nilai": 35,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci"
+    },
+    "lembaga.peran.ancaman_tanpa_tertulis": {
+      "nilai": 6,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "ancaman",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah dari berkas kerja lembaga/peran.csv (SHA-1 awal 8d35ac37df2f, 129 baris); hitung ulang saat paket lembaga dikunci; dari 13 ancaman: cuaca_ekstrem, gempa, gunungapi, kebakaran_tpa, longsor, tsunami; mandatnya hanya lewat pelaku dipetakan atau norma lintas jenis"
+    },
+    "renas.lokus_prioritas.entri_unik": {
+      "nilai": 171,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "entri",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.3",
+      "catatan": "olah: 172 entri tertulis hlm. 47–48, Kab. Badung dua kali; DKI Jakarta dan Ibu Kota Nusantara masing-masing satu entri",
+      "lokasi": "hlm. 47–48"
+    },
+    "renas.lokus_prioritas.sumatera": {
+      "nilai": 40,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "entri",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.3",
+      "catatan": "olah baris wilayah Sumatera",
+      "lokasi": "hlm. 47"
+    },
+    "renas.lokus_prioritas.jawa": {
+      "nilai": 66,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "entri",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.3",
+      "catatan": "olah baris wilayah Jawa; DKI Jakarta satu entri",
+      "lokasi": "hlm. 47"
+    },
+    "dibi.sumatra2025.mh_di_lokus_renas": {
+      "nilai": 429,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan Renas PB 2025–2029",
+      "catatan": "olah: meninggal+hilang banjir dan longsor Aceh, Sumut, Sumbar 15 Nov–31 Des 2025 (dibi/mentah/dibi_peristiwa.json, ditarik 23 Okt 2026) di kab/kota yang tercantum di Renas Tabel 2.3; pencocokan nama oleh penyusun"
+    },
+    "dibi.sumatra2025.mh_di_lokus_renas_persen": {
+      "nilai": 32.0,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah: 429 / 1.342 = 31,97%"
+    },
+    "dibi.sumatra2025.top10_kab_lokus": {
+      "nilai": 3,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah: dari 10 kab/kota dengan meninggal+hilang terbanyak, yang lokus Renas: Agam (233), Kota Sibolga (55), Kota Padang Panjang (46); bukan lokus: Aceh Utara, Tapanuli Tengah, Aceh Tamiang, Tapanuli Selatan, Aceh Timur, Bener Meriah, Bireuen"
+    },
+    "renas.indikator_1a.rasio_dibi_2025": {
+      "nilai": 3.6,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB dan Renas PB",
+      "catatan": "olah: versi semua klasifikasi; DIBI 2025 meninggal+hilang 0,80 per 100.000 (kunci dibi.nasional.per100rb.2025_supas) / proyeksi Renas 1.a 0,22 (kunci renas.indikator_1a.proyeksi_2025); versi alam di renas.indikator_1a.rasio_dibi_alam_2025; rumus resmi 1.a tidak tertulis di Renas"
+    },
+    "renas.aksi_312c.target_2029": {
+      "berkas": "program-terbukti/renas_aksi_terkait.csv",
+      "jalur": "[kode=3.1.2.c].target_2029",
+      "satuan": "rumah/unit/paket",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 hlm. 90",
+      "catatan": "PJ Kementerian PKP; kontributor BNPB, ATR/BPN, Kementerian BUMN (nomenklatur Renas); satuan rumah/unit/paket mencakup sarpras permukiman; pembanding DIBI Sumatra 2025 RB 62.956 berbeda satuan dan cakupan (rumah rusak berat satu kejadian), hanya [Inferensi tim], bukan ukuran kekurangan target"
+    },
+    "renas.aksi_312c.baseline_2024": {
+      "berkas": "program-terbukti/renas_aksi_terkait.csv",
+      "jalur": "[kode=3.1.2.c].baseline_2024",
+      "satuan": "rumah/unit/paket",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 hlm. 90",
+      "catatan": "baseline 2024"
+    },
+    "renas.aksi_411c.target_2029": {
+      "nilai": 2,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "dokumen",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029",
+      "catatan": "4.1.1.c Penguatan Regulasi terkait Pendanaan PB; PJ BNPB; kontributor Kementerian Hukum, Kemenko PMK, Kemenkeu, Kementerian PPN/Bappenas; kolom OCR bertumpuk, angka dari urutan teks",
+      "lokasi": "hlm. 95"
+    },
+    "renas.aksi_411l.target_2029": {
+      "nilai": 1,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "dokumen",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029",
+      "catatan": "4.1.1.l Penguatan NSPK terkait Analisis Risiko Bencana; PJ BNPB; pasangan Progsun 2026 butir 3",
+      "lokasi": "hlm. 98"
+    },
+    "renas.aksi_471c.target_2029": {
+      "nilai": 3,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "dokumen",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029",
+      "catatan": "4.7.1.c Pengembangan Metadata Indikator Kinerja PB; PJ BNPB",
+      "lokasi": "hlm. 114"
+    },
+    "kerugian.nasional.tahun_2018": {
+      "berkas": "turunan/profil_kerugian.csv",
+      "jalur_rendah": "[lapisan=tahun,tahun=2018].rp_rendah",
+      "jalur_tinggi": "[lapisan=tahun,tahun=2018].rp_tinggi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
+      "catatan": "rumah rusak DIBI x stimulan (rendah 50/25/10 juta, tinggi 60/30/15 juta); batas bawah, bukan kerugian ekonomi penuh; tahun tercatat terberat 2015–2025 (Lombok dan Sulteng), lantai tahunan lapisan ekstrem"
+    },
+    "kerugian.nasional.ekstrem_sulteng2018": {
+      "berkas": "turunan/profil_kerugian.csv",
+      "jalur_rendah": "[lapisan=ekstrem_analog_sulteng2018].rp_rendah",
+      "jalur_tinggi": "[lapisan=ekstrem_analog_sulteng2018].rp_tinggi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
+      "catatan": "rumah rusak DIBI x stimulan (rendah 50/25/10 juta, tinggi 60/30/15 juta); batas bawah, bukan kerugian ekonomi penuh; lebih ringan dari Lombok 2018 pada ukuran yang sama, jadi bukan lantai ekstrem gempa"
+    },
+    "kerugian.nasional.ekstrem_sumatra2025": {
+      "berkas": "turunan/profil_kerugian.csv",
+      "jalur_rendah": "[lapisan=ekstrem_analog_sumatra2025].rp_rendah",
+      "jalur_tinggi": "[lapisan=ekstrem_analog_sumatra2025].rp_tinggi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
+      "catatan": "rumah rusak DIBI x stimulan (rendah 50/25/10 juta, tinggi 60/30/15 juta); batas bawah, bukan kerugian ekonomi penuh; kategori banjir dan longsor; versi jenis musim hujan di kunci hidromet.sumatra2025.materiil_batas_bawah (Rp5,61–7,06 T)"
+    },
+    "kerugian.nasional.jumlah_2015_2025": {
+      "pustaka": "pantaubencana-2026-profil-kerugian",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
+      "catatan": "olah: jumlah 11 baris lapisan=tahun 2015–2025 di turunan/profil_kerugian.csv; 2018 dan 2025 bersama 55,1%",
+      "rendah": 29086175000000,
+      "tinggi": 37139220000000
+    },
+    "kerugian.lombok2018.stimulan_batas_bawah": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan stimulan rumah BNPB",
+      "catatan": "olah dibi/kejadian_besar.csv versi DIBI: RB 75160, RS 33951, RR 108744 x stimulan 50/25/10 (rendah) dan 60/30/15 juta (tinggi); jendela 29 Jul–30 Sep 2018, NTB dan Bali; lantai ekstrem gempa 2015–2025; kejadian tunggal terberat 2015–2025 pada ukuran ini (Sumatra 2025 Rp5,60–7,06 T; Sulteng 2018 Rp2,90–3,62 T)",
+      "rendah": 5694215000000,
+      "tinggi": 7159290000000
+    },
+    "kerugian.padang2009.stimulan_batas_bawah": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan stimulan rumah BNPB",
+      "catatan": "olah dibi/kejadian_besar.csv versi DIBI: RB 119005, RS 0, RR 152535 x stimulan 50/25/10 (rendah) dan 60/30/15 juta (tinggi); jendela 30 Sep–31 Okt 2009, Sumbar; RS tercatat 0; di luar periode profil 2015–2025, di dalam periode acuan geologi 1996–2025",
+      "rendah": 7475600000000,
+      "tinggi": 9428325000000
+    },
+    "stimulan.rumah.rb.skema_2010": {
+      "nilai": 50000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "bantuan stimulan rumah rusak berat sejak 2010 menurut Menko PMK; teks peraturan besaran tidak ditemukan di korpus JDIH; label resmi bersandar pada siaran resmi Kemenko PMK, bukan teks peraturan"
+    },
+    "stimulan.rumah.rb.skema_2023": {
+      "nilai": 60000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "besaran dinaikkan atas arahan Presiden menurut siaran Kemenko PMK ('Bapak Presiden menghitung akhirnya dinaikkan menjadi 60 juta, 30 juta, 15 juta'); siaran yang sama juga memakai kata 'diusulkan' dan menyebut Perban standar stimulan akan disusun; teks peraturan besaran tidak ditemukan (Juklak 5/2024 tanpa teks di JDIH); label resmi bersandar pada siaran resmi pemerintah, bukan teks peraturan; usulan Rp70–80 juta RB Juli 2026 hanya sekunder"
+    },
+    "stimulan.rumah.rs.skema_2010": {
+      "nilai": 25000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "bantuan stimulan rumah rusak sedang sejak 2010 menurut Menko PMK; teks peraturan besaran tidak ditemukan di korpus JDIH; label resmi bersandar pada siaran resmi Kemenko PMK, bukan teks peraturan"
+    },
+    "stimulan.rumah.rs.skema_2023": {
+      "nilai": 30000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "besaran dinaikkan atas arahan Presiden menurut siaran Kemenko PMK ('Bapak Presiden menghitung akhirnya dinaikkan menjadi 60 juta, 30 juta, 15 juta'); siaran yang sama juga memakai kata 'diusulkan' dan menyebut Perban standar stimulan akan disusun; teks peraturan besaran tidak ditemukan (Juklak 5/2024 tanpa teks di JDIH); label resmi bersandar pada siaran resmi pemerintah, bukan teks peraturan; usulan Rp70–80 juta RB Juli 2026 hanya sekunder"
+    },
+    "stimulan.rumah.rr.skema_2010": {
+      "nilai": 10000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "bantuan stimulan rumah rusak ringan sejak 2010 menurut Menko PMK; teks peraturan besaran tidak ditemukan di korpus JDIH; label resmi bersandar pada siaran resmi Kemenko PMK, bukan teks peraturan"
+    },
+    "stimulan.rumah.rr.skema_2023": {
+      "nilai": 15000000,
+      "pustaka": "kemenkopmk-2023-standar-stimulan",
+      "satuan": "Rp per unit",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 22 November 2023",
+      "catatan": "besaran dinaikkan atas arahan Presiden menurut siaran Kemenko PMK ('Bapak Presiden menghitung akhirnya dinaikkan menjadi 60 juta, 30 juta, 15 juta'); siaran yang sama juga memakai kata 'diusulkan' dan menyebut Perban standar stimulan akan disusun; teks peraturan besaran tidak ditemukan (Juklak 5/2024 tanpa teks di JDIH); label resmi bersandar pada siaran resmi pemerintah, bukan teks peraturan; usulan Rp70–80 juta RB Juli 2026 hanya sekunder"
+    },
+    "dibi.estimasi_kerugian_rumah.baris_diuji": {
+      "nilai": 4146,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah dibi/mentah/dibi_peristiwa.json (25 kejadian besar 2009–2025, ditarik 23 Okt 2026): baris yang memuat kolom estimasi_kerugian_rumah"
+    },
+    "dibi.estimasi_kerugian_rumah.baris_cocok": {
+      "nilai": 4146,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "baris dengan estimasi_kerugian_rumah = RB x 60 + RS x 30 + RR x 15 + rumah terendam x 1; satuan juta rupiah disimpulkan, tidak didokumentasikan"
+    },
+    "ckan.kerusakan_kerugian_proposal.baris": {
+      "nilai": 310,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "resource fefc94c0-5275-4d12-899e-1d517f6c8f7c, ditarik ulang 24 Okt 2026 (limit=1000, respons SHA-1 a4f23da0041b); tahun proposal 2017–2024; belum ditarik ke paket dibi"
+    },
+    "ckan.kerusakan_kerugian_proposal.jumlah_2017_2024": {
+      "nilai": 109341316505451.7,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "olah: jumlah nilai kerusakan + kerugian 310 baris (kerusakan Rp73,00 T, kerugian Rp36,35 T); nilai pengajuan pemda, bukan hasil verifikasi; satu kejadian dapat muncul di beberapa tahun proposal; tidak untuk Renas 2.a"
+    },
+    "ckan.kerusakan_kerugian_proposal.sulteng2018": {
+      "nilai": 44156904364336,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "olah: 9 baris Sulawesi Tengah tahun kejadian 2018, tahun proposal 2020–2024 (termasuk Morowali, Banggai Laut, dan satu baris tanpa nama kab); quake area saja di ckan.kerusakan_kerugian_proposal.palu_sigi_donggala_2018; berdampingan dengan Rp13,82 T angka sementara BNPB Okt 2018 (kunci bnpb.sulteng2018.kerusakan_kerugian)"
+    },
+    "lembaga.matriks.ancaman_n": {
+      "nilai": 13,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "ancaman",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
+      "catatan": "olah: kolom ancaman di lembaga/matriks_ringkas.csv di luar kolom 'semua' (norma lintas jenis); slot {n} deck E3"
+    },
+    "lembaga.peran.bnpb.k_saat_spesifik_n": {
+      "nilai": 1,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "ancaman",
+      "keyakinan": "resmi",
+      "sumber": "idem",
+      "catatan": "olah lembaga/matriks_bencana.csv: ancaman dengan baris BNPB saat:K khusus jenis = karhutla (R094, Inpres 3/2020); norma lintas jenis R002, R003, R004, R009 berlaku untuk ke-13 ancaman; slot {b} deck E3 ditulis dua lapis"
+    },
+    "renas.indikator_1a.rasio_dibi_alam_2025": {
+      "nilai": 3.1,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB dan Renas PB",
+      "catatan": "olah: versi bencana alam (angka utama Kajian 2, KERANGKA V06); 0,68 per 100.000 (kunci dibi.alam.per100rb.2025_bps2026) / 0,22 = 3,09; pembanding, bukan capaian"
+    },
+    "kerugian.nasional.rerata_2015_2025": {
+      "pustaka": "pantaubencana-2026-profil-kerugian",
+      "satuan": "Rp per tahun",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan stimulan rumah BNPB",
+      "catatan": "olah: jumlah 11 baris lapisan=tahun / 11; pembanding resmi PARB Rp22,8 T per tahun (2000–2016, semua bangunan dan bukan bangunan; kunci kemenkeu.parb2018.kerugian_rerata_2000_2016)",
+      "rendah": 2644197727273,
+      "tinggi": 3376292727273
+    },
+    "ckan.kerusakan_kerugian_proposal.palu_sigi_donggala_2018": {
+      "nilai": 43492707918461.0,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "olah: 6 baris Kota Palu, Sigi, Donggala tahun kejadian 2018 (tahun proposal 2020–2024; Kota Palu dua kali Rp13,96 T dan Rp5,22 T; satu baris Donggala bernilai nol); nilai pengajuan pemda, bukan hasil verifikasi; berdampingan Rp13,82 T BNPB sementara"
+    },
+    "ckan.kerusakan_kerugian_proposal.baris_tahun_rentang": {
+      "nilai": 43,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "olah: baris dengan tahun kejadian berbentuk rentang (mis. '2018 - 2019'); menghalangi penjumlahan per tahun kejadian untuk Renas 2.a"
+    },
+    "ckan.kerusakan_kerugian_proposal.baris_kerugian_sama": {
+      "nilai": 6,
+      "pustaka": "bnpb-2026-ckan-kerusakan-kerugian",
+      "satuan": "baris",
+      "keyakinan": "resmi",
+      "sumber": "CKAN data.bnpb.go.id, rekap nilai kerusakan dan kerugian berdasarkan proposal pemda 2017–2024",
+      "catatan": "olah: baris dengan nilai kerugian sama persis dengan nilai kerusakan dan lebih dari nol (antara lain Donggala dan Kota Palu, proposal 2023, kejadian 2018); penilaian mutu oleh penyusun"
+    },
+    "kemenkeu.parb2018.kerugian_rerata_2000_2016": {
+      "nilai": 22800000000000,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 15, 22; rinci Rp22,85 T hlm. PDF 35",
+      "satuan": "Rp per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "rata-rata kerugian ekonomi langsung (rusaknya bangunan dan bukan bangunan) akibat bencana alam 2000–2016; dokumen Kemenkeu mengutip Meilano dkk. 2018 (Insinas-Maipark ITB); nilai nominal; pembanding profil batas bawah; dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    },
+    "kemenkeu.parb2018.kerugian_teridentifikasi_porsi": {
+      "nilai": 60,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 23",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "'sekitar 60%': porsi kerugian ekonomi yang dapat diidentifikasi terhadap kerugian sesungguhnya, perkiraan Bank Dunia dikutip Strategi PARB; dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    },
+    "kemenkeu.parb2018.aceh2004_kerugian": {
+      "nilai": 51400000000000,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 23 (juga 15; Rp51,40 T di hlm. PDF 36)",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "kerugian ekonomi gempa dan tsunami Aceh 2004 menurut Strategi PARB; nilai nominal tahun kejadian; lantai kerugian kejadian 30 tahun (besaran (b) prinsip 9); dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    },
+    "kemenkeu.parb2018.yogya2006_kerugian": {
+      "nilai": 26100000000000,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 23",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "kerugian ekonomi gempa Yogyakarta 2006 menurut Strategi PARB; bertentangan dengan Rp29,1 T penilaian awal Bappenas (kunci bappenas.yogya2006.kerusakan_kerugian); tulis berdampingan; dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    },
+    "kemenkeu.parb2018.ambang_dampak_besar": {
+      "nilai": 4000000000000,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 55",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "bencana berdampak kerugian besar 'di atas Rp. 4 triliun' (gempa bumi, tsunami, banjir) dalam pelapisan PARB; dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    },
+    "kemenkeu.parb2018.dana_cadangan_porsi_maks": {
+      "nilai": 20,
+      "pustaka": "kemenkeu-bkf-2018-parb",
+      "lokasi": "hlm. PDF 46",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Keuangan (BKF), Strategi Pembiayaan dan Asuransi Risiko Bencana (2018, revisi)",
+      "catatan": "kapasitas pembiayaan APBN (dana cadangan bencana) 'secara rata-rata mendekati atau di bawah 20% dari nilai kerugian ekonomi'; nominal dana cadangan tidak disalin (P5); dicek ulang 24 Okt 2026 terhadap PDF SHA-1 8911e1f7a5907843c772ffb6c790691a6622b954, salinan lokal riset/mentah/kemenkeu-bkf-2018-parb.pdf (tidak dilacak git) dan teks pdftotext riset/mentah/kemenkeu-bkf-2018-parb.txt"
+    }
+  }
+}

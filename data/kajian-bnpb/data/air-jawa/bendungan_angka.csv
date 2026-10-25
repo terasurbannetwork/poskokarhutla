@@ -144,7 +144,7 @@ lodan,piezometer,32,buah,2021,https://sda.pu.go.id/balai/bbwspemalijuana/files/d
 lodan,piezometer_rusak,0,buah,2021,https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf (status Juli 2021),resmi,
 jatiluhur,kapasitas,3000,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,versi 1; bertentangan
 jatiluhur,kapasitas,2440,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,versi 2; bertentangan; minta data PJT II
-jatiluhur,luas_di,237790,ha,2015,data/kajian-bnpb/riset/B-air-jawa.md §3,resmi,"DI Jatiluhur, Permen PUPR 14/2015 Lampiran I hlm 16"
+jatiluhur,luas_di,237790,ha,2015,"Permen PUPR 14/2015, BN 2015 No. 638, Lampiran I hlm 16 (pindaian)",resmi,DI Jatiluhur (52.728 + 24.511 + 100.049 + 60.502)
 jatiluhur,sedimentasi_laju,20,juta m3/th,1995-2009,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,"rata-rata; abstrak kajian, inkonsistensi satuan"
 jatiluhur,sedimentasi_kumulatif,522,juta m3,36 tahun,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,idem
 cirata,kapasitas,2165,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,versi 1; bertentangan
@@ -177,7 +177,7 @@ bendo,kapasitas,43,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,
 semantok,kapasitas,32.67,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,
 semantok,layanan_irigasi,1900,ha,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,
 pidekso,kapasitas,25,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,
-kuningan,kapasitas,25,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,olah,riset B: dari 'Cipanas 10x Kuningan'; angka resmi belum ditemukan
+kuningan,kapasitas,25,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,olah(sekunder),riset B: dari 'Cipanas 10x Kuningan'; angka resmi belum ditemukan
 jlantah,kapasitas,10.97,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,
 gondang,kapasitas,9.15,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,jangan tertukar dengan Gondang Lamongan
 ciawi,kapasitas,6.05,juta m3,,data/kajian-bnpb/riset/B-air-jawa.md §3,sekunder,

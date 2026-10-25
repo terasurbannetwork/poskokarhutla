@@ -89,6 +89,81 @@ jobs:
       - name: Titik 24 jam untuk laporan warga
         run: python3 scripts/warga/titik24.py
 
+      # Peluang api 7 hari P1 (docs/riset/RISIKO-MINGGUAN.md): eksperimental, dibaca Worker hanya untuk akun login dari R2 risiko/.
+      # Arsip NOAA-20 bergulir + catatan prospektif (ramalan beku, nilai, tolak) di data/raw/risiko/p1: cache Actions DAN R2 arsip/.
+      # Salinan R2 selalu digabung dulu (risiko_produksi.py pulih: hanya menambah); unggah balik HANYA bila pemulihan R2 berhasil
+      # atau objeknya memang belum ada, supaya salinan yang lebih miskin (cache hilang + R2 tak terjangkau) tidak menimpa arsip.
+      - name: Pulihkan arsip risiko P1
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/risiko/p1
+          key: risiko-p1-${{ github.run_id }}
+          restore-keys: risiko-p1-
+
+      - name: Pulihkan arsip risiko P1 dari R2 (boleh gagal)
+        id: risiko_r2
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # r2 = ok (digabung) | kosong (objek belum ada: jalan pertama) | gagal (jaringan/izin/berkas rusak)
+          r2=ok
+          for b in risiko_p1 risiko_n20; do
+            rm -f /tmp/$b.jsonl.gz
+            if npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/arsip/$b.jsonl.gz --file /tmp/$b.jsonl.gz --remote > /tmp/$b.log 2>&1; then
+              python3 scripts/sebaran/risiko_produksi.py pulih /tmp/$b.jsonl.gz || { r2=gagal; echo "::error title=Risiko P1 pulih R2::$b tidak bisa digabung"; }
+            elif grep -q "specified key does not exist" /tmp/$b.log; then
+              [ "$r2" = ok ] && r2=kosong
+              echo "$b belum ada di R2 (jalan pertama)"
+            else
+              r2=gagal; cat /tmp/$b.log
+              echo "::error title=Risiko P1 pulih R2::arsip/$b.jsonl.gz tidak terbaca; unggah ke R2 dilewati di jalan ini"
+            fi
+          done
+          echo "r2=$r2" >> "$GITHUB_OUTPUT"
+
+      - name: Peluang api 7 hari P1 (boleh gagal)
+        id: risiko
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          python3 scripts/sebaran/risiko_produksi.py uji || { echo "::error title=Risiko P1 swauji merah::risiko_produksi.py uji gagal (paritas artefak atau logika tolak); tidak ada ramalan/nilai di jalan ini"; exit 1; }
+          python3 scripts/sebaran/risiko_produksi.py harian || { echo "::error title=Risiko P1 gagal::risiko_produksi.py harian gagal; ramalan/nilai tidak diperbarui, R2 dan cache tidak disentuh"; exit 1; }
+
+      # Worker mengalirkan risiko/*.json apa adanya: JSON polos (tanpa Content-Encoding), < 8 MB (dijaga di risiko_produksi.py)
+      - name: Unggah risiko P1 ke R2 (boleh gagal)
+        id: risiko_unggah
+        if: steps.risiko.outcome == 'success' && (steps.risiko_r2.outputs.r2 == 'ok' || steps.risiko_r2.outputs.r2 == 'kosong')
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -e
+          python3 scripts/sebaran/risiko_produksi.py kemas /tmp/risiko_p1.jsonl.gz
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/arsip/risiko_p1.jsonl.gz --file /tmp/risiko_p1.jsonl.gz --content-type application/gzip --remote
+          npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/arsip/risiko_n20.jsonl.gz --file data/raw/risiko/p1/n20.jsonl.gz --content-type application/gzip --remote
+          for f in terbaru prospektif; do
+            npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/risiko/$f.json --file data/risiko_p1/keluaran/$f.json --content-type application/json --remote
+          done
+
+      - name: Risiko P1 tidak terunggah (peringatan)
+        if: steps.risiko.outcome == 'success' && steps.risiko_unggah.outcome != 'success'
+        run: |
+          echo "::error title=Risiko P1 tidak diunggah::pemulihan R2 = '${{ steps.risiko_r2.outputs.r2 }}' atau unggah gagal; risiko/terbaru.json di R2 tetap versi lama"
+          echo "### Risiko P1 TIDAK diunggah ke R2" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Simpan arsip risiko P1
+        if: always() && steps.risiko.outcome == 'success'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/risiko/p1
+          key: risiko-p1-${{ github.run_id }}
+
       # arsip berita bergulir 120 hari dibawa lewat cache tersendiri (bukan commit: berubah tiap hari).
       # Cache hilang -> berita.py membangun ulang arsip 120 hari sendiri (± 8 menit).
       - name: Pulihkan iklim tanah

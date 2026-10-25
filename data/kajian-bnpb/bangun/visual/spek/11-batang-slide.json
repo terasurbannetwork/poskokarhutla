@@ -1,0 +1,29 @@
+{
+  "nama": "batang-irbi-nasional-slide",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "slide-separuh",
+  "keterangan": "Versi slide (setengah lebar isi deck, mode slide) dari grafik batang IRBI nasional, 2015 sampai 2024",
+  "sumber": "InaRISK BNPB, IRBI 2015 sampai 2024",
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_tren_2015_2024.csv",
+      "saring": {
+        "tingkat": "nasional",
+        "metode": "rerata_sederhana"
+      }
+    },
+    "kolom": "y{2015..2024}"
+  },
+  "pembanding": true,
+  "tekan": 3,
+  "desimal": 1,
+  "kepala": {
+    "kiri": "IRBI nasional",
+    "neto": true
+  },
+  "legenda": {
+    "pembanding": "2015",
+    "tekan": "tiga tahun terakhir"
+  }
+}

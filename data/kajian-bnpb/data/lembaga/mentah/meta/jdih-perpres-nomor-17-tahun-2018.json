@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Presiden",
+ "Judul": "Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+ "Nomor": "17",
+ "Tahun": "2018",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Status Keadaan Tertentu",
+ "Tanggal Penetapan": "19 March 2018",
+ "Tanggal Pengundangan": "22 March 2018",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "LN 2018 (34); 5 Hlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERPRES",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2018perpresri017.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perpres-nomor-17-tahun-2018",
+ "tipe": "Peraturan",
+ "slug": "perpres-nomor-17-tahun-2018",
+ "teks": [
+  "perpres-nomor-17-tahun-2018.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "6967a38c4f7f46bd346baf1f3bc09e3f74c59734",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "f0ae126191e5f18d284ea853b73c21ad84277350",
+ "asal_teks": "data/raw/hukum/teks/perpres-nomor-17-tahun-2018.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

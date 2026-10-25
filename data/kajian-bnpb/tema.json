@@ -48,12 +48,15 @@
       "teks-di-navy": {"hex": "#C9D1E3", "pakai": "slide gelap: footer, baris laporan penutup, butir pembatas Lampiran (d9 s7, s8)"},
       "aksen-di-navy": {"hex": "#F6B26B", "pakai": "slide gelap: subjudul dan kepala kelompok pembatas Lampiran (d9 s8)"},
       "oranye-di-navy": {"hex": "#F28C28", "pakai": "slide gelap: garis aksen penutup, kode lampiran di pembatas (d9 s7, s8)"},
-      "redup-di-navy": {"hex": "#8C9AA8", "pakai": "slide gelap: garis pemisah dan nomor halaman di pembatas Lampiran (d9 s8)"}
+      "redup-di-navy": {"hex": "#8C9AA8", "pakai": "slide gelap: garis pemisah dan nomor halaman di pembatas Lampiran (d9 s8)"},
+      "seri-lama": {"hex": "#B7B0A6", "pakai": "batang periode lama (tidak ditekankan) di grafik batang; di luar ramp skala supaya tidak berarti kelas (B1.8, D-24); CIEDE2000 >= 10,8 dari semua hex tema"},
+      "seri-lainnya": {"hex": "#8F877D", "pakai": "segmen 'lainnya' batang bertumpuk; di luar ramp skala dan kategori (B1.8, D-24); CIEDE2000 >= 12,8 dari semua hex tema, teks di atasnya 4,9:1"}
     },
     "arah": {
       "naik": "oranye",
       "turun": "biru",
       "nol": "teks-3",
+      "berkeluarga": "teks-2",
       "naik_di_navy": {"hex": "#F2A35E"},
       "turun_di_navy": {"hex": "#8EC5F5"},
       "_aturan": "arah = ikon segitiga vektor atau kata naik/turun, tidak pernah karakter segitiga atau panah; di halaman berkategori api atau basah ikon arah memakai teks-2 dan katanya ditulis"
@@ -81,9 +84,9 @@
     },
     "skala": {
       "_aturan": "lima kelas dari terang ke pekat; skala.<ramp>.<1..5>; status resmi lembaga (level PVMBG, peringatan BMKG, MMI) memakai warna dan kata asli lembaganya, tidak dipetakan ke sini",
-      "api": {"kelas": ["#FBE7D6", "#F4C3A0", "#E8894A", "#D9600B", "#8F3F07"], "dipakai": "karhutla; kelas IRBI (T8)"},
-      "air": {"kelas": ["#DCEBF8", "#A4CAEE", "#68A8E0", "#2F86D1", "#1B5A93"], "dipakai": "indeks platform banjir, longsor, cuaca ekstrem, gelombang, rob"},
-      "emas": {"kelas": ["#F4ECDC", "#DCC79C", "#C4A262", "#A07A32", "#6E5424"], "dipakai": "indeks platform kekeringan"},
+      "api": {"kelas": ["#FBE7D6", "#F4C3A0", "#E8894A", "#D9600B", "#8F3F07"], "dipakai": "karhutla; kelas IRBI (T8)", "kategori": "api"},
+      "air": {"kelas": ["#DCEBF8", "#A4CAEE", "#68A8E0", "#2F86D1", "#1B5A93"], "dipakai": "indeks platform banjir, longsor, cuaca ekstrem, gelombang, rob", "kategori": "basah"},
+      "emas": {"kelas": ["#F4ECDC", "#DCC79C", "#C4A262", "#A07A32", "#6E5424"], "dipakai": "indeks platform kekeringan", "kategori": "kering"},
       "netral": {"kelas": ["#DCE3EB", "#AEBBCB", "#7F93AA", "#4F6A88", "#24384F"], "dipakai": "kapasitas, geologi, nonalam, multi-bahaya platform"},
       "irbi": {
         "ramp": "api",
@@ -118,16 +121,20 @@
       "subjudul": "Pengelolaan Air pada Musim Kemarau dan Musim Hujan untuk Pengurangan Risiko Bencana",
       "judul_pendek": "Kajian Ketahanan Air Pulau Jawa",
       "nama_berkas": "Kajian Ketahanan Air Pulau Jawa {DDMMYY}",
-      "batas_halaman_isi": 110,
-      "lampiran": "ABCDEFGH"
+      "batas_halaman_isi": null,
+      "lampiran": "ABCDEFGHIJKL",
+      "kata_kunci": ["BNPB", "penanggulangan bencana", "ketahanan air", "Pulau Jawa", "grand design", "musim kemarau", "musim hujan"],
+      "cakupan_sampul": "Cakupan: seluruh kabupaten/kota di enam provinsi Pulau Jawa dan lima komponen air pada musim kemarau dan musim hujan."
     },
     "mitigasi": {
       "judul": "Grand Design Mitigasi Bencana Indonesia 2026–2030",
       "subjudul": "Strategi Prabencana, Tanggap Darurat, dan Pascabencana",
       "judul_pendek": "Kajian Mitigasi Bencana Indonesia",
       "nama_berkas": "Kajian Mitigasi Bencana Indonesia {DDMMYY}",
-      "batas_halaman_isi": 150,
-      "lampiran": "ABCDEFGHI"
+      "batas_halaman_isi": null,
+      "lampiran": "ABCDEFGHIJKL",
+      "kata_kunci": ["BNPB", "penanggulangan bencana", "mitigasi bencana", "Indonesia", "grand design", "skenario terburuk", "prabencana"],
+      "cakupan_sampul": "Cakupan: seluruh kabupaten/kota di Indonesia dan seluruh jenis bencana menurut UU 24/2007 pada tiga tahap penanggulangan."
     },
     "penerbit": "Badan Nasional Penanggulangan Bencana",
     "terbit": "Oktober 2026"
@@ -285,14 +292,18 @@
     "pil_label_garis": "garis",
     "margin_pt": 3,
     "sederhana_pt": 0.35,
-    "pil_tinggi_rasio": 1.75,
+    "pil_tinggi_rasio": 1.6,
     "pil_isi_pt": 4,
     "pil_garis_pt": 0.5,
     "pemandu_pt": 0.5,
     "titik_pemandu_pt": 1.1,
     "jarak_label_pt": [0, 4, 9, 15, 22, 30, 40, 52, 66, 82, 100],
     "jarak_antar_label_pt": 1.5,
-    "simbol_r_maks_pt": 9,
+    "jarak_jangkar_lain_pt": 6,
+    "jarak_laut_dekat_pt": 15,
+    "jarak_laut_maks_pt": 45,
+    "batas_wilayah_nasional_pt": 0.2,
+    "simbol_r_maks_pt": 7,
     "simbol_r_min_pt": 1.8,
     "simbol_r_tetap_pt": 3,
     "simbol_garis_pt": 0.75,
@@ -304,7 +315,7 @@
     "warna_pemandu": "teks-2",
     "warna_luar": "kertas",
     "warna_inset_darat": "wilayah",
-    "warna_inset_fokus": "navy",
+    "warna_inset_fokus": "teks-3",
     "warna_bingkai": "garis",
     "warna_skala": "teks-2"
   },
@@ -319,7 +330,12 @@
     "warna_rata_rata": "navy",
     "warna_seri_kedua": "biru-abu",
     "warna_batang": "navy",
-    "warna_batang_lama": "skala.netral.2",
+    "warna_batang_lama": "seri-lama",
+    "warna_lainnya": "seri-lainnya",
+    "warna_tercatat": "teks",
+    "tanda_tercatat_pt": 1.5,
+    "titik_matriks_pt": 22,
+    "baris_matriks_titik_pt": 25,
     "warna_pita": "tint.netral.pita",
     "warna_garis_acuan": "garis",
     "warna_anotasi": "teks-2",
@@ -339,13 +355,14 @@
     "jarak_teks_pt": 3,
     "tepi_pt": 2,
     "baris_horizontal_pt": 17,
-    "bulatan_nomor_pt": 12,
+    "bulatan_nomor_pt": 13,
     "sel_panas_tinggi_pt": 17,
     "sel_celah_pt": 1.5,
     "legenda_kotak_pt": [10, 7],
     "legenda_jarak_pt": 10,
     "pil_tinggi_pt": 14,
-    "pil_isi_pt": 5
+    "pil_isi_pt": 5,
+    "halo_pt": 2.4
   },
 
   "visual": {
@@ -375,7 +392,8 @@
         "panel": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
         "label_peta": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks"},
         "nomor": {"ukuran_pt": 8, "bobot": "bold", "warna": "kertas"},
-        "pil": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"}
+        "pil": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"},
+        "kaki": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks-3"}
       },
       "slide": {
         "batas_bawah_pt": 6,
@@ -390,7 +408,8 @@
         "panel": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
         "label_peta": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks"},
         "nomor": {"ukuran_pt": 6.5, "bobot": "bold", "warna": "kertas"},
-        "pil": {"ukuran_pt": 6.6, "bobot": "bold", "warna": "teks"}
+        "pil": {"ukuran_pt": 6.6, "bobot": "bold", "warna": "teks"},
+        "kaki": {"ukuran_pt": 6.5, "bobot": "regular", "warna": "teks-3"}
       }
     }
   },
@@ -440,6 +459,42 @@
     "turun": "khusus:segitiga-turun"
   },
 
+  "glif": {
+    "_catatan": "path SVG tiap glif registri ikon (viewBox 24, stroke 2, ujung bulat; PEDOMAN B5.14, D-25). 'lucide:' disalin dari paket lucide-react 1.54.0 (ISC) dan diuji sama dengannya bila LUCIDE_DIR diset (bangun/visual/uji.mjs); 'khusus:' digambar untuk kajian ini; 'deck:' tetap dibaca dari data/laporan-bnpb/harian-2026-10-23/ikon.mjs. DOCX, deck, dan web membaca blok ini.",
+    "lucide:banknote": "<rect width=\"20\" height=\"12\" x=\"2\" y=\"6\" rx=\"2\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/><path d=\"M6 12h.01M18 12h.01\"/>",
+    "lucide:cloud-lightning": "<path d=\"M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973\"/><path d=\"m13 12-3 5h4l-3 5\"/>",
+    "lucide:construction": "<rect x=\"2\" y=\"6\" width=\"20\" height=\"8\" rx=\"1\"/><path d=\"M17 14v7\"/><path d=\"M7 14v7\"/><path d=\"M17 3v3\"/><path d=\"M7 3v3\"/><path d=\"M10 14 2.3 6.3\"/><path d=\"m14 6 7.7 7.7\"/><path d=\"m8 6 8 8\"/>",
+    "lucide:database": "<ellipse cx=\"12\" cy=\"5\" rx=\"9\" ry=\"3\"/><path d=\"M3 5V19A9 3 0 0 0 21 19V5\"/><path d=\"M3 12A9 3 0 0 0 21 12\"/>",
+    "lucide:droplet": "<path d=\"M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z\"/>",
+    "lucide:factory": "<path d=\"M12 16h.01\"/><path d=\"M16 16h.01\"/><path d=\"M3 19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5a.5.5 0 0 0-.769-.422l-4.462 2.844A.5.5 0 0 1 15 10.5v-2a.5.5 0 0 0-.769-.422L9.77 10.922A.5.5 0 0 1 9 10.5V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z\"/><path d=\"M8 16h.01\"/>",
+    "lucide:graduation-cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>",
+    "lucide:hammer": "<path d=\"m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9\"/><path d=\"m18 15 4-4\"/><path d=\"m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5\"/>",
+    "lucide:land-plot": "<path d=\"m12 8 6-3-6-3v10\"/><path d=\"m8 11.99-5.5 3.14a1 1 0 0 0 0 1.74l8.5 4.86a2 2 0 0 0 2 0l8.5-4.86a1 1 0 0 0 0-1.74L16 12\"/><path d=\"m6.49 12.85 11.02 6.3\"/><path d=\"M17.51 12.85 6.5 19.15\"/>",
+    "lucide:landmark": "<path d=\"M10 18v-7\"/><path d=\"M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z\"/><path d=\"M14 18v-7\"/><path d=\"M18 18v-7\"/><path d=\"M3 22h18\"/><path d=\"M6 18v-7\"/>",
+    "lucide:list-checks": "<path d=\"M13 5h8\"/><path d=\"M13 12h8\"/><path d=\"M13 19h8\"/><path d=\"m3 17 2 2 4-4\"/><path d=\"m3 7 2 2 4-4\"/>",
+    "lucide:map-pin": "<path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/>",
+    "lucide:mountain": "<path d=\"m8 3 4 8 5-5 5 15H2L8 3z\"/>",
+    "lucide:scale": "<path d=\"M12 3v18\"/><path d=\"m19 8 3 8a5 5 0 0 1-6 0zV7\"/><path d=\"M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1\"/><path d=\"m5 8 3 8a5 5 0 0 1-6 0zV7\"/><path d=\"M7 21h10\"/>",
+    "lucide:school": "<path d=\"M14 21v-3a2 2 0 0 0-4 0v3\"/><path d=\"M18 4.933V21\"/><path d=\"m4 6 7.106-3.79a2 2 0 0 1 1.788 0L20 6\"/><path d=\"m6 11-3.52 2.147a1 1 0 0 0-.48.854V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a1 1 0 0 0-.48-.853L18 11\"/><path d=\"M6 4.933V21\"/><circle cx=\"12\" cy=\"9\" r=\"2\"/>",
+    "lucide:shield-check": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/>",
+    "lucide:siren": "<path d=\"M7 18v-6a5 5 0 1 1 10 0v6\"/><path d=\"M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z\"/><path d=\"M21 12h1\"/><path d=\"M18.5 4.5 18 5\"/><path d=\"M2 12h1\"/><path d=\"M12 2v1\"/><path d=\"m4.929 4.929.707.707\"/><path d=\"M12 12v6\"/>",
+    "lucide:sprout": "<path d=\"M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3\"/><path d=\"M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4\"/><path d=\"M5 21h14\"/>",
+    "lucide:sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.93 4.93 1.41 1.41\"/><path d=\"m17.66 17.66 1.41 1.41\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.34 17.66-1.41 1.41\"/><path d=\"m19.07 4.93-1.41 1.41\"/>",
+    "lucide:triangle-alert": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/>",
+    "lucide:virus": "<path d=\"M12 14.991h.01\"/><path d=\"M12 22v-3\"/><path d=\"M12 2v3\"/><path d=\"M13 22h-2\"/><path d=\"M13 2h-2\"/><path d=\"M13.99 10H14\"/><path d=\"m16.5 19.794-1-1.733\"/><path d=\"m16.5 4.205-1 1.732\"/><path d=\"m19.794 16.5-1.732-1\"/><path d=\"m19.794 7.5-1.732 1\"/><path d=\"M2 12h3\"/><path d=\"M2 13v-2\"/><path d=\"M22 12h-3\"/><path d=\"M22 13v-2\"/><path d=\"m4.206 16.5 1.732-1\"/><path d=\"m4.206 7.5 1.732 1\"/><path d=\"m7.5 19.794 1-1.733\"/><path d=\"m7.5 4.205 1 1.732\"/><path d=\"M9 12h.01\"/><circle cx=\"12\" cy=\"12\" r=\"7\"/>",
+    "khusus:tsunami": "<path d=\"M2 15.5c3 0 4.6-2 6-5C9.6 7 12 4 16 4c3.3 0 6 2.2 6 5.2 0 2.4-1.8 4.3-4.1 4.3-1.8 0-3.1-1.3-3.1-3 0-1.2.9-2.1 2.1-2.1\"/><path d=\"M2 20.5c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1\"/>",
+    "khusus:likuefaksi": "<path d=\"M6.2 16.5 4.6 6.6l7.4-1.3 1.7 9.9\"/><path d=\"M7.8 10.2l2.4-.4\"/><path d=\"M8.3 13.2l2.4-.4\"/><path d=\"M2 20c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1\"/><path d=\"M15.5 16.5c1.5 0 2-1 3.3-1s1.9 1 3.2 1\"/>",
+    "khusus:longsor": "<path d=\"M2 21h20\"/><path d=\"M2 21V6.5c2.6 0 3.8 1.2 4.8 3.2s2.4 3.4 4.7 4.4c2.2 1 3.4 3 3.9 6.9\"/><circle cx=\"18.7\" cy=\"19.3\" r=\"1.6\"/><circle cx=\"21.3\" cy=\"20\" r=\"0.9\"/><path d=\"m8 4.6 3 2\"/><path d=\"m12.6 8.8 2.6 1.7\"/>",
+    "khusus:abrasi": "<path d=\"M22 4h-9.5c0 2 1.6 3 1.6 5s-2.4 2.6-2.4 5 2.3 3.2 2.3 6H22\"/><path d=\"M2 9.5c1.3 0 2-.9 3.3-.9s2 .9 3.3.9\"/><path d=\"M2 14.5c1.3 0 2-.9 3.3-.9s2 .9 3.3.9\"/><path d=\"M2 19.5c1.3 0 2-.9 3.3-.9s2 .9 3.3.9\"/>",
+    "khusus:rob": "<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5.5 8.6V15\"/><path d=\"M18.5 8.6V15\"/><path d=\"M10 15v-4h4v4\"/><path d=\"M2 17c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1\"/><path d=\"M2 21.5c1.5 0 2.5-1 4-1s2.5 1 4 1 2.5-1 4-1 2.5 1 4 1 2.5-1 4-1\"/>",
+    "khusus:konflik": "<circle cx=\"6\" cy=\"7\" r=\"3\"/><circle cx=\"18\" cy=\"7\" r=\"3\"/><path d=\"M1.5 21v-1.5A5 5 0 0 1 8.5 15\"/><path d=\"M22.5 21v-1.5a5 5 0 0 0-7-4.5\"/><path d=\"m12.6 9-1.6 2.6h2L11.4 14.5\"/>",
+    "khusus:bendungan": "<path d=\"M11.5 21 14 4h2.5l5 17Z\"/><path d=\"M2 9.5c1.2 0 1.8.8 3 .8s1.8-.8 3-.8 1.8.8 3 .8\"/><path d=\"M2 14c1.2 0 1.8.8 3 .8s1.8-.8 3-.8 1.6.7 2.6.8\"/><path d=\"M2 21h20\"/>",
+    "khusus:sumur": "<path d=\"M3 9.5 12 3l9 6.5\"/><path d=\"M6 8v7\"/><path d=\"M18 8v7\"/><path d=\"M12 8v3.5\"/><path d=\"M10.5 11.5h3v2h-3z\"/><path d=\"M4 15h16v6H4z\"/>",
+    "khusus:gnss": "<path d=\"M2 15h7.5l2.5 4h10\"/><path d=\"M8 15V8.5\"/><path d=\"M5 8.5h6\"/><path d=\"M13.5 6.5a3 3 0 0 0-3-3\"/><path d=\"M16.5 6.5a6 6 0 0 0-6-6\"/>",
+    "khusus:segitiga-naik": "<path d=\"M12 5 20.5 19h-17Z\" fill=\"currentColor\" stroke=\"none\"/>",
+    "khusus:segitiga-turun": "<path d=\"M12 19 3.5 5h17Z\" fill=\"currentColor\" stroke=\"none\"/>"
+  },
+
   "kosakata": {
     "_catatan": "kode yang ditulis di naskah (bangun/NASKAH-SPEK.md) dan label yang tampil; generator menolak kode di luar daftar ini",
     "jenis_bencana": {
@@ -463,7 +518,46 @@
       "resmi": {"label": "Resmi", "pil_isi": "navy", "pil_teks": "kertas"},
       "terverifikasi": {"label": "Terverifikasi", "pil_garis": "slate", "pil_teks": "teks"},
       "estimasi-model": {"label": "Estimasi model", "pil_garis": "oranye", "pil_teks": "teks", "tambahan": ["belum diuji balik", "uji balik gagal"]},
-      "asumsi-kebijakan": {"label": "Asumsi kebijakan", "pil_garis": "teks-3", "pil_teks": "teks"}
+      "asumsi-kebijakan": {"label": "Asumsi kebijakan", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "penilaian-pakar": {"label": "Penilaian pakar", "pil_garis": "teks-3", "pil_teks": "teks"}
+    },
+    "aspek_dampak": {
+      "_aturan": "Perban BNPB 2/2023 Pasal 7 ayat (5): asumsi dampak kartu skenario diproyeksikan ke lima aspek ini (KERANGKA prinsip 9, PEDOMAN B5.11)",
+      "lingkungan": "Lingkungan",
+      "kependudukan": "Kependudukan",
+      "ekonomi": "Ekonomi",
+      "infrastruktur-fisik": "Infrastruktur/fisik",
+      "layanan-sipil": "Layanan sipil"
+    },
+    "skala_dampak": {
+      "_aturan": "kelas dampak 1-5 per aspek Perban 2/2023; kelas skenario = aspek terberat; ambang tiap aspek ditetapkan Bab 3 (Metodologi) dari sebaran DIBI 2008-2025 sebelum angka skenario diisi (KERANGKA prinsip 9, PEDOMAN B5.27)",
+      "1": "Ringan",
+      "2": "Terbatas",
+      "3": "Sedang",
+      "4": "Berat",
+      "5": "Sangat berat"
+    },
+    "dampak_prioritas": {
+      "_aturan": "kunci baris dampak kisi prioritas rekomendasi (PEDOMAN B5.28): diturunkan dari kelas skala_dampak tertinggi jenis atau aspek yang disasar rekomendasi; label Asumsi kebijakan",
+      "sedang": {"label": "Sedang", "kelas_dampak": [1, 2, 3]},
+      "tinggi": {"label": "Tinggi", "kelas_dampak": [4]},
+      "sangat-tinggi": {"label": "Sangat tinggi", "kelas_dampak": [5]}
+    },
+    "peran_bnpb": {
+      "_aturan": "kosakata tertutup peran BNPB di tiap program dan rekomendasi (KERANGKA prinsip 14); dasar Perpres 1/2019 Pasal 18-20, Perban 6/2025 jo. Perban 11/2025",
+      "koordinasi": "Koordinasi",
+      "nspk": "NSPK",
+      "monev": "Pemantauan dan evaluasi",
+      "data-krb": "Data dan KRB",
+      "dana-bersama": "Pendanaan Dana Bersama",
+      "komando-darurat": "Komando darurat"
+    },
+    "kode_peran": {
+      "_aturan": "kode peran lembaga di matriks mandat tertulis dan rekomendasi; sama dengan paket lembaga (lembaga.json meta kode_peran)",
+      "K": "koordinator/penanggung jawab utama",
+      "P": "pelaksana/pendukung",
+      "R": "penetap status/izin/norma",
+      "I": "informasi dan peringatan dini"
     },
     "status_usulan": {
       "sudah-ada": {"label": "Sudah ada", "pil_garis": "teks-3", "pil_teks": "teks"},
@@ -513,28 +607,25 @@
       "5": "> 25%"
     },
     "besaran_skenario_alam": [
-      "Korban jiwa",
-      "Luka",
-      "Pengungsi hari ke-7",
-      "Bangunan rusak berat",
-      "Bangunan rusak sedang",
-      "Bangunan rusak ringan",
-      "Luas terdampak",
-      "Kerugian materiil",
-      "DALY",
-      "Hari mengungsi",
-      "Sekolah terganggu",
-      "Faskes terganggu"
+      "Lingkungan",
+      "Kependudukan",
+      "Ekonomi",
+      "Infrastruktur/fisik",
+      "Layanan sipil",
+      "Kebutuhan respons"
     ],
+    "besaran_skenario_terlarang": ["Luka", "Pengungsi hari ke-7", "DALY"],
     "istilah": {
       "_catatan": "PEDOMAN C3 dan gerbang D-10 sampai glosarium.json ada: label dari data diganti ke istilah baku; teks tampil yang memuat istilah terlarang ditolak (kata utuh, tanpa beda huruf)",
       "ganti": {"Bali–Nusa Tenggara": "Bali dan Nusa Tenggara"},
       "terlarang": ["titik api", "perkiraan satelit", "provinsi prioritas", "hujan pertama", "kamu", "Anda", "pra bencana", "pra-bencana", "subsiden", "amblesan", "Bali–Nusa Tenggara", "[SEKUNDER]", "TIDAK DITEMUKAN"]
     },
     "indikator_skenario_nonalam": {
-      "pandemi": ["Kasus", "Kematian", "Hari layanan kesehatan terganggu"],
-      "kebakaran-tpa": ["Luas terbakar", "Hari asap", "Kasus ISPA"],
-      "kebakaran-industri": ["Radius evakuasi", "Pengungsi", "Korban jiwa", "Luka"]
+      "_aturan": "kartu analog berangka nonalam (varian b) dan sosial (varian c): empat besaran tanpa perkalian dan tanpa proyeksi per wilayah; sel tanpa data '–' beralasan (KERANGKA prinsip 9, PEDOMAN B5.11)",
+      "pandemi": ["Korban jiwa", "Luas terdampak", "Kerugian materiil", "Kerugian imateriil"],
+      "kebakaran-tpa": ["Korban jiwa", "Luas terdampak", "Kerugian materiil", "Kerugian imateriil"],
+      "kebakaran-industri": ["Korban jiwa", "Luas terdampak", "Kerugian materiil", "Kerugian imateriil"],
+      "konflik-sosial": ["Korban jiwa", "Luas terdampak", "Kerugian materiil", "Kerugian imateriil"]
     }
   },
 
@@ -555,7 +646,7 @@
     "layout": {"isi": "kertas", "gelap": "navy", "gelap_untuk": ["penutup", "pembatas-lampiran"]},
     "tipografi": {
       "batas_bawah_pt": 6,
-      "judul_temuan": {"ukuran_pt": [19, 22], "bobot": "bold", "warna": "teks", "warna_angka": "oranye", "warna_tempat": "biru-lembaga", "maks_baris": 2},
+      "judul_temuan": {"ukuran_pt": [19, 22], "bobot": "bold", "warna": "teks", "warna_angka": "oranye", "warna_angka_berkeluarga": "navy", "warna_tempat": "biru-lembaga", "maks_baris": 2},
       "subjudul": {"ukuran_pt": 12, "bobot": "regular", "warna": "teks-2"},
       "nilai_kartu": {"ukuran_pt": 17, "bobot": "bold"},
       "hitungan_panel": {"ukuran_pt": [16, 18], "bobot": "bold"},
@@ -577,19 +668,142 @@
       "catatan_kaki": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks-3"},
       "footer": {"ukuran_pt": 8.5, "bobot": "regular", "warna": "teks"},
       "nomor_halaman": {"ukuran_pt": 8.5, "bobot": "bold", "warna": "teks"},
-      "pengecualian_bawah": {"ukuran_pt": [5.2, 5.8], "hanya": "persen di tabel padat dan chip"}
+      "pengecualian_bawah": {"ukuran_pt": [5.2, 5.8], "hanya": "persen di tabel padat dan chip"},
+      "isi_pita": {"ukuran_pt": 7.2, "bobot": "regular", "warna": "teks-2"},
+      "temuan_kode": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "navy"},
+      "temuan_isi": {"ukuran_pt": 10.5, "bobot": "regular", "warna": "teks"},
+      "chip": {"ukuran_pt": 6.4, "bobot": "bold", "warna": "teks"},
+      "label_tabel_utama": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"},
+      "isi_tabel": {"ukuran_pt": 7.5, "bobot": "regular", "warna": "teks-2"},
+      "nilai_tabel": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"},
+      "total_tabel": {"ukuran_pt": 8, "bobot": "bold", "warna": "kertas"},
+      "nomor_peringkat": {"ukuran_pt": 6.5, "bobot": "bold", "warna": "kertas"},
+      "ubah_grafik": {"ukuran_pt": 9, "bobot": "bold"},
+      "label_peta": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks"},
+      "tesis": {"ukuran_pt": 12, "bobot": "bold", "warna": "navy"},
+      "footer_gelap": {"ukuran_pt": 8.5, "bobot": "regular", "warna": "teks-di-navy"},
+      "cut_off_label": {"ukuran_pt": 7, "bobot": "bold", "warna": "batas", "spasi_huruf_pt": 1.0},
+      "cut_off_nilai": {"ukuran_pt": 9, "bobot": "bold", "warna": "kertas"},
+      "judul_sampul": {"ukuran_pt": 32, "bobot": "bold", "warna": "teks", "maks_baris": 3},
+      "subjudul_sampul": {"ukuran_pt": 14, "bobot": "regular", "warna": "teks-2"},
+      "lembaga_sampul": {"ukuran_pt": 16, "bobot": "bold", "warna": "biru-lembaga"},
+      "kepada_sampul": {"ukuran_pt": 12.5, "bobot": "regular", "warna": "teks"},
+      "tanggal_sampul": {"ukuran_pt": 11, "bobot": "bold", "warna": "kertas"},
+      "kredit_foto": {"ukuran_pt": 7, "bobot": "regular", "warna": "kertas"},
+      "terima_kasih": {"ukuran_pt": 54, "bobot": "bold", "warna": "kertas"},
+      "lembaga_penutup": {"ukuran_pt": 18, "bobot": "bold", "warna": "kertas"},
+      "laporan_penutup": {"ukuran_pt": 13, "bobot": "regular", "warna": "teks-di-navy"},
+      "judul_pembatas": {"ukuran_pt": 40, "bobot": "bold", "warna": "kertas"},
+      "subjudul_pembatas": {"ukuran_pt": 15, "bobot": "regular", "warna": "aksen-di-navy"},
+      "kelompok_pembatas": {"ukuran_pt": 11, "bobot": "bold", "warna": "aksen-di-navy"},
+      "butir_pembatas": {"ukuran_pt": 9.5, "bobot": "regular", "warna": "teks-di-navy", "warna_kode": "oranye-di-navy", "warna_halaman": "redup-di-navy"},
+      "nomor_kartu_kesimpulan": {"ukuran_pt": 14, "bobot": "bold", "warna": "pembanding"},
+      "label_kartu_kesimpulan": {"ukuran_pt": 6.8, "bobot": "bold", "spasi_huruf_pt": 1.0},
+      "judul_kartu_kesimpulan": {"ukuran_pt": 12.5, "bobot": "bold", "warna": "teks"},
+      "isi_kartu_kesimpulan": {"ukuran_pt": 7.8, "bobot": "regular", "warna": "teks-2"},
+      "label_arahan": {"ukuran_pt": 7.5, "bobot": "bold", "warna": "kertas", "spasi_huruf_pt": 1.5},
+      "arahan": {"ukuran_pt": 10.5, "bobot": "bold", "warna": "kertas"},
+      "langkah": {"ukuran_pt": 9, "bobot": "bold", "warna": "teks"},
+      "kode_aksi": {"ukuran_pt": 7, "bobot": "bold", "warna": "kertas"},
+      "aksi_fase": {"ukuran_pt": 9, "bobot": "regular", "warna": "teks"},
+      "kemungkinan_kelas": {"ukuran_pt": 9, "bobot": "bold"},
+      "kemungkinan_label": {"ukuran_pt": 6.5, "bobot": "regular"},
+      "kepala_tabel_lampiran": {"ukuran_pt": 8, "bobot": "bold", "warna": "teks-3", "spasi_huruf_pt": 0.5},
+      "isi_tabel_lampiran": {"ukuran_pt": 8, "bobot": "regular", "warna": "teks"},
+      "isi_panel": {"ukuran_pt": 8.5, "bobot": "regular", "warna": "teks"}
     },
     "komponen": {
-      "kartu": {"lebar_pt": [132, 159], "tinggi_pt": 40, "radius_pt": 5.8, "lingkaran_pt": 26, "ikon_pt": 14, "jarak_pt": 7.2, "warna_garis": "garis"},
-      "grup_kartu": {"tinggi_pt": 73, "jarak_pt": 21},
+      "_catatan": "dibaca bangun/pptx/deck.py; jarak dalam pt, dx dan dy relatif ke tepi kiri atas komponennya",
+      "bingkai": {
+        "spasi_baris_judul": 0.95, "langkah_judul_pt": 0.5,
+        "subjudul_jarak_pt": 2, "subjudul_tinggi_pt": 18, "subjudul_maks_x_pt": 690,
+        "footer_lebar_pt": 432, "footer_tinggi_pt": 15.8, "nomor_lebar_pt": 43.2,
+        "jarak_blok_pt": 10.8, "rasio_utama": 0.62,
+        "sumber": {"y_pt": 485, "tinggi_pt": 16, "bilah_y_pt": 486.5, "bilah_tinggi_pt": 13, "teks_x_pt": 50.4, "isi_bawah_pt": 479,
+                   "awalan_olah": "Pengolahan data Pantau Bencana dari", "label_olah": "diolah Pantau Bencana"}
+      },
+      "kartu": {"lebar_pt": [132, 159], "tinggi_pt": 40, "radius_pt": 5.8, "lingkaran_pt": 26, "ikon_pt": 14, "jarak_pt": 7.2, "warna_garis": "garis",
+                "lingkaran_dx_pt": 8.6, "teks_dx_pt": 40.3, "nilai_dy_pt": 2.9, "nilai_tinggi_pt": 21.6, "label_dy_pt": 23.8, "label_tinggi_pt": 12.2,
+                "tint_ikon": {"teks-2": "tint.netral.pita", "teks-3": "tint.netral.pita", "navy": "tint.netral.pita", "oranye": "tint.api.pita", "merah": "tint.bahaya.pita", "biru": "tint.basah.pita", "slate": "tint.luas.pita", "biru-abu": "tint.luas.pita", "emas-teks": "tint.kering.pita"}},
+      "grup_kartu": {"tinggi_pt": 73, "jarak_pt": 21, "pad_pt": 8.64, "pil_dy_pt": 4.3, "kartu_dy_pt": 24.5, "radius_pt": 5.8,
+                     "nada": {"data": {"warna_latar": "tint.netral.muda"}, "perhatian": {"warna_latar": "tint.bahaya.muda"}, "bmkg": {"warna_latar": "tint.basah.muda"}}},
       "pil_bagian": {"tinggi_pt": 14.4, "ikon_pt": 9},
-      "panel": {"radius_pt": 4.3, "pita_pt": 36, "lingkaran_pt": 23, "ikon_pt": 14, "jarak_pt": 10.8, "warna_garis": "garis"},
-      "pita_bawah": {"lebar_pt": 874, "tinggi_pt": [61, 71], "lingkaran_pt": 26},
-      "baris_rekomendasi": {"tinggi_pt": 46.8, "lingkaran_pt": 26},
-      "tabel_peringkat": {"baris_pt": 17.3, "bulatan_pt": 13.7, "total_pt": 21, "warna_pemisah": "tint.netral.pita"},
-      "tabel_lampiran": {"baris_pt": [18, 21.6], "maks_baris": 24},
-      "cut_off": {"label": "CUT OFF DATA", "tinggi_pt": [16.6, 18], "lebar_pt": [186, 220], "warna_isi": "navy"},
+      "chip": {"tinggi_pt": 13, "ikon_rasio": 0.62, "pad_rasio": 0.5, "jarak_pt": 4, "warna_pemimpin": "navy", "warna_garis": "garis", "warna_ikon": "navy"},
+      "panel": {"radius_pt": 4.3, "pita_pt": 36, "lingkaran_pt": 23, "ikon_pt": 14, "jarak_pt": 10.8, "warna_garis": "garis", "tebal_garis_pt": 0.75, "pad_pt": 10, "jarak_judul_pt": 7,
+                "nada": {
+                  "netral": {"warna_pita": "tint.netral.pita", "warna_ikon": "navy"},
+                  "api": {"warna_pita": "tint.api.pita", "warna_ikon": "kategori.api"},
+                  "bahaya": {"warna_pita": "tint.bahaya.pita", "warna_ikon": "merah"},
+                  "air": {"warna_pita": "tint.basah.pita", "warna_ikon": "kategori.basah"},
+                  "kering": {"warna_pita": "tint.kering.pita", "warna_ikon": "kategori.kering"},
+                  "geologi": {"warna_pita": "tint.geologi.pita", "warna_ikon": "kategori.geologi"},
+                  "nonalam": {"warna_pita": "tint.nonalam.pita", "warna_ikon": "kategori.nonalam"},
+                  "sosial": {"warna_pita": "tint.netral.pita", "warna_ikon": "kategori.sosial"}}},
+      "pita_bawah": {"lebar_pt": 874, "tinggi_pt": [61, 71], "lingkaran_pt": 26, "tinggi_baku_pt": 64.8, "radius_pt": 6, "pad_pt": 11.5,
+                     "label_dy_pt": 5.8, "label_tinggi_pt": 14.4, "lingkaran_dy_pt": 27.4, "ikon_pt": 14, "teks_dx_pt": 33.1,
+                     "judul_dy_pt": 23, "judul_tinggi_pt": 15.8, "isi_dy_pt": 39, "pemisah_dy_pt": 26, "pemisah_bawah_pt": 6,
+                     "nada": {
+                       "aksi": {"warna_latar": "tint.api.muda", "warna_label": "oranye", "warna_ikon": "oranye", "warna_pemisah": "skala.api.2"},
+                       "hujan": {"warna_latar": "tint.basah.muda", "warna_label": "kategori.basah", "warna_ikon": "kategori.basah", "warna_pemisah": "skala.air.2"},
+                       "data": {"warna_latar": "tint.netral.muda", "warna_label": "navy", "warna_ikon": "navy", "warna_pemisah": "skala.netral.1"}}},
+      "temuan": {"lingkaran_pt": 26, "ikon_rasio": 0.54, "warna_lingkaran": "navy", "jarak_pt": 9, "tinggi_baris": 1.25,
+                 "baris_maks_pt": 120, "jarak_kolom_pt": 24, "warna_pemisah": "tint.netral.pita", "maks_baris": 3,
+                 "pola_kode": "Temuan [A-C]\\.\\d+", "jarak_pil_pt": 8, "tesis_maks_baris": 2, "tesis_jarak_pt": 8},
+      "baris_rekomendasi": {"tinggi_pt": 46.8, "tinggi_maks_pt": 72, "lingkaran_pt": 26, "ikon_rasio": 0.54, "kolom_rasio": [0, 0.33, 0.74], "jarak_pt": 9,
+                            "kepala_tinggi_pt": 14, "warna_garis_kepala": "garis-kuat", "warna_pemisah": "tint.netral.pita", "warna_lingkaran": "navy",
+                            "warna_kode": "oranye", "langkah_dy_pt": 6.5, "chip_dy_pt": 25, "nada_waktu": {"pil_isi": "tint.netral.pita", "pil_teks": "teks"}},
+      "tiga_fase": {"aksi_maks_pt": 110, "kode_lebar_pt": 20, "kode_tinggi_pt": 13, "warna_kode": "navy", "aksi_teks_tinggi_pt": 22, "chip_dy_pt": 25,
+                    "warna_pemisah": "tint.netral.pita", "nada_waktu": {"pil_isi": "tint.netral.pita", "pil_teks": "teks"}},
+      "tabel_peringkat": {"baris_pt": 17.3, "bulatan_pt": 13.7, "total_pt": 21, "warna_pemisah": "tint.netral.pita", "kepala_tinggi_pt": 16.6, "baris_min_pt": 12, "baris_maks_pt": 21,
+                          "segitiga_pt": 5, "pil_tinggi_pt": 14.4, "pil_lebar_min_pt": 57.6, "kolom_jarak_pt": 8,
+                          "warna_garis_kepala": "garis-kuat", "warna_sorot": "tint.sorot-baris.pita", "warna_nomor": "navy", "warna_total": "navy"},
+      "grafik_batang": {"maks_batang": 24, "kepala_tinggi_pt": 16, "segitiga_kepala_pt": 6, "nilai_tinggi_pt": 11, "label_tinggi_pt": 10, "persen_tinggi_pt": 9,
+                        "bawah_pt": 22, "lebar_rasio": 0.62, "radius_rasio": 0.22, "pekat_terakhir": 3, "segitiga_pt": 4,
+                        "warna_pembanding": "pembanding", "warna_garis_dasar": "garis",
+                        "keluarga": {
+                          "netral": {"warna_pekat": "navy", "warna_lama": "skala.netral.2"},
+                          "api": {"warna_pekat": "kategori.api", "warna_lama": "skala.api.2"},
+                          "air": {"warna_pekat": "kategori.basah", "warna_lama": "skala.air.2"},
+                          "kering": {"warna_pekat": "kategori.kering", "warna_lama": "skala.emas.2"}}},
+      "legenda": {"kotak_pt": 8, "jarak_kotak_pt": 4, "jarak_item_pt": 12, "tinggi_pt": 14, "warna_garis_kotak": "garis"},
+      "peta": {"legenda_tinggi_pt": 14, "jarak_legenda_pt": 6, "penanda_tinggi_pt": 13, "warna_garis_penanda": "garis",
+               "unsur_tinggi_pt": 11, "label_jarak_min_pt": 2, "label_darat_maks": 0.03},
+      "skenario": {"kepala_tinggi_pt": 36, "rasio_kerusakan": 0.52, "label_tinggi_pt": 12, "baris_maks_pt": 27, "kolom_nilai_rasio": 0.5,
+                   "kemungkinan_tinggi_pt": 30, "jarak_kebijakan_pt": 12, "label_kebijakan_rasio": 0.34, "nilai_kebijakan_lebar_pt": 64,
+                   "batang_kebijakan_pt": 20, "batang_kebijakan_jarak_pt": 24, "warna_batang": ["pembanding", "teks-2"]},
+      "kesimpulan": {"kolom": 4, "baris": 2, "y_pt": 106, "tinggi_pt": 147.6, "jarak_pt": 10.8, "radius_pt": 5.8, "pad_pt": 13, "lingkaran_pt": 31.7, "ikon_rasio": 0.55,
+                     "nomor_lebar_pt": 30.2, "label_dy_pt": 51.8, "label_tinggi_pt": 11.5, "judul_dy_pt": 64.8, "judul_tinggi_pt": 36, "isi_dy_pt": 99.4, "isi_maks_baris": 4,
+                     "arahan": {"tinggi_pt": 44, "radius_pt": 5.8, "lingkaran_pt": 26, "warna_isi": "oranye", "warna_lingkaran": "kertas", "warna_ikon": "oranye"}},
+      "tabel_lampiran": {"baris_pt": [18, 21.6], "maks_baris": 24, "kepala_tinggi_pt": 20, "pad_sel_pt": 3, "kolom_jarak_pt": 10,
+                         "warna_garis_kepala": "teks-3", "tebal_kepala_pt": 1.0, "warna_garis_baris": "garis", "tebal_baris_pt": 0.5},
+      "cut_off": {"label": "CUT OFF DATA", "tinggi_pt": [16.6, 18], "lebar_pt": [186, 220], "warna_isi": "navy", "x_pt": 696, "y_pt": 70, "pad_pt": 10},
       "catatan_kaki": {"bilah_pt": [3, 15], "warna_bilah": "sumber"},
+      "logo_bulat": {"warna_isi": "kertas", "rasio_logo": 0.66},
+      "foto": {"skala_px_per_pt": 2},
+      "sampul": {
+        "foto_x_pt": 497, "foto_alfa": [0, 1, 0.45],
+        "logo": {"x_pt": 43.2, "y_pt": 36, "d_pt": 79.2},
+        "teks_x_pt": 43.2, "teks_lebar_pt": 446.4, "judul_y_pt": 126, "judul_tinggi_pt": 120, "spasi_baris_judul": 0.95,
+        "jarak_pt": {"subjudul": 8, "lembaga": 12, "kepada": 4, "garis": 12},
+        "garis_lebar_pt": 403.2,
+        "tanggal": {"y_pt": 453.6, "lebar_pt": 230.4, "tinggi_pt": 30.2},
+        "kredit": {"x_pt": 568.8, "y_pt": 517, "lebar_pt": 369.6, "tinggi_pt": 14.4},
+        "putih": {"warna_judul": "teks", "warna_subjudul": "teks-2", "warna_lembaga": "biru-lembaga", "warna_kepada": "teks", "warna_garis": "teks", "warna_tanggal_isi": "navy", "warna_tanggal_teks": "kertas"},
+        "gelap": {"warna_judul": "kertas", "warna_subjudul": "teks-di-navy", "warna_lembaga": "aksen-di-navy", "warna_kepada": "teks-di-navy", "warna_garis": "redup-di-navy", "warna_tanggal_isi": "kertas", "warna_tanggal_teks": "navy"}
+      },
+      "penutup": {
+        "foto_alfa": [0.12, 0.62, 1.0],
+        "logo": {"x_pt": 43.2, "y_pt": 39.6, "d_pt": 79.2},
+        "teks_lebar_pt": 720, "judul_y_pt": 194.4, "judul_tinggi_pt": 79.2,
+        "garis": {"y_pt": 288, "lebar_pt": 374.4, "tebal_pt": 2, "warna": "oranye-di-navy"},
+        "lembaga_y_pt": 302.4, "lembaga_tinggi_pt": 28.8, "laporan_y_pt": 334, "laporan_tinggi_pt": 25.2
+      },
+      "pembatas": {
+        "logo": {"x_pt": 855.6, "y_pt": 25.2, "d_pt": 61.2},
+        "judul_y_pt": 126, "judul_tinggi_pt": 64.8, "subjudul_y_pt": 201.6, "subjudul_tinggi_pt": 28.8,
+        "garis_y_pt": 244.8, "warna_garis": "redup-di-navy",
+        "kolom_x_pt": [43.2, 489.6], "kolom_lebar_pt": 427, "kelompok_y_pt": 255.6, "kelompok_tinggi_pt": 21.6, "baris_pt": 20.2
+      },
       "jarak_isi_ke_tepi_panel_pt": 7
     }
   },
@@ -611,7 +825,7 @@
     "aksen_bab_sesudah_pt": 4,
     "tinggi_gambar_maks_cm": 21,
     "sampul": {"teks_di_bawah_foto_cm": 1.4, "margin_bawah_cm": 1.0, "logo_tinggi_mm": 14, "nama_lembaga_pt": 11, "terbit_pt": 12, "sela_subjudul_pt": 12, "sela_logo_pt": 24},
-    "sampul_belakang": {"teks_dari_atas_cm": 11, "logo_tinggi_mm": 18, "baris_pt": 10.5},
+    "sampul_belakang": {"teks_dari_atas_cm": 9, "logo_tinggi_mm": 18, "baris_pt": 10.5, "ringkas_pt": 9.5, "ringkas_sebelum_pt": 24},
     "pembatas_lampiran": {"judul_dari_atas_cm": 9, "daftar_pt": 10.5},
     "sampul_foto": {
       "air": {"berkas": "gambar/foto/sampul-air.jpg", "judul": "Waduk Jatiluhur, Purwakarta", "pengarang": "Cep Budhi Darma", "lisensi": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Jatiluhur_12.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
@@ -624,8 +838,20 @@
         "Peraturan Presiden Nomor 87 Tahun 2020 tentang Rencana Induk Penanggulangan Bencana Tahun 2020–2044",
         "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029"
       ],
-      "versi": "Draf 1",
       "batas_data": "23 Oktober 2026"
     }
+  },
+  "qa": {
+    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80}, "resmi_primer_min_persen": 50},
+    "_catatan": "Kenop gerbang qa/periksa.py yang bukan token desain. Nama gaya dicocokkan ke rantai gaya Word tanpa beda huruf; kepala kolom ke teks kepala yang dikapitalkan.",
+    "gaya_kapital_boleh": ["Label Bagian", "Kepala Tabel", "Pil", "Label Pita", "Judul Bagian Depan", "Judul Daftar Isi"],
+    "gaya_pustaka": ["Pustaka", "Bibliography"],
+    "kolom_tanpa_rata_kanan": ["NO", "NO.", "PERINGKAT", "KODE", "REK", "REGISTER", "REK KAJIAN AIR", "TINDAK LANJUT", "LAPIS"],
+    "kata_cacah": ["kejadian", "jiwa", "orang", "KK", "desa", "kab/kota", "kabupaten", "kota", "provinsi", "rumah", "unit", "ha", "km", "km²", "titik", "korban", "pengungsi", "sekolah", "faskes", "kasus", "liter", "tangki", "banjir", "longsor", "gempa", "kebakaran", "letusan"],
+    "cut_off_teks": "CUT OFF DATA",
+    "panel_tinggi_min_pt": 48,
+    "jarak_tepi_bawah_panel_pt": 7,
+    "irisan_toleransi_pt": 1,
+    "logo_toleransi_mm": 0.5
   }
 }

@@ -1,0 +1,1392 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 4 kajian air (berkas bukti naskah/air/bukti/bab-04.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur, atau nilai + pustaka (id di bab-04.pustaka.json, digabung ke pustaka.json saat registri disatukan).",
+  "Kunci yang sudah ada di data/angka.json tidak diulang. Angka sekunder tidak dimasukkan.",
+  "Disusun 23 Oktober 2026; direvisi 24 Oktober 2026 sesuai temuan pemeriksa (lihat bab-04.md, Catatan pemeriksaan temuan).",
+  "Pustaka bnpb-dibi sudah ada di pustaka.json induk; noaa-2026-oni sama dengan bab-03.pustaka.json; badangeologi-2024-cat dan kemenpupr-2024-rpsda-jratunseluna sama dengan riset/E-pustaka.json.",
+  "Ditambah penulis bab 24 Oktober 2026 untuk naskah bab-04.md: 48 kunci, semuanya angka yang sudah tertulis di berkas bukti bab-04.md (bentuk A dari paket air-jawa atau bentuk B dari pustaka bab ini)."
+ ],
+ "angka": {
+  "airjawa.dki.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=DKI Jakarta].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.jateng.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Tengah].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025",
+   "catatan": "terendah dari enam provinsi Jawa"
+  },
+  "airjawa.nasional.air_minum_layak_2025": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[prov_kode=ID,indikator=rumah_tangga_akses_air_minum_layak_persen].nilai",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.grobogan.air_minum_layak_2025": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[kode_kab=3315].nilai",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS Provinsi Jawa Tengah, Susenas 2025",
+   "catatan": "terendah dari 35 kab/kota Jawa Tengah"
+  },
+  "airjawa.jateng.n_kab_layak_bawah95_2025": {
+   "pustaka": "bps-jateng-2026-air-minum-layak-kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS Provinsi Jawa Tengah, Susenas 2025",
+   "nilai": 12,
+   "catatan": "olah: jumlah baris tingkat kab di air-jawa/air_minum.csv dengan nilai < 95 (dari 35); di bawah 90: 2 (Grobogan, Banjarnegara)"
+  },
+  "airjawa.dki.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=DKI Jakarta].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "catatan": "persen rumah tangga dengan sumber air minum utama leding; bukan cakupan jaringan perpipaan PU"
+  },
+  "airjawa.jateng.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Tengah].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "catatan": "persen rumah tangga dengan sumber air minum utama leding; bukan cakupan jaringan perpipaan PU"
+  },
+  "airjawa.banten.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Banten].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "catatan": "persen rumah tangga dengan sumber air minum utama leding; bukan cakupan jaringan perpipaan PU"
+  },
+  "airjawa.nasional.leding_2023": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[prov_kode=ID,indikator=rumah_tangga_sumber_air_minum_leding_persen].nilai",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023"
+  },
+  "airjawa.dki.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 12.83,
+   "catatan": "olah: sumur bor/pompa 12.57 + sumur terlindung 0.18 + mata air terlindung 0.08 (kolom 2, 4, 6 baris DKI Jakarta di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.jabar.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 42.24,
+   "catatan": "olah: sumur bor/pompa 18.44 + sumur terlindung 15.24 + mata air terlindung 8.56 (kolom 2, 4, 6 baris Jawa Barat di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.jateng.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 52.42,
+   "catatan": "olah: sumur bor/pompa 17.58 + sumur terlindung 17.89 + mata air terlindung 16.95 (kolom 2, 4, 6 baris Jawa Tengah di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.diy.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 57.8,
+   "catatan": "olah: sumur bor/pompa 25.0 + sumur terlindung 28.41 + mata air terlindung 4.39 (kolom 2, 4, 6 baris DI Yogyakarta di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.jatim.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 53.2,
+   "catatan": "olah: sumur bor/pompa 24.52 + sumur terlindung 15.66 + mata air terlindung 13.02 (kolom 2, 4, 6 baris Jawa Timur di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.banten.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 36.21,
+   "catatan": "olah: sumur bor/pompa 23.21 + sumur terlindung 8.51 + mata air terlindung 4.49 (kolom 2, 4, 6 baris Banten di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.nasional.sumur_mata_air_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 42.43,
+   "catatan": "olah: sumur bor/pompa 17.07 + sumur terlindung 15.26 + mata air terlindung 10.1 (kolom 2, 4, 6 baris Indonesia di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt); nama kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; batas bawah karena sumur dan mata air tak terlindung (kolom 5, 7) tidak dihitung"
+  },
+  "airjawa.jawa.irigasi_total_ha": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.irigasi.total_jawa_ha",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "catatan": "baseline 2015; lima jenis termasuk tambak"
+  },
+  "airjawa.jawa.irigasi_permukaan_ha": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.irigasi.total_jawa_per_jenis_ha_rekap.Permukaan",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "catatan": "baseline 2015"
+  },
+  "airjawa.jawa.irigasi_porsi_nasional_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 34.3,
+   "catatan": "olah: 3.135.123 / 9.136.027 ha (rekap nasional baris JUMLAH: pusat 3.142.532, air-jawa/mentah/permen14_ocr/p013.txt baris 49; provinsi 1.634.467, p029.txt baris 49; kab/kota 4.359.028, p063.txt baris 50)"
+  },
+  "airjawa.jawa.n_di_pusat": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.irigasi.n_di_pusat_jawa",
+   "satuan": "DI",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi"
+  },
+  "airjawa.jawa.n_di_provinsi": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.irigasi.n_di_provinsi_jawa",
+   "satuan": "DI",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi"
+  },
+  "airjawa.jawa.n_di_kabkota": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "DI",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 30432,
+   "catatan": "olah: 1.392 + 5.166 + 12.174 + 1.389 + 10.311 (rekap kab/kota hlm 63 per provinsi, air-jawa/mentah/permen14_ocr/p063.txt)"
+  },
+  "airjawa.jawa.irigasi_pusat_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 1120683,
+   "catatan": "olah: jumlah air-jawa/provinsi.csv kolom irigasi_pusat_ha_rekap"
+  },
+  "airjawa.jawa.irigasi_provinsi_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 406395,
+   "catatan": "olah: jumlah provinsi.csv kolom irigasi_provinsi_ha_rekap"
+  },
+  "airjawa.jawa.irigasi_kabkota_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 1608045,
+   "catatan": "olah: jumlah kolom TOTAL tercetak kab/kota (Jawa Timur 533.034); rekap per jenis 1.608.046"
+  },
+  "airjawa.jawa.irigasi_pusat_porsi_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 35.7,
+   "catatan": "olah: 1.120.683 / 3.135.123 = 35,75%"
+  },
+  "airjawa.jawa.irigasi_kabkota_porsi_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 51.3,
+   "catatan": "olah: 1.608.045 / 3.135.123 = 51,29%"
+  },
+  "airjawa.jabar.irigasi_pusat_ha": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Barat].irigasi_pusat_ha_rekap",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi"
+  },
+  "airjawa.di.jatiluhur.luas_ha": {
+   "berkas": "air-jawa/irigasi_di_pusat_provinsi.csv",
+   "jalur": "[kewenangan=pusat,nama_di=Jatiluhur].total_ha",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Lampiran I hlm 16",
+   "catatan": "Bekasi 52.728 (bukan 82.728), Indramayu 24.511, Karawang 100.049, Subang 60.502"
+  },
+  "airjawa.di.rentang.luas_ha": {
+   "berkas": "air-jawa/irigasi_di_pusat_provinsi.csv",
+   "jalur": "[kewenangan=pusat,nama_di=Rentang].total_ha",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Lampiran I hlm 16"
+  },
+  "airjawa.indramayu.irigasi_pusat_ha": {
+   "berkas": "air-jawa/kab_jawa.csv",
+   "jalur": "[kode=3212].irigasi_pusat_ha",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "catatan": "olah(resmi): atribusi OCR Lampiran I per kab, lolos cek rekap"
+  },
+  "airjawa.karawang.irigasi_permukaan_ha": {
+   "berkas": "air-jawa/kab_jawa.csv",
+   "jalur": "[kode=3215].irigasi_permukaan_ha",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "catatan": "olah(resmi): atribusi OCR; terluas di Jawa"
+  },
+  "airjawa.pantura_jabar.irigasi_pusat_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 326970,
+   "catatan": "olah: Indramayu 100.706 + Karawang 100.049 + Subang 70.267 + Bekasi 55.948 (kab_jawa.csv kolom irigasi_pusat_ha)"
+  },
+  "airjawa.pantura_jabar.irigasi_pusat_porsi_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 29.2,
+   "catatan": "olah: 326.970 / 1.120.683 = 29,18%"
+  },
+  "airjawa.jawa.n_kab_di_pusat": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 73,
+   "catatan": "olah: jumlah baris kab_jawa.csv dengan irigasi_pusat_ha > 0, dari 119"
+  },
+  "airjawa.nasional.irigasi_kondisi_buruk_persen": {
+   "pustaka": "worldbank-2021-vision2045, hlm. 64-65",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 46,
+   "catatan": "nasional; kategori \"poor\" di teks laporan; tidak dapat direkonstruksi dari Gambar 33 (poor + ruined 32,2%; selain good 43,6%); data asal Renstra Ditjen SDA 2015-2019 (data 2014) belum dibuka; tanpa rincian provinsi"
+  },
+  "airjawa.nasional.irigasi_waduk_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 797971,
+   "catatan": "irigasi padi yang dipasok waduk; DI Jatiluhur 237.790 ha = 30%"
+  },
+  "airjawa.bendungan.pj.volume_normal_total": {
+   "berkas": "air-jawa/bendungan_rekonsiliasi.csv",
+   "jalur": "[kolom=vol_normal_juta_m3].total_tercetak_dokumen",
+   "satuan": "juta m³",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "18 bendungan; jumlah baris 898,436"
+  },
+  "airjawa.bendungan.pj.tampungan_2021_total": {
+   "berkas": "air-jawa/bendungan_rekonsiliasi.csv",
+   "jalur": "[kolom=tampungan_2021_juta_m3].total_tercetak_dokumen",
+   "satuan": "juta m³",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.bendungan.pj.kehilangan_persen": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 10.7,
+   "catatan": "olah: sedimentasi tercetak 96,51 / volume normal 898,44 = 10,74%"
+  },
+  "airjawa.bendungan.pj.piezometer": {
+   "berkas": "air-jawa/bendungan_rekonsiliasi.csv",
+   "jalur": "[kolom=piezometer].total_tercetak_dokumen",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.bendungan.pj.piezometer_rusak": {
+   "berkas": "air-jawa/bendungan_rekonsiliasi.csv",
+   "jalur": "[kolom=piezometer_rusak].total_tercetak_dokumen",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "87 / 543 = 16,0%"
+  },
+  "airjawa.bendungan.pj.vnotch": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 48,
+   "catatan": "baris TOTAL kolom 31 (V-Notch); riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.pj.vnotch_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 26,
+   "catatan": "baris TOTAL kolom 31; 26 / 48 = 54,2%; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.pj.inklinometer": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 24,
+   "catatan": "baris TOTAL kolom 32 (Inklino meter); riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.pj.inklinometer_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 13,
+   "catatan": "baris TOTAL kolom 32; 13 / 24 = 54,2%; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.pj.settlement": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 56,
+   "catatan": "baris TOTAL kolom 36 (Sattlement); riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.pj.settlement_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 21,
+   "catatan": "baris TOTAL kolom 36; 21 / 56 = 37,5%; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.kedungombo.inklinometer": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 13,
+   "catatan": "baris Kedungombo kolom 32; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.kedungombo.inklinometer_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 11,
+   "catatan": "baris Kedungombo kolom 32; 11 / 13; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.kedungombo.settlement": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 48,
+   "catatan": "baris Kedungombo kolom 36; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.kedungombo.settlement_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 21,
+   "catatan": "baris Kedungombo kolom 36; 21 / 48; riset/mentah/pj.pdf, dicek pada render 300 dpi 23 Okt 2026"
+  },
+  "airjawa.bendungan.kedungombo.piezometer_rusak": {
+   "berkas": "air-jawa/bendungan_angka.csv",
+   "jalur": "[id=kedungombo,besaran=piezometer_rusak].nilai",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.bendungan.penjalin.piezometer_rusak": {
+   "berkas": "air-jawa/bendungan_angka.csv",
+   "jalur": "[id=penjalin,besaran=piezometer_rusak].nilai",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.bendungan.jatibarang.piezometer_rusak": {
+   "berkas": "air-jawa/bendungan_angka.csv",
+   "jalur": "[id=jatibarang,besaran=piezometer_rusak].nilai",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.bendungan.butak.kehilangan_persen": {
+   "berkas": "air-jawa/bendungan.csv",
+   "jalur": "[id=butak].kehilangan_tampungan_persen",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "1 - tampungan 2021 / volume normal desain, dua nilai resmi; bendungan Kab. Grobogan dibangun 1901–1914"
+  },
+  "airjawa.bendungan.simo.kehilangan_persen": {
+   "berkas": "air-jawa/bendungan.csv",
+   "jalur": "[id=simo].kehilangan_tampungan_persen",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "1 - tampungan 2021 / volume normal desain, dua nilai resmi; bendungan Kab. Grobogan dibangun 1901–1914"
+  },
+  "airjawa.bendungan.sanggeh.kehilangan_persen": {
+   "berkas": "air-jawa/bendungan.csv",
+   "jalur": "[id=sanggeh].kehilangan_tampungan_persen",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "1 - tampungan 2021 / volume normal desain, dua nilai resmi; bendungan Kab. Grobogan dibangun 1901–1914"
+  },
+  "airjawa.bendungan.nglangon.kehilangan_persen": {
+   "berkas": "air-jawa/bendungan.csv",
+   "jalur": "[id=nglangon].kehilangan_tampungan_persen",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "1 - tampungan 2021 / volume normal desain, dua nilai resmi; bendungan Kab. Grobogan dibangun 1901–1914"
+  },
+  "airjawa.bendungan.cacaban.irigasi_desain_ha": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 1",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 17481,
+   "catatan": "kolom Pemanfaatan (Desain); bendungan.csv kolom pemanfaatan"
+  },
+  "airjawa.bendungan.cacaban.irigasi_2021_ha": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 1",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 7439,
+   "catatan": "kolom Pemanfaatan (Status Saat Ini) Tahun 2021; turun 57,4% dari desain"
+  },
+  "airjawa.bendungan.jatiluhur.volume_1964": {
+   "pustaka": "sheftiana-2021-jatiluhur",
+   "satuan": "juta m³",
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan akhir Perum Otorita Jatiluhur 2000, dikutip Sheftiana dkk. (2021)",
+   "nilai": 2970
+  },
+  "airjawa.bendungan.jatiluhur.volume_2000": {
+   "pustaka": "sheftiana-2021-jatiluhur",
+   "satuan": "juta m³",
+   "keyakinan": "terverifikasi",
+   "sumber": "Laporan akhir Perum Otorita Jatiluhur 2000, dikutip Sheftiana dkk. (2021)",
+   "nilai": 2448,
+   "catatan": "deret: 1987 2.556; 1995 2.456; 2000 2.448"
+  },
+  "airjawa.bendungan.jatiluhur.kehilangan_1964_2000_persen": {
+   "pustaka": "sheftiana-2021-jatiluhur",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari Sheftiana dkk. (2021)",
+   "nilai": 17.6,
+   "catatan": "olah: 1 - 2.448 / 2.970; hilang 522 juta m³ dalam 36 tahun"
+  },
+  "airjawa.bendungan.saguling.paruh_umur_awal": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 294,
+   "catatan": "waktu paruh tampungan (setengah kapasitas terisi sedimen) sebelum sepuluh tahun terakhir studi"
+  },
+  "airjawa.bendungan.saguling.paruh_umur_akhir": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 28,
+   "catatan": "waktu paruh tampungan setelah laju sedimentasi sepuluh tahun terakhir studi"
+  },
+  "airjawa.bendungan.n_paket": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.bendungan.n",
+   "satuan": "bendungan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana 2021 dan riset B",
+   "catatan": "bukan inventaris lengkap; 19 baris sekunder"
+  },
+  "airjawa.bendungan.n_pj2021": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.bendungan.n_pj2021",
+   "satuan": "bendungan",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021"
+  },
+  "airjawa.turun_tanah.pekalongan.gnss_cpkl": {
+   "pustaka": "susilo-2023-gnss, Tabel 2",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), GNSS kontinu BIG 2010–2021",
+   "nilai": 10.7,
+   "catatan": "kecepatan vertikal stasiun CPKL (Kota Pekalongan) ditulis sebagai laju turun; satu titik, bukan laju kota; stasiun dipetakan ke kab dengan uji titik dalam poligon air-jawa/peta_kab.geojson"
+  },
+  "airjawa.turun_tanah.indramayu.gnss_crol": {
+   "pustaka": "susilo-2023-gnss, Tabel 2",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), GNSS kontinu BIG 2010–2021",
+   "nilai": 1.59,
+   "catatan": "kecepatan vertikal stasiun CROL (Indramayu) ditulis sebagai laju turun; satu titik, bukan laju kota; stasiun dipetakan ke kab dengan uji titik dalam poligon air-jawa/peta_kab.geojson"
+  },
+  "airjawa.turun_tanah.tegal.gnss_ctgl": {
+   "pustaka": "susilo-2023-gnss, Tabel 2",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), GNSS kontinu BIG 2010–2021",
+   "nilai": 1.25,
+   "catatan": "kecepatan vertikal stasiun CTGL (Kota Tegal) ditulis sebagai laju turun; satu titik, bukan laju kota; stasiun dipetakan ke kab dengan uji titik dalam poligon air-jawa/peta_kab.geojson"
+  },
+  "airjawa.turun_tanah.jakarta.gnss_cjkt": {
+   "pustaka": "susilo-2023-gnss, Tabel 2",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), GNSS kontinu BIG 2010–2021",
+   "nilai": 0.64,
+   "catatan": "kecepatan vertikal stasiun CJKT (Jakarta Utara) ditulis sebagai laju turun; satu titik, bukan laju kota; stasiun dipetakan ke kab dengan uji titik dalam poligon air-jawa/peta_kab.geojson"
+  },
+  "airjawa.turun_tanah.semarang.gnss_csem": {
+   "pustaka": "susilo-2023-gnss, Tabel 2",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), GNSS kontinu BIG 2010–2021",
+   "nilai": 0.08,
+   "catatan": "kecepatan vertikal stasiun CSEM (Kota Semarang) ditulis sebagai laju turun; satu titik, bukan laju kota; stasiun dipetakan ke kab dengan uji titik dalam poligon air-jawa/peta_kab.geojson"
+  },
+  "airjawa.turun_tanah.pekalongan.patok_2021_2022": {
+   "pustaka": "susilo-2023-gnss, Gambar 5",
+   "satuan": "cm",
+   "keyakinan": "terverifikasi",
+   "sumber": "Patok dalam Badan Geologi, dikutip Susilo dkk. (2023)",
+   "nilai": 8.0,
+   "catatan": "80 ± 1 mm antara 6 April 2021 dan 2 Oktober 2022 (sekitar 1,5 tahun); 140 mm sejak dipasang 17 Maret 2020"
+  },
+  "airjawa.turun_tanah.pekalongan.widodo2024_kumulatif": {
+   "pustaka": "widodo-2024-pekalongan",
+   "satuan": "cm",
+   "keyakinan": "terverifikasi",
+   "sumber": "Widodo dkk. (2024), PS-InSAR ALOS-2",
+   "nilai": 100,
+   "catatan": "penurunan kumulatif maksimum 2014–2022; 60,9% titik turun; kesesuaian patok lapangan 83%"
+  },
+  "airjawa.turun_tanah.jakarta.esdm_2015_2022": {
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM (Badan Geologi), siaran pers 10 November 2023",
+   "rendah": 0.04,
+   "tinggi": 6.3,
+   "catatan": "CAT Jakarta, pengukuran 2015–2022; 1997–2005: 1–10 hingga 15–20 cm per tahun"
+  },
+  "airjawa.turun_tanah.jakarta.abidin2011": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur_rendah": "[kota_kunci=jakarta,periode=1982-2010].min_cm_th",
+   "jalur_tinggi": "[kota_kunci=jakarta,periode=1982-2010].tengah_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Abidin dkk. (2011), levelling, GPS, InSAR",
+   "catatan": "umumnya 1–15 cm per tahun 1982–2010; lokal 20–28 (maks_cm_th)"
+  },
+  "airjawa.turun_tanah.semarang.abidin2013_maks": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=semarang,periode=1999-2011 (GPS 2008-2011)].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Abidin dkk. (2013)",
+   "catatan": "maksimum lokal 1999–2011; rata-rata ruang GPS 6–7 cm per tahun"
+  },
+  "airjawa.turun_tanah.kab_bandung.virtriana2026": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=bandung,wilayah_literatur=Kab. Bandung].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Virtriana dkk. (2026), InSAR Sentinel-1",
+   "catatan": "titik tertinggi; Bandung Barat 22,0"
+  },
+  "airjawa.nasional.cat_jumlah": {
+   "pustaka": "keppres-2011-cat, Lampiran I",
+   "satuan": "CAT",
+   "keyakinan": "resmi",
+   "sumber": "Keputusan Presiden Nomor 26 Tahun 2011 tentang Penetapan Cekungan Air Tanah",
+   "nilai": 421,
+   "catatan": "\"Total Keseluruhan CAT\" 421: 205 dalam kab/kota, 176 lintas kab/kota, 36 lintas provinsi, 4 lintas negara; CAT Jawa no. 66-145 = 80 (sama dengan airjawa.jawa.cat_jumlah)"
+  },
+  "airjawa.nasional.sumur_pantau_air_tanah": {
+   "pustaka": "badangeologi-2025-capaian",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "Badan Geologi, 27 Oktober 2025",
+   "nilai": 161,
+   "catatan": "artikel yang sama menulis 131 + 37 = 168; selisih ditulis"
+  },
+  "airjawa.jakarta.lokasi_pantau_air_tanah": {
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "lokasi per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, siaran pers 10 November 2023",
+   "nilai": 220
+  },
+  "airjawa.jawa.ipa_2010_persen": {
+   "berkas": "air-jawa/ipa_pulau_2010.csv",
+   "jalur": "[pulau=Jawa].ipa_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model; belum diuji balik",
+   "sumber": "BPS (2020) mengutip Radhika dkk. (2013), model hujan-limpasan TRMM",
+   "catatan": "kritis sedang; tingkat pulau saja; sandingkan dengan kab berkejadian kekeringan DIBI"
+  },
+  "airjawa.jawa.ipa_2010_tanpa_pemeliharaan_persen": {
+   "berkas": "air-jawa/ipa_pulau_2010.csv",
+   "jalur": "[pulau=Jawa].ipa_tanpa_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model; belum diuji balik",
+   "sumber": "BPS (2020) mengutip Radhika dkk. (2013), model hujan-limpasan TRMM",
+   "catatan": "kritis ringan"
+  },
+  "airjawa.citarum.hutan_2000_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 71750,
+   "catatan": "hutan DAS Citarum 2000"
+  },
+  "airjawa.citarum.hutan_2009_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 9899,
+   "catatan": "hutan DAS Citarum 2009"
+  },
+  "airjawa.citarum.permukiman_2000_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 81686,
+   "catatan": "permukiman DAS Citarum 2000"
+  },
+  "airjawa.citarum.permukiman_2009_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013)",
+   "nilai": 176442,
+   "catatan": "permukiman DAS Citarum 2009"
+  },
+  "airjawa.dki.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 12.86,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris DKI Jakarta (12.57 + 0.18 + 0.0 + 0.08 + 0.03) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.jabar.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 45.92,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris Jawa Barat (18.44 + 15.24 + 1.79 + 8.56 + 1.89) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.jateng.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 56.4,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris Jawa Tengah (17.58 + 17.89 + 1.92 + 16.95 + 2.06) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.diy.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 60.51,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris DI Yogyakarta (25.0 + 28.41 + 1.72 + 4.39 + 0.99) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.jatim.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 55.27,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris Jawa Timur (24.52 + 15.66 + 0.59 + 13.02 + 1.48) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.banten.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 40.3,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris Banten (23.21 + 8.51 + 2.44 + 4.49 + 1.65) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.nasional.sumur_mata_air_semua_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 46.91,
+   "catatan": "olah: kolom 2 + 4 + 5 + 6 + 7 baris Indonesia (17.07 + 15.26 + 2.41 + 10.1 + 2.07) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama kolom 5 dan 7 (sumur dan mata air tak terlindung) menurut urutan judul tabel, belum dicek ke publikasi BPS (bab-04.md P1 temuan 3)"
+  },
+  "airjawa.jatim.sumber_tak_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "poin persen",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 2.07,
+   "catatan": "olah: kolom 5 + 7 baris Jawa Timur (0,59 + 1,48) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; terendah dari lima provinsi selain DKI"
+  },
+  "airjawa.banten.sumber_tak_terlindung_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "poin persen",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 4.09,
+   "catatan": "olah: kolom 5 + 7 baris Banten (2,44 + 1,65) di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; tertinggi dari enam provinsi Jawa"
+  },
+  "airjawa.dki.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 79.39,
+   "catatan": "kolom 3 baris DKI Jakarta di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.banten.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 56.82,
+   "catatan": "kolom 3 baris Banten di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama menurut urutan judul"
+  },
+  "airjawa.di.jatiluhur.porsi_di_pusat_jawa_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 21.2,
+   "catatan": "olah: 237.790 / 1.120.683 = 21,22%; 58,6% DI pusat Jawa Barat; seluruhnya di Bekasi, Indramayu, Karawang, Subang"
+  },
+  "airjawa.di.rentang.indramayu_ha": {
+   "pustaka": "pupr-2015-permen14, Lampiran I hlm 16",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 66612,
+   "catatan": "air-jawa/irigasi_di_pusat_provinsi.csv baris Rentang (Cirebon 20.620; Indramayu 66.612; Majalengka 571); DI Rentang dipasok S. Cimanuk lewat Waduk Jatigede (setkab-2015-jatigede), bukan kaskade Citarum"
+  },
+  "airjawa.pantura_jabar.irigasi_pusat_di_lain_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 22568,
+   "catatan": "olah: 326.970 - 237.790 (Jatiluhur) - 66.612 (Rentang, Indramayu); DI pusat lain di Indramayu, Subang, Bekasi"
+  },
+  "airjawa.nasional.irigasi_ruined_pusat_persen": {
+   "pustaka": "worldbank-2021-vision2045, Gambar 33",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 6.96,
+   "catatan": "165.481 / 2.376.521 ha; Gambar 33 hlm. 65 (sumber laporan: Renstra Ditjen SDA 2015-2019, data 2014); penyebut per kewenangan = luas irigasi permukaan Permen PUPR 14/2015"
+  },
+  "airjawa.nasional.irigasi_ruined_kabkota_persen": {
+   "pustaka": "worldbank-2021-vision2045, Gambar 33",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 21.4,
+   "catatan": "784.249 / 3.663.173 ha; Gambar 33 hlm. 65 (sumber laporan: Renstra Ditjen SDA 2015-2019, data 2014); penyebut per kewenangan = luas irigasi permukaan Permen PUPR 14/2015"
+  },
+  "airjawa.nasional.irigasi_poor_ruined_persen": {
+   "pustaka": "worldbank-2021-vision2045, Gambar 33",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 32.2,
+   "catatan": "olah: 2.299.469 / 7.145.168 ha (poor dan ruined tiga kewenangan); Gambar 33 hlm. 65 (sumber laporan: Renstra Ditjen SDA 2015-2019, data 2014); penyebut per kewenangan = luas irigasi permukaan Permen PUPR 14/2015"
+  },
+  "airjawa.bendungan.cacaban.sedimentasi": {
+   "berkas": "air-jawa/bendungan.csv",
+   "jalur": "[nama=Cacaban].sedimentasi_juta_m3",
+   "satuan": "juta m³",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "catatan": "46,5% dari sedimentasi 18 bendungan (96,51)"
+  },
+  "airjawa.bendungan.pj.cacaban_kedungombo_porsi_sedimentasi_persen": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 87.7,
+   "catatan": "olah: (Cacaban 44,87 + Kedung Ombo 39,81) / 96,51 = 87,7%"
+  },
+  "airjawa.bendungan.pj.grobogan4_sedimentasi": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan",
+   "satuan": "juta m³",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 3.18,
+   "catatan": "olah: Butak 1,39 + Simo 0,37 + Sanggeh 0,18 + Nglangon 1,24; 3,3% dari 96,51; kehilangan persen masing-masing 56,78-86,94%"
+  },
+  "airjawa.bendungan.kedungombo.porsi_tampungan_2021_persen": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari BBWS Pemali-Juana, inventaris bendungan status Juli 2021",
+   "nilai": 85.2,
+   "catatan": "olah: 683,19 / 801,93; volume desain 723 = 80,5% dari 898,44"
+  },
+  "airjawa.turun_tanah.semarang.badangeologi2018": {
+   "pustaka": "kemenpupr-2024-rpsda-jratunseluna, hlm. 262",
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Badan Geologi Kementerian ESDM 2018, dikutip Kementerian PUPR (2024), RPSDA WS Jratunseluna Tahun 2024, Tabel 5.83",
+   "rendah": 2,
+   "tinggi": 10,
+   "catatan": "Kota Semarang; periode ukur dan metode tidak disebut; rilis Badan Geologi 2018 belum dibuka"
+  },
+  "airjawa.turun_tanah.demak.badangeologi2018": {
+   "pustaka": "kemenpupr-2024-rpsda-jratunseluna, hlm. 262",
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Badan Geologi Kementerian ESDM 2018, dikutip Kementerian PUPR (2024), RPSDA WS Jratunseluna Tahun 2024, Tabel 5.83",
+   "nilai": 10,
+   "catatan": "Kab. Demak \"> 10 cm/tahun\": tulis \"lebih dari 10\"; periode ukur dan metode tidak disebut"
+  },
+  "airjawa.turun_tanah.pekalongan.sidiq2021": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=pekalongan,periode=2016-2020].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sidiq dkk. (2021), InSAR SBAS Sentinel-1 2016-2020",
+   "catatan": "\"sampai 7 cm per tahun\""
+  },
+  "airjawa.turun_tanah.semarang_demak.sidiq2021": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=semarang,periode=2016-2020].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sidiq dkk. (2021), InSAR SBAS Sentinel-1 2016-2020",
+   "catatan": "Semarang dan Demak \"sampai 8 cm per tahun\""
+  },
+  "airjawa.turun_tanah.jakarta.sidiq2021": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=jakarta,periode=2016-2020].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sidiq dkk. (2021), InSAR SBAS Sentinel-1 2016-2020",
+   "catatan": "maksimum \"lebih dari 5\"; batas atas tidak disebut"
+  },
+  "airjawa.turun_tanah.jakarta.abidin2015": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur_rendah": "[kota_kunci=jakarta,periode=1982-2014].min_cm_th",
+   "jalur_tinggi": "[kota_kunci=jakarta,periode=1982-2014].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Abidin dkk. (2015), leveling, GPS, InSAR 1982-2014",
+   "catatan": "laju tipikal 3-10 cm per tahun"
+  },
+  "airjawa.turun_tanah.pekalongan.handoko2026": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=pekalongan,periode=2016-2024].min_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Handoko dkk. (2026), InSAR Sentinel-1 dan GNSS 2016-2024",
+   "catatan": "\"lebih dari 5 cm per tahun\" di Pekalongan Utara"
+  },
+  "airjawa.turun_tanah.surabaya.anjasmara2020_los": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=surabaya,periode=Mei 2015 sampai Sep 2017].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Anjasmara dkk. (2020), InSAR SBAS Sentinel-1A Mei 2015-September 2017",
+   "catatan": "laju LOS, bukan vertikal; Asemrowo sampai -45 mm per tahun; rentang LOS -40 sampai +30 mm per tahun"
+  },
+  "airjawa.jratunseluna.defisit_m3s": {
+   "pustaka": "kemenpupr-2024-rpsda-jratunseluna, hlm. 26 dan 191",
+   "satuan": "m³/detik",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian PUPR (2024), RPSDA WS Jratunseluna Tahun 2024, hasil analisis neraca 2023",
+   "nilai": 41.6,
+   "catatan": "rata-rata tahunan; defisit di semua bulan (tabel neraca hlm. 191); defisit air baku terutama di Grobogan, Pati, Demak, Blora, Kota Semarang (hlm. 27), tanpa rincian per kab; dokumen resmi, angka hasil analisis neraca"
+  },
+  "airjawa.jratunseluna.kebutuhan_eksisting_m3s": {
+   "pustaka": "kemenpupr-2024-rpsda-jratunseluna, hlm. 26 dan 191",
+   "satuan": "m³/detik",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian PUPR (2024), RPSDA WS Jratunseluna Tahun 2024, hasil analisis neraca 2023",
+   "nilai": 281.2,
+   "catatan": "pemenuhan (ketersediaan) eksisting 239,60"
+  },
+  "airjawa.jratunseluna.kebutuhan_proyeksi_m3s": {
+   "pustaka": "kemenpupr-2024-rpsda-jratunseluna, hlm. 26",
+   "satuan": "m³/detik",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian PUPR (2024), RPSDA WS Jratunseluna Tahun 2024, hasil analisis neraca 2023",
+   "nilai": 378.81,
+   "catatan": "proyeksi 20 tahun (2041)"
+  },
+  "dibi.jawa.kab_kekeringan.2015": {
+   "pustaka": "bnpb-dibi",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015",
+   "nilai": 3,
+   "catatan": "olah: jumlah kab/kota Jawa dengan baris kelompok kekeringan, is_bencana = 1, jumlah_kejadian > 0 di data/air-jawa/dibi_kab_tahun.csv; mengukur intensitas pelaporan, bukan keparahan; disandingkan dengan ONI JAS"
+  },
+  "dibi.jawa.kab_kekeringan.2018": {
+   "pustaka": "bnpb-dibi",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018",
+   "nilai": 67,
+   "catatan": "olah: jumlah kab/kota Jawa dengan baris kelompok kekeringan, is_bencana = 1, jumlah_kejadian > 0 di data/air-jawa/dibi_kab_tahun.csv; mengukur intensitas pelaporan, bukan keparahan; disandingkan dengan ONI JAS"
+  },
+  "dibi.jawa.kab_kekeringan.2024": {
+   "pustaka": "bnpb-dibi",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2024",
+   "nilai": 45,
+   "catatan": "olah: jumlah kab/kota Jawa dengan baris kelompok kekeringan, is_bencana = 1, jumlah_kejadian > 0 di data/air-jawa/dibi_kab_tahun.csv; mengukur intensitas pelaporan, bukan keparahan; disandingkan dengan ONI JAS"
+  },
+  "iklim.oni.jas_2015": {
+   "pustaka": "noaa-2026-oni",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "NOAA CPC, indeks ONI",
+   "nilai": 1.73,
+   "catatan": "musim Juli-September; salinan riset/mentah/oni_cpc.txt"
+  },
+  "iklim.oni.jas_2019": {
+   "pustaka": "noaa-2026-oni",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "NOAA CPC, indeks ONI",
+   "nilai": 0.2,
+   "catatan": "musim Juli-September; salinan riset/mentah/oni_cpc.txt"
+  },
+  "iklim.oni.jas_2023": {
+   "pustaka": "noaa-2026-oni",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "NOAA CPC, indeks ONI",
+   "nilai": 1.25,
+   "catatan": "musim Juli-September; salinan riset/mentah/oni_cpc.txt"
+  },
+  "iklim.oni.jas_2024": {
+   "pustaka": "noaa-2026-oni",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "NOAA CPC, indeks ONI",
+   "nilai": -0.04,
+   "catatan": "musim Juli-September; salinan riset/mentah/oni_cpc.txt"
+  },
+  "airjawa.jabar.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Barat].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023"
+  },
+  "airjawa.diy.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=DI Yogyakarta].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023"
+  },
+  "airjawa.jatim.leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Timur].air_minum_leding_2023",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023"
+  },
+  "airjawa.jabar.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Barat].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.diy.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=DI Yogyakarta].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.jatim.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Timur].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.banten.air_minum_layak_2025": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Banten].air_minum_layak_2025",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2025"
+  },
+  "airjawa.jabar.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 49.03,
+   "catatan": "kolom 3 baris Jawa Barat di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.jateng.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 29.78,
+   "catatan": "kolom 3 baris Jawa Tengah di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.diy.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 22.76,
+   "catatan": "kolom 3 baris DI Yogyakarta di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.jatim.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 35.75,
+   "catatan": "kolom 3 baris Jawa Timur di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.nasional.air_kemasan_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 40.64,
+   "catatan": "kolom 3 baris Indonesia di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"air dalam kemasan\" (bermerk dan isi ulang) menurut urutan judul"
+  },
+  "airjawa.diy.sumur_bor_pompa_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 25.0,
+   "catatan": "kolom 2 baris DI Yogyakarta di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"sumur bor atau pompa\" cocok dengan pembanding nasional (bukti P1 temuan 3)"
+  },
+  "airjawa.jatim.sumur_bor_pompa_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 24.52,
+   "catatan": "kolom 2 baris Jawa Timur di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"sumur bor atau pompa\" cocok dengan pembanding nasional (bukti P1 temuan 3)"
+  },
+  "airjawa.banten.sumur_bor_pompa_2023": {
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Survei Sosial Ekonomi Nasional 2023",
+   "nilai": 23.21,
+   "catatan": "kolom 2 baris Banten di data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt; nama \"sumur bor atau pompa\" cocok dengan pembanding nasional (bukti P1 temuan 3)"
+  },
+  "airjawa.banjarnegara.air_minum_layak_2025": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[kode_kab=3304].nilai",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS Provinsi Jawa Tengah, akses air minum layak per kab/kota 2025",
+   "catatan": "Kab. Banjarnegara; kedua dan ketiga terendah di Jawa Tengah sesudah Grobogan"
+  },
+  "airjawa.purworejo.air_minum_layak_2025": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[kode_kab=3306].nilai",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "BPS Provinsi Jawa Tengah, akses air minum layak per kab/kota 2025",
+   "catatan": "Kab. Purworejo; kedua dan ketiga terendah di Jawa Tengah sesudah Grobogan"
+  },
+  "airjawa.jateng.n_kab": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_nama=Jawa Tengah].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kepmendagri kode wilayah, paket air-jawa"
+  },
+  "airjawa.jawa.irigasi_provinsi_porsi_persen": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+   "nilai": 13.0,
+   "catatan": "olah: 406.395 / 3.135.123 ha (12,96%)"
+  },
+  "airjawa.ambang.di_pusat_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Pasal 9",
+   "nilai": 3000,
+   "catatan": "DI kewenangan pusat: lebih dari 3.000 ha, lintas provinsi, lintas negara, strategis nasional; provinsi 1.000-3.000 ha (riset/mentah/bn638.txt baris 340-360)"
+  },
+  "airjawa.ambang.di_kabkota_ha": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Pasal 11",
+   "nilai": 1000,
+   "catatan": "DI kewenangan kab/kota: kurang dari 1.000 ha dalam satu kab/kota"
+  },
+  "airjawa.irigasi.n_subtotal_kab": {
+   "berkas": "air-jawa/air-jawa.json",
+   "jalur": "meta.irigasi.n_subtotal_kab",
+   "satuan": "subtotal",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Lampiran III"
+  },
+  "airjawa.irigasi.subtotal_cocok": {
+   "pustaka": "pupr-2015-permen14",
+   "satuan": "subtotal",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari Permen PUPR 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi, Lampiran III",
+   "nilai": 96,
+   "catatan": "subtotal kab yang cocok penuh dengan baris DI di bawahnya (air-jawa.json meta.irigasi.subtotal_lampiran3_cocok_baris_di = 96/175)"
+  },
+  "airjawa.nasional.irigasi_ruined_provinsi_persen": {
+   "pustaka": "worldbank-2021-vision2045, Gambar 33, hlm. 65",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 18.68,
+   "catatan": "data 2014, Renstra Ditjen SDA 2015-2019; kategori \"ruined\" irigasi kewenangan provinsi"
+  },
+  "airjawa.nasional.irigasi_selain_baik_persen": {
+   "pustaka": "worldbank-2021-vision2045, Gambar 33, hlm. 65",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 43.6,
+   "catatan": "olah: semua kategori selain \"good\" / 7.145.168 ha; data 2014"
+  },
+  "airjawa.nasional.ws_tak_terpenuhi_kemarau": {
+   "pustaka": "worldbank-2021-vision2045, hlm. 14",
+   "satuan": "WS",
+   "keyakinan": "estimasi-model",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 24,
+   "catatan": "WS yang tidak dapat memenuhi kebutuhan pada musim kemarau; analisis tekanan air laporan dari PUS AIR 2016"
+  },
+  "airjawa.nasional.ws_jumlah_analisis": {
+   "pustaka": "worldbank-2021-vision2045, hlm. 14",
+   "satuan": "WS",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 128,
+   "catatan": "jumlah WS yang dianalisis laporan (cacah satuan analisis, bukan keluaran model)"
+  },
+  "airjawa.jawa.ws_tak_terpenuhi_kemarau": {
+   "pustaka": "worldbank-2021-vision2045, hlm. 14",
+   "satuan": "WS",
+   "keyakinan": "estimasi-model",
+   "sumber": "World Bank (2021), Indonesia Vision 2045: Towards Water Security, disusun bersama Bappenas",
+   "nilai": 13,
+   "catatan": "\"13 on Java\" dari 24 WS yang tidak dapat memenuhi kebutuhan pada musim kemarau"
+  },
+  "airjawa.di.jatiluhur.porsi_irigasi_waduk_persen": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013), Journal of Tropical Soils 18(2)",
+   "nilai": 30,
+   "catatan": "porsi DI Jatiluhur dari 797.971 ha irigasi padi yang dipasok waduk secara nasional"
+  },
+  "airjawa.di.jatiluhur.turun_terairi_mh_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013), Journal of Tropical Soils 18(2)",
+   "nilai": 9355,
+   "catatan": "penurunan luas terairi musim hujan dalam sepuluh tahun sebelum studi"
+  },
+  "airjawa.di.jatiluhur.turun_terairi_mk_ha": {
+   "pustaka": "tarigan-2013-citarum",
+   "satuan": "ha",
+   "keyakinan": "terverifikasi",
+   "sumber": "Tarigan dan Tukayo (2013), Journal of Tropical Soils 18(2)",
+   "nilai": 10170,
+   "catatan": "penurunan luas terairi musim kemarau dalam sepuluh tahun sebelum studi"
+  },
+  "airjawa.bendungan.kedungombo.piezometer": {
+   "berkas": "air-jawa/bendungan_angka.csv",
+   "jalur": "[id=kedungombo,besaran=piezometer].nilai",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali Juana (2021), Daftar inventarisasi bendungan, status Juli 2021"
+  },
+  "airjawa.bendungan.kedungombo.vnotch": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali Juana (2021), Daftar inventarisasi bendungan, status Juli 2021",
+   "nilai": 5,
+   "catatan": "baris Kedungombo, dicek pada render 300 dpi (bukti P3 temuan 7)"
+  },
+  "airjawa.bendungan.kedungombo.vnotch_rusak": {
+   "pustaka": "bbwspj-2021-inventaris-bendungan, hlm. 2",
+   "satuan": "buah",
+   "keyakinan": "resmi",
+   "sumber": "BBWS Pemali Juana (2021), Daftar inventarisasi bendungan, status Juli 2021",
+   "nilai": 4,
+   "catatan": "baris Kedungombo, dicek pada render 300 dpi (bukti P3 temuan 7)"
+  },
+  "airjawa.jakarta.ambil_akuifer_dalam_2009": {
+   "pustaka": "esdm-2009-cat-jakarta",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, \"Cekungan Air Tanah Jakarta Kritis\", 18 Agustus 2009",
+   "nilai": 21,
+   "catatan": "pengambilan air tanah akuifer dalam CAT Jakarta, \"sekitar\"; pernyataan Kepala Badan Geologi"
+  },
+  "airjawa.jakarta.potensi_akuifer_dalam_2009": {
+   "pustaka": "esdm-2009-cat-jakarta",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, \"Cekungan Air Tanah Jakarta Kritis\", 18 Agustus 2009",
+   "nilai": 52,
+   "catatan": "potensi air tanah akuifer dalam CAT Jakarta"
+  },
+  "airjawa.jakarta.ambil_porsi_potensi_2009": {
+   "pustaka": "esdm-2009-cat-jakarta",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, \"Cekungan Air Tanah Jakarta Kritis\", 18 Agustus 2009",
+   "nilai": 40,
+   "catatan": "sekitar 40% dari potensi"
+  },
+  "airjawa.jakarta.batas_anjuran_porsi_2009": {
+   "pustaka": "esdm-2009-cat-jakarta",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, \"Cekungan Air Tanah Jakarta Kritis\", 18 Agustus 2009",
+   "nilai": 20,
+   "catatan": "batas pengambilan yang dianjurkan"
+  },
+  "airjawa.turun_tanah.jakarta.esdm_1997_2005": {
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM (Badan Geologi), siaran pers 10 November 2023",
+   "rendah": 1,
+   "tinggi": 10,
+   "catatan": "CAT Jakarta 1997-2005: \"1-10 cm per tahun hingga 15-20 cm per tahun\"; bagian pertama"
+  },
+  "airjawa.turun_tanah.jakarta.esdm_1997_2005_maks": {
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM (Badan Geologi), siaran pers 10 November 2023",
+   "rendah": 15,
+   "tinggi": 20,
+   "catatan": "CAT Jakarta 1997-2005: bagian \"hingga 15-20 cm per tahun\""
+  },
+  "airjawa.jakarta.ambang_izin_rumah_tangga": {
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "m³ per bulan",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM (Badan Geologi), siaran pers 10 November 2023",
+   "nilai": 100,
+   "catatan": "rumah tangga yang memakai air tanah lebih dari 100 m³ per bulan wajib berizin"
+  },
+  "airjawa.turun_tanah.pantura.rasio_muka_laut": {
+   "pustaka": "susilo-2023-gnss",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), Scientific Data 10: 421, abstrak",
+   "nilai": 9,
+   "catatan": "Jakarta, Pekalongan, Semarang, Demak turun paling sedikit sekitar 9 kali lebih cepat daripada laju kenaikan muka laut global saat ini"
+  },
+  "airjawa.turun_tanah.semarang.aditiya2023_korelasi": {
+   "pustaka": "aditiya-2023-semarang",
+   "satuan": "",
+   "keyakinan": "terverifikasi",
+   "sumber": "Aditiya dan Ito (2023), Int. J. Appl. Earth Obs. Geoinf. 125: 103579",
+   "nilai": 0.86,
+   "catatan": "korelasi muka air tanah dan deformasi"
+  },
+  "airjawa.turun_tanah.bandung_barat.virtriana2026": {
+   "berkas": "air-jawa/subsiden_kota.csv",
+   "jalur": "[kota_kunci=bandung,wilayah_literatur=Bandung Barat].maks_cm_th",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Virtriana dkk. (2026), InSAR Sentinel-1",
+   "catatan": "titik tertinggi; periode tidak disebut di sumber yang dibaca"
+  },
+  "airjawa.sumatera.ipa_2010_persen": {
+   "berkas": "air-jawa/ipa_pulau_2010.csv",
+   "jalur": "[pulau=Sumatera].ipa_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model; belum diuji balik",
+   "sumber": "BPS (2020) mengutip Radhika dkk. (2013), model hujan-limpasan TRMM",
+   "catatan": "pembanding IPA Jawa; tingkat pulau"
+  },
+  "airjawa.bali_nusra.ipa_2010_persen": {
+   "berkas": "air-jawa/ipa_pulau_2010.csv",
+   "jalur": "[pulau=Bali-Nusa Tenggara].ipa_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model; belum diuji balik",
+   "sumber": "BPS (2020) mengutip Radhika dkk. (2013), model hujan-limpasan TRMM",
+   "catatan": "pembanding IPA Jawa; tingkat pulau"
+  },
+  "iklim.oni.jas_2018": {
+   "pustaka": "noaa-2026-oni",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "NOAA CPC, indeks ONI",
+   "nilai": 0.3,
+   "catatan": "musim Juli-September; salinan riset/mentah/oni_cpc.txt"
+  },
+  "airjawa.ambang.layak_hitung_persen": {
+   "pustaka": "bps-jateng-2026-air-minum-layak-kab",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Ambang hitung penyusun untuk akses air minum layak per kab/kota Jawa Tengah 2025",
+   "nilai": 95,
+   "catatan": "ambang yang dipakai kunci airjawa.jateng.n_kab_layak_bawah95_2025 (12 dari 35 kab/kota di bawah 95%)"
+  }
+ }
+}

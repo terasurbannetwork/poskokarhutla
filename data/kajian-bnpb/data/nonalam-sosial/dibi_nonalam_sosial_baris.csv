@@ -4,8 +4,8 @@ tanggal,tahun,kode_prov,provinsi,id_kab_bps,kabupaten,id_tipe_bencana,jenis_benc
 2025-01-07,2025,52,Nusa Tenggara Barat,5206,Bima,2010,Epidemi dan Wabah Penyakit,201,epidemi_wabah,nonalam,di_bawah_ambang,2,0,0,22,0,0,0,0,0,0,0,0,2,
 2025-01-09,2025,12,Sumatera Utara,1214,Nias Selatan,2010,Epidemi dan Wabah Penyakit,201,epidemi_wabah,nonalam,bencana,1,14,0,2010,0,0,0,0,0,0,0,0,1,dugaan entri ganda: dampak identik tercatat di dua subjenis; rekap DIBI menjumlah keduanya
 2025-01-09,2025,12,Sumatera Utara,1214,Nias Selatan,2011,Wabah Penyakit,201,epidemi_wabah,nonalam,bencana,1,14,0,2010,0,0,0,0,0,0,0,0,1,dugaan entri ganda: dampak identik tercatat di dua subjenis; rekap DIBI menjumlah keduanya
-2025-03-16,2025,52,Nusa Tenggara Barat,5206,Bima,2010,Epidemi dan Wabah Penyakit,201,epidemi_wabah,nonalam,di_bawah_ambang,1,0,0,0,0,0,0,0,0,0,0,0,1,
-2025-03-16,2025,52,Nusa Tenggara Barat,5206,Bima,2011,Wabah Penyakit,201,epidemi_wabah,nonalam,di_bawah_ambang,1,0,0,0,0,0,0,0,0,0,0,0,1,
+2025-03-16,2025,52,Nusa Tenggara Barat,5206,Bima,2010,Epidemi dan Wabah Penyakit,201,epidemi_wabah,nonalam,di_bawah_ambang,1,0,0,0,0,0,0,0,0,0,0,0,1,dugaan entri ganda: dampak identik tercatat di dua subjenis; rekap DIBI menjumlah keduanya
+2025-03-16,2025,52,Nusa Tenggara Barat,5206,Bima,2011,Wabah Penyakit,201,epidemi_wabah,nonalam,di_bawah_ambang,1,0,0,0,0,0,0,0,0,0,0,0,1,dugaan entri ganda: dampak identik tercatat di dua subjenis; rekap DIBI menjumlah keduanya
 2025-10-10,2025,36,Banten,3672,Kota Cilegon,2011,Wabah Penyakit,201,epidemi_wabah,nonalam,bencana,1,0,0,108,0,0,0,0,0,0,0,0,1,
 2026-08-05,2026,12,Sumatera Utara,1204,Tapanuli Tengah,2010,Epidemi dan Wabah Penyakit,201,epidemi_wabah,nonalam,bencana,1,5,0,0,454,0,0,0,0,0,0,0,1,
 2018-04-25,2018,11,Aceh,1105,Aceh Timur,2020,Kebakaran Gedung dan Permukiman,202,kebakaran_gedung_permukiman,nonalam,bencana,1,20,0,43,0,0,5,0,0,0,0,0,1,

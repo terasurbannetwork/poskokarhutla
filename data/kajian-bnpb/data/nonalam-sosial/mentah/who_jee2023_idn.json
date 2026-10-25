@@ -17,392 +17,450 @@
    "area": "P1",
    "area_nama": "Legal instruments",
    "indikator": "Legal instruments",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P1.2",
    "area": "P1",
    "area_nama": "Legal instruments",
    "indikator": "Gender equity and equality in health emergencies",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P2.1",
    "area": "P2",
    "area_nama": "Financing",
    "indikator": "Financing for IHR implementation",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P2.2",
    "area": "P2",
    "area_nama": "Financing",
    "indikator": "Financing for public health emergency response",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P3.1",
    "area": "P3",
    "area_nama": "IHR coordination, national IHR focal point functions and advocacy",
    "indikator": "National IHR Focal Point functions",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P3.2",
    "area": "P3",
    "area_nama": "IHR coordination, national IHR focal point functions and advocacy",
    "indikator": "Multisectoral coordination mechanisms",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P3.3",
    "area": "P3",
    "area_nama": "IHR coordination, national IHR focal point functions and advocacy",
    "indikator": "Strategic planning for IHR, preparedness or health security",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P4.1",
    "area": "P4",
    "area_nama": "Antimicrobial resistance (AMR)",
    "indikator": "Multisectoral coordination on AMR",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P4.2",
    "area": "P4",
    "area_nama": "Antimicrobial resistance (AMR)",
    "indikator": "Surveillance of AMR",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P4.3",
    "area": "P4",
    "area_nama": "Antimicrobial resistance (AMR)",
    "indikator": "Prevention of multidrug resistant organism (MDRO)",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P4.4",
    "area": "P4",
    "area_nama": "Antimicrobial resistance (AMR)",
    "indikator": "Optimal use of antimicrobial medicines in human health",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P4.5",
    "area": "P4",
    "area_nama": "Antimicrobial resistance (AMR)",
    "indikator": "Optimal use of antimicrobial medicines in animal health and agriculture",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P5.1",
    "area": "P5",
    "area_nama": "Zoonotic disease",
    "indikator": "Surveillance of zoonotic diseases",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P5.2",
    "area": "P5",
    "area_nama": "Zoonotic disease",
    "indikator": "Response to zoonotic diseases",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P5.3",
    "area": "P5",
    "area_nama": "Zoonotic disease",
    "indikator": "Sanitary animal production practices",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P6.1",
    "area": "P6",
    "area_nama": "Food safety",
    "indikator": "Surveillance of foodborne diseases and contamination",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P6.2",
    "area": "P6",
    "area_nama": "Food safety",
    "indikator": "Response and management of food safety emergencies",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "P7.1",
    "area": "P7",
    "area_nama": "Biosafety and biosecurity",
    "indikator": "Whole-of-government biosafety and biosecurity system is in place for human, animal and agriculture facilities",
-   "skor": 2
+   "skor": 2,
+   "skor_tabel_ringkasan": 2,
+   "catatan_who": "WHO (bagian P7): skor P7.1 'does not wholly reflect the nation's actual capacity'; skor lebih tinggi tertahan satu syarat yang belum terpenuhi (kerangka regulasi biosafety-biosecurity nasional yang menyeluruh)"
   },
   {
    "kode": "P7.2",
    "area": "P7",
    "area_nama": "Biosafety and biosecurity",
    "indikator": "Biosafety and biosecurity training and practices in all relevant sectors (including human, animal and agriculture)",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P8.1",
    "area": "P8",
    "area_nama": "Immunization",
    "indikator": "Vaccine coverage (measles) as part of national programme",
-   "skor": 5
+   "skor": 5,
+   "skor_tabel_ringkasan": 5
   },
   {
    "kode": "P8.2",
    "area": "P8",
    "area_nama": "Immunization",
    "indikator": "National vaccine access and delivery",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "P8.3",
    "area": "P8",
    "area_nama": "Immunization",
    "indikator": "Mass vaccination for epidemics of VPDs",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 5
   },
   {
    "kode": "D1.1",
    "area": "D1",
    "area_nama": "National laboratory systems",
    "indikator": "Specimen referral and transport system",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "D1.2",
    "area": "D1",
    "area_nama": "National laboratory systems",
    "indikator": "Laboratory quality system",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D1.3",
    "area": "D1",
    "area_nama": "National laboratory systems",
    "indikator": "Laboratory testing capacity modalities",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D1.4",
    "area": "D1",
    "area_nama": "National laboratory systems",
    "indikator": "Effective national diagnostic network",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D2.1",
    "area": "D2",
    "area_nama": "Surveillance",
    "indikator": "Early warning surveillance function",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D2.2",
    "area": "D2",
    "area_nama": "Surveillance",
    "indikator": "Event verification and investigation",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D2.3",
    "area": "D2",
    "area_nama": "Surveillance",
    "indikator": "Analysis and information sharing",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "D3.1",
    "area": "D3",
    "area_nama": "Human resources",
    "indikator": "Multisectoral workforce strategy",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "D3.2",
    "area": "D3",
    "area_nama": "Human resources",
    "indikator": "Human resources for implementation of IHR",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "D3.3",
    "area": "D3",
    "area_nama": "Human resources",
    "indikator": "Workforce training",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "D3.4",
    "area": "D3",
    "area_nama": "Human resources",
    "indikator": "Workforce surge during a public health event",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R1.1",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Emergency risk and readiness assessment",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R1.2",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Public health emergency operations center (PHEOC)",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R1.3",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Management of health emergency response",
-   "skor": 5
+   "skor": 5,
+   "skor_tabel_ringkasan": 5
   },
   {
    "kode": "R1.4",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Activation and coordination of health personnel in a public health emergency",
-   "skor": 5
+   "skor": 5,
+   "skor_tabel_ringkasan": 5
   },
   {
    "kode": "R1.5",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Emergency logistic and supply chain management",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R1.6",
    "area": "R1",
    "area_nama": "Health emergency management",
    "indikator": "Research, development and innovation",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "R2.1",
    "area": "R2",
    "area_nama": "Linking public health and security authorities",
    "indikator": "Public health and security authorities, (e.g., law enforcement, border control, customs) are involved during a suspect or confirmed biological, chemical or radiological event",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R3.1",
    "area": "R3",
    "area_nama": "Health services provision",
    "indikator": "Case management",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R3.2",
    "area": "R3",
    "area_nama": "Health services provision",
    "indikator": "Utilization of health services",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R3.3",
    "area": "R3",
    "area_nama": "Health services provision",
    "indikator": "Continuity of essential health services (EHS)",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R4.1",
    "area": "R4",
    "area_nama": "Infection prevention and control",
    "indikator": "IPC programmes",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "R4.2",
    "area": "R4",
    "area_nama": "Infection prevention and control",
    "indikator": "HCAI surveillance",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "R4.3",
    "area": "R4",
    "area_nama": "Infection prevention and control",
    "indikator": "Safe environment in health facilities",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "R5.1",
    "area": "R5",
    "area_nama": "Risk communication and community engagement",
    "indikator": "RCCE systems for emergencies",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R5.2",
    "area": "R5",
    "area_nama": "Risk communication and community engagement",
    "indikator": "Risk communication",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "R5.3",
    "area": "R5",
    "area_nama": "Risk communication and community engagement",
    "indikator": "Community engagement",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "PoE1",
    "area": "PoE",
    "area_nama": "PoEs and border health",
    "indikator": "Core capacity requirements at all times for PoEs (airports, ports and ground crossings)",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "PoE2",
    "area": "PoE",
    "area_nama": "PoEs and border health",
    "indikator": "Public health response at PoEs",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "PoE3",
    "area": "PoE",
    "area_nama": "PoEs and border health",
    "indikator": "Risk-based approach to international travel-related measures",
-   "skor": 4
+   "skor": 4,
+   "skor_tabel_ringkasan": 4
   },
   {
    "kode": "CE1",
    "area": "CE",
    "area_nama": "Chemical events",
    "indikator": "Mechanisms established and functioning for detecting and responding to Chemical events or emergencies",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "CE2",
    "area": "CE",
    "area_nama": "Chemical events",
    "indikator": "Enabling environment in place for management of Chemical events",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "RE1",
    "area": "RE",
    "area_nama": "Radiation emergencies",
    "indikator": "Mechanisms established and functioning for detecting and responding to radiological and nuclear emergencies",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   },
   {
    "kode": "RE2",
    "area": "RE",
    "area_nama": "Radiation emergencies",
    "indikator": "Enabling environment in place for management of radiological and nuclear emergencies",
-   "skor": 3
+   "skor": 3,
+   "skor_tabel_ringkasan": 3
   }
- ]
+ ],
+ "catatan_tabel_ringkasan": "skor_tabel_ringkasan dari tabel 'Indonesia: scores and priority actions', diekstrak dengan pdftotext -layout 23 Okt 2026 dari PDF yang sama (sha256 cocok). Berbeda dari bagian rinci 'Indicators and scores' di P3.3 (3 lawan 4), P8.3 (5 lawan 4), R4.1 (3 lawan 4); WHO tidak menjelaskan."
 }

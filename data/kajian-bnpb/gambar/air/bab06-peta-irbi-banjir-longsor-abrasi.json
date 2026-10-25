@@ -1,0 +1,68 @@
+{
+ "nama": "bab06-peta-irbi-banjir-longsor-abrasi",
+ "jenis": "peta",
+ "panel": [
+  "bab06-irbi-banjir",
+  "bab06-irbi-longsor",
+  "bab06-irbi-abrasi"
+ ],
+ "teks_min_pt": 8.0,
+ "ukuran_cm": [
+  16.5,
+  19.6
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "batas",
+   "latar",
+   "luar-cakupan",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas",
+   "garis",
+   "tanpa-data"
+  ],
+  "#FBE7D6": [
+   "legenda",
+   "skala"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#D9600B": [
+   "legenda",
+   "skala"
+  ],
+  "#E8894A": [
+   "legenda",
+   "skala"
+  ],
+  "#F4C3A0": [
+   "legenda",
+   "skala"
+  ],
+  "#8F3F07": [
+   "legenda",
+   "skala"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "pemandu",
+   "skala-batang",
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ }
+}

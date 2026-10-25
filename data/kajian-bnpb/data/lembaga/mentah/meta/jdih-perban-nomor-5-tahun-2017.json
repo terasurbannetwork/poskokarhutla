@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Badan",
+ "Judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+ "Nomor": "5",
+ "Tahun": "2017",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Rehabilitasi Dan Rekonstruksi",
+ "Tanggal Penetapan": "07 November 2017",
+ "Tanggal Pengundangan": "08 November 2017",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "BN 2017 (1570); 11 Hlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERBAN",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-5-tahun-2017",
+ "tipe": "Peraturan",
+ "slug": "perban-nomor-5-tahun-2017",
+ "teks": [
+  "perban-nomor-5-tahun-2017.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "22c17d808c43ecfdfcbb42f3bde9a2842bcaf155",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "5a6137392ab9b925ebbeb832d282f131fe1a57b7",
+ "asal_teks": "data/raw/hukum/teks/perban-nomor-5-tahun-2017.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

@@ -4,35 +4,35 @@ Dibangun 2026-10-23 oleh `data/kajian-bnpb/bangun/program-terbukti.py` dari data
 
 **Cara membaca.** Tiap program diberi *kekuatan bukti* (kuat, sedang, lemah, belum terbukti), *posisi* usulan, dan *status* di Indonesia. Sesuai prinsip 9 KERANGKA, program yang belum terbukti tidak diusulkan sebagai program baru; paling jauh uji coba terukur, atau, bila sudah berjalan, wajib dievaluasi dampaknya. Setiap angka di teks punya baris di `bukti_dampak.csv` dengan sumber, label keyakinan, dan cara verifikasi (dicek mesin). Biaya dan pagu proyek sengaja tidak dicantumkan.
 
-Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, lemah 7, belum terbukti 4; 163 baris bukti.
+Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 2, sedang 8, lemah 11, belum terbukti 4; 172 baris bukti.
 
-| ID | Program | Lokasi | Kekuatan bukti | Posisi | Status di Indonesia |
-| --- | --- | --- | --- | --- | --- |
-| P01 | Desa dan Kelurahan Tangguh Bencana (Destana) | Indonesia, nasional | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan |
-| P02 | Satuan Pendidikan Aman Bencana (SPAB) | Indonesia, nasional | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan |
-| P03 | Sistem Peringatan Dini Tsunami Indonesia (InaTEWS) | Indonesia, pesisir rawan tsunami | sedang | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan |
-| P04 | Sekolah Lapang Iklim (SLI) BMKG | Indonesia, sentra pangan | lemah | Uji coba terukur | Sudah ada, perlu dikembangkan |
-| P05 | Masyarakat Peduli Api dan Desa Bebas Api (Fire Free Village Programme) | Riau (konsesi APRIL/RAPP) | lemah | Uji coba terukur | Sudah ada, perlu dikembangkan |
-| P06 | Restorasi gambut melalui sekat kanal (pembasahan) | Sumatra dan Kalimantan, lahan gambut | lemah | Uji coba terukur | Sudah ada, perlu dikembangkan |
-| P07 | Rekompak: rekonstruksi rumah berbasis komunitas, gempa Yogyakarta-Jawa Tengah 2006 | DIY, Jawa Tengah, Jawa Barat | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan |
-| P08 | BRR Aceh-Nias: badan rekonstruksi berbatas waktu | Aceh dan Nias | sedang | Program dengan syarat (bukti sedang) | Usulan baru |
-| P09 | Rehabilitasi-rekonstruksi rumah pascagempa Lombok 2018 (stimulan, pokmas, RISHA) | NTB | lemah | Pelajaran, bukan teladan | Sudah ada, perlu dikembangkan |
-| P10 | Embung dan panen air hujan | Indonesia, lahan tadah hujan | belum-terbukti | Uji coba terukur | Sudah ada, perlu dikembangkan |
-| P11 | Sumur resapan dan lubang resapan biopori | DKI Jakarta dan kota lain | lemah | Uji coba terukur | Sudah ada, perlu dikembangkan |
-| P12 | Citarum Harum (pemulihan DAS Citarum) | DAS Citarum, Jawa Barat | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan |
-| P13 | PAMSIMAS (penyediaan air minum dan sanitasi berbasis masyarakat) | Indonesia, perdesaan | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan |
-| P14 | Sodetan dan bendungan kering Ciliwung | DAS Ciliwung, Jabodetabek | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan |
-| P15 | Sistem polder dan pompa kota pesisir | Jakarta, Semarang, Pekalongan | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan |
-| P16 | Pengendalian pengambilan air tanah untuk menghentikan penurunan tanah (Tokyo, Osaka, Bangkok) | Jepang (Tokyo, Osaka); Thailand (Bangkok) | kuat | Program (bukti kuat) | Sudah ada, perlu dikembangkan |
-| P17 | Delta Programme Belanda (UU, dana, komisaris, laporan tahunan) | Belanda | sedang | Rujukan tata kelola | Usulan baru |
-| P18 | Room for the River (ruang untuk sungai) | Belanda (Rhine, Waal, Meuse) | sedang | Uji coba terukur | Usulan baru |
-| P19 | Cyclone Preparedness Programme (CPP) Bangladesh | Pesisir Bangladesh | kuat | Program (bukti kuat) | Sudah ada, perlu dikembangkan |
-| P20 | Kesiapsiagaan siklon Odisha (OSDMA): evakuasi preemptif dan shelter | Odisha, India | kuat | Program (bukti kuat) | Sudah ada, perlu dikembangkan |
-| P21 | Pendidikan kebencanaan Kamaishi (Jepang) | Kota Kamaishi, Iwate, Jepang | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan |
-| P22 | Kode bangunan tahan gempa Chile (NCh433) dan penegakannya | Chile | kuat | Program (bukti kuat) | Sudah ada, perlu dikembangkan |
-| P23 | Asuransi risiko bencana dan pooling regional (CCRIF, ARC; Asuransi BMN dan Dana Bersama PB) | Karibia, Afrika; Indonesia | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan |
-| P24 | Hibah mitigasi FEMA (HMGP, BRIC) dengan syarat analisis manfaat-biaya | Amerika Serikat | sedang | Rujukan tata kelola | Usulan baru |
-| P25 | Evakuasi preemptif topan di Filipina (Albay, NDRRMC) | Filipina | lemah | Pelajaran, bukan teladan | Sudah ada, perlu dikembangkan |
+| ID | Program | Lokasi | Kekuatan bukti | Posisi | Status di Indonesia | Pemimpin |
+| --- | --- | --- | --- | --- | --- | --- |
+| P01 | Desa dan Kelurahan Tangguh Bencana (Destana) | Indonesia, nasional | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Desa dan Pembangunan Daerah Tertinggal; Badan Nasional Penanggulangan Bencana; Kementerian Sosial |
+| P02 | Satuan Pendidikan Aman Bencana (SPAB) | Indonesia, nasional | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama |
+| P03 | Sistem Peringatan Dini Tsunami Indonesia (InaTEWS) | Indonesia, pesisir rawan tsunami | sedang | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Badan Meteorologi, Klimatologi, dan Geofisika |
+| P04 | Sekolah Lapang Iklim (SLI) BMKG | Indonesia, sentra pangan | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Badan Meteorologi, Klimatologi, dan Geofisika |
+| P05 | Masyarakat Peduli Api dan Desa Bebas Api (Fire Free Village Programme) | Riau (konsesi APRIL/RAPP) | lemah | Uji coba terukur | Sudah ada, perlu dikembangkan | Kementerian Kehutanan |
+| P06 | Restorasi gambut melalui sekat kanal (pembasahan) | Sumatra dan Kalimantan, lahan gambut | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Kehutanan |
+| P07 | Rekompak: rekonstruksi rumah berbasis komunitas, gempa Yogyakarta-Jawa Tengah 2006 | DIY, Jawa Tengah, Jawa Barat | lemah | Rujukan tata kelola | Sudah ada, perlu dikembangkan | Kementerian Perumahan dan Kawasan Permukiman |
+| P08 | BRR Aceh-Nias: badan rekonstruksi berbatas waktu | Aceh dan Nias | lemah | Rujukan tata kelola | Sudah ada, perlu dikembangkan | Badan Nasional Penanggulangan Bencana |
+| P09 | Rehabilitasi-rekonstruksi rumah pascagempa Lombok 2018 (stimulan, pokmas, RISHA) | NTB | lemah | Pelajaran, bukan teladan | Sudah ada, perlu dikembangkan | Kementerian Perumahan dan Kawasan Permukiman |
+| P10 | Embung dan panen air hujan | Indonesia, lahan tadah hujan | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Pertanian; Kementerian Pekerjaan Umum |
+| P11 | Sumur resapan dan lubang resapan biopori | DKI Jakarta dan kota lain | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Pemerintah daerah provinsi dan kabupaten/kota |
+| P12 | Citarum Harum (pemulihan DAS Citarum) | DAS Citarum, Jawa Barat | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Pemerintah daerah provinsi dan kabupaten/kota |
+| P13 | PAMSIMAS (penyediaan air minum dan sanitasi berbasis masyarakat) | Indonesia, perdesaan | sedang | Program dengan syarat (bukti sedang) | Sudah ada, perlu dikembangkan | Kementerian Pekerjaan Umum |
+| P14 | Sodetan dan bendungan kering Ciliwung | DAS Ciliwung, Jabodetabek | lemah | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Pekerjaan Umum |
+| P15 | Sistem polder dan pompa kota pesisir | Jakarta, Semarang, Pekalongan | belum-terbukti | Program berjalan, wajib evaluasi dampak | Sudah ada, perlu dikembangkan | Kementerian Pekerjaan Umum |
+| P16 | Pengendalian pengambilan air tanah untuk menghentikan penurunan tanah (Tokyo, Osaka, Bangkok) | Jepang (Tokyo, Osaka); Thailand (Bangkok) | kuat | Program (bukti kuat) | Padanan: zona bebas air tanah DKI dan pengendalian izin air tanah, dengan NSPK mitigasi penurunan muka tanah Renas 2.4.4.a (Sudah ada, perlu dikembangkan) | Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup |
+| P17 | Delta Programme Belanda (UU, dana, komisaris, laporan tahunan) | Belanda | lemah | Rujukan tata kelola | Padanan: Dewan SDA Nasional dan wadah koordinasi pengelolaan SDA wilayah sungai (UU 17/2019 Pasal 65 dan Pasal 11 huruf h) (belum dapat dipastikan) | Kementerian Pekerjaan Umum; Kementerian Perencanaan Pembangunan Nasional/Badan Perencanaan Pembangunan Nasional |
+| P18 | Room for the River (ruang untuk sungai) | Belanda (Rhine, Waal, Meuse) | sedang | Uji coba terukur | Padanan: belum ada; pengendalian banjir sungai di Jawa didominasi normalisasi dan tanggul (Usulan baru) | Kementerian Pekerjaan Umum |
+| P19 | Kesiapsiagaan siklon Bangladesh: Cyclone Preparedness Programme (CPP), shelter, dan tanggul pesisir | Pesisir Bangladesh | kuat | Program (bukti kuat) | Padanan: relawan PB, Destana (P01), dan sistem peringatan dini tsunami (P03) (Sudah ada, perlu dikembangkan) | Kementerian Desa dan Pembangunan Daerah Tertinggal; Badan Nasional Penanggulangan Bencana; Kementerian Sosial |
+| P20 | Kesiapsiagaan siklon Odisha (OSDMA): evakuasi preemptif dan shelter | Odisha, India | sedang | Program dengan syarat (bukti sedang) | Padanan: rencana kontingensi BPBD (Perban 2/2023) dan rencana penanggulangan kedaruratan daerah (Perban 9/2025) (Sudah ada, perlu dikembangkan) | Badan Nasional Penanggulangan Bencana |
+| P21 | Pendidikan kebencanaan Kamaishi (Jepang) | Kota Kamaishi, Iwate, Jepang | sedang | Program dengan syarat (bukti sedang) | Padanan: SPAB (P02) (Sudah ada, perlu dikembangkan) | Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama |
+| P22 | Kode bangunan tahan gempa Chile (NCh433) dan penegakannya | Chile | sedang | Program dengan syarat (bukti sedang) | Padanan: pengawasan penerapan standar bangunan tahan bencana Renas 2.3.4.a (Sudah ada, perlu dikembangkan) | Kementerian Pekerjaan Umum; Badan Nasional Penanggulangan Bencana |
+| P23 | Asuransi risiko bencana dan pooling regional (CCRIF, ARC; Asuransi BMN dan Dana Bersama PB) | Karibia, Afrika; Indonesia | sedang | Program dengan syarat (bukti sedang) | Padanan: Dana Bersama PB (Perpres 75/2021) dan asuransi BMN (Renas 4.6.3.a) (Sudah ada, perlu dikembangkan) | Kementerian Keuangan; Badan Nasional Penanggulangan Bencana; Kementerian Dalam Negeri |
+| P24 | Hibah mitigasi FEMA (HMGP, BRIC) dengan syarat analisis manfaat-biaya | Amerika Serikat | sedang | Rujukan tata kelola | Padanan: Dana Bersama PB tanpa syarat analisis manfaat-biaya (Perban 1/2026) (Usulan baru) | Badan Nasional Penanggulangan Bencana; Kementerian Keuangan |
+| P25 | Evakuasi preemptif topan di Filipina (Albay, NDRRMC) | Filipina | lemah | Pelajaran, bukan teladan | Padanan: rencana penanggulangan kedaruratan daerah (Perban 9/2025) (Sudah ada, perlu dikembangkan) | Badan Nasional Penanggulangan Bencana |
 
 ## 1. Program per program
 
@@ -43,8 +43,9 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Yang dilakukan:** Desa/kelurahan menyusun kajian risiko dan rencana PB desa, membentuk Forum PRB dan Tim Relawan, menyiapkan peringatan dini dan jalur evakuasi; tingkat ketangguhan dinilai (pratama, madya, utama).
 - **Dampak terukur:** Belum ada evaluasi dampak kuantitatif (pra-pasca atau desa pembanding). Data resmi hanya cakupan: 2.234 desa/kelurahan dibina (baseline Renas) dengan target 7.234, dibanding 53.000 desa di daerah rawan; IKK Renstra daerah yang memiliki Destana 2,58% menjadi 3,26%.
 - **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: resmi.
-- **Syarat keberhasilan:** Masuk RPJMDes dan dana desa; relawan aktif dan gladi berkala; tersambung ke peringatan dini kab/kota (Pusdalops 24 jam); pendampingan multi-tahun.
+- **Syarat keberhasilan:** Masuk RPJMDes dan dana desa; relawan aktif dan gladi berkala; tersambung ke peringatan dini kab/kota (Pusdalops siaga terus-menerus); pendampingan multi-tahun.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 7/2025 tentang Desa dan Kelurahan Tangguh Bencana (mengganti Perka 1/2012); Renas 4.5.1.a; IKK Direktorat Kesiapsiagaan (Renstra Tabel 4.7).
+- **Pemimpin:** Kementerian Desa dan Pembangunan Daerah Tertinggal; Badan Nasional Penanggulangan Bencana; Kementerian Sosial (renas:4.5.1.a). **Peran BNPB:** NSPK, kode K.
 - **Celah:** Tidak ada evaluasi dampak; Penilaian Ketangguhan (Perban 7/2025) belum dipakai sebagai garis dasar; cakupan kecil terhadap desa rawan; Renas mencatat dana desa belum optimal untuk ketangguhan.
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Kesiapsiagaan; Direktorat Peringatan Dini; Direktorat Pemetaan dan Evaluasi Risiko Bencana. **K/L:** Kementerian Desa PDT; Kementerian Sosial; Kementerian Dalam Negeri; BPBD.
@@ -56,18 +57,20 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 | B002 | desa/kelurahan mendapat pembinaan menghadapi bencana (target) | 7.234 desa/kelurahan | 2029 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 4.5.1.a, hlm. 107 |
 | B003 | desa di daerah rawan bencana (isu strategis RPJMN) | 53.000 desa | 2025 | resmi | korpus-lokal | BNPB, isu kebencanaan RPJMN, hlm. 69 |
 | B004 | persentase daerah yang memiliki Desa tangguh Bencana (IKK) | 2,58 % | 2025 | resmi | korpus-lokal | BNPB, Tabel 4.7, hlm. 136 |
-| B005 | persentase daerah yang memiliki Desa tangguh Bencana (IKK) | 3,26 % | 2029 | resmi | korpus-lokal | BNPB, Tabel 4.7, hlm. 136 |
+| B005 | persentase daerah yang memiliki Desa tangguh Bencana (IKK) | 3,26 % | 2029 | resmi | korpus-lokal | BNPB, Tabel 4.7, hlm. 135 |
 | B006 | masalah pokok Renas: dana desa | (kualitatif) | 2025-2029 | resmi | korpus-lokal | BNPB, permasalahan ketangguhan masyarakat, hlm. 26 |
+| B007 | tingkat ketangguhan desa/kelurahan (dasar garis awal evaluasi) | (kualitatif) | 2025 | resmi | korpus-lokal | BNPB, pasal tingkatan Desa/Kelurahan Tangguh, hlm. 7 |
 
 ### P02. Satuan Pendidikan Aman Bencana (SPAB)
 
 - **Lokasi dan periode:** Indonesia, nasional, 2012-sekarang. **Pelaksana:** Kementerian Pendidikan Dasar dan Menengah, Kementerian Agama (sejak 2023); sebelumnya BNPB.
 - **Fase / bencana / jenis aksi:** prabencana / gempa, tsunami, banjir, gunungapi / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Pendidikan kebencanaan, gladi evakuasi rutin, penilaian keamanan gedung, dan rencana kesiapsiagaan di satuan pendidikan.
-- **Dampak terukur:** Belum ada evaluasi dampak nasional; studi yang ada skala satu sekolah tanpa kelompok pembanding. Pelaksana pindah dari BNPB ke kementerian pendidikan sejak 2023 (Renstra). Renas menargetkan 38.946.645 peserta didik dan 10.280 fasilitator dibina (baseline ±4.433.262 dan 4.110). Bukti terkuat pendekatan ini berasal dari luar negeri (program Kamaishi di kompendium ini).
+- **Dampak terukur:** Tidak ditemukan evaluasi dampak nasional berpembanding pada penelusuran 23 Okt 2026. Pelaksana pindah dari BNPB ke kementerian pendidikan sejak 2023 (Renstra). Renas menargetkan 38.946.645 peserta didik dan 10.280 fasilitator dibina (baseline ±4.433.262 dan 4.110). Bukti terkuat pendekatan ini berasal dari luar negeri (program Kamaishi di kompendium ini).
 - **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: resmi.
 - **Syarat keberhasilan:** Gladi berkala dengan skenario tak terduga; indikator hasil terukur (waktu evakuasi, porsi siswa ikut gladi); gedung sekolah dinilai dan diperkuat.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perka BNPB 4/2012 Pedoman Penerapan Sekolah/Madrasah Aman dari Bencana; Renas 2.1.2.a (PJ Kemendikdasmen dan Kemenag).
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perka BNPB 4/2012 Pedoman Penerapan Sekolah/Madrasah Aman dari Bencana; Permendikbud 33/2019 tentang Penyelenggaraan Program SPAB (rujukan sekunder, teks tidak dibuka); Renas 2.1.2.a (PJ Kemendikdasmen dan Kemenag).
+- **Pemimpin:** Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama (renas:2.1.2.a). **Peran BNPB:** NSPK, kode P; BNPB kontributor Renas 2.1.2.a; penanggung jawab Kemendikdasmen dan Kemenag.
 - **Celah:** Indikator Renas berupa jumlah peserta dibina, bukan hasil; BNPB kini kontributor; Renas mencatat belum semua satuan pendidikan menerapkan SPAB.
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Kesiapsiagaan; Direktorat Mitigasi Bencana. **K/L:** Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama.
@@ -75,22 +78,23 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B007 | pelaksana SPAB berpindah dari BNPB | (kualitatif) | 2023 | resmi | korpus-lokal | BNPB, evaluasi Renstra 2020-2024, hlm. 20 |
-| B008 | peserta didik dibina satuan pendidikan aman bencana (baseline) | 4.433.262 peserta didik | 2024 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
-| B009 | peserta didik dibina satuan pendidikan aman bencana (target) | 38.946.645 peserta didik | 2029 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
-| B010 | fasilitator SPAB dibina (baseline) | 4.110 orang | 2024 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
-| B011 | fasilitator SPAB dibina (target) | 10.280 orang | 2029 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
+| B008 | pelaksana SPAB berpindah dari BNPB | (kualitatif) | 2023 | resmi | korpus-lokal | BNPB, evaluasi Renstra 2020-2024, hlm. 20 |
+| B009 | peserta didik dibina satuan pendidikan aman bencana (baseline) | 4.433.262 peserta didik | 2024 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
+| B010 | peserta didik dibina satuan pendidikan aman bencana (target) | 38.946.645 peserta didik | 2029 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
+| B011 | fasilitator SPAB dibina (baseline) | 4.110 orang | 2024 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
+| B012 | fasilitator SPAB dibina (target) | 10.280 orang | 2029 | resmi | korpus-lokal | BNPB, Tabel 3.1 kode 2.1.2.a, hlm. 72 |
 
 ### P03. Sistem Peringatan Dini Tsunami Indonesia (InaTEWS)
 
 - **Lokasi dan periode:** Indonesia, pesisir rawan tsunami, 2008-sekarang. **Pelaksana:** BMKG (hulu); BNPB dan BPBD (hilir).
 - **Fase / bencana / jenis aksi:** prabencana, tanggap-darurat / tsunami, gempa / infrastruktur. **Kajian:** mitigasi.
 - **Yang dilakukan:** Jaringan seismik, pasang surut, dan diseminasi (WRS, sirene) BMKG; peringatan diteruskan BNPB, BPBD, media, dan operator ke masyarakat.
-- **Dampak terukur:** Kecepatan hulu terbukti: pada gempa Palu (September 2018) peringatan terbit sekitar 5 menit setelah gempa pukul 17.02 WIB, tetapi dicabut pukul 17.37 WIB karena tidak ada sensor muka laut di Teluk Palu (sensor terdekat sekitar 200 km); tsunami tetap datang. Hilir lemah: keterpenuhan sistem peringatan dini baru 6% dari masyarakat terpapar berisiko tinggi; IKP cakupan layanan peringatan dini 6,10% menjadi 6,32%.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: data-resmi-pra-pasca; label angka: resmi.
-- **Syarat keberhasilan:** Sensor muka laut di teluk dan dekat sumber; Pusdalops dan BPBD siaga 24 jam; sirene dan pesan seluler sampai rumah tangga; warga terlatih evakuasi mandiri saat guncangan kuat tanpa menunggu peringatan.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 2/2024 Sistem Peringatan Dini Bencana; Renas 1.1.1, 1.1.2, 1.2.1.c; Perpres 93/2019 (kutipan sekunder, teks tidak dibuka).
-- **Celah:** Mata rantai terakhir (sirene, Pusdalops 24 jam), tsunami nontektonik (Selat Sunda 2018), cakupan peringatan dini 6%; evaluasi UNDRR/UNESCO 2019 atas Palu belum dapat dibuka (HTTP 403).
+- **Dampak terukur:** Kecepatan hulu terbukti: pada gempa Palu (September 2018) peringatan terbit sekitar 5 menit setelah gempa pukul 17.02 WIB, tetapi dicabut pukul 17.37 WIB karena tidak ada sensor muka laut di Teluk Palu (sensor terdekat sekitar 200 km); tsunami tetap datang. Hilir lemah: keterpenuhan sistem peringatan dini baru 6% dari masyarakat terpapar di kawasan risiko tinggi; IKP cakupan layanan peringatan dini di daerah berisiko 6,10% menjadi 6,32% (penyebut kedua angka berbeda, jadi tidak dapat dibandingkan langsung).
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: kejadian-tunggal; label angka: terverifikasi;resmi.
+- **Syarat keberhasilan:** Sensor muka laut di teluk dan dekat sumber; Pusdalops dan BPBD siaga terus-menerus; sirene dan pesan seluler sampai rumah tangga; warga terlatih evakuasi mandiri saat guncangan kuat tanpa menunggu peringatan.
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 2/2024 Sistem Peringatan Dini Bencana; Perban BNPB 4/2022 Pelaksanaan Peringatan Dini Bencana pada BNPB dan BPBD; Renas 1.1.1, 1.1.2, 1.2.1.c; Perpres 93/2019 (kutipan sekunder, teks tidak dibuka).
+- **Pemimpin:** Badan Meteorologi, Klimatologi, dan Geofisika (renas:1.1.2.d). **Peran BNPB:** Koordinasi, kode I; BMKG penanggung jawab hulu; BNPB dan BPBD menyebarkan peringatan sampai warga (Perban 2/2024).
+- **Celah:** Mata rantai terakhir (sirene, Pusdalops siaga terus-menerus), tsunami nontektonik (Selat Sunda 2018), cakupan peringatan dini 6%; evaluasi UNDRR/UNESCO 2019 atas Palu ditolak server saat dibuka.
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Peringatan Dini; Direktorat Koordinasi Pengendalian Operasi Darurat; Pusat Data, Informasi, dan Komunikasi Kebencanaan. **K/L:** BMKG; BPBD; Kementerian Komunikasi dan Digital.
 - **Tabel silang:** Renas 1.1.1, 1.1.2, 1.2.1 (fokus RIPB 3, 7); strategi RIPB 2b; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
@@ -98,13 +102,13 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B012 | waktu terbit peringatan tsunami setelah gempa Palu | 5 menit | 2018 | resmi | dibuka-langsung | Kontan (mengutip BMKG), paragraf kronologi |
-| B013 | jam gempa Palu-Donggala | 17.02 WIB | 2018 | resmi | dibuka-langsung | Kontan (mengutip BMKG), paragraf kronologi |
-| B014 | jam peringatan tsunami dicabut | 17.37 WIB | 2018 | resmi | dibuka-langsung | Kontan (mengutip BMKG), paragraf kronologi |
-| B015 | jarak sensor pasang surut terdekat dari Palu | 200 km | 2018 | resmi | ringkasan-mesin-cari | CGTN; asianews.network, pernyataan Rahmat Triyono |
-| B016 | keterpenuhan sistem peringatan dini bagi masyarakat terpapar di kawasan risiko tinggi | 6 % | 2024 | resmi | korpus-lokal | BNPB, isu kebencanaan RPJMN, hlm. 70 |
-| B017 | IKP cakupan layanan peringatan dini di daerah berisiko | 6,10 % | 2025 | resmi | korpus-lokal | BNPB, Tabel 4.6, hlm. 133 |
-| B018 | IKP cakupan layanan peringatan dini di daerah berisiko | 6,32 % | 2029 | resmi | korpus-lokal | BNPB, Tabel 4.6, hlm. 133 |
+| B013 | waktu terbit peringatan tsunami setelah gempa Palu | 5 menit | 2018 | terverifikasi | dibuka-langsung | Kontan (mengutip Kepala BMKG), paragraf kronologi |
+| B014 | jam gempa Palu-Donggala | 17.02 WIB | 2018 | terverifikasi | dibuka-langsung | Kontan (mengutip Kepala BMKG), paragraf kronologi |
+| B015 | jam peringatan tsunami dicabut | 17.37 WIB | 2018 | terverifikasi | dibuka-langsung | Kontan (mengutip Kepala BMKG), paragraf kronologi |
+| B016 | jarak sensor pasang surut terdekat dari Palu | 200 km | 2018 | terverifikasi | dibuka-langsung | CGTN (mengutip BMKG), pernyataan Rahmat Triyono |
+| B017 | keterpenuhan sistem peringatan dini bagi masyarakat terpapar di kawasan risiko tinggi | 6 % | 2024 | resmi | korpus-lokal | BNPB, isu kebencanaan RPJMN, hlm. 70 |
+| B018 | IKP cakupan layanan peringatan dini di daerah berisiko | 6,10 % | 2025 | resmi | korpus-lokal | BNPB, Tabel 4.6, hlm. 133 |
+| B019 | IKP cakupan layanan peringatan dini di daerah berisiko | 6,32 % | 2029 | resmi | korpus-lokal | BNPB, Tabel 4.6, hlm. 133 |
 
 ### P04. Sekolah Lapang Iklim (SLI) BMKG
 
@@ -115,115 +119,123 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: resmi.
 - **Syarat keberhasilan:** Prakiraan musim yang andal untuk lokasi itu; petani punya pilihan (varietas, air irigasi); evaluasi dengan lahan pembanding sejenis.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program BMKG sejak 2011 (siaran pers BMKG 9 Jul 2019); terkait Renas 2.5.1 dan 4.5.2.
+- **Pemimpin:** Badan Meteorologi, Klimatologi, dan Geofisika (penyusun: program BMKG, tanpa baris Rencana Aksi Renas). **Peran BNPB:** Koordinasi, kode P; program BMKG; BNPB hanya penghubung ke BPBD.
 - **Celah:** Tidak ada evaluasi berpembanding; tidak dikaitkan dengan rencana kontinjensi kekeringan BPBD saat El Nino.
-- **Posisi dalam kajian:** Uji coba terukur.
+- **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** BMKG; Kementerian Pertanian.
 - **Tabel silang:** Renas 2.5.1, 4.5.2 (fokus RIPB 4, 6); strategi RIPB 4g; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B019 | produksi peserta SLI Temanggung di atas rata-rata kabupaten | 9,7 % | 2019 | resmi | dibuka-langsung | BMKG, paragraf hasil ubinan |
-| B020 | produksi peserta SLI Temanggung di atas rata-rata kecamatan | 11,5 % | 2019 | resmi | dibuka-langsung | BMKG, paragraf hasil ubinan |
-| B021 | klaim kenaikan produktivitas SLI tahap 3 nasional | 30 % (paling tinggi) | 2019 | resmi | dibuka-langsung | BMKG, paragraf penutup |
-| B022 | produktivitas lahan peserta SLI (Ciherang), Batanghari | 6,949 ton/ha | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
-| B023 | produktivitas padi lokal pembanding, Batanghari | 5,64 ton/ha | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
-| B024 | kenaikan produktivitas peserta SLI, Batanghari | 23 % | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
+| B020 | produksi peserta SLI Temanggung di atas rata-rata kabupaten | 9,7 % | 2019 | resmi | dibuka-langsung | BMKG, paragraf hasil ubinan |
+| B021 | produksi peserta SLI Temanggung di atas rata-rata kecamatan | 11,5 % | 2019 | resmi | dibuka-langsung | BMKG, paragraf hasil ubinan |
+| B022 | klaim kenaikan produktivitas SLI tahap 3 nasional | 30 % (paling tinggi) | 2019 | resmi | dibuka-langsung | BMKG, paragraf penutup |
+| B023 | produktivitas lahan peserta SLI (Ciherang), Batanghari | 6,949 ton/ha | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
+| B024 | produktivitas padi lokal pembanding, Batanghari | 5,64 ton/ha | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
+| B025 | kenaikan produktivitas peserta SLI, Batanghari | 23 % | 2016 | resmi | dibuka-langsung | BMKG, paragraf hasil |
 
 ### P05. Masyarakat Peduli Api dan Desa Bebas Api (Fire Free Village Programme)
 
 - **Lokasi dan periode:** Riau (konsesi APRIL/RAPP), 2014-sekarang. **Pelaksana:** APRIL/PT RAPP bersama pemerintah desa; MPA di bawah Kementerian Kehutanan.
 - **Fase / bencana / jenis aksi:** prabencana / karhutla / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Hibah infrastruktur bagi desa yang bebas kebakaran, pelatihan regu api desa, patroli, pertanian tanpa bakar, edukasi dan pemantauan udara.
-- **Dampak terukur:** Laporan perusahaan: luas terbakar di 9 desa peserta turun 90% dari 2014 ke 2015 (tahun El Nino kuat); rilis RAPP 2018 menyebut porsi area terbakar 0,18% (2014) menjadi 0,01% (2015), tetapi mencatat 4 desa peserta pada 2014 dan 18 desa pada 2015, berbeda dengan versi 9 desa. Tidak ada kelompok pembanding dan tidak ditemukan evaluasi independen.
+- **Dampak terukur:** Laporan perusahaan: luas terbakar di 9 desa peserta turun 90% dari 2014 ke 2015 (tahun El Nino kuat); rilis RAPP 2018 menyebut porsi area terbakar 0,18% (2014) menjadi 0,01% (2015), lalu 0,07% (2016) dan 0,03% (2017), tetapi mencatat 4 desa peserta pada 2014 dan 18 desa pada 2015, berbeda dengan versi 9 desa. Tidak ada kelompok pembanding dan tidak ditemukan evaluasi independen.
 - **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
 - **Syarat keberhasilan:** Insentif bersyarat yang benar-benar dibayar; regu api desa terlatih dan berperalatan; alternatif pembukaan lahan tanpa bakar yang layak ekonomi; pemantauan titik panas independen.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. MPA dan Brigdal karhutla di bawah Kementerian Kehutanan (Renas 1.2.3.d); Inpres 3/2020 (kutipan riset A, sekunder).
+- **Pemimpin:** Kementerian Kehutanan (renas:1.2.3.d). **Peran BNPB:** Koordinasi, kode P; BNPB kontributor Renas 1.2.3.d; penanggung jawab Kementerian Kehutanan.
 - **Celah:** Tidak ada evaluasi independen; skema insentif belum diadopsi pemerintah; perbandingan dengan desa nonpeserta belum dilakukan.
 - **Posisi dalam kajian:** Uji coba terukur.
-- **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Kesiapsiagaan. **K/L:** Kementerian Kehutanan; BRGM; pemerintah daerah.
+- **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Kesiapsiagaan. **K/L:** Kementerian Kehutanan; Kementerian Lingkungan Hidup; Kementerian Kelautan dan Perikanan; pemerintah daerah.
 - **Tabel silang:** Renas 1.2.3 (fokus RIPB 7); strategi RIPB 4e; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 - **Catatan:** Biaya per desa yang disebut rilis APRIL sengaja tidak disalin (aturan tanpa biaya proyek).
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B025 | desa peserta Fire Free Village (versi APRIL) | 9 desa | 2014-2015 | terverifikasi | dibuka-langsung | APRIL Group, paragraf 1 |
-| B026 | penurunan luas terbakar di desa peserta | 90 % | 2014-2015 | terverifikasi | dibuka-langsung | APRIL Group, paragraf 1 |
-| B027 | luas terbakar sebagai porsi area program | 0,18 % | 2014 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
-| B028 | luas terbakar sebagai porsi area program | 0,01 % | 2015 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
-| B029 | desa peserta FFVP (versi RAPP) | 4 desa | 2014 | terverifikasi | dibuka-langsung | PT RAPP, paragraf jumlah desa |
-| B030 | desa peserta FFVP (versi RAPP) | 18 desa | 2015 | terverifikasi | dibuka-langsung | PT RAPP, paragraf jumlah desa |
+| B026 | desa peserta Fire Free Village (versi APRIL) | 9 desa | 2014-2015 | terverifikasi | dibuka-langsung | APRIL Group, paragraf 1 |
+| B027 | penurunan luas terbakar di desa peserta | 90 % | 2014-2015 | terverifikasi | dibuka-langsung | APRIL Group, paragraf 1 |
+| B028 | luas terbakar sebagai porsi area program | 0,18 % | 2014 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
+| B029 | luas terbakar sebagai porsi area program | 0,01 % | 2015 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
+| B030 | luas terbakar sebagai porsi area program | 0,07 % | 2016 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
+| B031 | luas terbakar sebagai porsi area program | 0,03 % | 2017 | terverifikasi | dibuka-langsung | PT RAPP, paragraf capaian |
+| B032 | desa peserta FFVP (versi RAPP) | 4 desa | 2014 | terverifikasi | dibuka-langsung | PT RAPP, paragraf jumlah desa |
+| B033 | desa peserta FFVP (versi RAPP) | 18 desa | 2015 | terverifikasi | dibuka-langsung | PT RAPP, paragraf jumlah desa |
 
 ### P06. Restorasi gambut melalui sekat kanal (pembasahan)
 
-- **Lokasi dan periode:** Sumatra dan Kalimantan, lahan gambut, 2016-sekarang. **Pelaksana:** BRGM, Kementerian Kehutanan, pemegang konsesi.
+- **Lokasi dan periode:** Sumatra dan Kalimantan, lahan gambut, 2016-sekarang. **Pelaksana:** Kementerian Kehutanan, Kementerian Lingkungan Hidup, dan Kementerian Kelautan dan Perikanan (sejak tugas badan restorasi berakhir 2024), pemegang konsesi.
 - **Fase / bencana / jenis aksi:** prabencana / karhutla / infrastruktur. **Kajian:** mitigasi.
 - **Yang dilakukan:** Pembasahan gambut dengan sekat dan timbun kanal, sumur bor, revegetasi, dan revitalisasi ekonomi masyarakat.
 - **Dampak terukur:** Model hidrologi untuk 168 sekat kanal di 22.000 ha gambut Sumatra: rata-rata tahunan muka air tanah hanya naik 1,5 cm (1,44 cm tahun kering, 1,57 cm tahun basah); emisi karbon dioksida terhindar 1,07 dan 1,17 Mg/ha. Belum ditemukan bukti sekat kanal menurunkan kejadian kebakaran di skala lanskap.
-- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: model; label angka: terverifikasi.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: model; label angka: terverifikasi;estimasi-model.
 - **Syarat keberhasilan:** Lokasi sekat dioptimasi (bukan sebanyak-banyaknya); pemantauan muka air tanah rapat di luar tepi kanal; pemeliharaan sekat; disertai pencegahan pembakaran.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. BRGM (Perpres 120/2020, kutipan sekunder); Renas 2.3.3 dan 1.2.3.d (BRGM kontributor).
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. BRGM (Perpres 120/2020) berakhir 31 Des 2024; restorasi gambut kini dipegang Kemenhut, KLH, dan KKP (Info Singkat DPR Juni 2025); Renas 2.3.3 dan 1.2.3.d (Renas masih mencantumkan BRGM sebagai kontributor).
+- **Pemimpin:** Kementerian Kehutanan (renas:2.3.3.b). **Peran BNPB:** Koordinasi, kode P; restorasi gambut dipimpin Kementerian Kehutanan; BNPB pada siaga darurat karhutla.
 - **Celah:** Sebaran pemantauan muka air tanah sempit dan dekat kanal; efek pada kebakaran belum diukur.
-- **Posisi dalam kajian:** Uji coba terukur.
-- **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pemetaan dan Evaluasi Risiko Bencana. **K/L:** BRGM; Kementerian Kehutanan; Kementerian Lingkungan Hidup.
+- **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
+- **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pemetaan dan Evaluasi Risiko Bencana. **K/L:** Kementerian Kehutanan; Kementerian Lingkungan Hidup; Kementerian Kelautan dan Perikanan.
 - **Tabel silang:** Renas 2.3.3 (fokus RIPB 8); strategi RIPB 3a; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B031 | sekat kanal yang dimodelkan | 168 sekat | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B032 | luas gambut yang dimodelkan (Sumatra) | 22.000 ha | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B033 | kenaikan rata-rata tahunan muka air tanah akibat sekat | 1,5 cm | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B034 | kenaikan muka air tanah, tahun kering | 1,44 cm | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B035 | kenaikan muka air tanah, tahun basah | 1,57 cm | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B036 | emisi karbon dioksida terhindar, tahun kering | 1,07 Mg/ha | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
-| B037 | emisi karbon dioksida terhindar, tahun basah | 1,17 Mg/ha | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
+| B034 | sekat kanal yang dimodelkan | 168 sekat | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
+| B035 | luas gambut yang dimodelkan (Sumatra) | 22.000 ha | 2023 | terverifikasi | dibuka-langsung | Copernicus, abstrak |
+| B036 | kenaikan rata-rata tahunan muka air tanah akibat sekat | 1,5 cm | 2023 | estimasi-model | dibuka-langsung | Copernicus, abstrak |
+| B037 | kenaikan muka air tanah, tahun kering | 1,44 cm | 2023 | estimasi-model | dibuka-langsung | Copernicus, abstrak |
+| B038 | kenaikan muka air tanah, tahun basah | 1,57 cm | 2023 | estimasi-model | dibuka-langsung | Copernicus, abstrak |
+| B039 | emisi karbon dioksida terhindar, tahun kering | 1,07 Mg/ha | 2023 | estimasi-model | dibuka-langsung | Copernicus, abstrak |
+| B040 | emisi karbon dioksida terhindar, tahun basah | 1,17 Mg/ha | 2023 | estimasi-model | dibuka-langsung | Copernicus, abstrak |
+| B041 | BRGM berakhir; restorasi gambut beralih ke tiga kementerian | (kualitatif) | 2024-2025 | resmi | dibuka-langsung | Pusat Analisis Keparlemenan, Setjen DPR RI, hlm. 1 dan 3 |
 
 ### P07. Rekompak: rekonstruksi rumah berbasis komunitas, gempa Yogyakarta-Jawa Tengah 2006
 
 - **Lokasi dan periode:** DIY, Jawa Tengah, Jawa Barat, 2006-2012. **Pelaksana:** Kementerian PU dengan Java Reconstruction Fund (JRF, Bank Dunia sebagai wali amanat).
 - **Fase / bencana / jenis aksi:** pascabencana / gempa / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Dana langsung ke kelompok warga, rencana permukiman desa, fasilitator teknis, standar tahan gempa, dan pencairan bertahap yang dikunci mutu.
-- **Dampak terukur:** JRF membangun lebih dari 15.000 rumah tahan gempa; pemerintah menerapkan pendekatan yang sama untuk lebih dari 300.000 rumah (sumber lain menyebut 280.000 dalam dua tahun). Studi 2007 dan survei kepuasan 2008: biaya hingga 40% lebih rendah dari pendekatan non-komunitas, dan 30% lebih murah untuk spesifikasi identik.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
+- **Dampak terukur:** JRF membangun lebih dari 15.000 rumah tahan gempa; pemerintah menerapkan pendekatan yang sama untuk lebih dari 300.000 rumah, yang menurut buku yang sama selesai dua tahun setelah gempa. Studi 2007 dan survei kepuasan 2008 yang dibiayai proyek: biaya hingga 40% lebih rendah dari pendekatan non-komunitas, dan 30% lebih murah untuk spesifikasi identik. Semuanya laporan pelaksana dan donor sendiri, tanpa evaluasi mutu independen.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
 - **Syarat keberhasilan:** Fasilitator teknis memadai; uji mutu struktur oleh pihak luar; data penerima transparan dan pengaduan berjalan; dana tersedia cepat.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 6/2017 Penyelenggaraan RR Pascabencana; Juklak BNPB 5/2024 DSP stimulan rumah (teks tidak ada di korpus); Renas 3.1.2.c.
+- **Pemimpin:** Kementerian Perumahan dan Kawasan Permukiman (renas:3.1.2.c). **Peran BNPB:** Koordinasi, kode P; BNPB kontributor Renas 3.1.2.c; penanggung jawab Kementerian PKP.
 - **Celah:** Pola pokmas dipakai lagi (Lombok, Palu, Cianjur) tanpa evaluasi mutu independen yang dipublikasikan.
-- **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
+- **Posisi dalam kajian:** Rujukan tata kelola.
 - **Unit BNPB:** Direktorat Rehabilitasi dan Rekonstruksi Perumahan; Direktorat Rehabilitasi dan Rekonstruksi Sosial, Ekonomi, dan Lingkungan Hidup. **K/L:** Kementerian Perumahan dan Kawasan Permukiman; Kementerian Pekerjaan Umum; pemerintah daerah.
 - **Tabel silang:** Renas 3.1.2, 3.2.1 (fokus RIPB 11); strategi RIPB 6c; Renstra: Program Rehabilitasi dan Rekonstruksi Pascabencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B038 | rumah tahan gempa dibangun JRF/Rekompak di Jawa | 15.000 rumah (lebih dari) | 2006-2012 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 65 cetak (PDF 69) |
-| B039 | rumah dibangun pemerintah dengan pendekatan Rekompak di Jawa | 300.000 rumah (lebih dari) | 2006-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 125 cetak (PDF 129), catatan 1 |
-| B040 | rumah dibangun replikasi provinsi dalam dua tahun | 280.000 rumah | 2006-2008 | terverifikasi | ringkasan-mesin-cari | Bank Dunia, siaran pers |
-| B041 | selisih biaya Rekompak terhadap pendekatan non-komunitas | 40 % lebih rendah (paling besar) | 2007-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 121 cetak (PDF 125) |
-| B042 | selisih biaya untuk spesifikasi identik | 30 % lebih murah | 2007-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 121 cetak (PDF 125) |
+| B042 | rumah tahan gempa dibangun JRF/Rekompak di Jawa | 15.000 rumah (lebih dari) | 2006-2012 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 65 cetak (PDF 69) |
+| B043 | rumah dibangun pemerintah dengan pendekatan Rekompak di Jawa | 300.000 rumah (lebih dari) | 2006-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 125 cetak (PDF 129), catatan 2 |
+| B044 | rumah selesai dua tahun setelah gempa (rekonstruksi Jawa) | 300.000 rumah | 2006-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 104 cetak (PDF 108) |
+| B045 | selisih biaya Rekompak terhadap pendekatan non-komunitas | 40 % lebih rendah (paling besar) | 2007-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 121 cetak (PDF 125) |
+| B046 | selisih biaya untuk spesifikasi identik | 30 % lebih murah | 2007-2008 | terverifikasi | dibuka-langsung | Sekretariat MDF dan JRF, Bank Dunia, hlm. 121 cetak (PDF 125) |
 
 ### P08. BRR Aceh-Nias: badan rekonstruksi berbatas waktu
 
 - **Lokasi dan periode:** Aceh dan Nias, 2005-2009. **Pelaksana:** Badan Rehabilitasi dan Rekonstruksi (BRR) Aceh-Nias.
 - **Fase / bencana / jenis aksi:** pascabencana / tsunami, gempa / regulasi. **Kajian:** mitigasi.
 - **Yang dilakukan:** Satu badan berbatas waktu mengoordinasikan dana APBN, donor, dan LSM serta proyek rekonstruksi perumahan, infrastruktur, dan penghidupan.
-- **Dampak terukur:** Dalam 4 tahun: 140.304 rumah permanen dibangun terhadap 139.195 rumah hancur; 1.759 sekolah dibangun (3.415 rusak); 1.115 fasilitas kesehatan (517 rusak); 3.696 km jalan (2.618 km rusak). Ini angka keluaran yang dilaporkan BRR sendiri, bukan uji mutu atau hunian.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: laporan-sendiri; label angka: resmi.
+- **Dampak terukur:** Dalam 4 tahun: 140.304 rumah permanen dibangun terhadap 139.195 rumah hancur atau rusak berat (angka yang juga dipakai sebagai target); 1.759 sekolah dibangun (3.415 rusak); 1.115 fasilitas kesehatan (517 rusak); 3.696 km jalan (2.618 km rusak). Ini angka keluaran yang dilaporkan BRR sendiri, bukan uji mutu atau hunian.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: resmi.
 - **Syarat keberhasilan:** Mandat hukum tegas dan berbatas waktu; satu pintu dana; serah terima aset ke pemda direncanakan sejak awal.
-- **Status di Indonesia:** Usulan baru. Preseden BRR 2005-2009 (dasar hukum pembentukannya tidak diperiksa di sesi ini); belum ada templat badan/satgas rekonstruksi siap pakai.
-- **Celah:** Tiap bencana besar membentuk pengaturan ad hoc baru; pelajaran BRR (10 pelajaran manajemen) belum dibakukan.
-- **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Sudah ada: Perban BNPB 6/2017 Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana dan Deputi Bidang Rehabilitasi dan Rekonstruksi (Perban 6/2025 jo. 11/2025); preseden BRR 2005-2009. Yang dikembangkan: templat badan/satgas RR berbatas waktu yang siap pakai (mandat, satu pintu dana, serah terima aset).
+- **Pemimpin:** Badan Nasional Penanggulangan Bencana (penyusun: koordinasi rehabilitasi dan rekonstruksi oleh BNPB (UU 24/2007; Perban 5/2017 R3P)). **Peran BNPB:** Koordinasi, kode K.
+- **Celah:** Tiap bencana besar membentuk pengaturan ad hoc baru; pelajaran manajemen BRR belum dibakukan.
+- **Posisi dalam kajian:** Rujukan tata kelola.
 - **Unit BNPB:** Deputi Bidang Rehabilitasi dan Rekonstruksi; Biro Hukum, Organisasi, dan Kerja Sama. **K/L:** Bappenas; Kementerian Keuangan; Kementerian Perumahan dan Kawasan Permukiman; pemerintah daerah.
 - **Tabel silang:** Renas 3.2.1 (fokus RIPB 11); strategi RIPB 6a; Renstra: Program Rehabilitasi dan Rekonstruksi Pascabencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B043 | masa kerja BRR | 4 tahun | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B044 | rumah permanen dibangun | 140.304 rumah | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B045 | rumah hancur | 139.195 rumah | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B046 | sekolah dibangun | 1.759 sekolah | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B047 | sekolah rusak | 3.415 sekolah | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B048 | fasilitas kesehatan dibangun | 1.115 unit | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B049 | fasilitas kesehatan rusak | 517 unit | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B050 | jalan dibangun | 3.696 km | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
-| B051 | jalan rusak | 2.618 km | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B047 | masa kerja BRR | 4 tahun | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B048 | rumah permanen dibangun | 140.304 rumah | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B049 | rumah hancur atau rusak berat (juga target Perpres 47/2008) | 139.195 rumah | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. x (PDF 12); target: PDF 21 |
+| B050 | sekolah dibangun | 1.759 sekolah | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B051 | sekolah rusak | 3.415 sekolah | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B052 | fasilitas kesehatan dibangun | 1.115 unit | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B053 | fasilitas kesehatan rusak | 517 unit | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B054 | jalan dibangun | 3.696 km | 2005-2009 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
+| B055 | jalan rusak | 2.618 km | 2004-2005 | resmi | dibuka-langsung | BRR Aceh-Nias, hlm. xiii (PDF 15) |
 
 ### P09. Rehabilitasi-rekonstruksi rumah pascagempa Lombok 2018 (stimulan, pokmas, RISHA)
 
@@ -233,7 +245,8 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Dampak terukur:** Per Maret 2020: 170.559 dari 226.204 rumah sasaran selesai (75,40%) dan 209.634 tertangani (92,67%). Per akhir Agustus 2020: sekitar 89% rumah rusak berat selesai, disebut ±65.000 atau ±68.000 dari 74.774 atau 74.707 unit (dua versi dalam satu rilis); pandemi dan realokasi anggaran disebut penghambat. Mutu RISHA terhadap guncangan belum diuji dan tidak ditemukan evaluasi independen.
 - **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: resmi.
 - **Syarat keberhasilan:** Pendanaan cair tepat waktu; fasilitator cukup per desa; pilihan tipe rumah yang dapat dibangun dengan bahan dan tenaga lokal.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Juklak BNPB 5/2024 DSP stimulan rumah; Renas 3.1.2.c.
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Juklak BNPB 5/2024 DSP stimulan rumah (teks tidak ada di korpus); Renas 3.1.2.c.
+- **Pemimpin:** Kementerian Perumahan dan Kawasan Permukiman (renas:3.1.2.c). **Peran BNPB:** Koordinasi, kode P; BNPB kontributor Renas 3.1.2.c; penanggung jawab Kementerian PKP.
 - **Celah:** Tidak ada evaluasi mutu dan kepuasan yang dipublikasikan; data progres resmi tidak konsisten di satu rilis.
 - **Posisi dalam kajian:** Pelajaran, bukan teladan.
 - **Unit BNPB:** Direktorat Rehabilitasi dan Rekonstruksi Perumahan. **K/L:** Kementerian Perumahan dan Kawasan Permukiman; Kementerian Pekerjaan Umum; Kementerian Keuangan.
@@ -241,16 +254,16 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B052 | rumah sasaran rehab-rekon (RB+RS+RR) | 226.204 rumah | 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
-| B053 | rumah selesai | 170.559 rumah | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
-| B054 | porsi rumah selesai | 75,40 % | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
-| B055 | rumah tertangani | 209.634 rumah | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
-| B056 | porsi rumah tertangani | 92,67 % | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
-| B057 | porsi rumah rusak berat selesai | 89 % | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
-| B058 | rumah rusak berat selesai (versi Danrem) | 65.000 rumah (sekitar) | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, laporan Danrem 162/WB |
-| B059 | rumah rusak berat selesai (versi pembuka rilis) | 68.000 rumah (sekitar) | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
-| B060 | rumah rusak berat (versi pembuka rilis) | 74.774 rumah | 2018 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
-| B061 | rumah rusak berat (versi Kalaksa BPBD NTB) | 74.707 rumah | 2018 | resmi | dibuka-langsung | Kemenko PMK, pernyataan Ahmadi |
+| B056 | rumah sasaran rehab-rekon (RB+RS+RR) | 226.204 rumah | 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
+| B057 | rumah selesai | 170.559 rumah | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
+| B058 | porsi rumah selesai | 75,40 % | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
+| B059 | rumah tertangani | 209.634 rumah | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
+| B060 | porsi rumah tertangani | 92,67 % | Mar 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf progres |
+| B061 | porsi rumah rusak berat selesai | 89 % | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
+| B062 | rumah rusak berat selesai (versi Danrem) | 65.000 rumah (sekitar) | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, laporan Danrem 162/WB |
+| B063 | rumah rusak berat selesai (versi pembuka rilis) | 68.000 rumah (sekitar) | Agt 2020 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
+| B064 | rumah rusak berat (versi pembuka rilis) | 74.774 rumah | 2018 | resmi | dibuka-langsung | Kemenko PMK, paragraf 1 |
+| B065 | rumah rusak berat (versi Kalaksa BPBD NTB) | 74.707 rumah | 2018 | resmi | dibuka-langsung | Kemenko PMK, pernyataan Ahmadi |
 
 ### P10. Embung dan panen air hujan
 
@@ -261,14 +274,15 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: terverifikasi.
 - **Syarat keberhasilan:** Lokasi dengan hujan cukup dan tanah tidak bocor; daerah layanan jelas; pemeliharaan dari sedimentasi; kelompok pengelola.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program Kementan dan Kementerian PU; Inpres 1/2018 tentang embung desa (kutipan riset B, sekunder).
+- **Pemimpin:** Kementerian Pertanian; Kementerian Pekerjaan Umum (penyusun: pelaksana embung di kolom lembaga, tanpa baris Rencana Aksi Renas). **Peran BNPB:** Koordinasi, kode P; program Kementan dan Kementerian PU; BNPB hanya data rawan kekeringan.
 - **Celah:** Tidak ada inventaris volume dan fungsi embung terbuka (repo hanya jumlah objek OSM per kab); tidak ada evaluasi.
-- **Posisi dalam kajian:** Uji coba terukur.
+- **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** Kementerian Pertanian; Kementerian Pekerjaan Umum; Kementerian Desa PDT.
 - **Tabel silang:** Renas - (fokus RIPB -); strategi RIPB 3a; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B062 | evaluasi dampak embung berpembanding | (kualitatif) | 2026 | terverifikasi | via-riset | kajian-bnpb, bagian 9 (Embung) |
+| B066 | evaluasi dampak embung berpembanding | (kualitatif) | 2026 | terverifikasi | via-riset | kajian-bnpb, bagian 9 (Embung) |
 
 ### P11. Sumur resapan dan lubang resapan biopori
 
@@ -276,54 +290,57 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / banjir / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Sumur dan lubang resapan di persil dan ruang publik untuk menahan limpasan dan mengisi air tanah dangkal.
 - **Dampak terukur:** Untuk Jakarta, pakar IPB menilai kontribusinya terhadap pengurangan banjir kecil pada hujan periode ulang di atas 2 tahun; efektif hanya bila muka air tanah lebih dari 2,5 m dan permeabilitas lebih dari 2,0 cm/jam. Model DAS Kamoning (Sampang) dengan vegetasi 40% ditambah sumur resapan dan injeksi menurunkan limpasan 78,14% (simulasi, bukan pengukuran). Tidak ditemukan pengukuran skala kota.
-- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: pendapat-ahli; label angka: terverifikasi.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: pendapat-ahli; label angka: terverifikasi;estimasi-model.
 - **Syarat keberhasilan:** Muka air tanah dalam dan tanah permeabel; perawatan rutin; diposisikan sebagai pelengkap, bukan pengendali banjir.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program pemda (riset B: 29.833 titik di Jakarta per Des 2023, sekunder).
+- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program pemda; jumlah titik di Jakarta hanya dari berita (riset B, sekunder), tidak dikutip.
+- **Pemimpin:** Pemerintah daerah provinsi dan kabupaten/kota (penyusun: pelaksana di kolom lembaga, tanpa baris Rencana Aksi Renas). **Peran BNPB:** Koordinasi, kode P; program pemerintah daerah; BNPB tanpa peran pelaksana.
 - **Celah:** Dibangun tanpa peta kelayakan hidrogeologi; tidak ada pengukuran kinerja.
-- **Posisi dalam kajian:** Uji coba terukur.
+- **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana. **K/L:** Kementerian Pekerjaan Umum; pemerintah daerah.
 - **Tabel silang:** Renas 2.3.3 (fokus RIPB 8); strategi RIPB 3a; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B063 | periode ulang hujan di atas mana kontribusi sumur resapan Jakarta kecil | 2 tahun | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
-| B064 | syarat muka air tanah minimum | 2,5 m | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
-| B065 | syarat permeabilitas tanah minimum | 2,0 cm/jam | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
-| B066 | tutupan vegetasi skenario model DAS Kamoning | 40 % | 2021 | terverifikasi | via-riset | kajian-bnpb, bagian 9 (Muqaddas dkk. 2021) |
-| B067 | penurunan limpasan skenario model DAS Kamoning | 78,14 % | 2021 | terverifikasi | via-riset | kajian-bnpb, bagian 9 (Muqaddas dkk. 2021) |
+| B067 | periode ulang hujan di atas mana kontribusi sumur resapan Jakarta kecil | 2 tahun | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
+| B068 | syarat muka air tanah minimum | 2,5 m | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
+| B069 | syarat permeabilitas tanah minimum | 2,0 cm/jam | 2021 | terverifikasi | dibuka-langsung | detikEdu (mengutip S.D. Tarigan, IPB), kutipan pakar |
+| B070 | tutupan vegetasi skenario model DAS Kamoning | 40 % | 2021 | terverifikasi | via-riset | kajian-bnpb, bagian 9 (Muqaddas dkk. 2021) |
+| B071 | penurunan limpasan skenario model DAS Kamoning | 78,14 % | 2021 | estimasi-model | via-riset | kajian-bnpb, bagian 9 (Muqaddas dkk. 2021) |
 
 ### P12. Citarum Harum (pemulihan DAS Citarum)
 
 - **Lokasi dan periode:** DAS Citarum, Jawa Barat, 2018-2025. **Pelaksana:** Satgas PPK DAS Citarum (Perpres 15/2018), Pemprov Jawa Barat, TNI, K/L.
 - **Fase / bencana / jenis aksi:** prabencana / banjir / regulasi. **Kajian:** air-jawa.
 - **Yang dilakukan:** Pengendalian pencemaran industri dan domestik, pengelolaan sampah, penertiban, rehabilitasi hulu, dan pemantauan kualitas air.
-- **Dampak terukur:** IKA Sungai Citarum naik dari 33,43 (2018, cemar berat) menjadi 50,78 (2023, cemar ringan) menurut pejabat Jawa Barat; versi lain 33,34 untuk 2018, 51,01 untuk 2022, dan 50,78 untuk Juni 2024. Target 60 pada akhir 2025. Metode dan titik pantau tidak dijelaskan di sumber yang dibuka, dan atribusi ke program belum diuji.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: data-resmi-pra-pasca; label angka: resmi.
+- **Dampak terukur:** Menurut narasi detikJabar tanpa sumber data, IKA Sungai Citarum naik dari 33,43 (2018) menjadi 50,78 (2023); berita lain (dikutip riset B, sekunder) menulis 33,34 untuk 2018, 51,01 untuk 2022, dan 50,78 untuk Juni 2024. Pj Gubernur Jawa Barat menargetkan 60 pada akhir 2025. Deret IKA resmi KLH atau DLH Jawa Barat tidak ditemukan, metode dan titik pantau tidak dijelaskan, dan atribusi ke program belum diuji.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
 - **Syarat keberhasilan:** Komando lintas sektor dengan penegakan; pemantauan kualitas air terbuka dan konsisten; sanitasi domestik (sumber terbesar menurut DLH).
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perpres 15/2018 (berakhir 2025; kutipan riset B, sekunder); pengelolaan diserahkan ke kab/kota mulai 2026 (sekunder).
+- **Pemimpin:** Pemerintah daerah provinsi dan kabupaten/kota (penyusun: Satgas PPK DAS Citarum dan Pemprov Jawa Barat di kolom lembaga). **Peran BNPB:** Data dan KRB, kode P; program Satgas Citarum; BNPB pada data risiko banjir.
 - **Celah:** Data IKA tidak konsisten antarsumber; kelanjutan pasca-2025 belum jelas; relevansi bencana tidak langsung (air baku).
-- **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
+- **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pemetaan dan Evaluasi Risiko Bencana. **K/L:** Kementerian Lingkungan Hidup; Kementerian Pekerjaan Umum; Pemprov Jawa Barat.
 - **Tabel silang:** Renas 2.3.3 (fokus RIPB 8); strategi RIPB 3a; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B068 | IKA Sungai Citarum | 33,43 indeks | 2018 | resmi | dibuka-langsung | detikJabar (mengutip Pemprov Jawa Barat), paragraf IKA |
-| B069 | IKA Sungai Citarum | 50,78 indeks | 2023 | resmi | dibuka-langsung | detikJabar (mengutip Pemprov Jawa Barat), paragraf IKA |
-| B070 | IKA Sungai Citarum (versi Republika) | 33,34 indeks | 2018 | resmi | via-riset | kajian-bnpb, bagian 2.3 |
-| B071 | IKA Sungai Citarum (versi Republika) | 51,01 indeks | 2022 | resmi | via-riset | kajian-bnpb, bagian 2.3 |
-| B072 | IKA Sungai Citarum (versi Metro TV, Juni 2024) | 50,78 indeks | 2024-06 | resmi | via-riset | kajian-bnpb, bagian 2.3 |
-| B073 | target IKA akhir masa Perpres 15/2018 | 60 indeks | 2025 | resmi | dibuka-langsung | detikJabar (mengutip Pemprov Jawa Barat), paragraf target |
+| B072 | IKA Sungai Citarum | 33,43 indeks | 2018 | terverifikasi | dibuka-langsung | detikJabar (angka IKA dalam narasi wartawan tanpa sumber data; target 60 dari Pj Gubernur Jawa Barat), paragraf IKA |
+| B073 | IKA Sungai Citarum | 50,78 indeks | 2023 | terverifikasi | dibuka-langsung | detikJabar (angka IKA dalam narasi wartawan tanpa sumber data; target 60 dari Pj Gubernur Jawa Barat), paragraf IKA |
+| B074 | IKA Sungai Citarum (versi Republika) | 33,34 indeks | 2018 | terverifikasi | via-riset | kajian-bnpb, bagian 2.3 |
+| B075 | IKA Sungai Citarum (versi Republika) | 51,01 indeks | 2022 | terverifikasi | via-riset | kajian-bnpb, bagian 2.3 |
+| B076 | IKA Sungai Citarum (versi Metro TV, Juni 2024) | 50,78 indeks | 2024-06 | terverifikasi | via-riset | kajian-bnpb, bagian 2.3 |
+| B077 | target IKA akhir masa Perpres 15/2018 | 60 indeks | 2025 | terverifikasi | dibuka-langsung | detikJabar (angka IKA dalam narasi wartawan tanpa sumber data; target 60 dari Pj Gubernur Jawa Barat), paragraf target |
 
 ### P13. PAMSIMAS (penyediaan air minum dan sanitasi berbasis masyarakat)
 
 - **Lokasi dan periode:** Indonesia, perdesaan, 2008-2023. **Pelaksana:** Kementerian PU dengan Bank Dunia dan DFAT.
 - **Fase / bencana / jenis aksi:** prabencana / kekeringan / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Sistem air minum perdesaan dibangun dan dikelola kelompok warga (BP-SPAMS) dengan iuran, ditambah perubahan perilaku sanitasi.
-- **Dampak terukur:** Laporan penyelesaian Bank Dunia 2023 (ringkasan RWSN): layanan air berkelanjutan untuk ±24,8 juta jiwa (target awal 22,1 juta) di lebih dari 35.553 desa; ±91% sistem berfungsi baik. Evaluasi independen DFAT 2022 memperingatkan data MIS bisa menghitung ganda dan menaksir EIRR 30,8%.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: evaluasi-independen; label angka: terverifikasi.
+- **Dampak terukur:** Laporan penyelesaian Bank Dunia 2023 (ringkasan RWSN): layanan air berkelanjutan untuk ±24,8 juta jiwa (target awal 22,1 juta) di lebih dari 35.553 desa; ±91% sistem berfungsi baik. Evaluasi independen untuk DFAT (laporan akhir Januari 2023) menilai data MIS terlalu optimistis: banyak sistem yang tercatat berfungsi penuh kekurangan air saat pemakaian puncak atau kemarau; dengan sampel 42 desanya, taksiran EIRR Bank Dunia 36,1% dikoreksi menjadi 30,8%.
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: evaluasi-independen; label angka: terverifikasi;estimasi-model.
 - **Syarat keberhasilan:** Pengelola desa berfungsi dan iuran cukup untuk perawatan; sumber air tahan kemarau; pemantauan fungsi independen.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Program Kementerian PU (fase III berakhir; kelanjutan tidak diverifikasi di sesi ini).
+- **Pemimpin:** Kementerian Pekerjaan Umum (penyusun: pelaksana di kolom lembaga, tanpa baris Rencana Aksi Renas). **Peran BNPB:** Data dan KRB, kode P; program Kementerian PU; BNPB pada data desa rawan kekeringan.
 - **Celah:** Tidak terkait rencana kontinjensi kekeringan BPBD; ketahanan sumber air saat El Nino tidak diukur.
 - **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Kesiapsiagaan. **K/L:** Kementerian Pekerjaan Umum; Kementerian Kesehatan; Kementerian Desa PDT; pemerintah daerah.
@@ -331,11 +348,14 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B074 | jiwa terlayani air minum berkelanjutan | 24,8 juta jiwa | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
-| B075 | target awal jiwa terlayani | 22,1 juta jiwa | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
-| B076 | desa yang didukung | 35.553 desa (lebih dari) | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
-| B077 | sistem dibangun/direhabilitasi yang berfungsi baik | 91 % (sekitar) | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
-| B078 | EIRR terkoreksi | 30,8 % | 2022 | terverifikasi | ringkasan-mesin-cari | DFAT Australia, temuan ekonomi |
+| B078 | jiwa terlayani air minum berkelanjutan | 24,8 juta jiwa | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
+| B079 | target awal jiwa terlayani | 22,1 juta jiwa | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
+| B080 | desa yang didukung | 35.553 desa (lebih dari) | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
+| B081 | sistem dibangun/direhabilitasi yang berfungsi baik | 91 % (sekitar) | s.d. 2023 | terverifikasi | dibuka-langsung | Rural Water Supply Network, ringkasan ICR |
+| B082 | data MIS terlalu optimistis soal fungsi sistem | (kualitatif) | 2023 | terverifikasi | dibuka-langsung | Murray dkk., untuk DFAT Australia, PDF hlm. 40 |
+| B083 | desa sampel evaluasi independen | 42 desa | 2022 | terverifikasi | dibuka-langsung | Murray dkk., untuk DFAT Australia, PDF hlm. 32 |
+| B084 | EIRR terkoreksi evaluasi independen | 30,8 % | 2022 | estimasi-model | dibuka-langsung | Murray dkk., untuk DFAT Australia, PDF hlm. 32 |
+| B085 | EIRR taksiran Bank Dunia (PAMSIMAS I dan II) | 36,1 % | 2022 | estimasi-model | dibuka-langsung | Murray dkk., untuk DFAT Australia, PDF hlm. 11 |
 
 ### P14. Sodetan dan bendungan kering Ciliwung
 
@@ -343,9 +363,10 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / banjir / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Sodetan Ciliwung ke Kanal Banjir Timur dan bendungan kering Ciawi dan Sukamahi untuk memangkas debit puncak.
 - **Dampak terukur:** Bendungan kering Ciawi menurunkan debit puncak 20,87% (267,17 menjadi 211,41 m³/detik) dan Sukamahi 7% saat banjir Maret 2025 (data BBWS dikutip media). Sodetan berkapasitas 60 m³/detik dari debit rencana 508 m³/detik; klaim pengurangan potensi banjir 62% di 6 kelurahan belum diuji pascaoperasi.
-- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: resmi.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
 - **Syarat keberhasilan:** Operasi dan pemeliharaan; normalisasi hilir selesai; data debit dan genangan terbuka untuk evaluasi.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Proyek Kementerian PU; Renas 2.2.2.
+- **Pemimpin:** Kementerian Pekerjaan Umum (penyusun: BBWS Ciliwung-Cisadane di kolom lembaga). **Peran BNPB:** Data dan KRB, kode P; infrastruktur Kementerian PU; BNPB pada KRB banjir.
 - **Celah:** Tidak ada evaluasi pascaoperasi yang mengukur luas dan lama genangan.
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana. **K/L:** Kementerian Pekerjaan Umum; Pemprov DKI Jakarta.
@@ -353,14 +374,14 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B079 | reduksi debit puncak Bendungan Ciawi, banjir Maret 2025 | 20,87 % | 2025-03 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B080 | debit Ciliwung masuk Ciawi | 267,17 m³/detik | 2025-03 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B081 | debit Ciliwung keluar Ciawi | 211,41 m³/detik | 2025-03 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B082 | reduksi debit puncak Bendungan Sukamahi | 7 % | 2025-03 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B083 | kapasitas sodetan Ciliwung-KBT | 60 m³/detik | 2023 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B084 | debit rencana Ciliwung (periode ulang 25 tahun) | 508 m³/detik | 2023 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B085 | klaim pengurangan potensi banjir sodetan | 62 % | 2023 | resmi | via-riset | kajian-bnpb, bagian 9 |
-| B086 | kelurahan yang diklaim terbantu sodetan | 6 kelurahan | 2023 | resmi | via-riset | kajian-bnpb, bagian 9 |
+| B086 | reduksi debit puncak Bendungan Ciawi, banjir Maret 2025 | 20,87 % | 2025-03 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B087 | debit Ciliwung masuk Ciawi | 267,17 m³/detik | 2025-03 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B088 | debit Ciliwung keluar Ciawi | 211,41 m³/detik | 2025-03 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B089 | reduksi debit puncak Bendungan Sukamahi | 7 % | 2025-03 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B090 | kapasitas sodetan Ciliwung-KBT | 60 m³/detik | 2023 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B091 | debit rencana Ciliwung (periode ulang 25 tahun) | 508 m³/detik | 2023 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B092 | klaim pengurangan potensi banjir sodetan | 62 % | 2023 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
+| B093 | kelurahan yang diklaim terbantu sodetan | 6 kelurahan | 2023 | terverifikasi | via-riset | kajian-bnpb, bagian 9 |
 
 ### P15. Sistem polder dan pompa kota pesisir
 
@@ -371,6 +392,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Kekuatan bukti:** belum-terbukti (tidak ditemukan evaluasi dampak kuantitatif); jenis evaluasi: tidak-ada-evaluasi-dampak; label angka: terverifikasi.
 - **Syarat keberhasilan:** Penurunan tanah dihentikan; pompa dan listrik cadangan dipelihara; pengelola polder berbiaya tetap.
 - **Status di Indonesia:** Sudah ada, perlu dikembangkan. Proyek Kementerian PU dan pemda; Renas 2.4.2 dan 2.4.4.
+- **Pemimpin:** Kementerian Pekerjaan Umum (renas:2.4.2.a). **Peran BNPB:** Data dan KRB, kode P; BNPB pada KRB banjir dan rob serta rencana kontingensi (KERANGKA prinsip 2).
 - **Celah:** Tanpa penghentian pengambilan air tanah, tanggul dan polder terus tenggelam (lihat P16).
 - **Posisi dalam kajian:** Program berjalan, wajib evaluasi dampak.
 - **Unit BNPB:** Direktorat Mitigasi Bencana. **K/L:** Kementerian Pekerjaan Umum; pemerintah daerah.
@@ -378,7 +400,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B087 | kinerja polder Jati Pinggir dan tanggul Pekalongan | (kualitatif) | 2017-2022 | terverifikasi | via-riset | kajian-bnpb, bagian 7 dan 9 |
+| B094 | kinerja polder Jati Pinggir dan tanggul Pekalongan | (kualitatif) | 2017-2022 | terverifikasi | via-riset | kajian-bnpb, bagian 7 dan 9 |
 
 ### P16. Pengendalian pengambilan air tanah untuk menghentikan penurunan tanah (Tokyo, Osaka, Bangkok)
 
@@ -387,8 +409,9 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Yang dilakukan:** Pasokan air pengganti (air industri dan perpipaan), larangan sumur dan zona kritis, izin dan tarif air tanah yang naik bertahap.
 - **Dampak terukur:** Tokyo: pengambilan air tanah di wilayah ku turun dari 1.160.000 m³/hari (1964) menjadi 128.000 m³/hari (1975); sumur sampai kedalaman 160 m dilarang (Desember 1971) dan yang lebih dalam dari 160 m (Mei 1974); laju penurunan tanah turun tiap tahun sejak 1972 setelah mencapai maksimum 27 cm/tahun dan penurunan kumulatif sekitar 4,6 m; air industri pengganti dipasok dari Sungai Tone. Bangkok: laju penurunan turun dari hingga 120 mm/tahun (1981) menjadi sekitar 20 mm/tahun setelah undang-undang pembatasan pompa sejak akhir 1980-an.
 - **Kekuatan bukti:** kuat (deret data pra-pasca resmi atau studi bertinjauan, pola konsisten lintas kejadian/lokasi); jenis evaluasi: data-resmi-pra-pasca; label angka: terverifikasi.
-- **Syarat keberhasilan:** Pasokan air pengganti tersedia sebelum larangan; zona kritis berbasis pengukuran; tarif air tanah lebih mahal dari air perpipaan; penegakan izin; butuh 10-20 tahun.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Pergub DKI 93/2021 zona bebas air tanah dan Kepmen ESDM 291.K/2023 (kutipan riset B, sekunder); Renas 2.4.4.a NSPK mitigasi subsiden (PJ KLH).
+- **Syarat keberhasilan:** Pasokan air pengganti tersedia sebelum larangan; zona kritis berbasis pengukuran; tarif air tanah lebih mahal dari air perpipaan; penegakan izin; hasil butuh lebih dari satu dekade (Tokyo: 1964-1975).
+- **Padanan di Indonesia:** zona bebas air tanah DKI dan pengendalian izin air tanah, dengan NSPK mitigasi penurunan muka tanah Renas 2.4.4.a (Sudah ada, perlu dikembangkan). Pergub DKI 93/2021 zona bebas air tanah dan Kepmen ESDM 291.K/2023 (kutipan riset B, sekunder); Renas 2.4.4.a NSPK mitigasi subsiden (PJ KLH).
+- **Pemimpin:** Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup (renas:2.4.4.a). **Peran BNPB:** Data dan KRB, kode P; PJ Renas 2.4.4.a KLH; BNPB diusulkan menjadi kontributor pada peninjauan Renas (KERANGKA prinsip 2).
 - **Celah:** Cakupan air perpipaan rendah di Pantura; data subsiden dan zona konservasi CAT tidak terbuka; kewenangan izin tersebar.
 - **Posisi dalam kajian:** Program (bukti kuat).
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pemetaan dan Evaluasi Risiko Bencana; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** Kementerian ESDM; Kementerian Pekerjaan Umum; Kementerian Lingkungan Hidup; Kementerian ATR/BPN; pemerintah daerah.
@@ -397,14 +420,14 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B088 | pengambilan air tanah wilayah ku (ward) Tokyo | 1.160.000 m³/hari | 1964 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
-| B089 | pengambilan air tanah wilayah ku (ward) Tokyo | 128.000 m³/hari | 1975 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
-| B090 | batas kedalaman sumur yang dilarang (Desember 1971; >160 m dilarang Mei 1974) | 160 m | 1971-1974 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
-| B091 | laju penurunan tanah maksimum Tokyo | 27 cm/tahun | sebelum 1972 | terverifikasi | dibuka-langsung | UNESCO, 9.4.3 Land subsidence |
-| B092 | penurunan tanah kumulatif maksimum Tokyo | 4,6 m | s.d. 1970-an | terverifikasi | dibuka-langsung | UNESCO, 9.4.3 Land subsidence |
-| B093 | laju penurunan tanah puncak Bangkok timur | 120 mm/tahun | 1981 | terverifikasi | dibuka-langsung | Geological Survey of Japan, AIST, abstrak |
-| B094 | laju penurunan tanah Bangkok setelah pembatasan pompa (akhir 1980-an) | 20 mm/tahun | 2007-2010 | terverifikasi | dibuka-langsung | Geological Survey of Japan, AIST, abstrak |
-| B095 | undang-undang pembatasan air tanah Jepang (1956, 1962) | (kualitatif) | 1956-1962 | resmi | dibuka-langsung | Ministry of the Environment, Japan, Ground subsidence |
+| B095 | pengambilan air tanah wilayah ku (ward) Tokyo | 1.160.000 m³/hari | 1964 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
+| B096 | pengambilan air tanah wilayah ku (ward) Tokyo | 128.000 m³/hari | 1975 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
+| B097 | batas kedalaman sumur yang dilarang (Desember 1971; >160 m dilarang Mei 1974) | 160 m | 1971-1974 | terverifikasi | dibuka-langsung | UNESCO, 9.4.2 Hydrology |
+| B098 | laju penurunan tanah maksimum Tokyo | 27 cm/tahun | sebelum 1972 | terverifikasi | dibuka-langsung | UNESCO, 9.4.3 Land subsidence |
+| B099 | penurunan tanah kumulatif maksimum Tokyo | 4,6 m | s.d. 1970-an | terverifikasi | dibuka-langsung | UNESCO, 9.4.3 Land subsidence |
+| B100 | laju penurunan tanah puncak Bangkok timur | 120 mm/tahun | 1981 | terverifikasi | dibuka-langsung | Geological Survey of Japan, AIST, abstrak |
+| B101 | laju penurunan tanah Bangkok setelah pembatasan pompa (akhir 1980-an) | 20 mm/tahun | 2007-2010 | terverifikasi | dibuka-langsung | Geological Survey of Japan, AIST, abstrak |
+| B102 | undang-undang pembatasan air tanah Jepang (1956, 1962) | (kualitatif) | 1956-1962 | resmi | dibuka-langsung | Ministry of the Environment, Japan, Ground subsidence |
 
 ### P17. Delta Programme Belanda (UU, dana, komisaris, laporan tahunan)
 
@@ -412,18 +435,20 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / banjir, kekeringan / regulasi. **Kajian:** air-jawa.
 - **Yang dilakukan:** Delta Act 2012 membentuk program, dana jangka panjang, dan komisaris independen yang melapor tahunan ke kabinet dan parlemen dengan target 2050 per agenda.
 - **Dampak terukur:** Laporan kemajuan publik tahunan: agenda keamanan banjir 82% menuju target 2050, sementara air tawar dan adaptasi ruang masing-masing sekitar 10% (Delta Programme 2026). Ini indikator kemajuan pelaksanaan, bukan ukuran dampak kejadian.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: laporan-sendiri; label angka: resmi.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: resmi.
 - **Syarat keberhasilan:** Payung hukum, dana khusus multi-tahun, pemegang mandat independen, laporan kemajuan berangka.
-- **Status di Indonesia:** Usulan baru. Indonesia belum punya program air lintas K/L berpayung undang-undang dengan komisaris dan laporan tahunan berangka.
-- **Celah:** Kewenangan air terbagi BBWS, pemda, PDAM, ESDM; tidak ada pelapor kemajuan tunggal.
+- **Padanan di Indonesia:** Dewan SDA Nasional dan wadah koordinasi pengelolaan SDA wilayah sungai (UU 17/2019 Pasal 65 dan Pasal 11 huruf h) (belum dapat dipastikan). Yang dirujuk hanya laporan kemajuan berangka; dana air khusus dan komisaris tidak diusulkan (KERANGKA M05). Wadah yang dirujuk UU 17/2019: Dewan SDA Nasional (Pasal 65) dan wadah koordinasi pengelolaan SDA wilayah sungai (Pasal 11 huruf h), dipimpin Kementerian PU dan Bappenas; keberadaannya saat ini belum diverifikasi.
+- **Pemimpin:** Kementerian Pekerjaan Umum; Kementerian Perencanaan Pembangunan Nasional/Badan Perencanaan Pembangunan Nasional (penyusun: Dewan SDA Nasional dan wadah koordinasi wilayah sungai dipimpin Kementerian PU dan Bappenas (KERANGKA M05)). **Peran BNPB:** Koordinasi, kode P; BNPB menyampaikan catatan risiko lewat wadah koordinasi; bukan pemimpin rezim air (UU 17/2019 Pasal 35).
+- **Celah:** Kewenangan air terbagi BBWS, pemda, PDAM, ESDM; tidak ada pelapor kemajuan tunggal; keberadaan Dewan SDA Nasional dan wadah koordinasi wilayah sungai per Oktober 2026 belum dapat dipastikan.
 - **Posisi dalam kajian:** Rujukan tata kelola.
-- **Unit BNPB:** Deputi Bidang Sistem dan Strategi; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** Bappenas; Kementerian Pekerjaan Umum; Kementerian Keuangan.
+- **Unit BNPB:** Deputi Bidang Sistem dan Strategi; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** Kementerian Pekerjaan Umum; Bappenas.
 - **Tabel silang:** Renas 4.7.1 (fokus RIPB 5); strategi RIPB 4c; Renstra: Program Pengembangan Sistem dan Strategi Penanggulangan Bencana.
+- **Catatan:** Status padanan belum dapat dipastikan, bukan Sudah ada, perlu dikembangkan, sampai keberadaan wadah diverifikasi (KERANGKA M05).; KERANGKA M05: Sudah ada, perlu dikembangkan ditolak sampai keberadaan wadah diverifikasi
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B096 | kemajuan agenda pengelolaan risiko banjir menuju 2050 | 82 % | 2025 | resmi | via-riset | kajian-bnpb, bagian 4.1 (DP2026) |
-| B097 | kemajuan agenda air tawar dan adaptasi ruang (masing-masing) | 10 % (sekitar) | 2025 | resmi | via-riset | kajian-bnpb, bagian 4.1 (DP2026) |
+| B103 | kemajuan agenda pengelolaan risiko banjir menuju 2050 | 82 % | 2025 | resmi | dibuka-langsung | Pemerintah Belanda (Delta Commissioner), Agenda 1, alt teks grafik kemajuan |
+| B104 | kemajuan agenda air tawar dan adaptasi ruang (masing-masing) | 10 % (sekitar) | 2025 | resmi | dibuka-langsung | Pemerintah Belanda (Delta Commissioner), Agenda 2 dan 3, alt teks grafik kemajuan |
 
 ### P18. Room for the River (ruang untuk sungai)
 
@@ -431,9 +456,10 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / banjir / infrastruktur. **Kajian:** air-jawa.
 - **Yang dilakukan:** Memberi ruang banjir: memindah tanggul, menggali saluran samping, menurunkan bantaran, sebagai ganti meninggikan tanggul.
 - **Dampak terukur:** Proyek Nijmegen-Lent (Waal) menurunkan muka air rencana 35 cm, melampaui target awal 27 cm, selesai 2016 (nilai desain/model, bukan muka air kejadian). Kajian ENW atas banjir Juli 2021 mencatat muka air Maas hilir Roermond lebih rendah dari banjir terdahulu, sebagian karena Maaswerken (kutipan sekunder).
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: model; label angka: terverifikasi.
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: model; label angka: estimasi-model;terverifikasi.
 - **Syarat keberhasilan:** Lahan tersedia dan relokasi disepakati; penataan ruang mengikat; pemodelan hidraulik sebelum membangun.
-- **Status di Indonesia:** Usulan baru. Belum ada kebijakan ruang untuk sungai; pengendalian banjir Jawa didominasi normalisasi dan tanggul.
+- **Padanan di Indonesia:** belum ada; pengendalian banjir sungai di Jawa didominasi normalisasi dan tanggul (Usulan baru). Belum ada kebijakan ruang untuk sungai; pengendalian banjir Jawa didominasi normalisasi dan tanggul.
+- **Pemimpin:** Kementerian Pekerjaan Umum (penyusun: pengendalian banjir sungai kewenangan Kementerian PU). **Peran BNPB:** Data dan KRB, kode P; uji coba dipimpin Kementerian PU; BNPB pada data risiko.
 - **Celah:** Lahan bantaran padat; relokasi mahal secara sosial; perlu kawasan uji di DAS dengan lahan tersedia.
 - **Posisi dalam kajian:** Uji coba terukur.
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Pengembangan Strategi Penanggulangan Bencana. **K/L:** Kementerian Pekerjaan Umum; Kementerian ATR/BPN.
@@ -441,19 +467,20 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B098 | penurunan muka air rencana Waal di Nijmegen | 35 cm | 2016 | terverifikasi | dibuka-langsung | Climate-ADAPT, European Environment Agency, ringkasan studi kasus |
-| B099 | target awal penurunan muka air | 27 cm | 2016 | terverifikasi | dibuka-langsung | Climate-ADAPT, European Environment Agency, ringkasan studi kasus |
-| B100 | muka air Maas banjir Juli 2021 | (kualitatif) | 2021 | resmi | ringkasan-mesin-cari | Expertisenetwerk Waterveiligheid (ENW), ringkasan |
+| B105 | penurunan muka air rencana Waal di Nijmegen | 35 cm | 2016 | estimasi-model | dibuka-langsung | Climate-ADAPT, European Environment Agency, ringkasan studi kasus |
+| B106 | target awal penurunan muka air | 27 cm | 2016 | terverifikasi | dibuka-langsung | Climate-ADAPT, European Environment Agency, ringkasan studi kasus |
+| B107 | muka air Maas banjir Juli 2021 | (kualitatif) | 2021 | terverifikasi | dibuka-langsung | Expertisenetwerk Waterveiligheid (ENW), PDF hlm. 7 dan 38 |
 
-### P19. Cyclone Preparedness Programme (CPP) Bangladesh
+### P19. Kesiapsiagaan siklon Bangladesh: Cyclone Preparedness Programme (CPP), shelter, dan tanggul pesisir
 
 - **Lokasi dan periode:** Pesisir Bangladesh, 1972-sekarang. **Pelaksana:** Pemerintah Bangladesh dan Bangladesh Red Crescent Society.
 - **Fase / bencana / jenis aksi:** prabencana, tanggap-darurat / cuaca-ekstrem, gelombang-abrasi / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Relawan desa menyebarkan peringatan berjenjang (megafon, bendera, sirene) dan memandu evakuasi ke shelter siklon; ditambah tanggul pesisir dan hutan mangrove.
 - **Dampak terukur:** Kematian akibat siklon: 500.300 (1970), 138.958 (1991), 410 (1997), 4.234 (Sidr 2007), 197 (2009); penulis menyebutnya penurunan 100 kali lipat 1970-2007. Lebih dari 20.000 relawan menyiarkan peringatan; 1.500 shelter sebelum 2007 ditambah 2.000 yang mulai dibangun. Penulis mencatat efek terpisah shelter, tanggul, dan penyadaran belum dibuktikan ilmiah. Angka 1970 diperdebatkan: 300.000 (WMO) hingga 1 juta (angka pemerintah).
-- **Kekuatan bukti:** kuat (deret data pra-pasca resmi atau studi bertinjauan, pola konsisten lintas kejadian/lokasi); jenis evaluasi: peer-review; label angka: terverifikasi;resmi.
+- **Kekuatan bukti:** kuat (deret data pra-pasca resmi atau studi bertinjauan, pola konsisten lintas kejadian/lokasi); jenis evaluasi: peer-review; label angka: terverifikasi. Yang terbukti adalah paket intervensi (peringatan dini CPP, shelter, tanggul pesisir, penyadaran) sebagai satu kesatuan; Haque dkk. menulis belum ada bukti ilmiah dampak terpisah shelter, tanggul, atau program penyadaran. CPP sendirian tidak terbukti.
 - **Syarat keberhasilan:** Peringatan dini yang dipercaya; relawan desa terlatih dan berperalatan; shelter cukup dan layak; evakuasi dini sebelum angin kencang.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Padanan di Indonesia: relawan PB, Destana, dan TES belum diberi mandat menyebarkan peringatan sampai rumah tangga.
+- **Padanan di Indonesia:** relawan PB, Destana (P01), dan sistem peringatan dini tsunami (P03) (Sudah ada, perlu dikembangkan). Padanan di Indonesia: relawan PB, Destana, dan TES belum diberi mandat menyebarkan peringatan sampai rumah tangga.
+- **Pemimpin:** Kementerian Desa dan Pembangunan Daerah Tertinggal; Badan Nasional Penanggulangan Bencana; Kementerian Sosial (renas:4.5.1.a). **Peran BNPB:** Koordinasi, kode K.
 - **Celah:** Mata rantai peringatan ke rumah tangga (lihat P03) dan shelter evakuasi belum terukur.
 - **Posisi dalam kajian:** Program (bukti kuat).
 - **Unit BNPB:** Direktorat Peringatan Dini; Direktorat Kesiapsiagaan. **K/L:** BMKG; Kementerian Sosial; pemerintah daerah.
@@ -461,42 +488,43 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B101 | kematian siklon 1970 | 500.300 jiwa | 1970 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
-| B102 | kematian siklon 1991 | 138.958 jiwa | 1991 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
-| B103 | kematian siklon 1997 | 410 jiwa | 1997 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
-| B104 | kematian siklon Sidr | 4.234 jiwa | 2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 dan abstrak |
-| B105 | kematian siklon 2009 | 197 jiwa | 2009 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
-| B106 | faktor penurunan kematian 1970 ke 2007 | 100 kali | 1970-2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, abstrak |
-| B107 | relawan penyiar peringatan saat siaga siklon | 20.000 orang (lebih dari) | 2012 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
-| B108 | shelter siklon sebelum 2007 | 1.500 shelter | 2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
-| B109 | shelter tambahan yang mulai dibangun pasca-Sidr | 2.000 shelter | 2008-2012 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
-| B110 | kematian siklon 1970 (versi WMO) | 300.000 jiwa | 1970 | terverifikasi | ringkasan-mesin-cari | PreventionWeb, blog |
-| B111 | kematian siklon 1970 (angka resmi pemerintah, kepala CPP) | 1 juta jiwa | 1970 | resmi | ringkasan-mesin-cari | PreventionWeb, blog |
+| B108 | kematian siklon 1970 | 500.300 jiwa | 1970 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
+| B109 | kematian siklon 1991 | 138.958 jiwa | 1991 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
+| B110 | kematian siklon 1997 | 410 jiwa | 1997 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
+| B111 | kematian siklon Sidr | 4.234 jiwa | 2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 dan abstrak |
+| B112 | kematian siklon 2009 | 197 jiwa | 2009 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, Tabel 1 |
+| B113 | faktor penurunan kematian 1970 ke 2007 | 100 kali | 1970-2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, abstrak |
+| B114 | relawan penyiar peringatan saat siaga siklon | 20.000 orang (lebih dari) | 2012 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
+| B115 | shelter siklon sebelum 2007 | 1.500 shelter | 2007 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
+| B116 | shelter tambahan yang mulai dibangun pasca-Sidr | 2.000 shelter | 2008-2012 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
+| B117 | efek terpisah shelter, tanggul, dan penyadaran belum terbukti | (kualitatif) | 2012 | terverifikasi | dibuka-langsung | Bulletin of the World Health Organization, pembahasan |
+| B118 | kematian siklon 1970 (versi kajian WMO) | 300.000 jiwa | 1970 | terverifikasi | dibuka-langsung | PreventionWeb (UNDRR); angka 1970 dikutip dari kajian WMO dan kepala CPP, paragraf korban 1970 |
+| B119 | kematian siklon 1970 (angka resmi pemerintah menurut kepala CPP) | 1 juta jiwa | 1970 | terverifikasi | dibuka-langsung | PreventionWeb (UNDRR); angka 1970 dikutip dari kajian WMO dan kepala CPP, paragraf korban 1970 |
 
 ### P20. Kesiapsiagaan siklon Odisha (OSDMA): evakuasi preemptif dan shelter
 
 - **Lokasi dan periode:** Odisha, India, 1999-sekarang. **Pelaksana:** Odisha State Disaster Management Authority (OSDMA).
 - **Fase / bencana / jenis aksi:** prabencana, tanggap-darurat / cuaca-ekstrem, banjir / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Badan PB provinsi pertama di India; shelter serbaguna, sistem komunikasi, dan evakuasi massal berbasis prakiraan.
-- **Dampak terukur:** Siklon Phailin 2013: 44 korban jiwa, 13,2 juta jiwa terdampak, lebih dari 1 juta jiwa dievakuasi dalam 36 jam sebelum pendaratan. Siklon Super 1999: sekitar 10.000 meninggal, 18 juta jiwa terdampak. Versi lain korban Phailin: 23 dan 38 (laporan awal).
-- **Kekuatan bukti:** kuat (deret data pra-pasca resmi atau studi bertinjauan, pola konsisten lintas kejadian/lokasi); jenis evaluasi: data-resmi-pra-pasca; label angka: resmi;terverifikasi.
+- **Dampak terukur:** Siklon Phailin 2013: 44 korban jiwa, 13,2 juta jiwa terdampak, lebih dari 1 juta jiwa dievakuasi dalam 36 jam sebelum pendaratan. Siklon Super 1999: sekitar 10.000 meninggal, 18 juta jiwa terdampak. Angka awal korban Phailin dalam feature Bank Dunia: 38. Ini perbandingan dua badai yang berbeda, bukan pembanding terkontrol.
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: data-resmi-pra-pasca; label angka: resmi;terverifikasi. Pembanding hanya dua badai berbeda (1999 lawan 2013); naik ke kuat bila kejadian resmi lain (mis. Fani 2019) ditambahkan dari dokumen yang dibuka.
 - **Syarat keberhasilan:** Prakiraan jalur dan intensitas yang tepat; keputusan evakuasi dini oleh pemerintah daerah; shelter dan logistik siap; latihan berkala.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 9/2025 Rencana Penanggulangan Kedaruratan Bencana Daerah; Perban BNPB 2/2023 Rencana Kontingensi (katalog JDIH); Renas 1.2.1.
+- **Padanan di Indonesia:** rencana kontingensi BPBD (Perban 2/2023) dan rencana penanggulangan kedaruratan daerah (Perban 9/2025) (Sudah ada, perlu dikembangkan). Perban BNPB 9/2025 Penyusunan dan Uji Coba Rencana Penanggulangan Kedaruratan Bencana Daerah; Perban BNPB 2/2023 Penyusunan Rencana Kontingensi Bencana; Renas 1.2.1.
+- **Pemimpin:** Badan Nasional Penanggulangan Bencana (renas:1.2.1.c). **Peran BNPB:** NSPK, kode K.
 - **Celah:** Pemicu evakuasi berbasis prakiraan (cuaca ekstrem, banjir) belum dibakukan.
-- **Posisi dalam kajian:** Program (bukti kuat).
+- **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Peringatan Dini; Direktorat Koordinasi Pengendalian Operasi Darurat; Direktorat Kesiapsiagaan. **K/L:** BMKG; pemerintah daerah; BPBD.
 - **Tabel silang:** Renas 1.2.1 (fokus RIPB 7); strategi RIPB 5a; Renstra: Program Manajemen Penanganan Darurat Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B112 | korban jiwa Siklon Phailin | 44 jiwa | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword |
-| B113 | penduduk terdampak Phailin | 13,2 juta jiwa | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword |
-| B114 | penduduk dievakuasi sebelum pendaratan | 1 juta jiwa (lebih dari) | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword |
-| B115 | jendela evakuasi sebelum pendaratan | 36 jam | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword |
-| B116 | korban jiwa Siklon Super 1999 | 10.000 jiwa (sekitar) | 1999 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Background |
-| B117 | penduduk terdampak Siklon Super 1999 | 18 juta jiwa | 1999 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Background |
-| B118 | korban jiwa Phailin (laporan awal World Vision) | 23 jiwa | 2013 | terverifikasi | ringkasan-mesin-cari | World Vision; Bank Dunia, laporan awal |
-| B119 | korban jiwa Phailin (feature Bank Dunia) | 38 jiwa | 2013 | terverifikasi | ringkasan-mesin-cari | World Vision; Bank Dunia, feature 17 Okt 2013 |
+| B120 | korban jiwa Siklon Phailin | 44 jiwa | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword (PDF hlm. 7) |
+| B121 | penduduk terdampak Phailin | 13,2 juta jiwa | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword (PDF hlm. 7) |
+| B122 | penduduk dievakuasi sebelum pendaratan | 1 juta jiwa (lebih dari) | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword (PDF hlm. 7) |
+| B123 | jendela evakuasi sebelum pendaratan | 36 jam | 2013 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Foreword (PDF hlm. 7) |
+| B124 | korban jiwa Siklon Super 1999 | 10.000 jiwa (sekitar) | 1999 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Background (PDF hlm. 17) |
+| B125 | penduduk terdampak Siklon Super 1999 | 18 juta jiwa | 1999 | resmi | dibuka-langsung | Pemerintah Odisha, ADB, Bank Dunia, Background (PDF hlm. 17) |
+| B126 | korban jiwa Phailin 72 jam setelah pendaratan (feature Bank Dunia) | 38 jiwa | 2013 | terverifikasi | dibuka-langsung | Bank Dunia, paragraf 2 |
 
 ### P21. Pendidikan kebencanaan Kamaishi (Jepang)
 
@@ -504,9 +532,10 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 - **Fase / bencana / jenis aksi:** prabencana / tsunami, gempa / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Pendidikan tiga prinsip (jangan percaya peta bahaya, lakukan yang terbaik, pelopori evakuasi) dan latihan evakuasi mandiri di sekolah.
 - **Dampak terukur:** Saat tsunami Maret 2011, 99,8% dari sekitar 3.000 siswa SD dan SMP di 14 sekolah Kota Kamaishi selamat.
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: data-resmi-pra-pasca; label angka: resmi.
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: kejadian-tunggal; label angka: terverifikasi.
 - **Syarat keberhasilan:** Latihan rutin yang menuntut keputusan sendiri; guru dilatih; jalur ke tempat tinggi; skenario melampaui peta bahaya.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Padanan Indonesia: SPAB (P02).
+- **Padanan di Indonesia:** SPAB (P02) (Sudah ada, perlu dikembangkan). Padanan Indonesia: SPAB (P02).
+- **Pemimpin:** Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama (renas:2.1.2.a). **Peran BNPB:** NSPK, kode P; BNPB kontributor Renas 2.1.2.a; penanggung jawab Kemendikdasmen dan Kemenag.
 - **Celah:** Satu kejadian tanpa kelompok pembanding terkontrol; SPAB belum mengukur hasil gladi.
 - **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Kesiapsiagaan. **K/L:** Kementerian Pendidikan Dasar dan Menengah; Kementerian Agama.
@@ -515,44 +544,46 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B120 | siswa SD dan SMP Kamaishi yang selamat | 99,8 % | 2011 | resmi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
-| B121 | jumlah siswa | 3.000 siswa (sekitar) | 2011 | resmi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
-| B122 | jumlah sekolah | 14 sekolah | 2011 | resmi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
+| B127 | siswa SD dan SMP Kamaishi yang selamat | 99,8 % | 2011 | terverifikasi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
+| B128 | jumlah siswa | 3.000 siswa (sekitar) | 2011 | terverifikasi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
+| B129 | jumlah sekolah | 14 sekolah | 2011 | terverifikasi | dibuka-langsung | Japan Science and Technology Agency, paragraf pembuka |
 
 ### P22. Kode bangunan tahan gempa Chile (NCh433) dan penegakannya
 
 - **Lokasi dan periode:** Chile, 1972-sekarang. **Pelaksana:** Pemerintah Chile (komite kode seismik).
 - **Fase / bencana / jenis aksi:** prabencana / gempa / regulasi. **Kajian:** mitigasi.
 - **Yang dilakukan:** Kode seismik nasional dengan geser dasar minimum, ditegakkan lewat izin bangunan, dan diperbarui setelah tiap gempa besar.
-- **Dampak terukur:** Gempa Maule 2010 (Mw 8,8): dari bangunan hunian berizin 1985-2009, kegagalan 0,5% pada 9.974 bangunan tiga lantai atau lebih dan 2,8% pada 1.939 bangunan sembilan lantai atau lebih; sekitar 4 runtuh dan sekitar 50 harus dibongkar. Korban jiwa resmi sementara 528 (OCHA, Maret 2010).
-- **Kekuatan bukti:** kuat (deret data pra-pasca resmi atau studi bertinjauan, pola konsisten lintas kejadian/lokasi); jenis evaluasi: data-resmi-pra-pasca; label angka: terverifikasi;resmi.
+- **Dampak terukur:** Gempa Maule 2010 (Mw 8,8): dari bangunan hunian berizin 1985-2009, kegagalan 0,5% pada 9.974 bangunan tiga lantai atau lebih dan 2,8% pada 1.939 bangunan sembilan lantai atau lebih; sekitar 4 runtuh dan sekitar 50 harus dibongkar. Korban jiwa resmi sementara 528 (angka pemerintah per 8 Maret 2010, dikutip ECHO). Satu kejadian, tanpa data kinerja gempa sebelumnya dan tanpa pembanding bangunan nonkode.
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: kejadian-tunggal; label angka: terverifikasi. Satu gempa, tanpa periode pra dan tanpa pembanding bangunan nonkode; naik ke kuat bila kinerja gedung gempa terdahulu (mis. 1985) ditambahkan.
 - **Syarat keberhasilan:** Kode diperbarui dari pelajaran gempa; izin dan pengawasan konstruksi ditegakkan; insinyur tersertifikasi.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Renas 2.3.4.a pengawasan penerapan standar bangunan tahan bencana (PJ Kementerian PU dan BNPB); SNI ketahanan gempa dan persetujuan bangunan gedung (rujukan umum, teks tidak diperiksa di sesi ini).
+- **Padanan di Indonesia:** pengawasan penerapan standar bangunan tahan bencana Renas 2.3.4.a (Sudah ada, perlu dikembangkan). Renas 2.3.4.a pengawasan penerapan standar bangunan tahan bencana (PJ Kementerian PU dan BNPB); SNI ketahanan gempa dan persetujuan bangunan gedung (rujukan umum, teks tidak diperiksa di sesi ini).
+- **Pemimpin:** Kementerian Pekerjaan Umum; Badan Nasional Penanggulangan Bencana (renas:2.3.4.a). **Peran BNPB:** Pemantauan dan evaluasi, kode K.
 - **Celah:** Rumah nonteknis tidak tersentuh izin; pengawasan lemah (kerusakan Cianjur 2022).
-- **Posisi dalam kajian:** Program (bukti kuat).
+- **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Mitigasi Bencana; Direktorat Rehabilitasi dan Rekonstruksi Perumahan. **K/L:** Kementerian Pekerjaan Umum; Kementerian Perumahan dan Kawasan Permukiman; pemerintah daerah.
 - **Tabel silang:** Renas 2.3.4 (fokus RIPB 8); strategi RIPB 4f, 6c; Renstra: Program Ketangguhan Masyarakat terhadap Bencana.
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B123 | magnitudo gempa Maule | 8,8 Mw | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Pendahuluan |
-| B124 | kegagalan pada bangunan hunian tiga lantai atau lebih (izin 1985-2009) | 0,5 % | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B125 | bangunan hunian tiga lantai atau lebih | 9.974 bangunan | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B126 | kegagalan pada bangunan sembilan lantai atau lebih | 2,8 % | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B127 | bangunan hunian sembilan lantai atau lebih | 1.939 bangunan | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B128 | bangunan runtuh | 4 bangunan (sekitar) | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B129 | bangunan harus dibongkar | 50 bangunan (taksiran) | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
-| B130 | korban jiwa resmi sementara | 528 jiwa | 2010-03 | resmi | ringkasan-mesin-cari | OCHA (ReliefWeb), factsheet |
+| B130 | magnitudo gempa Maule | 8,8 Mw | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Pendahuluan |
+| B131 | kegagalan pada bangunan hunian tiga lantai atau lebih (izin 1985-2009) | 0,5 % | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B132 | bangunan hunian tiga lantai atau lebih | 9.974 bangunan | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B133 | kegagalan pada bangunan sembilan lantai atau lebih | 2,8 % | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B134 | bangunan hunian sembilan lantai atau lebih | 1.939 bangunan | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B135 | bangunan runtuh | 4 bangunan (sekitar) | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B136 | bangunan harus dibongkar | 50 bangunan (taksiran) | 2010 | terverifikasi | dibuka-langsung | 15th World Conference on Earthquake Engineering, Tabel 1 |
+| B137 | korban jiwa resmi sementara (8 Maret 2010) | 528 jiwa | 2010-03 | terverifikasi | dibuka-langsung | ECHO, Komisi Eropa (dimuat ReliefWeb/OCHA), factsheet |
 
 ### P23. Asuransi risiko bencana dan pooling regional (CCRIF, ARC; Asuransi BMN dan Dana Bersama PB)
 
 - **Lokasi dan periode:** Karibia, Afrika; Indonesia, 2007-sekarang. **Pelaksana:** CCRIF SPC; African Risk Capacity; Kemenkeu (DJKN, BKF), BPDLH.
 - **Fase / bencana / jenis aksi:** pascabencana / gempa, cuaca-ekstrem, kekeringan, banjir / pembiayaan. **Kajian:** mitigasi.
 - **Yang dilakukan:** Asuransi parametrik bagi pemerintah (pembayaran otomatis bila pemicu terpenuhi) dan asuransi aset negara; dana bersama untuk prabencana, darurat, pascabencana, dan transfer risiko.
-- **Dampak terukur:** CCRIF: 54 pembayaran ±US$245 juta ke 16 anggota sejak 2007, dibayar dalam 14 hari setelah bencana (versi 2023: 63 pembayaran, US$266,8 juta, 17 anggota). ARC (evaluasi independen OPM): ketepatan waktu pembayaran dinilai baik (3 dari 4 pembayaran di bawah target 30 hari), tetapi efektivitas rencana kontinjensi dan pemerataan dinilai buruk; hanya 16 dari 36 anggota membeli polis; premi reasuransi 81% dari harapan pembayaran. Indonesia: Asuransi BMN menutup klaim Rp1,14 miliar untuk 18 BMN pada 2020 (13 K/L peserta).
+- **Dampak terukur:** CCRIF: 54 pembayaran ±US$245 juta ke 16 anggota sejak 2007, dibayar dalam 14 hari setelah bencana (per April 2022); per Desember 2023 deret kumulatif itu menjadi 63 pembayaran, US$266,8 juta, ke 17 anggota. ARC (evaluasi independen OPM): ketepatan waktu pembayaran dinilai baik (3 dari 4 pembayaran di bawah target 30 hari), tetapi efektivitas rencana kontinjensi dan pemerataan dinilai buruk; hanya 16 dari 36 anggota membeli polis; premi reasuransi 81% dari harapan pembayaran. Indonesia: Asuransi BMN menutup klaim Rp1,14 miliar untuk 18 BMN pada 2020 (13 K/L peserta).
 - **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: evaluasi-independen; label angka: terverifikasi;resmi.
 - **Syarat keberhasilan:** Pemicu parametrik yang cocok dengan kerugian nyata (risiko basis kecil); rencana penggunaan dana disiapkan sebelum bencana; premi terjangkau.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perpres 75/2021 Dana Bersama PB; PMK 97/2019 Asuransi BMN; Perban BNPB 1/2026; Renas 4.6.2, 4.6.3, 2.5.1.c.
+- **Padanan di Indonesia:** Dana Bersama PB (Perpres 75/2021) dan asuransi BMN (Renas 4.6.3.a) (Sudah ada, perlu dikembangkan). Perpres 75/2021 Dana Bersama PB; PMK 97/2019 Asuransi BMN; Perban BNPB 1/2026 Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi terhadap Penyaluran Dana Bersama PB; Renas 4.6.2, 4.6.3, 2.5.1.c.
+- **Pemimpin:** Kementerian Keuangan; Badan Nasional Penanggulangan Bencana; Kementerian Dalam Negeri (renas:4.6.3.a). **Peran BNPB:** Pendanaan Dana Bersama, kode K.
 - **Celah:** Klaim ABMN kecil dibanding premi (2024, sekunder); dampak pembayaran pada kecepatan pemulihan belum diukur; SEADRIF (ASEAN) tidak ditelusuri di sesi ini.
 - **Posisi dalam kajian:** Program dengan syarat (bukti sedang).
 - **Unit BNPB:** Direktorat Pengembangan Strategi Penanggulangan Bencana; Biro Keuangan; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur. **K/L:** Kementerian Keuangan; BPDLH; Otoritas Jasa Keuangan.
@@ -560,35 +591,36 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B131 | pembayaran CCRIF sejak 2007 | 54 pembayaran | s.d. 2022 | terverifikasi | dibuka-langsung | Bank Dunia, ringkasan |
-| B132 | nilai pembayaran CCRIF | 245 juta US$ (sekitar) | s.d. 2022 | terverifikasi | dibuka-langsung | Bank Dunia, ringkasan |
-| B133 | anggota CCRIF penerima pembayaran | 16 negara | s.d. 2022 | terverifikasi | dibuka-langsung | Bank Dunia, ringkasan |
-| B134 | batas waktu pembayaran CCRIF setelah bencana | 14 hari | s.d. 2022 | terverifikasi | dibuka-langsung | Bank Dunia, ringkasan |
-| B135 | pembayaran CCRIF (versi 2023) | 63 pembayaran | s.d. 2023 | terverifikasi | ringkasan-mesin-cari | Artemis, berita |
-| B136 | nilai pembayaran CCRIF (versi 2023) | 266,8 juta US$ | s.d. 2023 | terverifikasi | ringkasan-mesin-cari | Artemis, berita |
-| B137 | anggota CCRIF penerima (versi 2023) | 17 negara | s.d. 2023 | terverifikasi | ringkasan-mesin-cari | Artemis, berita |
-| B138 | pembayaran ARC yang tepat waktu | 3 pembayaran | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
-| B139 | pembayaran ARC dalam periode analisis | 4 pembayaran | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
-| B140 | target waktu pembayaran ARC setelah pemicu | 30 hari | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
-| B141 | negara anggota ARC yang membeli polis kekeringan | 16 negara | 2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: relevant, well-priced products |
-| B142 | negara anggota ARC | 36 negara | 2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: relevant, well-priced products |
-| B143 | premi reasuransi terhadap harapan pembayaran ARC | 81 % | 2021 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: capital, reinsurance, running costs |
-| B144 | klaim Asuransi BMN dibayar | 1,14 miliar Rp | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 1 |
-| B145 | klaim Asuransi BMN dibayar (versi judul URL berita) | 114 miliar Rp | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, slug URL |
-| B146 | BMN terdampak bencana yang diklaim | 18 BMN | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 1 |
-| B147 | K/L peserta Asuransi BMN | 13 K/L | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 2 |
-| B148 | premi Asuransi BMN Jan-Okt 2024 | 132,1 miliar Rp | 2024 | resmi | ringkasan-mesin-cari | Bisnis.com (mengutip DJKN), berita |
-| B149 | klaim Asuransi BMN Jan-Okt 2024 | 2,45 miliar Rp | 2024 | resmi | ringkasan-mesin-cari | Bisnis.com (mengutip DJKN), berita |
+| B138 | pembayaran CCRIF sejak 2007 | 54 pembayaran | s.d. Apr 2022 | terverifikasi | dibuka-langsung | Bank Dunia, Results |
+| B139 | nilai pembayaran CCRIF | 245 juta US$ (sekitar) | s.d. Apr 2022 | terverifikasi | dibuka-langsung | Bank Dunia, Results |
+| B140 | anggota CCRIF penerima pembayaran | 16 negara | s.d. Apr 2022 | terverifikasi | dibuka-langsung | Bank Dunia, Results |
+| B141 | batas waktu pembayaran CCRIF setelah bencana | 14 hari | s.d. Apr 2022 | terverifikasi | dibuka-langsung | Bank Dunia, Results |
+| B142 | pembayaran CCRIF sejak 2007 | 63 pembayaran | s.d. Des 2023 | terverifikasi | dibuka-langsung | Artemis, paragraf 3 |
+| B143 | nilai pembayaran CCRIF | 266,8 juta US$ | s.d. Des 2023 | terverifikasi | dibuka-langsung | Artemis, judul dan paragraf 3 |
+| B144 | anggota CCRIF penerima pembayaran | 17 negara | s.d. Des 2023 | terverifikasi | dibuka-langsung | Artemis, paragraf 3 |
+| B145 | pembayaran ARC yang tepat waktu | 3 pembayaran | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
+| B146 | pembayaran ARC dalam periode analisis | 4 pembayaran | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
+| B147 | target waktu pembayaran ARC setelah pemicu | 30 hari | 2020-2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Efficiency: reliability and timeliness |
+| B148 | negara anggota ARC yang membeli polis kekeringan | 16 negara | 2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: relevant, well-priced products |
+| B149 | negara anggota ARC | 36 negara | 2022 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: relevant, well-priced products |
+| B150 | premi reasuransi terhadap harapan pembayaran ARC | 81 % | 2021 | terverifikasi | dibuka-langsung | Oxford Policy Management (didanai FCDO), Economy: capital, reinsurance, running costs |
+| B151 | klaim Asuransi BMN dibayar | 1,14 miliar Rp | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 1 |
+| B152 | klaim Asuransi BMN dibayar (versi judul URL berita) | 114 miliar Rp | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, slug URL |
+| B153 | BMN terdampak bencana yang diklaim | 18 BMN | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 1 |
+| B154 | K/L peserta Asuransi BMN | 13 K/L | 2020 | resmi | dibuka-langsung | DJKN Kemenkeu, paragraf 2 |
+| B155 | premi Asuransi BMN Jan-Okt 2024 | 132,1 miliar Rp | 2024 | terverifikasi | dibuka-langsung | Bisnis.com (mengutip Kasubdit Humas DJKN), paragraf 2 |
+| B156 | klaim Asuransi BMN Jan-Okt 2024 | 2,45 miliar Rp | 2024 | terverifikasi | dibuka-langsung | Bisnis.com (mengutip Kasubdit Humas DJKN), paragraf 4 |
 
 ### P24. Hibah mitigasi FEMA (HMGP, BRIC) dengan syarat analisis manfaat-biaya
 
 - **Lokasi dan periode:** Amerika Serikat, 1993-sekarang. **Pelaksana:** FEMA; negara bagian.
 - **Fase / bencana / jenis aksi:** prabencana / banjir, cuaca-ekstrem, gempa / pembiayaan. **Kajian:** keduanya.
 - **Yang dilakukan:** Hibah federal untuk proyek mitigasi (pembelian rumah di dataran banjir, ruang aman, perkuatan) yang wajib lolos analisis manfaat-biaya.
-- **Dampak terukur:** Analisis NIBS (lembar fakta FEMA, Juni 2018): hibah mitigasi federal menghemat rata-rata US$6 untuk tiap US$1 (studi 2005: 4:1); banjir sungai 7 kali, angin 5:1, gempa 3 kali untuk investasi publik dan 4 kali untuk desain di atas kode. Rasio ini hasil pemodelan, bukan pengukuran pascakejadian. Program BRIC dihentikan FEMA lalu pengadilan (Desember 2025) menyatakan penghentian melanggar hukum; FEMA mengajukan rencana memulai lagi (Maret 2026).
-- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: model; label angka: resmi.
+- **Dampak terukur:** Analisis NIBS (lembar fakta FEMA, Juni 2018): hibah mitigasi federal menghemat rata-rata US$6 untuk tiap US$1 (studi 2005: 4:1); banjir sungai 7 kali, angin 5:1, gempa 3 kali untuk investasi publik dan 4 kali untuk desain di atas kode. Rasio ini hasil pemodelan, bukan pengukuran pascakejadian. Program BRIC dihentikan FEMA; pengadilan memutus pada Desember (rilis NC DOJ 24 Mar 2026 tidak menulis tahunnya) bahwa penghentian itu melanggar hukum, lalu FEMA mengajukan rencana memulai lagi (Maret 2026).
+- **Kekuatan bukti:** sedang (data terukur tetapi satu kejadian, tanpa pembanding terkontrol, atau hasil pemodelan terdokumentasi); jenis evaluasi: model; label angka: estimasi-model.
 - **Syarat keberhasilan:** Data kerugian dan bahaya untuk menghitung manfaat; standar analisis manfaat-biaya yang seragam; pendanaan stabil lintas tahun.
-- **Status di Indonesia:** Usulan baru. Tidak ditemukan kewajiban analisis manfaat-biaya dalam Juklak 4/2025 (verifikasi memuat 'kelayakan teknis Rencana Anggaran Biaya').
+- **Padanan di Indonesia:** Dana Bersama PB tanpa syarat analisis manfaat-biaya (Perban 1/2026) (Usulan baru). Perban BNPB 1/2026 Pasal 14 ayat (4) hanya mensyaratkan kesesuaian dengan Renas PB dan RKP (K/L) atau RKPD, RPBD, dan/atau SPM (pemda), dan Pasal 16 ayat (3) hanya meminta KAK, RAB, reviu APIP, spesifikasi, dan dokumen lingkungan-sosial; tidak ada analisis manfaat-biaya, begitu pula di Juklak 1/2025, 3/2025, 4/2025, 6/2025, dan 2/2026 (dicek mesin). Juklak 4/2025 menginduk Perban 1/2024 yang dicabut Perban 1/2026 Pasal 34; statusnya perlu dicek.
+- **Pemimpin:** Badan Nasional Penanggulangan Bencana; Kementerian Keuangan (penyusun: penelaahan Dana Bersama oleh BNPB (Perban 1/2026) atas dana Perpres 75/2021). **Peran BNPB:** Pendanaan Dana Bersama, kode K.
 - **Celah:** Usulan prabencana Dana Bersama dinilai tanpa rasio manfaat-biaya; data kerugian rupiah per kejadian (DIBI) belum konsisten.
 - **Posisi dalam kajian:** Rujukan tata kelola.
 - **Unit BNPB:** Direktorat Pengembangan Strategi Penanggulangan Bencana; Direktorat Mitigasi Bencana; Biro Perencanaan. **K/L:** Kementerian Keuangan; Bappenas; BPDLH.
@@ -596,25 +628,29 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B150 | manfaat rata-rata hibah mitigasi federal per US$1 | 6 US$ | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Overall Findings |
-| B151 | investasi pembanding | 1 US$ | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Overall Findings |
-| B152 | rasio manfaat-biaya studi NIBS 2005 | 4 rasio (x:1) | 2005 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Overall Findings |
-| B153 | rasio hibah mitigasi banjir sungai | 7 kali | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Flood Mitigation Results |
-| B154 | rasio mitigasi angin | 5 rasio (x:1) | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Wind Mitigation Results |
-| B155 | rasio mitigasi gempa investasi publik | 3 kali | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Earthquake Mitigation Results |
-| B156 | rasio mitigasi gempa desain di atas kode | 4 kali | 1993-2016 | resmi | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration, Earthquake Mitigation Results |
-| B157 | status BRIC | (kualitatif) | 2025-2026 | resmi | dibuka-langsung | North Carolina Department of Justice, siaran pers |
-| B158 | kewajiban analisis manfaat-biaya di Juklak Dana Bersama prabencana | (kualitatif) | 2025 | resmi | korpus-lokal | BNPB, Bab verifikasi, hlm. 14 |
+| B157 | manfaat rata-rata hibah mitigasi federal per US$1 | 6 US$ | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Overall Findings |
+| B158 | investasi pembanding | 1 US$ | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Overall Findings |
+| B159 | rasio manfaat-biaya studi NIBS 2005 | 4 rasio (x:1) | 2005 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Overall Findings |
+| B160 | rasio hibah mitigasi banjir sungai | 7 kali | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Flood Mitigation Results |
+| B161 | rasio mitigasi angin | 5 rasio (x:1) | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Wind Mitigation Results |
+| B162 | rasio mitigasi gempa investasi publik | 3 kali | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Earthquake Mitigation Results |
+| B163 | rasio mitigasi gempa desain di atas kode | 4 kali | 1993-2016 | estimasi-model | dibuka-langsung | FEMA Federal Insurance and Mitigation Administration (analisis NIBS), Earthquake Mitigation Results |
+| B164 | status BRIC | (kualitatif) | 2025-2026 | resmi | dibuka-langsung | North Carolina Department of Justice, paragraf 1 |
+| B165 | kriteria penyaluran Dana Bersama prabencana | (kualitatif) | 2026 | resmi | korpus-lokal | BNPB, Pasal 14 ayat (4), hlm. 7 |
+| B166 | dokumen persyaratan verifikasi Dana Bersama | (kualitatif) | 2026 | resmi | korpus-lokal | BNPB, Pasal 16 ayat (3), hlm. 7 |
+| B167 | Perban 1/2024 (induk Juklak 4/2025) dicabut | (kualitatif) | 2026 | resmi | korpus-lokal | BNPB, Pasal 34, hlm. 12 |
+| B168 | Juklak 4/2025 menginduk Perban 1/2024 | (kualitatif) | 2025 | resmi | korpus-lokal | BNPB, Bab metodologi, hlm. 35 |
 
 ### P25. Evakuasi preemptif topan di Filipina (Albay, NDRRMC)
 
 - **Lokasi dan periode:** Filipina, 2010-sekarang. **Pelaksana:** NDRRMC/OCD; pemerintah provinsi (APSEMO Albay).
 - **Fase / bencana / jenis aksi:** prabencana, tanggap-darurat / cuaca-ekstrem / kapasitas. **Kajian:** mitigasi.
 - **Yang dilakukan:** Evakuasi paksa sebelum topan berdasarkan prakiraan; target 'zero casualty' provinsi.
-- **Dampak terukur:** Topan Haiyan 2013 menewaskan lebih dari 6.000 orang (NDRRMC: 6.300 meninggal, 1.061 hilang); Topan Rai/Odette 2021 lebih dari 400 orang, dan WFP mengkreditkan langkah preemptif tanpa angka pembanding. Klaim zero casualty Albay (Topan Nona 2015) berasal dari gubernur; pada Topan Nina 2016 terjadi 4 kematian yang disebut kegagalan evakuasi.
-- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi;resmi.
+- **Dampak terukur:** Topan Haiyan 2013 menewaskan lebih dari 6.000 orang; Topan Rai/Odette 2021 lebih dari 400 orang, dan WFP mengkreditkan langkah preemptif tanpa angka pembanding. Klaim zero casualty Albay (Topan Nona 2015) berasal dari gubernur; pada Topan Nina 2016 terjadi 4 kematian yang oleh kepala APSEMO disebut kegagalan evakuasi.
+- **Kekuatan bukti:** lemah (laporan sendiri pelaksana atau klaim pejabat tanpa pembanding); jenis evaluasi: laporan-sendiri; label angka: terverifikasi.
 - **Syarat keberhasilan:** Prakiraan tepat; kewenangan evakuasi paksa; tempat evakuasi layak.
-- **Status di Indonesia:** Sudah ada, perlu dikembangkan. Perban BNPB 9/2025 RPKB daerah; Renas 1.2.1.
+- **Padanan di Indonesia:** rencana penanggulangan kedaruratan daerah (Perban 9/2025) (Sudah ada, perlu dikembangkan). Perban BNPB 9/2025 Penyusunan dan Uji Coba Rencana Penanggulangan Kedaruratan Bencana Daerah; Renas 1.2.1.
+- **Pemimpin:** Badan Nasional Penanggulangan Bencana (renas:1.2.1.c). **Peran BNPB:** NSPK, kode K.
 - **Celah:** Perbandingan Haiyan dan Rai tidak mengendalikan kekuatan topan dan keterpaparan.
 - **Posisi dalam kajian:** Pelajaran, bukan teladan.
 - **Unit BNPB:** Direktorat Kesiapsiagaan; Direktorat Koordinasi Pengendalian Operasi Darurat. **K/L:** BMKG; pemerintah daerah; BPBD.
@@ -622,11 +658,10 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 
 | Bukti | Indikator | Nilai | Periode | Label | Verifikasi | Sumber |
 | --- | --- | --- | --- | --- | --- | --- |
-| B159 | korban jiwa Topan Haiyan/Yolanda | 6.000 jiwa (lebih dari) | 2013 | terverifikasi | dibuka-langsung | World Food Programme, ringkasan publikasi |
-| B160 | korban jiwa Topan Haiyan/Yolanda (NDRRMC) | 6.300 jiwa | 2013 | resmi | ringkasan-mesin-cari | Philippine Daily Inquirer, berita |
-| B161 | hilang Topan Haiyan/Yolanda (NDRRMC) | 1.061 jiwa | 2013 | resmi | ringkasan-mesin-cari | Philippine Daily Inquirer, berita |
-| B162 | korban jiwa Topan Rai/Odette | 400 jiwa (lebih dari) | 2021 | terverifikasi | dibuka-langsung | World Food Programme, ringkasan publikasi |
-| B163 | kematian di Albay saat Topan Nina | 4 jiwa | 2016 | resmi | ringkasan-mesin-cari | Philippine Daily Inquirer, berita |
+| B169 | korban jiwa Topan Haiyan/Yolanda | 6.000 jiwa (lebih dari) | 2013 | terverifikasi | dibuka-langsung | World Food Programme, ringkasan publikasi |
+| B170 | korban jiwa Topan Rai/Odette | 400 jiwa (lebih dari) | 2021 | terverifikasi | dibuka-langsung | World Food Programme, ringkasan publikasi |
+| B171 | klaim zero casualty Albay saat Topan Nona | (kualitatif) | 2015 | terverifikasi | dibuka-langsung | Philippine Daily Inquirer, paragraf 1-2 |
+| B172 | kematian di Albay saat Topan Nina | 4 jiwa | 2016 | terverifikasi | dibuka-langsung | Philippine Daily Inquirer, paragraf 1 |
 
 ## 2. Susunan organisasi BNPB berlaku (Perban 6/2025 jo. Perban 11/2025)
 
@@ -667,7 +702,7 @@ Ringkas: 25 program (15 dalam negeri, 10 luar negeri); bukti kuat 4, sedang 10, 
 | Pusat Pendidikan dan Pelatihan Penanggulangan Bencana | Pusat | Kepala BNPB | - | 25 (P6) |
 | Pusat Pembinaan Jabatan Fungsional Kebencanaan | Pusat | Kepala BNPB | - | 12 (P11) |
 
-Unit yang diganti Perban 11/2025 tetapi masih dipakai Renstra 2025-2029: Direktorat Dukungan Sumber Daya Darurat; Direktorat Dukungan Infrastruktur Darurat; Direktorat Fasilitasi Penanganan Korban dan Pengungsi; Direktorat Perencanaan Rehabilitasi dan Rekonstruksi; Direktorat Pemulihan dan Peningkatan Fisik; Direktorat Pemulihan dan Peningkatan Sosial, Ekonomi, dan Sumber Daya Alam; Pusat Pengendalian Operasi. Pemetaan ke unit baru ada di `renstra_bnpb_2025_2029.csv` kolom `unit_otk_berlaku`.
+Unit yang diganti Perban 11/2025 tetapi masih dipakai Renstra 2025-2029: Direktorat Dukungan Sumber Daya Darurat; Direktorat Dukungan Infrastruktur Darurat; Direktorat Fasilitasi Penanganan Korban dan Pengungsi; Direktorat Perencanaan Rehabilitasi dan Rekonstruksi; Direktorat Pemulihan dan Peningkatan Fisik; Direktorat Pemulihan dan Peningkatan Sosial, Ekonomi, dan Sumber Daya Alam; Pusat Pengendalian Operasi. Tidak ada pasal peralihan; dugaan padanannya di unit baru ada di `renstra_bnpb_2025_2029.csv` kolom `pemetaan_penyusun` (penilaian penyusun, bukan dasar pasal).
 
 ## 3. Renstra BNPB 2025-2029: tujuh program dan indikatornya
 
@@ -782,6 +817,6 @@ Unit yang diganti Perban 11/2025 tetapi masih dipakai Renstra 2025-2029: Direkto
 
 ## 6. Batas kompendium
 
-- Angka berlabel `ringkasan-mesin-cari` belum dibaca dari dokumen primernya dan wajib dicek sebelum naskah final.
+- Semua sumber web dibuka pada 2026-10-23 (sebagian lewat salinan web.archive.org; lihat kolom `akses`); baris `belum-dibaca`: 0. Angka yang tidak ditemukan di sumbernya dibuang dan dicatat di `program-terbukti.json` → `meta.dibuang`.
 - Program dalam negeri hampir semuanya tanpa evaluasi dampak berpembanding; kekuatan bukti mencerminkan ketiadaan itu, bukan penilaian manfaat.
-- Nomenklatur K/L mengikuti Renas PB 2025-2029 (kabinet 2024); belum dicek ke susunan kabinet Oktober 2026.
+- Nomenklatur K/L: BRGM (berakhir 31 Des 2024) dan Kementerian BUMN (kini BP BUMN) sudah diganti di kolom K/L dan diberi catatan di baris Renas yang disalin verbatim; nama K/L lain mengikuti Renas PB 2025-2029 dan belum dicek satu per satu ke susunan kabinet Oktober 2026.

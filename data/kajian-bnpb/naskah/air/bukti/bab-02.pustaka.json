@@ -1,0 +1,1291 @@
+[
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json (Pasal 7 hlm. 4; penetapan 6 Jan 2025 hlm. 5; program 2.4.4 hlm. 37 dan 86; §4.5–4.6 hlm. 122–125)"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (hlm. 84, 128, 133)"
+ },
+ {
+  "id": "bnpb-2026-krb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+ },
+ {
+  "id": "ri-2024-pp30",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 30 Tahun 2024 tentang Pengelolaan Sumber Daya Air",
+  "URL": "https://peraturan.bpk.go.id/Details/295844/pp-no-30-tahun-2024",
+  "verifikasi": "primer",
+  "note": "Pasal 96–97 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-30-2024.json.gz (hlm. 65–66)"
+ },
+ {
+  "id": "ri-2010-pp37",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 37 Tahun 2010 tentang Bendungan",
+  "URL": "https://peraturan.bpk.go.id/Details/5049/pp-no-37-tahun-2010",
+  "verifikasi": "primer",
+  "note": "Pasal 52–54 (rencana tindak darurat) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-37-2010.json.gz (hlm. 24)"
+ },
+ {
+  "id": "ri-2025-perpres77",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 77 Tahun 2025 tentang Badan Otorita Pengelola Pantai Utara Jawa",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 110",
+  "URL": "https://peraturan.bpk.go.id/Details/337303/perpres-no-77-tahun-2025",
+  "verifikasi": "primer",
+  "note": "Pasal 6–7 (Dewan Pengarah) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-77-2025.json.gz (hlm. 5–6)"
+ },
+ {
+  "id": "pupr-2015-permen14",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 638",
+  "URL": "https://peraturan.go.id/files/bn638-2015.pdf",
+  "verifikasi": "primer",
+  "note": "lampiran pindaian dibaca OCR (paket air-jawa §5); rekap hlm. 13, 29, 63"
+ },
+ {
+  "id": "pupr-2015-permen04",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 04/PRT/M/2015 tentang Kriteria dan Penetapan Wilayah Sungai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 429",
+  "URL": "https://peraturan.go.id/files/bn429-2015.pdf",
+  "verifikasi": "primer",
+  "note": "Lampiran I; teks di data/kajian-bnpb/data/air-jawa/mentah/permen04_2015.txt"
+ },
+ {
+  "id": "bps-2020-slhi",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Statistik Lingkungan Hidup Indonesia 2020",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf",
+  "verifikasi": "primer",
+  "note": "Gambar 2.4 (mengutip Radhika, Firmansyah, dan Hatmoko 2017, Jurnal Sumber Daya Air 13(2): 115–130), Gambar 2.5 (IPA, Radhika dkk. 2013), Gambar 2.6 (CAT, KLH 2008), Gambar 2.8 (per kapita, proyeksi). Teks lokal riset/mentah/slh.txt baris 2105–2150"
+ },
+ {
+  "id": "noaa-2026-oni",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "NOAA Climate Prediction Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Oceanic Niño Index (ONI), ERSSTv5",
+  "genre": "Data set",
+  "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026"
+ },
+ {
+  "id": "bmkg-2026-musim-hujan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     22
+    ]
+   ]
+  },
+  "title": "BMKG: El Niño sangat kuat sedang terjadi, musim hujan 2026/2027 diprediksi datang lebih lambat",
+  "genre": "Siaran pers",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-el-nino-sangat-kuat-sedang-terjadi-musim-hujan-2026-2027-diprediksi-datang-lebih-lambat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rilis primer dibuka 23 Okt 2026; pembanding InfoPublik 22 Sep 2026 (infopublik.id/kategori/nasional-sosial-budaya/990337) memuat angka yang sama"
+ },
+ {
+  "id": "ri-2023-uu6",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
+  "URL": "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 53 (perubahan UU 17/2019: Pasal 8, 9, 12, 17, 19, 38, 40, 43, 44, 45, 49, 50, 51, 52, 56, 70, 73; sisipan Pasal 40A dan 75A) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-6-2023.json.gz hlm. 365–378 (cetak -355- s.d. -369-)"
+ },
+ {
+  "id": "ri-2014-uu23",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah",
+  "URL": "https://peraturan.bpk.go.id/Details/38685/uu-no-23-tahun-2014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran C (hlm. PDF 322) dan CC (hlm. 435) dibaca dari lembaga/mentah/teks/uu-23-2014.json.gz; sebagian dicabut UU 17/2019 Pasal 77 dan UU 1/2022"
+ },
+ {
+  "id": "ri-2008-pp43",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 43 Tahun 2008 tentang Air Tanah",
+  "URL": "https://peraturan.bpk.go.id/Details/4857/pp-no-43-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK per 23 Okt 2026 (lembaga/sumber.csv); hlm. 31 (amblesan) dibaca dari lembaga/mentah/teks/pp-43-2008.json.gz"
+ },
+ {
+  "id": "ri-2015-pp122",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
+  "URL": "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10)"
+ },
+ {
+  "id": "ri-2025-inpres2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Instruksi Presiden Nomor 2 Tahun 2025 tentang Percepatan Pembangunan, Peningkatan, Rehabilitasi, serta Operasi dan Pemeliharaan Jaringan Irigasi untuk Mendukung Swasembada Pangan",
+  "URL": "https://peraturan.bpk.go.id/Details/313402/inpres-no-2-tahun-2025-percepatan-pembangunan-peningkatan-rehabilitasi-serta-ope",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ditetapkan 30 Jan 2025; status Berlaku di BPK; dibaca dari lembaga/mentah/teks/inpres-2-2025.json.gz"
+ },
+ {
+  "id": "ri-2018-perpres15",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 15 Tahun 2018 tentang Percepatan Pengendalian Pencemaran dan Kerusakan Daerah Aliran Sungai Citarum",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2018 Nomor 30",
+  "URL": "https://peraturan.go.id/files/ps15-2018.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "diunduh 23 Okt 2026, SHA-1 e1bfdf7b7e503accf9ca102394c4933eacf174cf; ditetapkan 14 Mar 2018; Pasal 17 dan 21 dibaca; teks tidak memuat batas waktu; status BPK tidak dicek"
+ },
+ {
+  "id": "ri-2008-uu18",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 18 Tahun 2008 tentang Pengelolaan Sampah",
+  "URL": "https://peraturan.bpk.go.id/Details/39067/uu-no-18-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK; Pasal 9 via lembaga/README.md §4.2"
+ },
+ {
+  "id": "esdm-2023-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     21
+    ]
+   ]
+  },
+  "title": "Kementerian ESDM lakukan penyesuaian Kepmen penyelenggaraan persetujuan penggunaan air tanah",
+  "genre": "Siaran pers",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/kementerian-esdm-lakukan-penyesuaian-kepmen-penyelenggaraan-persetujuan-penggunaan-air-tanah-",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "siaran pers No. 652.Pers/04/SJI/2023 dibuka 23 Okt 2026; judul mengikuti slug URL; Kepmen 291.K/GL.01/MEM.G/2023 dan 443.K/GL.01/MEM.G/2023 sendiri tidak dibuka; instansi penerbit persetujuan tidak disebut"
+ },
+ {
+  "id": "dsda-2025-ncicd",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Dinas Sumber Daya Air Provinsi DKI Jakarta"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     7,
+     23
+    ]
+   ]
+  },
+  "title": "Update progres pekerjaan NCICD: Ini tanggul terbangun per Juli 2025",
+  "URL": "https://dsda.jakarta.go.id/detail-artikel/update-progres-pekerjaan-ncicd-ini-tanggul-terbangun-per-juli-2025/85",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 17 Jul 2025; teks disimpan paket lembaga (sid web-dsda-ncicd-2025, SHA-1 HTML di sumber.csv)"
+ },
+ {
+  "id": "bankdunia-2021-air",
+  "type": "report",
+  "author": [
+   {
+    "family": "Khalil",
+    "given": "Abedalrazq"
+   },
+   {
+    "family": "Moeller-Gulland",
+    "given": "Jennifer"
+   },
+   {
+    "family": "Ward",
+    "given": "Christopher"
+   },
+   {
+    "family": "Al'Afghani",
+    "given": "Mohamad Mova"
+   },
+   {
+    "family": "Perwitasari",
+    "given": "Tarasinta"
+   },
+   {
+    "family": "Octaviani",
+    "given": "Kamelia"
+   },
+   {
+    "family": "Riani",
+    "given": "Etty"
+   },
+   {
+    "family": "Liao",
+    "given": "Xiawei"
+   },
+   {
+    "family": "Khan",
+    "given": "Amjad Muhammad"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Indonesia Vision 2045: Towards Water Security",
+  "genre": "Water Security Diagnostic",
+  "publisher": "World Bank",
+  "publisher-place": "Washington, DC",
+  "URL": "https://documents1.worldbank.org/curated/en/099300112012118742/pdf/P1707570a8b2460d40bca000d934cd70259.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka langsung 24 Okt 2026, SHA-1 6f4f7ffa4d230570015904f28c5c3eda33562687, 150 hlm PDF; angka di PDF hlm. 14, 16, 17, 34, 42, 43; menggantikan blog de Jong (2022) bankdunia-2022-air"
+ },
+ {
+  "id": "moe-tt-subsiden",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Ministry of the Environment, Japan"
+   }
+  ],
+  "title": "Water/soil/ground environment: Ground subsidence",
+  "URL": "https://www.env.go.jp/en/water/wq/wemj/ground.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Industrial Water Law (1956) dan undang-undang pembatasan pemompaan air tanah untuk bangunan (1962); dibuka paket program-terbukti 23 Okt 2026"
+ },
+ {
+  "id": "bankdunia-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     6,
+     29
+    ]
+   ]
+  },
+  "title": "Implementation Completion and Results Report on a credit and loans to the Republic of Indonesia for the Third Water Supply and Sanitation for Low-Income Communities / Community Based Water Supply Project (PAMSIMAS III)",
+  "genre": "Report No. ICR00005882",
+  "publisher": "World Bank",
+  "URL": "https://documents1.worldbank.org/curated/en/099070523124528093/pdf/BOSIB0fe61a43c0c2081aa0f122dbc2be54.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka langsung 24 Okt 2026, SHA-1 791e693c05fc56a10228430b63bb85b36f3058ed; hlm. cetak = hlm. PDF − 11; 24,8 dan 22,1 juta jiwa hlm. 10; 35.553 desa hlm. 8 dan 10; 91% (data MIS) hlm. 11; EIRR 52,11% hlm. 45; menggantikan ringkasan RWSN rwsn-2023-pamsimas"
+ },
+ {
+  "id": "eea-tt-rftr",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Climate-ADAPT, European Environment Agency"
+   }
+  ],
+  "title": "Room for the River Waal: Protecting the city of Nijmegen",
+  "genre": "Studi kasus",
+  "URL": "https://climate-adapt.eea.europa.eu/en/metadata/case-studies/room-for-the-river-waal-2013-protecting-the-city-of-nijmegen",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "studi kasus; angka 35 cm nilai desain/model"
+ },
+ {
+  "id": "deltaprogramma-2026",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Delta Commissioner, Pemerintah Belanda"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     9
+    ]
+   ]
+  },
+  "title": "Delta Programme 2026",
+  "URL": "https://dp2026.deltaprogramma.nl/en",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "situs ringkasan berbahasa Inggris; angka kemajuan dari teks alternatif grafik (bukti_dampak.csv B103–B104)"
+ },
+ {
+  "id": "asiae-2020-empat-sungai",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "The Asia Business Daily"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     8,
+     11
+    ]
+   ]
+  },
+  "title": "Reevaluation of the Four Major Rivers Project vs flood damage as a political blame issue",
+  "URL": "https://www.asiae.co.kr/en/article/2020081109361968671",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "media; mengutip laporan BAI 2018 dan komite evaluasi; laporan BAI asli tidak dibuka. Hanya untuk naskah draf"
+ },
+ {
+  "id": "investortrust-2024-pekalongan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Investor Trust"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     11,
+     13
+    ]
+   ]
+  },
+  "title": "Bappenas ungkap penurunan tanah Pantura di Pekalongan capai 30 cm per tahun",
+  "URL": "https://investortrust.id/national/47409/bappenas-ungkap-penurunan-tanah-pantura-di-pekalongan-capai-30-cm-per-tahun",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "media mengutip Deputi Bidang Sarana dan Prasarana Bappenas; laporan resmi Bappenas tidak ditemukan. Hanya untuk naskah draf"
+ },
+ {
+  "id": "dfat-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Department of Foreign Affairs and Trade, Australia",
+    "singkatan": "DFAT"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "PAMSIMAS final independent evaluation, Volume 1 (Final V.2)",
+  "publisher": "Department of Foreign Affairs and Trade",
+  "URL": "https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "penulis laporan Murray dkk. (daftar lengkap belum dicatat); dibuka paket program-terbukti lewat arsip http://web.archive.org/web/20251023113557/https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf; PDF hlm. 11, 32, 40"
+ },
+ {
+  "id": "enw-2021-hoogwater",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Expertisenetwerk Waterveiligheid",
+    "singkatan": "ENW"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Hoogwater 2021: Feiten en duiding",
+  "publisher": "Expertisenetwerk Waterveiligheid",
+  "URL": "https://www.enwinfo.nl/publish/pages/183541/211102_enw_hoogwater_2021-dv-def.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF hlm. 7 dan 38; temuan kualitatif muka air Maas hilir Roermond"
+ },
+ {
+  "id": "yamamoto-1984-tokyo",
+  "type": "chapter",
+  "author": [
+   {
+    "family": "Yamamoto",
+    "given": "Soki"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     1984
+    ]
+   ]
+  },
+  "title": "Case history No. 9.4: Tokyo, Japan",
+  "container-title": "Guidebook to studies of land subsidence due to ground-water withdrawal",
+  "publisher": "UNESCO",
+  "URL": "https://wwwrcamnl.wr.usgs.gov/rgws/Unesco/PDF-Chapters/Chapter9-4.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak 23 Okt 2026 (bagian 9.4.2, 9.4.3, 9.4.5); tahun 1984 dari meta paket program-terbukti, tidak tercetak di bab yang diekstrak. Tipe chapter belum ada di daftar NASKAH-SPEK §7; bila generator menolak, pakai book"
+ },
+ {
+  "id": "tanaka-2013-bangkok",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Tanaka",
+    "given": "Akiko"
+   },
+   {
+    "family": "Mio",
+    "given": "Aritoshi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Ground deformation signals detected by SAR interferometry time series analysis along the Chao Praya River areas",
+  "container-title": "Japan Geoscience Union Meeting 2013, abstrak STT57-01",
+  "publisher": "Geological Survey of Japan, AIST",
+  "URL": "https://www2.jpgu.org/meeting/2013/session/PDF/S-TT57/STT57-01.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "abstrak dibuka ulang 24 Okt 2026. Angka 120 mm/tahun (1981) dan 20 mm/tahun ('in recent years') adalah ringkasan studi sipat datar dan InSAR pita C terdahulu dengan rujukan Phien-wej dkk. (2006), Engineering Geology 82(4): 187–201, doi:10.1016/j.enggeo.2005.10.004, yang tidak dapat dibuka (captcha ScienceDirect); karena itu sekunder, hanya naskah draf. Hasil ALOS PALSAR 2007–2010 penulis sendiri: maksimum sekitar −20 mm/tahun dekat Sungai Tha Chin. Tipe paper-conference belum ada di daftar NASKAH-SPEK §7; bila generator menolak, pakai report"
+ },
+ {
+  "id": "aldrian-2003-iklim",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Aldrian",
+    "given": "Edvin"
+   },
+   {
+    "family": "Susanto",
+    "given": "R. Dwi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2003
+    ]
+   ]
+  },
+  "title": "Identification of three dominant rainfall regions within Indonesia and their relationship to sea surface temperature",
+  "container-title": "International Journal of Climatology",
+  "volume": "23",
+  "issue": "12",
+  "page": "1435–1452",
+  "DOI": "10.1002/joc.950",
+  "verifikasi": "primer",
+  "note": "abstrak dibaca lewat Crossref (api.crossref.org/works/10.1002/joc.950) 23 Okt 2026; teks penuh Wiley menolak (HTTP 403)"
+ },
+ {
+  "id": "siswanto-2022-kekeringan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Siswanto",
+    "given": "Siswanto"
+   },
+   {
+    "family": "Wardani",
+    "given": "Kartika Kusuma"
+   },
+   {
+    "family": "Purbantoro",
+    "given": "Babag"
+   },
+   {
+    "family": "Rustanto",
+    "given": "Andry"
+   },
+   {
+    "family": "Zulkarnain",
+    "given": "Faris"
+   },
+   {
+    "family": "Anggraheni",
+    "given": "Evi"
+   },
+   {
+    "family": "Dewanti",
+    "given": "Ratih"
+   },
+   {
+    "family": "Nurlambang",
+    "given": "Triarko"
+   },
+   {
+    "family": "Dimyati",
+    "given": "Muhammad"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Satellite-based meteorological drought indicator to support food security in Java Island",
+  "container-title": "PLoS ONE",
+  "volume": "17",
+  "issue": "6",
+  "page": "e0260982",
+  "DOI": "10.1371/journal.pone.0260982",
+  "verifikasi": "primer",
+  "note": "abstrak dibaca lewat Crossref 23 Okt 2026; daftar penulis dari Crossref (riset B hanya mencatat enam penulis)"
+ },
+ {
+  "id": "dimyati-2024-citarum",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Dimyati",
+    "given": "Muhammad"
+   },
+   {
+    "family": "Rustanto",
+    "given": "Andry"
+   },
+   {
+    "family": "Shidiq",
+    "given": "Iqbal Putut Ash"
+   },
+   {
+    "family": "Indratmoko",
+    "given": "Satria"
+   },
+   {
+    "family": "Siswanto",
+    "given": "Siswanto"
+   },
+   {
+    "family": "Dimyati",
+    "given": "Ratih Dewanti"
+   },
+   {
+    "family": "Nurlambang",
+    "given": "Triarko"
+   },
+   {
+    "family": "Zubair",
+    "given": "Ahmad"
+   },
+   {
+    "family": "Fakhruddin",
+    "given": "Ahmad"
+   },
+   {
+    "family": "Siddiq",
+    "given": "Ayyasy"
+   },
+   {
+    "family": "Adhanto",
+    "given": "Diko Hary"
+   },
+   {
+    "family": "Maulidina",
+    "given": "Kintan"
+   },
+   {
+    "family": "Auni",
+    "given": "Ravidania"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     20
+    ]
+   ]
+  },
+  "title": "Spatiotemporal relation of satellite-based meteorological to agricultural drought in the downstream Citarum watershed, Indonesia",
+  "container-title": "Environmental and Sustainability Indicators",
+  "volume": "22",
+  "page": "100339",
+  "DOI": "10.1016/j.indic.2024.100339",
+  "verifikasi": "primer",
+  "note": "abstrak dibuka lewat OpenAlex (api.openalex.org/works/doi:10.1016/j.indic.2024.100339) 24 Okt 2026; daftar 13 penulis dari OpenAlex",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  }
+ },
+ {
+  "id": "susilo-2023-gnss",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Susilo",
+    "given": "S."
+   },
+   {
+    "family": "Salman",
+    "given": "R."
+   },
+   {
+    "family": "Hermawan",
+    "given": "W."
+   },
+   {
+    "family": "Widyaningrum",
+    "given": "R."
+   },
+   {
+    "family": "Wibowo",
+    "given": "S. T."
+   },
+   {
+    "family": "Lumban-Gaol",
+    "given": "Y. A."
+   },
+   {
+    "family": "Meilano",
+    "given": "I."
+   },
+   {
+    "family": "Yun",
+    "given": "S.-H."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     7,
+     1
+    ]
+   ]
+  },
+  "title": "GNSS land subsidence observations along the northern coastline of Java, Indonesia",
+  "container-title": "Scientific Data",
+  "volume": "10",
+  "page": "421",
+  "DOI": "10.1038/s41597-023-02274-0",
+  "URL": "https://europepmc.org/article/PMC/PMC10314896",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks penuh Europe PMC; Tabel 2 kecepatan vertikal 20 stasiun BIG; Gambar 5 patok Badan Geologi Pekalongan; data Zenodo doi:10.5281/zenodo.7775016; abstrak dibuka ulang lewat Europe PMC 24 Okt 2026 untuk Bab 2"
+ },
+ {
+  "id": "aditiya-2023-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Aditiya",
+    "given": "Arif"
+   },
+   {
+    "family": "Ito",
+    "given": "Takeo"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Present-day land subsidence over Semarang revealed by time series InSAR new small baseline subset technique",
+  "container-title": "International Journal of Applied Earth Observation and Geoinformation",
+  "volume": "125",
+  "page": "103579",
+  "DOI": "10.1016/j.jag.2023.103579",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B lewat DOAJ; metadata dicek OpenAlex 23 Okt 2026); abstrak dibuka ulang lewat OpenAlex 24 Okt 2026 untuk Bab 2 (korelasi 0,86; laju maksimum 100–120 mm/tahun)"
+ },
+ {
+  "id": "novita-2021-pekalongan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Novita",
+    "given": "Maria Griselda"
+   },
+   {
+    "family": "Helmi",
+    "given": "Muhammad"
+   },
+   {
+    "family": "Widiaratih",
+    "given": "Rikha"
+   },
+   {
+    "family": "Hariyadi",
+    "given": "Hariyadi"
+   },
+   {
+    "family": "Wirasatriya",
+    "given": "Anindya"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Mengkaji area genangan banjir pasang terhadap penggunaan lahan pesisir tahun 2020 menggunakan metode geospasial di Kabupaten Pekalongan, Provinsi Jawa Tengah",
+  "container-title": "Indonesian Journal of Oceanography",
+  "volume": "3",
+  "issue": "3",
+  "page": "237–249",
+  "DOI": "10.14710/ijoce.v3i3.11449",
+  "verifikasi": "primer",
+  "note": "abstrak dibuka 23 Okt 2026 (ejournal2.undip.ac.id/index.php/ijoce/article/view/11449); judul di halaman terpotong setelah 'Provinsi Ja', akhir judul perlu dicek"
+ }
+]

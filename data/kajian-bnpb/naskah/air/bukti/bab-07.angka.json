@@ -1,0 +1,507 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 7 kajian air (berkas bukti naskah/air/bukti/bab-07.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: bentuk A berkas relatif ke data/ + jalur; bentuk B nilai + pustaka (id di bab-07.pustaka.json).",
+    "Kunci yang sudah ada di data/angka.json atau di bab-01 sampai bab-04.angka.json tidak diulang (renas.indikator_1c.*, renstra.ikp_peringatan_dini.*, renstra.iks_kapasitas_minimal_sedang.*, bukti.p13.*, airjawa.bendungan.pj.*, ncicd.fase_a.kewenangan_dki_km, perpres77.dewan_pengarah.kepala_daerah). Angka sekunder tidak dimasukkan.",
+    "Disusun 24 Oktober 2026.",
+    "Diperbaiki 24 Oktober 2026 menurut temuan pemeriksa: label matriks kewenangan air diturunkan ke asumsi-kebijakan cakupan; catatan sirene hlm. 135 dikoreksi; reviu renkon ditandai fakultatif; kunci POD Waspada dan dua kunci uji kepekaan P16 ditambah; asal kelas kapasitas KRB (ringkasan COVID-19) disebut."
+  ],
+  "angka": {
+    "lembaga.air.baris_total": {
+      "nilai": 31,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris kewenangan",
+      "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: jumlah baris lembaga/matriks_air.csv (7 komponen air x tingkat x lembaga); cakupan matriks pilihan penyusun: hanya norma rezim SDA yang dibaca (UU 17/2019 jo. UU 6/2023, UU 23/2014, dan turunannya; lembaga/README.md §4.3); peraturan kebencanaan dan RPSDA tidak dimasukkan"
+    },
+    "lembaga.air.baris_tertulis": {
+      "nilai": 23,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris kewenangan",
+      "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan; baris bersumber resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: baris jenis_bukti = tertulis; 8 baris lain pemetaan penyusun; cakupan matriks pilihan penyusun: hanya norma rezim SDA yang dibaca (UU 17/2019 jo. UU 6/2023, UU 23/2014, dan turunannya; lembaga/README.md §4.3); peraturan kebencanaan dan RPSDA tidak dimasukkan"
+    },
+    "lembaga.air.baris_bnpb": {
+      "nilai": 0,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris kewenangan",
+      "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: baris matriks_air.csv dengan lembaga BNPB; nol adalah akibat cakupan matriks, bukan bukti BNPB tidak berperan di rezim air (RPSDA Ciliwung-Cisadane 2019 menyebut BNPB dan BPBD sebagai pelaksana, riset E6); cakupan matriks pilihan penyusun: hanya norma rezim SDA yang dibaca (UU 17/2019 jo. UU 6/2023, UU 23/2014, dan turunannya; lembaga/README.md §4.3); peraturan kebencanaan dan RPSDA tidak dimasukkan; tulis 'dari norma rezim SDA yang dibaca'"
+    },
+    "lembaga.air.baris_bpbd": {
+      "nilai": 1,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "baris kewenangan",
+      "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: baris A19 (BPBD diikutsertakan menyusun RTD), dipetakan penyusun dari Penjelasan PP 37/2010; cakupan matriks pilihan penyusun: hanya norma rezim SDA yang dibaca (UU 17/2019 jo. UU 6/2023, UU 23/2014, dan turunannya; lembaga/README.md §4.3); peraturan kebencanaan dan RPSDA tidak dimasukkan"
+    },
+    "lembaga.celah.n": {
+      "nilai": 17,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "temuan",
+      "keyakinan": "resmi; 14 dari 17 disimpulkan penyusun dari teks resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: jumlah baris lembaga/celah.csv (C01–C17)"
+    },
+    "lembaga.celah.n_air": {
+      "nilai": 6,
+      "pustaka": "pantaubencana-2026-paket-lembaga",
+      "satuan": "temuan",
+      "keyakinan": "resmi; disimpulkan penyusun dari teks resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+      "catatan": "olah: C05, C06, C07, C13, C16, C17"
+    },
+    "perpres53.anggota_pusat": {
+      "nilai": 15,
+      "pustaka": "ri-2022-perpres53",
+      "satuan": "jabatan",
+      "keyakinan": "resmi",
+      "sumber": "Perpres 53/2022 tentang Dewan SDA Nasional, Pasal 7 ayat (1) huruf d",
+      "catatan": "kepala badan bidang penanggulangan bencana pada angka 14"
+    },
+    "renas.aksi_244a.kontributor_kl": {
+      "nilai": 6,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "K/L",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.4.4.a, hlm. 86",
+      "catatan": "olah: Kementerian Hukum, Kemenko PMK, Kemenko Infrastruktur dan Pembangunan Kewilayahan, Kementerian ATR/BPN, BNPB, KKP; PJ KLH; program-terbukti/renas_aksi_terkait.csv hanya mencatat 3 kontributor pertama"
+    },
+    "renstra.pd_keterpenuhan_persen": {
+      "berkas": "program-terbukti/bukti_dampak.csv",
+      "jalur": "[id=B017].nilai_angka",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 70, mengutip isu RPJMN",
+      "catatan": "keterpenuhan sistem peringatan dini dari total masyarakat terpapar di kawasan berisiko tinggi; penyebut berbeda dengan Renas 1.c"
+    },
+    "rpjmn.kp_peringatan_dini.baseline": {
+      "nilai": 6.0,
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025), Lampiran III hlm. 913",
+      "catatan": "KP 08.04.02 cakupan layanan peringatan dini di daerah berisiko; target 2025 6,10 dan 2029 6,32 (sama dengan IKP Renstra); dibaca lewat riset E11b"
+    },
+    "renas.aksi_112a.sarpras.2024": {
+      "nilai": 546,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.1.2.a, hlm. 51",
+      "catatan": "sarana dan prasarana pendukung dan diseminasi peringatan dini di daerah; PJ 11 K/L sektor bahaya, kontributor Kemendagri, BNPB tidak disebut"
+    },
+    "renas.aksi_112a.sarpras.2029": {
+      "nilai": 1495,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.1.2.a, hlm. 51"
+    },
+    "renas.aksi_112a.desa.2024": {
+      "nilai": 8412,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "desa/kelurahan",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.1.2.a, hlm. 51",
+      "catatan": "desa dengan sarana dan prasarana pendukung peringatan dini"
+    },
+    "renas.aksi_112a.desa.2029": {
+      "nilai": 8642,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "desa/kelurahan",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.1.2.a, hlm. 51"
+    },
+    "renstra.desa_rawan": {
+      "berkas": "program-terbukti/bukti_dampak.csv",
+      "jalur": "[id=B003].nilai_angka",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 69, mengutip isu RPJMN"
+    },
+    "renas.aksi_112a.desa_2029_porsi_desa_rawan_persen": {
+      "nilai": 16.3,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "%",
+      "keyakinan": "resmi; olah",
+      "sumber": "Pengolahan data Pantau Bencana dari Renas PB 2025–2029 hlm. 51 dan Renstra BNPB 2025–2029 hlm. 69",
+      "catatan": "olah: 8.642 / 53.000; batas atas porsi karena tidak semua desa bersarana dijamin berada di desa rawan; 2024: 15,9%"
+    },
+    "renstra.sirene_terpasang.2025": {
+      "nilai": 23,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "paket",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162",
+      "catatan": "indikator jumlah sirene peringatan dini yang terpasang, Direktorat Peringatan Dini; kolom tahunan 2025–2029: 23, 50, 67, 105, 170"
+    },
+    "renstra.sirene_terpasang.2029": {
+      "nilai": 170,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "paket",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162"
+    },
+    "renstra.pembinaan_respons_pd.2025": {
+      "nilai": 300,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "orang",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162",
+      "catatan": "pembinaan penguatan respons sistem peringatan dini berbasis masyarakat; 300 orang per tahun 2025–2028"
+    },
+    "renstra.pembinaan_respons_pd.2029": {
+      "nilai": 4250,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "orang",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162"
+    },
+    "renstra.fasilitasi_pemda_pd.2025": {
+      "nilai": 7,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162",
+      "catatan": "fasilitasi dan pembinaan pemda penguatan respons sistem peringatan dini; 7 kab/kota per tahun 2025–2028"
+    },
+    "renstra.fasilitasi_pemda_pd.2029": {
+      "nilai": 56,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 162"
+    },
+    "renstra.diseminasi_sirene_memadai.2025": {
+      "nilai": 6.09,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 161 (sama dengan hlm. 135)",
+      "catatan": "persentase layanan sistem diseminasi peringatan dini berbasis sirine yang memadai; deret 2025–2029: 6,09; 6,14; 6,18; 6,23; 6,29; hlm. 135 sama dengan hlm. 161 (dicek dengan pdftotext -layout atas PDF asli)"
+    },
+    "renstra.diseminasi_sirene_memadai.2029": {
+      "nilai": 6.29,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029, hlm. 161 dan 135"
+    },
+    "bpk.bmkg.ibf_banjir_terperingatkan_persen": {
+      "nilai": 19.68,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "%",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait",
+      "catatan": "kejadian banjir yang telah mendapat peringatan dini dari Impact Based Forecasting BMKG; nasional; periode data tidak disebut"
+    },
+    "bpk.bmkg.akurasi_prakiraan_persen": {
+      "nilai": 82.82,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "%",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait",
+      "catatan": "rata-rata akurasi prakiraan cuaca 34 provinsi; target Renstra BMKG 87%; hanya 2 provinsi memenuhi target"
+    },
+    "bpk.bmkg.akurasi_prakiraan_target_persen": {
+      "nilai": 87,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "%",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait"
+    },
+    "bpk.bmkg.kekurangan_radar": {
+      "nilai": 40,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "unit",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait",
+      "catatan": "selisih kebutuhan dan peralatan yang dimiliki BMKG"
+    },
+    "bpk.bmkg.kekurangan_aws": {
+      "nilai": 311,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "unit",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait"
+    },
+    "bpk.bmkg.kekurangan_arg": {
+      "nilai": 6536,
+      "pustaka": "dpr-2022-deteksi-dini",
+      "satuan": "unit",
+      "keyakinan": "resmi; dikutip lembaga negara dari LHP BPK yang tidak dibuka",
+      "sumber": "Badan Keahlian DPR RI (2022), mengutip LHP Kinerja BPK 2022 atas BMKG dan instansi terkait"
+    },
+    "platform.banjir.jawa.pod_waspada": {
+      "nilai": 0.503,
+      "pustaka": "pantaubencana-2026-validasi-banjir",
+      "satuan": "",
+      "keyakinan": "estimasi-model; uji balik dengan hujan ERA5 sebagai prakiraan sempurna",
+      "sumber": "Pengolahan data Pantau Bencana (uji balik status kabupaten); bukan Data Bencana menurut Perban BNPB 1/2023",
+      "catatan": "satuan kabupaten-hari, bukan kejadian; selang 95% 0,413–0,597; FAR 0,957; uji 2022–2025; kunci banjir.pulau.Jawa.waspada; uji ambang platform sendiri, bukan bukti kondisi hulu BMKG dan bukan penguat angka IBF BPK; longsor Waspada 0,531"
+    },
+    "platform.banjir.jawa.pod_siaga": {
+      "nilai": 0.141,
+      "pustaka": "pantaubencana-2026-validasi-banjir",
+      "satuan": "",
+      "keyakinan": "estimasi-model; uji balik dengan hujan ERA5 sebagai prakiraan sempurna",
+      "sumber": "Pengolahan data Pantau Bencana (uji balik status kabupaten); bukan Data Bencana menurut Perban BNPB 1/2023",
+      "catatan": "satuan kabupaten-hari, bukan kejadian; selang 95% 0,089–0,202; FAR 0,923; tulis berdampingan dengan Waspada 0,503 (platform.banjir.jawa.pod_waspada); uji 2022–2025; kunci banjir.pulau.Jawa.siaga; bukan penguat angka IBF BPK"
+    },
+    "platform.longsor.jawa.pod_siaga": {
+      "nilai": 0.181,
+      "pustaka": "pantaubencana-2026-validasi-banjir",
+      "satuan": "",
+      "keyakinan": "estimasi-model; uji balik dengan hujan ERA5 sebagai prakiraan sempurna",
+      "sumber": "Pengolahan data Pantau Bencana (uji balik status kabupaten); bukan Data Bencana menurut Perban BNPB 1/2023",
+      "catatan": "satuan kabupaten-hari; selang 95% 0,117–0,258; FAR 0,921; Waspada 0,531; nasional 0,151; kunci longsor.pulau.Jawa.siaga"
+    },
+    "perban2_2024.jenis_data_bahaya": {
+      "nilai": 11,
+      "pustaka": "bnpb-2024-spdb",
+      "satuan": "jenis bahaya",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 2/2024 tentang Sistem Peringatan Dini Bencana, Pasal 7 ayat (2)",
+      "catatan": "huruf a–k; huruf l layanan informasi bahaya lainnya"
+    },
+    "perban2_2024.evaluasi_per_bulan": {
+      "nilai": 4,
+      "pustaka": "bnpb-2024-spdb",
+      "satuan": "bulan",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 2/2024, Pasal 29 ayat (1)",
+      "catatan": "evaluasi penyelenggaraan sistem peringatan dini paling sedikit 1 kali dalam 4 bulan oleh Deputi Bidang Pencegahan, dilaporkan ke Kepala BNPB"
+    },
+    "perban2_2023.renkon_masa_berlaku_tahun": {
+      "nilai": 3,
+      "pustaka": "bnpb-2023-renkon",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 2/2023 tentang Penyusunan Rencana Kontingensi Bencana, Pasal 21 ayat (1)"
+    },
+    "perban2_2023.renkon_reviu_bulan": {
+      "nilai": 6,
+      "pustaka": "bnpb-2023-renkon",
+      "satuan": "bulan",
+      "keyakinan": "resmi; norma fakultatif",
+      "sumber": "Perban BNPB 2/2023, Pasal 21 ayat (2)",
+      "catatan": "norma fakultatif, kutip verbatim: 'Rencana Kontingensi Bencana dapat dilakukan reviu secara berkala paling sedikit 6 (enam) bulan sekali'; bukan kewajiban dan bukan tolok ukur audit; yang wajib: uji lewat latihan kesiapsiagaan (Pasal 19)"
+    },
+    "juklak7_2026.sosialisasi_risiko_tinggi_per_tahun": {
+      "nilai": 2,
+      "pustaka": "bnpb-2026-juklak-kie",
+      "satuan": "kali per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2026, hlm. 7",
+      "catatan": "kab/kota berisiko tinggi; berisiko sedang 1 kali per tahun"
+    },
+    "juklak7_2026.sosialisasi_risiko_sedang_per_tahun": {
+      "nilai": 1,
+      "pustaka": "bnpb-2026-juklak-kie",
+      "satuan": "kali per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2026, hlm. 7"
+    },
+    "program.kompendium.n": {
+      "nilai": 25,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "program",
+      "keyakinan": "asumsi-kebijakan; pemilihan program oleh penyusun",
+      "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
+      "catatan": "olah: baris kompendium_program.csv"
+    },
+    "program.kompendium.kuat": {
+      "nilai": 2,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "program",
+      "keyakinan": "asumsi-kebijakan; rubrik kekuatan bukti paket program-terbukti",
+      "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
+      "catatan": "P16 pengendalian air tanah Tokyo, Osaka, Bangkok; P19 kesiapsiagaan siklon Bangladesh; keduanya luar negeri"
+    },
+    "program.kompendium.kuat_dalam_negeri": {
+      "nilai": 0,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "program",
+      "keyakinan": "asumsi-kebijakan; rubrik kekuatan bukti paket program-terbukti",
+      "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)"
+    },
+    "program.kompendium.sedang_dalam_negeri": {
+      "nilai": 2,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "program",
+      "keyakinan": "asumsi-kebijakan; rubrik kekuatan bukti paket program-terbukti",
+      "sumber": "Pengolahan data Pantau Bencana dari kompendium program (paket program-terbukti)",
+      "catatan": "P03 InaTEWS (hulu), P13 PAMSIMAS; P23 campuran luar negeri dan Indonesia tidak dihitung"
+    },
+    "air.sel_program.total": {
+      "nilai": 30,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "5 komponen (air baku dan air minum, irigasi, waduk dan bendungan, air tanah, penurunan muka tanah) x 2 musim x 3 fase; varian dasar: P16 hanya di musim hujan (kolom bencana rob;banjir), pilihan penyusun"
+    },
+    "air.sel_program.bukti_kuat_sedang": {
+      "nilai": 3,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "air baku x kemarau x prabencana (PAMSIMAS, sedang, dalam negeri); air tanah dan penurunan muka tanah x hujan x prabencana (P16, kuat, luar negeri); varian dasar: P16 hanya di musim hujan (kolom bencana rob;banjir), pilihan penyusun; rentang 3–5 menurut uji kepekaan (P16 di dua musim: 5)"
+    },
+    "air.sel_program.lemah_belum_terbukti": {
+      "nilai": 4,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "sel yang hanya punya program berbukti lemah atau belum terbukti; varian dasar: P16 hanya di musim hujan (kolom bencana rob;banjir), pilihan penyusun; P04 tidak dipetakan: 3"
+    },
+    "air.sel_program.tanpa_program": {
+      "nilai": 23,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "tidak ada program kompendium yang dipetakan ke sel itu; varian dasar: P16 hanya di musim hujan (kolom bencana rob;banjir), pilihan penyusun; rentang 21–24 menurut uji kepekaan (P16 di dua musim: 21; P04 tidak dipetakan: 24)"
+    },
+    "air.sel_program.tanpa_program_tanggap_pasca": {
+      "nilai": 20,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "seluruh 20 sel fase tanggap darurat dan pascabencana"
+    },
+    "air.sel_program.sedang_dalam_negeri": {
+      "nilai": 1,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "hanya PAMSIMAS"
+    },
+    "air.sel_program.kuat_luar_negeri": {
+      "nilai": 2,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "P16; padanan Indonesia berstatus dikembangkan, belum dievaluasi; 4 bila P16 di dua musim"
+    },
+    "air.sel_program.bukti_kuat_sedang_p16_dua_musim": {
+      "nilai": 5,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "uji kepekaan: P16 dipetakan ke musim kemarau dan hujan (air tanah dan penurunan muka tanah, prabencana); kuat 4 (luar negeri), sedang 1 (PAMSIMAS); varian dasar 3"
+    },
+    "air.sel_program.tanpa_program_p16_dua_musim": {
+      "nilai": 21,
+      "pustaka": "pantaubencana-2026-program-terbukti",
+      "satuan": "sel",
+      "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+      "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 5 komponen x 2 musim x 3 fase (berkas bukti bab-07, P3)",
+      "catatan": "uji kepekaan: P16 di dua musim; 20 sel tanggap darurat dan pascabencana ditambah waduk dan bendungan x kemarau x prabencana; varian dasar 23"
+    },
+    "rpjmn.kp_kapasitas_minimal_sedang.baseline_2023": {
+      "nilai": 62,
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025), Lampiran III hlm. 913",
+      "catatan": "KP 08.04.01 persentase daerah dengan tingkat kapasitas PB minimal sedang; target 2025 67 dan 2029 90; Renstra memakai 67 sebagai nilai awal; dibaca lewat riset E11b"
+    },
+    "krb.nasional.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 38.0,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
+      "catatan": "olah: (190 sedang + 3 tinggi) / 508 kab/kota berkelas di nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab; 6 kab/kota tanpa kelas; kelas kapasitas dari ringkasan KRB untuk bahaya COVID-19 (InaRISK apiv4/kajian-summary/covid-19), bukan ringkasan KRB banjir atau kekeringan; kesetaraan dengan kapasitas untuk bahaya air belum diperiksa (penarikan ulang 24 Okt 2026 gagal, InaRISK tidak menjawab); bertentangan dengan 62% (RPJMN 2023) dan 67% (nilai awal Renstra) karena alat ukur berbeda; ditulis berdampingan (KD-3)"
+    },
+    "krb.jawa.kab_kapasitas_minimal_sedang": {
+      "nilai": 114,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
+      "catatan": "olah: 111 sedang + 3 tinggi (Kebumen, Magelang, Klaten) dari 119 kab/kota Jawa; kelas kapasitas dari ringkasan KRB untuk bahaya COVID-19 (InaRISK apiv4/kajian-summary/covid-19), bukan ringkasan KRB banjir atau kekeringan; kesetaraan dengan kapasitas untuk bahaya air belum diperiksa (penarikan ulang 24 Okt 2026 gagal, InaRISK tidak menjawab)"
+    },
+    "krb.jawa.kab_kapasitas_rendah": {
+      "nilai": 5,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
+      "catatan": "Kulon Progo, Gunungkidul, Sleman, Kota Yogyakarta, Pamekasan; kelas kapasitas dari ringkasan KRB untuk bahaya COVID-19 (InaRISK apiv4/kajian-summary/covid-19), bukan ringkasan KRB banjir atau kekeringan; kesetaraan dengan kapasitas untuk bahaya air belum diperiksa (penarikan ulang 24 Okt 2026 gagal, InaRISK tidak menjawab)"
+    },
+    "krb.jawa.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 95.8,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
+      "catatan": "olah: 114 / 119; kelas kapasitas dari ringkasan KRB untuk bahaya COVID-19 (InaRISK apiv4/kajian-summary/covid-19), bukan ringkasan KRB banjir atau kekeringan; kesetaraan dengan kapasitas untuk bahaya air belum diperiksa (penarikan ulang 24 Okt 2026 gagal, InaRISK tidak menjawab)"
+    },
+    "kemenkopmk.daerah_belum_spm_bencana": {
+      "nilai": 63,
+      "pustaka": "kemenkopmk-2025-sinkronisasi-irb",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
+      "catatan": "nasional; jenis daerah (provinsi atau kab/kota) tidak dirinci"
+    },
+    "kemenkopmk.daerah_belum_krb": {
+      "nilai": 87,
+      "pustaka": "kemenkopmk-2025-sinkronisasi-irb",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
+      "catatan": "belum mengaktifkan Kajian Risiko Bencana; nasional"
+    },
+    "kemenkopmk.daerah_belum_ikd_2024": {
+      "nilai": 79,
+      "pustaka": "kemenkopmk-2025-sinkronisasi-irb",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, siaran 12 September 2025 (pernyataan Direktur MPBG Kemendagri, rapat 4 September 2025)",
+      "catatan": "belum menyusun IKD 2024; nasional"
+    },
+    "renas.aksi_121c.pusdalops.2024": {
+      "nilai": 395,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.2.1.c, hlm. 56",
+      "catatan": "Pusdalops daerah yang mendapat pembinaan; PJ BNPB"
+    },
+    "renas.aksi_121c.pusdalops.2029": {
+      "nilai": 525,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "daerah",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 1.2.1.c, hlm. 56"
+    },
+    "renas.aksi_451a.desa.2024": {
+      "berkas": "program-terbukti/bukti_dampak.csv",
+      "jalur": "[id=B001].nilai_angka",
+      "satuan": "desa/kelurahan",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107",
+      "catatan": "desa/kelurahan yang mendapat pembinaan menghadapi bencana (Destana); PJ Kemendes PDT, BNPB, Kemensos"
+    },
+    "renas.aksi_451a.desa.2029": {
+      "berkas": "program-terbukti/bukti_dampak.csv",
+      "jalur": "[id=B002].nilai_angka",
+      "satuan": "desa/kelurahan",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, Rencana Aksi 4.5.1.a, hlm. 107"
+    }
+  }
+}

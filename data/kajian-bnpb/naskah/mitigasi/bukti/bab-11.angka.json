@@ -1,0 +1,766 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 11 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-11.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas + jalur (relatif ke data/) atau nilai + pustaka (id di bab-11.pustaka.json), dengan lokasi halaman bila ada.",
+  "Kunci yang sudah ada di data/angka.json atau diusulkan berkas bukti lain tidak diulang (diperiksa mesin terhadap semua naskah/*/bukti/*.angka.json pada 24 Oktober 2026). Angka sekunder tidak dimasukkan.",
+  "Kunci respons.* (jendela 30 hari per direktorat), hidromet.kalender.* (porsi per pulau), dan mitigasi.sel_posisi.* (pemetaan penyusun) adalah hitungan lintas baris tanpa baris ringkas di paket; dapat diubah ke bentuk berkas + jalur bila pemilik paket menulis turunannya.",
+  "Disusun 24 Oktober 2026."
+ ],
+ "angka": {
+  "rpjmn.kp080402b.status_darurat_standar.baseline": {
+   "nilai": 75,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 12/2025 RPJMN 2025–2029 Lampiran III",
+   "catatan": "KP 08.04.02 kedua: persentase daerah yang menetapkan status keadaan darurat dan menerima intervensi sesuai standar, baseline 2023; target 2025 100; standar tidak didefinisikan di halaman",
+   "lokasi": "Lampiran III hlm. 913"
+  },
+  "rpjmn.kp080402b.status_darurat_standar.2029": {
+   "nilai": 100,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 12/2025 RPJMN 2025–2029 Lampiran III",
+   "catatan": "target 2029 KP 08.04.02 kedua",
+   "lokasi": "Lampiran III hlm. 913"
+  },
+  "rpjmn.kp080403.pascabencana_masif.2029": {
+   "nilai": 100,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 12/2025 RPJMN 2025–2029 Lampiran III",
+   "catatan": "KP 08.04.03 daerah pascabencana masif yang ditangani; baseline 2023 dan target 2025 juga 100",
+   "lokasi": "Lampiran III hlm. 913"
+  },
+  "dibi.alam.meninggal_hilang.median_2015_2024": {
+   "nilai": 583.5,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): median meninggal+hilang alam 2015–2024 (276, 578, 378, 6.240, 589, 418, 815, 895, 308, 603); baris [klasifikasi=alam,cakupan=bencana] dibi/rekap_nasional_tahunan.csv dijumlah per tahun (kode 101–109); seri patah 2024"
+  },
+  "dibi.alam.per100rb.median_2015_2024_sp2020": {
+   "nilai": 0.216,
+   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS SP2020",
+   "catatan": "olah: 583,5 / 270.203.917 × 100.000 = 0,2159; setara proyeksi Renas 1.a 0,22 (kesamaan besaran, bukan cara hitung)"
+  },
+  "dibi.alam.per100rb.median_2015_2024_bps2026": {
+   "nilai": 0.203,
+   "pustaka": "bnpb-2026-dibi; bps-2026-penduduk",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS 2026",
+   "catatan": "olah: 583,5 / 287.198.383 × 100.000 = 0,203; penyebut sama dengan dibi.alam.per100rb.2025_bps2026 (0,68)"
+  },
+  "dibi.alam.per100rb.2025_sp2020": {
+   "nilai": 0.724,
+   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS SP2020",
+   "catatan": "olah: 1.956 / 270,20 juta × 100.000; penyebut tetap untuk seri 2015–2025"
+  },
+  "dibi.alam.per100rb.2018_sp2020": {
+   "nilai": 2.309,
+   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018 dan BPS SP2020",
+   "catatan": "olah: 6.240 / 270,20 juta × 100.000; tahun katastrofik (Lombok, Sulteng, Selat Sunda)"
+  },
+  "dibi.alam.meninggal_hilang.2026_sementara": {
+   "nilai": 448,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): baris [klasifikasi=alam,cakupan=bencana] dibi/rekap_nasional_tahunan.csv dijumlah per tahun (kode 101–109), tahun 2026 s.d. 23 Okt 2026, sementara"
+  },
+  "dibi.nasional.per100rb.median_2015_2024_sp2020": {
+   "nilai": 0.223,
+   "pustaka": "bnpb-2026-dibi; bps-2021-sp2020",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan BPS SP2020",
+   "catatan": "olah: 603,5 (dibi.nasional.meninggal_hilang.median_2015_2024, semua klasifikasi) / 270,20 juta × 100.000; hanya berdampingan dengan versi alam (V06)"
+  },
+  "dibi.nasional.meninggal_hilang.2026_sementara": {
+   "nilai": 569,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): meninggal + hilang baris [tahun=2026,klasifikasi=semua,cakupan=bencana] dibi/rekap_nasional_tahunan.csv s.d. 23 Okt 2026, sementara; versi alam 448"
+  },
+  "renas.indikator_1c.arah_2030": {
+   "nilai": 62235,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana dari Renas PB 2025–2029 Tabel 2.8",
+   "catatan": "arah 2030, bukan target resmi: 52.000 + (52.000 − 11.060) / 4; rumus sama dengan kajian air",
+   "lokasi": "hlm. 32"
+  },
+  "irb.arah_2030_kumulatif_persen": {
+   "nilai": 5.86,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana dari PP 08.04 RPJMN (IRB turun 1,2% per tahun)",
+   "catatan": "arah 2030: 1 − 0,988^5 = 5,86% dari baseline IRBI 2025 skala baru; hanya berlaku bila baseline terbit (KD-4)",
+   "lokasi": "Lampiran III hlm. 913"
+  },
+  "esdm2011_15.tingkat_aktivitas": {
+   "nilai": 4,
+   "pustaka": "esdm-2011-permen15",
+   "satuan": "tingkat",
+   "keyakinan": "resmi",
+   "sumber": "Permen ESDM 15/2011",
+   "catatan": "Normal, Waspada, Siaga, Awas; Awas: KRB I dan II segera mengungsi berdasarkan perintah pemda sesuai rekomendasi teknis ESDM",
+   "lokasi": "Pasal 1 angka 10; Lampiran I angka 4–6"
+  },
+  "juklak2022_3.kaji_cepat_jam": {
+   "nilai": 24,
+   "pustaka": "bnpb-2022-juklak-kajicepat",
+   "satuan": "jam",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2022",
+   "catatan": "kaji cepat paling lambat 1 × 24 jam setelah informasi (siaga dan tanggap darurat); TRC PB bergerak paling lambat 1 × 24 jam setelah perintah",
+   "lokasi": "hlm. 7–8"
+  },
+  "juklak2022_3.laporan_awal_jam": {
+   "nilai": 24,
+   "pustaka": "bnpb-2022-juklak-kajicepat",
+   "satuan": "jam",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2022",
+   "catatan": "laporan awal paling lambat 1 × 24 jam setelah tiba di lokasi; berisi rekomendasi penetapan status",
+   "lokasi": "hlm. 16"
+  },
+  "juklak2022_3.laporan_lanjutan_jam": {
+   "nilai": 72,
+   "pustaka": "bnpb-2022-juklak-kajicepat",
+   "satuan": "jam",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2022",
+   "catatan": "laporan lanjutan paling lambat 3 × 24 jam setelah tiba; untuk rencana operasi",
+   "lokasi": "hlm. 16"
+  },
+  "perban2017_5.r3p_hari_maks": {
+   "nilai": 90,
+   "pustaka": "bnpb-2017-r3p",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "catatan": "penyusunan R3P paling lama 90 hari dan dimulai pada saat tanggap darurat",
+   "lokasi": "Pasal 2 ayat (2)–(3), hlm. 4"
+  },
+  "perban2017_5.r3p_masa_tahun": {
+   "nilai": 3,
+   "pustaka": "bnpb-2017-r3p",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "catatan": "jangka waktu R3P paling lama 3 tahun",
+   "lokasi": "Pasal 10, hlm. 10"
+  },
+  "perban2024_4.hibah_tahapan": {
+   "nilai": 9,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "tahap",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "catatan": "pengusulan, penilaian, usulan rincian alokasi, penetapan alokasi, penyaluran, penganggaran, pelaksanaan, pelaporan, penyetoran sisa dana",
+   "lokasi": "Pasal 7, hlm. 5"
+  },
+  "perban2024_4.laporan_berkala_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "catatan": "laporan berkala pemda penerima hibah RR tiap 3 bulan sejak SPPH kepada Kepala BNPB, menteri keuangan, dan menteri dalam negeri; laporan akhir paling lama 60 hari kalender",
+   "lokasi": "Pasal 28 ayat (2)–(3), hlm. 11"
+  },
+  "sumatra2025.r3p_aceh_hari_selesai": {
+   "nilai": 35,
+   "pustaka": "kemenkopmk-2026-r3p-aceh; bnpb-2026-dibi",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
+   "catatan": "olah: 22 Nov 2025 (mulai kejadian, DIBI) ke 27 Des 2025 (R3P Aceh selesai disusun; target 20 Des 2025)"
+  },
+  "sumatra2025.r3p_aceh_hari_ke_bnpb": {
+   "nilai": 41,
+   "pustaka": "kemenkopmk-2026-r3p-aceh; bnpb-2026-dibi",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
+   "catatan": "olah: 22 Nov 2025 ke 2 Jan 2026 (disampaikan ke BNPB); ANTARA menulis 3 Feb 2026 (sekunder)"
+  },
+  "mitigasi.sel_posisi.total": {
+   "nilai": 39,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "13 jenis lingkup Kajian 2 (rob ke banjir, likuefaksi ke gempa) × 3 fase"
+  },
+  "mitigasi.sel_posisi.aksi_wajib_saja": {
+   "nilai": 28,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "sel tanpa program dalam negeri; = 20 sel tanpa program + 8 sel hanya luar negeri (bab-10)"
+  },
+  "mitigasi.sel_posisi.berjalan_wajib_evaluasi": {
+   "nilai": 8,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "gempa dan tsunami prabencana dan tanggap darurat, gunung api, banjir, longsor, karhutla prabencana"
+  },
+  "mitigasi.sel_posisi.rujukan_tata_kelola": {
+   "nilai": 2,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "gempa dan tsunami pascabencana (Rekompak P07, BRR P08)"
+  },
+  "mitigasi.sel_posisi.program_syarat": {
+   "nilai": 1,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "kekeringan prabencana (PAMSIMAS P13, bukti sedang)"
+  },
+  "mitigasi.sel_posisi.program_kuat_dalam_negeri": {
+   "nilai": 0,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "tidak ada program dalam negeri berbukti kuat"
+  },
+  "mitigasi.sel_posisi.aksi_wajib_padanan_luar_negeri": {
+   "nilai": 8,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "banjir tanggap darurat dan pascabencana, cuaca ekstrem tiga fase, gelombang prabencana dan tanggap darurat, kekeringan pascabencana"
+  },
+  "mitigasi.sel_posisi.aksi_wajib_prabencana": {
+   "nilai": 6,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "dari 13 sel prabencana"
+  },
+  "mitigasi.sel_posisi.aksi_wajib_tanggap_darurat": {
+   "nilai": 11,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "dari 13 sel tanggap darurat"
+  },
+  "mitigasi.sel_posisi.aksi_wajib_pascabencana": {
+   "nilai": 11,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "dari 13 sel pascabencana"
+  },
+  "mitigasi.sel_posisi.kepekaan_15_jenis.aksi_wajib_saja": {
+   "nilai": 33,
+   "pustaka": "pantaubencana-2026-program-terbukti",
+   "satuan": "sel",
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan Pantau Bencana: posisi dalam negeri tertinggi per sel, kompendium_program.csv × 13 jenis × 3 fase (berkas bukti mitigasi bab-11, P3)",
+   "catatan": "kepekaan 15 jenis tema.json (rob dan likuefaksi dipisah): 33 dari 45 sel"
+  },
+  "hidromet.kalender.bnt.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 84.9,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan; pulau = Bali dan Nusa Tenggara"
+  },
+  "hidromet.kalender.jawa.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 75.8,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.sumatera.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 60.6,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.kalimantan.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 60.4,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.papua.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 58.3,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.sulawesi.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 56.8,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.maluku.hujan_kejadian_porsi_nov_apr": {
+   "nilai": 41.6,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem November–April; pola tercatat, dipengaruhi intensitas pelaporan"
+  },
+  "hidromet.kalender.maluku.hujan_kejadian_porsi_jun_okt": {
+   "nilai": 46.1,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem Juni–Oktober di Maluku; puncak Juni 18,7%, Juli 14,2%"
+  },
+  "hidromet.kalender.maluku.hujan_mh_porsi_jun_okt": {
+   "nilai": 74.4,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi meninggal+hilang banjir, banjir_bandang, banjir_longsor, longsor, cuaca_ekstrem Juni–Oktober di Maluku"
+  },
+  "hidromet.kalender.jawa.kemarau_kejadian_porsi_jun_okt": {
+   "nilai": 92.7,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian kekeringan dan karhutla Juni–Oktober; puncak September 27,0%"
+  },
+  "hidromet.kalender.kalimantan.kemarau_kejadian_porsi_jun_okt": {
+   "nilai": 75.2,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian kekeringan dan karhutla Juni–Oktober; Agustus–September 47,0%"
+  },
+  "hidromet.kalender.sumatera.kemarau_kejadian_porsi_jun_okt": {
+   "nilai": 67.4,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian kekeringan dan karhutla Juni–Oktober; Februari–Maret 19,1%"
+  },
+  "hidromet.kalender.sumatera.kemarau_kejadian_porsi_feb_mar": {
+   "nilai": 19.1,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian kekeringan dan karhutla Februari–Maret di Sumatera (puncak kedua karhutla)"
+  },
+  "hidromet.kalender.gelombang.nasional_porsi_nov_apr": {
+   "nilai": 61.5,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian gelombang_abrasi November–April, semua pulau (585 kejadian); Januari 21,0%"
+  },
+  "hidromet.kalender.jawa.gelombang_porsi_mei_agu": {
+   "nilai": 53.7,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian gelombang_abrasi Mei–Agustus di Jawa (95 kejadian, 16 tahun); November–April 35,8%. Pola dari beberapa episode: 18 kejadian Juli 2018; tanpa Juli 2018 Mei–Agustus 42,9% (33/77) lawan November–April 44,2%; tanpa tahun 2018 43,2% sama dengan 43,2%; bukan dasar perombakan panel (bab-11 T4.3, I4.4)"
+  },
+  "hidromet.kalender.jawa.rob_porsi_mei_agu": {
+   "nilai": 68.0,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025 (skenario-hidromet/kalender_bulanan_pulau.csv)",
+   "catatan": "olah(resmi): porsi kejadian rob Mei–Agustus di Jawa (98,5 kejadian, hanya 2020–2023 dan 1 kejadian 2025); Mei 31,5%, Juni 29,4%; 38 dari 60 kejadian Mei–Juni dari Juni 2020 (20) dan Mei 2022 (18); tanpa satu tahun 59,3–79,5%; jenis rob di balik patahan kategori 2018; pola dari beberapa episode (bab-11 T4.3, I4.4)"
+  },
+  "respons.direktorat.w1.n_prov": {
+   "nilai": 13,
+   "pustaka": "bnpb-2025-otk-ubah",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 11/2025",
+   "catatan": "Direktorat Penanganan Darurat Wilayah I",
+   "lokasi": "Pasal 74, hlm. 4"
+  },
+  "respons.direktorat.w2.n_prov": {
+   "nilai": 13,
+   "pustaka": "bnpb-2025-otk-ubah",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 11/2025",
+   "catatan": "Direktorat Penanganan Darurat Wilayah II; ditambah Daerah Ibu Kota Nusantara",
+   "lokasi": "Pasal 77, hlm. 6"
+  },
+  "respons.direktorat.w3.n_prov": {
+   "nilai": 12,
+   "pustaka": "bnpb-2025-otk-ubah",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 11/2025",
+   "catatan": "Direktorat Penanganan Darurat Wilayah III",
+   "lokasi": "Pasal 79A, hlm. 7"
+  },
+  "respons.w1.hidromet_puncak30": {
+   "nilai": 954305,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): pengungsi tercatat DIBI dijumlah serentak dalam jendela 30 hari bergeser, provinsi per Perban 11/2025, riset/mentah/dibi_hidromet.json (tanggal dt dibaca UTC); jendela 30 hari asumsi-kebijakan; 6 Nov–5 Des 2025; Aceh 946.889 (99,2%); WIB: 954.315"
+  },
+  "respons.w2.hidromet_puncak30": {
+   "nilai": 468967,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): pengungsi tercatat DIBI dijumlah serentak dalam jendela 30 hari bergeser, provinsi per Perban 11/2025, riset/mentah/dibi_hidromet.json (tanggal dt dibaca UTC); jendela 30 hari asumsi-kebijakan; 31 Des 2019–29 Jan 2020; Kota Bekasi 366.274 (rekaman diragukan, KERANGKA §7 butir 15)"
+  },
+  "respons.w2.hidromet_puncak30_tanpa_bekasi2020": {
+   "nilai": 338360,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): pengungsi tercatat DIBI dijumlah serentak dalam jendela 30 hari bergeser, provinsi per Perban 11/2025, riset/mentah/dibi_hidromet.json (tanggal dt dibaca UTC); jendela 30 hari asumsi-kebijakan; tanpa rekaman Kota Bekasi 31 Des 2019–10 Jan 2020: 1–30 Jan 2014 (Karawang 182.837)"
+  },
+  "respons.w3.hidromet_puncak30": {
+   "nilai": 180213,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): pengungsi tercatat DIBI dijumlah serentak dalam jendela 30 hari bergeser, provinsi per Perban 11/2025, riset/mentah/dibi_hidromet.json (tanggal dt dibaca UTC); jendela 30 hari asumsi-kebijakan; 6 Jan–4 Feb 2021; Kalimantan Selatan 177.432; WIB: 180.247"
+  },
+  "respons.nasional.hidromet_puncak30": {
+   "nilai": 981483,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): pengungsi tercatat DIBI dijumlah serentak dalam jendela 30 hari bergeser, provinsi per Perban 11/2025, riset/mentah/dibi_hidromet.json (tanggal dt dibaca UTC); jendela 30 hari asumsi-kebijakan; 7 Nov–6 Des 2025; WIB: 981.477"
+  },
+  "respons.w2.porsi_kota_bekasi2020": {
+   "nilai": 78.1,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah: 366.274 / 468.967"
+  },
+  "respons.w1.geologi_rbrs_puncak30": {
+   "nilai": 245961,
+   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi) dengan asumsi-kebijakan 3,9 jiwa per rumah (skenario-geologi/README.md): (rumah rusak berat + sedang tercatat DIBI) × 3,9, jendela 30 hari, riset/mentah/dibi_geologi.json; definisi pengungsi gempa KERANGKA prinsip 9; Sulteng 2018 (pembanding_pdna.csv 245.954, Sulteng saja); pengungsi tercatat 212.719"
+  },
+  "respons.w2.geologi_rbrs_puncak30": {
+   "nilai": 425233,
+   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi) dengan asumsi-kebijakan 3,9 jiwa per rumah (skenario-geologi/README.md): (rumah rusak berat + sedang tercatat DIBI) × 3,9, jendela 30 hari, riset/mentah/dibi_geologi.json; definisi pengungsi gempa KERANGKA prinsip 9; Lombok 2018 RB 75.138 + RS 33.896; pengungsi tercatat 406.202; lantai Wilayah II tanpa Bekasi 2020"
+  },
+  "respons.w3.geologi_rbrs_puncak30": {
+   "nilai": 464120,
+   "pustaka": "bnpb-2026-dibi; pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan; olah dari rumah tercatat",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi) dengan asumsi-kebijakan 3,9 jiwa per rumah (skenario-geologi/README.md): (rumah rusak berat + sedang tercatat DIBI) × 3,9, jendela 30 hari, riset/mentah/dibi_geologi.json; definisi pengungsi gempa KERANGKA prinsip 9; Sumatera Barat 30 Sep 2009 RB 119.005 (RS tidak tercatat terpisah); pengungsi tercatat hanya 6.554; lantai perencanaan Wilayah III"
+  },
+  "dibi.ambon2019.mengungsi": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=ambon2019,metrik=mengungsi,versi=DIBI].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, gempa Ambon–Maluku Tengah 2019",
+   "catatan": "pengungsi tercatat terbesar Wilayah III; jendela 30 hari 26 Sep–25 Okt 2019 sama"
+  },
+  "dibi.padang2009.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=padang2009,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, gempa Sumatera Barat 30 Sep 2009",
+   "catatan": "RS 0 (tidak dicatat terpisah), RR 152.535; mengungsi tercatat 6.554"
+  },
+  "dibi.sumatra2025.mengungsi_aceh_buletin": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=sumatra2025,metrik=mengungsi,versi=pustaka,verifikasi=primer].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buletin Info Bencana BNPB Desember 2025 hlm. 6",
+   "catatan": "Aceh saja, stok per 31 Des 2025, ditulis \"lebih dari\"; DIBI Aceh 946.889 (jumlah per laporan kejadian); berdampingan"
+  },
+  "brr.aceh2004.kehilangan_tempat_tinggal": {
+   "nilai": 635384,
+   "pustaka": "brr-2009-nias",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009)",
+   "catatan": "Aceh dan Nias, tidak terpilah (Aceh Wilayah I, Nias/Sumatera Utara Wilayah II); 139.195 rumah rusak atau hancur; kehilangan tempat tinggal, bukan pengungsi tercatat; bukan lantai kepekaan direktorat; sumber resmi menurut KEPUTUSAN T14; dibaca lewat parafrase riset E §E4, halaman belum dicek penyusun ke buku",
+   "lokasi": "Bagian 1, Tabel 1.1, hlm. PDF 27 (menurut riset E §E4; belum dibuka ulang penyusun)"
+  },
+  "brr.nias2005.kehilangan_tempat_tinggal": {
+   "nilai": 70000,
+   "pustaka": "brr-2009-nias",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009)",
+   "catatan": "ditulis \"lebih dari 70.000\"; gempa Nias 28 Mar 2005",
+   "lokasi": "Bagian 1 (riset E §E4)"
+  },
+  "bappenas.yogya2006.kehilangan_rumah": {
+   "pustaka": "bappenas-2006-dala-yogya",
+   "satuan": "jiwa",
+   "keyakinan": "resmi; penilaian awal",
+   "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006)",
+   "catatan": "\"600.000 sampai satu juta\" kehilangan rumah; bukan pengungsi tercatat (mitigasi bab-06 Celah); batas atas 4,8% di atas lantai Wilayah I",
+   "lokasi": "penilaian awal kerusakan dan kerugian, Juni 2006",
+   "rendah": 600000,
+   "tinggi": 1000000
+  },
+  "respons.sumatra2025.mengungsi_sumut": {
+   "nilai": 13157,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): DIBI 15 Nov–31 Des 2025, riset/mentah/dibi_hidromet.json; jumlah tiga provinsi sama dengan registri dibi.sumatra2025.*; Sumatera Utara, Wilayah II"
+  },
+  "respons.sumatra2025.mengungsi_sumbar": {
+   "nilai": 10830,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): DIBI 15 Nov–31 Des 2025, riset/mentah/dibi_hidromet.json; jumlah tiga provinsi sama dengan registri dibi.sumatra2025.*; Sumatera Barat, Wilayah III"
+  },
+  "respons.sumatra2025.mh_aceh": {
+   "nilai": 591,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): DIBI 15 Nov–31 Des 2025, riset/mentah/dibi_hidromet.json; jumlah tiga provinsi sama dengan registri dibi.sumatra2025.*; meninggal + hilang Aceh, Wilayah I"
+  },
+  "respons.sumatra2025.mh_sumut": {
+   "nilai": 414,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): DIBI 15 Nov–31 Des 2025, riset/mentah/dibi_hidromet.json; jumlah tiga provinsi sama dengan registri dibi.sumatra2025.*; meninggal + hilang Sumatera Utara"
+  },
+  "respons.sumatra2025.mh_sumbar": {
+   "nilai": 337,
+   "pustaka": "bnpb-2026-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): DIBI 15 Nov–31 Des 2025, riset/mentah/dibi_hidromet.json; jumlah tiga provinsi sama dengan registri dibi.sumatra2025.*; meninggal + hilang Sumatera Barat"
+  },
+  "respons.model.jawa.pengungsi_w1": {
+   "nilai": 216912,
+   "pustaka": "pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
+   "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+   "catatan": "(RB + RS tengah) × 3,9 dari skenario-geologi/gempa_kab.csv kolom pengungsi, dijumlah per direktorat; rumah = jiwa/3,9, bukan data bangunan; selatan Jawa M8,5 (di bawah Mmaks); total 434.833"
+  },
+  "respons.model.jawa.pengungsi_w3": {
+   "nilai": 205211,
+   "pustaka": "pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
+   "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+   "catatan": "(RB + RS tengah) × 3,9 dari skenario-geologi/gempa_kab.csv kolom pengungsi, dijumlah per direktorat; rumah = jiwa/3,9, bukan data bangunan; selatan Jawa M8,5"
+  },
+  "respons.model.mentawai.pengungsi_w3": {
+   "nilai": 486584,
+   "pustaka": "pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
+   "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+   "catatan": "(RB + RS tengah) × 3,9 dari skenario-geologi/gempa_kab.csv kolom pengungsi, dijumlah per direktorat; rumah = jiwa/3,9, bukan data bangunan; Mentawai M8,8; total 563.701; 1,05 kali lantai Wilayah III"
+  },
+  "respons.model.jawa_mmaks.pengungsi_w1": {
+   "nilai": 3709974,
+   "pustaka": "pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
+   "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+   "catatan": "(RB + RS tengah) × 3,9 dari skenario-geologi/gempa_kab.csv kolom pengungsi, dijumlah per direktorat; rumah = jiwa/3,9, bukan data bangunan; selatan Jawa Mw 9,1 (Mmaks resmi PuSGeN 2024; paket masih berlabel sekunder); total 9.735.362; hanya Lampiran C"
+  },
+  "respons.model.jawa_mmaks.pengungsi_w3": {
+   "nilai": 3854305,
+   "pustaka": "pantaubencana-2026-skenario-geologi",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model; asumsi-kebijakan ×3,9",
+   "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+   "catatan": "(RB + RS tengah) × 3,9 dari skenario-geologi/gempa_kab.csv kolom pengungsi, dijumlah per direktorat; rumah = jiwa/3,9, bukan data bangunan; selatan Jawa Mw 9,1; hanya Lampiran C"
+  },
+  "perka_2008.beras_gram_hari": {
+   "nilai": 400,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "gram per orang per hari",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "catatan": "atau bahan makanan pokok lain dan lauk pauk",
+   "lokasi": "Lampiran, hlm. PDF 9"
+  },
+  "perka_2008.kkal_hari": {
+   "nilai": 2100,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "kkal per orang per hari",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "catatan": "besaran bantuan makanan setara 2.100 kkal; dapur umum 2 kali makan",
+   "lokasi": "Lampiran, hlm. PDF 9"
+  },
+  "perka_2008.hunian_m2_orang": {
+   "nilai": 3,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m² per orang",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "catatan": "tempat penampungan sementara; huntara Juklak 3/2023 minimal 3,5 m²",
+   "lokasi": "Lampiran, hlm. PDF 9"
+  },
+  "perka_2008.jamban_orang": {
+   "nilai": 20,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "orang per jamban",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "catatan": "satu jamban keluarga digunakan maksimal untuk 20 orang",
+   "lokasi": "Lampiran, hlm. PDF 13"
+  },
+  "juklak2023_3.huntara_m2_orang": {
+   "nilai": 3.5,
+   "pustaka": "bnpb-2023-huntara",
+   "satuan": "m² per orang",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2023",
+   "catatan": "standar teknis minimal ruang hunian sementara",
+   "lokasi": "hlm. 4"
+  },
+  "juklak2023_1.dth_rp_bulan": {
+   "nilai": 600000,
+   "pustaka": "bnpb-2023-dth",
+   "satuan": "Rp per bulan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 1/2023",
+   "catatan": "nilai maksimal; atau Rp20.000 per hari; Juklak 15/2025 menulis \"sebesar\" Rp600.000 untuk Aceh, Sumut, Sumbar",
+   "lokasi": "hlm. 3"
+  },
+  "juklak2023_1.dth_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2023-dth",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 1/2023",
+   "catatan": "selama status atau keadaan tertentu; dapat diberikan 3 bulan dan/atau berdasarkan keputusan Kepala BNPB",
+   "lokasi": "hlm. 3"
+  },
+  "juklak2024_3.buffer_stock_persen": {
+   "nilai": 10,
+   "pustaka": "bnpb-2024-juklak-logistik",
+   "satuan": "% dari jumlah pengadaan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2024",
+   "catatan": "bantuan logistik dan peralatan kesiapsiagaan dapat dialokasikan untuk buffer stock minimal sepuluh persen dari pengadaan; OCR \"(1096)\"",
+   "lokasi": "hlm. 3"
+  },
+  "respons.w1.beras_ton_hari": {
+   "nilai": 381.7,
+   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 954.305 × 0,4 kg; kepekaan Yogyakarta 2006 batas atas 400,0 ton"
+  },
+  "respons.w1.jamban": {
+   "nilai": 47715,
+   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 954.305 / 20"
+  },
+  "respons.w2.beras_ton_hari": {
+   "nilai": 187.6,
+   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 468.967 × 0,4 kg (dengan rekaman Bekasi 2020); tanpa Bekasi 170,1 ton (425.233)"
+  },
+  "respons.w3.beras_ton_hari": {
+   "nilai": 185.6,
+   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "satuan": "ton per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 464.120 × 0,4 kg (Sumatera Barat 2009, rumah × 3,9); pembanding pengungsi tercatat Ambon 2019 92,4 ton"
+  },
+  "respons.w3.jamban": {
+   "nilai": 23206,
+   "pustaka": "bnpb-2008-kebutuhan-dasar; bnpb-2026-dibi",
+   "satuan": "jamban",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana: lantai perencanaan (berkas bukti mitigasi bab-11, P5) × standar Perka BNPB 7/2008",
+   "catatan": "olah: 464.120 / 20"
+  }
+ }
+}

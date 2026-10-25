@@ -1,0 +1,21 @@
+{
+  "nama": "peta-irbi-total-2024-nasional",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "penuh",
+  "keterangan": "Kelas IRBI total per kab/kota di Indonesia, 2024; label: sepuluh provinsi dengan rerata IRBI tertinggi",
+  "sumber": "InaRISK BNPB, IRBI 2024; kelas Tinggi bila total {ambang} (ambang turunan dari RENSTRA dan RENAS, asumsi kebijakan; bangun/irbi.py)",
+  "token": {
+    "ambang": {"sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_hitung_kelas.csv", "saring": {"tingkat": "kab", "tahun": "2024"}}, "kolom": "ambang"}
+  },
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "koroplet": {
+    "sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2015_2025.csv", "saring": {"tahun": "2024"}, "kunci": "kode", "nilai": "total"},
+    "kelas": {"skala": "irbi", "kolom": "kelas_total"}
+  },
+  "label": {
+    "provinsi_teratas": {"n": 10, "sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_agregat_provinsi.csv", "saring": {"tahun": "2024"}}, "kunci": "prov_kode", "nilai": "total_sederhana"}
+  }
+}

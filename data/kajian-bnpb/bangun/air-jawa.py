@@ -17,6 +17,8 @@ Masukan (repo):
   public/banjir/data/subsiden_literatur.json     kutipan literatur subsiden per kota
   data/kajian-bnpb/riset/mentah/irbi.ndjson      IRBI BNPB (InaRISK apiv4/data-irbi-full), tarik riset 23 Okt 2026
   data/kajian-bnpb/data/dibi/mentah/dibi_kab_jawa.json   DIBI per kab Jawa per jenis per tahun (paket dibi, tarik 23 Okt 2026)
+  data/kajian-bnpb/data/nonalam-sosial/krb_covid19_kab.csv  penduduk KRB InaRISK per kab (versi penduduk pembanding)
+  data/kajian-bnpb/riset/mentah/bn638.pdf        Permen PUPR 14/2015 (di-.gitignore; hanya sha1-nya dicek bila ada)
   data/kajian-bnpb/bangun/air_jawa_rujukan.json  angka yang disalin tangan dari dokumen (rekap Permen 14/2015, WS, BBWS, bendungan, subsiden)
   data/kajian-bnpb/data/air-jawa/mentah/         OCR Permen 14/2015, tabel BPS, Wikidata, teks Permen 04/2015 dan PU 1/2025
 Kueri nama kab DIBI dipakai ulang dari scripts/banjir/kejadian.py (kunci_nama).
@@ -35,6 +37,8 @@ OCR = os.path.join(MENTAH, "permen14_ocr")
 RUJ = P("data/kajian-bnpb/bangun/air_jawa_rujukan.json")
 IRBI = P("data/kajian-bnpb/riset/mentah/irbi.ndjson")
 DIBI = P("data/kajian-bnpb/data/dibi/mentah/dibi_kab_jawa.json")
+KRB = P("data/kajian-bnpb/data/nonalam-sosial/krb_covid19_kab.csv")   # penduduk KRB InaRISK (paket nonalam-sosial), versi pembanding
+PDF14 = P("data/kajian-bnpb/riset/mentah/bn638.pdf")                     # di-.gitignore; sha1 dicek bila ada
 JAWA = ["31", "32", "33", "34", "35", "36"]
 H5 = ["banjir", "kekeringan", "longsor", "abrasi", "cuaca_ekstrem"]
 LAB_R, LAB_T, LAB_E, LAB_A, LAB_S = "resmi", "terverifikasi", "estimasi-model", "asumsi-kebijakan", "sekunder"
@@ -53,6 +57,14 @@ def r2(x):
 
 def r4(x):
     return None if x is None else round(x, 4)
+
+
+def bulat(x, d=2):
+    """Angka bulat ditulis tanpa '.0', pecahan d desimal (format seragam satu kolom)."""
+    if x is None:
+        return None
+    x = round(x, d)
+    return int(x) if x == int(x) else x
 
 
 TABEL = {}
@@ -216,9 +228,8 @@ def irbi(W):
                     assert (v is None and d[h] is None) or abs(v - d[h]) < 1e-9, ("beda dengan paket irbi", r["kode"], r["tahun"], h)
                 n += 1
         assert n == 119 * 11
-        silang = f"identik dengan data/kajian-bnpb/data/irbi/irbi_kab_2015_2025.csv ({n} baris Jawa)"
-    tot = sum(r["total"] for (k, y), r in D.items())
-    assert abs(tot - sum(b[K.index("total")] for b in B)) < 1e-6
+        # kedua paket membaca irbi.ndjson yang sama: ini hanya membuktikan pemrosesan konsisten, bukan kebenaran sumber
+        silang = f"identik dengan data/kajian-bnpb/data/irbi/irbi_kab_2015_2025.csv ({n} baris Jawa; masukan sama, bukan uji independen)"
     return D, {"sha1": sha1(IRBI), "meta_api": meta[0]["data"], "silang_paket_irbi": silang}
 
 
@@ -322,17 +333,29 @@ def air_minum(W):
         out.append(["kab", k[:2], k, 2025, "rumah_tangga_akses_air_minum_layak_persen", v, m["url"], LAB_R])
     rows, m = bps_baris("sumber_air_minum_prov_2023")
     meta["prov_sumber_2023"] = m
-    leding = {}
+    # Tabel yang dirender memuat 11 judul kolom kategori 2020, tetapi tiap baris hanya 8 nilai + 100,00 (Jumlah) + '...' dua kali:
+    # judul kolom TIDAK sejajar dengan nilai 2023. Urutan kolom 2023 ditetapkan dari pembanding independen: Kompas 13 Feb 2024
+    # (mengutip BPS, Indikator Perumahan dan Kesehatan Lingkungan 2023) menulis leding 8,92, sumur bor/pompa 17,07,
+    # sumur terlindung 15,26 untuk Indonesia = kolom 1, 2, 4 di sini. Kolom lain tidak ditafsirkan.
+    leding, indo = {}, None
     for r in rows:
         nm = r[0].strip().upper()
         if nm in NAMA_PROV_BPS or nm == "INDONESIA":
             leding[NAMA_PROV_BPS.get(nm, "ID")] = angka_id(r[1])
-    assert leding["ID"] == 8.92, "kolom leding Indonesia 2023 bukan 8,92: kolom tabel BPS bergeser"
+        if nm == "INDONESIA":
+            indo = r
+    assert len(indo) == 12 and angka_id(indo[9]) == 100.0 and indo[10].strip() == "...", f"bentuk baris BPS berubah: {indo}"
+    assert [angka_id(indo[i]) for i in (1, 2, 4)] == [8.92, 17.07, 15.26], "kolom 1/2/4 Indonesia 2023 tidak cocok dengan Kompas 13 Feb 2024 (8,92/17,07/15,26)"
+    m = dict(m, judul_kolom_tidak_sejajar="11 judul kolom (kategori 2020) vs 8 nilai + Jumlah 100,00 + '...' x2; kolom 1 = leding ditetapkan "
+             "dari pembanding Kompas 13 Feb 2024 (https://lestari.kompas.com/read/2024/02/13/100000486/mayoritas-penduduk-indonesia-andalkan-air-isi-ulang-untuk-minum, "
+             "diakses 23 Okt 2026): Indonesia leding 8,92, sumur bor/pompa 17,07, sumur terlindung 15,26 = kolom 1, 2, 4")
     for p in JAWA + ["ID"]:
         out.append(["provinsi", p, None, 2023, "rumah_tangga_sumber_air_minum_leding_persen", leding[p], m["url"], LAB_R])
     tulis_csv("air_minum.csv", ["tingkat", "prov_kode", "kode_kab", "tahun", "indikator", "nilai", "sumber", "label"], out)
     rows, m = bps_baris("penduduk_nasional_2026")
-    meta["penduduk_nasional_2026"] = dict(m, nilai=[r for r in rows if r[0].strip() == "Indonesia"][0][1].strip())
+    nilai = [r for r in rows if r[0].strip() == "Indonesia"][0][1].strip()
+    assert angka_id(nilai) > 2e8, nilai   # judul tabel menulis '(Ribu Jiwa)', tetapi nilainya dalam jiwa
+    meta["penduduk_nasional_2026"] = dict(m, nilai=nilai, satuan="jiwa (judul tabel BPS menulis '(Ribu Jiwa)', tetapi nilainya 287 juta = jiwa)")
     return prov, kab, leding, meta
 
 
@@ -343,7 +366,7 @@ SKEL = str.maketrans("GYJQ", "AVIO")   # OCR memotong kaki huruf g/y/j/q karena 
 ALIAS_IRIG = {"SUKOHARDJO": "SUKOHARJO"}
 JENIS_RE = re.compile(r"Nama Daerah Irigasi\s+(Permukaan|Rawa|Air Tanah|Pompa|Tambak)", re.I)
 KABH = re.compile(r"^\W{0,3}([A-Za-z]{1,2}|\d)?\W{0,2}\s*(Kab\b\.?|Kota\b)\s+(.+?)\s*$")
-DIL3 = re.compile(r"^\W{0,3}(\d{1,4})\W{0,2}\s+D\W{0,3}[IL1l]\b.*?\s(\d[\d.,]*)\s*\W{0,2}$")
+DIL3 = re.compile(r"^\W{0,3}(\d{1,4})\W{0,2}\s+D\W{0,3}[IL1l].*?\s(\d[\d.,]*)\s*\W{0,2}$")   # tanpa \b: 'D.LA.T.' (air tanah) ikut
 DIH = re.compile(r"^\W{0,3}(\d{1,3})\W{0,2}\s+D\W{0,2}\s?[IL1l]\W{0,2}\s?[A-Z]?\W{0,2}\s+(.*)$")
 BAG = re.compile(r"\b(Kabupaten|Kab\.|Kota)\s+(.*)$")
 NOL = re.compile(r"Bendung|Dam\b|Air Baku|Bendungan|Sebagian|Waduk|Mata Air", re.I)
@@ -560,7 +583,21 @@ def irigasi(W, ruj):
     di1, j1 = lampiran12(range(14, 29), "pusat", kor["total_di"])
     di2, j2 = lampiran12(range(30, 63), "provinsi", kor["total_di"])
     assert koreksi_dipakai == set(kor["total_di"]), f"koreksi total DI tak terpakai: {set(kor['total_di']) - koreksi_dipakai}"
-    baris_kab = []        # (kode|None, prov, kewenangan, jenis, ha, n_di, metode, hlm)
+    # Selisih induk-bagian (DI lintas kab) dan judul seksi-jumlah DI hanya boleh berupa ketidakkonsistenan dokumen yang sudah dicek ke
+    # pindaian (permen14_selisih_dokumen). Selisih lain = salah baca OCR yang belum ditangani -> gagal, bukan diserap baris sisa.
+    beda = {k: v for k, v in ruj["permen14_selisih_dokumen"].items() if not k.startswith("_")}
+    beda_dipakai = set()
+
+    def selisih_dokumen(hlm, teks, induk, bagian):
+        for kk, v in beda.items():
+            hk, pot = kk.split("|", 1)
+            if int(hk) == hlm and teks.startswith(pot):
+                assert v == [induk, bagian], (kk, v, induk, bagian)
+                beda_dipakai.add(kk)
+                return f"selisih di dokumen sumber (dicek ke pindaian): angka induk tercetak {bulat(induk)}, jumlah angka tercetak di bawahnya {bulat(bagian)}"
+        raise AssertionError(f"hlm {hlm} '{teks[:40]}': induk {induk} != jumlah bagian {bagian}; cek pindaian lalu isi permen14_koreksi atau permen14_selisih_dokumen")
+
+    baris_kab = []        # (kode|None, prov, kewenangan, jenis, ha, n_di, metode, hlm, label, cek_baris_di)
     di_out = []
     for di in di1 + di2:
         parts = [b for b in di["bagian"] if b[3] in KUNCI_KAB]
@@ -571,26 +608,38 @@ def irigasi(W, ruj):
             for b in parts:
                 if b[0] or b[1]:   # bagian rusak tanpa nama dan tanpa luas (mis. 'Kabupaten z Ha') dilewati
                     baris_kab.append([b[0], b[3], di["kewenangan"], di["jenis"], b[1] or 0, 1 if (b[1] or 0) > 0 else 0,
-                                      "bagian DI lintas kab/prov" if b[0] else f"bagian DI {di['nama']} tanpa nama kab terbaca: {b[2]}", di["hlm"]])
+                                      "bagian DI lintas kab/prov" if b[0] else f"bagian DI {di['nama']} tanpa nama kab terbaca: {b[2]}", di["hlm"],
+                                      LAB_R if b[0] else f"olah({LAB_R})", None])
             sisa = round(di["total"] - s, 2)
             if sisa:
-                baris_kab.append([None, parts[0][3], di["kewenangan"], di["jenis"], sisa, 0, f"sisa DI {di['nama']}: total {di['total']} - bagian {s} (salah baca OCR bagian kecil)", di["hlm"]])
+                baris_kab.append([None, parts[0][3], di["kewenangan"], di["jenis"], sisa, 0,
+                                  f"sisa DI {di['nama']}: " + selisih_dokumen(di["hlm"], di["nama"], di["total"], s), di["hlm"], f"olah({LAB_R})", None])
             letak = "; ".join(f"{W[b[0]]['nama'] if b[0] else b[2]}={b[1]}" for b in parts)
         else:
-            baris_kab.append([di["grup"], di["prov"], di["kewenangan"], di["jenis"], di["total"], 1, "DI utuh dalam satu kab", di["hlm"]])
+            baris_kab.append([di["grup"], di["prov"], di["kewenangan"], di["jenis"], di["total"], 1, "DI utuh dalam satu kab", di["hlm"], LAB_R, None])
             letak = f"{W[di['grup']]['nama']}={di['total']}"
         di_out.append([di["kewenangan"], di["jenis"], di["prov"] if not parts else parts[0][3], di["nama"], di["total"], di["bbws"], letak,
                        ";".join(sorted({b[3] for b in parts})) if parts else di["prov"], di["hlm"], LAB_R])
-    # judul seksi provinsi: total DI harus = angka judul; selisih jadi baris sisa
+    # judul seksi provinsi: total DI harus = angka judul; selisih jadi baris sisa (hanya bila terbukti selisih dokumen)
     for j in j1 + j2:
         if j["prov"] not in KUNCI_KAB or j["ha"] is None:
             continue
         s = sum(d["total"] or 0 for d in j["di"])
         if s != j["ha"]:
             baris_kab.append([None, j["prov"], j["kewenangan"], j["jenis"], j["ha"] - s, 0,
-                              f"sisa seksi '{j['teks'][:40]}': judul {j['ha']} - jumlah DI {s} (salah baca OCR total DI)", j["hlm"]])
+                              f"sisa seksi '{j['teks'][:40]}': " + selisih_dokumen(j["hlm"], j["teks"], j["ha"], s), j["hlm"], f"olah({LAB_R})", None])
+    assert beda_dipakai == set(beda), f"permen14_selisih_dokumen tak terpakai: {set(beda) - beda_dipakai}"
+    # Lampiran III: baris DI di bawah tiap subtotal kab dijumlah sebagai cek silang. OCR baris DI lebih lemah daripada OCR subtotal
+    # (subtotal dicek ke rekap per provinsi x jenis: jumlah DI persis, luas <= 2 ha), jadi kecocokan per kab dicatat, bukan dipaksa.
+    cocok_l3 = 0
     for e in l3:
-        baris_kab.append([e["kode"], e["prov"], "kabkota", e["jenis"], e["ha"], e["n"], "subtotal kab Lampiran III", e["hlm"]])
+        ok = e["di_n"] == e["n"] and abs(e["di_ha"] - e["ha"]) <= 1
+        cocok_l3 += ok
+        cek = "cocok: jumlah dan luas baris DI = subtotal" if ok else \
+            f"baris DI terbaca {e['di_n']}/{e['n']}, {bulat(e['di_ha'])} ha (selisih {bulat(e['di_ha'] - e['ha'])}); salah baca OCR tingkat baris DI"
+        baris_kab.append([e["kode"], e["prov"], "kabkota", e["jenis"], e["ha"], e["n"], "subtotal kab Lampiran III", e["hlm"], LAB_R, cek])
+    # lantai regresi pengurai (dokumen 2015 beku): 96 dari 175 subtotal cocok penuh dengan baris DI-nya per 23 Okt 2026
+    assert cocok_l3 >= 96, f"subtotal Lampiran III yang cocok dengan baris DI turun ke {cocok_l3} (sebelumnya 96): pengurai OCR memburuk"
     # rekonsiliasi dengan rekap resmi per provinsi x kewenangan x jenis
     rek_rows = []
     for kw in ("pusat", "provinsi", "kabkota"):
@@ -605,16 +654,15 @@ def irigasi(W, ruj):
                 assert resmi is not None, (kw, p, jn, ocr)
                 selisih = round(resmi[1] - ocr - sisa, 2)
                 if selisih:
-                    baris_kab.append([None, p, kw, jn, selisih, 0, f"sisa rekap: rekap {resmi[1]} - jumlah kab OCR {ocr + sisa}", None])
-                rek_rows.append([kw, p, jn, resmi[0], resmi[1], n_ocr if kw == "kabkota" else None, ocr, round(sisa + selisih, 2),
+                    baris_kab.append([None, p, kw, jn, selisih, 0, f"sisa rekap: rekap {resmi[1]} - jumlah kab OCR {bulat(ocr + sisa)} "
+                                      "(salah baca OCR satu digit atau ketidakkonsistenan dokumen; belum dicek per halaman)", None, f"olah({LAB_R})", None])
+                rek_rows.append([kw, p, jn, resmi[0], resmi[1], n_ocr if kw == "kabkota" else None, bulat(ocr), bulat(sisa + selisih),
                                  r4((sisa + selisih) / resmi[1] * 100), LAB_R])
-    # invarian: tiap provinsi x kewenangan x jenis = rekap; sisa kecil
+    # Invarian nyata (rekap hlm 13/29/63 dibaca tangan dari pindaian, independen dari OCR lampiran): sisa tak teratribusi per
+    # provinsi x kewenangan x jenis <= 2 ha, dan jumlah DI kab/kota hasil OCR persis = rekap.
     for r in rek_rows:
         kw, p, jn, n_res, ha_res, n_ocr, ocr, sisa = r[:8]
-        total = round(sum(b[4] for b in baris_kab if b[1] == p and b[2] == kw and b[3] == jn), 2)
-        assert total == ha_res, (kw, p, jn, total, ha_res)
-        batas = 2 if kw == "kabkota" else 100
-        assert abs(sisa) <= batas, f"sisa tak teratribusi terlalu besar {kw} {p} {jn}: {sisa} ha (batas {batas})"
+        assert abs(sisa) <= 2, f"sisa tak teratribusi terlalu besar {kw} {p} {jn}: {sisa} ha (batas 2 ha; rekap {ha_res}, OCR {ocr})"
         if kw == "kabkota":
             assert n_ocr == n_res, f"jumlah DI kab/kota {p} {jn}: OCR {n_ocr} != rekap {n_res}"
     for kw in ("pusat", "provinsi"):   # jumlah DI Jawa hasil OCR = jumlah DI rekap (94 pusat, 457 provinsi)
@@ -626,8 +674,8 @@ def irigasi(W, ruj):
     assert tercetak == 3135123 and tot_jawa == tercetak + 1, (tot_jawa, tercetak)   # +1: kolom Jatim kab/kota 533.035 vs TOTAL tercetak 533.034
     tulis_csv("irigasi_rekonsiliasi.csv", ["kewenangan", "prov_kode", "jenis", "rekap_n_di", "rekap_ha", "ocr_n_di", "ocr_ha_teratribusi_kab",
                                            "ha_tak_teratribusi", "persen_tak_teratribusi", "label_rekap"], rek_rows)
-    K = ["kode", "nama", "prov_kode", "kewenangan", "jenis", "ha", "n_di", "metode", "hlm_bn638", "label"]
-    B = [[b[0], W[b[0]]["nama"] if b[0] else "(tak teratribusi ke kab)", b[1], b[2], b[3], b[4], b[5], b[6], b[7], LAB_R] for b in baris_kab]
+    K = ["kode", "nama", "prov_kode", "kewenangan", "jenis", "ha", "n_di", "metode", "hlm_bn638", "label", "cek_baris_di_lampiran3"]
+    B = [[b[0], W[b[0]]["nama"] if b[0] else "(tak teratribusi ke kab)", b[1], b[2], b[3], bulat(b[4]), b[5], b[6], b[7], b[8], b[9]] for b in baris_kab]
     tulis_csv("irigasi_kab.csv", K, B)
     tulis_csv("irigasi_di_pusat_provinsi.csv", ["kewenangan", "jenis", "prov_kode", "nama_di", "total_ha", "bbws_disebut", "bagian_per_kab",
                                                 "provinsi_bagian", "hlm_bn638", "label"], di_out)
@@ -635,6 +683,8 @@ def irigasi(W, ruj):
     for b in baris_kab:
         if b[0]:
             per_kab[b[0]][b[2]] += b[4]
+            if b[3] == "Permukaan":
+                per_kab[b[0]]["permukaan"] += b[4]
             if b[2] == "kabkota":
                 per_kab[b[0]]["n_di_kabkota"] += b[5]
     bbws_kab = defaultdict(set)
@@ -643,8 +693,15 @@ def irigasi(W, ruj):
             for b in di["bagian"]:
                 if b[0] and (b[1] or 0) > 0:
                     bbws_kab[b[0]].add(di["bbws"])
+    sisa_neto = sum(r[7] for r in rek_rows)
+    sisa_bruto = sum(abs(r[7]) for r in rek_rows)
+    jenis_jawa = {jn: sum(r[4] for r in rek_rows if r[2] == jn) for jn in ("Permukaan", "Air Tanah", "Pompa", "Rawa", "Tambak")}
+    assert sum(jenis_jawa.values()) == tot_jawa
     return per_kab, rek_rows, bbws_kab, {"n_subtotal_kab": len(l3), "n_di_pusat_jawa": sum(1 for d in di_out if d[0] == "pusat"),
-                                         "n_di_provinsi_jawa": sum(1 for d in di_out if d[0] == "provinsi"), "total_jawa_ha": tercetak}
+                                         "n_di_provinsi_jawa": sum(1 for d in di_out if d[0] == "provinsi"), "total_jawa_ha": tercetak,
+                                         "total_jawa_per_jenis_ha_rekap": jenis_jawa,
+                                         "tak_teratribusi_neto_ha": bulat(sisa_neto), "tak_teratribusi_bruto_ha": bulat(sisa_bruto),
+                                         "subtotal_lampiran3_cocok_baris_di": f"{cocok_l3}/{len(l3)}"}
 
 
 # --------------------------------------------------------------------------------------------- bendungan
@@ -699,13 +756,21 @@ def bendungan(W, ruj):
     tot = defaultdict(float)
     D, angka = {}, []
     url_pj = "https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf"
+    kab_kor = {k: v for k, v in pj["kab_dikoreksi"].items() if not k.startswith("_")}
     for r in pj["baris"]:
         did = r[ki["nama"]].lower()
         for c in ("luas_genangan_ha", "vol_normal_juta_m3", "vol_efektif_juta_m3", "luas_genangan_2021_ha", "tampungan_2021_juta_m3",
                   "sedimentasi_juta_m3", "piezometer", "piezometer_rusak"):
             tot[c] += r[ki[c]] or 0
-        x, y, ks, cek, kk = pilih_titik(did, r[ki["kab_kode"]], (dms(r[ki["bujur_teks"]]), dms(r[ki["lintang_teks"]])))
-        D[did] = {"id": did, "nama": r[ki["nama"]], "kab": r[ki["kab_kode"]], "lokasi": f"Desa {r[ki['desa']]}, Kec. {r[ki['kecamatan']]}",
+        kab = r[ki["kab_kode"]]
+        if r[ki["nama"]] in kab_kor:
+            dok, kab, alasan = kab_kor[r[ki["nama"]]]
+            assert dok == r[ki["kab_kode"]], (r[ki["nama"]], dok)
+        x, y, ks, cek, kk = pilih_titik(did, kab, (dms(r[ki["bujur_teks"]]), dms(r[ki["lintang_teks"]])))
+        if r[ki["nama"]] in kab_kor:
+            assert kk == kab, f"{r[ki['nama']]}: koordinat dokumen tidak jatuh di kab koreksi {kab}"
+            cek += f"; kab dikoreksi {dok} -> {kab}: {alasan}"
+        D[did] = {"id": did, "nama": r[ki["nama"]], "kab": kab, "lokasi": f"Desa {r[ki['desa']]}, Kec. {r[ki['kecamatan']]}",
                   "tahun": r[ki["tahun_bangun"]], "status": "operasi", "bbws": "BBWS Pemali-Juana (inventaris 2021)", "ws": None,
                   "lon": r6(x), "lat": r6(y), "koordinat_sumber": ks, "koordinat_cek": cek,
                   "kapasitas": r[ki["vol_normal_juta_m3"]], "kapasitas_label": LAB_R, "tampungan_terukur": r[ki["tampungan_2021_juta_m3"]],
@@ -739,14 +804,16 @@ def bendungan(W, ruj):
                       "tahun_ukur": next((a[3] for a in ang if a[0] == "kapasitas" and a[3]), None),
                       "sedimentasi": None, "pemanfaatan": None}
         D[did]["ws"] = ws
-        for a in ang:
-            angka.append([did, a[0], a[1], a[2], a[3], url_b, a[4], a[5]])
+        for a in ang:   # elemen ke-7 opsional = sumber primer bila angkanya bukan dari riset B
+            angka.append([did, a[0], a[1], a[2], a[3], a[6] if len(a) > 6 else url_b, a[4], a[5]])
     K = ["id", "nama", "kab_kode", "kab_nama", "prov_kode", "lokasi", "ws_dasar_nama_sungai", "bbws_sumber", "status", "tahun_bangun",
          "kapasitas_desain_juta_m3", "label_kapasitas", "versi_kapasitas_lain", "tampungan_terukur_juta_m3", "tahun_ukur", "sedimentasi_juta_m3",
          "kehilangan_tampungan_persen", "label_kehilangan", "pemanfaatan", "lon", "lat", "koordinat_sumber", "koordinat_cek"]
     B = []
     for did, d in sorted(D.items(), key=lambda kv: (kv[1]["kab"] or "", kv[0])):
-        lain = sorted({f"{a[2]:g} ({a[4] or 'desain'}, {a[6]})" for a in angka if a[0] == did and a[1].startswith("kapasitas") and a[2] != d["kapasitas"]})
+        # nama besaran ikut ditulis: kapasitas efektif dan tampungan terukur bukan versi lain dari kapasitas total desain
+        lain = sorted({f"{a[2]:g} {a[1]}" + (f" ukur {a[4]}" if a[4] else "") + f" ({a[6]})"
+                       for a in angka if a[0] == did and a[1].startswith("kapasitas") and a[2] != d["kapasitas"]})
         hilang = r2((1 - d["tampungan_terukur"] / d["kapasitas"]) * 100) if d["kapasitas"] and d["tampungan_terukur"] else None
         lab_h = None if hilang is None else f"olah({d['kapasitas_label']})"
         B.append([did, d["nama"], d["kab"], W[d["kab"]]["nama"] if d["kab"] else None, d["kab"][:2] if d["kab"] else None, d["lokasi"], d["ws"], d["bbws"],
@@ -806,8 +873,9 @@ def wilayah_sungai(W, ruj, prov_nama, bbws_kab, D):
     assert len(ws) == 24 and len({w[0] for w in ws}) == 24
     assert set(bb) <= {w[1] for w in ws}, set(bb) - {w[1] for w in ws}
     K = ["kode_ws", "nama_ws", "kategori", "provinsi", "kab_kategori_c", "pengelola_menurut_permen04_2015", "bbws_permen_pu1_2025", "lokasi_bbws",
-         "n_kab_di_provinsi_ws", "bendungan_dalam_inventaris", "ipa_persen", "catatan_ipa", "label"]
+         "n_kab_di_provinsi_ws", "bendungan_dalam_inventaris", "label_bendungan_dalam_inventaris", "ipa_persen", "catatan_ipa", "catatan", "label"]
     B, tautan = [], []
+    KAB_UTUH_WS_C = {"3101"}   # WS Kepulauan Seribu = seluruh kab; kab C lain (Jepara) bisa juga masuk WS lintas kab, jadi tetap kandidat
     for kode, nama, kat, provs, kabc, bintang in ws:
         if kat in ("A2", "A3"):
             pengelola = "Menteri PU (Pasal 5 ayat 3)"
@@ -815,26 +883,93 @@ def wilayah_sungai(W, ruj, prov_nama, bbws_kab, D):
             pengelola = f"Gubernur {prov_nama[provs[0]]} (Pasal 5 ayat 4)"
         else:
             pengelola = f"Bupati/Wali Kota {W[kabc]['nama']} (Pasal 5 ayat 5)"
-        kab = [kabc] if kabc else sorted(k for k in W if k[:2] in provs)
+        kab = [kabc] if kabc else sorted(k for k in W if k[:2] in provs and k not in KAB_UTUH_WS_C)
         for k in kab:
             tautan.append([k, W[k]["nama"], kode, nama, kat, "disebut langsung di Lampiran I (kategori C)" if kabc else
                            "kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab", LAB_R if kabc else LAB_A])
-        dams = sorted(d["nama"] for d in D.values() if d["ws"] and re.split(r"\s*\(", d["ws"])[0] in [nama] + nama.split("-"))
+        dd = [d for d in D.values() if d["ws"] and re.split(r"\s*\(", d["ws"])[0] in [nama] + nama.split("-")]
+        dams = sorted(d["nama"] for d in dd)
+        pusat = sorted(d["nama"] for d in dd if (d["bbws"] or "").startswith("BBWS"))
+        cat = (f"WS kategori B dapat memuat aset pusat: {', '.join(pusat)} tercatat di inventaris BBWS Pemali-Juana 2021"
+               if kat == "B" and pusat else None)
         b = bb.get(nama)
         B.append([kode, nama, kat, ";".join(provs), kabc, pengelola, b[0] if b else None, b[2] if b else None, len(kab), "; ".join(dams) or None,
-                  None, ruj["ipa_pulau_2010"]["ipa_per_ws"], LAB_R])
+                  LAB_A if dams else None, None, ruj["ipa_pulau_2010"]["ipa_per_ws"], cat, LAB_R])
     for k, s in sorted(bbws_kab.items()):
         for x in sorted(s):
-            tautan.append([k, W[k]["nama"], None, None, None, f"{x} memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I)", LAB_R])
+            tautan.append([k, W[k]["nama"], None, None, None, f"{x} memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 "
+                           "Lampiran I); tautan BBWS-DI, bukan keanggotaan WS", LAB_R])
     tulis_csv("ws.csv", K, B)
     tulis_csv("ws_kab.csv", ["kode", "nama", "kode_ws", "nama_ws", "kategori", "jenis_tautan", "label"], tautan)
     ipa = ruj["ipa_pulau_2010"]
-    tulis_csv("ipa_pulau_2010.csv", ipa["_kolom"] + ["sumber", "label"], [r + [ipa["_sumber"], ipa["label"]] for r in ipa["baris"]])
+    tulis_csv("ipa_pulau_2010.csv", ipa["_kolom"] + ["sumber", "label", "catatan_label"],
+              [r + [ipa["_sumber"], ipa["label"], ipa["_catatan_label"]] for r in ipa["baris"]])
     cat = ruj["cat_rusak_2023"]
     tulis_csv("cat_air_tanah_rusak.csv", ["cat", "prov_kode", "sumber", "label"], [[c, ";".join(p), cat["_sumber"], cat["label"]] for c, p in cat["daftar"]])
     ner = ruj["neraca_jawa"]
-    tulis_csv("neraca_jawa.csv", ["besaran", "nilai", "satuan", "keterangan", "sumber", "label"], [r + [ner["_sumber"], ner["label"]] for r in ner["butir"]])
+    tulis_csv("neraca_jawa.csv", ["besaran", "nilai", "satuan", "keterangan", "sumber", "label"], [r[:4] + [ner["_sumber"], r[4]] for r in ner["butir"]])
     return B, tautan
+
+
+def sha1_masukan(ruj):
+    """sha1 semua masukan yang dibaca langkah bangun (OCR: satu hash atas gabungan p*.txt terurut). bn638.pdf di-.gitignore:
+    dicek terhadap sha1 tercatat di rujukan bila berkasnya ada."""
+    berkas = ["scripts/udara/kota.json", "public/data/penduduk.json", "public/banjir/data/meta.json", "public/banjir/data/subsiden_literatur.json",
+              "data/kajian-bnpb/riset/mentah/irbi.ndjson", "data/kajian-bnpb/data/dibi/mentah/dibi_kab_jawa.json",
+              "data/kajian-bnpb/data/nonalam-sosial/krb_covid19_kab.csv", "data/kajian-bnpb/bangun/air_jawa_rujukan.json", "scripts/banjir/kejadian.py"]
+    berkas += [os.path.relpath(f, ROOT) for f in sorted(glob.glob(P("public/geo/kabupaten/3[1-6].json")))]
+    berkas += [os.path.relpath(f, ROOT) for f in sorted(glob.glob(os.path.join(MENTAH, "*.txt")) + glob.glob(os.path.join(MENTAH, "*.json"))
+                                                         + glob.glob(os.path.join(MENTAH, "bps", "*.txt")))]
+    out = {b: sha1(P(b)) for b in berkas}
+    h = hashlib.sha1()
+    for f in sorted(glob.glob(os.path.join(OCR, "p*.txt"))):
+        h.update(open(f, "rb").read())
+    out[os.path.relpath(OCR, ROOT) + "/p*.txt (gabungan terurut)"] = h.hexdigest()
+    tercatat = ruj["permen14_rekap"]["_sha1_pdf"]
+    if os.path.exists(PDF14):
+        assert sha1(PDF14) == tercatat, f"bn638.pdf berubah: {sha1(PDF14)} != {tercatat}"
+        out["data/kajian-bnpb/riset/mentah/bn638.pdf"] = tercatat
+    else:
+        out["data/kajian-bnpb/riset/mentah/bn638.pdf"] = f"{tercatat} (tercatat di rujukan; berkas tidak ada di mesin ini, di-.gitignore)"
+    return out
+
+
+# --------------------------------------------------------------------------------------------- label per kolom
+
+LABEL_KOLOM = [   # (awalan atau nama kolom, label); urutan = prioritas, yang pertama cocok dipakai
+    ("penduduk_worldpop_2026", f"{LAB_E} (WorldPop R2025A, model dasimetrik eksternal; 3101 undercount)"),
+    ("penduduk_krb_inarisk", f"{LAB_R} (InaRISK KRB 2022-2026, tahun basis tidak tertulis di API)"),
+    ("catatan_penduduk", f"olah({LAB_R}, {LAB_E})"),
+    ("irbi2025_n_kab_tinggi", f"olah({LAB_R})"),
+    ("irbi2025_", LAB_R), ("irbi2024_", LAB_R),
+    ("dibi1525_", f"olah({LAB_R}): jumlah 2015-2025 dari DIBI"),
+    ("air_minum_", LAB_R), ("tingkat_data_air_minum", "keterangan"),
+    ("irigasi_total_ha_tercetak", LAB_R),
+    ("irigasi_permukaan_", f"olah({LAB_R}): hanya jenis Permukaan (tanpa air tanah, pompa, rawa, tambak)"),
+    ("irigasi_tambak_", f"olah({LAB_R}): hanya jenis Tambak"),
+    ("irigasi_", f"olah({LAB_R}): jumlah atribusi OCR BN 638 / rekap; total mencakup permukaan, air tanah, pompa, rawa, tambak"),
+    ("n_di_kabkota", f"olah({LAB_R})"),
+    ("n_bendungan_dalam_paket", f"olah({LAB_R}, {LAB_S}): hitungan paket, bukan inventaris lengkap"),
+    ("bendungan_nama", f"campuran {LAB_R}/{LAB_S}, lihat bendungan.csv"),
+    ("subsiden_maks_cm_th_terverifikasi", LAB_T),
+    ("subsiden_semua_versi", "label per versi tertulis di sel"),
+    ("n_kota_subsiden_literatur", f"olah({LAB_T}, {LAB_S})"),
+    ("ws_kategori_c_disebut", LAB_R), ("bbws_pemegang_di_pusat", f"{LAB_R} (tautan BBWS-DI, bukan keanggotaan WS)"),
+    ("n_ws_kandidat_provinsi", LAB_A), ("n_ws", f"olah({LAB_R})"),
+    ("lon_pusat", f"olah({LAB_E}): titik peraga berbobot WorldPop"), ("lat_pusat", f"olah({LAB_E}): titik peraga berbobot WorldPop"),
+    ("n_kab", LAB_R), ("kode", LAB_R), ("nama", LAB_R), ("nama_kepmendagri", LAB_R), ("prov_", LAB_R),
+]
+
+
+def label_kolom(kolom):
+    out = {}
+    for c in kolom:
+        lab = next((l for a, l in LABEL_KOLOM if c == a or (a.endswith("_") and c.startswith(a))), None)
+        assert lab, f"kolom {c} belum punya label (LABEL_KOLOM)"
+        out[c] = lab
+    out.update({c: f"olah({LAB_R}, {LAB_E})" for c in kolom if c.endswith("_berbobot_penduduk")})
+    out.update({c: f"olah({LAB_R})" for c in kolom if c.endswith("_rerata")})
+    return out
 
 
 # --------------------------------------------------------------------------------------------- utama
@@ -866,12 +1001,24 @@ def main():
         for k in (r[2] or "").split(";"):
             if k and r[5] is not None:
                 sub_kab[k].append((r[5], r[11]))
-    K = (["kode", "nama", "nama_kepmendagri", "prov_kode", "prov_nama", "penduduk_worldpop_2026"] +
+    # Versi penduduk kedua (resmi): penduduk KRB InaRISK 2022-2026 dari paket nonalam-sosial, disimpan berdampingan dengan WorldPop
+    # 6 kab luar Jawa tanpa unit KRB ditulis kosong oleh paket nonalam-sosial; semua kab Jawa terisi (assert di bawah)
+    krb = {r["kode"]: int(r["penduduk"]) for r in csv.DictReader(open(KRB, encoding="utf-8")) if r["penduduk"]}
+    assert set(W) <= set(krb), set(W) - set(krb)
+
+    def cat_pend(k):
+        rasio = W[k]["penduduk"] / krb[k]
+        if rasio >= 0.5:
+            return None
+        return (f"UNDERCOUNT WorldPop: {W[k]['penduduk']} = {rasio:.0%} dari penduduk KRB InaRISK {krb[k]}"
+                + ("; pulau kecil jatuh di luar poligon kecamatan (public/data/penduduk.json di_luar_poligon 145.719 jiwa nasional)" if k == "3101"
+                   else "; sebab belum diperiksa") + ". Bobot rerata IRBI provinsi ikut terpengaruh")
+    K = (["kode", "nama", "nama_kepmendagri", "prov_kode", "prov_nama", "penduduk_worldpop_2026", "penduduk_krb_inarisk", "catatan_penduduk"] +
          [f"irbi2025_{h}" for h in H5] + ["irbi2025_total", "irbi2025_status"] + [f"irbi2024_{h}" for h in H5] +
          [f"dibi1525_kejadian_{g}" for g in kel] + ["dibi1525_meninggal_hilang_air", "dibi1525_mengungsi_air", "dibi1525_menderita_mengungsi_air",
                                                      "dibi1525_rumah_terendam_air"] +
          ["air_minum_layak_kab_2025", "air_minum_layak_prov_2025", "tingkat_data_air_minum"] +
-         ["irigasi_pusat_ha", "irigasi_provinsi_ha", "irigasi_kabkota_ha", "irigasi_total_ha", "n_di_kabkota"] +
+         ["irigasi_pusat_ha", "irigasi_provinsi_ha", "irigasi_kabkota_ha", "irigasi_total_ha", "irigasi_permukaan_ha", "n_di_kabkota"] +
          ["n_bendungan_dalam_paket", "bendungan_nama", "subsiden_maks_cm_th_terverifikasi", "subsiden_semua_versi", "ws_kategori_c_disebut",
           "bbws_pemegang_di_pusat", "n_ws_kandidat_provinsi", "lon_pusat", "lat_pusat"])
     AIR = ["banjir", "rob", "longsor", "kekeringan", "gelombang_abrasi"]
@@ -881,14 +1028,14 @@ def main():
         r25, r24 = D_irbi[(k, 2025)], D_irbi[(k, 2024)]
         dd = {g: dibi_ringkas(agg, k, g) for g in kel}
         dams = sorted(d["nama"] for d in Dam.values() if d["kab"] == k)
-        B.append([k, w["nama"], w["nama_kepmendagri"], w["prov"], w["prov_nama"], w["penduduk"]] +
+        B.append([k, w["nama"], w["nama_kepmendagri"], w["prov"], w["prov_nama"], w["penduduk"], krb[k], cat_pend(k)] +
                  [r25[h] for h in H5] + [r25["total"], r25["status"]] + [r24[h] for h in H5] +
-                 [r4(dd[g]["jumlah_kejadian"]) for g in kel] +
+                 [bulat(dd[g]["jumlah_kejadian"], 4) for g in kel] +
                  [int(sum(dd[g]["meninggal"] + dd[g]["hilang"] for g in AIR)), int(sum(dd[g]["mengungsi"] for g in AIR)),
                   int(sum(dd[g]["menderita_mengungsi"] for g in AIR)), int(sum(dd[g]["rumah_terendam"] for g in AIR))] +
                  [am_kab.get(k), am_prov[w["prov"]], "kab (BPS Jateng)" if k in am_kab else "provinsi saja"] +
-                 [r2(irg[k]["pusat"]), r2(irg[k]["provinsi"]), r2(irg[k]["kabkota"]), r2(irg[k]["pusat"] + irg[k]["provinsi"] + irg[k]["kabkota"]),
-                  int(irg[k]["n_di_kabkota"])] +
+                 [bulat(irg[k]["pusat"]), bulat(irg[k]["provinsi"]), bulat(irg[k]["kabkota"]),
+                  bulat(irg[k]["pusat"] + irg[k]["provinsi"] + irg[k]["kabkota"]), bulat(irg[k]["permukaan"]), int(irg[k]["n_di_kabkota"])] +
                  [len(dams), "; ".join(dams) or None, max((v for v, lab in sub_kab[k] if lab == LAB_T), default=None),
                   "; ".join(f"{v:g} ({lab})" for v, lab in sorted(set(sub_kab[k]))) or None, "; ".join(ws_c[k]) or None,
                   "; ".join(sorted(set(bbws_di[k]))) or None, ws_kand[k], w["lon"], w["lat"]])
@@ -900,7 +1047,8 @@ def main():
          [f"irbi2025_{h}_berbobot_penduduk" for h in H5] + ["irbi2025_n_kab_tinggi"] + [f"dibi1525_kejadian_{g}" for g in kel] + \
          ["dibi1525_meninggal_hilang_air", "dibi1525_mengungsi_air", "air_minum_layak_2025", "air_minum_leding_2023",
           "irigasi_pusat_ha_rekap", "irigasi_provinsi_ha_rekap", "irigasi_kabkota_ha_rekap", "irigasi_total_ha_rekap", "irigasi_total_ha_tercetak",
-          "irigasi_ha_tak_teratribusi_kab", "n_bendungan_dalam_paket", "n_kota_subsiden_literatur", "n_ws"]
+          "irigasi_permukaan_ha_rekap", "irigasi_tambak_ha_rekap", "irigasi_ha_tak_teratribusi_kab", "n_bendungan_dalam_paket",
+          "n_kota_subsiden_literatur", "n_ws"]
     BP = []
     for p in JAWA:
         ks = [k for k in W if k[:2] == p]
@@ -914,12 +1062,14 @@ def main():
         rek = {kw: sum(r[4] for r in rek_irg if r[0] == kw and r[1] == p) for kw in ("pusat", "provinsi", "kabkota")}
         BP.append([p, prov_nama[p], len(ks), pop] + [rr(h, False) for h in H5] + [rr(h, True) for h in H5] +
                   [sum(D_irbi[(k, 2025)]["status"] == "Tinggi" for k in ks)] +
-                  [r4(sum(KAB[k][f"dibi1525_kejadian_{g}"] for k in ks)) for g in kel] +
+                  # dijumlah dari agg mentah lalu dibulatkan (bukan dari nilai kab yang sudah dibulatkan 4 desimal)
+                  [bulat(sum(a[0] for (kk, y, gg, ib), a in agg.items() if kk[:2] == p and gg == g and ib == 1 and 2015 <= y <= 2025), 4) for g in kel] +
                   [sum(KAB[k]["dibi1525_meninggal_hilang_air"] for k in ks), sum(KAB[k]["dibi1525_mengungsi_air"] for k in ks),
                    am_prov[p], leding[p]] +
                   [rek["pusat"], rek["provinsi"], rek["kabkota"], sum(rek.values()),
                    sum(ruj["permen14_rekap"]["total_provinsi_tercetak"][kw].get(p, 0) for kw in ("pusat", "provinsi", "kabkota")),
-                   r2(sum(r[7] for r in rek_irg if r[1] == p))] +
+                   sum(r[4] for r in rek_irg if r[1] == p and r[2] == "Permukaan"), sum(r[4] for r in rek_irg if r[1] == p and r[2] == "Tambak"),
+                   bulat(sum(r[7] for r in rek_irg if r[1] == p))] +
                   [sum(1 for d in Dam.values() if d["kab"] and d["kab"][:2] == p),
                    sum(1 for kk, kabs in ruj["subsiden_kota_kab"].items() if not kk.startswith("_") and kk != "pantura" and
                        ((kabs and kabs[0][:2] == p) or (kk == "jakarta" and p == "31"))),
@@ -931,7 +1081,9 @@ def main():
     for k in sorted(W):
         props = {c: KAB[k][c] for c in K if c not in ("lon_pusat", "lat_pusat")}
         fitur.append({"type": "Feature", "properties": props, "geometry": W[k]["geom"]})
-    json.dump({"type": "FeatureCollection", "name": "air_jawa_kab", "sumber_geometri": "public/geo/kabupaten/3[1-6].json", "features": fitur},
+    lab_kab = label_kolom(K)
+    json.dump({"type": "FeatureCollection", "name": "air_jawa_kab", "sumber_geometri": "public/geo/kabupaten/3[1-6].json",
+               "label_kolom": {c: l for c, l in lab_kab.items() if c not in ("lon_pusat", "lat_pusat")}, "features": fitur},
               open(os.path.join(OUT, "peta_kab.geojson"), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     KB = TABEL["bendungan.csv"]["kolom"]
     json.dump({"type": "FeatureCollection", "name": "air_jawa_bendungan", "features": [
@@ -953,12 +1105,16 @@ def main():
     # --- air-jawa.json: cermin semua tabel + silsilah
     meta = {"paket": "air-jawa", "dibuat_oleh": "data/kajian-bnpb/bangun/air-jawa.py", "tanggal_bangun": TANGGAL,
             "label": {LAB_R: "instansi pemerintah, dokumen/API dibuka", LAB_T: "sumber primer non-pemerintah dibuka (abstrak jurnal)",
-                      LAB_E: "keluaran model (tidak dipakai di paket ini)", LAB_A: "pilihan penyusun (kandidat WS per provinsi, nama sungai -> WS)",
+                      LAB_E: "keluaran model, belum diuji balik oleh paket ini: model eksternal (WorldPop; hujan-limpasan TRMM Radhika dkk. "
+                             "yang dikutip BPS 2020) dan proyeksi (per kapita 2020-2030); galat tidak dilaporkan sumber",
+                      LAB_A: "pilihan penyusun (kandidat WS per provinsi, nama sungai -> WS)",
                       LAB_S: "riset B: berita/ringkasan, sumber primer BELUM dibuka; jangan jadi angka utama",
                       "olah(x)": "hitungan penyusun dari angka berlabel x"},
             "wilayah": {"sumber_kode": "scripts/udara/kota.json (Kepmendagri 300.2.2-2138/2025)", "penduduk": sumber_pend},
             "irbi": meta_irbi, "dibi": meta_dibi, "air_minum": meta_am, "irigasi": meta_irg, "bendungan": meta_dam, "subsiden": meta_sub,
-            "rujukan_sha1": sha1(RUJ)}
+            "rujukan_sha1": sha1(RUJ), "sha1_masukan": sha1_masukan(ruj),
+            "label_kolom": {"kab_jawa.csv": lab_kab, "provinsi.csv": label_kolom(KP),
+                            "_catatan": "tabel lain membawa kolom label per baris; peta_kab.geojson membawa label_kolom di tingkat FeatureCollection"}}
     json.dump({"meta": meta, "tabel": TABEL}, open(os.path.join(OUT, "air-jawa.json"), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
 
     # --- self-check: invarian lintas tabel
@@ -966,6 +1122,10 @@ def main():
     assert sum(b[3] for b in BP) == sum(w["penduduk"] for w in W.values())
     assert sum(b[KP.index("irigasi_total_ha_rekap")] for b in BP) == meta_irg["total_jawa_ha"] + 1
     assert abs(sum(KAB[k]["irigasi_total_ha"] for k in W) + sum(b[KP.index("irigasi_ha_tak_teratribusi_kab")] for b in BP) - (meta_irg["total_jawa_ha"] + 1)) < 0.05
+    sisa_perm = sum(r[7] for r in rek_irg if r[2] == "Permukaan")
+    assert abs(sum(KAB[k]["irigasi_permukaan_ha"] for k in W) + sisa_perm - meta_irg["total_jawa_per_jenis_ha_rekap"]["Permukaan"]) < 0.05
+    assert sum(b[KP.index("irigasi_permukaan_ha_rekap")] for b in BP) == meta_irg["total_jawa_per_jenis_ha_rekap"]["Permukaan"]
+    assert all(KAB[k]["irigasi_permukaan_ha"] <= KAB[k]["irigasi_total_ha"] for k in W)
     assert all(KAB[k]["irigasi_total_ha"] == 0 for k in W if k[:2] == "31"), "DKI tidak punya DI di Permen 14/2015"
     assert sum(1 for k in W if KAB[k]["irigasi_total_ha"] > 0) >= 100
     for g in kel:   # jumlah DIBI per kab = jumlah dari tabel tahunan
@@ -986,7 +1146,8 @@ def main():
     print(f"  IRBI {meta_irbi['silang_paket_irbi']}")
     print(f"  DIBI {meta_dibi['baris']} baris {meta_dibi['tahun']}, kejadian {meta_dibi['jumlah_kejadian']}")
     print(f"  irigasi: {meta_irg['n_subtotal_kab']} subtotal kab, {meta_irg['n_di_pusat_jawa']} DI pusat, {meta_irg['n_di_provinsi_jawa']} DI provinsi; "
-          f"tak teratribusi {sum(r[7] for r in rek_irg):.2f} ha dari {meta_irg['total_jawa_ha']}")
+          f"tak teratribusi neto {meta_irg['tak_teratribusi_neto_ha']} ha, bruto {meta_irg['tak_teratribusi_bruto_ha']} ha dari {meta_irg['total_jawa_ha']}; "
+          f"subtotal Lampiran III cocok dengan baris DI {meta_irg['subtotal_lampiran3_cocok_baris_di']}")
     for r in rek_irg:
         if r[7]:
             print(f"    sisa {r[0]:8} {r[1]} {r[2]:9}: {r[7]:+} ha")

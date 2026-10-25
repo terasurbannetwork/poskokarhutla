@@ -1,0 +1,920 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 2 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-02.md). Format sama dengan data/angka.json; berkas relatif ke data/kajian-bnpb/data/. Tidak menyunting data/angka.json.",
+  "Kunci yang sudah ada di data/angka.json, naskah/mitigasi/bukti/bab-01.angka.json, atau naskah/air/bukti/bab-0N.angka.json tidak diulang (mis. renas.indikator_1a.proyeksi_2025, rpjmn.kp_kapasitas.baseline_2023, renas.krb.kerugian_multibahaya, krb.nasional.kab_kapasitas_*, irbi.kab.*.2025, rpjmn.kp_peringatan_dini.baseline, renas.aksi_451a.desa.*, irbi.nasional.*, rbi2023.nasional.*, nrr_2025.*, bukti.bangladesh_siklon.*). Dicek mesin terhadap data/angka.json dan semua naskah/*/bukti/*.angka.json saat ditulis.",
+  "Entri nilai + pustaka merujuk kunci di bab-02.pustaka.json. olah(x) ditulis di catatan dan memakai label x. Angka rupiah KRB disimpan dalam juta Rp seperti sumbernya, sama dengan renas.krb.kerugian_* di naskah/mitigasi/bukti/bab-03.angka.json.",
+  "Catatan untuk pemilik registri: bukti.bangladesh_siklon.kematian_1970 di data/angka.json bernilai 500000, sedangkan program-terbukti/bukti_dampak.csv B108 (Haque dkk. 2012 Tabel 1) 500300.",
+  "rbi2023.nasional.kerugian_tinggi (naskah/air/bukti/bab-02.angka.json) = komponen ekonomi saja dari KRB 2022–2026 (krb.api.tinggi_ekonomi_rp); pemilik kunci itu perlu menambah catatan agar tidak dijejerkan dengan kerugian fisik dan ekonomi.",
+  "krb.nasional.kapasitas_minimal_sedang_persen diulang di sini dengan pustaka bnpb-2026-krb-multibahaya karena entri di bab-03.angka.json tanpa pustaka (ditolak naskah.py); nilai 37,99 dan label sama."
+ ],
+ "angka": {
+  "renas.krb.luas_multibahaya": {
+   "nilai": 192473073,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.1 hlm. 21",
+   "catatan": "hlm. 20: luas wilayah bahaya multibahaya; semua kelas"
+  },
+  "renas.krb.luas_multibahaya_tinggi": {
+   "nilai": 125736462,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.1 hlm. 21"
+  },
+  "renas.krb.porsi_luas_tinggi_persen": {
+   "nilai": 65.32,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), hlm. 20",
+   "catatan": "tertulis 'sekitar 65,32%'"
+  },
+  "renas.krb.kerugian_fisik": {
+   "nilai": 2356643119,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.4 hlm. 24",
+   "catatan": "2.356.643.119 juta; API InaRISK fisik_rp 2356643120 (selisih pembulatan 1)"
+  },
+  "renas.krb.kerugian_ekonomi": {
+   "nilai": 1725921319,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.4 hlm. 24",
+   "catatan": "1.725.921.319 juta; API InaRISK ekonomi_rp 1725921320"
+  },
+  "renas.krb.terpapar_gempa": {
+   "nilai": 272405410,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24",
+   "catatan": "melampaui penduduk API (271.680.290): praktis seluruh penduduk, bukan hitungan presisi"
+  },
+  "renas.krb.terpapar_tsunami": {
+   "nilai": 5341282,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_gunungapi": {
+   "nilai": 5864711,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_banjir": {
+   "nilai": 113829496,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_banjir_bandang": {
+   "nilai": 15391846,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_kekeringan": {
+   "nilai": 272564439,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24",
+   "catatan": "melampaui penduduk API (271.680.290): praktis seluruh penduduk, bukan hitungan presisi"
+  },
+  "renas.krb.terpapar_longsor": {
+   "nilai": 25252687,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_likuefaksi": {
+   "nilai": 86689779,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_cuaca_ekstrem": {
+   "nilai": 255437799,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_gelombang_abrasi": {
+   "nilai": 4129597,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.terpapar_gagal_teknologi": {
+   "nilai": 713784,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24"
+  },
+  "renas.krb.kerugian_tsunami": {
+   "nilai": 42978422,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 24",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_gunungapi": {
+   "nilai": 12048691,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 24",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_banjir": {
+   "nilai": 1006919180,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 24",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_banjir_bandang": {
+   "nilai": 147673335,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_kekeringan": {
+   "nilai": 967552017,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_karhutla": {
+   "nilai": 709049963,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_longsor": {
+   "nilai": 696025976,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_likuefaksi": {
+   "nilai": 351875950,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_gelombang_abrasi": {
+   "nilai": 21624931,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.kerugian_gagal_teknologi": {
+   "nilai": 584288,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+   "catatan": "potensi kerugian fisik dan ekonomi; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "renas.krb.rasio_jumlah_per_bahaya_multibahaya": {
+   "nilai": 1.91,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "kali",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan penyusun dari Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "catatan": "olah(resmi): renas.krb.kerugian_jumlah_per_bahaya / renas.krb.kerugian_multibahaya (keduanya di naskah/mitigasi/bukti/bab-03.angka.json) = 7.811.983.867 / 4.082.564.437"
+  },
+  "krb.nasional.kab_kapasitas_dinilai": {
+   "nilai": 508,
+   "pustaka": "bnpb-2026-krb-multibahaya",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 multibahaya nasional",
+   "catatan": "kapasitas_kabupaten.total = 315 + 190 + 3; 6 dari 514 kab/kota tidak dinilai; kelas per kelas di krb.nasional.kab_kapasitas_* (naskah/mitigasi/bukti/bab-03.angka.json)"
+  },
+  "krb.api.sedang_ekonomi_rp": {
+   "nilai": 315980124,
+   "pustaka": "bnpb-2026-krb-multibahaya",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 multibahaya nasional (riset/mentah/ks_multi-bahaya.json)",
+   "catatan": "komponen ekonomi kelas risiko sedang; sedang + tinggi = ekonomi_rp 1.725.921.320; padanan rupiah \"RBI 2023\" kelas sedang di Renstra hlm. 9 (315.780.125 juta)"
+  },
+  "krb.api.tinggi_ekonomi_rp": {
+   "nilai": 1409941196,
+   "pustaka": "bnpb-2026-krb-multibahaya",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 multibahaya nasional (riset/mentah/ks_multi-bahaya.json)",
+   "catatan": "komponen ekonomi kelas risiko tinggi; padanan rbi2023.nasional.kerugian_tinggi (1.409.941.193 juta, selisih 3 juta pembulatan). Ekonomi saja, jangan dijejerkan dengan kerugian fisik dan ekonomi KRB"
+  },
+  "rbi2023.selisih_sedang_api_juta": {
+   "nilai": 199999,
+   "pustaka": "bnpb-2026-krb-multibahaya",
+   "satuan": "juta Rp",
+   "keyakinan": "resmi; turunan",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 multibahaya nasional (riset/mentah/ks_multi-bahaya.json) dan Renstra BNPB 2025–2029 hlm. 9",
+   "catatan": "olah(resmi): 315.980.124 − 315.780.125; kemungkinan salah salin di satu sisi, tidak dapat dipastikan tanpa Buku RBI 2023"
+  },
+  "rpjmn.kp_kapasitas.target_2025": {
+   "nilai": 67,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913, KP 08.04.01",
+   "catatan": "target 2025; Renstra memakai angka ini sebagai titik awal (riset E §E11b)"
+  },
+  "rpjmn.kp_desa_tangguh.baseline": {
+   "nilai": 10.31,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913, KP 08.04.04",
+   "catatan": "persentase desa berketahanan bencana multipihak; target 2025 10,49"
+  },
+  "rpjmn.kp_desa_tangguh.target_2029": {
+   "nilai": 11.74,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913, KP 08.04.04"
+  },
+  "rpjmn.pn8_kerugian_pdb.baseline_2022": {
+   "nilai": 0.14,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran I hlm. 201, Tabel 3.11 indikator 4",
+   "catatan": "tertulis 0,140; target 2025 0,137 dan 2029 0,135 = Renas 2.a"
+  },
+  "renstra.irb.turun_2023_persen": {
+   "nilai": 2.44,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi; turunan",
+   "sumber": "Pengolahan penyusun dari Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 1.6 hlm. 52",
+   "catatan": "olah(resmi): (135,56 − 132,25) / 135,56; berdampingan dengan baseline RPJMN PP 08.04 1,54 (rpjmn.pp_irb.baseline_2023), definisi baseline RPJMN tidak tertulis"
+  },
+  "renstra.irb.turun_tahunan_min_2020_2024_persen": {
+   "nilai": 1.65,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi; turunan",
+   "sumber": "Pengolahan penyusun dari Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 1.6 hlm. 52",
+   "catatan": "olah(resmi): 2020, (144,02 − 141,65) / 144,02; deret 1,65 / 2,00 / 2,34 / 2,44 / 2,82"
+  },
+  "renstra.irb.turun_tahunan_maks_2020_2024_persen": {
+   "nilai": 2.82,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi; turunan",
+   "sumber": "Pengolahan penyusun dari Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 1.6 hlm. 52",
+   "catatan": "olah(resmi): 2024, (132,25 − 128,52) / 132,25; target 1,2% per tahun di bawah semua nilai deret"
+  },
+  "renas.tinjau_berkala_tahun": {
+   "nilai": 2,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Pasal 7 ayat (1), hlm. 4",
+   "catatan": "ayat (2): dapat ditinjau sewaktu-waktu bila terjadi bencana; perubahan berdasar peninjauan berkala maksimal tahun ketiga (renas.ubah_berkala_maks_tahun_ke), karena bencana maksimal tahun keempat (hlm. 125)"
+  },
+  "renas.ubah_berkala_maks_tahun_ke": {
+   "nilai": 3,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tahun ke- periode pelaksanaan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), §4.6 Pembaruan, hlm. 125",
+   "catatan": "perubahan berdasar peninjauan berkala maksimal tahun ketiga (= 2027 untuk 2025–2029, olah(resmi)); rekomendasi harus termuat dalam hasil monev tahunan atau evaluasi paruh waktu"
+  },
+  "renas.ubah_bencana_maks_tahun_ke": {
+   "nilai": 4,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tahun ke- periode pelaksanaan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), §4.6 Pembaruan, hlm. 125",
+   "catatan": "perubahan karena bencana maksimal tahun keempat (= 2028), hanya program dan kegiatan rencana aksi; syarat rekomendasi sama"
+  },
+  "renas.kebijakan.jumlah": {
+   "nilai": 6,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "kebijakan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.9 dan 3.1",
+   "catatan": "olah(resmi): hitungan baris kebijakan di program-terbukti/renas_pb_2025_2029.csv (README program-terbukti §1, §5)"
+  },
+  "renas.sasaran.jumlah": {
+   "nilai": 4,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "sasaran",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.9 dan 3.1",
+   "catatan": "olah(resmi): hitungan baris sasaran di program-terbukti/renas_pb_2025_2029.csv (README program-terbukti §1, §5)"
+  },
+  "renas.strategi.jumlah": {
+   "nilai": 19,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "strategi",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.9 dan 3.1",
+   "catatan": "olah(resmi): hitungan baris strategi di program-terbukti/renas_pb_2025_2029.csv (README program-terbukti §1, §5)"
+  },
+  "renas.program.jumlah": {
+   "nilai": 44,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "program",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.9 dan 3.1",
+   "catatan": "olah(resmi): hitungan baris program; dicocokkan dua arah dengan Tabel 3.1 di program-terbukti/renas_pb_2025_2029.csv (README program-terbukti §1, §5)"
+  },
+  "renas.indikator_2a.proyeksi_2025": {
+   "nilai": 0.137,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 32",
+   "catatan": "penurunan proporsi kerugian ekonomi langsung akibat bencana relatif terhadap PDB; kolom PROYEKSI 2025"
+  },
+  "renas.indikator_2a.target_2029": {
+   "nilai": 0.135,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 32",
+   "catatan": "penurunan proporsi kerugian ekonomi langsung akibat bencana relatif terhadap PDB; kolom TARGET 2029"
+  },
+  "renas.indikator_2b.proyeksi_2025": {
+   "nilai": 0.004,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "rasio terhadap total belanja APBN",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "penurunan proporsi nilai kerusakan infrastruktur akibat bencana relatif terhadap total belanja APBN; kolom PROYEKSI 2025"
+  },
+  "renas.indikator_2b.target_2029": {
+   "nilai": 0.003,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "rasio terhadap total belanja APBN",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "penurunan proporsi nilai kerusakan infrastruktur akibat bencana relatif terhadap total belanja APBN; kolom TARGET 2029"
+  },
+  "renas.indikator_3a.proyeksi_2025": {
+   "nilai": 6.5,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "Indeks Pemulihan Pascabencana; kolom PROYEKSI 2025"
+  },
+  "renas.indikator_3a.target_2029": {
+   "nilai": 8,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "Indeks Pemulihan Pascabencana; kolom TARGET 2029"
+  },
+  "renas.indikator_4a.proyeksi_2025": {
+   "nilai": 87,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "persentase implementasi strategi PRB di level nasional; kolom PROYEKSI 2025"
+  },
+  "renas.indikator_4a.target_2029": {
+   "nilai": 100,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "persentase implementasi strategi PRB di level nasional; kolom TARGET 2029"
+  },
+  "renas.indikator_4b.proyeksi_2025": {
+   "nilai": 12,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "rata-rata persentase peningkatan nilai kerja sama resmi internasional PRB (nilai Rp); kolom PROYEKSI 2025"
+  },
+  "renas.indikator_4b.target_2029": {
+   "nilai": 15,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "rata-rata persentase peningkatan nilai kerja sama resmi internasional PRB (nilai Rp); kolom TARGET 2029"
+  },
+  "renas.indikator_4c.proyeksi_2025": {
+   "nilai": 1.2,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8 hlm. 33",
+   "catatan": "persentase penurunan nilai indeks risiko bencana; kolom PROYEKSI 2025; target 2029 juga 1,2"
+  },
+  "ripb.tahap.jumlah": {
+   "nilai": 5,
+   "pustaka": "ri-2020-perpres87",
+   "satuan": "tahap lima tahunan",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 87/2020 tentang RIPB 2020–2044, Pasal 3",
+   "catatan": "25 tahun dalam 5 tahap (riset E §E11a)"
+  },
+  "ripb.tinjau_tahun": {
+   "nilai": 5,
+   "pustaka": "ri-2020-perpres87",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 87/2020, Pasal 7 ayat (1)",
+   "catatan": "ditinjau berkala tiap 5 tahun atau sewaktu-waktu"
+  },
+  "ripb.sasaran.jumlah": {
+   "nilai": 5,
+   "pustaka": "ri-2020-perpres87",
+   "satuan": "sasaran",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 87/2020, Lampiran Bab II; dikutip Renas hlm. 13",
+   "catatan": "cocok dengan program-terbukti/ripb_2020_2044.csv"
+  },
+  "ripb.kebijakan.jumlah": {
+   "nilai": 6,
+   "pustaka": "ri-2020-perpres87",
+   "satuan": "kebijakan",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 87/2020, Lampiran; dikutip Renas hlm. 13",
+   "catatan": "cocok dengan program-terbukti/ripb_2020_2044.csv"
+  },
+  "ripb.fokus_2025_2029.jumlah": {
+   "nilai": 12,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "fokus capaian",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 1.2 hlm. 14–16",
+   "catatan": "olah(resmi): hitungan baris fokus capaian di program-terbukti/ripb_2020_2044.csv"
+  },
+  "renstra.ikd.rerata": {
+   "nilai": 0.46,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "indeks 0–1",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 70",
+   "catatan": "isu kebencanaan RPJMN: rata-rata Indeks Ketahanan Daerah, kategori sedang; tahun tidak tertulis"
+  },
+  "renstra.ikd.jumlah_indikator": {
+   "nilai": 71,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "indikator",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 85",
+   "catatan": "IKD: 7 prioritas, 71 indikator, 284 pertanyaan (riset A §1.1)"
+  },
+  "renstra.program.jumlah": {
+   "nilai": 7,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "program",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 103",
+   "catatan": "olah(resmi): program-terbukti/renstra_bnpb_2025_2029.csv"
+  },
+  "renstra.ikp.jumlah": {
+   "nilai": 12,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "IKP",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 130–131",
+   "catatan": "olah(resmi): program-terbukti/renstra_bnpb_2025_2029.csv"
+  },
+  "perka2012.krb.masa_berlaku_tahun": {
+   "nilai": 5,
+   "pustaka": "bnpb-2012-pengkajian-risiko-lampiran",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Lampiran Perka BNPB 2/2012, §2.6",
+   "catatan": "salinan BPBA Aceh hlm. PDF 10"
+  },
+  "perka2012.krb.tinjau_tahun": {
+   "nilai": 2,
+   "pustaka": "bnpb-2012-pengkajian-risiko-lampiran",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Lampiran Perka BNPB 2/2012, §2.6",
+   "catatan": "dapat ditinjau berkala tiap 2 tahun atau sewaktu-waktu bila terjadi bencana"
+  },
+  "sendai.target.jumlah": {
+   "nilai": 7,
+   "pustaka": "unisdr-2015-sendai",
+   "satuan": "target global",
+   "keyakinan": "terverifikasi",
+   "sumber": "UNISDR (2015), Sendai Framework, paragraf 18, hlm. 12",
+   "catatan": "dikutip Renas hlm. 9"
+  },
+  "sendai.prioritas.jumlah": {
+   "nilai": 4,
+   "pustaka": "unisdr-2015-sendai",
+   "satuan": "prioritas",
+   "keyakinan": "terverifikasi",
+   "sumber": "UNISDR (2015), Sendai Framework, paragraf 20, hlm. 14"
+  },
+  "nz.ndrs.prioritas": {
+   "nilai": 3,
+   "pustaka": "nz-2019-ndrs",
+   "satuan": "prioritas",
+   "keyakinan": "resmi",
+   "sumber": "Ministry of Civil Defence & Emergency Management (2019), National Disaster Resilience Strategy, hlm. 6",
+   "catatan": "pemerintah Selandia Baru"
+  },
+  "nz.ndrs.objektif_per_prioritas": {
+   "nilai": 6,
+   "pustaka": "nz-2019-ndrs",
+   "satuan": "objektif",
+   "keyakinan": "resmi",
+   "sumber": "idem, hlm. 6–7"
+  },
+  "nonalam.jee2023.n_indikator": {
+   "nilai": 56,
+   "pustaka": "who-2024-jee-idn",
+   "satuan": "indikator",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 8 Nov 2024)",
+   "catatan": "olah(terverifikasi): hitungan baris JEE di nonalam-sosial/indikator.csv"
+  },
+  "nonalam.jee2023.n_skor4": {
+   "nilai": 32,
+   "pustaka": "who-2024-jee-idn",
+   "satuan": "indikator",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, JEE IHR Indonesia 2023 (bagian rinci 'Indicators and scores')",
+   "catatan": "olah(terverifikasi); tabel ringkasan PDF yang sama berbeda di P3.3, P8.3, R4.1 (29/22/4/1)"
+  },
+  "nonalam.jee2023.n_skor3": {
+   "nilai": 20,
+   "pustaka": "who-2024-jee-idn",
+   "satuan": "indikator",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, JEE IHR Indonesia 2023 (bagian rinci 'Indicators and scores')",
+   "catatan": "olah(terverifikasi); tabel ringkasan PDF yang sama berbeda di P3.3, P8.3, R4.1 (29/22/4/1)"
+  },
+  "nonalam.jee2023.n_skor5": {
+   "nilai": 3,
+   "pustaka": "who-2024-jee-idn",
+   "satuan": "indikator",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, JEE IHR Indonesia 2023 (bagian rinci 'Indicators and scores')",
+   "catatan": "olah(terverifikasi); tabel ringkasan PDF yang sama berbeda di P3.3, P8.3, R4.1 (29/22/4/1)"
+  },
+  "nonalam.jee2023.n_skor2": {
+   "nilai": 1,
+   "pustaka": "who-2024-jee-idn",
+   "satuan": "indikator",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, JEE IHR Indonesia 2023 (bagian rinci 'Indicators and scores')",
+   "catatan": "olah(terverifikasi); tabel ringkasan PDF yang sama berbeda di P3.3, P8.3, R4.1 (29/22/4/1); skor 2 = P7.1"
+  },
+  "nonalam.spar.2021": {
+   "berkas": "nonalam-sosial/indikator.csv",
+   "jalur": "[kode=SDGIHR2021,tahun=2021].nilai",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO GHO, SPAR edisi 2",
+   "catatan": "penilaian mandiri pemerintah; edisi 1 dan 2 tidak sebanding"
+  },
+  "nonalam.spar.2025": {
+   "berkas": "nonalam-sosial/indikator.csv",
+   "jalur": "[kode=SDGIHR2021,tahun=2025].nilai",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO GHO, SPAR edisi 2"
+  },
+  "bukti.p19.kematian_1991": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B109].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
+   "catatan": "Tabel 1"
+  },
+  "bukti.p19.kematian_1997": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B110].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
+   "catatan": "Tabel 1"
+  },
+  "bukti.p19.kematian_2009": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B112].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
+   "catatan": "Tabel 1"
+  },
+  "bukti.p19.faktor_penurunan": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B113].nilai_angka",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2)",
+   "catatan": "abstrak: penurunan 1970 ke 2007; yang terbukti paket intervensi, bukan CPP sendirian"
+  },
+  "bukti.p19.relawan": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B114].nilai_angka",
+   "satuan": "orang (lebih dari)",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2)"
+  },
+  "bukti.p19.kematian_1970_wmo": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B118].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi; sekunder, hanya draf (sumber primer belum dibuka)",
+   "sumber": "Mc Clean (2020), blog UNDRR, mengutip kajian WMO",
+   "catatan": "grup konflik B_P19_1970: 500.300 (Haque) / 300.000 / 1 juta; label diturunkan 24 Okt 2026: media atau blog tanpa sumber primer dibuka (konvensi §0.1), tidak masuk naskah final"
+  },
+  "bukti.p19.kematian_1970_pemerintah": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B119].nilai_angka",
+   "satuan": "juta jiwa",
+   "keyakinan": "terverifikasi; sekunder, hanya draf (sumber primer belum dibuka)",
+   "sumber": "Mc Clean (2020), blog UNDRR, angka pemerintah menurut kepala CPP",
+   "catatan": "grup konflik B_P19_1970; label diturunkan 24 Okt 2026: media atau blog tanpa sumber primer dibuka (konvensi §0.1), tidak masuk naskah final"
+  },
+  "bukti.p20.phailin_meninggal": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B120].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Pemerintah Odisha, ADB, Bank Dunia (2013), RDNA Phailin",
+   "catatan": "grup konflik B_P20_PHAILIN"
+  },
+  "bukti.p20.phailin_meninggal_72jam": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B126].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia (2013), feature Phailin",
+   "catatan": "72 jam setelah pendaratan; grup konflik B_P20_PHAILIN"
+  },
+  "bukti.p20.phailin_evakuasi_juta": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B122].nilai_angka",
+   "satuan": "juta jiwa (lebih dari)",
+   "keyakinan": "resmi",
+   "sumber": "RDNA Phailin 2013"
+  },
+  "bukti.p20.phailin_jam_evakuasi": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B123].nilai_angka",
+   "satuan": "jam",
+   "keyakinan": "resmi",
+   "sumber": "RDNA Phailin 2013"
+  },
+  "bukti.p20.super1999_meninggal": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B124].nilai_angka",
+   "satuan": "jiwa (sekitar)",
+   "keyakinan": "resmi",
+   "sumber": "RDNA Phailin 2013, Background",
+   "catatan": "badai berbeda dengan Phailin; bukan pembanding terkontrol"
+  },
+  "bukti.p21.selamat_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B127].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "JST (2016), Katada",
+   "catatan": "sekitar 3.000 siswa SD dan SMP di 14 sekolah Kamaishi, tsunami Maret 2011"
+  },
+  "bukti.p21.siswa": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B128].nilai_angka",
+   "satuan": "siswa (sekitar)",
+   "keyakinan": "terverifikasi",
+   "sumber": "JST (2016), Katada"
+  },
+  "bukti.p22.gagal_3lantai_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B131].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Guendelman, Saragoni, Verdugo (2012), 15WCEE",
+   "catatan": "bangunan hunian berizin 1985–2009, gempa Maule 2010"
+  },
+  "bukti.p22.bangunan_3lantai": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B132].nilai_angka",
+   "satuan": "bangunan",
+   "keyakinan": "terverifikasi",
+   "sumber": "Guendelman, Saragoni, Verdugo (2012), 15WCEE"
+  },
+  "bukti.p22.gagal_9lantai_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B133].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Guendelman, Saragoni, Verdugo (2012), 15WCEE",
+   "catatan": "dari 1.939 bangunan sembilan lantai atau lebih"
+  },
+  "bukti.p22.maule_meninggal": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B137].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "ECHO MEMO/10/71 (8 Mar 2010)",
+   "catatan": "korban resmi sementara"
+  },
+  "bukti.p23.ccrif_pembayaran_2023": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B142].nilai_angka",
+   "satuan": "pembayaran",
+   "keyakinan": "terverifikasi",
+   "sumber": "Artemis (27 Des 2023)",
+   "catatan": "kumulatif sejak 2007 sampai Des 2023"
+  },
+  "bukti.p23.ccrif_nilai_2023": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B143].nilai_angka",
+   "satuan": "juta US$",
+   "keyakinan": "terverifikasi",
+   "sumber": "Artemis (27 Des 2023)",
+   "catatan": "kumulatif"
+  },
+  "bukti.p23.arc_polis": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B148].nilai_angka",
+   "satuan": "negara",
+   "keyakinan": "terverifikasi",
+   "sumber": "Oxford Policy Management (2022)",
+   "catatan": "negara anggota ARC yang membeli polis kekeringan"
+  },
+  "bukti.p23.arc_anggota": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B149].nilai_angka",
+   "satuan": "negara",
+   "keyakinan": "terverifikasi",
+   "sumber": "Oxford Policy Management (2022)"
+  },
+  "bukti.p23.arc_premi_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B150].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Oxford Policy Management (2022)",
+   "catatan": "premi reasuransi terhadap harapan pembayaran, 2021"
+  },
+  "bukti.p23.abmn_klaim_2020": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B151].nilai_angka",
+   "satuan": "miliar Rp",
+   "keyakinan": "resmi",
+   "sumber": "DJKN Kemenkeu (23 Jan 2021)",
+   "catatan": "isi berita; 18 BMN, 13 K/L; grup konflik B_P23_ABMN"
+  },
+  "bukti.p23.abmn_klaim_2020_slug": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B152].nilai_angka",
+   "satuan": "miliar Rp",
+   "keyakinan": "resmi",
+   "sumber": "DJKN Kemenkeu (23 Jan 2021), slug URL",
+   "catatan": "versi slug URL; ditulis berdampingan dengan 1,14 miliar"
+  },
+  "bukti.p24.manfaat_per_dolar": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B157].nilai_angka",
+   "satuan": "US$ per US$1",
+   "keyakinan": "estimasi-model",
+   "sumber": "FEMA (2018), Natural Hazard Mitigation Saves, analisis NIBS",
+   "catatan": "hasil pemodelan, bukan pengukuran pascakejadian; tanpa pasangan angka tercatat"
+  },
+  "bukti.p24.rasio_2005": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B159].nilai_angka",
+   "satuan": "rasio (x:1)",
+   "keyakinan": "estimasi-model",
+   "sumber": "FEMA (2018), mengutip studi NIBS 2005",
+   "catatan": "estimasi model"
+  },
+  "bukti.p03.palu_menit": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B013].nilai_angka",
+   "satuan": "menit",
+   "keyakinan": "terverifikasi; sekunder, hanya draf (sumber primer belum dibuka)",
+   "sumber": "Kontan (29 Sep 2018), mengutip Kepala BMKG",
+   "catatan": "peringatan tsunami terbit sekitar 5 menit setelah gempa 17.02 WIB; dicabut 17.37 WIB; label diturunkan 24 Okt 2026: media atau blog tanpa sumber primer dibuka (konvensi §0.1), tidak masuk naskah final"
+  },
+  "bukti.p03.sensor_km": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B016].nilai_angka",
+   "satuan": "km",
+   "keyakinan": "terverifikasi; sekunder, hanya draf (sumber primer belum dibuka)",
+   "sumber": "CGTN (Sep 2018), mengutip BMKG",
+   "catatan": "jarak sensor muka laut terdekat dari Teluk Palu; label diturunkan 24 Okt 2026: media atau blog tanpa sumber primer dibuka (konvensi §0.1), tidak masuk naskah final; siaran pers BMKG 29 Sep 2018 merujuk tide gauge Mamuju tanpa menyebut jarak"
+  },
+  "bukti.p03.mamuju_naik_cm": {
+   "nilai": 6,
+   "pustaka": "bmkg-2018-donggala",
+   "satuan": "cm",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers gempa M7,7 Donggala 28 Sep 2018 (terbit 29 Sep 2018)",
+   "catatan": "tide gauge Mamuju, Sulawesi Barat, pukul 17.27 WIB; PDT diakhiri 17.36.12 WIB; gempa 17.02.44 WIB"
+  },
+  "bukti.p02.spab_2024": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B009].nilai_angka",
+   "satuan": "peserta didik",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.1.2.a hlm. 72",
+   "catatan": "baseline 2024; PJ kementerian pendidikan dan Kemenag"
+  },
+  "bukti.p02.spab_2029": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B010].nilai_angka",
+   "satuan": "peserta didik",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.1.2.a hlm. 72",
+   "catatan": "target 2029"
+  },
+  "bukti.p19.kematian_1970": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B108].nilai_angka",
+   "satuan": "jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Haque dkk. (2012), Bull. WHO 90(2), Tabel 1",
+   "catatan": "ditambahkan penulis naskah Bab 2; bukti T3.2 dan C3.4: bukti.bangladesh_siklon.kematian_1970 di data/angka.json bernilai 500000, Tabel 1 Haque 500.300"
+  },
+  "r3p.cianjur2022.kerusakan": {
+   "nilai": 3980000000000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "Rp",
+   "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+   "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+   "catatan": "ditambahkan penulis naskah Bab 2 dari bukti T4.4 (riset E §E5): kerusakan Rp3,98 triliun"
+  },
+  "r3p.cianjur2022.kerugian": {
+   "nilai": 570000000000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "Rp",
+   "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+   "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+   "catatan": "ditambahkan penulis naskah Bab 2 dari bukti T4.4: kerugian Rp0,57 triliun"
+  },
+  "r3p.cianjur2022.kebutuhan": {
+   "nilai": 5050000000000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "Rp",
+   "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+   "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022, kebutuhan 2023–2025",
+   "catatan": "ditambahkan penulis naskah Bab 2 dari bukti T4.4: kebutuhan R3P Rp5,05 triliun"
+  },
+  "kemenkopmk.lombok2018.realisasi_persen": {
+   "nilai": 94.73,
+   "pustaka": "kemenkopmk-2024-rehabrekon-lombok",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK, 20 Mei 2024, realisasi per 11 Sep 2023",
+   "catatan": "ditambahkan penulis naskah Bab 2 dari bukti T4.5"
+  },
+  "krb.nasional.kapasitas_minimal_sedang_persen": {
+   "nilai": 37.99,
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan; turunan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, KRB 2022–2026 (endpoint kajian-summary/covid-19)",
+   "catatan": "(190 + 3) / 508; kelas kapasitas KRB tidak bergantung pada bahaya, tetapi kesetaraannya dengan alat ukur IKD (RPJMN 62% baseline 2023; Renstra 67% target 2025) belum terbukti; hanya pembanding KD-3, bukan titik awal resmi | Disalin penulis naskah Bab 2 dengan tambahan pustaka, karena entri di bab-03.angka.json tidak punya berkas+jalur maupun pustaka sehingga ditolak naskah.py; nilai dan label identik, gabungkan saat registri disatukan.",
+   "pustaka": "bnpb-2026-krb-multibahaya"
+  }
+ }
+}

@@ -1,0 +1,45 @@
+{
+  "nama": "horizontal-irbi-provinsi-2024",
+  "jenis": "horizontal",
+  "pesan": "G4",
+  "ukuran": "penuh",
+  "keterangan": "Sepuluh provinsi dengan rerata IRBI kab/kota tertinggi, 2024 (diurutkan menurut IRBI)",
+  "sumber": "InaRISK BNPB, IRBI 2024; rerata sederhana kab/kota; kab/kota Tinggi bila total {ambang} (bangun/irbi.py)",
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_agregat_provinsi.csv",
+      "saring": {
+        "tahun": "2024"
+      }
+    },
+    "x": "prov_nama",
+    "y": "total_sederhana",
+    "kolom_tambahan": {
+      "kolom": "n_tinggi",
+      "judul": "KAB/KOTA TINGGI"
+    }
+  },
+  "n": 10,
+  "desimal": 1,
+  "seri_label": "IRBI 2024, rerata kab/kota",
+  "judul_kolom": {
+    "nama": "PROVINSI",
+    "nilai": "IRBI 2024"
+  },
+  "sorot": [
+    "Aceh"
+  ],
+  "sorot_label": "contoh baris sorot",
+  "token": {
+    "ambang": {
+      "sumber": {
+        "berkas": "data/kajian-bnpb/data/irbi/irbi_hitung_kelas.csv",
+        "saring": {
+          "tingkat": "kab",
+          "tahun": "2024"
+        }
+      },
+      "kolom": "ambang"
+    }
+  }
+}

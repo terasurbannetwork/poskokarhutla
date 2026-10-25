@@ -1,0 +1,4 @@
+# keluaran harian CI (scripts/sebaran/risiko_produksi.py harian): diunggah ke R2 poskokarhutla-foto/risiko/, bukan git.
+# Contoh tetap untuk layar: ../contoh_terbaru.json
+*
+!.gitignore

@@ -275,6 +275,52 @@
   },
   {
    "jenis": "gagal_teknologi",
+   "kode": "plumpang2023",
+   "nama": "Kebakaran Integrated Terminal BBM Pertamina Plumpang",
+   "tanggal": "2023-03-03",
+   "prov": "31",
+   "lokasi": "Kota Jakarta Utara",
+   "metrik": "luka_sakit",
+   "nilai": 51,
+   "satuan": "jiwa",
+   "sumber": "BPBD DKI per 4 Mar 2023, dikutip Kompas TV",
+   "url": "https://www.kompas.tv/article/384362/update-korban-depo-pertamina-plumpang-17-meninggal-51-lainnya-luka-luka",
+   "label": "sekunder",
+   "catatan": "disalin dari paket dibi (data/kajian-bnpb/data/dibi/kejadian_besar.csv, diakses 23 Okt 2026)"
+  },
+  {
+   "jenis": "gagal_teknologi",
+   "kode": "plumpang2023",
+   "nama": "Kebakaran Integrated Terminal BBM Pertamina Plumpang",
+   "tanggal": "2023-03-03",
+   "prov": "31",
+   "lokasi": "Kota Jakarta Utara",
+   "metrik": "mengungsi",
+   "nilai": 579,
+   "satuan": "jiwa",
+   "sumber": "Kompas TV 4 Mar 2023",
+   "url": "https://www.kompas.tv/article/384324/579-warga-mengungsi-akibat-kebakaran-depo-pertamina-plumpang",
+   "label": "sekunder",
+   "catatan": "disalin dari paket dibi (kejadian_besar.csv, diakses 23 Okt 2026); pembanding 1.085 pengungsi Kepala BNPB"
+  },
+  {
+   "jenis": "gagal_teknologi",
+   "kode": "plumpang2023",
+   "nama": "Kebakaran Integrated Terminal BBM Pertamina Plumpang",
+   "tanggal": "2023-03-03",
+   "prov": "31",
+   "lokasi": "Kota Jakarta Utara",
+   "metrik": "versi_media_tidak_ditemukan",
+   "nilai": null,
+   "nilai_teks": "riset A §5 mencatat satu versi korban meninggal lain dari media (JPNN/Katadata); artikelnya tidak ditemukan ulang 23 Okt 2026, angkanya tidak dipakai",
+   "satuan": "",
+   "sumber": "data/kajian-bnpb/riset/A-dokumen-bnpb.md §5",
+   "url": "",
+   "label": "narasi",
+   "catatan": ""
+  },
+  {
+   "jenis": "gagal_teknologi",
    "kode": "morowali2023",
    "nama": "Ledakan tungku smelter PT ITSS (kawasan IMIP)",
    "tanggal": "2023-12-24",
@@ -298,10 +344,10 @@
    "metrik": "meninggal",
    "nilai": 20,
    "satuan": "jiwa",
-   "sumber": "Kapolda Sulteng Irjen Agus Nugroho, dikutip ANTARA/Jakarta Globe 3 Jan 2024 (via Business & Human Rights Resource Centre)",
+   "sumber": "Polda Sulteng via ANTARA, dikutip Business & Human Rights Resource Centre (BHRRC) 3 Jan 2024",
    "url": "https://business-humanrights.org/es/últimas-noticias/indonesia-death-toll-rises-to-20-at-morowali-nickel-smelter",
    "label": "sekunder",
-   "catatan": "12 TKI + 8 TKA"
+   "catatan": "12 TKI + 8 TKA; nama pejabat tidak disebut artikel"
   },
   {
    "jenis": "gagal_teknologi",
@@ -313,7 +359,7 @@
    "metrik": "luka_berat",
    "nilai": 29,
    "satuan": "jiwa",
-   "sumber": "Kapolda Sulteng, dikutip ANTARA/Jakarta Globe 3 Jan 2024",
+   "sumber": "BHRRC 3 Jan 2024 (angka tanpa atribusi di artikel)",
    "url": "https://business-humanrights.org/es/últimas-noticias/indonesia-death-toll-rises-to-20-at-morowali-nickel-smelter",
    "label": "sekunder",
    "catatan": ""
@@ -328,7 +374,7 @@
    "metrik": "luka_ringan",
    "nilai": 11,
    "satuan": "jiwa",
-   "sumber": "Kapolda Sulteng, dikutip ANTARA/Jakarta Globe 3 Jan 2024",
+   "sumber": "BHRRC 3 Jan 2024 (angka tanpa atribusi di artikel)",
    "url": "https://business-humanrights.org/es/últimas-noticias/indonesia-death-toll-rises-to-20-at-morowali-nickel-smelter",
    "label": "sekunder",
    "catatan": "DIBI tidak memuat kejadian ini"
@@ -552,13 +598,16 @@
    "prov": "32",
    "lokasi": "Kab. Bandung Barat",
    "metrik": "status_tanggap_darurat_kab",
-   "nilai": 21,
    "nilai_teks": "22 Agt - 11 Sep 2023, ditetapkan Bupati Bandung Barat Hengky Kurniawan; tidak diperpanjang, diserahkan ke provinsi",
    "satuan": "hari",
    "sumber": "Metro TV (Media Indonesia) 11 Sep 2023",
    "url": "https://www.metrotvnews.com/read/kqYCEDw5-status-darurat-kebakaran-tpa-sarimukti-berakhir",
    "label": "sekunder",
-   "catatan": "nomor SK tidak disebut"
+   "catatan": "nomor SK tidak disebut",
+   "hitung": [
+    "2023-08-22",
+    "2023-09-11"
+   ]
   },
   {
    "jenis": "kebakaran_tpa",
@@ -568,13 +617,16 @@
    "prov": "32",
    "lokasi": "Kab. Bandung Barat",
    "metrik": "status_tanggap_darurat_prov",
-   "nilai": 14,
    "nilai_teks": "12 - 25 Sep 2023, Pemprov Jawa Barat mengambil alih (Pj Gubernur Bey Triadi Machmudin)",
    "satuan": "hari",
    "sumber": "ANTARA via Medcom 12 Sep 2023",
    "url": "https://www.medcom.id/nasional/daerah/dN6wVD0b-pemprov-jabar-ambil-alih-penanganan-kebakaran-tpa-sarimukti",
    "label": "sekunder",
-   "catatan": ""
+   "catatan": "",
+   "hitung": [
+    "2023-09-12",
+    "2023-09-25"
+   ]
   },
   {
    "jenis": "kebakaran_tpa",
@@ -614,13 +666,16 @@
    "prov": "32",
    "lokasi": "Kota Bandung",
    "metrik": "status_tanggap_darurat_sampah_kota_bandung",
-   "nilai": 28,
    "nilai_teks": "28 Agt - 24 Sep 2023, Plh Wali Kota Bandung Ema Sumarna; Gubernur Jabar menetapkan Bandung darurat sampah 24 Agt 2023; biaya APBD Kota Bandung",
    "satuan": "hari",
    "sumber": "Katadata 30 Agt 2023",
    "url": "https://katadata.co.id/ameidyonasution/berita/64eeb945510b3/tpa-sarimukti-terbakar-bandung-berstatus-darurat-bencana-sampah",
    "label": "sekunder",
-   "catatan": "dampak hilir: layanan sampah kota"
+   "catatan": "dampak hilir: layanan sampah kota",
+   "hitung": [
+    "2023-08-28",
+    "2023-09-24"
+   ]
   },
   {
    "jenis": "kebakaran_tpa",
@@ -751,13 +806,16 @@
    "prov": "51",
    "lokasi": "Kota Denpasar",
    "metrik": "status_transisi_darurat",
-   "nilai": 7,
    "nilai_teks": "9 - 15 Nov 2023, Keputusan Wali Kota Denpasar Nomor 188.45/2575/HK/2023 (turun dari tanggap darurat)",
    "satuan": "hari",
    "sumber": "ANTARA Bali 9 Nov 2023",
    "url": "https://bali.antaranews.com/berita/330171/pemkot-denpasar-turunkan-status-kebakaran-di-tpa-suwung-jadi-transisi-darurat",
    "label": "sekunder",
-   "catatan": "tanggal dan SK tanggap darurat awal tidak ditemukan"
+   "catatan": "tanggal dan SK tanggap darurat awal tidak ditemukan",
+   "hitung": [
+    "2023-11-09",
+    "2023-11-15"
+   ]
   },
   {
    "jenis": "kebakaran_tpa",
@@ -791,7 +849,7 @@
    "sumber": "dihitung dari tanggal mulai (ANTARA Bali 9 Nov 2023) dan tanggal Keputusan Wali Kota 188.45/2651/HK/2023 (ANTARA via Medcom 19 Nov 2023)",
    "url": "https://www.medcom.id/nasional/daerah/eN457O7b-status-darurat-kebakaran-tpa-suwung-berakhir",
    "label": "sekunder",
-   "catatan": "selisih tanggal; bukan lama api menyala yang diukur"
+   "catatan": "bukan lama api menyala yang diukur"
   },
   {
    "jenis": "kebakaran_tpa",
@@ -831,13 +889,16 @@
    "prov": "36",
    "lokasi": "Kota Tangerang",
    "metrik": "status_tanggap_darurat_kota",
-   "nilai": 14,
    "nilai_teks": "20 Okt - 2 Nov 2023, Keputusan Wali Kota Tangerang Nomor 442/Kep.1023-BPBD/2023; dicabut menjadi pemulihan (diberitakan 3 Nov 2023) setelah 13 hari pemadaman",
    "satuan": "hari",
    "sumber": "Medcom 3 Nov 2023",
    "url": "https://www.medcom.id/nasional/daerah/zNPXM8VN-status-tanggap-darurat-tpa-rawa-kucing-tangerang-dicabut",
    "label": "sekunder",
-   "catatan": "534 personel gabungan termasuk BNPB; seluruh pengungsi sudah pulang"
+   "catatan": "534 personel gabungan termasuk BNPB; seluruh pengungsi sudah pulang",
+   "hitung": [
+    "2023-10-20",
+    "2023-11-02"
+   ]
   },
   {
    "jenis": "kebakaran_tpa",
@@ -852,7 +913,7 @@
    "sumber": "Wali Kota Tangerang, dikutip Medcom 3 Nov 2023",
    "url": "https://www.medcom.id/nasional/daerah/zNPXM8VN-status-tanggap-darurat-tpa-rawa-kucing-tangerang-dicabut",
    "label": "sekunder",
-   "catatan": "'pemadaman yang berlangsung selama 13 hari sejak 20 Oktober 2023'"
+   "catatan": "angka sumber, tidak dihitung skrip ('pemadaman yang berlangsung selama 13 hari sejak 20 Oktober 2023'); masa status 20 Okt - 2 Nov dihitung inklusif = 14"
   },
   {
    "jenis": "kebakaran_tpa",
@@ -1055,7 +1116,7 @@
    "sumber": "Laporan TGPF Peristiwa 13-15 Mei 1998, Temuan butir 3.2",
    "url": "https://id.wikisource.org/wiki/Laporan_Tim_Gabungan_Pencari_Fakta_(TGPF)_Peristiwa_Tanggal_13-15_Mei_1998/Temuan",
    "label": "resmi",
-   "catatan": "TGPF dibentuk keputusan bersama pemerintah 23 Jul 1998; teks dibaca dari transkripsi Wikisource; 1.217 = 1.190 + 27 (dijumlah penyusun)"
+   "catatan": "versi Tim Relawan (non-pemerintah) yang dimuat laporan TGPF, bukan hitungan instansi; teks dibaca dari transkripsi Wikisource, bukan dokumen resmi; TGPF dibentuk keputusan bersama pemerintah 23 Jul 1998; 1.217 = 1.190 + 27 (dijumlah penyusun)"
   },
   {
    "jenis": "konflik_sosial",
@@ -1314,6 +1375,22 @@
   },
   {
    "jenis": "konflik_sosial",
+   "kode": "wamena2019",
+   "nama": "Kerusuhan Wamena",
+   "tanggal": "2019-09-23",
+   "prov": "95",
+   "lokasi": "Kab. Jayawijaya",
+   "metrik": "versi_media_tidak_ditemukan",
+   "nilai": null,
+   "nilai_teks": "riset A §5 mencatat versi korban meninggal dari Dewan Adat Papua dan angka warga eksodus dari media (Republika); artikelnya tidak ditemukan ulang 23 Okt 2026, angkanya tidak dipakai",
+   "satuan": "",
+   "sumber": "data/kajian-bnpb/riset/A-dokumen-bnpb.md §5",
+   "url": "",
+   "label": "narasi",
+   "catatan": ""
+  },
+  {
+   "jenis": "konflik_sosial",
    "kode": "wamena2026",
    "nama": "Jembatan gantung Wouma putus dan konflik antarwarga Wamena",
    "tanggal": "2026-05-07",
@@ -1430,7 +1507,7 @@
  "covid_versi": [
   {
    "metrik": "kasus_terkonfirmasi",
-   "periode": "Mar 2020 - Mar 2023",
+   "periode": "kumulatif s.d. sekitar akhir Jun 2023 (tanggal potong tidak disebut Renstra; Kemenkes 2024)",
    "nilai": 6811945,
    "satuan": "kasus",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025-2029 (Perban 5/2025) hlm. 14",
@@ -1441,11 +1518,11 @@
     14,
     "6.811.945"
    ],
-   "catatan": "angka utama"
+   "catatan": "angka utama; periode 'Mar 2020 - Mar 2023' hanya judul Grafik 1.3 Renstra, bukan tanggal potong angka ini"
   },
   {
    "metrik": "meninggal",
-   "periode": "Mar 2020 - Mar 2023",
+   "periode": "kumulatif s.d. sekitar akhir Jun 2023 (tanggal potong tidak disebut Renstra; Kemenkes 2024)",
    "nilai": 161870,
    "satuan": "jiwa",
    "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025-2029 hlm. 14",
@@ -1456,7 +1533,7 @@
     14,
     "161.870"
    ],
-   "catatan": "angka utama"
+   "catatan": "angka utama; periode 'Mar 2020 - Mar 2023' hanya judul Grafik 1.3 Renstra, bukan tanggal potong angka ini"
   }
  ],
  "tpa_open_dumping": [
@@ -1534,11 +1611,11 @@
    "indikator": "kewajiban_memiliki_tpa",
    "tahun": 2026,
    "nilai": 20,
-   "satuan": "kab/kota",
+   "satuan": "TPA (sanksi)",
    "sumber": "KLH/BPLH, 26 Feb 2026",
    "url": "https://kemenlh.go.id/news/detail/klhbplh-perketat-penegakan-hukum-pengelolaan-sampah-273-tpa-disanksi-buntut-pengawasan-388-tpa-di-indonesia",
    "label": "resmi",
-   "catatan": "'kewajiban memiliki TPA, total 20 TPA'"
+   "catatan": "jenis sanksi: kewajiban memiliki TPA ('kewajiban memiliki TPA, total 20 TPA'); 231 + 22 + 20 = 273 TPA disanksi"
   },
   {
    "indikator": "jumlah_tpa_nasional",
@@ -1781,12 +1858,12 @@
    "pasal": "-",
    "pokok": "Mencabut Perpres 82/2020 jo. 108/2020 dan Perpres 99/2020 (vaksinasi)",
    "relevansi_bnpb": "Satgas COVID-19 berakhir",
-   "tanggal_penetapan": "2023-08-04",
-   "status": "berlaku (diundangkan 4 Agt 2023)",
+   "status": "berlaku",
    "sumber": "Setkab 7 Agt 2023",
    "url": "https://setkab.go.id/pemerintah-terbitkan-perpres-pengakhiran-penanganan-pandemi-covid-19/",
    "label": "resmi",
-   "catatan": "tanggal = tanggal diundangkan"
+   "catatan": "'mulai berlaku pada tanggal diundangkan', diundangkan 4 Agt 2023 (ketentuan penutup, dikutip Setkab); tanggal penetapan tidak disebut sumber yang dibuka",
+   "tanggal_berlaku": "2023-08-04"
   }
  ],
  "skenario": [
@@ -1803,12 +1880,12 @@
   {
    "jenis": "epidemi_pandemi",
    "komponen": "parameter_historis_cfr_1918",
-   "nilai": 5,
-   "satuan": "%",
-   "nilai_teks": "CFR pandemi influenza 1918; pandemi kedua dan ketiga sekitar 1-2%",
+   "nilai": null,
+   "satuan": "",
+   "nilai_teks": "CFR pandemi influenza 1918 5%; pandemi kedua dan ketiga sekitar 1-2% (Kepmenkes 300/2009). Parameter global historis, bukan parameter Indonesia; jangan dikalikan dengan penduduk terpapar.",
    "sumber": "Kepmenkes 300/MENKES/SK/IV/2009, Lampiran (Pendahuluan)",
    "url": "https://kespel.kemkes.go.id/uploads/imgreference/20150803103914.pdf",
-   "label": "resmi"
+   "label": "narasi"
   },
   {
    "jenis": "epidemi_pandemi",
@@ -1823,12 +1900,12 @@
   {
    "jenis": "epidemi_pandemi",
    "komponen": "parameter_cfr_flu_burung_indonesia",
-   "nilai": 87.5,
-   "satuan": "%",
-   "nilai_teks": "CFR H5N1 di Indonesia Jan-Mei 2006/2007/2008: 79,4% / 87,5% / 83,3%",
+   "nilai": null,
+   "satuan": "",
+   "nilai_teks": "CFR kasus H5N1 terkonfirmasi di Indonesia periode Jan-Mei: 2006 79,4% (34 kasus, 27 meninggal), 2007 87,5% (24 kasus, 21 meninggal), 2008 83,3% (18 kasus, 15 meninggal). CFR kasus H5N1 terkonfirmasi, bukan parameter pandemi (belum ada penularan antarmanusia berkelanjutan); jangan dikalikan dengan penduduk terpapar.",
    "sumber": "Kepmenkes 300/2009",
    "url": "https://kespel.kemkes.go.id/uploads/imgreference/20150803103914.pdf",
-   "label": "resmi"
+   "label": "narasi"
   },
   {
    "jenis": "gagal_teknologi",
@@ -1855,7 +1932,7 @@
    "komponen": "narasi_analog",
    "nilai": null,
    "satuan": "",
-   "nilai_teks": "Analog terburuk dalam ingatan kelembagaan: konflik komunal 1999-2002 (Maluku sedikitnya 5.000 sampai 10.000 meninggal dan sekitar 700.000 mengungsi; Poso sekitar 1.000 meninggal dan lebih dari 100.000 mengungsi; Sampit sekitar 500 meninggal dan 108.000 mengungsi), dengan pengungsi internal tercatat resmi lebih dari 1 juta pada 2001 yang dikoordinasikan Bakornas PBP. Kerusuhan perkotaan: Mei 1998 Jakarta (288 sampai 1.217 meninggal menurut empat sumber TGPF). Peringatan dini: desa dengan perkelahian massal naik dari 1.553 (1,85%) pada 2021 menjadi 2.031 (2,41%) pada 2024 (BPS).",
+   "nilai_teks": "Analog terburuk dalam ingatan kelembagaan: konflik komunal 1999-2002 (Maluku sedikitnya 5.000 sampai 10.000 meninggal dan sekitar 700.000 mengungsi; Poso sekitar 1.000 meninggal dan lebih dari 100.000 mengungsi; Sampit sekitar 500 meninggal dan 108.000 mengungsi), dengan pengungsi internal tercatat resmi lebih dari 1 juta pada 2001 yang dikoordinasikan Bakornas PBP. Kerusuhan perkotaan: Mei 1998 Jakarta (288 sampai 1.217 meninggal: empat versi yang dimuat laporan TGPF, yaitu Pemda DKI 288, Polda 451, Kodam 463, dan Tim Relawan non-pemerintah 1.217). Peringatan dini: desa dengan perkelahian massal naik dari 1.553 (1,85%) pada 2021 menjadi 2.031 (2,41%) pada 2024 (BPS).",
    "sumber": "peristiwa.csv; konflik_podes_provinsi.csv",
    "url": "",
    "label": "narasi"

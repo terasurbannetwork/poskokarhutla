@@ -1,0 +1,748 @@
+[
+  {
+    "id": "ri-2007-uu24",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2007
+        ]
+      ]
+    },
+    "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+    "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+    "verifikasi": "primer",
+    "note": "sama dengan entri pustaka.json utama, ditambah URL; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz (Pasal 1 angka 2, Pasal 5, 12, 21, 51, 53)"
+  },
+  {
+    "id": "ri-2019-uu17",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+    "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+  },
+  {
+    "id": "ri-2023-uu6",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2023 Nomor 41",
+    "URL": "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023",
+    "verifikasi": "primer",
+    "note": "Pasal 53 (perubahan UU 17/2019: Pasal 8, 9, 12, 17, 19, 38, 40, 43, 44, 45, 49, 50, 51, 52, 56, 70, 73; sisipan 40A, 75A; Pasal 31, 35, 39 tidak diubah) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-6-2023.json.gz hlm. 365–380"
+  },
+  {
+    "id": "ri-2024-pp30",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "title": "Peraturan Pemerintah Nomor 30 Tahun 2024 tentang Pengelolaan Sumber Daya Air",
+    "URL": "https://peraturan.bpk.go.id/Details/295844/pp-no-30-tahun-2024",
+    "verifikasi": "primer",
+    "note": "Pasal 94 ayat (5) (hlm. 64), Pasal 96 dan 97 ayat (1)-(3) (hlm. 65-66) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-30-2024.json.gz"
+  },
+  {
+    "id": "ri-2010-pp37",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2010
+        ]
+      ]
+    },
+    "title": "Peraturan Pemerintah Nomor 37 Tahun 2010 tentang Bendungan",
+    "URL": "https://peraturan.bpk.go.id/Details/5049/pp-no-37-tahun-2010",
+    "verifikasi": "primer",
+    "note": "Pasal 52-56 (rencana tindak darurat; hlm. 24-25) dan Penjelasan Pasal 52 ayat (1) serta Pasal 56 ayat (3) (hlm. 83-84) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-37-2010.json.gz"
+  },
+  {
+    "id": "ri-2019-perpres1",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "title": "Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 1",
+    "URL": "https://peraturan.bpk.go.id/Details/100440/perpres-no-1-tahun-2019",
+    "verifikasi": "primer",
+    "note": "Pasal 1 angka 1 (BNPB lembaga pemerintah nonkementerian, hlm. 2), Pasal 6, 7, 10, 18, 19 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-1-2019.json.gz; diubah Perpres 29/2021"
+  },
+  {
+    "id": "ri-2025-perpres77",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Presiden Nomor 77 Tahun 2025 tentang Badan Otorita Pengelola Pantai Utara Jawa",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 110",
+    "URL": "https://peraturan.bpk.go.id/Details/337303/perpres-no-77-tahun-2025",
+    "verifikasi": "primer",
+    "note": "Pasal 6-7 (Dewan Pengarah, termasuk Pasal 7 ayat (6) pelibatan Menteri/Kepala Lembaga lain di hlm. 7) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-77-2025.json.gz (hlm. 5-7)"
+  },
+  {
+    "id": "setkab-2020-ripb",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Sekretariat Kabinet Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020,
+          9,
+          30
+        ]
+      ]
+    },
+    "title": "Presiden teken Perpres Rencana Induk Penanggulangan Bencana tahun 2020–2044",
+    "URL": "https://setkab.go.id/presiden-teken-perpres-rencana-induk-penanggulangan-bencana-tahun-2o2o-2o44/",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "sekunder",
+    "note": "ringkasan Perpres 87/2020 di domain Setkab; sekunder untuk isi Perpres (tahap, pemantauan, peninjauan) karena teks Perpres 87/2020 belum dibuka (KERANGKA §7 butir 29). Periode 2020-2044 primer lewat Renas Pasal 7 ayat (3)"
+  },
+  {
+    "id": "bnpb-2025-renas",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json (Pasal 7 hlm. 4, dikutip utuh; penetapan 6 Jan 2025 hlm. 5; program 2.4.4 hlm. 37 dan 86, termasuk kolom instansi kontributor aksi 2.4.4.a yang memuat BNPB; program 2.4.3 hlm. 85; §4.5-4.6 hlm. 122-125)"
+  },
+  {
+    "id": "bnpb-2025-renstra",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+    "verifikasi": "primer",
+    "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (hlm. 84, 128, 133)"
+  },
+  {
+    "id": "bnpb-2025-progsun",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Keputusan Kepala Badan Nasional Penanggulangan Bencana Nomor 327 Tahun 2025 tentang Program Penyusunan Peraturan Badan Nasional Penanggulangan Bencana Tahun 2026",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025kepkabnpb327.pdf",
+    "verifikasi": "primer",
+    "note": "ditetapkan 31 Des 2025; dibaca dari data/raw/hukum/teks/keputusan-kepala-nomor-327-tahun-2025.json (Mengingat angka 4 Perka BNPB 6/2014 hlm. 2; Lampiran hlm. 4-5, termasuk butir 7 perubahan Perka 6/2014 dan butir 11 monev RIPB)"
+  },
+  {
+    "id": "bnpb-2014-produkhukum",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2014 tentang Pembentukan Produk Hukum di Lingkungan Badan Nasional Penanggulangan Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 557",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2014pbbnpb006.pdf",
+    "verifikasi": "primer",
+    "note": "ditetapkan 1 Apr 2014, diundangkan 24 Apr 2014; status BERLAKU menurut indeks JDIH BNPB (data/raw/hukum/indeks.json). Pasal 4, 6, 7, dan 8 ayat (1)-(2) (izin prakarsa di luar Proleg PB) dibaca dari data/raw/hukum/teks/perka-nomor-6-tahun-2014.json hlm. 4-6. Sedang diubah (Progsun 2026 butir 7)"
+  },
+  {
+    "id": "bnpb-2023-satudata",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2023 tentang Satu Data Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 21",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "Pasal 1 angka 3 dan 6 dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2023.json"
+  },
+  {
+    "id": "bmkg-2026-musim-hujan",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+        "singkatan": "BMKG"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          9,
+          22
+        ]
+      ]
+    },
+    "title": "BMKG: El Niño sangat kuat sedang terjadi, musim hujan 2026/2027 diprediksi datang lebih lambat",
+    "genre": "Siaran pers",
+    "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-el-nino-sangat-kuat-sedang-terjadi-musim-hujan-2026-2027-diprediksi-datang-lebih-lambat",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "rilis primer dibuka 23 Okt 2026; pembanding InfoPublik 22 Sep 2026 (infopublik.id/kategori/nasional-sosial-budaya/990337) memuat angka yang sama"
+  },
+  {
+    "id": "bmkg-2026-musim-kemarau",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+        "singkatan": "BMKG"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          6,
+          10
+        ]
+      ]
+    },
+    "title": "BMKG: Puncak musim kemarau Agustus 2026, perkuat kesiapan hadapi dampak El Niño",
+    "genre": "Siaran pers",
+    "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-puncak-musim-kemarau-agustus-2026-perkuat-kesiapan-hadapi-dampak-el-nino",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer"
+  },
+  {
+    "id": "infopublik-2026-awal-puncak",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "InfoPublik"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          2
+        ]
+      ]
+    },
+    "title": "Awal dan puncak musim hujan 2026/2027 berdekatan, BMKG tekankan kesiapsiagaan",
+    "URL": "https://infopublik.id/kategori/nasional-sosial-budaya/991951/awal-dan-puncak-musim-hujan-20262027-berdekatan-bmkg-tekankan-kesiapsiagaan",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "sekunder",
+    "note": "kutipan Direktur Perubahan Iklim BMKG di portal pemerintah; rilis BMKG 2 Okt 2026 belum dibuka. Hanya untuk naskah draf sampai rilis primer dibuka"
+  },
+  {
+    "id": "noaa-2026-oni",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "NOAA Climate Prediction Center"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Oceanic Niño Index (ONI), ERSSTv5",
+    "genre": "Data set",
+    "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026"
+  },
+  {
+    "id": "bnpb-dibi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+    "genre": "Data set",
+    "URL": "https://dibi.bnpb.go.id",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+  },
+  {
+    "id": "bnpb-2026-krb",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+  },
+  {
+    "id": "bnpb-irbi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "sama dengan pustaka.json utama"
+  },
+  {
+    "id": "worldpop-2025",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "WorldPop"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "WorldPop R2025A, constrained UN-adjusted population 2026",
+    "genre": "Data set",
+    "publisher": "University of Southampton",
+    "URL": "https://www.worldpop.org",
+    "verifikasi": "primer",
+    "note": "sama dengan pustaka.json utama"
+  },
+  {
+    "id": "bps-2021-sp2020-tabel",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Pusat Statistik",
+        "singkatan": "BPS"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "title": "Jumlah Penduduk menurut Wilayah dan Jenis Kelamin, INDONESIA, 2020 (Sensus Penduduk 2020)",
+    "genre": "Data set",
+    "publisher": "Badan Pusat Statistik",
+    "URL": "https://sensus.bps.go.id/topik/tabular/sp2020/1",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          24
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Indonesia 270.203.917; DKI Jakarta 10.562.088; Jawa Barat 48.274.162; Jawa Tengah 36.516.035; DI Yogyakarta 3.668.719; Jawa Timur 40.665.696; Banten 11.904.562. Jumlah Jawa dan persen 56,10 dihitung penyusun"
+  },
+  {
+    "id": "radhika-2017-jsda",
+    "type": "article-journal",
+    "author": [
+      {
+        "literal": "Radhika"
+      },
+      {
+        "family": "Firmansyah",
+        "given": "Rendy"
+      },
+      {
+        "family": "Hatmoko",
+        "given": "Waluyo"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017,
+          11
+        ]
+      ]
+    },
+    "title": "Perhitungan ketersediaan air permukaan di Indonesia berdasarkan data satelit",
+    "container-title": "Jurnal Sumber Daya Air",
+    "volume": "13",
+    "issue": "2",
+    "page": "115-130",
+    "DOI": "10.32679/jsda.v13i2.206",
+    "URL": "https://doi.org/10.32679/jsda.v13i2.206",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          24
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "PDF dari sda.pu.go.id/jurnal/jurnalsda (sha1 2275ec7556cb62cfe581bea453d445335c56c397), dibuka 24 Okt 2026. Tabel 1 hlm. 124: Jawa 132.698,13 km2, 5.566,92 m3/s, 175.558,45 juta m3/tahun, andalan 80% 3.770,33 m3/s; Indonesia 1.888.445,12 km2, 88.255,59 m3/s, 2.783.228,38 juta m3/tahun. Wflow + TRMM dikoreksi hujan BMKG, 2003-2015; kalibrasi 29 PDA, korelasi bulan kering > 80% (hlm. 118); deviasi Jawa terhadap rumus Weert 6% (hlm. 123). Halaman artikel mencatat terbit daring 6 Feb 2018"
+  },
+  {
+    "id": "setkab-2021-sp2020",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Sekretariat Kabinet Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021,
+          1,
+          23
+        ]
+      ]
+    },
+    "title": "Hasil Sensus Penduduk 2020; BPS: Meski lambat, ada pergeseran penduduk antarpulau",
+    "URL": "https://setkab.go.id/hasil-sensus-penduduk-2020-bps-meski-lambat-ada-pergeseran-penduduk-antarpulau/",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "sekunder",
+    "note": "keterangan Kepala BPS dimuat Setkab: Jawa 151,6 juta jiwa = 56,10%; 2000 59,1%, 2010 57,5%; luas Jawa sekitar 7% wilayah. Sekunder (agregator). Angka 56,10% dicek primer ke bps-2021-sp2020-tabel; 59,1%, 57,5%, dan 7% belum. Berita Resmi Statistik BPS belum dibuka (PDF di atas 10 MB)"
+  },
+  {
+    "id": "bps-2020-slhi",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Badan Pusat Statistik",
+        "singkatan": "BPS"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "title": "Statistik Lingkungan Hidup Indonesia 2020",
+    "publisher": "Badan Pusat Statistik",
+    "URL": "https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf",
+    "verifikasi": "sekunder",
+    "note": "kompilasi: Gambar 2.4 (mengutip Radhika, Firmansyah, dan Hatmoko 2017; primer di radhika-2017-jsda), Gambar 2.5 (IPA 2010 dan ketersediaan 5.004,64 m3/s, mengutip Radhika dkk. 2013, Kolokium Puslitbang SDA, naskah asli tidak ditemukan), Gambar 2.6 (CAT, KLH 2008), Gambar 2.8 (per kapita, proyeksi). Sekunder untuk angka yang dikutip. Teks lokal riset/mentah/slh.txt baris 2105-2222, pustaka baris 7216-7223"
+  },
+  {
+    "id": "pupr-2015-permen14",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 638",
+    "URL": "https://peraturan.go.id/files/bn638-2015.pdf",
+    "verifikasi": "primer",
+    "note": "lampiran pindaian dibaca OCR (paket air-jawa §5); rekap hlm. 13, 29, 63"
+  },
+  {
+    "id": "pupr-2015-permen04",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 04/PRT/M/2015 tentang Kriteria dan Penetapan Wilayah Sungai",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 429",
+    "URL": "https://peraturan.go.id/files/bn429-2015.pdf",
+    "verifikasi": "primer",
+    "note": "Lampiran I; teks di data/kajian-bnpb/data/air-jawa/mentah/permen04_2015.txt"
+  },
+  {
+    "id": "bbwspj-2021-bendungan",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Balai Besar Wilayah Sungai Pemali Juana"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "title": "Daftar inventarisasi bendungan di lingkungan BBWS Pemali Juana (status Juli 2021)",
+    "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "URL": "https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf",
+    "verifikasi": "primer",
+    "note": "18 bendungan di paket air-jawa berlabel resmi"
+  },
+  {
+    "id": "bps-jateng-2026-air-minum",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Pusat Statistik Provinsi Jawa Tengah"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026,
+          4,
+          14
+        ]
+      ]
+    },
+    "title": "Persentase rumah tangga yang memiliki akses terhadap air minum layak menurut kabupaten/kota di Provinsi Jawa Tengah",
+    "genre": "Data set",
+    "URL": "https://jateng.bps.go.id/id/statistics-table/2/MjQ4MCMy/persentase-rumah-tangga-yang-memiliki-akses-terhadap-air-minum-layak-menurut-kabupaten-kota-di-provinsi-jawa-tengah.html",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "ditarik paket air-jawa 23 Okt 2026 (meta.air_minum.kab_jateng_layak_2025)"
+  }
+]

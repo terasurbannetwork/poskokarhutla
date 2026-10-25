@@ -1,0 +1,74 @@
+{
+  "nama": "bertumpuk-dibi-kejadian-2020-2024",
+  "jenis": "bertumpuk",
+  "pesan": "G9",
+  "ukuran": "penuh",
+  "keterangan": "Kejadian bencana tercatat per keluarga bahaya di Indonesia, 2020 sampai 2024 (kejadian)",
+  "sumber": "DIBI BNPB, rekap nasional tahunan, cakupan kejadian bencana",
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/dibi/rekap_nasional_tahunan.csv",
+      "saring": {
+        "cakupan": "bencana",
+        "tahun": [
+          "2020",
+          "2021",
+          "2022",
+          "2023",
+          "2024"
+        ]
+      },
+      "kecuali": {
+        "kategori_dibi": "^SEMUA$"
+      }
+    },
+    "x": "tahun",
+    "seri": "kategori_dibi",
+    "nilai": "kejadian",
+    "kelompok": {
+      "basah": [
+        "Banjir",
+        "Longsor",
+        "Cuaca ekstrem",
+        "Gelombang pasang / Abrasi"
+      ],
+      "api": [
+        "Kebakaran hutan dan lahan"
+      ],
+      "kering": [
+        "Kekeringan"
+      ],
+      "geologi": [
+        "Gempabumi",
+        "Tsunami",
+        "Erupsi gunung api"
+      ]
+    }
+  },
+  "seri": [
+    {
+      "id": "basah",
+      "label": "Hidrometeorologi basah",
+      "warna": "kategori.basah"
+    },
+    {
+      "id": "api",
+      "label": "Karhutla",
+      "warna": "kategori.api"
+    },
+    {
+      "id": "kering",
+      "label": "Kekeringan",
+      "warna": "kategori.kering"
+    },
+    {
+      "id": "geologi",
+      "label": "Geologi",
+      "warna": "kategori.geologi"
+    },
+    {
+      "id": "lainnya",
+      "label": "Lainnya"
+    }
+  ]
+}

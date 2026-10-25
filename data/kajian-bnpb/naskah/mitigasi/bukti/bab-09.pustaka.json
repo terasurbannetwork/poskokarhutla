@@ -1,0 +1,833 @@
+[
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "verifikasi": "primer",
+  "note": "Bab 9 mitigasi: Pasal 1 angka 4 (hlm. 2), Pasal 51 (hlm. 23–24), Pasal 58 ayat (1) huruf f (hlm. 25), Penjelasan Umum hlm. 2 (\"kerusuhan sosial dan konflik sosial\"), Penjelasan Pasal 1 \"Cukup jelas\"; teks data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz"
+ },
+ {
+  "id": "ri-2012-uu7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     5,
+     10
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 7 Tahun 2012 tentang Penanganan Konflik Sosial",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2012 Nomor 116",
+  "URL": "https://peraturan.bpk.go.id/Details/39049/uu-no-7-tahun-2012",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Bab 9 mitigasi: Pasal 1, 5, 6, 10–14, 16, 18, 20, 22, 29, 37, 42, 44, 45, 49 ayat (2) huruf l, 55, 57; teks data/kajian-bnpb/data/lembaga/mentah/teks/uu-7-2012.json.gz"
+ },
+ {
+  "id": "ri-2015-pp2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     2,
+     2
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 2 Tahun 2015 tentang Peraturan Pelaksanaan Undang-Undang Nomor 7 Tahun 2012 tentang Penanganan Konflik Sosial",
+  "URL": "https://jdih.kemenkeu.go.id/download/31d6cafa-aaea-48af-aff5-431b730a079d/2TAHUN2015PP.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka ulang 24 Okt 2026 (pdftotext; SHA-256 PDF 9f89f049c3b2ab90ed1e1e0f412bbe0e1f8478eeb99a62fce7d793f43f249de2); LN 2015/25; Pasal 2, 5 ayat (4), 6, 9, 21–22, 79, 85–91, 97–98; kata \"bencana\" tidak muncul"
+ },
+ {
+  "id": "ri-2018-perpres17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     3,
+     19
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perpres-nomor-17-tahun-2018",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perpres-nomor-17-tahun-2018.json; diubah Perpres 46/2026",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2018 Nomor 34"
+ },
+ {
+  "id": "ri-2026-perpres46",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     16
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2026 Nomor 83",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Bab 9 mitigasi: konsiderans huruf b–c, Pasal 3 ayat (1)–(4), hlm. 1–4 korpus data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json"
+ },
+ {
+  "id": "ri-2024-perpres144",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     11,
+     5
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 144 Tahun 2024 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+  "URL": "https://peraturan.bpk.go.id/Details/306486/perpres-no-144-tahun-2024",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 24–26 Deputi Bidang Koordinasi Penanggulangan Bencana dan Konflik Sosial (README lembaga §4.1); diubah Perpres 91/2025"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "Bab 9 mitigasi: hlm. 30 (isu strategis 4 Potensi Kejadian Konflik Sosial), hlm. 55 (kegiatan 1.1.2.j), hlm. 62 (kegiatan 1.2.4.c); korpus data/raw/hukum/teks/perban-nomor-1-tahun-2025.json"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "Bab 9 mitigasi: kata \"konflik\" hanya muncul sekali (hlm. 49, bantuan ke Palestina); korpus data/raw/hukum/teks/perban-nomor-5-tahun-2025.json"
+ },
+ {
+  "id": "bnpb-2025-otk",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "susunan unit di data/kajian-bnpb/data/program-terbukti/organisasi_bnpb.csv; teks menulis ditetapkan 6 Okt 2025, metadata JDIH 7 Okt 2025",
+  "container-title": "Berita Negara Republik Indonesia, BN 2025 (769); 38 Hlm"
+ },
+ {
+  "id": "bnpb-2025-otk-ubah",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     30
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 11 Tahun 2025 tentang Perubahan atas Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb011.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "mengubah susunan Deputi Bidang Penanganan Darurat dan Deputi Bidang Rehabilitasi dan Rekonstruksi (README program-terbukti §1)",
+  "container-title": "Berita Negara Republik Indonesia, BN 2025 (1159); 21 Hlm"
+ },
+ {
+  "id": "bnpb-2025-progsun",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     31
+    ]
+   ]
+  },
+  "title": "Keputusan Kepala Badan Nasional Penanggulangan Bencana Nomor 327 Tahun 2025 tentang Program Penyusunan Peraturan Badan Nasional Penanggulangan Bencana Tahun 2026",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025kepkabnpb327.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan bab air; dibaca dari data/raw/hukum/teks/keputusan-kepala-nomor-327-tahun-2025.json (penetapan hlm. 3, Lampiran butir 11 hlm. 5)"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer"
+ },
+ {
+  "id": "bps-2024-podes",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Statistik Potensi Desa Indonesia 2024",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/publication/2024/12/10/2f5217e2d6a695a0830290a7/statistik-potensi-desa-indonesia-2024.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tabel 1.1, 18.1, 18.2 (mentah data/kajian-bnpb/data/nonalam-sosial/mentah/bps_podes2024_gangguan_keamanan.json, SHA-256 PDF ce740d31…): 2.031 desa/kelurahan dengan perkelahian massal (2,41%), 150 desa dengan korban meninggal, tujuh jenis perkelahian"
+ },
+ {
+  "id": "icg-2001-kalimantan",
+  "type": "report",
+  "author": [
+   {
+    "literal": "International Crisis Group",
+    "singkatan": "ICG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2001,
+     6,
+     27
+    ]
+   ]
+  },
+  "title": "Communal violence in Indonesia: Lessons from Kalimantan",
+  "collection-title": "Asia Report N°19",
+  "publisher": "International Crisis Group",
+  "URL": "https://www.justice.gov/file/277141/dl",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sampit sekitar 500 meninggal dan 108.000 pengungsi; Sambas 1996–1997 dan 1999"
+ },
+ {
+  "id": "icg-2002-maluku",
+  "type": "report",
+  "author": [
+   {
+    "literal": "International Crisis Group",
+    "singkatan": "ICG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     2,
+     8
+    ]
+   ]
+  },
+  "title": "Indonesia: The search for peace in Maluku",
+  "collection-title": "Asia Report N°31",
+  "publisher": "International Crisis Group",
+  "URL": "https://web.archive.org/web/20240717142222/https://www.crisisgroup.org/asia/south-east-asia/indonesia/indonesia-search-peace-maluku",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sedikitnya 5.000 (mungkin 10.000) meninggal; hampir 700.000 mengungsi"
+ },
+ {
+  "id": "hrw-2002-poso",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Human Rights Watch",
+    "singkatan": "HRW"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     12,
+     4
+    ]
+   ]
+  },
+  "title": "Indonesia: Breakdown: Four years of communal violence in Central Sulawesi (siaran pers)",
+  "publisher": "Human Rights Watch",
+  "URL": "https://www.hrw.org/press/2002/12/indo1204.htm",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sekitar 1.000 meninggal; lebih dari 100.000 mengungsi"
+ },
+ {
+  "id": "brookings-2001-pengungsi",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Brookings-CUNY Project on Internal Displacement"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2001,
+     6
+    ]
+   ]
+  },
+  "title": "Report of Seminar on Internal Displacement in Indonesia, Jakarta, 26–27 June 2001",
+  "publisher": "Brookings Institution",
+  "URL": "https://www.brookings.edu/wp-content/uploads/2012/04/20010626_IndonesiaReport.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pengungsi internal tercatat resmi lebih dari 1 juta"
+ },
+ {
+  "id": "setkab-2019-wamena",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "Sampaikan duka cita kepada korban, Presiden Jokowi: rusuh Wamena bukan konflik etnis",
+  "publisher": "Sekretariat Kabinet",
+  "URL": "https://setkab.go.id/sampaikan-duka-cita-kepada-korban-presiden-jokowi-rusuh-wamena-bukan-konflik-etnis/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "33 meninggal; Presiden: \"Bukan. Ini adalah kelompok kriminal bersenjata yang dari atas dari gunung turun ke bawah dan melakukan pembakaran-pembakaran rumah warga\" (dibuka ulang 24 Okt 2026)"
+ },
+ {
+  "id": "bnpb-2018-keadaan-tertentu",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2018 tentang Kondisi dan Tata Cara Pelaksanaan Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2018 Nomor 1644",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2018pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "diundangkan 13 Des 2018; status BERLAKU di katalog JDIH BNPB (data/raw/hukum/indeks.json); Pasal 1, 3, 4, 6, 7, 12 dibaca dari korpus data/raw/hukum/teks/perban-nomor-5-tahun-2018.json hlm. 2–8"
+ },
+ {
+  "id": "bps-2025-statistik-kriminal",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     12
+    ]
+   ]
+  },
+  "title": "Statistik Kriminal 2024/2025",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/publication/2025/12/12/2edc8ea4c35b19ba912fc7e4/statistik-kriminal-2024-2025.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran 26 hlm. 136 (desa/kelurahan dengan kejadian konflik massal 2021 dan 2024); mentah data/kajian-bnpb/data/nonalam-sosial/mentah/bps_kriminal2025_lampiran26.json (SHA-256 PDF 48a27c44…)"
+ },
+ {
+  "id": "kemendagri-2015-permendagri42",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Dalam Negeri"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     3,
+     31
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Dalam Negeri Nomor 42 Tahun 2015 tentang Pelaksanaan Koordinasi Penanganan Konflik Sosial",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 506",
+  "URL": "https://balaipemdesdilampung.kemendagri.go.id/assets/files/PERMENDAGRI-NO-42-TAHUN-2015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan Berita Negara (cap peraturan.go.id) di laman Kemendagri; diundangkan 6 Apr 2015; konsiderans PP 2/2015 Pasal 97; Pasal 10–15 Tim Terpadu (BNPB dan BPBD tidak disebut); status berlaku per 2026 belum dicek di JDIH BPK"
+ },
+ {
+  "id": "kemenkeu-2025-pmk97",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Keuangan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     22
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Keuangan Nomor 97 Tahun 2025 tentang Peta Kapasitas Fiskal Daerah",
+  "URL": "https://jdih.kemenkeu.go.id/api/download/b07259a8-a36e-49bd-8031-18b7489c675e/2025pmkeuangan097.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ditetapkan 22 Des 2025 (tanggal pengundangan tidak terbaca di salinan elektronik); Lampiran butir 1 (38 provinsi) dan butir 2 (508 kab/kota), lima kategori; teks diekstrak dengan pdftotext, SHA-256 PDF bd019510b4fdfefad02a2626ecee3e531eba8e51d6b86ad8dee99e555ead1f19"
+ },
+ {
+  "id": "kemenkopmk-2025-snpk-revitalisasi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     4,
+     21
+    ]
+   ]
+  },
+  "title": "Kemenko PMK dan UNDP bahas revitalisasi Sistem Nasional Pemantauan Kekerasan (SNPK)",
+  "publisher": "Kemenko PMK",
+  "URL": "https://kemenkopmk.go.id/node/5582",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rapat 17 Apr 2025; Deputi Bidang Koordinasi PB dan Konflik Sosial: SNPK ada sejak 10 tahun lalu, belum optimal karena kendala teknis dan koordinatif"
+ },
+ {
+  "id": "kemenkopmk-2025-snpk-hibah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     7,
+     10
+    ]
+   ]
+  },
+  "title": "Kemenko PMK matangkan proses migrasi SNPK dari LabPsiPol UI melalui skema hibah",
+  "publisher": "Kemenko PMK",
+  "URL": "https://kemenkopmk.go.id/node/5713",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rapat 7 Jul 2025; server dan aplikasi SNPK dalam kondisi nonaktif; UNDP mendanai migrasi"
+ },
+ {
+  "id": "kemenkopmk-2025-snpk-migrasi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     31
+    ]
+   ]
+  },
+  "title": "Kemenko PMK matangkan migrasi SNPK untuk perkuat tata kelola data konflik nasional",
+  "publisher": "Kemenko PMK",
+  "URL": "https://kemenkopmk.go.id/node/5967",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rapat 30 Okt 2025; tahap I migrasi data SNPK 2019–2023, tahap II dashboard; tiga server virtual"
+ },
+ {
+  "id": "ri-2002-uu2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
+  "URL": "https://peraturan.bpk.go.id/Details/44418/uu-no-2-tahun-2002",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 13 (tugas pokok Polri); status Berlaku, diubah terakhir UU 5/2026 (data/kajian-bnpb/data/lembaga/sumber.csv); teks lembaga/mentah/teks/uu-2-2002.json.gz"
+ },
+ {
+  "id": "ri-2026-uu5",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     6,
+     17
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 5 Tahun 2026 tentang Perubahan Ketiga atas Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
+  "URL": "https://peraturan.bpk.go.id/Details/350096/uu-no-5-tahun-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "mengubah Pasal 14, tidak mengubah Pasal 13 (dicek di lembaga/mentah/teks/uu-5-2026.json.gz)"
+ }
+]

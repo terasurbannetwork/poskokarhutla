@@ -1,0 +1,401 @@
+{
+ "nama": "bab04-peta-bendungan-pemali-juana",
+ "keterangan": "Bendungan BBWS Pemali-Juana menurut volume desain dan kehilangan tampungan, status Juli 2021",
+ "sumber": "BBWS Pemali-Juana, data bendungan status Juli 2021",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  414.41
+ ],
+ "ukuran_cm": [
+  16.5,
+  14.62
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "70",
+   "jenis": "simbol",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "200",
+   "jenis": "simbol",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "700",
+   "jenis": "simbol",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "garis",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#D3DBE5": [
+   "daratan-netral",
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#051C2C": [
+   "simbol",
+   "legenda"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 6.75,
+   "y": 356.36,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 125.14,
+   "y": 356.36,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "100 km"
+  },
+  {
+   "x": 135.81,
+   "y": 327.36,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 330.08,
+   "y": 213.65,
+   "w": 12.41,
+   "h": 12.41,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "Kedungombo, hilang 5,5%"
+  },
+  {
+   "x": 97.46,
+   "y": 181.41,
+   "w": 4.38,
+   "h": 4.38,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "Cacaban, hilang 49,9%"
+  },
+  {
+   "x": 315.26,
+   "y": 233.2,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "Klego, hilang 23,4%"
+  },
+  {
+   "x": 381.65,
+   "y": 206.38,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "Butak, hilang 86,9%"
+  },
+  {
+   "x": 377.56,
+   "y": 205.61,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "Nglangon, hilang 56,8%"
+  },
+  {
+   "x": 424.11,
+   "y": 167.55,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "Tempuran, hilang 17,8%"
+  },
+  {
+   "x": 403.36,
+   "y": 149.42,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim6",
+   "teks": "Banyukuwung, hilang 40,8%"
+  },
+  {
+   "x": 399.26,
+   "y": 149.68,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim7",
+   "teks": "Grawan, hilang 6,8%"
+  },
+  {
+   "x": 444.5,
+   "y": 151.26,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim8",
+   "teks": "Lodan, hilang 20,3%"
+  },
+  {
+   "x": 419.45,
+   "y": 155.19,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim9",
+   "teks": "Panohan, hilang 10,3%"
+  },
+  {
+   "x": 351.49,
+   "y": 137.24,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim10",
+   "teks": "Gembong, hilang 12,6%"
+  },
+  {
+   "x": 352.43,
+   "y": 131.42,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim11",
+   "teks": "Gunungrowo, hilang 1,4%"
+  },
+  {
+   "x": 346.44,
+   "y": 146.17,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim12",
+   "teks": "Logung, hilang 0,0%"
+  },
+  {
+   "x": 79.5,
+   "y": 228.12,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim13",
+   "teks": "Penjalin, hilang 18,2%"
+  },
+  {
+   "x": 264.66,
+   "y": 186.33,
+   "w": 3.19,
+   "h": 3.19,
+   "jenis": "simbol",
+   "grup": "sim14",
+   "teks": "Jatibarang, hilang 9,2%"
+  },
+  {
+   "x": 357.7,
+   "y": 121.42,
+   "w": 90.63,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Gembong, hilang 12,6%",
+   "teks": "Gembong, hilang 12,6%"
+  },
+  {
+   "x": 265.27,
+   "y": 152.38,
+   "w": 78.16,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Logung, hilang 0,0%",
+   "teks": "Logung, hilang 0,0%"
+  },
+  {
+   "x": 344.13,
+   "y": 227.69,
+   "w": 99.19,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Kedungombo, hilang 5,5%",
+   "teks": "Kedungombo, hilang 5,5%"
+  },
+  {
+   "x": 270.88,
+   "y": 192.54,
+   "w": 89.61,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Jatibarang, hilang 9,2%",
+   "teks": "Jatibarang, hilang 9,2%"
+  },
+  {
+   "x": 7.29,
+   "y": 188.63,
+   "w": 87.33,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Cacaban, hilang 49,9%",
+   "teks": "Cacaban, hilang 49,9%"
+  },
+  {
+   "x": 85.72,
+   "y": 234.33,
+   "w": 84.24,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Bendungan:Penjalin, hilang 18,2%",
+   "teks": "Penjalin, hilang 18,2%"
+  },
+  {
+   "x": 138.89,
+   "y": 378.32,
+   "w": 86.5,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-138",
+   "teks": "Volume desain (juta m³)"
+  },
+  {
+   "x": 138.89,
+   "y": 377.32,
+   "w": 86.5,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-138",
+   "teks": "Volume desain (juta m³)"
+  },
+  {
+   "x": 243.75,
+   "y": 378.32,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-235",
+   "teks": "70"
+  },
+  {
+   "x": 235.39,
+   "y": 377.32,
+   "w": 17.34,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-235",
+   "teks": "70"
+  },
+  {
+   "x": 274.09,
+   "y": 378.32,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-262",
+   "teks": "200"
+  },
+  {
+   "x": 262.73,
+   "y": 377.32,
+   "w": 24.84,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-262",
+   "teks": "200"
+  },
+  {
+   "x": 315.35,
+   "y": 378.32,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-297",
+   "teks": "700"
+  },
+  {
+   "x": 297.57,
+   "y": 375.44,
+   "w": 31.25,
+   "h": 13.78,
+   "jenis": "legenda",
+   "grup": "leg0-297",
+   "teks": "700"
+  },
+  {
+   "x": 3,
+   "y": 392.21,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 401.81,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,0° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": [
+  "33"
+ ],
+ "tingkat": "kab",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,0° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kiri bawah",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 6,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 15,
+ "simbol_digeser": 0,
+ "putaran_geser": 1
+}

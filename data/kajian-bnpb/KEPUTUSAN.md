@@ -41,3 +41,8 @@ berlaku.
 | T8 | Warna kelas IRBI | Skala oranye rumah BNPB dengan nama kelas resmi (Rendah, Sedang, Tinggi) dan legenda | Merah hanya untuk bahaya/perlu perhatian |
 | T9 | Daftar Pustaka dihitung dalam batas halaman | Tidak; sama seperti lampiran | Batas halaman = isi utama |
 | T10 | Ejaan fase | "prabencana", "tanggap darurat", "pascabencana" sesuai UU 24/2007; subjudul kajian mitigasi: "Strategi Prabencana, Tanggap Darurat, dan Pascabencana" | Istilah undang-undang |
+| T11 | Judul slide deck kajian: judul aksi (MBB) atau deskriptif | Slide temuan memakai kalimat temuan berangka maks 2 baris (pola lampiran Presiden d9); sampul, pembatas, dan slide rekomendasi memakai judul deskriptif | Deck kajian adalah deck temuan; judul deskriptif tetap untuk deck wilayah |
+| T12 | Letak pelacak bagian di deck | Kode bagian berwarna sorot di depan judul ("A1.", "B2.") seperti d9 dan Deloitte-NEMA; tanpa unsur baru di pojok yang bisa menabrak logo atau pil CUT OFF | Nol unsur tambahan, pola sudah dipakai pemilik |
+| T13 | Warna pembatas bab di deck | GELAP 051C2C, sama dengan pembatas Lampiran dan penutup | Kerangka rumah BNPB |
+| T14 | Angka Aceh 2004 dan Nias 2005 dari buku BRR 2009 | Diterima sebagai sumber resmi: BRR NAD-Nias adalah badan pemerintah yang dibentuk Perpres 30/2005, jadi terbitannya berlabel resmi dan boleh di isi utama | Penerbitnya lembaga negara; tanpa angka ini histori kehilangan kejadian terbesar |
+| P18 | Batas halaman | Dicabut pemilik 24 Okt 2026 ("Tidak ada batas"): T5 tidak berlaku lagi; gerbang D-12 tidak membatasi halaman isi; foto boleh ditambah sebanyak yang relevan | Kata pemilik |

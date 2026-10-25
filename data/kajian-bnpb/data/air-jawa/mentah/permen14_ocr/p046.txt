@@ -1,3 +1,4 @@
+#mesin tesseract 5.5.3; pdftoppm version 26.10.0; lang ind; psm 6; dpi 300 (dicap susulan 23 Okt 2026: versi terpasang di mesin yang menjalankan OCR hari itu)
 #TATA_LETAK satu-tabel lebar=2480
 2015, No.638 46
 NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan

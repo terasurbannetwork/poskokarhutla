@@ -1,72 +1,96 @@
-tahun,bulan,versi,kejadian,label,sumber,catatan
-2024,1,dibi_bencana,347,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,1,dibi_semua_laporan,369,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,1,buletin_bnpb,205,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,2,dibi_bencana,303,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,2,dibi_semua_laporan,311,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,2,buletin_bnpb,298,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,3,dibi_bencana,350,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,3,dibi_semua_laporan,355,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,3,buletin_bnpb,343,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,4,dibi_bencana,213,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,4,dibi_semua_laporan,218,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,5,dibi_bencana,218,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,5,dibi_semua_laporan,222,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,5,buletin_bnpb,215,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,6,dibi_bencana,168,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,6,dibi_semua_laporan,175,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,6,buletin_bnpb,163,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,7,dibi_bencana,307,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,7,dibi_semua_laporan,312,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,7,buletin_bnpb,301,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,8,dibi_bencana,349,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,8,dibi_semua_laporan,355,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,8,buletin_bnpb,344,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,9,dibi_bencana,329,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,9,dibi_semua_laporan,335,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,9,buletin_bnpb,327,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,10,dibi_bencana,304,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,10,dibi_semua_laporan,307,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,10,buletin_bnpb,295,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,11,dibi_bencana,337,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,11,dibi_semua_laporan,348,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,11,buletin_bnpb,326,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2024,12,dibi_bencana,323,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,12,dibi_semua_laporan,329,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2024,12,buletin_bnpb,312,resmi,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,1,dibi_bencana,586,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,1,dibi_semua_laporan,1187,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,1,buletin_bnpb,302,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,2,dibi_bencana,484,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,2,dibi_semua_laporan,1012,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,2,buletin_bnpb,237,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,3,dibi_bencana,509,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,3,dibi_semua_laporan,945,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,3,buletin_bnpb,261,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,4,dibi_bencana,288,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,4,dibi_semua_laporan,637,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,4,buletin_bnpb,152,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,5,dibi_bencana,373,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,5,dibi_semua_laporan,907,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,5,buletin_bnpb,209,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,6,dibi_bencana,337,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,6,dibi_semua_laporan,537,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,6,buletin_bnpb,182,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,7,dibi_bencana,637.25,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,7,dibi_semua_laporan,861.25,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,7,buletin_bnpb,287,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,8,dibi_bencana,532,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,8,dibi_semua_laporan,782,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,8,buletin_bnpb,251,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,9,dibi_bencana,448.2,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,9,dibi_semua_laporan,658.2,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,9,buletin_bnpb,176,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,10,dibi_bencana,423.5,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,10,dibi_semua_laporan,571.5,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,10,buletin_bnpb,202,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,11,dibi_bencana,423.5,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,11,dibi_semua_laporan,589.5,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,11,buletin_bnpb,274,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
-2025,12,dibi_bencana,399,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,12,dibi_semua_laporan,618,resmi,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
-2025,12,buletin_bnpb,245,resmi,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+tahun,bulan,versi,kejadian,label,verifikasi,sumber,catatan
+2024,1,dibi_bencana,347,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,1,dibi_semua_laporan,369,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,1,dibi_bencana_alam,340,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,1,buletin_bnpb,205,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,2,dibi_bencana,303,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,2,dibi_semua_laporan,311,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,2,dibi_bencana_alam,298,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,2,buletin_bnpb,298,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,3,dibi_bencana,350,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,3,dibi_semua_laporan,355,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,3,dibi_bencana_alam,342.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,3,buletin_bnpb,343,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,4,dibi_bencana,213,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,4,dibi_semua_laporan,218,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,4,dibi_bencana_alam,208,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,5,dibi_bencana,218,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,5,dibi_semua_laporan,222,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,5,dibi_bencana_alam,215,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,5,buletin_bnpb,215,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,6,dibi_bencana,168,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,6,dibi_semua_laporan,175,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,6,dibi_bencana_alam,163,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,6,buletin_bnpb,163,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,7,dibi_bencana,307,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,7,dibi_semua_laporan,312,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,7,dibi_bencana_alam,301,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,7,buletin_bnpb,301,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,8,dibi_bencana,349,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,8,dibi_semua_laporan,355,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,8,dibi_bencana_alam,344,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,8,buletin_bnpb,344,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,9,dibi_bencana,329,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,9,dibi_semua_laporan,335,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,9,dibi_bencana_alam,327,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,9,buletin_bnpb,327,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,10,dibi_bencana,304,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,10,dibi_semua_laporan,307,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,10,dibi_bencana_alam,295,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,10,buletin_bnpb,295,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,11,dibi_bencana,337,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,11,dibi_semua_laporan,348,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,11,dibi_bencana_alam,326,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,11,buletin_bnpb,326,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2024,12,dibi_bencana,323,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,12,dibi_semua_laporan,329,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2024,12,dibi_bencana_alam,312,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2024,12,buletin_bnpb,312,resmi,primer,Buletin Info Bencana BNPB 2025 (pembanding bulan yang sama 2024),https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,1,dibi_bencana,586,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,1,dibi_semua_laporan,1187,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,1,dibi_bencana_alam,565,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,1,buletin_bnpb,302,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,2,dibi_bencana,484,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,2,dibi_semua_laporan,1012,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,2,dibi_bencana_alam,474,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,2,buletin_bnpb,237,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,3,dibi_bencana,509,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,3,dibi_semua_laporan,945,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,3,dibi_bencana_alam,498,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,3,buletin_bnpb,261,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,4,dibi_bencana,288,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,4,dibi_semua_laporan,637,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,4,dibi_bencana_alam,277,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,4,buletin_bnpb,152,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,5,dibi_bencana,373,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,5,dibi_semua_laporan,907,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,5,dibi_bencana_alam,362,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,5,buletin_bnpb,209,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,6,dibi_bencana,337,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,6,dibi_semua_laporan,537,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,6,dibi_bencana_alam,323,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,6,buletin_bnpb,182,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,7,dibi_bencana,637.25,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,7,dibi_semua_laporan,861.25,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,7,dibi_bencana_alam,557.25,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,7,buletin_bnpb,287,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,8,dibi_bencana,532,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,8,dibi_semua_laporan,782,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,8,dibi_bencana_alam,458,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,8,buletin_bnpb,251,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,9,dibi_bencana,448.2,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,9,dibi_semua_laporan,658.2,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,9,dibi_bencana_alam,372.2,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,9,buletin_bnpb,176,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,10,dibi_bencana,423.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,10,dibi_semua_laporan,571.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,10,dibi_bencana_alam,399.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,10,buletin_bnpb,202,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,11,dibi_bencana,423.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,11,dibi_semua_laporan,589.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,11,dibi_bencana_alam,410.5,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,11,buletin_bnpb,274,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)
+2025,12,dibi_bencana,399,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,12,dibi_semua_laporan,618,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+2025,12,dibi_bencana_alam,381,resmi,primer,"DIBI BNPB, dibi.bnpb.go.id dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)","is_bencana=true, kode Juklak 101-109: pembanding utama buletin"
+2025,12,buletin_bnpb,245,resmi,primer,Buletin Info Bencana BNPB bulan itu,https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20{Bulan}/Buletin%20Info%20Bencana%20{Bulan}%202025.pdf (Februari: buletin-info-bencana-februari-2025.pdf)

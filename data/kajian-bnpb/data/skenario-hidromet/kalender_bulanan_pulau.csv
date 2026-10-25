@@ -1,0 +1,611 @@
+pulau,bulan,jenis,kejadian,meninggal_hilang,n_tahun
+Bali-Nusa Tenggara,1,banjir,268,30,18
+Bali-Nusa Tenggara,1,banjir_bandang,20.3333,4,5
+Bali-Nusa Tenggara,1,banjir_longsor,5,0,3
+Bali-Nusa Tenggara,1,cuaca_ekstrem,271,26,18
+Bali-Nusa Tenggara,1,gelombang_abrasi,31,4,11
+Bali-Nusa Tenggara,1,longsor,142,46,16
+Bali-Nusa Tenggara,1,rob,0.6667,0,1
+Bali-Nusa Tenggara,2,banjir,223,63,18
+Bali-Nusa Tenggara,2,banjir_bandang,21,2,5
+Bali-Nusa Tenggara,2,banjir_longsor,6,0,4
+Bali-Nusa Tenggara,2,cuaca_ekstrem,210,22,16
+Bali-Nusa Tenggara,2,gelombang_abrasi,29,4,9
+Bali-Nusa Tenggara,2,kekeringan,3,0,2
+Bali-Nusa Tenggara,2,longsor,108,26,15
+Bali-Nusa Tenggara,2,rob,1,0,1
+Bali-Nusa Tenggara,3,banjir,143,26,18
+Bali-Nusa Tenggara,3,banjir_bandang,5,0,3
+Bali-Nusa Tenggara,3,banjir_longsor,2,0,1
+Bali-Nusa Tenggara,3,cuaca_ekstrem,119,23,15
+Bali-Nusa Tenggara,3,gelombang_abrasi,4,1,2
+Bali-Nusa Tenggara,3,kekeringan,10,2,3
+Bali-Nusa Tenggara,3,longsor,58,17,14
+Bali-Nusa Tenggara,3,rob,1,0,1
+Bali-Nusa Tenggara,4,banjir,91.5,175,16
+Bali-Nusa Tenggara,4,banjir_bandang,3,69,2
+Bali-Nusa Tenggara,4,banjir_longsor,3.5,0,2
+Bali-Nusa Tenggara,4,cuaca_ekstrem,35,5,11
+Bali-Nusa Tenggara,4,gelombang_abrasi,5,1,2
+Bali-Nusa Tenggara,4,kekeringan,9,0,4
+Bali-Nusa Tenggara,4,longsor,37,11,14
+Bali-Nusa Tenggara,4,rob,1,0,1
+Bali-Nusa Tenggara,5,banjir,41,10,12
+Bali-Nusa Tenggara,5,cuaca_ekstrem,24,0,10
+Bali-Nusa Tenggara,5,gelombang_abrasi,13,1,5
+Bali-Nusa Tenggara,5,karhutla,1,0,1
+Bali-Nusa Tenggara,5,kekeringan,2,0,2
+Bali-Nusa Tenggara,5,longsor,25,9,11
+Bali-Nusa Tenggara,5,rob,3,0,3
+Bali-Nusa Tenggara,6,banjir,26,9,9
+Bali-Nusa Tenggara,6,cuaca_ekstrem,16,2,7
+Bali-Nusa Tenggara,6,gelombang_abrasi,3,0,2
+Bali-Nusa Tenggara,6,karhutla,3,0,2
+Bali-Nusa Tenggara,6,kekeringan,13,0,4
+Bali-Nusa Tenggara,6,longsor,18,14,9
+Bali-Nusa Tenggara,6,rob,4,0,2
+Bali-Nusa Tenggara,7,banjir,17,4,7
+Bali-Nusa Tenggara,7,cuaca_ekstrem,16,2,7
+Bali-Nusa Tenggara,7,gelombang_abrasi,10,0,4
+Bali-Nusa Tenggara,7,karhutla,15,0,6
+Bali-Nusa Tenggara,7,kekeringan,85,0,10
+Bali-Nusa Tenggara,7,longsor,16,5,4
+Bali-Nusa Tenggara,8,banjir,4,0,4
+Bali-Nusa Tenggara,8,banjir_longsor,1,1,1
+Bali-Nusa Tenggara,8,cuaca_ekstrem,13,0,6
+Bali-Nusa Tenggara,8,gelombang_abrasi,6,6,2
+Bali-Nusa Tenggara,8,karhutla,43,0,7
+Bali-Nusa Tenggara,8,kekeringan,22,0,8
+Bali-Nusa Tenggara,8,longsor,12,13,8
+Bali-Nusa Tenggara,9,banjir,19,44,7
+Bali-Nusa Tenggara,9,banjir_bandang,1,3,1
+Bali-Nusa Tenggara,9,cuaca_ekstrem,41,2,16
+Bali-Nusa Tenggara,9,karhutla,43,0,10
+Bali-Nusa Tenggara,9,kekeringan,19,0,7
+Bali-Nusa Tenggara,9,longsor,13,3,9
+Bali-Nusa Tenggara,10,banjir,13,2,5
+Bali-Nusa Tenggara,10,banjir_bandang,1,1,1
+Bali-Nusa Tenggara,10,banjir_longsor,3,4,1
+Bali-Nusa Tenggara,10,cuaca_ekstrem,67,3,17
+Bali-Nusa Tenggara,10,gelombang_abrasi,4,0,3
+Bali-Nusa Tenggara,10,karhutla,29,0,6
+Bali-Nusa Tenggara,10,kekeringan,9,0,3
+Bali-Nusa Tenggara,10,longsor,22,14,7
+Bali-Nusa Tenggara,10,rob,2,0,1
+Bali-Nusa Tenggara,11,banjir,68,42,12
+Bali-Nusa Tenggara,11,banjir_bandang,6,0,3
+Bali-Nusa Tenggara,11,banjir_longsor,2,0,2
+Bali-Nusa Tenggara,11,cuaca_ekstrem,108,6,17
+Bali-Nusa Tenggara,11,gelombang_abrasi,2,0,1
+Bali-Nusa Tenggara,11,karhutla,7,0,4
+Bali-Nusa Tenggara,11,longsor,47,6,9
+Bali-Nusa Tenggara,12,banjir,142.5,22,17
+Bali-Nusa Tenggara,12,banjir_bandang,8,8,3
+Bali-Nusa Tenggara,12,banjir_longsor,1.5,1,2
+Bali-Nusa Tenggara,12,cuaca_ekstrem,98,29,15
+Bali-Nusa Tenggara,12,gelombang_abrasi,5,0,2
+Bali-Nusa Tenggara,12,kekeringan,2,0,2
+Bali-Nusa Tenggara,12,longsor,44,16,12
+Bali-Nusa Tenggara,12,rob,5,0,2
+Jawa,1,banjir,1173.9667,240,18
+Jawa,1,banjir_bandang,8.5,0,3
+Jawa,1,banjir_longsor,12.5333,24,4
+Jawa,1,cuaca_ekstrem,1489,82,18
+Jawa,1,gelombang_abrasi,12,2,7
+Jawa,1,kekeringan,5,0,2
+Jawa,1,longsor,1128,204,18
+Jawa,1,rob,7,0,3
+Jawa,2,banjir,1252.6667,220,18
+Jawa,2,banjir_bandang,5,0,3
+Jawa,2,banjir_longsor,12.8333,10,3
+Jawa,2,cuaca_ekstrem,1318,21,18
+Jawa,2,gelombang_abrasi,3,0,3
+Jawa,2,karhutla,3,0,2
+Jawa,2,kekeringan,2,0,2
+Jawa,2,longsor,1328.5,214,18
+Jawa,2,rob,2,0,2
+Jawa,3,banjir,1007,290,18
+Jawa,3,banjir_bandang,6,1,3
+Jawa,3,banjir_longsor,17,5,4
+Jawa,3,cuaca_ekstrem,1148.5,39,18
+Jawa,3,gelombang_abrasi,1,0,1
+Jawa,3,longsor,966.5,147,18
+Jawa,4,banjir,657.6667,72,18
+Jawa,4,banjir_bandang,1.8333,0,2
+Jawa,4,banjir_longsor,16,2,3
+Jawa,4,cuaca_ekstrem,732,13,18
+Jawa,4,gelombang_abrasi,5,5,4
+Jawa,4,karhutla,3,0,3
+Jawa,4,kekeringan,4,0,4
+Jawa,4,longsor,782,186,18
+Jawa,5,banjir,501.8333,56,18
+Jawa,5,banjir_bandang,1,0,1
+Jawa,5,banjir_longsor,7,0,2
+Jawa,5,cuaca_ekstrem,496.1667,6,18
+Jawa,5,gelombang_abrasi,12,6,8
+Jawa,5,karhutla,13,0,5
+Jawa,5,kekeringan,35,0,8
+Jawa,5,longsor,568,125,17
+Jawa,5,rob,31,0,4
+Jawa,6,banjir,242,76,16
+Jawa,6,banjir_bandang,1.5,2,2
+Jawa,6,banjir_longsor,6.5,4,3
+Jawa,6,cuaca_ekstrem,305,8,18
+Jawa,6,gelombang_abrasi,15,0,6
+Jawa,6,karhutla,47,1,7
+Jawa,6,kekeringan,159,0,8
+Jawa,6,longsor,291.5,126,17
+Jawa,6,rob,29,0,3
+Jawa,7,banjir,164,14,14
+Jawa,7,banjir_longsor,3,3,2
+Jawa,7,cuaca_ekstrem,195,3,17
+Jawa,7,gelombang_abrasi,21,0,2
+Jawa,7,karhutla,156.5,0,9
+Jawa,7,kekeringan,233,0,14
+Jawa,7,longsor,149,50,17
+Jawa,7,rob,5,0,2
+Jawa,8,banjir,104,10,11
+Jawa,8,banjir_bandang,1,0,1
+Jawa,8,banjir_longsor,2,0,1
+Jawa,8,cuaca_ekstrem,224,4,18
+Jawa,8,gelombang_abrasi,3,4,3
+Jawa,8,karhutla,395.5,4,13
+Jawa,8,kekeringan,204,0,13
+Jawa,8,longsor,147.5,37,17
+Jawa,8,rob,2,0,2
+Jawa,9,banjir,136.6667,69,12
+Jawa,9,banjir_bandang,3,3,2
+Jawa,9,banjir_longsor,13.3333,4,3
+Jawa,9,cuaca_ekstrem,370,12,18
+Jawa,9,gelombang_abrasi,7,0,2
+Jawa,9,karhutla,453,4,13
+Jawa,9,kekeringan,193,0,15
+Jawa,9,longsor,239,38,16
+Jawa,10,banjir,290.1667,17,16
+Jawa,10,banjir_bandang,2,0,1
+Jawa,10,banjir_longsor,25.3333,13,3
+Jawa,10,cuaca_ekstrem,865.75,33,18
+Jawa,10,gelombang_abrasi,3,3,3
+Jawa,10,karhutla,338.5,16,12
+Jawa,10,kekeringan,36,0,11
+Jawa,10,longsor,492.1667,93,17
+Jawa,11,banjir,591.1667,91,17
+Jawa,11,banjir_bandang,7.5,0,3
+Jawa,11,banjir_longsor,18.3333,4,3
+Jawa,11,cuaca_ekstrem,1132.25,48,17
+Jawa,11,gelombang_abrasi,3,0,3
+Jawa,11,karhutla,80,1,5
+Jawa,11,kekeringan,6,0,3
+Jawa,11,longsor,796.3333,188,17
+Jawa,11,rob,1.5,0,1
+Jawa,12,banjir,784,80,18
+Jawa,12,banjir_bandang,5,2,5
+Jawa,12,banjir_longsor,26.3333,10,3
+Jawa,12,cuaca_ekstrem,1081,36,18
+Jawa,12,gelombang_abrasi,10,32,5
+Jawa,12,karhutla,12,0,3
+Jawa,12,kekeringan,12,0,2
+Jawa,12,longsor,782.1667,242,18
+Jawa,12,rob,21,0,3
+Kalimantan,1,banjir,291,35,18
+Kalimantan,1,banjir_bandang,1,0,1
+Kalimantan,1,banjir_longsor,5,7,3
+Kalimantan,1,cuaca_ekstrem,93,3,15
+Kalimantan,1,gelombang_abrasi,10,0,5
+Kalimantan,1,karhutla,65,0,12
+Kalimantan,1,kekeringan,1,0,1
+Kalimantan,1,longsor,49,24,13
+Kalimantan,2,banjir,179,4,16
+Kalimantan,2,banjir_longsor,3,4,2
+Kalimantan,2,cuaca_ekstrem,67,1,15
+Kalimantan,2,gelombang_abrasi,5,0,5
+Kalimantan,2,karhutla,182,0,12
+Kalimantan,2,longsor,38,9,12
+Kalimantan,3,banjir,256,26,18
+Kalimantan,3,banjir_bandang,2,0,1
+Kalimantan,3,banjir_longsor,1,0,1
+Kalimantan,3,cuaca_ekstrem,69,1,14
+Kalimantan,3,gelombang_abrasi,7,1,3
+Kalimantan,3,karhutla,156,1,13
+Kalimantan,3,kekeringan,3,0,2
+Kalimantan,3,longsor,31,4,10
+Kalimantan,4,banjir,196,31,18
+Kalimantan,4,cuaca_ekstrem,52,3,15
+Kalimantan,4,gelombang_abrasi,5,0,5
+Kalimantan,4,karhutla,118,1,12
+Kalimantan,4,kekeringan,1,0,1
+Kalimantan,4,longsor,57,25,12
+Kalimantan,5,banjir,216,21,18
+Kalimantan,5,banjir_longsor,2,0,2
+Kalimantan,5,cuaca_ekstrem,32,0,15
+Kalimantan,5,gelombang_abrasi,2,0,2
+Kalimantan,5,karhutla,77,0,10
+Kalimantan,5,kekeringan,2,0,1
+Kalimantan,5,longsor,59,31,14
+Kalimantan,5,rob,2,0,1
+Kalimantan,6,banjir,93,10,17
+Kalimantan,6,banjir_bandang,2,1,1
+Kalimantan,6,banjir_longsor,2,0,2
+Kalimantan,6,cuaca_ekstrem,30,2,13
+Kalimantan,6,gelombang_abrasi,1,0,1
+Kalimantan,6,karhutla,102,1,12
+Kalimantan,6,kekeringan,1,0,1
+Kalimantan,6,longsor,33,4,13
+Kalimantan,7,banjir,107,23,16
+Kalimantan,7,banjir_bandang,1,0,1
+Kalimantan,7,banjir_longsor,4,2,3
+Kalimantan,7,cuaca_ekstrem,15,0,8
+Kalimantan,7,gelombang_abrasi,1,0,1
+Kalimantan,7,karhutla,397,2,12
+Kalimantan,7,kekeringan,5,0,3
+Kalimantan,7,longsor,41,5,16
+Kalimantan,7,rob,1,0,1
+Kalimantan,8,banjir,90,17,13
+Kalimantan,8,banjir_longsor,7,0,2
+Kalimantan,8,cuaca_ekstrem,42,3,15
+Kalimantan,8,gelombang_abrasi,2,0,2
+Kalimantan,8,karhutla,608,6,15
+Kalimantan,8,kekeringan,8,0,3
+Kalimantan,8,longsor,25,2,9
+Kalimantan,9,banjir,139,13,14
+Kalimantan,9,banjir_bandang,1,0,1
+Kalimantan,9,banjir_longsor,4,2,2
+Kalimantan,9,cuaca_ekstrem,39,1,15
+Kalimantan,9,gelombang_abrasi,1,0,1
+Kalimantan,9,karhutla,610,0,14
+Kalimantan,9,kekeringan,11,0,4
+Kalimantan,9,longsor,43,22,10
+Kalimantan,10,banjir,106,11,11
+Kalimantan,10,banjir_bandang,2,0,2
+Kalimantan,10,banjir_longsor,2,0,2
+Kalimantan,10,cuaca_ekstrem,81,2,16
+Kalimantan,10,gelombang_abrasi,3,1,3
+Kalimantan,10,karhutla,234,0,14
+Kalimantan,10,kekeringan,1,0,1
+Kalimantan,10,longsor,35,28,9
+Kalimantan,11,banjir,150,3,15
+Kalimantan,11,cuaca_ekstrem,69,1,16
+Kalimantan,11,gelombang_abrasi,1,0,1
+Kalimantan,11,karhutla,39,0,8
+Kalimantan,11,longsor,26,14,10
+Kalimantan,11,rob,1,0,1
+Kalimantan,12,banjir,168,9,18
+Kalimantan,12,banjir_bandang,2,0,2
+Kalimantan,12,cuaca_ekstrem,73,11,14
+Kalimantan,12,gelombang_abrasi,6,0,4
+Kalimantan,12,karhutla,9,0,6
+Kalimantan,12,longsor,35,3,11
+Kalimantan,12,rob,4,0,2
+Maluku,1,banjir,31,4,11
+Maluku,1,banjir_longsor,2,0,2
+Maluku,1,cuaca_ekstrem,22,0,13
+Maluku,1,gelombang_abrasi,2,0,2
+Maluku,1,karhutla,3,0,1
+Maluku,1,longsor,7,0,6
+Maluku,1,rob,3,0,2
+Maluku,2,banjir,28,1,13
+Maluku,2,banjir_longsor,2,0,2
+Maluku,2,cuaca_ekstrem,24,2,7
+Maluku,2,gelombang_abrasi,16,0,5
+Maluku,2,karhutla,4,0,2
+Maluku,2,longsor,1,0,1
+Maluku,3,banjir,49,0,9
+Maluku,3,banjir_bandang,1.5,0,1
+Maluku,3,banjir_longsor,3.5,0,2
+Maluku,3,cuaca_ekstrem,18,0,9
+Maluku,3,gelombang_abrasi,8,0,6
+Maluku,3,longsor,11,9,2
+Maluku,3,rob,1,0,1
+Maluku,4,banjir,34,7,9
+Maluku,4,cuaca_ekstrem,16,0,7
+Maluku,4,gelombang_abrasi,5,0,3
+Maluku,4,kekeringan,2,0,2
+Maluku,4,longsor,6,0,6
+Maluku,4,rob,1,0,1
+Maluku,5,banjir,51,16,12
+Maluku,5,banjir_longsor,3,0,1
+Maluku,5,cuaca_ekstrem,19,0,7
+Maluku,5,gelombang_abrasi,3,0,3
+Maluku,5,longsor,23,11,9
+Maluku,5,rob,2,0,1
+Maluku,6,banjir,87,11,14
+Maluku,6,banjir_longsor,4,0,3
+Maluku,6,cuaca_ekstrem,16,2,6
+Maluku,6,gelombang_abrasi,1,0,1
+Maluku,6,longsor,38,34,12
+Maluku,7,banjir,72,40,15
+Maluku,7,banjir_bandang,1,0,1
+Maluku,7,banjir_longsor,13,7,5
+Maluku,7,cuaca_ekstrem,7,4,6
+Maluku,7,gelombang_abrasi,6,4,3
+Maluku,7,karhutla,1,0,1
+Maluku,7,longsor,17,22,10
+Maluku,8,banjir,39,34,11
+Maluku,8,banjir_longsor,1,0,1
+Maluku,8,cuaca_ekstrem,2,0,2
+Maluku,8,gelombang_abrasi,1,0,1
+Maluku,8,karhutla,7,0,2
+Maluku,8,kekeringan,3,0,3
+Maluku,8,longsor,7,8,5
+Maluku,9,banjir,24,4,7
+Maluku,9,cuaca_ekstrem,4,0,3
+Maluku,9,gelombang_abrasi,3,0,1
+Maluku,9,karhutla,6,0,2
+Maluku,9,longsor,3,0,3
+Maluku,9,rob,1,0,1
+Maluku,10,banjir,11,0,4
+Maluku,10,banjir_longsor,1,0,1
+Maluku,10,cuaca_ekstrem,7,0,6
+Maluku,10,gelombang_abrasi,2,0,2
+Maluku,10,karhutla,2,0,2
+Maluku,10,kekeringan,1,0,1
+Maluku,10,longsor,4,0,3
+Maluku,11,banjir,6,0,4
+Maluku,11,cuaca_ekstrem,8,0,6
+Maluku,11,karhutla,1,0,1
+Maluku,11,longsor,3,0,3
+Maluku,11,rob,1,0,1
+Maluku,12,banjir,22,7,7
+Maluku,12,cuaca_ekstrem,22,0,7
+Maluku,12,gelombang_abrasi,3,0,2
+Maluku,12,kekeringan,1,0,1
+Maluku,12,longsor,6,0,4
+Maluku,12,rob,3,0,1
+Papua,1,banjir,23,21,10
+Papua,1,banjir_bandang,1,0,1
+Papua,1,banjir_longsor,3,8,1
+Papua,1,cuaca_ekstrem,1,0,1
+Papua,1,gelombang_abrasi,4,0,4
+Papua,1,longsor,5,4,5
+Papua,2,banjir,32,16,11
+Papua,2,banjir_longsor,4,0,3
+Papua,2,cuaca_ekstrem,9,0,5
+Papua,2,gelombang_abrasi,6,0,4
+Papua,2,longsor,3,0,2
+Papua,2,rob,3,0,2
+Papua,3,banjir,33,209,11
+Papua,3,gelombang_abrasi,2,0,2
+Papua,3,longsor,7,14,6
+Papua,3,rob,1,0,1
+Papua,4,banjir,27,16,9
+Papua,4,cuaca_ekstrem,2,0,2
+Papua,4,longsor,9,4,6
+Papua,5,banjir,19,20,7
+Papua,5,cuaca_ekstrem,2,0,2
+Papua,5,gelombang_abrasi,2,0,2
+Papua,5,longsor,10,34,7
+Papua,6,banjir,21,0,9
+Papua,6,cuaca_ekstrem,2,0,2
+Papua,6,kekeringan,1,6,1
+Papua,6,longsor,4,1,4
+Papua,7,banjir,20,22,13
+Papua,7,banjir_longsor,2,7,1
+Papua,7,cuaca_ekstrem,1,1,1
+Papua,7,gelombang_abrasi,1,0,1
+Papua,7,longsor,6,21,5
+Papua,8,banjir,18,6,7
+Papua,8,banjir_longsor,2,3,1
+Papua,8,cuaca_ekstrem,3,0,3
+Papua,8,karhutla,3,0,1
+Papua,8,kekeringan,1,0,1
+Papua,9,banjir,9,0,6
+Papua,9,banjir_longsor,1,2,1
+Papua,9,cuaca_ekstrem,2,1,2
+Papua,9,karhutla,2,0,1
+Papua,9,longsor,4,1,3
+Papua,9,rob,1,0,1
+Papua,10,banjir,8,290,8
+Papua,10,cuaca_ekstrem,3,0,2
+Papua,10,karhutla,1,0,1
+Papua,10,longsor,1,0,1
+Papua,11,banjir,7,23,5
+Papua,11,cuaca_ekstrem,2,0,2
+Papua,11,karhutla,1,0,1
+Papua,11,longsor,1,0,1
+Papua,12,banjir,18,1,8
+Papua,12,cuaca_ekstrem,2,1,2
+Papua,12,gelombang_abrasi,5,0,2
+Papua,12,longsor,4,5,4
+Papua,12,rob,4,0,2
+Sulawesi,1,banjir,257,169,18
+Sulawesi,1,banjir_bandang,1,0,1
+Sulawesi,1,banjir_longsor,9,7,4
+Sulawesi,1,cuaca_ekstrem,282,35,18
+Sulawesi,1,gelombang_abrasi,41,0,16
+Sulawesi,1,karhutla,3,0,3
+Sulawesi,1,kekeringan,5,0,1
+Sulawesi,1,longsor,74,28,16
+Sulawesi,1,rob,5,0,2
+Sulawesi,2,banjir,159.5,34,18
+Sulawesi,2,banjir_bandang,2,0,2
+Sulawesi,2,banjir_longsor,3,2,1
+Sulawesi,2,cuaca_ekstrem,266,10,18
+Sulawesi,2,gelombang_abrasi,19,0,8
+Sulawesi,2,karhutla,3,0,3
+Sulawesi,2,kekeringan,7,0,4
+Sulawesi,2,longsor,64,38,15
+Sulawesi,2,rob,3.5,0,2
+Sulawesi,3,banjir,231,8,18
+Sulawesi,3,banjir_bandang,10,6,4
+Sulawesi,3,banjir_longsor,8,2,4
+Sulawesi,3,cuaca_ekstrem,149,4,17
+Sulawesi,3,gelombang_abrasi,8,0,6
+Sulawesi,3,karhutla,1,0,1
+Sulawesi,3,kekeringan,7,0,3
+Sulawesi,3,longsor,85,20,14
+Sulawesi,4,banjir,205,17,18
+Sulawesi,4,banjir_bandang,2,0,2
+Sulawesi,4,banjir_longsor,2,0,2
+Sulawesi,4,cuaca_ekstrem,118,4,16
+Sulawesi,4,gelombang_abrasi,5,0,3
+Sulawesi,4,karhutla,1,0,1
+Sulawesi,4,kekeringan,4,0,2
+Sulawesi,4,longsor,59,46,17
+Sulawesi,5,banjir,295,43,18
+Sulawesi,5,banjir_bandang,2,2,2
+Sulawesi,5,banjir_longsor,6,0,3
+Sulawesi,5,cuaca_ekstrem,60,4,15
+Sulawesi,5,gelombang_abrasi,2,0,2
+Sulawesi,5,karhutla,1,0,1
+Sulawesi,5,longsor,74,28,15
+Sulawesi,6,banjir,322,55,18
+Sulawesi,6,banjir_bandang,4,1,2
+Sulawesi,6,banjir_longsor,4,4,4
+Sulawesi,6,cuaca_ekstrem,59,0,14
+Sulawesi,6,gelombang_abrasi,5,3,4
+Sulawesi,6,karhutla,1,0,1
+Sulawesi,6,kekeringan,2,0,2
+Sulawesi,6,longsor,63,17,16
+Sulawesi,7,banjir,286,106,16
+Sulawesi,7,banjir_bandang,5,1,2
+Sulawesi,7,banjir_longsor,16,49,4
+Sulawesi,7,cuaca_ekstrem,37,1,12
+Sulawesi,7,gelombang_abrasi,7,11,6
+Sulawesi,7,kekeringan,11,0,4
+Sulawesi,7,longsor,36,52,11
+Sulawesi,8,banjir,135,26,14
+Sulawesi,8,banjir_bandang,4,0,4
+Sulawesi,8,banjir_longsor,9,2,3
+Sulawesi,8,cuaca_ekstrem,60,1,15
+Sulawesi,8,gelombang_abrasi,1,0,1
+Sulawesi,8,karhutla,12,1,3
+Sulawesi,8,kekeringan,41,0,8
+Sulawesi,8,longsor,9,4,8
+Sulawesi,9,banjir,151,7,13
+Sulawesi,9,banjir_bandang,5,5,3
+Sulawesi,9,banjir_longsor,7,0,2
+Sulawesi,9,cuaca_ekstrem,66,0,14
+Sulawesi,9,gelombang_abrasi,4,0,4
+Sulawesi,9,karhutla,48,0,4
+Sulawesi,9,kekeringan,70,0,8
+Sulawesi,9,longsor,16,3,9
+Sulawesi,10,banjir,110,10,15
+Sulawesi,10,banjir_bandang,5,4,2
+Sulawesi,10,banjir_longsor,5,1,2
+Sulawesi,10,cuaca_ekstrem,107,1,17
+Sulawesi,10,gelombang_abrasi,7,0,6
+Sulawesi,10,karhutla,36,0,8
+Sulawesi,10,kekeringan,21,0,4
+Sulawesi,10,longsor,22,22,10
+Sulawesi,11,banjir,118,50,17
+Sulawesi,11,banjir_bandang,2,4,2
+Sulawesi,11,banjir_longsor,3,0,3
+Sulawesi,11,cuaca_ekstrem,104,16,17
+Sulawesi,11,gelombang_abrasi,7,0,3
+Sulawesi,11,karhutla,8,0,2
+Sulawesi,11,kekeringan,9,0,3
+Sulawesi,11,longsor,28,24,10
+Sulawesi,12,banjir,158.5,48,18
+Sulawesi,12,banjir_bandang,5,0,4
+Sulawesi,12,banjir_longsor,1,0,1
+Sulawesi,12,cuaca_ekstrem,153,6,16
+Sulawesi,12,gelombang_abrasi,24,0,9
+Sulawesi,12,karhutla,1,0,1
+Sulawesi,12,kekeringan,1,0,1
+Sulawesi,12,longsor,42,26,15
+Sulawesi,12,rob,9.5,0,2
+Sumatera,1,banjir,696.5,70,18
+Sumatera,1,banjir_bandang,9,0,4
+Sumatera,1,banjir_longsor,25.5,10,6
+Sumatera,1,cuaca_ekstrem,288,7,18
+Sumatera,1,gelombang_abrasi,23,4,9
+Sumatera,1,karhutla,145,1,14
+Sumatera,1,kekeringan,2,0,2
+Sumatera,1,longsor,148,69,17
+Sumatera,1,rob,17,0,2
+Sumatera,2,banjir,467,66,18
+Sumatera,2,banjir_bandang,5,3,4
+Sumatera,2,banjir_longsor,9,0,3
+Sumatera,2,cuaca_ekstrem,240,6,18
+Sumatera,2,gelombang_abrasi,7,4,5
+Sumatera,2,karhutla,403,4,15
+Sumatera,2,kekeringan,17,0,8
+Sumatera,2,longsor,114,54,18
+Sumatera,3,banjir,526,95,18
+Sumatera,3,banjir_bandang,6,0,4
+Sumatera,3,banjir_longsor,10,0,3
+Sumatera,3,cuaca_ekstrem,344,10,18
+Sumatera,3,gelombang_abrasi,5,0,3
+Sumatera,3,karhutla,283,0,12
+Sumatera,3,kekeringan,2,0,1
+Sumatera,3,longsor,115,91,17
+Sumatera,3,rob,1,0,1
+Sumatera,4,banjir,423,86,18
+Sumatera,4,banjir_bandang,7,0,4
+Sumatera,4,banjir_longsor,8,0,3
+Sumatera,4,cuaca_ekstrem,373,13,18
+Sumatera,4,gelombang_abrasi,9,0,4
+Sumatera,4,karhutla,76,0,8
+Sumatera,4,kekeringan,6,0,4
+Sumatera,4,longsor,83,42,17
+Sumatera,4,rob,2,0,1
+Sumatera,5,banjir,295,91,18
+Sumatera,5,banjir_bandang,5,0,3
+Sumatera,5,banjir_longsor,8,1,3
+Sumatera,5,cuaca_ekstrem,376,15,18
+Sumatera,5,gelombang_abrasi,17,0,5
+Sumatera,5,karhutla,100,0,12
+Sumatera,5,kekeringan,7,0,6
+Sumatera,5,longsor,85,25,16
+Sumatera,5,rob,14,0,5
+Sumatera,6,banjir,138,23,18
+Sumatera,6,banjir_bandang,5,0,1
+Sumatera,6,banjir_longsor,3,1,3
+Sumatera,6,cuaca_ekstrem,301,12,18
+Sumatera,6,gelombang_abrasi,8,0,6
+Sumatera,6,karhutla,276,2,14
+Sumatera,6,kekeringan,19,0,6
+Sumatera,6,longsor,66,35,16
+Sumatera,6,rob,3,0,2
+Sumatera,7,banjir,177,8,17
+Sumatera,7,banjir_bandang,7,2,3
+Sumatera,7,banjir_longsor,8,8,3
+Sumatera,7,cuaca_ekstrem,288,12,18
+Sumatera,7,gelombang_abrasi,19,0,10
+Sumatera,7,karhutla,664.75,1,14
+Sumatera,7,kekeringan,67,0,7
+Sumatera,7,longsor,35,23,14
+Sumatera,7,rob,3,0,1
+Sumatera,8,banjir,205,14,18
+Sumatera,8,banjir_bandang,7,4,3
+Sumatera,8,banjir_longsor,18,5,5
+Sumatera,8,cuaca_ekstrem,321,9,17
+Sumatera,8,gelombang_abrasi,9,4,7
+Sumatera,8,karhutla,574.5,9,14
+Sumatera,8,kekeringan,76,0,9
+Sumatera,8,longsor,53,25,16
+Sumatera,8,rob,1,0,1
+Sumatera,9,banjir,256,36,18
+Sumatera,9,banjir_bandang,5,4,4
+Sumatera,9,banjir_longsor,18,2,4
+Sumatera,9,cuaca_ekstrem,308,18,18
+Sumatera,9,gelombang_abrasi,7,0,4
+Sumatera,9,karhutla,419,1,14
+Sumatera,9,kekeringan,49,0,8
+Sumatera,9,longsor,62,53,16
+Sumatera,10,banjir,419.5,66,18
+Sumatera,10,banjir_bandang,13.5,0,3
+Sumatera,10,banjir_longsor,17,0,4
+Sumatera,10,cuaca_ekstrem,262,5,17
+Sumatera,10,gelombang_abrasi,13,0,9
+Sumatera,10,karhutla,329,0,15
+Sumatera,10,kekeringan,7,0,5
+Sumatera,10,longsor,55,50,14
+Sumatera,10,rob,6,0,3
+Sumatera,11,banjir,622,1399,17
+Sumatera,11,banjir_bandang,20,8,5
+Sumatera,11,banjir_longsor,21,4,4
+Sumatera,11,cuaca_ekstrem,197.5,2,16
+Sumatera,11,gelombang_abrasi,8,0,5
+Sumatera,11,karhutla,136,0,8
+Sumatera,11,kekeringan,6,0,4
+Sumatera,11,longsor,128,100,16
+Sumatera,11,rob,6,0,2
+Sumatera,12,banjir,688,89,18
+Sumatera,12,banjir_bandang,11,12,3
+Sumatera,12,banjir_longsor,33,12,5
+Sumatera,12,cuaca_ekstrem,144,4,16
+Sumatera,12,gelombang_abrasi,9,0,5
+Sumatera,12,karhutla,18,0,5
+Sumatera,12,longsor,117,80,18
+Sumatera,12,rob,14,0,1

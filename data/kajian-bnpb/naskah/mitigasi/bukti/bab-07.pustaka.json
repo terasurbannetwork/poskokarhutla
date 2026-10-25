@@ -1,0 +1,876 @@
+[
+ {
+  "id": "bnpb-2026-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Data Informasi Bencana Indonesia (DIBI), dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ditarik lewat POST https://dibi.bnpb.go.id/api/v1/chart/data, 23 Okt 2026 pukul 15.23 WIB; data hidup; 2026 sementara. Berkas repo: data/kajian-bnpb/data/dibi/"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama"
+ },
+ {
+  "id": "bnpb-2026-krb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json (Pasal 7 hlm. 4; penetapan 6 Jan 2025 hlm. 5; program 2.4.4 hlm. 37 dan 86; §4.5–4.6 hlm. 122–125)"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (hlm. 84, 128, 133)"
+ },
+ {
+  "id": "ri-2025-perpres12-rpjmn",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 12 Tahun 2025 tentang Rencana Pembangunan Jangka Menengah Nasional Tahun 2025–2029",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 19",
+  "URL": "https://peraturan.bpk.go.id/Details/314638/perpres-no-12-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran I hlm. 29, 30, 71–73, 111, 201, 216; Lampiran II hlm. 437–440; Lampiran III hlm. 913 (BNPB); teks OCR, tabel kunci dicek dari gambar halaman; Bab 7: Lampiran III hlm. 913 (matriks kinerja BNPB), dibaca lewat riset E11b"
+ },
+ {
+  "id": "bnpb-2024-spdb",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     25
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2024 tentang Sistem Peringatan Dini Bencana",
+  "URL": "https://peraturan.bpk.go.id/Details/284502/peraturan-bnpb-no-2-tahun-2024",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibaca dari data/raw/hukum/teks/perban-nomor-2-tahun-2024.json: Pasal 1 angka 3–4, Pasal 2 ayat (3), Pasal 7, 12, 14, 15, 17, 19, 23, 25, 29, 30; ditetapkan 25 Maret 2024"
+ },
+ {
+  "id": "bnpb-2023-renkon",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2023 tentang Penyusunan Rencana Kontingensi Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 469",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb002.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 7 ayat (1) sampai (5) dibaca di halaman PDF 4 dan Lampiran (pertimbangan sejarah kejadian terburuk, lima aspek dampak) di halaman PDF 14, korpus data/raw/hukum/teks/perban-nomor-2-tahun-2023.json"
+ },
+ {
+  "id": "bmkg-2026-siaran-musim-hujan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     22
+    ]
+   ]
+  },
+  "title": "BMKG: El Niño Sangat Kuat sedang Terjadi, Musim Hujan 2026/2027 Diprediksi Datang Lebih Lambat",
+  "container-title": "Siaran Pers BMKG",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-el-nino-sangat-kuat-sedang-terjadi-musim-hujan-2026-2027-diprediksi-datang-lebih-lambat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "tanpa tabel per ZOM; persentase siaran adalah persen luas wilayah/daratan, bukan persen ZOM (529 ZOM = 61,08%, 147 ZOM = 18,55%, 482 ZOM = 51,90% luas daratan); total ZOM tidak disebut; dibuka ulang 24 Okt 2026"
+ },
+ {
+  "id": "bmkg-2026-dinamika-okt1",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     13
+    ]
+   ]
+  },
+  "title": "Analisis Dinamika Atmosfer Dasarian I Oktober 2026",
+  "publisher": "BMKG",
+  "URL": "https://www.bmkg.go.id/iklim/analisis-dinamika-atmosfer-dasarian-i-oktober-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Niño 3.4 dasarian +3,33; IOD dasarian +0,703 (September +0,72); peringatan dini kekeringan meteorologis dasarian II Oktober 2026: Awas di Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur (tanpa nama kab/kota)"
+ },
+ {
+  "id": "noaa-2026-oni",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "NOAA Climate Prediction Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Oceanic Niño Index (ONI), ERSSTv5",
+  "genre": "Data set",
+  "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026"
+ },
+ {
+  "id": "sipongi-luas",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup dan Kehutanan (kini Kementerian Kehutanan), SiPongi",
+    "singkatan": "SiPongi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Indikasi luas kebakaran hutan dan lahan per provinsi 2015–2026",
+  "publisher": "Kementerian Kehutanan",
+  "URL": "https://opsroom.sipongidata.my.id/api/list/luas-kebakaran/provinsi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Cache data/kajian-bnpb/riset/mentah/sipongi_luas_2015_2026.json (ditarik 23 Okt 2026) dan tarik ulang API 24 Okt 2026 untuk 2024–2026; public/data/luas_resmi.json (16 Okt 2026) untuk 2018–2026 s.d. Juli. 2025 bertentangan antartarik (359.619,42 ha lawan 11.052,13 ha); indikasi dari titik panas dan verifikasi, bukan citra"
+ },
+ {
+  "id": "worldbank-2016-cost-fire",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     2
+    ]
+   ]
+  },
+  "title": "The cost of fire: An economic analysis of Indonesia's 2015 fire crisis",
+  "collection-title": "Indonesia Sustainable Landscapes Knowledge Note No. 1",
+  "publisher": "World Bank",
+  "URL": "https://documents1.worldbank.org/curated/en/776101467990969768/pdf/103668-BRI-Cost-of-Fires-Knowledge-Note-PUBLIC-ADD-NEW-SERIES-Indonesia-Sustainable-Landscapes-Knowledge-Note.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF dibuka 24 Okt 2026 (halaman OKR handle 10986/23840 membalas 403). Hlm. PDF 3: USD 16,1 miliar (IDR 221 triliun); 2,6 juta ha, delapan provinsi, tabel luas 2.611 ribu ha bersumber BPPT. Hlm. PDF 6: 1,9% PDB 2015. Hlm. PDF 7: 19 meninggal dan lebih dari 500.000 ISPA, mengutip The Guardian (sekunder).",
+  "page": "PDF 3, 6, 7"
+ },
+ {
+  "id": "koplitz-2016-asap",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Koplitz"
+   },
+   {
+    "family": "Mickley"
+   },
+   {
+    "family": "Marlier"
+   },
+   {
+    "family": "Buonocore"
+   },
+   {
+    "family": "Kim"
+   },
+   {
+    "family": "Liu"
+   },
+   {
+    "family": "Sulprizio"
+   },
+   {
+    "family": "DeFries"
+   },
+   {
+    "family": "Jacob"
+   },
+   {
+    "family": "Schwartz"
+   },
+   {
+    "family": "Pongsiri"
+   },
+   {
+    "family": "Myers"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     9
+    ]
+   ]
+  },
+  "title": "Public health impacts of the severe haze in Equatorial Asia in September–October 2015: demonstration of a new framework for informing fire management strategies to reduce downwind smoke exposure",
+  "container-title": "Environmental Research Letters",
+  "volume": "11",
+  "issue": "9",
+  "number": "094023",
+  "DOI": "10.1088/1748-9326/11/9/094023",
+  "URL": "https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CC BY 3.0; dibuka ulang 24 Okt 2026; bagian 3.4: Indonesia 91.600 kematian berlebih (95%: 24.000–159.200); bagian 3.2: paparan seluruh musim bakar Juli–Oktober 2015 (September–Oktober hanya di judul); hanya kematian dewasa (anak tidak dihitung); estimasi model"
+ },
+ {
+  "id": "wmo-2022-peringatan-dini",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "World Meteorological Organization",
+    "singkatan": "WMO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     10,
+     13
+    ]
+   ]
+  },
+  "title": "UN warns that half the world is not prepared for disasters",
+  "URL": "https://wmo.int/media/news/un-warns-half-world-not-prepared-disasters",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "siaran pers laporan UNDRR dan WMO Global Status of Multi-Hazard Early Warning Systems: Target G; mortalitas bencana delapan kali lebih tinggi di negara bercakupan peringatan dini terbatas; asosiasi lintas negara, bukan efek kausal"
+ },
+ {
+  "id": "haque-2012-siklon",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Haque",
+    "given": "Ubydul"
+   },
+   {
+    "family": "Hashizume",
+    "given": "Masahiro"
+   },
+   {
+    "family": "Kolivras",
+    "given": "Korine N."
+   },
+   {
+    "family": "Overgaard",
+    "given": "Hans J."
+   },
+   {
+    "family": "Das",
+    "given": "Bivash"
+   },
+   {
+    "family": "Yamamoto",
+    "given": "Taro"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012
+    ]
+   ]
+  },
+  "title": "Reduced death rates from cyclones in Bangladesh: What more needs to be done?",
+  "container-title": "Bulletin of the World Health Organization",
+  "volume": "90",
+  "issue": "2",
+  "page": "150–156",
+  "DOI": "10.2471/BLT.11.088302",
+  "verifikasi": "primer",
+  "note": "abstrak dibaca di PMC3302549, 23 Oktober 2026"
+ },
+ {
+  "id": "dpr-2022-deteksi-dini",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pusat Kajian Akuntabilitas Keuangan Negara, Badan Keahlian DPR RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Akuntabilitas kinerja deteksi dini bencana alam geologi dan hidrometeorologi di Indonesia (Accountability Brief Komisi V)",
+  "publisher": "Badan Keahlian DPR RI",
+  "URL": "https://berkas.dpr.go.id/pa3kn//analisis-tematik-akuntabilitas/public-file/analisis-ringkas-cepat-public-66.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "4 hlm.; merangkum LHP Kinerja BPK 2022 atas efektivitas observasi, analisis, dan forecasting untuk deteksi dini banjir dan longsor pada BMKG dan instansi terkait (LHP tidak dibuka) dan data BNPB tentang LEWS/FEWS/TEWS"
+ },
+ {
+  "id": "cabinetoffice-2025-nrr",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Cabinet Office"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     16
+    ]
+   ]
+  },
+  "title": "National Risk Register 2025",
+  "publisher": "HM Government",
+  "URL": "https://assets.publishing.service.gov.uk/media/67b5f85732b2aab18314bbe4/National_Risk_Register_2025.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "definisi skenario terburuk yang masuk akal (hlm. 11), kemungkinan dalam 5 tahun untuk risiko nonmalisius dan pita <0,2%, 0,2–1%, 1–5%, 5–25%, >25% (hlm. 12 dan 16), skala dampak 1–5 logaritmik (hlm. 13–15); halaman terbitan gov.uk/government/publications/national-risk-register-2025"
+ },
+ {
+  "id": "bmkg-2026-siaran-asap",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     20
+    ]
+   ]
+  },
+  "title": "BMKG: Pemerintah Manfaatkan Dry Ice untuk Urai Kabut Asap Karhutla di Sumatra dan Kalimantan",
+  "container-title": "Siaran Pers BMKG",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-pemerintah-manfaatkan-dry-ice-untuk-urai-kabut-asap-karhutla-di-sumatra-dan-kalimantan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Nomor HM.05.00/45/HPM/KRH/X/2026; BNPB disebut mengoordinasikan dukungan; tanpa angka titik panas atau kualitas udara"
+ },
+ {
+  "id": "noaa-cpc-2026-ensodisc",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "NOAA Climate Prediction Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     8
+    ]
+   ]
+  },
+  "title": "ENSO Diagnostic Discussion",
+  "URL": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Status El Niño Advisory; El Niño kuat sampai sangat kuat kemungkinan bertahan sampai Jan–Mar 2027; peluang RONI >= +2,5 °C: SON 54%, OND 83%, NDJ 70%; diskusi berikutnya 12 Nov 2026"
+ },
+ {
+  "id": "worldbank-2019-ieq",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     12
+    ]
+   ]
+  },
+  "title": "Indonesia Economic Quarterly, December 2019: Investing in People",
+  "publisher": "World Bank",
+  "URL": "https://documents.worldbank.org/curated/en/622281575920970133/text/Indonesia-Economic-Quarterly-Investing-in-People.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Box A.1 hlm. 7–8: kerugian karhutla 2019 USD 5,2 miliar (157 juta kerusakan + 5,0 miliar kerugian), 0,5% PDB; 620.201 ha Jan–Sep 2019 (KLHK); dibuka paket skenario-hidromet; dibuka ulang 24 Okt 2026: Box A.1 'As of September 2019, over 900,000 people had reported respiratory health diseases' (pembanding orde besaran ISPA 2019, tanpa rincian provinsi)"
+ },
+ {
+  "id": "bappenas-2007-dala",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Perencanaan Pembangunan Nasional",
+    "singkatan": "Bappenas"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007,
+     2
+    ]
+   ]
+  },
+  "title": "Laporan Perkiraan Kerusakan dan Kerugian Pasca Bencana Banjir Awal Februari 2007 di Wilayah JABODETABEK",
+  "publisher": "Bappenas",
+  "URL": "locjkt.or.id (salinan)",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tabel III.1 hlm. 33 (PDF hlm. 42): kerusakan Rp1.765,89 M + kerugian Rp3.418,70 M = Rp5.184,43 M; ringkasan hlm. 8 Rp5,16 T dan perkiraan APINDO/AAUI US$400 juta; dibuka paket skenario-hidromet, URL salinan di skenario-hidromet/README.md"
+ },
+ {
+  "id": "dpr-2019-ispa",
+  "type": "report",
+  "author": [
+   {
+    "family": "Suni",
+    "given": "Nur Sholikah Putri"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     10
+    ]
+   ]
+  },
+  "title": "Strategi Pengendalian ISPA Akibat Kebakaran Hutan dan Lahan",
+  "container-title": "Info Singkat: Kajian Singkat terhadap Isu Aktual dan Strategis, Vol. XI, No. 19/I/Puslit/Oktober/2019",
+  "publisher": "Pusat Penelitian Badan Keahlian DPR RI",
+  "page": "13–18",
+  "URL": "https://berkas.dpr.go.id/pusaka/files/info_singkat/Info%20Singkat-XI-19-I-P3DI-Oktober-2019-1957.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "hlm. 15 (PDF hlm. 3): ISPA per provinsi Sumsel 291.807, Jambi 63.554, Riau 34.000, Kalbar 189.695, Kalsel 67.293, Kalteng 40.374; paragraf itu bersumber pers (antaranews 14 Sep 2019; Kompas 23 Sep 2019; Kompas '24 September 2014' sebagaimana tertulis), bukan data Pusdatin BNPB yang dibuka; tanggal data tidak disebut. Sumber dokumen lembaga negara, tetapi angka ISPA sekunder; tidak masuk registri"
+ },
+ {
+  "id": "kemenkopmk-2023-puncak",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     2
+    ]
+   ]
+  },
+  "title": "Pemerintah Tangani Serius Bencana Kekeringan di Kabupaten Puncak, Papua Tengah",
+  "URL": "https://kemenkopmk.go.id/node/4192",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kekeringan dan embun beku di Distrik Agandugume, Lambewi, Oneri menyebabkan gagal panen, kekurangan pangan, kelaparan; tanpa angka korban"
+ },
+ {
+  "id": "pupr-2024-rpsda-jratunseluna",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat, Direktorat Jenderal Sumber Daya Air"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Rencana Pengelolaan Sumber Daya Air Wilayah Sungai Jratunseluna",
+  "publisher": "Kementerian PUPR",
+  "URL": "https://sda.pu.go.id/dokumen/kategori/rencana_pola_pengelolaan_sda",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. 27–28: genangan rob 22.897 ha; Tabel 5.86 hlm. 265 luas rawan rob per kecamatan dari simulasi pasang 1,8 m; dibuka riset E §E6"
+ },
+ {
+  "id": "jawapos-2015-ispa",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "JawaPos"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Ihh ngeri, 450.431 warga Sumatera-Kalimantan kena ISPA",
+  "container-title": "JawaPos",
+  "URL": "https://www.jawapos.com/humaniora/1510230082/ihh-ngeri-450431-warga-sumatera-kalimantan-kena-ispa",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "mengutip BNPB (Sutopo Purwo Nugroho) 22 Okt 2015; rilis BNPB asli tidak ditemukan pada penelusuran 24 Okt 2026"
+ },
+ {
+  "id": "cnnindonesia-2019-ispa",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "CNN Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     9,
+     23
+    ]
+   ]
+  },
+  "title": "Penderita ISPA akibat karhutla tembus 919 ribu orang",
+  "container-title": "CNN Indonesia",
+  "URL": "https://www.cnnindonesia.com/nasional/20190923160933-20-433052/penderita-ispa-akibat-karhutla-tembus-919-ribu-orang",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "mengutip jumpa pers BNPB (Agus Wibowo) dengan data Kemenkes per 23 Sep 2019; rilis asli tidak dibuka"
+ }
+]

@@ -1,0 +1,356 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 13 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-13.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: nilai + pustaka (id di bab-13.pustaka.json), dengan lokasi halaman bila ada.",
+  "Kunci yang sudah ada di data/angka.json atau diusulkan berkas bukti lain (naskah/*/bukti/*.angka.json, diperiksa 24 Oktober 2026) tidak diulang; daftarnya di bab-13.md bagian Angka untuk registri.",
+  "Hitungan draf register rekomendasi (36 baris; per horizon dan per kelompok) sengaja tidak didaftarkan sampai register dikunci. Angka sekunder tidak dimasukkan.",
+  "Penggabung: kunci tesis.mitigasi di data/angka.json masih memakai token klasifikasi=semua; KERANGKA V06 meminta versi alam (dibi.alam.meninggal.2025 dan dibi.alam.hilang.2025). Lihat bab-13.md bagian Koreksi.",
+  "Disusun 24 Oktober 2026.",
+  "Pemutakhiran 24 Oktober 2026: 26 kunci baru dari Laporan Kinerja BNPB Tahun 2025 (pustaka bnpb-2026-lkip2025) dan hitungan turunannya; total 43 kunci."
+ ],
+ "angka": {
+  "dibi.alam.hilang.2025": {
+   "nilai": 221,
+   "pustaka": "bnpb-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2025, bencana alam",
+   "catatan": "olah: jumlah kolom hilang baris tahun=2025, klasifikasi=alam (kode 101–109), cakupan=bencana di data/dibi/rekap_nasional_tahunan.csv; dihitung ulang 24 Okt 2026; sama dengan KERANGKA V06; pasangan token tesis versi alam bersama dibi.alam.meninggal.2025"
+  },
+  "dibi.alam.meninggal.2018": {
+   "nilai": 5477,
+   "pustaka": "bnpb-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2018, bencana alam",
+   "catatan": "olah: jumlah kolom meninggal baris tahun=2018, klasifikasi=alam, cakupan=bencana; rekap_nasional_tahunan.csv"
+  },
+  "dibi.alam.hilang.2018": {
+   "nilai": 763,
+   "pustaka": "bnpb-dibi",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2018, bencana alam",
+   "catatan": "olah: jumlah kolom hilang baris tahun=2018, klasifikasi=alam, cakupan=bencana; jumlah dengan meninggal = 6.240 (dibi.alam.meninggal_hilang.2018)"
+  },
+  "dibi.alam.per100rb.2025_bps2026": {
+   "nilai": 0.68,
+   "pustaka": "bnpb-dibi; bps-2026-penduduk",
+   "satuan": "per 100.000 penduduk",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS 2026",
+   "catatan": "olah: (1.735 + 221) / 287.198.383 x 100.000 = 0,681; realisasi indikator Renas 1.a versi bencana alam; versi semua klasifikasi 0,79 (dibi.nasional.per100rb.2025_bps2026)"
+  },
+  "dibi.alam.rasio_proyeksi_1a.2025": {
+   "nilai": 3.1,
+   "pustaka": "bnpb-dibi; bnpb-2025-renas hlm. 32",
+   "satuan": "kali",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan Renas PB 2025–2029 Tabel 2.8",
+   "catatan": "olah: 0,681 / 0,22 (renas.indikator_1a.proyeksi_2025); cara Renas menghitung 0,22 (penyebut, cakupan jenis) tidak tertulis, sehingga rasio ditulis 'sekitar'"
+  },
+  "bmkg.musim_2026.zom_awal_november": {
+   "nilai": 185,
+   "pustaka": "bmkg-2026-siaran-musim-hujan",
+   "satuan": "ZOM",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, prakiraan musim hujan 2026/2027 (siaran pers 22 Sep 2026)",
+   "catatan": "jumlah ZOM yang awal musim hujannya November 2026; subtotal ZOM per kategori tidak saling menjumlah (riset E9); bab-07 P2 temuan 1"
+  },
+  "bmkg.musim_2026.zom_awal_desember": {
+   "nilai": 266,
+   "pustaka": "bmkg-2026-siaran-musim-hujan",
+   "satuan": "ZOM",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, prakiraan musim hujan 2026/2027 (siaran pers 22 Sep 2026)",
+   "catatan": "jumlah ZOM yang awal musim hujannya Desember 2026; bab-07 P2 temuan 1"
+  },
+  "bmkg.musim_2026.zom_puncak_februari": {
+   "nilai": 190,
+   "pustaka": "bmkg-2026-siaran-musim-hujan",
+   "satuan": "ZOM",
+   "keyakinan": "resmi",
+   "sumber": "BMKG, prakiraan musim hujan 2026/2027 (siaran pers 22 Sep 2026)",
+   "catatan": "jumlah ZOM yang puncak musim hujannya Februari 2027 (16,79% luas daratan, porsi terkecil dari tiga bulan puncak; Desember 155 ZOM = 36,94%, Januari 162 ZOM = 25,68%, air bukti bab-02); jangan ditulis sebagai puncak musim nasional; bab-07 P2 temuan 1"
+  },
+  "peta_jalan.hari100.hari0_1nov2026": {
+   "nilai": "9 Februari 2027",
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tanggal",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "catatan": "olah kalender: hari ke-0 1 November 2026 + 100 hari; tanggal hari ke-0 belum ditetapkan Kepala BNPB; sama dengan air bab-01 T1.14"
+  },
+  "peta_jalan.hari100.hari0_15nov2026": {
+   "nilai": "23 Februari 2027",
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tanggal",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "catatan": "olah kalender: hari ke-0 15 November 2026 + 100 hari"
+  },
+  "peta_jalan.hari100.hari0_30nov2026": {
+   "nilai": "10 Maret 2027",
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "tanggal",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "catatan": "olah kalender: hari ke-0 30 November 2026 + 100 hari"
+  },
+  "kapasitas.jarak_90.rpjmn_poin": {
+   "nilai": 28,
+   "pustaka": "ri-2025-perpres12-rpjmn",
+   "satuan": "poin persen",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari RPJMN 2025–2029 Lampiran III hlm. 913",
+   "catatan": "olah: target 90 (2029) dikurangi baseline 62 (2023) KP 08.04.01; bahan pilihan (a) KD-3"
+  },
+  "kapasitas.jarak_90.krb_kab_poin": {
+   "nilai": 52.0,
+   "pustaka": "bnpb-2026-krb; ri-2025-perpres12-rpjmn",
+   "satuan": "poin persen",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026 dan RPJMN 2025–2029",
+   "catatan": "olah: 90 dikurangi 37,99 (krb.nasional.kapasitas_minimal_sedang_persen, 193 dari 508 kab/kota); membandingkan sasaran RPJMN dengan alat ukur KRB yang berbeda unit; bahan pilihan (b) KD-3"
+  },
+  "kapasitas.target_90.krb_kab_n": {
+   "nilai": 458,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "kab/kota",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026",
+   "catatan": "olah: 90% x 508 kab/kota berkelas kapasitas = 457,2, dibulatkan ke atas"
+  },
+  "kapasitas.jarak_90.krb_kab_tambahan": {
+   "nilai": 265,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "kab/kota",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026",
+   "catatan": "olah: 458 dikurangi 193 kab/kota berkapasitas minimal sedang (sedang 190 + tinggi 3); sama dengan bab-05 PK3 I3.2"
+  },
+  "perka2014_6.proleg.jangka_tahun": {
+   "nilai": 1,
+   "pustaka": "bnpb-2014-produkhukum hlm. 4",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Peraturan Kepala BNPB 6/2014 Pasal 4 ayat (4)",
+   "catatan": "Proleg PB ditetapkan berdasarkan skala prioritas untuk 1 tahun; rancangan di luar Proleg PB dengan izin prakarsa Kepala BNPB (Pasal 8 ayat (2) hlm. 6)"
+  },
+  "progsun.2026.jangka_tahun": {
+   "nilai": 1,
+   "pustaka": "bnpb-2025-progsun hlm. 2",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Keputusan Kepala BNPB 327/2025 Diktum KEDUA",
+   "catatan": "Progsun BNPB 2026 ditetapkan untuk 1 tahun; realisasi dilaporkan tiap triwulan kepada Kepala melalui Sekretaris Utama (Diktum KETIGA)"
+  },
+  "bnpb.lkip2025.meninggal.2025": {
+   "nilai": 1666,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 7",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "berdasarkan hasil verifikasi data bencana; 4.727 kejadian (hidrometeorologi 99,26%, geologi 0,74%); berdampingan dengan DIBI tarik 23 Okt 2026 (alam 1.735) karena tanggal data berbeda"
+  },
+  "bnpb.lkip2025.hilang.2025": {
+   "nilai": 214,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 7",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "pasangan bnpb.lkip2025.meninggal.2025; DIBI alam tarik 23 Okt 2026: 221"
+  },
+  "bnpb.lkip2025.irb.penurunan_persen.2025": {
+   "nilai": 1.03,
+   "pustaka": "bnpb-2026-lkip2025 hlm. x, 19",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, IKSS 1.1",
+   "catatan": "target 1,2%, tidak tercapai (capaian 85,83%); dihitung dengan kerentanan 2021: (171,95 - 170,17) / 171,95"
+  },
+  "bnpb.lkip2025.irb.nasional_2025_kerentanan2021": {
+   "nilai": 170.17,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 19",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP"
+  },
+  "bnpb.lkip2025.irb.nasional_2024_krb2021": {
+   "nilai": 171.95,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 19",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "IRB 2024 dengan bahaya dan kerentanan KRB 2021; bertentangan dengan seri IRBI 2024 = 128,52 (irbi.nasional.2024); ditulis berdampingan"
+  },
+  "bnpb.lkip2025.irb.baseline_2026_2029": {
+   "nilai": 147.95,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 7, 19",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "rerata IRB nasional 2025 dengan kerentanan proyeksi SEB Kemendagri-Bappenas; baseline 2026-2029; sama nilainya dengan irbi.nasional.2025_rerata (bab-03) yang kini bersumber resmi"
+  },
+  "bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025": {
+   "nilai": 50,
+   "pustaka": "bnpb-2026-lkip2025 hlm. x, 20",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, IKSS 1.2",
+   "catatan": "porsi provinsi berkategori IKD sedang atau tinggi (Manual IKU, Kepka BNPB 318/2025); target 67%, persentase capaian 74,63%"
+  },
+  "bnpb.lkip2025.kapasitas.prov_minimal_sedang_n.2025": {
+   "nilai": 19,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 112-113",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, Lampiran 2",
+   "catatan": "olah: hitungan provinsi dengan rerata IKD >= 0,4 di Lampiran 2 dari 38 provinsi; konsisten dengan 50%"
+  },
+  "bnpb.lkip2025.ikd.kab_rendah.2025": {
+   "nilai": 225,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "hasil penilaian IKD 2025 di 514 kab/kota; kategori rendah < 0,4"
+  },
+  "bnpb.lkip2025.ikd.kab_sedang.2025": {
+   "nilai": 274,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "kategori sedang 0,4-0,8"
+  },
+  "bnpb.lkip2025.ikd.kab_tinggi.2025": {
+   "nilai": 15,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "kategori tinggi > 0,8"
+  },
+  "bnpb.lkip2025.ikd.kab_minimal_sedang_persen.2025": {
+   "nilai": 56.2,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "olah: (274 + 15) / 514 = 56,23%; label olah(resmi)"
+  },
+  "bnpb.lkip2025.ikd.kab_menilai.2025": {
+   "nilai": 469,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 22",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "469 dari 514 kab/kota menilai IKD 2025 (2024: 445); 45 memakai nilai tahun terakhir; yang belum pernah menilai diberi 0,2"
+  },
+  "bnpb.lkip2025.pd.tsunami_persen.2025": {
+   "nilai": 12.19,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "651.000 tercakup dari 5.341.282 jiwa terpapar tsunami"
+  },
+  "bnpb.lkip2025.pd.tsunami_tercakup.2025": {
+   "nilai": 651000,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "penduduk tercakup layanan peringatan dini tsunami"
+  },
+  "bnpb.lkip2025.pd.banjir_persen.2025": {
+   "nilai": 0.01,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "10.800 tercakup dari 113.829.496 jiwa terpapar banjir (0,0095% sebelum pembulatan)"
+  },
+  "bnpb.lkip2025.pd.banjir_tercakup.2025": {
+   "nilai": 10800,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "penduduk tercakup layanan peringatan dini banjir"
+  },
+  "bnpb.lkip2025.pd.banjir_terpapar.2025": {
+   "nilai": 113829496,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "penyebut cakupan banjir"
+  },
+  "bnpb.lkip2025.pd.rerata_persen.2025": {
+   "nilai": 6.1,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, IKP Direktorat Peringatan Dini",
+   "catatan": "rerata sederhana tsunami 12,19% dan banjir 0,01%; sama dengan target Renstra 2025"
+  },
+  "bnpb.lkip2025.pd.tertimbang_persen.2025": {
+   "nilai": 0.56,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 35, Tabel 3.4",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "olah: (651.000 + 10.800) / (5.341.282 + 113.829.496) = 0,555%; label olah(resmi)"
+  },
+  "bnpb.lkip2025.kerugian_pdb_persen.2025": {
+   "nilai": 0.217,
+   "pustaka": "bnpb-2026-lkip2025 hlm. x, 18",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, Indikator Tujuan",
+   "catatan": "Rp51,3 T / PDB Rp23.656,2 T; belum termasuk Siklon Tropis Senyar (Aceh, Sumut, Sumbar, Nov 2025); proyeksi Renas 2.a 2025 = 0,137"
+  },
+  "bnpb.lkip2025.kerugian_rp.2025": {
+   "nilai": 51.3,
+   "pustaka": "bnpb-2026-lkip2025 hlm. 18",
+   "satuan": "triliun rupiah",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "kerugian ekonomi langsung 2025 tanpa Senyar; metode tidak diuraikan"
+  },
+  "kapasitas.jarak_90.lkip_prov_poin": {
+   "nilai": 40,
+   "pustaka": "bnpb-2026-lkip2025",
+   "satuan": "poin persen",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan dari LKIP BNPB 2025",
+   "catatan": "olah: 90 - 50"
+  },
+  "kapasitas.target_90.prov_n": {
+   "nilai": 35,
+   "pustaka": "bnpb-2026-lkip2025",
+   "satuan": "provinsi",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan dari LKIP BNPB 2025",
+   "catatan": "olah: 90% x 38 = 34,2, dibulatkan ke atas; tambahan 16 dari 19"
+  },
+  "kapasitas.jarak_90.ikd_kab_tambahan": {
+   "nilai": 174,
+   "pustaka": "bnpb-2026-lkip2025",
+   "satuan": "kab/kota",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan dari LKIP BNPB 2025",
+   "catatan": "olah: 90% x 514 = 462,6 dibulatkan ke atas = 463; dikurangi 289"
+  },
+  "pd.ikp_2029.tambahan_tsunami_jiwa": {
+   "nilai": 23600,
+   "pustaka": "bnpb-2026-lkip2025",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan dari LKIP BNPB 2025 dan Renstra BNPB 2025-2029",
+   "catatan": "olah: tambahan jiwa tercakup tsunami agar rerata IKP = 6,32% (target 2029) dengan banjir tetap: 2 x 6,32 - 0,0095 = 12,6305%; x 5.341.282 - 651.000 = 23.631 (23.604 bila banjir dibulatkan 0,01%); dibulatkan; pembacaan rumus, bukan perkiraan"
+  }
+ }
+}

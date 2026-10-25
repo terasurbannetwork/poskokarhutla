@@ -1,0 +1,300 @@
+{
+ "nama": "kartu-kekeringan-tahun-dibi",
+ "keterangan": "Jumlah tahun berkejadian kekeringan kab/kota di Pulau Jawa menurut DIBI, 2015–2025",
+ "sumber": "DIBI BNPB 2015–2025 (batas tetap jumlah tahun)",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  171.4
+ ],
+ "ukuran_cm": [
+  5.23,
+  6.05
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "0 tahun (25)",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "1–2 tahun (40)",
+   "jenis": "kotak",
+   "warna": "#DCC79C"
+  },
+  {
+   "label": "3–4 tahun (38)",
+   "jenis": "kotak",
+   "warna": "#C4A262"
+  },
+  {
+   "label": "5–6 tahun (13)",
+   "jenis": "kotak",
+   "warna": "#A07A32"
+  },
+  {
+   "label": "7–11 tahun (3)",
+   "jenis": "kotak",
+   "warna": "#6E5424"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#F4ECDC": [
+   "skala",
+   "legenda"
+  ],
+  "#DCC79C": [
+   "skala",
+   "legenda"
+  ],
+  "#A07A32": [
+   "skala",
+   "legenda"
+  ],
+  "#C4A262": [
+   "skala",
+   "legenda"
+  ],
+  "#6E5424": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": -35.08,
+   "y": 56.4,
+   "w": 218.41,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0--35",
+   "teks": "Tahun berkejadian kekeringan 2015–2025 (jumlah kab/kota)"
+  },
+  {
+   "x": -35.08,
+   "y": 55.4,
+   "w": 218.41,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0--35",
+   "teks": "Tahun berkejadian kekeringan 2015–2025 (jumlah kab/kota)"
+  },
+  {
+   "x": 21.11,
+   "y": 69.4,
+   "w": 43.15,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-7",
+   "teks": "0 tahun (25)"
+  },
+  {
+   "x": 7.11,
+   "y": 68.4,
+   "w": 57.15,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-7",
+   "teks": "0 tahun (25)"
+  },
+  {
+   "x": 88.25,
+   "y": 69.4,
+   "w": 52.89,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-74",
+   "teks": "1–2 tahun (40)"
+  },
+  {
+   "x": 74.25,
+   "y": 68.4,
+   "w": 66.89,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-74",
+   "teks": "1–2 tahun (40)"
+  },
+  {
+   "x": 54.68,
+   "y": 82.4,
+   "w": 52.89,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-40",
+   "teks": "3–4 tahun (38)"
+  },
+  {
+   "x": 40.68,
+   "y": 81.4,
+   "w": 66.89,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-40",
+   "teks": "3–4 tahun (38)"
+  },
+  {
+   "x": 54.68,
+   "y": 95.4,
+   "w": 52.89,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg3-40",
+   "teks": "5–6 tahun (13)"
+  },
+  {
+   "x": 40.68,
+   "y": 94.4,
+   "w": 66.89,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg3-40",
+   "teks": "5–6 tahun (13)"
+  },
+  {
+   "x": 54.68,
+   "y": 108.4,
+   "w": 52.89,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg4-40",
+   "teks": "7–11 tahun (3)"
+  },
+  {
+   "x": 40.68,
+   "y": 107.4,
+   "w": 66.89,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg4-40",
+   "teks": "7–11 tahun (3)"
+  },
+  {
+   "x": 3,
+   "y": 120.4,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 130,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 139.6,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 149.2,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 158.8,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "emas",
+  "batas": [
+   0,
+   2,
+   4,
+   6
+  ],
+  "label": [
+   "0 tahun",
+   "1–2 tahun",
+   "3–4 tahun",
+   "5–6 tahun",
+   "7–11 tahun"
+  ],
+  "warna": [
+   "skala.emas.1",
+   "skala.emas.2",
+   "skala.emas.3",
+   "skala.emas.4",
+   "skala.emas.5"
+  ],
+  "rumus": "batas tetap jumlah tahun",
+  "resmi": false,
+  "jumlah": [
+   25,
+   40,
+   38,
+   13,
+   3
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

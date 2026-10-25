@@ -1,0 +1,1310 @@
+[
+ {
+  "id": "bnpb-2026-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Data Informasi Bencana Indonesia (DIBI), dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ditarik lewat POST https://dibi.bnpb.go.id/api/v1/chart/data, 23 Okt 2026 pukul 15.23 WIB; data hidup; 2026 sementara. Berkas repo: data/kajian-bnpb/data/dibi/"
+ },
+ {
+  "id": "bnpb-2025-ckan",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     3
+    ]
+   ]
+  },
+  "title": "Jumlah kejadian bencana menurut jenis bencana tahun 2010–2024",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://data.bnpb.go.id/api/3/action/datastore_search?resource_id=9b41007e-c998-456b-8cbc-385b17986e46",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Seri dibekukan Maret 2025; 2024 = 3.472 (sama dengan DIBI bencana alam 3.471,5)"
+ },
+ {
+  "id": "bnpb-2023-juklak7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     29
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Korpus JDIH lokal (slug juknis, isi dokumen Petunjuk Pelaksanaan); hlm. 3 data dinamis dan statis, hlm. 7 ambang batas kejadian bencana"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     3
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "data/raw/hukum/teks/perban-nomor-5-tahun-2025.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Hlm. 11 kejadian bencana masif; hlm. 14 COVID-19 (Kemenkes 2024); hlm. 16 Selat Sunda 2018; hlm. 24 Tabel 1.4 NAR 2023; hlm. 70 keterpenuhan peringatan dini 6%"
+ },
+ {
+  "id": "bnpb-2018-info-bencana-sep",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     10
+    ]
+   ]
+  },
+  "title": "Info Bencana: Informasi kebencanaan bulanan teraktual, edisi September 2018",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://bnpb.go.id/storage/app/media/uploads/24/info-bencana-september-2018-rev.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Hlm. 1: gempa Palu 17.02 WIB, tsunami, likuefaksi, peringatan BMKG Waspada dan Siaga, listrik dan komunikasi padam, status tanggap darurat provinsi 14 hari. Tanggal terbit tidak tercetak; bulan terbit perkiraan dari edisi"
+ },
+ {
+  "id": "bnpb-2025-buletin-des",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1
+    ]
+   ]
+  },
+  "title": "Buletin Info Bencana Vol. 6 No. 12, Desember 2025",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://www.bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20Desember/Buletin%20Info%20Bencana%20Desember%202025.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Hlm. 6, data per 31 Des 2025, Provinsi Aceh saja: 527 meninggal, 31 hilang; dibuka paket dibi (bangun/dibi_rujukan.json). Tanggal terbit perkiraan"
+ },
+ {
+  "id": "bnpb-2022-r3p-cianjur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "Badan Nasional Penanggulangan Bencana (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka riset E §E5. Hlm. PDF 13 korban (BPBD 7 Des 2022), 51 kerusakan dan kerugian, 55 rumah rusak (SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II). Tanpa nomor penetapan; penyusun dokumen tidak tercetak di bagian yang dikutip riset E, ditulis Pemkab Cianjur sebagai penyusun R3P menurut nama dokumen"
+ },
+ {
+  "id": "brr-2009-nias",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Nias: Membangun melalui jalan yang jarang dilalui",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "ISBN": "978-602-8199-36-0",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/assets/arsip/670de67d21dc8.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB, 205 hlm.; dibuka riset E §E4 (hlm. xiii Capaian 4 Tahun: 127.720 meninggal, 93.285 hilang; kotak Ketika Nias Luluh Lantak; Tabel 1.1; hlm. PDF 24 dan 27). Berkas > 10 MB, tidak dibuka ulang 24 Okt 2026"
+ },
+ {
+  "id": "ri-2005-perpres30",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Presiden Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2005
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 30 Tahun 2005 tentang Rencana Induk Rehabilitasi dan Rekonstruksi Wilayah dan Kehidupan Masyarakat Provinsi Nanggroe Aceh Darussalam dan Kepulauan Nias Provinsi Sumatera Utara",
+  "publisher": "Sekretariat Negara",
+  "URL": "https://peraturan.bpk.go.id/Details/42564/perpres-no-30-tahun-2005",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Batang tubuh 8 hlm., tanpa lampiran Buku Utama; Pasal 2 masa berlaku 4 tahun (riset E §E4)"
+ },
+ {
+  "id": "usgs-us1000h3p4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     9,
+     28
+    ]
+   ]
+  },
+  "title": "M 7.5 - 72 km N of Palu, Indonesia (event us1000h3p4)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us1000h3p4",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ringkasan dampak: at least 2.077 killed, 4.438 injured, 1.075 missing"
+ },
+ {
+  "id": "usgs-usp000ej1c",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     5,
+     26
+    ]
+   ]
+  },
+  "title": "M 6.3 - Java, Indonesia (event usp000ej1c)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ej1c",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     19
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tanggal UTC 26 Mei 2006 (27 Mei waktu lokal); 5.749 meninggal via public/gempa/data/factsheet_gempa.json"
+ },
+ {
+  "id": "usgs-us1000g3ub",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     5
+    ]
+   ]
+  },
+  "title": "M 6.9 - Lombok, Indonesia (event us1000g3ub)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us1000g3ub",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     19
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "563 meninggal via factsheet_gempa.json"
+ },
+ {
+  "id": "usgs-usp000h237",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "M 7.6 - Southern Sumatra, Indonesia (event usp000h237)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000h237",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     19
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "1.117 meninggal via factsheet_gempa.json"
+ },
+ {
+  "id": "usgs-us7000d030",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     1,
+     14
+    ]
+   ]
+  },
+  "title": "M 6.2 - Sulawesi, Indonesia (event us7000d030)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000d030",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "At least 107 killed; tanggal UTC 14 Jan 2021 (15 Jan waktu lokal)"
+ },
+ {
+  "id": "widiyanto-2019-palu",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Widiyanto",
+    "given": "W."
+   },
+   {
+    "family": "Santoso",
+    "given": "P. B."
+   },
+   {
+    "family": "Hsiao",
+    "given": "S.-C."
+   },
+   {
+    "family": "Imananta",
+    "given": "R. T."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Post-event field survey of 28 September 2018 Sulawesi earthquake and tsunami",
+  "container-title": "Natural Hazards and Earth System Sciences",
+  "volume": "19",
+  "page": "2781-2794",
+  "DOI": "10.5194/nhess-19-2781-2019",
+  "URL": "https://nhess.copernicus.org/articles/19/2781/2019/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CC BY 4.0; waktu tiba 3–8 menit, run-up maks 10,73 m (Tondo)"
+ },
+ {
+  "id": "harnantyari-2020-palu",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Harnantyari"
+   },
+   {
+    "family": "Takabatake"
+   },
+   {
+    "family": "Esteban"
+   },
+   {
+    "family": "Valenzuela"
+   },
+   {
+    "family": "Nishida"
+   },
+   {
+    "family": "Shibayama"
+   },
+   {
+    "family": "Achiari"
+   },
+   {
+    "family": "Rusli"
+   },
+   {
+    "family": "Marzuki"
+   },
+   {
+    "family": "Marzuki"
+   },
+   {
+    "family": "Aránguiz"
+   },
+   {
+    "family": "Kyaw"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     2
+    ]
+   ]
+  },
+  "title": "Tsunami awareness and evacuation behaviour during the 2018 Sulawesi Earthquake tsunami",
+  "container-title": "International Journal of Disaster Risk Reduction",
+  "volume": "43",
+  "number": "101389",
+  "DOI": "10.1016/j.ijdrr.2019.101389",
+  "URL": "https://doi.org/10.1016/j.ijdrr.2019.101389",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Metadata dari Crossref; abstrak lewat API Semantic Scholar; naskah penuh tidak dibuka (ScienceDirect 403). Nama depan penulis tidak dicatat"
+ },
+ {
+  "id": "surono-2012-merapi",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Surono"
+   },
+   {
+    "family": "Jousset"
+   },
+   {
+    "family": "Pallister"
+   },
+   {
+    "family": "Boichu"
+   },
+   {
+    "family": "Buongiorno"
+   },
+   {
+    "family": "Budisantoso"
+   },
+   {
+    "family": "Costa"
+   },
+   {
+    "family": "Andreastuti"
+   },
+   {
+    "family": "Prata"
+   },
+   {
+    "family": "Schneider"
+   },
+   {
+    "family": "Clarisse"
+   },
+   {
+    "family": "Humaida"
+   },
+   {
+    "family": "Sumarti"
+   },
+   {
+    "family": "Bignami"
+   },
+   {
+    "family": "Griswold"
+   },
+   {
+    "family": "Carn"
+   },
+   {
+    "family": "Oppenheimer"
+   },
+   {
+    "family": "Lavigne"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     10
+    ]
+   ]
+  },
+  "title": "The 2010 explosive eruption of Java's Merapi volcano: A '100-year' event",
+  "container-title": "Journal of Volcanology and Geothermal Research",
+  "volume": "241-242",
+  "page": "121-135",
+  "DOI": "10.1016/j.jvolgeores.2012.06.018",
+  "URL": "https://www.eps.mcgill.ca/~courses/c567/Week%204%20-%20Deformation%201/Surono%20et%20al%202012,%20Merapi%202010%20eruption.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Naskah penuh dibuka 24 Okt 2026 lewat salinan PDF McGill (versi terbit JVGR); dasar 10.000–20.000 jiwa di hlm. 129: 2.300 rumah hancur menurut BNPB dikali 4–8 jiwa per rumah tangga; data BNPB yang dikutip: 367 meninggal, 410.388 mengungsi. Riset E §E16 membaca naskah diterima di GFZ (403 saat dicek ulang); HAL insu-00723412 menolak akses otomatis"
+ },
+ {
+  "id": "koplitz-2016-asap",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Koplitz"
+   },
+   {
+    "family": "Mickley"
+   },
+   {
+    "family": "Marlier"
+   },
+   {
+    "family": "Buonocore"
+   },
+   {
+    "family": "Kim"
+   },
+   {
+    "family": "Liu"
+   },
+   {
+    "family": "Sulprizio"
+   },
+   {
+    "family": "DeFries"
+   },
+   {
+    "family": "Jacob"
+   },
+   {
+    "family": "Schwartz"
+   },
+   {
+    "family": "Pongsiri"
+   },
+   {
+    "family": "Myers"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     9
+    ]
+   ]
+  },
+  "title": "Public health impacts of the severe haze in Equatorial Asia in September–October 2015: demonstration of a new framework for informing fire management strategies to reduce downwind smoke exposure",
+  "container-title": "Environmental Research Letters",
+  "volume": "11",
+  "issue": "9",
+  "number": "094023",
+  "DOI": "10.1088/1748-9326/11/9/094023",
+  "URL": "https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CC BY 3.0; bagian 3.4: Indonesia 91.600 kematian berlebih (95%: 24.000–159.200); estimasi model"
+ },
+ {
+  "id": "who-2023-kematian-berlebih",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     5,
+     19
+    ]
+   ]
+  },
+  "title": "Estimates of excess mortality associated with COVID-19 pandemic (as of 5 April 2023)",
+  "publisher": "World Health Organization",
+  "URL": "https://cdn.who.int/media/docs/default-source/world-health-data-platform/covid-19-excessmortality/2023-05-19_covid-19_gem.zip?sfvrsn=9a95fc1a_4",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Indonesia 2020–2021: 806.815–1.343.849 (selang 95%), estimasi model; data/kajian-bnpb/data/nonalam-sosial/covid19_nasional.csv"
+ },
+ {
+  "id": "satgas-2022-covid19",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Satuan Tugas Penanganan COVID-19"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     10,
+     27
+    ]
+   ]
+  },
+  "title": "Data update COVID-19 Indonesia (update.json)",
+  "publisher": "Satgas Penanganan COVID-19 dan Kementerian Kesehatan",
+  "URL": "https://web.archive.org/web/20221027173342id_/https://data.covid19.go.id/public/api/update.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip Wayback; meninggal per tahun 2020 22.138, 2021 121.956"
+ },
+ {
+  "id": "sipongi-luas",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup dan Kehutanan (kini Kementerian Kehutanan), SiPongi",
+    "singkatan": "SiPongi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Indikasi luas kebakaran hutan dan lahan per provinsi 2018–2025",
+  "publisher": "Kementerian Kehutanan",
+  "URL": "public/data/luas_resmi.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     16
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Panen pipeline repo (git blob 56b94797caa4); 2019: 1.649.258 ha; 2023: 1.161.192,9 ha; tanggal = waktu ubah berkas"
+ },
+ {
+  "id": "setkab-2023-plumpang",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     5
+    ]
+   ]
+  },
+  "title": "Presiden Jokowi tinjau posko pengungsi korban kebakaran TBBM Pertamina Plumpang",
+  "publisher": "Sekretariat Kabinet",
+  "URL": "https://setkab.go.id/presiden-jokowi-tinjau-posko-pengungsi-korban-kebakaran-tbbm-pertamina-plumpang/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Kepala BNPB: 17 meninggal, 49 luka berat, 18 hilang, 1.085 pengungsi (hari kedua)"
+ },
+ {
+  "id": "setkab-2019-wamena",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "Sampaikan duka cita kepada korban, Presiden Jokowi: rusuh Wamena bukan konflik etnis",
+  "publisher": "Sekretariat Kabinet",
+  "URL": "https://setkab.go.id/sampaikan-duka-cita-kepada-korban-presiden-jokowi-rusuh-wamena-bukan-konflik-etnis/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "33 meninggal"
+ },
+ {
+  "id": "bnpb-2024-tpa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     22
+    ]
+   ]
+  },
+  "title": "Sambangi Bali, Kepala BNPB himpun kekuatan awal demi mencegah kebakaran TPA Suwung",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://bnpb.go.id/berita/sambangi-bali-kepala-bnpb-himpun-kekuatan-awal-demi-mencegah-kebakaran-tpa-suwung",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "16 TPA terbakar hebat bersamaan pada 2023; Suwung 32,4 ha"
+ },
+ {
+  "id": "bnpb-2023-sarimukti",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     26
+    ]
+   ]
+  },
+  "title": "BNPB gunakan helikopter water bombing untuk percepat pemadaman api di TPST Sarimukti",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://bnpb.go.id/berita/bnpb-gunakan-helikopter-water-bombing-untuk-percepat-pemadaman-api-di-tpst-sarimukti",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "80% lahan terbakar, 3.000 KK terdampak asap"
+ },
+ {
+  "id": "icg-2002-maluku",
+  "type": "report",
+  "author": [
+   {
+    "literal": "International Crisis Group",
+    "singkatan": "ICG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     2,
+     8
+    ]
+   ]
+  },
+  "title": "Indonesia: The search for peace in Maluku",
+  "collection-title": "Asia Report N°31",
+  "publisher": "International Crisis Group",
+  "URL": "https://web.archive.org/web/20240717142222/https://www.crisisgroup.org/asia/south-east-asia/indonesia/indonesia-search-peace-maluku",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sedikitnya 5.000 (mungkin 10.000) meninggal; hampir 700.000 mengungsi"
+ },
+ {
+  "id": "icg-2001-kalimantan",
+  "type": "report",
+  "author": [
+   {
+    "literal": "International Crisis Group",
+    "singkatan": "ICG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2001,
+     6,
+     27
+    ]
+   ]
+  },
+  "title": "Communal violence in Indonesia: Lessons from Kalimantan",
+  "collection-title": "Asia Report N°19",
+  "publisher": "International Crisis Group",
+  "URL": "https://www.justice.gov/file/277141/dl",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sampit sekitar 500 meninggal dan 108.000 pengungsi; Sambas 1996–1997 dan 1999"
+ },
+ {
+  "id": "hrw-2002-poso",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Human Rights Watch",
+    "singkatan": "HRW"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2002,
+     12,
+     4
+    ]
+   ]
+  },
+  "title": "Indonesia: Breakdown: Four years of communal violence in Central Sulawesi (siaran pers)",
+  "publisher": "Human Rights Watch",
+  "URL": "https://www.hrw.org/press/2002/12/indo1204.htm",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Sekitar 1.000 meninggal; lebih dari 100.000 mengungsi"
+ },
+ {
+  "id": "brookings-2001-pengungsi",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Brookings-CUNY Project on Internal Displacement"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2001,
+     6
+    ]
+   ]
+  },
+  "title": "Report of Seminar on Internal Displacement in Indonesia, Jakarta, 26–27 June 2001",
+  "publisher": "Brookings Institution",
+  "URL": "https://www.brookings.edu/wp-content/uploads/2012/04/20010626_IndonesiaReport.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pengungsi internal tercatat resmi lebih dari 1 juta"
+ },
+ {
+  "id": "bps-2024-podes",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Statistik Potensi Desa Indonesia 2024",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/publication/2024/12/10/2f5217e2d6a695a0830290a7/statistik-potensi-desa-indonesia-2024.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tabel 1.1, 18.1, 18.2: 2.031 desa/kelurahan dengan perkelahian massal (2,41%)"
+ },
+ {
+  "id": "kontan-2018-palu",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kontan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     9,
+     29
+    ]
+   ]
+  },
+  "title": "Inilah deretan fakta tentang tsunami Palu",
+  "container-title": "Kontan",
+  "URL": "https://nasional.kontan.co.id/news/inilah-deretan-fakta-yang-tentang-tsunami-palu",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Mengutip Kepala BMKG: peringatan sekitar 5 menit setelah gempa, dicabut 17.37 WIB; bukan untuk badan teks"
+ },
+ {
+  "id": "jpnn-2018-sulteng",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "JPNN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     10,
+     21
+    ]
+   ]
+  },
+  "title": "Ini data terbaru jumlah korban gempa dan tsunami di Sulteng",
+  "container-title": "JPNN",
+  "URL": "https://www.jpnn.com/news/ini-data-terbaru-jumlah-korban-gempa-dan-tsunami-di-sulteng",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "BNPB 21 Okt 2018: 2.256 meninggal, 1.309 hilang (data dinamis)"
+ },
+ {
+  "id": "suarasurabaya-2026-sumatra",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Suara Surabaya"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     12
+    ]
+   ]
+  },
+  "title": "Data BNPB korban banjir dan longsor Sumatra per 12 Januari 2026",
+  "container-title": "Suara Surabaya",
+  "URL": "https://www.suarasurabaya.net/?p=868551",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "BNPB: 1.189 meninggal, 141 hilang, 195.542 pengungsi bertahan; judul artikel diringkas penyusun"
+ },
+ {
+  "id": "worldbank-2016-cost-fire",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     2
+    ]
+   ]
+  },
+  "title": "The cost of fire: An economic analysis of Indonesia's 2015 fire crisis",
+  "collection-title": "Indonesia Sustainable Landscapes Knowledge Note No. 1",
+  "publisher": "World Bank",
+  "URL": "https://documents1.worldbank.org/curated/en/776101467990969768/txt/103668-BRI-Cost-of-Fires-Knowledge-Note-PUBLIC-ADD-NEW-SERIES-Indonesia-Sustainable-Landscapes-Knowledge-Note.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Versi teks Knowledge Note dibuka 24 Okt 2026: 'at least USD 16.1 billion (IDR 221 trillion)', setara 1,9% PDB 2015; luas 2,6 juta ha Juni–Oktober 2015 menurut pemerintah. Halaman OKR 403 saat dicek"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "usgs-usp000ensm",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     7,
+     17
+    ]
+   ]
+  },
+  "title": "M 7.7 - 226 km SSW of Singaparna, Indonesia (event usp000ensm), impact-text",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=usp000ensm&format=geojson",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Salinan di riset/mentah/usp000ensm.geojson. Impact-text: Ciamis 413, Tasikmalaya 62, Banjar 15, Garut 1, Cilacap 157, Kebumen 10, Banyumas 1, Gunung Kidul 3, Bantul 3 meninggal (jumlah 665); hilang 65; seluruh kematian akibat tsunami, run-up maksimum 4,6 m di Widarapayung"
+ }
+]

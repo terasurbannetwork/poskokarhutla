@@ -1,0 +1,369 @@
+{
+ "nama": "bab09-lapisan-pembiayaan",
+ "keterangan": "Lapisan sumber dana per fase penanggulangan bencana untuk komponen air, peraturan berlaku Oktober 2026",
+ "sumber": "PP 22/2008; PP 12/2019; Perpres 75/2021; Perban BNPB 1/2026; Juklak BNPB 2/2026; Renas PB 2025–2029",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  255
+ ],
+ "ukuran_cm": [
+  16.5,
+  9
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "APBN dan APBD",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Dana Bersama",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Dana BNPB",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Belanja tidak terduga daerah",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Asuransi",
+   "jenis": "kotak",
+   "warna": "#FFFFFF"
+  }
+ ],
+ "hex": {
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks",
+   "garis"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "legenda",
+   "teks",
+   "seri",
+   "latar"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 58.68,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "APBN dan APBD"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 72.68,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "APBN dan APBD"
+  },
+  {
+   "x": 98.68,
+   "y": 3,
+   "w": 52.11,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-84",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 84.68,
+   "y": 2,
+   "w": 66.11,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-84",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 174.79,
+   "y": 3,
+   "w": 41.05,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-160",
+   "teks": "Dana BNPB"
+  },
+  {
+   "x": 160.79,
+   "y": 2,
+   "w": 55.05,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-160",
+   "teks": "Dana BNPB"
+  },
+  {
+   "x": 239.84,
+   "y": 3,
+   "w": 101.49,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-225",
+   "teks": "Belanja tidak terduga daerah"
+  },
+  {
+   "x": 225.84,
+   "y": 2,
+   "w": 115.49,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-225",
+   "teks": "Belanja tidak terduga daerah"
+  },
+  {
+   "x": 365.33,
+   "y": 3,
+   "w": 31.29,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-351",
+   "teks": "Asuransi"
+  },
+  {
+   "x": 351.33,
+   "y": 2,
+   "w": 45.29,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-351",
+   "teks": "Asuransi"
+  },
+  {
+   "x": 53.16,
+   "y": 20,
+   "w": 45.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Prabencana"
+  },
+  {
+   "x": 202.12,
+   "y": 20,
+   "w": 63.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Tanggap darurat"
+  },
+  {
+   "x": 363.84,
+   "y": 20,
+   "w": 55.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Pascabencana"
+  },
+  {
+   "x": 202.3,
+   "y": 40,
+   "w": 63.12,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a",
+   "teks": "APBN dan APBD"
+  },
+  {
+   "x": 88.15,
+   "y": 51.6,
+   "w": 291.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a",
+   "teks": "DAK irigasi; dana desa 2026; dana kontinjensi APBN (PP 22/2008 Pasal 6 ayat (1))"
+  },
+  {
+   "x": 48.21,
+   "y": 79.8,
+   "w": 55.48,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 10.29,
+   "y": 91.4,
+   "w": 131.32,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "rencana kontinjensi, kapasitas badan"
+  },
+  {
+   "x": 43.28,
+   "y": 101,
+   "w": 65.35,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "air, peringatan dini"
+  },
+  {
+   "x": 364.02,
+   "y": 79.8,
+   "w": 55.48,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 336.7,
+   "y": 91.4,
+   "w": 110.12,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "sesuai rencana rehabilitasi dan"
+  },
+  {
+   "x": 369.79,
+   "y": 101,
+   "w": 43.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "rekonstruksi"
+  },
+  {
+   "x": 202.94,
+   "y": 129.2,
+   "w": 61.84,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c",
+   "teks": "Dana Siap Pakai"
+  },
+  {
+   "x": 171.34,
+   "y": 140.8,
+   "w": 125.03,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c",
+   "teks": "air bersih dan sanitasi (PP 22/2008"
+  },
+  {
+   "x": 217.08,
+   "y": 150.4,
+   "w": 33.56,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c",
+   "teks": "Pasal 17)"
+  },
+  {
+   "x": 213.75,
+   "y": 178.6,
+   "w": 40.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d",
+   "teks": "BTT APBD"
+  },
+  {
+   "x": 165.17,
+   "y": 190.2,
+   "w": 137.37,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d",
+   "teks": "keadaan darurat bencana (PP 12/2019"
+  },
+  {
+   "x": 209.96,
+   "y": 199.8,
+   "w": 47.8,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d",
+   "teks": "Pasal 68–69)"
+  },
+  {
+   "x": 336.44,
+   "y": 153.9,
+   "w": 110.64,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "e",
+   "teks": "Bantuan sosial berpola hibah"
+  },
+  {
+   "x": 323.66,
+   "y": 165.5,
+   "w": 136.2,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e",
+   "teks": "atas permohonan pemda (PP 22/2008"
+  },
+  {
+   "x": 374.98,
+   "y": 175.1,
+   "w": 33.56,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e",
+   "teks": "Pasal 23)"
+  },
+  {
+   "x": 197.74,
+   "y": 228,
+   "w": 72.25,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "f",
+   "teks": "Asuransi pertanian"
+  },
+  {
+   "x": 141.42,
+   "y": 239.6,
+   "w": 184.87,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "f",
+   "teks": "Renas PB 2.5.1.c; jalur pembiayaan puso kekeringan"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Lapisan sumber dana per fase tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 7
+}

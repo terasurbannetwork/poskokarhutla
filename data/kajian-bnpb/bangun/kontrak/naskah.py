@@ -51,7 +51,7 @@ NOMOR = {'gambar': 'Gambar', 'tabel': 'Tabel', 'skenario': 'Tabel', 'garis-waktu
 # nama: (atribut wajib, atribut opsional)
 DIREKTIF = {
     'gambar': ('berkas judul jenis', 'sumber keyakinan lebar data_per catatan pengarang lisensi url potong'),
-    'tabel': ('judul sumber keyakinan', 'csv kolom saring urut batas angka total peringkat sorot data_per catatan'),
+    'tabel': ('judul sumber keyakinan', 'csv kolom saring urut batas angka total peringkat sorot data_per catatan grup'),
     'kartu-angka': ('pil sumber keyakinan', 'nada'),
     'temuan': ('judul sifat', ''),
     'keputusan': ('', 'judul'),
@@ -59,19 +59,19 @@ DIREKTIF = {
     'catatan': ('', ''),
     'ringkasan-bab': ('', ''),
     'program': ('nama lokasi lembaga periode dampak sumber keyakinan', 'status jenis'),
-    'skenario': ('jenis judul dasar sumber lembaga', 'kemungkinan peta analog kaki data_per'),
+    'skenario': ('jenis judul dasar sumber lembaga', 'kemungkinan peta analog kaki data_per keyakinan'),
     'kerusakan': ('', ''), 'kebijakan': ('', ''), 'kepekaan': ('', ''), 'respons': ('', ''),
     'pemulihan': ('', ''), 'pemicu': ('', ''), 'mandat': ('', ''),
-    'garis-waktu': ('judul sumber', 'musim'),
-    'matriks-rekomendasi': ('judul kelompok sumber', ''),
+    'garis-waktu': ('judul sumber', 'musim keyakinan'),
+    'matriks-rekomendasi': ('judul kelompok sumber', 'keyakinan'),
     'rek': ('langkah jenis status unit kl waktu indikator dasar', 'program butuh membuka'),
-    'matriks-lembaga': ('judul sumber', ''),
-    'matriks-jenis': ('judul sumber', ''),
+    'matriks-lembaga': ('judul sumber', 'keyakinan'),
+    'matriks-jenis': ('judul sumber', 'keyakinan'),
 }
 INDUK = {'rek': 'matriks-rekomendasi', **{a: 'skenario' for a in
          ('kerusakan', 'kebijakan', 'kepekaan', 'respons', 'pemulihan', 'pemicu', 'mandat')}}
 ID_PREFIKS = {'gambar': 'gbr', 'rek': 'rek', **{n: 'tbl' for n, v in NOMOR.items() if v == 'Tabel'}}
-KODE = set('berkas jenis keyakinan lebar sifat status kelompok waktu nada csv kolom saring urut batas angka '
+KODE = set('berkas jenis keyakinan lebar sifat status kelompok waktu nada csv kolom saring urut batas angka grup '
            'total peringkat sorot musim peta lisensi url butuh membuka kemungkinan'.split())
 KOLOM = {
     'kartu-angka': ['nilai', 'satuan', 'label', 'ikon', 'warna'],
@@ -82,9 +82,10 @@ KOLOM = {
     'kerusakan/b': ['indikator', 'nilai', 'keyakinan', 'sumber'],
     'kepekaan': ['tuas', 'nilai dasar', 'nilai digeser', 'korban jiwa', 'kerugian materiil'],
 }
+# varian c (sosial) = kartu analog berangka seperti b, ditambah batas mandat dan kemungkinan "tidak dinilai" (KERANGKA prinsip 9)
 ANAK_SKENARIO = {'a': ('kerusakan kebijakan kepekaan respons pemulihan', 'kemungkinan peta kaki'),
                  'b': ('kerusakan respons pemulihan', 'analog'),
-                 'c': ('pemicu mandat respons pemulihan', 'kemungkinan')}
+                 'c': ('kerusakan mandat respons pemulihan', 'analog kemungkinan')}
 LABEL_WAJIB = {'temuan': ['Bukti', 'Dampak', 'Pembuka'], 'ringkasan-bab': ['Temuan', 'Angka kunci', 'Rekomendasi']}
 
 
@@ -258,7 +259,7 @@ class Konteks:
             raise KeyError(f'opsi token tidak dikenal: {sorted(tak_dikenal) or sorted(set(opsi) - {"flag", "fmt"})}')
         kyk = e['keyakinan'].split(';')[0].strip()
         if kyk not in self.tema['kosakata']['keyakinan']:
-            raise KeyError(f'entri "{kunci}": keyakinan "{kyk}" bukan salah satu dari empat label')
+            raise KeyError(f'entri "{kunci}": keyakinan "{kyk}" bukan salah satu dari lima label (tema.json kosakata.keyakinan)')
         tampil = format_angka(nilai, rendah, tinggi, e['satuan'], kyk, opsi)
         if 'teks' in opsi['flag'] and '{{angka:' in tampil and kedalaman == 0:
             tampil = RE_INLINE.sub(lambda m: self.suntik(m['kunci'], m['opsi'], asal, 1) if m['kunci'] else m[0], tampil)
@@ -270,9 +271,9 @@ class Konteks:
     # -- pustaka APA 7
     def _nama(self, item):
         a = item.get('author') or [{'literal': item.get('publisher', '')}]
-        if 'literal' in a[0]:
+        if all('literal' in x for x in a):  # lembaga; penulis bernama tunggal (Radhika, Surono) masuk daftar perorangan
             return a[0]['literal'], a[0].get('singkatan')
-        fam = [x['family'] for x in a]
+        fam = [x.get('family') or x['literal'] for x in a]
         return (fam[0] if len(fam) == 1 else f'{fam[0]} & {fam[1]}' if len(fam) == 2 else f'{fam[0]} dkk.'), None
 
     def _akhiran_tahun(self):
@@ -308,7 +309,7 @@ class Konteks:
                 self.dikutip.append(kunci)
             nama, singkat = self._nama(it)
             kenal = nama in self._kenal  # APA 7: singkatan lembaga dikenalkan sekali, lalu dipakai
-            if singkat:
+            if singkat and not hanya_tahun:  # [-@kunci] tidak menampilkan nama, jadi belum memperkenalkan singkatan
                 self._kenal.add(nama)
             th = self.tahun(kunci) + (f', {lokasi}' if lokasi else '')
             potong.append((nama, singkat, kenal, th, hanya_tahun))
@@ -334,10 +335,11 @@ class Konteks:
         t = lambda s, m=False: runs.append({'j': 'teks', 's': s, 'miring': m})
         titik = lambda s: '' if s.rstrip()[-1:] in '.?!' else '.'
         a = it.get('author') or []
-        if a and 'literal' in a[0]:
+        if a and all('literal' in x for x in a):
             pen = a[0]['literal']
         else:
-            nm = [f"{x['family']}, " + ' '.join(p[0] + '.' for p in x['given'].replace('.', ' ').split()) for x in a]
+            nm = [f"{x['family']}, " + ' '.join(p[0] + '.' for p in x['given'].replace('.', ' ').split())
+                  if x.get('given') else x.get('family') or x['literal'] for x in a]
             pen = nm[0] if len(nm) == 1 else ', '.join(nm[:-1]) + ', & ' + nm[-1]
         t(f'{pen}{titik(pen)} ({self.tahun(kunci)}). ')
         jenis = it.get('type')
@@ -826,8 +828,10 @@ class _Pengurai:
                 self.galat(i, f'kartu skenario varian {var} wajib atribut {w}')
         if var == 'a':
             k = a['kemungkinan']
-            if k not in kos['kemungkinan_5_tahun'] and not k.startswith('periode ulang'):
-                self.galat(i, 'kemungkinan varian a: kelas 1 sampai 5 (pita peluang 5 tahun) atau "periode ulang <n> tahun"')
+            # KERANGKA D18: jenis tanpa dasar peluang ditulis "tidak dinilai: <alasan>", tanpa kelas
+            if k not in kos['kemungkinan_5_tahun'] and not k.startswith(('periode ulang', 'tidak dinilai:')):
+                self.galat(i, 'kemungkinan varian a: kelas 1 sampai 5 (pita peluang 5 tahun), "periode ulang <n> tahun", '
+                              'atau "tidak dinilai: <alasan>"')
             tb = self._tabel_isi(anak['kerusakan'], i, KOLOM['kerusakan/a'])
             for x, r in enumerate(tb['baris']):
                 if polos(r[3]) != '\u2013':
@@ -835,16 +839,21 @@ class _Pengurai:
             ada = [polos(r[0]).lower() for r in tb['baris']]
             for besar in kos['besaran_skenario_alam']:
                 if not any(x.startswith(besar.lower()) for x in ada):
-                    self.galat(tb['baris_naskah'] - 1, f'tabel kerusakan wajib baris "{besar}" (isi "\u2013" beralasan bila tidak terhitung)')
+                    self.galat(tb['baris_naskah'] - 1, f'tabel kerusakan wajib baris aspek "{besar}" (Perban 2/2023 Pasal 7 ayat (5); '
+                               'isi "\u2013" beralasan bila tidak terhitung)')
+            for x in ada:  # luka, pengungsi hari ke-7, dan DALY tidak ada di DIBI (KERANGKA prinsip 9)
+                for besar in kos['besaran_skenario_terlarang']:
+                    if besar.lower() in x:
+                        self.galat(tb['baris_naskah'] - 1, f'tabel kerusakan memuat besaran terlarang "{besar}" (KERANGKA prinsip 9)')
             self._tabel_isi(anak['kepekaan'], i, KOLOM['kepekaan'])
-        elif var == 'b':
+        else:
             tb = self._tabel_isi(anak['kerusakan'], i, KOLOM['kerusakan/b'])
             ada = [polos(r[0]).lower() for r in tb['baris']]
             for besar in kos['indikator_skenario_nonalam'][a['jenis']]:
                 if not any(x.startswith(besar.lower()) for x in ada):
-                    self.galat(tb['baris_naskah'] - 1, f'tabel kerusakan {a["jenis"]} wajib indikator "{besar}"')
-        elif not a['kemungkinan'].startswith('tidak berlaku'):
-            self.galat(i, 'kartu skenario sosial: kemungkinan ditulis "tidak berlaku: <alasan>" (PEDOMAN B5.11 varian c)')
+                    self.galat(tb['baris_naskah'] - 1, f'kartu analog {a["jenis"]} wajib besaran "{besar}" (tanpa perkalian; "\u2013" beralasan bila tidak ada)')
+            if var == 'c' and not a['kemungkinan'].startswith('tidak dinilai'):
+                self.galat(i, 'kartu skenario sosial: kemungkinan ditulis "tidak dinilai: <alasan>" (KERANGKA prinsip 9, PEDOMAN B5.11 varian c)')
 
     def _csv(self, d, i):
         """Bangun tabel dari CSV: kolom, saring, urut, batas, total. Angka masuk manifest injeksi."""
@@ -1024,10 +1033,19 @@ def _uji_diri():
     assert utama <= pakai, f'contoh belum memakai direktif: {sorted(utama - pakai)}'
     assert any(b['jenis'] == 'halaman-baru' for b in n['blok']), 'contoh belum memakai {{halaman-baru}}'
     teks = json.dumps(n, ensure_ascii=False)
-    for harap in ('128,52', 'turun 17,8%', '260\u2013590 jiwa', 'Rp257,4 miliar', 'Rp337,8 miliar', '148\u2013341 jiwa', '500.000', '4.234',
-                  'Badan Nasional Penanggulangan Bencana [BNPB], 2025a', '(BNPB, 2025a, 2025b)', 'Haque dkk. (2012)',
+    for harap in ('Badan Nasional Penanggulangan Bencana [BNPB], 2025b', '(BNPB, 2025b, 2025d)', 'Haque dkk. (2012)',  # huruf tahun ikut pustaka.json
                   'Gambar 6.1', 'Tabel 6.1', 'Subbab 6.2'):
         assert harap in teks, f'contoh tidak menghasilkan "{harap}"'
+    # invarian, bukan potret data: tiap angka tersuntik tampil apa adanya, rentang ber-en dash, rupiah besar bersatuan
+    for m in k.manifest:
+        assert m['tampil'] in teks, f'angka {m["kunci"]} tersuntik "{m["tampil"]}" tetapi tidak tampil di contoh'
+    opsi = [m.get('opsi', '') for m in k.manifest]
+    assert any('rupiah' in o for o in opsi) and any('persen' in o and 'arah' in o for o in opsi), 'contoh wajib memakai opsi rupiah dan persen|arah'
+    for m in k.manifest:
+        if 'rupiah' in m.get('opsi', ''):
+            assert re.fullmatch(r'Rp[0-9.,]+ (juta|miliar|triliun)', m['tampil']), m
+        if 'arah' in m.get('opsi', ''):
+            assert re.match(r'(naik|turun|tetap) ', m['tampil']), m
     assert n['catatan_kaki'] and n['catatan_kaki'][0]['nomor'] == 1
     assert label['rek:peringatan-dini'] == '01' and label['rek:data-genangan'] == '02'
     tok = len(re.findall(r'\{\{angka:', lengkap))

@@ -1328,6 +1328,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 <link rel="stylesheet" href="/inti/peringatan-berita.css">
 <link href="lapisan5.css" rel="stylesheet">
 <link href="peta_kab.css" rel="stylesheet">
+<link href="risiko7.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
 <link href="ringkasan.css" rel="stylesheet">
 <link href="operasi.css" rel="stylesheet">
@@ -2054,6 +2055,7 @@ const Peta = {
           <div class="kg">${kb("Sebelum lintasan terakhir", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">${p.s === "N21" ? "NOAA-21 tidak dihitung dalam jumlah titik. " : ""}Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
+      if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */
       if (window.PetaKab?.klik(e)) return;   /* overlay Luas terbakar / Belum padam: klik = popup kabupaten, bukan turun ke wilayah */
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
@@ -6549,6 +6551,8 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 </script>
 <script src="peta_karhutla.js"></script>
 <script src="peta_kab.js"></script><!-- sebelum lapisan5.js: legendanya ikut hitungan kolom legenda lapisan5 -->
+<script src="risiko7.js"></script><!-- eksperimental, hanya akun masuk (anonim: berhenti di baris pertama); sebelum lapisan5.js dengan alasan sama -->
+
 <script src="lapisan5.js"></script>
 <link rel="stylesheet" href="banding.css">
 <link rel="stylesheet" href="cari.css">

@@ -8,3 +8,5 @@ riset/mentah/*.ndjson
 # salinan repositori anti-slop (berisi .git sendiri); daftar kata yang dipakai disalin terpisah
 riset/anti-slop/miqdad/
 riset/anti-slop/rand/
+qa/keluaran/
+naskah/_contoh/gambar/

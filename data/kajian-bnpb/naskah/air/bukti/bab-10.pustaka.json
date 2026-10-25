@@ -1,0 +1,1640 @@
+[
+ {
+  "id": "ri-2004-uu25",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2004,
+     10,
+     5
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 25 Tahun 2004 tentang Sistem Perencanaan Pembangunan Nasional",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2004 Nomor 104",
+  "URL": "https://peraturan.bpk.go.id/Details/40694/uu-no-25-tahun-2004",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Bab 10: PDF https://peraturan.bpk.go.id/Download/30429/UU%20Nomor%2025%20Tahun%202004.pdf diunduh dan dibaca lewat pdftotext 24 Okt 2026; Pasal 19 ayat (2) hlm. cetak 13 (Renstra-KL ditetapkan dengan peraturan pimpinan K/L setelah disesuaikan dengan RPJM Nasional). Status Berlaku di JDIH BPK."
+ },
+ {
+  "id": "ri-2025-perpres80",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     6,
+     30
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 80 Tahun 2025 tentang Penyusunan Rencana Strategis dan Rencana Kerja Kementerian/Lembaga",
+  "URL": "https://peraturan.bpk.go.id/Details/324647",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Bab 10: batang tubuh https://peraturan.bpk.go.id/Download/386421/2025perpres080.pdf diunduh dan dibaca lewat pdftotext 24 Okt 2026; Pasal 22–30 (perubahan Renstra-KL; persetujuan Kementerian Perencanaan; Pertemuan Dua Pihak) hlm. cetak 22–26; Pasal 51 ayat (5)–(6) (evaluasi tahun ke-3 dan ke-5); Pasal 61 (peralihan); ditetapkan dan diundangkan 30 Juni 2025. Lampiran IV tidak dibuka."
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json (Pasal 7 hlm. 4; penetapan 6 Jan 2025 hlm. 5; program 2.4.4 hlm. 37 dan 86; §4.5–4.6 hlm. 122–125); Bab 10: kolom kontributor aksi 2.4.4.a (memuat BNPB) dibuka ulang 24 Okt 2026 pada halaman n = 86; Tabel 2.8 hlm. 32; §4.5–4.6 hlm. 122–125"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (hlm. 84, 128, 133); Bab 10: tanggal penetapan 3 Oktober 2025 dibaca dari bagian penetapan korpus perban-nomor-5-tahun-2025.json; hlm. 70, 133"
+ },
+ {
+  "id": "ri-2025-perpres12-rpjmn",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 12 Tahun 2025 tentang Rencana Pembangunan Jangka Menengah Nasional Tahun 2025–2029",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 19",
+  "URL": "https://peraturan.bpk.go.id/Details/314638/perpres-no-12-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran I hlm. 29, 30, 71–73, 111, 201, 216; Lampiran II hlm. 437–440; Lampiran III hlm. 913 (BNPB); teks OCR, tabel kunci dicek dari gambar halaman"
+ },
+ {
+  "id": "ri-2020-perpres87",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 87 Tahun 2020 tentang Rencana Induk Penanggulangan Bencana Tahun 2020–2044",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2020 Nomor 204",
+  "URL": "https://peraturan.bpk.go.id/Details/146481/perpres-no-87-tahun-2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "batang tubuh dan lampiran dibaca; Pasal 3, 4, 6, 7; Lampiran Bab I–III"
+ },
+ {
+  "id": "ri-2019-perpres1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 1",
+  "URL": "https://peraturan.bpk.go.id/Details/100440/perpres-no-1-tahun-2019",
+  "verifikasi": "primer",
+  "note": "Pasal 6, 7, 10, 18, 19 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-1-2019.json.gz; diubah Perpres 29/2021"
+ },
+ {
+  "id": "bnpb-2025-progsun",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Keputusan Kepala Badan Nasional Penanggulangan Bencana Nomor 327 Tahun 2025 tentang Program Penyusunan Peraturan Badan Nasional Penanggulangan Bencana Tahun 2026",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025kepkabnpb327.pdf",
+  "verifikasi": "primer",
+  "note": "ditetapkan 31 Des 2025; dibaca dari data/raw/hukum/teks/keputusan-kepala-nomor-327-tahun-2025.json (Lampiran hlm. 4–5); Bab 7: Lampiran: 11 rancangan; tidak memuat perubahan Perban 2/2024 atau Perban 2/2023"
+ },
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+  "verifikasi": "primer",
+  "note": "sama dengan entri pustaka.json utama, ditambah URL; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz (Pasal 1 angka 2, Pasal 5, 12, 21, 51, 53)"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+ },
+ {
+  "id": "ri-2023-uu6",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2023 Nomor 41",
+  "URL": "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023",
+  "verifikasi": "primer",
+  "note": "Pasal 53 (perubahan UU 17/2019: Pasal 8, 9, 12, 17, 19, 38, 40, 43, 44, 45, 49, 50, 51, 52, 56, 70, 73; sisipan 40A, 75A; Pasal 31, 35, 39 tidak diubah) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-6-2023.json.gz hlm. 365–380"
+ },
+ {
+  "id": "ri-2024-pp30",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 30 Tahun 2024 tentang Pengelolaan Sumber Daya Air",
+  "URL": "https://peraturan.bpk.go.id/Details/295844/pp-no-30-tahun-2024",
+  "verifikasi": "primer",
+  "note": "Pasal 96–97 dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-30-2024.json.gz (hlm. 65–66)"
+ },
+ {
+  "id": "ri-2010-pp37",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 37 Tahun 2010 tentang Bendungan",
+  "URL": "https://peraturan.bpk.go.id/Details/5049/pp-no-37-tahun-2010",
+  "verifikasi": "primer",
+  "note": "Pasal 52–54 (rencana tindak darurat) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/pp-37-2010.json.gz (hlm. 24)"
+ },
+ {
+  "id": "ri-2015-pp122",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
+  "URL": "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10)"
+ },
+ {
+  "id": "ri-2008-pp22",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 22 Tahun 2008 tentang Pendanaan dan Pengelolaan Bantuan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2008 Nomor 43",
+  "URL": "https://peraturan.bpk.go.id/Details/4834/pp-no-22-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 4–7, 17; Bab 7: Pasal 5, 6 ayat (1) dana kontinjensi prabencana (riset E11e)"
+ },
+ {
+  "id": "ri-2025-perpres77",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 77 Tahun 2025 tentang Badan Otorita Pengelola Pantai Utara Jawa",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 110",
+  "URL": "https://peraturan.bpk.go.id/Details/337303/perpres-no-77-tahun-2025",
+  "verifikasi": "primer",
+  "note": "Pasal 6–7 (Dewan Pengarah) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/perpres-77-2025.json.gz (hlm. 5–6)"
+ },
+ {
+  "id": "ri-2022-perpres53",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 53 Tahun 2022 tentang Dewan Sumber Daya Air Nasional",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2022 Nomor 88",
+  "URL": "https://peraturan.bpk.go.id/Download/199318/Perpres%20Nomor%2053%20Tahun%202022.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 2, 3, 5, 7"
+ },
+ {
+  "id": "ri-2024-keppres18",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 18 Tahun 2024 tentang Keanggotaan Dewan Sumber Daya Air Nasional dari Unsur Pemerintah Pusat dan Nonpemerintah",
+  "URL": "https://peraturan.bpk.go.id/Download/342629/Keppres%20Nomor%2018%20Tahun%202024.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ditetapkan 25 April 2024; Pasal 1"
+ },
+ {
+  "id": "kemenpu-2024-permen2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum Nomor 2 Tahun 2024 tentang Pedoman Pembentukan Wadah Koordinasi Pengelolaan Sumber Daya Air pada Tingkat Wilayah Sungai",
+  "URL": "https://peraturan.bpk.go.id/Details/328867",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ditetapkan 13 Desember 2024; Pasal 4, 5, 96"
+ },
+ {
+  "id": "ri-2021-perpres75",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 75 Tahun 2021 tentang Dana Bersama Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2021 Nomor 183",
+  "URL": "https://peraturan.bpk.go.id/Details/175273/perpres-no-75-tahun-2021",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 3, 4, 6–10"
+ },
+ {
+  "id": "ri-2026-perpres46",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     16
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2026 Nomor 83",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 3 baru hlm. 3, korpus data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json (OCR mutu 0,968)"
+ },
+ {
+  "id": "ri-2024-perpres12-bmkg",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     26
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 12 Tahun 2024 tentang Badan Meteorologi, Klimatologi, dan Geofisika",
+  "URL": "https://peraturan.bpk.go.id/Details/276838/perpres-no-12-tahun-2024",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 4 huruf a-c, Pasal 5 huruf g, Pasal 22-24 (Deputi Bidang Modifikasi Cuaca); teks data/kajian-bnpb/data/lembaga/mentah/teks/perpres-12-2024.json.gz hlm. 2-3, 8-9"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-4-tahun-2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Definisi status keadaan darurat dan siaga darurat (hlm. 3); Pasal 20 ayat (1) (hlm. 16); teks korpus data/raw/hukum/teks/perban-nomor-4-tahun-2020.json"
+ },
+ {
+  "id": "bnpb-2023-renkon",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2023 tentang Penyusunan Rencana Kontingensi Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 469",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb002.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 7 ayat (1) sampai (5) dibaca di halaman PDF 4 dan Lampiran (pertimbangan sejarah kejadian terburuk, lima aspek dampak) di halaman PDF 14, korpus data/raw/hukum/teks/perban-nomor-2-tahun-2023.json"
+ },
+ {
+  "id": "bnpb-2024-peringatan-dini",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     25
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2024 tentang Sistem Peringatan Dini Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://peraturan.bpk.go.id/Details/284502/peraturan-bnpb-no-2-tahun-2024",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Diundangkan 18 April 2024; Pasal 2 ayat (3), Pasal 3, Pasal 19, Pasal 25; teks korpus data/raw/hukum/teks/perban-nomor-2-tahun-2024.json"
+ },
+ {
+  "id": "bnpb-2025-destana",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     24
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2025 tentang Desa dan Kelurahan Tangguh Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://peraturan.bpk.go.id/Details/349149/peraturan-bnpb-no-7-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Diundangkan 31 Oktober 2025 menurut indeks JDIH; Pasal 11, 13, 14, 15, 19, 20, 22; teks korpus data/raw/hukum/teks/perban-nomor-7-tahun-2025.json hlm. 6-10"
+ },
+ {
+  "id": "bnpb-2026-dana-bersama",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     3,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2026 tentang Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi terhadap Penyaluran Dana Bersama Penanggulangan Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-1-tahun-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 14 ayat (4), Pasal 16 ayat (3), Pasal 34; dicek mesin paket program-terbukti (README §4 butir 6)"
+ },
+ {
+  "id": "bnpb-2023-satudata",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2023 tentang Satu Data Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 21",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 1 angka 3 dan 6 dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2023.json; Bab 7: Pasal 1 angka 3, 5, 6; Pasal 4–8"
+ },
+ {
+  "id": "bnpb-2025-otk",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     6
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-6-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks menulis ditetapkan 6 Oktober 2025, metadata JDIH 7 Oktober 2025; susunan unit di data/kajian-bnpb/data/program-terbukti/organisasi_bnpb.csv"
+ },
+ {
+  "id": "bnpb-2025-otk-ubah",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     30
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 11 Tahun 2025 tentang Perubahan atas Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-11-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Deputi Bidang Penanganan Darurat: satu direktorat koordinasi dan tiga direktorat wilayah"
+ },
+ {
+  "id": "bnpb-2026-juklak-gladi",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     15
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Pemenuhan Standar Pelayanan Minimal Sub-Urusan Bencana Daerah Kabupaten/Kota untuk Subkegiatan Gladi Kesiapsiagaan terhadap Bencana Nomor 4 Tahun 2026",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juklak-nomor-4-tahun-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks korpus data/raw/hukum/teks/juklak-nomor-4-tahun-2026.json"
+ },
+ {
+  "id": "bnpb-2026-juklak-kie",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     15
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Pemenuhan Standar Pelayanan Minimal Sub-Urusan Bencana Daerah Kabupaten/Kota untuk Subkegiatan Pelayanan Komunikasi, Informasi, dan Edukasi Rawan Bencana Nomor 7 Tahun 2026",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juklak-nomor-7-tahun-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks korpus data/raw/hukum/teks/juklak-nomor-7-tahun-2026.json"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama"
+ },
+ {
+  "id": "bnpb-2026-krb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API; Bab 7: kolom kapasitas_kab per kab/kota (paket nonalam-sosial, krb_covid19_kab.csv) dipakai untuk kelas kapasitas KRB 2022–2026"
+ },
+ {
+  "id": "bmkg-2026-musim-hujan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     22
+    ]
+   ]
+  },
+  "title": "BMKG: El Niño sangat kuat sedang terjadi, musim hujan 2026/2027 diprediksi datang lebih lambat",
+  "genre": "Siaran pers",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-el-nino-sangat-kuat-sedang-terjadi-musim-hujan-2026-2027-diprediksi-datang-lebih-lambat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rilis primer dibuka 23 Okt 2026; pembanding InfoPublik 22 Sep 2026 (infopublik.id/kategori/nasional-sosial-budaya/990337) memuat angka yang sama"
+ },
+ {
+  "id": "kemenkopmk-2025-sinkronisasi-irb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     9,
+     12
+    ]
+   ]
+  },
+  "title": "Kemenko PMK Dorong Sinkronisasi Indeks Risiko Bencana untuk Perkuat Ketahanan Daerah",
+  "URL": "https://kemenkopmk.go.id/node/5841",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rapat 4 September 2025; angka 63, 87, 79 daerah disampaikan Direktur MPBG Kemendagri"
+ },
+ {
+  "id": "dpr-2022-deteksi-dini",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pusat Kajian Akuntabilitas Keuangan Negara, Badan Keahlian DPR RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Akuntabilitas kinerja deteksi dini bencana alam geologi dan hidrometeorologi di Indonesia (Accountability Brief Komisi V)",
+  "publisher": "Badan Keahlian DPR RI",
+  "URL": "https://berkas.dpr.go.id/pa3kn//analisis-tematik-akuntabilitas/public-file/analisis-ringkas-cepat-public-66.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "4 hlm.; merangkum LHP Kinerja BPK 2022 atas efektivitas observasi, analisis, dan forecasting untuk deteksi dini banjir dan longsor pada BMKG dan instansi terkait (LHP tidak dibuka) dan data BNPB tentang LEWS/FEWS/TEWS"
+ },
+ {
+  "id": "bbwspj-2021-inventaris-bendungan",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Balai Besar Wilayah Sungai Pemali Juana",
+    "singkatan": "BBWS Pemali-Juana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     7
+    ]
+   ]
+  },
+  "title": "Daftar inventarisasi bendungan di lingkungan BBWS Pemali Juana (status Juli 2021)",
+  "publisher": "Direktorat Jenderal Sumber Daya Air, Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "2 hlm; salinan riset/mentah/pj.pdf; hlm 2 (instrumentasi) dicek pada render 300 dpi 23 Okt 2026"
+ },
+ {
+  "id": "rembangkab-2024-rtd-banyukuwung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Rembang"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Rawan potensi banjir Bendungan Banyukuwung, pemerintah tingkatkan kesiapsiagaan 32 desa",
+  "container-title": "Situs resmi Pemerintah Kabupaten Rembang",
+  "URL": "https://rembangkab.go.id/?p=24363",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sosialisasi RTD oleh BBWS Pemali-Juana; 32 desa di 4 kecamatan; RTD disiapkan untuk BPBD Rembang; diperbarui tiap 5 tahun"
+ },
+ {
+  "id": "pupr-2015-permen14",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 638",
+  "URL": "https://peraturan.go.id/files/bn638-2015.pdf",
+  "verifikasi": "primer",
+  "note": "lampiran pindaian dibaca OCR (paket air-jawa §5); rekap hlm. 13, 29, 63"
+ },
+ {
+  "id": "kemenpupr-pola-rpsda-jawa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Sumber Daya Air, Kementerian Pekerjaan Umum"
+   }
+  ],
+  "title": "Dokumen Pola Pengelolaan SDA dan Rencana Pengelolaan SDA",
+  "container-title": "Situs Ditjen SDA",
+  "URL": "https://sda.pu.go.id/dokumen/kategori/pola_pengelolaan_sda",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "daftar berkas; juga https://sda.pu.go.id/dokumen/kategori/rencana_pola_pengelolaan_sda. Diunduh Pola 10 WS dan RPSDA 10 WS di Jawa (lihat E-dokumen-primer.md E6); Pemali-Comal tidak ada"
+ },
+ {
+  "id": "kemenpupr-2024-rpsda-jratunseluna",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Rencana Pengelolaan Sumber Daya Air Wilayah Sungai Jratunseluna Tahun 2024",
+  "publisher": "Direktorat Jenderal Sumber Daya Air",
+  "URL": "https://sda.pu.go.id/assets/uploads/files/2024_Rencana%20PSDA%20WS%20Jratunseluna_1786439921_ed6dd467d491255a92ae.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. 27–28 (defisit air baku 41,60 m3/detik; rob 22.897 ha), Tabel 5.83 hlm. 262, Tabel 5.86 hlm. 265 (simulasi pasang 1,8 m); nomor Kepmen penetapan tidak terbaca"
+ },
+ {
+  "id": "susilo-2023-gnss",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Susilo",
+    "given": "S."
+   },
+   {
+    "family": "Salman",
+    "given": "R."
+   },
+   {
+    "family": "Hermawan",
+    "given": "W."
+   },
+   {
+    "family": "Widyaningrum",
+    "given": "R."
+   },
+   {
+    "family": "Wibowo",
+    "given": "S. T."
+   },
+   {
+    "family": "Lumban-Gaol",
+    "given": "Y. A."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "GNSS land subsidence observations along the northern coastline of Java, Indonesia",
+  "container-title": "Scientific Data",
+  "volume": "10",
+  "DOI": "10.1038/s41597-023-02274-0",
+  "verifikasi": "primer",
+  "note": "abstrak dibaca riset B §6.1 [TERVERIFIKASI], tidak dibuka ulang 23 Okt 2026"
+ },
+ {
+  "id": "sidiq-2023-pekalongan",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Sidiq",
+    "given": "T. P."
+   },
+   {
+    "family": "Adiwijaya",
+    "given": "R."
+   },
+   {
+    "family": "Nugroho",
+    "given": "E."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Long term subsidence rate in Pekalongan city observed by SAR Interferometry",
+  "container-title": "IOP Conference Series: Earth and Environmental Science",
+  "volume": "1276",
+  "page": "012014",
+  "DOI": "10.1088/1755-1315/1276/1/012014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     21
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex (public/banjir/data/subsiden_literatur.json)"
+ },
+ {
+  "id": "abidin-2013-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   },
+   {
+    "family": "Andreas",
+    "given": "H."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Sidiq",
+    "given": "T. P."
+   },
+   {
+    "family": "Fukuda",
+    "given": "Y."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Land subsidence in coastal city of Semarang (Indonesia): characteristics, impacts and causes",
+  "container-title": "Geomatics, Natural Hazards and Risk",
+  "volume": "4",
+  "issue": "3",
+  "page": "226-240",
+  "DOI": "10.1080/19475705.2012.692336",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     21
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex"
+ },
+ {
+  "id": "virtriana-2026-bandung",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Virtriana",
+    "given": "R."
+   },
+   {
+    "family": "Harto",
+    "given": "A. B."
+   },
+   {
+    "family": "Meilano",
+    "given": "I."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Farid",
+    "given": "M."
+   },
+   {
+    "family": "Anggraini",
+    "given": "T. S."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Extreme climate and land subsidence: Flood vulnerability projection in the Bandung Basin by 2045 and its socio-economic implications",
+  "container-title": "Geoenvironmental Disasters",
+  "volume": "13",
+  "DOI": "10.1186/s40677-026-00420-5",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B §6.1)"
+ },
+ {
+  "id": "aditiya-2023-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Aditiya",
+    "given": "Arif"
+   },
+   {
+    "family": "Ito",
+    "given": "Takeo"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Present-day land subsidence over Semarang revealed by time series InSAR new small baseline subset technique",
+  "container-title": "International Journal of Applied Earth Observation and Geoinformation",
+  "volume": "125",
+  "page": "103579",
+  "DOI": "10.1016/j.jag.2023.103579",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B lewat DOAJ; metadata dicek OpenAlex 23 Okt 2026)"
+ },
+ {
+  "id": "yamamoto-1984-tokyo",
+  "type": "chapter",
+  "author": [
+   {
+    "family": "Yamamoto",
+    "given": "Soki"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     1984
+    ]
+   ]
+  },
+  "title": "Case history No. 9.4: Tokyo, Japan",
+  "container-title": "Guidebook to studies of land subsidence due to ground-water withdrawal",
+  "publisher": "UNESCO",
+  "URL": "https://wwwrcamnl.wr.usgs.gov/rgws/Unesco/PDF-Chapters/Chapter9-4.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak 23 Okt 2026 (bagian 9.4.2, 9.4.3, 9.4.5); tahun 1984 dari meta paket program-terbukti, tidak tercetak di bab yang diekstrak. Tipe chapter belum ada di daftar NASKAH-SPEK §7; bila generator menolak, pakai book"
+ },
+ {
+  "id": "tanaka-2013-bangkok",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Tanaka",
+    "given": "Akiko"
+   },
+   {
+    "family": "Mio",
+    "given": "Aritoshi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Ground deformation signals detected by SAR interferometry time series analysis along the Chao Praya River areas",
+  "container-title": "Japan Geoscience Union Meeting 2013, abstrak STT57-01",
+  "publisher": "Geological Survey of Japan, AIST",
+  "URL": "https://www2.jpgu.org/meeting/2013/session/PDF/S-TT57/STT57-01.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "abstrak dibuka dan diekstrak 23 Okt 2026; angka 1981 dikutip abstrak dari Phien-wej dkk. (2006). Tipe paper-conference belum ada di daftar NASKAH-SPEK §7; bila generator menolak, pakai report"
+ },
+ {
+  "id": "dfat-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Department of Foreign Affairs and Trade, Australia",
+    "singkatan": "DFAT"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "PAMSIMAS final independent evaluation, Volume 1 (Final V.2)",
+  "publisher": "Department of Foreign Affairs and Trade",
+  "URL": "https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "penulis laporan Murray dkk. (daftar lengkap belum dicatat); dibuka paket program-terbukti lewat arsip http://web.archive.org/web/20251023113557/https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf; PDF hlm. 11, 32, 40"
+ },
+ {
+  "id": "novita-2021-pekalongan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Novita",
+    "given": "Maria Griselda"
+   },
+   {
+    "family": "Helmi",
+    "given": "Muhammad"
+   },
+   {
+    "family": "Widiaratih",
+    "given": "Rikha"
+   },
+   {
+    "family": "Hariyadi",
+    "given": "Hariyadi"
+   },
+   {
+    "family": "Wirasatriya",
+    "given": "Anindya"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Mengkaji area genangan banjir pasang terhadap penggunaan lahan pesisir tahun 2020 menggunakan metode geospasial di Kabupaten Pekalongan, Provinsi Jawa Tengah",
+  "container-title": "Indonesian Journal of Oceanography",
+  "volume": "3",
+  "issue": "3",
+  "page": "237–249",
+  "DOI": "10.14710/ijoce.v3i3.11449",
+  "verifikasi": "primer",
+  "note": "abstrak dibuka 23 Okt 2026 (ejournal2.undip.ac.id/index.php/ijoce/article/view/11449); judul di halaman terpotong setelah 'Provinsi Ja', akhir judul perlu dicek"
+ },
+ {
+  "id": "pantaubencana-2026-program-terbukti",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Paket data program-terbukti: kompendium program, bukti dampak, organisasi BNPB, Renstra, Renas, RIPB",
+  "genre": "Data set",
+  "publisher": "Pantau Bencana",
+  "verifikasi": "primer",
+  "note": "data/kajian-bnpb/data/program-terbukti/ (kompendium_program.csv kolom kekuatan, posisi; bukti_dampak.csv); rubrik kekuatan bukti di README §3"
+ },
+ {
+  "id": "pantaubencana-2026-paket-lembaga",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Paket data lembaga: matriks lembaga, kewenangan komponen air, dan celah kewenangan (batas data 23 Oktober 2026)",
+  "genre": "Data set",
+  "publisher": "Pantau Bencana",
+  "verifikasi": "primer",
+  "note": "data/kajian-bnpb/data/lembaga/ (matriks_air.csv, celah.csv, peran.csv); dibangun data/kajian-bnpb/bangun/lembaga.py dengan pencocokan kutipan ke teks peraturan; label resmi untuk bukti, sel pemetaan bertanda"
+ }
+]

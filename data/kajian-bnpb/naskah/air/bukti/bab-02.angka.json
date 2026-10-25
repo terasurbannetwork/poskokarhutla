@@ -1,0 +1,744 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 2 kajian air (berkas bukti naskah/air/bukti/bab-02.md). Format sama dengan data/angka.json; berkas relatif ke data/kajian-bnpb/data/. Tidak menyunting data/angka.json.",
+  "Kunci yang sudah ada di data/angka.json atau bab-01.angka.json tidak diulang (mis. irbi.jawa.*, oni.jas_*, bmkg.musim_2026.*, airjawa.ipa_2010_persen, airjawa.ws.jumlah, dibi.jawa.*).",
+  "Entri nilai + pustaka merujuk kunci di bab-02.pustaka.json. olah(x) ditulis di catatan dan memakai label x.",
+  "Diperbaiki 24 Okt 2026 atas temuan pemeriksa (bab-02.md §9): kunci Bangkok dicabut (sekunder); bukti.p13.* kini nilai + pustaka ICR Bank Dunia; tambah kunci luas kekeringan, leding DIY/Jatim/nasional, Bank Dunia 2021.",
+  "Ditambah 24 Okt 2026 oleh penulis naskah Bab 2 (angka yang ada di berkas bukti tetapi belum berkunci): airjawa.jawa.n_kab, bps.slhi2020.ambang_ketahanan_air, susilo2023.pantura.kali_kenaikan_muka_laut, aditiya2023.semarang.korelasi_air_tanah."
+ ],
+ "angka": {
+  "hidromet.jawa.kekeringan.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=terpapar_krb_kekeringan].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.kekeringan.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=kekeringan_2015,wilayah=jawa,metrik=kerugian_potensi_krb_kekeringan].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.jawa.banjir.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=terpapar_krb_banjir].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.banjir.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_banjir].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.jawa.longsor.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=terpapar_krb_longsor].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.longsor.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_longsor].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.jawa.longsor.luas_bahaya_tinggi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=luas_bahaya_tinggi_longsor].nilai",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kelas tinggi KRB 2022–2026; batas atas luas terdampak, bukan jejak satu kejadian"
+  },
+  "hidromet.jawa.banjir_bandang.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=terpapar_krb_banjir_bandang].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.banjir_bandang.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_banjir_bandang].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.jawa.cuaca_ekstrem.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=terpapar_krb_cuaca_ekstrem].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.cuaca_ekstrem.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=jawa,metrik=kerugian_potensi_krb_cuaca_ekstrem].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.jawa.gelombang_abrasi.krb_terpapar": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=gelombang_abrasi_rob,wilayah=jawa,metrik=terpapar_krb_gelombang_abrasi].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "kolom API 'terpapar', jumlah 119 kab/kota Jawa"
+  },
+  "hidromet.jawa.gelombang_abrasi.krb_kerugian_potensi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=gelombang_abrasi_rob,wilayah=jawa,metrik=kerugian_potensi_krb_gelombang_abrasi].nilai",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "potensi kerugian fisik + ekonomi seluruh kelas; nilai aset terpapar, batas atas, tidak dijumlah antarbahaya (KERANGKA prinsip 9)"
+  },
+  "hidromet.nasional.kekeringan.krb_terpapar_jumlah_kab": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=kekeringan_2015,wilayah=nasional,metrik=terpapar_krb_kekeringan].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "jumlah 514 kab/kota; Renas PB 2025–2029 mencetak angka nasional berbeda < 0,3% (272.564.439)"
+  },
+  "hidromet.nasional.banjir.krb_terpapar_jumlah_kab": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=nasional,metrik=terpapar_krb_banjir].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "jumlah 514 kab/kota; Renas PB 2025–2029 mencetak angka nasional berbeda < 0,3% (113.829.496)"
+  },
+  "hidromet.nasional.longsor.krb_terpapar_jumlah_kab": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=nasional,metrik=terpapar_krb_longsor].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "jumlah 514 kab/kota; Renas PB 2025–2029 mencetak angka nasional berbeda < 0,3% (25.252.687)"
+  },
+  "hidromet.jawa.kekeringan.krb_porsi_nasional_persen": {
+   "nilai": 55.9,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): 152.356.122 / 272.475.672 (hidromet.jawa.kekeringan.krb_terpapar / hidromet.nasional.kekeringan.krb_terpapar_jumlah_kab). Karena terpapar kekeringan = penduduk, angka ini pada dasarnya porsi penduduk Jawa; bukan temuan kekeringan, jangan dijadikan kartu angka"
+  },
+  "hidromet.jawa.banjir.krb_porsi_nasional_persen": {
+   "nilai": 55.5,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): 63.189.232 / 113.826.725"
+  },
+  "hidromet.jawa.longsor.krb_porsi_nasional_persen": {
+   "nilai": 51.8,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): 13.054.323 / 25.178.627"
+  },
+  "hidromet.jawa.kekeringan.krb_porsi_penduduk_persen": {
+   "nilai": 99.97,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): 152.356.122 / 152.402.534 (airjawa.jawa.penduduk_krb di bab-01.angka.json; sama dengan kolom krb_penduduk_wilayah respons kekeringan). ARTEFAK DEFINISI: lapisan bahaya kekeringan KRB menutup seluruh daratan (Renas Tabel 2.2 dan 2.5), jadi terpapar = penduduk. Hanya untuk menjelaskan artefak itu; jangan dijadikan kartu angka atau temuan"
+  },
+  "hidromet.jawa.kekeringan.krb_luas_total": {
+   "nilai": 13046214,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "ha",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): skenario-hidromet/paparan_kab.csv baris bahaya=kekeringan, jawa=true; jumlah krb_luas_rendah_ha 401.295 + krb_luas_sedang_ha 9.767.513 + krb_luas_tinggi_ha 2.877.406, 119 kab/kota"
+  },
+  "hidromet.jawa.kekeringan.krb_porsi_luas_tinggi_persen": {
+   "nilai": 22.1,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "catatan": "olah(resmi): 2.877.406 / 13.046.214 (hidromet.jawa.kekeringan.luas_bahaya_tinggi / hidromet.jawa.kekeringan.krb_luas_total)"
+  },
+  "renas.krb.nasional.terpapar_multibahaya": {
+   "nilai": 271130365,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), mengutip Kajian Risiko Bencana 2022–2026",
+   "catatan": "Tabel 2.1–2.7, hlm. 20–25 (riset A §1.4); berbeda definisi dengan rbi2023.nasional.terpapar_total"
+  },
+  "rbi2023.jawa.terpapar_rendah": {
+   "nilai": 4756531,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa (Banten, DIY, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur) dari Tabel 1.2, hlm. 8–9; susunan 34 provinsi; kelas risiko multi-ancaman rendah"
+  },
+  "rbi2023.jawa.terpapar_sedang": {
+   "nilai": 17441008,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa (Banten, DIY, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur) dari Tabel 1.2, hlm. 8–9; susunan 34 provinsi; kelas sedang"
+  },
+  "rbi2023.jawa.terpapar_tinggi": {
+   "nilai": 117764134,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa (Banten, DIY, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur) dari Tabel 1.2, hlm. 8–9; susunan 34 provinsi; kelas tinggi"
+  },
+  "rbi2023.dki.terpapar_tinggi": {
+   "nilai": 11222878,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "Tabel 1.2, hlm. 8; berdampingan dengan kelas risiko KRB DKI Rendah (Renas Tabel 2.7) dan IRBI 2023 DKI 61,31 Sedang"
+  },
+  "rbi2023.nasional.terpapar_tinggi": {
+   "nilai": 213519183,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "hlm. 8"
+  },
+  "rbi2023.nasional.terpapar_total": {
+   "nilai": 258071714,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): 8.654.582 + 35.897.949 + 213.519.183 (hlm. 8); berbeda dengan renas.krb.nasional.terpapar_multibahaya 271.130.365"
+  },
+  "rbi2023.jawa.porsi_terpapar_tinggi_persen": {
+   "nilai": 55.2,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): 117.764.134 / 213.519.183"
+  },
+  "rbi2023.jawa.kerugian_sedang": {
+   "nilai": 92439333000000,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa, Tabel 1.3, hlm. 9–10 (dalam juta Rp: 92.439.333); potensi kerugian fisik dan ekonomi kelas sedang"
+  },
+  "rbi2023.jawa.kerugian_tinggi": {
+   "nilai": 552847668000000,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): jumlah enam provinsi Jawa, Tabel 1.3, hlm. 9–10 (dalam juta Rp: 552.847.668); kelas tinggi"
+  },
+  "rbi2023.nasional.kerugian_tinggi": {
+   "nilai": 1409941193000000,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "Rp",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "hlm. 9: Rp1.409.941.193.000.000,00"
+  },
+  "rbi2023.jawa.porsi_kerugian_tinggi_persen": {
+   "nilai": 39.2,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Buku Risiko Bencana Indonesia 2023, dikutip Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "olah(resmi): 552.847.668 / 1.409.941.193 juta Rp"
+  },
+  "irbi.prov.banten.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=36,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.banten.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=36,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jabar.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=32,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jabar.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=32,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jateng.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=33,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jateng.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=33,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.diy.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=34,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.diy.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=34,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jatim.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=35,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.jatim.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=35,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.dki.2019": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=31,tahun=2019].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "irbi.prov.dki.2023": {
+   "berkas": "irbi/irbi_rekonsiliasi_provinsi.csv",
+   "jalur": "[prov_kode=31,tahun=2023].indeks_terbit",
+   "satuan": "",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, Buku Indeks Risiko Bencana Indonesia 2019–2023, dikutip Renstra BNPB 2025–2029 Tabel 1.1",
+   "catatan": "kelas di kolom kelas_terbit; sel cocok dengan hitung ulang API (kolom cocok = ya)"
+  },
+  "airjawa.jabar.irbi2025_n_kab_tinggi": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=32].irbi2025_n_kab_tinggi",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "catatan": "Kab. Sukabumi (3202); lima provinsi Jawa lain 0, jadi Jawa 1 Tinggi dan 118 Sedang; skala 2025 tidak dibandingkan dengan 2015–2024"
+  },
+  "airjawa.ws.kewenangan_pusat": {
+   "nilai": 10,
+   "pustaka": "pupr-2015-permen04",
+   "satuan": "WS",
+   "keyakinan": "resmi",
+   "sumber": "Permen PUPR 04/PRT/M/2015, Lampiran I",
+   "catatan": "olah(resmi): air-jawa/ws.csv kategori A2 (6) + A3 (4); Pasal 5 ayat (3)"
+  },
+  "uu6_2023.pasal53.pasal_diubah": {
+   "nilai": 17,
+   "pustaka": "ri-2023-uu6",
+   "satuan": "pasal",
+   "keyakinan": "resmi",
+   "sumber": "UU 6/2023 Pasal 53",
+   "catatan": "olah(resmi): Pasal 8, 9, 12, 17, 19, 38, 40, 43, 44, 45, 49, 50, 51, 52, 56, 70, 73 UU 17/2019 (lembaga/mentah/teks/uu-6-2023.json.gz hlm. 365–378)"
+  },
+  "uu6_2023.pasal53.pasal_disisipkan": {
+   "nilai": 2,
+   "pustaka": "ri-2023-uu6",
+   "satuan": "pasal",
+   "keyakinan": "resmi",
+   "sumber": "UU 6/2023 Pasal 53",
+   "catatan": "olah(resmi): Pasal 40A dan 75A"
+  },
+  "esdm.air_tanah.ambang_persetujuan_m3_bulan": {
+   "nilai": 100,
+   "pustaka": "esdm-2023-air-tanah",
+   "satuan": "m³ per bulan",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, siaran pers No. 652.Pers/04/SJI/2023 (21 Desember 2023)",
+   "catatan": "Kepmen ESDM 291.K/GL.01/MEM.G/2023 jo. 443.K/GL.01/MEM.G/2023: rumah tangga paling sedikit 100 m³/bulan per KK, kelompok lebih dari 100 m³/bulan; teks Kepmen tidak dibuka; penerbit persetujuan tidak disebut"
+  },
+  "renas.aksi_244a.target_2029": {
+   "nilai": 5,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.4.4.a, hlm. 86",
+   "catatan": "NSPK mitigasi dan adaptasi subsiden tanah; PJ Kementerian Lingkungan Hidup; kontributor Kementerian Hukum, Kemenko PMK, Kemenko Infrastruktur dan Pembangunan Kewilayahan, Kementerian ATR/BPN, BNPB, Kementerian Kelautan dan Perikanan (korpus perban-nomor-1-tahun-2025.json hlm. 86, dibaca ulang 24 Okt 2026); renas_aksi_terkait.csv hanya memuat tiga kontributor pertama"
+  },
+  "renas.aksi_242a.baseline_2024": {
+   "nilai": 3635.42,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.4.2.a, hlm. 84",
+   "catatan": "panjang bangunan pengaman pantai nasional; PJ Kementerian PU"
+  },
+  "renas.aksi_242a.target_2029": {
+   "nilai": 5453.12,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Rencana Aksi 2.4.2.a, hlm. 84"
+  },
+  "perpres77.dewan_pengarah.kepala_daerah": {
+   "nilai": 30,
+   "pustaka": "ri-2025-perpres77",
+   "satuan": "kepala daerah",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 77/2025 Pasal 7 ayat (5)",
+   "catatan": "olah(resmi): 5 gubernur, 20 bupati, 5 wali kota (huruf a–dd); Kementerian ESDM dan BNPB tidak tercantum di Dewan Pengarah"
+  },
+  "ncicd.fase_a.panjang_km": {
+   "nilai": 39,
+   "pustaka": "dsda-2025-ncicd",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Dinas Sumber Daya Air Provinsi DKI Jakarta, progres NCICD per 17 Juli 2025",
+   "catatan": "Tanggul Pengaman Pantai dan Muara Sungai, Kementerian PU + Pemprov DKI, target 2030; versi lain 43,9 km (riset B §7, sekunder)"
+  },
+  "ncicd.dki.trase_km": {
+   "nilai": 20.9,
+   "pustaka": "dsda-2025-ncicd",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Dinas Sumber Daya Air Provinsi DKI Jakarta, progres NCICD per 17 Juli 2025"
+  },
+  "ncicd.dki.terbangun_km": {
+   "nilai": 9.4,
+   "pustaka": "dsda-2025-ncicd",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Dinas Sumber Daya Air Provinsi DKI Jakarta, progres NCICD per 17 Juli 2025"
+  },
+  "ncicd.dki.sisa_km": {
+   "nilai": 11.5,
+   "pustaka": "dsda-2025-ncicd",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "Dinas Sumber Daya Air Provinsi DKI Jakarta, progres NCICD per 17 Juli 2025",
+   "catatan": "data sekitar 15 bulan sebelum batas data"
+  },
+  "airjawa.jateng.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=33].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.dki.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=31].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.jabar.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=32].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.banten.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=36].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.diy.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=34].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.jatim.air_minum_leding_2023": {
+   "berkas": "air-jawa/provinsi.csv",
+   "jalur": "[prov_kode=35].air_minum_leding_2023",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "leding sebagai sumber air minum, bukan cakupan perpipaan PU; kolom ditetapkan dari pembanding independen karena tabel BPS tidak sejajar (README air-jawa §3)"
+  },
+  "airjawa.nasional.air_minum_leding_2023": {
+   "berkas": "air-jawa/air_minum.csv",
+   "jalur": "[prov_kode=ID,indikator=rumah_tangga_sumber_air_minum_leding_persen].nilai",
+   "satuan": "% rumah tangga",
+   "keyakinan": "resmi",
+   "sumber": "BPS, Susenas 2023, rumah tangga menurut sumber air minum",
+   "catatan": "Indonesia; pembanding untuk enam provinsi Jawa"
+  },
+  "bukti.p16.tokyo_ambil_1964": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B095].nilai_angka",
+   "satuan": "m³ per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "Yamamoto, Case History No. 9.4 Tokyo, Japan, Guidebook to studies of land subsidence due to ground-water withdrawal (UNESCO)",
+   "catatan": "23 wilayah ku Tokyo, 1964"
+  },
+  "bukti.p16.tokyo_ambil_1975": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B096].nilai_angka",
+   "satuan": "m³ per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "Yamamoto, Case History No. 9.4 Tokyo, Japan, Guidebook to studies of land subsidence due to ground-water withdrawal (UNESCO)",
+   "catatan": "1975, sekitar sepersepuluh angka 1964"
+  },
+  "bukti.p16.tokyo_laju_maks": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B098].nilai_angka",
+   "satuan": "cm per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Yamamoto, Case History No. 9.4 Tokyo, Japan, Guidebook to studies of land subsidence due to ground-water withdrawal (UNESCO)",
+   "catatan": "laju maksimum sebelum 1972; riset C menulis sekitar 24 cm/tahun (1968, IGES, sekunder)"
+  },
+  "bukti.p13.jiwa_terlayani": {
+   "nilai": 24.8,
+   "pustaka": "bankdunia-2023-pamsimas",
+   "satuan": "juta jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia, Implementation Completion and Results Report PAMSIMAS III (ICR00005882, 29 Jun 2023)",
+   "catatan": "PDO 1, hlm. cetak 10 (PDF 21); melampaui target 22,1 juta"
+  },
+  "bukti.p13.berfungsi_persen": {
+   "nilai": 91,
+   "pustaka": "bankdunia-2023-pamsimas",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia, Implementation Completion and Results Report PAMSIMAS III (ICR00005882, 29 Jun 2023)",
+   "catatan": "sekitar 91% sistem air yang dibangun atau direhabilitasi berfungsi baik menurut data MIS proyek (laporan sendiri), hlm. cetak 11; evaluasi independen DFAT menemukan banyak sistem kekurangan air saat puncak dan kemarau"
+  },
+  "bukti.p13.eirr_koreksi": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B084].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Evaluasi independen PAMSIMAS untuk DFAT Australia (Januari 2023)",
+   "catatan": "EIRR dengan sampel 42 desa"
+  },
+  "bukti.p13.eirr_bankdunia": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B085].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Evaluasi independen PAMSIMAS untuk DFAT Australia (Januari 2023)",
+   "catatan": "taksiran Bank Dunia yang dikoreksi"
+  },
+  "bukti.p17.banjir_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B103].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pemerintah Belanda, Delta Programme 2026",
+   "catatan": "kemajuan agenda pengelolaan risiko banjir menuju 2050; indikator pelaksanaan, bukan dampak kejadian"
+  },
+  "bukti.p17.air_tawar_persen": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B104].nilai_angka",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pemerintah Belanda, Delta Programme 2026",
+   "catatan": "sekitar 10%, masing-masing agenda air tawar dan adaptasi ruang"
+  },
+  "bukti.p18.turun_muka_air": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B105].nilai_angka",
+   "satuan": "cm",
+   "keyakinan": "estimasi-model",
+   "sumber": "Climate-ADAPT, European Environment Agency, studi kasus Room for the River Waal",
+   "catatan": "penurunan muka air rencana Nijmegen-Lent; nilai desain/model, bukan muka air kejadian"
+  },
+  "bukti.p18.target": {
+   "berkas": "program-terbukti/bukti_dampak.csv",
+   "jalur": "[id=B106].nilai_angka",
+   "satuan": "cm",
+   "keyakinan": "terverifikasi",
+   "sumber": "Climate-ADAPT, European Environment Agency, studi kasus Room for the River Waal",
+   "catatan": "target awal"
+  },
+  "hidromet.jawa.musim_2010.oni": {
+   "berkas": "skenario-hidromet/musim_hujan.csv",
+   "jalur": "[wilayah=jawa,tahun_awal=2010].oni_ndj",
+   "satuan": "°C",
+   "keyakinan": "terverifikasi",
+   "sumber": "NOAA CPC, ONI November–Januari 2010/2011",
+   "catatan": "episode La Niña"
+  },
+  "hidromet.jawa.musim_2020.oni": {
+   "berkas": "skenario-hidromet/musim_hujan.csv",
+   "jalur": "[wilayah=jawa,tahun_awal=2020].oni_ndj",
+   "satuan": "°C",
+   "keyakinan": "terverifikasi",
+   "sumber": "NOAA CPC, ONI November–Januari 2020/2021",
+   "catatan": "episode La Niña"
+  },
+  "bukti.p13.target_jiwa": {
+   "nilai": 22.1,
+   "pustaka": "bankdunia-2023-pamsimas",
+   "satuan": "juta jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia, Implementation Completion and Results Report PAMSIMAS III (ICR00005882, 29 Jun 2023)",
+   "catatan": "target PDO 1 PAMSIMAS III, hlm. cetak 10"
+  },
+  "bukti.p13.desa": {
+   "nilai": 35553,
+   "pustaka": "bankdunia-2023-pamsimas",
+   "satuan": "desa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia, Implementation Completion and Results Report PAMSIMAS III (ICR00005882, 29 Jun 2023)",
+   "catatan": "408 kab/kota, 33 provinsi; hlm. cetak 8 dan 10 (Project MIS 2022)"
+  },
+  "bukti.p13.eirr_icr": {
+   "nilai": 52.11,
+   "pustaka": "bankdunia-2023-pamsimas",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Bank Dunia, Implementation Completion and Results Report PAMSIMAS III (ICR00005882, 29 Jun 2023)",
+   "catatan": "EIRR ex-post seluruh proyek (komponen air 93,25%), hlm. cetak 45; berdampingan dengan EIRR DFAT 36,1% dan 30,8%, asumsi berbeda"
+  },
+  "bankdunia.air2045.kebutuhan_naik_persen": {
+   "nilai": 31,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "kenaikan kebutuhan air nasional 2015–2045 (proyeksi), PDF hlm. 17 dan 43"
+  },
+  "bankdunia.air2045.pdb_ws_stres_persen": {
+   "nilai": 50,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "porsi PDB dari WS dengan stres air musim kemarau tinggi atau berat saat ini (67% pada 2045), PDF hlm. 16 dan 42"
+  },
+  "bankdunia.air2045.pertanian_persen": {
+   "nilai": 80,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "porsi pertanian dalam kebutuhan air 2019, PDF hlm. 43"
+  },
+  "bankdunia.air2045.pdb_turun_2045_persen": {
+   "nilai": 7.3,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "PDB 2045 lebih rendah tanpa aksi atas ancaman air, skenario dampak tinggi (model CGE), PDF hlm. 14 dan 34"
+  },
+  "bankdunia.air2045.jawa_porsi_air_persen": {
+   "nilai": 5.9,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "porsi air tersedia nasional di Jawa, PDF hlm. 42; berdampingan dengan BPS 2020 6,3% (airjawa.jawa.porsi_air_permukaan_persen)"
+  },
+  "bankdunia.air2045.jawa_porsi_penduduk_persen": {
+   "nilai": 56.5,
+   "pustaka": "bankdunia-2021-air",
+   "satuan": "%",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia (2021), Indonesia Vision 2045: Towards Water Security (Khalil dkk.)",
+   "catatan": "porsi penduduk nasional di Jawa menurut laporan yang sama, PDF hlm. 42"
+  },
+  "airjawa.jawa.n_kab": {
+   "nilai": 119,
+   "pustaka": "bnpb-2026-krb",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026 per kab/kota",
+   "catatan": "olah(resmi): banyak baris air-jawa/kab_jawa.csv dan baris bahaya=kekeringan,jawa=true di skenario-hidromet/paparan_kab.csv (keduanya 119); dipakai naskah Bab 2 (T1.1 'jumlah 119 kab/kota')"
+  },
+  "bps.slhi2020.ambang_ketahanan_air": {
+   "nilai": 2000,
+   "pustaka": "bps-2020-slhi",
+   "satuan": "m³ per kapita per tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia 2020, Gambar 2.8",
+   "catatan": "ambang ketersediaan air per kapita yang dipakai BPS (2020), rantai kutipan PT SMI 2017 (bab-02.md T5.3); terverifikasi sebagai kutipan"
+  },
+  "susilo2023.pantura.kali_kenaikan_muka_laut": {
+   "nilai": 9,
+   "pustaka": "susilo-2023-gnss",
+   "satuan": "kali",
+   "keyakinan": "terverifikasi",
+   "sumber": "Susilo dkk. (2023), Scientific Data, GNSS kontinu pesisir utara Jawa 2010–2021",
+   "catatan": "laju penurunan muka tanah Jakarta, Pekalongan, Semarang, dan Demak paling sedikit sekitar 9 kali laju kenaikan muka laut global (abstrak, dibuka lewat Europe PMC 24 Okt 2026; bab-02.md T4.5 a)"
+  },
+  "aditiya2023.semarang.korelasi_air_tanah": {
+   "nilai": 0.86,
+   "pustaka": "aditiya-2023-semarang",
+   "satuan": "",
+   "keyakinan": "terverifikasi",
+   "sumber": "Aditiya dan Ito (2023), InSAR pita C 2015–2022, Semarang",
+   "catatan": "koefisien korelasi air tanah dan deformasi di Semarang (abstrak, dibuka lewat OpenAlex 24 Okt 2026; bab-02.md T4.5 b); korelasi, bukan sebab"
+  }
+ }
+}

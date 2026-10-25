@@ -1,0 +1,402 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 9 kajian air (berkas bukti naskah/air/bukti/bab-09.md), belum digabung ke data/angka.json. Bentuk B: nilai + pustaka (id di bab-09.pustaka.json).",
+  "Kunci yang sudah ada di data/angka.json atau di bab-01, bab-02, bab-07, bab-08, bab-10.angka.json tidak diulang. Angka sekunder dan nominal anggaran (pagu Renas, kapitalisasi PFB) tidak dimasukkan (P5).",
+  "Kunci lembaga.peran.* dihitung dari berkas kerja paket lembaga yang belum ter-commit; hitung ulang saat paket dikunci.",
+  "Disusun 24 Oktober 2026.",
+  "Diperbaiki 24 Oktober 2026 menurut temuan pemeriksa: lembaga.matriks_air.kemen_pu.tertulis 2 menjadi 1 (A28 bersumber situs Dinas SDA DKI, bukan norma); kunci lembaga.matriks_air.tertulis_norma dan lembaga.matriks_air.tertulis_situs_instansi ditambah; catatan kunci permenpu2024_2.tkpsda.* menyebut Pasal 41 dan 43.",
+  "Ditambah penulis naskah Bab 9, 24 Oktober 2026: lembaga.matriks_air.baris_total dan lembaga.matriks_air.tertulis_paket (kunci bab-07 lembaga.air.* berkeyakinan \"olah; ...\" ditolak naskah.py); \"sumber\": \"idem\" diganti teks sumber entri sebelumnya."
+ ],
+ "angka": {
+  "lembaga.peran.baris_total": {
+   "nilai": 129,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: jumlah baris berkas kerja lembaga/peran.csv dibaca 24 Okt 2026 (belum ter-commit; SHA-1 awal 8d35ac37df2f); README paket dan KERANGKA §4 Bab 9 menulis 127 (selisih R144 Kemendikdasmen, R145 Kemenag)"
+  },
+  "lembaga.peran.baris_tertulis": {
+   "nilai": 76,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: jenis_bukti = tertulis; KERANGKA menulis 74"
+  },
+  "lembaga.peran.baris_pemetaan": {
+   "nilai": 53,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: jenis_bukti = dipetakan penyusun"
+  },
+  "lembaga.peran.air_semua.baris": {
+   "nilai": 76,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: ancaman banjir, longsor, kekeringan, cuaca_ekstrem, gelombang_abrasi, kebakaran_tpa ditambah semua; karhutla tidak dihitung"
+  },
+  "lembaga.peran.air_semua.tertulis": {
+   "nilai": 49,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: idem, jenis_bukti = tertulis"
+  },
+  "lembaga.peran.air_semua.lembaga": {
+   "nilai": 32,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "lembaga",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: kode lembaga berbeda pada irisan yang sama"
+  },
+  "lembaga.peran.air_semua.lembaga_tertulis": {
+   "nilai": 26,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "lembaga",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: lembaga dengan paling sedikit satu peran tertulis pada irisan yang sama"
+  },
+  "lembaga.peran.air_khusus.baris": {
+   "nilai": 26,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: ancaman air saja tanpa norma lintas jenis (semua)"
+  },
+  "lembaga.peran.air_khusus.tertulis": {
+   "nilai": 8,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: R061, R063, R064, R065, R066, R070, R074, R076"
+  },
+  "lembaga.peran.kemen_pu.baris": {
+   "nilai": 10,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: baris lembaga KEMEN_PU"
+  },
+  "lembaga.peran.kemen_pu.tertulis": {
+   "nilai": 0,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: semua baris Kementerian PU berjenis pemetaan penyusun karena norma menyebut Menteri/Pemerintah Pusat atau tanpa pelaku"
+  },
+  "lembaga.peran.bnpb.baris": {
+   "nilai": 13,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: baris lembaga BNPB"
+  },
+  "lembaga.peran.bnpb.tertulis": {
+   "nilai": 11,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris peran",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: 8 di antaranya norma lintas jenis (R001-R007, R009)"
+  },
+  "lembaga.matriks_air.baris_total": {
+   "nilai": 31,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: jumlah baris lembaga/matriks_air.csv (dicek 24 Okt 2026); nilai sama dengan kunci lama lembaga.air.baris_total (bab-07), yang keyakinannya \"olah; asumsi-kebijakan cakupan\" ditolak naskah.py karena bukan salah satu lima label; cakupan matriks hanya norma rezim SDA yang dibaca (pilihan penyusun)"
+  },
+  "lembaga.matriks_air.tertulis_paket": {
+   "nilai": 23,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: baris jenis_bukti = tertulis di lembaga/matriks_air.csv, termasuk A28 dan A29 yang bersumber situs Dinas SDA DKI; nilai sama dengan lembaga.air.baris_tertulis (bab-07, keyakinan tidak sah untuk naskah.py); disandingkan dengan lembaga.matriks_air.tertulis_norma (21)"
+  },
+  "lembaga.matriks_air.kemen_pu.baris": {
+   "nilai": 7,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: baris KEMEN_PU di lembaga/matriks_air.csv (A01, A07, A11, A15, A17, A26, A28)"
+  },
+  "lembaga.matriks_air.kemen_pu.tertulis": {
+   "nilai": 1,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: A15 (Inpres 2/2025), satu-satunya baris KEMEN_PU berjenis tertulis yang bersumber norma; A28 (NCICD) berjenis tertulis di paket tetapi bersumber halaman web Dinas SDA DKI (sid web-dsda-ncicd-2025), ditulis 'dinyatakan instansi (bukan norma)'. Diperbaiki 24 Okt 2026 dari 2."
+  },
+  "lembaga.matriks_air.tertulis_norma": {
+   "nilai": 21,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: 23 baris jenis_bukti = tertulis di lembaga/matriks_air.csv dikurangi A28 dan A29 yang bersumber halaman web Dinas SDA DKI, bukan norma (definisi README §1: tertulis = norma menyebut lembaga itu); disandingkan dengan kunci lama lembaga.air.baris_tertulis (23, bab-07)"
+  },
+  "lembaga.matriks_air.tertulis_situs_instansi": {
+   "nilai": 2,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "baris kewenangan",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: A28 (Kementerian PU) dan A29 (Pemda), komponen banjir dan rob, sid web-dsda-ncicd-2025; dinyatakan instansi, bukan norma"
+  },
+  "lembaga.daftar.n": {
+   "nilai": 41,
+   "pustaka": "pantaubencana-2026-paket-lembaga",
+   "satuan": "lembaga",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "catatan": "olah: jumlah baris lembaga/lembaga.csv; README paket menulis 40"
+  },
+  "perban2025_6.unsur_pengarah.anggota": {
+   "nilai": 20,
+   "pustaka": "bnpb-2025-otk",
+   "satuan": "anggota",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 6/2025 tentang OTK BNPB, Pasal 9",
+   "catatan": "Ketua dijabat Kepala BNPB; korpus perban-nomor-6-tahun-2025.json hlm. 3"
+  },
+  "perban2025_6.unsur_pengarah.instansi": {
+   "nilai": 11,
+   "pustaka": "bnpb-2025-otk",
+   "satuan": "pejabat instansi",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 6/2025, Pasal 10 ayat (1)-(2)",
+   "catatan": "memuat Kementerian ESDM dan Kementerian PU; 9 anggota lain masyarakat profesional; hlm. 3-4"
+  },
+  "perpres77.dewan_pengarah.anggota_pusat": {
+   "nilai": 13,
+   "pustaka": "ri-2025-perpres77",
+   "satuan": "jabatan",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 77/2025 tentang BOP Pantura Jawa, Pasal 7 ayat (4) huruf a-m",
+   "catatan": "di luar ketua, wakil ketua, dan 30 kepala daerah (huruf n); BNPB dan Kementerian ESDM tidak tercantum"
+  },
+  "permenpu2024_2.tkpsda.instansi_prov_maks": {
+   "nilai": 5,
+   "pustaka": "kemenpu-2024-permen2",
+   "satuan": "instansi",
+   "keyakinan": "resmi",
+   "sumber": "Permen PU 2/2024, Pasal 34 ayat (5)",
+   "catatan": "paling banyak 5 orang dari 5 instansi pemerintah provinsi terkait PSDA (TKPSDA WS lintas provinsi); nilai sama untuk TKPSDA WS strategis nasional (Pasal 41 ayat (5))"
+  },
+  "permenpu2024_2.tkpsda.instansi_kab_maks": {
+   "nilai": 3,
+   "pustaka": "kemenpu-2024-permen2",
+   "satuan": "instansi",
+   "keyakinan": "resmi",
+   "sumber": "Permen PU 2/2024, Pasal 34 ayat (7)",
+   "catatan": "paling banyak 3 orang dari 3 instansi pemda kab/kota terkait PSDA; nilai sama untuk TKPSDA WS strategis nasional (Pasal 41 ayat (7))"
+  },
+  "permenpu2024_2.tkpsda.masa_kerja_tahun": {
+   "nilai": 5,
+   "pustaka": "kemenpu-2024-permen2",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Permen PU 2/2024, Pasal 36 ayat (1)",
+   "catatan": "masa tugas anggota TKPSDA WS lintas provinsi; nilai sama untuk TKPSDA WS strategis nasional (Pasal 43 ayat (1)); penggantian antarwaktu diatur hanya untuk unsur nonpemerintah (Pasal 36 ayat (2), Pasal 43 ayat (2))"
+  },
+  "pp22_2008.dsp.jenis_pengadaan": {
+   "nilai": 8,
+   "pustaka": "ri-2008-pp22",
+   "satuan": "jenis",
+   "keyakinan": "resmi",
+   "sumber": "PP 22/2008, Pasal 17 ayat (2)",
+   "catatan": "huruf d: kebutuhan air bersih dan sanitasi"
+  },
+  "pp22_2008.laporan_darurat.bulan": {
+   "nilai": 3,
+   "pustaka": "ri-2008-pp22",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "PP 22/2008, Pasal 34 ayat (2)",
+   "catatan": "laporan pertanggungjawaban keuangan dan kinerja tanggap darurat setelah masa tanggap darurat"
+  },
+  "perban2020_4.dsp.laporan_tanggal": {
+   "nilai": 5,
+   "pustaka": "bnpb-2020-dsp",
+   "satuan": "tanggal tiap bulan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2020, Pasal 21 ayat (1)",
+   "catatan": "laporan perkembangan penggunaan DSP paling lambat tanggal 5 bulan berikutnya"
+  },
+  "perban2020_4.dsp.pertanggungjawaban_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2020-dsp",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2020, Pasal 21 ayat (2)",
+   "catatan": "setelah masa status keadaan darurat berakhir"
+  },
+  "perban2026_1.laporan_akhir.hari": {
+   "nilai": 60,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "hari kalender",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 32 ayat (4)",
+   "catatan": "laporan akhir kegiatan Dana Bersama setelah kegiatan berakhir"
+  },
+  "perban2026_1.tim.masa_kerja_tahun": {
+   "nilai": 2,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 28 ayat (3)",
+   "catatan": "tim penelaahan, verifikasi, dan evaluasi BNPB"
+  },
+  "perban2026_1.tim.rapat_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 28 ayat (2)",
+   "catatan": "pertemuan rutin sesuai kebutuhan atau setiap 3 bulan"
+  },
+  "perban2026_1.dokumen_tambahan.hari_kerja": {
+   "nilai": 5,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "hari kerja",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 20 ayat (4)",
+   "catatan": "tenggat pemohon melengkapi dokumen tambahan"
+  },
+  "perban2026_1.pertimbangan.hari_kerja": {
+   "nilai": 10,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "hari kerja",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 23 ayat (3)",
+   "catatan": "tenggat risalah pertimbangan Kemenkeu, Bappenas, Kemendagri"
+  },
+  "juklak2026_2.kegiatan.kl": {
+   "nilai": 50,
+   "pustaka": "bnpb-2026-juklak2",
+   "satuan": "kegiatan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 2/2026, Lampiran I huruf A",
+   "catatan": "daftar usulan kegiatan prabencana dari K/L"
+  },
+  "juklak2026_2.kegiatan.provinsi": {
+   "nilai": 44,
+   "pustaka": "bnpb-2026-juklak2",
+   "satuan": "kegiatan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 2/2026, Lampiran I huruf B",
+   "catatan": "dari pemda provinsi"
+  },
+  "juklak2026_2.kegiatan.kabkota": {
+   "nilai": 44,
+   "pustaka": "bnpb-2026-juklak2",
+   "satuan": "kegiatan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 2/2026, Lampiran I huruf C",
+   "catatan": "dari pemda kab/kota"
+  },
+  "juklak2026_2.kegiatan.kelompok": {
+   "nilai": 10,
+   "pustaka": "bnpb-2026-juklak2",
+   "satuan": "kegiatan",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 2/2026, Lampiran I huruf D",
+   "catatan": "dari kelompok masyarakat"
+  },
+  "permendes2025_16.fokus.jumlah": {
+   "nilai": 8,
+   "pustaka": "kemendes-2025-permendes16",
+   "satuan": "fokus",
+   "keyakinan": "resmi",
+   "sumber": "Permendes PDT 16/2025, Pasal 2 ayat (1) huruf a-h",
+   "catatan": "huruf b: penguatan Desa berketahanan iklim dan tangguh bencana"
+  },
+  "renas.aksi_462a.target_2029": {
+   "nilai": 100,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "K/L, pemda, kelompok",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025-2029, Rencana Aksi 4.6.2.a, hlm. 111",
+   "catatan": "baseline '-'; PJ Kementerian Keuangan, BNPB; kolom OCR bertumpuk, angka dibaca dari urutan teks; pagu tidak disalin"
+  },
+  "renas.aksi_462b.target_2029": {
+   "nilai": 5,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025-2029, Rencana Aksi 4.6.2.b, hlm. 112",
+   "catatan": "laporan pemantauan dan evaluasi kegiatan Dana Bersama; PJ Kemenkeu, BNPB"
+  },
+  "renas.aksi_463a.target_2029": {
+   "nilai": 1,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "peraturan perundang-undangan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025-2029, Rencana Aksi 4.6.3.a, hlm. 112",
+   "catatan": "baseline 1 rekomendasi kebijakan; PJ Kemenkeu, BNPB, Kemendagri"
+  },
+  "renas.aksi_463b.target_2029": {
+   "nilai": 546,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "daerah (prov/kab/kota)",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025-2029, Rencana Aksi 4.6.3.b, hlm. 112",
+   "catatan": "pengenalan konsep transfer risiko; PJ BNPB; kontributor Kemenkeu, Kemendagri, OJK"
+  },
+  "renstra.ikp_p1_rekomendasi.baseline": {
+   "nilai": 82.35,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025-2029, IKP program P1, hlm. 130, 132-133",
+   "catatan": "persentase rekomendasi kebijakan sistem dan strategi yang diintegrasikan K/L/D ke rencana pembangunan/sektoral; ditulis 82,35%"
+  },
+  "renstra.ikp_p1_rekomendasi.2027": {
+   "nilai": 94.12,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025-2029, IKP program P1, hlm. 130, 132-133",
+   "catatan": "ditulis 94,12%"
+  },
+  "renstra.ikp_p1_rekomendasi.2029": {
+   "nilai": 100,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025-2029, IKP program P1, hlm. 130, 132-133"
+  },
+  "renstra.ikk_rekomendasi_pendanaan_pasca.2025": {
+   "nilai": 50,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025-2029, sasaran kegiatan P4, hlm. 136-137",
+   "catatan": "persentase daerah yang mendapatkan rekomendasi bantuan pendanaan pascabencana; unit Renstra Direktorat Perencanaan RR (diganti Perban 11/2025)"
+  },
+  "renstra.ikk_rekomendasi_pendanaan_pasca.2029": {
+   "nilai": 70,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025-2029, sasaran kegiatan P4, hlm. 136-137"
+  }
+ }
+}

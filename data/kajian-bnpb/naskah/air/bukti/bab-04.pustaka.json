@@ -1,0 +1,1377 @@
+[
+ {
+  "id": "bps-2024-sumber-air-minum-prov",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     2,
+     15
+    ]
+   ]
+  },
+  "title": "Distribusi persentase rumah tangga menurut provinsi dan sumber air minum, 2023",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/statistics-table/3/YzBaMlduSlFVbTVrUnpWeU9YRTJka0pVTTFkU1FUMDkjMw==/distribusi-persentase-rumah-tangga-menurut-provinsi-dan-sumber-air-minum--2020.html?year=2023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tabel daring Susenas, terakhir diperbarui 15 Februari 2024; salinan teks data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt. Baris memuat 8 nilai untuk 11 judul kolom; kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; kolom 3, 5, 7 dinamai menurut urutan judul (belum dicek ke publikasi BPS); kolom 8 gabungan air permukaan, air hujan, lainnya"
+ },
+ {
+  "id": "bps-2025-air-minum-layak-prov",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     16
+    ]
+   ]
+  },
+  "title": "Persentase rumah tangga menurut provinsi dan sumber air minum layak (persen)",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/statistics-table/2/ODQ1IzI=/persentase-rumah-tangga-menurut-provinsi-dan-sumber-air-minum-layak--persen-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tahun data 2025; data/air-jawa/air_minum.csv"
+ },
+ {
+  "id": "bps-jateng-2026-air-minum-layak-kab",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Tengah",
+    "singkatan": "BPS Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     4,
+     14
+    ]
+   ]
+  },
+  "title": "Persentase rumah tangga yang memiliki akses terhadap air minum layak menurut kabupaten/kota di Provinsi Jawa Tengah",
+  "publisher": "BPS Provinsi Jawa Tengah",
+  "URL": "https://jateng.bps.go.id/id/statistics-table/2/MjQ4MCMy/persentase-rumah-tangga-yang-memiliki-akses-terhadap-air-minum-layak-menurut-kabupaten-kota-di-provinsi-jawa-tengah.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tahun data 2025; data/air-jawa/air_minum.csv tingkat kab"
+ },
+ {
+  "id": "kompas-2024-isi-ulang",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kompas.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     2,
+     13
+    ]
+   ]
+  },
+  "title": "Mayoritas penduduk Indonesia andalkan air isi ulang untuk minum",
+  "container-title": "Kompas.com (Lestari)",
+  "URL": "https://lestari.kompas.com/read/2024/02/13/100000486/mayoritas-penduduk-indonesia-andalkan-air-isi-ulang-untuk-minum",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Judul dari alamat tautan. Mengutip BPS, Indikator Perumahan dan Kesehatan Lingkungan 2023. Dipakai hanya untuk memastikan nama kolom tabel BPS (leding 8,92; sumur bor/pompa 17,07; sumur terlindung 15,26; mata air terlindung 10,10; isi ulang 31,87)"
+ },
+ {
+  "id": "pupr-2015-permen14",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2015 Nomor 638",
+  "URL": "https://peraturan.go.id/files/bn638-2015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 9–11 (kewenangan); rekap hlm 13, 29, 63; Lampiran I hlm 16–17. Salinan riset/mentah/bn638.pdf (sha1 2d7bd2d1e9b37cbea8263adae715102fb8c21f91). Baris JUMLAH rekap nasional: air-jawa/mentah/permen14_ocr/p013.txt baris 49, p029.txt baris 49, p063.txt baris 50"
+ },
+ {
+  "id": "bbwspj-2021-inventaris-bendungan",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Balai Besar Wilayah Sungai Pemali Juana",
+    "singkatan": "BBWS Pemali-Juana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     7
+    ]
+   ]
+  },
+  "title": "Daftar inventarisasi bendungan di lingkungan BBWS Pemali Juana (status Juli 2021)",
+  "publisher": "Direktorat Jenderal Sumber Daya Air, Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "2 hlm; salinan riset/mentah/pj.pdf; hlm 2 (instrumentasi) dicek pada render 300 dpi 23 Okt 2026"
+ },
+ {
+  "id": "sheftiana-2021-jatiluhur",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Sheftiana",
+    "given": "U. S."
+   },
+   {
+    "family": "Purwanto",
+    "given": "M. Y. J."
+   },
+   {
+    "family": "Tarigan",
+    "given": "S. D."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Sedimentation prediction in Jatiluhur Dam, Purwakarta District (Perkiraan sedimentasi pada tahun 2018 di Waduk Jatiluhur, Kabupaten Purwakarta)",
+  "container-title": "Jurnal Ilmu Tanah dan Lingkungan",
+  "volume": "23",
+  "issue": "1",
+  "page": "18-21",
+  "DOI": "10.29244/jitl.23.1.18-21",
+  "URL": "https://journal.ipb.ac.id/index.php/jtanah/article/view/32820",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak dibuka; deret volume dikutip dari laporan akhir Perum Otorita Jatiluhur 2000"
+ },
+ {
+  "id": "tarigan-2013-citarum",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Tarigan",
+    "given": "Suria Darma"
+   },
+   {
+    "family": "Tukayo",
+    "given": "Rudolf Kristian"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Impact of land use change and land management on irrigation water supply in Northern Java Coast",
+  "container-title": "Journal of Tropical Soils",
+  "volume": "18",
+  "issue": "2",
+  "page": "169",
+  "DOI": "10.5400/jts.2013.18.2.169",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak dibaca lewat API DOAJ"
+ },
+ {
+  "id": "susilo-2023-gnss",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Susilo",
+    "given": "S."
+   },
+   {
+    "family": "Salman",
+    "given": "R."
+   },
+   {
+    "family": "Hermawan",
+    "given": "W."
+   },
+   {
+    "family": "Widyaningrum",
+    "given": "R."
+   },
+   {
+    "family": "Wibowo",
+    "given": "S. T."
+   },
+   {
+    "family": "Lumban-Gaol",
+    "given": "Y. A."
+   },
+   {
+    "family": "Meilano",
+    "given": "I."
+   },
+   {
+    "family": "Yun",
+    "given": "S.-H."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     7,
+     1
+    ]
+   ]
+  },
+  "title": "GNSS land subsidence observations along the northern coastline of Java, Indonesia",
+  "container-title": "Scientific Data",
+  "volume": "10",
+  "page": "421",
+  "DOI": "10.1038/s41597-023-02274-0",
+  "URL": "https://europepmc.org/article/PMC/PMC10314896",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks penuh Europe PMC; Tabel 2 kecepatan vertikal 20 stasiun BIG; Gambar 5 patok Badan Geologi Pekalongan; data Zenodo doi:10.5281/zenodo.7775016"
+ },
+ {
+  "id": "widodo-2024-pekalongan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Widodo",
+    "given": "Joko"
+   },
+   {
+    "family": "Trihatmoko",
+    "given": "Edy"
+   },
+   {
+    "family": "Khomarudin",
+    "given": "Muhammad Rokhis"
+   },
+   {
+    "family": "Ardha",
+    "given": "Mohammad"
+   },
+   {
+    "family": "Nugroho",
+    "given": "Udhi Catur"
+   },
+   {
+    "family": "Setyaningrum",
+    "given": "Nugraheni"
+   },
+   {
+    "family": "Dinanta",
+    "given": "Galih Prasetya"
+   },
+   {
+    "family": "Arief",
+    "given": "Rahmat"
+   },
+   {
+    "family": "Setiyoko",
+    "given": "Andie"
+   },
+   {
+    "family": "Novresiandi",
+    "given": "Dandy Aditya"
+   },
+   {
+    "family": "Handika",
+    "given": "Rendi"
+   },
+   {
+    "family": "Priyatna",
+    "given": "Muhammad"
+   },
+   {
+    "family": "Sobue",
+    "given": "Shinichi"
+   },
+   {
+    "family": "Sarah",
+    "given": "Dwi"
+   },
+   {
+    "family": "Hermawan",
+    "given": "Wawan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Dynamic geo-visualization of urban land subsidence and land cover data using PS-InSAR and Google Earth Engine (GEE) for spatial planning assessment",
+  "container-title": "Urban Science",
+  "volume": "8",
+  "issue": "4",
+  "page": "234",
+  "DOI": "10.3390/urbansci8040234",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak lewat OpenAlex. Angka 10–19 cm/th di kalimat latar; hasil studi: sampai 100 cm kumulatif 2014–2022"
+ },
+ {
+  "id": "aditiya-2023-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Aditiya",
+    "given": "Arif"
+   },
+   {
+    "family": "Ito",
+    "given": "Takeo"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Present-day land subsidence over Semarang revealed by time series InSAR new small baseline subset technique",
+  "container-title": "International Journal of Applied Earth Observation and Geoinformation",
+  "volume": "125",
+  "page": "103579",
+  "DOI": "10.1016/j.jag.2023.103579",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B lewat DOAJ; metadata dicek OpenAlex 23 Okt 2026)"
+ },
+ {
+  "id": "sidiq-2023-pekalongan",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Sidiq",
+    "given": "T. P."
+   },
+   {
+    "family": "Adiwijaya",
+    "given": "R."
+   },
+   {
+    "family": "Nugroho",
+    "given": "E."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Long term subsidence rate in Pekalongan city observed by SAR Interferometry",
+  "container-title": "IOP Conference Series: Earth and Environmental Science",
+  "volume": "1276",
+  "page": "012014",
+  "DOI": "10.1088/1755-1315/1276/1/012014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     21
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex (public/banjir/data/subsiden_literatur.json)"
+ },
+ {
+  "id": "abidin-2011-jakarta",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   },
+   {
+    "family": "Andreas",
+    "given": "H."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Fukuda",
+    "given": "Y."
+   },
+   {
+    "family": "Pohan",
+    "given": "Y. E."
+   },
+   {
+    "family": "Deguchi",
+    "given": "T."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011
+    ]
+   ]
+  },
+  "title": "Land subsidence of Jakarta (Indonesia) and its relation with urban development",
+  "container-title": "Natural Hazards",
+  "volume": "59",
+  "issue": "3",
+  "page": "1753-1771",
+  "DOI": "10.1007/s11069-011-9866-9",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     21
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak penerbit (subsiden_literatur.json)"
+ },
+ {
+  "id": "abidin-2013-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   },
+   {
+    "family": "Andreas",
+    "given": "H."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Sidiq",
+    "given": "T. P."
+   },
+   {
+    "family": "Fukuda",
+    "given": "Y."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Land subsidence in coastal city of Semarang (Indonesia): characteristics, impacts and causes",
+  "container-title": "Geomatics, Natural Hazards and Risk",
+  "volume": "4",
+  "issue": "3",
+  "page": "226-240",
+  "DOI": "10.1080/19475705.2012.692336",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     21
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex"
+ },
+ {
+  "id": "virtriana-2026-bandung",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Virtriana",
+    "given": "R."
+   },
+   {
+    "family": "Harto",
+    "given": "A. B."
+   },
+   {
+    "family": "Meilano",
+    "given": "I."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Farid",
+    "given": "M."
+   },
+   {
+    "family": "Anggraini",
+    "given": "T. S."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Extreme climate and land subsidence: Flood vulnerability projection in the Bandung Basin by 2045 and its socio-economic implications",
+  "container-title": "Geoenvironmental Disasters",
+  "volume": "13",
+  "DOI": "10.1186/s40677-026-00420-5",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B §6.1)"
+ },
+ {
+  "id": "esdm-2023-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     11,
+     10
+    ]
+   ]
+  },
+  "title": "Perbaiki kondisi air tanah, pemerintah optimalkan upaya pengendalian penggunaannya",
+  "number": "541.Pers/04/SJI/2023",
+  "container-title": "Siaran pers Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/perbaiki-kondisi-air-tanah-pemerintah-optimalkan-upaya-pengendalian-penggunaannya",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CAT Jakarta 2015–2022: 0,04–6,30 cm/th; pemantauan 220 lokasi per tahun; tidak menyebut daftar CAT rusak"
+ },
+ {
+  "id": "esdm-2025-perizinan-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Dukung pengelolaan air tanah berkelanjutan, Kementerian ESDM beri kemudahan perizinan",
+  "container-title": "Arsip berita Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/dukung-pengelolaan-air-tanah-berkelanjutan-kementerian-esdm-beri-kemudahan-perizinan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Menyebut daerah rawan, kritis, rusak tanpa nama; dasar Permen ESDM 14/2024"
+ },
+ {
+  "id": "badangeologi-2025-capaian",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Geologi, Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Badan Geologi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     27
+    ]
+   ]
+  },
+  "title": "Badan Geologi tebar jejak prestasi capaian kapasitas survei dan pelayanan 2025",
+  "URL": "https://geologi.esdm.go.id/media-center/badan-geologi-tebar-jejak-prestasi-capaian-kapasitas-survei-dan-pelayanan-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Zona konservasi seluruh CAT 2045, prioritas 2029; 161 sumur pantau (131 + 37 = 168 di artikel yang sama); hanya 100.000 karakter pertama halaman yang dibaca. Angka 421 CAT dirujuk ke keppres-2011-cat"
+ },
+ {
+  "id": "idx-2023-cat-rusak",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "IDX Channel"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     11,
+     13
+    ]
+   ]
+  },
+  "title": "ESDM beberkan wilayah yang cekungan air tanahnya rusak, simak lokasinya",
+  "container-title": "IDX Channel",
+  "URL": "https://www.idxchannel.com/news/esdm-beberkan-wilayah-yang-cekungan-air-tanahnya-rusak-simak-lokasinya/all",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Delapan CAT termasuk Pekalongan-Pemalang dan Palangkaraya-Banjarmasin"
+ },
+ {
+  "id": "cnbc-2023-cat-rusak",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "CNBC Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     11,
+     13
+    ]
+   ]
+  },
+  "title": "Waspada, tanah Pantura Jawa sudah ambles",
+  "container-title": "CNBC Indonesia",
+  "URL": "https://www.cnbcindonesia.com/news/20231113154002-4-488634/waspada-tanah-pantura-jawa-sudah-ambles",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Tujuh wilayah termasuk Palangkaraya, tanpa Pekalongan-Pemalang"
+ },
+ {
+  "id": "cnbc-2025-air-tanah",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "CNBC Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Waspada! Air tanah di daerah RI ini masuk zona kritis-rusak",
+  "container-title": "CNBC Indonesia",
+  "URL": "https://www.cnbcindonesia.com/news/20250108163515-4-601705/waspada-air-tanah-di-daerah-ri-ini-masuk-zona-kritis-rusak",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Pernyataan Wakil Menteri ESDM; Brantas disebut kritis"
+ },
+ {
+  "id": "bps-2020-slh",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Statistik lingkungan hidup Indonesia 2020",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Gbr. 2.4, 2.5, 2.6, 2.8 (mengutip Radhika dkk. 2013, 2017); teks riset/mentah/slh.txt"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia",
+    "singkatan": "RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks data/lembaga/mentah/teks/uu-17-2019.json.gz; Pasal 35 dan Penjelasan ayat (3) huruf b, i, j, k"
+ },
+ {
+  "id": "worldbank-2021-vision2045",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     12
+    ]
+   ]
+  },
+  "title": "Indonesia Vision 2045: Towards water security",
+  "publisher": "World Bank",
+  "publisher-place": "Washington, DC",
+  "DOI": "10.1596/36727",
+  "URL": "https://hdl.handle.net/10986/36727",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF 150 hlm. dari Open Knowledge Repository (berkas P1707570a8b2460d40bca000d934cd70259.pdf), CC BY 3.0 IGO; sampul memuat Kementerian PPN/Bappenas. Judul sampul 'Towards', metadata repositori 'Toward'. Dipakai: hlm. 13 (80% air untuk pertanian, kebutuhan naik 31% 2015-2045), hlm. 14 (separuh PDB di WS bertekanan high/severe saat kemarau; 24 dari 128 WS, 13 di Jawa; 'lima' WS defisit tahunan tetapi rincian berjumlah enam), hlm. xx, 64, 65 (46% irigasi 'poor'), Gambar 33 hlm. 65 (kondisi irigasi per kewenangan, data 2014, sumber Renstra Ditjen SDA 2015-2019; total pusat tercetak 2.378.521, kategori berjumlah 2.376.521). Menggantikan unggahan blog de Jong 2022 yang hanya meringkas laporan ini"
+ },
+ {
+  "id": "setkab-2015-jatigede",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     8,
+     31
+    ]
+   ]
+  },
+  "title": "Mulai diisi air, Waduk Jatigede diharapkan dapat tingkatkan intensitas tanam padi",
+  "container-title": "setkab.go.id",
+  "URL": "https://setkab.go.id/mulai-diisi-air-waduk-jatigede-diharapkan-dapat-tingkatkan-intensitas-tanam-padi/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Jatigede satu-satunya waduk di Sungai Cimanuk; mengairi DI Rentang (disebut 'di Kabupaten Indramayu') sekitar 90.000 ha"
+ },
+ {
+  "id": "sidiq-2021-pantura",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Sidiq",
+    "given": "T. P."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Meilano",
+    "given": "I."
+   },
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   },
+   {
+    "family": "Andreas",
+    "given": "H."
+   },
+   {
+    "family": "Permana",
+    "given": "A."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     10
+    ]
+   ]
+  },
+  "title": "Land subsidence of Java North Coast observed by SAR interferometry",
+  "container-title": "IOP Conference Series: Earth and Environmental Science",
+  "volume": "873",
+  "issue": "1",
+  "page": "012078",
+  "DOI": "10.1088/1755-1315/873/1/012078",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex; metadata Crossref. InSAR SBAS lebih dari 70 citra Sentinel-1 2016-2020: Jakarta maksimum lebih dari 5, Pekalongan sampai 7, Semarang dan Demak sampai 8 cm per tahun"
+ },
+ {
+  "id": "abidin-2015-jakarta",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Abidin",
+    "given": "H. Z."
+   },
+   {
+    "family": "Andreas",
+    "given": "H."
+   },
+   {
+    "family": "Gumilar",
+    "given": "I."
+   },
+   {
+    "family": "Wibowo",
+    "given": "I. R. R."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     6,
+     11
+    ]
+   ]
+  },
+  "title": "On correlation between urban development, land subsidence and flooding phenomena in Jakarta",
+  "container-title": "Proceedings of the International Association of Hydrological Sciences",
+  "volume": "370",
+  "page": "15-20",
+  "DOI": "10.5194/piahs-370-15-2015",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex; metadata Crossref. Leveling, GPS, InSAR 1982-2014: laju tipikal sekitar 3-10 cm per tahun"
+ },
+ {
+  "id": "anjasmara-2020-surabaya",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Anjasmara",
+    "given": "Ira Mutiara"
+   },
+   {
+    "family": "Yulyta",
+    "given": "Sendy Ayu"
+   },
+   {
+    "family": "Taufik",
+    "given": "Muhammad"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     2,
+     23
+    ]
+   ]
+  },
+  "title": "Application of time series InSAR (SBAS) method using Sentinel-1A data for land subsidence detection in Surabaya City",
+  "container-title": "International Journal on Advanced Science, Engineering and Information Technology",
+  "volume": "10",
+  "issue": "1",
+  "page": "191-197",
+  "DOI": "10.18517/ijaseit.10.1.6749",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex; metadata Crossref. Laju LOS (bukan vertikal) -40 sampai +30 mm per tahun, Mei 2015-September 2017; Asemrowo sampai -45 mm per tahun"
+ },
+ {
+  "id": "handoko-2026-pekalongan",
+  "type": "paper-conference",
+  "author": [
+   {
+    "family": "Handoko",
+    "given": "Eko Yuli"
+   },
+   {
+    "family": "Anjasmara",
+    "given": "Ira Mutiara"
+   },
+   {
+    "family": "Kurniawan",
+    "given": "Akbar"
+   },
+   {
+    "family": "Maulida",
+    "given": "Putra"
+   },
+   {
+    "literal": "Khomsin"
+   },
+   {
+    "family": "Nusantara",
+    "given": "Candida Aulia De Silva"
+   },
+   {
+    "family": "Khairunnisa",
+    "given": "Salsabila"
+   },
+   {
+    "family": "Kholiq",
+    "given": "Moh. Abdul"
+   },
+   {
+    "family": "Sarsito",
+    "given": "Dina Anggreni"
+   },
+   {
+    "family": "Heliani",
+    "given": "Leni Sophia"
+   },
+   {
+    "family": "Kuo",
+    "given": "Chung Yen"
+   },
+   {
+    "family": "Utomo",
+    "given": "Joko Budi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5
+    ]
+   ]
+  },
+  "title": "Integrated geodetic satellite observations for coastal flooding risk modeling: A case study of land subsidence and sea level rise in Pekalongan, Indonesia",
+  "container-title": "Journal of Physics: Conference Series",
+  "volume": "3238",
+  "issue": "1",
+  "page": "012037",
+  "DOI": "10.1088/1742-6596/3238/1/012037",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak via OpenAlex; metadata Crossref. InSAR Sentinel-1 2016-2024: lebih dari 50 mm per tahun di sebagian Pekalongan Utara, sesuai GNSS"
+ },
+ {
+  "id": "kemenpupr-2024-rpsda-jratunseluna",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Rencana Pengelolaan Sumber Daya Air Wilayah Sungai Jratunseluna Tahun 2024",
+  "publisher": "Direktorat Jenderal Sumber Daya Air",
+  "URL": "https://sda.pu.go.id/assets/uploads/files/2024_Rencana%20PSDA%20WS%20Jratunseluna_1786439921_ed6dd467d491255a92ae.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Id dan URL sama dengan riset/E-pustaka.json. Dipakai: hlm. 26 (kebutuhan 281,20, ketersediaan 239,60, defisit 41,60, proyeksi 378,81 m3/detik), hlm. 27 (defisit air baku terutama Grobogan, Pati, Demak, Blora, Kota Semarang), hlm. 191 (tabel neraca bulanan, 'Hasil Analisis, 2023'), Tabel 5.83 hlm. 262 (Badan Geologi 2018: Kota Semarang 2-10, Demak lebih dari 10 cm per tahun)"
+ },
+ {
+  "id": "esdm-2009-cat-jakarta",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     8,
+     18
+    ]
+   ]
+  },
+  "title": "Cekungan air tanah Jakarta kritis",
+  "container-title": "Arsip berita Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/cekungan-air-tanah-jakarta-kritis",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pernyataan Kepala Badan Geologi (13 Agustus 2009): CAT Jakarta zona kritis hingga rusak; pengambilan air tanah dalam 21 juta m3 per tahun dari potensi 52 juta m3 per tahun (40%, anjuran maksimum 20%)"
+ },
+ {
+  "id": "badangeologi-2024-cat",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Geologi, Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Badan Geologi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     22
+    ]
+   ]
+  },
+  "title": "Tanah Pantura Jawa alami penurunan, ini mitigasi Badan Geologi",
+  "container-title": "Media Center Badan Geologi",
+  "URL": "https://geologi.esdm.go.id/media-center/tanah-pantura-jawa-alami-penurunan-ini-mitigasi-badan-geologi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Id sama dengan riset/E-pustaka.json. Rubrik berita, Humas Pusat Air Tanah dan Geologi Tata Lingkungan; teks dibuka dengan 'Jakarta, CNBC Indonesia' (tulisan media dimuat ulang). Daftar CAT rusak (pernyataan Plt. Kepala Badan Geologi, konferensi pers 13 November 2023): Jakarta, Karawang Bekasi, Semarang, Bandung-Soreang, Bogor, Serang-Tangerang, Palangkaraya. Pernyataan instansi, bukan dokumen penetapan status"
+ },
+ {
+  "id": "keppres-2011-cat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia",
+    "singkatan": "RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     9,
+     13
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 26 Tahun 2011 tentang Penetapan Cekungan Air Tanah",
+  "URL": "https://jdih.esdm.go.id/storage/document/Keppres%20No.%2026%20Thn%202011.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Salinan JDIH Kementerian ESDM (pindaian, dibaca lewat pdftotext). Lampiran I: Total Keseluruhan CAT 421 (205, 176, 36, 4); CAT Jawa no. 66 (Labuan) sampai 145 (Toranggo), hlm. 12-25; Serang-Tangerang 68, Jakarta 70, Bogor 71, Bekasi-Karawang 75, Bandung-Soreang 80, Pekalongan-Pemalang 103, Semarang-Demak 116"
+ },
+ {
+  "id": "noaa-2026-oni",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "NOAA Climate Prediction Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Oceanic Niño Index (ONI), ERSSTv5",
+  "genre": "Data set",
+  "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Id sama dengan bab-03.pustaka.json; salinan riset/mentah/oni_cpc.txt; dipakai nilai JAS dan JJA 2008-2026"
+ }
+]

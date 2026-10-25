@@ -1,0 +1,1290 @@
+{
+ "nama": "bab04-peta-irigasi-permukaan-kab",
+ "keterangan": "Luas irigasi permukaan per kabupaten/kota di Pulau Jawa menurut penetapan daerah irigasi 2015 (ha)",
+ "sumber": "Permen PUPR 14/PRT/M/2015",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  193.52
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.83
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "10.000",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "30.000",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "100.000",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "garis",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#D3DBE5": [
+   "daratan-netral",
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#2F86D1": [
+   "simbol",
+   "legenda"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 358.74,
+   "y": 35.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 422.93,
+   "y": 35.92,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "200 km"
+  },
+  {
+   "x": 433.6,
+   "y": 6.92,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 97.36,
+   "y": 31.7,
+   "w": 14,
+   "h": 14,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "Karawang"
+  },
+  {
+   "x": 132.02,
+   "y": 37.85,
+   "w": 13.77,
+   "h": 13.77,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "Indramayu"
+  },
+  {
+   "x": 112.2,
+   "y": 40.89,
+   "w": 12.7,
+   "h": 12.7,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "Subang"
+  },
+  {
+   "x": 356.32,
+   "y": 113.59,
+   "w": 12.38,
+   "h": 12.38,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "Jember"
+  },
+  {
+   "x": 127.27,
+   "y": 80.48,
+   "w": 10.89,
+   "h": 10.89,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "Tasikmalaya"
+  },
+  {
+   "x": 162.29,
+   "y": 62.29,
+   "w": 10.84,
+   "h": 10.84,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "Brebes"
+  },
+  {
+   "x": 383.24,
+   "y": 119.75,
+   "w": 10.79,
+   "h": 10.79,
+   "jenis": "simbol",
+   "grup": "sim6",
+   "teks": "Banyuwangi"
+  },
+  {
+   "x": 50.27,
+   "y": 45.64,
+   "w": 10.57,
+   "h": 10.57,
+   "jenis": "simbol",
+   "grup": "sim7",
+   "teks": "Lebak"
+  },
+  {
+   "x": 164.22,
+   "y": 85.58,
+   "w": 10.56,
+   "h": 10.56,
+   "jenis": "simbol",
+   "grup": "sim8",
+   "teks": "Cilacap"
+  },
+  {
+   "x": 86.29,
+   "y": 32.61,
+   "w": 10.17,
+   "h": 10.17,
+   "jenis": "simbol",
+   "grup": "sim9",
+   "teks": "Bekasi"
+  },
+  {
+   "x": 38.44,
+   "y": 40.76,
+   "w": 9.87,
+   "h": 9.87,
+   "jenis": "simbol",
+   "grup": "sim10",
+   "teks": "Pandeglang"
+  },
+  {
+   "x": 245.51,
+   "y": 67.87,
+   "w": 9.56,
+   "h": 9.56,
+   "jenis": "simbol",
+   "grup": "sim11",
+   "teks": "Grobogan"
+  },
+  {
+   "x": 147.5,
+   "y": 55.44,
+   "w": 9.55,
+   "h": 9.55,
+   "jenis": "simbol",
+   "grup": "sim12",
+   "teks": "Cirebon"
+  },
+  {
+   "x": 234.81,
+   "y": 60.14,
+   "w": 9.46,
+   "h": 9.46,
+   "jenis": "simbol",
+   "grup": "sim13",
+   "teks": "Demak"
+  },
+  {
+   "x": 73.69,
+   "y": 64.16,
+   "w": 9.37,
+   "h": 9.37,
+   "jenis": "simbol",
+   "grup": "sim14",
+   "teks": "Sukabumi"
+  },
+  {
+   "x": 75.17,
+   "y": 43.36,
+   "w": 9.26,
+   "h": 9.26,
+   "jenis": "simbol",
+   "grup": "sim15",
+   "teks": "Bogor"
+  },
+  {
+   "x": 297.16,
+   "y": 98.52,
+   "w": 9.21,
+   "h": 9.21,
+   "jenis": "simbol",
+   "grup": "sim16",
+   "teks": "Kediri"
+  },
+  {
+   "x": 301.91,
+   "y": 86.95,
+   "w": 9.16,
+   "h": 9.16,
+   "jenis": "simbol",
+   "grup": "sim17",
+   "teks": "Jombang"
+  },
+  {
+   "x": 316.6,
+   "y": 110.57,
+   "w": 9.09,
+   "h": 9.09,
+   "jenis": "simbol",
+   "grup": "sim18",
+   "teks": "Malang"
+  },
+  {
+   "x": 89.21,
+   "y": 62.24,
+   "w": 9.01,
+   "h": 9.01,
+   "jenis": "simbol",
+   "grup": "sim19",
+   "teks": "Cianjur"
+  },
+  {
+   "x": 174.03,
+   "y": 64.5,
+   "w": 8.85,
+   "h": 8.85,
+   "jenis": "simbol",
+   "grup": "sim20",
+   "teks": "Tegal"
+  },
+  {
+   "x": 264.87,
+   "y": 82.78,
+   "w": 8.81,
+   "h": 8.81,
+   "jenis": "simbol",
+   "grup": "sim21",
+   "teks": "Ngawi"
+  },
+  {
+   "x": 50.04,
+   "y": 31.8,
+   "w": 8.75,
+   "h": 8.75,
+   "jenis": "simbol",
+   "grup": "sim22",
+   "teks": "Serang"
+  },
+  {
+   "x": 304.44,
+   "y": 68.49,
+   "w": 8.65,
+   "h": 8.65,
+   "jenis": "simbol",
+   "grup": "sim23",
+   "teks": "Lamongan"
+  },
+  {
+   "x": 137.04,
+   "y": 57.08,
+   "w": 8.55,
+   "h": 8.55,
+   "jenis": "simbol",
+   "grup": "sim24",
+   "teks": "Majalengka"
+  },
+  {
+   "x": 217.27,
+   "y": 88.63,
+   "w": 8.43,
+   "h": 8.43,
+   "jenis": "simbol",
+   "grup": "sim25",
+   "teks": "Magelang"
+  },
+  {
+   "x": 252.52,
+   "y": 53.75,
+   "w": 8.41,
+   "h": 8.41,
+   "jenis": "simbol",
+   "grup": "sim26",
+   "teks": "Pati"
+  },
+  {
+   "x": 340.76,
+   "y": 112.25,
+   "w": 8.36,
+   "h": 8.36,
+   "jenis": "simbol",
+   "grup": "sim27",
+   "teks": "Lumajang"
+  },
+  {
+   "x": 289.93,
+   "y": 89.27,
+   "w": 8.35,
+   "h": 8.35,
+   "jenis": "simbol",
+   "grup": "sim28",
+   "teks": "Nganjuk"
+  },
+  {
+   "x": 110.81,
+   "y": 67.02,
+   "w": 8.17,
+   "h": 8.17,
+   "jenis": "simbol",
+   "grup": "sim29",
+   "teks": "Bandung"
+  },
+  {
+   "x": 227.34,
+   "y": 73.34,
+   "w": 8.11,
+   "h": 8.11,
+   "jenis": "simbol",
+   "grup": "sim30",
+   "teks": "Semarang"
+  },
+  {
+   "x": 193.23,
+   "y": 92.45,
+   "w": 8.04,
+   "h": 8.04,
+   "jenis": "simbol",
+   "grup": "sim31",
+   "teks": "Kebumen"
+  },
+  {
+   "x": 323.98,
+   "y": 94.39,
+   "w": 8.01,
+   "h": 8.01,
+   "jenis": "simbol",
+   "grup": "sim32",
+   "teks": "Pasuruan"
+  },
+  {
+   "x": 175.68,
+   "y": 83.75,
+   "w": 7.86,
+   "h": 7.86,
+   "jenis": "simbol",
+   "grup": "sim33",
+   "teks": "Banyumas"
+  },
+  {
+   "x": 346.77,
+   "y": 99.38,
+   "w": 7.82,
+   "h": 7.82,
+   "jenis": "simbol",
+   "grup": "sim34",
+   "teks": "Probolinggo"
+  },
+  {
+   "x": 369.88,
+   "y": 104.2,
+   "w": 7.77,
+   "h": 7.77,
+   "jenis": "simbol",
+   "grup": "sim35",
+   "teks": "Bondowoso"
+  },
+  {
+   "x": 234.41,
+   "y": 93.64,
+   "w": 7.75,
+   "h": 7.75,
+   "jenis": "simbol",
+   "grup": "sim36",
+   "teks": "Klaten"
+  },
+  {
+   "x": 184.2,
+   "y": 64.38,
+   "w": 7.67,
+   "h": 7.67,
+   "jenis": "simbol",
+   "grup": "sim37",
+   "teks": "Pemalang"
+  },
+  {
+   "x": 269.98,
+   "y": 102.65,
+   "w": 7.64,
+   "h": 7.64,
+   "jenis": "simbol",
+   "grup": "sim38",
+   "teks": "Ponorogo"
+  },
+  {
+   "x": 207.75,
+   "y": 94.56,
+   "w": 7.5,
+   "h": 7.5,
+   "jenis": "simbol",
+   "grup": "sim39",
+   "teks": "Purworejo"
+  },
+  {
+   "x": 303.19,
+   "y": 110.99,
+   "w": 7.45,
+   "h": 7.45,
+   "jenis": "simbol",
+   "grup": "sim40",
+   "teks": "Blitar"
+  },
+  {
+   "x": 374.82,
+   "y": 95.85,
+   "w": 7.45,
+   "h": 7.45,
+   "jenis": "simbol",
+   "grup": "sim41",
+   "teks": "Situbondo"
+  },
+  {
+   "x": 312.46,
+   "y": 89.24,
+   "w": 7.34,
+   "h": 7.34,
+   "jenis": "simbol",
+   "grup": "sim42",
+   "teks": "Mojokerto"
+  },
+  {
+   "x": 239.23,
+   "y": 48.81,
+   "w": 7.33,
+   "h": 7.33,
+   "jenis": "simbol",
+   "grup": "sim43",
+   "teks": "Jepara"
+  },
+  {
+   "x": 250.69,
+   "y": 102.76,
+   "w": 7.26,
+   "h": 7.26,
+   "jenis": "simbol",
+   "grup": "sim44",
+   "teks": "Wonogiri"
+  },
+  {
+   "x": 64.68,
+   "y": 31,
+   "w": 7.2,
+   "h": 7.2,
+   "jenis": "simbol",
+   "grup": "sim45",
+   "teks": "Tangerang"
+  },
+  {
+   "x": 277.79,
+   "y": 91.25,
+   "w": 7.17,
+   "h": 7.17,
+   "jenis": "simbol",
+   "grup": "sim46",
+   "teks": "Madiun"
+  },
+  {
+   "x": 289.44,
+   "y": 63.2,
+   "w": 7.1,
+   "h": 7.1,
+   "jenis": "simbol",
+   "grup": "sim47",
+   "teks": "Tuban"
+  },
+  {
+   "x": 249.47,
+   "y": 81.31,
+   "w": 7.04,
+   "h": 7.04,
+   "jenis": "simbol",
+   "grup": "sim48",
+   "teks": "Sragen"
+  },
+  {
+   "x": 226.6,
+   "y": 93.04,
+   "w": 6.96,
+   "h": 6.96,
+   "jenis": "simbol",
+   "grup": "sim49",
+   "teks": "Sleman"
+  },
+  {
+   "x": 193.58,
+   "y": 65.53,
+   "w": 6.94,
+   "h": 6.94,
+   "jenis": "simbol",
+   "grup": "sim50",
+   "teks": "Pekalongan"
+  },
+  {
+   "x": 265.54,
+   "y": 92.49,
+   "w": 6.93,
+   "h": 6.93,
+   "jenis": "simbol",
+   "grup": "sim51",
+   "teks": "Magetan"
+  },
+  {
+   "x": 143.74,
+   "y": 77.21,
+   "w": 6.87,
+   "h": 6.87,
+   "jenis": "simbol",
+   "grup": "sim52",
+   "teks": "Ciamis"
+  },
+  {
+   "x": 216.55,
+   "y": 65.62,
+   "w": 6.77,
+   "h": 6.77,
+   "jenis": "simbol",
+   "grup": "sim53",
+   "teks": "Kendal"
+  },
+  {
+   "x": 148.32,
+   "y": 65.9,
+   "w": 6.74,
+   "h": 6.74,
+   "jenis": "simbol",
+   "grup": "sim54",
+   "teks": "Kuningan"
+  },
+  {
+   "x": 287.85,
+   "y": 111.95,
+   "w": 6.7,
+   "h": 6.7,
+   "jenis": "simbol",
+   "grup": "sim55",
+   "teks": "Tulungagung"
+  },
+  {
+   "x": 285.57,
+   "y": 74.25,
+   "w": 6.6,
+   "h": 6.6,
+   "jenis": "simbol",
+   "grup": "sim56",
+   "teks": "Bojonegoro"
+  },
+  {
+   "x": 194.43,
+   "y": 80.92,
+   "w": 6.56,
+   "h": 6.56,
+   "jenis": "simbol",
+   "grup": "sim57",
+   "teks": "Banjarnegara"
+  },
+  {
+   "x": 250.37,
+   "y": 90.18,
+   "w": 6.54,
+   "h": 6.54,
+   "jenis": "simbol",
+   "grup": "sim58",
+   "teks": "Karanganyar"
+  },
+  {
+   "x": 184.37,
+   "y": 79.27,
+   "w": 6.52,
+   "h": 6.52,
+   "jenis": "simbol",
+   "grup": "sim59",
+   "teks": "Purbalingga"
+  },
+  {
+   "x": 269.4,
+   "y": 55.14,
+   "w": 6.38,
+   "h": 6.38,
+   "jenis": "simbol",
+   "grup": "sim60",
+   "teks": "Rembang"
+  },
+  {
+   "x": 202.75,
+   "y": 64.82,
+   "w": 6.29,
+   "h": 6.29,
+   "jenis": "simbol",
+   "grup": "sim61",
+   "teks": "Batang"
+  },
+  {
+   "x": 320.7,
+   "y": 83.87,
+   "w": 6.18,
+   "h": 6.18,
+   "jenis": "simbol",
+   "grup": "sim62",
+   "teks": "Sidoarjo"
+  },
+  {
+   "x": 205.93,
+   "y": 82.26,
+   "w": 6.07,
+   "h": 6.07,
+   "jenis": "simbol",
+   "grup": "sim63",
+   "teks": "Wonosobo"
+  },
+  {
+   "x": 243.42,
+   "y": 94.08,
+   "w": 6.05,
+   "h": 6.05,
+   "jenis": "simbol",
+   "grup": "sim64",
+   "teks": "Sukoharjo"
+  },
+  {
+   "x": 245.33,
+   "y": 57.58,
+   "w": 5.94,
+   "h": 5.94,
+   "jenis": "simbol",
+   "grup": "sim65",
+   "teks": "Kudus"
+  },
+  {
+   "x": 215.05,
+   "y": 77.21,
+   "w": 5.94,
+   "h": 5.94,
+   "jenis": "simbol",
+   "grup": "sim66",
+   "teks": "Temanggung"
+  },
+  {
+   "x": 315.87,
+   "y": 70.2,
+   "w": 5.9,
+   "h": 5.9,
+   "jenis": "simbol",
+   "grup": "sim67",
+   "teks": "Gresik"
+  },
+  {
+   "x": 224.16,
+   "y": 105.31,
+   "w": 5.59,
+   "h": 5.59,
+   "jenis": "simbol",
+   "grup": "sim68",
+   "teks": "Bantul"
+  },
+  {
+   "x": 120.96,
+   "y": 75.96,
+   "w": 5.51,
+   "h": 5.51,
+   "jenis": "simbol",
+   "grup": "sim69",
+   "teks": "Garut"
+  },
+  {
+   "x": 124.2,
+   "y": 59.19,
+   "w": 5.49,
+   "h": 5.49,
+   "jenis": "simbol",
+   "grup": "sim70",
+   "teks": "Sumedang"
+  },
+  {
+   "x": 236.9,
+   "y": 84.54,
+   "w": 5.43,
+   "h": 5.43,
+   "jenis": "simbol",
+   "grup": "sim71",
+   "teks": "Boyolali"
+  },
+  {
+   "x": 267.59,
+   "y": 67.92,
+   "w": 4.95,
+   "h": 4.95,
+   "jenis": "simbol",
+   "grup": "sim72",
+   "teks": "Blora"
+  },
+  {
+   "x": 103.97,
+   "y": 48.76,
+   "w": 4.58,
+   "h": 4.58,
+   "jenis": "simbol",
+   "grup": "sim73",
+   "teks": "Purwakarta"
+  },
+  {
+   "x": 279.31,
+   "y": 113.3,
+   "w": 4.5,
+   "h": 4.5,
+   "jenis": "simbol",
+   "grup": "sim74",
+   "teks": "Trenggalek"
+  },
+  {
+   "x": 217.37,
+   "y": 101.77,
+   "w": 4.3,
+   "h": 4.3,
+   "jenis": "simbol",
+   "grup": "sim75",
+   "teks": "Kulon Progo"
+  },
+  {
+   "x": 150.85,
+   "y": 92.7,
+   "w": 4.09,
+   "h": 4.09,
+   "jenis": "simbol",
+   "grup": "sim76",
+   "teks": "Pangandaran"
+  },
+  {
+   "x": 138.98,
+   "y": 80.89,
+   "w": 3.86,
+   "h": 3.86,
+   "jenis": "simbol",
+   "grup": "sim77",
+   "teks": "Kota Tasikmalaya"
+  },
+  {
+   "x": 235.99,
+   "y": 107.35,
+   "w": 3.76,
+   "h": 3.76,
+   "jenis": "simbol",
+   "grup": "sim78",
+   "teks": "Gunungkidul"
+  },
+  {
+   "x": 259.41,
+   "y": 114.46,
+   "w": 3.69,
+   "h": 3.69,
+   "jenis": "simbol",
+   "grup": "sim79",
+   "teks": "Pacitan"
+  },
+  {
+   "x": 151.44,
+   "y": 82.24,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim80",
+   "teks": "Kota Banjar"
+  },
+  {
+   "x": 72.79,
+   "y": 32.8,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim81",
+   "teks": "Kota Tangerang"
+  },
+  {
+   "x": 45.54,
+   "y": 25.27,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim82",
+   "teks": "Kota Cilegon"
+  },
+  {
+   "x": 197.41,
+   "y": 61.03,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim83",
+   "teks": "Kota Pekalongan"
+  },
+  {
+   "x": 220,
+   "y": 84.13,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim84",
+   "teks": "Kota Magelang"
+  },
+  {
+   "x": 320.33,
+   "y": 106.07,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim85",
+   "teks": "Kota Malang"
+  },
+  {
+   "x": 312.08,
+   "y": 84.74,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim86",
+   "teks": "Kota Mojokerto"
+  },
+  {
+   "x": 273.29,
+   "y": 92.99,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim87",
+   "teks": "Kota Madiun"
+  },
+  {
+   "x": 51.84,
+   "y": 27.3,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim88",
+   "teks": "Kota Serang"
+  },
+  {
+   "x": 104.33,
+   "y": 61.43,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim89",
+   "teks": "Bandung Barat"
+  },
+  {
+   "x": 108.83,
+   "y": 61.72,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim90",
+   "teks": "Kota Cimahi"
+  },
+  {
+   "x": 113.26,
+   "y": 62.52,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim91",
+   "teks": "Kota Bandung"
+  },
+  {
+   "x": 78.04,
+   "y": 53.52,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim92",
+   "teks": "Kota Bogor"
+  },
+  {
+   "x": 78.54,
+   "y": 38.92,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim93",
+   "teks": "Kota Depok"
+  },
+  {
+   "x": 150.97,
+   "y": 51.04,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim94",
+   "teks": "Kota Cirebon"
+  },
+  {
+   "x": 83.96,
+   "y": 64.07,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim95",
+   "teks": "Kota Sukabumi"
+  },
+  {
+   "x": 174.27,
+   "y": 60,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim96",
+   "teks": "Kota Tegal"
+  },
+  {
+   "x": 227.89,
+   "y": 67.21,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim97",
+   "teks": "Kota Semarang"
+  },
+  {
+   "x": 231.59,
+   "y": 82.35,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim98",
+   "teks": "Kota Salatiga"
+  },
+  {
+   "x": 245,
+   "y": 89.58,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim99",
+   "teks": "Kota Surakarta"
+  },
+  {
+   "x": 226.19,
+   "y": 100.81,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim100",
+   "teks": "Kota Yogyakarta"
+  },
+  {
+   "x": 315.83,
+   "y": 102.83,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim101",
+   "teks": "Kota Batu"
+  },
+  {
+   "x": 298.69,
+   "y": 112.5,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim102",
+   "teks": "Kota Blitar"
+  },
+  {
+   "x": 292.66,
+   "y": 101.41,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim103",
+   "teks": "Kota Kediri"
+  },
+  {
+   "x": 342.27,
+   "y": 99.15,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim104",
+   "teks": "Kota Probolinggo"
+  },
+  {
+   "x": 332.89,
+   "y": 93.87,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim105",
+   "teks": "Kota Pasuruan"
+  },
+  {
+   "x": 331.51,
+   "y": 68.46,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim106",
+   "teks": "Bangkalan"
+  },
+  {
+   "x": 356.27,
+   "y": 70.14,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim107",
+   "teks": "Pamekasan"
+  },
+  {
+   "x": 346.34,
+   "y": 69.47,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim108",
+   "teks": "Sampang"
+  },
+  {
+   "x": 376.16,
+   "y": 66.33,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim109",
+   "teks": "Sumenep"
+  },
+  {
+   "x": 85.35,
+   "y": 16.19,
+   "w": 49.26,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-31",
+   "teks": "DKI Jakarta"
+  },
+  {
+   "x": 54.5,
+   "y": 75.66,
+   "w": 48.11,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-32",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 142.36,
+   "y": 19.5,
+   "w": 43.69,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Irigasi permukaan:Karawang",
+   "teks": "Karawang"
+  },
+  {
+   "x": 122.04,
+   "y": 106.59,
+   "w": 34.9,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Irigasi permukaan:Subang",
+   "teks": "Subang"
+  },
+  {
+   "x": 161.79,
+   "y": 38.33,
+   "w": 45.72,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Irigasi permukaan:Indramayu",
+   "teks": "Indramayu"
+  },
+  {
+   "x": 185.2,
+   "y": 114.96,
+   "w": 57.47,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-34",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 249.1,
+   "y": 14.54,
+   "w": 55.78,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-33",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 346.2,
+   "y": 132.68,
+   "w": 49.95,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-35",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 384.7,
+   "y": 100.58,
+   "w": 35.1,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-Irigasi permukaan:Jember",
+   "teks": "Jember"
+  },
+  {
+   "x": 15.3,
+   "y": 54.66,
+   "w": 33.01,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-36",
+   "teks": "Banten"
+  },
+  {
+   "x": 111.29,
+   "y": 157.71,
+   "w": 100.31,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-111",
+   "teks": "Luas irigasi permukaan (ha)"
+  },
+  {
+   "x": 111.29,
+   "y": 156.71,
+   "w": 100.31,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-111",
+   "teks": "Luas irigasi permukaan (ha)"
+  },
+  {
+   "x": 229.78,
+   "y": 157.71,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-221",
+   "teks": "10.000"
+  },
+  {
+   "x": 221.6,
+   "y": 156.71,
+   "w": 32.74,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-221",
+   "teks": "10.000"
+  },
+  {
+   "x": 275.59,
+   "y": 157.71,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-264",
+   "teks": "30.000"
+  },
+  {
+   "x": 264.35,
+   "y": 156.71,
+   "w": 35.8,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-264",
+   "teks": "30.000"
+  },
+  {
+   "x": 327.37,
+   "y": 157.71,
+   "w": 29.06,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-310",
+   "teks": "100.000"
+  },
+  {
+   "x": 310.15,
+   "y": 155.11,
+   "w": 46.27,
+   "h": 13.21,
+   "jenis": "legenda",
+   "grup": "leg0-310",
+   "teks": "100.000"
+  },
+  {
+   "x": 3,
+   "y": 171.32,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 180.92,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kanan atas",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 10,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 110,
+ "simbol_digeser": 50,
+ "putaran_geser": 4
+}

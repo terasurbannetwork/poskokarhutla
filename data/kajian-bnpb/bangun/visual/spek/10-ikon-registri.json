@@ -1,0 +1,14 @@
+{
+  "nama": "ikon-registri",
+  "jenis": "ikon",
+  "ukuran": "penuh",
+  "keterangan": "Registri ikon tema.json: ikon putih di lingkaran berwarna dan ikon berwarna di lingkaran tint",
+  "sumber": "Registri glif tema.json: Lucide 1.54.0 (ISC), glif deck harian BNPB, dan glif khusus kajian",
+  "konsep": "semua",
+  "gaya": [
+    "solid",
+    "tint"
+  ],
+  "diameter_mm": 9,
+  "satuan": true
+}

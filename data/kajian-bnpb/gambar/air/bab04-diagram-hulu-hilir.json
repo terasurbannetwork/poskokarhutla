@@ -1,0 +1,550 @@
+{
+ "nama": "bab04-diagram-hulu-hilir",
+ "keterangan": "Komponen sumber daya air Pulau Jawa sepanjang aliran sungai dan lembaga pelaksananya, 2026",
+ "sumber": "UU 17/2019; UU 24/2007; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  215
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.58
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Komponen air",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Pelaksana pengelolaan",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Penanggulangan bencana",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 49.69,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Komponen air"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 63.69,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Komponen air"
+  },
+  {
+   "x": 89.69,
+   "y": 3,
+   "w": 82.29,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-75",
+   "teks": "Pelaksana pengelolaan"
+  },
+  {
+   "x": 75.69,
+   "y": 2,
+   "w": 96.29,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-75",
+   "teks": "Pelaksana pengelolaan"
+  },
+  {
+   "x": 195.97,
+   "y": 3,
+   "w": 92.24,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-181",
+   "teks": "Penanggulangan bencana"
+  },
+  {
+   "x": 181.97,
+   "y": 2,
+   "w": 106.24,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-181",
+   "teks": "Penanggulangan bencana"
+  },
+  {
+   "x": 81.17,
+   "y": 20,
+   "w": 34,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Hulu dan"
+  },
+  {
+   "x": 79.54,
+   "y": 30.2,
+   "w": 37.25,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "cekungan"
+  },
+  {
+   "x": 167.92,
+   "y": 20,
+   "w": 26.08,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Waduk"
+  },
+  {
+   "x": 251.81,
+   "y": 20,
+   "w": 23.86,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Irigasi"
+  },
+  {
+   "x": 316.49,
+   "y": 20,
+   "w": 60.08,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "Air baku dan air"
+  },
+  {
+   "x": 333.29,
+   "y": 30.2,
+   "w": 26.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "minum"
+  },
+  {
+   "x": 399.35,
+   "y": 20,
+   "w": 59.94,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk4",
+   "teks": "Hilir dan pesisir"
+  },
+  {
+   "x": 2,
+   "y": 65.95,
+   "w": 41.27,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Komponen"
+  },
+  {
+   "x": 2,
+   "y": 130.05,
+   "w": 39.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Pelaksana"
+  },
+  {
+   "x": 2,
+   "y": 189.05,
+   "w": 51.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Saat bencana"
+  },
+  {
+   "x": 80.82,
+   "y": 55.3,
+   "w": 34.69,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k1",
+   "teks": "Air tanah"
+  },
+  {
+   "x": 75.4,
+   "y": 66.9,
+   "w": 45.54,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k1",
+   "teks": "cekungan air"
+  },
+  {
+   "x": 76.75,
+   "y": 76.5,
+   "w": 42.83,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k1",
+   "teks": "tanah (CAT)"
+  },
+  {
+   "x": 159.81,
+   "y": 50.2,
+   "w": 42.3,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "Waduk dan"
+  },
+  {
+   "x": 159.65,
+   "y": 60.4,
+   "w": 42.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "bendungan"
+  },
+  {
+   "x": 153.06,
+   "y": 72,
+   "w": 55.8,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "tampungan dan"
+  },
+  {
+   "x": 159.09,
+   "y": 81.6,
+   "w": 43.74,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "pola operasi"
+  },
+  {
+   "x": 237.32,
+   "y": 50.5,
+   "w": 52.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "Daerah irigasi"
+  },
+  {
+   "x": 241.26,
+   "y": 62.1,
+   "w": 44.98,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "kewenangan"
+  },
+  {
+   "x": 237.16,
+   "y": 71.7,
+   "w": 53.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "pusat, provinsi,"
+  },
+  {
+   "x": 247.86,
+   "y": 81.3,
+   "w": 31.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "kab/kota"
+  },
+  {
+   "x": 326.7,
+   "y": 55.3,
+   "w": 39.68,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "Air minum"
+  },
+  {
+   "x": 314.91,
+   "y": 66.9,
+   "w": 63.25,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "perpipaan, sumur,"
+  },
+  {
+   "x": 331.88,
+   "y": 76.5,
+   "w": 29.31,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "mata air"
+  },
+  {
+   "x": 416.11,
+   "y": 50.5,
+   "w": 26.43,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k5",
+   "teks": "Pesisir"
+  },
+  {
+   "x": 415.81,
+   "y": 62.1,
+   "w": 27.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k5",
+   "teks": "rob dan"
+  },
+  {
+   "x": 399.49,
+   "y": 71.7,
+   "w": 59.66,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k5",
+   "teks": "penurunan muka"
+  },
+  {
+   "x": 419.25,
+   "y": 81.3,
+   "w": 20.14,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k5",
+   "teks": "tanah"
+  },
+  {
+   "x": 70.39,
+   "y": 119.4,
+   "w": 55.56,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "Badan Geologi"
+  },
+  {
+   "x": 75.58,
+   "y": 131,
+   "w": 45.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "Kementerian"
+  },
+  {
+   "x": 87.41,
+   "y": 140.6,
+   "w": 21.52,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "ESDM"
+  },
+  {
+   "x": 152.29,
+   "y": 124.2,
+   "w": 57.34,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "BBWS dan PJT"
+  },
+  {
+   "x": 152.26,
+   "y": 135.8,
+   "w": 57.4,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "Kementerian PU"
+  },
+  {
+   "x": 232.46,
+   "y": 109.8,
+   "w": 62.58,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "BBWS dan dinas"
+  },
+  {
+   "x": 237.2,
+   "y": 121.4,
+   "w": 53.09,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "BBWS untuk DI"
+  },
+  {
+   "x": 242.3,
+   "y": 131,
+   "w": 42.88,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "pusat, dinas"
+  },
+  {
+   "x": 232.22,
+   "y": 140.6,
+   "w": 63.06,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "kab/kota untuk DI"
+  },
+  {
+   "x": 255.56,
+   "y": 150.2,
+   "w": 16.36,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "kecil"
+  },
+  {
+   "x": 334.45,
+   "y": 119.4,
+   "w": 24.17,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "PDAM"
+  },
+  {
+   "x": 326.33,
+   "y": 131,
+   "w": 40.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "pemerintah"
+  },
+  {
+   "x": 334.25,
+   "y": 140.6,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "daerah"
+  },
+  {
+   "x": 398.3,
+   "y": 114.6,
+   "w": 62.04,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "Kementerian PU"
+  },
+  {
+   "x": 408.34,
+   "y": 126.2,
+   "w": 41.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "tanggul dan"
+  },
+  {
+   "x": 408.5,
+   "y": 135.8,
+   "w": 41.65,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "polder; BOP"
+  },
+  {
+   "x": 404.82,
+   "y": 145.4,
+   "w": 49,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "Pantura Jawa"
+  },
+  {
+   "x": 232.48,
+   "y": 178.4,
+   "w": 62.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "BPBD dan BNPB"
+  },
+  {
+   "x": 68.2,
+   "y": 190,
+   "w": 391.09,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "saat daya rusak air dinyatakan bencana (UU 17/2019 Pasal 35 ayat (5) dan UU 24/2007); tindakan darurat oleh"
+  },
+  {
+   "x": 176.82,
+   "y": 199.6,
+   "w": 173.85,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "gubernur dan bupati/wali kota (Pasal 35 ayat (6))"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Bagan pelaksana per komponen air sepanjang sungai; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 11
+}
