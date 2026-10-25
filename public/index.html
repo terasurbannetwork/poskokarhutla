@@ -2462,21 +2462,21 @@ function renderDaftar() {
   item.sort((a, b) => b.lv - a.lv || b.v - a.v || a.nama.localeCompare(b.nama));
   const maks = Math.max(1, ...item.map(i => i.v));
   const prio = new Set(S.meta.prioritas);
-  const G = "grid-template-columns:18px minmax(0,2.6fr) minmax(44px,.8fr) minmax(36px,.6fr) minmax(74px,1fr)";
+  const G = "grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(54px,.8fr) minmax(58px,.8fr) minmax(70px,1fr)";
   const u = ukurAktif(), pilUkur = `<div class="tr-sw"><span>Indikator</span><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "baru" ? `<div class="tr-hari" title="Api Himawari-9 (JAXA) per 10 menit; piksel berdekatan digabung jadi satu api, sama dengan lingkaran di peta">Api baru Himawari-9: <b>pukul ${new Date(Lapis.cache.hwMeta.acuan).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"})} WIB</b></div>`
     : u === "hot" ? `<div class="tr-hari" title="Kolom Titik: titik panas pada satu hari kalender WIB">Titik panas: <b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
     : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
-  const kepala = hariTitik + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? "Titik" : u === "baru" ? "Api" : "Ha"}</span><span class="n" title="Jumlah cluster titik panas">Cluster</span><span style="text-align:right">Status</span></div>`;
+  const kepala = hariTitik + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? "Titik" : u === "baru" ? "Api" : "Ha"}</span><span class="n" title="Jumlah cluster titik panas">Cluster</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut">Firespot</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
     const t = j.length === 0 ? trenProv(i.kunci) : null;
     const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
     return `<button class="tb${lv >= 2 ? " hl" + lv : ""}" style="${G}" role="listitem" data-k="${esc(i.kunci)}" ${j.length >= 2 ? "data-daun=1" : ""} title="${esc(judul)}">
       <span class="rk">${n + 1}</span><span style="font-weight:600">${j.length === 0 ? namaProvHtml(i.kunci) : esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi yang sering mengalami karhutla"></i>' : ""}</span>
-      <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${kl.length ? fmt(kl.length) : "–"}</span>
+      <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${kl.length ? fmt(kl.length) : "–"}</span><span class="n">${(fs => fs ? fmt(fs) : "–")(kl.filter(f => f.properties.firespot === "ya").length)}</span>
       <span style="text-align:right">${lv >= 1 ? `<span class="pill l${lv}">${["Rutin", "Patroli", "Siaga", "Prioritas"][lv]}</span>` : ""}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   terapkanUrut();
