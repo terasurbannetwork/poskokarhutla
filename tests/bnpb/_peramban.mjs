@@ -14,15 +14,20 @@ const tidur = ms => new Promise(r => setTimeout(r, ms));
 
 export async function bukaPeramban(bin = cariChrome()) {
   const profil = mkdtempSync(path.join(tmpdir(), "uji-layar-"));
+  /* runner CI (Ubuntu 24.04: AppArmor membatasi user namespace) kadang membuat sandbox Chrome gagal atau lambat start, jadi di CI
+     tanpa sandbox dan tunggu sampai 30 detik; stderr Chrome dikumpulkan supaya galatnya terbaca, bukan cuma "tidak membuka port" */
   const proses = spawn(bin, ["--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profil}`, "--no-first-run", "--no-default-browser-check",
-    "--disable-gpu", "--disable-extensions", "--hide-scrollbars", "about:blank"], {stdio: "ignore"});
-  let port = null;
-  for (let i = 0; i < 100 && !port; i++) {
+    "--disable-gpu", "--disable-extensions", "--hide-scrollbars", ...(process.env.CI ? ["--no-sandbox", "--disable-dev-shm-usage"] : []), "about:blank"],
+    {stdio: ["ignore", "ignore", "pipe"]});
+  let port = null, galat = "", keluar = null;
+  proses.stderr.on("data", d => { galat = (galat + d).slice(-2000); });
+  proses.on("exit", k => { keluar = k; });
+  for (let i = 0; i < 300 && !port && keluar === null; i++) {
     await tidur(100);
     try { port = readFileSync(path.join(profil, "DevToolsActivePort"), "utf8").split("\n")[0]; } catch (e) {}
   }
   const tutup = async () => { proses.kill("SIGKILL"); await tidur(100); rmSync(profil, {recursive: true, force: true}); };
-  if (!port) { await tutup(); throw new Error("Chrome tidak membuka port DevTools dalam 10 detik"); }
+  if (!port) { await tutup(); throw new Error(`Chrome tidak membuka port DevTools dalam 30 detik${keluar !== null ? ` (keluar kode ${keluar})` : ""}: ${galat.trim().split("\n").slice(-5).join(" | ")}`); }
   return {tutup, port, tab: () => bukaTab(port)};
 }
 
