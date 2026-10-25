@@ -67,12 +67,12 @@ catatan: Satu jalur per rezim. Penghubung jalur kesehatan ke jalur bencana hanya
 ::: gambar {#gbr:kematian-covid19}
 berkas: gambar/mitigasi/bab08-g11-kematian-covid19-pekan.png
 jenis: grafik
-judul: Kematian COVID-19 terlapor per pekan, 2020–2023, dan kematian berlebih tahunan menurut model WHO, 2020–2021, di Indonesia (jiwa)
-sumber: Satuan Tugas Penanganan COVID-19, data.covid19.go.id; WHO, data global COVID-19; WHO (2023), estimasi kematian berlebih
+judul: Kematian COVID-19 terlapor per pekan di Indonesia, Maret 2020–Juni 2023 (jiwa)
+sumber: WHO, data global COVID-19 (laporan Kementerian Kesehatan)
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Garis mingguan adalah kematian terlapor. Panel tahunan membandingkan kematian terlapor dengan rentang kematian berlebih berpil estimasi model; estimasi WHO bersifat tahunan dan tidak digambar sebagai pita mingguan.
+catatan: Garis mingguan adalah kematian terlapor. Kematian berlebih tahunan menurut model WHO ditulis di teks dan tidak digambar, karena estimasinya tahunan.
 :::
 
 **Cakupan imunisasi DTP3 (vaksin difteri-tetanus-pertusis dosis ketiga) anak usia satu tahun di Indonesia turun dari {{angka:nonalam.covid19.dtp3.2019|persen}} pada 2019 menjadi {{angka:nonalam.covid19.dtp3.2021|persen}} pada 2021.** Pada periode yang sama cakupan campak dosis pertama (MCV1) turun dari {{angka:nonalam.covid19.mcv1.2019|persen}} menjadi {{angka:nonalam.covid19.mcv1.2021|persen}}, dan notifikasi tuberkulosis turun dari {{angka:nonalam.covid19.tb_notifikasi.2019}} kasus pada 2019 menjadi {{angka:nonalam.covid19.tb_notifikasi.2020}} pada 2020 [@who-gho-imunisasi-tb]. DTP3 naik pada 2022 lalu turun lagi pada 2023 dan 2024, sehingga cakupannya belum dapat disebut pulih. Sumber data tidak menyatakan sebab penurunan; kaitannya dengan pandemi adalah penilaian kajian ini, dan penurunan 2023–2024 tidak dikaitkan.
@@ -196,7 +196,7 @@ data_per: 24 Okt 2026
 Di luar persyaratan itu, peran BNPB berlaku setelah kejadian dinyatakan bencana nonalam, lewat komando bersama BPBD atau keadaan tertentu menurut Perpres 46/2026 [@ri-2026-perpres46]. Pemadaman tetap urusan pemerintah kab/kota [@ri-2014-uu23]. Oleh sebab itu, BNPB bukan regulator keselamatan industri; pembagian mandat tertulis per fase tampil pada @tbl:mandat-nonalam.
 
 ::: matriks-lembaga {#tbl:mandat-nonalam}
-judul: Mandat tertulis kebakaran industri dan kebakaran TPA menurut lembaga dan fase
+judul: Mandat tertulis kebakaran industri dan kebakaran TPA menurut lembaga dan fase, 2026
 sumber: UU 1/1970; PP 11/1979; UU 24/2007; UU 18/2008; UU 3/2014; UU 23/2014; Permen ESDM 32/2021; PP 22/2021 dikutip Pergub Jawa Tengah 7/2024; pengolahan kajian ini
 keyakinan: resmi
 

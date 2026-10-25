@@ -1,0 +1,888 @@
+{
+ "nama": "bab07-g16-kalender",
+ "keterangan": "Porsi bulanan meninggal dan hilang lima jenis musim hujan serta kejadian kekeringan dan karhutla di Indonesia, 2008–2026 (persen)",
+ "sumber": "BNPB, DIBI dasbor publik; pengolahan kajian ini (batas tetap porsi bulanan)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  107.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  3.78
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "5 atau kurang",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "5–10",
+   "jenis": "kotak",
+   "warna": "#A4CAEE"
+  },
+  {
+   "label": "10–20",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "di atas 20",
+   "jenis": "kotak",
+   "warna": "#1B5A93"
+  }
+ ],
+ "hex": {
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "garis"
+  ],
+  "#2F86D1": [
+   "skala",
+   "legenda"
+  ],
+  "#A4CAEE": [
+   "skala",
+   "legenda"
+  ],
+  "#DCEBF8": [
+   "skala",
+   "legenda"
+  ],
+  "#1B5A93": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 177.45,
+   "y": 2,
+   "w": 13.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp0",
+   "teks": "Jan"
+  },
+  {
+   "x": 201.96,
+   "y": 2,
+   "w": 13.15,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp1",
+   "teks": "Feb"
+  },
+  {
+   "x": 226.01,
+   "y": 2,
+   "w": 14.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp2",
+   "teks": "Mar"
+  },
+  {
+   "x": 251.31,
+   "y": 2,
+   "w": 12.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp3",
+   "teks": "Apr"
+  },
+  {
+   "x": 275.43,
+   "y": 2,
+   "w": 13.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp4",
+   "teks": "Mei"
+  },
+  {
+   "x": 299.89,
+   "y": 2,
+   "w": 13.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp5",
+   "teks": "Jun"
+  },
+  {
+   "x": 325.62,
+   "y": 2,
+   "w": 10.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp6",
+   "teks": "Jul"
+  },
+  {
+   "x": 348.44,
+   "y": 2,
+   "w": 14.12,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp7",
+   "teks": "Agu"
+  },
+  {
+   "x": 373.25,
+   "y": 2,
+   "w": 13.47,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp8",
+   "teks": "Sep"
+  },
+  {
+   "x": 398.4,
+   "y": 2,
+   "w": 12.17,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp9",
+   "teks": "Okt"
+  },
+  {
+   "x": 421.91,
+   "y": 2,
+   "w": 14.14,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp10",
+   "teks": "Nov"
+  },
+  {
+   "x": 446.67,
+   "y": 2,
+   "w": 13.61,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp11",
+   "teks": "Des"
+  },
+  {
+   "x": 2,
+   "y": 22.7,
+   "w": 163.79,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lima jenis musim hujan, meninggal dan hilang"
+  },
+  {
+   "x": 179.27,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-0",
+   "teks": "12"
+  },
+  {
+   "x": 206.15,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-1",
+   "teks": "9"
+  },
+  {
+   "x": 228.25,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-2",
+   "teks": "11"
+  },
+  {
+   "x": 255.13,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-3",
+   "teks": "9"
+  },
+  {
+   "x": 279.63,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-4",
+   "teks": "6"
+  },
+  {
+   "x": 304.12,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-5",
+   "teks": "5"
+  },
+  {
+   "x": 328.62,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-6",
+   "teks": "5"
+  },
+  {
+   "x": 353.11,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-7",
+   "teks": "2"
+  },
+  {
+   "x": 377.6,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-8",
+   "teks": "4"
+  },
+  {
+   "x": 402.1,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-9",
+   "teks": "7"
+  },
+  {
+   "x": 424.2,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-10",
+   "teks": "22"
+  },
+  {
+   "x": 451.08,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-11",
+   "teks": "8"
+  },
+  {
+   "x": 2,
+   "y": 47.7,
+   "w": 73.19,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kekeringan, kejadian"
+  },
+  {
+   "x": 181.65,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-0",
+   "teks": "1"
+  },
+  {
+   "x": 206.15,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-1",
+   "teks": "2"
+  },
+  {
+   "x": 230.64,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-2",
+   "teks": "1"
+  },
+  {
+   "x": 255.13,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-3",
+   "teks": "2"
+  },
+  {
+   "x": 279.63,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-4",
+   "teks": "3"
+  },
+  {
+   "x": 301.73,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-5",
+   "teks": "13"
+  },
+  {
+   "x": 326.23,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-6",
+   "teks": "26"
+  },
+  {
+   "x": 350.72,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-7",
+   "teks": "23"
+  },
+  {
+   "x": 375.22,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-8",
+   "teks": "22"
+  },
+  {
+   "x": 402.1,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-9",
+   "teks": "5"
+  },
+  {
+   "x": 426.59,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-10",
+   "teks": "1"
+  },
+  {
+   "x": 451.08,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-11",
+   "teks": "1"
+  },
+  {
+   "x": 2,
+   "y": 72.7,
+   "w": 63.12,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Karhutla, kejadian"
+  },
+  {
+   "x": 181.65,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-0",
+   "teks": "3"
+  },
+  {
+   "x": 206.15,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-1",
+   "teks": "8"
+  },
+  {
+   "x": 230.64,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-2",
+   "teks": "6"
+  },
+  {
+   "x": 255.13,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-3",
+   "teks": "3"
+  },
+  {
+   "x": 279.63,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-4",
+   "teks": "3"
+  },
+  {
+   "x": 304.12,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-5",
+   "teks": "6"
+  },
+  {
+   "x": 326.23,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-6",
+   "teks": "16"
+  },
+  {
+   "x": 350.72,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-7",
+   "teks": "21"
+  },
+  {
+   "x": 375.22,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-8",
+   "teks": "20"
+  },
+  {
+   "x": 399.71,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-9",
+   "teks": "12"
+  },
+  {
+   "x": 426.59,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-10",
+   "teks": "4"
+  },
+  {
+   "x": 451.08,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-11",
+   "teks": "1"
+  },
+  {
+   "x": 59.18,
+   "y": 96.2,
+   "w": 127.96,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-59",
+   "teks": "Porsi bulan dalam setahun (persen)"
+  },
+  {
+   "x": 59.18,
+   "y": 95.2,
+   "w": 127.96,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-59",
+   "teks": "Porsi bulan dalam setahun (persen)"
+  },
+  {
+   "x": 211.15,
+   "y": 96.2,
+   "w": 48.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-197",
+   "teks": "5 atau kurang"
+  },
+  {
+   "x": 197.15,
+   "y": 95.2,
+   "w": 62.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-197",
+   "teks": "5 atau kurang"
+  },
+  {
+   "x": 283.75,
+   "y": 96.2,
+   "w": 18.73,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-269",
+   "teks": "5–10"
+  },
+  {
+   "x": 269.75,
+   "y": 95.2,
+   "w": 32.73,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-269",
+   "teks": "5–10"
+  },
+  {
+   "x": 326.48,
+   "y": 96.2,
+   "w": 23.22,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-312",
+   "teks": "10–20"
+  },
+  {
+   "x": 312.48,
+   "y": 95.2,
+   "w": 37.22,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-312",
+   "teks": "10–20"
+  },
+  {
+   "x": 373.7,
+   "y": 96.2,
+   "w": 34.84,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-359",
+   "teks": "di atas 20"
+  },
+  {
+   "x": 359.7,
+   "y": 95.2,
+   "w": 48.84,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-359",
+   "teks": "di atas 20"
+  }
+ ],
+ "jenis": "matriks-titik",
+ "pesan": "G16",
+ "sumbu_y": false,
+ "pil": 0,
+ "kelas": {
+  "ramp": "air",
+  "batas": [
+   5,
+   10,
+   20
+  ],
+  "label": [
+   "5 atau kurang",
+   "5–10",
+   "10–20",
+   "di atas 20"
+  ],
+  "rumus": "batas tetap porsi bulanan"
+ },
+ "kontras_teks_min": 4.52,
+ "sel_kosong": 0,
+ "sel": [
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Jan",
+   "nilai": 12.3,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Feb",
+   "nilai": 8.8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Mar",
+   "nilai": 11.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Apr",
+   "nilai": 8.8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Mei",
+   "nilai": 5.8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Jun",
+   "nilai": 4.8,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Jul",
+   "nilai": 5.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Agu",
+   "nilai": 2.4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Sep",
+   "nilai": 3.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Okt",
+   "nilai": 7.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Nov",
+   "nilai": 21.6,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Lima jenis musim hujan, meninggal dan hilang",
+   "kolom": "Des",
+   "nilai": 8.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Jan",
+   "nilai": 0.8,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Feb",
+   "nilai": 1.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Mar",
+   "nilai": 1.4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Apr",
+   "nilai": 1.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Mei",
+   "nilai": 3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Jun",
+   "nilai": 12.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Jul",
+   "nilai": 26,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Agu",
+   "nilai": 23,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Sep",
+   "nilai": 22.2,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Okt",
+   "nilai": 4.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Nov",
+   "nilai": 1.4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kekeringan, kejadian",
+   "kolom": "Des",
+   "nilai": 1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Jan",
+   "nilai": 2.8,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Feb",
+   "nilai": 7.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Mar",
+   "nilai": 5.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Apr",
+   "nilai": 2.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Mei",
+   "nilai": 2.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Jun",
+   "nilai": 5.5,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Jul",
+   "nilai": 15.8,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Agu",
+   "nilai": 21,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Sep",
+   "nilai": 20.2,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Okt",
+   "nilai": 12.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Nov",
+   "nilai": 3.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Karhutla, kejadian",
+   "kolom": "Des",
+   "nilai": 0.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  }
+ ]
+}

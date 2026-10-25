@@ -122,13 +122,24 @@ def hitung(hari, jam='17:00', cuaca=None, kunci=None, gambut=None, w=None):
 
 
 def seri(hari_akhir, n, jam='17:00', kunci=None):
-    """({kode_prov: [n angka, paling lama dulu]}, [hari]) -- satu tarikan cuaca dan satu Wilayah untuk semua hari."""
+    """({kode_prov: [n angka, paling lama dulu]}, [hari]) -- satu tarikan cuaca dan satu Wilayah untuk semua hari.
+    Hari yang sudah pernah dihitung diambil dari cache/firespot-<jam>.json: 14 deck berurutan memakai hari yang sama
+    berulang kali, dan satu hari butuh satu DBSCAN atas tujuh hari titik."""
     hari_akhir = dt.date.fromisoformat(str(hari_akhir))
     hari = [hari_akhir - dt.timedelta(days=n - 1 - i) for i in range(n)]
-    cuaca = CR.hitung(hari[0], hari[-1])
-    w, gambut = Wilayah(), Poligon(os.path.join(AKAR, 'public/data/lahan/gambut.geojson'))
-    kolom = [hitung(d, jam, cuaca, kunci, gambut, w) for d in hari]
-    return {k: [c[k] for c in kolom] for k in kolom[0]}, [d.isoformat() for d in hari]
+    jalur = os.path.join(SINI, 'cache', f'firespot-{jam.replace(":", ".")}.json')
+    simpan = json.load(open(jalur)) if os.path.exists(jalur) else {}
+    perlu = [d for d in hari if d.isoformat() not in simpan]
+    if perlu:
+        cuaca = CR.hitung(min(perlu), max(perlu))
+        w, gambut = Wilayah(), Poligon(os.path.join(AKAR, 'public/data/lahan/gambut.geojson'))
+        for d in perlu:
+            simpan[d.isoformat()] = hitung(d, jam, cuaca, kunci, gambut, w)
+            os.makedirs(os.path.dirname(jalur), exist_ok=True)
+            json.dump(simpan, open(jalur, 'w'))
+            print('firespot', d, 'nasional', sum(simpan[d.isoformat()].values()), flush=True)
+    kolom = [simpan[d.isoformat()] for d in hari]
+    return {k: [c.get(k, 0) for c in kolom] for k in kolom[0]}, [d.isoformat() for d in hari]
 
 
 def uji():

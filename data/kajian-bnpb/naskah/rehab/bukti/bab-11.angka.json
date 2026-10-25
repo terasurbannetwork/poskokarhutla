@@ -1,0 +1,246 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 11 kajian rehab (naskah/rehab/bukti/bab-11.md), belum digabung ke data/angka.json. Bentuk nilai + pustaka (id di bab-11.pustaka.json).",
+  "Kunci yang sudah ada di data/angka.json atau berkas bukti Bab 1–8 dipakai ulang dan tidak diulang (lihat bab-11.md bagian Angka untuk registri). Angka sekunder (TKD Rp10,6 triliun, Rencana Induk Rp100,1 triliun, premi Asuransi BMN 2024) tidak dimasukkan.",
+  "Pagu indikatif Renas (mis. Rp12.530,25 miliar aksi 3.1.2.d) sengaja tidak dijadikan kunci: P5 melarang pagu tampil sebagai anggaran kajian.",
+  "Disusun 25 Oktober 2026."
+ ],
+ "angka": {
+  "rehab.renas.aksi_312d.baseline_2024": {
+   "nilai": 45083,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "unit/kilometer",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.d, hlm. 90",
+   "catatan": "infrastruktur di daerah terdampak bencana yang direhabilitasi/direkonstruksi; penanggung jawab BNPB, Kementerian PU, Kementerian Perhubungan, Kementerian ESDM, Kementerian Komunikasi dan Digital; kontributor Kementerian Keuangan; satuan unit dan km dicampur"
+  },
+  "rehab.renas.aksi_312d.target_2029": {
+   "nilai": 46182,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "unit/kilometer",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.d, hlm. 90",
+   "catatan": "target 2029; kolom target tahunan 2025-2028 kosong di PDF"
+  },
+  "rehab.renas.aksi_312d.selisih_2024_2029": {
+   "nilai": 1099,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "unit/kilometer",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), olahan penyusun",
+   "lokasi": "aksi 3.1.2.d, hlm. 90",
+   "catatan": "46.182 dikurangi 45.083; turunan hitung, satuan campuran unit dan km sehingga tidak dapat ditafsir sebagai jumlah jembatan"
+  },
+  "rehab.renas.aksi_312a.baseline_2024": {
+   "nilai": 42,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "rekomendasi kebijakan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.a, hlm. 89",
+   "catatan": "rekomendasi kebijakan identifikasi pendanaan untuk R3P; penanggung jawab Kemenko PMK dan BNPB; kontributor Bappenas, Kemenkeu, Kementerian BUMN"
+  },
+  "rehab.renas.aksi_312a.target_2029": {
+   "nilai": 52,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "rekomendasi kebijakan",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.a, hlm. 89"
+  },
+  "rehab.renas.aksi_311b.baseline_2024": {
+   "nilai": 3,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.1.b, hlm. 89",
+   "catatan": "Jitupasna dan R3P oleh daerah lewat pendampingan; penanggung jawab BNPB"
+  },
+  "rehab.renas.aksi_311b.target_2029": {
+   "nilai": 15,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.1.b, hlm. 89"
+  },
+  "rehab.renas.aksi_312j.baseline_2024": {
+   "nilai": 2,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen rekomendasi",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.j, hlm. 91-92",
+   "catatan": "rekomendasi kebijakan atau NSPK pengaturan BTT daerah untuk RR; penanggung jawab BNPB, Kemendagri, Kemenko PMK; kontributor Kemenkeu, Bappenas"
+  },
+  "rehab.renas.aksi_312j.target_2029": {
+   "nilai": 12,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen rekomendasi",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.j, hlm. 91-92"
+  },
+  "rehab.renas.aksi_321c.baseline_2024": {
+   "nilai": 2,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.2.1.c, hlm. 94",
+   "catatan": "naskah akademis, RIA, urgensi, atau NSPK pemulihan dan peningkatan fisik daerah terdampak; penanggung jawab BNPB; kontributor Kementerian Hukum, Kemenkeu"
+  },
+  "rehab.renas.aksi_321c.target_2029": {
+   "nilai": 6,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "dokumen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.2.1.c, hlm. 94"
+  },
+  "rehab.renas.aksi_312i.target_2029": {
+   "nilai": 50,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.i, hlm. 91",
+   "catatan": "persentase kebutuhan luas lahan relokasi yang tersedia; baseline N/A; penanggung jawab Kementerian ATR/BPN, BNPB, Kementerian PU, Kementerian PKP"
+  },
+  "rehab.renas.aksi_312n.baseline_2024": {
+   "nilai": 326,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "daerah",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.n, hlm. 93",
+   "catatan": "daerah mendapat pembinaan pemulihan dengan segera sarana dan prasarana vital serta pemulihan bidang fisik; penanggung jawab BNPB"
+  },
+  "rehab.renas.aksi_312n.target_2029": {
+   "nilai": 552,
+   "pustaka": "bnpb-2025-renas",
+   "satuan": "daerah",
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)",
+   "lokasi": "aksi 3.1.2.n, hlm. 93"
+  },
+  "rehab.renstra.pemulihan_fisik_standar.2025": {
+   "nilai": 70,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "lokasi": "sasaran kegiatan P4, hlm. 136-137",
+   "catatan": "persentase daerah yang melaksanakan pemulihan fisik dengan baik sesuai standar; unit Renstra Direktorat Pemulihan dan Peningkatan Fisik (OTK lama)"
+  },
+  "rehab.renstra.pemulihan_fisik_standar.2029": {
+   "nilai": 90,
+   "pustaka": "bnpb-2025-renstra",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "lokasi": "sasaran kegiatan P4, hlm. 136-137"
+  },
+  "rehab.progsun2026.rancangan_rr_terkait": {
+   "nilai": 4,
+   "pustaka": "bnpb-2025-progsun",
+   "satuan": "rancangan peraturan",
+   "keyakinan": "resmi",
+   "sumber": "Keputusan Kepala BNPB 327/2025, olahan penyusun",
+   "lokasi": "Lampiran butir 4, 5, 6, 9, hlm. 4-5",
+   "catatan": "butir 4 perubahan Perban perencanaan RR (tertulis Nomor 5 Tahun 2024), butir 5 perubahan Perban 6/2017, butir 6 perubahan Perban 4/2018 logistik dan peralatan, butir 9 penelaahan Dana Bersama (sudah terbit sebagai Perban 1/2026); pemilahan relevansi oleh penyusun"
+  },
+  "rehab.progsun2026.lapor_triwulan_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2025-progsun",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Keputusan Kepala BNPB 327/2025",
+   "lokasi": "Diktum KETIGA, hlm. 2",
+   "catatan": "Kepala Biro Hukum, Organisasi, dan Kerja Sama melapor realisasi tiap triwulan"
+  },
+  "rehab.hukum.proleg_jangka_tahun": {
+   "nilai": 1,
+   "pustaka": "bnpb-2014-perka6-produk-hukum",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 6/2014",
+   "lokasi": "Pasal 4 ayat (4), hlm. 4",
+   "catatan": "juga Diktum KEDUA Keputusan Kepala BNPB 327/2025"
+  },
+  "rehab.dana.perpres75_jenis_penyaluran": {
+   "nilai": 4,
+   "pustaka": "ri-2021-perpres75",
+   "satuan": "jenis",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 75/2021",
+   "lokasi": "Pasal 6 ayat (2), hlm. 6",
+   "catatan": "prabencana, darurat, pascabencana terutama pemulihan, transfer risiko"
+  },
+  "rehab.dana.perpres75_jenis_penerima": {
+   "nilai": 4,
+   "pustaka": "ri-2021-perpres75",
+   "satuan": "jenis",
+   "keyakinan": "resmi",
+   "sumber": "Perpres 75/2021",
+   "lokasi": "Pasal 7 ayat (1), hlm. 6",
+   "catatan": "K/L, pemda, kelompok masyarakat terverifikasi pemda, penyedia barang/jasa"
+  },
+  "rehab.dana.perban2026_1_jenis_pemohon": {
+   "nilai": 2,
+   "pustaka": "bnpb-2026-dana-bersama",
+   "satuan": "jenis",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026",
+   "lokasi": "Pasal 9 ayat (2), hlm. 5",
+   "catatan": "pemohon hanya K/L dan pemda; desa bukan pemohon"
+  },
+  "rehab.dana.hibah_rr_lapor_hari": {
+   "nilai": 15,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "hari kalender",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 28 ayat (2), hlm. 11",
+   "catatan": "batas penyampaian laporan berkala tiga bulanan setelah berakhirnya tiap tahapan"
+  },
+  "rehab.dana.hibah_rr_setor_sisa_hari": {
+   "nilai": 120,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "hari kalender",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 29 ayat (2), hlm. 12"
+  },
+  "rehab.dana.pp12_btt_keadaan_darurat_jenis": {
+   "nilai": 3,
+   "pustaka": "ri-2019-pp12",
+   "satuan": "jenis",
+   "keyakinan": "resmi",
+   "sumber": "PP 12/2019",
+   "lokasi": "Pasal 69 ayat (1), hlm. cetak 53",
+   "catatan": "bencana alam/nonalam/sosial/KLB; operasi pencarian dan pertolongan; kerusakan sarana/prasarana yang mengganggu pelayanan publik"
+  },
+  "rehab.dana.dana_desa_pktd_upah_min_persen": {
+   "nilai": 50,
+   "pustaka": "kemendes-2025-permendes16",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Permendes PDT 16/2025",
+   "lokasi": "Lampiran huruf F angka 5 huruf a, hlm. 18",
+   "catatan": "upah kerja paling sedikit 50% dari total biaya kegiatan Padat Karya Tunai Desa"
+  },
+  "rehab.lembaga.dir_rr_infra_fungsi_n": {
+   "nilai": 4,
+   "pustaka": "bnpb-2025-otk-ubah",
+   "satuan": "fungsi",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 11/2025",
+   "lokasi": "Pasal 87, hlm. 9",
+   "catatan": "kebijakan teknis perencanaan, pelaksanaan kebijakan teknis, NSPK, pemantauan-evaluasi-pelaporan RR infrastruktur"
+  }
+ }
+}

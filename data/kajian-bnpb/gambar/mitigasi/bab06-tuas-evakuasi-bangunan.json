@@ -1,0 +1,630 @@
+{
+ "nama": "bab06-tuas-evakuasi-bangunan",
+ "keterangan": "Faktor kematian tsunami menurut porsi evakuasi segera dan faktor korban guncangan menurut kepatuhan bangunan, empat skenario megathrust, 2026 (kali dasar)",
+ "sumber": "Cabinet Office Jepang 2025; simulasi skenario Pantau Bencana, belum divalidasi (batas tetap faktor terhadap dasar)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  141.4
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.99
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "0,4 atau kurang",
+   "jenis": "kotak",
+   "warna": "#DCE3EB"
+  },
+  {
+   "label": "0,4–0,7",
+   "jenis": "kotak",
+   "warna": "#7F93AA"
+  },
+  {
+   "label": "di atas 0,7",
+   "jenis": "kotak",
+   "warna": "#24384F"
+  }
+ ],
+ "hex": {
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "garis"
+  ],
+  "#24384F": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ],
+  "#7F93AA": [
+   "skala",
+   "legenda"
+  ],
+  "#DCE3EB": [
+   "skala",
+   "legenda"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 104,
+   "y": 11.2,
+   "w": 48.48,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp0",
+   "teks": "Evakuasi 20%"
+  },
+  {
+   "x": 165.36,
+   "y": 11.2,
+   "w": 48.48,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp1",
+   "teks": "Evakuasi 50%"
+  },
+  {
+   "x": 226.72,
+   "y": 11.2,
+   "w": 48.48,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp2",
+   "teks": "Evakuasi 70%"
+  },
+  {
+   "x": 283.39,
+   "y": 11.2,
+   "w": 57.85,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp3",
+   "teks": "Bangunan dasar"
+  },
+  {
+   "x": 346.16,
+   "y": 11.2,
+   "w": 55.03,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp4",
+   "teks": "Kepatuhan naik"
+  },
+  {
+   "x": 415.89,
+   "y": 2,
+   "w": 38.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp5",
+   "teks": "Kepatuhan"
+  },
+  {
+   "x": 424.06,
+   "y": 11.2,
+   "w": 21.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp5",
+   "teks": "penuh"
+  },
+  {
+   "x": 2,
+   "y": 31.9,
+   "w": 89.56,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Megathrust Jawa Mw 9,1"
+  },
+  {
+   "x": 120.24,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-0",
+   "teks": "1,00"
+  },
+  {
+   "x": 181.6,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-1",
+   "teks": "0,66"
+  },
+  {
+   "x": 242.96,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-2",
+   "teks": "0,44"
+  },
+  {
+   "x": 304.32,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-3",
+   "teks": "1,00"
+  },
+  {
+   "x": 365.68,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-4",
+   "teks": "0,68"
+  },
+  {
+   "x": 427.04,
+   "y": 31.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-5",
+   "teks": "0,35"
+  },
+  {
+   "x": 2,
+   "y": 56.9,
+   "w": 89.56,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Megathrust Jawa Mw 8,5"
+  },
+  {
+   "x": 120.24,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-0",
+   "teks": "1,00"
+  },
+  {
+   "x": 181.6,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-1",
+   "teks": "0,66"
+  },
+  {
+   "x": 242.96,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-2",
+   "teks": "0,44"
+  },
+  {
+   "x": 304.32,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-3",
+   "teks": "1,00"
+  },
+  {
+   "x": 365.68,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-4",
+   "teks": "0,60"
+  },
+  {
+   "x": 427.04,
+   "y": 56.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-5",
+   "teks": "0,20"
+  },
+  {
+   "x": 2,
+   "y": 81.9,
+   "w": 62.42,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Mentawai Mw 8,9"
+  },
+  {
+   "x": 120.24,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-0",
+   "teks": "1,00"
+  },
+  {
+   "x": 181.6,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-1",
+   "teks": "0,66"
+  },
+  {
+   "x": 242.96,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-2",
+   "teks": "0,44"
+  },
+  {
+   "x": 304.32,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-3",
+   "teks": "1,00"
+  },
+  {
+   "x": 365.68,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-4",
+   "teks": "0,69"
+  },
+  {
+   "x": 427.04,
+   "y": 81.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-5",
+   "teks": "0,38"
+  },
+  {
+   "x": 2,
+   "y": 106.9,
+   "w": 52.52,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumba Mw 8,3"
+  },
+  {
+   "x": 120.24,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-0",
+   "teks": "1,00"
+  },
+  {
+   "x": 181.6,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-1",
+   "teks": "0,66"
+  },
+  {
+   "x": 242.96,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-2",
+   "teks": "0,44"
+  },
+  {
+   "x": 304.32,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-3",
+   "teks": "1,00"
+  },
+  {
+   "x": 365.68,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-4",
+   "teks": "0,58"
+  },
+  {
+   "x": 427.04,
+   "y": 106.65,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-5",
+   "teks": "0,15"
+  },
+  {
+   "x": 99.54,
+   "y": 130.4,
+   "w": 79.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "Faktor terhadap dasar"
+  },
+  {
+   "x": 99.54,
+   "y": 129.4,
+   "w": 79.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "Faktor terhadap dasar"
+  },
+  {
+   "x": 202.74,
+   "y": 130.4,
+   "w": 54.67,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-188",
+   "teks": "0,4 atau kurang"
+  },
+  {
+   "x": 188.74,
+   "y": 129.4,
+   "w": 68.67,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-188",
+   "teks": "0,4 atau kurang"
+  },
+  {
+   "x": 281.41,
+   "y": 130.4,
+   "w": 26.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-267",
+   "teks": "0,4–0,7"
+  },
+  {
+   "x": 267.41,
+   "y": 129.4,
+   "w": 40.36,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-267",
+   "teks": "0,4–0,7"
+  },
+  {
+   "x": 331.77,
+   "y": 130.4,
+   "w": 36.41,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-317",
+   "teks": "di atas 0,7"
+  },
+  {
+   "x": 317.77,
+   "y": 129.4,
+   "w": 50.41,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-317",
+   "teks": "di atas 0,7"
+  }
+ ],
+ "jenis": "matriks-titik",
+ "pesan": "G16",
+ "sumbu_y": false,
+ "pil": 0,
+ "kelas": {
+  "ramp": "netral",
+  "batas": [
+   0.4,
+   0.7
+  ],
+  "label": [
+   "0,4 atau kurang",
+   "0,4–0,7",
+   "di atas 0,7"
+  ],
+  "rumus": "batas tetap faktor terhadap dasar"
+ },
+ "kontras_teks_min": 5.52,
+ "sel_kosong": 0,
+ "sel": [
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Evakuasi 20%",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Evakuasi 50%",
+   "nilai": 0.66,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Evakuasi 70%",
+   "nilai": 0.44,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Bangunan dasar",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Kepatuhan naik",
+   "nilai": 0.68,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 9,1",
+   "kolom": "Kepatuhan penuh",
+   "nilai": 0.35,
+   "kelas": "0,4 atau kurang",
+   "warna": "skala.netral.1"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Evakuasi 20%",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Evakuasi 50%",
+   "nilai": 0.66,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Evakuasi 70%",
+   "nilai": 0.44,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Bangunan dasar",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Kepatuhan naik",
+   "nilai": 0.6,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Megathrust Jawa Mw 8,5",
+   "kolom": "Kepatuhan penuh",
+   "nilai": 0.2,
+   "kelas": "0,4 atau kurang",
+   "warna": "skala.netral.1"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Evakuasi 20%",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Evakuasi 50%",
+   "nilai": 0.66,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Evakuasi 70%",
+   "nilai": 0.44,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Bangunan dasar",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Kepatuhan naik",
+   "nilai": 0.69,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Mentawai Mw 8,9",
+   "kolom": "Kepatuhan penuh",
+   "nilai": 0.38,
+   "kelas": "0,4 atau kurang",
+   "warna": "skala.netral.1"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Evakuasi 20%",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Evakuasi 50%",
+   "nilai": 0.66,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Evakuasi 70%",
+   "nilai": 0.44,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Bangunan dasar",
+   "nilai": 1,
+   "kelas": "di atas 0,7",
+   "warna": "skala.netral.5"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Kepatuhan naik",
+   "nilai": 0.58,
+   "kelas": "0,4–0,7",
+   "warna": "skala.netral.3"
+  },
+  {
+   "baris": "Sumba Mw 8,3",
+   "kolom": "Kepatuhan penuh",
+   "nilai": 0.15,
+   "kelas": "0,4 atau kurang",
+   "warna": "skala.netral.1"
+  }
+ ]
+}

@@ -1,0 +1,109 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 9 kajian rehab (naskah/rehab/bukti/bab-09.md), belum digabung ke data/angka.json. Bentuk nilai + pustaka (id di bab-09.pustaka.json); olahan dicatat di medan catatan.",
+  "Kunci yang sudah ada di berkas bukti Bab 1–5 dan registri utama tidak diulang (lihat bab-09.md bagian Angka untuk registri). Angka sekunder tidak dimasukkan.",
+  "Disusun 25 Oktober 2026."
+ ],
+ "angka": {
+  "rehab.hukum.hibah_rr_ubah_rka_larangan_n": {
+   "nilai": 4,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "larangan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 26 ayat (2) huruf a–d, hlm. 10–11",
+   "catatan": "perubahan RKA tidak boleh mengubah jenis, lokasi, menambah kegiatan, atau mengalihkan sisa tender"
+  },
+  "rehab.hukum.hibah_rr_syarat_penerima_n": {
+   "nilai": 4,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "syarat",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 6 ayat (1) huruf a–d, hlm. 5",
+   "catatan": "BPBD berdasar perda; kebutuhan R3P melebihi anggaran PB APBD; R3P tersusun; kesiapan anggaran perencanaan dan pengawasan"
+  },
+  "rehab.hukum.hibah_rr_setor_sisa_hari": {
+   "nilai": 120,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "hari kalender",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 29 ayat (2), hlm. 12",
+   "catatan": "sejak berakhirnya batas waktu pelaksanaan hibah RR"
+  },
+  "rehab.hukum.hibah_rr_lapor_berkala_bulan": {
+   "nilai": 3,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 28 ayat (2), hlm. 11",
+   "catatan": "laporan berkala pemda sejak SPPH; monev terhadap target output PHD dan RKA (Pasal 31 ayat (1))"
+  },
+  "rehab.hukum.hibah_rr_laporan_akhir_hari": {
+   "nilai": 60,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "hari kalender",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 28 ayat (3), hlm. 11–12",
+   "catatan": "sejak berakhirnya masa pelaksanaan, disertai reviu APIP daerah"
+  },
+  "rehab.hukum.dana_bersama_jenis_penerima_n": {
+   "nilai": 3,
+   "pustaka": "bnpb-2025-juklak-dana-bersama",
+   "satuan": "jenis penerima",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 1/2025",
+   "lokasi": "Bab II A.1 huruf a–c, hlm. 3",
+   "catatan": "K/L dan BNPB; pemda; Kelompok Masyarakat terverifikasi pemda; program harus tercantum di R3P yang masih berlaku; tidak ada larangan aset desa"
+  },
+  "rehab.hukum.dana_desa_2026_fokus_n": {
+   "nilai": 8,
+   "pustaka": "kemendesa-2025-permen16-dd2026",
+   "satuan": "fokus",
+   "keyakinan": "resmi",
+   "sumber": "Permendes PDT 16/2025",
+   "lokasi": "Pasal 2 ayat (1) huruf a–h",
+   "catatan": "termasuk huruf b desa berketahanan iklim dan tangguh bencana, huruf f infrastruktur desa melalui Padat Karya Tunai Desa"
+  },
+  "rehab.hukum.dana_desa_2026_pktd_upah_min_persen": {
+   "nilai": 50,
+   "pustaka": "kemendesa-2025-permen16-dd2026",
+   "satuan": "persen biaya per kegiatan",
+   "keyakinan": "resmi",
+   "sumber": "Permendes PDT 16/2025",
+   "lokasi": "Lampiran butir F angka 5 huruf a",
+   "catatan": "upah kerja Padat Karya Tunai Desa paling sedikit 50%"
+  },
+  "rehab.hukum.perban6_2017_juklak_diamanatkan_n": {
+   "nilai": 4,
+   "pustaka": "bnpb-2017-rr",
+   "satuan": "petunjuk pelaksanaan",
+   "keyakinan": "resmi (hitungan pasal)",
+   "sumber": "Perban BNPB 6/2017",
+   "lokasi": "Pasal 8 ayat (2), 9 ayat (2), 13 ayat (7), 14 ayat (6)",
+   "catatan": "dihitung dari frasa 'diatur dengan Petunjuk Pelaksanaan'; tidak satu pun juklak ditemukan di korpus lokal"
+  },
+  "rehab.dibi.kolom_air_n": {
+   "nilai": 0,
+   "pustaka": "bnpb-dibi",
+   "satuan": "kolom",
+   "keyakinan": "resmi (olahan)",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "lokasi": "medan kolom tabel pdsi_staging.mv_dibi_dampak_by_kejadian",
+   "catatan": "dari 19 kolom dampak tidak ada kolom air minum, SPAM, sumur, jalan, status jalan, desa terputus, atau hari pulih",
+   "berkas": "dibi/mentah/dibi_nasional.json"
+  },
+  "rehab.jembatan.tniad.porsi_luar_wilayah_bencana_persen_2026_08": {
+   "nilai": 73.5,
+   "pustaka": "setneg-2026-jembatan-tni-polri",
+   "satuan": "%",
+   "keyakinan": "resmi (olahan)",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "lokasi": "rilis 13 Agu 2026",
+   "catatan": "olah(resmi): (3.008 − 798) / 3.008 × 100"
+  }
+ }
+}

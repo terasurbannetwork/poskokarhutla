@@ -1,0 +1,1334 @@
+[
+ {
+  "nama": "rantai-metode",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Alur dari sumber data ke paket, aturan kajian, dan keluaran; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Rantai metode dari sumber data ke daftar perhatian dan rekomendasi, kajian mitigasi bencana Indonesia 2026",
+  "sumber": "Analisis kajian ini atas DIBI BNPB, InaRISK BNPB, NOAA CPC, PuSGeN 2024, SiPongi, dan BPS",
+  "kolom": 4,
+  "baris": 5,
+  "kelas": {
+   "sumber": {
+    "label": "Sumber data resmi atau terverifikasi",
+    "warna": "tint.netral.pita"
+   },
+   "paket": {
+    "label": "Paket data dan registri angka",
+    "warna": "tint.basah.pita"
+   },
+   "aturan": {
+    "label": "Aturan kajian",
+    "warna": "navy"
+   },
+   "model": {
+    "label": "Estimasi model, bukan Data Bencana",
+    "warna": "tint.kering.pita"
+   },
+   "hasil": {
+    "label": "Keluaran kajian",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "s1",
+    "k": 0,
+    "b": 0,
+    "kelas": "sumber",
+    "judul": "DIBI BNPB 2008–2026",
+    "isi": "kejadian dan korban per kab/kota"
+   },
+   {
+    "id": "d1",
+    "k": 1,
+    "b": 0,
+    "kelas": "paket",
+    "judul": "Paket DIBI",
+    "isi": "seri tahun, musim, kejadian besar"
+   },
+   {
+    "id": "a1",
+    "k": 2,
+    "b": 0,
+    "kelas": "aturan",
+    "judul": "Lantai skenario",
+    "isi": "kejadian tercatat terburuk"
+   },
+   {
+    "id": "c1",
+    "k": 3,
+    "b": 0,
+    "kelas": "hasil",
+    "judul": "Kartu skenario",
+    "isi": "Bab 6 sampai 9"
+   },
+   {
+    "id": "s2",
+    "k": 0,
+    "b": 1,
+    "kelas": "sumber",
+    "judul": "InaRISK BNPB",
+    "isi": "IRBI 2015–2025 dan KRB 2022–2026"
+   },
+   {
+    "id": "d2",
+    "k": 1,
+    "b": 1,
+    "kelas": "paket",
+    "judul": "Paket IRBI",
+    "isi": "kelas resmi dan kelas kuintil"
+   },
+   {
+    "id": "a2",
+    "k": 2,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Daftar perhatian",
+    "isi": "syarat IRBI, DIBI, dan proksi"
+   },
+   {
+    "id": "c2",
+    "k": 3,
+    "b": 1,
+    "kelas": "hasil",
+    "judul": "Daftar perhatian",
+    "isi": "Bab 5 dan Lampiran"
+   },
+   {
+    "id": "s3",
+    "k": 0,
+    "b": 2,
+    "kelas": "sumber",
+    "judul": "NOAA CPC, PuSGeN, SiPongi, BPS",
+    "isi": "ONI, magnitudo, luas terbakar, Podes"
+   },
+   {
+    "id": "d3",
+    "k": 1,
+    "b": 2,
+    "kelas": "paket",
+    "judul": "Registri angka",
+    "isi": "satu angka satu sumber"
+   },
+   {
+    "id": "a3",
+    "k": 2,
+    "b": 2,
+    "kelas": "aturan",
+    "judul": "Kemungkinan dan dampak per aspek",
+    "isi": "pita lima tahun, kelas dampak"
+   },
+   {
+    "id": "c3",
+    "k": 3,
+    "b": 2,
+    "kelas": "hasil",
+    "judul": "Kelas skenario",
+    "isi": "matriks Bab 5"
+   },
+   {
+    "id": "s4",
+    "k": 0,
+    "b": 3,
+    "kelas": "sumber",
+    "judul": "Literatur terverifikasi",
+    "isi": "evaluasi program"
+   },
+   {
+    "id": "d4",
+    "k": 1,
+    "b": 3,
+    "kelas": "paket",
+    "judul": "Paket program",
+    "isi": "kategori bukti"
+   },
+   {
+    "id": "a4",
+    "k": 2,
+    "b": 3,
+    "kelas": "aturan",
+    "judul": "Kategori bukti",
+    "isi": "kuat, sedang, lemah, belum terbukti"
+   },
+   {
+    "id": "c4",
+    "k": 3,
+    "b": 3,
+    "kelas": "hasil",
+    "judul": "Rekomendasi",
+    "isi": "Bab 10 sampai 13"
+   },
+   {
+    "id": "s5",
+    "k": 0,
+    "b": 4,
+    "kelas": "model",
+    "judul": "Platform Pantau Bencana",
+    "isi": "simulasi geologi dan hidrometeorologi"
+   },
+   {
+    "id": "d5",
+    "k": 1,
+    "b": 4,
+    "kelas": "model",
+    "judul": "Paket skenario",
+    "isi": "keluaran simulasi berpil"
+   },
+   {
+    "id": "a5",
+    "k": 2,
+    "b": 4,
+    "kelas": "aturan",
+    "judul": "Kepekaan",
+    "isi": "peringatan dini, evakuasi, bangunan"
+   },
+   {
+    "id": "c5",
+    "k": 3,
+    "b": 4,
+    "kelas": "hasil",
+    "judul": "Analisis kepekaan",
+    "isi": "kartu dan Lampiran"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "s1",
+    "ke": "d1"
+   },
+   {
+    "dari": "d1",
+    "ke": "a1"
+   },
+   {
+    "dari": "a1",
+    "ke": "c1"
+   },
+   {
+    "dari": "s2",
+    "ke": "d2"
+   },
+   {
+    "dari": "d2",
+    "ke": "a2"
+   },
+   {
+    "dari": "a2",
+    "ke": "c2"
+   },
+   {
+    "dari": "s3",
+    "ke": "d3"
+   },
+   {
+    "dari": "d3",
+    "ke": "a3"
+   },
+   {
+    "dari": "a3",
+    "ke": "c3"
+   },
+   {
+    "dari": "s4",
+    "ke": "d4"
+   },
+   {
+    "dari": "d4",
+    "ke": "a4"
+   },
+   {
+    "dari": "a4",
+    "ke": "c4"
+   },
+   {
+    "dari": "s5",
+    "ke": "d5"
+   },
+   {
+    "dari": "d5",
+    "ke": "a5"
+   },
+   {
+    "dari": "a5",
+    "ke": "c5"
+   }
+  ],
+  "judul_kolom": [
+   "Sumber data",
+   "Paket data",
+   "Aturan kajian",
+   "Keluaran"
+  ]
+ },
+ {
+  "nama": "bab08-g23-garis-waktu-status-epidemi",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Garis waktu status berlajur per rezim; tabel pilih grafik B5.10 tidak memuat garis waktu",
+  "keterangan": "Garis waktu penetapan status epidemi menurut rezim bencana, rezim kesehatan, dan krisis kesehatan di Indonesia, 2018–2026",
+  "sumber": "Keppres 11/2020, 12/2020, dan 17/2023; Perpres 17/2018, 82/2020, 48/2023, dan 46/2026; UU 17/2023; Permenkes 1/2026 (teks rancangan)",
+  "kolom": 5,
+  "baris": 3,
+  "kelas": {
+   "bencana": {
+    "label": "Rezim bencana (UU 24/2007)",
+    "warna": "navy"
+   },
+   "sehat": {
+    "label": "Rezim kesehatan",
+    "warna": "tint.basah.pita"
+   },
+   "krisis": {
+    "label": "Krisis kesehatan, teks rancangan",
+    "warna": "tint.kering.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "b0",
+    "k": 0,
+    "b": 0,
+    "kelas": "bencana",
+    "judul": "Perpres 17/2018",
+    "isi": "status keadaan darurat menurut skala"
+   },
+   {
+    "id": "b1",
+    "k": 1,
+    "b": 0,
+    "kelas": "bencana",
+    "judul": "Keppres 12/2020",
+    "isi": "bencana nasional nonalam COVID-19; Perpres 82/2020 Satuan Tugas",
+    "lk": 2
+   },
+   {
+    "id": "b3",
+    "k": 3,
+    "b": 0,
+    "kelas": "bencana",
+    "judul": "Keppres 17/2023",
+    "isi": "status dicabut; Perpres 48/2023 mengakhiri Satuan Tugas"
+   },
+   {
+    "id": "b4",
+    "k": 4,
+    "b": 0,
+    "kelas": "bencana",
+    "judul": "Perpres 46/2026",
+    "isi": "keadaan tertentu sesudah rakor menteri koordinator"
+   },
+   {
+    "id": "h0",
+    "k": 0,
+    "b": 1,
+    "kelas": "sehat",
+    "judul": "UU 6/2018",
+    "isi": "kekarantinaan kesehatan"
+   },
+   {
+    "id": "h1",
+    "k": 1,
+    "b": 1,
+    "kelas": "sehat",
+    "judul": "Keppres 11/2020",
+    "isi": "kedaruratan kesehatan masyarakat, 31 Maret 2020",
+    "lk": 2
+   },
+   {
+    "id": "h3",
+    "k": 3,
+    "b": 1,
+    "kelas": "sehat",
+    "judul": "UU 17/2023",
+    "isi": "KLB oleh kepala daerah atau Menteri; Daerah Terjangkit Wabah oleh Menteri",
+    "lk": 2
+   },
+   {
+    "id": "k4",
+    "k": 4,
+    "b": 2,
+    "kelas": "krisis",
+    "judul": "Permenkes 1/2026",
+    "isi": "Krisis Kesehatan oleh kepala dinas atau Menteri"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "h3",
+    "ke": "b3",
+    "label": "Pasal 369–370, nasional"
+   }
+  ],
+  "judul_kolom": [
+   "2018–2019",
+   "2020",
+   "2021–2022",
+   "2023–2025",
+   "2026"
+  ],
+  "judul_baris": [
+   "Bencana",
+   "Kesehatan",
+   "Krisis kesehatan"
+  ]
+ },
+ {
+  "nama": "bab10-g16-sel-bukti-program",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Kisi kategori jenis bencana kali fase dengan isi program; matriks titik G16 hanya untuk nilai berkelas angka",
+  "keterangan": "Sel fase × jenis bencana menurut kategori bukti program terbaik, Indonesia 2026",
+  "sumber": "Pengolahan Pantau Bencana dari paket program-terbukti (kompendium program)",
+  "kolom": 3,
+  "baris": 13,
+  "kelas": {
+   "kuat": {
+    "label": "Kuat, luar negeri",
+    "warna": "navy"
+   },
+   "sdn": {
+    "label": "Sedang, dalam negeri",
+    "warna": "biru-abu"
+   },
+   "sln": {
+    "label": "Sedang, luar negeri",
+    "warna": "tint.basah.pita"
+   },
+   "lemah": {
+    "label": "Lemah atau belum terbukti",
+    "warna": "tint.kering.pita"
+   },
+   "kosong": {
+    "label": "Tanpa program",
+    "warna": "kertas",
+    "garis": "garis"
+   }
+  },
+  "kotak": [
+   {
+    "id": "s00",
+    "k": 0,
+    "b": 0,
+    "kelas": "sdn",
+    "judul": "",
+    "isi": "InaTEWS"
+   },
+   {
+    "id": "s01",
+    "k": 1,
+    "b": 0,
+    "kelas": "sdn",
+    "judul": "",
+    "isi": "InaTEWS"
+   },
+   {
+    "id": "s02",
+    "k": 2,
+    "b": 0,
+    "kelas": "sln",
+    "judul": "",
+    "isi": "asuransi CCRIF/ARC"
+   },
+   {
+    "id": "s10",
+    "k": 0,
+    "b": 1,
+    "kelas": "sdn",
+    "judul": "",
+    "isi": "InaTEWS"
+   },
+   {
+    "id": "s11",
+    "k": 1,
+    "b": 1,
+    "kelas": "sdn",
+    "judul": "",
+    "isi": "InaTEWS"
+   },
+   {
+    "id": "s12",
+    "k": 2,
+    "b": 1,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "lemah atau belum terbukti"
+   },
+   {
+    "id": "s20",
+    "k": 0,
+    "b": 2,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "lemah atau belum terbukti"
+   },
+   {
+    "id": "s21",
+    "k": 1,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s22",
+    "k": 2,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s30",
+    "k": 0,
+    "b": 3,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "Tokyo, Osaka, Bangkok"
+   },
+   {
+    "id": "s31",
+    "k": 1,
+    "b": 3,
+    "kelas": "sln",
+    "judul": "",
+    "isi": "Odisha"
+   },
+   {
+    "id": "s32",
+    "k": 2,
+    "b": 3,
+    "kelas": "sln",
+    "judul": "",
+    "isi": "asuransi CCRIF/ARC"
+   },
+   {
+    "id": "s40",
+    "k": 0,
+    "b": 4,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "lemah atau belum terbukti"
+   },
+   {
+    "id": "s41",
+    "k": 1,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s42",
+    "k": 2,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s50",
+    "k": 0,
+    "b": 5,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "siklon Bangladesh"
+   },
+   {
+    "id": "s51",
+    "k": 1,
+    "b": 5,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "siklon Bangladesh"
+   },
+   {
+    "id": "s52",
+    "k": 2,
+    "b": 5,
+    "kelas": "sln",
+    "judul": "",
+    "isi": "asuransi CCRIF/ARC"
+   },
+   {
+    "id": "s60",
+    "k": 0,
+    "b": 6,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "siklon Bangladesh"
+   },
+   {
+    "id": "s61",
+    "k": 1,
+    "b": 6,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "siklon Bangladesh"
+   },
+   {
+    "id": "s62",
+    "k": 2,
+    "b": 6,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s70",
+    "k": 0,
+    "b": 7,
+    "kelas": "sdn",
+    "judul": "",
+    "isi": "PAMSIMAS"
+   },
+   {
+    "id": "s71",
+    "k": 1,
+    "b": 7,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s72",
+    "k": 2,
+    "b": 7,
+    "kelas": "sln",
+    "judul": "",
+    "isi": "asuransi CCRIF/ARC"
+   },
+   {
+    "id": "s80",
+    "k": 0,
+    "b": 8,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "lemah atau belum terbukti"
+   },
+   {
+    "id": "s81",
+    "k": 1,
+    "b": 8,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s82",
+    "k": 2,
+    "b": 8,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s90",
+    "k": 0,
+    "b": 9,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s91",
+    "k": 1,
+    "b": 9,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s92",
+    "k": 2,
+    "b": 9,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s100",
+    "k": 0,
+    "b": 10,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s101",
+    "k": 1,
+    "b": 10,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s102",
+    "k": 2,
+    "b": 10,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s110",
+    "k": 0,
+    "b": 11,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s111",
+    "k": 1,
+    "b": 11,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s112",
+    "k": 2,
+    "b": 11,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s120",
+    "k": 0,
+    "b": 12,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s121",
+    "k": 1,
+    "b": 12,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s122",
+    "k": 2,
+    "b": 12,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   }
+  ],
+  "panah": [],
+  "judul_kolom": [
+   "Prabencana",
+   "Tanggap darurat",
+   "Pascabencana"
+  ],
+  "judul_baris": [
+   "Gempa bumi",
+   "Tsunami",
+   "Gunung api",
+   "Banjir",
+   "Tanah longsor",
+   "Cuaca ekstrem",
+   "Gelombang, abrasi",
+   "Kekeringan",
+   "Karhutla",
+   "Epidemi",
+   "Kebakaran industri",
+   "Kebakaran TPA",
+   "Konflik sosial"
+  ],
+  "sela_pt": 3,
+  "tinggi_baris_min_pt": 20
+ },
+ {
+  "nama": "bab11-g21-alur-langkah",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan alur tahap berpemicu dan bertenggat; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Alur langkah penanggulangan bencana dari peringatan dini sampai hibah rehabilitasi dan rekonstruksi, dengan pemicu dan tenggat tiap tahap, 2026",
+  "sumber": "UU 24/2007; PP 21/2008; Perpres 17/2018 jo. Perpres 46/2026; Perka BNPB 3/2016 dan 15/2011; Perban BNPB 4/2020, 5/2017, 4/2024, dan 2/2024; Juklak BNPB 3/2022, 4/2023",
+  "kolom": 5,
+  "baris": 3,
+  "kelas": {
+   "tahap": {
+    "label": "Tahap",
+    "warna": "navy"
+   },
+   "pemicu": {
+    "label": "Pemicu dan tenggat tertulis",
+    "warna": "tint.netral.pita"
+   },
+   "jalur": {
+    "label": "Jalur tanpa penetapan status",
+    "warna": "tint.kering.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "t1",
+    "k": 0,
+    "b": 0,
+    "kelas": "tahap",
+    "judul": "Peringatan dini",
+    "isi": "K/L teknis ke platform BNPB"
+   },
+   {
+    "id": "t2",
+    "k": 1,
+    "b": 0,
+    "kelas": "tahap",
+    "judul": "Penilaian awal dan kaji cepat",
+    "isi": "warga, relawan, TRC PB"
+   },
+   {
+    "id": "t3",
+    "k": 2,
+    "b": 0,
+    "kelas": "tahap",
+    "judul": "Status keadaan darurat",
+    "isi": "siaga, tanggap, transisi"
+   },
+   {
+    "id": "t4",
+    "k": 3,
+    "b": 0,
+    "kelas": "tahap",
+    "judul": "Komando dan DSP",
+    "isi": "SKPDB aktif sesudah status"
+   },
+   {
+    "id": "t5",
+    "k": 4,
+    "b": 0,
+    "kelas": "tahap",
+    "judul": "R3P dan hibah",
+    "isi": "rehabilitasi dan rekonstruksi"
+   },
+   {
+    "id": "p1",
+    "k": 0,
+    "b": 1,
+    "kelas": "pemicu",
+    "judul": "Rekomendasi aksi",
+    "isi": "Perban BNPB 2/2024 Pasal 14–16"
+   },
+   {
+    "id": "p2",
+    "k": 1,
+    "b": 1,
+    "kelas": "pemicu",
+    "judul": "TRC bergerak paling lambat 24 jam",
+    "isi": "laporan awal dan lanjutan berjam"
+   },
+   {
+    "id": "p3",
+    "k": 2,
+    "b": 1,
+    "kelas": "pemicu",
+    "judul": "Penetap menurut tingkat pemerintahan",
+    "isi": "Perpres 17/2018 Pasal 2; PP 21/2008 Pasal 23"
+   },
+   {
+    "id": "p4",
+    "k": 3,
+    "b": 1,
+    "kelas": "pemicu",
+    "judul": "Pertanggungjawaban DSP",
+    "isi": "Perban BNPB 4/2020 Pasal 20–21"
+   },
+   {
+    "id": "p5",
+    "k": 4,
+    "b": 1,
+    "kelas": "pemicu",
+    "judul": "R3P dimulai saat tanggap darurat",
+    "isi": "Perban BNPB 5/2017; hibah Perban BNPB 4/2024"
+   },
+   {
+    "id": "j1",
+    "k": 1,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Keadaan tertentu Perpres 46/2026",
+    "isi": "Kepala BNPB bertindak sesudah rakor menteri koordinator",
+    "lk": 3
+   }
+  ],
+  "panah": [
+   {
+    "dari": "t1",
+    "ke": "t2"
+   },
+   {
+    "dari": "t2",
+    "ke": "t3"
+   },
+   {
+    "dari": "t3",
+    "ke": "t4"
+   },
+   {
+    "dari": "t4",
+    "ke": "t5"
+   },
+   {
+    "dari": "j1",
+    "ke": "p4"
+   }
+  ],
+  "judul_baris": [
+   "Tahap",
+   "Pemicu",
+   "Jalur lain"
+  ]
+ },
+ {
+  "nama": "bab12-forum-jalur-adopsi",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan forum dan jalur adopsi bertenggat; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Forum koordinasi dan jalur adopsi rekomendasi kajian mitigasi, 2026–2030",
+  "sumber": "Perpres 1/2019; Perpres 144/2024; Perpres 46/2026; Perpres 87/2020; Perpres 80/2025; Perban BNPB 5/2018, 6/2025, dan 1/2026; Renas PB 2025–2029",
+  "kolom": 4,
+  "baris": 4,
+  "kelas": {
+   "forum": {
+    "label": "Forum berdasar peraturan",
+    "warna": "tint.netral.pita"
+   },
+   "kd": {
+    "label": "Keputusan Kepala BNPB",
+    "warna": "navy"
+   },
+   "jalur": {
+    "label": "Jalur adopsi bertenggat",
+    "warna": "tint.basah.pita"
+   },
+   "lapor": {
+    "label": "Pelaporan",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "f1",
+    "k": 0,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Rakor Kemenko PMK",
+    "isi": "Perpres 1/2019 Pasal 6; Perpres 144/2024"
+   },
+   {
+    "id": "f2",
+    "k": 1,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Rakor antar-K/L",
+    "isi": "syarat keadaan tertentu Perpres 46/2026"
+   },
+   {
+    "id": "f3",
+    "k": 2,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Unsur Pengarah BNPB",
+    "isi": "Perban BNPB 6/2025 Pasal 7–10"
+   },
+   {
+    "id": "f4",
+    "k": 3,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Forum K/L Renas PB",
+    "isi": "paling lambat triwulan II"
+   },
+   {
+    "id": "kd",
+    "k": 0,
+    "b": 1,
+    "kelas": "kd",
+    "judul": "KD-1 Kepala BNPB",
+    "isi": "kajian sebagai masukan peninjauan Renas PB",
+    "lk": 4
+   },
+   {
+    "id": "j1",
+    "k": 0,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Renas jalur berkala",
+    "isi": "paling lambat 2027"
+   },
+   {
+    "id": "j2",
+    "k": 1,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Renas jalur bencana",
+    "isi": "paling lambat 2028"
+   },
+   {
+    "id": "j3",
+    "k": 2,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Pengendalian",
+    "isi": "lokasi kegiatan tahun berjalan"
+   },
+   {
+    "id": "j4",
+    "k": 3,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Renstra BNPB",
+    "isi": "perubahan lewat Perpres 80/2025"
+   },
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 3,
+    "kelas": "lapor",
+    "judul": "Pemantauan RIPB",
+    "isi": "setahun sekali ke Presiden melalui Menko PMK (Perpres 87/2020 Pasal 6)",
+    "lk": 4
+   }
+  ],
+  "panah": [
+   {
+    "dari": "f1",
+    "ke": "kd"
+   },
+   {
+    "dari": "f2",
+    "ke": "kd"
+   },
+   {
+    "dari": "f3",
+    "ke": "kd"
+   },
+   {
+    "dari": "f4",
+    "ke": "kd"
+   },
+   {
+    "dari": "kd",
+    "ke": "j1"
+   },
+   {
+    "dari": "kd",
+    "ke": "j2"
+   },
+   {
+    "dari": "kd",
+    "ke": "j3"
+   },
+   {
+    "dari": "kd",
+    "ke": "j4"
+   },
+   {
+    "dari": "j1",
+    "ke": "l1"
+   },
+   {
+    "dari": "j2",
+    "ke": "l1"
+   },
+   {
+    "dari": "j3",
+    "ke": "l1"
+   },
+   {
+    "dari": "j4",
+    "ke": "l1"
+   }
+  ]
+ },
+ {
+  "nama": "bab12-lapisan-pembiayaan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Lapisan sumber dana per lapis kejadian tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+  "keterangan": "Lapisan kejadian dan sumber dana penanggulangan bencana menurut peraturan yang berlaku, Oktober 2026",
+  "sumber": "Strategi PARB Kemenkeu; PP 22/2008; PP 12/2019; UU 7/2012; Perpres 75/2021; PMK 28/2025; Perban BNPB 4/2020 dan 1/2026; Permendes PDT 16/2025",
+  "kolom": 4,
+  "baris": 5,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis kejadian",
+    "warna": "navy"
+   },
+   "apbn": {
+    "label": "APBN, APBD, dana desa",
+    "warna": "tint.netral.pita"
+   },
+   "bnpb": {
+    "label": "Dana BNPB dan daerah",
+    "warna": "tint.basah.pita"
+   },
+   "bersama": {
+    "label": "Dana Bersama dan transfer risiko",
+    "warna": "tint.kering.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Prabencana",
+    "isi": "mitigasi dan kesiapsiagaan"
+   },
+   {
+    "id": "a1",
+    "k": 1,
+    "b": 0,
+    "kelas": "apbn",
+    "judul": "APBN K/L, APBD, dana desa",
+    "isi": "kontinjensi APBN (PP 22/2008 Pasal 6 ayat (1))"
+   },
+   {
+    "id": "b1",
+    "k": 2,
+    "b": 0,
+    "kelas": "bersama",
+    "judul": "Dana Bersama prabencana",
+    "isi": "Perpres 75/2021 Pasal 8"
+   },
+   {
+    "id": "c1",
+    "k": 3,
+    "b": 0,
+    "kelas": "apbn",
+    "judul": "Fokus dana desa 2026",
+    "isi": "Permendes PDT 16/2025 Pasal 2"
+   },
+   {
+    "id": "l2",
+    "k": 0,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Sering",
+    "isi": "sampai lapisan median"
+   },
+   {
+    "id": "a2",
+    "k": 1,
+    "b": 1,
+    "kelas": "bnpb",
+    "judul": "DSP BNPB dan BPBD",
+    "isi": "Perban BNPB 4/2020 Pasal 20"
+   },
+   {
+    "id": "b2",
+    "k": 2,
+    "b": 1,
+    "kelas": "bnpb",
+    "judul": "BTT APBD",
+    "isi": "PP 12/2019 Pasal 68–69",
+    "lk": 2
+   },
+   {
+    "id": "l3",
+    "k": 0,
+    "b": 2,
+    "kelas": "lapis",
+    "judul": "Berat",
+    "isi": "sampai persentil 90"
+   },
+   {
+    "id": "a3",
+    "k": 1,
+    "b": 2,
+    "kelas": "bersama",
+    "judul": "Dana Bersama",
+    "isi": "R3P syarat wajib (Perban BNPB 1/2026 Pasal 14)"
+   },
+   {
+    "id": "b3",
+    "k": 2,
+    "b": 2,
+    "kelas": "bnpb",
+    "judul": "Hibah rehabilitasi dan rekonstruksi",
+    "isi": "permohonan pemda (PP 22/2008 Pasal 23)",
+    "lk": 2
+   },
+   {
+    "id": "l4",
+    "k": 0,
+    "b": 3,
+    "kelas": "lapis",
+    "judul": "Ekstrem",
+    "isi": "tidak lebih ringan dari 2018"
+   },
+   {
+    "id": "a4",
+    "k": 1,
+    "b": 3,
+    "kelas": "bersama",
+    "judul": "Dana utama Dana Bersama",
+    "isi": "rekening BPDLH (PMK 28/2025)"
+   },
+   {
+    "id": "b4",
+    "k": 2,
+    "b": 3,
+    "kelas": "bersama",
+    "judul": "Transfer risiko dan asuransi BMN/BMD",
+    "isi": "Perpres 75/2021 Pasal 6; Renas 4.6.3.a",
+    "lk": 2
+   },
+   {
+    "id": "l5",
+    "k": 0,
+    "b": 4,
+    "kelas": "lapis",
+    "judul": "Konflik sosial",
+    "isi": "penghentian dan rekonsiliasi"
+   },
+   {
+    "id": "a5",
+    "k": 1,
+    "b": 4,
+    "kelas": "bnpb",
+    "judul": "DSP APBN dan BTT APBD",
+    "isi": "UU 7/2012 Pasal 55 ayat (1)",
+    "lk": 3
+   }
+  ],
+  "panah": [],
+  "judul_kolom": [
+   "Lapis",
+   "Sumber dana utama",
+   "Sumber dana tambahan",
+   "Sumber dana lain"
+  ]
+ },
+ {
+  "nama": "bab12-pelaporan-tiga-lapis",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan lapis pelaporan berfrekuensi; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Tata kelola dan pelaporan rekomendasi kajian mitigasi dalam tiga lapis, 2026–2030",
+  "sumber": "Perpres 1/2019; Perpres 87/2020; Perban BNPB 1/2023, 1/2025, 1/2026, 4/2020, dan 6/2025; Kepka BNPB 327/2025",
+  "kolom": 3,
+  "baris": 3,
+  "kelas": {
+   "internal": {
+    "label": "Lapis internal BNPB",
+    "warna": "navy"
+   },
+   "kl": {
+    "label": "Lapis lintas K/L",
+    "warna": "tint.basah.pita"
+   },
+   "daerah": {
+    "label": "Lapis daerah dan data",
+    "warna": "tint.netral.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "i1",
+    "k": 0,
+    "b": 0,
+    "kelas": "internal",
+    "judul": "Kepala BNPB ke Presiden",
+    "isi": "sebulan sekali; setiap saat bila darurat (Perpres 1/2019 Pasal 3)"
+   },
+   {
+    "id": "i2",
+    "k": 1,
+    "b": 0,
+    "kelas": "internal",
+    "judul": "Pemantauan dan evaluasi",
+    "isi": "Biro Perencanaan dan Direktorat Pengembangan Strategi (Perban BNPB 6/2025)"
+   },
+   {
+    "id": "i3",
+    "k": 2,
+    "b": 0,
+    "kelas": "internal",
+    "judul": "Progsun",
+    "isi": "Biro Hukum, Organisasi, dan Kerja Sama, tiap triwulan (Kepka 327/2025)"
+   },
+   {
+    "id": "k1",
+    "k": 0,
+    "b": 1,
+    "kelas": "kl",
+    "judul": "Evaluasi Renas PB",
+    "isi": "bagian pemantauan RIPB"
+   },
+   {
+    "id": "k2",
+    "k": 1,
+    "b": 1,
+    "kelas": "kl",
+    "judul": "Pemantauan RIPB",
+    "isi": "ke Presiden melalui Menko PMK (Perpres 87/2020)"
+   },
+   {
+    "id": "k3",
+    "k": 2,
+    "b": 1,
+    "kelas": "kl",
+    "judul": "Metadata indikator Renas 4.7.1.c",
+    "isi": "tempat indikator usulan kajian"
+   },
+   {
+    "id": "d1",
+    "k": 0,
+    "b": 2,
+    "kelas": "daerah",
+    "judul": "Laporan DSP",
+    "isi": "bulanan (Perban BNPB 4/2020 Pasal 21)"
+   },
+   {
+    "id": "d2",
+    "k": 1,
+    "b": 2,
+    "kelas": "daerah",
+    "judul": "Laporan akhir Dana Bersama",
+    "isi": "Perban BNPB 1/2026 Pasal 32"
+   },
+   {
+    "id": "d3",
+    "k": 2,
+    "b": 2,
+    "kelas": "daerah",
+    "judul": "Satu Data Bencana",
+    "isi": "Walidata Pusdatinkom (Perban BNPB 1/2023)"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "k1",
+    "ke": "k2"
+   },
+   {
+    "dari": "d1",
+    "ke": "k1"
+   },
+   {
+    "dari": "d2",
+    "ke": "k2"
+   },
+   {
+    "dari": "d3",
+    "ke": "k3"
+   }
+  ],
+  "judul_kolom": [
+   "Pelapor",
+   "Isi dan penerima",
+   "Tempat data"
+  ]
+ }
+]

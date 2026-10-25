@@ -31,6 +31,18 @@ target_halaman: 17
 - @rek:r-m19 agenda evaluasi dampak program berjalan (Sudah ada, perlu dikembangkan; Direktorat Mitigasi Bencana; BMKG, Kementerian Pendidikan Dasar dan Menengah, Kementerian Desa dan Pembangunan Daerah Tertinggal; 2028–2030).
 :::
 
+::: gambar {#gbr:foto-m11-ciliwung-keruk}
+berkas: gambar/foto/air-b07-ciliwung-keruk.jpg
+jenis: foto
+judul: Pengerukan lumpur di Sungai Ciliwung, Jakarta, Maret 2025
+pengarang: Hutomo
+lisensi: CC BY 4.0
+url: https://commons.wikimedia.org/wiki/File:Pengerukan_lumpur_di_Sungai_Ciliwung.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Kerangka Program {#sub:gd-kerangka}
 
 **Grand Design Mitigasi 2026–2030 disusun dalam tiga tahap menurut UU 24/2007, dan dari {{angka:program.kompendium.n}} program di kompendium hanya {{angka:program.kompendium.kuat}} yang berbukti kuat, keduanya di luar negeri [@ri-2007-uu24; @pantaubencana-2026-program-terbukti].** Prabencana mengikuti Pasal 35 dan Pasal 44–47, tanggap darurat mengikuti Pasal 48, dan pascabencana mengikuti Pasal 57–59. Program dalam negeri yang terbaik, Sistem Peringatan Dini Tsunami Indonesia (*Indonesia Tsunami Early Warning System*, InaTEWS) dan Penyediaan Air Minum dan Sanitasi Berbasis Masyarakat (PAMSIMAS), berbukti sedang. Desa dan Kelurahan Tangguh Bencana (Destana) dan Satuan Pendidikan Aman Bencana (SPAB) belum terbukti karena evaluasi dampaknya tidak ditemukan pada penelusuran 23–24 Oktober 2026. Karena itu kerangka di @tbl:gd-kerangka tidak memberi label terbukti kepada program dalam negeri mana pun. Program luar negeri berbukti kuat, yaitu paket kesiapsiagaan siklon Bangladesh (P19) dan pengendalian air tanah Tokyo, Osaka, dan Bangkok (P16), hanya hadir sebagai padanan dengan program Indonesia yang setara.
@@ -90,6 +102,18 @@ catatan: Renas PB 1.a sampai 1.c per 100.000 penduduk; arah 2030 asumsi kebijaka
 
 Rumus arah 2030 untuk Renas PB 1.c adalah target 2029 ditambah kenaikan tahunan rata-rata 2025–2029, sama dengan rumus kajian air. Arah IRB adalah {{angka:rpjmn.iks_penurunan_irb_persen|fmt=1|persen}} per tahun dari garis dasar 2025 skala baru dan hanya berlaku bila garis dasar itu terbit. Indikator RPJMN KP 08.04.02 kedua menyebut intervensi "sesuai standar" tanpa rujukan standar di halaman yang dibuka; standar minimal kebutuhan dasar yang tertulis di korpus BNPB adalah Perka BNPB 7/2008, dan tautan keduanya adalah tafsiran penyusun [@bnpb-2008-kebutuhan-dasar].
 
+
+::: gambar {#gbr:foto-m11-sekat-kanal}
+berkas: gambar/foto/mit-b11-sekat-kanal.jpg
+jenis: foto
+judul: Sekat kanal dari gambut padat untuk menaikkan muka air, Sumatera Selatan, 2016
+pengarang: Forest Carbon
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Aerial_Canal_Blocking_in_South_Sumatra,_Indonesia.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
 ## Alur Langkah Penanggulangan {#sub:gd-alur}
 
 **Rantai dari peringatan dini sampai rehabilitasi dan rekonstruksi berpasal lengkap, tetapi tenggat berangka hanya tertulis di dua ujungnya: kaji cepat paling lambat {{angka:juklak2022_3.kaji_cepat_jam|satuan}} dan Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) paling lama {{angka:perban2017_5.r3p_hari_maks|satuan}}.** Peringatan dini dikeluarkan kementerian atau lembaga teknis, lalu masuk platform sistem peringatan dini BNPB yang dikelola Deputi Bidang Pencegahan dan memberi rekomendasi aksi strategis dan teknis (Perban BNPB 2/2024 Pasal 3, Pasal 7, dan Pasal 14–15) [@bnpb-2024-peringatan-dini]. Data bahayanya mencakup {{angka:perban2_2024.jenis_data_bahaya|satuan}}, termasuk tsunami, banjir, erupsi, pergerakan tanah, kekeringan, cuaca ekstrem, karhutla, gempa bumi, dan epidemi. Rekomendasi aksi itu berfungsi menunjang keputusan pihak yang berwenang (Pasal 16 ayat (1)). Status keadaan darurat ditetapkan pemerintah atas rekomendasi badan penanggulangan bencana dan terdiri atas siaga darurat dan tanggap darurat, lalu transisi darurat ke pemulihan (Perban BNPB 4/2020) [@bnpb-2020-dsp]. Penetapnya mengikuti tingkat pemerintahan menurut Perpres 17/2018 Pasal 2 ayat (2) dan PP 21/2008 Pasal 23 ayat (2) [@ri-2018-perpres17; @ri-2008-pp21].
@@ -103,7 +127,7 @@ Di ujung lain rantai, R3P disusun bersama kementerian dan lembaga terkait serta 
 ::: gambar {#gbr:gd-alur}
 berkas: gambar/mitigasi/bab11-g21-alur-langkah.png
 jenis: diagram
-judul: Alur langkah penanggulangan bencana dari peringatan dini sampai hibah rehabilitasi dan rekonstruksi, dengan pemicu dan pemutus tiap tahap
+judul: Alur langkah penanggulangan bencana dari peringatan dini sampai hibah rehabilitasi dan rekonstruksi, dengan pemicu dan tenggat tiap tahap, 2026
 sumber: UU 24/2007; PP 21/2008; Perpres 17/2018 jo. Perpres 46/2026; Perka BNPB 3/2016 dan 15/2011; Perban BNPB 4/2020, 5/2017, 4/2024, dan 2/2024; Juklak BNPB 3/2022, 4/2023, dan 1/2023; analisis kajian ini
 keyakinan: resmi
 lebar: penuh
@@ -112,7 +136,7 @@ catatan: Tenggat hanya yang tertulis di peraturan; jalur KLB dan status keadaan 
 :::
 
 ::: tabel {#tbl:gd-alur}
-judul: Tahap, pemicu, pemutus, instrumen, dan tenggat tertulis dalam rantai penanggulangan bencana
+judul: Tahap, pemicu, pemutus, instrumen, dan tenggat tertulis dalam rantai penanggulangan bencana, 2026
 sumber: UU 24/2007; Perpres 17/2018 jo. Perpres 46/2026; Perka BNPB 3/2016 dan 15/2011; Perban BNPB 2/2024, 4/2020, 5/2017, dan 4/2024; Juklak BNPB 3/2022, 4/2023, dan 1/2023
 keyakinan: resmi
 data_per: 24 Okt 2026
@@ -191,7 +215,7 @@ Tabel peta panas tujuh pulau kali dua belas bulan, panel musim hujan (banjir, ba
 **Operasi musiman berpemicu prakiraan BMKG, dan instrumen prabencananya sudah tertulis: rencana kontinjensi berlaku {{angka:perban2023.renkon.masa_berlaku_tahun|satuan}}, dikaji ulang paling sedikit tiap {{angka:perban2023.renkon.reviu_bulan|satuan}}, dan diuji lewat latihan sampai geladi (Perban BNPB 2/2023 Pasal 19 dan Pasal 21) [@bnpb-2023-renkon].** Rencana Penanggulangan Kedaruratan Bencana (RPKB) daerah diuji lewat gladi ruang (Perban BNPB 9/2025 Pasal 27), dan standar pelayanan minimal suburusan bencana dijabarkan Juklak BNPB 4/2026 [@bnpb-2025-rpkb; @bnpb-2026-juklak-gladi]. Unit pelaksananya mengikuti Perban BNPB 6/2025 sebagaimana diubah Perban BNPB 11/2025 [@bnpb-2025-otk; @bnpb-2025-otk-ubah]. Operasi Modifikasi Cuaca (OMC) masuk Renas PB 1.2.1.h dengan target {{angka:renas.aksi_121h.hari_operasi_2029|satuan}} operasi kedaruratan karhutla, banjir, kekeringan, dan longsor sampai 2029, sedangkan fungsi modifikasi cuaca berada di BMKG (Perpres 12/2024) [@bnpb-2025-renas; @ri-2024-perpres12-bmkg]. @tbl:gd-musiman menyusun pemicu dan aksi tiap musim beserta unit pelaksananya.
 
 ::: tabel {#tbl:gd-musiman}
-judul: Operasi musiman kemarau dan musim hujan menurut pemicu, aksi prabencana, aksi saat status, dan unit pelaksana
+judul: Operasi musiman kemarau dan musim hujan menurut pemicu, aksi prabencana, aksi saat status, dan unit pelaksana, 2026
 sumber: Perban BNPB 2/2023, 2/2024, 4/2020, 9/2025, dan 6/2025 jo. 11/2025; Perka BNPB 7/2008; Inpres 3/2020; Renas PB 2025–2029; prakiraan BMKG; DIBI BNPB; SiPongi Kementerian Kehutanan; analisis kajian ini
 keyakinan: asumsi-kebijakan
 data_per: 24 Okt 2026

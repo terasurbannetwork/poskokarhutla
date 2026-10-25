@@ -71,12 +71,12 @@ catatan: Jenis tidak saling lepas, sehingga kolom desa tidak dijumlahkan; jumlah
 ::: gambar {#gbr:peta-perkelahian}
 berkas: gambar/mitigasi/bab09-peta-perkelahian-antarkelompok-2024.png
 jenis: peta
-judul: Persen dan jumlah desa/kelurahan dengan perkelahian massal antarkelompok masyarakat per provinsi di Indonesia, 2024
+judul: Persen desa/kelurahan dengan perkelahian massal antarkelompok masyarakat per provinsi di Indonesia, 2024
 sumber: Pengolahan data Pantau Bencana dari BPS, Statistik Potensi Desa Indonesia 2024 Tabel 1.1, Tabel 18.1, dan Tabel 18.2
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Panel utama: persen desa jenis antarkelompok masyarakat dalam lima kelas, dengan simbol sebanding jumlah desa jenis itu dan simbol desa dengan korban meninggal. Panel kecil berjudul semua jenis perkelahian sebagai konteks. Satuan desa/kelurahan, periode setahun sebelum pencacahan; persen jenis dihitung penyusun dari jumlah desa per jenis dibagi jumlah desa/kelurahan.
+catatan: Lima kelas kuintil provinsi. Satuan desa/kelurahan, periode setahun sebelum pencacahan; persen dihitung penyusun dari jumlah desa jenis antarkelompok masyarakat dibagi jumlah desa/kelurahan.
 :::
 
 **DIBI tidak memuat satu pun baris konflik sosial pada 2020–2024, sehingga kajian ini tidak memakai DIBI sebagai seri konflik.** DIBI mencatat {{angka:dibi.konflik.2019.kejadian}} kejadian konflik sosial dengan {{angka:dibi.konflik.2019.meninggal}} meninggal dan {{angka:dibi.konflik.2019.mengungsi}} mengungsi pada 2019, {{angka:dibi.konflik.2025.kejadian}} kejadian dengan {{angka:dibi.konflik.2025.meninggal}} meninggal dan {{angka:dibi.konflik.2025.mengungsi}} mengungsi pada 2025, dan {{angka:dibi.konflik.2026.kejadian}} kejadian sementara dengan {{angka:dibi.konflik.2026.meninggal}} meninggal dan {{angka:dibi.konflik.2026.mengungsi}} mengungsi pada 2026 [@bnpb-dibi]. Mutu baris yang ada juga diragukan, seperti diuraikan di kotak berikut. Kerusuhan akhir Agustus 2025 berada di luar lingkup bab ini. DIBI hanya memuat satu baris konflik sosial dalam jendela itu, yaitu Manokwari 28 Agustus 2025 dengan {{angka:sosial.kerusuhan2025.meninggal_dibi}} meninggal. Angka korban Komisi Nasional Hak Asasi Manusia (Komnas HAM) yang lebih besar hanya ditemukan melalui pemberitaan dan tidak dipakai. Selisih itu dicatat sebagai celah pencatatan DIBI.

@@ -1,0 +1,264 @@
+{
+ "nama": "bab09-peta-perkelahian-antarkelompok-2024",
+ "keterangan": "Persen desa/kelurahan dengan perkelahian massal antarkelompok masyarakat per provinsi di Indonesia, 2024",
+ "sumber": "Pengolahan data Pantau Bencana dari BPS, Statistik Potensi Desa Indonesia 2024 (kuintil dari 38 nilai, batas atas inklusif)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  233.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  8.24
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 0,26 (8)",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "0,26–0,72 (8)",
+   "jenis": "kotak",
+   "warna": "#DCC79C"
+  },
+  {
+   "label": "0,72–1,12 (7)",
+   "jenis": "kotak",
+   "warna": "#C4A262"
+  },
+  {
+   "label": "1,12–1,75 (8)",
+   "jenis": "kotak",
+   "warna": "#A07A32"
+  },
+  {
+   "label": "> 1,75 (7)",
+   "jenis": "kotak",
+   "warna": "#6E5424"
+  }
+ ],
+ "hex": {
+  "#F4ECDC": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#DCC79C": [
+   "skala",
+   "legenda"
+  ],
+  "#C4A262": [
+   "skala",
+   "legenda"
+  ],
+  "#6E5424": [
+   "skala",
+   "legenda"
+  ],
+  "#A07A32": [
+   "skala",
+   "legenda"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 14.83,
+   "y": 186.24,
+   "w": 166.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-14",
+   "teks": "Persen desa/kelurahan, kelas kuintil (provinsi)"
+  },
+  {
+   "x": 14.83,
+   "y": 185.24,
+   "w": 166.98,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-14",
+   "teks": "Persen desa/kelurahan, kelas kuintil (provinsi)"
+  },
+  {
+   "x": 205.81,
+   "y": 186.24,
+   "w": 33.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-191",
+   "teks": "≤ 0,26 (8)"
+  },
+  {
+   "x": 191.81,
+   "y": 185.24,
+   "w": 47.08,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-191",
+   "teks": "≤ 0,26 (8)"
+  },
+  {
+   "x": 262.89,
+   "y": 186.24,
+   "w": 47.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-248",
+   "teks": "0,26–0,72 (8)"
+  },
+  {
+   "x": 248.89,
+   "y": 185.24,
+   "w": 61.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-248",
+   "teks": "0,26–0,72 (8)"
+  },
+  {
+   "x": 334.23,
+   "y": 186.24,
+   "w": 47.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-320",
+   "teks": "0,72–1,12 (7)"
+  },
+  {
+   "x": 320.23,
+   "y": 185.24,
+   "w": 61.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-320",
+   "teks": "0,72–1,12 (7)"
+  },
+  {
+   "x": 405.56,
+   "y": 186.24,
+   "w": 47.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-391",
+   "teks": "1,12–1,75 (8)"
+  },
+  {
+   "x": 391.56,
+   "y": 185.24,
+   "w": 61.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-391",
+   "teks": "1,12–1,75 (8)"
+  },
+  {
+   "x": 224.26,
+   "y": 199.24,
+   "w": 33.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-210",
+   "teks": "> 1,75 (7)"
+  },
+  {
+   "x": 210.26,
+   "y": 198.24,
+   "w": 47.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-210",
+   "teks": "> 1,75 (7)"
+  },
+  {
+   "x": 3,
+   "y": 211.24,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 220.84,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "rasio",
+ "cakupan": "nasional",
+ "tingkat": "provinsi",
+ "kelas": {
+  "ramp": "emas",
+  "batas": [
+   0.26,
+   0.72,
+   1.12,
+   1.75
+  ],
+  "label": [
+   "≤ 0,26",
+   "0,26–0,72",
+   "0,72–1,12",
+   "1,12–1,75",
+   "> 1,75"
+  ],
+  "warna": [
+   "skala.emas.1",
+   "skala.emas.2",
+   "skala.emas.3",
+   "skala.emas.4",
+   "skala.emas.5"
+  ],
+  "rumus": "kuintil dari 38 nilai, batas atas inklusif",
+  "resmi": false,
+  "jumlah": [
+   8,
+   8,
+   7,
+   8,
+   7
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

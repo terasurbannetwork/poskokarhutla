@@ -25,6 +25,18 @@ target_halaman: 9
 **Rekomendasi:** @rek:r-m01, @rek:r-m08, @rek:r-m20
 :::
 
+::: gambar {#gbr:foto-m03-citra-asap}
+berkas: gambar/foto/mit-b03-citra-asap.jpg
+jenis: foto
+judul: Citra satelit asap kebakaran di atas Kalimantan, Kalimantan, 15 September 2019
+pengarang: NASA Earth Observatory, Joshua Stevens (LANCE MODIS Rapid Response)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Satellite_image_of_2019_Southeast_Asian_haze_in_Borneo_-_20190915.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Data, Produsen, dan Label Keyakinan {#sub:data-label}
 
 **Dari sepuluh kelompok data kajian, hanya tiga yang dihasilkan produsen Data Bencana menurut Peraturan Badan (Perban) BNPB 1/2023, yaitu DIBI, IRBI, dan Kajian Risiko Bencana (KRB) 2022–2026.** Peraturan itu menetapkan unit kerja di lingkungan BNPB sebagai Produsen Data Bencana [@bnpb-2023-satudata, hlm. 2]. DIBI ditarik dari dasbor publik Pusat Data, Informasi, dan Komunikasi Kebencanaan (Pusdatinkom) pada 23 Oktober 2026 [@bnpb-dibi]; IRBI dan KRB berasal dari InaRISK [@bnpb-irbi; @bnpb-2026-krb]. Lembaga lain pada @tbl:sumber-data adalah penerbit. Keluaran simulasi Pantau Bencana bukan Data Bencana, sehingga selalu berlabel Estimasi model dengan pernyataan produsen.
@@ -61,7 +73,7 @@ keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 23 Okt 2026
 
-Alur bergerak dari sumber resmi ke paket data dan registri angka, lalu ke lantai, kemungkinan, dampak per aspek, kelas skenario, daftar perhatian, dan rekomendasi; simpul berpil Estimasi model memuat pernyataan produsen.
+Alur bergerak dari sumber resmi ke paket data dan registri angka, lalu ke lantai, kemungkinan, dampak per aspek, kelas skenario, daftar perhatian, dan rekomendasi; simpul berwarna Estimasi model memuat pernyataan produsen.
 :::
 
 ## IRBI: Patahan Skala 2025 dan Aturan Pakai {#sub:irbi}

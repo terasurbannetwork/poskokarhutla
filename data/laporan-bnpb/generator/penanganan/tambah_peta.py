@@ -21,6 +21,7 @@ def settexts(b, texts):
 rows = sorted(A, key=lambda k: -A[k]['hot'][I]); ada = [k for k in rows if A[k]['hot'][I] > 0]
 HOT = sum(A[k]['hot'][I] for k in A); HOTP = sum(A[k]['hot'][IP] for k in A)
 LUAS = sum(bul(A[k]['luas'][I]) for k in A); BEL = sum(bul(A[k]['belum'][I]) for k in A)
+FS = sum(A[k]['fs'][I] for k in A)
 top = rows[0]
 out = []
 for b in keep:
@@ -54,9 +55,11 @@ def gambar(rid, x, y, w, h, nama):
     return (f'<p:pic><p:nvPicPr><p:cNvPr id="{i}" name="{nama}"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>'
             f'<p:blipFill><a:blip r:embed="{rid}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="{x}" y="{y}"/><a:ext cx="{w}" cy="{h}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 L, R_ = 640080, 11551920                     # tepi dalam panel
-# 1) tiga kotak angka nasional selebar panel: ikon + label + angka (tanpa ±, tanpa keterangan)
-ky, kh, gap = 1435608, 502920, 91440; kw = (R_ - L - 2 * gap) // 3
+# 1) empat kotak angka nasional selebar panel: ikon + label + angka (tanpa ±, tanpa keterangan).
+# FIRESPOT (keputusan pemilik 25 Okt 2026) memakai ikon hotspot dan merah Firespot layar; satuannya lokasi, bukan titik.
+ky, kh, gap = 1435608, 502920, 91440; kw = (R_ - L - 3 * gap) // 4
 KP = [('051C2C', 'AFC3DA', 'rIdIk1', 'HOTSPOT', f0(HOT), 'titik'),
+      ('C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT', f0(FS), 'lokasi'),
       ('3F5F80', 'D3DFEA', 'rIdIk2', 'LUAS TERBAKAR', f0(LUAS), 'ha'),
       ('D9600B', 'FFDCC2', 'rIdIk3', 'BELUM PADAM', f0(BEL), 'ha')]
 for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
@@ -67,16 +70,17 @@ for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
     out.append(kotak(x + 566928, ky, kw - 566928 - 164592, kh, [[(val, 1800, True, 'FFFFFF'), (' ' + sat, 1000, False, 'FFFFFF')]], algn='r', anchor='ctr'))
 top_isi = ky + kh + 91440; dasar = 5724144
 # 2) peringkat 10 provinsi di kanan; judul kolom bergaya judul kolom slide tabel (kotak warna + ikon + label* + satuan)
-CW = [256032, 1006000, 880000, 1010000, 920000]; RW = sum(CW); RX = R_ - RW; cx = [RX + sum(CW[:j]) for j in range(5)]
+CW = [256032, 950000, 800000, 800000, 880000, 820000]; RW = sum(CW); RX = R_ - RW; cx = [RX + sum(CW[:j]) for j in range(6)]
 hh = 338328
 out.append(kotak(cx[1], top_isi, CW[1], hh, [[('PROVINSI', 750, True, '6B7280', 150)]], anchor='ctr'))
-KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'luas', '3F5F80', 'E6ECF3', 'rIdIk2', 'LUAS TERBAKAR*', '(ha)'),
-       (4, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
+KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs', 'C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT*', '(lokasi)'),
+       (4, 'luas', '3F5F80', 'E6ECF3', 'rIdIk2', 'LUAS TERBAKAR*', '(ha)'),
+       (5, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
 for j, key, col, muda, rid, t, sat in KOL:
     bx, bw = cx[j] + 27432, CW[j] - 27432
     out.append(kotak(bx, top_isi, bw, hh, fill=col, geomp='roundRect', adj=13636))
-    out.append(gambar(rid, bx + 54864, top_isi + (hh - 118872) // 2, 118872, 118872, 'Ikon ' + t))
-    out.append(kotak(bx + 201168, top_isi, bw - 210312, hh, [[(t, 560, True, 'FFFFFF'), (' ' + sat, 560, False, muda)]], anchor='ctr', wrap='none'))
+    out.append(gambar(rid, bx + 45720, top_isi + (hh - 100584) // 2, 100584, 100584, 'Ikon ' + t))
+    out.append(kotak(bx + 173736, top_isi, bw - 182880, hh, [[(t, 490, True, 'FFFFFF'), (' ' + sat, 490, False, muda)]], anchor='ctr', wrap='none'))
 TOP = rows[:10]
 MX = {key: max(A[k][key][I] for k in TOP) or 1 for _, key, *_ in KOL}
 ry = top_isi + hh + 45720; rh = (dasar - ry) // 10
@@ -89,9 +93,9 @@ for n, k in enumerate(TOP):
         v = o[key][I]; cur, prv = bul(v), bul(o[key][IP])   # persen dari angka yang tampil, vs 19 Okt
         pr = bul((cur - prv) / prv * 100) if prv else None
         ar, ac = (('baru', 'A9B4C2') if pr is None else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1') if pr < 0 else ('0%', '6B7280'))
-        VW = CW[j] - 365760   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
-        out.append(kotak(cx[j], y, VW, rh, [[(f0(v), 900, True, '1A1A1A')]], algn='r', anchor='ctr'))
-        out.append(kotak(cx[j] + VW + 54864, y, 365760 - 54864, rh, [[(ar, 620, True, ac)]], algn='l', anchor='ctr'))
+        VW = CW[j] - 329184   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
+        out.append(kotak(cx[j], y, VW, rh, [[(f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
+        out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr'))
 # 3) peta di kiri, selebar sisa panel, ditengahkan vertikal
 X0 = L; W = RX - 182880 - L; H = round(W * 1664 / 4144); Y0 = top_isi + (dasar - top_isi - H) // 2
 i = nid()
@@ -117,31 +121,28 @@ rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships x
         '<Relationship Id="rIdPeta" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/peta-hotspot-20okt.png"/>'
         + ''.join(f'<Relationship Id="rIdIk{n}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image-1-{n + 1}.png"/>' for n in (1, 2, 3))
         + re.sub(r'Id="[^"]+"', 'Id="rIdLay"', lay) + '</Relationships>')
-# judul slide operasi: data operasi per 20 Okt (permintaan pemilik)
-s3 = F['ppt/slides/slide3.xml'].decode()
-m = [b for b in re.findall(r'<p:sp>.*?</p:sp>', s3, re.S) if 'Operasi Penanganan Karhutla per Tanggal' in b]
-assert len(m) == 1 and m[0].count('<a:t>21</a:t>') == 1
-m2 = m[0].replace('<a:t>21</a:t>', '<a:t>20</a:t>')
-assert m2.count('<a:t>Operasi Penanganan Karhutla per Tanggal </a:t>') == 1
-m2 = m2.replace('<a:t>Operasi Penanganan Karhutla per Tanggal </a:t>', '<a:t>Operasi Penanganan Karhutla yang Dilakukan per Tanggal </a:t>')
-m2 = re.sub(r'sz="(\d+)"', lambda q: f'sz="{int(q.group(1)) * 84 // 100}"', m2)   # judul lebih panjang: kecilkan supaya tetap satu baris
-F['ppt/slides/slide3.xml'] = s3.replace(m[0], m2).encode()
-# slide 'Provinsi Tambahan' (slide2.xml) dihapus dari deck (permintaan pemilik)
-assert 'Provinsi Tambahan' in F['ppt/slides/slide2.xml'].decode()
-r2 = F.pop('ppt/slides/_rels/slide2.xml.rels', b'').decode()
-for t in re.findall(r'Target="\.\./notesSlides/([^"]+)"', r2):
-    F.pop('ppt/notesSlides/' + t, None); F.pop('ppt/notesSlides/_rels/' + t + '.rels', None)
-    F['[Content_Types].xml'] = re.sub(r'<Override PartName="/ppt/notesSlides/' + re.escape(t) + r'"[^>]*/>', '', F['[Content_Types].xml'].decode()).encode()
-F.pop('ppt/slides/slide2.xml')
-PR0 = F['ppt/_rels/presentation.xml.rels'].decode(); rid2 = re.search(r'Id="(\w+)"[^>]*Target="slides/slide2\.xml"', PR0).group(1)
-F['ppt/_rels/presentation.xml.rels'] = re.sub(r'<Relationship [^>]*Target="slides/slide2\.xml"/>', '', PR0).encode()
-F['ppt/presentation.xml'] = re.sub(r'<p:sldId id="\d+" r:id="' + rid2 + r'"/>', '', F['ppt/presentation.xml'].decode()).encode()
-F['[Content_Types].xml'] = F['[Content_Types].xml'].decode().replace('<Override PartName="/ppt/slides/slide2.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>', '').encode()
-# nomor halaman: slide lama +1
+# Slide yang dibuang dari deck atas permintaan pemilik: slide2 "Provinsi Tambahan" (22 Okt 2026) dan
+# slide3 "Operasi Penanganan Karhutla" (25 Okt 2026; sumbernya teks WA satgas, tidak ada untuk hari lampau).
+# Sisa deck: slide4 peta (halaman 1) dan slide1 tabel (halaman 2).
+def buang_slide(n, penanda):
+    assert penanda in F[f'ppt/slides/slide{n}.xml'].decode(), (n, penanda)
+    r = F.pop(f'ppt/slides/_rels/slide{n}.xml.rels', b'').decode()
+    for t in re.findall(r'Target="\.\./notesSlides/([^"]+)"', r):
+        F.pop('ppt/notesSlides/' + t, None); F.pop('ppt/notesSlides/_rels/' + t + '.rels', None)
+        F['[Content_Types].xml'] = re.sub(r'<Override PartName="/ppt/notesSlides/' + re.escape(t) + r'"[^>]*/>', '', F['[Content_Types].xml'].decode()).encode()
+    F.pop(f'ppt/slides/slide{n}.xml')
+    PR0 = F['ppt/_rels/presentation.xml.rels'].decode()
+    rid = re.search(r'Id="(\w+)"[^>]*Target="slides/slide' + str(n) + r'\.xml"', PR0).group(1)
+    F['ppt/_rels/presentation.xml.rels'] = re.sub(r'<Relationship [^>]*Target="slides/slide' + str(n) + r'\.xml"/>', '', PR0).encode()
+    F['ppt/presentation.xml'] = re.sub(r'<p:sldId id="\d+" r:id="' + rid + r'"/>', '', F['ppt/presentation.xml'].decode()).encode()
+    F['[Content_Types].xml'] = F['[Content_Types].xml'].decode().replace(
+        f'<Override PartName="/ppt/slides/slide{n}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>', '').encode()
+buang_slide(2, 'Provinsi Tambahan')
+buang_slide(3, 'Operasi Penanganan Karhutla')
+# nomor halaman: tabel jadi halaman 2
 def halaman(x, n):
     return re.sub(r'(<a:off x="11094415" y="6510528"/>.*?<a:t>)\d+(</a:t>)', lambda m: m.group(1) + str(n) + m.group(2), x, count=1, flags=re.S)
-for j, n in ((1, 2), (3, 3)):
-    F[f'ppt/slides/slide{j}.xml'] = halaman(F[f'ppt/slides/slide{j}.xml'].decode(), n).encode()
+F['ppt/slides/slide1.xml'] = halaman(F['ppt/slides/slide1.xml'].decode(), 2).encode()
 F['ppt/slides/slide4.xml'] = halaman(s4, 1).encode()
 F['ppt/slides/_rels/slide4.xml.rels'] = rels.encode()
 F['ppt/media/peta-hotspot-20okt.png'] = open(PNG, 'rb').read()
@@ -153,7 +154,7 @@ F['ppt/_rels/presentation.xml.rels'] = PR.replace('</Relationships>', '<Relation
 CT = F['[Content_Types].xml'].decode()
 F['[Content_Types].xml'] = CT.replace('</Types>', '<Override PartName="/ppt/slides/slide4.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/></Types>').encode()
 if 'docProps/app.xml' in F:
-    F['docProps/app.xml'] = re.sub(r'<Slides>\d+</Slides>', '<Slides>3</Slides>', F['docProps/app.xml'].decode()).encode()
+    F['docProps/app.xml'] = re.sub(r'<Slides>\d+</Slides>', '<Slides>2</Slides>', F['docProps/app.xml'].decode()).encode()
 zo = zipfile.ZipFile(DECK, 'w', zipfile.ZIP_DEFLATED)
 for n in ['[Content_Types].xml'] + [n for n in F if n != '[Content_Types].xml']: zo.writestr(n, F[n])
 zo.close()

@@ -1,0 +1,497 @@
+{
+ "nama": "bab05-matriks-kemungkinan-dampak",
+ "keterangan": "Matriks kemungkinan lima tahun dan kelas fatalitas per jenis bencana, Indonesia, 2026",
+ "sumber": "Pita kemungkinan dan fatalitas NRR Cabinet Office; DIBI BNPB 2008–2025; PuSGeN (2024); pengolahan data Pantau Bencana",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  471
+ ],
+ "ukuran_cm": [
+  16.5,
+  16.62
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "1 Megathrust selatan Jawa, gabungan",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "2 Megathrust selatan Jawa, per segmen",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "3 Banjir dan banjir bandang",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "4 Gempa sesar darat dan majemuk",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "5 Tsunami nasional",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "6 Epidemi dan pandemi",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "7 Konflik sosial",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "8 Gunung api",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "9 Tanah longsor",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "10 Cuaca ekstrem",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "11 Gelombang ekstrem dan abrasi",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "12 Rob",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "13 Karhutla",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "14 Kebakaran industri",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "15 Kekeringan",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "permukaan"
+  ],
+  "#051C2C": [
+   "nomor",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 2,
+   "y": 2,
+   "w": 72.48,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "KELAS FATALITAS"
+  },
+  {
+   "x": 2,
+   "y": 400.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 1"
+  },
+  {
+   "x": 268.25,
+   "y": 400.5,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-0",
+   "teks": "15"
+  },
+  {
+   "x": 2,
+   "y": 313.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 2"
+  },
+  {
+   "x": 268.25,
+   "y": 285,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-1",
+   "teks": "11"
+  },
+  {
+   "x": 268.25,
+   "y": 304,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m1-5-1",
+   "teks": "12"
+  },
+  {
+   "x": 268.25,
+   "y": 323,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m2-5-1",
+   "teks": "13"
+  },
+  {
+   "x": 268.25,
+   "y": 342,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m3-5-1",
+   "teks": "14"
+  },
+  {
+   "x": 2,
+   "y": 226.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 3"
+  },
+  {
+   "x": 268.25,
+   "y": 226.5,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-2",
+   "teks": "10"
+  },
+  {
+   "x": 2,
+   "y": 139.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 4"
+  },
+  {
+   "x": 95.86,
+   "y": 139.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-1-3",
+   "teks": "1"
+  },
+  {
+   "x": 139.53,
+   "y": 139.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-2-3",
+   "teks": "2"
+  },
+  {
+   "x": 270.54,
+   "y": 130,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-3",
+   "teks": "8"
+  },
+  {
+   "x": 270.54,
+   "y": 149,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m1-5-3",
+   "teks": "9"
+  },
+  {
+   "x": 2,
+   "y": 52.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 5"
+  },
+  {
+   "x": 183.2,
+   "y": 52.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-3-4",
+   "teks": "3"
+  },
+  {
+   "x": 270.54,
+   "y": 24,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-4",
+   "teks": "4"
+  },
+  {
+   "x": 270.54,
+   "y": 43,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m1-5-4",
+   "teks": "5"
+  },
+  {
+   "x": 270.54,
+   "y": 62,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m2-5-4",
+   "teks": "6"
+  },
+  {
+   "x": 270.54,
+   "y": 81,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m3-5-4",
+   "teks": "7"
+  },
+  {
+   "x": 44.27,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 1"
+  },
+  {
+   "x": 87.94,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 2"
+  },
+  {
+   "x": 131.61,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 3"
+  },
+  {
+   "x": 175.28,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 4"
+  },
+  {
+   "x": 218.95,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 5"
+  },
+  {
+   "x": 251.51,
+   "y": 449.5,
+   "w": 42.66,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tidak dinilai"
+  },
+  {
+   "x": 106.83,
+   "y": 460.5,
+   "w": 113.66,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "KEMUNGKINAN LIMA TAHUN"
+  },
+  {
+   "x": 330.17,
+   "y": 18,
+   "w": 129.02,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar0",
+   "teks": "Megathrust selatan Jawa, gabungan"
+  },
+  {
+   "x": 330.17,
+   "y": 37,
+   "w": 135.54,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar1",
+   "teks": "Megathrust selatan Jawa, per segmen"
+  },
+  {
+   "x": 330.17,
+   "y": 56,
+   "w": 90.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar2",
+   "teks": "Banjir dan banjir bandang"
+  },
+  {
+   "x": 330.17,
+   "y": 75,
+   "w": 117.81,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar3",
+   "teks": "Gempa sesar darat dan majemuk"
+  },
+  {
+   "x": 330.17,
+   "y": 94,
+   "w": 63.11,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar4",
+   "teks": "Tsunami nasional"
+  },
+  {
+   "x": 330.17,
+   "y": 113,
+   "w": 76.88,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar5",
+   "teks": "Epidemi dan pandemi"
+  },
+  {
+   "x": 330.17,
+   "y": 132,
+   "w": 47.73,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar6",
+   "teks": "Konflik sosial"
+  },
+  {
+   "x": 330.17,
+   "y": 151,
+   "w": 40.35,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar7",
+   "teks": "Gunung api"
+  },
+  {
+   "x": 330.17,
+   "y": 170,
+   "w": 51.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar8",
+   "teks": "Tanah longsor"
+  },
+  {
+   "x": 330.17,
+   "y": 189,
+   "w": 53.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar9",
+   "teks": "Cuaca ekstrem"
+  },
+  {
+   "x": 330.17,
+   "y": 208,
+   "w": 111.12,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar10",
+   "teks": "Gelombang ekstrem dan abrasi"
+  },
+  {
+   "x": 330.17,
+   "y": 227,
+   "w": 13.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar11",
+   "teks": "Rob"
+  },
+  {
+   "x": 330.17,
+   "y": 246,
+   "w": 29.8,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar12",
+   "teks": "Karhutla"
+  },
+  {
+   "x": 330.17,
+   "y": 265,
+   "w": 66.62,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar13",
+   "teks": "Kebakaran industri"
+  },
+  {
+   "x": 330.17,
+   "y": 284,
+   "w": 39.86,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar14",
+   "teks": "Kekeringan"
+  }
+ ],
+ "jenis": "matriks",
+ "pesan": "G17",
+ "sumbu_y": false,
+ "pil": 0,
+ "ukuran_matriks": [
+  5,
+  6
+ ],
+ "butir": 15,
+ "ambang": null
+}

@@ -1,0 +1,40 @@
+kode,provinsi,persen
+11,Aceh,0.25
+12,Sumatera Utara,0.72
+13,Sumatera Barat,1.09
+14,Riau,0.27
+15,Jambi,0.38
+16,Sumatera Selatan,0.4
+17,Bengkulu,0.2
+18,Lampung,0.26
+19,Kepulauan Bangka Belitung,0.76
+21,Kepulauan Riau,0.0
+31,DKI Jakarta,7.49
+32,Jawa Barat,1.12
+33,Jawa Tengah,1.03
+34,DI Yogyakarta,1.14
+35,Jawa Timur,0.75
+36,Banten,1.16
+51,Bali,0.42
+52,Nusa Tenggara Barat,1.37
+53,Nusa Tenggara Timur,2.74
+61,Kalimantan Barat,0.32
+62,Kalimantan Tengah,0.25
+63,Kalimantan Selatan,0.1
+64,Kalimantan Timur,0.1
+65,Kalimantan Utara,0.0
+71,Sulawesi Utara,1.58
+72,Sulawesi Tengah,0.45
+73,Sulawesi Selatan,1.34
+74,Sulawesi Tenggara,1.0
+75,Gorontalo,1.23
+76,Sulawesi Barat,0.31
+81,Maluku,6.26
+82,Maluku Utara,6.45
+92,Papua Barat,1.75
+96,Papua Barat Daya,3.41
+91,Papua,2.72
+93,Papua Selatan,3.91
+94,Papua Tengah,1.16
+95,Papua Pegunungan,0.95
+00,INDONESIA,1.09

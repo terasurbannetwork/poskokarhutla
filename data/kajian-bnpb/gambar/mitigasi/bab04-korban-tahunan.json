@@ -1,0 +1,233 @@
+{
+ "nama": "bab04-korban-tahunan",
+ "keterangan": "Meninggal dan hilang akibat bencana alam per tahun menurut kelompok di Indonesia, 2015–2026 (jiwa)",
+ "sumber": "BNPB, DIBI dasbor publik, sembilan jenis bencana alam, cakupan kejadian bencana",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Hidrometeorologi",
+   "jenis": "label-ujung",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Geologi",
+   "jenis": "label-ujung",
+   "warna": "#8A4B2A"
+  }
+ ],
+ "hex": {
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#2F86D1": [
+   "seri",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "garis",
+   "latar"
+  ],
+  "#8A4B2A": [
+   "seri",
+   "legenda"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 18.58,
+   "y": 192.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 3,
+   "y": 117.9,
+   "w": 20.07,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2.500"
+  },
+  {
+   "x": 3,
+   "y": 42.87,
+   "w": 20.07,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "5.000"
+  },
+  {
+   "x": 19.09,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015"
+  },
+  {
+   "x": 50.43,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016"
+  },
+  {
+   "x": 81.77,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2017"
+  },
+  {
+   "x": 113.11,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 144.45,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 175.79,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 207.13,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 238.47,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 269.81,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 301.15,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 332.49,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  },
+  {
+   "x": 363.83,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2026"
+  },
+  {
+   "x": 385.21,
+   "y": 184.52,
+   "w": 62.29,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Hidrometeorologi",
+   "teks": "Hidrometeorologi"
+  },
+  {
+   "x": 449.49,
+   "y": 184.27,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Hidrometeorologi",
+   "teks": "280"
+  },
+  {
+   "x": 385.21,
+   "y": 194.3,
+   "w": 27.18,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Geologi",
+   "teks": "Geologi"
+  },
+  {
+   "x": 414.38,
+   "y": 194.05,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Geologi",
+   "teks": "168"
+  },
+  {
+   "x": 28.07,
+   "y": 176.78,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "276"
+  },
+  {
+   "x": 28.07,
+   "y": 202.32,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0"
+  }
+ ],
+ "jenis": "garis",
+ "pesan": "G3",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_periode": 12,
+ "acuan": 3,
+ "anotasi": 0,
+ "pita": false,
+ "label_ujung": true
+}

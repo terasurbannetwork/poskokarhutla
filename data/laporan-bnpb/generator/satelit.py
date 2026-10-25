@@ -6,16 +6,16 @@ pemotongan di jam cut-off WIB. hot = LOKASI UNIK per hari WIB (titik_unik.py: M,
 (kunci dipertahankan untuk pembaca lama) dan 'hot_mandiri' = hitungan ulang terpisah dari baris mentah (pembanding uji).
 
 API:
-    hitung(tanggal: date, jam='15:00', hari_n=4, kunci=None) -> {
+    hitung(tanggal: date, jam='17:00', hari_n=4, kunci=None) -> {
         'hari': ['YYYY-MM-DD', ...]            # hari_n hari WIB, berakhir di tanggal
         'cutoff': 'YYYY-MM-DDTHH:MM+07:00',
         'faktor': PK.FAKTOR,
-        'prov': {'62': {'hot': [..], 'hot_bersih': [..], 'luas': [..], 'belum': [..], 'padam': [..], 'fs': [0, ..]}},
+        'prov': {'62': {'hot': [..], 'hot_bersih': [..], 'luas': [..], 'belum': [..], 'padam': [..]}},   # firespot tidak di sini: firespot_hari.py
         'kab':  {'62|Kotawaringin Barat': {... sama ...}},       # kunci persis properties.kunci layar
         'kec':  {'62|Kotawaringin Barat|Kumai': {... sama ...}},
     }   # luas/belum/padam float belum dibulatkan (bulatkan sekali di deck), hot int
 CLI:
-    python3 satelit.py --tanggal 2026-10-25 [--jam 15:00] [--hari 4] [--keluar angka.json]
+    python3 satelit.py --tanggal 2026-10-25 [--jam 17:00] [--hari 4] [--keluar angka.json]
     python3 satelit.py --uji      # hari lengkap 23 Okt (jam 23:59) harus sama dengan public/data/peta_karhutla.json lokal (bangun --penuh dengan rumus F20/F21)
 Butuh FIRMS_MAP_KEY (env atau .env repo). CSV mentah di cache/raw/ (di-ignore git)."""
 import csv, datetime as dt, io, json, os, re, sys, urllib.request
@@ -59,7 +59,7 @@ def csv_hari(src, u, cutoff, kunci):
     return teks
 
 
-def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
+def hitung(tanggal, jam='17:00', hari_n=4, kunci=None):
     cutoff = dt.datetime.combine(tanggal, dt.time.fromisoformat(jam), WIB)
     hari = [tanggal - (hari_n - 1 - i) * PK.HARI for i in range(hari_n)]
     utc = [hari[0] - (3 - i) * PK.HARI for i in range((tanggal - hari[0]).days + 4)]   # hari_data(d) butuh UTC d-1, d; hitung(d) butuh d-2
@@ -96,7 +96,7 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
         mandiri[(x['wib'], x['p'])] += 1
     out = {'prov': {}, 'kab': {}, 'kec': {}}
     def isi(tingkat, k, i, hot, luas, belum, padam):
-        o = out[tingkat].setdefault(k, {m: [0] * hari_n for m in ('hot', 'hot_bersih', 'luas', 'belum', 'padam', 'fs')})
+        o = out[tingkat].setdefault(k, {m: [0] * hari_n for m in ('hot', 'hot_bersih', 'luas', 'belum', 'padam')})
         o['hot'][i], o['luas'][i], o['belum'][i], o['padam'][i] = hot, luas, belum, padam
         o['hot_bersih'][i] = hot   # hot sudah bersih
     for i, d in enumerate(hari):
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         uji()
     else:
         nilai = lambda o, b: arg[arg.index(o) + 1] if o in arg else b
-        a = hitung(dt.date.fromisoformat(nilai('--tanggal', '')), nilai('--jam', '15:00'), int(nilai('--hari', '4')))
+        a = hitung(dt.date.fromisoformat(nilai('--tanggal', '')), nilai('--jam', '17:00'), int(nilai('--hari', '4')))
         json.dump(a, open(nilai('--keluar', 'angka_satelit.json'), 'w'), ensure_ascii=False)
         print('ok', a['cutoff'], 'nasional hot', sum(o['hot'][-1] for o in a['prov'].values()),
               'luas', PK.bul(sum(o['luas'][-1] for o in a['prov'].values())), 'belum', PK.bul(sum(o['belum'][-1] for o in a['prov'].values())))

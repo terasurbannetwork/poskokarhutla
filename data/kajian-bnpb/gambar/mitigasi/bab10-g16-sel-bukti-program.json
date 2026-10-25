@@ -1,0 +1,506 @@
+{
+ "nama": "bab10-g16-sel-bukti-program",
+ "keterangan": "Sel fase × jenis bencana menurut kategori bukti program terbaik, Indonesia 2026",
+ "sumber": "Pengolahan Pantau Bencana dari paket program-terbukti (kompendium program)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  333.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  11.75
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Kuat, luar negeri",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Sedang, dalam negeri",
+   "jenis": "kotak",
+   "warna": "#3F5F80"
+  },
+  {
+   "label": "Sedang, luar negeri",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Lemah atau belum terbukti",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Tanpa program",
+   "jenis": "kotak",
+   "warna": "#FFFFFF"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#3F5F80": [
+   "legenda",
+   "seri"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "legenda",
+   "teks",
+   "seri",
+   "latar"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 57.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kuat, luar negeri"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 71.36,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kuat, luar negeri"
+  },
+  {
+   "x": 97.36,
+   "y": 3,
+   "w": 76.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-83",
+   "teks": "Sedang, dalam negeri"
+  },
+  {
+   "x": 83.36,
+   "y": 2,
+   "w": 90.48,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-83",
+   "teks": "Sedang, dalam negeri"
+  },
+  {
+   "x": 197.84,
+   "y": 3,
+   "w": 67.72,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-183",
+   "teks": "Sedang, luar negeri"
+  },
+  {
+   "x": 183.84,
+   "y": 2,
+   "w": 81.72,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-183",
+   "teks": "Sedang, luar negeri"
+  },
+  {
+   "x": 289.55,
+   "y": 3,
+   "w": 95.14,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-275",
+   "teks": "Lemah atau belum terbukti"
+  },
+  {
+   "x": 275.55,
+   "y": 2,
+   "w": 109.14,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-275",
+   "teks": "Lemah atau belum terbukti"
+  },
+  {
+   "x": 408.69,
+   "y": 3,
+   "w": 54.68,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-394",
+   "teks": "Tanpa program"
+  },
+  {
+   "x": 394.69,
+   "y": 2,
+   "w": 68.68,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-394",
+   "teks": "Tanpa program"
+  },
+  {
+   "x": 111.68,
+   "y": 20,
+   "w": 45.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Prabencana"
+  },
+  {
+   "x": 235.83,
+   "y": 20,
+   "w": 63.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Tanggap darurat"
+  },
+  {
+   "x": 372.74,
+   "y": 20,
+   "w": 55.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Pascabencana"
+  },
+  {
+   "x": 2,
+   "y": 40.95,
+   "w": 48.36,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Gempa bumi"
+  },
+  {
+   "x": 2,
+   "y": 63.95,
+   "w": 33.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Tsunami"
+  },
+  {
+   "x": 2,
+   "y": 86.95,
+   "w": 43.39,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Gunung api"
+  },
+  {
+   "x": 2,
+   "y": 109.95,
+   "w": 22.3,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb3",
+   "teks": "Banjir"
+  },
+  {
+   "x": 2,
+   "y": 132.95,
+   "w": 54.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb4",
+   "teks": "Tanah longsor"
+  },
+  {
+   "x": 2,
+   "y": 155.95,
+   "w": 57.41,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb5",
+   "teks": "Cuaca ekstrem"
+  },
+  {
+   "x": 2,
+   "y": 173.85,
+   "w": 45.83,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb6",
+   "teks": "Gelombang,"
+  },
+  {
+   "x": 2,
+   "y": 184.05,
+   "w": 23.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb6",
+   "teks": "abrasi"
+  },
+  {
+   "x": 2,
+   "y": 201.95,
+   "w": 43.41,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb7",
+   "teks": "Kekeringan"
+  },
+  {
+   "x": 2,
+   "y": 224.95,
+   "w": 32.25,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb8",
+   "teks": "Karhutla"
+  },
+  {
+   "x": 2,
+   "y": 247.95,
+   "w": 30.82,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb9",
+   "teks": "Epidemi"
+  },
+  {
+   "x": 2,
+   "y": 265.85,
+   "w": 40.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb10",
+   "teks": "Kebakaran"
+  },
+  {
+   "x": 2,
+   "y": 276.05,
+   "w": 29.16,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb10",
+   "teks": "industri"
+  },
+  {
+   "x": 2,
+   "y": 293.95,
+   "w": 59.43,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb11",
+   "teks": "Kebakaran TPA"
+  },
+  {
+   "x": 2,
+   "y": 316.95,
+   "w": 51.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb12",
+   "teks": "Konflik sosial"
+  },
+  {
+   "x": 118.42,
+   "y": 41.2,
+   "w": 32.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s00",
+   "teks": "InaTEWS"
+  },
+  {
+   "x": 251.52,
+   "y": 41.2,
+   "w": 32.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s01",
+   "teks": "InaTEWS"
+  },
+  {
+   "x": 364.17,
+   "y": 41.2,
+   "w": 72.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s02",
+   "teks": "asuransi CCRIF/ARC"
+  },
+  {
+   "x": 118.42,
+   "y": 64.2,
+   "w": 32.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s10",
+   "teks": "InaTEWS"
+  },
+  {
+   "x": 251.52,
+   "y": 64.2,
+   "w": 32.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s11",
+   "teks": "InaTEWS"
+  },
+  {
+   "x": 354.28,
+   "y": 64.2,
+   "w": 92.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s12",
+   "teks": "lemah atau belum terbukti"
+  },
+  {
+   "x": 88.09,
+   "y": 87.2,
+   "w": 92.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s20",
+   "teks": "lemah atau belum terbukti"
+  },
+  {
+   "x": 93.41,
+   "y": 110.2,
+   "w": 82.13,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s30",
+   "teks": "Tokyo, Osaka, Bangkok"
+  },
+  {
+   "x": 255.15,
+   "y": 110.2,
+   "w": 24.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s31",
+   "teks": "Odisha"
+  },
+  {
+   "x": 364.17,
+   "y": 110.2,
+   "w": 72.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s32",
+   "teks": "asuransi CCRIF/ARC"
+  },
+  {
+   "x": 88.09,
+   "y": 133.2,
+   "w": 92.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s40",
+   "teks": "lemah atau belum terbukti"
+  },
+  {
+   "x": 102.06,
+   "y": 156.2,
+   "w": 64.83,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s50",
+   "teks": "siklon Bangladesh"
+  },
+  {
+   "x": 235.16,
+   "y": 156.2,
+   "w": 64.83,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s51",
+   "teks": "siklon Bangladesh"
+  },
+  {
+   "x": 364.17,
+   "y": 156.2,
+   "w": 72.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s52",
+   "teks": "asuransi CCRIF/ARC"
+  },
+  {
+   "x": 102.06,
+   "y": 179.2,
+   "w": 64.83,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s60",
+   "teks": "siklon Bangladesh"
+  },
+  {
+   "x": 235.16,
+   "y": 179.2,
+   "w": 64.83,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s61",
+   "teks": "siklon Bangladesh"
+  },
+  {
+   "x": 113.91,
+   "y": 202.2,
+   "w": 41.12,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s70",
+   "teks": "PAMSIMAS"
+  },
+  {
+   "x": 364.17,
+   "y": 202.2,
+   "w": 72.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s72",
+   "teks": "asuransi CCRIF/ARC"
+  },
+  {
+   "x": 88.09,
+   "y": 225.2,
+   "w": 92.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s80",
+   "teks": "lemah atau belum terbukti"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Kisi kategori jenis bencana kali fase dengan isi program; matriks titik G16 hanya untuk nilai berkelas angka",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 39
+}

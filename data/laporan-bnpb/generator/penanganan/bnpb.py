@@ -89,18 +89,23 @@ def pasang(s, lib, x, y, jenis, teks_):
 
 
 def ganti_tabel(s, lib, top6, bm):
+    """bm dari wa_operasi.bmkg (stasiun BMKG tertinggi; provinsi di luar daftar tak punya angka) ATAU pil_sendiri.bahan
+    (rata-rata provinsi, semua provinsi punya angka). Keduanya sebentuk, jadi kedua kelas rendah ikut dilayani di sini."""
     for i, k in enumerate(top6):
         y = T0 + i * PB
-        if k in bm['pm']:
-            v, kat, _ = bm['pm'][k]; v = round(v)
-            j = 'berbahaya' if 'bahaya' in kat else 'tidak sehat'
-            s = pasang(s, lib, X_PM, y, j, f'{v} BERBAHAYA' if j == 'berbahaya' else f'{v} SANGAT TDK SEHAT' if 'sangat' in kat else f'{v} TIDAK SEHAT')
+        v, kat = (bm['pm'][k][0], bm['pm'][k][1]) if k in bm['pm'] else (None, '')
+        if 'bahaya' in kat:
+            s = pasang(s, lib, X_PM, y, 'berbahaya', f'{round(v)} BERBAHAYA')
+        elif 'tidak sehat' in kat:
+            s = pasang(s, lib, X_PM, y, 'tidak sehat', f'{round(v)} SANGAT TDK SEHAT' if 'sangat' in kat else f'{round(v)} TIDAK SEHAT')
+        elif v is not None:
+            s = pasang(s, lib, X_PM, y, 'rendah', f'{round(v)} {kat.upper()}' if kat else f'PM2.5 {round(v)}')
         else:
             s = pasang(s, lib, X_PM, y, 'rendah', f'PM2.5 &lt; {round(bm["pm_ke10"])}')
         h, a = k in bm['hujan'] or k in bm['lebat'], k in bm['angin']
         s = pasang(s, lib, X_CU, y, 'hujan' if h else 'angin' if a else 'cerah',
                    ('HUJAN LEBAT' if k in bm['lebat'] else 'HUJAN, ANGIN' if a else 'HUJAN SEDANG') if h else 'ANGIN KENCANG' if a else 'CERAH BERAWAN')
-    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>prakiraan cuaca {bm["periode"]}</a:t>')
+    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>cuaca {bm["periode"]}</a:t>')
 
 
 def singkat(t, n=46):

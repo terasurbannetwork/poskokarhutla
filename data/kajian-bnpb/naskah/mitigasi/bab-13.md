@@ -25,6 +25,18 @@ target_halaman: 4
 **Rekomendasi:** @rek:r-a01, @rek:r-a02, @rek:r-m01, @rek:r-m03, @rek:r-m04; daftar lengkap di @sub:rek-internal dan @sub:rek-lintas.
 :::
 
+::: gambar {#gbr:foto-m13-gambut}
+berkas: gambar/foto/mit-b13-gambut.jpg
+jenis: foto
+judul: Asap dari bara di dalam lahan gambut yang terbakar, Taman Nasional Sebangau, Kalimantan Tengah, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Out_of_Controls.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Kesimpulan {#sub:kesimpulan}
 
 Tesis kajian ini bertumpu pada DIBI BNPB dan sumber resmi lain. {{angka:tesis.mitigasi.alam|teks}}
@@ -69,7 +81,7 @@ judul: Keputusan yang diminta dari Kepala BNPB
 Keputusan empat belas hari pertama hanya memakai instrumen yang berlaku dan menjadi satu daftar untuk kedua kajian (@tbl:keputusan-14-hari).
 
 ::: tabel {#tbl:keputusan-14-hari}
-judul: Keputusan empat belas hari pertama sesudah hari ke-0 menurut rekomendasi dan unit pemimpin
+judul: Keputusan empat belas hari pertama sesudah hari ke-0 menurut rekomendasi dan unit pemimpin, 2026
 sumber: Register rekomendasi kajian ini; Perban BNPB 6/2025 jo. 11/2025
 keyakinan: asumsi-kebijakan
 

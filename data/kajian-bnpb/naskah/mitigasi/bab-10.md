@@ -31,6 +31,18 @@ target_halaman: 9
 - @rek:r-m13 Lengkapi dokumen dasar daerah berkapasitas rendah (Sudah ada, perlu dikembangkan; Direktorat Kesiapsiagaan dengan Direktorat Pemetaan dan Evaluasi Risiko Bencana; Kementerian Dalam Negeri (Kemendagri) untuk SPM; 2026–2027).
 :::
 
+::: gambar {#gbr:foto-m10-pemadam}
+berkas: gambar/foto/mit-b10-pemadam.jpg
+jenis: foto
+judul: Petugas menyemprot bara di lahan gambut, Taman Nasional Sebangau, Kalimantan Tengah, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Marking_the_Fire.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 **Analisis SWOT Renstra BNPB 2025–2029 memuat {{angka:renstra.swot.kelemahan}} kelemahan dan {{angka:renstra.swot.ancaman}} ancaman, dan kelemahan pertamanya adalah peraturan yang tidak harmonis.** Renstra menulis bahwa masih terdapat peraturan perundang-undangan dan peraturan internal BNPB yang tidak harmonis atau saling bertentangan, dan mengutip National Assessment Report 2023 bahwa ketidakjelasan regulasi dan pembagian kewenangan mengakibatkan tumpang tindih penanganan bencana [@bnpb-2025-renstra, hlm. 24, 73–76]. Badan Pemeriksa Keuangan (BPK) memeriksa kinerja penanggulangan bencana atas {{angka:bpk.ihps2_2024.pb.objek|satuan}}, terdiri atas {{angka:bpk.ihps2_2024.pb.objek_pusat}} objek pusat dan {{angka:bpk.ihps2_2024.pb.objek_pemda}} pemerintah daerah [@bpk-2025-ihps2-2024, hlm. 11–12]. Temuan BPK dalam bab ini dikutip dengan atribusi IHPS II 2024, dan laporan hasil pemeriksaan per entitas tidak dibuka.
 
 ## Regulasi {#sub:kj-regulasi}
@@ -123,6 +135,18 @@ sifat: fakta
 **Dampak:** Penanggung jawab indikator posko dan klaster di tingkat pusat tidak dapat dibaca dari dokumen yang berlaku, dan klaster kesehatan untuk epidemi belum dipastikan terbentuk.
 
 **Pembuka:** Deputi Bidang Penanganan Darurat melalui Direktorat Koordinasi Pengendalian Operasi Darurat; Biro Hukum, Organisasi, dan Kerja Sama (@rek:r-m10); koordinator enam klaster, yaitu Basarnas, Kementerian Sosial, BNPB, Kementerian Kesehatan, Kementerian Pendidikan Dasar dan Menengah (Kemendikdasmen), dan Kemendagri; Kemenko PMK.
+:::
+
+
+::: gambar {#gbr:foto-m10-heli}
+berkas: gambar/foto/mit-b10-heli.jpg
+jenis: foto
+judul: Helikopter menjatuhkan air di atas lahan terbakar, Indonesia, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Water_Bombing.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
 :::
 
 ## Data dan Peringatan Dini {#sub:kj-data}

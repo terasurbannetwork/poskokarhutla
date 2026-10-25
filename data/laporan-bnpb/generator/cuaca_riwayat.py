@@ -1,12 +1,13 @@
 """Grid FWI harian untuk hari LAMPAU, supaya firespot dan pil cuaca deck bisa dihitung ulang tanpa menyentuh keadaan live.
 
 Mesin hitungnya mesin website: scripts/data/harian.py (grid_darat sel 0,5 derajat, siang() = nilai jam 12 setempat + hujan 24 jam)
-dan scripts/data/fwi.py (deret FFMC/DMC/DC/ISI/BUI/FWI). Yang beda hanya SUMBER cuacanya: satu tarikan Open-Meteo forecast
-past_days=92 per sel, dipanaskan dari nilai awal standar (fwi.AWAL), bukan keadaan bersambung public/data/fwi_state.json.
-Pipeline harian memakai keadaan bersambung karena ia jalan tiap hari; untuk membangun ulang 14 hari sekaligus keadaan itu
-tidak ada (ia cuma menyimpan satu titik waktu, H-2), jadi 92 hari pemanasan dipakai sebagai gantinya: FFMC lupa dalam hitungan
-hari, DMC beberapa pekan, DC paling panjang (~53 hari), jadi >= 79 hari pemanasan sebelum hari paling awal yang dipakai.
-Kecocokannya dengan fwi.json live diuji oleh uji() di bawah.
+dan scripts/data/fwi.py (deret FFMC/DMC/DC/ISI/BUI/FWI). Yang beda hanya SUMBER cuacanya. Pipeline harian menyimpan keadaan
+FFMC/DMC/DC bersambung di public/data/fwi_state.json karena ia jalan tiap hari; keadaan itu cuma memuat satu titik waktu (H-2)
+dan tidak ikut git, jadi untuk hari lampau dipanaskan ulang dari nol seperti langkah 1 harian.cuaca_fwi: reanalisis ERA5
+(Open-Meteo archive) 300 hari ke belakang sampai H-9, lalu dilanjutkan tarikan forecast past_days untuk hari sesudahnya.
+Pemanasan 300 hari dipakai, BUKAN 92 hari: DC menumpuk sepanjang musim kemarau tanpa batas, dan pada percobaan 92 hari
+DC di NTT terbaca 468 sementara pipeline live 868 (FWI selisihnya kecil karena BUI jenuh, tetapi aturan bara gambut
+DC > 350 jadi meleset). Kecocokannya dengan fwi.json live diuji oleh uji() di bawah.
 
 API:
     hitung(awal, akhir) -> {'YYYY-MM-DD': {(lat, lon): {'prov','fwi','dc','hujan','ws'}}}   # hari WIB, inklusif
@@ -24,36 +25,63 @@ import harian as H     # noqa: E402
 from wilayah import Wilayah   # noqa: E402
 
 CACHE = os.path.join(SINI, 'cache', 'cuaca')
-PAST = 92    # batas Open-Meteo forecast API
-BATCH = 25   # sel per tarikan; 92 hari x 80 sel ditolak 429 (bobot kuota)
+PAST = 92     # batas Open-Meteo forecast API
+HANGAT = 300  # hari pemanasan ERA5, sama dengan harian.cuaca_fwi
+BATCH = 25    # sel per tarikan; 80 sel x ratusan hari ditolak 429 (bobot kuota)
 
 
-def tarik(bagian, past=PAST):
-    """Satu tarikan Open-Meteo untuk <= 80 sel; dicache per daftar sel + hari tarikan."""
+def tarik(bagian, tanda, url):
+    """Satu tarikan Open-Meteo untuk sekelompok sel; dicache per kelompok + tanda + hari tarikan."""
     os.makedirs(CACHE, exist_ok=True)
-    nama = f'{bagian[0][0]},{bagian[0][1]}-{bagian[-1][0]},{bagian[-1][1]}-{len(bagian)}-{past}-{dt.date.today()}.json'
-    jalur = os.path.join(CACHE, nama)
+    jalur = os.path.join(CACHE, f'{bagian[0][0]},{bagian[0][1]}-{len(bagian)}-{tanda}-{dt.date.today()}.json')
     if os.path.exists(jalur):
         return json.load(open(jalur))
-    url = ('https://api.open-meteo.com/v1/forecast?latitude=' + ','.join(str(g[0]) for g in bagian)
-           + '&longitude=' + ','.join(str(g[1]) for g in bagian)
-           + f'&past_days={past}&forecast_days=1&' + H.VAR)
     d = H.ambil(url, json_=True)   # coba ulang + tunggu 90 dtk pada 429 (kuota Open-Meteo)
     data = d if isinstance(d, list) else [d]
     json.dump(data, open(jalur, 'w'))
     return data
 
 
+def arsip(bagian, hari_ini):
+    """ERA5 untuk pemanasan; None bila kuota Open-Meteo menolak (seperti harian.cuaca_fwi: ERA5 dilewati, pemanasan
+    jatuh ke deret forecast PAST hari dari nilai awal standar)."""
+    url = ('https://archive-api.open-meteo.com/v1/archive?latitude=' + ','.join(str(g[0]) for g in bagian)
+           + '&longitude=' + ','.join(str(g[1]) for g in bagian)
+           + f'&start_date={hari_ini - dt.timedelta(days=HANGAT)}&end_date={hari_ini - dt.timedelta(days=9)}&' + H.VAR)
+    try:
+        return tarik(bagian, f'era5-{HANGAT}', url)
+    except Exception as e:
+        print('ERA5 dilewati:', e, file=sys.stderr)
+        return None
+
+
+def ramalan(bagian):
+    url = ('https://api.open-meteo.com/v1/forecast?latitude=' + ','.join(str(g[0]) for g in bagian)
+           + '&longitude=' + ','.join(str(g[1]) for g in bagian)
+           + f'&past_days={PAST}&forecast_days=1&' + H.VAR)
+    return tarik(bagian, f'fc-{PAST}', url)
+
+
 def seri_sel(awal=None, akhir=None):
-    """[(lat, lon, prov, {tgl: {fwi, dc, hujan, ws}})] untuk seluruh grid darat."""
+    """[(lat, lon, prov, {tgl: {fwi, dc, hujan, ws}})] untuk seluruh grid darat.
+    ERA5 dulu (pemanasan HANGAT hari s.d. H-9), lalu forecast melanjutkan keadaan FFMC/DMC/DC-nya untuk hari sesudahnya."""
     grid = H.grid_darat(Wilayah())
+    hari_ini = dt.date.today()
     out = []
     for a in range(0, len(grid), BATCH):
         bagian = grid[a:a + BATCH]
-        data = tarik(bagian)
-        for g, d in zip(bagian, data):
-            hari = H.siang(d['hourly'])
-            seri = F.deret([x[1:5] for x in hari])
+        era = None if os.environ.get('ERA5') == '0' else arsip(bagian, hari_ini)
+        fc = ramalan(bagian)
+        for i, (g, df) in enumerate(zip(bagian, fc)):
+            hari, seri, kode = [], [], F.AWAL
+            if era:
+                hari = H.siang(era[i]['hourly'])
+                seri = F.deret([x[1:5] for x in hari])
+                if seri:
+                    kode = (seri[-1]['ffmc'], seri[-1]['dmc'], seri[-1]['dc'])
+            hari2 = [x for x in H.siang(df['hourly']) if not hari or x[0] > hari[-1][0]]
+            seri += F.deret([x[1:5] for x in hari2], awal=kode)
+            hari += hari2
             per = {x[0]: {'fwi': round(sr['fwi'], 1), 'dc': round(sr['dc'], 1),
                           'hujan': None if x[4] is None else round(x[4], 1), 'ws': x[3]}
                    for x, sr in zip(hari, seri)
@@ -83,31 +111,39 @@ def hitung(awal, akhir):
 
 
 def uji():
-    """Hari yang sama-sama ada di fwi.json live dan hitungan ulang ini harus sepakat: FWI dalam 2 poin dan DC dalam 10%
-    untuk >= 95 persen sel. Pemanasan 92 hari dari nilai awal standar tidak identik dengan keadaan bersambung live,
-    jadi yang ditagih kecocokan praktis, bukan kesamaan bit."""
+    """Yang ditagih bukan FWI/DC yang sama persis, tetapi dua KEPUTUSAN yang benar-benar dipakai firespot_hari:
+       - ambang bara gambut `dc > 350` (harian.main: cluster gambut kering dipertahankan 168 jam, bukan 72 jam);
+       - kelas FWI aturan.kelas_fwi (batas 2 / 7 / 14), yang menentukan level cluster lewat aturan.status.
+    Keduanya harus sepakat >= 95 persen sel-hari dengan public/data/fwi.json, pada hari yang sama-sama ada.
+    Nilai mentahnya memang beda: pipeline live menyambung keadaan FFMC/DMC/DC sejak awal musim, hitungan ini
+    memanaskannya ulang (ERA5 300 hari, atau 92 hari forecast bila kuota ERA5 habis), dan DC menumpuk tanpa batas."""
+    sys.path.insert(0, os.path.join(AKAR, 'scripts', 'data'))
+    import aturan as A
     P = json.load(open(os.path.join(AKAR, 'public/data/fwi.json')))
     hidup = {(g['lat'], g['lon']): {h['tgl']: h for h in g['hari']} for g in P['grid']}
     hari = sorted({t for v in hidup.values() for t in v})
     kita = hitung(hari[0], hari[-1])
-    n = cocok_fwi = cocok_dc = 0
-    buruk = []
+    n = cocok_dc = cocok_kelas = 0
+    beda_dc, beda_kelas = [], []
     for tgl in hari:
         for k, v in kita[tgl].items():
             h = hidup.get(k, {}).get(tgl)
             if not h or h.get('celah'):
                 continue
             n += 1
-            df, dd = abs(v['fwi'] - h['fwi']), abs(v['dc'] - h['dc']) / max(h['dc'], 1)
-            cocok_fwi += df <= 2
-            cocok_dc += dd <= 0.10
-            if df > 2 or dd > 0.10:
-                buruk.append((tgl, k, v['fwi'], h['fwi'], v['dc'], h['dc']))
+            if (v['dc'] > 350) == (h['dc'] > 350):
+                cocok_dc += 1
+            else:
+                beda_dc.append((tgl, k, v['dc'], h['dc']))
+            if A.kelas_fwi(v['fwi']) == A.kelas_fwi(h['fwi']):
+                cocok_kelas += 1
+            else:
+                beda_kelas.append((tgl, k, v['fwi'], h['fwi']))
     assert n >= 1000, f'terlalu sedikit sel-hari yang bisa dibanding: {n}'
-    pf, pd_ = cocok_fwi / n, cocok_dc / n
-    assert pf >= 0.95, f'FWI cocok hanya {pf:.1%} dari {n} sel-hari; contoh {buruk[:5]}'
-    assert pd_ >= 0.95, f'DC cocok hanya {pd_:.1%} dari {n} sel-hari; contoh {buruk[:5]}'
-    print(f'uji lolos: {n} sel-hari {hari[0]}..{hari[-1]}, FWI cocok {pf:.1%}, DC cocok {pd_:.1%}')
+    pdc, pk = cocok_dc / n, cocok_kelas / n
+    assert pdc >= 0.95, f'ambang DC > 350 cocok hanya {pdc:.1%} dari {n} sel-hari; contoh (tgl, sel, kita, live) {beda_dc[:5]}'
+    assert pk >= 0.95, f'kelas FWI cocok hanya {pk:.1%} dari {n} sel-hari; contoh (tgl, sel, kita, live) {beda_kelas[:5]}'
+    print(f'uji lolos: {n} sel-hari {hari[0]}..{hari[-1]}; ambang DC > 350 cocok {pdc:.1%}, kelas FWI cocok {pk:.1%}')
 
 
 if __name__ == '__main__':

@@ -25,6 +25,18 @@ target_halaman: 11
 **Rekomendasi:** @rek:r-m08, @rek:r-m17, @rek:r-m20
 :::
 
+::: gambar {#gbr:foto-m04-banjir-jakarta}
+berkas: gambar/foto/air-b06-banjir-jakarta.jpg
+jenis: foto
+judul: Banjir di permukiman Tanjung Duren, Jakarta Barat, 1 Januari 2020
+pengarang: Cun Cun
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Banjir_Jakarta_Perumahan_di_Tanjung_Duren_1_Januari_2020.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Kejadian dan Dampak 2015–2026 {#sub:kejadian-dampak}
 
 **Badan Nasional Penanggulangan Bencana (BNPB) mencatat kejadian bencana alam naik dari {{angka:dibi.nasional.kejadian.2015}} pada 2015 menjadi {{angka:dibi.nasional.kejadian.2021}} pada 2021 dan {{angka:dibi.nasional.kejadian.2023}} pada 2023.** Kajian ini membaca seri tersebut dari dasbor publik DIBI yang ditarik 23 Oktober 2026 dan mencakup sembilan jenis bencana alam [@bnpb-dibi]. Pada 2024 dan 2025 angkanya tercatat {{angka:dibi.nasional.kejadian_alam.2024|fmt=0}} dan {{angka:dibi.nasional.kejadian_alam.2025|fmt=0}}; DIBI membagi kejadian lintas kabupaten/kota menjadi pecahan per wilayah, sehingga angka nasional 2024 dan 2025 di bab ini dibulatkan ke satuan. Turunnya angka dari 2023 ke 2024 bersamaan dengan berlakunya saringan ambang kejadian, sehingga tidak dapat dibaca sebagai penurunan risiko. Perbandingan antartahun memakai seri bencana alam, karena seri semua klasifikasi memuat kategori yang baru dicatat sejak 2024.
@@ -44,19 +56,19 @@ data_per: 23 Okt 2026
 catatan: Sebelum 2024 laporan tidak tersaring ambang Juklak 7/2023 dan hampir tanpa nonalam dan sosial; garis tegak menandai patahan 2024.
 :::
 
-**Sampai 23 Oktober 2026 DIBI mencatat {{angka:dibi.nasional.kejadian.2026}} kejadian bencana dan {{angka:dibi.nasional.meninggal.2026}} meninggal, termasuk {{angka:dibi.ntt2026.gempa.meninggal}} meninggal akibat gempa bumi Agustus 2026 di Nusa Tenggara Timur.** Gempa itu juga tercatat dengan {{angka:dibi.ntt2026.gempa.mengungsi}} pengungsi dan {{angka:dibi.ntt2026.gempa.rumah_rusak_berat}} rumah rusak berat di provinsi tersebut [@bnpb-dibi]. Angka 2026 bersifat sementara dan menurut dasbor DIBI difinalkan sekitar Februari 2027, sehingga @gbr:kejadian-tahunan dan @gbr:korban-tahunan menampilkannya dengan arsir.
+**Sampai 23 Oktober 2026 DIBI mencatat {{angka:dibi.nasional.kejadian.2026}} kejadian bencana dan {{angka:dibi.nasional.meninggal.2026}} meninggal, termasuk {{angka:dibi.ntt2026.gempa.meninggal}} meninggal akibat gempa bumi Agustus 2026 di Nusa Tenggara Timur.** Gempa itu juga tercatat dengan {{angka:dibi.ntt2026.gempa.mengungsi}} pengungsi dan {{angka:dibi.ntt2026.gempa.rumah_rusak_berat}} rumah rusak berat di provinsi tersebut [@bnpb-dibi]. Angka 2026 bersifat sementara dan menurut dasbor DIBI difinalkan sekitar Februari 2027, sehingga @gbr:kejadian-tahunan dan @gbr:korban-tahunan menandainya sebagai angka sementara.
 
 **Korban bencana alam 2015–2025 berjumlah {{angka:dibi.nasional.meninggal_alam.2015_2025}} meninggal dan {{angka:dibi.nasional.hilang_alam.2015_2025}} hilang, dengan dua puncak pada 2018 dan 2025.** Tahun 2018 mencatat {{angka:dibi.nasional.meninggal_alam.2018}} meninggal dan {{angka:dibi.nasional.hilang_alam.2018}} hilang, sedangkan 2025 mencatat {{angka:dibi.nasional.meninggal_alam.2025}} meninggal dan {{angka:dibi.nasional.hilang_alam.2025}} hilang (@gbr:korban-tahunan). Seri semua klasifikasi memberi {{angka:dibi.nasional.meninggal.2015_2025}} meninggal dan {{angka:dibi.nasional.hilang.2015_2025}} hilang untuk periode yang sama, dan {{angka:dibi.nasional.meninggal.2025}} meninggal serta {{angka:dibi.nasional.hilang.2025}} hilang untuk 2025; selisihnya memuat {{angka:dibi.nasional.nonalam_sosial_lainnya.meninggal.2025}} meninggal di luar bencana alam yang sebelum 2024 tidak dicatat [@bnpb-dibi]. Klaim "tertinggi sejak 2018" berlaku di kedua seri, karena angka alam 2025 juga melampaui tiap tahun 2019–2024, yang berkisar antara {{angka:dibi.nasional.meninggal.2023}} pada 2023 dan {{angka:dibi.nasional.meninggal.2022}} pada 2022. Data luka dan sakit tidak dipakai karena isiannya tidak stabil antartahun dan banyak baris kosong.
 
 ::: gambar {#gbr:korban-tahunan}
 berkas: gambar/mitigasi/bab04-korban-tahunan.png
 jenis: grafik
-judul: Korban meninggal dan hilang akibat bencana alam per tahun di Indonesia, 2015–2026 (jiwa)
+judul: Korban meninggal dan hilang akibat bencana alam per tahun menurut kelompok hidrometeorologi dan geologi di Indonesia, 2015–2026 (jiwa)
 sumber: BNPB, DIBI dasbor publik, sembilan jenis bencana alam, cakupan kejadian bencana; 2026 sementara sampai 23 Oktober
 keyakinan: resmi
 lebar: penuh
 data_per: 23 Okt 2026
-catatan: COVID-19 tidak tercatat di DIBI dan tidak digambar; anotasi porsi kejadian besar adalah hitungan kajian ini.
+catatan: COVID-19 tidak tercatat di DIBI dan tidak digambar; angka 2026 sementara sampai 23 Oktober.
 :::
 
 ::: koreksi
@@ -173,6 +185,18 @@ sifat: fakta
 **Dampak:** Untuk tsunami dekat, keputusan evakuasi warga terjadi sebelum pesan resmi mana pun dapat sampai, sehingga evakuasi mandiri atas tanda alam dan jalur evakuasi menentukan jumlah korban; DIBI mencatat {{angka:dibi.sulteng2018.meninggal}} meninggal dan {{angka:dibi.sulteng2018.hilang}} hilang untuk gabungan seluruh bahaya kejadian itu.
 
 **Pembuka:** *Indonesia Tsunami Early Warning System* (InaTEWS) berkekuatan bukti sedang karena bertumpu pada satu kejadian dan berposisi program berjalan yang wajib dievaluasi; dampaknya baru dapat dinilai terukur setelah evaluasi itu dilakukan.
+:::
+
+
+::: gambar {#gbr:foto-m04-banjir-pekalongan}
+berkas: gambar/foto/air-pekalongan-banjir.jpg
+jenis: foto
+judul: Evakuasi korban banjir di Pekalongan, Februari 2023
+pengarang: AntaraTV
+lisensi: CC BY 3.0
+url: https://commons.wikimedia.org/wiki/File:TNI_Mengevakuasi_Korban_Banjir_Pekalongan_2023.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
 :::
 
 ## Pola Korban: Kejadian dan Korban Bergerak Berbeda {#sub:pola-korban}
