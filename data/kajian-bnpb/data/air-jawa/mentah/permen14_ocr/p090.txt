@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+92 D.I. Lobu Dusun Pangkirapan 90
+93 D.I. Pangambatan 60
+94 D.I. Sitamba Lbn. Pea Dolok 75
+95 D.I. Pananggele 150
+96 D.I. Lumban Julu Pohan 66
+97 D.I. Saba Singkam 50
+98 D.I. Simarpinggan 60
+99 D.I. Liang Singa 40
+100 D.I. Aek Bontar 100
+101 D.I. Aek Sulum 40
+102 D.I. Sangkaran 57
+103 D.I. Parmocian 50
+104 D.I. Lumban Siagian 50
+105 D.I. Panomburan 50
+106 D.I. Aek parpangiran 75
+107 D.I. Aek Siandurian 117
+108 D.I. Aek Toras 40
+109 D.I. Aek Panaaloan 85
+110 D.I. Sisoding 50
+111 D.I. Sipilo 60
+112 D.I. Aek Narorangon 50
+113 D.I. Munson Liman 50
+114 D.I. Aek Burburan 50
+115 D.I. Aek Raisan 75
+116 D.I. Pansur Batu 75
+117 D.I. Aek Bulu Godang 75
+118 D.I. Nalas 100
+119 D.I. Oda Sipahutar 50
+120 D.I. Simanuk 125
+121 D.I. Lobu Sonak 77
+122 D.I. Janggaleman 40
+123 D.I. Lumban Silintong 70
+124 D.I. Pokkahan 50
+125 D.I. Sipultak Dolok 100
+126 D.I. Sitamba 50
+127 D.I. Simarhilap 60
+128 D.I. Pearung Desa Sibaragas 40
+129 D.I. Lumban Inaina 50
+130 D.I. Aek Sitakkubak 98
+131 D.I. Dolok Martumbur 50
+132 D.I. Sosor Sihilap 50
+133 D.I. Suppol 60
+134 D.I. Bondar Barat 80
+135 D.I. Silando 70
+136 D.I. Huta Ginjang 67
+137 D.I. Silaput/Sitanggor 60
+138 D.I. Aek Sitapean 75
+139 D.I. Aek Dahasan 60
+140 D.I. SawaLongat 40
+141 D.I. Lobu Pining 30
+142 D.I. Gonting Desa Janji Matogu 45
+143 D.I. Sonak Sigompulon 65
+144 D.I. Sitakkapan Lontung Dolok 75
+145 D.I. Aek Siparpar 43
+146 D.I. Parlombuan 105
+147 D.I. Saba Najonok 45
+148 D.I. Saba Lobu 45
+149 D.I. Hutaraja Julu 40
+150 D.I. Aek Raja 50
+151 D.I. Aek Ussim 40
+152 D.I. Aek Parinsoran 60
+#KANAN
+90
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+153 D.I. Siomaoma 100
+154 D.I. Parsibarungan 40
+155 D.I. Saroha Sampean 45
+156 D.I. Aek Bontar 75
+157 D.I. Aek Sitarolo 70
+158 D.I. Hutajulu 75
+159 D.I. Aek Tangga 70
+160 D.I. Aek Sisudung 50
+161 D.I. Aek Pansur Godang 75
+162 D.I. Saba Aron 45
+163 D.I. Saba Kole 50
+164 D.I. Sitangkorahot 33
+165 D.I. Sabalobu 36
+166 D.I. Aek Sibiobio 72
+167 D.I. Aek Boruan 40
+168 D.I. Sampean 80
+x Kab. Toba Samosir 79 14.068
+1 D.I. Aek Jangga 400
+2 D.I. Aek Mandosi II 905
+3 D.I. Aek Mandosi III 724
+4 D.I. Aek Mandosi IV 311
+5 D.I. Aek Nabara 467
+6 D.I. Aek Salak 151
+7 D.I. Aek Simare 430
+8 D.I. Bahal Pinang 400
+9 D.I. Bendar Juda 300
+10 D.I. Bendar Sijambe 150
+11 D.I. Bulu Duri 350
+12 D.I. Bulu Laga 70
+13 D.I. Dolok Jior 285
+14 D.I. Lagundi 90
+15 D.I. Lumban Gaol 119
+16 D.I. Lumban Huala 100
+17 D.I. Lumban Julu 108
+18 D.I. Lumban Lobu 176
+19 D.I. Lumban Rang 250
+20 D.I. Lumban Ria-Ria 148
+21 D.I. Paindoan 141
+22 D.I. Sianipar 100
+23 D.I. Sibaruang 56
+24 D.I. Sibong-bong 200
+25 D.I. Sidulang 580
+26 D.I. Sihail-hail 500
+27 D.I. Silam Banua 910
+28 D.I. Simanampang 81
+29 D.I. Simanampang/Sim atibung 57
+30 D.I. Simangatasi | 485
+31 D.I. Simarintop 150
+32 D.I. Sirandos Simanobak 600
+33 D.I. Sisera-sera 100
+34 D.I. Sisuhar-suhar 600
+35 D.I. Song-Song Batu 90
+36 D.I. Waduk Motung 100
+37 D.I. Bendar Tabu 50
+38 D.I. Bor-Bor 50
+39 D.I. Gala-Gala Pangkailan 50
+40 D.I. Lobu Hole 500
+41 D.I. Losung Batu 50
+42 D.I. Lumban Gala-Gala 50
+43 D.I. Lumban Gorat 39

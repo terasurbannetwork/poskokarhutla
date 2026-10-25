@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+117 D.I. Lambuea 100
+118 D.I. Lambusa 40
+119 D.I. Lamebara 85
+120 D.I. Lameuru 120
+121 D.I. Lameuru II 100
+122 D.I. Lamooso 75
+123 D.I. Landabaro 150
+124 D.I. Landai 175
+125 D.I. Landetalo 350
+126 D.I. Landono II 69
+127 D.I. Lapoa | 150
+128 D.I. Lapoa II 30
+129 D.I. Lapoa III 20
+130 D.I. Lapono 100
+131 D.I. Lapuko 130
+132 D.I. Lasiapa 100
+133 D.I. Lawa 70
+134 D.I. Lawoila | 88
+135 D.I. Lelekaa 50
+136 D.I. Lipu Masagena 195
+137 D.I. Maroa 115
+138 D.I. Maroa | 60
+139 D.I. Masagena 50
+140 D.I. Mataiwoi 100
+141 D.I. Mateupe 100
+142 D.I. Mateupe | 93
+143 D.I. Menggolopia 60
+144 D.I. Merta Bayu 100
+145 D.I. Mertani Jaya 75
+146 D.I. Mino Mulya 25
+147 D.I. Mitro 50
+148 D.I. Mokupa Baru 215
+149 D.I. Mokupa Jaya 300
+150 D.I. Mondoe 125
+151 D.I. Monggaria 80
+152 D.I. Moramo II 150
+153 D.I. Moreo 150
+154 D.I. Moreo I 90
+155 D.I. Nunulay 240
+156 D.I. Nunumenggere 130
+157 D.I. Nunumenggere | 75
+158 D.I. Nunumenggere II 65
+159 D.I. Ombu-Ombu Jaya I 60
+160 D.I. Ombu-Ombu Jaya II 50
+161 D.I. Onembute 200
+162 D.I. Onembute 80
+163 D.I. Onembute (Swa) 80
+164 D.I. Opaasi Atas 75
+165 D.I. Opaasi Bawah 85
+166 D.I. Otipulu 50
+167 D.I. PAM 60
+168 D.I. Padaidi 90
+169 D.I. Pak Alit 69
+170 D.I. Palotula 50
+171 D.I. Panca Marga 200
+172 D.I. Pandan Sari 40
+173 D.I. Parasi 60
+174 D.I. Patapo 100
+175 D.I. Polewali 150
+176 D.I. Polosilae 150
+177 D.I. Pombahoa Opae 150
+#KANAN
+430
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+178 D.I. Pombulaa 100
+179 D.I. Potuho/Atari 100
+180 D.I. Pramowila 200
+181 D.I. Puao 75
+182 D.I. Puwehuko 92
+183 D.I. Rambu-Rambu 125
+184 D.I. Rambu-Rambu Jaya 85
+185 D.I. Ranooha 175
+186 D.I. Ranooha 60
+187 D.I. Rawa Itik 70
+188 D.I. Rawa Pening 75
+189 D.I. Rawa Tanea | 100
+190 D.I. Rawa Tanea II 197
+191 D.I. Rawa Tanea III 184
+192 D.I. Rawa Wuura 600
+193 D.I. Rombu-Rombu | 50
+194 D.I. Rombu-Rombu II 60
+195 D.I. Rombu-Rombu III 100
+196 D.I. Rumba-Rumba 50
+197 D.I. Saguer I 80
+198 D.I. Saguer II 60
+199 D.I. Sambaeha 85
+200 D.I. Sandarsih Jaya 120
+201 D.I. Sanggi-Sanggi 75
+202 D.I. Sari Karya 175
+203 D.I. Sawa 200
+204 D.I. Sekar Mulya 50
+205 D.I. Sido Mulyo 52
+206 D.I. Sindang Kasih/Cekdam 60
+207 D.I. Sri Mukti 40
+208 D.I. Sri Rejeki 76
+209 D.I. Sukamukti 100
+210 D.I. Sumber Baru 56
+211 D.I. Sumber Jaya 87
+212 D.I. Sumber Makmur 150
+213 D.I. Sumber Sari 59
+214 D.I. Sumber Sari 42
+215 D.I. Taman Jati 35
+216 D.I. Taman Sari 100
+217 D.I. Tambayo | 150
+218 D.I. Tambayo II 100
+219 D.I. Tambolosu 90
+220 D.I. Tawa Oputu 80
+221 D.I. Telutu | 60
+222 D.I. Tirto Martani 200
+223 D.I. Tolihe 40
+224 D.I. Tolihe 100
+225 D.I. Tolutu Jaya 75
+226 D.I. Tongalueno 100
+227 D.I. Tongauna 60
+228 D.I. Tosiba 100
+229 D.I. Tri Darma Nadi 150
+230 D.I. Tri Guna 250
+231 D.I. Ulu Aopu 50
+232 D.I. Ulu Konda/Cd. Amoito 250
+233 D.I. Ulu Lakara | 43
+234 D.I. Ulu Sena 75
+235 D.I. Ululakara II 30
+236 D.I. Uwa-Uwa 40
+237 D.I. Wadonggo I 75
+238 D.I. Wadonggo II 80

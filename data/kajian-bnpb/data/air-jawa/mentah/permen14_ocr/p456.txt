@@ -1,0 +1,86 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 ,
+456
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+21 D.I.R. Sei Ambat (Ambar) 234
+22 D.I.R. Sei Baru 279
+23 D.I.R. Sei Lala/Sei Empat 165
+24 D.I.R. Sei Rukam I dan II 300
+25 D.I.R. Sei Beringin 872
+26 D.I.R. Sei Danai 500
+27 D.I.R. Sei Empat 204
+28 D.I.R. Sei Rabbit 759
+29 D.I.R. Sei Raya 443
+30 D.I.R. Sei Undan 205
+31 D.I.R. Sencalang, Pancur 304
+32 D.I.R. Sialang Panjang 876
+33 D.I.R. Simpang Gaung 880
+34 D.I.R. Tanjung Melayu 920
+35 D.I.R. Tekulai Bugis 700
+36 D.I.R. Tekulai Hulu 500
+37 D.I.R. Teluk Jira 308
+38 D.I.R. Teluk Kiambang Seberang 896
+39 D.I.R. Teluk Pinang/Teluk Pantaian 400
+40 D.I.R. Tembilahan Hilir 250
+41 D.I.R. Tempuling I dan II 894
+c Kab. Indraairi Hulu 6 2.898
+1 D.I.R. Kuala Cinaku II 874
+2 D.I.R. Pekan Heran 983
+3 D.I.R. Polak Pisang 80
+4 D.I.R. Sei Raya-Pulau Gelang 132
+5 D.I.R. Sekip Lokal 150
+6 D.I.R. Tanjung Sari 679
+d Kab. Meranti 3 1.843
+1 D.I.R. Alai 893
+2 D.I.R. Renak Dungun 800
+3 D.I.R. Tanjung Gadai 150
+e Kab. Pelalawan 25 2.555
+1 D.I.R. Desa Kesuma 60
+2 D.I.R. Dusun Tua 50
+3 D.I.R. Gondai 75
+4 D.I.R. Kuala Panduk 180
+5 D.I.R. Lubuk Kemb. Bunga 75
+6 D.I.R. Lubuk Keranji 80
+7 D.I.R. Lubuk Keranji Timur 100
+8 D.I.R. Pangkalan Panduk 265
+9 D.I.R. Pelalawan 60
+10 D.I.R. Pompa Air 30
+11 D.I.R. Pulau Muda 100
+12 D.I.R. Sei Langkan 30
+13 D.I.R. Serapung 250
+14 D.I.R. Sering 55
+15 D.I.R. Sokoi 200
+16 D.I.R. Tambak 100
+17 D.I.R. Tambun 75
+18 D.I.R. Tanjung Beringin 75
+19 D.I.R. Tanjung Beringin 350
+20 D.I.R. Tanjung Sum 75
+21 D.I.R. Teluk Bakau 15
+22 D.I.R. Teluk Beringin 15
+23 D.I.R. Teluk Meranti 150
+24 D.I.R. Terantang Manuk 10
+25 D.I.R. Terbangiang 80
+f Kab. Rokan Hilir 34 5.604
+1 D.I.R. Bagan Jawa 250
+2 D.I.R. Bagan Punak 85
+3 D.I.R. Bangko Kanan 83
+4 D.I.R. Bantayan 50
+5 D.I.R. Bantayan Baru 35
+6 D.I.R. Jajal 76
+7 D.I.R. Jumrah 50
+8 D.I.R. Karya Mukti (N. 11) 400
+9 D.I.R. Labuhan Tangga Baru 42
+10 D.I.R. Labuhan Tangga Besar (N. 8) 27
+11 D.I.R. Labuhan Tangga Kecil 33
+12 D.I.R. Pasir Limau Kapas 98
+13 D.I.R. Raja Bejamu 120
+14 D.I.R. Rantau Panjang Kanan 140
+15 D.I.R. Rantau Panjang Kiri 83
+16 D.I.R. Rimbo Melintang 150
+17 D.I.R. Sei Bakau 120
+18 D.I.R. Sei Besar 300
+19 D.I.R. Sei Daun 82
+20 D.I.R. Sei Kubu 80
+21 D.I.R. Sei Majo 75
+22 D.I.R. Sei Manasib (N. 12) 80

@@ -1,0 +1,58 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.t 38
+27
+NO Provinsi/ Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+IX PROVINSI KALIMANTAN TENGAH 19 143.988
+a Kab. Kapuas
+1 D.I.R. Anjir Serapat II 8.620
+2 D.I.R. Basarang 13.410
+3 D.I.R. Dadahup 14.000
+4 D.I.R. Lupak Dalam 9.022
+5 D.I.R. Mandomai 17.975
+6 D.I.R. Palingkau SP1, SP2 dan SP3 3.346
+7 D.L.R. Sei Tatas 6.052
+8 D.I.R. Tamban Luar 5.850
+9 D.I.R. Unit Sakalagon 7.825
+10 D.I.R. Unit Terusan Tengah 4104
+b Kab. Kotawaringin Timur
+1 D.I.R. Handil Bali 3.864
+2 D.I.R. Pelangsian 10.240
+c Kab. Pulang Pisau
+1 D.I.R. Unit Belanti II (Pangkoh 8) 3.890
+2 D.I.R. Unit Kanamit (Pangkoh 9 dan 10) 5.105
+3 D.I.R. Unit Kantan (Pangkoh 2 dan 3) 7.560
+4 D.IL.R. Unit Maliku (Pangkoh 5, 6 dan 11) 7.575
+5 D.I.R. Unit Paduran | 3.000
+6 D.I.R. Unit Talio (Pangkoh 1) 4.050
+d Kab. Seruyan
+1 D.I.R. Pematang Limau 3.500
+X PROVINSI KALIMANTAN SELATAN 13 57.080
+a Kab. Barito Kuala
+1 D.I.R. Anjir Serapat 6.700
+2 D.I.R. Anjir Tamban 7.700
+3 D.I.R. Barambai 3.850
+4 D.I.R. Belawang 4.800
+5 D.I.R. Handil Bakti 6.900
+6 D.I.R. Jejangkit I 3.450
+7 D.I.R. Jelapat 3.000
+8 D.I.R. Sakalagun 3.225
+9 D.I.R. Seluang 3.300
+10 D.I.R. Tabunganen 4.700
+11 D.I.R. Talaran 3.005
+12 D.I.R. Tanipah 3.450
+13 D.I.R. Terantang 3.000
+XI PROVINSI KALIMANTAN UTARA 3 15.616
+a Kab. Bulungan
+1 D.I.R. Sajau 4.366
+2 D.I.R. Tanjung Buka 7.500
+3 D.I.R. Tanjung Palas 3.750
+XII PROVINSI SULAWESI TENGAH 1 5.500
+a Kab. Toli-Toli
+1 D.I.R. Rawa Oyomlampasio 5.500
+XIII PROVINSI SULAWESI TENGGARA 2 6.649
+a Kab. Bombana
+1 D.LR. Bambaeya 3.500
+b Kab. Konawe Selatan
+1 D.I.R. Tanea 3.149
+TOTAL 110 703.362

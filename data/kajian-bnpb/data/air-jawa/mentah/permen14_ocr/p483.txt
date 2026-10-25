@@ -1,0 +1,45 @@
+#TATA_LETAK satu-tabel lebar=2480
+483 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+91 D.I.R. Kaptel 36
+92 D.I.R. Kaniskobat 36
+93 D.I.R. Ihalik 36
+94 D.I.R. Kwemsid 36
+95 D.I.R. Boha 9
+96 D.I.R. Afkap Makmur 37
+97 D.I.R. Andaito 20
+98 D.I.R. Enggal Jaya 70
+99 D.I.R. Kolam 10
+100 D.I.R. Manway Bob 79
+101 D.I.R. Muting 13
+102 D.I.R. Pachas 10
+103 D.I.R. Seed Agung 100
+104 D.I.R. Selauw 10
+105 D.I.R. Sigabel Jaya 81
+106 D.I.R. Waan 10
+107 D.I.R. Bouwer 161
+108 D.I.R. Bumun 73
+109 D.I.R. Bunggay 95
+110 D.I.R. Bupul Indah 167
+111 D.I.R. Bupul Kampung 4
+112 D.I.R. Enggal Jaya 35
+113 D.I.R. Gerisar 30
+114 D.I.R. Kweel 24
+115 D.I.R. Metaat Makmur 50
+116 D.I.R. Sipias 46
+117 D.I.R. Tanas 23
+118 D.I.R. Tof-Tof 47
+119 D.I.R. Baidub 29
+120 D.I.R. Bel Beland 180
+121 D.I.R. Kafyamke 26
+122 D.I.R. Kandra Kay 29
+123 D.I.R. Kindiki 26
+124 D.I.R. Kireli 33
+125 D.I.R. Kumaaf 43
+126 D.I.R. Mandekman 26
+127 D.I.R. Nggayu 39
+128 D.I.R. Rawahayu 123
+129 D.I.R. Selil 48
+TOTAL 1.876 516.619

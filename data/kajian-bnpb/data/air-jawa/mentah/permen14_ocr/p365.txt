@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+131 D.I. Gendut 6
+132 D.I. Gentong 1
+133 D.I. Godo 27
+134 D.I. Gombak 2
+135 D.I. Gondang 2
+136 D.I. Gondang 5
+137 D.I. Gondang 10
+138 D.I. Gondang 13
+139 D.I. Gondosore 6
+140 D.I. Gondowiso 3
+141 D.I. Gowok Dadi 1
+142 D.I. Gunung Cilik 6
+143 D.I. Gunung Gong 6
+144 D.I. Gunung Ijo 3
+145 D.I. Gunung Kekep 3
+146 D.I. Gunung Kidul 5
+147 D.I. Gunung Lor 10
+148 D.I. Gunung Tulak 6
+149 D.I. Gunung Wiling 18
+150 D.I. Guwo 10
+151 D.I. Guwo 3
+152 D.I. Guyangan 19
+153 D.I. Jabon 3
+154 D.I. Jabung 335
+155 D.I. Jadam 4
+156 D.I. Jajar 9
+157 D.I. Jalen 2
+158 D.I. Jali 24
+159 D.I. Jambangan 24
+160 D.I. Jambean 4
+161 D.I. Jambu 3
+162 D.I. Jamur Dipo | 2
+163 D.I. Jamur Dipo II 3
+164 D.I. Janjang 7
+165 D.I. Japuk 7
+166 D.I. Jati 8
+167 D.I. Jati Uki 5
+168 D.I. Jayan 5
+169 D.I. Jayan/Ngudal 4
+170 D.I. Jelok I 54
+171 D.I. Jelok II 39
+172 D.I. Jengglik 5
+173 D.I. Jetakan 3
+174 D.I. Joho 1
+175 D.I. Joketro 1
+176 D.I. Jonaden 6
+177 D.I. Josari 17
+178 D.I. Juron 8
+179 D.I. Jurug 4
+180 D.I. Jurug Plantir 168
+181 D.I. Juruk 1
+182 D.I. Juruk 12
+183 D.I. Kacangan 7
+184 D.I. Kalen Tengah 21
+185 D.I. Kali Jene 28
+186 D.I. Kali Mati Kanan 50
+187 D.I. Kali Mati Kiri 25
+188 D.I. Kali Putih 14
+189 D.I. Kali Sapi 1
+190 D.I. Kali Songo 6
+191 D.I. Kali Telu | 1
+#KANAN
+- 2015, No.638
+365 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+192 D.I. Kali Telu II 1
+193 D.I. Kalongan 5
+194 D.I. Kandri 1
+195 D.I. Karang 10
+196 D.I. Karang Nongko 9
+197 D.I. Karang Rejo 23
+198 D.I. Karang Tengah 20
+199 D.I. Karanggayam 4
+200 D.I. Karanggelang 26
+201 D.I. Karangrejo 4
+202 D.I. Karangrejo 6
+203 D.I. Karangsono 33
+204 D.I. Kasihan 16
+205 D.I. Katir 10
+206 D.I. Kayen 10
+207 D.I. Kebak 25
+208 D.I. Kebon Duren 7
+209 D.I. Kedung Banteng 79
+210 D.I. Kedung Bendo 51
+211 D.I. Kedung Dinding 12
+212 D.I. Kedung Gembol I 5
+213 D.I. Kedung Gembol II 14
+214 D.I. Kedung Gori Kiri 32
+215 D.I. Kedung Gori Kn 48
+216 D.I. Kedung Gupit 34
+217 D.I. Kedung Kotak 55
+218 D.I. Kedung Moro 73
+219 D.I. Kedung Tledek I 5
+220 D.I. Kedung Tledek II 31
+221 D.I. Kedungmaron 8
+222 D.I. Kelung 3
+223 D.I. Kemloko 4
+224 D.I. Kengser 11
+225 D.I. Kenteng 3
+226 D.I. Kenteng 6
+227 D.I. Kentong 2
+228 D.I. Kidang 12
+229 D.I. Kintelan 1
+230 D.I. Kipik 94
+231 D.I. Klandren 14
+232 D.I. Klumit | 86
+233 D.I. Klumit II 9
+234 D.I. Konang 6
+235 D.I. Koni 23
+236 D.I. Koperan 4
+237 D.I. Korepan 1
+238 D.I. Koyam 16
+239 D.I. Krobokan 1
+240 D.I. Kroncong 3
+241 D.I. Kucur 15
+242 D.I. Kuncung 11
+243 D.I. Kunir 3
+244 D.I. Lemah Ambreg 20
+245 D.I. Lodelep 3
+246 D.I. Luwing 12
+247 D.I. Maduh 4
+248 D.I. Malanggati 18
+249 D.I. Malat 5
+250 D.I. Manding 9
+251 D.I. Megar 5
+252 D.I. Mendung 2

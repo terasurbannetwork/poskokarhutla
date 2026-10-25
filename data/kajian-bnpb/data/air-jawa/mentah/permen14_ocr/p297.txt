@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+453 D.I. Cangkring 17,45
+454 D.I. Sentul 17,47
+455 D.I. Cangkring 17,49
+456 D.I. Lenguk 17,50
+457 D.I. Karangmindi 17,55
+458 D.I. Kebokuning 17,57
+459 D.I. Sidowayah I 17,78
+460 D.I. Pelem 17,80
+461 D.I. Kebokuning 17,84
+462 D.I. Ngelo 17,86
+463 D.I. Lebak 17,88
+464 D.I. Ngingas 17,88
+465 D.I. Denokan 18,00
+466 D.I. Grumbul Gede | 18,00
+467 D.I. Samberembe 18,00
+468 D.I. Kluwih 18,02
+469 D.I. Mriyan B 18,07
+470 D.I. Pedotan 18,21
+471 D.I. Ringin Putih 18,27
+472 D.I. Segaran 18,27
+473 D.I. Sikere 18,29
+474 D.I. Kenongo 18,45
+475 D.I. Kranji 18,52
+476 D.I. Medari 18,58
+477 D.I. Sawahan 18,72
+478 D.I. Talang 18,75
+479 D.I. Karanggayam 18,77
+480 D.I. Kemput II 18,97
+481 D.I. Sempu 19,00
+482 D.I. Tajen 19,02
+483 D.I. Kemadoh 19,18
+484 D.I. Kukusan 19,20
+485 D.I. Krasakan 19,20
+486 D.I. Sejaran 19,23
+487 D.I. Ngelo 19,23
+488 D.I. Druju 19,28
+489 D.I. Tanjung 19,34
+490 D.I. Sempu II 19,35
+491 D.I. Tegal tempel 19,36
+492 D.I. Dukuh II 19,50
+493 D.I. Pandan 19,50
+494 D.I. Malang II 19,56
+495 D.I. Pundong 19,60
+496 D.I. Caton 19,66
+497 D.I. Caton 19,66
+498 D.I. Temanten 19,67
+499 D.I. Ipik 19,69
+500 D.I. Blekik 19,76
+501 D.I. Jengkol 19,81
+502 D.I. Gempolan 19,91
+503 D.I. Pule I 19,96
+504 D.I. Tuk Dokringin 19,98
+505 D.I. Brisen 20,00
+506 D.I. Ciro 20,00
+507 D.I. Gayam | 20,00
+508 D.I. Kironajan 20,00
+509 D.I. Macanan 20,00
+510 D.I. Pete 20,00
+511 D.I. Purwo II 20,00
+512 D.I. Tegalsari 20,00
+513 D.I. Umbul (Keniten) 20
+#KANAN
+2097 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+514 D.I. Bendo 20,18
+515 D.I. Simping 20,20
+516 D.I. Wareng 20,30
+517 D.I. Gayam 20,36
+518 D.I. Kedongdowo 20,40
+519 D.I. Sangrahan II 20,44
+520 D.I. Banteng 20,45
+521 D.I. Petung 20,45
+522 D.I. Temon 20,48
+523 D.I. Turi 20,52
+524 D.I. Ngemplak 20,54
+525 D.I. Sipoleng 20,63
+526 D.I. Tunjungan I 20,71
+527 D.I. Karangnoko | 20,76
+528 D.I. Slingi 20,76
+529 D.I. Sorasan/Ngringin 20,86
+530 D.I. Guwo II 20,88
+531 D.I. Beji | 20,90
+532 D.I. Pundung 21,00
+533 D.I. Tunjungan II 21,00
+534 D.I. Turgosari 21,00
+535 D.I. Kembang 21,28
+536 D.I. Sengon A 21,38
+537 D.I. Cepit 21,49
+538 D.I. Gepit 21,49
+539 D.I. Gremeng 21,50
+540 D.I. Jatingisor 21,50
+541 D.I. Awar-Awar 21,56
+542 D.I. Kadipiro (Jembangan) 21,70
+543 D.I. Jengkol 21,74
+544 D.I. Rogobangsan 21,83
+545 D.I. Pucung 21,99
+546 D.I. Kules 21,99
+547 D.I. Pelem 22,00
+548 D.I. Sambiroto | 22,00
+549 D.I. Wadas 22,00
+550 D.I. Gupit 22,16
+551 D.I. Nayan III 22,19
+552 D.I. Kenaji 22,21
+553 D.I. Medari 22,21
+554 D.I. Gayam 22,24
+555 D.I. Ngentak 22,38
+556 D.I. Jonggrang 22,43
+557 D.I. Sambi 22,44
+558 D.I. Pandan 22,47
+559 D.I. Pondok II 22,50
+560 D.I. Mindi 22,60
+561 D.I. Temanten 22,63
+562 D.I. Mlesen 22,90
+563 D.I. Sigondang 23,00
+564 D.I. Babadan II 23,09
+565 D.I. Mangunan 23,09
+566 D.I. Sipolo 23,19
+567 D.I. Tuk Sibedug 23,25
+568 D.I. Tamanan 23,26
+569 D.I. Sembojo 23,27
+570 D.I. Nepen 23,30
+571 D.I. Kadilobo 23,35
+572 D.I. Kaliwaru 23,36
+573 D.I. Gedang 23,38
+574 D.I. Gejawan 24

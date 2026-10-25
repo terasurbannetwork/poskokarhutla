@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+131 D.I. Saba Tonga 180
+132 D.I. Saba Tonga 600
+133 D.I. Saba Tuncang 200
+134 D.I. Sayur Maincat 150
+135 D.I. Sayur Maincat 40
+136 D.I. Seno Seno 210
+137 D.I. Sianggunan 142
+138 D.I. Siantona 115
+139 D.I. Sibanggor 150
+140 D.I. Sihepeng 150
+141 D.I. Simakako 250
+142 D.I. Simanguntong 85
+143 D.I. Simpang Banyak 45
+144 D.I. Simpang Pining 52
+145 D.I. Simpang Talap 125
+146 D.I. Sinailang Bangun Sejati 150
+147 D.I. Singadodap 100
+148 D.I. Sinakuana 400
+149 D.I. Sinonoan 150
+150 D.I. Sipalangka 200
+151 D.I. Siraja Jompang 120
+152 D.I. Siulang aling 200
+153 D.I. Sopo Sorik 80
+154 D.I. Tambangan 150
+155 D.I. Tamiang 117
+156 D.I. Tangga Bosi kanan 100
+157 D.I. Tangga Bosi kiri 120
+158 D.I. Tano Bato 200
+159 D.I. Tapus 115
+160 D.I. Tarlola 95
+161 D.I. Tarutung 175
+162 D.I. Tebing Tinggi 125
+163 D.I. Tegal Sari 130
+164 D.I. Tobang 50
+165 D.I. Tolang 160
+166 D.I. Tombang Bustak 167
+167 D.I. Torusan 250
+| Kab. Nias 38 5.902
+1 D.I. Afia 60
+2 D.I. Ahedano 150
+3 D.I. Baruzo 120
+4 D.I. Faumbu 60
+5 D.I. Helelasara 75
+6 D.I. Hilibadalu 220
+7 D.I. Hilisebua 150
+8 D.I. Idano Lauri 132
+9 D.I. Mo'Awu 150
+10 D.I. Noho 25
+11 D.I. Siholi 300
+12 D.I. Simanani 90
+13 D.I. Sogaeadu 200
+14 D.I. Torifo 225
+15 D.I. Awoni Lauso 335
+16 D.I. Biouti 75
+17 D.I. Bozawa 50
+18 D.I. Bozihona 25
+19 D.I. Helefanikha 200
+20 D.I. Hiliadulo 150
+21 D.I. Hiliono Zega 100
+22 D.I. Hilisebua 150
+#KANAN
+82
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Idano Mola 75
+24 D.I. Laowo 100
+25 D.I. Lauri 85
+26 D.I. Maliwaa 300
+27 D.I. Moambolo 85
+28 D.I. Mondrali 225
+29 D.I. Nalawo 225
+30 D.I. Sifaoroasi/Bulumaoso 300
+31 D.I. Sikhula Deu 200
+32 D.I. Sinizi 260
+33 D.I. Sisake 110
+34 D.I. Sisarahili 175
+35 D.I. Taimboli 200
+36 D.I. Tetegeona'ai 240
+37 D.I. Uluwi 80
+38 D.I. Zumuzu 200
+m Kab. Nias Selatan 113 10.787
+1 D.I. Bo'u 150
+2 D.I. Edanau 200
+3 D.I. Hilifalawu 400
+4 D.I. Idano Zala 390
+5 D.I. Lato Sebua 100
+6 D.I. Laza Garamba 250
+7 D.I. Leuwo 100
+8 D.I. Lolo Moyo 60
+9 D.I. Losu II 150
+10 D.I. Mbombo Laehuwa 75
+11 D.I. Meso 150
+12 D.I. Otu'an 374
+13 D.I. Salamate 300
+14 D.I. Saraina 150
+15 D.I. Sialikhe 125
+16 D.I. Siwalawa 800
+17 D.I. Taro'oi Ala 60
+18 D.I. Adulo 100
+19 D.I. Awono 30
+20 D.I. Baikoro 75
+21 D.I. Batu Awolo 50
+22 D.I. Batu Nitaru'O 100
+23 D.I. Batu Nitaru'O 100
+24 D.I. Bawonifaoso 75
+25 D.I. Bohalu 50
+26 D.I. Boli 150
+27 D.I. Boli 60
+28 D.I. Bonalita 20
+29 D.I. Boriwi 150
+30 D.I. Bou Nene 250
+31 D.I. Buluko 20
+32 D.I. Bunio 25
+33 D.I. Fahurusa 56
+34 D.I. Fana 85
+35 D.I. Faohe 50
+36 D.I. Fasui Laza 100
+37 D.I. Fayo 25
+38 D.I. Fayo 30
+39 D.I. Gaele-Gaele 150
+40 D.I. Gui-Gui 25
+41 D.I. Guliho 125
+42 D.I. Hilifadolo 30
+43 D.I. Hilimbowo 75

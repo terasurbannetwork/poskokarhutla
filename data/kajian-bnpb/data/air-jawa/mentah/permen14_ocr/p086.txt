@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+14 D.I. Silimbat 50
+15 D.I. Silubung 37
+16 D.I. Siriaon Buhit 165
+17 D.I. Sisogot 75
+18 D.I. Sitete 107
+19 D.I. Siugan-Ugan 135
+20 D.I. Tamba 72
+s Kab. Serdana Bedaaai 35 9.936
+1 D.I. Bukit Cermin 800
+2 D.I. Cinta Kasih 360
+3 D.I. Apras 100
+4 D.I. Aras Panjang 325
+5 D.I. Baron 70
+6 D.I. Binjai 125
+7 D.I. Dolok Masango 400
+8 D.I. Durian Kondot 120
+9 D.I. Juhar 500
+10 D.I. Kampung Baru 200
+11 D.I. Kayu Besar 300
+12 D.I. Kerapuh 75
+13 D.I. Kulasar 60
+14 D.I. Malasori 100
+15 D.I. Pagar Manik 125
+16 D.I. Pamah 81
+17 D.I. Paritokan 60
+18 D.I. Paya Mabar 300
+19 D.I. Pematang Cermai 600
+20 D.I. Pematang Ganjang 630
+21 D.I. Pematang Terang 700
+22 D.I. Penggalangan 250
+23 D.I. Penggalian 250
+24 D.I. Pertambatan 145
+25 D.I. Sei Buaya 70
+26 D.I. Sei Martebing 250
+27 D.I. Sei Parit 250
+28 D.I. Sei Pinang 600
+29 D.I. Silau Merawan 150
+30 D.I. Simalas 45
+31 D.I. Siria-Ria Blok IV 700
+32 D.I. Suka Damai 300
+33 D.I. Sumber Rejo 45
+34 D.I. Tapian Nauli 150
+35 D.I. Tebing Tinggi 700
+t Kab. Simalunaun 158 31.363
+1 D.I. Afd III Bah Jambi 160
+2 D.I. Afd C Bah Kisat 55
+3 D.I. Afd Naga Huta 74
+4 D.I. Ambarisan 100
+5 D.I. Andarasih 40
+6 D.I. Bah Birong Hulu 90
+7 D.I. Bah Bolon 91
+8 D.I. Bah Bulawan 222
+9 D.I. Bah Halat I-II 280
+10 D.I. Bah Hapal Raya 55
+11 D.I. Bah Hilang 70
+12 D.I. Bah Kisat/Dolok Maraja 760
+13 D.I. Bah Korah I/Simpang Panel 406
+14 D.I. Bah Lombut III 833
+15 D.I. Bah Sampuran 160
+#KANAN
+36
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+16 D.I. Bah Tangan I-II 900
+17 D.I. Bah Tongguran III Ht. Bayu 754
+18 D.I. Bahal Gajah/Tiga Bolon 430
+19 D.I. Bahung Kahean 235
+20 D.I. Balata Ujung Raja 340
+21 D.I. Bandar Huta 200
+22 D.I. Bandar Malela/Silau Malela 197
+23 D.I. Bandar Tongah Bawah/Bah Gunung 556
+24 D.I. Banua 203
+25 D.I. Bawang Siursa/Bdr. Jawa 199
+26 D.I. Bosar Bayu 280
+27 D.I. Bosar Majawa 250
+28 D.I. Bt. Ill S.Malela/Bt. Tomok 142
+29 D.I. Bt. IV Pantoan/Laras II 760
+30 D.I. Buntu Huluan 10
+31 D.I. Buntu Turunan 280
+32 D.I. Cingkes 100
+33 D.I. Dalik Raya 120
+34 D.I. Dolok Malela/Bandan 444
+35 D.I. Dolok Marlawan 260
+36 D.I. Dolok Parmonangan 75
+37 D.I. G. Simalungun/Panuho 120
+38 D.I. Gajing Masilom 123
+39 D.I. Gunung Bosar 120
+40 D.I. Hataran Bayu 156
+41 D.I. Hataran Jawa 160
+42 D.I. Huta Dolok 150
+43 D.I. Huta Iling 177
+44 D.I. Huta Imbaru/Huta Dipar 165
+45 D.I. Huta Parik 130
+46 D.I. Jalangan Siborna 150
+47 D.I. Jawa Maligas/M.Bayu 290
+48 D.I. Jawa Tongah 300
+49 D.I. Jorlang Hataran 162
+50 D.I. Jorlang Huluan 60
+51 D.I. Kampung Melayu/Hubuan 130
+52 D.I. Kampung Sulin 147
+53 D.I. Kandang Lombu/Huta Urung 160
+54 D.I. Karang Anyer 247
+55 D.I. Karang Bangun / Cempaka 80
+56 D.I. Kasindir 142
+57 D.I. Kuala Janji/Siligason 350
+58 D.I. Lumpat Nahirik 20
+59 D.I. Maligas Bayu 212
+60 D.I. Maligas Tongah 400
+61 D.I. Mallopot 305
+62 D.I. Mandohu 87
+63 D.I. Manik Hataran 420
+64 D.I. Manik Rejo 90
+65 D.I. Manik Silau 142
+66 D.I. Manrayap 86
+67 D.I. Margo Mulyo 171
+68 D.I. Mariah Jambi 25
+69 D.I. Marihat Baris 46
+70 D.I. Marihat Dolok/T. Motung 361
+71 D.I. Marihat Hulu 65
+72 D.I. Marihat Lela 80
+73 D.I. Marihat Raja I-II 410
+74 D.I. Marihat Raja Tombak 50
+75 D.I. Marjanji Asih 440
+76 D.I. Marmosi 90

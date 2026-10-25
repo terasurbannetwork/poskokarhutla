@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+20 5, No.638 544
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+102 D.LA.T. Pringgabaya 52- II 20
+103 D.LA.T. Pringgabaya 45 - II 6
+104 D.LA.T. Pringgabaya 48 - II 20
+105 D.LA.T. Pringgabaya 53- III 20
+106 D.L.A.T. Pringgabaya 16- III 18
+107 D.LA.T. Sambelia 125 - 11 10
+108 D.IL.A.T. Sambelia 123- 11 9
+109 D.IL.A.T. Sambelia 122-11 16
+110 D.LA.T. Sambelia 132- 11 9
+111 D.LA.T. Sambelia 130 - III 9
+112 D.LA.T. Sambelia 121-111 10
+113 D.LA.T. Sambelia 120- II 13
+114 D.LA.T. Sukadana SG. 128 10
+115 D.LA.T. Aikmel 2-11 20
+116 D.LA.T. Pringgabaya 26 - III 22
+117 D.LA.T. Pringgabaya 46 - II 20
+118 D.LA.T. Pringgabaya 35 - III 38
+119 D.LA.T. Pringgabaya 37 - III 23
+120 D.LA.T. Pringgabaya 32- III 38
+121 D.LA.T. Pringgabaya 34 - III 37
+122 D.LA.T. Pringgabaya 43-11 23
+123 D.LA.T. Pringgabaya 27-11 20
+124 D.LA.T. Pringgabaya 78 - III 28
+125 D.LA.T. Pringgabaya 15- II 20
+126 D.LA.T. Pringgabaya 49 - II 25
+127 D.LA.T. Pringgabaya 22-11 23
+128 D.LA.T. Pringgabaya 155 - III 26
+129 D.LA.T. Sambelia 115-1I 12
+130 D.LA.T. Sambelia 113- 11 20
+131 D.LA.T. Sambelia 143- 11 28
+132 D.LA.T. Sambelia 119- 11 20
+133 D.LA.T. Sambelia 154 - III 20
+134 D.LA.T. Sambelia 108 - III 18
+135 D.LA.T. Sambelia 126 - II 20
+136 D.LA.T. Sambelia 135 - III 29
+137 D.LA.T. Sambelia 134 - III 13
+138 D.LA.T. Sambelia 136 - III 20
+139 D.LA.T. Sambelia 118- 11 20
+140 D.LA.T. Pringgabaya 14- II 15
+141 D.LA.T. Pringgabaya 13- II 14
+142 D.LA.T. Pringgabaya 12-11 18
+143 D.LA.T. Pringgabaya 64 - III 12
+144 D.LA.T. Pringgabaya 61 - III 19
+145 D.LA.T. Pringgabaya 62- III 17
+146 D.L.A.T. Pringgabaya 63 - II 9
+147 D.LA.T. Pringgabaya 56.A - III 20
+148 D.LA.T. Sambelia 129- 11 11
+f Kab. Sumbawa 77 1.290
+
+1 D.LA.T. Lamenta 20
+
+2 D.LA.T. Lunyuk Ode 36
+
+3 D.LA.T. Lunyuk Ode 34
+
+4 D.LA.T. Lunyuk Ode 33
+
+5 D.LA.T. Lunyuk Rea 35
+
+6 D.LA.T. Jurumapin SPS 001 21
+
+7 D.LA.T. Stowebrang SPS 003 11
+
+8 D.ILA.T. Stowebrang SPS 004 13
+
+9 D.LA.T. Stowebrang SPS 007 16
+10 D.LA.T. Jurumapin SPS 008 17
+11 D.LA.T. Jurumapin SPS 027 10
+12 D.LA.T. Jurumapin SPS 028 17

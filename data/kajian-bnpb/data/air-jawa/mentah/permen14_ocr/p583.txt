@@ -1,0 +1,55 @@
+#TATA_LETAK satu-tabel lebar=2480
+583 2015, No.638
+Status Daerah Irigasi Yang Menjadi Wewenang Dan Targgung Jaw ab Pemerintah Kabupaten/Kota
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Pompa Sumur D.. (Ha)
+Il PROVINSI BANTEN 11 1.283
+a Kab. Lebak 11 1.283
+1 D.I. Pompa Kolelet Wetan 180
+2 D.I. Pompa Pabuaran 200
+3 D.I. Pompa Bojong Cae 100
+4 D.I. Pompa Bojong Leles 150
+5 D.I. Pompa Citangkap 100
+6 D.I. Pompa Cibeureum 100
+7 D.I. Pompa Cikulur 10
+8 D.I. Pompa Gunung Anten 140
+9 D.I. Pompa Sudamanik 120
+10 D.I. Pompa Karyajaya 75
+11 D.I. Pompa Keramatjaya 108
+II PROVINSI DIY 3 45
+a Kab. Gununa Kidul 3 45
+1 D.I. Pa. Jebul 25
+2 D.I. Pa. Karangrejek 10
+3 D.I. Pa. Gledak 10
+| PROVINSI JAWA TIMUR 23 3.870
+a Kab. Boioneaoro 19 1.678
+1 D.I. Banjarjo 30
+2 D.I. Tapelan 60
+3 D.I. Payaman 72
+4 D.I. Kabalan 97
+5 D.I. Kalisari 85
+6 D.I. Leran 40
+7 D.I. Mojorejo 65
+8 D.I. Mulyoagung 77
+9 D.I. Mulyorejo 168
+10 D.I. Ngulanan 70
+11 D.I. Ngringinrejo 65
+12 D.I. Ngraho 144
+13 D.I. Pilang Gede 98
+14 D.I. Sarirejo 162
+15 D.I. Sudu 141
+16 D.I. Tanggungan 40
+17 D.I. Tebon 50
+18 D.I. Dengok 104
+19 D.I. Tulungrejo 110
+b Kab. Lamonaan 1 797
+1 D.I. Karanggeneng 797
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Pompa Sumur D.I. (Ha)
+c Kab. Tuban 3 1.395
+1 D.I. Karangtinoto 500
+2 D.I. Bandungrejo 300
+3 D.I. Klotok 595
+TOTAL 37 5.198

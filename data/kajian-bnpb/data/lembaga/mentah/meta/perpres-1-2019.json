@@ -1,0 +1,23 @@
+{
+ "id": "100440",
+ "url": "https://peraturan.bpk.go.id/Details/100440/perpres-no-1-tahun-2019",
+ "judul": "Peraturan Presiden (Perpres) Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
+ "nomor": "1 Tahun 2019 Badan Nasional Penanggulangan Bencana MATERI POKOK PERATURAN Abstrak METADATA PERATURAN Tipe Dokumen Peraturan Perundang-undangan Judul Peraturan Presiden (Perpres) Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana T.E.U. Indonesia, Pemerintah Pusat Nomor 1",
+ "tanggal_penetapan": "01 Januari 2019",
+ "tanggal_berlaku": "08 Januari 2019",
+ "sumber": "LN.2019/NO.1, LL SETKAB : 25 HLM.",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/91061/Perpres%20Nomor%201%20Tahun%202019.pdf"
+ ],
+ "status_peraturan": "Diubah dengan : PERPRES No. 29 Tahun 2021 tentang Perubahan atas Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana Mencabut : PERPRES No. 8 Tahun 2008 tentang Badan Nasional Penanggulangan Bencana",
+ "abstrak": "2019 Peraturan Presiden (PERPRES) NO. 1, LN.2019/NO.1, LL SETKAB : 25 HLM. Peraturan Presiden (PERPRES) TENTANG Badan Nasional Penanggulangan Bencana ABSTRAK: CATATAN: Peraturan Presiden (PERPRES) ini mulai berlaku pada tanggal 08 Januari 2019.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/91061/Perpres%20Nomor%201%20Tahun%202019.pdf",
+ "pdf_sha1": "207b29a643bbdf94ef01af7e548a22f721da5a42",
+ "pdf_bytes": 1098633,
+ "sid": "perpres-1-2019",
+ "halaman_total": 25,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

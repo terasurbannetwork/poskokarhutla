@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+47 D.I. Bdr. Tandikat Duku 90
+48 D.I. Batang Galam Sikucur 29
+49 D.I. Alahan Tabek Sikucur 29
+50 D.I. Kamp. Tanjung Sikucur 38
+51 D.I. Bukit Gonggang Campago 25
+52 D.I. Bdr. Simpang IV Toboh 32
+53 D.I. Kampung Sagik 139
+54 D.I. Bdr. Pili Kudu 50
+55 D.I. Bdr. Lubuk Gajah Gunung 50
+56 D.I. Bdr. Gadang Ganting 11
+57 D.I. Tanah Taban 4
+58 D.I. Rimbo Piatu 38
+59 D.I. Lubuk Langik 27
+60 D.I. Sungai Kemuning 50
+61 D.I. Bdr. Batang Kalu 134
+62 D.I. Bdr. Sianik 25
+63 D.I. Anai Sasapan 283
+64 D.I. Bdr. Baru 201
+65 D.I. Talao 52
+66 D.I. Batang Tarok 40
+67 D.I. Sei. Kalu 86
+68 D.I. Sakayan Paku 137
+69 D.I. Tanah Taban 94
+70 D.I. Bdr. Anduring 60
+71 D.I. Lubuk Bunta 51
+72 D.I. Sigabue Toboh Ketek 47
+73 D.I. Bandar Ganting 40
+74 D.I. Ampang Sipinang 46
+75 D.I. Kayu Balam 148
+76 D.I. Kamp. Koto/Btg. Kapecong 15
+77 D.I. Tanah Runtuh 16
+78 D.I. Balik Bukit 87
+79 D.I. Lubuk Guci 4
+80 D.I. Bdr. Napa Nan Rangkah 363
+81 D.I. Bd. Baru | 186
+82 D.I. Bd. Baru II 179
+83 D.I. Bdr. Tandikat Asli 110
+84 D.I. Bdr. Sawah Laweh 105
+85 D.I. Bdr. Sawah Dibaruah 15
+86 D.I. Bdr. Paraman Jambu 48
+87 D.I. Bdr. Lareh Nan Panjang 52
+88 D.I. Lubuk Duku 46
+89 D.I. Sawah Dirimbo 50
+90 D.I. Ujung Gunung 995
+91 D.I. Lembah Duku 241
+92 D.I. Sungai Langkok 500
+93 D.I. Bdr. Naboyan 450
+94 D.I. Bdr. Rimbo Kabun 300
+95 D.I. Ampang Sungai Batung 250
+96 D.I. Ampangan Durakan 250
+97 D.I. Bdr. Batang Pakotan 350
+98 D.I. Sungai Kabun 350
+99 D.I. Sungai Abu 800
+100 D.I. Ampangan Aie Toboh 400
+101 D.I. Batang Ampalam 125
+102 D.I. Bdr. Turi 90
+103 D.I. Toboh Parupuk 300
+104 D.I. Lubuk Pauh 400
+105 D.I. Salibutan 85
+106 D.I. Bdr. Gunung 117
+107 D.I. Maransi 213
+#KANAN
+99 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+108 D.I. Kasang | 414
+109 D.I. Sungai Sarik 196
+110 D.I. Batang Salisikan 250
+111 D.I. Anak Air Kuburan 47
+112 D.I. Anak Air Surau Anduring 46
+113 D.I. Bdr. Bukit Sampan 50
+114 D.I. Jembatan Jangau 49
+115 D.I. Bdr. Karan 28
+116 D.I. Sawah Bancah 48
+117 D.I. Sawah Bukareh 46
+118 D.I. Sawah Laweh 25
+119 D.I. Sawah Laweh Anak Air 44
+120 D.I. Surau Kincir 28
+121 D.I. Bdr. Tanpabanan 28
+122 D.I. Talang Kacang 46
+123 D.I. Tarok Solok 65
+124 D.I. Bdr. Bukit Lintang 20
+125 D.I. Bdr. Batang Balirik 30
+126 D.I. Bdr. Basi Tujuh 43
+127 D.I. Bdr. Bukik Calik 45
+128 D.I. Bdr. Batu Koto 48
+129 D.I. Bdr. Kajai 42
+130 D.I. Bdr. Koto Bangko 55
+131 D.I. Kampung Jambu 40
+132 D.I. Kampung Lereng 55
+133 D.I. Koto Runcing 47
+134 D.I. Bdr. Kalampaian 47
+135 D.I. Bdr. Kampung Madang 65
+136 D.I. Bdr. Lubuak Ukir 30
+137 D.I. Bdr. Layang-Layang 30
+138 D.I. Bdr. Labuh Biduak 25
+139 D.I. Bdr. Musajik 45
+140 D.I. Bdr. Surau Nago 44
+141 D.I. Bdr. Sungai Limau 25
+142 D.I. Bdr. Tampak Talang 25
+143 D.I. Bdr. Sungai Talang 25
+144 D.I. Anak Air Kijang 42
+145 D.I. Anak Air Panyurek 30
+146 D.I. Anak Air Sipinang 25
+147 D.I. Bdr. Anak Air Batung 50
+148 D.I. Bdr. Ampangan Gadang 47
+149 D.I. Bdr. Baluko Tuo 62
+150 D.I. Bdr. Burai-Burai 30
+151 D.I. Bdr. Batu Asahan 49
+152 D.I. Bdr. Caniago 29
+153 D.I. Durian Taba 35
+154 D.I. Durian Basi 30
+155 D.I. Durian Randah 49
+156 D.I. Bdr. Ganting II 48
+157 D.I. Kampung Jambu 40
+158 D.I. Kampung Sundai 28
+159 D.I. Kampung Punik 42
+160 D.I. Bdr. Koto Bimo 48
+161 D.I. Bdr. Koto 55
+162 D.I. Bdr. Kemuning 33
+163 D.I. Lubuak Tiris 30
+164 D.I. Lubuk Kepala Banda 45
+165 D.I. Bdr. Mingkudu 30
+166 D.I. Bdr. Piti-Piti 47
+167 D.I. Bdr. Ponggong 49
+168 D.I. Bdr. Sikumbang 52

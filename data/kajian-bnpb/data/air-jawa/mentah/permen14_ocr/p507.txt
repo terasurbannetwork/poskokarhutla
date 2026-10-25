@@ -1,0 +1,79 @@
+#TATA_LETAK satu-tabel lebar=2480
+507 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+15 D.LA.T. Sp. Karang Duwet I Karangrejek 40
+16 D.LA.T. Sp. Karang Duwet II Karangrejek 25
+17 D.LA.T. Sp. Karang Sari 37
+18 D.LA.T. Sp. Karang Talun 51
+19 D.LA.T. Sp. Karang Wetan 62
+20 D.LA.T. Sp. Kelor 30
+21 D.LA.T. Sp. Kenteng 35
+22 D.LA.T. Sp. Krambil Duwur 33
+23 D.LA.T. Sp. Ledok Sari 15
+24 D.LA.T. Sp. Munggur 40
+25 D.LA.T. Sp. Ngawar Awar 10
+26 D.LA.T. Sp. Ngeposari 36
+27 D.LA.T. Sp. Ngunut I 28
+28 D.LA.T. Sp. Ngunut II 28
+29 D.LA.T. Sp. Playen I 25
+30 D.LA.T. Sp. Playen II 23
+31 D.LA.T. Sp. Plumbungan 41
+32 D.LA.T. Sp. Sambirejo I 35
+33 D.LA.T. Sp. Sambirejo II 39
+34 D.LA.T. Sp. Sayangan 30
+35 D.LA.T. Sp. Selang 26
+36 D.LA.T. Sp. Siraman 50
+37 D.LA.T. Sp. Siyono 40
+38 D.LA.T. Sp. Tanjung 30
+39 D.LA.T. Sp. Temu 40
+40 D.LA.T. Sp. Baleharjo Lor 45
+41 D.LA.T. Sp. Bolo Dukuh Lor 35
+42 D.LA.T. Sp. Bulak Belik 53
+43 D.LA.T. Sp. Karang Duwet Karangmojo 31
+44 D.LA.T. Sp. Karang Gumuk 30
+45 D.LA.T. Sp. Kerjo 41
+46 D.LA.T. Sp. Mengger 30
+47 D.LA.T. Sp. Ngawis 20
+48 D.LA.T. Sp. Ngebrak 15
+49 D.LA.T. Sp. Ngipak | 32
+50 D.LA.T. Sp. Ngipak II 42
+51 D.LA.T. Sp. Slametan 40
+52 D.LA.T. Sp. Srimpi 10
+53 D.LA.T. Sp. Sumber Wojo 40
+54 D.LA.T. Sp. Susukan 35
+55 D.LA.T. Sp. Bolo Blarangan 40
+
+c Kab. Kulon Proao 3 50
+
+1 D.LA.T. Brosot TW 010 20
+
+2 D.LA.T. Cepitan/Wijimulyo TW 014 15
+
+3 D.LA.T. Tritis/ Banjararum TW 016 15
+
+d Kab. Sleman 75 3.861
+
+1 D.LA.T. Gunung Gebang A TW 001 A 70
+
+2 D.LA.T. Gunung Gebang B TW 001B 75
+
+3 D.LA.T. Bromonilan TW 002 75
+
+4 D.LA.T. Tegalrejo A TW 003 A 70
+
+5 D.LA.T. Tegalrejo B TW 003B 60
+
+6 D.LA.T. Sidoagung TW 004 45
+
+7 D.LA.T. Mangsel/Kernen TW 005 60
+
+8 D.LA.T. Candirejo A TW 006 A 75
+
+9 D.LA.T. Candirejo B TW 006 B 15
+10 D.LA.T. Krendosari TW 007 60
+11 D.LA.T. Pokoh TW 008 75
+12 D.LA.T. Sawahan TW 009 60
+13 D.LA.T. Morangan A TW 010A 37

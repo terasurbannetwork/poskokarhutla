@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+284 D.I. Wae Poru 50
+285 D.I. Wae Pumpung 150
+286 D.I. Wae Purang Kawak 60
+287 D.I. Wae Rabat 75
+288 D.I. Wae Rabu 90
+289 D.I. Wae Racang/Ngeles I 100
+290 D.I. Wae Raci 100
+291 D.I. Wae Rage 100
+292 D.I. Wae Raho 50
+293 D.I. Wae Raja 100
+294 D.I. Wae Rajo 100
+295 D.I. Wae Rake 100
+296 D.I. Wae Rangat 100
+297 D.I. Wae Rasang 100
+298 D.I. Wae Rea 50
+299 D.I. Wae Rea/Ara 100
+300 D.I. Wae Rego 100
+301 D.I. Wae Rengge 50
+302 D.I. Wae Rengge I 100
+303 D.I. Wae Renaae II 100
+304 D.I. Wae Reno 150
+305 D.I. Wae Reno II 100
+306 D.I. Wae Rewus 40
+307 D.I. Wae Rewus 40
+308 D.I. Wae Rii II 150
+309 D.I. Wae Robeng 100
+310 D.I. Wae Rumbang 100
+311 D.I. Wae Rundang 100
+312 D.I. Wae Rupuk 25
+313 D.I. Wae Rutang 100
+314 D.I. Wae Rutung 100
+315 D.I. Wae Sampeng 50
+316 D.I. Wae Sangkong 100
+317 D.I. Wae Sanjong 100
+318 D.I. Wae Sapo Nara 50
+319 D.I. Wae Sar | 100
+320 D.I. Wae Satar Lewe 100
+321 D.I. Wae Satar Mese 250
+322 D.I. Wae Sawang 50
+323 D.I. Wae Sawo 65
+324 D.I. Wae Sepang 65
+325 D.I. Wae Serang 25
+326 D.I. Wae Sipi 20
+327 D.I. Wae Siret 95
+328 D.I. Wae Sok Rutung 100
+329 D.I. Wae Tale 25
+330 D.I. Wae Tando 50
+331 D.I. Wae Tanggar 100
+332 D.I. Wae Tarong 100
+333 D.I. Wae Tawa 50
+334 D.I. Wae Tehek 100
+335 D.I. Wae Teku 25
+336 D.I. Wae Telang 50
+337 D.I. Wae Temak Brit 100
+338 D.I. Wae Tembur 35
+339 D.I. Wae Tenda 80
+340 D.I. Wae Tene 85
+341 D.I. Wae Teno 75
+342 D.I. Wae Timbu 100
+343 D.I. Wae Tueng 100
+344 D.I. Wae Tumbang 100
+#KANAN
+389 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+345 D.I. Wae Tuna 75
+346 D.I. Wae Ukeh Manuh 50
+347 D.I. Wae Ulu 45
+348 D.I. Wae Ungkang 100
+349 D.I. Wae Uwu 75
+350 D.I. Wae Wa'e/Yae Wako 100
+351 D.I. Wae Walang 100
+352 D.I. Wae Wani 40
+353 D.I. Wae Warang 50
+354 D.I. Wae Waso 100
+355 D.I. Wae Welu 50
+356 D.I. Wae Welu 50
+357 D.I. Wae Weor 200
+358 D.I. Wae Weter I 75
+359 D.I. Wae Weter II 100
+360 D.I. Wae Woor 100
+361 D.I. Wae Worok 50
+362 D.I. Wae Wunis 100
+i Kab. Manaaarai Timur 335 14.934
+1 D.I. Wae Mbaling 226
+2 D.I. Wae Wau 78
+3 D.I. Bea Lengkorong 10
+4 D.I. Buntal 811
+5 D.I. Cunga Telo 10
+6 D.I. Gorong 5
+7 D.I. Inahasa 50
+8 D.I. Kembo 9
+9 D.I. Lengko Lendong 7
+10 D.I. Liang Leso 15
+11 D.I. Lok Nio 7
+12 D.I. Lujan 8
+13 D.I. Nenu 11
+14 D.I. Raba Pering 6
+15 D.I. Sambi Jawa 11
+16 D.I. Satar Waso 6
+17 D.I. Tija III 180
+18 D.I. Tiwu Cebong 3
+19 D.I. Tiwu Roang 126
+20 D.I. Tiwu Sengit 480
+21 D.I. Tolo Moa 3
+22 D.I. Wae Maras 110
+23 D.I. Wae Nawu Hilir 50
+24 D.I. Wae Pateng 5
+25 D.I. Wae Ara 60
+26 D.I. Wae Bakok 75
+27 D.I. Wae Bea Reda 15
+28 D.I. Wae Bealalang 6
+29 D.I. Wae Bejan 12
+30 D.I. Wae Belang 11
+31 D.I. Wae Belang 15
+32 D.I. Wae Bentang 60
+33 D.I. Wae Bobo 150
+34 D.I. Wae Bobo II 50
+35 D.I. Wae Boko 20
+36 D.I. Wae Bola 8
+37 D.I. Wae Boru 12
+38 D.I. Wae Bron 35
+39 D.I. Wae Butang Nggali 30
+40 D.I. Wae Cacor 5
+41 D.I. Wae Cebu 65

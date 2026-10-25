@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+276 D.I. Tingal 15
+277 D.I. Tlogo 20
+278 D.I. Tloyo (MA) 10
+279 D.I. Trocoh 157
+280 D.I. Tuk Mulyo (MA) 55
+281 D.I. Tuk Sulon 25
+282 D.I. Waduk 197
+283 D.I. Walangkerek 79
+284 D.I. Watu Bucu 37
+285 D.I. Watu Tunggal 34
+286 D.I. Wunut 20
+287 D.I. Aji Bandunggede 166
+288 D.I. Aji Plumbon 30
+289 D.I. Aji Tegowanuh 48
+290 D.I. Aji Watubuan 66
+291 D.I. Ares 55
+292 D.I. Banaran 19
+293 D.I. Bangkong Gandulan 102
+294 D.I. Bangkong Ketitang 6
+295 D.I. Banjaran Banjarsari 44
+296 D.I. Beji Kandangan (MA) 17
+297 D.I. Belik Bojonegoro 52
+298 D.I. Belik Kutoanyar 33
+299 D.I. Belik Tuksari 17
+300 D.I. Belikan 10
+301 D.I. Bendan 3
+302 D.I. Bendo Balak 5
+303 D.I. Blarakan 53
+304 D.I. Bono II 30
+305 D.I. Brangsong 1
+306 D.I. Brejen (MA) 2
+307 D.I. Bulu 31
+308 D.I. Bulung (MA) 5
+309 D.I. Centong 20
+310 D.I. Curuk 10
+311 D.I. Dalan 5
+312 D.I. Dalangan 5
+313 D.I. Dawuhan 39
+314 D.I. Dede 5
+315 D.I. Depok (MA) 1
+316 D.I. Dung Jambu 15
+317 D.I. Dunglawang 6
+318 D.I. Dungtuk (MA) 8
+319 D.I. Galombo 12
+320 D.I. Gatong 20
+321 D.I. Gedegan 7
+322 D.I. Gedengan 10
+323 D.I. Gelaran | 15
+324 D.I. Gelaran II 12
+325 D.I. Gemblong 34
+326 D.I. Gendoroto 22
+327 D.I. Gerjen II (MA) 5
+328 D.I. Gondangan 127
+329 D.I. Gunung Besi 27
+330 D.I. Gunung Kendil 6
+331 D.I. Guwolowo 15
+332 D.I. Jalen (MA) 1
+333 D.I. Jamban 4
+334 D.I. Janggor (MA) 3
+335 D.I. Jarakan 6
+336 D.I. Jengkolan 48
+#KANAN
+278
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+337 D.I. Jengkolan (MA) 19
+338 D.I. Jlamprang 14
+339 D.I. Jlegong (MA) 1
+340 D.I. Jlegong Bejen 27
+341 D.I. Jlegong Giripurno 8
+342 D.I. Jurang 3
+343 D.I. Kajangan 10
+344 D.I. Kali Anget (MA) 25
+345 D.I. Kali Elo (MA) 3
+346 D.I. Kali Elo Kandangan 11
+347 D.I. Kali Guwer 23
+348 D.I. Kali Jengkol (MA) 27
+349 D.I. Kali Kulon 5
+350 D.I. Kali Langgar (MA) 2
+351 D.I. Kali Lor 15
+352 D.I. Kali Mangut (MA) 3
+353 D.I. Kali Paing 36
+354 D.I. Kali Reco 9
+355 D.I. Kali Reco (MA) 6
+356 D.I. Kaligondang 3
+357 D.I. Kalitelon 16
+358 D.I. Kebraman (MA) 8
+359 D.I. Kedung Gombak 26
+360 D.I. Kedung Kalong 44
+361 D.I. Kedung Migit 12
+362 D.I. Kedung Miri 38
+363 D.I. Kedung Ploso 9
+364 D.I. Kembang Tening 38
+365 D.I. Kemijing 20
+366 D.I. Keteri 26
+367 D.I. Kleyangan (MA) 7
+368 D.I. Kranggan 16
+369 D.I. Krembangan 9
+370 D.I. Krincing (MA) 10
+371 D.I. Lempong Bulu 20
+372 D.I. Madu Koyan 11
+373 D.I. Makamdowo 3
+374 D.I. Malangan 13
+375 D.I. Mandang 10
+376 D.I. Manggong 2
+377 D.I. Mudal 40
+378 D.I. Murung 92
+379 D.I. Nduren 7
+380 D.I. Ngaditirto 13
+381 D.I. Ngaglik 15
+382 D.I. Ngampel 9
+383 D.I. Ngleses 8
+384 D.I. Nirboyo 20
+385 D.I. Peningpengilon 6
+386 D.I. Pondoh 20
+387 D.I. Pringkudo 25
+388 D.I. Pucung (MA) 9
+389 D.I. Pucung I 13
+390 D.I. Pucung II 25
+391 D.I. Pupu/Kaligaeng 41
+392 D.I. Rancah 5
+393 D.I. Sabrang 15
+394 D.I. Sabuk 20
+395 D.I. Sambeng Lempuyang (MA) 8
+396 D.I. Sampel 30
+397 D.I. Sandong 5

@@ -1,0 +1,77 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 549
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+82 D.LA.T. Dsn. Batu Keruk 61-I 12
+83 D.LA.T. Dsn. Lokok Mumbul 44-1 28
+84 D.LA.T. Dsn. Luk 36-1 18
+85 D.LA.T. Dsn. Lempenge 21-1 20
+86 D.LA.T. Dsn. Rempek 31-1 27
+87 D.LA.T. Dsn. Rempek 33-1 18
+88 D.LA.T. Dsn. Sembaro 6-1 21
+89 D.LA.T. Dsn Sembaro 7-1 33
+90 D.LA.T. Dsn. Sengkukun 12-1 22
+91 D.LA.T. Dsn. Papak 9-1 32
+92 D.LA.T. Dsn. Sembaro 4-1 25
+93 D.LA.T. Dsn. Beraringan 14-1 23
+94 D.LA.T. Dsn. Cupek 3-1 22
+95 D.LA.T. Dsn. Sambirindang 30-1 16
+
+d Kab. Lombok Tenaah 2 32
+
+1 D.LA.T. Dsn. Kateng 3-1 14
+
+2 D.LA.T. Dsn. Rajan 4-1 18
+
+e Kab. Lombok Timur 148 2.543
+
+1 D.LA.T. Pringgabaya 39 - 12
+
+2 D.LA.T. Pringgabaya 42-11 12
+
+3 D.LA.T. Pringgabaya 4A- III 12
+
+4 D.LA.T. Pringgabaya B. 031 12
+
+5 D.LA.T. Pringgabaya B. 032 12
+
+6 D.LA.T. Pringgabaya B. 033 12
+
+7 D.LA.T. Pringgabaya B. 034 12
+
+8 D.LA.T. Pringgabaya 40-11 12
+
+9 D.LA.T. Pringgabaya 105 - II 22
+10 D.LA.T. Pringgabaya 101 - II 12
+11 D.LA.T. Labuhan Lombok BT. 053 22
+12 D.LA.T. Labuhan Lombok BT. 058 12
+13 D.LA.T. Pringgabaya 104 - III 8
+14 D.LA.T. Pringgabaya 94-11 16
+15 D.LA.T. Pringgabaya 95 - III 15
+16 D.LA.T. Pringgabaya 93 - III 22
+17 D.LA.T. Pringgabaya 92- II 22
+18 D.LA.T. Pringgabaya 90 - III 18
+19 D.LA.T. Pringgabaya 21 - III 23
+20 D.LA.T. Pringgabaya 96 - III 22
+21 D.LA.T. Pringgabaya 89 - III 22
+22 D.LA.T. Pringgabaya 88- III 24
+23 D.LA.T. Pringgabaya 103 - II 18
+24 D.LA.T. Pringgabaya 102 - III 18
+25 D.LA.T. Labuhan Lombok BT. 075 22
+26 D.LA.T. Pringgabaya 97 - II 26
+27 D.LA.T. Labuhan Lombok BT.077 16
+28 D.L.A.T. Labuhan Lombok BT. 082 16
+29 D.LA.T. Labuhan Lombok BT. 083 18
+30 D.L.A.T. Labuhan Lombok BT. 084 17
+31 D.LA.T. Labuhan Lombok BT. 085 16
+32 D.LA.T. Pringgabaya 17-1N 17
+33 D.LA.T. Pringgabaya 18- III 17
+34 D.LA.T. Pringgabaya 19- 1! 14
+35 D.LA.T. Pringgabaya 20- III 32
+36 D.LA.T. Pringgabaya 24 - III 16
+37 D.LA.T. Pringgabaya C.025 18
+38 D.LA.T. Pringgabaya C.026 18
+39 D.LA.T. Pringgabaya C.027 18
+40 D.LA.T. Pringgabaya C.028 35

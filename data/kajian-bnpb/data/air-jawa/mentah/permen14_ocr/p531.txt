@@ -1,0 +1,80 @@
+#TATA_LETAK satu-tabel lebar=2480
+531 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+5 D.LA.T. Sumberejo SDSP 103 21
+
+6 D.LA.T. Karanganyar SDSP 111 24
+
+7 D.LA.T. Pesawahan SDSP 146 28
+
+8 D.LA.T. Condong SDSP 176 34
+
+9 D.LA.T. Tanjungrejo SDSP 217 25
+10 D.LA.T. Sejati 60
+11 D.LA.T. Ketapang 60
+12 D.LA.T. Sokobanah Daya 55
+13 D.LA.T. Bira Timur 40
+
+u Kab. Situbondo 76 1.695
+
+1 D.LA.T. Sumberanyar SDST 001 28
+
+2 D.LA.T. Sumberejo SDST 002 23
+
+3 D.LA.T. Sumberejo SDST 003 26
+
+4 D.LA.T. Sumberejo SDST 004 25
+
+5 D.LA.T. Sumberejo SDST 005 27
+
+6 D.LA.T. Banyuputih SDST 006 25
+
+7 D.LA.T. Banyu Putih SDST 007 23
+
+8 D.L.A.T. Banyu Putih SDST 008 28
+
+9 D.L.A.T. Banyu Putih SDST 009 24
+10 D.LA.T. Banyuputih SDST 011 25
+11 D.LA.T. Sumberejo SDST 013 26
+12 D.LA.T. Sumberejo SDST 014 23
+13 D.LA.T. Sumberejo SDST 015 28
+14 D.LA.T. Sumberejo SDST 017 24
+15 D.LA.T. Sumberejo SDST 018 11
+16 D.LA.T. Sumber Rejo SDST 019 19
+17 D.LA.T. Sumberejo SDST 020 13
+18 D.LA.T. Sumberejo SDST 021 20
+19 D.LA.T. Sumberejo SDST 022 27
+20 D.I.A.T. Sumberejo SDST 024 26
+21 D.I.A.T. Banyuputih SDST 025 23
+22 D.I.A.T. Sumberejo SDST 027 20
+23 D.I.A.T. Banyuputih SDST 028 26
+24 D.I.A.T. Banyuputih SDST 029 21
+25 D.I.A.T. Banyuputih SDST 030 24
+26 D.LA.T. Sumber Anyar SDST 031 26
+27 D.I.A.T. Banyuputih SDST 032 21
+28 D.I.A.T. Sumber Rejo SDST 033 19
+29 D.I.A.T. Banyuputih SDST 034 21
+30 D.I.A.T. Kertosari SDST 035 26
+31 D.I.A.T. Banyuputih SDST 036 27
+32 D.I.A.T. Banyuputih SDST 037 26
+33 D.I.A.T. Sumber Rejo SDST 038 28
+34 D.I.A.T. Banyuputih SDST 039 26
+35 D.I.A.T. Banyuputih SDST 040 17
+36 D.I.A.T. Sumberejo SDST 041 23
+37 D.I.A.T. Sumberejo SDST 042 18
+38 D.I.A.T. Sumberejo SDST 043 21
+39 D.I.A.T. Mojosari SDST 044 12
+40 D.I.A.T. Sumberejo SDST 045 22
+41 D.LA.T. Sumberejo SDST 047 29
+42 D.LA.T. Sumberejo SDST 048 29
+43 D.LA.T. Sumberejo SDST 049 21
+44 D.LA.T. Sumberejo SDST 050 28
+46 D.I.A.T. Perante SDST 052 26
+47 D.L.A.T. Perante SDST 053 12
+48 D.I.A.T. Kertosari SDST 055 22
+49 D.I.A.T. Mojosari SDST 056 25
+50 D.I.A.T. Kertosari SDST 057 26
+51 D.I.A.T. Mojosari SDST 058 11

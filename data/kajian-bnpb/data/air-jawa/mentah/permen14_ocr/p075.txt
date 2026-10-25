@@ -1,0 +1,126 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+r Kab. Simeuleu 52 5.343
+1 D.I. Air Pinana | 19
+2 D.I. Air Pinang II 34
+3 D.I. Amarabu 29
+4 D.I. Ana Ao 100
+5 D.I. Bubuhan 60
+6 D.I. Datimon 379
+7 D.I. Ganting 124
+8 D.I. Inor 39
+9 D.I. Kota Batu 10
+10 D.I. Kuala Makmur 52
+11 D.I. Lamamek 45
+12 D.I. Lambaya 630
+13 D.I. Lataling 73
+14 D.I. Latitik 211
+15 D.I. Latitik Akt | 803
+16 D.I. Latiung 127
+17 D.I. Lauke 60
+18 D.I. Lavabauna 13
+19 D.I. Leubang 100
+20 D.I. Luan Balu 6
+21 D.I. Maudil 57
+22 D.I. Meunafa 56
+23 D.I. Mitem 80
+24 D.I. Pulau Bengkalak 31
+25 D.I. Sanggiran 52
+26 D.I. Sembilan 61
+27 D.I. Sereta 59
+28 D.I. Silengas 39
+29 D.I. Tameng 79
+30 D.I. Ujung Padang 145
+31 D.I. Nancala 18
+32 D.I. Nancawa 133
+33 D.I. Putra Java 26
+34 D.I. Sambai 58
+35 D.I. Sefuluh 383
+36 D.I. Sembilan | 17
+37 D.I. Situbuk 61
+38 D.I. Salur Latun 122
+39 D.I. Awe Kecil 40
+40 D.I. Awe Seubel 16
+41 D.I. Blang Ihda 17
+42 D.I. Kuala Bakti 14
+43 D.I. Kuala Baru 70
+44 D.I. Luan Sorip 110
+45 D.I. Matanurung 40
+46 D.I. Muara Aman 98
+47 D.I. Suak Lamatan 291
+48 D.I. Tanjung Raya 27
+49 D.I. Along 60
+50 D.I. Blang Seubel 79
+51 D.I. Buluh Hadik 23
+52 D.I. Sua - Sua 65
+s Kota Lanasa 2 1.773
+1 D.I. Buket Meutuah 800
+2 D.I. Meurandeh 973
+#KANAN
+75 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1 PROVINSI.—— 1.923 269.195
+SUMATERA UTARA
+
+a Kab. Asahan 15 4.079
+1 D.I. Desa Gajah 415
+2 D.I. Kampung Jati 200
+3 D.I. Sei Beluru 150
+4 D.I. Sei Serani 150
+5 D.I. Setia Budi 128
+6 D.I. Silau Maraja 530
+7 D.I. Silau Tuo Blok IVO 40
+8 D.I. Simpang Empat 60
+9 D.I. Suka Makmur 600
+10 D.I. Air Putih 600
+11 D.I. Pasar II 200
+12 D.I. Paya Bomban 200
+13 D.I. Rawang Panca Arga | 256
+14 D.I. Silau Barat 100
+15 D.I. Suplesi 450
+b Kab. Batubara 13 5.238
+1 D.I. Antara 178
+2 D.I. Binjai Baru 355
+3 D.I. Cahaya Pardomuan 681
+4 D.I. Kampung Jagung/Si Ajam 250
+5 D.I. Kwala Gunung 810
+6 D.I. Rawa Dolik 925
+7 D.I. Sei Muka 560
+8 D.I. Suka Ramai 451
+9 D.I. Tanjung Mulia 168
+10 D.I. Durian II 160
+11 D.I. Kuala Sikasim 150
+12 D.I. Merbau 100
+13 D.I. Sidomulio 450
+c Kab. Dairi 201 19.090
+1 D.I. Aek Nauli 20
+2 D.I. Amborgang 195
+3 D.I. Baina 80
+4 D.I. Bangun 225
+5 D.I. Banjar Toba 155
+6 D.I. Bantun Kerbo 260
+7 D.I. Batang Ari 135
+8 D.I. Batang Beruh 20
+9 D.I. Batu Horbo 50
+10 D.I. Bekasi 60
+11 D.I. Berampu 115
+12 D.I. Bongkaras 100
+13 D.I. Bonian 110
+14 D.I. Bulu Ujung 60
+15 D.I. Buluduri 669
+16 D.I. Gabe Padan 50
+17 D.I. Gabelas 300
+18 D.I. Gabema 77
+19 D.I. Gabepa 50
+20 D.I. Ganda Sumurung 120
+21 D.I. Gapan Laho 500
+22 D.I. Gaplak 60
+23 D.I. Gaponsi 80
+24 D.I. Gapul 40
+25 D.I. Gunung Meriah 40
+26 D.I. Gunung Tua 36

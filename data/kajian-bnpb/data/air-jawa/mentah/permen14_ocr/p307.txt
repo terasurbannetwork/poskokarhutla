@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+334 D.I. Ngleses 23
+335 D.I. Ngolakan 24
+336 D.I. Ngoran I 23
+337 D.I. Ngoran II 30
+338 D.I. Ngrawan 45
+339 D.I. Ngredi 5
+340 D.I. Ngrendeng I 69
+341 D.I. Ngrendeng III 111
+342 D.I. Ngrendeng III 5
+343 D.I. Ngrobyong 27
+344 D.I. Nyunyur I 81
+345 D.I. Nyunyur II 10
+346 D.I. Olak-Alen 130
+347 D.I. Pacuh I 13
+348 D.I. Pacuh II 12
+349 D.I. Pacuh III 6
+350 D.I. Palem 25
+351 D.I. Palulo 11
+352 D.I. Pancir 4
+353 D.I. Papungan 54
+354 D.I. Parang | 7
+355 D.I. Parang II 7
+356 D.I. Pasar 16
+357 D.I. Patilaler 47
+358 D.I. Pb. Paket | 6
+359 D.I. Pehpulo 42
+360 D.I. Pelangi 97
+361 D.I. Penataran I 36
+362 D.I. Penataran II 15
+363 D.I. Pengkol 80
+364 D.I. Pikatan 24
+365 D.I. Pikatan 8
+366 D.I. Ploso 3
+367 D.I. Ploso Rejo I 6
+368 D.I. Ploso Rejo II 9
+369 D.I. Pojok 17
+370 D.I. Pojok I 28
+371 D.I. Pojok II 15
+372 D.I. Pokah 25
+373 D.I. Pondok 7
+374 D.I. Popoh 370
+375 D.I. Potro | 30
+376 D.I. Potro II 69
+377 D.I. Precet | M
+378 D.I. Precet III 14
+379 D.I. Precet II 7
+380 D.I. Pucungsari | 64
+381 D.I. Pucungsari II 12
+382 D.I. Pucungsari III 48
+383 D.I. Pupus 298
+384 D.I. Pupus Kiri 89
+385 D.I. Purwoasri | 9
+386 D.I. Purwoasri III 53
+387 D.I. Purworejo 100
+388 D.I. Purworejo A 29
+389 D.I. Purworejo B 28
+390 D.I. Purworejo C Kn/Kr 40
+391 D.I. Putat 190
+392 D.I. Randu 10
+393 D.I. Rejosari 35
+394 D.I. Rembang II 83
+#KANAN
+307 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+395 D.I. Rembang III 23
+396 D.I. Resapombo I 63
+397 D.I. Resapombo III 58
+398 D.I. Resapombo IV 5
+399 D.I. Ringin Kembar 61
+400 D.I. Ringinanom | 46
+401 D.I. Ringinanom II 13
+402 D.I. Rondokuning 50
+403 D.I. S. Jambe 105
+404 D.I. S. Urung-urung 28
+405 D.I. Salam 96
+406 D.I. Sambi 5
+407 D.I. Sambong 62
+408 D.I. Sanandayu 32
+409 D.I. Sanawi 10
+410 D.I. Satreyan 51
+411 D.I. Sawahan 85
+412 D.I. Sawentar A 58
+413 D.I. Sawentar B 14
+414 D.I. Sawentar I 43
+415 D.I. Sawentar II 23
+416 D.I. Sbk. Rejokaton 7
+417 D.I. Sbr. Agung 9
+418 D.I. Sbr. Asri 31
+419 D.I. Sbr. Asri 5
+420 D.I. Sbr. Aren 50
+421 D.I. Sbr. Bakung 10
+422 D.I. Sbr. Balong 15
+423 D.I. Sbr. Banyu Urip 51
+424 D.I. Sbr. Baos IA 20
+425 D.I. Sbr. Becek 18
+426 D.I. Sbr. Bendil 17
+427 D.I. Sbr. Bintang II 11
+428 D.I. Sbr. BI. Rejo I 5
+429 D.I. Sbr. Blimbing 5
+430 D.I. Sbr. Blonyo 131
+431 D.I. Sbr. Bogel 7
+432 D.I. Sbr. Bongkang 30
+433 D.I. Sbr. Buntung 23
+434 D.I. Sbr. Buntung 6
+435 D.I. Sbr. Buntung 6
+436 D.I. Sbr. Combong Wetan 23
+437 D.I. Sbr. Dandang 69
+438 D.I. Sbr. Darungan 20
+439 D.I. Sbr. Darungan 13
+440 D.I. Sbr. Galor 5
+441 D.I. Sbr. Gandul 5
+442 D.I. Sbr. Gayam 25
+443 D.I. Sbr. Gempolan 89
+444 D.I. Sbr. Glodog 11
+445 D.I. Sbr. Glodog I 37
+446 D.I. Sbr. Jali 6
+447 D.I. Sbr. Jarandawuk 22
+448 D.I. Sbr. Jenggot 10
+449 D.I. Sbr. Jetis M
+450 D.I. Sbr. K. Bentak 12
+451 D.I. Sbr. Kali Putih 8
+452 D.I. Sbr. Karangnongko 10
+453 D.I. Sbr. Karangsono 15
+454 D.I. Sbr. Kawedusan 11
+455 D.I. Sbr. Kemiri 7

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+24 D.I. Esot 208
+25 D.I. Gapuk 433
+26 D.I. Gege | 67
+27 D.I. Gege II 157
+28 D.I. Gege III 145
+29 D.I. Ijo Balit 719
+30 D.I. Jenjek 61
+31 D.I. Jimse 111
+32 D.I. Jogok 594
+33 D.I. Jowet 116
+34 D.I. Kedatuk 303
+35 D.I. Kerongkong 658
+36 D.I. Keruak 116
+37 D.I. Kondak 490
+38 D.I. Kulur 112
+39 D.I. Kwang Berora 105
+40 D.I. Kwang Derek 239
+41 D.I. Kwang Manget 126
+42 D.I. Larung 532
+43 D.I. Ledang 201
+44 D.I. Lekak 79
+45 D.I. Lembak 158
+46 D.I. Lendang Suar 243
+47 D.I. Lendang Tinggi 265
+48 D.I. Loang Gali 160
+49 D.I. Lokak Bau 682
+50 D.I. Meloang | 168
+51 D.I. Montong Tangi 295
+52 D.I. Obel-obel 50
+53 D.I. Orong Atas 137
+54 D.I. Pancor Barong 46
+55 D.I. Pancor Dewa 83
+56 D.I. Pancor Manis 102
+57 D.I. Paok Dangka 252
+58 D.I. Paok Pondong 116
+59 D.I. Pelambik 342
+60 D.I. Pelemeng 255
+61 D.I. Pelolat 280
+62 D.I. Penede Ia # Ib 269
+63 D.I. Penede II 183
+64 D.I. Penendem 837
+65 D.I. Pengadangan 704
+66 D.I. Penyonggok 125
+67 D.I. Perako 119
+68 D.I. Petung 98
+69 D.I. Pondol 113
+70 D.I. Presak Siren 148
+71 D.I. Pringgesela 533
+72 D.I. Punakana 289
+73 D.I. Reban Bela 63
+74 D.I. Reban Tebu 114
+75 D.I. Reban Waru 200
+76 D.I. Renga 273
+77 D.I. Rugah 196
+78 D.I. Rungkang 639
+79 D.I. Sadar 276
+80 D.I. Sangkon 34
+81 D.I. Selak Eat 144
+82 D.I. Sembe 334
+83 D.I. Solong 150
+84 D.I. Songgen 262
+#KANAN
+380
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+85 D.I. Sundi 35
+86 D.I. Surabaya 196
+87 D.I. Tebaban 261
+88 D.I. Temiling 223
+89 D.I. Tempasan 496
+90 D.I. Temusik 648
+91 D.I. Terara 264
+92 D.I. Tetekopong 302
+93 D.I. Tibu Pandan 300
+94 D.I. Timba Gading 138
+95 D.I. Tundak 618
+96 D.I. E. Temodo 25
+97 D.I. Embung Mare 150
+98 D.I. Embung Petak 321
+99 D.I. Embung Senang 300
+100 D.I. Embung Solong 125
+101 D.I. Embung Tridaya 135
+102 D.I. Kepak 57
+103 D.I. Kokok Rajak 118
+104 D.I. Lendang Bur 159
+105 D.I. Mencerit 150
+106 D.I. Pancor Gedang 105
+107 D.I. Praide 100
+f Kab. Lombok Utara 22 5.341
+1 D.I. Batu Rakit 190
+2 D.I. Bentek 9
+3 D.I. Embung Bayan 4
+4 D.I. Embung Lokok Tawah 165
+5 D.I. Lendang Jurang 166
+6 D.I. Loloan 500
+7 D.I. Menggala 120
+8 D.I. Pawang Kates 210
+9 D.I. Pekatan 806
+10 D.I. Prawira 117
+11 D.I. Rempek 162
+12 D.I. Sambik Jengkel 245
+13 D.I. Sindang Gila 496
+14 D.I. Sopak 407
+15 D.I. Teres Genit 516
+16 D.I. Lekok 120
+17 D.I. Lokok Empok 256
+18 D.I. Mandala 215
+19 D.I. Sambik Bangkol 136
+20 D.I. Sankukun 280
+21 D.I. Soloh I 79
+22 D.I. Soloh II 105
+a Kab. Sumbawa 71 17.261
+1 D.I. Aik Putik 228
+2 D.I. Aji 694
+3 D.I. Embung Brang Kolong 580
+4 D.I. Embung Jompong 150
+5 D.I. Embung Lamenta 200
+6 D.I. Embung Mengkoang 110
+7 D.I. Embung Muer 225
+8 D.I. Embung Olat Rawa 269
+9 D.I. Embung Pemasar 600
+10 D.I. Embung Penyaring 200
+11 D.I. Embung Sejari | 300
+12 D.I. Embung Sejari II 184

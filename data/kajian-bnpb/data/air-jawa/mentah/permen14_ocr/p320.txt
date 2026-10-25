@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+35 D.I. Grogol II 11
+36 D.I. Grogol III 31
+37 D.I. Jahe | 1
+38 D.I. Jahe II 1
+39 D.I. Jahe III 4
+40 D.I. Jahe IV 4
+41 D.I. Jemparing Ka 49
+42 D.I. Jemparing Ki 34
+43 D.I. Jenis Gelaran 82
+44 D.I. Jeruk | 43
+45 D.I. Jeruk II 14
+46 D.I. Jeruk III 23
+47 D.I. K. Bancang 280
+48 D.I. K. Kuwik 62
+49 D.I. K. Maling | 31
+50 D.I. K. Maling II 10
+51 D.I. K.Gembyang 32
+52 D.I. Kabuh | 362
+53 D.I. Kabuh II 167
+54 D.I. Kalibening 100
+55 D.I. Karangan I 9
+56 D.I. Karangan II 1
+57 D.I. Karangan III 50
+58 D.I. Karangan IV 335
+59 D.I. Katemas | 180
+60 D.I. Katemas II 182
+61 D.I. Kedung Galih 25
+62 D.I. Kedunglo 31
+63 D.I. Kedungsuruh 139
+64 D.I. Kromong | 13
+65 D.I. Kromong II 42
+66 D.I. Kromong III 210
+67 D.I. Kulak | 305
+68 D.I. Kulak II 70
+69 D.I. Kulak III 196
+70 D.I. Kulak IV 27
+71 D.I. Kulak V 10
+72 D.I. Kulak VI 33
+73 D.I. Kulak VII 10
+74 D.I. Kulak VIII 7
+75 D.I. Kulak IX 9
+76 D.I. Kulak X 10
+77 D.I. Made | 181
+78 D.I. Made II 166
+79 D.I. Made III 7
+80 D.I. Made IV 12
+81 D.I. Made V 60
+82 D.I. Mangir I 86
+83 D.I. Mangir II 117
+84 D.I. Mangirejo 3
+85 D.I. Marmoyo | 15
+86 D.I. Marmoyo III 13
+87 D.I. Marmoyo V 29
+88 D.I. Marmoyo VIII 22
+89 D.I. Marmoyo IX 15
+90 D.I. Mernung | 110
+91 D.I. Mernung II 110
+92 D.I. Mojojejer 70
+93 D.I. Mundusewu 134
+94 D.I. Munju 3
+95 D.I. Ngares I 117
+#KANAN
+320
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+96 D.I. Ngares II 78
+97 D.I. Ngepeh 18
+98 D.I. Ngk. Pereng II (Nongko Pereng II) 2
+99 D.I. Nglebak I 28
+100 D.I. Nglebak II 87
+101 D.I. Nglebak III 30
+102 D.I. Ngrimbi I 16
+103 D.I. Ngrimbi II 22
+104 D.I. Pakel | 11
+105 D.I. Pakel II 78
+106 D.I. Pakis 2
+107 D.I. Pandean 385
+108 D.I. Peleman I 37
+109 D.I. Peleman II 50
+110 D.I. Peleman III 10
+111 D.I. Peleman IV 94
+112 D.I. Peleman V 4
+113 D.I. Penanggalan 418
+114 D.I. Pugur 6
+115 D.I. Pulonasir 50
+116 D.I. Sabuk Ilang 15
+117 D.I. Sambirejo 2
+118 D.I. Sbr. Pandansili 4
+119 D.I. Sebajing 2
+120 D.I. Segitik 209
+121 D.I. Sembung 185
+122 D.I. Setalang 20
+123 D.I. Sumber Embak 1
+124 D.I. Sumber I 2
+125 D.I. Sumber II 3
+126 D.I. Sumber III 2
+127 D.I. Sumber IV 6
+128 D.I. Sumber Kuburan 1
+129 D.I. Sumber V 2
+130 D.I. Sumber VI 1
+131 D.I. Sumber VII 2
+132 D.I. Tawangsari 520
+133 D.I. Tempuran 1, II, III, IV 38
+134 D.I. Tempuran VII 42
+135 D.I. Tukum | 11
+136 D.I. Tukum II 14
+137 D.I. Tukum III 8
+138 D.I. Tukum IV 1
+139 D.I. Tukum V 1
+140 D.I. W. Bangsri 10
+141 D.I. W. Brumbung 25
+142 D.I. W. Grogol 78
+143 D.I. W. Kapuhrejo I 51
+144 D.I. W. Karangjati 22
+145 D.I. W. Karangpakis 17
+146 D.I. W. Kradenan 17
+147 D.I. W. Mangunan 98
+148 D.I. W. Plabuhan 20
+149 D.I. W. Sempal 29
+150 D.I. Wates 22
+151 D.I. Watu Mayung | 94
+152 D.I. Watu Mayung II 155
+153 D.I. Watudakon 6
+154 D.I. Watukurung 12
+155 D.I. Watulawang 21
+156 D.I. Watulumbung 13

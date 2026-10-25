@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 518
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+49 D.LA.T. Sewulan SDMD 470 30
+50 D.LA.T. Kedung Maron SDMD 471 35
+51 D.LA.T. Sumbersari SDMD 472 35
+52 D.LA.T. Klumutan SDMD 473 35
+53 D.LA.T. Bangsopotro SDMD 494 35
+54 D.LA.T. Kedungjati SDMD 519 35
+55 D.LA.T. Pajaran SDMD 523 4
+56 D.LA.T. Sumbergandu SDMD 524 35
+57 D.LA.T. Sangen SDMD 525 30
+58 D.LA.T. Kedungjati SDMD 536 35
+59 D.LA.T. Gading SDMD 537 40
+60 D.LA.T. Dempelan SKMD 133 5
+61 D.LA.T. Dempelan SKMD 134 5
+62 D.LA.T. Dempelan SKMD 135 5
+63 D.LA.T. Dempelan SKMD 136 5
+64 D.LA.T. Tempur sari SKMD 137 6
+65 D.LA.T. Tempur sari SKMD 138 6
+66 D.L.A.T. Nglanduk SKMD 139 6
+67 D.LA.T. Nglanduk SKMD 140 6
+68 D.LA.T. Nglanduk SKMD 141 6
+69 D.LA.T. Nglanduk SKMD 142 6
+70 D.IL.A.T. Mojorayung SKMD 143 8
+71 D.LA.T. Mojorayung SKMD 144 8
+72 D.LA.T. Mojorayung SKMD 145 8
+73 D.LA.T. Mojorayung SKMD 146 8
+74 D.LA.T. Dimong SKMD 211 8
+75 D.LA.T. Dimong SKMD 212 8
+76 D.LA.T. Dimong SKMD 213 8
+77 D.LA.T. Dimong SKMD 214 8
+78 D.LA.T. Nglambangan SKMD 215 8
+79 D.LA.T. Nglambangan SKMD 216 8
+80 D.I.A.T. Nglambangan SKMD 217 6
+81 D.LA.T. Nglambangan SKMD 218 6
+82 D.LA.T. Mojorayung SKMD 219 8
+83 D.LA.T. Mojorayung SKMD 220 8
+84 D.LA.T. Bantangan SKMD 221 10
+85 D.LA.T. Bantangan SKMD 222 10
+86 D.ILA.T. Bantangan SKMD 223 10
+87 D.LA.T. Bantangan SKMD 224 10
+88 D.LA.T. Sambirejo SKMD 572 47
+89 D.LA.T. Ngadirejo SKMD 574 40
+90 D.L.A.T. Tapelan SKMD 576 40
+91 D.LA.T. Darmorejo SKMD 579 40
+92 D.LA.T. Jatirejo SKMD 581 40
+93 D.LA.T. Mojorejo SMMD 443 30
+94 D.LA.T. Tambakmas SMMD 444 30
+95 D.LA.T. Tambakmas SMMD 448 30
+
+k Kab. Maaetan 92 3.032
+
+1 D.LA.T. Sukowidi SDMG 040 69
+
+2 D.LA.T. Gorang Gareng SDMG 044 69
+
+3 D.LA.T. Karangrejo SDMG 048 40
+
+4 D.LA.T. Pingkuk SDMG 076 60
+
+5 D.LA.T. Belotan SDMG 077 65
+
+6 D.ILLA.T. Bendo SDMG 078 80
+
+7 D.LA.T. Carikan SDMG 079 108
+
+8 D.LA.T. Kledokan SDMG 080 80
+
+9 D.LA.T. Tinap SDMG 081 70
+10 D.I.LA.T. Maospati SDMG 082 77
+11 D.LA.T. Kraton SDMG 083 70
+12 D.LA.T. Malang SDMG 084 99

@@ -1,0 +1,105 @@
+#TATA_LETAK satu-tabel lebar=2480
+pE 2015, No.638
+“
+Status Daerah Irigasi Yang Menjadi Wewenang Dan Tinggung Jawab Pemerintah
+NO Provinsi/ Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+A LINTAS KABUPATEN/KOTA 3 26.782
+
+| PROVINSI LAMPUNG 1 17.515
+
+1 D.I.R. Rawa Jitu 17.515 Kabupaten Mesuij z 9.280 Ha
+Kabupaten Tulang Bawang z 8.235 Ha
+
+Il PROVINSI KALIMANTAN SELATAN 1 3.267
+
+1 D.I.R. Belanti | # II 3.267 Kabupaten Banjar z 2.267 Ha
+Kabupaten Tapin z 1.000 Ha
+
+Ill PROVINSI SULAWESI TENGAH 1 6.000
+
+1 D.I.R. Rawa Saembawalati 6.000 Kabupaten Morowali Utara z 800 Ha
+Kabupaten Poso z 5.200 Ha
+
+B UTUH KABUPATEN/KOTA 107 676.580
+
+| PROVINSI SUMATERA UTARA 6 37.611
+
+a Kab. Asahan
+
+1 D.I.R. Sei Lebah 3.031
+
+b Kab. Karo
+
+1 D.I.R. Payalah-lah 3.300
+
+c Kab. Labuhan Batu
+
+1 D.I.R. Kualuh 9.500
+
+2 D.I.R. Panai Hilir 5.200
+
+3 D.I.R. Tanjung Leidong 13.116
+
+d Kab. Serdang Bedagai
+
+1 D.I.R. Pematang Cermai 3.464
+
+Il PROVINSI RIAU 12 41.898
+
+a Kab. Indragiri Hilir
+
+1 D.LR. Guntung 3.765
+
+2 D.I.R. Kotabaru Seberida 3.107
+
+3 D.I.R. Kuala Keritang Nusantara Jaya 3.016
+
+4 D.I.R. Kuala Sebatu 3.500
+
+5 D.I.R. Pengalihan Keritang 3.184
+
+6 D.I.R. Reteh I (Rumbai Jaya) 3.006
+
+7 D.LR. Seberang Tembilahan 3.019
+
+8 D.I.R. Sei Junjangan 3.027
+
+9 D.I.R. Sei Luar 3.578
+
+b Kab. Pelalawan
+
+1 D.I.R. Sei Solok 3.020
+
+2 D.I.R. Sei Upih 4.200
+
+c Kab. Siak
+
+1 D.I.R. Siak Kiri Paket B,C, D 5.476
+
+Ill PROVINSI SUMATERA BARAT 2 8.500
+
+a Kab. Padang Pariaman
+
+1 D.I.R. Mangopoh 5.000
+
+b Kota Pariaman 1 3.500
+
+1 D.I.R. Rawang Pariaman 3.500
+
+IV PROVINSI JAME! 2 7.242
+
+a Kab. Tanjung Jabung Barat
+
+1 D.I.R. Parit Pudin 4.342
+
+2 D.I.R. Pematang Lumut 3.000
+
+V PROVINSI SUMATERA SELATAN 22 237133
+
+a Kab. Banyuasin
+
+1 D.I.R. Air Saleh 17.011
+
+2 D.I.R. Air Senda 4711

@@ -1,0 +1,71 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 56
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+26 D.I.R. Teluk Dalam 2.054
+27 D.I.R. Teluk Kelasa 2.784
+28 D.I.R. Teluk Kiambang 2.054
+29 D.I.R. Teluk Sungka 2.769
+30 D.I.R. Terusan Kempas 2.703
+31 D.I.R. Togaraja 1.683
+c Kab. Indragiri Hulu
+1 D.I.R. Dagang 2.902
+2 D.I.R. Kuala Mulya/Rawa Sekip 2.793
+3 D.I.R. Rengat 1.507
+d Kab. Meranti
+1 D.I.R. Anak Setatah 1.235
+2 D.I.R. Centai/Semukut 1.010
+3 D.I.R. Kedabu Rapat 2.400
+4 D.I.R. Melai 2.900
+5 D.I.R. Sei Cina 1.450
+6 D.I.R. Sei. Tohor 1.500
+e Kab. Rokan Hilir
+1 D.I.R. Lenggadai Mukti Jaya( N.4) 1.750
+2 D.I.R. Padamaran (N. 17, N. 18) 2.082
+3 D.I.R. Parit Aman 2.015
+4 D.I.R. Pekaitan 2.500
+5 D.I.R. Teluk Bano II (N.15, N.16) 1.876
+6 D.I.R. Teluk Pulau 2.785
+f Kab. Siak
+1DIR Siak Kiri Paket A, (Langsat Permai, Jati 2.870
+"" Baru dan Dayang Suri)
+IV PROVINSI SUMATERA BARAT 3 5.700
+a Kab. Pasaman
+1 D.I.R. Panti/Batang Simpur 2.400
+b Kota Pesisir Selatan
+1 D.I.R. Labuhan Tanjak, Sei Kuyung 2.300
+2 D.I.R. Lunang 1.000
+V PROVINSI JAMBI 10 13.039
+a Kab. Tanjung Jabung Barat
+1 D.I.R. Sei. Ayam 1.000
+2 D.I.R. Senyerang 1.318
+3 D.I.R. Teluk Ketapang 1.250
+4 D.I.R. Teluk Nilau 1.510
+b Kab. Tanjung Jabung Timur
+1 D.I.R. Koto Kandis 1.077
+2 D.I.R. Nipah Panjang | - II 1.300
+3 D.I.R. Rantau Rasau 1.734
+4 D.I.R. Simpang Datuk 1.050
+5 D.I.R. Simpang Puding 1.600
+6 D.I.R. Sungai Raya 1.200
+VI PROVINSI BENGKULU 3 3.995
+a Kab. Bengkulu Tengah
+1 D.I.R. Air Hitam 1.500
+b Kab. Seluma
+1 D.I.R. Peninjauan 1.411
+2 D.I.R. Penago 1.084
+VII PROVINSI SUMATERA SELATAN 27 49.509
+a Kab. Muara Enim
+1 D.I.R. Air Putak 1.200
+b Kab. Musi Banyuasin
+1 D.I.R. Bailangu 2.150
+2 D.I.R. Buntiale 2.000
+3 D.I.R. Danau Cala 1.769
+4 D.I.R. Lumpatan 1.300
+5 D.I.R. Pinang Banjar 1.000
+6 D.I.R. Rantau Bayur 1.500
+7 D.I.R. Rantau Panjang 1.922
+c Kab. Ogan llir
+1 D.I.R. Lbk. Bakung 2.975
+2 D.I.R. Lbk. Lorok 1.681
+3 D.I.R. Lbk. Parit 1.575

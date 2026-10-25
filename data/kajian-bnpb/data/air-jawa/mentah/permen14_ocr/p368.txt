@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+497 D.I. Pager Ukir 4
+498 D.I. Pagerejo 7
+499 D.I. Pakel (Pule) 5
+500 D.I. Pakel (Jombok) 4
+501 D.I. Pakuran 69
+502 D.I. Pundensari 28
+503 D.I. Putuk Gading I 5
+504 D.I. Putuk Gading II 5
+505 D.I. Putuk Gading III 11
+506 D.I. Putuk Wulung 4
+507 D.I. Ringin Putih 1
+508 D.I. Ringin Sewu 14
+509 D.I. Salam 17
+510 D.I. Salang 13
+511 D.I. Sambeng 18
+512 D.I. Songo 47
+513 D.I. Sukun I 13
+514 D.I. Sukun II 27
+515 D.I. Tumpak Pelem 2
+516 D.I. Tumpak. Nongko 2
+517 D.I. Unci 29
+518 D.I. Waru 4
+519 D.I. Waru 1
+520 D.I. Waru Kiri 6
+521 D.I. Waru Kn 66
+522 D.I. Watulim as 4
+523 D.I. Winong 30
+ab Kab. Tuban 169 17.028
+1 D.I. Banaran 412
+2 D.I. Banjarworo 30
+3 D.I. Bektiharjo 101
+4 D.I. Boto 868
+5 D.I. Cekalang 99
+6 D.I. Cendono 4
+7 D.I. Clangapan 21
+8 D.I. Dawung 617
+9 D.I. Gede 473
+10 D.I. Gempol 70
+11 D.I. Getami 53
+12 D.I. Joho 272
+13 D.I. Karanglo 96
+14 D.I. Katerban 256
+15 D.I. Kd. Hireng 500
+16 D.I. Kd. Kayen 183
+17 D.I. Kd. Sulur 105
+18 D.I. Kedung Dowo 21
+19 D.I. Kedung Geden 116
+20 D.I. Kedung Jambangan 19
+21 D.I. Kedung Kiter 155
+22 D.I. Kedung Lombok 34
+23 D.I. Kejuron 196
+24 D.I. Keremati 59
+25 D.I. Latsari 50
+26 D.I. Lomanis 4
+27 D.I. Mlaten 350
+28 D.I. Ngabongan 200
+29 D.I. Ngampon 386
+30 D.I. Nganget 707
+31 D.I. Penidon 21
+32 D.I. Sawir 53
+#KANAN
+368
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+33 D.I. Simbatan 167
+34 D.I. Simo 301
+35 D.I. Singkil 182
+36 D.I. Sluki 57
+37 D.I. Soko Medalem 307
+38 D.I. Suci 330
+39 D.I. Sundulan 71
+40 D.I. Temayang 149
+41 D.I. Tempur 699
+42 D.I. Tlogo 50
+43 D.I. Tlogo Pucangan 72
+44 D.I. Tlogowaru 89
+45 D.I. Topar 38
+46 D.I. Wangi 25
+47 D.I. Jatirejo 67
+48 D.I. Kalipakis 16
+49 D.I. Karangtalun 207
+50 D.I. Kd. Bantal | 165
+51 D.I. Kd. Bantal II 4
+52 D.I. Kedoyo I 15
+53 D.I. Kedoyo II 15
+54 D.I. Kedung Jambe I 8
+55 D.I. Kedung Jambe II 26
+56 D.I. Kedung Kwali 30
+57 D.I. Kedung Pucang I 38
+58 D.I. Kedung Pucang II 108
+59 D.I. Kedung Wilud 486
+60 D.I. Kembangan 28
+61 D.I. Kenikir 9
+62 D.I. Klagen 68
+63 D.I. Klanggeran 11
+64 D.I. Klegen I 23
+65 D.I. Klegen II 6
+66 D.I. Kluwih 142
+67 D.I. Krecek 42
+68 D.I. Kresak 20
+69 D.I. Kriyan 109
+70 D.I. Krosok 45
+71 D.I. Ledok 26
+72 D.I. Lemah Duwur | 128
+73 D.I. Mbah Minten 8
+74 D.I. Menduh 51
+75 D.I. Mojoagung 28
+76 D.I. Mrican | 20
+77 D.I. Mrican II 55
+78 D.I. Ngadirejo I 84
+79 D.I. Ngadirejo II 27
+80 D.I. Ngambal 20
+81 D.I. Ngampel 15
+82 D.I. Ngasinan | 6
+83 D.I. Ngasinan II 87
+84 D.I. Ngelo I 50
+85 D.I. Ngelo II 135
+86 D.I. Ngepeh 85
+87 D.I. Ngledok I 32
+88 D.I. Ngledok II 150
+89 D.I. Ngruncing 20
+90 D.I. Pakem I 1
+91 D.I. Pakem II 5
+92 D.I. Pakem III 3
+93 D.I. Pakisaji | 34

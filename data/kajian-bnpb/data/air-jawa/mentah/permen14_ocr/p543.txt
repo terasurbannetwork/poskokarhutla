@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+543 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+41 D.LA.T. Pringgabaya C.029 19
+42 D.LA.T. Pringgabaya C. 030 13
+43 D.LA.T. Pringgabaya 50 - III 14
+44 D.LA.T. Pringgabaya S1 - III 12
+45 D.LA.T. Pringgabaya 44-11 19
+46 D.LA.T. Pringgabaya Cc. 054 14
+47 D.LA.T. Pringgabaya C.058 19
+48 D.LA.T. Pringgabaya 36 - III 32
+49 D.LA.T. Pringgabaya 38 - III 30
+50 D.LA.T. Pringgabaya 66 - III 12
+51 D.LA.T. Pringgabaya 67 - III 12
+52 D.LA.T. Labuhan Lombok DD. 046 14
+53 D.LA.T. Labuhan Lombok DD. 047 12
+54 D.LA.T. Pringgabaya 60 - III 30
+55 D.LA.T. Labuhan Lombok DP. 108 30
+56 D.LA.T. Pringgabaya 80 - 1 32
+57 D.LA.T. Pringgabaya 841 - III 20
+58 D.LA.T. Pringgabaya 70 - III 13
+59 D.LA.T. Pringgabaya 7ZA- III 22
+60 D.ILA.T. Pringgabaya 69 - III 24
+61 D.LA.T. Sambelia 112-111 18
+62 D.LA.T. Sambelia 107 - II 24
+63 D.LA.T. Sambelia 110- 11 16
+64 D.LA.T. Sambelia 109 - III 22
+65 D.LA.T. Pringgabaya 24-11 12
+66 D.ILA.T. Pringgabaya 23- III 10
+67 D.LA.T. Pringgabaya 25- III 13
+68 D.L.A.T. Pringgabaya 30-11 20
+69 D.LA.T. Pringgabaya 28 - 1 16
+70 D.LA.T. Pringgabaya 29.A - III 16
+71 D.LA.T. Pringgabaya 87 - III 17
+72 D.LA.T. Pringgabaya 84- III 19
+73 D.LA.T. Sambelia 150 - III 5
+74 D.LA.T. Sambelia 151- 11 5
+75 D.LA.T. Sambelia 153- 11 5
+76 D.LA.T. Sambelia 149 - 1 5
+77 D.LA.T. Sambelia 152- 11 5
+78 D.LA.T. Sambelia 146 - III 15
+79 D.LA.T. Sambelia 147 - 10
+80 D.L.A.T. Sambelia 148 - II 5
+81 D.LA.T. Sambelia 138 - II 20
+82 D.LA.T. Sambelia 142-11 20
+83 D.LA.T. Sambelia 141 - II 10
+84 D.LA.T. Sambelia 140 - III 10
+85 D.LA.T. Pringgabaya 59 - 1 10
+86 D.ILA.T. Pringgabaya 58 - III 12
+87 D.LA.T. Pringgabaya 57 - III 23
+88 D.I.A.T. Pringgabaya 65 - III 9
+89 D.LA.T. Sambelia 145 - II 9
+90 D.ILA.T. Pringgabaya 54- III 9
+91 D.LA.T. Pringgabaya 55- 1 7
+92 D.LA.T. Pringgabaya 83- 1 15
+93 D.LA.T. Pringgabaya 74-11 19
+94 D.LA.T. Sambelia 124- 11 13
+95 D.LA.T. Pringgabaya 75- III 18
+96 D.I.LA.T. Pringgabaya 76- III 17
+97 D.LA.T. Pringgabaya 77-11 15
+98 D.LA.T. Pringgabaya 79-11 13
+99 D.LA.T. Pringgabaya 72-11 19
+100 D.I.A.T. Sambelia 116- III 14
+101 D.LA.T. Sambelia 117 -11 15

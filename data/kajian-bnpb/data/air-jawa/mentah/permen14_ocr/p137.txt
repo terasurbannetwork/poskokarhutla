@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+81 D.I. Way Pahibungan II 40
+82 D.I. Way Pematang 50
+83 D.I. Way Penengahan II 40
+84 D.I. Way Rengas 215
+85 D.I. Way Ruguk 325
+86 D.I. Way Sabah Bajau 106
+87 D.I. Way Samoja 200
+88 D.I. Way Serpong I 15
+89 D.I. Way Serpong II 75
+90 D.I. Way Sinar Karya 25
+91 D.I. Way Sobah Limbang 125
+92 D.I. Way Sukaratu Kanan 100
+93 D.I. Way Sukaratu Kiri 50
+94 D.I. Way Sumur Dewa 300
+95 D.I. Way Sumur | 125
+96 D.I. Way Tabu 150
+97 D.I. Way Tajimalela | 23
+98 D.I. Way Tajimalela II 66
+99 D.I. Way Tajimalela III 36
+100 D.I. Way Tanjung Harapan 100
+101 D.I. Way Tebing Cepa 214
+102 D.I. Way Tengkujuh 125
+103 D.I. Way Tetaan 546
+c Kab. Lambuna Tenaah 163 16.636
+1 D.I. Lebung Fajar 65
+2 D.I. Lebung Rojan 62
+3 D.I. Way Aliran Dempo Tanjung Rejo 99
+4 D.I. Way Besi Kota Batu 225
+5 D.I. Way Besi Kutowinangun 115
+6 D.I. Way Besi Sendang Agung 70
+7 D.I. Way Besi Sendang Mulyo 106
+8 D.I. Way Binjai 65
+9 D.I. Way Bumi Batin Banjar Sari Hilir 44
+10 D.I. Way Bumi Batin Banjar Sari Hulu 43
+11 D.I. Way Bumi Batin Banjar Sari Tengah 34
+12 D.I. Way Bumi Batin SD 34
+13 D.I. Way Caringin Hilir 62
+14 D.I. Way Caringin Hulu 40
+15 D.I. Way Caringin Tengah 100
+16 D.I. Way Dempo 86
+17 D.I. Way Fajar Asri 128
+18 D.I. Way Gumuk Inten 100
+19 D.I. Way Ilian Balak 510
+20 D.I. Way Ilian Mas 167
+21 D.I. Way Ilihan Tanjung 88
+22 D.I. Way Kapuan 83
+23 D.I. Way Khaur 30
+24 D.I. Way Krengseng 200
+25 D.I. Way Kupang Payung Dadi Hilir 35
+26 D.I. Way Kupang Payung Dadi Hulu 73
+27 D.I. Way Kupang Payung Dadi Tengah 50
+28 D.I. Way Kupang Payung Rejo 66
+29 D.I. Way Kurang 178
+30 D.I. Way Langsep Kali Rejo 199
+31 D.I. Way Lebung 75
+32 D.I. Way Liak Kuripan 250
+33 D.I. Way Lingga Batu Tangkop 41
+34 D.I. Way Lungguh 348
+35 D.I. Way Merias 137
+36 D.I. Way Merias Sinar Luas 242
+#KANAN
+137 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+37 D.I. Way Muara Mas Argo Peni 80
+38 D.I. Way Muara Mas Sendang Agung 97
+39 D.I. Way Muara Mas Sumber Agung 124
+40 D.I. Way Nuju Prono 84
+41 D.I. Way Pasak Pagi Payung Dadi 45
+42 D.I. Way Pelus Kampung 22
+43 D.I. Way Pelus Kawasan 34
+44 D.I. Way Pelus Kota Batu 31
+45 D.I. Way Penandingan Lingga Pura Hilir 20
+46 D.I. Way Penandingan Lingga Pura Hulu 37
+47 D.I. Way Penandingan Margajaya Hilir 20
+48 D.I. Way Penandingan Margajaya Hulu 159
+49 D.I. Way Penindingan Payung Mulya 262
+50 D.I. Way Pete 98
+51 D.I. Way Pubian Payung Batu 112
+52 D.I. Way Purwosari 54
+53 D.I. Way Purwosari Purwo Rejo 70
+54 D.I. Way Rupi Batu Makmur 33
+55 D.I. Way Rupi Payung Makmur 61
+56 D.I. Way Rupi Ponpes 24
+57 D.I. Way Samang Kota Batu 74
+58 D.I. Way Sekar Gading Payung Dadi 124
+59 D.I. Way Sekar Gading Putak 60
+60 D.I. Way Sinar Hulu 48
+61 D.I. Way Sinar Padang 63
+62 D.I. Way Sinar Seputih Hilir 90
+63 D.I. Way Sinar Seputih Hulu 178
+64 D.I. Way Singaparna 497
+65 D.I. Way Sri Langsep 199
+66 D.I. Way Suka Negara 60
+67 D.I. Way Sumber Rejeki 275
+68 D.I. Way Sungkai 66
+69 D.I. Way Sungkai Kuripan 188
+70 D.I. Way Sungkai Sangon Ratu 80
+71 D.I. Way Sungkai Sido Rahayu 50
+72 D.I. Way Tanjung Ratu 28
+73 D.I. Way Tatayan Sendang Asih 488
+74 D.I. Way Tatayan Sendang Baru 207
+75 D.I. Way Tatayan Sri Agung 208
+76 D.I. Way Tatayan Sri Agung Pompa 43
+77 D.I. Way Tias 179
+78 D.I. Way Tipo Kiri-Kanan Kedatuan 350
+79 D.I. Way Tipo Lunik Jaya Sakti 321
+80 D.I. Way Tipo Lunik Sri Pendowo 362
+81 D.I. Way Tulung Balak Gedung Sari 39
+82 D.I. Way Tulung Balak Sido Harjo 101
+83 D.I. Way Tulung Balak Tobong 65
+84 D.I. Way Waya Kroi 332
+85 D.I. Way Waya Srimulyo 449
+86 D.I. Lebung Suluh 120
+87 D.I. Muji Rahayu 50
+88 D.I. Way Asri 100
+89 D.I. Way Awik Pekandangan 20
+90 D.I. Way Bangun Sari 53
+91 D.I. Way Banjar Ratu 200
+92 D.I. Way Buring Ramayana 400
+93 D.I. Way Curup 21
+94 D.I. Way Embung Mojokerto Dusun Lima 231
+95 D.I. Way Embung Payung Rejo Dusun Dua 120
+96 D.I. Way Embung Kampung Purworejo 28
+97 D.I. Way Embung Karang Jawa 25

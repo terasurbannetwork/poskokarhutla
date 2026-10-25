@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+239 D.I. Wakiri 80
+240 D.I. Watu-Watu III 58
+241 D.I. Watubangga 50
+242 D.I. Watukila 100
+243 D.I. Watumeeto 75
+244 D.I. Waturapa 85
+245 D.I. Watu-Watu | 175
+246 D.I. Watu-Watu II 100
+247 D.I. Waworano 125
+248 D.I. Wia-Wia | 58
+249 D.I. Wia-Wia II 81
+250 D.I. Wolasi Barat 112
+251 D.I. Wonua 80
+252 D.I. Wuhov 150
+253 D.I. Wulende 60
+254 D.I. Wunduwatu 60
+255 D.I. Wuura I 140
+256 D.I. Wuura II 70
+257 D.I. Wuura III 75
+258 D.I. Yadi 75
+i Kab. Konawe Utara 22 3.880
+1 D.I. Amorame 150
+2 D.I. Andowia 250
+3 D.I. Awila 100
+4 D.I. Belalo 150
+5 D.I. Kokapi 150
+6 D.I. Kota Maju 300
+7 D.I. Lamonae 100
+8 D.I. Landawe 250
+9 D.I. Larobende 150
+10 D.I. Laronaha 50
+11 D.I. Lawaru 250
+12 D.I. Lembo 200
+13 D.I. Linomoiyo 300
+14 D.I. Mopute 80
+15 D.I. Padaleu 100
+16 D.I. Puuhialu 200
+17 D.I. Puulemo 100
+18 D.I. Walalindu 150
+19 D.I. Walasolo 150
+20 D.I. Wanggudu 250
+21 D.I. Watuulo 250
+22 D.I. Wiwirano Atas 200
+i Kab. Muna 21 3.104
+1 D.I. Bente 450
+2 D.I. Lupia | 125
+3 D.I. Lupia II 75
+4 D.I. Marobea 100
+5 D.I. Kolasa 100
+6 D.I. Maligano 150
+7 D.I. Katangana 300
+8 D.I. Kasampano 250
+9 D.I. Kontumere 90
+10 D.I. Lahontohe 20
+11 D.I. Bahutara 200
+12 D.I. Kumba-Kumba 100
+13 D.I. Lakandito 214
+14 D.I. Wakobalu Agung 45
+15 D.I. Suka Damai 75
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+16 D.I. Wanseriwu 200
+17 D.I. Kasimpa Jaya 100
+18 D.I. Nihi 85
+19 D.I. Lawada 150
+20 D.I. Wokuni 75
+21 D.I. Labulu bulu 200
+k Kota Kendari 2 1150
+1 D.I. Amohalo 800
+2 D.I. Labibia 350
+xxix PROVINSI 2sng 270.519
+
+DULAYYESI SELATAN
+
+a Kab. Bantaena 100 16.990
+1 D.I. Allu 224
+2 D.I. Balang Sikuyu 127
+3 D.I. Bungloe 149
+4 D.I. Bangkala loe 150
+5 D.I. Biangkeke II 306
+6 D.I. Bungun Erasa 130
+7 D.I. Barakassi 150
+8 D.I. Batu Doli 305
+9 D.I. Balang Ninring 250
+10 D.I. Batu Kanre 60
+11 D.I. Batu Leppa 134
+12 D.I. Batu Massong 60
+13 D.I. Batu Song 100
+14 D.I. Biangkeke | 75
+15 D.I. Biangkeke V 723
+16 D.I. Bianglos II 159
+17 D.I. Biangloe IV 401
+18 D.I. Biangloe V/VI 696
+19 D.I. Biangloe X 180
+20 D.I. Bilianja 200
+21 D.I. Bontolena 104
+22 D.I. Borong Tan'nga 150
+23 D.I. Buakang Tan'ngaya 158
+24 D.I. Bukioro 100
+25 D.I. Bulo Buloa 143
+26 D.I. Bulu Summang 80
+27 D.I. Bungung Bara' 150
+28 D.I. Bungung Batu 165
+29 D.I. Buakang Lompoa 80
+30 D.I. Bungung Kocci 100
+31 D.I. Bonto Katideng 75
+32 D.I. Calendu | 351
+33 D.I. Calendu III 103
+34 D.I. Dammo 150
+35 D.I. Calendu II 100
+36 D.I. Banre 100
+37 D.I. Junggea 116
+38 D.I. Kalamassang | 727
+39 D.I. Kaloling 420
+40 D.I. Gunturu 100
+41 D.I. Kalu Kaluku 60
+42 D.I. Compenga 75
+43 D.I. Kariu | 429
+44 D.I. Kariu II 104
+45 D.I. Kasimburang 100
+46 D.I. Kiling-Kiling 145
+47 D.I. Lassang-Lassang 89

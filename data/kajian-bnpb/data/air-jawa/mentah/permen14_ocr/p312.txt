@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+242 D.I. Pesaan II 24
+243 D.I. Pinang 20
+244 D.I. Pitasuci 38
+245 D.I. Plampang |, II, III 102
+246 D.I. Ploso 60
+247 D.I. Pojok 13
+248 D.I. Pokaini 10
+249 D.I. Polai 17
+250 D.I. Polo Agung 12
+251 D.I. Pring 11
+252 D.I. Pring Jagung | 25
+253 D.I. Pring Jagung II 17
+254 D.I. Pring Jagung III 6
+255 D.I. Pring Jagung IV 4
+256 D.I. Pringduri 46
+257 D.I. Pringduri (UPTD Bondowoso) 227
+258 D.I. Pringduri (UPTD Bondowoso) 44
+259 D.I. Pringduri (UPTD Grujugan) 60
+260 D.I. Pringduri (UPTD Prajekan) 120
+261 D.I. Pringduri I s/d VI 233
+262 D.I. Pringduri A 22
+263 D.I. Pringduri B 105
+264 D.I. Pujer Baru 57
+265 D.I. Purbo M
+266 D.I. Pyan 37
+267 D.I. Rahmad 5
+268 D.I. Raisi | 28
+269 D.I. Raisi II 24
+270 D.I. Raisi III 12
+271 D.I. Raisi IV 42
+272 D.I. Rambai 25
+273 D.I. Rame 4
+274 D.I. Randima 81
+275 D.I. Randu I 5
+276 D.I. Randu II 5
+277 D.I. Randu Agung 43
+278 D.I. Randu Agung (UPTD Bondowoso) 33
+279 D.I. Randu Agung (UPTD Grujugan) 55
+280 D.I. Ranti 87
+281 D.I. Renggono I 23
+282 D.I. Renggono II 24
+283 D.I. Renggono III 8
+284 D.I. Renggono IV 21
+285 D.I. Renggono V 14
+286 D.I. Renteng 53
+287 D.I. Renteng 3
+288 D.I. Renteng I 100
+289 D.I. Renteng II 62
+290 D.I. Renteng III 68
+291 D.I. Resek 17
+292 D.I. Ringin 18
+293 D.I. Rita 39
+294 D.I. Salak | 4
+295 D.I. Salak II 10
+296 D.I. Salak III 10
+297 D.I. Salak | 4
+298 D.I. Salak II 95
+299 D.I. Salak III 47
+300 D.I. Salak IV 25
+301 D.I. Saman 70
+302 D.I. Sanglong 15
+#KANAN
+312
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+303 D.I. Sanom 153
+304 D.I. Sbr. Anyar 23
+305 D.I. Sbr. Arah 5
+306 D.I. Sbr. Arah 36
+307 D.I. Sbr. Arah 25
+308 D.I. Sbr. Arsiman | 70
+309 D.I. Sbr. Arsiman II 26
+310 D.I. Sbr. Arsiman III 16
+311 D.I. Sbr. Baren 16
+312 D.I. Sbr. Batu 73
+313 D.I. Sbr. Bayur 55
+314 D.I. Sbr. Bindung I 5
+315 D.I. Sbr. Bindung II 1
+316 D.I. Sbr. Bindung III 9
+317 D.I. Sbr. Bindung IV 3
+318 D.I. Sbr. Birsa 33
+319 D.I. Sbr. Bubu 4
+320 D.I. Sbr. Cangkring 34
+321 D.I. Sbr. Celeng 17
+322 D.I. Sbr. Complong 79
+323 D.I. Sbr. Duren 13
+324 D.I. Sbr. Duren | 54
+325 D.I. Sbr. Duren II 21
+326 D.I. Sbr. Duren III 40
+327 D.I. Sbr. Engas 12
+328 D.I. Sbr. Gayam 18
+329 D.I. Sbr. Gayan | 60
+330 D.I. Sbr. Gedang 38
+331 D.I. Sbr. Gigir 17
+332 D.I. Sbr. Gilir 3
+333 D.I. Sbr. Giman 5
+334 D.I. Sbr. Glintongan 5
+335 D.I. Sbr. Gulang 40
+336 D.I. Sbr. Gumuk 7
+337 D.I. Sbr. Gundo 7
+338 D.I. Sbr. Gundo 4
+339 D.I. Sbr. Gunung 36
+340 D.I. Sbr. Jeding 22
+341 D.I. Sbr. Jeding 35
+342 D.I. Sbr. Junglot 24
+343 D.I. Sbr. Kacep 207
+344 D.I. Sbr. Kajar 55
+345 D.I. Sbr. Kalong 13
+346 D.I. Sbr. Kalong/Pring 13
+347 D.I. Sbr. Kalpoh 34
+348 D.I. Sbr. Kapuran 14
+349 D.I. Sbr. KB. Doro 42
+350 D.I. Sbr. Kedawung 10
+351 D.I. Sbr. Kemuning 17
+352 D.I. Sbr. Kokap 2
+353 D.I. Sbr. Kokap 3
+354 D.I. Sbr. Kokap B 14
+355 D.I. Sbr. Kolbuk 7
+356 D.I. Sbr. Ko'ong 5
+357 D.I. Sbr. Lambibing 3
+358 D.I. Sbr. Leduk 7
+359 D.I. Sbr. Leket 24
+360 D.I. Sbr. Lugu 2
+361 D.I. Sbr. Majid 50
+362 D.I. Sbr. Malang 25
+363 D.I. Sbr. Malang | 8

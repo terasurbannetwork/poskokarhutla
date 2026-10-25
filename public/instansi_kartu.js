@@ -34,6 +34,21 @@
   const DASAR_LUAS = "kisaran antartahun, perkiraan dari titik panas, bukan pengukuran", DASAR_AKTIF = "piksel satelit aktif 12 jam terakhir";
   const kata = s => String(s).replace(/_/g, " ");
 
+  /* Pola lokasi dari riwayat VIIRS (kartu.watak): tiap baris hanya muncul bila angkanya ada; tanpa presisi palsu (tahun dan hari apa adanya, jarak 2 angka bermakna). */
+  const tglPendek = v => { const d = typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(v + "T00:00:00Z") : null; return d && Number.isFinite(+d) ? d.toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"}) : null; };
+  function watak(w) {
+    w = obj(w); if (!w) return {baris: [], kambuh: false};
+    const b = [], int = v => num(v) && Number.isInteger(v) && v >= 0, lamaHari = int(w.md) ? `Biasanya ${ang(w.md)} hari` : null;
+    if (int(w.a) && int(w.n) && w.n > 0 && w.a <= w.n) b.push(`${w.lg ? "Lokasi langganan: terbakar" : "Terbakar"} ${ang(w.a)} dari ${ang(w.n)} tahun`);
+    const sisa = int(w.sisa) ? (w.sisa ? `perkiraan sisa ${ang(w.sisa)} hari` : "perkiraan mendekati akhir") : null;
+    if (lamaHari || sisa) b.push([lamaHari, sisa].filter(Boolean).join("; "));
+    if (tglPendek(w.akhir)) b.push(`Musim di sini biasanya selesai ${tglPendek(w.akhir)}`);
+    if (num(w.x) && w.x > 0) b.push(`Api di sini biasa meluas sekitar ${a2(w.x)} km`);
+    const kambuh = num(w.k) && w.k >= 2;
+    if (kambuh) b.push("Sering kambuh: jangan tinggalkan lokasi, lanjutkan mop-up dan patroli 14 hari setelah padam");
+    return {baris: b, kambuh};
+  }
+
   /* Susun isi kartu sebagai data netral; html() dan teks() sama-sama membacanya, jadi isi keduanya tak bisa berbeda. */
   function susun(t, kartu) {
     const k = obj(kartu) || {}, rek = obj(t?.rekomendasi) || {}, keb = obj(rek.kebutuhan) || {}, tot = obj(keb.total) || {};
@@ -56,7 +71,8 @@
     const heli = tiga(tot.heli, "unit"), hari = num(keb.target_hari) ? `${ang(keb.target_hari)} hari` : null;
     const kb = [["Regu", tiga(tot.regu, "")], ["Personel", tiga(tot.personel, "orang")], ["Pompa", pompa || null], ["Air", tiga(tot.air_l_hari, "liter per hari")], ["Selang", tiga(tot.selang_m, "m")],
       ["Helikopter", heli], ["Durasi", hari ? `target ${hari}` : null]].filter(x => x[1]);
-    return {id: k.insiden || null, di, se, sit, kb, ada: !!(titik || luas || aktif || kons.length || kb.length)};
+    const wk = watak(k.watak);
+    return {id: k.insiden || null, di, se, sit, kb, wk, ada: !!(titik || luas || aktif || kons.length || kb.length || wk.baris.length)};
   }
 
 
@@ -126,6 +142,7 @@
     if (s.se.aktif) b.push(`*Front aktif:* sekitar ${s.se.aktif}, dari ${DASAR_AKTIF}, bukan luas terbakar.`);
     const sit = [s.sit.lahan && `lahan ${s.sit.lahan}`, ...s.sit.kons.map(x => `konsesi ${x}`), s.sit.cuaca].filter(Boolean);
     if (sit.length) b.push(`*Situasi:* ${sit.join(", ")}.`);
+    if (s.wk.baris.length) b.push(`*Pola lokasi:* ${s.wk.baris.join(". ")}.`);
     if (s.kb.length) b.push(`*Kebutuhan (perkiraan):* ${s.kb.map(([n, v]) => `${n.toLowerCase()} ${v}`).join(", ")}.`);
     b.push(SUMBER);
     return b.join("\n");
@@ -146,6 +163,7 @@
       <div class="kp-bag"><h3>Sebesar apa</h3>${se.luas ? `<p class="kp-utama">Sekitar ${esc(se.luas.tengah)}</p>${baris("Rentang", se.luas.rentang && esc(se.luas.rentang))}${baris("Dasar", esc(se.luasDasar))}` : `<p class="kp-redup">Luas belum tersedia.</p>`}
         ${baris("Front aktif", se.aktif && `sekitar ${esc(se.aktif)}, dari ${esc(DASAR_AKTIF)}, bukan luas terbakar`)}${baris("Tren 24 jam", se.tren && esc(se.tren))}</div>
       <div class="kp-bag"><h3>Situasi</h3>${sitIsi || `<p class="kp-redup">Belum ada data lahan atau konsesi.</p>`}</div>
+      ${s.wk.baris.length ? `<div class="kp-bag"><h3>Pola lokasi ${pil("Riwayat satelit", "emas")}</h3>${s.wk.baris.map(x => `<p class="kp-baris">${esc(x)}</p>`).join("")}</div>` : ""}
       <div class="kp-bag"><h3>Kebutuhan ${pil("Perkiraan", "emas")}</h3>${s.kb.length ? s.kb.map(([n, v]) => baris(n, esc(v))).join("") : `<p class="kp-redup">Belum ada hitungan kebutuhan.</p>`}</div>
       <p class="kp-sumber">${SUMBER}</p>
       <div class="kp-aksi"><button type="button" class="kp-tombol" data-kp="salin">Salin teks WhatsApp</button><a class="kp-tombol" data-kp="wa" href="https://wa.me/?text=${encodeURIComponent(teks(t, kartu))}" target="_blank" rel="noopener noreferrer">Buka WhatsApp</a><button type="button" class="kp-tombol" data-kp="cetak">Cetak</button></div>

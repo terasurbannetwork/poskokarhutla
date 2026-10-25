@@ -1,0 +1,190 @@
+#url https://jateng.bps.go.id/id/statistics-table/2/MjQ4MCMy/persentase-rumah-tangga-yang-memiliki-akses-terhadap-air-minum-layak-menurut-kabupaten-kota-di-provinsi-jawa-tengah.html
+#ditarik 2026-10-23T09:03:40.032Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA TENGAH
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Layanan Online Data BPS silakan melalui e-mail : jateng@bps.go.id, Whatsapp (chat only) : 0815 6770 1212, dan silastik.bps.go.id
+
+Anda bisa menyampaikan pengaduan layanan kepada kami disini atau  mengakses Layanan Aspirasi dan Pengaduan Online Rakyat (LAPOR) disini
+
+Sebagai upaya meningkatkan kualitas data dan pelayanan kami kepada Anda mohon mengisi Survei Kebutuhan Data (SKD) 2026 melalui tautan : https://skd.bps.go.id/skd/s/3300
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pemukiman dan Perumahan
+
+Persentase Rumah Tangga yang Memiliki Akses Terhadap Air Minum Layak Menurut Kabupaten/Kota di Provinsi Jawa Tengah
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Kependudukan dan Migrasi
+Tenaga Kerja
+Pendidikan
+Kesehatan
+Konsumsi dan Pendapatan
+Perlindungan Sosial
+Pemukiman dan Perumahan
+Hukum dan Kriminal
+Budaya
+Aktivitas Politik dan Komunitas Lainnya
+Penggunaan Waktu
+
+Statistik Ekonomi
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Persentase Rumah Tangga yang Memiliki Akses Terhadap Air Minum Layak Menurut Kabupaten/Kota di Provinsi Jawa Tengah (Persen), 2025
+
+Terakhir Diperbarui : 14 April 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2025
+Freeze judul kolom
+
+Kabupaten dan Kota
+
+
+
+
+Persentase Rumah Tangga yang Memiliki Akses Terhadap Air Minum Layak Menurut Kabupaten/Kota di Provinsi Jawa Tengah (Persen)
+
+
+
+
+2025
+
+
+3301 Kabupaten Cilacap	95,32
+3302 Kabupaten Banyumas	91,11
+3303 Kabupaten Purbalingga	91,30
+3304 Kabupaten Banjarnegara	89,83
+3305 Kabupaten Kebumen	90,75
+3306 Kabupaten Purworejo	90,01
+3307 Kabupaten Wonosobo	91,44
+3308 Kabupaten Magelang	94,85
+3309 Kabupaten Boyolali	96,70
+3310 Kabupaten Klaten	99,67
+3311 Kabupaten Sukoharjo	98,56
+3312 Kabupaten Wonogiri	99,10
+3313 Kabupaten Karanganyar	99,93
+3314 Kabupaten Sragen	99,81
+3315 Kabupaten Grobogan	83,47
+3316 Kabupaten Blora	92,91
+3317 Kabupaten Rembang	99,31
+3318 Kabupaten Pati	98,63
+3319 Kabupaten Kudus	99,71
+3320 Kabupaten Jepara	91,61
+3321 Kabupaten Demak	97,73
+3322 Kabupaten Semarang	99,83
+3323 Kabupaten Temanggung	98,62
+3324 Kabupaten Kendal	99,55
+3325 Kabupaten Batang	98,98
+3326 Kabupaten Pekalongan	98,61
+3327 Kabupaten Pemalang	93,37
+3328 Kabupaten Tegal	94,05
+3329 Kabupaten Brebes	98,36
+3371 Kota Magelang	99,98
+3372 Kota Surakarta	100,00
+3373 Kota Salatiga	99,89
+3374 Kota Semarang	99,45
+3375 Kota Pekalongan	99,73
+3376 Kota Tegal	100,00
+3300 Provinsi Jawa Tengah	95,73
+
+Keterangan Data :
+
+Data menggunakan konsep sanitasi layak terbaru berdasarkan surat Kementerian Perencanaan Pembangunan Nasional/Bappenas Nomor 661/Dt.2.4/01/2020BPS, Survei Sosial Ekonomi Nasional (Susenas)
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Jawa Tengah (BPS-Statistics Jawa Tengah Province)Jl.Pahlawan No. 6 Telp. 024 - 8412802
+
+8412804
+
+8412805 Fax. 024 - 8311195 e-mail : jateng@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

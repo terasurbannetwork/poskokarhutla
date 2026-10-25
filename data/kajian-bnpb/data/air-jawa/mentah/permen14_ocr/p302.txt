@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+116 D.I. Ketang 31
+117 D.I. Ketegan 144
+118 D.I. Klampok 265
+119 D.I. Klampok 54
+120 D.I. Klampok A 93
+121 D.I. Klampok B M
+122 D.I. Klatak 45
+123 D.I. Kluncing 68
+124 D.I. Korolintang | 54
+125 D.I. Korolintang II 58
+126 D.I. Krambangan 28
+127 D.I. Kretep 3
+128 D.I. Kromo 12
+129 D.I. Krumbang 23
+130 D.I. Krupuk 50
+131 D.I. Lalangan Genitri 94
+132 D.I. Laos 27
+133 D.I. Laos Ancar 69
+134 D.I. Laos | 9
+135 D.I. Laos II 16
+136 D.I. Laos III 12
+137 D.I. Larangan 234
+138 D.I. Lateng 148
+139 D.I. Lebuh 54
+140 D.I. Loo 21
+141 D.I. Los 71
+142 D.I. Los 5
+143 D.I. Maelang 9
+144 D.I. Maesogati 38
+145 D.I. Makruman 7
+146 D.I. Manggis 369
+147 D.I. Manggis 153
+148 D.I. Mangli 12
+149 D.I. Marem 659
+150 D.I. Marwi 16
+151 D.I. Marwo 80
+152 D.I. Mega Arum 25
+153 D.I. Miasi 44
+154 D.I. Min I 3
+155 D.I. Min II 5
+156 D.I. Mluwo 54
+157 D.I. Mustofa 62
+158 D.I. Ontobogo I 72
+159 D.I. Ontobogo II 86
+160 D.I. Ori 108
+161 D.I. Pacean 72
+162 D.I. Pakel 85
+163 D.I. Pakel Ka/Ki 543
+164 D.I. Pakem 273
+165 D.I. Pakem 38
+166 D.I. Pakem 27
+167 D.I. Paleran 21
+168 D.I. Paliran Amat 109
+169 D.I. Pandan 473
+170 D.I. Panggang 44
+171 D.I. Panggang | 6
+172 D.I. Panggangharjo 309
+173 D.I. Panggung 40
+174 D.I. Parastembok 167
+175 D.I. Partojan 12
+176 D.I. Payung 140
+#KANAN
+302
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+177 D.I. Peloan 231
+178 D.I. Petung 25
+179 D.I. Plonto 111
+180 D.I. Poncowati Ka/Ki 513
+181 D.I. Porong Kidul 26
+182 D.I. Porong Lor 11
+183 D.I. Pringgading I 28
+184 D.I. Pringgading II 48
+185 D.I. Pringgodani 40
+186 D.I. Pugag 67
+187 D.I. Putat Gedang 59
+188 D.I. Putat Laos 8
+189 D.I. Putat Petang 40
+190 D.I. Putrojoyo 113
+191 D.I. Putuk 50
+192 D.I. Racek 300
+193 D.I. Randu Agung 40
+194 D.I. Randu Agung A 40
+195 D.I. Rau 28
+196 D.I. Rawan 47
+197 D.I. Rebut loro 43
+198 D.I. Rejeng 74
+199 D.I. Rejeng 71
+200 D.I. Reksowono 20
+201 D.I. Ridwan 14
+202 D.I. Rowogatel 28
+203 D.I. Sadang 43
+204 D.I. Salam 30
+205 D.I. Saleh 7
+206 D.I. Salekan 15
+207 D.I. Saniman 111
+208 D.I. Sap 9
+209 D.I. Sarbanti 15
+210 D.I. Sari 15
+211 D.I. Sarjono 18
+212 D.I. Sawi 13
+213 D.I. Sayuti 39
+214 D.I. Sbr. Awal 7
+215 D.I. Sbr. Bakri 6
+216 D.I. Sbr. Bendo 36
+217 D.I. Sbr. Broto 47
+218 D.I. Sbr. Bulugito 23
+219 D.I. Sbr. Bunder 17
+220 D.I. Sbr. Cokro 5
+221 D.I. Sbr. Curah 21
+222 D.I. Sbr. Dampit 37
+223 D.I. Sbr. Dari 33
+224 D.I. Sbr. Dipo 55
+225 D.I. Sbr. Ganti 27
+226 D.I. Sbr. Gempol 25
+227 D.I. Sbr. Gitik 56
+228 D.I. Sbr. Glondong 16
+229 D.I. Sbr. Gn. Nongko I 3
+230 D.I. Sbr. Gn. Nongko II 3
+231 D.I. Sbr. Jagir 3
+232 D.I. Sbr. Janudin 21
+233 D.I. Sbr. Kajar 157
+234 D.I. Sbr. Kajar 48
+235 D.I. Sbr. Kalianyar 41
+236 D.I. Sbr. Kalong 8
+237 D.I. Sbr. Kempit 294

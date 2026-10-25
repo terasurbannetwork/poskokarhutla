@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+49 D.I. Blang Sanggeng 50
+50 D.I. Cawieng Peunalom 125
+51 D.I. Geuni 70
+52 D.I. Go-Go 510
+53 D.I. Jurong Anoe 60
+54 D.I. Kambuk Nicah 130
+55 D.I. Kambuk Paya Pie 50
+56 D.I. Kemba (Geumbana) 137
+57 D.I. Keumala Dalam 60
+58 D.I. Kr. Muko 50
+59 D.I. Kr. Seukeuk 125
+60 D.I. Krueng Blang 200
+61 D.I. Krueng Meukiek 30
+62 D.I. Kunyet 40
+63 D.I. Leupu 180
+64 D.I. Leupung Datok 140
+65 D.I. Lhok Bakoi 100
+66 D.I. Lhok Baro 444
+67 D.I. Lhok Jiem 175
+68 D.I. Lhok Keumude (Batee) 50
+69 D.I. Lhok Keumudee Gilp. Tiga 50
+70 D.I. Lhok Keutapang 125
+71 D.I. Lhok Mancang 40
+72 D.I. Lhok Toh Areh Gledieng 75
+73 D.I. Lutung | 200
+74 D.I. Lutung II 100
+75 D.I. Mane 75
+76 D.I. Mane Lhok 70
+77 D.I. Neubok Badeuk 218
+78 D.I. Panton Beunot 70
+79 D.I. Pawood 242
+80 D.I. Paya Gabus 350
+81 D.I. Paya Gajah 25
+82 D.I. Paya Mee 60
+83 D.I. Paya Papeun 40
+84 D.I. Paya Raoh 66
+85 D.I. Peunalom 148
+86 D.I. Piala 90
+87 D.I. Pucok 50
+88 D.I. Pulo Ie 80
+89 D.I. Pulo Lhoih 60
+90 D.I. Pulo Siblah 10
+91 D.I. Rabo 25
+92 D.I. Sarah Panyang 70
+93 D.I. Seulasak 60
+94 D.I. Seumayam 450
+95 D.I. Seunong Cicem 30
+96 D.I. Tungkop 70
+97 D.I. Turue cut 70
+98 D.I. Ulee Kalee 25
+99 D.I. Alue Baroh Padang Tiji 150
+100 D.I. Alue Beureune 40
+101 D.I. Alue Buloh 50
+102 D.I. Alue Enteuk 20
+103 D.I. Alue Geune 35
+104 D.I. Alue Rimeh 20
+105 D.I. Alue Syahbandar 70
+106 D.I. Beureunien | 50
+107 D.I. Beureunien II 60
+108 D.I. Blang Gle Gapui 25
+109 D.I. Blang Husin I 30
+#KANAN
+14
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+110 D.I. Blang Pakeh 70
+111 D.I. Blang Sayeng 25
+112 D.I. Gintong 22
+113 D.I. Mampree 15
+114 D.I. Pulo Senong 50
+115 D.I. Rajui 200
+a Kab. Pidie Java 53 5.411
+1 D.I. Alue Demam 80
+2 D.I. Alue Drien 50
+3 D.I. Alue Sane 200
+4 D.I. Beuracan 863
+5 D.I. Blang Geulumpang 60
+6 D.I. Blang Lubok 44
+7 D.I. Blang Suwak 10
+8 D.I. Blang Weu 15
+9 D.I. Drien Bungong 200
+10 D.I. Kiran 200
+11 D.I. Kuta Krueng 300
+12 D.I. Lhok Pisang 28
+13 D.I. Lhok Puuk 10
+14 D.I. Lhok Sandeng 252
+15 D.I. Lhok Ugop 150
+16 D.I. Lueng Limeng 200
+17 D.I. Lueng Paloh 200
+18 D.I. Lueng Paya 100
+19 D.I. Meugit 80
+20 D.I. Muka Blang 10
+21 D.I. Palong 50
+22 D.I. Pante Breuh 125
+23 D.I. Panton Limeng 10
+24 D.I. Panton Pupu 10
+25 D.I. Paya Baro 15
+26 D.I. Paya Reulet 20
+27 D.I. Paya Trieng 80
+28 D.I. Pulo Perlak 70
+29 D.I. Teuraceu 12
+30 D.I. Tgk.Chik DiSintheu 233
+31 D.I. Tgk.Leman 20
+32 D.I. Ule Glee 596
+33 D.I. Ulim 424
+34 D.I. Uteun Bayu 103
+35 D.I. Waduk Alue 25
+36 D.I. Waduk Baro 25
+37 D.I. Padon Nga 55
+38 D.I. Paya Keumude 20
+39 D.I. Lhok Papeun 25
+40 D.I. Meuh 10
+41 D.I. Blang Biri 16
+42 D.I. Cot Bayu 10
+43 D.I. Meunigoe 15
+44 D.I. Lhok Pie 15
+45 D.I. Blang Beunot 30
+46 D.I. Paya Pie Ujong Baroh 20
+47 D.I. Gaharu 100
+48 D.I. Jurong Brangkat 20
+49 D.I. Tanoh Mirah 20
+50 D.I... Ujong Leubat 100
+51 D.I. . Lhok Pineung 40
+52 D.I. . Lhok Bambui 20
+53 D.I. Blang Bili 25

@@ -1,0 +1,83 @@
+/* Pustaka Hukum BNPB. Token dan tabel dari bnpb.css -> admin.css. */
+.hk-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hk-panel{margin-top:16px;display:grid;gap:14px}
+.hk-panel[hidden]{display:none}
+.ad-tabs button svg,.bn-pil svg,.bn-tombol svg,.ad-tombol svg,.hk-cari svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bn-pil svg{width:13px;height:13px}
+.bn-kartu h2 svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#dok,#jawab,#relasi{display:grid;gap:14px;align-content:start}
+#tab{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:row}
+
+.hk-hero{background:var(--card);border-radius:18px;box-shadow:var(--bayang);padding:26px clamp(16px,4vw,40px);display:grid;gap:12px;justify-items:center;text-align:center}
+.hk-hero h1{font:800 clamp(22px,3.4vw,32px)/1.2 var(--display);letter-spacing:-.02em}
+.hk-hero p{margin:0;color:var(--ink2);max-width:60ch}
+.hk-cari{display:flex;gap:10px;width:min(760px,100%)}
+.hk-kotak{flex:1;min-width:0}
+.hk-kotak input{width:100%;height:50px;border:1px solid var(--line);border-radius:14px;padding:0 16px;font-size:16px;background:var(--card);color:var(--ink)}
+.hk-kotak input:focus-visible,.hk-tanya textarea:focus-visible{outline:2px solid var(--c5);outline-offset:1px;border-color:transparent}
+.hk-cari .bn-tombol{height:50px;padding:0 26px}
+.hk-contoh{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.hk-contoh button{all:unset;cursor:pointer;padding:5px 12px;border-radius:999px;background:var(--soft);font-size:12.5px;font-weight:600;color:var(--ink)}
+.hk-contoh button:hover{background:color-mix(in srgb,var(--c5) 16%,var(--soft))}
+.hk-contoh button:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.hk-saring{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:min(760px,100%);text-align:left}
+.hk-tanya{width:min(760px,100%);display:grid;gap:10px;text-align:left}
+.hk-tanya textarea{min-height:84px}
+.hk-baris-aksi{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hk-catatan{color:var(--ink2);font-size:12.5px;font-weight:600}
+
+.hk-ringkas{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;font-weight:700}
+.hk-ringkas:empty{display:none}
+.hk-hasil{display:grid;gap:12px}
+.hk-hit{display:grid;gap:8px;text-align:left;cursor:pointer;border:0;font:inherit;color:inherit;width:100%;text-decoration:none}
+.hk-hit:hover{box-shadow:var(--bayang),0 0 0 2px color-mix(in srgb,var(--c5) 35%,transparent)}
+.hk-hit:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.hk-pils{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.hk-hit h3,.hk-judul{font:800 15px/1.4 var(--display)}
+.hk-bab{color:var(--ink2);font-size:12.5px;font-weight:600}
+.hk-cuplik{margin:0;color:var(--ink2);font-size:13.5px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+mark{background:color-mix(in srgb,var(--emas) 40%,transparent);color:inherit;border-radius:3px;padding:0 2px}
+.hk-kosong{margin:0;padding:22px;text-align:center;color:var(--ink2);background:var(--card);border-radius:16px;box-shadow:var(--bayang)}
+.hk-hal{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:13px;color:var(--ink2);font-weight:600}
+.hk-hal:empty{display:none}
+.hk-memuat{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--soft),var(--line),var(--soft));background-size:200% 100%;animation:hkk 1.2s linear infinite}
+@keyframes hkk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.hk-memuat{animation:none}}
+
+/* dokumen */
+.hk-kepala{display:grid;gap:10px}
+.hk-kepala .hk-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.hk-isi{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start}
+.hk-toc{position:sticky;top:62px;max-height:calc(100vh - 74px);overflow:auto}
+.hk-toc summary{cursor:pointer;font-weight:800;font-size:14px}
+.hk-toc ol{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:2px;font-size:13px}
+.hk-toc li.bab{margin-top:8px;font-weight:800;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}
+.hk-toc a{display:block;padding:3px 8px;border-radius:8px;color:var(--ink);text-decoration:none;font-weight:600}
+.hk-toc a:hover{background:var(--soft)}
+.hk-teks{display:grid;gap:10px;min-width:0}
+.hk-seg{scroll-margin-top:70px;display:grid;gap:6px}
+.hk-seg.sorot{box-shadow:var(--bayang),0 0 0 2px var(--emas)}
+.hk-seg-kepala{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hk-seg-kepala b{font:800 14px var(--display)}
+.hk-seg-kepala .ad-tombol{margin-left:auto}
+.hk-seg-bab{font:800 12px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-top:8px}
+.hk-seg p{margin:0;white-space:pre-line;line-height:1.7;font-size:14.5px;overflow-wrap:anywhere}
+.hk-relasi{display:grid;gap:10px}
+.hk-relasi h3{font:800 11px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.hk-relasi ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.hk-relasi li{font-size:13.5px;padding:8px 12px;border-radius:12px;background:var(--soft)}
+.hk-relasi a{font-weight:700}
+.hk-redup{color:var(--ink2);font-size:12px;font-weight:500}
+
+/* tabel */
+.hk-tabel-sec{display:grid;gap:10px}
+.hk-tabel-sec h2{font:800 18px var(--display)}
+.hk-tabel-sec .hk-urut{all:unset;cursor:pointer;color:#fff;font-weight:800;letter-spacing:inherit;text-transform:inherit}
+.hk-tabel-sec .hk-urut:focus-visible{outline:2px solid var(--emas);outline-offset:3px;border-radius:4px}
+.hk-tabel-sec td{vertical-align:top}
+.hk-tabel-sec td.n,.hk-tabel-sec th{text-align:left}
+.hk-tabel-sec td a{font-weight:700}
+.hk-tabel-sec .bn-isian{max-width:360px}
+
+@media (max-width:900px){.hk-isi{grid-template-columns:1fr}.hk-toc{position:static;max-height:none}}
+@media (max-width:640px){.hk-saring{grid-template-columns:1fr}.hk-cari{flex-direction:column}.hk-cari .bn-tombol{height:46px}.hk-hero{padding:18px 14px;text-align:left;justify-items:stretch}.hk-contoh{justify-content:flex-start}.ad-tabs button{padding:0 8px;font-size:12.5px}}

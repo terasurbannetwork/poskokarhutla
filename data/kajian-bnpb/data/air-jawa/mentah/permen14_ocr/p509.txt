@@ -1,0 +1,65 @@
+#TATA_LETAK satu-tabel lebar=2480
+509 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+75 D.LA.T. Cupuwatu 15
+VII PROVINSI JAWA TIMUR 1.573 45.288
+a Kab. Banakalan 61 2.362
+1 D.LA.T. Pangolangan | SDBK 05 25
+2 D.LA.T. Bilaporan SDBK 06 30
+3 D.LA.T. Tengket | SDBK 07 17
+4 D.LA.T. Aeng Tabar SDBK 08 9
+5 D.LA.T. Modung | SDBK 09 24
+6 D.ILA.T. Modung II SDBK 011 25
+7 D.LA.T. Jambuh SDBK 016 19
+8 D.ILA.T. Dumajah SDBK 047 42
+9 D.LA.T. Dukotamben SDBK 048 65
+10 D.IL.A.T. Srabi Barat SDBK 049 40
+11 D.LA.T. Tagungguh SDBK 050 42
+12 D.LA.T. Janteh SDBK 051 42
+13 D.LA.T. Parseh SDBK 052 42
+14 D.LA.T. Pengalongan II SDBK 053 59
+15 D.LA.T. Pengalongan III SDBK 054 50
+16 D.ILLA.T. Soket Daya SDBK 055 60
+17 D.LA.T. Soket Daya SDBK 055 39
+18 D.ILA.T. Paoran SDBK 056 49
+19 D.I.A.T. Alang-alang | SDBK 059 B 44
+20 D.LA.T. Patengteng I SDBK 060 42
+21 D.LA.T. Buluh Babah I SDBK 061 38
+22 D.LA.T. Pangpajung SDBK 062 36
+23 D.LA.T. Suwaan SDBK 063 46
+24 D.LA.T. Karang Entang I SDBK 064 48
+25 D.LA.T. Karang Anyar | SDBK 068 50
+26 D.LA.T. Larangan Timur SDBK 069 37
+27 D.LA.T. Bungkeng SDBK 070 37
+28 D.LA.T. Pandanan SDBK 071 42
+29 D.LA.T. Bandang Daya SDBK 072 32
+30 D.LA.T. Duwak Butir I SDBK 073 50
+31 D.LA.T. Karang Entang II SDBK 074 44
+32 D.LA.T. Lang Panggang SDBK 076 32
+33 D.LA.T. Karang Nangka SDBK 081 53
+34 D.LA.T. Buluh Babah II SDBK 085 44
+35 D.LA.T. Pandabah | SDBK 088 42
+36 D.LA.T. Brakas Daya SDBK 091 37
+37 D.LA.T. Alas Rajah SDBK 098 33
+38 D.LA.T. Karang Gayam | SDBK 104 32
+39 D.L.A.T. Alang-Alang II SDBK 105 59
+40 D.LA.T. Katelang SDBK 109 54
+41 D.LA.T. Dlemer SDBK 115 45
+42 D.LA.T. Telang SDBK 117 46
+43 D.LA.T. Neroh II SDBK 124 45
+44 D.LA.T. Karang Nangka II SDBK 125 55
+45 D.LA.T. Pandabah II SDBK 127 30
+46 D.LA.T. Glisgis SDBK 136 49
+47 D.LA.T. Patengteng II SDBK 137 54
+48 D.LA.T. Srabi Timur I SDBK 139 20
+49 D.LA.T. Karang Anyar II SDBK 141 45
+50 D.LA.T. Petengteng III SDBK 144 23
+51 D.LA.T. Karang gayam II SDBK 148 36
+52 D.LA.T. Karang Anyar III SDBK 150 45
+53 D.LA.T. Bilah Timur SDBK 174 35
+54 D.LA.T. Ko'olan | SDBK 175 30
+55 D.LA.T. Binoh | SDBK 185 30
+56 D.L.A.T. Binoh II SDBK 186 35

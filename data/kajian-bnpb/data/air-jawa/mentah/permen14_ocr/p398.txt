@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+47 D.I. Supul 35
+48 D.I. Taklam 40
+49 D.I. To'i 80
+50 D.I. Tuaana 85
+51 D.I. Tuakole 85
+52 D.I. Tuamnanu 45
+53 D.I. Tuasene 320
+54 D.I. Tuatuka 40
+55 D.I. Tubunaus 60
+56 D.I. Tune 70
+57 D.I. Babis 250
+58 D.I. Bangkono/Enoneten 60
+59 D.I. Biloto 250
+60 D.I. Faelubu 50
+61 D.I. Kuamnasi 30
+62 D.I. Lelobatan 250
+63 D.I. Mio 90
+64 D.I. Nefokoko 50
+65 D.I. Noelniti 70
+66 D.I. Oelnoah/Oelnunu 150
+67 D.I. Oelpetu 40
+68 D.I. Oenunu 40
+69 D.I. Oesuni/Tubuhue 50
+70 D.I. Sanam 50
+u Kab. Timor Tenaah Utara 52 7.276
+1 D.I. Baikh 60
+2 D.I. Bolke 65
+3 D.I. Boni 50
+4 D.I. Buk 50
+5 D.I. Faut Kolo 70
+6 D.I. Inbate 50
+7 D.I. Jak 150
+8 D.I. Kiuola 95
+9 D.I. Klae 50
+10 D.I. Kleja | 50
+11 D.I. Kustanis 70
+12 D.I. Mil'ana 150
+13 D.I. Nain 300
+14 D.I. Naitiu 160
+15 D.I. Nit'oes 55
+16 D.I. Oekopa I 200
+17 D.I. Oelfaub 250
+18 D.I. Oelima 40
+19 D.I. Oeliurai 30
+20 D.I. Oeluan 76
+21 D.I. Oemanu 60
+22 D.I. Oemeu 100
+23 D.I. Paok Bu 75
+24 D.I. Pnuinin 65
+25 D.I. Popnam 60
+26 D.I. Pulo 200
+27 D.I. Seko 80
+28 D.I. Teutbesi 150
+29 D.I. Tfoin 100
+30 D.I. Tualeu 50
+31 D.I. Upunaek 70
+32 D.I. Besin 180
+33 D.I. Besleu 150
+34 D.I. Bidufa 300
+35 D.I. Enokono 250
+#KANAN
+398
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+36 D.I. Fatuani 420
+37 D.I. Hasfuik 450
+38 D.I. Ken'uf 260
+39 D.I. Mnesat Batan 140
+40 D.I. Neon'o 200
+41 D.I. Nesam 60
+42 D.I. Nino 200
+43 D.I. Oebesak 75
+44 D.I. Oekolo 50
+45 D.I. Oemeu | 50
+46 D.I. Oeniut 60
+47 D.I. Seunkoa 50
+48 D.I. Siman-Sunkaen 300
+49 D.I. Sontoi 150
+50 D.I. Tainsala 700
+51 D.I. Tuamau 150
+52 D.I. Tuen'ana 50
+v Kota Kupana 9 672
+1 D.I. Amnesia 80
+2 D.I. Batuplat 140
+3 D.I. Belo 60
+4 D.I. Fatukoa 65
+5 D.I. Labat 60
+6 D.I. Oelon 102
+7 D.I. Oebura 85
+8 D.I. Kolhua 40
+9 D.I. Lasiana 40
+xx PROVINSI 081 RS RK7
+KALINIAN TAN DARA I
+
+a Kab. Benakavana 71 10.945
+1 D.I. Benawan 117
+2 D.I. Selinse 266
+3 D.I. Tirta Kencana 88
+4 D.I. Lamat Payang 152
+5 D.I. Seburuk Kompleks 574
+6 D.I. Semalat 47
+7 D.I. Ketiat A-B 145
+8 D.I. Sebawak 149
+9 D.I. Riam 66
+10 D.I. Setia Jaya 143
+11 D.I. Madas 76
+12 D.I. Air Pauh 204
+13 D.I. Darma Bhakti 128
+14 D.I. Seluas 626
+15 D.I. Samalantan 310
+16 D.I. Pasuk Kayu 362
+17 D.I. Aping 120
+18 D.I. Kincir 375
+19 D.I. Sindu 50
+20 D.I. Sungai Limau 144
+21 D.I. Teradu Patok 134
+22 D.I. Babane 90
+23 D.I. Tumiang 84
+24 D.I. Sendoreng 117
+25 D.I. Pakucing 85
+26 D.I. Capkala 175
+27 D.I. Mandor 180
+28 D.I. Sebandut 555
+29 D.I. Setanduk 266

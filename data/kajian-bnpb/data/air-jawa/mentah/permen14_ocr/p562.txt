@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 562
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+75 D.I.A.T. Watumilok TW -002 10
+76 D.I.A.T. Kopong TW - 003 10
+77 D.L.A.T. Wairara TW - 004 10
+m Kab. Sumba Barat 18 179
+1 D.LA.T. Kalembu Kaha WKKI - 029 10
+2 D.LA.T. Kalembu Kaha WKKI - 030 10
+3 D.LA.T. Kalembu Kaha WKKI - 031 10
+4 D.LA.T. Ramadana WKKI - 033 10
+5 D.LA.T. Ramadana WKKI - 034 10
+6 D.LA.T. Kalembu Kaha WKKI - 035 10
+7 D.LA.T. Kalembu Kaha WKKI - 036 10
+8 D.LA.T. Weboro WKKI - 038 10
+9 D.LA.T. Waikabundu WVKKI - 040 10
+10 D.I.A.T. Waikabundu WKKI - 041 10
+11 D.LA.T. Hombakodi WKKI - 042 10
+12 D.LA.T. Ramadana WKKI - 044 10
+13 D.LA.T. Kabunduk WKM - 017 9
+14 D.LA.T. Dusun IV, Keruni WLKI - 033 10
+15 D.LA.T. Golkar WLKI - 034 10
+16 D.L.A.T. Wairasa II WMI - 009 10
+17 D.LA.T. Puukapaka WWP - 038 10
+18 D.LA.T. Ranamata WP - 044 10
+n Kab. Sumba Tenaah 5 49
+1 D.LA.T. Maliyok WKM - 017 9
+2 D.L.A.T. Wairasa | WMI - 006 10
+3 D.LA.T. Wairasa II WMI - 009 10
+4 D.LA.T. Wairasa III WMI - 014 10
+5 D.LA.T. Kakunduk WMI - 017 10
+o Kab. Sumba Timur 15 150
+1 D.LA.T. Hambuang EHI - 014 10
+2 D.LA.T. Kadumbul EHI - 024 10
+3 D.LA.T. Kadumbul EHI - 026 10
+4 D.LA.T. Kadumbul EPI - 025 10
+5 D.LA.T. Kadumbul EPI - 026 10
+6 D.L.A.T. Palakahembi EHI - 023 10
+7 D.LA.T. Palakahembi EHI - 025 10
+8 D.LA.T. Palakahembi EPI - 018 10
+9 D.LA.T. Palakahembi EPI - 020 10
+10 D.LA.T. Rambangaru EHI - 019 10
+11 D.LA.T. Rambangaru EHI - 021 10
+12 D.LA.T. Rambangaru EHI - 022 10
+13 D.LA.T. Watumbaka EPI - 015 10
+14 D.LA.T. Watumbaka EPI - 016 10
+15 D.LA.T. Watumbaka EPI - 017 10
+p Kab. Timor Tenaah Selatan 21 260
+1 D.LA.T. Oebelo SAOI - 031 12
+2 D.LA.T. Oebelo SAOI - 032 14
+3 D.LA.T. Oebelo SAOI - 033 14
+4 D.LA.T. Oebelo SAOI - 034 11
+5 D.LA.T. Polo SAPI - 035 12
+6 D.L.A.T. Polo SAPI - 036 12
+7 D.LA.T. Kiufatu SKKI - 039 12
+8 D.L.A.T. Kiufatu SKKI - 040 12
+9 D.LA.T. Toineke SKTI - 024 12
+10 D.LA.T. Toineke SKTI - 025 12
+11 D.LA.T. Toineke SKTI - 026 12
+12 D.LA.T. Toineke SKTI - 028 12

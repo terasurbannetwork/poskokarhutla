@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+597 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+22 D.I.A.T. Bajangan SDPS 258 32
+23 D.I.LA.T. Gayam SDPS 259 32
+24 D.L.A.T. Gayam SDPS 260 26
+25 D.I.A.T. Tebas SDPS 261 27
+26 D.I.A.T. Sedarum SDPS 262 32
+27 D.I.A.T. Wotgalih SDPS 263 26
+28 D.I.A.T. Gejug SDPS 264 29
+29 D.LA.T. Sumberanyar SDPS 265 25
+30 D.ILA.T. Dandanggendis SDPS 286 31
+31 D.I.A.T. Sebalong SDPS 287 27
+32 D.I.A.T. Karanglo SDPS 288 26
+33 D.LA.T. Sumberanyar SDPS 293 28
+34 D.I.A.T. Kebon Rojo SDPS 329 32
+35 D.I.A.T. Rebalas SDPS 330 25
+36 D.I.A.T. Kalipang SDPS 331 30
+37 D.I.A.T. Plososari SDPS 332 30
+38 D.ILA.T. Karangsentul SDPS 411 36
+39 D.I.A.T. Tenggilis Rejo SDPS 412 38
+40 D.LA.T. Wangkal wetan SDPS 413 37
+41 D.I.A.T. Wotgalih SDPS 440 30
+42 D.LA.T. Sebalong SDPS 441 24
+43 D.LA.T. Dandunggendis SDPS 442 24
+44 D.LA.T. Rebalas SDPS 443 33
+45 D.L.A.T. Kalipang SDPS 444 36
+46 D.LA.T. Sumber dawesari SDPS 468 29
+47 D.LA.T. Cukur Sondang SDPS 469 32
+48 D.LA.T. Tanggulangin SDPS 470 27
+49 D.LA.T. Kepuh SDPS 471 24
+50 D.I.A.T. Pohgading SDPS 481 26
+51 D.LA.T. Tanggulangin SDPS 491 27
+52 D.I.A.T. Kebotohan SDPS 533 36
+53 D.I.A.T. Ranggeh SMPS 328 12
+54 D.I.A.T. Ranggeh SMPS 403 8
+55 D.I.A.T. Wonojati SMPS 404 10
+
+r Kab. Ponoroao 93 2.674
+
+1 D.LA.T. Balong SDPO 013 60
+
+2 D.L.A.T. Balong SDPO 014 55
+
+3 D.LA.T. Sadarat SDPO 015 80
+
+4 D.LA.T. Muneng SDPO 016 70
+
+5 D.LA.T. Patihan SDPO 017 50
+
+6 D.LA.T. Ngampel SDPO 018 93
+
+7 D.LA.T. Pengkol SDPO 019 35
+
+8 D.LA.T. Ngrandu SDPO 020 40
+
+9 D.LA.T. Ngrandu SDPO 021 30
+10 D.LA.T. Nongko Dono SDPO 022 45
+11 D.LA.T. Semanding SDPO 023 40
+12 D.LA.T. Semanding SDPO 024 75
+13 D.LA.T. Gabel SDPO 025 80
+14 D.LA.T. Ciluk SDPO 026 125
+15 D.LA.T. Gabel SDPO 027 60
+16 D.I.A.T. Morosari SDPO 028 84
+17 D.LA.T. Madusari SDPO 029 58
+18 D.LA.T. Ngampel SDPO 030 96
+19 D.LA.T. Kadipaten SDPO 037 40
+20 D.I.A.T. Ngumpul SDPO 038 50
+21 D.I.A.T. Bajang SDPO 039 45
+22 D.I.A.T. Sawun SDPO 046 55
+23 D.I.A.T. Kadiaten SDPO 047 55
+24 D.LA.T. Siman SDPO 085 50
+25 D.I.A.T. Siman SDPO 086 50

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1332 D.I. Samarang II 30
+1333 D.I. Sampalan Lega 40
+1334 D.I. Sampalan Lega 100
+1335 D.I. Sampalan Lega 15
+1336 D.I. Samparantu 11
+1337 D.I. Sanaan 15
+1338 D.I. Sangabang 11
+1339 D.I. Sangiang Jarian 27
+1340 D.I. Saninten Cinyomang 40
+1341 D.I. Sarbini 80
+1342 D.I. Sarbini I 70
+1343 D.I. Sarbini III 90
+1344 D.I. Saribakti 80
+1345 D.I. Saribudi 20
+1346 D.I. Sarinieun 10
+1347 D.I. Sarinieun 60
+1348 D.I. Sariwangi 20
+1349 D.I. Saronge 50
+1350 D.I. Saronge 20
+1351 D.I. Saronge 40
+1352 D.I. Sasak 15
+1353 D.I. Satak 25
+1354 D.I. Saungjaya 64
+1355 D.I. Sawah Jeruk 22
+1356 D.I. Sawah Kalapa 55
+1357 D.I. Sawah Kaler 60
+1358 D.I. Sawah Lame 15
+1359 D.I. Sawah Lega 30
+1360 D.I. Sawah Lega 35
+1361 D.I. Sawah Lega 55
+1362 D.I. Sawah Limus 27
+1363 D.I. Sawah Peuteuy 20
+1364 D.I. Sawah Tengah 30
+1365 D.I. Sawah Tengah 10
+1366 D.I. Sawah Tengah 12
+1367 D.I. Sawahbera 10
+1368 D.I. Sawahlega 35
+1369 D.I. Sawahlega 160
+1370 D.I. Sawahlega 20
+1371 D.I. Sawahlega 35
+1372 D.I. Sayang Heulang 15
+1373 D.I. Sayuran 8
+1374 D.I. Sayuti 40
+1375 D.I. Segleng 65
+1376 D.I. Sela Awi 10
+1377 D.I. Selaawi 50
+1378 D.I. Sembah Rahtijah 40
+1379 D.I. Sembah Barelang 10
+1380 D.I. Sempur 10
+1381 D.I. Sempur 20
+1382 D.I. Senang Wangi 5
+1383 D.I. Sepan 6
+1384 D.I. Sero 50
+1385 D.I. Sero 50
+1386 D.I. Seungkeu 59
+1387 D.I. Simpeureum 40
+1388 D.I. Simpur 40
+1389 D.I. Sinagar 250
+1390 D.I. Sinanggalih 10
+1391 D.I. Sinapeul 10
+1392 D.I. Sinareja 83
+#KANAN
+194
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1393 D.I. Sindang Keueung 34
+1394 D.I. Sindang Ngelet 30
+1395 D.I. Sindang Tanjung | 40
+1396 D.I. Sindang Tanjung II 25
+1397 D.I. Sindangkasih 5
+1398 D.I. Sindangsari 6
+1399 D.I. Siraweuy 30
+1400 D.I. Sirnaraja 83
+1401 D.I. Situ Bedah 5
+1402 D.I. Situ Cilangla 5
+1403 D.I. Situ Panganten 46
+1404 D.I. Situ Sa'an 70
+1405 D.I. Situ Simpang 2
+1406 D.I. Situhiang 35
+1407 D.I. Situhiang 15
+1408 D.I. Sodong Sirang 10
+1409 D.I. Solokan 35
+1410 D.I. Solokan Haji 20
+1411 D.I. Solokan Kaen 45
+1412 D.I. Solokan Rahab 30
+1413 D.I. Sonari 40
+1414 D.I. Sosopan 35
+1415 D.I. Subah 20
+1416 D.I. Sugapan/Cibatur 125
+1417 D.I. Sukabirus 50
+1418 D.I. Sukahaji 35
+1419 D.I. Sukaharja 20
+1420 D.I. Sukahening 25
+1421 D.I. Sukahening 5
+1422 D.I. Sukajaya 20
+1423 D.I. Sukakarsa 20
+1424 D.I. Sukakarsa 25
+1425 D.I. Sukakarsa 20
+1426 D.I. Sukamahi 150
+1427 D.I. Sukamahi | 25
+1428 D.I. Sukamahi II 20
+1429 D.I. Sukamaju 25
+1430 D.I. Sukamanah 25
+1431 D.I. Sukamenak 75
+1432 D.I. Sukamulya 10
+1433 D.I. Sukamulya 10
+1434 D.I. Sukamulya 15
+1435 D.I. Sukarame 15
+1436 D.I. Sukaroya 49
+1437 D.I. Sukasari 20
+1438 D.I. Sukasari Baru 30
+1439 D.I. Sukasari Cibuntut 19
+1440 D.I. Suma 12
+1441 D.I. Sumbang Situ 20
+1442 D.I. Sunawenang 20
+1443 D.I. Sunia 30
+1444 D.I. Susukan Gede 70
+1445 D.I. Susukan Gede 15
+1446 D.I. Sutiang 25
+1447 D.I. Tajur 37
+1448 D.I. Tajur 50
+1449 D.I. Tamb Bojong 6
+1450 D.I. Tampian 75
+1451 D.I. Tanjung 30
+1452 D.I. Tanjung 40
+1453 D.I. Tanjung 6

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+15 D.I. Ladang Neubok 21
+16 D.I. Meurandeh 16
+17 D.I. Muka Blang 169
+18 D.I. Pante Cermen 12
+19 D.I. Panton Cut 83
+20 D.I. Panto Mue 58
+21 D.I. Panton Teungku 419
+22 D.I. Pusu 75
+23 D.I. Putroe Ijo 14
+24 D.I. Tangan-Tangan 605
+25 D.I. Tuwi Kareng 365
+26 D.I. Alue Drien 10
+27 D.I. Alue Thoe 4
+28 D.I. Lhung Geulumpang 88
+29 D.I. Paya Riemung Mate 7
+30 D.I. Suka Damai 32
+c Kab. Aceh Besar 117 20.657
+1 D.I. Alue Cureh 170
+2 D.I. Alue Paya Dua 200
+3 D.I. Ara Mejangak 800
+4 D.I. Bate Meucicak 285
+5 D.I. Blang Barih 100
+6 D.I. Blang Bate Beukah 130
+7 D.I. Blang Blah Deh 200
+8 D.I. Blang Data (Lon Asan) 100
+9 D.I. Blang Data (Tanoh Abee) 100
+10 D.I. Blang Karam 700
+11 D.I. Blang Lam Ura 150
+12 D.I. Data Teurebeh 750
+13 D.I. Empe Beuno 300
+14 D.I. Geu Peu 840
+15 D.I. Geunteut 320
+16 D.I. Iboh Tunong 75
+17 D.I. Krueng Kala 160
+18 D.I. Krueng Kalok 50
+19 D.I. Krueng Khee 120
+20 D.I. Krueng Lubuk 882
+21 D.I. Lam Apeng 95
+22 D.I. Lam Badeuk 120
+23 D.I. Lam Girek 160
+24 D.I. Lamsie 155
+25 D.I. Lamtamot 125
+26 D.I. Mate Ie Lebu 110
+27 D.I. Saree Aceh 215
+28 D.I. Trans Jantho 860
+29 D.I. Alue Batee 60
+30 D.I. Alue Riyeung 50
+31 D.I. Alue Sikebeu 150
+32 D.I. Alur Indang 350
+33 D.I. Aneuk Glee 45
+34 D.I. Ayon 250
+35 D.I. Batee Lhee 100
+36 D.I. Batee Raya 100
+37 D.I. Blang Asan 75
+38 D.I. Blang Bak Asan 50
+39 D.I. Blang Baroh 100
+40 D.I. Blang Bate Meulingka 50
+41 D.I. Blang Beutong 50
+42 D.I. Blang Bia 40
+43 D.I. Blang Daroh 290
+#KANAN
+65 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+44 D.I. Blang Gerbang 40
+45 D.I. Blang Gla 40
+46 D.I. Blang Jawi 75
+47 D.I. Blang Kathom 60
+48 D.I. Blang Leupung 40
+49 D.I. Blang Lhok 130
+50 D.I. Blang Masam 40
+51 D.I. Blang Meureulik 100
+52 D.I. Blang Milee 300
+53 D.I. Blang Paro 50
+54 D.I. Blang Paseh 70
+55 D.I. Blang Raya 200
+56 D.I. Blang Reudeup 70
+57 D.I. Blang Teu 45
+58 D.I. Blang Teuga 50
+59 D.I. Blang Thung 100
+60 D.I. Blang Tingkem Saree 319
+61 D.I. Blana Tunona 80
+62 D.I. Blang Twi 100
+63 D.I. Cot Bagie 45
+64 D.I. Desa Teladan 50
+65 D.I. Empe Bling 250
+66 D.I. Empe Leupon 100
+67 D.I. Iboh Tanjong 85
+68 D.I. Jalin Gampong 75
+69 D.I. Jalin Sampong Jantho 75
+70 D.I. Jantang 190
+71 D.I. Kayee Adang Atas 70
+72 D.I. Kayee Adang Bawah 60
+73 D.I. Krueng Lambirah 100
+74 D.I. Krueng Lamtanjong 50
+75 D.I. Krueng Panca 800
+76 D.I. Krueng Patah 150
+77 D.I. Krueng Raba 50
+78 D.I. Krueng Silan 160
+79 D.I. Lam Ara Cut 55
+80 D.I. Lam Ara Engket 55
+81 D.I. Lam Ara Tunong 75
+82 D.I. Lam Kura 120
+83 D.I. Lam Panah 180
+84 D.I. Lam Sujen 920
+85 D.I. Lambada 75
+86 D.I. Lambaro Tunong 75
+87 D.I. Lamjruen 50
+88 D.I. Lampu Uk 100
+89 D.I. Langon 80
+90 D.I. Leungah 125
+91 D.I. Lheup 55
+92 D.I. Lon Asan 277
+93 D.I. Lung Balee 200
+94 D.I. Lung Baroh 200
+95 D.I. Lung Beringin 80
+96 D.I. Lung Blang 200
+97 D.I. Lung Jok 40
+98 D.I. Luthu 100
+99 D.I. Maheng 120
+100 D.I. Mata le 75
+101 D.I. Mata le Nebit 450
+102 D.I. Meureung 99
+103 D.I. Meusek 75
+104 D.I. Mon Abok 200

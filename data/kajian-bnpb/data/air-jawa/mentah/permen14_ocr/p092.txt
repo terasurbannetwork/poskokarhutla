@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+3 D.I. Danau Koto Rajo 442
+4 D.I. Rumbio Taluk 255
+5 D.I. Seberang Taluk | 186
+6 D.I. Sentajo I 28
+7 D.I. Sentajo II 120
+8 D.I. Koto Kari 150
+9 D.I. Rawana Udana 124
+10 D.I. Lubuk Ambacang | 200
+11 D.I. Lubuk Ambacang II 131
+12 D.I. Kinali 153
+13 D.I. Gunung 81
+14 D.I. Petapahan Toar 144
+15 D.I. Pisang Berebus 100
+16 D.I. Pangkalan Indarung 75
+17 D.I. Pulau Bayur 180
+18 D.I. Saik 100
+19 D.I. Sungai Manau 116
+20 D.I. Sungai Kelelawar 52
+21 D.I. Teluk Beringin 150
+22 D.I. Tanjung 100
+23 D.I. Siruang Kocik 40
+24 D.I. Jaya Kopah 42
+25 D.I. Pulau Aro 50
+26 D.I. Pulau Kopung 98
+27 D.I. Gunung Kesiangan 115
+28 D.I. Banjar Benai 100
+29 D.I. Pembatang 100
+30 D.I. Padang Kunik 125
+31 D.I. Tanah Bekali 50
+32 D.I. Pulau Deras 50
+33 D.I. Sei Besar 100
+34 D.I. Teluk Pauh 50
+35 D.I. Pulau Kulur 40
+36 D.I. Sei Sorek 15
+37 D.I. Pulau Busuk 51
+38 D.I. Bedeng Sikuran 9
+39 D.I. Pulau Panjang 171
+40 D.I. Sipan/Petai 61
+41 D.I. Ujung Karam 55
+42 D.I. Pulau Jambu 39
+43 D.I. Rawa Sawa 471
+44 D.I. Sikakak 163
+d Kab. Rokan Hulu 4 1.313
+1 D.I. Sei Menaming 423
+2 D.I. Sei Perak 95
+3 D.I. Sei Palis 370
+4 D.I. Sei Kijang 425
+" PROVINSI 2 4.798
+KEPULAUAN KIAU
+
+a Kab. Kep. Anambas 1 386
+1 D.I. Jemaja 386
+b Kab. Karimun 1 278
+1 D.I. Kawasan Pertanian Terpadu 278
+c Kab. Natuna 6 1.062
+1 D.I. Air Raya 40
+2 D.I. Batubi 223
+3 D.I. Kelarik 328
+#KANAN
+92
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+4 D.I. Meliah 40
+5 D.I. Payak 106
+6 D.I. Tapau 325
+y PROVINSI RAR 222828
+DUMAI ERA DARAI
+
+a Kab. Aaam 295 29.013
+1 D.I. Angge 40
+2 D.I. Btg. Palupuh 70
+3 D.I. Jambak Balau 25
+4 D.I. Air Kijang 50
+5 D.I. Patapaian 38
+6 D.I. Air Dareh 100
+7 D.I. Air Biso 99
+8 D.I. Sungai Beluka 42
+9 D.I. Waduk Lapangan 195
+10 D.I. Katiak 150
+11 D.I. Bebeh 75
+12 D.I. Kasiak 75
+13 D.I. Sidangkong 150
+14 D.I. Tabek Tarok 150
+15 D.I. Banda Siliuk 59
+16 D.I. Pincuran VII 77
+17 D.I. Cingkano 35
+18 D.I. Tabiang 47
+19 D.I. Subarang 58
+20 D.I. Nyiur 36
+21 D.I. Karong Panjang 67
+22 D.I. Batu Aasahan 90
+23 D.I. Jembatan Ujung Guguak 124
+24 D.I. Ujung Guguak 144
+25 D.I. Mancuang/Mato Ala Kupang 118
+26 D.I. Jabur 29
+»5 xi Datuk Kodoh/Danguang - cm
+“ " Danguang hate
+28 D.I. Baruah Salo 56
+29 D.I. Aur 108
+30 D.I. Sungai Tuak 123
+31 D.I. Jembatan Besi 123
+32 D.I. Parak Laweh 231
+33 D.I. Batu Mandi 134
+34 D.I. Kambing VII 58
+35 D.I. Waduk Batu Kabau 141
+36 D.I. Pandan Banyak 133
+37 D.I. Induriang 125
+38 D.I. Gurun Laweh 52
+39 D.I. Brb. III Lurah (BB ) 179
+40 D.I. Brb. III Lurah (BT) 263
+41 D.I. Brb. III Lurah (TG) 108
+42 D.I. Brb. III Lurah (TP) 64
+43 D.I. Brb. III Lurah ( BBT ) 134
+44 D.I. Namuang 40
+45 D.I. Brb.III Lurah(TL) 367
+46 D.I. Brb.III April(TA) 95
+47 D.I. Ambacang 284
+48 D.I. Joho 100
+49 D.I. Bkt. Monaaok 90
+50 D.I. Batu Biaro 33
+51 D.I. Ulu Air Gadang 21
+52 D.I. Hilalang 153

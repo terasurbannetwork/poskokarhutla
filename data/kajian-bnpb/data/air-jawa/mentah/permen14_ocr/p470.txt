@@ -1,0 +1,100 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 470
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+9 D.I.R. Petuk Katimpun 75
+10 D.I.R. Sei Gohong 340
+11 D.I.R. Tanjung Pinang 195
+XII PROVINSI KALIMANTAN SELATAN 535 128.942
+
+a Kab. Balanaan 3 575
+
+1 D.I.R. Batu Mandi 150
+
+2 D.I.R. Mundar 75
+
+3 D.I.R. Sei Hanyar 350
+
+b Kab. Baniar 72 30.839
+
+1 D.I.R. Akar Bagantung 99
+
+2 D.I.R. Antalangu 90
+
+3 D.I.R. Antasan 780
+
+4 D.I.R. Antasan Bawah Ringin 650
+
+5 D.I.R. Antasan Sutun 700
+
+6 D.I.R. Babirik 560
+
+7 D.I.R. Banua Hanyar 175
+
+8 D.I.R. Banyu Irang 750
+
+9 D.I.R. Bawahan Pasar 200
+10 D.I.R. Bawahan Seberang 170
+11 D.I.R. Bunipah 559
+12 D.I.R. Guntung Papuyu 518
+13 D.I.R. Guntung Ujung 700
+14 D.I.R. Guntung Ujung Atas 500
+15 D.I.R. Handil Bujur 780
+16 D.I.R. Handil Buluan 100
+17 D.I.R. Handil Gayam/Kampung Baru 570
+18 D.I.R. Handil Jawa 720
+19 D.I.R. Handil Purai 700
+20 D.I.R. Haur Kuning 350
+21 D.I.R. Jambu Burung 475
+22 D.I.R. Jambu Raya 350
+23 D.I.R. Jati Baru 200
+24 D.I.R. Kayu Bawang 215
+25 D.I.R. Keladan 255
+26 D.I.R. Kelampayan Ilir 100
+27 D.I.R. Kuin Besar 433
+28 D.I.R. Lawahan 500
+29 D.I.R. Lok Baintan 200
+30 D.I.R. Lok Buntar 600
+31 D.I.R. Makmur 518
+32 D.I.R. Malintang 370
+33 D.I.R. Manarap Baru 415
+34 D.I.R. Mangguruh Bawah 750
+35 D.I.R. Muara Halayung 750
+36 D.I.R. Munggu Raya 120
+37 D.I.R. Pasar Jati 265
+38 D.I.R. Pasar Kamis 580
+39 D.I.R. Pemakuan Laut 385
+40 D.I.R. Pembantanan 900
+41 D.I.R. Penggalaman 760
+42 D.I.R. Penjalaian Atas 930
+43 D.I.R. Polder Liang 900
+44 D.I.R. Polder Pasayangan 400
+45 D.ILR. Rawa Kertak Hanyar II 165
+46 D.I.R. Rumpiang 559
+47 D.I.R. Sei Asam dan Tapang 152
+48 D.I.R. Sei Bakung/Ky. Kacang 240
+49 D.I.R. Sei Landung 400
+50 D.I.R. Sei Layap Baru 140
+51 D.I.R. Sei Liakhmad 350
+52 D.I.R. Sei Lulut Madam 465
+53 D.I.R. Sei Musang 810
+54 D.I.R. Sei Pemakuan 532
+55 D.I.R. Sei Tabuk Keramat 300
+56 D.I.R. Selat Makmur 400
+57 D.I.R. Simpang Empat 960
+58 D.I.R. Simpang Warga Dalam 344
+59 D.I.R. Sungai Kitano 175
+60 D.I.R. Sungai Kupang 500
+61 D.I.R. Sungai Lakum 100
+62 D.I.R. Tambak Sirang Baru 210
+63 D.I.R. Tambak Sirang Darat 650
+64 D.I.R. Tambak Sirang Laut 385
+65 D.I.R. Tampang Awang 400
+66 D.I.R. Tanggul Sei Dayung 200
+67 D.I.R. Tatah Bangkal 200
+68 D.I.R. Tatah Juruju 100
+69 D.I.R. Tatah Pemangkih 100
+70 D.I.R. Terapu 300
+71 D.I.R. Thaibah Raya 210
+72 D.I.R. Trace Pamajatan 450

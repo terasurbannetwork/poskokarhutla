@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+563 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+13 D.LA.T. Toineke SKTI - 029 12
+14 D.LA.T. Toineke SKTI - 030 12
+15 D.LA.T. Kiufatu SKTI - 037 12
+16 D.L.A.T. Kiufatu SKTI - 038 12
+17 D.LA.T. Skinu STM - 020 15
+18 D.LA.T. Skinu STSI - 018 12
+19 D.LA.T. Skinu STSI - 019 12
+20 D.L.A.T. Skinu STSI - 022 14
+21 D.LA.T. Skinu STSI - 023 12
+
+a Kab. Timor Tenaah Utara 45 553
+
+1 D.LA.T. Hauteas AEW - 004 12
+
+2 D.LA.T. Hauteas KTW - 005 10
+
+3 D.LA.T. Hauteas KTW - 008 10
+
+4 D.LA.T. Ponu KTW - 014 10
+
+5 D.LA.T. Oepuah KTW - 015 10
+
+6 D.LA.T. Oepuah KTW - 016 14
+
+7 D.LA.T. Boronubaen P-013 10
+
+8 D.LA.T. Boronubaen P- 014 15
+
+9 D.LA.T. Boronubaen P - 024 10
+10 D.LA.T. Boronubaen P-025 10
+11 D.LA.T. Boronubaen P-026 14
+12 D.LA.T. Boronubaen P-028 10
+13 D.LA.T. Boronubaen P-029 10
+14 D.ILA.T. Maukabatan TW - 001 16
+15 D.ILA.T. Maukabatan TW - 002 10
+16 D.I.A.T. Maukabatan TW -002 12
+17 D.LA.T. Maukabatan TW - 005 12
+18 D.LA.T. Kota Foun UBKI - 019 12
+19 D.LA.T. Kota Foun UBKI - 025 12
+20 D.I.A.T. Kota Foun UBKI - 030 11
+21 D.L.A.T. Kota Foun UBKI - 032 11
+22 D.I.A.T. Maukabatan UBMI - 001 10
+23 D.I.A.T. Maukabatan UBMI - 010 12
+24 D.I.A.T. Maukabatan UBMI - 012 13
+25 D.I.A.T. Maukabatan UBMI - 014 10
+26 D.I.A.T. Maukabatan UBMI - 015 14
+27 D.I.A.T. Maukabatan UBMI - 017 14
+28 D.I.A.T. Maukabatan UBMI - 018 15
+29 D.I.A.T. Maukabatan UBMI - 020 12
+30 D.I.A.T. Maukabatan UBMI - 021 14
+31 D.I.A.T. Maukabatan UBMI - 022 14
+32 D.I.A.T. Maukabatan UBMI - 026 12
+33 D.I.A.T. Maukabatan UBMI - 027 12
+34 D.I.A.T. Maukabatan UBMI - 028 16
+35 D.I.A.T. Maukabatan UBMI IT - 017 14
+36 D.I.A.T. Ponu UBPI - 002 13
+37 D.I.A.T. Ponu UBPI - 003 12
+38 D.I.A.T. Ponu UBPI - 023 12
+39 D.I.A.T. Ponu UBPI - 024 14
+40 D.I.A.T. Ponu UBPI - 029 12
+41 D.LA.T. Ponu UBPI - 031 12
+42 D.I.A.T. Maukabatan UMBI - 026 15
+43 D.I.A.T. Maukabatan UMBI - 027 16
+44 D.L.A.T. Maukabatan UMBI - 028 12
+45 D.L.A.T. Nifuboke UNI - 006 12
+XII PROVINSI SULAWESI UTARA 184 3.747
+
+a Kab. Bolaana Moaondow 58 1.319
+
+1 D.LA.T. Inobonto I SMB 001 7

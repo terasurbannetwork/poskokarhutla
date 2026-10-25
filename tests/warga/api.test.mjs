@@ -404,7 +404,7 @@ const cuacaSumber = (jam, DBx = DB) => DBx.prepare("INSERT INTO cuaca_sumber (ku
 const beritaSegar = () => Object.fromEntries(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].map(n => [`/banjir/data/berita_${n}.json`, metaUji(2)]));
 const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
 uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
-  Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     let r = await panggil("GET", "/api/status");
@@ -424,6 +424,10 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
     ASET_UJI["/data/meta.json"] = metaUji(9);
     r = await panggil("GET", "/api/status");
     assert.equal(r.status, 503, `titik 9 jam (> 8) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, ["titik"]);
+    ASET_UJI["/data/meta.json"] = metaUji(2); ASET_UJI["/data/presiden/semua.json"] = metaUji(9);   // panel /presiden: sumber status sendiri, ambang 8 jam (registry 22 Okt)
+    r = await panggil("GET", "/api/status");
+    assert.equal(r.status, 503, `presiden 9 jam (> 8) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, ["presiden"]); assert.equal(r.j.sumber.presiden.ambang_jam, 8);
+    ASET_UJI["/data/presiden/semua.json"] = metaUji(2);
     ASET_UJI["/data/meta.json"] = metaUji(7.9); ASET_UJI["/data/berita.json"] = null;
     r = await panggil("GET", "/api/status");
     assert.equal(r.status, 503); assert.deepEqual(r.j.basi, ["berita"], `berita hilang (aktif) harus basi: ${r.teks}`);
@@ -456,7 +460,7 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
 });
 
 uji("status: hanya sumber bencana aktif menentukan 503 (semua bencana kini aktif, `uji` kosong)", async () => {
-  Object.assign(ASET_UJI, {...beritaSegar(), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     const r = await panggil("GET", "/api/status");
@@ -493,7 +497,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   try {
     const D2 = await mf2.getD1Database("DB"); await D2.batch(pecah(migrasi()).map(s => D2.prepare(s)));
     const st = async () => { const r = await mf2.dispatchFetch("http://warga.lokal/api/status"); return {status: r.status, j: await r.json()}; };
-    Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+    Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
     await D2.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?)").bind(KINI - 0.1 * JAM).run();
     let r = await st();   // tabel cuaca_sumber kosong = cuaca_nowcast (uji) hilang
     assert.equal(r.status, 200, `uji hilang harus tetap 200: ${JSON.stringify(r.j)}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);

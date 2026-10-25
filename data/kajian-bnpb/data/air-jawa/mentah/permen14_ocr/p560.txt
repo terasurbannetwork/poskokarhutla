@@ -1,0 +1,79 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 560
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+14 D.LA.T. Pota II MT - 014 10
+i Kab. Naaekeo 11 99
+1 D.LA.T. Waemburung NMI - 001 10
+2 D.LA.T. Aeramo NMI - 005 7
+3 D.LA.T. Anakoli NMI - 006 12
+4 D.LA.T. Ngegedhawe NMI - 007 10
+5 D.LA.T. Anakoli NMI - 009 8
+6 D.L.A.T. Olaia NMI - 011 10
+7 D.LA.T. Aeramo NMI - 018 6
+8 D.I.A.T. Anakoli NMI - 020 12
+9 D.LA.T. Penginanga NMI - 026 10
+
+10 D.LA.T. Aesesa NMI - 032 4
+
+11 D.LA.T. Wekaseko NYI - 021 10
+i Kab. Naada 11 121
+1 D.LA.T. Aeramo NAI - 002 7
+2 D.LA.T. Anakoli NAI - 003 12
+3 D.LA.T. Ngegeowawe NNI - 004 10
+4 D.LA.T. Ngegeowawe NNI - 005 10
+5 D.LA.T. Pengananga NPI - 007 10
+6 D.LA.T. Lengkosambi Barat NRI - 009 10
+7 D.LA.T. Golokutu NRI - 010 10
+8 D.LA.T. Lengkosambi Tengah NRI-015 12
+9 D.LA.T. Lengkosambi Timur NRI- 017 20
+
+10 D.L.A.T. Tendatoto NTI - 006 10
+
+11 D.LA.T. Wainburung NYI - 001 10
+k Kab. Rote Ndao 17 185
+1 D.LA.T. Tesabela DW - 001 10
+2 D.LA.T. Tesabela DW - 003 10
+3 D.LA.T. Oenitas DW - 004 10
+4 D.LA.T. Keden PKEI - 028 15
+5 D.LA.T. Keden PKEI - 029 5
+6 D.L.A.T. Olafulihaa PROI - 001 11
+7 D.LA.T. Tungganamo PROI - 004 8
+8 D.L.A.T. Olafulihaa PROI - 005 12
+9 D.LA.T. Tungganamo PROI - 031 13
+
+10 D.L.A.T. Olafulihaa PROI - 032 14
+
+11 D.LA.T. Tesabela PRTI-017 12
+
+12 D.LA.T. Tesabela PRTI - 018 13
+
+13 D.LA.T. Tesabela PRTI-019 12
+
+14 D.LA.T. Tungganamo PRTI - 033 10
+
+15 D.LA.T. Tesabela PTI - 166 10
+
+16 D.LA.T. Tesabela PTI - 169 10
+
+17 D.LA.T. Tesabela PTI-170 10
+| Kab. Sikka 17 809
+1 D.LA.T. Watugong KAI - 093 10
+2 D.LA.T. Kota Uneng KAI - 095 7
+3 D.LA.T. Watuliwung KKI - 001 8
+4 D.LA.T. Langir KKI - 002 9
+5 D.LA.T. Watumilok KKI - 010 20
+6 D.LA.T. Namangkewa KKI - 011 10
+7 D.LA.T. Watuliung KKI - 016 10
+8 D.LA.T. Tanaduen KKI - 030 15
+9 D.LA.T. Kopong KKI - 035 10
+
+10 D.I.A.T. Watumilak KKI - 056 11
+
+11 D.LA.T. Kopong KKI - 058 11
+
+12 D.LA.T. Magepanda KKI - 059 10
+
+13 D.LA.T. Watumilok KKI - 060 18

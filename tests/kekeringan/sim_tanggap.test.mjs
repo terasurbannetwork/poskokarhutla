@@ -48,9 +48,55 @@ test("dampak padi: kemarau tanpa hujan menghilangkan hasil; pompa dan tanam awal
   for (const k of E.kand) assert.ok(k.padiHa <= E.dasar.hilang + 1e-6, `${k.id} menyelamatkan ${k.padiHa} ha > yang hilang ${E.dasar.hilang}`);
 });
 
+test("jiwa rentan: tak pernah melebihi penduduk × porsi rentan; hujan menghapusnya; butuh N hari kering berturut-turut", () => {
+  const {D, sk, hj} = mini(0), idx = [0, 1], penuh = S.dampak(D, S.jalankan(D, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.ok(penuh.jiwaPuncak <= 10500 + 1e-6, `jiwaPuncak ${penuh.jiwaPuncak} > penduduk 10.500`);
+  const D2 = {...D, rentan: [0.2, 0.2]}, r2 = S.dampak(D2, S.jalankan(D2, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.ok(r2.jiwaPuncak <= 0.2 * 10500 + 1e-6 && Math.abs(r2.jiwaPuncak - 0.2 * penuh.jiwaPuncak) < 1e-6, `porsi 20%: ${r2.jiwaPuncak} vs ${penuh.jiwaPuncak}`);
+  const b = mini(400), basah = S.dampak(b.D, S.jalankan(b.D, b.sk, b.hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.equal(basah.jiwaPuncak, 0, "hujan 400 mm/minggu: tanah tak pernah stres, tak ada jiwa rentan");
+  const D3 = {...D, nKering: 400}, r3 = S.dampak(D3, S.jalankan(D3, sk, hj, {tanam: 0, laju: 0, kap: 0, omc: 0}, idx), idx);
+  assert.equal(r3.jiwaPuncak, 0, "N lebih panjang dari simulasi: tak pernah terpenuhi");
+  assert.ok(penuh.hariKrisis > 0 && penuh.hariKrisis <= S.H);
+});
+
+test("anomali: tahun normal tidak memberi jiwa rentan walau tanah kering; tahun lebih kering dari Normal memberi; hindcast 2015 jauh di atas normal", () => {
+  const idx = [0, 1], cfg = {tanam: 0, laju: 0, kap: 0, omc: 0}, normal = mini(5), kering = mini(0), basah = mini(5);
+  const norm = {sk: normal.sk, hj: normal.hj}, pk = (m, n) => S.dampak(m.D, S.jalankan(m.D, m.sk, m.hj, cfg, idx, n), idx).jiwaPuncak;
+  assert.ok(pk(kering) > 5000, "tanpa pembanding: tanah kering = rentan (aturan lama)");
+  assert.equal(pk(basah, norm), 0, "tahun sama dengan Normal: anomali nol walau tanah sendiri kering");
+  const lembab = mini(60), normL = {sk: lembab.sk, hj: lembab.hj};
+  assert.ok(pk(kering, normL) > 5000, `0 mm vs Normal 60 mm/minggu: harus rentan, dapat ${pk(kering, normL)}`);
+  const n = json("data/kekeringan_neraca.json"), h = json("kekeringan/data/hindcast.json"), c = n.sel_data;
+  const D = {...c, n: c.lat.length, param: n.param, dr0: c.dr0.map(() => 0), km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), rentan: c.lat.map(() => 1), nKering: 14}, snk = n.skenario.normal_k, nm = {sk: snk, hj: S.hujanHarian(D, snk)};
+  const puncak = sk => Math.max(...S.jalankan(D, sk, S.hujanHarian(D, sk), cfg, undefined, nm).jiwa), total = c.jiwa.reduce((a, b) => a + b, 0);
+  assert.ok(puncak(snk) < 0.01 * total, `Normal sintetis memberi ${puncak(snk)} jiwa rentan, harus < 1% penduduk`);
+  assert.ok(puncak({int: 15, ...h.tahun["2015"]}) > 20 * Math.max(1, puncak(snk)) && puncak({int: 15, ...h.tahun["2015"]}) > 0.2 * total, "2015 (El Niño kuat) harus jauh di atas Normal");
+});
+
 test("dampak padi: hujan cukup hampir tidak menghilangkan padi", () => {
   const basah = jalan(400), kering = jalan(0);
   assert.ok(basah.dasar.hilang < 0.05 * kering.dasar.hilang, `hujan 400 mm/minggu: hilang ${basah.dasar.hilang} ha, seharusnya jauh di bawah ${kering.dasar.hilang}`);
+});
+
+test("pita anggota: p10 (kering) merugikan paling besar, p90 (basah) paling kecil; tanpa anggota -> null", () => {
+  const {D, sk} = mini(0), w = m => Array.from({length: 2}, () => Array(26).fill(m));
+  assert.equal(S.pita(T, D, sk, [0, 1], {tanam: 0, pangkalan: pang}), null);
+  const b = S.pita(T, D, {...sk, anggota: {p10: w(0), p50: w(60), p90: w(400)}}, [0, 1], {tanam: 0, pangkalan: pang});
+  assert.ok(b.hilang[0] < b.hilang[1], `rentang padi hilang harus melebar: ${b.hilang}`);
+  assert.ok(b.hilang[1] > 900 && b.hilang[0] < 0.05 * b.hilang[1], `anggota 0 mm hilang hampir semua, 400 mm/minggu hampir tidak: ${b.hilang}`);
+  assert.ok(b.kand.p20[1] >= b.kand.p20[0] && Object.keys(b.kand).length === 8);
+});
+
+test("hindcast: selaras dengan kisi neraca; musim kering 2015 dan 2023 menghasilkan jiwa kering puncak tak melebihi penduduk", () => {
+  const n = json("data/kekeringan_neraca.json"), h = json("kekeringan/data/hindcast.json"), c = n.sel_data;
+  assert.deepEqual(h.lat, c.lat); assert.deepEqual(h.lon, c.lon);
+  const D = {...c, n: c.lat.length, param: n.param, dr0: c.dr0.map(() => 0), km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), rentan: c.lat.map(() => 1), nKering: 14}, total = c.jiwa.reduce((a, b) => a + b, 0);
+  for (const y of ["2015", "2023"]) {
+    const sk = {int: 15, ...h.tahun[y]}, R = S.jalankan(D, sk, S.hujanHarian(D, sk), {tanam: 30, laju: 0, kap: 0, omc: 0}), puncak = Math.max(...R.jiwa);
+    assert.equal(h.tahun[y].hujan[0].length, 26);
+    assert.ok(puncak > 0 && puncak <= total + 1e-6, `${y}: puncak ${puncak} di luar (0, ${total}]`);
+  }
 });
 
 test("data nyata: tutupan selaras dengan neraca, jumlah sawah = acuan nasional, peringkat berjalan", () => {

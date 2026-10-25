@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+36 D.I. Bojongnangka 125
+37 D.I. Bojongnangka 122
+38 D.I. Cadas Beureum 135
+39 D.I. Ciakar 100
+40 D.I. Ciambon 250
+41 D.I. Ciartamaya 34
+42 D.I. Ciawi Tali 100
+43 D.I. Cibadak | 106
+44 D.I. Cibinong Girang 70
+45 D.I. Cibitung/Girijaya 115
+46 D.I. Cibogo 100
+47 D.I. Cibojong 112
+48 D.I. Cibungur 200
+49 D.I. Cibuntu 110
+50 D.I. Ciburial 250
+51 D.I. Cicadas 8
+52 D.I. Cicalengka 150
+53 D.I. Cidadap 100
+54 D.I. Cidaun I 130
+55 D.I. Cidulang Cigarukgak 112
+56 D.I. Cigadung 120
+57 D.I. Cigadung 193
+58 D.I. Cigadung | # II 103
+59 D.I. Cigembong 115
+60 D.I. Cigenteng 129
+61 D.I. Cigewor 132
+62 D.I. Cigulingan 123
+63 D.I. Ciherang | 109
+64 D.I. Ciherang II 114
+65 D.I. Cijedil 53
+66 D.I. Cijembrung 212
+67 D.I. Cikadu 28
+68 D.I. Cikandang Domba 29
+69 D.I. Cikaret Girang 50
+70 D.I. Cikaret Hilir 21
+71 D.I. Cikawung 947
+72 D.I. Cikeris 100
+73 D.I. Cikerta 82
+74 D.I. Cikerta 180
+75 D.I. Cikoronyo 130
+76 D.I. Cikujang 197
+77 D.I. Cikunjungan 150
+78 D.I. Cilangkap 112
+79 D.I. Cileueur 16
+80 D.I. Cilongsong 140
+81 D.I. Cilung Gunung 140
+82 D.I. Cimanahayu 145
+83 D.I. Cimanggu 140
+84 D.I. Cimanggu/Cipatat 120
+85 D.I. Cimanggu Kiri 300
+86 D.I. Cimunding 120
+87 D.I. Cinangsi 34
+88 D.I. Cingebul 107
+89 D.I. Cipandak 350
+90 D.I. Cipetir 150
+91 D.I. Cipetir 111
+92 D.I. Cipeundeuy II 150
+93 D.I. Cipeuteuy 113
+94 D.I. Cireang 211
+95 D.I. Cireang 100
+96 D.I. Ciroyom 160
+#KANAN
+171 7015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+97 D.I. Ciroyom 310
+98 D.I. Ciroyom 120
+99 D.I. Cisabuk 100
+100 D.I. Cisalopa 200
+101 D.I. Cisarandi 127
+102 D.I. Cisarua | 139
+103 D.I. Cisarua III 151
+104 D.I. Cisawer 100
+105 D.I. Ciseungkeu 135
+106 D.I. Ciseupan 106
+107 D.I. Ciseupan 136
+108 D.I. Ciseureuh 200
+109 D.I. Cisiluman 130
+110 D.I. Cisore/Bojong Kasih 100
+111 D.I. Cisukarama 56
+112 D.I. Cisukasari/Ciburial 100
+113 D.I. Citambur 100
+114 D.I. Citaringgul II 155
+115 D.I. Citempuan | 100
+116 D.I. Citoblongan 122
+117 D.I. Curug Dadali 400
+118 D.I. Curug Dendeng 100
+119 D.I. Curug Jampang 112
+120 D.I. Gunung Leutik 65
+121 D.I. Gupitan 100
+122 D.I. Hurikukun 80
+123 D.I. Jagur/Citunggul 120
+124 D.I. Jaya Bakti 103
+125 D.I. Jayabakti Tonjong 103
+126 D.I. Jebol 107
+127 D.I. Karang Tengah M4
+128 D.I. Kubengan 103
+129 D.I. Leuwi Anyar 100
+130 D.I. Leuwi Badak 450
+131 D.I. Leuwi Cantik 100
+132 D.I. Leuwi Malang Jati 120
+133 D.I. Leuwi Peujit 109
+134 D.I. Leuwi Sadinah 180
+135 D.I. Leuwihalang 197
+136 D.I. Leuwirakit 145
+137 D.I. Limbangan 100
+138 D.I. Logawa 147
+139 D.I. Mande/Lebak Soang 41
+140 D.I. Mandorangsi 175
+141 D.I. Mandu 141
+142 D.I. Mangkak 145
+143 D.I. Nagrak 202
+144 D.I. Nyelempet 135
+145 D.I. Pamoyanan 110
+146 D.I. Panglawakan 130
+147 D.I. Parenggong 280
+148 D.I. Parungbangkong 300
+149 D.I. Sangkuriang 100
+150 D.I. Sariban 120
+151 D.I. Sawah Muncang 100
+152 D.I. Selokan Anyar 200
+153 D.I. Singayuda 719
+154 D.I. Sukamahi 120
+155 D.I. Sukanagalih/Bengkok 153
+156 D.I. Sukanagalih/Lam e 125
+157 D.I. Sungapan 125

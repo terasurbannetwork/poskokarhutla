@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+167 D.I. Sweden 30
+168 D.I. Tempuran 30
+ad Kota Batu 42 2.107
+1 D.I. Dadaprejo I 24
+2 D.I. Dadaprejo II 3
+3 D.I. Gangsiran 14
+4 D.I. Gedang Klutuk 196
+5 D.I. Kaliampo 27
+6 D.I. Karang Mloko | 18
+7 D.I. Karang Mloko II 3
+8 D.I. Kekep 17
+9 D.I. Kokopan 16
+10 D.I. Prambatan 492
+11 D.I. Sarem 139
+12 D.I. Sbr. Beji I 110
+13 D.I. Sbr. Beji II 24
+14 D.I. Sbr. Bendo 11
+15 D.I. Sbr. Bletok 16
+16 D.I. Sbr. Dandang 20
+17 D.I. Sbr. Dok 24
+18 D.I. Sbr. Dompyong 17
+19 D.I. Sbr. Gemulo 57
+20 D.I. Sbr. Genengan 26
+21 D.I. Sbr. Grinsing 20
+22 D.I. Sbr. Jeding teh
+23 D.I. Sbr. Jurangjero 102
+24 D.I. Sbr. Kalisusuh 110
+25 D.I. Sbr. Kasinan 13
+26 D.I. Sbr. Kembang 31
+27 D.I. Sbr. Kungkuk 16
+28 D.I. Sbr. Lodengkol 20
+29 D.I. Sbr. Ngukir Meranak | 26
+30 D.I. Sbr. Ngukir Meranak II 49
+31 D.I. Sbr. Preteng 13
+32 D.I. Sbr. Selayur 63
+33 D.I. Sbr. Sumberan 40
+34 D.I. Sbr. Tenggulun 29
+35 D.I. Sbr. Torong Belok 14
+36 D.I. Sbr. Torong Sisir 51
+37 D.I. Sbr. Watu Gedek 28
+38 D.I. Sbr. Watu Gudik 10
+39 D.I. Sbr.Torong Dadap I 48
+40 D.I. Tlekung 31
+41 D.I. Sbr. Watu Gede 39
+42 D.I. Torong Dadap II 9
+ae Kota Blitar 36 1.051
+1 D.I. Bd. Bangsongan 56
+2 D.I. Bd. Banjar Rejo 27
+3 D.I. Bd. Bendo 27
+4 D.I. Bd. Pakunden 28
+5 D.I. Bd. Pengkol 55
+6 D.I. Bd. Sudung 24
+7 D.I. Bd. Tanggung 26
+8 D.I. Bendogerit 4
+9 D.I. Gedog 10
+10 D.I. Jatimalang 45
+11 D.I. Jumblengan 6
+12 D.I. Jurangsembot 27
+13 D.I. Karanglo I 10
+#KANAN
+3771 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+14 D.I. Karanglo II 13
+15 D.I. Karangsari 50
+16 D.I. Ngadirejo 43
+17 D.I. Narebo 10
+18 D.I. Ploso Tengah 51
+19 D.I. Sbr. Aren 42
+20 D.I. Sbr. Gedog 11
+21 D.I. Sbr. Jajar 11
+22 D.I. Sbr. Jati 21
+23 D.I. Sbr. Kotes 35
+24 D.I. Sbr. Lumbu 74
+25 D.I. Sbr. Ngegong 27
+26 D.I. Sbr. Ngegong I 1
+27 D.I. Sbr. Ngegong II 1
+28 D.I. Sbr. Ngrebo 15
+29 D.I. Sbr. Urung-urung 24
+30 D.I. Sentul 36
+31 D.I. Sumber Jaran 84
+32 D.I. Tanjungsari 75
+33 D.I. Tulungrejo 15
+34 D.I. Bendil 17
+35 D.I. Rembang 45
+36 D.I. Sumber Saman 5
+af Kota Kediri 42 1.708
+1 D.I. Balowerti 10
+2 D.I. Banaran 33
+3 D.I. Bangsal 69
+4 D.I. Banjaran 37
+5 D.I. Boro 132
+6 D.I. Bujel 39
+7 D.I. Burengan | 25
+8 D.I. Burengan II 16
+9 D.I. Centong 125
+10 D.I. Gande 38
+11 D.I. Grogol Kota 33
+12 D.I. Grogol Pesantren 21
+13 D.I. Klampok 39
+14 D.I. Kleco 32
+15 D.I. Kresek 81
+16 D.I. Maron 16
+17 D.I. Nglaban 43
+18 D.I. Ngletih 34
+19 D.I. Pamor 46
+20 D.I. Pojok 66
+21 D.I. Sb. Cakarwesi 9
+22 D.I. Sb. Gande 31
+23 D.I. Sb. Ganaaona 59
+24 D.I. Sb. Glodok 74
+25 D.I. Sb. Gobang 38
+26 D.I. Sb. Jasem 36
+27 D.I. Sb. Jiput 29
+28 D.I. Sb. Kwangkalan 45
+29 D.I. Sb. Munengan 22
+30 D.I. Sb. Ngasinan 106
+31 D.I. Sb. Ngembak 16
+32 D.I. Sb. Ngreco 28
+33 D.I. Sb. Ngronggo 19
+34 D.I. Sb. Rempi 34
+35 D.I. Sb. Soyo 11
+36 D.I. Sb. Topan 6

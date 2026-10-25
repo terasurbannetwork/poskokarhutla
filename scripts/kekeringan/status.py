@@ -92,6 +92,11 @@ def teks_enso(ik):
             "peluang": int(p.group(1)) if p else None, "hingga": hingga}
 
 
+def tampil(v):
+    """SPI untuk tampilan dibatasi +-3 (di luar itu fit gamma pada sel kering tak bermakna); status memakai nilai penuh. q3 > 0,5 = massa nol tinggi, tandai."""
+    return None if v is None else max(-3.0, min(3.0, v))
+
+
 def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
     """Murni (tanpa jaringan): hitung seluruh keluaran dari berkas masukan dan `hujan` = {'lat,lon': {'YYYYMM': mm/hari}}."""
     dc = {(round(g["lat"], 2), round(g["lon"], 2)): g["hari"] for g in fwi["grid"] if g.get("hari")}
@@ -103,9 +108,10 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
         s3 = SPI.spi_seri(h, ym[0], ym[1], 3) if h and ym else None
         s6 = SPI.spi_seri(h, ym[0], ym[1], 6) if h and ym else None
         x3 = SPI.jumlah(h, ym[0], ym[1], 3) if h and ym else None
+        q3 = SPI.spi_q(h, ym[0], ym[1], 3) if h and ym and s3 is not None else None
         p = g.get("pct1") if g.get("pct1") is not None else g.get("pct0")
         d = dc[k][-1]["dc"] if k in dc else None
-        sel[k] = {"prov": g["prov"], "p0": g.get("pct0"), "p1": g.get("pct1"), "dc": d, "spi3": s3, "spi6": s6, "mm3": None if x3 is None else round(x3), "lv": gabung(lv_spi(s3), lv_tanah(p), s6)}
+        sel[k] = {"prov": g["prov"], "p0": g.get("pct0"), "p1": g.get("pct1"), "dc": d, "spi3": s3, "spi6": s6, "q3": q3, "mm3": None if x3 is None else round(x3), "lv": gabung(lv_spi(s3), lv_tanah(p), s6)}
     # kecamatan -> sel terdekat
     kab, prov = {}, {}
     for kk, jiwa in penduduk["kec"].items():
@@ -173,12 +179,12 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
     riw.append({"id": das_id, "tgl": hari_ini.isoformat(), "das": dasarian(hari_ini.isoformat()), "jiwa": nas["jiwa"], "kab_n": nas["kab_n"], "sel_n": nas["sel_n"], "sel": nas["sel"]})
     riw = sorted(riw, key=lambda r: r["id"])[-108:]  # 3 tahun
     tren = {"spi_bulanan": spi_bln, "dc_harian": dc_harian, "dasarian": riw}
-    grid = [[k[0], k[1], s["prov"], s["p0"], s["p1"], s["dc"], s["spi3"], s["lv"], s["spi6"], s["mm3"]] for k, s in sorted(sel.items())]
+    grid = [[k[0], k[1], s["prov"], s["p0"], s["p1"], s["dc"], tampil(s["spi3"]), s["lv"], tampil(s["spi6"]), s["mm3"], s["q3"]] for k, s in sorted(sel.items())]
     meta = {"hari_ini": hari_ini.isoformat(), "dasarian": dasarian(hari_ini.isoformat()), "label": "Deteksi Pantau Bencana",
             "spi": {"bulan": f"{ym[0]}-{ym[1]:02d}", "k": 3, "sel": sum(1 for s in sel.values() if s["spi3"] is not None)} if ym else None,
             "tanah": {"tgl": tanah.get("hari_ini"), "sel": sum(1 for s in sel.values() if s["p1"] is not None or s["p0"] is not None)},
             "dc": {"tgl": fwi.get("hari_ini")}, "enso": teks_enso(iklim), "nasional": nas,
-            "kolom": ["lat", "lon", "prov", "pct0", "pct1", "dc", "spi3", "lv", "spi6", "mm3"],
+            "kolom": ["lat", "lon", "prov", "pct0", "pct1", "dc", "spi3", "lv", "spi6", "mm3", "q3"],
             "provinsi": {k: n for k, n in PROVINSI.items() if k in P}}
     return meta, grid, {"prov": P, "kab": K}, tren
 

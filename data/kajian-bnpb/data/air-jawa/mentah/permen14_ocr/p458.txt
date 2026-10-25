@@ -1,0 +1,86 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 ,
+458
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+34 D.I.R. Py. Paku Aji 65
+35 D.I.R. Py. Pasar Terusan 450
+36 D.I.R. Py. Pedak 120
+37 D.I.R. Py. Pelumpung 100
+38 D.I.R. Py. Pematang Pacat 115
+39 D.I.R. Py. Pemtang Temiang 13
+40 D.I.R. Py. Penghujan 34
+4 D.I.R. Py. Plajo 70
+42 D.I.R. Py. Rawang Anak 75
+43 D.I.R. Py. Rawang Induk 40
+44 D.I.R. Py. Rengas Condong 35
+45 D.I.R. Py. Saken Seberang 20
+46 D.I.R. Py. Sei Aur 70
+47 D.I.R. Py. Sei Bayur 115
+48 D.I.R. Py. Sei Bayur 200
+49 D.I.R. Py. Sei Dimpang 140
+50 D.I.R. Py. Sei Duo 67
+51 D.I.R. Py. Sei Gondang 15
+52 D.I.R. Py. Sei Gondang 40
+53 D.I.R. Py. Sei Lais II 120
+54 D.I.R. Py. Sei Lantang 42
+55 D.I.R. Py. Sei Maro duo 65
+56 D.I.R. Py. Sei Napal 250
+57 D.I.R. Py. Sei Payung 65
+58 D.I.R. Py. Sei Pedak 65
+59 D.I.R. Py. Sei Rotan 20
+60 D.I.R. Py. Sei Rumbai 120
+61 D.I.R. Py. Sei Tantan II 135
+62 D.I.R. Py. Seluang 20
+63 D.I.R. Py. Senaning 60
+64 D.I.R. Py. Singoan 25
+65 D.I.R. Py. Sukaramai 68
+66 D.I.R. Py. Sungai Pulai 5
+67 D.I.R. Py. Talang Tebat 75
+68 D.I.R. Py. Tanah Hitam 3
+69 D.I.R. Py. Tanjung Marwo 40
+70 D.I.R. Py. Tantan 150
+71 D.I.R. Py. Teluk Melintang 120
+72 D.I.R. Py. Terusan Ilir 50
+73 D.I.R. Py. Tjg. Mulyo 15
+74 D.I.R. Py. Tunggul Buto 20
+b Kab. Meranain 1 144
+1 D.I.R. Margoyoso 144
+c Kab. Muaro Jambi 7 2.804
+1 D.I.R. Kumpeh 976
+2 D.I.R. Niaso 115
+3 D.I.R. Pudak 322
+4 D.I.R. Pudak 666
+5 D.I.R. Sei Duren 90
+6 D.I.R. Sungai Aur 510
+7 D.I.R. Tangkit Baru 125
+d Kab. Sarolanaun 1 320
+1 D.LR. Singkut 320
+e Kab. Taniuna Jabuna Barat 16 8.469
+1 D.I.R. Beram Hitam 315
+2 D.I.R. Betara 315
+3 D.I.R. Kayu Aro Kanan 535
+4 D.I.R. Kayu Aro Kiri 825
+5 D.I.R. Kelagian Baru 241
+6 D.I.R. Kempas Jaya 100
+7 D.I.R. Lumahan 808
+8 D.I.R. Margo Rukun 980
+9 D.I.R. Mekarjati 142
+10 D.I.R. Pasar Senen 736
+11 D.I.R. Rawa Asam 600
+12 D.I.R. Srindit 222
+13 D.I.R. Sungai Gebar 500
+14 D.I.R. Sungai Rambai 875
+15 D.I.R. Sungai Raya 450
+16 D.I.R. Tebing Tinggi 825
+f Kab. Taniuna Jabuna Timur 30 12.869
+1 D.I.R. Air Hitam Laut 112
+2 D.I.R. Baku Tuo 164
+3 D.I.R. Dendang I- II 200
+4 D.I.R. Kampung Laut 400
+5 D.I.R. Lagan Hulu 319
+6 D.I.R. Lagan Simpang Pandan 500
+7 D.I.R. Lambur I- II 220
+8 D.I.R. Lambur Luar 800
+9 D.I.R. Marga Mulya 950
+10 D.I.R. Mendahara Hulu 200

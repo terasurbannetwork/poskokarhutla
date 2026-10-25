@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1088 D.I. Leuwi Kondang 40
+1089 D.I. Leuwi Kuda 100
+1090 D.I. Leuwi Lame 25
+1091 D.I. Leuwi Leungsir 30
+1092 D.I. Leuwi Leungsir 30
+1093 D.I. Leuwi Liang 60
+1094 D.I. Leuwi Loa 80
+1095 D.I. Leuwi Manggu 35
+1096 D.I. Leuwi Manggu 150
+1097 D.I. Leuwi Manggu 5
+1098 D.I. Leuwi Mangu 20
+1099 D.I. Leuwi Munding 30
+1100 D.I. Leuwi Nanggung 20
+1101 D.I. Leuwi Odeng 12
+1102 D.I. Leuwi Orok 45
+1103 D.I. Leuwi Panggung 35
+1104 D.I. Leuwi Peuneuy 10
+1105 D.I. Leuwi Peusing 33
+1106 D.I. Leuwi Picung 12
+1107 D.I. Leuwi Rapit 8
+1108 D.I. Leuwi Rukem 24
+1109 D.I. Leuwi Seeng 30
+1110 D.I. Leuwi Tayeum 11
+1111 D.I. Leuwi Tembok 25
+1112 D.I. Leuwi Tengah 28
+1113 D.I. Leuwi Tengah 80
+1114 D.I. Leuwi Tonjong 15
+1115 D.I. Leuwi Ucing 31
+1116 D.I. Leuwi Udul 63
+1117 D.I. Leuwibilik 45
+1118 D.I. Leuwidahu 60
+1119 D.I. Leuwigaru 125
+1120 D.I. Leuwigeureng 30
+1121 D.I. Leuwiheras 30
+1122 D.I. Leuwijoho 40
+1123 D.I. Leuwijoho 40
+1124 D.I. LeuwiJoho 15
+1125 D.I. Leuwikelong 36
+1126 D.I. Leuwiliang 20
+1127 D.I. Leuwipamulang 80
+1128 D.I. Leuwipari 300
+1129 D.I. Leuwipiring 15
+1130 D.I. Leuwisapi Kanan 90
+1131 D.I. Leuwisapi Kr 198
+1132 D.I. Leuwititin 3
+1133 D.I. Liang kelong 40
+1134 D.I. Limusnunggal 10
+1135 D.I. Limusnunggal 30
+1136 D.I. Limusnunggal 80
+1137 D.I. Lusian 28
+1138 D.I. Madholil 15
+1139 D.I. Ma'lhot 50
+1140 D.I. Majasinga 15
+1141 D.I. Malawung | 30
+1142 D.I. Malawung II 11
+1143 D.I. Mama Ento 25
+1144 D.I. Manaesah 50
+1145 D.I. Mantaja 25
+1146 D.I. Margahayu 30
+1147 D.I. Margahayu 30
+1148 D.I. Margasari 10
+#KANAN
+192
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1149 D.I. Maribaya 30
+1150 D.I. Mayana Gunung 5
+1151 D.I. Mayana Tengah 25
+1152 D.I. Mayang Cinde 40
+1153 D.I. Mayungan | 20
+1154 D.I. Mbah 20
+1155 D.I. Mekarsari 25
+1156 D.I. Mekarsari | 30
+1157 D.I. Mekarsari II 25
+1158 D.I. Menek 20
+1159 D.I. Merjan 15
+1160 D.I. Monyet 60
+1161 D.I. Muhara 260
+1162 D.I. Muhara 15
+1163 D.I. Muhara 63
+1164 D.I. Mukasid 10
+1165 D.I. Muncang 60
+1166 D.I. Munjul 15
+1167 D.I. Munjul 6
+1168 D.I. Muringis 30
+1169 D.I. Murnaja 35
+1170 D.I. Murucut 10
+1171 D.I. Mustofa 30
+1172 D.I. Nagaratengah 30
+1173 D.I. Nagrak 15
+1174 D.I. Nagrak 60
+1175 D.I. Nagrog 20
+1176 D.I. Nagrog 8
+1177 D.I. Nagrog 60
+1178 D.I. Nagrog/Cihanyang 20
+1179 D.I. Nahuri 30
+1180 D.I. Nangah 40
+1181 D.I. Nangela/Cikukuy 90
+1182 D.I. Nangewer 70
+1183 D.I. Nanggewer 17
+1184 D.I. Nangka Beurit 12
+1185 D.I. Nangorak 50
+1186 D.I. Nangre 15
+1187 D.I. Nangtang 7
+1188 D.I. Naringgul 9
+1189 D.I. Narunggul 40
+1190 D.I. Negia 10
+1191 D.I. Nenggeng 15
+1192 D.I. Neundeut 20
+1193 D.I. Ngancad 18
+1194 D.I. Nunggul Jambe 20
+1195 D.I. Nur Muhammad 60
+1196 D.I. Nusa 47
+1197 D.I. Nyalindung 60
+1198 D.I. Nyalindung 15
+1199 D.I. Nyalindung 50
+1200 D.I. Nyampai 180
+1201 D.I. Nyemped 20
+1202 D.I. Oyong 90
+1203 D.I. Paciwilan | 30
+1204 D.I. Paciwilan II 30
+1205 D.I. Paciwilan III 10
+1206 D.I. Padat Karya 20
+1207 D.I. Padat Karya 100
+1208 D.I. Padawonge 50
+1209 D.I. Pagerhurip 55

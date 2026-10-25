@@ -46,6 +46,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # mentah yang tidak ikut cache lain: HTH 6 jam, SEAS5 7 hari (tanpa ini ±4.500 bobot kuota hilang tiap hari), hujan bulanan SPI,
       # angin ansambel peluang abu. Jalur HARUS sama persis dengan simpanan di bawah.
       - name: Pulihkan data mentah lintas bencana
@@ -65,10 +69,10 @@ jobs:
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # Tanpa langkah "Uji aturan" bersama: tiap modul menjalankan `uji`-nya sendiri di langkahnya, jadi satu uji rusak
       # hanya mematikan modul itu, bukan kelima bencana sekaligus.
@@ -278,7 +282,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/isi_data.py buat && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/banjir/data data/raw/banjir/sungai_ambang.json data/raw/banjir/rob/ambang.json data/raw/banjir/rob/titik.json

@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 A74
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+58 D.I.R. Pulau Tambak 20
+59 D.I.R. Rantau Bujur 50
+60 D.I.R. Rawa Tampakang 285
+61 D.I.R. Rintisan 15
+62 D.I.R. Sapala 10
+63 D.I.R. Sei Dalam 120
+64 D.I.R. Sei Namang 135
+65 D.I.R. Sei Nyiur 180
+66 D.I.R. Sei Panangah 125
+67 D.I.R. Sei Papuyu 75
+68 D.I.R. Sei Parupukan 80
+69 D.I.R. Simpang Tiga 20
+70 D.I.R. Sungai Baring 50
+71 D.I.R. Sungai Binuang 23
+72 D.I.R. Sungai Kuini 44
+73 D.I.R. Sungai Malang 10
+74 D.I.R. Sungai Turak 150
+75 D.I.R. Tabing Lereng 25
+76 D.I.R. Tambak Sari Panji 110
+77 D.I.R. Tambalang Raya 10
+78 D.I.R. Tangga Ulin 42
+79 D.I.R. Tangkawang 25
+80 D.I.R. Tayur 100
+81 D.I.R. Telaga Silaba 7
+82 D.I.R. Teluk Daun 100
+83 D.I.R. Teluk Haur 25
+84 D.I.R. Teluk Limbung 144
+85 D.I.R. Teluk Mesjid 150
+86 D.I.R. Teluk Paring 20
+87 D.I.R. Teluk Sarikat 157
+88 D.I.R. Teluk Telaga 17
+89 D.I.R. Tuhuran 30
+90 D.I.R. Ujung Murung 10
+91 D.I.R. Waringin 25
+
+a Kab. Kotabaru 60 8.658
+
+1 D.I.R. Ale-Ale 50
+
+2 D.I.R. Bandar Raya 80
+
+3 D.I.R. Bangkalan Melayu 100
+
+4 D.I.R. Bangun Rejo 350
+
+5 D.I.R. Banua Lawas 20
+
+6 D.I.R. Basuang 315
+
+7 D.I.LR. Bekambit Asri dan Bekambit 860
+
+8 D.I.R. Berangas 134
+
+9 D.I.R. Betung 65
+10 D.I.R. Bumi Asih 125
+11 D.ILR. Gunung Calang 310
+12 D.ILR. Kampung Baru 100
+13 D.I.R. Karang Payau 130
+14 D.I.R. Karang Sari Indah 86
+15 D.I.R. Kulipak 108
+16 D.I.R. Langadai 150
+17 D.I.R. Langkang Baru 255
+18 D.I.R. Langkang Lama 382
+19 D.I.R. Mangga 265
+20 D.I.R. Mulyodadi 50
+21 D.I.R. Pantai 210
+22 D.I.R. Pantai Baru 15
+23 D.I.R. Pembelacanan 175
+24 D.I.R. Pudi 68
+25 D.I.R. Pudi Seberang 127

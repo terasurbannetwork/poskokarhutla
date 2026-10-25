@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+649 D.I. Sumber Pringgondani 36
+650 D.I. Sumber Pucung 17
+651 D.I. Sumber Putih 33
+652 D.I. Sumber Rejosari 32
+653 D.I. Sumber Rejoyoso 12
+654 D.I. Sumber Sari 100
+655 D.I. Sumber Sewu 4
+656 D.I. Sumber Sih 100
+657 D.I. Sumber Sindurejo 31
+658 D.I. Sumber Sonowangi 15
+659 D.I. Sumber Suwaru 61
+660 D.I. Sumber Taman Asri 16
+661 D.I. Sumber Tawang Agung 9
+662 D.I. Sumber Tlogo (Kec. Tirtoyudo) 13
+663 D.I. Sumber Tlogosari 15
+664 D.I. Sumber Towo 14
+665 D.I. Sumber Tundo 90
+666 D.I. Sumber Ubalan 19
+667 D.I. Sumber Umbulan (Ds. Sidodadi) 30
+668 D.I. Sumber Umbulan (Bantur -78, II-12, I!l-100) 190
+669 D.I. Sumber Umbulan/Umbuldawe | 32
+670 D.I. Sumber Umbulan/Umbuldawe II 35
+671 D.I. Sumber Wader 54
+672 D.I. Sumber Wader/Sumber Kerto I 25
+673 D.I. Sumber Wiwit 30
+674 D.I. Sumberawan | 200
+675 D.I. Sumberawan II 93
+676 D.I. Sumberoto 30
+677 D.I. Sumbersuko (Kec.Karangploso) 34
+678 D.I. Sumbersuko (Kec.Singosari) 50
+679 D.I. Sumbersuko | 55
+680 D.I. Sumbersuko II 2
+681 D.I. Sumbersuko III 8
+682 D.I. Sumbertempur 54
+683 D.I. Sumberwuni 421
+684 D.I. Tadah Batok 1
+685 D.I. Talangsuko 104
+686 D.I. Tamiajeng 49
+687 D.I. Tampar Sewu 20
+688 D.I. Tawangsari 12
+689 D.I. Tegopati/Grumbul 10
+690 D.I. Telogo Madiredo 12
+691 D.I. Telogo Semedi 26
+692 D.I. Tempuran 25
+693 D.I. Temungkul 11
+694 D.I. Tentrem 35
+695 D.I. Tokol 37
+696 D.I. Tomblok 5
+697 D.I. Toyomerto 9
+698 D.I. Trap. Sewu 20
+699 D.I. Trasan 8
+700 D.I. Tretes 15
+701 D.I. Tritih 6
+702 D.I. Trucuk 16
+703 D.I. Turi (Kadalpang) 135
+704 D.I. Ubalan II 17
+705 D.I. Ubalan III 15
+706 D.I. Ubalan IV 8
+707 D.I. Ubalan V 51
+708 D.I. Ubalan VI 82
+709 D.I. Umbulan (Kec.Kalipare) 50
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+710 D.I. Umbulan (Kec.Pagak) 80
+711 D.I. Wadung/Ngreco 172
+712 D.I. Wajak II 143
+713 D.I. Wangkal (Kadalpang) 61
+714 D.I. Watu Gatuk 17
+715 D.I. Watu Gede (Ngabab/Pujon) 32
+716 D.I. Watu Gede II 5
+717 D.I. Watulintang 42
+717 D.I. Watulintang 42
+o Kab. Moiokerto 365 17.757
+1 D.I. Bacem 314
+2 D.I. Bajangan 57
+3 D.I. Bakalan 2
+4 D.I. Balong Kenongo 63
+5 D.I. Balongmasin | 30
+6 D.I. Balongmasin II 121
+7 D.I. Bangon 13
+8 D.I. Banosari 3
+9 D.I. Baraan 98
+10 D.I. Baureno 54
+11 D.I. Begagan | 11
+12 D.I. Begagan II 12
+13 D.I. Belahan | 18
+14 D.I. Belor I 26
+15 D.I. Belor II 22
+16 D.I. Bendet 267
+17 D.I. Bendorejo 89
+18 D.I. Bendungan 43
+19 D.I. Blentreng I 17
+20 D.I. Blentreng II 10
+21 D.I. Blentreng III 11
+22 D.I. Bringin 43
+23 D.I. Briti 14
+24 D.I. Bulupayung 43
+25 D.I. Cakarayam | 10
+26 D.I. Cakarayam II 4
+27 D.I. Cepogo 62
+28 D.I. Cepokolimo I 21
+29 D.I. Cepokolimo II 5
+30 D.I. Clangap 26
+31 D.I. Clangap 80
+32 D.I. Curah Ngoro 26
+33 D.I. Curahmojo 139
+34 D.I. Dadapan 23
+35 D.I. Dakon 24
+36 D.I. Dateng 24
+37 D.I. Dlimo 149
+38 D.I. Dosermo 97
+39 D.I. Dukuh 43
+40 D.I. Gampang | 12
+41 D.I. Gampang II 8
+42 D.I. Gebangmalang 151
+43 D.I. Gebangsari 13
+44 D.I. Gelonggongan 34
+45 D.I. Gero | 61
+46 D.I. Gero II 181
+47 D.I. Glibak 23
+48 D.I. Gumeng 13
+49 D.I. Jabon 24
+50 D.I. Jabon 20

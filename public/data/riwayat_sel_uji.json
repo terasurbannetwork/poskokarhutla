@@ -1,0 +1,1111 @@
+{
+ "dibuat": "2026-10-23",
+ "tahun_uji": [
+  2019,
+  2023
+ ],
+ "definisi": "Ramalan dibuat dari tahun SEBELUM musim uji saja. Lama: total hari episode yang sudah bertahan h hari = median lama episode lalu di jendela itu yang >= h hari; pembanding = 2 x umur dan median NASIONAL episode lalu yang >= h hari. Akhir musim: median hari deteksi terakhir di tahun lalu yang >= 10 titik; pembanding = median semua lokasi. Selang 95% = bootstrap blok per jendela ~16 km.",
+ "lama": {
+  "3": {
+   "n": 13550,
+   "n_jendela": 3164,
+   "mae": 5.0,
+   "tepat": 58,
+   "toleransi": 3,
+   "mae_pembanding": 5.0,
+   "mae_nasional": 5.0,
+   "selisih_nasional_ci95": [
+    0.01,
+    0.08
+   ]
+  },
+  "7": {
+   "n": 6649,
+   "n_jendela": 2195,
+   "mae": 6.4,
+   "tepat": 49,
+   "toleransi": 3,
+   "mae_pembanding": 6.8,
+   "mae_nasional": 6.2,
+   "selisih_nasional_ci95": [
+    0.05,
+    0.26
+   ]
+  }
+ },
+ "musim": {
+  "n": 6739,
+  "n_jendela": 3956,
+  "mae": 22.8,
+  "tepat": 44,
+  "toleransi": 14,
+  "mae_pembanding": 29.2,
+  "selisih_pembanding_ci95": [
+   -6.97,
+   -5.8
+  ]
+ },
+ "lama_unggul": false,
+ "el_nino": {
+  "definisi": "Musim El Nino 2019, 2023 diramal dua cara pada kasus yang SAMA: umum (semua tahun sebelumnya) vs analog (hanya tahun El Nino sebelumnya). Uji ini memakai 1-2 tahun analog; produksi memakai 3.",
+  "lama": {
+   "3": {
+    "n": 10891,
+    "mae_umum": 5.1,
+    "mae_analog": 5.8,
+    "tepat_umum": 58,
+    "tepat_analog": 48,
+    "toleransi": 3
+   },
+   "7": {
+    "n": 4140,
+    "mae_umum": 6.6,
+    "mae_analog": 7.4,
+    "tepat_umum": 48,
+    "tepat_analog": 40,
+    "toleransi": 3
+   }
+  },
+  "musim": {
+   "n": 6600,
+   "mae_umum": 22.5,
+   "mae_analog": 25.5,
+   "tepat_umum": 44,
+   "tepat_analog": 40,
+   "toleransi": 14
+  }
+ },
+ "hierarki": {
+  "definisi": "Model bertingkat (docs/riset/HIERARKI-WILAYAH.md) pada kasus yang SAMA dengan ujibalik. Susut B_u = (n*mentah + k*B_induk)/(n+k) dari nasional ke provinsi, kabupaten, kecamatan, jendela; k per tingkat dipilih dengan tinggalkan-satu-tahun di tahun latih saja. Lama dalam log hari lalu dikembalikan; mentah_u = median. Selang 95% = bootstrap blok per jendela atas selisih galat berpasangan (negatif = bertingkat lebih tepat).",
+  "k_terpilih": {
+   "2019": {
+    "3": {
+     "p": 0.5,
+     "a": 1000000000.0,
+     "c": 1000000000.0,
+     "w": 64
+    },
+    "7": {
+     "p": 1000000000.0,
+     "a": 64,
+     "c": 128,
+     "w": 32
+    },
+    "musim": {
+     "p": 32,
+     "a": 8,
+     "c": 8,
+     "w": 4
+    }
+   },
+   "2023": {
+    "3": {
+     "p": 0.5,
+     "a": 256,
+     "c": 128,
+     "w": 64
+    },
+    "7": {
+     "p": 8,
+     "a": 64,
+     "c": 64,
+     "w": 32
+    },
+    "musim": {
+     "p": 32,
+     "a": 8,
+     "c": 8,
+     "w": 4
+    }
+   }
+  },
+  "lama": {
+   "3": {
+    "n": 13550,
+    "mae_hierarki": 4.91,
+    "mae_nasional": 4.97,
+    "mae_mentah": 5.01,
+    "selisih_nasional_ci95": [
+     -0.07,
+     -0.04
+    ],
+    "selisih_mentah_ci95": [
+     -0.13,
+     -0.07
+    ],
+    "selisih_nasional_ci95_blok_prov_tahun": [
+     -0.106,
+     -0.018
+    ]
+   },
+   "7": {
+    "n": 6649,
+    "mae_hierarki": 6.06,
+    "mae_nasional": 6.21,
+    "mae_mentah": 6.36,
+    "selisih_nasional_ci95": [
+     -0.19,
+     -0.11
+    ],
+    "selisih_mentah_ci95": [
+     -0.38,
+     -0.22
+    ],
+    "selisih_nasional_ci95_blok_prov_tahun": [
+     -0.223,
+     -0.083
+    ]
+   }
+  },
+  "musim": {
+   "n": 6739,
+   "mae_hierarki": 22.23,
+   "mae_mentah": 22.84,
+   "mae_nasional": 29.24,
+   "selisih_mentah_ci95": [
+    -0.8,
+    -0.43
+   ],
+   "selisih_nasional_ci95": [
+    -7.51,
+    -6.49
+   ],
+   "selisih_mentah_ci95_blok_prov_tahun": [
+    -0.959,
+    -0.315
+   ]
+  },
+  "lama_unggul_hierarki": true,
+  "lama_semua_kasus": {
+   "3": {
+    "n": 14079,
+    "mae_hierarki": 4.82,
+    "mae_nasional": 4.88,
+    "selisih_nasional_ci95": [
+     -0.07,
+     -0.04
+    ]
+   },
+   "7": {
+    "n": 7212,
+    "mae_hierarki": 5.81,
+    "mae_nasional": 5.95,
+    "selisih_nasional_ci95": [
+     -0.17,
+     -0.1
+    ]
+   }
+  },
+  "musim_unggul_hierarki": true,
+  "per_provinsi": {
+   "11": {
+    "nama": "Aceh",
+    "lama3": {
+     "n": 70,
+     "mae_nasional": 3.03,
+     "mae_mentah": 2.69,
+     "mae_hierarki": 2.71,
+     "menang": "mentah"
+    },
+    "lama7": {
+     "n": 18,
+     "mae_nasional": 3.28,
+     "mae_mentah": 3.47,
+     "mae_hierarki": 3.21,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 85,
+     "mae_nasional": 69.84,
+     "mae_mentah": 53.77,
+     "mae_hierarki": 51.79,
+     "menang": "hierarki"
+    }
+   },
+   "12": {
+    "nama": "Sumatera Utara",
+    "lama3": {
+     "n": 58,
+     "mae_nasional": 2.05,
+     "mae_mentah": 1.99,
+     "mae_hierarki": 1.71,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 13,
+     "mae_nasional": 2.15,
+     "mae_mentah": 1.85,
+     "mae_hierarki": 1.49,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 89,
+     "mae_nasional": 56.2,
+     "mae_mentah": 39.25,
+     "mae_hierarki": 37.97,
+     "menang": "hierarki"
+    }
+   },
+   "13": {
+    "nama": "Sumatera Barat",
+    "lama3": {
+     "n": 75,
+     "mae_nasional": 2.8,
+     "mae_mentah": 2.67,
+     "mae_hierarki": 2.65,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 22,
+     "mae_nasional": 3.09,
+     "mae_mentah": 2.61,
+     "mae_hierarki": 2.95,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 61,
+     "mae_nasional": 20.54,
+     "mae_mentah": 26.89,
+     "mae_hierarki": 23.73,
+     "menang": "nasional"
+    }
+   },
+   "14": {
+    "nama": "Riau",
+    "lama3": {
+     "n": 519,
+     "mae_nasional": 3.9,
+     "mae_mentah": 4.11,
+     "mae_hierarki": 3.96,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 246,
+     "mae_nasional": 4.34,
+     "mae_mentah": 4.61,
+     "mae_hierarki": 4.31,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 250,
+     "mae_nasional": 36.79,
+     "mae_mentah": 30.93,
+     "mae_hierarki": 28.72,
+     "menang": "hierarki"
+    }
+   },
+   "15": {
+    "nama": "Jambi",
+    "lama3": {
+     "n": 249,
+     "mae_nasional": 5.41,
+     "mae_mentah": 5.41,
+     "mae_hierarki": 5.49,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 112,
+     "mae_nasional": 7.31,
+     "mae_mentah": 7.07,
+     "mae_hierarki": 7.11,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 188,
+     "mae_nasional": 19.56,
+     "mae_mentah": 23.67,
+     "mae_hierarki": 21.36,
+     "menang": "nasional"
+    }
+   },
+   "16": {
+    "nama": "Sumatera Selatan",
+    "lama3": {
+     "n": 950,
+     "mae_nasional": 5.92,
+     "mae_mentah": 6.1,
+     "mae_hierarki": 5.88,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 499,
+     "mae_nasional": 7.69,
+     "mae_mentah": 8.67,
+     "mae_hierarki": 7.55,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 480,
+     "mae_nasional": 22.43,
+     "mae_mentah": 19.47,
+     "mae_hierarki": 18.69,
+     "menang": "hierarki"
+    }
+   },
+   "17": {
+    "nama": "Bengkulu",
+    "lama3": {
+     "n": 47,
+     "mae_nasional": 2.28,
+     "mae_mentah": 1.68,
+     "mae_hierarki": 1.55,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 8,
+     "mae_nasional": 2.38,
+     "mae_mentah": 1.81,
+     "mae_hierarki": 1.81,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 69,
+     "mae_nasional": 31.04,
+     "mae_mentah": 29.24,
+     "mae_hierarki": 27.8,
+     "menang": "hierarki"
+    }
+   },
+   "18": {
+    "nama": "Lampung",
+    "lama3": {
+     "n": 360,
+     "mae_nasional": 5.33,
+     "mae_mentah": 5.28,
+     "mae_hierarki": 5.27,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 179,
+     "mae_nasional": 6.47,
+     "mae_mentah": 6.79,
+     "mae_hierarki": 6.43,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 134,
+     "mae_nasional": 27.09,
+     "mae_mentah": 22.85,
+     "mae_hierarki": 22.19,
+     "menang": "hierarki"
+    }
+   },
+   "19": {
+    "nama": "Kep. Bangka Belitung",
+    "lama3": {
+     "n": 309,
+     "mae_nasional": 3.01,
+     "mae_mentah": 3.11,
+     "mae_hierarki": 3.01,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 124,
+     "mae_nasional": 3.16,
+     "mae_mentah": 3.35,
+     "mae_hierarki": 3.15,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 121,
+     "mae_nasional": 19.07,
+     "mae_mentah": 19.19,
+     "mae_hierarki": 18.72,
+     "menang": "hierarki"
+    }
+   },
+   "21": {
+    "nama": "Kepulauan Riau",
+    "lama3": {
+     "n": 41,
+     "mae_nasional": 2.98,
+     "mae_mentah": 3.3,
+     "mae_hierarki": 2.98,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 19,
+     "mae_nasional": 3.21,
+     "mae_mentah": 3.08,
+     "mae_hierarki": 3.1,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 20,
+     "mae_nasional": 45.55,
+     "mae_mentah": 37.85,
+     "mae_hierarki": 40.01,
+     "menang": "mentah"
+    }
+   },
+   "31": {
+    "nama": "DKI Jakarta",
+    "lama3": {
+     "n": 4,
+     "mae_nasional": 1.75,
+     "mae_mentah": 2.75,
+     "mae_hierarki": 2.69,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 4,
+     "mae_nasional": 35.5,
+     "mae_mentah": 31.0,
+     "mae_hierarki": 29.07,
+     "menang": "hierarki"
+    }
+   },
+   "32": {
+    "nama": "Jawa Barat",
+    "lama3": {
+     "n": 155,
+     "mae_nasional": 5.85,
+     "mae_mentah": 5.97,
+     "mae_hierarki": 5.82,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 80,
+     "mae_nasional": 8.09,
+     "mae_mentah": 8.38,
+     "mae_hierarki": 8.0,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 124,
+     "mae_nasional": 17.87,
+     "mae_mentah": 23.33,
+     "mae_hierarki": 22.29,
+     "menang": "nasional"
+    }
+   },
+   "33": {
+    "nama": "Jawa Tengah",
+    "lama3": {
+     "n": 148,
+     "mae_nasional": 3.42,
+     "mae_mentah": 3.7,
+     "mae_hierarki": 3.45,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 72,
+     "mae_nasional": 3.65,
+     "mae_mentah": 3.76,
+     "mae_hierarki": 3.61,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 121,
+     "mae_nasional": 23.41,
+     "mae_mentah": 23.12,
+     "mae_hierarki": 22.47,
+     "menang": "hierarki"
+    }
+   },
+   "34": {
+    "nama": "DI Yogyakarta",
+    "musim": {
+     "n": 2,
+     "mae_nasional": 20,
+     "mae_mentah": 21.25,
+     "mae_hierarki": 19.47,
+     "menang": "hierarki"
+    }
+   },
+   "35": {
+    "nama": "Jawa Timur",
+    "lama3": {
+     "n": 485,
+     "mae_nasional": 4.37,
+     "mae_mentah": 4.43,
+     "mae_hierarki": 4.29,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 257,
+     "mae_nasional": 5.08,
+     "mae_mentah": 5.22,
+     "mae_hierarki": 5.07,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 226,
+     "mae_nasional": 20.33,
+     "mae_mentah": 18.88,
+     "mae_hierarki": 18.85,
+     "menang": "hierarki"
+    }
+   },
+   "36": {
+    "nama": "Banten",
+    "lama3": {
+     "n": 52,
+     "mae_nasional": 3.9,
+     "mae_mentah": 4.01,
+     "mae_hierarki": 3.78,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 34,
+     "mae_nasional": 4.09,
+     "mae_mentah": 3.97,
+     "mae_hierarki": 4.1,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 31,
+     "mae_nasional": 30.55,
+     "mae_mentah": 30.66,
+     "mae_hierarki": 29.25,
+     "menang": "hierarki"
+    }
+   },
+   "51": {
+    "nama": "Bali",
+    "lama3": {
+     "n": 7,
+     "mae_nasional": 2.57,
+     "mae_mentah": 2.79,
+     "mae_hierarki": 2.42,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 1,
+     "mae_nasional": 3.0,
+     "mae_mentah": 2.5,
+     "mae_hierarki": 2.9,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 5,
+     "mae_nasional": 14.8,
+     "mae_mentah": 12.0,
+     "mae_hierarki": 11.37,
+     "menang": "hierarki"
+    }
+   },
+   "52": {
+    "nama": "Nusa Tenggara Barat",
+    "lama3": {
+     "n": 391,
+     "mae_nasional": 8.54,
+     "mae_mentah": 8.43,
+     "mae_hierarki": 8.36,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 233,
+     "mae_nasional": 10.87,
+     "mae_mentah": 10.35,
+     "mae_hierarki": 10.48,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 112,
+     "mae_nasional": 20.16,
+     "mae_mentah": 15.37,
+     "mae_hierarki": 14.72,
+     "menang": "hierarki"
+    }
+   },
+   "53": {
+    "nama": "Nusa Tenggara Timur",
+    "lama3": {
+     "n": 1081,
+     "mae_nasional": 7.81,
+     "mae_mentah": 7.42,
+     "mae_hierarki": 7.5,
+     "menang": "mentah"
+    },
+    "lama7": {
+     "n": 683,
+     "mae_nasional": 9.13,
+     "mae_mentah": 8.53,
+     "mae_hierarki": 8.68,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 296,
+     "mae_nasional": 22.99,
+     "mae_mentah": 15.02,
+     "mae_hierarki": 14.79,
+     "menang": "hierarki"
+    }
+   },
+   "61": {
+    "nama": "Kalimantan Barat",
+    "lama3": {
+     "n": 1442,
+     "mae_nasional": 3.94,
+     "mae_mentah": 3.99,
+     "mae_hierarki": 3.98,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 698,
+     "mae_nasional": 4.42,
+     "mae_mentah": 4.67,
+     "mae_hierarki": 4.35,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 736,
+     "mae_nasional": 37.33,
+     "mae_mentah": 20.84,
+     "mae_hierarki": 20.33,
+     "menang": "hierarki"
+    }
+   },
+   "62": {
+    "nama": "Kalimantan Tengah",
+    "lama3": {
+     "n": 1279,
+     "mae_nasional": 5.49,
+     "mae_mentah": 5.66,
+     "mae_hierarki": 5.5,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 629,
+     "mae_nasional": 6.94,
+     "mae_mentah": 7.02,
+     "mae_hierarki": 6.62,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 645,
+     "mae_nasional": 20.16,
+     "mae_mentah": 19.38,
+     "mae_hierarki": 18.89,
+     "menang": "hierarki"
+    }
+   },
+   "63": {
+    "nama": "Kalimantan Selatan",
+    "lama3": {
+     "n": 597,
+     "mae_nasional": 7.21,
+     "mae_mentah": 7.29,
+     "mae_hierarki": 7.1,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 361,
+     "mae_nasional": 8.63,
+     "mae_mentah": 8.65,
+     "mae_hierarki": 8.36,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 213,
+     "mae_nasional": 22.21,
+     "mae_mentah": 18.74,
+     "mae_hierarki": 18.52,
+     "menang": "hierarki"
+    }
+   },
+   "64": {
+    "nama": "Kalimantan Timur",
+    "lama3": {
+     "n": 814,
+     "mae_nasional": 4.63,
+     "mae_mentah": 4.71,
+     "mae_hierarki": 4.63,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 398,
+     "mae_nasional": 5.61,
+     "mae_mentah": 5.87,
+     "mae_hierarki": 5.47,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 391,
+     "mae_nasional": 26.99,
+     "mae_mentah": 23.2,
+     "mae_hierarki": 22.23,
+     "menang": "hierarki"
+    }
+   },
+   "65": {
+    "nama": "Kalimantan Utara",
+    "lama3": {
+     "n": 75,
+     "mae_nasional": 2.8,
+     "mae_mentah": 2.53,
+     "mae_hierarki": 2.38,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 17,
+     "mae_nasional": 4.76,
+     "mae_mentah": 4.59,
+     "mae_hierarki": 4.65,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 72,
+     "mae_nasional": 37.94,
+     "mae_mentah": 30.71,
+     "mae_hierarki": 29.22,
+     "menang": "hierarki"
+    }
+   },
+   "71": {
+    "nama": "Sulawesi Utara",
+    "lama3": {
+     "n": 55,
+     "mae_nasional": 5.04,
+     "mae_mentah": 5.95,
+     "mae_hierarki": 5.13,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 23,
+     "mae_nasional": 7.48,
+     "mae_mentah": 7.8,
+     "mae_hierarki": 7.64,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 29,
+     "mae_nasional": 22.62,
+     "mae_mentah": 23.19,
+     "mae_hierarki": 22.34,
+     "menang": "hierarki"
+    }
+   },
+   "72": {
+    "nama": "Sulawesi Tengah",
+    "lama3": {
+     "n": 343,
+     "mae_nasional": 3.61,
+     "mae_mentah": 3.72,
+     "mae_hierarki": 3.54,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 137,
+     "mae_nasional": 4.64,
+     "mae_mentah": 5.06,
+     "mae_hierarki": 4.75,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 193,
+     "mae_nasional": 29.07,
+     "mae_mentah": 18.33,
+     "mae_hierarki": 17.71,
+     "menang": "hierarki"
+    }
+   },
+   "73": {
+    "nama": "Sulawesi Selatan",
+    "lama3": {
+     "n": 283,
+     "mae_nasional": 3.88,
+     "mae_mentah": 3.88,
+     "mae_hierarki": 3.83,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 113,
+     "mae_nasional": 4.64,
+     "mae_mentah": 4.95,
+     "mae_hierarki": 4.7,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 184,
+     "mae_nasional": 25.02,
+     "mae_mentah": 18.61,
+     "mae_hierarki": 17.64,
+     "menang": "hierarki"
+    }
+   },
+   "74": {
+    "nama": "Sulawesi Tenggara",
+    "lama3": {
+     "n": 331,
+     "mae_nasional": 4.05,
+     "mae_mentah": 4.15,
+     "mae_hierarki": 4.06,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 163,
+     "mae_nasional": 4.63,
+     "mae_mentah": 5.21,
+     "mae_hierarki": 4.67,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 156,
+     "mae_nasional": 31.67,
+     "mae_mentah": 13.01,
+     "mae_hierarki": 12.37,
+     "menang": "hierarki"
+    }
+   },
+   "75": {
+    "nama": "Gorontalo",
+    "lama3": {
+     "n": 136,
+     "mae_nasional": 4.47,
+     "mae_mentah": 4.98,
+     "mae_hierarki": 4.48,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 70,
+     "mae_nasional": 5.27,
+     "mae_mentah": 5.58,
+     "mae_hierarki": 5.34,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 46,
+     "mae_nasional": 26.15,
+     "mae_mentah": 19.86,
+     "mae_hierarki": 18.69,
+     "menang": "hierarki"
+    }
+   },
+   "76": {
+    "nama": "Sulawesi Barat",
+    "lama3": {
+     "n": 84,
+     "mae_nasional": 2.31,
+     "mae_mentah": 2.46,
+     "mae_hierarki": 2.39,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 28,
+     "mae_nasional": 2.57,
+     "mae_mentah": 2.14,
+     "mae_hierarki": 2.16,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 61,
+     "mae_nasional": 25.28,
+     "mae_mentah": 19.32,
+     "mae_hierarki": 18.3,
+     "menang": "hierarki"
+    }
+   },
+   "81": {
+    "nama": "Maluku",
+    "lama3": {
+     "n": 251,
+     "mae_nasional": 4.18,
+     "mae_mentah": 4.27,
+     "mae_hierarki": 4.09,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 116,
+     "mae_nasional": 4.65,
+     "mae_mentah": 5.12,
+     "mae_hierarki": 4.74,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 116,
+     "mae_nasional": 25.47,
+     "mae_mentah": 17.25,
+     "mae_hierarki": 16.3,
+     "menang": "hierarki"
+    }
+   },
+   "82": {
+    "nama": "Maluku Utara",
+    "lama3": {
+     "n": 41,
+     "mae_nasional": 6.98,
+     "mae_mentah": 7.62,
+     "mae_hierarki": 6.85,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 25,
+     "mae_nasional": 8.64,
+     "mae_mentah": 9.58,
+     "mae_hierarki": 8.61,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 28,
+     "mae_nasional": 30.75,
+     "mae_mentah": 25.54,
+     "mae_hierarki": 23.61,
+     "menang": "hierarki"
+    }
+   },
+   "91": {
+    "nama": "Papua",
+    "lama3": {
+     "n": 7,
+     "mae_nasional": 2.14,
+     "mae_mentah": 2.43,
+     "mae_hierarki": 2.16,
+     "menang": "nasional"
+    },
+    "lama7": {
+     "n": 1,
+     "mae_nasional": 1.0,
+     "mae_mentah": 2,
+     "mae_hierarki": 0.33,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 14,
+     "mae_nasional": 33.36,
+     "mae_mentah": 22.18,
+     "mae_hierarki": 20.36,
+     "menang": "hierarki"
+    }
+   },
+   "92": {
+    "nama": "Papua Barat",
+    "lama3": {
+     "n": 4,
+     "mae_nasional": 2.75,
+     "mae_mentah": 1.25,
+     "mae_hierarki": 1.88,
+     "menang": "mentah"
+    },
+    "musim": {
+     "n": 13,
+     "mae_nasional": 28.62,
+     "mae_mentah": 24.92,
+     "mae_hierarki": 26.38,
+     "menang": "mentah"
+    }
+   },
+   "93": {
+    "nama": "Papua Selatan",
+    "lama3": {
+     "n": 931,
+     "mae_nasional": 3.15,
+     "mae_mentah": 3.21,
+     "mae_hierarki": 3.13,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 404,
+     "mae_nasional": 3.22,
+     "mae_mentah": 3.48,
+     "mae_hierarki": 3.17,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 292,
+     "mae_nasional": 28.9,
+     "mae_mentah": 18.22,
+     "mae_hierarki": 17.05,
+     "menang": "hierarki"
+    }
+   },
+   "94": {
+    "nama": "Papua Tengah",
+    "lama3": {
+     "n": 15,
+     "mae_nasional": 1.8,
+     "mae_mentah": 1.57,
+     "mae_hierarki": 1.6,
+     "menang": "mentah"
+    },
+    "lama7": {
+     "n": 2,
+     "mae_nasional": 0.0,
+     "mae_mentah": 0.0,
+     "mae_hierarki": 0.33,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 13,
+     "mae_nasional": 34.62,
+     "mae_mentah": 21.73,
+     "mae_hierarki": 22.96,
+     "menang": "mentah"
+    }
+   },
+   "95": {
+    "nama": "Papua Pegunungan",
+    "lama3": {
+     "n": 18,
+     "mae_nasional": 2.61,
+     "mae_mentah": 2.53,
+     "mae_hierarki": 1.97,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 2,
+     "mae_nasional": 0.5,
+     "mae_mentah": 1.5,
+     "mae_hierarki": 0.83,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 33,
+     "mae_nasional": 43.7,
+     "mae_mentah": 32.62,
+     "mae_hierarki": 33.0,
+     "menang": "mentah"
+    }
+   },
+   "96": {
+    "nama": "Papua Barat Daya",
+    "lama3": {
+     "n": 3,
+     "mae_nasional": 1.67,
+     "mae_mentah": 1.0,
+     "mae_hierarki": 1.6,
+     "menang": "mentah"
+    },
+    "lama7": {
+     "n": 1,
+     "mae_nasional": 3.0,
+     "mae_mentah": 5,
+     "mae_hierarki": 3.27,
+     "menang": "nasional"
+    },
+    "musim": {
+     "n": 3,
+     "mae_nasional": 32.33,
+     "mae_mentah": 46.0,
+     "mae_hierarki": 42.7,
+     "menang": "nasional"
+    }
+   },
+   "?": {
+    "nama": "luar batas",
+    "lama3": {
+     "n": 1840,
+     "mae_nasional": 4.9,
+     "mae_mentah": 4.9,
+     "mae_hierarki": 4.85,
+     "menang": "hierarki"
+    },
+    "lama7": {
+     "n": 861,
+     "mae_nasional": 6.05,
+     "mae_mentah": 6.21,
+     "mae_hierarki": 5.97,
+     "menang": "hierarki"
+    },
+    "musim": {
+     "n": 1083,
+     "mae_nasional": 37.08,
+     "mae_mentah": 29.74,
+     "mae_hierarki": 30.26,
+     "menang": "mentah"
+    }
+   }
+  }
+ }
+}

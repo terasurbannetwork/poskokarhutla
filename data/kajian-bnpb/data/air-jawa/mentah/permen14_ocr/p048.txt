@@ -1,0 +1,73 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 48
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+7 D.I. Teguhan 1.337
+8 D.I. Widodaren 1.372
+p Kab. Pamekasan
+1 D.I. Samiran 2.462
+g Kab. Pasuruan
+1 D.I. Baong 1.843
+2 D.I. Bekacak 1.613
+3 D.I. Domas 1.057
+4 D.I. Klosod 1.008
+5 D.I. Pateguan 1.449
+6 D.I. Ranugrati 1.085
+7 D.I. Selowongko 1.090
+8 D.I. Telebuk 1.132
+r Kab. Ponorogo
+1 D.I. Cepogo 1.000
+2 D.I. Dalem 1.403
+3 D.I. Sampung 1.370
+4 D.I. Sumorobangun 1.787
+5 D.I. Watu Putih 1.096
+6 D.I. Wilangan 1.727
+s Kab. Probolinggo
+1 D.I. Arah Makam Bawah 1.523
+2 D.I. Jeruk Taman 1.744
+3 D.I. Ramah Bawah 1.126
+4 D.I. Sbr. Bendo Jeruk 1.909
+5 D.I. Topi 1.513
+t Kab. Sampang
+1 D.I. Klampis 1.799
+u Kab. Situbondo
+1 D.I. Nangger 2.184
+v Kab. Sumenep
+1 D.I. Jepun 1.424
+w Kab. Tuban
+1 D.I. Kening 2.522
+2 D.I. Maibit 1.229
+3 D.I. Merak Urak 1.475
+4 D.I. Nglirip 1.292
+x Kab. Tulungagung
+1 D.I. Gelang 1.378
+XV PROVINSI BALI 6 7.359
+a Kab. Badung
+1 D.I. Gerana 1.027
+b Kab. Buleleng
+1 D.I. Tiyingtali 1177
+c Kab. Jembrana
+1 D.I. Benel 1.047
+2 D.I. Pala Sari 1.300
+d Kab. Tabanan
+1 D.I. Balian 1.027
+e Kota Denpasar
+1 D.I. Oongan 1.781
+XVI PROVINSI NUSA TENGGARA BARAT 33 53.095
+a Kab. Bima
+1 D.I. Mada Pangga II 2.000
+2 D.I. Ncangakai Ncoha 1.672
+3 D.I. Sumi Sape 2.650
+b Kab. Dompu
+1 D.I. Daha |, II 1.273
+2 D.I. Kadindi 1.200
+3 D.I. Latonda Pekat 1.217
+4 D.I. Nangakara 1.140
+c Kab. Lombok Barat
+1 D.I. Gebong 2.161
+2 D.I. Sesaot 1.678
+d Kab. Lombok Tengah
+1 D.I. Bisok Bokah 1.255
+2 D.I. Gde Bongoh 2.644
+3 D.I. Parung 1.270
+4 D.I. Renggung 1.717

@@ -1,0 +1,151 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+119 D.I. Way Tulung Punjung 50
+120 D.I. Way Tulung Tambah 80
+121 D.I. Way Tulung Toyib 40
+122 D.I. Way Abu Bakar Sidik 50
+123 D.I. Way Alam Jaya 30
+124 D.I. Way Balang Lebow 65
+125 D.I. Way Bandes 30
+126 D.I. Way Bangi 25
+127 D.I. Way Banjar Agung 45
+128 D.I. Way Banyu Urip 25
+129 D.I. Way Cabang 35
+130 D.I. Way Cibuay II 45
+131 D.I. Way Gabus 60
+132 D.I. Way Hujan Mas 45
+133 D.I. Way Kistang 32
+134 D.I. Way Kluntum 60
+135 D.I. Way Lada 40
+136 D.I. Way Leban 25
+137 D.I. Way Leheu 40
+138 D.I. Way Lintah Karang Rejo 65
+139 D.I. Way Madukoro 45
+140 D.I. Way Muara Balak II 40
+141 D.I. Way Paniangan | 100
+142 D.I. Way Paniangan II 50
+143 D.I. Way Pring 35
+144 D.I. Way Purwosari | 65
+145 D.I. Way Purwosari II 50
+146 D.I. Way Rawa Kalong 60
+147 D.I. Way Rawa Sari 60
+148 D.I. Way Sabuk Sungkai 60
+149 D.I. Way Simpang Abung 40
+150 D.I. Way Sinar Mas Alam 50
+151 D.I. Way Suka Makmur 60
+152 D.I. Way Sulian | 35
+153 D.I. Way Sulian II 40
+154 D.I. Way Sumber Agung 68
+155 D.I. Way Tanjung Aman 35
+156 D.I. Way Tanjung Raja 40
+157 D.I. Way Tanjung Slamat 30
+158 D.I. Way Wakak 50
+f Kab. Mesuii 8 830
+
+1 D.I. Wdk Simpang Pematang 45
+
+2 D.I. Wira Bangun II 200
+
+3 D.I. Waduk Brabasan 40
+
+4 D.I. Wdk Wira Bangun | 40
+
+5 D.I. Way Abang 200
+
+6 D.I. Harapan Jaya 25
+
+7 D.I. Jaya Sakti 200
+
+8 D.I. Kejadian 80
+
+a Kab. Pesawaran 80 19.498
+
+1 D.I. Lunik Penegahan 279
+
+2 D.I. Way Awi II 376
+
+3 D.I. Way Batu Raja 450
+
+4 D.I. Way Berulu 200
+
+5 D.I. Way Cambai 200
+
+6 D.I. Way Dantar I 400
+
+7 D.I. Way Elok Atas 160
+
+8 D.I. Way Elok Bawah 140
+
+9 D.I. Way Handak 150
+#KANAN
+140
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+10 D.I. Way Harong 200
+11 D.I. Way Hindik 150
+12 D.I. Way Kandis 100
+13 D.I. Way Kedondong I 269
+14 D.I. Way Kedondong II 297
+15 D.I. Way Kertosono 400
+16 D.I. Way Kincir I 220
+17 D.I. Way Kota jawa 200
+18 D.I. Way Kubu 235
+19 D.I. Way Kubu Batu I & II 299
+20 D.I. Way Kuburan 125
+21 D.I. Way Kupang 200
+22 D.I. Way Kuripan (Gede) 150
+23 D.I. Way Langkap 200
+24 D.I. Way Lebak 383
+25 D.I. Way Linti 180
+26 D.I. Way Lipang 358
+27 D.I. Way Lubuk Rumput 100
+28 D.I. Way Lunik Hulu 385
+29 D.I. Way Lunik Penengahan 350
+30 D.I. Way Mada 674
+31 D.I. Way Maja (Punduh) 500
+32 D.I. Way Oro-Oro 300
+33 D.I. Way Padang Cermin 300
+34 D.I. Way Padang Ratu II 434
+35 D.I. Way Padang Ratu III 318
+36 D.I. Way Padang Rincang 200
+37 D.I. Way Panas 250
+38 D.I. Way Pidada 240
+39 D.I. Way Ratai | 250
+40 D.I. Way Rilau 758
+41 D.I. Way Rowo Rejo 100
+42 D.I. Way Sebelanga (Cikiri) 400
+43 D.I. Way Sekampung Anak 150
+44 D.I. Way Semah I 510
+45 D.I. Way Semah II 139
+46 D.I. Way Semah III 200
+47 D.I. Way Sukaraja 105
+48 D.I. Way Sulah 50
+49 D.I. Way Tabak 208
+50 D.I. Way Tahala 350
+51 D.I. Wav Trimulvo 150
+52 D.I. Way Urang 100
+53 D.I. Way Wonorejo 150
+54 D.I. Way Begorejo (Gedung) 100
+55 D.I. Way Bernung 250
+56 D.I. Way Berumbun 200
+57 D.I. Way Buah Bawah 200
+58 D.I. Way Cik Yang 170
+59 D.I. Way Cinander 50
+60 D.I. Way Curup 50
+61 D.I. Wav Gadina II 166
+62 D.I. Way Gunung Sugih 300
+63 D.I. Way Kating Wonokromo (HIg. Ratu) 280
+64 D.I. Way Langkap Andang 340
+65 D.I. Way Lunik Punduh 210
+66 D.I. Way Pd. Cermin II 179
+67 D.I. Way Peguyuban 250
+68 D.I. Way Pekir Atas | 50
+69 D.I. Way Pematang Awi 475
+70 D.I. Way Trisnomaju 125

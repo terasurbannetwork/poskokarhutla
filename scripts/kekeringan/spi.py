@@ -103,6 +103,12 @@ def spi_seri(seri, y, m, k):
     return spi_nilai(x, baku)
 
 
+def spi_q(seri, y, m, k):
+    """Porsi tahun dasar dengan hujan jendela nol (massa nol sebaran gamma). Di atas 0,5 fit gamma tak dapat dipercaya: SPI sel itu diberi tanda."""
+    baku = [b for b in (jumlah(seri, t, m, k) for t in range(DASAR[0], DASAR[1] + 1)) if b is not None]
+    return round(sum(1 for v in baku if v <= 0) / len(baku), 2) if baku else None
+
+
 def bulan_terakhir(sel):
     """(tahun, bulan) terakhir yang terisi di sedikitnya 90% sel; sel yang tertinggal diabaikan."""
     cacah = {}

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+189 D.I. Ciangsana 100
+190 D.I. Cibeas 65
+191 D.I. Cicanggo 75
+192 D.I. Cikadongdong I 60
+193 D.I. Cibarengkok 100
+194 D.I. Cikadongdong II 200
+195 D.I. Ciboleger 60
+196 D.I. Cicadek 80
+197 D.I. Cilengsor 60
+198 D.I. Cisangiang 200
+199 D.I. Cikekel 60
+200 D.I. Ciujung Hilir 100
+201 D.I. Cirangkas Hilir/Swh landeuh 80
+202 D.I. Ciherang 115
+203 D.I. Citeureup 85
+204 D.I. Cimanyangray 80
+205 D.I. Cirangkas 85
+206 D.I. Leuwiborelang 40
+207 D.I. Leuwibuleud | 70
+208 D.I. Leuwibuleud II 75
+209 D.I. Cilimus/ Cibulakan 80
+210 D.I. Sangiang 56
+211 D.I. Cisuren 100
+212 D.I. Curug Sewu 265
+213 D.I. Gunung Kendeng 60
+214 D.I. Ciburahong/ Sanghiang 80
+215 D.I. Curugipuh 80
+216 D.I. Ciburahung 65
+217 D.I. Cikeusik 40
+218 D.I. Cinanggela 65
+219 D.I. Situ Kompeni 75
+220 D.I. Cihajere 52
+221 D.I. Cibeusi 100
+222 D.I. Citamiang 150
+223 D.I. Pagerbitung 75
+224 D.I. Citamiang II 75
+225 D.I. Cinangkaruka 70
+226 D.I. Cirinteun 70
+227 D.I. Cisaat 150
+228 D.I. Citiis 70
+229 D.I. Cilimus 80
+230 D.I. Ciputan 150
+231 D.I. Cibinglu 98
+232 D.I. Cipanggelangan 87
+233 D.I. Cibarahung 75
+234 D.I. Cibeureum 60
+235 D.I. Ciruji 60
+236 D.I. Ciputra 149
+237 D.I. Cisampih 67
+238 D.I. Cikatulampa 115
+239 D.I. Ciateul I 70
+240 D.I. Ciateul II 75
+241 D.I. Cibodas | 100
+242 D.I. Cibodas II 80
+243 D.I. Ciaris 80
+244 D.I. Ciasem 150
+245 D.I. Cimadang 40
+246 D.I. Cingunun 125
+247 D.I. Ciomas 50
+248 D.I. Ciluluk 40
+249 D.I. Curug Ipuh/Manjangan 75
+#KANAN
+146
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+250 D.I. Ciranggong 62
+251 D.I. Cigendong 75
+252 D.I. Cikapas 185
+253 D.I. Cicanggong | 105
+254 D.I. Cicanggong II 125
+255 D.I. Cirenggel 130
+256 D.I. Cigoeng 65
+257 D.I. Cisilad 460
+258 D.I. Cicikral 60
+259 D.I. Cicariweuheun 100
+260 D.I. Ciambel 53
+261 D.I. Ciroge 60
+262 D.I. Dukuh 135
+263 D.I. Cingarawong 110
+264 D.I. Cimonggor 65
+265 D.I. Cinanahu 95
+266 D.I. Banjar 40
+267 D.I. Cisero 60
+268 D.I. Cipeuteuy 62
+269 D.I. Nangerang 85
+270 D.I. Cikeong Mas/Cibodas 60
+271 D.I. Telaga 75
+272 D.I. Cicanggirahong 60
+273 D.I. Ciranca 60
+274 D.I. Cilahun 60
+275 D.I. Munjul 100
+276 D.I. Margaluyu 50
+277 D.I. Cigembor 75
+278 D.I. Margatirta 50
+279 D.I. Cirocek 60
+280 D.I. Ciruyung 60
+281 D.I. Cikorab 60
+282 D.I. Ciondok 50
+283 D.I. Cipeucangpare 620
+284 D.I. Cihanjaeun 80
+285 D.I. Cilangkahan II 436
+286 D.I. Citalang 75
+287 D.I. Cadasgantung 150
+288 D.I. Cicangkeuteuk 70
+289 D.I. Cipeundeuy 200
+290 D.I. Citatarpahang 79
+291 D.I. Cigarukgak 105
+292 D.I. Mumunggang 70
+293 D.I. Cipeucang 125
+294 D.I. Cikerang 60
+295 D.I. Malangnengah 150
+296 D.I. Cimandiri 500
+297 D.I. Cibarengkok 115
+298 D.I. Cikereteg 75
+299 D.I. Panyaungan 50
+300 D.I. Cipeusing 60
+301 D.I. Cijengkol 150
+302 D.I. Cijoho 120
+303 D.I. Leuwi Nila 70
+304 D.I. Panyaungan 75
+305 D.I. Cipondok panjang 210
+306 D.I. Curug Kebo 125
+307 D.I. Panyandungan 100
+308 D.I. Citepuseun 125
+309 D.I. Ciparahu 125
+310 D.I. Cijengkol 91

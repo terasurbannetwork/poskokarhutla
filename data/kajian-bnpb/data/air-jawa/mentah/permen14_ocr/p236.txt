@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+231 D.I. Jatia 5
+232 D.I. Jati b 3
+233 D.I. Jati c 6
+234 D.I. Jemblukan 10
+235 D.I. Jengkol 4
+236 D.I. Jetakan/Bandan 19
+237 D.I. Jetisa 2
+238 D.I. Jetis b 3
+239 D.I. Jingkang 15
+240 D.I. Jingkang a 7
+241 D.I. Jingkang b 8
+242 D.I. Jlegong 176
+243 D.I. Jolinggo 20
+244 D.I. Jrati/Ajji 24
+245 D.I. Jrenggeng 14
+246 D.I. Jurang 2
+247 D.I. Jurang 14
+248 D.I. Jurang 3
+249 D.I. Jurang a 10
+250 D.I. Jurang b 8
+251 D.I. Jurangmangun 23
+252 D.I. Juweh 75
+253 D.I. Juweh 9
+254 D.I. Kudu 12
+255 D.I. Kajoran 11
+256 D.I. Kajoran 15
+257 D.I. Kakas 1
+258 D.I. Kakas 10
+259 D.I. Kali Bubak 10
+260 D.I. Kali Kidang 8
+261 D.I. Kali Kutuk a 3
+262 D.I. Kali Kutuk b 2
+263 D.I. Kali Mati 12
+264 D.I. Kali Wates 24
+265 D.I. Kalisat 20
+266 D.I. Kaliwaru 30
+267 D.I. Kalong 9
+268 D.I. Kamaran 7
+269 D.I. Kamaran 7
+270 D.I. Kampar 3
+271 D.I. Kampir 14
+272 D.I. Kancer 2
+273 D.I. Kangkrang 8
+274 D.I. Karanggantung 19
+275 D.I. Karangsari 7
+276 D.I. Kebonadem 5
+277 D.I. Kebrok 26
+278 D.I. Kedung Anyes 7
+279 D.I. Kedung Ingas 22
+280 D.I. Kedung Jembrok 6
+281 D.I. Kedung Penganten 39
+282 D.I. Kedung Petung 7
+283 D.I. Kedung Rukem 8
+284 D.I. Kedung Tembong 40
+285 D.I. Kemadu 18
+286 D.I. Kembang 9
+287 D.I. Kembang 4
+288 D.I. Kembang 7
+289 D.I. Kemijing 17
+290 D.I. Kemiri 4
+291 D.I. Kemloko 11
+#KANAN
+236
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+292 D.I. Kemloko 5
+293 D.I. Kemloko Legi 18
+294 D.I. Kemulan 13
+295 D.I. Kendo 27
+296 D.I. Kenteng 3
+297 D.I. Kenti 8
+298 D.I. Kepik 11
+299 D.I. Kepik 11
+300 D.I. Keseser 39
+301 D.I. Keseser 38
+302 D.I. Kesruh 25
+303 D.I. Kintelan 19
+304 D.I. Klakah 26
+305 D.I. Klakah 33
+306 D.I. Klampok 19
+307 D.I. Klantong 14
+308 D.I. Klantung 9
+309 D.I. Klawer 15
+310 D.I. Klebeyan 26
+311 D.I. Kleon 30
+312 D.I. Klesem 5
+313 D.I. Klesem 6
+314 D.I. Klewer 3
+315 D.I. Kliris 14
+316 D.I. Klisat 25
+317 D.I. Klopo/Tengah 2
+318 D.I. Klotok 10
+319 D.I. Klurahan 20
+320 D.I. Kobar 3
+321 D.I. Kopen 10
+322 D.I. Kopyah 9
+323 D.I. Kramat 95
+324 D.I. Kramat 5
+325 D.I. Kramat 8
+326 D.I. Kranggan 2
+327 D.I. Kranggan 36
+328 D.I. Kranji 63
+329 D.I. Krasak 10
+330 D.I. Krengseng 10
+331 D.I. Krengseng 20
+332 D.I. Krengseng 2
+333 D.I. Kreteg 2
+334 D.I. Krikil 21
+335 D.I. Krobokan 1
+336 D.I. Kruwet 3
+337 D.I. Kruweta 3
+338 D.I. Kruwet b 3
+339 D.I. Kuburan 3
+340 D.I. Kukusan 3
+341 D.I. Kwali 14
+342 D.I. Larangan 9
+343 D.I. Larangan 9
+344 D.I. Larik 28
+345 D.I. Layur 20
+346 D.I. Lebuh 6
+347 D.I. Ledok 2
+348 D.I. Legok 22
+349 D.I. Lekeh 5
+350 D.I. Lekor 15
+351 D.I. Lengko 25
+352 D.I. Lengkong 5

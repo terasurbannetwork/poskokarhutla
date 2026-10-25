@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+196 D.I. Kareng Makka 41
+197 D.I. Tosinau 60
+198 D.I. Sapiri Borong 168
+199 D.I. Tassese 69
+200 D.I. Pao 70
+201 D.I. Bonto Marannu 86
+202 D.I. Sapabalang 138
+203 D.I. Ulujangang 118
+204 D.I. Labboro Lohea 70
+205 D.I. Julukanaya 128
+206 D.I. Leang Pa'nyikia Buakkang 189
+207 D.I. Biroro 130
+208 D.I. Pakku Lompo 51
+209 D.I. Parang Sialla 115
+210 D.I. Pattabakkang 60
+211 D.I. Tamajeng 60
+212 D.I. Taring Tallua 138
+213 D.I. Batu Donggia 50
+214 D.I. Borong Biraeng 89
+215 D.I. Bori Masunggu 127
+216 D.I. Taipatojeng 84
+a Kab. Jenevonto 113 22.779
+1 D.I. Allu 447
+2 D.I. Air Madinging 200
+3 D.I. Balang Balengkan 159
+4 D.I. Balang Loe | 100
+5 D.I. Balang Loe II 296
+6 D.I. Batu Kalocci 250
+7 D.I. Belong 709
+8 D.I. Beroangin 300
+9 D.I. Bira-Bira 150
+10 D.I. Boli Eja 100
+11 D.I. Borong Pandang 250
+12 D.I. Buakang Mattinroa 100
+13 D.I. Campagayya 100
+14 D.I. Canda 200
+15 D.I. Galung Boro 200
+16 D.I. Kalibbong Jina 136
+17 D.I. Kaluku 100
+18 D.I. Karangasa 300
+19 D.I. Karisa | 250
+20 D.I. Kua-Kuala 200
+21 D.I. Kunjungmange 132
+22 D.I. Liku Barana 165
+23 D.I. Liku Jati 250
+24 D.I. Liku Panyila 300
+25 D.I. Lompo Depa I 150
+26 D.I. Loro-Loro 300
+27 D.I. Lumpakang 120
+28 D.I. Manapala 200
+29 D.I. Palangke 150
+30 D.I. Pao-Pao 100
+31 D.I. Papan Eja 100
+32 D.I. Parang Baku 300
+33 D.I. Pattiro 200
+34 D.I. Pokobulo Kanan 425
+35 D.I. Pokobulo Kiri 726
+36 D.I. Ralla Manggunturu 150
+37 D.I. Topa 400
+38 D.I. Tamanroya 497
+#KANAN
+410
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+39 D.I. Tanrang 187
+40 D.I. Tantalisi 144
+41 D.I. Tappalalo 500
+42 D.I. Tappanjeng 268
+43 D.I. Taruttu 120
+44 D.I. Timurung 250
+45 D.I. Tino 330
+46 D.I. Tombolo I 100
+47 D.I. Tombolo II 80
+48 D.I. Ulo 300
+49 D.I. Arung-Arung 250
+50 D.I. Balang Pattongko 100
+51 D.I. Balang Salekoa 300
+52 D.I. Bangka-Bangkala 75
+53 D.I. Belang-Belang Tino 150
+54 D.I. Bonto Salama 150
+55 D.I. Bonto Tala 120
+56 D.I. Bumbung Loe 150
+57 D.I. Balala 215
+58 D.I. Balang Beru 193
+59 D.I. Balang Kalimbungang 300
+60 D.I. Balang Loe II/LK. JRG 100
+61 D.I. Barobbo 100
+62 D.I. Belang-belang Bontorappo 200
+63 D.I. Belang-belang Togo-Togo 150
+64 D.I. Biloro I 175
+65 D.I. Biloro II 265
+66 D.I. Biring Romang 235
+67 D.I. Bomba/Tala Sonra 200
+68 D.I. Bone Cilla 575
+69 D.I. Bonto Nompo 150
+70 D.I. Bonto Sobbi 35
+71 D.I. Borong Tala 100
+72 D.I. Buakang Loe/Pattiro 100
+73 D.I. Bungung Taipa 100
+74 D.I. Gonra 100
+75 D.I. Kalimbungang 100
+76 D.I. Kara'bu/Palajau 175
+77 D.I. Karisa II 250
+78 D.I. Kassi-Kassi 150
+79 D.I. Kandoro 200
+80 D.I. Kolasa 100
+81 D.I. Lambarua 100
+82 D.I. Liku Lantang 150
+83 D.I. Liang Puro 250
+84 D.I. Lianga 100
+85 D.I. Liku Gallang 250
+86 D.I. Lombua 150
+87 D.I. Lompo Depa II 100
+88 D.I. Lompo Punaga 300
+89 D.I. Palammassang 150
+90 D.I. Pa'limbuassang 150
+91 D.I. Pangi I 100
+92 D.I. Panre Loe 300
+93 D.I. Panre Loe II 200
+94 D.I. Pao 300
+95 D.I. Pao Sonra 200
+96 D.I. Pumbanti 150
+97 D.I. Punaga | 250
+98 D.I. Punanga Loe 300
+99 D.I. Pammesorang 300

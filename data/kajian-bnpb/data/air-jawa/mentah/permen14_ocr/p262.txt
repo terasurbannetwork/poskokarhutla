@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+244 D.I. Siwarak 50
+245 D.I. Soropadan 33
+246 D.I. Sutaraga 44
+247 D.I. Suwuk 52
+248 D.I. Tayur II 15
+249 D.I. Tinggar II 21
+250 D.I. Tirtomoyo (MA) 86
+251 D.I. Tuksewu 20
+252 D.I. Wadas II 150
+253 D.I. Waringin II 18
+254 D.I. Winong 19
+255 D.I. Wuluh I 31
+u Kab. Purworeio 250 9.470
+1 D.I. Andong 4
+2 D.I. Awis 16
+3 D.I. Bangkong 9
+4 D.I. Banyusurup 4
+5 D.I. Beji 15
+6 D.I. Bekekang 11
+7 D.I. Bekok III 13
+8 D.I. Bengkal 70
+9 D.I. Bengkek I 24
+10 D.I. Bengkek II 13
+11 D.I. Besole 28
+12 D.I. Blade 7
+13 D.I. Bleber 60
+14 D.I. Bojong 8
+15 D.I. Brengkok 4
+16 D.I. Brondong I 25
+17 D.I. Brondong II 18
+18 D.I. Brondong III 11
+19 D.I. Buhmati 10
+20 D.I. Bulus 27
+21 D.I. Caban | 10
+22 D.I. Caban II 24
+23 D.I. Caban III 10
+24 D.I. Cangkring 6
+25 D.I. Cempedak 122
+26 D.I. Clapar 10
+27 D.I. Cluwek 336
+28 D.I. Curug 4
+29 D.I. Donorejo 14
+30 D.I. Dukuh 5
+31 D.I. Dung Bendo 17
+32 D.I. Dung Lemper 15
+33 D.I. Dupo 15
+34 D.I. Ganggeng 32
+35 D.I. Gladak 14
+36 D.I. Gondosuli 25
+37 D.I. Gowang 7
+38 D.I. Guntur 326
+39 D.I. Gunung Butak 168
+40 D.I. Gupit 49
+41 D.I. Gusti Ngisor 105
+42 D.I. Guyangan 12
+43 D.I. Jambean 17
+44 D.I. Jati 4
+45 D.I. Jeruk 5
+46 D.I. Jetis 15
+47 D.I. Jonggol 5
+#KANAN
+262
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+48 D.I. Jrakah 405
+49 D.I. Juweh 37
+50 D.I. Juweh 26
+51 D.I. Kalibawang 42
+52 D.I. Kalidono 8
+53 D.I. Kaliduren 190
+54 D.I. Kaliglagah 15
+55 D.I. Kaliharjo 26
+56 D.I. Kalikalong 33
+57 D.I. Kalimeneng 15
+58 D.I. Kalisemo 599
+59 D.I. Karang Pencil 75
+60 D.I. Karangrejo 43
+61 D.I. Kebanasan 93
+62 D.I. Kebo Kuning 86
+63 D.I. Kedondong 282
+64 D.I. Kedung Agung 9
+65 D.I. Kedung Bibis 10
+66 D.I. Kedung Bulu 5
+67 D.I. Kedung Kidang 70
+68 D.I. Kedung Lele 19
+69 D.I. Kedung Minger 6
+70 D.I. Kedung Miring 46
+71 D.I. Kedung Tebok 12
+72 D.I. Kemranggen | 27
+73 D.I. Kemranggen II 53
+74 D.I. Kepising 211
+75 D.I. Kinger 20
+76 D.I. Klereng I 15
+77 D.I. Klereng II 22
+78 D.I. Klereng III 16
+79 D.I. Kombang I 33
+80 D.I. Kombang II 18
+81 D.I. Kombang III 25
+82 D.I. Kopeng 3
+83 D.I. Krandon 153
+84 D.I. Krasak 30
+85 D.I. Krasak 8
+86 D.I. Krengseng 17
+87 D.I. Larangan 12
+88 D.I. Lingsang 10
+89 D.I. Loroggrantung 30
+90 D.I. Mawung 10
+91 D.I. Medono 20
+92 D.I. Mentosaran 27
+93 D.I. Mranti 268
+94 D.I. Mranti | 18
+95 D.I. Mranti II 20
+96 D.I. Mudal 59
+97 D.I. Munggang 15
+98 D.I. Ngabean 10
+99 D.I. Ngadirejo 13
+100 D.I. Ngaglik I 15
+101 D.I. Ngaglik II 19
+102 D.I. Ngasem 22
+103 D.I. Ngasem | 15
+104 D.I. Ngasem II 16
+105 D.I. Ngasinan 61
+106 D.I. Onggowangsan 98
+107 D.I. Pakisan 16
+108 D.I. Pakisarum 17

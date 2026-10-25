@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+161 D.I. Bulung 278
+162 D.I. Ceren 40
+163 D.I. Cumplung 6
+164 D.I. Dalan 5
+165 D.I. Dung Betung 10
+166 D.I. Dung Bledu 6
+167 D.I. Gamelan 42
+168 D.I. Gedangan 13
+169 D.I. Gedeg 25
+170 D.I. Gepuk 90
+171 D.I. Gompeng 6
+172 D.I. Grintina 20
+173 D.I. Griyo 15
+174 D.I. Gulang 15
+175 D.I. Guwo 5
+176 D.I. Janti 9
+177 D.I. Jaranan 40
+178 D.I. Jati 7
+179 D.I. Jembangan 10
+180 D.I. Karangdowo 8
+181 D.I. Kecepak 8
+182 D.I. Kembang 7
+183 D.I. Ketileng 8
+184 D.I. Ketinggen 6
+185 D.I. Kleco 20
+186 D.I. Klentang 14
+187 D.I. Klutuk 2
+188 D.I. Kontrak 7
+189 D.I. Langak 130
+190 D.I. Ledok 7
+191 D.I. Lodong 140
+192 D.I. Menawan 106
+193 D.I. Mrisen 16
+194 D.I. Nganyar 4
+195 D.I. Ngasem 11
+196 D.I. Ngawen 27
+197 D.I. Ngelo 180
+198 D.I. Ngembes 6
+199 D.I. Ngipik 18
+200 D.I. Ngumbut 15
+201 D.I. Nongko 4
+202 D.I. Nongko 7
+203 D.I. Pancur 5
+204 D.I. Pelem 20
+205 D.I. Poh Ruboh 7
+206 D.I. Pugat 6
+207 D.I. Pule 5
+208 D.I. Rejenu 6
+209 D.I. Sande 11
+210 D.I. Sekuwang 8
+211 D.I. Sendang 9
+212 D.I. Sengon 4
+213 D.I. Serut 4
+214 D.I. Setlecek 6
+215 D.I. Sigandu 20
+216 D.I. Sikebo 63
+217 D.I. Singkil 7
+218 D.I. Sitatar 12
+219 D.I. Siwaru 80
+220 D.I. Siwatu 47
+221 D.I. Soco 11
+#KANAN
+pas 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+222 D.I. Sunggingan 18
+223 D.I. Tempur 10
+224 D.I. Tengah 13
+225 D.I. Teratai 48
+226 D.I. Tonah 56
+227 D.I. Tuwung 33
+228 D.I. Waringin 20
+229 D.I. Wuluh 11
+230 D.I. Wuni 10
+231 D.I. Wuni 4
+p Kab. Maaelana 993 35.662
+1 D.I. Adingan 16
+2 D.I. Aji 233
+3 D.I. Aji Cowong 164
+4 D.I. Aji Semagung 335
+5 D.I. Aji Sidowangi 150
+6 D.I. Aji Temon 378
+7 D.I. Anggas 45
+8 D.I. Anggas/Bolong 19
+9 D.I. Angkruk 24
+10 D.I. Ares 11
+11 D.I. Argosari 15
+12 D.I. Babadan 34
+13 D.I. Bakalan 25
+14 D.I. Balegede 363
+15 D.I. Balong I 29
+16 D.I. Balong II 13
+17 D.I. Balong III 20
+18 D.I. Banaran A 18
+19 D.I. Banaran B 18
+20 D.I. Bancak 16
+21 D.I. Bandung 37
+22 D.I. Banger II 23
+23 D.I. Banggalan 236
+24 D.I. Bangkong 17
+25 D.I. Banjengan 19
+26 D.I. Banteng 9
+27 D.I. Bantuan 15
+28 D.I. Banyusumurup Ka 92
+29 D.I. Banyusumurup Ki 340
+30 D.I. Bateh 80
+31 D.I. Baturan 18
+32 D.I. Bawang 33
+33 D.I. Bayeman 10
+34 D.I. Bebengan 26
+35 D.I. Beji Geneng I 55
+36 D.I. Beji Geneng II 48
+37 D.I. Beji | 35
+38 D.I. Beji II 6
+39 D.I. Belik 35
+40 D.I. Bendo | 15
+41 D.I. Bendo II 10
+42 D.I. Bendo III 20
+43 D.I. Bendolele 14
+44 D.I. Bendosari 16
+45 D.I. Bengkok I 40
+46 D.I. Bengkok II 14
+47 D.I. Bengkok III 14
+48 D.I. Bentoro 12
+49 D.I. Bentoyo 29

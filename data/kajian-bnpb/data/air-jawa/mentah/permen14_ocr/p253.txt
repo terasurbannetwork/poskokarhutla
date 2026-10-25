@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+904 D.I. MA. Sares/Tembalang 25
+905 D.I. MA. Seringin 5
+906 D.I. MA.Tuk Manuk 20
+907 D.I. Maron 15
+908 D.I. Mesem 199
+909 D.I. Minang 64
+910 D.I. Mindi 16
+911 D.I. Miri 33
+912 D.I. Mlambong 13
+913 D.I. Mlobo 25
+914 D.I. Montro 30
+915 D.I. Ngadonan 15
+916 D.I. Nganyak 20
+917 D.I. Ngargomulyo 20
+918 D.I. Ngebuh 18
+919 D.I. Ngemplak 28
+920 D.I. Ngentak | 14
+921 D.I. Ngimbang 4
+922 D.I. Ngingas 20
+923 D.I. Ngipik 14
+924 D.I. Ngipik/Ploso 47
+925 D.I. Ngori Canggalan 16
+926 D.I. Nogorejo 55
+927 D.I. Pace 202
+928 D.I. Pancar III 92
+929 D.I. Pari 15
+930 D.I. Pasarmati 20
+931 D.I. Pelanangan 6
+932 D.I. Pernolo 25
+933 D.I. Plampeyan 6
+934 D.I. Ploso 13
+935 D.I. Ploso Pakunden 12
+936 D.I. Ploso Wetan 20
+937 D.I. Podang 20
+938 D.I. Podang 25
+939 D.I. Prigi 15
+940 D.I. Prigi 30
+941 D.I. Pucang 29
+942 D.I. Pule I 13
+943 D.I. Pulo 14
+944 D.I. Pusung 4
+945 D.I. Ringin 15
+946 D.I. Sabrangan 10
+947 D.I. Sedayu IV 37
+948 D.I. Segaran 21
+949 D.I. Sejangkung 15
+950 D.I. Seklurahan 25
+951 D.I. Sekopek/Soglengan 4
+952 D.I. Sekori 33
+953 D.I. Seleter 10
+954 D.I. Selomerah 20
+955 D.I. Semaken 25
+956 D.I. Sembir 22
+957 D.I. Sepon 45
+958 D.I. Seringin 38
+959 D.I. Serongko 14
+960 D.I. Sidomakmur 22
+961 D.I. Sidondong 27
+962 D.I. Sigondang 80
+963 D.I. Sijaran 10
+964 D.I. Sikepan 25
+#KANAN
+253 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+965 D.I. Sikucing 17
+966 D.I. Silumut 15
+967 D.I. Sipodang 30
+968 D.I. Sipoh 30
+969 D.I. Sitayo 55
+970 D.I. Soropadan 13
+971 D.I. Srowol 63
+972 D.I. Sucen 100
+973 D.I. Sugihan 25
+974 D.I. Suren 25
+975 D.I. Suren/Kendal 33
+976 D.I. Surodadi 264
+977 D.I. Taman Mulyo 10
+978 D.I. Tegah/Sarbu 25
+979 D.I. Tejo 17
+980 D.I. Tembelang I 50
+981 D.I. Tempuran 25
+982 D.I. Tengah 16
+983 D.I. Tetel 15
+984 D.I. Tlatar Il 30
+985 D.I. Tosaren/Gandu B 20
+986 D.I. Turi 15
+987 D.I. Wanadri 8
+988 D.I. Wangan Tengah 10
+989 D.I. Waru 15
+990 D.I. Wayuh 35
+991 D.I. Wonoboyo 24
+992 D.I. Wuni I 2
+993 D.I. Wuni II 20
+a Kab. Pati 327 20.965
+1 D.I. Asemjago 23
+2 D.I. Asemwedus 74
+3 D.I. Astrodiwongso 22
+4 D.I. Bakangan 10
+5 D.I. Bancak 143
+6 D.I. Bangau I 10
+7 D.I. Bangau II 62
+8 D.I. Bangkleyan 414
+9 D.I. Bangsal 111
+10 D.I. Banyutarung 49
+11 D.I. Batur 76
+12 D.I. Beketung 19
+13 D.I. Bencong 12
+14 D.I. Bendo 16
+15 D.I. Bendo 36
+16 D.I. Bendo 10
+17 D.I. Bendo 28
+18 D.I. Bendoroto 15
+19 D.I. Bengkok 18
+20 D.I. Besali 72
+21 D.I. Besole 10
+22 D.I. Blado 284
+23 D.I. Blekik 94
+24 D.I. Bogo 121
+25 D.I. Bongko 25
+26 D.I. Bonjoran 274
+27 D.I. Bontro 18
+28 D.I. Bopong 15
+29 D.I. Boro 13
+30 D.I. Brambang 10

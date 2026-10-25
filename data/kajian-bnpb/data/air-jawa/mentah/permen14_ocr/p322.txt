@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+81 D.I. Ngino 281
+82 D.I. Nglumpang 189
+83 D.I. Pakisaji 60
+84 D.I. Pandan 95
+85 D.I. Panjer 36
+86 D.I. Parerejo I 40
+87 D.I. Parerejo II 4
+88 D.I. Parerejo III 7
+89 D.I. Paron 152
+90 D.I. Petung 304
+91 D.I. Pilang Ki 94
+92 D.I. Ploso | 11
+93 D.I. Ploso II 26
+94 D.I. Ploso III 23
+95 D.I. Pucung 21
+96 D.I. Ringinrejo 369
+97 D.I. Sambirejo 156
+98 D.I. Sbr. Agung 29
+99 D.I. Sbr. Agung 20
+100 D.I. Sbr. Agung 69
+101 D.I. Sbr. Badut 35
+102 D.I. Sbr. Badut 68
+103 D.I. Sbr. Banaran 35
+104 D.I. Sbr. Bapang 22
+105 D.I. Sbr. Bayi 64
+106 D.I. Sbr. Bedug 56
+107 D.I. Sbr. Beji 6
+108 D.I. Sbr. Bendo M
+109 D.I. Sbr. Bendo 19
+110 D.I. Sbr. Bendo 32
+111 D.I. Sbr. Bendo 33
+112 D.I. Sbr. Beru 3
+113 D.I. Sbr. Besuk 61
+114 D.I. Sbr. Blimbing 52
+115 D.I. Sbr. Blorong 11
+116 D.I. Sbr. Botol 51
+117 D.I. Sbr. Branggahan 30
+118 D.I. Sbr. Branggahan | 4
+119 D.I. Sbr. Branggahan II 24
+120 D.I. Sbr. Bulurejo 12
+121 D.I. Sbr. Buntung 140
+122 D.I. Sbr. Buntung 16
+123 D.I. Sbr. Buntung 65
+124 D.I. Sbr. Cangkring 13
+125 D.I. Sbr. Celeng 31
+126 D.I. Sbr. Cempoko 1
+127 D.I. Sbr. Cumolek 58
+128 D.I. Sbr. Dadap 21
+129 D.I. Sbr. Dasun 75
+130 D.I. Sbr. Deyeng 26
+131 D.I. Sbr. Dlopo 131
+132 D.I. Sbr. Donganti 16
+133 D.I. Sbr. Gading 32
+134 D.I. Sbr. Gadungan 51
+135 D.I. Sbr. Gambi 94
+136 D.I. Sbr. Gayam 34
+137 D.I. Sbr. Gentong 15
+138 D.I. Sbr. Genuk 100
+139 D.I. Sbr. Getuk 9
+140 D.I. Sbr. Gintungan 19
+141 D.I. Sbr. Glodok 43
+#KANAN
+322
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+142 D.I. Sbr. Golek 178
+143 D.I. Sbr. Gondang 1
+144 D.I. Sbr. Gundi A 29
+145 D.I. Sbr. Gundi B 53
+146 D.I. Sbr. Jagul 12
+147 D.I. Sbr. Jambangan 44
+148 D.I. Sbr. Jati slorok 36
+149 D.I. Sbr. Jeti 5
+150 D.I. Sbr. Jlundang 10
+151 D.I. Sbr. Kajar 21
+152 D.I. Sbr. Kaliboto 7
+153 D.I. Sbr. Kalirong 111
+154 D.I. Sbr. Kalong 8
+155 D.I. Sbr. Kapu kidul 38
+156 D.I. Sbr. Karangtalun 53
+157 D.I. Sbr. Kayunan III 18
+158 D.I. Sbr. Kedungmerang 46
+159 D.I. Sbr. Kedungtalang 1
+160 D.I. Sbr. Kemuning 48
+161 D.I. Sbr. Klanderan 31
+162 D.I. Sbr. Klaten 22
+163 D.I. Sbr. Klumprit 1
+164 D.I. Sbr. Kolak 58
+165 D.I. Sbr. Kroncong 6
+166 D.I. Sbr. Ledang 1
+167 D.I. Sbr. Lotes 1
+168 D.I. Sbr. Lumendrik 25
+169 D.I. Sbr. Munengan 50
+170 D.I. Sbr. Nepen 4
+171 D.I. Sbr. Ngadiloyo 81
+172 D.I. Sbr. Ngletih 1
+173 D.I. Sbr. Ngujem 3
+174 D.I. Sbr. Nongko 9
+175 D.I. Sbr. Pakel 1
+176 D.I. Sbr. Pakem 53
+177 D.I. Sbr. Pandean 16
+178 D.I. Sbr. Patihan 47
+179 D.I. Sbr. Pawon 112
+180 D.I. Sbr. Pelem 15
+181 D.I. Sbr. Pendem 9
+182 D.I. Sbr. Petung 28
+183 D.I. Sbr. Petungsewu 6
+184 D.I. Sbr. Plumpungan 22
+185 D.I. Sbr. Pring 30
+186 D.I. Sbr. Pule 102
+187 D.I. Sbr. Rampalgading 10
+188 D.I. Sbr. Rayut 47
+189 D.I. Sbr. Reco 96
+190 D.I. Sbr. Recoputri 36
+191 D.I. Sbr. Rejosari 18
+192 D.I. Sbr. Ringin 19
+193 D.I. Sbr. Sambong 4
+194 D.I. Sbr. Sedaket 72
+195 D.I. Sbr. Sekung 7
+196 D.I. Sbr. Semoyo 4
+197 D.I. Sbr. Sendang 125
+198 D.I. Sbr. Siluman 4
+199 D.I. Sbr. Sirah 4
+200 D.I. Sbr. Sirahgolo 22
+201 D.I. Sbr. Slumbung/Bangle 139
+202 D.I. Sbr. Soko 26

@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+A7 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+b Kab. Gunung Kidul
+1 D.I. Bd. Simo 1.247
+2 D.I. Bd. Payaman 1.040
+c Kab. Kulonprogo
+1 D.I. Sapon 1.900
+XIV PROVINSI JAWA TIMUR 80 118.262
+a Kab. Bangkalan
+1 D.I. Dam Ombul 1.085
+2 D.I. Tunjung 1.807
+b Kab. Banyuwangi
+1 D.I. Blambangan 1.523
+2 D.I. Gembleng 1.736
+3 D.I. Tenggoro 1.074
+c Kab. Blitar
+1 D.I. Dermen 1.763
+d Kab. Bojonegoro
+1 D.I. Cawak 1.733
+2 D.I. Pirang 1.347
+3 D.I. Wd. Leran 1.144
+e Kab. Bondowoso
+1 D.I. Balud 1.074
+2 D.I. Wonosroyo 1.499
+f Kab. Gresik
+1 D.I. Kali Wadak 1.476
+2 D.I. Wd. Gogor 1.054
+3 D.I. Wd. Lowayu 1.430
+g Kab. Jember
+1 D.I. Bago 2.188
+2 D.I. Grogol 1.239
+3 D.I. Karanglo 2.323
+4 D.I. Kembar 1.447
+5 D.I. Kertosari 2.056
+6 D.I. Kottok 1.879
+7 D.I. Mrawan 1.244
+8 D.I. Sumber Nangka 1.393
+h Kab. Jombang
+1 D.I. Jatimlerek 1.812
+2 D.I. Slumbung 1.182
+i Kab. Lamongan
+1 D.I. Rawa Cungkup 1.274
+2 D.I. Rawa Sekaran 1.719
+3 D.I. Rawa Semando 1.661
+4 D.I. Wd. Rande 1.044
+j Kab. Lumajang
+1 D.I. Brug Purwo 1.094
+2 D.I. Curah Menjangan/Kedungsangku 1.867
+3 D.I. Jurang Dawir 1.088
+4 D.I. Tekung | 1.920
+5 D.I. Umbul Pringtali 1.262
+k Kab. Kediri
+1 D.I. Ketandan 1.637
+2 D.I. Pohblembem 1.086
+| Kab. Madiun
+1 D.I. Bedilan 1.058
+2 D.I. Notopuro 2.433
+3 D.I. Sarangan 1.273
+4 D.I. Sewu 1.332
+5 D.I. Wates 1.045
+m Kab. Mojokerto
+1 D.I. Kromong II 1.055
+n Kab. Nganjuk
+1 D.I. Bulakmojo 1.211
+2 D.I. Kedung Gerit 1.470
+3 D.I. Ngrambe 1185
+o Kab. Ngawi
+1 D.I. Bekoh 1.921
+2 D.I. Gurdo 1.593
+3 D.I. Guyung 1.246
+4 D.I. Kedung Bendo 1.341
+5 D.I. Kedungputri 1.884
+6 D.I. Pang 1.046

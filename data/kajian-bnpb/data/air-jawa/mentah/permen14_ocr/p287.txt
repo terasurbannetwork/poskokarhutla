@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+388 D.I. Pencar I 15
+389 D.I. Pencil 10
+390 D.I. Pengangson 14
+391 D.I. Pengangson 13
+392 D.I. Pengangson | 18
+393 D.I. Pengangson | 16
+394 D.I. Pengangson I 15
+395 D.I. Pengangson II 17
+396 D.I. Pengangson II 15
+397 D.I. Pengangson II 20
+398 D.I. Pengangson III 10
+399 D.I. Pengangson IV 13
+400 D.I. Pengasinan 14
+401 D.I. Penggajian 14
+402 D.I. Pesung 53
+403 D.I. Petir 90
+404 D.I. Petung 30
+405 D.I. Petung 17
+406 D.I. Pingit 271
+407 D.I. Plampean 31
+408 D.I. Plampean 26
+409 D.I. Pleben I 4 II 26
+410 D.I. Pleregan 72
+411 D.I. Plintaran 13
+412 D.I. Poh 30
+413 D.I. Pomahan 25
+414 D.I. Pomahan | 16
+415 D.I. Pomahan II 10
+416 D.I. Ponggok 14
+417 D.I. Prageman 65
+418 D.I. Preng I 29
+419 D.I. Preng II 30
+420 D.I. Preng Leksono 110
+421 D.I. Puar 15
+422 D.I. Pucung 12
+423 D.I. Pucung 31
+424 D.I. Pucung II 12
+425 D.I. PucungPasang 12
+426 D.I. Pulus 22
+427 D.I. Pundung 10
+428 D.I. Purbosono 36
+429 D.I. Putung 30
+430 D.I. Rancah | 15
+431 D.I. Rancah II 15
+432 D.I. Randu 16
+433 D.I. Rau 94
+434 D.I. Rejosari 17
+435 D.I. Rowojali 29
+436 D.I. Rukun 14
+437 D.I. Ruyung 12
+438 D.I. Sabrang 18
+439 D.I. Sabrang 30
+440 D.I. Sabrangan | 17
+441 D.I. Sabrangan II 16
+442 D.I. Sabung 11
+443 D.I. Sahsih 10
+444 D.I. Sambuwer 10
+445 D.I. Sampang 13
+446 D.I. Sandriyo 17
+447 D.I. Sanggar 12
+448 D.I. Sanjatan 15
+#KANAN
+287 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+449 D.I. Santren 12
+450 D.I. Santren 25
+451 D.I. Sapi 15
+452 D.I. Sarangan 31
+453 D.I. Sarangan 22
+454 D.I. Sarangan | 16
+455 D.I. Sareh 10
+456 D.I. Sarioso 20
+457 D.I. Sasak 14
+458 D.I. Satsatan 18
+459 D.I. Sawahombo 18
+460 D.I. Sawangan 31
+461 D.I. Sayangan 42
+462 D.I. Semang 11
+463 D.I. Sembir 12
+464 D.I. Semen 15
+465 D.I. Sentong 50
+466 D.I. Serang 10
+467 D.I. Serayu 43
+468 D.I. Seser 13
+469 D.I. Sewu 40
+470 D.I. Siampel 10
+471 D.I. Siaren 15
+472 D.I. Sibawang 15
+473 D.I. Sibekuk 15
+474 D.I. Sibelik 13
+475 D.I. Sibenda 10
+476 D.I. Sibentar 15
+477 D.I. Sibrongsong 10
+478 D.I. Sicacing 17
+479 D.I. Sidadap 12
+480 D.I. Sidadi I 15
+481 D.I. Sidadi II 26
+482 D.I. Sidakala 18
+483 D.I. Sidaung 15
+484 D.I. Sidawung 10
+485 D.I. Sidawung I 11
+486 D.I. Sideng 50
+487 D.I. Sideng I 34
+488 D.I. Sidesel 40
+489 D.I. Sidodok 18
+490 D.I. Sidodol 10
+491 D.I. Sigandu 61
+492 D.I. Sigandul 49
+493 D.I. Sigeler 20
+494 D.I. Sigiling I 16
+495 D.I. Sigong 10
+496 D.I. Sigowok 15
+497 D.I. Sigug Jurang 15
+498 D.I. Sijambon 17
+499 D.I. Sijambu 35
+500 D.I. Sijambu 14
+501 D.I. Sijarakan 35
+502 D.I. Sijaran 45
+503 D.I. Sijeruk 77
+504 D.I. Sijeruk 32
+505 D.I. Sijeruk I 15
+506 D.I. Sijeruk II 50
+507 D.I. Sijlubang 18
+508 D.I. Sikalong 10
+509 D.I. Sikarang 16

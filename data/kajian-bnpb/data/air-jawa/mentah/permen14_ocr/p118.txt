@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+41 D.I. Muaro Sikabau 20
+42 D.I. Sawah Tangah 15
+43 D.I. Sawah Luwung 20
+44 D.I. Sawah Sapan 25
+45 D.I. Lingkuang Batu 12
+46 D.I. Tanah Taban 15
+47 D.I. Pancung Talang 8
+48 D.I. Sawah Nyiur 8
+49 D.I. Sawah Tba/Swh Laweh II 15
+50 D.I. Batu Bujuh 14
+51 D.I. Cuma Lagi 25
+52 D.I. Sikunik 10
+53 D.I. Sawah Datar 13
+54 D.I. Sawah Panjang 15
+55 D.I. Sawah Sajik 6
+56 D.I. Kaluka/Sawah Lurah 15
+57 D.I. Embung Banda Panjang 20
+58 D.I. Sawah Banyak 15
+59 D.I. Limau Kabau 15
+60 D.I. Koto Tingga 15
+61 D.I. Sawah Gunung 15
+62 D.I. Sawah Gadang 16
+63 D.I. Sawah Patai 15
+64 D.I. Sawah Pampuan 12
+65 D.I. Sawah Aie Mancur 5
+66 D.I. Lubuk Siromek 27
+67 D.I. Batang Mindai 20
+68 D.I. Sawah Jambak 12
+69 D.I. Sawah Pulau 6
+70 D.I. Sibolin 15
+71 D.I. Lubuk Kalodan 32
+72 D.I. Simotuang Mudik 10
+73 D.I. Simotuang Hilir 17
+74 D.I. Lubuk Sipotang 21
+75 D.I. Guguk Nan Panjang 10
+76 D.I. Sawah Talago 5
+77 D.I. Titian Sionsek 3
+78 D.I. Sungai Limau 3
+79 D.I. Sawah Langkok 4
+80 D.I. Sawah Rumbio 15
+81 D.I. Sawah Baye 15
+82 D.I. Sawah Taban/Batang Piruko 10
+83 D.I. Sawah Bancah 10
+84 D.I. Koto Tingga 12
+85 D.I. Batu Bage 10
+86 D.I. Sawah Dilie 12
+87 D.I. Ngungun 12
+s Kota Solok 17 661
+1 D.I. Bdr. Imang Payo 108
+2 D.I. Bdr. Gurun Bagan 78
+3 D.I. Bdr. Pincuran Gadang 50
+4 D.I. Bdr. Ulu Air 48
+5 D.I. Bdr. Rawang Batu Ampa 47
+6 D.I. Bdr. Ampang Batu 45
+7 D.I. Bdr. Tabek Patah 45
+8 D.I. Bdr. Ampang Rajo 42
+9 D.I. Bdr. Sawah Gadang 37
+10 D.I. Bdr. Sawah Ladang 34
+11 D.I. Bdr. Balantai 26
+12 D.I. Bdr. Tarartak 23
+#KANAN
+118
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+13 D.I. Bdr. Rawang 22
+14 D.I. Bdr. Air Batumbuk 19
+15 D.I. Bdr. Sarang Alang 18
+16 D.I. Bdr. Barantai 16
+17 D.I. Bdr. Swh. Taruko 3
+MI PROVINSI JAMI A1 21 1n9
+a Kab. Batana Hari 5 625
+1 D.I. Karmeo 400
+2 D.I. Mekar Jaya 30
+3 D.I. Sungai Pulai 125
+4 D.I. Lubuk Buntar 65
+5 D.I. Tanah Hitam 5
+b Kab. Bunao 85 5.326
+1 D.I. Sei. Andik 70
+2 D.I. Sei. Berunai 70
+3 D.I. Sei. Duren 30
+4 D.I. Sei. Dusun Manggis 240
+5 D.I. Sei. Dusun Tebat 200
+6 D.I. Sei. Embacang Kecil 155
+7 D.I. Sei. Jentayo 274
+8 D.I. Sei. Kembang 225
+9 D.I. Sei. Limau 203
+10 D.I. Sei. Lubuk Manyan 44
+11 D.I. Sei. Pulau Pekan 287
+12 D.I. Sei. Semagi 225
+13 D.I. Sei. Senamat 100
+14 D.I. Sei. Talang Pantai 123
+15 D.I. Sei. Teluk Pandak 141
+16 D.I. Sei. Teluk Panjang 146
+17 D.I. Sei. Terantam Besar 207
+18 D.I. Aburan 5
+19 D.I. Agam | 56
+20 D.I. Agam II 35
+21 D.I. Alai 35
+22 D.I. Bangar 65
+23 D.I. Batang Buat 60
+24 D.I. Belakang Rumah 20
+25 D.I. Buli-Buli 30
+26 D.I. Bulim 40
+27 D.I. Buluh 20
+28 D.I. Cino | 30
+29 D.I. Cino II 30
+30 D.I. Danau 20
+31 D.I. Duyung 30
+32 D.I. Gedang 90
+33 D.I. Gedana Senamat Hulu 20
+34 D.I. Jelutung 5
+35 D.I. Jerinjing 94
+36 D.I. Kerang 83
+37 D.I. Ketak 20
+38 D.I. Ketapang 5
+39 D.I. KK Unit III 10
+40 D.I. KK Unit IX 5
+41 D.I. KK Unit VIII 3
+42 D.I. KK Unit X-| 5
+43 D.I. KK Unit X-II 5
+44 D.I. KK Unit XIV-I 10
+45 D.I. KK Unit XIV-II 10

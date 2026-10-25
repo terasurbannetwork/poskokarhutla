@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+172 D.I. Gayur II 9
+173 D.I. Geblok 25
+174 D.I. Gedangan 35
+175 D.I. Gedolon Kanan 81
+176 D.I. Gedolon Kiri M
+177 D.I. Gedoyo 21
+178 D.I. Gejagan 17
+179 D.I. Gejiwan 22
+180 D.I. Gelapan 15
+181 D.I. Gemawang 30
+182 D.I. Gembung I 28
+183 D.I. Gembung II 14
+184 D.I. Gembyang 19
+185 D.I. Gempol 43
+186 D.I. Gendol 20
+187 D.I. Gendol 20
+188 D.I. Geneng 15
+189 D.I. Genting 11
+190 D.I. Gento 7
+191 D.I. Gereng 17
+192 D.I. Gesang 13
+193 D.I. Gintung 3
+194 D.I. Siwing 26
+195 D.I. Giyanti 39
+196 D.I. Glece 27
+197 D.I. Gledek I 55
+198 D.I. Gledek II 11
+199 D.I. Godo 3
+200 D.I. Sondang 19
+201 D.I. Gondang | 14
+202 D.I. Gondang II 31
+203 D.I. Gondang Treko 365
+204 D.I. Gondangan Atas 25
+205 D.I. Gowok II 34
+206 D.I. Gowong 45
+207 D.I. Grabag 214
+208 D.I. Grantingan 17
+209 D.I. Grebek II 17
+210 D.I. Gremeng 10
+211 D.I. Grenggeng I 17
+212 D.I. Grenggeng II 20
+213 D.I. Grenggeng III 21
+214 D.I. Grenjengan II 20
+215 D.I. Grigak | 34
+216 D.I. Grogol II 26
+217 D.I. Grogol I/Cokro 17
+218 D.I. Grogol III 26
+219 D.I. Groyok 25
+220 D.I. Gudang 21
+221 D.I. Guling | 84
+222 D.I. Guling II 20
+223 D.I. Gumuk | 10
+224 D.I. Gumuk II 25
+225 D.I. Gumuk III 20
+226 D.I. Gunung Sunting 25
+227 D.I. Gupit | 13
+228 D.I. Gupit II 35
+229 D.I. Gupit III 5
+230 D.I. Guwo I 11
+231 D.I. Guyangan I 5
+232 D.I. Guyangan II 4
+#KANAN
+pa7 7015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+233 D.I. Ingas 21
+234 D.I. Ingas II 20
+235 D.I. Jagalan 20
+236 D.I. Jambang 25
+237 D.I. Jambe I 20
+238 D.I. Jambe II 24
+239 D.I. Jambe III 24
+240 D.I. Jambe IV 10
+241 D.I. Jambean 17
+242 D.I. Jamblangan | 22
+243 D.I. Jamblangan II 13
+244 D.I. Jambu I 24
+245 D.I. Jambu II 10
+246 D.I. Jambu III 56
+247 D.I. Jamus Kauman 10
+248 D.I. Jamus kulon 10
+249 D.I. Jangkang II 10
+250 D.I. Jaten 10
+251 D.I. Jati | 26
+252 D.I. Jati II 54
+253 D.I. Jati Sari 14
+254 D.I. Jayan 28
+255 D.I. Jeblok 22
+256 D.I. Jelehan 18
+257 D.I. Jembirit | 34
+258 D.I. Jembirit II 17
+259 D.I. Jenekah 10
+260 D.I. Jenggol 14
+261 D.I. Jengkol 43
+262 D.I. Jengkon 15
+263 D.I. Jengkulon 25
+264 D.I. Jetis I 25
+265 D.I. Jetis II 7
+266 D.I. Jingkong 19
+267 D.I. Jlegong I 10
+268 D.I. Jlegong II 16
+269 D.I. Jogowisan 12
+270 D.I. Jombang II 9
+271 D.I. Jomblang 21
+272 D.I. Jombor 39
+273 D.I. Jonggol 16
+274 D.I. Jrakah 26
+275 D.I. Judah 26
+276 D.I. Junjungan | II 42
+277 D.I. Junjungan III 83
+278 D.I. Junjungan IV 32
+279 D.I. Junjungan V 36
+280 D.I. Jurang | 19
+281 D.I. Jurang II 3
+282 D.I. Juwono 25
+283 D.I. K. Bajang 9
+284 D.I. K. Sapi 10
+285 D.I. Kacangan 20
+286 D.I. Kading 91
+287 D.I. Kadipolo | 12
+288 D.I. Kadipolo II 17
+289 D.I. Kadipolo III 17
+290 D.I. Kajoran 22
+291 D.I. Kalangan | 81
+292 D.I. Kalangan II 13
+293 D.I. Kalegen 32

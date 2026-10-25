@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+85 D.I. Pattimpa 144
+86 D.I. Pattuku 155
+87 D.I. Pising 97
+88 D.I. Ponto libureng 70
+89 D.I. Rabua 250
+90 D.I. Raja 370
+91 D.I. Rappa 120
+92 D.I. Sabila | 262
+93 D.I. Sabila II 100
+94 D.I. Sailong 350
+95 D.I. Samagora 158
+96 D.I. Sijelling 161
+97 D.I. Soga 95
+98 D.I. Soloreng 286
+99 D.I. Sura 110
+100 D.I. Talabangi I 54
+101 D.I. Tabbe Walie 148
+102 D.I. Taddagae 113
+103 D.I. Tajong 230
+104 D.I. Tajong I 184
+105 D.I. Talabangi II 80
+106 D.I. Talabangi III 50
+107 D.I. Tanete 100
+108 D.I. Tanete Buang 343
+109 D.I. Taretta 337
+110 D.I. Tagori 200
+111 D.I. Tellongeng 165
+112 D.I. Tempe-Tempe 400
+113 D.I. Teppo Tae 62
+114 D.I. Tobempa 129
+115 D.I. To Cina 300
+116 D.I. Toddang Jompi 427
+117 D.I. Tokeddu 58
+118 D.I. Tolaga/Talaga 187
+119 D.I. Toragi/Barakke 200
+120 D.I. Tuangleo | 250
+121 D.I. Uloe I 500
+122 D.I. Uloe II 400
+123 D.I. Ulu Bubung 200
+124 D.I. Unra 76
+125 D.I. Waelennae 135
+126 D.I. Waetowu 102
+127 D.I. WalenrangWelareng 209
+128 D.I. Walenreng 226
+129 D.I. Walimpong 519
+130 D.I. Watang Cani 188
+131 D.I. Weddie 69
+132 D.I. Wessa 400
+133 D.I. Wollangi 463
+134 D.I. Wollangi II 94
+135 D.I. Ajangale 40
+136 D.I. Galung III 50
+137 D.I. Ajasso 50
+138 D.I. Ako Bange 90
+139 D.I. Allamengnge 100
+140 D.I. Allempongengnge 200
+141 D.I. Assirrajangge 100
+142 D.I. Barereng 226
+143 D.I. Batua 80
+144 D.I. Batu-Batu 80
+145 D.I. Batuputih 80
+#KANAN
+434
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+146 D.I. Bila 200
+147 D.I. Bt. Masunggu 250
+148 D.I. Bulu Pare'e 150
+149 D.I. Bulu-Bulu 435
+150 D.I. Bulusirua 58
+151 D.I. Bulutungke 100
+152 D.I. Calima 125
+153 D.I. Camilo 150
+154 D.I. Carengke 130
+155 D.I. Cimellu 70
+156 D.I. Componge 200
+157 D.I. Dewatae 70
+158 D.I. Ere Cinnong 250
+159 D.I. Galung Langi 30
+160 D.I. Ganja 110
+161 D.I. Ipie 35
+162 D.I. Jampu 80
+163 D.I. Jerae 114
+164 D.I. Jompeng 200
+165 D.I. Kalobbae 50
+166 D.I. Katapang 49
+167 D.I. Lacenno 70
+168 D.I. Lacori 50
+169 D.I. Lalompeng 80
+170 D.I. Lamoncong 100
+171 D.I. Langi 300
+172 D.I. Lappa Galung 50
+173 D.I. Lappa Kanrung 200
+174 D.I. Lappapao Bedda 75
+175 D.I. Lawara 80
+176 D.I. Lempang 140
+177 D.I. Libukange 75
+178 D.I. Lompu 150
+179 D.I. Lonrong 90
+180 D.I. Loppa 70
+181 D.I. Malongka 70
+182 D.I. Mallinrung | 150
+183 D.I. Massapae 150
+184 D.I. Massapae 50
+185 D.I. Mamminasae 76
+186 D.I. Mangenrang 100
+187 D.I. Nagae/Massappae 150
+188 D.I. Otting 20
+189 D.I. Padang Loang 150
+190 D.I. Palacari 80
+191 D.I. Palongki II 51
+192 D.I. Pandangnge 50
+193 D.I. Pasempe I 50
+194 D.I. Passappareng 50
+195 D.I. Pattuku Limpoe 80
+196 D.I. Payili II 50
+197 D.I. Perangeng 200
+198 D.I. Poleonro 70
+199 D.I. Ponre-ponre 500
+200 D.I. Rumpia 270
+201 D.I. Samaenre 74
+202 D.I. Siame 45
+203 D.I. Soga | 150
+204 D.I. Tanah Tengngah 60
+205 D.I. Tangkulu 150
+206 D.I. Tapampang 60

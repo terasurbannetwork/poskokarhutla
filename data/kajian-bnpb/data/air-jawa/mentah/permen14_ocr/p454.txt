@@ -1,0 +1,79 @@
+#TATA_LETAK dua-tabel belah_x=1249 lebar=2480
+#KIRI
+2015, No.638 .z
+“
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+2 D.I. Daeo 150
+3 D.I. Sambiki 100
+4 D.I. Sangowo 203
+5 D.I. Tiley 427
+6 D.I. Wewemo 150
+a Kota Tidore Kepulauan 1 750
+1 D.I. Kahoho Tayawi 750
+MSI PROMINSI PAPUA DARAT 1 £ 274
+a Kab. Fak-fak 1 130
+1 D.I. Bimajaya 130
+b Kab. Manokwari 1 250
+1 D.I. Kassi 250
+c Kab. Raia Ampat 4 431
+1 D.I. Waijan 256
+2 D.I. Kalobo 55
+3 D.I. Waibu 80
+4 D.I. Waimeci 40
+d Kab. Sorona 10 4.560
+1 D.I. Aimas 54
+2 D.I. Modan II/Malaos 815
+3 D.I. Sisipan 300
+4 D.I. Klamalu 150
+5 D.I. Klamono 682
+6 D.I. Makbalim 800
+7 D.I. Makotvamsa 700
+8 D.I. Malawele 208
+9 D.I. Malawili 319
+10 D.I. Modan IAWalal 532
+XXX PROVINSI PAPUA 28 7.024
+a Kab. Javanura 2 1.820
+1 D.I. Besum 822
+2 D.I. Nimbokrang 998
+#KANAN
+4
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+b Kab. Javawiiava 11 989
+1 D.I. Delekama 130
+2 D.I. Holkima 48
+3 D.I. Muai 204
+4 D.I. Muliama 12
+5 D.I. Perabaga 79
+6 D.I. Puaima 15
+7 D.I. Tulem 129
+8 D.I. Wosilimo 5
+9 D.I. Elabukama 99
+10 D.I. Megapura 188
+11 D.I. Siepkkosi 79
+c Kab. Keerom 1 350
+1 D.I. Arso V 350
+d Kab. Mimika 3 700
+1 D.I. SP1 400
+2 D.I. SP5 150
+3 D.I. SP7 150
+e Kab. Nabire 4 1.425
+1 D.I. Legari Jaya 400
+2 D.I. Biha 600
+3 D.I. Karadiri 1 175
+4 D.I. Topo 250
+f Kab. Nduaa 1 150
+1 D.I. Kenyam 150
+a Kab. Sarmi 5 1.000
+1 D.I. Bebon Jaya 50
+2 D.I. Gwin Jaya 26
+3 D.I. Mawes Mukti 11
+4 D.I. Tamar Sari 50
+5 D.I. Tetom Jaya 863
+h Kab. Waroben 1 600
+1 D.I. Sumiangga 600
+TOTAL 46.761 3.663.173

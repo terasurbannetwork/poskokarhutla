@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+88 D.I. Ngentep 617
+89 D.I. Ngijo 35
+90 D.I. Nglebak 101
+91 D.I. Nglegok Kidul 13
+92 D.I. Nglegok Lor 7
+93 D.I. Ngrejeng 70
+94 D.I. Ngujung 64
+95 D.I. Ngunut 1
+96 D.I. Nitikan 640
+97 D.I. Numpuk 8
+98 D.I. Pegat Alas 25
+99 D.I. Pendem 154
+100 D.I. Penganten | 28
+101 D.I. Penganten II 30
+102 D.I. Penganten III 28
+103 D.I. Podang 34
+104 D.I. Pucang 1
+105 D.I. Pucung 54
+106 D.I. Randubimo 177
+107 D.I. Rejomulyo 374
+108 D.I. Sadon 383
+109 D.I. Sbr. Agung 51
+110 D.I. Sbr. Grantil 54
+111 D.I. Sbr. Jumok 47
+112 D.I. Sbr. Kedono 26
+113 D.I. Sbr. Kiringan 132
+114 D.I. Sbr. Klampok 9
+115 D.I. Sbr. Krendo 10
+116 D.I. Sbr. Nganggar 8
+117 D.I. Sbr. Ngrowo 98
+118 D.I. Sbr. Rejo 23
+119 D.I. Sbr. Sekalongan 7
+120 D.I. Sbr. Tumpang 83
+121 D.I. Segondang 28
+122 D.I. Sejagir 15
+123 D.I. Sejambu 2
+124 D.I. Sejemben 16
+125 D.I. Sekempong 6
+126 D.I. Selangsang | 16
+127 D.I. Selangsang II 22
+128 D.I. Selangsang III 59
+129 D.I. Selotawing 3
+130 D.I. Selotawing Kidul 7
+131 D.I. Selotawing Lor 16
+132 D.I. Selotinatah 19
+133 D.I. Sembung 1
+134 D.I. Seploso 20
+135 D.I. Seringin 11
+136 D.I. Setalangan 7
+137 D.I. Seturi 15
+138 D.I. Sindon 93
+139 D.I. Singolono 16
+140 D.I. Slagreng 31
+141 D.I. Sono-Sono 6
+142 D.I. Sukun 46
+143 D.I. Sumber Sirah Banyu 6
+144 D.I. Sumuran 9
+145 D.I. Suren 57
+146 D.I. Tlatak 626
+147 D.I. Tlayu 77
+148 D.I. Tlogo Pasir 17
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+149 D.I. Tonggoiro 227
+150 D.I. Trojiwo 65
+151 D.I. Tugu 5
+152 D.I. Tulakan Cs 32
+153 D.I. Tunggu 56
+154 D.I. Tunggur Cs 43
+155 D.I. Watusisik 133
+156 D.I. Wonosari 28
+157 D.I. Dung Ori 8
+158 D.I. Embung Taman Arum 77
+159 D.I. PID Banyak 86
+160 D.I. PID Galuh 15
+161 D.I. PID Semendak 70
+162 D.I. PIK Maron 15
+163 D.I. PIK Sejeben 16
+164 D.I. PIK Sedompyong 5
+165 D.I. PIK Seringin 11
+166 D.I. Plangkrongan 73
+167 D.I. Sbr. Duren 7
+168 D.I. Sbr. Sunuran 9
+169 D.I. Soponyono 8
+n Kab. Malana 717 35.346
+1 D.I. Akir 194
+2 D.I. Ambyakan | 3
+3 D.I. Ambyakan II 3
+4 D.I. Ambyakan III 8
+5 D.I. Ambyakan IV 34
+6 D.I. Babadan 15
+7 D.I. Bales 2
+8 D.I. Bandarangin 27
+9 D.I. Bandung | 5
+10 D.I. Bandung II 27
+11 D.I. Bangelan 105
+12 D.I. Banjartengah 62
+13 D.I. Banu 156
+14 D.I. Baraan | 11
+15 D.I. Baraan II 6
+16 D.I. Baraan III 19
+17 D.I. Baraan IV 5
+18 D.I. Baraan V 4
+19 D.I. Baraan VI 7
+20 D.I. Baraan VII 7
+21 D.I. Baraan VIII 4
+22 D.I. Baraan IX 18
+23 D.I. Begawan 82
+24 D.I. Belung 219
+25 D.I. Bendo | 2
+26 D.I. Bendo II 3
+27 D.I. Bendoijo 1
+28 D.I. Bendrong 43
+29 D.I. Bendungan 8
+30 D.I. Besar 56
+31 D.I. Blado 17
+32 D.I. Blau 36
+33 D.I. Bokor 80
+34 D.I. Boyak 3
+35 D.I. Braholo 4
+36 D.I. Brukon 3
+37 D.I. Bulak Glagah 47
+38 D.I. Bulung I 202

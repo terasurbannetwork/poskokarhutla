@@ -1,0 +1,23 @@
+{
+ "id": "133045",
+ "url": "https://peraturan.bpk.go.id/Details/133045/inpres-no-3-tahun-2020-penanggulangan-kebakaran-hutan-dan-lahan",
+ "judul": "Instruksi Presiden (Inpres) Nomor 3 Tahun 2020 tentang Penanggulangan Kebakaran Hutan dan Lahan",
+ "nomor": "3 Tahun 2020 Penanggulangan Kebakaran Hutan dan Lahan MATERI POKOK PERATURAN Abstrak METADATA PERATURAN Tipe Dokumen Peraturan Perundang-undangan Judul Instruksi Presiden (Inpres) Nomor 3 Tahun 2020 tentang Penanggulangan Kebakaran Hutan dan Lahan T.E.U. Indonesia, Pemerintah Pusat Nomor 3",
+ "tanggal_penetapan": "28 Februari 2020",
+ "tanggal_berlaku": "28 Februari 2020",
+ "sumber": "JDIH.SETKAB.GO.ID : 14 HLM.",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/261475/Inpres%20Nomor%203%20Tahun%202020.pdf"
+ ],
+ "status_peraturan": "Mencabut : Inpres No. 11 Tahun 2015 tentang Peningkatan Pengendalian Kebakaran Hutan dan Lahan",
+ "abstrak": "2020 Instruksi Presiden (Inpres) NO. 3, JDIH.SETKAB.GO.ID : 14 HLM. Instruksi Presiden (Inpres) TENTANG Penanggulangan Kebakaran Hutan dan Lahan ABSTRAK: CATATAN: Instruksi Presiden (Inpres) ini mulai berlaku pada tanggal 28 Februari 2020.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/261475/Inpres%20Nomor%203%20Tahun%202020.pdf",
+ "pdf_sha1": "0552d94469363220831c5310ba6e856d5b365e35",
+ "pdf_bytes": 6856532,
+ "sid": "inpres-3-2020",
+ "halaman_total": 14,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

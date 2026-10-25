@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+61 D.I. Cikal 5
+62 D.I. D. Cengkek 4
+63 D.I. Dersono 5
+64 D.I. Dhung Winong 10
+65 D.I. Dlimas 5
+66 D.I. Dung Biru 10
+67 D.I. Dung Bulu 8
+68 D.I. Dung Cingklok 21
+69 D.I. Dung Wutah 7
+70 D.I. Dungpucung 10
+71 D.I. Dungsalak 5
+72 D.I. Dungsono 10
+73 D.I. Gimong 8
+74 D.I. Jangkang 5
+75 D.I. Jarakan 5
+76 D.I. Kali Ngiwo 21
+77 D.I. Kembang 10
+78 D.I. Kembang 8
+79 D.I. Kleben 6
+80 D.I. Ngroto 17
+81 D.I. Pengason 12
+82 D.I. Sebalong 5
+83 D.I. Sendat 5
+84 D.I. Separang 15
+85 D.I. Sinogo 25
+86 D.I. Sriten 5
+87 D.I. Tlogo 5
+88 D.I. Wareng 7
+89 D.I. Watu Payung 11
+90 D.I. Wiyu 4
+d Kab. Sleman 853 21.953
+D.I. Lintas Desa
+
+1 D.I. Tempursari 1,44
+2 D.I. Ketapang 1,50
+3 D.I. Taken 1,50
+4 D.I. Gandok tegal 1,51
+5 D.I. Gebang I 1,79
+6 D.I. Pojok 1,1
+7 D.I. Dawung 1,96
+8 D.I. Jangkang 2,00
+9 D.I. Karangpakis II/Glagahwero 2,61
+10 D.I. Ngipik 2,04
+11 D.I. Gupit 2,11
+12 D.I. Ampel 217
+13 D.I. Gimberan 2,22
+14 D.I. Watuadeg 2,33
+15 D.I. Sumberan | 2,35
+16 D.I. Sebrang 2,40
+17 D.I. Guwo 2,59
+18 D.I. Kidul kretek 2,84
+19 D.I. Malingmati 2,85
+20 D.I. Dendeng 2,93
+21 D.I. Sembung 2,97
+22 D.I. Mangunan 3,04
+23 D.I. Ngipik 3,07
+24 D.I. Grenjeng 3,19
+25 D.I. Serut 3,22
+26 D.I. Cangkringan 3,23
+27 D.I. Bendo 3,25
+28 D.I. Temanten 3
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+29 D.I. Krobyokan 3,32
+30 D.I. Dukuh 3,37
+31 D.I. Waru 3,48
+32 D.I. Guwo | 3,49
+33 D.I. Glagah 3,50
+34 D.I. Sono 3,53
+35 D.I. Miri 3,55
+36 D.I. Gayam 3,57
+37 D.I. Gedoyo 3,67
+38 D.I. Turus 3,70
+39 D.I. Cangkring | 3,75
+40 D.I. Gayam Ngaglik 3,79
+41 D.I. Petung 3,79
+42 D.I. Sayangan 3,81
+43 D.I. Gayam Batok 3,86
+44 D.I. Ngampel 3,89
+45 D.I. Ngelo 3,91
+46 D.I. Dawung 4,00
+47 D.I. Ngelo 4,00
+48 D.I. Sabrangan 4,00
+49 D.I. Sawungsari 4,00
+50 D.I. Cangkring/Anggelan 4,29
+51 D.I. Jatisengon 4,03
+52 D.I. Pule II 4,06
+53 D.I. Pule 4,10
+54 D.I. Puntuk 4,10
+55 D.I. Sengon 411
+56 D.I. Jambe 4,20
+57 D.I. Anggelan | 4,37
+58 D.I. Ampera 4,40
+59 D.I. Pule 4,50
+60 D.I. Jenakol 4.57
+61 D.I. Kemaduh 4,60
+62 D.I. Putat 4,61
+63 D.I. Kretek 4,64
+64 D.I. Maron 4,69
+65 D.I. Sendang 4,70
+66 D.I. Cikal 4,74
+67 D.I. Guwo II 4,76
+68 D.I. Jati 4,82
+69 D.I. Karanglo 4,84
+70 D.I. Canggal 4,90
+71 D.I. Gayam 4,91
+72 D.I. Nyamplung 4,98
+73 D.I. Gupit 4,98
+74 D.I. Cangkring 5,00
+75 D.I. Sengon 5,00
+76 D.I. Tapang 5,00
+77 D.I. Truwon 5,03
+78 D.I. Tumpeng 5,09
+79 D.I. Karanganyar 5,12
+80 D.I. Potro 5,23
+81 D.I. Srodokan 5,24
+82 D.I. Cangkring II 5,27
+83 D.I. Gayam 5,34
+84 D.I. Gayamsari 5,40
+85 D.I. Bambuwulung 5,45
+86 D.I. Sembung I 5,50
+87 D.I. Semen 5,50
+88 D.I. Ngori 5,52
+89 D.I. Panggung 6

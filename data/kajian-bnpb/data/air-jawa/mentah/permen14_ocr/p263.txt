@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+109 D.I. Pamriyan 155
+110 D.I. Panceng 2
+111 D.I. Pandanrejo 16
+112 D.I. Pandek 5
+113 D.I. Pategongan 11
+114 D.I. Pawotan 84
+115 D.I. PB. Sengon 7
+116 D.I. PB. Watubelah 19
+117 D.I. Pending 10
+118 D.I. Pending 44
+119 D.I. Penungkulan 581
+120 D.I. Pepedan 20
+121 D.I. Petung Tanah Putih 48
+122 D.I. Plandaan 4
+123 D.I. Planditan 68
+124 D.I. Plipiran 17
+125 D.I. Ploro 225
+126 D.I. Podang 10
+127 D.I. Pomahan 25
+128 D.I. Purbowono 18
+129 D.I. Putak 8
+130 D.I. Randuparang 3
+131 D.I. Remun 10
+132 D.I. Santren 40
+133 D.I. Sawangan (Ds. Brunorejo-Bruno) 19
+134 D.I. Sawangan (Ds. Gowong-Bruno) 15
+135 D.I. Sedayu I 21
+136 D.I. Sedayu II 79
+137 D.I. Semawung 99
+138 D.I. Separe 53
+139 D.I. Seprih 11
+140 D.I. Setran 21
+141 D.I. Siblembeng 7
+142 D.I. Sijeruk 26
+143 D.I. Silanang 14
+144 D.I. Sileteh 25
+145 D.I. Silumpang 12
+146 D.I. Simacan 6
+147 D.I. Simanggis 2
+148 D.I. Simanggis 2
+149 D.I. Simanggis | 10
+150 D.I. Sinongko 6
+151 D.I. Sipetit 6
+152 D.I. Siwaru 10
+153 D.I. Siwaru 5
+154 D.I. Siwaru 6
+155 D.I. Siwaru | 5
+156 D.I. Siwinong 36
+157 D.I. Siwurang 4
+158 D.I. Srapah 9
+159 D.I. Sudorogo 18
+160 D.I. Tawangsari 38
+161 D.I. Tegal Duren 83
+162 D.I. Tembalak Duwur 38
+163 D.I. Tengah 13
+164 D.I. Tepansari 60
+165 D.I. Tlogobulu 46
+166 D.I. Tlogoguwo 16
+167 D.I. Tlogokotes 9
+168 D.I. Tretes 10
+169 D.I. Tridadi 38
+#KANAN
+- 1015, No.638
+263 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+170 D.I. Tuk Bende 1
+171 D.I. Tuk Brondong 30
+172 D.I. Tuk Cekal 4
+173 D.I. Tuk Gunting 65
+174 D.I. Tuk Guyangan 5
+175 D.I. Tuk Kalisemo 28
+176 D.I. Tuk Karangrejo 10
+177 D.I. Tuk Keposong 10
+178 D.I. Tuk Pait 6
+179 D.I. Tuk Pekacangan 41
+180 D.I. Tumbak Anyar 32
+181 D.I. Watesan 3
+182 D.I. Watugajah | 14
+183 D.I. Watugajah II 3
+184 D.I. Watutengah 12
+185 D.I. Winong 11
+186 D.I. Winong II 4
+187 D.I. Banaran 10
+188 D.I. Bapangsari 20
+189 D.I. Bekokok I 11
+190 D.I. Bekokok II 15
+191 D.I. Bugel 23
+192 D.I. Cawang Kanan 1
+193 D.I. Cawang Kiri 3
+194 D.I. Cepego 3
+195 D.I. Cepit 7
+196 D.I. Condong 51
+197 D.I. Dawuhan 3
+198 D.I. Depok 11
+199 D.I. Dung Suter 10
+200 D.I. Gedangan 30
+201 D.I. Girirejo 14
+202 D.I. Glasah 32
+203 D.I. Jatikontal 60
+204 D.I. Jatimalang 75
+205 D.I. Jemberan 10
+206 D.I. Jogoboyo 30
+207 D.I. Jonokerto 4
+208 D.I. Kaligalih 4
+209 D.I. Kalimati 3
+210 D.I. Kalimeneng Kiri 310
+211 D.I. Kalisat 1
+212 D.I. Kalisemo 12
+213 D.I. Karanganyar 40
+214 D.I. Karanggedang 11
+215 D.I. Keburuan 32
+216 D.I. Kecapi 37
+217 D.I. Kedung Lumpang 8
+218 D.I. Kedung Pomahan 16
+219 D.I. Kedung Wadas 5
+220 D.I. Malang 31
+221 D.I. Mudal 8
+222 D.I. Ngembel 2
+223 D.I. Ngentak 47
+224 D.I. Pagak 43
+225 D.I. Penjalin 1
+226 D.I. Pucungan I 6
+227 D.I. Pucungan II 2
+228 D.I. Sebanggai 3
+229 D.I. Securi 2
+230 D.I. Seduren 13

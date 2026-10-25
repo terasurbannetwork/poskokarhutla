@@ -62,14 +62,15 @@ def isi(rings, boleh, tulis):
                     tulis(ix, iy)
 
 
-def hitung(sel, daratan_geo, kawasan, konsesi, gb):
+def hitung(sel, daratan_geo, kawasan, konsesi, gb, lbs_prov=None):
     """sel = [(lat, lon)] pusat sel; gb = persen gambut tiap sel. Kembalikan dict kolom (ha) dan f."""
     ada = {(math.floor(la / SEL), math.floor(lo / SEL)): i for i, (la, lo) in enumerate(sel)}
     idx = lambda ix, iy: ada.get((math.floor(iy * PX / SEL + 1e-9), math.floor(ix * PX / SEL + 1e-9)))
     boleh = lambda ix, iy: idx(ix, iy) is not None
-    darat, kelas = set(), {}
+    darat, kelas = {}, {}
     for f in daratan_geo:
-        isi(cincin(f["geometry"]), boleh, lambda ix, iy: darat.add((ix, iy)))
+        kd = (f.get("properties") or {}).get("kode")
+        isi(cincin(f["geometry"]), boleh, lambda ix, iy, kd=kd: darat.setdefault((ix, iy), kd))
     dar = lambda ix, iy: (ix, iy) in darat
     for f in kawasan:
         if f["properties"].get("fungsi") in HUTAN_KAWASAN:
@@ -81,40 +82,53 @@ def hitung(sel, daratan_geo, kawasan, konsesi, gb):
     n = len(sel)
     kol = {k: [0.0] * n for k in ("darat", "hutan", "sawit", "hti", "tambang")}
     nama = {v: k for k, v in KODE.items()}
-    for ix, iy in darat:
+    budi_px = {}                                  # (piksel) -> (sel, provinsi, ha lahan budidaya tanpa gambut)
+    for (ix, iy), kd in darat.items():
         i = idx(ix, iy); ha = pixel_ha((iy + .5) * PX)
         kol["darat"][i] += ha
         c = nama.get(kelas.get((ix, iy)))
         if c:
             kol[c][i] += ha
-    budi = [max(0.0, kol["darat"][i] - kol["hutan"][i] - kol["sawit"][i] - kol["hti"][i] - kol["tambang"][i]) * (1 - gb[i] / 100) for i in range(n)]
-    tot = sum(budi)
-    f = LBS_HA / tot if tot else 0.0
-    kol["sawah"] = [b * f for b in budi]
-    return kol, f
+        else:
+            budi_px[(ix, iy)] = (i, kd, ha * (1 - gb[i] / 100))
+    # Penyebut: bila ada lbs_prov {kode: ha} (LBS per provinsi), tiap provinsi dikalikan faktornya sendiri; piksel provinsi tanpa angka LBS tidak diberi sawah.
+    # Tanpa lbs_prov: satu faktor nasional sehingga total = LBS_HA (sebaran merata, jauh lebih kasar).
+    tot = {}
+    for i, kd, ha in budi_px.values():
+        k = kd if lbs_prov else "*"
+        tot[k] = tot.get(k, 0.0) + ha
+    fak = {k: ((lbs_prov.get(k, 0) if lbs_prov else LBS_HA) / v if v else 0.0) for k, v in tot.items()}
+    kol["sawah"] = [0.0] * n
+    for i, kd, ha in budi_px.values():
+        kol["sawah"][i] += ha * fak[kd if lbs_prov else "*"]
+    return kol, (fak if lbs_prov else fak.get("*", 0.0))
+
+
+LBS_PROV = os.path.join(AKAR, "public/kekeringan/data/lbs_provinsi.json")   # opsional: {"tahun", "sumber", "prov": {"73": ha}} kurasi tangan dari ATR/BPN atau BPS
 
 
 def main():
     baca = lambda p: json.load(open(os.path.join(AKAR, p)))
     ner = baca("public/data/kekeringan_neraca.json")["sel_data"]
     sel = list(zip(ner["lat"], ner["lon"]))
+    lbs = json.load(open(LBS_PROV)) if os.path.exists(LBS_PROV) else None
     kol, f = hitung(sel, baca("public/geo/provinsi.json")["features"], baca("public/data/lahan/kawasan.geojson")["features"],
-                    baca("public/data/lahan/konsesi.geojson")["features"], ner["gb"])
+                    baca("public/data/lahan/konsesi.geojson")["features"], ner["gb"], lbs["prov"] if lbs else None)
     out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00"), "label": "Deteksi Pantau Bencana", "piksel_derajat": PX,
-           "lbs_ha": LBS_HA, "f_sawah": round(f, 4),
+           "lbs_ha": sum(lbs["prov"].values()) if lbs else LBS_HA, "lbs_dari": f"per provinsi, {lbs['sumber']} ({lbs['tahun']})" if lbs else "satu angka nasional, belum per provinsi", "f_sawah": round(f, 4) if not lbs else None,
            "sumber": {"darat": "public/geo/provinsi.json", "hutan": "kawasan hutan KLHK (HL, HK, THR, HP, HPT) dan konsesi HPH, public/data/lahan", "kebun": "konsesi sawit dan HTI, public/data/lahan/konsesi.geojson",
-                      "sawah": f"BUKAN pengamatan. Lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali f={f:.3f} supaya jumlah nasional = {LBS_HA:,} ha (acuan lahan baku sawah ATR/BPN, belum diverifikasi); sebaran merata."},
+                      "sawah": "BUKAN pengamatan. Lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali faktor " + (f"tiap provinsi supaya jumlahnya = LBS provinsi ({lbs['sumber']}, {lbs['tahun']})" if lbs else f"tunggal f={f:.3f} supaya jumlah nasional = {LBS_HA:,} ha (acuan LBS ATR/BPN ~7,4 juta ha dari ingatan penulis, belum diverifikasi dan belum per provinsi); sebaran merata") + "."},
            "lat": ner["lat"], "lon": ner["lon"], **{k: [round(v) for v in a] for k, a in kol.items()}}
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     json.dump(out, open(KELUAR, "w"), ensure_ascii=False, separators=(",", ":"))
-    print(f"tutupan: {os.path.getsize(KELUAR) / 1000:.0f} KB; f={f:.3f}; sawah {sum(out['sawah']):,} ha; kebun {sum(out['sawit']) + sum(out['hti']):,} ha; hutan {sum(out['hutan']):,} ha")
+    print(f"tutupan: {os.path.getsize(KELUAR) / 1000:.0f} KB; {'LBS per provinsi' if lbs else f'f={f:.3f}'}; sawah {sum(out['sawah']):,} ha; kebun {sum(out['sawit']) + sum(out['hti']):,} ha; hutan {sum(out['hutan']):,} ha")
 
 
 def uji():
     kotak = lambda x0, y0, x1, y1: [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]
     geo = lambda *r: {"type": "Polygon", "coordinates": list(r)}
     # sel 0,5 derajat berpusat (0,25; 0,25): darat penuh; hutan = setengah barat; sawit = pojok 0,1 x 0,1 (di atas hutan); lubang darat tak dihitung
-    dar = [{"geometry": geo(kotak(0, 0, .5, .5), kotak(.4, .4, .5, .5))}]       # lubang 0,1 x 0,1 (laut)
+    dar = [{"properties": {"kode": "99"}, "geometry": geo(kotak(0, 0, .5, .5), kotak(.4, .4, .5, .5))}]       # lubang 0,1 x 0,1 (laut)
     kaw = [{"properties": {"fungsi": "HL"}, "geometry": geo(kotak(0, 0, .25, .5))}, {"properties": {"fungsi": "HPK"}, "geometry": geo(kotak(.25, 0, .5, .5))}]
     kon = [{"properties": {"jenis": "sawit"}, "geometry": geo(kotak(0, 0, .1, .1))}]
     kol, f = hitung([(.25, .25)], dar, kaw, kon, [0])
@@ -124,6 +138,9 @@ def uji():
     assert abs(kol["sawah"][0] - LBS_HA) < 1, kol["sawah"]                                              # satu sel: seluruh acuan nasional jatuh ke sel itu
     kol2, _ = hitung([(.25, .25)], dar, kaw, kon, [100])
     assert kol2["sawah"][0] == 0                                                                       # seluruhnya gambut: tak ada sawah
+    kol3, fp = hitung([(.25, .25)], dar, kaw, kon, [0], {"99": 1234})
+    assert abs(kol3["sawah"][0] - 1234) < 1e-6 and set(fp) == {"99"}, kol3       # LBS provinsi menjadi pembagi
+    assert hitung([(.25, .25)], dar, kaw, kon, [0], {"11": 5})[0]["sawah"][0] == 0   # provinsi tanpa angka LBS: tak diberi sawah
     print("tutupan uji: ok")
 
 

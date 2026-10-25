@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+151 D.I. Tempel 83
+152 D.I. Tempuran 20
+153 D.I. Tinatah 23
+154 D.I. Tirtoguno 13
+155 D.I. Tlawong 72
+156 D.I. Toprayan 52
+157 D.I. Totogan 22
+158 D.I. Tretes 75
+159 D.I. Watuleter 66
+160 D.I. Widoro 28
+161 D.I. Wolupule 32
+162 D.I. Ampera/Sikuat 45
+163 D.I. Apu 48
+164 D.I. Bajing 5
+165 D.I. Bawu 15
+166 D.I. Bendo 16
+167 D.I. Berdug 7
+168 D.I. Bertumpuk 11
+169 D.I. Branten 7
+170 D.I. Cebong 8
+171 D.I. Dukoh 40
+172 D.I. Gampeng 13
+173 D.I. Gandu 12
+174 D.I. Gatak 14
+175 D.I. Gayam 11
+176 D.I. Gendol 14
+177 D.I. Geneng Timah 7
+178 D.I. Gondang 15
+179 D.I. Gumuk 6
+180 D.I. Gunung Maling 4
+181 D.I. Gunung Sari 15
+182 D.I. Gunung Tugel 22
+183 D.I. Guwo II 37
+184 D.I. Jambean 6
+185 D.I. Jebres 35
+186 D.I. Jelek 10
+187 D.I. Jipangan 6
+188 D.I. Jumbleng 5
+189 D.I. Jurug 11
+190 D.I. Katerban 29
+191 D.I. Kauman 14
+192 D.I. Kedung Asem 125
+193 D.I. Kedung Dowo 10
+194 D.I. Kedung Jambe 23
+195 D.I. Kedung Landak 12
+196 D.I. Kedung Nongko/Keyongan 34
+197 D.I. Kedung Ringin 35
+198 D.I. Kedung Tanon 70
+199 D.I. Kedung Wuni 14
+200 D.I. Kendel 30
+201 D.I. Kidul Braian 7
+202 D.I. Klari II 16
+203 D.I. Klutuk 10
+204 D.I. Kongseng Madoh 10
+205 D.I. Kopyah 113
+206 D.I. Laban 16
+207 D.I. Langse 116
+208 D.I. Ledok II 14
+209 D.I. Manggis 239
+210 D.I. Mangul 25
+211 D.I. Mbel 16
+#KANAN
+o11 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+212 D.I. Munggur 35
+213 D.I. Pakelan 3
+214 D.I. Pesing 20
+215 D.I. Plemburan 5
+216 D.I. Pracimoharjo 14
+217 D.I. Prigi 15
+218 D.I. Pulokadang 6
+219 D.I. Rejoso III 12
+220 D.I. Rejoso IV 158
+221 D.I. Selogan 20
+222 D.I. Sentul 7
+223 D.I. Si Elo 5
+224 D.I. Siaji 20
+225 D.I. Siasem 14
+226 D.I. Sibajing 10
+227 D.I. Sikandar 10
+228 D.I. Siklakah 15
+229 D.I. Sinongko 6
+230 D.I. Sisabuk 18
+231 D.I. Situnggak 7
+232 D.I. Sorowaden 8
+233 D.I. ST, Karanglo 12
+234 D.I. Sumber Ayu 8
+235 D.I. Sumber Bantengan 11
+236 D.I. Sumber Blawong 7
+237 D.I. Sumber Dahar 55
+238 D.I. Sumber Ledok III 15
+239 D.I. Sumber Lengkong 20
+240 D.I. Sumber Mungup | 116
+241 D.I. Sumber Mungup II/Maron 128
+242 D.I. Sumber Pracimowati 12
+243 D.I. Sumber Siringin 20
+244 D.I. Sumber Sumurup 11
+245 D.I. Sumber Sungsang 31
+246 D.I. Sumber Tirtomoyo 12
+247 D.I. Sumbung 13
+248 D.I. Sumur Duren 15
+249 D.I. Sumur Plengeh 10
+250 D.I. Surobayan 16
+251 D.I. Surowangsan 70
+252 D.I. Suyudan 22
+253 D.I. Tempel 17
+254 D.I. Triwindu 7
+255 D.I. Tunggaldara 10
+256 D.I. Turi 12
+257 D.I. Watugede 20
+258 D.I. Watugede 5
+259 D.I. Wesi 8
+260 D.I. Yagan 21
+f Kab. Brebes 449 25.731
+1 D.I. Arus 29
+2 D.I. Aur 83
+3 D.I. Aji 18
+4 D.I. Anten 117
+5 D.I. Arus II 68
+6 D.I. Asem 25
+7 D.I. Astanapanjang 10
+8 D.I. Bali 25
+9 D.I. Bulu 95
+10 D.I. Babakan 19

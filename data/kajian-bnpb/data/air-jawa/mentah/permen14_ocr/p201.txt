@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+266 D.I. Kracak II 15
+267 D.I. Kracakan 33
+268 D.I. Kracakan 50
+269 D.I. Krajan 13
+270 D.I. Krapyak 40
+271 D.I. Krebek 244
+272 D.I. Krecek 17
+273 D.I. Krecek 18
+274 D.I. Krikil 8
+275 D.I. Krinjing 17
+276 D.I. Kuburan 10
+277 D.I. Kuneng 28
+278 D.I. Kurak 43
+279 D.I. Kuyuk 23
+280 D.I. Langseb 12
+281 D.I. Larangan 15
+282 D.I. Lebak | 45
+283 D.I. Lebeng I 61
+284 D.I. Lebeng I 73
+285 D.I. Lebeng II 12
+286 D.I. Lebeng III 16
+287 D.I. Leler | 27
+288 D.I. Leler II 26
+289 D.I. Lesung 15
+290 D.I. Leweng 22
+291 D.I. Lingga 88
+292 D.I. Lingseng 30
+293 D.I. Lingsi 53
+294 D.I. Lobangkara 16
+295 D.I. Lokasana 38
+296 D.I. Loning 19
+297 D.I. Lopasir 20
+298 D.I. Losari 12
+299 D.I. Lowuni 71
+300 D.I. Luweng 80
+301 D.I. Luwuk 14
+302 D.I. Madkarijan 89
+303 D.I. Majingklak 29
+304 D.I. Makam Dawa 20
+305 D.I. Malik 28
+306 D.I. Manggala 25
+307 D.I. Manggis 46
+308 D.I. Mangli 11
+309 D.I. Maprok 15
+310 D.I. Mejingklak 29
+311 D.I. Menganti 40
+312 D.I. Menggala 25
+313 D.I. Mertawinata 45
+314 D.I. Metenggang 70
+315 D.I. Mijen 3
+316 D.I. Mintel 35
+317 D.I. Mremeng | 15
+318 D.I. Mremeng II 20
+319 D.I. Mremong | 15
+320 D.I. Mremong II 27
+321 D.I. Mundu 80
+322 D.I. Muntu 20
+323 D.I. Murma 27
+324 D.I. Muthu 25
+325 D.I. Nagog 5
+326 D.I. Nayapatok 132
+#KANAN
+201 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+327 D.I. Ngasiman 12
+328 D.I. Nistur 15
+329 D.I. Nung Tebak 20
+330 D.I. Pacekelan 38
+331 D.I. Paduraksa | 15
+332 D.I. Padureksa II 15
+333 D.I. Pagu 16
+334 D.I. Pakembaran 4
+335 D.I. Palem 13
+336 D.I. Paleng Tungit 49
+337 D.I. Palengan I 10
+338 D.I. Palengan II 10
+339 D.I. Pancong Gales 58
+340 D.I. Panconggalas 30
+341 D.I. Pandak Raden 765
+342 D.I. Pandu 33
+343 D.I. Panemon | 30
+344 D.I. Panemon II 20
+345 D.I. Pangan 45
+346 D.I. Pangimplengan 29
+347 D.I. Parakan Dangu 16
+348 D.I. Parung 22
+349 D.I. Pasang 15
+350 D.I. Pasung I & II 20
+351 D.I. Paterusan 10
+352 D.I. Pedagung 25
+353 D.I. Pedali 19
+354 D.I. Pejogol 11
+355 D.I. Pekodokan 7
+356 D.I. Pekunden 13
+357 D.I. Pelem I 23
+358 D.I. Pelem II 20
+359 D.I. Pelita Sari 73
+360 D.I. Penariban 29
+361 D.I. Penaruban 48
+362 D.I. Pendil 37
+363 D.I. Pengarengan 33
+364 D.I. Pengasinan 32
+365 D.I. Penyawaran 22
+366 D.I. Pertapen 11
+367 D.I. Pesandor 50
+368 D.I. Pesantren 49
+369 D.I. Pesantren 49
+370 D.I. Pesawahan 18
+371 D.I. Petarangan II 194
+372 D.I. Pete 10
+373 D.I. Petung 31
+374 D.I. Pinang I 15
+375 D.I. Pinang II 22
+376 D.I. Pinang Tugit 36
+377 D.I. Pingit 12
+378 D.I. Pingit 22
+379 D.I. Pliken | 50
+380 D.I. Pliken II 8
+381 D.I. Pliken III 19
+382 D.I. Plumbukan 25
+383 D.I. Porang 12
+384 D.I. Porong 12
+385 D.I. Prapatan 53
+386 D.I. Pucung 4
+387 D.I. Pucung 4

@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+267 D.I. Sumber Rowo 15
+268 D.I. Sumber Rowo Baung 20
+269 D.I. Sumber Rowo Kancu 14
+270 D.I. Sumber Rowosumo 24
+271 D.I. Sumber Salak 55
+272 D.I. Sumber Sari 18
+273 D.I. Sumber Sayang 158
+274 D.I. Sumber Sebono 36
+275 D.I. Sumber Sengon 56
+276 D.I. Sumber Sentul 3
+277 D.I. Sumber Sepikul 1
+278 D.I. Sumber Sinap 9
+279 D.I. Sumber Sinonggo 342
+280 D.I. Sumber Sintok 12
+281 D.I. Sumber Sonok 25
+282 D.I. Sumber Suko 72
+283 D.I. Sumber Suko 24
+284 D.I. Sumber Sukosari 6
+285 D.I. Sumber Sumberan 4
+286 D.I. Sumber Takir 99
+287 D.I. Sumber Tangis 40
+288 D.I. Sumber Tangkil 1
+289 D.I. Sumber Tekik 40
+290 D.I. Sumber Tembok 12
+291 D.I. Sumber Temo 56
+292 D.I. Sumber Tempuran 5
+293 D.I. Sumber Tretes 60
+294 D.I. Sumber Tumpuk/Tunjung 87
+295 D.I. Sumber Umbulan 14
+296 D.I. Sumber Urang 5
+297 D.I. Sumber Urip 20
+298 D.I. Sumber Wakap 15
+299 D.I. Sumber Wongso 50
+300 D.I. Sumber Wringin 7
+301 D.I. Sumberan 110
+302 D.I. Tabon 77
+303 D.I. Talang 260
+304 D.I. Tambuh 54
+305 D.I. Tandak 45
+306 D.I. Temari 30
+307 D.I. Tong Maling 88
+308 D.I. Umbul Sari I 80
+309 D.I. Umbul sari II 76
+310 D.I. Wakap 3
+311 D.I. Wareng 24
+312 D.I. Wonokerto 21
+313 D.I. Banjarejo 12
+314 D.I. Celeng Mati 17
+315 D.I. Jambe 117
+316 D.I. Kali Wuluh 15
+317 D.I. Pak Duan 40
+318 D.I. Pelus III 7
+319 D.I. Pinus 5
+320 D.I. Prapatan 12
+321 D.I. Sumber Dairun 40
+322 D.I. Sumber Dompyong I 8
+323 D.I. Sumber Dompyong II 7
+324 D.I. Sumber Gedong Sutro 100
+325 D.I. Sumber Kemanten 5
+326 D.I. Sumber Kemiri I 10
+327 D.I. Sumber Kemiri II 10
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+328 D.I. Sumber Kenek 25
+329 D.I. Tino 201
+I Kab. Madiun 334 11.332
+1 D.I. Andong I 1
+2 D.I. Andong II 5
+3 D.I. Bandem 37
+4 D.I. Bandotan | 47
+5 D.I. Bandotan II 12
+6 D.I. Bandung Kulon 15
+7 D.I. Bandung Wetan 10
+8 D.I. Banyudal 3
+9 D.I. Batgeneng 40
+10 D.I. Bedo 4
+11 D.I. Bedrek 60
+12 D.I. Belang 1
+13 D.I. Belang 4
+14 D.I. Belar I 2
+15 D.I. Belar II 5
+16 D.I. Besi I 7
+17 D.I. Besi II 5
+18 D.I. Blembem 4
+19 D.I. Blimbing 4
+20 D.I. Blutak 69
+21 D.I. Bodo 22
+22 D.I. Bodowuluh I 3
+23 D.I. Bodowuluh II 6
+24 D.I. Bodowuluh II 5
+25 D.I. Bogoangin I 14
+26 D.I. Bogoangin II 5
+27 D.I. Bolo 5
+28 D.I. Bolo | 4
+29 D.I. Bolo II 8
+30 D.I. Bolo III 3
+31 D.I. Borang 10
+32 D.I. Boto Putih 1
+33 D.I. Bribis 149
+34 D.I. Brojo 8
+35 D.I. Brojol I 71
+36 D.I. Brojol II 42
+37 D.I. Bruwok Atas 23
+38 D.I. Bruwok Bawah 680
+39 D.I. Bulu Bronjong I 2
+40 D.I. Bulu Bronjong II 3
+41 D.I. Bulu Bronjong III 4
+42 D.I. Butuh 11
+43 D.I. Cacingan 9
+44 D.I. Cengkeh 4
+45 D.I. Cengkeh 2
+46 D.I. Cerme 6
+47 D.I. Coban | 10
+48 D.I. Coban II 6
+49 D.I. Coban III 7
+50 D.I. Craken 212
+51 D.I. Cubung 30
+52 D.I. Dadap 4
+53 D.I. Danu | 2
+54 D.I. Danu II 3
+55 D.I. Danu III 4
+56 D.I. Danu IV 7
+57 D.I. Dawe 40

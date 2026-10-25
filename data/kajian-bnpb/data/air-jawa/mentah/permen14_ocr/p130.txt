@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+100 D.I. Kota Panjang 20
+101 D.I. Kota Raya lembak 20
+102 D.I. Kubangan |, II dan III 50
+103 D.I. Kubangan Tujuh 60
+104 D.I. Lembak Dusun 40
+105 D.I. Lembak Dusun/Cengal 20
+106 D.I. Lembak Jemaring 50
+107 D.I. Lesung Batu 75
+108 D.I. Lubuk Dalam 30
+109 D.I. Lubuk Layang 65
+110 D.I. Lubuk Nambulan 70
+111 D.I. Lubuk Napal 20
+112 D.I. Lubuk Saung 30
+113 D.I. Lubuk Sepang 20
+114 D.I. Lubuk Tabun 20
+115 D.I. Macan Maja 70
+116 D.I. Matang Pupuran 14
+117 D.I. Merindu 45
+118 D.I. Muara Cawang 25
+119 D.I. Muara Cawang 65
+120 D.I. Muara Gula 30
+121 D.I. Muara Jauh 20
+122 D.I. Muara Keban 20
+123 D.I. Muara Siban 10
+124 D.I. Niur Bali 30
+125 D.I. Pacar Serambi 30
+126 D.I. Padang 40
+127 D.I. Padang Bindu 120
+128 D.I. Padang Masat 30
+129 D.I. Pagar Alam 45
+130 D.I. Pagar Dewa 80
+131 D.I. Pajar Bulan 40
+132 D.I. Paku Aji 15
+133 D.I. Pama Salak 68
+134 D.I. Pandan Arang 250
+135 D.I. Pasar Jarai 60
+136 D.I. Pasar Manis 25
+137 D.I. Pelajaran 250
+138 D.I. Pelajaran 100
+139 D.I. Penandingan/Air Ugul 30
+140 D.I. Penindaian 35
+141 D.I. Pulau Beringin 25
+142 D.I. Pulau Panggung 12
+143 D.I. Pulau Sialang 50
+144 D.I. Pulau Timun 20
+145 D.I. Rambai Kaca 60
+146 D.I. Rimba Riben/Karang Agung 45
+147 D.I. Sawah Asam 20
+148 D.I. Sawah Darat 46
+149 D.I. Sawah lebar 30
+150 D.I. Sawah Lukoh 31
+151 D.I. Sawah Merek 25
+152 D.I. Sawah Ulak 20
+153 D.I. Sawah Ulu 8
+154 D.I. Selike 30
+155 D.I. Senakuana 35
+156 D.I. Siring Acong 60
+157 D.I. Siring Agung 20
+158 D.I. Siring Agung 250
+159 D.I. Siring Agung 280
+160 D.I. Siring Agung 48
+#KANAN
+130
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+161 D.I. Siring Agung 45
+162 D.I. Siring Agung 75
+163 D.I. Siring Benteng 45
+164 D.I. Siring Brik 40
+165 D.I. Siring Brik 30
+166 D.I. Siring Darat 10
+167 D.I. Siring Darat/Sawah Darat 17
+168 D.I. Siring Darso 30
+169 D.I. Siring Durugan 60
+170 D.I. Siring Endelemu 15
+171 D.I. Siring Kupang 50
+172 D.I. Siring Pangeran 70
+173 D.I. Siring Panjang 30
+174 D.I. Siring Peruangan 30
+175 D.I. Siring Tengah 30
+176 D.I. Siring Ulu Dusun 60
+177 D.I. Siring Utan 25
+178 D.I. Sukabumi 90
+179 D.I. Sukajadi 40
+180 D.I. Sukamerindu 60
+181 D.I. Sukananti 25
+182 D.I. Sukaraja 120
+183 D.I. Sukaraja 55
+184 D.I. Sungai Dua 10
+185 D.I. Sungai Kudam 30
+186 D.I. Talang Alai 45
+187 D.I. Talang Gardu 85
+188 D.I. Talang Kerembu 70
+189 D.I. Talang Mayan 15
+190 D.I. Talang Ogan 50
+191 D.I. Talang Pauh 27
+192 D.I. Talang Sawah 35
+193 D.I. Talang Sejemput 60
+194 D.I. Tanjung Alam 75
+195 D.I. Tanjung Alam 30
+196 D.I. Tanjung Bulan 80
+197 D.I. Tanjung Bulan 65
+198 D.I. Tanjung Kurung Ilir 65
+199 D.I. Tanjung Raman 40
+200 D.I. Tanjung Raya 50
+201 D.I. Tanjung Tangu 23
+202 D.I. Tanjung Tebat 45
+203 D.I. Tanjungan 20
+204 D.I. Tebat Bali 40
+205 D.I. Tebat Bukit 85
+206 D.I. Tebat Empai 50
+207 D.I. Tebat Langsat 30
+208 D.I. Tebat Pagar Jati 15
+209 D.I. Tebet Serian 20
+210 D.I. Terkau 30
+211 D.I. Ujung Pulau 40
+212 D.I. Ulak Bandung 40
+213 D.I. Ulak Lebar 22
+214 D.I. Ulak Lebar 85
+c Kab. Muara Enim 241 24.327
+1 D.I. Ataran Bagindo 220
+2 D.I. Ataran Bentungan 315
+3 D.I. Ataran Curup Kuning 55
+4 D.I. Ataran Karang Lantang 125
+5 D.I. Ataran Paraku 40

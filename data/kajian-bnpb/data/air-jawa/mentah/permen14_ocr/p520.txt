@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 520
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+74 D.LA.T. Sawojajar SKMG 208 6
+75 D.LA.T. Sawojajar SKMG 209 5
+76 D.LA.T. Sawojajar SKMG 210 5
+77 D.LA.T. Semen SMMG 308 20
+78 D.LA.T. Semen SMMG 309 20
+79 D.LA.T. Semen SMMG 310 20
+80 D.I.A.T. Semen SMMG 311 20
+81 D.LA.T. Sawojajar SMMG 356 25
+82 D.LA.T. Sawojajar SMMG 357 25
+83 D.LA.T. Sawojajar SMMG 358 20
+84 D.LA.T. Sawojajar SMMG 359 20
+85 D.LA.T. Sawojajar SMMG 360 20
+86 D.ILA.T. Tawangrejo SMMG 361 20
+87 D.LA.T. Tawangrejo SMMG 362 20
+88 D.I.A.T. Tawangrejo SMMG 363 20
+89 D.LA.T. Takeran SMMG 437 20
+90 D.LA.T. Takeran SMMG 438 20
+91 D.LA.T. Kerik SMMG 439 12
+92 D.LA.T. Kerik SMMG 440 20
+
+| Kab. Moiokerto 102 2.377
+
+1 D.LA.T. Jatilangkung SDMJ 002 20
+
+2 D.LA.T. Bejinjong SDMJ 005 35
+
+3 D.LA.T. Gayaman SDMJ 007 42
+
+4 D.LA.T. Sumbertebu SDMJ 025 33
+
+5 D.LA.T. Sidorejo SDMJ 049 11
+
+6 D.I.A.T. Ngastemi SDMJ 078 40
+
+7 D.LA.T. Kintelan SDMJ 111 47
+
+8 D.ILA.T. Kepuhpandak SDMJ 112 55
+
+9 D.LA.T. Mananggal SDMJ 113 46
+10 D.LA.T. Tambakagung SDMJ 114 34
+11 D.LA.T. Karang Diyeng SDMJ 281 25
+12 D.LA.T. Sumbertanggul SDMJ 283 28
+13 D.LA.T. Singowangi SDMJ 285 32
+14 D.LA.T. Kutoporong SDMJ 294 36
+15 D.LA.T. Bangsal SDMJ 295 32
+16 D.L.A.T. Singowangi SDMJ 333 30
+17 D.LA.T. Kedunguneng SDMJ 334 32
+18 D.LA.T. Gedangan SDMJ 406 30
+19 D.LA.T. Wonodadi SDMJ 407 32
+20 D.LA.T. Kaligoro SDMJ 408 33
+21 D.LA.T. Kepuhpandak SDMJ 409 34
+22 D.LA.T. Belahantengah SDMJ 410 31
+23 D.LA.T. Sumberwono SDMJ 417 45
+24 D.LA.T. Mojotamping SDMJ 419 43
+25 D.LA.T. Ketemasdungus SDMJ 430 35
+26 D.LA.T. Puri SDMJ 431 35
+27 D.LA.T. Medali SDMJ 432 30
+28 D.L.A.T. Ngastemi SDMJ 433 22
+29 D.LA.T. Kedunguneng SDMJ 434 36
+30 D.I.A.T. Sumberwono SDMJ 435 34
+31 D.LA.T. Singowangi SDMJ 436 33
+32 D.LA.T. Kepuhpandak SDMJ 437 31
+33 D.LA.T. Karangdiyeng SDMJ 438 26
+34 D.LA.T. Wonodadi SDMJ 439 49
+35 D.LA.T. Ketemasdungus SDMJ 447 33
+36 D.ILA.T. Gedangan SDMJ 460 33
+37 D.LA.T. Mojosulur SDMJ 461 32
+38 D.LA.T. Sentonorejo SDMJ 462 30
+39 D.LA.T. Tumapel SDMJ 463 36
+40 D.LA.T. Randugenengan SDMJ 464 30

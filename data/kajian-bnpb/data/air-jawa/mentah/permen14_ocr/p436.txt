@@ -1,0 +1,140 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+103 D.I. Kabibing 100
+104 D.I. Ka'bung 90
+105 D.I. Kalibong 50
+106 D.I. Kalicompeng 45
+107 D.I. Kalimulasa 40
+108 D.I. Kalle'e 65
+109 D.I. Kampenni 100
+110 D.I. Kanaria 40
+111 D.I. Karambu Lotong 15
+112 D.I. Karosi 100
+113 D.I. Kirasa 70
+114 D.I. Kullenge 80
+115 D.I. Labutakkang 90
+116 D.I. Lambeang 500
+117 D.I. Lembang Tinurung 50
+118 D.I. Liku Mitti 50
+119 D.I. Maesa 206
+120 D.I. Mangottong 70
+121 D.I. Ma'Jangka 150
+122 D.I. Manyoleng 25
+123 D.I. Memangan 50
+124 D.I. Munte Rilau 50
+125 D.I. Napenge 50
+126 D.I. Oro 80
+127 D.I. Pabbuayya 100
+128 D.I. Pakanre Lembang 45
+129 D.I. Paku-paku 100
+130 D.I. Pa'lelang 80
+131 D.I. Palipi 30
+132 D.I. Palimpungang 30
+133 D.I. Palimpungang | 37
+134 D.I. Pamborong 70
+135 D.I. Panrioang Meong 45
+136 D.I. Panriong Jarang 175
+137 D.I. Paradae 100
+138 D.I. Passimbungan 120
+139 D.I. Passorengan 75
+140 D.I. Pasuru 75
+141 D.I. Patompongan 75
+142 D.I. Pulanting 50
+143 D.I. Sakku 30
+144 D.I. Sapaya 75
+145 D.I. Serrae 25
+146 D.I. Soppeng 100
+147 D.I. Sumpang Ale 49
+148 D.I. Tamarellang 75
+149 D.I. Tanah Illi 45
+150 D.I. Tihele 150
+151 D.I. Tinurung 50
+152 D.I. Toddoe 50
+153 D.I. Toga 80
+154 D.I. Tombong 50
+e Kab. Enrekana 237 8.846
+
+1 D.I. Alang Alipa 68
+
+2 D.I. Awo 75
+
+3 D.I. Banua/Bungin 75
+
+4 D.I. Baraka 220
+
+5 D.I. Baringin 60
+
+6 D.I. Bassaran 101
+
+7 D.I. Bau/Lokal 15
+#KANAN
+436
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+8 D.I. Belalla/Lewaja 15
+9 D.I. Bolang 35
+10 D.I. Bulangi 15
+11 D.I. Buntu Ampang | 225
+12 D.I. Buntu Lamba 85
+13 D.I. Burassea 102
+14 D.I. Dakka/Tapong 17
+15 D.I. Data 15
+16 D.I. Date Koa 30
+17 D.I. Dulang 65
+18 D.I. Eran Batu 35
+19 D.I. Galonggong 75
+20 D.I. Garege 63
+21 D.I. Garese/Cendana 93
+22 D.I. Gengge 9
+23 D.I. Innorron 8
+24 D.I. Kabere 121
+25 D.I. Kalebokang 10
+26 D.I. Kalimbono 30
+27 D.I. Kalo Barang 32
+28 D.I. Kalo Barereng 61
+29 D.I. Kalo Baru 54
+30 D.I. Kalo Galung/Curio 16
+31 D.I. Kalo Kanan 46
+32 D.I. Kalo Kendenan/Rante Mario 20
+33 D.I. Kalo Koa 45
+34 D.I. Kalo Komba 93
+35 D.I. Kalo Lambak/Dante 15
+36 D.I. Kalo Lambanan 36
+37 D.I. Kalo Lanja 31
+38 D.I. Kalo Lemo 40
+39 D.I. Kalo Limbong 22
+40 D.I. Kalo Pangngadi 5
+41 D.I. Kalo Parinding 46
+42 D.I. Kalo Pekaparan 6
+43 D.I. Kalo Puradoke Curio 4
+44 D.I. Kalo Randan 45
+45 D.I. Kalo Sepang 17
+46 D.I. Kalo Tombang 43
+47 D.I. Kalosengka | 39
+48 D.I. Kaluppini 20
+49 D.I. Kanjorro/Curio 4
+50 D.I. Kareko Kanan 46
+51 D.I. Kareko Kiri 75
+52 D.I. Karrang 20
+53 D.I. Kassa/Talimbangan 56
+54 D.I. Lajana/Bungin 40
+55 D.I. Lakibong 22
+56 D.I. Lalang Tedong 49
+57 D.I. Lebani 30
+58 D.I. Lemo 40
+59 D.I. Lempujang/Matarin 75
+60 D.I. Leon 45
+61 D.I. Leto Bua/Parombean 86
+62 D.I. Liang Bai 31
+63 D.I. Linda 51
+64 D.I. Lokomalilin 45
+65 D.I. Ma Kurin 25
+66 D.I. Maliba 12
+67 D.I. Malino 40
+68 D.I. Mares/Pude 50

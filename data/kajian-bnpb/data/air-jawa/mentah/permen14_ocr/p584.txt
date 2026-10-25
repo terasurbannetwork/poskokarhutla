@@ -1,0 +1,52 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 584
+Status Daerah Irigasi Yang Menjadi Wswenang Din Tanggung Jawab Pemerintah Kabupaten/Kota
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+| PROVINSI ACEH 23 5.309
+a Kab. Aceh Besar 3 133
+1 D.LT. Lho'nga/Leupung 10
+2 D..T. Peukan Bada 107
+3 D.LT. Seulimeum 16
+b Kab. Aceh Tamiana 1 500
+1 D.LT. Seruway 500
+c Kab. Aceh Utara 7 1.152
+1 D.LT. Baktia 500
+2 D.I.T. Banda Sakti 151
+3 D.I.T. Dewantara 120
+4 D.LT. Muara Batu 20
+5 D.LT. Muara Dua 121
+6 D.I.T. Samtilara Bayu 40
+7 D.IT. Syamtalira Bayu 200
+d Kab. Bireuen 2 1.000
+1 D.LT. Jeumpa 600
+2 D.LT. Samalanga 400
+e Kab. Pidie 5 1.097
+1 D.LT. Batee 390
+2 D.LT. Glumpang Tiga 391
+3 D.I.T. Kota Sigli 75
+4 D.LT. Muara Tiga 120
+5 D.LT. Simpang Tiga 121
+e Kab. Pidie Java 3 772
+1 D.LT. Meureudu 272
+2 D.LT. Triang Gading 215
+3 D.L.T. Ulim 285
+f Kota Banda Aceh 2 655
+1 D.I.T. Meuraxa 155
+2 D.LT. Syiah Kuala 500
+Il PROVINSI BANTEN 54 12.644
+a Kab. Pandealana 15 1.781
+1 D.LT. Bama 5
+2 D.LT. Banjarmasin 2
+3 D.ILT. Caringin 6
+4 D.LT. Cibungur 175
+5 D.I.T. Cikiruh Wetan 150
+6 D.I.T. Citeureup 25
+7 D.LT. Marga Giri 10
+8 D.I.T. Panimbang Jaya 752
+9 D.LT. Pejamben 1
+10 D.I.T. Sida Mukti 60
+11 D.I.T. Sukarame 3
+12 D.I.T. Sukawaris 50
+13 D.I.T. Tanjung Jaya 185
+14 D.I.T. Tanjungan 240

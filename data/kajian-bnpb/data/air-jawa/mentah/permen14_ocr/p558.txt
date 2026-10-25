@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 558
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+501 D.ILA.T. Namodale-Pariti PAF - 113 3
+502 D.LA.T. Baba Oen-Pariti PAF - 114 2
+503 D.ILA.T. Babaoen-Pariti PAF - 115 3
+504 D.ILA.T. Babaoen-Pariti PAF - 117 3
+505 D.ILA.T. Baba Oen-Pariti PAF - 119 3
+506 D.I.A.T. Babaoen-Pariti PAF - 120 3
+507 D.ILA.T. Baba Oen-Pariti PAF - 122 3
+508 D.I.A.T. Baba Oen-Pariti PAF - 123 3
+509 D.I.A.T. Baba Oen-Pariti PAF - 124 2
+510 D.LA.T. Baba Oen-Pariti PAF - 125 3
+511 D.LA.T. Baba Oen-Pariti PAF - 127 2
+512 D.LA.T. Baba Oen-Pariti PAF - 128 2
+513 D.LA.T. Baba Oen-Pariti PAF - 129 3
+514 D.LA.T. Baba Oen-Pariti PAF - 130 3
+515 D.LA.T. Baba Oen-Pariti PAF - 131 2
+516 D.LA.T. Babaoen-Pariti PAF - 132 3
+517 D.LA.T. Babaoen-Pariti PAF - 133 3
+518 D.LA.T. Pantai Balok-Pariti PAF - 134 2
+519 D.LA.T. Pantai Balok-Pariti PAF - 135 4
+520 D.LA.T. Pantai Balok-Pariti PAF - 136 3
+521 D.LA.T. Lemedak-Pariti PAF - 137 3
+522 D.LA.T. Lemadak-Pariti PAF - 138 3
+523 D.LA.T. Namodale-Pariti PAF - 139 2
+524 D.ILA.T. Namodale-Pariti PAF - 140 2
+525 D.LA.T. Namodale-Pariti PAF - 141 2
+526 D.I.A.T. Namodale-Pariti PAF - 142 3
+527 D.LA.T. Namodale-Pariti PAF - 143 3
+528 D.I.LA.T. Hauloki-Oeteta PAF - 163 3
+529 D.LA.T. Kolosoko-Oeteta PAF - 165 2
+530 D.LA.T. Pancoran-Oeteta PAF - 209 2
+531 D.LA.T. Pancoran-Oeteta PAF - 210 2
+532 D.LA.T. Pancoran-Oeteta PAF - 211 2
+533 D.LA.T. Pancoran-Oeteta PAF - 212 2
+534 D.LA.T. Pancoran-Oeteta PAF - 213 2
+535 D.LA.T. Pancoran-Oeteta PAF - 214 2
+536 D.ILA.T. Modoaik-Oeteta PAF - 215 2
+537 D.LA.T. Modoaik-Oeteta PAF - 216 2
+538 D.I.A.T. Hauloki-Oeteta PAF - 217 3
+539 D.ILA.T. Hauloki-Oeteta PAF - 218 3
+540 D.I.A.T. Hauloki-Oeteta PAF - 219 2
+541 D.LA.T. Hauloki-Oeteta PAF - 220 3
+542 D.LA.T. Hauloki-Oeteta PAF - 221 3
+543 D.LA.T. Hauloki-Oeteta PAF - 222 3
+544 D.LA.T. Hauloki-Oeteta PAF - 223 3
+545 D.LA.T. Hauloki-Oeteta PAF - 224 3
+546 D.ILA.T. Modoaik-Oeteta PAF - 225 2
+547 D.LA.T. Tokotuan-Oeteta PAF - 267 2
+548 D.LA.T. Tokotuan-Oeteta PAF - 271 2
+549 D.LA.T. Tokotuan-Oeteta PAF - 274 3
+550 D.ILA.T. Oenalbesi-Oeteta PAF - 275 2
+551 D.LA.T. Oenal Besi-Oeteta PAF - 276 3
+552 D.LA.T. Oenalbesi-Oeteta PAF - 277 3
+553 D.LA.T. Oenalbesi-Oeteta PAF - 278 2
+554 D.LA.T. Oenalbesi-Oeteta PAF - 279 2
+555 D.LA.T. Oenalbesi-Oeteta PAF - 280 3
+556 D.I.LA.T. Oenalbesi-Oeteta PAF - 281 2
+557 D.LA.T. Oenalbesi-Oeteta PAF - 282 2
+558 D.I.A.T. Jati-Oeteta PAF - 283 3
+559 D.I.LA.T. Naifalo Tim-Oeteta PAF - 284 4
+560 D.I.A.T. Naifalo Tim-Oeteta PAF - 285 2
+561 D.I.A.T. Naifalo Tim-Oeteta PAF - 287 2

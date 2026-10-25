@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+39 D.I. Jaranan 188
+40 D.I. Jrebeng 28
+41 D.I. Jumbleng 14
+42 D.I. Kadinowo 71
+43 D.I. Kambang 13
+44 D.I. Kambangan 25
+45 D.I. Kapiluas 22
+46 D.I. Karanggayam 483
+47 D.I. Kauman 215
+48 D.I. Kauman 30
+49 D.I. Kauman 16
+50 D.I. Kedawung 9
+51 D.I. Kedunggupit 845
+52 D.I. Kepoh 51
+53 D.I. Kepuh 13
+54 D.I. Keringan 45
+55 D.I. Kigulang 30
+56 D.I. Klitik 40
+57 D.I. Klopo 15
+58 D.I. Kopyah 20
+59 D.I. Krangkeng 110
+60 D.I. Kreteg 18
+61 D.I. Krobyokan 100
+62 D.I. Kuburan 10
+63 D.I. Lampis 96
+64 D.I. Langgar 211
+65 D.I. Lau 27
+66 D.I. Londo 40
+67 D.I. Londo 27
+68 D.I. Lulang 29
+69 D.I. Lurah 53
+70 D.I. Madat 82
+71 D.I. Makam 40
+72 D.I. Masjid 86
+73 D.I. Mojo 90
+74 D.I. Mojo Perak 61
+75 D.I. Montel 11
+76 D.I. Ngelo 25
+77 D.I. Ngelo 15
+78 D.I. Ngipik 13
+79 D.I. Nglengkong 10
+80 D.I. Nyamplung 14
+81 D.I. Ori 208
+82 D.I. Pakel 15
+83 D.I. Pedes 13
+84 D.I. Pelem 5
+85 D.I. Pertembon 14
+86 D.I. Petir 34
+87 D.I. Petung 18
+88 D.I. Ploso 476
+89 D.I. Pojok 32
+90 D.I. Presen 16
+91 D.I. Prosono 45
+92 D.I. Pucangan 65
+93 D.I. Pucung 20
+94 D.I. Pucung 10
+95 D.I. Pularan 75
+96 D.I. Pundung 46
+97 D.I. Pundung 15
+98 D.I. Punen 20
+99 D.I. Randugunting 8
+#KANAN
+244
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+100 D.I. Rejoso 16
+101 D.I. Rimong 49
+102 D.I. Rowo 16
+103 D.I. Salaman 28
+104 D.I. Samban 34
+105 D.I. Sampok A 10
+106 D.I. Sampok B 15
+107 D.I. Seboyo 14
+108 D.I. Sekolahan 35
+109 D.I. Selok 16
+110 D.I. Seluman 40
+111 D.I. Sembojo 147
+112 D.I. Semontel 11
+113 D.I. Sendono 18
+114 D.I. Sente 15
+115 D.I. Setro 46
+116 D.I. Setro 101
+117 D.I. Siceleng 11
+118 D.I. Sigentong 10
+119 D.I. Sigogor 13
+120 D.I. Sijeruk 11
+121 D.I. Sikepu 10
+122 D.I. Silep 88
+123 D.I. Simangu 13
+124 D.I. Simbar 16
+125 D.I. Siwaru 80
+126 D.I. Soko 17
+127 D.I. Sowito 14
+128 D.I. Sukun 13
+129 D.I. Suluh 11
+130 D.I. Sumban 19
+131 D.I. Sunggingan 18
+132 D.I. Suruhan 15
+133 D.I. Susukan 70
+134 D.I. Tagung 18
+135 D.I. Talang 20
+136 D.I. Tegaru 53
+137 D.I. Tempur 241
+138 D.I. Tempur 10
+139 D.I. Tengah 13
+140 D.I. Tingen 14
+141 D.I. Tonah 56
+142 D.I. Turusan 10
+143 D.I. Tuwung 33
+144 D.I. Wali 64
+145 D.I. Waringin 20
+146 D.I. Watu Putih 14
+147 D.I. Winong 11
+148 D.I. Wuluh 11
+149 D.I. Anyar 5
+150 D.I. Asemdoyong 260
+151 D.I. Awar-Awar 7
+152 D.I. Bakaran 5
+153 D.I. Becak 6
+154 D.I. Bego 30
+155 D.I. Belik Gede 7
+156 D.I. Bendo 7
+157 D.I. Bergat 8
+158 D.I. Beru 141
+159 D.I. Blimbing 4
+160 D.I. Buloh 3

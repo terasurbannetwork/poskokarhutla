@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+40 D.I. Tontowea 80
+41 D.I. Towara 60
+42 D.I. Korololama 60
+43 D.I. Mondowe 15
+44 D.I. Sampalowo 20
+45 D.I. Maralee 80
+46 D.I. Tadiola 30
+47 D.I. Keuno 30
+48 D.I. Tambarobone 115
+49 D.I. Siliti 40
+50 D.I. Posangke 15
+51 D.I. Woomparigi 45
+52 D.I. Tanakuraya 70
+53 D.I. Uemasi 20
+54 D.I. Cendrawasi 160
+55 D.I. Klestong 75
+56 D.I. Pandansari 75
+57 D.I. Cibereum 80
+58 D.I. Tananagaya 100
+59 D.I. Malino 30
+a Kab. Pariai Moutona 34 9.587
+1 D.I. Ampibabo 316
+2 D.I. Bambalemo Kiri 79
+3 D.I. Korontua 277
+4 D.I. Labalang 309
+5 D.I. Malanggo 476
+6 D.I. Mepanga Atas 302
+7 D.I. Moubang 521
+8 D.I. Moutong 212
+9 D.I. Ogotion 80
+10 D.I. Ogotumubu 359
+11 D.I. Olaya 301
+12 D.I. Olonjongi 479
+13 D.I. Ongka Persatuan 371
+14 D.I. Palasa 437
+15 D.I. Parigi Kanan 419
+16 D.I. Parigimpu 60
+17 D.I. Petapa 156
+18 D.I. Sausu Bawah 814
+19 D.I. Sidoan 457
+20 D.I. Sigenti 210
+21 D.I. Tilung 240
+22 D.I. Tindaki 766
+23 D.I. Toribulu 562
+24 D.I. Towera 301
+25 D.I. Bolanosau 100
+26 D.I. Ganonggol 75
+27 D.I. Mensung 100
+28 D.I. Ogotion Bawah I 75
+29 D.I. Ogotion Bawah II 100
+30 D.I. Posona 150
+31 D.I. Sritabaang 100
+32 D.I. Tolai Bawah 158
+33 D.I. Tomini Kiri 75
+34 D.I. Wanagading 150
+h Kab. Poso 130 20.969
+1 D.I. Boe 100
+2 D.I. Halulai 217
+3 D.I. Kasiguncu 546
+#KANAN
+419 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+4 D.I. Kelei 117
+5 D.I. Kilo Atas 654
+6 D.I. Limba'ata 144
+7 D.I. Maranda 85
+8 D.I. Mayoa 525
+9 D.I. Padalembara 237
+10 D.I. Pandiri 100
+11 D.I. Panjo 445
+12 D.I. Pendolo 250
+13 D.I. Pendolo Atas 300
+14 D.I. Pongge'e 400
+15 D.I. Salukaya 200
+16 D.I. Samalera 115
+17 D.I. Silanca 160
+18 D.I. Taipa 186
+19 D.I. Tambarana Kanan 118
+20 D.I. Tambarana Kiri 600
+21 D.I. Taripa 300
+22 D.I. Tindoli 100
+23 D.I. Toinasa 304
+24 D.I. Tonusu 200
+25 D.I. Uwebangke 290
+26 D.I. Wanga 90
+27 D.I. Wimbi 170
+28 D.I. Wuasa 200
+29 D.I. Alitupu 250
+30 D.I. Amporiwo 200
+31 D.I. Balamba 130
+32 D.I. Bategencu 20
+33 D.I. Betue 65
+34 D.I. Bewa 300
+35 D.I. Bomba 200
+36 D.I. Dewua 95
+37 D.I. Didiri 150
+38 D.I. Doda 132
+39 D.I. Dodolo 100
+40 D.I. Dungasa 63
+M1 D.I. Gelata 190
+42 D.I. Hanggira 325
+43 D.I. Kaduwa'a 150
+44 D.I. Kaduwa'a Trans 200
+45 D.I. Kalincua 100
+46 D.I. Kamba 320
+47 D.I. Kancu'u 57
+48 D.I. Karowaru 80
+49 D.I. Kaumayo 111
+50 D.I. Koburo 146
+51 D.I. Kolori 86
+52 D.I. Konta 150
+53 D.I. Korobono 150
+54 D.I. Kumambu 50
+55 D.I. Lamusa 102
+56 D.I. Lane 135
+57 D.I. Leboni 102
+58 D.I. Lempe 212
+59 D.I. Lena 100
+60 D.I. Lengkeka 87
+61 D.I. Mabubu 120
+62 D.I. Maholo 250
+63 D.I. Makilaya 100
+64 D.I. Maliwuko 67

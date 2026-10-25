@@ -1,0 +1,52 @@
+#TATA_LETAK satu-tabel lebar=2480
+587 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+7 D.LT. Keburuan 1
+8 D.I.T. Malangrejo 20
+9 D.ILT. Ngentak 3
+10 D.I.T. Pagak 4
+e Kab. Teaal 10 388
+1 D.LT. Bojongsana 44
+2 D.LT. Dampyak 112
+3 D.I.T. Demangharjo 30
+4 D.LT. Kedungkelor 84
+5 D.LT. Kramat 35
+6 D.I.T. Maribaya 12
+7 D.LT. Munjuagung 20
+8 D.I.T. Padaharja 30
+9 D.ILT. Purwahamba 8
+10 D.I.T. Suradadi 13
+f Kota Pekalonaan 1 163
+1 D.LT. Pekalongan Utara 163
+a Kota Teaal 6 489
+1 D.I.T. Margadana 15
+2 D.I.T. Mintaragen 4
+3 D.I.T. Muarareja 388
+4 D.LT. Panggung 38
+5 D.LT. Pesurungan Lor 13
+6 D.I.T. Tegalsari 30
+V PROVINSI JAWA TIMUR 12 3.525
+a Kab. Banvuwanai 4 824
+1 D.LT. Muncar 80
+2 D.LT. Rogojampi 674
+3 D.LT. Srono 14
+4 D.I.T. Wongsorejo 56
+b Kab. Lumaiana 2 12
+1 D.LT. Rawa Kancu 7
+2 D.LT. Rawa Sumo 5
+c Kab. Sidoario 6 2.689
+1 D.I.T. Afv. Bulak Endok 160
+2 D.LT. Afv. Kragan 274
+3 D.I.T. Afv. Kuangsan 230
+4 D.LT. Afv. Pepe 375
+5 D.LT. Afv. Sidokare 900
+6 D.I.T. Golon Doro 750
+VI PROVINSI KALIMANTAN TENGAH 3 1.000
+a Kab. Kapuas 3 1.000
+1 D.I.T. Batanjung 200
+2 D.LT. Cemara Lebat 300
+3 D.ILT. Pelampai 500
+VII PROVINSI KALIMANTAN TIMUR 10 4.246
+a Kab. Berau 1 200
+1 D.LT. Sukan Pantai 200

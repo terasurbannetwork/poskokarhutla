@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Beran 6
+51 D.I. Beran Kulon 15
+52 D.I. Beran Wetan 16
+53 D.I. Berdikari 50
+54 D.I. Beringin 26
+55 D.I. Berut A 30
+56 D.I. Berut B 10
+57 D.I. Blancir 8
+58 D.I. Bleberan 10
+59 D.I. Bledu 20
+60 D.I. Bludru 20
+61 D.I. Bogangan 34
+62 D.I. Bojong | 22
+63 D.I. Bojong II 26
+64 D.I. Bolo Mitro 30
+65 D.I. Bon Liwon 20
+66 D.I. Bondolan 40
+67 D.I. Bono 68
+68 D.I. Braman 9
+69 D.I. Brangkal 5
+70 D.I. Branjangan 25
+71 D.I. Brojonalan 11
+72 D.I. Brongkol 25
+73 D.I. Budeng 26
+74 D.I. Bulu 22
+75 D.I. Bunut 15
+76 D.I. Butuh I 10
+77 D.I. Butuh II 55
+78 D.I. Cabe 24
+79 D.I. Cabean 50
+80 D.I. Cakel 30
+81 D.I. Candi | 92
+82 D.I. Candi II 26
+83 D.I. Candi III 11
+84 D.I. Candilopo 26
+85 D.I. Cangkring I 16
+86 D.I. Cangkring II 15
+87 D.I. Cangkring III 16
+88 D.I. Cangkring I 33
+89 D.I. Cangkring II 75
+90 D.I. Carikan | 25
+91 D.I. Carikan II 12
+92 D.I. Caruban 27
+93 D.I. Cebong I 24
+94 D.I. Cebong II 20
+95 D.I. Cecelan 30
+96 D.I. Cekelan 38
+97 D.I. Celepan 18
+98 D.I. Cempuair 18
+99 D.I. Cepek 15
+100 D.I. Cepit I 24
+101 D.I. Cepit II 38
+102 D.I. Cikal 10
+103 D.I. Cikono 4
+104 D.I. Citrogaten | 8
+105 D.I. Citrogaten II 14
+106 D.I. Clapar I 29
+107 D.I. Clapar II 37
+108 D.I. Clapar I 50
+109 D.I. Clapar II 33
+110 D.I. Cokro 208
+#KANAN
+216
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+111 D.I. Craken 30
+112 D.I. Cublikan 32
+113 D.I. Cumprit 20
+114 D.I. Curug I 9
+115 D.I. Curug II 16
+116 D.I. Curug III 19
+117 D.I. Curug IV 30
+118 D.I. Dalangan | 44
+119 D.I. Dalem 14
+120 D.I. Daleman 16
+121 D.I. Damarjati 33
+122 D.I. Dampit 25
+123 D.I. Daseh 8
+124 D.I. Dawuhan 39
+125 D.I. Dawung 3
+126 D.I. Dawung A Ki 202
+127 D.I. Dawung B 150
+128 D.I. Demangan | 113
+129 D.I. Demangan II 16
+130 D.I. Dersanan 12
+131 D.I. Derso | 20
+132 D.I. Derso II 12
+133 D.I. Diwak | 40
+134 D.I. Diwek 50
+135 D.I. Dlimas | 2
+136 D.I. Dlimas II 29
+137 D.I. Domas | 13
+138 D.I. Domas II 80
+139 D.I. Dukuh I 13
+140 D.I. Dukuh II 15
+141 D.I. Dukuh Ill/pogalan 258
+142 D.I. Dukuh IV 20
+143 D.I. Dukuhan 17
+144 D.I. Dukun 10
+145 D.I. Dung Sapi 23
+146 D.I. Dungrau 4
+147 D.I. Duren A 23
+148 D.I. Duren B 20
+149 D.I. Duren | 19
+150 D.I. Duren III 29
+151 D.I. Elo | 30
+152 D.I. Elo II 22
+153 D.I. Gadingan I 65
+154 D.I. Gadingan II 16
+155 D.I. Gales 30
+156 D.I. Gamblok | 24
+157 D.I. Gandu I 39
+158 D.I. Gandu II 24
+159 D.I. Gandu III 14
+160 D.I. Gantang 16
+161 D.I. Garon 10
+162 D.I. Garung 22
+163 D.I. Gaten 74
+164 D.I. Gayam | 5
+165 D.I. Gayam II 10
+166 D.I. Gayam III 25
+167 D.I. Gayam IV 19
+168 D.I. Gayam V 19
+169 D.I. Gayam VI 5
+170 D.I. Gayam VII 18
+171 D.I. Gayur I 3

@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+459 2015, No.638
+A
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+11 D.LR. Mendahara Ilir 500
+12 D.I.R. Muara Sabak 240
+13 D.I.R. Pamusiran 85
+14 D.I.R. Pamusiran Luar 400
+15 D.I.R. Pangkal Duri 175
+16 D.I.R. Penganyut 700
+17 D.I.R. Rantau Rasau Desa 320
+18 D.I.R. Sei Cemara 50
+19 D.I.R. Sei Itik/Sei Lokan 330
+20 D.I.R. Sei Jambat 550
+21 D.I.R. Sei Palas 920
+22 D.I.R. Sei Raya Dalam 950
+23 D.I.R. Sei Sayang 125
+24 D.I.R. Siau Dalam 600
+25 D.I.R. Siau I- II 550
+26 D.I.R. Simbur Naik 900
+27 D.I.R. Simpang Jelita/Pulau Burung 444
+28 D.I.R. Simpang Kacang 300
+29 D.I.R. Telago Limo 640
+30 D.I.R. Teluk Kijing 225
+a Kab. Tebo 1 105
+1 D.I.R. Air Hitam 105
+V PROVINSI BENGKULU 4 394
+a Kab. Benakulu Tenaah 1 300
+1 D.I.R. Harapan Makmur 300
+b Kab. Benakulu Utara 2 41
+1 D.I.R. Dusun Raja 25
+2 D.I.R. Pal 30 16
+c Kab. Mukomuko 1 53
+1 D.I.R. Paleh 53
+VI PROVINSI SUMATERA SELATAN 119 39.398
+a Kab. Banvuasin 3 2.066
+1 D.I.R. Air Limau 773
+2 D.I.R. Air Rengit 723
+3 D.I.R. Rambutan 570
+b Kab. Muara Enim 4 2.757
+1 D.I.R. Arisan Musi 450
+2 D.I.R. Danau Tampang 807
+3 D.I.R. Gedung Buruk 900
+4 D.L.R. Lingkis 600
+c Kab. Musi Banvuasin 56 17.812
+1 D.I.R. Air Balui 300
+2 D.I.R. Air Itam 140
+3 D.I.R. Babat 385
+4 D.I.R. Babat Banyuasin 500
+5 D.I.R. Balai Agung 260
+6 D.I.R. Beruge 220
+7 D.I.R. Bumi Ayu 240
+8 D.I.R. Epil 820
+9 D.I.R. Gajah Mati 500
+10 D.I.R. Jirak 165
+11 D.L.R. JudI 150
+12 D.I.R. Jud II 120
+13 D.I.R. Karang Anyar 192
+14 D.I.R. Karang Ringin | 174
+15 D.I.R. Karang Ringin II 237
+16 D.I.R. Karang Waru 248
+17 D.LR. Kasmaran M5
+18 D.I.R. Kayuara 852
+19 D.I.R. Keban I 207
+20 D.I.R. Kemang 240
+21 D.I.R. Langkap 500
+22 D.I.R. Lelang 150
+23 D.I.R. Mangun Jaya 265
+24 D.I.R. Muara Punjung 241
+25 D.I.R. Muara Teladan 750
+26 D.I.R. Napal 189
+27 D.I.R. Nganti 280
+28 D.I.R. Ngulak I 290
+29 D.I.R. Ngulak II 250
+30 D.I.R. Ngulak III 220
+31 D.I.R. Ngunang 280
+32 D.I.R. Penggage 220
+33 D.I.R. Petaling 450
+34 D.I.R. Rantau Kasih 205
+35 D.I.R. Rantau Kroya 475

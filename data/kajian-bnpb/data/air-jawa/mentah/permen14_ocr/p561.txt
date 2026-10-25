@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+561 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+14 D.LA.T. Tanaduen KKI - 064 10
+15 D.LA.T. Watumilok KKI - 066 10
+16 D.I.A.T. Watumilok KKI - 068 13
+17 D.LA.T. Habi KKI - 070 10
+18 D.ILA.T. Waiara KKI - 075 12
+19 D.LA.T. Nawangkewa KKI - 076 10
+20 D.L.A.T. Waiara KKI - 077 10
+21 D.LA.T. Kopong KKI - 078 8
+22 D.L.A.T. Langir KKI - 079 8
+23 D.LA.T. Waiara KKI - 081 10
+24 D.LA.T. Waiara KKI - 082 10
+25 D.LA.T. Waebleler KKI - 084 6
+26 D.I.A.T. Habi KKI - 085 10
+27 D.LA.T. Langir KKI - 086 10
+28 D.LA.T. Kolisia A KKI - 087 10
+29 D.LA.T. Habi KKI - 089 10
+30 D.ILA.T. Napungseda KKI - 090 10
+31 D.LA.T. Lantena KKI - 091 10
+32 D.LA.T. Habi KKI - 092 10
+33 D.LA.T. Magepanda KMI - 001 10
+34 D.LA.T. Magepanda KMI - 003 10
+35 D.LA.T. Magepanda KMI - 004 10
+36 D.ILA.T. Magepanda KMI - 006 10
+37 D.LA.T. Watumilok KMI - 014 8
+38 D.LA.T. Watumilok KMI - 019 8
+39 D.LA.T. Kolasia KMI - 020 10
+40 D.LA.T. Kolasia KMI - 023 10
+41 D.LA.T. Kolasia KMI - 025 10
+42 D.LA.T. Reroroja KMI - 026 15
+43 D.LA.T. Magepanda KMI - 027 18
+44 D.LA.T. Magepanda KMI - 040 13
+45 D.LA.T. Magepanda KMI - 045 17
+46 D.LA.T. Magepanda KMI - 046 17
+47 D.LA.T. Magepanda KMI - 048 13
+48 D.LA.T. Kolasia KMI - 049 10
+49 D.LA.T. Reroroja KMI - 052 12
+50 D.LA.T. Magepanda KMI - 059 10
+51 D.LA.T. Nangarasong KMI - 072 10
+52 D.LA.T. Magepanda KMI - 073 8
+53 D.LA.T. Magepanda KMI - 074 9
+54 D.LA.T. Nongarasong KMI - 080 10
+55 D.LA.T. Magepanda KMI - 094 7
+56 D.ILA.T. Magepanda KMI - 096 10
+57 D.LA.T. Magepanda KMI - 097 10
+58 D.LA.T. Magepanda KMI - 098 10
+59 D.LA.T. Magepanda KMI - 099 10
+60 D.L.A.T. Paga KPI - 083 10
+61 D.LA.T. Paga KPI - 084 10
+62 D.L.A.T. Wairbleler KTI - 061 10
+63 D.LA.T. Wairbleler KTI - 062 10
+64 D.LA.T. Nebe KTI - 071 11
+65 D.LA.T. Namangkewa KTI - 076 11
+66 D.I.A.T. Watuliwung SCH - 001 10
+67 D.LA.T. Wairkoja SCH - 002 10
+68 D.L.A.T. Tanaduen SCH - 003 10
+69 D.LA.T. Tanaduen SCH - 004 10
+70 D.LA.T. Kopong SCH - 005 10
+71 D.LA.T. Watuliwang SCH - 006 10
+72 D.LA.T. Watumilok SCH - 007 11
+73 D.LA.T. Wairara SCH - 008 10
+74 D.LA.T. Langir I TW - 001 8

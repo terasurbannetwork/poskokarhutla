@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+697 D.I. Tonggalan 36,50
+698 D.I. Babadan | 36,68
+699 D.I. Ngampel 36,77
+700 D.I. Randu 37,70
+701 D.I. Sitalun 37,80
+702 D.I. Ceper II 37,85
+703 D.I. Cikalan 38,30
+704 D.I. Pete 38,35
+705 D.I. Gupit 39,00
+706 D.I. Gupit 39,20
+707 D.I. Kluwih 39,59
+708 D.I. Mulungan 39,60
+709 D.I. Sayam 39,78
+710 D.I. Geneng 40,00
+711 D.I. Kencono 40,00
+712 D.I. Ngaren 40,00
+713 D.I. Kluwih 40,18
+714 D.I. Dero 40,38
+715 D.I. Paraksari 40,50
+716 D.I. Sidandang 40,72
+717 D.I. Tempur 40,1
+718 D.I. Ingas 40,92
+719 D.I. Tuk Pajangan 41,00
+720 D.I. Wadas 41,03
+721 D.I. Pule 41,10
+722 D.I. Kalireso 41,37
+723 D.I. Tegal weru 41,44
+724 D.I. Kragan 42,00
+725 D.I. Pokoh 42,00
+726 D.I. Sabrangan 42,00
+727 D.I. Yapah II 42,00
+728 D.I. Tangkisan 42,19
+729 D.I. Randu 42,20
+730 D.I. Gejayan II 42,23
+731 D.I. Jetakan 42,39
+732 D.I. Sipol 42,41
+733 D.I. Patuk 42,77
+734 D.I. Pule 43,16
+735 D.I. Pete 43,43
+736 D.I. Kardangan II 43,65
+737 D.I. Cangkring 43,71
+738 D.I. Kemaduh 43,92
+739 D.I. Gayam 44,00
+740 D.I. Sambiroto II 44,00
+741 D.I. Duren II 45,00
+742 D.I. Jrangkong 45,00
+743 D.I. Klutuk 45,34
+744 D.I. Jomblangan II 45,50
+745 D.I. Kalianjir 45,81
+746 D.I. Bakungan 45,82
+747 D.I. Pondok 46,48
+748 D.I. Patuk 47,00
+749 D.I. Sriwil 47,31
+750 D.I. Nggremeng 47,42
+751 D.I. Grogol 47,45
+752 D.I. T. Karang 47,74
+753 D.I. Sanggrahan | 48,00
+754 D.I. Bayeman 48,39
+755 D.I. Sempu II 49,00
+756 D.I. Angin-Anginan 49,33
+757 D.I. Gayamrobyong 50
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+758 D.I. Sengarakan 50,28
+759 D.I. Sengarakan 50,28
+760 D.I. Kadipuro 50,43
+761 D.I. Kadipuro 10 50,43
+762 D.I. Kencuran 50,48
+763 D.I. Kencuran 50,48
+764 D.I. Somolagi 50,50
+765 D.I. Somolagi 50,50
+766 D.I. Pokoh 50,52
+767 D.I. Pokoh 10 50,52
+768 D.I. Serut 50,78
+769 D.I. Serut 50,78
+770 D.I. Cungkup 51,00
+771 D.I. Sebrang 51,00
+772 D.I. Kowang 52,00
+773 D.I. Krawak 52,00
+774 D.I. Mlatikrajan 52,04
+775 D.I. Padasan 52,80
+776 D.I. Ngrangsan 53,00
+777 D.I. Yapah | 53,00
+778 D.I. Sembir 53,48
+779 D.I. Jaten 53,67
+780 D.I. Karanggeneng 54,72
+781 D.I. Karanggeneng 54,72
+782 D.I. Mlangi 56,14
+783 D.I. Ingas (Blambangan) 56,43
+784 D.I. Klampeyan 56,43
+785 D.I. Bokesan 56,52
+786 D.I. Soman 59,10
+787 D.I. Denggung 59,17
+788 D.I. Cuwo 60,00
+789 D.I. Gupit 60,09
+790 D.I. Klinyo 61,00
+791 D.I. Pusung 61,00
+792 D.I. Tirtomoyo 61,00
+793 D.I. Klenisan 61,06
+794 D.I. Ngori 62,00
+795 D.I. Pasekan 62,45
+796 D.I. Talang 62,50
+797 D.I. Ngingklik 62,75
+798 D.I. Bolawen 63,00
+799 D.I. Kronggahan 64,26
+800 D.I. Pusung 65,00
+801 D.I. Bakungan 66,00
+802 D.I. Kadirojo 66,00
+803 D.I. Jamblangan II 66,88
+804 D.I. Jayan | 67,40
+805 D.I. Ngebruk 69,00
+806 D.I. Juwangen 69,12
+807 D.I. Blotan II 70,00
+808 D.I. Tlogowono 7115
+809 D.I. Senuko 71,80
+810 D.I. Kalibulus 71,81
+811 D.I. Sebarukan 73,01
+812 D.I. Bolu 73,21
+813 D.I. Daengan 75,00
+814 D.I. Kemput 75,00
+815 D.I. Tegalsari 75,13
+816 D.I. Tempursari 75,22
+817 D.I. Blendangan 76,00
+818 D.I. Blendangan 76

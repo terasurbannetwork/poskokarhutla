@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+9 D.I. Banaran 5
+10 D.I. Banaran 4
+11 D.I. Bandung 5
+12 D.I. Bangsalan 4
+13 D.I. Bangun Sari 5
+14 D.I. Bangunsari 14
+15 D.I. Bangunsari 69
+16 D.I. Banteng Mati 4
+17 D.I. Banyudal 30
+18 D.I. Banyu Meneng I 11
+19 D.I. Banyu Meneng II 8
+20 D.I. Banyunget I 28
+21 D.I. Banyunget II 16
+22 D.I. Banyuripan 21
+23 D.I. Barat 2
+24 D.I. Begagan I 4
+25 D.I. Begagan II 12
+26 D.I. Beji 5
+27 D.I. Beji | 4
+28 D.I. Beji II 4
+29 D.I. Beji III 2
+30 D.I. Beji Maron 92
+31 D.I. Belangan 2
+32 D.I. Belik 4
+33 D.I. Belik II 3
+34 D.I. Belik III 2
+35 D.I. Bendo 2
+36 D.I. Bendo 5
+37 D.I. Bendo 1
+38 D.I. Bendo Bener 5
+39 D.I. Bendo Bener II 11
+40 D.I. Bendo Gede 11
+41 D.I. Bendo Kretek 3
+42 D.I. Bendo Sulur 11
+43 D.I. Benggolo 7
+44 D.I. Besuki 3
+45 D.I. Bintoro 3
+46 D.I. Blimbing 8
+47 D.I. Blimbing | 20
+48 D.I. Blimbing | 10
+49 D.I. Blimbing II 4
+50 D.I. Blimbing II 2
+51 D.I. Bogopati 19
+52 D.I. Bolo 5
+53 D.I. Bonagung 5
+54 D.I. Bongkal 6
+55 D.I. Bromo 1
+56 D.I. Brongkah 2
+57 D.I. Brongkah I 1
+58 D.I. Brongkah II 1
+59 D.I. Brujulan 8
+60 D.I. Bubuk 58
+61 D.I. Cangkir Gading 17
+62 D.I. Cangkring 11
+63 D.I. Ceni 4
+64 D.I. Clumbri 6
+65 D.I. Coban 7
+66 D.I. Coban 1
+67 D.I. Comboran 1
+68 D.I. Coreng 2
+69 D.I. Crabak 29
+#KANAN
+364
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+70 D.I. Crabak | 5
+71 D.I. Crabak II 5
+72 D.I. Craken 35
+73 D.I. Craken | 16
+74 D.I. Craken II 10
+75 D.I. Cupuk 29
+76 D.I. Dadapan 14
+77 D.I. Dalang Turu 104
+78 D.I. Darungan 55
+79 D.I. Darungan 7
+80 D.I. Dasri 6
+81 D.I. Dawuhan 2
+82 D.I. Dawuhan 36
+83 D.I. Dawung 1
+84 D.I. Dawung 22
+85 D.I. Dawung 3
+86 D.I. Dayu 2
+87 D.I. Debeg 4
+88 D.I. Deder 15
+89 D.I. Demangan 10
+90 D.I. Demangan 10
+91 D.I. Depok 21
+92 D.I. Dompyong 4
+93 D.I. Dompyong 10
+94 D.I. Dompyong | 2
+95 D.I. Dompyong II 3
+96 D.I. Dondong 19
+97 D.I. Dowo 7
+98 D.I. Dowo | 18
+99 D.I. Dowo II 30
+100 D.I. Druju 1
+101 D.I. Dukuh 6
+102 D.I. Dung Biru | 15
+103 D.I. Dung Biru II 11
+104 D.I. Dung Watu 4
+105 D.I. Duren 31
+106 D.I. Duren 8
+107 D.I. Duren 8
+108 D.I. Duren | 3
+109 D.I. Duren II 3
+110 D.I. Duren Bokor 9
+111 D.I. Duren Ijo 2
+112 D.I. Duren Lancur 8
+113 D.I. Duri 2
+114 D.I. Duwet 4
+115 D.I. Gading 10
+116 D.I. Gajah 8
+117 D.I. Galih 6
+118 D.I. Gamping 32
+119 D.I. Gandu 7
+120 D.I. Garon 7
+121 D.I. Gayam 4
+122 D.I. Gebang 5
+123 D.I. Gebang 2
+124 D.I. Gebyok Kn 4
+125 D.I. Gebyok Kr 4
+126 D.I. Gemah 4
+127 D.I. Gembes 78
+128 D.I. Gempol 10
+129 D.I. Gempol 2
+130 D.I. Gendong 13

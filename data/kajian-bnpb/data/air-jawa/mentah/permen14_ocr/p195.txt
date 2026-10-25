@@ -1,0 +1,126 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1454 D.I. Taniunawanai 40
+1455 D.I. Tarikolot 8
+1456 D.I. Tarikolot 30
+1457 D.I. Taringgul 20
+1458 D.I. Tavub | 20
+1459 D.I. Tayub II 25
+1460 D.I. Tegal Tepus 10
+1461 D.I. Terowongan/Cadas Belah 5
+1462 D.I. Timbang 13
+1463 D.I. Tonjong 25
+1464 D.I. Tonjong 60
+1465 D.I. Tonjong 45
+1466 D.I. Tonjong 15
+1467 D.I. Tonjong 10
+1468 D.I. Tonjong 77
+1469 D.I. Tonjong 15
+1470 D.I. Tonjong | 59
+1471 D.I. Tonjong II 45
+1472 D.I. Tonjong Kaler 60
+1473 D.I. Tonjong Kidul 75
+1474 D.I. Totosan 39
+1475 D.I. Tugaran 15
+1476 D.I. Tugaran 5
+1477 D.I. Tundaeun 5
+1478 D.I. Ujo 40
+1479 D.I. Uyad 20
+1480 D.I. Waiina 2
+1481 D.I. Walagar 15
+1482 D.I. Walagar 30
+1483 D.I. Wangun 20
+1484 D.I. Wangunsari 60
+1485 D.I. Waregu 45
+1486 D.I. Wilkel 30
+s Kota Banduna 2 28
+1 D.I. Cibengkok 25
+2 D.I. Citalaga Pasir 3
+t Kota Baniar 6 322
+1 D.I. Pagak 60
+2 D.I. Situleutik 99
+3 D.I. Cikadongdong 49
+4 D.I. Cicalung 40
+5 D.I. Sukamanah 57
+6 D.I. Sukanagara 17
+u Kota Boaor 6 256
+1 D.I. Cibanten 30
+2 D.I. Cibenda 151
+3 D.I. Cinangka 20
+4 D.I. Cisempur 25
+5 D.I. Coblong 20
+6 D.I. Leuwi Bangke 10
+v Kota Cimahi 5 226
+1 D.I. Kantin 15
+2 D.I. Pasir Kumeli 5
+3 D.I. Leuwi Layung 111
+4 D.I. Leuwi Teureup 80
+5 D.I. Jolorot 15
+#KANAN
+195 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+w Kota Denok 2 64
+1 D.I. Enggram 51
+2 D.I. Situ Ciriung 13
+x Kota Sukabumi 20 2.119
+1 D.I. Cipelang Leutik 272
+2 D.I. Cisuda 625
+3 D.I. Ceger 32
+4 D.I. Ciaul 24
+5 D.I. Cibandung 20
+6 D.I. Cibeureum 104
+7 D.I. Cibitung 165
+8 D.I. Cikapek 26
+9 D.I. Cipanengah 51
+10 D.I. Cipelang 413
+11 D.I. Cisaray 23
+12 D.I. Cisarua 12
+13 D.I. Ciseupan 31
+14 D.I. Ciseureuh 31
+15 D.I. Ciseureuh 30
+16 D.I. Ciwalung 34
+17 D.I. Salakaso 84
+18 D.I. Sukamantri 10
+19 D.I. Tipar 49
+20 D.I. Tonjong 84
+v Kota Tasikmalava 51 4.239
+1 D.I. Cidongkol 192
+2 D.I. Citanduy 335
+3 D.I. Situ Gede 223
+4 D.I. Bengkok 300
+5 D.I. Bungursari 130
+6 D.I. Cibangbay 50
+7 D.I. Cibeas 40
+8 D.I. Cibeureum 25
+9 D.I. Cibogo 35
+10 D.I. Cibunigeulis 200
+11 D.I. Cicangri 65
+12 D.I. Cidukuh 194
+13 D.I. Cieurih 75
+14 D.I. Cigugur 25
+15 D.I. Cihasem 40
+16 D.I. Cijeruk 45
+17 D.I. Cikadu 45
+18 D.I. Cikarag 75
+19 D.I. Cikurantung 40
+20 D.I. Cilamaiana 50
+21 D.I. Cimanggala 40
+22 D.I. Cinangka 50
+23 D.I. Cinutut 45
+24 D.I. Cipajajaran 40
+25 D.I. Cipamutih 35
+26 D.I. Cipeucang 30
+27 D.I. Cisalak 45
+28 D.I. Ciseupan 73
+29 D.I. Citalaga 65
+30 D.I. Citerewes 50
+31 D.I. Dalem Suba 212
+32 D.I. Dam Amsid 95
+33 D.I. Eyong 75
+34 D.I. Gn. Eurih 60

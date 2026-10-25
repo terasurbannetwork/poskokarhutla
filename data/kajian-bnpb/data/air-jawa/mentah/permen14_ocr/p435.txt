@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+207 D.I. Tapong 80
+208 D.I. Tappareng 100
+209 D.I. Tellangkere 102
+210 D.I. Tellu Boccoe 110
+211 D.I. Tellu Lipue 65
+212 D.I. Teppae 150
+213 D.I. Tocuma 75
+214 D.I. Tompo Baruttung 50
+215 D.I. Tompo Bulu 105
+216 D.I. Tondong Bua 120
+217 D.I. Tonrongnge 175
+218 D.I. Toragi 200
+219 D.I. Torette/Mattampawalie 100
+220 D.I. Tuangleo 350
+221 D.I. Tuangleo II 300
+222 D.I. Ulaweng 100
+223 D.I. Wanga 50
+224 D.I. Wollangi III 94
+d Kab. Bulukumba 154 20.777
+1 D.I. Anisia 150
+2 D.I. Babana 448
+3 D.I. Balakang 275
+4 D.I. Balang Bessi 425
+5 D.I. Balang Riri 448
+6 D.I. Balangtieng 325
+7 D.I. Balangtikeke 704
+8 D.I. Bali Konrong 200
+9 D.I. Bara Batu 67
+10 D.I. Barana 450
+11 D.I. Batu Eja 350
+12 D.I. Bintanaja 197
+13 D.I. Bonto Mate'ne 125
+14 D.I. Bonto Pao 122
+15 D.I. Bonto Rita 87
+16 D.I. Bonto Ulu 85
+17 D.I. Danggarehang 50
+18 D.I. Galung Beru 80
+19 D.I. Galung Lohe 369
+20 D.I. Garumbang 175
+21 D.I. Hisang I 174
+22 D.I. Hisang II 250
+23 D.I. Hulo 84
+24 D.I. Ili 165
+25 D.I. Jalepeng 137
+26 D.I. Jammu 58
+27 D.I. Jampue 95
+28 D.I. Jannae 78
+29 D.I. Kadieng 403
+30 D.I. Kantisang 200
+31 D.I. Kaseseng 145
+32 D.I. Kaseseng II 100
+33 D.I. Kassi Buleng 75
+34 D.I. Katimbang 145
+35 D.I. Latambang 54
+36 D.I. Laumang 40
+37 D.I. LembangNyorang 200
+38 D.I. Lonrong 870
+39 D.I. Madauleng 75
+40 D.I. Maremme 158
+41 D.I. Matunggaleng 197
+#KANAN
+435 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+42 D.I. Oddungan 80
+43 D.I. Pacollong 86
+44 D.I. Paenre Lompoa 195
+45 D.I. Pagentungan 226
+46 D.I. Pakombong I 87
+47 D.I. Pakombong II/PTR 148
+48 D.I. Palioi 375
+49 D.I. Pandang-Pandang 222
+50 D.I. Panggilingan 90
+51 D.I. Pao Canie 88
+52 D.I. Pao Lohe 21
+53 D.I. Parigi 150
+54 D.I. Patoengang 95
+55 D.I. Pattongtongan 140
+56 D.I. Punranga 330
+57 D.I. Sangkala 940
+58 D.I. Sapobonto Lakatoang 96
+59 D.I. Sarajoko I-II 50
+60 D.I. Sarre 60
+61 D.I. Ta'banaka 117
+62 D.I. Ta'gentung 195
+63 D.I. Tanah Kongkong 699
+64 D.I. Tibona 75
+65 D.I. Tuli 175
+66 D.I. Aho Lagading 189
+67 D.I. Badu 75
+68 D.I. Baji Areng 50
+69 D.I. Balangbina 75
+70 D.I. Balibutta 30
+71 D.I. Balla Pale 50
+72 D.I. Ballesanging 70
+73 D.I. Bandu 90
+74 D.I. Bangsalaya 35
+75 D.I. Bantilang 100
+76 D.I. Batu Lapisi 50
+77 D.I. Batu Lassu 75
+78 D.I. Batu Nilamung 120
+79 D.I. Batulohe 30
+80 D.I. Bilang Rea 120
+81 D.I. Bili 100
+82 D.I. Bobo 50
+83 D.I. Bokong 100
+84 D.I. Bole-Bole 65
+85 D.I. Bollie 75
+86 D.I. Bongkasae 90
+87 D.I. Bongki 60
+88 D.I. Bonto Manipi 85
+89 D.I. Bonto Raja 151
+90 D.I. Bonto Rihu 135
+91 D.I. Bonto-Bontoa 30
+92 D.I. Borong Kondo 50
+93 D.I. Borong Loe 60
+94 D.I. Borong Parring 120
+95 D.I. Buakang Tangaya 30
+96 D.I. Cambang Boko 100
+97 D.I. Capenge 95
+98 D.I. Cilellang 60
+99 D.I. Cinranae 175
+100 D.I. Daloba 100
+101 D.I. Donggo 20
+102 D.I. Garumbang II 70

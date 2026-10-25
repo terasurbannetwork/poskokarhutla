@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+35 2015, No.638
+Status Daerah Irigasi Yang Menjadi Wewenang Dan Tanggung Jawab Pemerintah Provinsi
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+| PROVINSI ACEH 3 5.724
+a Kab. Aceh Jaya
+
+1 D.I.R. Babah Nipah 1.632
+2 D.I.R. Seunebok Padang 1.520
+b Kab. Aceh Timur
+
+1 D.I.R. Keutengga 2.572
+Il PROVINSI SUMATERA UTARA 14 26.846
+a Kab. Asahan
+
+1 D.I.R. Tambun Tulang 2.750
+b Kab. Deli Serdang
+
+1 D.I.R. Percut/Paluh Merbau 2.900
+2 D.I.R. Sisir Gunting 2.680
+c Kab. Labuhan Batu
+
+1 D.I.R. Cinta Makmur 2.200
+2 D.I.R. Sei Merdeka 1.916
+3 D.I.R. Sei Serdang/Sei Rakyat 1.200
+d Kab. Langkat
+
+1 D.I.R. Gebang 2.025
+2 D.I.R. Tanjung Putus 1.575
+e Kab. Mandailing Natal
+
+1 D.I.R. Banjar Aur 2.000
+
+f Kab. Serdang Bedagai
+
+1 D.I.R. Bogak Besar 1.400
+2 D.I.R. Kayu Besar 1.000
+g Kab. Tapanuli Selatan
+
+1 D.I.R. Sangkunur 2.500
+h Kab. Tapanuli Tengah
+
+1 D.I.R. Kolang 1.700
+
+i Kab. Tapanuli Utara
+
+1 D.I.R. Aek Sarulla 1.000
+Ill PROVINSI RIAU 50 106.936
+a Kab. Bengkalis
+
+1 D.I.R. Siak Kecil A',B',C' 1.341
+2 D.I.R. Siak Kecil Blok A,B,C,D 1.262
+3 D.I.R. Siak Kecil Blok E,F,H,I,J,K 1.890
+b Kab. Indragiri Hilir
+
+1 D.I.R. Belantaraya 2.100
+2 D.I.R. Belaras 2.670
+3 D.I.R. Benteng/Pengsanggrahan 1.794
+4 D.I.R. Kampung Baru 1.200
+5 D.I.R. Kempas 2.900
+6 D.I.R. Kotabaru Reteh, 2.169
+7 D.I.R. Kuala Cinaku Il/Harapan & Bayas Jaya 2.892
+8 D.I.R. Kuala Lemang 2.873
+9 D.I.R. Mumpa 1.454
+10 D.I.R. Pebenaan 2.801
+11 D.I.R. Pekan Arba 1.243
+12 D.I.R. Pulau Burung 2.500
+13 D.I.R. Pulau Kecil 1.900
+14 D.LR. Pulau Kijang 2.706
+15 D.I.R. Pulau Palas 2.032
+16 D.I.R. Reteh Lokal (Sei mumpa, Sei Gantang) 1.207
+17 D.I.R. Sanglar 2.908
+18 D.I.R. Sei Piring/Tasik Raya 2.792
+19 D.I.R. Sei Salak 2.073
+20 D.I.R. Sei. Dusun 2.097
+21 D.I.R. Sei. Perak 1.007
+22 D.I.R. Sei. Piyai 1.905
+23 D.LR. Sei. Teritip 1.750
+24 D.I.R. Simpang Kateman 2.240
+25 D.I.R. Tanjung Lajau 2.918

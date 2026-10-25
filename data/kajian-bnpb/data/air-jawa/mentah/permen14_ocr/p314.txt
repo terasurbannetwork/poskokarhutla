@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+486 D.I. Urung Urung 108
+487 D.I. Wringin Korong | 48
+488 D.I. Wringin Korong II 35
+489 D.I. Agung Baratan (UPTD Bondowoso) 249
+490 D.I. Ahmad 25
+491 D.I. Ampera 43
+492 D.I. Arsiman IV 55
+493 D.I. Astah | 20
+494 D.I. Astah II 16
+495 D.I. Baeni | 22
+496 D.I. Balud II 14
+497 D.I. Bandilan 14
+498 D.I. Batu Ampar I 70
+499 D.I. Batu Ampar III 87
+500 D.I. Batu Lunggu 35
+501 D.I. Bd. Taman 76
+502 D.I. Begadang I 3
+503 D.I. Begadang II 5
+504 D.I. Bendelan 18
+505 D.I. Bire | 20
+506 D.I. Bire II 35
+507 D.I. Bire III 10
+508 D.I. Bire IV 12
+509 D.I. Bire V 20
+510 D.I. Burneh I 48
+511 D.I. Cottok II 51
+512 D.I. Curah Bugis 38
+513 D.I. Sbr. Wringin I, II, III, IV, V 245
+514 D.I. Dawuhan Agung 45
+515 D.I. Dawuhan Suco 84
+516 D.I. Desa 5
+517 D.I. Dinda 25
+518 D.I. Disa 15
+519 D.I. Sarmo II 35
+520 D.I. Gubri 628
+521 D.I. Gundang (UPTD Grujugan) 54
+522 D.I. Jumpong 17
+523 D.I. Jurungan 4
+524 D.I. Kaji 26
+525 D.I. Kalong Kanan 52
+526 D.I. Kalong Tengah 125
+527 D.I. Karang Perik 36
+528 D.I. Kayu Sapi II 40
+529 D.I. Kemuning I 81
+530 D.I. Kemuning II 12
+531 D.I. Kemuning III 17
+532 D.I. Kemuning IV Ka 11
+533 D.I. Kemuning IV Ki 6
+534 D.I. Klampok 80
+535 D.I. Klompang (UPTD Grujugan) 24
+536 D.I. Klompang (UPTD Bondowoso) 21
+537 D.I. Klompang (UPTD Prajekan) 25
+538 D.I. Kokap A 18
+539 D.I. Leduk (UPTD Bondowoso) 15
+540 D.I. Leprak II 22
+541 D.I. Libilian IB 64
+542 D.I. Libilian II 14
+543 D.I. Majid 59
+544 D.I. Malang 29
+545 D.I. Manting 21
+546 D.I. Menuran 40
+#KANAN
+314
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+547 D.I. Merong 55
+548 D.I. Ngitek 53
+549 D.I. Pager Gunung (UPTD Bondowoso) 6
+550 D.I. Pakem II (UPTD Bondowoso) 24
+551 D.I. Pancoran 15
+552 D.I. Peno 40
+553 D.I. Posang 35
+554 D.I. Pringduri C 44
+555 D.I. Ringduri C (UPTD Bondowoso) 44
+556 D.I. Rabeh 35
+557 D.I. Regidin 40
+558 D.I. Rencang 5
+559 D.I. Renggono 53
+560 D.I. Sbr. Bakar 11
+561 D.I. Sbr. Bayur II 15
+562 D.I. Sbr. Bayur III 15
+563 D.I. Sbr. Bire 13
+564 D.I. Sbr. Blimbing 12
+565 D.I. Sbr. Bukor 20
+566 D.I. Sbr. Dulayan 19
+567 D.I. Sbr. Gilih 18
+568 D.I. Sbr. Gunung I 43
+569 D.I. Sbr. Gunung II 40
+570 D.I. Sbr. Gunung III 25
+571 D.I. Sbr. Gunung IV 34
+572 D.I. Sbr. Hidup 22
+573 D.I. Sbr. Jeding 17
+574 D.I. Sbr. Kenek I 67
+575 D.I. Sbr. Kenek II 20
+576 D.I. Sbr. Komadu 40
+577 D.I. Sbr. Langgar 30
+578 D.I. Sbr. Macan 55
+579 D.I. Sbr. Majid (UPTD Grujugan) 15
+580 D.I. Sbr. Mangir 14
+581 D.I. Sbr. Manis 32
+582 D.I. Sbr. Manis II 11
+583 D.I. Sbr. Maron 20
+584 D.I. Sbr. Nangka 14
+585 D.I. Sbr. Nyiur 35
+586 D.I. Sbr. Potok 15
+587 D.I. Sbr. Pujer 25
+588 D.I. Sbr. Sakimo 58
+589 D.I. Sbr. Tena 18
+590 D.I. Sbr. Tengah 28
+591 D.I. Sbr. Tengah 22
+592 D.I. Sekimo 19
+593 D.I. Sengkap 45
+594 D.I. Sengkap II 35
+595 D.I. Senudin 49
+596 D.I. Serman 70
+597 D.I. Sok Rabah 12
+598 D.I. Sorah 25
+599 D.I. Sukosari 30
+600 D.I. Sulam 52
+601 D.I. Talangrejo 48
+602 D.I. Taman 110
+603 D.I. Taman 17
+604 D.I. Taman I (UPTD Bondowoso) 23
+605 D.I. Taman II (UPTD Bondowoso) 6
+606 D.I. Taman Agung 25
+607 D.I. Taman Agung 25

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+118 D.I. Bandar Bagerus 26
+119 D.I. Bandar Batu Gadang 35
+120 D.I. Bandar Bukit I 30
+121 D.I. Bandar Gadang Marambuang 60
+122 D.I. Bandar Gadang Timaran 60
+123 D.I. Bandar Gompong 30
+124 D.I. Bandar Ibua 25
+125 D.I. Bandar Kama 40
+126 D.I. Bandar Kampung Abah 39
+127 D.I. Bandar Karambia 25
+128 D.I. Bandar Koto Sapan 47
+129 D.I. Bandar Kubu Lansek 45
+130 D.I. Bandar Kulah 32
+131 D.I. Bandar Lampai 28
+132 D.I. Bandar Malandu Bonjol 52
+133 D.I. Bandar Mas I 15
+134 D.I. Bandar Mas II 24
+135 D.I. Bandar Melayu 18
+136 D.I. Bandar Padang Pauh 50
+137 D.I. Bandar Pauh 50
+138 D.I. Bandar Payung 20
+139 D.I. Bandar Rumber 22
+140 D.I. Bandar Sanik 25
+141 D.I. Bandar Sarik 35
+142 D.I. Bandar Sawah Taruko 17
+143 D.I. Bandar Subarang 30
+144 D.I. Bandar Suka Ramai | 60
+145 D.I. Bandar Taruko 35
+146 D.I. Bandar Ungka 17
+147 D.I. Batang Rambah 115
+148 D.I. Batang Bahanaon | 36
+149 D.I. Batang Bahanon II 32
+150 D.I. Batang Karopeh 60
+151 D.I. Batang Kasok 40
+152 D.I. Batang Mapun 50
+153 D.I. Batang Pagadih 30
+154 D.I. Batang Pamenan 95
+155 D.I. Batang Panti 15
+156 D.I. Batang Paraman 40
+157 D.I. Batang Silalang 42
+158 D.I. Batang Simpang 17
+159 D.I. Batang Sinabuan | 25
+160 D.I. Batang Sinabuan II 26
+161 D.I. Batang Sopan 30
+162 D.I. Batang Tambangan 53
+163 D.I. Batang Tikalak 34
+164 D.I. Batang Tombang 42
+165 D.I. Batang Tuhur I 15
+166 D.I. Batu Batindih 30
+167 D.I. Batu Gadang 35
+168 D.I. Batu Tinggi 37
+169 D.I. Bdr. Kampung Baru 55
+170 D.I. Bdr. Kampuna Koto 16
+171 D.I. Bdr. Pauh Koto Lintang 35
+172 D.I. Hulu Batang Buluah 40
+173 D.I. Kampung Lintang 30
+174 D.I. Kampung Padang 15
+175 D.I. Koto Mananti 67
+176 D.I. Koto Randah M
+177 D.I. Labuah Panjang 25
+178 D.I. Lembah Bukit 30
+#KANAN
+103 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+179 D.I. Lombang Tobing 30
+180 D.I. Lubuk Durian 60
+181 D.I. Lubuk Nago 50
+182 D.I. Lubuk Siduri 40
+183 D.I. Lubuk Batu 25
+184 D.I. Lubuk Bingkuang 35
+185 D.I. Lubuk Hantu 15
+186 D.I. Lubuk Hijau 95
+187 D.I. Lubuk Kabu 28
+188 D.I. Lubuk Kanji 25
+189 D.I. Lubuk Mati 38
+190 D.I. Lubuk Ngarik 25
+191 D.I. Lubuk Sarik 25
+192 D.I. Lubuk Siku 20
+193 D.I. Lubuk Takih 35
+194 D.I. Lubuk Tangkurak 35
+195 D.I. Malandu Tanjung Bungo 20
+196 D.I. Malindai 32
+197 D.I. Mangkumang Datar 35
+198 D.I. Marambuang 40
+199 D.I. Muaro Cubadak 51
+200 D.I. Muaro Sitobu 65
+201 D.I. Padang Manduang 30
+202 D.I. Padang Mantinggi 200
+203 D.I. Padang Rambutan 42
+204 D.I. Padang Sarai 65
+205 D.I. Pagaran | 25
+206 D.I. Pancahan 170
+207 D.I. Saba Cuncang 28
+208 D.I. Saba Julu 32
+209 D.I. Sawah Lambuik 27
+210 D.I. Sawah Liat 29
+211 D.I. Sawah Liek 27
+212 D.I. Sawah Liek 15
+213 D.I. Sawah Serayun 164
+214 D.I. Sawah Subarang 40
+215 D.I. Sungai Belut 25
+216 D.I. Sungai Durian 28
+217 D.I. Sungai Guntung 25
+218 D.I. Sungai Limau 25
+219 D.I. Sungai Nyiur 35
+220 D.I. Sungai Pelak 70
+221 D.I. Sungai Pimping 75
+222 D.I. Sungai Ranyah Hilir 40
+223 D.I. Sungai Ranyah Mudik 40
+224 D.I. Sungai Sariak 35
+225 D.I. Sungai Tanang 150
+226 D.I. Tanah Pariuk 36
+227 D.I. Tanjung Medan 15
+228 D.I. Taratang Tunggang 50
+229 D.I. Ujung Karang 147
+a Kab. Pasaman Barat 95 12.138
+1 D.I. Air Dingin 150
+2 D.I. Air Talang 46
+3 D.I. Ampu Kariang 75
+4 D.I. Ampu Rimbi 121
+5 D.I. Aur Kuning 84
+6 D.I. Bandarjo 435
+7 D.I. Banja Anau/Bt. Toman 75
+8 D.I. Banja Sukamenanti 75

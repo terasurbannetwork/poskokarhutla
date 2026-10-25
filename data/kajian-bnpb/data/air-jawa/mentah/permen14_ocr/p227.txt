@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+496 D.I. Dung Nyentek 20
+497 D.I. Dung Pule 13
+498 D.I. Dung Wuluh 55
+499 D.I. Dunggupit 12
+500 D.I. Dunggupit 10
+501 D.I. Dungilat 16
+502 D.I. Dungilat 14
+503 D.I. Dungkatiyah 11
+504 D.I. Dunglumpit 18
+505 D.I. Dungpabrik 65
+506 D.I. Dungpiting 10
+507 D.I. Dungundi 10
+508 D.I. Dungwakul 28
+509 D.I. Gaimah 80
+510 D.I. Gandu 25
+511 D.I. Gandu 49
+512 D.I. Gandu 25
+513 D.I. Gayam 39
+514 D.I. Sayam/Plonggo 12
+515 D.I. Gempol 13
+516 D.I. Gempol 35
+517 D.I. Gempol II 32
+518 D.I. Gerang 15
+519 D.I. Gerang 15
+520 D.I. Gili Kembang 21
+521 D.I. Gili/Gede 16
+522 D.I. Glagah 35
+523 D.I. Glundung 73
+524 D.I. Goprak 120
+525 D.I. Gowok 17
+526 D.I. Gowok 46
+527 D.I. Gowok 15
+528 D.I. Grenggengan 30
+529 D.I. Grenjengan 11
+530 D.I. Grojogan 34
+531 D.I. Grongong 11
+532 D.I. Guntur II 140
+533 D.I. Guwo 11
+534 D.I. Guwo 11
+535 D.I. Guwo 25
+536 D.I. Guwo 15
+537 D.I. Guwosari 30
+538 D.I. Ibrahim 25
+539 D.I. Ingas 10
+540 D.I. Ingas 45
+541 D.I. Ingas 10
+542 D.I. Ingas 65
+543 D.I. Iwil-Iwil 30
+544 D.I. Jabung 23
+545 D.I. Jalak 20
+546 D.I. Jambu Klutuk 14
+547 D.I. Jamur 12
+548 D.I. Jati 18
+549 D.I. Jati Lesung 50
+550 D.I. Jerakah 15
+551 D.I. Jerakah 70
+552 D.I. Jeruk I 14
+553 D.I. Jeruk II 12
+554 D.I. Jeruk Gulung 16
+555 D.I. Jiting 35
+556 D.I. Jlenguk 13
+#KANAN
+207 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+557 D.I. Jog Surodadi 43
+558 D.I. Jombang 64
+559 D.I. Joyo M
+560 D.I. Jrakah 15
+561 D.I. Jrakah 20
+562 D.I. Jrakah 25
+563 D.I. Jugo 71
+564 D.I. Jumbleng 40
+565 D.I. Kajar 53
+566 D.I. Kaji Blok 60
+567 D.I. Kalen Kaji 21
+568 D.I. Kalen Tengah 60
+569 D.I. Kali Bendo 20
+570 D.I. Kali Tekuk 13
+571 D.I. Kali Wetan 52
+572 D.I. Kali Wetan 70
+573 D.I. Kalipuro 12
+574 D.I. Kaliputih 15
+575 D.I. Kaman 12
+576 D.I. Kanci/Ngasem 14
+577 D.I. Kancil 16
+578 D.I. Kandeg 15
+579 D.I. Karang Rejo 25
+580 D.I. Karimun 32
+581 D.I. Karpiyo 11
+582 D.I. Kasimbar 10
+583 D.I. Kasturi 40
+584 D.I. Kedawung 33
+585 D.I. Kedawung 15
+586 D.I. Kedawung 19
+587 D.I. Kedawung 60
+588 D.I. Kedokan 18
+589 D.I. Kedondong 35
+590 D.I. Kedoyo 30
+591 D.I. Kedung Banger 27
+592 D.I. Kedung Bodeh 10
+593 D.I. Kedung Setro 13
+594 D.I. Kedung Waloh 125
+595 D.I. Kedungbasir 80
+596 D.I. Kedungdowo/Sarbini 19
+597 D.I. Kedungmundu 40
+598 D.I. Kedungombo 50
+599 D.I. Kedungpaso 41
+600 D.I. Kedungrandu 12
+601 D.I. Kemang I 12
+602 D.I. Kemang II 14
+603 D.I. Kembang Slamet 12
+604 D.I. Kembulsari 15
+605 D.I. Kemundu 10
+606 D.I. Kendo 70
+607 D.I. Kepoh 23
+608 D.I. Klapan 50
+609 D.I. Kliwon 16
+610 D.I. Klomoh 17
+611 D.I. Klutuk 15
+612 D.I. Kopen 30
+613 D.I. Koyum 13
+614 D.I. Kukusan 12
+615 D.I. Kumprit 10
+616 D.I. Kutan 11
+617 D.I. Lakonggo 60

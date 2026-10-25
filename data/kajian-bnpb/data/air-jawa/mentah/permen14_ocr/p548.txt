@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 548
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+84 D.L.A.T. Tabene DW - 028 5
+
+85 D.I.A.T. Tabene DW - 029 5
+
+86 D.I.A.T. Bakiruk DW - 030 5
+
+87 D.I.A.T. Naimana NAI - 046 3
+
+88 D.I.A.T. Naimana NAI - 047 3
+
+89 D.I.A.T. Naimana NAI - 048 3
+
+90 D.I.A.T. Naimana NAI - 049 3
+
+91 D.I.A.T. Naimana NAI - 050 3
+
+92 D.I.A.T. Naimana NAI - 051 2
+
+93 D.I.A.T. Naimana NAI - 052 2
+
+94 D.I.A.T. Naimana NAI - 053 3
+
+95 D.I.A.T. Naimana NAI - 054 3
+
+96 D.I.A.T. Naimana NAI - 055 2
+
+97 D.I.A.T. Naimana NAI - 056 3
+
+98 D.I.A.T. Naimana NAI - 057 3
+
+99 D.I.A.T. Naimana NAI - 058 2
+100 D.LA.T. Naimana NAI - 059 3
+101 D.LA.T. Naimana NAI - 060 3
+102 D.I.A.T. Naimana NAI - 061 3
+103 D.L.A.T. Naimana NAI - 062 3
+104 D.LA.T. Naimana NAI - 063 3
+105 D.LA.T. Naimana NAI - 064 3
+106 D.LA.T. Naimana NAI - 065 3
+107 D.LA.T. Naimana NAI - 066 3
+108 D.I.A.T. Naimana NAI - 067 2
+109 D.L.A.T. Naimana NAI - 068 2
+110 D.LA.T. Naimana NAI - 069 2
+111 D.LA.T. Naimana NAI - 070 2
+112 D.LA.T. Naimana NAI - 071 3
+113 D.LA.T. Naimana NAI - 072 3
+114 D.LA.T. Naimana NAI - 073 3
+115 D.L.A.T. Naimana NAI - 075 3
+116 D.LA.T. Naimana NAI - 076 2
+117 D.LA.T. Naimana NAI - 077 3
+118 D.LA.T. Naimana NAI - 078 3
+119 D.LA.T. Naimana NAI - 080 3
+120 D.L.A.T. Naimana NAI - 083 2
+121 D.LA.T. Naimana NAI - 084 2
+122 D.LA.T. Naimana NAI - 085 1
+123 D.LA.T. Naimana NAI - 086 2
+124 D.LA.T. Naimana NAI - 087 3
+125 D.LA.T. Naimana NAI - 088 2
+126 D.LA.T. Naimana NAI - 089 3
+127 D.LA.T. Naimana NAI - 090 2
+128 D.LA.T. Naimana NAI - 091 3
+129 D.LA.T. Naimana NAI - 092 3
+130 D.LA.T. Naimana NAI - 093 3
+131 D.LA.T. Naimana NAI - 094 2
+132 D.LA.T. Naimana NAI - 095 3
+133 D.LA.T. Naimana NAI - 096 3
+134 D.LA.T. Naimana NAI - 097 2
+135 D.LA.T. Naimana NAI - 098 3
+136 D.LA.T. Naimana NAI - 099 3
+137 D.LA.T. Naimana NAI - 100 3
+138 D.LA.T. Naimana NAI - 101 2
+139 D.LA.T. Naimana NAI - 102 3
+140 D.LA.T. Naimana NAI - 103 2
+141 D.LA.T. Naimana NAI - 104 2
+142 D.LA.T. Seo, Naitimu P-003 10
+143 D.LA.T. Webutak P-008 10
+144 D.LA.T. Obor P - 009 10

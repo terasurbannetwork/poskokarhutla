@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+3 D.I. Bamil Nosar | 75
+4 D.I. Belang Pulo 120
+5 D.I. Belo Uten Angkop 190
+6 D.I. Berawang Ramung 60
+7 D.I. Berawang Gading 300
+8 D.I. Berenung 75
+9 D.I. Bewak 100
+10 D.I. Bewang 50
+11 D.I. Daling 80
+12 D.I. Dedamar 150
+13 D.I. Erlop 150
+14 D.I. Gelegung 50
+15 D.I. Kala Bintang 150
+16 D.I. Kerpap 100
+17 D.I. Kute Dah Isag 125
+18 D.I. Kute Lintang 200
+19 D.I. Lentik Pinangan 80
+20 D.I. Luang 150
+21 D.I. Lumut 220
+22 D.I. Mengaya 70
+23 D.I. Nosar 100
+24 D.I. One-one 50
+25 D.I. Paya Ilang 150
+26 D.I. Paya Kolak 150
+27 D.I. Paya Reje 100
+28 D.I. Pedemun 100
+29 D.I. Pepalang 200
+30 D.I. Pepayungen 150
+31 D.I. Rawe Ayangan 150
+32 D.I. Singke Paya Kude 125
+33 D.I. Tamak Ayu 300
+34 D.I. Tamak Tue 300
+35 D.I. Tebes Lues Kuyun 200
+36 D.I. Tebuk 150
+37 D.I. Tembolon Kenawat 150
+38 D.I. Terang Ulen 200
+39 D.I. Tero 50
+40 D.I. Totor Uyet 150
+41 D.I. Ulung Gajah 165
+42 D.I. Uring 150
+43 D.I. Angkip 50
+44 D.I. Arul Duren Pantan Nangka 50
+45 D.I. Arul Item 200
+46 D.I. Arul Kumer 250
+47 D.I. Arul Lenang Pantan Nangka 35
+48 D.I. Arul Relem 100
+49 D.I. Arul Takah Pantan Nangka 40
+50 D.I. Atu Mendulang Kenawat 50
+51 D.I. Atu Payung 50
+52 D.I. Atu Terbang Toweren 350
+53 D.I. Bah 25
+54 D.I. Bale Bujang 50
+55 D.I. Bamil Nosar II 50
+56 D.I. Bayur 50
+57 D.I. Berawang Kenil 50
+58 D.I. Blang Gele 125
+59 D.I. Blang Kekumur 50
+60 D.I. Cang Duri 50
+61 D.I. Celala 300
+62 D.I. Gele Rau 50
+63 D.I. Gembirit Pedemun 25
+#KANAN
+68
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+64 D.I. Genencang Kenawat 30
+65 D.I. Genting Bulen Kute Gelime 100
+66 D.I. Genting Gerbang 50
+67 D.I. Genting Kanis 75
+68 D.I. Genuren 25
+69 D.I. Gewat / Mungkur 200
+70 D.I. Jamat 75
+71 D.I. Jelobok Kung 75
+72 D.I. Jerang Belanga 75
+73 D.I. Kala Mampak 150
+74 D.I. Kala Rengkih 75
+75 D.I. Kalang 25
+76 D.I. Karang Ampar 400
+77 D.I. Kedelah 150
+78 D.I. Kulem Balik 100
+79 D.I. Kute Lintang 200
+80 D.I. Kute Rayang 100
+81 D.I. Kute Robel 25
+82 D.I. Kuyun Paya Dedep 150
+83 D.I. Kuyun Uken 100
+84 D.I. Lelumu 125
+85 D.I. Linge 175
+86 D.I. Linung Bulen | 55
+87 D.I. Linung Bulen II 65
+88 D.I. Loyang 600
+89 D.I. Loyang Datu 50
+90 D.I. Lukup Lungi 100
+91 D.I. Menye Bintang I 170
+92 D.I. Menye Bintang II 50
+93 D.I. Nasuh 50
+94 D.I. Pameu 600
+95 D.I. Paya Beke 400
+96 D.I. Paya Bekelah 150
+97 D.I. Paya Pelu 50
+98 D.I. Payung 250
+99 D.I. Perak Ringit 150
+100 D.I. Pestak Tan Saril 50
+101 D.I. Pintu Rime Kenawat 50
+102 D.I. Rebe Basi 75
+103 D.I. Rebe Gedung Tami Delem 80
+104 D.I. Remesan Jamur Barat 60
+105 D.I. Rutih 150
+106 D.I. Semelit 640
+107 D.I. Serempah 75
+108 D.I. Serule 100
+109 D.I. Sp. Kemili Angkup 50
+110 D.I. Tamak Lelabu 100
+111 D.I. Tembolon Angkip 150
+112 D.I. Tenggulun 75
+113 D.I. Tukik 200
+114 D.I. Turus 50
+115 D.I. Umang 50
+116 D.I. Umang 100
+117 D.I. Undag 50
+118 D.I. Wag 150
+119 D.I. Weih Kuli 75
+120 D.I. Weih Nafis 25
+121 D.I. Weih Nampan Toweren 75
+122 D.I. Weih Ni Duren 200
+123 D.I. Weih Pinangan 50
+124 D.I. Weih Renggali 75

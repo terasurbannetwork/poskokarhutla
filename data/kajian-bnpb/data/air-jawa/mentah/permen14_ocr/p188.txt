@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+600 D.I. Ciomas 10
+601 D.I. Cioray I 40
+602 D.I. Cioray II 50
+603 D.I. Cipacalang 44
+604 D.I. Cipada 80
+605 D.I. Cipada 1, 2 24
+606 D.I. Cipada 4 206
+607 D.I. Cipada | 108
+608 D.I. Cipada | 30
+609 D.I. Cipada II 30
+610 D.I. Cipada IV 120
+611 D.I. Cipadanten 40
+612 D.I. Cipadarek 12
+613 D.I. Cipager 12
+614 D.I. Cipager 45
+615 D.I. Cipager/Batu Belah 22
+616 D.I. Cipaguan 76
+617 D.I. Cipakat 65
+618 D.I. Cipalahlar 15
+619 D.I. Cipalasari 25
+620 D.I. Cipalembuan 20
+621 D.I. Cipalinter 20
+622 D.I. Cipalu 15
+623 D.I. Cipamali 96
+624 D.I. Cipamali 32
+625 D.I. Cipamali 35
+626 D.I. Cipamali 20
+627 D.I. Cipamali 90
+628 D.I. Cipamali 70
+629 D.I. Cipameda 7
+630 D.I. Cipamipiran 25
+631 D.I. Cipanadegan 50
+632 D.I. Cipanaha | 20
+633 D.I. Cipanaha II 15
+634 D.I. Cipanawar 6
+635 D.I. Cipancer 50
+636 D.I. Cipancur 30
+637 D.I. Cipandan 8
+638 D.I. Cipandawa 30
+639 D.I. Cipangulu 6
+640 D.I. Cipanguyangan 20
+641 D.I. Cipaniis 3
+642 D.I. Cipaniis 2
+643 D.I. Cipanojer 175
+644 D.I. Cipara 25
+645 D.I. Ciparagpag 212
+646 D.I. Ciparahu 85
+647 D.I. Ciparanten 25
+648 D.I. Ciparasi 25
+649 D.I. Ciparay 50
+650 D.I. Ciparay 27
+651 D.I. Ciparaya 35
+652 D.I. Cipari 35
+653 D.I. Cipasuti 100
+654 D.I. Cipatahunan/Samuda 40
+655 D.I. Cipatat Cipanunjang 8
+656 D.I. Cipawitra 35
+657 D.I. Cipendeuy 20
+658 D.I. Ciperut 53
+659 D.I. Cipetir 60
+660 D.I. Cipetir 60
+#KANAN
+188
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+661 D.I. Cipetir 6
+662 D.I. Cipeuneuy 30
+663 D.I. Cipeusing 30
+664 D.I. Cipeuteuy 20
+665 D.I. Cipeuteuy 30
+666 D.I. Cipeuteuy 8
+667 D.I. Cipicung 120
+668 D.I. Cipicung 24
+669 D.I. Cipicung II 6
+670 D.I. Cipiit 80
+671 D.I. Cipinaha 70
+672 D.I. Cipinang 40
+673 D.I. Cipinang 1 25
+674 D.I. Cipinang 2 10
+675 D.I. Cipinang 2 20
+676 D.I. Cipinang 3 40
+677 D.I. Cipinang I 20
+678 D.I. Cipinang I 7
+679 D.I. Cipinang II 40
+680 D.I. Cipondok 33
+681 D.I. Cipongol 20
+682 D.I. Cipongol 25
+683 D.I. Cipongpok 28
+684 D.I. Cipongpok 25
+685 D.I. Cipora 10
+686 D.I. Cipugeran 35
+687 D.I. Cipulus 60
+688 D.I. Cipulus 20
+689 D.I. Cipulus 12
+690 D.I. Cipulus 30
+691 D.I. Cipurut 50
+692 D.I. Ciputat 20
+693 D.I. Ciputri 7
+694 D.I. Ciraab 60
+695 D.I. Cirahong 60
+696 D.I. Cirakutak 35
+697 D.I. Cirama 55
+698 D.I. Cirama | 60
+699 D.I. Cirama II 60
+700 D.I. Ciranca 12
+701 D.I. Ciranca 50
+702 D.I. Cirandeg/Balapulang 40
+703 D.I. Cirando 15
+704 D.I. Cirangkong 10
+705 D.I. Cirangkong 20
+706 D.I. Cirang-rang 5
+707 D.I. Ciranis 10
+708 D.I. Cirante 50
+709 D.I. Cirapih/Ciupih 40
+710 D.I. Cirasmadin 7
+711 D.I. Ciratna 40
+712 D.I. Ciraweuy 20
+713 D.I. Cirenang 26
+714 D.I. Cirende 32
+715 D.I. Cireundeu 12
+716 D.I. Ciringgit I 10
+717 D.I. Ciringkang 1 18
+718 D.I. Ciringkang 2 22
+719 D.I. Ciririp 8
+720 D.I. Ciroyom 20
+721 D.I. Ciroyom 35

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+44 D.I. Hilimbulawa 45
+45 D.I. Hilisaoto 150
+46 D.I. Hilisimaetano Balaekha 13
+47 D.I. Hilisondrekha 80
+48 D.I. Hilisondrekha 20
+49 D.I. Huno 25
+50 D.I. Huwo 50
+51 D.I. Idano Gambukha 220
+52 D.I. Idano Gono 50
+53 D.I. Idano Mbou 50
+54 D.I. Idanotae 15
+55 D.I. Labu Faulo 100
+56 D.I. Lagundri 45
+57 D.I. Lagundri 100
+58 D.I. Lahusa 250
+59 D.I. Lahusa La'ha 50
+60 D.I. Laimba 75
+61 D.I. Laoa 200
+62 D.I. Laosu 25
+63 D.I. La'Oyo 50
+64 D.I. Laoyo Hilisaotonitia 100
+65 D.I. Lato Site 80
+66 D.I. Lawolu 100
+67 D.I. Laza Gau 22
+68 D.I. Laza Solewua 28
+69 D.I. Lazahiu 50
+70 D.I. Lobufaulo 100
+71 D.I. Lolofaoso 60
+72 D.I. Lolomatua 150
+73 D.I. Losu II 50
+74 D.I. Luaha Handru 35
+75 D.I. Lumori 110
+76 D.I. Made-Made 30
+77 D.I. Mahang Labara 50
+78 D.I. Manavia 20
+79 D.I. Marimbe 50
+80 D.I. Mouliho 100
+81 D.I. Nanowa 20
+82 D.I. Nari-Nari 100
+83 D.I. Ndraso Oyo 40
+84 D.I. Odulo 100
+85 D.I. Olo-Olo 140
+86 D.I. Olo-Olo I 100
+87 D.I. Olo-Olo II 140
+88 D.I. Saetu 30
+89 D.I. Sambulu 50
+90 D.I. Saraina II 102
+91 D.I. Sefa 100
+92 D.I. Sehe 55
+93 D.I. Sibola Ene 75
+94 D.I. Sifaoroasi 100
+95 D.I. Sigondri-Gondri 40
+96 D.I. Silamba 50
+97 D.I. Simandraolo 65
+98 D.I. Sisarahili Ekholo 50
+99 D.I. Sitolu Banua 75
+100 D.I. So'Enuo 70
+101 D.I. Soenuo 50
+102 D.I. Sogawu 50
+103 D.I. Sondradu 50
+104 D.I. Sondrapa 50
+#KANAN
+83 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+105 D.I. Tebelo 50
+106 D.I. Tegoyo 50
+107 D.I. Teluk Limo 25
+108 D.I. Tetemawo 150
+109 D.I. Tetezou/Owalo 30
+110 D.I. Togi Guro 30
+111 D.I. Togimbogi 100
+112 D.I. Tuindrao 40
+113 D.I. Wawa 22
+n Kab. Nias Utara 75 8.132
+1 D.I. Bagoa 250
+2 D.I. Berua 390
+3 D.I. Bina'a 370
+4 D.I. Borosi 81
+5 D.I. Buazilimo 75
+6 D.I. Fusi 200
+7 D.I. Faumbu 400
+8 D.I. Helelasara 100
+9 D.I. Humaga 300
+10 D.I. Legemana 92
+11 D.I. Lawira | 80
+12 D.I. Luahahele 100
+13 D.I. Ma'ae 150
+14 D.I. Mahau 95
+15 D.I. Merasi I/II 60
+16 D.I. Moafoa 55
+17 D.I. Moambolo 212
+18 D.I. Simali 189
+19 D.I. Sinoto 20
+20 D.I. Sitoba'a 100
+21 D.I. Sogawu 210
+22 D.I. So'vuro 80
+23 D.I. Talio 40
+24 D.I. Torowa 262
+25 D.I. Anaua 70
+26 D.I. Bahosea 125
+27 D.I. Bio 30
+28 D.I. Bozinga 150
+29 D.I. Bozukhu 30
+30 D.I. Buma'ae 50
+31 D.I. Dasogoba 100
+32 D.I. Faekhuna'a | 130
+33 D.I. Faekhuna'a II 195
+34 D.I. Fahasaradodo 80
+35 D.I. Gamaera 40
+36 D.I. Gembira 100
+37 D.I. Golewu 170
+38 D.I. Harewakhe 30
+39 D.I. Hiliduruwa 120
+40 D.I. Idano safusi 30
+41 D.I. Idano sohahau 40
+42 D1. Iii 38
+43 D.I. Laehuwa 185
+44 D.I. Lafau 25
+45 D.I. Lawira II 125
+46 D.I. Lugumana 100
+47 D.I. Mediti 85
+48 D.I. Modo 100
+49 D.I. Molawayo 75
+50 D.I. Mowa 45

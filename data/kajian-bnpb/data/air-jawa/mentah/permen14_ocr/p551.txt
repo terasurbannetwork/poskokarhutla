@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+551 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+74 D.LA.T. Ledeana Dusun! PSB - 003 13
+75 D.LA.T. Ledeana Dusun! PSB - 004 12
+76 D.LA.T. Padami-Raeloro PSB - 005 14
+77 D.LA.T. Padami-Raeloro PSB - 007 15
+78 D.I.A.T. Bali-Bodae PSB - 010 15
+79 D.LA.T. Ledeana Dusun II PSB - 015 15
+80 D.ILA.T. Tetelek-Nunkurus OEW - 015 15
+81 D.I.A.T. Padang Tia OEW - 019 10
+82 D.LA.T. PD. Beringin-Nunkurus OPW - 009 13
+83 D.LA.T. PD. Beringin-Nunkurus OPW - 010 11
+84 D.LA.T. PD. Beringin-Nunkurus OPW - 012 12
+85 D.LA.T. Tetelekli-Nunkurus OPW - 014 13
+86 D.I.A.T. Tumpah Darah OPW - 015 12
+87 D.LA.T. Tak Gentar-Nunkurus OPW - 016 0
+88 D.LA.T. PD. Beringin-Nunkurus OTW - 011 11
+89 D.LA.T. Tetelek-Nunkurus OTW - 012 13
+90 D.LA.T. PD. Beringin-Nunkurus OTW -013 12
+91 D.LA.T. PB. Selatan-Nunkurus OTW - 016 14
+92 D.LA.T. PD. Beringin-Nunkurus OTW - 010 10
+93 D.LA.T. Kakabai-Nunkurus PSI - 140 12
+94 D.L.A.T. Airefak-Nunkurus PSI - 145 22
+95 D.LA.T. PD. Beringin-Nunkurus PSI - 146 22
+96 D.I.A.T. Batubau PTI - 167 15
+97 D.I.A.T. Tuadale PTI - 168 15
+98 D.I.A.T. Tabulolong PTM - 157 18
+99 D.I.A.T. Tesabela PTM - 162 39
+100 D.LA.T. Lukman Barat -Oesao DW - 001 11
+101 D.LA.T. Lukman Timur I-Naibonat DW - 002 13
+102 D.I.A.T. Lifubatu-Babau DW - 003 12
+103 D.L.A.T. TekatiI-Oesao DW - 004 12
+104 D.L.A.T. Pukdalelll-Pukdale DW - 005 12
+105 D.I.A.T. PukdalelV-Pukdale DW - 006 11
+106 D.L.A.T. Merdeka-Pariti DW - 007 12
+107 D.I.A.T. Naifallo-Oeteta DW - 008 10
+108 D.LA.T. Lukman Barat I-Oesao DW - 009 14
+109 D.L.A.T. Tekat I-Oesao DW - 010 12
+110 D.LA.T. Gn. Golkar I-Oesao DW - 011 10
+111 D.LA.T. Kakabai -Nunkurus DW - 012 13
+112 D.LA.T. Pukdale V-Pukdale DW - 013 12
+113 D.LA.T. Pukdale VI-Pukdale DW - 014 10
+114 D.LA.T. Lukman Timur I-Naibonat DW - 015 12
+115 D.LA.T. Gn. Golkar I-Oesao DW - 016 12
+116 D.LA.T. Gn. Golkar Ill-Oesao DW - 017 10
+117 D.LA.T. Tekad Ill-Oesao DW - 018 13
+118 D.LA.T. Bilanga-Naibonat DW - 019 10
+119 D.LA.T. Tuatuka I-Pukdale DW - 020 10
+120 D.I.A.T. Tuatuka Il-Pukdale DW - 021 10
+121 D.LA.T. Sendio-Oesao DW - 022 11
+122 D.LA.T. Tekad IV-Oesao DW - 023 12
+123 D.LA.T. Gn. Golkar IV-Oesao DW - 024 12
+124 D.LA.T. Dalam Kom Il-Babau DW - 025 10
+125 D.LA.T. Lasikode-Pukdale DW - 026 10
+126 D.L.A.T. Tetkolo-Pukdale DW - 027 10
+127 D.LA.T. Sendio-Oesao Besar DW - 028 10
+128 D.L.A.T. Tuatuka-Pukdale DW - 029 10
+129 D.LA.T. Lolonoak I-Oesao DW - 030 10
+130 D.LA.T. Lolonoak II-Oesao DW - 031 10
+131 D.LA.T. Tuatuka Ill-Pukdale DW - 032 10
+132 D.LA.T. Tatelek I-Pukdale DW - 033 10
+133 D.LA.T. Felakdale-Pukdale DW - 034 10
+134 D.LA.T. Gaukdale-Tuatuka DW - 035 10

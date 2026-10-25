@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+817 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+59 D.LA.T. Kedungmoro SMLJ 152 10
+60 D.LA.T. Kedungmoro SMLJ 153 10
+61 D.LA.T. Kedungmoro SMLJ 154 11
+62 D.LA.T. Kedungmoro SMLJ 155 11
+63 D.LA.T. Karanglo SMLJ 156 10
+64 D.LA.T. Karanglo SMLJ 158 11
+65 D.LA.T. Karanglo SMLJ 159 12
+66 D.ILA.T. Karangrejo SMLJ 160 10
+67 D.LA.T. Karangrejo SMLJ 161 11
+68 D.LA.T. Sukosari SMLJ 166 10
+69 D.LA.T. Kunirkidul SMLJ 167 12
+
+i Kab. Madiun 95 4.133
+
+1 D.LA.T. Dawuhan SDMD 001 83
+
+2 D.LA.T. Duren SDMD 002 85
+
+3 D.LA.T. Kenongrejo SDMD 003 54
+
+4 D.LA.T. Sumber Gandu SDMD 004 86
+
+5 D.LA.T. Sumber Gandu SDMD 005 85
+
+6 D.I.A.T. Ngegor SDMD 006 57
+
+7 D.LA.T. Pilangkenceng SDMD 007 85
+
+8 D.LA.T. Gandul SDMD 008 85
+
+9 D.LA.T. Luworo SDMD 009 88
+10 D.LA.T. Kedung Banteng SDMD 010 87
+11 D.LA.T. Bagasem SDMD 011 86
+12 D.LA.T. Kenonggorejo SDMD 012 57
+13 D.LA.T. Sidomulyo SDMD 036 71
+14 D.LA.T. Pulerejo SDMD 043 82
+15 D.LA.T. Kebonagung SDMD 049 82
+16 D.LA.T. Duren SDMD 052 111
+17 D.LA.T. Bulu SDMD 053 102
+18 D.LA.T. Wonoayu SDMD 054 126
+19 D.LA.T. Purworejo SDMD 055 102
+20 D.LA.T. Wunggu SDMD 056 132
+21 D.LA.T. Pilangkenceng SDMD 057 80
+22 D.LA.T. Kedung Banteng SDMD 058 113
+23 D.LA.T. Krebet SDMD 059 107
+24 D.LA.T. Ngale SDMD 060 112
+25 D.LA.T. Pulerejo SDMD 061 116
+26 D.LA.T. Kedungrejo SDMD 089 90
+27 D.LA.T. Sobrah SDMD 090 26
+28 D.LA.T. Tulung SDMD 091 48
+29 D.LA.T. Tulung SDMD 094 56
+30 D.LA.T. Sambirejo SDMD 095 72
+31 D.LA.T. Sumbersari SDMD 096 53
+32 D.LA.T. Plumpung Rejo SDMD 105 44
+33 D.LA.T. Kaliabu SDMD 106 71
+34 D.LA.T. Sumbersari SDMD 107 71
+35 D.LA.T. Sirapan SDMD 108 59
+36 D.LA.T. Tulung SDMD 318 30
+37 D.LA.T. Tulung SDMD 319 30
+38 D.LA.T. Kepet SDMD 338 31
+39 D.LA.T. Sidorejo SDMD 339 30
+40 D.LA.T. Sambirejo SDMD 340 31
+41 D.LA.T. Klumutan SDMD 379 37
+42 D.LA.T. Sugihwaras SDMD 380 37
+43 D.LA.T. Glonggong SDMD 460 35
+44 D.LA.T. Sugihwaras SDMD 461 30
+45 D.LA.T. Bener SDMD 462 40
+46 D.LA.T. Kradenan SDMD 467 30
+47 D.LA.T. Candimulyo SDMD 468 10
+48 D.LA.T. Slambur SDMD 469 10

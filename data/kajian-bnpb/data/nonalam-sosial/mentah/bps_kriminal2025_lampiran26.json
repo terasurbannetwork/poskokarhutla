@@ -1,0 +1,280 @@
+{
+ "sumber": "BPS, Statistik Kriminal 2024/2025 (rilis 12 Des 2025), Lampiran 26 'Jumlah dan Persentase Desa/Kelurahan yang Ada Kejadian Konflik Massal Selama Setahun yang Lalu Menurut Provinsi, 2021 dan 2024' (hlm. 136); https://www.bps.go.id/id/publication/2025/12/12/2edc8ea4c35b19ba912fc7e4/statistik-kriminal-2024-2025.html",
+ "diakses": "2026-10-23",
+ "ekstraksi": "teks PDF diekstrak dengan PyMuPDF sekali; '…' = provinsi belum ada pada 2021 (null), '-' = nol",
+ "baris": [
+  {
+   "provinsi": "Aceh",
+   "desa_2021": 34,
+   "desa_2024": 46,
+   "persen_2021": 0.52,
+   "persen_2024": 0.71
+  },
+  {
+   "provinsi": "Sumatera Utara",
+   "desa_2021": 84,
+   "desa_2024": 122,
+   "persen_2021": 1.37,
+   "persen_2024": 2.0
+  },
+  {
+   "provinsi": "Sumatera Barat",
+   "desa_2021": 36,
+   "desa_2024": 45,
+   "persen_2021": 2.8,
+   "persen_2024": 3.5
+  },
+  {
+   "provinsi": "Riau",
+   "desa_2021": 13,
+   "desa_2024": 9,
+   "persen_2021": 0.69,
+   "persen_2024": 0.48
+  },
+  {
+   "provinsi": "Jambi",
+   "desa_2021": 24,
+   "desa_2024": 43,
+   "persen_2021": 1.54,
+   "persen_2024": 2.71
+  },
+  {
+   "provinsi": "Sumatera Selatan",
+   "desa_2021": 20,
+   "desa_2024": 56,
+   "persen_2021": 0.61,
+   "persen_2024": 1.71
+  },
+  {
+   "provinsi": "Bengkulu",
+   "desa_2021": 9,
+   "desa_2024": 14,
+   "persen_2021": 0.59,
+   "persen_2024": 0.92
+  },
+  {
+   "provinsi": "Lampung",
+   "desa_2021": 6,
+   "desa_2024": 27,
+   "persen_2021": 0.23,
+   "persen_2024": 1.02
+  },
+  {
+   "provinsi": "Kep. Bangka Belitung",
+   "desa_2021": 5,
+   "desa_2024": 13,
+   "persen_2021": 1.27,
+   "persen_2024": 3.31
+  },
+  {
+   "provinsi": "Kepulauan Riau",
+   "desa_2021": 0,
+   "desa_2024": 0,
+   "persen_2021": 0,
+   "persen_2024": 0
+  },
+  {
+   "provinsi": "DKI Jakarta",
+   "desa_2021": 47,
+   "desa_2024": 50,
+   "persen_2021": 17.6,
+   "persen_2024": 18.73
+  },
+  {
+   "provinsi": "Jawa Barat",
+   "desa_2021": 158,
+   "desa_2024": 218,
+   "persen_2021": 2.65,
+   "persen_2024": 3.66
+  },
+  {
+   "provinsi": "Jawa Tengah",
+   "desa_2021": 95,
+   "desa_2024": 205,
+   "persen_2021": 1.11,
+   "persen_2024": 2.39
+  },
+  {
+   "provinsi": "DI Yogyakarta",
+   "desa_2021": 9,
+   "desa_2024": 13,
+   "persen_2021": 2.05,
+   "persen_2024": 2.97
+  },
+  {
+   "provinsi": "Jawa Timur",
+   "desa_2021": 104,
+   "desa_2024": 129,
+   "persen_2021": 1.22,
+   "persen_2024": 1.52
+  },
+  {
+   "provinsi": "Banten",
+   "desa_2021": 15,
+   "desa_2024": 52,
+   "persen_2021": 0.97,
+   "persen_2024": 3.35
+  },
+  {
+   "provinsi": "Bali",
+   "desa_2021": 3,
+   "desa_2024": 3,
+   "persen_2021": 0.42,
+   "persen_2024": 0.42
+  },
+  {
+   "provinsi": "Nusa Tenggara Barat",
+   "desa_2021": 22,
+   "desa_2024": 50,
+   "persen_2021": 1.91,
+   "persen_2024": 4.29
+  },
+  {
+   "provinsi": "Nusa Tenggara Timur",
+   "desa_2021": 129,
+   "desa_2024": 156,
+   "persen_2021": 3.74,
+   "persen_2024": 4.41
+  },
+  {
+   "provinsi": "Kalimantan Barat",
+   "desa_2021": 8,
+   "desa_2024": 14,
+   "persen_2021": 0.37,
+   "persen_2024": 0.65
+  },
+  {
+   "provinsi": "Kalimantan Tengah",
+   "desa_2021": 17,
+   "desa_2024": 11,
+   "persen_2021": 1.08,
+   "persen_2024": 0.7
+  },
+  {
+   "provinsi": "Kalimantan Selatan",
+   "desa_2021": 13,
+   "desa_2024": 4,
+   "persen_2021": 0.65,
+   "persen_2024": 0.2
+  },
+  {
+   "provinsi": "Kalimantan Timur",
+   "desa_2021": 15,
+   "desa_2024": 12,
+   "persen_2021": 1.43,
+   "persen_2024": 1.14
+  },
+  {
+   "provinsi": "Kalimantan Utara",
+   "desa_2021": 4,
+   "desa_2024": 2,
+   "persen_2021": 0.83,
+   "persen_2024": 0.41
+  },
+  {
+   "provinsi": "Sulawesi Utara",
+   "desa_2021": 49,
+   "desa_2024": 56,
+   "persen_2021": 2.66,
+   "persen_2024": 3.05
+  },
+  {
+   "provinsi": "Sulawesi Tengah",
+   "desa_2021": 36,
+   "desa_2024": 27,
+   "persen_2021": 1.78,
+   "persen_2024": 1.34
+  },
+  {
+   "provinsi": "Sulawesi Selatan",
+   "desa_2021": 78,
+   "desa_2024": 93,
+   "persen_2021": 2.56,
+   "persen_2024": 3.04
+  },
+  {
+   "provinsi": "Sulawesi Tenggara",
+   "desa_2021": 40,
+   "desa_2024": 61,
+   "persen_2021": 1.73,
+   "persen_2024": 2.66
+  },
+  {
+   "provinsi": "Gorontalo",
+   "desa_2021": 10,
+   "desa_2024": 18,
+   "persen_2021": 1.36,
+   "persen_2024": 2.46
+  },
+  {
+   "provinsi": "Sulawesi Barat",
+   "desa_2021": 1,
+   "desa_2024": 5,
+   "persen_2021": 0.15,
+   "persen_2024": 0.77
+  },
+  {
+   "provinsi": "Maluku",
+   "desa_2021": 161,
+   "desa_2024": 144,
+   "persen_2021": 12.9,
+   "persen_2024": 11.41
+  },
+  {
+   "provinsi": "Maluku Utara",
+   "desa_2021": 93,
+   "desa_2024": 137,
+   "persen_2021": 7.73,
+   "persen_2024": 11.33
+  },
+  {
+   "provinsi": "Papua Barat",
+   "desa_2021": 75,
+   "desa_2024": 22,
+   "persen_2021": 3.78,
+   "persen_2024": 2.27
+  },
+  {
+   "provinsi": "Papua Barat Daya",
+   "desa_2021": null,
+   "desa_2024": 47,
+   "persen_2021": null,
+   "persen_2024": 4.45
+  },
+  {
+   "provinsi": "Papua",
+   "desa_2021": 140,
+   "desa_2024": 36,
+   "persen_2021": 2.52,
+   "persen_2024": 3.5
+  },
+  {
+   "provinsi": "Papua Selatan",
+   "desa_2021": null,
+   "desa_2024": 39,
+   "persen_2021": null,
+   "persen_2024": 5.65
+  },
+  {
+   "provinsi": "Papua Tengah",
+   "desa_2021": null,
+   "desa_2024": 21,
+   "persen_2021": null,
+   "persen_2024": 1.74
+  },
+  {
+   "provinsi": "Papua Pegunungan",
+   "desa_2021": null,
+   "desa_2024": 31,
+   "persen_2021": null,
+   "persen_2024": 1.18
+  },
+  {
+   "provinsi": "Indonesia",
+   "desa_2021": 1553,
+   "desa_2024": 2031,
+   "persen_2021": 1.85,
+   "persen_2024": 2.41
+  }
+ ]
+}

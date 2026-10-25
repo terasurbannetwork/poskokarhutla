@@ -1,0 +1,67 @@
+#TATA_LETAK satu-tabel lebar=2480
+533 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+36 D.I.A.T. Dasuk Barat | SDSM 106 53
+37 D.LA.T. Slopeng SDSM 107 45
+38 D.LA.T. Lembung Timur SDSM 108 31
+39 D.LA.T. Juluk | SDSM 110 33
+40 D.LA.T. Pakamban laok SDSM 112 48
+41 D.LA.T. Kaduara Timur SDSM 114 38
+42 D.LA.T. Poreh SDSM 116 36
+43 D.LA.T. Panagan SDSM 128 33
+44 D.LA.T. Mandala SDSM 132 51
+45 D.LA.T. Baban SDSM 145 45
+46 D.LA.T. Saroka SDSM 149 29
+47 D.LA.T. Talang III SDSM 156 23
+48 D.LA.T. Kambingan Barat II SDSM 157 24
+49 D.LA.T. Saronggi III SDSM 168 30
+50 D.LA.T. Batuan II SDSM 169 28
+51 D.LA.T. Karang Budi SDSM 170 30
+52 D.LA.T. Banjar Timur SDSM 171 30
+53 D.LA.T. Kambingan Timur IV SDSM 173 30
+54 D.LA.T. Juluk II SDSM 181 30
+55 D.LA.T. Tanah Merah SDSM 182 28
+56 D.LA.T. Banaresep II SDSM 183 38
+57 D.LA.T. Pragaan laok SDSM 193 25
+58 D.LA.T. Campor Timur SDSM 196 28
+59 D.LA.T. Beluk Ares SDSM 197 28
+60 D.LA.T. Batuan III SDSM 198 30
+61 D.LA.T. Sendang SDSM 199 27
+62 D.LA.T. Sentol Daya SDSM 204 30
+63 D.LA.T. Juluk III SDSM 205 30
+64 D.LA.T. Dasuk Barat SDSM 207 26
+65 D.LA.T. Sergang SDSM 208 30
+66 D.I.A.T. Campur Barat SDSM 536 25
+67 D.LA.T. Legung Barat | SMSM 163 15
+68 D.I.A.T. Legung Barat II SMSM 164 12
+69 D.LA.T. Tamansari SMSM 184 39
+w Kab. Trenaaalek 18 99
+
+1 D.LA.T. Wonorejo SKTG 358 3
+2 D.LA.T. Wonorejo SKTG 359 3
+3 D.LA.T. Ngrayung SKTG 360 3
+4 D.LA.T. Ngrayung SKTG 361 3
+5 D.LA.T. Gembleng SKTG 362 3
+6 D.ILA.T. Gembleng SKTG 363 3
+7 D.LA.T. Sumberingin SKTG 364 3
+8 D.LA.T. Sumberingin SKTG 365 3
+9 D.LA.T. Ngadisoko SKTG 366 3
+10 D.ILA.T. Ngadisoko SKTG 367 3
+11 D.LA.T. Durenan SKTG 368 3
+12 D.LA.T. Pandaan SKTG 369 3
+13 D.LA.T. Kendalrejo SKTG 370 3
+14 D.LA.T. Kendalrejo SKTG 371 3
+15 D.LA.T. Pakis SKTG 372 3
+16 D.LA.T. Pandean SDTG 535 29
+17 D.LA.T. Sumber Gayam SDTG 567 12
+18 D.LA.T. Panggungsari SDTG 568 12
+x Kab. Tuban 72 2.296
+
+1 D.LA.T. Suwalan SDTB 063 50
+2 D.LA.T. Suwalan SDTB 064 67
+3 D.LA.T. Temaji SDTB 342 35
+4 D.LA.T. Temaji SDTB 343 40
+5 D.LA.T. Banjaragung SDTB 071 41

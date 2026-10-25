@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+141 D.I. Simacan 11
+142 D.I. Situ 200
+143 D.I. Slado 29
+144 D.I. Sumbarang 20
+145 D.I. Sumurwatu 18
+146 D.I. Suniarsih 70
+147 D.I. Suren 25
+148 D.I. Tambah 35
+149 D.I. Tambaksela 55
+150 D.I. Tambaksela 100
+151 D.I. Tangger 45
+152 D.I. Taswan 20
+153 D.I. Koneng 125
+154 D.I. Telaga 355
+155 D.I. Tlaga 40
+156 D.I. Tlaya 22
+157 D.I. Traju 71
+158 D.I. Tukung 20
+159 D.I. Wangon 120
+160 D.I. Winong 31
+161 D.I. Wonogati 16
+162 D.I. Wringin 15
+163 D.I. Wuni 15
+164 D.I. Ajasari 200
+165 D.I. Asep 28
+166 D.I. Aur 34
+167 D.I. Batu 3
+168 D.I. Bedji 5
+169 D.I. Belik 5
+170 D.I. Beton 61
+171 D.I. Benda 6
+172 D.I. Betatal 1
+173 D.I. Bodas 2
+174 D.I. Brete 2
+175 D.I. Bulakan 121
+176 D.I. Cacaban 15
+177 D.I. Cikunang 30
+178 D.I. Dasa 7
+179 D.I. Demang 41
+180 D.I. Diyang 150
+181 D.I. Diyang 2
+182 D.I. Gantungan 151
+183 D.I. Gembong 45
+184 D.I. Gintung 35
+185 D.I. Gong 140
+186 D.I. Jambe 25
+187 D.I. Jambu 47
+188 D.I. Jawan 20
+189 D.I. Jumbleng 23
+190 D.I. Kajar 1
+191 D.I. Klapa 100
+192 D.I. Kele 82
+193 D.I. Kele 50
+194 D.I. Kembang 18
+195 D.I. Kemojing 20
+196 D.I. Ketileng 40
+197 D.I. Lengkong 42
+198 D.I. Lumut 16
+199 D.I. Monggor 50
+200 D.I. Mulih 80
+201 D.I. Padung 150
+#KANAN
+os 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+202 D.I. Pagak 80
+203 D.I. Pencu 7
+204 D.I. Pesing 4
+205 D.I. Peteng 2
+206 D.I. Porang 8
+207 D.I. Prupuk 50
+208 D.I. Pucang 1
+209 D.I. Pule 15
+210 D.I. Pule 7
+211 D.I. Putih 22
+212 D.I. Ragung 25
+213 D.I. Rambut 50
+214 D.I. Rawa 3
+215 D.I. Randi 70
+216 D.I. Rau 4
+217 D.I. Rucah 70
+218 D.I. Sanka 80
+219 D.I. Sela 6
+220 D.I. Sempat 21
+221 D.I. Sitanah 7
+222 D.I. Siwanda 60
+223 D.I. Snok 8
+224 D.I. Surat 75
+225 D.I. Taman 7
+226 D.I. Tengah 26
+227 D.I. Wadas 3
+228 D.I. Wangkal 9
+229 D.I. Wringin 70
+aa Kab. Temanaauna 57717711
+1 D.I. Aji Bangkong 65
+2 D.I. Aji Barang 93
+3 D.I. Aji Bulu 45
+4 D.I. Aji Gambasan 172
+5 D.I. Aji Jaya 132
+6 D.I. Aji Kawah 35
+7 D.I. Aji Kebonsari 237
+8 D.I. Aji Margosono 92
+9 D.I. Aji Mudal (MA) 37
+10 D.I. Aji Nampirejo 106
+11 D.I. Aji Nongko 131
+12 D.I. Andong 9
+13 D.I. Balak (MA) 5
+14 D.I. Balong | 3
+15 D.I. Balong II 10
+16 D.I. Bangkong Mangunsari 241
+17 D.I. Banjaran Plosogaden 12
+18 D.I. Batur 10
+19 D.I. Bedali 52
+20 D.I. Beji (MA) 74
+21 D.I. Belisan 61
+22 D.I. Bengkat II 15
+23 D.I. Bono | 25
+24 D.I. Bonori 40
+25 D.I. Bringinan 58
+26 D.I. Cabak 58
+27 D.I. Candi 25
+28 D.I. Cekdam 81
+29 D.I. Cepoko 68
+30 D.I. Code (MA) 20
+31 D.I. Curug Bajang 77

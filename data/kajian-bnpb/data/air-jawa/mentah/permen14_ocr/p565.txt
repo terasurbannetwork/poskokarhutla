@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+565 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+3 D.LA.T. Guaan TWB 051 30
+4 D.LA.T. Guaan TWB 053 27
+5 D.LA.T. Guaan TWB 054 25
+c Kab. Bolaana Moaondow Utara 3 75
+1 D.LA.T. Binjeita TWB 78 25
+2 D.LA.T. Bohabak TWB 79 25
+3 D.LA.T. Dalapuli TWB 80 25
+d Kab. Minahasa 88 1.579
+1 D.LA.T. Touliang SMM 001 10
+2 D.LA.T. Toliang SMM 002 9
+3 D.LA.T. Toliang SMM 003 7
+4 D.LA.T. Wasian SMM 004 9
+5 D.LA.T. Kalawiran SMM 005 8
+6 D.L.A.T. Pahalaten SMM 006 7
+7 D.LA.T. Touliang SMM 007 5
+8 D.LA.T. Kalawiran SMM 008 6
+9 D.LA.T. Sendangan SMM 010 8
+10 D.I.A.T. Wasian SMM 012 9
+11 D.LA.T. Wasian SMM 013 9
+12 D.LA.T. Sendangan SMM 014 9
+13 D.LA.T. Kalawiran SMM 015 8
+14 D.LA.T. Pahalaten SMM 016 11
+15 D.LA.T. Kalawiran SMM 017 12
+16 D.I.A.T. Wasian SMM 018 10
+17 D.LA.T. Wasian SMM 019 8
+18 D.LA.T. Kalawiran SMM 020 8
+19 D.L.A.T. Talikuran SMM 023 10
+20 D.I.A.T. Wasian SMM 024 10
+21 D.I.A.T. Parepey TWM 003 A 10
+22 D.LA.T. Amongena TWM 005 10
+23 D.LA.T. Tondegesan TWM 006 15
+24 D.LA.T. Touliang TWM 007 15
+25 D.LA.T. Tondegesan TWM 008 10
+26 D.LA.T. Tondegesan TWM 009 15
+27 D.LA.T. Panasen TWM 010 15
+28 D.LA.T. Tondegesan TWM 011 10
+29 D.I.A.T. Tempok TWM 012 10
+30 D.I.A.T. Liba TWM 014 25
+31 D.I.A.T. Tempok TWM 015 22
+32 D.LA.T. Panasen TWM 016 20
+33 D.LA.T. Tondegesan TWM 017 25
+34 D.LA.T. Panasen TWM 018 15
+35 D.I.A.T. Liba TWM 019 18
+36 D.LA.T. Sumarayar TWM 020 14
+37 D.LA.T. Panasen TWM 021 15
+38 D.I.A.T. Talikuran TWM 022 20
+39 D.I.A.T. Tempok TWM 023 25
+40 D.LA.T. Parepey TWM 024 12
+41 D.LA.T. Kanonang TWM 025 20
+42 D.LA.T. Tompaso II TWM 027 15
+43 D.LA.T. Tataaran | TWM 028 25
+44 D.LA.T. Raringis TWM 031 20
+45 D.I.A.T. Wengkol TWM 032 21
+46 D.LA.T. Kampungjawa TWM 033 15
+47 D.LA.T. Tumaratas TWM 035 23
+48 D.LA.T. Noongan TWM 038 25
+49 D.LA.T. Touliang TWM 039 25
+50 D.I.A.T. Kalawiran TWM 040 22
+51 D.I.A.T. Pahalaten TWM 041 25

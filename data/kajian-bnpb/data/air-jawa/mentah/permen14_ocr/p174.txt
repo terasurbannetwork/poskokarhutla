@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+12 D.I. Cibeusi 120
+13 D.I. Ciborelang 55
+14 D.I. Cicemplang 172
+15 D.I. Cidadap 31
+16 D.I. Cidangdarat 104
+17 D.I. Cidaras 48
+18 D.I. Cidulang 45
+19 D.I. Cigalah 48
+20 D.I. Cigaleuh 45
+21 D.I. Cigedang 7
+22 D.I. Cigede 3
+23 D.I. Cigimpur 113
+24 D.I. Cigintung 60
+25 D.I. Cihawu 103
+26 D.I. Ciherang Hilir 847
+27 D.I. Ciherang Udik 83
+28 D.I. Cihideung 40
+29 D.I. Cihisum 425
+30 D.I. Cijarih 58
+31 D.I. Cijeruk 38
+32 D.I. Cijeruk 286
+33 D.I. Cijolang 127
+34 D.I. Cijurey 357
+35 D.I. Cikadongdong 82
+36 D.I. Cikeruh Udik 93
+37 D.I. Cikiara 50
+38 D.I. Cikijing 65
+39 D.I. Cikiung 55
+40 D.I. Cikubang M
+41 D.I. Cikulem 14
+42 D.I. Cilaku 92
+43 D.I. Cilangkap 104
+44 D.I. Ciledug 219
+45 D.I. Cilesang 224
+46 D.I. Ciloa 95
+47 D.I. Cilutung 156
+48 D.I. Cimade 98
+49 D.I. Cimanggu 74
+50 D.I. Cimingking 249
+51 D.I. Cimulah 6
+52 D.I. Cimuncang 132
+53 D.I. Cintaasih 155
+54 D.I. Cipada 78
+55 D.I. Cipamintar 121
+56 D.I. Cipanas 99
+57 D.I. Cipayung 21
+58 D.I. Cipetek 40
+59 D.I. Cipicung 119
+60 D.I. Ciracak 34
+61 D.I. Ciranca 74
+62 D.I. Cireuma 123
+63 D.I. Ciroke 94
+64 D.I. Cisaat 57
+65 D.I. Cisadap 135
+66 D.I. Cisalaka 102
+67 D.I. Cisambeng 281
+68 D.I. Cisempong 104
+69 D.I. Cisurat 100
+70 D.I. Cisurupan 129
+71 D.I. Citando 76
+72 D.I. Citerus 53
+#KANAN
+174
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+73 D.I. Citeureup 319
+74 D.I. Citoga 30
+75 D.I. Ciwaru 184
+76 D.I. Ciwaringin Udik 122
+77 D.I. Curug 140
+78 D.I. Gujubrug 64
+79 D.I. Kembang 59
+80 D.I. Kiararambay 187
+81 D.I. Kubang 21
+82 D.I. Lamping 13
+83 D.I. Legasari 22
+84 D.I. Lentuk 54
+85 D.I. Leuwibatu 178
+86 D.I. Leuwigeni 42
+87 D.I. Leuwijenggot 20
+88 D.I. Muhara 95
+89 D.I. Nagarakembang 47
+90 D.I. Pakuwon 26
+91 D.I. Palembang 213
+92 D.I. Pareang 179
+93 D.I. Rancabuluh 248
+94 D.I. Sampora 40
+95 D.I. Sanghiangdora 100
+96 D.I. Santu 20
+97 D.I. Simpur 242
+98 D.I. Singawada 62
+99 D.I. Situhideung 130
+100 D.I. Sukamurni 9
+101 D.I. Anggrarahan 35
+102 D.I. Babakan 25
+103 D.I. Banjaran 37
+104 D.I. Barung 15
+105 D.I. Batucupu 21
+106 D.I. Batujurung 40
+107 D.I. Batulawang 5
+108 D.I. Batupasar 15
+109 D.I. Baturanjang 26
+110 D.I. Blentuk 390
+111 D.I. Bojong I 25
+112 D.I. Bojong II 20
+113 D.I. Bongas 46
+114 D.I. Borongsong 20
+115 D.I. Burubutuh 20
+116 D.I. Cakrawati 25
+117 D.I. Candana 14
+118 D.I. Canggah 15
+119 D.I. Carikan 15
+120 D.I. Cengal 40
+121 D.I. Ciakar 18
+122 D.I. Cianda 84
+123 D.I. Ciawi | 135
+124 D.I. Ciawi II 17
+125 D.I. Cibacang 8
+126 D.I. Cibalukbuk 37
+127 D.I. Cibarengkok 30
+128 D.I. Cibatugede 10
+129 D.I. Cibayawak 25
+130 D.I. Cibeber 25
+131 D.I. Cibeber 30
+132 D.I. Cibelo 19
+133 D.I. Cibewek 75

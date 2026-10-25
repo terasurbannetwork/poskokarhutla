@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+144 D.I. Gemrengjeng 24
+145 D.I. Gemuruh 20
+146 D.I. Gentan 10
+147 D.I. Gentan 25
+148 D.I. Genting 13
+149 D.I. Geong 31
+150 D.I. Gesing 15
+151 D.I. Gintung 113
+152 D.I. Gintung 10
+153 D.I. Gintung 10
+154 D.I. Gintung 10
+155 D.I. Gintung | 18
+156 D.I. Gites 31
+157 D.I. Glondongan 15
+158 D.I. Gondang 24
+159 D.I. Gondang 11
+160 D.I. Gondang 18
+161 D.I. Gondang 25
+162 D.I. Gondang | 26
+163 D.I. Gondok 51
+164 D.I. Gowong 16
+165 D.I. Gowong I 15
+166 D.I. Gremeng 56
+167 D.I. Gremeng 16
+168 D.I. Gremeng 11
+169 D.I. Grenjeng 15
+170 D.I. Grobogan 19
+171 D.I. Grogak 38
+172 D.I. Gumelar 55
+173 D.I. Gumelar 14
+174 D.I. Gumingsir 11
+175 D.I. Gunturgeni 64
+176 D.I. Gunung 14
+177 D.I. Gunungpring 15
+178 D.I. Gupit I 11
+179 D.I. Guwo 18
+180 D.I. Guyangan 15
+181 D.I. Haji 69
+182 D.I. Igir 25
+183 D.I. Igir Sampang 47
+184 D.I. Ingasl 11
+185 D.I. Iring 10
+186 D.I. Jalaksono 40
+187 D.I. Jali 89
+188 D.I. Jali 15
+189 D.I. Jali I 39
+190 D.I. Jali I 42
+191 D.I. Jali I 29
+192 D.I. Jali II 25
+193 D.I. Jali III 15
+194 D.I. Jambe 18
+195 D.I. Jambean 16
+196 D.I. Jambean 17
+197 D.I. Jambean 25
+198 D.I. Jambean 12
+199 D.I. Jambean 14
+200 D.I. Jambu 30
+201 D.I. Jambu 16
+202 D.I. Jarakan 11
+203 D.I. Jatisrono 24
+204 D.I. Jeboran 10
+#KANAN
+285 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+205 D.I. Jematri 25
+206 D.I. Jengkol 18
+207 D.I. Jepet 15
+208 D.I. Jero 14
+209 D.I. Jeruk 70
+210 D.I. Jeruk I 11
+211 D.I. Jeruk II 14
+212 D.I. Jimat 176
+213 D.I. Jlamprang 10
+214 D.I. Jlarang 53
+215 D.I. Jlarang 14
+216 D.I. Jlegong 18
+217 D.I. Jlegong 10
+218 D.I. Jojogan 27
+219 D.I. Jologroho 32
+220 D.I. Judo 15
+221 D.I. Jumbleng 12
+222 D.I. Jurang 93
+223 D.I. Jurang 115
+224 D.I. Jurang 18
+225 D.I. Jurang | 10
+226 D.I. Jurang II 20
+227 D.I. Jurangjero 28
+228 D.I. Kacung 20
+229 D.I. Kagungan 45
+230 D.I. Kaligering 24
+231 D.I. Kalijurang 12
+232 D.I. Kalikuning 50
+233 D.I. Kalilompo II 25
+234 D.I. Kalimendong 139
+235 D.I. Kalimiri 16
+236 D.I. Kaliputih 121
+237 D.I. Kalisalak 17
+238 D.I. Kalitompo 25
+239 D.I. Kalitulang 171
+240 D.I. Kalong | 20
+241 D.I. Kalong II 11
+242 D.I. Kancil 39
+243 D.I. Kandang 10
+244 D.I. Kandri 10
+245 D.I. Kapuk 31
+246 D.I. Karang 16
+247 D.I. Karang Anyar 17
+248 D.I. Karang Tengah 10
+249 D.I. Karanglewas 12
+250 D.I. Karangsambung 25
+251 D.I. Karangsari 198
+252 D.I. Karangtengah 16
+253 D.I. Karung 10
+254 D.I. Katilang II 15
+255 D.I. Katilompo II 25
+256 D.I. Kauman 18
+257 D.I. Kawista 27
+258 D.I. Kayugiang 10
+259 D.I. Kebo 18
+260 D.I. Kebokuning 12
+261 D.I. Kedalon 17
+262 D.I. Kedawung 13
+263 D.I. Kedung Gupit 55
+264 D.I. Kedung Jengkol 25
+265 D.I. Kedung Mayong 50

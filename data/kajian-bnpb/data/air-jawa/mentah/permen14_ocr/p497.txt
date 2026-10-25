@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+497 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+129 D.LA.T. Tanjung SUPJ11 18
+130 D.LA.T. Tanjung SUPJ15 22
+131 D.LA.T. Bajo SUPJ17 16
+132 D.LA.T. Sogo SUPJ22 15
+133 D.LA.T. Tanjung SUPJ23 20
+134 D.LA.T. Mojorembun SUPJO7 20
+135 D.LA.T. Pulo SUPJO8 20
+136 D.LA.T. Sogo SUPJO9 20
+137 D.LA.T. Ngloram TW195/346 27
+138 D.LA.T. Sumber TW82/231 47
+b Kab. Bovolali 16 292
+
+1 D.LA.T. Keyongan PWS 001 19
+
+2 D.LA.T. Sembungan PWS 005 22
+
+3 D.LA.T. Sembungan PWS 006 17
+
+4 D.LA.T. Sembungan PWS 007 15
+
+5 D.LA.T. Sembungan PWS 009 15
+
+6 D.LA.T. Sembungan PWS 010 17
+
+7 D.LA.T. Ketitang PWS 011 16
+
+8 D.IL.A.T. Ketitang PWS 012 16
+
+9 D.L.A.T. Ketitang PWS 014 12
+10 D.LA.T. Jeron PWS 017 17
+11 D.LA.T. Jeron PWS 018 32
+12 D.LA.T. Sembungan PWS 050 25
+13 D.LA.T. Sembungan PWS 053 14
+14 D.LA.T. Sembungan PWS 055/249 26
+15 D.LA.T. Jeron PWS 056 14
+16 D.L.A.T. Ketitang PWS 057 15
+c Kab. Brebes 48 929
+
+1 D.LA.T. Cenang CWPO1 28
+2 D.LA.T. Jagalumpeni CWwPO2 20
+
+3 D.LA.T. Kedungtukang PWP36 6
+
+4 D.LA.T. Jatibarangkidul PWP39 11
+
+5 D.LA.T. Wanacala PWP42 11
+
+6 D.LA.T. Wanacala PWP44 7
+
+7 D.LA.T. Wanacala PWP46 10
+
+8 D.LA.T. Pedeslohor PWP79 5
+
+9 D.LA.T. Kalipucang PWP80 13
+10 D.LA.T. Kedungtukang PWP84 7
+11 D.LA.T. Kedungtukang PWP85 7
+12 D.LA.T. Rengasbandung PWP87 10
+13 D.LA.T. Buaran PWP88 6
+14 D.LA.T. Kalialang PWP90 7
+15 D.LA.T. Karanglo PWP92 8
+16 D.LA.T. Karanglo CWwP93 7
+17 D.LA.T. Wanacala PWP97 11
+18 D.L.A.T. Jatirokeh PWP98 6
+19 D.LA.T. Jagalumpeni TW109/200 21
+20 D.I.LA.T. Wanacala PWP111/208 25
+21 D.LA.T. Jatimakmur PWP129 35
+22 D.LA.T. Karangsembung PWP130 26
+23 D.LA.T. Wanatawang PWP131 26
+24 D.LA.T. Cenang PWP132/207 23
+25 D.LA.T. Gegerkunci PWP133 16
+26 D.LA.T. Gegerkunci PWP135/209 31
+27 D.LA.T. Wanatawang PWP136 32
+28 D.LA.T. Klampis PWP137/226 25
+29 D.LA.T. Klampis PWP138 25
+30 D.I.A.T. Jatimakmur PWP139 28
+31 D.L.A.T. Jatimakmur PWP140 21

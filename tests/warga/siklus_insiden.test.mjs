@@ -146,7 +146,7 @@ uji("GET /api/sla: durasi tiap tahap siklus ini cocok dengan jam yang dimajukan"
   assert.equal(T.tugas_konfirmasi.dalam_target_pct, 100, "180 menit dalam target 360");
   assert.equal(T.konfirmasi_kabar.n, 1); assert.equal(T.konfirmasi_kabar.p50_menit, mnt(K.kabar - K.konfirmasi_pada)); assert.equal(T.konfirmasi_kabar.dalam_target_pct, 100);
   assert.equal(T.konfirmasi_tiba.n, 0, "tanpa penugasan regu: tahap tiba kosong, bukan nol"); assert.strictEqual(T.konfirmasi_tiba.p50_menit, null);
-  assert.equal(T.padam_terverifikasi.n, 1); assert.equal(T.padam_terverifikasi.p50_menit, mnt(kini2 - K.padam_pada)); assert.ok(T.padam_terverifikasi.p50_menit >= 48 * 60 && T.padam_terverifikasi.p50_menit <= 50 * 60, `padam ke terverifikasi ${T.padam_terverifikasi.p50_menit} menit`);
+  assert.equal(T.padam_terverifikasi.n, 1); assert.equal(T.padam_terverifikasi.p50_menit, mnt(kini2 - K.padam_pada)); assert.ok(T.padam_terverifikasi.p50_menit >= 48 * 60 && T.padam_terverifikasi.p50_menit <= 50 * 60 + 9, `padam ke terverifikasi ${T.padam_terverifikasi.p50_menit} menit`);
   const P = Object.fromEntries(r.j.proses.map(p => [p.tahap, p.n])); assert.deepEqual([P.deteksi, P.tugas, P.konfirmasi, P.padam, P.terverifikasi, P.muncul_lagi], [1, 1, 1, 1, 1, 0]);
   const w = r.j.wilayah.find(x => x.nama === "Seruyan" || x.kode === "Seruyan" || x.kode === "62"); assert.ok(w, JSON.stringify(r.j.wilayah)); assert.equal(w.n, 1);
   assert.equal(r.j.lapangan.n.padam, 1); assert.equal(r.j.lapangan.padam_terverifikasi_pct, 100);

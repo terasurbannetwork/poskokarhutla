@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Guwo Landak 18
+51 D.I. Jabon 24
+52 D.I. Jambu 20
+53 D.I. Jasem 5
+54 D.I. Jati | 22
+55 D.I. Jati II 5
+56 D.I. Jati Rejo 12
+57 D.I. Jeruk 26
+58 D.I. Jetis 227
+59 D.I. Jolotundo 25
+60 D.I. Joso 364
+61 D.I. Jurang Jungkel 23
+62 D.I. Jurang Jungkel | 20
+63 D.I. Jurang Kunci 12
+64 D.I. Juwet 27
+65 D.I. Juwok 14
+66 D.I. Juwok I 6
+67 D.I. Juwok II 4
+68 D.I. Juwok III 12
+69 D.I. Juwok IV 14
+70 D.I. Juwok V 13
+71 D.I. Juwok VI 18
+72 D.I. Juwok VII 20
+73 D.I. Kajar 38
+74 D.I. Kali Tunggak 3
+75 D.I. Kalianjok 266
+76 D.I. Kapas 483
+77 D.I. Karangsono 17
+78 D.I. Kebon Agung 74
+79 D.I. Ked. Padang 35
+80 D.I. Kedung Bengkah 2
+81 D.I. Kedung Krangkeng 7
+82 D.I. Kedung Kudi 183
+83 D.I. Kedung Ringin 3
+84 D.I. Kedung Sengon 439
+85 D.I. Kedung Soko 788
+86 D.I. Kemukus 26
+87 D.I. Ketandan 757
+88 D.I. Klati 158
+89 D.I. Klili I 15
+90 D.I. Klili 1 24
+91 D.I. Klili II 24
+92 D.I. Klonggean | 46
+93 D.I. Klonggean II 111
+94 D.I. Kobong | 13
+95 D.I. Kobong II 56
+96 D.I. Kobong III 9
+97 D.I. Kopen 14
+98 D.I. Kramat 233
+99 D.I. Krecoan | 20
+100 D.I. Krecoan II 18
+101 D.I. Krecoan III 34
+102 D.I. Kuncir 13
+103 D.I. Kweden 31
+104 D.I. Lempoh 65
+105 D.I. Logawe 259
+106 D.I. Macanan 369
+107 D.I. Maguan 311
+108 D.I. Manding 5
+109 D.I. Manyung 63
+110 D.I. Meko 3
+#KANAN
+343 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+111 D.I. Mekuto | 4
+112 D.I. Mekuto II 8
+113 D.I. Mencaro 130
+114 D.I. Miilir 795
+115 D.I. Mujang 8
+116 D.I. Ngampel Gading 11
+117 D.I. Ngargo Wekas 29
+118 D.I. Ngargojali I 34
+119 D.I. Ngargojali II 47
+120 D.I. Ngliman 3
+121 D.I. Ngloni 13
+122 D.I. Nglumpang 24
+123 D.I. Ngomben 122
+124 D.I. Ngumpul I 16
+125 D.I. Ngumpul II 47
+126 D.I. Nitis 10
+127 D.I. Nolehan 5
+128 D.I. Pandansili II 21
+129 D.I. Pandansili | 2
+130 D.I. Peh Pandan 28
+131 D.I. Pengkol 126
+132 D.I. Perning 133
+133 D.I. Petung Surak 21
+134 D.I. Petungulung 12
+135 D.I. Pogoh 13
+136 D.I. Poleng 33
+137 D.I. Precet 7
+138 D.I. Puh Salak 131
+139 D.I. Punjul I 35
+140 D.I. Punjul II 3
+141 D.I. Purwo 74
+142 D.I. Reco Lancar 35
+143 D.I. Sabrang 88
+144 D.I. Sambirobyong 45
+145 D.I. Sbr. Agung 322
+146 D.I. Sbr. Argomulyo 178
+147 D.I. Sbr. Ayung 43
+148 D.I. Sbr. Blereng 5
+149 D.I. Sbr. Dandang 66
+150 D.I. Sbr. Gondang I 60
+151 D.I. Sbr. Gondang II 12
+152 D.I. Sbr. Gondang III 6
+153 D.I. Sbr. Gondang IV 29
+154 D.I. Sbr. Gosari 11
+155 D.I. Sbr. Jatitunggak 34
+156 D.I. Sbr. Jurang Jero 30
+157 D.I. Sbr. Jurang Limas 47
+158 D.I. Sbr. Jurang Ringin 11
+159 D.I. Sbr. Loricik 28
+160 D.I. Sbr. Manggrarejo 85
+161 D.I. Sbr. Manik 14
+162 D.I. Sbr. Ngambak | 62
+163 D.I. Sbr. Ngambak II 120
+164 D.I. Sbr. Puncu 5
+165 D.I. Sbr. Sangku 18
+166 D.I. Sbr. Sedati 66
+167 D.I. Sbr. Sentono 3
+168 D.I. Sbr. Trincingan 54
+169 D.I. Sbr. Wates 34
+170 D.I. Selopuro | 113
+171 D.I. Selopuro II 6

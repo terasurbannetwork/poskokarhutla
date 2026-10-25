@@ -1,0 +1,146 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+40 D.I. Sei. Beduri Besar 75
+41 D.I. Sei. Beduri Kecil 60
+42 D.I. Sei. Belimbing 28
+43 D.I. Sei. Bemban 75
+44 D.I. Sei. Benso 50
+45 D.I. Sei. Benut Kasiro Ulu 35
+46 D.I. Sei. Berkun 24
+47 D.I. Sei. Berkun I 30
+48 D.I. Sei. Besa 30
+49 D.I. Sei. Binjai 38
+50 D.I. Sei. Birah 520
+51 D.I. Sei. Birun 100
+52 D.I. Sei. Bukit Petai 20
+53 D.I. Sei. Bukit Putih 25
+54 D.I. Sei. Bukit Sumbing 70
+55 D.I. Sei. Buluh Datuk Nan Duo 27
+56 D.I. Sei. Durian 20
+57 D.I. Sei. Gedung 33
+58 D.I. Sei. Gelimbing 40
+59 D.I. Sei. Kandang 25
+60 D.I. Sei. Kandang Alau 35
+61 D.I. Sei. Karit 30
+62 D.I. Sei. Kasai 37
+63 D.I. Sei. Keliki 40
+64 D.I. Sei. Keruh 30
+65 D.I. Sei. Ketari Besar 75
+66 D.I. Sei. Ketari Kecil 60
+67 D.I. Sei. Ketari Mudik 11
+68 D.I. Sei. Kuyung 40
+69 D.I. Sei. Lako 60
+70 D.I. Sei. Layau 55
+71 D.I. Sei. Lebuh 105
+72 D.I. Sei. Letuh 22
+73 D.I. Sei. Limun, Dsn. Napal Melintang 35
+74 D.I. Sei. Lisit 300
+75 D.I. Sei. Lubuk Betung 40
+76 D.I. Sei. Lubuk Celao 40
+77 D.I. Sei. Lubuk Cermai 38
+78 D.I. Sei. Lubuk Dusun Dalam 35
+79 D.I. Sei. Lubuk Kasai 9
+80 D.I. Sei. Lubuk Murai 30
+81 D.I. Sei. Lubuk Talun 45
+82 D.I. Sei. Lulus M
+83 D.I. Sei. Maloko Kecil 35
+84 D.I. Sei. Manaaus 30
+85 D.I. Sei. Menanti Kanan 20
+86 D.I. Sei. Menturun 95
+87 D.I. Sei. Muara Gedang 35
+88 D.I. Sei. Narso 25
+89 D.I. Sei. Nau 26
+90 D.I. Sei. Paniban 20
+91 D.I. Sei. Pati Balana 60
+92 D.I. Sei. Pelajau 75
+93 D.I. Sei. Penanti Kiri 30
+94 D.I. Sei. Peneru Kecil 50
+95 D.I. Sei. Peniban Lintang 25
+96 D.I. Sei. Peniban Nil 35
+97 D.I. Sei. Peninjau 60
+98 D.I. Sei. Perigi 69
+99 D.I. Sei. Petai Bungkuk 60
+100 D.I. Sei. Pinang I 20
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+101 D.I. Sei. Pisang II 60
+102 D.I. Sei. Renah 25
+103 D.I. Sei. Renah Limau Agung 24
+104 D.I. Sei. Rumbang 25
+105 D.I. Sei. SAB 45
+106 D.I. Sei. Salak 30
+107 D.I. Sei. Sebelat 75
+108 D.I. Sei. Serawo 30
+109 D.I. Sei. Solang 50
+110 D.I. Sei. Solok 25
+111 D.I. Sei. Sualang 26
+112 D.I. Sei. Tanah 25
+113 D.I. Sei. Tanaman 55
+114 D.I. Sei. Telentam 55
+115 D.I. Sei. Temalang Seberang 40
+116 D.I. Sei. Temiang 40
+117 D.I. Sei. Temulun 27
+118 D.I. Sei. Tiung 40
+119 D.I. Sei. Tolang 50
+120 D.I. Sei. Ulu Kederang 18
+121 D.I. Sei. Batang Talang 35
+122 D.I. Sei. Bukit Lasih | 15
+123 D.I. Sei. Bukit Lasih II 25
+124 D.I. Sei. Bungin 30
+125 D.I. Sei. Kebunut Besar 70
+126 D.I. Sei. Kemunut 29
+127 D.I. Sei. Keranji, Panti Seberang 85
+128 D.I. Sei. Pemuat Ulu 32
+129 D.I. Sei. Renah Alai 30
+130 D.I. Sei. Sekuang 100
+131 D.I. Sei. Selasih 40
+132 D.I. Sei. Talang 20
+133 D.I. Sei. Tebat 25
+134 D.I. Sei. Teluk Sigatal 30
+135 D.I. Sei. Tendah 30
+136 D.I. Sei. Ulu Air 35
+137 D.I. Sumber Rejeki 50
+138 D.I. Sungai Baung 25
+139 D.I. Tanjung Kasiro 20
+f Kab. Taniuna Jabuna Barat 2 275
+
+1 D.I. Sei Bungin 125
+
+2 D.I. Sei Melawai 150
+
+a Kab. Tebo 5 1.284
+
+1 D.I. Payo Tebat 60
+
+2 D.I. Sei Pagar Puding 400
+
+3 D.I. Sei Sukaramai 220
+
+4 D.I. Sei Kasai 100
+
+5 D.I. Semabu 504
+
+h Kota Sunaai Penuh 66 4.348
+
+1 D.I. Batu Lumut 112
+
+2 D.I. Dusun Baru Debai 51
+
+3 D.I. Jembatan Serong 245
+
+4 D.I. Renah Kayu Embun 180
+
+5 D.I. Sei. Bungkal 230
+
+6 D.I. Sei. Dadap 101
+
+7 D.I. Air Baru 30
+
+8 D.I. Air Mati Pendung Hiang 60
+
+9 D.I. Air Sesat 18

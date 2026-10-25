@@ -12,7 +12,7 @@ const baca = p => readFileSync(new URL(p, akar), 'utf8')
 const win = {}
 new Function('window', baca('public/peta_karhutla.js'))(win)   // realm yang sama: deepStrictEqual sah
 const R = win.PetaKarhutla
-for (const f of ['atur', 'cekKab', 'siapkanKab', 'agregatKab', 'batasKab', 'warnaKab', 'kelasKab']) assert.equal(typeof R[f], 'function', `peta_karhutla.js harus mengekspor ${f}`)
+for (const f of ['atur', 'cekKab', 'siapkanKab', 'agregatKab', 'batasKab', 'warnaKab', 'kelasKab', 'bulat2', 'teksKab', 'kosongKab']) assert.equal(typeof R[f], 'function', `peta_karhutla.js harus mengekspor ${f}`)
 
 // 31 hari 2026-09-21 .. 2026-10-21 (Senin 19 Okt = indeks 28); celah 20 Okt (indeks 29) dan 25 Sep (indeks 4)
 const hari = Array.from({ length: 31 }, (_, i) => R.tambah('2026-09-21', i))
@@ -203,8 +203,58 @@ test('pengabelan: peta_kab.js sah secara sintaks; index.html memuatnya sesudah p
 test('selera pemilik: angka di tooltip/popup overlay ditulis apa adanya ("1.234 ha"), tanpa tanda ±', () => {
   const j = baca('public/peta_kab.js')
   assert.doesNotMatch(j, /±/, 'peta_kab.js memakai ± (pemilik: tanpa ±)')
-  assert.match(j, /const nilai = k => hit\[k\] \? `\$\{fmt\(hit\[k\]\)\} ha` : "Tanpa deteksi"/)
+  assert.equal(R.teksKab('luas', 91322, n => n.toLocaleString('id-ID')), '91.322 ha', 'pemilik 22 Okt 2026: angka luas persis seperti deck, tidak dibulatkan')
   assert.doesNotMatch(baca('public/peta_kab.css'), /±/)
+})
+
+test('en.json: kalimat baru overlay kabupaten (sumber FIRMS, deteksi ulang, belum padam kosong) punya padanan EN, termasuk yang dihasilkan fungsi murni', () => {
+  const en = JSON.parse(baca('public/i18n/en.json')).kamus
+  for (const t of ['Perkiraan satelit NASA FIRMS, bukan luas resmi.', 'Api yang sama terhitung lagi tiap hari.', 'Tanpa deteksi pada periode ini', 'Tidak ada yang belum padam',
+    R.kosongKab('luas', 0), R.kosongKab('luas', 5), R.kosongKab('belum', 0), R.kosongKab('belum', 5)]) assert.ok(en[t], `en.json tanpa kunci: ${t}`)
+})
+
+test('overlay kabupaten: sumber disebut, periode jumlah diberi catatan deteksi ulang, satu penghitung waktu per input tanggal, warna lewat feature-state, pasang dipisah dari gambar', () => {
+  const j = baca('public/peta_kab.js')
+  assert.match(j, /R\.teksKab\(st\.metrik, hit\[k\], fmt\)/, 'angka tooltip/popup lewat R.teksKab (angka persis + belum padam 0 = "0 ha")')
+  assert.match(j, /R\.kosongKab\(m, kls\.maks\)/, 'baris legenda petak kosong lewat R.kosongKab')
+  assert.match(j, /Sumber NASA FIRMS, bukan luas resmi\./, 'popup menyebut sumber')
+  assert.match(j, /Api yang sama terhitung lagi tiap hari\./, 'jumlah periode luas diberi catatan deteksi ulang')
+  // satu penghitung bersama membuat Sampai (Tab dari Dari < 600 ms) membatalkan komit Dari
+  assert.doesNotMatch(j, /clearTimeout\(tunda\)/, 'peta_kab.js: penghitung waktu tanggal harus per input (c._h), bukan bersama')
+  assert.match(j, /clearTimeout\(c\._h\)/)
+  const lap = baca('public/laporan.js')
+  assert.doesNotMatch(lap, /clearTimeout\(tundaTgl\)/, 'laporan.js: penghitung waktu tanggal harus per input (c._h), bukan bersama')
+  assert.match(lap, /clearTimeout\(c\._h\)/)
+  // ganti periode tidak boleh memuat ulang ubin: warna kelas di feature-state "c", ekspresi paint tetap
+  assert.doesNotMatch(j, /setPaintProperty\("kab-fill"/, 'setPaintProperty dengan ekspresi baru memuat ulang semua ubin sumber tiap ganti periode')
+  assert.match(j, /\["feature-state", "c"\]/)
+  // pasang sumber dan penggambaran awal tidak satu tugas dengan penyelesaian fetch
+  assert.match(j, /await new Promise\(nanti\); if \(id !== gen\) return;\s+pasang\(\); nanti\(/)
+})
+
+test('selera pemilik: ± yang sudah dibersihkan dari teks tampil tidak kembali (kartu Peta provinsi di laporan.js, tooltip/laci di index.html)', () => {
+  assert.doesNotMatch(baca('public/laporan.js'), /`±\$\{|"±" \+|HPH ± 2014/, 'laporan.js: ± kembali di kartu Peta provinsi / sumber konsesi')
+  assert.doesNotMatch(baca('public/index.html'),
+    /"Sel ± 11 km"|"±" \+ fmt\(Math\.round\(d\.pg|"± " \+ fmt\(x\.(siklus_menit|siram_per_jam)|per sel ± 11 km\)<\/div>|Konsesi \(data ± 2014\)|garis api aktif ± \$|sawit & HPH ± 2014 · HTI|<td class="n num">± \$\{fmtJam/,
+    'index.html: ± kembali di teks tampil yang sudah dibersihkan')
+})
+
+test('bulat2: dua angka penting untuk tampilan luas; di bawah 100 tak berubah, galat relatif paling banyak 5%', () => {
+  assert.equal(R.bulat2(4687), 4700); assert.equal(R.bulat2(397), 400); assert.equal(R.bulat2(83), 83); assert.equal(R.bulat2(1), 1); assert.equal(R.bulat2(0), 0)
+  assert.equal(R.bulat2(233748), 230000); assert.equal(R.bulat2(191551), 190000); assert.equal(R.bulat2(99), 99); assert.equal(R.bulat2(100), 100); assert.equal(R.bulat2(995), 1000)
+  for (let v = 1; v < 100; v++) assert.equal(R.bulat2(v), v, `${v} < 100 harus tetap`)
+  for (let v = 1; v <= 2.5e6; v = Math.ceil(v * 1.07)) { const r = R.bulat2(v); assert.ok(r >= 1 && Math.abs(r - v) / v <= 0.0501, `${v} -> ${r}: galat > 5% atau jatuh ke 0`) }
+})
+
+test('teksKab / kosongKab: belum padam 0 tidak pernah tertulis "Tanpa deteksi" (kabupaten itu bisa punya deteksi yang tak bertahan 12-36 jam)', () => {
+  const f = n => n.toLocaleString('id-ID')
+  assert.equal(R.teksKab('luas', undefined, f), 'Tanpa deteksi'); assert.equal(R.teksKab('luas', 0, f), 'Tanpa deteksi')
+  assert.equal(R.teksKab('belum', undefined, f), '0 ha'); assert.equal(R.teksKab('belum', 0, f), '0 ha')
+  assert.equal(R.teksKab('luas', 4687, f), '4.687 ha'); assert.equal(R.teksKab('belum', 397, f), '397 ha'); assert.equal(R.teksKab('luas', 83, f), '83 ha')
+  for (const v of [undefined, 0, 5, 4687]) assert.doesNotMatch(R.teksKab('belum', v, f), /Tanpa deteksi/)
+  for (const maks of [0, 1, 5, 4687]) assert.doesNotMatch(R.kosongKab('belum', maks), /Tanpa deteksi/)
+  assert.equal(R.kosongKab('luas', 5), 'Tanpa deteksi'); assert.equal(R.kosongKab('luas', 0), 'Tanpa deteksi pada periode ini')
+  assert.equal(R.kosongKab('belum', 0), 'Tidak ada yang belum padam')
 })
 
 // data/peta_karhutla_kab.json (bila sudah terbit): invarian terhadap peta_karhutla.json dan GeoJSON kabupaten layar

@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+575 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+63 D.LA.T. Lanoulu P.75 KDI 10
+64 D.LA.T. Ngapaaha P.103 KDI 10
+65 D.ILA.T. Ngapaaha P.104 KDI 10
+66 D.I.A.T. Ngapaaha P.105 KDI 10
+67 D.L.A.T. Asingi P.114 KNS 10
+68 D.LA.T. Asingi P.115 KNS 10
+69 D.I.A.T. Asingi P.116 KNS 10
+70 D.LA.T. Wadonggo P.117 KNS 10
+71 D.LA.T. Wadonggo P.118 KNS 10
+72 D.LA.T. Wadonggo P.136 KNS 10
+73 D.LA.T. Lalowatu P1 AB 10
+74 D.LA.T. Lalosingi P.2AB 10
+75 D.LA.T. Watumelewe P.138 KNS 10
+76 D.LA.T. Onembute P.30 KDI 10
+77 D.LA.T. Onembute P.45 KDI 3
+78 D.LA.T. Onembute P.46 KDI 3
+79 D.LA.T. Waworaha P.44 KDI 8
+80 D.IL.LA.T. Palangga P.50 KDI 3
+81 D.LA.T. Lipumasagena P.76 KDI 6
+82 D.L.A.T. Basala P.77 KDI 8
+83 D.LA.T. Basala BL. 01 10
+84 D.LA.T. Basala BL. 03 8
+85 D.LA.T. Basala BL.04 8
+86 D.I.A.T. Basala BL. 05 8
+87 D.LA.T. Basala BL. 06 8
+88 D.I.A.T. Basala BL. 07 8
+89 D.ILA.T. Lipumasagena LM. 01 8
+90 D.L.A.T. Lipumasagena LM. 02 8
+91 D.LA.T. Lipumasagena LM. 03 6
+92 D.LA.T. Lipumasagena LM.04.A 8
+93 D.ILA.T. Lipumasagena LM. 06 8
+94 D.LA.T. Lipumasagena LM. 07 8
+95 D.LA.T. Lipumasagena LM. 08 8
+96 D.ILA.T. Lipumasagena LM.O9.A 6
+97 D.LA.T. Lipumasagena LM. 10 8
+98 D.LA.T. Lipumasagena LM. 11 6
+99 D.LA.T. Lipumasagena LM. 13 8
+100 D.L.A.T. Lipumasagena LM. 14 8
+101 D.LA.T. Langgowala P.95 KDI 8
+102 D.LA.T. Langgowala P.96 KDI 8
+103 D.LA.T. Bimamaroa P.113 KNS 8
+104 D.LA.T. Lambakara P.120 KNS 8
+e Kab. Muna 9 64
+1 D.LA.T. Abadi Jaya P.01 MNA 7
+2 D.LA.T. Abadi Jaya P.02 MNA 7
+3 D.ILA.T. Abadi Jaya P.03 MNA 7
+4 D.LA.T. Abadi Jaya P.04 MNA 7
+5 D.LA.T. Parura Jaya P.05 MNA 7
+6 D.LA.T. Parura Jaya P.06 MNA 7
+7 D.LA.T. Kasimpa Jaya P.07 MNA 7
+8 D.I.A.T. Katangana P.08 MNA 7
+9 D.I.A.T. Labaha P.09 MNA 8
+f Kota Bau-Bau 4 26
+
+1 D.LA.T. Loko P.01 BTN 5
+2 D.LA.T. Loko II P.02 BTN 5
+3 D.LA.T. Kaisabu | P.03 BTN 8
+4 D.LA.T. Kaisabu II P.05 BTN 8

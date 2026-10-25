@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+527 D.I. Pasrepan I 32
+528 D.I. Pasrepan II 30
+529 D.I. Pehklitik 68
+530 D.I. Pelas 1
+531 D.I. Pelus 12
+532 D.I. Pentong Mindi 6
+533 D.I. Petung 2
+534 D.I. Petungroto 20
+535 D.I. Plandi 265
+536 D.I. Pongso 1
+537 D.I. Pringo 157
+538 D.I. Pucang 5
+539 D.I. Pucangsongo 163
+540 D.I. Pusung Pandan 48
+541 D.I. Pusung Pegat 5
+542 D.I. Pusung Tuno 2
+543 D.I. Rembun 166
+544 D.I. Ringin 30
+545 D.I. Rono Sumitro 35
+546 D.I. Rowo 1
+547 D.I. Salam 39
+548 D.I. Sambong 7
+549 D.I. Sanankerto 28
+550 D.I. Sayang 3
+551 D.I. Sumber Kedungkandang 143
+552 D.I. Sebaluh 99
+553 D.I. Sedo 4
+554 D.I. Segaran (Kadalpang) 260
+555 D.I. Sekar 1
+556 D.I. Sembon Kulon 27
+557 D.I. Sembon Wetan 26
+558 D.I. Seplupuh II 8
+559 D.I. Sepudak 38
+560 D.I. Sepukul 15
+561 D.I. Serandu 4
+562 D.I. Sereng 59
+563 D.I. Serut 4
+564 D.I. Sido 3
+565 D.I. Simpang 1
+566 D.I. Singgahan 126
+567 D.I. Slamet (Kec. Pagak) 83
+568 D.I. Slatri VI 2
+569 D.I. Songko Lor A 3
+570 D.I. Suji 25
+571 D.I. Suko Rejeki/Sumber Rejeki 75
+572 D.I. Sukoraharjo | (Kadalpang) 59
+573 D.I. Sukoraharjo II (Kadalpang) 55
+574 D.I. Sukoraharjo III (Kadalpang) 139
+575 D.I. Sukorejo 59
+576 D.I. Sumber Agung 39
+577 D.I. Sumber Amadanom 13
+578 D.I. Sumber Ampel I 15
+579 D.I. Sumber Andong/Sumber Petung | 18
+580 D.I. Sumber Angkrik 60
+581 D.I. Sumber Babaan 43
+582 D.I. Sumber Bandung 43
+583 D.I. Sumber Bandungrejo 86
+584 D.I. Sumber Bantal 219
+585 D.I. Sumber Barek 11
+586 D.I. Sumber Bebek 5
+587 D.I. Sumber Belik Bedali 9
+#KANAN
+338
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+588 D.I. Sumber Bendo I 20
+589 D.I. Sumber Bledokan 56
+590 D.I. Sumber Bocek 43
+591 D.I. Sumber Boros 20
+592 D.I. Sumber Bunder 53
+593 D.I. Sumber Busu 5
+594 D.I. Sumber Cangkring (Kec. Wajak) 34
+595 D.I. Sumber Cangkring (Kec. Karangploso) 10
+596 D.I. Sumber Duren 30
+597 D.I. Sumber Duren I 3
+598 D.I. Sumber Duren II 2
+599 D.I. Sumber Duren III 3
+600 D.I. Sumber Duren Iv 2
+601 D.I. Sumber Duren V 5
+602 D.I. Sumber Duren VI 3
+603 D.I. Sumber Durmo 40
+604 D.I. Sumber Duwet 2
+605 D.I. Sumber Endut 8
+606 D.I. Sumber Gamino 27
+607 D.I. Sumber Gedangan 100
+608 D.I. Sumber Gelang I 80
+609 D.I. Sumber Genitro 14
+610 D.I. Sumber Gentong I 15
+611 D.I. Sumber Gentong II 107
+612 D.I. Sumber Gesing 20
+613 D.I. Sumber Gilang 22
+614 D.I. Sumber Gongso 21
+615 D.I. Sumber Jaruman 19
+616 D.I. Sumber Jeding (Kec. Dampit) 9
+617 D.I. Sumber Jeding/Sawahan (Kec. Turen) 98
+618 D.I. Sumber Juwet I 17
+619 D.I. Sumber Juwet II 13
+620 D.I. Sumber Kadipaten 9
+621 D.I. Sumber Kaligetih 12
+622 D.I. Sumber Kasin 26
+623 D.I. Sumber Kasri 138
+624 D.I. Sumber Katesan 10
+625 D.I. Sumber Kemanten 45
+626 D.I. Sumber Kendi 19
+627 D.I. Sumber Kidangberik 68
+628 D.I. Sumber Klepu 15
+629 D.I. Sumber Kotes (Kedok/Turen) 16
+630 D.I. Sumber Kotes (Babadan/Ngajum) 15
+631 D.I. Sumber Kunci 25
+632 D.I. Sumber Kutuk 15
+633 D.I. Sumber Lebak Kresek 30
+634 D.I. Sumber Lepor 49
+635 D.I. Sumber Licin 40
+636 D.I. Sumber Lombok 25
+637 D.I. Sumber Mlaten 8
+638 D.I. Sumber Mundu 12
+639 D.I. Sumber Nagan 19
+640 D.I. Sumber Ngelak 4
+641 D.I. Sumber Pakel 113
+642 D.I. Sumber Pancuran 97
+643 D.I. Sumber Pandanrejo (Kec. Pagak) 109
+644 D.I. Sumber Pasu 23
+645 D.I. Sumber Pecaton 63
+646 D.I. Sumber Perinci 23
+647 D.I. Sumber Peteng 12
+648 D.I. Sumber Pohkecik 8

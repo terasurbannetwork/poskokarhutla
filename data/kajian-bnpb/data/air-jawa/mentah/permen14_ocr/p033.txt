@@ -1,0 +1,77 @@
+#TATA_LETAK satu-tabel lebar=2480
+33 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+32 D.I. Cisimpen 200 Kabupaten Bandung z 5 Ha
+Kabupaten Garut z 195 Ha
+33 D.I. Batu 30 Kabupaten Cirebon z - Ha
+Kota Cirebon -z 30 Ha
+34 D.I. Cirongkob 197 Kabupaten Cirebon z 139 Ha
+Kabupaten Kuningan z 58 Ha
+35 D.I. Cisamaya 228 Kabupaten Cirebon z 141 Ha
+Kabupaten Kuningan z 87 Ha
+36 D.I. Cigolempang 244 Kabupaten Cirebon z 165 Ha
+Kabupaten Kuningan z 79 Ha
+37 D.I. Leuwijawa 242 Kabupaten Cirebon z 210 Ha
+Kabupaten Kuningan z 32 Ha
+38 D.I. Cikembang 663 Kota Banjar z 49 Ha
+Kabupaten Ciamis z 614 Ha
+39 D.I. Gunung Putri 500 Kota Banjar z 30 Ha
+Kabupaten Ciamis z 470 Ha
+40 D.I. Wangundireja 206 Kota Banjar z 4 Ha
+Kabupaten Ciamis -z 202 Ha
+41 D.I. Ciranjeng 75 Kabupaten Bandung z 50 Ha
+Kabupaten Sumedang - 25 Ha
+42 D.I. Sukapura 140 Kabupaten Bandung z 120 Ha
+Kota Bandung z 20 Ha
+43 D.I. Ranjeng 50 Kabupaten Bandung -z 50 Ha
+Kota Bandung z - Ha
+44 D.I. Sudiplak 220 Kabupaten Bandung z 210 Ha
+Kota Bandung z 10 Ha
+45 D.I. Rancacili 398 Kabupaten Bandung z 300 Ha
+Kota Bandung z 98 Ha
+46 D.I. Gempol 50 Kabupaten Bandung z 50 Ha
+Kabupaten z Ha
+47 D.I. Bongkok 170 Kabupaten Bandung Barat z 93 Ha
+Kota Cimahi z 77 Ha
+48 D.I. Citopeng/Cikendal 34 Kota Bandung z 10 Ha
+Kota Cimahi z 24 Ha
+49 D.I. Lagadar 325 Kabupaten Bandung Barat z 317 Ha
+Kota Cimahi z 8 Ha
+50 D.I. Leuwi Kuya 2.357 Kabupaten Bandung z 762 Ha
+Kabupaten Bandung Barat z 1595 Ha
+51 D.I. Cibeureum 125 Kota Sukabumi z 25 Ha
+Kabupaten Sukabumi z 100 Ha
+52 D.I. Cipeundeuy Kadulawang 519 Kota Sukabumi z 156 Ha
+Kabupaten Sukabumi z 363 Ha
+
+VIII PROVINSI JAWA TENGAH 77 34.971
+1 D.I. Pesayangan 1.870 Kabupaten Tegal z 1.453 Ha
+Kota Tegal z 417 Ha
+2 D.I. Sidapuma 600 Kabupaten Tegal z 103 Ha
+Kota Tegal z 497 Ha
+3 D.I. Gangsa Lumingser 749 Kabupaten Brebes z 79 Ha
+Kabupaten Tegal z 653 Ha
+Kota Tegal z 17 Ha
+4 D.I. Beji 236 Kabupaten Brebes z 46 Ha
+Kabupaten Tegal z 190 Ha
+5 D.I. Gondang 824 Kabupaten Brebes z 424 Ha
+Kabupaten Tegal z 400 Ha
+6 D.I. Lenggor 290 Kabupaten Brebes z 121 Ha
+Kabupaten Tegal z 169 Ha
+7 D.I. Parakan Kidang 1.704 Kabupaten Brebes z 20 Ha
+Kabupaten Tegal z 1.684 Ha
+8 D.I. Asem Siketek/Kesetu 500 Kabupaten Pekalongan z 238 Ha
+Kota Pekalongan -z 262 Ha
+9 D.I. Karanganyar 210 Kabupaten Brebes z 46 Ha
+Kabupaten Tegal z 164 Ha
+10 D.I. Penggaron 1.060 Kabupaten Demak z 1.060 Ha
+Kota Semarang z Bendung
+11 D.I. Sidopangus 719 Kota Semarang -z 306 Ha
+Kabupaten Semarang z 413 Ha
+12 D.I. Dolok 1.296 Kabupaten Demak z 1.296 Ha
+Kota Semarang -z Bendung
+13 D.I. Plumbon 464 Kabupaten Kendal z 174 Ha
+Kabupaten Semarang z 290 Ha
+14 D.I. Padas Klorot 701 Kabupaten Boyolali z 41 Ha

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+183 D.I. Kresek 82
+184 D.I. Kricak 12
+185 D.I. Krisak 874
+186 D.I. Kuncen 81
+187 D.I. Kuncen 10
+188 D.I. Kuniran 67
+189 D.I. Kwarasan 48
+190 D.I. Lancing 103
+191 D.I. Ledok 37
+192 D.I. Lengkong 73
+193 D.I. Maguan 22
+194 D.I. Mandan 50
+195 D.I. Manding 177
+196 D.I. Manggis 69
+197 D.I. Mantu 92
+198 D.I. Maron 57
+199 D.I. Masaran 23
+200 D.I. Megu 109
+201 D.I. Melikan 33
+202 D.I. Melikan 48
+203 D.I. Mendung 25
+204 D.I. Mendungan 25
+205 D.I. Mendungan 25
+206 D.I. Mentoro 139
+207 D.I. Mesu 14
+208 D.I. Micisan 49
+209 D.I. Miri 55
+210 D.I. Miring 38
+211 D.I. Misih 39
+212 D.I. Mlagi 112
+213 D.I. Mlati 33
+214 D.I. Mloko 93
+215 D.I. Morogiat 32
+216 D.I. Mujing 68
+217 D.I. Mundel 32
+218 D.I. Nawangan 319
+219 D.I. Ngancar 163
+220 D.I. Ngandong 50
+221 D.I. Nganti 55
+222 D.I. Ngebeng 102
+223 D.I. Ngebrak 33
+224 D.I. Ngelo 140
+225 D.I. Ngembong 20
+226 D.I. Ngemplak 22
+227 D.I. Ngesong 38
+228 D.I. Ngipik 72
+229 D.I. Nglegok 19
+230 D.I. Ngruwuh 11
+231 D.I. Ngudal 70
+232 D.I. Ngulu 58
+233 D.I. Ngulur 24
+234 D.I. Ngunut 101
+235 D.I. Niru 35
+236 D.I. Nongko Semut 53
+237 D.I. Padas Malang 93
+238 D.I. Pager Gunung 17
+239 D.I. Pakel | 110
+240 D.I. Pakis 76
+241 D.I. Pancuran 15
+242 D.I. Pandan 39
+243 D.I. Panekan 153
+#KANAN
+282
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+244 D.I. Panggang 49
+245 D.I. Pangpalon 80
+246 D.I. Pehkendang 10
+247 D.I. Pelem 17
+248 D.I. Pencil 21
+249 D.I. Pendem 20
+250 D.I. Pengging 21
+251 D.I. Penggong I 21
+252 D.I. Petir 22
+253 D.I. Pijiharjo 14
+254 D.I. Pilang 45
+255 D.I. Platar 15
+256 D.I. Pletes 15
+257 D.I. Ploso I 38
+258 D.I. Plosorejo 13
+259 D.I. Plumbon 392
+260 D.I. Plumpatan | 13
+261 D.I. Plumpatan II 13
+262 D.I. Plumpung 205
+263 D.I. Pohrubuh 13
+264 D.I. Pojok 76
+265 D.I. Pokoh 10
+266 D.I. Pondok 204
+267 D.I. Posong 227
+268 D.I. Pucung 32
+269 D.I. Pucungan II 40
+270 D.I. Pudak 20
+271 D.I. Pujut M
+272 D.I. Pule 11
+273 D.I. Putek 13
+274 D.I. Putuk Putri 51
+275 D.I. Rampal 49
+276 D.I. Randusari 127
+277 D.I. Ringin II 33
+278 D.I. Ringin III 114
+279 D.I. Salam 143
+280 D.I. Sambeng 34
+281 D.I. Sambi I 10
+282 D.I. Sambi II 33
+283 D.I. Sambi III 160
+284 D.I. Sambi IV 66
+285 D.I. Sambirejo | 104
+286 D.I. Sambiroto II 83
+287 D.I. Sanggar 63
+288 D.I. Sanggomo 101
+289 D.I. Sangubanyu 12
+290 D.I. Sarangan 81
+291 D.I. Sari | 163
+292 D.I. Sari II 169
+293 D.I. Sasap 59
+294 D.I. Sawit I 18
+295 D.I. Sawit II 16
+296 D.I. Sayek 92
+297 D.I. Sb. Klego 14
+298 D.I. Sb. Salak 96
+299 D.I. Sb. Tirtoswara 18
+300 D.I. Sedudo 77
+301 D.I. Segeroh I 51
+302 D.I. Segeroh II 52
+303 D.I. Sekar petak 151
+304 D.I. Sekarang 15

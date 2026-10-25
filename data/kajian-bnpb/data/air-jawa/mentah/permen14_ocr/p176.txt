@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+256 D.I. Cisurawada 17
+257 D.I. Citahi 74
+258 D.I. Citalahab 90
+259 D.I. Citalang 27
+260 D.I. Citalang 45
+261 D.I. Citamiang 31
+262 D.I. Citengah 24
+263 D.I. Citeureup 20
+264 D.I. Citisuk 21
+265 D.I. Citiwu 50
+266 D.I. Cituhur 73
+267 D.I. Ciwalagar 94
+268 D.I. Ciwalahir 27
+269 D.I. Ciwalahir 28
+270 D.I. Ciwalanda 63
+271 D.I. Ciwanda 30
+272 D.I. Ciwangsih 5
+273 D.I. Ciwaringin Udik 122
+274 D.I. Ciwaru II 6
+275 D.I. Ciwasiat 20
+276 D.I. Cukang 19
+277 D.I. Culangung 5
+278 D.I. Curug 18
+279 D.I. Curugpandak 4
+280 D.I. Curugpandak 12
+281 D.I. Curugtamiang 9
+282 D.I. Dalem 89
+283 D.I. Domas 18
+284 D.I. Dukuh 10
+285 D.I. Galonggong 16
+286 D.I. Gede 75
+287 D.I. Gegerbarang 14
+288 D.I. Gendangan 34
+289 D.I. Gobang 22
+290 D.I. Golat 27
+291 D.I. Gulampit 25
+292 D.I. Gunung Embe 23
+293 D.I. Gunung Payung 25
+294 D.I. Gunung Payung 25
+295 D.I. Haur 10
+296 D.I. Jagahayu 25
+297 D.I. Jagamulya 15
+298 D.I. Jamburaya 68
+299 D.I. Jambusabrang 8
+300 D.I. Janawi 54
+301 D.I. Japer 22
+302 D.I. Jawura 35
+303 D.I. Junti 12
+304 D.I. Kadupugur 21
+305 D.I. Kangkung 10
+306 D.I. Kangseng 10
+307 D.I. Kanyep 20
+308 D.I. Kapakuda 22
+309 D.I. Kebonkiara 42
+310 D.I. Ketos 30
+311 D.I. Kondangtiga 155
+312 D.I. Kopeng 5
+313 D.I. Kopo 23
+314 D.I. Kubang 32
+315 D.I. Kubang 18
+316 D.I. Kumbung 55
+#KANAN
+176
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+317 D.I. Kupa Amis 7
+318 D.I. Langkara 31
+319 D.I. Lengo 26
+320 D.I. Leuweungpelah 24
+321 D.I. Leuwibabi 6
+322 D.I. Leuwibujang 20
+323 D.I. Leuwiliuh 3
+324 D.I. Leuwimuncang 12
+325 D.I. Leuwiseeng 5
+326 D.I. Leuwisoka 15
+327 D.I. Limus Dua 20
+328 D.I. Limustilu 130
+329 D.I. Malam 31
+330 D.I. Munari 25
+331 D.I. Ngimpingampa 13
+332 D.I. Nunuk 15
+333 D.I. Nursalim 66
+334 D.I. Nyangkokot 25
+335 D.I. P2AT 243
+336 D.I. Pabean 30
+337 D.I. Pajajar 40
+338 D.I. Pamujaan 89
+339 D.I. Pamuruyan 13
+340 D.I. Panenjoan 20
+341 D.I. Paringga 4
+342 D.I. Pasantren 45
+343 D.I. Pasir 13
+344 D.I. Pasir Ciceuri 5
+345 D.I. Pasir Dagul 20
+346 D.I. Pasir Huni 51
+347 D.I. Pasir Huni II 6
+348 D.I. Pasir Kunti 33
+349 D.I. Pasir Malaka 25
+350 D.I. Pataking 22
+351 D.I. Payung 65
+352 D.I. Peusar 5
+353 D.I. Playangan 87
+354 D.I. Popojok 23
+355 D.I. Ranca Bolang 21
+356 D.I. Ranca Bungur 12
+357 D.I. Ranca Tutut 40
+358 D.I. Rancabeureum 65
+359 D.I. Rancah 23
+360 D.I. Rancakanten 14
+361 D.I. Rumahbogo 18
+362 D.I. Saketi 44
+363 D.I. Salatiga 20
+364 D.I. Santoan 20
+365 D.I. Sarati 13
+366 D.I. Sawah Agung 19
+367 D.I. Sawah Asem 17
+368 D.I. Sawah Hilir 10
+369 D.I. Sawah Lega 27
+370 D.I. Sawah Lega 17
+371 D.I. Sawah Ondot 15
+372 D.I. Sawah Pulus 10
+373 D.I. Sawah Urug 25
+374 D.I. Selahaur 42
+375 D.I. Selapraja 55
+376 D.I. Sindangpano 78
+377 D.I. Sirahdayeuh 26

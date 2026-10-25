@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+40 D.I. Pusaka Pangkung Kutek 56
+41 D.I. Sari Kuning 141
+42 D.I. Sebual 77
+43 D.I. Semanggong 129
+44 D.I. Tegak Gede 408
+45 D.I. Tegal Gintungan | 23
+46 D.I. Tegal Gintungan II 413
+47 D.I. Telepus 444
+48 D.I. Telepus Manistutu 30
+49 D.I. Tibu Beneng 481
+50 D.I. Tibu Tanggang 8
+51 D.I. Yeh Buah 163
+52 D.I. Yeh Satang 164
+53 D.I. Sombang 60
+54 D.I. Mengandang 4
+55 D.I. Penyaringan Mendoyo 33
+56 D.I. Manistutu 42
+57 D.I. Skak | 30
+58 D.I. Skak II 15
+f Kab. Karanaasem 116 5.476
+1 D.I. Ababi | 33
+2 D.I. Ababi III 23
+3 D.I. Ababi IV 38
+4 D.I. Ababi V 45
+5 D.I. Ababi VI 20
+6 D.I. Ababi VII 7
+7 D.I. Ababi VIII 21
+8 D.I. Alas Tunggal 47
+9 D.I. Andong | 20
+10 D.I. Angan Telu 101
+11 D.I. Babakan 44
+12 D.I. Baingin 40
+13 D.I. Bakung 70
+14 D.I. Bale Punduk 44
+15 D.I. Bangbangbiaung 79
+16 D.I. Basang Alas 30
+17 D.I. Belong 14
+18 D.I. Boan 20
+19 D.I. Buda Keling 30
+20 D.I. Buisi 32
+21 D.I. Bukit 7
+22 D.I. Cangangan 40
+23 D.I. Cantalan | 69
+24 D.I. Cantalan II 91
+25 D.I. Cau Jasi | 135
+26 D.I. Cau Jasi II 65
+27 D.I. Cau Jasi III 48
+28 D.I. Datah 70
+29 D.I. Desa Bugbug 90
+30 D.I. Dlod Sema 36
+31 D.I. Embah Api 65
+32 D.I. Embukan 89
+33 D.I. Empelan 12
+34 D.I. Iseh 63
+35 D.I. Jabakuta 59
+36 D.I. Kampikan 32
+37 D.I. Katowarah 27
+38 D.I. Kayu Putih 59
+39 D.I. Kebon Agung 38
+40 D.I. Kebung 11
+#KANAN
+375 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+41 D.I. Kecicang 53
+42 D.I. Komala 77
+43 D.I. Krana 86
+44 D.I. Kuum Cangah 54
+45 D.I. Langon 124
+46 D.I. Lebah 24
+47 D.I. Lebah 11
+48 D.I. Liligundi 24
+49 D.I. Linggawana 25
+50 D.I. Lipang 27
+51 D.I. Lumpadang 20
+52 D.I. MA. Tauka | 9
+53 D.I. MA. Tauka II 21
+54 D.I. MA. Tirta Gangga | 97
+55 D.I. MA. Tirta Gangga II 5
+56 D.I. MA. Tirta Gangga III 5
+57 D.I. MA. Tirta Gangga IV 8
+58 D.I. Mage Telu 40
+59 D.I. Mascatu 4
+60 D.I. Naga Sungsang 168
+61 D.I. Nais 15
+62 D.I. Nongan 171
+63 D.I. Padang Aji 36
+64 D.I. Pajegan 61
+65 D.I. Pancoan 7
+66 D.I. Pasegahan 57
+67 D.I. Penaban 43
+68 D.I. Perasi 58
+69 D.I. Pesaban 160
+70 D.I. Pesangkan 14
+71 D.I. Prakpak 6
+72 D.I. Puseh 150
+73 D.I. Sangkungan 30
+74 D.I. Saren 61
+75 D.I. Sasa 52
+76 D.I. Sayehan 34
+77 D.I. Sege 31
+78 D.I. Selat 147
+79 D.I. Selumbung 78
+80 D.I. Sengkawan 34
+81 D.I. Seraya 27
+82 D.I. Subagan | 6
+83 D.I. Subagan II 7
+84 D.I. Subagan III 13
+85 D.I. Subagan IV 13
+86 D.I. Sudi 14
+87 D.I. Susuan 40
+88 D.I. Susuan Karangasem 170
+89 D.I. Tanah Bita 9
+90 D.I. Tegakin 18
+91 D.I. Tegal Kauh 48
+92 D.I. Telaga 19
+93 D.I. Telun Wayah 58
+94 D.I. Timbrah 94
+95 D.I. Tista 40
+96 D.I. Tohpati 60
+97 D.I. Tubuh 22
+98 D.I. Tuminggal 8
+99 D.I. Uma Biyu 46
+100 D.I. Uma Cetra 117
+101 D.I. Uma Desa 63

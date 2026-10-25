@@ -1,0 +1,91 @@
+#TATA_LETAK satu-tabel lebar=2480
+559 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+562 D.I.A.T. Naifalo Tim-Oeteta PAF - 288 2
+563 D.ILA.T. Oenalbesi-Oeteta PAF - 321 2
+564 D.I.A.T. Oenalbesi-Oeteta PAF - 322 2
+565 D.I.A.T. Modoaik-Oeteta PAF - 340 3
+566 D.I.A.T. Modoaik-Oeteta PAF - 341 2
+567 D.ILA.T. Modoaik-Oeteta PAF - 342 2
+568 D.I.A.T. Bololin A-Oeteta PAF - 343 2
+569 D.I.A.T. Bilolin A-Oeteta PAF - 345 2
+570 D.LA.T. Bilolin A-Oeteta PAF - 346 2
+571 D.LA.T. Bilolin A-Oeteta PAF - 347 3
+572 D.LA.T. Bilolin A-Oeteta PAF - 348 3
+573 D.LA.T. Bilolin A-Oeteta PAF - 349 3
+574 D.LA.T. Hauloki-Oeteta PAF - 350 3
+575 D.LA.T. Hauloki-Oeteta PAF - 351 2
+f Kab. Lembata 14 140
+
+1 D.LA.T. Kilontobo LII - 001 10
+
+2 D.LA.T. Kolontobo LII - 002 10
+
+3 D.LA.T. Kolontobo LII - 003 10
+
+4 D.LA.T. Merdeka LLI - 002 10
+
+5 D.LA.T. Muruona LMI - 002 10
+
+6 D.LA.T. Lamahora LMI - 007 10
+
+7 D.LA.T. Muruona LMI - 008 10
+
+8 D.LA.T. Ile Ape LMI - 009 10
+
+9 D.LA.T. Ile Ape LMI - 010 10
+10 D.LA.T. Ile Ape LMI - 011 10
+11 D.LA.T. Lewoleba Timur LNI - 001 10
+12 D.LA.T. Lewoleba Timur LNI - 005 10
+13 D.LA.T. Lewoleba Barat LNI - 007 10
+14 D.LA.T. Waikomo LNI - 007 10
+a Kab. Mangaarai Barat 14 137
+
+1 D.LA.T. Golosepang ITW - 001 10
+
+2 D.LA.T. Mbuit ITW - 002 10
+
+3 D.LA.T. Golokerok ITW - 003 10
+
+4 D.LA.T. Mbuit ITW - 004 10
+
+5 D.LA.T. Lando ITW - 005 10
+
+6 D.L.A.T. Golokerok ITW - 006 12
+
+7 D.LA.T. Mbuit ITW - 007 10
+
+8 D.LA.T. Golosepang ITW - 008 10
+
+9 D.LA.T. Beo Sapong ITW - 010 10
+10 D.LA.T. Beo Sapong ITW - 011 10
+11 D.LA.T. Sepang ITW - 012 5
+12 D.LA.T. Golosepang ITW - 013 10
+13 D.LA.T. Mbuit ITW - 014 10
+14 D.LA.T. Waekelambu ITW - 017 10
+h Kab. Manaaarai Timur 14 140
+
+1 D.LA.T. Nangabaras MSI - 001 10
+
+2 D.LA.T. Nangabaras MSI - 003 10
+
+3 D.LA.T. Nanggaburas MSI - 008 10
+
+4 D.LA.T. Pota MT - 001 10
+
+5 D.LA.T. Pota MT - 002 10
+
+6 D.L.A.T. Pota MT - 002 10
+
+7 D.LA.T. Tompong MT - 003 10
+
+8 D.LA.T. Pota MT - 007 10
+
+9 D.L.A.T. Pota MT - 008 10
+10 D.ILA.T. Nangabaur MT - 009 10
+11 D.LA.T. Pacipanda MT - 011 10
+12 D.LA.T. Pota I MT - 012 10
+13 D.LA.T. Pota II MT - 013 10

@@ -1,0 +1,69 @@
+#TATA_LETAK satu-tabel lebar=2480
+501 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+16 D.LA.T. Klumpit PWJ97 32
+17 D.LA.T. Karangmalang PWJ98/348 26
+18 D.LA.T. Getasrabi PWJ99 27
+19 D.LA.T. Gribig PWJ100 28
+20 D.LA.T. Gribig PWJ101 32
+21 D.LA.T. Karangmalang PWJ102 18
+22 D.LA.T. Gribig PWJ202 28
+23 D.LA.T. Getasrabi PWJ204 26
+24 D.LA.T. Getasrabi PWJ205 27
+25 D.LA.T. Getasrabi PWJ206 25
+26 D.L.A.T. Getasrabi PWJ208 32
+27 D.LA.T. Besito PWJ210 16
+28 D.L.A.T. Besito PWJ212 18
+29 D.LA.T. Sadang PWJ228 14
+30 D.LA.T. Kaliwungu PWJ20/319 22
+31 D.LA.T. Kaliwungu PWJ21/329 17
+32 D.LA.T. Kaliwungu PWJ22/811 29
+33 D.LA.T. Kaliwungu PWJ23 32
+34 D.LA.T. Karangampel PWJ24 25
+35 D.LA.T. Karangampel PWJ25 24
+36 D.ILA.T. Papringan PWJ26 19
+37 D.LA.T. Mijen PWJ27 31
+38 D.LA.T. Karangampel PWJ28 17
+39 D.LA.T. Papringan PWJ51 12
+40 D.LA.T. Papringan PWJ52 32
+41 D.LA.T. Papringan PWJ53 13
+42 D.LA.T. Papringan PWJ54 20
+43 D.LA.T. Kaliwungu PWJ55 32
+44 D.LA.T. Mijen PWJ56/297 39
+45 D.LA.T. Banget PWJ191 30
+46 D.LA.T. Banget PWJ192 26
+47 D.LA.T. Blimbingkidul PWJ196 29
+48 D.LA.T. Gamong PWJ197/347 21
+49 D.LA.T. Papringan PWJ200/310 32
+50 D.LA.T. Sidorekso PWJ201 23
+51 D.LA.T. Sidorekso PWJ203 37
+52 D.LA.T. Sidorekso PWJ213 /328 19
+53 D.LA.T. Blimbingkidul PWJ215 15
+54 D.LA.T. Sidorekso PWJ219 20
+55 D.LA.T. Blimbingkidul PWJ220 32
+56 D.LA.T. Blimbingkidul PWJ221 24
+57 D.LA.T. Gamong PWJ222 25
+58 D.LA.T. Gamong PWJ223/321 27
+59 D.LA.T. Banget PWJ224 36
+60 D.LA.T. Banget PWJ225/312 37
+61 D.LA.T. Mijen PWJ246 28
+62 D.LA.T. Kedungdowo PWJ248 40
+63 D.LA.T. Kedungdowo PWJ249 38
+64 D.LA.T. Gamong PWJ251 34
+65 D.LA.T. Kedungdowo PWJ252 31
+66 D.LA.T. Kaliwungu TW133 30
+67 D.LA.T. Setrokalangan SUPJO6 20
+68 D.ILA.T. Karangampel KTW25 20
+69 D.LA.T. Karangampel SUPJ14 18
+h Kab. Pati 1 30
+
+1 D.LA.T. Tlogowungu TW 075 30
+
+i Kab. Pemalana 32 898
+
+1 D.LA.T. Surajaya PWPO1 31
+
+2 D.LA.T. Banjarmulya PWPO2/221 30

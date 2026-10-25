@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+402 D.I. Tanete Sasuran 145
+403 D.I. Taora 70
+404 D.I. Taponaka 25
+405 D.I. Tappasang 10
+406 D.I. Tati Leaba 40
+407 D.I. Tatika 40
+408 D.I. Tatika II 40
+409 D.I. Tatoa' 75
+410 D.I. Taupe 43
+411 D.I. Tawalian Timur 128
+412 D.I. Tawan Liang 40
+413 D.I. Tawane 78
+414 D.I. Tawane | 8
+415 D.I. Tawane II 100
+416 D.I. Tetang 60
+417 D.I. Tetean | 42
+418 D.I. Tetean II 25
+419 D.I. Tetean III 21
+420 D.I. Tettenan 68
+421 D.I. Tigaruk 30
+422 D.I. To' Pao 52
+423 D.I. Tondok 60
+424 D.I. Tondok 60
+425 D.I. Tondok Bakaru 38
+426 D.I. Tondok Bakaru Beang 97
+427 D.I. Tondon Timbu 8
+428 D.I. Tullu 56
+429 D.I. Tumangka 15
+430 D.I. Tuppang 20
+431 D.I. Ulu Balala 15
+432 D.I. Ululakahang 10
+433 D.I. Ulumambi 47
+434 D.I. Ulusalu 7
+435 D.I. Umah 65
+436 D.I. Unggu Batarirak 20
+437 D.I. Urio 30
+438 D.I. Waka' 24
+c Kab. Mamuiu 36 3.363
+1 D.I. Beru-Beru 490
+2 D.I. Lomali 105
+3 D.I. Salumasa 93
+4 D.I. Sikeang 82
+5 D.I. Atu-Atu 106
+6 D.I. Salubarakna 475
+7 D.I. Pure 360
+8 D.I. Marurinding 35
+9 D.I. Bonde Pute 50
+10 D.I. Boka-Boka 80
+11 D.I. Waitumbur 75
+12 D.I. Balehanang 145
+13 D.I. Kopeang 25
+14 D.I. Pacirong 65
+15 D.I. Tampouhai 60
+16 D.I. Sarana 25
+17 D.I. Ranga-Ranga 215
+18 D.I. Pelulasa 150
+19 D.I. Sepang 10
+20 D.I. Buallo 15
+21 D.I. Mabubu 20
+22 D.I. Kaluttun 20
+#KANAN
+495 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Siraun 15
+24 D.I. Tulasi 95
+25 D.I. Kalasisi 18
+26 D.I. Pelosian 15
+27 D.I. Salitiwo 12
+28 D.I. Salu Denge 16
+29 D.I. Salumitto 30
+30 D.I. Tekkesenga 15
+31 D.I. Bunana 23
+32 D.I. Mappu 20
+33 D.I. Salukayu 138
+34 D.I. Sampaga 190
+35 D.I. Salubara'na 65
+36 D.I. Lesang 10
+d Kab. Mamuiu Tenaah 32 9.032
+1 D.I. Hopo 400
+2 D.I. Salubiro 200
+3 D.I. Muhajir 450
+4 D.I. Kuo 250
+5 D.I. Pololereng 805
+6 D.I. Polocamba 127
+7 D.I. Sartanamaju 345
+8 D.I. Pangale 35
+9 D.I. Polopangale 70
+10 D.I. Salumanurung 170
+11 D.I. Sikeang Kire 100
+12 D.I. Tinali 800
+13 D.I. Pontanakaiiyang 580
+14 D.I. Babana 150
+15 D.I. Tasangtung Tobadak | 525
+16 D.I. Mahahe 225
+17 D.I. Polongaan 235
+18 D.I. Batuparigi 663
+19 D.I. Bambadaru 455
+20 D.I. Salubaja 350
+21 D.I. Salubadak 350
+22 D.I. Tabolang 125
+23 D.I. Paraili 125
+24 D.I. Tumbu 110
+25 D.I. Patulana 50
+26 D.I. Sanjango 50
+27 D.I. Lesang 100
+28 D.I. Lara 147
+29 D.I. Salubarana 575
+31 D.I. Tomemba 125
+32 D.I. Salubijau 115
+32 D.I. Manisi 225
+e Kab. Mamuiu Utara 15 1.388
+1 D.I. Bambalamotu 142
+2 D.I. Pangiang 102
+3 D.I. Randomayang 204
+4 D.I. Bambaira 27
+5 D.I. Bunto Monrowali 45
+6 D.I. Lariang 78
+7 D.I. Letawa 51
+8 D.I. Martajaya 150
+9 D.I. Masabo 79
+10 D.I. Papo Sipakainga 48
+11 D.I. Pasangkayu 147

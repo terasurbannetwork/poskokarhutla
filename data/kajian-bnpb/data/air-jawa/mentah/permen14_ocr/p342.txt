@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+295 D.I. Towo II 6
+296 D.I. Towo III 10
+297 D.I. Trawas 40
+298 D.I. Troliman | 5
+299 D.I. Troliman II 5
+300 D.I. Tromalang 29
+301 D.I. Tumpangsari 49
+302 D.I. Turi 36
+303 D.I. Unengan 175
+304 D.I. Urung-Urung I 41
+305 D.I. Urung-Urung II 27
+306 D.I. Waru Binatur 60
+307 D.I. Watu Umpak 28
+308 D.I. Winong 1
+309 D.I. Wonojati I 4
+310 D.I. Wonojati II 14
+311 D.I. Wonojati III 1
+312 D.I. Wonokoyo 92
+313 D.I. Wonokusumo 790
+314 D.I. Wonosari 22
+315 D.I. Wonosari | 11
+316 D.I. Wonosari II 14
+317 D.I. Wonosari III 7
+318 D.I. Banjaragung 12
+319 D.I. Belahan II 17
+320 D.I. Canggu 8
+321 D.I. Genengan 57
+322 D.I. Jurang | 5
+323 D.I. Jurang II 4
+324 D.I. Kalikatir IV 12
+325 D.I. Kedung Gempol 188
+326 D.I. Lebak Sumengko 915
+327 D.I. Pikatan II 46
+328 D.I. Sbr. Aren 6
+329 D.I. Sbr. Baruk II 46
+330 D.I. Sbr. Bebek 15
+331 D.I. Sbr. Bendo 15
+332 D.I. Sbr. Borang I 32
+333 D.I. Sbr. Borang II 24
+334 D.I. Sbr. Coban | 15
+335 D.I. Sbr. Coban II 35
+336 D.I. Sbr. Coban III 10
+337 D.I. Sbr. Gedang 17
+338 D.I. Sbr. Glodog 17
+339 D.I. Sbr. Golong 10
+340 D.I. Sbr. Jambe 6
+341 D.I. Sbr. Jambe 2
+342 D.I. Sbr. Janjing 11
+343 D.I. Sbr. Jeruk 20
+344 D.I. Sbr. Karangri II 9
+345 D.I. Sbr. Kates 11
+346 D.I. Sbr. Kemado I 8
+347 D.I. Sbr. Kemado II 15
+348 D.I. Sbr. Kemado III 7
+349 D.I. Sbr. Kesono 14
+350 D.I. Sbr. Kr. Tengah 57
+351 D.I. Sbr. Krembung II 12
+352 D.I. Sbr. Lumpang 6
+353 D.I. Sbr. Medali 17
+354 D.I. Sbr. Panjer II 35
+355 D.I. Sbr. Petung 53
+#KANAN
+32
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+356 D.I. Sbr. Sambikuning 82
+357 D.I. Sbr. Trenggumung 17
+358 D.I. Sbr. Winong 4
+359 D.I. Sukoanyar 32
+360 D.I. Tambaksari 39
+361 D.I. Teras 70
+362 D.I. Tinggar II 14
+363 D.I. Tinggar III 13
+364 D.I. Trimo 51
+365 D.I. Wonoayu 24
+pb Kab. Naaniuk 210 14.951
+1 D.I. Asem Linting 18
+2 D.I. Badong I 10
+3 D.I. Badong II 6
+4 D.I. Balongrejo 159
+5 D.I. Banaran 29
+6 D.I. Bangun 2
+7 D.I. Batu 4
+8 D.I. Bedrek 298
+9 D.I. Bendolo I 10
+10 D.I. Bendolo II 22
+11 D.I. Beru 57
+12 D.I. Besuk 248
+13 D.I. Blimbing 3
+14 D.I. Bodo 116
+15 D.I. Bomo | 62
+16 D.I. Bomo II 18
+17 D.I. Brono I 4
+18 D.I. Brono II 3
+19 D.I. Cepoko 30
+20 D.I. Clanget 11
+21 D.I. Curik 6
+22 D.I. Dadapan 4
+23 D.I. Dam Banaran 687
+24 D.I. Demangan | 21
+25 D.I. Demangan II 32
+26 D.I. Dokerso 109
+27 D.I. Dukun 26
+28 D.I. Gambyok I 13
+29 D.I. Gambyok II 14
+30 D.I. Gambyok III 16
+31 D.I. Ganter 2
+32 D.I. Gawok 74
+33 D.I. Gayam 5
+34 D.I. Gayu 26
+35 D.I. Gedang Klutuk 18
+36 D.I. Gedong I 4
+37 D.I. Gedong II 8
+38 D.I. Gendingan I 18
+39 D.I. Gendingan II 8
+40 D.I. Gendingan III 5
+41 D.I. Genjeng 86
+42 D.I. Gilis I 160
+43 D.I. Gilis II 135
+44 D.I. Gimbal I 3
+45 D.I. Gimbal II 3
+46 D.I. Girirejo 213
+47 D.I. Glagah Ombo 13
+48 D.I. Glodok 25
+49 D.I. Guwo Budeh 15

@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 498
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+32 D.LA.T. Karangsembung TW141 28
+33 D.LA.T. Jagalumpeni PWP142 44
+34 D.LA.T. Karangsembung PWP143 25
+35 D.LA.T. Wanatawang TW144 22
+36 D.LA.T. Wanatawang PWP145 28
+37 D.LA.T. Jagalumpeni PWP146 28
+38 D.I.LA.T. Cenang PWP147 30
+39 D.ILA.T. Cenang PWP148 24
+40 D.LA.T. Wanacala PWP149 19
+41 D.LA.T. Wanacala PWP150 28
+42 D.LA.T. Wanacala PWP151 28
+43 D.LA.T. Wanacala PWP152 23
+44 D.LA.T. Wanacala PWP153 30
+45 D.LA.T. Jatimakmur PWP155 25
+46 D.LA.T. Wanacala PWP156 19
+47 D.LA.T. Sisalam PWP169 6
+48 D.LA.T. Tegal Gandu PWP196 32
+d Kab. Jebara 48 1.072
+1 D.LA.T. Paren CWwJO1 37
+2 D.LA.T. Banyuputih PWJO9 8
+3 D.LA.T. Banyuputih PWJ11 22
+4 D.LA.T. Gemiringlor PWJ12 27
+5 D.LA.T. Nalumsari PWJ13 23
+6 D.LA.T. Nalumsari PWJ15 16
+7 D.LA.T. Nalumsari PWJ16 26
+8 D.LA.T. Daren PWJ17 24
+9 D.LA.T. Pringtulis PWJ18 11
+10 D.L.A.T. Tunggulpandean PWJ19 35
+11 D.LA.T. Gemiringlor PWJ32 17
+12 D.LA.T. Gemiringlor PWJ33 18
+13 D.LA.T. Gemiringlor PWJ34 16
+14 D.LA.T. Gemiringlor PWJ35 17
+15 D.LA.T. Pringtulis PWJ40 11
+16 D.LA.T. Gemiringlor PWJ41 14
+17 D.LA.T. Nalumsari PWJ42 30
+18 D.LA.T. Tunggulpandean PWJ43 35
+19 D.LA.T. Tunggulpandean PWJ44 12
+20 D.LA.T. Nalumsari PWJ45 20
+21 D.LA.T. Tunggulpandean PWJ46 18
+22 D.LA.T. Karangnongko PWJ47 12
+23 D.LA.T. Daren PWJ48 24
+24 D.LA.T. Daren PWJ49 16
+25 D.LA.T. Tritis PWJ50 21
+26 D.LA.T. Tritis PW/J88 21
+27 D.LA.T. Tritis PWJ89/331 13
+28 D.LA.T. Karangnongko PWJ90/320 21
+29 D.LA.T. Karangnongko PWJO1 10
+30 D.ILA.T. Karangnongko PWJ92 13
+31 D.LA.T. Daren PWJ93 15
+32 D.LA.T. Daren PWJ94 12
+33 D.LA.T. Daren PWJ95 13
+34 D.LA.T. Dorang PWJ142/213 33
+35 D.LA.T. Dorang PWJ190 32
+36 D.I.A.T. Dorang PWJ195 38
+37 D.LA.T. Tunggulpandean PWJ198 20
+38 D.L.A.T. Dorang PWJ214 30
+39 D.LA.T. Blimbingrejo PWJ216 33
+40 D.LA.T. Blimbingrejo PWJ217 30
+41 D.LA.T. Blimbingrejo SUPJ24 22
+42 D.L.A.T. Mayongkidul PWJ242 43

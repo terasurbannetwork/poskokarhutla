@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 39
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+5 D.I. Ciwaka Bawah 1.210 Kabupaten Serang z 210 Ha
+Kota Serang z 1.000 Ha
+6 D.I. Cilemer 2.672 Kabupaten Lebak z 150 Ha
+Kabupaten Pandeglang -z 2.522 Ha
+
+VII PROVINSI JAWA BARAT 52 23.637
+1 D.I. Cijanggel 391 Kabupaten Bandung Barat z 371 Ha
+Kota Cimahi -z 20 Ha
+2 D.I. Cibeunying/Ciateul 124 Kabupaten Bandung z 111 Ha
+Kota Bandung z 13 Ha
+3 D.I. Buahbatu 147 Kabupaten Bandung z 125 Ha
+Kota Bandung z 22 Ha
+4 D.I. Ciyasana 1.189 Kabupaten Bandung z 1.070 Ha
+Kota Bandung z 119 Ha
+5 D.I. Malang 425 Kabupaten Bandung z 400 Ha
+Kota Cimahi -z 25 Ha
+6 D.I. Ciregol 115 Kabupaten Bandung -z 50 Ha
+Kota Bandung z 65 Ha
+7 D.I. Depok 579 Kabupaten Bandung - 407 Ha
+Kabupaten Sumedang z 172 Ha
+8 D.I. Cangkuang 403 Kabupaten Bandung z 375 Ha
+Kabupaten Sumedang -z 28 Ha
+9 D.I. Cisadane Empang 1.049 Kabupaten Bogor z 789 Ha
+Kota Bogor z 4 Ha
+Kota Depok z 256 Ha
+10 D.I. Parakanjati 119 Kabupaten Bogor z 49 Ha
+Kota Depok z 70 Ha
+11 D.I. Ciliwung Katulampa 333 Kabupaten Bogor z 122 Ha
+Kota Bogor z 139 Ha
+Kota Depok z 72 Ha
+12 D.I. Cibanon 510 Kabupaten Bogor z 473 Ha
+Kota Bogor z 37 Ha
+13 D.I. Bantarjati 24 Kabupaten Bogor z 20 Ha
+Kota Bogor z 4 Ha
+14 D.I. Kranji 151 Kabupaten Bogor z 53 Ha
+Kota Depok z 98 Ha
+15 D.I. Cibalok 84 Kabupaten Bogor z 79 Ha
+Kota Bogor z 5 Ha
+16 D.I. Angke V 252 Kota Depok z 252 Ha
+Kabupaten Bogor z - Ha
+17 D.I. Cipager 1.636 Kabupaten Cirebon z 1.040 Ha
+Kota Cirebon -z 70 Ha
+Kabupaten Kuningan z 526 Ha
+18 D.I. Paniis Lebak 375 Kabupaten Cirebon z 312 Ha
+Kabupaten Kuningan z 63 Ha
+19 D.I. Setupatok 1.494 Kabupaten Cirebon z 1.396 Ha
+Kota Cirebon -z 98 Ha
+20 D.I. Katiga 1.010 Kabupaten Cirebon z 662 Ha
+Kabupaten Kuningan z 348 Ha
+21 D.I. Mungkal Gajah 79 Kabupaten Cirebon z 27 Ha
+Kabupaten Kuningan z 52 Ha
+22 D.I. Jawa 147 Kabupaten Cirebon z 111 Ha
+Kabupaten Kuningan z 36 Ha
+23 D.I. Cipurut 325 Kabupaten Cirebon z 134 Ha
+Kabupaten Kuningan z 191 Ha
+24 D.I. Cibacang 814 Kabupaten Cirebon z 259 Ha
+Kabupaten Kuningan z 555 Ha
+25 D.I. Pundong 1111 Kabupaten Karawang z 1111 Ha
+Kabupaten Purwakarta z - Ha
+26 D.I. Cisalada 632 Kabupaten Sukabumi -z 632 Ha
+Kota Sukabumi z - Ha
+27 D.I. Cimulu 1.546 Kabupaten Tasikmalaya z 579 Ha
+Kota Tasikmalaya z 967 Ha
+28 D.I. Cigede 542 Kabupaten Tasikmalaya z 203 Ha
+Kota Tasikmalaya -z 339 Ha
+29 D.I. Cibanjaran 595 Kabupaten Tasikmalaya z 260 Ha
+Kota Tasikmalaya z 335 Ha
+30 D.I. Cikalang 108 Kabupaten Tasikmalaya z 108 Ha
+Kota Tasikmalaya z - Ha
+31 D.I. Ciaro/Cisaat 355 Kabupaten Bandung z 243 Ha
+Kabupaten Garut z 112 Ha

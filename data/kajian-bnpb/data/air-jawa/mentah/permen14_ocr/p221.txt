@@ -1,0 +1,142 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+658 D.I. Ciklahang 3
+659 D.I. Cikopeng | 17
+660 D.I. Cikuya 14
+661 D.I. Cilalab 27
+662 D.I. Cilubang 7
+663 D.I. Cilumping I/Cipancar 38
+664 D.I. Cilumping Il/Cigerong 33
+665 D.I. Cimelang 17
+666 D.I. Cimengor 30
+667 D.I. Cimengor 30
+668 D.I. Cimonte 15
+669 D.I. Cinangka | 4
+670 D.I. Ciogombong 15
+671 D.I. Cipamanukan 10
+672 D.I. Cipangebatan 25
+673 D.I. Cipaparayan 60
+674 D.I. Cirateun 8
+675 D.I. Ciroyom | 17
+676 D.I. Ciroyom II 20
+677 D.I. Cisalado 36
+678 D.I. Ciseureuh 12
+679 D.I. Citangga 15
+680 D.I. Citangkur/Cikadu 25
+681 D.I. Citangkurap 25
+682 D.I. Citenjo Laut 6
+683 D.I. Citetegong 35
+684 D.I. Ciurut I 32
+685 D.I. SG. Gadung I 13
+686 D.I. G. Gadung II 11
+687 D.I. Gempalan I 20
+688 D.I. Karangsari 15
+689 D.I. Lamping 15
+690 D.I. Manganti 15
+691 D.I. Nanggerang 25
+692 D.I. Pamipiran 15
+693 D.I. Rimpak M
+694 D.I. Santia 33
+695 D.I. Sawah Beurit 32
+696 D.I. Sawah Contoh 30
+697 D.I. Sudagar 25
+698 D.I. Sunia | 30
+699 D.I. Sunia II 32
+700 D.I. Sunia III 31
+701 D.I. Tigasari 65
+702 D.I. Wangsareja 25
+h Kab. Demak 4 1.627
+
+1 D.I. Gablok 152
+
+2 D.I. Pelayaran Buyaran 909
+
+3 D.I. Polder Batu 366
+
+4 D.I. Sumberejo 200
+
+i Kab. Groboaan 182 16.747
+
+1 D.I. Anggi-Anggil 10
+
+2 D.I. Batang 30
+
+3 D.I. Belik 40
+
+4 D.I. Bendung Coyo 90
+
+5 D.I. Beni 5
+
+6 D.I. Blimbing 50
+
+7 D.I. Boloh 100
+
+8 D.I. Bringin 60
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+9 D.I. Brubulan 40
+10 D.I. Buduran 20
+11 D.I. Butak 366
+12 D.I. Candisari 50
+13 D.I. Carikan 10
+14 D.I. Deresmi 20
+15 D.I. Dokoro 84
+16 D.I. Doro 3
+17 D.I. Gabus 60
+18 D.I. Gading 30
+19 D.I. Galiran 60
+20 D.I. Garengan 10
+21 D.I. Gedangan 28
+22 D.I. Gedong 25
+23 D.I. Gempol 13
+24 D.I. Geneng 25
+25 D.I. Genggeng 25
+26 D.I. Slonggong Tanjungsari 140
+27 D.I. Godan 50
+28 D.I. Grantil 10
+29 D.I. Jajar Baru Hilir 75
+30 D.I. Jajar Baru Hulu 70
+31 D.I. Jambe 3
+32 D.I. Jangkungharjo 55
+33 D.I. Jaringan 10
+34 D.I. Jatilor Tempuran 50
+35 D.I. Jenengan 40
+36 D.I. Jipang 30
+37 D.I. Jlono 132
+38 D.I. Kalidoro 153
+39 D.I. Kalipang 180
+40 D.I. Kandang 50
+41 D.I. Kandangan Serut 459
+42 D.I. Karanganyar Godong 35
+43 D.I. Karanganyar Lusi 100
+44 D.I. Karangasem 49
+45 D.I. Karangasem II 40
+46 D.I. Karangpaing 40
+47 D.I. Katekan II 40
+48 D.I. Kedung Kotak 10
+49 D.I. Kedungrejo 30
+50 D.I. Kemantren Candi 50
+51 D.I. Kemantren Klampok 80
+52 D.I. Kembang Kuning 25
+53 D.I. Kemloko 20
+54 D.I. Kenongo 72
+55 D.I. Kentena 440
+56 D.I. Kenti 63
+57 D.I. Keongan 39
+58 D.I. Ketek 40
+59 D.I. Kidang Kencono I 40
+60 D.I. Kidang Kencono II 60
+61 D.I. Klambu 45
+62 D.I. Klampok | 90
+63 D.I. Klampok II 30
+64 D.I. Kronggen I 232
+65 D.I. Lajer 30
+66 D.I. Lemah Putih I 55
+67 D.I. Lengkung Nglobar 40
+68 D.I. Limbe 50
+69 D.I. Madoh 25

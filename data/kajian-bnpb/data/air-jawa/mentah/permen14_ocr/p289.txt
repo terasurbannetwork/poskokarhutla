@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+632 D.I. Wilodobanyu | 17
+633 D.I. Wilodobanyu II 29
+634 D.I. Wiyu 27
+635 D.I. Wlingi 11
+636 D.I. Wonodri 40
+637 D.I. Wonolelo 30
+638 D.I. Wonolobo 40
+639 D.I. Wonoroto 25
+640 D.I. Wonosoko 13
+641 D.I. Wringin 35
+642 D.I. Wringin 23
+643 D.I. Wringin 14
+644 D.I. Wuluh 11
+645 D.I. Wuni 45
+646 D.I. Wuni 26
+647 D.I. Dodok 38
+648 D.I. Glitok 10
+649 D.I. Gowok 30
+650 D.I. Gremes II 15
+651 D.I. Gupit 25
+652 D.I. Guwung 14
+653 D.I. Kali Tulang 20
+654 D.I. Kembang 10
+655 D.I. Larit 16
+656 D.I. Lempong 10
+657 D.I. Pompon 15
+658 D.I. Sabrang 18
+659 D.I. Sikauman 15
+660 D.I. Timahan 16
+661 D.I. Banteng 24
+662 D.I. Bedru 20
+663 D.I. Besole 36
+664 D.I. Besuki 10
+665 D.I. Besulih 55
+666 D.I. Bojong 14
+667 D.I. Bovona M
+668 D.I. Branteni 23
+669 D.I. Bugangan 18
+670 D.I. Bulu 25
+671 D.I. Bumen 12
+672 D.I. Cibuk 29
+673 D.I. Ciledok 15
+674 D.I. Colat 26
+675 D.I. Dlingon 24
+676 D.I. Duren 15
+677 D.I. Gembongan 14
+678 D.I. Glewang 11
+679 D.I. Ipik 10
+680 D.I. Jambe 10
+681 D.I. Jambe 16
+682 D.I. Jatisrono 24
+683 D.I. Kaliampo 12
+684 D.I. Kaliputih 10
+685 D.I. Kancil 20
+686 D.I. Kawung 11
+687 D.I. Krinjing 22
+688 D.I. Kwarasan 20
+689 D.I. Lebuh 18
+690 D.I. Lukulo 24
+691 D.I. Maitan 37
+692 D.I. Maitanl 25
+#KANAN
+289 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+693 D.I. Malih 11
+694 D.I. Parakandawa 13
+695 D.I. Pelur 17
+696 D.I. Peniron 16
+697 D.I. Pewaton 19
+698 D.I. Plencing 25
+699 D.I. Prageman 15
+700 D.I. Salam 31
+701 D.I. Sijati 14
+702 D.I. Sitrutus 17
+703 D.I. T. Krengseng 17
+704 D.I. Tlatar 15
+705 D.I. Watuaji 15
+ad Kota Salatiaa 19 985
+1 D.I. Andong 38
+2 D.I. Banyu Putih 42
+3 D.I. Bonorejo 38
+4 D.I. Cengek 212
+5 D.I. Kedawung 100
+6 D.I. Plampeyan 10
+7 D.I. Si Andran 16
+8 D.I. Sidali 28
+9 D.I. Sijamban 24
+10 D.I. Siluwing 12
+11 D.I. Tambak Boyo 14
+12 D.I. Tengah 52
+13 D.I. Isep-Isep 18
+14 D.I. Aji Getas 28
+15 D.I. Kedung Kopyah 156
+16 D.I. Senjoyo 4
+17 D.I. Si Nongko 35
+18 D.I. Sijambe 48
+19 D.I. Sucen 73
+ae Kota Semarana 41 2.339
+1 D.I. Blorong Tambangan 156
+2 D.I. Buyutan 15
+3 D.I. Curug 18
+4 D.I. Dampyak 25
+5 D.I. Jinunjung 47
+6 D.I. Kandri 30
+7 D.I. Kedung Bangkong 35
+8 D.I. Kedung Bringin 296
+9 D.I. Kedung Kreo 367
+10 D.I. Kreo 24
+11 D.I. Kripik 211
+12 D.I. Kuasen 25
+13 D.I. Ndanggoro 12
+14 D.I. Ndangwungu 12
+15 D.I. Ngancar 15
+16 D.I. Panggung 56
+17 D.I. Plumbon Hulu | 96
+18 D.I. Plumbon Hulu II 82
+19 D.I. Reko 20
+20 D.I. Secoda/Godo 15
+21 D.I. Sidayu 10
+22 D.I. Sentono 46
+23 D.I. Siberuk 14
+24 D.I. Sibumen 7
+25 D.I. Sicapit Sekaran 75

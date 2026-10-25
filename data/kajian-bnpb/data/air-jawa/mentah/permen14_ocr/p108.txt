@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+28 D.I. Bdr. Imang 249
+29 D.I. Bdr. Kajai 44
+30 D.I. Bdr. Kampung Jawa 123
+31 D.I. Bdr. Kandang Beo 59
+32 D.I. Bdr. Kapalo Danau 45
+33 D.I. Bdr. Kapolo Koto 179
+34 D.I. Bdr. Katialo 75
+35 D.I. Bdr. Kayu Kundue 78
+36 D.I. Bdr. Kilangan 256
+37 D.I. Bdr. Koto Gaek 652
+38 D.I. Bdr. Koto Hilalang 280
+39 D.I. Bdr. Kubang 71
+40 D.I. Bdr. Kulemban 150
+41 D.I. Bdr. Kuluih 97
+42 D.I. Bdr. Kuok 418
+43 D.I. Bdr. Ladang Laweh 36
+44 D.I. Bdr. Lampayo 108
+45 D.I. Bdr. Lembang 243
+46 D.I. Bdr. Lembang Duri 104
+47 D.I. Bdr. Limau Hantu 55
+48 D.I. Bdr. Lolo 50
+49 D.I. Bdr. Lurah Putih 39
+50 D.I. Bdr. Mandi Mandian 45
+51 D.I. Bdr. Manggis 70
+52 D.I. Bdr. Mangkudu 75
+53 D.I. Bdr. Musajik 170
+54 D.I. Bdr. Nagari 100
+55 D.I. Bdr. Ngalau Gadang 72
+56 D.I. Bdr. Paninjauan 75
+57 D.I. Bdr. Pauh 160
+58 D.I. Bdr. Payo 87
+59 D.I. Bdr. Pinang Baririk 47
+60 D.I. Bdr. Pintu Rayo 50
+61 D.I. Bdr. Pompa I 153
+62 D.I. Bdr. Pompa II 110
+63 D.I. Bdr. Pompa III 89
+64 D.I. Bdr. Pompa V 283
+65 D.I. Bdr. Pompa VI 285
+66 D.I. Bdr. Rimbo Gontong 137
+67 D.I. Bdr. Sawah Banyak 70
+68 D.I. Bdr. Sawah Belukar 231
+69 D.I. Bdr. Sawah Bukik 154
+70 D.I. Bdr. Sawah Durian 70
+71 D.I. Bdr. Sawah Laweh | 30
+72 D.I. Bdr. Sawah Luar 146
+73 D.I. Bdr. Sawah Panjang 33
+74 D.I. Bdr. Sawah Pinang 77
+75 D.I. Bdr. Sawah Ratak 75
+76 D.I. Bdr. Sawah Ruko 119
+77 D.I. Bdr. Sawah Sundi 50
+78 D.I. Bdr. Sawah Tangah 45
+79 D.I. Bdr. Sungai Baliang 40
+80 D.I. Bdr. Sungai Buluh 100
+81 D.I. Bdr. Sungai Gasang 61
+82 D.I. Bdr. Sungai Janiah | 50
+83 D.I. Bdr. Tabek Dangka 155
+84 D.I. Bdr. Tabek Kabau Busuk 76
+85 D.I. Bdr. Tabek Panjang 109
+86 D.I. Bdr. Tabek Sonsang 178
+87 D.I. Bdr. Tabing 65
+88 D.I. Bdr. Taluak Bawah 150
+#KANAN
+108
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+89 D.I. Bdr. Tampunik 78
+90 D.I. Bdr. Tangguak-Tangguak 95
+91 D.I. Bdr. Tapi Pilang 213
+92 D.I. Bdr. Tapian Puti 105
+93 D.I. Bdr. Taratak Jarang 88
+94 D.I. Bdr. Taratak Teleng 62
+95 D.I. Bdr. Timbulun 100
+96 D.I. Bdr. Ulu Air 187
+97 D.I. Bdr. Ulu Air 205
+98 D.I. Bdr. Usak 42
+99 D.I. Bdr. Tubasi M
+100 D.I. Bdr. Pauh 160
+101 D.I. Bdr. Ulu Air 205
+102 D.I. Bdr. Guguk Bulek 109
+103 D.I. Bdr. Talago 25
+104 D.I. Bdr. Karang 40
+105 D.I. Bdr. Sawah Luar 146
+106 D.I. Bdr. Kandang Beo 59
+107 D.I. Bdr. Tapi Piliang 213
+108 D.I. Bdr. Batu Bagiriak 285
+109 D.I. Bdr. Air Angek 40
+110 D.I. Bdr. Sawah Pinang 30
+111 D.I. Bdr. Jambak 30
+112 D.I. Bdr. Karang Nago 93
+113 D.I. Bdr. Tampunik 78
+114 D.I. Bdr. Tangah Sirah 30
+115 D.I. Bdr. Gadang 172
+116 D.I. Bdr. Tuo Ujung Ladang 167
+117 D.I. Bdr. Timbarau 30
+118 D.I. Bdr. Swh.Panjang Santua 33
+119 D.I. Bdr. Sawah Laweh | 30
+120 D.I. Bdr. Sawah Laweh II 40
+121 D.I. Bdr. Air Jernih 31
+122 D.I. Bdr. Lurah Putih 39
+123 D.I. Bdr. Sawah Panjang 33
+124 D.I. Bdr. Ladang Laweh 36
+125 D.I. Bdr. Mandi-Mandian 45
+126 D.I. Bdr. Gantiang 30
+127 D.I. Bdr. Timbago 50
+128 D.I. Bdr. Muaro Taram 75
+129 D.I. Bdr. Rambun 27
+130 D.I. Bdr. Talago Laweh 53
+131 D.I. Bdr. Mata Air 75
+132 D.I. Bdr. Limau Puruik 40
+133 D.I. Bdr. Baliak Gunuang 30
+134 D.I. Bdr. Talago Puyu 45
+135 D.I. Bdr. Ondung 75
+136 D.I. Bdr. Jaruai 38
+137 D.I. Bdr. Tabek Kabau Busuak 76
+138 D.I. Bdr. Jedang 28
+139 D.I. Bdr. Gelanggang Hantu 50
+140 D.I. Bdr. Sawah Tangah 26
+141 D.I. Bdr. Batu Laweh (I) 27
+142 D.I. Bdr. Batang Simo 143
+143 D.I. Bdr. Guguk Gayo 123
+144 D.I. Bdr. Pincuran Tujuh 49
+145 D.I. Bdr. Batu Balenang 35
+146 D.I. Bdr. Anak Air 35
+147 D.I. Bdr. Air Luo 30
+148 D.I. Bdr. Sikuran-Kuran 42
+149 D.I. Bdr. Kipek 42

@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+31 D.I. Cipanas Leuweung 800
+32 D.I. Cipawada 198
+33 D.I. Cipedang 150
+34 D.I. Cipurut 40
+35 D.I. Cisaat 138
+36 D.I. Cisadang 25
+37 D.I. Cisagu 56
+38 D.I. Cisagu 2 30
+39 D.I. Cisagu 3 60
+40 D.I. Cisagu 4 160
+41 D.I. Ciseuti 85
+42 D.I. Citengah 1 30
+43 D.I. Citukang 50
+44 D.I. Ciwangun 140
+45 D.I. Garokgek 1 100
+46 D.I. Garokgek 2 65
+47 D.I. Garokgek 3 250
+48 D.I. Gengereng 68
+49 D.I. Huni 31
+50 D.I. Jelegong 50
+51 D.I. Leuwi Kadu 17
+52 D.I. Leuwi Urug 70
+53 D.I. Nagrog 50
+54 D.I. Nangerang 250
+55 D.I. Pasir Kadal 75
+56 D.I. Plered 60
+57 D.I. Rancabali 50
+58 D.I. Sumurugul 50
+59 D.I. Tanjungsari 205
+60 D.I. Cikadu 250
+61 D.I. Citaraje 112
+62 D.I. Citengah 2 30
+63 D.I. Leuwikawung 180
+64 D.I. Nangngewer 375
+o Kab. Subana 289 20.122
+1 D.I. Arjasari 20
+2 D.I. Astana Kikis/Cikembang III 56
+3 D.I. Astana Kikis | 36
+4 D.I. Awi Lega | 32
+5 D.I. Awi Lega II 20
+6 D.I. Awisan 128
+7 D.I. Babakan Loa 25
+8 D.I. Bantar Panjang 334
+9 D.I. Bebedahan 21
+10 D.I. Blenong 20
+11 D.I. Cau Karo 113
+12 D.I. Ceuri 53
+13 D.I. Ciasem | 24
+14 D.I. Ciasem II 24
+15 D.I. Ciater 20
+16 D.I. Cibalingbing 31
+17 D.I. Cibalong 20
+18 D.I. Cibareubey 35
+19 D.I. Cibarosole 53
+20 D.I. Cibarubus | 22
+21 D.I. Cibatu 31
+22 D.I. Cibenuang 21
+23 D.I. Cibeunying 85
+24 D.I. Cibeureum 71
+25 D.I. Cibeusi 28
+#KANAN
+18
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+26 D.I. Cibinong I 35
+27 D.I. Cibitung 115
+28 D.I. Cibodas 148
+29 D.I. Cibolang Sglhrang 55
+30 D.I. Cibolang Tnjsing 75
+31 D.I. Cibuang 264
+32 D.I. Cibulao 50
+33 D.I. Cicadas 72
+34 D.I. Cicaracas 317
+35 D.I. Ciciung 40
+36 D.I. Cidadap 28
+37 D.I. Cidomas 26
+38 D.I. Cigadog 76
+39 D.I. Cigadog I-ll 15
+40 D.I. Cigadung 50
+41 D.I. Cigandasoli 27
+42 D.I. Cigede 30
+43 D.I. Cigombong 21
+44 D.I. Cihaji | 20
+45 D.I. Ciharendong 22
+46 D.I. Cihideung 54
+47 D.I. Cihuni 105
+48 D.I. Cijagang 57
+49 D.I. Cijalu 47
+50 D.I. Cijalupang 268
+51 D.I. Cijambe 25
+52 D.I. Cijengkol 80
+53 D.I. Cijengkol/Sehati 153
+54 D.I. Cijere Ka 33
+55 D.I. Cijolang 27
+56 D.I. Cikadu 21
+57 D.I. Cikadu I/Sagaherang 21
+58 D.I. Cikadu II/Sagalaherang 317
+59 D.I. Cikadu/Kalijati 45
+60 D.I. Cikaliduren 35
+61 D.I. Cikaliaambir 49
+62 D.I. Cikaligarung 119
+63 D.I. Cikalijambe 446
+64 D.I. Cikaliwuluh 159
+65 D.I. Cikamiri 113
+66 D.I. Cikarangdawa 82
+67 D.I. Cikeruh 99
+68 D.I. Cikohok 75
+69 D.I. Cikondang 43
+70 D.I. Cikondang | 55
+71 D.I. Cikondang II 29
+72 D.I. Cikondang III 34
+73 D.I. Cilandesan | 97
+74 D.I. Cilandesan II 51
+75 D.I. Cilayah 21
+76 D.I. Cilege 52
+77 D.I. Cilembu I 26
+78 D.I. Cilembu II 136
+79 D.I. Ciloa 20
+80 D.I. Cilutung 64
+81 D.I. Cilutung 41
+82 D.I. Cimanggu 63
+83 D.I. Cimuja | 47
+84 D.I. Cimuja II 23
+85 D.I. Cimuncang 31
+86 D.I. Cimuncang II 21

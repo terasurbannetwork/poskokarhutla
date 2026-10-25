@@ -46,16 +46,20 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # aktor_karhutla.json dari repo menunjuk ID kompleks saat dibuat; samakan dengan kluster.json cache yang ikut terbit
       - name: Aktor WALHI x kompleks terkini (boleh gagal)
@@ -96,6 +100,8 @@ jobs:
         run: |
           python3 scripts/terbit/versi.py
           if [ "$GITHUB_REF_NAME" = main ]; then
+            python3 scripts/terbit/jaga_segar.py
+            python3 scripts/terbit/isi_data.py buat
             npx --yes wrangler@4.42.0 deploy
           else
             npx --yes wrangler@4.42.0 versions upload --preview-alias staging --message "staging ${GITHUB_SHA::7}"

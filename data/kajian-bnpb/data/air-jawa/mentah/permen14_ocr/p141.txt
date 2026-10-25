@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+71 D.I. Way Krisnowidodo (Gs. Baru) 200
+72 D.I. Way Pekir Atas 250
+73 D.I. Way Ratai II 300
+74 D.I. Wav Awi III 100
+75 D.I. Way Awi IV 100
+76 D.I. Way Banding Agung 297
+77 D.I. Way Batu Raja Punduh 264
+78 D.I. Way Cik Muri 150
+79 D.I. Way Kota Jawa 150
+80 D.I. Way Pd. Cermin I 300
+h Kab. Pesisir Barat 51 5.405
+1 D.I. Way Balai Kencana 125
+2 D.I. Way Bambang 204
+3 D.I. Way Bandar Dalam 280
+4 D.I. Way Bandar Pugung 10
+5 D.I. Way Batang I 58
+6 D.I. Way Batang II 9
+7 D.I. Way Batu Raja 30
+8 D.I. Way Bengkunat 200
+9 D.I. Way Bulu Munti Kendaway 125
+10 D.I. Way Gading 7
+11 D.I. Way Gunung 192
+12 D.I. Way Hanoan 49
+13 D.I. Way Jambu 150
+14 D.I. Way Kederai 218
+15 D.I. Way Kedondong 147
+16 D.I. Way Kendaway 84
+17 D.I. Way Kerkay Binjai 115
+18 D.I. Way Ketapang 200
+19 D.I. Way Ketapang 200
+20 D.I. Way Laay Kanan 150
+21 D.I. Way Laay Kiri 381
+22 D.I. Way Langkap 150
+23 D.I. Way Malaya 30
+24 D.I. Way Mandar 150
+25 D.I. Way Maralam 85
+26 D.I. Way Maya 235
+27 D.I. Way Mayah 45
+28 D.I. Way Melson 120
+29 D.I. Way Mendati 225
+30 D.I. Way Napal Sindi 85
+31 D.I. Way Ngison Sempana 68
+32 D.I. Way Padang Manis 12
+33 D.I. Way Pagar Dalam 15
+34 D.I. Way Pemekonan 25
+35 D.I. Way Rilau 26
+36 D.I. Way Salar 42
+37 D.I. Way Siring Balak 77
+38 D.I. Way Siring Balak 75
+39 D.I. Way Suka Marga I 41
+40 D.I. Way Suka Marga II 33
+41 D.I. Way Tanjung Meneng 45
+42 D.I. Way Tayas 50
+43 D.I. Way Telamah 200
+44 D.I. Way Tembulih 75
+45 D.I. Way Tinggal Balak 16
+46 D.I. Way Tinggal Lunik 16
+47 D.I. Way Tinggal Palimbang 75
+48 D.I. Way Titian Kupang 125
+49 D.I. Way Ulok 75
+#KANAN
+141 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Way Walur 99
+51 D.I. Way Krui 154
+i Kab. Prinasewu 94 6.597
+1 D.I. Way Adi luwih 25
+2 D.I. Way Apus 87
+3 D.I. Way Belimbing 65
+4 D.I. Way Bulok Sukamara V 150
+5 D.I. Way Bulu Rejo 150
+6 D.I. Way Gading 272
+7 D.I. Way Gatel 550
+8 D.I. Wav Kelutum 150
+9 D.I. Way Kunyir 130
+10 D.I. Way Langsep 80
+11 D.I. Way Manak II 100
+12 D.I. Way Mincang II 225
+13 D.I. Way Mincang Tjg. Rusia 794
+14 D.I. Way Nenep | 86
+15 D.I. Way Nenep II 38
+16 D.I. Way Padang Ratu II 64
+17 D.I. Way Padang Ratu III 268
+18 D.I. Way Padangkan 80
+19 D.I. Way Simpang Rawa 125
+20 D.I. Way Trisno 125
+21 D.I. Way Wonokriyo I 78
+22 D.I. Way Wonokriyo II 74
+23 D.I. Embung Fajar Agung 9
+24 D.I. Embung Pagersari 10
+25 D.I. Embung Pandan Surat 10
+26 D.I. Embung Sukoharjo II 40
+27 D.I. Embung Sukoyoso 12
+28 D.I. Embung Waringin sari Timur 15
+29 D.I. Way Apus II 28
+30 D.I. Way Balak Pagelaran 106
+31 D.I. Way Banjarejo | 10
+32 D.I. Way Banjarejo II 12
+33 D.I. Way Banjarejo III 30
+34 D.I. Way Banjarejo IV 10
+35 D.I. Way Banyumas | 15
+36 D.I. Way Banyumas II 10
+37 D.I. Way Banyuwangi 25
+38 D.I. Way Binong 12
+39 D.I. Way Blitarejo 46
+40 D.I. Way Bungur 68
+41 D.I. Way Cangkringan 86
+42 D.I. Way Fajar Agung 50
+43 D.I. Way Fajar mulia I 20
+44 D.I. Way Fajar mulia II 15
+45 D.I. Way Gemahripah 20
+46 D.I. Way Giri Tunggal | 80
+47 D.I. Way Giri Tunggal II 15
+48 D.I. Way Giri Tunggal III 10
+49 D.I. Way Gunung Bathin 86
+50 D.I. Way Gunung Kancil I 10
+51 D.I. Way Gunung Kancil II 10
+52 D.I. Way Gunung Kandi 64
+53 D.I. Way Iwil-Iwil 20
+54 D.I. Way Kamilin 12
+55 D.I. Way Karangsari 25
+56 D.I. Way Kresno Mulyo 94
+57 D.I. Way Kutilang 24

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+57 D.I. Centuko B 17
+58 D.I. Cepit 20
+59 D.I. Dadapan 11
+60 D.I. Dalem 25
+61 D.I. Dekong 14
+62 D.I. Dele A 53
+63 D.I. Dele B 35
+64 D.I. Dengken 33
+65 D.I. Dlimas 17
+66 D.I. Dlimas 5
+67 D.I. Domas 17
+68 D.I. Droso 15
+69 D.I. Dung Pelem 11
+70 D.I. Dunguling B 21
+71 D.I. Duren 7
+72 D.I. Duren 15
+73 D.I. Embomerto I, II 79
+74 D.I. Gabuk 2 12
+75 D.I. Gandring 10
+76 D.I. Gandu 18
+77 D.I. Gandu 55
+78 D.I. Gandu A 40
+79 D.I. Gebyak 22
+80 D.I. Gede 21
+81 D.I. Gembongan 28
+82 D.I. Gendongan 12
+83 D.I. Genjahan 25
+84 D.I. Genjahan 5
+85 D.I. Gili 20
+86 D.I. Gili II 36
+87 D.I. Gintung Siguci 15
+88 D.I. Glangsing 33
+89 D.I. Glutuk 63
+90 D.I. Gondang 5
+91 D.I. Gondang 15
+92 D.I. Gondang 78
+93 D.I. Gondang 18
+94 D.I. Gondang 15
+95 D.I. Gondangan 25
+96 D.I. Gondok 20
+97 D.I. Gowak 10
+98 D.I. Grenjeng 11
+99 D.I. Gudug 10
+100 D.I. Gumiwang 30
+101 D.I. Gunung 15
+102 D.I. Gunung 32
+103 D.I. Gunungsari 45
+104 D.I. Jamban 32
+105 D.I. Jamban 20
+106 D.I. Jamban 17
+107 D.I. Jamban 19
+108 D.I. Jamban 50
+109 D.I. Jamban 9
+110 D.I. Jamban 19
+111 D.I. Jamban/Depok 13
+112 D.I. Jamban Grogok 10
+113 D.I. Jamban | 20
+114 D.I. Jamban I 47
+115 D.I. Jamban II 14
+116 D.I. Jambilan 20
+117 D.I. Jarang 9
+#KANAN
+204
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+118 D.I. Jaten 20
+119 D.I. Jati 5
+120 D.I. Jb. Lintang 5
+121 D.I. Jengkol 10
+122 D.I. Jetis 50
+123 D.I. Jito 20
+124 D.I. Jlegong 92
+125 D.I. Jogoloyo 40
+126 D.I. Joho 19
+127 D.I. Joho/Pantek 83
+128 D.I. Jrakah 10
+129 D.I. Jurang 7
+130 D.I. Jurang 11
+131 D.I. Jurang 26
+132 D.I. Kali Putih 1 10
+133 D.I. Kalinyamat 5
+134 D.I. Kalisat 25
+135 D.I. Kalisat 17
+136 D.I. Karang Tengah 44
+137 D.I. Kebon 6
+138 D.I. Kebun 15
+139 D.I. Kecombrang 56
+140 D.I. Kedungdowo 36
+141 D.I. Kedungjati 23
+142 D.I. Kedunglanggar 96
+143 D.I. Kedungserut 93
+144 D.I. Kemarongan 60
+145 D.I. Kemejing 15
+146 D.I. Kemejing 32
+147 D.I. Kemploko 4
+148 D.I. Kemploso 89
+149 D.I. Kemuning | 20
+150 D.I. Kemuning II 25
+151 D.I. Kenconorejo 712
+152 D.I. Kencur 10
+153 D.I. Kendil 12
+154 D.I. Kijing 34
+155 D.I. Kilingan 53
+156 D.I. Klatak 10
+157 D.I. Klatak 5
+158 D.I. Klembrangan 20
+159 D.I. Klilingan 50
+160 D.I. Krobokan 25
+161 D.I. Krongo 8
+162 D.I. Kropak 75
+163 D.I. Kuripan 20
+164 D.I. Kurung 20
+165 D.I. Kuwung 59
+166 D.I. Lemah Abang 20
+167 D.I. Lempong 6
+168 D.I. Lengkong 17
+169 D.I. Lengkong 63
+170 D.I. Liangan 10
+171 D.I. Longopan 21
+172 D.I. Losari 32
+173 D.I. Loyar 5
+174 D.I. Lugas | 33
+175 D.I. Lugas II 42
+176 D.I. Luwung 24
+177 D.I. MA. Bali Kembang 29
+178 D.I. MA. Bledo 4

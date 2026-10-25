@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+147 D.I. Kedungwangan 93
+148 D.I. Keji Panjang 43
+149 D.I. Kemambang 45
+150 D.I. Kembang 15
+151 D.I. Kener 32
+152 D.I. Kenteng 18
+153 D.I. Kenteng S 81
+154 D.I. Kenteng T 45
+155 D.I. Kepoh K 10
+156 D.I. Kerban 80
+157 D.I. Kerep 74
+158 D.I. Kerokbatok 7
+159 D.I. Ketanggi 10
+160 D.I. Ketekan 151
+161 D.I. Klampisan 35
+162 D.I. Klempoh 75
+163 D.I. Klesem 35
+164 D.I. Kramat 57
+165 D.I. Kranggan 63
+166 D.I. Krasak 25
+167 D.I. Krenceng 63
+168 D.I. Kretek 34
+169 D.I. Kuncen 67
+170 D.I. Kunir 27
+171 D.I. Kupang 30
+172 D.I. Kutukan 17
+173 D.I. Langensari 31
+174 D.I. Ledok 43
+175 D.I. Ledoksari 25
+176 D.I. Legi 154
+177 D.I. Legok 23
+178 D.I. Legowo 24
+179 D.I. Lempuyangan 10
+180 D.I. Lerep 16
+181 D.I. Lodoyong 11
+182 D.I. Losari 15
+183 D.I. Maduan 14
+184 D.I. Maduhan 14
+185 D.I. Malang 13
+186 D.I. Mayong 22
+187 D.I. Membik 10
+188 D.I. Mendiro 16
+189 D.I. Mendoh 96
+190 D.I. Mendut 861
+191 D.I. Menggah 120
+192 D.I. Mintorogo 71
+193 D.I. Minuran 177
+194 D.I. Modinan 35
+195 D.I. Mudal 16
+196 D.I. Mukiran | 44
+197 D.I. Mukiran II 23
+198 D.I. Munding 37
+199 D.I. Muning Wetan 15
+200 D.I. Ngabean 25
+201 D.I. Ngablak 65
+202 D.I. Ngaglik 18
+203 D.I. Ngampin 43
+204 D.I. Ngancar I 34
+205 D.I. Ngancar II 27
+206 D.I. Ngasem 37
+207 D.I. Ngasinan 20
+#KANAN
+268
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+208 D.I. Ngeblak 10
+209 D.I. Ngeces 19
+210 D.I. Ngempon 26
+211 D.I. Ngimbun 14
+212 D.I. Nglangon 21
+213 D.I. Ngrancah 45
+214 D.I. Ngrawan 16
+215 D.I. Nyamat Karang 97
+216 D.I. Pager/Mudal 60
+217 D.I. Pagersari 45
+218 D.I. Pakopen 90
+219 D.I. Pancuran 40
+220 D.I. Pandanan 30
+221 D.I. Panggang 18
+222 D.I. Pangkok 53
+223 D.I. Pangus/Cenginging 34
+224 D.I. Parat 29
+225 D.I. Payaman 30
+226 D.I. Payungan 32
+227 D.I. Pelem 60
+228 D.I. Pendem | 15
+229 D.I. Pendem II 12
+230 D.I. Penggung 11
+231 D.I. Pereng 10
+232 D.I. Perengsari 110
+233 D.I. Petet 86
+234 D.I. Pilang 48
+235 D.I. Piyanggang 20
+236 D.I. Plampeyan 10
+237 D.I. Plaosan 227
+238 D.I. Plaosan 110
+239 D.I. Pleret/Sembungan 20
+240 D.I. Plintahan 30
+241 D.I. Pojok 45
+242 D.I. Poncouro 25
+243 D.I. Praguman 38
+244 D.I. Prampogan 7
+245 D.I. Prigen 14
+246 D.I. Pucung 12
+247 D.I. Punung 60
+248 D.I. Putih 10
+249 D.I. Rancah 21
+250 D.I. Randu Alas 30
+251 D.I. Rejosari 20
+252 D.I. Rengas 45
+253 D.I. Rowo 16
+254 D.I. Sabrangan 10
+255 D.I. Sandi/Sinongko 30
+256 D.I. Sarangan 98
+257 D.I. Sarem 60
+258 D.I. Sawur 43
+259 D.I. Secoadi 15
+260 D.I. Sedandang 44
+261 D.I. Sedono 17
+262 D.I. Sedoro 47
+263 D.I. Sedoyo 18
+264 D.I. Segawah 15
+265 D.I. Segunung 43
+266 D.I. Seguyangan 50
+267 D.I. Sejati 15
+268 D.I. Sekaum 18

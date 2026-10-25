@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+391 D.I. Sinongko 23
+392 D.I. Sipandan 51
+393 D.I. Sipelem 11
+394 D.I. Sipelem 15
+395 D.I. Sipengkok 53
+396 D.I. Sipengkok II 11
+397 D.I. Sipengok I 21
+398 D.I. Sipete 60
+399 D.I. Sipetet 18
+400 D.I. Sipetir 30
+401 D.I. Siraf 24
+402 D.I. Sirandu 14
+403 D.I. Sirandu 30
+404 D.I. Sirau 40
+405 D.I. Sireco 22
+406 D.I. Siringin 35
+407 D.I. Siringin 16
+408 D.I. Sirojeng 14
+409 D.I. Sirondo 49
+410 D.I. Sisalam 4
+411 D.I. Sisengon 22
+412 D.I. Sisisir 20
+413 D.I. Sisono 19
+414 D.I. Sitaman 13
+415 D.I. Sitenggen 15
+416 D.I. Sitretes 16
+417 D.I. Situk 14
+418 D.I. Situmpang 30
+419 D.I. Situnjang 67
+420 D.I. Siwareng 25
+421 D.I. Siweden 15
+422 D.I. Siweru 15
+423 D.I. Siweru 20
+424 D.I. Siwuluh 12
+425 D.I. Siwuni 20
+426 D.I. Sliling 27
+427 D.I. Slomot 53
+428 D.I. Soko A 50
+429 D.I. Soko B 35
+430 D.I. Songo 14
+431 D.I. Sonto 13
+432 D.I. Stren 150
+433 D.I. Sukan Sireco 40
+434 D.I. Sukomerto 115
+435 D.I. Sukoponco 40
+436 D.I. Sukorini 20
+437 D.I. Sumber Wungu 17
+438 D.I. Sumbermas 82
+439 D.I. Susukan 217
+440 D.I. Taman 19
+441 D.I. Taman 30
+442 D.I. Tambakboyo 30
+443 D.I. Tambakselo 20
+444 D.I. Tanjung 75
+445 D.I. Tapen 59
+446 D.I. Tarukan 23
+447 D.I. Tarung 53
+448 D.I. Tempel 30
+449 D.I. Tempuran 40
+450 D.I. Tempuran 44
+451 D.I. Tengaran 10
+#KANAN
+270
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+452 D.I. Tinalun 994
+453 D.I. Tirip 75
+454 D.I. Tlogo 76
+455 D.I. Toro 52
+456 D.I. Toyo Lipur 38
+457 D.I. Truneng 62
+458 D.I. Tuk Sumber/Timpik 25
+459 D.I. Tuksumber 25
+460 D.I. Tulakan 31
+461 D.I. Tulung 21
+462 D.I. Tumpak 26
+463 D.I. Tumpak 35
+464 D.I. Turusan 50
+465 D.I. Ubalan 182
+466 D.I. Urang 16
+467 D.I. Wadas Malang 21
+468 D.I. Wadas Tinatar 30
+469 D.I. Watu Gajah 30
+470 D.I. Watu Gandu 22
+471 D.I. Watu Kodok 32
+472 D.I. Watu Payung 21
+473 D.I. Watu Rumpuk 35
+474 D.I. Watu Rumpuk II 10
+475 D.I. Watulawang 15
+476 D.I. Wewe 20
+477 D.I. Widoro 23
+478 D.I. Winong 12
+479 D.I. Wiyonggo 220
+480 D.I. Wonoboyo 29
+481 D.I. Aji Getas 21
+482 D.I. Aji Getas 12
+483 D.I. Aji Joho 30
+484 D.I. Aji Pentung 15
+485 D.I. Aji Saradan 50
+486 D.I. Ajigarang/Sirancang 96
+487 D.I. Andong 8
+488 D.I. Banyu Tarung 30
+489 D.I. Batur 30
+490 D.I. Bebek 30
+491 D.I. Bendungan 40
+492 D.I. Bongos 20
+493 D.I. Bonili 12
+494 D.I. Cegatan 12
+495 D.I. Deres 15
+496 D.I. Diwak 20
+497 D.I. Dung Pani 40
+498 D.I. Duren 70
+499 D.I. Duren Selo 38
+500 D.I. Gajahan 16
+501 D.I. Gandul 25
+502 D.I. Garat 86
+503 D.I. Gayam 25
+504 D.I. Gayam 35
+505 D.I. Gebang 18
+506 D.I. Gebugan 25
+507 D.I. Gelah 140
+508 D.I. Gelaran 23
+509 D.I. Gempol 10
+510 D.I. Genting 32
+511 D.I. Gerbetung 30
+512 D.I. Gintaran Kanan 45

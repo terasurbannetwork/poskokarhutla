@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Tajen 114
+84 D.I. Selonding 28
+85 D.I. Dukuh 48
+86 D.I. Rejasa 165
+87 D.I. Pesagi 167
+88 D.I. Muduk Lumbang 29
+89 D.I. Gunung 21
+90 D.I. Biaung 22
+91 D.I. Karadan 30
+92 D.I. Serason 66
+93 D.I. Piling 28
+94 D.I. Dukuh Kuning 6
+95 D.I. Kebon I 33
+96 D.I. Abian Swan 81
+97 D.I. Dalem Pesagi 80
+98 D.I. Suka Candi 56
+99 D.I. Merta | 20
+100 D.I. Rum 92
+101 D.I. Mengesta 13
+102 D.I. Piling 48
+103 D.I. Asah 104
+104 D.I. Sandan Darma 15
+105 D.I. Sengkulung 15
+106 D.I. Lebah 9
+107 D.I. Klembang 15
+108 D.I. Tegal Linggah 85
+109 D.I. Songot 50
+110 D.I. Piak 70
+111 D.I. Amplas 15
+112 D.I. Keloncing 79
+113 D.I. Sandan Bongli 30
+114 D.I. Selat 23
+115 D.I. Bedugul 119
+116 D.I. Puakan 34
+117 D.I. Tingkih Kerep 34
+118 D.I. Pacung Kawan 17
+119 D.I. Pacung 16
+120 D.I. Munduk 17
+121 D.I. Melaka 22
+122 D.I. Ngesta 19
+123 D.I. Tengkudak 160
+124 D.I. Anyar Sangketan 71
+125 D.I. Babakan Tegayang 32
+126 D.I. Tegayang 23
+127 D.I. Kerasan 11
+128 D.I. Bangkiang Sidem 18
+129 D.I. Mongan 52
+130 D.I. Penatahan 87
+131 D.I. Pemuhunan 8
+132 D.I. Deman 34
+133 D.I. Merta II 73
+134 D.I. Uma Jaka 12
+135 D.I. MA. Sem 15
+136 D.I. Peselatan 36
+137 D.I. Kedampal 75
+138 D.I. Baru 42
+139 D.I. Puring 15
+140 D.I. Kesambi 10
+141 D.I. Yeh Kajang 269
+142 D.I. Selat Berteh 25
+143 D.I. Angsri/Angu 114
+#KANAN
+3177 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+144 D.I. Srinadi 10
+145 D.I. Tinungan 42
+146 D.I. Kambangan 52
+147 D.I. Yeh Ning 23
+148 D.I. B. Jelantik 28
+149 D.I. Br. Bangli 11
+150 D.I. Gunung Kangin 29
+151 D.I. Uma Poh 53
+152 D.I. Apit Yeh 34
+153 D.I. Baturiti 18
+154 D.I. Bangah 36
+155 D.I. Bengkaling 54
+156 D.I. Mayungan 16
+157 D.I. Danu 55
+158 D.I. Ngilngilan 18
+159 D.I. Apuan 28
+160 D.I. Babakan 22
+161 D.I. Kukub 19
+162 D.I. Tuka 21
+163 D.I. Leba/Piun 32
+164 D.I. Ts. Punjuan 67
+165 D.I. Batunya 81
+166 D.I. Suradadi 173
+167 D.I. Dayang 177
+168 D.I. Tiying Sading 641
+169 D.I. Balian Atas 110
+170 D.I. Kebon Anyar 150
+171 D.I. Sabah Hulu 382
+172 D.I. Sempol I 19
+173 D.I. Sempol II 10
+174 D.I. Muncar Sari 18
+175 D.I. Tibu Dalem 31
+176 D.I. Dayang Pujungan 122
+177 D.I. Baturiti 95
+178 D.I. Dangin 88
+179 D.I. Jelijih 20
+180 D.I. Nyanglad 21
+181 D.I. Duren Taluh 39
+182 D.I. Gemuh 29
+183 D.I. Puyungan 49
+184 D.I. Mas 51
+185 D.I. Teben Telabah 42
+186 D.I. Asah 48
+187 D.I. Anyar 62
+188 D.I. Seronggo 123
+189 D.I. Enggung 59
+190 D.I. Sembung Kelating 49
+191 D.I. Kawan Samsaman 106
+192 D.I. Timan Agung 178
+193 D.I. Dalem 95
+194 D.I. Penyalin 74
+i Kota Denpasar 9 1.566
+1 D.I. Batannyuh 252
+2 D.I. Dadas 20
+3 D.I. Lange 111
+4 D.I. Serogsogan 40
+5 D.I. Tegallinjung 28
+6 D.I. Umedui M
+7 D.I. Mertagangga 380
+8 D.I. Praupan 230

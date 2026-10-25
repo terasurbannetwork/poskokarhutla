@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+571 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+5 D.LA.T. Buyunng P SE 92 DPP - ST 8
+6 D.LA.T. Pamona U SE 102 PUP - ST 8
+e Kab. Siai 51 709
+1 D.LA.T. Baliase SD 105 BMD - ST 19
+2 D.LA.T. Beka SD 164 BMS-ST 10
+3 D.L.A.T. Binangga SE 74 BMD - ST 10
+4 D.LA.T. Binangga SD 165 BMS-ST 15
+5 D.LA.T. Bomba SD 163 BMS-ST 15
+6 D.LA.T. Sunju SE.11 SMD - ST 11
+7 D.LA.T. Sunju SE.12 SMD - ST 10
+8 D.LA.T. Sunju SE.13 SMD - ST 10
+9 D.LA.T. Sunju SE.14 SMD - ST 10
+10 D.LA.T. Sunju SE.15 SMD - ST 11
+11 D.LA.T. Sunju SE.16 SMD - ST 10
+12 D.LA.T. Sunju SE.17 SMD - ST 8
+13 D.LA.T. Sunju SE.18 SMD - ST 10
+14 D.LA.T. Sunju SE.19 SMD - ST 10
+15 D.LA.T. Sunju SE.20 SMD - ST 11
+16 D.I.A.T. Tinggede SE.01 TMD - ST 8
+17 D.LA.T. Tinggede SE.02 TMD - ST 8
+18 D.L.A.T. Tinggede SE.03 TMD - ST 8
+19 D.LA.T. Tinggede SE.04 TMD - ST 8
+20 D.I.A.T. Tinggede SE.05 TMD - ST 8
+21 D.L.A.T. Tinggede SE 26 TMD- ST 8
+22 D.L.A.T. Tinggede SE 27 TMD - ST 8
+23 D.L.A.T. Tinggede SE 28 TMD- ST 7
+24 D.L.A.T. Tinggede SE 29 TMD- ST 8
+25 D.I.A.T. Tinggede SE 30 TMD - ST 9
+26 D.I.A.T. Bora SD 130 BBD- ST 16
+27 D.L.A.T. Bora SD 135 BBD- ST 16
+28 D.I.A.T. Bora SD 114 BBD- ST 18
+29 D.I.A.T. Bora SD 115 BBD- ST 18
+30 D.I.A.T. Bora SD 125 BBD- ST 20
+31 D.I.A.T. Bora SD 126 BBD- ST 20
+32 D.I.A.T. Bora SD 127 BBD- ST 20
+33 D.I.A.T. Bora SD 128 BBD- ST 18
+34 D.I.A.T. Bora SD 124 BBD- ST 20
+35 D.I.A.T. Lolu SD 53 LBD- ST 21
+36 D.I.A.T. Lolu SD 54 LBD- ST 20
+37 D.I.A.T. Mpanau SD 157 MPD- ST 15
+38 D.I.A.T. Mpanau SD 55 MBD- ST 15
+39 D.I.A.T. Ngatabaru SD 50 NPKP - ST 15
+40 D.I.A.T. Pombewe SD 132 PBD- ST 15
+41 D.LA.T. Sidera SD 136 SBD - ST 20
+42 D.LA.T. Sidera SD 103 SBD - ST 21
+43 D.LA.T. Sidera SD 113 SBD- ST 19
+44 D.LA.T. Sidera SD 120 SBD - ST 19
+45 D.LA.T. Sidera SD 121 SBD - ST 17
+46 D.L.A.T. Solouwe SD 104 SBD - ST 16
+47 D.LA.T. Solouwe SD 110 SBD - ST 21
+48 D.LA.T. Solouwe SD 111 SBD- ST 18
+49 D.LA.T. Solouwe SD 122 SBD - ST 16
+50 D.I.A.T. Watunonju SD 112 WBD - ST 15
+51 D.I.A.T. Watunonju SD 123 WBD - ST 15
+f Kab. Toio Una-Una 10 122
+1 D.LA.T. Tongku SE 41 TPP - ST 10
+2 D.L.A.T. Limoro SE 42 TPP - ST 8
+3 D.LA.T. Tayawa SE 43 LIP - ST 10
+4 D.LA.T. Tayawa SE 44 TPP - ST 15

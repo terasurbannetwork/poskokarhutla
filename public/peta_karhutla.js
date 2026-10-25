@@ -210,10 +210,14 @@ function warnaKab(sasaran, n) {
 }
 /* kelas satu nilai: indeks 0..b.length (v > 0); sama dengan aturan "step" di gaya peta (nilai bulat, batas b+0,5) */
 const kelasKab = (b, v) => b.filter(x => v > x).length;
-/* angka luas untuk TAMPIL: dua angka penting (4687 -> 4700, 397 -> 400, 83 tetap). Luas satelit galatnya puluhan persen (porsi dan sampling), jadi satuan hektare adalah presisi palsu.
-   Hanya tampilan: batas kelas legenda dan penjumlahan tetap dari angka utuh */
+/* dua angka penting (4687 -> 4700, 397 -> 400, 83 tetap). TIDAK dipakai tampilan: pemilik (22 Okt 2026) memilih angka persis, sama dengan deck BNPB */
 const bulat2 = x => Number(Number(x).toPrecision(2));
+/* teks nilai satu kabupaten (tooltip, popup), angka persis seperti deck. Luas 0 = tak ada deteksi sama sekali; belum padam 0 = kabupaten itu bisa saja punya deteksi
+   (luas > 0) yang tak satu pun bertahan 12-36 jam, jadi "0 ha", BUKAN "Tanpa deteksi". fmt = pemformat angka layar */
+const teksKab = (metrik, v, fmt) => v ? `${fmt(v)} ha` : metrik === "luas" ? "Tanpa deteksi" : "0 ha";
+/* baris legenda untuk petak transparan (nilai 0); maks = nilai terbesar periode itu (0 = tak ada kabupaten berwarna) */
+const kosongKab = (metrik, maks) => metrik === "belum" ? "Tidak ada yang belum padam" : maks ? "Tanpa deteksi" : "Tanpa deteksi pada periode ini";
 
 g.PetaKarhutla = {MODE, METRIK, STOK, cek, siapkan, batas, rentang, tetangga, awalRentang, label, labelTgl, waktu, waktuBagian, agregat, banding, celahDi, catatanCelah, catatanBanding, pilihan, kontrol, senin, tambah,
-  atur, cekKab, siapkanKab, agregatKab, batasKab, warnaKab, kelasKab, bulat2};
+  atur, cekKab, siapkanKab, agregatKab, batasKab, warnaKab, kelasKab, bulat2, teksKab, kosongKab};
 })(window);

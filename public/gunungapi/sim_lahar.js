@@ -110,7 +110,7 @@ function laharAlur(z, n, m, P, S, Vp, Bp, dx, stamp, mulai, W, stT) {
     const h = luasA(hi) > 1.2 * A ? lo : hi, T = tampang(pts, h, dx); tinggi = Math.max(tinggi, h); if (h < 399) { sumA += T.area; nA++; }
     const ds = i > mulai ? S[i] - S[i - 1] : dx; luas = Math.min(B, luas + T.lebar * ds); /* langkah terakhir dipotong di B: total tak melampaui B */
     /* kecepatan Manning v = R^(2/3) S^(1/2) / n; R = kedalaman rata-rata penampang basah (alur lebar), S = kemiringan dasar alur dirata-rata +-3 sel */
-    if (i > mulai) { const a = Math.max(0, i - 3), b = Math.min(P.length - 1, i + 3), sl = Math.max(0.005, (z[P[a]] - z[P[b]]) / Math.max(1, S[b] - S[a])), R = Math.max(0.3, T.area / T.lebar);
+    if (i > mulai) { const a = Math.max(0, i - 3), b = Math.min(P.length - 1, i + 3), sl = Math.max(0.005, (z[P[a]] - z[P[b]]) / Math.max(1, S[b] - S[a])), R = Math.max(0.3, T.lebar > 0 ? T.area / T.lebar : 0);   /* penampang kosong (lebar 0) = 0/0 NaN: jatuh ke kedalaman minimal */
       const v = Math.min(V_LAHAR_MAKS, Math.max(V_LAHAR_MIN, R ** (2 / 3) * Math.sqrt(sl) / N_MANNING)); tc += ds / v; vMaks = Math.max(vMaks, v); }
     for (let k = T.a; k <= T.b; k++) if (pts[k][1] < h || pts[k][0] === 0) { const idx = pts[k][2]; if (stamp[idx] < 0) { stamp[idx] = S[i]; stT[idx] = tc; } }
     s1 = S[i];

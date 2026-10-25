@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+519 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+13 D.LA.T. Dukuh SDMG 101 48
+14 D.LA.T. Setren SDMG 102 60
+15 D.LA.T. Gulun SDMG 103 81
+16 D.LA.T. Pincuk SDMG 113 86
+17 D.LA.T. Belotan SDMG 114 63
+18 D.LA.T. Klagen Gambiran SDMG 115 68
+19 D.LA.T. Lemah Bang SDMG 116 94
+20 D.LA.T. Dukuh SDMG 324 30
+21 D.LA.T. Kinandang SDMG 325 27
+22 D.LA.T. Kinandang SDMG 328 35
+23 D.LA.T. Soco SDMG 329 35
+24 D.LA.T. Tanjung Preh SDMG 330 35
+25 D.LA.T. Tunggur SDMG 336 35
+26 D.ILA.T. Kuwon Harjo SDMG 337 31
+27 D.LA.T. Duwet SDMG 377 25
+28 D.LA.T. Dukuh SDMG 378 30
+29 D.LA.T. Lembeyan Kulon SDMG 457 35
+30 D.LA.T. Sumur Songo SDMG 458 35
+31 D.LA.T. Karas SDMG 459 35
+32 D.LA.T. Dukuh SDMG 474 35
+33 D.LA.T. Tunggur SDMG 475 40
+34 D.L.A.T. Nguri SDMG 476 35
+35 D.LA.T. Mojorejo SDMG 477 35
+36 D.I.A.T. Keputih Rejo SDMG 478 40
+37 D.LA.T. Kuwon SDMG 479 35
+38 D.LA.T. Bendo SDMG 480 40
+39 D.LA.T. Tunggur SDMG 495 21
+40 D.LA.T. Temenggungan SDMG 496 35
+41 D.LA.T. Temboro SDMG 497 35
+42 D.LA.T. Sumursongo SDMG 498 35
+43 D.LA.T. Setren SDMG 499 35
+44 D.LA.T. Duwet SDMG 500 25
+45 D.LA.T. Lembayan K SDMG 501 22
+46 D.LA.T. Soco SDMG 502 35
+47 D.LA.T. Kepuhrejo SDMG 503 30
+48 D.LA.T. Lembayan K SDMG 504 30
+49 D.LA.T. Kinandang SDMG 528 35
+50 D.LA.T. Kleco SDMG 533 35
+51 D.LA.T. Tanjung Sepreh SDMG 534 35
+52 D.LA.T. Banyudono SDMG 535 10
+53 D.LA.T. Kepuhrejo SDMG 538 35
+54 D.LA.T. Nguri SDMG 539 35
+55 D.LA.T. Kedung Panji SDMG 540 40
+56 D.I.A.T. Ngabirejo SDMG 541 35
+57 D.LA.T. Pesu SKMG 125 5
+58 D.LA.T. Pesu SKMG 126 5
+59 D.LA.T. Pesu SKMG 127 5
+60 D.L.A.T. Pesu SKMG 128 5
+61 D.LA.T. Bayem Taman SKMG 129 7
+62 D.LA.T. Bayem Taman SKMG 130 7
+63 D.LA.T. Bayem Taman SKMG 131 7
+64 D.LA.T. Bayem Taman SKMG 132 7
+65 D.LA.T. Kerik SKMG 199 5
+66 D.LA.T. Kerik SKMG 200 5
+67 D.LA.T. Kerik SKMG 201 5
+68 D.LA.T. Kerik SKMG 202 5
+69 D.LA.T. Takeran SKMG 203 5
+70 D.LA.T. Takeran SKMG 204 5
+71 D.LA.T. Takeran SKMG 205 6
+72 D.LA.T. Takeran SKMG 206 6
+73 D.LA.T. Sawojajar SKMG 207 6

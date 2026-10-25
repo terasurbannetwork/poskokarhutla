@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Dung Kapluk 7
+52 D.I. Dung Kidang 16
+53 D.I. Dung Mote 30
+54 D.I. Dung Sapi Kn 8
+55 D.I. Dung Sapi Kr 6
+56 D.I. Dungbiru 25
+57 D.I. Dungdowo 38
+58 D.I. Dungdowo 10
+59 D.I. Dungdowo Kanan 70
+60 D.I. Dungdowo Kiri 20
+61 D.I. Dungjangan 5
+62 D.I. Dungjati 11
+63 D.I. Dungmiri 10
+64 D.I. Dungnongo 80
+65 D.I. Dungpring 10
+66 D.I. Dungsuru Kn 8
+67 D.I. Dungsuru Kr 5
+68 D.I. Gagakan 10
+69 D.I. Gamping 3
+70 D.I. Gamping 1
+71 D.I. Garong 4
+72 D.I. Gawang 40
+73 D.I. Gayuhan Kanan 39
+74 D.I. Gayuhan Kiri 82
+75 D.I. Gebang 10
+76 D.I. Gebang 2
+77 D.I. Gemah 1
+78 D.I. Gemaharjo 33
+79 D.I. Gembuk 53
+80 D.I. Gembuk 30
+81 D.I. Genting 2
+82 D.I. Gesingan 8
+83 D.I. Siyono 25
+84 D.I. Glagah Ombo 4
+85 D.I. Glodakan 20
+86 D.I. Slonggong 125
+87 D.I. Gombang 20
+88 D.I. Gombang 14
+89 D.I. Gondang 40
+90 D.I. Gondosuli 10
+91 D.I. Gonggang 95
+92 D.I. Grego 3
+93 D.I. Grenjeng 22
+94 D.I. Grigak 25
+95 D.I. Grinsing 20
+96 D.I. Grojokan 8
+97 D.I. Gunung Duwur 4
+98 D.I. Gusit 16
+99 D.I. In. Bengkal 85
+100 D.I. In. Semanten 68
+101 D.I. J. Menjangan 15
+102 D.I. J. Teleng Kn 3
+103 D.I. J. Teleng Kr 3
+104 D.I. Jajar 10
+105 D.I. Jalen | 23
+106 D.I. Jalen li 12
+107 D.I. Jambean 60
+108 D.I. Jambon 8
+109 D.I. Jambu 45
+110 D.I. Jati 30
+111 D.I. Jembaran 8
+#KANAN
+3-18
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+112 D.I. Jembret 5
+113 D.I. Jenggring 17
+114 D.I. Jengklong 20
+115 D.I. Jero Gelo 15
+116 D.I. Jetis Kanan 24
+117 D.I. Jetis Kiri 26
+118 D.I. Jr. Panggang 20
+119 D.I. Jurang 20
+120 D.I. Jurang 7
+121 D.I. Jurug 47
+122 D.I. Jurug Bendo 30
+123 D.I. Jurug Kanan 15
+124 D.I. Jurug Kiri 30
+125 D.I. K. Bayangkaki 10
+126 D.I. K. Dringo 4
+127 D.I. K. Kambang 15
+128 D.I. K. Mojo 25
+129 D.I. Kali Mangun 10
+130 D.I. Kalialang 11
+131 D.I. Kalibarong 29
+132 D.I. Kalidoyo 35
+133 D.I. Kaligondang 10
+134 D.I. Kalilarang 3
+135 D.I. Kalilongan | 10
+136 D.I. Kalilongan II 8
+137 D.I. Kalipoh 2
+138 D.I. Kalisat 10
+139 D.I. Kalisuci 15
+140 D.I. Kalitelu 20
+141 D.I. Kalitelu 20
+142 D.I. Kalitelu 14
+143 D.I. Kalitelu 10
+144 D.I. Kalitowo 80
+145 D.I. Kalitulung 20
+146 D.I. Kaliuni 44
+147 D.I. Kaliuning 20
+148 D.I. Kaliwaru 7
+149 D.I. Kampir 6
+150 D.I. Kandri 6
+151 D.I. Karang 23
+152 D.I. Karanggede 45
+153 D.I. Karangnongko 50
+154 D.I. Kasihan 6
+155 D.I. Katulan 12
+156 D.I. Kayen 6
+157 D.I. Kayen 3
+158 D.I. Kebonagung 72
+159 D.I. Kedaung 15
+160 D.I. Kedung Pinihan 29
+161 D.I. Kedungaren 25
+162 D.I. Kedungbendo 16
+163 D.I. Kedungsapi 32
+164 D.I. Kelis 15
+165 D.I. Kembang 102
+166 D.I. Kendal 9
+167 D.I. Kenongo 11
+168 D.I. Kerti Kanan 47
+169 D.I. Kerti Kiri 17
+170 D.I. Kidulsalak 40
+171 D.I. Klampok 32
+172 D.I. Klumpit 5

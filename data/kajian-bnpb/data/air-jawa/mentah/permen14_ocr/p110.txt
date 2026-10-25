@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+272 D.I. Bdr. Sungai Pangalek 28
+273 D.I. Bdr. Taratak Dama 60
+274 D.I. Bdr. Lurah Gadang 56
+275 D.I. Bdr. Usak (PLTMH) 42
+276 D.I. Bdr. Tinggi Sungai Abu 66
+277 D.I. Bdr. Lubuak Muaro 27
+278 D.I. Bdr. Batu Kudo Sei. Kaluang 35
+279 D.I. Bdr. Lakuak Pinang 54
+280 D.I. Bdr. Ulu Air 50
+281 D.I. Bdr. Air Sirah 70
+282 D.I. Bdr. Air Jernih 30
+283 D.I. Bdr. Putiah 30
+284 D.I. Bdr. Firdaus 28
+285 D.I. Bdr. Taluak Anjalai 60
+286 D.I. Bdr. Taluak Kinari 40
+287 D.I. Bdr. Lurah Ingu 50
+288 D.I. Bdr. Tabing 65
+289 D.I. Bdr. Surau Balenggek 45
+290 D.I. Bdr. Timbulun 30
+291 D.I. Bdr. Batang Hari 39
+292 D.I. Bdr. Jalan Baru 53
+293 D.I. Bdr. Ampasan 40
+294 D.I. Bdr. Galagah 90
+295 D.I. Bdr. Sawah Tangah 228
+296 D.I. Bdr. Saluang Angin 51
+297 D.I. Bdr. Balimbing 28
+298 D.I. Bdr. Masajik 65
+299 D.I. Bdr. Air Karuah 60
+300 D.I. Bdr. Loang Gadang 65
+301 D.I. Bdr. Tuo (Sauk Leba) 45
+302 D.I. Bdr. Aie Sonsang 80
+303 D.I. Bdr. Aie Abu 50
+304 D.I. Bdr. Bendang Aie Abu 36
+305 D.I. Bdr. Kandang Pulai 193
+306 D.I. Bdr. Rao Talaok 161
+307 D.I. Bdr. Lawas Hulu 54
+308 D.I. Bdr. Sarasah Padang Laweh 45
+k Kab. Solok Selatan 94 11.734
+1 D.I. Air Manyuruk 341
+2 D.I. Bandar Alai 250
+3 D.I. Bandar Ampalu 191
+4 D.I. Bandar Baliang 65
+5 D.I. Bandar Baringin 165
+6 D.I. Bandar Batang Ampalu 223
+7 D.I. Bandar Batang Bangko 145
+8 D.I. Bandar Batang Kapiu 165
+9 D.I. Bandar Batang Lolo 127
+10 D.I. Bandar Batang Malus 127
+11 D.I. Bandar Batang Sangir 175
+12 D.I. Bandar Batang Tiak 444
+13 D.I. Bandar Batikan 66
+14 D.I. Bandar Batu Agung 115
+15 D.I. Bandar Batu Alang 55
+16 D.I. Bandar Batu Dalam 60
+17 D.I. Bandar Batu Mambang 79
+18 D.I. Bandar Beringin 100
+19 D.I. Bandar Bt. Pasimpai 122
+20 D.I. Bandar Bunian (SP) 45
+21 D.I. Bandar Durian Kunik 200
+22 D.I. Bandar Durian Mukti 215
+#KANAN
+110
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Bandar Gadang Ulu Suliti 58
+24 D.I. Bandar Kapau 350
+25 D.I. Bandar Kapiu 60
+26 D.I. Bandar Koto Baru 27
+27 D.I. Bandar Koto Ranah 180
+28 D.I. Bandar Koto Tinggi 244
+29 D.I. Bandar Kuminking 55
+30 D.I. Bandar Langkitang 55
+31 D.I. Bandar Liki Atas 100
+32 D.I. Bandar Lipek Patah 90
+33 D.I. Bandar Lompatan 101
+34 D.I. Bandar Lubuk Kamang 57
+35 D.I. Bandar Padang Air Dingin 75
+36 D.I. Bandar Pajinjauan 52
+37 D.I. Bandar Parak Gadang I 250
+38 D.I. Bandar Parak Gadang II 86
+39 D.I. Bandar Pauh (sp) 65
+40 D.I. Bandar Pidang 150
+41 D.I. Bandar Pintu Langik 55
+42 D.I. Bandar Pulakek 55
+43 D.I. Bandar Rawang 58
+44 D.I. Bandar Sawah Darek 54
+45 D.I. Bandar Sawah Langit 35
+46 D.I. Bandar Sawah Siluak 100
+47 D.I. Bandar Sawah Talang 220
+48 D.I. Bandar Sawah Uran 99
+49 D.I. Bandar Sei Bangku 38
+50 D.I. Bandar Sei Bilang 55
+51 D.I. Bandar Sei Binuang 88
+52 D.I. Bandar Sei Dalam 60
+53 D.I. Bandar Sei Duo 271
+54 D.I. Bandar Sei Durian 50
+55 D.I. Bandar Sei Ipuh 125
+56 D.I. Bandar Sei Jando 350
+57 D.I. Bandar Sei Lambai 140
+58 D.I. Bandar Sei Manau 150
+59 D.I. Bandar Sei Panjang 100
+60 D.I. Bandar Sei Rambutan 96
+61 D.I. Bandar Sei Sunakup 60
+62 D.I. Bandar Sei Talang 220
+63 D.I. Bandar Sei Geringging 148
+64 D.I. Bandar Sei Pangkur 25
+65 D.I. Bandar Sei Ratak 25
+66 D.I. Bandar Siangik 89
+67 D.I. Bandar Sikabau 57
+68 D.I. Bandar Sipotu 159
+69 D.I. Bandar Sukabumi 300
+70 D.I. Bandar Talanag Lia Ai 90
+71 D.I. Bandar Talang Mudiak Ai 60
+72 D.I. Bandar Talawi 60
+73 D.I. Bandar Tanjung Ampalu 75
+74 D.I. Bandar Tanjung Durian 78
+75 D.I. Bandar Tanjung Tangah 139
+76 D.I. Bandar Taratak 98
+77 D.I. Bandar Taruko 90
+78 D.I. Bandar Timbarau 50
+79 D.I. Bandar Timbulun 97
+80 D.I. Batang Lolo 25
+81 D.I. Batang Malus 200
+82 D.I. Bdr. Sawah Tandai 150
+83 D.I. Bdr. Sungai Dahan 200

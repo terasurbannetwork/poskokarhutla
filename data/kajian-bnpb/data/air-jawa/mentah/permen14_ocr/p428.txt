@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+2 D.I. Mowewe | 165
+3 D.I. Mowewe II 198
+4 D.I. Penanggo 295
+5 D.I. Simbune Atas 272
+6 D.I. Simbune Bawah 432
+7 D.I. Woitombo 189
+8 D.I. Aere 20
+9 D.I. Atolanu 78
+10 D.I. Bou 400
+11 D.I. Gunung Jaya 170
+12 D.I. Horodopi 105
+13 D.I. Iwoikondo 342
+14 D.I. Keisio 172
+15 D.I. Ladongi Jaya 200
+16 D.I. Lalolera 100
+17 D.I. Lalosingi 100
+18 D.I. Lamunde 170
+19 D.I. Lapangisi 50
+20 D.I. Lere Jaya 341
+21 D.I. Loka 7
+22 D.I. Lowa 320
+23 D.I. Putemata | 50
+24 D.I. Sabi-sabila 100
+25 D.I. Solewatu | 100
+26 D.I. Solewatu II 100
+27 D.I. Solewatu III 69
+28 D.I. Talodo 30
+29 D.I. Tawarombadaka 160
+30 D.I. Tengko 100
+31 D.I. Tinondo I 80
+32 D.I. Tinondo II 150
+33 D.I. Tinondo III 150
+34 D.I. Tumbudadio 125
+35 D.I. Ulu Ambapa 60
+36 D.I. Watupute 150
+37 D.I. Wonuamboteo 195
+f Kab. Kolaka Utara 13 3.385
+1 D.I. Batu Putih 665
+2 D.I. Lambuno 122
+3 D.I. Majapahit 347
+4 D.I. Mataleuno 454
+5 D.I. Mikuasi 350
+6 D.I. Mosiku 62
+7 D.I. Pasampang-Labipi 175
+8 D.I. Porehu 430
+9 D.I. Rante Angin 395
+10 D.I. Rante Limbong 49
+11 D.I. Salulotong 96
+12 D.I. Tolemo 25
+13 D.I. Wawo 215
+a Kab. Konawe 73 17.348
+1 D.I. Aleute 175
+2 D.I. Amonggedo 908
+3 D.I. Benua 112
+4 D.I. Lasada 347
+5 D.I. Meluhu 541
+6 D.I. Paku Jaya 227
+7 D.I. Sambaosu 518
+8 D.I. Sonay 256
+#KANAN
+428
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+9 D.I. Tukambopo 499
+10 D.I. A'Eya 115
+11 D.I. Ahuhu 151
+12 D.I. Alomba 151
+13 D.I. Ambekairi 240
+14 D.I. Amboniki 125
+15 D.I. Amesiu 150
+16 D.I. Amonggedo Baru 418
+17 D.I. Anahinunu | 185
+18 D.I. Anahinunu II 150
+19 D.I. Andawe | 115
+20 D.I. Andawe II 123
+21 D.I. Anggotoa 115
+22 D.I. A'Ongohi 300
+23 D.I. Asinua 300
+24 D.I. Aworeka | 475
+25 D.I. Aworeka II 566
+26 D.I. Awuliti 97
+27 D.I. Karya Mulya I 245
+28 D.I. Karya Mulya II 167
+29 D.I. Kumapo Dahu 550
+30 D.I. Labeau 250
+31 D.I. Ladianta 200
+32 D.I. Lalonggatu 225
+33 D.I. Lalowata 250
+34 D.I. Lambuya 160
+35 D.I. Lamelay I 50
+36 D.I. Lamelay II 50
+37 D.I. Lansilowo 500
+38 D.I. Larombu 75
+39 D.I. Larowiu | 44
+40 D.I. Larowiu II 155
+41 D.I. Laundau/Lalondau 265
+42 D.I. Matahori 174
+43 D.I. Meraka Tanggobu 460
+44 D.I. Mokaleleo 100
+45 D.I. Onembute | 250
+46 D.I. Onembute II 310
+47 D.I. Opuaha | 125
+48 D.I. Opuaha II 260
+49 D.I. Padangguni 317
+50 D.I. Parudongka 45
+51 D.I. Poanaha | 286
+52 D.I. Poanaha II 97
+53 D.I. Puasana 75
+54 D.I. Puriala 220
+55 D.I. Routa 150
+56 D.I. Selabangga 250
+57 D.I. Solobulili 50
+58 D.I. Sth. Ahuhu 151
+59 D.I. Titiowa 200
+60 D.I. Tondowatu 291
+61 D.I. Trimulva A 98
+62 D.I. Trimulya B 128
+63 D.I. Trimulya | 315
+64 D.I. Trimulya II 150
+65 D.I. Trimulya III 142
+66 D.I. Ulu Meraka | 115
+67 D.I. Ulu Meraka II 289
+68 D.I. Ulu Meraka III 320
+69 D.I. Wawolemo | 50

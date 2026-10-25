@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+32 D.I. Dawe 34
+33 D.I. Dawung 80
+34 D.I. Depok 25
+35 D.I. Diwek Kentengsari 50
+36 D.I. Diwek Sunggingsari 16
+37 D.I. Endongsewu (MA) 60
+38 D.I. Galgoro 34
+39 D.I. Gambir 12
+40 D.I. Gambyong 32
+41 D.I. Gemawang 15
+42 D.I. Gemiwang 60
+43 D.I. Gempol (MA) 16
+44 D.I. Gerjen I 10
+45 D.I. Gesingsuroloyo 28
+46 D.I. Gondang 49
+47 D.I. Gondangan Watukumpul 40
+48 D.I. Gowangsan 20
+49 D.I. Gunungan 47
+50 D.I. Ipik 21
+51 D.I. Jambe | 15
+52 D.I. Jambe Il/Sijeruk 6
+53 D.I. Jambe III 12
+54 D.I. Jambe IV 10
+55 D.I. Jambe/Sisir 7
+56 D.I. Jarak 20
+57 D.I. Jaranan 39
+58 D.I. Jombor 73
+59 D.I. Jonggolan 134
+60 D.I. Jrakah (MA) 29
+61 D.I. Jurang (MA) 10
+62 D.I. K. Pacar 275
+63 D.I. Kali Mandang 108
+64 D.I. Kd. Buntung 25
+65 D.I. Kebo Kuning 50
+66 D.I. Kedung Bangkong 4
+67 D.I. Kedung Gatel 10
+68 D.I. Kedung Jali 105
+69 D.I. Kedung Jambu 40
+70 D.I. Kedung Keling 150
+71 D.I. Kedung Kretek 14
+72 D.I. Kedung Tarung 31
+73 D.I. Keji Balerejo 33
+74 D.I. Kembang Mangunsari 34
+75 D.I. Kembaran 15
+76 D.I. Kemiri 20
+77 D.I. Kenton 66
+78 D.I. Kerokan M
+79 D.I. Ketek 10
+80 D.I. Krawitan 48
+81 D.I. Krekah 90
+82 D.I. Krengseng 8
+83 D.I. Krengseng 5
+84 D.I. Kuwaluhan 165
+85 D.I. Kuwelan 10
+86 D.I. Kwagean 164
+87 D.I. Langit 33
+88 D.I. Laranganluwok 60
+89 D.I. Lempongsowo 18
+90 D.I. Logung 20
+91 D.I. Lumut 46
+92 D.I. Lumut II 31
+#KANAN
+276
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+93 D.I. Lungge 72
+94 D.I. Lutut II 14
+95 D.I. Menjangan 20
+96 D.I. Mijil (MA) 10
+97 D.I. Mlandi 10
+98 D.I. Mundingharjo 56
+99 D.I. Mungseng 25
+100 D.I. Nayu 13
+101 D.I. Ngasalan 30
+102 D.I. Ngasinan (MA) 25
+103 D.I. Ngimbrang 12
+104 D.I. Ngingkil 87
+105 D.I. Pabengan 24
+106 D.I. Pakisan Klepu 13
+107 D.I. Pakisan Wonokerso 6
+108 D.I. Patemon 15
+109 D.I. Plangkrong 21
+110 D.I. Pringapus 27
+111 D.I. Progo I 14
+112 D.I. Progo II 115
+113 D.I. Pucung/Dungkutut 15
+114 D.I. Puleharjo 56
+115 D.I. Putat 50
+116 D.I. Salak 60
+117 D.I. Salam 10
+118 D.I. Sambeng Klepu (MA) 17
+119 D.I. Saren 12
+120 D.I. Sedawe 30
+121 D.I. Sedayu 20
+122 D.I. Segunung 86
+123 D.I. Sejurang 15
+124 D.I. Seleri 30
+125 D.I. Selilin Nguwet 171
+126 D.I. Selingseng Purborejo 27
+127 D.I. Semen 20
+128 D.I. Semiling 65
+129 D.I. Sempol Siyanti 24
+130 D.I. Sempol Plumbon 30
+131 D.I. Sempol Wanutengah 44
+132 D.I. Sendang II 35
+133 D.I. Sengganen 16
+134 D.I. Sengon (MA) 73
+135 D.I. Serunting 97
+136 D.I. Seset 56
+137 D.I. Setro 71
+138 D.I. Sewaru 14
+139 D.I. Sewiyu 14
+140 D.I. Sewuni Bulu 15
+141 D.I. Sewuni Tepusan 30
+142 D.I. Sianggung 24
+143 D.I. Siangkrik 10
+144 D.I. Sianjir 35
+145 D.I. Siasem 10
+146 D.I. Sibedug 86
+147 D.I. Sibenca 33
+148 D.I. Sibencah 12
+149 D.I. Sibendo Bulu 37
+150 D.I. Sibendo Tanjungsari 42
+151 D.I. Sibibis 30
+152 D.I. Sibratung 21
+153 D.I. Sibumen 30

@@ -1,0 +1,51 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638
+40
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+XIV PROVINSI KALIMANTAN BARAT 7 396
+1 D.I. Dema Sualam 25 Kabupaten Landak z 13 Ha
+Kabupaten Pontianak z 12 Ha
+2 D.I. Gutok 17 Kabupaten Landak - 2 Ha
+Kabupaten Pontianak z 15 Ha
+3 D.I. Takong 8 Kabupaten Landak - 1 Ha
+Kabupaten Pontianak z 7 Ha
+4 D.I. Sembora 124 Kabupaten Landak - 24 Ha
+Kabupaten Pontianak z 100 Ha
+5 D.I. Benuang 59 Kabupaten Landak z 19 Ha
+Kabupaten Pontianak z 40 Ha
+6 D.I. Pak Bulu 72 Kabupaten Landak z 12 Ha
+Kabupaten Pontianak z 60 Ha
+7 D.I. Ngarak 91 Kabupaten Landak z 70 Ha
+Kabupaten Pontianak z 21 Ha
+
+XV PROVINSI SULAWESI UTARA 1 769
+1 D.I. Buyat 769 Kabupaten Bolaang Mogondow - Koo La
+Timur Pe
+Kabupaten Minahasa Tenggara z 171 Ha
+
+XVI PROVINSI SULAWESI TENGAH 2 1.669
+1 D.I. Kekeloe 1.169 Kabupaten Sigi - 1.130 Ha
+Kota Palu z 39 Ha
+2 D.I. Paneki 500 Kabupaten Sigi - 465 Ha
+Kota Palu z 35 Ha
+
+XVII PROVINSI SULAWESI TENGGARA 3 1.406
+1 D.I. Wonco I 834 Kabupaten Buton z 213 Ha
+Kota Bau-Bau z 621 Ha
+2 D.I. Wonco II 278 Kabupaten Buton z 182 Ha
+Kota Bau-Bau z 96 Ha
+3 D.I. Wonco III 294 Kabupaten Buton z 127 Ha
+Kota Bau-Bau z 167 Ha
+
+XVIII PROVINSI SULAWESI SELATAN 4 6.896
+1 D.I. Bili-Bili 2.443 Kabupaten Gowa z 759 Ha
+Kota Makassar z 1.684 Ha
+2 D.I. Cilellang 1.113 Kabupaten Soppeng z 381 Ha
+Kabupaten Wajo z 732 Ha
+3 D.I. Matajang 1.880 Kabupaten Barru z 775 Ha
+Kabupaten Pangkajene dan - AAOr La
+Kepulauan Hanan
+4 D.I. Tubu Ampak 1.460 Kabupaten Luwu - 712 Ha
+Kabupaten Luwu Utara z 748 Ha

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+72 D.I. Cibadak 2 40
+73 D.I. Cibagbagan 21
+74 D.I. Cibanen 15
+75 D.I. Cibanjaran 45
+76 D.I. Cibarengkok 105
+77 D.I. Cibatu Meong 49
+78 D.I. Cibatubeureum 70
+79 D.I. Cibatuhawu 1 54
+80 D.I. Cibatunangtung 40
+81 D.I. Cibatur 14
+82 D.I. Cibayondah 40
+83 D.I. Cibayongbong 30
+84 D.I. Cibeet 25
+85 D.I. Cibeet 40
+86 D.I. Cibengkuk/Cibeuneur 25
+87 D.I. Cibeunying 79
+88 D.I. Cibeureum 100
+89 D.I. Cibeureum 65
+90 D.I. Cibeureum 40
+91 D.I. Cibeureum 10
+92 D.I. Cibeusi 77
+93 D.I. Cibeusi 57
+94 D.I. Cibiuk 10
+95 D.I. Cibiuk III & II 30
+96 D.I. Cibodas 30
+97 D.I. Cibodas 40
+98 D.I. Cibodo/Cibiru 45
+99 D.I. Cibogo 10
+100 D.I. Cibongkok 48
+101 D.I. Cibuah 29
+102 D.I. Cibuah 12
+103 D.I. Cibuah 50
+104 D.I. Cibubuay 50
+105 D.I. Cibubuay 33
+106 D.I. Cibuni 73
+107 D.I. Ciburial 22
+108 D.I. Ciburial 47
+109 D.I. Ciburial 15
+110 D.I. Cicagak 46
+111 D.I. Cicager 51
+112 D.I. Cicampaka 63
+113 D.I. Cicampaka 63
+114 D.I. Cicampaka 25
+115 D.I. Cicanar III & III 22
+116 D.I. Cicariu 37
+117 D.I. Ciceret 25
+118 D.I. Cicurug 10
+119 D.I. Cidadali 18
+120 D.I. Cidadali 30
+121 D.I. Cidempok 20
+122 D.I. Cidodol 52
+123 D.I. Cieceng 1 63
+124 D.I. Cieceng 2 29
+125 D.I. Ciendog 25
+126 D.I. Cienteng 190
+127 D.I. Cienteng Lebak 10
+128 D.I. Cigadog 806
+129 D.I. Cigadog 16
+130 D.I. Cigadog 107
+131 D.I. Cigadog 2 26
+132 D.I. Cigadog Lio 33
+#KANAN
+156
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+133 D.I. Cigalumpit 24
+134 D.I. Cigalumpit 26
+135 D.I. Cigandasoli 30
+136 D.I. Cigarukgak 15
+137 D.I. Cigarukgak 15
+138 D.I. Cigedig 1 40
+139 D.I. Cigedig 2 17
+140 D.I. Cigembrang 26
+141 D.I. Cigenteng 15
+142 D.I. Cigentur 25
+143 D.I. Cigentur 32
+144 D.I. Cigentur 21
+145 D.I. Cigeureuh 28
+146 D.I. Cigeureuh | 47
+147 D.I. Cigiri 19
+148 D.I. Cigoong 97
+149 D.I. Cigunung 100
+150 D.I. Ciguruwik 23
+151 D.I. Cihamerang 26
+152 D.I. Cihampelas 51
+153 D.I. Cihaneut/Karangtumpul 30
+154 D.I. Cihaniwung 16
+155 D.I. Cihanyawar 22
+156 D.I. Cihanyir 46
+157 D.I. Ciharanggi 45
+158 D.I. Ciharupat 45
+159 D.I. Ciharus 60
+160 D.I. Cihejo 52
+161 D.I. Cihejo/Ciawi 50
+162 D.I. Ciheulang 26
+163 D.I. Cihiang 12
+164 D.I. Cihideung 50
+165 D.I. Cihideunng 10
+166 D.I. Cihuni 45
+167 D.I. Cijaha 25
+168 D.I. Cijalupang 37
+169 D.I. Cijambe 10
+170 D.I. Cijambe 45
+171 D.I. Cijambe M
+172 D.I. Cijamburaya 63
+173 D.I. Cijantaka 10
+174 D.I. Cijauh 36
+175 D.I. Cijaura | 96
+176 D.I. Cijengjing 40
+177 D.I. Cijengkol 83
+178 D.I. Cijengkol 18
+179 D.I. Cijengkol 24
+180 D.I. Cijengkol 15
+181 D.I. Cijeruk 39
+182 D.I. Cijolang 20
+183 D.I. Cikabayan 39
+184 D.I. Cikadu 20
+185 D.I. Cikadu 35
+186 D.I. Cikadu 28
+187 D.I. Cikadu 12
+188 D.I. Cikadu/Ciengang 40
+189 D.I. Cikahiyangan 10
+190 D.I. Cikahiyangan 26
+191 D.I. Cikahuripan 15
+192 D.I. Cikalage 149
+193 D.I. Cikalong 145

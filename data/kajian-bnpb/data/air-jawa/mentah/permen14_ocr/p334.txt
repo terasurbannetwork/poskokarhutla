@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+39 D.I. Bulung II 24
+40 D.I. Cacing Konto 1
+41 D.I. Candi 6
+42 D.I. Cendol 122
+43 D.I. Ciblungan 67
+44 D.I. Coban Tretes 3
+45 D.I. Codol 19
+46 D.I. Cokro 45
+47 D.I. Cumplung 30
+48 D.I. Dadi I, II 2
+49 D.I. Damaran 2
+50 D.I. Dawuhan (Kec. Tajinan,Bululawang) 177
+51 D.I. Dawuhan (Kec. Poncokusumo) 70
+52 D.I. Dawung 25
+53 D.I. Delik 7
+54 D.I. Deling Apus I 53
+55 D.I. Deling Apus II 27
+56 D.I. Deling Kobong 5
+57 D.I. Dempok (Kec. Jabung) 24
+58 D.I. Dengkol M4
+59 D.I. Diyo 17
+60 D.I. Dompyong (Konto) 5
+61 D.I. Donomulyo I 81
+62 D.I. Donomulyo II 100
+63 D.I. Donomulyo III 129
+64 D.I. Dukuh 294
+65 D.I. Durenan 55
+66 D.I. Gading 21
+67 D.I. Gagar 2
+68 D.I. Gagar | 4
+69 D.I. Gagar II 3
+70 D.I. Gajah Barong 29
+71 D.I. Gajahlonggong 478
+72 D.I. Ganten 15
+73 D.I. Gapuk 8
+74 D.I. Garum 82
+75 D.I. Gedang 1
+76 D.I. Gedok 234
+77 D.I. Gejed 112
+78 D.I. Gempol 2
+79 D.I. Genting | 11
+80 D.I. Gentong 20
+81 D.I. Gobok 21
+82 D.I. Gondanglegi 155
+83 D.I. Gunungsari 4
+84 D.I. Jabung 46
+85 D.I. Jambuwer 8
+86 D.I. Jaruman | 251
+87 D.I. Jaruman II 349
+88 D.I. Jemunang 24
+89 D.I. Jeru 131
+90 D.I. Jetis 2
+91 D.I. Juwetmanting 55
+92 D.I. Kacangan 77
+93 D.I. Kadut 60
+94 D.I. Kajar 3
+95 D.I. Kali Lumbangsari 252
+96 D.I. Kali Manjing 234
+97 D.I. Kali Sat (Kec. Pujon) 3
+98 D.I. Kali Sat (Kec. Ampelgading) 18
+99 D.I. Kali Wangkit 12
+#KANAN
+334
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+100 D.I. Karangampel I 25
+101 D.I. Karanganyar 404
+102 D.I. Karangjambe 224
+103 D.I. Karangkates 155
+104 D.I. Kasembon 147
+105 D.I. Kasikon 63
+106 D.I. Kasin | 1
+107 D.I. Kasin II 2
+108 D.I. Kebobang 28
+109 D.I. Kedungbanteng 194
+110 D.I. Kedungboto 75
+111 D.I. Kedungrejo I 1
+112 D.I. Kemantren 33
+113 D.I. Kenongo 110
+114 D.I. Kesamben 63
+115 D.I. Klampok | 99
+116 D.I. Kontroliran 23
+117 D.I. Kramat 321
+118 D.I. Kromengan 100
+119 D.I. Kucur Ledong 1
+120 D.I. Lajo 10
+121 D.I. Langlang 98
+122 D.I. Lebaksari 4
+123 D.I. Lekso (Kec. Wonosari) 26
+124 D.I. Leses 82
+125 D.I. Lopawon 10
+126 D.I. Lunyu 12
+127 D.I. Lunyu | 5
+128 D.I. Lunyu II 9
+129 D.I. Makmur (Kec. Tumpang) 62
+130 D.I. Mangunrejo 207
+131 D.I. Manting 72
+132 D.I. Mas 37
+133 D.I. Meling 42
+134 D.I. Mendalanwangi (Kec. Wagir) 20
+135 D.I. Mogal 291
+136 D.I. Mojosari 109
+137 D.I. Mondoroko 62
+138 D.I. Ngadirejo 111
+139 D.I. Ngajum 231
+140 D.I. Ngambrek 113
+141 D.I. Ngasem | 34
+142 D.I. Ngasem II 97
+143 D.I. Ngawonggo 327
+144 D.I. Ngebyu 7
+145 D.I. Ngeprih 2
+146 D.I. Ngijo 31
+147 D.I. Nglewung 10
+148 D.I. Nglowo I 4
+149 D.I. Nglowo II 2
+150 D.I. Ngragi 43
+151 D.I. Ngrejo 18
+152 D.I. Ngremeng 4
+153 D.I. Pagelaran 114
+154 D.I. Pagersari 24
+155 D.I. Pait I 13
+156 D.I. Pait II 11
+157 D.I. Pait III 10
+158 D.I. Pait IV 2
+159 D.I. Pakel 31
+160 D.I. Pandanrejo I 117

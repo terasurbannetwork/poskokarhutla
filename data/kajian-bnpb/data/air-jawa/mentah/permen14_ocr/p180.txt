@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+209 D.I. Cijengkol 11
+210 D.I. Cijuhung 264
+211 D.I. Cikahuripan 25
+212 D.I. Cikaruncang IV 20
+213 D.I. Cikawung 20
+214 D.I. Cilampeni I 18
+215 D.I. Cilawang 30
+216 D.I. Cileuleuy Udik 376
+217 D.I. Cimanglid 16
+218 D.I. Cinempo 115
+219 D.I. Cinungku 10
+220 D.I. Cinyaro 20
+221 D.I. Cipabelah Ia 11
+222 D.I. Cipabelah Ia 13
+223 D.I. Cipabelah III 16
+224 D.I. Cipadati 138
+225 D.I. Cirendes 251
+226 D.I. Cisalawangi 13
+227 D.I. Cisambo I 20
+228 D.I. Cisusukan 134
+229 D.I. Citamiang 20
+230 D.I. Citempuran 69
+231 D.I. Citeureup 19
+232 D.I. Dam Muhrim 27
+233 D.I. Empang 50
+234 D.I. Gabug 66
+235 D.I. Subang 55
+236 D.I. Jalan Pedati 12
+237 D.I. Jamadin 12
+238 D.I. Jami Embah 5
+239 D.I. Jaringao 30
+240 D.I. Jati 124
+241 D.I. Kalapa Tilu 11
+242 D.I. Kamurang 235
+243 D.I. Kandang Ranjang 190
+244 D.I. Karadak 16
+245 D.I. Katulapa 10
+246 D.I. Legok Waru 8
+247 D.I. Leuwi Buah 35
+248 D.I. Leuwi Buah/Kutu Cs 40
+249 D.I. Leuwi Gintiri 60
+250 D.I. Leuwi Haur 17
+251 D.I. Leuwi Jambu 10
+252 D.I. Leuwi Pariuk 25
+253 D.I. Leuwi Sabuk 30
+254 D.I. Nagrak II 10
+255 D.I. Nagrak Lebak 10
+256 D.I. Nangka Bengkok 35
+257 D.I. Pa Eyang 9
+258 D.I. Pangkalan 31
+259 D.I. Parakan Peupeuh 35
+260 D.I. Pasarean 13
+261 D.I. Pasir Joho 12
+262 D.I. Patrol 14
+263 D.I. Pembuang Peundeuy 107
+264 D.I. Peuntas 35
+265 D.I. Ponggang I 79
+266 D.I. Ponggang IV 86
+267 D.I. Putat 10
+268 D.I. Rasiman 135
+269 D.I. Rawa Tapen 4
+#KANAN
+180
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+270 D.I. Sadang 17
+271 D.I. Saluran Baru 36
+272 D.I. Sawah Honje/Rawa Tapen 96
+273 D.I. Sayuran 185
+274 D.I. Serepong 19
+275 D.I. Siil 84
+276 D.I. Situ Cerelek/Cikalong 163
+277 D.I. Situ Hiang 45
+278 D.I. Situ Isjan 57
+279 D.I. Situ Kalijambe 14
+280 D.I. Situ Nagrog 233
+281 D.I. St. Sadang 40
+282 D.I. St.Cigayonggong 20
+283 D.I. Sukadana/Cicokop 14
+284 D.I. Sukamanah 14
+285 D.I. Tanjungsinga 70
+286 D.I. Tarik Kolot II 22
+287 D.I. Tunjung 148
+288 D.I. Walahir I 20
+289 D.I. Walahir II 20
+p Kab. Sukabumi 157 28.650
+1 D.I. Batu Karut 366
+2 D.I. Binongsari 150
+3 D.I. Cialing 222
+4 D.I. Ciasih kalibunder 408
+5 D.I. Cibalung 194
+6 D.I. Cibatu 100
+7 D.I. Cibeber 811
+8 D.I. Cibening Girang 190
+9 D.I. Cibeureum 150
+10 D.I. Cibodas 200
+11 D.I. Cibojong 100
+12 D.I. Cicatih 556
+13 D.I. Ciengang 94
+14 D.I. Ciheulang 548
+15 D.I. Cikahuripan 512
+16 D.I. Cikanteh 752
+17 D.I. Cikolawing | 650
+18 D.I. Cikupa/Pada Asih 169
+19 D.I. Cikurutug 400
+20 D.I. Cilengis 166
+21 D.I. Cimulek 491
+22 D.I. Cimuncang 299
+23 D.I. Cipamarangan 614
+24 D.I. Cipamutih I 240
+25 D.I. Cipeundeuy 519
+26 D.I. Cipuspa 130
+27 D.I. Ciraden 659
+28 D.I. Cisarua Bojong 100
+29 D.I. Cisarua II 143
+30 D.I. Cisekarwangi 241
+31 D.I. Cisukawayana 349
+32 D.I. Citarik 168
+33 D.I. Ciutara 184
+34 D.I. Gegerbitung 220
+35 D.I. Leuwi Munding 200
+36 D.I. Sukarame 342
+37 D.I. Tarisi 430
+38 D.I. Tirta Bakti 190
+39 D.I. Warungkiara 507

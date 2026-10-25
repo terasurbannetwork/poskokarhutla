@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+536 D.I. Tajur Sereh 118
+537 D.I. Tanjong 25
+538 D.I. Tanjung III 21
+539 D.I. Tanjung IV 22
+540 D.I. Tengkolo 45
+541 D.I. Tipar 104
+542 D.I. Tonjong 25
+543 D.I. Tonjong 40
+544 D.I. Tritih 207
+545 D.I. Tundun 15
+546 D.I. Wanguk 7
+547 D.I. Babakan II 25
+548 D.I. Baturaja 15
+549 D.I. Bingang 15
+550 D.I. Bojongsari/Ciebeg 3 60
+551 D.I. Brujulan 15
+552 D.I. Ciawingamang 20
+553 D.I. Cibalandongan 10
+554 D.I. Cibarambang II 5
+555 D.I. Cibatur 30
+556 D.I. Cibungur 30
+557 D.I. Cibunut Il/Cibunut 10
+558 D.I. Ciburang Bonghas II 20
+559 D.I. Cicapar III 25
+560 D.I. Cidolog 20
+561 D.I. Cidolog II 15
+562 D.I. Cigebeg II 15
+563 D.I. Cigendong 3
+564 D.I. Cigenjlong 25
+565 D.I. Cigombong/Curug 5
+566 D.I. Cihejo I-Il 53
+567 D.I. Cijauh 15
+568 D.I. Cijulang II 15
+569 D.I. Cijurai I-I/Cijuray I-II 17
+570 D.I. Cikadu 30
+571 D.I. Cikadu/Cikareo 40
+572 D.I. Cikadu | 42
+573 D.I. Cikadu II 40
+574 D.I. Cikalong 80
+575 D.I. Cikawalon V 5
+576 D.I. Cikawalon VI 11
+577 D.I. Cike 30
+578 D.I. Cikedung 7
+579 D.I. Cikuya 60
+580 D.I. Cilajan 30
+581 D.I. Cilangkap 30
+582 D.I. Cilongkmag I 2
+583 D.I. Cilongkmag II 11
+584 D.I. Cimancang II 50
+585 D.I. Cimancang III 12
+586 D.I. Cinongkop 15
+587 D.I. Cinyirib 36
+588 D.I. Cipadangan 15
+589 D.I. Cipamuntuan I-II 10
+590 D.I. Cipenday 30
+591 D.I. Cipicung VI/Romasih 41
+592 D.I. Cipicung Batu Lawang | 20
+593 D.I. Cipicung Kadu Pandak 40
+594 D.I. Cipicung/Badak Jaya 20
+595 D.I. Ciranggon 40
+596 D.I. Cirebah I 3
+#KANAN
+220
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+597 D.I. Cirebah II 6
+598 D.I. Cirey III 20
+599 D.I. Cirey IV 20
+600 D.I. Cirey V 25
+601 D.I. Cirey VI 25
+602 D.I. Cisurian | 10
+603 D.I. Cisurian II 148
+604 D.I. Citaman 20
+605 D.I. Ciupas 9
+606 D.I. Dadap Cangkring 15
+607 D.I. Depok 20
+608 D.I. Gabug 34
+609 D.I. Srendeng 25
+610 D.I. Jambu 15
+611 D.I. Karanggandul 15
+612 D.I. Katulampa 15
+613 D.I. Kemandoran 8
+614 D.I. Kemojing 20
+615 D.I. Keukeuk 20
+616 D.I. Lancingan 10
+617 D.I. Leuwi Saeng 20
+618 D.I. Maloko I 20
+619 D.I. Maloko II 15
+620 D.I. Mungkal Bonteng 30
+621 D.I. Nyangkewok 20
+622 D.I. Rungkang 25
+623 D.I. Tebing Cimanik 15
+624 D.I. Tonjong 15
+625 D.I. Watukelir 10
+626 D.I. Batu Ngampar 35
+627 D.I. Batu Ngampar 30
+628 D.I. Batulawang II 45
+629 D.I. Cadas Gantung 35
+630 D.I. Cangkuan/Citambelang 10
+631 D.I. Cibacek 8
+632 D.I. Cibaganjing 15
+633 D.I. Cibaleker/Cigebeg | 10
+634 D.I. Cibariuk 22
+635 D.I. Cibatu Hilir 25
+636 D.I. Cibeber 25
+637 D.I. Cibebera | 31
+638 D.I. Cibebera II 34
+639 D.I. Cibengang | 31
+640 D.I. Cibengang II 33
+641 D.I. Cibeulang Akar 30
+642 D.I. Cibeunying 35
+643 D.I. Cibinuang 18
+644 D.I. Cibitung 11
+645 D.I. Cibogo 4
+646 D.I. Cibungur 12
+647 D.I. Cicadas II 10
+648 D.I. Cicapar I 10
+649 D.I. Cicenteng 15
+650 D.I. Ciebeg Girang 84
+651 D.I. Cigaluga 9
+652 D.I. Cigarut 40
+653 D.I. Cihaur Hilir 35
+654 D.I. Cihideung 30
+655 D.I. Cikadongdong 33
+656 D.I. Cikarag 25
+657 D.I. Cikarag/Curug Reong 25

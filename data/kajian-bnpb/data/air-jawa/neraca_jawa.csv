@@ -1,0 +1,11 @@
+besaran,nilai,satuan,keterangan,sumber,label
+air_permukaan_m3s,5567,m3/s,TRMM 2003-2015,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+air_permukaan_juta_m3_th,175558,juta m3/th,TRMM 2003-2015,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+porsi_air_permukaan_nasional_persen,6.3,%,olah riset B: 175.558/2.783.228,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+luas_km2,132698,km2,luas dalam perhitungan,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+cat_jumlah,80,CAT,KLH 2008,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+cat_luas_km2,80936,km2,KLH 2008,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+cat_potensi_juta_m3,41334,juta m3,KLH 2008,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+per_kapita_2020_m3,1227,m3/kapita/th,BPS & Ditjen SDA via PT SMI 2017,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+per_kapita_2025_m3,1178,m3/kapita/th,proyeksi,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi
+per_kapita_2030_m3,1142,m3/kapita/th,proyeksi,"BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",resmi

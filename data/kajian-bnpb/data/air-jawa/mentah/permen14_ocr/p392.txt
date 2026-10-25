@@ -1,0 +1,143 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+286 D.I. Wae Solong 15
+287 D.I. Wae Songi 20
+288 D.I. Wae Songkot 4
+289 D.I. Wae Sulit 50
+290 D.I. Wae Tara Welo 7
+291 D.I. Wae Tawa 11
+292 D.I. Wae Tawu 9
+293 D.I. Wae Teber 150
+294 D.I. Wae Teng 148
+295 D.I. Wae Teong 10
+296 D.I. Wae Tetes 6
+297 D.I. Wae Tiwu Lewe 60
+298 D.I. Wae Tiwu Molas 12
+299 D.I. Wae Tiwu Rii 60
+300 D.I. Wae Tiwu Roekok 9
+301 D.I. Wae Tua 6
+302 D.I. Wae Tuan 8
+303 D.I. Wae Tuke 50
+304 D.I. Wae Tuke 10
+305 D.I. Wae Tung 10
+306 D.I. Wae Ulu Galung 50
+307 D.I. Wae Ulu Lua 5
+308 D.I. Wae Waci 100
+309 D.I. Wae Wa'e 50
+310 D.I. Wae Wake 6
+311 D.I. Wae Wako 60
+312 D.I. Wae Wasang Loak 35
+313 D.I. Wae Waso 50
+314 D.I. Wae Watu | Hulu Kana/Sambi 4
+315 D.I. Wae Watu II Kanan/Dejan 75
+316 D.I. Wae Watu II Kiri/Mata Manuk 150
+317 D.I. Wae Watu III Hilir Kanan/Kumpe 60
+318 D.I. Wae Welak 3
+319 D.I. Wae Welo 9
+320 D.I. Wae Welu 10
+321 D.I. Wae Wentang 6
+322 D.I. Wae Wina | 10
+323 D.I. Wae Wina II 30
+324 D.I. Wae Wira 150
+325 D.I. Wae Wira 60
+326 D.I. Wae Woa 8
+327 D.I. Wae Woa 9
+328 D.I. Wae Wonon 80
+329 D.I. Wae Wuang 75
+330 D.I. Wae Wuci 4
+331 D.I. Wae Wul 8
+332 D.I. Wae Wulang 6
+333 D.I. Wae Wunis 60
+334 D.I. Wae Wurak 2
+335 D.I. Wejang Ratung 10
+k Kab. Naaekeo 115 5.076
+
+1 D.I. Adhaki 25
+
+2 D.I. Aeca 76
+
+3 D.I. Aeghaja 20
+
+4 D.I. Aemu 20
+
+5 D.I. Aepoa 17
+
+6 D.I. Aeraga 25
+
+7 D.I. Aesemi 25
+
+8 D.I. Aetaba/Liabanga 19
+
+9 D.I. Aetoro 17
+#KANAN
+392
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+10 D.I. Bale 10
+11 D.I. Boamau 15
+12 D.I. Boanio 100
+13 D.I. Dhozonage |, II 2
+14 D.I. Gako 43
+15 D.I. Gako II 52
+16 D.I. Hedanara/Malaki 15
+17 D.I. Hobogoma 150
+18 D.I. Hobogoma 44
+19 D.I. Hobongaba 18
+20 D.I. Kinde 500
+21 D.I. Lodo 37
+22 D.I. Lokalaba/Ayeu 18
+23 D.I. Lowobage/Buru 13
+24 D.I. Lowobua 23
+25 D.I. Lowolela 25
+26 D.I. Malanage 400
+27 D.I. Malapea 17
+28 D.I. Malasawu 88
+29 D.I. Malasawu 42
+30 D.I. Malasoi 27
+31 D.I. Malawae 38
+32 D.I. Mataana | 25
+33 D.I. Mataana II 25
+34 D.I. MeoAo 14
+35 D.I. Molugede 22
+36 D.I. Natabadha 85
+37 D.I. Nesu 100
+38 D.I. Oki 17
+39 D.I. Pisa 193
+40 D.I. Pisa Kabi 200
+41 D.I. Rigi 150
+42 D.I. Soba 125
+43 D.I. Theobea 25
+44 D.I. Tiwu Moi 30
+45 D.I. Tiwubera 15
+46 D.I. Waemu 17
+47 D.I. Watuapi 16
+48 D.I. Watumanu 18
+49 D.I. Wede 20
+50 D.I. Wongasua 10
+51 D.I. Yefa 200
+52 D.I. Aelako 38
+53 D.I. Aemanu 20
+54 D.I. Aendeti 30
+55 D.I. Aengeta 15
+56 D.I. Aesule 10
+57 D.I. Aetuna 10
+58 D.I. Andhika 15
+59 D.I. Balejawa 15
+60 D.I. Bhondukado 7
+61 D.I. Boalewa 350
+62 D.I. Boamogo 25
+63 D.I. Cae Coa 10
+64 D.I. Dhoge 43
+65 D.I. Dialae 17
+66 D.I. Dorameli 10
+67 D.I. Dowodaka 10
+68 D.I. Ghajabhenga 20
+69 D.I. Hobobo 10
+70 D.I. Hobonaku 17

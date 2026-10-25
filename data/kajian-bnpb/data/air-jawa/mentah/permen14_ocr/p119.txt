@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+46 D.I. KK Unit XV-I 50
+47 D.I. KK Unit XV-II 40
+48 D.I. Kolam Hidup 30
+49 D.I. Kumbo 100
+50 D.I. Kumbuk Kecil 30
+51 D.I. Langkap 6
+52 D.I. Lbk. Larangan Sbrg 65
+53 D.I. Lebak Gedang 60
+54 D.I. Lekai 45
+55 D.I. Letung I 60
+56 D.I. Letung II 30
+57 D.I. Lubuk 45
+58 D.I. Lubuk Larangan 30
+59 D.I. Manggis 60
+60 D.I. Mengkuang Kecil 109
+61 D.I. Mukut 30
+62 D.I. Nusa Indah 5
+63 D.I. Pangkah Hulu 80
+64 D.I. Penyengat 40
+65 D.I. Petai 20
+66 D.I. Rumbio 10
+67 D.I. Salo Kampung Baru 20
+68 D.I. Saluk 25
+69 D.I. Sei Talang Cabuk 140
+70 D.I. Sei. Apung Mudik 20
+71 D.I. Sei. Perabung 40
+72 D.I. Senamat Hulu | 26
+73 D.I. Senamat Hulu II 20
+74 D.I. Simpaibung 28
+75 D.I. Singo Lubuk Pauh 40
+76 D.I. Sunsang 70
+77 D.I. Talang Kundo 35
+78 D.I. Talang Paku 35
+79 D.I. Taman Cucur 50
+80 D.I. Tebat 60
+81 D.I. Tegan 20
+82 D.I. Telang 40
+83 D.I. Tembang Arang 30
+84 D.I. Tembang Seberang 96
+85 D.I. Tembesu 5
+c Kab. Kerinci 104 8.963
+1 D.I. Sei. Air Jernih 21
+2 D.I. Sei. Air Jujun 159
+3 D.I. Sei. Cubadak 46
+4 D.I. Sei. Cupak 120
+5 D.I. Sei. Dadap 45
+6 D.I. Sei. Lempur 311
+7 D.I. Sei. Rajo Seleman 211
+8 D.I. Sei. Renah Sako 82
+9 D.I. Sei. Rumpun 147
+10 D.I. Sei. Sikai 312
+11 D.I. Sei. Talang Kemulun 72
+12 D.I. Sei. Talang Kemuning 104
+13 D.I. Sei. Tapan 227
+14 D.I. Simpang Tutup 23
+15 D.I. Air Agung 80
+16 D.I. Air Bangko Tanjung Tanah 195
+17 D.I. Air Kerinci 40
+18 D.I. Bumbun Duri 125
+19 D.I. Dtk. Serimut Putih 102
+#KANAN
+119 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+20 D.I. Koto Panjang 60
+21 D.I. Lempur Danau Semerap 200
+22 D.I. Lubuk keling 50
+23 D.I. Lubuk Pauh 78
+24 D.I. Lubuk Tabun 200
+25 D.I. Napal Melintang 50
+26 D.I. Pasir Jaya 225
+27 D.I. Pauh Manis 45
+28 D.I. Perikan Tengah 86
+29 D.I. Pesisir Bukit 85
+30 D.I. Sei Renah Sako 82
+31 D.I. Sei. Abu 35
+32 D.I. Sei. Air Abang 20
+33 D.I. Sei. Air Jernih | 21
+34 D.I. Sei. Air ke Bangko 198
+35 D.I. Sei. Air Lingkat 314
+36 D.I. Sei. Air Pondok 75
+37 D.I. Sei. Air Selai 30
+38 D.I. Sei. Air Tembesut 25
+39 D.I. Sei. Ambai Atas 120
+40 D.I. Sei. Balun 120
+41 D.I. Sei. Batu Gantih 45
+42 D.I. Sei. Betung Hilir 33
+43 D.I. Sei. Betung Mudik 25
+44 D.I. Sei. Bukit Bendung 150
+45 D.I. Sei. Dalam 235
+46 D.I. Sei. Danau Tinggi 85
+47 D.I. Sei. Deras 40
+48 D.I. Sei. Galampeh 27
+49 D.I. Sei. Gunung Pandan 40
+50 D.I. Sei. Hangat 20
+51 D.I. Sei. Harapan Jaya 100
+52 D.I. Sei. Kebun Baru 10
+53 D.I. Sei. Keluru 100
+54 D.I. Sei. Kersik Jaro 40
+55 D.I. Sei. Kersik Tuo 35
+56 D.I. Sei. Koto Panjang 70
+57 D.I. Sei. Koto Tengah 65
+58 D.I. Sei. Koto Tengah Seleman 60
+59 D.I. Sei. Koto Tuo 95
+60 D.I. Sei. Kubu 9
+61 D.I. Sei. Kunina 75
+62 D.I. Sei. Kunyit 4
+63 D.I. Sei. Lolo Gedang 60
+64 D.I. Sei. Lolo Hilir 90
+65 D.I. Sei. Lolo Kecil 66
+66 D.I. Sei. Lubuk Kemenyan 8
+67 D.I. Sei. Lubuk Muara Sungai 45
+68 D.I. Sei. Pauh Tinggi 200
+69 D.I. Sei. Pengasih Baru 25
+70 D.I. Sei. Pide I 110
+71 D.I. Sei. Pulau Pandan 23
+72 D.I. Sei. Pulau Sangkar 100
+73 D.I. Sei. Pungut Hilir 70
+74 D.I. Sei. Pungut Mudik 80
+75 D.I. Sei. Pungut Tengah 70
+76 D.I. Sei. Renah 25
+77 D.I. Sei. Rotan 170
+78 D.I. Sei. Sako Mudik 129
+79 D.I. Sei. Sampun 70
+80 D.I. Sei. Sawah Panjang 40

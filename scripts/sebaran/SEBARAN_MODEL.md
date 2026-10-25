@@ -110,3 +110,46 @@ tar -xzf /tmp/sebaran-cache.tar.gz -C data/raw
 ```
 
 Setelah melatih ulang, buat rilis baru dengan tanggalnya sendiri, jangan menimpa yang lama.
+
+## Sensor: S-NPP pensiun 1 Nov 2026 (dicatat 23 Okt 2026, direvisi setelah tinjauan validasi-model)
+
+Aturan peralihan TERKUNCI (`prospektif.pilih_sensor`, dipakai `prospektif.py` dan `jejak.py`; padanan JS `sensorTitik` di
+`public/sebaran_model.js`, diuji sama untuk masukan yang sama di `uji_js.py`): primer = S-NPP; pindah ke NOAA-20 hanya bila acuan
+>= 2026-11-01T00:00Z DAN S-NPP tak mendeteksi >= 36 jam DAN NOAA-20 >= 20 deteksi sesudah deteksi S-NPP terakhir. Sebelum tanggal itu
+celah S-NPP = celah data (aturan lama "NOAA-20 > 36 jam lebih baru" terpicu di 29,8% langkah 3 jam Jul 2024 saat S-NPP hidup). Keputusan
+disimpan di `data/raw/sebaran/prospektif/sensor.json` (ikut cache & arsip R2, `pulih` memulihkannya) dan tidak pernah berbalik; jejak.py
+membaca, tidak menulis. Jendela buta (deteksi S-NPP terakhir sampai peralihan, `peralihan.buta_jam` di prospektif.json): titik api baru
+yang mulai di situ dan sudah > 24 jam saat peralihan tidak pernah diramal.
+
+NOAA-21 hanya pendamping (`n20_0`/`n20_14`) untuk NOAA-20, bukan primer. Keluaran mencatat `sensor`/`pendamping`. Ramalan dinilai dengan
+sensornya sendiri: bila deteksi terakhir sensor itu < t0 + 72 jam dan sensor belum dipensiunkan, ramalan DILEWATI dan dinilai lagi nanti;
+sesudah peralihan ramalan S-NPP yang terpotong = `kedaluwarsa` + `sensor_berhenti`. Angka `mode` dan gerbang (teruji, kalibrasi_ok,
+berturut) dihitung hanya pada ramalan sensor primer sekarang (`gerbang_sensor`); vonis di gerbang.jsonl bersensor dan "berturut" tak
+menyeberangi peralihan; sesudah peralihan gerbang mulai dari nol (`catatan_gerbang`: "belum teruji untuk NOAA-20"). Tanpa primer:
+`status` "tanpa_viirs" (tak ada S-NPP/NOAA-20) atau "tanpa_primer" (prospektif.json, jejak_api.json; JS `lolos_status`), bukan hasil kosong.
+
+Uji arsip 2024-2026 (model 2015-2023 / sel 2015-2022, persis yang dinilai; p S-NPP mereproduksi `lolos_peluang.pkl` dengan beda 0).
+Versi NOAA-20 = peristiwa dari komponen N20, fitur dan label dari N20; pendamping = NOAA-21 SUNGGUHAN (FIRMS SP Jul-Nov 2023-2026 + NRT
+Jul-Okt 2026, 949.049 deteksi) dan, sebagai pembanding, S-NPP sebagai pengganti NOAA-21. Pasangan "peristiwa sama" = deteksi pertama
+<= 3 jam dan <= 750 m: 71.133 dari 252.582 peristiwa S-NPP 2018+ (yang lain hanya terlihat satu sensor), 32.723 di 2024-2026. Label
+lolos sama di 96,2% pasangan, tetapi konkordansi label POSITIF hanya ~55% (N20 lolos bila S-NPP lolos: 747 dari 1.346 = 55,5%).
+Selang 95% bootstrap baris (B = 200) TANPA resampel klaster per kompleks/hari: terlalu sempit, baca sebagai batas bawah ketidakpastian.
+
+| Model / himpunan 2024-2026 | S-NPP AUC | NOAA-20 AUC | S-NPP ECE | NOAA-20 ECE | recall di ambang S-NPP -> N20 |
+| --- | --- | --- | --- | --- | --- |
+| membesar awal, populasi penuh (97.749 / 102.255) | 0,908 [0,903; 0,913] | 0,909 [0,903; 0,914] | 0,0035 | 0,0035 | 0,674 -> 0,665 |
+| membesar awal, pasangan (32.723) | 0,895 [0,886; 0,903] | 0,881 [0,873; 0,891] | 0,0045 | 0,0060 | 0,714 -> 0,667 |
+| ramal ulang 14 jam, penuh, pendamping N21 | 0,955 [0,952; 0,958] | 0,956 [0,952; 0,959] | 0,0053 | 0,0051 | 0,764 -> 0,758 |
+| ramal ulang 14 jam, pasangan, pendamping N21 | 0,955 [0,949; 0,961] | 0,945 [0,939; 0,952] | 0,0124 | 0,0066 | 0,821 -> 0,771 |
+
+Ringkas: TIDAK ada penurunan pada populasi penuh. Pada pasangan (api yang sama) recall turun 4-5 poin (0,714 -> 0,667 awal,
+0,821 -> 0,781 ramal ulang dengan pendamping pengganti, 0,771 dengan NOAA-21 sungguhan) dan AUC awal -0,014 [-0,022; -0,004].
+Model awal tidak memakai fitur pendamping; untuk ramal ulang NOAA-21 sungguhan vs pengganti S-NPP memberi AUC 0,956 vs 0,957 (n20_0
+sama pada 54% peristiwa). Model sel, 208 titik awal uji berpasangan (dari 500): F1 mikro sel baru 24 jam 0,133 vs 0,131 (selisih
+-0,002 [-0,047; +0,044]); IoU 24 jam LEBIH TINGGI dengan NOAA-20: 0,617 vs 0,681 (+0,064 [+0,030; +0,105]; persistensi 0,820 vs 0,812).
+
+Rekalibrasi (Platt pada skor luar-lipatan versi N20 2018-2023) TIDAK dipasang: perbaikan tidak terbukti (awal: ECE penuh 0,0035 ->
+0,0030 tetapi pasangan 0,0060 -> 0,0068; ramal ulang membaik 0,0056 -> 0,0023 tetapi recall di ambang tetap turun 0,764 -> 0,742) dan
+memasangnya berarti memilih ulang ambang recall 70% (risiko penyetelan ulang; `model_sebaran.json` hanya ditulis `lolos.py akhir`).
+Prospektif per sensor tetap hakim terakhir. Analisis: skrip `uji_sensor.py` (tahap peristiwa | baris | cocok | lolos | sel | baris21 |
+nilai21) di luar repo; pindahkan ke `scripts/sebaran/` bila angka ini perlu dihitung ulang. Batas: cuaca reanalisis.

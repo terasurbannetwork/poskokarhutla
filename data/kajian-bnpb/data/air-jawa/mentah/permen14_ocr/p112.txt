@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+110 D.I. Bdr. Nan Gadang Tanjung Alam 44
+111 D.I. Bdr. Nan Gadang Tjg Bonai 793
+112 D.I. Bdr. Nan Panjang 43
+113 D.I. Bdr. Ngarai 40
+114 D.I. Bdr. Nyiur 26
+115 D.I. Bdr. Padadiah 115
+116 D.I. Bdr. Padang Ganting 434
+117 D.I. Bdr. Padang Lawas Simpang 40
+118 D.I. Bdr. Painban 61
+119 D.I. Bdr. Pakan Tuo 64
+120 D.I. Bdr. Pandan 84
+121 D.I. Bdr. Paninjauan 32
+122 D.I. Bdr. Panjang Batu Basa 166
+123 D.I. Bdr. Panjang Gurun 80
+124 D.I. Bdr. Panti 49
+125 D.I. Bdr. Patai 78
+126 D.I. Bdr. Patai Sungai Tarab 78
+127 D.I. Bdr. Patai Tanjung Alam 47
+128 D.I. Bdr. Pinang Balai Balirik 241
+129 D.I. Bdr. Pinang Balirik 273
+130 D.I. Bdr. Pincuran Pasu 28
+131 D.I. Bdr. Pincuran VII Lima Kaum 525
+132 D.I. Bdr. Pincuran VII Situmbuk 85
+133 D.I. Bdr. Rajo 60
+134 D.I. Bdr. Rayo 85
+135 D.I. Bdr. Sabu Jawi Badur 275
+136 D.I. Bdr. Sanggirik 33
+137 D.I. Bdr. Sawah Batu Tagak 29
+138 D.I. Bdr. Sawah Bodi 200
+139 D.I. Bdr. Sawah Bukur 44
+140 D.I. Bdr. Sawah Darek 34
+141 D.I. Bdr. Sawah Darek 36
+142 D.I. Bdr. Sawah Diaur 25
+143 D.I. Bdr. Sawah Gadang 35
+144 D.I. Bdr. Sawah Gadang 42
+145 D.I. Bdr. Sawah Jauh 100
+146 D.I. Bdr. Sawah Liek 31
+147 D.I. Bdr. Sawah Lua 52
+148 D.I. Bdr. Sawah Manenggek 39
+149 D.I. Bdr. Sawah Nunang 215
+150 D.I. Bdr. Sawah Pamatang 26
+151 D.I. Bdr. Sawah Panjang 23
+152 D.I. Bdr. Sawah Pinang 103
+153 D.I. Bdr. Sawah Tabing 225
+154 D.I. Bdr. Sawah Tabuh 32
+155 D.I. Bdr. Sawah Tanjung 68
+156 D.I. Bdr. Sempit 53
+157 D.I. Bdr. Sialang 34
+158 D.I. Bdr. Sibatur 106
+159 D.I. Bdr. Silambing M
+160 D.I. Bdr. Simpang 150
+161 D.I. Bdr. Sipulut 70
+162 D.I. Bdr. Sisiau 270
+163 D.I. Bdr. Situgar 60
+164 D.I. Bdr. Solok Betung 36
+165 D.I. Bdr. Sumpur 40
+166 D.I. Bdr. Sungai Emas 115
+167 D.I. Bdr. Swh Taluk 36
+168 D.I. Bdr. Talago Atar 23
+169 D.I. Bdr. Taluak Bawah 30
+170 D.I. Bdr. Tambangan 28
+#KANAN
+112
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+171 D.I. Bdr. Tangah Gurun 39
+172 D.I. Bdr. Tangah Gurun 39
+173 D.I. Bdr. Tarok 47
+174 D.I. Bdr. Timbaran Bawah 30
+175 D.I. Bdr. Titi Gadang 125
+176 D.I. Bdr. Ujung Sao 79
+177 D.I. Bdr. Ujung Tanjung 28
+178 D.I. Bdr. Sawah Darek 15
+179 D.I. Bdr. Rupik 42
+180 D.I. Bdr. Landua 22
+181 D.I. Bdr. Sawah Pauh 20
+182 D.I. Bdr. Sawah Barusung 18
+183 D.I. Bdr. Batu Tagak 34
+184 D.I. Bdr. Guguk Jirapuik 14
+185 D.I. Bdr. Kayu Tanduk 156
+186 D.I. Bdr. Ikua Kandang 17
+187 D.I. Bdr. Sawah Lundang/Parumahan 35
+188 D.I. Bdr. Mato Air Pocah 13
+189 D.I. Bdr. Belakang Guguk 11
+190 D.I. Bdr. Galadiak/Galodo 44
+191 D.I. Bdr. Malintang 25
+192 D.I. Bdr. Galadok 16
+193 D.I. Bdr. Balai Kapak 60
+194 D.I. Bdr. Sawah Dahulu 34
+195 D.I. Bdr. Butangan 14
+196 D.I. Bdr. Gamuruh 65
+197 D.I. Bdr. Saluak Hati 17
+198 D.I. Bdr. Panca Baruah 4
+199 D.I. Bdr. Lubuk Batu 20
+200 D.I. Bdr. Panca Baruah 25
+201 D.I. Bdr. Lubuk Hantu 21
+202 D.I. Bdr. Sawah Panjang 14
+203 D.I. Bdr. Sawah Bangkang 13
+204 D.I. Bdr. Aro 23
+205 D.I. Bdr. Kubu 39
+206 D.I. Bdr. Bulaan Dalam 140
+207 D.I. Bdr. Kubu Duri 126
+208 D.I. Bdr. Sawah Bukur 44
+209 D.I. Bdr. Batu Datar 16
+210 D.I. Bdr. Air Tawar 20
+211 D.I. Bdr. Sawah Diaur 25
+212 D.I. Bdr. Sungai Talang 30
+213 D.I. Bdr. Totoa 11
+214 D.I. Bdr. Batu Gadang 11
+215 D.I. Bdr. Koto Marajo 13
+216 D.I. Bdr. Lubuk Baganto 14
+217 D.I. Bdr. Kubu Jaho 16
+218 D.I. Bdr. Kubu Jao 21
+219 D.I. Bdr. Batang Palak 15
+220 D.I. Bdr. Sawah Darek 85
+221 D.I. Bdr. Sampik 16
+222 D.I. Bdr. Kampung 12
+223 D.I. Bdr. Sawah Kuok 13
+224 D.I. Bdr. Bancah Air 12
+225 D.I. Bdr. Kubu Nan Gadang 14
+226 D.I. Bdr. Gadang I 11
+227 D.I. Bdr. Lalo 60
+228 D.I. Bdr. Munggu 30
+229 D.I. Bdr. Ganting 25
+230 D.I. Bdr. Sawah Tarok Hilia Balai 35
+231 D.I. Bdr. Batang Sikibui 14

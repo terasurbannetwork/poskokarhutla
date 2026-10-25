@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+722 D.I. Ciroyom 5
+723 D.I. Cirukem 30
+724 D.I. Cirukuy 20
+725 D.I. Cirukuy 25
+726 D.I. Ciruluk 10
+727 D.I. Cirundak 20
+728 D.I. Cirungking 10
+729 D.I. Ciruum 4
+730 D.I. Cisaat 200
+731 D.I. Cisadana 65
+732 D.I. Cisadane 29
+733 D.I. Cisaladah 150
+734 D.I. Cisalak 40
+735 D.I. Cisalam 30
+736 D.I. Cisalem 85
+737 D.I. Cisalosor 20
+738 D.I. Cisalosor 1 10
+739 D.I. Cisalosor 2 15
+740 D.I. Cisalosor 3 20
+741 D.I. Cisampih 55
+742 D.I. Cisanggar 60
+743 D.I. Cisaronge 15
+744 D.I. Cisaronge 50
+745 D.I. Cisarua 25
+746 D.I. Cisarua 30
+747 D.I. Cisarua 10
+748 D.I. Cisarua 2
+749 D.I. Cisaruni 30
+750 D.I. Cisawer 15
+751 D.I. Ciseeng/Pangayakan 20
+752 D.I. Cisela 10
+753 D.I. Cisela 15
+754 D.I. Cisema 60
+755 D.I. Cisemplo 12
+756 D.I. Cisepan 15
+757 D.I. Cisetra 13
+758 D.I. Ciseupan 32
+759 D.I. Ciseupan 20
+760 D.I. Ciseupeut 20
+761 D.I. Cisingkup 15
+762 D.I. Cisirah 40
+763 D.I. Cisirah Terung 40
+764 D.I. Cisodong 60
+765 D.I. Cisodong 30
+766 D.I. Cisodong 25
+767 D.I. Cisuger 20
+768 D.I. Cisukar 6
+769 D.I. Cisukup 72
+770 D.I. Cisuren 15
+771 D.I. Cisurian 25
+772 D.I. Cisurian 2 25
+773 D.I. Cisurupan 3
+774 D.I. Cisurupan 30
+775 D.I. Cisurupan Ka 40
+776 D.I. Cisurupan Ki 30
+777 D.I. Citalahab 80
+778 D.I. Citamaga/Cibuaya 12
+779 D.I. Citamba 70
+780 D.I. Citamelang 60
+781 D.I. Citamiang 15
+782 D.I. Citamiang 80
+#KANAN
+189 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+783 D.I. Citamiang 5
+784 D.I. Citamiang 40
+785 D.I. Citamiang 21
+786 D.I. Citanduy 10
+787 D.I. Citangkil 50
+788 D.I. Citapen 18
+789 D.I. Citapen 30
+790 D.I. Citatah 15
+791 D.I. Citawur 15
+792 D.I. Citeja | 130
+793 D.I. Citeja II 25
+794 D.I. Citengah 75
+795 D.I. Citepus 4
+796 D.I. Citerewes 50
+797 D.I. Citerus 50
+798 D.I. Citeupus 1
+799 D.I. Citeureud 25
+800 D.I. Citeureup 20
+801 D.I. Citeureup 3
+802 D.I. Citeureup 1
+803 D.I. Citeureup 8
+804 D.I. Citiga 10
+805 D.I. Citilu 50
+806 D.I. Citilu 12
+807 D.I. Citilu 40
+808 D.I. Citoe 21
+809 D.I. Citonggeng 25
+810 D.I. Citutung 19
+811 D.I. Citutut/Cangkring 30
+812 D.I. Ciung 30
+813 D.I. Ciupih 75
+814 D.I. Ciupih 95
+815 D.I. Ciupih/Cim anggu 40
+816 D.I. Ciwadaru 85
+817 D.I. Ciwadaru 30
+818 D.I. Ciwalini 60
+819 D.I. Ciwangsa 20
+820 D.I. Ciwangun | 100
+821 D.I. Ciwarak 15
+822 D.I. Ciwatin Sawahbera 20
+823 D.I. Ciwayu 25
+824 D.I. Ciwitali 15
+825 D.I. Ciwungkul 15
+826 D.I. Coblong 5
+827 D.I. Cogreg 80
+828 D.I. Cogreg 30
+829 D.I. Cukang Ranca 20
+830 D.I. Cupug Angkrek/Curug Muning 40
+831 D.I. Curug 8
+832 D.I. Curug 65
+833 D.I. Curug Adan 8
+834 D.I. Curug Aksan 5
+835 D.I. Curug Amoh 20
+836 D.I. Curug Anah 40
+837 D.I. Curug Bandung 37
+838 D.I. Curug Bedil 23
+839 D.I. Curug Ciung 5
+840 D.I. Curug Dampit 15
+841 D.I. Curug Dendeng 30
+842 D.I. Curug Gedus 150
+843 D.I. Curug Gedus 37

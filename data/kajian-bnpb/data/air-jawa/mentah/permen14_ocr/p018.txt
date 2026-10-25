@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 18
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+XVI PROVINSI GORONTALO 2 10.028
+1 D.I. Lomaya Alale 3.148 Kabupaten Bone Bolango z 2.033 Ha
+Kota Gorontalo z 1.115 Ha
+2 D.I. Paguyaman 6.880 Kabupaten Boalemo z 4176 Ha
+Kabupaten Gorontalo z 2.704 Ha
+XVII PROVINSI SULAWESI SELATAN 6 114.893
+1 D.I. Bila 9.747 Kabupaten Sidenreng Rappang - 6.517 Ha
+Kabupaten Wajo z 3.230 Ha
+2 D.I. Bissua 12.793 Kabupaten Gowa z 5.740 Ha
+Kabupaten Takalar z 7.053 Ha
+3 D.I. Lamasi 11.506 Kabupaten Luwu - 10.306 Ha
+Kota Palopo z 1.200 Ha
+4 D.I. Kampili 10.547 Kabupaten Gowa z 9.412 Ha
+Kabupaten Takalar z 788 Ha
+Kota Makassar z 347 Ha
+5 D.I. Kelara Karaloe 10.000 Kabupaten Gowa z 2.801 Ha
+Kabupaten Jeneponto z 7199 Ha
+6 D.I. Sadang 60.300 Kabupaten Pinrang 23 42931 Ha
+Kabupaten Sidenreng Rappang z 15.195 Ha
+Kabupaten Wajo z 2174 Ha
+D UTUH KABUPATEN/KOTA 203 1.147.034
+| PROVINSI ACEH 10 75.225
+a Kab. Aceh Barat Daya
+1 D.I. Susoh 5.793
+b Kab. Aceh Besar
+1 D.I. Krueng Aceh/Leubok 7.884
+2 D.I. Krueng Jreu/Keuliling 4156
+c Kab. Aceh Tenggara
+1 D.I. Lawe Alas/Kutacane Lama 15.000
+d Kab. Aceh Utara
+1 D.I. Alue Ubay 4144
+2 D.I. Krueng Pase 8.922
+e Kab. Bireuen
+1 D.I. Pante Lhong 6.562
+2 D.I. Paya Nie/Mon Seuke Pulot 3.121
+f Kab. Nagan Raya
+1 D.I. Jeuram 7.449
+g Kab. Pidie
+1 D.I. Baro Raya 12.194
+Il PROVINSI SUMATERA UTARA 6 27.378
+a Kab. Batu Bara
+1 D.I. Perkotaan 3.457
+b Kab. Deli Serdang
+1 D.I. Bandar Sidoras 3.017
+c Kab. Mandailing Natal
+1 D.I. Batang Gadis 6.628
+d Kab. Padang Lawas Utara
+1 D.I. Batang Ilung 4194
+e Kab. Serdang Bedagai
+1 D.I. Sei Belutu 5.082
+f Kab. Simalungun
+1 D.I. Kerasaan 5.000
+Il PROVINSI RIAU 2 6.054
+a Kab. Indragiri Hulu
+1 D.I. Kelayang 3.020
+b Kab. Kuantan Singingi
+1 D.I. Simandolak-Pangean 3.034
+IV PROVINSI SUMATERA BARAT 9 61.489
+a Kab. Padang Pariaman
+1 D.I. Batang Anai 13.604
+b Kab. Pasaman
+1 D.I. Panti Rao 8.300

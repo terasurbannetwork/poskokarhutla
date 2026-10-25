@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+125 D.I. Salam/Ranjeng 157
+126 D.I. Salwi 220
+127 D.I. Sapira 67
+128 D.I. Selareuma 180
+129 D.I. Sirah Cipelang 488
+130 D.I. Sirah Cipelang 972
+131 D.I. Sukalare 65
+132 D.I. Tanggerang 60
+133 D.I. Wangun 27
+r Kab. Tasikmalava 1.486 58.011
+1 D.I. Cibanjaran 40
+2 D.I. Cibodas 25
+3 D.I. Cibodas 12
+4 D.I. Cibodas 30
+5 D.I. Cibodas 60
+6 D.I. Cidadap 30
+7 D.I. Cidadap 35
+8 D.I. Cidadap 50
+9 D.I. Cidadap 18
+10 D.I. Cidadap 25
+11 D.I. Cidadap 35
+12 D.I. Cidadap 35
+13 D.I. Cikayaraharja 925
+14 D.I. Cikembang 65
+15 D.I. Cikembang 36
+16 D.I. Cikembang 350
+17 D.I. Cikembang 90
+18 D.I. Cimulu 150
+19 D.I. Cimulu 70
+20 D.I. Cimulu 80
+21 D.I. Cipedes 40
+22 D.I. Cipedes 2
+23 D.I. Citere 615
+24 D.I. Garunggang | 335
+25 D.I. Leuwi sapi 20
+26 D.I. Paniis 12
+27 D.I. Paniis 20
+28 D.I. Parakan Panjang 50
+29 D.I. Parakan Panjang 50
+30 D.I. Surakatiga KR 214
+31 D.I. Abdul Karta 40
+32 D.I. Ageung 37
+33 D.I. Alhafi 20
+34 D.I. Alkawi 30
+35 D.I. Ampah 40
+36 D.I. Ampel 20
+37 D.I. Ampel Tarikolot 30
+38 D.I. Anteg Girang 30
+39 D.I. Anteg Hilir II 25
+40 D.I. Anteg Hlir I 30
+41 D.I. Anyar 17
+42 D.I. Arsi 30
+43 D.I. Asmudin 25
+44 D.I. Asri 20
+45 D.I. Astana Anyar 25
+46 D.I. Ater 30
+47 D.I. Awi mungkus 18
+48 D.I. Awi mungkus 40
+49 D.I. Awu mungkus 85
+50 D.I. Babakan 60
+#KANAN
+183 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Babakan Asem 60
+52 D.I. Babakan Ciputri 15
+53 D.I. Babakan Curug 35
+54 D.I. Babakan Haur 15
+55 D.I. Babakan Honje 40
+56 D.I. Babakan Kadu 17
+57 D.I. Babakan Nangka 20
+58 D.I. Babakan Sawah | 25
+59 D.I. Babakan Sawah II 25
+60 D.I. Baeji 40
+61 D.I. Bala Uvah 25
+62 D.I. Balasipun 15
+63 D.I. Baleker 30
+64 D.I. Balengbeng 22
+65 D.I. Balengendongan 32
+66 D.I. Bangbayang 20
+67 D.I. Bangkonol 35
+68 D.I. Bangkonol 20
+69 D.I. Banirum 40
+70 D.I. Bantar Beureum 10
+71 D.I. Bantar Payung 300
+72 D.I. Bantarmara 50
+73 D.I. Bantarnyiru 54
+74 D.I. BAP (Ampel) 15
+75 D.I. BAPI/Ampel | 98
+76 D.I. Baranang Siang 150
+77 D.I. Baranang Siang 20
+78 D.I. Baranang Siang 11
+79 D.I. Baranang Siang | 40
+80 D.I. Baranang Siang II 17
+81 D.I. Baros 40
+82 D.I. Baros 6
+83 D.I. Baros/Sawah Tengah 15
+84 D.I. Basari 20
+85 D.I. Batu 300
+86 D.I. Batu Ayi 57
+87 D.I. Batu Bangkong 25
+88 D.I. Batu Belah 5
+89 D.I. Batu Belah 4
+90 D.I. Batu Belang 17
+91 D.I. Batu Beureum 20
+92 D.I. Batu Beureum 40
+93 D.I. Batu Blak 25
+94 D.I. Batu Cina 25
+95 D.I. Batu Gede 10
+96 D.I. Batu Hawu 30
+97 D.I. Batu Karut 60
+98 D.I. Batu Lampu 25
+99 D.I. Batu Lawang 70
+100 D.I. Batu Masigit 75
+101 D.I. Batu Mengpek 35
+102 D.I. Batu Ngijing 75
+103 D.I. Batu Peri 12
+104 D.I. Batu Renges 50
+105 D.I. Batu Reok 25
+106 D.I. Batu Saperak 10
+107 D.I. Batu Sirap 10
+108 D.I. Batu Wulung 67
+109 D.I. Batu Wulung 52
+110 D.I. Batugede 20
+111 D.I. Batukohok 133

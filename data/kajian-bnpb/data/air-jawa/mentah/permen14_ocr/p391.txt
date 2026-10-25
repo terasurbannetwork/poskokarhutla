@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+164 D.I. Wae Munde/Ghora 5
+165 D.I. Wae Munta Nara 9
+166 D.I. Wae Mura I 70
+167 D.I. Wae Mura II 70
+168 D.I. Wae Muting 125
+169 D.I. Wae Muwur 10
+170 D.I. Wae Nales 8
+171 D.I. Wae Nalo 90
+172 D.I. Wae Nambas 60
+173 D.I. Wae Nampe 200
+174 D.I. Wae Nampe Hulu 8
+175 D.I. Wae Namut 9
+176 D.I. Wae Namut 9
+177 D.I. Wae Nanar 15
+178 D.I. Wae Nandir 50
+179 D.I. Wae Nara 10
+180 D.I. Wae Nare 4
+181 D.I. Wae Naron 10
+182 D.I. Wae Nasat Nape 8
+183 D.I. Wae Nawak 4
+184 D.I. Wae Nawu 17
+185 D.I. Wae Nawu 10
+186 D.I. Wae Nderu 60
+187 D.I. Wae Nderu I 3
+188 D.I. Wae Nderu II 3
+189 D.I. Wae Ndiru 3
+190 D.I. Wae Necak 120
+191 D.I. Wae Neka | 7
+192 D.I. Wae Neka II 5
+193 D.I. Wae Neko 15
+194 D.I. Wae Nenda 18
+195 D.I. Wae Nengel 60
+196 D.I. Wae Nenu 5
+197 D.I. Wae Ngeles 20
+198 D.I. Wae Ngere 15
+199 D.I. Wae Nggelur 110
+200 D.I. Wae Nggiling 5
+201 D.I. Wae Nggiwi 20
+202 D.I. Wae Nggorong 9
+203 D.I. Wae Nida Koro 56
+204 D.I. Wae Niki 8
+205 D.I. Wae Ntawang 10
+206 D.I. Wae Ntoreng 9
+207 D.I. Wae Ntuang 70
+208 D.I. Wae Ntung 15
+209 D.I. Wae Numbang 7
+210 D.I. Wae Nunung 150
+211 D.I. Wae NunurAYangge 8
+212 D.I. Wae Paan 7
+213 D.I. Wae Paci 15
+214 D.I. Wae Paen/Liang Mareng 10
+215 D.I. Wae Pake 12
+216 D.I. Wae Pau 10
+217 D.I. Wae Paupada 11
+218 D.I. Wae Pelus 200
+219 D.I. Wae Penelewing 11
+220 D.I. Wae Podo 3
+221 D.I. Wae Podot 13
+222 D.I. Wae Poeng 10
+223 D.I. Wae Pogol 15
+224 D.I. Wae Poja 9
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+225 D.I. Wae Poka 4
+226 D.I. Wae Pong Lengang 16
+227 D.I. Wae Pong Pelus/Nimbar 200
+228 D.I. Wae Ponggo Wenggeng 150
+229 D.I. Wae Pum 15
+230 D.I. Wae Pu'u Nio 7
+231 D.I. Wae Racang I 100
+232 D.I. Wae Racang II 95
+233 D.I. Wae Raeng 70
+234 D.I. Wae Rampot 4
+235 D.I. Wae Rana Mese 45
+236 D.I. Wae Rana Rembong 8
+237 D.I. Wae Rana Wasa 15
+238 D.I. Wae Ras Atas 10
+239 D.I. Wae Ratun 14
+240 D.I. Wae Ratung 15
+241 D.I. Wae Raun 9
+242 D.I. Wae Rebak 60
+243 D.I. Wae Rebos 10
+244 D.I. Wae Rebus 60
+245 D.I. Wae Reca 215
+246 D.I. Wae Reca Hulu 15
+247 D.I. Wae Redung 60
+248 D.I. Wae Remil 120
+249 D.I. Wae Remi ll 80
+250 D.I. Wae Rempang II 25
+251 D.I. Wae Rencek 15
+252 D.I. Wae Reno 50
+253 D.I. Wae Reno 60
+254 D.I. Wae Reno 150
+255 D.I. Wae Reno Ulas 25
+256 D.I. Wae Rentung 5
+257 D.I. Wae Repi 8
+258 D.I. Wae Repung 9
+259 D.I. Wae Resang 10
+260 D.I. Wae Rewos 2
+261 D.I. Wae Rina 55
+262 D.I. Wae Rinam 7
+263 D.I. Wae Ringa 60
+264 D.I. Wae Roda 20
+265 D.I. Wae Rokat 5
+266 D.I. Wae Rombang 30
+267 D.I. Wae Rombeng 25
+268 D.I. Wae Rowa 74
+269 D.I. Wae Rowak 15
+270 D.I. Wae Rowong 6
+271 D.I. Wae Rutung 15
+272 D.I. Wae Sale 9
+273 D.I. Wae Sama 14
+274 D.I. Wae Sangan Kalo 10
+275 D.I. Wae Satar Teu 12
+276 D.I. Wae Sati 5
+277 D.I. Wae sau 6
+278 D.I. Wae Sele 200
+279 D.I. Wae Sele 20
+280 D.I. Wae Sele Bangan 11
+281 D.I. Wae Sele Pogol 7
+282 D.I. Wae Selet/Lembur 20
+283 D.I. Wae Selir 15
+284 D.I. Wae Sewong Sik 20
+285 D.I. Wae Sisar 10

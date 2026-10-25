@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+12 D.I. Mekar Sari 325
+13 D.I. Pandan Sari 239
+14 D.I. Panaauna 600
+15 D.I. Panggung Baru | 100
+16 D.I. Panggung Baru II 96
+17 D.I. Sebamban Baru 560
+18 D.I. Sei Biawak Karang Rejo 250
+19 D.I. Sei Riam 122
+20 D.I. Sukaramah | 160
+21 D.I. Sum Sum 176
+22 D.I. Sumber Mulva 45
+23 D.I. Sungai Cuka 178
+24 D.I. Tajau Pecah 100
+25 D.I. Telaga I 50
+26 D.I. Telaga II 50
+27 D.I. Trans. Angkatan Laut 20
+28 D.I. Waduk Takisung | 470
+29 D.I. Waduk Takisung II 150
+30 D.I. Banua Lawas II 100
+31 D.I. Kait-Kait Baru 250
+32 D.I. Kait-Kait Lama 250
+33 D.I. Kandangan Lama | 75
+34 D.I. Kandangan Lama II 50
+35 D.I. Kandangan Lama III 325
+36 D.I. Kuringkit 250
+37 D.I. Langsat Besar 262
+38 D.I. Maluka Baulin 350
+39 D.I. Pantai Linuh 100
+40 D.I. Salaman 390
+41 D.I. Sei Pihaung | 100
+42 D.I. Sei Pihaung II 20
+43 D.I. Srikandi 150
+44 D.I. Sukaramah II 100
+45 D.I. Sukaramah III 100
+46 D.I. Sungai Beji 150
+47 D.I. Sungai Paku 125
+48 D.I. Telaga III 100
+49 D.I. Ujung Batu 100
+i Kab. Tapin 6 1.596
+
+1 D.I. Rampanang 146
+2 D.I. Napadang 253
+3 D.I. Lokpaikat 98
+4 D.I. Tatakan 750
+5 D.I. Pampain 79
+6 D.I. Pulau Pinang 270
+i Kota Baniarbaru 11 5.700
+
+1 D.I. Gt. Payung 600
+2 D.I. Gt. Manggis 800
+3 D.I. Palam 500
+4 D.I. Peramuan 400
+5 D.I. Sei Lurus 300
+6 D.I. Landasan Ulin Barat 900
+7 D.I. Sido Rukun 400
+8 D.I. Tambak Buluh 500
+9 D.I. Syamsudin Noor 600
+10 D.I. Berlina 400
+11 D.I. Bangkal 300
+#KANAN
+410
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+Xu PROVINSI a22 £7 asa
+KALINIAN LAN TIVURK
+
+a Kab. Berau 6 1.278
+1 D.I. Buyung-Buyung 218
+2 D.I. Gurimbang 60
+3 D.I. Pulau Besing 200
+4 D.I. Semurut 400
+5 D.I. Tasuk 300
+6 D.I. Tumbit Melayu 100
+b Kab. Kutai Barat 73 13.889
+1 D.I. Abit 100
+2 D.I. Bermai 150
+3 D.I. Bilung 100
+4 D.I. Blusuh 200
+5 D.I. Bombay 200
+6 D.I. Bongan 175
+7 D.I. Buntut Bongan 300
+8 D.I. Damai Kota 100
+9 D.I. Damai Seberang/Kp. Sebelang 100
+10 D.I. Dempar 100
+11 D.I. Desa Kia 100
+12 D.I. Empas 133
+13 D.I. Engkuni Pasek 75
+14 D.I. Gadur 100
+15 D.I. Galeo Asa/Galeo Lama 300
+16 D.I. Galeo Baru 190
+17 D.I. Gunung Bayan 300
+18 D.I. Gusik 200
+19 D.I. Jambug 280
+20 D.I. Jengan Danum 300
+21 D.I. Jontai 150
+22 D.I. Lembonah 300
+23 D.I. Loa Deras 200
+24 D.I. Lumpat Dahug 150
+25 D.I. Mancong 100
+26 D.I. Mandang 75
+27 D.I. Meladuk Yek 200
+28 D.I. Melak Ilir 100
+29 D.I. Melak Ulu 150
+30 D.I. Mendika 100
+31 D.I. Mentiwan 552
+32 D.I. Merayag 105
+33 D.I. Minta 250
+34 D.I. Muara Asa Dalam 200
+35 D.I. Muara Batug 128
+36 D.I. Muara Bongan 200
+37 D.I. Muara Jawaa 200
+38 D.I. Muara Kedang 150
+39 D.I. Muara Nayan 300
+40 D.I. Muara Nilik 200
+41 D.I. Muara Pahu Sbrg. 100
+42 D.I. Muara Tokong 100
+43 D.I. Muyub Ilir 210
+44 D.I. Penawai | 300
+45 D.I. Penawai II 400
+46 D.I. Pentat 150
+47 D.I. Penyinggahan 200
+48 D.I. Perigi 200
+49 D.I. Pinang Seratus 300
+50 D.I. Pulau Lanting 250

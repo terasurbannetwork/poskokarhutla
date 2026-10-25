@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+545 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+13 D.LA.T. Jurumapin SPS 029 17
+14 D.LA.T. Jurumapin SPS 030 18
+15 D.LA.T. Jorok SPS 031 20
+16 D.LA.T. Jorok SPS 032 21
+17 D.LA.T. Lekong SPS 047 21
+18 D.LA.T. Lekong SPS 048 19
+19 D.L.A.T. Jorok SPS 049 14
+20 D.LA.T. Stowebrang SPS 054 21
+21 D.I.A.T. Kalabeso SPS 058 13
+22 D.I.A.T. Lab. Burung SPS 059 12
+23 D.LA.T. Jorok SPS 060 13
+24 D.L.A.T. Jorok SPS 061 15
+25 D.I.A.T. Empang B. SPS 065 16
+26 D.I.A.T. Empang B. SPS 066 19
+27 D.LA.T. Empang Bawah SPS 067 17
+28 D.I.A.T. Empang B. SPS 068 17
+29 D.I.A.T. Terusa SPS 069 18
+30 D.I.A.T. Terusa SPS 070 14
+31 D.I.A.T. Lab. Burung SPS 071 15
+32 D.I.A.T. Lab. Burung SPS 072 16
+33 D.LA.T. Stowebrang SPS 078 14
+34 D.LA.T. Stowebrang SPS 079 17
+35 D.I.A.T. Lab. Bontong SPS 080 15
+36 D.I.A.T. Empang B. SPS 081 18
+37 D.I.A.T. Bantulanteh SPS 082 18
+38 D.I.A.T. Sabedo SPS 084 17
+39 D.LLA.T. Stowebrang SPS 085 18
+40 D.LA.T. Stowebrang SPS 087 16
+41 D.LA.T. Stowebrang SPS 088 17
+42 D.L.A.T. Lab. Bontong SPS 089 10
+43 D.I.A.T. Bantulanteh SPS 090 10
+44 D.LA.T. Empang Bawah SPS 091 10
+45 D.I.A.T. Bantulanteh SPS 092 10
+46 D.I.A.T. Bantulanteh SPS 093 12
+47 D.I.A.T. Bantulanteh SPS 094 11
+48 D.L.A.T. Lab. Aji SPS 095 11
+49 D.I.A.T. Bantulanteh SPS 096 11
+50 D.I.A.T. Bantulanteh SPS 097 11
+51 D.ILA.T. Empang B. SPS 098 10
+52 D.I.A.T. Lab. Burung SPS 099 18
+53 D.L.A.T. Sabedo SPS 101 15
+54 D.L.A.T. Sabedo SPS 107 13
+55 D.I.A.T. Tlk. Santong SPS 122 14
+56 D.I.A.T. Bantulanteh SPS 123 11
+57 D.I.A.T. Bantulanteh SPS 124 11
+58 D.I.A.T. Bantulanteh SPS 125 14
+59 D.I.A.T. Bantulanteh SPS 126 12
+60 D.I.A.T. Bantulanteh SPS 127 14
+61 D.I.A.T. Bantulanteh SPS 128 13
+62 D.I.A.T. Sabedo SPS 135 13
+63 D.I.A.T. Sabedo SPS 136 16
+64 D.I.A.T. Sabedo SPS 139 15
+65 D.I.A.T. Sabedo SPS 140 16
+66 D.I.A.T. Ai Jati SPS 154 20
+67 D.I.A.T. Bantulanteh SPS 157 20
+68 D.I.A.T. Bantulanteh SPS 159 20
+69 D.I.A.T. Mamak SPS 183 20
+70 D.I.A.T. Bantu Lanteh SPS 185 20
+71 D.I.A.T. Bantu Lanteh SPS 186 20
+72 D.I.A.T. Bantu Lanteh SPS 187 20
+73 D.I.A.T. Bantu Lanteh SPS 188 20

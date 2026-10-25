@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+456 D.I. Sbr. Kerjen 79
+457 D.I. Sbr. Kisi 9
+458 D.I. Sbr. Klampok | 37
+459 D.I. Sbr. Klampok II 6
+460 D.I. Sbr. Klepon 7
+461 D.I. Sbr. Kluwih 23
+462 D.I. Sbr. Kotes 43
+463 D.I. Sbr. Kr. Sono II 20
+464 D.I. Sbr. Kr. Sono Ill 60
+465 D.I. Sbr. Kruwuk 5
+466 D.I. Sbr. Kutrukan 7
+467 D.I. Sbr. Langon | 10
+468 D.I. Sbr. Luweng 211
+469 D.I. Sbr. Maron 89
+470 D.I. Sbr. Menj. Kalung I 20
+471 D.I. Sbr. Menj. Kalung II 24
+472 D.I. Sbr. Modong 6
+473 D.I. Sbr. Ngaringan 48
+474 D.I. Sbr. Ngembul 14
+475 D.I. Sbr. Nyonya 20
+476 D.I. Sbr. Onje 70
+477 D.I. Sbr. Petung 137
+478 D.I. Sbr. Pojok Kidul 36
+479 D.I. Sbr. Pojok Lor 25
+480 D.I. Sbr. Ponggok 28
+481 D.I. Sbr. Pulerejo 8
+482 D.I. Sbr. Ronggo 38
+483 D.I. Sbr. Saman 19
+484 D.I. Sbr. Sendang Rejo B 6
+485 D.I. Sbr. Sendang Rejo C 7
+486 D.I. Sbr. Soko 5
+487 D.I. Sbr. Sumberingin 46
+488 D.I. Sbr. Sumberjo 13
+489 D.I. Sbr. Suwito 119
+490 D.I. Sbr. Tambakboyo 55
+491 D.I. Sbr. Tangkil 40
+492 D.I. Sbr. Tulung 8
+493 D.I. Sbr. Tunjung 72
+494 D.I. Sbr. Tuwuh 17
+495 D.I. Sbr. Utomo 19
+496 D.I. Selopuro 192
+497 D.I. Selorejo 18
+498 D.I. Semanding 13
+499 D.I. Semanding II 182
+500 D.I. Sembon 34
+501 D.I. Semit 7
+502 D.I. Sempol 18
+503 D.I. Sempol II 33
+504 D.I. Sendung 4
+505 D.I. Serang I 12
+506 D.I. Serang II 40
+507 D.I. Serang III 10
+508 D.I. Serut 30
+509 D.I. Sesek 45
+510 D.I. Slemanan 583
+511 D.I. Slorok 2 6
+512 D.I. Slorok 3 7
+513 D.I. Slumbung I 19
+514 D.I. Slumbung II 11
+515 D.I. Slumbung III 43
+516 D.I. Soso A 11
+#KANAN
+308
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+517 D.I. Soso B 11
+518 D.I. Soso €C 17
+519 D.I. Soso D 14
+520 D.I. Srondol 11
+521 D.I. Subontoro | 35
+522 D.I. Sukorejo 50
+523 D.I. Sukosari | 101
+524 D.I. Sukosari II 87
+525 D.I. Sukosewu 31
+526 D.I. Sumber 68
+527 D.I. Sumber II 17
+528 D.I. Sumber IV 12
+529 D.I. Sumber Agung 11
+530 D.I. Sumber Agung | 36
+531 D.I. Sumber Aren 11
+532 D.I. Sumber Bacin 30
+533 D.I. Sumber Banyu Urip I 20
+534 D.I. Sumber Belut 5
+535 D.I. Sumber Bendo 8
+536 D.I. Sumber Bendo I 15
+537 D.I. Sumber Bendo II 15
+538 D.I. Sumber Blumbang 5
+539 D.I. Sumber Dandang 25
+540 D.I. Sumber Dandang 10
+541 D.I. Sumber Dewi 11
+542 D.I. Sumber Glodog 33
+543 D.I. Sumber Gondo 7
+544 D.I. Sumber Gong 21
+545 D.I. Sumber Jajar 6
+546 D.I. Sumber Jambe 10
+547 D.I. Sumber Jambedawe 74
+548 D.I. Sumber Jaran 84
+549 D.I. Sumber Jatireco 7
+550 D.I. Sumber Jedog 14
+551 D.I. Sumber Jirak 9
+552 D.I. Sumber Judel 14
+553 D.I. Sumber Kanoman 5
+554 D.I. Sumber Karet 8
+555 D.I. Sumber Kemloko Wetan 17
+556 D.I. Sumber Kenayan 10
+557 D.I. Sumber Kendi 20
+558 D.I. Sumber Kendi 12
+559 D.I. Sumber Kepluk 5
+560 D.I. Sumber Kuntulan 32
+561 D.I. Sumber Mojorejo 23
+562 D.I. Sumber Mundu 35
+563 D.I. Sumber Ngasem 20
+564 D.I. Sumber Pandan 12
+565 D.I. Sumber Patian 5
+566 D.I. Sumber Ploso 48
+567 D.I. Sumber Pluncing 10
+568 D.I. Sumber Rampalgading 21
+569 D.I. Sumber Rejo 18
+570 D.I. Sumber Ringin 13
+571 D.I. Sumber Ringin 9
+572 D.I. Sumber Saman 5
+573 D.I. Sumber Sanan 33
+574 D.I. Sumber Tangis 7
+575 D.I. Sumber Tekek 7
+576 D.I. Sumber Tepas 16
+577 D.I. Sumber Ulo 38

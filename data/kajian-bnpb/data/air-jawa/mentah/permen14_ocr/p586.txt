@@ -1,0 +1,61 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 586
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+IV PROVINSI JAWA TENGAH 73 6.295
+a Kab. Demak 1 3
+1 D.LT. Rowo Sedo 3
+b Kab. Kendal 29 3.350
+1 D.L.T. Balok 118
+2 D.LT. Bandengan 77
+3 D.I.T. Bangunsari 74
+4 D.LT. Banyutowo 47
+5 D.LT. Jungsemi 70
+6 D.I.T. Juwiring 29
+7 D.LT. Kaliayu 38
+8 D.I.T. Kalibuntu 55
+9 D.I.T. Kalirandu Gede 25
+10 D.I.T. Kalirejo 150
+11 D.I.T. Karangsari 107
+12 D.L.T. Kartika Jaya 160
+13 D.I.T. Korowelang Anyar 20
+14 D.I.T. Korowelang Kulon 21
+15 D.I.T. Kotaharjo 4
+16 D.I.T. Krajan Kulon 20
+17 D.I.T. Margorejo 24
+18 D.I.T. Mororejo 599
+19 D.I.T. Nolokerto 14
+20 D.I.T. Pidodo Kulon 175
+21 D.I.T. Pidodo Wetan 98
+22 D.I.T. Purwokerto 111
+23 D.I.T. Sendang Sikucing 5
+24 D.LT. Sidomulyo 23
+25 D.LT. Sumberejo 12
+26 D.I.T. Tanjungmojo 49
+27 D.LT. Turunrejo 218
+28 D.I.T. Wonorejo 809
+29 D.I.T. Wonosari 200
+c Kab. Pemalana 16 1.728
+1 D.LT. Asemdoyong 55
+2 D.LT. Blendung 175
+3 D.I.T. Danasari 4
+4 D.I.T. Kaliprau 33
+5 D.LT. Kendalrejo 26
+6 D.I.T. Kertosari 31
+7 D.LT. Ketapang 144
+8 D.I.T. Klareyan 16
+9 D.I.T. Lawangrejo 40
+10 D.I.T. Limbangan 224
+11 D.I.T. Mojo 357
+12 D.I.T. Nyamplungsari 47
+13 D.I.T. Pesantren 531
+14 D.I.T. Sugihwaras 4
+15 D.I.T. Tasikrejo 39
+16 D.I.T. Widuri 2
+d Kab. Purworeio 10 174
+1 D.LT. Gedangan 5
+2 D.LT. Girirejo 1
+3 D.I.T. Jatikontal 25
+4 D.LT. Jatimalang 25
+5 D.LT. Jogoboyo 84
+6 D.I.T. Karanganyar 7

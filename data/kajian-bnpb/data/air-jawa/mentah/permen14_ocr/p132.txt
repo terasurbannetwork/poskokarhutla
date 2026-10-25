@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+128 D.I. Ataran Padang Tembung II 40
+129 D.I. Ataran Padang Tembung III 17
+130 D.I. Ataran Pagar Bumi 45
+131 D.I. Ataran Pagar Bumi 15
+132 D.I. Ataran Pandak Balung 80
+133 D.I. Ataran Pandang Paku 30
+134 D.I. Ataran Pang Jate 25
+135 D.I. Ataran Pauh Endap 85
+136 D.I. Ataran Pedare 600
+137 D.I. Ataran Pedaro/Bungur 15
+138 D.I. Ataran Pematang Bansungan 50
+139 D.I. Ataran Pematang Macan Desa 350
+140 D.I. Ataran Pematang Nyawa 50
+141 D.I. Ataran Pematang Pengawi/Kanjungan 100
+142 D.I. Ataran Penyengat Desa 15
+143 D.I. Ataran Perahu Sedagar 343
+144 D.I. Ataran Piagul 25
+145 D.I. Ataran Pinggir Dusun 18
+146 D.I. Ataran Pondong Sepang 40
+147 D.I. Ataran Pulau 14
+148 D.I. Ataran Pulau 15
+149 D.I. Ataran Pulau Panggung Enim 190
+150 D.I. Ataran Pulau Tengah 26
+151 D.I. Ataran Raman 200
+152 D.I. Ataran Remiling 25
+153 D.I. Ataran Rencong 90
+154 D.I. Ataran Rimbe Bungur 112
+155 D.I. Ataran Rimbe Hawang 150
+156 D.I. Ataran Rimbe Lembung 75
+157 D.I. Ataran Rimbe Pedere 195
+158 D.I. Ataran Samsin 150
+159 D.I. Ataran Sawah Lebar 150
+160 D.I. Ataran Sawah lebar/ Got Ijah 98
+161 D.I. Ataran Swh Pinang Ta. Terang Lambur 25
+162 D.I. Ataran Segusi 15
+163 D.I. Ataran Sei Garang 94
+164 D.I. Ataran Semaju 800
+165 D.I. Ataran Serban Tanding Marga 80
+166 D.I. Ataran Siku Keramik'Tunggu Tubang 26
+167 D.I. Ataran Simg Panjang 320
+168 D.I. Ataran Sinar Baru 150
+169 D.I. Ataran Sinar Benteng 70
+170 D.I. Ataran Sinar Dewa/ S. Jaya 100
+171 D.I. Ataran Sinar Muara 10
+172 D.I. Ataran Siring Agung 75
+173 D.I. Ataran Siring Damping 110
+174 D.I. Ataran Siring Indikat Bengkok 335
+175 D.I. Ataran Siring Lembung Atas 60
+176 D.I. Ataran Siring Padang Ratu 110
+177 D.I. Ataran Siring Panjang 350
+178 D.I. Ataran Siring Panjang Tanj. Mabar 200
+179 D.I. Ataran Siring Sepuluh Ataran Bukit 20
+180 D.I. Ataran Siring Talang Resam 80
+181 D.I. Ataran Siring Tujuh 50
+182 D.I. Ataran Sukamerindu 200
+183 D.I. Ataran Sukarame 70
+184 D.I. Ataran Sukardi 30
+185 D.I. Ataran Sukaria 25
+186 D.I. Ataran Sumberjo 75
+187 D.I. Ataran Sungai Arisan Tembagu 75
+188 D.I. Ataran Sungai Bahu 81
+#KANAN
+132
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+189 D.I. Ataran Sungai Bahu 25
+190 D.I. Ataran Sungai Bangkal 40
+191 D.I. Ataran Sungai Baung 30
+192 D.I. Ataran Sungai Bungur 30
+193 D.I. Ataran Sungai Buntut 178
+194 D.I. Ataran Sungai Kakap 500
+195 D.I. Ataran Sungai Ngaerengas 60
+196 D.I. Ataran Sungai Nibung 40
+197 D.I. Ataran Sungai Pangkul 100
+198 D.I. Ataran Sungai Rengas 50
+199 D.I. Ataran Sungai Rotan Besar 100
+200 D.I. Ataran Sungai Sejawi 35
+201 D.I. Ataran Sungai Sepuluh 200
+202 D.I. Ataran Surabaya 30
+203 D.I. Ataran Talang Akar | 15
+204 D.I. Ataran Talang Akar II 12
+205 D.I. Ataran Talang Degung 30
+206 D.I. Ataran Talang Dengung 153
+207 D.I. Ataran Talang Eman 60
+208 D.I. Ataran Talang Nangke 54
+209 D.I. Ataran Talang Sawah 109
+210 D.I. Ataran Talang Tegajul 70
+211 D.I. Ataran Talang Tengah 25
+212 D.I. Ataran Tanjung Baru 75
+213 D.I. Ataran Tanjung Bira 44
+214 D.I. Ataran Tanjung Iman | 315
+215 D.I. Ataran Tanjung Iman II 75
+216 D.I. Ataran Tanjung Iman III 85
+217 D.I. Ataran Tanjung Raya 50
+218 D.I. Ataran Tebat Barisan/Atm Pagar Embun 60
+219 D.I. Ataran Tebat Besar sebelah Sei Lematang 120
+220 D.I. Ataran Tebat Binjal 125
+221 D.I. Ataran Tebat Buntu 40
+222 D.I. Ataran Tebat Gantung Ma. Lematang 100
+223 D.I. Ataran Tebat Gayam 10
+224 D.I. Ataran Tebat Guci 10
+225 D.I. Ataran Tebat Kemang 100
+226 D.I. Ataran Tebat Lais 400
+227 D.I. Ataran Tebat Lirik 25
+228 D.I. Ataran Tebat Muara 15
+229 D.I. Ataran Tebat Ramung 25
+230 D.I. Ataran Tebat Semen 300
+231 D.I. Ataran Telung Besuk 50
+232 D.I. Ataran Tenang 15
+233 D.I. Ataran Tengah Dusun 35
+234 D.I. Ataran Tg. Batu/Renvas 60
+235 D.I. Ataran TI. Patimah 200
+236 D.I. Ataran TI. Karangan/TI. Grasi 14
+237 D.I. Ataran Top Tiking 50
+238 D.I. Ataran Ulak Limau 60
+239 D.I. Ataran Ulu 10
+240 D.I. Ataran Ulu Dusuh 100
+241 D.I. Ataran Ulu Dusun 35
+d Kab. Musi Rawas 43 7.203
+1 D.I. Air Cecar SP. III 200
+2 D.I. Air Deras II 928
+3 D.I. Air Dulu 100
+4 D.I. Air Jangkat 50
+5 D.I. Air Kambil 100
+6 D.I. Air Kelingi SP. II 40

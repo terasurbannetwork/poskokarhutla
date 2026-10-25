@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+475 D.I. Pelem 15
+476 D.I. Pelem/Sentul 17
+477 D.I. Pendem 1
+478 D.I. Pengging 55
+479 D.I. Penggung 14
+480 D.I. Penggung 5
+481 D.I. Penggung 2
+482 D.I. Peron 78
+483 D.I. Perto 14
+484 D.I. Pesantren 6
+485 D.I. Pesantren 7
+486 D.I. Pete 4
+487 D.I. Petung 30
+488 D.I. Pilang 55
+489 D.I. Pinggir 5
+490 D.I. Pinggir 20
+491 D.I. Plalar 10
+492 D.I. Plalar 3
+493 D.I. Plalar 25
+494 D.I. Plandakan 14
+495 D.I. Plantukan 6
+496 D.I. Plantukan 21
+497 D.I. Ploso 8
+498 D.I. Podang 20
+499 D.I. Pring 2
+500 D.I. Pring 5
+501 D.I. Pring Wedus 15
+502 D.I. Pucung 7
+503 D.I. Pucung 37
+504 D.I. Pucung 15
+505 D.I. Pucung 1
+506 D.I. Pucung 7
+507 D.I. Pugat 12
+508 D.I. Pule 10
+509 D.I. Pule 5
+510 D.I. Pule 13
+511 D.I. Pupon 60
+512 D.I. Puru 10
+513 D.I. Rambut Gono 50
+514 D.I. Rancah 8
+515 D.I. Randu 8
+516 D.I. Randu 7
+517 D.I. Randu 4
+518 D.I. Randu 12
+519 D.I. Randu 3
+520 D.I. Randu Kiri 7
+521 D.I. Rondo 31
+522 D.I. Ropo 26
+523 D.I. Rowo Cawet 2
+524 D.I. Rowo Kutuk a 5
+525 D.I. Rowo Kutuk b 4
+526 D.I. Rowo Murup 1
+527 D.I. Rowo Penjalin 5
+528 D.I. Rowogandu 27
+529 D.I. Sabrang 11
+530 D.I. Sabrang b 5
+531 D.I. Sabuk Semeru 8
+532 D.I. Sabuk Semeru 3
+533 D.I. Salamsari 10
+534 D.I. Sanggar a 2
+535 D.I. Sanggar b 2
+#KANAN
+238
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+536 D.I. Sanggar c 4
+537 D.I. Sapi 2
+538 D.I. Sarangan 2
+539 D.I. Sarangan 6
+540 D.I. Sarangan 20
+541 D.I. Saron 11
+542 D.I. Sasem 4
+543 D.I. Sawang/Semayu 5
+544 D.I. Secewok 9
+545 D.I. Sedali 17
+546 D.I. Sedandang 6
+547 D.I. Sedangin 4
+548 D.I. Sedawung 9
+549 D.I. Sedempul 4
+550 D.I. Segandu 11
+551 D.I. Segono 10
+552 D.I. Sejamban 10
+553 D.I. Sekaran 6
+554 D.I. Sekaran 6
+555 D.I. Sekaran 9
+556 D.I. Sekaran 12
+557 D.I. Sekatul 22
+558 D.I. Sekauman 16
+559 D.I. Seklombo 20
+560 D.I. Seklopo 8
+561 D.I. Seklotok 15
+562 D.I. Sekopek 17
+563 D.I. Sekretek 7
+564 D.I. Sekutup 14
+565 D.I. Sekuwuk 17
+566 D.I. Sekwali 18
+567 D.I. Selanjar 10
+568 D.I. Semadu 4
+569 D.I. Semak 5
+570 D.I. Semanggring 36
+571 D.I. Semantenan 25
+572 D.I. Sembir 5
+573 D.I. Sembojjo 13
+574 D.I. Semek 2
+575 D.I. Sempu 23
+576 D.I. Sendang Sedangkel 8
+577 D.I. Seneng 8
+578 D.I. Seneng 14
+579 D.I. Senet 10
+580 D.I. Sengon Gunung 37
+581 D.I. Sengon Jurang 40
+582 D.I. Sentul 4
+583 D.I. Sepace 7
+584 D.I. Sepat 43
+585 D.I. Seprecet 16
+586 D.I. Sepule 10
+587 D.I. Sepule 8
+588 D.I. Serongkek 13
+589 D.I. Setalang 7
+590 D.I. Seteki 5
+591 D.I. Setengah 8
+592 D.I. Setinggen 10
+593 D.I. Setonto 10
+594 D.I. Setu 5
+595 D.I. Setukung 8
+596 D.I. Sewates 12

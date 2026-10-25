@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+172 D.I. Semangu 11
+173 D.I. Senggowar 22
+174 D.I. Sengkrik 14
+175 D.I. Sentono 37
+176 D.I. Sergan 19
+177 D.I. Sumber Gayam 14
+178 D.I. Sumber Gondang 20
+179 D.I. Sumber Kemiri 104
+180 D.I. Sumber Kepuh 135
+181 D.I. Sumber Klampok 71
+182 D.I. Sumber Sangsang 46
+183 D.I. Sumber Setri 27
+184 D.I. Sumber Soko 60
+185 D.I. Sumber Sono 162
+186 D.I. Sumbersari 1
+187 D.I. Surti 13
+188 D.I. Suwaru 19
+189 D.I. Suwaru | 19
+190 D.I. Suwaru II 6
+191 D.I. Talar/Keduk 39
+192 D.I. Telik 1
+193 D.I. Tempuran 31
+194 D.I. Tirip 114
+195 D.I. Tiripan 363
+196 D.I. Tretes 599
+197 D.I. Tretes I 16
+198 D.I. Tretes II 10
+199 D.I. Tritik 42
+200 D.I. Tunglur 266
+201 D.I. Turi 18
+202 D.I. Watu Brayut I 20
+203 D.I. Watu Brayut II 3
+204 D.I. Watu Brayut III 3
+205 D.I. Watu Kajang 2
+206 D.I. Watugudik 24
+207 D.I. Watukajang 38
+208 D.I. Watulanang | 122
+209 D.I. Watulanang II 7
+210 D.I. Wengkal 16
+a Kab. Naawi 395 24.040
+1 D.I. Ampel gading 9
+2 D.I. Ampik-Ampik 16
+3 D.I. Apuk Apuk 57
+4 D.I. Babadan 112
+5 D.I. Baron 324
+6 D.I. Bate 18
+7 D.I. Bayanan 20
+8 D.I. Bendungan 116
+9 D.I. Berjing 266
+10 D.I. Bleberan 750
+11 D.I. Blimbing 3
+12 D.I. Brendil 264
+13 D.I. Brentolo 4
+14 D.I. Bulak 3
+15 D.I. Bulak Kaji 17
+16 D.I. Bulak Nganten 27
+17 D.I. Bulakrejo | 56
+18 D.I. Bulakrejo II 67
+19 D.I. Burikan 32
+20 D.I. Candi 1408
+#KANAN
+344
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+21 D.I. Cantel 9
+22 D.I. Carang 13
+23 D.I. Carat 5
+24 D.I. Cemeri 24
+25 D.I. Cemer II 25
+26 D.I. Cemer Ill 40
+27 D.I. Cepret 611
+28 D.I. Dares | 24
+29 D.I. Dares II 12
+30 D.I. Dares III 7
+31 D.I. Dares IV 4
+32 D.I. Dares V 4
+33 D.I. Dares VI 3
+34 D.I. Dedak 146
+35 D.I. Dengok 45
+36 D.I. Dondo 4
+37 D.I. Doyong 26
+38 D.I. Dukuh 1
+39 D.I. Dulang I 167
+40 D.I. Dulang II 19
+41 D.I. Dulang III 42
+42 D.I. Dung Winong 137
+43 D.I. Duren 72
+44 D.I. Duren | 7
+45 D.I. Duren II 13
+46 D.I. Durenan 205
+47 D.I. Durenan 1
+48 D.I. Duwet 59
+49 D.I. Gagang 6
+50 D.I. Gareman 58
+51 D.I. Garut 171
+52 D.I. Gayaman 39
+53 D.I. Gebung 99
+54 D.I. Gede 7
+55 D.I. Gendol 18
+56 D.I. Geneng 6
+57 D.I. Genggong 44
+58 D.I. Gergunung 5
+59 D.I. Getas 326
+60 D.I. Gondang 37
+61 D.I. Gondanaan 154
+62 D.I. Gondosari | 4
+63 D.I. Gondosari II 9
+64 D.I. Gorok 45
+65 D.I. Grogol 74
+66 D.I. Guyangan 1
+67 D.I. Hawug-Hawug 16
+68 D.I. Jodi 18
+69 D.I. Jarakan 26
+70 D.I. Jasan 107
+71 D.I. Jaten 64
+72 D.I. Jenggrik 199
+73 D.I. Jeruk Gulung 56
+74 D.I. Jetakan 13
+75 D.I. Jloro | 8
+76 D.I. Jloro II 68
+77 D.I. Jubleg | 4
+78 D.I. Jubleg II 6
+79 D.I. Kali Bendo 25
+80 D.I. Kali Bening 69
+81 D.I. Kali Ombo 83

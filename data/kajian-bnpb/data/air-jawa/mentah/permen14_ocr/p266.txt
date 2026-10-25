@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+223 D.I. Emb. Megulung 50
+224 D.I. Emb. Meteseh 50
+225 D.I. Emb. Meteseh II 12
+226 D.I. Emb. Mojorembun 60
+227 D.I. Emb. Mondoteko 31
+228 D.I. Emb. Ngadem 35
+229 D.I. Emb. Ngotet 38
+230 D.I. Emb. Ngrandu 25
+231 D.I. Emb. Padaran/Tlogom ojo 60
+232 D.I. Emb. Padas 35
+233 D.I. Emb. Panohan 513
+234 D.I. Emb. Pasarbanggi 50
+235 D.I. Emb. Pasucen 20
+236 D.I. Emb. Pedak 13
+237 D.I. Emb. Pelang 60
+238 D.I. Emb. Pelemsari 25
+239 D.I. Emb. Pengkol 50
+240 D.I. Emb. Pinggan 30
+241 D.I. Emb. Pragen 18
+242 D.I. Emb. Pranti 15
+243 D.I. Emb. Precet 124
+244 D.I. Emb. Pucung 50
+245 D.I. Emb. Punggul 35
+246 D.I. Emb. Randu Agung 67
+247 D.I. Emb. Rondo 32
+248 D.I. Emb. Ronggomulyo 60
+249 D.I. Emb. Rowobolodewo 200
+250 D.I. Emb. Rowosetro 25
+251 D.I. Emb. Rukem 12
+252 D.I. Emb. Sambiyan 45
+253 D.I. Emb. Sambongpayak 15
+254 D.I. Emb. Sekarsari 30
+255 D.I. Emb. Selayur 57
+256 D.I. Emb. Sembiyan II 20
+257 D.I. Emb. Sendang Mulyo 50
+258 D.I. Emb. Seren 27
+259 D.I. Emb. Serina 50
+260 D.I. Emb. Setampah 20
+261 D.I. Emb. Sido Mulyo 10
+262 D.I. Emb. Sidomulyo 10
+263 D.I. Emb. Sidomulyo 18
+264 D.I. Emb. Sidomulyo II 15
+265 D.I. Emb. Sridadi 455
+266 D.I. Emb. Sumber 30
+267 D.I. Emb. Sumbreng 60
+268 D.I. Emb. Suruhan 15
+269 D.I. Emb. Swaduk 100
+270 D.I. Emb. Tambak Agung 83
+271 D.I. Emb. Tanjungan 138
+272 D.I. Emb. Tawangrejo 50
+273 D.I. Emb. Tegaldowo 54
+274 D.I. Emb. Telgawah 26
+275 D.I. Emb. Tireman 40
+276 D.I. Emb. Turusgede 72
+277 D.I. Emb. Warugunung 52
+278 D.I. Emb. Wiroto 141
+279 D.I. Sb. Agung/Kebon 12
+280 D.I. Sb. Belik Kembar 12
+281 D.I. Sb. Brubul 8
+282 D.I. Sb. Brubulan 178
+283 D.I. Sb. Bulan 28
+#KANAN
+266
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+284 D.I. Sb. Cadong 25
+285 D.I. Sb. Condro 20
+286 D.I. Sb. Dawe 10
+287 D.I. Sb. Dong Bulu 52
+288 D.I. Sb. Dowan 20
+289 D.I. Sb. Dukoh 3
+290 D.I. Sb. Dur Sumber 17
+291 D.I. Sb. Gayam 12
+292 D.I. Sb. Gondang 30
+293 D.I. Sb. Gupit 20
+294 D.I. Sb. Jambon 23
+295 D.I. Sb. Kadiwono 61
+296 D.I. Sb. Kajar 45
+297 D.I. Sb. Kajar 15
+298 D.I. Sb. Kajar 10
+299 D.I. Sb. Kalidoso 10
+300 D.I. Sb. Kebon 15
+301 D.I. Sb. Kedung Lingi 30
+302 D.I. Sb. Kedung Ruah 25
+303 D.I. Sb. Macan II 13
+304 D.I. Sb. Mrican | 28
+305 D.I. Sb. Mudal 20
+306 D.I. Sb. Nglencong 5
+307 D.I. Sb. Nglodro 19
+308 D.I. Sb. Nglongko 16
+309 D.I. Sb. Ngroto 33
+310 D.I. Sb. Ngulahan 40
+311 D.I. Sb. Pacing 10
+312 D.I. Sb. Soco 6
+313 D.I. Sb. Soco 22
+314 D.I. Sb. Sumber Agung 36
+315 D.I. Sb. Taban 15
+316 D.I. Sb. Taban 13
+317 D.I. Sb. Tapaan 14
+318 D.I. Sb. Watu Lawang 15
+w Kab. Semarana 666 32.687
+1 D.I. Aji 23
+2 D.I. Ajigebugan 81
+3 D.I. Amat Kadir 20
+4 D.I. Asinan 43
+5 D.I. Asinan 37
+6 D.I. Babar Sari 100
+7 D.I. Bakalan 10
+8 D.I. Balu 18
+9 D.I. Bamban 12
+10 D.I. Banyu Kuning 60
+11 D.I. Basangan 20
+12 D.I. Begajah 55
+13 D.I. Bejalen 60
+14 D.I. Belon 281
+15 D.I. Bendo 38
+16 D.I. Bendo Bacin 16
+17 D.I. Bening 10
+18 D.I. Benjaran Gunung 25
+19 D.I. Berokan 40
+20 D.I. Bianten 10
+21 D.I. Bingkat 26
+22 D.I. Blere 76
+23 D.I. Bode 10
+24 D.I. Bokoan 50

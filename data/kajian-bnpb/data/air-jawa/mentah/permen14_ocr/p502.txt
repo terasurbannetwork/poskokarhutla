@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 502
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+3 D.LA.T. Banjarmulya PWPO4 28
+
+4 D.LA.T. Banjarmulya PWPO5 34
+
+5 D.LA.T. Banjarmulya PWP06/211 32
+
+6 D.LA.T. Banjarmulya PWPO7 20
+
+7 D.LA.T. Banjarmulya PWP48 39
+
+8 D.LA.T. Surajaya PWP49 32
+
+9 D.LA.T. Surajaya PWP50/235 34
+10 D.I.A.T. Banjarmulya PWP112/231 32
+11 D.LA.T. Banjarmulya PWP113/232 24
+12 D.LA.T. Surajaya PWP114 34
+13 D.LA.T. Wanagiri PWP115 29
+14 D.LA.T. Wanagiri PWP116 30
+15 D.LA.T. Kemuning PWP117 30
+16 D.LA.T. Tegalsari TW118 22
+17 D.LA.T. Tegalsari PWP119 / 237 20
+18 D.I.LA.T. Karangtalok PWP120 29
+19 D.ILA.T. Karangtalok PWP121/213 30
+20 D.LA.T. Banjarmulya PWP185/212 21
+21 D.LA.T. Banjarmulya PWP186 25
+22 D.LA.T. Surajaya PWP187 25
+23 D.LA.T. Wonogiri PWP188/236 30
+24 D.LA.T. Wonogiri PWP189/210 36
+25 D.LA.T. Tegalsari PWP190 26
+26 D.I.A.T. Tegalsari PWP191 24
+27 D.LA.T. Tegalsari PWP192 28
+28 D.IL.A.T. Tegalsari PWP193 30
+29 D.LA.T. Tegalsari PWP194/234 31
+30 D.LA.T. Banjarmulya PWP220/222 24
+31 D.LA.T. Banjarmulya SUPPO1 20
+32 D.L.A.T. Tegalsari SUPPO4 20
+
+i Kab. Sraaen 149 4.205
+
+1 D.LA.T. Dawungan CWS 003 36
+
+2 D.LA.T. Manyarejo CWS 004 35
+
+3 D.LA.T. Nganti PWS 024 18
+
+4 D.LA.T. Doyong PWS 025 20
+
+5 D.LA.T. Doyong PWS 026 18
+
+6 D.I.A.T. Doyong PWS 027 13
+
+7 D.LA.T. Kalangan PWS 028 30
+
+8 D.LA.T. Kalangan PWS 029 15
+
+9 D.LA.T. Karangpung PWS 030 21
+10 D.LA.T. Karangpung PWS 031 17
+11 D.LA.T. Karangjati PWS 034 13
+12 D.LA.T. Karangjati PWS 036 19
+13 D.LA.T. Kalimacan PWS 037 23
+14 D.LA.T. Banaran PWS 038 17
+15 D.LA.T. Banaran PWS 039 15
+16 D.ILA.T. Banaran PWS 040 R 15
+17 D.LA.T. Hadiluwih PWS 041 15
+18 D.L.A.T. Hadiluwih PWS 042 14
+19 D.LA.T. Hadiluwih PWS 043 28
+20 D.LA.T. Karangpung PWS 052 16
+21 D.LA.T. Sambirembe PWS 062 23
+22 D.LA.T. Karangpung PWS 063 14
+23 D.LA.T. Karangpung PWS 064 20
+24 D.LA.T. Kalimacan PWS 067 34
+25 D.LA.T. Karangjati PWS 068 12
+26 D.LA.T. Jono PWS 069 32
+27 D.LA.T. Padas PWS 070 40
+28 D.LA.T. Kecik PWS 071 45
+29 D.LA.T. Hadiluwih PWS 072 19

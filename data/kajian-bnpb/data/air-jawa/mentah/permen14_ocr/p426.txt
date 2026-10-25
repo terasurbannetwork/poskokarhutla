@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+12 D.I. Patika 25
+13 D.I. Pedongga 199
+14 D.I. Rontojali 58
+15 D.I. Tikke 33
+f Kab. Polewali Mandar 41 5.419
+1 D.I. Alapahang 84
+2 D.I. Amola 40
+3 D.I. Barumbung 60
+4 D.I. Batu Wonosari 150
+5 D.I. Besoangin 100
+6 D.I. Bunga-Bunga 333
+7 D.I. Galung-Galung 50
+8 D.I. Kalakuring 20
+9 D.I. Kalimbua 22
+10 D.I. Kalumammang 50
+11 D.I. Kanang 400
+12 D.I. Kunyi 920
+13 D.I. Lebani 238
+14 D.I. Lemo 139
+15 D.I. Lemogamba 57
+16 D.I. Mambu Batu 160
+17 D.I. Mangopi 31
+18 D.I. Mata Kali 110
+19 D.I. Mirring 140
+20 D.I. Nene Becce 197
+21 D.I. Palatta 22
+22 D.I. Papandangan | 60
+23 D.I. Papondongan II 20
+24 D.I. Pasembarang 100
+25 D.I. Pulao 18
+26 D.I. Rappang Curede 783
+27 D.I. Riso 45
+28 D.I. Soreang 20
+29 D.I. Tandakan 52
+30 D.I. Tapango 150
+31 D.I. Teppo 80
+32 D.I. Galung Lombok 50
+33 D.I. Lemo Gamba III 93
+34 D.I. Mammi 40
+35 D.I. Matanga 50
+36 D.I. Paneppo 50
+37 D.I. Penaniang 25
+38 D.I. Renggeang/Lamase II 70
+39 D.I. Sulewatang 281
+40 D.I. Tandasura 19
+41 D.I. Tibung 90
+xyun PROVINSI Rin KaKan
+DULANYESI ENYOYARA
+a Kab. Bombana 73 10.562
+1 D.I. Batulasa 250
+2 D.I. Kasipute 673
+3 D.I. Langkowala 684
+4 D.I. Toburi 379
+5 D.I. Bangko-Bangko 114
+6 D.I. Embung Laaho 600
+7 D.I. Enano 200
+8 D.I. Hambawa 150
+9 D.I. Kabumbu 30
+10 D.I. Kapila 50
+#KANAN
+426
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+11 D.I. Kapu-Kapura 75
+12 D.I. La Aho 300
+13 D.I. Laate 13
+14 D.I. Laemolori 30
+15 D.I. Lamenoni 55
+16 D.I. Lameroro I 75
+17 D.I. Lameroro II 56
+18 D.I. Lamoare 150
+19 D.I. Lamoronene 100
+20 D.I. Lampadena 200
+21 D.I. Lampeantani 54
+22 D.I. Lampobulu 157
+23 D.I. Langkaida 150
+24 D.I. Langkowi 74
+25 D.I. Lantari 200
+26 D.I. Lantari Kanan 200
+27 D.I. Lantowonua 100
+28 D.I. Lasangi 200
+29 D.I. Lauru Gunung 50
+30 D.I. Lausu 400
+31 D.I. Lebo 40
+32 D.I. Lemboea I 150
+33 D.I. Lemboea II 150
+34 D.I. Lengori 75
+35 D.I. Lepo-Lepo 54
+36 D.I. Lerementa 60
+37 D.I. Lora 75
+38 D.I. Mata'Ee 60
+39 D.I. Merta Sari 200
+40 D.I. Olola 30
+41 D.I. Opali 32
+42 D.I. Pangi-Pangi 125
+43 D.I. Papi 100
+44 D.I. Poea | 107
+45 D.I. Poea II 150
+46 D.I. Polewali 170
+47 D.I. Pomontoro 150
+48 D.I. Puulore 200
+49 D.I. Puuroda 150
+50 D.I. Rambaha 75
+51 D.I. Rompu-Rompu 100
+52 D.I. Sampa'Ee 30
+53 D.I. Sampantarica 38
+54 D.I. Sangia 50
+55 D.I. Sangkona 57
+56 D.I. Sawai | 50
+57 D.I. Sawai II 35
+58 D.I. Swakarsa 150
+59 D.I. Tampabulu 100
+60 D.I. Tampate 60
+61 D.I. Tedubara 200
+62 D.I. Tembe 175
+63 D.I. Tenang-Tengu 40
+64 D.I. Teppoe 175
+65 D.I. Tetehaka 30
+66 D.I. Tingke 260
+67 D.I. Toari 200
+68 D.I. Tongkoseng I 140
+69 D.I. Tongkoseng II 75
+70 D.I. Tosui 300
+71 D.I. Wambay 75

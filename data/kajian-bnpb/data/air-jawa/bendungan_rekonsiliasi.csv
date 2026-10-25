@@ -1,0 +1,9 @@
+kolom,jumlah_18_baris,total_tercetak_dokumen,selisih,catatan,label
+luas_genangan_ha,6420.62,6420.62,0.0,cocok,resmi
+vol_normal_juta_m3,898.436,898.44,-0.004,cocok,resmi
+vol_efektif_juta_m3,790.185,790.19,-0.005,cocok,resmi
+luas_genangan_2021_ha,6295.04,6295.04,-0.0,cocok,resmi
+tampungan_2021_juta_m3,801.93,801.93,-0.0,cocok,resmi
+sedimentasi_juta_m3,96.545,96.51,0.035,selisih di dokumen sumber (TOTAL tercetak != jumlah baris),resmi
+piezometer,543.0,543,0.0,cocok,resmi
+piezometer_rusak,87.0,87,0.0,cocok,resmi

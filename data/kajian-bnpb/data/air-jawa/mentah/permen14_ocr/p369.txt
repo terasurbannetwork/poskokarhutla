@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+94 D.I. Pakisaji II 9
+95 D.I. Pandaan 36
+96 D.I. Pehoyot 761
+97 D.I. Peksi 137
+98 D.I. Picisan 39
+99 D.I. Pulerejo | 38
+100 D.I. Pulerejo II 86
+101 D.I. Pulo | 1
+102 D.I. Pulo II 11
+103 D.I. Punjul 84
+104 D.I. Randualas 10
+105 D.I. Sawo 146
+106 D.I. Sbr. Bandung 42
+107 D.I. Sbr. Banyuurip 24
+108 D.I. Sbr. Beji 8
+109 D.I. Sbr. Bejigatel 2
+110 D.I. Sbr. Biru 12
+111 D.I. Sbr. Blendis 19
+112 D.I. Sbr. Cemenung 10
+113 D.I. Sbr. Cining 18
+114 D.I. Sbr. Claket 20
+115 D.I. Sbr. Durenbokor 6
+116 D.I. Sbr. Ece 36
+117 D.I. Sbr. Gandong 57
+118 D.I. Sbr. Gomo 11
+119 D.I. Sbr. Guntur 4
+120 D.I. Sbr. Judek 52
+121 D.I. Sbr. Kandung 93
+122 D.I. Sbr. Kundung 38
+123 D.I. Sbr. Manggis 37
+124 D.I. Sbr. Ngagrek 11
+125 D.I. Sbr. Ngebel 22
+126 D.I. Sbr. Nglangkap 10
+127 D.I. Sbr. Ngresap I. 30
+128 D.I. Sbr. Ngresap II 79
+129 D.I. Sbr. Nongko 75
+130 D.I. Sbr. Pacar 2
+131 D.I. Sbr. Puring 25
+132 D.I. Sbr. Sepatan 96
+133 D.I. Sbr. Temon 38
+134 D.I. Sbr. Wangi 99
+135 D.I. Selolanang | 37
+136 D.I. Selolanang II 35
+137 D.I. Selotinatah 212
+138 D.I. Setono 38
+139 D.I. Sidem 95
+140 D.I. Sobowo 11
+141 D.I. Sobro 7
+142 D.I. Subi | 4
+143 D.I. Subi II 168
+144 D.I. Sukorejo 48
+145 D.I. Sumber Pucung 29
+146 D.I. Sumur Brumbung | 4
+147 D.I. Sumur Brumbung II 3
+148 D.I. Sumur Brumbung III 67
+149 D.I. Tambibendo 15
+150 D.I. Tanen 42
+151 D.I. Tempel 67
+152 D.I. Toyoaring 15
+153 D.I. Tumpak Ampel 26
+154 D.I. Turi 169
+#KANAN
+- 2015, No.638
+
+369 ,
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+155 D.I. Watugatik 40
+156 D.I. Ampelgading 169
+157 D.I. Dung Gandok 10
+158 D.I. Duren Plumpung 24
+159 D.I. Gambiran/Tawing 77
+160 D.I. Garon 473
+161 D.I. Jirak 110
+162 D.I. Kd. Bebek 155
+163 D.I. Keboireng 344
+164 D.I. Lambang 7
+165 D.I. Plamesan 35
+166 D.I. Sbr. Bedalem 117
+167 D.I. Sentoro 85
+168 D.I. Sweden 30
+169 D.I. Tempuran 30
+ac Kab. Tulunaaauna 168 10.222
+1 D.I. Babaan I 3
+2 D.I. Babaan II 15
+3 D.I. Bajal I 61
+4 D.I. Bajal II 25
+5 D.I. Bajal III 6
+6 D.I. Balong 32
+7 D.I. Banjar 8
+8 D.I. Batokan 55
+9 D.I. Bendogilir 256
+10 D.I. Beringin 36
+11 D.I. Blader 286
+12 D.I. Bogopati 7
+13 D.I. Boso 54
+14 D.I. Buret 48
+15 D.I. Cari 124
+16 D.I. Cluwok 107
+17 D.I. Creme I 40
+18 D.I. Creme II 54
+19 D.I. Curah Bajal | 5
+20 D.I. Curah Bajal II 99
+21 D.I. Dadapan 238
+22 D.I. Damis | 10
+23 D.I. Damis II 6
+24 D.I. Darungan I 4
+25 D.I. Darungan II 10
+26 D.I. Darungan III 20
+27 D.I. Dawung 36
+28 D.I. Dinoyo | 24
+29 D.I. Dinoyo II 30
+30 D.I. Dlimo | 223
+31 D.I. Dlimo II 25
+32 D.I. Gempong 2
+33 D.I. Genceng 32
+34 D.I. Gendong 72
+35 D.I. Genting 22
+36 D.I. Getuk 64
+37 D.I. Glodogan 3
+38 D.I. Grenjengan 18
+39 D.I. Gronggongan 50
+40 D.I. Jagungan I 5
+41 D.I. Jagungan II 7
+42 D.I. Jajar | 9
+43 D.I. Jajar II 54
+44 D.I. Japuh | 33

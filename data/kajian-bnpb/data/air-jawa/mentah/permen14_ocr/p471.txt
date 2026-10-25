@@ -1,0 +1,96 @@
+#TATA_LETAK satu-tabel lebar=2480
+471 2015, No.638
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+c Kab. Barito Kuala 99 29.720
+
+1 D.I.R. Andaman 375
+
+2 D.I.R. Anjir Muara Kota 191
+
+3 D.I.R. Anjir Muara Kota Tengah 135
+
+4 D.I.R. Anjir Muara Lama 183
+
+5 D.I.R. Anjir Pasar Kota | 199
+
+6 D.I.R. Anjir Pasar Kota II 300
+
+7 D.I.R. Anjir Pasar Lama 245
+
+8 D.I.R. Anjir Sebrang Pasar | 289
+
+9 D.I.R. Anjir Sebrang Pasar II 409
+10 D.I.R. Anjir Serapat Baru 265
+11 D.I.R. Antasan Segera 255
+12 D.I.R. Badandan 767
+13 D.I.R. Bagagap 530
+14 D.I.R. Bahalayung 325
+15 D.I.R. Balandean 135
+16 D.I.R. Bambangin 298
+17 D.I.R. Bandarkarya 150
+18 D.I.R. Bangkit Baru 98
+19 D.I.R. Banitan 730
+20 D.I.R. Bantuil 618
+21 D.I.R. Banua Anyar 242
+22 D.I.R. Barambai Muara 520
+23 D.I.R. Batik 435
+24 D.I.R. Belawang Desa Ujung 285
+25 D.I.R. Beringin 95
+26 D.I.R. Binaan Baru 293
+27 D.I.R. Cahaya Baru 267
+28 D.I.R. Danau Karya 411
+29 D.I.R. Desa Bagus 495
+30 D.I.R. Desa Baliuk 180
+31 D.I.R. Gandaraya 89
+32 D.I.R. Gandaria 211
+33 D.I.R. Handil Barabai 430
+34 D.I.R. Hilir Mesjid 150
+35 D.I.R. Indah Sari 115
+36 D.I.R. Jelapat Baru 330
+37 D.I.R. Karya Baru Ujung 410
+38 D.I.R. Karya Indah 500
+39 D.I.R. Karya Tani 613
+40 D.I.R. Lepasan 425
+MM D.I.R. Lok Rawa 259
+42 D.I.R. Marabahan Baru 113
+43 D.I.R. Marabahan Kota 450
+44 D.I.R. Mekar Sari 225
+45 D.I.R. Mentaren 298
+46 D.I.R. Muara Pulau 142
+47 D.I.R. Murung Keramat 389
+48 D.I.R. Murung raya 404
+49 D.I.R. Pandan Sari 205
+50 D.I.R. Pantai Hambawang 179
+51 D.I.R. Pantang baru 498
+52 D.I.R. Pantang Raya 418
+53 D.I.R. Parimata 113
+54 D.I.R. Patih Muhur Lama 250
+55 D.I.R. Patih Selera 198
+56 D.I.R. Pendalaman 520
+57 D.ILR. Pendalaman Baru 480
+58 D.I.R. Pindahan Baru 385
+59 D.I.R. Ramania 211
+60 D.I.R. Rangga Surya 135
+61 D.I.R. Rantau Bamban 136
+62 D.I.R. Roham Raya 390
+63 D.I.R. Sampurna 279
+64 D.I.R. Samuda 255
+65 D.I.R. Sei Gampa 650
+66 D.I.R. Sei Jingah Besar 378
+67 D.I.R. Sei Kali 497
+68 D.I.R. Sei Lirik 391
+69 D.I.R. Sei Lumbah 150
+70 D.I.R. Sei Pantai 665
+71 D.I.R. Sei Pitung 100
+72 D.I.R. Sei Sahurai 500
+73 D.I.R. Sei Teras Dalam 112
+74 D.I.R. Sei Teras Luar 124
+75 D.I.R. Sekata Baru 325
+76 D.I.R. Semangat Bakti 90
+77 D.I.R. Semangat Dalam 115
+78 D.I.R. Semangat Karya 95
+79 D.I.R. Sepakat Bersama 285
+80 D.I.R. Simpang Arja 350
+81 D.I.R. Simpang Nungki 665

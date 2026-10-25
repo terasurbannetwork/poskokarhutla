@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Benuang Hilir VI 8
+23 D.I. Benuang Hilir VII 2
+24 D.I. Benuang Hilir VIII 8
+25 D.I. Benuang Hilir IX 15
+26 D.I. Sumber Agung 5
+27 D.I. Toho Hilir I 1
+28 D.I. Toho Hilir II 2
+29 D.I. Toho Hilir III 2
+30 D.I. Toho Hilir IV 2
+31 D.I. Toho Hilir V 2
+32 D.I. Toho Hilir VI 5
+33 D.I. Toho Hilir VII 1
+34 D.I. Toho Hilir VIII 3
+35 D.I. Toho Hilir IX 5
+36 D.I. Toho Hilir X 1
+37 D.I. Toho Hilir XI 5
+38 D.I. Pak Kawin I 4
+39 D.I. Pak Kawin II 5
+40 D.I. Pak Kawin III 7
+41 D.I. Pak Kawin IV 7
+42 D.I. Pak Kawin V 16
+43 D.I. Pak Kawin VI 22
+44 D.I. Pak Kawin VII 11
+45 D.I. Pak Kawin VIII 7
+46 D.I. Pak Kawin IX 5
+47 D.I. Kumpang | 5
+48 D.I. Kumpang II 11
+49 D.I. Kumpang III 9
+50 D.I. Kumpang IV 12
+51 D.I. Kumpang V 4
+52 D.I. Sekek | 39
+53 D.I. Sekek II 16
+54 D.I. Sekek III 23
+55 D.I. Pak Utan I 3
+56 D.I. Pak Utan II 1
+57 D.I. Sibau Hulu | 40
+58 D.I. Sibau Hulu II 8
+59 D.I. Sibau Hulu III 8
+60 D.I. Sibau Hulu IV 8
+61 D.I. Sibau Hulu V 16
+62 D.I. Bobor 8
+63 D.I. Sekabuk I 2
+64 D.I. Sekabuk II 4
+65 D.I. Sekabuk III 5
+66 D.I. Sekabuk IV 1
+67 D.I. Sekabuk V 1
+68 D.I. Sekabuk VI 1
+69 D.I. Sekabuk VII 3
+70 D.I. Sekabuk VIII 1
+71 D.I. Sekabuk IX 1
+72 D.I. Sekabuk X 5
+73 D.I. Sekabuk XI 1
+74 D.I. Sekabuk XII 2
+75 D.I. Sekabuk XIII 2
+76 D.I. Sekabuk XIV 1
+77 D.I. Sekabuk XV 1
+78 D.I. Sekabuk XVI 1
+79 D.I. Sekabuk XVII 1
+80 D.I. Sekabuk XVIII 1
+81 D.I. Sekabuk XIX 5
+82 D.I. Sekabuk XX 3
+#KANAN
+403 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Sekabuk XXI 3
+84 D.I. Sekabuk XXII 1
+85 D.I. Sekabuk XXIII 5
+86 D.I. Sekabuk XXIV 1
+87 D.I. Untang | 3
+88 D.I. Untang II 3
+89 D.I. Untang III 1
+90 D.I. Untang IV 2
+91 D.I. Untang V 6
+92 D.I. Untang VI 5
+93 D.I. Untang VII 1
+94 D.I. Amawang | 1
+95 D.I. Amawang II 2
+96 D.I. Amawang III 11
+97 D.I. Amawang IV 5
+98 D.I. Amawang V 1
+99 D.I. Amawang VI 3
+100 D.I. Amawang VII 4
+101 D.I. Amawang VIII 2
+102 D.I. Amawang IX 12
+103 D.I. Amawang X 43
+104 D.I. Pentek 4
+105 D.I. Pudak I 5
+106 D.I. Pudak II 4
+107 D.I. Pudak III 3
+108 D.I. Pudak IV 2
+109 D.I. Pudak V 4
+110 D.I. Pudak VI 10
+111 D.I. Pudak VII 2
+112 D.I. Pudak VIII 8
+113 D.I. Pudak IX 1
+114 D.I. Suak Barangan 11
+115 D.I. Sangking 52
+116 D.I. Jagu Melancar 20
+117 D.I. Terdu Anjungan | 3
+118 D.I. Terdu Anjungan II 1
+119 D.I. Terdu Anjungan III 3
+120 D.I. Terdu Anjungan IV 3
+121 D.I. Terdu Anjungan V 2
+122 D.I. Terdu Anjungan VI 1
+123 D.I. Terdu Anjungan VII 4
+124 D.I. Terdu Anjungan VIII 3
+125 D.I. Terdu Anjungan IX 4
+126 D.I. Terdu Anjungan X 4
+127 D.I. Terdu Anjungan XI 4
+128 D.I. Terdu Anjungan XII 20
+129 D.I. Kepayang | 8
+130 D.I. Kepayang II 87
+131 D.I. Kepayang III 10
+132 D.I. Kepayang IV 14
+133 D.I. Kepayang V 14
+134 D.I. Kepayang VI 29
+135 D.I. Moton Babar | 100
+136 D.I. Moton Babar II 16
+137 D.I. Moton Babar III 16
+138 D.I. Moton Babar IV 16
+139 D.I. Moton Babar V 16
+140 D.I. Moton Babar VI 36
+141 D.I. Peladis Perikanan | 15
+142 D.I. Peladis Perikanan II 3
+143 D.I. Peladis Perikanan III 3

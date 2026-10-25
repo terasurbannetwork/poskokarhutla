@@ -1,0 +1,89 @@
+#TATA_LETAK satu-tabel lebar=2480
+43 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+IV PROVINSI SUMATERA BARAT 36 54.677
+a Kab. Agam
+
+1 D.I. Bandar Batang Dareh 1.128
+2 D.I. Bandar Sangkir Geragahan 1.031
+3 D.I. Baramban III Lurah 1.164
+4 D.I. Batang Gumarang 1.778
+5 D.I. Batang Sianok 1.285
+b Kab. Padang Pariaman
+
+1 D.I. Ladang Laweh 1.140
+2 D.I. Sicaung 1.285
+c Kab. Pasaman
+
+1 D.I. Batang Tingkarang 2.326
+d Kab. Pasaman Barat
+
+1 D.I. Bt. Partupangan 1.200
+2 D.I. Kapar Ampu 2.250
+3 D.I. Lubuk Gobing 1.250
+4 D.I. Rimbo Tampurung 1.200
+e Kab. Pesisir Selatan
+
+1 D.I. Amping Parak 2.363
+2 D.I. Batang Bayang 1.362
+3 D.I. Batang Surantih 1.864
+4 D.I. Koto Kandis 2.357
+5 D.I. Koto Salapan 1.998
+6 D.I. Lubuak Kubang 1.896
+7 D.I. Lubuak Sariak 1.300
+8 D.I. Malepang 1.813
+9 D.I. Talang Kemuning Jaya 1.930
+f Kab. Sijunjung
+
+1 D.I. Sei Samek 1.158
+g Kab. Solok
+
+1 D.I. Bdr. Gadang 1.525
+2 D.I. Bintungan 1.017
+3 D.I. Muaro Danau 1371
+4 D.I. Paneh Gadang 1.007
+5 D.I. Sapan Kayu Manang 1.160
+h Kab. Solok Selatan
+
+1 D.I. Bandar Pekonina 1.250
+2 D.I. Bandar Sawah Padang 1.000
+3 D.I. Batang Suliti 1.450
+4 D.I. Bdr. Bangko 1.603
+5 D.I. Bdr. Sungai Aro 2.739
+
+i Kab. Tanah Datar
+
+1 D.I. Bandar Galo Gandang 1112
+2 D.I. Batang Selo 1.275
+j Kota Padang
+
+1 D.I. Gunung Nago 2.087
+2 D.I. Koto Tuo 1.004
+V PROVINSI JAMBI 4 6.029
+a Kab. Bungo
+
+1 D.I. Sei Batang Uleh 2.043
+b Kab. Kerinci
+
+1 D.I. Sei Tanduk 1.265
+c Kab. Sarolangun
+
+1 D.I. Sei Batang Limun Singkut 1.600
+d Kab. Tanjung Jabung Barat
+
+1 D.I. Sei Suban 1.121
+VI PROVINSI BENGKULU 9 12.179
+a Kab. Bengkulu Selatan
+
+1 D.I. Air Selebang Kedurang 1.024
+b Kab. Bengkulu Utara
+
+1 D.I. Air Nokan Batu Roto 1.104
+2 D.I. Air Nokan Rama Agung 2.071
+3 D.I. Air Palik Aur Gading 1.015
+4 D.I. Air Telatang Besar 1.482
+c Kab. Kaur
+
+1 D.I. Air Kule 1.200

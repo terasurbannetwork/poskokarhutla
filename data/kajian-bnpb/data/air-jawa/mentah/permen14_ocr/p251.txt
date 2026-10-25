@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+660 D.I. Sidadi 19
+661 D.I. Sidandang | 316
+662 D.I. Sidandang II 203
+663 D.I. Sidandang III 93
+664 D.I. Sidawung I 55
+665 D.I. Sidawung II 15
+666 D.I. Sido Makmur I 22
+667 D.I. Sido Makmur II 17
+668 D.I. Sido Mulyo 10
+669 D.I. Sido Mulyo II 21
+670 D.I. Sidoarjo 45
+671 D.I. Sidodadi 15
+672 D.I. Sidorejo I 45
+673 D.I. Sidorejo II 14
+674 D.I. Sigedung 42
+675 D.I. Sigembong 15
+676 D.I. Sigendol 6
+677 D.I. Sigendul 5
+678 D.I. Sigenjik 5
+679 D.I. Sigeprak 25
+680 D.I. Siglawah 50
+681 D.I. Sigran 15
+682 D.I. Sigutan 31
+683 D.I. Sijelis/Mlobo 13
+684 D.I. Sijengkol 25
+685 D.I. Sikali 3
+686 D.I. Sikancil 17
+687 D.I. Sikarag 26
+688 D.I. Sikebo 10
+689 D.I. Sikembang 80
+690 D.I. Siklitik 125
+691 D.I. Sikluwung 40
+692 D.I. Sikopek M
+693 D.I. Sikretek 14
+694 D.I. Sileman 22
+695 D.I. Silengser 22
+696 D.I. Sileri | 32
+697 D.I. Sileri II 20
+698 D.I. Sileri III 49
+699 D.I. Silingseng 50
+700 D.I. Siliwung 7
+701 D.I. Silo | 15
+702 D.I. Silo II 10
+703 D.I. Siluwak 17
+704 D.I. Simpar 25
+705 D.I. Singan 16
+706 D.I. Singo Bangun 20
+707 D.I. Sinongko 19
+708 D.I. Sioho 25
+709 D.I. Siondo 6
+710 D.I. Sipalung 30
+711 D.I. Sipelem 42
+712 D.I. Sipete 13
+713 D.I. Sipetung I 23
+714 D.I. Sipetung II 10
+715 D.I. Sirebut 16
+716 D.I. Sirembug 24
+717 D.I. Sirondo 15
+718 D.I. Siroto 29
+719 D.I. Sisembir II 20
+720 D.I. Sisembir III 20
+#KANAN
+251 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+721 D.I. Sisembung 10
+722 D.I. Sisih 12
+723 D.I. Siteleng | 23
+724 D.I. Siteleng II 23
+725 D.I. Siteleng III 14
+726 D.I. Siwaluh 30
+727 D.I. Siwunung 16
+728 D.I. Siwunut 18
+729 D.I. Slole 27
+730 D.I. Soko 20
+731 D.I. Sombo 6
+732 D.I. Sono 14
+733 D.I. Sorobayan 10
+734 D.I. Sri Rejeki 25
+735 D.I. Srimulyo 65
+736 D.I. Sudimoro | 10
+737 D.I. Sudimoro II 54
+738 D.I. Sudimoro III 10
+739 D.I. Sudimoro IV 10
+740 D.I. Sudimoro V 15
+741 D.I. Sumbar 10
+742 D.I. Sumber | 18
+743 D.I. Sumber II 17
+744 D.I. Sumber III 40
+745 D.I. Sumberan Ki. 157
+746 D.I. Sumberan Kn. 567
+747 D.I. Sumuran 8
+748 D.I. Sungapan 7
+749 D.I. Surakan 5
+750 D.I. Suren 15
+751 D.I. Surojoyo 17
+752 D.I. Suroloyo I 5
+753 D.I. Suroloyo II 12
+754 D.I. Suruh 19
+755 D.I. Susukan | 109
+756 D.I. Susukan II 60
+757 D.I. Tabang 45
+758 D.I. Tahunan 73
+759 D.I. Talang 11
+760 D.I. Talangrejo 26
+761 D.I. Talun 26
+762 D.I. Tambakrame 20
+763 D.I. Tampingan 18
+764 D.I. Tampir Kulon 127
+765 D.I. Tampir Wetan 20
+766 D.I. Tanen 25
+767 D.I. Tanggul Angin 134
+768 D.I. Tangkil 14
+769 D.I. Tangsi Gedangan 17
+770 D.I. Tanon 23
+771 D.I. Tarukan 16
+772 D.I. Taruman 20
+773 D.I. Tawang | 25
+774 D.I. Tawang II 61
+775 D.I. Tegong 16
+776 D.I. Tejo Kading 119
+777 D.I. Temanem 38
+778 D.I. Tembeman 15
+779 D.I. Tempuran | 54
+780 D.I. Tempuran II 31
+781 D.I. Tempuran Sari 30

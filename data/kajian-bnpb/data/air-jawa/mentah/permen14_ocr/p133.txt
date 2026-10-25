@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+7 D.I. Air Merung 50
+8 D.I. Air Nangka 36
+9 D.I. Air Nitap 52
+10 D.I. Air Putat 20
+11 D.I. Air Tupak 778
+12 D.I. Dangku 171
+13 D.I. Jajaran Baru 288
+14 D.I. Ketuan Kecil/Bumi Agung 593
+15 D.I. Kosgoro 96
+16 D.I. Krani Jaya Nibung 15
+17 D.I. Marga Baru 10
+18 D.I. Maur 20
+19 D.I. Megang Tikip 912
+20 D.I. Noman 10
+21 D.I. Paduraksa 120
+22 D.I. Pelita Jaya 40
+23 D.I. Pelita Jaya | 20
+24 D.I. Sawah Pangeran 25
+25 D.I. Setia Marga 20
+26 D.I. Sidomulyo 10
+27 D.I. Sri Kemuning 300
+28 D.I. Srijaya Makmur 36
+29 D.I. Sukakarya 250
+30 D.I. Sukamana 188
+31 D.I. Sukarame 200
+32 D.I. Sukaraya 246
+33 D.I. Tebat Sech/S.Baung 100
+34 D.I. BPD Pendo 288
+35 D.I. Kasang Tinggi 210
+36 D.I. Megang Sakti V 160
+37 D.I. Pelita Jaya II 20
+38 D.I. AlI Wonorejo 21
+39 D.I. Sungai Pinang 50
+40 D.I. Tebat Gede 70
+41 D.I. Wonosari 35
+42 D.I. Bukit Langkap 125
+43 D.I. Paduraksa II 200
+e Kab. Oaan Komerina Ulu 34 3.824
+1 D.I. Air Minuman | 120
+2 D.I. Blambangan 250
+3 D.I. Gunung Kuripan 160
+4 D.I. Kelumpang Kiri 170
+5 D.I. Lubuk Tupak 130
+6 D.I. Sawah Tengah 160
+7 D.I. Tanjung Sari 120
+8 D.I. Tubohan/Ataran Lebar 400
+9 D.I. Ataran Caban 25
+10 D.I. Tanjung Kurung 80
+11 D.I. Air Minuman II 50
+12 D.I. Ataran Mambang 50
+13 D.I. Air Panang 60
+14 D.I. Belambangan 300
+15 D.I. Lentipe 263
+16 D.I. Gunung Liwat 175
+17 D.I. Pengandonan 50
+18 D.I. Merawai 60
+19 D.I. Tanjungan 176
+20 D.I. Kisiran 50
+21 D.I. Uian Mas 60
+22 D.I. Atr. Ting Jambi 100
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Kiwai 80
+24 D.I. Ataran Ninggung 100
+25 D.I. Lembak Dusun 60
+26 D.I. Karang Lantang 45
+27 D.I. Ataran Galang 70
+28 D.I. Rantau Pinang 50
+29 D.I. Babakan Kendis 70
+30 D.I. Pulau Lebih 30
+31 D.I. Mendingin 60
+32 D.I. Belandang 100
+33 D.I. Darat Dusun 30
+34 D.I. Pedataran 120
+f Kab. OKU Selatan 44 5.179
+
+1 D.I. Air Tak Berikan 332
+2 D.I. Alun Dua 200
+3 D.I. Lubuk Liku 60
+4 D.I. Mandala 50
+5 D.I. Niagara 200
+6 D.I. Pilla 100
+7 D.I. Pulau Kemiling 155
+8 D.I. Rantau Nipis 400
+9 D.I. Repong Balak 100
+10 D.I. Sabah Renoh 120
+11 D.I. Ulu Danau 250
+12 D.I. Ulu Pematang Danau 155
+13 D.I. Way Relay/Ataran Landos 210
+14 D.I. Way Senangkal 110
+15 D.I. Way Warkoek 400
+16 D.I. Air Baru 150
+17 D.I. Ataran Lebar 75
+18 D.I. Ataran Pius 80
+19 D.I. Ataran Ratu Dhaha 30
+20 D.I. Ataran Swah Baru 75
+21 D.I. Ataran Talang Rumun 45
+22 D.I. Bandar Alam Lama 37
+23 D.I. Batu Patah 75
+24 D.I. Cangkah Tengah 280
+25 D.I. Kenali 80
+26 D.I. Kisau 40
+27 D.I. Monggo Betung 65
+28 D.I. Pancur mas 50
+29 D.I. Peninggiran 135
+30 D.I. Pulau Duku 100
+31 D.I. Pulau Kejai 60
+32 D.I. Punti Henai 210
+33 D.I. Sawah Plajau 150
+34 D.I. Semingkap 40
+35 D.I. Siring Panjang 60
+36 D.I. Subik Tuha 75
+37 D.I. Sungkai 55
+38 D.I. Talang Suban 75
+39 D.I. Tanjung Kari 45
+40 D.I. Terawengan 150
+41 D.I. Way Kung-kung 100
+a Kab. OKU Timur 1 650
+1 D.I. Baturaja Bungin 650
+h Kota Lubuk Linaaau 5 1.529
+1 D.I. Air Kesie | 347

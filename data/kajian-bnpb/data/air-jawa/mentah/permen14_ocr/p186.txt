@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+356 D.I. Ciguha 30
+357 D.I. Cigunung 50
+358 D.I. Ciguruweuk 15
+359 D.I. Cihadro 50
+360 D.I. Cihampelas 30
+361 D.I. Cihamplas 6
+362 D.I. Cihanggor 27
+363 D.I. Cihanjuang 25
+364 D.I. Cihanjuang 58
+365 D.I. Cihanjuang 25
+366 D.I. Cihanyang 80
+367 D.I. Cihapitan 10
+368 D.I. Cihapitan Nagasari 45
+369 D.I. Ciharuman 144
+370 D.I. Ciharus 20
+371 D.I. Ciharus 40
+372 D.I. Cihaseum | 42
+373 D.I. Cihaseum II 40
+374 D.I. Cihateup 40
+375 D.I. Cihateup 30
+376 D.I. Cihaur 45
+377 D.I. Cihaur 20
+378 D.I. Cihaur 1
+379 D.I. Cihaur | 13
+380 D.I. Cihaur II 25
+381 D.I. Cihaur Kuning 5
+382 D.I. Cihaur/Cisalak 8
+383 D.I. Cihaurwangi 35
+384 D.I. Cihejo 17
+385 D.I. Ciherang 25
+386 D.I. Ciherang 45
+387 D.I. Ciheras 50
+388 D.I. Cihideung keupeul 40
+389 D.I. Cihoe 1 25
+390 D.I. Cihoe 2 15
+391 D.I. Cihoe 3 15
+392 D.I. Cihonje 55
+393 D.I. Cihonje 50
+394 D.I. Cihonje I 40
+395 D.I. Cihonje II 120
+396 D.I. Cihuni 25
+397 D.I. Cihurip | 50
+398 D.I. Cihurip II 30
+399 D.I. Cihuut 16
+400 D.I. Cijagra 40
+401 D.I. Cijambe 5
+402 D.I. Cijambe 30
+403 D.I. Cijambu 30
+404 D.I. Cijambu 30
+405 D.I. Cijanum 80
+406 D.I. Cijaring 2 40
+407 D.I. Cijaringao 50
+408 D.I. Cijawer 5
+409 D.I. Cijayanti 20
+410 D.I. Cijemit 20
+411 D.I. Cijeruk 45
+412 D.I. Cijeungjing 10
+413 D.I. Cijoho 100
+414 D.I. Cijuhung 100
+415 D.I. Cijulang 25
+416 D.I. Cikadu 48
+#KANAN
+186
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+417 D.I. Cikadu 10
+418 D.I. Cikadu 102
+419 D.I. Cikadu 80
+420 D.I. Cikadu 15
+421 D.I. Cikadu/Cipurut 65
+422 D.I. Cikadu/Cihanjuang 35
+423 D.I. Cikahuripan 40
+424 D.I. Cikakak 10
+425 D.I. Cikalakay 75
+426 D.I. Cikalong 20
+427 D.I. Cikalong 8
+428 D.I. Cikalong 60
+429 D.I. Cikalong Hilir 9
+430 D.I. Cikalong Pogor 10
+431 D.I. Cikamiri 120
+432 D.I. Cikamuning 30
+433 D.I. Cikamuning 35
+434 D.I. Cikamuy 10
+435 D.I. Cikanawe 60
+436 D.I. Cikandang 7
+437 D.I. Cikantun 7
+438 D.I. Cikanyere 20
+439 D.I. Cikanyere 30
+440 D.I. Cikanyere 30
+441 D.I. Cikapundung 200
+442 D.I. Cikaracak 70
+443 D.I. Cikaradak 50
+444 D.I. Cikarag 15
+445 D.I. Cikaraha 10
+446 D.I. Cikareo 35
+447 D.I. Cikaso 30
+448 D.I. Cikaso 32
+449 D.I. Cikata 25
+450 D.I. Cikatila 8
+451 D.I. Cikatul 35
+452 D.I. Cikawung 15
+453 D.I. Cikawung 10
+454 D.I. Cikawung 100
+455 D.I. Cikawung Pugur 50
+456 D.I. Cikayaprak 30
+457 D.I. Cikedok 30
+458 D.I. Cikedukan 12
+459 D.I. Cikelen 1 32
+460 D.I. Cikelen 2 20
+461 D.I. Cikelet 30
+462 D.I. Cikelewung 25
+463 D.I. Cikeuheul 23
+464 D.I. Cikeukeut/Cijambe 25
+465 D.I. Cikiangir 25
+466 D.I. Cikidang 42
+467 D.I. Cikijing 35
+468 D.I. Cikiray 14
+469 D.I. Cikiray 12
+470 D.I. Cikitaleus 150
+471 D.I. Cikocop 10
+472 D.I. Cikoja 11
+473 D.I. Cikole 4 15
+474 D.I. Cikondang 50
+475 D.I. Cikondang 45
+476 D.I. Cikoneng 18
+477 D.I. Cikoromoy 22

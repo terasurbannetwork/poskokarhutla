@@ -1,0 +1,87 @@
+#TATA_LETAK satu-tabel lebar=2480
+463 2015, No.638
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+56 D.I.R. Tanjung Bunga 250
+57 D.I.R. Tanjung Harapan 150
+58 D.I.R. Tanjung Saleh 300
+59 D.I.R. Tapah 50
+60 D.I.R. Tasik Malaya 150
+61 D.I.R. Teluk Gelam 25
+62 D.I.R. Teluk Kapuas 80
+63 D.I.R. Teluk Lerang 20
+64 D.I.R. Terentang 424
+f Kab. Pontianak 9 2.235
+1 D.I.R. Bangkam 56
+2 D.I.R. Lengkuas 45
+3 D.I.R. Mempawah Komplek 500
+4 D.L.R. Purun Hulu 213
+5 D.I.R. Segedong 150
+6 D.I.R. Seliung 67
+7 D.I.R. Separong 650
+8 D.I.R. Sui Lipan 54
+9 D.I.R. Sungai Kunyit Komplek 500
+a Kab. Sambas 85 25.518
+1 D.I.R. Arung Parak 270
+2 D.I.R. Bakau 170
+3 D.I.R. Batu Mak Jage 990
+4 D.I.R. Bekut 280
+5 D.I.R. Beringin 150
+6 D.I.R. Berlimang 300
+7 D.I.R. Buduk Sempadang 600
+8 D.I.R. Bukit Segoler 380
+9 D.I.R. Ceremai 400
+10 D.I.R. Dungun Laut 200
+11 D.I.R. Galing 590
+12 D.I.R. Gapura 100
+13 D.I.R. Jawai Laut 838
+14 D.I.R. Jirak 200
+15 D.I.R. Kalimantan 220
+16 D.I.R. Karti 450
+17 D.I.R. Kartiasa 400
+18 D.I.R. KP. Keramat 260
+19 D.I.R. Kubangga 160
+20 D.I.R. Lumbang 350
+21 D.I.R. Mak Rampai 250
+22 D.I.R. Mak Tangguk 300
+23 D.I.R. Matang Labong 320
+24 D.I.R. Mekar Jaya 200
+25 D.I.R. Mekar Sekuntum 90
+26 D.I.R. Mentibar 200
+27 D.I.R. Merabuan 340
+28 D.I.R. Nunuk 220
+29 D.I.R. Pangkalan Kongsi 320
+30 D.I.R. Pari Baja 390
+31 D.I.R. Parit Cegat 350
+32 D.I.R. Parit Setia 260
+33 D.I.R. Pedada 280
+34 D.I.R. Pelimpaan 300
+35 D.I.R. Penakalan 220
+36 D.I.R. Perigi Landu 100
+37 D.I.R. Perigi Limus 90
+38 D.I.R. Puringan 360
+39 D.I.R. Ratu Sepudak 380
+40 D.I.R. Sagu 320
+41 D.I.R. Saing Rambi 80
+42 D.I.R. Sebagu 90
+43 D.I.R. Sebayan 80
+44 D.I.R. Seberkat 60
+45 D.I.R. Segedong 290
+46 D.I.R. Sei Nyirih 450
+47 D.I.R. Sei Kumpai 390
+48 D.I.R. Sei Palah 340
+49 D.I.R. Sei Toman 350
+50 D.I.R. Sejiram 130
+51 D.I.R. Sekuduk 350
+52 D.I.R. Sekura 400
+53 D.I.R. Semanga' 240
+54 D.I.R. Semangau 100
+55 D.I.R. Semparuk 560
+56 D.I.R. Sendoyan 380
+57 D.I.R. Sengawang 500
+58 D.I.R. Sentalik 290
+59 D.I.R. Sentebang 300
+60 D.I.R. Senujuh 250
+61 D.I.R. Sepadu 250
+62 D.I.R. Sepadu 390

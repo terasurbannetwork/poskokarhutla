@@ -1,0 +1,16 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 590
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+
+17 D.I.T. Tambolongan 27
+
+k Kab. Siniai 1 626
+
+1 D.LT. Sinjai Utara & Timur 626
+
+TOTAL 256 60.439
+
+MENTERI PEKERJAAN UMUM DAN PERUMAHAN RAKYAT
+REPUBLIK INDONESIA,
+N. BASUKI HADIMULJONO

@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+35 D.I. Mon Jerejak 80
+36 D.I. Nasee me 75
+37 D.I. Padang Kasab 60
+38 D.I. Paku 200
+39 D.I. Paloh Mee 154
+40 D.I. Paloh Panyang 100
+41 D.I. Pante Breuh 140
+42 D.I. Panton Bili 80
+43 D.I. Panton Jenueh 75
+44 D.I. Paya Alue Peunolok 100
+45 D.I. Paya Alue Udeung 114
+46 D.I. Paya Geurugu 482
+47 D.I. Paya Gulungku 235
+48 D.I. Paya Jaloh 210
+49 D.I. Paya Laot 865
+50 D.I. Paya Pie 70
+51 D.I. Paya Praden 200
+52 D.I. Paya Puntong 154
+53 D.I. Paya Sepat 50
+54 D.I. Paya Sikameh 210
+55 D.I. Pulo Gisa 64
+56 D.I. Pulo Sikembung 37
+57 D.I. Rayeuk Mamplam 100
+58 D.I. Seuneubok Seumawe 95
+59 D.I. Tanjung Bungong 120
+60 D.I. Tanjung Mesjid 60
+61 D.I. Tanjung Raya 125
+62 D.I. Trienggadeng 475
+63 D.I. Ujong Bayu 100
+64 D.I. Waduk Alue Chueng 80
+65 D.I. Cot Jabet 130
+66 D.I. Kaye Adang 75
+67 D.I. Krueng Meusagop 120
+68 D.I. Mampre 80
+69 D.I. Tanjong Beulidi 92
+70 D.I. Tanjongan 275
+71 D.I. Uteun Bunta 120
+n Kab. Gavo Lues 116 10.011
+1 D.I. Atu Kasar 260
+2 D.I. Badak 645
+3 D.I. Cempa 120
+4 D.I. Cinta Maju 120
+5 D.I. Ekan 55
+6 D.I. Gele 100
+7 D.I. Gumpang 100
+8 D.I. Kendawi 50
+9 D.I. Kenyaran 150
+10 D.I. Kuta Bukit 450
+11 D.I. Kute Lesung 150
+12 D.I. Kute Sange 75
+13 D.I. Leme 100
+14 D.I. Lokot 95
+15 D.I. Padang Terangun 180
+16 D.I. Palok 75
+17 D.I. Pangur 100
+18 D.I. Pasir 100
+19 D.I. Pasir Putih 50
+20 D.I. Penampaan 150
+21 D.I. Penggalangan 275
+22 D.I. Perlak 150
+#KANAN
+12
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Pining 120
+24 D.I. Rema Baru 100
+25 D.I. Rempelam 125
+26 D.I. Remukut 45
+27 D.I. Rerebe 145
+28 D.I. Rigeb 350
+29 D.I. Rikit 65
+30 D.I. Rumpi 135
+31 D.I. Sangir 125
+32 D.I. Sere 50
+33 D.I. Soyo 100
+34 D.I. Terlis 100
+35 D.I. Tiga Desa 200
+36 D.I. Truil 200
+37 D.I. Uring 175
+38 D.I. Buah Penggalangan 172
+39 D.I. Cinte 80
+40 D.I. Gao 150
+41 D.I. Gelinggang Soyo 50
+42 D.I. Kala Pinang 35
+43 D.I. Kalajernih 80
+44 D.I. Lempuh 90
+45 D.I. Makmur Jaya 90
+46 D.I. Pantan Kela 45
+47 D.I. Pintu Gayo 40
+48 D.I. Telpi 75
+49 D.I. Tetinggi Blang Papan 45
+50 D.I. Tingkem 42
+51 D.I. Tium 25
+52 D.I. Tongra 30
+53 D.I. Uning Gelung 42
+54 D.I. Uning Gerogoh 52
+55 D.I. Uning Nangka 15
+56 D.I. Uyem Roa Pepir 80
+57 D.I. Waih Kulit 15
+58 D.I. Waih Ongkap 70
+59 D.I. Bacang 15
+60 D.I. Badak Uken 45
+61 D.I. Blana Kuncir 35
+62 D.I. Bukit 58
+63 D.I. Bukut 100
+64 D.I. Cane Toa 80
+65 D.I. Cane Uken 40
+66 D.I. Cike 50
+67 D.I. Gajah 20
+68 D.I. Gantung Geluni 48
+69 D.I. Gegarang 40
+70 D.I. Jabo Gumpang 30
+71 D.I. Kala Kenol 12
+72 D.I. Kala Suem 20
+73 D.I. Kereteng 85
+74 D.I. Kerkun 70
+75 D.I. Ketemi Peparik Gaib 70
+76 D.I. Kute Reje 75
+77 D.I. Lung 50
+78 D.I. Nanga 25
+79 D.I. Napal 50
+80 D.I. Palungen Peparik Gaib 35
+81 D.I. Pantan Lues 20
+82 D.I. Peger Gantung 53
+83 D.I. Penomon 45

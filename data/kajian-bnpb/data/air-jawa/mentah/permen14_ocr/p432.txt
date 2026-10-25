@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+48 D.I. Lemoa II 251
+49 D.I. Liku Boddong 108
+50 D.I. Liku Bundang 100
+51 D.I. Liku Metang 134
+52 D.I. Loka 125
+53 D.I. Massarrang 75
+54 D.I. Mawang I 241
+55 D.I. Mawang II 198
+56 D.I. Moti 764
+57 D.I. Muntea 100
+58 D.I. Mattoanging 100
+59 D.I. Nipa-Nipa I 163
+60 D.I. Nipa-Nipa II 205
+61 D.I. Palaguna 400
+62 D.I. Palappa 200
+63 D.I. Punlindung 146
+64 D.I. Paenre 100
+65 D.I. Paccammi 90
+66 D.I. Panaikang I 234
+67 D.I. Panaikang II 216
+68 D.I. Panaikang III 172
+69 D.I. Pa'niki 150
+70 D.I. Pao-Pao 100
+71 D.I. Papanloe 234
+72 D.I. Pambutung 111
+73 D.I. Parang Tala 60
+74 D.I. Parang Pangi 130
+75 D.I. Patte 100
+76 D.I. Pamelangan 100
+77 D.I. Pondeceng 90
+78 D.I. Rappo Ewa 150
+79 D.I. Sabarro 80
+80 D.I. Salli 75
+81 D.I. Sarroanging 100
+82 D.I. Samboanga 100
+83 D.I. Palimpurang 100
+84 D.I. Sappaya 150
+85 D.I. Manjalling 100
+86 D.I. Senea 245
+87 D.I. Mala' 100
+88 D.I. Su'ranga 156
+89 D.I. Tanetea 112
+90 D.I. Turung Asu 289
+91 D.I. Taruttu Campaga 102
+92 D.I. Tino Toa 102
+93 D.I. Tombolo Pa'jukukang 200
+94 D.I. Taring Balao 90
+95 D.I. Mattiro Baji 122
+96 D.I. Biraeng 102
+97 D.I. Puntina 60
+98 D.I. Libboa 150
+99 D.I. Parang-Parang 30
+100 D.I. Parampangi 25
+b Kab. Barru 103 9.792
+1 D.I. Alakkang 250
+2 D.I. Alejjang 175
+3 D.I. Alekale 25
+4 D.I. Ammerung I 180
+5 D.I. Ammerung II 40
+6 D.I. Ampelle 157
+#KANAN
+432
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+7 D.I. ArotangngE 30
+8 D.I. AroppoE 226
+9 D.I. Baera 40
+10 D.I. Barang 107
+11 D.I. Barangnge 107
+12 D.I. Batu Bessi 929
+13 D.I. Batu Lappa 100
+14 D.I. Bebbat 25
+15 D.I. Benrong 80
+16 D.I. Bette 65
+17 D.I. Bojo 87
+18 D.I. BolliE 175
+19 D.I. Bua 95
+20 D.I. Buaka 40
+21 D.I. Bujung Mattimbawawoe 50
+22 D.I. Bunne 60
+23 D.I. Cinekko 125
+24 D.I. Dawalian 60
+25 D.I. Galung 178
+26 D.I. Garessi 80
+27 D.I. Gattareng 220
+28 D.I. Gellengnge 50
+29 D.I. Jalanru 122
+30 D.I. Jambat 40
+31 D.I. Jarume 100
+32 D.I. Jelata 50
+33 D.I. Jempangnge 95
+34 D.I. Jempulu 100
+35 D.I. Jempurenge 75
+36 D.I. KalompiE 100
+37 D.I. Kamiri 45
+38 D.I. Kampung Baru 75
+39 D.I. Kelo 75
+40 D.I. Kiru-Kiru 628
+41 D.I. La Buleng 110
+42 D.I. Labaka 50
+43 D.I. Lajoangin 75
+44 D.I. Lakalili 111
+45 D.I. Lempang 75
+46 D.I. Limpo 50
+47 D.I. Manuba 60
+48 D.I. Manyengo 50
+49 D.I. Mare-Mare 30
+50 D.I. Menrong 80
+51 D.I. Paccekke 45
+52 D.I. Pacciro 100
+53 D.I. Paddumpu 75
+54 D.I. Palakka 250
+55 D.I. Palluda 60
+56 D.I. Panggalungan 100
+57 D.I. Pangi 63
+58 D.I. Pattalassang 220
+59 D.I. Pejjenge 150
+60 D.I. Pesse 25
+61 D.I. Poddo 25
+62 D.I. Puccanra 60
+63 D.I. Punbari 100
+64 D.I. Punranga 254
+65 D.I. Salopuru 30
+66 D.I. Tabbi 70
+67 D.I. Tangngasoe 25

@@ -1,0 +1,273 @@
+#url https://www.bps.go.id/id/statistics-table/3/YzBaMlduSlFVbTVrUnpWeU9YRTJka0pVTTFkU1FUMDkjMw==/distribusi-persentase-rumah-tangga-menurut-provinsi-dan-sumber-air-minum--2020.html?year=2023
+#ditarik 2026-10-23T09:03:48.649Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Dalam rangka percepatan transformasi tata kelola penyelenggaraan pemerintahan, layanan kunjungan langsung PST pada hari Jumat dialihkan menjadi layanan online: pst.bps.go.id
+
+Tabel Publikasi Indikator Kependudukan SUPAS 2025 telah tersedia dalam bentuk Tabel Statistik yang dapat diakses pada Menu Produk > Direktori. Klik disini untuk mengakses laman tersebut.
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pemukiman dan Perumahan
+
+Distribusi Persentase Rumah Tangga Menurut Provinsi dan Sumber Air Minum, 2023
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Kependudukan dan Migrasi
+Tenaga Kerja
+Pendidikan
+Kesehatan
+Konsumsi dan Pendapatan
+Perlindungan Sosial
+Pemukiman dan Perumahan
+Hukum dan Kriminal
+Budaya
+Aktivitas Politik dan Komunitas Lainnya
+Penggunaan Waktu
+
+Statistik Ekonomi
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Distribusi Persentase Rumah Tangga Menurut Provinsi dan Sumber Air Minum, 2023
+
+Terakhir Diperbarui : 15 Februari 2024
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+20232021202020192018
+Freeze judul kolom
+
+Provinsi
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Leding
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Pompa
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Air Dalam Kemasan
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Sumur Terlindung
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Sumur Tak Terlidung
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Mata Air Terlindung
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Mata Air Tak Terlindung
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Air Permukaan
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Air Hujan
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Lainnya
+
+	
+
+Persentase Rumah Tangga dengan Sumber Air Minum Jumlah
+
+
+Aceh	7,79	9,19	43,52	24,58	2,86	8,06	1,20	2,80	100,00	...	...
+Sumatera Utara	11,66	23,73	39,25	9,27	2,33	8,25	1,94	3,57	100,00	...	...
+Sumatera Barat	11,42	6,48	43,76	16,87	3,16	10,58	5,11	2,63	100,00	...	...
+Riau	0,47	13,97	54,95	10,15	1,61	2,41	0,85	15,60	100,00	...	...
+Jambi	10,73	6,97	26,49	28,86	10,42	4,05	1,65	10,83	100,00	...	...
+Sumatera Selatan	16,46	13,96	21,70	31,67	4,39	2,61	1,29	7,93	100,00	...	...
+Bengkulu	11,34	14,64	14,59	26,78	20,72	7,26	3,30	1,38	100,00	...	...
+Lampung	2,44	16,88	22,95	38,71	10,76	4,27	3,02	0,97	100,00	...	...
+Kepulauan Bangka Belitung	2,11	7,78	64,33	18,77	5,21	0,91	0,54	0,36	100,00	...	...
+Kepulauan Riau	7,11	4,14	75,76	7,36	2,65	1,35	1,08	0,55	100,00	...	...
+DKI Jakarta	7,64	12,57	79,39	0,18	–	0,08	0,03	0,10	100,00	...	...
+Jawa Barat	4,66	18,44	49,03	15,24	1,79	8,56	1,89	0,40	100,00	...	...
+Jawa Tengah	12,97	17,58	29,78	17,89	1,92	16,95	2,06	0,84	100,00	...	...
+DI Yogyakarta	10,33	25,00	22,76	28,41	1,72	4,39	0,99	6,40	100,00	...	...
+Jawa Timur	8,58	24,52	35,75	15,66	0,59	13,02	1,48	0,39	100,00	...	...
+Banten	2,18	23,21	56,82	8,51	2,44	4,49	1,65	0,71	100,00	...	...
+Bali	20,69	7,56	40,69	4,01	0,15	22,40	1,02	3,47	100,00	...	...
+Nusa Tenggara Barat	12,80	22,52	29,15	19,81	1,36	13,19	0,74	0,42	100,00	...	...
+Nusa Tenggara Timur	16,50	10,58	9,33	17,99	3,53	30,04	5,59	6,45	100,00	...	...
+Kalimantan Barat	2,40	3,28	23,70	4,40	3,31	10,66	3,86	48,39	100,00	...	...
+Kalimantan Tengah	5,62	14,15	50,07	8,25	2,37	2,62	1,35	15,57	100,00	...	...
+Kalimantan Selatan	27,20	10,53	37,59	8,73	5,48	1,46	0,83	8,19	100,00	...	...
+Kalimantan Timur	11,76	1,68	79,19	2,05	0,56	1,47	0,36	2,94	100,00	...	...
+Kalimantan Utara	5,41	1,34	73,76	0,94	0,08	3,44	0,75	14,30	100,00	...	...
+Sulawesi Utara	9,37	8,83	51,40	13,36	1,94	12,48	1,28	1,34	100,00	...	...
+Sulawesi Tengah	7,76	12,94	44,20	6,81	1,61	18,15	2,25	6,28	100,00	...	...
+Sulawesi Selatan	13,55	18,75	38,23	12,73	2,06	9,99	2,12	2,57	100,00	...	...
+Sulawesi Tenggara	10,97	14,19	41,73	14,87	1,47	12,56	1,22	2,99	100,00	...	...
+Gorontalo	7,60	11,83	62,64	12,09	1,63	3,67	0,32	0,22	100,00	...	...
+Sulawesi Barat	6,68	15,34	28,56	17,68	3,97	13,57	6,01	8,20	100,00	...	...
+Maluku	10,10	8,84	24,60	19,61	2,76	28,53	1,50	4,05	100,00	...	...
+Maluku Utara	21,07	4,32	25,27	23,20	3,33	13,41	2,57	6,82	100,00	...	...
+Papua Barat	3,86	3,88	41,50	10,77	3,64	12,08	4,04	20,25	100,00	...	...
+Papua Barat Daya	...	...	...	...	...	...	...	...	...	...	...
+Papua	3,72	1,79	30,22	2,84	3,57	14,19	20,19	23,49	100,00	...	...
+Papua Selatan	...	...	...	...	...	...	...	...	...	...	...
+Papua Tengah	...	...	...	...	...	...	...	...	...	...	...
+Papua Pegunungan	...	...	...	...	...	...	...	...	...	...	...
+Indonesia	8,92	17,07	40,64	15,26	2,41	10,10	2,07	3,53	100,00	...	...
+
+Sumber :
+
+ Badan Pusat Statistik, Survei Sosial Ekonomi Nasional (Susenas)/BPS-Statistics Indonesia, National Socioeconomic Survey
+
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+Metadata
+
+Persentase rumah tangga yang sumber air minum utamanya leding, Persentase rumah tangga yang sumber air minum utamanya adalah permukaan air, Persentase Rumah Tangga yang Memiliki Akses terhadap Sumber Air Minum Layak
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik(BPS - Statistics Indonesia)
+
+Jl. Dr. Sutomo 6-8
+
+Jakarta 10710 Indonesia
+
+Telp (62-21) 3841195; 3842508; 3810291
+
+Faks (62-21) 3857046
+
+Mailbox : bpshq@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik

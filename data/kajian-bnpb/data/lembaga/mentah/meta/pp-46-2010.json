@@ -1,0 +1,23 @@
+{
+ "id": "5062",
+ "url": "https://peraturan.bpk.go.id/Details/5062/pp-no-46-tahun-2010",
+ "judul": "Peraturan Pemerintah (PP) Nomor 46 Tahun 2010 tentang Perusahaan Umum Perum Jasa Tirta I",
+ "nomor": "46 Tahun 2010 tentang Perusahaan Umum Perum Jasa Tirta I T.E.U. Indonesia, Pemerintah Pusat Nomor 46",
+ "tanggal_penetapan": "03 Mei 2010",
+ "tanggal_berlaku": "03 Mei 2010",
+ "sumber": "LN. 2010 No. 64, LL SETNEG : 59 HLM",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/35971/PP%2046%20Tahun%202010.pdf"
+ ],
+ "status_peraturan": "Mencabut : PP No. 93 Tahun 1999 tentang Perusahaan Umum (Perum) Jasa Tirta I",
+ "abstrak": "2010 Peraturan Pemerintah (PP) NO. 46, LN. 2010 No. 64, LL SETNEG : 59 HLM Peraturan Pemerintah (PP) TENTANG Perusahaan Umum Perum Jasa Tirta I ABSTRAK: CATATAN: Peraturan Pemerintah (PP) ini mulai berlaku pada tanggal 03 Mei 2010.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/35971/PP%2046%20Tahun%202010.pdf",
+ "pdf_sha1": "ddfb76915a4c1dccf8714e52025cba657191afba",
+ "pdf_bytes": 202454,
+ "sid": "pp-46-2010",
+ "halaman_total": 59,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

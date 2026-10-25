@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+538 D.I. Plembangan 10
+539 D.I. Plempungan 24
+540 D.I. Pleret I 24
+541 D.I. Pleret II 10
+542 D.I. Podosuko 64
+543 D.I. Pojok 26
+544 D.I. Polengan 27
+545 D.I. Posong 129
+546 D.I. Potorono 46
+547 D.I. Prawen 12
+548 D.I. Precetan 13
+549 D.I. Pucung I 13
+550 D.I. Pucung II 18
+551 D.I. Pule II 13
+552 D.I. Pulerejo 12
+553 D.I. Pulo Sari 14
+554 D.I. Pundung 33
+555 D.I. Puringan 47
+556 D.I. Purwogondo 10
+557 D.I. Pusung 29
+558 D.I. Pusung A 15
+559 D.I. Pusung B 20
+560 D.I. Putat 30
+561 D.I. Rejeng 33
+562 D.I. Rejosari 13
+563 D.I. Ringin | 19
+564 D.I. Ringin II 13
+565 D.I. Rupingi 29
+566 D.I. Sabrang A 16
+567 D.I. Sabrang II 20
+568 D.I. Sabrang III 30
+569 D.I. Sabrang Kali 15
+570 D.I. Sadono 73
+571 D.I. Sal. Mataram 55
+572 D.I. Salam Kanci 135
+573 D.I. Salam Sari 13
+574 D.I. Saran 22
+575 D.I. Sarangan 23
+576 D.I. Satak 26
+577 D.I. Sebajingan 4
+578 D.I. Sebangkong 6
+579 D.I. Sebogan 8
+580 D.I. Sebubur 7
+581 D.I. Secangkring 16
+582 D.I. Sedali I 27
+583 D.I. Sedali II 10
+584 D.I. Sedayu I 27
+585 D.I. Sedayu II 8
+586 D.I. Sedayu III 14
+587 D.I. Segrapah 9
+588 D.I. Segremeng 5
+589 D.I. Sejajan 18
+590 D.I. Sejali 10
+591 D.I. Sejambu 15
+592 D.I. Sejati 25
+593 D.I. Sejlamprang | 10
+594 D.I. Sekalongan 7
+595 D.I. Sekrasak | 15
+596 D.I. Sekrasak II 8
+597 D.I. Seleri 12
+598 D.I. Selilin 9
+#KANAN
+250
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+599 D.I. Selosari 23
+600 D.I. Selumpang 15
+601 D.I. Selumut 19
+602 D.I. Selurah 10
+603 D.I. Seluran 16
+604 D.I. Semali Atas 28
+605 D.I. Semali Bawah 28
+606 D.I. Semantenan 31
+607 D.I. Semaren 107
+608 D.I. Semarum 33
+609 D.I. Sembir I 126
+610 D.I. Sembir II 7
+611 D.I. Sembungan 16
+612 D.I. Semen 20
+613 D.I. Semiri 12
+614 D.I. Sempol 11
+615 D.I. Sempon I 36
+616 D.I. Sempon II 10
+617 D.I. Semruning 15
+618 D.I. Semut 43
+619 D.I. Semutan 15
+620 D.I. Sendoyo 25
+621 D.I. Senengan 40
+622 D.I. Senggrikan | 35
+623 D.I. Senggrikan II 40
+624 D.I. Sengi 148
+625 D.I. Sengon 60
+626 D.I. Sengon A 24
+627 D.I. Sengon B 10
+628 D.I. Sentul I 4
+629 D.I. Sentul II 25
+630 D.I. Sepampung 40
+631 D.I. Sepasang I 5
+632 D.I. Sepasang II 5
+633 D.I. Sepet I 8
+634 D.I. Sepet II 24
+635 D.I. Sepet III 7
+636 D.I. Serangen 10
+637 D.I. Seringin | 25
+638 D.I. Seringin II 10
+639 D.I. Seringin III 67
+640 D.I. Seringin IV 46
+641 D.I. Seringin V 11
+642 D.I. Seringin VI 1
+643 D.I. Sesalam 25
+644 D.I. Sesuno 25
+645 D.I. Setaji 12
+646 D.I. Setalang 23
+647 D.I. Setejam 12
+648 D.I. Sewukan 71
+649 D.I. Sewungis 10
+650 D.I. Si Iwil Iwil 125
+651 D.I. Siampel 21
+652 D.I. Siangan 10
+653 D.I. Sibabung 20
+654 D.I. Sibagug 13
+655 D.I. Sibangkong 20
+656 D.I. Sibekelan 24
+657 D.I. Sibeno 70
+658 D.I. Sibunen 14
+659 D.I. Siceblok 25

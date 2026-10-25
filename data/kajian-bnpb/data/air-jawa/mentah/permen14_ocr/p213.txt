@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+133 D.I. Citandang 75
+134 D.I. Citatah I 15
+135 D.I. Citengah 10
+136 D.I. Citimbang 32
+137 D.I. Citinggar 12
+138 D.I. Citotosan 20
+139 D.I. Ciulam 80
+140 D.I. Ciwenoy 17
+141 D.I. Cogrek 55
+142 D.I. Cogrek I -# II 34
+143 D.I. Colanggateng 70
+144 D.I. Conggah 40
+145 D.I. Congkar 727
+146 D.I. Contoh 375
+147 D.I. Contohan 37
+148 D.I. Crewet 18
+149 D.I. Cungging 25
+150 D.I. Damrau 22
+151 D.I. Dansak 67
+152 D.I. Danuh 60
+153 D.I. Dasukan 27
+154 D.I. Dawuhan 68
+155 D.I. Dedali 129
+156 D.I. Dinding 50
+157 D.I. Duaji 24
+158 D.I. Dudul 35
+159 D.I. Dudul 37
+160 D.I. Dukuhrejo 20
+161 D.I. Galahtimur 19
+162 D.I. Gandok 25
+163 D.I. Ganggorok 22
+164 D.I. Gatol 75
+165 D.I. Gayam 114
+166 D.I. Gayunan 15
+167 D.I. Gembrong 12
+168 D.I. Gempang 19
+169 D.I. Glagah 22
+170 D.I. Slempang 619
+171 D.I. Glubang 40
+172 D.I. Gombangan 27
+173 D.I. Gosali 10
+174 D.I. Granyang 10
+175 D.I. Grogol 32
+176 D.I. Gronggongan 12
+177 D.I. Gruyung 150
+178 D.I. Gunung tiga 127
+179 D.I. Gununggeulis 16
+180 D.I. Gunungkakal 27
+181 D.I. Guyang 11
+182 D.I. Igirsempu 48
+183 D.I. Jaha 51
+184 D.I. Jadimerta 15
+185 D.I. Jalawatsu | 30
+186 D.I. Jamban 28
+187 D.I. Jambe 30
+188 D.I. Jambuair 10
+189 D.I. Jaya 115
+190 D.I. Jemasih I 150
+191 D.I. Jemasih II 75
+192 D.I. Jembat 123
+193 D.I. Jeruk 191
+#KANAN
+213 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+194 D.I. Jimat 19
+195 D.I. Jinegara 75
+196 D.I. Jumbleng 30
+197 D.I. Kabayan 31
+198 D.I. Kadu 17
+199 D.I. Kalibulus 60
+200 D.I. Kaligiri 168
+201 D.I. Kalijurang 75
+202 D.I. Kalimati 15
+203 D.I. Kalipari 16
+204 D.I. Kalipondoh 25
+205 D.I. Kalipucung 40
+206 D.I. Kamal | 65
+207 D.I. Kamal II 75
+208 D.I. Kamal kasih 180
+209 D.I. Kambangan 43
+210 D.I. Karahas 15
+211 D.I. Karanggandul 94
+212 D.I. Karangjati 62
+213 D.I. Karangjongkeng 67
+214 D.I. Karet 20
+215 D.I. Karet 96
+216 D.I. Karut 29
+217 D.I. Kedawung 57
+218 D.I. Kedondong 31
+219 D.I. Kedung agung 10
+220 D.I. Kedungalang 290
+221 D.I. Kedungrinu 36
+222 D.I. Kedungsulang 10
+223 D.I. Kelapagetas 16
+224 D.I. Kemadukuning 18
+225 D.I. Kembang 571
+226 D.I. Kemijing 18
+227 D.I. Kertasari 130
+228 D.I. Keser 10
+229 D.I. Kiarakoneng 10
+230 D.I. Kiasar 10
+231 D.I. Kilaris 10
+232 D.I. Kiwesni 20
+233 D.I. Koneng 40
+234 D.I. Krajan 31
+235 D.I. Krona 21
+236 D.I. Kubang 26
+237 D.I. Kubangkalong 20
+238 D.I. Kutayu 37
+239 D.I. Kuya 64
+240 D.I. Laban 180
+241 D.I. Lame 17
+242 D.I. Lamebelang 34
+243 D.I. Langeran 65
+244 D.I. Langkapsuren 13
+245 D.I. Larangan 105
+246 D.I. Lebak benda 20
+247 D.I. Leles 10
+248 D.I. Leusir 13
+249 D.I. Leuwi Denok 10
+250 D.I. Leuwi Kedongdo 10
+251 D.I. Leuwibatok 21
+252 D.I. Leuwibotok 18
+253 D.I. Leuwiceleng 18
+254 D.I. Leuwiheras 45

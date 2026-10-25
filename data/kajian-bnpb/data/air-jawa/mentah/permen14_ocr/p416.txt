@@ -1,0 +1,125 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+12 D.I. Karumenga 75
+13 D.I. Kaweruan 40
+14 D.I. Kema Maletang 155
+15 D.I. Kendem 50
+16 D.I. Kewong 160
+17 D.I. Kinapian Batu 44
+18 D.I. Kiniar 75
+19 D.I. Kinidow 365
+20 D.I. Laikit 100
+21 D.I. Lalan Roda 34
+22 D.I. Likupana Oki 246
+23 D.I. Maen 60
+24 D.I. Makansar 285
+25 D.I. Matungkas 4
+26 D.I. Mawuwuk 140
+27 D.I. Morowuwung 90
+28 D.I. Pales Werot 85
+29 D.I. Paniki Kolonaan 135
+30 D.I. Pinaminto 51
+31 D.I. Rap Rap 90
+32 D.I. Rumitatak 70
+33 D.I. Sampiri 40
+34 D.I. Sawangan Karegesan 243
+35 D.I. Sawangan Kasar 160
+36 D.I. Sawangan Kiri Kanan 255
+37 D.I. Susudaan 120
+38 D.I. Tanah Putih 40
+39 D.I. Tumadi Mudud 390
+40 D.I. Werot 50
+41 D.I. Weteng 80
+42 D.I. Wineru 40
+k Kota Bituna 5 238
+1 D.I. Kopian 36
+2 D.I. Tudambok 30
+3 D.I. Manembo Nembo 34
+4 D.I. Sagerat 89
+5 D.I. Sendangan 49
+| Kota Kotamobaau 13 818
+
+1 D.I. Ampow 38
+2 D.I. Bonodon 45
+3 D.I. Dayanan 44
+4 D.I. Eleba 150
+5 D.I. Kobo Kecil 70
+6 D.I. Lumoring 45
+7 D.I. Molinow 150
+8 D.I. Motoboi Moyongkota | 45
+9 D.I. Motoboi Moyongkota II 109
+10 D.I. Pinoba Biga 28
+11 D.I. Pontodon 28
+12 D.I. Mayangkara 26
+13 D.I. Inanipon 40
+m Kota Manado 2 300
+1 D.I. Matikub Kayuwatu 150
+2 D.I. Paniki Buha 150
+n Kota Tomohon 9 1.136
+1 D.I. Aga 60
+2 D.I. Kakaskasen 230
+#KANAN
+416
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+3 D.I. Kelong 30
+4 D.I. Kembes 85
+5 D.I. Ranonekoropit 70
+6 D.I. Ranowangko 492
+7 D.I. Sapa Pinaras 104
+8 D.I. Sarulutu 30
+9 D.I. Suko Meras 35
+XXV PROVINSI CORONTALO tan 17.204
+a Kab. Boalemo 5 649
+1 D.I. Karya Agung 361
+2 D.I. Kramat 35
+3 D.I. Mekar Jaya 103
+4 D.I. Pangea 100
+5 D.I. Tutulo 50
+b Kab. Bone Bolanao 9 721
+1 D.I. Posolo 55
+2 D.I. Molonuayo 26
+3 D.I. Sambapuga 40
+4 D.I. Butaiyo Daa 35
+5 D.I. Tunggulo 65
+6 D.I. Bongopini 120
+7 D.I. Ulanta 70
+8 D.I. Perintis 170
+9 D.I. Pinogu 140
+c Kab. Gorontalo 48 9.366
+1 D.I. Bumela 125
+2 D.I. Hunggaluwa 276
+3 D.I. Molalahu 155
+4 D.I. Tombiu 496
+5 D.I. Beringin 200
+6 D.I. Bina Jaya 40
+7 D.I. Boliyohuto Kiki 130
+8 D.I. Buhu 103
+9 D.I. Bululi 150
+10 D.I. Hunggaluwa/Helumo 864
+11 D.I. Iloponu 50
+12 D.I. Isimu Selatan 150
+13 D.I. Karyamukti (Motobuloo Daa) 130
+14 D.I. Kayubulan Bawah 130
+15 D.I. Limehe Timur 203
+16 D.I. Moahudu (Manggulipa) 250
+17 D.I. Modelidu 150
+18 D.I. Mohiyolo 361
+19 D.I. Mohiyolo I 200
+20 D.I. Molalahu | 564
+21 D.I. Molamahu 200
+22 D.I. Molawahu | 120
+23 D.I. Molowahu II 130
+24 D.I. Monggelomo 40
+25 D.I. Ombulo (Marisa |) 94
+26 D.I. Padenao 80
+27 D.I. Pangahu 570
+28 D.I. Paris 190
+29 D.I. Parungi 50
+30 D.I. Pavunaa 100
+31 D.I. Polohungo 250
+32 D.I. Pongongaila 35

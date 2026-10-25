@@ -1,0 +1,81 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 478
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+32 D.I.R. Sei Salai 400
+33 D.I.R. Sei Salak 250
+34 D.I.R. Sei Serawi 370
+35 D.I.R. Sei Sirang 105
+36 D.I.R. Sei Sosial 400
+37 D.I.R. Sei Suka Ramai 250
+38 D.I.R. Sei Tabukan Purun 100
+39 D.I.R. Sei Tampusing 250
+40 D.I.R. Sei Tandui 150
+41 D.I.R. Sei Tapin/Gadung 705
+42 D.LR. Sei Tengkuluk 400
+43 D.I.R. Sei Tungkit 150
+44 D.I.R. Sei Waringin 145
+
+k Kab. Tabalona 38 9.438
+
+1 D.I.R. Ampukung 393
+
+2 D.I.R. Bangkiling 406
+
+3 D.I.R. Bangkiling Raya 265
+
+4 D.I.R. Banua Lawas 100
+
+5 D.I.R. Banua Rantau 269
+
+6 D.I.R. Batang Banyu 68
+
+7 D.I.R. Bungin 90
+
+8 D.I.R. Desa Hapalah 404
+
+9 D.I.R. Habau 753
+10 D.I.R. Habau Hulu 555
+11 D.I.R. Halangan 150
+12 D.I.R. Hariang 157
+13 D.I.R. Jirak 57
+14 D.I.R. Luk Kulur-Tahuran 100
+15 D.I.R. Padangin 200
+16 D.I.R. Pampanan 467
+17 D.I.R. Pematang 265
+18 D.I.R. Pintu Air Madang 370
+19 D.I.R. Pintu Air Mr. Karangan 260
+20 D.I.R. Pintu Air Pasar Minggu 70
+21 D.I.R. Pintu Air Pudak Setegal 275
+22 D.I.R. Pugaan 100
+23 D.I.R. Purai 236
+24 D.I.R. Rawa Asam Pauh 325
+25 D.I.R. Rawa Muara Harus 200
+26 D.I.R. Sei Awang Latuk 20
+27 D.I.R. Sei Manduin Babarut 250
+28 D.I.R. Sei Nanti 175
+29 D.I.R. Sei Rampang 560
+30 D.I.R. Sei Rukam | 30
+31 D.I.R. Sei Rukam II 176
+32 D.I.R. Sei Anyar 86
+33 D.I.R. Sei Binturu 135
+34 D.I.R. Sei Durian 114
+35 D.I.R. Sei Paliat 450
+36 D.I.R. Talan 472
+37 D.I.R. Tamuti 300
+38 D.I.R. Telaga Itar/Tabat Hanau 135
+
+| Kota. Baniar Baru 6 255
+
+1 D.I.R. Golf 55
+
+2 D.I.R. Guntung Manggis 30
+
+3 D.I.R. Lukudat 15
+
+4 D.I.R. Palam 50
+
+5 D.ILR. Pengayuan 90
+
+6 D.I.R. Tambak Geronggong 15

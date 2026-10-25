@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+819 D.I. Pondok I 77,10
+820 D.I. Bulu 78,42
+821 D.I. Sumber 80,00
+822 D.I. Pandan Arum 81,00
+823 D.I. Sembung II 81,57
+824 D.I. Kaliputih 83,08
+825 D.I. Tanggul 84,00
+826 D.I. Kujon 84,00
+827 D.I. Jlapan 84,42
+828 D.I. Siwarung 85,00
+829 D.I. Karanglo 86,80
+830 D.I. Mlandangan 87,71
+831 D.I. Kringinan 88,00
+832 D.I. Tulung Opak 90,26
+833 D.I. Sambisari 91,66
+834 D.I. Tunggul 93,84
+835 D.I. Ngelo 94,42
+836 D.I. Baki 116,58
+837 D.I. Sentonorejo 120,00
+838 D.I. Plombangan 125,00
+839 D.I. Bedog Krasak 131,00
+840 D.I. Drono 133,00
+841 D.I. Randu 145,09
+842 D.I. Randu Alas 145,09
+843 D.I. Blambangan 145,50
+844 D.I. Grogol 152,00
+845 D.I. Giyancawan 154,00
+846 D.I. Klontongan 158,38
+847 D.I. Pluyon Kanan 207,00
+848 D.I. Plunyon Kanan 217,48
+849 D.I. Mojosari 273,37
+850 D.I. Pendekan 300,54
+851 D.I. Plunyon Kiri 319,00
+852 D.I. Sempu I 426,00
+853 D.I. Jering 469,21
+e Kota Yoavakarta 10 49
+1 D.I. Batikan 4
+2 D.I. Bendosirah 4
+3 D.I. Kranon 1
+4 D.I. Muja-Muju 8
+5 D.I. Sidikan II 5
+6 D.I. Sidikan III 7
+7 D.I. Tambak II 10
+8 D.I. Tambak III 1
+9 D.I. Tambak IV 7
+10 D.I. Tempel Wirogunan 2
+XV PROVINSI SAMA TIMUR RTNR ARN REI
+a Kab. Banakalan 76 3.925
+1 D.I. Dam Banyior 38
+2 D.I. Dam Batu Korongan 15
+3 D.I. Dam Budduk 128
+4 D.I. Dam Dupok 70
+5 D.I. Dam Glagah 60
+6 D.I. Dam Gondang 40
+7 D.I. Dam Jambu 73
+8 D.I. Dam Kabanan 54
+9 D.I. Dam Kambah 35
+10 D.I. Dam Korot 18
+#KANAN
+300
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+11 D.I. Dam Lamkajang 169
+12 D.I. Dam Maneron 121
+13 D.I. Dam Pamorah 250
+14 D.I. Dam Paorampak 106
+15 D.I. Dam Patonaan 124
+16 D.I. Dam Petapan 69
+17 D.I. Dam Petrah 75
+18 D.I. Dam Sepuluh 35
+19 D.I. Dam Tagungguh 300
+20 D.I. Gligis 150
+21 D.I. Sbr. Amparan 5
+22 D.I. Sbr. Bangsereh 50
+23 D.I. Sbr. Banyu Bunih 4
+24 D.I. Sbr. Banyuajuh 10
+25 D.I. Sbr. Banyuloran 20
+26 D.I. Sbr. Bindang 60
+27 D.I. Sbr. Binoloh 5
+28 D.I. Sbr. Bleteran 13
+29 D.I. Sbr. Buluh 136
+30 D.I. Sbr. Bulung 8
+31 D.I. Sbr. Bungur 30
+32 D.I. Sbr. Buwak 44
+33 D.I. Sbr. Coralegung 5
+34 D.I. Sbr. Durjan 2
+35 D.I. Sbr. Duwak 70
+36 D.I. Sbr. Gayam 20
+37 D.I. Sbr. Gayam Karang 20
+38 D.I. Sbr. Gening 146
+39 D.I. Sbr. Gunelap 35
+40 D.I. Sbr. Jrangoh 10
+41 D.I. Sbr. Kamarong 75
+42 D.I. Sbr. Karang Asem 68
+43 D.I. Sbr. Karang Entang 65
+44 D.I. Sbr. Keong 5
+45 D.I. Sbr. Kesatrian 131
+46 D.I. Sbr. Klabetan 22
+47 D.I. Sbr. Klampar 40
+48 D.I. Sbr. Klompek 43
+49 D.I. Sbr. Kolbuk 35
+50 D.I. Sbr. Kolla 3
+51 D.I. Sbr. Kompol 60
+52 D.I. Sbr. Kuning 20
+53 D.I. Sbr. Kwanyar 7
+54 D.I. Sbr. Lancang 20
+55 D.I. Sbr. Landak 80
+56 D.I. Sbr. Langkap 45
+57 D.I. Sbr. Mantan 46
+58 D.I. Sbr. Mencay 50
+59 D.I. Sbr. Moddung 17
+60 D.I. Sbr. Modung 20
+61 D.I. Sbr. Pancor 40
+62 D.I. Sbr. Pandan Lanjang 5
+63 D.I. Sbr. Petong 30
+64 D.I. Sbr. Pocong 25
+65 D.I. Sbr. Rabah 16
+66 D.I. Sbr. Rajah 44
+67 D.I. Sbr. Rojing 22
+68 D.I. Sbr. Rojing 13
+69 D.I. Sbr. Sangkeyan 140
+70 D.I. Sbr. Tabak Agung 18
+71 D.I. Sbr. Taman 5

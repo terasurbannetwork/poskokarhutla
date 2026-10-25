@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+58 D.I. Dawuhan 21
+59 D.I. Desan 15
+60 D.I. Dilem 15
+61 D.I. Dimong 121
+62 D.I. Dondoman 7
+63 D.I. Doplang I 5
+64 D.I. Doplang II 2
+65 D.I. Dowo | 3
+66 D.I. Dowo II 4
+67 D.I. Druju 71
+68 D.I. Dungbogo 4
+69 D.I. Dungjangan 3
+70 D.I. Dungjaran 12
+71 D.I. Dungsengon | 75
+72 D.I. Dungsengon II 17
+73 D.I. Duwet 25
+74 D.I. Gandong II 14
+75 D.I. Ganter 17
+76 D.I. Ganter | 1
+77 D.I. Ganter II 2
+78 D.I. Ganter III 3
+79 D.I. Gebang 2
+80 D.I. Gebang Arum 50
+81 D.I. Gebyok I 14
+82 D.I. Gebyok II 1
+83 D.I. Gebyok III 59
+84 D.I. Gedong 1
+85 D.I. Gelur I 3
+86 D.I. Gelur II 5
+87 D.I. Gelur III 3
+88 D.I. Semarang 7
+89 D.I. Gemblung | 2
+90 D.I. Gemblung II 2
+91 D.I. Gemblung III 2
+92 D.I. Gemblung IV 5
+93 D.I. Gendong 292
+94 D.I. Genen I 2
+95 D.I. Genen II 3
+96 D.I. Genen III 2
+97 D.I. Geneng I 6
+98 D.I. Geneng II 6
+99 D.I. Geneng III 2
+100 D.I. Geneng IV 2
+101 D.I. Glagah Ombo | 10
+102 D.I. Glagah Ombo II 5
+103 D.I. Gligi 8
+104 D.I. Glinggang 186
+105 D.I. Golang | 5
+106 D.I. Golang II 4
+107 D.I. Gomo I 3
+108 D.I. Gomo II 3
+109 D.I. Gondong Lor 3
+110 D.I. Grenjeng 5
+111 D.I. Gulunan 66
+112 D.I. Guwo | 2
+113 D.I. Guwo II 4
+114 D.I. Guwo III 3
+115 D.I. Guwo Kendil 10
+116 D.I. Iromejan 3
+117 D.I. Janget I 13
+118 D.I. Janget II 6
+#KANAN
+330
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+119 D.I. Janget III 5
+120 D.I. Jati 17
+121 D.I. Jati Putih 2
+122 D.I. Jati Sikut I 3
+123 D.I. Jati Sikut II 3
+124 D.I. Jatiklorot 9
+125 D.I. Jegong I 2
+126 D.I. Jegong II 4
+127 D.I. Jelir 7
+128 D.I. Jelok 11
+129 D.I. Jumok I 4
+130 D.I. Jumok II 11
+131 D.I. Jumok III 116
+132 D.I. Jumok IV 5
+133 D.I. Jumok V 14
+134 D.I. Jumok VI 17
+135 D.I. Jurang Gajah 10
+136 D.I. Juwet I 3
+137 D.I. Juwet II 4
+138 D.I. Juwet III 1
+139 D.I. Juwet IV 1
+140 D.I. Kaliabu 374
+141 D.I. Kaligede 483
+142 D.I. Kaligunting 21
+143 D.I. Kambatan | 3
+144 D.I. Kambatan II 3
+145 D.I. Karangunto | 4
+146 D.I. Karangunto II 20
+147 D.I. Kasihan | 3
+148 D.I. Kasihan II 6
+149 D.I. Kasreman 46
+150 D.I. Katang Kidul 27
+151 D.I. Katang Lor 22
+152 D.I. Kawung 358
+153 D.I. Keben 106
+154 D.I. Kedungbanteng 654
+155 D.I. Kedungtelo 39
+156 D.I. Kedungtelo 10
+157 D.I. Kenteng 114
+158 D.I. Kenteng 4
+159 D.I. Kepet 90
+160 D.I. Kepuh 3
+161 D.I. Kepuh 4
+162 D.I. Ketupu 380
+163 D.I. Klegung | 1
+164 D.I. Klegung II 1
+165 D.I. Klumpit | 13
+166 D.I. Klumpit II 5
+167 D.I. Kramen 9
+168 D.I. Kromorio 9
+169 D.I. Lemahdengkeng | 3
+170 D.I. Lemahdengkeng II 2
+171 D.I. Mason | 5
+172 D.I. Mason II 1
+173 D.I. Matokan 4
+174 D.I. Mendil 9
+175 D.I. Mijil I 2
+176 D.I. Mijil II 1
+177 D.I. Mojopurno 48
+178 D.I. Mranggen 31
+179 D.I. Mrico 1

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+575 D.I. Lonceng 23,76
+576 D.I. Gayam 23,83
+577 D.I. Tulungpete 23,84
+578 D.I. Sedogan 23,89
+579 D.I. Cangkring III 24,00
+580 D.I. Jetis 24,00
+581 D.I. Karangnongko II 24,00
+582 D.I. Sikepek 24,00
+583 D.I. Umbulan/Nduri 24,00
+584 D.I. Mrahen 24,02
+585 D.I. Gupit 24,15
+586 D.I. Dayakan 24,28
+587 D.I. Padasgempal 24,34
+588 D.I. Bayanan 24,43
+589 D.I. Kanomam 24,43
+590 D.I. Tuk Klangkapan 24,45
+591 D.I. Domas 24,49
+592 D.I. Duren 24,70
+593 D.I. Watutumpang 24,85
+594 D.I. Kalireso | 25,00
+595 D.I. Blekik | 25,00
+596 D.I. Karanggeneng 25,00
+597 D.I. Karangpakis 25,00
+598 D.I. Koripan 25,00
+599 D.I. Lengkong 25,00
+600 D.I. Puring 25,01
+601 D.I. Ngawen 25,13
+602 D.I. Karangkrebet 25,22
+603 D.I. Mangunan 25,46
+604 D.I. Bedingin 25,47
+605 D.I. Dalem 25,49
+606 D.I. Bendo 25,54
+607 D.I. Randusongo 25,66
+608 D.I. Cangkring 25,81
+609 D.I. Kabunan 25,87
+610 D.I. Duren I 26,00
+611 D.I. Ngrajek 26,00
+612 D.I. Tajem 26,00
+613 D.I. Donotirto 26,01
+614 D.I. Ngampel 26,29
+615 D.I. Pleret Kelor 26,46
+616 D.I. Janturan 26,50
+617 D.I. Silo 26,52
+618 D.I. Jalakan 26,60
+619 D.I. Plumbon 26,69
+620 D.I. Balong 26,75
+621 D.I. Karangasem 26,85
+622 D.I. Kepanjen 26,95
+623 D.I. Malang 27,00
+624 D.I. Turgogede 27,00
+625 D.I. Blimbing 27,47
+626 D.I. Maling 27,58
+627 D.I. Simaling 27,58
+628 D.I. Krapyak 27,68
+629 D.I. Manukan 27,72
+630 D.I. Sanggrahan 28,00
+631 D.I. Dengkeng 28,02
+632 D.I. Josari I 28,07
+633 D.I. Tuk Klinyo 28,10
+634 D.I. Kacung 28,49
+635 D.I. Cangkring Kleben 29
+#KANAN
+298
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+636 D.I. Gedoyo 28,63
+637 D.I. Mriyan A 28,83
+638 D.I. Sudimoro 28,85
+639 D.I. Sibakul 28,89
+640 D.I. Cangkring 29,20
+641 D.I. Gayam 29,27
+642 D.I. Sawahan 29,40
+643 D.I. Kopen 29,44
+644 D.I. Tempelsari 29,50
+645 D.I. Mantaran | 29,52
+646 D.I. Mantaran II 29,53
+647 D.I. Koroulon 29,58
+648 D.I. Jetak 29,74
+649 D.I. Siaten 29,79
+650 D.I. Ngasem 29,90
+651 D.I. Kedungaren 29,93
+652 D.I. Arumoyo 29,98
+653 D.I. Babatan 30,00
+654 D.I. Cupuwatu 30,00
+655 D.I. Kretek 30,00
+656 D.I. Mangunan 30,00
+657 D.I. Pace 30,00
+658 D.I. Semoyo 30,00
+659 D.I. Druju 30,10
+660 D.I. Guwosari 30,32
+661 D.I. Kayen 30,43
+662 D.I. Waru 30,58
+663 D.I. Gejayan I 30,65
+664 D.I. Pelem 30,70
+665 D.I. Sidaltok 30,90
+666 D.I. Jetis 31,00
+667 D.I. Kedung 31,12
+668 D.I. Bego 31,21
+669 D.I. Sentong 31,31
+670 D.I. Sangrahan 31,92
+671 D.I. Mojo 31,98
+672 D.I. Gandoktegal 32,00
+673 D.I. Gempol 32,00
+674 D.I. Dukuh I 32,16
+675 D.I. Tekusan 32,30
+676 D.I. Cino 32,40
+677 D.I. Jetis 32,52
+678 D.I. Sigedangan 32,53
+679 D.I. Jetis 32,59
+680 D.I. Sendari 32,76
+681 D.I. Tuk Sibapang 33,35
+682 D.I. Ploso 33,39
+683 D.I. Makmur 33,53
+684 D.I. Sibapang 33,55
+685 D.I. Kiyudan | 34,00
+686 D.I. Tangkilan 34,00
+687 D.I. Gempol 35,00
+688 D.I. Gorok 35,01
+689 D.I. Sigorok 35,01
+690 D.I. Klutuk 35,30
+691 D.I. Kadipiro 35,36
+692 D.I. Menggono 35,70
+693 D.I. Pondok Kulon 35,01
+694 D.I. Pasekan 35,94
+695 D.I. Koroulon 36,00
+696 D.I. Tanen 36

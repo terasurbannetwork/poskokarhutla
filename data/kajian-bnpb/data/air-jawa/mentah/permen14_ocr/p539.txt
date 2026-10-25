@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+539 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+64 D.I.A.T. Pandai SPB 051 15
+65 D.LA.T. Donggobolo SPB 053 15
+66 D.I.A.T. Risa SPB 063 10
+67 D.I.A.T. Piong SPB 145 15
+68 D.I.A.T. Piong SPB 146 16
+69 D.I.A.T. Piong SPB 147 15
+70 D.I.A.T. Piong SPB 148 19
+71 D.L.A.T. Nggembe SPB 150 20
+72 D.LA.T. Pa'i SPB 151 20
+73 D.LA.T. Piong SPB 152 16
+74 D.LA.T. Piong SPB 153 15
+75 D.I.A.T. Nanga Nae, Pari SPB 164 18
+76 D.I.A.T. Pa'l SPB 165 16
+77 D.LA.T. Pa'l SPB 166 18
+78 D.LA.T. Pa'i SPB 167 18
+79 D.I.A.T. Ntonggu SPB 168 20
+80 D.I.A.T. Kawinda SPB 175 20
+81 D.I.A.T. Kawinda SPB 176 15
+82 D.I.A.T. Nggembe SPB 184 20
+83 D.I.A.T. Nggembe SPB 192 20
+84 D.I.A.T. Nggembe SPB 193 20
+85 D.I.A.T. Nggembe SPB 194 20
+86 D.I.A.T. Nggembe SPB 195 20
+87 D.I.A.T. Nggeru SPB 219 25
+88 D.I.A.T. Leu SPB 220 15
+89 D.I.A.T. Leu SPB 221 20
+90 D.I.A.T. Tumpu SPB 222 20
+91 D.LA.T. Kenanga SPB 227 10
+92 D.LA.T. Oi Toi SPB 228 15
+93 D.LA.T. Oi Toi SPB 234 22
+94 D.LA.T. Oi Toi SPB 238 10
+95 D.I.A.T. Nggembe SPB 240 20
+
+b Kab. Dompu 66 807
+
+1 D.LA.T. Ta'a DPW 001 10
+
+2 D.LA.T. Ta'a DPW 002 10
+
+3 D.LA.T. Ta'a DPW 003 10
+
+4D.LA.T.Ta'a DPW 004 10
+
+5 D.LA.T. Ta'a DPW 005 10
+
+6 D.LA.T. Ta'a DPW 006 10
+
+7 D.LA.T. Ta'a DPW 007 10
+
+8 D.I.A.T. Doro Peti SED 043 20
+
+9 D.LA.T. Adu SID 013 10
+10 D.LA.T. Lanci SID 015 8
+11 D.LA.T. Ta'a SID 026 8
+12 D.LA.T. Ta'a SID 027 8
+13 D.LA.T. Ta'a SID 028 9
+14 D.LA.T. Ta'a SID 029 11
+15 D.LA.T. Ta'a SID 030 9
+16 D.LA.T. Ta'a SID 031 8
+17 D.LA.T. Ta'a SID 032 10
+18 D.LA.T. Ta'a SID 033 10
+19 D.LA.T. Tolo Kalo SID 040 11
+20 D.I.A.T. Tolo Kalo SID 061 10
+21 D.LA.T. Tolo Kalo SID 062 10
+22 D.LA.T. Tolo Kalo SID 063 10
+23 D.LA.T. Tolo Kalo SID 064 7
+24 D.L.A.T. Tolo Kalo SID 065 10
+25 D.LA.T. Tolo Kalo SID 067 10
+26 D.I.A.T. Tolo Kalo SID 068 10
+27 D.LA.T. Tolo Kalo SID 069 10

@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+305 D.I. Selo 103
+306 D.I. Selogeni 10
+307 D.I. Seloresi 178
+308 D.I. Selungguh I 25
+309 D.I. Selungguh II 37
+310 D.I. Semangin 55
+311 D.I. Sembung 46
+312 D.I. Sempor 57
+313 D.I. Sendang 4
+314 D.I. Setro 15
+315 D.I. Sewaton 22
+316 D.I. Siasem 27
+317 D.I. Siduren 21
+318 D.I. Sigerot 29
+319 D.I. Siglonggong 78
+320 D.I. Sigruduk 63
+321 D.I. Sigug 30
+322 D.I. Sikepan 87
+323 D.I. Silap 108
+324 D.I. Sindumoyo 25
+325 D.I. Sinongko 14
+326 D.I. Sitalang 111
+327 D.I. Sobo teh
+328 D.I. Soko | 10
+329 D.I. Soko II 172
+330 D.I. Sono I 10
+331 D.I. Sono II 94
+332 D.I. Soongputri 870
+333 D.I. Srempang 226
+334 D.I. Suci 226
+335 D.I. Suden 10
+336 D.I. Suduk 78
+337 D.I. Sugihan 491
+338 D.I. Sulen 19
+339 D.I. Sulingan 44
+340 D.I. Sumber I 21
+341 D.I. Sumber II 27
+342 D.I. Sumur 10
+343 D.I. Sumurup 77
+344 D.I. Sunalon 24
+345 D.I. Sungsang 92
+346 D.I. Supit Urang 16
+347 D.I. Suruh 26
+348 D.I. Suruh II 102
+349 D.I. Suruhan 50
+350 D.I. Susukan 158
+351 D.I. Sutomo 190
+352 D.I. Talang 15
+353 D.I. Talun 66
+354 D.I. Tangi 96
+355 D.I. Tapan 16
+356 D.I. Tebon I 43
+357 D.I. Tebon II 50
+358 D.I. Teleng 73
+359 D.I. Temon 637
+360 D.I. Tengger 92
+361 D.I. Tirtosari 18
+362 D.I. Tlogo 15
+363 D.I. Tlupen 11
+364 D.I. Trangkang 70
+365 D.I. Trembesi 127
+#KANAN
+283 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+366 D.I. Tretes 55
+367 D.I. Truneng 50
+368 D.I. Tugu 11
+369 D.I. Tulakan 37
+370 D.I. Tulung 62
+371 D.I. Umbul 65
+372 D.I. Umbul rejo 32
+373 D.I. Waru I 28
+374 D.I. Waru II 89
+375 D.I. Warung 198
+376 D.I. Watu Gajah 129
+377 D.I. Watu Keluh 162
+378 D.I. Watugajah 154
+379 D.I. Watugede 167
+380 D.I. Watugombak 107
+381 D.I. Watukarung 31
+382 D.I. Watulembu 29
+383 D.I. Watupecah 12
+384 D.I. Widoro 20
+385 D.I. Wiroko 20
+386 D.I. Wt. Agung 111
+387 D.I. Wt. Lumbung 112
+388 D.I. Wungu 107
+389 D.I. Bulu II 39
+390 D.I. Gayam II 10
+391 D.I. Gayam III 10
+392 D.I. Gayam IV 24
+393 D.I. Gondang 11
+394 D.I. Klumpit II 31
+395 D.I. Klumpit III 12
+396 D.I. Pakel II 36
+397 D.I. Pakel III 11
+398 D.I. Pakel IV 36
+399 D.I. Pakel V 94
+400 D.I. Pelem 10
+401 D.I. Penggong II 105
+402 D.I. Ploso II 54
+403 D.I. Ploso IIII 89
+ac Kab. Wonosobo 705 21.050
+1 D.I. Aji 53
+2 D.I. Aji 11
+3 D.I. Aji Hilir 32
+4 D.I. Aji Hulu 34
+5 D.I. Aji I 20
+6 D.I. Aji II 20
+7 D.L Aji II 20
+8 D.I. Aji IV 24
+9 D.I. Aji Leler 11
+10 D.I. Aji Pagedangan 265
+11 D.I. Aji V 12
+12 D.I. Aji VI 37
+13 D.I. Aligon 10
+14 D.I. Ampo 19
+15 D.I. Ampobendo 37
+16 D.I. Anger 10
+17 D.I. Antap 16
+18 D.I. Antap 10
+19 D.I. Anyer 30
+20 D.I. Anyer 10
+21 D.I. Anyer Hilir 19

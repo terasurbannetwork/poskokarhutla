@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+377 D.I. Tlaga 16
+378 D.I. Tlaga 86
+379 D.I. Tlagasari 16
+380 D.I. Tlahap 64
+381 D.I. Traguman 12
+382 D.I. Tuk Gede 85
+383 D.I. Upih 120
+384 D.I. Wadas 14
+385 D.I. Wadasancol 178
+386 D.I. Wadasanom 40
+387 D.I. Walingi 42
+388 D.I. Wangangede 286
+389 D.I. Wangkelong 23
+390 D.I. Warinain 30
+391 D.I. Wates 12
+392 D.I. Wateus 12
+393 D.I. Watuganjel 13
+394 D.I. Watujaya 70
+395 D.I. Winangun 27
+396 D.I. Wuluh 14
+397 D.I. Wungkalbale 126
+398 D.I. Arus VIII 10
+399 D.I. Batur Sari 75
+400 D.I. Bojong Cengis 15
+401 D.I. Ciasem 25
+402 D.I. Ciberih 25
+403 D.I. Cigagak 40
+404 D.I. Cigandung 30
+405 D.I. Cigayam 75
+406 D.I. Cigedongan 40
+407 D.I. Cigunung 50
+408 D.I. Cijoho 50
+409 D.I. Cikarang 15
+410 D.I. Cikopeng 15
+411 D.I. Cilayu 20
+412 D.I. Cilibur 65
+413 D.I. Cimangu 25
+414 D.I. Cimaruyung 25
+415 D.I. Cipangwaraan 75
+416 D.I. Ciraja 75
+417 D.I. Cirendu 27
+418 D.I. Citara 75
+419 D.I. Citatah II 28
+420 D.I. Ciwalingi 50
+421 D.I. Crewet 18
+422 D.I. Curug Bayawak 50
+423 D.I. Dukuh Tengah 85
+424 D.I. Gempol 15
+425 D.I. Gendon 25
+426 D.I. Jangkar 50
+427 D.I. Jaya II 65
+428 D.I. Kalen Badak 16
+429 D.I. Kalen Gintung 15
+430 D.I. Kaligua 75
+431 D.I. Kalijurang 45
+432 D.I. Kedawung 57
+433 D.I. Kedung Upit 20
+434 D.I. Kubang 30
+435 D.I. Maribaya | # II 70
+436 D.I. Mlewong 40
+437 D.I. Monggor 50
+#KANAN
+915 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+438 D.I. Muara II 25
+439 D.I. Pawi 40
+440 D.I. Pendeh 40
+441 D.I. Persil 28
+442 D.I. Petujah 144
+443 D.I. Ranca Kole 10
+444 D.I. Randu Alas 40
+445 D.I. Sawah Gunung 50
+446 D.I. Sawah Jeruk 20
+447 D.I. Sengkol 240
+448 D.I. Slarang 30
+449 D.I. Subuh 50
+a Kab. Cilacap 702 21.745
+1 D.I. Cihandiung 17
+2 D.I. Cisurian 6
+3 D.I. Mungkal sengked 25
+4 D.I. Ailuar Il -V 6
+5 D.I. Arya 25
+6 D.I. Astana 6
+7 D.I. Awijajar 6
+8 D.I. Awiluar 25
+9 D.I. Babakan 140
+10 D.I. Babakan 45
+11 D.I. Balangkunang 25
+12 D.I. Baledana 15
+13 D.I. Balukbuk 137
+14 D.I. Banjarwaru 15
+15 D.I. Bantarmangu 17
+16 D.I. Banyumudal 15
+17 D.I. Barugbug 40
+18 D.I. Batukarikil 35
+19 D.I. Bd. Cibalimbing | 11
+20 D.I. Bd. Cibalimbing II 5
+21 D.I. Bd. Cibalim bing III 3
+22 D.I. Bd. Cibalimbing IV 3
+23 D.I. Bd. Cibalimbing V 3
+24 D.I. Bd. Cikubang IV 11
+25 D.I. Bd. Cikubang V 5
+26 D.I. Bd. Cipalasari | 5
+27 D.I. Bd. Cipalasari II 5
+28 D.I. Bd. Cipalasari III 5
+29 D.I. Bd. Cirateum 15
+30 D.I. Bd. Citalaga II 10
+31 D.I. Bd. Citalaga III 8
+32 D.I. Bd. Citalaga IV 10
+33 D.I. Bd. Citalaga Tengah 30
+34 D.I. Bd. Leuwigintung 30
+35 D.I. Bd. Mukal Prahu 6
+36 D.I. Bengkok 20
+37 D.I. Bingang 15
+38 D.I. Bingkeng 30
+39 D.I. Binuang 5
+40 D.I. Blisuk 5
+41 D.I. Bloksalam 5
+42 D.I. Bojong 40
+43 D.I. Bondol 10
+44 D.I. Bonghas 15
+45 D.I. Bontang 4
+46 D.I. Bowong 25
+47 D.I. Brujulan 30

@@ -1,0 +1,91 @@
+#TATA_LETAK satu-tabel lebar=2480
+549 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+145 D.L.A.T. Obor P - 016 10
+146 D.LA.T. Fatunries P - 019 10
+147 D.LA.T. Leuntolu P- 021 10
+148 D.LA.T. Umanen UMA - 013 3
+149 D.LA.T. Umanen UMA - 019 3
+150 D.LA.T. Umanen UMA - 020 3
+151 D.LA.T. Umanen UMA - 021 3
+152 D.LA.T. Umanen UMA - 024 2
+153 D.LA.T. Wederok WED - 044 3
+154 D.LA.T. Wederok WED - 045 3
+c Kab. Ende 20 209
+
+1 D.LA.T. Maukaro DDI - 011 15
+
+2 D.LA.T. Wolo Oja DFI-027 10
+
+3 D.LA.T. Wolo Oja DFI-028 10
+
+4 D.LA.T. Wolo Oja DFI-029 10
+
+5 D.LA.T. Maukaro DKI - 014 14
+
+6 D.L.A.T. Kota Baru DKI - 021 10
+
+7 D.LA.T. Kota Baru DKI - 022 10
+
+8 D.L.A.T. Kota Baru DKI - 023 15
+
+9 D.LA.T. Kota Baru DKI - 024 10
+10 D.LA.T. Mausambi DMI - 007 10
+11 D.LA.T. Alomelo DMI - 032 8
+12 D.LA.T. Keduboro DMI - 034 10
+13 D.LA.T. Mausambi DMI - 035 10
+14 D.LA.T. Aemau DMI - 036 6
+15 D.LA.T. Keduboro DMI - 038 10
+16 D.LA.T. Aemau DMI - 039 6
+17 D.LA.T. Maukaro DMUI - 004 15
+18 D.LA.T. Ranakolo DRI - 025 10
+19 D.I.A.T. Mukusaki DWI - 031 10
+20 D.I.A.T. Aiwora ETW - 004 10
+d Kab. Flores Timur 13 148
+
+1 D.ILA.T. Adebang FAI - 015 10
+
+2 D.LA.T. Adebang FAI - 016 17
+
+3 D.LA.T. Bandona FBI - 028 8
+
+4 D.LA.T. Bandona FBI - 029 8
+
+5 D.LA.T. Ebak FEI - 018 15
+
+6 D.LA.T. Adebong FEI - 020 17
+
+7 D.LA.T. Badu FII- 077 10
+
+8 D.LA.T. Wailangging FLI - 023 13
+
+9 D.I.A.T. Boru FPI - 012 10
+10 D.LA.T. Boru FPI - 021 10
+11 D.LA.T. Boru FPI - 022 10
+12 D.LA.T. Kiwang Ona FWI - 026 10
+13 D.LA.T. Kiwang Ona FWI - 027 10
+e Kab. Kupana 575 3.218
+
+1 D.LA.T. Noilbaki KEW - 025 12
+
+2 D.LA.T. Bello (Sikumana) KEW - 024 14
+
+3 D.LA.T. Airkom III OTW - 001 10
+
+4 D.LA.T. Dalam Komi-Babau OPW - 005 10
+
+5 D.LA.T. Dalam Kom-Babau OPW - 007 16
+
+6 D.I.A.T. ORA-Bipolo I OTW - 008 10
+
+7 D.LA.T. Taupanaf-Bipolo II OTW - 009 10
+
+8 D.I.A.T. Naitimu-Bipolo PBI-128 10
+
+9 D.LA.T. Dusunlll-Bipolo PBI- 141 11
+10 D.ILA.T. Nunkurus PBI - 159 10
+11 D.LA.T. Bipolo PBI - 176 10
+12 D.LA.T. Airkom IV OEW - 005 10

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+98 D.I. Sungai Payang 80
+99 D.I. Sungai Seluang 150
+100 D.I. Tani Aman 300
+101 D.I. Tani Bhakti 200
+102 D.I. Tanjung Batu 200
+103 D.I. Tanjung Harapan 100
+104 D.I. Tanjung Laung 50
+105 D.I. Teluk Muda 100
+106 D.I. Teratak 75
+107 D.I. Timbau 150
+108 D.I. Trans SP. IV 150
+109 D.I. Trans SP. VA 100
+110 D.I. Trans SP. VB 100
+111 D.I. Ukung 200
+112 D.I. Semangkok 277
+113 D.I. Kota Bangun III 300
+114 D.I. Rempanga II Km. 5 200
+115 D.I. Sungai Merdeka 350
+116 D.I. Sidomulyo A 200
+117 D.I. Sidomulyo B 200
+118 D.I. Bukit Raya | 350
+119 D.I. Tanah Datar 200
+120 D.I. Suka Maju 160
+121 D.I. Kota Bangun II 120
+d Kab. Kutai Timur 74 14.074
+1 D.I. Benua baru 38
+2 D.I. Karangan Sebrang 200
+3 D.I. Long Nah 260
+4 D.I. Long Pejeng 50
+5 D.I. Manubar 200
+6 D.I. Marukangan 215
+7 D.I. Muara Bengkal Ulu 182
+8 D.I. Rantau Pulung 185
+9 D.I. Susuk Dalam 200
+10 D.I. Susuk Luar 400
+11 D.I. Bangun Jaya 590
+12 D.I. Batu Lepok 305
+13 D.I. Batu Redi 32
+14 D.I. Bukit Harapan 141
+15 D.I. Bukit Permata 130
+16 D.I. Bumi Etam 70
+17 D.I. Bumi Jaya | 70
+18 D.I. Bumi Jaya II 40
+19 D.I. Bumi Rapak 35
+20 D.I. Bumi Sejahtera 140
+21 D.I. Citra Manunggal Jaya 292
+22 D.I. Dabeg 48
+23 D.I. Danau Redan 200
+24 D.I. Jabdan 39
+25 D.I. Jukaya 520
+26 D.I. Kali Orang 700
+27 D.I. Kandolo | 170
+28 D.I. Kandolo II 255
+29 D.I. Kandungan Jaya 72
+30 D.I. Karangan Dalam 64
+31 D.I. Karangan Ilir 120
+32 D.I. Kebon Agung 152
+33 D.I. Kelinjau Ilir 100
+34 D.I. Kelinjau Ulu 204
+35 D.I. Kerayaan 130
+#KANAN
+412
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+36 D.I. Makmur Jaya 735
+37 D.I. Maloy 238
+38 D.I. Manunggal Jaya 206
+39 D.I. Margo Mulyo 215
+40 D.I. Martadinata 113
+41 D.I. Mata Air 20
+42 D.I. Mawai Indah 60
+43 D.I. Miau Baru 764
+44 D.I. Muara Pantun 62
+45 D.I. Muara Wahau 100
+46 D.I. Mukti Jaya 95
+47 D.I. Mukti Lestari 368
+48 D.I. Mukti Utama 100
+49 D.I. Perupuk 200
+50 D.I. Pulung Sari 126
+51 D.I. Rantau Sentosa 300
+52 D.I. Sangatta Selatan 150
+53 D.I. Sangatta Utara 110
+54 D.I. Sangkima 233
+55 D.I. Segoy Makmur 164
+56 D.I. Selangkau 25
+57 D.I. Sepaso Barat 105
+58 D.I. Sepaso Selatan | 350
+59 D.I. Sepaso Selatan II 350
+60 D.I. Singa Gembara 120
+61 D.I. Sinaa Geweh 174
+62 D.I. Suka Damai 300
+63 D.I. Suka Maju 110
+64 D.I. Suka Makmur 100
+65 D.I. Suka Rahmat 13
+66 D.I. Sumber Agung 90
+67 D.I. Sumber Sari 477
+68 D.I. Swarga Bara 140
+69 D.I. Tadoan 30
+70 D.I. Tanjung Labu 60
+71 D.I. Teluk Lingga 80
+72 D.I. Tepian Indah 125
+73 D.I. Tepian Langsat 500
+74 D.I. Tepian Makmur 17
+e Kab. Paser 27 9.752
+1 D.I. Bekoso | 100
+2 D.I. Bekoso II 190
+3 D.I. Bekoso III 120
+4 D.I. Bente Tualan 600
+5 D.I. Damit I 250
+6 D.I. Damit II 600
+7 D.I. Janju 100
+8 D.I. Mendik 350
+9 D.I. Muara Pias 120
+10 D.I. Munggu 500
+11 D.I. Panemban 375
+12 D.I. Sangkuriman 167
+13 D.I. Sempulang 650
+14 D.I. Tanah Periuk 250
+15 D.I. Mendik Karya 250
+16 D.I. Olong Pinang 150
+17 D.I. Pabencengan 250
+18 D.I. Padang Jaya 80
+19 D.I. Pepara 450
+20 D.I. Pondong Suliliran 525

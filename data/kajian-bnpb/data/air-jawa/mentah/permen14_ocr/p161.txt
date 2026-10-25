@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+96 D.I. Situ Babakan 13
+97 D.I. Situ Babakan 52
+98 D.I. Situ Bala 305
+99 D.I. Situ Cicau Cigadung 10
+100 D.I. Situ Ciriung 2
+101 D.I. Situ Gunung Putri 11
+102 D.I. Situ Iwul 58
+103 D.I. Situ Jampang 97
+104 D.I. Situ Jati 5
+105 D.I. Situ Kemang 115
+106 D.I. Situ Lengkong Barang 71
+107 D.I. Situ Rawa Jejed | 15
+108 D.I. Situ Tunggilis 178
+109 D.I. Teluk Pinang 92
+110 D.I. Toblongan 126
+111 D.I. Alinan 150
+112 D.I. Alipah 37
+113 D.I. Angke II 38
+114 D.I. Angke III 44
+115 D.I. Angke IX 25
+116 D.I. Anyar/Sukajadi 30
+117 D.I. Arca 15
+118 D.I. Arnen 63
+119 D.I. Awilega 10
+120 D.I. Babakan 25
+121 D.I. Babakan Awi Lega 10
+122 D.I. Babakan Gobang 54
+123 D.I. Babakan Nangela 15
+124 D.I. Babakan Ngantai 5
+125 D.I. Babakan Sukawayahna 50
+126 D.I. Babakan Tasik 15
+127 D.I. Banar 70
+128 D.I. Banjar Waru 30
+129 D.I. Barengkok 79
+130 D.I. Barengkok 70
+131 D.I. Baru Bolang 40
+132 D.I. Baru Gebog 10
+133 D.I. Baru Sirem 15
+134 D.I. Batu Karamat 30
+135 D.I. Batu Kembar 35
+136 D.I. Batusela 26
+137 D.I. Beberaan 10
+138 D.I. Bengle 34
+139 D.I. Bentang Atas 29
+140 D.I. Bentang Bawah 36
+141 D.I. Binong | 25
+142 D.I. Binong II 60
+143 D.I. Binong III 20
+144 D.I. Bitung 18
+145 D.I. Blok Bendung 10
+146 D.I. Blok Coblong 20
+147 D.I. Blok Kaum 18
+148 D.I. Blok Kemang 20
+149 D.I. Blok Landak 10
+150 D.I. Bobojong 40
+151 D.I. Bojong Kaso 25
+152 D.I. Bojong Koneng 27
+153 D.I. Bojong Nyocok 35
+154 D.I. Bojong Sari 10
+155 D.I. Bolang 20
+156 D.I. Bongas 60
+#KANAN
+- 1015, No.638
+161 ?
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+157 D.I. Budin 55
+158 D.I. Cadas Gantung 30
+159 D.I. Cadas Leueur I 15
+160 D.I. Cadas Leueur II 45
+161 D.I. Caringin | 30
+162 D.I. Caringin II 30
+163 D.I. Cemplang 37
+164 D.I. Cengal 5
+165 D.I. Ceuli Badak 18
+166 D.I. Ceuri 60
+167 D.I. Ciacan 25
+168 D.I. Ciangsana 10
+169 D.I. Ciangsana 37
+170 D.I. Cianiwung 12
+171 D.I. Cianten | 30
+172 D.I. Cianten II 40
+173 D.I. Cianyar 57
+174 D.I. Ciaruteun 21
+175 D.I. Ciasin I 6
+176 D.I. Ciasin II 10
+177 D.I. Ciasmara 50
+178 D.I. Ciastra 57
+179 D.I. Ciater 35
+180 D.I. Ciawi Tali 10
+181 D.I. Ciawitali 30
+182 D.I. Cibadag 25
+183 D.I. Cibadak | 42
+184 D.I. Cibadak II 36
+185 D.I. Cibadak III 25
+186 D.I. Cibadak IV 35
+187 D.I. Cibadak V 30
+188 D.I. Cibadud 25
+189 D.I. Cibadud 26
+190 D.I. Cibakatul 15
+191 D.I. Cibalandong 30
+192 D.I. Cibalandongan 37
+193 D.I. Cibangke 20
+194 D.I. Cibanon 324
+195 D.I. Cibanteng II 45
+196 D.I. Cibaregbeg 68
+197 D.I. Cibaregbeg 25
+198 D.I. Cibatu Hideung 70
+199 D.I. Cibaturuyuk 17
+200 D.I. Cibau 15
+201 D.I. Cibeas 10
+202 D.I. Cibeber I 10
+203 D.I. Cibeber I 30
+204 D.I. Cibeber II 4
+205 D.I. Cibeet Bedahan 15
+206 D.I. Cibeet Cigoha 95
+207 D.I. Cibeet Cikopo 15
+208 D.I. Cibeji 45
+209 D.I. Cibenda 92
+210 D.I. Cibening 40
+211 D.I. Ciberani 10
+212 D.I. Cibeundeur/Leuwi Gablog 88
+213 D.I. Cibeungbleu 15
+214 D.I. Cibeureum 20
+215 D.I. Cibeureum 15
+216 D.I. Cibeureum 20
+217 D.I. Cibeureum 18

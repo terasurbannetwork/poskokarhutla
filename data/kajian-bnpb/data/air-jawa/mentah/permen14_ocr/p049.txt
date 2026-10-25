@@ -1,0 +1,93 @@
+#TATA_LETAK satu-tabel lebar=2480
+49 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+e Kab. Lombok Timur
+
+1 D.I. Belanting 1.300
+2 D.I. Kali Desa Kompleks 1.022
+3 D.I. Marongge Kompleks 1.246
+4 D.I. Sakra 1.859
+5 D.I. Sambelia 1.666
+6 D.I. Tojang Kompleks 1.014
+f Kab. Lombok Utara
+
+1 D.I. Bagik Kembar 1.305
+2 D.I. Santong 1.807
+g Kab. Sumbawa
+
+1 D.I. Beringin Sila 2.400
+2 D.I. Buer Komplek 1.639
+3 D.I. Embung Gapit 1.300
+4 D.I. Marente Kompleks 1.058
+5 D.I. Maronge/Tiu Kulit 1.877
+6 D.I. Pelara 2.743
+7 D.I. Pungkit 1.340
+8 D.I. Semangi 1.232
+h Kab. Sumbawa Barat
+
+1 D.I. Elang Desa 1.300
+2 D.I. Kalimantong | 1.550
+3 D.I. Kalimantong II 2.500
+4 D.I. Plampo'o 1.060
+
+XVII PROVINSI NUSA TENGGARA TIMUR 38 55.656
+
+a Kab. Belu
+
+1 D.I. Fatu Besi 1.650
+2 D.I. Maubusa 1.350
+3 D.I. Obor 1.815
+b Kab. Flores Timur
+
+1 D.I. Konga 1.100
+2 D.I. Waikelak 1.080
+3 D.I. Waiwadan 1.450
+c Kab. Kupang
+
+1 D.I. Enorain 1.100
+2 D.I. Kolidoki 1.071
+3 D.I. Netenmanu 1.350
+d Kab. Lembata
+
+1 D.I. Wai Matan Boto 1.350
+e Kab. Malaka
+
+1 D.I. Alas 1.650
+2 D.I. Weliman 1.000
+f Kab. Manggarai
+
+1 D.I. Cancar 2.500
+2 D.I. Golowoi 1.500
+3 D.I. Satar Lenda 1.525
+4 D.I. Wae Ces 1-4 2.750
+g Kab. Manggarai Barat
+
+1 D.I. Wae Ganggang 1.281
+2 D.I. Wae Paku 1.050
+3 D.I. Wae Tiwo Lawo 1.200
+4 D.I. Waeracang 1.200
+h Kab. Manggarai Timur
+
+1 D.I. Wae Mokel |, II 1.007
+2 D.I. Waerana 1.022
+i Kab. Nagekeo
+
+1 D.I. Malawitu 1.000
+j Kab. Ngada
+
+1 D.I. Ganggong 1.000
+2 D.I. Luwurweton 1.000
+3 D.I. Malatawa 1.344
+4 D.I. Nuakua 1.200
+k Kab. Rote Ndao
+
+1 D.I. Manubulu 1.250
+| Kab. Sikka
+
+1 D.I. Kolesia 1.250
+m Kab. Sumba Barat
+
+1 D.I. Loli 2.390
+2 D.I. Wanokaka 2.653

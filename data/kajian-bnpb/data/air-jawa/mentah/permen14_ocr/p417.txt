@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+33 D.I. Prima 300
+34 D.I. Puncak 50
+35 D.I. Satria 130
+36 D.I. Serayu 250
+37 D.I. Serikat Tani | 75
+38 D.I. Serikat Tani II 4
+39 D.I. Sidodadi 200
+40 D.I. Sidomukti (Motobuloo Kiki) 200
+41 D.I. Tabongo (llowotia) 82
+42 D.I. Talumopatu 100
+43 D.I. Tenilo 200
+44 D.I. Tenilo (Marisa III) 216
+45 D.I. Toidito 185
+46 D.I. Tonala 250
+47 D.I. Tunggulo 339
+48 D.I. Yosonegoro (Marisa II) 200
+d Kab. Gorontalo Utara 36 5.567
+1 D.I. Didingga 641
+2 D.I. Leboto 142
+3 D.I. Posso 310
+4 D.I. Pulahenti 411
+5 D.I. Soklat 515
+6 D.I. Abati | 125
+7 D.I. Abati II 150
+8 D.I. Bohulo 120
+9 D.I. Bualemo 11
+10 D.I. Buata 150
+11 D.I. Bubode 150
+12 D.I. Buloila Kanan 190
+13 D.I. Buloila Kiri 100
+14 D.I. Deme | 200
+15 D.I. Deme II 80
+16 D.I. Di Pulahenti II 145
+17 D.I. Dulukapa 200
+18 D.I. Ilangata 80
+19 D.I. Imana Tengah 37
+20 D.I. Imana Ulu 165
+21 D.I. Kasia 15
+22 D.I. Kota Jin 10
+23 D.I. Mebongo 195
+24 D.I. Molingkapoto 130
+25 D.I. Monano 250
+26 D.I. Monggupo 40
+27 D.I. Mootinelo 50
+28 D.I. Omulo 80
+29 D.I. Omuto II 75
+30 D.I. Pinontoyongan 75
+31 D.I. Sigaso 185
+32 D.I. Tenilo 125
+33 D.I. Tolango 65
+34 D.I. Tolongio 150
+35 D.I. Tudi 50
+36 D.I. Wubudu 150
+e Kab. Pohuwato 12 1.588
+1 D.I. Karangetan 234
+2 D.I. Bunuyo 150
+3 D.I. Iloheluma 142
+4 D.I. Ilota 170
+5 D.I. Malango 15
+#KANAN
+A17 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+6 D.I. Manunggal Karya 50
+7 D.I. Marisa VI 200
+8 D.I. Molosipat 114
+9 D.I. Panca Karsa | 40
+10 D.I. Panca Karsa II 15
+11 D.I. Sari Murni 55
+12 D.I. Taluditi 403
+xxyi PROVINSI A45 R0 134
+DULAYYESI IENYAN
+
+a Kab. Banaaai 37 10.693
+1 D.I Bahulolok 208
+2 D.I Bantayan 375
+3 D.I Baya 329
+4 D.I Hek 874
+5 D.I Kumpi 941
+6 D.I Lamala/Labotan 211
+7 D.I Lomba 415
+8 D.I Longkoga 185
+9 D.I Pohi 135
+10 D.I Rata 703
+11 D.I Roa 212
+12 D.I Saleabon 220
+13 D.I Samaku 450
+14 D.I Siuna 629
+15 D.I Tolisu Sindang 823
+16 D.I Topo 392
+17 D.I Waru Kiri 268
+18 D.I Bahulolok Atas 150
+19 D.I Bumi Harapan 50
+20 D.I Kembang Mertha 75
+21 D.I Korui Atas 75
+22 D.I Longkoga Kanan 100
+23 D.I Mayayap 500
+24 D.I Minangandala 204
+25 D.I Muangi 55
+26 D.I Nintu 193
+27 D.I Piondo 296
+28 D.I Ranga-Ranga 45
+29 D.I Rantau Jaya 70
+30 D.I Salu Boko-Boko 380
+31 D.I Sosokaon 100
+32 D.I Tikupon A/B 134
+33 D.I Toiba 325
+34 D.I Tomeang 110
+35 D.I Tomelongsong 157
+36 D.I Uwelolu 105
+37 D.I Wunut 198
+b Kab. Banaaai Kebulauan 8 1.328
+1 D.I. Lalong 127
+2 D.I. Lokon 100
+3 D.I. Luksagu 107
+4 D.I. Ponding-Ponding 100
+5 D.I. Tatakalai 345
+6 D.I. Tatakalai Atas 198
+7 D.I. Tatal 251
+8 D.I. Tinangkung 100
+c Kab. Buol 32 3.687
+1 D.I. Lakea 850

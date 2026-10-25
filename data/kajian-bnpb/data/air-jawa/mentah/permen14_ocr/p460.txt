@@ -1,0 +1,106 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 :
+460
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+36 D.I.R. Rantau Panjang 269
+37 D.I.R. Serasan Jaya 230
+38 D.I.R. Sereka 195
+39 D.I.R. Soak Baru 220
+40 D.I.R. Sri Gunung 500
+41 D.I.R. Sugi Waras 245
+42 D.I.R. Sugiraya 150
+43 D.I.R. Suka Maju 750
+44 D.I.R. Sukarami 310
+45 D.I.R. Sungai Lilin 400
+46 D.I.R. Supat 200
+47 D.I.R. Tanjung Agung 445
+48 D.I.R. Tanjung Durian 195
+49 D.I.R. Tanjung Raya 150
+50 D.I.R. Teluk 350
+51 D.I.R. Teluk Kijing 800
+52 D.I.R. Terusan 260
+53 D.I.R. Toman 90
+54 D.I.R. Ulak Embacang 200
+55 D.I.R. Ulak Pacah 317
+56 D.I.R. Ulak Tberau 406
+
+d Kab. Oaan Ilir 50 14.704
+
+1 D.I.R. Ds. Tanjung Raja 62
+
+2 D.I.R. Ds. Penyandingan 70
+
+3 D.I.R. Ds. Tanjung Balai Lama 73
+
+4 D.I.R. Ds. Tanjung Raja Barat 74
+
+5 D.I.R. Ds. Sukapindah 105
+
+6 D.I.R. Ds. Tanjung Agas 112
+
+7 D.I.R. Ds. Ulak Kerbau Lama 112
+
+8 D.I.R. Ds. Tanjung Raja Utara 126
+
+9 D.I.R. Ds. Sukaraja Lama 140
+10 D.I.R. Ds. Tanjung Balai Baru 140
+11 D.I.R. Ds. Ulak Kerbau Baru 140
+12 D.I.R. Lbk. Tanjung Gelam 140
+13 D.I.R. Lbk. Tanjung Lubuk 161
+14 D.I.R. Lbk. Lubuk Sakti 175
+15 D.I.R. Lbk. Mandi Angin 182
+16 D.I.R. Lbk. Ulak Banding 182
+17 D.I.R. Ds. Sukaraja Baru 192
+18 D.I.R. Ds. Talang Dukun 193
+19 D.I.R. Lbk. Sakatiga Seberang 193
+20 D.I.R. Ds. Jaga Raja 210
+21 D.I.R. Ds. Sri Jabo 210
+22 D.I.R. Ds. Tg. Temiang 210
+23 D.I.R. Lbk. Ulak Bedil 224
+24 D.I.R. Ds. Ketapang 228
+25 D.I.R. Lbk. Arisan Gading 230
+26 D.I.R. Ds. Sridalam 231
+27 D.I.R. Ds. Jagolana 235
+28 D.I.R. Lbk. Penyandingan 242
+29 D.I.R. Ds. Sejangko 245
+30 D.I.R. Ds. Siring Alam 249
+31 D.I.R. Ds. Kerinjing 256
+32 D.I.R. Lbk. Tebing Gerinting 263
+33 D.I.R. Ds. Kota Daro | 280
+34 D.I.R. Ds. Tg. Serian 288
+35 D.I.R. Lbk. Ulak Segelang 305
+36 D.I.R. Ds. Kota Daro II 315
+37 D.I.R. Ds. Sei Pinang | 315
+38 D.I.R. Lbk. Soak Batu 369
+39 D.I.R. Lbk. Tanjung Agung 375
+40 D.I.R. Ds. Sei Pinang II 392
+41 D.I.R. Ds. Rt. Panjang 420
+42 D.I.R. Lbk. Umbai Sei Rotan 455
+43 D.I.R. Lbk. Sakatiga 592
+44 D.I.R. Ds. Sei Pinang III 595
+45 D.I.R. Lbk. Sudimampir 595
+46 D.I.R. Lbk. Talang Aur 595
+47 D.I.R. Lbk. Muara Penimbung 613
+48 D.I.R. Indralaya 840
+49 D.I.R. Sei Rambutan 840
+50 D.I.R. Lbk. Tanjung Sejaro 921
+
+e Kab. Oaan Komerina Ilir 3 1.019
+
+1 D.I.R. Terentang 140
+
+2 D.I.R. Sukaraja 179
+
+3 D.I.R. Sungai Sodong 700
+
+f Kab. Oaan Komerina Ulu Timur 1 700
+
+1 D.I.R. Adumanis 700
+
+a Kota. Palembana 2 341
+
+1 D.I.R. Sekojo 288
+
+2 D.I.R. Sungai Putat 53

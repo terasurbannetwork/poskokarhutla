@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 476
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+25 D.I.R. Setiung 155
+26 D.I.R. Tabat Lasung 225
+27 D.I.R. Tabat Rantau Panjang Hilir 80
+28 D.I.R. Tanggul Lasung 350
+
+i Kab. Tanah Laut 83 16.878
+
+1 D.I.R. Ambungan 99
+
+2 D.I.R. Asam-Asam 39
+
+3 D.I.R. Atu-Atu 50
+
+4 D.I.R. Awang Makmur 264
+
+5 D.I.R. Banua Raya 73
+
+6 D.I.R. Batakan 523
+
+7 D.I.R. Bati-Bati 97
+
+8 D.I.R. Bati-Bati Tanggul 134
+
+9 D.I.R. Bati-Bati Ujung 73
+10 D.I.R. Batilai 37
+11 D.I.R. Batu Tungku 322
+12 D.I.R. Bawah Layung 245
+13 D.I.R. Bentok Tamb. Batung 49
+14 D.I.R. Bingkulu | dan II 137
+15 D.I.R. Bumi Harapan 287
+16 D.I.R. Danau Besar 32
+17 D.I.R. Danau Undang 151
+18 D.I.R. Guntung Besar 198
+19 D.I.R. Gunung Makmur Rt. 4 Rawa Gebang 111
+20 D.I.R. Gunung Makmur Sei Kembang 37
+21 D.I.R. Gunung Raja 107
+22 D.I.R. Handil Babirik 358
+23 D.I.R. Handil Birayang Atas 824
+24 D.I.R. Handil Birayang Bawah 605
+25 D.I.R. Handil Gayam 475
+26 D.I.R. Handil Maluka 448
+27 D.I.R. Handil Negara 490
+28 D.I.R. Handil Rantau 537
+29 D.I.R. Handil Suruk 717
+30 D.I.R. Hutan Kintap 33
+31 D.I.R. Imban 24
+32 D.I.R. Kait-Kait Baru 36
+33 D.I.R. Kait-Kait Lama 61
+34 D.I.R. Kali Besar 572
+35 D.I.R. Kandangan Baru 107
+36 D.I.R. Kandangan Lama 97
+37 D.I.R. Karang Taruna 25
+38 D.I.R. Kayu Abang 99
+39 D.I.R. Kebun Raya 30
+40 D.I.R. Kintap Kecil 17
+41 D.I.R. Kintap Lama 59
+42 D.I.R. Kuala Tambangan 17
+43 D.I.R. Kudamba 33
+44 D.I.R. Kurau 147
+45 D.I.R. Kurau Utara 358
+46 D.I.R. Labuan Amas 627
+47 D.I.R. Liang Anggang 512
+48 D.I.R. Malaka Baulin 421
+49 D.I.R. Martadah 69
+50 D.I.R. Mekar Sari 15
+51 D.I.R. Pabahanan 74
+52 D.I.R. Padang Luas 612
+53 D.I.R. Pagatan Besar 117
+54 D.I.R. Pamanaran Angsau 44
+55 D.I.R. Pandahan 24

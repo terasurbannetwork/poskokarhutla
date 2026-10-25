@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+334 D.I. Cibayawak 45
+335 D.I. Ciantara 47
+336 D.I. Cikadu Guling 32
+337 D.I. Cikalidin 52
+338 D.I. Cibalageudah 30
+339 D.I. Cibangkonol 33
+340 D.I. Citamaga 29
+341 D.I. Situ Gonggong 29
+342 D.I. Ps.Pare/Cikeubang 26
+343 D.I. Cigendis 33
+344 D.I. Pasir Pare 35
+345 D.I. Blok Kadutomo 36
+346 D.I. Cihalimun 62
+347 D.I. Cikedal 284
+348 D.I. Cidahu Girang 137
+349 D.I. Cidahu Hilir 81
+350 D.I. Citumenggung 37
+351 D.I. Cipatenggang 49
+352 D.I. Cigumerut 40
+353 D.I. Cisaat 3
+354 D.I. Cisaid 30
+355 D.I. Situ Gonggong 49
+356 D.I. Cipametung 49
+357 D.I. Ciangga 172
+358 D.I. Cigentang 42
+359 D.I. Cibojong Kakak 184
+360 D.I. Cilebak Cau 59
+361 D.I. Leuwi Kored 201
+362 D.I. Cirincang 225
+363 D.I. Cikadu Cibahan Pasir 32
+364 D.I. Cikadu Sireum 89
+365 D.I. Cikadu Beureum 22
+366 D.I. Cilembur III 32
+367 D.I. Cilebak 110
+368 D.I. Cicuak 13
+369 D.I. Cicampurak 13
+370 D.I. Cigulusur 33
+371 D.I. Cielor 105
+372 D.I. Cisajid 52
+373 D.I. Ciwates 22
+374 D.I. Cigodag 22
+375 D.I. Cilembur Situ 66
+376 D.I. Cigodag 52
+377 D.I. Cinageung 70
+378 D.I. Cibentrang/Citengah 261
+379 D.I. Cibakul 136
+380 D.I. Cimala 89
+381 D.I. Cimala | 198
+382 D.I. Cigoliti Karet 26
+383 D.I. Ciselapraya 160
+384 D.I. Ciduta 89
+385 D.I. Cijaebah 109
+386 D.I. Cibahan Pasir 66
+387 D.I. Ciawi Layeus 30
+388 D.I. Cibentung 15
+389 D.I. Citangkolo 60
+390 D.I. Cibareong 35
+391 D.I. Cikalapa 27
+392 D.I. Cibotung 64
+393 D.I. Leuwi Handan 330
+394 D.I. Ciambia 10
+#KANAN
+151 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+395 D.I. Cipulo 45
+396 D.I. Cikijimal 6
+397 D.I. Cisaimbang 45
+398 D.I. Citegal 49
+399 D.I. Citaman 235
+400 D.I. Cirambieun 36
+401 D.I. Cisurog 99
+402 D.I. Cibendungan 42
+403 D.I. Ciranca Bulan 42
+404 D.I. Cibanyu Mekar 49
+405 D.I. Cimuruy 36
+406 D.I. Curug Antap 25
+407 D.I. Cibuntu 26
+408 D.I. Ciweru 10
+409 D.I. Curug Tilu 42
+410 D.I. Ciranca Teureup 53
+411 D.I. Ciwates 26
+412 D.I. Cisukma 160
+413 D.I. Citajur 420
+414 D.I. Ciraraan 45
+415 D.I. Cibenda 44
+416 D.I. Cilampir 66
+417 D.I. Ciawi Situ 52
+418 D.I. Ciranca Buaya 36
+419 D.I. Cicarita 13
+420 D.I. Citumenggung 19
+421 D.I. Cibeureum 19
+422 D.I. Leuwi Piring 49
+423 D.I. Cicurug 42
+424 D.I. Ciherang 26
+425 D.I. Cigeunggelang 40
+426 D.I. Cipamuguan 40
+427 D.I. Cilebak Ceri 22
+428 D.I. Cigeureuwek 35
+429 D.I. Cikadu Buang 10
+430 D.I. Cipasabeutan 10
+431 D.I. Cileuning 11
+432 D.I. Ciranca Bulan 11
+433 D.I. Cikidul 26
+434 D.I. Cisukanagara 26
+435 D.I. Cicarita 23
+436 D.I. Cisukajadi 23
+437 D.I. Cipangsing 9
+438 D.I. Cikala II 10
+439 D.I. Citambakan 39
+440 D.I. Cikali Mati 44
+441 D.I. Situ Kiaksana 19
+442 D.I. Cikisiman 73
+443 D.I. Cipeutey 39
+444 D.I. Cisema 39
+445 D.I. Cibarat 32
+446 D.I. Cisumur Laban 32
+447 D.I. Cihaji 49
+448 D.I. Bojong Konang 98
+449 D.I. Cijeujing 45
+450 D.I. Cipinang 24
+451 D.I. Cidangdeur 23
+452 D.I. Cinyawana 32
+453 D.I. Ciliang Landak 32
+454 D.I. Citeureup | 56
+455 D.I. Leuwi Karang 66

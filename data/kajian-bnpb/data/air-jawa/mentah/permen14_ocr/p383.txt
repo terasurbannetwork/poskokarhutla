@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Liabeke 5
+84 D.I. Ndenawali 40
+85 D.I. Nduaria 20
+86 D.I. Nggesa 50
+87 D.I. Nio Sanggo 100
+88 D.I. Nuamuri 45
+89 D.I. Nuaone 17
+90 D.I. Ramanelo 10
+91 D.I. Sokonggonde 100
+92 D.I. Sokoria 100
+93 D.I. Tenda/Ratebata 5
+94 D.I. Wologai 100
+d Kab. Flores Timur 20 1.932
+1 D.I. Ariona 50
+2 D.I. Bakaraha 50
+3 D.I. Bama 30
+4 D.I. Bama II 15
+5 D.I. Beligi 150
+6 D.I. Binga 75
+7 D.I. Lewolaga 21
+8 D.I. Waibelen 50
+9 D.I. Waiburak 50
+10 D.I. Waigowa 226
+11 D.I. Waijole 10
+12 D.I. Waikelak (Bendona) 50
+13 D.I. Wailolong 50
+14 D.I. Waipadak 50
+15 D.I. Wodong 75
+16 D.I. Kawela 300
+17 D.I. Pledo 300
+18 D.I. Waiboleng 200
+19 D.I. Waidang 30
+20 D.I. Wainili 150
+e Kab. Kupana 129 14.528
+1 D.I. Aeraomanu 175
+2 D.I. Aerbauk 250
+3 D.I. Barkey 250
+4 D.I. Baumata 80
+5 D.I. Benu 40
+6 D.I. Binatun 98
+7 D.I. Bokong Bijaisahan 52
+8 D.I. Bokong Nainoel 50
+9 D.I. Camplong 135
+10 D.I. Dalam Kawat 50
+11 D.I. Enaboni 47
+12 D.I. Fatuhaken 250
+13 D.I. Fatumuti 120
+14 D.I. Fuabonak 75
+15 D.I. Haeklutu 75
+16 D.I. Harapan Baru 50
+17 D.I. Huekael 60
+18 D.I. Kabunono 150
+19 D.I. Kaerane | 150
+20 D.I. Kaerane II 60
+21 D.I. Kauniki 110
+22 D.I. Kenan 112
+23 D.I. Kifu 80
+24 D.I. Kuni 40
+25 D.I. Lolonoak 45
+#KANAN
+383 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+26 D.I. Lukman Timur 160
+27 D.I. Merbaun 100
+28 D.I. Merdeka/Babau 120
+29 D.I. Naibonat 165
+30 D.I. Naiheli 90
+31 D.I. Nambulesi 60
+32 D.I. Namodale 150
+33 D.I. Nausaf 100
+34 D.I. Neonbaun 250
+35 D.I. Nggalana 220
+36 D.I. Nimaf 50
+37 D.I. Noekele 100
+38 D.I. Noelmina 60
+39 D.I. Nonbesi 295
+40 D.I. Nunfalo 80
+41 D.I. Nunsono 60
+42 D.I. Nuntonok 40
+43 D.I. Oeboboa 100
+44 D.I. Oehani 75
+45 D.I. Oeletsala 50
+46 D.I. Oellomin 50
+47 D.I. Oelnaimuti 75
+48 D.I. Oelomin 50
+49 D.I. Oemoro 530
+50 D.I. Oenao 225
+51 D.I. Oenesu 110
+52 D.I. Oenunu 175
+53 D.I. Oesena 85
+54 D.I. Oesusu 80
+55 D.I. Ohaem/Naipena 33
+56 D.I. Olio 365
+57 D.I. Pane 300
+58 D.I. Panfolok 50
+59 D.I. Perancang 250
+60 D.I. Pitae 75
+61 D.I. Puel II 125
+62 D.I. Pulutie 300
+63 D.I. Puni 110
+64 D.I. Puru 100
+65 D.I. Suva 300
+66 D.I. Tanloko 110
+67 D.I. Teres 60
+68 D.I. Tuahanat 68
+69 D.I. Tuapisa 410
+70 D.I. Tuatuka 75
+71 D.I. Tuatuka Lama 70
+72 D.I. Tulun 200
+73 D.I. Tunfeu 50
+74 D.I. Aijopeta 50
+75 D.I. Batu Oe 250
+76 D.I. Batu Putih 20
+77 D.I. Batuaik Rote 60
+78 D.I. Beludale 250
+79 D.I. Bijaelenakan 40
+80 D.I. Bisuma 68
+81 D.I. Bitobe 35
+82 D.I. Fatukanutu 40
+83 D.I. Fatumtasa 80
+84 D.I. Hapit 50
+85 D.I. Honuk 25
+86 D.I. Kaura 50

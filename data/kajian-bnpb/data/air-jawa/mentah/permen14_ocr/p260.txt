@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+t Kab. Purbalinaaa 255 19.159
+1 D.I. Alang-Alang 36
+2 D.I. Ampel 6
+3 D.I. Andong 35
+4 D.I. Arenan 20
+5 D.I. Arta 77
+6 D.I. Arus 196
+7 D.I. Asinan II 15
+8 D.I. Babakan 16
+9 D.I. Badak 130
+10 D.I. Balamoyang 30
+11 D.I. Bandingan 50
+12 D.I. Banyumaro 40
+13 D.I. Bataputih (MA) 53
+14 D.I. Batu 23
+15 D.I. Beber 58
+16 D.I. Bedagas 44
+17 D.I. Beji 32
+18 D.I. Benda 20
+19 D.I. Berem 33
+20 D.I. Bleberan 72
+21 D.I. Boleran 23
+22 D.I. Bringkeng 55
+23 D.I. Brunyah (MA) 76
+24 D.I. Buara 103
+25 D.I. Bulakan 10
+26 D.I. Bulan 71
+27 D.I. Bulukuning 25
+28 D.I. Canas 276
+29 D.I. Candinata 42
+30 D.I. Cangkring I 45
+31 D.I. Cangkring II 72
+32 D.I. Cibaya 53
+33 D.I. Curug I 34
+34 D.I. Curug II 30
+35 D.I. Curugnini | 280
+36 D.I. Curugnini II 94
+37 D.I. Dagan 587
+38 D.I. Depok 30
+39 D.I. Genting 25
+40 D.I. Glutak 61
+41 D.I. Gondang 42
+42 D.I. Gowok 22
+43 D.I. Gumelar 63
+44 D.I. Gunungsari 49
+45 D.I. Jaha II 35
+46 D.I. Jambean II 116
+47 D.I. Kadu 26
+48 D.I. Kajar II/KAJAR M
+49 D.I. Kalimanah 210
+50 D.I. Kalitengah 19
+51 D.I. Karang Petir 32
+52 D.I. Karangaren 49
+53 D.I. Karangduren 50
+54 D.I. Karangduwur 60
+55 D.I. Karangjengkol 19
+56 D.I. Karangnangka | 75
+57 D.I. Karangnangka II 31
+58 D.I. Karangreja 88
+59 D.I. Karangsari II 192
+60 D.I. Kecepit 57
+#KANAN
+260
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+61 D.I. Kedawuna 27
+62 D.I. Kedoya 13
+63 D.I. Kedung arus 123
+64 D.I. Kedung Belis 11
+65 D.I. Kedung Damang 10
+66 D.I. Kedung Klapa 110
+67 D.I. Kedung pete 12
+68 D.I. Kedungjampang 305
+69 D.I. Kedungjeruk 205
+70 D.I. Kedungsalak 35
+71 D.I. Kedungsiung 238
+72 D.I. Kedungwungu 75
+73 D.I. Kemiren 26
+74 D.I. Kemusuk 37
+75 D.I. Klantang 80
+76 D.I. Kieang 67
+77 D.I. Kracak 25
+78 D.I. Kuburan 15
+79 D.I. Kuning 70
+80 D.I. Kuripan 26
+81 D.I. Kyai Wilah 12
+82 D.I. Laban 127
+83 D.I. Larangan 56
+84 D.I. Larangan | 369
+85 D.I. Larangan II 334
+86 D.I. Lebak II 113
+87 D.I. Lemberang 105
+88 D.I. Limbangan 19
+89 D.I. Limpakdau 792
+90 D.I. Limus 50
+91 D.I. Lingga LINGGA MA 116
+92 D.I. Logung 46
+93 D.I. lusi 25
+94 D.I. MA. Tirtomoyi 86
+95 D.I. Makamdawa 100
+96 D.I. Mandala 26
+97 D.I. Mangun Negara 106
+98 D.I. Mersan 18
+99 D.I. Metenggeng 81
+100 D.I. Muli 35
+101 D.I. Nambo II 20
+102 D.I. Nanggung 39
+103 D.I. Nusakembang 154
+104 D.I. Ondar-Andir 22
+105 D.I. OYAR 5
+106 D.I. Pagerandong 65
+107 D.I. Paingan 33
+108 D.I. Panyatan | 25
+109 D.I. Panyatan II 75
+110 D.I. Paseh 73
+111 D.I. Patrawangsa 131
+112 D.I. Pejaten 40
+113 D.I. Pelas 53
+114 D.I. Peninis 43
+115 D.I. Petir M
+116 D.I. Pingit 90
+117 D.I. Pining 111
+118 D.I. Plipitan 10
+119 D.I. Ponjen 437
+120 D.I. Prabawulan 47
+121 D.I. Prayakerti 77

@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 554
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+257 D.LA.T. Naiusaf-Bipolo NAF - 241 2
+258 D.I.A.T. Naiusaf-Bipolo NAF - 242 2
+259 D.I.A.T. Naiusaf-Bipolo NAF - 243 4
+260 D.I.A.T. Naiusaf-Bipolo NAF - 244 2
+261 D.I.A.T. Naiusaf-Bipolo NAF - 245 2
+262 D.I.A.T. Naiusaf-Bipolo NAF - 246 2
+263 D.I.A.T. Naiusaf-Bipolo NAF - 247 2
+264 D.I.A.T. Naiusaf-Bipolo NAF - 248 2
+265 D.I.A.T. Naiusaf-Bipolo NAF - 249 2
+266 D.I.A.T. Naiusaf-Bipolo NAF - 250 2
+267 D.I.A.T. Naiusaf-Bipolo NAF - 251 2
+268 D.I.A.T. Naiusaf-Bipolo NAF - 252 2
+269 D.I.A.T. Naiusaf-Bipolo NAF - 253 3
+270 D.I.A.T. Naiusaf-Bipolo NAF - 254 3
+271 D.LA.T. Naiusaf-Bipolo NAF - 255 3
+272 D.LA.T. Naiusaf-Bipolo NAF - 256 3
+273 D.LA.T. Naiusaf-Bipolo NAF - 257 2
+274 D.LA.T. Naiusaf-Bipolo NAF - 258 2
+275 D.L.A.T. Naiusaf-Bipolo NAF - 259 3
+276 D.I.A.T. Naiusaf-Bipolo NAF - 260 3
+277 D.LA.T. Naiusaf-Bipolo NAF - 261 2
+278 D.I.A.T. Naiusaf-Bipolo NAF - 262 2
+279 D.I.A.T. Naiusaf-Bipolo NAF - 263 2
+280 D.I.A.T. Naiusaf-Bipolo NAF - 264 2
+281 D.I.A.T. Naiusaf-Bipolo NAF - 335 2
+282 D.L.A.T. Naiusaf-Bipolo NAF - 336 2
+283 D.I.A.T. Naiusaf-Bipolo NAF - 337 2
+284 D.I.A.T. Naiusaf-Bipolo NAF - 338 2
+285 D.I.A.T. Naiusaf-Bipolo NAF - 339 2
+286 D.ILA.T. Bilolin A-Oeteta NAF - 344 3
+287 D.LA.T. Ufmese-Bipolo NAF/I1/468 2
+288 D.I.A.T. Ufmese-Bipolo NAF/I1/469 2
+289 D.I.A.T. Ufmese-Bipolo NAF/II/470 3
+290 D.I.A.T. Ufmese-Bipolo NAF/I1/471 2
+291 D.LA.T. Ufmese-Bipolo NAF/I1/472 3
+292 D.LA.T. Oeneno-Bipolo NAF/I1/474 2
+293 D.ILA.T. Oeneno-Bipolo NAF/II/475 3
+294 D.ILA.T. Oeneno-Bipolo NAF/I1/476 2
+295 D.LA.T. Oeneno-Bipolo NAF/II/477 3
+296 D.I.A.T. Oeneno-Bipolo NAF/II/478 2
+297 D.LA.T. Oeneno-Bipolo NAF!/II/479 2
+298 D.I.A.T. Oeneno-Bipolo NAF/I1/480 2
+299 D.ILA.T. Oeneno-Bipolo NAF/I1/481 2
+300 D.I.A.T. Oeneno-Bipolo NAF/I1/482 1
+301 D.ILA.T. Oeneno-Bipolo NAF/I1/483 1
+302 D.I.A.T. Manonof-Bipolo NAF/I1/484 2
+303 D.I.A.T. Manonof-Bipolo NAF/II/485 3
+304 D.I.A.T. Manonof-Bipolo NAF/I1/486 2
+305 D.I.A.T. Manonof-Bipolo NAF/I1/487 2
+306 D.I.A.T. Oesao Besar-Oesao OEF - 002 3
+307 D.I.A.T. Lumbung-Naibonat OEF - 027 3
+308 D.I.A.T. Lumbung-Naibonat OEF - 028 3
+309 D.I.A.T. Lumbung-Naibonat OEF - 030 3
+310 D.LA.T. Lumbung-Naibonat OEF - 032 3
+311 D.LA.T. Lumbung-Naibonat OEF - 034 3
+312 D.LA.T. Lumbung-Naibonat OEF - 051 2
+313 D.LA.T. Subsidi-Naibonat OEF - 052 2
+314 D.ILA.T. Subsidi-Naibonat OEF - 053 2
+315 D.LA.T. Subsidi-Naibonat OEF - 054 2
+316 D.I.A.T. Subsidi-Naibonat OEF - 059 2
+317 D.LA.T. Subsidi-Naibonat OEF - 063 2

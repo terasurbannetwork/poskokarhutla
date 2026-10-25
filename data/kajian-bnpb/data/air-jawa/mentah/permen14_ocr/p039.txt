@@ -1,0 +1,73 @@
+#TATA_LETAK satu-tabel lebar=2480
+39 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+80 D.I. Nurbiha 309 Kabupaten Bondowoso z 272 Ha
+Kabupaten Situbondo z 37 Ha
+81 D.I. Gumbolo/Dawuhan 350 Kabupaten Bondowoso z 252 Ha
+Kabupaten Situbondo -z 98 Ha
+82 D.I. Pringduri 63 Kabupaten Bondowoso z 18 Ha
+Kabupaten Situbondo z 45 Ha
+83 D.I. Bajulmati 777 Kabupaten Banyuwangi z 469 Ha
+Kabupaten Situbondo z 308 Ha
+84 D.I. Sbr. Nyamplong 80 Kabupaten Bondowoso z Dam
+Kabupaten Situbondo z 80 Ha
+85 D.I. LS Pakis 190 Kabupaten Probolinggo z 12 Ha
+Kota Probolinggo z 178 Ha
+86 D.I. Lontong 151 Kabupaten Probolinggo z 31 Ha
+Kota Probolinggo z 120 Ha
+87 D.I. Warujinggo 62 Kabupaten Probolinggo z 50 Ha
+Kota Probolinggo z 12 Ha
+88 D.I. Taposan 696 Kabupaten Probolinggo z 678 Ha
+Kota Probolinggo -z 18 Ha
+89 D.I. Krasak 598 Kabupaten Probolinggo z 560 Ha
+Kota Probolinggo - 38 Ha
+90 D.I. Mbok Siti 445 Kabupaten Probolinggo z 364 Ha
+Kota Probolinggo z 81 Ha
+91 D.I. Bango 64 Kabupaten Probolinggo -z 34 Ha
+Kota Probolinggo z 30 Ha
+92 D.I. Grinting 695 Kabupaten Pasuruan z 662 Ha
+Kota Pasuruan -z 33 Ha
+93 D.I. Licin 463 Kabupaten Pasuruan z 322 Ha
+Kota Pasuruan -z 141 Ha
+94 D.I. Plered 296 Kabupaten Pasuruan z 35 Ha
+Kota Pasuruan z 261 Ha
+95 D.I. Tanggulangin 2.581 Kabupaten Pasuruan z 1.780 Ha
+Kota Pasuruan z 801 Ha
+96 D.I. Surak 876 Kabupaten Malang z 81 Ha
+Kabupaten Pasuruan z 795 Ha
+
+XI PROVINSI BALI 8 1.912
+1 D.I. Apuan 160 Kabupaten Bangli z 107 Ha
+Kabupaten Gianyar z 53 Ha
+2 D.I. Bekutel 224 Kabupaten Bangli z 92 Ha
+Kabupaten Gianyar z 132 Ha
+3 D.I. Tembuku 152 Kabupaten Bangli z 80 Ha
+Kabupaten Gianyar z 72 Ha
+4 D.I. Banjarangkan 543 Kabupaten Gianyar z 261 Ha
+Kabupaten Klungkung z 282 Ha
+5 D.I. Yeh Leh 230 Kabupaten Jembrana z 123 Ha
+Kabupaten Tabanan z 107 Ha
+6 D.I. Dwi Eka Buana 150 Kabupaten Bangli z 70 Ha
+Kabupaten Gianyar z 80 Ha
+7 D.I. Mergaya 372 Kabupaten Badung z 192 Ha
+Kota Denpasar z 180 Ha
+8 D.I. Padpadan 81 Kabupaten Gianyar z 81 Ha
+Kabupaten Bangli z Bendung
+
+XII PROVINSI NUSA TENGGARA BARAT 2 5.010
+1 D.I. Rutus 2.783 Kabupaten Lombok Tengah z 1.743 Ha
+Kabupaten Lombok Timur z 1.040 Ha
+2 D.I. Pelapak 2.227 Kabupaten Lombok Tengah z 747 Ha
+Kabupaten Lombok Timur z 1.480 Ha
+
+XIIl PROVINSI NUSA TENGGARA TIMUR 4 4.672
+1 D.I. Batuh Putih/Oebobo 400 Kabupaten Kupang z 250 Ha
+Kabupaten Timor Tengah Selatan - 150 Ha
+2 D.I. Biliuana 1.430 Kabupaten Timor Tengah Selatan - 230 Ha
+Kabupaten Timur Tengah Utara -z 1.200 Ha
+3 D.I. Hasfuik 1.600 Kabupaten Belu z 150 Ha
+Kabupaten Timur Tengah Utara z 1.450 Ha
+4 D.I. Aroki 1.242 Kabupaten Belu z 500 Ha
+Kabupaten Timur Tengah Utara z 742 Ha

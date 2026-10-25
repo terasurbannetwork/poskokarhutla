@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+5 D.I. Pakasai IV Angkek 231
+6 D.I. Sungai Rambai 125
+7 D.I. Talang Kuning 544
+8 D.I. Tungkal 136
+9 D.I. Ampang Labuang 15
+10 D.I. Bandar Padang Cakur 48
+11 D.I. Bandar Subarang 42
+12 D.I. Durian Gadang 30
+13 D.I. Cimparuh 37
+14 D.I. Lapau Baruah 30
+15 D.I. Palak Aneh 50
+16 D.I. Pompanisasi 15
+17 D.I. Sampan 80
+a Kota Pavakumbuh 65 2.455
+1 D.I. Sei. Bai 80
+2 D.I. Sei. Talang 35
+3 D.I. Bdng. Beringin 40
+4 D.I. Bt. Sikali 51
+5 D.I. Bdr. Ngalau 124
+6 D.I. Bulakan 390
+7 D.I. Bt. Pulau 387
+8 D.I. Bandar Baru 14
+9 D.I. Bandar Gadang 64
+10 D.I. Bandar Kubang 9
+11 D.I. Bandar Cangkiang 10
+12 D.I. Bandar Taruko | 12
+13 D.I. Bandar Taruko II 10
+14 D.I. Bandar Baliak Parik 12
+15 D.I. Bandar Jaring 5
+16 D.I. Bandar Guguk Sicincin Hilir 10
+17 D.I. Bandar Sikumbang 15
+18 D.I. Bandar Napar 15
+19 D.I. Bandar Jambu 13
+20 D.I. Bandar Sawah Liek 16
+21 D.I. Bandar Kalumpanng 15
+22 D.I. Bandar Datar 16
+23 D.I. Bandar Patai 81
+24 D.I. Bdr. Sikampung 38
+25 D.I. Bdr. Padang Jaring 81
+26 D.I. Badar Piraweh 26
+27 D.I. Bandar Darek 64
+28 D.I. Bandar Sawah Tobek 25
+29 D.I. Bandar Tj. Aur Kuning 20
+30 D.I. Bdr. Lakung Sinabok 5
+31 D.I. Bandar Dalam 7
+32 D.I. Bandar Bukareh 13
+33 D.I. Bdr. Sei Linding 20
+34 D.I. Bdr. Labuah 17
+35 D.I. Bandar Panampuang 7
+36 D.I. Bandar Tanjung 83
+37 D.I. Bandar Luak Samak 7
+38 D.I. Bandar Luak Ampuah 15
+39 D.I. Bdr. Lurah Taunan 15
+40 D.I. Bandar Kincir 10
+41 D.I. Bdr.Padang Kasai 28
+42 D.I. Tanjung Rajo 16
+43 D.I. Jembatan Cangkiang 7
+44 D.I. Bandar Kuok 15
+45 D.I. Bdr. Tobek Kincia 17
+46 D.I. Bdr. Tanjuang Simotiah 15
+#KANAN
+117 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+47 D.I. Bdr. Tanjuang Sipasan 10
+48 D.I. Bandar Kaluek 35
+49 D.I. Baramban Nan Tuo 10
+50 D.I. Bandar Rawang 10
+51 D.I. Bandar Simpang 16
+52 D.I. Tanjung Baukia 17
+53 D.I. Limau Munggu Gadang 25
+54 D.I. Bandar Guguk Kapalo Koto 12
+55 D.I. Bandar Atas Pandan 17
+56 D.I. Pincuran Tujuh 40
+57 D.I. Tanjung Panta 15
+58 D.I. Sei Talang (Sicincin) 10
+59 D.I. Bandar Nan Lambiang 25
+60 D.I. Bandar Talao 67
+61 D.I. Bandar Sawah Rawana 25
+62 D.I. Tembok Jua 75
+63 D.I. Bdr.Simantuang 45
+64 D.I. Bdr.Simumbai 12
+65 D.I. Bandar Aia Nan Doreh 15
+r Kota Sawahlunto 87 1.724
+1 D.I. Batang Sialang/Sawah Dilie 35
+2 D.I. Mansiruk 60
+3 D.I. Kandang lowan 22
+4 D.I. Subangko/Ujung Tanjung/Pdg Sarai 50
+5 D.I. Singkarewang/Lbk Pjg/Karak Taruko 30
+6 D.I. Tapian 30
+7 D.I. Lubuk Sawah Gadang 30
+8 D.I. Lubuk Sungkai 40
+9 D.I. Banda Panjang/Lubuk Antuan 53
+10 D.I. Durian Gampu 30
+11 D.I. Kamaung 35
+12 D.I. Pakan Sinamo 50
+13 D.I. Data Rambutan 28
+14 D.I. Sawah Lawas Mudik 35
+15 D.I. Sawah Laweh Hilir 35
+16 D.I. Pasaunan 50
+17 D.I. Sawah Tangah 10
+18 D.I. Batang Kumanis 30
+19 D.I. Taruko/Limau Sundal 25
+20 D.I. Lubuk Sarosah 25
+21 D.I. Bukit Ombang 15
+22 D.I. Sopan Tupai 20
+23 D.I. Batu Hampar/Lbk Landak 15
+24 D.I. Sawah Tangah 35
+25 D.I. Lurah Cubadak 15
+26 D.I. Kandang Batu 15
+27 D.I. Lawek Jedah 15
+28 D.I. Sungai Nyie 15
+29 D.I. Asam 25
+30 D.I. Sungai bay 25
+31 D.I. Ulu 15
+32 D.I. Luak Dareh 10
+33 D.I. Tarok II 20
+34 D.I. Bungo 25
+35 D.I. Sungai Abu 6
+36 D.I. Tall Mato 25
+37 D.I. Banda Lurah 54
+38 D.I. Pulau Ambacang 10
+39 D.I. Lurah Rambutan 6
+40 D.I. Kajatan 10

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+90 D.I. Sigedang 5,55
+91 D.I. Guwo 5,61
+92 D.I. Cangkring III 5,64
+93 D.I. Klepu 5,65
+94 D.I. Sabrangan 5,65
+95 D.I. Gayam 5,68
+96 D.I. Sentul 5,71
+97 D.I. Dermo II 5,72
+98 D.I. T. Cuwo 5,75
+99 D.I. Tempel 5,75
+100 D.I. Putat/Beji II 6,31
+101 D.I. Leri 5,82
+102 D.I. Ngebok II 5,91
+103 D.I. Ketingan 5,94
+104 D.I. Kramatan 5,99
+105 D.I. Embung Gancahan 6,00
+106 D.I. Gayam II 6,00
+107 D.I. Kledokan 6,00
+108 D.I. Sempu baru 6,00
+109 D.I. Tlukan 6,00
+110 D.I. Kokos 6,13
+111 D.I. Serut 6,16
+112 D.I. Gayam 6,24
+113 D.I. Pojok 6,26
+114 D.I. Gempol 6,37
+115 D.I. Donolayan 6,51
+116 D.I. Bendo 6,59
+117 D.I. Tlisik 6,67
+118 D.I. Ngampel 6,68
+119 D.I. Jonggrangan 6,69
+120 D.I. Tengah 6,72
+121 D.I. Gempol 6,73
+122 D.I. Sebrangan 6,93
+123 D.I. Ngampel 6,94
+124 D.I. Randugowang 6,96
+125 D.I. Cangkring 6,96
+126 D.I. Bunder 6,97
+127 D.I. Ploso 6,99
+128 D.I. Gedang 7,00
+129 D.I. Serut 7,00
+130 D.I. Setom 7,06
+131 D.I. Ngebuk 7,09
+132 D.I. Sabrangan 7,09
+133 D.I. Sriwil III 7,10
+134 D.I. Klumprit 714
+135 D.I. Sabrangan 7,21
+136 D.I. Plumbon 7,22
+137 D.I. Cangkring 7,25
+138 D.I. Ngaren 7,26
+139 D.I. Sikedung 7,26
+140 D.I. Karangturi | 7,27
+141 D.I. Bakalan 7,35
+142 D.I. Ngebel II 7,49
+143 D.I. Kalim ati | 7,50
+144 D.I. Mete 7,60
+145 D.I. Waru 7,60
+146 D.I. Tekik 7,62
+147 D.I. Jambe 7,64
+148 D.I. Randugowang 7,65
+149 D.I. Pule 7,69
+150 D.I. Siposong 8
+#KANAN
+294
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+151 D.I. Cangkring 7,75
+152 D.I. Karang 7,82
+153 D.I. Sukun 7,87
+154 D.I. Dawung 8,00
+155 D.I. Gayam 8,00
+156 D.I. Tugu 8,00
+157 D.I. Cangkring | 8,06
+158 D.I. Gayam 8,07
+159 D.I. Cangkring I 8,10
+160 D.I. Ngasem 8,10
+161 D.I. Kendangan 8,13
+162 D.I. Sipecut 8,23
+163 D.I. Ngori 8,24
+164 D.I. Ngori 8,27
+165 D.I. Bulu 8,30
+166 D.I. Pelem 8,37
+167 D.I. Ngelo 8,43
+168 D.I. Ipik 8,56
+169 D.I. Sepucang 8,59
+170 D.I. Gayam 8,61
+171 D.I. Srowolan | 8,64
+172 D.I. Salam 8,75
+173 D.I. Dunglanang 8,79
+174 D.I. Ringin 8,82
+175 D.I. Ringin 8,82
+176 D.I. Dawung 8,87
+177 D.I. Jangkang 8,90
+178 D.I. Pule 8,92
+179 D.I. Kauman 9,00
+180 D.I. Sengon 9,00
+181 D.I. Ledokwareng 9,07
+182 D.I. Pabrik 9,12
+183 D.I. Pengarep II 9,21
+184 D.I. Klutuk 9,22
+185 D.I. Silampean 9,29
+186 D.I. Jagalan 9,33
+187 D.I. Jetis 9,33
+188 D.I. Bandulan | 9,34
+189 D.I. Sidenok 9,35
+190 D.I. Kembang 9,41
+191 D.I. Laban 9,42
+192 D.I. Tanjungsari 9,42
+193 D.I. Matmajan 9,43
+194 D.I. Gayam 9,52
+195 D.I. Sebrangan 9,58
+196 D.I. Weru I 9,91
+197 D.I. Awar-Awar 10,00
+198 D.I. Candi 10,00
+199 D.I. Kadilobo 10,00
+200 D.I. Keringan 10,00
+201 D.I. Palgading 10,00
+202 D.I. Pancuran 10,00
+203 D.I. Pelem 10,00
+204 D.I. Plasan 10,00
+205 D.I. Putat 10,00
+206 D.I. Sabrangan 10,00
+207 D.I. Sogol I 10,00
+208 D.I. Sogol II 10,00
+209 D.I. Tempel 10,00

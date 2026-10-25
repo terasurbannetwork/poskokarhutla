@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Ncangga Sangge 224
+51 D.I. O'O Rui 75
+52 D.I. Soko 175
+53 D.I. Sori Dei 252
+54 D.I. Sori Kedo 92
+55 D.I. Sori Na'a 285
+56 D.I. Sori Paranggi 385
+57 D.I. Sori Tatanga 80
+58 D.I. Tebu Lara 120
+59 D.I. Tegambe 275
+60 D.I. Teke 100
+61 D.I. Tonda 80
+62 D.I. Wa'l Jaria 95
+63 D.I. Wa'l Me'e 150
+64 D.I. Woko 125
+c Kab. Lombok Barat 20 4.756
+1 D.I. Buntopeng 174
+2 D.I. Embung Kengkang 175
+3 D.I. Embung Telekong I, II 285
+4 D.I. Gegutu 141
+5 D.I. Ireng Daya 246
+6 D.I. Keru 833
+7 D.I. Medas 67
+8 D.I. Mencongah 244
+9 D.I. Menjeli 97
+10 D.I. Montang 176
+11 D.I. Nyur Baye 449
+12 D.I. Pelangan 108
+13 D.I. Penimbung 450
+14 D.I. Pesongoran Kuripan 78
+15 D.I. Repok Pancor 244
+16 D.I. Sandik 330
+17 D.I. Embung Aik Mual 79
+18 D.I. Embung Bantir I, II 21
+19 D.I. Embung Telaga Lebur 223
+20 D.I. Embung Tibu Kuning 266
+d Kab. Lombok Tenaah 58 13.123
+1 D.I. Benjor 188
+2 D.I. Berambang 195
+3 D.I. Bilekere 350
+4 D.I. Dao 396
+5 D.I. Embung Batu Bokah 305
+6 D.I. Embung Batu Jangkih 100
+7 D.I. Embung Batu Ngapah 583
+8 D.I. Embung Bengak 157
+9 D.I. Embung Bombas 206
+10 D.I. Embung Brenge 350
+11 D.I. Embung Danasari 210
+12 D.I. Embung Gabak 249
+13 D.I. Embung Goa 82
+14 D.I. Embung Gusi 45
+15 D.I. Embung Jangkih Jawa 301
+16 D.I. Embung Jebak 98
+17 D.I. Embung Jongkor 15
+18 D.I. Embung Lendang Telage 136
+19 D.I. Embung Loang Maka 100
+20 D.I. Embung Melat I 35
+21 D.I. Embung Melat II 25
+22 D.I. Embung Orok Gendang 123
+#KANAN
+3179 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Embung Pancor 119
+24 D.I. Embung Pare 600
+25 D.I. Embung Paskar 96
+26 D.I. Embung Pejanggik 135
+27 D.I. Embung Pejeruk 63
+28 D.I. Embung Pendem 138
+29 D.I. Embung Pengkemit 300
+30 D.I. Embung Penyabuk 94
+31 D.I. Embung Perok 35
+32 D.I. Embung Sepit 175
+33 D.I. Embung Tantih 200
+34 D.I. Embung Tasik Asik 25
+35 D.I. Gula Liat 203
+36 D.I. Jengguar 293
+37 D.I. Mertak Paok 115
+38 D.I. Mesone Wareng 285
+39 D.I. Muiur I 718
+40 D.I. Muncan 318
+41 D.I. Nyeredep 78
+42 D.I. Otak Desa 294
+43 D.I. Paok Dengkol 300
+44 D.I. Paok Rengge 413
+45 D.I. Pelapak 565
+46 D.I. Sidemen 688
+47 D.I. Simbe 115
+48 D.I. Tainpetuk 353
+49 D.I. Telage 316
+50 D.I. Bual 144
+51 D.I. Bumbang 180
+52 D.I. Embung Inen Ratu 15
+53 D.I. Embung Kawi Sampi M4
+54 D.I. Gerintuk 420
+55 D.I. Lantan 280
+56 D.I. Mapasan 150
+57 D.I. Sade 450
+58 D.I. Sekedek 110
+e Kab. Lombok Timur 107 25.334
+1 D.I. Aik Anvar 209
+2 D.I. Aik Lomak 113
+3 D.I. Ambung 95
+4 D.I. Anjani 290
+5 D.I. Asmalang 243
+6 D.I. Bagek Longgek 212
+7 D.I. Bagek Tungka 287
+8 D.I. Bangka 256
+9 D.I. Bangle 43
+10 D.I. Batu Malang 495
+11 D.I. Bebidas 280
+12 D.I. Beleong 250
+13 D.I. Borok Lelet 575
+14 D.I. Burung 125
+15 D.I. Camek 229
+16 D.I. Damar Jengkang 42
+17 D.I. Dasan Lekong 192
+18 D.I. Denggen 80
+19 D.I. Embung Gunung Paok 49
+20 D.I. Embung Balok 12
+21 D.I. Embung Kandong 385
+22 D.I. Embung Penggek 72
+23 D.I. Endut 176

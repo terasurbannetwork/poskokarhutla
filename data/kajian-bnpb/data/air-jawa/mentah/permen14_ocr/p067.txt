@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Ladang Tuha 51
+52 D.I. Lawe Sawah I/Temerking 100
+53 D.I. Lawe Sawah II/Porang 200
+54 D.I. Lhok Aman 20
+55 D.I. Lhok Pawoh 50
+56 D.I. Lhok Sialang Cut 166
+57 D.I. Lhok Sialang Rayeuk | 62
+58 D.I. Lhok Sialang Rayeuk II 66
+59 D.I. Limeng Tujoh 50
+60 D.I. Lubuk Layu 106
+61 D.I. Lueng Mane 60
+62 D.I. Lung Cot Rambot 75
+63 D.I. Malaka 125
+64 D.I. Mata Ie 30
+65 D.I. Mersak Manggamat 125
+66 D.I. Meuligo 25
+67 D.I. Mungkur 160
+68 D.I. Mutiara 25
+69 D.I. Naca 50
+70 D.I. Pante Geulima 100
+71 D.I. Panton bili 50
+72 D.I. Panton dalam 50
+73 D.I. Panton Luas 50
+74 D.I. Paya Ateuk 72
+75 D.I. Paya Nan Jauh 20
+76 D.I. Paya Sibadeh 200
+77 D.I. Payo Nangadang 20
+78 D.I. Peulokan Atas 65
+79 D.I. Peulokan Bawah 80
+80 D.I. Pisang Baru 30
+81 D.I. Pucok Krueng 145
+82 D.I. Rot Teungoh 77
+83 D.I. Sawah Laweh 230
+84 D.I. Sawahl Liek 450
+85 D.I. Sawang | 15
+86 D.I. Sawang II 30
+87 D.I. Seubadeh 500
+88 D.I. Seulekat 65
+89 D.I. Sikabu 153
+90 D.I. Silolo | 80
+21 D.I. Silolo II 250
+92 D.I. Tanah Munggu 25
+93 D.I. Trieng Meuduro 250
+94 D.I. Tui Timah 200
+95 D.I. Ujung Kareng 25
+96 D.I. Ulee Keube Singgleng 75
+97 D.I. Arun Tunggai 68
+98 D.I. Alue Putro 100
+99 D.I. Alue Bahagia II 40
+100 D.I. Air Pinang 15
+101 D.I. Alue Meutuah 30
+102 D.I. Alue Raya 200
+103 D.I. Alue Nibong 150
+104 D.I. Blang Teungoh 165
+105 D.I. Blang Luah 150
+106 D.I. Bukit Gadeng 25
+107 D.I. Carak 35
+108 D.I. Gunung Ketek 40
+109 D.I. le Merah I 150
+110 D.I. Ie Merah II 150
+111 D.I. Jambo Kepok 35
+#KANAN
+67 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+112 D.I. Keumumu Hilir 175
+113 D.I. Keude Padang 27
+114 D.I. Kubang Gajah 200
+115 D.I. Kampung Drien 60
+116 D.I. Panton Paoh 70
+117 D.I. Paya Peulumat 100
+118 D.I. Panton Luas Sawang 50
+119 D.I. Panton Luas Samadua 15
+120 D.I. Panjupian 15
+121 D.I. Panton Luas Tapaktuan 15
+122 D.I. Padang Luas 50
+123 D.I. Sawang Ba'u 74
+124 D.I. Silolo III 80
+125 D.I. Lhok Raya 20
+126 D.I. Suag Bakong 100
+127 D.I. Sinebok Keranji I 400
+128 D.I. Sinebok Keranji II 100
+129 D.I. Ujung Batu 200
+f Kab. Aceh Sinakil 11 693
+1 D.I. Haloban 30
+2 D.I. Bulu Sema 7
+3 D.I. Lae Balno 40
+4 D.I. Lae Mbara 51
+5 D.I. Lae Pinang 10
+6 D.I. Mango Sari 20
+7 D.I. Pangkalan Sulampi 120
+8 D.I. Sidorejo 80
+9 D.I. Singkohor Atas 40
+10 D.I. Situbun Makmur 233
+11 D.I. Tanah Bara 67
+a Kab. Aceh Tamiana 24 6.285
+1 D.I. Alue Cantik 180
+2 D.I. Alue Lhok 200
+3 D.I. Alur Baung 150
+4 D.I. Alur Hitam 150
+5 D.I. Batu Bedulang 150
+6 D.I. Bukit Panjang 175
+7 D.I. Gelanggang Merak 245
+8 D.I. Ingin Jaya 280
+9 D.I. Jamur Jelatang 300
+10 D.I. Jamur Labu 250
+11 D.I. Kampung Durian 200
+12 D.I. Lhong Manyo 130
+13 D.I. Matang Ara 285
+14 D.I. Pahlawan 200
+15 D.I. Paya Dehok 365
+16 D.I. Paya Laut 675
+17 D.I. Paya Udang 120
+18 D.I. Pulo Tiga 998
+19 D.I. Senebuk Gayo 365
+20 D.I. Seunebok Bacee 85
+21 D.I. Seunebok Dalem 200
+22 D.I. Suka Rahmat 320
+23 D.I. Suka Rakyat 187
+24 D.I. Rantau Pakam 75
+h Kab. Aceh Tenaah 126 16.010
+1 D.I. Asir-asir 100
+2 D.I. Ayangan 100

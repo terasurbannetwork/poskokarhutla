@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+59 D.I. Kalisamas 246
+60 D.I. Kandang Jati/Sumbersowo 507
+61 D.I. Karangrejo | 13
+62 D.I. Katimoho 992
+63 D.I. Kedung Bajul 100
+64 D.I. Kedung Tikung 3
+65 D.I. Kejawan 166
+66 D.I. Kengkengan 181
+67 D.I. Kersikan 56
+68 D.I. Kiju 155
+69 D.I. Klawangan 138
+70 D.I. Kluwih 290
+71 D.I. Kodung 31
+72 D.I. Kolor Sewuluh 125
+73 D.I. Kolpoh Asem 59
+74 D.I. Kolpoh Hulu 49
+75 D.I. Krajan 107
+76 D.I. Kresek 51
+77 D.I. Kresek | 5
+78 D.I. Kubat 18
+79 D.I. Kuningan 74
+80 D.I. Kuripan I 2
+81 D.I. Kuripan II 4
+82 D.I. Kuripan III 4
+83 D.I. Kuripan IV 4
+84 D.I. Kuripan V 10
+85 D.I. Kuripan VI 24
+86 D.I. Kuripan VII 10
+87 D.I. Kuripan VIII 17
+88 D.I. Kuripan X Ka # Ki 55
+89 D.I. Kuripan XI Ka # Ki 90
+90 D.I. Laksoran | 22
+91 D.I. Laksoran II 16
+92 D.I. Laksoran III 33
+93 D.I. Laksoran IV 12
+94 D.I. Laksoran V 12
+95 D.I. Laksoran VI 76
+96 D.I. Lecari 50
+97 D.I. Leces 108
+98 D.I. Lumbang | 19
+99 D.I. Lumbang II 3
+100 D.I. Lumbang III 15
+101 D.I. Lumbang IV 4
+102 D.I. Lumbang V 6
+103 D.I. Lumbang VI 22
+104 D.I. Lumbang VII 4
+105 D.I. Lumbang VIII 3
+106 D.I. Lumbang IX 3
+107 D.I. Lumbang X 3
+108 D.I. Lumbang XI 8
+109 D.I. Lumbang XII 5
+110 D.I. Lumbang XIII 79
+111 D.I. Maleng 7
+112 D.I. Manting 546
+113 D.I. Matras 119
+114 D.I. Mentor 248
+115 D.I. Meseh 107
+116 D.I. Moniran 30
+117 D.I. Nangger 77
+118 D.I. Negororejo 38
+119 D.I. Nuralim 37
+#KANAN
+359 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+120 D.I. Ongga'an/Nasikun 98
+121 D.I. Opo-Opa 185
+122 D.I. Pakem 11
+123 D.I. Paleran 8
+124 D.I. Pamatan 79
+125 D.I. Pamatan II 25
+126 D.I. Pao 174
+127 D.I. Paras 12
+128 D.I. Paras 516
+129 D.I. Parseh 10
+130 D.I. Patemon 34
+131 D.I. PB. Gadang 7
+132 D.I. Pehlaksoran 564
+133 D.I. Pekalen I (Sbr. Kapung) 44
+134 D.I. Pekalen Il (Andung Biru) 53
+135 D.I. Pekalen III (Paleran) 71
+136 D.I. Pekalen IV (Kedung Gabuk) 64
+137 D.I. Pekalen V (Ranu Agung) 17
+138 D.I. Pekalen VI (Jambu) 44
+139 D.I. Pekalongan 4
+140 D.I. Penang 6
+141 D.I. Penjalin 125
+142 D.I. Pereng 11
+143 D.I. Pereng Pote 6
+144 D.I. Pesisir 116
+145 D.I. Racek I 12
+146 D.I. Racek II 25
+147 D.I. Randu 25
+148 D.I. Ranon 266
+149 D.I. Resongo I 3
+150 D.I. Resongo II 4
+151 D.I. Resongo III 29
+152 D.I. Resongo IV 28
+153 D.I. Resongo V 3
+154 D.I. Resongo VI 4
+155 D.I. Resongo VII 2
+156 D.I. Resongo VIII 4
+157 D.I. Resongo IX 8
+158 D.I. Resongo X 15
+159 D.I. Resongo XI 6
+160 D.I. Resongo XII 16
+161 D.I. Resongo XIII 3
+162 D.I. Resongo XIV 20
+163 D.I. Rupa-Rupa Mulut 63
+164 D.I. Sambi 11
+165 D.I. Sarjan 22
+166 D.I. Seboro 92
+167 D.I. Segadi 81
+168 D.I. Semek 16
+169 D.I. Sempol Kulon 122
+170 D.I. Sempol Wetan 139
+171 D.I. Sengon 167
+172 D.I. Sengon 177
+173 D.I. Setija 68
+174 D.I. Sidowayah Ambulu 184
+175 D.I. Sidowayah Sewuluh 213
+176 D.I. Sijonglangit 106
+177 D.I. Sinyonya 60
+178 D.I. Sipatrol 43
+179 D.I. Sironjengan 63
+180 D.I. Sriyanudin 9

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+782 D.I. Tengah 21
+783 D.I. Tepo 9
+784 D.I. Terongan 3
+785 D.I. Tirang 102
+786 D.I. Tlahap 23
+787 D.I. Tlatar | 19
+788 D.I. Tlatar Ill 170
+789 D.I. Tlogo Klangenan | 25
+790 D.I. Tlogo Klangenan II 35
+791 D.I. Tlogorejo 7
+792 D.I. Tong Belut 26
+793 D.I. Tosaren 75
+794 D.I. Tosari 22
+795 D.I. Toso Gunung 30
+796 D.I. Trisip 37
+797 D.I. Trowongan 12
+798 D.I. Tuk Catak 60
+799 D.I. Tuk Songo I 10
+800 D.I. Tuk Songo II 5
+801 D.I. Tuk Songo III 23
+802 D.I. Tulung 43
+803 D.I. Tulung/Nglegok A 46
+804 D.I. Tumpangan 20
+805 D.I. Turen 22
+806 D.I. Tutup Duwur 30
+807 D.I. Tuwukan 25
+808 D.I. Udal 57
+809 D.I. Wadas 20
+810 D.I. Wangan Tengah 13
+811 D.I. Warangan 35
+812 D.I. Wareng I 23
+813 D.I. Wareng II 20
+814 D.I. Wareng III 42
+815 D.I. Waringin 10
+816 D.I. Warung 24
+817 D.I. Wates 8
+818 D.I. Watu Badut 44
+819 D.I. Watu Kethuk 40
+820 D.I. Watu Payung 10
+821 D.I. Watu Sigar 25
+822 D.I. Watu Umbul 30
+823 D.I. Wiji 684
+824 D.I. Windu Sari 25
+825 D.I. Wiyono 38
+826 D.I. Wohan 18
+827 D.I. Wonogiri 24
+828 D.I. Wonolobo 10
+829 D.I. Wonosari 10
+830 D.I. Wonosuko 4
+831 D.I. Wreni 25
+832 D.I. Wulung 28
+833 D.I. Wungu I 13
+834 D.I. Wungu II/Gatak 28
+835 D.I. Balong 14
+836 D.I. Balong Kali Aji 474
+837 D.I. Banaran 39
+838 D.I. Bandungan/ngebuh 24
+839 D.I. Banger I 47
+840 D.I. Baran 16
+841 D.I. Bendo 15
+842 D.I. Bojong 106
+#KANAN
+252
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+843 D.I. Bojong III 18
+844 D.I. Boto 29
+845 D.I. Carikan 48
+846 D.I. Cawang 17
+847 D.I. Dadi Mulyo 21
+848 D.I. Dalangan II 9
+849 D.I. Dangkel kulon 20
+850 D.I. Dangkel wetan 20
+851 D.I. Dawang 10
+852 D.I. Dawung A Ka 21
+853 D.I. Diwak II 22
+854 D.I. Duren € 6
+855 D.I. Duren Sawit 30
+856 D.I. Duwet 60
+857 D.I. Gadingan/Sidorejo 65
+858 D.I. Galancar 8
+859 D.I. Gamblok II 14
+860 D.I. Gedono 20
+861 D.I. Gemer 23
+862 D.I. Gendungan 26
+863 D.I. Gentong 15
+864 D.I. Siwing 33
+865 D.I. Gondangan Bawah 37
+866 D.I. Gowok I 50
+867 D.I. Gowok III 20
+868 D.I. Gowok IV 40
+869 D.I. Grawah 20
+870 D.I. Grebek I 30
+871 D.I. Grenjeng 31
+872 D.I. Grenjengan | 10
+873 D.I. Growong 22
+874 D.I. Guwo 16
+875 D.I. Guwo II 40
+876 D.I. Jambu IV 10
+877 D.I. Jambu V 7
+878 D.I. Jangkang | 16
+879 D.I. Jemblok 18
+880 D.I. Joho 20
+881 D.I. Jombang I 15
+882 D.I. Kadipiro 27
+883 D.I. Kalibang 20
+884 D.I. Kalinongko 51
+885 D.I. Kamal 53
+886 D.I. Karang Kendal 12
+887 D.I. Kedung Gupit 92
+888 D.I. Kedung Pucung 38
+889 D.I. Keji 67
+890 D.I. Kemiren €C 31
+891 D.I. Kemiren D 30
+892 D.I. Kemukus 25
+893 D.I. Kendal 10
+894 D.I. Ketaron 30
+895 D.I. Klitak 10
+896 D.I. Koplak 7
+897 D.I. Kr. Kendal 25
+898 D.I. Krandon 13
+899 D.I. Kuton 25
+900 D.I. Kuton 25
+901 D.I. Kwilet 30
+902 D.I. Lokayanti 16
+903 D.I. MA. Pugeran 10

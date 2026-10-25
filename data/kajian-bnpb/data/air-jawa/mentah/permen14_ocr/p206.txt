@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+301 D.I. Sitambi 36
+302 D.I. Siwadas 21
+303 D.I. Siwatu | 6
+304 D.I. Siwatu II 7
+305 D.I. Siwuluh 20
+306 D.I. Siwuni 96
+307 D.I. Sodo 33
+308 D.I. Song 50
+309 D.I. Sono 82
+310 D.I. Sugeng 5
+311 D.I. Sugeng 20
+312 D.I. Sukan 30
+313 D.I. Sumilir 24
+314 D.I. Sunti 85
+315 D.I. Susuk 10
+316 D.I. Susuk 20
+317 D.I. Susukan 30
+318 D.I. Susukan 27
+319 D.I. Susukan 30
+320 D.I. Susukan 30
+321 D.I. Susukan 62
+322 D.I. Susukan 10
+323 D.I. Susukan 8
+324 D.I. Susukan B 48
+325 D.I. Susukan | 54
+326 D.I. Susukan II 20
+327 D.I. Talang 7
+328 D.I. Talun 26
+329 D.I. Tanon 19
+330 D.I. Tawang 25
+331 D.I. Tengah 10
+332 D.I. Tengah 19
+333 D.I. Tengah/Satrian 58
+334 D.I. Tlodas 15
+335 D.I. Tombo 15
+336 D.I. Towok 15
+337 D.I. Tratag 10
+338 D.I. Trenggiling 26
+339 D.I. Trenggiling 257
+340 D.I. Tropong 81
+341 D.I. Tulung 10
+342 D.I. Tulung 17
+343 D.I. Tulungatis 70
+344 D.I. Wadas 15
+345 D.I. Wadas Atas 163
+346 D.I. Wangan Dukuh 10
+347 D.I. Wangan Tengah 30
+348 D.I. Acian 11
+349 D.I. Anglik 10
+350 D.I. Apus 20
+351 D.I. Asem 17
+352 D.I. Bajang 10
+353 D.I. Baji 8
+354 D.I. Bakalan 20
+355 D.I. Bancet 59
+356 D.I. Bancet 67
+357 D.I. Bandung Tersono 542
+358 D.I. Bangkong 22
+359 D.I. Banjar 46
+360 D.I. Banteng 18
+361 D.I. Bawang 7
+#KANAN
+206
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+362 D.I. Beji 10
+363 D.I. BengkokAWinong 25
+364 D.I. Blender 17
+365 D.I. Blewah 4 20
+366 D.I. Blewah 5 5
+367 D.I. Blewah 6 14
+368 D.I. Blewah A 69
+369 D.I. Blewah B 35
+370 D.I. Bluak 15
+371 D.I. Bodrodono 24
+372 D.I. Bogol Tepuh 15
+373 D.I. Bulungan 9
+374 D.I. Cablikan 20
+375 D.I. Ceret 15
+376 D.I. Dadapan 11
+377 D.I. Degan 4
+378 D.I. Dekong 14
+379 D.I. Dimoro 8
+380 D.I. Dlimas 17
+381 D.I. Domas 17
+382 D.I. Duren 7
+383 D.I. Gabuk 2 12
+384 D.I. Sandring 10
+385 D.I. Gandu Pandan 19
+386 D.I. GSawak 45
+387 D.I. Gebang A B 40
+388 D.I. Gebluk 12
+389 D.I. Gebyak 22
+390 D.I. Gili 20
+391 D.I. Gondang 5
+392 D.I. Gondang 15
+393 D.I. Grenjeng 11
+394 D.I. Gudug 10
+395 D.I. Gumiwang 30
+396 D.I. Gunting 18
+397 D.I. Gunung 15
+398 D.I. Jamban 32
+399 D.I. Jamban 9
+400 D.I. Jamban Grogok 10
+401 D.I. Jamban Jati 27
+402 D.I. Jamban Klawen 14
+403 D.I. Jambilan 20
+404 D.I. Jambu 26
+405 D.I. Jarang 9
+406 D.I. Jati 5
+407 D.I. Jati 28
+408 D.I. Jati 5
+409 D.I. Jito 20
+410 D.I. Jrakah 10
+411 D.I. Jurang 7
+412 D.I. Jurang B 33
+413 D.I. Kal Putih 2 11
+414 D.I. Kali Boto 30
+415 D.I. Kali Dalem 8
+416 D.I. Kali Putih 1 10
+417 D.I. Kali Tengah 5
+418 D.I. Kalinyamat 5
+419 D.I. Karanganyar 15
+420 D.I. Karangtalun 23
+421 D.I. Kayen 7
+422 D.I. Kebaron 38

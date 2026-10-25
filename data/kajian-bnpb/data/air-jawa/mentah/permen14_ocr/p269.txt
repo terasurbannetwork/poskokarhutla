@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+269 D.I. Sekawah 10
+270 D.I. Selamongan 15
+271 D.I. Selototo 128
+272 D.I. Semak 39
+273 D.I. Semampir 30
+274 D.I. Semarangan 17
+275 D.I. Sembungan 25
+276 D.I. Semirang 25
+277 D.I. Sempu 16
+278 D.I. Sendang 39
+279 D.I. Sendang Entak 11
+280 D.I. Sendang Kemetul 12
+281 D.I. Sendang Putri 10
+282 D.I. Sendi 46
+283 D.I. Sepapringan 11
+284 D.I. Seringin 22
+285 D.I. Setri 150
+286 D.I. Setri 11
+287 D.I. Sewaduk 11
+288 D.I. Sewakul 20
+289 D.I. Siancar 50
+290 D.I. Siason 48
+291 D.I. Sibanteng 36
+292 D.I. Sibendo 75
+293 D.I. Sibendo 25
+294 D.I. Sibendo 25
+295 D.I. Sibening 44
+296 D.I. Sibening | 10
+297 D.I. Siblimbing 86
+298 D.I. Siblobok 33
+299 D.I. Sibucu 35
+300 D.I. Sibulus 16
+301 D.I. Sicangkring 14
+302 D.I. Sicangkring 20
+303 D.I. Sicangkring II 14
+304 D.I. Sicangkring IV 22
+305 D.I. Sicebongan 18
+306 D.I. Sicerme 62
+307 D.I. Sicoblong 37
+308 D.I. Sicuwo 20
+309 D.I. Sidadap 28
+310 D.I. Sidadap 15
+311 D.I. Sidegluk 20
+312 D.I. Sidomukti 12
+313 D.I. Sidruju 10
+314 D.I. Sidukuh 32
+315 D.I. Sidupo 20
+316 D.I. Siduren 8
+317 D.I. Siduwet 18
+318 D.I. Sigajih 25
+319 D.I. Sigandu 45
+320 D.I. Sigantungan 40
+321 D.I. Sigatot 127
+322 D.I. Sigawe 10
+323 D.I. Sigeblok 67
+324 D.I. Sigedeg 25
+325 D.I. Sigembyuk 20
+326 D.I. Sigempol 21
+327 D.I. Sigempol 62
+328 D.I. Sigerong 34
+329 D.I. Sigetas 30
+#KANAN
+- 1015, No.638
+269 ,
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+330 D.I. Sigondang 19
+331 D.I. Sigudig 90
+332 D.I. Sijali 40
+333 D.I. Sijambe 113
+334 D.I. Sijangkang 30
+335 D.I. Sijarak 19
+336 D.I. Sijengkol 21
+337 D.I. Sijengkolan 17
+338 D.I. Sijeruk 14
+339 D.I. Sijeruk 38
+340 D.I. Sijoho 25
+341 D.I. Sijomblong 133
+342 D.I. Sijumbleng 32
+343 D.I. Sikarang 17
+344 D.I. Sikeblok 20
+345 D.I. Sikembar 25
+346 D.I. Sikempul 12
+347 D.I. Sikenteng 25
+348 D.I. Sikenteng 10
+349 D.I. Sikenteng 40
+350 D.I. Sikepes 18
+351 D.I. Sikeris 23
+352 D.I. Sikidang 30
+353 D.I. Siklampok 42
+354 D.I. Siklotok 81
+355 D.I. Siklutuk 45
+356 D.I. Sikluwih 25
+357 D.I. Sikluwih 82
+358 D.I. Sikluwih 63
+359 D.I. Sikunter 10
+360 D.I. Sikuwon 15
+361 D.I. Silebihan 28
+362 D.I. Silengkong 18
+363 D.I. Silerak 20
+364 D.I. Sileri 16
+365 D.I. Sileri 17
+366 D.I. Sileri | 30
+367 D.I. Sileri II 16
+368 D.I. Sileses 11
+369 D.I. Sililin 50
+370 D.I. Siling Seng 48
+371 D.I. Silo 25
+372 D.I. Silontar 42
+373 D.I. Silumut 62
+374 D.I. Silumut 25
+375 D.I. Simacanan 19
+376 D.I. Simadat 45
+377 D.I. Simaling 25
+378 D.I. Simaling 30
+379 D.I. Simangli 10
+380 D.I. Simangli 25
+381 D.I. Simantren 37
+382 D.I. Simendut 15
+383 D.I. Simenter | 12
+384 D.I. Simenter II 17
+385 D.I. Simodin 17
+386 D.I. Simongkong 57
+387 D.I. Simuso 87
+388 D.I. Sinatah 85
+389 D.I. Singon 55
+390 D.I. Sinongko 15

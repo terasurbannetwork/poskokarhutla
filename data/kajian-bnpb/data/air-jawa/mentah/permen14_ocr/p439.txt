@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+74 D.I. Pacceroang 300
+75 D.I. Pakang 75
+76 D.I. Pakkalengkerang 165
+77 D.I. Palanci 150
+78 D.I. Palantikang 150
+79 D.I. Palladingang 538
+80 D.I. Pammanjengang 206
+81 D.I. Pamoka 25
+82 D.I. Panaikang 55
+83 D.I. Pangulu 125
+84 D.I. Pannyangkalang 149
+85 D.I. Paralengorang 300
+86 D.I. Parangloe 100
+87 D.I. Pasosokia 400
+88 D.I. Pattallasang 250
+89 D.I. Pencong 246
+90 D.I. Pokoborong 138
+91 D.I. Ponroka 25
+92 D.I. Pumbola 150
+93 D.I. Rappo Daeng 25
+94 D.I. Salentang/Sanaletang 155
+95 D.I. Sappa/Sakkaiya 20
+96 D.I. Seko 98
+97 D.I. Senre 710
+98 D.I. Sicini 446
+99 D.I. Sinalla/Sinallang/Karrasa 150
+100 D.I. Sipokeke/Sapakeke 174
+101 D.I. Songkolo/Buakkang 200
+102 D.I. Takapala 360
+103 D.I. Tako/Matteko 125
+104 D.I. Tallang Santarang 51
+105 D.I. Tamammayang 59
+106 D.I. Tanete 96
+107 D.I. Tanrurusa |, II 315
+108 D.I. Taruttu 85
+109 D.I. Tujuang 109
+110 D.I. Tunrung Lading 116
+111 D.I. Alluloe 100
+112 D.I. Panyawakkang 180
+113 D.I. Papoanriri 337
+114 D.I. Palianja 180
+115 D.I. Sapa Balang 98
+116 D.I. Sukkukang 84
+117 D.I. Lembangloe 76
+118 D.I. Boakang Berua 292
+119 D.I. Pannosoang Bumbung 212
+120 D.I. Boakang Lompoa 223
+121 D.I. Liku Kallong 160
+122 D.I. Batu Menteng 44
+123 D.I. Barumbung 91
+124 D.I. Passangarang 297
+125 D.I. Sapangkaeng 51
+126 D.I. Bangkowa 98
+127 D.I. Pimpinga 57
+128 D.I. Lantaloe 25
+129 D.I. Buloeng 62
+130 D.I. Parang Parang 43
+131 D.I. Punagaya 62
+132 D.I. Campagaya 48
+133 D.I. Liku Gallang 83
+134 D.I. Parang Tajjoro 100
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+135 D.I. Borong Lantebung 100
+136 D.I. Buakang Panreng 31
+137 D.I. Parang Bodongia 70
+138 D.I. Lengkese 57
+139 D.I. Labba Batu 299
+140 D.I. Leang Pembali 573
+141 D.I. Nassere 123
+142 D.I. Gentungang 59
+143 D.I. Balang Gallang 85
+144 D.I. Pangngawarrang 159
+145 D.I. Bulo-Bulo/Pencong 50
+146 D.I. Tanete Tompobulu 311
+147 D.I. Jengoang 120
+148 D.I. Pa'limbassang 31
+149 D.I. Be'Be 65
+150 D.I. Rannaloe 42
+151 D.I. Aripang 167
+152 D.I. Tobarania 85
+153 D.I. Gantinga 111
+154 D.I. Panyikokang | 24
+155 D.I. Panyikokang II 58
+156 D.I. Galunglolo 85
+157 D.I. Jene Maere 180
+158 D.I. Tabuakang 60
+159 D.I. Laburukeng 49
+160 D.I. Patalassang Punta 79
+161 D.I. Mamingko 87
+162 D.I. Mamampang 70
+163 D.I. Bulo-Bulo/Datara 60
+164 D.I. Balangkalobbang 42
+165 D.I. Patuku 174
+166 D.I. Bangki Alla 27
+167 D.I. Garentong 155
+168 D.I. Tombolo 99
+169 D.I. Talung 87
+170 D.I. Buloa 17
+171 D.I. Pattalikang 85
+172 D.I. Batu Kaloro 11
+173 D.I. Bissoloro 150
+174 D.I. Gallanga 50
+175 D.I. Tonasa 43
+176 D.I. Lambere 50
+177 D.I. Pontoa 80
+178 D.I. Pa'lappassang 50
+179 D.I. Matere Pa'burung 110
+180 D.I. Matere Pattallassang 75
+181 D.I. Mapung 60
+182 D.I. Balang Sapiri 315
+183 D.I. Saluwere 50
+184 D.I. Manimbahoi 75
+185 D.I. Paradaya 50
+186 D.I. Bola Romang II 50
+187 D.I. Ta'binjai | 70
+188 D.I. Ta'binjai II 50
+189 D.I. Paccellekang 200
+190 D.I. Bontopanno 84
+191 D.I. Balang-Balang 50
+192 D.I. Mannyampa 100
+193 D.I. Moncongloe 30
+194 D.I. Moncongang 100
+195 D.I. Lanta Boko 61

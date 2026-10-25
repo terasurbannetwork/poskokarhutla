@@ -56,14 +56,14 @@ async function muatDem(lat, lon) {
   let gagal = 0;
   const antre = Array.from({length: JU * JU}, (_, k) => k); /* 6 unduhan sekaligus + 1 ulangan: puluhan permintaan serentak ke S3 sering terputus */
   const kerja = async () => { for (let k; (k = antre.shift()) != null;) { const i = k % JU, j = (k / JU) | 0; let ok = false;
-    for (let coba = 0; coba < 2 && !ok; coba++) try { const r = await fetch(TERRARIUM(Z, tx0 + i, ty0 + j)); if (!r.ok) throw 0; const bm = await createImageBitmap(await r.blob()); g.drawImage(bm, i * 256, j * 256); ok = true; } catch {}
+    for (let coba = 0; coba < 4 && !ok; coba++) try { const r = await fetch(TERRARIUM(Z, tx0 + i, ty0 + j)); if (!r.ok) throw 0; const bm = await createImageBitmap(await r.blob()); g.drawImage(bm, i * 256, j * 256); ok = true; } catch {}
     if (!ok) gagal++; } };
   await Promise.all(Array.from({length: 6}, kerja));
   if (gagal > JU * JU / 2) throw new Error("ubin medan gagal dimuat");
   const dem = Lahar.elevasi(g.getImageData(0, 0, n, n).data, n * n);
   const sampel = []; for (let i = 0; i < dem.length; i += 97) if (dem[i] > 1) sampel.push(dem[i]); sampel.sort((a, b) => a - b);
   const relief = sampel.length > 50 ? sampel[Math.floor(sampel.length * .98)] - sampel[Math.floor(sampel.length * .05)] : 500;
-  return {dem, n, tx0, ty0, pusat: [gx - tx0 * 256, gy - ty0 * 256], relief, ex: relief < 600 ? 2 : relief < 1500 ? 1.6 : 1.3};
+  return {dem, n, tx0, ty0, gagal, pusat: [gx - tx0 * 256, gy - ty0 * 256], relief, ex: relief < 600 ? 2 : relief < 1500 ? 1.6 : 1.3};
 }
 
 /* ---------------------------------------------------------------- bentuk geojson */
@@ -207,11 +207,9 @@ function bahayaDi(lon, lat) {
 }
 /* paparan penduduk dari grid WorldPop 1 km: bagian luas piksel yang disapu sel awan panas/lahar x jiwa piksel (desa OSM hanya label). Satu unit per piksel. */
 function paparanUnit(pop, r) {
-  const s = S; if (!pop?.piksel?.length) return null; const d = s.dem, gx = d.tx0 * 256, gy = d.ty0 * 256, luas = (r.dx / 1000) ** 2;
-  const sel = (tab, geser) => Array.from(tab.idx, (v, q) => { const [lo, la] = Lahar.pxKeLL(Z, gx + (v % d.n) + .5, gy + ((v / d.n) | 0) + .5); return [la, lo, geser + tab.t[q] / 3600]; });
-  const pd = Tanggap.paparPiksel(pop.piksel, pop.sx, sel(r.pdc, 0), luas), lh = Tanggap.paparPiksel(pop.piksel, pop.sx, sel(r.lahar, T_LAHAR), luas);
-  return pop.piksel.map(([la, lo, jiwa], i) => { const f = Math.min(1, pd[i].frak + lh[i].frak), t = [pd[i].t, lh[i].t].filter(x => x != null);
-    return {lat: la, lon: lo, jiwa, km: jarakKm(s.g.lon, s.g.lat, lo, la), frak: f >= 0.005 ? f : 0, bahaya_jam: f >= 0.005 && t.length ? Math.min(...t) : null}; });
+  const s = S, d = s.dem, gx = d.tx0 * 256, gy = d.ty0 * 256;
+  const u = Tanggap.paparanUnit(pop, r, (x, y) => Lahar.pxKeLL(Z, gx + x + .5, gy + y + .5), d.n, (r.dx / 1000) ** 2, T_LAHAR); if (!u) return null;
+  return u.map(x => ({...x, km: jarakKm(s.g.lon, s.g.lat, x.lon, x.lat)}));
 }
 /* desa yang titiknya (atau tetangga 1 piksel) kena lahar / awan panas; tpdc/tlahar = jam sejak erupsi saat bahaya tiba (waktu model terkecil di sekitar titik desa) */
 function desaTerpapar() {
@@ -354,6 +352,7 @@ function panel() {
     <li><b>Awan panas:</b> kerucut energi H/L dari puncak (Malin &amp; Sheridan 1982) dengan pengungkungan lembah (tebal ${15} m). Kecepatan dari garis energi (Heim; Malin &amp; Sheridan 1982): v = &radic;(2g &times; (z<sub>kawah</sub> &minus; H/L &times; jarak &minus; z<sub>tanah</sub>)), dibatasi 3 sampai 50 m/dtk (garis energi adalah batas atas, tanpa gesekan); waktu tiba = jumlah jarak/kecepatan sepanjang alur. Di lereng terbuka lidahnya melebar setengah-lebar 0,2 &times; jarak dari kawah di tiap sisi; angka 0,2 ilustrasi tanpa kalibrasi. Lembah sempit di bawah ~80 m tak terpisah di DEM ini; kawah, kubah, dan tanggul baru tidak terbaca.</li>
     <li><b>Evakuasi:</b> penduduk dan desa dari ${s.pg ? esc(s.pg.zona_sumber || "data paparan") : "<i>data paparan belum tersedia untuk gunung ini</i>"}; waktu tempuh dari rute jalan OSM ${s.geo ? "(kecepatan per kelas jalan dari paparan.py, 15 sampai 50 km/jam)" : "(data rute belum ada, dipakai menit paparan atau garis lurus)"}. Penduduk dari grid WorldPop 1 km (piksel, bukan titik desa OSM); terpapar = jiwa piksel x bagian luas piksel yang disapu sel model (anggapan merata di piksel). Aman = tiba di titik kumpul sebelum bahaya sampai di pikselnya, di titik kumpul, atau di ruas jalan yang dilalui (ruas terpotong ungu di peta); truk hanya berangkat bila sempat tiba sebelum bahaya. Menit tiba adalah ilustrasi model. Kendaraan pribadi 60% warga, 3,5 orang per kendaraan, 600 kendaraan per jam keluar lewat satu titik kumpul (antrean), armada 40 orang per rit, jeda siap 30 menit. Biaya Rp 50.000 per jiwa per hari mengungsi (3 hari, ditambah hari bila mulai sebelum erupsi) dan Rp 2,5 juta per kendaraan armada per hari. Semua satuan ini asumsi sampai diganti data BPBD. Penutupan jalan baru dievaluasi lewat waktu tempuh (klik ruas), belum masuk peringkat.</li>
     <li><b>Masker dan bandara:</b> masker untuk desa dengan hujan abu relatif &ge; 0,1 (2 per orang per hari, lama erupsi + 2 hari, Rp 3.500). Bandara dihitung tertutup bila ada di dalam jejak abu di atas ambang penerbangan 2 mg/m³ (AbuModel.jejak) pada jam 1 sampai 72.</li>
+    <li><b>Pembanding Merapi 2010</b> (<code>scripts/gunungapi/cek_merapi2010.mjs</code>, dihitung 22 Okt 2026): skenario setara (V 10 jt m³, H/L 0,15, awan panas model 17,6 km; 2010 nyata ±15-17 km di Kali Gendol) menyapu area berpenduduk sekitar 90.000 jiwa pada grid WorldPop 1 km bila tak ada yang mengungsi. Catatan 2010 (BNPB/PVMBG): ±367 meninggal dengan evakuasi dan sekitar 350.000 orang mengungsi. Rasio paparan model terhadap korban jiwa ±245 kali; ini bukan prakiraan kematian: model menghitung penduduk di area sapuan tanpa evakuasi, sedangkan 2010 zona bahaya diperluas bertahap (10, 15, 20 km) sebelum awan panas besar tiba. Skenario bawaan layar (V 1 jt m³, H/L 0,3) menyapu sekitar 1.000 jiwa.</li>
     <li><b>Ketidakpastian:</b> jangkauan abu dihitung ulang pada tinggi kolom &times;0,7 dan &times;1,4; panjang lahar pada volume &divide;3 dan &times;3. Hasil model, belum divalidasi terhadap kejadian nyata.</li>
     ${s.pg ? "" : "<li>Tanpa data desa, endapan abu hanya tampil sebagai peta kisi.</li>"}</ul>`;
   const el = $("#smBd");
@@ -427,25 +426,27 @@ function evakuasi() {
   if (!s.unit) { el.innerHTML = teksRadius + `<p class="sm-msg">Grid penduduk WorldPop gunung ini belum tersedia, jadi jiwa terpapar belum bisa dihitung per piksel.</p>`; return; }
   const D = tanggapUnit(s), dasar = {radius_km: s.p.radius, mulai_jam: s.p.mulai, armada: {n: s.p.armada}};
   const res = Tanggap.evakuasi({...dasar, desa: D, dalam: Tanggap.dalamRadius(D, s.p.radius)});
-  el.innerHTML = teksRadius + `<p class="sm-msg">${res.terpapar0 > 0 ? `Menurut model (grid WorldPop 1 km, dibobot luas yang tersapu), ${hl(jiwaBulat(res.terpapar0) + " jiwa")} berada di area awan panas atau lahar bila tak ada yang mengungsi. Dengan rencana ini ${hl(jiwaBulat(res.terselamatkan) + " jiwa")} sempat tiba di titik kumpul sebelum bahaya sampai, ${hl(jiwaBulat(res.terpapar1) + " jiwa")} masih terpapar.` : "Pada skenario ini tak ada penduduk di area awan panas atau lahar."} ${res.diungsi > 0 ? `Pengungsian ${jiwaBulat(res.diungsi)} jiwa selesai di titik kumpul pada jam ${BULAT(res.selesai_jam, 1)} dan memakan sekitar Rp ${rupiah(res.biaya)} (${res.hari} hari).` : "Tak ada penduduk di dalam radius ini, jadi tak ada yang diungsikan."} Jam dan biaya adalah ilustrasi model; satuan biaya, kapasitas jalan, dan bagian warga berkendaraan pribadi (60%) adalah asumsi.</p>`;
+  el.innerHTML = teksRadius + `<p class="sm-msg">${res.terpapar0 > 0 ? `Menurut model (grid WorldPop 1 km, dibobot luas yang tersapu), ${hl(jiwaBulat(res.terpapar0) + " jiwa")} berada di area awan panas atau lahar bila tak ada yang mengungsi. Dengan rencana ini ${hl(jiwaBulat(res.terselamatkan) + " jiwa")} sempat tiba di titik kumpul sebelum bahaya sampai, ${hl(jiwaBulat(res.terpapar1) + " jiwa")} masih terpapar.` : "Pada skenario ini tak ada penduduk di area awan panas atau lahar."} ${res.diungsi > 0 ? `Pengungsian ${jiwaBulat(res.diungsi)} jiwa selesai di titik kumpul pada jam ${BULAT(res.selesai_jam, 1)} dan memakan sekitar Rp ${rupiah(res.biaya)} (${res.hari} hari).` : "Tak ada penduduk di dalam radius ini, jadi tak ada yang diungsikan."} ${res.terpotong ? "Perhitungan armada dipotong di 50.000 rit, jadi hasilnya batas bawah. " : ""}${s.dem?.gagal ? `${s.dem.gagal} dari 25 ubin medan gagal diunduh (dianggap 0 m): muat ulang halaman untuk hasil lengkap. ` : ""}Jam dan biaya adalah ilustrasi model; satuan biaya, kapasitas jalan, dan bagian warga berkendaraan pribadi (60%) adalah asumsi.</p>`;
   peringkatKartu(D, dasar, res); kumpulKartu(D); logistikKartu();
 }
 /* data per desa (label): waktu tempuh dari jalan nyata (graf rute paparan, kecepatan per kelas jalan OSM, ruas tertutup ikut), jatuh ke menit paparan, lalu ke garis lurus x 1,4 / kecepatan median jalan.
    ruas = ruas di jalur desa itu yang tersentuh bahaya model: [[menit dari desa, jam bahaya]] */
 function tanggapDesa(s) {
+  s.tujuan ||= [...new Map((s.pg?.evakuasi || []).filter(e => e.ke).map(e => [e.ke.join(","), e.ke])).values()];
   const G = siapGraf(s), d1 = G?.d0 ? (s.tutup.size ? dijkstra(G, s.tutup) : G.d0) : null, ev = new Map((s.pg?.evakuasi || []).map(e => [e.desa, e])), vmed = G?.vmed || 20;
   if (G && !s.bahayaRuas) s.bahayaRuas = G.ruasJam = bahayaRuasJam(s);
   return s.desa.map((d, i) => { const n = G?.dn[i], e = ev.get(d.nama); let m = null, ruas = [];
     if (d1 && n && isFinite(G.d0[n[0]])) { m = isFinite(d1[n[0]]) ? d1[n[0]] + n[1] / 15 * 60 : Infinity; if (isFinite(m)) ruas = Tanggap.ruasBahaya(d1, n[0], s.bahayaRuas).map(([o, t]) => [o + n[1] / 15 * 60, t]); }
     if (m == null && e) m = e.menit; if (m == null) m = d.km * 1.4 / vmed * 60;
-    const key = e?.ke ? Math.round(e.ke[0] * 1e4) + "," + Math.round(e.ke[1] * 1e4) : "lain";
-    return {m, ruas, key, label: e?.titik_kumpul || "", tb: e?.ke ? bahayaDi(e.ke[0], e.ke[1]) : null, nama: d.nama, lon: d.lon, lat: d.lat}; });
+    /* desa tanpa entri evakuasi: titik kumpul terdekat (garis lurus) dari daftar tujuan, bukan satu antrean bersama */
+    const tj = e?.ke ? {kunci: Tanggap.kunciTitik(e.ke), titik: e.ke} : s.tujuan.length ? Tanggap.tujuanTerdekat(s.tujuan, d.lon, d.lat) : null;
+    return {m, ruas, key: tj?.kunci ?? "-", label: e?.titik_kumpul || "", tb: tj ? bahayaDi(tj.titik[0], tj.titik[1]) : null, nama: d.nama, lon: d.lon, lat: d.lat}; });
 }
 /* satu unit per piksel WorldPop: ikut waktu tempuh, titik kumpul, dan ruas desa OSM terdekat (<= 6 km, ditambah jarak ke desa pada 15 km/jam); tanpa desa dekat: garis lurus x 1,4 / kecepatan median */
 function tanggapUnit(s) {
   const T = tanggapDesa(s), vmed = s.graf?.vmed || 20;
   return s.unit.map(u => { let b = -1, bd = 6; if (!u.dekat) { for (let i = 0; i < T.length; i++) { const k = jarakKm(u.lon, u.lat, T[i].lon, T[i].lat); if (k < bd) { bd = k; b = i; } } u.dekat = [b, bd]; } const [i, off] = u.dekat, t = i >= 0 ? T[i] : null;
-    return {jiwa: u.jiwa, frak: u.frak, km: u.km, bahaya_jam: u.bahaya_jam, tempuh_menit: t ? t.m + off / 15 * 60 : u.km * 1.4 / vmed * 60, titik: t ? t.key : "lain", label: t?.label || "", titik_bahaya_jam: t?.tb ?? null, ruas: t ? t.ruas.map(([o, th]) => [o + off / 15 * 60, th]) : []}; });
+    return {jiwa: u.jiwa, frak: u.frak, km: u.km, bahaya_jam: u.bahaya_jam, tempuh_menit: t ? t.m + off / 15 * 60 : u.km * 1.4 / vmed * 60, titik: t ? t.key : (u.tj ||= Tanggap.tujuanTerdekat(s.tujuan, u.lon, u.lat)?.kunci ?? "-"), label: t?.label || "", titik_bahaya_jam: t?.tb ?? null, ruas: t ? t.ruas.map(([o, th]) => [o + off / 15 * 60, th]) : []}; });
 }
 /* jam bahaya tiba di tiap ruas rute (simpul pertama yang tersentuh sel model) atau null */
 function bahayaRuasJam(s) {

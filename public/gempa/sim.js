@@ -79,6 +79,7 @@ const Sim = (() => {
     if (typeof GempaGuncangan === "undefined") throw new Error("guncangan.js belum dimuat");
     const [model, sesar, pusat, pend, fas, grid] = await Promise.all([muatJSON("data/model_guncangan.json"), muatJSON("data/sesar.geojson"),
       muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json"), muatJSON("../data/fasilitas.json"), Tsunami.muat("data/")]);
+    const bpbd = await muatJSON("../data/bpbd.json").then(d => d.kantor || [], () => []);
     const M = GempaGuncangan.pasang(model), cari = Tsunami.pencariKec(pusat, 60);
     /* Vs30 per sel (proksi kemiringan DEM, vs30.py); gagal dimuat = jatuh ke 400 m/s seragam dan panel mengatakannya */
     try { GempaKerusakan.atur(await muatJSON("data/kalibrasi_kerusakan.json")); } catch (e) { console.warn("kalibrasi kerusakan tidak termuat", e); }
@@ -90,7 +91,7 @@ const Sim = (() => {
       return {id: "gem" + i, i, jenis: f.properties.jenis, garis: g, L, n: `Sesar ${f.properties.jenis} ${fmt(Math.round(L))} km${k ? " dekat " + k.split("|")[1] : ""}`}; })
       .filter(s => s.jenis !== "pemekaran").sort((a, b) => a.n.localeCompare(b.n, "id"));
     /* fasilitas.json & sekolah.json baru mencakup provinsi karhutla: kartu fasilitas hanya untuk provinsi yang tercakup */
-    return {model, M, vs30, vs30Ada: !!vs30, sesar, pusat, pend: pend.kec || {}, rs: fas.filter(f => f.t === "rs"), provFas: new Set(fas.map(f => f.prov)), grid, cari, sekolah: null}; })().catch(e => { janji = null; throw e; });
+    return {bpbd, model, M, vs30, vs30Ada: !!vs30, sesar, pusat, pend: pend.kec || {}, rs: fas.filter(f => f.t === "rs"), provFas: new Set(fas.map(f => f.prov)), grid, cari, sekolah: null}; })().catch(e => { janji = null; throw e; });
   /* ---------- pekerja latar (Web Worker): waktu tiba tsunami (~100-500 ms) dan sekolah.json (7 MB) tidak menahan klik.
      Gagal membuat Worker (CSP, peramban lama) = jatuh ke utas utama lewat nanti(). */
   const KODE_PEKERJA = `let G = null, P = null;
@@ -175,7 +176,8 @@ self.onmessage = async e => { const d = e.data;
     const provKuat = new Set(kec.filter(c => c.mmi >= 6.5).map(c => c.prov)), provAda = [...provKuat].filter(p => D.provFas.has(p));
     const rs = D.rs.filter(f => provAda.includes(f.prov) && Math.abs(f.lat - sk.lat) < degLa && Math.abs(f.lon - sk.lon) < degLo).map(f => ({...f, mmi: mmiDi(f.lat, f.lon)})).filter(f => f.mmi >= 6.5);
     const kerusakan = KZ.taksir(sebar, jg, sk.m, jam), t7 = a => a.slice(7).reduce((x, y) => x + y, 0);
-    const H = {ras, kec, perKelas, tujuhPita: [t7(perLo), t7(perKelas), t7(perHi)], mmiPita: kec.length ? kec[0].pga.map(M.pgaKeMmi) : null, kerusakan, vs30Ada: D.vs30Ada, pgaDi, provKuat, provAda, kota: Object.values(kota).filter(c => c.mmi >= 4).sort((a, b) => a.tS - b.tS), rs, sekolah: null, win, mmiDi,
+    const bpbd = D.bpbd.map(b => ({...b, km: km2(sk.lat, sk.lon, b.lat, b.lon)})).sort((a, b) => a.km - b.km).slice(0, 5);
+    const H = {bpbd, ras, kec, perKelas, tujuhPita: [t7(perLo), t7(perKelas), t7(perHi)], mmiPita: kec.length ? kec[0].pga.map(M.pgaKeMmi) : null, kerusakan, vs30Ada: D.vs30Ada, pgaDi, provKuat, provAda, kota: Object.values(kota).filter(c => c.mmi >= 4).sort((a, b) => a.tS - b.tS), rs, sekolah: null, win, mmiDi,
       tSelesai: Math.hypot(win, sk.dalam) / VS + 4, ts: null, evak: []};
     H.kotakSekolah = [sk.lat - degLa, sk.lat + degLa, sk.lon - degLo, sk.lon + degLo];
     return H;
@@ -273,6 +275,10 @@ self.onmessage = async e => { const d = e.data;
     const k6 = H.kec.filter(c => c.mmi >= 5.5);
     if (H.kec.length) out.push(kartu(pil("Wilayah", "#3f6fa8"), k6.length ? `${hl(fmt(k6.length) + " kecamatan")} di guncangan VI atau lebih` : "Tidak ada kecamatan di guncangan VI atau lebih",
       `<table class="tb3"><thead><tr><th>Kecamatan</th><th class="n">MMI</th><th class="n">Penduduk</th></tr></thead><tbody>${H.kec.slice(0, 8).map(c => `<tr><td><button class="link" data-ke="${c.lat},${c.lon}">${esc(c.nama)}</button><small>${esc(c.kab)}</small></td><td class="n">${pilMmi(c.mmi)}</td><td class="n num">${rb(c.p)}</td></tr>`).join("")}</tbody></table>`, H.mmiPita ? `Guncangan tertinggi MMI ${rom(H.mmiPita[1])}, rentang ${rom(H.mmiPita[0])} sampai ${rom(H.mmiPita[2])} (satu sigma GMPE).` : ""));
+    /* 3b. posko tanggap: kantor BPBD terdekat dari pusat gempa (BNPB peta_bpbd) */
+    if (H.bpbd.length) out.push(kartu(pil("Tanggap darurat", "#2f7d6b"), `Kantor BPBD terdekat ${hl(esc(H.bpbd[0].nama.toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase())))}, sekitar ${hl(fmt(Math.round(H.bpbd[0].km)) + " km")} dari pusat gempa`,
+      `<table class="tb3"><thead><tr><th>Kantor</th><th class="n">Jarak</th><th class="n">Pusdalops</th></tr></thead><tbody>${H.bpbd.map(b => `<tr><td>${esc(b.nama)}</td><td class="n num">${fmt(Math.round(b.km))} km</td><td class="n num">${esc(b.pusdalops || "–")}</td></tr>`).join("")}</tbody></table>`,
+      "Sumber: BNPB peta_bpbd. Kapasitas regu SAR dan tempat tidur RS belum ada datanya di repo."));
     /* 4. peringatan dini, ilustrasi */
     if (H.kota.length) { const k = H.kota.filter(c => c.tS - c.tP >= 1).sort((a, b) => b.mmi - a.mmi)[0];
       out.push(kartu(pil("Ilustrasi peringatan dini", "#5a6b85"), k ? `Warga ${esc(k.kab)} punya ${hl(fmt(Math.floor(k.tS - k.tP)) + " detik")} antara gelombang P dan guncangan kuat` : "Guncangan kuat tiba hampir bersamaan dengan gelombang pertama",

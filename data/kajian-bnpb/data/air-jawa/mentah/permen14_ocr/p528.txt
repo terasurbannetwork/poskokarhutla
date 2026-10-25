@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 598
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+26 D.LA.T. Probosuman SDPO 087 60
+27 D.LA.T. Brahu SDPO 088 60
+28 D.LA.T. Kedung Banteng SDPO 092 56
+29 D.LA.T. Kedung Banteng SDPO 104 35
+30 D.LA.T. Serangan SDPO 463 35
+31 D.LA.T. Sukorejo SDPO 464 35
+32 D.LA.T. Babadan SDPO 465 35
+33 D.LA.T. Prajekan SDPO 466 40
+34 D.LA.T. Balong SDPO 488 35
+35 D.LA.T. Pengkol SDPO 489 40
+36 D.LA.T. Gegeran SDPO 490 25
+37 D.LA.T. Prajegan SDPO 491 40
+38 D.I.A.T. Babadan SDPO 492 35
+39 D.LA.T. Gontor SDPO 529 30
+40 D.LA.T. Joresaan SDPO 530 50
+41 D.LA.T. Pijeran SDPO 531 R 35
+42 D.LA.T. Tulung SDPO 532 35
+43 D.LA.T. Lengkong SKPO 147 4
+44 D.LA.T. Lengkong SKPO 148 4
+45 D.LA.T. Karangan SKPO 149 4
+46 D.LA.T. Karangan SKPO 150 4
+47 D.LA.T. Karangan SKPO 151 5
+48 D.LA.T. Karangan SKPO 152 5
+49 D.LA.T. Gelang Lor SKPO 153 4
+50 D.LA.T. Gelang Lor SKPO 154 4
+51 D.LA.T. Gelang Lor SKPO 155 5
+52 D.LA.T. Gelang Lor SKPO 156 5
+53 D.LA.T. Kranggan SKPO 230 5
+54 D.LA.T. Lengkong SKPO 231 5
+55 D.LA.T. Nongkodono SKPO 238 5
+56 D.LA.T. Nongkodono SKPO 239 5
+57 D.LA.T. Nongkodono SKPO 240 5
+58 D.LA.T. Tegalombo SKPO 241 5
+59 D.LA.T. Tegalombo SKPO 242 5
+60 D.LA.T. Tegalombo SKPO 243 5
+61 D.LA.T. Poko SKPO 251 5
+62 D.LA.T. Poko SKPO 252 5
+63 D.LA.T. Bringinan SKPO 256 5
+64 D.LA.T. Serangan SMPO 291 12
+65 D.LA.T. Serangan SMPO 292 12
+66 D.LA.T. Sukorejo SMPO 293 12
+67 D.LA.T. Sukorejo SMPO 294 12
+68 D.I.A.T. Crabak SMPO 295 12
+69 D.LA.T. Crabak SMPO 299 12
+70 D.LA.T. Bancar SMPO 312 12
+71 D.LA.T. Bancar SMPO 313 12
+72 D.LA.T. Bediwetan SMPO 314 12
+73 D.LA.T. Bediwetan SMPO 315 12
+74 D.LA.T. Karangan SMPO 316 12
+75 D.LA.T. Karangan SMPO 317 15
+76 D.LA.T. Poko SMPO 364 15
+77 D.LA.T. Poko SMPO 365 10
+78 D.LA.T. Poko SMPO 366 15
+79 D.LA.T. Crabak SMPO 367 10
+80 D.I.A.T. Crabak SMPO 368 12
+81 D.LA.T. Bedi Kulon SMPO 369 10
+82 D.LA.T. Bedi Kulon SMPO 370 10
+83 D.LA.T. Bedi Kulon SMPO 371 10
+84 D.LA.T. Bancar SMPO 372 12
+85 D.LA.T. Bancar SMPO 373 15
+86 D.I.A.T. Bringinan SMPO 441 15

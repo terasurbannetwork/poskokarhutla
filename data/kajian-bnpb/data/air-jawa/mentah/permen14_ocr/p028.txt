@@ -1,0 +1,41 @@
+#TATA_LETAK satu-tabel lebar=2480
+2012, Nc.638
+26
+Status Daerah Irigasi Yang Menjadi Wewinang Dan Tanggung Jawab F'emerintah
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Pompa Sumur D.I. (Ha)
+| PROVINSI KALIMANTAN SELATAN 1 5.987
+a Kab. Hulu Sungai Utara
+1 C.I. Alabio 5.987
+Il PROVINSI PAPUA 5 30.740
+b Kab. Merauke
+1 C.I. Kurik 7.600
+2 L.I. Semangga 5.500
+3 L.I. Tanah Miring 7.840
+4 C.I. Jagebob 5.400
+5 C.I. Sermayam 4.400
+TOTAL 6 36.727
+Status Daerah Irigasi Yang Mnjadi Wewenang Dan Tanggung Jawab Pemerintah
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+| PROVINSI ACEH 1 7.000
+a Kab. Aceh Singkil
+1 D.LT. Rawa Singkil 7.000
+Il PROVINSI JAWA TIMUR 1 3.322
+a Kab. Sidoarjo
+1 D.I.T. Afv. Kalang Anyar 3.322
+Il PROVINSI SULAWESI TENGGARA 5 15.600
+a Kab. Bombana
+1 D.I.T. Poleang 3.000
+b Kab. Kolaka
+1 D.I.T. Tamboli/Samaturu 3.000
+c Kab. Konawe
+1 D.LT. Paku Jaya II 3.600
+d Kab. Konawe Selatan
+1 D.L.T. Tinanggea 3.000
+2 D.I.T. Labokeo 3.000
+TOTAL 7 15.922
+MENTERI FEKERJAAI UMUM DAN PERUMAHAN RAKYAT
+REP JBLIK INDC NESIA,
+M. BA:5UKI HADIN ULJONO

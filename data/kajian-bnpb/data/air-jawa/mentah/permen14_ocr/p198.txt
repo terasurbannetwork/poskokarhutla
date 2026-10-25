@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+224 D.I. Bodas 50
+225 D.I. Bojong I Pekikiran 10
+226 D.I. Bojong II Pekikiran 25
+227 D.I. Bojong III 75
+228 D.I. Bojong IV 85
+229 D.I. Butek 15
+230 D.I. Cengang II 25
+231 D.I. Cengang III 30
+232 D.I. Cengingis 25
+233 D.I. Curug Pandanarum 52
+234 D.I. Dagan 10
+235 D.I. Dawung 13
+236 D.I. Deles 30
+237 D.I. Dolog II 40
+238 D.I. Gemawang | 16
+239 D.I. Gemawang II 17
+240 D.I. Semawang III 27
+241 D.I. Gesek 30
+242 D.I. Gintung 50
+243 D.I. Glogak 32
+244 D.I. Gondang Tempuran 40
+245 D.I. Growong I 35
+246 D.I. Gumelar 40
+247 D.I. Igir Tugel 100
+248 D.I. Ireng 25
+249 D.I. Ireng Sigaluh 17
+250 D.I. Jamban 40
+251 D.I. Karang Tengah 30
+252 D.I. Karekan 60
+253 D.I. Kedawung I 25
+254 D.I. Kedawung II 40
+255 D.I. kembang 50
+256 D.I. Kesenet 10
+257 D.I. Koneng 50
+258 D.I. Krangean I 40
+259 D.I. Krangean II 20
+260 D.I. Krangean III 40
+261 D.I. Krangean IV 20
+262 D.I. Krasak 35
+263 D.I. Kunina 25
+264 D.I. Lebuh 10
+265 D.I. Lintang Tiba 90
+266 D.I. Lumajang II 12
+267 D.I. Lumajang III 84
+268 D.I. Lumajang IV 61
+269 D.I. Lumajang V 101
+270 D.I. Majalengka 15
+271 D.I. Mudal 30
+272 D.I. Nagasari 60
+273 D.I. Pagedongan I Punggelan 60
+274 D.I. Pagedongan II 50
+275 D.I. Pantog 60
+276 D.I. Paseh III 40
+277 D.I. Pereng 150
+278 D.I. Rancah 35
+279 D.I. Rawa 75
+280 D.I. Santen 30
+281 D.I. Semangkung 100
+282 D.I. Serang 70
+283 D.I. Serang Susukan 10
+284 D.I. Sijati 60
+#KANAN
+198
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+285 D.I. Sikubon III 31
+286 D.I. Silebuh 60
+287 D.I. Silumbu 100
+288 D.I. Sirawa 70
+289 D.I. Siwatu 80
+290 D.I. soplan 50
+291 D.I. Srengseng Badakarya 10
+292 D.I. Srima 10
+293 D.I. Subur 70
+294 D.I. Suruhan 25
+295 D.I. Tawonan 20
+296 D.I. Tempurung 30
+297 D.I. Urang II 40
+298 D.I. Urang III 25
+299 D.I. Wadas | 30
+300 D.I. Wadas II 30
+301 D.I. Wadas III 20
+302 D.I. Watubelah 30
+303 D.I. Wungu I 15
+304 D.I. Wungu II 15
+305 D.I. Legoksayem 60
+306 D.I. Pager III 111
+307 D.I. Sokasari 50
+308 D.I. kalitlaga 45
+309 D.I. Grenjeng 50
+310 D.I. Bojong Batur 75
+311 D.I. Adiresa 18
+312 D.I. Pasuruhan 50
+313 D.I. Nggentu 70
+314 D.I. Karanggayam 30
+315 D.I. Kedung kendil 15
+316 D.I. Kepuh II 20
+317 D.I. Bojong III Pakikiran 15
+318 D.I. Betaka II 25
+319 D.I. Teru 12
+320 D.I. Kemit 21
+321 D.I. Kembang Susukan 30
+322 D.I. Rambang 10
+b Kab. Banvumas 573 23.716
+1 D.I. Alasmalang 72
+2 D.I. Anda 27
+3 D.I. Antapsari 56
+4 D.I. Anyar | 63
+5 D.I. Ares 12
+6 D.I. Arus 148
+7 D.I. Arus | 11
+8 D.I. Arus II 42
+9 D.I. Asahan 50
+10 D.I. Badak | 21
+11 D.I. Badak II 35
+12 D.I. Bakmati 58
+13 D.I. Balong 11
+14 D.I. Bana Keling 19
+15 D.I. Bandayuda 90
+16 D.I. Bandayuda 19
+17 D.I. Bangen 40
+18 D.I. Bangen 8
+19 D.I. Bangkong 60
+20 D.I. Bangsa I 14
+21 D.I. Bangsa II 39

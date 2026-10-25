@@ -1,0 +1,141 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+9 D.I. Cipagadungan 40
+10 D.I. Cirawa 60
+11 D.I. Citaman 170
+12 D.I. Huni 30
+13 D.I. Lio 59
+14 D.I. Pagelaran 297
+15 D.I. Panembahan 105
+16 D.I. Pangkalan 911
+17 D.I. Parakan Badak 175
+18 D.I. Tonjong 424
+19 D.I. Waru 345
+20 D.I. Apur Tinggal 120
+21 D.I. Cikuntul 337
+22 D.I. Cilesung 150
+23 D.I. Cipicung 76
+24 D.I. Citaman 170
+25 D.I. Ciwadas 75
+26 D.I. Cuhambulu 50
+27 D.I. Dariwan 100
+28 D.I. Dongkal 425
+29 D.I. Jaya Mulya 150
+30 D.I. Kalen Tunut 150
+31 D.I. Kamojing 170
+32 D.I. Kiciong 107
+33 D.I. Kutamaneh 80
+34 D.I. Pangasinan 135
+35 D.I. Pasir Putih 125
+36 D.I. Penggalangan 150
+37 D.I. Segar Jaya 100
+38 D.I. Solokan 200
+39 D.I. Srikamulyan 400
+40 D.I. Sumberjaya 484
+41 D.I. Tambak Sari 150
+42 D.I. Tambak Sumur 200
+43 D.I. Tanah baru 150
+44 D.I. Tanjung Bungin 100
+45 D.I. Tanjung Mekar 125
+46 D.I. Tanjung Pakis 100
+47 D.I. Tanjungjaya 583
+48 D.I. Telagajaya 200
+
+k Kab. Kuninaan 67 21.853
+
+1 D.I. Ancaran 554
+
+2 D.I. Bantarwangi 527
+
+3 D.I. Banyu Hurip 250
+
+4 D.I. Bratakasian 517
+
+5 D.I. Ciawi II 429
+
+6 D.I. Cibatu | 218
+
+7 D.I. Ciberes 654
+
+8 D.I. Ciaolat 153
+
+9 D.I. Cihambar 582
+10 D.I. Cijolang 300
+11 D.I. Cikepel 551
+12 D.I. Cikotok Cs 305
+13 D.I. Cilangkap 595
+14 D.I. Cilengkrang A 414
+15 D.I. Cilengkrang B 529
+16 D.I. Cileuya 230
+17 D.I. Cimonte 709
+18 D.I. Cinangka | 336
+19 D.I. Cipager 365
+#KANAN
+173 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Cipager Udik 526
+21 D.I. Cipaku 843
+22 D.I. Ciparigi 293
+23 D.I. Cipikul 428
+24 D.I. Cisande Hilir 476
+25 D.I. Cisrigading 363
+26 D.I. Cisubang 452
+27 D.I. Citaal 527
+28 D.I. Citamba 325
+29 D.I. Citanggulun 864
+30 D.I. Kedungcalung 259
+31 D.I. Kenyere 808
+32 D.I. Luragung 422
+33 D.I. Surakatiga 510
+34 D.I. Susukan 515
+35 D.I. Susukan II 225
+36 D.I. Cengkok 109
+37 D.I. Cibatu II 146
+38 D.I. Cicerem 111
+39 D.I. Cidano 55
+40 D.I. Cigimpur 15
+41 D.I. Cigintung 12
+42 D.I. Cigorowong 155
+43 D.I. Ciherang 750
+44 D.I. Cijamaka 513
+45 D.I. Cikadu 123
+46 D.I. Cilagadar 85
+47 D.I. Cilame 85
+48 D.I. Cimanceng 323
+49 D.I. Cinangka II 431
+50 D.I. Cipari 35
+51 D.I. Cipasir 70
+52 D.I. Cipedak 476
+53 D.I. Cipereng 296
+54 D.I. Cipeundeuy 120
+55 D.I. Ciporang 301
+56 D.I. Cirungkap 61
+57 D.I. Cisande Hulu 402
+58 D.I. Cisubur 28
+59 D.I. Citambeg II 408
+60 D.I. Citambleg I 29
+61 D.I. Ciwaluna 50
+62 D.I. Ciweri 77
+63 D.I. Hawangan Gede 75
+64 D.I. Jurutulis 77
+65 D.I. Paniis Tonggoh 151
+66 D.I. Sindang Barang 83
+67 D.I. Soka Udik 147
+| Kab. Maialenaka 396 22.518
+1 D.I. Arkilem 30
+2 D.I. Bagus 65
+3 D.I. Balekambang 281
+4 D.I. Batugede 55
+5 D.I. Batuseuneu 26
+6 D.I. Bunigeulis 17
+7 D.I. Campaka 95
+8 D.I. Carihiang 57
+9 D.I. Ciawi 149
+10 D.I. Ciawilega 38
+11 D.I. Cibeureum 99

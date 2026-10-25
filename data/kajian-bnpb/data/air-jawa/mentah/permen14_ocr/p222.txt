@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+70 D.I. Mangin | 75
+71 D.I. Mangin II 50
+72 D.I. Menawan 267
+73 D.I. Mendikil 100
+74 D.I. Menduran 250
+75 D.I. Mlowo/Senggot 73
+76 D.I. Mojolumut 108
+77 D.I. Mojorebo 8
+78 D.I. Mudal I 56
+79 D.I. Mudal II 25
+80 D.I. Nambuhan 216
+81 D.I. Ngablak | 60
+82 D.I. Ngaliman 115
+83 D.I. Ngeluk 110
+84 D.I. Ngenden 212
+85 D.I. Ngesong 175
+86 D.I. Nglangon 730
+87 D.I. Ngrandah Winong 155
+88 D.I. Ngrandu 30
+89 D.I. Ngrandu I 30
+90 D.I. Ngrejeng 154
+91 D.I. Ngrenjah Galeh 290
+92 D.I. Ngrijo 63
+93 D.I. Pajaren 50
+94 D.I. Pakuwon Kanan 20
+95 D.I. Pakuwon Kiri 25
+96 D.I. Pancur 10
+97 D.I. Pasiraman 88
+98 D.I. Penawangan | 153
+99 D.I. Penganten 110
+100 D.I. Pengkol II 100
+101 D.I. Pengkol III 60
+102 D.I. Pengkol Kanan 30
+103 D.I. Pilang Nglobar 6
+104 D.I. Pojok | 97
+105 D.I. Pojok II 50
+106 D.I. Pompa Ex Dumpil Kanan (Brati) 666
+107 D.I. Pondok 47
+108 D.I. Pondok Sendang sirah 24
+109 D.I. Pucung 10
+110 D.I. Pulo/Semen 75
+111 D.I. Putat 50
+112 D.I. Ragem 50
+113 D.I. Rejosari 29
+114 D.I. Sandi 20
+115 D.I. Sanggeh 46
+116 D.I. Sb. Karangsari Cs 214
+117 D.I. Sedadi 100
+118 D.I. Sedayu 66
+119 D.I. Selojari 68
+120 D.I. Selokromo Nglobar 40
+121 D.I. Sendang Mulyo 13
+122 D.I. Sendang Waru | 10
+123 D.I. Sendana Waru II 40
+124 D.I. Sengon Wetan 100
+125 D.I. Sepreh 188
+126 D.I. Simo 482
+127 D.I. Sinawah 36
+128 D.I. Sinawah Ex Dumpil Kanan 55
+129 D.I. Srikuning 25
+130 D.I. Sucen 11
+#KANAN
+222
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+131 D.I. Talang Dudo 169
+132 D.I. Tapan Blabag 55
+133 D.I. Taruman | 58
+134 D.I. Temurejo 75
+135 D.I. Terkesi 53
+136 D.I. Tirem 78
+137 D.I. Tirto 557
+138 D.I. Tlecer 75
+139 D.I. Toko I 60
+140 D.I. Toko II 40
+141 D.I. Tunggak 75
+142 D.I. Wandan Kemiri 70
+143 D.I. Waru Karanganyar | 195
+144 D.I. Waru Karanganyar II 186
+145 D.I. Watusong 25
+146 D.I. Wd. Sanggeh 46
+147 D.I. Widuri 84
+148 D.I. Winong 60
+149 D.I. Wuni 6
+150 D.I. Bendung Sumberagung 60
+151 D.I. Bringin Selatan 30
+152 D.I. Brongkah 23
+153 D.I. Candi 15
+154 D.I. Candisari 50
+155 D.I. Clupak 45
+156 D.I. Corot 50
+157 D.I. Gani 200
+158 D.I. Kandangrejo 380
+159 D.I. Karanganyar Glugu 35
+160 D.I. Karangsari II 300
+161 D.I. Kronggen II 347
+162 D.I. Kuripan 130
+163 D.I. Lebak 50
+164 D.I. Lemah Putih II 98
+165 D.I. Ngrumpeng 810
+166 D.I. Nonang I 50
+167 D.I. Nonang II 67
+168 D.I. Penawangan II 50
+169 D.I. Penawangan III 40
+170 D.I. Pilang Kedungrejo 9
+171 D.I. Pucang 40
+172 D.I. Sambak 125
+173 D.I. Sendang Mudal 50
+174 D.I. Sendang Sirah 24
+175 D.I. Sendang Wedok 13
+176 D.I. Sumber Coyo 218
+177 D.I. Sumberjosari 54
+178 D.I. Sumurgede Kepoh 15
+179 D.I. Taruman II 75
+180 D.I. Tegalrejo 20
+181 D.I. Tempel 45
+182 D.I. Tumenggungan 15
+i Kab. Jepara 834 28.247
+1 D.I. Ampel 63
+2 D.I. Anggelan 61
+3 D.I. Antong Semak 10
+4 D.I. Awar-Awar 11
+5 D.I. Bajing/Depok 29
+6 D.I. Bakalan 10
+7 D.I. Bakalan/Guru 13

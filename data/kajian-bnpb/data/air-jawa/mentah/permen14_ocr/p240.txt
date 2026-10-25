@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+31 D.I. Borang 47
+32 D.I. Borangan 38
+33 D.I. Brajan 26
+34 D.I. Brangkal 123
+35 D.I. Brokolan 13
+36 D.I. Brongkol 201
+37 D.I. Brunyah 32
+38 D.I. Bugelan 95
+39 D.I. Bugelan 28
+40 D.I. Bungkusan 20
+41 D.I. Buntalan 72
+42 D.I. Cakotan 13
+43 D.I. Candaran 98
+44 D.I. Candi 47
+45 D.I. Candirubuh 24
+46 D.I. Cangak 10
+47 D.I. Cangkring 30
+48 D.I. Cangkring 12
+49 D.I. Cangkring 11
+50 D.I. Cangkring 30
+51 D.I. Cangkringan 14
+52 D.I. Carikan 213
+53 D.I. Celengan 99
+54 D.I. Cino 29
+55 D.I. Cucukan 29
+56 D.I. Cumpikan 322
+57 D.I. Cungkrungan 131
+58 D.I. Cuweran 4
+59 D.I. Daden 15
+60 D.I. Dagen 11
+61 D.I. Dagen I 19
+62 D.I. Daleman 10
+63 D.I. Daratan 208
+64 D.I. Dawung 11
+65 D.I. Dedesan 177
+66 D.I. Deleran 10
+67 D.I. Delukan 15
+68 D.I. Dengok B 28
+69 D.I. Depok 19
+70 D.I. Dlewer 15
+71 D.I. Dlimas 285
+72 D.I. Dlingo 31
+73 D.I. Dolikan 323
+74 D.I. Dompyong 24
+75 D.I. Dondong 32
+76 D.I. Doyo 342
+77 D.I. Drono 34
+78 D.I. Dukuh 115
+79 D.I. Dukuh 14
+80 D.I. Dukuh 11
+81 D.I. Dukuh B 17
+82 D.I. Dumuk Kidul 106
+83 D.I. Dumuk Lor 45
+84 D.I. Dumung 47
+85 D.I. Duroko 30
+86 D.I. Duwet 13
+87 D.I. Duwet 12
+88 D.I. Gabugan 27
+89 D.I. Gampar 24
+90 D.I. Gamping 109
+91 D.I. Gandu 13
+#KANAN
+2:10
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+92 D.I. Gantung 10
+93 D.I. Gatak 62
+94 D.I. Gatak 62
+95 D.I. Gatak 18
+96 D.I. Gatak 62
+97 D.I. Gatak 10
+98 D.I. Gatak II 16
+99 D.I. Gatak Prayan 32
+100 D.I. Gaten 16
+101 D.I. Gawen 109
+102 D.I. Gayam 22
+103 D.I. Gayam II 80
+104 D.I. Gayam Pogok 23
+105 D.I. Gedangan 24
+106 D.I. Gedong 17
+107 D.I. Gedong Pelem 12
+108 D.I. Gedongan 90
+109 D.I. Gejagan 18
+110 D.I. Gejegan 28
+111 D.I. Gempol 100
+112 D.I. Gempol II 15
+113 D.I. Geneng 117
+114 D.I. Geneng 10
+115 D.I. Geneng II 15
+116 D.I. Genengan 177
+117 D.I. Gereh 82
+118 D.I. Gergunung 110
+119 D.I. Gilang 21
+120 D.I. Gledegan 15
+121 D.I. Glogok 37
+122 D.I. Glonggong 10
+123 D.I. Gombang 28
+124 D.I. Gombang 12
+125 D.I. Gono 16
+126 D.I. Gordon 89
+127 D.I. Grejegan 28
+128 D.I. Grenjeng 158
+129 D.I. Grenjeng | 13
+130 D.I. Grenjeng II 34
+131 D.I. Gunden 288
+132 D.I. Gunden 138
+133 D.I. Gupit 13
+134 D.I. Ipik 178
+135 D.I. Ipik 10
+136 D.I. Jaden 122
+137 D.I. Jagalan 12
+138 D.I. Jalin 86
+139 D.I. Jamban 131
+140 D.I. Jambe 22
+141 D.I. Jeblok 117
+142 D.I. Jebol 15
+143 D.I. Jembangan 94
+144 D.I. Jenggot 16
+145 D.I. Jeruk Manis 53
+146 D.I. Jetak 165
+147 D.I. Jetak 44
+148 D.I. Jetis 37
+149 D.I. Jetis 23
+150 D.I. Jetis Krajan 73
+151 D.I. Jetisbolo 28
+152 D.I. Jeto 387

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+510 D.I. Sikebo 20
+511 D.I. Sikelah 15
+512 D.I. Sikidang 10
+513 D.I. Siklotok 15
+514 D.I. Sikroya 15
+515 D.I. Sikudi 88
+516 D.I. Silagung 14
+517 D.I. Silarik 11
+518 D.I. Silayung/Pucung 14
+519 D.I. Silebuh 54
+520 D.I. Silebuh 15
+521 D.I. Silebuh 11
+522 D.I. Sililing 25
+523 D.I. Sililing | 15
+524 D.I. Sililing II 14
+525 D.I. Sililing III 13
+526 D.I. Silumpang 25
+527 D.I. Silumpang 25
+528 D.I. Sinangka 60
+529 D.I. Singamada 14
+530 D.I. Sinongko 14
+531 D.I. Sipadi 20
+532 D.I. Sipait 12
+533 D.I. Sipawuk 11
+534 D.I. Siperang 13
+535 D.I. Sipodang 18
+536 D.I. Sipring 15
+537 D.I. Sirancak 23
+538 D.I. Sirandu 20
+539 D.I. Sirandu 20
+540 D.I. Sirang 24
+541 D.I. Sirawan M
+542 D.I. Siropah 19
+543 D.I. Sisung 36
+544 D.I. Sitawang 25
+545 D.I. Sitekuk 12
+546 D.I. Sitelo 22
+547 D.I. Sitelo 10
+548 D.I. Sitengah 13
+549 D.I. Sitengis 30
+550 D.I. Siton 10
+551 D.I. Siwaru 12
+552 D.I. Siwelut 10
+553 D.I. Siwuluh 10
+554 D.I. Siwungu 11
+555 D.I. Siwuni 20
+556 D.I. Siwur 40
+557 D.I. Siyuyu 30
+558 D.I. Slempet 15
+559 D.I. Sliling Baru 12
+560 D.I. Sloko M
+561 D.I. Sojokerto 108
+562 D.I. Songgoluwang 25
+563 D.I. Sukuh 15
+564 D.I. Sumber 30
+565 D.I. Sumber Makmur 87
+566 D.I. Sunggungan 10
+567 D.I. Susukan 30
+568 D.I. Susukan 10
+569 D.I. Susukan 18
+570 D.I. Sutoireng 46
+#KANAN
+288
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+571 D.I. Sutoprono I 50
+572 D.I. Sutoprono II 19
+573 D.I. Suwuh 15
+574 D.I. Suwuk 15
+575 D.I. Tabahan 12
+576 D.I. Tabetan 30
+577 D.I. Tadahan 19
+578 D.I. Talun 12
+579 D.I. Tambangan 84
+580 D.I. Tandon 22
+581 D.I. Tandu 234
+582 D.I. Tanggek 17
+583 D.I. Tangkil 17
+584 D.I. Tanjungsari 12
+585 D.I. Tedeng 12
+586 D.I. Tedengkelir 35
+587 D.I. Tedengleri 30
+588 D.I. Telu 30
+589 D.I. Telu 27
+590 D.I. Telu 10
+591 D.I. Temanggungan 20
+592 D.I. Tembelang 23
+593 D.I. Tembelang 32
+594 D.I. Tembelang 23
+595 D.I. Tempel 11
+596 D.I. Tempuran 15
+597 D.I. Tengah 72
+598 D.I. Tengah 13
+599 D.I. Tengah 23
+600 D.I. Tengah 19
+601 D.I. Tengah 39
+602 D.I. Terbes 17
+603 D.I. Timbang 60
+604 D.I. Timpang 16
+605 D.I. Tingkrang 25
+606 D.I. Tiparan 10
+607 D.I. Tlodas 28
+608 D.I. Tlogo 18
+609 D.I. Tlogo 17
+610 D.I. Tlogoaren 26
+611 D.I. Totogan 64
+612 D.I. Tracap 29
+613 D.I. Tuban 15
+614 D.I. Tugu 77
+615 D.I. Tuk Leri 17
+616 D.I. Tulis 36
+617 D.I. Tulung 16
+618 D.I. Tumbu A 32
+619 D.I. Wadasgendor 22
+620 D.I. Wadasgendor 13
+621 D.I. Wanganaji 604
+622 D.I. Waron 19
+623 D.I. Waru 23
+624 D.I. Waru 17
+625 D.I. Watu | 25
+626 D.I. Watubalong 17
+627 D.I. Watugajah 20
+628 D.I. Watujaran 15
+629 D.I. Watulawang 16
+630 D.I. Wedung 25
+631 D.I. Welahan 38

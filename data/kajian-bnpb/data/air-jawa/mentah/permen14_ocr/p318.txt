@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+241 D.I. Salmon | 53
+242 D.I. Salmon II 58
+243 D.I. Sanenrejo 195
+244 D.I. Sangkrah 36
+245 D.I. Sanjani 11
+246 D.I. Saola 79
+247 D.I. Saona 99
+248 D.I. Sarim 71
+249 D.I. Sasi 431
+250 D.I. Sbr. Agung 2
+251 D.I. Sbr. Ampo 197
+252 D.I. Sbr. Andong 18
+253 D.I. Sbr. Biyu 11
+254 D.I. Sbr. Brahim 13
+255 D.I. Sbr. Bulus 35
+256 D.I. Sbr. Canting 37
+257 D.I. Sbr. Dampar 186
+258 D.I. Sbr. Dawuhan 60
+259 D.I. Sbr. Durin 26
+260 D.I. Sbr. Gadung I 40
+261 D.I. Sbr. Gadung II 20
+262 D.I. Sbr. Gadung III 256
+263 D.I. Sbr. Gadung IV 26
+264 D.I. Sbr. Gadung V 30
+265 D.I. Sbr. Gambiran 5
+266 D.I. Sbr. Gayam Sukowono 48
+267 D.I. Sbr. Gayam Rambipuji 209
+268 D.I. Sbr. Gidin 66
+269 D.I. Sbr. Gua 24
+270 D.I. Sbr. Gulur 9
+271 D.I. Sbr. Gumuk 20
+272 D.I. Sbr. Jati 51
+273 D.I. Sbr. Jebung 28
+274 D.I. Sbr. Jerangu 4
+275 D.I. Sbr. Jonggrang 17
+276 D.I. Sbr. Kaidin 10
+277 D.I. Sbr. Kajar Rambipuji 12
+278 D.I. Sbr. Kajar Kalisat 57
+279 D.I. Sbr. Kajar Mayang 137
+280 D.I. Sbr. Kaliputih 88
+281 D.I. Sbr. Karang Paras 105
+282 D.I. Sbr. Karangharjo 10
+283 D.I. Sbr. Katu 3
+284 D.I. Sbr. Kebon 89
+285 D.I. Sbr. Kemiri 200
+286 D.I. Sbr. Kemirian 72
+287 D.I. Sbr. Kepel 26
+288 D.I. Sbr. Klomprit 37
+289 D.I. Sbr. Klopo I 2
+290 D.I. Sbr. Klopo II 4
+291 D.I. Sbr. Klopo III 5
+292 D.I. Sbr. Klopo IV 17
+293 D.I. Sbr. Klopo V 30
+294 D.I. Sbr. Klopo VI 22
+295 D.I. Sbr. Kokap II 72
+296 D.I. Sbr. Ko'ong I 145
+297 D.I. Sbr. Ko'ong II 85
+298 D.I. Sbr. Krajan 10
+299 D.I. Sbr. Kurung 25
+300 D.I. Sbr. Langon Bangsalsari 23
+301 D.I. Sbr. Langon Patrang 54
+#KANAN
+318
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+302 D.I. Sbr. Langsap 7
+303 D.I. Sbr. Legong 16
+304 D.I. Sbr. Lesung 156
+305 D.I. Sbr. Lucu 10
+306 D.I. Sbr. Lutung 67
+307 D.I. Sbr. Malang 4
+308 D.I. Sbr. Manis 373
+309 D.I. Sbr. Manting 7
+310 D.I. Sbr. Mukti 34
+311 D.I. Sbr. Pace 103
+312 D.I. Sbr. Pakem | 166
+313 D.I. Sbr. Paleran 50
+314 D.I. Sbr. Pandian 51
+315 D.I. Sbr. Panen 26
+316 D.I. Sbr. Patemon 4
+317 D.I. Sbr. Pelus 15
+318 D.I. Sbr. Petung 32
+319 D.I. Sbr. Petung I Kalisat 5
+320 D.I. Sbr. Petung II Kalisat 90
+321 D.I. Sbr. Pinang 266
+322 D.I. Sbr. Pinus 39
+323 D.I. Sbr. Plalangan 13
+324 D.I. Sbr. Plinggian 21
+325 D.I. Sbr. Prasian 53
+326 D.I. Sbr. Pring 6
+327 D.I. Sbr. Pringtali Bangsalsari 20
+328 D.I. Sbr. Pringtali/Klonceng 118
+329 D.I. Sbr. Rowosemek 7
+330 D.I. Sbr. Salak 100
+331 D.I. Sbr. Salam 81
+332 D.I. Sbr. Sempol 24
+333 D.I. Sbr. Sidomukti 109
+334 D.I. Sbr. Songo 8
+335 D.I. Sbr. Suci 23
+336 D.I. Sbr. Sukmoilang 48
+337 D.I. Sbr. Tarup 3
+338 D.I. Sbr. Telok 112
+339 D.I. Sbr.Tetelan 13
+340 D.I. Sbr. Toba 71
+341 D.I. Sbr. Wates 21
+342 D.I. Segaran 25
+343 D.I. Sekar I 251
+344 D.I. Sekar II 87
+345 D.I. Sekolahan 169
+346 D.I. Semangir 74
+347 D.I. Sempolan 106
+348 D.I. Seno 42
+349 D.I. Serut 39
+350 D.I. Slimon 21
+351 D.I. Suci 42
+352 D.I. Suko 87
+353 D.I. Suko Gelang 166
+354 D.I. Suko Jamintoro 53
+355 D.I. Sukobarat 50
+356 D.I. Sukotimur 112
+357 D.I. Sumber Curah Manis 150
+358 D.I. Sumber Kolor 54
+359 D.I. Sumber Tengah 25
+360 D.I. Sumber Uling 42
+361 D.I. Sumberbulus 32
+362 D.I. Suno 129

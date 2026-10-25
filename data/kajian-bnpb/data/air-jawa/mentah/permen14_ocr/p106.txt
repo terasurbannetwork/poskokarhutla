@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+156 D.I. Langkok 15
+157 D.I. Siasa 35
+158 D.I. Ampar Putiah 15
+159 D.I. Kampuang Akad 82
+160 D.I. Gantiang Kubang 51
+161 D.I. Koto Lamo 65
+162 D.I. Lubuk Rasak 35
+163 D.I. Kampung Lurah 21
+164 D.I. Lubuk Sari Bulan 16
+165 D.I. Kalumpang 32
+166 D.I. Bukik Lereng 47
+167 D.I. Alai 25
+168 D.I. Tatanggo 55
+169 D.I. Lubuk Durian Sirah 33
+170 D.I. Balik Bukit 26
+171 D.I. Air Batu Nijan 20
+172 D.I. Kampung Akad 13
+173 D.I. Kapalo Banda 90
+174 D.I. Kalumpang 35
+175 D.I. Bintungan 85
+176 D.I. Lubuak Namo 60
+177 D.I. Lubuak Cubadak 235
+178 D.I. Koto Durian 90
+179 D.I. Sawitan 51
+180 D.I. Aia Jambak 35
+181 D.I. Tabek Gadang 35
+182 D.I. Kayu Jao 233
+183 D.I. Kurao 70
+184 D.I. Tabek Koto Panjang 25
+185 D.I. Batang Nandang 40
+186 D.I. Pangian 30
+187 D.I. Sawah Lurahan 32
+188 D.I. Kampuang Pauh 35
+189 D.I. Aia Jariang Punai 25
+190 D.I. Kampuana Jambak 9
+191 D.I. Sawah Liek 27
+192 D.I. Tabek Surau Tangah Sawah 10
+193 D.I. Aia Tambang 75
+194 D.I. Aia Tajun 44
+195 D.I. Baliak Intan 35
+196 D.I. Baliak Koto 25
+197 D.I. Ala Mayuruak 49
+198 D.I. Bukik Kaciak 25
+199 D.I. Sikabu 20
+200 D.I. Rawang Bakuang 100
+201 D.I. Lagan Gadang Mudiak 175
+202 D.I. Lagan Gadang Hilia 150
+203 D.I. Bukik Sikai 15
+204 D.I. Kampuang Akad 25
+205 D.I. Kapalo Banda 57
+206 D.I. Sawah Lurahan 37
+207 D.I. Rumah Nan IV Punggasan 100
+208 D.I. Kampung Akad Lagan Hilia 12
+209 D.I. Koto Tinggi 15
+210 D.I. Aia Jambak 35
+211 D.I. Lua Parik 20
+212 D.I. Baliak Gunuang 125
+213 D.I. Lubuak Papan 35
+214 D.I. Aia Manca 51
+215 D.I. Titian Patai 75
+216 D.I. Sungai Sirah 45
+#KANAN
+106
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+217 D.I. Bantaian 260
+218 D.I. Sungai Batang 290
+219 D.I. Lubuak Sitajam 195
+220 D.I. Sungai Gemuruh 450
+221 D.I. Damar Rumput 600
+222 D.I. Lubuak Asam 96
+223 D.I. Sungai Batu Panjang 200
+224 D.I. Pasir Mas 175
+225 D.I. Sungai Durian 100
+226 D.I. Sungai Gadang 200
+227 D.I. Sungai Telun 40
+228 D.I. Rawang Sangek 40
+229 D.I. Rawang Bubur | 15
+230 D.I. Rawang Bubur II 80
+231 D.I. Sungai Kait 35
+232 D.I. Pondok Baru 345
+233 D.I. Banda Baru 653
+234 D.I. Talang Balarik 60
+235 D.I. Lubuk Kubu 50
+236 D.I. Lubuk Rasam 20
+237 D.I. Panadah | 28
+238 D.I. Panadah II 18
+239 D.I. Lubuk Begalung 29
+240 D.I. Muara Siri 25
+241 D.I. Jangki Ayam 25
+242 D.I. Air Nikek 51
+243 D.I. Kumbung Mudik 40
+244 D.I. Rantau Baduri 65
+245 D.I. Sungai Sirah 650
+246 D.I. Tanjung Jati 225
+247 D.I. Lubuk Merantih 35
+248 D.I. Tanjung Sikabu 75
+249 D.I. Lunang Kampung 150
+i Kab. Siiuniuna 119 9.229
+1 D.I. Siminai 40
+2 D.I. Lubuk Mandahiling 70
+3 D.I. Bandar Tampa 54
+4 D.I. Bandar Koto Tuo 28
+5 D.I. Bandar IX Lurah 192
+6 D.I. Batang Sitaok 53
+7 D.I. Sei. Lantung 58
+8 D.I. Batang Paliki 59
+9 D.I. Batang Puntian 46
+10 D.I. Batang Talao 50
+11 D.I. Sawah Lawas 61
+12 D.I. Lubuk Rombio 60
+13 D.I. Sawah Manangah 50
+14 D.I. Bandar Gadang 49
+15 D.I. Sei. Pandan 64
+16 D.I. Pulau Basung 32
+17 D.I. Tabek Gadang 50
+18 D.I. Tandikek 162
+19 D.I. Ampang Nagari 42
+20 D.I. Batang Lawas Kupitan 306
+21 D.I. Batang Lasi 200
+22 D.I. Datar Beringin 42
+23 D.I. Palak Kudo 33
+24 D.I. Sawah Guguk 33
+25 D.I. Lubuk Paraku 69
+26 D.I. Batang Tape 100

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+635 D.I. Siploso 30
+636 D.I. Sipolo 38
+637 D.I. Sipring 13
+638 D.I. Sipucang 25
+639 D.I. Sisarangan 25
+640 D.I. Sisendang 15
+641 D.I. Siterongan 25
+642 D.I. Situlung 18
+643 D.I. Siwakul 25
+644 D.I. Siwedi 15
+645 D.I. Siweron 20
+646 D.I. Siwuni 25
+647 D.I. Songo 17
+648 D.I. Sprang 15
+649 D.I. Spreh 27
+650 D.I. Spreh 25
+651 D.I. Sucen 523
+652 D.I. Sumber Bening 50
+653 D.I. Suropodo 105
+654 D.I. Surotopo 12
+655 D.I. Suruhan 35
+656 D.I. Susukan 96
+657 D.I. Susukan 13
+658 D.I. Sutiman 30
+659 D.I. Sutiman 17
+660 D.I. Tegal Melik 8
+661 D.I. Umbul 30
+662 D.I. Wangan Dalem 44
+663 D.I. Watu Cagak 75
+664 D.I. Watu Kebo 12
+665 D.I. Watu Lintang 100
+666 D.I. Wonotoro 118
+x Kab. Sraaen 118 12.323
+1 D.I. Balekambang 89
+2 D.I. Bayanan 12
+3 D.I. Bodehan 44
+4 D.I. Buduran 608
+5 D.I. Buyuk 56
+6 D.I. Cinde 12
+7 D.I. Citran 48
+8 D.I. Dadapan 114
+9 D.I. Dayu 77
+10 D.I. Dudo 388
+11 D.I. Gamping 175
+12 D.I. Garut 212
+13 D.I. Gebyar 8
+14 D.I. Gempol 652
+15 D.I. Jetis Kalijambe | 18
+16 D.I. Kaliwuni I 25
+17 D.I. Kaliwuni II 15
+18 D.I. Kandangsapi 46
+19 D.I. Karang Bajang 21
+20 D.I. Karanganom 399
+21 D.I. Karangasem 10
+22 D.I. Kecik 20
+23 D.I. Ked.Duren Winong 752
+24 D.I. Kedung Gatot 561
+25 D.I. Kedung Kancil 848
+26 D.I. Kedung Munyeng 73
+27 D.I. Kedung Pring 389
+#KANAN
+272
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+28 D.I. Kedung Song 212
+29 D.I. Ketro 284
+30 D.I. Krikilan 979
+31 D.I. Mlokolegi 168
+32 D.I. Mojoranu 30
+33 D.I. Nangsri 714
+34 D.I. Ngarum 28
+35 D.I. Ngleri 48
+36 D.I. Ngrawoh 25
+37 D.I. Nusupan 247
+38 D.I. Nyaen 71
+39 D.I. Pakel Krapyak 50
+40 D.I. Pengkok 31
+41 D.I. Pengkol 40
+42 D.I. Piji 226
+43 D.I. Sambirejo 52
+44 D.I. Sentono 25
+45 D.I. Sidowayah 547
+46 D.I. Sirap 219
+47 D.I. Slogo 93
+48 D.I. Sudo 62
+49 D.I. Suwatu 261
+50 D.I. Tegalombo 40
+51 D.I. Tempel 56
+52 D.I. Terban 89
+53 D.I. Tompe M
+54 D.I. Toro 375
+55 D.I. Tritis 190
+56 D.I. Wonorejo Kalijambe 6
+57 D.I. Wonorejo Kedawung 65
+58 D.I. Jetis Kalijambe II 12
+59 D.I. Sambi 8
+60 D.I. Kedungmojo 49
+61 D.I. Grogolan 10
+62 D.I. Cebong 15
+63 D.I. Daren Nangsri 9
+64 D.I. Genengduwur 25
+65 D.I. Nglembu 14
+66 D.I. Jati 68
+67 D.I. Pagak 20
+68 D.I. Ngargosari 25
+69 D.I. Cepoko 20
+70 D.I. Baleharjo 12
+71 D.I. Karanganom Sukodono 8
+72 D.I. Srawung 8
+73 D.I. Slendro 24
+74 D.I. Gading 36
+75 D.I. Peleman 56
+76 D.I. Gadon I 72
+77 D.I. Gadon II 40
+78 D.I. Kenteng 20
+79 D.I. Tlogotirto | 10
+80 D.I. Tlogotirto II 16
+81 D.I. Ngrukun 15
+82 D.I. Kopen 6
+83 D.I. Tegalrejo 8
+84 D.I. Ngrejeng 5
+85 D.I. Kedung Bebek 10
+86 D.I. Kebon Kupluk 10
+87 D.I. Wungu-Wungu 10
+88 D.I. Tudunan 15

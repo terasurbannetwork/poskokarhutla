@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+23 D.I. Curah Petung | 30
+24 D.I. Curah Petung II 20
+25 D.I. Curah Wedi | 52
+26 D.I. Curah Wedi II 60
+27 D.I. Dadapan 76
+28 D.I. Darungan 20
+29 D.I. Demo 86
+30 D.I. Depok 85
+31 D.I. Dilem 449
+32 D.I. Djatim 10
+33 D.I. Duk 591
+34 D.I. Duk | 53
+35 D.I. Duk Il 77
+36 D.I. Duk III 33
+37 D.I. Duk IV 34
+38 D.I. Duk V 70
+39 D.I. Dul Mungit 92
+40 D.I. Durek 51
+41 D.I. Duren I 40
+42 D.I. Duren II 56
+43 D.I. Duren III 36
+44 D.I. Duren IV 27
+45 D.I. Duren V 14
+46 D.I. Duren VI 80
+47 D.I. Gedang Mas 88
+48 D.I. Gedang Mas I 127
+49 D.I. Gedang Mas II 570
+50 D.I. Gedangan 23
+51 D.I. Gempol 12
+52 D.I. Gubug Domas 871
+53 D.I. Ismail 40
+54 D.I. Jabon 30
+55 D.I. Jagalan 14
+56 D.I. Jagalan | 48
+57 D.I. Jamal 42
+58 D.I. Jati 74
+59 D.I. Jemuit 35
+60 D.I. Jerukan/Monisa 22
+61 D.I. Jombok I 51
+62 D.I. Jombok II 16
+63 D.I. Jombok III 32
+64 D.I. Jonggrang I 114
+65 D.I. Jonggrang II 42
+66 D.I. Jonggrang III 42
+67 D.I. Jonggrang IV 4
+68 D.I. Kali Piri 15
+69 D.I. Kamid 40
+70 D.I. Karang Anyar | 35
+71 D.I. Karang Anyar II 18
+72 D.I. Karang Culik 74
+73 D.I. Karang Kletak 17
+74 D.I. Kebon Deli I 50
+75 D.I. Kebon Deli II 60
+76 D.I. Kebon Deli III 13
+77 D.I. Kebon Deli IV 21
+78 D.I. Kebon Deli V 17
+79 D.I. Keduna Carina 386
+80 D.I. Kedung Klampok 20
+81 D.I. Kedung Lier I 42
+82 D.I. Kedung Lier II 11
+83 D.I. Klakah Pakis 566
+#KANAN
+307 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+84 D.I. Klerek 815
+85 D.I. Klopo Gading 83
+86 D.I. Kowang 183
+87 D.I. Krai 292
+88 D.I. Krumbang I 6
+89 D.I. Krumbang II 66
+90 D.I. Krumbang III 29
+91 D.I. Krumbang IV 65
+92 D.I. Kuburan 27
+93 D.I. Lalangan 63
+94 D.I. Lancing 4
+95 D.I. Langgar | 14
+96 D.I. Langgar II 54
+97 D.I. Langgar III/BT 84
+98 D.I. Langkapan 22
+99 D.I. Lateng | 81
+100 D.I. Lateng II 113
+101 D.I. Legenan 50
+102 D.I. Lewung | 39
+103 D.I. Lewung II 58
+104 D.I. Lobang Kanan 171
+105 D.I. Lobang Kiri 964
+106 D.I. Lombok 55
+107 D.I. Mangun 18
+108 D.I. Mi'an 30
+109 D.I. Mualap 58
+110 D.I. Ngrepyak 34
+111 D.I. Pahlewen 31
+112 D.I. Pak Jum 53
+113 D.I. Pakel | 28
+114 D.I. Pakel II 61
+115 D.I. Paku Rejo 77
+116 D.I. Paleran 263
+117 D.I. Pancing I 10
+118 D.I. Pancing II 8
+119 D.I. Pancing III 10
+120 D.I. Pancing IV 34
+121 D.I. Pandanwangi I 88
+122 D.I. Pandanwangi II 379
+123 D.I. Panggung 72
+124 D.I. Pelus 59
+125 D.I. Pelus II 58
+126 D.I. Petehan 32
+127 D.I. Poh 63
+128 D.I. Poh II 46
+129 D.I. Poh III 50
+130 D.I. Poh IV 24
+131 D.I. Poh V 49
+132 D.I. Poh VI 20
+133 D.I. Ponco Kusumo 21
+134 D.I. Pringtali 180
+135 D.I. Rahayu 83
+136 D.I. Rakinten 190
+137 D.I. Rawaan 321
+138 D.I. Regoyo 79
+139 D.I. Rejali 455
+140 D.I. Rekesan I 40
+141 D.I. Rekesan II 17
+142 D.I. Repeh 58
+143 D.I. Rowo Asin 47
+144 D.I. Rowo Gedang 657

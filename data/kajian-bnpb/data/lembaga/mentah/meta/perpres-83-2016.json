@@ -1,0 +1,23 @@
+{
+ "id": "40987",
+ "url": "https://peraturan.bpk.go.id/Details/40987/perpres-no-83-tahun-2016",
+ "judul": "Peraturan Presiden (Perpres) Nomor 83 Tahun 2016 tentang Badan Nasional Pencarian Dan Pertolongan",
+ "nomor": "83 Tahun 2016 tentang Badan Nasional Pencarian Dan Pertolongan T.E.U. Indonesia, Pemerintah Pusat Nomor 83",
+ "tanggal_penetapan": "06 September 2016",
+ "tanggal_berlaku": "07 September 2016",
+ "sumber": "LN No. 186/2016",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/33165/Perpres%20Nomor%2083%20Tahun%202016.pdf"
+ ],
+ "status_peraturan": "Mencabut : PERPRES No. 99 Tahun 2007 tentang Badan SAR Nasional",
+ "abstrak": "2016 Peraturan Presiden (PERPRES) NO. 83, LN No. 186/2016 Peraturan Presiden (PERPRES) TENTANG Badan Nasional Pencarian Dan Pertolongan ABSTRAK: CATATAN: Peraturan Presiden (PERPRES) ini mulai berlaku pada tanggal 07 September 2016.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/33165/Perpres%20Nomor%2083%20Tahun%202016.pdf",
+ "pdf_sha1": "d21584bc2a4b5018a9e059223dbda825107bfc97",
+ "pdf_bytes": 700592,
+ "sid": "perpres-83-2016",
+ "halaman_total": 20,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

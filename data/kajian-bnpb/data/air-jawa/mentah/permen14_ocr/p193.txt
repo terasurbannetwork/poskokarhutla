@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1210 D.I. Paintasik 30
+1211 D.I. Pajagan 5
+1212 D.I. Pajar Bulan 20
+1213 D.I. Pajaratan 2
+1214 D.I. Pajarit 10
+1215 D.I. Pakacangan 25
+1216 D.I. Paku Haji 50
+1217 D.I. Palahlar 21
+1218 D.I. Palasari 40
+1219 D.I. Palasari 15
+1220 D.I. Palayangan II 20
+1221 D.I. Pamegersari 30
+1222 D.I. Pamijahan 125
+1223 D.I. Pamijahan 70
+1224 D.I. Pamijahan 50
+1225 D.I. Pancamaneuh 30
+1226 D.I. Pangeureunan 40
+1227 D.I. Panggiringan | 10
+1228 D.I. Panggiringan II 7
+1229 D.I. Pangkalan 56
+1230 D.I. Panglayangan | 75
+1231 D.I. Panglepa 60
+1232 D.I. Paniis Talajung 35
+1233 D.I. Panulisan 15
+1234 D.I. Panyakalan 20
+1235 D.I. Panyeuseupan 20
+1236 D.I. Panyinangan 10
+1237 D.I. Panyiraman 12
+1238 D.I. Panyusuhan 10
+1239 D.I. Paodag 65
+1240 D.I. Parakan Cadas 40
+1241 D.I. Parakan Raden 235
+1242 D.I. Pariuk 90
+1243 D.I. Pariuk 5
+1244 D.I. Parung Golong 125
+1245 D.I. Parungbala 5
+1246 D.I. Parungmayung 150
+1247 D.I. Parungpaku 2
+1248 D.I. Pasagi 15
+1249 D.I. Pasantren 24
+1250 D.I. Pasantren 50
+1251 D.I. Pasir Awi 60
+1252 D.I. Pasir Balingbing 18
+1253 D.I. Pasir Bangkong 32
+1254 D.I. Pasir Buntu 15
+1255 D.I. Pasir Ceuri 40
+1256 D.I. Pasir Curi 95
+1257 D.I. Pasir Ibu 20
+1258 D.I. Pasir Ipis 98
+1259 D.I. Pasir Jaya | 10
+1260 D.I. Pasir Karag 35
+1261 D.I. Pasir londok 30
+1262 D.I. Pasir maung 3
+1263 D.I. Pasir Menteng 8
+1264 D.I. Pasir Pari 60
+1265 D.I. Pasir Pogor 45
+1266 D.I. Pasir Sireum 60
+1267 D.I. Pasir Tamiang 23
+1268 D.I. Pasirangin 50
+1269 D.I. Pasirgadung 25
+1270 D.I. Pasung 45
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1271 D.I. Patinggi 25
+1272 D.I. Penereban 20
+1273 D.I. Petir 15
+1274 D.I. Petir 50
+1275 D.I. Peundeuy sari 45
+1276 D.I. Peureu 5
+1277 D.I. Peusar 20
+1278 D.I. Peuteuy Pugur 12
+1279 D.I. Peuteuynunggal 30
+1280 D.I. Pindang Lancar 70
+1281 D.I. Pojok I 25
+1282 D.I. Pojok II 30
+1283 D.I. Pondok kadu 19
+1284 D.I. Pongpet 40
+1285 D.I. Pr. Pondong 8
+1286 D.I. Psr Cerlak 5
+1287 D.I. Psr Galing 5
+1288 D.I. Pukes | 25
+1289 D.I. Pukes II 20
+1290 D.I. Pulo 15
+1291 D.I. Raden Sura 35
+1292 D.I. Rahong 50
+1293 D.I. Rahong 15
+1294 D.I. Raja Galuh 25
+1295 D.I. Rajamahi 32
+1296 D.I. Raksadinata 5
+1297 D.I. Raksajaya | 10
+1298 D.I. Raksajaya II 40
+1299 D.I. Rameng 9
+1300 D.I. Ranca Keuyeup 45
+1301 D.I. Rancagede 15
+1302 D.I. Rancakalong 50
+1303 D.I. Rancakuda 25
+1304 D.I. Rancakuya 50
+1305 D.I. Randu 40
+1306 D.I. Ranjeng 30
+1307 D.I. Raong 60
+1308 D.I. Rengkol 10
+1309 D.I. Ririp 8
+1310 D.I. Sadananya 80
+1311 D.I. Sadane 60
+1312 D.I. Sadane Bojong 50
+1313 D.I. Sadri 5
+1314 D.I. Saheng 25
+1315 D.I. Sakelet 60
+1316 D.I. Sal. Anyar 5
+1317 D.I. Sal. Cipaingen 3
+1318 D.I. Sal. Amin 10
+1319 D.I. Sal. Anyar 7
+1320 D.I. Sal. Batu Wulung 4
+1321 D.I. Sal. Haji 16
+1322 D.I. Sal. Lembur 5
+1323 D.I. Sal. Muara 5
+1324 D.I. Sal. Murhani 6
+1325 D.I. Sal. Pasir 7
+1326 D.I. Sal. Sabelen 30
+1327 D.I. Sal. Sabelen Lebak 10
+1328 D.I. Saladaer 30
+1329 D.I. Saladah 25
+1330 D.I. Saladah Muah 10
+1331 D.I. Samarang | 40

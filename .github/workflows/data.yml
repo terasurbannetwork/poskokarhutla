@@ -35,6 +35,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # cache public/data lama tidak boleh menimpa berkas yang di-commit tapi TIDAK dibuat ulang di sini: lapisan statis
       # (statis.yml) dan keluaran skrip lokal (sebaran/*, sejarah.py, riwayat_grid.py, lahan.py, osm.py, udara.py, daops.py,
       # musim.py, luas_satelit.py). ls-files membuang path yang tidak ada, jadi satu path hilang tidak menggagalkan semuanya.
@@ -43,17 +47,17 @@ jobs:
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
       # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
       - name: Pulihkan musim_harian dari repo bila latar cache bukan median
         run: |
           python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
-            || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
+            || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
 
       # koefisien operasi dikalibrasi dari isian lapangan (Bearer PIPA_TOKEN); token kosong = dilewati dengan log, berkas lama/bawaan dipakai
       - name: Kalibrasi koefisien dari isian lapangan (boleh gagal)
@@ -63,10 +67,15 @@ jobs:
           PIPA_URL: ${{ vars.PIPA_URL }}
         run: python3 scripts/data/kalibrasi.py uji && python3 scripts/data/kalibrasi.py
 
+      # FIRMS kadang tak terjangkau dari runner (20 & 22 Okt 2026): jangan jatuhkan seluruh jalan harian (berita, cuaca, udara, dll).
+      # Langkah sesudahnya memakai titik/kompleks terakhir dari cache (titik.yml memperbaruinya tiap 3 jam). Deploy tetap dijaga
+      # scripts/terbit/jaga_segar.py: data basi atau lebih tua dari yang tayang tidak pernah terbit.
       - name: Titik panas, kompleks, FWI, BNPB
+        id: harian
+        continue-on-error: true
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-        run: python3 scripts/data/harian.py
+        run: python3 scripts/data/harian.py || { echo "::error title=harian.py gagal::FIRMS/BNPB tidak terjangkau; langkah lain lanjut dengan titik terakhir dari cache"; exit 1; }
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py
@@ -245,6 +254,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+          python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
       # luas terukur Sentinel-2 (dNBR) per insiden yang sudah >= 7 hari tak terdeteksi; hasil menumpuk di public/data/luas_citra.json,
@@ -414,7 +424,7 @@ jobs:
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/isi_data.py buat && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/data

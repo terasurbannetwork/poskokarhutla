@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+55 D.I. Ojo 50
+56 D.I. Kali'ba 45
+57 D.I. Bulo 25
+58 D.I. Mataluntun 64
+59 D.I. Sangtandung 15
+60 D.I. Tampang Tua 75
+61 D.I. Taba 412
+62 D.I. Lumaring Hulu 20
+63 D.I. Sondong 93
+64 D.I. Salukanan 55
+65 D.I. Tabi 135
+66 D.I. Buntu Nase 34
+67 D.I. Buntu Sarek 40
+68 D.I. Kaili Hulu 50
+69 D.I. Ulusalu 22
+i Kab. Luwu Timur 33 6.788
+
+1 D.I. Asuli 50
+2 D.I. Bakkara 300
+3 D.I. Bambalu 350
+4 D.I. Bantilang 150
+5 D.I. Kondube 450
+6 D.I. Korondeme 100
+7 D.I. Lanosi 50
+8 D.I. Ledu-Ledu 615
+9 D.I. Lioka 165
+10 D.I. Loeha 750
+11 D.I. Paobali 150
+12 D.I. Puncak Indah 110
+13 D.I. Tanggoloe 110
+14 D.I. Tarabbi 306
+15 D.I. Tokalimbo 150
+16 D.I. Waelalo 250
+17 D.I. Bisaka 75
+18 D.I. Bonepute 120
+19 D.I. Harapan 410
+20 D.I. Kawata 190
+21 D.I. Lakawali 30
+22 D.I. Landangi 200
+23 D.I. Manurung 130
+24 D.I. Matano 50
+25 D.I. Nuha 50
+26 D.I. Parumpanai 200
+27 D.I. Rante Angin 90
+28 D.I. Taborano 50
+29 D.I. Tawakua 610
+30 D.I. Tokke | 107
+31 D.I. Ujung Batu 120
+32 D.I. Wasuponda 150
+33 D.I. Wewangriu 150
+k Kab. Luwu Utara 61 9.221
+1 D.I. Bae Bunta 184
+2 D.I. Bebesuk 105
+3 D.I. Kaluku 62
+4 D.I. Kappuna Lebannu 165
+5 D.I. Laiya 44
+6 D.I. Lampuawa II 253
+7 D.I. Lampuawa III 100
+8 D.I. Lampuawa IV 140
+9 D.I. Lapapa 329
+#KANAN
+412
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+10 D.I. Malalin 29
+11 D.I. Maleku 366
+12 D.I. Malombu 320
+13 D.I. Meli 45
+14 D.I. Mina Patiai 160
+15 D.I. Parara Uasa 20
+16 D.I. Patila | 101
+17 D.I. Patila II 30
+18 D.I. Radda Lebannu 350
+19 D.I. Radda Petambua 165
+20 D.I. Ramba Kulu 50
+21 D.I. Salulemo 275
+22 D.I. Salumasapi 36
+23 D.I. Salutabaro 142
+24 D.I. Tamuku 136
+25 D.I. Tanangkae 110
+26 D.I. Tarobok 193
+27 D.I. Ulu Salu 50
+28 D.I. Walu-Walu 250
+29 D.I. Balambangi 52
+30 D.I. Beroppa 88
+31 D.I. Embong Tana 75
+32 D.I. Hoyame 49
+33 D.I. Kuau 100
+34 D.I. Kanandede 80
+35 D.I. Komba 73
+36 D.I. Kalawin 53
+37 D.I. Limbong 96
+38 D.I. Lodang 104
+39 D.I. Lero Maipi 100
+40 D.I. Makawu 150
+41 D.I. Minanga 106
+42 D.I. Malimongan 52
+43 D.I. Marampa 72
+44 D.I. Malimbu Binuang 100
+45 D.I. Mobu 70
+46 D.I. Onondoa 350
+47 D.I. Ompala 700
+48 D.I. Pengkendekan 75
+49 D.I. Padang Raya 52
+50 D.I. Paburirian 500
+51 D.I. Padang Balua 350
+52 D.I. Pabonsea 300
+53 D.I. Pebata Meli 45
+54 D.I. Sassa 50
+55 D.I. Sepakat 50
+56 D.I. Salembo 179
+57 D.I. Tiro Bali 108
+58 D.I. Tana Makaleang 115
+59 D.I. Taloto 80
+60 D.I. Urukumpang 550
+61 D.I. Wono 87
+| Kab. Maros 74 9.094
+1 D.I. Alorengnge 45
+2 D.I. Assambung Parea 150
+3 D.I. Babang Bua 60
+4 D.I. Balocci 115
+5 D.I. Batu Putih 325
+6 D.I. Bontopanno 115
+7 D.I. Bottoe 36

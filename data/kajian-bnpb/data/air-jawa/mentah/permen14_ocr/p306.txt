@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+212 D.I. Karangbendo 26
+213 D.I. Karangbendo II 20
+214 D.I. Karangbendo II 59
+215 D.I. Karanggayam 34
+216 D.I. Karanggondang 60
+217 D.I. Karanggondang | 25
+218 D.I. Karanggondang II 33
+219 D.I. Karangrejo 217
+220 D.I. Karangsono | 85
+221 D.I. Karangtanjung 40
+222 D.I. Karyotirto 11
+223 D.I. Kaweron 195
+224 D.I. Kaweron 9
+225 D.I. Kd. Puring | 56
+226 D.I. Kd. Puring II 45
+227 D.I. Kebon Agung 44
+228 D.I. Kebonduren 57
+229 D.I. Kedawung II 29
+230 D.I. Kedung Cabak 387
+231 D.I. Kedung Wungu I 10
+232 D.I. Kedung Wungu II 10
+233 D.I. Kedungwaru 7
+234 D.I. Kembang Arum | 17
+235 D.I. Kembang Arum II 19
+236 D.I. Kembangan I 30
+237 D.I. Kembangan II 9
+238 D.I. Kembar 15
+239 D.I. Kembar 13
+240 D.I. Kemloko | 55
+241 D.I. Kemloko | 29
+242 D.I. Kemloko | 15
+243 D.I. Kemloko II 61
+244 D.I. Kemloko II 27
+245 D.I. Kemloko II 11
+246 D.I. Kening Aran I 14
+247 D.I. Kening Aran II 8
+248 D.I. Kerjen I 39
+249 D.I. Kerjen II 20
+250 D.I. Kerjen III 35
+251 D.I. Kerto 9
+252 D.I. Kesamben 219
+253 D.I. Klampok | 73
+254 D.I. Klampok II 39
+255 D.I. Klepon 36
+256 D.I. Kluwih Bajang II 65
+257 D.I. Kluwih Bajang III 6
+258 D.I. Kluwih Bajang IV 10
+259 D.I. Kluwih Bajang V 29
+260 D.I. Kotes II 29
+261 D.I. Kotes Mlalo 50
+262 D.I. Kotes Tumpang 30
+263 D.I. Krakal | 62
+264 D.I. Krakal II 30
+265 D.I. Krakal III 5
+266 D.I. Krenceng II 54
+267 D.I. Krenceng I 86
+268 D.I. Krenceng I 20
+269 D.I. Krenceng III 18
+270 D.I. Krenceng IV 43
+271 D.I. Krenceng V 9
+272 D.I. Kreweng 49
+#KANAN
+306
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+273 D.I. Krisik 15
+274 D.I. Krisik | 6
+275 D.I. Krisik II 8
+276 D.I. Kruwuk I 20
+277 D.I. Kruwuk II 36
+278 D.I. Kumbo Karno 38
+279 D.I. Kuningan 109
+280 D.I. Kunir 143
+281 D.I. Kupu 46
+282 D.I. Kupu | 40
+283 D.I. Kuwut 36
+284 D.I. Laharan | 43
+285 D.I. Laharan II 151
+286 D.I. Lestari II 27
+287 D.I. Lodeng 31
+288 D.I. Loding 5
+289 D.I. Loding II 10
+290 D.I. Loding III 11
+291 D.I. Loo 12
+292 D.I. Luksongo 6
+293 D.I. Luweng 35
+294 D.I. Maguan A 83
+295 D.I. Maguan B 6
+296 D.I. Maguan C 24
+297 D.I. Maguan D 11
+298 D.I. Mandesan 11
+299 D.I. Mangir I 14
+300 D.I. Mangir II 24
+301 D.I. Mangir IV 12
+302 D.I. Mangkurejo 103
+303 D.I. Mangunan II 715
+304 D.I. Mantenan II 20
+305 D.I. Manukan 60
+306 D.I. Meduran 19
+307 D.I. Menjangankalung | 28
+308 D.I. Menjangankalung II 744
+309 D.I. Mentaraman 14
+310 D.I. Modangan 20
+311 D.I. Mojo 28
+312 D.I. Mojorejo I 27
+313 D.I. Mojorejo II 9
+314 D.I. Mojorejo IV 22
+315 D.I. Mukmin 82
+316 D.I. Mustopo 9
+317 D.I. Nambaan 42
+318 D.I. Ngadipuro 20
+319 D.I. Ngadirejo I 89
+320 D.I. Ngadirejo II 28
+321 D.I. Ngaglik 56
+322 D.I. Ngambak 52
+323 D.I. Ngampel 47
+324 D.I. Ngaringan II 20
+325 D.I. Ngaringan III 5
+326 D.I. Ngasem 82
+327 D.I. Ngasem 17
+328 D.I. Ngasem I 23
+329 D.I. Ngasem II 33
+330 D.I. Ngelo 22
+331 D.I. Ngepring 11
+332 D.I. Ngeseng 22
+333 D.I. Nglegok 42

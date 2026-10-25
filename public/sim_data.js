@@ -26,7 +26,7 @@ const SimData = window.SimData = {
       if (st) st.textContent = st.textContent.replace(", model data: memuat…", ", model data selesai");
     } catch (e) { console.error(e); this.hasil = null; if (st) st.textContent += ", model data gagal: " + e.message; }
   },
-  /* deteksi S-NPP/NOAA-20 7 hari (hotspot.json) untuk model "akan membesar"; titik kompleks ini sendiri (<= 750 m dari sel awal)
+  /* deteksi S-NPP/NOAA-20/NOAA-21 7 hari (hotspot.json) untuk model "akan membesar" (NOAA-21 = pendamping sesudah S-NPP pensiun); titik kompleks ini sendiri (<= 750 m dari sel awal)
      dibuang karena model dilatih pada titik panas BARU yang belum punya riwayat di tempatnya */
   async titik(sel0) {
     try {
@@ -34,7 +34,7 @@ const SimData = window.SimData = {
       if (!rows) { const hs = await muatJSON("data/hotspot.json"); rows = hs.baris; acuan = new Date(hs.acuan); }
       if (!rows || !acuan) return undefined;
       const a = +acuan, pus = sel0.map(k => SebaranModel.pusat(k)), km = (x, y, u, v) => Math.hypot((u - x) * 111.32 * Math.cos(y * Math.PI / 180), (v - y) * 110.57);
-      return rows.filter(r => (r[3] === "N" || r[3] === "N20") && r[5] >= 1).map(r => ({t: a + r[2] * 36e5, lat: r[0], lon: r[1], s: r[3]}))
+      return rows.filter(r => (r[3] === "N" || r[3] === "N20" || r[3] === "N21") && r[5] >= 1).map(r => ({t: a + r[2] * 36e5, lat: r[0], lon: r[1], s: r[3]}))
         .filter(p => !pus.some(([x, y]) => km(x, y, p.lon, p.lat) <= .75));
     } catch (e) { return undefined; }
   },

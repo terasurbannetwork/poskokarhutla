@@ -1,0 +1,23 @@
+tingkat,tahun,ambang,n_dinilai,n_tinggi,n_sedang,n_rendah,n_tinggi_semua_total,sumber_kelas,label
+kab,2015,> 144,498,324,174,0,330,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2016,> 144,498,284,214,0,290,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2017,> 144,498,270,228,0,276,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2018,> 144,498,253,245,0,259,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2019,> 144,498,243,255,0,249,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2020,> 144,498,223,275,0,229,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2021,> 144,514,221,293,0,221,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2022,> 144,514,192,322,0,192,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2023,> 144,514,168,346,0,168,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),resmi
+kab,2024,> 144,514,151,363,0,151,ambang > 144 disimpulkan dari kelas resmi provinsi RENSTRA Tabel 1.1; non-Tinggi = Sedang (RENAS 2023: 168 + 346 = 514),asumsi-kebijakan
+kab,2025,kolom status API,514,169,345,0,169,kolom `status` InaRISK (resmi),resmi
+provinsi,2015,> 144 pada rerata sederhana kab,38,29,9,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2016,> 144 pada rerata sederhana kab,38,26,12,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2017,> 144 pada rerata sederhana kab,38,25,13,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2018,> 144 pada rerata sederhana kab,38,21,17,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2019,> 144 pada rerata sederhana kab,38,19,19,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2020,> 144 pada rerata sederhana kab,38,18,20,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2021,> 144 pada rerata sederhana kab,38,15,23,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2022,> 144 pada rerata sederhana kab,38,13,25,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2023,> 144 pada rerata sederhana kab,38,13,25,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,resmi
+provinsi,2024,> 144 pada rerata sederhana kab,38,8,30,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2025,> 176 pada rerata sederhana kab,38,15,23,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang; metode provinsi 2025 tidak terdokumentasi,asumsi-kebijakan

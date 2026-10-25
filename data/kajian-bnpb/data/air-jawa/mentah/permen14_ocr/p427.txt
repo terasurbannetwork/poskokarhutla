@@ -1,0 +1,129 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+72 D.I. Waru-Waru 100
+73 D.I. Wice 200
+b Kab. Buton 14 1.197
+1 D.I. Boneatiro 20
+2 D.I. Kapontori 163
+3 D.I. Kinapani 210
+4 D.I. Lawele 233
+5 D.I. Wakalambe 208
+6 D.I. Ambuau 70
+7 D.I. Kaweli 40
+8 D.I. Lamatano 15
+9 D.I. Lasembagi 20
+10 D.I. Mataompana 23
+11 D.I. Tuangila 48
+12 D.I. Wahope 33
+13 D.I. Wajah Jaya 40
+14 D.I. Wakuli 74
+c Kab. Buton Utara 7 1.000
+1 D.I. Soloy Agung 200
+2 D.I. Buranga 150
+3 D.I. Ronta 100
+4 D.I. Gunung Sari 200
+5 D.I. Triwocu Wocu 150
+6 D.I. Lahumoko 50
+7 D.I. Wacu Balu 150
+d Kab. Kolaka 90 14.335
+1 D.I. Andowengga 340
+2 D.I. Balandete 218
+3 D.I. Huko-Huko 537
+4 D.I. Konaweha 260
+5 D.I. Lapao-pao 322
+6 D.I. Tokay 230
+7 D.I. Wolo 530
+8 D.I. Wolulu 334
+9 D.I. Aere 120
+10 D.I. Amomotu 150
+11 D.I. Atolanu 78
+12 D.I. Batu Bronjong 190
+13 D.I. Bende 80
+14 D.I. Bou 600
+15 D.I. Damarwulan 125
+16 D.I. Donggala 150
+17 D.I. Gunung Jaya 170
+18 D.I. Horodopi 105
+19 D.I. Huko-Huko 81
+20 D.I. Iwoikondo 600
+21 D.I. Keisio 172
+22 D.I. Kukutio 61
+23 D.I. Ladahai 30
+24 D.I. Ladongi Jaya 200
+25 D.I. Lalolera 200
+26 D.I. Lalonaha 40
+27 D.I. Lalosingi 760
+28 D.I. Lambopini 80
+29 D.I. Lambopini II 25
+30 D.I. Lamonde 137
+31 D.I. Lamunde 170
+32 D.I. Lana 75
+#KANAN
+427 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+72 D.I. Langgomali 90
+73 D.I. Langgosipi 50
+74 D.I. Lapangisi 50
+75 D.I. Lapao-pao | 100
+76 D.I. Lasiroku 100
+77 D.I. Lere Jaya 416
+78 D.I. Loka 7
+79 D.I. Lowa 470
+80 D.I. Malaha 75
+81 D.I. Maros 70
+43 D.I. Oneha 130
+44 D.I. Pangi-Pangi 125
+45 D.I. Peohol 108
+46 D.I. Peoho II 135
+47 D.I. Pesouha 107
+48 D.I. Pewisoa Jaya 69
+49 D.I. Pewutaa 85
+50 D.I. Polinggona 156
+51 D.I. Polinggona 218
+52 D.I. Ponre I 50
+53 D.I. Ponre II 40
+54 D.I. Popalia 187
+55 D.I. Pubenua 103
+56 D.I. Pubunga | 61
+57 D.I. Pubunga II 120
+58 D.I. Pulemo 51
+59 D.I. Pulomaniang 210
+60 D.I. Pundoho 57
+61 D.I. Puroda 75
+62 D.I. Putemata | 50
+63 D.I. Sabiano | 85
+64 D.I. Sabilambo 177
+65 D.I. Sabi-Sabila 100
+66 D.I. Sanggona 126
+67 D.I. Sani-Sani 60
+68 D.I. Solewatu I 225
+69 D.I. Solewatu II 175
+70 D.I. Solewatu III 69
+71 D.I. Subak Tegek 80
+72 D.I. Talodo 30
+73 D.I. Tamboli 50
+74 D.I. Tawarombadaka 160
+75 D.I. Tengko 100
+76 D.I. Tinondo | 80
+77 D.I. Tinondo II 230
+78 D.I. Tinondo III 200
+79 D.I. Tumbudadio 125
+80 D.I. Ulu Ambapa 60
+81 D.I. Ulu Lapao-pao 150
+82 D.I. Ulunggolaka 225
+83 D.I. Watalara 100
+84 D.I. Watubangga 224
+85 D.I. Watupute 150
+86 D.I. Wawoli 100
+87 D.I. Wolulu 64
+88 D.I. Wonua Laku 75
+89 D.I. Wonuamboteo 270
+90 D.I. Wulonggere 112
+e Kab. Kolaka Timur 37 5.981
+1 D.I. Loea 236

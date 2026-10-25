@@ -1,0 +1,61 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 488
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+d Kab. Pesisir Selatan 22 225
+1 D.LA.T. Sungai Liku SL.PW.O1 11
+2 D.LA.T. Sungai Liku SL.PW.O2 10
+3 D.LA.T. Sungai Liku SL.PW.05 10
+4 D.LA.T. Sungai Liku SL.PW.06 10
+5 D.LA.T. Sungai Liku SL.PW.08 8
+6 D.L.A.T. Sungai Liku SL.PW.09 13
+7 D.LA.T. Sungai Liku SL.PW.10 9
+8 D.LA.T. Sungai Liku SL.PW.11 9
+9 D.LA.T. Sungai Liku SL.PW.A11A 10
+10 D.L.A.T. Sungai Liku SL.PW.13 1
+11 D.LA.T. Sungai Liku SL.PW.14 10
+12 D.LA.T. Sungai Liku SL.PW.15 10
+13 D.LA.T. Sungai Liku SL.PW.16 9
+14 D.LA.T. Sungai Liku SL.PW.17 16
+15 D.LA.T. Sungai Liku SL.PW.18 7
+16 D.LA.T. Sungai Liku SL.PW.19 13
+17 D.LA.T. Sungai Liku SL.PW.20 12
+18 D.LA.T. Seberang Tarok SLR.37 10
+19 D.LA.T. Seberang Tarok SLR.38 16
+20 D.LA.T. Sungai Tunu ST. 06 8
+21 D.LA.T. Sungai Tunu ST. 16 13
+22 D.I.A.T. Sungai Liku SL.PW.O7 11
+e Kab. Siiuniuna 1 24
+1 D.LA.T. Palangki PLK.PW.07 24
+f Kab. Tanah Datar 4 50
+1 D.LA.T. Aliran Sungai AS.PW.0O7 16
+2 D.LA.T. Limo Sumanik LSM.PW.20 25
+3 D.LA.T. Galogandang SS.01 5
+4 D.LA.T. Saruaso Timur ST.02 4
+IV PROVINSI LAMPUNG 112 2.857
+a Kab. Lambuna Barat 1 20
+1 D.LA.T. Tj. Raya/Sukau PPS 2 20
+b Kab. Lambuna Selatan 53 1.418
+1 D.LA.T. Sidoharjo SBE - 005 35
+2 D.LA.T. Cintamulya SBE - 009 25
+3 D.LA.T. Sidoreno SBE - 019 35
+4 D.LA.T. Balinuraga SBE - 021 30
+5 D.LA.T. Sidoasri SBE - 022 30
+6 D.L.A.T. Sidoasri SBE - 023 30
+7 D.LA.T. Pancasila SBE - 029 30
+8 D.I.A.T. Muara Putih SBE - 030 25
+9 D.LA.T. Purwosari SBE - 031 25
+10 D.LA.T. Sidomakmur SBE - 032 25
+11 D.LA.T. Trimomutti SBE - 033 25
+12 D.LA.T. Sinar Rejeki SBE - 034 45
+13 D.LA.T. Taman Sari SBE - 039 15
+14 D.LA.T. Sidoharjo SBE - 05P 15
+15 D.LA.T. Cintamulya SBE - 09P 19
+16 D.LA.T. Bumi Nabung Timur SBP - 003 25
+17 D.LA.T. Sidoharjo SBP - 009 25
+18 D.LA.T. Sidoharjo SBP - 010 30
+19 D.LA.T. Cintamulya SBP - 014 40
+20 D.I.A.T. Sukapura SBP - 015 25
+21 D.LA.T. Sidowaluyo SBP - 016 25
+22 D.L.A.T. Sidowaluyo SBP - 017 20

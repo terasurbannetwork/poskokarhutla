@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Registrasi Kontak Pemangku Kepentingan · Pantau Bencana</title>
+<meta name="description" content="Daftarkan kontak pimpinan daerah, BPBD, TNI, Polri, dan instansi lain untuk menerima kabar kejadian bencana di wilayahnya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Registrasi kontak</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul"><h1>Registrasi kontak pemangku kepentingan</h1></div>
+  <p>Untuk kepala daerah, BPBD, TNI, Polri, Manggala Agni, dan instansi lain. Kontak yang disetujui admin menerima kabar kejadian di wilayahnya.</p>
+  <section id="sukses" hidden aria-live="polite">
+    <h2>Registrasi masuk</h2>
+    <p>Admin akan memeriksa data ini sebelum kontak diaktifkan. Bila perlu, admin menghubungi nomor atau email yang didaftarkan.</p>
+  </section>
+  <form id="f" class="bn-form" novalidate autocomplete="off">
+    <section class="bn-blok">
+      <h2>Identitas</h2>
+      <div class="bn-baris">
+        <label class="bn-isian">Nama lengkap<input name="nama" maxlength="100" required autocomplete="name"></label>
+        <label class="bn-isian">Jabatan<input name="jabatan" maxlength="100" required placeholder="Bupati, Kalaksa BPBD, Kapolres…"></label>
+        <label class="bn-isian">Lembaga atau satuan<input name="lembaga" maxlength="120" placeholder="Pemkab Pulang Pisau, Polda Kalteng…"></label>
+      </div>
+      <div class="bn-baris">
+        <label class="bn-isian">Kategori<select name="kategori" id="fKat" required></select></label>
+        <label class="bn-isian">Provinsi<select name="prov" id="fProv"></select></label>
+        <label class="bn-isian">Kabupaten atau kota<select name="kab" id="fKab"></select></label>
+      </div>
+    </section>
+    <section class="bn-blok">
+      <h2>Kontak</h2>
+      <div class="bn-baris">
+        <label class="bn-isian">Nomor WhatsApp<input name="wa" inputmode="tel" maxlength="20" placeholder="0812xxxxxxxx" autocomplete="tel"></label>
+        <label class="bn-isian">Email<input name="email" type="email" maxlength="254" autocomplete="email"></label>
+        <label class="bn-isian">Telepon kantor (boleh dikosongkan)<input name="telepon" inputmode="tel" maxlength="20"></label>
+      </div>
+      <div class="bn-baris">
+        <label class="bn-isian">Nama ajudan atau sespri (boleh dikosongkan)<input name="ajudan" maxlength="100"></label>
+        <label class="bn-isian">WA ajudan (boleh dikosongkan)<input name="ajudan_wa" inputmode="tel" maxlength="20"></label>
+        <label class="bn-isian">Kirim kabar untuk<select name="ambang" id="fAmbang"></select></label>
+      </div>
+      <label class="bn-isian">Keterangan (boleh dikosongkan)<input name="catatan" maxlength="500"></label>
+    </section>
+    <section class="bn-blok">
+      <label class="bn-setuju"><input type="checkbox" name="setuju" id="fSetuju" required><span>Saya setuju data ini diproses untuk pengiriman kabar kejadian bencana sesuai UU Pelindungan Data Pribadi. Data tidak ditampilkan ke publik. Penghapusan bisa diminta ke admin kapan saja.</span></label>
+      <div id="ts"></div>
+      <p id="pesan" class="bn-pesan" role="status"></p>
+      <div><button class="bn-tombol" id="kirim" type="submit">Kirim registrasi</button></div>
+    </section>
+  </form>
+</main>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/bnpb/kontak.js?v=1" defer></script>
+</body>
+</html>

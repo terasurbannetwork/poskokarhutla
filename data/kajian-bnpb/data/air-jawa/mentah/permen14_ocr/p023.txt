@@ -1,0 +1,118 @@
+#TATA_LETAK satu-tabel lebar=2480
+»3 2015, No.€38
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+b Kab. Kolaka
+
+1 D.I. Ladongi 3.100
+
+2 D.I. Wundulako 3.600
+
+c Kab. Konawe
+
+1 D.I. Walai 3.050
+
+2 D.I. Wawotobi Ameroro 20.458
+
+d Kab. Konawe Selatan
+
+1 D.I. Aporo-Lambandia 5.610
+
+2 D.I. Mowila 5.056
+XXIV PROVINSI SULAWESI BARAT 1 12.585
+
+a Kab. Polewali Mandar
+
+1 D.I. Maloso 12.585
+XXV PROVINSI SULAWESI SELATAN 19 128.041
+
+a Kab. Bone
+
+1 D.I. Palakka 4.633
+
+2 D.I. Pattiro 4.970
+
+3 D.I. Ponre-Ponre 4411
+
+4 D.I. Sanrego 9.457
+
+b Kab. Bulukumba
+
+1 D.I. Bayang-Bayang 5.030
+
+2 D.I. Bonto Manai 3.830
+
+c Kab. Luwu
+
+1 D.I. Bajo 7.000
+
+2 D.I. Padang Sappa 12.588
+
+d Kab. Luwu Timur
+
+1 D.I. Kalaena 18.184
+
+e Kab. Luwu Utara
+
+1 D.I. Kanjiro Bone-Bone 5.917
+
+f Kab. Maros
+
+1 D.I. Bantimurung 6.513
+
+2 D.I. Lekopancing 3.626
+
+g Kab. Pangkajene dan Kepulauan
+
+1 D.I. Tabo-Tabo 3.615
+
+h Kab. Sidenreng Rappang
+
+1 D.I. Bulucenrana 5.999
+
+2 D.I. Bulutimorang 5.442
+
+i Kab. Soppeng
+
+1 D.I. Langkemme 6.708
+
+2 D.I. Tinco 3.520
+
+j Kab. Takalar
+
+1 D.I. Pammukulu 6.256
+
+k Kab. Wajo
+
+1 D.I. Awo 5.342
+XXVI PROVINSI MALUKU 7 27.483
+
+a Kab. Buru
+
+1 D.I. Way Apu Kiri/Kanan 4174
+
+2 D.I. Way Geren 3.892
+
+b Kab. Buru Selatan
+
+1 D.I. Way Mulang 3.500
+
+c Kab. Maluku Tengah
+
+1 D.I. Kobi 3.150
+
+2 D.I. Samal 4.717
+
+d Kab. Seram Bagian Timur
+
+1 D.I. Matakabo 3.050
+
+2 D.I. Werinama 5.000
+XXVII PROVINSI MALUKU UTARA 2 7.730
+
+a Kab. Halmahera Timur
+
+1 D.I. Akedaga-Tutiling-Meja 4.640
+
+2 D.I. Opiyang-Mancalele 3.090

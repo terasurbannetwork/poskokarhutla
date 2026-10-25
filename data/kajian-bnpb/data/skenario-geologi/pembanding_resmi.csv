@@ -1,0 +1,13 @@
+butir,angka_resmi_atau_literatur,sumber,label,angka_platform,arti_angka_platform,dipakai_sebagai_utama
+Penduduk terpapar bahaya tsunami (nasional),5341282 (jiwa_terpapar 4252077),"KRB 2022-2026 via API-KRB kajian-summary/tsunami (riset/mentah/ks_tsunami.json; RENAS 2025-2029 Tabel 2.x, riset A §1.4)",resmi,jawa 2931246; mentawai 930750; sumba 1350831,"jiwa kecamatan pesisir rendah tiba <= 30 menit per skenario (proksi, bukan genangan)",resmi
+Penduduk terpapar bahaya gempa (nasional),272405410,KRB 2022-2026 (ks_gempabumi.json),resmi,jawa MMI>=VI 17425600; mentawai MMI>=VI 9623934; sumba MMI>=VI 0,"per skenario tunggal, bukan bahaya probabilistik",resmi
+Penduduk terpapar bahaya letusan gunung api (nasional),5864711,KRB 2022-2026 (ks_letusan-gunungapi.json),resmi,866389,"jumlah KRB III+II+I 30 gunung (paparan.json, dalam 20 km)",resmi
+Mmaks megathrust Jawa,"9,1 (Peta Gempa 2024); PuSGeN 2017: tabel tidak dibuka",tektonesiana.org; katadata; CNBC (riset A §6),terverifikasi (sekunder),"8,5",skenario sim.js; lebih kecil dari Mmaks 2024,resmi untuk Mmaks; platform hanya ilustrasi
+Mmaks megathrust Mentawai/Enggano,"8,9 (Peta Gempa 2024)",riset A §6 (sekunder),terverifikasi (sekunder),"8,8",skenario sim.js,resmi untuk Mmaks
+Mmaks megathrust selatan Bali-Sumba,tidak ditemukan di riset,-,-,"8,3","skenario sim.js, tanpa rujukan per baris","platform (ilustrasi), tandai belum bersumber"
+Jumlah segmen megathrust,"13 (RPJMN/Renstra, PuSGeN 2017) / 14 (Peta Gempa 2024) / 15 (GeoServer InaRISK) / 16 (sumber lain 2017)","riset A §6, §8","resmi/sekunder, bertentangan",3 skenario,hanya tiga segmen dijalankan,resmi
+Tinggi tsunami terburuk selatan Jawa Barat,~20 m (dua segmen pecah bersamaan),"Widiyantoro dkk. 2020, Sci. Rep. 10:15274 (ITB/BMKG; abstrak, riset A §6)",terverifikasi (sekunder: abstrak),14.2,"tinggi indikatif atas (Abe 1995 x2) di pantai Jabar/Banten, skenario jawa M8,5",literatur
+Tinggi tsunami terburuk selatan Jawa Timur,"~12 m; rata-rata maksimum 4,5 m sepanjang pantai selatan Jawa",Widiyantoro dkk. 2020 (abstrak),terverifikasi (sekunder: abstrak),22.3,"tinggi indikatif atas di pantai Jatim, skenario jawa",literatur
+Tinggi tsunami Sumatra paling selatan / Ujung Kulon,hingga 34 m,"Supendi dkk. 2022, Nat. Hazards (riset A §6)",terverifikasi (sekunder),19.8,"tinggi indikatif atas Lampung/Banten, skenario jawa & mentawai",literatur
+Genangan tsunami skenario,layer Inun_7_8_Mw ... Inun_9_0_Mw dan INA_Megathrust di GeoServer InaRISK,"docs/multi-bencana/SUMBER-BNPB.md (riset A §6), cakupan belum dicek",resmi (keberadaan layer),-,platform TIDAK menghitung genangan,resmi
+Korban jiwa Merapi 2010,386 (DIBI) / 347 / 354,DIBI; riset A §4.4,resmi,89707,jiwa di sapuan model tanpa evakuasi (bukan korban),resmi

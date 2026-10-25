@@ -30,16 +30,20 @@ const tolak = () => gagal(403, "perlu masuk admin");
 
 async function baca(env, req, url) {
   if (!await adminOK(env, req)) return tolak();
+  return bacaLaporan(env, url);
+}
+/* tanpa pemeriksaan akses: dipanggil setelah adminOK di atas, atau setelah kunci API bercakupan laporan_bnpb (src/api_v1.js) */
+export async function bacaLaporan(env, url, tanpaOleh = false) {
   const jenis = jenisDari(url); if (!jenis) return gagal(400, "jenis harus harian atau presiden");
   const t = url.searchParams.get("tanggal");
   const h = {"cache-control": "no-store"};
   if (t == null) {   // daftar tanggal tersimpan, terbaru dulu
-    const r = await env.DB.prepare("SELECT tanggal, diubah, oleh FROM laporan_bnpb WHERE jenis = ? ORDER BY tanggal DESC LIMIT 400").bind(jenis).all();
+    const r = await env.DB.prepare(`SELECT tanggal, diubah${tanpaOleh ? "" : ", oleh"} FROM laporan_bnpb WHERE jenis = ? ORDER BY tanggal DESC LIMIT 400`).bind(jenis).all();
     return json({jenis, daftar: r.results}, 200, h);
   }
   if (!tglSah(t)) return gagal(400, "tanggal harus YYYY-MM-DD");
-  const r = await env.DB.prepare("SELECT isi, diubah, oleh FROM laporan_bnpb WHERE jenis = ? AND tanggal = ?").bind(jenis, t).first();
-  return r ? json({jenis, tanggal: t, isi: JSON.parse(r.isi), diubah: r.diubah, oleh: r.oleh}, 200, h) : gagal(404, "belum ada laporan tanggal itu");
+  const r = await env.DB.prepare(`SELECT isi, diubah${tanpaOleh ? "" : ", oleh"} FROM laporan_bnpb WHERE jenis = ? AND tanggal = ?`).bind(jenis, t).first();
+  return r ? json({jenis, tanggal: t, isi: JSON.parse(r.isi), diubah: r.diubah, ...(tanpaOleh ? {} : {oleh: r.oleh})}, 200, h) : gagal(404, "belum ada laporan tanggal itu");
 }
 
 async function simpan(env, req, url, kini) {

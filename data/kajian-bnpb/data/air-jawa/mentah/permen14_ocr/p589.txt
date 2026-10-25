@@ -1,0 +1,58 @@
+#TATA_LETAK satu-tabel lebar=2480
+589 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+2 D.LT. Dannuang 165
+3 D.I.T. Dwitiro 50
+4 D.I.T. Ela-Ela 65
+5 D.LT. Garanta 32
+6 D.I.T. Jalanjang 80
+7 D.LT. Kalumeme 249
+8 D.I.T. Lembang 135
+9 D.ILT. Lembang Lohe 141
+10 D.I.T. Lembanna 98
+11 D.L.T. Lolisang 5
+12 D.I.T. Manjalling 226
+13 D.I.T. Mariorennu 138
+14 D.I.T. Matekko 75
+15 D.I.T. Palambarae 125
+16 D.I.T. Possi Tanah 64
+17 D.I.T. Salemba 170
+18 D.I.T. Sapolohe 93
+19 D.I.T. Seppang 37
+20 D.I.T. Tanah Jaya 26
+d Kab. Jenebonto 2 1.150
+1 D..T. Batang 500
+2 D.LT. Tamanroya 650
+e Kab. Luwu 1 770
+1 D.T. Bua Ponrang 770
+f Kab. Luwu Timur 2 1.500
+1 D.I.T. Manurung 750
+2 D.I.T. Ussu 750
+a Kab. Maros 5 2.897
+1 D.L.T. Balosi 578
+2 D.LT. Borongkaluku 479
+3 D.LT. Kadarbobo 420
+4 D.LT. Maranak 450
+5 D.LT. Tupabiring 970
+h Kab. Panakaiene dan Kebulauan 1 202
+1 D.I.T. Pundata Baji 202
+i Kab. Pinrana 1 911
+1 D.I.T. Mattiro Sompe 911
+i Kab. Kepulauan Selavar 18 1.174
+1 D.LT. Barugaya 2
+2 D.LT. Benteng Selatan 1
+3 D.I.T. Bontelempangan 1
+4 D.LT. Bontobulaeng 190
+5 D.LT. Bontoharu 500
+6 D.I.T. Bontomalling 38
+7 D.I.T. Bontosaile 78
+8 D.I.T. Kayuadi 10
+9 D.I.T. Kembang Ragi 64
+10 D.I.T. Labuang Pamajang 17
+11 D.I.T. Laiyolo 48
+12 D.I.T. Lembang Baji 7
+13 D.I.T. Lowa 109
+14 D.I.T. Ma'minasa 25
+15 D.I.T. Massungke 51
+16 D.I.T. Parak 7

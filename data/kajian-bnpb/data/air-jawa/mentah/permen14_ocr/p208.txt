@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+545 D.I. Simbang 17
+546 D.I. Sipete 15
+547 D.I. Sipete 26
+548 D.I. Sirandu 27
+549 D.I. Sirung 8
+550 D.I. Sisigan 27
+551 D.I. Siwuluh 20
+552 D.I. Sodo 33
+553 D.I. Song 50
+554 D.I. Sugeng 5
+555 D.I. Sunti 85
+556 D.I. Tandon 68
+557 D.I. Tanon 19
+558 D.I. Tawang 25
+559 D.I. Tengah/Boja 15
+560 D.I. Tengah/Satrian 58
+561 D.I. Tlodas 15
+562 D.I. Wangan Anyar 15
+563 D.I. Wangan Cokro 36
+564 D.I. Wangan Gede 34
+565 D.I. Wangan Gede 30
+566 D.I. Wangan Tengah 20
+567 D.I. Wangan Tengah 30
+568 D.I. Watu Gabuk 10
+569 D.I. Watubucu 15
+570 D.I. Winong 10
+571 D.I. Wuluh 13
+572 D.I. Wuluh 16
+573 D.I. Wuni 11
+d Kab. Blora 183 13.351
+1 D.I. Adirejo 20
+2 D.I. Bangoan 10
+3 D.I. Banyubang 30
+4 D.I. Bedingin 20
+5 D.I. Beduk 10
+6 D.I. Beran 9
+7 D.I. Betet 11
+8 D.I. Bicak 36
+9 D.I. Bleboh 80
+10 D.I. Bogem 53
+11 D.I. Bradak 30
+12 D.I. Bruk 25
+13 D.I. Cabean 426
+14 D.I. Cigrok 306
+15 D.I. Cokrowati 40
+16 D.I. Cumpleng 20
+17 D.I. Cungkup 25
+18 D.I. Dringo 30
+19 D.I. Dumpul 70
+20 D.I. Gabus 345
+21 D.I. Gadon 16
+22 D.I. Gadu I- II 40
+23 D.I. Gakyang 7
+24 D.I. Gayam 115
+25 D.I. Gembleb 52
+26 D.I. Gendongan 311
+27 D.I. Geneng 45
+28 D.I. Giyanti 20
+29 D.I. Glagahan 288
+30 D.I. Slempo 83
+#KANAN
+208
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+31 D.I. Gondel 60
+32 D.I. Gondoriyo 25
+33 D.I. Greneng 265
+34 D.I. Guwolandak 212
+35 D.I. Jagong 116
+36 D.I. Janjang I & II 20
+37 D.I. Jembangan 25
+38 D.I. Jetakwanger 125
+39 D.I. Jiken 100
+40 D.I. Jipang 62
+41 D.I. Joho 30
+42 D.I. Jomblang 18
+43 D.I. Jugo 50
+44 D.I. Juruk 10
+45 D.I. Kajengan 65
+46 D.I. Kali Suru 10
+47 D.I. Kali Tengah 15
+48 D.I. Kali Ungkal 35
+49 D.I. Kali Wedi 20
+50 D.I. Kamolan 25
+51 D.I. Karang Anyar | 34
+52 D.I. Karang Anyar II 20
+53 D.I. Karang Geneng I 150
+54 D.I. Karangtawang 10
+55 D.I. Katesan 12
+56 D.I. Kedawung 30
+57 D.I. Kedung banggi 35
+58 D.I. Kedung bulus 25
+59 D.I. Kedung Bunder 9
+60 D.I. Kedung Embut 26
+61 D.I. Kedung Lo 25
+62 D.I. Kedung Prau 7
+63 D.I. Kedung Sari 27
+64 D.I. Kedungrejo 25
+65 D.I. Kedungrejo 65
+66 D.I. Kelir 278
+67 D.I. Kemiri 63
+68 D.I. Kemloko 45
+69 D.I. Kepoh 30
+70 D.I. Ketileng 71
+71 D.I. Kidangan 234
+72 D.I. Klampok 15
+73 D.I. Klampok II 25
+74 D.I. Krocok 40
+75 D.I. Kulur 97
+76 D.I. Kundi 11
+77 D.I. Lawungan 953
+78 D.I. Ledok 59
+79 D.I. Ledok 10
+80 D.I. Lego 358
+81 D.I. Medalem 100
+82 D.I. Menden 50
+83 D.I. Mursapa 659
+84 D.I. Ngawenombo 109
+85 D.I. Nglanjuk 40
+86 D.I. Nglaroh 15
+87 D.I. Nglaroh Gunung 27
+88 D.I. Nglebur 129
+89 D.I. Nglengkir 30
+90 D.I. Nglungger 100
+91 D.I. Ngrandu 21

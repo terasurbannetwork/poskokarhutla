@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+11 D.I. Air Kelam Darat Sawah | 80
+12 D.I. Air Kelam Siring Agung 150
+13 D.I. Air Kelam Karang Tanjul 25
+14 D.I. Air Kelam Talang IX 27
+15 D.I. Air Kelam Leboan 60
+16 D.I. Air Gegasan | 105
+17 D.I. Air Beriang Tanjung Bulan 50
+18 D.I. Air Kinal Gedung Wani 105
+19 D.I. Air Rantai Jaya | 30
+20 D.I. Air Kinal Batu Lambang 30
+21 D.I. Air Kinal Gunung Megang 150
+22 D.I. Air Kinal Bunga Melur 35
+23 D.I. Air Durian Nusuk | 35
+24 D.I. Air Kandis Fajar Bulan 100
+25 D.I. Air Kandis Padang Hangat 80
+26 D.I. Air Luas Benua Ratu 60
+27 D.I. Air Luas Cahaya Negeri 50
+28 D.I. Air Luas Pulau Tengah 135
+29 D.I. Air Kendawaian | 65
+30 D.I. Air Makekal 80
+31 D.I. Air Tebat Senin 61
+32 D.I. Air Bintuhan 105
+33 D.I. Air Pd. Guci Gedung Luis 60
+34 D.I. Air Surau Mekah | 25
+35 D.I. Air Surau Mekah II 28
+36 D.I. Air Abang Manau IX 30
+37 D.I. Air Pagar Gunung 60
+38 D.I. Air Lubuk Mangkok 25
+39 D.I. Air Padian Manau IX 25
+40 D.I. Air Pelilingan 50
+41 D.I. Air Tanjung Serai 20
+42 D.I. Air Bemban Manau IX 50
+43 D.I. Air Pd. Guci Pengaringan 35
+44 D.I. Air Pd. Guci Guru Agung 80
+45 D.I. Air Pd. Guci Simpang Tiga 40
+46 D.I. Air Pd. Guci Gn. Agung 45
+47 D.I. Air Pd. Guci Lipih Tengah 60
+48 D.I. Air Kelam Bandu Aauna II 40
+49 D.I. Air Kelam Pd. Manis 10
+50 D.I. Air Tebat Cina 45
+51 D.I. Air Tebat Baru 15
+52 D.I. Air Pd. Guci Kampung Panjang 135
+53 D.I. Air Jelatang | 25
+54 D.I. Air Jelatang II 20
+55 D.I. Air Kelam Tj. Ganti I 20
+56 D.I. Air Kelam Rigangan I 20
+57 D.I. Air Kelam Darat Sawah II 10
+58 D.I. Air Kelam Talang Tais 50
+59 D.I. Air Kelam Pagar Dewa 40
+60 D.I. Air Kelam Seranjangan Kecil 15
+61 D.I. Air Kelam Papakan Lagan 15
+62 D.I. Air Kelam Sukarami 38
+63 D.I. Air Tebat Tupak II 18
+64 D.I. Air Kelam Papakan Gajah 15
+65 D.I. Air Tebat Tupak | 25
+66 D.I. Air Tebat Ipuh 25
+67 D.I. Air Kelam Seranjangan Kecil TI. Belut 15
+68 D.I. Air Kelam Pagar Agung 38
+69 D.I. Air Hitam Tinggi Ari 38
+70 D.I. Air Tebat Katak 60
+71 D.I. Air Gegasan II 25
+#KANAN
+125 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+72 D.I. Air Gegasan III 15
+73 D.I. Air Selika | 10
+74 D.I. Air Selika II 25
+75 D.I. Air Kelian 25
+76 D.I. Air Rantai Jaya II 75
+77 D.I. Air Sulau Indah 30
+78 D.I. Air Kinal Lubuk Niur 20
+79 D.I. Air Kinal Tanjung Selepah 50
+80 D.I. Air Kinal Pengurung Limus 20
+81 D.I. Air Kinal Pinang Jawa 111
+82 D.I. Air Kinal Talang Padang 50
+83 D.I. Air Kule Lubuk Durian 30
+84 D.I. Air Paluh Palem Rantai Jaya 45
+85 D.I. Air Rantai Jaya Bunga Melur 25
+86 D.I. Air Paluh Pisang 35
+87 D.I. Air Durian Karang Dapo 30
+88 D.I. Air Kinal Tj. Baru 30
+89 D.I. Air Durian Nusuk II 20
+90 D.I. Air Tebat Suka Rami 25
+91 D.I. Air Tebat Gerumbulan 25
+92 D.I. Air Lubuk Gong 30
+93 D.I. Air Mantai Desa Umbul 25
+94 D.I. Air Umbul Mantai 60
+95 D.I. Air Luas Tuguk 75
+96 D.I. Air Kendawaian II 25
+97 D.I. Air Kendawaian III 15
+98 D.I. Air Luas Muara Sahung 25
+99 D.I. Air Luas Kepahyang 60
+100 D.I. Air Senabung 50
+101 D.I. Air Demak 25
+102 D.I. Air Tebat Pauh 163
+103 D.I. Air Tebat Penangkis 65
+104 D.I. Air Cendekawi 40
+105 D.I. Air Lelehan Kedataran 25
+106 D.I. Air Palawan 28
+107 D.I. Air Nasal Muara Dua 25
+e Kab. Kevahiana 78 3.765
+1 D.I. Air Durian | 156
+2 D.I. Air Durian II 20
+3 D.I. Air Sempiang 33
+4 D.I. Air Lembut 135
+5 D.I. Air Sengak 225
+6 D.I. Air Tik Ingan 20
+7 D.I. Air Li'ik 20
+8 D.I. Air Tik Kapuk 25
+9 D.I. Air Tik Siput 25
+10 D.I. Air Sempiang 20
+11 D.I. Air Sengak 20
+12 D.I. Air Pama Genjer 15
+13 D.I. Air Sengak 18
+14 D.I. Air Les 15
+15 D.I. Air Pea 15
+16 D.I. Air Tik Betung 17
+17 D.I. Air Ketapang 50
+18 D.I. Air Tebat Monok 10
+19 D.I. Air Sengak Tapak Gedung 25
+20 D.I. Air Pinggir Kuning Taba Sating 87
+21 D.I. Air Pinggir Kuning | 88
+22 D.I. Air Pinggir Kuning II 45
+23 D.I. Air Pinggir Kuning III 60

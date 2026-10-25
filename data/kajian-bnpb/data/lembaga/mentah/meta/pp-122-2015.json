@@ -1,0 +1,23 @@
+{
+ "id": "5701",
+ "url": "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
+ "judul": "Peraturan Pemerintah (PP) Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
+ "nomor": "122 Tahun 2015 tentang Sistem Penyediaan Air Minum T.E.U. Indonesia, Pemerintah Pusat Nomor 122",
+ "tanggal_penetapan": "28 Desember 2015",
+ "tanggal_berlaku": "28 Desember 2015",
+ "sumber": "LN. 2015 No. 345, TLN No. 5802, LL SETNEG : 33 HLM",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/28467/PP%20Nomor%20122%20Tahun%202015.pdf"
+ ],
+ "status_peraturan": "Belum Tersedia",
+ "abstrak": "2015 Peraturan Pemerintah (PP) NO. 122, LN. 2015 No. 345, TLN No. 5802, LL SETNEG : 33 HLM Peraturan Pemerintah (PP) TENTANG Sistem Penyediaan Air Minum ABSTRAK: CATATAN: Peraturan Pemerintah (PP) ini mulai berlaku pada tanggal 28 Desember 2015.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/28467/PP%20Nomor%20122%20Tahun%202015.pdf",
+ "pdf_sha1": "a334f4f31867975b9cb24e06652d929e917e261b",
+ "pdf_bytes": 447372,
+ "sid": "pp-122-2015",
+ "halaman_total": 52,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

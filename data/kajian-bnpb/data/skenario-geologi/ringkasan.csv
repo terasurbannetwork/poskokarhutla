@@ -1,0 +1,79 @@
+skenario,butir,rendah,tengah,tinggi,satuan,label,catatan
+jawa,magnitudo / kedalaman / strike,,M8.5 / 25 km / 278°,,-,asumsi-kebijakan,"public/gempa/sim.js DIKENAL; jejak PuSGeN 2017 menurut komentar sim.js, magnitudo tidak bersumber per baris (audit 21 Okt)"
+jawa,jiwa terpapar MMI >= VI,,17425600,,jiwa,estimasi-model,guncangan.js belum diuji (model_guncangan.json kinerja_uji belum_diuji)
+jawa,jiwa terpapar MMI >= VII,0,0,5545446,jiwa,estimasi-model,rendah/tinggi = guncangan satu tau antar-kejadian lebih lemah/kuat
+jawa,luas MMI >= VI,,17481,,km2,estimasi-model,"kisi 0,02 derajat, daratan dalam poligon kab"
+jawa,rumah rusak berat,2554,24991,218417,unit,estimasi-model,"rumah = jiwa/3,9 (bukan data bangunan); pita kerusakan.js"
+jawa,rumah rusak sedang,10226,86503,660038,unit,estimasi-model,
+jawa,rumah rusak ringan,25437,197943,1400906,unit,estimasi-model,
+jawa,"korban jiwa guncangan, pita mesin",29,312,2979,jiwa,estimasi-model,"kerusakan.js; galat LOO x5.341 (kalibrasi 8 gempa kerak, korban ditulis dari ingatan); okupansi 0,85"
+jawa,"korban jiwa guncangan, rasio analog",0,0,12726,jiwa,estimasi-model,"jiwa MMI>=VII x rasio analog [min x pita rendah, median x tengah, maks x pita tinggi]; analog.csv"
+jawa,korban jiwa tsunami (evakuasi segera 20%),897,2670,7945,jiwa,estimasi-model,proksi jiwa pesisir rendah tiba <= 30 menit x rasio Mentawai 2010/Pangandaran 2006; BUKAN genangan
+jawa,korban jiwa tsunami (evakuasi segera 50%),594,1768,5262,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.662"
+jawa,korban jiwa tsunami (evakuasi segera 70%),392,1167,3474,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.437"
+jawa,pengungsi (penghuni RB + RS),,434828,,jiwa,asumsi-kebijakan,"(RB+RS) x 3,9; cek Cianjur 2022: lihat pembanding_pdna.csv"
+jawa,"jiwa evakuasi tsunami (pesisir rendah, tiba <= 30 menit)",,2931246,,jiwa,estimasi-model,"batas atas, seluruh penduduk kecamatan"
+jawa,panjang pantai tiba < 30 menit,851,,1389,km,estimasi-model,"rendah = waktu tampilan (x0,85), tinggi = sisi aman (x0,61); proksi jumlah sel pantai ETOPO 3' x 5,6 km"
+jawa,kerugian materiil batas bawah (stimulan rumah),841608,7063712,53919772,juta Rp,asumsi-kebijakan,Rp60/30/15 jt per rumah RB/RS/RR (param_banjir.json); bukan kerugian ekonomi penuh
+jawa,"kerugian materiil batas bawah, skema lama 50/25/10",,5391568,,juta Rp,asumsi-kebijakan,skema Lombok 2018/Sulbar 2021
+jawa,"tahun hidup hilang (YLL), guncangan analog",0,0,572683,tahun,asumsi-kebijakan,korban x sisa harapan hidup 25/35/45 tahun
+jawa,hari-mengungsi (guncangan),3043797,13044844,39134533,jiwa-hari,asumsi-kebijakan,pengungsi x 7 / 30 / 90 hari
+jawa,tsunami: kab/kota tercapai <= 180 menit,,134,,kab/kota,estimasi-model,
+jawa,tsunami: tinggi indikatif maksimum di pantai,,22.3,,m,estimasi-model,"Abe 1995 x2 (batas atas rentang), bukan run-up"
+mentawai,magnitudo / kedalaman / strike,,M8.8 / 25 km / 320.5°,,-,asumsi-kebijakan,"public/gempa/sim.js DIKENAL; jejak PuSGeN 2017 menurut komentar sim.js, magnitudo tidak bersumber per baris (audit 21 Okt)"
+mentawai,jiwa terpapar MMI >= VI,,9623934,,jiwa,estimasi-model,guncangan.js belum diuji (model_guncangan.json kinerja_uji belum_diuji)
+mentawai,jiwa terpapar MMI >= VII,1208127,3911944,7535100,jiwa,estimasi-model,rendah/tinggi = guncangan satu tau antar-kejadian lebih lemah/kuat
+mentawai,luas MMI >= VI,,80637,,km2,estimasi-model,"kisi 0,02 derajat, daratan dalam poligon kab"
+mentawai,rumah rusak berat,6807,50378,350761,unit,estimasi-model,"rumah = jiwa/3,9 (bukan data bangunan); pita kerusakan.js"
+mentawai,rumah rusak sedang,13984,94160,599681,unit,estimasi-model,
+mentawai,rumah rusak ringan,23913,153172,934859,unit,estimasi-model,
+mentawai,"korban jiwa guncangan, pita mesin",116,902,6574,jiwa,estimasi-model,"kerusakan.js; galat LOO x5.341 (kalibrasi 8 gempa kerak, korban ditulis dari ingatan); okupansi 0,85"
+mentawai,"korban jiwa guncangan, rasio analog",199,1833,17292,jiwa,estimasi-model,"jiwa MMI>=VII x rasio analog [min x pita rendah, median x tengah, maks x pita tinggi]; analog.csv"
+mentawai,korban jiwa tsunami (evakuasi segera 20%),285,848,2523,jiwa,estimasi-model,proksi jiwa pesisir rendah tiba <= 30 menit x rasio Mentawai 2010/Pangandaran 2006; BUKAN genangan
+mentawai,korban jiwa tsunami (evakuasi segera 50%),189,561,1671,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.662"
+mentawai,korban jiwa tsunami (evakuasi segera 70%),125,371,1103,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.437"
+mentawai,pengungsi (penghuni RB + RS),,563696,,jiwa,asumsi-kebijakan,"(RB+RS) x 3,9; cek Cianjur 2022: lihat pembanding_pdna.csv"
+mentawai,"jiwa evakuasi tsunami (pesisir rendah, tiba <= 30 menit)",,930750,,jiwa,estimasi-model,"batas atas, seluruh penduduk kecamatan"
+mentawai,panjang pantai tiba < 30 menit,1440,,2061,km,estimasi-model,"rendah = waktu tampilan (x0,85), tinggi = sisi aman (x0,61); proksi jumlah sel pantai ETOPO 3' x 5,6 km"
+mentawai,kerugian materiil batas bawah (stimulan rumah),1186621,8145033,53058961,juta Rp,asumsi-kebijakan,Rp60/30/15 jt per rumah RB/RS/RR (param_banjir.json); bukan kerugian ekonomi penuh
+mentawai,"kerugian materiil batas bawah, skema lama 50/25/10",,6404598,,juta Rp,asumsi-kebijakan,skema Lombok 2018/Sulbar 2021
+mentawai,"tahun hidup hilang (YLL), guncangan analog",4966,64159,778156,tahun,asumsi-kebijakan,korban x sisa harapan hidup 25/35/45 tahun
+mentawai,hari-mengungsi (guncangan),3945871,16910876,50732629,jiwa-hari,asumsi-kebijakan,pengungsi x 7 / 30 / 90 hari
+mentawai,tsunami: kab/kota tercapai <= 180 menit,,95,,kab/kota,estimasi-model,
+mentawai,tsunami: tinggi indikatif maksimum di pantai,,37.8,,m,estimasi-model,"Abe 1995 x2 (batas atas rentang), bukan run-up"
+sumba,magnitudo / kedalaman / strike,,M8.3 / 25 km / 275.3°,,-,asumsi-kebijakan,"public/gempa/sim.js DIKENAL; jejak PuSGeN 2017 menurut komentar sim.js, magnitudo tidak bersumber per baris (audit 21 Okt)"
+sumba,jiwa terpapar MMI >= VI,,0,,jiwa,estimasi-model,guncangan.js belum diuji (model_guncangan.json kinerja_uji belum_diuji)
+sumba,jiwa terpapar MMI >= VII,0,0,0,jiwa,estimasi-model,rendah/tinggi = guncangan satu tau antar-kejadian lebih lemah/kuat
+sumba,luas MMI >= VI,,122,,km2,estimasi-model,"kisi 0,02 derajat, daratan dalam poligon kab"
+sumba,rumah rusak berat,81,928,9300,unit,estimasi-model,"rumah = jiwa/3,9 (bukan data bangunan); pita kerusakan.js"
+sumba,rumah rusak sedang,435,4237,36398,unit,estimasi-model,
+sumba,rumah rusak ringan,1296,11458,90016,unit,estimasi-model,
+sumba,"korban jiwa guncangan, pita mesin",1,10,107,jiwa,estimasi-model,"kerusakan.js; galat LOO x5.341 (kalibrasi 8 gempa kerak, korban ditulis dari ingatan); okupansi 0,85"
+sumba,"korban jiwa guncangan, rasio analog",0,0,0,jiwa,estimasi-model,"jiwa MMI>=VII x rasio analog [min x pita rendah, median x tengah, maks x pita tinggi]; analog.csv"
+sumba,korban jiwa tsunami (evakuasi segera 20%),413,1230,3661,jiwa,estimasi-model,proksi jiwa pesisir rendah tiba <= 30 menit x rasio Mentawai 2010/Pangandaran 2006; BUKAN genangan
+sumba,korban jiwa tsunami (evakuasi segera 50%),274,815,2425,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.662"
+sumba,korban jiwa tsunami (evakuasi segera 70%),181,538,1601,jiwa,asumsi-kebijakan,"skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x0.437"
+sumba,pengungsi (penghuni RB + RS),,20142,,jiwa,asumsi-kebijakan,"(RB+RS) x 3,9; cek Cianjur 2022: lihat pembanding_pdna.csv"
+sumba,"jiwa evakuasi tsunami (pesisir rendah, tiba <= 30 menit)",,1350831,,jiwa,estimasi-model,"batas atas, seluruh penduduk kecamatan"
+sumba,panjang pantai tiba < 30 menit,1261,,2031,km,estimasi-model,"rendah = waktu tampilan (x0,85), tinggi = sisi aman (x0,61); proksi jumlah sel pantai ETOPO 3' x 5,6 km"
+sumba,kerugian materiil batas bawah (stimulan rumah),37353,354628,3000220,juta Rp,asumsi-kebijakan,Rp60/30/15 jt per rumah RB/RS/RR (param_banjir.json); bukan kerugian ekonomi penuh
+sumba,"kerugian materiil batas bawah, skema lama 50/25/10",,266879,,juta Rp,asumsi-kebijakan,skema Lombok 2018/Sulbar 2021
+sumba,"tahun hidup hilang (YLL), guncangan analog",0,0,0,tahun,asumsi-kebijakan,korban x sisa harapan hidup 25/35/45 tahun
+sumba,hari-mengungsi (guncangan),140991,604246,1812739,jiwa-hari,asumsi-kebijakan,pengungsi x 7 / 30 / 90 hari
+sumba,tsunami: kab/kota tercapai <= 180 menit,,150,,kab/kota,estimasi-model,
+sumba,tsunami: tinggi indikatif maksimum di pantai,,10.6,,m,estimasi-model,"Abe 1995 x2 (batas atas rentang), bukan run-up"
+merapi2010,"jiwa di area sapuan awan panas + lahar tanpa evakuasi (H/L 0,15)",,89707,,jiwa,estimasi-model,"awan panas 17.6 km, lahar 21.1 km; H/L 0,18: 34742 jiwa"
+merapi2010,luas sapuan,,7993,,ha,estimasi-model,gabungan sel DEM awan panas + lahar
+merapi2010,korban jiwa (pola evakuasi 2010),347,,386,jiwa,resmi,kejadian 2010: 347 (sekunder) s.d. 386 (DIBI); dibagi ke kab menurut porsi sapuan
+merapi2010,pengungsi (radius 20 km seperti 2010),,1552098,,jiwa,estimasi-model,DIBI 2010 mengungsi 447982
+merapi2010,rumah rusak berat (analog 2010),,2465,,unit,resmi,DIBI 26 Okt 2010; batas atas model = rumah di sapuan (merapi2010_kab.csv)
+merapi2010,rumah rusak sedang (analog 2010),,158,,unit,resmi,DIBI 26 Okt 2010; batas atas model = rumah di sapuan (merapi2010_kab.csv)
+merapi2010,rumah rusak ringan (analog 2010),,296,,unit,resmi,DIBI 26 Okt 2010; batas atas model = rumah di sapuan (merapi2010_kab.csv)
+merapi2010,kerugian materiil batas bawah (stimulan),,157080,,juta Rp,asumsi-kebijakan,rumah DIBI 2010 x Rp60/30/15 jt
+merapi2010,tahun hidup hilang (YLL),8675,12828,17370,tahun,asumsi-kebijakan,korban x 25/35/45 tahun
+krb-30-gunung,"jiwa KRB III (jumlah 30 gunung, piksel <= 20 km)",,86614,,jiwa,resmi,zona KRB PVMBG 2018 x WorldPop 2026; = paparan.json
+krb-30-gunung,"jiwa KRB II (jumlah 30 gunung, piksel <= 20 km)",,297012,,jiwa,resmi,zona KRB PVMBG 2018 x WorldPop 2026; = paparan.json
+krb-30-gunung,"jiwa KRB I (jumlah 30 gunung, piksel <= 20 km)",,482762,,jiwa,resmi,zona KRB PVMBG 2018 x WorldPop 2026; = paparan.json
+krb-30-gunung,korban jiwa erupsi besar pola historis,596,,967,jiwa,estimasi-model,jiwa KRB III x rasio Semeru 2021 / Merapi 2010; bila SEMUA gunung erupsi besar (bukan satu kejadian)
+krb-30-gunung,rumah rusak berat pola historis,6174,,8769,unit,estimasi-model,jiwa KRB III x RB/jiwa KRB III Merapi 2010 & Semeru 2021
+krb-30-gunung,pengungsi pola historis,98353,,1122021,jiwa,estimasi-model,"jiwa KRB III x mengungsi/jiwa KRB III (Semeru 1,1x; Merapi 13x)"

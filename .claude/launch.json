@@ -108,6 +108,22 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8798
+    },
+    {
+      "name": "hukum",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8799",
+        "--persist-to",
+        ".wrangler/hukum",
+        "--var",
+        "IP_SALT:garam-lokal"
+      ],
+      "port": 8799
     }
   ]
 }

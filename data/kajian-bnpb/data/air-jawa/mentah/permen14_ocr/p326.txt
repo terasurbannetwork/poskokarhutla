@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+569 D.I. Seminang 50
+570 D.I. Sengkan 34
+571 D.I. Sentul 119
+572 D.I. Sepudak 5
+573 D.I. Sidorejo 85
+574 D.I. Sidorejo 54
+575 D.I. Singgahan 84
+576 D.I. Sinaopadu 143
+577 D.I. Sobo 55
+578 D.I. Soko 38
+579 D.I. Soko 7
+580 D.I. Songo I 30
+581 D.I. Songo II 36
+582 D.I. Sragi 8
+583 D.I. Sukosari 38
+584 D.I. Sukosari | 29
+585 D.I. Sukosari II 30
+586 D.I. Sukosewu | 33
+587 D.I. Sukosewu II 15
+588 D.I. Sukosewu I 2
+589 D.I. Sukosewu II 58
+590 D.I. Sukosewu III 9
+591 D.I. Sumber 29
+592 D.I. Sumber Agung I 105
+593 D.I. Sumber Agung II 9
+594 D.I. Sumber gayam 83
+595 D.I. Sumberduren 16
+596 D.I. Sumontoro 59
+597 D.I. Suro | 96
+598 D.I. Suro II 64
+599 D.I. Suru 163
+600 D.I. Suwaluh 51
+601 D.I. Suwaru 52
+602 D.I. Tambak Wirang 47
+603 D.I. Tarokan | 199
+604 D.I. Tawang Lor 12
+605 D.I. Tawangsari | 10
+606 D.I. Tawangsari II 8
+607 D.I. Teaalan 85
+608 D.I. Tegalarum 58
+609 D.I. Tegalsari 165
+610 D.I. Tekenuwung 48
+611 D.I. Temanggungan 20
+612 D.I. Temboro 17
+613 D.I. Tempursari 102
+614 D.I. Tlanak 3
+615 D.I. Tritis | 8
+616 D.I. Tritis II 14
+617 D.I. Tugurejo 117
+618 D.I. Tulungrejo 153
+619 D.I. Tulungrejo 160
+620 D.I. Tumpang 48
+621 D.I. Turus 54
+622 D.I. Wangkal Kerep 64
+623 D.I. Wangkal Kerep II Ki 132
+624 D.I. Wates 28
+625 D.I. Wates/Ngaglik | 18
+626 D.I. Wates/Ngaglik II 6
+627 D.I. Watutulis | 4
+628 D.I. Watutulis II 42
+629 D.I. Welo | 30
+#KANAN
+326
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+630 D.I. Welo II 55
+631 D.I. Winong 120
+632 D.I. Winong Ledok I 2
+633 D.I. Winong Ledok II 15
+634 D.I. Winong Ledok III 6
+635 D.I. Wonorejo 37
+i Kab. Lamonaan 29 9.843
+1 D.I. Bengawan Solo 357
+2 D.I. Rawa Bogo 297
+3 D.I. Rawa Bulu 790
+4 D.I. Rawa Geger 135
+5 D.I. Rawa Kwanon 705
+6 D.I. Rawa Manyar 860
+7 D.I. Rawa Sibanget 365
+8 D.I. Rawa Sogo 222
+9 D.I. Sl. Keyongan 696
+10 D.I. Waduk Bowo 670
+11 D.I. Waduk Caling 509
+12 D.I. Waduk Canggah 358
+13 D.I. Waduk Delikguno 257
+14 D.I. Waduk Dukuh 145
+15 D.I. Waduk Jajong 497
+16 D.I. Waduk Kuripan 202
+17 D.I. Waduk Legoh 57
+18 D.I. Waduk Makam Santri 302
+19 D.I. Waduk Meduran 225
+20 D.I. Waduk Pading 487
+21 D.I. Waduk Palangan 334
+22 D.I. Waduk Paprit 144
+23 D.I. Waduk Sumur Gung 123
+24 D.I. Waduk Takeran 285
+25 D.I. Waduk Tuwiri 449
+26 D.I. Wd. Dermo 50
+27 D.I. Wd. Kedungdowo 16
+28 D.I. Wd. Lembeyan 20
+29 D.I. Nganjuk 286
+k Kab. Lumaiana 329 27.579
+1 D.I. Ali 7
+2 D.I. Bacem | 37
+3 D.I. Bacem II 73
+4 D.I. Bayur 30
+5 D.I. Bedayu. 158
+6 D.I. Bendo 90
+7 D.I. Bentrong Suko 118
+8 D.I. Besuki 51
+9 D.I. Betoto I 37
+10 D.I. Betoto II 207
+11 D.I. Bisri 150
+12 D.I. Blokrejo 54
+13 D.I. Blukon 658
+14 D.I. Bodang 155
+15 D.I. Boreng 306
+16 D.I. Boto 213
+17 D.I. Bulak Klakah 22
+18 D.I. Bulak Manggis 18
+19 D.I. Candri 17
+20 D.I. Cangkring I 19
+21 D.I. Cangkring II 29
+22 D.I. Carang Kuning 32

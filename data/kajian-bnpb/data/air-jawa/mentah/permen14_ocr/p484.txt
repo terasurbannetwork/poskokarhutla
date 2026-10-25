@@ -1,0 +1,56 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 484
+Status Daerah Irigasi Yang Menjadi Wei senang Dan Tangg' ing Jawab |'emerintah F.abupaten/Kota
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+| PROVINSI ACEH 66 1.858
+a Kab. Aceh Barat 5 105
+1 D.LA.T. Lueng Manerejo SP 003 ML 30
+2 D.LA.T. Cot Mee II SP 004 ML 25
+3 D.LA.T. Meunasah Buloh SP 65 ML 20
+4 D.LA.T. Suka Mulya TW 003 ML 10
+5 D.LA.T. Sido Dadi TW 005 ML 20
+b Kab. Aceh Besar 3 280
+1 D.LA.T. Meureu PP 02 JT 20
+2 D.LA.T. Silhom Cot SP 05 JT 30
+3 D.LA.T. Silhom Lhok I SP 06 JT 25
+4 D.LA.T. Luthu Lamweu SP 07 JT 30
+5 D.LA.T. Ulee Kareung SP 14 JT 25
+6 D.I.A.T. Atong | SP 36 JT 20
+7 D.LA.T. Menasah Manyang SP 48 JT 20
+8 D.IL.A.T. Atong II SP 55 JT 20
+9 D.LA.T. Lamcot | TP 01 40
+10 D.LA.T. Lamcot II TPO2 40
+11 D.LA.T. Sihoum Lhok II TW O2 JT 10
+c Kab. Aceh Java 3 120
+1 D.LA.T. Lam Asan PP 017 CLG 40
+2 D.LA.T. Bak Paoh I PP 018 CLG 40
+3 D.LA.T. Bak Paoh II PP 019 CLG 40
+d Kab. Aceh Selatan 2 55
+1 D.LA.T. Paya Peulumat SP 001 TT 30
+2 D.LA.T. Padang Bakau SP 002 TT 25
+e Kab. Aceh Tamiana 16 330
+1 D.LA.T. Air Masin SP 008 LS 30
+2 D.LA.T. Lubuk Damar SP 009 LS 30
+3 D.ILA.T. Muka Sei Kuruk SP 010LS 30
+4 D.LA.T. Gelanggang Merak | SP 030 LS 40
+5 D.LA.T. Gelanggang Merak II SP 031 LS 20
+6 D.LA.T. Sampaimah | SP 046 KLS 20
+7 D.LA.T. Matang Ara Jawa IV SP 047 KLS 20
+8 D.LA.T. Sampaimah II 20
+9 D.LA.T. Matang Ara Jawa V 20
+10 D.LA.T. le Bintah 20
+11 D.LA.T. Matang Ara Jawa | TW 009 LS 10
+12 D.LA.T. Pahlawan | TWO11LS 20
+13 D.LA.T. Matang Ara Jawa II TW 016LS 10
+14 D.LA.T. Matang Ara Jawa III TW 017 LS 10
+15 D.LA.T. Matang Cincin TW018LS 10
+16 D.LA.T. Pahlawan II TW015LS 20
+f Kab. Aceh Timur 26 608
+1 D.LA.T. Tanjung Tualang PP 001 LS 40
+2 D.LA.T. Teumpeun I PP 003 LS 40
+3 D.LA.T. Teumpeun II PP 004 LS 40
+4 D.LA.T. Julok Cut PP 005 LS 40
+5 D.LA.T. Tualang | PP 006 LS 40
+6 D.I.A.T. Tualang II PP 007 LS 40

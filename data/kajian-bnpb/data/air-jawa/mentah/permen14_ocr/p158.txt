@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+316 D.I. Citere 40
+317 D.I. Citiis 18
+318 D.I. Citiis I 36
+319 D.I. Citiis II 27
+320 D.I. Citisuk 15
+321 D.I. Citiwu 30
+322 D.I. Ciwaru 35
+323 D.I. Ciwaru 10
+324 D.I. Ciwaru 13
+325 D.I. Cogreg 12
+326 D.I. Cogreg 13
+327 D.I. Cukangmonteng 120
+328 D.I. Cumungeuyeuk 28
+329 D.I. Curug 65
+330 D.I. Curug 12
+331 D.I. Curug Cihaji 20
+332 D.I. Curugdogdog 13
+333 D.I. Dam Holil 60
+334 D.I. Dam Karta 15
+335 D.I. DAM Palintang 17
+336 D.I. Dangdeur 20
+337 D.I. Dangdeur 35
+338 D.I. Dano 12
+339 D.I. Dano Panauan 18
+340 D.I. Darsono 46
+341 D.I. Demah luhur 69
+342 D.I. DP. Holil 60
+343 D.I. Dukuh Aki Salim 60
+344 D.I. Dukuh Pahat 35
+345 D.I. Empel 18
+346 D.I. Gadog 20
+347 D.I. Galudra 23
+348 D.I. Gamblang 46
+349 D.I. Ganol/Situhiang 50
+350 D.I. Garung 43
+351 D.I. Gempol/Lembang 31
+352 D.I. Gengge 17
+353 D.I. Girang Deukeut 49
+354 D.I. Gunung Karung 150
+355 D.I. Gunungleutik 35
+356 D.I. Hanjuang Brm. 50
+357 D.I. Haur Lega/Cihanyir 25
+358 D.I. Haurcucuk 95
+359 D.I. Huluwotan 56
+360 D.I. Huni 35
+361 D.I. Imras 24
+362 D.I. Jadipa 26
+363 D.I. Jaga Baya 96
+364 D.I. Jaga Baya 10
+365 D.I. Jamra Ciawigede 10
+366 D.I. Jamra/Rawagede 60
+367 D.I. Jasirna 50
+368 D.I. Jaura | 11
+369 D.I. Jaura II 20
+370 D.I. Jelekong 48
+371 D.I. Jogjogan 50
+372 D.I. Kadalmeteng 15
+373 D.I. Kadugodong 40
+374 D.I. Kadurentas 20
+375 D.I. Kaiji | 64
+376 D.I. Kamasan 11
+#KANAN
+158
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+377 D.I. Katulampa 42
+378 D.I. Katulampa 42
+379 D.I. Kaum Luwuk 37
+380 D.I. Kelurahan II 24
+381 D.I. Kiangroke 53
+382 D.I. Kolelega 75
+383 D.I. Kopeng 14
+384 D.I. Korabakan 10
+385 D.I. Kosambi I & II 35
+386 D.I. Kukun 15
+387 D.I. Loa 60
+388 D.I. Lamping 56
+389 D.I. Lamping Astana 15
+390 D.I. Lebak Gede 57
+391 D.I. Lebak Gede 62
+392 D.I. Legok Badak 10
+393 D.I. Legok Hayam 12
+394 D.I. Legok Kiraksa 40
+395 D.I. Legok Teureup 50
+396 D.I. Legoknyenang 10
+397 D.I. Legokteureup 50
+398 D.I. Lengo 31
+399 D.I. Lengo Kiri 20
+400 D.I. Leuweung Datar 36
+401 D.I. Leuwi Domba 30
+402 D.I. Leuwi Nimbang 45
+403 D.I. Leuwiitik 59
+404 D.I. Leuwijurig 49
+405 D.I. Leuwiliang 86
+406 D.I. Leuwimelang 46
+407 D.I. Leuwinanggung 23
+408 D.I. Leuwinotog 10
+409 D.I. Leuwipanglay 37
+410 D.I. Leuwisataun 77
+411 D.I. Loa Jogo 221
+412 D.I. Loji 70
+413 D.I. Martajaya 20
+414 D.I. Muara 11
+415 D.I. Nangela 10
+416 D.I. Neglasari 20
+417 D.I. Nengkelan 10
+418 D.I. Nengla 10
+419 D.I. Nyalindung 103
+420 D.I. Nyomplong 95
+421 D.I. Ogong 30
+422 D.I. Pabeyan 20
+423 D.I. Padma 35
+424 D.I. Palalangon 65
+425 D.I. Palalangon 56
+426 D.I. Pameungpeuk 50
+427 D.I. Pamujaan 97
+428 D.I. Panenjoan 12
+429 D.I. Panganten 28
+430 D.I. Pangauban 26
+431 D.I. Panggilingan 30
+432 D.I. Paninggaan 40
+433 D.I. Parakan Bolang 10
+434 D.I. Parungjebug 105
+435 D.I. Pasanggrahan 32
+436 D.I. Pasir Batu 45
+437 D.I. Pasir Batu 40

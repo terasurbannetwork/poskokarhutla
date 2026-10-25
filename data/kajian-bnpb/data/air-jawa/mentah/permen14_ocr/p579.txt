@@ -1,0 +1,60 @@
+#TATA_LETAK satu-tabel lebar=2480
+579 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+5 D.LA.T. Bontotallasa SMMR 38 8
+6 D.L.A.T. Bontotallasa SMMR 39 5
+7 D.LA.T. Bontotallasa SMMR 40 15
+8 D.I.A.T. Bontotallasa SMMR 41 10
+9 D.LA.T. Kalabbirang E70MR 10
+10 D.LA.T. Tukamasea SMMR 189 21
+i Kab. Panakaiene dan Kepulauan 31 374
+1 D.LA.T. Alesipitto SMPK 170 6
+2 D.LA.T. Kalabbirang E66 PK 17
+3 D.LA.T. Kalabbirang SMPK 174 12
+4 D.LA.T. Baring E 64 PK 15
+5 D.LA.T. Baring E 65 PK 15
+6 D.LA.T. Baring SMPK 154 15
+7 D.LA.T. Baring SMPK 155 10
+8 D.LA.T. Baring SMPK 156 15
+9 D.LA.T. Baring SMPK 157 10
+10 D.L.A.T. Baring SMPK 158 10
+11 D.LA.T. Baring SMPK 159 10
+12 D.LA.T. Baring SMPK 160 15
+13 D.LA.T. Baring SMPK 161 10
+14 D.LA.T. Baring SMPK 162 10
+15 D.LA.T. Baring SMPK 163 10
+16 D.L.A.T. Baring SMPK 164 20
+17 D.LA.T. Baring SMPK 165 10
+18 D.L.A.T. Baring SMPK 166 20
+19 D.LA.T. Baring SMPK 168 10
+20 D.I.A.T. Baring SDPK. 199 20
+21 D.LA.T. Parenreng SDPK. 229 15
+22 D.LA.T. Parenreng SDPK. 230 15
+23 D.I.A.T. Benteng SMPK. 100 13
+24 D.I.A.T. Benteng SMPK. 106 10
+25 D.I.A.T. Benteng SMPK. 109 9
+26 D.I.A.T. Benteng SMPK. 113 8
+27 D.I.A.T. Benteng SMPK. 117 10
+28 D.I.A.T. Benteng SMPK 169 10
+29 D.I.A.T. Benteng SMPK 171 8
+30 D.ILA.T. Manggalung SMPK. 116 8
+31 D.LA.T. Manggalung SMPK. 132 8
+k Kab. Sidenrena Rappana 8 146
+1 D.LA.T. Kampung Baru SDSR 69 20
+2 D.LA.T. Tellang-Tellang SDSR 149 36
+3 D.LA.T. Tellang-Tellang SDSR 150 15
+4 D.LA.T. Tellang-Tellang SDSR 153 15
+5 D.LA.T. Tellang-Tellang SDSR 192 15
+6 D.L.A.T. Madenra SDSR 66 10
+7 D.LA.T. Madenra SDSR 67 15
+8 D.L.A.T. Madenra SDSR 68 20
+| Kab. Siniai 2 15
+1 D.LA.T. Mananti SDSJ 262 5
+2 D.L.A.T. Mananti SDSJ 263 10
+m Kab. Sopbena 4 42
+1 D.LA.T. Baringen SDSP 248 10
+2 D.LA.T. Baringen SDSP 249 10
+3 D.LA.T. Congko SDSP 257 10
+4 D.LA.T. Laringgi SDSP 247 12

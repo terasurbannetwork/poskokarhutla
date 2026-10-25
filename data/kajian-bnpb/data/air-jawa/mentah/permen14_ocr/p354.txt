@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+266 D.I. Sbr. Towo 10
+267 D.I. Sbr. Towobiting 77
+268 D.I. Sbr. Wonokerso 10
+269 D.I. Sebalong 131
+270 D.I. Sebandung 209
+271 D.I. Sebani 25
+272 D.I. Sekar 12
+273 D.I. Sekarputih 53
+274 D.I. Sekarputih 20
+275 D.I. Selang 144
+276 D.I. Selorawan | 2
+277 D.I. Selorawan II 9
+278 D.I. Sengkan 19
+279 D.I. Sengon 313
+280 D.I. Sentong 35
+281 D.I. Sentongan 9
+282 D.I. Sentono 27
+283 D.I. Serut 13
+284 D.I. Simbar 18
+285 D.I. Sindupati 380
+286 D.I. Slangu 19
+287 D.I. Sudimoro 21
+288 D.I. Sukodono | 16
+289 D.I. Sukodono II 51
+290 D.I. Sukorejo I 38
+291 D.I. Sukorejo II 16
+292 D.I. Sukun 240
+293 D.I. Sukun 7
+294 D.I. Sumberingin 7
+295 D.I. Talang | 40
+296 D.I. Talang II 12
+297 D.I. Talang III 7
+298 D.I. Tamansari 57
+299 D.I. Tambaan 30
+300 D.I. Tambak 330
+301 D.I. Tambakrejo 57
+302 D.I. Tanggul 648
+303 D.I. Tembong 15
+304 D.I. Tempuran 8
+305 D.I. Tengger 10
+306 D.I. Tlogo 185
+307 D.I. Tlogo B 11
+308 D.I. Tretes 9
+309 D.I. Trongso 58
+310 D.I. Urung-Urung 117
+311 D.I. Urung-Urung 29
+312 D.I. Wakaf 9
+313 D.I. Wangkal 156
+314 D.I. Watu 35
+315 D.I. Watuagung | 2
+316 D.I. Watukosek 75
+317 D.I. Wedoro 142
+318 D.I. Wedus 128
+319 D.I. Wekas | 30
+320 D.I. Wekas II 3
+321 D.I. Welulang 36
+322 D.I. Wijeng 88
+323 D.I. Wilo 104
+324 D.I. Wonorejo 53
+325 D.I. Wringinanom 328
+326 D.I. Dongol 36
+#KANAN
+354
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+327 D.I. Durensewu 11
+328 D.I. Gempol A (sbr) 4
+329 D.I. Gempol B (sbr) 7
+330 D.I. Genitro 15
+331 D.I. Jambubulo 6
+332 D.I. Jati 4
+333 D.I. Kediren 19
+334 D.I. Kenongo 13
+335 D.I. Kesambon 86
+336 D.I. Klotok 19
+337 D.I. Pronodakon 16
+338 D.I. Sbr. Bandaran 14
+339 D.I. Sbr. Banyubiru 120
+340 D.I. Sbr. Bawang 19
+341 D.I. Sbr. Beji 17
+342 D.I. Sbr. Blembem 20
+343 D.I. Sbr. Cendono 21
+344 D.I. Sbr. Dengkul | 14
+345 D.I. Sbr. Gayam 20
+346 D.I. Sbr. Gedang 10
+347 D.I. Sbr. Gede 9
+348 D.I. Sbr. Gunung Sari 36
+349 D.I. Sbr. Kedok 21
+350 D.I. Sbr. Kresek 23
+351 D.I. Sbr. Nguling 36
+352 D.I. Sbr. Pacet 20
+353 D.I. Sbr. Pandan II 10
+354 D.I. Sbr. Petung 2
+355 D.I. Sbr. Sedarum 15
+356 D.I. Sbr. Sempol 36
+357 D.I. Sbr. Talsawit 19
+358 D.I. Sbr. Tangkur 11
+359 D.I. Sbr. Tepus 21
+360 D.I. Sbr. Turi 15
+361 D.I. Sbr. Waru 31
+362 D.I. Sbr. Umbulan 29
+363 D.I. Suluran 38
+364 D.I. Sumber Suko | 13
+365 D.I. Sumber Kajar 74
+366 D.I. Sumber Suko II 20
+367 D.I. Sumberingin 36
+368 D.I. Tombo 2
+369 D.I. Trobayan 11
+370 D.I. Tumpeng 56
+371 D.I. Watuagung 5
+372 D.I. Watuagung II 35
+373 D.I. Wonogriyo (sbr) 33
+Uu Kab. Ponoroao 440 17.950
+1 D.I. Alas Gede 5
+2 D.I. Asem Tropong 149
+3 D.I. Babadan 69
+4 D.I. Babak 92
+5 D.I. Bale kambang 35
+6 D.I. Balekambang 6
+7 D.I. Banaran 164
+8 D.I. Banaran 6
+9 D.I. Bancak 12
+10 D.I. Bandung 36
+11 D.I. Bandungan 10
+12 D.I. Banjarsari 6

@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 539
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+52 D.LA.T. Sumber Rejo SDST 083 23
+53 D.LA.T. Karang Anyar SDST 126 23
+54 D.LA.T. Sumberejo SDST 127 27
+55 D.LA.T. Sumberejo SDST 128 26
+56 D.LA.T. Karang Anyar SDST 129 29
+57 D.LA.T. Sumberejo SDST 130 29
+58 D.LA.T. Banyuputih SDST 131 17
+59 D.LA.T. Banyuputih SDST 132 21
+61 D.LA.T. Sumber Anyar SDST 134 25
+62 D.LA.T. Sumberejo SDST 169 30
+63 D.LA.T. Curah Tatal SDST 182 35
+64 D.LA.T. Sumber Rejo SDST 183 26
+65 D.LA.T. Sumberanyar SDST 196 30
+66 D.I.LA.T. Sumberejo SDST 197 32
+67 D.LA.T. Jatisari SDST 202 22
+68 D.LA.T. Jatisari SDST 215 22
+69 D.ILA.T. Sumberanyar SDST 228 35
+70 D.LA.T. Banyuputih SDST 238 14
+71 D.LA.T. Banyuputih SDST 239 10
+72 D.LA.T. Kedungdowo SDST 256 15
+73 D.LA.T. Klatakan SDST 257 15
+74 D.LA.T. Sliwung SDST 258 15
+75 D.LA.T. Banyuputih SDST 259 15
+76 D.LA.T. Tanjungkamal SDST 260 15
+
+v Kab. Sumenep 69 2.201
+
+1 D.LA.T. Glugur SDSM 002 16
+
+2 D.LA.T. Candi I (b) SDSM 010 28
+
+3 D.LA.T. Pamolokan SDSM 012 11
+
+4 D.LA.T. Sumur Agung SDSM 014 38
+
+5 D.LA.T. Jambu II SDSM 015 15
+
+6 D.IL.A.T. Candi II SDSM 018 22
+
+7 D.LA.T. Candi III SDSM 019 22
+
+8 D.LA.T. Jenangger SDSM 020 20
+
+9 D.LA.T. Elak Daya | SDSM 021 26
+10 D.I.A.T. Daramista | SDSM 022 19
+11 D.LA.T. Banaresep Timur SDSM 023 18
+12 D.LA.T. Lenteng Timur SDSM 024 27
+13 D.LA.T. Jenangger II SDSM 026 43
+14 D.LA.T. Nyabakan Timur | SDSM 027 26
+15 D.LA.T. Daramista II SDSM 029 30
+16 D.I.A.T. Tarogan SDSM 030 40
+17 D.LA.T. Batuan | SDSM 031 40
+18 D.L.A.T. Daramista III SDSM 032 49
+19 D.LA.T. Andulang SDSM 033 44
+20 D.LA.T. Batu Dinding | SDSM 034 25
+21 D.LA.T. Paberasan SDSM 035 28
+22 D.LA.T. Talang | SDSM 036 27
+23 D.LA.T. Ellak Laok SDSM 038 B 42
+24 D.LA.T. Ellak Daya II SDSM 039 42
+25 D.LA.T. Saronggi I SDSM 040 36
+26 D.LA.T. Paloklokan SDSM 041 50
+27 D.LA.T. Torbang SDSM 042 46
+28 D.LA.T. Kambingan Barat | SDSM 043 36
+29 D.LA.T. Saronggi II SDSM 044 B 44
+30 D.LA.T. Jambu III SDSM 045 B 35
+31 D.LA.T. Jambu IV SDSM 065 30
+32 D.LA.T. Kambingan Timur II SDSM 067 42
+33 D.LA.T. Kambingan Timur III SDSM 080 22
+34 D.LA.T. Talang | SDSM 084 30
+35 D.LA.T. Batu Dinding II SDSM 089 54

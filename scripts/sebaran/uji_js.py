@@ -10,6 +10,7 @@ import json, os, subprocess, sys, tempfile
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, DIR)
+import prospektif as P  # noqa: E402  SEBELUM cuaca (cuaca menaruh scripts/banjir di depan sys.path; banjir/prospektif.py akan menang)
 import cuaca  # noqa: E402
 import latih as L  # noqa: E402
 from umum import AKAR, MENTAH, PUBLIK, T0  # noqa: E402
@@ -21,7 +22,9 @@ const M = ctx.SebaranModel, fx = JSON.parse(fs.readFileSync(process.argv[3]));
 const P = f => JSON.parse(fs.readFileSync(process.argv[4] + "/" + f));
 const lahan = {gambut: P("lahan/gambut.geojson"), kawasan: P("lahan/kawasan.geojson"), konsesi: P("lahan/konsesi.geojson"), kanal: P("kanal.json"),
   jalan: P("jalan.geojson"), desa: P("osm/desa.json"), riwayat: P("riwayat_grid.json"), penduduk: P("penduduk.json")};
-let maks = 0, n = 0, maksL = 0;
+let maks = 0, n = 0, maksL = 0, nN20 = 0;
+for (const sk of fx.sensor_skenario) { const g = M.sensorTitik(sk.titik, sk.kini, sk.pensiun);
+  if (g.prim !== sk.harap[0] || g.pend !== sk.harap[1]) throw new Error("aturan sensor JS != Python: " + JSON.stringify(sk.nama) + " " + JSON.stringify(g) + " vs " + JSON.stringify(sk.harap)); }
 for (const c of fx.kasus) {
   const r = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0, titik: c.titik, frpJumlah: c.frp_jml});
   const js = new Map(r.p1.map(x => [x.k, x.p]));
@@ -30,6 +33,22 @@ for (const c of fx.kasus) {
   maksL = Math.max(maksL, Math.abs(r.lolos.p - c.p_lolos));
   const ru = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0, titik: c.titik, frpJumlah: c.frp_jml, ulang: c.ulang});
   maksL = Math.max(maksL, Math.abs(ru.lolos.p - c.p_lolos_ulang));
+  if (r.lolos.sensor !== "N" || r.lolos_status !== "ok") throw new Error("S-NPP ada: primer harus N");
+  /* sebelum tanggal pensiun S-NPP: titik tanpa S-NPP = celah data -> diam ("tanpa_primer"), bukan pindah ke NOAA-20 */
+  const r0 = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0, titik: c.titik_n20n21.filter(p => p.s === "N20"), frpJumlah: c.frp_jml});
+  if (r0.lolos !== null || r0.lolos_status !== "tanpa_primer") throw new Error("S-NPP kosong sebelum pensiun harus tanpa_primer, dapat " + r0.lolos_status);
+  /* sesudah pensiun (tanggal digeser: pensiun 0): primer NOAA-20, pendamping NOAA-21 (titik N21 sintetis = N20 + 50 menit), sama dengan Python */
+  const o2 = {model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0, titik: c.titik_n20n21, frpJumlah: c.frp_jml, pensiun: 0};
+  const r2 = M.ramal(o2), ru2 = M.ramal({...o2, ulang: c.ulang});
+  if (c.uji_n20) {
+    if (!r2.lolos || r2.lolos.sensor !== "N20" || r2.lolos.pendamping !== "N21") throw new Error("S-NPP pensiun: model membesar harus jalan dari NOAA-20 + NOAA-21 dan menandai sensornya");
+    for (const [f, v] of Object.entries(c.lolos_fitur_n20)) { const q = r2.lolos.fitur[f]; if (Math.abs(q - v) > 1e-6) throw new Error("fitur membesar (N20) beda " + f + " " + v + " vs " + q); }
+    if (ru2.lolos.fitur.n20_0 !== c.n20_0_n21) throw new Error("n20_0 dari NOAA-21 beda " + ru2.lolos.fitur.n20_0 + " vs " + c.n20_0_n21);
+    maksL = Math.max(maksL, Math.abs(r2.lolos.p - c.p_lolos_n20), Math.abs(ru2.lolos.p - c.p_lolos_ulang_n20)); nN20++;
+  } else if (r2.lolos !== null) throw new Error("NOAA-20 < 20 deteksi: belum boleh pindah");
+  /* tanpa VIIRS sama sekali (hanya MODIS): diam dengan status eksplisit */
+  const r3 = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0, titik: c.titik.map(p => ({...p, s: "M"})), frpJumlah: c.frp_jml});
+  if (r3.lolos !== null || r3.lolos_status !== "tanpa_viirs") throw new Error("tanpa VIIRS: lolos harus null dengan lolos_status tanpa_viirs, dapat " + r3.lolos_status);
   for (const [k, p] of c.p1) { const q = js.get(k); if (q === undefined) throw new Error("sel hilang " + k); if (Math.abs(p - q) > 1e-4) console.error("beda", k, p, q, JSON.stringify(c.ev), JSON.stringify(r.iklim), c.strata, r.strata, r.geser); maks = Math.max(maks, Math.abs(p - q)); n++; }
   if (js.size !== c.p1.length) throw new Error("jumlah calon beda " + js.size + " vs " + c.p1.length);
 }
@@ -45,10 +64,10 @@ for (const s of r.sel) for (const p of s.p) if (!(p >= 0 && p <= 1)) throw new E
 if (r.p_lepas < 0 || r.p_lepas > 1) throw new Error("p_lepas di luar [0,1]");
 for (let d = 1; d < r.luas.length; d++) if (r.luas[d].p50 < r.luas[d - 1].p50 || r.luas[d].p90 < r.luas[d - 1].p90) throw new Error("luas kumulatif turun");
 for (const x of r.luas) if (!(x.p10 <= x.p50 && x.p50 <= x.p90 && x.p10_mc != null)) throw new Error("selang terkalibrasi tidak memuat median");
-if (r.lolos !== null) throw new Error("tanpa titik sekitar, model membesar harus diam (bukan menebak)");
+if (r.lolos !== null || r.lolos_status !== "tanpa_titik") throw new Error("tanpa titik sekitar, model membesar harus diam (bukan menebak)");
 const rb = M.ramal({...dasar, sel0: [...Array(12)].map((_, i) => M.sel(c.lon + i * .004, c.lat)), titik: []});
 if (rb.p_lepas !== 1 || !rb.sudah_besar || rb.lolos) throw new Error(">= 10 sel awal harus 'sudah besar'");
-console.log(JSON.stringify({sel: n, selisih_maks: maks, selisih_membesar_maks: maksL}));
+console.log(JSON.stringify({sel: n, selisih_maks: maks, selisih_membesar_maks: maksL, kasus_n20: nN20, skenario_sensor: fx.sensor_skenario.length}));
 """
 
 
@@ -79,8 +98,11 @@ def main(n_kasus=6):
             tit += [(v_["t"][q], v_["lat"][q], v_["lon"][q], s_) for q in range(a_, b_) if abs(v_["lat"][q] - e["lat0"]) < .15 and abs(v_["lon"][q] - e["lon0"]) < .15]
         iS = LL.Indeks(*zip(*[(t, la, lo) for t, la, lo, s_ in tit if s_ == "N"])) if any(x[3] == "N" for x in tit) else LL.Indeks([], [], [])
         nn = [(t, la, lo) for t, la, lo, s_ in tit if s_ == "N20"]
-        iN = LL.Indeks(*zip(*nn)) if nn else LL.Indeks([], [], [])
-        iN.t_min = -1e18  # data N20 ada (kasus >= 2023); subset kecil tidak boleh dianggap 'tidak ada data'
+        if not nn:
+            continue  # kasus tanpa NOAA-20 di sekitarnya tak bisa menguji jalur "S-NPP berhenti"
+        iN = LL.Indeks(*zip(*nn)) if nn else None  # tanpa N20 sama sekali di titik = -1 (sama dengan JS & prospektif: pendamping tak ada)
+        if iN:
+            iN.t_min = -1e18  # data N20 ada (kasus >= 2023); subset kecil tidak boleh dianggap 'tidak ada data'
         frp0 = L.frp_terakhir(e, p)
         frp_jml = round(frp0 * 1.7, 2)
         w = S.jendela(p)
@@ -91,6 +113,15 @@ def main(n_kasus=6):
         args = (w, s0, int(e["t0"][:4]), len(tb), frp0, frp_jml, 0 if 6 <= jl < 18 else 1, oni, dmi, LL.konteks(iS, p, e["lon0"], e["lat0"]),
                 LL.n20_sekitar(iN, sorted(tb), p - 180, p + 181))
         vl, vu = LL.fitur_lolos(*args), LL.fitur_lolos(*args, ulang)
+        # S-NPP pensiun: primer = N20 (konteks dari N20), pendamping = NOAA-21 sintetis (titik N20 + 50 menit; arsip N21 tak ada)
+        iP = LL.Indeks(*zip(*nn))
+        n21 = [(t + 50, la, lo) for t, la, lo in nn]
+        iN21 = LL.Indeks(*zip(*n21))
+        iN21.t_min = -1e18
+        n20_0_n21 = LL.n20_sekitar(iN21, sorted(tb), p - 180, p + 181)
+        args2 = args[:9] + (LL.konteks(iP, p, e["lon0"], e["lat0"]), n20_0_n21)
+        uji_n20 = sum(1 for t, *_ in nn if t <= p) >= P.MIN_N20  # aturan peralihan: NOAA-20 >= 20 deteksi sampai kini
+        vl2, vu2 = LL.fitur_lolos(*args2), LL.fitur_lolos(*args2, ulang)  # ulang diberikan apa adanya (JS tidak menghitung ulang n20_14)
         f = L.fungsi_model({**model, "jenis": "gbdt"}, L.KOLOM, (model.get("geser_logit") or {}).get(st, 0.0))
         r = L.ramal_sel(f, e, p, tb, ak, S, k, model["tau"], hari=1)
         d = json.load(open(cuaca.nama(int(e["t0"][:4]), *cuaca.sel05(e["lat0"], e["lon0"]))))
@@ -100,11 +131,29 @@ def main(n_kasus=6):
                       "cuaca": {"m0": m0, **{x: d[x] for x in cuaca.KOLOM}}, "p1": [[kk, q] for kk, q in r["p1"].items()],
                       "titik": [{"t": (T0.timestamp() + t * 60) * 1000, "lat": la, "lon": lo, "s": s_} for t, la, lo, s_ in tit],
                       "frp_jml": frp_jml, "ulang": ulang, "lolos_fitur": {f: vl[f] for f in model["lolos"]["fitur"]},
-                      "p_lolos": LL.prediksi(model["lolos"], vl), "p_lolos_ulang": LL.prediksi(model["lolos_ulang"], vu)})
+                      "p_lolos": LL.prediksi(model["lolos"], vl), "p_lolos_ulang": LL.prediksi(model["lolos_ulang"], vu),
+                      "titik_n20n21": [{"t": (T0.timestamp() + t * 60) * 1000, "lat": la, "lon": lo, "s": s_} for t, la, lo, s_ in tit if s_ == "N20"]
+                                      + [{"t": (T0.timestamp() + t * 60) * 1000, "lat": la, "lon": lo, "s": "N21"} for t, la, lo in n21],
+                      "uji_n20": uji_n20, "n20_0_n21": n20_0_n21,
+                      "lolos_fitur_n20": {f: vl2[f] for f in model["lolos"]["fitur"]},
+                      "p_lolos_n20": LL.prediksi(model["lolos"], vl2), "p_lolos_ulang_n20": LL.prediksi(model["lolos_ulang"], vu2)})
         if len(kasus) >= n_kasus:
             break
+    # aturan peralihan sensor: Python (prospektif.pilih_sensor) vs JS (sensorTitik) pada masukan sama
+    H, P0 = 60, 10 ** 6
+    n20s = lambda a, n: [[a + i, 0, 0, "N20"] for i in range(n)]
+    sk = [("sebelum pensiun, S-NPP lama", [[P0 - 99 * H, 0, 0, "N"]] + n20s(P0 - 9 * H, 50), P0 - H),
+          ("sesudah, S-NPP diam 40 jam, N20 cukup", [[P0, 0, 0, "N"]] + n20s(P0 + 1, 20) + [[P0 + 5, 0, 0, "N21"]], P0 + 40 * H),
+          ("sesudah, N20 19", [[P0, 0, 0, "N"]] + n20s(P0 + 1, 19), P0 + 40 * H),
+          ("sesudah, S-NPP diam 35 jam", [[P0, 0, 0, "N"]] + n20s(P0 + 1, 30), P0 + 35 * H),
+          ("tepat 36 jam", [[P0, 0, 0, "N"]] + n20s(P0 + 1, 20), P0 + 36 * H),
+          ("deteksi sesudah kini diabaikan", [[P0 + 99 * H, 0, 0, "N"]] + n20s(P0 + 1, 20), P0 + 40 * H),
+          ("tanpa S-NPP sebelum pensiun", n20s(P0 - 9 * H, 30), P0 - H), ("kosong", [], P0), ("N21 saja", [[P0, 0, 0, "N21"]], P0 + H)]
+    ms = lambda m: (T0.timestamp() + m * 60) * 1000
+    skenario = [{"nama": nm, "titik": [{"t": ms(r[0]), "lat": 0, "lon": 0, "s": r[3]} for r in rows], "kini": ms(kini), "pensiun": ms(P0),
+                 "harap": list(P.pilih_sensor(rows, kini, None, P0)[:2])} for nm, rows, kini in sk]
     with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as fx, tempfile.NamedTemporaryFile("w", suffix=".js", delete=False) as js:
-        json.dump({"model": model, "kasus": kasus}, fx)
+        json.dump({"model": model, "kasus": kasus, "sensor_skenario": skenario}, fx)
         js.write(JS)
     try:
         out = subprocess.run(["node", js.name, os.path.join(PUBLIK, "..", "sebaran_model.js"), fx.name, PUBLIK], capture_output=True, text=True, timeout=600)
@@ -114,7 +163,7 @@ def main(n_kasus=6):
     if out.returncode:
         sys.exit("GAGAL: " + out.stderr[-2000:])
     r = json.loads(out.stdout)
-    assert r["selisih_maks"] < 1e-4 and r["selisih_membesar_maks"] < 1e-6, (r, out.stderr[:1500])
+    assert r["selisih_maks"] < 1e-4 and r["selisih_membesar_maks"] < 1e-6 and r["kasus_n20"] >= 1, (r, out.stderr[:1500])
     print("ok", r)
 
 

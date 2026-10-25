@@ -1,0 +1,126 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+44 D.I. Sibitara 45
+45 D.I. Sigaol 50
+46 D.I. Aek Bolon 300
+47 D.I. Nalela 300
+48 D.I. Lumban Pinasa 150
+49 D.I. Aek Bolon 75
+50 D.I. Siantar Tonga Tonga 75
+51 D.I. Raut Bosi 100
+52 D.I. Natolu Tali 55
+53 D.I. Siringo Ringo 80
+54 D.I. Sidoras 70
+55 D.I. Bondar Sitobu 65
+56 D.I. Parik 60
+57 D.I. Maranti Barat 50
+58 D.I. Sionggang 37
+59 D.I. Sihiong 75
+60 D.I. Atehe 45
+61 D.I. Silamosik 40
+62 D.I. Sibide Parpatihan 50
+63 D.I. Situhulon 60
+64 D.I. Simalau 55
+65 D.I. Tali Air Harangan 50
+66 D.I. Jonggi Manulus 43
+67 D.I. Huta Gurgur 100
+68 D.I. Pea Pea Hutaginjang 50
+69 D.I. Pintu Pohan 45
+70 D.I. Sinar Sabungan 50
+71 D.I. Pantil 50
+72 D.I. Sipange 35
+73 D.I. Sidogor Dogor 50
+74 D.I. Hitetano 25
+75 D.I. Lumban Pea 40
+76 D.I. Siaodana Tua 50
+77 D.I. Sidari 40
+78 D.I. Sibosur 75
+79 D.I. Sibodiala 55
+v Kota Padana Sidembuan 54 3.774
+1 D.I. Aek Sipogas 38
+2 D.I. Batu Lubana 51
+3 D.I. Goti 180
+4 D.I. Padang Sibio-bio 168
+5 D.I. Panyanggar 78
+6 D.I. Salambue 83
+7 D.I. Sihoring-horing 144
+8 D.I. Ujung Gurap 439
+9 D.I. Aek Najaji 10
+10 D.I. Batang Ayumi 6
+11 D.I. Palopat Pijorkoling 5
+12 D.I. Sihitang 12
+13 D.I. Aek Tuhul 17
+14 D.I. Bargotopong 25
+15 D.I. Batang Bahal 36
+16 D.I. Batu Bola 15
+17 D.I. Batu Gajah 66
+18 D.I. Batu Lanja 23
+19 D.I. Batu Layan 56
+20 D.I. Batu Nadua 59
+21 D.I. Hanopan 16
+22 D.I. Huta Lombang 20
+23 D.I. Huta Padang 48
+#KANAN
+91 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+24 D.I. Hutaimbaru 183
+25 D.I. Hutapadang 75
+26 D.I. Joring Lombang 77
+27 D.I. Joring Natobang 76
+28 D.I. Labuhan Labo 34
+29 D.I. Labuhan Rasoki 45
+30 D.I. Lembah Lubuk Manik 32
+31 D.I. Losung Batu 80
+32 D.I. Lubuk Raya 30
+33 D.I. Manunggang Jae 23
+34 D.I. Manunggang Julu 134
+35 D.I. Mompang 66
+36 D.I. Palopat Maria 55
+37 D.I. Partihaman Saroha 60
+38 D.I. Pijor Koling 4
+39 D.I. Pintu Langit Jae 116
+40 D.I. Rimba Soping 113
+41 D.I. Sabungan Jae 23
+42 D.I. Sabungan Julu 244
+43 D.I. Sabungan Komplek 288
+44 D.I. Sadabuan Komplek 19
+45 D.I. Sidakkal 37
+46 D.I. Silandit 43
+47 D.I. Simangonot Simolang 4
+48 D.I. Simartokis Pondala 28
+49 D.I. Simasom 79
+50 D.I. Simatohir 51
+51 D.I. Simirik 12
+52 D.I. Singali 15
+53 D.I. Tarutung Baru 20
+54 D.I. Tinjoman 39
+z Kota Tebina Tinaai 3 650
+1 D.I. Bajenis 300
+2 D.I. Pinang Macung 275
+3 D.I. Padang Merbau 75
+a Kab. Indraairi Hulu 2 453
+1 D.I. Siberida 353
+2 D.I. Paya Rumbai 100
+b Kab. Kampar 13 1.166
+1 D.I. Kuok | 95
+2 D.I. Kuok II 110
+3 D.I. Salo Tjg. Belit 20
+4 D.I. Sasapan II 115
+5 D.I. Sei Gemuruh 65
+6 D.I. Sei Maki 150
+7 D.I. Sei Tambang 133
+8 D.I. Sei Tanjung 88
+9 D.I. Tanjung Berulak 95
+10 D.I. Bonca Labi 40
+11 D.I. Danau Lancang 50
+12 D.I. Natopang' 150
+13 D.I. PID Sei Guntung 55
+c Kab. Kuantan Senaaiai 44 5.248
+1 D.I. Baserah | 115
+2 D.I. Baserah II 251

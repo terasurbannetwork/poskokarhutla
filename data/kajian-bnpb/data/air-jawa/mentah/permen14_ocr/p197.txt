@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+102 D.I. Krikil 234
+103 D.I. Kruncang | 31
+104 D.I. Kruncang II 69
+105 D.I. Kuang 62
+106 D.I. Kumut 94
+107 D.I. Kutukan 62
+108 D.I. Langit 49
+109 D.I. Larangan | 14
+110 D.I. Larangan II 13
+111 D.I. Larangan III 25
+112 D.I. Leler 25
+113 D.I. Liangan 271
+114 D.I. Ligung 30
+115 D.I. Limbangan 923
+116 D.I. Loning | 82
+117 D.I. Loning II 33
+118 D.I. Lumajang | 20
+119 D.I. Lumbu 46
+120 D.I. Mendelem 40
+121 D.I. Meong 12
+122 D.I. Mlengan 30
+123 D.I. Mujil 64
+124 D.I. Muncar 20
+125 D.I. Nosog I 50
+126 D.I. Nosog II 150
+127 D.I. Nyangkuh | 47
+128 D.I. Nyangkuh II 37
+129 D.I. Ori I 49
+130 D.I. Ori II 58
+131 D.I. Ori II 40
+132 D.I. Pabungan 10
+133 D.I. Pagedongan watubelah 50
+134 D.I. Pager I 80
+135 D.I. Pager II 78
+136 D.I. Palet I 15
+137 D.I. Palet II 20
+138 D.I. Palet III 15
+139 D.I. Palet IV 77
+140 D.I. Panaraban 45
+141 D.I. Pandan Arum 73
+142 D.I. Parungan 14
+143 D.I. Paseh I 30
+144 D.I. Paseh II 20
+145 D.I. Penambangan | 40
+146 D.I. Penambangan II 40
+147 D.I. Pengarengan 40
+148 D.I. Pertinggi I 30
+149 D.I. Pertinggi II 25
+150 D.I. Pesangkalan 30
+151 D.I. Pinggan 12
+152 D.I. Pining 20
+153 D.I. Pucung 18
+154 D.I. Purut 30
+155 D.I. Putih I 20
+156 D.I. Putih II 25
+157 D.I. Ragajaya | 58
+158 D.I. Ragajaya II 73
+159 D.I. Ranu 106
+160 D.I. Reca 200
+161 D.I. Sadang 10
+162 D.I. Satan 15
+#KANAN
+197 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+163 D.I. Sawal I 20
+164 D.I. Sawal II 15
+165 D.I. Sawangan 15
+166 D.I. Segan 40
+167 D.I. Sicinde 160
+168 D.I. Sidamulya 200
+169 D.I. Sidawangi 39
+170 D.I. Sigarpandan 15
+171 D.I. Sijambe 10
+172 D.I. Sijeruk 10
+173 D.I. Sikalong 150
+174 D.I. Sikebo 10
+175 D.I. Sikokol 29
+176 D.I. Sikrisik 16
+177 D.I. Sikubon | 21
+178 D.I. Sikubon II 15
+179 D.I. Silak 30
+180 D.I. Langit I 20
+181 D.I. Sindang 10
+182 D.I. Sirukem 212
+183 D.I. Siton 30
+184 D.I. Siwungu 28
+185 D.I. Sopen 10
+186 D.I. Srengseng 50
+187 D.I. Subak 25
+188 D.I. Tampomas | 10
+189 D.I. Tampomas II 10
+190 D.I. Tanalaya | 14
+191 D.I. Tanalaya II 13
+192 D.I. Tanjungsari 62
+193 D.I. Tanjungtirta 122
+194 D.I. Telas 10
+195 D.I. Tempoyan I 20
+196 D.I. Tempoyan II 12
+197 D.I. Tenggaron 14
+198 D.I. Tersono 74
+199 D.I. Tinggar 106
+200 D.I. Tratrasuren | 45
+201 D.I. Tratrasuren II 45
+202 D.I. Tulis Sokaraja 23
+203 D.I. Urang 50
+204 D.I. Urang | 50
+205 D.I. Watutugu I 158
+206 D.I. Watutugu II 25
+207 D.I. Wilada 55
+208 D.I. Winong 30
+209 D.I. Bening IV 30
+210 D.I. Bening III 20
+211 D.I. Plumbungan 20
+212 D.I. Sikebo I 10
+213 D.I. Legoksayem 35
+214 D.I. Anjatan 30
+215 D.I. Banger II 25
+216 D.I. Banyon I 45
+217 D.I. Banyon II 30
+218 D.I. Banyon III 50
+219 D.I. Batur | 30
+220 D.I. Batur II 75
+221 D.I. Bedana | 27
+222 D.I. Beran II 25
+223 D.I. Bilungan 10

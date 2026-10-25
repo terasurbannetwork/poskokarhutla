@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+74 D.I. Pacikallana 100
+75 D.I. Pangajae 100
+76 D.I. Paroto 270
+77 D.I. Ponra 40
+78 D.I. PoroAVYawogalunge 30
+79 D.I. Rabbana 40
+80 D.I. Salebbo 100
+81 D.I. Sanuale 20
+82 D.I. Seppae 79
+83 D.I. Tarennuang 100
+84 D.I. Taroe 75
+85 D.I. Teppo Bronjong 40
+86 D.I. Teppo Watu 100
+87 D.I. Tikkao 57
+88 D.I. Tobangko 87
+89 D.I. Tobinawa 70
+90 D.I. Tocciama 60
+91 D.I. Tokawang 58
+92 D.I. Totakka 70
+93 D.I. Toweleng 350
+94 D.I. Ungae 40
+95 D.I. Wae Sellue 30
+96 D.I. Waeturunge I 90
+97 D.I. Waeturunge II 69
+98 D.I. Welalang 30
+99 D.I. Welonge 100
+100 D.I. Abbekkae Galungkalunge 50
+101 D.I. Abbolongnge 70
+102 D.I. Alletonge 50
+103 D.I. Asseleng 180
+104 D.I. Banga 70
+105 D.I. Batu Nampang 60
+106 D.I. Jampu 45
+107 D.I. Lagenrang 95
+108 D.I. Lakawerang 185
+109 D.I. Lamarengkalinga 60
+110 D.I. Lapamico 35
+111 D.I. Lato Tepu 20
+112 D.I. Latoka 50
+113 D.I. Loboe Citta 70
+114 D.I. Malongka 30
+115 D.I. Pangisoreng 75
+116 D.I. Patomanange 40
+117 D.I. Tanapoloe 30
+118 D.I. Teppo Kecci 100
+119 D.I. Teppo Kessi 200
+120 D.I. Tohellang 30
+121 D.I. Waepejje 15
+r Kab. Takalar 11 2.852
+1 D.I. Balangtanaya 370
+2 D.I. Barugaya 214
+3 D.I. Batanglappo 325
+4 D.I. Bontorea 266
+5 D.I. Je'nemaeja 400
+6 D.I. Jenetallasa 481
+7 D.I. Kampong Bugisi 190
+8 D.I. Kato'nokang 161
+9 D.I. Ngai-Ngai 45
+10 D.I. Lembang Loe 200
+11 D.I. Palilangi 200
+#KANAN
+418
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+s Kab. Tana Toraia 184 14.238
+1 D.I. Awo 55
+2 D.I. Belau 100
+3 D.I. Buri 60
+4 D.I. Kalotangnga 70
+5 D.I. Kaluku-Tobena 70
+6 D.I. Kapa-Kapa 58
+7 D.I. Kasisi 80
+8 D.I. Komba 90
+9 D.I. Komba II 150
+10 D.I. Kurra 125
+11 D.I. Malillin 60
+12 D.I. Mamara 157
+13 D.I. Mangge 70
+14 D.I. Mararin 80
+15 D.I. Saladadi 120
+16 D.I. Salu Ratte II 120
+17 D.I. Sampang 115
+18 D.I. Sangkilli 60
+19 D.I. Sangrapuan 60
+20 D.I. Sapan 145
+21 D.I. Sarre 65
+22 D.I. Sumarambu 115
+23 D.I. Tabang 275
+24 D.I. To' Liku 125
+25 D.I. Aa' Batu 60
+26 D.I. Alang-Alang 65
+27 D.I. Ambe'langi Anto'kaluku 67
+28 D.I. Awa'/Korang 55
+29 D.I. Boto 60
+30 D.I. Balole 90
+31 D.I. Balombong 60
+32 D.I. Bamba 55
+33 D.I. Bamba Sandangan 55
+34 D.I. Banga 65
+35 D.I. Bangre 60
+36 D.I. Bangunan 55
+37 D.I. Baramase 65
+38 D.I. Bare Batu 70
+39 D.I. Batukleong 55
+40 D.I. Belalang 40
+41 D.I. Bila 65
+42 D.I. Bombong 70
+43 D.I. Bongli 125
+44 D.I. Botang 40
+45 D.I. Buangin 95
+46 D.I. Bungin 50
+47 D.I. Burasia 75
+48 D.I. Buttu Dama' 95
+49 D.I. Buttu Limbona 50
+50 D.I. Dai Tabiri 90
+51 D.I. Dengo 75
+52 D.I. Dualang Madandan 60
+53 D.I. Durian 65
+54 D.I. Galungan Kamurung 55
+55 D.I. Gantungan 60
+56 D.I. Garotin 50
+57 D.I. Geleppo" 70
+58 D.I. Kalesok 50
+59 D.I. Kalo' Baine 55
+60 D.I. Kambuno 65

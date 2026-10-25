@@ -1,0 +1,102 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 468
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+16 D.I.R. Beringin Agung 25
+17 D.I.R. Bonot 100
+18 D.I.R. Bukit Makmur 50
+19 D.I.R. Bukit Raya 250
+20 D.I.R. Camba 100
+21 D.I.R. Camba Barat 200
+22 D.I.R. Camp Putih 675
+23 D.I.R. Danau Lentang 600
+24 D.I.R. Delapa/Darwis 50
+25 D.I.R. Ganepo/Hambawang 100
+26 D.I.R. Gemuk Sari 600
+27 D.I.R. Handil Sohor 790
+28 D.I.R. Jaya Karet 526
+29 D.I.R. Jaya Kelapa 148
+30 D.I.R. Kalab Seban Mente 289
+31 D.I.R. Kamapit 100
+32 D.I.R. Ketapang 475
+33 D.I.R. Komplek Mulia Barat 250
+34 D.I.R. Komplek Mulia Timur 100
+35 D.I.R. Kota Besi | 300
+36 D.I.R. Kota Besi II 400
+37 D.I.R. Lantabu 100
+38 D.I.R. Luwuk Bunter 200
+39 D.I.R. Luwuk Ranggan Barat 50
+40 D.I.R. Luwuk Ranggan Timur 100
+41 D.I.R. Mentaya Seberang/Trans. 160
+42 D.I.R. Mulia Agung 100
+43 D.I.R. Padas Bajarau 50
+44 D.LR. Pamalian 25
+45 D.I.R. Parebok 100
+46 D.I.R. Patai 150
+47 D.I.R. Pelantaran 100
+48 D.I.R. PLTU/Tambulihan 60
+49 D.I.R. Remiring 100
+50 D.I.R. Rubung Buyung 100
+51 D.I.R. Sabamban 403
+52 D.I.R. Samuda Besar 475
+53 D.ILR. Samuda Kecil 370
+54 D.I.R. Samuda Kota 961
+55 D.I.R. Sei Bajangkut 300
+56 D.I.R. Sei Benyamuk 50
+57 D.I.R. Sei Iding 50
+58 D.I.R. Sei jum Raya 395
+59 D.I.R. Sei Jemaras | 200
+60 D.I.R. Sei Jemaras II 25
+61 D.I.R. Sei Jemaras III 100
+62 D.I.R. Sei Kalikasa 100
+63 D.I.R. Sei Kandan Besar 100
+64 D.I.R. Sei Pipisan 25
+65 D.I.R. Sei Sugih | 200
+66 D.I.R. Sei Sugih II 75
+67 D.I.R. Sei Tenggiran 100
+68 D.I.R. Sei Ubar Mandiri 30
+69 D.I.R. Sei Paring 200
+70 D.I.R. Serambut 100
+71 D.I.R. Seranggas 300
+72 D.I.R. Soren 50
+73 D.LR. Sumber Makmur 50
+74 D.I.R. Tangkarobah 100
+75 D.I.R. Teluk Baguci 25
+76 D.I.R. Teluk Tewah 40
+77 D.I.R. Terantang Hilir 50
+78 D.I.R. Terantang Hulu 300
+79 D.I.R. Tinduk 100
+80 D.I.R. Transmigrasi/Kandan 100
+81 D.I.R. Tumbang Maya 80
+82 D.I.R. Ujung Pandaran 500
+
+h Kab. Lamandau 8 48
+
+1 D.I.R. Batu Hambawang 10
+
+2 D.I.R. Bunut 3
+
+3 D.I.R. Cuhai 6
+
+4 D.I.R. Guci 3
+
+5 D.I.R. Kujan 10
+
+6 D.I.R. Lopus 5
+
+7 D.I.R. Nanga Belantikan 5
+
+8 D.I.R. Sei Mentawa 6
+
+i Kab. Pulana Pisau 44 20.917
+
+1 D.I.R. Anjir Kalampan 790
+
+2 D.I.R. Badirih 780
+
+3 D.I.R. Bahaur III 700
+
+4 D.I.R. Bahaur IV 750
+
+5 D.I.R. Bantanan 635

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+193 D.I. Rukem 94
+194 D.I. D. Krat 93
+195 D.I. Sekar Arum M4
+196 D.I. Sapari-Curah Uling 63
+197 D.I. Klompang II 49
+198 D.I. Tambak Ukir 47
+199 D.I. Kamar 46
+200 D.I. Sbr. Taman 39
+201 D.I. Manteng 31
+202 D.I. Podak 28
+203 D.I. Klompang I 25
+204 D.I. Agung 24
+205 D.I. Sangkan 22
+206 D.I. Glidung 21
+207 D.I. Rasak 18
+208 D.I. Kancil 18
+209 D.I. Prao 18
+210 D.I. Mandar I 17
+211 D.I. Batu Paras 17
+212 D.I. Pisang 17
+213 D.I. Mandar II 15
+214 D.I. Koras 14
+215 D.I. Dam Bugis 13
+216 D.I. Kolpoh 12
+217 D.I. Klompang 12
+218 D.I. Kesambi II 12
+219 D.I. Trebung 12
+220 D.I. Sekolahan 11
+221 D.I. Kemuning B 11
+222 D.I. Glintongan 11
+223 D.I. Jenuh 11
+224 D.I. Manteng 10
+225 D.I. Cengker Manis 10
+226 D.I. Pao 9
+227 D.I. Sbr. Pakel III 8
+228 D.I. Sbr. Pakel II 7
+229 D.I. Sbr. Kuning 6
+230 D.I. Sbr. Rengik 3
+231 D.I. Sbr. Pakel IV 1
+232 D.I. Sbr. Taman II 1
+z Kab. Sumenep 70 5.332
+1 D.I. Angon-Angon 30
+2 D.I. Bakeyong 68
+3 D.I. Banjar 187
+4 D.I. Banjeru 194
+5 D.I. Bilis-Bilis 125
+6 D.I. Braji 213
+7 D.I. Candi 124
+8 D.I. Catoh 19
+9 D.I. Duko 15
+10 D.I. Kali Masjid 85
+11 D.I. Karpenana 166
+12 D.I. Kebonagung 707
+13 D.I. Korcah 87
+14 D.I. Nonsaen | 78
+15 D.I. Nonsaen II 78
+16 D.I. Parsanga 554
+17 D.I. Pelat 116
+18 D.I. Reang 80
+19 D.I. Sbr. Aeng Baja Raja 58
+#KANAN
+- 1015, No.638
+
+363 ,
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+20 D.I. Sbr. Air Mata 20
+21 D.I. Sbr. Baris 7
+22 D.I. Sbr. Belluk 59
+23 D.I. Sbr. Bentong 14
+24 D.I. Sbr. Blumbang 10
+25 D.I. Sbr. Bragung 95
+26 D.I. Sbr. Buah 17
+27 D.I. Sbr. Buddi I 37
+28 D.I. Sbr. Buddi II 6
+29 D.I. Sbr. Buko I 36
+30 D.I. Sbr. Buko II 6
+31 D.I. Sbr. Bungur 12
+32 D.I. Sbr. Bunkandang 10
+33 D.I. Sbr. Cerkah 20
+34 D.I. Sbr. Daleman | 11
+35 D.I. Sbr. Daleman II 21
+36 D.I. Sbr. Ganja 27
+37 D.I. Sbr. Grinih 21
+38 D.I. Sbr. Kacing 13
+39 D.I. Sbr. Kapoh 54
+40 D.I. Sbr. Kasih 10
+41 D.I. Sbr. Kerta Tengah 51
+42 D.I. Sbr. Kolla I 96
+43 D.I. Sbr. Kolla II 20
+44 D.I. Sbr. Ngolbek I 102
+45 D.I. Sbr. Ngolbek II 25
+46 D.I. Sbr. Nyapar 92
+47 D.I. Sbr. Ombak 48
+48 D.I. Sbr. Pancor 90
+49 D.I. Sbr. Pandeman 13
+50 D.I. Sbr. Pangelen 33
+51 D.I. Sbr. Pareba'an 75
+52 D.I. Sbr. Penang 33
+53 D.I. Sbr. Perengan 95
+54 D.I. Sbr. Polay 7
+55 D.I. Sbr. Raja 7
+56 D.I. Sbr. Raja Timur 12
+57 D.I. Sbr. Rombu 19
+58 D.I. Sbr. Talon 90
+59 D.I. Sbr. Taman 13
+60 D.I. Sbr. Tarona 26
+61 D.I. Sumber Nanaka 10
+62 D.I. Talambung 140
+63 D.I. Tambak Agung 399
+64 D.I. Tambak Pereng Atas 109
+65 D.I. Tambak Pereng Bawah 119
+66 D.I. Bujutan 15
+67 D.I. Pandeman Atas 3
+68 D.I. Pandeman Bawah 8
+69 D.I. Sambakati 50
+70 D.I. Sawahsumur 42
+aa Kab. Trenaaalek 523 9.708
+1 D.I. Ampel 2
+2 D.I. Ampel Gading 5
+3 D.I. Anjok 19
+4 D.I. Apak 1
+5 D.I. Bagong 854
+6 D.I. Bakalan 2
+7 D.I. Balang 83
+8 D.I. Banar 12

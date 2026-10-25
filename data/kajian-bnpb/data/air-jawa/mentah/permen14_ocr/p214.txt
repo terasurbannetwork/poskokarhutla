@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+255 D.I. Leuwihliang 10
+256 D.I. Leuwilesang 10
+257 D.I. Limbangan 25
+258 D.I. Linggapura 83
+259 D.I. Longkrang 34
+260 D.I. Longkrang 154
+261 D.I. Mahan 12
+262 D.I. Majapahit 22
+263 D.I. Majingklak 60
+264 D.I. Manggang 71
+265 D.I. Manggang |, II 30
+266 D.I. Manggang |, II 100
+267 D.I. Manggang IV 35
+268 D.I. Manggis 33
+269 D.I. Marenggeng 20
+270 D.I. Maruyung 24
+271 D.I. Muara 50
+272 D.I. Mudah 16
+273 D.I. Muncang 31
+274 D.I. Munggangsari 47
+275 D.I. Mungguhan 12
+276 D.I. Nangka 4
+277 D.I. Nangka 109
+278 D.I. Ngasinan 35
+279 D.I. Notog 198
+280 D.I. Nutug 26
+281 D.I. Nyalak 25
+282 D.I. Pabahanan 55
+283 D.I. Palem besar 11
+284 D.I. Pamahan 14
+285 D.I. Pamipiran 15
+286 D.I. Panahan 15
+287 D.I. Panimbangan 50
+288 D.I. Panyindangan 11
+289 D.I. Parakankidang II 20
+290 D.I. Parasi 25
+291 D.I. Pasir tengah 60
+292 D.I. Payan 78
+293 D.I. Pedetan 21
+294 D.I. Pelatar 16
+295 D.I. Pemali 15
+296 D.I. Pemanahan 11
+297 D.I. Penalangan 145
+298 D.I. Petahunan 454
+299 D.I. Petambakan 195
+300 D.I. Petir 51
+301 D.I. Plembang 43
+302 D.I. Podol 75
+303 D.I. Proyek 25
+304 D.I. Pule 11
+305 D.I. Purbanala 168
+306 D.I. Ragatunjung 40
+307 D.I. Rajawetan 11
+308 D.I. Rambatan | 50
+309 D.I. Rambatan Kanan 60
+310 D.I. Rambatan Kiri 127
+311 D.I. Rancabungur 13
+312 D.I. Randu 20
+313 D.I. Rapyah 81
+314 D.I. Reban 225
+315 D.I. Rosid 21
+#KANAN
+214
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+316 D.I. Runtuh I 130
+317 D.I. Runtuh II 60
+318 D.I. Suci 111
+319 D.I. Salak | 32
+320 D.I. Salam 35
+321 D.I. Sampang 60
+322 D.I. Sarengseng 56
+323 D.I. Sawah Buah 28
+324 D.I. Sawah Cungging 70
+325 D.I. Sawah Hilir 50
+326 D.I. Sawah Julang 66
+327 D.I. Sawah Baru 10
+328 D.I. Sawah Dayeuh 76
+329 D.I. Sawah Gede 159
+330 D.I. Sawah Girang 12
+331 D.I. Sawah Lega 16
+332 D.I. Sawah Lesang 20
+333 D.I. Sawah Luhur 40
+334 D.I. Sawah Rejo 12
+335 D.I. Sawah Wetan 23
+336 D.I. Selagading 25
+337 D.I. Semampir 20
+338 D.I. Sembunggrugul 40
+339 D.I. Sendangkubang 23
+340 D.I. Serut 48
+341 D.I. Seseupan 115
+342 D.I. Sidomulyo 134
+343 D.I. Simbar 21
+344 D.I. Simpur 10
+345 D.I. Sinapel 25
+346 D.I. Sindanghayu | 70
+347 D.I. Sindanghayu II 140
+348 D.I. Sindangheula 35
+349 D.I. Sindangsari 35
+350 D.I. Sindangsari I 30
+351 D.I. Singkup 11
+352 D.I. Siroyom 340
+353 D.I. Soka 25
+354 D.I. Soketan 20
+355 D.I. Srengseng 22
+356 D.I. Sridadi I, II, III 152
+357 D.I. Sumiyan 88
+358 D.I. Sumur Cikeusal 25
+359 D.I. Suren 80
+360 D.I. Suriyah 15
+361 D.I. Susukan 131
+362 D.I. Tajurmalang 36
+363 D.I. Tambaksari 10
+364 D.I. Tameng 36
+365 D.I. Tanggeran 19
+366 D.I. Tanggeran 489
+367 D.I. Tanjungsari 89
+368 D.I. Tantu 291
+369 D.I. Tapen 35
+370 D.I. Tasiem 18
+371 D.I. Tegalsari 13
+372 D.I. Tegalusar 15
+373 D.I. Tegangan 25
+374 D.I. Telang 30
+375 D.I. Tembongraja 476
+376 D.I. Tinggarwangi 55

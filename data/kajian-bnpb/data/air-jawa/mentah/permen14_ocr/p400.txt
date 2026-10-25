@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+4 D.I. Mentubang 212
+5 D.I. Tj. Belimbing 177
+6 D.I. Tj. Gunung 400
+7 D.I. Air Pauh 100
+8 D.I. Batu Bedil 95
+9 D.I. Payak Itam 100
+10 D.I. Sejahtera 75
+11 D.I. Tambak Rawang 75
+12 D.I. Setegar 49
+13 D.I. Tanah Merah 50
+d Kab. Ketapana 72 7.206
+1 D.I. Air Dikakah 55
+2 D.I. Air Dua 50
+3 D.I. Bagan Kusik 200
+4 D.I. Balai Semandang 200
+5 D.I. Banyur Rempangi 140
+6 D.I. Baram 150
+7 D.I. Batu Tajam I 105
+8 D.I. Belaban | 60
+9 D.I. Betenung 200
+10 D.I. Bukit Sekuntang 50
+11 D.I. Kalam Bengaras 100
+12 D.I. Kalimantan 125
+13 D.I. Kanaking 100
+14 D.I. Kenawan 65
+15 D.I. Kuedar 55
+16 D.I. Lobang Sawak 100
+17 D.I. Mahawa 60
+18 D.I. Manjau 140
+19 D.I. Meraban 60
+20 D.I. Muara Jekak 150
+21 D.I. Pampang Seribu 71
+22 D.I. Pangkalan Suka 64
+23 D.I. Panyau 100
+24 D.I. Payak Buruk 50
+25 D.I. Payak Layang 50
+26 D.I. Payak Sempok 120
+27 D.I. Pebihingan 115
+28 D.I. Pengancing 95
+29 D.I. Penyengkuang 97
+30 D.I. Randau 100
+31 D.I. Riam Bunut 100
+32 D.I. Runjai Jaya 60
+33 D.I. Seberuang 50
+34 D.I. Sei. Merah/Pisang 110
+35 D.I. Semandang/Deraman 60
+36 D.I. Siagak 50
+37 D.I. Silat 100
+38 D.I. Suka Karya 150
+39 D.I. Sukaria 60
+40 D.I. Sumber Rejo 285
+41 D.I. Sungai Lui 549
+42 D.I. Sungkai 100
+43 D.I. Terusan 150
+44 D.I. Batu Mas 80
+45 D.I. Belaban II 80
+46 D.I. Bolobor 65
+47 D.I. Kayong Mati 110
+48 D.I. Kemuning 125
+49 D.I. Lalang Panjang 50
+#KANAN
+400
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+50 D.I. Mengkunong 75
+51 D.I. Payak Keluing 65
+52 D.I. Pengatapan 60
+53 D.I. Piansak 100
+54 D.I. Randai 60
+55 D.I. Sebauk Jaya 60
+56 D.I. Seibeti 40
+57 D.I. Sejurai 200
+58 D.I. Sekutu Lobor 60
+59 D.I. Seleming 60
+60 D.I. Selupuk 60
+61 D.I. Sembelonaak 60
+62 D.I. Sempurna 100
+63 D.I. Sentabik 150
+64 D.I. Sepotong 70
+65 D.I. Serua 60
+66 D.I. Setongkas 30
+67 D.I. Siantau 100
+68 D.I. Sumber Resmi 200
+69 D.I. Tebuar 60
+70 D.I. Titi Purang 40
+71 D.I. Uber Bengang 75
+72 D.I. Usaha Baru 60
+e Kab. Kubu Rava 7 2.964
+1 D.I. Bhr. Ambawang 760
+2 D.I. Bemban Timur 480
+3 D.I. Bemban Barat 560
+4 D.I. Ence Manan 450
+5 D.I. Nuri 250
+6 D.I. Padu Empat 274
+7 D.I. Semak 190
+f Kab. Landak 198 19.042
+1 D.I. Senakin Komplek 507
+2 D.I. Serimbang 20
+3 D.I. Beres 92
+4 D.I. Sabangan 153
+5 D.I. Sengah 680
+6 D.I. Aur Sampuk 146
+7 D.I. Singkut Buluh 50
+8 D.I. Tonang 200
+9 D.I. Saham 75
+10 D.I. Sanyang 150
+11 D.I. Roba Sairi 175
+12 D.I. Seginah 180
+13 D.I. Gantang 175
+14 D.I. Keranji Birah 140
+15 D.I. Pook 200
+16 D.I. Tebing Tinggi 140
+17 D.I. Sanurian 100
+18 D.I. Kapur 150
+19 D.I. Pahauman 150
+20 D.I. Singkut Durian 100
+21 D.I. Baet Kawan 180
+22 D.I. Paloan 100
+23 D.I. Jelutung 131
+24 D.I. Asong 261
+25 D.I. Simpang Ladang 145
+26 D.I. Betung Pulai 100
+27 D.I. Runut 100

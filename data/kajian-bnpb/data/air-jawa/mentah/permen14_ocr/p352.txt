@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+22 D.I. Bunut II 32
+23 D.I. Capang 65
+24 D.I. Cowek 18
+25 D.I. Curah Malang 31
+26 D.I. Curah Sudo 60
+27 D.I. Dandang/Kaning 42
+28 D.I. Daren 26
+29 D.I. Dem 10
+30 D.I. Dempok 257
+31 D.I. Deresan 16
+32 D.I. Epek 28
+33 D.I. Gading 260
+34 D.I. Gadungan 17
+35 D.I. Gajahan 12
+36 D.I. Gajahan Kulon 3
+37 D.I. Gajahrejo 19
+38 D.I. Gambiran 51
+39 D.I. Ganti 50
+40 D.I. Gantungan 92
+41 D.I. Gayam 47
+42 D.I. Gebang 174
+43 D.I. Gedang 11
+44 D.I. Gedang 30
+45 D.I. Gedangan 71
+46 D.I. Gendol I 13
+47 D.I. Gendol II 54
+48 D.I. Genengan 29
+49 D.I. Genitro 15
+50 D.I. Gerbo 145
+51 D.I. Girang 503
+52 D.I. Glendangan 52
+53 D.I. Gondang 57
+54 D.I. Grayah 141
+55 D.I. Grenjengan 32
+56 D.I. Gupit 17
+57 D.I. Guwo 17
+58 D.I. Guwo telasih 17
+59 D.I. Guyangan 308
+60 D.I. Guyangan 25
+61 D.I. Imprak 19
+62 D.I. Ingas 21
+63 D.I. Jabon | 7
+64 D.I. Jabon II 20
+65 D.I. Jagil 35
+66 D.I. Janti 37
+67 D.I. Jati manggung 18
+68 D.I. Jatianom 8
+69 D.I. Jatirejo 57
+70 D.I. Jawi 25
+71 D.I. Jebug 32
+72 D.I. Jedung 95
+73 D.I. Jembrung 109
+74 D.I. Jeruk 49
+75 D.I. Jetak 69
+76 D.I. Jogonalan 7
+77 D.I. Joho 44
+78 D.I. Jolo 3
+79 D.I. Junggo 35
+80 D.I. K. Sibon (Sibon) 309
+81 D.I. Kadalpang 72
+82 D.I. Kali Putih 7
+#KANAN
+352
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+83 D.I. Kalicilik/Kalicilik 47
+84 D.I. Kalipang 122
+85 D.I. Kalitengah 16
+86 D.I. Karang Lebak 83
+87 D.I. Karang Tengah 43
+88 D.I. Karangkepuh 62
+89 D.I. Karanglo 54
+90 D.I. Karsono (Pedes) 56
+91 D.I. Kastanan (Jemblung) 32
+92 D.I. Kayoman 23
+93 D.I. Kebonagung 83
+94 D.I. Kebonalas 22
+95 D.I. Kebonsari 42
+96 D.I. Kecepek 22
+97 D.I. Kedawang | 11
+98 D.I. Kedawang II 12
+99 D.I. Kedawung 146
+100 D.I. Kedung 112
+101 D.I. Kedung Bajul 49
+102 D.I. Kedung Banteng 57
+103 D.I. Kedung Biru 25
+104 D.I. Kedung Boto 78
+105 D.I. Kedung Waru 470
+106 D.I. Kedungringin 94
+107 D.I. Kemirahan 58
+108 D.I. Kemiri I 44
+109 D.I. Kemiri IIA 6
+110 D.I. Kemiri II B 28
+111 D.I. Kemiri III 39
+112 D.I. Kemiri IV 112
+113 D.I. Kemisik 12
+114 D.I. Kepuhrejo 54
+115 D.I. Kepulungan 82
+116 D.I. Kesamben 82
+117 D.I. Ketanireng 99
+118 D.I. Ketapan 172
+119 D.I. Kluncing 13
+120 D.I. Kradenan 86
+121 D.I. Krangkong 113
+122 D.I. Krikil 582
+123 D.I. Kriyan 79
+124 D.I. Kunir I 15
+125 D.I. Kunir II 31
+126 D.I. Kurung 128
+127 D.I. Kutukan 40
+128 D.I. Kwangen 38
+129 D.I. Lecari 77
+130 D.I. Leduk I 4
+131 D.I. Leduk II 16
+132 D.I. Leduk III 7
+133 D.I. Leduk VI 26
+134 D.I. Legok I 5
+135 D.I. Legok II 5
+136 D.I. Lembucapang 107
+137 D.I. Lerek | 20
+138 D.I. Lerek II 3
+139 D.I. Lobang 183
+140 D.I. Loo 32
+141 D.I. Lumbang 24
+142 D.I. Lumpang Bolong 230
+143 D.I. Luwuk 37

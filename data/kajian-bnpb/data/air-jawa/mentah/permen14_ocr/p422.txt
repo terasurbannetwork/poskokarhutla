@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+36 D.I. Rantebulahan 165
+37 D.I. Salu 100
+38 D.I. Salu Aho 40
+39 D.I. Salu Alo 35
+40 D.I. Salu Assing 40
+41 D.I. Salu Bubun 65
+42 D.I. Salu Bulo | 40
+43 D.I. Salu Bulo II 43
+44 D.I. Salu Kadi 43
+45 D.I. Salu Kaiyang 75
+46 D.I. Salu Kepopo 65
+47 D.I. Salu Lele 80
+48 D.I. Salu Mariri 100
+49 D.I. Salu Panetean 70
+50 D.I. Saludengen 16
+51 D.I. Salulo 42
+52 D.I. Salurano 40
+53 D.I. Sepang 75
+54 D.I. Sindagamanik 60
+55 D.I. Sipate/Ulusalu 50
+56 D.I. Tanete Tomba 45
+57 D.I. Tangkalu 50
+58 D.I. Tatale 75
+59 D.I. Tomba 20
+60 D.I. Tondok Bakaru 116
+61 D.I. Ulusalu 100
+62 D.I. Kira 51
+63 D.I. Pebassian 60
+64 D.I. Pulio 18
+65 D.I. Rante 100
+66 D.I. Salu Bungin 40
+67 D.I. Siso 50
+68 D.I. Talapuki 50
+69 D.I. Alla" 44
+70 D.I. Ambe' Ponno 70
+71 D.I. Anak Langi 34
+72 D.I. Atok Rea 50
+73 D.I. Awa' 45
+74 D.I. Bakaru 15
+75 D.I. Bala Tana 18
+76 D.I. Balabatu 78
+77 D.I. Balala 10
+78 D.I. Balatana 44
+79 D.I. Balattagi 40
+80 D.I. Balembang 35
+81 D.I. Balla Kalua' 40
+82 D.I. Balla Kareke 35
+83 D.I. Balla Sepang 30
+84 D.I. Balla Tandiallo 30
+85 D.I. Bamba 40
+86 D.I. Bamba 20
+87 D.I. Bamba 57
+88 D.I. Bamba Buntu 81
+89 D.I. Bamba Rante Dambu 15
+90 D.I. Bamba Sepang 20
+91 D.I. Bamba Tabone 75
+92 D.I. Bambang 55
+93 D.I. Banda/Beting 33
+94 D.I. Banea 55
+95 D.I. Banggo 26
+96 D.I. Barana' 25
+#KANAN
+422
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+97 D.I. Barana II 25
+98 D.I. Barana' Karua 53
+99 D.I. Batang Barana' 30
+100 D.I. Batarirak 45
+101 D.I. Bataririk Kanan 50
+102 D.I. Bataririk Kiri 50
+103 D.I. Batu 45
+104 D.I. Bau 15
+105 D.I. Bau 10
+106 D.I. Bauang 60
+107 D.I. Bauang 70
+108 D.I. Beting 27
+109 D.I. Biring Patta 24
+110 D.I. Bo'Ne 43
+111 D.I. Bongga Lembang 10
+112 D.I. Buangin 45
+113 D.I. Bubun Batu 45
+114 D.I. Bue 98
+115 D.I. Bue 30
+116 D.I. Bue II 30
+117 D.I. Bulo 10
+118 D.I. Bulung 10
+119 D.I. Buntu Kasisi 17
+120 D.I. Burana 25
+121 D.I. Bussu 35
+122 D.I. Butang 95
+123 D.I. Buttu 40
+124 D.I. Buttu-Buttu 37
+125 D.I. Buttu Buttu 30
+126 D.I. Buttu Lepong 70
+127 D.I. Buttu Lepong 160
+128 D.I. Buttu Manik 47
+129 D.I. Cigaru 38
+130 D.I. Datubaringan 34
+131 D.I. Dusun Maruyo 40
+132 D.I. Dusun Minanga 48
+133 D.I. Gaho 30
+134 D.I. Gandang Batu 55
+135 D.I. Gandang Dewata 45
+136 D.I. Hatana Lanmbaku 20
+137 D.I. Indo' Itto' 75
+138 D.I. Kadike 8
+139 D.I. Kahatangi 30
+140 D.I. Kalakian 15
+141 D.I. Kalawa Patottong 45
+142 D.I. Kaluppang 25
+143 D.I. Kaluyo 35
+144 D.I. Kanan 56
+145 D.I. Kanan 20
+146 D.I. Karangan 13
+147 D.I. Karangan Kalua' 20
+148 D.I. Karoan 42
+149 D.I. Kasombo 35
+150 D.I. Katimbang 25
+151 D.I. Katoan 20
+152 D.I. Kayu Mea 50
+153 D.I. Kebanga 70
+154 D.I. Kollonglau 39
+155 D.I. Kondo 10
+156 D.I. Kondo 50
+157 D.I. Kondo Batu 20

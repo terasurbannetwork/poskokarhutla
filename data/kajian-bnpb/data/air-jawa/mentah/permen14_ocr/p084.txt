@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+51 D.I. Mude 20
+52 D.I. Na'ai 70
+53 D.I. No'uo 40
+54 D.I. Oholu 65
+55 D.I. Olewu 130
+56 D.I. Ononazara 15
+57 D.I. Orahili 85
+58 D.I. Salo'o 30
+59 D.I. Saua 10
+60 D.I. Siwawo 100
+61 D.I. So Tugala 40
+62 D.I. Sohoya 100
+63 D.I. Solabo 250
+64 D.I. Solaya 100
+65 D.I. Solewuo 100
+66 D.I. So'ohi 160
+67 D.I. Sorara 70
+68 D.I. Subaewa 50
+69 D.I. Sungai Bori 30
+70 D.I. Sungai Mua 60
+71 D.I. Taliwu 38
+72 D.I. Tegilamuhu 30
+73 D.I. Tora'a 250
+74 D.I. Uluwi 70
+75 D.I. Ziliwi 40
+o Kab. Padana Lawas 14 2.624
+1 D.I. Waduk Huristak 140
+2 D.I. Sibulung Bira 136
+3 D.I. Napa Sibual-buali 500
+4 D.I. Waduk Gunung Manaon 125
+5 D.I. Waduk Paya Labi 150
+6 D.I. Siraisan 148
+7 D.I. Ujung Batu/Penguapan 15
+8 D.I. Aek Nabara 50
+9 D.I. Aek Sihapas Kiri/Kanan 50
+10 D.I. Tahalak Senjong 100
+11 D.I. Sigornus 390
+12 D.I. Siborna 595
+13 D.I. Saba Pasir II/L Godang 200
+14 D.I. Aek Sibontar 25
+p Kab. Padana Lawas Utara 132 12.522
+1 D.I. Aek Sihapas 575
+2 D.I. Aek Suhat 75
+3 D.I. Psr. Matanggor Kiri/Kanan 635
+4 D.I. Sayur Matinggi 20
+5 D.I. Siala Gundi 400
+6 D.I. Sibulung Bira 20
+7 D.I. Napa (Saba Napa) 50
+8 D.I. Aek Bargot 50
+9 D.I. Aek Baruas 90
+10 D.I. Aek Batang Ilung 45
+11 D.I. Aek Batu Gana 350
+12 D.I. Aek Batu Hosing 60
+13 D.I. Aek Biara 130
+14 D.I. Aek Bilah 85
+15 D.I. Aek Bulung Rara/Saba Pulut 80
+16 D.I. Aek Doras 35
+17 D.I. Aek Gaja 35
+18 D.I. Aek Garut 95
+#KANAN
+84
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+19 D.I. Aek Godang 100
+20 D.I. Aek Godang Bonan Dolok 80
+21 D.I. Aek Godang Sayur Matinggi 90
+22 D.I. Aek Gulangan 250
+23 D.I. Aek Habaoran | 50
+24 D.I. Aek Habaoran II 80
+25 D.I. Aek Habaoran III 45
+26 D.I. Aek Hambala 90
+27 D.I. Aek Hararongga 100
+28 D.I. Aek Hararongga/Sipaho 30
+29 D.I. Aek Kiding 100
+30 D.I. Aek Kuala 21
+31 D.I. Aek Langkimat 95
+32 D.I. Aek Lubak Jae 35
+33 D.I. Aek Mahual 120
+34 D.I. Aek Malino 100
+35 D.I. Aek Morang 220
+36 D.I. Aek Mual Nauli 130
+37 D.I. Aek Nauli 100
+38 D.I. Aek Nauli 45
+39 D.I. Aek Panantanan 90
+40 D.I. Aek Pangirkiran 60
+41 D.I. Aek Pining 90
+42 D.I. Aek Poring 60
+43 D.I. Aek Rombi 40
+44 D.I. Aek Rura Portibi Jae 225
+45 D.I. Aek Rura Pule 90
+46 D.I. Aek Rura Sitarak 61
+47 D.I. Aek Saba Gamba/Tukko 50
+48 D.I. Aek Saba Ipar 47
+49 D.I. Aek Saba Parsuluhan 50
+50 D.I. Aek Salak 25
+51 D.I. Aek Salusuan 22
+52 D.I. Aek Sane-sane 101
+53 D.I. Aek SI Isang-Isang 30
+54 D.I. Aek Siala 85
+55 D.I. Aek Siala 36
+56 D.I. Aek Siala 90
+57 D.I. Aek Siala Dua 123
+58 D.I. Aek Sialang Bujing 45
+59 D.I. Aek Siandor 60
+60 D.I. Aek Sibaling-baling 130
+61 D.I. Aek Sibaluana 85
+62 D.I. Aek Sidodaha 50
+63 D.I. Aek Sigama 50
+64 D.I. Aek Sihombal 53
+65 D.I. Aek Sijattung 100
+66 D.I. Aek Sikkam 70
+67 D.I. Aek Silangkitang 80
+68 D.I. Aek Simundol 80
+69 D.I. Aek Sini-Sini Bargottong Julu 30
+70 D.I. Aek Sini-Sini Bargottopong Jae 60
+71 D.I. Aek Sipea 55
+72 D.I. Aek Sirumambe 79
+73 D.I. Aek Sirumambe 100
+74 D.I. Aek Sirumambe 93
+75 D.I. Aek Sirumambe 30
+76 D.I. Aek Sirumambe Bandar Godang 52
+77 D.I. Aek Sisakkap 35
+78 D.I. Aek Sisoma Dolok Julu 130
+79 D.I. Aek Sisoma Lama 179

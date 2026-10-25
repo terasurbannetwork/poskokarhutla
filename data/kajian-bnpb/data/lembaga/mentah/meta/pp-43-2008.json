@@ -1,0 +1,23 @@
+{
+ "id": "4857",
+ "url": "https://peraturan.bpk.go.id/Details/4857/pp-no-43-tahun-2008",
+ "judul": "Peraturan Pemerintah (PP) Nomor 43 Tahun 2008 tentang Air Tanah",
+ "nomor": "43 Tahun 2008 tentang Air Tanah T.E.U. Indonesia, Pemerintah Pusat Nomor 43",
+ "tanggal_penetapan": "23 Mei 2008",
+ "tanggal_berlaku": "23 Mei 2008",
+ "sumber": "LN. 2008 No. 83, TLN No. 4859, LL SETNEG : 46 HLM",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/37203/PP%2043%20Tahun%202008.pdf"
+ ],
+ "status_peraturan": "Mencabut : PP No. 22 Tahun 1982 tentang Tata Pengaturan Air",
+ "abstrak": "2008 Peraturan Pemerintah (PP) NO. 43, LN. 2008 No. 83, TLN No. 4859, LL SETNEG : 46 HLM Peraturan Pemerintah (PP) TENTANG Air Tanah ABSTRAK: CATATAN: Peraturan Pemerintah (PP) ini mulai berlaku pada tanggal 23 Mei 2008.",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/37203/PP%2043%20Tahun%202008.pdf",
+ "pdf_sha1": "e4c0143ed6257fb4091266f21c56fd6f4dd8d199",
+ "pdf_bytes": 252950,
+ "sid": "pp-43-2008",
+ "halaman_total": 75,
+ "halaman_disimpan": "semua",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id"
+}

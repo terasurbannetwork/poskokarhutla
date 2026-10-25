@@ -1,0 +1,51 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638
+, 588
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+b Kab. Kutai Kartaneaara 5 3.363
+1 D.I.T. Desa Sepatin 500
+2 D.I.T. Ma Badak 754
+3 D.I.T. Ma Jawa 384
+4 D.ILT. Ma Pantuan 800
+5 D.LT. Sei Meriam 925
+c Kab. Paser 2 233
+1 D.I.T. Laburan Lama 184
+2 D.LT. Tanjung Aru 49
+d Kab. Penaiam Paser Utara 2 450
+1 D.IT. Desa Babulu Laut 250
+2 D.LT. Labangka 200
+VIII PROVINSI KALIMANTAN UTARA 4 1.452
+a Kab. Bulunaan 2 677
+1 D.LT. Tanjung Buka 500
+2 D.I.T. Salim Batu 177
+b Kab. Nunukan 2 775
+1 D.LT. Simanggaris 275
+2 D.LT. Sinualan Pantai 500
+IX PROVINSI SULAWESI TENGGARA 9 2.345
+a Kab. Bombana 2 400
+1 D.LT. Kabaena 200
+2 D.ILT. Ulungkura/Boepinang 200
+b Kab. Buton 1 100
+1 D.I.T. Kaudani/Mawasangka 100
+c Kab. Buton Utara 1 100
+1 D.I.T. Waodeburi/Kalisusu 100
+d Kab. Kolaka Utara 1 800
+1 D.I.T. Ranteangin 800
+e Kab. Muna 4 945
+1 D.LT. Kusambi 20
+2 D.LT. Napabalano 75
+3 D.LT. Parigi 50
+4 D.LT. Tikep 800
+X PROVINSI SULAWESI SELATAN 57 14.566
+a Kab. Barru 5 1.991
+1 D.I.T. Madello 261
+2 D.I.T. Mallusettasi 870
+3 D.I.T. Takkalasi 250
+4 D.LT. Tuwung 360
+5 D..T. Wirittasi 250
+b Kab. Bone 2 1.350
+1 D.LT. Barebbo 500
+2 D.LT. Sibulue 850
+c Kab. Bulukumba 20 1.995
+1 D.I.T. Bonto Kamase 21

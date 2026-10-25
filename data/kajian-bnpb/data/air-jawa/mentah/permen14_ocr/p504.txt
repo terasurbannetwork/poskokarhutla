@@ -1,0 +1,73 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 504
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+91 D.L.LA.T. Gedongan PWS 209 30
+
+92 D.I.A.T. Jabung PWS 210 28
+
+93 D.I.A.T. Jabung PWS 211 35
+
+94 D.I.A.T. Jabung PWS 212 18
+
+95 D.I.A.T. Jabung PWS 213 21
+
+96 D.I.A.T. Jabung PWS 214 29
+
+97 D.ILA.T. Gawan PWS 215 30
+
+98 D.I.A.T. Sidokerto PWS 216 17
+
+99 D.I.A.T. Sidokerto PWS 217 29
+100 D.LA.T. Gawan PWS 218 27
+101 D.LA.T. Sidokerto PWS 219 26
+102 D.LA.T. Sambirejo PWS 220 25
+103 D.L.A.T. Sambirejo PWS 221 27
+104 D.L.A.T. Doyong PWS 225 25
+105 D.I.A.T. Jenalas PWS 226 32
+106 D.LA.T. Pengkol PWS 227 27
+107 D.LA.T. Jenalas PWS 228 28
+108 D.I.A.T. Pengkol PWS 229 18
+109 D.L.A.T. Nganti PWS 230 17
+110 D.LA.T. Karangpung PWS 231 20
+111 D.LA.T. Padas PWS 232 25
+112 D.LA.T. Padas PWS 233/307 21
+113 D.LA.T. Dari PWS 234/306 37
+114 D.LA.T. Karangpung PWS 235 27
+115 D.LA.T. Sambirembe PWS 236 24
+116 D.L.A.T. Gawan PWS 237 30
+117 D.LA.T. Jono PWS 238 36
+118 D.LA.T. Gentanbanaran PWS 239 28
+119 D.LA.T. Gentanbanaran PWS 240 29
+120 D.LA.T. Gentanbanaran PWS 241 31
+121 D.LA.T. Kalimacan PWS 242 18
+122 D.LA.T. Sambirejo PWS 245 36
+123 D.LA.T. Plupuh PWS 246 14
+124 D.LA.T. Bendo PWS 264 45
+125 D.LA.T. Gabugan PWS 267 32
+126 D.LA.T. Slogo PWS 269 37
+127 D.LA.T. Gawan PWS 271 44
+128 D.LA.T. Jambanan PWS 273 35
+129 D.LA.T. Singopadu PWS 274 30
+130 D.LA.T. Taraman PWS 276 41
+131 D.LA.T. Dawungan PWS 278 31
+132 D.LA.T. Dawungan PWS 279 42
+133 D.LA.T. Karungan PWS 280 30
+134 D.LA.T. Karungan PWS 282 37
+135 D.LA.T. Dari PWS 283 37
+136 D.LA.T. Sambirejo PWS 285 35
+137 D.LA.T. Sambirejo PWS 286 30
+138 D.L.A.T. Sidokerto PWS 288 21
+139 D.LA.T. Banaran TW 017 R 30
+140 D.LA.T. Tuban PWS 049 R 26
+141 D.LA.T. Krendowahono PWS 061 14
+142 D.LA.T. Krendowahono PWS 065 20
+143 D.LA.T. Krendowahono PWS 077 R 18
+144 D.LA.T. Tuban PWS 091 25
+145 D.LA.T. Tuban PWS 140 R 25
+146 D.LA.T. Bulurejo TW 143 R 25
+147 D.LA.T. Krendowahono PWS 137 35
+148 D.LA.T. Tuban PWS 222 13
+149 D.LA.T. Tuban PWS 223 16

@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+190 D.I. Sijubleg 30
+191 D.I. Sikidang 35
+192 D.I. Sikopo 20
+193 D.I. Sikosari 36
+194 D.I. Sikuang 72
+195 D.I. Sikumbang 110
+196 D.I. Silanjar 40
+197 D.I. Silapar 12
+198 D.I. Siluwek 35
+199 D.I. Siluwuk 20
+200 D.I. Siluwung 25
+201 D.I. Simangli 20
+202 D.I. Simangu 40
+203 D.I. Simbang 602
+204 D.I. Simbar 15
+205 D.I. Simedo 15
+206 D.I. Simende 55
+207 D.I. Sinangka/Joho 20
+208 D.I. Sindang 15
+209 D.I. Sinongko 11
+210 D.I. Siperes 102
+211 D.I. Sipete 15
+212 D.I. Sirajut 17
+213 D.I. Sirandu 23
+214 D.I. Sirejeng 102
+215 D.I. Sirinten 47
+216 D.I. Sirogo 31
+217 D.I. Sitilas 68
+218 D.I. Siwaru 35
+219 D.I. Sodong 25
+220 D.I. Sogo 15
+221 D.I. Sombeng 24
+222 D.I. Songgom | 35
+223 D.I. Songgom II 35
+224 D.I. Sono 70
+225 D.I. Sonto 26
+226 D.I. Sorosido 263
+227 D.I. Sukoboyo 30
+228 D.I. Sukoboyo II 39
+229 D.I. Sumilir 34
+230 D.I. Sumurup 58
+231 D.I. Suntingan 34
+232 D.I. Talun/Gandu 63
+233 D.I. Tambakboyo 18
+234 D.I. Tangerang 48
+235 D.I. Tanjung 22
+236 D.I. Tegalsari 35
+237 D.I. Tembelang 13
+238 D.I. Tireng 70
+239 D.I. Tirto Kencono 50
+240 D.I. Tomoleksono 36
+241 D.I. Tonjong 15
+242 D.I. Toso 10
+243 D.I. Totogan 47
+244 D.I. Tracas 26
+245 D.I. Tuk Jeger 10
+246 D.I. Tuk Jombang 17
+247 D.I. Tulung 30
+248 D.I. Wadas 33
+249 D.I. Wadas 15
+250 D.I. Wangan Sabrang 50
+#KANAN
+258
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+251 D.I. Wanganjati 25
+252 D.I. Wangankelang 25
+253 D.I. Wangankembar 114
+254 D.I. Wanglu IV 42
+255 D.I. Wanglu I 42
+256 D.I. Wanglu II 25
+257 D.I. Wanglu III 58
+258 D.I. Waringin 15
+259 D.I. Watesan 70
+260 D.I. Watutumpang 50
+261 D.I. Wedang 21
+262 D.I. Wedang atas 20
+263 D.I. Wedang Bawah 25
+264 D.I. Werdi 78
+265 D.I. Weringin 35
+266 D.I. Winduaji 51
+267 D.I. Winduaji Atas 110
+268 D.I. Winduaji Bawah 31
+269 D.I. Winongpule 25
+270 D.I. Wisan 30
+271 D.I. Wokosari 18
+272 D.I. Wringin 15
+273 D.I. Asem 25
+274 D.I. Bandot 15
+275 D.I. Bantung 22
+276 D.I. Bedoyo 30
+277 D.I. Blimbing 25
+278 D.I. Boro 45
+279 D.I. Dadah 50
+280 D.I. Dampit 38
+281 D.I. Dilom 40
+282 D.I. Dukuh Jeruk 20
+283 D.I. Gandu 10
+284 D.I. Gumelem II 30
+285 D.I. Jimat 25
+286 D.I. Kali Banteng 55
+287 D.I. Kali Jarak 92
+288 D.I. Kaliombo 35
+289 D.I. Kaliwinang 25
+290 D.I. Karangkabur 125
+291 D.I. Kemuning 60
+292 D.I. Kepuh 30
+293 D.I. Kesetu 118
+294 D.I. Klamaran 20
+295 D.I. Klatuk/Kambangan 30
+296 D.I. Klinting 25
+297 D.I. Kolong 30
+298 D.I. Kuning 30
+299 D.I. Kutukan 10
+300 D.I. Lebo 20
+301 D.I. Lilin 25
+302 D.I. Lulit 20
+303 D.I. Mawan/Rowo 64
+304 D.I. Mejarum 35
+305 D.I. Mudu 36
+306 D.I. Mungguan 10
+307 D.I. Nogosari 20
+308 D.I. Ontobogo 8
+309 D.I. Pajomblangan 72
+310 D.I. Pakis 13
+311 D.I. Pedawang 106

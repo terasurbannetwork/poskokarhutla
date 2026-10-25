@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+231 D.I. Sewalo 1
+232 D.I. Sibedog 5
+233 D.I. Sibokong 22
+234 D.I. Sidoleren 6
+235 D.I. Sigigis 25
+236 D.I. Sijambu 5
+237 D.I. Sikidang 5
+238 D.I. Silir 8
+239 D.I. Siluhur 5
+240 D.I. Sisden 20
+241 D.I. Sitalang 6
+242 D.I. Siwatu Kiri 192
+243 D.I. Somorejo 12
+244 D.I. Somowono 17
+245 D.I. Sumong 3
+246 D.I. Tilampok 4
+247 D.I. Tuk Siwinong 2
+248 D.I. Wero 35
+249 D.I. Wonorejo Kulon 106
+250 D.I. Wuluh 1
+v Kab. Rembana 318 21193
+1 D.I. Bd. Babadan 589
+2 D.I. Bd. Bamban 50
+3 D.I. Bd. Bancang 100
+4 D.I. Bd. Banowan 206
+5 D.I. Bd. Bara'an 56
+6 D.I. Bd. Bebeg 126
+7 D.I. Bd. Bedol 62
+8 D.I. Bd. Bendo 20
+9 D.I. Bd. Beran 17
+10 D.I. Bd. Bogoran 196
+11 D.I. Bd. Bojo 102
+12 D.I. Bd. Bonjor 297
+13 D.I. Bd. Bulak Sempu 35
+14 D.I. Bd. Buloh 65
+15 D.I. Bd. Bulu 44
+16 D.I. Bd. Cangaan 129
+17 D.I. Bd. Dadapan 75
+18 D.I. Bd. Dalem 182
+19 D.I. Bd. Dukuh 10
+20 D.I. Bd. Gandri 68
+21 D.I. Bd. Gayam 45
+22 D.I. Bd. Gayam 113
+23 D.I. Bd. Gebang 87
+24 D.I. Bd. Gede 59
+25 D.I. Bd. Gembul 93
+26 D.I. Bd. Genuk 35
+27 D.I. Bd. Gepuro 50
+28 D.I. Bd. Giyok 35
+29 D.I. Bd. Grasak 45
+30 D.I. Bd. Jambeyan 165
+31 D.I. Bd. Jambu 25
+32 D.I. Bd. Janggan 135
+33 D.I. Bd. Jatigrowong 50
+34 D.I. Bd. Jatihadi 39
+35 D.I. Bd. Jenggreng 43
+36 D.I. Bd. Jurangan 25
+37 D.I. Bd. Keben 9
+38 D.I. Bd. Kedung Ringin 30
+39 D.I. Bd. Kedung Rumpit 324
+#KANAN
+264
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+40 D.I. Bd. Kedung Semar 101
+41 D.I. Bd. Kenong 25
+42 D.I. Bd. Kopen 129
+43 D.I. Bd. Kramat 197
+44 D.I. Bd. Mojokerto 250
+45 D.I. Bd. Mudal 197
+46 D.I. Bd. Mujur 40
+47 D.I. Bd. Narukan 50
+48 D.I. Bd. Ngaglik 40
+49 D.I. Bd. Ngampo 310
+50 D.I. Bd. Ngelo 15
+51 D.I. Bd. Ngepreh 27
+52 D.I. Bd. Ngetuk 136
+53 D.I. Bd. Ngori 64
+54 D.I. Bd. Ngulakan 132
+55 D.I. Bd. Ngulangan 80
+56 D.I. Bd. Pacing 52
+57 D.I. Bd. Pakel Beruk 35
+58 D.I. Bd. Pakis 13
+59 D.I. Bd. Panohan 381
+60 D.I. Bd. Pasar 31
+61 D.I. Bd. Patiyan 66
+62 D.I. Bd. Pelem 40
+63 D.I. Bd. Penewen 51
+64 D.I. Bd. Pengapus 12
+65 D.I. Bd. Pengaron 20
+66 D.I. Bd. Pengilon 76
+67 D.I. Bd. Pengkol 267
+68 D.I. Bd. Pentil 775
+69 D.I. Bd. Ploso 50
+70 D.I. Bd. Pomahan 64
+71 D.I. Bd. Pule 65
+72 D.I. Bd. Putat 73
+73 D.I. Bd. Samaran 43
+74 D.I. Bd. Sambiroto 85
+75 D.I. Bd. Sampung 31
+76 D.I. Bd. Sebale 30
+77 D.I. Bd. Sekijing 273
+78 D.I. Bd. Sembiyan 30
+79 D.I. Bd. Sidowayah 465
+80 D.I. Bd. Simoturun 252
+81 D.I. Bd. Sono 45
+82 D.I. Bd. Sulo 253
+83 D.I. Bd. Sumurtawang 125
+84 D.I. Bd. Suruhan 36
+85 D.I. Bd. Taban 60
+86 D.I. Bd. Talang 69
+87 D.I. Bd. Tawangrejo 29
+88 D.I. Bd. Terjan 30
+89 D.I. Bd. Terongan 68
+90 D.I. Bd. Tlogo Tunggal 500
+91 D.I. Bd. Trahan 76
+92 D.I. Bd. Tulung 71
+93 D.I. Bd. Tumbun 42
+94 D.I. Bd. Warugunung 54
+95 D.I. Bd. Woro 101
+96 D.I. Bd. Wunut 79
+97 D.I. Bd. Bangkle 30
+98 D.I. Bd. Banyu Urip 13
+99 D.I. Bd. Blumbang 43
+100 D.I. Bd. Bogo 25

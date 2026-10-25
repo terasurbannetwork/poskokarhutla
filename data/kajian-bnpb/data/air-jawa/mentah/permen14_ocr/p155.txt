@@ -1,0 +1,128 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+202 D.I. Kalung Pancen 45
+203 D.I. Kebon Jeruk/Cijeruk 70
+204 D.I. Kijatip 70
+205 D.I. Kisanaka 65
+206 D.I. Kodon 26
+207 D.I. Lamojan 50
+208 D.I. LegokcauAVaringin 75
+209 D.I. Leuwi Bungsu 27
+210 D.I. Leuwibanen 75
+211 D.I. Leuwikadu 40
+212 D.I. Leuwipakis 26
+213 D.I. Mendong 30
+214 D.I. Nabig 20
+215 D.I. Parakansaat 76
+216 D.I. Parolima 80
+217 D.I. Pasir Limus 53
+218 D.I. Putri Cina 80
+219 D.I. Santoan M
+220 D.I. Cisatuk Gayam 75
+221 D.I. Sentul 60
+222 D.I. Silewah 30
+223 D.I. Silongkrang 60
+224 D.I. Singgokgok/Curug Goong 55
+225 D.I. Siring 70
+226 D.I. Sukabaya 75
+227 D.I. Tanggul Baru 60
+228 D.I. Tanggul Dalem 2/Cikorosok Bawah 70
+229 D.I. Tanggul Jambe 52
+230 D.I. Waringin 60
+d Kota Serana 16 1.384
+1 D.I. Cibuah 48
+2 D.I. Bayur 45
+3 D.I. Ciwadas | 60
+4 D.I. Curug Sunar 30
+5 D.I. Pengasinan 50
+6 D.I. Cibuah 48
+7 D.I. Cikasir 160
+8 D.I. Cikasir II 20
+9 D.I. Ciwadas 60
+10 D.I. Siorok 55
+11 D.I. Pagadangan 45
+12 D.I. Cibugang 162
+13 D.I. Cikaduwen 214
+14 D.I. Cablik 257
+15 D.I. Ciblik 2 28
+16 D.I. Kresek 102
+XM PROVINSI JAMYA BARAT A24 RAN TAN
+a Kab. Banduna 549 25.701
+1 D.I. Baros 56
+2 D.I. Cangkuang 27
+3 D.I. Cibeureum 741
+4 D.I. Cibodas 404
+5 D.I. Cidadap 17
+6 D.I. Juntihilir 178
+7 D.I. Kiaraeunyeuh 227
+8 D.I. Leuwikuray 640
+9 D.I. Adi 20
+10 D.I. Alisena 20
+#KANAN
+155 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+11 D.I. Ancol 66
+12 D.I. Astana 35
+13 D.I. Astana Gantung 37
+14 D.I. Astana Gede 30
+15 D.I. Astana Kidul 47
+16 D.I. Babakan 15
+17 D.I. Babakan 35
+18 D.I. Babakan Kapas 12
+19 D.I. Babakan Paseh 23
+20 D.I. Babakan sayang 14
+21 D.I. Bah Mulyana 75
+22 D.I. Bale Desa 54
+23 D.I. Balong 30
+24 D.I. Balong Saladah 48
+25 D.I. Bangkewong 82
+26 D.I. Bangkonol 62
+27 D.I. Bangkonol 74
+28 D.I. Baros 56
+29 D.I. Barupetak 73
+30 D.I. Barusampeu 40
+31 D.I. Batu Bogol 31
+32 D.I. Batukarut 63
+33 D.I. Batunamprak 16
+34 D.I. Batureok 37
+35 D.I. Bayongbong 20
+36 D.I. Bencoy 60
+37 D.I. Bengkok 20
+38 D.I. Bihbul 21
+39 D.I. Binong 20
+40 D.I. Bj. Sempur 12
+41 D.I. Boiong 39
+42 D.I. Bojong 110
+43 D.I. Bojong Braja 74
+44 D.I. Bojong Gerong 30
+45 D.I. Bojong Jambu 32
+46 D.I. Bojong Krg 20
+47 D.I. Bojong Monyet 32
+48 D.I. Bojong Picung 79
+49 D.I. Bojong/Cipatat 100
+50 D.I. Bojongbecik 48
+51 D.I. Buah Piit 100
+52 D.I. Bugel 102
+53 D.I. Bugel 100
+54 D.I. Bungur 70
+55 D.I. Cadas Gantung 152
+56 D.I. Cadas Pataruman 22
+57 D.I. Calengka 15
+58 D.I. Campaka 20
+59 D.I. Canawang 34
+60 D.I. Candi 46
+61 D.I. Canakrina 16
+62 D.I. Cekdam 20
+63 D.I. Cengkrong 97
+64 D.I. Ceudeum 60
+65 D.I. Ciajag 30
+66 D.I. Ciangsana 88
+67 D.I. Ciapus 21
+68 D.I. Ciaro 127
+69 D.I. Ciawi Gede 91
+70 D.I. Ciawi Tali 18
+71 D.I. Cibadak 20

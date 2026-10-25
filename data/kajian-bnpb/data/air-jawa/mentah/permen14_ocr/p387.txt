@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+40 D.I. Wae Los Baba 100
+41 D.I. Wae Lus 100
+42 D.I. Wae Maras 100
+43 D.I. Wae Mawu 100
+44 D.I. Wae Mbangir 100
+45 D.I. Wae Mbaru 50
+46 D.I. Wae Mene 150
+47 D.I. Wae Mentik 150
+48 D.I. Wae Mora 150
+49 D.I. Wae Mowol 150
+50 D.I. Wae Nampe 200
+51 D.I. Wae Nanar 100
+52 D.I. Wae Nao 100
+53 D.I. Wae Ngalo 100
+54 D.I. Wae Ngelas 100
+55 D.I. Wae Ngele 100
+56 D.I. Wae Ngelong 100
+57 D.I. Wae Nggae 100
+58 D.I. Wae Nggilat 100
+59 D.I. Wae Ngontek 100
+60 D.I. Wae Ose 200
+61 D.I. Wae Paci 250
+62 D.I. Wae Perang 100
+63 D.I. Wae Podo | 50
+64 D.I. Wae Podo II 100
+65 D.I. Wae Pora 100
+66 D.I. Wae Pumpung 100
+67 D.I. Wae Pungkang 100
+68 D.I. Wae Raba 150
+69 D.I. Wae Rae 100
+70 D.I. Wae Rage 100
+71 D.I. Wae Randong 200
+72 D.I. Wae Rangang 100
+73 D.I. Wae Rangga 100
+74 D.I. Wae Ranggu 100
+75 D.I. Wae Raru I-II 750
+76 D.I. Wae Rateng 150
+77 D.I. Wae Rawas 100
+78 D.I. Wae Rendong 200
+79 D.I. Wae Rengge 75
+80 D.I. Wae Rentang | 50
+81 D.I. Wae Rentang II 100
+82 D.I. Wae Renu 100
+83 D.I. Wae Rii 150
+84 D.I. Wae Rindu 50
+85 D.I. Wae Riwung 100
+86 D.I. Wae Rukus | 150
+87 D.I. Wae Rukus II 100
+88 D.I. Wae Rumbang 150
+89 D.I. Wae Sapol 100
+90 D.I. Wae Sapo II 500
+91 D.I. Wae Sar 100
+92 D.I. Wae Satar 100
+93 D.I. Wae Sawang 100
+94 D.I. Wae Sernaru 150
+95 D.I. Wae Sior 100
+96 D.I. Wae Sirek 100
+97 D.I. Wae Tajang 100
+98 D.I. Wae Telang 100
+99 D.I. Wae Tentang 100
+100 D.I. Wae Tiwu Nampar 200
+#KANAN
+387 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+101 D.I. Wae Tiwu Roang 100
+102 D.I. Wae Togo 150
+103 D.I. Wae Tompok 100
+104 D.I. Wae Tumbu 200
+105 D.I. Wae Turi 200
+106 D.I. Wae Walang 100
+107 D.I. Wae Waring 100
+108 D.I. Wae Wase 100
+109 D.I. Wae Watu 200
+110 D.I. Wae Wene 100
+111 D.I. Mbeku 350
+112 D.I. Naba 100
+113 D.I. Temek Lana 50
+114 D.I. Wa Telang 100
+115 D.I. Wae Keok 75
+116 D.I. Wae Bangkal 75
+117 D.I. Wae Bumbek 60
+118 D.I. Wae Cekel Wate 100
+119 D.I. Wae Galang 100
+120 D.I. Wae Hirek 25
+121 D.I. Wae Holot 30
+122 D.I. Wae Jewong 67
+123 D.I. Wae Kor 25
+124 D.I. Wae Kuse 100
+125 D.I. Wae Limbung 30
+126 D.I. Wae Mberisung 40
+127 D.I. Wae Molo 50
+128 D.I. Wae Nggieng 100
+129 D.I. Wae Niwu 200
+130 D.I. Wae Poang II 85
+131 D.I. Wae Rangat 60
+132 D.I. Wae Rato 40
+133 D.I. Wae Rembong 50
+134 D.I. Wae Rentang II 100
+135 D.I. Wae Rii 50
+136 D.I. Wae Rii 50
+137 D.I. Wae Rondak 40
+138 D.I. Wae Ronggeng 50
+139 D.I. Wae Sakang 150
+140 D.I. Wae Sebung 30
+141 D.I. Wae Sunsa Herong 40
+142 D.I. Wae Wau II 30
+143 D.I. Wae Wua 50
+144 D.I. Wae Ajo 54
+145 D.I. Wae Aur 100
+146 D.I. Wae Baling 50
+147 D.I. Wae Bea Pada 100
+148 D.I. Wae Blancing 160
+149 D.I. Wae Bo 50
+150 D.I. Wae Bobek 75
+151 D.I. Wae Bongko 50
+152 D.I. Wae Borong 300
+153 D.I. Wae Boru I-II 50
+154 D.I. Wae Boto 65
+155 D.I. Wae Caeng 150
+156 D.I. Wae Cangkang 80
+157 D.I. Wae Cing 100
+158 D.I. Wae Cumbi 200
+159 D.I. Wae Cunca Nggorong 50
+160 D.I. Wae Dadar 30
+161 D.I. Wae Daleng 100

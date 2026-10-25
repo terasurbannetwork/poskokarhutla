@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+433 D.I. Ciayunan 115
+434 D.I. Ciherang 70
+435 D.I. Ciawi Hilir 222
+436 D.I. Cibeber 148
+437 D.I. Leuwikarang 120
+438 D.I. Ciawi Tengah 50
+439 D.I. Pasir Peuteuy 70
+440 D.I. Curug Buluh 150
+441 D.I. Cikatomas | 300
+442 D.I. Curug Dengdeng 480
+443 D.I. Curug Kuda 60
+444 D.I. Curug Purut 70
+445 D.I. Cimanggu 116
+446 D.I. Cisungsang 100
+447 D.I. Ciwangun 103
+448 D.I. Lebak Tipar 100
+449 D.I. Bantarkalapa 80
+450 D.I. Cicaringin 150
+451 D.I. Cinangka 100
+452 D.I. Cirumah Landak 75
+453 D.I. Curug Kopo 100
+454 D.I. Citarate 70
+455 D.I. Lebak Peundeuy 100
+456 D.I. Panaruan 70
+457 D.I. Cireundeu 50
+458 D.I. Cigemblong 100
+459 D.I. Cikate 60
+460 D.I. Cipeucangpari 80
+461 D.I. Cikunting 100
+462 D.I. Cipulang Sari 95
+463 D.I. Jamrut 70
+b Kab. Pandealana 618 40.188
+1 D.I. Cimasayang 151
+2 D.I. Cigunung Karang 49
+3 D.I. Curug goong 62
+4 D.I. Cijaliti 56
+5 D.I. Cikeredek 58
+6 D.I. Ciastana 148
+7 D.I. Cipait 49
+8 D.I. Citando 32
+9 D.I. Tajur Malang 39
+10 D.I. Cikadu Galek 33
+11 D.I. Cibanteng 40
+12 D.I. Cibebek 32
+13 D.I. Cibatu 65
+14 D.I. Cisaung Kuya 65
+15 D.I. Cikadu Peusing 56
+16 D.I. Cikupa 350
+17 D.I. Ciraden/Cikokosan 13
+18 D.I. Cihilir 21
+19 D.I. Ciyurup/Psr.Angin 19
+20 D.I. Pager Batu 26
+21 D.I. Cikedung 40
+22 D.I. Cikole 28
+23 D.I. Cidalem 13
+24 D.I. Cikadu Teureup 26
+25 D.I. Cidalumpit 19
+26 D.I. Ciwalet 20
+27 D.I. Cikuya 16
+28 D.I. Ciparokoy 34
+#KANAN
+148
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+29 D.I. Cimenteng 24
+30 D.I. Cijolok 20
+31 D.I. Cikoceak 113
+32 D.I. Cibulakan | 70
+33 D.I. Cijohar 34
+34 D.I. Ciheas 55
+35 D.I. Cibangun 42
+36 D.I. Cibulakan II 32
+37 D.I. Cisangku I 21
+38 D.I. Cirebo 48
+39 D.I. Cisangku II 17
+40 D.I. Cikurung Dahu 33
+41 D.I. Cipahomas 17
+42 D.I. Sukalimas | 33
+43 D.I. Sukalimas II 33
+44 D.I. Cilalaki 33
+45 D.I. Cilalaki II 44
+46 D.I. Cidangdeur 49
+47 D.I. Cilembur I 302
+48 D.I. Sumur Gintung 60
+49 D.I. Cilograng 70
+50 D.I. Cikadu Merak 55
+51 D.I. Cikahuripan 72
+52 D.I. Cipaingeun 179
+53 D.I. Citapai 32
+54 D.I. Kr. Bantrar 32
+55 D.I. Cikopo 59
+56 D.I. Ciambuleuit 49
+57 D.I. Citando 32
+58 D.I. Cicurug I 50
+59 D.I. Cicurug II 95
+60 D.I. Cilakatrang 66
+61 D.I. Cibendunaan 22
+62 D.I. Cibusung 33
+63 D.I. Cileuwi Buut 33
+64 D.I. Ciaseum | 81
+65 D.I. Ciaseum II 33
+66 D.I. Cibahomas 58
+67 D.I. Cipalurahan 79
+68 D.I. Kadu Kalapa 33
+69 D.I. Cilaki 164
+70 D.I. Ciabuan 132
+71 D.I. Cibangkonol 70
+72 D.I. Sumur Domas 83
+73 D.I. Cipeuteuy 52
+74 D.I. Citengah 84
+75 D.I. Cisitu 52
+76 D.I. Cipalurahan 50
+77 D.I. Ciomas/Cibanteri 66
+78 D.I. Cipasabetan 79
+79 D.I. Cisentul 50
+80 D.I. Cirahong 66
+81 D.I. Cimanah 56
+82 D.I. Cibali 43
+83 D.I. Cinemplong 48
+84 D.I. Cijami 66
+85 D.I. Cicampaka 17
+86 D.I. Cimunigeulis 50
+87 D.I. Cigeumlo 132
+88 D.I. Cipeujeh 33
+89 D.I. Cikueuk 50

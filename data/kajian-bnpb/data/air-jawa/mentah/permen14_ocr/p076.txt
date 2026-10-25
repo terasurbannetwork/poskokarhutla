@@ -1,0 +1,134 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+27 D.I. Guru Tuha 40
+28 D.I. Hajut 400
+29 D.I. Halibema 300
+30 D.I. Huta Gambir 300
+31 D.I. Huta Gugung 150
+32 D.I. Huta Imbaru 200
+33 D.I. Huta Manik 120
+34 D.I. Huta Pinang 90
+35 D.I. Huta Uruk 30
+36 D.I. Huta Usang 190
+37 D.I. Jambur Indonesia 250
+38 D.I. Juma Gajah 114
+39 D.I. Juma Gulangan 150
+40 D.I. Juma Lubang I 27
+41 D.I. Juma Lubang II 74
+42 D.I. Juma Lubang III 30
+43 D.I. Juma Mbalno 40
+44 D.I. Juma Mejan 30
+45 D.I. Juma Paku 40
+46 D.I. Juma Petak 25
+47 D.I. Juma Ramba | 130
+48 D.I. Juma Ramba II 32
+49 D.I. Juma Rindang 190
+50 D.I. Juma Rusuk 100
+51 D.I. Juma Sianak 35
+52 D.I. Jumala 300
+53 D.I. Kaban Julu 125
+54 D.I. Kampung Merdeka 110
+55 D.I. Karing 200
+56 D.I. Kateppul 30
+57 D.I. Kuta Geroh 130
+58 D.I. Lae Ambat 90
+59 D.I. Lae Bilulus 60
+60 D.I. Lae Enggan-enggan 100
+61 D.I. Lae Gadong 30
+62 D.I. Lae Itam 70
+63 D.I. Lae Kersik 140
+64 D.I. Lae Laki Rimo Bunga 20
+65 D.I. Lae Logan 40
+66 D.I. Lae Luhung 40
+67 D.I. Lae Luis Mate Horbo 40
+68 D.I. Lae Manchiho 130
+69 D.I. Lae Markelang 100
+70 D.I. Lae Mboang 30
+71 D.I. Lae Mbulan 110
+72 D.I. Lae Pangaroan 225
+73 D.I. Lae Pinagar 200
+74 D.I. Lae Sarudan 60
+75 D.I. Lancang 100
+76 D.I. Lingga Raja 141
+77 D.I. Lingga Tonga 50
+78 D.I. Manik Meriah 40
+79 D.I. Namo Gedang 25
+80 D.I. Nantombis 20
+81 D.I. Napa 40
+82 D.I. Pandiangan 120
+83 D.I. Panggiringan 110
+84 D.I. Pangguruan 90
+85 D.I. Panji bako 40
+86 D.I. Panji Dabutar 250
+87 D.I. Parbuahan 60
+#KANAN
+16
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+88 D.I. Parbuluan 30
+89 D.I. Parhutuan 25
+90 D.I. Parikki I 31
+91 D.I. Parikki II 70
+92 D.I. Parlambukan 40
+93 D.I. Paropo 110
+94 D.I. Parsaoran 50
+95 D.I. Pasi 140
+96 D.I. Pelita 20
+97 D.I. Pergas 390
+98 D.I. Persema 45
+99 D.I. Poltak Bintang 100
+100 D.I. Pulo Gajah 50
+101 D.I. Sada Ukur 120
+102 D.I. Sambaliang 150
+103 D.I. Saroha 57
+104 D.I. Siarungarung | 149
+105 D.I. Siarungarung II 46
+106 D.I. Sibengkelu 40
+107 D.I. Sibereng 40
+108 D.I. Sibira 100
+109 D.I. Siboras 60
+110 D.I. Sidiangkat 190
+111 D.I. Sidumpe 20
+112 D.I. Sigalingging 130
+113 D.I. Sikaleut 150
+114 D.I. Sikalompet 30
+115 D.I. Sikula 130
+116 D.I. Sikunihan 166
+117 D.I. Silalahi | 125
+118 D.I. Silalahi II 69
+119 D.I. Silencer 60
+120 D.I. Sileu-leu I 260
+121 D.I. Sileu-leu II 100
+122 D.I. Simaho 60
+123 D.I. Simanduma 150
+124 D.I. Simarangarangar 50
+125 D.I. Simartugan 90
+126 D.I. Simatupang 100
+127 D.I. Simengkadu 60
+128 D.I. Simungun 60
+129 D.I. Sinonsot 185
+130 D.I. Sinta Mardongan 52
+131 D.I. Sipalipali 30
+132 D.I. Sipispis 80
+133 D.I. Sipitu Panggung 30
+134 D.I. Sirunde 80
+135 D.I. Sitinjo 240
+136 D.I. Soban 30
+137 D.I. Sopo Blin 10
+138 D.I. Sopo Hombung 400
+139 D.I. Sulang Silima Maibang 70
+140 D.I. Sumbari 177
+141 D.I. Sumbul Berampu 135
+142 D.I. Sumbul Julu 20
+143 D.I. Sumbul Rakom 85
+144 D.I. Tamboro 130
+145 D.I. Tangga Batu 10
+146 D.I. Tanggiring 95
+147 D.I. Tanjung Saluksuk 45
+148 D.I. Tapian Nauli 50

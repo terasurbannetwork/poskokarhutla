@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+557 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+440 D.LA.T. Airkom-Naibonat OEF/I/415 3
+441 D.LA.T. Tatelek-Pukdale OEF/II/416 2
+442 D.LA.T. Danau Tetebo-Naibonat OEF/II/417 2
+443 D.LA.T. Danau Tetebo-Naibonat OEF/II/418 2
+444 D.LA.T. Danau Tetebo-Naibonat OEF/I/419 2
+445 D.LA.T. Danau Tetebo-Naibonat OEF/II/420 1
+446 D.LA.T. Danau Tetebo-Naibonat OEF/II/421 2
+447 D.LA.T. Danau Tetebo-Naibonat OEF/I/422 2
+448 D.LA.T. Danau Tetebo-Naibonat OEF/II/423 2
+449 D.LA.T. Danau Tetebo-Naibonat OEF/II/424 2
+450 D.I.A.T. Tunfeo-Naibonat OEF/I1/425 2
+451 D.LA.T. I-Naibonat OEF/I1/426 2
+452 D.LA.T. I-Naibonat OEF/I/427 1
+453 D.LA.T. I-Naibonat OEF/I1/428 2
+454 D.LA.T. I-Naibonat OEF/I/429 1
+455 D.LA.T. Lumbung-Naibonat OEF/I1/430 3
+456 D.ILA.T. Lumbung-Naibonat OEF/I1/431 3
+457 D.LA.T. Lumbung-Naibonat OEF/II/432 2
+458 D.ILA.T. Lumbung-Naibonat OEF/I/433 2
+459 D.LA.T. Uel Kampung-Nunkurus OEF/I1/434 2
+460 D.LA.T. Uel Kampung-Nunkurus OEF/II/435 2
+461 D.I.A.T. Tatelek-Pukdale OEF/I1/494 2
+462 D.I.A.T. Tatelek-Pukdale OEF/I1/495 2
+463 D.I.A.T. Tatelek-Pukdale OEF/I1/496 3
+464 D.I.A.T. Tatelek-Pukdale OEF/I1/497 2
+465 D.I.A.T. Tatelek-Pukdale OEF/I1/498 2
+466 D.I.A.T. Tatelek-Pukdale OEF/I1/499 3
+467 D.LA.T. Tatelek-Pukdale OEF/I1/500 4
+468 D.I.A.T. Taklale-Babau OEF/11/501 2
+469 D.I.A.T. Taklale-Babau OEF/11/502 5
+470 D.LA.T. Taklale-Babau OEF/11/504 2
+471 D.LA.T. Taklale-Babau OEF/11/505 2
+472 D.LA.T. Taklale-Babau OEF/11/506 3
+473 D.LA.T. Taklale-Babau OEF/I1/507 2
+474 D.LA.T. Taklale-Babau OEF/I1/508 2
+475 D.LA.T. Taklale-Babau OEF/11/509 2
+476 D.LA.T. Taklale-Babau OEF/11/510 2
+477 D.LA.T. Taklale-Babau OEF/1/511 2
+478 D.LA.T. Taklale-Babau OEF/I1/512 2
+479 D.LA.T. Taklale-Babau OEF/I1/513 2
+480 D.LA.T. Pulau Kayu-Naibonat OTW - 014 10
+481 D.LA.T. Bilolin-Oeteta PAF - 015 2
+482 D.LA.T. Bilolin-Oeteta PAF - 094 2
+483 D.LA.T. Bilolin-Oeteta PAF - 095 2
+484 D.LA.T. Bilolin-Oeteta PAF - 096 2
+485 D.LA.T. Bilolin-Oeteta PAF - 097 2
+486 D.L.A.T. Bilolin-Oeteta PAF - 098 2
+487 D.LA.T. Bilolin-Oeteta PAF - 099 2
+488 D.LA.T. Bilolin-Oeteta PAF - 100 2
+489 D.LA.T. Bilolin-Oeteta PAF - 101 3
+490 D.LA.T. Bilolin-Oeteta PAF - 102 3
+491 D.LA.T. Bilolin-Oeteta PAF - 103 3
+492 D.LA.T. Hauloki-Oeteta PAF - 104 2
+493 D.LA.T. Hauloki-Oeteta PAF - 105 3
+494 D.LA.T. Merdeka-Pariti PAF - 106 3
+495 D.LA.T. Dsn. Merdeka-Pariti PAF - 107 3
+496 D.I.A.T. Merdeka-Pariti PAF - 108 3
+497 D.LA.T. Merdeka-Pariti PAF - 109 3
+498 D.I.A.T. Merdeka-Pariti PAF - 110 2
+499 D.I.A.T. Merdeka-Pariti PAF - 111 3
+500 D.I.A.T. Namodale-Pariti PAF - 112 3

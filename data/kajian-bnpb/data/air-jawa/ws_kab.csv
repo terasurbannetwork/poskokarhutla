@@ -1,0 +1,797 @@
+kode,nama,kode_ws,nama_ws,kategori,jenis_tautan,label
+3601,Pandeglang,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3602,Lebak,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3603,Tangerang,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3604,Serang,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3671,Kota Tangerang,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3672,Kota Cilegon,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3673,Kota Serang,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3674,Kota Tangerang Selatan,02.01.B,Cibaliung-Cisawarna,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3601,Pandeglang,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3602,Lebak,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3603,Tangerang,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3604,Serang,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3671,Kota Tangerang,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3672,Kota Cilegon,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3673,Kota Serang,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3674,Kota Tangerang Selatan,02.02.B,Ciliman-Cibungur,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3601,Pandeglang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3602,Lebak,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3603,Tangerang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3604,Serang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3671,Kota Tangerang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3672,Kota Cilegon,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3673,Kota Serang,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3674,Kota Tangerang Selatan,02.03.A2,Cidanau-Ciujung-Cidurian,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3101,Administrasi Kepulauan Seribu,02.04.C,Kepulauan Seribu,C,disebut langsung di Lampiran I (kategori C),resmi
+3101,Administrasi Kepulauan Seribu,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3171,Kota Administrasi Jakarta Pusat,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3172,Kota Administrasi Jakarta Utara,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3173,Kota Administrasi Jakarta Barat,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3174,Kota Administrasi Jakarta Selatan,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3175,Kota Administrasi Jakarta Timur,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3601,Pandeglang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3602,Lebak,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3603,Tangerang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3604,Serang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3671,Kota Tangerang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3672,Kota Cilegon,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3673,Kota Serang,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3674,Kota Tangerang Selatan,02.05.A2,Ciliwung-Cisadane,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.05.B,Cisadea-Cibareno,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.06.A3,Citarum,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.06.B,Ciwulan-Cilaki,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.09.A2,Cimanuk-Cisanggarung,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.09.B,Pemali-Comal,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3201,Bogor,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3202,Sukabumi,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3203,Cianjur,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3204,Bandung,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3205,Garut,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3206,Tasikmalaya,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3208,Kuningan,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3209,Cirebon,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3210,Majalengka,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3211,Sumedang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3212,Indramayu,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3213,Subang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3214,Purwakarta,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3215,Karawang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3216,Bekasi,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3217,Bandung Barat,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3218,Pangandaran,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3271,Kota Bogor,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3272,Kota Sukabumi,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3273,Kota Bandung,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3274,Kota Cirebon,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3275,Kota Bekasi,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3276,Kota Depok,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3277,Kota Cimahi,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3278,Kota Tasikmalaya,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3279,Kota Banjar,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.10.A2,Citanduy,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.10.A3,Serayu-Bogowonto,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.11.B,Bodri-Kuto,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.12.C,Kepulauan Karimunjawa,C,disebut langsung di Lampiran I (kategori C),resmi
+3320,Jepara,02.13.C,Wiso-Gelis,C,disebut langsung di Lampiran I (kategori C),resmi
+3301,Cilacap,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.14.A3,Jratunseluna,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3401,Kulon Progo,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3402,Bantul,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3403,Gunungkidul,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3404,Sleman,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3471,Kota Yogyakarta,02.17.A2,Progo-Opak-Serang,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.17.A3,Brantas,A3,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3301,Cilacap,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3302,Banyumas,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3303,Purbalingga,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3304,Banjarnegara,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3305,Kebumen,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3306,Purworejo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3307,Wonosobo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3308,Magelang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3309,Boyolali,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3310,Klaten,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3311,Sukoharjo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3312,Wonogiri,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3313,Karanganyar,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3314,Sragen,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3315,Grobogan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3316,Blora,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3317,Rembang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3318,Pati,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3319,Kudus,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3320,Jepara,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3321,Demak,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3322,Semarang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3323,Temanggung,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3324,Kendal,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3325,Batang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3326,Pekalongan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3327,Pemalang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3328,Tegal,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3329,Brebes,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3371,Kota Magelang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3372,Kota Surakarta,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3373,Kota Salatiga,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3374,Kota Semarang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3375,Kota Pekalongan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3376,Kota Tegal,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.18.A2,Bengawan Solo,A2,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.18.B,Madura-Bawean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.19.B,Welang-Rejoso,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.20.B,Bondoyudo-Bedadung,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.21.B,Pekalen-Sampean,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3501,Pacitan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3502,Ponorogo,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3503,Trenggalek,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3504,Tulungagung,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3505,Blitar,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3506,Kediri,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3507,Malang,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3508,Lumajang,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3509,Jember,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3510,Banyuwangi,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3511,Bondowoso,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3512,Situbondo,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3513,Probolinggo,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3514,Pasuruan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3515,Sidoarjo,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3516,Mojokerto,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3517,Jombang,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3518,Nganjuk,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3519,Madiun,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3520,Magetan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3521,Ngawi,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3522,Bojonegoro,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3523,Tuban,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3524,Lamongan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3525,Gresik,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3526,Bangkalan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3527,Sampang,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3528,Pamekasan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3529,Sumenep,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3571,Kota Kediri,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3572,Kota Blitar,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3573,Kota Malang,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3574,Kota Probolinggo,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3575,Kota Pasuruan,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3576,Kota Mojokerto,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3577,Kota Madiun,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3578,Kota Surabaya,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3579,Kota Batu,02.22.B,Baru-Bajulmati,B,kandidat: provinsi kab tercantum untuk WS ini; batas WS (peta Lampiran V) belum dipetakan ke kab,asumsi-kebijakan
+3207,Ciamis,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3218,Pangandaran,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3279,Kota Banjar,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3301,Cilacap,,,,BBWS Citanduy memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3310,Klaten,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3310,Klaten,,,,BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3311,Sukoharjo,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3312,Wonogiri,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3313,Karanganyar,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3314,Sragen,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3317,Rembang,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3329,Brebes,,,,BBWS Cimanuk Cisanggarung memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3404,Sleman,,,,BBWS Serayu Opak memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3521,Ngawi,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi
+3523,Tuban,,,,BBWS Bengawan Solo memegang DI kewenangan pusat lintas provinsi di kab ini (Permen PUPR 14/2015 Lampiran I),resmi

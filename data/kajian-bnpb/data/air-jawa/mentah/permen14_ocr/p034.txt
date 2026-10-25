@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 34
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+Kabupaten Semarang z 660 Ha
+15 D.I. Rejoso 560 Kabupaten Boyolali z 158 Ha
+Kabupaten Semarang z 402 Ha
+16 D.I. Senjoyo 2.235 Kabupaten Semarang -z 2.194 Ha
+Kota Salatiga z M1 Ha
+17 D.I. Sinongko 70 Kabupaten Semarang z 35 Ha
+Kota Salatiga z 35 Ha
+18 D.I. Sucen 596 Kabupaten Semarang z 523 Ha
+Kota Salatiga z 73 Ha
+19 D.I. Aji Getas 119 Kabupaten Semarang z 91 Ha
+Kota Salatiga z 28 Ha
+20 D.I. Isep-Isep 40 Kabupaten Semarang z 22 Ha
+Kota Salatiga z 18 Ha
+21 D.I. Medani 989 Kabupaten Jepara z 866 Ha
+Kabupaten Pati z 123 Ha
+22 D.I. Bd. Kedungwaru 1.302 Kabupaten Blora z 658 Ha
+Kabupaten Grobogan -z 644 Ha
+23 D.I. Siwayut 683 Kabupaten Jepara z 248 Ha
+Kabupaten Kudus - 435 Ha
+24 D.I. Kramat 163 Kabupaten Jepara z Bendung
+Kabupaten Kudus z 163 Ha
+25 D.I. Garat 113 Kabupaten Boyolali -z 27 Ha
+Kabupaten Semarang z 86 Ha
+26 D.I. Parean 653 Kabupaten Boyolali z 640 Ha
+Kabupaten Semarang z 13 Ha
+27 D.I. Wonotoro 472 Kabupaten Boyolali z 331 Ha
+Kabupaten Semarang z 141 Ha
+28 D.I. Baran 179 Kabupaten Boyolali z 77 Ha
+Kabupaten Sukoharjo z 102 Ha
+29 D.I. Gisik 301 Kabupaten Boyolali z 254 Ha
+Kabupaten Karanganyar z 47 Ha
+30 D.I. Glodog 82 Kabupaten Boyolali z 17 Ha
+Kabupaten Karanganyar z 52 Ha
+Kabupaten Sukoharjo z 13 Ha
+31 D.I. Gunung Maling 82 Kabupaten Boyolali z 41 Ha
+Kabupaten Sukoharjo z M1 Ha
+32 D.I. Kedung Boyo 706 Kabupaten Boyolali z 512 Ha
+Kabupaten Sragen z 194 Ha
+33 D.I. Majegan 32 Kabupaten Boyolali z 8 Ha
+Kabupaten Sukoharjo z 25 Ha
+34 D.I. Pakelan 26 Kabupaten Boyolali z 3 Ha
+Kabupaten Sukoharjo z 23 Ha
+35 D.I. Pundung 609 Kabupaten Boyolali z 131 Ha
+Kabupaten Klaten z 206 Ha
+Kabupaten Sukoharjo z 272 Ha
+36 D.I. Sb. Tlatar 149 Kabupaten Boyolali z 14 Ha
+Kabupaten Semarang z 135 Ha
+37 D.I. Bakdalem II 62 Kabupaten Karanganyar z 22 Ha
+Kabupaten Sukoharjo z 40 Ha
+38 D.I. Jetu 647 Kabupaten Karanganyar z 627 Ha
+Kabupaten Sukoharjo z 20 Ha
+39 D.I. Kasihan II 61 Kabupaten Karanganyar z 18 Ha
+Kabupaten Sragen z 43 Ha
+40 D.I. Kepoh 277 Kabupaten Karanganyar z 31 Ha
+Kabupaten Sragen z 246 Ha
+41 D.I. Kwangsan 286 Kabupaten Karanganyar z 2 Ha
+Kabupaten Sukoharjo z 284 Ha
+42 D.I. Lemahbang 748 Kabupaten Karanganyar z 100 Ha
+Kabupaten Sukoharjo z 648 Ha
+43 D.I. Menggok 437 Kabupaten Karanganyar z 19 Ha
+Kabupaten Wonogiri -z 418 Ha
+44 D.I. Munggur 287 Kabupaten Karanganyar z 103 Ha
+Kabupaten Sragen z 184 Ha
+45 D.I. Ngasem 153 Kabupaten Karanganyar z 90 Ha
+Kabupaten Sukoharjo z 63 Ha
+46 D.I. Sedayu 237 Kabupaten Karanganyar -z 140 Ha
+Kabupaten Sragen z 97 Ha
+47 D.I. Seloromo 23 Kabupaten Karanganyar z 16 Ha
+Kabupaten Sragen z 7 Ha
+48 D.I. Sidomakmur 156 Kabupaten Karanganyar z 28 Ha
+Kabupaten Sukohario -z 128 Ha

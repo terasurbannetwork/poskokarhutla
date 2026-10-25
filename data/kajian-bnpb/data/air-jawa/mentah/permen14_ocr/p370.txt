@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+45 D.I. Japuh II 14
+46 D.I. Jatirejo 67
+47 D.I. Kalipakis 16
+48 D.I. Karangtalun 207
+49 D.I. Kd. Bantal | 165
+50 D.I. Kd. Bantal II 4
+51 D.I. Kedoyo I 15
+52 D.I. Kedoyo II 15
+53 D.I. Kedung Jambe | 8
+54 D.I. Kedung Jambe II 26
+55 D.I. Kedung Kwali 30
+56 D.I. Kedung Pucang I 38
+57 D.I. Kedung Pucang II 108
+58 D.I. Kedung Wilud 486
+59 D.I. Kembangan 28
+60 D.I. Kenikir 9
+61 D.I. Klagen 68
+62 D.I. Klanggeran 11
+63 D.I. Klegen | 23
+64 D.I. Klegen II 6
+65 D.I. Kluwih 142
+66 D.I. Krecek 42
+67 D.I. Kresak 20
+68 D.I. Kriyan 109
+69 D.I. Krosok 45
+70 D.I. Ledok 26
+71 D.I. Lemah Duwur | 128
+72 D.I. Mbah Minten 8
+73 D.I. Menduh 51
+74 D.I. Mojoagung 28
+75 D.I. Mrican I 20
+76 D.I. Mrican II 55
+77 D.I. Ngadirejo | 84
+78 D.I. Ngadirejo II 27
+79 D.I. Ngambal 20
+80 D.I. Ngampel 15
+81 D.I. Ngasinan | 6
+82 D.I. Ngasinan II 87
+83 D.I. Ngelo I 50
+84 D.I. Ngelo II 135
+85 D.I. Ngepeh 85
+86 D.I. Ngledok I 32
+87 D.I. Ngledok II 150
+88 D.I. Ngruncing 20
+89 D.I. Pakem I 1
+90 D.I. Pakem II 5
+91 D.I. Pakem III 3
+92 D.I. Pakisaji | 34
+93 D.I. Pakisaji II 9
+94 D.I. Pandaan 36
+95 D.I. Pehoyot 761
+96 D.I. Peksi 137
+97 D.I. Picisan 39
+98 D.I. Pulerejo I 38
+99 D.I. Pulerejo II 86
+100 D.I. Pulo | 1
+101 D.I. Pulo II 11
+102 D.I. Punjul 84
+103 D.I. Randualas 10
+104 D.I. Sawo 146
+105 D.I. Sbr. Bandung 42
+#KANAN
+370
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+106 D.I. Sbr. Banyuurip 24
+107 D.I. Sbr. Beji 8
+108 D.I. Sbr. Bejigatel 2
+109 D.I. Sbr. Biru 12
+110 D.I. Sbr. Blendis 19
+111 D.I. Sbr. Cemenung 10
+112 D.I. Sbr. Cining 18
+113 D.I. Sbr. Claket 20
+114 D.I. Sbr. Durenbokor 6
+115 D.I. Sbr. Ece 36
+116 D.I. Sbr. Gandong 57
+117 D.I. Sbr. Gomo 11
+118 D.I. Sbr. Guntur 4
+119 D.I. Sbr. Judek 52
+120 D.I. Sbr. Kandung 93
+121 D.I. Sbr. Kundung 38
+122 D.I. Sbr. Manggis 37
+123 D.I. Sbr. Ngagrek 11
+124 D.I. Sbr. Ngebel 22
+125 D.I. Sbr. Nglangkap 10
+126 D.I. Sbr. Ngresap I 30
+127 D.I. Sbr. Ngresap II 79
+128 D.I. Sbr. Nongko 75
+129 D.I. Sbr. Pacar 2
+130 D.I. Sbr. Puring 25
+131 D.I. Sbr. Sepatan 96
+132 D.I. Sbr. Temon 38
+133 D.I. Sbr. Wangi 99
+134 D.I. Selolanang | 37
+135 D.I. Selolanang II 35
+136 D.I. Selotinatah 212
+137 D.I. Setono 38
+138 D.I. Sidem 95
+139 D.I. Sobowo 11
+140 D.I. Sobro 7
+141 D.I. Subi | 4
+142 D.I. Subi II 168
+143 D.I. Sukorejo 48
+144 D.I. Sumber Pucung 29
+145 D.I. Sumur Brumbung | 4
+146 D.I. Sumur Brumbung II 3
+147 D.I. Sumur Brumbung III 67
+148 D.I. Tambibendo 15
+149 D.I. Tanen 42
+150 D.I. Tempel 67
+151 D.I. Toyoaring 15
+152 D.I. Tumpak Ampel 26
+153 D.I. Turi 169
+154 D.I. Watugatik 40
+155 D.I. Ampelgading 169
+156 D.I. Dung Gandok 10
+157 D.I. Duren Plumpung 24
+158 D.I. Gambiran/Tawing 77
+159 D.I. Garon 473
+160 D.I. Jirak 110
+161 D.I. Kd. Bebek 155
+162 D.I. Keboireng 344
+163 D.I. Lambang 7
+164 D.I. Plamesan 35
+165 D.I. Sbr. Bedalem 117
+166 D.I. Sentoro 85

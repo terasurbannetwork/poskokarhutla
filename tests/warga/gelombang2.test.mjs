@@ -75,7 +75,7 @@ uji("gel2/W2: GET /api/lapangan/tugas: kode regu wajib, maks 20 tugas buka di ka
   assert.deepEqual(t0.rekomendasi, REK); assert.deepEqual(t0.akses, AKS); assert.deepEqual(t0.kartu, {luas_aktif: 80}); assert.strictEqual(a.j.tugas.find(t => t.id === ids[1]).kartu, null);
   /* sama dengan rincian tugas instansi: kartu/akses/rekomendasi berbentuk sama (objek, bukan string) */
   const b = await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": B}); assert.equal(b.s, 200); assert.deepEqual(b.j.tugas.map(t => t.id), [kapuas], "regu B hanya tugas wilayahnya");
-  assert.ok(!b.j.tugas.some(t => ids.includes(t.id)), "regu B tidak melihat tugas regu A"); assert.ok(!/Rahasia|akun_id|token|6281|pic_|"nama"/i.test(b.t + a.t), "tanpa nama/akun/nomor");
+  assert.ok(!b.j.tugas.some(t => ids.includes(t.id)), "regu B tidak melihat tugas regu A"); assert.ok(!/Rahasia|akun_id|token|"6281|pic_|"nama"/i.test(b.t + a.t), "tanpa nama/akun/nomor");
   const sumber = await api("POST", "/api/posko/regu", {nama: "Regu Uji", unsur: "BPBD", prov: "62", kab: "Katingan"}, ADMIN); assert.equal((await api("POST", `/api/posko/regu/${sumber.j.regu.id}`, {aksi: "cabut"}, ADMIN)).s, 200);
   assert.equal((await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": sumber.j.kode})).s, 403, "kode dicabut");
   /* batas 20 + kunci kontak dibuang dari JSON bebas */
@@ -84,7 +84,8 @@ uji("gel2/W2: GET /api/lapangan/tugas: kode regu wajib, maks 20 tugas buka di ka
   await DB.prepare("UPDATE tugas_kartu SET kartu = ? WHERE tugas_id = ?").bind(JSON.stringify({luas_aktif: 80, kontak_wa: "6281", pic_nama: "X"}), ids[0]).run();
   const c = await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": A}); assert.equal(c.j.tugas.length, 20, "LIMIT 20"); assert.ok(!c.j.tugas.some(t => t.id === ids[5]), "level 1 terpotong");
   const k0 = c.j.tugas.find(t => t.id === ids[0]); assert.deepEqual(k0.rekomendasi, {cara: [{metode: "garis"}], catatan: "ok"}); assert.deepEqual(k0.akses, {kaki_km: 2, dari: [{dari: "Posko", km_jalan: 3}]}); assert.deepEqual(k0.kartu, {luas_aktif: 80});
-  assert.ok(!/6281|0812|021555|b@x\.go|Budi|Andi|"wa"|"pic|telp|petugas/i.test(c.t), "tanpa WA/telepon/surel/PIC");
+  /* nomor dicari sebagai nilai string JSON: tanpa kutip, angka "0812"/"6281" bisa muncul kebetulan di stempel kini atau koordinat (flaky di CI) */
+  assert.ok(!/"6281|"0812|"021555|b@x\.go|Budi|Andi|"wa"|"pic|telp|petugas/i.test(c.t), "tanpa WA/telepon/surel/PIC");
   for (const t of [...ids, ...banyak, kapuas, padam, contoh, huruf]) await DB.prepare("DELETE FROM tugas_api WHERE id = ?").bind(t).run();
 });
 

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+34 D.I. Sawah Patai 8
+35 D.I. Sawah Kabun 6
+36 D.I. Sawah Subarang 30
+37 D.I. Aia Kaciak Siguntur 20
+38 D.I. Ambacang Kawek 14
+39 D.I. Ala Manggun 30
+40 D.I. Sawah Munggu 15
+41 D.I. Timbulun 30
+42 D.I. Sawah Kandih 30
+43 D.I. Sungai Lundang 8
+44 D.I. Aia Kareh 7
+45 D.I. Aia Papo 15
+46 D.I. Sawah Limpu 6
+47 D.I. Sawah Taruko BIII 5
+48 D.I. Sawah Tambang 21
+49 D.I. Sawah Gantiang Bawah 10
+50 D.I. Sawah Kasiak BIII 20
+51 D.I. Sawah Cangkuak 7
+52 D.I. Cumanteh 20
+53 D.I. Banda Gadang 20
+54 D.I. Durian Karanggo 20
+55 D.I. Sawah Subarang Aia 20
+56 D.I. Sawah Tabek 18
+57 D.I. Sawah Gurun 20
+58 D.I. Sawah Rawang Tage 25
+59 D.I. Banda Kumbuang 20
+60 D.I. Sawah Mandeh 30
+61 D.I. Sarasah Sungai Tawa 50
+62 D.I. Banda Sago 100
+63 D.I. Bayang Bungo 65
+64 D.I. Kubang Kapujan 325
+65 D.I. Sawah Tangah 55
+66 D.I. Sarasah 45
+67 D.I. Limau Manih 20
+68 D.I. Sungai Sugu 20
+69 D.I. Punago 25
+70 D.I. Kajai 30
+71 D.I. Sikuai 30
+72 D.I. Limau Puruik 15
+73 D.I. Banda Lubuak Batiah 8
+74 D.I. Banda Pinang 15
+75 D.I. Lubuak Jantan 20
+76 D.I. Bayang Sani 16
+77 D.I. Lansano 40
+78 D.I. Banda Lereang 69
+79 D.I. Calau 72
+80 D.I. Bayang Sani 63
+81 D.I. Taratak Baru 104
+82 D.I. Baruah Koto 10
+83 D.I. Durian Sanam 12
+84 D.I. Jalamu 20
+85 D.I. Banda Gadang Koto Ranah 65
+86 D.I. Limau Puruik 25
+87 D.I. Lumagek 20
+88 D.I. Gurun Laweh 15
+89 D.I. Taratak 18
+90 D.I. Bayang Janiah 25
+91 D.I. Banda Bangka 35
+92 D.I. Banda Apa 30
+93 D.I. Banda Gadang 95
+94 D.I. Banda Koto Pancuang Taba 12
+#KANAN
+105 1015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+95 D.I. Bayang Abu 60
+96 D.I. Banda Limau-Limau 20
+97 D.I. Banda Koto Limau-limau 16
+98 D.I. Banda Gadang Ngalau Gadang 23
+99 D.I. Banda Tangah Ngalau Gadang 18
+100 D.I. Banda Andaleh 15
+101 D.I. Kayu Aro Ngalau Gadang 20
+102 D.I. Lansano Calau 20
+103 D.I. Lereang Bukik Bae 15
+104 D.I. Solok Limau Manih 30
+105 D.I. Limau Puruik 17
+106 D.I. Solok Suname 18
+107 D.I. Solok Sintuka 10
+108 D.I. Pinang Sinawa 18
+109 D.I. Sawah Liek 75
+110 D.I. Ladang Tinggi 10
+111 D.I. Tanah Jongkong 12
+112 D.I. Sungai Tigo 18
+113 D.I. Ulak Kubang 40
+114 D.I. Bakuang Rasau 20
+115 D.I. Banda Gadang 27
+116 D.I. Sawah Jambak 35
+117 D.I. Karatau 30
+118 D.I. Rimbo Laweh 32
+119 D.I. Solok Sikabu 39
+120 D.I. Koto Gunuang Bungkuak 16
+121 D.I. Gunuang Bungkuak 1
+122 D.I. Koto Ranggao 40
+123 D.I. Pincuran Tarok 27
+124 D.I. Sianik 42
+125 D.I. Salido Sari Bulan 57
+126 D.I. Gunuang Giriek 10
+127 D.I. Koto Rawang 80
+128 D.I. Sungai Salak 15
+129 D.I. Aie Baralieh 9
+130 D.I. Teluk Betung | 25
+131 D.I. Teluk Betung II 30
+132 D.I. Nunang 45
+133 D.I. Jalamu 20
+134 D.I. Limau Manih 100
+135 D.I. Tanah Kareh 50
+136 D.I. Koto Panjang 125
+137 D.I. Tanjung Durian 50
+138 D.I. Pungguang Ladiang 35
+139 D.I. Tanjuang Kandih | 70
+140 D.I. Tanjuang Kandih II 50
+141 D.I. Ujuang Bukik 45
+142 D.I. Solok Sungai Pampan 70
+143 D.I. Kampuang Baru 60
+144 D.I. Limpato 13
+145 D.I. Koto Gunuang 65
+146 D.I. Lubuak Mato Kuciang 105
+147 D.I. Lambuang Bukik 67
+148 D.I. Buatan Gadang 165
+149 D.I. Langgai 53
+150 D.I. Kampuang Dalam 112
+151 D.I. Tabek Sampudiang 145
+152 D.I. Pincuran Sianok 50
+153 D.I. Cubadak 20
+154 D.I. Mesjid 20
+155 D.I. Taruko 65

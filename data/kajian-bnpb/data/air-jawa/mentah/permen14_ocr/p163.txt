@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+340 D.I. Cikamar 34
+341 D.I. Cikandang 75
+342 D.I. Cikandang Sapi 10
+343 D.I. Cikanjut 36
+344 D.I. Cikaradak 32
+345 D.I. Cikaramat 80
+346 D.I. Cikarang 15
+347 D.I. Cikarang 234
+348 D.I. Cikarawang 28
+349 D.I. Cikarenda | 40
+350 D.I. Cikarenda II 40
+351 D.I. Cikareo 25
+352 D.I. Cikareo 70
+353 D.I. Cikareo 35
+354 D.I. Cikaret 15
+355 D.I. Cikaret 62
+356 D.I. Cikaret I 19
+357 D.I. Cikaret | 25
+358 D.I. Cikaret II 13
+359 D.I. Cikaret II 20
+360 D.I. Cikaret III 11
+361 D.I. Cikarikil 18
+362 D.I. Cikarut 25
+363 D.I. Cikasungka | 12
+364 D.I. Cikasungka II 10
+365 D.I. Cikasungka III 32
+366 D.I. Cikasungka IV 40
+367 D.I. Cikatapis 10
+368 D.I. Cikatomas 15
+369 D.I. Cikawung 20
+370 D.I. Cikemang 15
+371 D.I. Cikemang 20
+372 D.I. Cikemang 10
+373 D.I. Cikembar 57
+374 D.I. Cikembar Gaok 32
+375 D.I. Cikereteg 25
+376 D.I. Cikeruh 25
+377 D.I. Cikeruh Pamokolan 134
+378 D.I. Ciketug 31
+379 D.I. Cikiruh | 35
+380 D.I. Cikiruh II 32
+381 D.I. Cikiruh III 28
+382 D.I. Cikole 40
+383 D.I. Cikompeni 15
+384 D.I. Cikompeni 34
+385 D.I. Cikompeni 28
+386 D.I. Cikompeni 20
+387 D.I. Cikondang 50
+388 D.I. Cikoneng 4
+389 D.I. Cikoneng I/Leuwi Sakinin 40
+390 D.I. Cikoneng II 40
+391 D.I. Cikopo 30
+392 D.I. Cikopong 20
+393 D.I. Cikosol 13
+394 D.I. Cikubang 50
+395 D.I. Cikuda 30
+396 D.I. Cikuda Paeh 40
+397 D.I. Cikuning 60
+398 D.I. Cikuningan | 65
+399 D.I. Cikuningan II 58
+400 D.I. Cikupa 30
+#KANAN
+163 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+401 D.I. Cikupa 25
+402 D.I. Cikuray 25
+403 D.I. Cikuya 25
+404 D.I. Cilame 22
+405 D.I. Cilame I 31
+406 D.I. Cilame II 48
+407 D.I. Cilampeong 25
+408 D.I. Cilandung 21
+409 D.I. Cilangkap 87
+410 D.I. Cilanglubang 45
+411 D.I. Cilatuy 30
+412 D.I. Cilaya Ciputri 149
+413 D.I. Ciledong 35
+414 D.I. Cilember 30
+415 D.I. Cilengkong 20
+416 D.I. Cilenot 26
+417 D.I. Ciletuh 30
+418 D.I. Ciletuh 25
+419 D.I. Ciletuh 25
+420 D.I. Ciletuh I 20
+421 D.I. Ciletuh II 20
+422 D.I. Ciletuh II 15
+423 D.I. Cileuksa Girang 44
+424 D.I. Cileuksa Hilir 60
+425 D.I. Cileungsir 32
+426 D.I. Cileungsir 15
+427 D.I. Cileungsir | 30
+428 D.I. Cileungsir II 95
+429 D.I. Cilimus 25
+430 D.I. Ciliwung Katulampa 51
+431 D.I. Cilonjong 32
+432 D.I. Cilutung 35
+433 D.I. Cimaja 35
+434 D.I. Cimalam 20
+435 D.I. Cimanaracun 149
+436 D.I. Cimande 20
+437 D.I. Cimandirasa 72
+438 D.I. Cimanggu 25
+439 D.I. Cimanggu 19
+440 D.I. Cimanggu 40
+441 D.I. Cimanggu 15
+442 D.I. Cimanggu 95
+443 D.I. Cimanggu 40
+444 D.I. Cimangir 16
+445 D.I. Cimangir 25
+446 D.I. Cimangir Girang 53
+447 D.I. Cimanten 35
+448 D.I. Cimapag 10
+449 D.I. Cimapag I 146
+450 D.I. Cimapag III 80
+451 D.I. Cimarid 12
+452 D.I. Cimarinten 37
+453 D.I. Cimaya 25
+454 D.I. Cimeded 40
+455 D.I. Cimenteng 40
+456 D.I. Cimenteng 20
+457 D.I. Cimeulit 26
+458 D.I. Cimonoyot 15
+459 D.I. Cimuncang 50
+460 D.I. Cimuncang 20
+461 D.I. Cimuncang 25

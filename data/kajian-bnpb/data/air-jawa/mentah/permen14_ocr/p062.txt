@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 62
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+VIII PROVINSI SULAWESI TENGGARA 10 16.750
+a Kab. Bombana
+1 D.I.T. Rumbia 2.300
+b Kab. Kolaka
+1 D.I.T. Watubangga 1.450
+2 D.T. Wundulako 1.820
+3 D.ILT. Woluku 1.440
+c Kab. Kolaka Utara
+1 D.I.T. Pakue 2.250
+d Kab. Konawe
+1 D.I.T. Kapoilala 2.110
+e Kab. Konawe Selatan
+1 D.LT. Amondo 1.080
+2 D.L.T. Kolono 1.500
+f Kab. Konawe Utara
+1 D.I.T. Lasolo II 1.000
+g Kab. Muna
+1 D.I.T. Maligano 1.800
+IX PROVINSI SULAWESI SELATAN 27 43.708
+a Kab. Bone
+1 D.I.T. Tallusiattange 1.000
+2 D.I.T. Cenrana dan Mare 1.257
+3 D.I.T. Mare 1.500
+b Kab. Bulukumba
+1 D.I.T. Manyampa 1.296
+c Kab. Luwu
+1 D.I.T. Belopa/Bajo 2.000
+2 D.I.T. Pompengan Pantai 1.885
+3 DT. Suli 1.500
+4 D.I.T. Walenrang 1.000
+d Kab. Luwu Timur
+1 D.I.T. Angkona 1.000
+2 D.I.T. Harapan 1.000
+3 D.IL.T. Malili 1.750
+4 D.LT. Wotu 2.750
+e Kab. Luwu Utara
+1 D.I.T. Bone-Bone 2.260
+f Kab. Maros
+1 D.I.T. Maros Baru 1.266
+g Kab. Pangkajene dan Kepulauan
+1 D.I.T. Ma'rang 1.866
+2 D.I.T. Labakkang 2.000
+h Kab. Pinrang
+1 D.LT. Cempa 1.824
+2 D.I.T. Duampanua 2.467
+3 D.I.T. Lanrisang/Jampue 2.580
+i Kab. Takalar
+1 D.I.T. Mangara Bombang 1.500
+2 D.I.T. Mappakasunggu 1.000
+3 D.I.T. Takalar Tua 1.000
+j Kab. Wajo
+1 D.I.T. Akkotengeng 1.069
+2 D.I.T. Doping 1.000
+3 D.IL.T. Pitumpanua 1.380
+4 D.I.T. Sajoanging 2175
+5 D.I.T. Takkalalia 2.383
+TOTAL 69 103.386
+MEN ERI PEKEFJAAN UMUM DAN PERUMAHAN RAKYAT
+REPUBLIK INDONESIA,
+NI. BASUKI HADIMULJONO

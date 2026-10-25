@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+555 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+318 D.I.A.T. Subsidi-Naibonat OEF - 065 2
+319 D.ILA.T. Subsidi-Naibonat OEF - 066 2
+320 D.I.LA.T. Subsidi-Naibonat OEF - 067 2
+321 D.LA.T. Subsidi-Naibonat OEF - 068 2
+322 D.LA.T. Subsidi-Naibonat OEF - 069 2
+323 D.ILA.T. Subsidi-Naibonat OEF - 070 2
+324 D.I.A.T. Subsidi-Naibonat OEF - 072 2
+325 D.LA.T. Oesao Besar-Oesao OEF - 085 3
+326 D.ILA.T. Oesao Besar-Oesao OEF - 086 3
+327 D.LA.T. Oesao Besar-Oesao OEF - 087 3
+328 D.LA.T. Oesao Besar-Oesao OEF - 088 3
+329 D.LA.T. Oesao Besar-Oesao OEF - 089 3
+330 D.LA.T. Oesao Besar-Oesao OEF - 090 3
+331 D.LA.T. Oesao Besar-Oesao OEF - 091 3
+332 D.LA.T. Oesao Besar-Oesao OEF - 092 3
+333 D.LA.T. Oesao Besar-Oesao OEF - 093 2
+334 D.LA.T. Lukman Timur Oesao OEF - 169 2
+335 D.LA.T. Lukman Timur Oesao OEF - 170 3
+336 D.I.A.T. Lukman Timur Oesao OEF -171 3
+337 D.LA.T. Oesao Besar-Oesao OEF - 172 2
+338 D.LA.T. Oesao Besar-Oesao OEF -173 3
+339 D.LA.T. Oesao Besar-Oesao OEF - 174 3
+340 D.LA.T. Oesao Besar-Oesao OEF - 175 2
+341 D.LA.T. Oesao Besar-Oesao OEF - 176 3
+342 D.LA.T. Oesao Besar-Oesao OEF - 189 3
+343 D.LA.T. Oesao Besar-Oesao OEF - 190 2
+344 D.LA.T. Oesao Besar-Oesao OEF - 191 3
+345 D.LA.T. Oesao Besar-Oesao OEF - 192 3
+346 D.LA.T. Oesao Besar-Oesao OEF - 193 3
+347 D.LA.T. Oesao Besar-Oesao OEF - 194 3
+348 D.LA.T. Oesao Besar-Oesao OEF - 195 3
+349 D.LA.T. Oesao Besar-Oesao OEF - 196 2
+350 D.LA.T. Oesao Besar-Oesao OEF - 197 3
+351 D.LA.T. Oesao Besar-Oesao OEF - 198 3
+352 D.LA.T. Oesao Besar-Oesao OEF - 199 3
+353 D.LA.T. Oesao Besar-Oesao OEF - 200 3
+354 D.LA.T. Lukman Barat Besar OEF - 201 3
+355 D.LA.T. Lukman Barat Besar OEF - 202 2
+356 D.LA.T. Lukman Barat Besar OEF - 203 2
+357 D.LA.T. Lukman Barat Besar OEF - 204 2
+358 D.ILA.T. Lukman Barat Besar OEF - 205 3
+359 D.LA.T. Lukman Barat Besar OEF - 206 3
+360 D.I.A.T. Lukman Barat Besar OEF - 207 2
+361 D.LA.T. Lukman Barat Besar OEF - 208 2
+362 D.I.A.T. Danau tetebo-Nai OEF - 297 3
+363 D.LA.T. Danau tetebo-Nai OEF - 298 3
+364 D.I.A.T. Sindio-Pukdale OEF - 301 2
+365 D.I.A.T. Sindio-Pukdale OEF - 305 2
+366 D.I.A.T. Sindio-Pukdale OEF - 306 2
+367 D.I.A.T. Sindio-Pukdale OEF - 307 2
+368 D.I.A.T. Sindio-Pukdale OEF - 308 2
+369 D.I.A.T. Lasikode-Pukdale OEF - 310 2
+370 D.ILA.T. Sindio-Pukdale OEF - 312 2
+371 D.LA.T. Lasikode-Pukdale OEF - 313 2
+372 D.LA.T. Sindio-Pukdale OEF - 315 3
+373 D.LA.T. Sindio-Pukdale OEF - 316 2
+374 D.LA.T. Lasikode-Pukdale OEF - 317 2
+375 D.LA.T. Dalam Kom-Babau OEF - 324 3
+376 D.LA.T. Dalam Kom-Babau OEF - 325 3
+377 D.LA.T. Dalam Kom-Babau OEF - 326 3
+378 D.LA.T. Dalam Kom-Babau OEF - 327 3

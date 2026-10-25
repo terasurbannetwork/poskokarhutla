@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+144 D.I. Peladis Perikanan IV 9
+145 D.I. Bilado I 6
+146 D.I. Bilado II 3
+147 D.I. Bilado III 9
+148 D.I. Bilado IV 4
+149 D.I. Bilado V 11
+150 D.I. Bilado VI 30
+151 D.I. Dandana | 44
+152 D.I. Dandang II 22
+153 D.I. Dandang III 22
+154 D.I. Terap I 4
+155 D.I. Terap II 3
+156 D.I. Terap VIII 2
+157 D.I. Terap IX 2
+158 D.I. Pak Ona | 4
+159 D.I. Pak Ona II 30
+160 D.I. Pak Ona III 6
+161 D.I. Sibau Hilir I 5
+162 D.I. Sibau Hilir II 5
+163 D.I. Sibau Hilir III 6
+164 D.I. Sibau Hilir IV 5
+165 D.I. Sibau Hilir V 7
+166 D.I. Pelanjau I 13
+167 D.I. Pelanjau II 3
+168 D.I. Pelanjau III 9
+169 D.I. Pelanjau IV 5
+170 D.I. Nangka 42
+171 D.I. Tikalong 45
+172 D.I. Guro 55
+173 D.I. Parasan | 8
+174 D.I. Parasan II 1
+175 D.I. Parasan III 24
+176 D.I. Pamugaran 26
+177 D.I. Bumbun I 3
+178 D.I. Satak | 5
+179 D.I. Satak II 3
+180 D.I. Satak III 11
+181 D.I. Satak IV 1
+182 D.I. Satak V 10
+183 D.I. Penyuak I 3
+184 D.I. Penyuak II 7
+185 D.I. Penyuak III 2
+186 D.I. Penyuak IV 1
+187 D.I. Penyuak V 2
+188 D.I. Penyuak VI 2
+189 D.I. Penyuak VII 4
+190 D.I. Penyuak VIII 2
+191 D.I. Penyuak IX 2
+i Kab. Sambas 17 3.293
+1 D.I. Aruk 160
+2 D.I. Balai Gemuruh 150
+3 D.I. Batu Hitam 500
+4 D.I. Bukit Mulia 300
+5 D.I. Keranji 150
+6 D.I. Madak 150
+7 D.I. Sabung 128
+8 D.I. Santaban 100
+9 D.I. Sapa 150
+10 D.I. Sei Bening 60
+11 D.I. Sei Deden 400
+#KANAN
+404
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+12 D.I. Sempurna 101
+13 D.I. Tapang 400
+14 D.I. Tebuah Elok 94
+15 D.I. Mukti Raharja 96
+16 D.I. Mensade 59
+17 D.I. Bayuan (Temajuk) 300
+i Kab. Sanaaau 80 9.599
+1 D.I. Ampar Kedukul 80
+2 D.I. Bahta 75
+3 D.I. Bengkuang Sari 159
+4 D.I. Berungkat 66
+5 D.I. Bungkang 44
+6 D.I. Darok 225
+7 D.I. Doroi 265
+8 D.I. Empirang Pokok | 200
+9 D.I. Empirang Pokok II 260
+10 D.I. Empirang Ujung 75
+11 D.I. Empu Engkiang 120
+12 D.I. Engkodik 150
+13 D.I. Engkonis 146
+14 D.I. Entabai 300
+15 D.I. Entakai 175
+16 D.I. Jangkang Benua 125
+17 D.I. Jemungko 200
+18 D.I. Kenaman 80
+19 D.I. Kuyak 60
+20 D.I. Lancak M
+21 D.I. Lape 225
+22 D.I. Lubuk Sabuk 200
+23 D.I. Lubuk Tengah 100
+24 D.I. Lumut 300
+25 D.I. Maet 50
+26 D.I. Mak Dadong 55
+27 D.I. Menyak 75
+28 D.I. Mobui I 150
+29 D.I. Mungguk Lumut 188
+30 D.I. Mungguk Seboro 130
+31 D.I. Nekan | 17
+32 D.I. Noyan 120
+33 D.I. Padi Kaye 50
+34 D.I. Pelipit 10
+35 D.I. Pisang 115
+36 D.I. Rantau Prapat 20
+37 D.I. Raut 30
+38 D.I. Rintau 220
+39 D.I. Sebandang 64
+40 D.I. Sebual 37
+41 D.I. Sebuduh 70
+42 D.I. Sei Danain 200
+43 D.I. Sei Kelik 29
+44 D.I. Selepe 80
+45 D.I. Semanget 25
+46 D.I. Semangkar 60
+47 D.I. Sematan 230
+48 D.I. Senyabang 120
+49 D.I. Sosok Hulu 155
+50 D.I. Suka Mulya 127
+51 D.I. Sum 65
+52 D.I. Tanggung Temura 200
+53 D.I. Tanjung 170

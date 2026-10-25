@@ -1,0 +1,70 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 530
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+53 D.LA.T. Pohsangittengah SDPB 208 34
+54 D.I.LA.T. Sumberkare SDPB 209 33
+55 D.I.A.T. Kedungrejo SDPB 210 37
+56 D.I.A.T. Besuk SDPB 211 27
+57 D.ILA.T. Patokan SDPB 212 32
+58 D.I.A.T. Karengkidul SDPB 213 34
+59 D.LA.T. Kedungsupit SDPB 214 29
+60 D.LA.T. Wringinanom SDPB 218 37
+61 D.I.A.T. Besuk SDPB 225 24
+62 D.I.A.T. Patokan SDPB 226 27
+63 D.LA.T. Tunggakcerme SDPB 227 24
+64 D.I.A.T. Wonorejo SDPB 240 15
+65 D.LA.T. Tempuran SDPB 241 15
+66 D.L.A.T. Tongaskulon SDPB 242 15
+67 D.I.A.T. Jrebenglor SDPB 243 15
+68 D.I.A.T. Patokan SDPB 244 15
+69 D.I.A.T. Sidodadi SMPB 162 12
+70 D.I.A.T. Sidodadi SMPB 163 11
+71 D.L.A.T. Sidodadi SMPB 164 11
+72 D.L.A.T. Sidodadi SMPB 165 12
+73 D.I.A.T. Patokan SDPB 005 42
+74 D.I.A.T. Bantaran SDPB 006 36
+75 D.I.A.T. Legundi SDPB 022 30
+76 D.I.A.T. Jatisari SDPB 023 30
+77 D.I.A.T. Munengkidul SDPB/Kab/ 010 37
+78 D.I.A.T. Karengkidul SDPB/Kab/ 004 41
+79 D.I.A.T. Kedungsupit SDPB/Kab/ 003 36
+80 D.I.A.T. Sepuhgembol SDPB/Kab/ 011 40
+81 D.I.A.T. Klampok SDPB/Kab/ 001 31
+82 D.LA.T. Tanjungrejo SDPB/Kab/ 002 28
+83 D.I.A.T. Sekarkare SDPB/Kab/ 013 38
+84 D.I.A.T. Brabe SDPB/Kab/008 41
+85 D.I.A.T. Tulupari SDPB/Kab/012 15
+86 D.I.A.T. Jatiurip SMPB/Kab/028 36
+87 D.L.A.T. Sidopekso SDKPB/Kab/018 21
+88 D.L.A.T. Alassumur Kulon SDPB/Kab/009 15
+89 D.L.LA.T. Alassumur Lor SDKPB/Kab/032 15
+90 D.ILA.T. Alassumur Lor SDKPB/Kab/033 15
+91 D.I.A.T. Bhinar SDKPB/Kab/034 63
+92 D.I.A.T. Sumber Katimoho SDKPB/Kab/029 15
+93 D.I.A.T. Sumber Katimoho SDKPB/Kab/030 15
+94 D.I.A.T. Sumberejo SDKPB/Kab/019 36
+95 D.I.A.T. Sumberejo SDKPB/Kab/020 12
+96 D.LA.T. Sumber Centeng SDKPB/Kab/014 4
+97 D.LA.T. Sumber Centeng SDKPB/Kab/015 6
+98 D.LA.T. Sumber Centeng SDKPB/Kab/016 4
+99 D.I.A.T. Bucor Wetan SDKPB/Kab/017 4
+100 D.I.A.T. Bucor Wetan SDKPB/Kab/018 15
+101 D.LA.T. Tongaskulon SDPB 242 15
+102 D.LA.T. Jrebenglor SDPB 243 15
+103 D.LA.T. Patokan SDPB 244 15
+104 D.LA.T. Sidodadi SMPB 162 12
+105 D.LA.T. Sidodadi SMPB 163 11
+106 D.LA.T. Sidodadi SMPB 164 11
+107 D.LA.T. Sidodadi SMPB 165 12
+t Kab. Sambana 13 492
+
+1 D.LA.T. Sumberanyar SDSP 078 39
+
+2 D.LA.T. Kutoanyar SDSP 079 36
+
+3 D.LA.T. Randumerah SDSP 083 34
+
+4 D.LA.T. Sidorejo SDSP 101 36

@@ -1,0 +1,71 @@
+#TATA_LETAK satu-tabel lebar=2480
+- 2015, No.638
+461
+No Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+VII PROVINSI KEP. BANGKA BELITUNG 8 3.950
+a Kab. Banaka 2 1.150
+1 D.LR. Fusuk 750
+2 D.I.R. Lalang 400
+b Kab. Banaka Barat 2 550
+1 D.I.R. Bakit 250
+2 D.I.R. Kundi 300
+c Kab. Banaka Selatan 1 300
+1 D.I.R. Kepoh 300
+d Kab. Banaka Tenaah 1 950
+1 D.I.R. Kurau 950
+e Kab. Belituna Timur 1 600
+1 D.I.R. Danau Meranti 600
+f Kota Panakalpinana 1 400
+1 D.I.R. Kampak 400
+VIII PROVINSI LAMPUNG 3 1.623
+a Kab. Mesuii 1 600
+1 D.I.R. Sungai Sidang 600
+b Kab. Tulana Bawana 2 1.023
+1 D.I.R. Aji Mesir 286
+2 D.I.R. Batu Ampar 737
+IX PROVINSI JAWA TENGAH 21 1.556
+a Kab. Demak 2 115
+1 D.I.R. Rowo Lawangrejo 110
+2 D.I.R. Rowo Sedo 5
+b Kab. Groboaan 2 910
+1 D.I.R. Gubug 180
+2 D.I.R. Tegowanu 730
+c Kab. Kendal 2 74
+1 D.I.R. Nolokerto 26
+2 D.I.R. Sumberejo 48
+d Kab. Purworeio 14 453
+1 D.I.R. Depok 11
+2 D.I.R. Gedangan 30
+3 D.I.R. Girirejo 14
+4 D.I.R. Jatikontal 60
+5 D.I.R. Jatimalang 75
+6 D.I.R. Jogoboyo 30
+7 D.I.R. Karanganyar 40
+8 D.I.R. Keburuan 33
+9 D.I.R. Malangrejo 31
+10 D.I.R. Ngentak 47
+11 D.I.R. Pagak 43
+12 D.I.R. Pejagaran 2
+13 D.I.R. Tunjungan 2
+14 D.I.R. Wero 35
+e Kota Pekalonaan 1 4
+1 D.I.R. Pekalongan Barat 4
+X PROVINSI KALIMANTAN BARAT 196 55.858
+a Kab. Benakavana 6 873
+1 D.I.R. Parit Baru 50
+2 D.I.R. Peresak 100
+3 D.I.R. Rukma Jaya 50
+4 D.I.R. Sei Pangkalan I 50
+5 D.I.R. Sei Pangkalan II 50
+6 D.I.R. Sungai Jaga 573
+b Kab. Kapuas Hulu 1 750
+1 D.I.R. Kedamin Komplek 750
+c Kab. Kavona Utara 21 10.138
+1 D.I.R. Alur Bandung 400
+2 D.I.R. Dusun Besar 400
+3 D.I.R. Dusun Kecil 400
+4 D.I.R. Lubuk Batu 400
+5 D.I.R. Mas Bangun 400
+6 D.I.R. Matan Jaya 400

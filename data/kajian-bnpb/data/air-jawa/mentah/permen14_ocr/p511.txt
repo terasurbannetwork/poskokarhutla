@@ -1,0 +1,76 @@
+#TATA_LETAK satu-tabel lebar=2480
+511 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+21 D.L.A.T. Golokan SMGR 181 8
+22 D.I.A.T. Golokan SMGR 182 8
+23 D.I.A.T. Wadeng SMGR 257 9
+24 D.I.A.T. Wadeng SMGR 258 10
+25 D.I.A.T. Wadeng SMGR 259 10
+26 D.I.A.T. Wadeng SMGR 260 7
+27 D.ILA.T. Wadeng SMGR 261 7
+28 D.I.A.T. Sambi Pondok SMGR 263 11
+29 D.I.A.T. Sambi Pondok SMGR 264 9
+30 D.I.A.T. Golokan SMGR 265 10
+31 D.I.A.T. Golokan SMGR 266 10
+32 D.I.A.T. Golokan SMGR 267 9
+33 D.I.A.T. Wadeng SMGR 276 9
+34 D.I.A.T. Kertosono SMGR 304 10
+35 D.I.A.T. Kertosono SMGR 305 10
+36 D.I.A.T. Sambi Pondok SMGR 262 8
+
+f Kab. Jember 57 608
+
+1 D.LA.T. Jambearum SDJE 072 15
+
+2 D.LA.T. Jambearum SDJE 073 15
+
+3 D.LA.T. Jambearum SDJE 074 10
+
+4 D.LA.T. Bagon SDJE 075 15
+
+5 D.LA.T. Grenden SDJE 076 10
+
+6 D.LA.T. Grenden SDJE 077 10
+
+7 D.LA.T. Tisnogambar SDJE 232 45
+
+8 D.LA.T. Tanjungrejo SDJE 233 24
+
+9 D.LA.T. Ampel SDJE 245 12
+10 D.LA.T. Dukuh Dempok SDJE 246 12
+11 D.LA.T. Kaliwining SDJE 247 12
+12 D.LA.T. Kasiyan SKJE 001 5
+13 D.LA.T. Kasiyan SKJE 002 5
+14 D.LA.T. Kasiyan SKJE 003 5
+15 D.LA.T. Kasiyan SKJE 004 8
+16 D.LA.T. Kasiyan SKJE 005 8
+17 D.LA.T. Kasiyan SKJE 006 8
+18 D.LA.T. Kasiyan SKJE 007 5
+19 D.LA.T. Kasiyan SKJE 008 9
+20 D.I.A.T. Kasiyan SKJE 009 9
+21 D.I.A.T. Kasiyan SKJE 010 9
+22 D.I.A.T. Kasiyan SKJE 011 9
+23 D.I.A.T. Kasiyan SKJE 012 9
+24 D.I.A.T. Bagorejo SKJE 013 9
+25 D.I.A.T. Bagorejo SKJE 014 10
+26 D.I.A.T. Bagorejo SKJE 015 10
+27 D.I.A.T. Bagorejo SKJE 016 10
+28 D.I.A.T. Bagorejo SKJE 017 10
+29 D.I.A.T. Bagorejo SKJE 018 10
+30 D.I.A.T. Bagorejo SKJE 019 10
+31 D.I.A.T. Bagorejo SKJE 020 10
+32 D.I.A.T. Bagorejo SKJE 021 10
+33 D.I.A.T. Bagorejo SKJE 022 10
+34 D.I.A.T. Bagorejo SKJE 023 10
+35 D.I.A.T. Bagorejo SKJE 024 10
+36 D.I.A.T. Bagorejo SKJE 025 10
+37 D.I.A.T. Bagorejo SKJE 026 10
+38 D.ILA.T. Pugerwetan SKJE 027 10
+39 D.LA.T. Pugerwetan SKJE 028 10
+40 D.LA.T. Pugerwetan SKJE 029 10
+41 D.LA.T. Pugerwetan SKJE 030 10
+42 D.LA.T. Pugerwetan SKJE 031 10
+43 D.LA.T. Pugerwetan SKJE 032 10

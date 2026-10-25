@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+489 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+23 D.LA.T. Cintamulya SBP - 023 35
+24 D.LA.T. Sinar Pasmah SBP - 035 15
+25 D.LA.T. Sidoreno SBP - 066 40
+26 D.LA.T. Sidoreno SBP - 067 15
+27 D.LA.T. Banyumas SBP - 068 25
+28 D.LA.T. Banyumas SBP - 069 40
+29 D.LA.T. Balinuraga SBP - 070 25
+30 D.L.A.T. Sidoreno SBP - 071 30
+31 D.LA.T. Beringin Kencana SBP - 074 25
+32 D.LA.T. Cintamulya SBP - 075 30
+33 D.LA.T. Way Gelam SBP - 076 20
+34 D.LA.T. Sidoreno SBP - 077 25
+35 D.LA.T. Rawa Selapan SBP - 078 25
+36 D.I.A.T. Sidowaluyo SBP- 079 30
+37 D.LA.T. Agom SBP - 080 35
+38 D.LA.T. Pancasila SBP- 081 30
+39 D.LA.T. Beringin Kencana SBP - 082 25
+40 D.L.A.T. Mekar Mulya SBP - 083 35
+41 D.LA.T. Baktirasa SBP - 084 25
+42 D.LA.T. Beringin Kencana SBP - 085 30
+43 D.LA.T. Beringin Kencana SBP - 086 30
+44 D.LA.T. Sukaraja SBP - 087 25
+45 D.LA.T. Sukadamai SBP - 088 25
+46 D.LA.T. Margo Lestari SBP - 089 24
+47 D.LA.T. Bali Agung SBP - 090 20
+48 D.LA.T. Kuala Sekampung SBP- 091 26
+49 D.LA.T. Sukadamai SBP - 092 30
+50 D.LA.T. Bali Ag ing SBP - 095 20
+51 D.LA.T. Sido Ash SBP - 096 20
+52 D.LA.T. Pematang Pasir SBP - 097 20
+53 D.LA.T. Sidodadi SBP - 098 20
+c Kab. Lambuna Timur 9 180
+1 D.LA.T. Gunung Raya/Jabung SBE 24 20
+2 D.LA.T. Sidorejo/Jabung SBE 25 20
+3 D.LA.T. Marga Jaya/Metro Kibang SBP. 93 20
+4 D.LA.T. Marga Jaya/Metro Kibang SBP. 101 20
+5 D.LA.T. Raman rendra/ Ramana Utara SBP. 102 20
+6 D.LA.T. Buana Sakti/Batang Hari SBE.43 20
+7 D.LA.T. Metro Kibang/Kibang SBP.106 20
+8 D.LA.T. Raman Endran/Raman Utara SBP.107 20
+9 D.LA.T. Kiibang/Metro Kibang SBP.115 20
+d Kab. Lampuna Tenaah 34 914
+1 D.LA.T. Bn. Timur/Rumbia SPB 3 25
+2 D.LA.T. Bumi Raharjo/B. Ratu Nuban SBP 4 35
+3 D.LA.T. Suka Jawa/B. Ratu Nuban SBP 6 30
+4 D.LA.T. Sriwijaya/Sp. Mataram SBP 7 30
+5 D.LA.T. B.N. Timur/Rumbia SBP 8 30
+6 D.LA.T. Sidoharjo/Sidomulyo SBP 10 25
+7 D.LA.T. Sriwijaya/Sp. Mataram SBE3 25
+8 D.LA.T. Sriwijaya/Sp. Mataram SBE 4 25
+9 D.LA.T. Gaya Baru 3/Sp. Surabaya SBP 18 40
+10 D.LA.T. Gaya Baru7/ Sp. Surabaya SBP 19 25
+11 D.LA.T. Negara B. Ilir/Pd. Ratu SBP 20 25
+12 D.LA.T. Gayau Sakti/Tb. Besar SBP 21 20
+13 D.LA.T. B.Nabung Baru/Rumbia SBP 31 40
+14 D.LA.T. Restu Baru/Rumbia SBP 33 15
+15 D.LA.T. B.Nabung Selatan/Rumbia SBP 34 25
+16 D.LA.T. Purnama Tunggal/Tb. Besar SBP 50 25
+17 D.LA.T. Spg.Agung/Tb. Besar SBP 51 30

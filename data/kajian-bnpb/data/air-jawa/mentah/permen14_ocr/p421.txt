@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+16 D.I. Tampiala 620
+17 D.I. Alisang 20
+18 D.I. Bajugan (Aung) 150
+19 D.I. Bambaala 35
+20 D.I. Batuilo 75
+21 D.I. Buluminung 68
+22 D.I. Dadakitan 40
+23 D.I. Diule 67
+24 D.I. Dongingis Batu Pesa 30
+25 D.I. Janja 52
+26 D.I. Kamalu 200
+27 D.I. Katayan 40
+28 D.I. Kayulompa 27
+29 D.I. Kombo Kanan 35
+30 D.I. Kombo Kiri 40
+31 D.I. Lakuan 308
+32 D.I. Laulalang 51
+33 D.I. Lingadan 40
+34 D.I. Lingadan Bawah 50
+35 D.I. Manipi 21
+36 D.I. Marisa 50
+37 D.I. Ogomoinit/Bajugan 55
+38 D.I. Oyom 60
+39 D.I. Pinjan Tikup 35
+40 D.I. Pulias 50
+41 D.I. Saladana 43
+42 D.I. Salae 23
+43 D.I. Salugan 120
+44 D.I. Salumpaga Bawah 100
+45 D.I. Salusu Lanang 174
+46 D.I. Salusu Pande 110
+47 D.I. Sibaluton 30
+48 D.I. Silondolian (Malala) 112
+49 D.I. Silumba 222
+50 D.I. Tinabogan 100
+51 D.I. Tinading Atas 125
+52 D.I. Tinading Bawah 67
+53 D.I. Toboloit 50
+| Kota Palu 11 1.001
+1 D.I. Kawatuna 150
+2 D.I. Poboya 90
+3 D.I. Pantoloan 150
+4 D.I. Mpanau 40
+5 D.I. Lambara 89
+6 D.I. Mamboro 150
+7 D.I. Kayu Malue Ngapa 135
+8 D.I. Tanamodindi 51
+9 D.I. Duyu 50
+10 D.I. Donggala Kodi 48
+11 D.I. Liku 48
+xxum PROVINSI 802 28an
+
+DULAWESI BAKAI
+
+a Kab. Maiene 30 1.064
+1 D.I. Bababaru 200
+2 D.I. Baturoro 25
+3 D.I. Buttu Sosso 7
+4 D.I. Tappa Galung 12
+5 D.I. Kalambangan 80
+6 D.I. Mangara Bombang 40
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+7 D.I. Mekkatta 12
+8 D.I. Onang 65
+9 D.I. Palipi 7
+10 D.I. Pallang-Pallang 26
+11 D.I. Puttada 10
+12 D.I. Ulu Tinggas 5
+13 D.I. Teppo Baru 10
+14 D.I. Banua 10
+15 D.I. Binanga 47
+16 D.I. Deking 12
+17 D.I. Kalausu 80
+18 D.I. Kasipong 10
+19 D.I. Leppangan 15
+20 D.I. Limboro I 32
+21 D.I. Limboro II 8
+22 D.I. Lombang 8
+23 D.I. Maliaya 15
+24 D.I. Mata Urang 70
+25 D.I. Pao-Pao 70
+26 D.I. Popenga 100
+27 D.I. Pundau 15
+28 D.I. Salutambung 3
+29 D.I. Tanisi 45
+30 D.I. Totolisi 25
+b Kab. Mamasa 438 18.174
+1 D.I. Bambang Patadokang 47
+2 D.I. Batu Alang 20
+3 D.I. Batu Papan 80
+4 D.I. Bikka 20
+5 D.I. Bulo 100
+6 D.I. Bungin 20
+7 D.I. Galung-Galung 99
+8 D.I. Karakeang 70
+9 D.I. Kariango 39
+10 D.I. Kole 40
+11 D.I. Kondo 30
+12 D.I. Kopian 15
+13 D.I. Lakahang | 50
+14 D.I. Lakahana II 75
+15 D.I. Lemba Rante 85
+16 D.I. Lembang Kalua' 40
+17 D.I. Lindu 50
+18 D.I. Loko 30
+19 D.I. Makalangkan 81
+20 D.I. Mamari 20
+21 D.I. Mamasa 20
+22 D.I. Mambi 145
+23 D.I. Mambu Batu 70
+24 D.I. Manipi 100
+25 D.I. Maroangin 142
+26 D.I. Massewe 85
+27 D.I. Mehalaan 15
+28 D.I. Osango II 78
+29 D.I. Pallu | 75
+30 D.I. Pallu II 70
+31 D.I. Pallu II 50
+32 D.I. Penanian 50
+33 D.I. Rante Buda 20
+34 D.I. Rante Kepa 27
+35 D.I. Rante Puang 50

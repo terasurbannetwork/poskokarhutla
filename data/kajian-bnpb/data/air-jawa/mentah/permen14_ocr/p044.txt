@@ -1,0 +1,69 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 A4
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+d Kab. Lebong
+1 D.I. Air Santan 1.603
+e Kab. Rejang Lebong
+1 D.I. Air Musi Kejalo 1.180
+f Kab. Seluma
+1 D.I. Air Riak Siabun 1.500
+VII PROVINSI SUMATERA SELATAN 28 41.541
+a Kab. Empat Lawang
+1 D.I. Air Keban 1.500
+b Kab. Lahat
+1 D.I. Air Gohong 1.200
+2 D.I. Air Makim 1.000
+3 D.I. Air Manna | 1.500
+4 D.I. Air Merendang 1.341
+5 D.I. Air Mulak 1.645
+6 D.I. Air Pangi 1.001
+7 D.I. Masam Balau 1.500
+8 D.I. Tebing Panjang 1.256
+c Kab. Muara Enim
+1 D.I. Ataran Sungai Air Deras (Cahaya Alam) 1.000
+2 D.I. Danau Tampang 2.690
+3 D.I. Endikat Bengkok/T. Bute 1.500
+4 D.I. Lecah Paye 1.295
+5 D.I. Tunggul Bute 2.400
+d Kab. Musi Rawas
+1 D.I. Air Deras | 1.461
+2 D.I. Air Gegas 2.300
+3 D.I. Air Satan 1175
+4 D.I. Megang Tikip 1.077
+e Kab. Pagar Alam
+1 D.I. Air Merah 1.500
+2 D.I. Pasemah 1.107
+3 D.I. Selangis Besar/Jemair 1.020
+4 D.I. Selangis Kecil 1.352
+f Kab. Ogan Komering Ulu Selatan
+1 D.I. Air Pius 1.600
+2 D.I. Air Sungkai 1.500
+3 D.I. Sunur 1.701
+g Kab. Ogan Komering Ulu Timur
+1 D.I. Air Gilas 1.050
+2 D.I. Lebak Datuk 2.102
+3 D.I. Lebak Semendawai 1.768
+VIII PROVINSI KEP. BANGKA BELITUNG 3 3.350
+a Kab. Bangka
+1 D.I. Kimak 1.200
+b Kab. Bangka Barat
+1 D.I. Buleng 1.050
+c Kab. Bangka Selatan
+1 D.I. Jeriji 1.100
+IX PROVINSI LAMPUNG 11 17.013
+a Kab. Lampung Barat
+1 D.I. Way Biha 1.839
+b Kab. Lampung Selatan
+1 D.I. Way Ketibung 1.550
+2 D.I. Way Negara Ratu 1.153
+3 D.I. Way Sulan 1.124
+c Kab. Lampung Tengah
+1 D.I. Way Kali Pasir 3.000
+2 D.I. Way Srikaton 1.220
+3 D.I. Way Tatayan 1.120
+4 D.I. Way Tipo Balak 1133
+d Kab. Tanggamus
+1 D.I. Way Ngarip | 1.346
+2 D.I. Way Ngison 1.980
+3 D.I. Way Semangka 1.548

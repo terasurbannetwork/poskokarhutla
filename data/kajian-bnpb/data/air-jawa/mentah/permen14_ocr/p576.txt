@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 576
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+a Kota Kendari 5 50
+1 D.LA.T. Unhalu P.108 KDI 3
+2 D.LA.T. Amohalo P.125 KDI 8
+3 D.LA.T. Amohalo P.126 KDI 15
+4 D.LA.T. Amohalo P.127 KDI 14
+5 D.LA.T. Amohalo P.128 KDI 10
+XVII PROVINSI SULAWESI SELATAN 225 3.135
+a Kab. Bantaena 17 255
+1 D.LA.T. Baruga SDBT 75 11
+2 D.LA.T. Baruga SDBT 97 23
+3 D.LA.T. Baruga SDBT 152 21
+4 D.LA.T. Baruga SDBT 240 12
+5 D.LA.T. Baruga SDBT 241 10
+6 D.LA.T. Borongloe SDBT 148 28
+7 D.LA.T. Borongloe SDBT 151 24
+8 D.LA.T. Layoa SDBT 238 12
+9 D.LA.T. Layoa SDBT 239 12
+10 D.I.A.T. Nipa-Nipa TW3 12
+11 D.LA.T. Nipa-Nipa SDBT 232 12
+12 D.LA.T. Nipa-Nipa SDBT 234 8
+13 D.LA.T. Nipa-Nipa SDBT 235 15
+14 D.LA.T. Pajukukang SDBT 233 20
+15 D.LA.T. Papanloe TW 5 9
+16 D.I.A.T. Papanloe SDBT 236 12
+17 D.LA.T. Papanloe SDBT 237 15
+b Kab. Barru 22 363
+1 D.LA.T. Pao-Pao SMBR 143 12
+2 D.LA.T. Pao-Pao SMBR 144 12
+3 D.LA.T. Pao-Pao SDBR 195 15
+4 D.LA.T. Pao-Pao SDBR 197 20
+5 D.LA.T. Tallumpanua SMBR 141 13
+6 D.LA.T. Tallumpanua SMBR 142 12
+7 D.LA.T. Tallumpanua SMBR 145 10
+8 D.LA.T. Lembae 10
+9 D.LA.T. Ammaro 20
+10 D.LA.T. Arotangnge 10
+11 D.LA.T. Burancie 20
+12 D.LA.T. Kajuara 25
+13 D.LA.T. Jeppee 25
+14 D.LA.T. Lojie 20
+15 D.LA.T. Lapakaka 25
+16 D.LA.T. Cilellang 20
+17 D.LA.T. Bulo-Bulo 20
+18 D.LA.T. Oring 15
+19 D.LA.T. Palanro 10
+20 D.I.A.T. Mallawa 10
+21 D.LA.T. Dusun Tompo 20
+22 D.LA.T. Abbatungge 20
+c Kab. Bone 7 85
+1 D.LA.T. Bulutempe SMBN 49 10
+2 D.LA.T. Bulutempe SMBN 50 5
+3 D.LA.T. Bulutempe SDBN 253 15
+4 D.LA.T. Majang SMBN 65 10
+5 D.LA.T. Majang SDBN 245 15
+6 D.I.A.T. Majang SDBN 246 15
+7 D.L.A.T. Majang SDBN 251 15

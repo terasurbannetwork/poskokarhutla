@@ -1,0 +1,77 @@
+#TATA_LETAK satu-tabel lebar=2480
+2C15, No.638 36
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+7 D.I. Pulodadi 176 Kabupaten Bantul z 88 Ha
+Kabupaten Sleman z 88 Ha
+8 D.I. Glendongan 209 Kabupaten Bantul z 200 Ha
+Kabupaten Sleman -z 9 Ha
+9 D.I. Klampok 295 Kabupaten Bantul z 180 Ha
+Kabupaten Sleman z 115 Ha
+10 D.I. Sekarsuli 145 Kabupaten Bantul z 123 Ha
+Kabupaten Sleman z 22 Ha
+11 D.I. Nologaten 27 Kabupaten Bantul z 13 Ha
+Kabupaten Sleman z 14 Ha
+12 D.I. Ngebruk 41 Kabupaten Sleman z 13 Ha
+Kota Yogyakarta z 28 Ha
+13 D.I. Trini 152 Kabupaten Bantul z 69 Ha
+Kabupaten Sleman z 83 Ha
+14 D.I. Cokrobedog 194 Kabupaten Bantul z 4 Ha
+Kabupaten Sleman z 190 Ha
+15 D.I. Gamping 532 Kabupaten Bantul z 530 Ha
+Kabupaten Sleman -z 2 Ha
+16 D.I. Brongkol 16 Kabupaten Bantul z 9 Ha
+Kabupaten Sleman - 6 Ha
+17 D.I. Tumut 44 Kabupaten Bantul z 1 Ha
+Kabupaten Sleman z 43 Ha
+18 D.I. Timoho 121 Kabupaten Bantul -z 119 Ha
+Kabupaten Sleman z 2 Ha
+19 D.I. Engkuk-Engkuan 14 Kabupaten Bantul z 2 Ha
+Kabupaten Sleman z 12 Ha
+20 D.I. Samben 60 Kabupaten Bantul z 57 Ha
+Kabupaten Sleman z 3 Ha
+21 D.I. Mojo 48 Kabupaten Bantul z 40 Ha
+Kabupaten Sleman z 8 Ha
+22 D.I. Sembuh 33 Kabupaten Bantul z 28 Ha
+Kabupaten Sleman z 6 Ha
+23 D.I. Ponggok 132 Kabupaten Bantul z 11 Ha
+Kabupaten Sleman z 121 Ha
+24 D.I. Kanoman 16 Kabupaten Bantul z 16 Ha
+Kabupaten Sleman z Bendung
+25 D.I. Tanjung 776 Kabupaten Bantul z 776 Ha
+Kota Yogyakarta z Bendung
+26 D.I. Bangeran 138 Kabupaten Bantul z 125 Ha
+Kota Yogyakarta z 13 Ha
+27 D.I. Mrican 162 Kabupaten Bantul z 162 Ha
+Kota Yogyakarta z Bendung
+28 D.I. Sidomulyo 160 Kabupaten Bantul z 155 Ha
+Kota Yogyakarta z 5 Ha
+29 D.I. Prangkok 81 Kabupaten Bantul z 81 Ha
+Kabupaten Sleman z Bendung
+30 D.I. Sidoraharjo 98 Kabupaten Bantul z 56 Ha
+Kabupaten Sleman z 42 Ha
+31 D.I. Madean 328 Kabupaten Bantul z 328 Ha
+Kabupaten Sleman z Bendung
+32 D.I. Pogong 1 Kabupaten Bantul z 1 Ha
+Kabupaten Sleman z Bendung
+33 D.I. Minggiran 4 Kabupaten Bantul z 2 Ha
+Kota Yogyakarta z 2 Ha
+34 D.I. Mendungan 4 Kabupaten Bantul z 3 Ha
+Kota Yogyakarta z 1 Ha
+35 D.I. Mergangsan 15 Kabupaten Bantul z 8 Ha
+Kota Yogyakarta z 7 Ha
+
+X PROVINSI JAWA TIMUR 96 46.561
+1 D.I. Bakalan 148 Kabupaten Malang -z 53 Ha
+Kota Malang z 95 Ha
+2 D.I. Bodo 156 Kabupaten Malang z 97 Ha
+Kota Malang z 59 Ha
+3 D.I. Kadalpang 1.212 Kabupaten Malang z 1.106 Ha
+Kota Malang -z 106 Ha
+4 D.I. Kajar IIA 20 Kabupaten Malang z 10 Ha
+Kota Malang z 10 Ha
+5 D.I. Kali Metro 527 Kabupaten Malang z 482 Ha
+Kota Malang z 45 Ha
+6 D.I. Kalilanang 457 Kabupaten Malang z 243 Ha
+Kota Batu -z 214 Ha

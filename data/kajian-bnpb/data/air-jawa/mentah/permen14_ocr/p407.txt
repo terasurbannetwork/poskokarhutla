@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+13 D.I. Kawa 95
+14 D.I. Kubung 50
+15 D.I. Mangkalang 50
+16 D.I. Melata 100
+17 D.I. Nyalang 45
+18 D.I. Suja 75
+xxi PROVINSI 307 74.47
+
+MALINIAN LAN SELATAN
+
+a Kab. Balanaan 20 7.749
+1 D.I. Batu Mandi 360
+2 D.I. Lok Batu 581
+3 D.I. Paran 188
+4 D.I. Suapin 400
+5 D.I. Tundakan 295
+6 D.I. Paringin 980
+7 D.I. Badalungga dan Sikuntan 411
+8 D.I. Putat Basiun 995
+9 D.I. Kandang Jaya 129
+10 D.I. Batu Merah 158
+11 D.I. Jungkai 122
+12 D.I. Mantimin 272
+13 D.I. Lingsir 85
+14 D.I. Kali Maraup 300
+15 D.I. Telaga Purun 85
+16 D.I. Pinuan 100
+17 D.I. Mayanau 70
+18 D.I. Marias 850
+19 D.I. Belahing 752
+20 D.I. Baruh Panyambaran 616
+b Kab. Baniar 4 597
+1 D.I. Sungkai 90
+2 D.I. Mandiangin 104
+3 D.I. Lihung 75
+4 D.I. Sei. Tabuk 328
+c Kab. Hulu Sunaai Selatan 124 12116
+1 D.I. Tayub 200
+2 D.I. Kuangan 234
+3 D.I. Pamujaan 350
+4 D.I. Ta'al 572
+5 D.I. Hawatu 188
+6 D.I. Jarau 294
+7 D.I. Nunungin 165
+8 D.I. Tanah Bangkang 125
+9 D.I. Aliyaman 60
+10 D.I. Andi 75
+11 D.I. Angkinag Selatan 100
+12 D.I. Angkinang (Kupang II) 40
+13 D.I. Angkinang Selatan (Kupang I) 100
+14 D.I. Asam 75
+15 D.I. Awang 100
+16 D.I. Awang Bakarung 75
+17 D.I. Bacagat Baru 250
+18 D.I. Balai Amas 80
+19 D.I. Baling | 75
+20 D.I. Baling II 50
+21 D.I. Bamban Utara | 50
+22 D.I. Bamban Utara II 50
+23 D.I. Bamban Utara III 50
+#KANAN
+407 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+24 D.I. Baruh Jati 150
+25 D.I. Bata 100
+26 D.I. Batang Kulur Kanan 50
+27 D.I. Batangkulur Kiri 75
+28 D.I. Batu Bahatap 40
+29 D.I. Belahan Gadur 45
+30 D.I. Beton Haji Diris 50
+31 D.I. Beton Hamzah 80
+32 D.I. Beton Mangunang 50
+33 D.I. Beton Sungai Paring Dalam (Ulin II) 50
+34 D.I. Beton Tebing Tinggi 170
+35 D.I. Binturung 40
+36 D.I. Buluh Padang 70
+37 D.I. Bumi Berkat 200
+38 D.I. Bumi Pihaung 50
+39 D.I. Bunga Balai 75
+40 D.I. Buntu Danau 150
+41 D.I. Desa Baru 100
+42 D.I. Durari | 85
+43 D.I. Durari II 50
+44 D.I. Empang Bangkal Sei. Raya 100
+45 D.I. Gambah Dalam | 150
+46 D.I. Gambah Dalam II 100
+47 D.I. Gemorong 60
+48 D.I. H. Mahlan 50
+49 D.I. Halaban 50
+50 D.I. Hantarukung 95
+51 D.I. Hariti I 75
+52 D.I. Hariti II 65
+53 D.I. Hariti III 40
+54 D.I. Hilir Mesjid 75
+55 D.I. Ida Manaaala 135
+56 D.I. Jabar 50
+57 D.I. Jambangan | 170
+58 D.I. Jambangan II 100
+59 D.I. Jarau 75
+60 D.I. Jembatan Merah 150
+61 D.I. Kacipak 75
+62 D.I. Kamat 60
+63 D.I. Kapuh Padang 80
+64 D.I. Karang Jawa 100
+65 D.I. Karang Paci 57
+66 D.I. Kayu Abang 200
+67 D.I. Kembang Besar 100
+68 D.I. Keramat Raya 75
+69 D.I. Kupang 35
+70 D.I. Kurih 100
+71 D.I. Libak | 100
+72 D.I. Libak II 100
+73 D.I. Linau | 75
+74 D.I. Linau II 100
+75 D.I. Linau III 150
+76 D.I. Longawang/Pengguruh 165
+77 D.I. Lorong Tentara 146
+78 D.I. Luaw 75
+79 D.I. Madang | 75
+80 D.I. Madang II 50
+81 D.I. Madang III 50
+82 D.I. Martajiwa 70
+83 D.I. Masimpan 160
+84 D.I. Pacakan 150

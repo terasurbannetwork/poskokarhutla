@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 556
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+379 D.LA.T. Oesao Besar-Oesao OEF/II/352 3
+380 D.ILA.T. Oesao Besar-Oesao OEF/II/353 1
+381 D.LA.T. Oesao Besar-Oesao OEF/I1/354 3
+382 D.LA.T. Oesao Besar-Oesao OEF/II/355 2
+383 D.LA.T. Oesao Besar-Oesao OEF/I1/356 2
+384 D.LA.T. Lukman Barat Besar OEFI/II/357 4
+385 D.ILA.T. Lukman Barat Besar OEF/II/358 2
+386 D.I.A.T. Lukman Barat Besar OEF/II/359 2
+387 D.LA.T. Lukman Barat Besar OEF/II/360 3
+388 D.ILA.T. Lukman Barat Besar OEFI/II/361 2
+389 D.ILA.T. Lukman Barat Besar OEF/II/362 1
+390 D.I.A.T. Nggalana A-Oesao OEF/II/363 2
+391 D.LA.T. Nggalana A-Oesao OEF/I1/364 4
+392 D.ILA.T. Sawah Medi-Oesao OEF/11/365 2
+393 D.ILA.T. Sawah Medi-Oesao OEF/I1/366 3
+394 D.ILA.T. Sawah Medi-Oesao OEF/I1/867 3
+395 D.ILA.T. Sawah Medi-Oesao OEF/I1/368 2
+396 D.I.A.T. Sawah Medi-Oesao OEF/I1/369 2
+397 D.ILA.T. Sawah Medi-Oesao OEF/I1/870 3
+398 D.I.A.T. Sawah Medi-Oesao OEF/I/871 2
+399 D.I.A.T. Sawah Medi-Oesao OEF/I1/872 3
+400 D.I.A.T. Sawah Medi-Oesao OEF/I1/873 2
+401 D.ILA.T. Sawah Medi-Oesao OEF/I1/874 3
+402 D.LA.T. Sawah Medi-Oesao OEF/I/375 2
+403 D.LA.T. Usaha Baru-Naibonat OEFI/II/378 2
+404 D.LA.T. Usaha Baru-Naibonat OEF/II/379 2
+405 D.ILA.T. Oeanak-Naibonat OEF/I1/380 2
+406 D.I.A.T. Oeanak-Naibonat OEF/I1/881 2
+407 D.ILA.T. Oeanak-Naibonat OEF/I1/882 2
+408 D.I.A.T. Oeanak-Naibonat OEF/I/383 2
+409 D.I.A.T. Oeanak-Naibonat OEF/11/884 2
+410 D.LA.T. Oeanak-Naibonat OEF/I1/385 3
+411 D.LA.T. Oeanak-Naibonat OEF/I1/386 2
+412 D.LA.T. Oeanak-Naibonat OEF/I1/887 2
+413 D.LA.T. Oeanak-Naibonat OEF/I/388 2
+414 D.LA.T. Oeanak-Naibonat OEF/11/389 3
+415 D.LA.T. Oeanak-Naibonat OEF/I1/390 3
+416 D.LA.T. Oeanak-Naibonat OEF/I1/891 2
+417 D.LA.T. Oeanak-Naibonat OEF/I/892 2
+418 D.LA.T. Oeanak-Naibonat OEF/I1/893 2
+419 D.LA.T. Ocanak-Naibonat OEF/I1/894 2
+420 D.LA.T. Oeanak-Naibonat OEF/I1/395 2
+421 D.LA.T. Airkom-Naibonat OEF/I1/396 3
+422 D.LA.T. Airkom-Naibonat OEF/I/897 2
+423 D.LA.T. Airkom-Naibonat OEF/II/398 2
+424 D.LA.T. Airkom-Naibonat OEF/II/899 2
+425 D.LA.T. Airkom-Naibonat OEF/I1/400 2
+426 D.LA.T. Airkom-Naibonat OEF/I1/401 2
+427 D.LA.T. Airkom-Naibonat OEF/I/402 2
+428 D.LA.T. Airkom-Naibonat OEF/I/403 2
+429 D.LA.T. Airkom-Naibonat OEF/I1/404 2
+430 D.L.A.T. Airkom-Naibonat OEF/II/405 2
+431 D.LA.T. Airkom-Naibonat OEF/I1/406 2
+432 D.LA.T. Airkom-Naibonat OEF/I1/407 2
+433 D.LA.T. Airkom-Naibonat OEF/I1/408 2
+434 D.LA.T. Airkom-Naibonat OEF/II/409 2
+435 D.LA.T. Airkom-Naibonat OEF/II/410 2
+436 D.LA.T. Airkom-Naibonat OEF/I/411 2
+437 D.LA.T. Airkom-Naibonat OEF/I/412 2
+438 D.LA.T. Airkom-Naibonat OEF/I/413 2
+439 D.ILA.T. Airkom-Naibonat OEF/I/414 1

@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+270 D.I. Soko 10
+271 D.I. Sono 20
+272 D.I. Suko/Jirak 2
+273 D.I. Sumber Kuning 7
+274 D.I. Sumbruk 129
+275 D.I. Supan 46
+276 D.I. Suren 92
+277 D.I. Suruhan 44
+278 D.I. Suwewe 21
+279 D.I. Tabuhan 149
+280 D.I. Talang 15
+281 D.I. Talok 18
+282 D.I. Tambak 10
+283 D.I. Tanggal 24
+284 D.I. Tawang I 72
+285 D.I. Tawang II 202
+286 D.I. Tedunan 94
+287 D.I. Tempuran 18
+288 D.I. Tirto I 10
+289 D.I. Tirto II 11
+290 D.I. Tlobo 11
+291 D.I. Tlobo Ledok 64
+292 D.I. Tloaomadirdo 13
+293 D.I. Tomosiyo 74
+294 D.I. Tompe 20
+295 D.I. Torendeh 23
+296 D.I. Toyo 12
+297 D.I. Trugo 65
+298 D.I. Truneng 25
+299 D.I. Tulakan 33
+300 D.I. Waru 15
+301 D.I. Wates 34
+302 D.I. Watu Gajah 40
+303 D.I. Watu Gundul 14
+304 D.I. Watu Kangsi 13
+305 D.I. Watu Surupan 49
+306 D.I. Winong 26
+307 D.I. Wong Sewu 36
+308 D.I. Wonoketi 33
+309 D.I. Gedangan | 25
+310 D.I. Kali Omo 29
+311 D.I. Tabuhan II 14
+312 D.I. Gedangan II 15
+313 D.I. Kuwung 34
+314 D.I. Nglasem 115
+315 D.I. Braholo 63
+316 D.I. Toyo li 33
+317 D.I. Watu Gajah 13
+318 D.I. Petung 12
+319 D.I. Kajar 21
+320 D.I. Kemiri 13
+321 D.I. Podrono 10
+322 D.I. Ngijo 31
+323 D.I. Jumok 15
+324 D.I. Glorung 30
+325 D.I. Ngluwak 32
+326 D.I. Randu Rantai 57
+327 D.I. Teges 38
+328 D.I. Plawan 14
+329 D.I. Tengklik 20
+330 D.I. Gemantar 96
+#KANAN
+232
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+331 D.I. Sedayu 40
+332 D.I. Sedayu II 140
+333 D.I. Sekendil 14
+334 D.I. Beling 71
+335 D.I. Tengah 32
+336 D.I. Setran 40
+337 D.I. Seploso 13
+338 D.I. Selojok 12
+339 D.I. Buret 15
+340 D.I. Dadap 12
+341 D.I. Turendek 14
+342 D.I. Watu Surupan II 16
+343 D.I. Menjing II 14
+344 D.I. Sirondo Kuning 16
+345 D.I. Duren 14
+346 D.I. Krajan 12
+347 D.I. Sepakel 12
+348 D.I. Kedung Asem 52
+349 D.I. Sekuning 10
+350 D.I. Daleman 40
+351 D.I. Nglori 60
+| Kab. Kebumen 172 8.621
+1 D.I. Argosari 10
+2 D.I. Bangkong I 28
+3 D.I. Bangkong II 35
+4 D.I. Bango 140
+5 D.I. Banioro 36
+6 D.I. Banyu Mudal 55
+7 D.I. Banyu Urip 100
+8 D.I. Bejiruyung I 20
+9 D.I. Bejiruyung II 40
+10 D.I. Bersole 10
+11 D.I. Binangun 15
+12 D.I. Blado | 25
+13 D.I. Blado II 35
+14 D.I. Blangkunang 119
+15 D.I. Bonosari 30
+16 D.I. Brojogeni 75
+17 D.I. Buayan 6
+18 D.I. Bumirejo 177
+19 D.I. Cangkring 20
+20 D.I. Cewok 30
+21 D.I. Clapar | 11
+22 D.I. Clapar II 50
+23 D.I. Clowok 60
+24 D.I. Cuntang 20
+25 D.I. Curug | 40
+26 D.I. Curug II 30
+27 D.I. Donorojo 20
+28 D.I. Era Gombong 23
+29 D.I. Galagamba 20
+30 D.I. Gambar 106
+31 D.I. Geblug 30
+32 D.I. Gentan 28
+33 D.I. Ginandong 10
+34 D.I. Giritirto 16
+35 D.I. Giyanti I 65
+36 D.I. Giyanti II 16
+37 D.I. Giyanti III 22
+38 D.I. Glontor 20

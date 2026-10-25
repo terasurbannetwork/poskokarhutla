@@ -1,0 +1,117 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+33 D.I. Siaili Tukka 957
+34 D.I. Napapoli 278
+35 D.I. Sp. Maruku/Sitabeak 75
+36 D.I. Sosor Gonting/Sogar 150
+37 Dl. ena o-gambo 555
+Gonting Mahe/
+39 D.I. Pangambatan/Pelita/Naga 520
+Timbul
+40 D.I Unte Mungkur III/ Pangasean 475
+41 D.I. Sipange/Aek Tutun 140
+42 D.I. Pulo Pakkat/Anggoli 30
+43 D.l. Ka Sunu Uon/ 140
+45 D.I. Sidikkil 150
+46 D.I. Aek Lumut 100
+47 D.I. Ladang Tengah 350
+48 D.I. Sigala gala 75
+49 D.I. Muara Bolak 100
+w Kab. Tapanuli Utara 168 15.905
+1 D.I. Aek Salak/Sisudung 97
+2 D.I. Aek Bongbongan 100
+3 D.I. Aek Botik 140
+4 D.I. Aek Butar 300
+5 D.I. Aek Halian 60
+6 D.I. Aek Halian Harangan 68
+7 D.I. Aek Horasan 40
+8 D.I. Aek Martindi 100
+9 D.I. Aek Marubun 80
+10 D.I. Aek Nambilung 130
+11 D.I. Aek Nangali 51
+12 D.I. Aek Siaro 61
+13 D.I. Aek Sibatubatu 100
+14 D.I. Aek Simargalung 75
+15 D.I. Aritonang 60
+16 D.I. Banjar Sitabotabo 60
+17 D.I. Bondar Sibabiat 66
+18 D.I. Dusun Pansinaran 70
+19 D.I. Hariara Silaban 80
+20 D.I. Hasak I 300
+21 D.I. Hasak II 250
+22 D.I. Hutabarat Parbaju 50
+23 D.I. Hutasoit 90
+24 D.I. Lobu Siregar 53
+25 D.I. Lobu Sonak 46
+26 D.I. Lubis 46
+27 D.I. Lumban pea 200
+28 D.I. Mabar 43
+29 D.I. Onan Hasang 135
+30 D.I. Onan Joro 350
+31 D.I. Pagaran Ginjang 84
+32 D.I. Pagaran Lambung 40
+33 D.I. Panaharan 200
+34 D.I. Panganan Lombu 15
+35 D.I. Pangasean 50
+36 D.I. Pardamean 368
+#KANAN
+89 1015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+37 D.I. Parhorboan 116
+38 D.I. Parlombuan 105
+39 D.I. Pasadahon Paduahon 320
+40 D.I. Saba Bolak 400
+41 D.I. Saba Dolok 18
+42 D.I. Sambariba Horbo 90
+43 D.I. Sampuran 100
+44 D.I. Sialang 110
+45 D.I. Sibaragas 107
+46 D.I. Sibontar 55
+47 D.I. Siborgung Hilir 200
+48 D.I. Siborgung Kiri dan Kanan 159
+49 D.I. Siborongborong 135
+50 D.I. Sibuntuon 107
+51 D.I. Sidempula 160
+52 D.I. Sidilanitano Kanan/Kiri 500
+53 D.I. Sidolgi 140
+54 D.I. Sidoras Kiri/Kanan 384
+55 D.I. Sidua Mas 50
+56 D.I. Sigalingging/Pealangge 41
+57 D.I. Sigansip 100
+58 D.I. Sigohi Butuha 339
+59 D.I. Sigumbang 73
+60 D.I. Sigurung-gurung 47
+61 D.I. Sijaba 115
+62 D.I. Silangkitang 200
+63 D.I. Simajambu 200
+64 D.I. Simangumban 70
+65 D.I. Simanosor 55
+66 D.I. Simanungkalit 66
+67 D.I. Simarlai-lai 80
+68 D.I. Simarombang 112
+69 D.I. Simasom 43
+70 D.I. Simokmok 200
+71 D.I. Sipolhas 67
+72 D.I. Sipultak 85
+73 D.I. Sipurik-purik 150
+74 D.I. Sisordak 84
+75 D.I. Sitampurung 225
+76 D.I. Siugan-ugan 51
+77 D.I. Sosor Tambak 120
+78 D.I. Tambok Bolon 91
+79 D.I. Tambok Nabegu 52
+80 D.I. Tomburan Sibirik 225
+81 D.I. Ugan 49
+82 D.I. Untemungkur 25
+83 D.I. Partali Julu 100
+84 D.I. Siansimun 60
+85 D.I. Silait-lait 67
+86 D.I. Lumban Tora 72
+87 D.I. Lumban Pea Dolok 79
+88 D.I. Sianpapaga 150
+89 D.I. Simarompuompu 93
+90 D.I. Panggasean 64
+91 D.I. Sampean 80

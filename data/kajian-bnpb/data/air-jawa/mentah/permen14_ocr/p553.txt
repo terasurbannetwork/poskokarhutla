@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+553 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+196 D.L.A.T. Tirosa-Nunkurus LIF - 184 3
+197 D.LA.T. Gunung Tiga-Nunkurus LIF - 185 3
+198 D.LA.T. Gunung Tiga-Nunkurus LIF - 186 3
+199 D.LA.T. Tirosa-Nunkurus LIF - 187 2
+200 D.LA.T. Tirosa-Nunkurus LIF - 188 2
+201 D.I.A.T. Kampung Baru-Nunkurus. LIF - 294 2
+202 D.LA.T. Kampung Baru-Nunkurus. LIF - 295 2
+203 D.LA.T. Kampung Baru-Nunkurus. LIF - 296 2
+204 D.I.A.T. Pondok Beringin -Nunkurus LIF - 328 3
+205 D.I.A.T. Pondok Beringin -Nunkurus LIF - 329 2
+206 D.I.A.T. Pondok Beringin -Nunkurus LIF - 330 2
+207 D.LA.T. Pondok Beringin -Nunkurus LIF - 331 3
+208 D.I.A.T. Pondok Beringin -Nunkurus LIF - 332 3
+209 D.I.A.T. Pondok Beringin -Nunkurus LIF - 333 3
+210 D.LA.T. Pondok Beringin -Nunkurus LIF - 334 3
+211 D.LA.T. Vel Kampung-Nunkurus LIF/1/436 2
+212 D.LA.T. Uel Kampung-Nunkurus LIFA1/437 2
+213 D.LA.T. Kampung Baru-Nunkurus. LIFA1/439 2
+214 D.LA.T. Kampung Baru-Nunkurus. LIFA1/440 2
+215 D.LA.T. Kampung Baru-Nunkurus. LIFA1/441 2
+216 D.LA.T. Kampung Baru-Nunkurus. LIFA1/442 2
+217 D.LA.T. Nunkurus Dalam-Nunkurus LIF/1/443 3
+218 D.LA.T. Nunkurus Dalam-Nunkurus LIFA1/444 2
+219 D.LA.T. Nunkurus Dalam-Nunkurus LIFA1/445 2
+220 D.ILA.T. Nunkurus Dalam-Nunkurus LIFA1/446 2
+221 D.LA.T. Nunkurus Dalam-Nunkurus LIFA1/447 2
+222 D.LA.T. Maju-Nunkurus LIFA1/448 2
+223 D.ILA.T. Maju-Nunkurus LIFA1/449 3
+224 D.LA.T. Maju-Nunkurus LIFA1/450 2
+225 D.I.A.T. Maju-Nunkurus LIFA1/451 2
+226 D.I.A.T. Maju-Nunkurus LIFA1/452 2
+227 D.LA.T. Maju-Nunkurus LIFA1/453 2
+228 D.I.A.T. Maju-Nunkurus LIFA1/454 2
+229 D.I.A.T. Maju-Nunkurus LIFA1/455 2
+230 D.I.A.T. Maju-Nunkurus LIFA1/456 2
+231 D.ILA.T. Maju-Nunkurus LIFA1/457 2
+232 D.ILA.T. Maju-Nunkurus LIFA1/458 3
+233 D.ILA.T. Maju-Nunkurus LIFA1/459 2
+234 D.LA.T. Maju-Nunkurus LIFA1/460 2
+235 D.ILA.T. Maju-Nunkurus LIFA1/461 2
+236 D.ILA.T. Maju-Nunkurus LIFA1/462 2
+237 D.LA.T. Maju-Nunkurus LIFA1/463 1
+238 D.LA.T. Gunung Tiga-Nunkurus LIFA1/464 2
+239 D.LA.T. Gunung Tiga-Nunkurus LIFA1/465 2
+240 D.I.A.T. Pondok Beringin-Nunkurus LIF/1/466 2
+241 D.LA.T. Pondok Beringin-Nunkurus LIFA1/467 2
+242 D.LA.T. Nunuk-Bipolo NAF - 226 2
+243 D.LA.T. Nunuk-Bipolo NAF - 227 2
+244 D.LA.T. Nunuk-Bipolo NAF - 228 2
+245 D.LA.T. Nunuk-Bipolo NAF - 229 2
+246 D.ILA.T. Nunuk-Bipolo NAF - 230 2
+247 D.LA.T. Nunuk-Bipolo NAF - 231 2
+248 D.ILA.T. Nunuk-Bipolo NAF - 232 2
+249 D.LA.T. Nunuk-Bipolo NAF - 233 2
+250 D.I.A.T. Nunuk-Bipolo NAF - 234 2
+251 D.LA.T. Kiuleko-Bipolo NAF - 235 2
+252 D.LA.T. Kiuleko-Bipolo NAF - 236 2
+253 D.LA.T. Kiuleko-Bipolo NAF - 237 2
+254 D.LA.T. Kiuleko-Bipolo NAF - 238 2
+255 D.LA.T. Kiuleko-Bipolo NAF - 239 3
+256 D.I.A.T. Naiusaf-Bipolo NAF - 240 3

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+6 D.I. Ataran Sungai Empang 50
+7 D.I. Ataran Tangga Dewata 440
+8 D.I. Ataran Agung Tb. Barisan 30
+9 D.I. Ataran Air Batuan 50
+10 D.I. Ataran Air Jernih 50
+11 D.I. Ataran Air Macan 10
+12 D.I. Ataran Air Meo/Siring Limau Kanas 15
+13 D.I. Ataran Air Siku 433
+14 D.I. Ataran Air Sungai Raman 50
+15 D.I. Ataran Air Talang Ulu 30
+16 D.I. Ataran Alai 140
+17 D.I. Ataran Arisan Musi 100
+18 D.I. Ataran Asmawan 25
+19 D.I. Ataran Aur Duri 25
+20 D.I. Ataran Bahesang 50
+21 D.I. Ataran Bakal Gajah 300
+22 D.I. Ataran Bakal Jaya/Pembakal 20
+23 D.I. Ataran Batu Balal 35
+24 D.I. Ataran Batu Batangkup/Tanid Are 18
+25 D.I. Ataran Batu Pipih 30
+26 D.I. Ataran Belambangan 20
+27 D.I. Ataran Belanti 200
+28 D.I. Ataran Belimbing 6
+29 D.I. Ataran Benakat Minyak 26
+30 D.I. Ataran Bendungan Betung 73
+31 D.I. Ataran Bengkuang 70
+32 D.I. Ataran Bengkuang 40
+33 D.I. Ataran Benuang Ja. 100
+34 D.I. Ataran Beringin 75
+35 D.I. Ataran Beringin Jaya 55
+36 D.I. Ataran Beringin Jaya Pematang Tngh 195
+37 D.I. Ataran Budur Besar 500
+38 D.I. Ataran Budur Tengah 150
+39 D.I. Ataran Budur Ulu 77
+40 D.I. Ataran Bukit Kecil 25
+41 D.I. Ataran Bukit Tengah 50
+42 D.I. Ataran Buluh Gedung 30
+43 D.I. Ataran Butik 20
+44 D.I. Ataran Cintuk 150
+45 D.I. Ataran Comp. Pertamina 8
+46 D.I. Ataran Dahaga/Sekedar 156
+47 D.I. Ataran Danau Baturaja 175
+48 D.I. Ataran Danau Baturaja 120
+49 D.I. Ataran Danau Dalam 265
+50 D.I. Ataran Danau Gabus 175
+51 D.I. Ataran Danau Kangkung 25
+52 D.I. Ataran Danau Nipis 38
+53 D.I. Ataran Danau Panjang 135
+54 D.I. Ataran Danau Sidup 380
+55 D.I. Ataran Darat Dusun 100
+56 D.I. Ataran Darat Dusun 88
+57 D.I. Ataran Darat Dusun Karang Agung 200
+58 D.I. Ataran Datar Kiri 250
+59 D.I. Ataran Datar Pauh 154
+60 D.I. Ataran Delima 145
+61 D.I. Ataran Desa Air Itam Barat 491
+62 D.I. Ataran Desa Air Itam Timur 329
+63 D.I. Ataran Desa Jambu 166
+64 D.I. Ataran Desa Karta Mulya 175
+65 D.I. Ataran Desa Lubuk Nipis Ilir 50
+66 D.I. Ataran Desa Milian 192
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+67 D.I. Ataran Desa Mutung 200
+68 D.I. Ataran Desa Pandan Enim 80
+69 D.I. Ataran Desa Pendaftaran 186
+70 D.I. Ataran Desa Prambatan 471
+71 D.I. Ataran Desa Sebau 170
+72 D.I. Ataran Desa Sri Menanti 85
+73 D.I. Ataran Desa Talang Nangka 200
+74 D.I. Ataran Desa Tanjung Kurung 72
+75 D.I. Ataran Desa Tempral Selatan 170
+76 D.I. Ataran Desa Tempral Utara 280
+77 D.I. Ataran Duku 35
+78 D.I. Ataran Dusun Buruk 150
+79 D.I. Ataran Dusun Lembak 29
+80 D.I. Ataran Dusun Tg.Ill/Sinar Jaya 90
+81 D.I. Ataran Empang Bakal 16
+82 D.I. Ataran Endilau Besak 5
+83 D.I. Ataran Gulo Pocong 60
+84 D.I. Ataran Gunung Raja 40
+85 D.I. Ataran Ilir Desa 35
+86 D.I. Ataran Ilir Dusun Bakal 40
+87 D.I. Ataran Jadi Raya 30
+88 D.I. Ataran Jambat Teras 35
+89 D.I. Ataran Jembatan Tanah 45
+90 D.I. Ataran Jernih Indah Padang Bindu 186
+91 D.I. Ataran Kail Betung 60
+92 D.I. Ataran Kandis/Sungai Ibul 60
+93 D.I. Ataran Kayu Labu 35
+94 D.I. Ataran Keluih 12
+95 D.I. Ataran Kerinjing 10
+96 D.I. Ataran Kerinjing 40
+97 D.I. Ataran Ketumbah 30
+98 D.I. Ataran Kijang Budur 28
+99 D.I. Ataran Kute Atas 150
+100 D.I. Ataran Kute Bawah 100
+101 D.I. Ataran Lebak Desa 20
+102 D.I. Ataran Lembak Dusun 10
+103 D.I. Ataran Lembung Bawah 45
+104 D.I. Ataran Lembung Tengah 67
+105 D.I. Ataran Lembut 40
+106 D.I. Ataran Lempaug 90
+107 D.I. Ataran Lepak Serdang 50
+108 D.I. Ataran Limau Kapas 30
+109 D.I. Ataran Lubuk Genting (S.Pauh) 100
+110 D.I. Ataran Lubuk Karet 100
+111 D.I. Ataran Lubuk Langsat 45
+112 D.I. Ataran Lubuk Matang Pauh 15
+113 D.I. Ataran Matang Begelung 15
+114 D.I. Ataran Matang Kayu 40
+115 D.I. Ataran Mayan 10
+116 D.I. Ataran Meo/Emil 15
+117 D.I. Ataran Meragung 65
+118 D.I. Ataran Mijak 35
+119 D.I. Ataran Muara 40
+120 D.I. Ataran Muara Beringin 15
+121 D.I. Ataran Muara Betung 35
+122 D.I. Ataran Muara Endilau Tebing Bungkuk 15
+123 D.I. Ataran Muara Tiaga 30
+124 D.I. Ataran Negara 100
+125 D.I. Ataran Padang 28
+126 D.I. Ataran Padang 25
+127 D.I. Ataran Padang Tembung | 60

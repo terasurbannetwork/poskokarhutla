@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+5 D.I. Air Telatang II Sido Dadi 60
+6 D.I. Air Telatang Kecil Kemumu 50
+7 D.I. Air Sandur | 60
+8 D.I. Air Tik Lay 85
+9 D.I. Air Tik Tiang 80
+10 D.I. Air Ukup Talang Rais 75
+11 D.I. A. Meok 173
+12 D.I. A. Kahabi 418
+13 D.I. A. Apiko 339
+14 D.I. A. Mumbang 350
+15 D.I. A. Nuso 60
+16 D.I. A. Dingin 40
+17 D.I. A. Lais Lubuk Gedang 87
+18 D.I. A.Lais Taba Baru 100
+19 D.I. A. Lais Kalbang 60
+20 D.I. A. Lais Suka Langu 60
+21 D.I. A. Pelimbur 50
+22 D.I. A. Kuripan | 60
+23 D.I. A. Kuripan II 60
+24 D.I. A. Sido Luhur 40
+25 D.I. A. Talang Kering 50
+26 D.I. A. Karas Tebing Kandang 75
+27 D.I. A. Palik Tanjung Agung 120
+28 D.I. A. Kotok Kota Agung 130
+29 D.I. A. Senali Tik Lembak 50
+30 D.I. A. Napal Ds. Curup 50
+31 D.I. A. Palik Lubuk Jale 167
+32 D.I. A. Manis Magelang 60
+33 D.I. A. Tik Jale 50
+34 D.I. A. Kerkap TI. Curup 150
+35 D.I. A. Merah Lb. Mumpo 128
+36 D.I. A. Kemumu Sumber Rejo 302
+37 D.I. A. Telatang Besar 151
+38 D.I. A. Ketenong 197
+39 D.I. A. Donok II 150
+40 D.I. A. Payang Kecil 60
+41 D.I. A. Jeminang 115
+42 D.I. A. Nakai Batu Raja Kol 50
+43 D.I. A. Banai Tb. Padang 60
+44 D.I. Air Sialang 50
+45 D.I. Air Nokan Kr. Anyar 80
+46 D.I. Air Nokan Taba Tembilang | 50
+47 D.I. Air Nokan Lb. Saung 60
+48 D.I. Air Lais Karang Brai 40
+49 D.I. Air Nikai 60
+50 D.I. Air Besi Tetango | 60
+51 D.I. Air Besi Tetango II 60
+52 D.I. Air Nokan Taba Tembilang 50
+53 D.I. Air Napal TI. Congok 133
+54 D.I. Air Besi Gunung Besar 312
+55 D.I. Air Tik Keleboi 50
+56 D.I. Air Sandur II 60
+57 D.I. Air Sandur TI. Gonggong | 60
+58 D.I. Air Telatang Pmt. Sampang 60
+59 D.I. Air Tik Nuk 60
+60 D.I. Air Pohong 40
+61 D.I. Air Kemumu 40
+62 D.I. Air Besi Buan 50
+63 D.I. Air Sandur TI. Gonggong II 70
+64 D.I. A. Kikuba 200
+65 D.I. A. Anok 400
+#KANAN
+124
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+66 D.I. A. Merah Sebelat 493
+67 D.I. A. Munting 40
+68 D.I. A. Simpang 40
+69 D.I. A. Sekundam 40
+70 D.I. A. Senangai 60
+71 D.I. A. Kesik/Dingin Hulu 120
+72 D.I. A. Sebayur 40
+73 D.I. A. Benda 60
+74 D.I. A. Batik Nau 100
+75 D.I. A. Talang Renggu 40
+76 D.I. A. Sabut 40
+77 D.I. A. Swakarsa 20
+78 D.I. A. Tebat Koni 70
+79 D.I. A. Padang Tanah Hitam 250
+80 D.I. A. Buat 50
+81 D.I. A. Bagus 60
+82 D.I. A. Buruk 50
+83 D.I. A. Kuripan III 70
+84 D.I. A. Durian 28
+85 D.I. A. Anak Padang I 50
+86 D.I. A. Anak Padang II 82
+87 D.I. A. Anak Padang III 82
+88 D.I. A. Besi Wonoharjo 60
+89 D.I. A. Tanjung Sari 60
+90 D.I. A. Giri Mulya I 144
+91 D.I. A. Giri Mulya II 40
+92 D.I. A. Merah Silubuk 178
+93 D.I. A. Kotok Kertapati 40
+94 D.I. A. Talang Pungguk 52
+95 D.I. A. Simpang Talang Pasak 60
+96 D.I. A. Tik Curup 40
+97 D.I. A. Ketenong Padang Bendar 60
+98 D.I. A. Donok I 150
+99 D.I. A. Telatang Tj. Wulung 150
+100 D.I. A. Payang Besar 75
+101 D.I. A. Gambir I 15
+102 D.I. A. Payang Kota Lekat 60
+103 D.I. A. Telatang Kecil Sb. Rejo 75
+104 D.I. A. Nakai Tb. Padang. R 60
+105 D.I. A. Tulung Agung 75
+106 D.I. A. Suban 75
+107 D.I. A. Tik Pinang 50
+108 D.I. A. Keong 50
+109 D.I. A. Lado 75
+110 D.I. A. Tebat Telegai 72
+111 D.I. A. Tik Durian 50
+112 D.I. A. Gambir II 60
+113 D.I. A. Tik Tiang 100
+114 D.I. A. Dingin Penegai 50
+d Kab. Kaur 107 5.200
+1 D.I. Air Durian Pamah 30
+2 D.I. Air Pd. Guci Pulau Kabu 200
+3 D.I. Air Pd. Guci Siring Betung 60
+4 D.I. Air Kukup 50
+5 D.I. Air Kelam Bandu Agung | 100
+6 D.I. Air Pd. Guci Pulau Panggung 100
+7 D.I. Air Kering 95
+8 D.I. Air Palawan 60
+9 D.I. Air Kelam Tj. Ganti II 15
+10 D.I. Air Kelam Rigangan II 50

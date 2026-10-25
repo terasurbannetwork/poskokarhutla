@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+379 D.I. Bangle 2
+380 D.I. Bayut 20
+381 D.I. Bedah 50
+382 D.I. Buh Kuning 4
+383 D.I. Dakon 40
+384 D.I. Dawung 13
+385 D.I. Dayakan 40
+386 D.I. Dondong 16
+387 D.I. Gajah 30
+388 D.I. Gedangan 40
+389 D.I. Gempol 11
+390 D.I. Glodeg 3
+391 D.I. Guwo 15
+392 D.I. Jambean 40
+393 D.I. Juron 3
+394 D.I. Kali Salam 2
+395 D.I. Klegung 3
+396 D.I. Koripan 5
+397 D.I. Kuwuh 39
+398 D.I. Lemah Bero 4
+399 D.I. Mayak 25
+400 D.I. Mayong 216
+401 D.I. Mundungan 13
+402 D.I. Ngelo 30
+403 D.I. Ngrejang 11
+404 D.I. Ngudal 20
+405 D.I. Pabrik 2
+406 D.I. Plandakan 18
+407 D.I. Pletes 75
+408 D.I. Pojok 34
+409 D.I. Poko 1
+410 D.I. Pule 20
+411 D.I. Putuk 25
+412 D.I. Sb. Bandung 4
+413 D.I. Sb. Belik Sentul 17
+414 D.I. Sb. Dawe 10
+415 D.I. Sb. Glatik 12
+416 D.I. Sb. Gunung Gajah 5
+417 D.I. Sb. Ireng 10
+418 D.I. Sb. Krincing 3
+419 D.I. Sb. Ngembak 15
+420 D.I. Sb. Pagotan 12
+421 D.I. Sb. Panjang 1
+422 D.I. Sb. Watu Dukun 15
+423 D.I. Sedodol 57
+424 D.I. Segawe 8
+425 D.I. Selanjar 10
+426 D.I. Sido Mukti 9
+427 D.I. Sobo 172
+428 D.I. Sodong 21
+429 D.I. Sriti 50
+430 D.I. Sware 55
+431 D.I. Temon 50
+432 D.I. Temon 16
+433 D.I. Tempuran 18
+434 D.I. Tempuran 20
+435 D.I. Tengah 43
+436 D.I. Tenggong 31
+437 D.I. Tunggon 17
+438 D.I. Umbul 18
+439 D.I. Waru doyong 40
+#KANAN
+358
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+440 D.I. Watu Lumpang 10
+v Kab. Probolinaao 289 18.964
+1 D.I. Ampel Wates 19
+2 D.I. Arah 98
+3 D.I. Arah | 12
+4 D.I. Arah II 72
+5 D.I. Arah/Sietek 173
+6 D.I. Arah Makam 12
+7 D.I. Arah Makam Lama 4
+8 D.I. Aren 5
+9 D.I. Aren 23
+10 D.I. Asem Manis 161
+11 D.I. Babagan Lebar 55
+12 D.I. Baena 4
+13 D.I. Bakong 20
+14 D.I. Banyubiru 52
+15 D.I. Besi I 39
+16 D.I. Besi II 29
+17 D.I. Betek | 75
+18 D.I. Betek II 64
+19 D.I. Bindung 570
+20 D.I. Btw 25
+21 D.I. Cabean 40
+22 D.I. Campuran 5
+23 D.I. Cangkring 19
+24 D.I. Curah Menjangan 34
+25 D.I. Curah Pakis 2
+26 D.I. Daren Ambulu 145
+27 D.I. Darsi | 22
+28 D.I. Darsi II 10
+29 D.I. Dermoyo 5
+30 D.I. Dung Paras 40
+31 D.I. Durbina 3
+32 D.I. Gabuk 38
+33 D.I. Gayam 36
+34 D.I. Gedahu 186
+35 D.I. Gendungan 71
+36 D.I. Gombang 107
+37 D.I. Ingas 10
+38 D.I. Jagungilo | 6
+39 D.I. Jagungilo II 5
+40 D.I. Jagungilo III 14
+41 D.I. Jagungilo IV 5
+42 D.I. Jagungilo V 10
+43 D.I. Jambon 100
+44 D.I. Janten 235
+45 D.I. Jati Kandang 79
+46 D.I. Jatiampuh 497
+47 D.I. Jeret Bejeng 6
+48 D.I. Jerukan | 6
+49 D.I. Jerukan II 6
+50 D.I. Jerukan III 12
+51 D.I. Jerukan IV 6
+52 D.I. Jerukan V 6
+53 D.I. Jerukan VI 8
+54 D.I. Jerukan VII 6
+55 D.I. Jungkong 39
+56 D.I. Jurang Jero 496
+57 D.I. Kabuwaran 65
+58 D.I. Kahuripan 153

@@ -1,0 +1,79 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 26
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Rawa D.I.R (Ha)
+
+3 D.I.R. Delta Air Sugihan Kiri 34.690
+4 D.I.R. Delta Cinta Manis 5.554
+5 D.I.R. Delta Upang 5.896
+6 D.I.R. Gasing Puntian 4.830
+7 D.I.R. Ka. Agung Hilir 9.777
+8 D.I.R. Karang Agung | 6.300
+9 D.I.R. Kr. Agung Tengah 4.001
+10 D.I.R. Kumbang Padang 4.268
+11 D.I.R. Padang Sugihan 10.200
+12 D.I.R. Pulau Rimau 28.184
+13 D.I.R. Telang I 18.676
+14 D.I.R. Telang II 9.660
+c Kab. Musi Banyuasin
+
+1 D.I.R. Air Tenggulang 6.156
+2 D.I.R. Kr. Agung Hilir 6.350
+3 D.I.R. Kr. Agung Il/Tengah 17.000
+d Kab. Ogan llir
+
+1 D.I.R. Lbk. Tanjung Seteko 3.876
+2 D.I.R. Ogan Keramasan I 4 II 9.660
+e Kab. Ogan Komering Ilir
+
+1 D.I.R. M. Gajah Mati 5.950
+2 D.I.R. Sugihan Kanan 20.885
+3 D.I.R. Sungai Lumpur 3.500
+VI PROVINSI KEP. BANGKA BELITUNG 5 15.923
+a Kab. Bangka Barat
+
+1 D.I.R. Kayu Arang 3.000
+b Kab. Bangka Selatan
+
+1 D.I.R. Batu Batumpang 3.000
+2 D.I.R. Dungun Raya 3.423
+3 D.I.R. Sungai Balar 3.000
+c Kab. Bangka Tengah
+
+1 D.I.R. Sungai Selan 3.500
+VII PROVINSI LAMPUNG 3 30.857
+a Kab. Lampung Timur
+
+1 D.I.R. Tambak Rakyat 4.000
+b Kab. Tulang Bawang
+
+1 D.I.R. Rawa Pitu 10.529
+c Kab. Mesuji
+
+2 D.I.R. Rawa Mesuji Atas 16.328
+
+VIII PROVINSI KALIMANTAN BARAT 17 68.483
+
+a Kab. Ketapang
+
+1 D.I.R. Air Hitam Besar 3.300
+2 D.I.R. Banjarsari 3.450
+3 D.I.R. Kendawangan Membuluh 4.220
+4 D.I.R. Pematang Gadung | 6.250
+5 D.I.R. Pematang Gadung II 4.450
+6 D.I.R. Sui. Kinjil 4.050
+b Kab. Kubu Raya
+
+1 D.I.R. Kerawang Komplek 4.500
+2 D.LR. Kubu Komplek 3.688
+3 D.I.R. Teluk Bayur 4.500
+c Kab. Sambas
+
+1 D.I.R. Pemangkat Komplek 3.289
+2 D.I.R. Pimpinan Komplek 4.304
+3 D.I.R. Sarang Burung Komplek 4.476
+4 D..R. Sebangkau 3.455
+5 D.I.R. Sebawi 3.000
+6 D.I.R. Sebubus Komplek 3.036
+7 D.LR. Selakau Komplek 4.900
+8 D.I.R. Semelagi Komplek 3.615

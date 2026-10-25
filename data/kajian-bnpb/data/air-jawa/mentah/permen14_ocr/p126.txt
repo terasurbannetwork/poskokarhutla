@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+24 D.I. Air Kotok II 50
+25 D.I. Air Tik Kepahiang 30
+26 D.I. Air Duku 30
+27 D.I. Air Kotok | 50
+28 D.I. Air Kotok III 50
+29 D.I. Air Langkap 50
+30 D.I. Air Penebat 100
+31 D.I. Air Sengak II 30
+32 D.I. Air Pauh 35
+33 D.I. Air Sebubut 25
+34 D.I. Air Sengkuang Tapak Gedung 20
+35 D.I. Air Tebat Penajung Panjang 85
+36 D.I. Air Kah 380
+37 D.I. Air Besi 75
+38 D.I. Air Serut 50
+39 D.I. Air Lembut Atas 75
+40 D.I. Air Sempiang 90
+41 D.I. Air Sempiang 15
+42 D.I. Air Sempiang 15
+43 D.I. Air Tik Panas 20
+44 D.I. Air Tik Betung 25
+45 D.I. Air Sengkuang 39
+46 D.I. Air Tik Sebubut 20
+47 D.I. Air Dingin 50
+48 D.I. Air Sengak Atas 50
+49 D.I. Air Rawa Salak 50
+50 D.I. Air Sengak 60
+51 D.I. Air Lembut 75
+52 D.I. Air Sengak 21
+53 D.I. Air Ketapang 28
+54 D.I. Air Tik Lay 38
+55 D.I. Air Tertik 50
+56 D.I. Air Tik Deras 30
+57 D.I. Air Bulu Kecil 51
+58 D.I. Air Tik Menyuruk 20
+59 D.I. Air Dendan 40
+60 D.I. Air Kemumu | 90
+61 D.I. Air Kemumu II 75
+62 D.I. Air Pring 45
+63 D.I. Air Jambu 75
+64 D.I. Air Susup II 35
+65 D.I. Air Pungut 40
+66 D.I. Air Gergasan 49
+67 D.I. Air Tik Tuak 5
+68 D.I. Air Itam 40
+69 D.I. Air Tik Kepahiang 20
+70 D.I. Air Lanang 20
+71 D.I. Air Salak 20
+72 D.I. Air Susup II 10
+73 D.I. Air Kemanis 20
+74 D.I. Air Susup | 10
+75 D.I. Air Kemanis 20
+76 D.I. Air Serut 25
+77 D.I. Air Raman 60
+78 D.I. Air Raman 40
+f Kab. Lebona 88 9.328
+1 D.I. Air Aman | 350
+2 D.I. Air Aman II 296
+3 D.I. Air Aman III 101
+4 D.I. Air Beloi 243
+#KANAN
+126
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+5 D.I. Air Buah 114
+6 D.I. Air Buyuak Bawah 75
+7 D.I. Air Danau Dare 38
+8 D.I. Air Dingin 70
+9 D.I. Air Dingin | 65
+10 D.I. Air Dingin II 60
+11 D.I. Air Embong III 195
+12 D.I. Air Geligai 40
+13 D.I. Air Gelugai 30
+14 D.I. Air Gilang Dingin 90
+15 D.I. Air Karat 505
+16 D.I. Air Karat Pel. Talang Leak 112
+17 D.I. Air Ketenong 314
+18 D.I. Air Menganyau Bawah 60
+19 D.I. Air Menganyau Kanan 200
+20 D.I. Air Menganyau Kiri 375
+21 D.I. Air Mubai Kanan 190
+22 D.I. Air Mubai Kecil 34
+23 D.I. Air Mubai Kiri 49
+24 D.I. Air Ngaai 614
+25 D.I. Air Nipis 75
+26 D.I. Air Nyudam Atas 153
+27 D.I. Air Pauh Besar 45
+28 D.I. Air Pluwen Atas 35
+29 D.I. Air Pluwen Bawah 176
+30 D.I. Air Pluwen Tengah 35
+31 D.I. Air Sebouk 25
+32 D.I. Air Selikat 40
+33 D.I. Air Siapang Kanan 100
+34 D.I. Air Telaga 30
+35 D.I. Air Tik Lay 30
+36 D.I. Air Udik 40
+37 D.I. Air Uram 702
+38 D.I. Air Aman Bawah 40
+39 D.I. Air Aman Kiri 50
+40 D.I. Air Baes 175
+41 D.I. Air Baes Bawah 60
+42 D.I. Air Beneng 100
+43 D.I. Air Butok 60
+44 D.I. Air Buyuak Atas 70
+45 D.I. Air Cendam Atas 150
+46 D.I. Air Cendam Bawah 163
+47 D.I. Air Danau Liang 150
+48 D.I. Air Dap 75
+49 D.I. Air Dingin Atas 50
+50 D.I. Air Dingin Tengah 29
+51 D.I. Air Gelugai II 30
+52 D.I. Air Genang 50
+53 D.I. Air Gilang 30
+54 D.I. Air Karat Karang Dapo 35
+55 D.I. Air Karat Mubai 45
+56 D.I. Air Kebutau 84
+57 D.I. Air Kemacak 65
+58 D.I. Air Kemacak 10
+59 D.I. Air Kopras 50
+60 D.I. Air Mangub Kanan 40
+61 D.I. Air Manaub Kecil 75
+62 D.I. Air Mangub Kiri 100
+63 D.I. Air Mubai Merah 60
+64 D.I. Air Musnau 40
+65 D.I. Air Ngoos 73

@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+180 D.I. Mundu I 3
+181 D.I. Mundu II 3
+182 D.I. Mundu III 2
+183 D.I. Nampu 48
+184 D.I. Ngasem 9
+185 D.I. Ngegongan 5
+186 D.I. Ngejos 1
+187 D.I. Ngembak 7
+188 D.I. Ngijo I 2
+189 D.I. Ngijo II 1
+190 D.I. Ngijo III 1
+191 D.I. Nglegok 14
+192 D.I. Nglendong 4
+193 D.I. Nglorok 18
+194 D.I. Nglorok 2
+195 D.I. Nglumer 56
+196 D.I. Ngrawung 35
+197 D.I. Ngrayung | 4
+198 D.I. Ngrayung II 6
+199 D.I. Nguren 375
+200 D.I. Pacar 87
+201 D.I. Pajek I 5
+202 D.I. Pajek II 6
+203 D.I. Pajek III 3
+204 D.I. Pajek IV 2
+205 D.I. Pajek V 3
+206 D.I. Pancur 1
+207 D.I. Panggung 28
+208 D.I. Pehulung 35
+209 D.I. Pencil I 4
+210 D.I. Pencil II 3
+211 D.I. Penggrik I 2
+212 D.I. Penggrik II 2
+213 D.I. Pijenan 150
+214 D.I. Piring II 59
+215 D.I. Piring III 100
+216 D.I. Piring IV 121
+217 D.I. Poleng I 11
+218 D.I. Poleng II 4
+219 D.I. Poleng III 18
+220 D.I. Pondok | 2
+221 D.I. Pondok II 6
+222 D.I. Pondok III 6
+223 D.I. Prambutan 7
+224 D.I. Pucung 35
+225 D.I. Pule I 25
+226 D.I. Pule II 15
+227 D.I. Pulo 8
+228 D.I. Pulo I 3
+229 D.I. Pulo II 5
+230 D.I. Puntuk 203
+231 D.I. Randu Alas | 33
+232 D.I. Randu Alas II 47
+233 D.I. Rondo Bebek 50
+234 D.I. Sagon I 7
+235 D.I. Sagon II 9
+236 D.I. Salak | 2
+237 D.I. Salak II 1
+238 D.I. Sambi 3
+239 D.I. Sambiroto | 3
+240 D.I. Sambiroto II 1
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+241 D.I. Sambiroto III 2
+242 D.I. Sambiroto IV 1
+243 D.I. Sambiroto V 2
+244 D.I. Sambong 36
+245 D.I. Santan | 3
+246 D.I. Santan II 1
+247 D.I. Sareng 866
+248 D.I. Sebakah I 2
+249 D.I. Sebakah II 1
+250 D.I. Sedah 587
+251 D.I. Segabuk 4
+252 D.I. Sekedung 2
+253 D.I. Sekedung I 7
+254 D.I. Sekedung II 2
+255 D.I. Selo 1
+256 D.I. Selumpak | 4
+257 D.I. Selumpak | 1
+258 D.I. Selukon I 2
+259 D.I. Selukon II 1
+260 D.I. Selulang | 3
+261 D.I. Selulang II 2
+262 D.I. Seluman I 1
+263 D.I. Seluman II 1
+264 D.I. Sembungan 8
+265 D.I. Semendi 14
+266 D.I. Sendanglawe 5
+267 D.I. Sepicis I 1
+268 D.I. Sepicis II 1
+269 D.I. Sepicis III 2
+270 D.I. Sepicis IV 1
+271 D.I. Seplupuh 6
+272 D.I. Seprahu Kidul 7
+273 D.I. Seprahu Kulon I 6
+274 D.I. Seprahu Kulon II 1
+275 D.I. Seprahu Wetan 4
+276 D.I. Serenyah 2
+277 D.I. Serenyah | 5
+278 D.I. Serenyah II 7
+279 D.I. Serenyah III 7
+280 D.I. Serenyah IV 3
+281 D.I. Serenyah V 2
+282 D.I. Sewu Kidul 16
+283 D.I. Siasem 6
+284 D.I. Sidorejo 150
+285 D.I. Silanang 53
+286 D.I. Singgahan 188
+287 D.I. Sirapan 74
+288 D.I. Slampir 29
+289 D.I. Slerong | 3
+290 D.I. Slerong II 86
+291 D.I. Slerong III 32
+292 D.I. Sobo 1
+293 D.I. Soko 10
+294 D.I. Soko | 20
+295 D.I. Soko II 5
+296 D.I. Sucen 46
+297 D.I. Sukoliman 30
+298 D.I. Suluk I 2
+299 D.I. Suluk II 3
+300 D.I. Sumberejo 3
+301 D.I. Sumbersirah 83

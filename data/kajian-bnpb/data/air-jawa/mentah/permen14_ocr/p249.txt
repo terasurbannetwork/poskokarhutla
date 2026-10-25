@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+416 D.I. Lumut | 7
+417 D.I. Lumut II 23
+418 D.I. MA. Balong 38
+419 D.I. MA. Depok 18
+420 D.I. MA. Gondang 10
+421 D.I. MA. Losari 40
+422 D.I. MA. Mrawu 11
+423 D.I. MA. Mudal 6
+424 D.I. Macanan 4
+425 D.I. Madesan A 47
+426 D.I. Madesan B 14
+427 D.I. Mancasan 15
+428 D.I. Manggisan 42
+429 D.I. Mangir 11
+430 D.I. Mangun 20
+431 D.I. Mangunan 25
+432 D.I. Maron 50
+433 D.I. Mayongan 10
+434 D.I. Mendut 21
+435 D.I. Mentik 21
+436 D.I. Mlelo 36
+437 D.I. Mrawu 108
+438 D.I. Muncrat 25
+439 D.I. Muneng Warangan 50
+440 D.I. Mungkidan 45
+441 D.I. Muning/Bening 15
+442 D.I. Muntuk 21
+443 D.I. Musuk 39
+444 D.I. Nabe 18
+445 D.I. Nabin 25
+446 D.I. Napen 25
+447 D.I. Nerang 15
+448 D.I. Ngabean 27
+449 D.I. Ngabeyan 25
+450 D.I. Ngablak 20
+451 D.I. Ngadangan 6
+452 D.I. Ngadi Gunung 20
+453 D.I. Ngadiretno 30
+454 D.I. Ngadranan 5
+455 D.I. Ngaglik | 59
+456 D.I. Ngaglik II 26
+457 D.I. Ngaglik III 7
+458 D.I. Ngaglik IV 6
+459 D.I. Ngaliyan 25
+460 D.I. Ngamat 5
+461 D.I. Ngampel 16
+462 D.I. Nganggrung 21
+463 D.I. Nganti 25
+464 D.I. Ngaren 14
+465 D.I. Ngares 10
+466 D.I. Ngasem I 30
+467 D.I. Ngasem II 10
+468 D.I. Ngebuh 12
+469 D.I. Ngelo I 40
+470 D.I. Ngelo II 20
+471 D.I. Ngelo III 7
+472 D.I. Ngelo/Cangkring 16
+473 D.I. Ngembel 22
+474 D.I. Ngemplak I 20
+475 D.I. Ngemplak II 15
+476 D.I. Ngemplak III 43
+#KANAN
+ag 7015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+477 D.I. Ngempon 60
+478 D.I. Ngentak I 14
+479 D.I. Ngentak II 20
+480 D.I. Ngepeh 415
+481 D.I. Ngepos 25
+482 D.I. Ngepreh 65
+483 D.I. Ngetos 46
+484 D.I. Ngipik 2
+485 D.I. Nglampahan 35
+486 D.I. Nglawisan 10
+487 D.I. Nglegok I 45
+488 D.I. Nglegok II 10
+489 D.I. Ngleses 30
+490 D.I. Nglumut 12
+491 D.I. Ngobaran 133
+492 D.I. Ngodok 63
+493 D.I. Ngori | 6
+494 D.I. Ngori II 23
+495 D.I. Ngrajek 29
+496 D.I. Ngresap 25
+497 D.I. Nongko I 12
+498 D.I. Nongko II 20
+499 D.I. Oho 15
+500 D.I. Pabolan 38
+501 D.I. Padureso 26
+502 D.I. Padusan 12
+503 D.I. Pager Gunung 5
+504 D.I. Pajangan 114
+505 D.I. Pakel 11
+506 D.I. Pakem I 7
+507 D.I. Pakem II 6
+508 D.I. Pakisan 17
+509 D.I. Pancar | 31
+510 D.I. Pancar II 5
+511 D.I. Pandaran 18
+512 D.I. Pangkat 14
+513 D.I. Parakan 5
+514 D.I. Parakan Bengkong 13
+515 D.I. Parangan | 11
+516 D.I. Parangan II 15
+517 D.I. Pasangsari 20
+518 D.I. Pasarmati 16
+519 D.I. Pasekan 204
+520 D.I. Paten 14
+521 D.I. Patuk 27
+522 D.I. Patuk Suruh 25
+523 D.I. Pelem 37
+524 D.I. Pencar 106
+525 D.I. Pendem 18
+526 D.I. Pending 50
+527 D.I. Pengangson 16
+528 D.I. Penggik 22
+529 D.I. Petel 3
+530 D.I. Petung I 47
+531 D.I. Petung II 14
+532 D.I. Petung III 60
+533 D.I. Pisangan 4
+534 D.I. Piton 33
+535 D.I. Piyungan 50
+536 D.I. Plalangan 27
+537 D.I. Plalar 5

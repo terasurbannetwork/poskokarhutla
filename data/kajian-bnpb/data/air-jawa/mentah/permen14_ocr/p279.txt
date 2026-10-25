@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+398 D.I. Sanggen 27
+399 D.I. Santri (MA) 9
+400 D.I. Sares Jambon 13
+401 D.I. Sebatang 28
+402 D.I. Sebumen 1
+403 D.I. Secang 31
+404 D.I. Secangkring 33
+405 D.I. Segandu 20
+406 D.I. Segelung 1
+407 D.I. Segetak 8
+408 D.I. segetuk (MA) 1
+409 D.I. Seglodog I 3
+410 D.I. Seglutuk 12
+411 D.I. Segondang 48
+412 D.I. Segondang I 2
+413 D.I. Segondang Il/Sekere 10
+414 D.I. Segondang III 8
+415 D.I. Segringsing 20
+416 D.I. Sejambe 3
+417 D.I. Sejenggot 6
+418 D.I. Sejengkol 12
+419 D.I. Sekasur 4
+420 D.I. Sekemplong 12
+421 D.I. Sekenting 46
+422 D.I. Sekepruk 26
+423 D.I. Sekero 2
+424 D.I. Sekreo (MA) 2
+425 D.I. Sekrincing 15
+426 D.I. Sekrincing | 8
+427 D.I. Sekrincing II 5
+428 D.I. Sekuburan 1
+429 D.I. Sekuwung 26
+430 D.I. Selempong 20
+431 D.I. Selengi 14
+432 D.I. Seleri Bejen (MA) 10
+433 D.I. Seleri Semen (MA) 3
+434 D.I. Selilin WVonoboyo 15
+435 D.I. Selingseng Ngabean 7
+436 D.I. Selingseng Pesantren 2
+437 D.I. Sempuro 10
+438 D.I. Semrican (MA) 7
+439 D.I. Semuyon (MA) 10
+440 D.I. Sendang I 16
+441 D.I. Senden 20
+442 D.I. Sengi (MA) 3
+443 D.I. Sepasung 15
+444 D.I. Sepelem Rejosari 3
+445 D.I. Sepete 4
+446 D.I. Seprempeng 9
+447 D.I. Seratan 17
+448 D.I. Seringin 5
+449 D.I. Serno (MA) 6
+450 D.I. Serogo 5
+451 D.I. Setalang 15
+452 D.I. Setegal 8
+453 D.I. Setlombo 46
+454 D.I. Sewatu (MA) 7
+455 D.I. Seweden 10
+456 D.I. Sewerak 9
+457 D.I. Sewiru 5
+458 D.I. Sewiyu (MA) 7
+#KANAN
+979 2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+459 D.I. Sewungu 12
+460 D.I. Siaji 7
+461 D.I. Sibandan 5
+462 D.I. Sibanteng 10
+463 D.I. Sibawak 13
+464 D.I. Sibayan 6
+465 D.I. Sibende/Balong 17
+466 D.I. Sibendeng 12
+467 D.I. Siblumbang 5
+468 D.I. Sicangkring/Sejati 26
+469 D.I. Siceret 10
+470 D.I. Sicurug 25
+471 D.I. Sidadap 3
+472 D.I. Sidali 61
+473 D.I. Sidawung 17
+474 D.I. Sidekong I 17
+475 D.I. Sidoharjo 78
+476 D.I. Sidowo 37
+477 D.I. Siduren (MA) 10
+478 D.I. Siences 31
+479 D.I. Siendok 20
+480 D.I. Sigamblok 30
+481 D.I. Siganjur 5
+482 D.I. Sigareng 8
+483 D.I. Sigaul 3
+484 D.I. Sigelap 1
+485 D.I. Sigembleb 12
+486 D.I. Sigempirit 13
+487 D.I. Sigemuk 7
+488 D.I. Sigetas (MA) 10
+489 D.I. Sigetuk (MA) 29
+490 D.I. Siglagah M
+491 D.I. Siglagah 9
+492 D.I. Siglutuk 13
+493 D.I. Siglutuk 20
+494 D.I. Sigorong 15
+495 D.I. Sijago 13
+496 D.I. Sijenggot 20
+497 D.I. Sijeruk 10
+498 D.I. Sijodog 13
+499 D.I. Sijohar (MA) 5
+500 D.I. Sijonggol 29
+501 D.I. Sikebo 11
+502 D.I. Sikecah (MA) 6
+503 D.I. Sikelen 15
+504 D.I. Sikembang Ngadirejo 101
+505 D.I. Sikenting Wadas 35
+506 D.I. Sikentir 11
+507 D.I. Siklam pok 25
+508 D.I. Siklewok 5
+509 D.I. Siklopo 156
+510 D.I. Siklurak I 20
+511 D.I. Sikonal 10
+512 D.I. Sikranjang 17
+513 D.I. Sikretek 7
+514 D.I. Sikuncen (MA) 3
+515 D.I. Silatuk (MA) 10
+516 D.I. Silayar 23
+517 D.I. Siledah 15
+518 D.I. Silegok 5
+519 D.I. Silemut 25

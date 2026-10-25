@@ -1,0 +1,82 @@
+#TATA_LETAK satu-tabel lebar=2480
+585 2015, No.638
+NO Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Tambak D.I.T (Ha)
+
+15 D.I.T. Tegal Mapak 118
+b Kab. Serana 17 5.761
+1 D.I.T. Desa Alang Alang 215
+2 D.LT. Desa Banten 189
+3 D..T. Desa Domas 537
+4 D.LT. Desa Kubang Puji 66
+5 D.LT. Desa Linduk 337
+6 D.I.T. Desa Pamengkang 141
+7 D.LT. Desa Pedalaman 496
+8 D.I.T. Desa Sawah Luhur 446
+9 D.I.T. Desa Sujung 167
+
+10 D.I.T. Desa Sukajaya 409
+
+11 D.I.T. Desa Susukan 478
+
+12 D.I.T. Desa Tanara 95
+
+13 D.I.T. Desa Tengkurak 669
+
+14 D.I.T. Desa Tenjo Ayu 553
+
+15 D.I.T. Desa Tenjo Ayu 245
+
+16 D.I.T. Desa Tonjong 215
+
+17 D.I.T. Desa Wanayasa 503
+c Kab. Tanaerana 22 5.102
+1 D.I.T. Desa Dadap 58
+2 D.LT. Desa Jenggot 104
+3 D.I.T. Desa Karang Anyar 109
+4 D.LT. Desa Ketapang 169
+5 D.LT. Desa Kohod 266
+6 D.I.T. Desa Kosambi Barat 131
+7 D..T. Desa Kosambi Timur 57
+8 D.I.T. Desa Kramat 253
+9 D.I.T. Desa Kronjo 349
+
+10 D.I.T. Desa Lemo 282
+
+11 D.I.T. Desa Lontar 326
+
+12 D.I.T. Desa Marga Mulya 129
+
+13 D.I.T. Desa Mauk Barat 357
+
+14 D.I.T. Desa Muara 329
+
+15 D.I.T. Desa Muncang 356
+
+16 D.I.T. Desa Pagedangan Ilir 433
+
+17 D.I.T. Desa Patra Manggala 213
+
+18 D.I.T. Desa Salembaran Jati 84
+
+19 D.I.T. Desa Salembaran Jaya 415
+
+20 D.I.T. Desa Sukawali 88
+
+21 D.LT. Desa Tanjung Burung 243
+
+22 DT. Desa Tanjung Pasir 351
+Il PROVINSI JAWA BARAT 11 9.057
+a Kab. Karawana 3 2.526
+1 D.LT. Cilamaya Wetan 906
+2 D.LT. Pepetan 750
+3 D.I.T. Saca 870
+b Kab. Subana 8 6.531
+1 D.LT. Cilebar 945
+2 D.ILT. Langensari 750
+3 D.I.T. Pondok Bali 895
+4 D.LT. Ekpres 870
+5 D.ILT. Cigadung 921
+6 D.I.T. Jayamutti 580
+7 DT. Jeruju 600
+8 D.I.T. Sukamaju 970

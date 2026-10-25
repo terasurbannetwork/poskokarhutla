@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 500
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+42 D.LA.T. Gondangan PWS 175 22
+43 D.LA.T. Gondangan PWS 176 21
+44 D.LA.T. Tangkisanpos PWS 177 26
+45 D.LA.T. Tangkisanpos PWS 178 41
+46 D.LA.T. Wonoboyo PWS 179 30
+47 D.LA.T. Kwaren PWS 180 18
+48 D.LA.T. Titang PWS 181 20
+49 D.LA.T. Mutihan PWS 182 19
+50 D.LA.T. Karangdukuh PWS 183 24
+51 D.LA.T. Candirejo PWS 184 33
+52 D.LA.T. Candirejo PWS 185 28
+53 D.LA.T. Candirejo PWS 186 23
+54 D.LA.T. Granting PWS 187 26
+55 D.LA.T. Muruh PWS 188 34
+56 D.LA.T. Muruh PWS 189 15
+57 D.LA.T. Baturan PWS 190 19
+58 D.LA.T. Baturan PWS 191 24
+59 D.I.A.T. Baturan PWS 192 16
+60 D.L.A.T. Mlese PWS 193 18
+61 D.LA.T. Ceporan PWS 194 27
+62 D.LA.T. Ceporan PWS 195 19
+63 D.LA.T. Jothon PWS 224 22
+64 D.LA.T. Tambongwetan PWS 247 22
+65 D.LA.T. Mayungan PWS 248 R 14
+66 D.I.A.T. Mayungan PWS 252 21
+67 D.LA.T. Tarubasan PWS 253 32
+68 D.I.A.T. Mutihan PWS 254 18
+69 D.LA.T. Mutihan PWS 255 28
+70 D.LA.T. Mlese PWS 256 14
+71 D.LA.T. Mutihan PWS 257 30
+72 D.LA.T. Kadirejo PWS 258 28
+73 D.LA.T. Jungkare PWS 259 17
+74 D.LA.T. Wonosari PWS 260 22
+75 D.LA.T. Wonosari PWS 262 22
+76 D.LA.T. Wonosari PWS 263 16
+77 D.LA.T. Gempol PWS 265 25
+78 D.LA.T. Pandes PWS 266 33
+79 D.LA.T. Mayungan PWS 111/275 36
+80 D.LA.T. Bugisan PWS 293 R 31
+81 D.LA.T. Majegan PWS 295 35
+82 D.LA.T. Kwaren PWS 118/287 24
+83 D.LA.T. Wonosari PWS 164/89 34
+84 D.LA.T. Wonosari PWS 088/270 26
+85 D.LA.T. Tarubasan PWS 092/272 35
+a Kab. Kudus 69 1.677
+
+1 D.LA.T. Klumpit PWJ29 27
+
+2 D.LA.T. Gondosari PWJ30 20
+
+3 D.LA.T. Gondosari PWJ31 13
+
+4 D.LA.T. Gribig PWJS7 26
+
+5 D.LA.T. Klumpit PWJ58 18
+
+6 D.LA.T. Klumpit PWJ59 23
+
+7 D.LA.T. Klumpit PWJ6O 14
+
+8 D.LA.T. Klumpit PWJ61 14
+
+9 D.L.A.T. Getasrabi PWJeE2 12
+10 D.I.A.T. Getasrabi PWJ63 13
+11 D.LA.T. Getasrabi PWJ64 18
+12 D.LA.T. Klumpit PWJE5 18
+13 D.LA.T. Karangmalang PWJ66 15
+14 D.LA.T. Pedurenan PWJ68 19
+15 D.LA.T. Karangmalang PWJ96 23

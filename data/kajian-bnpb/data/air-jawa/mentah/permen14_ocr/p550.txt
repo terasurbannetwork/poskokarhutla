@@ -1,0 +1,66 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 550
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+13 D.LA.T. Merdeka I KEW - 020 12
+14 D.LA.T. Merdeka-Babau KEW - 028 10
+15 D.LA.T. Bolok PBM - 022 33
+16 D.LA.T. Kobonoen (Babau) KEW - 018 18
+17 D.LA.T. Pukdalel-Pukdale OTW - 003 10
+18 D.LA.T. Fatukoa PFM - 158 21
+19 D.LA.T. Kuanheum PKM - 021 32
+20 D.I.A.T. Deklat Pemda-Kolhua PKM - 025 4
+21 D.LA.T. Kuanheum PKM - 155 34
+22 D.L.A.T. Penfui KPW - 003 10
+23 D.I.A.T. Oesapa KEW - 011 50
+24 D.I.A.T. Fatukoa KEW - 015 23
+25 D.LA.T. Kuanunut Penfui KEW - 029 5
+26 D.I.A.T. Naibonat II OTW - 005 12
+27 D.I.A.T. Naibonat II-Naibonat OPW - 001 10
+28 D.ILA.T. Lumbung-Naibonat OEW - 013 14
+29 D.I.A.T. Subsidi-Naibonat OPW - 002 17
+30 D.I.A.T. Naibonat OPW - 003 2
+31 D.I.A.T. Naibonat OPW - 004 12
+32 D.LA.T. Tunfeo-Naibonat PNI - 149 6
+33 D.I.A.T. Naibonat ( BPTP) I PNI - 153 2
+34 D.I.A.T. Naibonat ( BPTP) II PNI - 154 2
+35 D.I.A.T. Nunkurus PNI - 159 12
+36 D.I.A.T. Nunkurus PNI - 175 12
+37 D.I.A.T. Naibonatl OTW - 002 3
+38 D.LA.T. Oesao Besar OEW - 014 16
+39 D.I.A.T. Oeteta I POI - 132 22
+40 D.L.A.T. Oeteta II POI - 135 22
+41 D.LA.T. Oeteta III POI - 136 15
+42 D.LA.T. Oetetal V POI - 137 12
+43 D.L.A.T. Dusunlll-Oeteta POI - 142 13
+44 D.LA.T. Oeteta POI - 163 14
+45 D.LA.T. Oenaek POI- 171 12
+46 D.I.A.T. Oefafi POI- 172 14
+47 D.LA.T. Oefafi POI - 173 15
+48 D.LA.T. Oesao POI - 174 15
+49 D.LA.T. Kobonoen-Oefafi POM - 125 16
+50 D.I.A.T. Koat-Oefafi POM - 126 18
+51 D.I.A.T. Koat-Oefafi POM - 127 14
+52 D.I.A.T. Oesao OEW - 003 0
+53 D.I.A.T. Tatelek-Pukdale PP-139 12
+54 D.I.A.T. Pukdale (Tatelek) PP - 156 10
+55 D.LA.T. Paritil OEW - 009 12
+56 D.I.A.T. Paritill OTW - 007 14
+57 D.I.A.T. Umakisik OEW - 017 12
+58 D.I.A.T. Tuadale OEW - 018 18
+59 D.I.A.T. Lemadak OEW - 020 17
+60 D.I.A.T. Merdeka-Pariti OPW - 011 10
+61 D.LA.T. Oeteta-Puskesmas OPW - 013 10
+62 D.I.A.T. Tatelek-Pukdale PPI-129 10
+63 D.I.A.T. Tatelek-Pukdale PPI-131 12
+64 D.I.A.T. Tatelek-Pukdale PPI -133 12
+65 D.I.A.T. Tatelek-Pukdale PPI - 134 11
+66 D.I.A.T. Tatelek-Pukdale PPI -139 10
+67 D.I.A.T. Namodale-Pariti PPI - 143 18
+68 D.I.A.T. Babaoen-Pariti PPI - 144 18
+69 D.I.A.T. Tatelek-Pukdale PPI - 150 12
+70 D.I.A.T. Tatelek PPI - 156 18
+71 D.LA.T. Pukdale PPI - 161 12
+72 D..A.T. Pariti OTW - 006 8
+73 D.LA.T. Ledeana Dusun V PSB - 001 13

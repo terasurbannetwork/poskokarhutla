@@ -1,0 +1,62 @@
+#TATA_LETAK satu-tabel lebar=2480
+569 2015, No.638
+Provinsi/Kabupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+65 D.LA.T. WS. Limboto Bolango Bone SDGo 142 18
+66 D.ILA.T. WS. Limboto Bolango Bone SDGo 143 18
+67 D.LA.T. WS. Limboto Bolango Bone SDGo 144 R 17
+68 D.ILA.T. WS. Limboto Bolango Bone SDGo 145 15
+69 D.LA.T. WS. Limboto Bolango Bone SDGo 146 15
+70 D.LA.T. WS. Limboto Bolango Bone SDGo 147 15
+71 D.LA.T. WS. Limboto Bolango Bone SDGo 148 15
+72 D.LA.T. WS. Limboto Bolango Bone SDGo 149 30
+73 D.LA.T. WS. Limboto Bolango Bone SDGo 150 20
+74 D.LA.T. WS. Limboto Bolango Bone SDGo 151 20
+75 D.LA.T. WS. Limboto Bolango Bone SDGo 152 20
+76 D.LA.T. WS. Limboto Bolango Bone SDGo 153 20
+77 D.LA.T. WS. Limboto Bolango Bone SDGo 155 20
+78 D.LA.T. WS. Limboto Bolango Bone SDGo 156 20
+79 D.LA.T. WS. Limboto Bolango Bone SDGo 157 20
+80 D.LA.T. WS. Limboto Bolango Bone SDGo 158 20
+81 D.LA.T. WS. Limboto Bolango Bone SDGo 159 20
+82 D.LA.T. WS. Limboto Bolango Bone SDGo 160 20
+83 D.LA.T. WS. Limboto Bolango Bone SDGo 161 20
+84 D.LA.T. WS. Limboto Bolango Bone SDGo 162 20
+85 D.LA.T. WS. Limboto Bolango Bone SDGo 163 10
+86 D.LLA.T. WS. Limboto Bolango Bone SDGo 164 20
+87 D.LA.T. WS. Limboto Bolango Bone SDGo 165 20
+88 D.LA.T. WS. Limboto Bolango Bone SDGo 166 20
+89 D.LA.T. WS. Limboto Bolango Bone SDGo 167 20
+90 D.LA.T. WS. Limboto Bolango Bone SDGo 169 11
+d Kab. Gorontalo Utara 1 15
+1 D.LA.T. WS. Bolango Bone SDGu 173 15
+e Kab. Pohuwato 8 180
+1 D.LA.T. WS. Randangan SDPo 51 20
+2 D.LA.T. WS. Randangan SDPo 52 20
+3 D.LA.T. WS. Randangan SDPo 103 22
+4 D.LA.T. WS. Randangan SDPo 104 22
+5 D.LA.T. WS. Randangan SDPo 105 26
+6 D.LA.T. WS. Randangan SDPo 106 25
+7 D.LA.T. WS. Randangan SDPo 107 19
+8 D.LA.T. WS. Randangan SDPo 154R 26
+XIV PROVINSI SULAWESI TENGAH 178 1.873
+a Kab. Banaaai 2 20
+1 D.ILA.T Cendana P SE 119 CTL- ST 10
+2 D.LA.T Pandan W SE 118 PTL- ST 10
+b Kab. Donaaala 82 697
+1 D.LA.T. Kola-Kola SE 71 KBD - ST 11
+2 D.LA.T. Lalombi SE 67 WBD- ST 9
+3 D.LA.T. Lalombi SE 70 LKD - ST 9
+4 D.LA.T. Limboro SE 21 LBD - ST 9
+5 D.LA.T. Limboro SE 22 LBD - ST 9
+6 D.I.A.T. Limboro SE 23 LBD - ST 10
+7 D.LA.T. Limboro SE 24 LBD - ST 10
+8 D.LA.T. Limboro SE 25 LBD- ST 10
+9 D.LA.T. Surumana SE 31 SBD - ST 10
+10 D.ILA.T. Surumana SE 32 SBD - ST 10
+11 D.LA.T. Surumana SE 33 SBD - ST 10
+12 D.LA.T. Surumana SE 34 SBD - ST 10
+13 D.LA.T. Surumana SE 35 SBD - ST 10
+14 D.LA.T. Surumana SE 36 SBD - ST 10

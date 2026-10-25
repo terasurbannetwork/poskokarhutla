@@ -1,0 +1,131 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+417 D.I. G. Limas 15
+418 D.I. Sabwatu 15
+419 D.I. Pajaringan 30
+420 D.I. K. Ngelo 15
+421 D.I. Dung Telon 20
+422 D.I. Baran 15
+423 D.I. Jebukan 15
+424 D.I. Temon 17
+425 D.I. Plandi 10
+426 D.I. Watusigar 25
+427 D.I. Dung Dut 20
+428 D.I. Puladadi 17
+429 D.I. Gamping 15
+430 D.I. Duren 18
+431 D.I. Dung dowo 17
+432 D.I. Gesing 15
+433 D.I. Becik 10
+434 D.I. D. Wajak 7
+435 D.I. Wadar 10
+436 D.I. Jambu 20
+437 D.I. Sidodadi 15
+438 D.I. Gitri 13
+439 D.I. Watukudi 7
+440 D.I. Gondang 10
+441 D.I. Bolang 15
+442 D.I. Salam 25
+443 D.I. Klacen 20
+444 D.I. Mekung 15
+445 D.I. Plupuh 12
+446 D.I. Sb. Jumbleng 6
+447 D.I. K. Tempuran 10
+448 D.I. Waruteklok 5
+449 D.I. Bener 7
+450 D.I. Nguni 7
+451 D.I. Miri 10
+452 D.I. Delisen 8
+453 D.I. Padas 7
+454 D.I. Jeblokan 25
+455 D.I. Watu Buyeng 20
+456 D.I. Naampo 6
+457 D.I. Sambeng 5
+458 D.I. Suren 9
+459 D.I. Plelesan 4
+460 D.I. Gauto 10
+461 D.I. Gandul 7
+462 D.I. Kepuh 10
+463 D.I. Gablok 3
+s Kab. Pamekasan 50 3.730
+1 D.I. Angsokah 3
+2 D.I. Bajang 14
+3 D.I. Balang 35
+4 D.I. Bangsokah 125
+5 D.I. Ba'Oloh 20
+6 D.I. Batu Bintang 100
+7 D.I. Batu Karang 5
+8 D.I. Batu Kerbuy 190
+9 D.I. Betes 72
+10 D.I. Blumbungan 121
+11 D.I. Bulay 238
+12 D.I. Bungur 47
+#KANAN
+351 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+13 D.I. Burneh 16
+14 D.I. Cangkreng 30
+15 D.I. Cenlecen 51
+16 D.I. Dempo Timur 35
+17 D.I. Dempol 50
+18 D.I. Duko 13
+19 D.I. Duko | 98
+20 D.I. Duko li 33
+21 D.I. ENIS 15
+22 D.I. Glagas 5
+23 D.I. Grujugan 98
+24 D.I. Jrengoh 10
+25 D.I. Kapt. Blumbungan 80
+26 D.I. Kebun 50
+27 D.I. Kenek 8
+28 D.I. Kereman 21
+29 D.I. Klampar 189
+30 D.I. Kolbuk 78
+31 D.I. Kolpoh 12
+32 D.I. Lancar 138
+33 D.I. Lebek 23
+34 D.I. Nyato 43
+35 D.I. Ombar 10
+36 D.I. Panaguan 151
+37 D.I. Pancoran 30
+38 D.I. Pegantenan 50
+39 D.I. Penang 200
+40 D.I. Polagan 321
+41 D.I. Ponjanan 15
+42 D.I. Prompong 96
+43 D.I. Raja 582
+44 D.I. Sanip 10
+45 D.I. Sentaman 6
+46 D.I. Sere 5
+47 D.I. Taman Gengser 15
+48 D.I. Taman Pakong 30
+49 D.I. Taman Waru 90
+50 D.I. Toronan 53
+t Kab. Pasuruan 373 22.905
+1 D.I. Afvour Budengan 308
+2 D.I. Badong 211
+3 D.I. Bakalan 59
+4 D.I. Bakalan 15
+5 D.I. Bang kuning 21
+6 D.I. Bawang 142
+7 D.I. Beji 286
+8 D.I. Bendo 16
+9 D.I. Bener 219
+10 D.I. Besuki 25
+11 D.I. Betiting 13
+12 D.I. Betiting II 29
+13 D.I. Betro (Sbr) 1
+14 D.I. Brojo 95
+15 D.I. Bulakbendo 21
+16 D.I. Bulharsari 31
+17 D.I. Buluh 59
+18 D.I. Bumbungan 17
+19 D.I. Bunder I 16
+20 D.I. Bunder II 29
+21 D.I. Bunut | 32

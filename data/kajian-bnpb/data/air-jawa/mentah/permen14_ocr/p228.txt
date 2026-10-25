@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+618 D.I. Lambir 38
+619 D.I. Landak 22
+620 D.I. Langgar 10
+621 D.I. Langon 36
+622 D.I. Lasahan 25
+623 D.I. Lasim 20
+624 D.I. Lasimah 45
+625 D.I. Lemahbang 10
+626 D.I. Lempuk 16
+627 D.I. Lempuk 16
+628 D.I. Lenceng 40
+629 D.I. Londo 18
+630 D.I. Lowo 40
+631 D.I. Margorejo 40
+632 D.I. Marjo 25
+633 D.I. Mat Kabirin 13
+634 D.I. Mberan 30
+635 D.I. Mbujel 10
+636 D.I. Mbujel 26
+637 D.I. Medani 50
+638 D.I. Miri 10
+639 D.I. Mojo 10
+640 D.I. Moroguno Tapen 40
+641 D.I. Nanas 12
+642 D.I. Ndlembak 13
+643 D.I. Ndoro/Bedahan 60
+644 D.I. Nduren 10
+645 D.I. Nduren 50
+646 D.I. Ngampenan 17
+647 D.I. Ngandong 18
+648 D.I. Ngari 40
+649 D.I. Ngaritan 20
+650 D.I. Ngarjo 15
+651 D.I. Ngasem 68
+652 D.I. Ngawot 25
+653 D.I. Ngelang 27
+654 D.I. Ngelo 100
+655 D.I. Ngempeng 15
+656 D.I. Ngemplak 10
+657 D.I. Ngetong 11
+658 D.I. Ngetuk 13
+659 D.I. Nggadu Rembulung 11
+660 D.I. Nggesing 30
+661 D.I. Ngingas 25
+662 D.I. Ngipik 12
+663 D.I. Ngipik 15
+664 D.I. Nglagar 20
+665 D.I. Nglembah 17
+666 D.I. Ngradegan 11
+667 D.I. Ngrahu 90
+668 D.I. Ngrancah 25
+669 D.I. Ngranggi 13
+670 D.I. Ngrau 10
+671 D.I. Ngrebu 30
+672 D.I. Ngrinyah 12
+673 D.I. Ngrowo 20
+674 D.I. Numbrok 20
+675 D.I. Oro-Oro 70
+676 D.I. Pakel 17
+677 D.I. Pakis/Persil 40
+678 D.I. Pandangan 67
+#KANAN
+228
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+679 D.I. Panggang/Dunggeng 13
+680 D.I. Paras 11
+681 D.I. Paras 10
+682 D.I. Peci I 12
+683 D.I. Peci II 10
+684 D.I. Pelem 15
+685 D.I. Pelem 30
+686 D.I. Pelus I 15
+687 D.I. Pelus II 25
+688 D.I. Pendem M
+689 D.I. Pendem 40
+690 D.I. Pentol 25
+691 D.I. Pete 30
+692 D.I. Pete 12
+693 D.I. Pete Krajan 50
+694 D.I. Plantungan 40
+695 D.I. Pligen 50
+696 D.I. Polorejo 50
+697 D.I. Pomahan 25
+698 D.I. Protelon 10
+699 D.I. Pucung 14
+700 D.I. Pucung 11
+701 D.I. Pugruk 18
+702 D.I. Pule 60
+703 D.I. Pule 11
+704 D.I. Pulo 40
+705 D.I. Punden 17
+706 D.I. Punden 31
+707 D.I. Punden 25
+708 D.I. Punden 25
+709 D.I. Punden Wetan | 15
+710 D.I. Putat 15
+711 D.I. Putat 14
+712 D.I. Ragiman 10
+713 D.I. Redjeb 27
+714 D.I. Rembulung 10
+715 D.I. Rembulung 11
+716 D.I. Rengging 40
+717 D.I. Resulo 12
+718 D.I. Rimong 13
+719 D.I. Rojo 62
+720 D.I. Rojo 60
+721 D.I. Ropis 20
+722 D.I. S. Sentul 12
+723 D.I. Sagi 15
+724 D.I. Sakijah 16
+725 D.I. Sakimah 15
+726 D.I. Sakirah 15
+727 D.I. Salak 46
+728 D.I. Salem 25
+729 D.I. Salipin 36
+730 D.I. Sambungjalan 21
+731 D.I. Sampok 13
+732 D.I. Sampung 12
+733 D.I. Sapirah 11
+734 D.I. Sarigi 36
+735 D.I. Sarikoso 47
+736 D.I. Sariman 10
+737 D.I. Sarini 30
+738 D.I. Sarkam 25
+739 D.I. Sarug 10

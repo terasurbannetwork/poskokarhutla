@@ -23,6 +23,10 @@ data/raw/berita/*
 data/raw/konsesi/*
 !data/raw/konsesi/sanksi_karhutla.json
 !data/raw/konsesi/grup_perusahaan.json
+
+!data/raw/hukum/
+data/raw/hukum/*
+!data/raw/hukum/indeks.json
 __pycache__/
 .DS_Store
 data/graf_jalan.json.gz

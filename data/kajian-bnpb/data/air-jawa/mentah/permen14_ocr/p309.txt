@@ -1,0 +1,132 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+578 D.I. Sumber Um. Dawe 8
+579 D.I. Sumber Umbul Damar 6
+580 D.I. Sumber Urip € 17
+581 D.I. Sumber Urip D 18
+582 D.I. Sumber Urip E 21
+583 D.I. Sumber Urip F 17
+584 D.I. Sumber Urip I 32
+585 D.I. Sumber Urip II 10
+586 D.I. Sumber Urip III 9
+587 D.I. Sumber Urip IV 7
+588 D.I. Sumber Waru 9
+589 D.I. Sumber Wuluh 10
+590 D.I. Sumberagung 20
+591 D.I. Sumberagung I 51
+592 D.I. Sumberagung I 8
+593 D.I. Sumberagung I 6
+594 D.I. Sumberagung II 15
+595 D.I. Sumberagung III 15
+596 D.I. Sumberagung III 10
+597 D.I. Sumberagung IV 8
+598 D.I. Sumbercungkup | 8
+599 D.I. Sumberingin 29
+600 D.I. Sumberjo 82
+601 D.I. Sumberjo 4
+602 D.I. Sumberkotes 12
+603 D.I. Sumberkrenceng 5
+604 D.I. Sumbermanggis 5
+605 D.I. Sumberpelus 19
+606 D.I. Sumberprecet 17
+607 D.I. Sumbersari 37
+608 D.I. Sumbersari 6
+609 D.I. Sumbersari | 148
+610 D.I. Sumbersari II 22
+611 D.I. Sumbersari III 86
+612 D.I. Sumberwaru A 5
+613 D.I. Suru | 13
+614 D.I. Suru Kn 232
+615 D.I. Suwaru 51
+616 D.I. Talok II 24
+617 D.I. Talok III 20
+618 D.I. Talun | 33
+619 D.I. Talun II 14
+620 D.I. Tambakrejo II 13
+621 D.I. Tanggung 12
+622 D.I. Tapak | 18
+623 D.I. Tapak II 10
+624 D.I. Tapak III 38
+625 D.I. Tapak IV 60
+626 D.I. Tapakrejo | 7
+627 D.I. Tapakrejo II 10
+628 D.I. Tawang 7
+629 D.I. Tawang | 70
+630 D.I. Tawang II 23
+631 D.I. Tawang Rejo I 23
+632 D.I. Tawang Rejo II 19
+633 D.I. Tawang Rejo III 12
+634 D.I. Tawang Rejo IV 9
+635 D.I. Tawang Rejo V 9
+636 D.I. Tawangbrak 51
+637 D.I. Tawangrejo 21
+638 D.I. Tawangsari I 74
+#KANAN
+309 2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+639 D.I. Tawangsari II 33
+640 D.I. Tawing I 50
+641 D.I. Tawing II 151
+642 D.I. Tejo 218
+643 D.I. Temenggungan 116
+644 D.I. Tempurejo 11
+645 D.I. Tepas I 10
+646 D.I. Tepas II 13
+647 D.I. Termas 43
+648 D.I. Tetelan 18
+649 D.I. Tiaji 162
+650 D.I. Tiaji 10
+651 D.I. Tileng Bajang | 11
+652 D.I. Timang 26
+653 D.I. Tingal 74
+654 D.I. Tirtomoyo 12
+655 D.I. Tlogo Banyu Urip 22
+656 D.I. Tlogorame 6
+657 D.I. Togogan I 47
+658 D.I. Togogan III 7
+659 D.I. Toikromo 6
+660 D.I. Toyip 11
+661 D.I. Tritih 13
+662 D.I. Tulungrejo 23
+663 D.I. Tulungrejo I 9
+664 D.I. Tumpang 25
+665 D.I. Umbul Mawar 46
+666 D.I. Waryomejo 12
+667 D.I. Wates | 15
+668 D.I. Wates II 5
+669 D.I. Watugede 18
+670 D.I. Watukuncung 10
+671 D.I. Wonokraman 26
+672 D.I. Wonorejo 48
+673 D.I. Wonorejo 30
+674 D.I. Wonosari 35
+d Kab. Boioneaoro 24 4.046
+1 D.I. Dander 420
+2 D.I. Ngunut 614
+3 D.I. Panjang 161
+4 D.I. Pasinan 36
+5 D.I. Purworejo 165
+6 D.I. Tlogo Haji 30
+7 D.I. Balong 316
+8 D.I. Balong Dayaan 40
+9 D.I. Bilo 34
+10 D.I. Katur 110
+11 D.I. Nglambangan 800
+12 D.I. Ngradin 50
+13 D.I. Nolo/Ngasinan 60
+14 D.I. Pajeng 80
+15 D.I. Plumpung 40
+16 D.I. Prangi 100
+17 D.I. Purwosari 40
+18 D.I. Rondomori 150
+19 D.I. Rowoglandang 150
+20 D.I. Sambongrejo 295
+21 D.I. Sonorejo 120
+22 D.I. Sumberarum 105
+23 D.I. Temulus 80

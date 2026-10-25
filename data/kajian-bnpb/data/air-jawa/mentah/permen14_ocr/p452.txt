@@ -1,0 +1,127 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+77 D.I. Pasir Putih 60
+78 D.I. Patemma 500
+79 D.I. Peneki 100
+80 D.I. Salo Barue 100
+81 D.I. Salotengnga 50
+82 D.I. Sanreseng Ade' 50
+83 D.I. Soppae 500
+84 D.I. Tancuna 50
+85 D.I. Teppo Batue 300
+86 D.I. Teppo Panase 70
+87 D.I. Teppo Waji 100
+88 D.I. Tobatang 30
+89 D.I. Tocule 250
+90 D.I. Ujung Tanah 200
+91 D.I. Ujunge/Pajalele 350
+92 D.I. UkkeE 15
+93 D.I. Wacudai 100
+94 D.I. Watangteppo 100
+95 D.I. Kading 200
+96 D.I. Karamee 350
+97 D.I. Katampue/Wajoriaja 150
+98 D.I. Labette 60
+99 D.I. Labulo-bulo 200
+100 D.I. Lacinde 125
+101 D.I. Ladusa 40
+102 D.I. Lagoari 80
+103 D.I. Lajokka 30
+104 D.I. Lakaluku 50
+105 D.I. Lamasewanua 200
+106 D.I. Lapao 80
+107 D.I. Lapoloaju 40
+108 D.I. Latappareng 100
+109 D.I. Lawarenanae 50
+110 D.I. Lebongnge 40
+111 D.I. Lompo Loang 65
+112 D.I. Lonrae 60
+113 D.I. Mabbucu Ulu Tanre 50
+114 D.I. Makkalu 20
+115 D.I. Muallah 50
+116 D.I. Pappolo Lekko 200
+117 D.I. Salo Pandang 100
+118 D.I. Salodua 40
+119 D.I. Salotengnga/Ongkoe 350
+120 D.I. Sappewalie/Langkauttu 15
+121 D.I. Teppo Batue 50
+122 D.I. Teppoe 80
+123 D.I. Timpalaja 40
+124 D.I. Tobarakka 70
+125 D.I. Toboko 50
+126 D.I. Ulu Galung 50
+v Kota Parevare 5 164
+1 D.I. Ladoma 44
+2 D.I. Caramele 77
+3 D.I. Akajange 14
+4 D.I. Lameri 18
+5 D.I. Butoh 11
+w Kota Palopo 6 800
+1 D.I. Mawa 530
+2 D.I. Murante 14
+#KANAN
+452
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+3 D.I. Tomarundung I 17
+4 D.I. Padang Lambe 153
+5 D.I. Sumarambu 48
+6 D.I. Tomarundung I 38
+XXX PROVINSI MALUKU 122 12671
+a Kab. Buru 10 2.536
+1 D.I. Way Bini 396
+2 D.I. Way Pure 200
+3 D.I. Way Dafa 500
+4 D.I. Way Perang 230
+5 D.I. Ubung 210
+6 D.I. Waepoti 200
+7 D.I. Lamahang 200
+8 D.I. Sawa 200
+9 D.I. Pela 200
+10 D.I. Way Suan 200
+b Kab. Buru Selatan 3 700
+1 D.I. Way Trukat 300
+2 D.I. Lena 200
+3 D.I. Simi 200
+c Kab. Maluku Barat Dava 6 1.600
+1 D.I. Kroing 700
+2 D.I. Manuwui 150
+3 D.I. Yaltubun 150
+4 D.I. Imroing 200
+5 D.I. Tela 200
+6 D.I. Wetar 200
+d Kab. Maluku Tenaah 7 3.315
+1 D.I. Way Lofin 750
+2 D.I. Namto 265
+3 D.I. Tanah Merah 450
+4 D.I. Way Musal 850
+5 D.I. Wai Tila 350
+6 D.I. Karlutu 400
+7 D.I. Kailolo 250
+e Kab. Maluku Tenaaara 81 3.294
+1 D.I. Abean 3
+2 D.I. Ad Waeraur 15
+3 D.I. Banda Ely 8
+4 D.I. Choifau 6
+5 D.I. Danar Ternate 2
+6 D.I. Debut 47
+7 D.I. Dian 40
+8 D.I. Elaar Lamagorang 1
+9 D.I. Elaar Let 3
+10 D.I. Elat 18
+11 D.I. Elralang 108
+12 D.I. Evu 65
+13 D.I. Faa 63
+14 D.I. Faan 14
+15 D.I. Fako 16
+16 D.I. Feer 98
+17 D.I. Haar Ohoimel 7
+18 D.I. Hollat 48
+19 D.I. Ibra 28

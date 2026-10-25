@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+966 D.I. Kadugede 70
+967 D.I. Kadunenggang 8
+968 D.I. Kadupugur 35
+969 D.I. Kalapa Condong 150
+970 D.I. Kalapa Datar 4
+971 D.I. Kalapasari 17
+972 D.I. Kaleker 35
+973 D.I. Kali Cihanggor 25
+974 D.I. Kalian Kaum 125
+975 D.I. Kalpataru 150
+976 D.I. Karag 75
+977 D.I. Karamat 40
+978 D.I. Karamat 3
+979 D.I. Karamat V 25
+980 D.I. Karangmulya 20
+981 D.I. Karangtengah 35
+982 D.I. Kararas 30
+983 D.I. Karayunan 35
+984 D.I. Karayunan 10
+985 D.I. Karoroy 5
+986 D.I. Karya 25
+987 D.I. Karyamandala 30
+988 D.I. Kasti 25
+989 D.I. Kaum 45
+990 D.I. Kawung Luwuk 180
+991 D.I. Kebo 70
+992 D.I. Kebon 10 3
+993 D.I. Kebon I 3
+994 D.I. Kekel 31
+995 D.I. Kerenceng 20
+996 D.I. Kerenceng 20
+997 D.I. Kerenceng 25
+998 D.I. Kerenceng 1 20
+999 D.I. Kerenceng 2 20
+1000 D.I. Kerenceng 3 20
+1001 D.I. Kereteg 30
+1002 D.I. Kersagalih 10
+1003 D.I. Kiara Saheng 1 30
+1004 D.I. Kiara Saheng 2 15
+1005 D.I. Kiarabandung 30
+1006 D.I. Kiarabongkok 150
+1007 D.I. Kibanen 10
+1008 D.I. Koak 30
+1009 D.I. Kokoncong 10
+1010 D.I. Kopanunggal 15
+1011 D.I. Kosambi 45
+1012 D.I. Kubang Keuyeup 40
+1013 D.I. Kubang Keuyeup II 100
+1014 D.I. Kubang Lele 15
+1015 D.I. Kudadampit/'Sukamenak 30
+1016 D.I. Kudadampit/'Sukamenak 30
+1017 D.I. Kupaamis 8
+1018 D.I. Lamping Cikalong 30
+1019 D.I. Langkap 20
+1020 D.I. Langkob 15
+1021 D.I. Lebak Cihanggor 10
+1022 D.I. Lebak Seah 18
+1023 D.I. Lebak Sereh 8
+1024 D.I. Lebaksiuh 30
+1025 D.I. Legok 80
+1026 D.I. Legok 30
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+1027 D.I. Legok Awi 20
+1028 D.I. Legok Cijambe 25
+1029 D.I. Legok Denok 20
+1030 D.I. Legok Garut/Bakom 45
+1031 D.I. Legok Jahe 10
+1032 D.I. Legok Lembur Sumur 11
+1033 D.I. Legok memet 20
+1034 D.I. Legok Peuteuy 9
+1035 D.I. Legok Picung 3
+1036 D.I. Legok sereh 30
+1037 D.I. Leles 40
+1038 D.I. Lembur Sabeulah 20
+1039 D.I. Lembur Sawah 5
+1040 D.I. Lembur Sawah 20
+1041 D.I. Lembur sawah 115
+1042 D.I. Lemo 30
+1043 D.I. Lempong 50
+1044 D.I. Lengka 25
+1045 D.I. Lengkong 40
+1046 D.I. Lengkong 1 40
+1047 D.I. Lengkong 2 48
+1048 D.I. Lengkong II 35
+1049 D.I. Lengkongjaya 5
+1050 D.I. Lengkongsari 30
+1051 D.I. Leuwi Anyar 25
+1052 D.I. Leuwi anyar 100
+1053 D.I. Leuwi Apin 15
+1054 D.I. Leuwi Baju 40
+1055 D.I. Leuwi Bancir 26
+1056 D.I. Leuwi Bengang 20
+1057 D.I. Leuwi Bengkok 40
+1058 D.I. Leuwi Bilik Bojong 32
+1059 D.I. Leuwi Bitung 60
+1060 D.I. Leuwi Bitung 16
+1061 D.I. Leuwi Bolang 12
+1062 D.I. Leuwi Bolang 18
+1063 D.I. Leuwi Cangkudu 40
+1064 D.I. Leuwi Caruluk 30
+1065 D.I. Leuwi Caruluk 40
+1066 D.I. Leuwi Dakom 70
+1067 D.I. Leuwi Dingding 25
+1068 D.I. Leuwi gajah 4
+1069 D.I. Leuwi Garut 55
+1070 D.I. Leuwi Gede 20
+1071 D.I. Leuwi Genteng 45
+1072 D.I. Leuwi Gobang 250
+1073 D.I. Leuwi Gugur 2
+1074 D.I. Leuwi gupit 15
+1075 D.I. Leuwi Hanyir 9
+1076 D.I. Leuwi Herit/Satus 150
+1077 D.I. Leuwi Huni 64
+1078 D.I. Leuwi Huut 30
+1079 D.I. Leuwi Jangkar 45
+1080 D.I. Leuwi Jangkar 10
+1081 D.I. Leuwi Jurig 50
+1082 D.I. Leuwi Jurig 8
+1083 D.I. Leuwi Kacapi 10
+1084 D.I. Leuwi Kalapa 60
+1085 D.I. Leuwi Kantong 35
+1086 D.I. Leuwi Karet 15
+1087 D.I. Leuwi Kekel 60

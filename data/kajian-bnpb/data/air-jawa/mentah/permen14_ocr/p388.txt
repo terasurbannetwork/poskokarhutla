@@ -1,0 +1,135 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+162 D.I. Wae Dangga I 100
+163 D.I. Wae Dangga II 50
+164 D.I. Wae Dangka Ripa 50
+165 D.I. Wae Dape/Mela 100
+166 D.I. Wae Dener 50
+167 D.I. Wae Deruk 80
+168 D.I. Wae Dimar 40
+169 D.I. Wae Ela 65
+170 D.I. Wae Galang 100
+171 D.I. Wae Galang 20
+172 D.I. Wae Gendong 80
+173 D.I. Wae Gerak 10
+174 D.I. Wae Gurung 100
+175 D.I. Wae Hapong 85
+176 D.I. Wae Helas 35
+177 D.I. Wae Hemas 75
+178 D.I. Wae Hira 50
+179 D.I. Wae Holot 100
+180 D.I. Wae Iko Tuak 90
+181 D.I. Wae Impor II 60
+182 D.I. Wae Ipung 50
+183 D.I. Wae Jare 500
+184 D.I. Wae Kaca I 250
+185 D.I. Wae Kaca INYae Wengkar 80
+186 D.I. Wae Kampas 50
+187 D.I. Wae Kantor 35
+188 D.I. Wae Kaweng 50
+189 D.I. Wae Kebang I 75
+190 D.I. Wae Kebang II 100
+191 D.I. Wae Kempet 100
+192 D.I. Wae Koja 50
+193 D.I. Wae Kokor 50
+194 D.I. Wae Koor 100
+195 D.I. Wae Koroh (Helung II) 100
+196 D.I. Wae Kwinda | 100
+197 D.I. Wae Laing 100
+198 D.I. Wae Lajang 80
+199 D.I. Wae Lajar 90
+200 D.I. Wae Laka 100
+201 D.I. Wae Laking 100
+202 D.I. Wae Lalong 100
+203 D.I. Wae Lamba 45
+204 D.I. Wae Lampang 50
+205 D.I. Wae Lande 150
+206 D.I. Wae Langka Tebu II 200
+207 D.I. Wae Langkar 100
+208 D.I. Wae Lansang 65
+209 D.I. Wae Lanteng 100
+210 D.I. Wae Lanteng | (Helung I) 175
+211 D.I. Wae Lanteng II (Helung III) 100
+212 D.I. Wae Larong 50
+213 D.I. Wae Laru 50
+214 D.I. Wae Lawar 50
+215 D.I. Wae Lawar 40
+216 D.I. Wae Lawar 75
+217 D.I. Wae Lawi 100
+218 D.I. Wae Leba 60
+219 D.I. Wae Leka | 80
+220 D.I. Wae Leka II 200
+221 D.I. Wae Leka Lalong 300
+222 D.I. Wae Leming 100
+#KANAN
+388
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+223 D.I. Wae Lempar 100
+224 D.I. Wae Lempe 35
+225 D.I. Wae Lencing 200
+226 D.I. Wae Lendu 30
+227 D.I. Wae Lengka Tebu I 100
+228 D.I. Wae Lengkong 300
+229 D.I. Wae Liang Ds. Repi 250
+230 D.I. Wae Lilung 150
+231 D.I. Wae Limbung II 100
+232 D.I. Wae Lola 100
+233 D.I. Wae Lombong 100
+234 D.I. Wae Londong 100
+235 D.I. Wae Lonto II 100
+236 D.I. Wae Lowang 40
+237 D.I. Wae Lus 45
+238 D.I. Wae Mamis 75
+239 D.I. Wae Manuk 75
+240 D.I. Wae Marah 30
+241 D.I. Wae Maras 50
+242 D.I. Wae Mata Alo 100
+243 D.I. Wae Mata Bubek 100
+244 D.I. Wae Mata Mbubung 100
+245 D.I. Wae Mbomber 150
+246 D.I. Wae Mbot I 25
+247 D.I. Wae Mbot II 175
+248 D.I. Wae Mbrata 100
+249 D.I. Wae Mburak 50
+250 D.I. Wae Melo 100
+251 D.I. Wae Menati 50
+252 D.I. Wae Molas 50
+253 D.I. Wae Momol 100
+254 D.I. Wae Moto |, II 100
+255 D.I. Wae Mpara 150
+256 D.I. Wae Mulo 100
+257 D.I. Wae Murung 75
+258 D.I. Wae Nalis/Mburak 100
+259 D.I. Wae Nampar 65
+260 D.I. Wae Nampar 75
+261 D.I. Wae Nantal 250
+262 D.I. Wae Nao 50
+263 D.I. Wae Naring 100
+264 D.I. Wae Ndareng 50
+265 D.I. Wae Ndeo 150
+266 D.I. Wae Nditer 50
+267 D.I. Wae Ndolee 40
+268 D.I. Wae Ngembo 100
+269 D.I. Wae Ngencung | 100
+270 D.I. Wae Ngencung II 150
+271 D.I. Wae Nggaru 100
+272 D.I. Wae Nggola 150
+273 D.I. Wae Nio Wulang 70
+274 D.I. Wae Nobo 35
+275 D.I. Wae Pateng 100
+276 D.I. Wae Pateng 65
+277 D.I. Wae Pau 45
+278 D.I. Wae Pede/Kwinda II 30
+279 D.I. Wae Pelilu 100
+280 D.I. Wae Pitak 50
+281 D.I. Wae Podo 75
+282 D.I. Wae Pongkal 30
+283 D.I. Wae Pora 100

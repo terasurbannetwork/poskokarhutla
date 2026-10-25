@@ -1,0 +1,64 @@
+#TATA_LETAK satu-tabel lebar=2480
+499 2015, No.638
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+43 D.I.A.T. Mayongkidul CWJ243 32
+44 D.L.A.T. Mayongkidul PWJ244 33
+45 D.LA.T. Gedangan PWJ245 28
+46 D.I.A.T. Mayongkidul PWJ247 13
+47 D.L.A.T. Dorang PWJ250 34
+48 D.LA.T. Tunggulpandean SUPJ13 25
+e Kab. Karanaanvar 10 216
+1 D.LA.T. Tuban PWS 049 R 26
+2 D.LA.T. Krendowahono PWS 061 14
+3 D.LA.T. Krendowahono PWS 065 20
+4 D.LA.T. Krendowahono PWS 077 R 18
+5 D.LA.T. Tuban PWS 091 25
+6 D.LA.T. Tuban PWS 140 R 25
+7 D.LA.T. Bulurejo TW 143 R 25
+8 D.LA.T. Krendowahono PWS 137 35
+9 D.LA.T. Tuban PWS 222 13
+10 D.LA.T. Tuban PWS 223 16
+f Kab. Klaten 85 2.215
+1 D.LA.T. Majegan CWS 001 19
+2 D.LA.T. Gempol CWS 005 36
+3 D.LA.T. Titang PWS 046 24
+4 D.LA.T. Somopuro PWS 081 31
+5 D.LA.T. Dompyongan PWS 082 28
+6 D.I.A.T. Rejoso PWS 083 25
+7 D.LA.T. Titang PWS 084 28
+8 D.LA.T. Muruh PWS 085 28
+9 D.LA.T. Candirejo PWS 086 30
+10 D.LA.T. Drono PWS 087 34
+11 D.LA.T. Mireng PWS 090 18
+12 D.LA.T. Drono PWS 110/294 31
+13 D.LA.T. Tarubasan PWS 112 40
+14 D.LA.T. Sabranglor PWS 113 35
+15 D.LA.T. Wanglu PWS 114 25
+16 D.I.A.T. Prawatan PWS 116/251 35
+17 D.LA.T. Prawatan PWS 117 24
+18 D.LA.T. Randusari PWS 119 25
+19 D.L.A.T. Brajan PWS 120 29
+20 D.I.A.T. Kemudo PWS 121 47
+21 D.LA.T. Geneng PWS 122 23
+22 D.I.A.T. Muruh PWS 123 31
+23 D.L.A.T. Kraguman PWS 124/277 34
+24 D.LA.T. Dompyongan PWS 126 24
+25 D.LA.T. Dompyongan PWS 127/292 18
+26 D.I.A.T. Jothon PWS 128/281 35
+27 D.I.A.T. Wonoboyo PWS 129 18
+28 D.LA.T. Somopuro PWS 130 36
+29 D.LA.T. Kraguman PWS 131 24
+30 D.I.A.T. Gondangan PWS 132/284 20
+31 D.I.A.T. Rejoso PWS 133 29
+32 D.I.A.T. Prawatan PWS 162 15
+33 D.LA.T. Dompyongan PWS 045163 15
+34 D.LA.T. Sanggrahan PWS 165 27
+35 D.LA.T. Sanggrahan PWS 166 24
+36 D.I.A.T. Geneng PWS 167 16
+37 D.LA.T. Kemudo PWS 168 26
+38 D.I.A.T. Brajan PWS 169 29
+39 D.I.A.T. Randusari PWS 170 30
+40 D.LA.T. Wonoboyo PWS 171 32
+41 D.L.A.T. Prawatan PWS 174 29

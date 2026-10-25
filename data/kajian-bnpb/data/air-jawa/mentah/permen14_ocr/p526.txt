@@ -1,0 +1,75 @@
+#TATA_LETAK satu-tabel lebar=2480
+20.5, No.638 596
+Provinsi/K abupaten/Kota Nomor Kode Jumlah Luasan
+NO Keterangan
+Nama Daerah Irigasi Air Tanah Sumur D.I. (Ha)
+
+15 D.LA.T. Banyubuluh II SDPM 113 39
+16 D.L.A.T. Montok I SDPM 118 21
+17 D.LA.T. Groom SDPM 119 53
+18 D.LA.T. Campur | SDPM 120 27
+19 D.LA.T. Panglemah SDPM 121 19
+20 D.I.A.T. Gugul SDPM 122 42
+21 D.LA.T. Bukek SDPM 123 30
+22 D.LA.T. Tentenan Timur | SDPM 126 48
+23 D.LA.T. Lancar I SDPM 129 39
+24 D.I.A.T. Montok II SDPM 130 45
+25 D.L.A.T. Sentol I SDPM 131 21
+26 D.I.A.T. Sentol II SDPM 133 42
+27 D.LA.T. Bulangan Timur II SDPM 134 21
+28 D.I.A.T. Pakong SDPM 135 37
+29 D.L.A.T. Lebek III SDPM 140 32
+30 D.I.A.T. Tlagah SDPM 142 32
+31 D.I.A.T. Peltong III SDPM 151 20
+32 D.I.A.T. Montok III SDPM 152 29
+33 D.LA.T. Pagendingan II SDPM 153 25
+34 D.I.A.T. Artodung I SDPM 155 29
+35 D.I.A.T. Polagan | SDPM 165 31
+36 D.I.A.T. Lancar II SDPM 166 30
+37 D.I.A.T. Tebul Timur SDPM 167 25
+38 D.LA.T. Tentenan Timur II SDPM 177 28
+39 D.I.A.T. Blumbungan I SDPM 178 23
+40 D.I.A.T. Ponteh II SDPM 179 31
+41 D.LA.T. Kaduara Barat II SDPM 180 31
+42 D.LA.T. Bindang | SDPM 188 24
+43 D.L.A.T. Bindang II SDPM 190 24
+44 D.LA.T. Tentenan barat II SDPM 191 40
+45 D.LA.T. Polagan II SDPM 192 40
+46 D.I.A.T. Duko Timur I SDPM 206 20
+47 D.LA.T. Campor II SDPM 209 31
+48 D.I.A.T. Jambringin SDPM 212 30
+49 D.LA.T. Duko Timur II SDPM 213 28
+50 D.I.A.T. Trasak III SDPM 514 28
+51 D.LA.T. Tebul timur II SDPM 537 24
+52 D.I.A.T. Artodung III SMPM 162 13
+a Kab. Pasuruan 55 1.723
+
+1 D.LA.T. Gunungsari SDPS 013 35
+
+2 D.LA.T. Karangsentul SDPS 014B 40
+
+3 D.LA.T. Tanggulangin SDPS 015 33
+
+4 D.LA.T. Sladi SDPS 021 37
+
+5 D.LA.T. Pohgading SDPS 028 34
+
+6 D.LA.T. Kambingan SDPS 029 25
+
+7 D.LA.T. Tebas SDPS 091 44
+
+8 D.LA.T. Tebas SDPS 092 39
+
+9 D.LA.T. Wates SDPS 093 38
+10 D.LA.T. Randugong SDPS 117 47
+11 D.LA.T. Watestani SDPS 118 40
+12 D.LA.T. Watgalih SDPS 119 35
+13 D.LA.T. Watestani SDPS 137 48
+14 D.LA.T. Lorohan SDPS 153 36
+15 D.LA.T. Gambir kuning SDPS 154 33
+16 D.I.A.T. Watestani SDPS 155 44
+17 D.LA.T. Tundosuro SDPS 159 30
+18 D.LA.T. Mulyorejo SDPS 160 10
+19 D.LA.T. Pukul SDPS 161 54
+20 D.LA.T. Wangkalwetan SDPS 162 51
+21 D.I.A.T. Bajangan SDPS 257 21

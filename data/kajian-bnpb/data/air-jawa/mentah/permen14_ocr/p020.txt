@@ -1,0 +1,68 @@
+#TATA_LETAK satu-tabel lebar=2480
+2015, No.638 20
+Na Provinsi/Kabupaten/Kota Jumlah Luasan Keterangan
+Nama Daerah Irigasi Permukaan D.I. (Ha)
+XI PROVINSI JAWA BARAT 1 54.753
+a Kab. Cianjur
+1 D.I. Cihea 5.484
+b Kab. Cirebon
+1 D.I. Cikeusik 6.924
+2 D.I. Seuseupan 3.897
+c Kab. Indramayu
+1 D.I. Cipanas II 3.265
+2 D.I. Cipancuh 6.318
+d Kab. Majalengka
+1 D.I. Kamun 8.462
+e Kab. Subang
+1 D.I. Cileuleuy 5.378
+2 D.I. Leuwi Nangka 4.387
+f Kab. Sukabumi
+1 D.I. Cikaranggeusan 4.038
+2 D.I. Ciletuh 3.378
+g Kab. Tasikmalaya
+1 D.I. Cikunten | 3.222
+XII PROVINSI JAWA TENGAH 17... 110.500
+a Kab. Banjarnegara
+1 D.I. Singomerto 5.863
+b Kab. Banyumas
+1 D.I. Tajum 3.200
+c Kab. Brebes
+1 D.I. Waduk Malahayu 12.486
+d Kab. Demak
+1 D.I. Jragung 4.053
+e Kab. Grobogan
+1 D.I. Bd. Dumpil 9.818
+2 D.I. Sidorejo 7.938
+f Kab. Kebumen
+1 D.I. Waduk Sempor 6.478
+g Kab. Kendal
+1 D.I. Bodri Trompo 3.861
+h Kab. Pati
+1 D.I. Waduk Gembong 4.606
+2 D.I. Waduk Gunung Rowo 3.922
+i Kab. Pekalongan
+1 D.I. Sragi 3.212
+j Kab. Pemalang
+1 D.I. Comal/Sukawati 8.882
+k Kab. Purworejo
+1 D.I. Boro 5.136
+2 D.I. Kedung Putri 4.341
+| Kab. Tegal
+1 D.I. Cacaban (Bd. Dukuh Jati) 7.439
+2 D.I. Cipero (Rambut) 7.634
+3 D.I. Gung 6.632
+XIII PROVINSI D.I. YOGYAKARTA 1 7.152
+a Kab. Kulonprogo
+1 D.I. Kalibawang 7152
+XIV PROVINSI JAWA TIMUR 20 149.677
+a Kab. Banyuwangi
+1 D.I. Baru 15.910
+2 D.I. K (Setail) 6.422
+3 D.I. Porolinggo 3.515
+4 D.I. Setail Teknik 5.788
+b Kab. Bojonegoro
+1 D.I. Pacal 16.688
+c Kab. Jember
+1 D.I. Bedadung 13.202
+2 D.I. Pondok Waluh 7.263
+3 D.I. Talang 8.844

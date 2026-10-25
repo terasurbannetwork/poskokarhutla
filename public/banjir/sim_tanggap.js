@@ -25,6 +25,7 @@ const ASUMSI = {
   PATUH: [0.4, 0.8],    /* bagian warga yang benar-benar mengungsi bila diperingatkan: rentang asumsi */
 };
 /* biaya Rp per perlakuan 72 jam: ASUMSI rentang (belum dari HSPK/harga satuan resmi) */
+const TANGGUL_R = 500; /* m, jari-jari busur tanggul */
 const BIAYA = {
   tanggulPerM: [150e3, 350e3], /* Rp per meter pada tinggi 1 m; naik dengan kuadrat tinggi (karung pasir/tanggul tanah darurat) */
   pompaUnit: [25e6, 50e6],     /* Rp per unit 0,25 m3/dtk, sewa + BBM + operator 72 jam */
@@ -123,8 +124,8 @@ function kandidatPerlakuan(ctx) {
   /* arah sumber air: ke sel masuk sungai bila ada, kalau tidak ke arah tanah paling tinggi dalam radius 12 sel */
   let ang; if (ctx.sungaiK >= 0) ang = Math.atan2((ctx.sungaiK / nx | 0) - cj, ctx.sungaiK % nx - ci);
   else { let b = -Infinity; ang = 0; for (let a = 0; a < 8; a++) { const th = a * Math.PI / 4; let s = 0, n = 0; for (let r = 4; r <= 12; r += 2) { const i = Math.round(ci + Math.cos(th) * r), j = Math.round(cj + Math.sin(th) * r); if (i >= 0 && j >= 0 && i < nx && j < ny && !laut[j * nx + i]) { s += z[j * nx + i]; n++; } } if (n && s / n > b) { b = s / n; ang = th; } } }
-  const R = Math.max(5, Math.ceil(500 / dx)), arc = []; for (let d = -70; d <= 70; d += 10) { const th = ang + d * Math.PI / 180; arc.push([ci + Math.cos(th) * R, cj + Math.sin(th) * R]); }
-  const panjang = R * dx * (140 * Math.PI / 180), tg = tinggi => ({garis: arc, tinggi, panjang});
+  const R = Math.max(1.5, TANGGUL_R / dx), arc = []; /* radius fisik tetap 500 m (bukan jumlah sel): panjang dan biaya tak ikut resolusi */ for (let d = -70; d <= 70; d += 10) { const th = ang + d * Math.PI / 180; arc.push([ci + Math.cos(th) * R, cj + Math.sin(th) * R]); }
+  const panjang = R * dx * (140 * Math.PI / 180), kasar = dx > 100, tg = tinggi => ({garis: arc, tinggi, panjang});
   /* pompa di sel berpenduduk terdalam dalam radius 6 sel dari pusat */
   let kp = -1, bs = -1; for (let j = Math.max(0, Math.floor(cj - 6)); j <= Math.min(ny - 1, Math.ceil(cj + 6)); j++) for (let i = Math.max(0, Math.floor(ci - 6)); i <= Math.min(nx - 1, Math.ceil(ci + 6)); i++) { const k = j * nx + i; if (laut[k]) continue; const s = hmaks[k] * (1 + (pop.lo[k] + pop.hi[k]) / 2); if (s > bs) { bs = s; kp = k; } }
   const rp = x => x.map(v => Math.round(v)), tgBiaya = t => rp(BIAYA.tanggulPerM.map(c => c * t * t * panjang)), pmBiaya = q => rp(BIAYA.pompaUnit.map(c => c * q / .25));
@@ -134,8 +135,8 @@ function kandidatPerlakuan(ctx) {
     {id: "pompa05", nama: "Pompa mobile 0,5 m³/dtk", jenis: "pompa", ket: "di sel berpenduduk terdalam", biaya: pmBiaya(.5), tanggul: [], pompa: [{k: kp, q: .5}], pintu: false},
     {id: "pompa15", nama: "Pompa mobile 1,5 m³/dtk", jenis: "pompa", ket: "di sel berpenduduk terdalam", biaya: pmBiaya(1.5), tanggul: [], pompa: [{k: kp, q: 1.5}], pintu: false},
     {id: "paket", nama: "Tanggul 2 m + pompa 1,5 m³/dtk", jenis: "paket", ket: "tanggul melindungi, pompa membuang air yang terkurung", biaya: [0, 1].map(i => tgBiaya(2)[i] + pmBiaya(1.5)[i]), tanggul: [tg(2)], pompa: [{k: kp, q: 1.5}], pintu: false}];
-  if (ctx.adaLaut) kandidat.push({id: "pintu", nama: "Pintu air ditutup saat pasang", jenis: "pintu", ket: "menahan air laut masuk lewat muara", biaya: BIAYA.pintu.slice(), tanggul: [], pompa: [], pintu: true});
-  return {kandidat, pusat: [ci, cj], panjang};
+  if (ctx.adaLaut) kandidat.push({id: "pintu", nama: "Pintu air ditutup 72 jam penuh", jenis: "pintu", ket: "menahan pasang, tapi hujan di balik pintu juga tak bisa keluar lewat muara (tanpa jadwal per jam)", biaya: BIAYA.pintu.slice(), tanggul: [], pompa: [], pintu: true});
+  return {kandidat, pusat: [ci, cj], panjang, kasar, catatan: kasar ? `Sel ${Math.round(dx)} m jauh lebih kasar dari tanggul (lebar beberapa meter): tanggul dihitung sebagai dinding setinggi n meter selebar satu sel, jadi efeknya perkiraan kasar.` : ""};
 }
 /* evakuasi dini: warga di sel yang akhirnya tergenang >= 50 cm selamat bila peringatan + mobilisasi + perjalanan ke titik aman < jam air tiba 30 cm.
    tiba[k] = jam pertama air >= 30 cm (Infinity bila tak pernah); ke[k] = jam perjalanan ke titik aman (waktuTempuh dari titik aman). Kembali {jiwa [lo, hi], diungsikan [lo, hi], sel} */

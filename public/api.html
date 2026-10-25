@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>API data · Pantau Bencana</title>
+<meta name="description" content="Cara mengambil data Pantau Bencana lewat API: titik panas, laporan karhutla, cuaca, dan data berkunci untuk mitra. Data publik tanpa kunci.">
+<meta name="theme-color" content="#0b2545">
+<style>
+:root{--paper:#f3f5f9;--card:#fff;--ink:#14213d;--ink2:#56607a;--line:#e1e5ee;--navy:#0b2545;--navy2:#13315c;--brand:#1d4e89;--soft:#e8eef8;--kode:#0e1a33;--kodeInk:#e6ecf7;--hijau:#1f7a4d;--hijauBg:#e3f4ea;--jingga:#a14b12;--jinggaBg:#fbeee2;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--paper:#0d1424;--card:#151f35;--ink:#eef1f7;--ink2:#a7b2c7;--line:#26324d;--brand:#8db4ea;--soft:#1b2944;--kode:#0a1120;--hijau:#7fd3a6;--hijauBg:#173527;--jingga:#f2b183;--jinggaBg:#3a2617;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--brand)}
+/* kepala */
+.kepala{position:sticky;top:0;z-index:5;background:linear-gradient(90deg,var(--navy),var(--navy2));color:#fff}
+.kepala .isi{max-width:1160px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.merek{font-weight:700;letter-spacing:.2px;color:#fff;text-decoration:none;display:flex;align-items:center;gap:8px}
+.merek svg{width:20px;height:20px}
+.kepala .kanan{margin-left:auto;display:flex;gap:8px}
+.tombol{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;font-size:13.5px;font-weight:600;text-decoration:none;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+.tombol:hover{background:rgba(255,255,255,.22)}
+/* pembuka */
+.pembuka{background:linear-gradient(180deg,var(--navy2),transparent 100%);padding:28px 16px 8px}
+.pembuka .isi{max-width:1160px;margin:0 auto}
+.pembuka h1{color:#fff;font-size:30px;line-height:1.2;margin:0 0 6px}
+.pembuka p{color:#d7e1f2;margin:0 0 22px;max-width:680px}
+.pilar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pilar a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 6px 18px rgba(11,37,69,.08)}
+.pilar a:hover{border-color:var(--brand)}
+.pilar b{display:block;font-size:15px;margin:8px 0 2px}
+.pilar span{color:var(--ink2);font-size:13.5px}
+/* tata letak */
+.badan{max-width:1160px;margin:0 auto;padding:20px 16px 56px;display:grid;grid-template-columns:200px 1fr;gap:28px}
+nav.daftar{position:sticky;top:76px;align-self:start;font-size:13.5px}
+nav.daftar a{display:block;padding:6px 10px;border-radius:8px;color:var(--ink2);text-decoration:none}
+nav.daftar a:hover,nav.daftar a.aktif{background:var(--soft);color:var(--ink)}
+section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px;margin-bottom:16px}
+h2{font-size:19px;margin:0 0 4px}h3{font-size:15px;margin:20px 0 6px}
+.sub{color:var(--ink2);margin:0 0 14px}
+.kecil{color:var(--ink2);font-size:13px}
+/* lencana */
+.lc{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.lc.publik{background:var(--hijauBg);color:var(--hijau)}
+.lc.kunci{background:var(--jinggaBg);color:var(--jingga)}
+.lc.get{background:var(--soft);color:var(--brand);font-family:ui-monospace,Menlo,monospace}
+/* tabel */
+.tabel{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{background:var(--navy);color:#fff;font-weight:600;text-align:left;padding:9px 12px;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:color-mix(in srgb,var(--soft) 45%,transparent)}
+td:first-child{white-space:nowrap}
+/* kode */
+code{font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--soft);border-radius:5px;padding:1px 5px}
+.kode{position:relative;margin:8px 0 12px}
+.kode pre{margin:0;background:var(--kode);color:var(--kodeInk);border-radius:10px;padding:14px 16px;overflow-x:auto}
+.kode pre code{background:none;padding:0;color:inherit;white-space:pre}
+.salin{position:absolute;top:8px;right:8px;font:600 12px system-ui;color:#cfd9ec;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:7px;padding:4px 10px;cursor:pointer}
+.salin:hover{background:rgba(255,255,255,.18)}
+.catatan{background:var(--soft);border-left:4px solid var(--brand);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:14px}
+ul{padding-left:20px;margin:6px 0}li{margin:3px 0}
+.kaki{color:var(--ink2);font-size:13px;text-align:center;padding:8px 0 0}
+@media (max-width:900px){.badan{grid-template-columns:1fr}nav.daftar{display:none}.pilar{grid-template-columns:1fr}.pembuka h1{font-size:25px}td:first-child{white-space:normal}}
+@media (max-width:520px){section{padding:18px 14px}.kepala .tombol span{display:none}}
+</style>
+</head>
+<body>
+<header class="kepala"><div class="isi">
+  <a class="merek" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg><span data-merek>Pantau Bencana</span> · API</a>
+  <div class="kanan">
+    <a class="tombol" href="/api/v1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Daftar endpoint</span></a>
+    <a class="tombol" href="/peta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/></svg><span>Kembali ke Peta</span></a>
+  </div>
+</div></header>
+
+<div class="pembuka"><div class="isi">
+  <h1 data-merek-teks>API data Pantau Bencana</h1>
+  <p>Ambil data titik panas, laporan karhutla, cuaca, dan kualitas udara langsung dari program Anda. Semua hanya baca, jawaban berformat JSON.</p>
+  <div class="pilar">
+    <a href="#publik"><span class="lc publik">Tanpa kunci</span><b>Data publik</b><span>Titik panas, laporan harian, FWI, udara, peringatan BMKG.</span></a>
+    <a href="#berkunci"><span class="lc kunci">Perlu kunci</span><b>Data mitra</b><span>Rumah rusak, bangunan terpapar, laporan BNPB, konsesi perusahaan.</span></a>
+    <a href="#mcp"><span class="lc get">MCP</span><b>Untuk asisten AI</b><span>Satu alamat, data yang sama, tanpa menulis kode.</span></a>
+  </div>
+</div></div>
+
+<div class="badan">
+<nav class="daftar" aria-label="Isi halaman">
+  <a href="#mulai">Mulai</a>
+  <a href="#publik">Data publik</a>
+  <a href="#berkunci">Data mitra</a>
+  <a href="#contoh">Contoh kode</a>
+  <a href="#mcp">Server MCP</a>
+  <a href="#galat">Kode galat</a>
+  <a href="#batas">Batas laju</a>
+  <a href="#sumber">Sumber data</a>
+  <a href="#kunci">Meminta kunci</a>
+</nav>
+
+<main>
+<section id="mulai">
+  <h2>Mulai</h2>
+  <p class="sub">Semua endpoint berada di bawah satu alamat dasar.</p>
+  <div class="kode"><pre><code>https://centurisk97.id/api/v1</code></pre></div>
+  <ul>
+    <li>Alamat dasar mengembalikan daftar semua endpoint dalam JSON (UTF-8).</li>
+    <li>Peramban dari situs mana pun boleh memanggilnya (CORS terbuka, tanpa cookie).</li>
+    <li>Hanya baca: <code>GET</code> dan <code>HEAD</code>.</li>
+  </ul>
+</section>
+
+<section id="publik">
+  <h2>Data publik <span class="lc publik">Tanpa kunci</span></h2>
+  <p class="sub">Alamatnya <code>/api/v1/data/&lt;nama&gt;</code>; nama di luar tabel dijawab 404 beserta daftar nama yang sah.</p>
+  <div class="tabel"><table>
+  <tr><th>Nama</th><th>Isi</th><th>Pembaruan</th></tr>
+  <tr><td><code>titik24</code></td><td>Titik panas 24 jam terakhir, ringkas, dengan kode kompleks</td><td>Tiap 3 jam</td></tr>
+  <tr><td><code>hotspot24</code></td><td>Titik panas 24 jam: koordinat, jam, sensor, FRP, keyakinan, wilayah</td><td>Tiap 3 jam</td></tr>
+  <tr><td><code>hotspot72</code></td><td>Sama dengan <code>hotspot24</code>, rentang 72 jam</td><td>Tiap 3 jam</td></tr>
+  <tr><td><code>meta</code></td><td>Waktu data terakhir, jumlah titik dan kluster, daftar provinsi</td><td>Tiap 3 jam</td></tr>
+  <tr><td><code>laporan</code></td><td>Laporan harian karhutla: luas dan titik tahun berjalan per provinsi</td><td>Tiap 3 jam, ditutup malam hari</td></tr>
+  <tr><td><code>peta_karhutla</code></td><td>Titik panas harian per provinsi sepanjang tahun</td><td>Harian</td></tr>
+  <tr><td><code>peta_karhutla_kab</code></td><td>Sama, per kabupaten/kota</td><td>Harian</td></tr>
+  <tr><td><code>wilayah</code></td><td>Ringkasan per provinsi: titik harian, kluster, tingkat, FWI maksimum</td><td>Tiap 3 jam</td></tr>
+  <tr><td><code>kumulatif</code></td><td>Titik panas kumulatif tahun berjalan dibanding tahun-tahun lalu</td><td>Harian</td></tr>
+  <tr><td><code>musim_harian</code></td><td>Titik panas per hari per provinsi, 2019 sampai sekarang</td><td>Harian</td></tr>
+  <tr><td><code>fwi</code></td><td>Indeks cuaca kebakaran (FWI) per sel 0,5 derajat</td><td>Harian</td></tr>
+  <tr><td><code>peringatan</code></td><td>Peringatan dini cuaca dan gelombang dari BMKG</td><td>Beberapa kali sehari</td></tr>
+  <tr><td><code>udara_kualitas</code></td><td>Prakiraan PM2,5 per provinsi dan kabupaten/kota, dengan jiwa terpapar</td><td>Dua kali sehari</td></tr>
+  </table></div>
+  <p class="kecil">Jadwal adalah jadwal pipeline, bukan jaminan; lihat <code>dibuat</code> atau <code>acuan</code> di dalam berkas untuk umur datanya. Struktur kolom dijelaskan di <code>kolom</code> atau <code>definisi</code> tiap berkas. Jawaban disimpan cache 5 menit.</p>
+
+  <h3>Riwayat titik panas satu lokasi</h3>
+  <div class="tabel"><table>
+  <tr><th>Endpoint</th><th>Isi</th></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/riwayat?lat=-2.21&amp;lon=113.92</code></td><td>Riwayat titik panas VIIRS S-NPP sejak 2012 di sel 0,05 derajat (sekitar 5 km) yang memuat koordinat itu. <code>lat</code> (-11,5 sampai 6,5) dan <code>lon</code> (94,5 sampai 141,5) wajib. Isi <code>data</code>: <code>y</code> titik per tahun, <code>yd</code> sampai tanggal <code>sd</code>, <code>m</code> per bulan, <code>r</code> lama episode (hari), <code>k</code> episode per tahun, <code>x</code> jangkauan (km), <code>v</code> pergeseran pusat api, <code>s</code> awal dan akhir musim, <code>nm</code> persen deteksi malam. Sel tanpa riwayat: <code>data: null</code>. Pola masa lalu, bukan prakiraan.</td></tr>
+  </table></div>
+</section>
+
+<section id="berkunci">
+  <h2>Data mitra <span class="lc kunci">Perlu kunci</span></h2>
+  <p class="sub">Kirim kunci di header <code>X-API-Key</code>; satu kunci hanya membuka cakupan yang diberikan padanya.</p>
+  <div class="tabel"><table>
+  <tr><th>Endpoint</th><th>Cakupan</th><th>Isi</th></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/rumah-rusak</code></td><td><span class="lc kunci">rumah_rusak</span></td><td>Laporan rumah rusak berat, sedang, ringan berstatus sah; maksimal 500 baris, terbaru dulu. Tanpa data pelapor, foto, dan catatan; koordinat dibulatkan 4 desimal (sekitar 11 meter). Parameter: <code>bencana</code>, <code>prov</code> (2 digit), <code>kab</code>, <code>dari</code>, <code>sampai</code> (YYYY-MM-DD), <code>bbox</code> (latMin,lonMin,latMaks,lonMaks)</td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/rumah-rusak/rekap</code></td><td><span class="lc kunci">rumah_rusak</span></td><td>Jumlah berat, sedang, ringan per kecamatan (maksimal 1.000 baris, <code>kec_dipotong: true</code> bila lebih) dan per kabupaten/kota. Parameter: <code>dari</code>, <code>sampai</code> (maksimal 366 hari, bawaan hari ini WIB), <code>bencana</code>, <code>prov</code></td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/bangunan/terpapar</code></td><td><span class="lc kunci">bangunan</span></td><td>Bangunan Google Open Buildings yang terpapar, ringkasan nasional</td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/bangunan/kec</code></td><td><span class="lc kunci">bangunan</span></td><td>Paparan bangunan per kecamatan</td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/bangunan/grid?prov=62</code></td><td><span class="lc kunci">bangunan</span></td><td>Paparan bangunan per sel grid satu provinsi (<code>prov</code> wajib)</td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/laporan-bnpb</code></td><td><span class="lc kunci">laporan_bnpb</span></td><td>Laporan Harian dan Paparan Presiden BNPB. <code>jenis=harian</code> atau <code>presiden</code> (wajib). Tanpa <code>tanggal</code>: daftar tanggal tersimpan; dengan <code>tanggal=YYYY-MM-DD</code>: isi laporan hari itu</td></tr>
+  <tr><td><span class="lc get">GET</span> <code>/api/v1/konsesi?prov=62</code></td><td><span class="lc kunci">konsesi</span></td><td>Perusahaan pemegang konsesi satu provinsi beserta titik panas di dalamnya (<code>prov</code> wajib, 2 digit). Tambah <code>nama=</code> untuk menyaring satu PT (potongan nama, tanpa beda huruf besar-kecil) agar jawabannya kecil; tanpa <code>prov</code> keluar daftar provinsi yang tersedia. Data perusahaan hanya untuk mitra berkunci.</td></tr>
+  </table></div>
+  <div class="catatan">Kunci berbentuk <code>pb_</code> diikuti 64 karakter. Kunci di alamat (query string) tidak dibaca supaya tidak tercatat di log. Simpan kunci di server Anda, jangan di JavaScript peramban; kalau bocor, minta admin mencabutnya.</div>
+</section>
+
+<section id="contoh">
+  <h2>Contoh kode</h2>
+  <p class="sub">Ganti <code>pb_GANTI_DENGAN_KUNCI_ANDA</code> dengan kunci Anda.</p>
+  <h3>Data publik, curl</h3>
+  <div class="kode"><pre><code>curl "https://centurisk97.id/api/v1/data/meta"</code></pre></div>
+  <h3>Data publik, JavaScript</h3>
+  <div class="kode"><pre><code>const r = await fetch("https://centurisk97.id/api/v1/data/meta");
+if (!r.ok) throw new Error("galat " + r.status);
+const meta = await r.json();
+console.log(meta.jumlah_titik, meta.data_terakhir);</code></pre></div>
+  <h3>Data mitra, curl</h3>
+  <div class="kode"><pre><code>curl -H "X-API-Key: pb_GANTI_DENGAN_KUNCI_ANDA" \
+  "https://centurisk97.id/api/v1/rumah-rusak/rekap?dari=2026-10-01&amp;sampai=2026-10-22&amp;prov=62"</code></pre></div>
+  <h3>Data mitra, dari server Node.js</h3>
+  <div class="kode"><pre><code>const r = await fetch("https://centurisk97.id/api/v1/rumah-rusak?prov=62&amp;dari=2026-10-01", {
+  headers: {"X-API-Key": process.env.PANTAU_API_KEY},
+});
+const {jumlah, laporan} = await r.json();</code></pre></div>
+</section>
+
+<section id="mcp">
+  <h2>Server MCP <span class="lc get">untuk asisten AI</span></h2>
+  <p class="sub">Asisten AI yang mendukung Model Context Protocol bisa memakai data yang sama lewat satu alamat.</p>
+  <div class="kode"><pre><code>https://centurisk97.id/mcp</code></pre></div>
+  <h3>Memasang di klien MCP</h3>
+  <p>Tambahkan server MCP jenis HTTP di pengaturan klien Anda. Tanpa kunci, hapus bagian <code>headers</code>; yang tersedia tool publik saja.</p>
+  <div class="kode"><pre><code>{
+  "mcpServers": {
+    "pantau-bencana": {
+      "url": "https://centurisk97.id/mcp",
+      "headers": {"X-API-Key": "pb_GANTI_DENGAN_KUNCI_ANDA"}
+    }
+  }
+}</code></pre></div>
+  <h3>Tool yang tersedia</h3>
+  <div class="tabel"><table>
+  <tr><th>Tool</th><th>Isi</th><th>Akses</th></tr>
+  <tr><td><code>titik_api_terkini</code></td><td>Titik panas 24 atau 72 jam, urut daya api; saring <code>prov</code>, <code>kab</code>; <code>limit</code> sampai 200</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>status_kabupaten</code></td><td>Peringkat kabupaten/kota: titik panas, indikasi luas, level, FWI</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>laporan_harian</code></td><td>Ringkasan laporan karhutla satu tanggal, nasional dan per provinsi</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>kualitas_udara</code></td><td>Prakiraan PM2,5 per provinsi dan penduduk terpapar</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>peringatan_aktif</code></td><td>Peringatan cuaca dan gelombang tinggi BMKG yang aktif</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>daftar_wilayah</code></td><td>Kode provinsi dan nama kabupaten/kota</td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>riwayat_lokasi</code></td><td>Riwayat titik panas VIIRS sejak 2012 di sekitar <code>lat</code>, <code>lon</code></td><td><span class="lc publik">Publik</span></td></tr>
+  <tr><td><code>rumah_rusak</code>, <code>rumah_rusak_rekap</code></td><td>Laporan dan rekap rumah rusak (status sah, tanpa catatan, koordinat sekitar 11 m)</td><td><span class="lc kunci">rumah_rusak</span></td></tr>
+  <tr><td><code>bangunan_terpapar</code></td><td>Bangunan terpapar bahaya aktif, ringkasan</td><td><span class="lc kunci">bangunan</span></td></tr>
+  <tr><td><code>konsesi_perusahaan</code></td><td>Konsesi satu provinsi, ringkas: nama PT, grup, negara, kabupaten, jumlah titik dan kompleks aktif</td><td><span class="lc kunci">konsesi</span></td></tr>
+  <tr><td><code>laporan_bnpb</code></td><td>Laporan Harian dan Paparan Presiden BNPB</td><td><span class="lc kunci">laporan_bnpb</span></td></tr>
+  </table></div>
+  <div class="catatan">Tool berkunci hanya muncul bila klien mengirim header <code>X-API-Key</code> yang sah. Klien yang hanya menerima alamat server (tanpa pengaturan header) cuma mendapat tool publik, karena server ini belum memakai OAuth.</div>
+  <p class="kecil">Transport Streamable HTTP tanpa sesi: tiap permintaan adalah POST JSON-RPC berdiri sendiri, GET dijawab 405. Panggilan dari halaman web di localhost atau jaringan privat ditolak (perlindungan DNS rebinding).</p>
+</section>
+
+<section id="galat">
+  <h2>Kode galat</h2>
+  <p class="sub">Galat berbentuk <code>{"galat": "pesan"}</code>.</p>
+  <div class="tabel"><table>
+  <tr><th>Kode</th><th>Artinya</th></tr>
+  <tr><td>400</td><td>Parameter tidak sah (tanggal bukan YYYY-MM-DD, kode provinsi salah, dan sebagainya); pesannya menyebut yang salah</td></tr>
+  <tr><td>401</td><td>Header <code>X-API-Key</code> tidak ada, kunci salah, atau kunci sudah dicabut</td></tr>
+  <tr><td>403</td><td>Kunci sah, tetapi cakupannya tidak termasuk endpoint ini</td></tr>
+  <tr><td>404</td><td>Rute atau nama data tidak ada, atau berkasnya belum tersedia</td></tr>
+  <tr><td>405</td><td>Metode selain GET, HEAD, dan OPTIONS</td></tr>
+  <tr><td>429</td><td>Batas laju terlewati; tunggu sebanyak header <code>Retry-After</code> (detik)</td></tr>
+  <tr><td>503</td><td>Layanan belum tersedia; coba lagi nanti</td></tr>
+  </table></div>
+</section>
+
+<section id="batas">
+  <h2>Batas laju</h2>
+  <div class="tabel"><table>
+  <tr><th>Jenis</th><th>Batas</th></tr>
+  <tr><td>Data publik</td><td>Tidak dihitung per kunci. Berkas diperbarui paling cepat tiap 3 jam, jadi satu kali ambil per jam sudah cukup</td></tr>
+  <tr><td>Data mitra</td><td>1.000 permintaan per jam per kunci</td></tr>
+  <tr><td>MCP tanpa kunci</td><td>600 permintaan per jam per jaringan</td></tr>
+  <tr><td>Kunci salah</td><td>Lebih dari 300 kali per jam dari satu jaringan: jaringan itu ditolak (429) selama sejam</td></tr>
+  </table></div>
+</section>
+
+<section id="sumber">
+  <h2>Sumber data</h2>
+  <p class="sub">Bila Anda menampilkan ulang data ini, sebut sumbernya.</p>
+  <div class="tabel"><table>
+  <tr><th>Data</th><th>Sumber</th></tr>
+  <tr><td>Titik panas</td><td>NASA FIRMS (MODIS, VIIRS S-NPP, VIIRS NOAA-20)</td></tr>
+  <tr><td>Peringatan dini cuaca dan gelombang</td><td>BMKG</td></tr>
+  <tr><td>Kualitas udara</td><td>CAMS (Copernicus) lewat Open-Meteo; penduduk WorldPop. Prakiraan model, belum divalidasi dengan stasiun</td></tr>
+  <tr><td>Indeks cuaca kebakaran (FWI)</td><td>Dihitung dari data cuaca</td></tr>
+  <tr><td>Bangunan</td><td>Google Open Buildings</td></tr>
+  <tr><td>Rumah rusak dan laporan BNPB</td><td>Diinput tim lapangan dan staf, bukan angka resmi BNPB kecuali disebut demikian</td></tr>
+  </table></div>
+  <p class="kecil">Situs ini bukan kanal resmi BNPB, KLHK, atau BMKG. Untuk keputusan operasional, rujuk instansi yang berwenang.</p>
+</section>
+
+<section id="kunci">
+  <h2>Meminta kunci</h2>
+  <p class="sub">Kunci diterbitkan admin untuk lembaga atau aplikasi tertentu dan bisa dicabut kapan saja.</p>
+  <p>Hubungi pengelola dan sebutkan nama lembaga, data yang dibutuhkan, dan keperluannya. Data publik tidak perlu kunci.</p>
+</section>
+<p class="kaki"><a href="/privasi">Privasi</a> · <a href="/api/v1">Daftar endpoint (JSON)</a></p>
+</main>
+</div>
+<script>
+/* contoh mengikuti alamat yang sedang dibuka (centurisk97.id atau *.workers.dev); merek Centurisk97 di situs Centurisk97 */
+for (const c of document.querySelectorAll("code")) c.textContent = c.textContent.replaceAll("https://centurisk97.id", location.origin);
+if (/centurisk97/.test(location.hostname)) { for (const m of document.querySelectorAll("[data-merek]")) m.textContent = "Centurisk97"; for (const m of document.querySelectorAll("[data-merek-teks]")) m.textContent = m.textContent.replace("Pantau Bencana", "Centurisk97"); document.title = "API data · Centurisk97"; }
+/* tombol salin di tiap blok kode */
+for (const k of document.querySelectorAll(".kode")) {
+  const b = document.createElement("button"); b.className = "salin"; b.type = "button"; b.textContent = "Salin";
+  b.addEventListener("click", () => navigator.clipboard?.writeText(k.querySelector("code").textContent).then(() => { b.textContent = "Tersalin"; setTimeout(() => b.textContent = "Salin", 1500); }));
+  k.append(b);
+}
+/* daftar isi menandai bagian yang sedang dibaca */
+const tautan = new Map([...document.querySelectorAll("nav.daftar a")].map(a => [a.hash.slice(1), a]));
+const amati = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) { for (const a of tautan.values()) a.classList.remove("aktif"); tautan.get(e.target.id)?.classList.add("aktif"); } }, {rootMargin: "-40% 0px -55% 0px"});
+for (const s of document.querySelectorAll("main section")) amati.observe(s);
+</script>
+</body>
+</html>

@@ -29,23 +29,27 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
+      - name: Data tidak lebih tua dari yang tayang
+        run: python3 scripts/terbit/isi_data.py perlu
+
       # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
-          [ -z "$f" ] || git checkout HEAD -- $f
+          git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
       # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
       - name: Pulihkan musim_harian dari repo bila latar cache bukan median
         run: |
           python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
-            || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
+            || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
 
       - name: Titik panas, kompleks (FWI dipakai ulang)
         env:
@@ -63,6 +67,40 @@ jobs:
           python3 scripts/data/ringkasan.py
           python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
 
+      # Luas terbakar / belum padam metode deck BNPB (indikator Real Time, overlay kabupaten, laporan, API v1). Hari WIB d lengkap
+      # sesudah d+1 04.00, jadi putaran pagi menerbitkan kemarin. Harian hanya mengunduh hari baru + 4 hari terakhir (± 2 menit);
+      # trio prov/kab/wil yang hilang atau tak selaras = bangun ulang penuh (± 35 menit), dicicil antarputaran lewat cache peta-utc-.
+      - name: Pulihkan cache FIRMS per hari UTC untuk peta luas
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/peta_karhutla/utc
+          key: peta-utc-${{ github.run_id }}
+          restore-keys: peta-utc-
+
+      - name: Peta luas terbakar dan belum padam (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          # cache data- bisa membawa trio yang lebih tua atau tak lengkap dari versi repo: pakai versi repo bila lebih baru
+          akhir() { python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['hari'][-1])" "$1" 2>/dev/null || echo 0; }
+          git show HEAD:public/data/peta_karhutla.json > /tmp/pk_repo.json 2>/dev/null || true
+          if [ ! -f public/data/peta_karhutla_kab.json ] || [ ! -f public/data/peta_karhutla_wil.json ] \
+             || [[ "$(akhir /tmp/pk_repo.json)" > "$(akhir public/data/peta_karhutla.json)" ]]; then
+            f=$(git ls-files 'public/data/peta_karhutla*.json'); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
+          fi
+          python3 scripts/data/peta_karhutla.py --uji
+          python3 scripts/data/peta_karhutla.py
+
+      - name: Simpan cache FIRMS per hari UTC untuk peta luas
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/peta_karhutla/utc
+          key: peta-utc-${{ github.run_id }}
+
       - name: Kendala lapangan per kompleks (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py
@@ -77,6 +115,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+          python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
       - name: Laporan harian & kurva musim (boleh gagal)
@@ -215,6 +254,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           python3 scripts/terbit/versi.py
+          python3 scripts/terbit/jaga_segar.py
+          python3 scripts/terbit/isi_data.py buat
           npx --yes wrangler@4.42.0 deploy
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.

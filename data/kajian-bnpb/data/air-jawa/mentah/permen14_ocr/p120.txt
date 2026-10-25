@@ -1,0 +1,133 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+2015, No.638
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+81 D.I. Sei. Sawah Panjang 75
+82 D.I. Sei. Sekabu 50
+83 D.I. Sei. Selampaung 60
+84 D.I. Sei. Selampik | 75
+85 D.I. Sei. Siulak Deras Mudik 45
+86 D.I. Sei. Siulak Tenang 45
+87 D.I. Sei. Suko Pangkat 7
+88 D.I. Sei. Talang Angin 144
+89 D.I. Sei. Talang Lindung 119
+90 D.I. Sei. Tambulun 30
+91 D.I. Sei. Tandai 200
+92 D.I. Sei. Tanjung Genting 45
+93 D.I. Sei. Tanjung Syam 50
+94 D.I. Sei. Tanjung Tanah 40
+95 D.I. Sei. Tebing Tinggi 36
+96 D.I. Sei. Tebing Tinggi 55
+97 D.I. Sei. Teluk Kepayang 32
+98 D.I. Sei. Ulu Air Larat 8
+99 D.I. Sei. Ulu Jernih | 100
+100 D.I. Sei. Ulu Jernih II 250
+101 D.I. Talang Lindung 40
+102 D.I. Tanakil 45
+103 D.I. Tebat Nail Pendung Talang Genting 95
+104 D.I. Teluk Kepayang 32
+d Kab. Meranain 55 4.526
+1 D.I. Sei. Betuk 300
+2 D.I. Sei. Birun 119
+3 D.I. Sei. Karang Birahi 70
+4 D.I. Sei. Lintang 65
+5 D.I. Sei. Nagan 98
+6 D.I. Sei. Nilau 66
+7 D.I. Sei. Pelipan 88
+8 D.I. Sei. Semayo 172
+9 D.I. Sei. Sembilang 234
+10 D.I. Sei. Supermin 70
+11 D.I. Sei. Tanjung Mudo 93
+12 D.I. Sei. Tiangko 175
+13 D.I. Air Batu Perentak 25
+14 D.I. Birun Atas 35
+15 D.I. Cuban 25
+16 D.I. Ganduk 50
+17 D.I. Gelanggang 50
+18 D.I. Koto Teguh 500
+19 D.I. Lubuk Napal Kuning 70
+20 D.I. Lubuk Pulai 25
+21 D.I. Lubuk Pungguk 60
+22 D.I. Madras 50
+23 D.I. Madras Ulu 130
+24 D.I. Mentenang 60
+25 D.I. Metung 45
+26 D.I. Palik 30
+27 D.I. Perion 40
+28 D.I. Rantau Kermas 50
+29 D.I. Sawah Laweh Ds. Ngaol 30
+30 D.I. Sei. Belula Lubuk Pungguk 70
+31 D.I. Sei. Langkup 40
+32 D.I. Sei. Lematang 50
+33 D.I. Sei. Perimbun 50
+34 D.I. Sei. Berembang 50
+35 D.I. Sei. Durian Ds. Telentam 30
+#KANAN
+120
+
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+36 D.I. Sei. Jernih 50
+37 D.I. Sei. Ludan 27
+38 D.I. Sei. Luncur 50
+39 D.I. Sei. Mensenai 50
+40 D.I. Sei. Ngungung Ma. Panco 25
+41 D.I. Sei. Sapek Ds. Ngaol 70
+42 D.I. Sei. Serik 35
+43 D.I. Sei. Sesah 489
+44 D.I. Sei. Solok 20
+45 D.I. Sei. Tayeh 20
+46 D.I. Sei. Temelan Ds.Temelan 60
+47 D.I. Seketuk 80
+48 D.I. Sengering 50
+49 D.I. Silap 30
+50 D.I. Sisin 100
+51 D.I. Talang Segagah 20
+52 D.I. Talang Tembago 55
+53 D.I. Tanjung Alam 80
+54 D.I. Tanjung Berugo 50
+55 D.I. Tembesi 50
+e Kab. Sarolanaun 139 7.762
+1 D.I. Sei Air Jernih 164
+2 D.I. Sei Keramat 76
+3 D.I. Sei Rawang Ujo 182
+4 D.I. Sinakaran 311
+5 D.I. Asam Bubuk 63
+6 D.I. Batang Kasiro 70
+7 D.I. Batin Pengambang 115
+8 D.I. Ladang Panjang 160
+9 D.I. Ma. Pangi 50
+10 D.I. Ma. Pemuat 65
+11 D.I. Marga Rahayu 62
+12 D.I. Mentawak Baru | 70
+13 D.I. Mentawak Baru II 60
+14 D.I. Meranti Kiri 45
+15 D.I. Padang Sungkai | 95
+16 D.I. Padang Sungkai II 50
+17 D.I. Pauh 50
+18 D.I. Payo Terbakar 125
+19 D.I. Perdamaian 70
+20 D.I. Plaju II 75
+21 D.I. Pulau Langsat 27
+22 D.I. Punti Kayu 90
+23 D.I. Raden Anom 75
+24 D.I. Renah Alai Bukit Bulan 48
+25 D.I. Sawah Benteng 90
+26 D.I. Sawah Gedang 25
+27 D.I. Sei Batang Keradak 75
+28 D.I. Sei. Anak Paku Aji 95
+29 D.I. Sei. Apar 35
+30 D.I. Sei. Baru Mersip Ilir 20
+31 D.I. Sei. Batang Daup 40
+32 D.I. Sei. Batang Mersip 25
+33 D.I. Sei. Batang Naran 90
+34 D.I. Sei. Batang Pangi 75
+35 D.I. Sei. Batang Penyamun 40
+36 D.I. Sei. Batang Sandaran 25
+37 D.I. Sei. Batang Sekaladi 40
+38 D.I. Sei. Baung Ulu 25
+39 D.I. Sei. Bawah Buluh 65

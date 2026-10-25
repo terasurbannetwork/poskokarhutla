@@ -1,0 +1,130 @@
+#TATA_LETAK dua-tabel belah_x=1111 lebar=2480
+#KIRI
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+70 D.I. Wawolemo II 85
+71 D.I. Waworaha 650
+72 D.I. Wawouso 300
+73 D.I. Wungkolo 350
+h Kab. Konawe Selatan 258 27.018
+1 D.I. Aepodu 350
+2 D.I. Alangga M4
+3 D.I. Amoito 378
+4 D.I. Amotowo 229
+5 D.I. Atari Lama 163
+6 D.I. Baito 256
+7 D.I. Dana Mulya 229
+8 D.I. Kolono 100
+9 D.I. Konda 16
+10 D.I. Landono 132
+11 D.I. Lapoa 357
+12 D.I. Lapulu/Moolo Indah 250
+13 D.I. Moramo I 182
+14 D.I. Pamandati 120
+15 D.I. Ranomeeto 85
+16 D.I. Ranomeeto (JICA) 80
+17 D.I. Tanea Baru 310
+18 D.I. Tanea Lama 38
+19 D.I. Teteasa/Embung Repe 142
+20 D.I. Wolasi 129
+21 D.I. Abenggi 180
+22 D.I. Abundawaro 33
+23 D.I. Abusu 50
+24 D.I. Adombotombo 50
+25 D.I. Alengge 100
+26 D.I. Alombu 50
+27 D.I. Ambawijaya 125
+28 D.I. Ambekiara 60
+29 D.I. Ambesea 100
+30 D.I. Ambololi 40
+31 D.I. Amohola/Sindang Kasih 55
+32 D.I. Ananiwoinahu 85
+33 D.I. Anaupe 250
+34 D.I. Anda Meura 50
+35 D.I. Andinira 150
+36 D.I. Andinu 60
+37 D.I. Andonuana 267
+38 D.I. Anese | 80
+39 D.I. Anese II 150
+40 D.I. Anggalo Mebou 50
+41 D.I. Anggarowia 200
+42 D.I. Anggotawe 60
+43 D.I. Angguliusu/Ambalodangge 61
+44 D.I. Aopu/Punggulahi 50
+45 D.I. Apure 200
+46 D.I. Areo Il/Kondawa 150
+47 D.I. Asingi 47
+48 D.I. Atari | 70
+49 D.I. Atari Il/Atari Indah 250
+50 D.I. Baku Taru 75
+51 D.I. Basala 200
+52 D.I. Beji 60
+53 D.I. Beringin | 42
+54 D.I. Beringin II 44
+55 D.I. Bima Maroa 115
+#KANAN
+Provinsi/Kabupaten/Kota Jumlah Luasan
+NO Nama Daerah Irigasi Permukaan D.I. (Ha)
+
+56 D.I. Bina Karya 25
+57 D.I. Bina Karya/Mulyasari 85
+58 D.I. Blok H 55
+59 D.I. Bomba-Bomba 60
+60 D.I. Boro-Boro 100
+61 D.I. Bose-Bose 100
+62 D.I. Bulusa 50
+63 D.I. Bumi Raya/Cekdam 200
+64 D.I. Cialam Jaya 100
+65 D.I. Darma Karya 75
+66 D.I. Dawi-Dawi 75
+67 D.I. Duduria 100
+68 D.I. Eka Budi 90
+69 D.I. Eka Sari 42
+70 D.I. Embung Mokupa 75
+71 D.I. Embung Tuoa 102
+72 D.I. Emon | 80
+73 D.I. Emon II/Darmon 125
+74 D.I. Endanga 100
+75 D.I. Gunung Tangki 80
+76 D.I. Harapan 20
+77 D.I. Harapan Tani 60
+78 D.I. Horodopi 75
+79 D.I. Jati Bali 100
+80 D.I. Jati Bali (Embung) 30
+81 D.I. Kali Liduka 30
+82 D.I. Kalisua 100
+83 D.I. Kapu Jaya 150
+84 D.I. Karya Bakti 100
+85 D.I. Karya Jaya 40
+86 D.I. Karya Makmur 60
+87 D.I. Karya Muda 90
+88 D.I. Karya Sabar 50
+89 D.I. Karya Yoga Sari 60
+90 D.I. Keku/JICA 408
+91 D.I. Kembar Jaya 200
+92 D.I. Kiaeya/Areo 60
+93 D.I. Konaweepa 95
+94 D.I. Lahuau/Laloawu 120
+95 D.I. Laksana Karya 120
+96 D.I. Lalembuu 50
+97 D.I. Lalobani 100
+98 D.I. Lalodaria 250
+99 D.I. Lalombaka 100
+100 D.I. Lalombonda 200
+101 D.I. Lalombonda/Mowila 100
+102 D.I. Lalomewuta 50
+103 D.I. Lalondahari 150
+104 D.I. Lalonggopiu 60
+105 D.I. Laloomili/Atari III 80
+106 D.I. Laloonaha 60
+107 D.I. Lalouae 35
+108 D.I. Lalowi 124
+109 D.I. Lalowiu 124
+110 D.I. Lalowosula 76
+111 D.I. Lambodi Jaya | 150
+112 D.I. Lambadi Jaya II 100
+113 D.I. Lambadi Jaya III 200
+114 D.I. Lambadi Jaya IV 100
+115 D.I. Lambadi Jaya V 25
+116 D.I. Lambadi Jaya VI 200
