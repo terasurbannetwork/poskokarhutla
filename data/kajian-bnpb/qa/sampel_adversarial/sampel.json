@@ -1,0 +1,177 @@
+{
+ "keterangan": "Sampel uji adversarial qa/slop.py, 23 Okt 2026. slop: paragraf buatan yang meniru slop model bahasa dan sengaja menghindari pola S-n; pola_sasaran = kode yang semestinya menangkapnya. baik: kutipan tulisan resmi/riset bersumber yang semestinya lolos ambang final. Angka di sampel slop berupa token {{angka:...}}, bukan data.",
+ "slop": [
+  {
+   "id": "slop-01",
+   "taktik": "pembuka klise tersamar, tiga-serangkai nominal, \"menjadi fondasi\"",
+   "pola_sasaran": [
+    "S-9",
+    "S-17",
+    "S-20"
+   ],
+   "teks": "Sebagai negara yang berada di pertemuan tiga lempeng besar dunia, Indonesia menghadapi ancaman bencana yang terus berkembang dari waktu ke waktu. Pada 2024, DIBI mencatat {{angka:dibi.kejadian.2024}} kejadian bencana [@bnpb-2025-dibi]. Menghadapi kenyataan tersebut, arah penanggulangan bencana perlu bertumpu pada penguatan kelembagaan, perluasan jangkauan layanan, serta pendalaman kemitraan antarlembaga. Ketiganya saling menguatkan dan menjadi fondasi bagi sistem yang lebih siap menghadapi tantangan."
+  },
+  {
+   "id": "slop-02",
+   "taktik": "simpulan moral dan aforisme tanpa kata pemicu (\"memegang kunci\", \"investasi bagi generasi berikutnya\", \"tidak lahir dalam semalam\")",
+   "pola_sasaran": [
+    "S-20",
+    "S-23",
+    "M-13"
+   ],
+   "teks": "Kesiapsiagaan desa memegang kunci dalam menekan jumlah korban. Hingga 2024, program Desa Tangguh Bencana telah menjangkau {{angka:destana.2024}} desa [@bnpb-2024-destana]. Setiap rupiah yang ditanamkan untuk pencegahan pada hakikatnya adalah investasi bagi keselamatan generasi berikutnya. Ketangguhan tidak lahir dalam semalam; ia tumbuh setapak demi setapak, jauh sebelum bencana datang mengetuk."
+  },
+  {
+   "id": "slop-03",
+   "taktik": "personifikasi di luar daftar kata kerja (\"tidak mengenal\", \"seakan menagih\", \"memberi sinyal\", \"tanpa permisi\")",
+   "pola_sasaran": [
+    "S-23"
+   ],
+   "teks": "Banjir tidak mengenal batas administrasi. Ketika hujan ekstrem mengguyur hulu Citarum pada Maret 2024, sungai seakan menagih kembali ruang yang selama ini dirampas permukiman. Angka-angka kejadian memberi sinyal yang jelas: kemarau dan banjir kini datang silih berganti tanpa permisi, dan wilayah yang lengah akan menanggung akibatnya."
+  },
+  {
+   "id": "slop-04",
+   "taktik": "frasa birokrat model bahasa: \"dalam rangka mewujudkan\", \"upaya berkelanjutan\", \"langkah strategis\", \"wujud komitmen\", \"kontribusi nyata\"",
+   "pola_sasaran": [
+    "S-10",
+    "S-15"
+   ],
+   "teks": "Dalam rangka mewujudkan Indonesia yang tangguh bencana, BNPB terus melakukan upaya berkelanjutan melalui penguatan kapasitas daerah. Penyusunan RENAS PB 2025–2029 merupakan langkah strategis sebagai wujud komitmen pemerintah dalam melindungi segenap bangsa. Upaya ini diharapkan dapat memberikan kontribusi nyata bagi penurunan indeks risiko di seluruh wilayah tanah air [@bnpb-2025-renas]."
+  },
+  {
+   "id": "slop-05",
+   "taktik": "klaim tanpa angka; kata \"sumber daya\" dan \"sumber persoalan\" dibaca regex SUMBER sebagai rujukan sehingga S-37 padam",
+   "pola_sasaran": [
+    "S-37"
+   ],
+   "teks": "Pengelolaan sumber daya air di Pulau Jawa menghadapi tekanan yang kian berat dari tahun ke tahun. Alih fungsi lahan di hulu, pertumbuhan permukiman yang pesat di hilir, dan pengambilan air tanah yang tidak terkendali membuat daya dukung lingkungan terus merosot. Kondisi ini menuntut perhatian serius dari para pemangku kepentingan agar ketersediaan air bagi masyarakat luas tetap terjaga dan tidak menjadi sumber persoalan baru di masa mendatang."
+  },
+  {
+   "id": "slop-06",
+   "taktik": "lima paragraf simetris berpola sama (aspek, angka, \"Meski begitu/Namun\", \"sehingga ... tetap menjadi ...\"); S-28 baru menghitung mulai enam paragraf",
+   "pola_sasaran": [
+    "S-28"
+   ],
+   "teks": "Dari sisi kelembagaan, BPBD di {{angka:bpbd.mandiri}} kabupaten/kota sudah berdiri sebagai organisasi tersendiri. Meski begitu, kapasitas personel dan anggaran belum seimbang dengan besarnya ancaman, sehingga penguatan lembaga tetap menjadi pekerjaan rumah utama.\n\nPada aspek pendanaan, alokasi prabencana daerah baru mencapai {{angka:apbd.prabencana}} persen dari belanja kebencanaan. Meski begitu, kesadaran untuk menggeser anggaran ke hulu terus tumbuh, sehingga reformasi pendanaan tetap menjadi agenda yang mendesak.\n\nUntuk urusan data, DIBI telah merekam {{angka:dibi.total}} kejadian sejak 1815 [@bnpb-2025-dibi]. Namun kualitas pencatatan antardaerah masih belum seragam, sehingga pembenahan sistem informasi tetap menjadi prioritas yang tidak bisa diabaikan.\n\nDi ranah peringatan dini, BMKG mengoperasikan {{angka:bmkg.sirene}} sirene tsunami di pesisir rawan. Akan tetapi, jangkauan pesan hingga tingkat desa belum merata, sehingga penguatan rantai komunikasi tetap menjadi kebutuhan yang mendesak.\n\nTerkait pemulihan, rehabilitasi dan rekonstruksi pascagempa Cianjur 2022 menyerap anggaran {{angka:rr.cianjur}} miliar rupiah. Hanya saja, koordinasi lintas sektor masih berjalan lambat, sehingga percepatan pemulihan tetap menjadi tantangan bersama kita."
+  },
+  {
+   "id": "slop-07",
+   "taktik": "hedging dengan penanda di luar HEDGE (\"berpeluang\", \"relatif dapat\", \"ditengarai\", \"banyak faktor\")",
+   "pola_sasaran": [
+    "S-31",
+    "S-33"
+   ],
+   "teks": "Curah hujan pada musim hujan 2026/2027 berpeluang meningkat di sebagian besar wilayah Pulau Jawa. Kondisi tersebut relatif dapat memicu banjir di kawasan yang daya tampungnya terbatas, meskipun besarnya dampak masih bergantung pada banyak faktor. Secara umum, daerah dengan tutupan vegetasi rendah ditengarai lebih rawan, sehingga kewaspadaan perlu ditingkatkan sedini mungkin."
+  },
+  {
+   "id": "slop-08",
+   "taktik": "kontras retoris dengan \"tak\" alih-alih \"tidak\"/\"bukan\", dan \"tidak terletak pada X, tetapi pada Y\"",
+   "pola_sasaran": [
+    "S-19",
+    "S-25"
+   ],
+   "teks": "Tantangan kebencanaan saat ini tak sekadar soal respons cepat ketika bencana terjadi, tetapi juga tentang membangun budaya sadar risiko di tingkat keluarga. Persoalannya tidak terletak pada ketersediaan peralatan, tetapi pada kesiapan manusia yang mengoperasikannya. Tak hanya itu, porsi pendanaan prabencana pada 2025 masih jauh tertinggal dibandingkan belanja tanggap darurat."
+  },
+  {
+   "id": "slop-09",
+   "taktik": "ajakan di tengah kalimat (\"Kini saatnya\"), \"tidak bisa lagi ditunda\", penutup \"Dengan kebersamaan itu ... hari esok yang lebih aman\"",
+   "pola_sasaran": [
+    "S-20",
+    "S-21",
+    "S-24"
+   ],
+   "teks": "Kabupaten Demak mencatat {{angka:dibi.banjir.demak.2024}} kejadian banjir pada 2024 [@bnpb-2025-dibi]. Angka ini mengingatkan bahwa kesiapsiagaan tidak bisa lagi ditunda. Kini saatnya pemerintah daerah, dunia usaha, akademisi, media, dan masyarakat bergandengan tangan. Dengan kebersamaan itu, Demak akan mampu bangkit dan melangkah menuju hari esok yang lebih aman."
+  },
+  {
+   "id": "slop-10",
+   "taktik": "atribusi kabur yang dilindungi satu sitasi di akhir paragraf; \"Literatur internasional menunjukkan\", \"Pengalaman di banyak negara membuktikan\"",
+   "pola_sasaran": [
+    "S-34"
+   ],
+   "teks": "Banyak kajian sepakat bahwa investasi mitigasi jauh lebih hemat daripada biaya pemulihan. Literatur internasional menunjukkan bahwa setiap dolar untuk pengurangan risiko dapat menghemat hingga beberapa kali lipat biaya pascabencana. Pengalaman di banyak negara membuktikan hal serupa, dan Indonesia pun merasakannya ketika gempa Cianjur 2022 menimbulkan kerugian besar (BNPB, 2023)."
+  },
+  {
+   "id": "slop-11",
+   "taktik": "emoji U+23F1, figure dash U+2012, tanda pisah tanda hubung berspasi, pertanyaan retoris berakhir titik, sapaan \"kita semua\"",
+   "pola_sasaran": [
+    "S-3",
+    "S-4",
+    "S-22",
+    "M-11"
+   ],
+   "teks": "Peringatan dini tsunami ⏱ harus tiba di sirene dalam hitungan menit. Pertanyaannya, sejauh mana pesisir selatan Jawa benar-benar siap ketika gempa berikutnya datang. Jawabannya sederhana ‒ kesiapan dibangun lewat latihan rutin - bukan lewat spanduk. Pekerjaan rumah itu masih menunggu kita semua hingga 2030."
+  },
+  {
+   "id": "slop-12",
+   "taktik": "meta-komentar di luar daftar (\"Uraian berikut memetakan\", \"Penting digarisbawahi bahwa\", \"patut dicermati\"), daftar bertiga dengan \"hingga\", \"secara lebih terpadu\"",
+   "pola_sasaran": [
+    "S-16",
+    "S-17",
+    "S-10"
+   ],
+   "teks": "Uraian berikut memetakan kondisi kekeringan di Pulau Jawa selama 2023. Penting digarisbawahi bahwa kekeringan berbeda dengan banjir karena datang perlahan dan kerap luput dari perhatian. Hal yang patut dicermati, dampaknya merambat ke sektor pertanian, kesehatan, hingga pendidikan. Karena itu, persoalan ini perlu menjadi perhatian bersama dan ditangani secara lebih terpadu."
+  }
+ ],
+ "baik": [
+  {
+   "id": "baik-01",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 indeks risiko provinsi 2023",
+   "teks": "Hasil perhitungan indeks risiko bencana tahun 2023 menunjukkan bahwa terdapat 13 (tiga belas) provinsi yang berada pada risiko bencana tinggi dengan 3 (tiga) provinsi yang berisiko paling tinggi yaitu Sulawesi Barat, Maluku, dan Kepulauan Bangka Belitung. Sebanyak 25 provinsi berada pada kelas risiko bencana sedang dengan provinsi yang memiliki indeks risiko terendah pada kelas sedang adalah Daerah Khusus Ibukota Jakarta, Papua Pegunungan, dan Daerah Istimewa Yogyakarta."
+  },
+  {
+   "id": "baik-02",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 indeks risiko kabupaten/kota",
+   "teks": "Dari perhitungan nilai indeks risiko bencana untuk kabupaten/kota menunjukkan bahwa terdapat 168 kabupaten/kota yang berada pada risiko bencana tinggi dan sebanyak 346 kabupaten/kota berada pada risiko bencana sedang. Lima kabupaten/kota yang memiliki nilai indeks risiko bencana tertinggi yaitu Kabupaten Mandailing Natal, Kabupaten Halmahera Selatan, Kabupaten Nias Utara, Kabupaten Nias, dan Kabupaten Maluku Barat Daya. Sedangkan kabupaten/kota yang memiliki nilai risiko bencana terendah ialah Kota Administratif Jakarta Selatan, Kota Surakarta, Kabupaten Sigi, Kabupaten Administratif Kepulauan Seribu, dan Kabupaten Mamberamo Tengah."
+  },
+  {
+   "id": "baik-03",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 luas bahaya multibahaya (salah ketik OCR \"Persentas\" dibetulkan)",
+   "teks": "Hasil pengkajian risiko bencana di Indonesia tahun 2022-2026 menunjukkan informasi terkait tingkat bahaya, tingkat kerugian, tingkat kapasitas, dan tingkat risiko masing-masing bahaya yang kemudian diklasifikasikan menjadi tingkat rendah, sedang, dan tinggi. Seluruh provinsi di Indonesia memiliki kelas bahaya dengan tingkat risiko tinggi. Luas wilayah bahaya berbasis risiko multibahaya di Indonesia secara total sebesar 192.473.073 ha dengan luas bahaya di kelas risiko tertinggi mendominasi sekitar 65,32%. Provinsi Papua (sebelum pemecahan menjadi Daerah Otonom Baru), Provinsi Kalimantan Tengah, dan Provinsi Kalimantan Timur memiliki luas multibahaya tertinggi dan Provinsi Daerah Khusus Ibukota Jakarta memiliki luas multibahaya terendah. Persentase luas bahaya pada kelas risiko tinggi terbesar berada di Provinsi Bengkulu (94,76%), Provinsi Gorontalo (84,05%), dan Provinsi Aceh (83,36%)."
+  },
+  {
+   "id": "baik-04",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 luas bahaya per jenis",
+   "teks": "Jika dilihat per jenis bahaya, luas bahaya bencana geologis seperti gempabumi memiliki luas bahaya tertinggi dengan total untuk seluruh kelas risiko sebesar 192.473.068 ha. Untuk bencana hidrometeorologis, luas bahaya tertinggi berada pada bencana kebakaran hutan dan lahan (karhutla) dan kekeringan. Sedangkan untuk bencana non alam, luas bahaya tertinggi berada pada bencana epidemi wabah penyakit dan COVID-19. Bencana tanah longsor, banjir bandang, dan banjir memiliki luas bahaya terbesar pada kelas risiko tinggi dengan persentase sebesar 61,18%, 57,81%, dan 50,43%."
+  },
+  {
+   "id": "baik-05",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 kerentanan",
+   "teks": "Pengkajian kerentanan dilakukan terhadap potensi penduduk terpapar dan potensi kerugian. Secara total, potensi penduduk terpapar multibahaya ialah sebanyak 271.130.365 jiwa. Seluruh provinsi di Indonesia memiliki kelas risiko untuk kerentanan dari potensi penduduk terpapar. Provinsi Jawa Barat, Provinsi Jawa Tengah, dan Provinsi Jawa Timur memiliki jumlah potensi penduduk terbesar untuk multibahaya termasuk jumlah potensi penduduk terpapar pada kelompok rentan."
+  },
+  {
+   "id": "baik-06",
+   "sumber": "riset/B-air-jawa.md baris 311, rilis BMKG 22 Sep 2026",
+   "teks": "Rilis BMKG 22 Sep 2026 [TERVERIFIKASI via InfoPublik]: anomali Niño 3.4 akhir Agustus +2,83; indeks ENSO JAS +2,63 (**El Niño sangat kuat**); IOD Agustus +0,376 menuju positif. Awal musim hujan 2026/27 mundur di 529 ZOM (61,08%); **sebagian Jawa mulai November 2026, sebagian besar Jawa Desember 2026**; puncak Des 2026–Feb 2027; durasi lebih pendek di 482 ZOM (51,90%); HTH >60 hari di 25 provinsi, terpanjang 131 hari di Bantul. Konferensi pers 2 Okt 2026: El Niño bertahan hingga awal 2027 [SEKUNDER]. Implikasi: awal dan puncak musim hujan berdekatan → risiko banjir mendadak di atas tanah kering pascakemarau panjang."
+  },
+  {
+   "id": "baik-07",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 2 potensi kerugian gempabumi (salah ketik OCR \"hidrometeorlogis\" dibetulkan)",
+   "teks": "Potensi kerugian fisik dan ekonomi bencana gempabumi mencapai 1.111.318.267 Juta Rupiah dan merupakan nilai terbesar untuk bencana geologi. Sedangkan untuk bencana hidrometeorologis, bencana cuaca ekstrim dan banjir memiliki nilai yang relatif besar dibandingkan bencana lainnya. Untuk potensi kerusakan lingkungan, bencana kekeringan memiliki nilai potensi kerugian terbesar, yaitu seluas 35.020.682 ha."
+  },
+  {
+   "id": "baik-08",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 1 masa berlaku dan peninjauan (OCR \"20202044\" dibetulkan)",
+   "teks": "RENAS PB Tahun 2025-2029 merupakan bentuk pelaksanaan RIPB Tahun 2020-2044 yang berlaku untuk jangka waktu 5 (lima) tahun. Dokumen RENAS PB Tahun 2025-2029 dapat ditinjau secara berkala setiap 2 (dua) tahun sekali atau sewaktu-waktu jika terjadi bencana. Peninjauan kembali RENAS PB Tahun 2025-2029 didasarkan pada hasil pemantauan, pengendalian, dan evaluasi tahunan pelaksanaan RENAS PB Tahun 2025-2029."
+  },
+  {
+   "id": "baik-09",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 3 isu strategis bencana geologi (penanda halaman OCR dibuang)",
+   "teks": "Peningkatan potensi dampak dan risiko bencana geologi di Indonesia terlihat dari data Sumber dan Bahaya Gempa Indonesia 2017 yang menunjukkan jumlah sesar atau patahan aktif meningkat menjadi 295, termasuk penambahan di zona laut dan darat Pulau Jawa. Subduksi selatan Jawa menunjukkan tiga lokasi seismic gap yang berpotensi memicu gempa dengan kekuatan hingga magnitudo 9 atau lebih, berpotensi menimbulkan tsunami. Jumlah penduduk terdampak gempa tertinggi ada di Jawa dan Bali, dengan analisis kerugian fisik mencakup fasilitas umum. Ancaman tsunami tinggi tersebar di hampir seluruh wilayah pantai Indonesia, dengan proyeksi kenaikan jumlah populasi terdampak dan potensi kerugian fisik, ekonomi, serta kerusakan lingkungan meningkat dari 2015 hingga 2045. Selain itu, erupsi gunungapi di Indonesia juga memiliki dampak global dengan 70 gunungapi perlu mendapat perhatian khusus."
+  },
+  {
+   "id": "baik-10",
+   "sumber": "riset/B-air-jawa.md baris 268, penurunan muka tanah",
+   "teks": "Kaitan dengan air tanah: korelasi 0,86 antara muka air tanah dan deformasi di Semarang [TERVERIFIKASI] Aditiya & Ito (2023). Pengaruh tektonik relatif kecil [TERVERIFIKASI] Andreas et al. (2019). Model hidro-geomekanik Bandung menunjukkan kehilangan tampungan akuifer permanen [TERVERIFIKASI] Rygus et al. (2025)."
+  },
+  {
+   "id": "baik-11",
+   "sumber": "riset/D-inventaris-platform.md baris 141, catatan pakai IRBI",
+   "teks": "Catatan pakai IRBI (RINGKASAN §3, A layak): skala 2025 tidak sebanding dengan 2015–2024. `status` adalah kelas total semua bahaya, bukan kelas per bahaya. IRBI jangan dipakai untuk memeringkat, karena banyak kab bernilai sama. Untuk Jawa (119 kab), status 2025: 118 Sedang dan 1 Tinggi, jadi status total hampir tidak membedakan; pakai skor per bahaya. Lisensi InaRISK tidak tertulis: cukup tulis \"Sumber: InaRISK BNPB\"."
+  },
+  {
+   "id": "baik-12",
+   "sumber": "Perban BNPB 1/2025 (RENAS PB 2025-2029), data/raw/hukum/teks/perban-nomor-1-tahun-2025.json, Bab 1 kaitan RPJPN 2025-2045",
+   "teks": "Rencana Pembangunan Jangka Panjang Nasional Tahun 2025-2045 yang ditetapkan dalam Undang-Undang Nomor 59 Tahun 2024 tentang Rencana Pembangunan Jangka Panjang Nasional Tahun 2025-2045 telah menetapkan Visi Indonesia Emas 2025-2045 yang dilaksanakan melalui 8 (delapan) Misi Pembangunan. Misi Pembangunan tersebut dilaksanakan melalui 17 (tujuh belas) Arah Pembangunan, dengan 45 (empat puluh lima) indikator utama Pembangunan. Kebijakan terkait dengan kebencanaan dalam Rencana Pembangunan Jangka Panjang Nasional 2025-2045 secara utama dijabarkan dalam Misi Pembangunan ke-5 yaitu Ketahanan Sosial Budaya dan Ekologi. Meskipun demikian, pada misi-misi pembangunan lainnya juga masih terdapat arah kebijakan berkaitan penanggulangan bencana, sebagaimana terlihat dalam Tabel 1-1."
+  }
+ ]
+}

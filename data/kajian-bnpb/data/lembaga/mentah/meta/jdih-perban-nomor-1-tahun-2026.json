@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Badan",
+ "Judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2026 tentang Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi Terhadap Penyaluran Dana Bersama Penanggulangan Bencana",
+ "Nomor": "1",
+ "Tahun": "2026",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Dana Bersama Penanggulangan Bencana",
+ "Tanggal Penetapan": "10 March 2026",
+ "Tanggal Pengundangan": "17 March 2026",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "BN 2026 (189); 13 Hlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERBAN",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2026pbbnpb001.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-1-tahun-2026",
+ "tipe": "Peraturan",
+ "slug": "perban-nomor-1-tahun-2026",
+ "teks": [
+  "perban-nomor-1-tahun-2026.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "f7072a64448a9abc254c7c9294e729eac9b79efa",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "855225e9bd77bc32e891fbdd058b19888752eb33",
+ "asal_teks": "data/raw/hukum/teks/perban-nomor-1-tahun-2026.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

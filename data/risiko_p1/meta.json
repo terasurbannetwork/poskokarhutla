@@ -1,0 +1,231 @@
+{
+ "versi": "P1",
+ "status": "eksperimental",
+ "dibuat": "2026-10-23T16:42:39Z",
+ "pendaftaran": "docs/riset/RISIKO-MINGGUAN.md, Pendaftaran model produksi P1 (f7a3f5da)",
+ "fitur": [
+  "n7",
+  "n30",
+  "n7_3",
+  "n30_3",
+  "n7_11",
+  "n30_11",
+  "hari_sejak",
+  "minggu",
+  "gambut",
+  "hutan",
+  "produksi",
+  "apl",
+  "kebun",
+  "hti",
+  "hph",
+  "konsesi",
+  "kanal_km",
+  "jalan_km",
+  "penduduk_km2",
+  "klim",
+  "klim5",
+  "klim_3",
+  "kekerapan",
+  "reg_prov",
+  "reg_kab"
+ ],
+ "hp": {
+  "pohon": 300,
+  "dalam": 6,
+  "lr": 0.05,
+  "l2": 1.0,
+  "min_h": 20.0,
+  "sub": 0.7
+ },
+ "seed": 7,
+ "sampel": {
+  "positif": [
+   0.5,
+   2.0
+  ],
+  "negatif": [
+   0.02,
+   50.0
+  ]
+ },
+ "k_wilayah": [
+  1000.0,
+  100.0
+ ],
+ "latih": {
+  "baris": 1277458,
+  "positif": 462373,
+  "per_tahun": {
+   "2013": [
+    93938,
+    34727
+   ],
+   "2014": [
+    116046,
+    57965
+   ],
+   "2015": [
+    132117,
+    74773
+   ],
+   "2016": [
+    80520,
+    20745
+   ],
+   "2017": [
+    78240,
+    19016
+   ],
+   "2018": [
+    90747,
+    31637
+   ],
+   "2019": [
+    103118,
+    44842
+   ],
+   "2020": [
+    77562,
+    18295
+   ],
+   "2021": [
+    75032,
+    14839
+   ],
+   "2022": [
+    73193,
+    13445
+   ],
+   "2023": [
+    96753,
+    37782
+   ],
+   "2024": [
+    81978,
+    22719
+   ],
+   "2025": [
+    78856,
+    18859
+   ],
+   "2026": [
+    99358,
+    52729
+   ]
+  },
+  "minggu_akhir": [
+   2026,
+   41
+  ],
+  "data_sampai": "2026-10-21",
+  "sensor": "S-NPP s.d. 31 Mar 2018 lalu NOAA-20, tanpa faktor penyetara",
+  "arsip_mulai_wib": "2026-10-12"
+ },
+ "riwayat": {
+  "tahun_baris": 2026,
+  "tahun": [
+   2012,
+   2025
+  ]
+ },
+ "ns": 58035,
+ "statis": {
+  "sel": 192,
+  "kerap": 118,
+  "titik_palsu": 101,
+  "di_populasi": 155
+ },
+ "b1": {
+  "fitur": [
+   "n7",
+   "n30",
+   "n7_3",
+   "n30_3",
+   "n7_11",
+   "n30_11",
+   "hari_sejak",
+   "klim",
+   "klim5",
+   "klim_3",
+   "kekerapan",
+   "reg_prov",
+   "reg_kab"
+  ],
+  "ubah": "log1p",
+  "koef": [
+   -4.818154294784642,
+   0.11388642316840249,
+   -0.03095140835262005,
+   0.06998310846082802,
+   0.15932748627006865,
+   0.25753164842190757,
+   0.13658921450937636,
+   -0.3289648217170481,
+   -0.3715523223732123,
+   3.348502878934501,
+   1.123746763156334,
+   2.152366279604217,
+   1.279427576295083,
+   -2.3174178787357187
+  ]
+ },
+ "b2": {
+  "fitur": [
+   "n7>0",
+   "klim"
+  ],
+  "koef": [
+   -4.346143679443382,
+   2.788364936170504,
+   3.8268830542853327
+  ]
+ },
+ "grid": {
+  "x0": 94.5,
+  "y1": 6.5,
+  "sel": 0.05,
+  "nx": 940,
+  "ny": 360
+ },
+ "berkas": {
+  "sel.json.gz": "738682e8c380d20202c71b9d2f4e541e2c6c1d3bbf978f9c8d51faa8b6775d05",
+  "lahan.f32.gz": "c4b1fd065af0bf45ba19433bd8457521acb6083aede7b43f0a8c48373bd86f95",
+  "klim.f32.gz": "0b14928a642efcc892365b99b4ca1659c9bc18993b9aae2d317322187469c4e6",
+  "klim5.f32.gz": "d8b88a2891afaeae9f4648cd408fcc7929b26d01a8331264819894c71b2a560e",
+  "klim_3.f32.gz": "101e413e1836118885f48518f61c3c54002f890153ec3481186ee41b239d866e",
+  "kek.f32.gz": "87ed879f222e4b30543beab9a813ed0dff21e563c5ede494b29820d53aab931a",
+  "reg_prov.f32.gz": "e315803504b96da99a17d0513b197df2a7c0910657a3ab70b9a7d45d651fa5ea",
+  "reg_kab.f32.gz": "2e2d32d8952887a9f3cc79db3ce6eefbce3108444d1c9d3df706af2221990f8d",
+  "statis.json": "56d6efffb6266a33ab867d2ebd541f73fe81b99a80e3fb4e9711a9838060af51",
+  "nonveg.json.gz": "3fa999b9d4882216c5e8288d2c0c791cf2d0b8e292d67c543171a4c35e329ebf",
+  "p1_pohon.json.gz": "8c59aeecc19187ca0e68f8412bb3894da9a7527047a311f1fb34da13673d5c3d"
+ },
+ "kunci": "0702ed67e0e710c0",
+ "uji_balik": {
+  "auc_dalam_prov_minggu": 0.847,
+  "pembanding_riwayat": 0.84,
+  "recall10": 0.414,
+  "auc_dalam_prov_minggu_dihitung": 0.8468,
+  "himpunan": "Jul-Nov, tinggalkan-satu-tahun 2015-2025",
+  "sumber": "lipat_<th>.npz (AUC), public/data/risiko_mingguan_uji.json (recall), docs/riset/RISIKO-MINGGUAN.md Koreksi audit (pembanding riwayat)",
+  "catatan": "model uji balik (dengan cuaca, ENSO, sel statis belum ditapis); P1 tanpa keduanya, setara di 2026 menurut audit"
+ },
+ "paritas": {
+  "minggu": [
+   2026,
+   42
+  ],
+  "sel": 58035,
+  "fitur_beda": 0,
+  "peluang_beda_maks": 4.996003610813204e-16,
+  "sha256": "cf3ce57ab98bbb1d0e4427bd8b627ec98365a3ae08510327365c14da9228515e"
+ },
+ "waktu_dtk": {
+  "nonveg": 14,
+  "siapkan": 62,
+  "baris": 138,
+  "gbdt": 617,
+  "total": 675
+ }
+}

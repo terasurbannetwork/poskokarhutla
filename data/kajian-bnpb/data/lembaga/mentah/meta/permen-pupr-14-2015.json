@@ -1,0 +1,24 @@
+{
+ "id": "159870",
+ "url": "https://peraturan.bpk.go.id/Details/159870/permen-pupr-no-14prtm2015-tahun-2015",
+ "judul": "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 Tahun 2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+ "tanggal_penetapan": "21 April 2015",
+ "tanggal_berlaku": "28 April 2015",
+ "sumber": "BN.2015/No.638, jdih.pu.go.id : 13 hlm.",
+ "status": "Berlaku",
+ "pdf": [
+  "/Download/152421/PermenPUPR14-2015.pdf",
+  "/Download/152422/PermenPUPR14-2015%20-%20Lamp.1.pdf",
+  "/Download/152423/PermenPUPR14-2015%20-%20Lamp.2.pdf",
+  "/Download/152424/PermenPUPR14-2015%20-%20Lamp.3.pdf"
+ ],
+ "status_peraturan": "Belum Tersedia",
+ "diakses": "2026-10-23",
+ "pdf_url": "https://peraturan.bpk.go.id/Download/152421/PermenPUPR14-2015.pdf",
+ "sid": "permen-pupr-14-2015",
+ "ekstraksi": "pymupdf get_text() atas PDF unduhan peraturan.bpk.go.id",
+ "pdf_sha1": "e7200ad41e57a4da3e45590bab11f3c6f6c236bb",
+ "pdf_bytes": 214174,
+ "halaman_total": 13,
+ "halaman_disimpan": "semua"
+}

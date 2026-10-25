@@ -1,0 +1,3288 @@
+{
+ "nama": "bab11-g16-kalender-pulau",
+ "keterangan": "Porsi kejadian bencana hidrometeorologi per bulan menurut pulau dan musim, Indonesia 2008–2025 (persen kejadian)",
+ "sumber": "DIBI BNPB 2008–2025, per tanggal kejadian; pengolahan kajian ini (batas tetap porsi bulanan)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  407.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  14.37
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "5 atau kurang",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "5–10",
+   "jenis": "kotak",
+   "warna": "#A4CAEE"
+  },
+  {
+   "label": "10–20",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "di atas 20",
+   "jenis": "kotak",
+   "warna": "#1B5A93"
+  }
+ ],
+ "hex": {
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "garis"
+  ],
+  "#2F86D1": [
+   "skala",
+   "legenda"
+  ],
+  "#A4CAEE": [
+   "skala",
+   "legenda"
+  ],
+  "#DCEBF8": [
+   "skala",
+   "legenda"
+  ],
+  "#1B5A93": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 149.24,
+   "y": 2,
+   "w": 13.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp0",
+   "teks": "Jan"
+  },
+  {
+   "x": 176.2,
+   "y": 2,
+   "w": 13.15,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp1",
+   "teks": "Feb"
+  },
+  {
+   "x": 202.7,
+   "y": 2,
+   "w": 14.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp2",
+   "teks": "Mar"
+  },
+  {
+   "x": 230.46,
+   "y": 2,
+   "w": 12.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp3",
+   "teks": "Apr"
+  },
+  {
+   "x": 257.04,
+   "y": 2,
+   "w": 13.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp4",
+   "teks": "Mei"
+  },
+  {
+   "x": 283.95,
+   "y": 2,
+   "w": 13.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp5",
+   "teks": "Jun"
+  },
+  {
+   "x": 312.13,
+   "y": 2,
+   "w": 10.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp6",
+   "teks": "Jul"
+  },
+  {
+   "x": 337.4,
+   "y": 2,
+   "w": 14.12,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp7",
+   "teks": "Agu"
+  },
+  {
+   "x": 364.67,
+   "y": 2,
+   "w": 13.47,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp8",
+   "teks": "Sep"
+  },
+  {
+   "x": 392.27,
+   "y": 2,
+   "w": 12.17,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp9",
+   "teks": "Okt"
+  },
+  {
+   "x": 418.23,
+   "y": 2,
+   "w": 14.14,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp10",
+   "teks": "Nov"
+  },
+  {
+   "x": 445.44,
+   "y": 2,
+   "w": 13.61,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp11",
+   "teks": "Des"
+  },
+  {
+   "x": 2,
+   "y": 22.7,
+   "w": 79.71,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-0",
+   "teks": "12"
+  },
+  {
+   "x": 180.39,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-1",
+   "teks": "9"
+  },
+  {
+   "x": 204.95,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-2",
+   "teks": "10"
+  },
+  {
+   "x": 234.29,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-3",
+   "teks": "9"
+  },
+  {
+   "x": 261.23,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-4",
+   "teks": "8"
+  },
+  {
+   "x": 288.18,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-5",
+   "teks": "5"
+  },
+  {
+   "x": 315.12,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-6",
+   "teks": "5"
+  },
+  {
+   "x": 342.07,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-7",
+   "teks": "6"
+  },
+  {
+   "x": 369.02,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-8",
+   "teks": "7"
+  },
+  {
+   "x": 395.96,
+   "y": 22.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-9",
+   "teks": "8"
+  },
+  {
+   "x": 420.52,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-10",
+   "teks": "10"
+  },
+  {
+   "x": 447.47,
+   "y": 22.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-11",
+   "teks": "10"
+  },
+  {
+   "x": 2,
+   "y": 47.7,
+   "w": 68.65,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-0",
+   "teks": "16"
+  },
+  {
+   "x": 178.01,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-1",
+   "teks": "16"
+  },
+  {
+   "x": 204.95,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-2",
+   "teks": "13"
+  },
+  {
+   "x": 234.29,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-3",
+   "teks": "9"
+  },
+  {
+   "x": 261.23,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-4",
+   "teks": "7"
+  },
+  {
+   "x": 288.18,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-5",
+   "teks": "4"
+  },
+  {
+   "x": 315.12,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-6",
+   "teks": "2"
+  },
+  {
+   "x": 342.07,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-7",
+   "teks": "2"
+  },
+  {
+   "x": 369.02,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-8",
+   "teks": "3"
+  },
+  {
+   "x": 395.96,
+   "y": 47.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-9",
+   "teks": "7"
+  },
+  {
+   "x": 420.52,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-10",
+   "teks": "11"
+  },
+  {
+   "x": 447.47,
+   "y": 47.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-11",
+   "teks": "11"
+  },
+  {
+   "x": 2,
+   "y": 72.7,
+   "w": 89.93,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kalimantan, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-0",
+   "teks": "14"
+  },
+  {
+   "x": 180.39,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-1",
+   "teks": "9"
+  },
+  {
+   "x": 204.95,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-2",
+   "teks": "11"
+  },
+  {
+   "x": 231.9,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-3",
+   "teks": "10"
+  },
+  {
+   "x": 258.85,
+   "y": 72.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-4",
+   "teks": "10"
+  },
+  {
+   "x": 288.18,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-5",
+   "teks": "5"
+  },
+  {
+   "x": 315.12,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-6",
+   "teks": "5"
+  },
+  {
+   "x": 342.07,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-7",
+   "teks": "5"
+  },
+  {
+   "x": 369.02,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-8",
+   "teks": "7"
+  },
+  {
+   "x": 395.96,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-9",
+   "teks": "7"
+  },
+  {
+   "x": 422.91,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-10",
+   "teks": "8"
+  },
+  {
+   "x": 449.86,
+   "y": 72.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-11",
+   "teks": "9"
+  },
+  {
+   "x": 2,
+   "y": 97.7,
+   "w": 81.29,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sulawesi, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 97.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-0",
+   "teks": "14"
+  },
+  {
+   "x": 178.01,
+   "y": 97.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-1",
+   "teks": "11"
+  },
+  {
+   "x": 204.95,
+   "y": 97.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-2",
+   "teks": "10"
+  },
+  {
+   "x": 234.29,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-3",
+   "teks": "8"
+  },
+  {
+   "x": 261.23,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-4",
+   "teks": "9"
+  },
+  {
+   "x": 285.79,
+   "y": 97.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-5",
+   "teks": "10"
+  },
+  {
+   "x": 315.12,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-6",
+   "teks": "8"
+  },
+  {
+   "x": 342.07,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-7",
+   "teks": "5"
+  },
+  {
+   "x": 369.02,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-8",
+   "teks": "5"
+  },
+  {
+   "x": 395.96,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-9",
+   "teks": "5"
+  },
+  {
+   "x": 422.91,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-10",
+   "teks": "6"
+  },
+  {
+   "x": 449.86,
+   "y": 97.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-11",
+   "teks": "8"
+  },
+  {
+   "x": 2,
+   "y": 122.7,
+   "w": 134.36,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Bali dan Nusa Tenggara, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 122.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-0",
+   "teks": "26"
+  },
+  {
+   "x": 178.01,
+   "y": 122.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-1",
+   "teks": "21"
+  },
+  {
+   "x": 204.95,
+   "y": 122.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-2",
+   "teks": "12"
+  },
+  {
+   "x": 234.29,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-3",
+   "teks": "6"
+  },
+  {
+   "x": 261.23,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-4",
+   "teks": "4"
+  },
+  {
+   "x": 288.18,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-5",
+   "teks": "2"
+  },
+  {
+   "x": 315.12,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-6",
+   "teks": "2"
+  },
+  {
+   "x": 342.07,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-7",
+   "teks": "1"
+  },
+  {
+   "x": 369.02,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-8",
+   "teks": "3"
+  },
+  {
+   "x": 395.96,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-9",
+   "teks": "4"
+  },
+  {
+   "x": 422.91,
+   "y": 122.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-10",
+   "teks": "8"
+  },
+  {
+   "x": 447.47,
+   "y": 122.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-11",
+   "teks": "11"
+  },
+  {
+   "x": 2,
+   "y": 147.7,
+   "w": 75.68,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Maluku, musim hujan"
+  },
+  {
+   "x": 153.45,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-0",
+   "teks": "8"
+  },
+  {
+   "x": 180.39,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-1",
+   "teks": "9"
+  },
+  {
+   "x": 204.95,
+   "y": 147.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-2",
+   "teks": "11"
+  },
+  {
+   "x": 234.29,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-3",
+   "teks": "7"
+  },
+  {
+   "x": 258.85,
+   "y": 147.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-4",
+   "teks": "12"
+  },
+  {
+   "x": 285.79,
+   "y": 147.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-5",
+   "teks": "18"
+  },
+  {
+   "x": 312.74,
+   "y": 147.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-6",
+   "teks": "14"
+  },
+  {
+   "x": 342.07,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-7",
+   "teks": "6"
+  },
+  {
+   "x": 369.02,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-8",
+   "teks": "4"
+  },
+  {
+   "x": 395.96,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-9",
+   "teks": "3"
+  },
+  {
+   "x": 422.91,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-10",
+   "teks": "2"
+  },
+  {
+   "x": 449.86,
+   "y": 147.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-11",
+   "teks": "6"
+  },
+  {
+   "x": 2,
+   "y": 172.7,
+   "w": 72.17,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Papua, musim hujan"
+  },
+  {
+   "x": 151.06,
+   "y": 172.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-0",
+   "teks": "11"
+  },
+  {
+   "x": 178.01,
+   "y": 172.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-1",
+   "teks": "15"
+  },
+  {
+   "x": 204.95,
+   "y": 172.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-2",
+   "teks": "12"
+  },
+  {
+   "x": 231.9,
+   "y": 172.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-3",
+   "teks": "11"
+  },
+  {
+   "x": 261.23,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-4",
+   "teks": "9"
+  },
+  {
+   "x": 288.18,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-5",
+   "teks": "8"
+  },
+  {
+   "x": 315.12,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-6",
+   "teks": "9"
+  },
+  {
+   "x": 342.07,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-7",
+   "teks": "7"
+  },
+  {
+   "x": 369.02,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-8",
+   "teks": "5"
+  },
+  {
+   "x": 395.96,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-9",
+   "teks": "3"
+  },
+  {
+   "x": 422.91,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-10",
+   "teks": "3"
+  },
+  {
+   "x": 449.86,
+   "y": 172.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-11",
+   "teks": "8"
+  },
+  {
+   "x": 2,
+   "y": 197.7,
+   "w": 64.87,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-0",
+   "teks": "4"
+  },
+  {
+   "x": 178.01,
+   "y": 197.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-1",
+   "teks": "11"
+  },
+  {
+   "x": 207.34,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-2",
+   "teks": "8"
+  },
+  {
+   "x": 234.29,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-3",
+   "teks": "2"
+  },
+  {
+   "x": 261.23,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-4",
+   "teks": "3"
+  },
+  {
+   "x": 288.18,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-5",
+   "teks": "8"
+  },
+  {
+   "x": 312.74,
+   "y": 197.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-6",
+   "teks": "20"
+  },
+  {
+   "x": 339.68,
+   "y": 197.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-7",
+   "teks": "18"
+  },
+  {
+   "x": 366.63,
+   "y": 197.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-8",
+   "teks": "13"
+  },
+  {
+   "x": 395.96,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-9",
+   "teks": "9"
+  },
+  {
+   "x": 422.91,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-10",
+   "teks": "4"
+  },
+  {
+   "x": 449.86,
+   "y": 197.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-11",
+   "teks": "1"
+  },
+  {
+   "x": 2,
+   "y": 222.7,
+   "w": 53.8,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-0",
+   "teks": "0"
+  },
+  {
+   "x": 180.39,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-1",
+   "teks": "0"
+  },
+  {
+   "x": 207.34,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-2",
+   "teks": "0"
+  },
+  {
+   "x": 234.29,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-3",
+   "teks": "0"
+  },
+  {
+   "x": 261.23,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-4",
+   "teks": "2"
+  },
+  {
+   "x": 288.18,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-5",
+   "teks": "9"
+  },
+  {
+   "x": 312.74,
+   "y": 222.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-6",
+   "teks": "16"
+  },
+  {
+   "x": 339.68,
+   "y": 222.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-7",
+   "teks": "25"
+  },
+  {
+   "x": 366.63,
+   "y": 222.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-8",
+   "teks": "27"
+  },
+  {
+   "x": 393.58,
+   "y": 222.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-9",
+   "teks": "16"
+  },
+  {
+   "x": 422.91,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-10",
+   "teks": "4"
+  },
+  {
+   "x": 449.86,
+   "y": 222.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel8-11",
+   "teks": "1"
+  },
+  {
+   "x": 2,
+   "y": 247.7,
+   "w": 75.08,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kalimantan, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-0",
+   "teks": "3"
+  },
+  {
+   "x": 180.39,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-1",
+   "teks": "7"
+  },
+  {
+   "x": 207.34,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-2",
+   "teks": "6"
+  },
+  {
+   "x": 234.29,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-3",
+   "teks": "5"
+  },
+  {
+   "x": 261.23,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-4",
+   "teks": "3"
+  },
+  {
+   "x": 288.18,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-5",
+   "teks": "4"
+  },
+  {
+   "x": 312.74,
+   "y": 247.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-6",
+   "teks": "15"
+  },
+  {
+   "x": 339.68,
+   "y": 247.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-7",
+   "teks": "23"
+  },
+  {
+   "x": 366.63,
+   "y": 247.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-8",
+   "teks": "24"
+  },
+  {
+   "x": 395.96,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-9",
+   "teks": "9"
+  },
+  {
+   "x": 422.91,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-10",
+   "teks": "2"
+  },
+  {
+   "x": 449.86,
+   "y": 247.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel9-11",
+   "teks": "0"
+  },
+  {
+   "x": 2,
+   "y": 272.7,
+   "w": 66.44,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sulawesi, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-0",
+   "teks": "3"
+  },
+  {
+   "x": 180.39,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-1",
+   "teks": "3"
+  },
+  {
+   "x": 207.34,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-2",
+   "teks": "3"
+  },
+  {
+   "x": 234.29,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-3",
+   "teks": "2"
+  },
+  {
+   "x": 261.23,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-4",
+   "teks": "0"
+  },
+  {
+   "x": 288.18,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-5",
+   "teks": "1"
+  },
+  {
+   "x": 315.12,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-6",
+   "teks": "4"
+  },
+  {
+   "x": 339.68,
+   "y": 272.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-7",
+   "teks": "18"
+  },
+  {
+   "x": 366.63,
+   "y": 272.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-8",
+   "teks": "40"
+  },
+  {
+   "x": 393.58,
+   "y": 272.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-9",
+   "teks": "20"
+  },
+  {
+   "x": 422.91,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-10",
+   "teks": "6"
+  },
+  {
+   "x": 449.86,
+   "y": 272.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel10-11",
+   "teks": "1"
+  },
+  {
+   "x": 2,
+   "y": 297.7,
+   "w": 119.51,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Bali dan Nusa Tenggara, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-0",
+   "teks": "0"
+  },
+  {
+   "x": 180.39,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-1",
+   "teks": "1"
+  },
+  {
+   "x": 207.34,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-2",
+   "teks": "3"
+  },
+  {
+   "x": 234.29,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-3",
+   "teks": "3"
+  },
+  {
+   "x": 261.23,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-4",
+   "teks": "1"
+  },
+  {
+   "x": 288.18,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-5",
+   "teks": "5"
+  },
+  {
+   "x": 312.74,
+   "y": 297.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-6",
+   "teks": "32"
+  },
+  {
+   "x": 339.68,
+   "y": 297.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-7",
+   "teks": "21"
+  },
+  {
+   "x": 366.63,
+   "y": 297.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-8",
+   "teks": "20"
+  },
+  {
+   "x": 393.58,
+   "y": 297.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-9",
+   "teks": "12"
+  },
+  {
+   "x": 422.91,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-10",
+   "teks": "2"
+  },
+  {
+   "x": 449.86,
+   "y": 297.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel11-11",
+   "teks": "1"
+  },
+  {
+   "x": 2,
+   "y": 322.7,
+   "w": 60.83,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Maluku, kemarau"
+  },
+  {
+   "x": 151.06,
+   "y": 322.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-0",
+   "teks": "10"
+  },
+  {
+   "x": 178.01,
+   "y": 322.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-1",
+   "teks": "13"
+  },
+  {
+   "x": 207.34,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-2",
+   "teks": "0"
+  },
+  {
+   "x": 234.29,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-3",
+   "teks": "7"
+  },
+  {
+   "x": 261.23,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-4",
+   "teks": "0"
+  },
+  {
+   "x": 288.18,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-5",
+   "teks": "0"
+  },
+  {
+   "x": 315.12,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-6",
+   "teks": "3"
+  },
+  {
+   "x": 339.68,
+   "y": 322.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-7",
+   "teks": "32"
+  },
+  {
+   "x": 366.63,
+   "y": 322.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-8",
+   "teks": "19"
+  },
+  {
+   "x": 393.58,
+   "y": 322.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-9",
+   "teks": "10"
+  },
+  {
+   "x": 422.91,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-10",
+   "teks": "3"
+  },
+  {
+   "x": 449.86,
+   "y": 322.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel12-11",
+   "teks": "3"
+  },
+  {
+   "x": 2,
+   "y": 347.7,
+   "w": 57.32,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Papua, kemarau"
+  },
+  {
+   "x": 153.45,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-0",
+   "teks": "0"
+  },
+  {
+   "x": 180.39,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-1",
+   "teks": "0"
+  },
+  {
+   "x": 207.34,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-2",
+   "teks": "0"
+  },
+  {
+   "x": 234.29,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-3",
+   "teks": "0"
+  },
+  {
+   "x": 261.23,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-4",
+   "teks": "0"
+  },
+  {
+   "x": 285.79,
+   "y": 347.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-5",
+   "teks": "11"
+  },
+  {
+   "x": 315.12,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-6",
+   "teks": "0"
+  },
+  {
+   "x": 339.68,
+   "y": 347.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-7",
+   "teks": "44"
+  },
+  {
+   "x": 366.63,
+   "y": 347.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-8",
+   "teks": "22"
+  },
+  {
+   "x": 393.58,
+   "y": 347.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-9",
+   "teks": "11"
+  },
+  {
+   "x": 420.52,
+   "y": 347.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-10",
+   "teks": "11"
+  },
+  {
+   "x": 449.86,
+   "y": 347.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel13-11",
+   "teks": "0"
+  },
+  {
+   "x": 2,
+   "y": 372.7,
+   "w": 63.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Rob, semua pulau"
+  },
+  {
+   "x": 151.06,
+   "y": 372.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-0",
+   "teks": "14"
+  },
+  {
+   "x": 180.39,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-1",
+   "teks": "4"
+  },
+  {
+   "x": 207.34,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-2",
+   "teks": "2"
+  },
+  {
+   "x": 234.29,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-3",
+   "teks": "2"
+  },
+  {
+   "x": 258.85,
+   "y": 372.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-4",
+   "teks": "23"
+  },
+  {
+   "x": 285.79,
+   "y": 372.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-5",
+   "teks": "16"
+  },
+  {
+   "x": 315.12,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-6",
+   "teks": "4"
+  },
+  {
+   "x": 342.07,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-7",
+   "teks": "1"
+  },
+  {
+   "x": 369.02,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-8",
+   "teks": "1"
+  },
+  {
+   "x": 395.96,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-9",
+   "teks": "4"
+  },
+  {
+   "x": 422.91,
+   "y": 372.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-10",
+   "teks": "4"
+  },
+  {
+   "x": 447.47,
+   "y": 372.45,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel14-11",
+   "teks": "26"
+  },
+  {
+   "x": 43,
+   "y": 396.2,
+   "w": 160.32,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-43",
+   "teks": "Porsi bulan dalam setahun (persen kejadian)"
+  },
+  {
+   "x": 43,
+   "y": 395.2,
+   "w": 160.32,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-43",
+   "teks": "Porsi bulan dalam setahun (persen kejadian)"
+  },
+  {
+   "x": 227.32,
+   "y": 396.2,
+   "w": 48.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-213",
+   "teks": "5 atau kurang"
+  },
+  {
+   "x": 213.32,
+   "y": 395.2,
+   "w": 62.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-213",
+   "teks": "5 atau kurang"
+  },
+  {
+   "x": 299.93,
+   "y": 396.2,
+   "w": 18.73,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-285",
+   "teks": "5–10"
+  },
+  {
+   "x": 285.93,
+   "y": 395.2,
+   "w": 32.73,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-285",
+   "teks": "5–10"
+  },
+  {
+   "x": 342.66,
+   "y": 396.2,
+   "w": 23.22,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-328",
+   "teks": "10–20"
+  },
+  {
+   "x": 328.66,
+   "y": 395.2,
+   "w": 37.22,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-328",
+   "teks": "10–20"
+  },
+  {
+   "x": 389.87,
+   "y": 396.2,
+   "w": 34.84,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-375",
+   "teks": "di atas 20"
+  },
+  {
+   "x": 375.87,
+   "y": 395.2,
+   "w": 48.84,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-375",
+   "teks": "di atas 20"
+  }
+ ],
+ "jenis": "matriks-titik",
+ "pesan": "G16",
+ "sumbu_y": false,
+ "pil": 0,
+ "kelas": {
+  "ramp": "air",
+  "batas": [
+   5,
+   10,
+   20
+  ],
+  "label": [
+   "5 atau kurang",
+   "5–10",
+   "10–20",
+   "di atas 20"
+  ],
+  "rumus": "batas tetap porsi bulanan"
+ },
+ "kontras_teks_min": 4.52,
+ "sel_kosong": 0,
+ "sel": [
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Jan",
+   "nilai": 12.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Feb",
+   "nilai": 8.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Mar",
+   "nilai": 10.2,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Apr",
+   "nilai": 9.2,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Mei",
+   "nilai": 8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Jun",
+   "nilai": 5.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Jul",
+   "nilai": 5.4,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Agu",
+   "nilai": 6.2,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Sep",
+   "nilai": 6.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Okt",
+   "nilai": 7.9,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Nov",
+   "nilai": 10.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, musim hujan",
+   "kolom": "Des",
+   "nilai": 10.2,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Jan",
+   "nilai": 15.8,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Feb",
+   "nilai": 16.2,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Mar",
+   "nilai": 13,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Apr",
+   "nilai": 9.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Mei",
+   "nilai": 6.5,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Jun",
+   "nilai": 3.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Jul",
+   "nilai": 2.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Agu",
+   "nilai": 2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Sep",
+   "nilai": 3.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Okt",
+   "nilai": 6.9,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Nov",
+   "nilai": 10.5,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, musim hujan",
+   "kolom": "Des",
+   "nilai": 11.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Jan",
+   "nilai": 14,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Feb",
+   "nilai": 9.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Mar",
+   "nilai": 11.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Apr",
+   "nilai": 9.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Mei",
+   "nilai": 9.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Jun",
+   "nilai": 5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Jul",
+   "nilai": 5.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Agu",
+   "nilai": 5.2,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Sep",
+   "nilai": 7.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Okt",
+   "nilai": 7.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Nov",
+   "nilai": 7.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, musim hujan",
+   "kolom": "Des",
+   "nilai": 8.8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Jan",
+   "nilai": 14.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Feb",
+   "nilai": 10.9,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Mar",
+   "nilai": 10.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Apr",
+   "nilai": 8.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Mei",
+   "nilai": 9.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Jun",
+   "nilai": 9.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Jul",
+   "nilai": 8.2,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Agu",
+   "nilai": 4.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Sep",
+   "nilai": 5.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Okt",
+   "nilai": 5.4,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Nov",
+   "nilai": 5.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, musim hujan",
+   "kolom": "Des",
+   "nilai": 8.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Jan",
+   "nilai": 26.2,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Feb",
+   "nilai": 21.2,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Mar",
+   "nilai": 11.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Apr",
+   "nilai": 6.2,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Mei",
+   "nilai": 3.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Jun",
+   "nilai": 2.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Jul",
+   "nilai": 2.1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Agu",
+   "nilai": 1.3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Sep",
+   "nilai": 2.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Okt",
+   "nilai": 3.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Nov",
+   "nilai": 8.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, musim hujan",
+   "kolom": "Des",
+   "nilai": 10.6,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Jan",
+   "nilai": 7.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Feb",
+   "nilai": 8.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Mar",
+   "nilai": 11,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Apr",
+   "nilai": 7.4,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Mei",
+   "nilai": 12,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Jun",
+   "nilai": 17.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Jul",
+   "nilai": 14,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Agu",
+   "nilai": 6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Sep",
+   "nilai": 4.1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Okt",
+   "nilai": 3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Nov",
+   "nilai": 2.1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, musim hujan",
+   "kolom": "Des",
+   "nilai": 6.4,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Jan",
+   "nilai": 10.5,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Feb",
+   "nilai": 15.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Mar",
+   "nilai": 12,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Apr",
+   "nilai": 10.8,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Mei",
+   "nilai": 9.4,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Jun",
+   "nilai": 7.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Jul",
+   "nilai": 8.5,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Agu",
+   "nilai": 6.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Sep",
+   "nilai": 4.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Okt",
+   "nilai": 3.4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Nov",
+   "nilai": 2.8,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, musim hujan",
+   "kolom": "Des",
+   "nilai": 8.3,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Jan",
+   "nilai": 4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Feb",
+   "nilai": 11.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Mar",
+   "nilai": 7.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Apr",
+   "nilai": 2.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Mei",
+   "nilai": 2.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Jun",
+   "nilai": 8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Jul",
+   "nilai": 19.9,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Agu",
+   "nilai": 17.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Sep",
+   "nilai": 12.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Okt",
+   "nilai": 9.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Nov",
+   "nilai": 3.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sumatra, kemarau",
+   "kolom": "Des",
+   "nilai": 0.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Jan",
+   "nilai": 0.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Feb",
+   "nilai": 0.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Mar",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Apr",
+   "nilai": 0.3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Mei",
+   "nilai": 2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Jun",
+   "nilai": 8.6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Jul",
+   "nilai": 16.3,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Agu",
+   "nilai": 25.1,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Sep",
+   "nilai": 27,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Okt",
+   "nilai": 15.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Nov",
+   "nilai": 3.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Jawa, kemarau",
+   "kolom": "Des",
+   "nilai": 1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Jan",
+   "nilai": 2.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Feb",
+   "nilai": 6.9,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Mar",
+   "nilai": 6,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Apr",
+   "nilai": 4.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Mei",
+   "nilai": 3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Jun",
+   "nilai": 3.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Jul",
+   "nilai": 15.3,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Agu",
+   "nilai": 23.4,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Sep",
+   "nilai": 23.6,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Okt",
+   "nilai": 8.9,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Nov",
+   "nilai": 1.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Kalimantan, kemarau",
+   "kolom": "Des",
+   "nilai": 0.3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Jan",
+   "nilai": 2.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Feb",
+   "nilai": 3.4,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Mar",
+   "nilai": 2.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Apr",
+   "nilai": 1.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Mei",
+   "nilai": 0.3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Jun",
+   "nilai": 1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Jul",
+   "nilai": 3.8,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Agu",
+   "nilai": 18.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Sep",
+   "nilai": 40.3,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Okt",
+   "nilai": 19.5,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Nov",
+   "nilai": 5.8,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Sulawesi, kemarau",
+   "kolom": "Des",
+   "nilai": 0.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Jan",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Feb",
+   "nilai": 1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Mar",
+   "nilai": 3.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Apr",
+   "nilai": 2.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Mei",
+   "nilai": 1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Jun",
+   "nilai": 5.1,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Jul",
+   "nilai": 31.7,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Agu",
+   "nilai": 20.6,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Sep",
+   "nilai": 19.7,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Okt",
+   "nilai": 12.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Nov",
+   "nilai": 2.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara, kemarau",
+   "kolom": "Des",
+   "nilai": 0.6,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Jan",
+   "nilai": 9.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Feb",
+   "nilai": 12.9,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Mar",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Apr",
+   "nilai": 6.5,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Mei",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Jun",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Jul",
+   "nilai": 3.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Agu",
+   "nilai": 32.3,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Sep",
+   "nilai": 19.4,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Okt",
+   "nilai": 9.7,
+   "kelas": "5–10",
+   "warna": "skala.air.2"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Nov",
+   "nilai": 3.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Maluku, kemarau",
+   "kolom": "Des",
+   "nilai": 3.2,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Jan",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Feb",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Mar",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Apr",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Mei",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Jun",
+   "nilai": 11.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Jul",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Agu",
+   "nilai": 44.4,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Sep",
+   "nilai": 22.2,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Okt",
+   "nilai": 11.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Nov",
+   "nilai": 11.1,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Papua, kemarau",
+   "kolom": "Des",
+   "nilai": 0,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Jan",
+   "nilai": 14.2,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Feb",
+   "nilai": 4.1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Mar",
+   "nilai": 1.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Apr",
+   "nilai": 1.7,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Mei",
+   "nilai": 22.6,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Jun",
+   "nilai": 15.6,
+   "kelas": "10–20",
+   "warna": "skala.air.4"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Jul",
+   "nilai": 3.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Agu",
+   "nilai": 1.3,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Sep",
+   "nilai": 0.9,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Okt",
+   "nilai": 3.5,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Nov",
+   "nilai": 4.1,
+   "kelas": "5 atau kurang",
+   "warna": "skala.air.1"
+  },
+  {
+   "baris": "Rob, semua pulau",
+   "kolom": "Des",
+   "nilai": 26.3,
+   "kelas": "di atas 20",
+   "warna": "skala.air.5"
+  }
+ ]
+}

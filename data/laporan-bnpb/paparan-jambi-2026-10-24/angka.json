@@ -1,0 +1,1561 @@
+{
+ "HARI": [
+  "2026-10-17",
+  "2026-10-18",
+  "2026-10-19",
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22",
+  "2026-10-23",
+  "2026-10-24"
+ ],
+ "prov": {
+  "hot": [
+   45,
+   345,
+   82,
+   87,
+   843,
+   383,
+   587,
+   199
+  ],
+  "luas": [
+   112,
+   819,
+   271,
+   370,
+   1322,
+   555,
+   1483,
+   661
+  ],
+  "belum": [
+   57,
+   140,
+   149,
+   117,
+   491,
+   379,
+   936,
+   457
+  ],
+  "kum": 38764
+ },
+ "kab": {
+  "Batanghari": {
+   "hot": [
+    0,
+    10,
+    5,
+    0,
+    12,
+    20,
+    16,
+    2
+   ],
+   "luas": [
+    2,
+    30,
+    2,
+    9,
+    7,
+    23,
+    39,
+    25
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    14
+   ],
+   "komp": 15
+  },
+  "Bungo": {
+   "hot": [
+    3,
+    0,
+    0,
+    0,
+    7,
+    1,
+    4,
+    0
+   ],
+   "luas": [
+    7,
+    7,
+    11,
+    5,
+    9,
+    0,
+    11,
+    2
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 4
+  },
+  "Kerinci": {
+   "hot": [
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    2,
+    0
+   ],
+   "luas": [
+    5,
+    2,
+    2,
+    0,
+    0,
+    2,
+    5,
+    0
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 3
+  },
+  "Kota Jambi": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    2,
+    0,
+    0,
+    1
+   ],
+   "luas": [
+    0,
+    0,
+    0,
+    2,
+    2,
+    0,
+    2,
+    2
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 5
+  },
+  "Kota Sungai Penuh": {
+   "hot": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "luas": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 0
+  },
+  "Merangin": {
+   "hot": [
+    7,
+    6,
+    2,
+    3,
+    5,
+    3,
+    13,
+    2
+   ],
+   "luas": [
+    16,
+    14,
+    7,
+    14,
+    2,
+    5,
+    37,
+    2
+   ],
+   "belum": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "komp": 13
+  },
+  "Muaro Jambi": {
+   "hot": [
+    6,
+    139,
+    22,
+    28,
+    429,
+    153,
+    317,
+    99
+   ],
+   "luas": [
+    2,
+    264,
+    140,
+    177,
+    673,
+    262,
+    771,
+    383
+   ],
+   "belum": [
+    2,
+    87,
+    103,
+    80,
+    211,
+    170,
+    572,
+    298
+   ],
+   "komp": 27
+  },
+  "Sarolangun": {
+   "hot": [
+    2,
+    11,
+    9,
+    0,
+    8,
+    23,
+    31,
+    3
+   ],
+   "luas": [
+    7,
+    32,
+    28,
+    18,
+    16,
+    16,
+    67,
+    34
+   ],
+   "belum": [
+    0,
+    0,
+    18,
+    0,
+    0,
+    0,
+    7,
+    11
+   ],
+   "komp": 25
+  },
+  "Tanjung Jabung Barat": {
+   "hot": [
+    1,
+    13,
+    6,
+    2,
+    4,
+    4,
+    3,
+    2
+   ],
+   "luas": [
+    2,
+    25,
+    5,
+    9,
+    9,
+    7,
+    11,
+    11
+   ],
+   "belum": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    2,
+    2,
+    2
+   ],
+   "komp": 7
+  },
+  "Tanjung Jabung Timur": {
+   "hot": [
+    21,
+    150,
+    28,
+    54,
+    358,
+    168,
+    182,
+    81
+   ],
+   "luas": [
+    60,
+    418,
+    57,
+    124,
+    576,
+    200,
+    496,
+    133
+   ],
+   "belum": [
+    53,
+    53,
+    25,
+    34,
+    280,
+    177,
+    356,
+    129
+   ],
+   "komp": 62
+  },
+  "Tebo": {
+   "hot": [
+    5,
+    15,
+    9,
+    0,
+    18,
+    10,
+    19,
+    9
+   ],
+   "luas": [
+    11,
+    28,
+    18,
+    11,
+    28,
+    41,
+    44,
+    67
+   ],
+   "belum": [
+    0,
+    0,
+    2,
+    2,
+    0,
+    28,
+    0,
+    2
+   ],
+   "komp": 19
+  }
+ },
+ "rank": [
+  "Muaro Jambi",
+  "Tanjung Jabung Timur",
+  "Tebo",
+  "Sarolangun",
+  "Batanghari",
+  "Merangin",
+  "Tanjung Jabung Barat",
+  "Kota Jambi",
+  "Bungo",
+  "Kerinci",
+  "Kota Sungai Penuh"
+ ],
+ "level": {
+  "3": 3,
+  "2": 31,
+  "1": 97,
+  "0": 49
+ },
+ "n_komp": 180,
+ "prio": [
+  {
+   "id": "K0008",
+   "kab": "Muaro Jambi",
+   "kec": "Kumpeh",
+   "n24": 229,
+   "n": 1651,
+   "luas": 8404.3,
+   "lat": -1.4157,
+   "lon": 104.0626,
+   "level": 3,
+   "awal": "2026-10-17T18:04:00+00:00",
+   "gambut": true
+  },
+  {
+   "id": "K0063",
+   "kab": "Tanjung Jabung Timur",
+   "kec": "Berbak",
+   "n24": 38,
+   "n": 255,
+   "luas": 1140.4,
+   "lat": -1.178,
+   "lon": 104.3251,
+   "level": 3,
+   "awal": "2026-10-17T18:47:00+00:00",
+   "gambut": true
+  },
+  {
+   "id": "K0068",
+   "kab": "Tanjung Jabung Timur",
+   "kec": "Sadu",
+   "n24": 27,
+   "n": 191,
+   "luas": 1147.7,
+   "lat": -1.2474,
+   "lon": 104.1921,
+   "level": 3,
+   "awal": "2026-10-17T19:23:00+00:00",
+   "gambut": true
+  }
+ ],
+ "mj_kec": [
+  [
+   "Kumpeh",
+   1170
+  ],
+  [
+   "Kumpeh Ulu",
+   15
+  ],
+  [
+   "Sekernan",
+   3
+  ],
+  [
+   "Mestong",
+   2
+  ],
+  [
+   "Sungai Gelam",
+   1
+  ],
+  [
+   "Jambi Luar Kota",
+   1
+  ],
+  [
+   "Taman Rajo",
+   1
+  ]
+ ],
+ "gambut_kec": [
+  "Batanghari|Maro Sebo Ulu",
+  "Batanghari|Muara Tembesi",
+  "Kerinci|Siulak Mukai",
+  "Kota Jambi|Danau Teluk",
+  "Kota Jambi|Pelayangan",
+  "Muaro Jambi|Kumpeh",
+  "Muaro Jambi|Kumpeh Ulu",
+  "Muaro Jambi|Mestong",
+  "Muaro Jambi|Taman Rajo",
+  "Sarolangun|Air Hitam",
+  "Sarolangun|Mandiangin",
+  "Sarolangun|Pauh",
+  "Tanjung Jabung Barat|Betara",
+  "Tanjung Jabung Barat|Tebing Tinggi",
+  "Tanjung Jabung Timur|Berbak",
+  "Tanjung Jabung Timur|Sadu",
+  "Tebo|Muara Tabir",
+  "Tebo|Tebo Ilir"
+ ],
+ "kaw": {
+  "hot": [
+   27,
+   289,
+   50,
+   82,
+   783,
+   321,
+   492,
+   180
+  ],
+  "luas": [
+   61,
+   682,
+   197,
+   298,
+   1246,
+   458,
+   1248,
+   516
+  ],
+  "belum": [
+   54,
+   140,
+   128,
+   114,
+   491,
+   347,
+   923,
+   428
+  ]
+ },
+ "kaw_kec": {
+  "Muaro Jambi|Kumpeh": {
+   "hot": [
+    4,
+    136,
+    20,
+    28,
+    422,
+    153,
+    309,
+    98
+   ],
+   "luas": [
+    0,
+    259,
+    138,
+    172,
+    661,
+    259,
+    748,
+    376
+   ],
+   "belum": [
+    0,
+    87,
+    103,
+    80,
+    211,
+    170,
+    572,
+    294
+   ]
+  },
+  "Tanjung Jabung Timur|Sadu": {
+   "hot": [
+    17,
+    132,
+    28,
+    51,
+    347,
+    152,
+    172,
+    76
+   ],
+   "luas": [
+    48,
+    370,
+    57,
+    115,
+    551,
+    174,
+    473,
+    133
+   ],
+   "belum": [
+    41,
+    48,
+    25,
+    34,
+    269,
+    161,
+    333,
+    129
+   ]
+  },
+  "Tanjung Jabung Timur|Berbak": {
+   "hot": [
+    4,
+    18,
+    0,
+    3,
+    10,
+    16,
+    8,
+    5
+   ],
+   "luas": [
+    11,
+    48,
+    0,
+    9,
+    25,
+    25,
+    18,
+    0
+   ],
+   "belum": [
+    11,
+    5,
+    0,
+    0,
+    11,
+    16,
+    18,
+    0
+   ]
+  },
+  "Muaro Jambi|Kumpeh Ulu": {
+   "hot": [
+    2,
+    3,
+    2,
+    0,
+    4,
+    0,
+    3,
+    1
+   ],
+   "luas": [
+    2,
+    5,
+    2,
+    2,
+    9,
+    0,
+    9,
+    7
+   ],
+   "belum": [
+    2,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    5
+   ]
+  }
+ },
+ "kaw_komp": 82,
+ "kaw_prio": 3,
+ "kaw_luas_klaster": 10692,
+ "banjir": {
+  "kab": {
+   "Batanghari": {
+    "banjir": [
+     [
+      "Batin XXIV",
+      65.6
+     ],
+     [
+      "Bajubang",
+      56.6
+     ],
+     [
+      "Pemayung",
+      53.1
+     ],
+     [
+      "Mersam",
+      48.7
+     ],
+     [
+      "Maro Sebo Ulu",
+      48.7
+     ],
+     [
+      "Muara Tembesi",
+      45.0
+     ],
+     [
+      "Muara Bulian",
+      45.0
+     ],
+     [
+      "Maro Sebo Ilir",
+      45.0
+     ]
+    ],
+    "longsor": [
+     [
+      "Pemayung",
+      53.1
+     ],
+     [
+      "Muara Tembesi",
+      45.0
+     ],
+     [
+      "Muara Bulian",
+      45.0
+     ],
+     [
+      "Maro Sebo Ilir",
+      45.0
+     ]
+    ],
+    "h3": 65.6,
+    "n_kec": 8,
+    "dibi_banjir": 33,
+    "dibi_longsor": 2,
+    "maks_st": 1
+   },
+   "Bungo": {
+    "banjir": [
+     [
+      "Pelepat Ilir",
+      68.1
+     ],
+     [
+      "Pelepat",
+      67.7
+     ],
+     [
+      "Limbur Lubuk Mengkuang",
+      58.5
+     ],
+     [
+      "Muko-muko Bathin VII",
+      55.8
+     ],
+     [
+      "Rantau Pandan",
+      55.8
+     ],
+     [
+      "Bathin III Ulu",
+      55.8
+     ],
+     [
+      "Bungo Dani",
+      51.5
+     ],
+     [
+      "Rimbo Tengah",
+      51.5
+     ],
+     [
+      "Batin II Babeko",
+      51.5
+     ],
+     [
+      "Jujuhan Ilir",
+      48.7
+     ],
+     [
+      "Tanah Sepenggal",
+      47.9
+     ],
+     [
+      "Jujuhan",
+      47.9
+     ],
+     [
+      "Tanah Tumbuh",
+      47.9
+     ],
+     [
+      "Tanah Sepenggal Lintas",
+      47.9
+     ],
+     [
+      "Bathin II Pelayang",
+      47.9
+     ],
+     [
+      "Pasar Muaro Bungo",
+      46.4
+     ],
+     [
+      "Bathin III",
+      46.4
+     ]
+    ],
+    "longsor": [
+     [
+      "Pelepat",
+      67.7
+     ],
+     [
+      "Limbur Lubuk Mengkuang",
+      58.5
+     ],
+     [
+      "Rantau Pandan",
+      55.8
+     ],
+     [
+      "Bathin III Ulu",
+      55.8
+     ],
+     [
+      "Tanah Sepenggal",
+      47.9
+     ],
+     [
+      "Jujuhan",
+      47.9
+     ],
+     [
+      "Tanah Tumbuh",
+      47.9
+     ],
+     [
+      "Bathin II Pelayang",
+      47.9
+     ],
+     [
+      "Bathin III",
+      46.4
+     ]
+    ],
+    "h3": 68.1,
+    "n_kec": 17,
+    "dibi_banjir": 35,
+    "dibi_longsor": 3,
+    "maks_st": 1
+   },
+   "Kerinci": {
+    "banjir": [
+     [
+      "Gunung Tujuh",
+      60.9
+     ],
+     [
+      "Batang Merangin",
+      47.3
+     ],
+     [
+      "Danau Kerinci",
+      47.3
+     ],
+     [
+      "Gunung Kerinci",
+      43.8
+     ],
+     [
+      "Kayu Aro Barat",
+      43.8
+     ]
+    ],
+    "longsor": [
+     [
+      "Gunung Tujuh",
+      60.9
+     ],
+     [
+      "Batang Merangin",
+      47.3
+     ],
+     [
+      "Danau Kerinci",
+      47.3
+     ],
+     [
+      "Gunung Kerinci",
+      43.8
+     ],
+     [
+      "Kayu Aro Barat",
+      43.8
+     ],
+     [
+      "Air Hangat",
+      34.4
+     ],
+     [
+      "Kayu Aro",
+      34.4
+     ],
+     [
+      "Air Hangat Timur",
+      34.4
+     ],
+     [
+      "Siulak Mukai",
+      34.4
+     ],
+     [
+      "Siulak",
+      34.4
+     ],
+     [
+      "Air Hangat Barat",
+      34.4
+     ],
+     [
+      "Sitinjau Laut",
+      32.3
+     ],
+     [
+      "Keliling Danau",
+      32.3
+     ],
+     [
+      "Depati Tujuh",
+      32.3
+     ],
+     [
+      "Danau Kerinci Barat",
+      32.3
+     ]
+    ],
+    "h3": 60.9,
+    "n_kec": 17,
+    "dibi_banjir": 61,
+    "dibi_longsor": 19,
+    "maks_st": 1
+   },
+   "Kota Jambi": {
+    "banjir": [
+     [
+      "Kota Baru",
+      54.9
+     ],
+     [
+      "Jelutung",
+      54.9
+     ],
+     [
+      "Pelayangan",
+      54.9
+     ],
+     [
+      "Danau Teluk",
+      54.9
+     ],
+     [
+      "Alam Barajo",
+      54.9
+     ],
+     [
+      "Jambi Timur",
+      54.9
+     ],
+     [
+      "Pasar Jambi",
+      54.9
+     ],
+     [
+      "Telanaipura",
+      54.9
+     ],
+     [
+      "Jambi Selatan",
+      54.9
+     ],
+     [
+      "Danau Sipin",
+      54.9
+     ],
+     [
+      "Paal Merah",
+      54.9
+     ]
+    ],
+    "longsor": [],
+    "h3": 54.9,
+    "n_kec": 11,
+    "dibi_banjir": 18,
+    "dibi_longsor": 0,
+    "maks_st": 1
+   },
+   "Kota Sungai Penuh": {
+    "banjir": [],
+    "longsor": [
+     [
+      "Sungai Bungkal",
+      32.3
+     ],
+     [
+      "Pondok Tinggi",
+      32.3
+     ],
+     [
+      "Kumun Debai",
+      32.3
+     ],
+     [
+      "Pesisir Bukit",
+      32.3
+     ]
+    ],
+    "h3": 32.3,
+    "n_kec": 4,
+    "dibi_banjir": 39,
+    "dibi_longsor": 7,
+    "maks_st": 1
+   },
+   "Merangin": {
+    "banjir": [
+     [
+      "Tabir Ilir",
+      68.1
+     ],
+     [
+      "Tabir Timur",
+      68.1
+     ],
+     [
+      "Tabir Ulu",
+      67.7
+     ],
+     [
+      "Bangko",
+      61.7
+     ],
+     [
+      "Pamenang Barat",
+      61.7
+     ],
+     [
+      "Renah Pamenang",
+      61.7
+     ],
+     [
+      "Pamenang",
+      52.9
+     ],
+     [
+      "Muara Siau",
+      50.0
+     ],
+     [
+      "Lembah Masurai",
+      50.0
+     ],
+     [
+      "Tabir Selatan",
+      48.4
+     ],
+     [
+      "Tabir",
+      48.4
+     ],
+     [
+      "Margo Tabir",
+      48.4
+     ],
+     [
+      "Tabir Lintas",
+      48.4
+     ],
+     [
+      "Tabir Barat",
+      47.0
+     ],
+     [
+      "Jangkat Timur",
+      43.6
+     ],
+     [
+      "Bangko Barat",
+      41.8
+     ],
+     [
+      "Nalo Tantan",
+      41.8
+     ],
+     [
+      "Batang Masumai",
+      41.8
+     ],
+     [
+      "Renah Pembarap",
+      41.8
+     ],
+     [
+      "Pamenang Selatan",
+      41.0
+     ]
+    ],
+    "longsor": [
+     [
+      "Tabir Ulu",
+      67.7
+     ],
+     [
+      "Bangko",
+      61.7
+     ],
+     [
+      "Muara Siau",
+      50.0
+     ],
+     [
+      "Lembah Masurai",
+      50.0
+     ],
+     [
+      "Tabir Barat",
+      47.0
+     ],
+     [
+      "Jangkat Timur",
+      43.6
+     ],
+     [
+      "Bangko Barat",
+      41.8
+     ],
+     [
+      "Nalo Tantan",
+      41.8
+     ],
+     [
+      "Renah Pembarap",
+      41.8
+     ],
+     [
+      "Pamenang Selatan",
+      41.0
+     ],
+     [
+      "Sungai Manau",
+      37.5
+     ],
+     [
+      "Pangkalan Jambu",
+      37.5
+     ],
+     [
+      "Tiang Pumpung",
+      37.5
+     ]
+    ],
+    "h3": 68.1,
+    "n_kec": 23,
+    "dibi_banjir": 57,
+    "dibi_longsor": 14,
+    "maks_st": 1
+   },
+   "Muaro Jambi": {
+    "banjir": [
+     [
+      "Sekernan",
+      59.2
+     ],
+     [
+      "Sungai Bahar",
+      58.7
+     ],
+     [
+      "Bahar Utara",
+      58.7
+     ],
+     [
+      "Bahar Selatan",
+      56.6
+     ],
+     [
+      "Mestong",
+      56.3
+     ],
+     [
+      "Maro Sebo",
+      55.2
+     ],
+     [
+      "Taman Rajo",
+      55.2
+     ],
+     [
+      "Jambi Luar Kota",
+      53.1
+     ],
+     [
+      "Kumpeh Ulu",
+      52.4
+     ],
+     [
+      "Sungai Gelam",
+      52.4
+     ]
+    ],
+    "longsor": [],
+    "h3": 59.2,
+    "n_kec": 10,
+    "dibi_banjir": 35,
+    "dibi_longsor": 3,
+    "maks_st": 1
+   },
+   "Sarolangun": {
+    "banjir": [
+     [
+      "Pauh",
+      62.1
+     ],
+     [
+      "Mandiangin",
+      62.1
+     ],
+     [
+      "Pelawan",
+      54.5
+     ],
+     [
+      "Air Hitam",
+      52.9
+     ],
+     [
+      "Sarolangun",
+      51.0
+     ],
+     [
+      "Bathin VIII",
+      51.0
+     ],
+     [
+      "Mandiangin Timur",
+      45.0
+     ],
+     [
+      "Batang Asai",
+      43.6
+     ],
+     [
+      "Cermin Nan Gedang",
+      41.0
+     ]
+    ],
+    "longsor": [
+     [
+      "Air Hitam",
+      52.9
+     ],
+     [
+      "Batang Asai",
+      43.6
+     ],
+     [
+      "Cermin Nan Gedang",
+      41.0
+     ],
+     [
+      "Limun",
+      35.1
+     ]
+    ],
+    "h3": 62.1,
+    "n_kec": 10,
+    "dibi_banjir": 40,
+    "dibi_longsor": 3,
+    "maks_st": 1
+   },
+   "Tanjung Jabung Barat": {
+    "banjir": [
+     [
+      "Merlung",
+      60.9
+     ],
+     [
+      "Muara Papalik",
+      60.9
+     ],
+     [
+      "Pengabuan",
+      59.3
+     ],
+     [
+      "Senyerang",
+      59.3
+     ],
+     [
+      "Betara",
+      52.0
+     ],
+     [
+      "Batang Asam",
+      48.4
+     ],
+     [
+      "Renah Mendaluh",
+      48.4
+     ],
+     [
+      "Tungkal Ulu",
+      48.3
+     ],
+     [
+      "Tebing Tinggi",
+      48.3
+     ],
+     [
+      "Tungkal Ilir",
+      44.9
+     ],
+     [
+      "Kuala Betara",
+      44.9
+     ],
+     [
+      "Seberang Kota",
+      44.9
+     ],
+     [
+      "Bram Itam",
+      44.9
+     ]
+    ],
+    "longsor": [
+     [
+      "Merlung",
+      60.9
+     ],
+     [
+      "Muara Papalik",
+      60.9
+     ],
+     [
+      "Batang Asam",
+      48.4
+     ],
+     [
+      "Renah Mendaluh",
+      48.4
+     ]
+    ],
+    "h3": 60.9,
+    "n_kec": 13,
+    "dibi_banjir": 15,
+    "dibi_longsor": 5,
+    "maks_st": 1
+   },
+   "Tanjung Jabung Timur": {
+    "banjir": [
+     [
+      "Kuala Jambi",
+      66.0
+     ],
+     [
+      "Dendang",
+      66.0
+     ],
+     [
+      "Muara Sabak Barat",
+      66.0
+     ],
+     [
+      "Muara Sabak Timur",
+      66.0
+     ],
+     [
+      "Rantau Rasau",
+      65.5
+     ],
+     [
+      "Nipah Panjang",
+      65.5
+     ],
+     [
+      "Berbak",
+      65.5
+     ],
+     [
+      "Sadu",
+      47.4
+     ],
+     [
+      "Mendahara",
+      47.4
+     ],
+     [
+      "Mendahara Ulu",
+      47.4
+     ],
+     [
+      "Geragai",
+      47.4
+     ]
+    ],
+    "longsor": [],
+    "h3": 66.0,
+    "n_kec": 11,
+    "dibi_banjir": 18,
+    "dibi_longsor": 0,
+    "maks_st": 1
+   },
+   "Tebo": {
+    "banjir": [
+     [
+      "Muara Tabir",
+      56.2
+     ],
+     [
+      "Tebo Ilir",
+      56.2
+     ],
+     [
+      "VII Koto",
+      48.7
+     ],
+     [
+      "Rimbo Ulu",
+      46.4
+     ],
+     [
+      "Rimbo Bujang",
+      46.4
+     ],
+     [
+      "VII Koto Ilir",
+      44.0
+     ],
+     [
+      "Rimbo Ilir",
+      41.6
+     ],
+     [
+      "Tebo Ulu",
+      41.6
+     ]
+    ],
+    "longsor": [
+     [
+      "Tebo Ilir",
+      56.2
+     ],
+     [
+      "Serai Serumpun",
+      39.4
+     ],
+     [
+      "Sumay",
+      39.4
+     ],
+     [
+      "Tengah Ilir",
+      36.3
+     ],
+     [
+      "Tebo Tengah",
+      36.3
+     ]
+    ],
+    "h3": 56.2,
+    "n_kec": 12,
+    "dibi_banjir": 24,
+    "dibi_longsor": 1,
+    "maks_st": 1
+   }
+  },
+  "kec_waspada_b": 112,
+  "kec_waspada_l": 58,
+  "kec_waspada": 134,
+  "n_kec": 136,
+  "dibi": {
+   "banjir": 375,
+   "longsor": 57,
+   "th0": "2008",
+   "th1": "2025",
+   "v": {
+    "2008": 11,
+    "2009": 15,
+    "2010": 23,
+    "2011": 12,
+    "2012": 21,
+    "2013": 16,
+    "2014": 17,
+    "2015": 9,
+    "2016": 24,
+    "2017": 18,
+    "2018": 7,
+    "2019": 12,
+    "2020": 37,
+    "2021": 35,
+    "2022": 2,
+    "2023": 24,
+    "2024": 44,
+    "2025": 48,
+    "2026": 5
+   },
+   "v_longsor": {
+    "2008": 0,
+    "2009": 0,
+    "2010": 2,
+    "2011": 0,
+    "2012": 2,
+    "2013": 5,
+    "2014": 3,
+    "2015": 2,
+    "2016": 5,
+    "2017": 3,
+    "2018": 4,
+    "2019": 2,
+    "2020": 4,
+    "2021": 11,
+    "2022": 1,
+    "2023": 4,
+    "2024": 2,
+    "2025": 7,
+    "2026": 2
+   }
+  },
+  "bulan": [
+   4.1,
+   2.4,
+   3.6,
+   2.1,
+   1.5,
+   0.6,
+   0.5,
+   0.6,
+   0.4,
+   0.9,
+   1.7,
+   3.0
+  ],
+  "dibuat_status": null
+ },
+ "nasional": {
+  "hot_bersih": 9,
+  "luas": 4,
+  "belum": 4,
+  "n_prov": 38
+ },
+ "dibuat": "2026-10-24T23:07+07:00"
+}

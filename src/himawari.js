@@ -7,7 +7,7 @@ export const BARU_N_MIN = 2;          // terdeteksi >= 2 pindaian 10 menit pada 
 export const BARU_U_MAKS = 60;        // menit: deteksi terakhir <= 60 menit sebelum acuan, jadi masih menyala di jam terakhir data
 export const BARU_LEVEL_MIN = 2;      // level 2 (membara) atau 3 (menyala); level 1 (dingin) terlalu sering sisa api/panas permukaan
 export const BARU_ACUAN_MAKS = 3 * JAM;   // acuan lebih tua dari ini = data basi, tidak ada yang "baru"
-export const BARU_KM = 4;             // geolokasi Himawari +-2 km + piksel VIIRS 375 m: titik FIRMS (sensor/keyakinan apa pun) dalam 4 km = sudah terlihat NASA
+export const BARU_KM = 4;             // geolokasi Himawari +-2 km + piksel VIIRS 375 m: titik FIRMS keyakinan sedang/tinggi (kolom 5 >= 1; pemilik 25 Okt 2026) dalam 4 km = sudah terlihat NASA
 export const FIRMS_UMUR = 24 * JAM;   // sama dengan TITIK_UMUR ews.js: hanya titik FIRMS <= 24 jam yang menutup status baru
 const SEL = 0.1;                      // derajat (>= 11 km) > BARU_KM, jadi 3x3 sel cukup
 const GRID = new WeakMap();
@@ -32,7 +32,7 @@ export function tandaiBaru(hw, firms, kini, diIndonesia = () => true) {
     if (!g) {
       g = new Map(); const ac = Date.parse(firms.acuan);
       for (const p of firms.baris) {
-        if (!(ac + p[2] * JAM >= kini - FIRMS_UMUR)) continue;
+        if (!(ac + p[2] * JAM >= kini - FIRMS_UMUR) || p[5] < 1) continue;   // keyakinan rendah bukan bukti NASA sudah melihat
         const k = Math.floor(p[0] / SEL) + "," + Math.floor(p[1] / SEL); (g.get(k) || g.set(k, []).get(k)).push(p);
       }
       GRID.set(firms, g);

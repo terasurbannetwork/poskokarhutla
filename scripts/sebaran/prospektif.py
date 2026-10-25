@@ -233,7 +233,7 @@ def gabung(lama, hs):
     acuan = dt.datetime.fromisoformat(hs["acuan"])
     a0 = menit_dari(acuan)
     baru = []
-    for la, lo, jam, s, frp, c, w, _ in hs["baris"]:
+    for la, lo, jam, s, frp, c, w, *_ in hs["baris"]:   # *_ : tgl_wib, hitung (kolom ke-9 sejak 25 Okt 2026)
         if s in ("N", "N20", "N21") and c >= 1:
             baru.append([round(a0 + jam * 60), la, lo, s, frp, hs["wilayah"][w].split("|")[0]])  # menit BULAT: jam di hotspot.json dibulatkan 0,01 jam terhadap acuan yang berganti, pecahan menit tidak stabil antarjalan
     out = list({(round(r[0]), r[1], r[2], r[3]): r for r in lama + baru}.values())

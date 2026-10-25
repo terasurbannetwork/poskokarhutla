@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Petunjuk Pelaksanaan",
+ "Judul": "Petunjuk Pelaksanaan Penyelenggaraan Klaster Logistik Penanggulangan Bencana Nomor 16 Tahun 2025",
+ "Nomor": "16",
+ "Tahun": "2025",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Klaster Logistik",
+ "Tanggal Penetapan": "18 December 2025",
+ "Tanggal Pengundangan": "18 December 2025",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "-; 41 Dlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "JUKLAK",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2025juklakbnpb016.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/juklak-nomor-16-tahun-2025",
+ "tipe": "Peraturan",
+ "slug": "juklak-nomor-16-tahun-2025",
+ "teks": [
+  "juklak-nomor-16-tahun-2025.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "f56866368c8e1a4808e3b9b033d7265bcaae38b7",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "78c91694bbf501a19e569c13f7c311011c62a580",
+ "asal_teks": "data/raw/hukum/teks/juklak-nomor-16-tahun-2025.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

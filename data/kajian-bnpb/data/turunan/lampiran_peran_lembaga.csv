@@ -1,0 +1,130 @@
+lembaga,ancaman,fase,peran,uraian,dasar,jenis_bukti
+Badan Nasional Penanggulangan Bencana,semua jenis,lintas tahap,K,Pedoman dan pengarahan PB dari pencegahan sampai rekonstruksi,"UU 24/2007, hlm. 9",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,tanggap darurat,K,"Kemudahan akses saat status darurat, termasuk komando memerintahkan sektor/lembaga","UU 24/2007, hlm. 23",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,tanggap darurat,K,Menggunakan dana siap pakai saat tanggap darurat,"UU 24/2007, hlm. 27",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,tanggap darurat,K,"PB dalam keadaan tertentu (tanpa/selepas status darurat) untuk faktor alam, nonalam, sosial","Perpres 46/2026, hlm. 3",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,lintas tahap,K,"Fungsi komando: pengerahan SDM, logistik, peralatan dari instansi terkait, Polri, TNI","Perpres 1/2019, hlm. 8",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,prabencana,I,Mengelola platform Sistem Peringatan Dini Bencana multiancaman,"Perban BNPB 2/2024, hlm. 2",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,pascabencana,K,Menyusun Rencana Rehabilitasi dan Rekonstruksi skala nasional bersama Bappenas dan K/L,"Perban BNPB 5/2017, hlm. 5",tertulis
+Badan Nasional Penanggulangan Bencana,semua jenis,tanggap darurat,K,Koordinator Klaster Logistik (Kepka BNPB 308/2024),"Juklak BNPB 16/2025, hlm. 1",tertulis
+Badan Nasional Penanggulangan Bencana,karhutla,tanggap darurat,K,Fungsi komando pengerahan sumber daya tingkat nasional; bantuan dana dan operasi udara/darat,"Inpres 3/2020, hlm. 9",tertulis
+Badan Nasional Penanggulangan Bencana,epidemi,lintas tahap,P,Epidemi dan wabah termasuk bencana nonalam; data peringatan dini epidemik masuk SPD BNPB,"UU 24/2007, hlm. 2",dipetakan penyusun
+Badan Nasional Penanggulangan Bencana,gagal teknologi,lintas tahap,P,Gagal teknologi termasuk bencana nonalam; data peringatan dini teknologi industri,"UU 24/2007, hlm. 2",dipetakan penyusun
+Badan Nasional Penanggulangan Bencana,konflik sosial,pascabencana,P,PB keadaan tertentu bagi daerah dalam rekonsiliasi pascakonflik berkapasitas fiskal rendah,"Perpres 46/2026, hlm. 3",tertulis
+Badan Nasional Penanggulangan Bencana,konflik sosial,tanggap darurat,P,Anggota Satgas Penyelesaian Konflik Sosial skala nasional,"UU 7/2012, hlm. 25",tertulis
+Kementerian Perencanaan Pembangunan Nasional/Badan Perencanaan Pembangunan Nasional,semua jenis,pascabencana,P,Anggota tim penyusun Rencana Rehabilitasi dan Rekonstruksi skala nasional,"Perban BNPB 5/2017, hlm. 5",tertulis
+Kementerian Perencanaan Pembangunan Nasional/Badan Perencanaan Pembangunan Nasional,karhutla,prabencana,P,Sinkronisasi perencanaan dan penganggaran (bersama Kemenkeu),"Inpres 3/2020, hlm. 13",tertulis
+"Badan Penanggulangan Bencana Daerah (provinsi, kabupaten/kota)",semua jenis,lintas tahap,K,Pedoman dan pengarahan PB di daerah dari pencegahan sampai rekonstruksi,"UU 24/2007, hlm. 12",tertulis
+"Badan Penanggulangan Bencana Daerah (provinsi, kabupaten/kota)",semua jenis,prabencana,I,"Menyusun, menetapkan, dan menginformasikan peta rawan bencana","UU 24/2007, hlm. 12",tertulis
+"Badan Penanggulangan Bencana Daerah (provinsi, kabupaten/kota)",karhutla,lintas tahap,K,BPBD sebagai koordinator penanggulangan karhutla di provinsi dan kab/kota,"Inpres 3/2020, hlm. 12",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,semua jenis,lintas tahap,K,Menjamin hak pengungsi sesuai SPM dan mengalokasikan dana PB di APBD,"UU 24/2007, hlm. 8",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,semua jenis,lintas tahap,K,Sub-urusan bencana sebagai urusan daerah,"UU 23/2014, hlm. 332",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,semua jenis,tanggap darurat,R,Gubernur dan bupati/wali kota menetapkan status keadaan darurat bencana daerah,"Perpres 17/2018, hlm. 3",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,semua jenis,pascabencana,K,Penyediaan dan rehabilitasi rumah korban bencana provinsi dan kabupaten/kota,"UU 23/2014, hlm. 329",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,banjir,lintas tahap,K,Pengelolaan SDA dan pengaman pantai di WS lintas kab/kota (provinsi) dan dalam satu kab/kota,"UU 23/2014, hlm. 322",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,banjir,prabencana,R,Gubernur/bupati menetapkan kawasan daya rusak air pada WS kewenangannya,"PP 30/2024, hlm. 66",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,kekeringan,lintas tahap,K,Kab/kota memenuhi kebutuhan pokok minimal air warganya,"UU 17/2019, hlm. 14",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,banjir,prabencana,I,Penetapan sistem peringatan dini pada setiap WS kewenangan provinsi dan kab/kota,"PP 30/2024, hlm. 65",dipetakan penyusun
+Pemerintah daerah provinsi dan kabupaten/kota,karhutla,tanggap darurat,K,Gubernur dan bupati/wali kota sebagai komandan satuan tugas karhutla,"Inpres 3/2020, hlm. 11-12",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,epidemi,tanggap darurat,R,"Bupati/wali kota, gubernur (atau Menteri) menetapkan KLB dan wajib menanggulanginya","UU 17/2023, hlm. 155-156",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,gagal teknologi,lintas tahap,K,"Damkar kab/kota: pencegahan, pemadaman, penyelamatan, penanganan B3 kebakaran","UU 23/2014, hlm. 333",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,prabencana,K,Kab/kota menyusun sistem tanggap darurat pengelolaan sampah dan memantau TPA,"UU 18/2008, hlm. 7",dipetakan penyusun
+Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,tanggap darurat,K,Pemadaman oleh damkar kab/kota,"UU 23/2014, hlm. 333",dipetakan penyusun
+Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,prabencana,K,Penanganan sampah di TPA/TPST regional (provinsi) dan pengelolaan sampah (kab/kota),"UU 23/2014, hlm. 361",dipetakan penyusun
+Pemerintah daerah provinsi dan kabupaten/kota,konflik sosial,tanggap darurat,R,Bupati/wali kota dan gubernur menetapkan status keadaan konflik,"UU 7/2012, hlm. 10-11",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,konflik sosial,pascabencana,K,Pemulihan pascakonflik (bersama Pemerintah),"UU 7/2012, hlm. 16",tertulis
+Presiden Republik Indonesia,semua jenis,tanggap darurat,R,Menetapkan status keadaan darurat bencana tingkat nasional,"Perpres 17/2018, hlm. 3",tertulis
+Presiden Republik Indonesia,konflik sosial,tanggap darurat,R,Presiden menetapkan status keadaan konflik skala nasional,"UU 7/2012, hlm. 11",tertulis
+Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan,semua jenis,lintas tahap,K,Sinkronisasi dan koordinasi kebijakan K/L di bidang penanggulangan bencana dan konflik sosial,"Perpres 144/2024, hlm. 13",tertulis
+Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan,semua jenis,tanggap darurat,K,Memimpin rapat koordinasi antar-K/L sebagai syarat BNPB bertindak dalam keadaan tertentu,"Perpres 46/2026, hlm. 3",dipetakan penyusun
+Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan,semua jenis,prabencana,P,Dilibatkan dalam penetapan prioritas penyaluran Dana Bersama PB,"Perban BNPB 1/2026, hlm. 5",dipetakan penyusun
+Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan,konflik sosial,lintas tahap,K,Deputi Koordinasi Penanggulangan Bencana dan Konflik Sosial,"Perpres 144/2024, hlm. 13",tertulis
+Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan,konflik sosial,tanggap darurat,P,Unsur Satgas nasional: kementerian koordinasi urusan kesejahteraan rakyat,"UU 7/2012, hlm. 24",dipetakan penyusun
+Badan Nasional Pencarian dan Pertolongan,semua jenis,tanggap darurat,K,Koordinator Klaster Pencarian dan Pertolongan,"Juklak BNPB 16/2025, hlm. 1",tertulis
+Badan Nasional Pencarian dan Pertolongan,semua jenis,tanggap darurat,P,Bantuan internasional: mendampingi pemeriksaan bantuan SAR asing (huruf s),"Perban BNPB 6/2018, hlm. 20",tertulis
+Badan Nasional Pencarian dan Pertolongan,karhutla,tanggap darurat,P,Operasi pencarian dan pertolongan masyarakat terdampak karhutla,"Inpres 3/2020, hlm. 10",tertulis
+Kementerian Sosial,semua jenis,tanggap darurat,K,Koordinator Klaster Pengungsian dan Perlindungan,"Juklak BNPB 16/2025, hlm. 1",tertulis
+Kementerian Sosial,semua jenis,tanggap darurat,P,"Bantuan internasional: pemulihan sosial, kemitraan, logistik bencana (huruf e)","Perban BNPB 6/2018, hlm. 18",tertulis
+Kementerian Sosial,karhutla,tanggap darurat,P,Menjamin kesejahteraan sosial masyarakat terdampak,"Inpres 3/2020, hlm. 4",tertulis
+Kementerian Sosial,konflik sosial,tanggap darurat,P,Unsur Satgas nasional: kementerian urusan sosial,"UU 7/2012, hlm. 24",dipetakan penyusun
+Kementerian Kesehatan,semua jenis,tanggap darurat,K,Koordinator Klaster Kesehatan,"Juklak BNPB 16/2025, hlm. 1",tertulis
+Kementerian Kesehatan,semua jenis,lintas tahap,K,Kesehatan bencana dari perencanaan prabencana sampai pascabencana (bersama pemda),"UU 17/2023, hlm. 52",dipetakan penyusun
+Kementerian Kesehatan,semua jenis,tanggap darurat,P,"Bantuan internasional: kualifikasi personil medis, farmasi, alat kesehatan (huruf c)","Perban BNPB 6/2018, hlm. 18",tertulis
+Kementerian Kesehatan,karhutla,tanggap darurat,P,Menjamin layanan kesehatan masyarakat terdampak,"Inpres 3/2020, hlm. 4",tertulis
+Kementerian Kesehatan,epidemi,tanggap darurat,R,Menetapkan/mencabut daerah terjangkit wabah,"UU 17/2023, hlm. 162",dipetakan penyusun
+Kementerian Kesehatan,epidemi,lintas tahap,K,Penanggulangan penyakit (Ditjen Penanggulangan Penyakit),"Perpres 161/2024, hlm. 6",tertulis
+Kementerian Kesehatan,konflik sosial,tanggap darurat,P,Unsur Satgas nasional: kementerian urusan kesehatan,"UU 7/2012, hlm. 24",dipetakan penyusun
+Kementerian Pendidikan Dasar dan Menengah,semua jenis,tanggap darurat,K,Koordinator Klaster Pendidikan (pewaris nomenklatur),"Juklak BNPB 16/2025, hlm. 1",dipetakan penyusun
+Kementerian Pendidikan Dasar dan Menengah,semua jenis,prabencana,K,Penanggung jawab bersama Renas 2.1.2.a Penguatan Fasilitas Pendidikan Aman Bencana,"Perban BNPB 1/2025, hlm. 72",tertulis
+Kementerian Dalam Negeri,semua jenis,pascabencana,K,Koordinator Klaster Pemulihan,"Juklak BNPB 16/2025, hlm. 1",tertulis
+Kementerian Dalam Negeri,semua jenis,lintas tahap,P,Pembinaan sub-urusan bencana dan kebakaran daerah (Ditjen Bina Administrasi Kewilayahan),"Perpres 149/2024, hlm. 7",tertulis
+Kementerian Dalam Negeri,semua jenis,tanggap darurat,P,Bantuan internasional di Pos Pendukung PDB melalui pemda/BPBD (huruf k),"Perban BNPB 6/2018, hlm. 19",tertulis
+Kementerian Dalam Negeri,karhutla,prabencana,P,Bersama Menteri LHK membina dan mengawasi kebijakan gubernur/bupati soal karhutla,"Inpres 3/2020, hlm. 3",tertulis
+Kementerian Dalam Negeri,gagal teknologi,prabencana,R,Standardisasi sarana-prasarana dan kompetensi pemadam kebakaran (urusan pusat),"UU 23/2014, hlm. 333",dipetakan penyusun
+Kementerian Dalam Negeri,konflik sosial,tanggap darurat,P,Unsur Satgas nasional: kementerian urusan dalam negeri,"UU 7/2012, hlm. 24",dipetakan penyusun
+Tentara Nasional Indonesia,semua jenis,tanggap darurat,P,"Operasi militer selain perang: membantu mengatasi akibat bencana alam, pengungsian, bantuan kemanusiaan","UU 3/2025, hlm. 4",tertulis
+Tentara Nasional Indonesia,semua jenis,tanggap darurat,P,Bantuan internasional: perizinan dan pengamanan bantuan militer asing (huruf a),"Perban BNPB 6/2018, hlm. 18",tertulis
+Tentara Nasional Indonesia,karhutla,tanggap darurat,P,Mengerahkan kekuatan TNI membantu Kepala BNPB untuk pemadaman,"Inpres 3/2020, hlm. 7",tertulis
+Tentara Nasional Indonesia,konflik sosial,tanggap darurat,P,Bantuan penggunaan kekuatan TNI atas permintaan kepala daerah,"UU 7/2012, hlm. 15",tertulis
+Kepolisian Negara Republik Indonesia,semua jenis,tanggap darurat,P,Melindungi masyarakat dan lingkungan dari gangguan ketertiban dan/atau bencana,"UU 5/2026, hlm. 4",tertulis
+Kepolisian Negara Republik Indonesia,semua jenis,tanggap darurat,P,"Bantuan internasional: perizinan bantuan kepolisian asing, keamanan personil asing (huruf b)","Perban BNPB 6/2018, hlm. 18",tertulis
+Kepolisian Negara Republik Indonesia,karhutla,tanggap darurat,P,Mengerahkan kekuatan Polri membantu Kepala BNPB; penegakan hukum pidana,"Inpres 3/2020, hlm. 8",tertulis
+Kepolisian Negara Republik Indonesia,konflik sosial,tanggap darurat,K,Mengoordinasikan pelaksanaan bantuan kekuatan TNI,"UU 7/2012, hlm. 16",tertulis
+Kementerian Perumahan dan Kawasan Permukiman,semua jenis,pascabencana,K,Penyediaan dan rehabilitasi rumah korban bencana nasional (urusan perumahan),"UU 23/2014, hlm. 329",dipetakan penyusun
+Kementerian Keuangan,semua jenis,tanggap darurat,P,Kepabeanan dan perpajakan barang bantuan internasional,"Perban BNPB 6/2018, hlm. 19",tertulis
+Kementerian Keuangan,karhutla,prabencana,P,Sinkronisasi perencanaan dan penganggaran (bersama Bappenas),"Inpres 3/2020, hlm. 13",tertulis
+Kementerian Keuangan,konflik sosial,tanggap darurat,P,Unsur Satgas nasional: kementerian urusan keuangan negara,"UU 7/2012, hlm. 24",dipetakan penyusun
+Kementerian Luar Negeri,semua jenis,tanggap darurat,P,Perizinan diplomatik personel asing bantuan internasional,"Perban BNPB 6/2018, hlm. 19",tertulis
+Kementerian Perhubungan,semua jenis,tanggap darurat,P,Perizinan sarana transportasi dan fasilitas bandara/pelabuhan bantuan internasional,"Perban BNPB 6/2018, hlm. 19",tertulis
+Kementerian Perhubungan,karhutla,tanggap darurat,P,"Layanan angkutan udara, bandara sebagai base ops, ruang udara untuk OMC dan pemadaman","Inpres 3/2020, hlm. 4",tertulis
+Kementerian Komunikasi dan Digital,semua jenis,tanggap darurat,P,Perizinan alat komunikasi yang dibawa lembaga internasional,"Perban BNPB 6/2018, hlm. 19",dipetakan penyusun
+Kementerian Komunikasi dan Digital,karhutla,tanggap darurat,P,Monitor media massa dan perimbangan informasi (alamat Inpres: Menkominfo),"Inpres 3/2020, hlm. 4",dipetakan penyusun
+Kementerian Pekerjaan Umum,semua jenis,tanggap darurat,P,Bantuan bidang pekerjaan umum dan perumahan,"Perban BNPB 6/2018, hlm. 19",dipetakan penyusun
+Kementerian Pekerjaan Umum,banjir,lintas tahap,K,Pengelolaan SDA dan bangunan pengaman pantai di WS lintas provinsi/negara/strategis nasional,"UU 23/2014, hlm. 322",dipetakan penyusun
+Kementerian Pekerjaan Umum,banjir,prabencana,R,"Menetapkan kawasan daya rusak air (banjir, erosi, longsor, lahar dingin, ambles)","PP 30/2024, hlm. 66",dipetakan penyusun
+Kementerian Pekerjaan Umum,tanah longsor,prabencana,R,Kawasan daya rusak air memuat tanah longsor,"PP 30/2024, hlm. 66",dipetakan penyusun
+Kementerian Pekerjaan Umum,gelombang ekstrem dan abrasi,prabencana,K,Bangunan pengaman pantai di WS kewenangan pusat,"UU 23/2014, hlm. 322",dipetakan penyusun
+Kementerian Pekerjaan Umum,kekeringan,lintas tahap,K,Menjamin penyediaan air baku di WS lintas negara/provinsi/strategis nasional,"UU 17/2019, hlm. 9",dipetakan penyusun
+Kementerian Pekerjaan Umum,kekeringan,tanggap darurat,P,"SPAM bersifat khusus oleh pusat, termasuk penanganan bencana dan kekeringan","PP 122/2015, hlm. 43",dipetakan penyusun
+Kementerian Pekerjaan Umum,banjir,prabencana,I,"Penetapan sistem peringatan dini pada setiap WS (pengaturan pencegahan daya rusak air), WS kewenangan pusat","PP 30/2024, hlm. 65",dipetakan penyusun
+Kementerian Pekerjaan Umum,karhutla,prabencana,P,"Sekat kanal pembasahan, konstruksi fisik, pemompaan (alamat Inpres: Menteri PUPR)","Inpres 3/2020, hlm. 4",dipetakan penyusun
+Kementerian Pekerjaan Umum,kebakaran TPA,prabencana,P,Infrastruktur persampahan (Ditjen Cipta Karya),"Perpres 170/2024, hlm. 7",dipetakan penyusun
+Kementerian Energi dan Sumber Daya Mineral,semua jenis,tanggap darurat,P,Bantuan bidang energi dan sumber daya mineral,"Perban BNPB 6/2018, hlm. 19",tertulis
+Kementerian Energi dan Sumber Daya Mineral,gempa bumi,prabencana,R,Penetapan kawasan rawan bencana geologi; mitigasi bencana geologi (Badan Geologi),"UU 23/2014, hlm. 436",dipetakan penyusun
+Kementerian Energi dan Sumber Daya Mineral,tsunami,prabencana,R,Penetapan kawasan rawan bencana geologi,"UU 23/2014, hlm. 436",dipetakan penyusun
+Kementerian Energi dan Sumber Daya Mineral,gunung api,prabencana,I,Penetapan status dan peringatan dini bahaya gunung api (Badan Geologi),"UU 23/2014, hlm. 435",dipetakan penyusun
+Kementerian Energi dan Sumber Daya Mineral,tanah longsor,prabencana,I,Peringatan dini potensi gerakan tanah,"UU 23/2014, hlm. 435-436",dipetakan penyusun
+Badan Informasi Geospasial,semua jenis,prabencana,I,Informasi geospasial dasar dan tematik,"Perpres 128/2022, hlm. 3",tertulis
+Badan Informasi Geospasial,semua jenis,tanggap darurat,I,Bantuan internasional: data geospasial pendukung penanganan darurat (huruf w),"Perban BNPB 6/2018, hlm. 20",tertulis
+Badan Informasi Geospasial,karhutla,prabencana,I,Peta dasar dan tematik untuk pemadaman dan analisis tutupan lahan,"Inpres 3/2020, hlm. 10",tertulis
+Badan Riset dan Inovasi Nasional,semua jenis,prabencana,P,Riset dan inovasi nasional (termasuk eks LAPAN dan BPPT),"Perpres 78/2021, hlm. 4",dipetakan penyusun
+Badan Riset dan Inovasi Nasional,semua jenis,tanggap darurat,P,"Bantuan internasional bidang penerbangan-antariksa dan teknologi tepat guna (huruf u, v; alamat Perban: LAPAN, BPPT)","Perban BNPB 6/2018, hlm. 20",dipetakan penyusun
+Badan Riset dan Inovasi Nasional,karhutla,prabencana,I,"Data citra satelit (alamat Inpres: LAPAN, kini BRIN)","Inpres 3/2020, hlm. 10",dipetakan penyusun
+Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional,semua jenis,prabencana,R,Perencanaan tata ruang dan pemanfaatan ruang (Ditjen Tata Ruang),"Perpres 176/2024, hlm. 5",tertulis
+Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional,karhutla,prabencana,R,Identifikasi tanah terlantar berizin dan sanksi,"Inpres 3/2020, hlm. 6",tertulis
+Kementerian Pertanian,semua jenis,tanggap darurat,P,Bantuan internasional: karantina tanaman dan/atau hewan (huruf d),"Perban BNPB 6/2018, hlm. 18",tertulis
+Kementerian Pertanian,kekeringan,prabencana,P,Lahan dan irigasi pertanian,"Perpres 192/2024, hlm. 5",tertulis
+Kementerian Pertanian,karhutla,prabencana,R,Pengawasan usaha pertanian; pembukaan lahan tanpa bakar,"Inpres 3/2020, hlm. 5",tertulis
+"Badan Meteorologi, Klimatologi, dan Geofisika",semua jenis,tanggap darurat,P,"Bantuan internasional bidang meteorologi, klimatologi, geofisika (huruf p)","Perban BNPB 6/2018, hlm. 20",tertulis
+"Badan Meteorologi, Klimatologi, dan Geofisika",gempa bumi,prabencana,I,Informasi gempa bumi tektonik,"UU 31/2009, hlm. 17",dipetakan penyusun
+"Badan Meteorologi, Klimatologi, dan Geofisika",tsunami,prabencana,I,Peringatan dini tsunami,"UU 31/2009, hlm. 17",dipetakan penyusun
+"Badan Meteorologi, Klimatologi, dan Geofisika",cuaca ekstrem,prabencana,I,Peringatan dini cuaca ekstrem,"UU 31/2009, hlm. 17",dipetakan penyusun
+"Badan Meteorologi, Klimatologi, dan Geofisika",gelombang ekstrem dan abrasi,prabencana,I,Peringatan dini gelombang laut berbahaya,"UU 31/2009, hlm. 17",dipetakan penyusun
+"Badan Meteorologi, Klimatologi, dan Geofisika",kekeringan,prabencana,I,Peringatan dini iklim ekstrem dan prakiraan musim,"UU 31/2009, hlm. 17",dipetakan penyusun
+"Badan Meteorologi, Klimatologi, dan Geofisika",karhutla,prabencana,I,"Data asap, titik panas, prakiraan cuaca dan musim; prakiraan potensi karhutla","Inpres 3/2020, hlm. 10",tertulis
+"Badan Meteorologi, Klimatologi, dan Geofisika",karhutla,tanggap darurat,P,Operasi modifikasi cuaca (fungsi BMKG sejak Perpres 12/2024; Inpres menugaskan BPPT),"Perpres 12/2024, hlm. 2",dipetakan penyusun
+Perum Jasa Tirta I,banjir,lintas tahap,P,"Pengendalian banjir di wilayah kerja (WS Brantas, Bengawan Solo)","PP 46/2010, hlm. 7",tertulis
+Perum Jasa Tirta II,banjir,lintas tahap,P,Pengendalian banjir di wilayah kerja (WS Citarum),"PP 25/2022, hlm. 12",tertulis
+Badan Otorita Pengelola Pantai Utara Jawa,banjir,prabencana,P,Pengelolaan Pantura Jawa termasuk tanggul laut (banjir laut/rob),"Perpres 77/2025, hlm. 1",tertulis
+Kementerian Kelautan dan Perikanan,gelombang ekstrem dan abrasi,prabencana,P,Adaptasi dan mitigasi bencana laut di pesisir dan pulau kecil,"Perpres 193/2024, hlm. 7",tertulis
+Kementerian Koordinator Bidang Pangan,kekeringan,prabencana,K,Sinkronisasi penyediaan air di lahan pertanian padi,"Inpres 2/2025, hlm. 3",dipetakan penyusun
+Kementerian Koordinator Bidang Politik dan Keamanan,karhutla,lintas tahap,K,Mengoordinasikan kebijakan penanggulangan karhutla (alamat Inpres: Menko Polhukam),"Inpres 3/2020, hlm. 2",dipetakan penyusun
+Kementerian Koordinator Bidang Politik dan Keamanan,konflik sosial,tanggap darurat,K,"Unsur Satgas nasional: kementerian koordinasi politik, hukum, keamanan","UU 7/2012, hlm. 24",dipetakan penyusun
+Kementerian Kehutanan,karhutla,lintas tahap,K,Pengendalian kebakaran hutan (Ditjen Penegakan Hukum Kehutanan),"Perpres 175/2024, hlm. 13",dipetakan penyusun
+Kementerian Kehutanan,karhutla,tanggap darurat,P,Bantuan internasional kebakaran hutan (Perban 6/2018 Pasal 17 ayat (2) huruf f; alamat: KLHK),"Perban BNPB 6/2018, hlm. 19",dipetakan penyusun
+Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup,karhutla,lintas tahap,K,"Pengendalian kebakaran lahan (BPLH, Deputi Penegakan Hukum LH)","Perpres 183/2024, hlm. 15",dipetakan penyusun
+Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup,karhutla,tanggap darurat,P,Bantuan internasional kebakaran lahan (Perban 6/2018 Pasal 17 ayat (2) huruf f; alamat: KLHK),"Perban BNPB 6/2018, hlm. 19",dipetakan penyusun
+Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup,gagal teknologi,lintas tahap,P,Pengelolaan B3 dan limbah B3; bantuan bencana dampak B3,"Perpres 183/2024, hlm. 3",dipetakan penyusun
+Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup,kebakaran TPA,prabencana,R,NSPK pengelolaan sampah (Pemerintah); pengelolaan sampah di KLH,"UU 18/2008, hlm. 6",dipetakan penyusun
+Kementerian Desa dan Pembangunan Daerah Tertinggal,karhutla,prabencana,P,Prioritas dana desa untuk penanggulangan karhutla,"Inpres 3/2020, hlm. 6",dipetakan penyusun
+Kementerian Agama,semua jenis,prabencana,K,Penanggung jawab bersama Renas 2.1.2.a Penguatan Fasilitas Pendidikan Aman Bencana,"Perban BNPB 1/2025, hlm. 72",tertulis

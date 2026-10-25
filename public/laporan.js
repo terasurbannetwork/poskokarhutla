@@ -30,6 +30,7 @@ function ubah(n, p) {
 const ubahTeks = (n, p) => { if (!p) return ""; const v = Math.round((n - p) / p * 100); return v > 0 ? `<span class="naik">▲ ${fmt(v)}%</span>` : v < 0 ? `<span class="turun">▼ ${fmt(-v)}%</span>` : "tetap"; };
 
 const idx = () => D.hari.indexOf(st.hari);
+const hariQ = new URLSearchParams(location.search).get("hari") || "";
 /* mode provinsi (?prov=62,63): satu atau beberapa provinsi; [] = Indonesia (nasional, perilaku lama).
    Pilihan di kepala jadi bawaan semua pemilih kartu; kartu yang pemilihnya diubah sendiri memakai st.pk[kunci] sampai kepala diganti lagi.
    Beberapa provinsi = seri dijumlah per hari. Kartu yang hanya bermakna nasional disembunyikan (NAS); jumlah kab/kota dari baris D.kab. */
@@ -223,7 +224,7 @@ function modelLama(P, K) {
   const ctl = b > 0 ? Kartu.seg("petaH", [["", tgl(st.hari)], ["b", tgl(D.hari[b]) + " (belum final)"]], {petaH: pakaiB ? "b" : ""}) : "";
   const dft = K ? barisKab().filter(r => r.t > 0).sort((a, c) => c.t - a.t).slice(0, 10).map(r => ({nama: r.nama, t: r.t, tp: r.tp})) : rows.slice(0, 10);
   return {rows, j, ctl, pakaiB, dft, kepala: "", ket: "", cetak: "", sat: " titik", ey: P.length ? "Peta " + namaWil(P) : "Peta provinsi", aria: `Peta titik panas tiap provinsi ${tgl(h)}`,
-    sumber: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG",
+    sumber: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21); batas wilayah BIG",
     leg: [["#D9600B", "Ukuran lingkaran sebanding jumlah titik panas"], ["#051C2C", "Provinsi dengan titik panas"], ["#DCE1E7", "Tanpa titik panas"],
       ["#D9600B", "naik dari hari sebelumnya"], ["#2F86D1", "turun dari hari sebelumnya"]],
     tip: r => `<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / (totNas || 1) * 100))}%`};
@@ -295,9 +296,9 @@ function kartuProvGrafik() {
 /* baris riwayat per triwulan: judul bagian + satu baris per triwulan yang sudah genap, terbaru di atas.
    Triwulan berjalan tidak ditampilkan (pemilik, 17 Okt 2026): bulan berjalan sudah ada di baris harian di atasnya.
    sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
-function riwayatTw(sel, snpp = true) {
-  const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
-  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
+function riwayatTw(sel, snpp = true, tb = D.tahun_berjalan) {
+  const tw = (tb?.triwulan || []).slice(0, -1); if (!tw.length) return "";
+  const th = tb.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
   return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th}${snpp ? ' <span class="lp-co">VIIRS S-NPP</span>' : ""}</td></tr>`
     + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
       + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
@@ -362,16 +363,17 @@ function kartuLuas() {
   /* perkiraan luas = titik S-NPP x 4,3 ha (kalibrasi seri resmi 2015-2025, lihat scripts/data/laporan.py) */
   /* kumulatif sejak 1 Januari = total tahun berjalan dikurangi luas hari-hari sesudahnya */
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(P.length ? n.baru : n.luas, i))   /* provinsi: seri "baru" = kolom Kumulatif di tabel kab/kota */;
-  const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
-    return P.length ? "" : riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i]), "–"]); };
+  const triwulan = () => { let c = 0; const kum = (tb?.triwulan || []).map(q => c += q.ha);
+    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i]), "–"], true, tb); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
-  const tb = P.length ? null : D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  /* tahun berjalan: nasional, atau satu provinsi (laporan.py, luas saja); beberapa provinsi tidak dijumlah */
+  const tb = !P.length ? D.tahun_berjalan : P.length === 1 ? D.prov[P[0]].tahun_berjalan || null : null, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}), besar = v => v >= 1e6 ? jt(v) + " juta" : fmt(Math.round(v / 100) * 100);
   /* luas terdampak = piksel VIIRS bertitik x 14,06 ha, harian saja (piksel sama terdampak berhari-hari, tidak dijumlah); arsip lama = null */
   const dp = i => n.dampak?.[i] ?? null;
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
     + (dp(i) != null ? `; luas terdampak ${Kartu.hl(fmt(dp(i)))} ha` : "")
-    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta)` : "");
+    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(besar(tb.ha))} ha (rentang ${besar(tb.rendah)}–${besar(tb.tinggi)})` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, pasCetak(batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}), tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1], ["Luas terdampak (ha)", i => fmt(dp(i)), 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–", "–"],
@@ -478,7 +480,7 @@ function kartuSumber() {
 
 /* ---------- tiga kartu musim & luas (tugas 2): musim_harian.json (dimuat malas, X.mh) + laporan.json luas_banding. Ikut pemilih provinsi kartu (pilih) ---------- */
 /* semua teks label metode/sumber di sini supaya gampang diganti (validasi-model bisa mengubahnya) */
-const CATATAN_TITIK = "Semua deteksi NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20), semua tingkat keyakinan, di dalam batas provinsi, hari WIB; sumber statis, gunung api, dan lepas pantai tidak disaring.";
+const CATATAN_TITIK = "Lokasi unik ± 375 m per hari dari NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, di dalam batas provinsi, hari WIB; sumber panas tetap (industri, tambang, PLTU) dibuang, gunung api dan lepas pantai tidak disaring.";
 const SUMBER_MUSIM = `NASA FIRMS; tahun berjalan dari data harian ${MEREK}`;
 const MULAI = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];   /* awal tiap bulan, kalender kabisat (0 = 1 Jan, 59 = 29 Feb) */
 const li = h => MULAI[+h.slice(5, 7) - 1] + (+h.slice(8) - 1);
@@ -685,7 +687,7 @@ function kartuTren() {
         + `<text x="${cx}" y="${y0 + ch - 4}" text-anchor="middle" font-size="10" opacity="${bf ? .9 : .55}" font-weight="${bf ? 700 : 400}">${+hari[j].slice(8)}${bf ? "*" : ""}</text>`
         + (j > 0 && v[j - 1] ? (() => { const a = Math.round((x / v[j - 1] - 1) * 100); return `<text x="${cx}" y="${y0 + ch + 10}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:${a > 0 ? MERAH : a < 0 ? HIJAU : "#8a94a6"}">${a > 0 ? "▲" : a < 0 ? "▼" : "•"}${fmt(Math.abs(a))}%</text>`; })() : ""); }); });
   return Kartu.kartu("Tren harian", `Titik panas naik di ${Kartu.hl(naik + " dari " + pv.length)} provinsi yang sering mengalami karhutla dalam 3 hari terakhir`,
-    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)", "",
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21; lokasi unik per hari)", "",
     [[HIJAU, "3 hari terakhir turun"], [MERAH, "3 hari terakhir naik"], [BANDING, "3 hari pembanding"], [LAMA, "hari sebelumnya"], ["#8a94a6", "▲▼% di bawah tanggal = perubahan dari hari sebelumnya"]]);
 }
 
@@ -768,9 +770,15 @@ async function muat(ulang) {
   if (ulang && D && d.dibuat === D.dibuat && d.cutoff === D.cutoff) return;
   D = d;
   st.prov = kodeSah(st.prov).join(",");   /* ?prov= tak dikenal dibuang; tak tersisa = Indonesia */
+  /* ?hari= dari arsip tab Laporan: hari itu dipakai bila datanya ada, dan dihitung sebagai pilihan
+     manual supaya muat ulang berkala tidak menariknya kembali ke hari terbaru. */
+  if (!st.hari && hariQ && D.hari.includes(hariQ)) { st.hari = hariQ; st.manual = true; }
   if (!st.manual || !D.hari.includes(st.hari)) st.hari = awal();
   if (ulang) PKmuat = false;   /* peta_karhutla.json ikut dimuat ulang pada render berikutnya */
   ulang ? nanti(semua) : semua();
+  /* ?cetak=1 dari arsip tab Laporan: dialog cetak dibuka SEKALI sesudah laporan tergambar penuh,
+     bukan tiap kali data dimuat ulang. */
+  if (!ulang && new URLSearchParams(location.search).get("cetak") === "1") nanti(() => setTimeout(print, 400));
 }
 pasangTip(); PilihCantik.pasang(); muatTambahan();
 muat(false).catch(() => { $("#lpKepala").innerHTML = '<div class="kosong">Laporan belum tersedia. Coba muat ulang beberapa menit lagi.</div>'; $("#upd").textContent = "Data belum tersedia"; });

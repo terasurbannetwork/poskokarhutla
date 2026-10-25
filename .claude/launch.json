@@ -124,6 +124,18 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8799
+    },
+    {
+      "name": "statis2",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8812",
+        "--directory",
+        "public"
+      ],
+      "port": 8812
     }
   ]
 }

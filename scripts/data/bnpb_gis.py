@@ -5,7 +5,7 @@
 import json, os, sys, time, urllib.parse, urllib.request
 
 sys.path.insert(0, os.path.dirname(__file__))
-from wilayah import AKAR
+from wilayah import AKAR, Wilayah
 
 D = os.path.join(AKAR, "public/data")
 BASIS = "https://gis.bnpb.go.id/server/rest/services"
@@ -38,6 +38,14 @@ def sampel(titik):
     return hasil
 
 
+def lengkapi(kantor, w):
+    """Tambah prov (kode BPS) dan kab dari titik kantor; nama GIS cuma 'PROVINSI'/'ACEH BESAR', kotak cari butuh wilayahnya."""
+    for k in kantor:
+        a = w.cari(k["lon"], k["lat"])
+        k["prov"], k["kab"] = (a[0], a[1]) if a else (None, None)
+    return kantor
+
+
 def main():
     K = json.load(open(os.path.join(D, "kluster.json")))["features"]
     pk = json.load(open(os.path.join(D, "posko.json")))
@@ -58,6 +66,7 @@ def main():
             continue
         kantor.append({"nama": a["BPBD"].strip(), "lat": round(la, 5), "lon": round(lo, 5),
                        "alamat": (a.get("ALAMAT") or "").strip(), "pusdalops": (a.get("PUSDALOPS") or "").strip()})
+    lengkapi(kantor, Wilayah())
     json.dump({"sumber": "BNPB peta_bpbd (gis.bnpb.go.id)", "kantor": kantor}, open(os.path.join(D, "bpbd.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     ada = [v for v in nilai.values() if v is not None]
     print(f"{len(nilai)} titik InaRISK ({len(ada)} bernilai, rata {sum(ada) / max(1, len(ada)):.2f}); {len(kantor)} kantor BPBD", file=sys.stderr)

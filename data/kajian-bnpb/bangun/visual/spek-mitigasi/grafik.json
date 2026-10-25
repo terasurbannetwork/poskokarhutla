@@ -1,0 +1,1613 @@
+[
+ {
+  "nama": "bab01-batang-korban-alam-2015-2025",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Meninggal dan hilang akibat bencana alam di Indonesia, 2015–2025 (jiwa)",
+  "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam kode 101–109",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/korban_alam_tahun.csv",
+    "saring": {
+     "tahun": [
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2022",
+      "2023",
+      "2024",
+      "2025"
+     ]
+    }
+   },
+   "x": "tahun",
+   "y": "meninggal_hilang"
+  },
+  "tekan": [
+   9,
+   10
+  ],
+  "legenda": {
+   "lama": "2015–2023, laporan belum tersaring ambang",
+   "tekan": "2024–2025, saringan Juklak 7/2023"
+  }
+ },
+ {
+  "nama": "bab04-kejadian-tahunan",
+  "jenis": "garis",
+  "pesan": "G3",
+  "ukuran": "penuh",
+  "keterangan": "Kejadian bencana per tahun menurut kelompok di Indonesia, 2015–2026 (kejadian)",
+  "sumber": "BNPB, DIBI dasbor publik, cakupan kejadian bencana",
+  "seri": [
+   {
+    "label": "Hidrometeorologi",
+    "warna": "kategori.basah",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kejadian_kelompok.csv",
+      "saring": {
+       "kelompok": "hidromet"
+      }
+     },
+     "x": "tahun",
+     "y": "kejadian"
+    }
+   },
+   {
+    "label": "Geologi",
+    "warna": "kategori.geologi",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kejadian_kelompok.csv",
+      "saring": {
+       "kelompok": "geologi"
+      }
+     },
+     "x": "tahun",
+     "y": "kejadian"
+    }
+   },
+   {
+    "label": "Nonalam dan sosial",
+    "warna": "kategori.nonalam",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kejadian_kelompok.csv",
+      "saring": {
+       "kelompok": "nonalam"
+      }
+     },
+     "x": "tahun",
+     "y": "kejadian"
+    }
+   }
+  ],
+  "anotasi": [
+   {
+    "x": "2024",
+    "teks": "saringan Juklak 7/2023"
+   }
+  ],
+  "desimal": 0
+ },
+ {
+  "nama": "bab04-korban-tahunan",
+  "jenis": "garis",
+  "pesan": "G3",
+  "ukuran": "penuh",
+  "keterangan": "Meninggal dan hilang akibat bencana alam per tahun menurut kelompok di Indonesia, 2015–2026 (jiwa)",
+  "sumber": "BNPB, DIBI dasbor publik, sembilan jenis bencana alam, cakupan kejadian bencana",
+  "seri": [
+   {
+    "label": "Hidrometeorologi",
+    "warna": "kategori.basah",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/korban_alam_kelompok.csv",
+      "saring": {
+       "kelompok": "hidromet"
+      }
+     },
+     "x": "tahun",
+     "y": "meninggal_hilang"
+    }
+   },
+   {
+    "label": "Geologi",
+    "warna": "kategori.geologi",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/korban_alam_kelompok.csv",
+      "saring": {
+       "kelompok": "geologi"
+      }
+     },
+     "x": "tahun",
+     "y": "meninggal_hilang"
+    }
+   }
+  ],
+  "desimal": 0
+ },
+ {
+  "nama": "bab05-tren-irb",
+  "jenis": "matriks-titik",
+  "pesan": "G16",
+  "ukuran": "penuh",
+  "keterangan": "Indeks Risiko Bencana nasional dan rerata kab/kota per pulau di Indonesia, 2015–2024 (indeks)",
+  "sumber": "InaRISK BNPB, IRBI 2015–2024; Renstra BNPB 2025–2029 Tabel 1.6; pengolahan data Pantau Bencana ({rumus_kelas})",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_tren_2015_2024.csv",
+    "saring": {
+     "metode": "rerata_sederhana",
+     "tingkat": [
+      "nasional",
+      "pulau"
+     ]
+    }
+   },
+   "baris": "kode",
+   "urutan": [
+    "ID",
+    "SUM",
+    "JAW",
+    "KAL",
+    "SUL",
+    "BNT",
+    "MAL",
+    "PAP"
+   ],
+   "label_baris": {
+    "ID": "Nasional",
+    "SUM": "Sumatra",
+    "JAW": "Jawa",
+    "KAL": "Kalimantan",
+    "SUL": "Sulawesi",
+    "BNT": "Bali dan Nusa Tenggara",
+    "MAL": "Maluku",
+    "PAP": "Papua"
+   },
+   "kolom": [
+    {
+     "kolom": "y2015",
+     "label": "2015"
+    },
+    {
+     "kolom": "y2016",
+     "label": "2016"
+    },
+    {
+     "kolom": "y2017",
+     "label": "2017"
+    },
+    {
+     "kolom": "y2018",
+     "label": "2018"
+    },
+    {
+     "kolom": "y2019",
+     "label": "2019"
+    },
+    {
+     "kolom": "y2020",
+     "label": "2020"
+    },
+    {
+     "kolom": "y2021",
+     "label": "2021"
+    },
+    {
+     "kolom": "y2022",
+     "label": "2022"
+    },
+    {
+     "kolom": "y2023",
+     "label": "2023"
+    },
+    {
+     "kolom": "y2024",
+     "label": "2024"
+    }
+   ]
+  },
+  "kelas": {
+   "ramp": "api",
+   "batas": [
+    130,
+    140,
+    150,
+    160
+   ],
+   "rumus": "batas tetap indeks, pilihan penyusun",
+   "desimal": 0
+  },
+  "judul_legenda": "Indeks Risiko Bencana"
+ },
+ {
+  "nama": "bab05-peta-status-irbi-2025",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "penuh",
+  "keterangan": "Status Indeks Risiko Bencana Indonesia per kab/kota, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025, kolom status",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "total"
+   },
+   "kelas": {
+    "skala": "irbi",
+    "kolom": "status_total_resmi"
+   }
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-peta-kelas-provinsi-2023",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "penuh",
+  "keterangan": "Kelas Indeks Risiko Bencana Indonesia per provinsi, 2023",
+  "sumber": "InaRISK BNPB, IRBI 2023; Renstra BNPB 2025–2029 Tabel 1.1",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_rekonsiliasi_provinsi.csv",
+    "saring": {
+     "tahun": "2023"
+    },
+    "kunci": "prov_kode",
+    "nilai": "indeks_terbit"
+   },
+   "kelas": {
+    "skala": "irbi",
+    "kolom": "kelas_terbit"
+   }
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-peta-kapasitas-krb",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "penuh",
+  "keterangan": "Kelas kapasitas penanggulangan bencana kab/kota menurut Kajian Risiko Bencana 2022–2026",
+  "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, kelas kapasitas kab/kota",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kapasitas_krb.csv",
+    "kunci": "kode",
+    "nilai": "kelas"
+   },
+   "kelas": {
+    "ramp": "air",
+    "batas": [
+     1,
+     2
+    ],
+    "label": [
+     "Rendah",
+     "Sedang",
+     "Tinggi"
+    ],
+    "rumus": "kelas resmi KRB",
+    "desimal": 0
+   },
+   "judul_legenda": "Kelas kapasitas KRB (kab/kota)"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-matriks-kemungkinan-dampak",
+  "jenis": "matriks",
+  "pesan": "G17",
+  "ukuran": "penuh",
+  "tinggi_sel_pt": 84,
+  "keterangan": "Matriks kemungkinan lima tahun dan kelas fatalitas per jenis bencana, Indonesia, 2026",
+  "sumber": "Pita kemungkinan dan fatalitas NRR Cabinet Office; DIBI BNPB 2008–2025; PuSGeN (2024); pengolahan data Pantau Bencana",
+  "kolom": {
+   "judul": "KEMUNGKINAN LIMA TAHUN",
+   "label": [
+    "Pita 1",
+    "Pita 2",
+    "Pita 3",
+    "Pita 4",
+    "Pita 5",
+    "Tidak dinilai"
+   ]
+  },
+  "baris": {
+   "judul": "KELAS FATALITAS",
+   "label": [
+    "Kelas 1",
+    "Kelas 2",
+    "Kelas 3",
+    "Kelas 4",
+    "Kelas 5"
+   ]
+  },
+  "butir": [
+   {
+    "nama": "Megathrust selatan Jawa, gabungan",
+    "kolom": 1,
+    "baris": 3
+   },
+   {
+    "nama": "Megathrust selatan Jawa, per segmen",
+    "kolom": 2,
+    "baris": 3
+   },
+   {
+    "nama": "Banjir dan banjir bandang",
+    "kolom": 3,
+    "baris": 4
+   },
+   {
+    "nama": "Gempa sesar darat dan majemuk",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Tsunami nasional",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Epidemi dan pandemi",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Konflik sosial",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Gunung api",
+    "kolom": 5,
+    "baris": 3
+   },
+   {
+    "nama": "Tanah longsor",
+    "kolom": 5,
+    "baris": 3
+   },
+   {
+    "nama": "Cuaca ekstrem",
+    "kolom": 5,
+    "baris": 2
+   },
+   {
+    "nama": "Gelombang ekstrem dan abrasi",
+    "kolom": 5,
+    "baris": 1
+   },
+   {
+    "nama": "Rob",
+    "kolom": 5,
+    "baris": 1
+   },
+   {
+    "nama": "Karhutla",
+    "kolom": 5,
+    "baris": 1
+   },
+   {
+    "nama": "Kebakaran industri",
+    "kolom": 5,
+    "baris": 1
+   },
+   {
+    "nama": "Kekeringan",
+    "kolom": 5,
+    "baris": 0
+   }
+  ]
+ },
+ {
+  "nama": "bab06-peta-mmi-jawa",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "penuh",
+  "keterangan": "Jiwa terpapar guncangan MMI VII atau lebih per kab/kota pada skenario megathrust Jawa Mw 9,1 PuSGeN 2024 (jiwa)",
+  "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi; penduduk WorldPop 2026",
+  "cakupan": [
+   "31",
+   "32",
+   "33",
+   "34",
+   "35",
+   "36",
+   "51"
+  ],
+  "tingkat": "kab",
+  "titik": [
+   {
+    "nama": "Jiwa MMI VII+",
+    "judul_legenda": "Jiwa terpapar MMI VII atau lebih, nilai tengah",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/mmi7_jawa_mmaks.csv"
+    },
+    "nilai": "jiwa",
+    "label": "nama",
+    "label_teratas": 3
+   }
+  ],
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-peta-tsunami-30mnt",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "penuh",
+  "keterangan": "Jiwa kecamatan pesisir rendah dengan tiba tsunami 30 menit atau kurang, skenario megathrust Jawa Mw 9,1 dan Mentawai Mw 8,9, 2026 (jiwa)",
+  "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+  "cakupan": [
+   "11",
+   "12",
+   "13",
+   "14",
+   "15",
+   "16",
+   "17",
+   "18",
+   "19",
+   "21",
+   "31",
+   "32",
+   "33",
+   "34",
+   "35",
+   "36",
+   "51",
+   "52"
+  ],
+  "tingkat": "kab",
+  "titik": [
+   {
+    "nama": "Jiwa pesisir rendah",
+    "judul_legenda": "Jiwa pesisir rendah, tiba 30 menit atau kurang",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/tsunami_30mnt.csv"
+    },
+    "nilai": "jiwa",
+    "label": "nama",
+    "label_teratas": 4
+   }
+  ],
+  "sorot": [
+   "3202",
+   "3203",
+   "3205",
+   "3206",
+   "3218",
+   "3312",
+   "3403",
+   "3504",
+   "3505",
+   "3507",
+   "3602",
+   "5102",
+   "5104",
+   "5105",
+   "5107",
+   "5108",
+   "5202",
+   "5203",
+   "5204",
+   "5208"
+  ],
+  "sorot_label": "Tiba kurang dari 30 menit, luput dari proksi",
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-tuas-evakuasi-bangunan",
+  "jenis": "matriks-titik",
+  "pesan": "G16",
+  "ukuran": "penuh",
+  "keterangan": "Faktor kematian tsunami menurut porsi evakuasi segera dan faktor korban guncangan menurut kepatuhan bangunan, empat skenario megathrust, 2026 (kali dasar)",
+  "sumber": "Cabinet Office Jepang 2025; simulasi skenario Pantau Bencana, belum divalidasi ({rumus_kelas})",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/tuas_geologi.csv"
+   },
+   "baris": "skenario",
+   "kolom": [
+    {
+     "kolom": "e20",
+     "label": "Evakuasi 20%"
+    },
+    {
+     "kolom": "e50",
+     "label": "Evakuasi 50%"
+    },
+    {
+     "kolom": "e70",
+     "label": "Evakuasi 70%"
+    },
+    {
+     "kolom": "b_dasar",
+     "label": "Bangunan dasar"
+    },
+    {
+     "kolom": "b_naik",
+     "label": "Kepatuhan naik"
+    },
+    {
+     "kolom": "b_penuh",
+     "label": "Kepatuhan penuh"
+    }
+   ]
+  },
+  "kelas": {
+   "ramp": "netral",
+   "batas": [
+    0.4,
+    0.7
+   ],
+   "label": [
+    "0,4 atau kurang",
+    "0,4–0,7",
+    "di atas 0,7"
+   ],
+   "rumus": "batas tetap faktor terhadap dasar",
+   "desimal": 2
+  },
+  "judul_legenda": "Faktor terhadap dasar"
+ },
+ {
+  "nama": "bab07-hm-banjir",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "dua-kolom",
+  "keterangan": "Nilai IRBI banjir per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "banjir"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Banjir, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-hm-longsor",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "dua-kolom",
+  "keterangan": "Nilai IRBI tanah longsor per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "longsor"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Tanah longsor, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-hm-kekeringan",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "dua-kolom",
+  "keterangan": "Nilai IRBI kekeringan per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "kekeringan"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Kekeringan, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-hm-karlahut",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "dua-kolom",
+  "keterangan": "Nilai IRBI karhutla per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "karlahut"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Karhutla, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-g01-musim-hujan",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Meninggal dan hilang per musim hujan nasional menurut fase La Niña, 2008/2009–2025/2026 (jiwa)",
+  "sumber": "BNPB, DIBI dasbor publik; NOAA CPC, ONI; pengolahan kajian ini",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/musim_hujan_nasional.csv"
+   },
+   "x": "pendek",
+   "y": "meninggal_hilang"
+  },
+  "warna": "kategori.basah",
+  "tekan": [
+   0,
+   2,
+   3,
+   9,
+   12,
+   13,
+   14
+  ],
+  "legenda": {
+   "tekan": "Musim La Niña",
+   "lama": "Musim lain"
+  }
+ },
+ {
+  "nama": "bab07-g16-kalender",
+  "jenis": "matriks-titik",
+  "pesan": "G16",
+  "ukuran": "penuh",
+  "keterangan": "Porsi bulanan meninggal dan hilang lima jenis musim hujan serta kejadian kekeringan dan karhutla di Indonesia, 2008–2026 (persen)",
+  "sumber": "BNPB, DIBI dasbor publik; pengolahan kajian ini ({rumus_kelas})",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kalender_nasional.csv"
+   },
+   "baris": "baris",
+   "kolom": [
+    {
+     "kolom": "Jan",
+     "label": "Jan"
+    },
+    {
+     "kolom": "Feb",
+     "label": "Feb"
+    },
+    {
+     "kolom": "Mar",
+     "label": "Mar"
+    },
+    {
+     "kolom": "Apr",
+     "label": "Apr"
+    },
+    {
+     "kolom": "Mei",
+     "label": "Mei"
+    },
+    {
+     "kolom": "Jun",
+     "label": "Jun"
+    },
+    {
+     "kolom": "Jul",
+     "label": "Jul"
+    },
+    {
+     "kolom": "Agu",
+     "label": "Agu"
+    },
+    {
+     "kolom": "Sep",
+     "label": "Sep"
+    },
+    {
+     "kolom": "Okt",
+     "label": "Okt"
+    },
+    {
+     "kolom": "Nov",
+     "label": "Nov"
+    },
+    {
+     "kolom": "Des",
+     "label": "Des"
+    }
+   ]
+  },
+  "kelas": {
+   "ramp": "air",
+   "batas": [
+    5,
+    10,
+    20
+   ],
+   "label": [
+    "5 atau kurang",
+    "5–10",
+    "10–20",
+    "di atas 20"
+   ],
+   "rumus": "batas tetap porsi bulanan",
+   "desimal": 0
+  },
+  "judul_legenda": "Porsi bulan dalam setahun (persen)"
+ },
+ {
+  "nama": "bab07-g14-peringatan-dini",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Korban jiwa lantai musim hujan 2025/2026 nasional pada cakupan peringatan dini 2025, dua lintasan 2029, dan cakupan penuh (jiwa)",
+  "sumber": "BNPB, DIBI dasbor publik; Renas PB 2025–2029; Renstra BNPB 2025–2029; WMO (2022); pengolahan kajian ini",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/peringatan_dini_lantai.csv"
+   },
+   "x": "tahap",
+   "y": "jiwa"
+  },
+  "pembanding": 0,
+  "tekan": [
+   1,
+   2,
+   3
+  ],
+  "legenda": {
+   "pembanding": "Lantai tercatat, cakupan 2025",
+   "tekan": "Batas atas ilustratif sesudah kepekaan"
+  }
+ },
+ {
+  "nama": "bab08-g11-kematian-covid19-pekan",
+  "jenis": "garis",
+  "pesan": "G2",
+  "ukuran": "penuh",
+  "keterangan": "Kematian COVID-19 terlapor per pekan di Indonesia, Maret 2020–Juni 2023 (jiwa)",
+  "sumber": "WHO, data global COVID-19 (laporan Kementerian Kesehatan)",
+  "seri": [
+   {
+    "label": "Kematian per pekan",
+    "label_ujung": "Juni 2023",
+    "warna": "kategori.nonalam",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/covid19_pekan.csv"
+     },
+     "x": "pekan",
+     "y": "meninggal"
+    }
+   }
+  ],
+  "anotasi": [
+   {
+    "x": "2021-08-01",
+    "teks": "puncak Delta"
+   }
+  ],
+  "desimal": 0,
+  "dari_nol": true
+ },
+ {
+  "nama": "bab09-peta-perkelahian-antarkelompok-2024",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "rasio",
+  "ukuran": "penuh",
+  "keterangan": "Persen desa/kelurahan dengan perkelahian massal antarkelompok masyarakat per provinsi di Indonesia, 2024",
+  "sumber": "Pengolahan data Pantau Bencana dari BPS, Statistik Potensi Desa Indonesia 2024 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/perkelahian_provinsi.csv",
+    "kunci": "kode",
+    "nilai": "persen"
+   },
+   "kelas": {
+    "ramp": "emas",
+    "kuantil": 5,
+    "desimal": 2
+   },
+   "judul_legenda": "Persen desa/kelurahan, kelas kuintil (provinsi)"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab11-g16-kalender-pulau",
+  "jenis": "matriks-titik",
+  "pesan": "G16",
+  "ukuran": "penuh",
+  "keterangan": "Porsi kejadian bencana hidrometeorologi per bulan menurut pulau dan musim, Indonesia 2008–2025 (persen kejadian)",
+  "sumber": "DIBI BNPB 2008–2025, per tanggal kejadian; pengolahan kajian ini ({rumus_kelas})",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/kalender_pulau.csv"
+   },
+   "baris": "baris",
+   "kolom": [
+    {
+     "kolom": "Jan",
+     "label": "Jan"
+    },
+    {
+     "kolom": "Feb",
+     "label": "Feb"
+    },
+    {
+     "kolom": "Mar",
+     "label": "Mar"
+    },
+    {
+     "kolom": "Apr",
+     "label": "Apr"
+    },
+    {
+     "kolom": "Mei",
+     "label": "Mei"
+    },
+    {
+     "kolom": "Jun",
+     "label": "Jun"
+    },
+    {
+     "kolom": "Jul",
+     "label": "Jul"
+    },
+    {
+     "kolom": "Agu",
+     "label": "Agu"
+    },
+    {
+     "kolom": "Sep",
+     "label": "Sep"
+    },
+    {
+     "kolom": "Okt",
+     "label": "Okt"
+    },
+    {
+     "kolom": "Nov",
+     "label": "Nov"
+    },
+    {
+     "kolom": "Des",
+     "label": "Des"
+    }
+   ]
+  },
+  "kelas": {
+   "ramp": "air",
+   "batas": [
+    5,
+    10,
+    20
+   ],
+   "label": [
+    "5 atau kurang",
+    "5–10",
+    "10–20",
+    "di atas 20"
+   ],
+   "rumus": "batas tetap porsi bulanan",
+   "desimal": 0
+  },
+  "judul_legenda": "Porsi bulan dalam setahun (persen kejadian)"
+ },
+ {
+  "nama": "bab12-profil-kerugian",
+  "jenis": "rentang",
+  "pesan": "G12",
+  "ukuran": "penuh",
+  "keterangan": "Kebutuhan stimulan rumah tahunan batas bawah, 2015–2025, dengan lapisan dan kejadian tunggal (Rp triliun)",
+  "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan siaran Kemenko PMK 22 November 2023 (besaran stimulan)",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/profil_kerugian.csv"
+   },
+   "kategori": "id",
+   "rendah": "rendah",
+   "tinggi": "tinggi",
+   "warna_kategori": {
+    "Lapisan sering, median": "slate",
+    "Lapisan berat, persentil 90": "slate",
+    "Sulawesi Tengah 2018, kejadian": "kategori.geologi",
+    "Sumatra 2025, kejadian": "kategori.geologi"
+   },
+   "legenda_warna": {
+    "navy": "tahun, besaran 2010 sampai besaran 2023",
+    "slate": "lapisan sering dan berat",
+    "kategori.geologi": "kejadian tunggal"
+   }
+  },
+  "satuan": "T",
+  "desimal": 1,
+  "warna": "navy"
+ },
+ {
+  "nama": "bab05-irbi-banjir",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI banjir per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "banjir"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Banjir, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-longsor",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI tanah longsor per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "longsor"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Tanah longsor, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-kekeringan",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI kekeringan per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "kekeringan"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Kekeringan, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-cuaca_ekstrem",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI cuaca ekstrem per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "cuaca_ekstrem"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Cuaca ekstrem, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-abrasi",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gelombang ekstrem dan abrasi per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "abrasi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gelombang dan abrasi, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-gempabumi",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gempa bumi per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "gempabumi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gempa bumi, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-tsunami",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI tsunami per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "tsunami"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Tsunami, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-karlahut",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI karhutla per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "karlahut"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Karhutla, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab05-irbi-gunungapi",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gunung api per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "gunungapi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gunung api, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-megathrust-jawa",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "rasio",
+  "ukuran": "tiga-kolom",
+  "skala": false,
+  "keterangan": "Persen penduduk kab/kota terpapar MMI VII atau lebih, megathrust Jawa Mw 9,1, 2026",
+  "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi ({rumus_kelas})",
+  "cakupan": [
+   "31",
+   "32",
+   "33",
+   "34",
+   "35",
+   "36",
+   "51"
+  ],
+  "tingkat": "kab",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/mmi7_jawa_persen.csv",
+    "kunci": "kode",
+    "nilai": "persen"
+   },
+   "kelas": {
+    "ramp": "emas",
+    "batas": [
+     25,
+     50,
+     75
+    ],
+    "rumus": "batas tetap persen penduduk",
+    "desimal": 0
+   },
+   "judul_legenda": "Persen penduduk MMI VII+"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-megathrust-mentawai",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "skala": false,
+  "keterangan": "Jiwa terpapar MMI VII atau lebih, megathrust Mentawai Mw 8,9, 2026",
+  "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+  "cakupan": [
+   "12",
+   "13",
+   "15",
+   "16",
+   "17"
+  ],
+  "tingkat": "kab",
+  "titik": [
+   {
+    "nama": "Jiwa MMI VII+",
+    "judul_legenda": "Jiwa MMI VII atau lebih",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-mitigasi/mmi7_mentawai_mmaks.csv"
+    },
+    "nilai": "jiwa"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-sesar-darat",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gempa bumi per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "gempabumi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gempa bumi, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-tsunami",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI tsunami per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "tsunami"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Tsunami, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-gunungapi",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gunung api per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "gunungapi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gunung api, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-banjir",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI banjir per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "banjir"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Banjir, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-longsor",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI tanah longsor per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "longsor"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Tanah longsor, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-cuaca",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI cuaca ekstrem per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "cuaca_ekstrem"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Cuaca ekstrem, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-gelombang",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gelombang ekstrem dan abrasi per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "abrasi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gelombang dan abrasi, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-kekeringan",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI kekeringan per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "kekeringan"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Kekeringan, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab07-kartu-karhutla",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI karhutla per kab/kota di Indonesia, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "karlahut"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Karhutla, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab06-kartu-majemuk",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Nilai IRBI gempa bumi per kab/kota di Sulawesi Tengah, 2025",
+  "sumber": "InaRISK BNPB, IRBI 2025 ({rumus_kelas})",
+  "cakupan": [
+   "72"
+  ],
+  "tingkat": "kab",
+  "skala": false,
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2025.csv",
+    "kunci": "kode",
+    "nilai": "gempabumi"
+   },
+   "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+   },
+   "judul_legenda": "Gempa bumi, kuintil"
+  },
+  "label": {
+   "provinsi": false
+  }
+ }
+]

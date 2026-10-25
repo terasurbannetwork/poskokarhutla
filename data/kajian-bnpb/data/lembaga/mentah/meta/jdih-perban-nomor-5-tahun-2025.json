@@ -1,0 +1,33 @@
+{
+ "Jenis Dokumen": "Peraturan Badan",
+ "Judul": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025-2029",
+ "Nomor": "5",
+ "Tahun": "2025",
+ "Tajuk Entri Utama": "Indonesia. Badan Nasional Penanggulangan Bencana",
+ "Bidang Hukum": "Hukum Umum",
+ "Subjek": "Renstra",
+ "Tanggal Penetapan": "03 October 2025",
+ "Tanggal Pengundangan": "08 October 2025",
+ "Tempat Terbit": "Jakarta",
+ "Sumber": "BN 2025 (768); 202 Hlm",
+ "Bahasa": "Indonesia",
+ "Lokasi": "Biro Hukum, Organisasi dan Kerja Sama",
+ "Tipe Dokumen": "Peraturan",
+ "Singkatan": "PERBAN",
+ "Status": "BERLAKU",
+ "pdf": [
+  "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf"
+ ],
+ "relasi": [],
+ "url": "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-5-tahun-2025",
+ "tipe": "Peraturan",
+ "slug": "perban-nomor-5-tahun-2025",
+ "teks": [
+  "perban-nomor-5-tahun-2025.txt"
+ ],
+ "teks_ok": true,
+ "teks_sha1": "0be311542e8738e8d396624e97dc050bad40b71e",
+ "disalin": "2026-10-23",
+ "pdf_sha1_lokal": "2d025b5de59e80e03b1245fc02d8cdd47c6a1b10",
+ "asal_teks": "data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (scripts/bnpb/hukum.py teks: pdftotext + tesseract; docs/bnpb/HUKUM.md)"
+}

@@ -1,0 +1,25 @@
+{
+  "nama": "garis-irbi-tren-pita",
+  "jenis": "garis",
+  "alasan": "Dua seri sepuluh tahun dengan pita persentil 10 sampai 90 kab/kota; batang G1 tidak memuat pita sebaran, dan G2 hanya untuk seri lebih dari 24 periode",
+  "ukuran": "penuh",
+  "keterangan": "IRBI rerata kab/kota Indonesia dan Pulau Jawa, 2015–2024 (indeks)",
+  "sumber": "InaRISK BNPB, IRBI 2015 sampai 2024; rerata sederhana kab/kota ber-fix_values; pita = persentil 10 dan 90 kab/kota ber-fix_values",
+  "seri": [
+    {"label": "Indonesia", "warna": "navy",
+     "data": {"sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_tren_2015_2024.csv", "saring": {"tingkat": "nasional", "metode": "rerata_sederhana"}}, "kolom": "y{2015..2024}"}},
+    {"label": "Pulau Jawa", "warna": "biru-abu",
+     "data": {"sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_tren_2015_2024.csv", "saring": {"tingkat": "pulau", "kode": "JAW", "metode": "rerata_sederhana"}}, "kolom": "y{2015..2024}"}}
+  ],
+  "pita": {
+    "label": "persentil 10 sampai 90 kab/kota Indonesia",
+    "data": {
+      "sumber": {"berkas": "data/kajian-bnpb/data/irbi/irbi_kab_2015_2025.csv", "saring": {"ber_fix_values": "1"}, "kecuali": {"tahun": "^2025$"},
+                 "kelompok": "tahun", "ringkas": {"p10": "p10:total", "p90": "p90:total"}},
+      "x": "tahun", "bawah": "p10", "atas": "p90"
+    }
+  },
+  "anotasi": [{"x": "2019", "teks": "baseline Renstra 2019"}],
+  "kepala": {"kiri": "IRBI Pulau Jawa", "neto": true, "seri": 1},
+  "desimal": 1
+}

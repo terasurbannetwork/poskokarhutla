@@ -1,6 +1,13 @@
 {
  "dibuat": "2026-10-23",
  "arti": "per kode kab/kota Kemendagri 4 digit; gabungkan ke public/geo/kabupaten/<prov>.json lewat (prov, kab). Angka sama dengan CSV paket ini.",
+ "status_magnitudo": {
+  "jawa": "M8,5 sim.js, di bawah Mmaks 9,1; tanpa sumber per baris",
+  "mentawai": "M8,8 sim.js, di bawah Mmaks 8,9; tanpa sumber per baris",
+  "sumba": "M8,3 sim.js TANPA SUMBER; Mmaks Bali-Sumba tidak ditemukan",
+  "jawa-mmaks": "M9,1 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)",
+  "mentawai-mmaks": "M8,9 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)"
+ },
  "kab": {
   "1101": {
    "prov": "11",
@@ -19,6 +26,18 @@
      "tiba_menit_sisi_aman": 42.5,
      "tinggi_hi_m": 9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 140.3,
+     "tiba_menit_sisi_aman": 100.7,
+     "tinggi_hi_m": 5.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 57.2,
+     "tiba_menit_sisi_aman": 41,
+     "tinggi_hi_m": 12,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -32,6 +51,12 @@
      "tiba_menit": 138.7,
      "tiba_menit_sisi_aman": 99.5,
      "tinggi_hi_m": 3.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 136.7,
+     "tiba_menit_sisi_aman": 98.1,
+     "tinggi_hi_m": 5.1,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -61,6 +86,12 @@
      "tiba_menit_sisi_aman": 63.8,
      "tinggi_hi_m": 6.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 86.9,
+     "tiba_menit_sisi_aman": 62.4,
+     "tinggi_hi_m": 8.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -74,6 +105,12 @@
      "tiba_menit": 81.6,
      "tiba_menit_sisi_aman": 58.6,
      "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 79.6,
+     "tiba_menit_sisi_aman": 57.1,
+     "tinggi_hi_m": 7.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -89,6 +126,12 @@
      "tiba_menit_sisi_aman": 70.2,
      "tinggi_hi_m": 4.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 95.8,
+     "tiba_menit_sisi_aman": 68.8,
+     "tinggi_hi_m": 6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -102,6 +145,12 @@
      "tiba_menit": 116.9,
      "tiba_menit_sisi_aman": 83.9,
      "tinggi_hi_m": 4.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 114.9,
+     "tiba_menit_sisi_aman": 82.5,
+     "tinggi_hi_m": 5.2,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -123,6 +172,18 @@
      "tiba_menit_sisi_aman": 25.1,
      "tinggi_hi_m": 10.5,
      "jiwa_pesisir_rendah_lt30": 8138
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 116.1,
+     "tiba_menit_sisi_aman": 83.3,
+     "tinggi_hi_m": 5.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 33,
+     "tiba_menit_sisi_aman": 23.7,
+     "tinggi_hi_m": 14.1,
+     "jiwa_pesisir_rendah_lt30": 8138
     }
    }
   },
@@ -133,7 +194,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.75,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.01,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -155,6 +226,18 @@
      "tiba_menit_sisi_aman": 29,
      "tinggi_hi_m": 11.2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 121.5,
+     "tiba_menit_sisi_aman": 87.2,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 38.4,
+     "tiba_menit_sisi_aman": 27.6,
+     "tinggi_hi_m": 15.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -168,6 +251,12 @@
      "tiba_menit": 113,
      "tiba_menit_sisi_aman": 81.1,
      "tinggi_hi_m": 4.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 111,
+     "tiba_menit_sisi_aman": 79.7,
+     "tinggi_hi_m": 5.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -189,6 +278,18 @@
      "tiba_menit_sisi_aman": 48,
      "tinggi_hi_m": 8.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 148,
+     "tiba_menit_sisi_aman": 106.2,
+     "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 64.9,
+     "tiba_menit_sisi_aman": 46.6,
+     "tinggi_hi_m": 10.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -203,6 +304,18 @@
      "tiba_menit_sisi_aman": 50.2,
      "tinggi_hi_m": 6.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 151,
+     "tiba_menit_sisi_aman": 108.4,
+     "tinggi_hi_m": 4.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 67.9,
+     "tiba_menit_sisi_aman": 48.7,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -216,6 +329,18 @@
      "tiba_menit": 72.1,
      "tiba_menit_sisi_aman": 51.7,
      "tinggi_hi_m": 7.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 153.2,
+     "tiba_menit_sisi_aman": 109.9,
+     "tinggi_hi_m": 5.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 70.1,
+     "tiba_menit_sisi_aman": 50.3,
+     "tinggi_hi_m": 10.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -245,6 +370,12 @@
      "tiba_menit_sisi_aman": 78.3,
      "tinggi_hi_m": 4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 107.1,
+     "tiba_menit_sisi_aman": 76.9,
+     "tinggi_hi_m": 5.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -258,6 +389,12 @@
      "tiba_menit": 95.5,
      "tiba_menit_sisi_aman": 68.5,
      "tinggi_hi_m": 3.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 93.5,
+     "tiba_menit_sisi_aman": 67.1,
+     "tinggi_hi_m": 4.8,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -273,6 +410,12 @@
      "tiba_menit_sisi_aman": 62.7,
      "tinggi_hi_m": 5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 85.3,
+     "tiba_menit_sisi_aman": 61.2,
+     "tinggi_hi_m": 6.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -287,6 +430,30 @@
      "tiba_menit_sisi_aman": 87.3,
      "tinggi_hi_m": 3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 119.6,
+     "tiba_menit_sisi_aman": 85.8,
+     "tinggi_hi_m": 3.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1175": {
+   "prov": "11",
+   "kab": "Kota Subulussalam",
+   "nama": "Kota Subulussalam",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 3.81,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -297,7 +464,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.53,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -305,6 +472,16 @@
       0
      ],
      "rb": 4
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.15,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 24
     }
    },
    "tsunami": {
@@ -312,6 +489,18 @@
      "tiba_menit": 72.8,
      "tiba_menit_sisi_aman": 52.2,
      "tinggi_hi_m": 12.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 153.9,
+     "tiba_menit_sisi_aman": 110.4,
+     "tinggi_hi_m": 5.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 70.8,
+     "tiba_menit_sisi_aman": 50.8,
+     "tinggi_hi_m": 16.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -323,7 +512,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.18,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -331,6 +520,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.73,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
     }
    }
   },
@@ -341,7 +540,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.75,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -349,6 +548,16 @@
       0
      ],
      "rb": 11
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 52
     }
    },
    "tsunami": {
@@ -356,6 +565,12 @@
      "tiba_menit": 85,
      "tiba_menit_sisi_aman": 61,
      "tinggi_hi_m": 12.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 83,
+     "tiba_menit_sisi_aman": 59.6,
+     "tinggi_hi_m": 17.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -367,7 +582,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.78,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -375,6 +590,16 @@
       0
      ],
      "rb": 6
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.41,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 31
     }
    },
    "tsunami": {
@@ -388,6 +613,18 @@
      "tiba_menit": 50.6,
      "tiba_menit_sisi_aman": 36.3,
      "tinggi_hi_m": 15.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 131.7,
+     "tiba_menit_sisi_aman": 94.5,
+     "tinggi_hi_m": 6.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 48.6,
+     "tiba_menit_sisi_aman": 34.9,
+     "tinggi_hi_m": 21.1,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -406,6 +643,24 @@
     ]
    }
   },
+  "1208": {
+   "prov": "12",
+   "kab": "Simalungun",
+   "nama": "Kab. Simalungun",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 3.81,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
   "1209": {
    "prov": "12",
    "kab": "Asahan",
@@ -413,7 +668,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.64,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.88,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -431,7 +696,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.94,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -439,17 +704,27 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.16,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
     }
    }
   },
-  "1212": {
+  "1211": {
    "prov": "12",
-   "kab": "Toba",
-   "nama": "Kab. Toba",
+   "kab": "Dairi",
+   "nama": "Kab. Dairi",
    "pulau": "Sumatra",
    "gempa": {
-    "mentawai": {
-     "mmi_maks": 3.9,
+    "mentawai-mmaks": {
+     "mmi_maks": 3.86,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -460,6 +735,34 @@
     }
    }
   },
+  "1212": {
+   "prov": "12",
+   "kab": "Toba",
+   "nama": "Kab. Toba",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.88,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.12,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   }
+  },
   "1213": {
    "prov": "12",
    "kab": "Mandailing Natal",
@@ -467,14 +770,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.3,
+     "mmi_maks": 6.29,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      209.4
+      42.8
      ],
      "rb": 265
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.93,
+     "jiwa_mmi7plus": 63024,
+     "korban_analog": [
+      0,
+      29.6,
+      124.2
+     ],
+     "rb": 875
     }
    },
    "tsunami": {
@@ -482,6 +795,18 @@
      "tiba_menit": 52.4,
      "tiba_menit_sisi_aman": 37.6,
      "tinggi_hi_m": 36.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 154.4,
+     "tiba_menit_sisi_aman": 110.8,
+     "tinggi_hi_m": 4.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 48.2,
+     "tiba_menit_sisi_aman": 34.6,
+     "tinggi_hi_m": 42.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -501,14 +826,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.4,
+     "mmi_maks": 7.36,
      "jiwa_mmi7plus": 27095,
      "korban_analog": [
-      1.5,
+      4.2,
       12.7,
-      64.7
+      53.4
      ],
      "rb": 273
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 8.07,
+     "jiwa_mmi7plus": 28207,
+     "korban_analog": [
+      4.4,
+      13.2,
+      55.6
+     ],
+     "rb": 793
     }
    },
    "tsunami": {
@@ -529,6 +864,18 @@
      "tiba_menit_sisi_aman": 103.8,
      "tinggi_hi_m": 0.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 93.8,
+     "tiba_menit_sisi_aman": 67.3,
+     "tinggi_hi_m": 6.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 2.8,
+     "tiba_menit_sisi_aman": 2,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 10648
     }
    }
   },
@@ -539,7 +886,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.5,
+     "mmi_maks": 3.54,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.94,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -557,7 +914,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.93,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -565,6 +922,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.18,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
     }
    }
   },
@@ -575,7 +942,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.74,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.99,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -593,7 +970,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.68,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -601,6 +978,16 @@
       0
      ],
      "rb": 6
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.25,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 26
     }
    }
   },
@@ -611,7 +998,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.08,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -619,6 +1006,16 @@
       0
      ],
      "rb": 20
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.54,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 71
     }
    }
   },
@@ -629,7 +1026,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -637,6 +1034,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
     }
    }
   },
@@ -647,7 +1054,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.82,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -655,6 +1062,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.05,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    }
   },
@@ -665,7 +1082,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.21,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -673,6 +1090,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.79,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
     }
    },
    "tsunami": {
@@ -687,6 +1114,18 @@
      "tiba_menit_sisi_aman": 18.9,
      "tinggi_hi_m": 13.4,
      "jiwa_pesisir_rendah_lt30": 25148
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 107.5,
+     "tiba_menit_sisi_aman": 77.1,
+     "tinggi_hi_m": 5.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 24.4,
+     "tiba_menit_sisi_aman": 17.5,
+     "tinggi_hi_m": 18.5,
+     "jiwa_pesisir_rendah_lt30": 25148
     }
    }
   },
@@ -697,7 +1136,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.47,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -705,6 +1144,16 @@
       0
      ],
      "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.07,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 12
     }
    },
    "tsunami": {
@@ -719,6 +1168,36 @@
      "tiba_menit_sisi_aman": 20.7,
      "tinggi_hi_m": 15.1,
      "jiwa_pesisir_rendah_lt30": 11803
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 109.9,
+     "tiba_menit_sisi_aman": 78.9,
+     "tinggi_hi_m": 6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 26.8,
+     "tiba_menit_sisi_aman": 19.2,
+     "tinggi_hi_m": 21,
+     "jiwa_pesisir_rendah_lt30": 11803
+    }
+   }
+  },
+  "1272": {
+   "prov": "12",
+   "kab": "Kota Pematangsiantar",
+   "nama": "Kota Pematangsiantar",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 3.71,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -729,7 +1208,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -737,6 +1216,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.72,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    },
    "tsunami": {
@@ -745,6 +1234,30 @@
      "tiba_menit_sisi_aman": 78.4,
      "tinggi_hi_m": 11.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 107.2,
+     "tiba_menit_sisi_aman": 76.9,
+     "tinggi_hi_m": 15.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1274": {
+   "prov": "12",
+   "kab": "Kota Tanjung Balai",
+   "nama": "Kota Tanjungbalai",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 3.65,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -763,6 +1276,16 @@
       0
      ],
      "rb": 13
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.29,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 60
     }
    }
   },
@@ -773,7 +1296,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.34,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -781,6 +1304,16 @@
       0
      ],
      "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.96,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 12
     }
    },
    "tsunami": {
@@ -795,6 +1328,18 @@
      "tiba_menit_sisi_aman": 34.4,
      "tinggi_hi_m": 6.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 129.1,
+     "tiba_menit_sisi_aman": 92.6,
+     "tinggi_hi_m": 3.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 46,
+     "tiba_menit_sisi_aman": 33,
+     "tinggi_hi_m": 9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -805,14 +1350,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.6,
+     "mmi_maks": 7.63,
      "jiwa_mmi7plus": 457894,
      "korban_analog": [
-      16.5,
-      214.6,
-      1230
+      47.1,
+      214.9,
+      902.2
      ],
      "rb": 3603
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.96,
+     "jiwa_mmi7plus": 535959,
+     "korban_analog": [
+      77.8,
+      251.5,
+      1056
+     ],
+     "rb": 5919
     }
    },
    "tsunami": {
@@ -833,6 +1388,18 @@
      "tiba_menit_sisi_aman": 108.1,
      "tinggi_hi_m": 0.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 99.7,
+     "tiba_menit_sisi_aman": 71.5,
+     "tinggi_hi_m": 8.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 7.8,
+     "tiba_menit_sisi_aman": 5.6,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 19250
     }
    }
   },
@@ -843,14 +1410,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.4,
+     "mmi_maks": 6.37,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      924.4
+      189
      ],
      "rb": 842
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.7,
+     "jiwa_mmi7plus": 135878,
+     "korban_analog": [
+      0,
+      63.8,
+      267.7
+     ],
+     "rb": 1547
     }
    }
   },
@@ -861,14 +1438,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6,
+     "mmi_maks": 5.97,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      79.6
+      16.3
      ],
      "rb": 161
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.29,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      57.3
+     ],
+     "rb": 315
     }
    }
   },
@@ -879,14 +1466,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.14,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      588.8
+      120.4
      ],
      "rb": 462
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.46,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      173.2
+     ],
+     "rb": 881
     }
    },
    "krb": {
@@ -905,14 +1502,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.8,
+     "mmi_maks": 6.82,
      "jiwa_mmi7plus": 405085,
      "korban_analog": [
       0,
-      189.8,
-      1116.6
+      190.1,
+      798.2
      ],
      "rb": 2253
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.15,
+     "jiwa_mmi7plus": 459160,
+     "korban_analog": [
+      14.4,
+      215.5,
+      904.7
+     ],
+     "rb": 3865
     }
    },
    "tsunami": {
@@ -926,6 +1533,18 @@
      "tiba_menit": 25.8,
      "tiba_menit_sisi_aman": 18.5,
      "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 104053
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 121.1,
+     "tiba_menit_sisi_aman": 86.9,
+     "tinggi_hi_m": 7.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 24.5,
+     "tiba_menit_sisi_aman": 17.6,
+     "tinggi_hi_m": 42.4,
      "jiwa_pesisir_rendah_lt30": 104053
     }
    }
@@ -942,9 +1561,19 @@
      "korban_analog": [
       0,
       60.3,
-      1047.2
+      253.4
      ],
      "rb": 1266
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.13,
+     "jiwa_mmi7plus": 185274,
+     "korban_analog": [
+      0,
+      86.9,
+      365.1
+     ],
+     "rb": 2273
     }
    },
    "tsunami": {
@@ -958,6 +1587,18 @@
      "tiba_menit": 31.3,
      "tiba_menit_sisi_aman": 22.5,
      "tinggi_hi_m": 37.8,
+     "jiwa_pesisir_rendah_lt30": 24594
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 130.2,
+     "tiba_menit_sisi_aman": 93.4,
+     "tinggi_hi_m": 7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 29.9,
+     "tiba_menit_sisi_aman": 21.5,
+     "tinggi_hi_m": 42.4,
      "jiwa_pesisir_rendah_lt30": 24594
     }
    },
@@ -977,14 +1618,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.86,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      23.4
+      4.8
      ],
      "rb": 221
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.19,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      82.3
+     ],
+     "rb": 440
     }
    }
   },
@@ -995,14 +1646,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.2,
+     "mmi_maks": 6.18,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      117.4
+      24
      ],
      "rb": 238
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.51,
+     "jiwa_mmi7plus": 39137,
+     "korban_analog": [
+      0,
+      18.4,
+      125.2
+     ],
+     "rb": 496
     }
    }
   },
@@ -1013,14 +1674,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 8.7,
+     "mmi_maks": 8.75,
      "jiwa_mmi7plus": 92831,
      "korban_analog": [
-      15.3,
-      43.5,
-      213
+      14.4,
+      43.6,
+      182.9
      ],
      "rb": 6389
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 8.79,
+     "jiwa_mmi7plus": 92831,
+     "korban_analog": [
+      14.4,
+      43.6,
+      182.9
+     ],
+     "rb": 6641
     }
    },
    "tsunami": {
@@ -1041,6 +1712,18 @@
      "tiba_menit_sisi_aman": 87.5,
      "tinggi_hi_m": 0.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 70.9,
+     "tiba_menit_sisi_aman": 50.9,
+     "tinggi_hi_m": 9.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 0,
+     "tiba_menit_sisi_aman": 0,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 11016
     }
    }
   },
@@ -1059,6 +1742,16 @@
       0
      ],
      "rb": 91
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.12,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      21.9
+     ],
+     "rb": 185
     }
    }
   },
@@ -1069,14 +1762,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.4,
+     "mmi_maks": 6.35,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      363.7
+      74.4
      ],
      "rb": 348
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.68,
+     "jiwa_mmi7plus": 76183,
+     "korban_analog": [
+      0,
+      35.7,
+      150.1
+     ],
+     "rb": 640
     }
    },
    "krb": {
@@ -1095,14 +1798,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.6,
+     "mmi_maks": 6.59,
      "jiwa_mmi7plus": 101696,
      "korban_analog": [
       0,
       47.7,
-      943.6
+      200.4
      ],
      "rb": 1235
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.06,
+     "jiwa_mmi7plus": 411170,
+     "korban_analog": [
+      0,
+      192.9,
+      810.2
+     ],
+     "rb": 2653
     }
    },
    "tsunami": {
@@ -1117,6 +1830,18 @@
      "tiba_menit_sisi_aman": 25.9,
      "tinggi_hi_m": 37.8,
      "jiwa_pesisir_rendah_lt30": 12634
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 136.1,
+     "tiba_menit_sisi_aman": 97.7,
+     "tinggi_hi_m": 6.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 34.4,
+     "tiba_menit_sisi_aman": 24.7,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 12634
     }
    }
   },
@@ -1127,14 +1852,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.9,
+     "mmi_maks": 6.91,
      "jiwa_mmi7plus": 579102,
      "korban_analog": [
       0,
-      271.4,
-      2176.3
+      271.7,
+      1141
      ],
      "rb": 4586
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.24,
+     "jiwa_mmi7plus": 948308,
+     "korban_analog": [
+      147.2,
+      445,
+      1868.5
+     ],
+     "rb": 7817
     }
    },
    "tsunami": {
@@ -1149,6 +1884,18 @@
      "tiba_menit_sisi_aman": 15.4,
      "tinggi_hi_m": 36,
      "jiwa_pesisir_rendah_lt30": 223143
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 115.5,
+     "tiba_menit_sisi_aman": 82.9,
+     "tinggi_hi_m": 7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 20,
+     "tiba_menit_sisi_aman": 14.4,
+     "tinggi_hi_m": 40.4,
+     "jiwa_pesisir_rendah_lt30": 223143
     }
    }
   },
@@ -1159,14 +1906,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.4,
+     "mmi_maks": 6.35,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      119
+      24.3
      ],
      "rb": 141
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.68,
+     "jiwa_mmi7plus": 51856,
+     "korban_analog": [
+      0,
+      24.3,
+      102.2
+     ],
+     "rb": 252
     }
    }
   },
@@ -1177,14 +1934,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.93,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      64.3
+      13.2
      ],
      "rb": 62
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.25,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      32
+     ],
+     "rb": 120
     }
    }
   },
@@ -1195,14 +1962,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.3,
+     "mmi_maks": 6.25,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      61.2
+      12.5
      ],
      "rb": 43
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.58,
+     "jiwa_mmi7plus": 10579,
+     "korban_analog": [
+      0,
+      5,
+      20.8
+     ],
+     "rb": 81
     }
    },
    "krb": {
@@ -1221,14 +1998,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      246.1
+      50.3
      ],
      "rb": 193
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.46,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      50.3
+     ],
+     "rb": 356
     }
    }
   },
@@ -1239,7 +2026,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.7,
+     "mmi_maks": 5.74,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1247,6 +2034,16 @@
       0
      ],
      "rb": 114
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.07,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      71.5
+     ],
+     "rb": 224
     }
    }
   },
@@ -1257,14 +2054,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.9,
+     "mmi_maks": 6.85,
      "jiwa_mmi7plus": 101184,
      "korban_analog": [
       0,
-      47.4,
-      232.2
+      47.5,
+      199.4
      ],
      "rb": 639
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.18,
+     "jiwa_mmi7plus": 101184,
+     "korban_analog": [
+      15.7,
+      47.5,
+      199.4
+     ],
+     "rb": 1072
     }
    },
    "tsunami": {
@@ -1279,6 +2086,18 @@
      "tiba_menit_sisi_aman": 13.1,
      "tinggi_hi_m": 37.8,
      "jiwa_pesisir_rendah_lt30": 73141
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 115.4,
+     "tiba_menit_sisi_aman": 82.8,
+     "tinggi_hi_m": 7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 16.7,
+     "tiba_menit_sisi_aman": 12,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 73141
     }
    }
   },
@@ -1289,7 +2108,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1297,6 +2116,16 @@
       0
      ],
      "rb": 37
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.49,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 85
     }
    }
   },
@@ -1307,7 +2136,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.64,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1315,6 +2144,16 @@
       0
      ],
      "rb": 6
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.95,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 14
     }
    }
   },
@@ -1333,6 +2172,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.13,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
     }
    }
   },
@@ -1343,7 +2192,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.08,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1351,17 +2200,9 @@
       0
      ],
      "rb": 1
-    }
-   }
-  },
-  "1405": {
-   "prov": "14",
-   "kab": "Pelalawan",
-   "nama": "Kab. Pelalawan",
-   "pulau": "Sumatra",
-   "gempa": {
-    "mentawai": {
-     "mmi_maks": 4.2,
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.21,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1372,6 +2213,34 @@
     }
    }
   },
+  "1405": {
+   "prov": "14",
+   "kab": "Pelalawan",
+   "nama": "Kab. Pelalawan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 4.18,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 6
+    }
+   }
+  },
   "1406": {
    "prov": "14",
    "kab": "Rokan Hulu",
@@ -1379,7 +2248,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.15,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1387,6 +2256,16 @@
       0
      ],
      "rb": 44
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.52,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 117
     }
    }
   },
@@ -1397,7 +2276,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1405,6 +2284,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 5
     }
    }
   },
@@ -1415,7 +2304,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4,
+     "mmi_maks": 4.05,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1423,6 +2312,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.18,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
     }
    }
   },
@@ -1433,7 +2332,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.16,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1441,6 +2340,16 @@
       0
      ],
      "rb": 32
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.48,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 71
     }
    }
   },
@@ -1459,6 +2368,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.63,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -1469,7 +2388,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.18,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1477,6 +2396,16 @@
       0
      ],
      "rb": 10
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 25
     }
    }
   },
@@ -1487,7 +2416,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.73,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.88,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1505,14 +2444,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.8,
+     "mmi_maks": 6.77,
      "jiwa_mmi7plus": 156118,
      "korban_analog": [
       0,
-      73.2,
-      611.7
+      73.3,
+      307.6
      ],
      "rb": 1002
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.09,
+     "jiwa_mmi7plus": 226023,
+     "korban_analog": [
+      0,
+      106.1,
+      445.4
+     ],
+     "rb": 1747
     }
    },
    "krb": {
@@ -1531,14 +2480,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.5,
+     "mmi_maks": 6.45,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      148.1
+      30.3
      ],
      "rb": 307
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.78,
+     "jiwa_mmi7plus": 45910,
+     "korban_analog": [
+      0,
+      21.5,
+      96.3
+     ],
+     "rb": 582
     }
    }
   },
@@ -1549,7 +2508,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.8,
+     "mmi_maks": 5.76,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1557,6 +2516,16 @@
       0
      ],
      "rb": 103
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.09,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      20.9
+     ],
+     "rb": 211
     }
    }
   },
@@ -1567,7 +2536,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.62,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1575,6 +2544,16 @@
       0
      ],
      "rb": 6
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.93,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 14
     }
    }
   },
@@ -1585,7 +2564,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1593,6 +2572,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.41,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
     }
    }
   },
@@ -1603,7 +2592,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.16,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1611,6 +2600,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.39,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
     }
    }
   },
@@ -1621,7 +2620,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.83,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.96,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1639,14 +2648,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.94,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      36.5
+      7.5
      ],
      "rb": 117
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.27,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      7.5
+     ],
+     "rb": 240
     }
    }
   },
@@ -1657,7 +2676,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5,
+     "mmi_maks": 5.04,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1665,6 +2684,16 @@
       0
      ],
      "rb": 34
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.36,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 75
     }
    }
   },
@@ -1675,7 +2704,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4,
+     "mmi_maks": 3.97,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1683,6 +2712,16 @@
       0
      ],
      "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
     }
    }
   },
@@ -1693,14 +2732,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.7,
+     "mmi_maks": 6.74,
      "jiwa_mmi7plus": 38983,
      "korban_analog": [
       0,
       18.3,
-      233.4
+      76.8
      ],
      "rb": 402
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.07,
+     "jiwa_mmi7plus": 101698,
+     "korban_analog": [
+      0,
+      47.7,
+      200.4
+     ],
+     "rb": 701
     }
    }
   },
@@ -1711,7 +2760,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5,
+     "mmi_maks": 4.98,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1719,35 +2768,9 @@
       0
      ],
      "rb": 15
-    }
-   }
-  },
-  "1602": {
-   "prov": "16",
-   "kab": "Ogan Komering Ilir",
-   "nama": "Kab. Ogan Komering Ilir",
-   "pulau": "Sumatra",
-   "gempa": {
-    "mentawai": {
-     "mmi_maks": 4,
-     "jiwa_mmi7plus": 0,
-     "korban_analog": [
-      0,
-      0,
-      0
-     ],
-     "rb": 1
-    }
-   }
-  },
-  "1603": {
-   "prov": "16",
-   "kab": "Muara Enim",
-   "nama": "Kab. Muara Enim",
-   "pulau": "Sumatra",
-   "gempa": {
-    "mentawai": {
-     "mmi_maks": 5.5,
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.55,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1758,6 +2781,62 @@
     }
    }
   },
+  "1602": {
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "nama": "Kab. Ogan Komering Ilir",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 3.97,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.18,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
+    }
+   }
+  },
+  "1603": {
+   "prov": "16",
+   "kab": "Muara Enim",
+   "nama": "Kab. Muara Enim",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai": {
+     "mmi_maks": 5.54,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 63
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.14,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      15.6
+     ],
+     "rb": 213
+    }
+   }
+  },
   "1604": {
    "prov": "16",
    "kab": "Lahat",
@@ -1765,14 +2844,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.08,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      163.5
+      33.4
      ],
      "rb": 275
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.61,
+     "jiwa_mmi7plus": 38413,
+     "korban_analog": [
+      0,
+      18,
+      179.2
+     ],
+     "rb": 773
     }
    },
    "krb": {
@@ -1791,14 +2880,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.88,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      111
+      22.7
      ],
      "rb": 288
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      159.8
+     ],
+     "rb": 575
     }
    }
   },
@@ -1809,7 +2908,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.95,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1817,6 +2916,16 @@
       0
      ],
      "rb": 16
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.32,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 40
     }
    }
   },
@@ -1827,7 +2936,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.07,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1835,6 +2944,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.23,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 4
     }
    }
   },
@@ -1845,7 +2964,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.34,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1853,6 +2972,16 @@
       0
      ],
      "rb": 6
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.92,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 31
     }
    }
   },
@@ -1871,6 +3000,16 @@
       0
      ],
      "rb": 38
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.83,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 166
     }
    }
   },
@@ -1881,7 +3020,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1889,6 +3028,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.49,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 5
     }
    }
   },
@@ -1899,14 +3048,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.7,
+     "mmi_maks": 6.74,
      "jiwa_mmi7plus": 100550,
      "korban_analog": [
       0,
-      47.1,
-      801.3
+      47.2,
+      198.1
      ],
      "rb": 966
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.21,
+     "jiwa_mmi7plus": 208145,
+     "korban_analog": [
+      16.3,
+      97.7,
+      410.1
+     ],
+     "rb": 2091
     }
    },
    "krb": {
@@ -1925,7 +3084,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.67,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1933,6 +3092,16 @@
       0
      ],
      "rb": 9
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.08,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 27
     }
    }
   },
@@ -1948,9 +3117,19 @@
      "korban_analog": [
       0,
       0,
-      92.9
+      19
      ],
      "rb": 108
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      33.3
+     ],
+     "rb": 213
     }
    }
   },
@@ -1961,7 +3140,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.89,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -1969,6 +3148,16 @@
       0
      ],
      "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.06,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 7
     }
    }
   },
@@ -1979,14 +3168,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6,
+     "mmi_maks": 6.03,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      105.3
+      21.5
      ],
      "rb": 156
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.58,
+     "jiwa_mmi7plus": 45895,
+     "korban_analog": [
+      0,
+      21.5,
+      90.4
+     ],
+     "rb": 469
     }
    },
    "krb": {
@@ -2005,14 +3204,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.2,
+     "mmi_maks": 6.15,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      556.9
+      113.9
      ],
      "rb": 379
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.48,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      113.9
+     ],
+     "rb": 707
     }
    }
   },
@@ -2023,7 +3232,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.31,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2031,6 +3240,16 @@
       0
      ],
      "rb": 3
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.76,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 12
     }
    }
   },
@@ -2041,14 +3260,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.6,
+     "mmi_maks": 6.59,
      "jiwa_mmi7plus": 87277,
      "korban_analog": [
       0,
-      40.9,
-      391.8
+      41,
+      172
      ],
      "rb": 608
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.23,
+     "jiwa_mmi7plus": 170707,
+     "korban_analog": [
+      26.5,
+      80.1,
+      336.4
+     ],
+     "rb": 1824
     }
    },
    "tsunami": {
@@ -2069,6 +3298,18 @@
      "tiba_menit_sisi_aman": 81.8,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 63.1,
+     "tiba_menit_sisi_aman": 45.3,
+     "tinggi_hi_m": 13.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 12.7,
+     "tiba_menit_sisi_aman": 9.1,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2079,14 +3320,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.9,
+     "mmi_maks": 6.88,
      "jiwa_mmi7plus": 219323,
      "korban_analog": [
       0,
-      102.8,
-      624
+      102.9,
+      432.1
      ],
      "rb": 1280
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.21,
+     "jiwa_mmi7plus": 261330,
+     "korban_analog": [
+      2.8,
+      122.6,
+      514.9
+     ],
+     "rb": 2201
     }
    }
   },
@@ -2097,14 +3348,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.8,
+     "mmi_maks": 7.77,
      "jiwa_mmi7plus": 308507,
      "korban_analog": [
-      37.2,
-      144.6,
-      726
+      47.9,
+      144.8,
+      607.9
      ],
      "rb": 4473
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 8.1,
+     "jiwa_mmi7plus": 316333,
+     "korban_analog": [
+      49.1,
+      148.4,
+      623.3
+     ],
+     "rb": 6952
     }
    },
    "tsunami": {
@@ -2125,6 +3386,18 @@
      "tiba_menit_sisi_aman": 71.7,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 48.9,
+     "tiba_menit_sisi_aman": 35.1,
+     "tinggi_hi_m": 13.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 11.3,
+     "tiba_menit_sisi_aman": 8.1,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2135,14 +3408,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      73.7
+      15.1
      ],
      "rb": 93
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 6.77,
+     "jiwa_mmi7plus": 32128,
+     "korban_analog": [
+      0,
+      15.1,
+      63.3
+     ],
+     "rb": 344
     }
    },
    "tsunami": {
@@ -2163,6 +3446,18 @@
      "tiba_menit_sisi_aman": 77.7,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 57.3,
+     "tiba_menit_sisi_aman": 41.1,
+     "tinggi_hi_m": 13.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 20.4,
+     "tiba_menit_sisi_aman": 14.6,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 19300
     }
    }
   },
@@ -2176,11 +3471,21 @@
      "mmi_maks": 7.5,
      "jiwa_mmi7plus": 192184,
      "korban_analog": [
-      17,
-      90.1,
-      494
+      29.8,
+      90.2,
+      378.7
      ],
      "rb": 2335
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.91,
+     "jiwa_mmi7plus": 215244,
+     "korban_analog": [
+      33.4,
+      101,
+      424.1
+     ],
+     "rb": 4613
     }
    },
    "tsunami": {
@@ -2201,6 +3506,18 @@
      "tiba_menit_sisi_aman": 90.9,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 75.7,
+     "tiba_menit_sisi_aman": 54.3,
+     "tinggi_hi_m": 12.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 21,
+     "tiba_menit_sisi_aman": 15.1,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 24614
     }
    }
   },
@@ -2211,14 +3528,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.8,
+     "mmi_maks": 7.76,
      "jiwa_mmi7plus": 201154,
      "korban_analog": [
-      29.5,
-      94.3,
-      461.6
+      31.2,
+      94.4,
+      396.3
      ],
      "rb": 3483
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 8.09,
+     "jiwa_mmi7plus": 201154,
+     "korban_analog": [
+      31.2,
+      94.4,
+      396.3
+     ],
+     "rb": 5290
     }
    },
    "tsunami": {
@@ -2239,6 +3566,18 @@
      "tiba_menit_sisi_aman": 106.2,
      "tinggi_hi_m": 0.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 97,
+     "tiba_menit_sisi_aman": 69.6,
+     "tinggi_hi_m": 8.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 8.8,
+     "tiba_menit_sisi_aman": 6.3,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 33929
     }
    }
   },
@@ -2249,14 +3588,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.9,
+     "mmi_maks": 6.94,
      "jiwa_mmi7plus": 26695,
      "korban_analog": [
       0,
       12.5,
-      261.4
+      53.5
      ],
      "rb": 410
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.27,
+     "jiwa_mmi7plus": 113923,
+     "korban_analog": [
+      1.8,
+      53.5,
+      224.5
+     ],
+     "rb": 718
     }
    }
   },
@@ -2267,14 +3616,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 6.9,
+     "mmi_maks": 6.91,
      "jiwa_mmi7plus": 167490,
      "korban_analog": [
       0,
-      78.5,
-      384.4
+      78.6,
+      330
      ],
      "rb": 1057
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.27,
+     "jiwa_mmi7plus": 167490,
+     "korban_analog": [
+      26,
+      78.6,
+      330
+     ],
+     "rb": 1805
     }
    }
   },
@@ -2285,14 +3644,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.4,
+     "mmi_maks": 7.41,
      "jiwa_mmi7plus": 118796,
      "korban_analog": [
-      15.6,
+      18.4,
       55.7,
-      272.6
+      234.1
      ],
      "rb": 1456
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 7.75,
+     "jiwa_mmi7plus": 118796,
+     "korban_analog": [
+      18.4,
+      55.7,
+      234.1
+     ],
+     "rb": 2310
     }
    },
    "tsunami": {
@@ -2313,6 +3682,18 @@
      "tiba_menit_sisi_aman": 109.3,
      "tinggi_hi_m": 0.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 101.4,
+     "tiba_menit_sisi_aman": 72.8,
+     "tinggi_hi_m": 10,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 33.8,
+     "tiba_menit_sisi_aman": 24.3,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 29181
     }
    }
   },
@@ -2323,14 +3704,24 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 7.6,
+     "mmi_maks": 7.64,
      "jiwa_mmi7plus": 401395,
      "korban_analog": [
-      66,
-      188.1,
-      921.2
+      62.3,
+      188.4,
+      790.9
      ],
      "rb": 7236
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 8,
+     "jiwa_mmi7plus": 401395,
+     "korban_analog": [
+      62.3,
+      188.4,
+      790.9
+     ],
+     "rb": 11125
     }
    },
    "tsunami": {
@@ -2351,6 +3742,18 @@
      "tiba_menit_sisi_aman": 93.2,
      "tinggi_hi_m": 0.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 78.9,
+     "tiba_menit_sisi_aman": 56.6,
+     "tinggi_hi_m": 10.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 12.5,
+     "tiba_menit_sisi_aman": 9,
+     "tinggi_hi_m": 42.4,
+     "jiwa_pesisir_rendah_lt30": 285942
     }
    }
   },
@@ -2359,6 +3762,28 @@
    "kab": "Lampung Selatan",
    "nama": "Kab. Lampung Selatan",
    "pulau": "Sumatra",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 4.09,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 2
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.86,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 60.5,
@@ -2376,6 +3801,18 @@
      "tiba_menit": 100.5,
      "tiba_menit_sisi_aman": 72.1,
      "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 49.5,
+     "tiba_menit_sisi_aman": 35.5,
+     "tinggi_hi_m": 17.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 54.5,
+     "tiba_menit_sisi_aman": 39.1,
+     "tinggi_hi_m": 10.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -2395,7 +3832,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.91,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2403,6 +3840,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.16,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
     }
    }
   },
@@ -2413,7 +3860,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4,
+     "mmi_maks": 4.01,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2421,6 +3868,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 7
     }
    }
   },
@@ -2431,7 +3888,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.72,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2439,6 +3896,16 @@
       0
      ],
      "rb": 4
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.36,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 23
     }
    }
   },
@@ -2449,7 +3916,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.69,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.92,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2467,7 +3944,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4,
+     "mmi_maks": 4.02,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2475,6 +3952,16 @@
       0
      ],
      "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.35,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 7
     }
    },
    "tsunami": {
@@ -2495,6 +3982,18 @@
      "tiba_menit_sisi_aman": 68.6,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 44.7,
+     "tiba_menit_sisi_aman": 32.1,
+     "tinggi_hi_m": 17.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 38.5,
+     "tiba_menit_sisi_aman": 27.6,
+     "tinggi_hi_m": 19.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2503,6 +4002,28 @@
    "kab": "Lampung Timur",
    "nama": "Kab. Lampung Timur",
    "pulau": "Sumatra",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 3.98,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.81,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 119.2,
@@ -2520,6 +4041,18 @@
      "tiba_menit": 159.2,
      "tiba_menit_sisi_aman": 114.2,
      "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 108.2,
+     "tiba_menit_sisi_aman": 77.6,
+     "tinggi_hi_m": 15.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 113.2,
+     "tiba_menit_sisi_aman": 81.2,
+     "tinggi_hi_m": 9.1,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -2539,6 +4072,16 @@
       0
      ],
      "rb": 3
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.77,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 17
     }
    }
   },
@@ -2557,6 +4100,26 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 3.83,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.95,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    },
    "tsunami": {
@@ -2577,6 +4140,18 @@
      "tiba_menit_sisi_aman": 70.2,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 46.9,
+     "tiba_menit_sisi_aman": 33.7,
+     "tinggi_hi_m": 16.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 51.7,
+     "tiba_menit_sisi_aman": 37.1,
+     "tinggi_hi_m": 10.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2587,7 +4162,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.82,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2595,6 +4170,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.07,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    }
   },
@@ -2605,7 +4190,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.76,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.98,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2623,7 +4218,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.82,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2631,6 +4226,16 @@
       0
      ],
      "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 4.05,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    }
   },
@@ -2641,7 +4246,7 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.71,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2649,6 +4254,16 @@
       0
      ],
      "rb": 4
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 5.35,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 19
     }
    },
    "tsunami": {
@@ -2669,6 +4284,18 @@
      "tiba_menit_sisi_aman": 69.8,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 46.3,
+     "tiba_menit_sisi_aman": 33.2,
+     "tinggi_hi_m": 16.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 26.9,
+     "tiba_menit_sisi_aman": 19.3,
+     "tinggi_hi_m": 28.4,
+     "jiwa_pesisir_rendah_lt30": 14216
     }
    }
   },
@@ -2677,6 +4304,28 @@
    "kab": "Kota Bandar Lampung",
    "nama": "Kota Bandar Lampung",
    "pulau": "Sumatra",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 3.78,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.84,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 85.9,
@@ -2695,6 +4344,36 @@
      "tiba_menit_sisi_aman": 90.4,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 75,
+     "tiba_menit_sisi_aman": 53.8,
+     "tinggi_hi_m": 16.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 79.8,
+     "tiba_menit_sisi_aman": 57.3,
+     "tinggi_hi_m": 9.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "1872": {
+   "prov": "18",
+   "kab": "Kota Metro",
+   "nama": "Kota Metro",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 3.84,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -2705,7 +4384,35 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.3,
+     "mmi_maks": 3.34,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.48,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "2101": {
+   "prov": "21",
+   "kab": "Bintan",
+   "nama": "Kab. Bintan",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 2.82,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2723,7 +4430,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.2,
+     "mmi_maks": 3.16,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.29,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2741,7 +4458,17 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 3.2,
+     "mmi_maks": 3.21,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3.34,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2759,7 +4486,35 @@
    "pulau": "Sumatra",
    "gempa": {
     "mentawai": {
-     "mmi_maks": 2.9,
+     "mmi_maks": 2.87,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    },
+    "mentawai-mmaks": {
+     "mmi_maks": 3,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "2172": {
+   "prov": "21",
+   "kab": "Kota Tanjung Pinang",
+   "nama": "Kota Tanjung Pinang",
+   "pulau": "Sumatra",
+   "gempa": {
+    "mentawai-mmaks": {
+     "mmi_maks": 2.79,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2775,6 +4530,18 @@
    "kab": "Administrasi Kepulauan Seribu",
    "nama": "Kab. Administrasi Kepulauan Seribu",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 4.67,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 141.3,
@@ -2787,6 +4554,122 @@
      "tiba_menit_sisi_aman": 98.6,
      "tinggi_hi_m": 6.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 130.4,
+     "tiba_menit_sisi_aman": 93.6,
+     "tinggi_hi_m": 14.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 135.4,
+     "tiba_menit_sisi_aman": 97.2,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3171": {
+   "prov": "31",
+   "kab": "Kota Administrasi Jakarta Pusat",
+   "nama": "Kota Administrasi Jakarta Pusat",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 239
+    }
+   }
+  },
+  "3172": {
+   "prov": "31",
+   "kab": "Kota Administrasi Jakarta Utara",
+   "nama": "Kota Administrasi Jakarta Utara ",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.19,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 410
+    }
+   },
+   "tsunami": {
+    "jawa-mmaks": {
+     "tiba_menit": 162.2,
+     "tiba_menit_sisi_aman": 116.4,
+     "tinggi_hi_m": 13.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 167.2,
+     "tiba_menit_sisi_aman": 120,
+     "tinggi_hi_m": 8.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3173": {
+   "prov": "31",
+   "kab": "Kota Administrasi Jakarta Barat",
+   "nama": "Kota Administrasi Jakarta Barat",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.17,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 487
+    }
+   }
+  },
+  "3174": {
+   "prov": "31",
+   "kab": "Kota Administrasi Jakarta Selatan",
+   "nama": "Kota Administrasi Jakarta Selatan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.38,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 698
+    }
+   }
+  },
+  "3175": {
+   "prov": "31",
+   "kab": "Kota Administrasi Jakarta Timur",
+   "nama": "Kota Administrasi Jakarta Timur",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1013
     }
    }
   },
@@ -2805,6 +4688,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.96,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      222.3
+     ],
+     "rb": 3673
     }
    }
   },
@@ -2815,7 +4708,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.79,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2823,6 +4716,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.79,
+     "jiwa_mmi7plus": 292086,
+     "korban_analog": [
+      0,
+      137.1,
+      1148.5
+     ],
+     "rb": 6311
     }
    },
    "tsunami": {
@@ -2843,6 +4746,18 @@
      "tiba_menit_sisi_aman": 55.6,
      "tinggi_hi_m": 1.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 17.8,
+     "tiba_menit_sisi_aman": 12.8,
+     "tinggi_hi_m": 49.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 50,
+     "tiba_menit_sisi_aman": 35.9,
+     "tinggi_hi_m": 7.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2853,7 +4768,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4,
+     "mmi_maks": 4.05,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2861,6 +4776,16 @@
       0
      ],
      "rb": 2
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.35,
+     "jiwa_mmi7plus": 775292,
+     "korban_analog": [
+      67.9,
+      363.8,
+      1527.6
+     ],
+     "rb": 9582
     }
    },
    "tsunami": {
@@ -2881,6 +4806,18 @@
      "tiba_menit_sisi_aman": 50.9,
      "tinggi_hi_m": 1.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 9.7,
+     "tiba_menit_sisi_aman": 7,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 51.1,
+     "tiba_menit_sisi_aman": 36.7,
+     "tinggi_hi_m": 8.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2891,7 +4828,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2899,6 +4836,16 @@
       0
      ],
      "rb": 11
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.15,
+     "jiwa_mmi7plus": 3074430,
+     "korban_analog": [
+      30.5,
+      1442.7,
+      6057.8
+     ],
+     "rb": 19233
     }
    }
   },
@@ -2909,7 +4856,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.63,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2917,6 +4864,16 @@
       0
      ],
      "rb": 30
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.91,
+     "jiwa_mmi7plus": 2508578,
+     "korban_analog": [
+      261.6,
+      1177.2,
+      4942.8
+     ],
+     "rb": 24073
     }
    },
    "tsunami": {
@@ -2937,6 +4894,18 @@
      "tiba_menit_sisi_aman": 50.2,
      "tinggi_hi_m": 1.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 9,
+     "tiba_menit_sisi_aman": 6.5,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 57.7,
+     "tiba_menit_sisi_aman": 41.4,
+     "tinggi_hi_m": 7.3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2947,7 +4916,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.16,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2955,6 +4924,16 @@
       0
      ],
      "rb": 121
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.99,
+     "jiwa_mmi7plus": 1913272,
+     "korban_analog": [
+      297.1,
+      897.8,
+      3769.9
+     ],
+     "rb": 28552
     }
    },
    "tsunami": {
@@ -2975,6 +4954,18 @@
      "tiba_menit_sisi_aman": 47.6,
      "tinggi_hi_m": 1.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 8.1,
+     "tiba_menit_sisi_aman": 5.8,
+     "tinggi_hi_m": 46.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 66.1,
+     "tiba_menit_sisi_aman": 47.4,
+     "tinggi_hi_m": 6.3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -2985,7 +4976,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -2993,6 +4984,16 @@
       0
      ],
      "rb": 100
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.47,
+     "jiwa_mmi7plus": 1290179,
+     "korban_analog": [
+      200.3,
+      605.4,
+      2542.1
+     ],
+     "rb": 12721
     }
    }
   },
@@ -3003,7 +5004,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.57,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3011,6 +5012,16 @@
       0
      ],
      "rb": 26
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.76,
+     "jiwa_mmi7plus": 498499,
+     "korban_analog": [
+      0,
+      233.9,
+      982.2
+     ],
+     "rb": 4221
     }
    }
   },
@@ -3021,7 +5032,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.4,
+     "mmi_maks": 4.39,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3029,6 +5040,16 @@
       0
      ],
      "rb": 25
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1124.2
+     ],
+     "rb": 4748
     }
    }
   },
@@ -3039,7 +5060,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.28,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3047,6 +5068,16 @@
       0
      ],
      "rb": 9
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.69,
+     "jiwa_mmi7plus": 192708,
+     "korban_analog": [
+      0,
+      90.4,
+      650.1
+     ],
+     "rb": 3183
     }
    }
   },
@@ -3057,7 +5088,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3065,6 +5096,16 @@
       0
      ],
      "rb": 3
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.62,
+     "jiwa_mmi7plus": 250835,
+     "korban_analog": [
+      0,
+      117.7,
+      596.1
+     ],
+     "rb": 3387
     }
    }
   },
@@ -3075,7 +5116,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4,
+     "mmi_maks": 3.98,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3083,6 +5124,16 @@
       0
      ],
      "rb": 3
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.98,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      192
+     ],
+     "rb": 1672
     }
    }
   },
@@ -3093,7 +5144,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.91,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3101,6 +5152,16 @@
       0
      ],
      "rb": 1
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.31,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      417.6
+     ],
+     "rb": 2004
     }
    }
   },
@@ -3111,7 +5172,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.79,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3119,6 +5180,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.22,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      435.2
+     ],
+     "rb": 1475
     }
    }
   },
@@ -3129,7 +5200,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.63,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3137,6 +5208,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.86,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      13.9
+     ],
+     "rb": 1502
     }
    }
   },
@@ -3147,7 +5228,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.5,
+     "mmi_maks": 3.54,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3155,6 +5236,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.71,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1390
     }
    }
   },
@@ -3165,7 +5256,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.89,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3173,6 +5264,16 @@
       0
      ],
      "rb": 2
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.7,
+     "jiwa_mmi7plus": 465318,
+     "korban_analog": [
+      0,
+      218.4,
+      935.4
+     ],
+     "rb": 6180
     }
    }
   },
@@ -3183,7 +5284,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.45,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3191,6 +5292,16 @@
       0
      ],
      "rb": 143
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.96,
+     "jiwa_mmi7plus": 446889,
+     "korban_analog": [
+      69.4,
+      209.7,
+      880.5
+     ],
+     "rb": 9705
     }
    },
    "tsunami": {
@@ -3211,6 +5322,36 @@
      "tiba_menit_sisi_aman": 50.1,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 12.7,
+     "tiba_menit_sisi_aman": 9.1,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 71.1,
+     "tiba_menit_sisi_aman": 51,
+     "tinggi_hi_m": 6.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3271": {
+   "prov": "32",
+   "kab": "Kota Bogor",
+   "nama": "Kota Bogor",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.79,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 794
     }
    }
   },
@@ -3221,7 +5362,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.66,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3229,6 +5370,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      147.5
+     ],
+     "rb": 770
     }
    }
   },
@@ -3239,7 +5390,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4,
+     "mmi_maks": 3.99,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3247,6 +5398,16 @@
       0
      ],
      "rb": 6
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.68,
+     "jiwa_mmi7plus": 2534422,
+     "korban_analog": [
+      0,
+      1189.3,
+      4993.8
+     ],
+     "rb": 11250
     }
    }
   },
@@ -3257,7 +5418,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3265,6 +5426,52 @@
       0
      ],
      "rb": 3
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.18,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      181.1
+     ],
+     "rb": 711
+    }
+   }
+  },
+  "3275": {
+   "prov": "32",
+   "kab": "Kota Bekasi",
+   "nama": "Kota Bekasi",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.47,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 920
+    }
+   }
+  },
+  "3276": {
+   "prov": "32",
+   "kab": "Kota Depok",
+   "nama": "Kota Depok",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.52,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 847
     }
    }
   },
@@ -3283,6 +5490,16 @@
       0
      ],
      "rb": 1
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.57,
+     "jiwa_mmi7plus": 394776,
+     "korban_analog": [
+      0,
+      185.2,
+      777.9
+     ],
+     "rb": 1900
     }
    }
   },
@@ -3293,7 +5510,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.71,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3301,6 +5518,16 @@
       0
      ],
      "rb": 40
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.34,
+     "jiwa_mmi7plus": 755376,
+     "korban_analog": [
+      117.3,
+      354.5,
+      1488.4
+     ],
+     "rb": 9189
     }
    }
   },
@@ -3311,7 +5538,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5,
+     "mmi_maks": 4.96,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3319,6 +5546,16 @@
       0
      ],
      "rb": 26
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.23,
+     "jiwa_mmi7plus": 208161,
+     "korban_analog": [
+      32.3,
+      97.7,
+      410.2
+     ],
+     "rb": 2398
     }
    }
   },
@@ -3329,7 +5566,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.8,
+     "mmi_maks": 5.78,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3337,6 +5574,16 @@
       0
      ],
      "rb": 1074
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.77,
+     "jiwa_mmi7plus": 2063051,
+     "korban_analog": [
+      320.3,
+      968.1,
+      4065
+     ],
+     "rb": 33778
     }
    },
    "tsunami": {
@@ -3357,6 +5604,18 @@
      "tiba_menit_sisi_aman": 53.6,
      "tinggi_hi_m": 2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 20.7,
+     "tiba_menit_sisi_aman": 14.9,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 1028616
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 85.5,
+     "tiba_menit_sisi_aman": 61.4,
+     "tinggi_hi_m": 6.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -3367,7 +5626,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.6,
+     "mmi_maks": 5.63,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3375,6 +5634,16 @@
       0
      ],
      "rb": 638
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.41,
+     "jiwa_mmi7plus": 1882056,
+     "korban_analog": [
+      292.2,
+      883.2,
+      3708.4
+     ],
+     "rb": 20636
     }
    },
    "krb": {
@@ -3393,7 +5662,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.37,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3401,6 +5670,16 @@
       0
      ],
      "rb": 257
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.15,
+     "jiwa_mmi7plus": 965674,
+     "korban_analog": [
+      41.1,
+      453.1,
+      1902.7
+     ],
+     "rb": 8516
     }
    },
    "krb": {
@@ -3419,7 +5698,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.41,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3427,6 +5706,16 @@
       0
      ],
      "rb": 222
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.17,
+     "jiwa_mmi7plus": 840156,
+     "korban_analog": [
+      69,
+      394.2,
+      1655.4
+     ],
+     "rb": 7178
     }
    }
   },
@@ -3442,9 +5731,19 @@
      "korban_analog": [
       0,
       0,
-      871.4
+      178.2
      ],
      "rb": 1158
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.65,
+     "jiwa_mmi7plus": 1443425,
+     "korban_analog": [
+      224.1,
+      677.3,
+      2844.1
+     ],
+     "rb": 24304
     }
    },
    "tsunami": {
@@ -3465,6 +5764,18 @@
      "tiba_menit_sisi_aman": 48.9,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 17.9,
+     "tiba_menit_sisi_aman": 12.8,
+     "tinggi_hi_m": 48.1,
+     "jiwa_pesisir_rendah_lt30": 360540
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 87.9,
+     "tiba_menit_sisi_aman": 63.1,
+     "tinggi_hi_m": 5.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -3475,14 +5786,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.95,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      405.3
+      82.9
      ],
      "rb": 635
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.7,
+     "jiwa_mmi7plus": 816325,
+     "korban_analog": [
+      126.8,
+      383.1,
+      1608.5
+     ],
+     "rb": 13288
     }
    },
    "tsunami": {
@@ -3503,6 +5824,18 @@
      "tiba_menit_sisi_aman": 45.9,
      "tinggi_hi_m": 2.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 15.1,
+     "tiba_menit_sisi_aman": 10.8,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 261748
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 86.5,
+     "tiba_menit_sisi_aman": 62.1,
+     "tinggi_hi_m": 5.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -3513,7 +5846,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.5,
+     "mmi_maks": 5.46,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3521,6 +5854,16 @@
       0
      ],
      "rb": 212
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.21,
+     "jiwa_mmi7plus": 859042,
+     "korban_analog": [
+      32.8,
+      403.1,
+      1692.6
+     ],
+     "rb": 6788
     }
    }
   },
@@ -3531,7 +5874,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.5,
+     "mmi_maks": 5.54,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3539,6 +5882,16 @@
       0
      ],
      "rb": 402
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.29,
+     "jiwa_mmi7plus": 1363151,
+     "korban_analog": [
+      143.4,
+      639.7,
+      2685.9
+     ],
+     "rb": 11869
     }
    },
    "merapi2010": {
@@ -3562,7 +5915,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.35,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3570,6 +5923,16 @@
       0
      ],
      "rb": 229
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.09,
+     "jiwa_mmi7plus": 1054925,
+     "korban_analog": [
+      0,
+      495,
+      2078.6
+     ],
+     "rb": 7626
     }
    },
    "merapi2010": {
@@ -3593,7 +5956,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.7,
+     "mmi_maks": 5.68,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3601,6 +5964,16 @@
       0
      ],
      "rb": 677
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.43,
+     "jiwa_mmi7plus": 1337767,
+     "korban_analog": [
+      207.7,
+      627.7,
+      2635.9
+     ],
+     "rb": 16800
     }
    },
    "merapi2010": {
@@ -3624,7 +5997,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.6,
+     "mmi_maks": 5.65,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3632,6 +6005,16 @@
       0
      ],
      "rb": 423
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.39,
+     "jiwa_mmi7plus": 1059775,
+     "korban_analog": [
+      164.6,
+      497.3,
+      2088.2
+     ],
+     "rb": 11345
     }
    }
   },
@@ -3642,14 +6025,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.3,
+     "mmi_maks": 6.33,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      663.6
+      135.7
      ],
      "rb": 1009
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.08,
+     "jiwa_mmi7plus": 1128384,
+     "korban_analog": [
+      175.2,
+      529.5,
+      2223.3
+     ],
+     "rb": 19917
     }
    },
    "tsunami": {
@@ -3670,6 +6063,18 @@
      "tiba_menit_sisi_aman": 37.9,
      "tinggi_hi_m": 1.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 10.7,
+     "tiba_menit_sisi_aman": 7.7,
+     "tinggi_hi_m": 28.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 93.9,
+     "tiba_menit_sisi_aman": 67.4,
+     "tinggi_hi_m": 2.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -3680,7 +6085,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.5,
+     "mmi_maks": 5.51,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3688,6 +6093,16 @@
       0
      ],
      "rb": 263
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.26,
+     "jiwa_mmi7plus": 1060008,
+     "korban_analog": [
+      40,
+      497.4,
+      2088.6
+     ],
+     "rb": 8224
     }
    }
   },
@@ -3698,7 +6113,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3706,6 +6121,16 @@
       0
      ],
      "rb": 139
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.83,
+     "jiwa_mmi7plus": 995340,
+     "korban_analog": [
+      0,
+      467.1,
+      1961.2
+     ],
+     "rb": 5342
     }
    }
   },
@@ -3716,7 +6141,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.67,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3724,6 +6149,16 @@
       0
      ],
      "rb": 59
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      729.3
+     ],
+     "rb": 3316
     }
    }
   },
@@ -3734,7 +6169,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.64,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3742,6 +6177,16 @@
       0
      ],
      "rb": 23
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.37,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      384.6
+     ],
+     "rb": 1447
     }
    }
   },
@@ -3752,7 +6197,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.12,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3760,6 +6205,16 @@
       0
      ],
      "rb": 4
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 360
     }
    }
   },
@@ -3770,7 +6225,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.23,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3778,6 +6233,16 @@
       0
      ],
      "rb": 10
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.95,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      70.4
+     ],
+     "rb": 875
     }
    }
   },
@@ -3788,7 +6253,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.21,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3796,6 +6261,16 @@
       0
      ],
      "rb": 9
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.92,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      28.7
+     ],
+     "rb": 729
     }
    }
   },
@@ -3806,7 +6281,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3814,6 +6289,16 @@
       0
      ],
      "rb": 6
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.72,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 595
     }
    }
   },
@@ -3824,7 +6309,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.52,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3832,6 +6317,16 @@
       0
      ],
      "rb": 31
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.25,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      514.2
+     ],
+     "rb": 1955
     }
    }
   },
@@ -3842,7 +6337,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3850,6 +6345,16 @@
       0
      ],
      "rb": 107
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.87,
+     "jiwa_mmi7plus": 683502,
+     "korban_analog": [
+      0,
+      320.7,
+      1346.8
+     ],
+     "rb": 4516
     }
    },
    "merapi2010": {
@@ -3865,7 +6370,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3873,6 +6378,16 @@
       0
      ],
      "rb": 87
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.83,
+     "jiwa_mmi7plus": 586987,
+     "korban_analog": [
+      0,
+      275.4,
+      1156.6
+     ],
+     "rb": 3585
     }
    }
   },
@@ -3883,7 +6398,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.71,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3891,6 +6406,16 @@
       0
      ],
      "rb": 41
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.44,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      503.2
+     ],
+     "rb": 2292
     }
    }
   },
@@ -3909,6 +6434,16 @@
       0
      ],
      "rb": 29
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      402.1
+     ],
+     "rb": 1684
     }
    }
   },
@@ -3919,7 +6454,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.67,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3927,6 +6462,16 @@
       0
      ],
      "rb": 43
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      517.7
+     ],
+     "rb": 2415
     }
    }
   },
@@ -3937,7 +6482,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.81,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3945,6 +6490,16 @@
       0
      ],
      "rb": 70
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.62,
+     "jiwa_mmi7plus": 110026,
+     "korban_analog": [
+      0,
+      51.6,
+      727.4
+     ],
+     "rb": 3983
     }
    },
    "krb": {
@@ -3963,7 +6518,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.72,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3971,6 +6526,16 @@
       0
      ],
      "rb": 75
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.62,
+     "jiwa_mmi7plus": 171712,
+     "korban_analog": [
+      0,
+      80.6,
+      776.3
+     ],
+     "rb": 4937
     }
    },
    "krb": {
@@ -3989,7 +6554,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.94,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -3997,6 +6562,16 @@
       0
      ],
      "rb": 100
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.88,
+     "jiwa_mmi7plus": 886870,
+     "korban_analog": [
+      0,
+      416.2,
+      1747.5
+     ],
+     "rb": 7476
     }
    },
    "krb": {
@@ -4015,7 +6590,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.27,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4023,7 +6598,22 @@
       0
      ],
      "rb": 27
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.01,
+     "jiwa_mmi7plus": 104192,
+     "korban_analog": [
+      0,
+      48.9,
+      205.3
+     ],
+     "rb": 834
     }
+   },
+   "merapi2010": {
+    "jiwa_sapuan": 0,
+    "pengungsi_radius20km": 0,
+    "luas_sapuan_ha": 0
    }
   },
   "3372": {
@@ -4033,7 +6623,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.29,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4041,6 +6631,16 @@
       0
      ],
      "rb": 102
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.04,
+     "jiwa_mmi7plus": 377759,
+     "korban_analog": [
+      0,
+      177.3,
+      744.3
+     ],
+     "rb": 3155
     }
    }
   },
@@ -4051,7 +6651,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5,
+     "mmi_maks": 4.99,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4059,6 +6659,16 @@
       0
      ],
      "rb": 26
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.72,
+     "jiwa_mmi7plus": 204575,
+     "korban_analog": [
+      0,
+      96,
+      403.1
+     ],
+     "rb": 1008
     }
    },
    "merapi2010": {
@@ -4074,7 +6684,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.53,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4082,6 +6692,16 @@
       0
      ],
      "rb": 57
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.26,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      810.2
+     ],
+     "rb": 3353
     }
    }
   },
@@ -4092,7 +6712,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.47,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4100,6 +6720,16 @@
       0
      ],
      "rb": 8
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      120
+     ],
+     "rb": 471
     }
    }
   },
@@ -4110,7 +6740,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.4,
+     "mmi_maks": 4.42,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4118,6 +6748,16 @@
       0
      ],
      "rb": 9
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.27,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      146.7
+     ],
+     "rb": 701
     }
    }
   },
@@ -4128,14 +6768,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      822.8
+      168.2
      ],
      "rb": 547
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.84,
+     "jiwa_mmi7plus": 470913,
+     "korban_analog": [
+      73.1,
+      221,
+      927.9
+     ],
+     "rb": 9921
     }
    },
    "tsunami": {
@@ -4156,6 +6806,18 @@
      "tiba_menit_sisi_aman": 45.8,
      "tinggi_hi_m": 2.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 15.8,
+     "tiba_menit_sisi_aman": 11.3,
+     "tinggi_hi_m": 53.2,
+     "jiwa_pesisir_rendah_lt30": 129359
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 89.6,
+     "tiba_menit_sisi_aman": 64.3,
+     "tinggi_hi_m": 5.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4166,14 +6828,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.1,
+     "mmi_maks": 6.15,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      1477
+      302
      ],
      "rb": 1424
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.9,
+     "jiwa_mmi7plus": 1208541,
+     "korban_analog": [
+      187.7,
+      567.1,
+      2381.3
+     ],
+     "rb": 26087
     }
    },
    "tsunami": {
@@ -4194,6 +6866,18 @@
      "tiba_menit_sisi_aman": 44.5,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 14.6,
+     "tiba_menit_sisi_aman": 10.5,
+     "tinggi_hi_m": 41.5,
+     "jiwa_pesisir_rendah_lt30": 69587
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 90.1,
+     "tiba_menit_sisi_aman": 64.7,
+     "tinggi_hi_m": 4.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4204,14 +6888,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.4,
+     "mmi_maks": 6.35,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      1391.3
+      284.5
      ],
      "rb": 1230
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.1,
+     "jiwa_mmi7plus": 810910,
+     "korban_analog": [
+      125.9,
+      380.5,
+      1597.8
+     ],
+     "rb": 20196
     }
    },
    "tsunami": {
@@ -4232,6 +6926,18 @@
      "tiba_menit_sisi_aman": 39,
      "tinggi_hi_m": 1.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 11.7,
+     "tiba_menit_sisi_aman": 8.4,
+     "tinggi_hi_m": 43.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 88.5,
+     "tiba_menit_sisi_aman": 63.5,
+     "tinggi_hi_m": 4.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4242,7 +6948,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.8,
+     "mmi_maks": 5.77,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4250,6 +6956,16 @@
       0
      ],
      "rb": 854
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.51,
+     "jiwa_mmi7plus": 1249372,
+     "korban_analog": [
+      194,
+      586.3,
+      2461.7
+     ],
+     "rb": 19120
     }
    },
    "merapi2010": {
@@ -4273,7 +6989,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.8,
+     "mmi_maks": 5.81,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4281,6 +6997,16 @@
       0
      ],
      "rb": 147
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.56,
+     "jiwa_mmi7plus": 174017,
+     "korban_analog": [
+      27,
+      81.7,
+      342.9
+     ],
+     "rb": 3067
     }
    },
    "krb": {
@@ -4299,14 +7025,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.3,
+     "mmi_maks": 6.33,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      956
+      195.5
      ],
      "rb": 1033
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.07,
+     "jiwa_mmi7plus": 620553,
+     "korban_analog": [
+      96.4,
+      291.2,
+      1222.7
+     ],
+     "rb": 16119
     }
    },
    "tsunami": {
@@ -4327,6 +7063,18 @@
      "tiba_menit_sisi_aman": 36.8,
      "tinggi_hi_m": 2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 10,
+     "tiba_menit_sisi_aman": 7.2,
+     "tinggi_hi_m": 38.6,
+     "jiwa_pesisir_rendah_lt30": 132451
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 93.2,
+     "tiba_menit_sisi_aman": 66.9,
+     "tinggi_hi_m": 3.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4337,14 +7085,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.89,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      83
+      17
      ],
      "rb": 676
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.64,
+     "jiwa_mmi7plus": 1037355,
+     "korban_analog": [
+      161.1,
+      486.8,
+      2044
+     ],
+     "rb": 15303
     }
    }
   },
@@ -4355,14 +7113,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.3,
+     "mmi_maks": 6.31,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      1057.4
+      216.2
      ],
      "rb": 927
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.06,
+     "jiwa_mmi7plus": 771853,
+     "korban_analog": [
+      119.8,
+      362.2,
+      1520.8
+     ],
+     "rb": 16651
     }
    },
    "tsunami": {
@@ -4383,6 +7151,18 @@
      "tiba_menit_sisi_aman": 33.9,
      "tinggi_hi_m": 2.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 9.9,
+     "tiba_menit_sisi_aman": 7.1,
+     "tinggi_hi_m": 42.7,
+     "jiwa_pesisir_rendah_lt30": 118596
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 96.2,
+     "tiba_menit_sisi_aman": 69,
+     "tinggi_hi_m": 3.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4393,14 +7173,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.4,
+     "mmi_maks": 6.44,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      1798.3
+      367.7
      ],
      "rb": 1466
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.19,
+     "jiwa_mmi7plus": 1161072,
+     "korban_analog": [
+      180.3,
+      544.8,
+      2287.7
+     ],
+     "rb": 25906
     }
    },
    "tsunami": {
@@ -4421,6 +7211,18 @@
      "tiba_menit_sisi_aman": 32.3,
      "tinggi_hi_m": 3.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 8,
+     "tiba_menit_sisi_aman": 5.7,
+     "tinggi_hi_m": 49.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 94.8,
+     "tiba_menit_sisi_aman": 68,
+     "tinggi_hi_m": 4.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -4439,14 +7241,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.2,
+     "mmi_maks": 6.21,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      953.4
+      194.9
      ],
      "rb": 1363
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.96,
+     "jiwa_mmi7plus": 1337793,
+     "korban_analog": [
+      207.7,
+      627.8,
+      2636
+     ],
+     "rb": 25983
     }
    },
    "tsunami": {
@@ -4467,6 +7279,18 @@
      "tiba_menit_sisi_aman": 27.7,
      "tinggi_hi_m": 2.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 9.8,
+     "tiba_menit_sisi_aman": 7,
+     "tinggi_hi_m": 38.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 99.1,
+     "tiba_menit_sisi_aman": 71.1,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -4485,7 +7309,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.7,
+     "mmi_maks": 5.68,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4493,6 +7317,16 @@
       0
      ],
      "rb": 676
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.43,
+     "jiwa_mmi7plus": 1689129,
+     "korban_analog": [
+      262.3,
+      792.6,
+      3328.2
+     ],
+     "rb": 17984
     }
    },
    "krb": {
@@ -4511,17 +7345,17 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 6.2,
+     "mmi_maks": 6.21,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      1996.6
+      408.3
      ],
      "rb": 2403
     },
     "sumba": {
-     "mmi_maks": 3.5,
+     "mmi_maks": 3.49,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4529,6 +7363,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.96,
+     "jiwa_mmi7plus": 2871534,
+     "korban_analog": [
+      445.9,
+      1347.5,
+      5658
+     ],
+     "rb": 50609
     }
    },
    "tsunami": {
@@ -4548,6 +7392,18 @@
      "tiba_menit": 31.9,
      "tiba_menit_sisi_aman": 22.9,
      "tinggi_hi_m": 4.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 7.3,
+     "tiba_menit_sisi_aman": 5.2,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 98.4,
+     "tiba_menit_sisi_aman": 70.6,
+     "tinggi_hi_m": 4.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -4569,7 +7425,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.6,
+     "mmi_maks": 5.63,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4579,7 +7435,7 @@
      "rb": 396
     },
     "sumba": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.68,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4587,6 +7443,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.64,
+     "jiwa_mmi7plus": 1180661,
+     "korban_analog": [
+      183.3,
+      554,
+      2326.3
+     ],
+     "rb": 18155
     }
    },
    "tsunami": {
@@ -4607,6 +7473,18 @@
      "tiba_menit_sisi_aman": 23.7,
      "tinggi_hi_m": 3.2,
      "jiwa_pesisir_rendah_lt30": 70109
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 10,
+     "tiba_menit_sisi_aman": 7.2,
+     "tinggi_hi_m": 36.5,
+     "jiwa_pesisir_rendah_lt30": 70109
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 103.7,
+     "tiba_menit_sisi_aman": 74.4,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -4626,7 +7504,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.6,
+     "mmi_maks": 5.62,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4636,7 +7514,7 @@
      "rb": 479
     },
     "sumba": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.88,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4644,6 +7522,16 @@
       0
      ],
      "rb": 2
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 8.01,
+     "jiwa_mmi7plus": 2714752,
+     "korban_analog": [
+      421.5,
+      1273.9,
+      5349.1
+     ],
+     "rb": 46705
     }
    },
    "tsunami": {
@@ -4664,6 +7552,18 @@
      "tiba_menit_sisi_aman": 17.4,
      "tinggi_hi_m": 4.9,
      "jiwa_pesisir_rendah_lt30": 225289
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 7.8,
+     "tiba_menit_sisi_aman": 5.6,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 225289
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 103.8,
+     "tiba_menit_sisi_aman": 74.5,
+     "tinggi_hi_m": 4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -4682,7 +7582,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.78,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4692,7 +7592,7 @@
      "rb": 48
     },
     "sumba": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.53,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4700,6 +7600,16 @@
       0
      ],
      "rb": 18
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.93,
+     "jiwa_mmi7plus": 1819039,
+     "korban_analog": [
+      282.4,
+      853.6,
+      3584.2
+     ],
+     "rb": 35722
     }
    },
    "tsunami": {
@@ -4720,6 +7630,18 @@
      "tiba_menit_sisi_aman": 11.8,
      "tinggi_hi_m": 7.4,
      "jiwa_pesisir_rendah_lt30": 44692
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 5.6,
+     "tiba_menit_sisi_aman": 4,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 44692
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 106.4,
+     "tiba_menit_sisi_aman": 76.4,
+     "tinggi_hi_m": 3.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -4738,7 +7660,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.53,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4748,7 +7670,7 @@
      "rb": 19
     },
     "sumba": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.91,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4756,6 +7678,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.05,
+     "jiwa_mmi7plus": 812538,
+     "korban_analog": [
+      0,
+      381.3,
+      1601
+     ],
+     "rb": 5356
     }
    },
    "krb": {
@@ -4774,7 +7706,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.32,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4784,7 +7716,7 @@
      "rb": 7
     },
     "sumba": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.84,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4792,6 +7724,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.68,
+     "jiwa_mmi7plus": 403436,
+     "korban_analog": [
+      0,
+      189.3,
+      794.9
+     ],
+     "rb": 2868
     }
    },
    "tsunami": {
@@ -4812,6 +7754,18 @@
      "tiba_menit_sisi_aman": 35.6,
      "tinggi_hi_m": 4.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 53,
+     "tiba_menit_sisi_aman": 38,
+     "tinggi_hi_m": 25.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 152.1,
+     "tiba_menit_sisi_aman": 109.2,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -4822,7 +7776,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4832,7 +7786,7 @@
      "rb": 100
     },
     "sumba": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.58,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4840,6 +7794,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.12,
+     "jiwa_mmi7plus": 1114749,
+     "korban_analog": [
+      0,
+      523.1,
+      2196.5
+     ],
+     "rb": 7291
     }
    },
    "tsunami": {
@@ -4853,6 +7817,12 @@
      "tiba_menit": 108.4,
      "tiba_menit_sisi_aman": 77.8,
      "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 111.8,
+     "tiba_menit_sisi_aman": 80.2,
+     "tinggi_hi_m": 19.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -4872,7 +7842,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.24,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4882,7 +7852,7 @@
      "rb": 214
     },
     "sumba": {
-     "mmi_maks": 3.3,
+     "mmi_maks": 3.35,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4890,6 +7860,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.06,
+     "jiwa_mmi7plus": 1624264,
+     "korban_analog": [
+      0,
+      762.2,
+      3200.4
+     ],
+     "rb": 9223
     }
    },
    "tsunami": {
@@ -4903,6 +7883,12 @@
      "tiba_menit": 140.8,
      "tiba_menit_sisi_aman": 101,
      "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 144.2,
+     "tiba_menit_sisi_aman": 103.5,
+     "tinggi_hi_m": 18,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -4922,7 +7908,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.75,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4930,6 +7916,16 @@
       0
      ],
      "rb": 118
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.51,
+     "jiwa_mmi7plus": 135085,
+     "korban_analog": [
+      0,
+      63.4,
+      1049.6
+     ],
+     "rb": 6174
     }
    },
    "tsunami": {
@@ -4948,7 +7944,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5,
+     "mmi_maks": 4.96,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4956,6 +7952,16 @@
       0
      ],
      "rb": 97
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.7,
+     "jiwa_mmi7plus": 576594,
+     "korban_analog": [
+      0,
+      270.6,
+      1136.1
+     ],
+     "rb": 4367
     }
    }
   },
@@ -4966,7 +7972,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -4974,6 +7980,16 @@
       0
      ],
      "rb": 166
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.85,
+     "jiwa_mmi7plus": 1111869,
+     "korban_analog": [
+      0,
+      521.7,
+      2190.8
+     ],
+     "rb": 6577
     }
    },
    "krb": {
@@ -4992,7 +8008,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.33,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5000,6 +8016,16 @@
       0
      ],
      "rb": 215
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.07,
+     "jiwa_mmi7plus": 1171411,
+     "korban_analog": [
+      0,
+      549.7,
+      2308.1
+     ],
+     "rb": 7427
     }
    }
   },
@@ -5010,7 +8036,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.44,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5018,6 +8044,16 @@
       0
      ],
      "rb": 192
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.18,
+     "jiwa_mmi7plus": 759708,
+     "korban_analog": [
+      63.3,
+      356.5,
+      1496.9
+     ],
+     "rb": 5935
     }
    }
   },
@@ -5028,7 +8064,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.45,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5036,6 +8072,16 @@
       0
      ],
      "rb": 203
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.19,
+     "jiwa_mmi7plus": 736501,
+     "korban_analog": [
+      62.9,
+      345.6,
+      1451.2
+     ],
+     "rb": 6166
     }
    }
   },
@@ -5046,7 +8092,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.13,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5054,6 +8100,16 @@
       0
      ],
      "rb": 118
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.87,
+     "jiwa_mmi7plus": 883221,
+     "korban_analog": [
+      0,
+      414.5,
+      1740.3
+     ],
+     "rb": 4589
     }
    }
   },
@@ -5064,7 +8120,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.77,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5072,6 +8128,16 @@
       0
      ],
      "rb": 50
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.5,
+     "jiwa_mmi7plus": 31784,
+     "korban_analog": [
+      0,
+      14.9,
+      650.8
+     ],
+     "rb": 2813
     }
    }
   },
@@ -5082,7 +8148,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.23,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5090,6 +8156,16 @@
       0
      ],
      "rb": 13
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.96,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      115.4
+     ],
+     "rb": 1069
     }
    }
   },
@@ -5108,6 +8184,16 @@
       0
      ],
      "rb": 27
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.33,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      431
+     ],
+     "rb": 1803
     }
    }
   },
@@ -5118,7 +8204,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.54,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5126,6 +8212,16 @@
       0
      ],
      "rb": 30
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.27,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      448.5
+     ],
+     "rb": 1886
     }
    }
   },
@@ -5136,7 +8232,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.18,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5144,6 +8240,16 @@
       0
      ],
      "rb": 9
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.85,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 810
     }
    },
    "tsunami": {
@@ -5151,6 +8257,12 @@
      "tiba_menit": 158.3,
      "tiba_menit_sisi_aman": 113.6,
      "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 161.7,
+     "tiba_menit_sisi_aman": 116,
+     "tinggi_hi_m": 17.8,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -5162,7 +8274,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.15,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5170,6 +8282,16 @@
       0
      ],
      "rb": 5
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.87,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      13
+     ],
+     "rb": 656
     }
    },
    "tsunami": {
@@ -5184,6 +8306,12 @@
      "tiba_menit_sisi_aman": 89.3,
      "tinggi_hi_m": 3.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 127.9,
+     "tiba_menit_sisi_aman": 91.8,
+     "tinggi_hi_m": 18.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5194,7 +8322,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.06,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5202,6 +8330,16 @@
       0
      ],
      "rb": 3
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.79,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 571
     }
    },
    "tsunami": {
@@ -5216,6 +8354,12 @@
      "tiba_menit_sisi_aman": 81.7,
      "tinggi_hi_m": 3.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 117.2,
+     "tiba_menit_sisi_aman": 84.1,
+     "tinggi_hi_m": 19.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5226,7 +8370,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.9,
+     "mmi_maks": 3.93,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5236,7 +8380,7 @@
      "rb": 1
     },
     "sumba": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.57,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5244,6 +8388,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.69,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 451
     }
    },
    "tsunami": {
@@ -5264,6 +8418,18 @@
      "tiba_menit_sisi_aman": 29.9,
      "tinggi_hi_m": 4.7,
      "jiwa_pesisir_rendah_lt30": 15412
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 45.1,
+     "tiba_menit_sisi_aman": 32.4,
+     "tinggi_hi_m": 26.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 144.2,
+     "tiba_menit_sisi_aman": 103.5,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5274,7 +8440,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.5,
+     "mmi_maks": 5.46,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5282,6 +8448,16 @@
       0
      ],
      "rb": 125
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.2,
+     "jiwa_mmi7plus": 310024,
+     "korban_analog": [
+      48.1,
+      145.5,
+      610.9
+     ],
+     "rb": 3362
     }
    }
   },
@@ -5292,14 +8468,24 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.9,
+     "mmi_maks": 5.87,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
       0,
-      250.4
+      51.2
      ],
      "rb": 146
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.62,
+     "jiwa_mmi7plus": 140608,
+     "korban_analog": [
+      21.8,
+      66,
+      277.1
+     ],
+     "rb": 2820
     }
    },
    "krb": {
@@ -5318,7 +8504,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.5,
+     "mmi_maks": 5.54,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5326,6 +8512,16 @@
       0
      ],
      "rb": 406
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.32,
+     "jiwa_mmi7plus": 855305,
+     "korban_analog": [
+      132.8,
+      401.4,
+      1685.3
+     ],
+     "rb": 10713
     }
    }
   },
@@ -5336,7 +8532,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.8,
+     "mmi_maks": 4.85,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5346,7 +8542,7 @@
      "rb": 25
     },
     "sumba": {
-     "mmi_maks": 3.5,
+     "mmi_maks": 3.46,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5354,6 +8550,16 @@
       0
      ],
      "rb": 0
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.83,
+     "jiwa_mmi7plus": 276824,
+     "korban_analog": [
+      0,
+      129.9,
+      545.4
+     ],
+     "rb": 1646
     }
    },
    "tsunami": {
@@ -5368,6 +8574,12 @@
      "tiba_menit_sisi_aman": 92.6,
      "tinggi_hi_m": 2.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 132.4,
+     "tiba_menit_sisi_aman": 95,
+     "tinggi_hi_m": 16.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5378,7 +8590,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.88,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5386,6 +8598,16 @@
       0
      ],
      "rb": 21
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.69,
+     "jiwa_mmi7plus": 206135,
+     "korban_analog": [
+      0,
+      96.7,
+      406.2
+     ],
+     "rb": 1009
     }
    },
    "tsunami": {
@@ -5393,6 +8615,12 @@
      "tiba_menit": 153.3,
      "tiba_menit_sisi_aman": 110,
      "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 156.7,
+     "tiba_menit_sisi_aman": 112.5,
+     "tinggi_hi_m": 17.6,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -5404,7 +8632,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.75,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5412,6 +8640,16 @@
       0
      ],
      "rb": 11
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.48,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      72.2
+     ],
+     "rb": 530
     }
    }
   },
@@ -5422,7 +8660,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.24,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5430,6 +8668,16 @@
       0
      ],
      "rb": 51
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.98,
+     "jiwa_mmi7plus": 215264,
+     "korban_analog": [
+      0,
+      101,
+      424.2
+     ],
+     "rb": 1643
     }
    }
   },
@@ -5440,7 +8688,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4.5,
+     "mmi_maks": 4.45,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5448,6 +8696,16 @@
       0
      ],
      "rb": 77
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.19,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      1411.3
+     ],
+     "rb": 4999
     }
    }
   },
@@ -5458,7 +8716,7 @@
    "pulau": "Jawa",
    "gempa": {
     "jawa": {
-     "mmi_maks": 5.4,
+     "mmi_maks": 5.39,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5466,6 +8724,16 @@
       0
      ],
      "rb": 60
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.13,
+     "jiwa_mmi7plus": 224884,
+     "korban_analog": [
+      0,
+      105.5,
+      443.1
+     ],
+     "rb": 1817
     }
    }
   },
@@ -5474,6 +8742,18 @@
    "kab": "Pandeglang",
    "nama": "Kab. Pandeglang",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 4.98,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 103
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 39.2,
@@ -5492,6 +8772,18 @@
      "tiba_menit_sisi_aman": 57.9,
      "tinggi_hi_m": 1.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 23.7,
+     "tiba_menit_sisi_aman": 17,
+     "tinggi_hi_m": 38.5,
+     "jiwa_pesisir_rendah_lt30": 109423
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 42.3,
+     "tiba_menit_sisi_aman": 30.4,
+     "tinggi_hi_m": 11,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5500,6 +8792,18 @@
    "kab": "Lebak",
    "nama": "Kab. Lebak",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.73,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 315
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 38.6,
@@ -5518,6 +8822,18 @@
      "tiba_menit_sisi_aman": 57.8,
      "tinggi_hi_m": 1.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 23.1,
+     "tiba_menit_sisi_aman": 16.6,
+     "tinggi_hi_m": 41.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 47.6,
+     "tiba_menit_sisi_aman": 34.2,
+     "tinggi_hi_m": 9.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5526,6 +8842,18 @@
    "kab": "Tangerang",
    "nama": "Kab. Tangerang",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.26,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 532
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 146.3,
@@ -5538,6 +8866,18 @@
      "tiba_menit_sisi_aman": 102.2,
      "tinggi_hi_m": 6.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 135.4,
+     "tiba_menit_sisi_aman": 97.2,
+     "tinggi_hi_m": 14.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 140.3,
+     "tiba_menit_sisi_aman": 100.7,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5546,6 +8886,18 @@
    "kab": "Serang",
    "nama": "Kab. Serang",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 115
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 86.1,
@@ -5564,6 +8916,36 @@
      "tiba_menit_sisi_aman": 90.5,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 75.1,
+     "tiba_menit_sisi_aman": 53.9,
+     "tinggi_hi_m": 15,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 80.1,
+     "tiba_menit_sisi_aman": 57.5,
+     "tinggi_hi_m": 8.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3671": {
+   "prov": "36",
+   "kab": "Kota Tangerang",
+   "nama": "Kota Tangerang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.2,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 370
     }
    }
   },
@@ -5572,6 +8954,18 @@
    "kab": "Kota Cilegon",
    "nama": "Kota Cilegon",
    "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 4.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 12
+    }
+   },
    "tsunami": {
     "jawa": {
      "tiba_menit": 94.6,
@@ -5590,6 +8984,54 @@
      "tiba_menit_sisi_aman": 96.6,
      "tinggi_hi_m": 0.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 83.7,
+     "tiba_menit_sisi_aman": 60.1,
+     "tinggi_hi_m": 12.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 88.7,
+     "tiba_menit_sisi_aman": 63.7,
+     "tinggi_hi_m": 7.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "3673": {
+   "prov": "36",
+   "kab": "Kota Serang",
+   "nama": "Kota Serang",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 4.71,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 42
+    }
+   }
+  },
+  "3674": {
+   "prov": "36",
+   "kab": "Kota Tangerang Selatan",
+   "nama": "Kota Tangerang Selatan",
+   "pulau": "Jawa",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 5.34,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 457
     }
    }
   },
@@ -5600,7 +9042,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 4,
+     "mmi_maks": 4.04,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5610,7 +9052,7 @@
      "rb": 1
     },
     "sumba": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.25,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5618,6 +9060,16 @@
       0
      ],
      "rb": 5
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 7.24,
+     "jiwa_mmi7plus": 324797,
+     "korban_analog": [
+      50.4,
+      152.4,
+      640
+     ],
+     "rb": 3370
     }
    },
    "tsunami": {
@@ -5638,6 +9090,18 @@
      "tiba_menit_sisi_aman": 16.7,
      "tinggi_hi_m": 7.3,
      "jiwa_pesisir_rendah_lt30": 101813
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 18.4,
+     "tiba_menit_sisi_aman": 13.2,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 101813
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 119.7,
+     "tiba_menit_sisi_aman": 85.9,
+     "tinggi_hi_m": 3.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5648,7 +9112,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.85,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5658,7 +9122,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.85,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5666,6 +9130,16 @@
       0
      ],
      "rb": 31
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.95,
+     "jiwa_mmi7plus": 428849,
+     "korban_analog": [
+      0,
+      201.2,
+      845
+     ],
+     "rb": 2860
     }
    },
    "tsunami": {
@@ -5686,6 +9160,18 @@
      "tiba_menit_sisi_aman": 19.2,
      "tinggi_hi_m": 7.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 21.8,
+     "tiba_menit_sisi_aman": 15.6,
+     "tinggi_hi_m": 51.9,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 123.1,
+     "tiba_menit_sisi_aman": 88.3,
+     "tinggi_hi_m": 3.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5696,7 +9182,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.81,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5706,7 +9192,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.26,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5714,6 +9200,16 @@
       0
      ],
      "rb": 100
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.95,
+     "jiwa_mmi7plus": 593171,
+     "korban_analog": [
+      0,
+      278.3,
+      1168.8
+     ],
+     "rb": 4039
     }
    },
    "tsunami": {
@@ -5734,6 +9230,18 @@
      "tiba_menit_sisi_aman": 10.3,
      "tinggi_hi_m": 9.7,
      "jiwa_pesisir_rendah_lt30": 71560
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 13.5,
+     "tiba_menit_sisi_aman": 9.7,
+     "tinggi_hi_m": 53.3,
+     "jiwa_pesisir_rendah_lt30": 71560
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 113.7,
+     "tiba_menit_sisi_aman": 81.6,
+     "tinggi_hi_m": 3.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5744,7 +9252,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.71,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5754,7 +9262,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.91,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5762,6 +9270,16 @@
       0
      ],
      "rb": 49
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.64,
+     "jiwa_mmi7plus": 431129,
+     "korban_analog": [
+      0,
+      202.3,
+      849.5
+     ],
+     "rb": 2237
     }
    },
    "tsunami": {
@@ -5782,6 +9300,18 @@
      "tiba_menit_sisi_aman": 18.4,
      "tinggi_hi_m": 7.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 26.8,
+     "tiba_menit_sisi_aman": 19.2,
+     "tinggi_hi_m": 44.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 126.3,
+     "tiba_menit_sisi_aman": 90.6,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5792,7 +9322,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.64,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5802,7 +9332,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.19,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5810,6 +9340,16 @@
       0
      ],
      "rb": 28
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.43,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      102.6
+     ],
+     "rb": 638
     }
    },
    "tsunami": {
@@ -5830,6 +9370,18 @@
      "tiba_menit_sisi_aman": 11.3,
      "tinggi_hi_m": 8.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 17.6,
+     "tiba_menit_sisi_aman": 12.6,
+     "tinggi_hi_m": 53,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 117.1,
+     "tiba_menit_sisi_aman": 84,
+     "tinggi_hi_m": 3.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -5848,7 +9400,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.6,
+     "mmi_maks": 3.64,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5858,7 +9410,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.62,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5866,6 +9418,16 @@
       0
      ],
      "rb": 9
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.41,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      130.1
+     ],
+     "rb": 557
     }
    }
   },
@@ -5886,7 +9448,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 4.7,
+     "mmi_maks": 4.74,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5894,6 +9456,16 @@
       0
      ],
      "rb": 19
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.32,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      126.5
+     ],
+     "rb": 701
     }
    },
    "tsunami": {
@@ -5914,6 +9486,18 @@
      "tiba_menit_sisi_aman": 16.9,
      "tinggi_hi_m": 4.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 27,
+     "tiba_menit_sisi_aman": 19.4,
+     "tinggi_hi_m": 23.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 126.1,
+     "tiba_menit_sisi_aman": 90.5,
+     "tinggi_hi_m": 1.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -5932,7 +9516,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.84,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5942,7 +9526,7 @@
      "rb": 0
     },
     "sumba": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.22,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5950,6 +9534,16 @@
       0
      ],
      "rb": 7
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.79,
+     "jiwa_mmi7plus": 227073,
+     "korban_analog": [
+      0,
+      106.6,
+      447.4
+     ],
+     "rb": 2534
     }
    },
    "tsunami": {
@@ -5970,6 +9564,18 @@
      "tiba_menit_sisi_aman": 22.7,
      "tinggi_hi_m": 5.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 35,
+     "tiba_menit_sisi_aman": 25.1,
+     "tinggi_hi_m": 30.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 134.1,
+     "tiba_menit_sisi_aman": 96.2,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -5980,7 +9586,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "jawa": {
-     "mmi_maks": 3.8,
+     "mmi_maks": 3.77,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -5998,6 +9604,16 @@
       0
      ],
      "rb": 117
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 6.83,
+     "jiwa_mmi7plus": 730574,
+     "korban_analog": [
+      0,
+      342.8,
+      1439.5
+     ],
+     "rb": 4329
     }
    },
    "tsunami": {
@@ -6018,6 +9634,18 @@
      "tiba_menit_sisi_aman": 15.4,
      "tinggi_hi_m": 8.6,
      "jiwa_pesisir_rendah_lt30": 274971
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 22.8,
+     "tiba_menit_sisi_aman": 16.4,
+     "tinggi_hi_m": 49.8,
+     "jiwa_pesisir_rendah_lt30": 274971
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 122.3,
+     "tiba_menit_sisi_aman": 87.8,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6028,7 +9656,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6036,6 +9664,16 @@
       0
      ],
      "rb": 77
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.47,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 255
     }
    },
    "tsunami": {
@@ -6056,6 +9694,18 @@
      "tiba_menit_sisi_aman": 9.6,
      "tinggi_hi_m": 8.2,
      "jiwa_pesisir_rendah_lt30": 93875
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 19.1,
+     "tiba_menit_sisi_aman": 13.7,
+     "tinggi_hi_m": 37.3,
+     "jiwa_pesisir_rendah_lt30": 93875
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 117.5,
+     "tiba_menit_sisi_aman": 84.3,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6066,7 +9716,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.27,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6074,6 +9724,16 @@
       0
      ],
      "rb": 177
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.38,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 252
     }
    },
    "tsunami": {
@@ -6094,6 +9754,18 @@
      "tiba_menit_sisi_aman": 9.8,
      "tinggi_hi_m": 10.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 21.9,
+     "tiba_menit_sisi_aman": 15.7,
+     "tinggi_hi_m": 40.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 119.6,
+     "tiba_menit_sisi_aman": 85.8,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6112,7 +9784,17 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.2,
+     "mmi_maks": 5.23,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 135
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 4.99,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6140,6 +9822,18 @@
      "tiba_menit_sisi_aman": 10.3,
      "tinggi_hi_m": 10.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 25.3,
+     "tiba_menit_sisi_aman": 18.2,
+     "tinggi_hi_m": 36.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 122.6,
+     "tiba_menit_sisi_aman": 88,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6158,7 +9852,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.3,
+     "mmi_maks": 5.29,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6166,6 +9860,16 @@
       0
      ],
      "rb": 36
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 4.1,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 1
     }
    },
    "tsunami": {
@@ -6186,6 +9890,18 @@
      "tiba_menit_sisi_aman": 9.4,
      "tinggi_hi_m": 10.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 28.7,
+     "tiba_menit_sisi_aman": 20.6,
+     "tinggi_hi_m": 28.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 124.9,
+     "tiba_menit_sisi_aman": 89.6,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6196,7 +9912,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.4,
+     "mmi_maks": 4.38,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6224,6 +9940,18 @@
      "tiba_menit_sisi_aman": 13.5,
      "tinggi_hi_m": 7.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 41.8,
+     "tiba_menit_sisi_aman": 30,
+     "tinggi_hi_m": 20.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 136,
+     "tiba_menit_sisi_aman": 97.6,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6242,7 +9970,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.6,
+     "mmi_maks": 4.57,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6270,6 +9998,18 @@
      "tiba_menit_sisi_aman": 14.3,
      "tinggi_hi_m": 7.1,
      "jiwa_pesisir_rendah_lt30": 48163
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 43.4,
+     "tiba_menit_sisi_aman": 31.1,
+     "tinggi_hi_m": 18.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 137.5,
+     "tiba_menit_sisi_aman": 98.7,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6289,7 +10029,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.09,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6297,6 +10037,16 @@
       0
      ],
      "rb": 18
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 4.4,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 3
     }
    },
    "tsunami": {
@@ -6317,6 +10067,18 @@
      "tiba_menit_sisi_aman": 8.5,
      "tinggi_hi_m": 9.2,
      "jiwa_pesisir_rendah_lt30": 71935
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 25.4,
+     "tiba_menit_sisi_aman": 18.2,
+     "tinggi_hi_m": 30.2,
+     "jiwa_pesisir_rendah_lt30": 71935
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 121.7,
+     "tiba_menit_sisi_aman": 87.3,
+     "tinggi_hi_m": 3.3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6335,6 +10097,16 @@
       0
      ],
      "rb": 4
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 4.99,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 22
     }
    },
    "tsunami": {
@@ -6355,6 +10127,18 @@
      "tiba_menit_sisi_aman": 18.7,
      "tinggi_hi_m": 6.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 29.7,
+     "tiba_menit_sisi_aman": 21.3,
+     "tinggi_hi_m": 37,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 128.7,
+     "tiba_menit_sisi_aman": 92.4,
+     "tinggi_hi_m": 3.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6373,7 +10157,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.9,
+     "mmi_maks": 4.89,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6381,6 +10165,16 @@
       0
      ],
      "rb": 44
+    },
+    "jawa-mmaks": {
+     "mmi_maks": 5.45,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 164
     }
    },
    "tsunami": {
@@ -6401,6 +10195,18 @@
      "tiba_menit_sisi_aman": 20.9,
      "tinggi_hi_m": 7.1,
      "jiwa_pesisir_rendah_lt30": 277892
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 32.7,
+     "tiba_menit_sisi_aman": 23.5,
+     "tinggi_hi_m": 38.8,
+     "jiwa_pesisir_rendah_lt30": 277892
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 131.8,
+     "tiba_menit_sisi_aman": 94.6,
+     "tinggi_hi_m": 3.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6411,7 +10217,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.1,
+     "mmi_maks": 4.11,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6433,6 +10239,12 @@
      "tiba_menit_sisi_aman": 38.2,
      "tinggi_hi_m": 2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 68.2,
+     "tiba_menit_sisi_aman": 48.9,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6452,6 +10264,12 @@
      "tiba_menit": 56.8,
      "tiba_menit_sisi_aman": 40.8,
      "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 80.8,
+     "tiba_menit_sisi_aman": 58,
+     "tinggi_hi_m": 9,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -6473,6 +10291,12 @@
      "tiba_menit_sisi_aman": 49.1,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 92.4,
+     "tiba_menit_sisi_aman": 66.3,
+     "tinggi_hi_m": 7.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6492,6 +10316,12 @@
      "tiba_menit": 65.8,
      "tiba_menit_sisi_aman": 47.2,
      "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 89.7,
+     "tiba_menit_sisi_aman": 64.4,
+     "tinggi_hi_m": 5.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -6513,6 +10343,12 @@
      "tiba_menit_sisi_aman": 51,
      "tinggi_hi_m": 1.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 95,
+     "tiba_menit_sisi_aman": 68.2,
+     "tinggi_hi_m": 7.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6533,6 +10369,12 @@
      "tiba_menit_sisi_aman": 47.4,
      "tinggi_hi_m": 2.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 90,
+     "tiba_menit_sisi_aman": 64.6,
+     "tinggi_hi_m": 8.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6552,6 +10394,12 @@
      "tiba_menit": 57.1,
      "tiba_menit_sisi_aman": 41,
      "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 81.1,
+     "tiba_menit_sisi_aman": 58.2,
+     "tinggi_hi_m": 6.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -6581,6 +10429,12 @@
      "tiba_menit_sisi_aman": 38,
      "tinggi_hi_m": 2.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 76.9,
+     "tiba_menit_sisi_aman": 55.2,
+     "tinggi_hi_m": 10,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6600,6 +10454,12 @@
      "tiba_menit": 50.3,
      "tiba_menit_sisi_aman": 36.1,
      "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 74.3,
+     "tiba_menit_sisi_aman": 53.3,
+     "tinggi_hi_m": 10.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -6629,6 +10489,12 @@
      "tiba_menit_sisi_aman": 36.2,
      "tinggi_hi_m": 2.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 74.4,
+     "tiba_menit_sisi_aman": 53.4,
+     "tinggi_hi_m": 10.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6639,7 +10505,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 3.5,
+     "mmi_maks": 3.49,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6661,6 +10527,12 @@
      "tiba_menit_sisi_aman": 29.9,
      "tinggi_hi_m": 4.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 66.8,
+     "tiba_menit_sisi_aman": 47.9,
+     "tinggi_hi_m": 14.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    },
    "krb": {
@@ -6679,7 +10551,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.2,
+     "mmi_maks": 4.17,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6706,6 +10578,18 @@
      "tiba_menit": 21.8,
      "tiba_menit_sisi_aman": 15.6,
      "tinggi_hi_m": 6.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 45.8,
+     "tiba_menit_sisi_aman": 32.9,
+     "tinggi_hi_m": 14.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 136.9,
+     "tiba_menit_sisi_aman": 98.2,
+     "tinggi_hi_m": 2.8,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -6745,6 +10629,18 @@
      "tiba_menit_sisi_aman": 13.6,
      "tinggi_hi_m": 5.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 46.1,
+     "tiba_menit_sisi_aman": 33.1,
+     "tinggi_hi_m": 10.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 137.2,
+     "tiba_menit_sisi_aman": 98.5,
+     "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6764,6 +10660,12 @@
      "tiba_menit": 61.2,
      "tiba_menit_sisi_aman": 43.9,
      "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 85.2,
+     "tiba_menit_sisi_aman": 61.1,
+     "tinggi_hi_m": 9.1,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -6793,6 +10695,12 @@
      "tiba_menit_sisi_aman": 33.7,
      "tinggi_hi_m": 2.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 70.9,
+     "tiba_menit_sisi_aman": 50.9,
+     "tinggi_hi_m": 10.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6803,7 +10711,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 3.7,
+     "mmi_maks": 3.74,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6831,6 +10739,18 @@
      "tiba_menit_sisi_aman": 20.5,
      "tinggi_hi_m": 5.7,
      "jiwa_pesisir_rendah_lt30": 32272
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 53.5,
+     "tiba_menit_sisi_aman": 38.4,
+     "tinggi_hi_m": 16.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 147.2,
+     "tiba_menit_sisi_aman": 105.6,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6851,6 +10771,12 @@
      "tiba_menit_sisi_aman": 36,
      "tinggi_hi_m": 2.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 74.1,
+     "tiba_menit_sisi_aman": 53.2,
+     "tinggi_hi_m": 11.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6861,7 +10787,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 4.3,
+     "mmi_maks": 4.34,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6889,6 +10815,18 @@
      "tiba_menit_sisi_aman": 16.5,
      "tinggi_hi_m": 5.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 48.5,
+     "tiba_menit_sisi_aman": 34.8,
+     "tinggi_hi_m": 16.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 139.6,
+     "tiba_menit_sisi_aman": 100.2,
+     "tinggi_hi_m": 2.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6899,7 +10837,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 5.1,
+     "mmi_maks": 5.12,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6927,6 +10865,18 @@
      "tiba_menit_sisi_aman": 12.3,
      "tinggi_hi_m": 9.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 44,
+     "tiba_menit_sisi_aman": 31.6,
+     "tinggi_hi_m": 16.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 136.4,
+     "tiba_menit_sisi_aman": 97.9,
+     "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -6937,7 +10887,7 @@
    "pulau": "Bali-Nusa Tenggara",
    "gempa": {
     "sumba": {
-     "mmi_maks": 3.3,
+     "mmi_maks": 3.29,
      "jiwa_mmi7plus": 0,
      "korban_analog": [
       0,
@@ -6958,6 +10908,12 @@
      "tiba_menit": 46.7,
      "tiba_menit_sisi_aman": 33.5,
      "tinggi_hi_m": 3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 72,
+     "tiba_menit_sisi_aman": 51.7,
+     "tinggi_hi_m": 11.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -6987,6 +10943,18 @@
      "tiba_menit_sisi_aman": 28.3,
      "tinggi_hi_m": 3.2,
      "jiwa_pesisir_rendah_lt30": 22848
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 63.4,
+     "tiba_menit_sisi_aman": 45.5,
+     "tinggi_hi_m": 11.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "mentawai-mmaks": {
+     "tiba_menit": 154.5,
+     "tiba_menit_sisi_aman": 110.9,
+     "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7006,6 +10974,12 @@
      "tiba_menit": 73.4,
      "tiba_menit_sisi_aman": 52.7,
      "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 97.4,
+     "tiba_menit_sisi_aman": 69.9,
+     "tinggi_hi_m": 7.9,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7027,6 +11001,84 @@
      "tiba_menit_sisi_aman": 43.8,
      "tinggi_hi_m": 1.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 85,
+     "tiba_menit_sisi_aman": 61,
+     "tinggi_hi_m": 7.6,
+     "jiwa_pesisir_rendah_lt30": 0
+    }
+   }
+  },
+  "6201": {
+   "prov": "62",
+   "kab": "Kotawaringin Barat",
+   "nama": "Kab. Kotawaringin Barat",
+   "pulau": "Kalimantan",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 2.6,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "6207": {
+   "prov": "62",
+   "kab": "Seruyan",
+   "nama": "Kab. Seruyan",
+   "pulau": "Kalimantan",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 2.7,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "6208": {
+   "prov": "62",
+   "kab": "Sukamara",
+   "nama": "Kab. Sukamara",
+   "pulau": "Kalimantan",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 2.67,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
+    }
+   }
+  },
+  "6301": {
+   "prov": "63",
+   "kab": "Tanah Laut",
+   "nama": "Kab. Tanah Laut",
+   "pulau": "Kalimantan",
+   "gempa": {
+    "jawa-mmaks": {
+     "mmi_maks": 2.97,
+     "jiwa_mmi7plus": 0,
+     "korban_analog": [
+      0,
+      0,
+      0
+     ],
+     "rb": 0
     }
    }
   },
@@ -7183,6 +11235,12 @@
      "tiba_menit_sisi_aman": 87.4,
      "tinggi_hi_m": 1.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 146.1,
+     "tiba_menit_sisi_aman": 104.8,
+     "tinggi_hi_m": 6.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7210,6 +11268,12 @@
      "tiba_menit": 118.9,
      "tiba_menit_sisi_aman": 85.3,
      "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 143.1,
+     "tiba_menit_sisi_aman": 102.7,
+     "tinggi_hi_m": 6.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7259,6 +11323,12 @@
      "tiba_menit_sisi_aman": 40.6,
      "tinggi_hi_m": 3.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 80.7,
+     "tiba_menit_sisi_aman": 57.9,
+     "tinggi_hi_m": 13,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7278,6 +11348,12 @@
      "tiba_menit": 73.7,
      "tiba_menit_sisi_aman": 52.9,
      "tinggi_hi_m": 2.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 96.2,
+     "tiba_menit_sisi_aman": 69,
+     "tinggi_hi_m": 10.9,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7299,6 +11375,12 @@
      "tiba_menit_sisi_aman": 61.5,
      "tinggi_hi_m": 2.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 107.3,
+     "tiba_menit_sisi_aman": 77,
+     "tinggi_hi_m": 11.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7318,6 +11400,12 @@
      "tiba_menit": 77.6,
      "tiba_menit_sisi_aman": 55.7,
      "tinggi_hi_m": 2.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 98.4,
+     "tiba_menit_sisi_aman": 70.6,
+     "tinggi_hi_m": 12.1,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7339,6 +11427,12 @@
      "tiba_menit_sisi_aman": 54.7,
      "tinggi_hi_m": 2.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 97,
+     "tiba_menit_sisi_aman": 69.6,
+     "tinggi_hi_m": 11.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7358,6 +11452,12 @@
      "tiba_menit": 77.9,
      "tiba_menit_sisi_aman": 55.9,
      "tinggi_hi_m": 2.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 100.3,
+     "tiba_menit_sisi_aman": 72,
+     "tinggi_hi_m": 10.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7379,6 +11479,12 @@
      "tiba_menit_sisi_aman": 63.5,
      "tinggi_hi_m": 2.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 110.9,
+     "tiba_menit_sisi_aman": 79.6,
+     "tinggi_hi_m": 10.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7398,6 +11504,12 @@
      "tiba_menit": 131.6,
      "tiba_menit_sisi_aman": 94.4,
      "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 152.3,
+     "tiba_menit_sisi_aman": 109.3,
+     "tinggi_hi_m": 10.5,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7419,6 +11531,12 @@
      "tiba_menit_sisi_aman": 43.8,
      "tinggi_hi_m": 3.4,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 79.3,
+     "tiba_menit_sisi_aman": 56.9,
+     "tinggi_hi_m": 15.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7438,6 +11556,12 @@
      "tiba_menit": 112.2,
      "tiba_menit_sisi_aman": 80.5,
      "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 128.3,
+     "tiba_menit_sisi_aman": 92.1,
+     "tinggi_hi_m": 11.2,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7459,6 +11583,12 @@
      "tiba_menit_sisi_aman": 70.1,
      "tinggi_hi_m": 1.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 120.2,
+     "tiba_menit_sisi_aman": 86.3,
+     "tinggi_hi_m": 9.1,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7478,6 +11608,12 @@
      "tiba_menit": 113.6,
      "tiba_menit_sisi_aman": 81.5,
      "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 129.6,
+     "tiba_menit_sisi_aman": 93,
+     "tinggi_hi_m": 9.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7499,6 +11635,12 @@
      "tiba_menit_sisi_aman": 75,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 126.9,
+     "tiba_menit_sisi_aman": 91.1,
+     "tinggi_hi_m": 8.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7513,6 +11655,12 @@
      "tiba_menit_sisi_aman": 91.5,
      "tinggi_hi_m": 1.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 150,
+     "tiba_menit_sisi_aman": 107.6,
+     "tinggi_hi_m": 8.2,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7526,6 +11674,12 @@
      "tiba_menit": 129,
      "tiba_menit_sisi_aman": 92.6,
      "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 151.4,
+     "tiba_menit_sisi_aman": 108.7,
+     "tinggi_hi_m": 8.2,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7547,6 +11701,12 @@
      "tiba_menit_sisi_aman": 82.3,
      "tinggi_hi_m": 2.2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 135.5,
+     "tiba_menit_sisi_aman": 97.2,
+     "tinggi_hi_m": 10.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7567,6 +11727,12 @@
      "tiba_menit_sisi_aman": 82.7,
      "tinggi_hi_m": 1.3,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 131.2,
+     "tiba_menit_sisi_aman": 94.2,
+     "tinggi_hi_m": 7.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7580,6 +11746,12 @@
      "tiba_menit": 128.4,
      "tiba_menit_sisi_aman": 92.1,
      "tinggi_hi_m": 1.7,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 150.8,
+     "tiba_menit_sisi_aman": 108.2,
+     "tinggi_hi_m": 8.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7601,6 +11773,12 @@
      "tiba_menit_sisi_aman": 64.3,
      "tinggi_hi_m": 2.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 112,
+     "tiba_menit_sisi_aman": 80.4,
+     "tinggi_hi_m": 9.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7614,6 +11792,12 @@
      "tiba_menit": 119.2,
      "tiba_menit_sisi_aman": 85.5,
      "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 143.4,
+     "tiba_menit_sisi_aman": 102.9,
+     "tinggi_hi_m": 7,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7635,6 +11819,12 @@
      "tiba_menit_sisi_aman": 76.1,
      "tinggi_hi_m": 2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 128.5,
+     "tiba_menit_sisi_aman": 92.2,
+     "tinggi_hi_m": 9.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7654,6 +11844,12 @@
      "tiba_menit": 89.5,
      "tiba_menit_sisi_aman": 64.2,
      "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 113.2,
+     "tiba_menit_sisi_aman": 81.2,
+     "tinggi_hi_m": 9.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7675,6 +11871,12 @@
      "tiba_menit_sisi_aman": 80.6,
      "tinggi_hi_m": 1.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 136.5,
+     "tiba_menit_sisi_aman": 98,
+     "tinggi_hi_m": 5.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7694,6 +11896,12 @@
      "tiba_menit": 83.6,
      "tiba_menit_sisi_aman": 60,
      "tinggi_hi_m": 2.2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 106.1,
+     "tiba_menit_sisi_aman": 76.1,
+     "tinggi_hi_m": 10.2,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7715,6 +11923,12 @@
      "tiba_menit_sisi_aman": 62.9,
      "tinggi_hi_m": 1.8,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 111.9,
+     "tiba_menit_sisi_aman": 80.3,
+     "tinggi_hi_m": 8.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7735,6 +11949,12 @@
      "tiba_menit_sisi_aman": 70.2,
      "tinggi_hi_m": 1.9,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 120.2,
+     "tiba_menit_sisi_aman": 86.3,
+     "tinggi_hi_m": 8.9,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7748,6 +11968,12 @@
      "tiba_menit": 128.6,
      "tiba_menit_sisi_aman": 92.3,
      "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 152.8,
+     "tiba_menit_sisi_aman": 109.7,
+     "tinggi_hi_m": 5.8,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7769,6 +11995,12 @@
      "tiba_menit_sisi_aman": 70.9,
      "tinggi_hi_m": 1.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 123,
+     "tiba_menit_sisi_aman": 88.3,
+     "tinggi_hi_m": 8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7789,6 +12021,12 @@
      "tiba_menit_sisi_aman": 74.9,
      "tinggi_hi_m": 1.5,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 128.5,
+     "tiba_menit_sisi_aman": 92.2,
+     "tinggi_hi_m": 7.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7802,6 +12040,12 @@
      "tiba_menit": 126,
      "tiba_menit_sisi_aman": 90.4,
      "tinggi_hi_m": 2,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 148.4,
+     "tiba_menit_sisi_aman": 106.5,
+     "tinggi_hi_m": 9.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7823,6 +12067,12 @@
      "tiba_menit_sisi_aman": 58.8,
      "tinggi_hi_m": 2.2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 104.4,
+     "tiba_menit_sisi_aman": 74.9,
+     "tinggi_hi_m": 10,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7843,6 +12093,12 @@
      "tiba_menit_sisi_aman": 58.9,
      "tinggi_hi_m": 1.2,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 106.3,
+     "tiba_menit_sisi_aman": 76.3,
+     "tinggi_hi_m": 5.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7856,6 +12112,12 @@
      "tiba_menit": 120.7,
      "tiba_menit_sisi_aman": 86.6,
      "tinggi_hi_m": 1.4,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 144.9,
+     "tiba_menit_sisi_aman": 104,
+     "tinggi_hi_m": 7,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7877,6 +12139,12 @@
      "tiba_menit_sisi_aman": 66.5,
      "tinggi_hi_m": 2.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 115.1,
+     "tiba_menit_sisi_aman": 82.6,
+     "tinggi_hi_m": 9.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7890,6 +12158,12 @@
      "tiba_menit": 133.9,
      "tiba_menit_sisi_aman": 96.1,
      "tinggi_hi_m": 1.5,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 145.1,
+     "tiba_menit_sisi_aman": 104.1,
+     "tinggi_hi_m": 9.6,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7911,6 +12185,12 @@
      "tiba_menit_sisi_aman": 85,
      "tinggi_hi_m": 1.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 129.9,
+     "tiba_menit_sisi_aman": 93.2,
+     "tinggi_hi_m": 10.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7930,6 +12210,12 @@
      "tiba_menit": 112,
      "tiba_menit_sisi_aman": 80.4,
      "tinggi_hi_m": 1.8,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 126,
+     "tiba_menit_sisi_aman": 90.4,
+     "tinggi_hi_m": 11.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -7951,6 +12237,12 @@
      "tiba_menit_sisi_aman": 79.1,
      "tinggi_hi_m": 1.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 123.7,
+     "tiba_menit_sisi_aman": 88.8,
+     "tinggi_hi_m": 10.4,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7965,6 +12257,12 @@
      "tiba_menit_sisi_aman": 91.9,
      "tinggi_hi_m": 1.6,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 139.1,
+     "tiba_menit_sisi_aman": 99.8,
+     "tinggi_hi_m": 10,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -7978,6 +12276,12 @@
      "tiba_menit": 119.3,
      "tiba_menit_sisi_aman": 85.6,
      "tinggi_hi_m": 1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 143.3,
+     "tiba_menit_sisi_aman": 102.8,
+     "tinggi_hi_m": 5.2,
      "jiwa_pesisir_rendah_lt30": 0
     }
    },
@@ -8015,6 +12319,12 @@
      "tiba_menit_sisi_aman": 92.9,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 153.5,
+     "tiba_menit_sisi_aman": 110.2,
+     "tinggi_hi_m": 5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -8028,6 +12338,12 @@
      "tiba_menit": 119.8,
      "tiba_menit_sisi_aman": 86,
      "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 143.8,
+     "tiba_menit_sisi_aman": 103.2,
+     "tinggi_hi_m": 4.8,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -8043,6 +12359,12 @@
      "tiba_menit_sisi_aman": 92.7,
      "tinggi_hi_m": 1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 153.2,
+     "tiba_menit_sisi_aman": 109.9,
+     "tinggi_hi_m": 2.8,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -8056,6 +12378,12 @@
      "tiba_menit": 121.6,
      "tiba_menit_sisi_aman": 87.3,
      "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 145.6,
+     "tiba_menit_sisi_aman": 104.5,
+     "tinggi_hi_m": 5.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -8077,6 +12405,12 @@
      "tiba_menit_sisi_aman": 58.8,
      "tinggi_hi_m": 1.7,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 105.9,
+     "tiba_menit_sisi_aman": 76,
+     "tinggi_hi_m": 7.5,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -8097,6 +12431,12 @@
      "tiba_menit_sisi_aman": 82.5,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 139,
+     "tiba_menit_sisi_aman": 99.8,
+     "tinggi_hi_m": 5.6,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -8110,6 +12450,12 @@
      "tiba_menit": 121.4,
      "tiba_menit_sisi_aman": 87.1,
      "tinggi_hi_m": 1.1,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 145.4,
+     "tiba_menit_sisi_aman": 104.3,
+     "tinggi_hi_m": 5.3,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }
@@ -8182,6 +12528,12 @@
      "tiba_menit_sisi_aman": 88.3,
      "tinggi_hi_m": 1.1,
      "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 147.3,
+     "tiba_menit_sisi_aman": 105.7,
+     "tinggi_hi_m": 5.7,
+     "jiwa_pesisir_rendah_lt30": 0
     }
    }
   },
@@ -8195,6 +12547,12 @@
      "tiba_menit": 121,
      "tiba_menit_sisi_aman": 86.8,
      "tinggi_hi_m": 1.3,
+     "jiwa_pesisir_rendah_lt30": 0
+    },
+    "jawa-mmaks": {
+     "tiba_menit": 145.2,
+     "tiba_menit_sisi_aman": 104.2,
+     "tinggi_hi_m": 6.4,
      "jiwa_pesisir_rendah_lt30": 0
     }
    }

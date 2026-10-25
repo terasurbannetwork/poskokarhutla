@@ -1,0 +1,593 @@
+[
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama"
+ },
+ {
+  "id": "bnpb-2023-standar-data",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juknis-nomor-7-tahun-2023",
+  "verifikasi": "primer",
+  "note": "dipakai Bab 3 rehab: daftar data prasarana vital termasuk jaringan air bersih/minum dan jaringan jalan dan jembatan hlm. PDF 8 butir 5e; formulir jembatan RB/RS/RR hlm. 12; jalan menurut status nasional sampai desa hlm. 23–24; definisi jembatan dan klasifikasi jenis kerusakan hlm. 29 dan 38; korpus data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json (salinan non-JDIH)"
+ },
+ {
+  "id": "cianjur-2022-r3p",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   },
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "BNPB (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka ulang 25 Okt 2026 (pdftotext). Ditetapkan Keputusan Bupati Cianjur No 360/KEP.118-BAPPERIDA/2023 (halaman awal); sumber tabel 'Hasil Analisi Tim Jitupasna Kabupaten Cianjur, 2023'. Rumah rusak 114.315 (20.969 RB, 24.584 RS, 68.762 RR) menurut SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II hasil reviu BNPB (SK data rumah, bukan penetapan R3P), hlm. PDF 55–56; subsektor air bersih dan sanitasi kerusakan Rp1,90 miliar, kerugian Rp0,40 miliar (Tabel 3.8); SPAM perkotaan dalam subsektor SDA Rp41,60 miliar; Tabel 3.9 subsektor SDA berjumlah Rp53,2 miliar tetapi baris totalnya memakai total sektor infrastruktur Rp214,60 miliar (Tabel 3.5); teks 3.1.2.4 salah ketik kerugian 690,57 untuk 90,57 miliar; jembatan kabupaten Rp6,69 miliar dan jembatan desa Rp19,71 miliar kerusakan (Tabel 3.6); semua dalam rupiah, bukan unit atau jiwa"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dipakai Bab 3 rehab: Pasal 2 ayat (2)–(3) 90 hari dan dimulai saat tanggap darurat (hlm. 4); Pasal 8 sektor infrastruktur memuat sumber daya air, air bersih dan sanitasi (hlm. 7); Pasal 10 jangka waktu paling lama 3 tahun (hlm. 10)",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "bnpb-2011-pdna",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12,
+     8
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pasca Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2011pbbnpb015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dipakai Bab 3 rehab: pengkajian akibat bencana meliputi kerusakan, kerugian, gangguan akses, gangguan fungsi, risiko; nilai kerusakan = unit fisik rusak x harga satuan (hlm. 40)"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "bnpb-2023-satudata",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2023 tentang Satu Data Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 21",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 1 angka 3 dan 6 dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2023.json"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2025.json (hlm. 84, 128, 133)"
+ },
+ {
+  "id": "pu-2026-spam-sumatra-feb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "container-title": "ePPID Kementerian PU",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 2 Februari 2026: 143 dari 176 SPAM terdampak berfungsi (judul menulis 142); 537 unit sarana darurat; sumur bor 25 unit air dalam (Ditjen SDA) dan 103 unit (Ditjen Cipta Karya); target permanen 'bertahap hingga Agustus 2028' hanya untuk 60 SPAM Sumatera Barat"
+ },
+ {
+  "id": "pu-2026-infrastruktur-sumatra-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera",
+  "container-title": "ePPID Kementerian PU",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 7 Mei 2026: 178 SPAM terdampak, sekitar 95,5% fungsional; 2.421 ruas jalan daerah terdampak, sekitar 94% fungsional; 1.181 jembatan daerah terdampak, sekitar 67% dapat difungsikan; jalan dan jembatan nasional terdampak 100% fungsional; tidak memuat target permanen"
+ },
+ {
+  "id": "binamarga-2025-aceh-14-jembatan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, Balai Pelaksanaan Jalan Nasional Aceh"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     3
+    ]
+   ]
+  },
+  "title": "Dampak Bencana Banjir dan Longsor Sumatera, Kementerian PU Percepat Penanganan 14 Jembatan Rusak di Aceh",
+  "container-title": "Situs Ditjen Bina Marga",
+  "URL": "https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "14 jembatan roboh atau terputus di jaringan jalan nasional Aceh, kondisi sampai 1 Desember 2025"
+ },
+ {
+  "id": "dpr-2026-rumah-sumatra",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pusat Analisis Keparlemenan, Badan Keahlian DPR RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1
+    ]
+   ]
+  },
+  "title": "Percepatan Rehabilitasi dan Rekonstruksi Rumah Pascabencana Sumatra",
+  "container-title": "Info Singkat Vol. XVIII No. 2",
+  "URL": "https://berkas.dpr.go.id/pusaka/files/info_singkat/Info%20Singkat-XVIII-2-II-P3DI-Januari-2026-230.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Agregator: angka BNPB sekitar 147.000 'hingga 17 Desember 2025' dan PKP sekitar 189.308 per 9 Januari 2026 dirujuk DPR ke berita media (menurut pemeriksa: Antara 16 Des 2025 dan housingestate.id 14 Jan 2026), jadi rantainya lembaga, media, DPR. Primer hanya untuk penilaian DPR (selisih 'pemutakhiran yang belum sepenuhnya sinkron'). PDF menolak akses saat dicek ulang 25 Okt 2026."
+ },
+ {
+  "id": "kontan-2025-bnpb-498-jembatan",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kontan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Update BNPB: Korban Tewas Banjir Sumatra Bertambah Jadi 969 Jiwa, 252 Hilang",
+  "container-title": "Kontan",
+  "URL": "https://nasional.kontan.co.id/news/update-bnpb-korban-tewas-banjir-sumatra-bertambah-jadi-969-jiwa-252-hilang",
+  "verifikasi": "sekunder",
+  "note": "498 jembatan rusak mengutip BNPB; tidak dibuka ulang sesi ini (dari riset B [36]); hanya untuk lampiran rekonsiliasi (R3)"
+ },
+ {
+  "id": "esdm-2019-sumur-750",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     6,
+     27
+    ]
+   ]
+  },
+  "title": "Atasi Krisis Air Bersih, 750 Sumur Bor Terbangun di Tahun 2020",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/atasi-krisis-air-bersih-750-sumur-bor-terbangun-di-tahun-2020",
+  "verifikasi": "primer",
+  "note": "dari riset C [15], tidak dibuka ulang sesi ini: 750 sumur Rp429,1 miliar (rencana 2020); sekitar 2.000 jiwa per sumur; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan"
+ },
+ {
+  "id": "setkab-2023-banjarbakula",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     17
+    ]
+   ]
+  },
+  "title": "Diresmikan Presiden Jokowi, SPAM Banjarbakula Suplai Air Minum ke 60 Ribu Rumah",
+  "URL": "https://setkab.go.id/diresmikan-presiden-jokowi-spam-banjarbakula-suplai-air-minum-ke-60-ribu-rumah/",
+  "verifikasi": "primer",
+  "note": "dari riset D [29], tidak dibuka ulang sesi ini: tahap II Rp787 miliar, 500 l/dt; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan"
+ },
+ {
+  "id": "pu-2025-jembatan-gantung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Kementerian PU Genjot Pembangunan 43 Jembatan Gantung Tahun 2025, Progres Fisik Capai 81 Persen",
+  "container-title": "ePPID Kementerian PU",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-genjot-pembangunan-43-jembatan-gantung-tahun-2025-progres-fisik-capai-81-persen",
+  "verifikasi": "primer",
+  "note": "dari riset B [25], tidak dibuka ulang sesi ini: Rp246,36 miliar untuk 43 jembatan gantung 2025; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "bappenas-2006-dala-yogya",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Perencanaan Pembangunan Nasional",
+    "singkatan": "Bappenas"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota D.I. Yogyakarta"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     6
+    ]
+   ]
+  },
+  "title": "Preliminary Damage and Loss Assessment: Yogyakarta and Central Java Natural Disaster",
+  "publisher": "Disajikan pada Pertemuan ke-15 Consultative Group on Indonesia, Jakarta, 14 Juni 2006; diterbitkan daring oleh Bank Dunia",
+  "URL": "http://documents.worldbank.org/curated/en/581581468041086975/pdf/407120ENGLISH01507190Yogya01PUBLIC1.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Laporan bersama Bappenas, pemda DIY, pemda Jawa Tengah, dan mitra internasional; dibaca dari versi teks dokumen yang sama (.../text/407120ENGLISH01507190Yogya01PUBLIC1.txt). Kata pengantar: lebih dari 5.700 meninggal, 40.000–60.000 luka; Tabel 1: 5.716 meninggal; Section II hlm. 12: kerusakan dan kerugian Rp29,1 T (kerusakan Rp22,75 T, kerugian Rp6,40 T); hlm. 15: perumahan Rp15,3 T, 157.000 rumah hancur dan 202.000 rusak; bagian Key Sectoral Facts: 154.000 hancur dan 260.000 rusak. Versi Bahasa Indonesia: http://documents.worldbank.org/curated/en/209611468269394159/pdf/407120INDONESI1ogya1Bahasa01PUBLIC1.pdf"
+ },
+ {
+  "id": "jawapos-2025-bnpb-147-ribu-rumah",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Dinarsa Kurniawan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     17
+    ]
+   ]
+  },
+  "title": "BNPB: Sebanyak 147 ribu lebih rumah rusak akibat bencana di 3 provinsi",
+  "container-title": "JawaPos.com",
+  "URL": "https://www.jawapos.com/nasional/2512160331/bnpb-sebanyak-147-ribu-lebih-rumah-rusak-akibat-bencana-di-3-provinsi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Media; dibuka 25 Okt 2026. Kapusdatinkom BNPB Abdul Muhari di Banda Aceh: lebih dari 147 ribu rumah rusak, data sampai Selasa 16 Des 2025; Aceh 106.058 (RR 46.779, RS 22.951, RB 36.328), Sumut 28.708 (19.651/3.899/5.158), Sumbar 12.451 (6.933/2.959/2.559). Terverifikasi (media); lampiran saja"
+ },
+ {
+  "id": "investortrust-2026-pkp-189308-rumah",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Investortrust"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     11
+    ]
+   ]
+  },
+  "title": "Menteri Ara siapkan 197 titik lahan huntap untuk warga terdampak bencana Sumatra",
+  "container-title": "Investortrust.id",
+  "URL": "https://investortrust.id/national/90976/menteri-ara-siapkan-197-titik-lahan-huntap-untuk-warga-terdampak-bencana-sumatra",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Media; dibuka 25 Okt 2026. Menteri PKP Maruarar Sirait di depan Satgas DPR, Banda Aceh 10 Jan 2026: 189.308 rumah terdampak, data 9 Jan 2026 pukul 17.00 WIB; Aceh RR 64.740, RS 40.103, RB 29.527, hanyut 13.969; Sumut 18.341/3.616/5.149/937; Sumbar 6.627/2.842/2.666/791. Terverifikasi (media); lampiran saja"
+ }
+]

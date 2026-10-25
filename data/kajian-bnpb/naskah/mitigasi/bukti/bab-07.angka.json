@@ -1,0 +1,779 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 7 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-07.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur, atau nilai (atau rendah/tinggi) + pustaka (id di bab-07.pustaka.json).",
+    "Kunci yang sudah ada di data/angka.json atau diusulkan berkas bukti lain tidak diulang (diperiksa mesin). Angka sekunder tidak dimasukkan. Bentuk A diperiksa: tiap jalur menunjuk tepat satu baris dan nilainya sama dengan berkas bukti; untuk entri rentang, nilai/rendah/tinggi dibaca dari kolom berkas. Dicabut 24 Okt 2026 sesuai temuan pemeriksa: ispa.karhutla2015, ispa.karhutla2019, dpr.ispa2019.jumlah_6prov (asal pers, sekunder). Ditahan sampai skenario-hidromet/lantai_jenis.csv ada: dibi.nasional.<jenis>.meninggal_hilang_maks. Kunci *.materiil_batas_bawah diganti nama *.stimulan_rumah_semua_jenis.",
+    "Disusun 24 Oktober 2026."
+  ],
+  "angka": {
+    "hidromet.nasional.musim_2025.kejadian": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2025].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim hujan 1 Okt 2025–30 Apr 2026; kejadian lintas kab dibagi pecahan"
+    },
+    "hidromet.nasional.musim_2025.hilang": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2025].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "lantai musim hujan nasional = 1.506 meninggal + 186 hilang"
+    },
+    "hidromet.nasional.musim_2025.rumah_rs": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2025].rumah_rs",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "rumah rusak sedang musim 2025/2026"
+    },
+    "hidromet.nasional.musim_2025.rumah_rr": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2025].rumah_rr",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "rumah rusak ringan musim 2025/2026"
+    },
+    "hidromet.nasional.musim_2025.menderita": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2025].menderita",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "kolom DIBI menderita; terbesar 18 musim adalah 2008/2009 (9.389.379)"
+    },
+    "hidromet.nasional.terberat.hari_mengungsi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=hari_mengungsi].nilai",
+      "satuan": "jiwa-hari",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "param_banjir.json param.hari_mengungsi",
+      "catatan": "mengungsi x 7 hari (rendah 3, tinggi 30); nilai, rendah, tinggi di kolom berkas",
+      "jalur_rendah": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=hari_mengungsi].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=hari_mengungsi].tinggi"
+    },
+    "hidromet.nasional.terberat.stimulan_rumah_semua_jenis": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "param_banjir.json param.stimulan_rumah_rb/rs/rr",
+      "catatan": "metrik paket bernama materiil_batas_bawah; rumah RB/RS/RR semua jenis x stimulan (50/25/10 jt; 60/30/15 jt); bukan kerugian materiil; didominasi banjir genangan, sehingga tidak tampil di Kartu 7.1 (KERANGKA §2 butir 9 (c): stimulan hanya gempa, longsor, banjir bandang)",
+      "jalur_rendah": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=materiil_batas_bawah].rendah",
+      "jalur_tinggi": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=materiil_batas_bawah].tinggi"
+    },
+    "hidromet.nasional.terberat.meninggal_hilang_tercatat_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=meninggal_hilang_tercatat_longsor].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "komposisi lantai 1.692 per jenis, musim 2025/2026"
+    },
+    "hidromet.nasional.terberat.meninggal_hilang_tercatat_cuaca_ekstrem": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=meninggal_hilang_tercatat_cuaca_ekstrem].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "komposisi lantai 1.692 per jenis, musim 2025/2026"
+    },
+    "hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_bandang": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=meninggal_hilang_tercatat_banjir_bandang].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "komposisi lantai 1.692 per jenis, musim 2025/2026; patahan kategori 2018 dan 2024"
+    },
+    "hidromet.nasional.terberat.meninggal_hilang_tercatat_banjir_longsor": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=meninggal_hilang_tercatat_banjir_longsor].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "komposisi lantai 1.692 per jenis, musim 2025/2026; patahan kategori 2018 dan 2024"
+    },
+    "hidromet.nasional.musim.median_meninggal_hilang": {
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "median meninggal+hilang 18 musim hujan nasional 2008/2009–2025/2026 (skenario-hidromet/musim_hujan.csv); dihitung penyusun bukti",
+      "nilai": 301.5
+    },
+    "hidromet.nasional.musim.kedua_terberat_meninggal_hilang": {
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "musim 2018/2019: 475 meninggal + 125 hilang; lantai 1.692 = 2,8 kali",
+      "nilai": 600
+    },
+    "hidromet.nasional.lantai.rasio_batas_tinggi_model": {
+      "satuan": "kali",
+      "keyakinan": "estimasi-model",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "1.692 tercatat / 954,27 batas tinggi model rasio musim yang sama (kartu_skenario.csv musim_hujan_terberat_tercatat korban_jiwa); model belum diuji balik",
+      "nilai": 1.77
+    },
+    "hidromet.sumatra2025.porsi_musim_2025": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "(1.202 + 140) / 1.692; kasus_sumatra_nov2025 lawan musim_hujan_lantai",
+      "nilai": 79.3
+    },
+    "hidromet.sumatra2025.stimulan_rumah_semua_jenis": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "param_banjir.json param.stimulan_rumah_rb/rs/rr",
+      "catatan": "metrik paket bernama materiil_batas_bawah; stimulan rumah banjir dan longsor tanpa pemisahan jenis; bukan kerugian materiil; tidak tampil di kartu sampai rumah rusak per jenis ada; rendah/tinggi di kolom berkas",
+      "jalur_rendah": "[skenario=kasus_sumatra_nov2025,wilayah=sumatra_aceh_sumut_sumbar,metrik=materiil_batas_bawah].rendah",
+      "jalur_tinggi": "[skenario=kasus_sumatra_nov2025,wilayah=sumatra_aceh_sumut_sumbar,metrik=materiil_batas_bawah].tinggi"
+    },
+    "hidromet.sumatra2025.menderita": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kasus_sumatra_nov2025,wilayah=sumatra_aceh_sumut_sumbar,metrik=terdampak_menderita].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "DIBI 15 Nov–31 Des 2025, Aceh, Sumut, Sumbar; kolom menderita"
+    },
+    "hidromet.nasional.gelombang.lantai_meninggal_hilang": {
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "tahun 2011: 4 meninggal + 32 hilang (kode 103); lantai kartu gelombang, bukan 4 (tahun analog 2021); kandidat lantai per jenis, diganti angka skenario-hidromet/lantai_jenis.csv bila berbeda",
+      "nilai": 36
+    },
+    "dibi.jepara2011.gelombang.hilang": {
+      "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+      "jalur": "[kode=3320,jenis=gelombang_abrasi,tahun=2011].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "satu kejadian, Kab. Jepara; 1 meninggal"
+    },
+    "dibi.puncak2023.kekeringan.meninggal": {
+      "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+      "jalur": "[kode=9405,jenis=kekeringan,tahun=2023].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "Kab. Puncak, Papua Tengah, satu kejadian; lantai korban kekeringan"
+    },
+    "hidromet.nasional.kekeringan.dibi_terdampak_2018": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=nasional,metrik=dibi_terdampak_2018].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "terdampak kekeringan terbesar 2010–2025; pencatatan antartahun tidak seragam (prinsip 7)"
+    },
+    "hidromet.nasional.kekeringan.luas_bahaya_tinggi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kekeringan_2015,wilayah=nasional,metrik=luas_bahaya_tinggi_kekeringan].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK KRB 2022–2026, jumlah 514 kab",
+      "catatan": "Renas Tabel 2.1–2.7: 30.002.272 ha"
+    },
+    "dibi.nasional.kekeringan.terdampak.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,kode_jenis_juklak=105,cakupan=bencana].menderita",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "sementara s.d. 23 Okt 2026; 122 kejadian"
+    },
+    "dibi.nasional.karhutla.kejadian.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,kode_jenis_juklak=106,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "sementara s.d. 23 Okt 2026; 8 meninggal, 6 hilang"
+    },
+    "hidromet.nasional.pasca_elnino.meninggal_hilang_2009": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_pasca_elnino,wilayah=nasional,metrik=meninggal_hilang_2009].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim hujan 2009/2010 dengan ONI NDJ >= 1,5 (El Niño kuat berlangsung); analog operasional 2026/2027, bukan skenario terburuk"
+    },
+    "hidromet.nasional.pasca_elnino.meninggal_hilang_2015": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_pasca_elnino,wilayah=nasional,metrik=meninggal_hilang_2015].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim hujan 2015/2016 dengan ONI NDJ >= 1,5 (El Niño kuat berlangsung); analog operasional 2026/2027, bukan skenario terburuk"
+    },
+    "hidromet.nasional.pasca_elnino.meninggal_hilang_2023": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=musim_hujan_pasca_elnino,wilayah=nasional,metrik=meninggal_hilang_2023].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim hujan 2023/2024 dengan ONI NDJ >= 1,5 (El Niño kuat berlangsung); analog operasional 2026/2027, bukan skenario terburuk"
+    },
+    "hidromet.nasional.musim_berikut.kenaikan_kejadian_2016": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "2016/2017 (2.012) lawan 2015/2016 (1.310); pola tercatat n = 3, patahan kategori 2018",
+      "nilai": 53.6
+    },
+    "hidromet.nasional.musim_berikut.kenaikan_kejadian_2024": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "2024/2025 (4.046,33) lawan 2023/2024 (1.630,5); patahan kategori 2024",
+      "nilai": 148.2
+    },
+    "hidromet.nasional.musim_berikut.kenaikan_kejadian_2010": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "2010/2011 (1.119) lawan 2009/2010 (1.148); meninggal+hilang naik 373 ke 599",
+      "nilai": -2.5
+    },
+    "hidromet.nasional.kalender.porsi_mh_november": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "porsi meninggal+hilang lima jenis musim hujan di bulan November, semua pulau 2008–2026 (skenario-hidromet/kalender_bulanan_pulau.csv); dipengaruhi Sumatra 2025",
+      "nilai": 21.6
+    },
+    "hidromet.nasional.kalender.porsi_kekeringan_jun_sep": {
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "porsi kejadian kekeringan Juni–September, semua pulau 2008–2026 (kalender_bulanan_pulau.csv)",
+      "nilai": 84
+    },
+    "oni.jas_2026.peringkat": {
+      "satuan": "peringkat dari 77",
+      "keyakinan": "terverifikasi",
+      "pustaka": "noaa-2026-oni",
+      "sumber": "NOAA CPC ONI (ERSSTv5)",
+      "catatan": "ONI JAS 2026 = 2,16, tertinggi JAS 1950–2026 (1997: 1,79; 2015: 1,73); dihitung penyusun bukti dari riset/mentah/oni_cpc.txt",
+      "nilai": 1
+    },
+    "cpc.ensodisc_2026_10.peluang_historis_ond": {
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "pustaka": "noaa-cpc-2026-ensodisc",
+      "sumber": "NOAA CPC ENSO Diagnostic Discussion 8 Okt 2026",
+      "catatan": "peluang RONI tiga bulan >= +2,5 °C untuk Okt–Des 2026; El Niño kuat sampai sangat kuat kemungkinan bertahan sampai Jan–Mar 2027",
+      "nilai": 83
+    },
+    "bmkg.musim_2026.persen_atas_normal": {
+      "satuan": "% luas daratan",
+      "keyakinan": "resmi",
+      "pustaka": "bmkg-2026-siaran-musim-hujan",
+      "sumber": "BMKG siaran pers 22 Sep 2026",
+      "catatan": "sifat hujan musim 2026/2027 atas normal di 147 ZOM = 18,55% luas daratan (bukan persen ZOM; siaran tidak menyebut total ZOM); normal 510 ZOM (69,76% luas daratan), bawah normal 42 ZOM (11,69%)",
+      "nilai": 18.55
+    },
+    "bmkg.dasarian_okt1_2026.enso_aso": {
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "sumber": "BMKG Analisis Dinamika Atmosfer Dasarian I Oktober 2026",
+      "catatan": "indeks ENSO tiga bulan ASO; El Niño intensitas sangat kuat",
+      "nilai": 3.08
+    },
+    "bmkg.pdkm_okt2_2026.prov_awas_nasional": {
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "pustaka": "bmkg-2026-dinamika-okt1",
+      "sumber": "BMKG Analisis Dinamika Atmosfer Dasarian I Oktober 2026",
+      "catatan": "provinsi yang memuat sebagian kab/kota berstatus Awas peringatan dini kekeringan meteorologis dasarian II Oktober 2026; dihitung penyusun bukti dari daftar",
+      "nilai": 22
+    },
+    "wmo.2022.rasio_mortalitas": {
+      "satuan": "kali",
+      "keyakinan": "terverifikasi",
+      "pustaka": "wmo-2022-peringatan-dini",
+      "sumber": "WMO siaran pers 13 Okt 2022 (UNDRR–WMO Target G)",
+      "catatan": "mortalitas bencana negara bercakupan peringatan dini terbatas lawan substansial–komprehensif; asosiasi lintas negara, bukan efek kausal; dipakai sebagai R (asumsi-kebijakan)",
+      "nilai": 8
+    },
+    "hidromet.nasional.pd_renas.penurunan_persen": {
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana; Renas 1.c, WMO 2022",
+      "catatan": "1 − faktor; faktor = ((1−0,52)+0,52/8)/((1−0,1106)+0,1106/8) = 0,6034",
+      "nilai": 39.7
+    },
+    "hidromet.nasional.pd_renstra.penurunan_persen": {
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renstra",
+      "sumber": "Pengolahan Pantau Bencana; IKP Renstra, WMO 2022",
+      "catatan": "1 − faktor; faktor = ((1−0,0632)+0,0632/8)/((1−0,061)+0,061/8) = 0,9980; penyebut berbeda dengan Renas 1.c",
+      "nilai": 0.2
+    },
+    "hidromet.nasional.pd_rpjmn.faktor": {
+      "satuan": "faktor",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "sumber": "Pengolahan Pantau Bencana; RPJMN KP 08.04.02, WMO 2022",
+      "catatan": "c0 = 6,00 (baseline RPJMN), c1 = 6,32, R = 8; penurunan 0,30%",
+      "nilai": 0.997
+    },
+    "hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang": {
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "lantai 1.692 dikurangi longsor 202 (KERANGKA §2 butir 10: longsor tidak dihitung)",
+      "nilai": 1490
+    },
+    "hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "1.490 x 0,6034; turun 590,9; batas atas ilustratif",
+      "nilai": 899.1
+    },
+    "hidromet.nasional.lantai_tanpa_longsor.pd_renstra.korban_jiwa": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renstra",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "1.490 x 0,9980; turun 3,0",
+      "nilai": 1487.0
+    },
+    "hidromet.nasional.lantai.pd_renas.korban_jiwa_banjir": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "1.421 x 0,6034; turun 563,6",
+      "nilai": 857.4
+    },
+    "hidromet.nasional.lantai.pd_renas.korban_jiwa_cuaca_ekstrem": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "40 x 0,6034; turun 15,9",
+      "nilai": 24.1
+    },
+    "hidromet.nasional.lantai.pd_renas.korban_jiwa_banjir_bandang": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "26 x 0,6034; turun 10,3; waktu tunggu pendek, R = 8 cenderung melebih-lebihkan",
+      "nilai": 15.7
+    },
+    "hidromet.nasional.gelombang.lantai.pd_renas.korban_jiwa": {
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Pengolahan Pantau Bencana",
+      "catatan": "lantai gelombang 36 (2011) x 0,6034; turun 14,3",
+      "nilai": 21.7
+    },
+    "sipongi.karhutla2015.luas_ha": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=luas_terbakar_sipongi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "SiPongi Kementerian Kehutanan, ditarik 23 Okt 2026",
+      "catatan": "indikasi luas dari titik panas dan verifikasi; Bank Dunia 2,611 juta ha"
+    },
+    "sipongi.karhutla2016.luas_ha": {
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "pustaka": "sipongi-luas",
+      "sumber": "SiPongi, riset/mentah/sipongi_luas_2015_2026.json",
+      "catatan": "jumlah 38 provinsi; tahun sesudah El Niño kuat 2015",
+      "nilai": 438363.19
+    },
+    "sipongi.karhutla2023.luas_ha": {
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "pustaka": "sipongi-luas",
+      "sumber": "SiPongi, riset/mentah/sipongi_luas_2015_2026.json",
+      "catatan": "sama dengan public/data/luas_resmi.json; tahun El Niño",
+      "nilai": 1161192.9
+    },
+    "sipongi.karhutla2024.luas_ha": {
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "pustaka": "sipongi-luas",
+      "sumber": "SiPongi, riset/mentah/sipongi_luas_2015_2026.json; tarik ulang 24 Okt 2026",
+      "catatan": "tahun sesudah El Niño kuat 2023",
+      "nilai": 376805.05
+    },
+    "sipongi.karhutla2026.luas_juli": {
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "pustaka": "sipongi-luas",
+      "sumber": "SiPongi, public/data/luas_resmi.json dan API 24 Okt 2026",
+      "catatan": "tahun berjalan s.d. Juli 2026; tidak dibandingkan dengan tahun penuh",
+      "nilai": 202010.96
+    },
+    "bankdunia.karhutla2015.kerugian_usd": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=kerugian_bank_dunia].nilai",
+      "satuan": "USD",
+      "keyakinan": "terverifikasi",
+      "sumber": "World Bank (2016) The Cost of Fire, PDF documents1.worldbank.org hlm. PDF 3 (dibuka 24 Okt 2026)",
+      "catatan": "kerusakan + kerugian 8 provinsi; Rp221 T; biaya regional dan global tidak termasuk"
+    },
+    "bankdunia.karhutla2015.pct_pdb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=kerugian_bank_dunia_pct_pdb].nilai",
+      "satuan": "% PDB",
+      "keyakinan": "terverifikasi",
+      "sumber": "World Bank (2016) The Cost of Fire hlm. PDF 6 (dibuka 24 Okt 2026)",
+      "catatan": "PDB 2015"
+    },
+    "bankdunia.karhutla2019.kerugian_usd": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2019,wilayah=nasional,metrik=kerugian_bank_dunia].nilai",
+      "satuan": "USD",
+      "keyakinan": "terverifikasi",
+      "sumber": "World Bank (Des 2019) Indonesia Economic Quarterly Box A.1",
+      "catatan": "kerusakan aset USD 157 juta + kerugian ekonomi USD 5,0 miliar; 8 provinsi Jun–Okt 2019"
+    },
+    "bankdunia.karhutla2019.pct_pdb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2019,wilayah=nasional,metrik=kerugian_bank_dunia_pct_pdb].nilai",
+      "satuan": "% PDB",
+      "keyakinan": "terverifikasi",
+      "sumber": "World Bank (Des 2019) IEQ Box A.1"
+    },
+    "dibi.karhutla2015.meninggal_prov_asap": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=dibi_meninggal_hilang_prov_asap].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "provinsi asap 14/15/16/61/62/63/64/91/93; pembanding setara Bank Dunia 19 (mengutip The Guardian, sekunder); DIBI semua provinsi 24"
+    },
+    "dibi.karhutla2019.meninggal_prov_asap": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2019,wilayah=nasional,metrik=dibi_meninggal_hilang_prov_asap].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "Banyuasin 4 Jan 2019, di luar musim asap"
+    },
+    "renas.krb.luas_karhutla": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=luas_bahaya_total_krb_karhutla].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.1–2.7 via riset A §1.4",
+      "catatan": "penduduk terpapar karhutla tidak disajikan; per kab tidak tersedia"
+    },
+    "renas.krb.luas_tinggi_karhutla": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=luas_bahaya_tinggi_krb_karhutla].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.1–2.7 via riset A §1.4"
+    },
+    "irbi.nasional.2025.banjir_kosong": {
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-irbi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI 2025",
+      "catatan": "irbi/irbi_kab_2025.csv kolom banjir kosong; 510 bernilai; sel kosong = tidak dinilai",
+      "nilai": 4
+    },
+    "irbi.nasional.2025.abrasi_kosong": {
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-irbi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI 2025",
+      "catatan": "irbi/irbi_kab_2025.csv kolom abrasi kosong; 326 bernilai",
+      "nilai": 188
+    },
+    "hidromet.nasional.lantai.rasio_musim_kedua": {
+      "nilai": 2.8,
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah 1.692 / 600 (musim 2018/2019); bab-07 P1 Inti"
+    },
+    "hidromet.nasional.lantai.rasio_median": {
+      "nilai": 5.6,
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah 1.692 / 301,5 (median 18 musim); bab-07 tabel temuan"
+    },
+    "hidromet.nasional.musim_2025.tanpa_sumatra": {
+      "nilai": 350,
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah 1.692 - 1.342 (kasus Sumatra Nov 2025); bab-07 P1 Inferensi"
+    },
+    "hidromet.nasional.lanina.meninggal_hilang_tercatat": {
+      "nilai": 537,
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah 465 + 72, musim La Niña analog 2020/2021; bab-07 P1 temuan 5"
+    },
+    "hidromet.nasional.kalender.porsi_karhutla_jul_okt": {
+      "nilai": 69,
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-dibi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah kalender_bulanan_pulau.csv, porsi kejadian karhutla Juli–Oktober 2008–2026; bab-07 P2 temuan 8"
+    },
+    "koplitz.asap2015.rasio_tercatat": {
+      "nilai": 7600,
+      "satuan": "kali",
+      "keyakinan": "estimasi-model",
+      "pustaka": "koplitz-2016-asap",
+      "sumber": "Koplitz dkk. (2016) dibagi DIBI BNPB",
+      "catatan": "olah 91.600 / 12 (meninggal DIBI provinsi asap 2015); bab-07 P4 Inti"
+    },
+    "hidromet.nasional.musim_2019.mengungsi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=uji_kepekaan_bekasi,wilayah=nasional,metrik=mengungsi_2019_dengan_rekaman].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim 2019/2020 dengan rekaman Kota Bekasi 1 Jan 2020; bab-07 P1 temuan 6"
+    },
+    "hidromet.nasional.musim_2019.mengungsi_tanpa_bekasi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=uji_kepekaan_bekasi,wilayah=nasional,metrik=mengungsi_2019_tanpa_rekaman].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tanpa rekaman Kota Bekasi (status tidak terbukti); penyisihan asumsi-kebijakan"
+    },
+    "hidromet.nasional.musim_2009.mengungsi": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2009].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim El Niño kuat 2009/2010"
+    },
+    "hidromet.nasional.musim_2015.mengungsi": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2015].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim El Niño kuat 2015/2016"
+    },
+    "hidromet.nasional.musim_2023.mengungsi": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2023].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim El Niño kuat 2023/2024"
+    },
+    "hidromet.nasional.musim_2009.rumah_rb": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2009].rumah_rb",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim El Niño kuat 2009/2010"
+    },
+    "hidromet.nasional.musim_2015.rumah_rb": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,tahun_awal=2015].rumah_rb",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "musim El Niño kuat 2015/2016"
+    },
+    "dibi.nasional.kekeringan.kejadian.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,kode_jenis_juklak=105,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "sementara s.d. 23 Okt 2026"
+    },
+    "dibi.nasional.karhutla.meninggal.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,kode_jenis_juklak=106,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "sementara s.d. 23 Okt 2026"
+    },
+    "dibi.nasional.karhutla.hilang.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,kode_jenis_juklak=106,cakupan=bencana].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "sementara s.d. 23 Okt 2026"
+    },
+    "dibi.nasional.kekeringan.terdampak.2015": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2015,kode_jenis_juklak=105,cakupan=bencana].menderita",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun kedua episode El Niño 2014–2016; bab-07 P2 temuan 14"
+    },
+    "hidromet.nasional.gelombang.analog_2021.meninggal_hilang": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=meninggal_hilang_tercatat_gelombang_abrasi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog paket 2021; bukan lantai"
+    },
+    "hidromet.nasional.gelombang.analog_2021.kejadian": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=kejadian_gelombang_abrasi].nilai",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog 2021"
+    },
+    "hidromet.nasional.rob.analog_2021.kejadian": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=kejadian_rob].nilai",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog 2021"
+    },
+    "hidromet.nasional.gelombang_rob.analog_2021.mengungsi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "gelombang, abrasi, dan rob tahun analog 2021"
+    },
+    "hidromet.nasional.gelombang_rob.analog_2021.rumah_rb": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=rumah_rusak_berat].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog 2021"
+    },
+    "hidromet.nasional.gelombang_rob.analog_2021.rumah_rs": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=rumah_rusak_sedang].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog 2021"
+    },
+    "hidromet.nasional.gelombang_rob.analog_2021.rumah_rr": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=rumah_rusak_ringan].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tahun analog 2021"
+    },
+    "inarisk.krb.gelombang.terpapar_jumlah_kab": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=terpapar_krb_gelombang_abrasi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, KRB 2022–2026, jumlah 514 kab/kota",
+      "catatan": "beda dengan Renas 4.129.597 dan API nasional 4.104.943"
+    },
+    "inarisk.krb.gelombang.terpapar_api_nasional": {
+      "nilai": 4104943,
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2026-krb",
+      "sumber": "InaRISK BNPB, API KRB nasional",
+      "catatan": "bab-07 Bahan subbab temuan 3; skenario-hidromet/README.md §Angka yang bertentangan"
+    },
+    "inarisk.krb.gelombang.kerugian_jumlah_kab": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=kerugian_potensi_krb_gelombang_abrasi].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, KRB 2022–2026, jumlah 514 kab/kota",
+      "catatan": "potensi kerugian, batas atas, bukan kerugian kejadian"
+    },
+    "renas.krb.kerugian_gelombang_abrasi_rp": {
+      "nilai": 21624931000000,
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Renas PB 2025–2029 Tabel 2.1–2.7",
+      "catatan": "padanan rupiah renas.krb.kerugian_gelombang_abrasi (21.624.931 juta Rp)"
+    },
+    "renas.krb.kerugian_karhutla_rp": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=karhutla_2015,wilayah=nasional,metrik=kerugian_potensi_krb_karhutla].nilai",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.1–2.7",
+      "catatan": "padanan rupiah renas.krb.kerugian_karhutla; potensi kerugian, batas atas"
+    },
+    "renas.krb.kerugian_cuaca_ekstrem_rp": {
+      "nilai": 2744332847000000,
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "pustaka": "bnpb-2025-renas",
+      "sumber": "Renas PB 2025–2029 Tabel 2.1–2.7",
+      "catatan": "Rp2.744,33 T (riset A §1.4); registri bab-03 renas.krb.kerugian_cuaca_ekstrem bersatuan Rp padahal nilainya juta Rp"
+    },
+    "hidromet.nasional.gelombang.luas_bahaya_tinggi": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=gelombang_abrasi_rob,wilayah=nasional,metrik=luas_bahaya_tinggi_gelombang_abrasi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, KRB 2022–2026, jumlah 514 kab/kota",
+      "catatan": "Renas 303.252 ha"
+    },
+    "haque.siklon.penurunan_kali": {
+      "nilai": 100,
+      "satuan": "kali",
+      "keyakinan": "terverifikasi",
+      "pustaka": "haque-2012-siklon",
+      "sumber": "Haque dkk. (2012), Bull. WHO 90: 150–156",
+      "catatan": "kematian siklon Bangladesh turun lebih dari 100 kali 1970–2007; efek tiap komponen belum terpisah; bab-07 P3 temuan 11"
+    },
+    "dibi.nasional.longsor.meninggal.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,kode_jenis_juklak=102,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+      "catatan": "tanah longsor 2024 hanya 207 kejadian (cakupan bencana) tetapi 213 meninggal; tanda patahan pencatatan 2024 (bukti bab-07 bahan subbab butir 6); ditambah penulis bab 25 Okt 2026"
+    }
+  }
+}

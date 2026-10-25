@@ -1,0 +1,169 @@
+{
+ "nama": "bab05-peta-status-irbi-2025",
+ "keterangan": "Status Indeks Risiko Bencana Indonesia per kab/kota, 2025",
+ "sumber": "InaRISK BNPB, IRBI 2025, kolom status",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  220.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.78
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Sedang (345)",
+   "jenis": "kotak",
+   "warna": "#E8894A"
+  },
+  {
+   "label": "Tinggi (169)",
+   "jenis": "kotak",
+   "warna": "#8F3F07"
+  }
+ ],
+ "hex": {
+  "#8F3F07": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#E8894A": [
+   "skala",
+   "legenda"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 134.58,
+   "y": 186.24,
+   "w": 59.8,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-134",
+   "teks": "Kelas IRBI BNPB"
+  },
+  {
+   "x": 134.58,
+   "y": 185.24,
+   "w": 59.8,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-134",
+   "teks": "Kelas IRBI BNPB"
+  },
+  {
+   "x": 218.39,
+   "y": 186.24,
+   "w": 47.72,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-204",
+   "teks": "Sedang (345)"
+  },
+  {
+   "x": 204.39,
+   "y": 185.24,
+   "w": 61.72,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-204",
+   "teks": "Sedang (345)"
+  },
+  {
+   "x": 290.11,
+   "y": 186.24,
+   "w": 43.02,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-276",
+   "teks": "Tinggi (169)"
+  },
+  {
+   "x": 276.11,
+   "y": 185.24,
+   "w": 57.02,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-276",
+   "teks": "Tinggi (169)"
+  },
+  {
+   "x": 3,
+   "y": 198.24,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 207.84,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "nasional",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "api",
+  "batas": null,
+  "label": [
+   "Sedang",
+   "Tinggi"
+  ],
+  "warna": [
+   "skala.api.3",
+   "skala.api.5"
+  ],
+  "rumus": "kelas resmi dari kolom status_total_resmi",
+  "resmi": true,
+  "jumlah": [
+   345,
+   169
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

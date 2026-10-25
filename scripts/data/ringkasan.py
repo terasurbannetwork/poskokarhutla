@@ -44,11 +44,15 @@ def ringan_penerbangan(P, hari):
 
 
 def titik_hari(hs, provinsi):
-    """= ringkasan.js hariTitik(): sensor utama, provinsi pantauan, laci 24 jam mundur dari acuan, paling lama 14 hari"""
-    per, jmin, utama = {}, 0, set(hs["sensor_utama"])
+    """= ringkasan.js hariTitik(): deteksi yang dihitung (kolom "hitung": lokasi unik per hari WIB, titik_unik.py), provinsi pantauan,
+    laci 24 jam mundur dari acuan, paling lama 14 hari"""
+    per, jmin = {}, 0
+    # berkas lama tanpa kolom "hitung" (harian.py gagal sesudah 25 Okt 2026): sensor_utama + keyakinan_min seperti dulu
+    ih = hs["kolom"].index("hitung") if "hitung" in hs.get("kolom", []) else None
+    utama, ymin = set(hs.get("sensor_utama") or []), hs.get("keyakinan_min", 0)
     for b in hs["baris"]:
         jmin = min(jmin, b[2])
-        if hs["wilayah"][b[6]].split("|")[0] not in provinsi or b[3] not in utama:
+        if hs["wilayah"][b[6]].split("|")[0] not in provinsi or not (b[ih] if ih is not None else b[3] in utama and b[5] >= ymin):
             continue
         i = max(0, math.ceil(-b[2] / 24) - 1)
         per[i] = per.get(i, 0) + 1
@@ -95,9 +99,12 @@ def uji():
     assert m == {"prov": {"14": {"ambang": {"0": 0, "1": 1, "2": 2}}}}, m
     p = ringan_penerbangan({"kejadian": [{"tgl": "2026-09-01", "bandara": "A"}, {"tgl": "2026-10-10", "bandara": "B", "x": 1}]}, dt.date(2026, 10, 14))
     assert p["kejadian"] == [{"tgl": "2026-10-10", "bandara": "B"}], p
-    hs = {"acuan": "A", "sensor_utama": ["N"], "wilayah": ["14|x|y", "99|x|y"],
-          "baris": [[0, 0, -1, "N", 0, 0, 0, ""], [0, 0, -25, "N", 0, 0, 0, ""], [0, 0, -30, "M", 0, 0, 0, ""], [0, 0, -2, "N", 0, 0, 1, ""], [0, 0, -72, "N", 0, 0, 0, ""]]}
-    assert titik_hari(hs, {"14": "Riau"}) == {"acuan": "A", "v": [1, 1, 1]}, titik_hari(hs, {"14": "Riau"})
+    hs = {"acuan": "A", "kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"], "wilayah": ["14|x|y", "99|x|y"],
+          "baris": [[0, 0, -1, "N", 0, 1, 0, "", 1], [0, 0, -25, "N", 0, 1, 0, "", 0], [0, 0, -30, "M", 0, 1, 0, "", 0], [0, 0, -2, "N", 0, 1, 1, "", 1], [0, 0, -72, "N", 0, 1, 0, "", 1]]}
+    # laci kedua hanya berisi baris hitung=0 (lokasi yang sama sudah dihitung, atau keyakinan rendah): 0; provinsi 99 bukan pantauan
+    assert titik_hari(hs, {"14": "Riau"}) == {"acuan": "A", "v": [1, 0, 1]}, titik_hari(hs, {"14": "Riau"})
+    lama = {"acuan": "A", "sensor_utama": ["N"], "keyakinan_min": 1, "wilayah": hs["wilayah"], "baris": [b[:8] for b in hs["baris"]]}
+    assert titik_hari(lama, {"14": "Riau"})["v"] == [1, 1, 1], "berkas lama tanpa kolom hitung harus jatuh ke sensor_utama + keyakinan_min"
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import laporan
     laporan.uji()

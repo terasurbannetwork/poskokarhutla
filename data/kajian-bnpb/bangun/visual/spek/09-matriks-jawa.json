@@ -1,0 +1,41 @@
+{
+  "nama": "matriks-banjir-longsor-jawa-2024",
+  "jenis": "matriks",
+  "alasan": "Kuadran dua indeks IRBI terhadap median Jawa: sebar beranotasi diringkas menjadi kisi 2 x 2 bernomor, bentuk di luar tabel B5.10",
+  "ukuran": "penuh",
+  "keterangan": "Provinsi Pulau Jawa menurut indeks banjir dan tanah longsor IRBI terhadap median Jawa, 2024",
+  "sumber": "InaRISK BNPB, IRBI 2024; ambang = median enam provinsi",
+  "kolom": {
+    "judul": "IRBI BANJIR 2024",
+    "label": [
+      "di bawah median Jawa",
+      "di atas median Jawa"
+    ]
+  },
+  "baris": {
+    "judul": "IRBI TANAH LONGSOR 2024",
+    "label": [
+      "di bawah median",
+      "di atas median"
+    ]
+  },
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_agregat_provinsi.csv",
+      "saring": {
+        "tahun": "2024",
+        "prov_kode": [
+          "36",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35"
+        ]
+      }
+    },
+    "nama": "prov_nama",
+    "x": "banjir_sederhana",
+    "y": "longsor_sederhana"
+  }
+}

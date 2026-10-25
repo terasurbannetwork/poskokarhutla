@@ -4,34 +4,42 @@ keduanya berdampingan dengan --keluar; ketiga berkas dibawa bersama, satu yang h
 
 Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/satelit-2026-10-21/hitung3.py, hitung_nasional.py, README.md):
 - provinsi = wilayah.Wilayah().cari(lon, lat)[0]; hari = hari kalender WIB (UTC+7) dari acq_date + acq_time.
-- hot   = titik MODIS (Terra+Aqua) + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan (definisi SiPongi; jumlah per provinsi baru terbukti
-  sama untuk Papua Selatan, di provinsi lain deck mencatat selisih besar dengan GIS BNPB). Sesudah S-NPP berhenti (SNPP_AKHIR) NOAA-21 menggantikannya.
-- luas  = titik NOAA-20 + NOAA-21 berkeyakinan n/h x porsi x 4,3 ha.
-  porsi = PORSI, konstanta modul = median nasional (titik S-NPP n/h : titik NOAA-20+21 n/h) pada hari acuan ACUAN (16-19 Okt 2026, S-NPP lengkap) = 0,534.
-  Distribusi S-NPP berhenti 1 Nov 2026, jadi porsi TIDAK PERNAH dihitung dari data di jalur bangun(); ACUAN hanya dipakai --uji untuk membuktikan
-  PORSI = angka deck. Mengubah PORSI membuat baca_lama menolak JSON lama (bangun ulang penuh).
-- belum = luas x bagian titik NOAA-20/21 n/h hari d yang sel 3x3-nya (sel = round(lon/0,003375), round(lat/0,003375)) pernah terdeteksi
-  NOAA-20/21 n/h 12-36 jam sebelumnya. Cadangan (stok): nilai hari terakhir periode, tidak dijumlahkan.
-- padam(d) = luas(d-2) x bagian titik NOAA-20/21 n/h hari d-2 yang sel 3x3-nya tanpa deteksi NOAA-20/21 n/h pada hari d-1 dan d
+- hot   = LOKASI UNIK per hari WIB menurut scripts/data/titik_unik.py (keputusan pemilik 25 Okt 2026): M, S-NPP, NOAA-20, NOAA-21, keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30),
+  tanpa sel industri; sel kisi titik_unik.sel dihitung sekali per hari, wilayah = deteksi paling awal. Aturannya DIIMPOR, bukan disalin. Sengaja tidak sama dengan SiPongi/GIS BNPB
+  (titik mentah semua keyakinan; deck 21 Okt). Tidak ada seri "lokasi" lain: hot sendiri adalah lokasi unik. N21 selalu ikut, jadi pensiun S-NPP (SNPP_AKHIR) tidak mematahkan seri.
+- luas  = (n_N20 x F20 + n_N21 x F21) / 2, n_* = titik NOAA-20 / NOAA-21 berkeyakinan n/h; F20 = 4,12 ha, F21 = 4,16 ha per titik (kalibrasi langsung per satelit,
+  keputusan pemilik 25 Okt 2026; sumber angka: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py + kalibrasi_noaa.json = luas resmi BNPB 2019-2025 dibagi
+  titik N20 n/h per tahun, median 4,12; N21 2024-2025 median 4,16; uji Jan-Jul 2026 vs SiPongi 202.011 ha: lihat UJI_SIPONGI, cara lama (PORSI x 4,3) +20%).
+  SARINGAN: titik di sel sumber panas tetap (titik_palsu.sel_industri(): smelter, tambang, kilang, pembangkit, lepas pantai; kawah tidak) dibuang dari hot
+  DAN dari det (luas, belum, padam, dan pengecekan "bertahan"; keputusan pemilik 25 Okt 2026), SAMA dengan yang dipakai kalibrasi_noaa.py untuk faktor, karena faktor dibagi titik tersaring. Tanpa saringan
+  10,5% titik N20/N21 n/h Jan-Jul 2026 (12.506 dari 118.545 di dalam batas wilayah, hitungan validasi-model 25 Okt dari viirs_noaa20/21.csv) tercampur panas bukan api lahan dan luas Jan-Jul melonjak ke +26% vs SiPongi. Hanya bd (hitungan celah dan bobot() per pita bujur) tidak disaring.
+  Dua satelit dirata-rata (/2). PER PITA BUJUR 5 derajat (bd): di pita tempat satu satelit HILANG (anjlok(): 0 titik n/h sementara satelit lain >= CELAH_MIN titik; lintasan benar-benar
+  tak ada) titik pita itu dihitung dari satelit yang ada saja, bobot penuh F20 atau F21 tanpa dibagi 2; belum dan padam memakai bobot pita yang sama. Rasio rendah tetapi bukan nol
+  (mis. N21 864 vs N20 6.498 di pita 110E 24 Okt 2026) = tepi sapuan, sebaran normal: tetap /2, bukan celah.
+  PORSI (S-NPP : N20+N21, 0,534) TIDAK lagi dipakai luas/belum/padam; hanya deteksi celah S-NPP (celah_hari, CELAH_NAS).
+- belum = (bertahan_N20 x F20 + bertahan_N21 x F21) / 2; "bertahan" = titik hari d yang sel 3x3-nya (sel = round(lon/0,003375), round(lat/0,003375)) pernah terdeteksi
+  NOAA-20/21 n/h 12-36 jam sebelumnya (kedua satelit dipakai untuk mengecek sel). Cadangan (stok): nilai hari terakhir periode, tidak dijumlahkan.
+- padam(d) = bobot yang sama atas titik NOAA-20/21 n/h hari d-2 yang sel 3x3-nya tanpa deteksi NOAA-20/21 n/h pada hari d-1 dan d
   (aturan pemilik: 48 jam tanpa titik = padam). Beda dengan harian.py (72 jam, 168 jam gambut).
 - angka dibulatkan SEKALI per provinsi (setengah ke atas); nasional = jumlah angka provinsi.
 - kabupaten (public/data/peta_karhutla_kab.json, dari jalan yang sama, hari yang sama): luas dan belum per kabupaten = jumlah titik N20/N21 n/h (dan yang bertahan)
-  di kabupaten itu x porsi x 4,3, dibulatkan sekali, setengah ke atas, sendiri-sendiri; hanya hari berluas/belum > 0 ditulis ("d": [[indeks_hari, luas, belum], ...]).
+  di kabupaten itu x bobot per satelit di atas, dibulatkan sekali, setengah ke atas, sendiri-sendiri; hanya hari berluas/belum > 0 ditulis ("d": [[indeks_hari, luas, belum], ...]).
   Kunci = kode provinsi + "|" + nama kabupaten fitur public/geo/kabupaten/<prov>.json (sama dengan index.html aturWilayah); nama itu = properti kab
   public/geo/kecamatan/<prov>.json yang dibaca Wilayah.cari(...)[1]; titik di fitur tanpa nama (danau) = "<prov>|(tanpa nama)". Pembulatan terpisah membuat jumlah kabupaten bergeser dari angka provinsi paling banyak
   (m + 1) / 2 ha per hari (m = jumlah kabupaten tercatat di provinsi itu); aturan itu dipaksa periksa_kab. Padam dan hotspot tidak dipecah per kabupaten.
   Berkas kab membawa salinan hari/celah/celah_turunan/patah provinsi dan celah_luas (= celah_turunan: hari yang luas/belum-nya terdampak celah NOAA-20/21;
   dibaca peta_kab.js lewat PetaKarhutla.siapkan, jadi catatan celah tidak muncul untuk hari yang hanya kehilangan S-NPP).
-- sumber panas tetap (smelter, tambang, kilang, PLTU; public/data/titik_palsu.json) TIDAK disaring, beda dengan harian.py: angka provinsi tetap sama dengan deck BNPB.
+- sumber panas tetap (smelter, tambang, kilang, PLTU; public/data/titik_palsu.json): DISARING dari hot, luas, belum, dan padam (lihat SARINGAN di atas).
+  (Paragraf berikut ditulis sebelum 25 Okt 2026 saat saringan belum ada; dampaknya kini dibuang, bukan dilaporkan.)
   Dampaknya kecil nasional (STATIS: ~1% titik) tetapi nyata di kabupaten tertentu (Halmahera Tengah, Cilacap, Kota Cilegon); teks metode menyebutnya. Menyaringnya
-  menggeser angka provinsi ~1% dan memutus paritas dengan deck (uji_deck), jadi itu keputusan pemilik, bukan perbaikan diam-diam.
+  menggeser angka provinsi ~1% dan memutus paritas dengan deck (uji_deck); itu keputusan pemilik.
 - celah = hari yang lintasan satelitnya hilang di FIRMS (lihat celah_hari): hotspot hari itu terlalu rendah, TIDAK dikoreksi.
-  celah_turunan = hari yang luas/belum/padam-nya mewarisi celah NOAA-20/21 (hari celah + 2 hari sesudahnya; celah hanya S-NPP tidak menurun karena
+  celah_turunan = hari yang luas/belum/padam-nya mewarisi celah NOAA-20/21 di pita mana pun (hari celah + 2 hari sesudahnya; celah hanya S-NPP tidak menurun karena
   luas/belum/padam tak memakai S-NPP). patah = hari WIB pertama yang hot-nya memuat N21 pengganti S-NPP (seri hot berbeda mulai hari itu).
 
 Sumber: FIRMS area API lewat firms_sumber.py (SP bila ada, selain itu NRT; maks 5 hari/panggilan; ~240 panggilan untuk setahun, batas 5000/10 menit
 aman). Antara-kompak per hari UTC di data/raw/peta_karhutla/utc/*.json.gz (di-ignore git): hot per provinsi, hitungan S-NPP/N20/N21 per pita bujur
-5 derajat, dan (sel, menit, provinsi, kabupaten) tiap deteksi N20/N21 n/h (VREK 3; rekaman versi lain diunduh ulang). Tarikan harian hanya mengunduh hari yang belum ada + menghitung ulang JENDELA hari
+5 derajat, dan (sel, menit, provinsi, kabupaten, kecamatan, satelit) tiap deteksi N20/N21 n/h (VREK 5; rekaman versi lain diunduh ulang). Tarikan harian hanya mengunduh hari yang belum ada + menghitung ulang JENDELA hari
 terakhir; hari lebih tua dibawa dari JSON lama (bilangan bulat), jadi cache kosong di CI tidak apa-apa. Berkas provinsi dan kabupaten dibawa sebagai pasangan:
 kab lama yang tak ada atau tak cocok dengan provinsi lama (periksa_kab) membuat bangun ulang penuh (tanpa cache = ~35 menit), jadi keduanya harus dipulihkan bersama.
 
@@ -49,6 +57,8 @@ from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import firms
+import titik_palsu
+import titik_unik
 from firms_sumber import muat_ketersediaan, sumber_hari, unduh
 from wilayah import AKAR, PROVINSI, Wilayah
 
@@ -62,25 +72,31 @@ HOT = {"N", "N20", "Terra", "Aqua"}        # sensor hitungan utama (tanpa N21)
 G = 0.003375                               # sisi sel ~375 m
 LEBAR = 8192                               # kemasan sel: round(lon/G) * LEBAR + round(lat/G) + LEBAR/2 (lat/G ada di -3400..1930)
 NB = [i * LEBAR + j for i in (-1, 0, 1) for j in (-1, 0, 1)]
-HA = 4.3                                   # ha per titik VIIRS 375 m
-PORSI = 0.5337924177818518                 # S-NPP : N20+N21 (n/h) = median 16-19 Okt 2026 (deck BNPB 21 Okt, angka_nasional.json); KONSTAN, lihat docstring
+# Luas per titik, kalibrasi langsung per satelit (keputusan pemilik 25 Okt 2026). SUMBER: data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py -> kalibrasi_noaa.json
+# (F20 = median 2019-2025 luas resmi BNPB / titik N20 n/h tanpa sel sumber panas tetap = 4,12; F21 = median 2024-2025 = 4,16; bulat 2 desimal). Uji: UJI_SIPONGI.
+F20, F21 = 4.12, 4.16
+FAKTOR = {"N20": F20, "N21": F21}          # ha per titik; tersimpan di JSON terbit ("faktor") dan menjadi kunci baca_lama
+# PORSI HANYA untuk deteksi celah S-NPP (celah_hari, CELAH_NAS); TIDAK dipakai luas/belum/padam.
+PORSI = 0.5337924177818518                 # S-NPP : N20+N21 (n/h) = median 16-19 Okt 2026 (deck BNPB 21 Okt, angka_nasional.json); KONSTAN
 ACUAN = ("2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19")   # hari S-NPP lengkap tempat PORSI diukur (hanya --uji yang memakainya)
 SNPP_AKHIR = ("2026-11-01", 780)           # akuisisi S-NPP terakhir yang didistribusikan FIRMS: 1 Nov 2026 13:00 UTC (tanggal UTC, menit); sesudahnya N21 menggantikan
 PATAH = (dt.datetime.fromisoformat(SNPP_AKHIR[0]).replace(tzinfo=UTC) + dt.timedelta(minutes=SNPP_AKHIR[1])).astimezone(WIB).date()   # hari WIB pertama berseri hot baru
 # Hasil --ukur (21 Okt 2026, 2026-01-01..2026-10-20, hari tanpa celah): dipakai teks metode supaya angka kalimat tidak diketik tangan.
-#   porsi_median/porsi_agregat = rasio S-NPP:N20+N21 (n/h) median harian / jumlah setahun; snpp_n21_* = S-NPP : N21 semua keyakinan (UTC-hari; p10/p90 harian).
+#   porsi_median/porsi_agregat = rasio S-NPP:N20+N21 (n/h) median harian / jumlah setahun; snpp_n21_* = S-NPP : N21 sedang/tinggi (UTC-hari; p10/p90 harian).
 UKUR = {"hari": 264, "porsi_median": 0.5, "porsi_agregat": 0.5085, "snpp_n21_hari": 248, "snpp_n21_median": 1.006, "snpp_n21_agregat": 1.0222,
         "snpp_n21_p10": 0.7771, "snpp_n21_p90": 1.25}
 # Hasil --statis (22 Okt 2026, hari WIB 2026-10-20, fikstur deck): titik N20/N21 n/h di Indonesia ("titik") dan yang jatuh di sel sumber panas tetap
 # titik_palsu.sel_industri() ("statis"); "bertahan" = yang terdeteksi lagi 12-36 jam sebelumnya (dasar "belum"). Dipakai teks metode; uji_deck membuktikannya.
+# Uji Jan-Jul 2026 (25 Okt 2026): jumlah luas nasional hari WIB 1 Jan-31 Jul 2026 vs SiPongi; "lama" = selisih cara lama (titik x PORSI x 4,3). Diisi dari hasil bangun ulang penuh.
+UJI_SIPONGI = {"sipongi": 202011, "kita": 219174, "selisih": "8,5", "lama": 20}   # kita = jumlah nasional luas 1 Jan-31 Jul 2026, bangun --penuh 25 Okt 2026 15.34 (+8,5%)
 STATIS = {"hari": "2026-10-20", "titik": 12516, "statis": 130, "bertahan": 6158, "bertahan_statis": 117}
 JENDELA = 4                               # hari terakhir yang dihitung ulang tiap jalan harian
 WARM = 2                                   # hari sebelum hari hitung yang dibutuhkan (belum 36 jam, padam d-2)
 LATENSI = dt.timedelta(hours=4)            # NRT terlambat; hari WIB d dianggap lengkap bila sudah (now - 4 jam) > d
 TRUST = dt.timedelta(hours=12)             # rekaman cache sah bila ditarik >= 12 jam sesudah hari UTC-nya berakhir
 VERSI = 1
-VREK = 4                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
-                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); rekaman versi lain diunduh ulang
+VREK = 10                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
+                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); 5: + s (satelit tiap deteksi N20/N21 n/h: 0 = N20, 1 = N21); 6: deteksi di sel sumber panas tetap (titik_palsu) tidak masuk c/m/p/k/q/kw/s; 7: hot/hk/h21*/tn hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30); 8: hot/hk/h21*/tn juga membuang sel sumber panas tetap; 9: (dibatalkan); 10: hot = lokasi unik titik_unik (z*), hk/h21k/h21t* dihapus; rekaman versi lain diunduh ulang
 VERSI_WIL = 1                              # peta_karhutla_wil.json (kabupaten/kota + kecamatan, jarang)
 PITA = 5                                   # derajat bujur per pita deteksi celah
 # celah (dikalibrasi pada 293 hari 2026): rasio S-NPP : N20+N21 nasional per hari bergeser +-20% secara alami (p10 0,34, p90 0,61) dan per pita
@@ -106,7 +122,8 @@ def tgl(s):
 
 # ---------------------------------------------------------------- rekaman per hari UTC
 def baru_rekaman(tarik):
-    return {"v": VREK, "tarik": tarik, "hot": {}, "h21": {}, "h21t": {}, "tn": 0, "bd": {}, "c": [], "m": [], "p": [], "k": [], "kn": [], "hk": {}, "h21k": {}, "h21tk": {}, "kw": [], "q": []}
+    return {"v": VREK, "tarik": tarik, "h21": {}, "tn": 0, "bd": {}, "c": [], "m": [], "p": [], "k": [], "kn": [], "kw": [], "q": [], "s": [],
+            "zla": [], "zlo": [], "zm": [], "zp": [], "zk": [], "zq": [], "zkn": [], "zkw": []}
 
 
 def wajib(u, ket):
@@ -119,46 +136,57 @@ def wajib(u, ket):
     return w
 
 
-def rekam(baris, wil, tarik):
-    """[(sumber, baris_csv)] -> {tgl_utc: rekaman}. Rekaman: hot {prov: [UTC<17:00, >=17:00]} (M+N+N20 semua keyakinan), h21 sama untuk N21,
-    h21t = h21 hanya akuisisi >= SNPP_AKHIR (pengganti S-NPP di hari S-NPP berhenti), tn = jumlah S-NPP semua keyakinan di provinsi (untuk --ukur),
-    bd {pita bujur: [N, N20, N21 masing-masing (a, b)]} (n/h, di provinsi), c/m/p = sel, menit UTC, provinsi (0 = laut/luar) tiap N20/N21 n/h,
-    k = indeks ke kn (nama kabupaten terurut; "" = laut/luar atau fitur tanpa nama) tiap deteksi yang sama.
-    a/b = bagian hari UTC yang jatuh di hari WIB yang sama / berikutnya (batas 17:00 UTC = 00:00 WIB).
-    S-NPP sesudah SNPP_AKHIR dibuang: N21 yang menggantikannya, tak pernah keduanya."""
-    out, memo, tab = {}, {}, {}
+def sedang(r):
+    """Keyakinan sedang/tinggi (keputusan pemilik 25 Okt 2026): VIIRS n/h, MODIS >= 30. Keyakinan rendah (l, MODIS < 30) tidak dihitung."""
+    c = r["confidence"].strip().lower()
+    if c in ("n", "h"):
+        return True
+    if c in ("l", ""):
+        return False
+    try:
+        return float(c) >= 30
+    except ValueError:
+        return False
+
+
+def rekam(baris, wil, tarik, industri=None):
+    """[(sumber, baris_csv)] -> {tgl_utc: rekaman}. Rekaman:
+    z* = TITIK PANAS (lokasi unik, titik_unik.py): per bagian hari UTC (b = menit >= 17:00 UTC = hari WIB berikutnya) deteksi PERTAMA tiap sel kisi titik_unik.sel dari M, N, N20, N21
+         berkeyakinan sedang/tinggi (sedang()) tanpa sel industri, berurut menit: zla/zlo lintang/bujur, zm menit UTC, zp provinsi ("" = laut/luar), zk/zq indeks ke zkn (nama kabupaten)
+         dan zkw (kunci kecamatan kode|kab|kec); hari_data menggabungkan dua bagian yang membentuk satu hari WIB dan menjatuhkan sel yang sama (deteksi paling awal menang);
+    h21/tn = jumlah N21 / S-NPP sedang/tinggi di provinsi (hanya untuk --ukur);
+    bd {pita bujur: [N, N20, N21 masing-masing (a, b)]} (n/h, di provinsi, tanpa saringan industri; dasar celah dan bobot()), c/m/p = sel, menit UTC, provinsi (0 = laut/luar) tiap N20/N21 n/h
+    tersaring industri, s = satelitnya (0 = N20, 1 = N21), k = indeks ke kn (nama kabupaten terurut; "" = laut/luar atau fitur tanpa nama), q/kw = kecamatan, untuk luas/belum/padam.
+    industri = set titik_palsu.sel_industri() (None = tanpa saringan): titik di sel itu tidak masuk z*/h21/tn maupun c/m/p/k/q/kw/s; hanya bd tetap lengkap.
+    a/b = bagian hari UTC yang jatuh di hari WIB yang sama / berikutnya (batas 17:00 UTC = 00:00 WIB)."""
+    out, memo, tab, kandidat = {}, {}, {}, {}
     for _, r in baris:
         s = r["satellite"]
         if s not in HOT and s not in VIIRS:
             continue
         jam = r["acq_time"].zfill(4)
         m = int(jam[:2]) * 60 + int(jam[2:])
-        sesudah = (r["acq_date"], m) >= SNPP_AKHIR
-        if s == "N" and sesudah:
-            continue
         rec = out.setdefault(r["acq_date"], baru_rekaman(tarik))
         b = int(m >= 1020)
         lon, lat = float(r["longitude"]), float(r["latitude"])
+        ind = bool(industri) and titik_palsu.palsu(lat, lon, industri)   # sel sumber panas tetap: tidak dihitung di mana pun (bd tetap lengkap untuk celah)
+        ok = sedang(r) and not ind
         idn = memo.get((lon, lat))
         if idn is None:
             w = wil.cari(lon, lat)
             idn = memo[(lon, lat)] = w or ("", None, None)
         prov, kab = idn[0], idn[1] or ""   # fitur tanpa nama kabupaten (danau) -> kab ""
         kk = f"{prov}|{idn[1]}|{idn[2]}" if prov else ""   # kunci kecamatan persis seperti layar: kode|kab|kec
-        if s in HOT and prov:
-            rec["hot"].setdefault(prov, [0, 0])[b] += 1
-            rec["hk"].setdefault(kk, [0, 0])[b] += 1
-        if s == "N" and prov:
+        if ok:
+            kandidat.setdefault(r["acq_date"], []).append({"s": "M" if s in ("Terra", "Aqua") else s, "c": 1, "lat": lat, "lon": lon, "m": m, "b": b, "p": prov, "k": kab, "q": kk})
+        if s == "N" and prov and ok:
             rec["tn"] += 1
-        if s == "N21" and prov:   # pengganti S-NPP di hot bila S-NPP berhenti (lihat hari_data)
+        if s == "N21" and prov and ok:
             rec["h21"].setdefault(prov, [0, 0])[b] += 1
-            rec["h21k"].setdefault(kk, [0, 0])[b] += 1
-            if sesudah:
-                rec["h21t"].setdefault(prov, [0, 0])[b] += 1
-                rec["h21tk"].setdefault(kk, [0, 0])[b] += 1
         if s in VIIRS and r["confidence"].lower() in ("n", "h"):
-            if s != "N":
+            if s != "N" and not ind:
                 rec["c"].append(sel(lon, lat)); rec["m"].append(m); rec["p"].append(int(prov) if prov else 0); rec["k"].append(kab)
+                rec["s"].append(int(s == "N21"))
                 t = tab.setdefault(r["acq_date"], {})
                 rec["q"].append(t.setdefault(kk, len(t)) if kk else -1)
                 if kk and len(rec["kw"]) < len(t):
@@ -167,41 +195,46 @@ def rekam(baris, wil, tarik):
                 rec["bd"].setdefault(str(math.floor(lon / PITA) * PITA), [0] * 6)[VIIRS[s] * 2 + b] += 1
         if len(memo) > 200000:
             memo.clear()
-    for rec in out.values():   # k: nama kabupaten tiap deteksi -> indeks ke kn (nama unik terurut) supaya rekaman kecil dan tak bergantung urutan berkas wilayah
-        kn = sorted(set(rec["k"]))
+    for tg, rec in out.items():
+        kn = sorted(set(rec["k"]))   # k: nama kabupaten tiap deteksi -> indeks ke kn (nama unik terurut) supaya rekaman kecil dan tak bergantung urutan berkas wilayah
         ix = {n: i for i, n in enumerate(kn)}
         rec["kn"], rec["k"] = kn, [ix[n] for n in rec["k"]]
+        kand = sorted(kandidat.get(tg, []), key=lambda x: x["m"])
+        zkn, zkw = {}, {}
+        for x in titik_unik.unik(kand, lambda x: x["b"]):   # aturan lokasi unik DIIMPOR dari titik_unik.py, bukan disalin
+            rec["zla"].append(x["lat"]); rec["zlo"].append(x["lon"]); rec["zm"].append(x["m"]); rec["zp"].append(x["p"])
+            rec["zk"].append(zkn.setdefault(x["k"], len(zkn))); rec["zq"].append(zkw.setdefault(x["q"], len(zkw)))
+        rec["zkn"], rec["zkw"] = list(zkn), list(zkw)
     return out
 
 
 def hari_data(rek, d):
-    """Hari WIB d dari rekaman UTC d-1 (>=17:00Z) dan d (<17:00Z): hot {prov: n}, bd {pita: [N, N20, N21]}, det [(sel, menit_mutlak, prov)],
-    kab [nama kabupaten] sejajar dengan det,
-    snpp (False bila S-NPP tak utuh hari itu: tak didistribusikan, atau hari UTC >= SNPP_AKHIR; hot memakai N21 sebagai pengganti S-NPP dan celah S-NPP tak dinilai)."""
-    hot, bd, det, kab, snpp = defaultdict(int), defaultdict(lambda: [0, 0, 0]), [], [], True
-    hotw, detw = defaultdict(int), []   # per kecamatan: hot {kode|kab|kec: n}; detw sejajar dengan det (kunci kecamatan, "" = laut)
+    """Hari WIB d dari rekaman UTC d-1 (>=17:00Z) dan d (<17:00Z): hot {prov: n} = LOKASI UNIK hari itu menurut titik_unik (bagian z* kedua hari UTC digabung berurut waktu, sel yang sama
+    sekali, deteksi paling awal menang), hotw {kode|kab|kec: n} sama per kecamatan, bd {pita: [N, N20, N21]}, det [(sel, menit_mutlak, prov)], sat [0 = N20, 1 = N21], kab [nama kabupaten]
+    dan detw [kunci kecamatan] sejajar dengan det (untuk luas/belum/padam), snpp (False bila S-NPP tak utuh hari itu: tak didistribusikan, atau hari UTC >= SNPP_AKHIR; celah S-NPP tak dinilai)."""
+    hot, bd, det, kab, sat, snpp = defaultdict(int), defaultdict(lambda: [0, 0, 0]), [], [], [], True
+    hotw, detw, z = defaultdict(int), [], []
     for u, bagian in ((d - HARI, 1), (d, 0)):
         r = rek[u.isoformat()]
         ada = (r.get("src") or {}).get("VIIRS_SNPP", True) is not None
         snpp = snpp and ada and u.isoformat() < SNPP_AKHIR[0]
-        for p, ab in r["hot"].items():
-            hot[p] += ab[bagian]
-        for p, ab in r.get("hk", {}).items():
-            hotw[p] += ab[bagian]
-        for p, ab in r.get("h21" if not ada else "h21t", {}).items():   # S-NPP tak ada: seluruh N21 menggantikannya; hari SNPP_AKHIR: N21 sesudah batas
-            hot[p] += ab[bagian]
-        for p, ab in r.get("h21k" if not ada else "h21tk", {}).items():
-            hotw[p] += ab[bagian]
+        for la, lo, m, p, k, i in zip(r["zla"], r["zlo"], r["zm"], r["zp"], r["zk"], r["zq"]):
+            if (m >= 1020) == bool(bagian):
+                z.append({"s": "M", "c": 1, "lat": la, "lon": lo, "p": p, "q": r["zkw"][i]})
         for pita, v in r["bd"].items():
             for i in range(3):
                 bd[pita][i] += v[2 * i + bagian]
         dasar = u.toordinal() * 1440
         kw, q = r.get("kw", []), r.get("q") or [-1] * len(r["c"])
-        for c, m, p, k, i in zip(r["c"], r["m"], r["p"], r["k"], q):
+        for c, m, p, k, i, sa in zip(r["c"], r["m"], r["p"], r["k"], q, r["s"]):
             if (m >= 1020) == bool(bagian):
-                det.append((c, dasar + m, str(p) if p else "")); kab.append(r["kn"][k])
+                det.append((c, dasar + m, str(p) if p else "")); kab.append(r["kn"][k]); sat.append(sa)
                 detw.append(kw[i] if i >= 0 else "")
-    return {"hot": hot, "bd": bd, "det": det, "kab": kab, "snpp": snpp, "hotw": hotw, "detw": detw}
+    for x in titik_unik.unik(z, lambda x: 0):   # urutan z = d-1 bagian b=1 lalu d bagian b=0 = urutan waktu; z sudah lolos dihitung() di rekam()
+        if x["p"]:
+            hot[x["p"]] += 1
+            hotw[x["q"]] += 1
+    return {"hot": hot, "bd": bd, "det": det, "kab": kab, "sat": sat, "snpp": snpp, "hotw": hotw, "detw": detw}
 
 
 def bertahan(det, c, t):
@@ -209,36 +242,76 @@ def bertahan(det, c, t):
     return any(t - 2160 <= x <= t - 720 for o in NB for x in det.get(c + o, ()))
 
 
-def hitung(hd, d, porsi, kab=None):
+NORMAL = [F20 / 2, F21 / 2]
+
+
+def pita_sel(c):
+    """Pita bujur 5 derajat (teks, kunci bd) dari sel c = round(lon/G) * LEBAR + round(lat/G) + LEBAR/2."""
+    return str(math.floor((c // LEBAR) * G / PITA) * PITA)
+
+
+def anjlok(a, b):
+    """(a, b) = titik N20, N21 satu pita -> 'N20' / 'N21' bila satelit itu HILANG di pita itu (0 titik n/h sementara satelit lain >= CELAH_MIN titik: lintasan benar-benar tak ada),
+    selain itu None. Rasio rendah tetapi bukan nol dianggap tepi sapuan (lintasan bergeser antar hari), bukan celah: sebarannya normal, dan rata-rata /2 meredamnya."""
+    if b >= CELAH_MIN and a == 0:
+        return "N20"
+    if a >= CELAH_MIN and b == 0:
+        return "N21"
+    return None
+
+
+def bobot(h):
+    """{pita: [bobot N20, bobot N21]} ha per titik untuk hari WIB h. Pita normal: (F20 / 2, F21 / 2). Pita tempat satu satelit hilang (anjlok(): 0 titik n/h): satelit yang ada
+    dipakai SAJA dengan bobot penuh ([F20, 0] atau [0, F21]); satelit yang hilang dibobot 0. Pita tanpa catatan (laut/luar) dan pita lain: NORMAL (.get(pita, NORMAL))."""
+    out = {}
+    for pita, v in h["bd"].items():
+        x = anjlok(v[1], v[2])
+        out[pita] = [F20, 0.0] if x == "N21" else [0.0, F21] if x == "N20" else NORMAL
+    return out
+
+
+def bw(w, c, s):
+    """Bobot ha titik di sel c dari satelit s (0 = N20, 1 = N21) menurut bobot() hari itu."""
+    return w.get(pita_sel(c), NORMAL)[s]
+
+
+def _ha(titik, w):
+    """Luas (ha) daftar titik [(sel, menit, satelit)] dengan bobot w = bobot()."""
+    return sum(bw(w, c, s) for c, _, s in titik)
+
+
+def hitung(hd, d, kab=None):
     """hd {tanggal: hari_data} berisi d-2..d. -> {prov: [hot, luas, belum, padam]} (float, belum dibulatkan). Urutan operasi sama dengan hitung3.py.
-    kab (dict kosong, opsional) diisi {(prov, kabupaten): [titik N20/21 n/h hari d, yang bertahan 12-36 jam]}: luas/belum kabupaten = jumlah x porsi x 4,3
-    (provinsi = jumlah kabupatennya persis; pembulatan terpisah, lihat periksa_kab)."""
+    luas = jumlah bobot() per satelit atas titik N20/N21 hari d; belum = bobot titik yang bertahan 12-36 jam; padam = bobot titik hari d-2 yang padam (bobot hari d-2).
+    kab (dict kosong, opsional) diisi {(prov, kabupaten): [luas, belum]} (float): jumlah bobot titik kabupaten itu (provinsi = jumlah kabupatennya persis;
+    pembulatan terpisah, lihat periksa_kab)."""
     h0, h1, h2 = hd[d - 2 * HARI], hd[d - HARI], hd[d]
     det = defaultdict(list)
     for h in (h0, h1, h2):
         for c, t, _ in h["det"]:
             det[c].append(t)
     sepi = {c for h in (h1, h2) for c, _, _ in h["det"]}
-    per = lambda h: {k: [(c, t) for c, t, p in h["det"] if p == k] for k in PROVINSI}
+    per = lambda h: {k: [(c, t, s) for (c, t, p), s in zip(h["det"], h["sat"]) if p == k] for k in PROVINSI}
     L_, Lp_ = per(h2), per(h0)
+    w2, w0 = bobot(h2), bobot(h0)
     out = {}
     for k in PROVINSI:
         L, Lp = L_[k], Lp_[k]
-        luas = len(L) * porsi * HA
-        luas_p = len(Lp) * porsi * HA
-        belum = luas * (sum(1 for c, t in L if bertahan(det, c, t)) / len(L) if L else 0)
-        padam = luas_p * (sum(1 for c, t in Lp if not any(c + o in sepi for o in NB)) / len(Lp) if Lp else 0)
+        luas = _ha(L, w2)
+        belum = _ha([x for x in L if bertahan(det, x[0], x[1])], w2)
+        padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
         out[k] = [h2["hot"].get(k, 0), luas, belum, padam]
     if kab is not None:
-        for (c, t, p), nama in zip(h2["det"], h2["kab"]):
+        for (c, t, p), s, nama in zip(h2["det"], h2["sat"], h2["kab"]):
             if p:
-                v = kab.setdefault((p, nama), [0, 0])
-                v[0] += 1
-                v[1] += bertahan(det, c, t)
+                v = kab.setdefault((p, nama), [0.0, 0.0])
+                v[0] += bw(w2, c, s)
+                if bertahan(det, c, t):
+                    v[1] += bw(w2, c, s)
     return out
 
 
-def hitung_wil(hd, d, porsi):
+def hitung_wil(hd, d):
     """Seperti hitung() tetapi per kecamatan dan per kabupaten/kota. -> {kunci: [hot, luas, belum, padam]} (float), kunci "kode|kab|kec" dan "kode|kab"
     (persis properties.kunci di layar); hanya wilayah yang punya hot atau deteksi N20/N21 di d atau d-2. Rumus identik dengan hitung(): luas/belum/padam
     per wilayah memakai titik wilayah itu saja, jadi jumlah kecamatan = kabupaten = provinsi sebelum pembulatan."""
@@ -251,21 +324,22 @@ def hitung_wil(hd, d, porsi):
     kab = lambda k: k.rsplit("|", 1)[0]
     def per(h, f):
         g = defaultdict(list)
-        for (c, t, _), w in zip(h["det"], h["detw"]):
+        for (c, t, _), w, s in zip(h["det"], h["detw"], h["sat"]):
             if w:
-                g[f(w)].append((c, t))
+                g[f(w)].append((c, t, s))
         return g
     hot = {1: defaultdict(int), 0: defaultdict(int)}
     for w, n in h2["hotw"].items():
         hot[0][w] += n; hot[1][kab(w)] += n
+    w2, w0 = bobot(h2), bobot(h0)
     out = {}
     for tingkat, f in ((0, lambda w: w), (1, kab)):
         L_, Lp_ = per(h2, f), per(h0, f)
         for k in set(hot[tingkat]) | set(L_) | set(Lp_):
             L, Lp = L_.get(k, []), Lp_.get(k, [])
-            luas, luas_p = len(L) * porsi * HA, len(Lp) * porsi * HA
-            belum = luas * (sum(1 for c, t in L if bertahan(det, c, t)) / len(L) if L else 0)
-            padam = luas_p * (sum(1 for c, t in Lp if not any(c + o in sepi for o in NB)) / len(Lp) if Lp else 0)
+            luas = _ha(L, w2)
+            belum = _ha([x for x in L if bertahan(det, x[0], x[1])], w2)
+            padam = _ha([x for x in Lp if not any(x[0] + o in sepi for o in NB)], w0)
             out[k] = [hot[tingkat].get(k, 0), luas, belum, padam]
     return out
 
@@ -287,7 +361,7 @@ def porsi_acuan(hd_acuan):
 def celah_hari(h, porsi):
     """Alasan celah (list teks, kosong = tak ada) untuk hari WIB. Dua jenis, keduanya hanya dinilai bila titik harapannya >= CELAH_MIN:
     (1) S-NPP nasional < CELAH_NAS x porsi x (N20+N21): bagian besar lintasan S-NPP hilang di FIRMS (mis. 20 Okt 2026, 13 Okt 2026);
-    (2) satu satelit nyaris hilang di satu pita bujur 5 derajat (<= CELAH_HILANG x harapan): lintasan regional hilang (sapuan satu lintasan ~25 derajat)."""
+    (2) S-NPP nyaris hilang di satu pita bujur 5 derajat (<= CELAH_HILANG x harapan), atau N20/N21 hilang di satu pita (anjlok(): 0 titik sementara satelit lain >= CELAH_MIN): lintasan regional hilang (sapuan satu lintasan ~25 derajat)."""
     pita = sorted(h["bd"].items())
     n, a, b = (sum(v[i] for _, v in pita) for i in range(3))
     alasan = []
@@ -297,9 +371,9 @@ def celah_hari(h, porsi):
     for nama, (n, a, b) in pita:
         if snpp and porsi * (a + b) >= CELAH_MIN and n <= CELAH_HILANG * porsi * (a + b):
             alasan.append(f"S-NPP {nama}E: {n} dari ~{round(porsi * (a + b))}")
-        for sat, x, y in (("N20", a, b), ("N21", b, a)):
-            if y >= CELAH_MIN and x <= CELAH_HILANG * y:
-                alasan.append(f"{sat} {nama}E: {x} vs {y}")
+        sat = anjlok(a, b)
+        if sat:   # luas/belum/padam di pita ini memakai satelit yang ada saja (bobot())
+            alasan.append(f"{sat} {nama}E: {a if sat == 'N20' else b} vs {b if sat == 'N20' else a}")
     return alasan
 
 
@@ -341,6 +415,7 @@ def ambil_pelan(url):
 def unduh_hari(hari_utc, kunci, ket, wil, cache, log=print):
     """Unduh hari UTC (list date terurut) per potongan <= 5 hari, simpan tiap hari yang sukses utuh (semua famili). -> set hari yang sukses."""
     sah = set()
+    industri, _ = titik_palsu.sel_industri()
     i = 0
     while i < len(hari_utc):
         j = i
@@ -350,7 +425,7 @@ def unduh_hari(hari_utc, kunci, ket, wil, cache, log=print):
         for coba in range(3):
             tarik = dt.datetime.now(UTC).isoformat(timespec="seconds")
             baris, ok = unduh(u0, u1, kunci, ambil_pelan, BBOX, ket, famili=FAMILI)
-            rekaman = rekam(baris, wil, tarik)
+            rekaman = rekam(baris, wil, tarik, industri)
             ada = []
             for n in range((u1 - u0).days + 1):
                 u = u0 + n * HARI
@@ -377,48 +452,53 @@ def koma(x, n=3):
     return f"{x:.{n}f}".replace(".", ",")
 
 
+def ribu(x):
+    return f"{x:,}".replace(",", ".")
+
+
 def metode():
-    """Teks metode untuk kaki kartu. Angka kalimat berasal dari konstanta (PORSI, UKUR, CELAH_*), tidak diketik di sini."""
-    bias = (PORSI / UKUR["porsi_agregat"] - 1) * 100
+    """Teks metode untuk kaki kartu. Angka kalimat berasal dari konstanta (F20, F21, UJI_SIPONGI, UKUR, CELAH_*), tidak diketik di sini."""
     h = tgl(STATIS["hari"])
-    statis = (f"Panas industri (smelter, tambang, kilang, pembangkit) dan gunung api ikut terhitung sebagai titik karena tidak disaring. "
+    statis = (f"Panas industri (smelter, tambang, kilang, pembangkit) dibuang dari titik panas, luas, belum padam, dan padam; gunung api (kawah) tidak disaring. "
               f"Pada {h.day} {BULAN[h.month - 1]} {h.year}, {koma(100 * STATIS['statis'] / STATIS['titik'], 1)}% titik NOAA-20/21 nasional "
               f"({koma(100 * STATIS['bertahan_statis'] / STATIS['bertahan'], 1)}% dari yang bertahan) berada di sel sumber panas industri; "
-              f"di kabupaten yang memilikinya, luas terbakar dan belum padam bisa terbaca terlalu tinggi.")
+              f"daftar selnya diperbarui berkala, jadi hari lama tidak dihitung ulang sampai bangun ulang penuh.")
     return {
-        "hot": "Titik panas MODIS (Terra+Aqua) + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan, per hari kalender WIB. "
-               "Definisi sama dengan SiPongi; kesesuaian jumlah per provinsi baru diuji untuk Papua Selatan.",
-        "luas": f"Titik VIIRS NOAA-20 dan NOAA-21 berkeyakinan nominal/tinggi x porsi {koma(PORSI)} x 4,3 ha. Porsi = median rasio titik S-NPP terhadap NOAA-20+21 "
-                f"pada 16–19 Okt 2026 (S-NPP lengkap); tetap dipakai karena distribusi S-NPP berhenti 1 Nov 2026. "
-                f"Porsi sedikit di atas median 2026 ({koma(UKUR['porsi_median'])}, {UKUR['hari']} hari tanpa celah); luas cenderung sekitar {bias:.0f}% lebih tinggi dibanding basis S-NPP.",
-        "belum": "Luas x bagian titik NOAA-20/21 hari itu yang lokasinya (sel 3x3, sampai 375 m dari titik) sudah terdeteksi 12–36 jam sebelumnya. "
+        "hot": "Titik panas = lokasi unik per hari kalender WIB: sel kisi sekitar 375 m yang terdeteksi MODIS, VIIRS S-NPP, NOAA-20, atau NOAA-21 berkeyakinan sedang dan tinggi "
+               "(VIIRS nominal/tinggi, MODIS 30 ke atas), tiap sel dihitung sekali per hari berapa pun satelit dan lintasannya. Titik berkeyakinan rendah dan titik di sel sumber panas tetap "
+               "(smelter, tambang, kilang, pembangkit) tidak dihitung. Angka ini tidak sama dengan SiPongi dan GIS BNPB, yang menghitung titik mentah semua keyakinan.",
+        "luas": f"(titik NOAA-20 x {koma(F20, 2)} ha + titik NOAA-21 x {koma(F21, 2)} ha) / 2, titik berkeyakinan nominal/tinggi. Faktor tiap satelit = luas resmi BNPB "
+                f"2019–2025 dibagi titik NOAA-20 (median {koma(F20, 2)} ha per titik; NOAA-21 2024–2025: {koma(F21, 2)} ha). Titik di sel sumber panas tetap (smelter, tambang, kilang, pembangkit) dibuang karena faktor dihitung dari titik tersaring (tanpa saringan 10,5% titik Jan–Jul 2026 bukan api lahan). Uji Jan–Jul 2026: jumlah luas nasional "
+                f"{ribu(UJI_SIPONGI['kita'])} ha vs SiPongi {ribu(UJI_SIPONGI['sipongi'])} ha (+{UJI_SIPONGI['selisih']}%); cara lama (titik x porsi x 4,3 ha) +{UJI_SIPONGI['lama']}%. Saringan dipilih sesudah uji ini dilihat, jadi angka ini bukan uji luar contoh murni; uji tinggalkan satu tahun 2019–2025 meleset rata-rata 13,5%. "
+                f"Di pita bujur 5 derajat tempat satu satelit tidak punya satu titik pun (lintasannya hilang di FIRMS) sementara satelit lain punya {CELAH_MIN} titik atau lebih, titik pita itu dihitung dari satelit yang ada saja, tanpa dibagi 2. "
+                f"Faktor dikalibrasi pada jumlah luas harian setahun, jadi deteksi ulang lokasi yang sama lintas hari sudah terserap faktornya.",
+        "belum": "Luas titik NOAA-20/21 hari itu (rumus yang sama) yang lokasinya (sel 3x3, sampai 375 m dari titik) sudah terdeteksi 12–36 jam sebelumnya oleh salah satu satelit. "
                  "Cadangan pada hari itu, bukan dijumlahkan antarhari.",
-        "padam": "Luas dua hari sebelumnya x bagian titiknya yang lokasinya tidak terdeteksi lagi sepanjang dua hari berikutnya (48 jam tanpa titik = padam).",
+        "padam": "Luas dua hari sebelumnya (rumus yang sama) dari titik yang lokasinya tidak terdeteksi lagi sepanjang dua hari berikutnya (48 jam tanpa titik = padam).",
         "catatan": [
-            "Perkiraan dari satelit, bukan luas resmi. Rentang galat 15–40% hanya berasal dari porsi dan sampling; faktor 4,3 ha per titik tidak diuji per provinsi, "
-            "dan angka dapat jauh berbeda dari laporan lapangan BNPB.",
+            "Perkiraan dari satelit, bukan luas resmi. Rentang galat 15–40% hanya berasal dari faktor dan sampling; faktor per titik tidak diuji per provinsi, "
+            "faktor NOAA-21 baru dari 2 tahun penuh (2024–2025) dan dihitung ulang setelah luas resmi 2026 keluar; angka dapat jauh berbeda dari laporan lapangan BNPB.",
             "Hari bertanda celah: lintasan satelit hilang di FIRMS sehingga hotspot hari itu terlalu rendah; angka tidak dikoreksi. "
             "Celah NOAA-20/21 juga menurunkan luas, belum padam, dan padam pada hari itu dan dua hari sesudahnya (celah_turunan).",
             f"Deteksi celah disetel pada data 2026 sendiri dan belum diuji independen; kehilangan satelit di bawah {100 - CELAH_HILANG * 100:.0f}% per pita bujur "
             f"{PITA}° dan hari berisik (harapan kurang dari {CELAH_MIN} titik) tidak terdeteksi.",
             "Sumber NASA FIRMS: arsip standar (SP) bila tersedia, selain itu NRT; hari-hari NRT dapat bergeser sedikit saat diganti SP.",
             "Aturan padam 48 jam berbeda dengan peta cluster platform (72 jam, 168 jam di gambut kering).",
-            f"S-NPP dijadwalkan berhenti didistribusikan FIRMS pada 1 Nov 2026 13.00 UTC; sesudahnya hotspot memakai NOAA-21 sebagai pengganti S-NPP tanpa koreksi "
-            f"dan porsi tidak dihitung ulang. Pada 2026 titik S-NPP semua keyakinan sekitar {koma(UKUR['snpp_n21_median'], 2)} x titik NOAA-21 "
-            f"(median harian {UKUR['snpp_n21_hari']} hari; sebaran harian {koma(UKUR['snpp_n21_p10'], 2)}–{koma(UKUR['snpp_n21_p90'], 2)}), jadi rata-rata sebanding "
-            f"tetapi hari ke hari bisa berbeda seperempat; perubahan hotspot yang melintasi hari patah dibaca hati-hati.",
+            f"S-NPP dijadwalkan berhenti didistribusikan FIRMS pada 1 Nov 2026 13.00 UTC. Titik panas memakai lokasi unik empat satelit, jadi NOAA-21 selalu ikut dan berhentinya S-NPP "
+            f"tidak mematahkan seri; yang berkurang hanya cakupan tambahan S-NPP. Pada 2026 titik S-NPP sedang/tinggi sekitar {koma(UKUR['snpp_n21_median'], 2)} x titik NOAA-21 "
+            f"(median harian {UKUR['snpp_n21_hari']} hari; sebaran harian {koma(UKUR['snpp_n21_p10'], 2)}–{koma(UKUR['snpp_n21_p90'], 2)}); porsi celah S-NPP tidak dihitung ulang.",
             statis,
         ],
     }
 
 
 def baca_lama(jalur, mulai):
-    """JSON lama bila utuh (versi, awal hari, porsi = PORSI, 38 provinsi, panjang larik cocok), selain itu None (bangun ulang penuh)."""
+    """JSON lama bila utuh (versi, awal hari, faktor = FAKTOR, 38 provinsi, panjang larik cocok), selain itu None (bangun ulang penuh)."""
     try:
         lama = json.load(open(jalur))
         n = len(lama["hari"])
         assert lama["versi"] == VERSI and lama["hari"][0] == mulai.isoformat() and set(lama["prov"]) == set(PROVINSI)
-        assert abs(lama["porsi"] - PORSI) < 1e-12
+        assert lama["faktor"] == FAKTOR
         assert (tgl(lama["hari"][-1]) - mulai).days == n - 1
         assert all(len(v[m]) == n for v in lama["prov"].values() for m in ("hot", "luas", "belum", "padam"))
         return lama
@@ -446,8 +526,8 @@ def susun(lama, mulai, awal_hitung, akhir, baru, celah_baru, turunan_baru, cutof
     nas = {m: [sum(prov[k][m][i] for k in prov) for i in range(len(hari))] for m in ("hot", "luas", "belum", "padam")}
     celah = sorted({c for c in (lama or {}).get("celah", []) if c < awal_hitung.isoformat()} | set(celah_baru))
     turunan = sorted(({c for c in (lama or {}).get("celah_turunan", []) if c < awal_hitung.isoformat()} | set(turunan_baru)) & set(hari))
-    return {"versi": VERSI, "dibuat": dibuat, "cutoff": cutoff, "hari": hari, "porsi": PORSI, "porsi_median_2026": UKUR["porsi_median"], "metode": metode(),
-            "celah": celah, "celah_turunan": turunan, "patah": [PATAH.isoformat()] if PATAH.isoformat() in set(hari) else [],
+    return {"versi": VERSI, "dibuat": dibuat, "cutoff": cutoff, "hari": hari, "faktor": dict(FAKTOR), "metode": metode(),
+            "celah": celah, "celah_turunan": turunan, "patah": [],   # S-NPP pensiun tidak lagi mematahkan seri hot (lokasi unik 4 satelit); kunci dipertahankan untuk pembaca lama
             "nasional": nas, "prov": prov}
 
 
@@ -467,7 +547,7 @@ def periksa(isi):
     assert set(isi["celah"]) <= set(isi["hari"]) and isi["celah"] == sorted(isi["celah"])
     assert set(isi["celah_turunan"]) <= set(isi["hari"]) and isi["celah_turunan"] == sorted(isi["celah_turunan"])
     assert set(isi["patah"]) <= set(isi["hari"]), "patah di luar hari"
-    assert isinstance(isi["porsi"], float) and 0 < isi["porsi"] < 2, f"porsi tak sah: {isi['porsi']}"
+    assert set(isi["faktor"]) == set(FAKTOR) and all(isinstance(x, float) and 0 < x < 20 for x in isi["faktor"].values()), f"faktor tak sah: {isi['faktor']}"
 
 
 # ---------------------------------------------------------------- kabupaten (peta_karhutla_kab.json)
@@ -488,33 +568,32 @@ def kunci_geo():
 
 
 def susun_kab(lama, n_lama, isi, baru):
-    """Berkas kabupaten selaras dengan `isi` (berkas provinsi dari susun: hari, porsi, celah, ... disalin). Hari < n_lama dibawa dari `lama` (berkas kab lama atau None),
-    hari lain dari baru {tanggal_iso: {(prov, kab): [titik, titik_bertahan]}}. Tiap angka dibulatkan sekali, setengah ke atas (luas = titik x porsi x 4,3; belum =
-    titik bertahan x porsi x 4,3); hari tanpa luas dan belum tidak ditulis ("d" jarang: [[indeks_hari, luas, belum], ...] urut indeks)."""
+    """Berkas kabupaten selaras dengan `isi` (berkas provinsi dari susun: hari, faktor, celah, ... disalin). Hari < n_lama dibawa dari `lama` (berkas kab lama atau None),
+    hari lain dari baru {tanggal_iso: {(prov, kab): [luas, belum]}} (float dari hitung(), bobot per satelit). Tiap angka dibulatkan sekali, setengah ke atas; hari tanpa luas dan belum tidak ditulis ("d" jarang: [[indeks_hari, luas, belum], ...] urut indeks)."""
     kab = {}
     for key, v in ((lama or {}).get("kab") or {}).items():
         d = [e for e in v["d"] if e[0] < n_lama]
         if d:
             kab[key] = {"nama": v["nama"], "prov": v["prov"], "d": d}
     for i in range(n_lama, len(isi["hari"])):
-        for (p, nama), (n, nb) in sorted(baru[isi["hari"][i]].items()):
-            luas, belum = bul(n * isi["porsi"] * HA), bul(nb * isi["porsi"] * HA)
+        for (p, nama), (l, b) in sorted(baru[isi["hari"][i]].items()):
+            luas, belum = bul(l), bul(b)
             if luas or belum:
                 kab.setdefault(kunci_kab(p, nama), {"nama": nama or TANPA, "prov": p, "d": []})["d"].append([i, luas, belum])
     # celah_luas = celah_turunan: peta_kab.js (siapkan) memakainya untuk luas dan belum; "celah" memuat juga hari S-NPP saja yang tak menyentuh luas/belum (catatan celah palsu)
-    return {**{k: isi[k] for k in ("versi", "dibuat", "cutoff", "hari", "porsi", "celah", "celah_turunan", "patah")}, "celah_luas": isi["celah_turunan"], "kab": dict(sorted(kab.items()))}
+    return {**{k: isi[k] for k in ("versi", "dibuat", "cutoff", "hari", "faktor", "celah", "celah_turunan", "patah")}, "celah_luas": isi["celah_turunan"], "kab": dict(sorted(kab.items()))}
 
 
 def periksa_kab(kab, isi, geo=None):
     """Invarian berkas kabupaten terhadap berkas provinsi `isi`; geo = kunci_geo() (bila ada, tiap kunci harus ada di GeoJSON layar).
-    (a) hari dan porsi sama; jumlah luas dan jumlah belum kabupaten per provinsi per hari berbeda dari angka provinsi paling banyak (m + 1) / 2 ha, m = jumlah kabupaten
-        yang tercatat hari itu di provinsi itu (tiap pembulatan geser <= 0,5 ha, provinsi dibulatkan sekali lagi; titik terkecil 4,3 x porsi > 0,5 ha, jadi kabupaten
+    (a) hari dan faktor sama; jumlah luas dan jumlah belum kabupaten per provinsi per hari berbeda dari angka provinsi paling banyak (m + 1) / 2 ha, m = jumlah kabupaten
+        yang tercatat hari itu di provinsi itu (tiap pembulatan geser <= 0,5 ha, provinsi dibulatkan sekali lagi; titik terkecil min(F20, F21) / 2 > 0,5 ha, jadi kabupaten
         berisi tak pernah hilang karena nol); m = 0 berarti angka provinsi harus 0;
     (b) tiap kunci ada di GeoJSON kabupaten layar (kecuali "<prov>|(tanpa nama)"), nama dan prov cocok dengan kuncinya, nama tak pernah kosong;
     (c) belum <= luas;
     (d) format jarang: "d" daftar [i, luas, belum] bilangan bulat, i naik ketat dalam 0..n-1, luas/belum >= 0, tidak keduanya nol."""
     n = len(isi["hari"])
-    assert kab["hari"] == isi["hari"] and kab["porsi"] == isi["porsi"] and kab["versi"] == isi["versi"], "hari/porsi/versi kabupaten beda dari provinsi"
+    assert kab["hari"] == isi["hari"] and kab["faktor"] == isi["faktor"] and kab["versi"] == isi["versi"], "hari/faktor/versi kabupaten beda dari provinsi"
     assert kab.get("celah_luas", isi.get("celah_turunan")) == isi.get("celah_turunan"), "celah_luas kabupaten beda dari celah_turunan provinsi"   # berkas lama tanpa celah_luas boleh
     S = defaultdict(lambda: [0, 0, 0])
     for key, v in kab["kab"].items():
@@ -541,7 +620,7 @@ def periksa_kab(kab, isi, geo=None):
 
 
 def baca_lama_kab(jalur, lama):
-    """Berkas kab lama bila lolos periksa_kab terhadap berkas provinsi lama (hari, porsi, jumlah), selain itu None (bangun ulang penuh)."""
+    """Berkas kab lama bila lolos periksa_kab terhadap berkas provinsi lama (hari, faktor, jumlah), selain itu None (bangun ulang penuh)."""
     try:
         kab = json.load(open(jalur))
         periksa_kab(kab, lama)
@@ -572,10 +651,10 @@ def metode_wil():
 
 
 def baca_lama_wil(jalur, mulai, lama):
-    """JSON kab/kec lama bila selaras dengan JSON provinsi lama (versi, hari0, jumlah hari, porsi), selain itu None."""
+    """JSON kab/kec lama bila selaras dengan JSON provinsi lama (versi, hari0, jumlah hari, faktor), selain itu None."""
     try:
         w = json.load(open(jalur))
-        assert w["versi"] == VERSI_WIL and w["hari0"] == mulai.isoformat() and w["n"] == len(lama["hari"]) and abs(w["porsi"] - PORSI) < 1e-12
+        assert w["versi"] == VERSI_WIL and w["hari0"] == mulai.isoformat() and w["n"] == len(lama["hari"]) and w["faktor"] == FAKTOR
         return w
     except (OSError, ValueError, KeyError, AssertionError, TypeError):
         return None
@@ -594,14 +673,14 @@ def susun_wil(lama_w, mulai, awal_hitung, akhir, baru_w, dibuat):
             r = [bul(x) for x in v]
             if any(r):
                 d.setdefault(k, []).extend([i, *r])
-    return {"versi": VERSI_WIL, "dibuat": dibuat, "hari0": mulai.isoformat(), "n": n, "porsi": PORSI, "metode": metode_wil(), "d": d}
+    return {"versi": VERSI_WIL, "dibuat": dibuat, "hari0": mulai.isoformat(), "n": n, "faktor": dict(FAKTOR), "metode": metode_wil(), "d": d}
 
 
 def periksa_wil(w, isi):
     """Invarian: larik kelipatan 5, indeks naik dalam [0, n), bilangan bulat >= 0, belum <= luas; per hari hot kab = hot prov dan kec = kab persis; luas/belum/padam
     jumlah anak tidak melebihi induk + 0,5 x (jumlah anak + 1) (tiap anak dibulatkan sendiri; anak yang membulat ke 0 tak tertulis jadi batas bawah tak ada)."""
     n = w["n"]
-    assert n == len(isi["hari"]) and w["hari0"] == isi["hari"][0] and w["porsi"] == isi["porsi"], "berkas wil tak selaras dengan provinsi"
+    assert n == len(isi["hari"]) and w["hari0"] == isi["hari"][0] and w["faktor"] == isi["faktor"], "berkas wil tak selaras dengan provinsi"
     anak = defaultdict(lambda: [0, 0, 0, 0, 0])   # (kunci induk, hari) -> [jumlah anak, hot, luas, belum, padam]
     nilai = {}
     for k, arr in w["d"].items():
@@ -672,7 +751,7 @@ def bangun(argv, sekarang=None, log=print):
 
     hd, baru, baru_kab, baru_w, celah_baru, turunan_baru = {}, {}, {}, {}, [], set()
     ambil_hd = lambda d: hd.setdefault(d, hari_data(rek, d))
-    porsi = PORSI   # konstanta: tidak dihitung dari data (S-NPP berhenti 1 Nov 2026 dan hari acuan tak ada di cache/CI)
+    porsi = PORSI   # hanya untuk deteksi celah S-NPP; konstanta, tidak dihitung dari data (S-NPP berhenti 1 Nov 2026 dan hari acuan tak ada di cache/CI)
     for g in (awal_hitung - 2 * HARI, awal_hitung - HARI):   # hari sebelum jendela yang bercelah NOAA-20/21 menurunkan hari jendela (belum d+1, padam d..d+2)
         if celah_menurun(celah_hari(ambil_hd(g), porsi)):
             turunan_baru |= {(g + n * HARI).isoformat() for n in range(3) if g + n * HARI <= akhir}
@@ -681,8 +760,8 @@ def bangun(argv, sekarang=None, log=print):
         for x in (d - 2 * HARI, d - HARI, d):
             ambil_hd(x)
         baru_kab[d.isoformat()] = {}
-        baru[d.isoformat()] = hitung(hd, d, porsi, baru_kab[d.isoformat()])
-        baru_w[d.isoformat()] = hitung_wil(hd, d, porsi)
+        baru[d.isoformat()] = hitung(hd, d, baru_kab[d.isoformat()])
+        baru_w[d.isoformat()] = hitung_wil(hd, d)
         alasan = celah_hari(hd[d], porsi)
         if alasan:
             celah_baru.append(d.isoformat())
@@ -703,7 +782,7 @@ def bangun(argv, sekarang=None, log=print):
     for berkas, muatan in ((jw, isi_w), (jalur_kab, isi_kab), (jalur, isi)):   # provinsi terakhir: bila gagal di tengah, JSON provinsi lama memaksa bangun ulang
         tulis(berkas, muatan)
     nas = isi["nasional"]
-    log(f"peta_karhutla: {len(isi['hari'])} hari ({isi['hari'][0]}..{isi['hari'][-1]}), porsi {porsi:.4f}, celah {len(isi['celah'])} hari ({len(isi['celah_turunan'])} turunan), "
+    log(f"peta_karhutla: {len(isi['hari'])} hari ({isi['hari'][0]}..{isi['hari'][-1]}), faktor N20 {F20} N21 {F21}, celah {len(isi['celah'])} hari ({len(isi['celah_turunan'])} turunan), "
         f"hot {nas['hot'][-1]} luas {nas['luas'][-1]} belum {nas['belum'][-1]} padam {nas['padam'][-1]} pada {isi['hari'][-1]}, cutoff {cutoff}; "
         f"{len(isi_kab['kab'])} kabupaten, {sum(len(v['d']) for v in isi_kab['kab'].values())} entri hari")
     return isi
@@ -711,7 +790,7 @@ def bangun(argv, sekarang=None, log=print):
 
 def ukur(cache, jalur):
     """Ukur dari cache UTC-hari + JSON terbit (daftar hari dan celah) pada hari WIB tanpa celah -> dict untuk konstanta UKUR:
-    porsi_median/porsi_agregat = S-NPP : N20+N21 (n/h) median harian / jumlah; snpp_n21_* = S-NPP : N21 semua keyakinan per hari UTC (hari UTC yang menyentuh
+    porsi_median/porsi_agregat = S-NPP : N20+N21 (n/h) median harian / jumlah; snpp_n21_* = S-NPP : N21 sedang/tinggi per hari UTC (hari UTC yang menyentuh
     hari celah dibuang). Hari tanpa rekaman cache dilewati (hari = jumlah yang terpakai)."""
     isi = json.load(open(jalur))
     hari, celah = [tgl(h) for h in isi["hari"]], set(isi["celah"])
@@ -789,20 +868,33 @@ def uji_sintetis():
             return ("62", "X", "Y") if lat < 0 else None
     row = lambda sat, jam, lat, conf="n", tgl_="2026-03-10": {"satellite": sat, "acq_date": tgl_, "acq_time": jam, "latitude": str(lat), "longitude": "113.0", "confidence": conf}
     rec = rekam([("s", row("N20", "1659", -2.0)), ("s", row("N20", "1700", -2.0)), ("s", row("N", "0100", -2.0, "l")), ("s", row("N21", "0100", -2.0)),
-                 ("s", row("Terra", "0200", -2.0, "37")), ("s", row("N20", "0300", 3.0)), ("s", row("N", "0100", -2.0))], W(), "2026-03-11T05:00:00+00:00")["2026-03-10"]
-    assert rec["hot"] == {"62": [4, 1]}, rec["hot"]                      # N20 1659, N 'l', Terra, N (n); N20 1700 di bagian b; N21 tak dihitung hot
-    assert rec["m"] == [1019, 1020, 60, 180] and rec["p"] == [62, 62, 62, 0], rec   # N20 x3 + N21; titik laut p=0 tetap tercatat untuk sel
-    assert rec["kn"] == ["", "X"] and rec["k"] == [1, 1, 1, 0], (rec["kn"], rec["k"])   # kabupaten sejajar dengan c/m/p; laut = ""
+                 ("s", row("Terra", "0200", -2.0, "37")), ("s", row("N20", "0300", 3.0)), ("s", row("N", "0100", -2.0)),
+                 ("s", row("Aqua", "0200", -2.0, "29")), ("s", row("Aqua", "0200", -2.0, "30")), ("s", row("N21", "0100", -2.0, "l"))], W(), "2026-03-11T05:00:00+00:00")["2026-03-10"]
+    # TITIK PANAS = lokasi unik (titik_unik): deteksi pertama tiap sel per bagian hari UTC. Sel (-2,0; 113,0): N20 1659 (b0), N21/N/Terra/Aqua 30 (menit 60-120, b0) -> SATU entri (menit 60);
+    # N20 1700 (b1) -> satu entri di bagian lain; N20 lintang 3,0 (luar provinsi) -> entri tanpa provinsi. DITOLAK: N 'l', N21 'l', Aqua 29 (keyakinan rendah).
+    assert rec["zm"] == [60, 180, 1020] and rec["zp"] == ["62", "", "62"], rec
+    assert len(rec["zm"]) < 7, "lokasi unik harus lebih sedikit daripada deteksi mentah sedang/tinggi (7)"
+    assert sedang({"confidence": "l"}) is False and sedang({"confidence": "29"}) is False and sedang({"confidence": "30"}) and sedang({"confidence": "80"}) and sedang({"confidence": "N"}) and sedang({"confidence": "h"})
+    assert rec["m"] == [1019, 1020, 60, 180] and rec["p"] == [62, 62, 62, 0], rec   # N20 x3 + N21 (n): bahan luas/belum/padam; S-NPP tidak ikut; titik laut p=0 tetap tercatat
+    # saringan sel sumber panas tetap: titik di (-2,0; 113,0) dibuang dari z*/c/m/p/k/q/s/tn/h21 tetapi bd (celah) tetap lengkap; titik lain tetap
+    ind = rekam([("s", row("N20", "0100", -2.0)), ("s", row("N20", "0200", -2.5)), ("s", row("N21", "0300", -2.0))], W(), "t", {titik_palsu.sel(-2.0, 113.0)})["2026-03-10"]
+    assert ind["zm"] == [120] and ind["h21"] == {} and ind["tn"] == 0, ind   # titik di sel industri TIDAK dihitung
+    assert ind["m"] == [120] and ind["s"] == [0] and ind["c"] == [sel(113.0, -2.5)] and ind["bd"]["110"] == [0, 0, 2, 0, 1, 0], ind   # bd (celah) tak disaring
+    assert rec["s"] == [0, 0, 1, 0], rec["s"]                               # satelit sejajar c/m/p: N20, N20, N21
+    assert rec["kn"] == ["", "X"] and rec["k"] == [1, 1, 1, 0], (rec["kn"], rec["k"])   # kabupaten sejajar dengan c/m/p
     assert rec["bd"]["110"] == [1, 0, 1, 1, 1, 0], rec["bd"]             # N n/h a=1; N20 a=1 b=1; N21 a=1  (N 'l' tidak masuk)
-    assert rec["h21"] == {"62": [1, 0]} and rec["h21t"] == {} and rec["tn"] == 2, (rec["h21"], rec["h21t"], rec["tn"])   # tn: S-NPP semua keyakinan (2 baris N di provinsi)
-    # batas S-NPP 1 Nov 2026 13:00Z: N sesudahnya dibuang (N21 yang menggantikan, tak pernah keduanya); N21 sesudahnya masuk h21 dan h21t
-    nov = rekam([("s", row("N", "1259", -2.0, "n", "2026-11-01")), ("s", row("N", "1300", -2.0, "n", "2026-11-01")), ("s", row("N21", "1259", -2.0, "n", "2026-11-01")),
-                 ("s", row("N21", "1300", -2.0, "n", "2026-11-01")), ("s", row("N21", "1700", -2.0, "n", "2026-11-01")), ("s", row("N", "0100", -2.0, "n", "2026-11-02"))], W(), "t")
-    assert nov["2026-11-01"]["hot"] == {"62": [1, 0]} and nov["2026-11-01"]["tn"] == 1, nov["2026-11-01"]
-    assert nov["2026-11-01"]["h21"] == {"62": [2, 1]} and nov["2026-11-01"]["h21t"] == {"62": [1, 1]}, nov["2026-11-01"]
-    assert "2026-11-02" not in nov, "hari yang hanya berisi S-NPP sesudah batas tidak punya rekaman"
-    assert PATAH == dt.date(2026, 11, 1), PATAH   # 13:00Z = 20:00 WIB: hari WIB 1 Nov sudah memuat N21 pengganti
-    # S-NPP berhenti didistribusikan (dijadwalkan 1 Nov 2026): opsional hanya selama NOAA-20 masih ada; hot memakai N21; celah S-NPP tak dinilai
+    assert rec["h21"] == {"62": [1, 0]} and rec["tn"] == 1, (rec["h21"], rec["tn"])   # hanya --ukur; N 'l' dan N21 'l' tak dihitung
+    # hari WIB lintas dua hari UTC: sel yang sama di UTC 03-10 >= 17:00Z dan UTC 03-11 < 17:00Z = SATU lokasi di hari WIB 11 Mar; sel lain dihitung
+    lin = rekam([("s", row("N20", "1800", -2.0)), ("s", row("N21", "1810", -2.0)), ("s", row("Terra", "1830", -2.5, "50")), ("s", row("N", "1900", -2.5, "l")),
+                 ("s", row("N", "0100", -2.0, "n", "2026-03-11")), ("s", row("M", "0200", -2.0, "n", "2026-03-11")), ("s", row("Aqua", "0300", -2.0, "n", "2026-03-11")),
+                 ("s", row("N20", "0400", -2.7, "n", "2026-03-11")), ("s", row("N20", "0500", -2.7, "n", "2026-03-11"))], W(), "t")
+    for u_ in lin.values():
+        u_["src"] = {f: "NRT" for f in FAMILI}
+    hl = hari_data(lin, dt.date(2026, 3, 11))
+    assert hl["hot"] == {"62": 3} and hl["hotw"] == {"62|X|Y": 3}, hl["hot"]   # sel -2,0 (N20 dan N21 hari UTC lalu + hari ini sama sel), sel -2,5, sel -2,7
+    assert sum(1 for x in rec["zm"]) < 7 and sum(hl["hot"].values()) < 9 - 1, "lokasi unik <= deteksi mentah (N 'l' ditolak, duplikat sel dijatuhkan)"
+    assert titik_unik.sel(-2.0, 113.0) == titik_unik.sel(-2.0001, 113.0001), "sel yang dilihat 2 satelit dengan koordinat berbeda sedikit = satu sel (aturan titik_unik)"
+    # S-NPP berhenti didistribusikan (dijadwalkan 1 Nov 2026): opsional hanya selama NOAA-20 masih ada; hot (lokasi unik) tak terpengaruh, celah S-NPP tak dinilai
     D = dt.date
     ket = {f + "_NRT": (D(2026, 7, 1), D(2026, 11, 20)) for f in FAMILI}
     ket["VIIRS_SNPP_NRT"] = (D(2026, 7, 1), D(2026, 11, 1))
@@ -811,37 +903,49 @@ def uji_sintetis():
     assert wajib(D(2026, 11, 2), ket) == set(FAMILI) - {"VIIRS_SNPP"} and wajib(D(2026, 5, 2), {**ket, "VIIRS_SNPP_SP": (D(2012, 1, 1), D(2026, 6, 30))}) == set(FAMILI)
     ket["VIIRS_SNPP_NRT"] = (D(2026, 7, 1), D(2026, 11, 1))
     assert wajib(D(2026, 11, 25), ket) == set(FAMILI), "tak ada famili yang opsional bila semuanya melewati max_date (hari bolong = gagal keras)"
-    mk = lambda src, h21t={}: {"hot": {"62": [5, 5]}, "h21": {"62": [2, 3]}, "h21t": h21t, "bd": {}, "c": [], "m": [], "p": [], "k": [], "kn": [], "src": {"VIIRS_SNPP": src}}
-    h = hari_data({"2026-11-02": mk(None), "2026-11-03": mk(None)}, D(2026, 11, 3))
-    assert h["hot"]["62"] == 5 + 5 + 3 + 2 and h["snpp"] is False, h["hot"]
-    h = hari_data({"2026-10-30": mk("NRT"), "2026-10-31": mk("NRT")}, D(2026, 10, 31))
-    assert h["hot"]["62"] == 10 and h["snpp"] is True, h["hot"]                      # S-NPP utuh: N21 tidak ikut
-    # hari WIB 1 Nov: S-NPP sampai 13:00Z (20:00 WIB), N21 sesudahnya menggantikan (h21t a = 4); S-NPP tak lagi utuh, celah S-NPP tak dinilai
-    h = hari_data({"2026-10-31": mk("NRT"), "2026-11-01": mk("NRT", {"62": [4, 6]})}, D(2026, 11, 1))
-    assert h["hot"]["62"] == 5 + 5 + 4 and h["snpp"] is False, h["hot"]
-    # hari WIB 2 Nov: UTC 1 Nov >= 17Z (S-NPP hilang, h21t b = 6 menggantikan) + UTC 2 Nov < 17Z (S-NPP tak didistribusikan: seluruh N21 a = 2)
-    h = hari_data({"2026-11-01": mk("NRT", {"62": [4, 6]}), "2026-11-02": mk(None)}, D(2026, 11, 2))
-    assert h["hot"]["62"] == 5 + 6 + 5 + 2 and h["snpp"] is False, h["hot"]
+    mk = lambda src: {**baru_rekaman("t"), "src": {"VIIRS_SNPP": src}}
+    assert hari_data({"2026-11-02": mk(None), "2026-11-03": mk(None)}, D(2026, 11, 3))["snpp"] is False
+    assert hari_data({"2026-10-30": mk("NRT"), "2026-10-31": mk("NRT")}, D(2026, 10, 31))["snpp"] is True
+    assert hari_data({"2026-10-31": mk("NRT"), "2026-11-01": mk("NRT")}, D(2026, 11, 1))["snpp"] is False   # hari WIB 1 Nov: S-NPP berhenti 13:00Z, tak lagi utuh
+    h = hari_data({"2026-11-01": mk("NRT"), "2026-11-02": mk(None)}, D(2026, 11, 2))
     h["snpp"], h["bd"] = False, {"100": [0, 300, 300]}
     assert celah_hari(h, 0.534) == [], "tanpa S-NPP, celah S-NPP tak dinilai (bukan celah)"
     # belum dan padam: hari d, d-1, d-2 dibuat tangan
     d = dt.date(2026, 3, 10)
     t0 = d.toordinal() * 1440
     c1, c2, c3, c4 = 100000, 200000, 300000, 400000
-    H = lambda hot, det: {"hot": hot, "bd": defaultdict(lambda: [0, 0, 0]), "det": det}
-    h2 = H({"62": 7}, [(c3, t0 + 600, "62"), (c4, t0 + 600, "62"), (c4 + 999999, t0 + 600, "")])         # hari d: 2 titik di prov 62, 1 di laut
-    h1 = H({}, [(c3 + LEBAR + 1, t0 - 1440 + 600, ""), (c4 + 3 * LEBAR, t0 - 1440 + 600, "")])           # d-1: tetangga c3 (20 jam sebelum d 10:00 = 22 jam: sah), c4+3 sel bukan tetangga
-    h0 = H({}, [(c1, t0 - 2880 + 600, "62"), (c2, t0 - 2880 + 600, "62")])                                  # d-2: c1 dan c2; hanya c1 muncul lagi (sebagai tetangga di d-1)
-    h1["det"].append((c1 - LEBAR, t0 - 1440 + 700, "62"))
-    r = hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, 0.5)["62"]
-    assert r[0] == 7 and r[1] == 2 * 0.5 * 4.3, r                                                          # luas = titik x porsi x 4,3
-    assert r[2] == r[1] * 0.5, r                                                                            # belum: c3 bertahan (tetangga 22 jam), c4 tidak
-    assert r[3] == (2 * 0.5 * 4.3) * 0.5, r                                                                 # padam: c1 muncul lagi di d-1, c2 tidak
-    assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, 0.5)["16"] == [0, 0, 0, 0], "provinsi tanpa titik"
+    # det = [(sel, menit, prov)], sat sejajar (0 = N20, 1 = N21); bd kosong = kedua satelit ada (bobot F/2 masing-masing)
+    H = lambda hot, det, sat, bd=None: {"hot": hot, "bd": bd if bd is not None else defaultdict(lambda: [0, 0, 0]), "det": det, "sat": sat}
+    h2 = H({"62": 7}, [(c3, t0 + 600, "62"), (c4, t0 + 600, "62"), (c4 + 999999, t0 + 600, "")], [0, 1, 0])        # hari d: N20 di c3, N21 di c4 (prov 62), 1 titik di laut
+    h1 = H({}, [(c3 + LEBAR + 1, t0 - 1440 + 600, ""), (c4 + 3 * LEBAR, t0 - 1440 + 600, "")], [1, 0])           # d-1: tetangga c3 (22 jam sebelum d 10:00: sah, satelit lain boleh), c4+3 sel bukan tetangga
+    h0 = H({}, [(c1, t0 - 2880 + 600, "62"), (c2, t0 - 2880 + 600, "62")], [1, 0])                                  # d-2: c1 (N21) dan c2 (N20); hanya c1 muncul lagi (sebagai tetangga di d-1)
+    h1["det"].append((c1 - LEBAR, t0 - 1440 + 700, "62")); h1["sat"].append(0)
+    w20, w21 = F20 / 2, F21 / 2
+    r = hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d)["62"]
+    assert r[0] == 7 and abs(r[1] - (w20 + w21)) < 1e-9, r                                                  # luas = N20 x F20/2 + N21 x F21/2
+    assert abs(r[2] - w20) < 1e-9, r                                                                         # belum: c3 (N20) bertahan, c4 (N21) tidak; c3 dicek oleh deteksi N21 hari d-1
+    assert abs(r[3] - w20) < 1e-9, r                                                                         # padam: c1 (N21) muncul lagi di d-1, c2 (N20) tidak -> bobot N20
+    assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d)["16"] == [0, 0, 0, 0], "provinsi tanpa titik"
     h2["kab"] = ["A", "B", ""]
     kb = {}
-    assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, 0.5, kb)["62"] == r, "kab mengubah hitungan provinsi"
-    assert kb == {("62", "A"): [1, 1], ("62", "B"): [1, 0]}, kb                                             # A: c3 bertahan; B: c4 tidak; titik laut tak dihitung
+    assert hitung({d - 2 * HARI: h0, d - HARI: h1, d: h2}, d, kb)["62"] == r, "kab mengubah hitungan provinsi"
+    assert kb.keys() == {("62", "A"), ("62", "B")} and abs(kb[("62", "A")][0] - w20) < 1e-9 and abs(kb[("62", "A")][1] - w20) < 1e-9 \
+        and abs(kb[("62", "B")][0] - w21) < 1e-9 and kb[("62", "B")][1] == 0, kb                           # A: c3 N20 bertahan; B: c4 N21 tidak; titik laut tak dihitung
+    # satelit anjlok PER PITA BUJUR (bd per pita 5 derajat): pita yang satu satelitnya 0 titik (dan yang lain >= CELAH_MIN) memakai satelit yang ada
+    # saja, bobot penuh (F20 / F21, tanpa dibagi 2), satelit yang hilang dibobot 0; pita normal (termasuk rasio rendah tetapi bukan nol = tepi sapuan) tetap /2; pita lain tak terpengaruh. c3, c4 jatuh di pita "0".
+    ada = lambda n20, n21, pita="0": {pita: [0, n20, n21]}
+    assert bobot(H({}, [], [], ada(CELAH_MIN, 0)))["0"] == [F20, 0.0] and bobot(H({}, [], [], ada(0, CELAH_MIN)))["0"] == [0.0, F21]
+    assert bobot(H({}, [], [], ada(CELAH_MIN, 1)))["0"] == NORMAL and bobot(H({}, [], [], ada(CELAH_MIN - 1, 0)))["0"] == NORMAL and bobot(H({}, [], [])) == {}
+    assert bobot(H({}, [], [], ada(6498, 864, "110")))["110"] == NORMAL, "24 Okt 2026 pita 110: N21 864 vs N20 6.498 (rasio 0,13) = tepi sapuan, bukan hilang: tetap /2"
+    assert bobot(H({}, [], [], ada(7543, 6079, "110")))["110"] == NORMAL and bobot(H({}, [], [], ada(6039, 8513, "110")))["110"] == NORMAL, "22 dan 23 Okt pita 110 normal"
+    assert anjlok(1000, 0) == "N21" and anjlok(1000, 1) is None and anjlok(0, 1000) == "N20" and anjlok(50, 0) is None and anjlok(100, 0) == "N21", "hanya 0 titik; pita sepi (< CELAH_MIN) tak dinilai"
+    assert pita_sel(sel(113.0, -2.0)) == "110" and pita_sel(sel(109.99, -2.0)) == "105" and pita_sel(sel(141.0, -2.0)) == "140"
+    hn = lambda bd: H({"62": 2}, [(c3, t0 + 600, "62"), (c4, t0 + 600, "62")], [0, 0], bd)
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: hn(ada(CELAH_MIN, 0))}, d)["62"][1] - 2 * F20) < 1e-9, "N21 hilang di pita: dua titik N20 x F20 penuh"
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: hn(ada(CELAH_MIN, 5 * CELAH_MIN))}, d)["62"][1] - 2 * F20 / 2) < 1e-9, "dua satelit ada: dibagi 2"
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: hn(ada(CELAH_MIN, 0, "110"))}, d)["62"][1] - 2 * F20 / 2) < 1e-9, "hilang di pita lain: pita ini tetap dibagi 2"
+    hs = hn(ada(0, CELAH_MIN)); hs["sat"] = [1, 0]   # N20 hilang di pita ini: titik N20 bobot 0, titik N21 bobot F21 penuh
+    assert abs(hitung({d - 2 * HARI: h0, d - HARI: h1, d: hs}, d)["62"][1] - F21) < 1e-9
     # jendela belum tepat 12-36 jam
     det = {c1: [1000]}
     assert bertahan(det, c1 + LEBAR, 1000 + 720) and bertahan(det, c1, 1000 + 2160) and not bertahan(det, c1, 1000 + 719) and not bertahan(det, c1, 1000 + 2161)
@@ -855,8 +959,11 @@ def uji_sintetis():
     assert celah_hari(h, 0.534) == [], celah_hari(h, 0.534)
     h["bd"]["100"] = [2, 10, 12]                                                                             # hari api sedikit (harapan < 100): tak berisik
     assert celah_hari(h, 0.534) == [], celah_hari(h, 0.534)
-    h["bd"]["115"] = [160, 150, 5]
-    assert any(a.startswith("N21 115E") for a in celah_hari(h, 0.534)), celah_hari(h, 0.534)                  # NOAA-21 nyaris hilang di pita 115E
+    assert celah_hari({"bd": {"110": [0, 6498, 864]}, "snpp": False}, 0.534) == [], "24 Okt 2026 pita 110 (rasio 0,13) = tepi sapuan, bukan celah"
+    assert celah_hari({"bd": {"110": [0, 6498, 0]}, "snpp": False}, 0.534) == ["N21 110E: 0 vs 6498"], "0 titik N21 sementara N20 6.498 = lintasan hilang"
+    assert celah_hari({"bd": {"110": [0, 7543, 6079]}, "snpp": False}, 0.534) == [] and celah_hari({"bd": {"110": [0, 6039, 8513]}, "snpp": False}, 0.534) == [], "22/23 Okt normal"
+    h["bd"]["115"] = [160, 150, 0]
+    assert any(a.startswith("N21 115E") for a in celah_hari(h, 0.534)), celah_hari(h, 0.534)                  # NOAA-21 hilang (0 titik) di pita 115E
     h["bd"] = {"100": [100, 300, 300], "115": [100, 300, 300]}                                               # nasional: 200 dari harapan ~641 (< 0,6) walau tiap pita ~0,3 (tak nyaris hilang)
     assert celah_hari(h, 0.534) == ["S-NPP nasional: 200 dari ~641"], celah_hari(h, 0.534)
     # susun: hari lama dibawa, hari baru dibulatkan, nasional = jumlah provinsi
@@ -865,7 +972,7 @@ def uji_sintetis():
     lama = {"celah": ["2026-03-08", "2026-03-09"], "prov": {k: {"hot": [3, 3], "luas": [9, 9], "belum": [4, 4], "padam": [1, 1]} for k in PROVINSI}}
     isi = susun(lama, awal, dt.date(2026, 3, 9), dt.date(2026, 3, 10), baru, ["2026-03-10"], ["2026-03-07", "2026-03-10"], "c", "d")
     periksa(isi)
-    assert isi["porsi"] == PORSI and isi["patah"] == [] and isi["celah_turunan"] == ["2026-03-10"], (isi["porsi"], isi["patah"], isi["celah_turunan"])   # 03-07 di luar hari: dibuang
+    assert isi["faktor"] == FAKTOR and isi["patah"] == [] and isi["celah_turunan"] == ["2026-03-10"], (isi["faktor"], isi["patah"], isi["celah_turunan"])   # 03-07 di luar hari: dibuang
     assert isi["hari"] == ["2026-03-08", "2026-03-09", "2026-03-10"] and isi["prov"]["62"]["luas"] == [9, 2, 2] and isi["prov"]["62"]["padam"] == [1, 3, 3]
     assert isi["nasional"]["luas"] == [9 * 38, 2 * 38, 2 * 38] and isi["celah"] == ["2026-03-08", "2026-03-10"], isi["celah"]   # celah lama >= awal_hitung dihitung ulang
     bad = json.loads(json.dumps(isi)); bad["prov"]["62"]["belum"][1] = 99
@@ -873,49 +980,52 @@ def uji_sintetis():
         periksa(bad); raise SystemExit("periksa() harus menolak belum > luas")
     except AssertionError:
         pass
-    for porsi_buruk in (0.0, -0.5, 2.0):                                                                     # porsi nol (S-NPP tak terunduh) meloloskan luas/belum/padam serba nol: harus ditolak
-        bad = json.loads(json.dumps(isi)); bad["porsi"] = porsi_buruk
+    for f_buruk in ({"N20": 0.0, "N21": 4.36}, {"N20": 4.22, "N21": -1.0}, {"N20": 4.22}, {"N20": 4.22, "N21": 99.0}):   # faktor nol/negatif/hilang/mustahil meloloskan luas serba nol atau gila: harus ditolak
+        bad = json.loads(json.dumps(isi)); bad["faktor"] = f_buruk
         try:
-            periksa(bad); raise SystemExit(f"periksa() harus menolak porsi {porsi_buruk}")
+            periksa(bad); raise SystemExit(f"periksa() harus menolak faktor {f_buruk}")
         except AssertionError:
             pass
-    # baca_lama menolak JSON dengan porsi lain (PORSI berubah = bangun ulang penuh) dan awal tahun lain, menerima yang sah
+    # baca_lama menolak JSON dengan faktor lain atau berkas bentuk lama ("porsi", tanpa "faktor") dan awal tahun lain, menerima yang sah
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         jl = os.path.join(tmp, "lama.json")
         json.dump(isi, open(jl, "w"))
         assert baca_lama(jl, awal) is not None and baca_lama(jl, dt.date(2027, 1, 1)) is None
-        json.dump({**isi, "porsi": 0.5}, open(jl, "w"))
-        assert baca_lama(jl, awal) is None, "porsi lama beda dari PORSI harus ditolak"
+        json.dump({**isi, "faktor": {"N20": 4.3, "N21": 4.3}}, open(jl, "w"))
+        assert baca_lama(jl, awal) is None, "faktor lama beda dari FAKTOR harus ditolak"
+        json.dump({k: v for k, v in isi.items() if k != "faktor"} | {"porsi": PORSI}, open(jl, "w"))
+        assert baca_lama(jl, awal) is None, "JSON bentuk lama (porsi) harus ditolak: bangun ulang penuh"
     # patah muncul begitu rentang hari memuatnya; celah_turunan hanya dari celah NOAA-20/21
     z = lambda t: {k: [0, 0, 0, 0] for k in PROVINSI}
     ts = [(dt.date(2026, 10, 30) + n * HARI).isoformat() for n in range(4)]
-    assert susun(None, dt.date(2026, 10, 30), dt.date(2026, 10, 30), dt.date(2026, 11, 2), {t: z(t) for t in ts}, [], [], "c", "d")["patah"] == ["2026-11-01"]
-    assert susun(None, dt.date(2026, 10, 30), dt.date(2026, 10, 30), dt.date(2026, 10, 31), {t: z(t) for t in ts[:2]}, [], [], "c", "d")["patah"] == []
+    assert susun(None, dt.date(2026, 10, 30), dt.date(2026, 10, 30), dt.date(2026, 11, 2), {t: z(t) for t in ts}, [], [], "c", "d")["patah"] == [], "S-NPP pensiun tidak mematahkan seri hot (lokasi unik 4 satelit)"
     assert celah_menurun(["N21 100E: 3 vs 300"]) and celah_menurun(["S-NPP nasional: 1 dari ~300", "N20 105E: 1 vs 200"]) and not celah_menurun(["S-NPP 100E: 1 dari ~300"]) and not celah_menurun([])
     # hitung_wil: dua kecamatan di satu kabupaten + satu kabupaten lain; jumlah kec = kab = provinsi (float), kunci persis kode|kab|kec
     kk = ("62|A|x", "62|A|y", "62|B|z")
-    Hw = lambda hot, det: {"hot": {}, "hotw": hot, "bd": defaultdict(lambda: [0, 0, 0]), "det": [(c, t, "62") for c, t, _ in det], "detw": [w for _, _, w in det]}
-    g2 = Hw({kk[0]: 3, kk[2]: 1}, [(c3, t0 + 600, kk[0]), (c4, t0 + 600, kk[1]), (c4 + 5 * LEBAR, t0 + 600, kk[2])])
-    g1 = Hw({}, [(c3 + LEBAR + 1, t0 - 1440 + 600, kk[0])])
-    g0 = Hw({}, [(c1, t0 - 2880 + 600, kk[0]), (c2, t0 - 2880 + 600, kk[2])])
-    rw = hitung_wil({d - 2 * HARI: g0, d - HARI: g1, d: g2}, d, 0.5)
-    assert set(rw) == {*kk, "62|A", "62|B"} and rw["62|A|x"][1] == 0.5 * 4.3 and rw["62|A|x"][2] == rw["62|A|x"][1] and rw["62|A|y"][2] == 0, rw
+    Hw = lambda hot, det: {"hot": {}, "hotw": hot, "bd": defaultdict(lambda: [0, 0, 0]), "det": [(c, t, "62") for c, t, _, _ in det], "detw": [w for _, _, w, _ in det], "sat": [s for _, _, _, s in det]}
+    g2 = Hw({kk[0]: 3, kk[2]: 1}, [(c3, t0 + 600, kk[0], 0), (c4, t0 + 600, kk[1], 1), (c4 + 5 * LEBAR, t0 + 600, kk[2], 1)])
+    g1 = Hw({}, [(c3 + LEBAR + 1, t0 - 1440 + 600, kk[0], 1)])
+    g0 = Hw({}, [(c1, t0 - 2880 + 600, kk[0], 0), (c2, t0 - 2880 + 600, kk[2], 1)])
+    rw = hitung_wil({d - 2 * HARI: g0, d - HARI: g1, d: g2}, d)
+    assert set(rw) == {*kk, "62|A", "62|B"} and abs(rw["62|A|x"][1] - w20) < 1e-9 and rw["62|A|x"][2] == rw["62|A|x"][1] and rw["62|A|y"][2] == 0 and abs(rw["62|A|y"][1] - w21) < 1e-9, rw
     for j in range(4):
         assert abs(rw["62|A"][j] - rw["62|A|x"][j] - rw["62|A|y"][j]) < 1e-9 and abs(rw["62|A"][j] + rw["62|B"][j] - sum(rw[k][j] for k in kk)) < 1e-9, (j, rw)
-    assert rw["62|A"][0] == 3 and rw["62|B"][0] == 1 and rw["62|A|x"][3] == 0.5 * 4.3 and rw["62|B|z"][3] == 0.5 * 4.3, rw   # c1 dan c2 tak muncul lagi: keduanya padam
+    assert rw["62|A"][0] == 3 and rw["62|B"][0] == 1 and abs(rw["62|A|x"][3] - w20) < 1e-9 and abs(rw["62|B|z"][3] - w21) < 1e-9, rw   # c1 (N20) dan c2 (N21) tak muncul lagi: keduanya padam, bobot satelit masing-masing
     iw = susun_wil(None, d, d, d + HARI, {d.isoformat(): rw, (d + HARI).isoformat(): {"62|A": [0, 0.4, 0, 0]}}, "x")
-    assert iw["d"]["62|A"] == [0, 3, 4, 2, 2] and iw["d"]["62|A|y"] == [0, 0, 2, 0, 0] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
+    assert iw["d"]["62|A"] == [0, 3, bul(w20 + w21), bul(w20), bul(w20)] and iw["d"]["62|A|y"] == [0, 0, bul(w21), 0, 0] and iw["n"] == 2, iw["d"]   # hari 2 (semua membulat 0) tak tertulis
     # teks metode: angka dari konstanta, tanda baca bertipografi (en dash), tanpa ± (selera pemilik), klaim tak melampaui bukti
     mt = metode()
     teks = json.dumps(mt, ensure_ascii=False)
-    assert koma(PORSI) in mt["luas"] and koma(UKUR["porsi_median"]) in mt["luas"] and "16–19 Okt 2026" in mt["luas"], mt["luas"]
+    assert koma(F20, 2) in mt["luas"] and koma(F21, 2) in mt["luas"] and "SiPongi" in mt["luas"] and "tanpa dibagi 2" in mt["luas"] and "2019–2025" in mt["luas"], mt["luas"]
+    assert "NOAA-21 baru dari 2 tahun penuh" in mt["catatan"][0] and "luas resmi 2026 keluar" in mt["catatan"][0], mt["catatan"][0]
     assert "sampai 375 m dari titik" in mt["belum"] and "12–36 jam" in mt["belum"] and "Rentang galat 15–40%" in mt["catatan"][0], (mt["belum"], mt["catatan"][0])
     assert "±" not in teks + json.dumps(metode_wil(), ensure_ascii=False), "± di teks tayang"
     assert not any(x in teks for x in ("+-", "16-19", "12-36", "15-40")), "tanda baca ASCII di teks tayang"
     assert "1,0% titik NOAA-20/21 nasional (1,9% dari yang bertahan)" in mt["catatan"][-1] and "20 Okt 2026" in mt["catatan"][-1] and "gunung api" in mt["catatan"][-1], mt["catatan"][-1]
-    assert "setara SiPongi dan GIS BNPB" not in teks and "Papua Selatan" in mt["hot"], mt["hot"]
-    assert "4,3 ha per titik tidak diuji per provinsi" in mt["catatan"][0] and "belum diuji independen" in mt["catatan"][2], mt["catatan"]
+    assert "setara SiPongi dan GIS BNPB" not in teks and "lokasi unik" in mt["hot"] and "empat satelit" not in mt["hot"] and "tidak sama dengan SiPongi" in mt["hot"] and "tidak dibagi" not in mt["hot"], mt["hot"]
+    assert "terserap faktornya" in mt["luas"] and "luas_periode" not in mt, "faktor dikalibrasi pada jumlah harian; seri sel unik dicabut"
+    assert "faktor per titik tidak diuji per provinsi" in mt["catatan"][0] and "belum diuji independen" in mt["catatan"][2], mt["catatan"]
     assert hari_lengkap_terakhir(dt.datetime(2026, 10, 21, 14, 20, tzinfo=UTC)) == dt.date(2026, 10, 20)      # jalan 21.20 WIB
     assert hari_lengkap_terakhir(dt.datetime(2026, 10, 20, 19, 0, tzinfo=UTC)) == dt.date(2026, 10, 19)       # 02.00 WIB: NRT 20 Okt belum lengkap
     assert hari_lengkap_terakhir(dt.datetime(2026, 10, 20, 21, 0, tzinfo=UTC)) == dt.date(2026, 10, 20)       # 04.00 WIB
@@ -931,11 +1041,12 @@ def harus_gagal(fn, ket):
 
 def uji_kab():
     """Berkas kabupaten tanpa jaringan: susun_kab (jarang, bulat, dibawa dari lama), periksa_kab menerima yang sah dan menolak tiap pelanggaran (a)-(d)."""
-    d0, titik = dt.date(2026, 3, 8), PORSI * HA
+    d0, titik = dt.date(2026, 3, 8), 2.1   # titik = luas satu titik (angka sembarang dekat F/2; yang diuji pembulatan terpisah)
     pv = lambda kd: {k: [0, sum(n for (p, _), (n, _) in kd.items() if p == k) * titik, sum(nb for (p, _), (_, nb) in kd.items() if p == k) * titik, 0] for k in PROVINSI}
     hari = {"2026-03-08": {("62", "A"): [3, 1], ("62", "B"): [2, 2], ("16", "C"): [1, 0]}, "2026-03-09": {}, "2026-03-10": {("62", "A"): [1, 0], ("62", ""): [1, 1]}}
     isi = susun(None, d0, d0, d0 + 2 * HARI, {t: pv(kd) for t, kd in hari.items()}, [], [], "c", "d")
-    k = susun_kab(None, 0, isi, hari)
+    fl = lambda kd: {key: [n * titik, nb * titik] for key, (n, nb) in kd.items()}   # kab dari hitung(): [luas, belum] float
+    k = susun_kab(None, 0, isi, {t: fl(kd) for t, kd in hari.items()})
     geo = {"62|A", "62|B", "16|C"}
     assert list(k["kab"]) == ["16|C", "62|(tanpa nama)", "62|A", "62|B"], list(k["kab"])                      # terurut; titik tanpa nama kabupaten punya kunci "<prov>|(tanpa nama)"
     import re
@@ -943,19 +1054,19 @@ def uji_kab():
     assert k["kab"]["62|A"]["d"] == [[0, bul(3 * titik), bul(titik)], [2, bul(titik), 0]] and k["kab"]["62|B"]["d"] == [[0, bul(2 * titik), bul(2 * titik)]], k["kab"]
     assert k["kab"]["62|(tanpa nama)"] == {"nama": TANPA, "prov": "62", "d": [[2, bul(titik), bul(titik)]]} and k["kab"]["16|C"]["d"] == [[0, 2, 0]], k["kab"]
     assert all(e[0] != 1 for v in k["kab"].values() for e in v["d"]), "hari tanpa titik (indeks 1) tak boleh ditulis"
-    assert k["hari"] == isi["hari"] and k["porsi"] == PORSI and k["celah"] == [] and k["patah"] == [] and k["celah_luas"] == [], k
+    assert k["hari"] == isi["hari"] and k["faktor"] == FAKTOR and "porsi" not in k and k["celah"] == [] and k["patah"] == [] and k["celah_luas"] == [], k
     periksa_kab(k, isi, geo)
     isi_c = {**isi, "celah": ["2026-03-09", "2026-03-10"], "celah_turunan": ["2026-03-09"]}   # 10 Mar celah S-NPP saja: tak boleh masuk celah_luas
-    kc = susun_kab(None, 0, isi_c, hari)
+    kc = susun_kab(None, 0, isi_c, {t: fl(kd) for t, kd in hari.items()})
     assert kc["celah_luas"] == ["2026-03-09"] and kc["celah"] == isi_c["celah"], kc
     periksa_kab(kc, isi_c, geo)
     harus_gagal(lambda: periksa_kab({**kc, "celah_luas": isi_c["celah"]}, isi_c, geo), "(a) celah_luas bukan celah_turunan")
-    # jumlah 62: A 3+B 2 titik = 11,476 -> 11 (provinsi) vs 7 + 5 = 12 (kabupaten): selisih 1 <= (2 + 1) / 2
-    assert isi["prov"]["62"]["luas"][0] == 11 and sum(v["d"][0][1] for key, v in k["kab"].items() if key in ("62|A", "62|B")) == 12
+    # jumlah 62: A 3 + B 2 titik x 2,1 = 10,5 -> 11 (provinsi) vs 6,3 -> 6 + 4,2 -> 4 = 10 (kabupaten): selisih 1 <= (2 + 1) / 2
+    assert isi["prov"]["62"]["luas"][0] == 11 and sum(v["d"][0][1] for key, v in k["kab"].items() if key in ("62|A", "62|B")) == 10
     # inkremental: hari < n_lama dibawa, hari >= n_lama dihitung ulang (entri lamanya dibuang)
     hari2 = {"2026-03-10": {("62", "A"): [2, 1]}}
     isi2 = susun(isi, d0, d0 + 2 * HARI, d0 + 2 * HARI, {t: pv(kd) for t, kd in hari2.items()}, [], [], "c", "d")
-    k2 = susun_kab(k, 2, isi2, hari2)
+    k2 = susun_kab(k, 2, isi2, {t: fl(kd) for t, kd in hari2.items()})
     assert k2["kab"]["62|A"]["d"] == [[0, bul(3 * titik), bul(titik)], [2, bul(2 * titik), bul(titik)]] and "62|(tanpa nama)" not in k2["kab"] and "62|B" in k2["kab"], k2["kab"]
     periksa_kab(k2, isi2, geo)
     import tempfile
@@ -977,7 +1088,7 @@ def uji_kab():
     harus_gagal(ubah(lambda c: c["kab"]["62|B"]["d"][0].__setitem__(1, 5.0)), "(d) luas bukan bilangan bulat")
     harus_gagal(ubah(lambda c: c["kab"]["62|B"]["d"][0].pop()), "(d) entri bukan tiga angka")
     harus_gagal(ubah(lambda c: c["kab"]["62|B"].__setitem__("d", [])), "(d) kabupaten tanpa hari")
-    harus_gagal(ubah(lambda c: c.__setitem__("porsi", 0.5)), "(a) porsi beda")
+    harus_gagal(ubah(lambda c: c.__setitem__("faktor", {"N20": 4.3, "N21": 4.3})), "(a) faktor beda")
     harus_gagal(ubah(lambda c: c.__setitem__("hari", c["hari"][:2])), "(a) hari beda")
     harus_gagal(ubah(lambda c: c["kab"].pop("62|B")), "(a) kabupaten hilang: jumlah jauh di bawah provinsi")
 
@@ -1003,7 +1114,7 @@ def uji_deck():
     assert os.path.exists(tar) and os.path.exists(ref), f"fikstur deck tidak ada di {FIKSTUR} (harus di-commit bersama skrip ini)"
     A = json.load(open(ref))
     baris, wil = baris_deck(tar), Wilayah()
-    rek = rekam(baris, wil, "2026-10-21T14:41:00+00:00")
+    rek = rekam(baris, wil, "2026-10-21T14:41:00+00:00", titik_palsu.sel_industri()[0])
     st = ukur_statis(baris, wil, tgl(STATIS["hari"]))   # angka di teks metode (STATIS) = hitungan atas fikstur
     assert st == STATIS, f"STATIS usang: fikstur memberi {st}, konstanta {STATIS}; jalankan --statis dan salin hasilnya (titik_palsu.json berubah?)"
     assert 0 < st["statis"] < 0.05 * st["titik"], f"sel sumber panas tetap harus ada tetapi kecil: {st}"
@@ -1012,15 +1123,15 @@ def uji_deck():
         hd[dt.date(2026, 10, i)] = hari_data(rek, dt.date(2026, 10, i))
     porsi = porsi_acuan({a: hd[tgl(a)] for a in ACUAN})
     assert abs(porsi - A["porsi"]) < 1e-12 and abs(porsi - PORSI) < 1e-12, (porsi, A["porsi"], PORSI)   # konstanta PORSI = median hari acuan = angka deck
-    porsi = PORSI   # jalur bangun() memakai konstanta, bukan hasil porsi_acuan
+    porsi = PORSI   # jalur bangun() memakai konstanta, bukan hasil porsi_acuan (hanya untuk celah S-NPP)
     baru, baru_kab = {}, {}
     for i in (18, 19, 20):
         d = dt.date(2026, 10, i)
         baru_kab[d.isoformat()] = {}
-        baru[d.isoformat()] = hitung(hd, d, porsi, baru_kab[d.isoformat()])
+        baru[d.isoformat()] = hitung(hd, d, baru_kab[d.isoformat()])
     for i in (18, 19, 20):   # jumlah kecamatan = kabupaten = provinsi sebelum pembulatan, tiap metrik, 38 provinsi
         d = dt.date(2026, 10, i)
-        rw, rp = hitung_wil(hd, d, porsi), baru[d.isoformat()]
+        rw, rp = hitung_wil(hd, d), baru[d.isoformat()]
         for tingkat in (2, 1):
             tot = defaultdict(lambda: [0.0] * 4)
             for k, v in rw.items():
@@ -1030,14 +1141,54 @@ def uji_deck():
             for k, v in rp.items():
                 assert all(abs(tot[k][j] - v[j]) < 1e-6 for j in range(4)), (d, tingkat, k, tot[k], v)
     assert len(A["prov"]) == 38
+    # hot: keputusan pemilik 25 Okt 2026 = LOKASI UNIK (titik_unik) 4 satelit, sedang/tinggi, tanpa sel industri, jadi BUKAN lagi angka deck (deck = titik mentah semua keyakinan).
+    # Pembanding mandiri: hitung ulang dari baris fikstur (tanpa rekam/hari_data) lewat titik_unik.unik berurut waktu; hot harus sama persis, <= deteksi mentah yang lolos saringan sama,
+    # dan lebih kecil daripada deteksi mentah itu (sel yang dilihat dua satelit = satu).
+    # luas/belum/padam deck memakai rumus lama (titik x PORSI x 4,3), jadi bukan pembanding persis:
+    # (1) rumus baru dihitung ulang mandiri dari det/sat dan harus sama; (2) arah terhadap deck: kedua satelit utuh, (F20 + F21) / 4 = 2,07 ha per titik vs PORSI x 4,3 = 2,296 -> rasio ~0,89
+    industri = titik_palsu.sel_industri()[0]
+    pts = []
+    for _, r in baris:
+        sen = {"Terra": "M", "Aqua": "M"}.get(r["satellite"], r["satellite"])
+        if sen not in titik_unik.SENSOR or not sedang(r) or titik_palsu.palsu(float(r["latitude"]), float(r["longitude"]), industri):
+            continue
+        jam = r["acq_time"].zfill(4)
+        t = dt.datetime.fromisoformat(r["acq_date"]).replace(tzinfo=UTC) + dt.timedelta(hours=int(jam[:2]), minutes=int(jam[2:]))
+        w = wil.cari(float(r["longitude"]), float(r["latitude"]))
+        pts.append({"s": sen, "c": 1, "lat": float(r["latitude"]), "lon": float(r["longitude"]), "t": t, "wib": t.astimezone(WIB).date().isoformat(), "p": w[0] if w else ""})
+    pts.sort(key=lambda x: x["t"])
+    mandiri_hot, mentah = defaultdict(int), defaultdict(int)
+    for x in pts:
+        if x["p"]:
+            mentah[(x["wib"], x["p"])] += 1
+    for x in titik_unik.unik(pts, lambda x: x["wib"]):
+        if x["p"]:
+            mandiri_hot[(x["wib"], x["p"])] += 1
+    assert sum(mandiri_hot.values()) < sum(mentah.values()), "lokasi unik harus lebih sedikit daripada deteksi mentah (sel yang dilihat dua satelit = satu)"
+    selisih = 0
     salah = []
-    for k, v in A["prov"].items():
-        for j, m in enumerate(("hot", "luas", "belum", "padam")):
-            for t in ("2026-10-18", "2026-10-19", "2026-10-20"):
-                ref_v, hasil = bul(v[m][A["hari"].index(t)]), bul(baru[t][k][j])
-                if ref_v != hasil:
-                    salah.append(f"{t} {k} {m}: deck {ref_v} != {hasil}")
-    assert not salah, f"{len(salah)} angka beda dari deck, mis. {salah[:5]}"
+    for t in ("2026-10-18", "2026-10-19", "2026-10-20"):
+        d = tgl(t)
+        for k, v in A["prov"].items():
+            ref_v, hasil, mand = bul(v["hot"][A["hari"].index(t)]), bul(baru[t][k][0]), mandiri_hot[(t, k)]
+            if hasil != mand:
+                salah.append(f"{t} {k} hot: mandiri sedang/tinggi {mand} != {hasil}")
+            if hasil > mentah[(t, k)]:
+                salah.append(f"{t} {k} lokasi unik {hasil} > deteksi mentah {mentah[(t, k)]}")
+            selisih += ref_v - hasil   # selisih terhadap deck (informasi saja: deck titik mentah 3 satelit semua keyakinan)
+        assert all((v == NORMAL) == (anjlok(hd[x]["bd"][k][1], hd[x]["bd"][k][2]) is None) for x in (d, d - 2 * HARI) for k, v in bobot(hd[x]).items()), f"{t}: bobot per pita menyimpang dari anjlok()"
+        mandiri, W = defaultdict(float), bobot(hd[d])   # luas mandiri dari det/sat dengan bobot per pita (pita anjlok: satelit yang ada saja)
+        for (c, m, p), sa in zip(hd[d]["det"], hd[d]["sat"]):
+            mandiri[p] += W.get(pita_sel(c), NORMAL)[sa]
+        for k, v in mandiri.items():
+            if k:
+                assert abs(baru[t][k][1] - v) < 1e-6, (t, k, baru[t][k][1], v)
+        nas_baru = sum(v[1] for v in baru[t].values())
+        nas_deck = sum(v["luas"][A["hari"].index(t)] for v in A["prov"].values())
+        assert 0.82 < nas_baru / nas_deck < 0.95, f"{t}: luas nasional baru {nas_baru:.0f} vs deck {nas_deck:.0f} (rasio {nas_baru / nas_deck:.3f}, harapan ~0,88: bobot 2,07 vs 2,30 ha per titik, minus ~1% titik industri)"
+        for k, v in baru[t].items():
+            assert v[2] <= v[1] + 1e-9, (t, k, v)
+    assert not salah, f"{len(salah)} hot salah, mis. {salah[:5]}"
     # (b) invarian lewat susun()+periksa() pada tiga hari itu
     awal = dt.date(2026, 10, 18)
     isi = susun(None, awal, awal, dt.date(2026, 10, 20), baru, [], [], "c", "d")
@@ -1049,13 +1200,13 @@ def uji_deck():
     # (c) celah: 20 Okt (lintasan siang S-NPP hilang) bertanda, hari acuan 16-19 Okt tidak
     c = {i: celah_hari(hd[dt.date(2026, 10, i)], porsi) for i in range(16, 21)}
     assert c[20], f"20 Okt 2026 harus bertanda celah: {c[20]}"
-    assert not any(c[i] for i in range(16, 20)), f"hari acuan tak boleh bertanda celah: {c}"
+    assert not any(x.startswith("S-NPP") for i in range(16, 20) for x in c[i]), f"hari acuan porsi tak boleh bertanda celah S-NPP: {c}"   # celah pita N20/N21 (17 Okt 130E, 19 Okt 100E) tidak mengganggu porsi
     return isi, porsi, c[20], kab
 
 
 def uji_tahun_baru():
     """Jalur bangun() tanpa jaringan: tahun baru (mulai 2027-01-01) dengan JSON 2026 di jalur keluaran, rekaman Okt 2026 tak ada, S-NPP berhenti
-    -> porsi tetap PORSI (tidak KeyError, tidak nol), JSON 2026 tidak dipakai, hot memuat N21 pengganti."""
+    -> luas tetap dari FAKTOR (tidak KeyError, tidak nol), JSON 2026 tidak dipakai, hot memuat N21 pengganti."""
     import tempfile
     class W:
         def cari(self, lon, lat):
@@ -1070,7 +1221,7 @@ def uji_tahun_baru():
             rec = rekam(baris, W(), "2027-01-10T00:00:00+00:00")[u.isoformat()]
             rec["src"] = {f: None if f == "VIIRS_SNPP" else "NRT" for f in FAMILI}     # S-NPP tak didistribusikan
             simpan_rek(cache, u, rec)
-        json.dump({"versi": VERSI, "hari": ["2026-01-01", "2026-01-02"], "porsi": PORSI, "prov": {}}, open(jalur, "w"))   # JSON 2026 basi di jalur keluaran
+        json.dump({"versi": VERSI, "hari": ["2026-01-01", "2026-01-02"], "faktor": dict(FAKTOR), "prov": {}}, open(jalur, "w"))   # JSON 2026 basi di jalur keluaran
         asli = (globals()["muat_ketersediaan"], globals()["Wilayah"], firms.kunci, globals()["kunci_geo"])
         globals()["muat_ketersediaan"], globals()["Wilayah"], firms.kunci, globals()["kunci_geo"] = (lambda *a, **k: {}), W, (lambda: "K"), (lambda: {"62|X"})
         try:
@@ -1081,11 +1232,12 @@ def uji_tahun_baru():
             globals()["muat_ketersediaan"], globals()["Wilayah"], firms.kunci, globals()["kunci_geo"] = asli
     assert list(kab["kab"]) == ["62|X"] and [e[0] for e in kab["kab"]["62|X"]["d"]] == [0, 1, 2] and kab["hari"] == isi["hari"], kab["kab"]
     assert [e[1] for e in kab["kab"]["62|X"]["d"]] == isi["nasional"]["luas"], "satu kabupaten = seluruh provinsi"
-    assert set(iw["d"]) == {"62|X", "62|X|Y"} and iw["d"]["62|X|Y"] == iw["d"]["62|X"] and iw["d"]["62|X"][1] == 6 and len(iw["d"]["62|X"]) == 15, iw["d"]
-    assert isi["hari"] == ["2027-01-01", "2027-01-02", "2027-01-03"] and isi["porsi"] == PORSI and isi["patah"] == [], isi["hari"]
+    assert set(iw["d"]) == {"62|X", "62|X|Y"} and iw["d"]["62|X|Y"] == iw["d"]["62|X"] and iw["d"]["62|X"][1] == 3 and len(iw["d"]["62|X"]) == 15, iw["d"]
+    assert isi["hari"] == ["2027-01-01", "2027-01-02", "2027-01-03"] and isi["faktor"] == FAKTOR and isi["patah"] == [], isi["hari"]
     # tiap hari UTC: N20 2 (a) + 1 (b), N21 1 (a) + 1 (b), Terra 1 (a); hari WIB = b hari UTC sebelumnya + a hari UTC itu
-    assert isi["nasional"]["hot"] == [6, 6, 6], isi["nasional"]["hot"]                   # Terra + N20 3 + N21 pengganti S-NPP 2 (tanpa N21 = 4)
-    assert isi["nasional"]["luas"] == [bul(5 * PORSI * HA)] * 3 and bul(5 * PORSI * HA) > 0, isi["nasional"]["luas"]   # 5 titik N20/N21 n/h x porsi x 4,3, bukan nol
+    assert isi["nasional"]["hot"] == [3, 3, 3], isi["nasional"]["hot"]                   # lokasi unik: sel 113,0 (Terra+N20+N21 satu), 113,5, 114,0
+    luas = bul((3 * F20 + 2 * F21) / 2)   # 3 titik N20 + 2 titik N21 n/h per hari WIB (kedua satelit ada tapi < CELAH_MIN: dibagi 2)
+    assert isi["nasional"]["luas"] == [luas] * 3 and luas > 0, isi["nasional"]["luas"]
 
 
 def uji_terbit():
@@ -1111,7 +1263,7 @@ def uji():
     uji_tahun_baru()
     isi, porsi, alasan, kab = uji_deck()
     nas = isi["nasional"]
-    print(f"peta_karhutla: uji lolos | porsi {porsi:.4f} | 18-20 Okt = deck untuk 38 provinsi x 4 metrik | nasional hot {nas['hot']} luas {nas['luas']} "
+    print(f"peta_karhutla: uji lolos | porsi {porsi:.4f} | 18-20 Okt: hot sedang/tinggi = hitungan mandiri 38 provinsi (<= deck), luas/belum/padam rumus baru | nasional hot {nas['hot']} luas {nas['luas']} "
           f"belum {nas['belum']} padam {nas['padam']} | celah 20 Okt: {alasan[:3]}")
     print(f"peta_karhutla: kabupaten | {n_kab} kabupaten di GeoJSON, nama sama dengan peta kecamatan | 18-20 Okt {len(kab['kab'])} kabupaten berisi, "
           f"{sum(len(v['d']) for v in kab['kab'].values())} entri hari, jumlah per provinsi = provinsi (selisih <= (m+1)/2 ha), belum <= luas, semua kunci ada di GeoJSON layar")

@@ -1,2 +1,12 @@
 .venv/
 bangun/*/keluaran/
+# bahan riset berukuran besar: PDF/PPTX sumber asli cukup disimpan lokal, PNG bukti dilacak
+riset/**/*.pdf
+riset/**/*.pptx
+riset/mentah/*.json
+riset/mentah/*.ndjson
+# salinan repositori anti-slop (berisi .git sendiri); daftar kata yang dipakai disalin terpisah
+riset/anti-slop/miqdad/
+riset/anti-slop/rand/
+qa/keluaran/
+naskah/_contoh/gambar/

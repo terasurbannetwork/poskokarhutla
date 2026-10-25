@@ -1,0 +1,717 @@
+[
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus perban-nomor-5-tahun-2017.json: Pasal 1 angka 5 definisi Jitupasna (hlm. 3), Pasal 8 ayat (1) (hlm. 7), Pasal 9 (hlm. 9); Bab 9: judul dari indeks JDIH untuk pencocokan Progsun butir 4 (Lampiran J)",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "brr-2009-nias",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Nias: Membangun Melalui Jalan yang Jarang Dilalui",
+  "publisher": "BRR NAD–Nias",
+  "publisher-place": "Banda Aceh",
+  "ISBN": "978-602-8199-36-0",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/assets/arsip/670de67d21dc8.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "arsip sejarah BNPB; hlm. xiii (Capaian 4 Tahun), Bagian 1 Tabel 1.1"
+ },
+ {
+  "id": "kemenkopmk-2020-lombok-percepatan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     13
+    ]
+   ]
+  },
+  "title": "Pemerintah Upayakan Percepatan Penanganan Pascabencana Gempa Bumi NTB",
+  "URL": "https://www.kemenkopmk.go.id/pemerintah-upayakan-percepatan-penanganan-pascabencana-gempa-bumi-ntb",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "170.559 dari 226.204 rumah selesai (75,40%); program-terbukti bukti_dampak B057–B058"
+ },
+ {
+  "id": "kemenkopmk-2024-huntap-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     15
+    ]
+   ]
+  },
+  "title": "Menko PMK Serahkan Kunci Huntap Warga Terdampak Bencana Gempa dan Likuefaksi Sulawesi Tengah",
+  "URL": "https://kemenkopmk.go.id/node/5032",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "5.598 huntap; 382 belum selesai per Juni 2024; serah kunci 14 Jun 2024 di Tondo II; kutipan 'Ini sudah tertunda cukup lama 6 tahun'"
+ },
+ {
+  "id": "pu-2026-spam-februari",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "publisher": "Kementerian PU (ePPID)",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "143 dari 176 SPAM berfungsi per 2 Feb 2026 (judul 142); 537 sarana darurat; dibaca riset rehab D [21]"
+ },
+ {
+  "id": "pu-2026-pemulihan-sumatera-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera, Mayoritas Infrastruktur Kembali Fungsional",
+  "publisher": "Kementerian PU (ePPID)",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Data per 7 Mei 2026: jalan dan jembatan nasional 100%; jembatan daerah sekitar 67% dari 1.181; jalan daerah sekitar 94% dari 2.421 ruas; SPAM sekitar 95,5% dari 178; hunian selesai 1.547 KK. Judul dipulihkan dari slug URL"
+ },
+ {
+  "id": "binamarga-2025-jembatan-aceh",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, Balai Pelaksanaan Jalan Nasional Aceh",
+    "singkatan": "BPJN Aceh"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     3
+    ]
+   ]
+  },
+  "title": "Dampak Bencana Banjir dan Longsor Sumatera, Kementerian PU Percepat Penanganan 14 Jembatan Rusak di Aceh",
+  "URL": "https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "14 jembatan putus atau terputus per 1 Des 2025; dibaca riset rehab B [29], tidak dibuka ulang di berkas bukti Bab 4"
+ },
+ {
+  "id": "ocg-2026-palu4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Oriental Consultants Global"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     19
+    ]
+   ]
+  },
+  "title": "Opening ceremony, Programme for the Reconstruction of Palu 4 Bridges and its Access Road",
+  "URL": "https://ocglobal.jp/news/260218-indonesia-en/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Jembatan 250 m, jalan pesisir sekitar 5 km, dibuka 13 Feb 2026; konsultan pengawas proyek JICA (terverifikasi); dibaca riset rehab E [18]"
+ },
+ {
+  "id": "jsce-2011-nojima",
+  "type": "speech",
+  "author": [
+   {
+    "family": "Nojima"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     6,
+     13
+    ]
+   ]
+  },
+  "title": "Lifeline Restoration Overview",
+  "publisher": "Japan Society of Civil Engineers",
+  "URL": "https://www.jsce.or.jp/kokusai/what's_new/2011/Prof.Nojima_lifeline-overview_110613.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Air Kobe 90% 38 hari, 95% 43 hari, 100% 81 hari; Tohoku 90% 36 hari, 95% 41 hari; dibaca riset rehab D [36]"
+ },
+ {
+  "id": "pusgen-2024-peta-gempa",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Pusat Studi Gempa Nasional",
+    "singkatan": "PuSGeN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+  "publisher": "Kementerian Pekerjaan Umum",
+  "publisher-place": "Jakarta",
+  "URL": "https://ciptakarya.pu.go.id/admin/assets/upload/galeri/gempa/2026/02/10/887359_0.%20Final_BUKU_PETA_SUMBER_DAN_BAHAYA_GEMPA_2024_Publish.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. xxxi–xxxii; Tabel 2.4 hlm. 68–69; hlm. 336–337; Tabel 6.2 hlm. 342–343; Tabel 6.9 hlm. 364–371. Katalog Kementerian PU mencatat tahun terbit 2025"
+ },
+ {
+  "id": "usgs-us6000tkt2",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     14
+    ]
+   ]
+  },
+  "title": "M 7.8 - 66 km NNW of Ende, Indonesia (event us6000tkt2)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkt2",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibaca lewat https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000tkt2&format=geojson. Produk impact-text: sedikitnya 136 meninggal, 1.776 luka, 27.414 rumah hancur, 71.486 rusak, 3.614 bangunan publik rusak, tsunami tercatat maksimum 169 cm di Pelabuhan Laut Pota. Produk general-text (Key Points diperbarui 18 Agu 2026 15.42 UTC): M7,7, sekitar 1,7 juta jiwa terpapar MMI VI–VIII, sesar naik dangkal di dalam lempeng Sunda, gempa M7,8 tahun 1992 sedikitnya 2.500 korban jiwa. Moment tensor: sesar naik, kedalaman turunan 23,5 km. Katalog Mww 7,8; waktu 14 Agu 2026 21.58 UTC (15 Agu 2026 05.58 WITA). Penilaian PAGER status otomatis"
+ },
+ {
+  "id": "bnpb-2026-flores-hari8",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     23
+    ]
+   ]
+  },
+  "title": "Hari Kedelapan, BNPB Catat 53.971 Rumah Rusak dan Pendataan Dilakukan secara Paralel",
+  "URL": "https://www.bnpb.go.id/berita/hari-kedelapan-bnpb-catat-53971-rumah-rusak-dan-pendataan-dilakukan-secara-paralel",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Gempa M7,7 Flores 15 Agu 2026; data sementara per 22 Agu 2026: 53.971 rumah rusak (RB 19.006, RS 11.777, RR 23.188) di Nagekeo, Ende, Manggarai, Manggarai Timur, Manggarai Barat, Ngada, Sikka; tanpa angka jembatan dan air"
+ },
+ {
+  "id": "bnpb-2026-flores-verifikasi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     7
+    ]
+   ]
+  },
+  "title": "Sebanyak 51.591 Rumah Pascagempa M7,7 Flores telah Diverifikasi",
+  "URL": "https://www.bnpb.go.id/berita/sebanyak-51591-rumah-pascagempa-m77-flores-telah-diverifikasi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "51.591 dari 102.384 data awal (50,39%) terverifikasi: RB 2.382, RS 7.276, RR 14.177, tidak rusak 27.756; data dinamis; dibuka ulang 25 Okt 2026: Nagekeo data awal 15.929, RB 218, RS 1.523, RR 3.475, tidak rusak 10.713"
+ },
+ {
+  "id": "bmkg-2026-flores",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     21
+    ]
+   ]
+  },
+  "title": "Model Kinematika Sumber Gempa Bumi Flores 2026 Mw 7,7 dan Kompleksitas Rangkaian Gempa Bumi di Sesar Naik Flores",
+  "URL": "https://www.bmkg.go.id/artikel/model-kinematika-sumber-gempa-bumi-flores-2026-mw-77-dan-kompleksitas-rangkaian-gempa-bumi-di-sesar-naik-flores",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "15 Agu 2026 04.58 WIB, Mw 7,7, Sesar Naik Flores"
+ },
+ {
+  "id": "pupr-2019-satgas-lombok",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Buku Satgas Penanganan Gempa Lombok",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Satgas%20Penanganan%20Gempa%20Lombok.pdf",
+  "verifikasi": "primer",
+  "note": "riset rehab D [10], dibaca utuh oleh riset; tidak dibuka ulang 25 Okt 2026. 37 titik SPAM rusak; 83 sumur bor JIAT 1.314 l/dt; 242 hidran 2.000 l; 28 mobil tangki 4.000 l; 26 IPA 358 l/dt. Halaman tim penyusun bertanda draf"
+ },
+ {
+  "id": "pupr-2023-cianjur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Penanganan Gempa Cianjur 2022",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Penanganan%20Gempa%20Cianjur%202022_lowres.pdf",
+  "verifikasi": "primer",
+  "note": "riset rehab D [12]; status sampai 25 Sep 2023: 10 titik kerusakan pipa SPAM; hidran 172 unit puncak 18 Des 2022; 10 mobil tangki PDAM x 5 rit/hari; rehab lima SPAM sekitar 98%"
+ },
+ {
+  "id": "esdm-2019-sumur-bor",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     6,
+     27
+    ]
+   ]
+  },
+  "title": "Atasi Krisis Air Bersih, 750 Sumur Bor Terbangun di Tahun 2020",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/atasi-krisis-air-bersih-750-sumur-bor-terbangun-di-tahun-2020",
+  "verifikasi": "primer",
+  "note": "riset rehab C [15]: kedalaman sekitar 125 m, debit 1–2,4 l/detik, sekitar 2.000 jiwa per sumur; 2.290 unit 2005–2018 untuk 6,6 juta jiwa"
+ },
+ {
+  "id": "esdm-2018-air-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     12,
+     17
+    ]
+   ]
+  },
+  "title": "Program \"Air Bersih Siap Minum\" Kementerian ESDM Jangkau 22 Ribu Pengungsi di Sulawesi Tengah",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/program-air-bersih-siap-minum-kementerian-esdm-jangkau-22-ribu-pengungsi-di-sulawesi-tengah",
+  "verifikasi": "primer",
+  "note": "riset rehab D [17]: 17 unit pengolah air di 15 lokasi mulai 17 Okt 2018, 22.241 jiwa"
+ },
+ {
+  "id": "sphere-2018",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Sphere Association"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "The Sphere Handbook: Humanitarian Charter and Minimum Standards in Humanitarian Response",
+  "edition": "4",
+  "publisher": "Sphere Association",
+  "publisher-place": "Geneva",
+  "URL": "https://reliefweb.int/sites/reliefweb.int/files/resources/Sphere-Handbook-2018-EN.pdf",
+  "verifikasi": "primer",
+  "note": "riset rehab C [24] dibaca langsung: minimum 15 l/orang/hari; 250 orang per keran; 500 per pompa tangan; jarak < 500 m"
+ },
+ {
+  "id": "mdf-2011-progress",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Sekretariat Multi Donor Fund Aceh dan Nias",
+    "singkatan": "MDF"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12
+    ]
+   ]
+  },
+  "title": "Partnerships for Sustainability: MDF Progress Report December 2011",
+  "URL": "https://www.locjkt.or.id/application/docliblcjkt/upload/MDF-Progress-Report-2011.pdf",
+  "verifikasi": "primer",
+  "note": "riset rehab E [4]: US$655 juta, 15 donor; hampir 20.000 rumah; hampir 8.000 sumur; laporan pengelola dana sendiri; angka sumur adalah keluaran program RR, bukan kerusakan; tidak dibuka ulang"
+ },
+ {
+  "id": "marohn-2012-aceh-barat",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Marohn",
+    "given": "C."
+   },
+   {
+    "literal": "dkk."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     9,
+     12
+    ]
+   ]
+  },
+  "title": "Impacts of soil and groundwater salinization on tree crop performance in post-tsunami Aceh Barat, Indonesia",
+  "container-title": "Natural Hazards and Earth System Sciences",
+  "volume": "12",
+  "page": "2879-2891",
+  "URL": "https://nhess.copernicus.org/articles/12/2879/2012/nhess-12-2879-2012.pdf",
+  "verifikasi": "primer",
+  "note": "riset rehab C [26]: salinitas air tanah turun dari lebih dari 10 ke kurang dari 2 mS/cm dalam dua tahun"
+ },
+ {
+  "id": "setneg-2026-jembatan-air",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara",
+    "singkatan": "Kemensetneg"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     13
+    ]
+   ]
+  },
+  "title": "Resmikan 3.395 Jembatan TNI-Polri dan 3.000 Sumber Air Bersih TNI AD, Presiden Prabowo: Misi Bakti kepada Rakyat",
+  "URL": "https://www.setneg.go.id/baca/index/resmikan_3395_jembatan_tni_polri_dan_3000_sumber_air_bersih_tni_ad_presiden_prabowo_misi_bakti_kepada_rakyat",
+  "verifikasi": "primer",
+  "note": "riset rehab B [1]: TNI AD 3.008 titik, 2.500 selesai, 798 di wilayah bencana; Polri 895, 874 selesai; 3.000 sumber air TNI AD"
+ }
+]

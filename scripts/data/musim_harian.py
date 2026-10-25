@@ -1,6 +1,7 @@
 """Kurva musim api: titik panas kumulatif per hari-ke-n, 2019 s.d. tahun berjalan, nasional dan per provinsi -> public/data/musim_harian.json
 
-Definisi sama dengan baris harian laporan (laporan.py): MODIS + VIIRS S-NPP + VIIRS NOAA-20, semua keyakinan, hari kalender WIB,
+Definisi sama dengan baris harian laporan (laporan.py) dan titik_unik.py: LOKASI UNIK ~375 m per hari dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21
+(NOAA-21 ada sejak 2023), hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30) dan di luar sel sumber panas tetap (keputusan pemilik 25 Okt 2026), hari kalender WIB,
 provinsi lewat wilayah.py. Berkas ini menyimpan HITUNGAN HARIAN (bukan kumulatif); layar yang menjumlahkan.
 
   tahun   : tahun yang tercakup (2019..)
@@ -9,7 +10,7 @@ provinsi lewat wilayah.py. Berkas ini menyimpan HITUNGAN HARIAN (bukan kumulatif
   latar   : rerata 2019-2025 per tanggal kalender kabisat (indeks 0 = 1 Jan, 59 = 29 Feb; 29 Feb dirata-rata atas tahun yang punya)
 
 Dua jalur:
-  python3 scripts/data/musim_harian.py bangun <sd>   SEKALI (lokal): baca data/raw/firms/{modis,viirs,viirs_noaa20}.csv (firms.py),
+  python3 scripts/data/musim_harian.py bangun <sd>   SEKALI (lokal): baca data/raw/firms/{modis,viirs,viirs_noaa20,viirs_noaa21}.csv (firms.py),
         simpan hitungan di data/raw/firms/musim_harian_hitung.json (cache; hapus untuk hitung ulang), tulis berkas publik.
   perbarui(lap)  tiap laporan.py jalan (CI 3-jam): tahun-tahun lampau dan latar dipakai ulang dari berkas yang sudah di-commit;
         hanya hari yang ada di arsip laporan.json ditimpa (jadi == laporan nasional.titik / prov.titik). Hari sebelum arsip
@@ -19,13 +20,15 @@ Pakai:  python3 scripts/data/musim_harian.py uji
 import csv, datetime as dt, json, os, statistics, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
+from firms_sumber import kelas_yakin
+import titik_unik as TU
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 JALUR = os.path.join(AKAR, "public/data/musim_harian.json")
 HITUNG = os.path.join(AKAR, "data/raw/firms/musim_harian_hitung.json")
 AWAL, LATAR_AKHIR = 2019, 2025
 WIB = dt.timedelta(hours=7)
-SUMBER = "NASA FIRMS MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20; arsip standar (SP) + NRT; tahun berjalan dari laporan.json"
-DEFINISI = "Titik panas semua satelit (M, N, N20), semua keyakinan, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif"
+SUMBER = "NASA FIRMS MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20, VIIRS NOAA-21; arsip standar (SP) + NRT; tahun berjalan dari laporan.json"
+DEFINISI = "Lokasi unik ~375 m per hari dari semua satelit (M, N, N20, N21 sejak 2023), keyakinan sedang/tinggi saja, tanpa sumber panas tetap, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif. Hari arsip laporan ikut lokasi unik sesudah migrasi_titik (laporan.py)"
 
 
 def hari_tahun(tahun):
@@ -55,10 +58,14 @@ def latar(nas, prov, tahun):
             "prov": {k: rata({y: v[y] for y in tahun}) for k, v in prov.items()}}
 
 
-def hitung_csv(sd, berkas):
-    """CSV FIRMS -> {tahun: {kode: [titik per hari]}} sampai sd (inklusif)."""
+def hitung_csv(sd, berkas, industri=None):
+    """CSV FIRMS -> {tahun: {kode: [lokasi unik per hari]}} sampai sd (inklusif): satu sel titik_unik.sel sekali per hari WIB lintas berkas.
+    Titik di sel sumber panas tetap (titik_palsu.sel_industri(); industri=None = daftar sekarang) dibuang."""
     from wilayah import Wilayah
-    w, sdd, hasil, tembolok = Wilayah(), dt.date.fromisoformat(sd), {}, {}
+    import titik_palsu
+    if industri is None:
+        industri = titik_palsu.sel_industri()[0]
+    w, sdd, hasil, tembolok, lihat = Wilayah(), dt.date.fromisoformat(sd), {}, {}, set()
     for b in berkas:
         n = 0
         for r in csv.DictReader(open(b)):
@@ -70,6 +77,16 @@ def hitung_csv(sd, berkas):
             d = t.date()
             if d.year < AWAL or d > sdd:
                 continue
+            c = r["confidence"].strip()
+            if kelas_yakin(c, c.isdigit()) < 1:
+                continue   # keyakinan rendah (VIIRS l, MODIS < 30) tidak dihitung
+            if industri and titik_palsu.palsu(r["latitude"], r["longitude"], industri):
+                continue   # sumber panas tetap (industri, tambang, kilang, PLTU) tidak dihitung
+            si, sj = TU.sel(float(r["latitude"]), float(r["longitude"]))
+            kunci = (d.toordinal() * 20000 + si + 10000) * 200000 + sj + 100000   # (hari, sel) sebagai satu int: hemat memori
+            if kunci in lihat:
+                continue   # lokasi yang sama hari itu sudah dihitung (satelit atau lintasan lain)
+            lihat.add(kunci)
             k = (round(float(r["longitude"]), 3), round(float(r["latitude"]), 3))
             if k not in tembolok:
                 a = w.cari(*k)
@@ -107,7 +124,7 @@ def bangun(sd):
         hit = hit["hit"]
     else:
         d = os.path.join(AKAR, "data/raw/firms")
-        hit = hitung_csv(sd, [os.path.join(d, f) for f in ("modis.csv", "viirs.csv", "viirs_noaa20.csv")])
+        hit = hitung_csv(sd, [os.path.join(d, f) for f in ("modis.csv", "viirs.csv", "viirs_noaa20.csv", "viirs_noaa21.csv")])
         json.dump({"sd": sd, "hit": hit}, open(HITUNG, "w"), separators=(",", ":"))
     m = rakit(hit, sd, sorted(PROVINSI))
     tulis(m)
@@ -190,6 +207,23 @@ def uji():
         raise AssertionError("panjang salah harus ditolak")
     except AssertionError as e:
         assert "harusnya" in str(e), e
+    # hitung_csv menolak keyakinan rendah: VIIRS n/h dan MODIS 30+ masuk, VIIRS l dan MODIS 29 tidak
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        b = os.path.join(tmp, "x.csv")
+        h = "latitude,longitude,acq_date,acq_time,confidence\n"
+        # tiap baris di sel sendiri (bujur bergeser 0,01 derajat ~ 3 sel) supaya yang diuji keyakinan, bukan lokasi unik
+        open(b, "w").write(h + "".join(f"-2.0,{113.0 + i * 0.01:.2f},2026-03-10,0300,{c}\n" for i, c in enumerate(("n", "h", "l", "30", "29", "80"))))
+        import titik_palsu
+        hit = hitung_csv("2026-03-31", [b], set())
+        assert sum(sum(v) for v in hit["2026"].values()) == 4, hit
+        # lokasi unik lintas berkas: sel yang sama hari yang sama sekali, hari lain dihitung lagi
+        b2 = os.path.join(tmp, "y.csv")
+        open(b2, "w").write(h + "-2.0,113.00,2026-03-10,0500,n\n-2.0,113.00,2026-03-11,0300,n\n")
+        hit = hitung_csv("2026-03-31", [b, b2], set())
+        assert sum(sum(v) for v in hit["2026"].values()) == 5, hit
+        hit = hitung_csv("2026-03-31", [b], {titik_palsu.sel(-2.0, 113.0)})
+        assert sum(sum(v) for v in hit["2026"].values()) == 3, ("titik di sel industri (baris 'n' di 113,00) harus dibuang", hit)
     # berkas nyata (bila ada): invarian dan setara laporan.json untuk tiap hari arsip
     lap = json.load(open(os.path.join(AKAR, "public/data/laporan.json"))) if os.path.exists(os.path.join(AKAR, "public/data/laporan.json")) else None
     if os.path.exists(JALUR):

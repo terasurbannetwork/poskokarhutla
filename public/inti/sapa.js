@@ -13,7 +13,9 @@
     jam: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
     daun: '<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/>',
     asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
-    awas: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>'};
+    awas: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+    naik: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+    turun: '<path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/>'};
   const ik = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${IK[k]}</svg>`;
   const kartu = (k, w, label, isi) => `<div class="sp-c" style="--w:${w}"><span class="sp-ci">${ik(k)}</span><div><b class="sp-ey">${label}</b><p>${isi}</p></div></div>`;
   const css = () => document.head.insertAdjacentHTML("beforeend", `<style>
@@ -21,11 +23,14 @@
 dialog.sp{width:min(940px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 32px));overflow:hidden;padding:0;border:0;border-radius:22px}
 dialog.sp[open]{display:flex;flex-direction:column}
 .sp svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.sp-hd{flex:none;display:flex;gap:12px;align-items:flex-start;padding:20px 22px 18px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff}
+/* kepala rata tengah; tombol tutup menempel di pojok supaya tidak menggeser tengahnya */
+.sp-hd{flex:none;position:relative;display:flex;gap:12px;align-items:flex-start;padding:20px 64px 18px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff;text-align:center}
+.sp-hd .sp-x{position:absolute;top:16px;right:16px}
 .sp-eyh{display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#f5a06b}
 .sp-hd h3{font:700 20px/1.3 var(--display);letter-spacing:-.01em;margin:8px 0 12px;color:#fff}
 .sp-hd h3>b{color:#ff9a6b}.sp-hd h3 .naik{color:#ff9a6b}.sp-hd h3 .turun{color:#7fd6a4}
-.sp-chips{display:flex;flex-wrap:nowrap;gap:6px}
+.sp-hd h3 b svg{width:.95em;height:.95em;stroke-width:2.4;vertical-align:-.1em;margin-right:4px}
+.sp-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
 .sp-eyh svg{width:18px;height:18px}
 .sp .sp-x{border:0;background:rgb(255 255 255 / .14);color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;flex:none}
 .sp .sp-x:hover{background:rgb(255 255 255 / .24)}
@@ -74,6 +79,13 @@ dialog.sp[open]{display:flex;flex-direction:column}
 .sp-bs.rata .sp-b,.sp-th.b{grid-template-columns:minmax(0,1fr) 150px minmax(80px,1fr) 64px 64px}
 .sp-bs>.sp-th{margin:-14px -16px 4px;border-bottom:1px solid var(--line)}
 .sp-pt>.sp-th,.sp-pr{grid-template-columns:minmax(130px,1.2fr) 1.3fr 1fr 1fr .9fr}
+.sp-pt.as>.sp-th,.sp-pt.as>.sp-pr{grid-template-columns:minmax(130px,1.1fr) 1.2fr .8fr .8fr .7fr 1.5fr}
+.sp-ct{margin:0;padding:9px 16px;border-top:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ink2);background:color-mix(in oklch,var(--ink) 2.5%,transparent)}
+/* asap: skala P.14/2020 pada PM2,5 24 jam, warna sama dengan .pill.as* di tabel wilayah */
+.sp-p.as0{background:color-mix(in oklch,var(--ink) 6%,var(--card));color:var(--ink2)}
+.sp-p.as1{background:oklch(70% .05 70 / .2);color:oklch(45% .05 65)}
+.sp-p.as2{background:oklch(55% .07 55 / .22);color:oklch(38% .07 50)}
+.sp-p.as3{background:oklch(40% .08 340 / .2);color:oklch(38% .12 340)}
 .sp-pr{display:grid;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:14px}
 .sp-pn{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-align:left}.sp-pn:hover{text-decoration:underline}
 button.sp-p{border:0;cursor:pointer;font-family:inherit}button.sp-p:hover{filter:brightness(.95)}button.sp-p[aria-expanded="true"]{box-shadow:inset 0 0 0 1.5px currentColor}
@@ -90,7 +102,7 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
 @media (max-width:560px){.sp-eyh{font-size:12px;letter-spacing:.05em;white-space:nowrap}.sp-pv{display:grid;gap:7px}.sp-pv>b{min-width:0}.sp-chips{gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}.sp-chips::-webkit-scrollbar{display:none}.sp-p{font-size:9.5px;padding:3px 6px;gap:3px}.sp-p svg{display:none}.sp-pv{min-width:0}.sp-hd{padding:18px 16px 16px}.sp-isi{padding:16px 16px 8px}.sp-aksi{padding:12px 16px 16px}.sp-aksi>span{display:none}.sp-pri{flex:1}
   .sp-k{grid-template-columns:18px minmax(0,1fr) auto auto}.sp-nm span,.sp-k em:last-child{display:none}
   .sp-b{grid-template-columns:minmax(0,1.3fr) 1fr 34px}.sp-b>span{flex-direction:column;align-items:flex-start;gap:3px}
-  .sp-pt{overflow-x:auto}.sp-pt>*{min-width:600px}
+  .sp-pt{overflow-x:auto}.sp-pt>*{min-width:600px}.sp-pt.as>*{min-width:740px}.sp-hd{padding:18px 52px 16px}.sp-hd .sp-x{top:12px;right:12px}
   .sp-mh{display:none!important}.sp-ks.rata .sp-k,.sp-th.k{grid-template-columns:18px minmax(0,1fr) 64px 54px}
   .sp-as .sp-th,.sp-ar{grid-template-columns:minmax(0,1fr) 96px 58px 58px}.sp-ar{font-size:12.5px}
   .sp-bs.rata .sp-b,.sp-th.b{grid-template-columns:minmax(0,1fr) 108px 40px 40px}.sp-bs.rata .sp-b>i,.sp-th.b>:nth-child(3){display:none}

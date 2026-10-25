@@ -1,6 +1,7 @@
 {
   "_catatan": "Angka rujukan paket air-jawa yang disalin tangan dari dokumen (bukan hasil hitung). Tiap butir punya sumber + tanggal akses + label. Label: resmi (instansi pemerintah, dokumen dibuka), terverifikasi (sumber primer non-pemerintah dibuka), sekunder (dari riset B: berita/ringkasan, dokumen primer BELUM dibuka; jangan dipakai sebagai angka utama), olah (hitungan penyusun riset B). Diperiksa oleh data/kajian-bnpb/bangun/air-jawa.py.",
   "permen14_rekap": {
+    "_sha1_pdf": "2d7bd2d1e9b37cbea8263adae715102fb8c21f91",
     "_sumber": "Permen PUPR 14/PRT/M/2015, Berita Negara 2015 No. 638, Lampiran I hlm 13, Lampiran II hlm 29, Lampiran III hlm 63 (rekapitulasi per provinsi). Dibaca dari pindaian halaman (crop 200 dpi) 23 Okt 2026; cocok dengan OCR dan dengan riset B §4.1. File: data/kajian-bnpb/riset/mentah/bn638.pdf (https://peraturan.go.id/files/bn638-2015.pdf).",
     "_kolom": "[jumlah DI, luas ha] per jenis irigasi; DKI Jakarta tidak tercantum di rekap (tidak ada DI)",
     "pusat": {
@@ -32,7 +33,7 @@
     }
   },
   "permen14_koreksi": {
-    "_catatan": "Salah baca OCR yang dibetulkan setelah melihat pindaian halaman (pdftoppm 80-100 dpi), 23 Okt 2026. kunci = 'hlm|potongan teks OCR'. Selain butir ini tidak ada angka yang disunting tangan.",
+    "_catatan": "Salah baca OCR yang dibetulkan setelah melihat pindaian halaman (pdftoppm 80-100 dpi), 23 Okt 2026. kunci = 'hlm|potongan teks OCR'. Selain butir ini tidak ada angka yang disunting tangan. Rawa Sekaran (Kab. Lamongan, hlm 47): OCR 1.719, pindaian 1.779; ditemukan pemeriksa yang mencocokkan 80 DI hlm 47-48 dengan pindaian (jumlahnya lalu = 118.262 = angka judul seksi XIV), dicek ulang penyusun pada crop 200 dpi.",
     "subtotal_kab": {
       "275|Temanaauna": [577, 17711],
       "510|Gresik": [47, 733],
@@ -40,8 +41,16 @@
     },
     "total_di": {
       "20|Bodri Trompo": 8861,
-      "45|Cisomang": 2117
+      "45|Cisomang": 2117,
+      "47|Rawa Sekaran": 1779
     }
+  },
+  "permen14_selisih_dokumen": {
+    "_catatan": "Ketidakkonsistenan DI DALAM dokumen BN 638 (bukan salah baca OCR), dicek ke pindaian 23 Okt 2026. kunci = 'hlm|nama DI atau awal judul seksi' -> [angka tercetak induk, jumlah angka tercetak bagian/baris]. Paket memakai angka induk; selisihnya jadi baris sisa (kode kosong). Self-check gagal bila muncul selisih DI/seksi yang tidak ada di daftar ini.",
+    "20|XII PROVINSI JAWA TENGAH": [110500, 110501],
+    "34|Majegan": [32, 33],
+    "36|Brongkol": [16, 15],
+    "36|Sembuh": [33, 34]
   },
   "ws_permen04_2015": {
     "_sumber": "Permen PUPR 04/PRT/M/2015 tentang Kriteria dan Penetapan Wilayah Sungai, Lampiran I (Berita Negara 2015 No. 429), https://peraturan.go.id/files/bn429-2015.pdf, diakses 23 Okt 2026; teks: mentah/permen04_2015.txt. Kategori: A2 lintas provinsi, A3 strategis nasional, B lintas kab/kota, C dalam satu kab/kota. Kode dicetak berulang antarkategori (mis. 02.05.A2 dan 02.05.B), jadi kunci = kode lengkap dengan akhiran kategori. Tanda * di dokumen tidak dijelaskan di lampiran.",
@@ -92,7 +101,8 @@
   },
   "ipa_pulau_2010": {
     "_sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia 2020, Gbr. 2.5, mengutip Radhika dkk. (2013); https://unstats.un.org/unsd/envstats/Compendia/Indonesia_Statistik_Lingkungan_Hidup_2020.pdf; dibaca riset B 23 Okt 2026 [TERVERIFIKASI].",
-    "label": "resmi",
+    "label": "estimasi-model",
+    "_catatan_label": "Ketersediaan dan IPA adalah keluaran model hujan-limpasan berbasis TRMM (Radhika dkk. 2013) yang dikutip ulang BPS 2020; bukan hasil ukur. Galat model tidak dilaporkan sumber.",
     "_kolom": ["pulau", "ketersediaan_m3s", "kebutuhan_dg_aliran_pemeliharaan_m3s", "ipa_persen", "kategori", "kebutuhan_tanpa_aliran_pemeliharaan_m3s", "ipa_tanpa_persen", "kategori_tanpa"],
     "baris": [
       ["Jawa", 5004.64, 2681.41, 54, "Kritis sedang", 2078.52, 42, "Kritis ringan"],
@@ -103,18 +113,18 @@
   },
   "neraca_jawa": {
     "_sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia 2020 Gbr. 2.4 (Radhika dkk. 2017) dan Gbr. 2.6 (CAT, data KLH 2008), Gbr. 2.8 (per kapita); riset B §1.1-1.3 [TERVERIFIKASI]",
-    "label": "resmi",
+    "_label_butir": "per butir (elemen ke-5): resmi, estimasi-model (model eksternal/proyeksi yang dikutip BPS), olah(x)",
     "butir": [
-      ["air_permukaan_m3s", 5567, "m3/s", "TRMM 2003-2015"],
-      ["air_permukaan_juta_m3_th", 175558, "juta m3/th", "TRMM 2003-2015"],
-      ["porsi_air_permukaan_nasional_persen", 6.3, "%", "olah riset B: 175.558/2.783.228"],
-      ["luas_km2", 132698, "km2", "luas dalam perhitungan"],
-      ["cat_jumlah", 80, "CAT", "KLH 2008"],
-      ["cat_luas_km2", 80936, "km2", "KLH 2008"],
-      ["cat_potensi_juta_m3", 41334, "juta m3", "KLH 2008"],
-      ["per_kapita_2020_m3", 1227, "m3/kapita/th", "BPS & Ditjen SDA via PT SMI 2017"],
-      ["per_kapita_2025_m3", 1178, "m3/kapita/th", "proyeksi"],
-      ["per_kapita_2030_m3", 1142, "m3/kapita/th", "proyeksi"]
+      ["air_permukaan_m3s", 5567, "m3/s", "estimasi model hujan-limpasan berbasis TRMM 2003-2015 (Radhika dkk. 2017), dikutip BPS 2020; galat tidak dilaporkan sumber", "estimasi-model"],
+      ["air_permukaan_juta_m3_th", 175558, "juta m3/th", "idem (TRMM 2003-2015, Radhika dkk. 2017, dikutip BPS 2020)", "estimasi-model"],
+      ["porsi_air_permukaan_nasional_persen", 6.3, "%", "hitungan riset B: 175.558/2.783.228 (keduanya keluaran model yang sama)", "olah(estimasi-model)"],
+      ["luas_km2", 132698, "km2", "luas daratan yang dipakai dalam perhitungan model (dicetak BPS 2020)", "resmi"],
+      ["cat_jumlah", 80, "CAT", "KLH 2008, dikutip BPS 2020", "resmi"],
+      ["cat_luas_km2", 80936, "km2", "KLH 2008, dikutip BPS 2020", "resmi"],
+      ["cat_potensi_juta_m3", 41334, "juta m3", "KLH 2008, dikutip BPS 2020", "resmi"],
+      ["per_kapita_2020_m3", 1227, "m3/kapita/th", "PROYEKSI (terbit 2017, bukan realisasi 2020); rantai kutipan BPS 2020 <- PT SMI Insight Q2 2017 <- BPS & Ditjen SDA (sumber tersier)", "estimasi-model"],
+      ["per_kapita_2025_m3", 1178, "m3/kapita/th", "PROYEKSI (terbit 2017); rantai BPS 2020 <- PT SMI 2017 <- BPS & Ditjen SDA", "estimasi-model"],
+      ["per_kapita_2030_m3", 1142, "m3/kapita/th", "PROYEKSI (terbit 2017); rantai BPS 2020 <- PT SMI 2017 <- BPS & Ditjen SDA", "estimasi-model"]
     ]
   },
   "cat_rusak_2023": {
@@ -125,6 +135,7 @@
   "bendungan_pj2021": {
     "_sumber": "BBWS Pemali Juana (2021). Daftar Inventarisasi Bendungan di Lingkungan BBWS Pemali Juana, status Juli 2021. https://sda.pu.go.id/balai/bbwspemalijuana/files/datasda/Bendungan_BBWSPemaliJuana.pdf (salinan riset: data/kajian-bnpb/riset/mentah/pj.pdf, teks pj.txt), dibuka 23 Okt 2026. Disalin tangan dari pj.txt; jumlah kolom dicek ke baris TOTAL dokumen.",
     "label": "resmi",
+    "kab_dikoreksi": {"_catatan": "nama -> [kab dicetak dokumen, kab dipakai paket, alasan]", "Grawan": ["3318", "3317", "dokumen BBWS PJ mencantumkan Grawan di bawah Kab. Pati, padahal Kec. Sumber dan koordinat dokumen (rentang 6°46'50,58\"-47'01,68\" LS; 111°17'24,72\"-35,82\" BT) sama-sama di Kab. Rembang"]},
     "total_dokumen": {"luas_genangan_ha": 6420.62, "vol_normal_juta_m3": 898.44, "vol_efektif_juta_m3": 790.19, "luas_genangan_2021_ha": 6295.04, "tampungan_2021_juta_m3": 801.93, "sedimentasi_juta_m3": 96.51, "piezometer": 543, "piezometer_rusak": 87},
     "_kolom": ["no", "nama", "desa", "kecamatan", "kab_kode", "lintang_teks", "bujur_teks", "tahun_bangun", "pemanfaatan_desain", "pemanfaatan_2021", "luas_genangan_ha", "vol_normal_juta_m3", "vol_efektif_juta_m3", "luas_genangan_2021_ha", "tampungan_2021_juta_m3", "sedimentasi_juta_m3", "piezometer", "piezometer_rusak"],
     "baris": [
@@ -152,7 +163,7 @@
     "_sumber": "Riset B §3.1-3.2 (data/kajian-bnpb/riset/B-air-jawa.md), diakses 23 Okt 2026. Hampir semua angka SEKUNDER (berita/artikel/abstrak); sumber primer (PJT II, PLN IP, BBWS) BELUM dibuka. Disimpan semua versi berdampingan.",
     "_kolom": ["id", "nama", "kab_kode atau null", "ws_dasar_nama_sungai", "status", "angka: [besaran, nilai, satuan, tahun, label, catatan]"],
     "baris": [
-      ["jatiluhur", "Jatiluhur (Ir. H. Djuanda)", "3214", "Citarum", "operasi", [["kapasitas", 3000, "juta m3", null, "sekunder", "versi 1; bertentangan"], ["kapasitas", 2440, "juta m3", null, "sekunder", "versi 2; bertentangan; minta data PJT II"], ["luas_di", 237790, "ha", 2015, "resmi", "DI Jatiluhur, Permen PUPR 14/2015 Lampiran I hlm 16"], ["sedimentasi_laju", 20, "juta m3/th", "1995-2009", "sekunder", "rata-rata; abstrak kajian, inkonsistensi satuan"], ["sedimentasi_kumulatif", 522, "juta m3", "36 tahun", "sekunder", "idem"]]],
+      ["jatiluhur", "Jatiluhur (Ir. H. Djuanda)", "3214", "Citarum", "operasi", [["kapasitas", 3000, "juta m3", null, "sekunder", "versi 1; bertentangan"], ["kapasitas", 2440, "juta m3", null, "sekunder", "versi 2; bertentangan; minta data PJT II"], ["luas_di", 237790, "ha", 2015, "resmi", "DI Jatiluhur (52.728 + 24.511 + 100.049 + 60.502)", "Permen PUPR 14/2015, BN 2015 No. 638, Lampiran I hlm 16 (pindaian)"], ["sedimentasi_laju", 20, "juta m3/th", "1995-2009", "sekunder", "rata-rata; abstrak kajian, inkonsistensi satuan"], ["sedimentasi_kumulatif", 522, "juta m3", "36 tahun", "sekunder", "idem"]]],
       ["cirata", "Cirata", null, "Citarum", "operasi", [["kapasitas", 2165, "juta m3", null, "sekunder", "versi 1; bertentangan"], ["kapasitas", 1900, "juta m3", null, "sekunder", "versi 2; bertentangan"]]],
       ["saguling", "Saguling", null, "Citarum", "operasi", [["kapasitas", 982, "juta m3", null, "sekunder", ""], ["sedimentasi_laju_desain", 4.0, "juta m3/th", null, "sekunder", "repositori UPI"], ["sedimentasi_laju_terukur", 4.3, "juta m3/th", null, "sekunder", "repositori UPI"], ["sedimentasi_laju_studi_2016_min", 2.1, "juta m3/th", 2016, "sekunder", "bertentangan dengan 4,3"], ["sedimentasi_laju_studi_2016_maks", 2.58, "juta m3/th", 2016, "sekunder", ""]]],
       ["jatigede", "Jatigede", "3211", "Cimanuk", "operasi (PLTA diresmikan 20 Jan 2025)", [["kapasitas", 979.5, "juta m3", null, "sekunder", "Bisnis, detik"], ["kapasitas_efektif", 700, "juta m3", null, "sekunder", "sekitar"], ["layanan_irigasi", 90000, "ha", null, "sekunder", "DI Rentang, sekitar"], ["air_baku", 3500, "l/s", null, "sekunder", ""]]],
@@ -166,7 +177,7 @@
       ["bendo", "Bendo", "3502", "Bengawan Solo (DAS Madiun)", "operasi", [["kapasitas", 43, "juta m3", null, "sekunder", ""]]],
       ["semantok", "Semantok", "3518", "Brantas", "operasi (diresmikan 20 Des 2022)", [["kapasitas", 32.67, "juta m3", null, "sekunder", ""], ["layanan_irigasi", 1900, "ha", null, "sekunder", ""]]],
       ["pidekso", "Pidekso", "3312", "Bengawan Solo", "operasi (jaringan irigasi target 2026)", [["kapasitas", 25, "juta m3", null, "sekunder", ""]]],
-      ["kuningan", "Kuningan", "3208", "Cimanuk-Cisanggarung", "operasi", [["kapasitas", 25, "juta m3", null, "olah", "riset B: dari 'Cipanas 10x Kuningan'; angka resmi belum ditemukan"]]],
+      ["kuningan", "Kuningan", "3208", "Cimanuk-Cisanggarung", "operasi", [["kapasitas", 25, "juta m3", null, "olah(sekunder)", "riset B: dari 'Cipanas 10x Kuningan'; angka resmi belum ditemukan"]]],
       ["jlantah", "Jlantah", "3313", "Bengawan Solo", "konstruksi/operasi (belum dipastikan)", [["kapasitas", 10.97, "juta m3", null, "sekunder", ""]]],
       ["gondang", "Gondang (Karanganyar)", "3313", "Bengawan Solo", "operasi", [["kapasitas", 9.15, "juta m3", null, "sekunder", "jangan tertukar dengan Gondang Lamongan"]]],
       ["ciawi", "Ciawi (bendungan kering)", "3201", "Ciliwung", "operasi", [["kapasitas", 6.05, "juta m3", null, "sekunder", ""], ["reduksi_debit_desain", 111.75, "m3/s", null, "sekunder", ""], ["reduksi_banjir_mar2025", 20.87, "%", 2025, "sekunder", "267,17 -> 211,41 m3/s; BBWS Cilcis via detik"]]],
@@ -200,11 +211,13 @@
       ["pekalongan", "Pekalongan", ["3375"], 10, 19, "rentang", "2014-2022", "PS-InSAR ALOS-2", "Widodo dkk. (2024) Urban Science 8(4) 234", "https://www.mdpi.com/2413-8851/8/4/234", "terverifikasi"],
       ["pekalongan", "Pekalongan", ["3375"], 12, 30, "rentang", "pernyataan 13 Nov 2024", "pernyataan Deputi Bappenas", "Investor Trust (2024)", "https://investortrust.id/national/47409/bappenas-ungkap-penurunan-tanah-pantura-di-pekalongan-capai-30-cm-per-tahun", "sekunder"],
       ["pekalongan", "Pekalongan", ["3375"], 2.1, 11.0, "rentang", "2015-2020", "satelit (BRIN)", "BRIN via Tempo (2022)", "https://en.tempo.co/amp/1597858/brin-java-panturas-land-subsidence-up-to-20cm-per-year", "sekunder"],
-      ["bandung", "Kab. Bandung dan Bandung Barat", ["3204", "3217"], null, 22.3, "tertinggi 0,223 dan 0,22 m/th", "Sentinel-1", "InSAR Sentinel-1", "Virtriana dkk. (2026) Geoenvironmental Disasters 13", "https://doi.org/10.1186/s40677-026-00420-5", "terverifikasi"],
+      ["bandung", "Kab. Bandung", ["3204"], null, 22.3, "tertinggi 0,223 m/th (sumber menulis '0,223 dan 0,22 m/th' untuk Kab. Bandung dan Bandung Barat; pasangan mengikuti urutan penulisan)", "Sentinel-1", "InSAR Sentinel-1", "Virtriana dkk. (2026) Geoenvironmental Disasters 13", "https://doi.org/10.1186/s40677-026-00420-5", "terverifikasi"],
+      ["bandung", "Bandung Barat", ["3217"], null, 22.0, "tertinggi 0,22 m/th (pasangan mengikuti urutan penulisan sumber, lihat baris Kab. Bandung)", "Sentinel-1", "InSAR Sentinel-1", "Virtriana dkk. (2026) Geoenvironmental Disasters 13", "https://doi.org/10.1186/s40677-026-00420-5", "terverifikasi"],
       ["bandung", "Cekungan Bandung", [], -13.3, 9.8, "rentang -133 s.d. +98 mm/th (konvensi tanda sumber, tidak ditafsirkan)", "2019", "PS-InSAR Sentinel-1A", "Sari dkk. (2024) Jurnal Elkomika 12(4)", "https://doi.org/10.26760/elkomika.v12i4.1116", "terverifikasi"],
       ["bandung", "Cekungan Bandung", [], 8, 23, "rata-rata ~8, lokal ~23", "2000-2011", "GPS/InSAR", "ringkasan Abidin dkk.", null, "sekunder"],
       ["surabaya", "Surabaya pesisir utara-timur", ["3578"], 0.02, 8.33, "rentang 0,2-83,3 mm/th", "studi 2022", "GPS", "ITS", null, "sekunder"],
       ["surabaya", "Surabaya", ["3578"], -4, 3, "rentang -40 s.d. +30 mm/th LOS (konvensi tanda sumber, tidak ditafsirkan)", "2015-2017", "SBAS Sentinel-1", "ITS", null, "sekunder"],
+      ["pantura", "Semarang, Pekalongan, Demak", ["3374", "3375", "3321"], null, 20, "\"20 cm/thn\" (satu angka untuk tiga wilayah, tanpa rincian)", "2022", "pernyataan pers", "ITB (2022), dikutip riset B §6.1 tanpa tautan", null, "sekunder"],
       ["pantura", "Pantura (Jakarta, Pekalongan, Semarang, Demak)", [], null, null, ">= ~9x laju kenaikan muka laut global", "2010-2021", "GNSS kontinu 20 stasiun", "Susilo dkk. (2023) Scientific Data 10", "https://doi.org/10.1038/s41597-023-02274-0", "terverifikasi"]
     ]
   },

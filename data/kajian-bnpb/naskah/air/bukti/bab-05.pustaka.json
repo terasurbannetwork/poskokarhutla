@@ -1,0 +1,1354 @@
+[
+ {
+  "id": "bmkg-2026-musim-hujan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     22
+    ]
+   ]
+  },
+  "title": "BMKG: El Niño sangat kuat sedang terjadi, musim hujan 2026/2027 diprediksi datang lebih lambat",
+  "genre": "Siaran pers",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-el-nino-sangat-kuat-sedang-terjadi-musim-hujan-2026-2027-diprediksi-datang-lebih-lambat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "rilis primer dibuka 23 Okt 2026; pembanding InfoPublik 22 Sep 2026 (infopublik.id/kategori/nasional-sosial-budaya/990337) memuat angka yang sama"
+ },
+ {
+  "id": "bmkg-2026-musim-kemarau",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     6,
+     10
+    ]
+   ]
+  },
+  "title": "BMKG: Puncak musim kemarau Agustus 2026, perkuat kesiapan hadapi dampak El Niño",
+  "genre": "Siaran pers",
+  "URL": "https://www.bmkg.go.id/siaran-pers/bmkg-puncak-musim-kemarau-agustus-2026-perkuat-kesiapan-hadapi-dampak-el-nino",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka ulang 24 Okt 2026: 'BMKG memprediksi fenomena El Nino akan terus bertahan hingga awal tahun 2027', peluang intensitas kategori moderat 98 persen dan kuat 62 persen; dampak saat bertemu musim kemarau hingga pertengahan Oktober; kemarau lebih kering dan lebih panjang dari normal"
+ },
+ {
+  "id": "infopublik-2026-awal-puncak",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "InfoPublik"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     2
+    ]
+   ]
+  },
+  "title": "Awal dan puncak musim hujan 2026/2027 berdekatan, BMKG tekankan kesiapsiagaan",
+  "URL": "https://infopublik.id/kategori/nasional-sosial-budaya/991951/awal-dan-puncak-musim-hujan-20262027-berdekatan-bmkg-tekankan-kesiapsiagaan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "kutipan Direktur Perubahan Iklim BMKG di portal pemerintah; rilis BMKG 2 Okt 2026 tidak ditemukan. Hanya untuk frasa awal dan puncak musim hujan berdekatan; persistensi El Niño dikutip dari bmkg-2026-musim-kemarau"
+ },
+ {
+  "id": "noaa-2026-oni",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "NOAA Climate Prediction Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Oceanic Niño Index (ONI), ERSSTv5",
+  "genre": "Data set",
+  "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama"
+ },
+ {
+  "id": "bnpb-2026-krb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "kolom penduduk per kab dipakai sebagai penyebut resmi (paket nonalam-sosial, krb_covid19_kab.csv dan krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API"
+ },
+ {
+  "id": "bnpb-2012-pengkajian-risiko",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2012 tentang Pedoman Umum Pengkajian Risiko Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1096",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2012pbbnpb002.pdf",
+  "verifikasi": "primer",
+  "note": "korpus lokal hanya memuat batang tubuh 3 halaman; lampiran metode (rumus risiko) tidak dibuka"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2025.json (Pasal 7 hlm. 4; penetapan 6 Jan 2025 hlm. 5; program 2.4.4 hlm. 37 dan 86; §4.5–4.6 hlm. 122–125)"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+  "verifikasi": "primer",
+  "note": "sama dengan entri pustaka.json utama, ditambah URL; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz (Pasal 1 angka 2, Pasal 5, 12, 21, 51, 53)"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+ },
+ {
+  "id": "ri-2023-uu6",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2023 Nomor 41",
+  "URL": "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023",
+  "verifikasi": "primer",
+  "note": "Pasal 53 (perubahan UU 17/2019: Pasal 8, 9, 12, 17, 19, 38, 40, 43, 44, 45, 49, 50, 51, 52, 56, 70, 73; sisipan 40A, 75A; Pasal 31, 35, 39 tidak diubah) dibaca dari data/kajian-bnpb/data/lembaga/mentah/teks/uu-6-2023.json.gz hlm. 365–380"
+ },
+ {
+  "id": "ri-2015-pp122",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
+  "URL": "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10)"
+ },
+ {
+  "id": "siswanto-2022-kekeringan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Siswanto",
+    "given": "Siswanto"
+   },
+   {
+    "family": "Wardani",
+    "given": "Kartika Kusuma"
+   },
+   {
+    "family": "Purbantoro",
+    "given": "Babag"
+   },
+   {
+    "family": "Rustanto",
+    "given": "Andry"
+   },
+   {
+    "family": "Zulkarnain",
+    "given": "Faris"
+   },
+   {
+    "family": "Anggraheni",
+    "given": "Evi"
+   },
+   {
+    "family": "Dewanti",
+    "given": "Ratih"
+   },
+   {
+    "family": "Nurlambang",
+    "given": "Triarko"
+   },
+   {
+    "family": "Dimyati",
+    "given": "Muhammad"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Satellite-based meteorological drought indicator to support food security in Java Island",
+  "container-title": "PLoS ONE",
+  "volume": "17",
+  "issue": "6",
+  "page": "e0260982",
+  "DOI": "10.1371/journal.pone.0260982",
+  "verifikasi": "primer",
+  "note": "abstrak dibaca lewat Crossref 23 Okt 2026; daftar penulis dari Crossref (riset B hanya mencatat enam penulis)"
+ },
+ {
+  "id": "bmkg-2026-dinamika-okt1",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     13
+    ]
+   ]
+  },
+  "title": "Analisis Dinamika Atmosfer Dasarian I Oktober 2026",
+  "publisher": "BMKG",
+  "URL": "https://www.bmkg.go.id/iklim/analisis-dinamika-atmosfer-dasarian-i-oktober-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Indeks ENSO (3 bulanan) ASO +3,08; Niño 3.4 dasarian +3,33; IOD dasarian +0,703 (September +0,72); peringatan dini kekeringan meteorologis dasarian II Oktober 2026: Awas di Banten, DKI Jakarta, Jawa Barat, Jawa Tengah, DI Yogyakarta, Jawa Timur (tanpa nama kab/kota)"
+ },
+ {
+  "id": "noaa-psl-dmi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "NOAA Physical Sciences Laboratory",
+    "singkatan": "NOAA PSL"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     25
+    ]
+   ]
+  },
+  "title": "Dipole Mode Index (DMI), HadISST1.1, monthly time series",
+  "publisher": "NOAA PSL",
+  "URL": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "berkas berlabel Preliminary, dibuat 25 Juli 2026; data 2026 sampai Mei; rerata Jul–Sep dihitung penyusun bukti; belum disalin ke riset/mentah/"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2020 Nomor 482",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2020.json (Pasal 1 hlm. 3–4; Pasal 2 hlm. 5; Pasal 4 hlm. 6–7; Pasal 14 hlm. 12–13; Pasal 20 hlm. 16); URL dari data/raw/hukum/indeks.json"
+ },
+ {
+  "id": "bnpb-2024-peringatan-dini",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     25
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2024 tentang Sistem Peringatan Dini Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 207",
+  "URL": "https://peraturan.bpk.go.id/Details/284502/peraturan-bnpb-no-2-tahun-2024",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-2-tahun-2024.json (Pasal 3 hlm. 4; Pasal 7 hlm. 5)"
+ },
+ {
+  "id": "bnpb-2026-dana-bersama",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     3,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2026 tentang Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi terhadap Penyaluran Dana Bersama Penanggulangan Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2026 Nomor 189",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 2 ayat (2) hlm. 3, korpus data/raw/hukum/teks/perban-nomor-1-tahun-2026.json"
+ },
+ {
+  "id": "bnpb-2026-juklak7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     15
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Pemenuhan Standar Pelayanan Minimal Sub-Urusan Bencana Daerah Kabupaten/Kota untuk Subkegiatan Pelayanan Komunikasi, Informasi, dan Edukasi Rawan Bencana Nomor 7 Tahun 2026",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026juklakbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "materi KIE 9 jenis ancaman termasuk kekeringan, hlm. 26, 32–33, korpus data/raw/hukum/teks/juklak-nomor-7-tahun-2026.json"
+ },
+ {
+  "id": "ri-2018-perpres17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     3,
+     19
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2018 Nomor 34",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2018perpresri017.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 1 dan Pasal 2 hlm. 2–3, korpus data/raw/hukum/teks/perpres-nomor-17-tahun-2018.json"
+ },
+ {
+  "id": "ri-2026-perpres46",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     16
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2026 Nomor 83",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 3 baru hlm. 3, korpus data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json (OCR mutu 0,968)"
+ },
+ {
+  "id": "kemenhut-sipongi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Kementerian Kehutanan",
+    "singkatan": "Kemenhut"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7
+    ]
+   ]
+  },
+  "title": "SiPongi: luas kebakaran hutan dan lahan per provinsi 2015–2026",
+  "publisher": "Kementerian Kehutanan (sebelum Oktober 2024 KLHK)",
+  "URL": "https://opsroom.sipongidata.my.id/api/list/luas-kebakaran/provinsi?tahunAwal=2015&tahunAkhir=2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan riset/mentah/sipongi_luas_2015_2026.json (field last = Juli 2026); endpoint dicatat di bangun/skenario-hidromet.py; total nasional 2015 2.611.411,44 ha sama dengan pembanding Bank Dunia di paket"
+ },
+ {
+  "id": "bps-2023-padi-sementara",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi di Indonesia 2023 (angka sementara)",
+  "publisher": "BPS",
+  "URL": "https://www.bps.go.id/en/pressrelease/2023/10/16/2037",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "produksi 2023 sekitar 53,63 juta ton GKG, turun 1,12 juta ton atau 2,05% dari 54,75 juta ton (2022); luas panen 10,20 juta ha"
+ },
+ {
+  "id": "bps-2024-padi-tetap",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     1
+    ]
+   ]
+  },
+  "title": "Pada 2023, luas panen padi mencapai sekitar 10,21 juta hektare dengan produksi padi sebesar 53,98 juta ton gabah kering giling (GKG)",
+  "publisher": "BPS",
+  "URL": "https://www.bps.go.id/en/pressrelease/2024/03/01/2375/pada-2023--luas-panen-padi-mencapai-sekitar-10-21-juta-hektare-dengan-produksi-padi-sebesar-53-98-juta-ton-gabah-kering-giling--gkg-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "angka tetap 2023; halaman tidak memuat perbandingan dengan 2022"
+ },
+ {
+  "id": "bps-jateng-2024-padi",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Tengah",
+    "singkatan": "BPS Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     1
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi di Provinsi Jawa Tengah tahun 2023 (angka tetap)",
+  "publisher": "BPS Provinsi Jawa Tengah",
+  "URL": "https://jateng.bps.go.id/en/pressrelease/2024/03/01/1528/luas-panen-dan-produksi-padi-di-provinsi-jawa-tengah-tahun-2023--angka-tetap-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "produksi 9,08 juta ton GKG (2022: 9,36), turun 0,27 juta ton atau 2,91%; luas panen 1,64 juta ha, turun 2,72%"
+ },
+ {
+  "id": "bps-jatim-2024-padi",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     26
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi di Provinsi Jawa Timur 2023 (angka tetap)",
+  "publisher": "BPS Kabupaten Probolinggo (rilis ulang angka Provinsi Jawa Timur)",
+  "URL": "https://probolinggokab.bps.go.id/en/pressrelease/2024/03/26/225/luas-panen-dan-produksi-padi--di-provinsi-jawa-timur-2023--angka-tetap-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "produksi 9,71 juta ton GKG (2022: 9,53), naik 184,15 ribu ton atau 1,93%; luas panen 1,698 juta ha, naik 0,29%; laman BPS Jawa Timur sendiri tidak terbaca angkanya saat penelusuran"
+ },
+ {
+  "id": "bnpb-2024-tpa-suwung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     22
+    ]
+   ]
+  },
+  "title": "Sambangi Bali, Kepala BNPB himpun kekuatan awal demi mencegah kebakaran TPA Suwung",
+  "publisher": "BNPB",
+  "URL": "https://bnpb.go.id/berita/sambangi-bali-kepala-bnpb-himpun-kekuatan-awal-demi-mencegah-kebakaran-tpa-suwung",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "16 TPA terbakar hebat 2023 menurut catatan BNPB (rakor 21 Juni 2024); Suwung 32,4 ha; dibuka paket nonalam-sosial (peristiwa.csv)"
+ },
+ {
+  "id": "bnpb-2023-sarimukti",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     26
+    ]
+   ]
+  },
+  "title": "BNPB gunakan helikopter water bombing untuk percepat pemadaman api di TPST Sarimukti",
+  "publisher": "BNPB",
+  "URL": "https://bnpb.go.id/berita/bnpb-gunakan-helikopter-water-bombing-untuk-percepat-pemadaman-api-di-tpst-sarimukti",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "80% lahan terbakar, sekitar 3.000 KK terdampak asap (data Pusdalops 25 Agustus 2023); dibuka paket nonalam-sosial"
+ },
+ {
+  "id": "bnpb-2026-jatiwaringin",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     10
+    ]
+   ]
+  },
+  "title": "Update penanganan darurat pemadaman kebakaran di TPA Jatiwaringin mencapai 100% operasi udara dan pendinginan terus dioptimalkan",
+  "publisher": "BNPB",
+  "URL": "https://www.bnpb.go.id/berita/update-penanganan-darurat-pemadaman-kebakaran-di-tpa-jatiwaringin-mencapai-100-operasi-udara-dan-pendinginan-terus-dioptimalkan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Keputusan Bupati Tangerang 609/2026 (status tanggap darurat) dan 613/2026 (satgas); 4 helikopter; lahan utama sekitar 15 ha padam 100% 9 Juli 2026; dibuka paket nonalam-sosial"
+ },
+ {
+  "id": "bnpb-2026-jatibarang",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     1
+    ]
+   ]
+  },
+  "title": "Kebakaran lahan TPA Jatibarang Semarang, tim gabungan fokus pemadaman dan pengendalian api",
+  "publisher": "BNPB",
+  "URL": "https://www.bnpb.go.id/berita/kebakaran-lahan-tpa-jatibarang-semarang-tim-gabungan-fokus-pemadaman-dan-pengendalian-api",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sekitar 10 ha (BPBD Provinsi Jawa Tengah), tanpa korban jiwa; dibuka paket nonalam-sosial"
+ },
+ {
+  "id": "klh-2026-open-dumping",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     4,
+     17
+    ]
+   ]
+  },
+  "title": "Target nasional 2026: pemerintah tegaskan penghentian open dumping dan percepatan pemilahan sampah (Siaran Pers SR.70/HUMAS/KLH-BPLH/4/2026)",
+  "publisher": "KLH/BPLH",
+  "URL": "https://kemenlh.go.id/news/detail/target-nasional-2026-pemerintah-tegaskan-penghentian-open-dumping-dan-percepatan-pemilahan-sampah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "369 dari 485 TPA belum berhenti open dumping; dibuka paket nonalam-sosial (skenario_terburuk.csv)"
+ },
+ {
+  "id": "nu-2026-gunungkidul",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "NU Online"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     27
+    ]
+   ]
+  },
+  "title": "Kekeringan di Gunung Kidul, LAZISNU DIY salurkan 30 ribu liter air bersih ke Saptosari",
+  "container-title": "NU Online",
+  "URL": "https://www.nu.or.id/daerah/kekeringan-di-gunung-kidul-lazisnu-diy-salurkan-30-ribu-liter-air-bersih-ke-saptosari-5qoQS",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "menyebut Keputusan Bupati Nomor 154/KPTS/2026, siaga darurat kekeringan 1 Juni–31 Agustus 2026; teks keputusan tidak dibuka; tidak untuk badan teks"
+ },
+ {
+  "id": "rri-2026-gunungkidul",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "RRI Yogyakarta"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     5
+    ]
+   ]
+  },
+  "title": "Anggaran dropping air sisa 600 tangki, BPBD Gunungkidul siapkan skema BTT",
+  "container-title": "RRI",
+  "URL": "https://rri.co.id/yogyakarta/regional/2626384/anggaran-dropping-air-sisa-600-tanki-bpbd-gunungkidul-siapkan-skema-btt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "anggaran Rp346 juta untuk 800 tangki, 200 tersalur awal Agustus 2026; narasumber Ketua Tim Kerja Logistik dan Peralatan BPBD Gunungkidul; tidak untuk badan teks"
+ },
+ {
+  "id": "bmkg-2026-dinamika-okt2",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Meteorologi, Klimatologi, dan Geofisika",
+    "singkatan": "BMKG"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Analisis Dinamika Atmosfer Dasarian II Oktober 2026",
+  "publisher": "BMKG",
+  "URL": "https://www.bmkg.go.id/iklim/analisis-dinamika-atmosfer-dasarian-ii-oktober-2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Indeks ENSO ASO +3,05; Niño 3.4 dasarian +3,19; IOD dasarian +0,765; peringatan dini kekeringan meteorologis dasarian III Oktober 2026: Awas beberapa kab/kota Banten, Jawa Barat, DI Yogyakarta, Jawa Timur; Siaga Banten, Jawa Timur; Waspada Banten, Jawa Tengah"
+ },
+ {
+  "id": "bnpb-2018-perban5",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2018 tentang Kondisi dan Tata Cara Pelaksanaan Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2018 Nomor 1644",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2018pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-5-tahun-2018.json (menimbang hlm. 1; Pasal 3 hlm. 3–5; Pasal 4 hlm. 5; Pasal 5–6 hlm. 6; Pasal 7 hlm. 7); status BERLAKU dan URL dari data/raw/hukum/indeks.json; melaksanakan Pasal 3 ayat (4) Perpres 17/2018"
+ },
+ {
+  "id": "bps-2016-padi-2015",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     7,
+     1
+    ]
+   ]
+  },
+  "title": "Produksi padi tahun 2015 naik 6,42 persen",
+  "publisher": "BPS",
+  "URL": "https://www.bps.go.id/pressrelease/2016/07/01/1272/produksi-padi-tahun-2015-naik-6-42-persen.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "nasional 75,40 juta ton GKG, naik 4,55 juta ton (6,42%); kenaikan di Pulau Jawa 2,31 juta ton, luar Jawa 2,24 juta ton; halaman tidak memuat angka per provinsi"
+ },
+ {
+  "id": "bps-jateng-2016-padi-2015",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Tengah",
+    "singkatan": "BPS Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     7,
+     1
+    ]
+   ]
+  },
+  "title": "Produksi padi tahun 2015 sebesar 11,30 juta ton gabah kering giling (GKG)",
+  "publisher": "BPS Provinsi Jawa Tengah",
+  "URL": "https://jateng.bps.go.id/en/pressrelease/2016/07/01/794/produksi-padi-tahun-2015-sebesar-11-30-juta-ton-gabah-kering-giling--gkg-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "angka tetap 2015: 11,30 juta ton, 2014: 9,65 juta ton, naik 17,14%"
+ },
+ {
+  "id": "bps-jatim-2016-padi-2015",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Timur",
+    "singkatan": "BPS Jawa Timur"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     7,
+     1
+    ]
+   ]
+  },
+  "title": "Produksi padi dan palawija (angka tetap) tahun 2015",
+  "publisher": "BPS Provinsi Jawa Timur",
+  "URL": "https://jatim.bps.go.id/en/pressrelease/2016/07/01/390/produksi-padi-dan-palawija--angka-tetap-tahun-2015-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "angka tetap 2015: 13,15 juta ton GKG, naik 757,92 ribu ton (6,11%) dari 2014; angka 2014 tidak tertulis"
+ },
+ {
+  "id": "bps-jateng-2025-padi-2024",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Tengah",
+    "singkatan": "BPS Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     3,
+     3
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi 2024 (angka tetap) Provinsi Jawa Tengah",
+  "publisher": "BPS Provinsi Jawa Tengah",
+  "URL": "https://jateng.bps.go.id/id/pressrelease/2025/03/03/1558/luas-panen-dan-produksi-padi-2024--angka-tetap--provinsi-jawa-tengah.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "produksi 2024 8,89 juta ton GKG, turun 0,19 juta ton (2,12%) dari 2023"
+ },
+ {
+  "id": "bps-jatim-2025-padi-2024",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Timur",
+    "singkatan": "BPS Jawa Timur"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     3,
+     3
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi di Provinsi Jawa Timur 2024 (angka tetap)",
+  "publisher": "BPS Provinsi Jawa Timur",
+  "URL": "https://jatim.bps.go.id/en/pressrelease/2025/03/03/1482/luas-panen-dan-produksi-padi-di-provinsi-jawa-timur-2024--angka-tetap-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "produksi 2024 9,27 juta ton GKG, turun 0,44 juta ton (4,53%) dari 9,71 juta ton (2023)"
+ },
+ {
+  "id": "bps-jatim-2022-padi-2021",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Provinsi Jawa Timur",
+    "singkatan": "BPS Jawa Timur"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     3,
+     1
+    ]
+   ]
+  },
+  "title": "Produksi padi Jawa Timur selama tahun 2021 sebesar 9,789 juta ton gabah kering giling",
+  "publisher": "BPS Provinsi Jawa Timur",
+  "URL": "https://jatim.bps.go.id/en/pressrelease/2022/03/01/1312/produksi-padi-jawa-timur-selama-tahun-2021-sebesar-9-789-juta-ton-gabah-kering-giling.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "2021: 9,789 juta ton GKG; 2020: 9,944 juta ton; turun 154,95 ribu ton (1,56%); halaman tidak menulis status angka tetap secara tersurat"
+ },
+ {
+  "id": "bps-jateng-2022-padi-2021",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik Kabupaten Klaten",
+    "singkatan": "BPS Klaten"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     3,
+     1
+    ]
+   ]
+  },
+  "title": "Luas panen dan produksi padi di Jawa Tengah 2021 (angka tetap)",
+  "publisher": "BPS Kabupaten Klaten (rilis ulang angka Provinsi Jawa Tengah)",
+  "URL": "https://klatenkab.bps.go.id/en/pressrelease/2022/03/01/346/luas-panen-dan-produksi-padi-di-jawa-tengah-2021--angka-tetap-.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "angka tetap 2021 Jawa Tengah: 9,62 juta ton GKG; luas panen sekitar 1,70 juta ha; angka 2020 tidak tertulis di halaman"
+ },
+ {
+  "id": "metrotv-2026-bromo",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Metro TV News"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "BPBD ungkap kronologi karhutla Bromo yang tewaskan 4 orang",
+  "container-title": "metrotvnews.com",
+  "URL": "https://www.metrotvnews.com/read/N4ECvB51-bpbd-ungkap-kronologi-karhutla-bromo-yang-tewaskan-4-orang",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "mengutip Kepala BPBD Kab. Probolinggo: 15 Okt 2026 lereng Pusung Lingker, Desa Ngadirejo, Kec. Sukapura; petugas TNBTS dan relawan terjebak api; 4 meninggal, 2 luka bakar berat. Bertentangan dengan baris DIBI Kab. Probolinggo (10 Sep 2026, 5 meninggal, 4 hilang). Hanya pembanding, tidak di badan teks"
+ }
+]

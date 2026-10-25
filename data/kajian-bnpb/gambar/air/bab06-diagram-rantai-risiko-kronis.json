@@ -1,0 +1,332 @@
+{
+ "nama": "bab06-diagram-rantai-risiko-kronis",
+ "keterangan": "Rantai risiko kronis pesisir utara Jawa, contoh ruas Pekalongan dan Demak, 2026",
+ "sumber": "Susilo dkk. 2023; Aditiya dkk. 2023; RPSDA WS Jratunseluna 2024; DIBI BNPB",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  140.8
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.97
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Mata rantai sebab",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Sumber bukti",
+   "jenis": "kotak",
+   "warna": "#FFFFFF"
+  }
+ ],
+ "hex": {
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "legenda",
+   "seri",
+   "latar"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 64.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Mata rantai sebab"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 78.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Mata rantai sebab"
+  },
+  {
+   "x": 104.33,
+   "y": 3,
+   "w": 47.09,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-90",
+   "teks": "Sumber bukti"
+  },
+  {
+   "x": 90.33,
+   "y": 2,
+   "w": 61.09,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-90",
+   "teks": "Sumber bukti"
+  },
+  {
+   "x": 2,
+   "y": 40.55,
+   "w": 43.65,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Mata rantai"
+  },
+  {
+   "x": 2,
+   "y": 104.95,
+   "w": 19.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Bukti"
+  },
+  {
+   "x": 58.48,
+   "y": 25.1,
+   "w": 85.86,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Pengambilan air tanah"
+  },
+  {
+   "x": 69.37,
+   "y": 36.7,
+   "w": 64.07,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "pemakaian rumah"
+  },
+  {
+   "x": 65.53,
+   "y": 46.3,
+   "w": 71.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "tangga, industri, dan"
+  },
+  {
+   "x": 83.52,
+   "y": 55.9,
+   "w": 35.78,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "perkotaan"
+  },
+  {
+   "x": 167.27,
+   "y": 29.9,
+   "w": 79.31,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "Muka air tanah turun"
+  },
+  {
+   "x": 173.1,
+   "y": 41.5,
+   "w": 67.66,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "cekungan air tanah"
+  },
+  {
+   "x": 195.14,
+   "y": 51.1,
+   "w": 23.57,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "pesisir"
+  },
+  {
+   "x": 280.01,
+   "y": 24.8,
+   "w": 64.86,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "Penurunan muka"
+  },
+  {
+   "x": 301.69,
+   "y": 35,
+   "w": 21.5,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "tanah"
+  },
+  {
+   "x": 284.39,
+   "y": 46.6,
+   "w": 56.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "laju terverifikasi"
+  },
+  {
+   "x": 282.95,
+   "y": 56.2,
+   "w": 58.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "tertinggi di Jawa"
+  },
+  {
+   "x": 383.13,
+   "y": 24.8,
+   "w": 69.66,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "Genangan rob dan"
+  },
+  {
+   "x": 407.13,
+   "y": 35,
+   "w": 21.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "banjir"
+  },
+  {
+   "x": 385.58,
+   "y": 46.6,
+   "w": 64.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "terdampak, rumah"
+  },
+  {
+   "x": 376.25,
+   "y": 56.2,
+   "w": 83.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "terendam, pengungsian"
+  },
+  {
+   "x": 117.78,
+   "y": 99.1,
+   "w": 72.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "e1",
+   "teks": "Aditiya dkk. (2023)"
+  },
+  {
+   "x": 66.09,
+   "y": 110.7,
+   "w": 176.15,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e1",
+   "teks": "korelasi muka air tanah dan deformasi, Semarang"
+  },
+  {
+   "x": 276.46,
+   "y": 84.4,
+   "w": 71.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "e2",
+   "teks": "Susilo dkk. (2023);"
+  },
+  {
+   "x": 273.85,
+   "y": 94.6,
+   "w": 77.18,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "e2",
+   "teks": "Badan Geologi 2018"
+  },
+  {
+   "x": 282.5,
+   "y": 106.2,
+   "w": 59.89,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e2",
+   "teks": "GNSS dan patok:"
+  },
+  {
+   "x": 270.79,
+   "y": 115.8,
+   "w": 83.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e2",
+   "teks": "Pekalongan, Semarang,"
+  },
+  {
+   "x": 299.99,
+   "y": 125.4,
+   "w": 24.9,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e2",
+   "teks": "Demak"
+  },
+  {
+   "x": 397.78,
+   "y": 94.3,
+   "w": 40.35,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "e3",
+   "teks": "DIBI BNPB"
+  },
+  {
+   "x": 377.68,
+   "y": 105.9,
+   "w": 80.56,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e3",
+   "teks": "kejadian rob dan banjir"
+  },
+  {
+   "x": 379.09,
+   "y": 115.5,
+   "w": 77.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "e3",
+   "teks": "kab/kota pesisir utara"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Rantai sebab berurutan dengan bukti per mata rantai; tabel pilih grafik B5.10 tidak memuat bagan alur sebab",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 7
+}

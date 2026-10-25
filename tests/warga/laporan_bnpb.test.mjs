@@ -91,3 +91,40 @@ uji("halaman /laporan-bnpb: centurisk97.id wajib masuk; alamat lain 404", async 
   assert.equal(r.status, 303); assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Flaporan-bnpb/);
   assert.equal((await mf.dispatchFetch("https://pantau.terasurban.com/laporan-bnpb", {redirect: "manual"})).status, 404);
 });
+
+/* ---------------- urai dengan model (jalur cadangan bahan Pusdalops) ---------------- */
+uji("urai model: wajib admin, dan tanpa binding AI menjawab 503 bukan galat samar", async () => {
+  const teks = "Bencana Alam Kebakaran Hutan dan Lahan di Kab. Karanganyar, Provinsi Jawa Tengah. Dampak: 490 ha lahan terbakar. Kondisi mutakhir: Api belum padam.";
+  assert.equal((await api("POST", "/api/laporan-bnpb/urai", {teks})).s, 403, "tanpa admin ditolak");
+  const r = await api("POST", "/api/laporan-bnpb/urai", {teks}, ADMIN);
+  assert.equal(r.s, 503, "Miniflare uji tanpa binding AI");
+  assert.match(r.j.galat, /model tidak tersedia/i);
+});
+
+uji("urai model: teks terlalu pendek ditolak sebelum memanggil model", async () => {
+  assert.equal((await api("POST", "/api/laporan-bnpb/urai", {teks: "halo"}, ADMIN)).s, 400);
+});
+
+uji("periksaSalinan: nilai yang tidak ada di teks sumber dibuang, bukan ikut masuk isian", async () => {
+  const {periksaSalinan} = await import("../../src/laporan_bnpb_spek.js");
+  const sumber = "1. Bencana Alam Kekeringan di Kab. Klaten, Provinsi Jawa Tengah\n- Dampak: 5.136 KK terdampak\n- Kondisi mutakhir: distribusi air bersih 20 tangki";
+  const {kejadian, dibuang} = periksaSalinan([
+    {judul: "Bencana Alam Kekeringan di Kab. Klaten", prov: "Jawa Tengah", lokasi: "Klaten", dampak: "5.136 KK terdampak", kondisi: "distribusi air bersih 20 tangki", entry_no: 14},
+    {judul: "Bencana Alam Kekeringan di Kab. Klaten", dampak: "9.999 KK terdampak"},            // angka karangan
+    {judul: "Bencana Alam Banjir di Kab. Entah", dampak: "x"},                                  // judul tidak ada di teks sumber
+  ], sumber);
+  assert.equal(kejadian.length, 2, "baris berjudul karangan dibuang seluruhnya");
+  assert.equal(kejadian[0].dampak, "5.136 KK terdampak");
+  assert.equal(kejadian[0].entry_no, 14);
+  assert.equal(kejadian[1].dampak, "", "angka yang tidak ada di sumber dikosongkan, tidak dikarang");
+  assert.ok(dibuang.some(x => /9\.999/.test(x)), "yang dibuang dilaporkan: " + JSON.stringify(dibuang));
+});
+
+uji("status darurat daerah tersimpan apa adanya di isian harian", async () => {
+  const isi = {...sah.isi, status_daerah: [{prov: "33", kabkota: "Kab. Karanganyar", jenis_teks: "Karhutla", macam: "tanggap", masa: "TMT 17 Okt s.d 30 Okt 2026", mulai: "2026-10-17", sampai: "2026-10-30", sk_posko: ""}]};
+  const p = await api("POST", "/api/laporan-bnpb", {jenis: "harian", tanggal: "2026-10-26", isi}, ADMIN);
+  assert.equal(p.s, 201, p.t);
+  const g = await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-26", null, ADMIN);
+  assert.equal(g.j.isi.status_daerah[0].macam, "tanggap");
+  assert.equal(g.j.isi.status_daerah[0].kabkota, "Kab. Karanganyar");
+});

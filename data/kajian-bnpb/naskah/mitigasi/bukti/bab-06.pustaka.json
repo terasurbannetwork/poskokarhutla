@@ -1,0 +1,975 @@
+[
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+ },
+ {
+  "id": "bnpb-irbi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer"
+ },
+ {
+  "id": "bnpb-2026-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Data Informasi Bencana Indonesia (DIBI), dasbor publik 1 (pdsi_staging.mv_dibi_dampak_by_kejadian)",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ditarik lewat POST https://dibi.bnpb.go.id/api/v1/chart/data, 23 Okt 2026 pukul 15.23 WIB; data hidup; 2026 sementara. Berkas repo: data/kajian-bnpb/data/dibi/"
+ },
+ {
+  "id": "bnpb-2023-renkon",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2023 tentang Penyusunan Rencana Kontingensi Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 469",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb002.pdf",
+  "verifikasi": "primer",
+  "note": "Pasal 7 ayat (1) sampai (5) dibaca di halaman PDF 4 dan Lampiran (pertimbangan sejarah kejadian terburuk, lima aspek dampak) di halaman PDF 14, korpus data/raw/hukum/teks/perban-nomor-2-tahun-2023.json"
+ },
+ {
+  "id": "pusgen-2024-peta-gempa",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Pusat Studi Gempa Nasional",
+    "singkatan": "PuSGeN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+  "publisher": "Kementerian Pekerjaan Umum",
+  "publisher-place": "Jakarta",
+  "URL": "https://ciptakarya.pu.go.id/admin/assets/upload/galeri/gempa/2026/02/10/887359_0.%20Final_BUKU_PETA_SUMBER_DAN_BAHAYA_GEMPA_2024_Publish.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. xxxi–xxxii; Tabel 2.4 hlm. 68–69; hlm. 336–337; Tabel 6.2 hlm. 342–343; Tabel 6.9 hlm. 364–371. Katalog Kementerian PU mencatat tahun terbit 2025"
+ },
+ {
+  "id": "widiyantoro-2020-tsunami",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Widiyantoro",
+    "given": "S."
+   },
+   {
+    "family": "Gunawan",
+    "given": "E."
+   },
+   {
+    "family": "Muhari",
+    "given": "A."
+   },
+   {
+    "family": "Rawlinson",
+    "given": "N."
+   },
+   {
+    "family": "Mori",
+    "given": "J."
+   },
+   {
+    "family": "Hanifa",
+    "given": "N. R."
+   },
+   {
+    "family": "Susilo",
+    "given": "S."
+   },
+   {
+    "family": "Supendi",
+    "given": "P."
+   },
+   {
+    "family": "Shiddiqi",
+    "given": "H. A."
+   },
+   {
+    "family": "Nugraha",
+    "given": "A. D."
+   },
+   {
+    "family": "Putra",
+    "given": "H. E."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     9,
+     17
+    ]
+   ]
+  },
+  "title": "Implications for megathrust earthquakes and tsunamis from seismic gaps south of Java Indonesia",
+  "container-title": "Scientific Reports",
+  "volume": "10",
+  "number": "15274",
+  "DOI": "10.1038/s41598-020-72142-z",
+  "URL": "https://doi.org/10.1038/s41598-020-72142-z",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "teks lengkap Europe PMC PMC7499206; CC BY 4.0"
+ },
+ {
+  "id": "cao-japan-2025-nankai",
+  "type": "report",
+  "author": [
+   {
+    "literal": "中央防災会議 防災対策実行会議 南海トラフ巨大地震対策検討ワーキンググループ (Central Disaster Management Council, Japan)"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     3
+    ]
+   ]
+  },
+  "title": "南海トラフ巨大地震 最大クラス地震における被害想定について【定量的な被害量】",
+  "title-short": "Perkiraan kerusakan gempa Palung Nankai kelas maksimum (besaran kuantitatif)",
+  "publisher": "内閣府 (防災担当) Cabinet Office, Government of Japan",
+  "URL": "https://www.bousai.go.jp/jishin/nankai/taisaku_wg_02/pdf/saidai_01.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. 4–5 dan 18–19; lampiran metode 被害想定手法の概要 hlm. 25: https://www.bousai.go.jp/jishin/nankai/taisaku_wg_02/pdf/sanko_gaiyo.pdf"
+ },
+ {
+  "id": "surono-2012-merapi",
+  "type": "article-journal",
+  "author": [
+   {
+    "literal": "Surono"
+   },
+   {
+    "family": "Jousset",
+    "given": "Philippe"
+   },
+   {
+    "family": "Pallister",
+    "given": "John"
+   },
+   {
+    "family": "Boichu",
+    "given": "Marie"
+   },
+   {
+    "family": "Buongiorno",
+    "given": "M. Fabrizia"
+   },
+   {
+    "family": "Budisantoso",
+    "given": "Agus"
+   },
+   {
+    "family": "Costa",
+    "given": "Fidel"
+   },
+   {
+    "family": "Andreastuti",
+    "given": "Supriyati"
+   },
+   {
+    "family": "Prata",
+    "given": "Fred"
+   },
+   {
+    "family": "Schneider",
+    "given": "David"
+   },
+   {
+    "family": "Clarisse",
+    "given": "Lieven"
+   },
+   {
+    "family": "Humaida",
+    "given": "Hanik"
+   },
+   {
+    "family": "Sumarti",
+    "given": "Sri"
+   },
+   {
+    "family": "Bignami",
+    "given": "Christian"
+   },
+   {
+    "family": "Griswold",
+    "given": "Julie"
+   },
+   {
+    "family": "Carn",
+    "given": "Simon"
+   },
+   {
+    "family": "Oppenheimer",
+    "given": "Clive"
+   },
+   {
+    "family": "Lavigne",
+    "given": "Franck"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012,
+     10
+    ]
+   ]
+  },
+  "title": "The 2010 explosive eruption of Java's Merapi volcano: a '100-year' event",
+  "container-title": "Journal of Volcanology and Geothermal Research",
+  "volume": "241–242",
+  "page": "121–135",
+  "DOI": "10.1016/j.jvolgeores.2012.06.018",
+  "URL": "https://doi.org/10.1016/j.jvolgeores.2012.06.018",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hanya abstrak dan pendahuluan naskah diterima dibaca, repositori GFZ: https://gfzpublic.gfz.de/pubman/item/item_246296_3/component/file_246295/19736.pdf"
+ },
+ {
+  "id": "cianjur-2022-r3p",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   },
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "BNPB (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. PDF 13, 51, 55, 142; tanpa nomor penetapan"
+ },
+ {
+  "id": "kemenkopmk-2024-rehabrekon-lombok",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     5,
+     20
+    ]
+   ]
+  },
+  "title": "Komitmen Bersama dalam Penuntasan Rehab Rekon Pascabencana Gempa Bumi Pulau Lombok dan Sekitarnya",
+  "URL": "https://kemenkopmk.go.id/node/4970",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "total kebutuhan R3P Rp11.440.594.509.577; realisasi 94,73% per 11 September 2023"
+ },
+ {
+  "id": "widiyanto-2019-palu",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Widiyanto",
+    "given": "W."
+   },
+   {
+    "family": "Santoso",
+    "given": "P. B."
+   },
+   {
+    "family": "Hsiao",
+    "given": "S.-C."
+   },
+   {
+    "family": "Imananta",
+    "given": "R. T."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Post-event field survey of 28 September 2018 Sulawesi earthquake and tsunami",
+  "container-title": "Natural Hazards and Earth System Sciences",
+  "volume": "19",
+  "page": "2781-2794",
+  "DOI": "10.5194/nhess-19-2781-2019",
+  "URL": "https://nhess.copernicus.org/articles/19/2781/2019/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CC BY 4.0; waktu tiba 3–8 menit, run-up maks 10,73 m (Tondo)"
+ },
+ {
+  "id": "harnantyari-2020-palu",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Harnantyari"
+   },
+   {
+    "family": "Takabatake"
+   },
+   {
+    "family": "Esteban"
+   },
+   {
+    "family": "Valenzuela"
+   },
+   {
+    "family": "Nishida"
+   },
+   {
+    "family": "Shibayama"
+   },
+   {
+    "family": "Achiari"
+   },
+   {
+    "family": "Rusli"
+   },
+   {
+    "family": "Marzuki"
+   },
+   {
+    "family": "Marzuki"
+   },
+   {
+    "family": "Aránguiz"
+   },
+   {
+    "family": "Kyaw"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     2
+    ]
+   ]
+  },
+  "title": "Tsunami awareness and evacuation behaviour during the 2018 Sulawesi Earthquake tsunami",
+  "container-title": "International Journal of Disaster Risk Reduction",
+  "volume": "43",
+  "number": "101389",
+  "DOI": "10.1016/j.ijdrr.2019.101389",
+  "URL": "https://doi.org/10.1016/j.ijdrr.2019.101389",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Metadata dari Crossref; abstrak lewat API Semantic Scholar; naskah penuh tidak dibuka (ScienceDirect 403). Nama depan penulis tidak dicatat"
+ },
+ {
+  "id": "usgs-usp000ej1c",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     5,
+     26
+    ]
+   ]
+  },
+  "title": "M 6.3 - Java, Indonesia (event usp000ej1c)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ej1c",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     19
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tanggal UTC 26 Mei 2006 (27 Mei waktu lokal); 5.749 meninggal via public/gempa/data/factsheet_gempa.json"
+ },
+ {
+  "id": "usgs-usp000h237",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "M 7.6 - Southern Sumatra, Indonesia (event usp000h237)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000h237",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     19
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "1.117 meninggal via factsheet_gempa.json"
+ },
+ {
+  "id": "usgs-us1000h3p4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     9,
+     28
+    ]
+   ]
+  },
+  "title": "M 7.5 - 72 km N of Palu, Indonesia (event us1000h3p4)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us1000h3p4",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ringkasan dampak: at least 2.077 killed, 4.438 injured, 1.075 missing"
+ },
+ {
+  "id": "pantaubencana-2026-program-terbukti",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Paket data program-terbukti: kompendium program, bukti dampak, organisasi BNPB, Renstra, Renas, RIPB",
+  "genre": "Data set",
+  "publisher": "Pantau Bencana",
+  "verifikasi": "primer",
+  "note": "data/kajian-bnpb/data/program-terbukti/ (kompendium_program.csv kolom kekuatan, posisi; bukti_dampak.csv); rubrik kekuatan bukti di README §3"
+ },
+ {
+  "id": "ri-2025-perpres12-rpjmn",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 12 Tahun 2025 tentang Rencana Pembangunan Jangka Menengah Nasional Tahun 2025–2029",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 19",
+  "URL": "https://peraturan.bpk.go.id/Details/314638/perpres-no-12-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Lampiran I hlm. 29, 30, 71–73, 111, 201, 216; Lampiran II hlm. 437–440; Lampiran III hlm. 913 (BNPB); teks OCR, tabel kunci dicek dari gambar halaman"
+ },
+ {
+  "id": "bappenas-2006-dala-yogya",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Perencanaan Pembangunan Nasional",
+    "singkatan": "Bappenas"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota D.I. Yogyakarta"
+   },
+   {
+    "literal": "Pemerintah Provinsi dan Kabupaten/Kota Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     6
+    ]
+   ]
+  },
+  "title": "Preliminary Damage and Loss Assessment: Yogyakarta and Central Java Natural Disaster",
+  "publisher": "Disajikan pada Pertemuan ke-15 Consultative Group on Indonesia, Jakarta, 14 Juni 2006; diterbitkan daring oleh Bank Dunia",
+  "URL": "http://documents.worldbank.org/curated/en/581581468041086975/pdf/407120ENGLISH01507190Yogya01PUBLIC1.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Laporan bersama Bappenas, pemda DIY, pemda Jawa Tengah, dan mitra internasional; dibaca dari versi teks dokumen yang sama (.../text/407120ENGLISH01507190Yogya01PUBLIC1.txt). Kata pengantar: lebih dari 5.700 meninggal, 40.000–60.000 luka; Tabel 1: 5.716 meninggal; Section II hlm. 12: kerusakan dan kerugian Rp29,1 T (kerusakan Rp22,75 T, kerugian Rp6,40 T); hlm. 15: perumahan Rp15,3 T, 157.000 rumah hancur dan 202.000 rusak; bagian Key Sectoral Facts: 154.000 hancur dan 260.000 rusak. Versi Bahasa Indonesia: http://documents.worldbank.org/curated/en/209611468269394159/pdf/407120INDONESI1ogya1Bahasa01PUBLIC1.pdf"
+ },
+ {
+  "id": "supendi-2022-megathrust",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Supendi",
+    "given": "Pepen"
+   },
+   {
+    "family": "Widiyantoro",
+    "given": "Sri"
+   },
+   {
+    "family": "Rawlinson",
+    "given": "Nicholas"
+   },
+   {
+    "family": "Yatimantoro",
+    "given": "Tatok"
+   },
+   {
+    "family": "Muhari",
+    "given": "Abdul"
+   },
+   {
+    "family": "Hanifa",
+    "given": "Nuraini Rahma"
+   },
+   {
+    "family": "Gunawan",
+    "given": "Endra"
+   },
+   {
+    "family": "Shiddiqi",
+    "given": "Hasbi Ash"
+   },
+   {
+    "family": "Imran",
+    "given": "Iswandi"
+   },
+   {
+    "family": "Anugrah",
+    "given": "Suci Dewi"
+   },
+   {
+    "literal": "Daryono"
+   },
+   {
+    "family": "Prayitno",
+    "given": "Bambang Setyo"
+   },
+   {
+    "family": "Adi",
+    "given": "Suko Prayitno"
+   },
+   {
+    "family": "Karnawati",
+    "given": "Dwikorita"
+   },
+   {
+    "family": "Faizal",
+    "given": "Lutfi"
+   },
+   {
+    "family": "Damanik",
+    "given": "Ruben"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     10,
+     30
+    ]
+   ]
+  },
+  "title": "On the potential for megathrust earthquakes and tsunamis off the southern coast of West Java and southeast Sumatra, Indonesia",
+  "container-title": "Natural Hazards",
+  "volume": "116",
+  "page": "1315–1328",
+  "DOI": "10.1007/s11069-022-05696-y",
+  "URL": "https://doi.org/10.1007/s11069-022-05696-y",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CC BY 4.0. Abstrak dibaca lewat API Crossref (api.crossref.org/works/10.1007/s11069-022-05696-y); halaman Springer menolak akses otomatis. Koreksi: vol. 116 hlm. 4059–4060, DOI 10.1007/s11069-022-05809-7"
+ },
+ {
+  "id": "usgs-us6000tkt2",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     14
+    ]
+   ]
+  },
+  "title": "M 7.8 - 66 km NNW of Ende, Indonesia (event us6000tkt2)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000tkt2",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibaca lewat https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000tkt2&format=geojson. Produk impact-text: sedikitnya 136 meninggal, 1.776 luka, 27.414 rumah hancur, 71.486 rusak, 3.614 bangunan publik rusak, tsunami tercatat maksimum 169 cm di Pelabuhan Laut Pota. Produk general-text (Key Points diperbarui 18 Agu 2026 15.42 UTC): M7,7, sekitar 1,7 juta jiwa terpapar MMI VI–VIII, sesar naik dangkal di dalam lempeng Sunda, gempa M7,8 tahun 1992 sedikitnya 2.500 korban jiwa. Moment tensor: sesar naik, kedalaman turunan 23,5 km. Katalog Mww 7,8; waktu 14 Agu 2026 21.58 UTC (15 Agu 2026 05.58 WITA). Penilaian PAGER status otomatis"
+ },
+ {
+  "id": "usgs-usp000ensm",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "U.S. Geological Survey",
+    "singkatan": "USGS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2006,
+     7,
+     17
+    ]
+   ]
+  },
+  "title": "M 7.7 - 226 km SSW of Singaparna, Indonesia (event usp000ensm)",
+  "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+  "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ensm",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tsunami Pangandaran 2006. Impact-text per kabupaten diunduh paket skenario-geologi ke data/kajian-bnpb/riset/mentah/usp000ensm.geojson; jumlah 665 meninggal dan 65 hilang dihitung dari rincian per kabupaten"
+ },
+ {
+  "id": "pantaubencana-2026-skenario-geologi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Paket data skenario-geologi: skenario ilustratif dan kepekaan Mmaks gempa, tsunami, dan gunung api per kab/kota",
+  "genre": "Data set",
+  "publisher": "Pantau Bencana",
+  "medium": "data/kajian-bnpb/data/skenario-geologi/ (ringkasan.csv, gempa_kab.csv, tsunami_kab.csv, kepekaan.csv, analog.csv, pembanding_pdna.csv, skenario.json); kalibrasi mesin public/gempa/data/kalibrasi_kerusakan.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibangun data/kajian-bnpb/bangun/skenario-geologi.mjs (self-check hijau). GMPE belum diuji; kalibrasi korban 8 gempa kerak dengan faktor LOO 5,341; tsunami tanpa genangan. Keluaran platform, bukan Data Bencana menurut Perban BNPB 1/2023; label estimasi-model"
+ },
+ {
+  "id": "bnpb-2026-krb-geologi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Ringkasan Kajian Risiko Bencana 2022–2026 nasional untuk gempabumi, tsunami, letusan gunung api, dan likuefaksi",
+  "genre": "Data set",
+  "publisher": "InaRISK",
+  "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/tsunami/ALL?level=nasional",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pola URL kajian-summary/{gempabumi|tsunami|letusan-gunungapi|likuefaksi}/ALL?level=nasional; ditarik paket skenario-geologi 23 Okt 2026 ke data/kajian-bnpb/riset/mentah/ks_*.json. Kolom assets (sekolah, puskesmas, rumah sakit per kelas sedang dan tinggi) dibaca dari nama field; dokumentasi API tidak dibuka. API tidak terjangkau saat dicoba ulang 24 Okt 2026 (batas waktu koneksi)"
+ },
+ {
+  "id": "bnpb-2018-kerugian-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     10,
+     22
+    ]
+   ]
+  },
+  "title": "Loss and Damage of Disaster in Central Sulawesi Reach 13,82 Trillion Rupiah",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "https://bnpb.go.id/berita/loss-and-damage-of-disaster-in-central-sulawesi-reach-1382-trillion-rupiah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Situs bnpb.go.id tidak terjangkau 24 Okt 2026; dibaca dari arsip Wayback http://web.archive.org/web/20250801215420/https://bnpb.go.id/berita/loss-and-damage-of-disaster-in-central-sulawesi-reach-1382-trillion-rupiah. Angka sementara per 20 Okt 2018: kerusakan Rp11,83 T, kerugian Rp1,99 T, total lebih dari Rp13,82 T; perumahan Rp7,95 T; Palu Rp7,63 T, Sigi Rp4,29 T, Donggala Rp1,61 T, Parigi Moutong Rp393 M; korban per 21 Okt 2018 13.00 WIB 2.256 meninggal, 1.309 hilang; 68.451 rumah rusak (sementara)"
+ }
+]

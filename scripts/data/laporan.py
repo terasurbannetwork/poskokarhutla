@@ -4,7 +4,9 @@ Titik panas dan luas terdampak per hari, per kab/kota, per provinsi, dengan arsi
 Kontrak skema: lihat kunci-kunci di build(); halaman laporan membaca berkas ini.
 
 Definisi angka:
-  titik  = sensor M, N, N20 (hotspot.json sensor_utama), semua keyakinan, jendela 24 jam s.d. 16.00 WIB (lihat 'Hari laporan'); BUKAN sama dengan wilayah.json harian (hari kalender)
+  titik  = LOKASI UNIK ~375 m (titik_unik.py: M, N, N20, N21, keyakinan sedang/tinggi; keputusan pemilik 25 Okt 2026), satu sel sekali per
+           hari laporan = jendela 24 jam s.d. 16.00 WIB (lihat 'Hari laporan'); BUKAN sama dengan wilayah.json harian (hari kalender).
+           Hari arsip sebelum 25 Okt 2026 (dulu titik mentah M+N+N20) dihitung ulang sekali dari FIRMS 4 satelit: migrasi_titik().
   luas   = PERKIRAAN luas terbakar = titik VIIRS S-NPP (N) keyakinan >= 1 hari itu x HA_TITIK (4,3 ha)
   baru   = sama dengan luas (tiap deteksi harian menyumbang luas baru); kumulatif = jumlah luas harian
   dampak = luas TERDAMPAK = sel kisi 375 m (1 piksel VIIRS) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan >= 1 hari itu
@@ -32,6 +34,7 @@ Pakai:  python3 scripts/data/laporan.py  |  ... uji
 import datetime as dt, json, math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
+import titik_unik as TU  # noqa: E402
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 DATA = os.path.join(AKAR, "public/data")
@@ -39,6 +42,7 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 HA_TITIK, HA_RENDAH, HA_TINGGI = 4.30, 3.22, 4.59   # ha per titik S-NPP; lihat docstring
 HA_PIKSEL, SEL = 14.06, 0.375 / 111.32   # 1 piksel VIIRS 375 m; sel kisi dalam derajat lintang
 LUAS_V = 2
+MULAI_UNIK = "2026-10-25"   # hari laporan pertama yang build() hitung sebagai lokasi unik; hari arsip sebelumnya dimigrasi sekali (migrasi_titik)
 ARSIP_HARI = 90
 TUTUP_JAM = 16   # jam WIB penutup hari laporan
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
@@ -74,19 +78,20 @@ def hari_status(dibuat, hari_akhir):
     return hari_akhir - dt.timedelta(days=1), hari_akhir
 
 
-def hitung(hs, sensor_utama=None):
-    """Titik panas -> t[hari][kunci] = titik sensor utama, s[hari][kunci] = titik S-NPP keyakinan >= 1,
-    c[hari][kunci] = set sel kisi 375 m bertitik VIIRS (N, N20) keyakinan >= 1. Kunci: (), (prov,), (prov,kab)."""
+def hitung(hs):
+    """Titik panas -> t[hari][kunci] = lokasi unik (titik_unik.py) per hari laporan, s[hari][kunci] = titik S-NPP keyakinan >= 1,
+    c[hari][kunci] = set sel kisi 375 m bertitik VIIRS (N, N20) keyakinan >= 1. Kunci: (), (prov,), (prov,kab).
+    Lokasi unik dihitung ulang per HARI LAPORAN (jendela s.d. 16.00 WIB), bukan dari kolom "hitung" hotspot.json (hari kalender)."""
     acuan = dt.datetime.fromisoformat(hs["acuan"]).astimezone(WIB)
     akhir = hari_lap(acuan)
-    utama = set(sensor_utama or hs.get("sensor_utama") or ["M", "N", "N20"])
     tabel = [tuple(w.split("|")[:2]) for w in hs["wilayah"]]
-    t, s, c = {}, {}, {}
-    for lat, lon, j, sen, _f, yak, w, tg in hs["baris"]:
+    t, s, c, lihat = {}, {}, {}, set()
+    for lat, lon, j, sen, _f, yak, w, tg, *_ in sorted(hs["baris"], key=lambda r: r[2] if isinstance(r[2], (int, float)) else -1e9):
         # tanpa jam yang bisa dipakai: tanggal kalender lama (tg)
         d = hari_lap(acuan + dt.timedelta(hours=j)) if isinstance(j, (int, float)) else tanggal(tg, akhir)
         prov, kab = tabel[w]
-        if sen in utama:
+        if TU.dihitung(sen, yak) and (d, TU.sel(lat, lon)) not in lihat:
+            lihat.add((d, TU.sel(lat, lon)))
             for k in ((), (prov,), (prov, kab)):
                 a = t.setdefault(d, {})
                 a[k] = a.get(k, 0) + 1
@@ -166,6 +171,65 @@ def arsip_seri(arsip):
     for v in arsip.get("kab") or []:
         o[(v["prov"], v["nama"])] = {f: v.get(f) for f in ("titik", "luas", "baru", "dampak")}
     return o
+
+
+def migrasi_titik(arsip, ambil_csv, cari, palsu=None):
+    """Hari arsip < MULAI_UNIK yang belum lokasi unik (arsip["titik_unik"]) dihitung ulang SEKALI dari FIRMS 4 satelit lewat hitung() yang
+    sama dengan jendela hotspot.json: titik nasional/prov/kab hari itu = lokasi unik per hari laporan (D-1 16.00, D 16.00] WIB. Hari arsip
+    sebelum 21 Okt 2026 (dulu hari kalender) ikut pindah ke jendela 16.00, jadi seluruh seri satu definisi.
+    ambil_csv(u0, u1) -> ([(sumber, baris_csv)], ok) = firms_sumber.unduh 4 famili; cari(lon, lat) -> [prov, kab, kec] | None;
+    palsu(lat, lon) -> True untuk sel sumber panas tetap. Hari yang unduhannya tidak lengkap (penuh() 4 famili) dibiarkan dan dicoba lagi
+    di jalan berikutnya. luas, baru, dampak arsip tidak disentuh."""
+    from firms_sumber import SENSOR, kelas_yakin, penuh
+    if not arsip or not arsip.get("hari"):
+        return arsip
+    sudah = set(arsip.get("titik_unik") or [])
+    perlu = [d for d in arsip["hari"] if d < MULAI_UNIK and d not in sudah]
+    if not perlu:
+        return arsip
+    D, sensor = dt.date.fromisoformat, {**SENSOR, "VIIRS_NOAA21": "N21"}
+    baris, ok = ambil_csv(D(perlu[0]) - dt.timedelta(days=1), D(perlu[-1]))
+    acuan = dt.datetime.combine(D(perlu[-1]), dt.time(16), WIB)
+    tabel, idx, rows, lihat = [], {}, [], set()
+    for src, r in baris:
+        jam = r["acq_time"].zfill(4)
+        t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
+        lat, lon, s = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4), sensor.get(src.rsplit("_", 1)[0])
+        if s is None or (lat, lon, t, s) in lihat or (palsu and palsu(lat, lon)):
+            continue
+        lihat.add((lat, lon, t, s))
+        adm = cari(lon, lat)
+        if not adm:
+            continue   # laut atau negara tetangga
+        k = "|".join(adm)
+        if k not in idx:
+            idx[k] = len(tabel)
+            tabel.append(k)
+        rows.append([lat, lon, (t - acuan).total_seconds() / 3600, s, float(r.get("frp") or 0), kelas_yakin(r.get("confidence", ""), src.startswith("MODIS")),
+                     idx[k], t.astimezone(WIB).strftime("%m-%d")])
+    _, _, tt, _, _ = hitung({"acuan": acuan.isoformat(), "wilayah": tabel, "baris": rows})
+    selesai = [d for d in perlu if penuh(ok, D(d), tuple(f for f in sensor))]
+    if not selesai:
+        return arsip
+    a = json.loads(json.dumps(arsip))
+    n = len(a["hari"])
+    kosong = lambda: {"titik": [0] * n, "luas": [0] * n, "baru": [0] * n, "dampak": [None] * n}
+    prov, kab = a.setdefault("prov", {}), {(v["prov"], v["nama"]): v for v in a.setdefault("kab", [])}
+    for d in selesai:
+        i, h = a["hari"].index(d), tt.get(D(d), {})
+        for k in [k for k in h if len(k) == 1 and k[0] not in prov] :
+            prov[k[0]] = kosong()
+        for k in [k for k in h if len(k) == 2 and k not in kab]:
+            kab[k] = {"prov": k[0], "nama": k[1], **kosong()}
+            a["kab"].append(kab[k])
+        a.setdefault("nasional", kosong())["titik"][i] = h.get((), 0)
+        for p, v in prov.items():
+            v["titik"][i] = h.get((p,), 0)
+        for k, v in kab.items():
+            v["titik"][i] = h.get(k, 0)
+    a["titik_unik"] = sorted(sudah | set(selesai))
+    print(f"laporan: migrasi titik lokasi unik {len(selesai)} hari ({selesai[0]} s.d. {selesai[-1]}), belum {len(perlu) - len(selesai)}", file=sys.stderr)
+    return a
 
 
 def isi_celah(t, s, ambang=0.15):
@@ -398,6 +462,10 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
     per = dt.date.fromisoformat(operasi["per"]) if operasi and operasi.get("per") else None
     bn = f"Rekap BNPB operasi karhutla {akhir.year} s.d. {per.day} {BULAN[per.month - 1]} {per.year}, belum diverifikasi ke dokumen resmi BNPB" if per else None
     tb = tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun, titik_tahun, nas["titik"])
+    # per provinsi: luas saja (titik_tahun.json cuma nasional), dipakai halaman saat satu provinsi dipilih
+    for p, o in prov.items():
+        if sejarah and p in sejarah.get("prov", {}):
+            o["tahun_berjalan"] = tahun_berjalan({**sejarah, "prov": {p: sejarah["prov"][p]}}, hari_iso, o["luas"], tahun)
     return {
         "dibuat": dibuat.astimezone(WIB).isoformat(timespec="minutes"),
         "cutoff": acuan.isoformat(timespec="minutes"),
@@ -407,12 +475,13 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "awal_arsip": hari_iso[0] if hari_iso else None,
         "jadwal": {"tutup": "16.00 WIB", "pembaruan": "tiap 3 jam"},
         "luas_v": LUAS_V,
+        "titik_unik": sorted(d for d in ((arsip or {}).get("titik_unik") or []) if d in hari_iso),   # hari arsip yang sudah dimigrasi (migrasi_titik)
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
         "tahun_berjalan": tb,
         "luas_banding": luas_banding(sejarah, luas_sat, luas_resmi, tb, hari_iso, prov, tahun),
         "sumber": {
-            "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
+            "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20, VIIRS NOAA-21; lokasi unik ~375 m per hari laporan (s.d. 16.00 WIB)",
             "dampak": "Luas terdampak: sel 375 m (1 piksel VIIRS, 14,06 ha) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan sedang/tinggi hari itu; memuat lahan belum terbakar di piksel yang sama, jadi selalu lebih luas dari luas terbakar; harian, tidak dijumlahkan",
             "luas": "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) × 4,3 ha, dikalibrasi ke luas terbakar resmi tahunan 2015–2025 (SiPongi KLHK); kuartil 3,2–4,6 ha per titik; uji balik tahunan meleset sampai +101%/−35%; angka harian dan per wilayah indikatif; bukan pengukuran citra",
             "kompleks": "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari); status dihitung dari aturan Centurisk97",
@@ -429,11 +498,28 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
     }
 
 
+def unduh_4satelit():
+    """-> (ambil_csv, cari, palsu) untuk migrasi_titik: FIRMS area API 4 famili (kunci FIRMS_MAP_KEY), wilayah BIG, sel sumber panas tetap."""
+    from firms_sumber import FAMILI, muat_ketersediaan, unduh
+    from harian import BBOX, ambil, kunci
+    from wilayah import Wilayah
+    import titik_palsu as TP
+    fam, k, w = FAMILI + ("VIIRS_NOAA21",), kunci(), Wilayah()
+    ket = muat_ketersediaan(k, ambil, fam)
+    sel = TP.sel_industri()[0]
+    return (lambda u0, u1: unduh(u0, u1, k, ambil, BBOX, ket, famili=fam)), w.cari, (lambda la, lo: TP.palsu(la, lo, sel)) if sel else None
+
+
 def main():
     hs = baca("hotspot.json")
     if not hs:
         sys.exit("hotspot.json tidak ada")
-    lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), baca("laporan.json"),
+    arsip = baca("laporan.json")
+    try:   # sekali: hari arsip sebelum MULAI_UNIK dihitung ulang sebagai lokasi unik; gagal = arsip lama tetap dipakai, dicoba lagi jalan berikutnya
+        arsip = migrasi_titik(arsip, *unduh_4satelit())
+    except (Exception, SystemExit) as e:
+        print(f"peringatan: migrasi titik arsip gagal: {e!r}", file=sys.stderr)
+    lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), arsip,
                 sejarah=baca("sejarah.json"), h30=baca("harian30.json"), titik_tahun=baca("titik_tahun.json"), luas_sat=baca("luas_satelit.json"))
     jalur = os.path.join(DATA, "laporan.json")
     with open(jalur, "w") as f:
@@ -465,12 +551,12 @@ def uji():
     L = lambda la, lo: (la, lo)
     JAM = {"12-31": -53.5, "01-01": -29.5, "01-02": -5.5}   # jam relatif acuan untuk 10.00 WIB tiap hari
     b = lambda p, sen, yak, w, tg: [p[0], p[1], JAM[tg], sen, 1.0, yak, w, tg]
-    hs = {"acuan": acuan, "sensor_utama": ["M", "N", "N20"], "wilayah": ["14|A|x", "14|B|y"],
-          "baris": [b(L(0.5, 101.5), "N", 1, 0, "12-31"), b(L(0.5, 101.5), "N", 1, 0, "12-31"),  # 2 titik S-NPP = 2 x 4,3 ha
+    hs = {"acuan": acuan, "sensor_utama": ["M", "N", "N20", "N21"], "wilayah": ["14|A|x", "14|B|y"],
+          "baris": [b(L(0.5, 101.5), "N", 1, 0, "12-31"), b(L(0.5, 101.5), "N", 1, 0, "12-31"),  # 2 titik S-NPP = 2 x 4,3 ha, tapi SATU lokasi
+                    b(L(0.5, 101.52), "N21", 2, 0, "12-31"),                                    # N21 di sel lain (~2,2 km): lokasi kedua, bukan luas
                     b(L(0.5, 101.5), "N", 1, 0, "01-01"),
-                    b(L(0.6, 101.6), "N21", 2, 0, "01-01"),                                     # N21: bukan titik, bukan luas
-                    b(L(0.7, 101.7), "M", 2, 1, "01-02"), b(L(0.8, 101.8), "N", 0, 1, "01-02"),  # M: titik tanpa luas; yak 0: titik tanpa luas
-                    b(L(0.9, 101.9), "N20", 1, 1, "01-02")]}
+                    b(L(0.7, 101.7), "M", 2, 1, "01-02"), b(L(0.8, 101.8), "N", 0, 1, "01-02"),  # M: titik tanpa luas; yak 0: bukan titik, bukan luas
+                    b(L(0.9, 101.9), "N20", 1, 1, "01-02"), b(L(0.9, 101.9), "N21", 1, 1, "01-02")]}  # N21 sel sama dengan N20: dobel, sekali
     acu, akhir, t, s, c = hitung(hs)
     assert akhir == dt.date(2026, 1, 2) and dt.date(2025, 12, 31) in t, (akhir, list(t))
     hari, o, ctx = seri(t, s, c)
@@ -478,13 +564,13 @@ def uji():
     assert o[()]["dampak"] == [14, 14, 14], o[()]["dampak"]
     assert all(d >= l for d, l in zip(o[()]["dampak"], o[()]["luas"]))
     assert [d.isoformat() for d in hari] == ["2025-12-31", "2026-01-01", "2026-01-02"]
-    assert o[()]["titik"] == [2, 1, 3], o[()]
+    assert o[()]["titik"] == [2, 1, 2], o[()]   # N yak 0 (keyakinan rendah) DITOLAK
     assert o[()]["luas"] == [9, 4, 0], o[()]["luas"]  # 2 / 1 / 0 titik S-NPP keyakinan >= 1, x 4,3 ha
     assert o[()]["baru"] == o[()]["luas"], o[()]["baru"]
     # celah S-NPP: hari tanpa titik S-NPP padahal sensor lain mencatat -> ditaksir titik x porsi median
     tc, sc = {1: {(): 10}, 2: {(): 10}, 3: {(): 10}}, {1: {(): 5}, 2: {(): 5}, 3: {(): 0}}
     assert isi_celah(tc, sc) == (0.5, ["3"]) and sc[3][()] == 5.0, sc
-    assert o[("14", "A")]["titik"] == [2, 1, 0] and o[("14", "B")]["titik"] == [0, 0, 3]
+    assert o[("14", "A")]["titik"] == [2, 1, 0] and o[("14", "B")]["titik"] == [0, 0, 2]
     # arsip: tanggal tertua memakai arsip; konteks menahan baru lama bila lebih kaya
     meta = {"dibuat": "2026-01-02T21:45+07:00", "provinsi": {"14": "Riau"}}
     arsip = {"hari": ["2025-12-30", "2025-12-31"], "nasional": {"titik": [5, 9], "luas": [70, 99], "baru": [70, 56]}, "prov": {}, "kab": [],
@@ -493,20 +579,25 @@ def uji():
     assert lap["hari"] == ["2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02"], lap["hari"]
     n = lap["nasional"]
     # porsi median S-NPP = 1 (2/2, 1/1, 0/3); 01-02 tanpa S-NPP = celah -> 3 x 1 x 4,3. Arsip lama dikonversi titik x 1 x 4,3
-    assert n["titik"] == [5, 9, 1, 3] and n["luas"] == [22, 39, 4, 13], n  # tertua jendela (12-31) dari arsip
+    assert n["titik"] == [5, 9, 1, 2] and n["luas"] == [22, 39, 4, 9], n  # tertua jendela (12-31) dari arsip
     assert n["baru"] == n["luas"], n
     assert n["dampak"][:2] == [None, None] and n["dampak"][2:] == [14, 14], n["dampak"]   # arsip tanpa kolom dampak = None
     assert lap["luas_v"] == LUAS_V and konversi_arsip(lap, 0.1) is lap  # arsip baru tidak dikonversi ulang
     assert lap["awal_arsip"] == "2025-12-30" and n["kab"][2] == 1 and lap["prov"]["14"]["nama"] == "Riau"
     # arsip kosong: semua dari jendela
     lap0 = build(hs, None, meta, None, None, None)
-    assert lap0["hari"] == ["2026-01-01", "2026-01-02"] and lap0["nasional"]["titik"] == [1, 3], lap0["nasional"]  # tertua terpotong dibuang
+    assert lap0["hari"] == ["2026-01-01", "2026-01-02"] and lap0["nasional"]["titik"] == [1, 2], lap0["nasional"]  # tertua terpotong dibuang
     # tahun berjalan: sejarah s.d. sehari sebelum dibuat + luas harian sesudahnya
     sj = {"tahun": ["2026"], "dibuat": "2026-01-02", "prov": {"14": {"2026": [10000] + [0] * 11}}}
     tb = tahun_berjalan(sj, ["2025-12-31", "2026-01-01", "2026-01-02"], [9, 4, 7], "2026")
     assert tb["ha"] == round(10000 * HA_TITIK + 7) and tb["rendah"] < tb["ha"] < tb["tinggi"], tb
     assert tb["triwulan"] == [{"nama": "Jan–Mar", "ha": tb["ha"], "titik_snpp": 10002, "prov_aktif": 1, "bulan_kosong": []}], tb["triwulan"]
     assert tahun_berjalan(None, [], [], "2026") is None
+    # per provinsi: semua titik uji di provinsi 14, jadi tahun berjalan provinsi = nasional; provinsi tanpa sejarah tidak diberi kunci
+    lapS = build(hs, None, meta, None, None, None, sejarah={**sj, "prov": {**sj["prov"], "99": {"2026": [0] * 12}}})
+    tp = lapS["prov"]["14"]["tahun_berjalan"]
+    assert tp["ha"] == lapS["tahun_berjalan"]["ha"] and tp["triwulan"][0]["ha"] == tp["ha"] and "titik" not in tp, (tp, lapS["tahun_berjalan"])
+    assert "99" not in lapS["prov"], "provinsi tanpa titik tetap tidak masuk prov"
     # titik semua satelit: titik_tahun.json sebelum arsip harian (02-01 dst.), baris harian sesudahnya; celah -> None
     tt = {"tahun": "2026", "sd": "2026-01-02", "harian": [3, 4], "prov": {"14": [7] + [0] * 11}}
     tb = tahun_berjalan(sj, ["2026-01-02", "2026-01-03"], [4, 7], "2026", tt, [5, 6])
@@ -524,22 +615,44 @@ def uji():
     ac = dt.datetime(2026, 1, 1, 17, 0, tzinfo=WIB)
     jm = lambda t: round((t - ac).total_seconds() / 3600, 2)
     wk = lambda *a: dt.datetime(*a, tzinfo=WIB)
-    bb = lambda t, tg: [0.5, 101.5, jm(t), "M", 1.0, 1, 0, tg]
+    sel_ke = iter(range(100))   # tiap baris di sel sendiri: yang diuji batas jendela, bukan lokasi unik
+    bb = lambda t, tg: [0.5 + next(sel_ke) * 0.01, 101.5, jm(t), "M", 1.0, 1, 0, tg]
     hb = {"acuan": ac.isoformat(), "wilayah": ["14|A|x"], "baris": [
         bb(wk(2025, 12, 31, 15, 59), "12-31"), bb(wk(2025, 12, 31, 16, 0), "12-31"), bb(wk(2025, 12, 31, 16, 1), "12-31"),
         bb(wk(2026, 1, 1, 15, 59), "01-01"), bb(wk(2026, 1, 1, 16, 1), "01-01"), bb(wk(2025, 12, 31, 0, 5), "12-31")]}
     _, akh, tb_, _, _ = hitung(hb)
     assert akh == dt.date(2026, 1, 2), akh
     assert {k: v[()] for k, v in tb_.items()} == {dt.date(2025, 12, 31): 3, dt.date(2026, 1, 1): 2, dt.date(2026, 1, 2): 1}, tb_
-    hb["baris"].append([0.5, 101.5, None, "M", 1.0, 1, 0, "12-31"])   # tanpa jam: jatuh ke tanggal kalender tg
+    hb["baris"].append([0.9, 101.5, None, "M", 1.0, 1, 0, "12-31"])   # tanpa jam: jatuh ke tanggal kalender tg
+    assert hitung(hb)[2][dt.date(2025, 12, 31)][()] == 4
+    hb["baris"].append([0.9, 101.5, None, "N21", 1.0, 2, 0, "12-31"])   # sel yang sama, hari laporan sama: tidak menambah
     assert hitung(hb)[2][dt.date(2025, 12, 31)][()] == 4
     # (a) tidak lagi dibandingkan dengan wilayah.json harian: itu hari kalender, laporan memakai jendela s.d. 16.00 WIB.
-    #     Gantinya: jumlah titik semua hari laporan == jumlah baris sensor utama hotspot.json (tak ada titik hilang/ganda)
+    #     Gantinya: jumlah titik semua hari laporan == jumlah pasangan (hari laporan, sel) berbeda di hotspot.json (tak ada lokasi hilang/ganda)
     hl = baca("hotspot.json")
     if hl:
-        _, _, tt, _, _ = hitung(hl)
-        n = sum(1 for r in hl["baris"] if r[3] in set(hl.get("sensor_utama") or ["M", "N", "N20"]))
+        acu_l, akh_l, tt, _, _ = hitung(hl)
+        n = len({(hari_lap(acu_l + dt.timedelta(hours=r[2])) if isinstance(r[2], (int, float)) else tanggal(r[7], akh_l), TU.sel(r[0], r[1]))
+                 for r in hl["baris"] if TU.dihitung(r[3], r[5])})
         assert sum(v.get((), 0) for v in tt.values()) == n, (sum(v.get((), 0) for v in tt.values()), n)
+    # migrasi_titik: hari arsip lama dihitung ulang sebagai lokasi unik per hari laporan; unduhan tak lengkap = hari dibiarkan
+    nol3 = lambda v: {"titik": list(v), "luas": [9, 9, 9], "baru": [9, 9, 9], "dampak": [None, None, None]}
+    ar = {"hari": ["2026-10-01", "2026-10-02", "2026-10-25"], "luas_v": LUAS_V, "nasional": nol3([100, 100, 7]),
+          "prov": {"14": nol3([100, 100, 7])}, "kab": [{"prov": "14", "nama": "A", **nol3([100, 100, 7])}]}
+    K = lambda la, lo, tg, jm, c, f="VIIRS_NOAA20_NRT": (f, {"latitude": str(la), "longitude": str(lo), "acq_date": tg, "acq_time": jm, "confidence": c, "frp": "1"})
+    csv_m = [K(0.5, 101.5, "2026-10-02", "0300", "n"), K(0.5, 101.5, "2026-10-02", "0350", "h", "VIIRS_NOAA21_NRT"),   # sel sama 10-02: SATU
+             K(0.5, 102.5, "2026-10-02", "0400", "n", "VIIRS_NOAA21_NRT"),                                             # kab B (baru di arsip)
+             K(0.6, 101.5, "2026-10-02", "1000", "n"),                                                                  # 17.00 WIB = hari laporan 10-03
+             K(0.7, 101.5, "2026-10-02", "0300", "l"), K(0.8, 101.5, "2026-10-02", "0300", "h"), K(9, 9, "2026-10-02", "0300", "h")]   # rendah / sel palsu / laut
+    fam = {"VIIRS_SNPP", "VIIRS_NOAA20", "VIIRS_NOAA21", "MODIS"}
+    okm = {D: set(fam) for D in (dt.date(2026, 10, 1), dt.date(2026, 10, 2))}   # 30 Sep tak lengkap -> hari 10-01 tidak dimigrasi
+    cari_m = lambda lon, lat: None if lon < 100 else ["14", "A" if lon < 102 else "B", "x"]
+    mg = migrasi_titik(ar, lambda u0, u1: (csv_m, okm), cari_m, lambda la, lo: abs(la - 0.8) < 1e-6)
+    assert mg["nasional"]["titik"] == [100, 2, 7] and mg["prov"]["14"]["titik"] == [100, 2, 7], mg["nasional"]
+    assert {v["nama"]: v["titik"] for v in mg["kab"]} == {"A": [100, 1, 7], "B": [0, 1, 0]}, mg["kab"]
+    assert mg["titik_unik"] == ["2026-10-02"] and mg["nasional"]["luas"] == [9, 9, 9] and ar["nasional"]["titik"] == [100, 100, 7]
+    assert migrasi_titik(mg, lambda u0, u1: (csv_m, {D: set(fam) for D in (dt.date(2026, 9, 30), dt.date(2026, 10, 1))}), cari_m)["titik_unik"] == ["2026-10-01", "2026-10-02"]
+    assert migrasi_titik({**mg, "titik_unik": ["2026-10-01", "2026-10-02"]}, None, None)["titik_unik"] == ["2026-10-01", "2026-10-02"]   # selesai: tak mengunduh
     # luas_banding: sumber tanpa data suatu tahun = None (bukan 0); GWIS digabung di kode pertama grup
     sj2 = {"tahun": ["2025", "2026"], "dibuat": "2026-01-02", "prov": {"14": {"2025": [100] + [0] * 11, "2026": [10] + [0] * 11}}}
     tb2 = tahun_berjalan(sj2, ["2026-01-02"], [7], "2026")

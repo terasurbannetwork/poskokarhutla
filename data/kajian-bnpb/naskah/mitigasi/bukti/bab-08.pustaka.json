@@ -1,0 +1,1633 @@
+[
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007,
+     4,
+     26
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana (LN 2007/66, TLN 4723)",
+  "URL": "https://peraturan.go.id/files/uu24-2007.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 1 angka 3, Pasal 7 ayat (1) huruf e, Pasal 40 ayat (3) dan Penjelasan, Pasal 41, Pasal 51, Pasal 75–76. Salinan teks: data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz"
+ },
+ {
+  "id": "ri-2023-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     8
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2023 tentang Kesehatan (LN 2023/105, TLN 6887)",
+  "URL": "https://peraturan.go.id/files/uu-no-17-tahun-2023.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Teks lengkap batang tubuh dan Penjelasan (salinan peraturan.go.id, 300 hlm, lapisan teks OCR; diunduh dan ditelusuri 24 Okt 2026; JDIH BPK https://peraturan.bpk.go.id/Details/258028 sedang pemeliharaan saat itu). Pasal 1 angka 30, 32, 35 (hlm. 6–7), Pasal 353–354 (hlm. 155–156), Pasal 368–370 (hlm. 162–163), Pasal 454 huruf b dan j (hlm. 196–197); Penjelasan Pasal 353–370 \"Cukup jelas\" (hlm. 285, 288). Transkripsi Wikisource hanya memuat sebagian pasal dan tidak dipakai lagi."
+ },
+ {
+  "id": "ri-2008-uu18",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008,
+     5,
+     7
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 18 Tahun 2008 tentang Pengelolaan Sampah (LN 2008/69, TLN 4851)",
+  "URL": "https://peraturan.bpk.go.id/Details/39067/uu-no-18-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 1 angka 11, Pasal 9 ayat (1) huruf e dan f, ayat (3), Pasal 29 ayat (1) huruf f dan g, Pasal 44. Salinan teks: data/kajian-bnpb/data/lembaga/mentah/teks/uu-18-2008.json.gz"
+ },
+ {
+  "id": "ri-2014-uu23",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014,
+     10,
+     2
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah (Lampiran, sub-urusan kebakaran dan persampahan)",
+  "URL": "https://peraturan.bpk.go.id/Details/38685/uu-no-23-tahun-2014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dikutip lewat data/kajian-bnpb/data/lembaga/peran.csv baris R114, R119, R122 (hlm. 333, 361)"
+ },
+ {
+  "id": "ri-2018-perpres17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     3,
+     19
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu (LN 2018/34)",
+  "URL": "data/raw/hukum/teks/perpres-nomor-17-tahun-2018.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 1 angka 1 dan 3, Pasal 2 ayat (2), Pasal 3; korpus JDIH lokal"
+ },
+ {
+  "id": "ri-2026-perpres46",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     16
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 (LN 2026/83)",
+  "URL": "data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal I (Pasal 3 ayat (2) huruf a dan c, ayat (4)); korpus JDIH lokal"
+ },
+ {
+  "id": "ri-2020-keppres11",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     31
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 11 Tahun 2020 tentang Penetapan Kedaruratan Kesehatan Masyarakat Corona Virus Disease 2019 (COVID-19)",
+  "URL": "https://peraturan.go.id/files/keppres-no-11-tahun-2020.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka paket nonalam-sosial (regulasi.csv); dasar UU 6/2018"
+ },
+ {
+  "id": "ri-2020-keppres12",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     4,
+     13
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 12 Tahun 2020 tentang Penetapan Bencana Nonalam Penyebaran Corona Virus Disease 2019 (COVID-19) sebagai Bencana Nasional",
+  "URL": "https://peraturan.go.id/files/keppres-no-12-tahun-2020.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka paket nonalam-sosial (regulasi.csv); dasar UU 4/1984 dan UU 24/2007"
+ },
+ {
+  "id": "ri-2023-keppres17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     6,
+     22
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 17 Tahun 2023 tentang Penetapan Berakhirnya Status Pandemi Corona Virus Disease 2019 (COVID-19) di Indonesia",
+  "URL": "https://peraturan.go.id/files/keppres-no-17-tahun-2023.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Berlaku 21 Jun 2023; mencabut Keppres 11/2020, 12/2020, 24/2021"
+ },
+ {
+  "id": "ri-2020-perpres82",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     7,
+     20
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 82 Tahun 2020 tentang Komite Penanganan Corona Virus Disease 2019 dan Pemulihan Ekonomi Nasional",
+  "URL": "https://peraturan.bpk.go.id/Details/141403/perpres-no-82-tahun-2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dicabut Perpres 48/2023; mencabut Keppres 7/2020 dan 9/2020"
+ },
+ {
+  "id": "setkab-2023-perpres48",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     7
+    ]
+   ]
+  },
+  "title": "Pemerintah terbitkan Perpres pengakhiran penanganan pandemi COVID-19",
+  "URL": "https://setkab.go.id/pemerintah-terbitkan-perpres-pengakhiran-penanganan-pandemi-covid-19/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Perpres 48/2023 diundangkan 4 Agt 2023; teks Perpres tidak dibuka"
+ },
+ {
+  "id": "ri-2020-keppres7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     13
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 7 Tahun 2020 tentang Gugus Tugas Percepatan Penanganan Corona Virus Disease 2019 (COVID-19)",
+  "URL": "https://peraturan.bpk.go.id/Details/134544/keppres-no-7-tahun-2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer (metadata)",
+  "note": "Halaman status JDIH BPK; teks Keppres tidak dibuka, jadi susunan Gugus Tugas hanya dari riset A (sekunder)"
+ },
+ {
+  "id": "kemenkes-2026-pmk1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Kesehatan Republik Indonesia",
+    "singkatan": "Kemenkes"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     20
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Kesehatan Nomor 1 Tahun 2026 tentang Kejadian Luar Biasa, Wabah, dan Krisis Kesehatan (teks berlabel RANCANGAN)",
+  "URL": "https://jdih.kemkes.go.id/storage/documents/pdfs/2026permenkes001.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer (rancangan)",
+  "note": "Teks yang dibaca berlabel RANCANGAN; nomor pasal dapat berbeda dari salinan final (ANTARA menyebut penetapan status krisis kesehatan di Pasal 80, rancangan di Pasal 82). Salinan final di peraturan.go.id tidak terbuka (habis waktu 24 Okt 2026)"
+ },
+ {
+  "id": "antara-2026-pmk1",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "ANTARA Jogja"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     4
+    ]
+   ]
+  },
+  "title": "Kemenkes terbitkan Permenkes 1/2026 guna atasi KLB, krisis kesehatan",
+  "URL": "https://jogja.antaranews.com/berita/802450/kemenkes-terbitkan-permenkes-12026-guna-atasi-klb-krisis-kesehatan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Tanggal penetapan 20 Jan 2026; 12 bab, 175 pasal; Pasal 80 status krisis kesehatan, Pasal 89 koordinator klaster kesehatan"
+ },
+ {
+  "id": "kemenkes-2009-kepmenkes300",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Kesehatan Republik Indonesia",
+    "singkatan": "Kemenkes"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     4,
+     1
+    ]
+   ]
+  },
+  "title": "Keputusan Menteri Kesehatan Nomor 300/MENKES/SK/IV/2009 tentang Pedoman Penanggulangan Episenter Pandemi Influenza",
+  "URL": "https://kespel.kemkes.go.id/uploads/imgreference/20150803103914.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka paket nonalam-sosial (skenario_terburuk.csv); parameter historis hanya narasi, tidak dikalikan"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     6
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "URL": "data/raw/hukum/teks/perban-nomor-1-tahun-2025.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. 6, 22, 24, 25, 28–29, 54–57, 68 (tabel program dibaca dari OCR berkolom bertumpuk)"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     1
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis BNPB Tahun 2025–2029",
+  "URL": "data/raw/hukum/teks/perban-nomor-5-tahun-2025.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. 12–15, 55–56; tanggal terbit di issued adalah tahun saja"
+ },
+ {
+  "id": "bnpb-2014-perka12",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014,
+     1,
+     1
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala BNPB Nomor 12 Tahun 2014 tentang Peran Serta Lembaga Usaha dalam Penyelenggaraan Penanggulangan Bencana (BN 2014/1603)",
+  "URL": "data/raw/hukum/teks/perka-nomor-12-tahun-2014.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 2–5, 14, 22"
+ },
+ {
+  "id": "bnpb-2008-perka5",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala BNPB Nomor 5 Tahun 2008 tentang Pedoman Persyaratan Analisis Risiko Bencana bagi Pembangunan Berisiko Tinggi",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perka-nomor-5-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer (metadata)",
+  "note": "Status BERLAKU; halaman JDIH menulis \"Dokumen belum tersedia\"; tautan PDF di indeks korpus memberi 404 (24 Okt 2026). Isi tidak dibaca"
+ },
+ {
+  "id": "bnpb-2024-perban2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Peraturan BNPB Nomor 2 Tahun 2024 (sistem peringatan dini; daftar data memuat epidemik dan teknologi industri)",
+  "URL": "data/kajian-bnpb/data/lembaga/mentah/teks/jdih-perban-nomor-2-tahun-2024.json.gz",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dikutip lewat lembaga/peran.csv R113 dan R117 (hlm. 5)"
+ },
+ {
+  "id": "bnpb-2018-perban6",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "Peraturan BNPB Nomor 6 Tahun 2018 (memuat bencana dampak pengelolaan B3 dan limbah B3)",
+  "URL": "data/kajian-bnpb/data/lembaga/mentah/teks/jdih-perban-nomor-6-tahun-2018.json.gz",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dikutip lewat lembaga/peran.csv R116 (hlm. 19)"
+ },
+ {
+  "id": "ri-1970-uu1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     1970,
+     1,
+     12
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 1 Tahun 1970 tentang Keselamatan Kerja",
+  "URL": "https://peraturan.bpk.go.id/Details/47614/uu-no-1-tahun-1970",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka riset E §E12: Pasal 2, 3 ayat (1) huruf b, 5 ayat (1), 9 ayat (3)"
+ },
+ {
+  "id": "ri-2014-uu3",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014,
+     1,
+     15
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 3 Tahun 2014 tentang Perindustrian",
+  "URL": "https://peraturan.bpk.go.id/Details/38572/uu-no-3-tahun-2014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka riset E §E12: Pasal 117 ayat (1) dan ayat (3) huruf j; teks 2014, versi konsolidasi pascaperubahan UU 6/2023 tidak diperiksa"
+ },
+ {
+  "id": "ri-1979-pp11",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     1979
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 11 Tahun 1979 tentang Keselamatan Kerja pada Pemurnian dan Pengolahan Minyak dan Gas Bumi",
+  "URL": "https://peraturan.bpk.go.id/Details/66726/pp-no-11-tahun-1979",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka riset E §E12: Pasal 2 ayat (1)–(4), Pasal 23"
+ },
+ {
+  "id": "esdm-2021-permen32",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri ESDM Nomor 32 Tahun 2021 tentang Inspeksi Teknis dan Pemeriksaan Keselamatan Instalasi dan Peralatan pada Kegiatan Usaha Minyak dan Gas Bumi (BN 2021/1273)",
+  "URL": "https://peraturan.bpk.go.id/Download/261051/Permen%20ESDM%20No.%2032%20Tahun%202021.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka riset E §E12: Pasal 2 huruf f, Pasal 3 ayat (1) dan (6) huruf d, Pasal 50, 51"
+ },
+ {
+  "id": "jateng-2024-pergub7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Pemerintah Provinsi Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     3,
+     13
+    ]
+   ]
+  },
+  "title": "Peraturan Gubernur Jawa Tengah Nomor 7 Tahun 2024 tentang Sistem Tanggap Darurat Pengelolaan Bahan Berbahaya dan Beracun dan/atau Limbah B3 Skala Provinsi",
+  "URL": "https://peraturan.bpk.go.id/Download/357548/2024pg0033007.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Konsiderans huruf c mengutip PP 22/2021 Pasal 433 ayat (2); teks PP 22/2021 sendiri tidak dibuka"
+ },
+ {
+  "id": "satgas-2022-covid19",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Satuan Tugas Penanganan COVID-19"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     10,
+     27
+    ]
+   ]
+  },
+  "title": "data.covid19.go.id public API (update.json, prov.json), arsip Wayback",
+  "URL": "https://web.archive.org/web/20221027173342id_/https://data.covid19.go.id/public/api/update.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "API asli mati; data harian sampai 27 Okt 2022, provinsi per 30 Sep 2022"
+ },
+ {
+  "id": "who-2026-covid-dashboard",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     27
+    ]
+   ]
+  },
+  "title": "WHO COVID-19 global data (WHO-COVID-19-global-data.csv)",
+  "URL": "https://srhdpeuwpubsa.blob.core.windows.net/whdh/COVID/WHO-COVID-19-global-data.csv",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Baris Indonesia; laporan mingguan menurut tanggal laporan"
+ },
+ {
+  "id": "who-2023-kematian-berlebih",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     5,
+     19
+    ]
+   ]
+  },
+  "title": "Estimates of excess mortality associated with COVID-19 pandemic (as of 5 April 2023)",
+  "URL": "https://cdn.who.int/media/docs/default-source/world-health-data-platform/covid-19-excessmortality/2023-05-19_covid-19_gem.zip?sfvrsn=9a95fc1a_4",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Estimasi model; Indonesia dimodelkan dari data bulanan Jakarta dan data tahunan historis (Methods §5.1); bukan statistik resmi nasional"
+ },
+ {
+  "id": "who-gho-imunisasi-tb",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Global Health Observatory: WHS4_100, WHS8_110 (WUENIC), TB_notif_num, SDGIHR2018/2021",
+  "URL": "https://ghoapi.azureedge.net/api/WHS4_100",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Saring SpatialDim eq 'IDN'"
+ },
+ {
+  "id": "who-2024-jee-idn",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     11,
+     8
+    ]
+   ]
+  },
+  "title": "Joint External Evaluation of IHR Core Capacities of the Republic of Indonesia, 16–20 October 2023 (ISBN 9789240095151)",
+  "URL": "https://www.who.int/publications/i/item/9789240095151",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Skor dari bagian rinci; tabel ringkasan beda di P3.3, P8.3, R4.1 (paket nonalam-sosial)"
+ },
+ {
+  "id": "bnpb-2026-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Data Informasi Bencana Indonesia (DIBI), dasbor publik 1",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Ditarik lewat POST https://dibi.bnpb.go.id/api/v1/chart/data; 2026 sementara. Berkas repo: data/kajian-bnpb/data/nonalam-sosial/dibi_nonalam_sosial_rekap.csv"
+ },
+ {
+  "id": "setkab-2023-plumpang",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     5
+    ]
+   ]
+  },
+  "title": "Presiden Jokowi tinjau posko pengungsi korban kebakaran TBBM Pertamina Plumpang",
+  "URL": "https://setkab.go.id/presiden-jokowi-tinjau-posko-pengungsi-korban-kebakaran-tbbm-pertamina-plumpang/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Angka Kepala BNPB per 5 Mar 2023 (\"hingga saat ini\"); kebakaran malam 3 Mar 2023"
+ },
+ {
+  "id": "bnpb-2021-balongan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     3,
+     30
+    ]
+   ]
+  },
+  "title": "Update kebakaran kilang minyak Indramayu, sebanyak 932 jiwa mengungsi (dan rilis 29 Mar 2021: 912 jiwa diungsikan)",
+  "URL": "https://bnpb.go.id/berita/update-kebakaran-kilang-minyak-indramayu-sebanyak-932-jiwa-mengungsi-",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dua rilis BNPB 29 dan 30 Mar 2021; peristiwa.csv kode balongan2021"
+ },
+ {
+  "id": "antara-2024-morowali",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Mohamad Ridwan"
+   },
+   {
+    "literal": "Kristina Natalia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     2,
+     12
+    ]
+   ]
+  },
+  "title": "Ledakan smelter tewaskan 20 orang, dua pimpinan PT ITSS jadi tersangka",
+  "container-title": "ANTARA (Palu; dimuat ANTARA Kalimantan Selatan)",
+  "URL": "https://kalsel.antaranews.com/berita/404766/ledakan-smelter-tewaskan-20-orang-dua-pimpinan-pt-itss-jadi-tersangka",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Kabidhumas Polda Sulteng Kombes Pol. Djoko Wienartono: 20 meninggal (12 pekerja Indonesia, 8 TKA). Pengganti BHRRC 3 Jan 2024, yang ternyata menerbitkan ulang Jakarta Globe. Rilis Tribratanews Polda Sulteng (3 Jan dan 8 Mar 2024) diblokir Cloudflare/HTTP 403 saat dicek 24 Okt 2026"
+ },
+ {
+  "id": "bnpb-2024-tpa-suwung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     22
+    ]
+   ]
+  },
+  "title": "Sambangi Bali, Kepala BNPB himpun kekuatan awal demi mencegah kebakaran TPA Suwung",
+  "URL": "https://bnpb.go.id/berita/sambangi-bali-kepala-bnpb-himpun-kekuatan-awal-demi-mencegah-kebakaran-tpa-suwung",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "16 TPA terbakar hebat bersamaan 2023 menurut catatan BNPB; Suwung 32,4 ha; rabies NTT kategori bencana nonalam. Situs BNPB HTTP 521 saat dicek ulang 24 Okt 2026; isi dari paket nonalam-sosial (23 Okt)"
+ },
+ {
+  "id": "bnpb-2023-sarimukti",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     26
+    ]
+   ]
+  },
+  "title": "BNPB gunakan helikopter water bombing untuk percepat pemadaman api di TPST Sarimukti",
+  "URL": "https://bnpb.go.id/berita/bnpb-gunakan-helikopter-water-bombing-untuk-percepat-pemadaman-api-di-tpst-sarimukti",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "80% lahan terbakar; sekitar 3.000 KK terdampak asap"
+ },
+ {
+  "id": "bnpb-2026-jatiwaringin",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     10
+    ]
+   ]
+  },
+  "title": "Update penanganan darurat pemadaman kebakaran di TPA Jatiwaringin mencapai 100 persen (dan rilis 1 Jul 2026)",
+  "URL": "https://www.bnpb.go.id/berita/update-penanganan-darurat-pemadaman-kebakaran-di-tpa-jatiwaringin-mencapai-100-o",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "15 ha; Keputusan Bupati Tangerang 609/2026 dan 613/2026; 4 helikopter"
+ },
+ {
+  "id": "klh-2026-open-dumping",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     4,
+     17
+    ]
+   ]
+  },
+  "title": "Target nasional 2026: pemerintah tegaskan penghentian open dumping dan percepatan pemilahan sampah (Siaran Pers SR.70/HUMAS/KLH-BPLH/4/2026)",
+  "URL": "https://kemenlh.go.id/news/detail/target-nasional-2026-pemerintah-tegaskan-penghentian-open-dumping-dan-percepatan-pemilahan-sampah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "485 TPA; sekitar 30% berhenti; sekitar 369 belum; percepatan Agustus 2026 (dasar Perpres 12/2025)"
+ },
+ {
+  "id": "klh-2026-sanksi-tpa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     26
+    ]
+   ]
+  },
+  "title": "KLH/BPLH perketat penegakan hukum pengelolaan sampah: 273 TPA disanksi buntut pengawasan 388 TPA di Indonesia",
+  "URL": "https://kemenlh.go.id/news/detail/klhbplh-perketat-penegakan-hukum-pengelolaan-sampah-273-tpa-disanksi-buntut-pengawasan-388-tpa-di-indonesia",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka paket nonalam-sosial (indikator.csv)"
+ },
+ {
+  "id": "klh-2026-jatiwaringin",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     5
+    ]
+   ]
+  },
+  "title": "Penanganan kebakaran TPA Jatiwaringin tunjukkan hasil, Menteri LH: area terbakar tinggal 36 persen",
+  "URL": "https://kemenlh.go.id/news/detail/penanganan-kebakaran-tpa-jatiwaringin-tunjukkan-hasil-menteri-lh-area-terbakar-tinggal-36-persen",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Judul menulis 36 persen, kutipan Menteri di badan berita menulis 3,6 persen dari sekitar 70 persen semula; SE Menteri LH 11/2026"
+ },
+ {
+  "id": "klh-2026-galuga",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     9
+    ]
+   ]
+  },
+  "title": "Tinjau kebakaran TPA Galuga, Wamen LH pastikan sistem monitoring kualitas udara untuk himbauan warga",
+  "URL": "https://kemenlh.go.id/news/detail/tinjau-kebakaran-tpa-galuga-wamen-lh-pastikan-sistem-monitoring-kualitas-udara-untuk-himbauan-warga",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Api teridentifikasi 7 Sep 2026 di lahan kebun lalu merambat ke TPA; SE 11/2026 mewajibkan pembasahan dan patroli"
+ },
+ {
+  "id": "klh-2026-sambutan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+    "singkatan": "KLH/BPLH"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     14
+    ]
+   ]
+  },
+  "title": "Cegah kebakaran TPA, Wamen LH dorong pemanfaatan air hasil pengolahan limbah cair untuk pembasahan",
+  "URL": "https://kemenlh.go.id/news/detail/cegah-kebakaran-tpa-wamen-lh-dorong-pemanfaatan-air-hasil-pengolahan-limbah-cair-untuk-pembasahan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Judul SE 11/2026: Peningkatan Kesiapsiagaan dan Antisipasi Kebakaran di TPA pada Kondisi Cuaca Panas Ekstrem; ditujukan ke gubernur, bupati, wali kota"
+ },
+ {
+  "id": "kompas-2023-tpa35",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kompas.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     11,
+     9
+    ]
+   ]
+  },
+  "title": "Waspada, kebakaran TPA lepaskan zat beracun",
+  "URL": "https://lestari.kompas.com/read/2023/11/09/110000786/waspada-kebakaran-tpa-lepaskan-zat-beracun",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Direktur Pengelolaan Sampah KLHK: 35 TPA terbakar sejak awal 2023"
+ },
+ {
+  "id": "rri-2024-tpa35",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "RRI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     24
+    ]
+   ]
+  },
+  "title": "KLHK pastikan takkan bangun TPA baru hingga 2030",
+  "URL": "https://rri.co.id/nasional/528275/klhk-pastikan-takkan-bangun-tpa-baru-hingga-2030",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Dirjen PSLB3 KLHK: 35 TPA terbakar sepanjang 2023, mayoritas akibat gas metana"
+ },
+ {
+  "id": "detik-2023-tpa15",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "detikJabar"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     9,
+     30
+    ]
+   ]
+  },
+  "title": "Menteri LHK sebut 15 TPA di Jawa terbakar",
+  "URL": "https://www.detik.com/jabar/berita/d-6958244/menteri-lhk-sebut-15-tpa-di-jawa-terbakar",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Menteri LHK: yang tercatat olehnya 15 spot (angka sementara)"
+ },
+ {
+  "id": "katadata-2023-tpa30",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Katadata"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     10,
+     31
+    ]
+   ]
+  },
+  "title": "Pemerintah sebut ketiadaan sanitary landfill sebabkan 30 TPA terbakar",
+  "URL": "https://katadata.co.id/amp/ekonomi-hijau/ekonomi-sirkular/654100ce80312/pemerintah-sebut-ketiadaan-sanitary-landfill-sebabkan-30-tpa-terbakar",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Kemenko Marves: kebakaran di 30 TPA selama tiga bulan terakhir"
+ },
+ {
+  "id": "pantau-2026-program-terbukti",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Tim Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "title": "Paket program-terbukti: kompendium 25 program dan rubrik posisi bukti",
+  "URL": "data/kajian-bnpb/data/program-terbukti/kompendium_program.csv",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "olahan tim",
+  "note": "Paket internal kajian; sumber tiap program di bukti_dampak.csv"
+ },
+ {
+  "id": "investortrust-2024-morowali",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Investortrust"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "Soal ledakan smelter, Kemenaker periksa PT ITSS selama 4 hari",
+  "URL": "https://investortrust.id/national/7910/soal-ledakan-smelter-kemenaker-periksa-pt-itss-selama-4-hari",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "19 meninggal (11 pekerja Indonesia, 8 TKA) \"seperti diberitakan\", tanpa atribusi pejabat; siaran pers Kemnaker yang memuat angka tidak ditemukan"
+ },
+ {
+  "id": "beritajakarta-2023-plumpang",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Pemerintah Provinsi DKI Jakarta",
+    "singkatan": "Pemprov DKI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     18
+    ]
+   ]
+  },
+  "title": "Perkembangan penanganan bencana kebakaran Depo Pertamina Plumpang hingga 18 Maret 2023",
+  "container-title": "Berita Jakarta (portal resmi Pemprov DKI Jakarta)",
+  "URL": "https://m.beritajakarta.id/read/118992/perkembangan-penanganan-bencana-kebakaran-depo-pertamina-plumpang-hingga-18-maret-2023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Kalaksa BPBD DKI Isnawa Adji; data Dinkes DKI: total 29 meninggal, 15 masih dirawat di 2 rumah sakit; tidak ada pengungsi di posko sejak 16 Mar 18.00. Rilis 9 Mar 2023 (https://m.beritajakarta.id/read/118383/) mencatat 19 meninggal per 9 Mar 06.00 dari siaran pers PPID"
+ },
+ {
+  "id": "idxchannel-2023-plumpang",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "IDX Channel"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     24
+    ]
+   ]
+  },
+  "title": "Korban meninggal kebakaran Depo Plumpang bertambah jadi 33 orang",
+  "URL": "https://www.idxchannel.com/news/korban-meninggal-kebakaran-depo-plumpang-bertambah-jadi-33-orang/all",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Kalaksa BPBD DKI Isnawa Adji, data Dinkes DKI: 33 meninggal per 24 Mar 2023; rilis Pemprov untuk angka ini tidak ditemukan"
+ },
+ {
+  "id": "kompas-2023-tpa14",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kompas.com"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     10,
+     18
+    ]
+   ]
+  },
+  "title": "14 TPA kebakaran dalam 3 bulan, berikut daftarnya",
+  "URL": "https://lestari.kompas.com/read/2023/10/18/200000586/14-tpa-kebakaran-dalam-3-bulan-berikut-daftarnya",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "Kepala Pusdatinkom BNPB Abdul Muhari, Disaster Briefing daring 17 Okt 2023: 14 TPA terbakar Agustus–Oktober 2023, daftar nama dan tanggal mulai; rilis atau rekaman BNPB asli tidak ditemukan"
+ }
+]

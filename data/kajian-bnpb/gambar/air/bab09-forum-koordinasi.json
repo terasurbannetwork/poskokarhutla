@@ -1,0 +1,306 @@
+{
+ "nama": "bab09-forum-koordinasi",
+ "keterangan": "Forum koordinasi dan aliran rekomendasi kajian air lintas K/L, 2026–2030",
+ "sumber": "Perpres 1/2019; Perpres 87/2020; Perpres 53/2022; Perpres 77/2025; Perban BNPB 6/2025",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  130.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.61
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "BNPB",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Koordinasi dan pelaporan",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Forum air",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ],
+  "#6B7280": [
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 20.71,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "BNPB"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 34.71,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "BNPB"
+  },
+  {
+   "x": 60.71,
+   "y": 3,
+   "w": 90.91,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Koordinasi dan pelaporan"
+  },
+  {
+   "x": 46.71,
+   "y": 2,
+   "w": 104.91,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Koordinasi dan pelaporan"
+  },
+  {
+   "x": 175.63,
+   "y": 3,
+   "w": 34.09,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-161",
+   "teks": "Forum air"
+  },
+  {
+   "x": 161.63,
+   "y": 2,
+   "w": 48.09,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-161",
+   "teks": "Forum air"
+  },
+  {
+   "x": 13.31,
+   "y": 24.8,
+   "w": 85.81,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "up",
+   "teks": "Unsur Pengarah BNPB"
+  },
+  {
+   "x": 11.84,
+   "y": 36.4,
+   "w": 88.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "up",
+   "teks": "masukan kepada Kepala;"
+  },
+  {
+   "x": 6.06,
+   "y": 46,
+   "w": 100.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "up",
+   "teks": "memuat Kementerian ESDM"
+  },
+  {
+   "x": 43.47,
+   "y": 55.6,
+   "w": 25.49,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "up",
+   "teks": "dan PU"
+  },
+  {
+   "x": 149.35,
+   "y": 34.4,
+   "w": 50.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kb",
+   "teks": "Kepala BNPB"
+  },
+  {
+   "x": 138.02,
+   "y": 46,
+   "w": 73.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kb",
+   "teks": "KD-1, KD-2, dan KD-5"
+  },
+  {
+   "x": 252.55,
+   "y": 24.8,
+   "w": 81.04,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "rk",
+   "teks": "Rakor Kemenko PMK"
+  },
+  {
+   "x": 255.58,
+   "y": 36.4,
+   "w": 74.98,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "rk",
+   "teks": "peninjauan Renas PB"
+  },
+  {
+   "x": 248.76,
+   "y": 46,
+   "w": 88.62,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "rk",
+   "teks": "triwulan II 2027; keadaan"
+  },
+  {
+   "x": 251.26,
+   "y": 55.6,
+   "w": 83.63,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "rk",
+   "teks": "tertentu; Dana Bersama"
+  },
+  {
+   "x": 394.53,
+   "y": 29.6,
+   "w": 33.95,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "pr",
+   "teks": "Presiden"
+  },
+  {
+   "x": 365.23,
+   "y": 41.2,
+   "w": 92.55,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "pr",
+   "teks": "laporan pemantauan RIPB"
+  },
+  {
+   "x": 375.95,
+   "y": 50.8,
+   "w": 71.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "pr",
+   "teks": "melalui Menko PMK"
+  },
+  {
+   "x": 16.24,
+   "y": 93.7,
+   "w": 79.94,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "ds",
+   "teks": "Dewan SDA Nasional"
+  },
+  {
+   "x": 17.05,
+   "y": 105.3,
+   "w": 78.33,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "ds",
+   "teks": "Kepala BNPB anggota"
+  },
+  {
+   "x": 150.95,
+   "y": 93.7,
+   "w": 47.38,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "tk",
+   "teks": "TKPSDA WS"
+  },
+  {
+   "x": 127.13,
+   "y": 105.3,
+   "w": 95.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "tk",
+   "teks": "butir air per wilayah sungai"
+  },
+  {
+   "x": 369.83,
+   "y": 83.8,
+   "w": 83.35,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "bo",
+   "teks": "Dewan Pengarah BOP"
+  },
+  {
+   "x": 385.35,
+   "y": 94,
+   "w": 52.31,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "bo",
+   "teks": "Pantura Jawa"
+  },
+  {
+   "x": 367.03,
+   "y": 105.6,
+   "w": 88.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "bo",
+   "teks": "Menko PMK Wakil Ketua;"
+  },
+  {
+   "x": 390.05,
+   "y": 115.2,
+   "w": 42.91,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "bo",
+   "teks": "tanpa BNPB"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Bagan forum dan jalur adopsi rekomendasi lintas lembaga; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 7
+}

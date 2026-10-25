@@ -1,0 +1,174 @@
+{
+ "nama": "oni-2008-2026",
+ "keterangan": "Oceanic Niño Index per musim hujan 2008/2009–2025/2026 dan Juli–September 2026 (°C)",
+ "sumber": "NOAA Climate Prediction Center, Oceanic Niño Index",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "ONI",
+   "jenis": "label-ujung",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "seri",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "garis",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 3,
+   "y": 128.8,
+   "w": 10.55,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0,0"
+  },
+  {
+   "x": 3,
+   "y": 42.14,
+   "w": 10.55,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2,0"
+  },
+  {
+   "x": 3.43,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2008/09"
+  },
+  {
+   "x": 48,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2010/11"
+  },
+  {
+   "x": 92.56,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2012/13"
+  },
+  {
+   "x": 137.13,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2014/15"
+  },
+  {
+   "x": 181.7,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016/17"
+  },
+  {
+   "x": 226.26,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018/19"
+  },
+  {
+   "x": 270.83,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020/21"
+  },
+  {
+   "x": 315.39,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022/23"
+  },
+  {
+   "x": 359.96,
+   "y": 214.5,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024/25"
+  },
+  {
+   "x": 402.49,
+   "y": 214.5,
+   "w": 34.33,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "JAS 2026"
+  },
+  {
+   "x": 432.05,
+   "y": 35.21,
+   "w": 13.38,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-ONI",
+   "teks": "ONI"
+  },
+  {
+   "x": 447.41,
+   "y": 34.96,
+   "w": 16.71,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-ONI",
+   "teks": "2,16"
+  },
+  {
+   "x": 18.55,
+   "y": 155.17,
+   "w": 20,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "-0,79"
+  }
+ ],
+ "jenis": "garis",
+ "alasan": "Seri delapan belas musim ditambah satu nilai Juli sampai September dengan nilai negatif; batang G1 tidak memuat nilai negatif",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_periode": 19,
+ "acuan": 2,
+ "anotasi": 0,
+ "pita": false,
+ "label_ujung": true
+}

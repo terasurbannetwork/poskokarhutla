@@ -261,7 +261,124 @@ HARIAN.push({id: "rincian", judul: "Rincian per jenis", gambar: (k, c) => {
     if (i < ln.length - 1) k.garis(xc + 0.15, y + ch - 0.04, xc + wc - 0.15, y + ch - 0.04, {c: "ECEEF1", w: 0.5});
   });
 }});
+/* ---------------- dua halaman yang diisi Pusdalops ----------------
+   Keduanya bersyarat (`bila`): kalau Pusdalops belum mengisi, halamannya tidak ikut dicetak dan deck
+   harian tetap empat halaman seperti yang dipakai sejak 24 Okt 2026. deckHarian() yang menyaringnya. */
+const MACAM_SD = {siaga: {nama: "Siaga darurat", w: C.emas, m: C.emasM}, tanggap: {nama: "Tanggap darurat", w: C.merah, m: C.merahM},
+  transisi: {nama: "Transisi darurat", w: C.slate, m: C.slateM}};
+const statusDaerah = c => (c.isi.status_daerah || []).filter(x => x && (x.prov || x.prov_teks));
+/* teks bebas laphar jadi satu baris pendek. Butir "●" diganti titik koma, bukan titik tengah: titik
+   tengah dan em dash dilarang di seluruh deck ini. */
+const ringkasTeks = (t, maks) => {
+  const s = String(t ?? "").replace(/[•●▪·]/g, ";").replace(/[—–]/g, "-").replace(/\s*;\s*/g, "; ").replace(/\s+/g, " ").replace(/^;\s*/, "").trim();
+  return s.length > maks ? s.slice(0, maks - 1).replace(/[\s,;.:-]+$/, "") + "…" : s;
+};
+const MEDAN_LAPANGAN = [["kendala", "Kendala", C.merah], ["kebutuhan", "Kebutuhan mendesak", C.jingga], ["upaya", "Upaya", C.biru]];
+const adaLapangan = x => MEDAN_LAPANGAN.some(([f]) => ringkasTeks(x[f], 999));
+/* kejadian yang punya rincian lapangan; yang belum selesai lebih dulu, lalu yang penanganannya berjalan */
+const kejadianLapangan = c => (c.isi.kejadian || []).filter(adaLapangan)
+  .sort((a, b) => (a.status === "belum" ? 0 : a.status === "berjalan" ? 1 : 2) - (b.status === "belum" ? 0 : b.status === "berjalan" ? 1 : 2));
+
+HARIAN.push({id: "status_daerah", judul: "Status darurat daerah", bila: c => statusDaerah(c).length > 0, gambar: (k, c) => {
+  const sd = statusDaerah(c), per = m => sd.filter(x => x.macam === m).length;
+  const grup = new Map();
+  for (const x of sd) { const p = x.prov || x.prov_teks; if (!grup.has(p)) grup.set(p, []); grup.get(p).push(x); }
+  const urut = [...grup].sort((a, b) => b[1].length - a[1].length || namaProv(c, a[0]).localeCompare(namaProv(c, b[0])));
+  const judul = c.isi.judul_status ? [R(c.isi.judul_status)] : [R("Status darurat berlaku di "), J(n0(grup.size)), R(" provinsi, "), J(n0(sd.length)), R(" penetapan"),
+    ...(per("tanggap") ? [R(", "), R(n0(per("tanggap")), C.merah, true), R(" di antaranya tanggap darurat")] : [])];
+  rangka(k, c, judul);
+  const y0 = 1.48, yb = 6.95;
+
+  /* kiri: jumlah penetapan per provinsi. Satu lajur bila provinsinya sedikit, dua bila banyak; tinggi
+     panel mengikuti isinya, tidak pernah kotak tinggi berisi empat baris. */
+  const lajur = urut.length > 14 ? 2 : 1;
+  const xa = 0.6, wa = lajur === 2 ? 7.75 : 5.55;
+  const nBaris = Math.ceil(Math.max(1, urut.length) / lajur);
+  let rh = 0.3, ha = 1.07 + nBaris * rh;
+  if (ha > yb - y0) { rh = (yb - y0 - 1.07) / nBaris; ha = yb - y0; }
+  const s = Math.min(8, rh * 27);
+  kartu(k, xa, y0, wa, ha);
+  kepalaPanel(k, xa, y0, wa, "Penetapan per provinsi", grup.size, {w: C.navy, m: C.latar});
+  const lw = (wa - 0.3) / lajur, kolAngka = j => lw - 3.0 + j * 0.75;   // tiga lajur angka lalu lajur SK, tanpa saling menimpa
+  for (let l = 0; l < lajur; l++) {
+    const x = xa + 0.15 + l * lw;
+    k.teks(x, y0 + 0.58, 1.6, 0.18, "PROVINSI", {s: 6.5, b: true, c: C.abu});
+    for (const [i, [kunci, nama]] of [["siaga", "SIAGA"], ["tanggap", "TANGGAP"], ["transisi", "TRANSISI"]].entries())
+      k.teks(x + kolAngka(i), y0 + 0.58, 0.7, 0.18, nama, {s: 6.5, b: true, c: MACAM_SD[kunci].w, a: "r"});
+    k.teks(x + lw - 0.7, y0 + 0.58, 0.6, 0.18, "SK", {s: 6.5, b: true, c: C.abu, a: "r"});
+    k.garis(x, y0 + 0.8, x + lw - 0.1, y0 + 0.8, {c: "3A3F45", w: 0.75});
+    urut.slice(l * nBaris, (l + 1) * nBaris).forEach((g, i) => {
+      const y = y0 + 0.85 + i * rh, [kunci, xs] = g;
+      k.teks(x, y, lw - 3.15, rh, namaProv(c, kunci) || kunci, {s, v: "m"});
+      ["siaga", "tanggap", "transisi"].forEach((m, j) => {
+        const n = xs.filter(z => z.macam === m).length;
+        k.teks(x + kolAngka(j), y, 0.7, rh, n ? n0(n) : "-", {s, b: !!n, c: n ? MACAM_SD[m].w : C.abu2, a: "r", v: "m"});
+      });
+      k.teks(x + lw - 0.7, y, 0.6, rh, n0(xs.length), {s, b: true, a: "r", v: "m"});
+      k.garis(x, y + rh, x + lw - 0.1, y + rh, {c: "ECEEF1", w: 0.5});
+    });
+  }
+
+  /* kanan: tiga angka besar, lalu daerah bertanggap darurat */
+  const tg = sd.filter(x => x.macam === "tanggap");
+  const xb = xa + wa + 0.5, wb = 12.75 - xb;
+  let rt = 0.46, hb = 2.58 + 0.42 + Math.max(0.3, tg.length * rt);
+  if (hb > yb - y0) { rt = (yb - y0 - 3.0) / Math.max(1, tg.length); hb = yb - y0; }
+  const st = Math.min(7.5, rt * 18);
+  kartu(k, xb, y0, wb, hb);
+  kepalaPanel(k, xb, y0, wb, "Macam penetapan", sd.length, {w: C.jingga, m: C.krem});
+  ["siaga", "tanggap", "transisi"].forEach((m, i) => {
+    const y = y0 + 0.62 + i * 0.62, mc = MACAM_SD[m];
+    k.kotak(xb + 0.15, y, wb - 0.3, 0.54, {f: mc.m, r: 0.09});
+    k.teks(xb + 0.3, y, 2.6, 0.54, mc.nama, {s: 9.5, b: true, c: mc.w, v: "m"});
+    k.teks(xb + wb - 1.25, y, 1.0, 0.54, n0(per(m)), {s: 18, b: true, c: mc.w, a: "r", v: "m"});
+  });
+  const yt = y0 + 2.58;
+  k.garis(xb + 0.15, yt, xb + wb - 0.15, yt, {c: "3A3F45", w: 0.75});
+  labelKecil(k, xb + 0.15, yt + 0.08, wb - 0.3, "Daerah berstatus tanggap darurat", C.merah);
+  if (!tg.length) k.teks(xb + 0.15, yt + 0.38, wb - 0.3, 0.3, "Tidak ada daerah berstatus tanggap darurat.", {s: 8, c: C.abu});
+  tg.forEach((x, i) => {
+    const y = yt + 0.34 + i * rt;
+    if (y + rt > y0 + hb - 0.05) return;
+    k.bulat(xb + 0.26, y + 0.1, 0.055, {f: C.merah});
+    k.teks(xb + 0.4, y, wb - 0.55, 0.2, [R(ringkasTeks(x.kabkota, 28) || namaProv(c, x.prov) || x.prov_teks || "", C.teks, true),
+      R(x.kabkota ? ", " + (namaProv(c, x.prov) || x.prov_teks || "") : "", C.abu)], {s: st});
+    if (rt > 0.3) k.teks(xb + 0.4, y + 0.19, wb - 0.55, 0.19, ringkasTeks(`${x.jenis_teks || ""}${x.masa ? ", " + x.masa : ""}`, 62), {s: st * 0.85, c: C.abu});
+  });
+}});
+
+HARIAN.push({id: "pusdalops", judul: "Hambatan dan kebutuhan lapangan", bila: c => kejadianLapangan(c).length > 0, gambar: (k, c) => {
+  const ks = kejadianLapangan(c), belum = ks.filter(x => x.status === "belum").length;
+  const judul = c.isi.judul_pusdalops ? [R(c.isi.judul_pusdalops)] : [R("Hambatan dan kebutuhan lapangan pada "), J(n0(ks.length)), R(" kejadian"),
+    ...(belum ? [R(", "), R(n0(belum), C.merah, true), R(" di antaranya belum selesai")] : [])];
+  rangka(k, c, judul);
+  /* kisi kartu mengikuti jumlahnya: satu kartu memakai lebar penuh, tiga kartu tidak menyisakan
+     setengah halaman kosong. Tinggi kartu dibatasi supaya kartu tunggal tidak jadi kotak raksasa. */
+  const y0 = 1.48, yb = 6.95, gx = 0.25, gy = 0.14, MAKS = 6;
+  const n = Math.min(ks.length, MAKS), kol = n === 1 ? 1 : 2, baris = Math.ceil(n / kol);
+  const cw = (12.15 - gx * (kol - 1)) / kol, ch = Math.min(2.6, (yb - y0 - gy * (baris - 1)) / baris);
+  ks.slice(0, MAKS).forEach((x, i) => {
+    const cx = 0.6 + (i % kol) * (cw + gx), cy = y0 + Math.floor(i / kol) * (ch + gy), j = JENIS[x.jenis] || JENIS.lainnya;
+    kartu(k, cx, cy, cw, ch);
+    k.kotak(cx, cy, cw, 0.42, {f: j.m, r: 0.1}); k.kotak(cx, cy + 0.24, cw, 0.18, {f: j.m});
+    k.bulat(cx + 0.24, cy + 0.21, 0.075, {f: j.w});
+    k.teks(cx + 0.4, cy, cw - 1.4, 0.42, [R(j.nama + " ", j.w, true), R(namaProv(c, x.prov), C.teks, true), R(x.lokasi ? ", " + x.lokasi : "")], {s: 9, v: "m"});
+    ikonStatus(k, cx + cw - 0.9, cy + 0.21, x.status, 0.075);
+    k.teks(cx + cw - 0.78, cy, 0.68, 0.42, (STATUS[x.status] || STATUS.berjalan).nama, {s: 6.2, c: C.abu, v: "m"});
+    const isi = MEDAN_LAPANGAN.map(([f, l, w]) => [l, w, ringkasTeks(x[f], 150)]).filter(r => r[2]);
+    const bh = (ch - 0.52) / Math.max(1, isi.length);
+    isi.forEach(([l, w, t], n) => {
+      const y = cy + 0.5 + n * bh;
+      k.kotak(cx + 0.18, y + 0.02, 0.035, bh - 0.1, {f: w});
+      k.teks(cx + 0.3, y, cw - 0.5, 0.17, l.toUpperCase(), {s: 6.2, b: true, c: w});
+      k.teks(cx + 0.3, y + 0.16, cw - 0.48, bh - 0.22, t, {s: 7.2, c: C.teks});
+    });
+  });
+  if (ks.length > MAKS) k.teks(0.6, yb + 0.02, 12.15, 0.2, `Dan ${n0(ks.length - MAKS)} kejadian lain dengan rincian lapangan, selengkapnya di laporan Dit. Koordalops.`, {s: 7.5, c: C.abu});
+}});
 HARIAN.push({id: "penutup", judul: "Penutup", gambar: (k, c) => penutup(k, c, `Laporan Kejadian Bencana Harian, ${rentang(c.isi.mulai, c.tanggal)}`)});
+/* deck harian = halaman tetap + halaman Pusdalops yang datanya ada */
+const deckHarian = c => HARIAN.filter(s => !s.bila || s.bila(c));
 
 /* ============================================================ PRESIDEN */
 const P = [];
@@ -561,6 +678,6 @@ const NAMA_KP = {sampul: "Sampul", ringkasan: "Ringkasan nasional", perhatian: "
 const deckKonpers = c => window.LaporanKonpers.rencana(c).map(h => PS.lengkapi({id: h.id + (h.hal > 1 ? h.hal : ""), judul: h.id === "jenis" ? JENIS[h.jenis].nama + (h.dari > 1 ? ` (${h.hal}/${h.dari})` : "") : NAMA_KP[h.id], gambar: (k, c2) => KP[h.id](k, c2, h)}));
 
 HARIAN.forEach(PS.lengkapi); P.forEach(PS.lengkapi);
-window.LaporanBnpbSlide = {DECK: {harian: HARIAN, presiden: P}, deckKonpers, JENIS, STATUS, C, tglP, tglK, tglHari, rentang, tambahHari, angkaTeks, KONTAK,
+window.LaporanBnpbSlide = {DECK: {harian: HARIAN, presiden: P}, deckHarian, deckKonpers, JENIS, STATUS, C, tglP, tglK, tglHari, rentang, tambahHari, angkaTeks, KONTAK,
   H: {R, J, n0, n2, pil, ikonStatus, logo, kartu, labelKecil, sampul, blokPenyaji, penutup, lebarTeks, statusHitung, urutJenis, kelompok, namaProv, jum, pct, W, H}};
 })();

@@ -1,0 +1,222 @@
+{
+ "tahun": 2023,
+ "dibuat": "2026-10-25T15:25Z",
+ "n_ditandai": 1000,
+ "n_belum": 0,
+ "resmi_ha": 1161193,
+ "metode_web_ha": 994069,
+ "luas_tanpa_deteksi_ha": 0,
+ "provinsi_tanpa_deteksi": [],
+ "strata": [
+  {
+   "strata": "A",
+   "gambut": 0,
+   "luas_ha": 2748225.5,
+   "n_rancangan": 275,
+   "n_ditandai": 275,
+   "terbakar": 20,
+   "tidak": 115,
+   "ragu_tanpa_pasangan": 83,
+   "ragu_dnbr": 57
+  },
+  {
+   "strata": "A",
+   "gambut": 1,
+   "luas_ha": 1255729.0,
+   "n_rancangan": 125,
+   "n_ditandai": 125,
+   "terbakar": 15,
+   "tidak": 47,
+   "ragu_tanpa_pasangan": 38,
+   "ragu_dnbr": 25
+  },
+  {
+   "strata": "B",
+   "gambut": 0,
+   "luas_ha": 43260089.7,
+   "n_rancangan": 245,
+   "n_ditandai": 245,
+   "terbakar": 2,
+   "tidak": 129,
+   "ragu_tanpa_pasangan": 92,
+   "ragu_dnbr": 22
+  },
+  {
+   "strata": "B",
+   "gambut": 1,
+   "luas_ha": 9804739.6,
+   "n_rancangan": 55,
+   "n_ditandai": 55,
+   "terbakar": 2,
+   "tidak": 18,
+   "ragu_tanpa_pasangan": 33,
+   "ragu_dnbr": 2
+  },
+  {
+   "strata": "C",
+   "gambut": 0,
+   "luas_ha": 110239312.0,
+   "n_rancangan": 249,
+   "n_ditandai": 249,
+   "terbakar": 0,
+   "tidak": 26,
+   "ragu_tanpa_pasangan": 214,
+   "ragu_dnbr": 9
+  },
+  {
+   "strata": "C",
+   "gambut": 1,
+   "luas_ha": 22486631.9,
+   "n_rancangan": 51,
+   "n_ditandai": 51,
+   "terbakar": 0,
+   "tidak": 10,
+   "ragu_tanpa_pasangan": 36,
+   "ragu_dnbr": 5
+  }
+ ],
+ "diagnosa": {
+  "terbakar_total": 39,
+  "terbakar_strata": {
+   "A": 35,
+   "B": 4,
+   "C": 0
+  },
+  "bukan_api": 34,
+  "tanpa_pasangan": 496,
+  "tanpa_latar_BC": 1,
+  "abs_dnbr_gt_2": 0
+ },
+ "estimasi": {
+  "utama": {
+   "luas_ha": 1959610,
+   "se_ha": 737205,
+   "ci95_ha": [
+    514687,
+    3404532
+   ],
+   "se_konservatif_ha": 2575915,
+   "ci95_konservatif_ha": [
+    0,
+    7008404
+   ]
+  },
+  "ragu_tidak_terbakar": {
+   "luas_ha": 1060238,
+   "se_ha": 357328,
+   "ci95_ha": [
+    359875,
+    1760601
+   ],
+   "se_konservatif_ha": 591998,
+   "ci95_konservatif_ha": [
+    0,
+    2220555
+   ]
+  },
+  "ragu_dikeluarkan": {
+   "luas_ha": 2351883,
+   "se_ha": 826829,
+   "ci95_ha": [
+    731298,
+    3972468
+   ],
+   "se_konservatif_ha": 3476079,
+   "ci95_konservatif_ha": [
+    0,
+    9164997
+   ]
+  },
+  "ragu_sedang_terbakar": {
+   "luas_ha": 46090872,
+   "se_ha": 8867157,
+   "ci95_ha": [
+    28711244,
+    63470499
+   ],
+   "se_konservatif_ha": 8942095,
+   "ci95_konservatif_ha": [
+    28564365,
+    63617379
+   ]
+  },
+  "tanpa_kontrol_latar": {
+   "luas_ha": 2242356,
+   "se_ha": 788234,
+   "ci95_ha": [
+    697417,
+    3787294
+   ],
+   "se_konservatif_ha": 2590786,
+   "ci95_konservatif_ha": [
+    0,
+    7320296
+   ]
+  },
+  "nbr_pasca_0,2": {
+   "luas_ha": 2031298,
+   "se_ha": 737728,
+   "ci95_ha": [
+    585352,
+    3477245
+   ],
+   "se_konservatif_ha": 2576063,
+   "ci95_konservatif_ha": [
+    0,
+    7080381
+   ]
+  },
+  "hanya_dekat_titik_AB": {
+   "luas_ha": 1959610,
+   "se_ha": 737205,
+   "ci95_ha": [
+    514687,
+    3404532
+   ],
+   "se_konservatif_ha": 2575915,
+   "ci95_konservatif_ha": [
+    0,
+    7008404
+   ]
+  },
+  "dnbr_0,1": {
+   "luas_ha": 2342791,
+   "se_ha": 788903,
+   "ci95_ha": [
+    796541,
+    3889041
+   ],
+   "se_konservatif_ha": 2590987,
+   "ci95_konservatif_ha": [
+    0,
+    7421126
+   ]
+  },
+  "dnbr_0,27": {
+   "luas_ha": 1959610,
+   "se_ha": 737205,
+   "ci95_ha": [
+    514687,
+    3404532
+   ],
+   "se_konservatif_ha": 2575915,
+   "ci95_konservatif_ha": [
+    0,
+    7008404
+   ]
+  },
+  "dnbr_0,44": {
+   "luas_ha": 1202567,
+   "se_ha": 533425,
+   "ci95_ha": [
+    157053,
+    2248081
+   ],
+   "se_konservatif_ha": 2528383,
+   "ci95_konservatif_ha": [
+    0,
+    6158198
+   ]
+  }
+ }
+}

@@ -1,0 +1,185 @@
+{
+ "nama": "bab06-batang-kepekaan-peringatan-dini",
+ "keterangan": "Meninggal dan hilang tercatat dan setelah kepekaan cakupan peringatan dini di Pulau Jawa, musim 2008/2009 dan 2025/2026 (jiwa)",
+ "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB; Renas PB 2025–2029 indikator 1.c; WMO 2022",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Musim 2008/2009 (lantai)",
+   "jenis": "kotak",
+   "warna": "#B7B0A6"
+  },
+  {
+   "label": "Musim 2025/2026",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 92.8,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Musim 2008/2009 (lantai)"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 106.8,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Musim 2008/2009 (lantai)"
+  },
+  {
+   "x": 132.8,
+   "y": 3,
+   "w": 65.69,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-118",
+   "teks": "Musim 2025/2026"
+  },
+  {
+   "x": 118.8,
+   "y": 2,
+   "w": 79.69,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-118",
+   "teks": "Musim 2025/2026"
+  },
+  {
+   "x": 33.33,
+   "y": 20.04,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "270"
+  },
+  {
+   "x": 25.73,
+   "y": 186.44,
+   "w": 29.84,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tercatat"
+  },
+  {
+   "x": 110.61,
+   "y": 81.05,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "163"
+  },
+  {
+   "x": 92.27,
+   "y": 186.44,
+   "w": 51.32,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semua korban"
+  },
+  {
+   "x": 187.9,
+   "y": 73.63,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "176"
+  },
+  {
+   "x": 169.64,
+   "y": 186.44,
+   "w": 51.16,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tanpa longsor"
+  },
+  {
+   "x": 265.19,
+   "y": 38.86,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "237"
+  },
+  {
+   "x": 257.58,
+   "y": 186.44,
+   "w": 29.84,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tercatat"
+  },
+  {
+   "x": 342.47,
+   "y": 92.45,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "143"
+  },
+  {
+   "x": 324.13,
+   "y": 186.44,
+   "w": 51.32,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semua korban"
+  },
+  {
+   "x": 419.76,
+   "y": 51.97,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "214"
+  },
+  {
+   "x": 401.49,
+   "y": 186.44,
+   "w": 51.16,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tanpa longsor"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 6
+}

@@ -1,0 +1,385 @@
+{
+ "nama": "bab06-irbi-longsor",
+ "keterangan": "Nilai IRBI tanah longsor per kab/kota di Pulau Jawa, 2025",
+ "sumber": "InaRISK BNPB, IRBI 2025 (kuintil dari 96 nilai, batas atas inklusif)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  181.42
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.4
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 8,0 (22)",
+   "jenis": "kotak",
+   "warna": "#FBE7D6"
+  },
+  {
+   "label": "8,0–10,0 (18)",
+   "jenis": "kotak",
+   "warna": "#F4C3A0"
+  },
+  {
+   "label": "10,0–12,0 (24)",
+   "jenis": "kotak",
+   "warna": "#E8894A"
+  },
+  {
+   "label": "12,0–13,0 (15)",
+   "jenis": "kotak",
+   "warna": "#D9600B"
+  },
+  {
+   "label": "> 13,0 (17)",
+   "jenis": "kotak",
+   "warna": "#8F3F07"
+  },
+  {
+   "label": "Belum terdata (23)",
+   "jenis": "arsir",
+   "warna": "arsir"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas",
+   "tanpa-data",
+   "garis"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#FBE7D6": [
+   "skala",
+   "legenda"
+  ],
+  "#F4C3A0": [
+   "skala",
+   "legenda"
+  ],
+  "#8F3F07": [
+   "skala",
+   "legenda"
+  ],
+  "#D9600B": [
+   "skala",
+   "legenda"
+  ],
+  "#E8894A": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 354.22,
+   "y": 35.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 422.93,
+   "y": 35.92,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "250 km"
+  },
+  {
+   "x": 433.6,
+   "y": 6.92,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 79.88,
+   "y": 18.95,
+   "w": 49.26,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-31",
+   "teks": "DKI Jakarta"
+  },
+  {
+   "x": 202.85,
+   "y": 83.92,
+   "w": 57.47,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-34",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 195.24,
+   "y": 61.34,
+   "w": 55.78,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-33",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 107.4,
+   "y": 49.32,
+   "w": 48.11,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-32",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 62.79,
+   "y": 37.9,
+   "w": 33.01,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-36",
+   "teks": "Banten"
+  },
+  {
+   "x": 282.98,
+   "y": 81.13,
+   "w": 49.95,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-35",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 31.8,
+   "y": 134.22,
+   "w": 199.88,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-31",
+   "teks": "IRBI tanah longsor 2025, kelas kuintil (jumlah kab/kota)"
+  },
+  {
+   "x": 31.8,
+   "y": 133.22,
+   "w": 199.88,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-31",
+   "teks": "IRBI tanah longsor 2025, kelas kuintil (jumlah kab/kota)"
+  },
+  {
+   "x": 255.68,
+   "y": 134.22,
+   "w": 33.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-241",
+   "teks": "≤ 8,0 (22)"
+  },
+  {
+   "x": 241.68,
+   "y": 133.22,
+   "w": 47.08,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-241",
+   "teks": "≤ 8,0 (22)"
+  },
+  {
+   "x": 312.76,
+   "y": 134.22,
+   "w": 47.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-298",
+   "teks": "8,0–10,0 (18)"
+  },
+  {
+   "x": 298.76,
+   "y": 133.22,
+   "w": 61.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-298",
+   "teks": "8,0–10,0 (18)"
+  },
+  {
+   "x": 384.09,
+   "y": 134.22,
+   "w": 51.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-370",
+   "teks": "10,0–12,0 (24)"
+  },
+  {
+   "x": 370.09,
+   "y": 133.22,
+   "w": 65.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-370",
+   "teks": "10,0–12,0 (24)"
+  },
+  {
+   "x": 138.89,
+   "y": 147.22,
+   "w": 51.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-124",
+   "teks": "12,0–13,0 (15)"
+  },
+  {
+   "x": 124.89,
+   "y": 146.22,
+   "w": 65.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-124",
+   "teks": "12,0–13,0 (15)"
+  },
+  {
+   "x": 214.71,
+   "y": 147.22,
+   "w": 37.69,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-200",
+   "teks": "> 13,0 (17)"
+  },
+  {
+   "x": 200.71,
+   "y": 146.22,
+   "w": 51.69,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-200",
+   "teks": "> 13,0 (17)"
+  },
+  {
+   "x": 276.4,
+   "y": 147.22,
+   "w": 66.43,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-262",
+   "teks": "Belum terdata (23)"
+  },
+  {
+   "x": 262.4,
+   "y": 146.22,
+   "w": 80.43,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-262",
+   "teks": "Belum terdata (23)"
+  },
+  {
+   "x": 3,
+   "y": 159.22,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 168.82,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "api",
+  "batas": [
+   8,
+   10,
+   12,
+   13
+  ],
+  "label": [
+   "≤ 8,0",
+   "8,0–10,0",
+   "10,0–12,0",
+   "12,0–13,0",
+   "> 13,0"
+  ],
+  "warna": [
+   "skala.api.1",
+   "skala.api.2",
+   "skala.api.3",
+   "skala.api.4",
+   "skala.api.5"
+  ],
+  "rumus": "kuintil dari 96 nilai, batas atas inklusif",
+  "resmi": false,
+  "jumlah": [
+   22,
+   18,
+   24,
+   15,
+   17
+  ],
+  "tanpa_data": 23
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kanan atas",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 6,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

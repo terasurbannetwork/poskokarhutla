@@ -412,9 +412,10 @@ uji("isolasi dummy: aktor dummy tak menyentuh hari nyata (404) dan tak membuat h
   const d1 = await kirim(dumPem, "2026-10-02", "prov:62", {personel: {total: 5}, fs: [], total: tot(0, 0, 0, 0)}); assert.equal(d1.s, 201, d1.t);
   assert.equal((await DB.prepare("SELECT dummy FROM lk_kiriman WHERE tanggal_laporan = '2026-10-02'").first()).dummy, 1);
   /* C: cron tidak membuat draf nyata di atas hari dummy */
-  const cron = (w, h, m) => w.scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 9, 24, h, m)});
-  await sisip("lk_hari", {tanggal_laporan: "2026-10-24", prioritas: JSON.stringify(S.PRIORITAS_BAWAAN), dibuat: 1, dummy: 1});
-  await cron(await mf.getWorker(), 0, 1); assert.equal(await n("lk_kiriman", "tanggal_laporan = '2026-10-24'"), 0, "cron melewati hari dummy"); assert.equal(await n("lk_hari", "tanggal_laporan = '2026-10-24' AND dummy = 1"), 1);
+  /* tanggal tetap jauh di belakang: 24 Okt bertabrakan dengan hari "kemarin" yang dibuat uji lain sejak 25 Okt 2026 */
+  const cron = (w, h, m) => w.scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 8, 14, h, m)});
+  await sisip("lk_hari", {tanggal_laporan: "2026-09-14", prioritas: JSON.stringify(S.PRIORITAS_BAWAAN), dibuat: 1, dummy: 1});
+  await cron(await mf.getWorker(), 0, 1); assert.equal(await n("lk_kiriman", "tanggal_laporan = '2026-09-14'"), 0, "cron melewati hari dummy"); assert.equal(await n("lk_hari", "tanggal_laporan = '2026-09-14' AND dummy = 1"), 1);
   /* Meja Pantau: butir untuk hari ini bila hari ini berisi dummy */
   const hariIni = new Date(Date.now() + 7 * JAM).toISOString().slice(0, 10);
   if (!await DB.prepare("SELECT 1 FROM lk_hari WHERE tanggal_laporan = ?").bind(hariIni).first()) {

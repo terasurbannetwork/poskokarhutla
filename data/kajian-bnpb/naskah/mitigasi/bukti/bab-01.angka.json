@@ -1,0 +1,469 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 1 kajian mitigasi (Grand Design Mitigasi Bencana Indonesia 2026–2030). Disusun 24 Oktober 2026 dari berkas bukti naskah/mitigasi/bukti/bab-01.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Bentuk entri sama dengan data/angka.json: berkas (relatif ke data/) + jalur, atau nilai + pustaka (kunci di bab-01.pustaka.json). Entri berkas+jalur diuji dengan ikuti() dari bangun/kontrak/naskah.py. Entri bernilai hasil hitungan atas paket data menulis cara hitungnya di catatan, karena registri belum bisa menjumlah atau menghitung baris.",
+    "Kunci lama yang dipakai ulang BAB 1 (tidak diulang di sini): dibi.nasional.meninggal.2025, dibi.nasional.hilang.2025, dibi.nasional.kejadian.2025, dibi.sumatra2025.meninggal, dibi.sumatra2025.hilang, irbi.nasional.2019, irbi.nasional.2024, irbi.nasional.persen_2019_2024, irbi.prov.tinggi.2023, irbi.kab.tinggi.2023, tesis.mitigasi. Kunci usulan bab air yang juga dipakai (naskah/air/bukti/bab-01.angka.json, belum digabung): airjawa.nasional.penduduk_krb, renas.indikator_1c.2025, renas.indikator_1c.2029, renstra.iks_kapasitas_minimal_sedang.awal, rpjmn.iks_penurunan_irb_persen, progsun.2026.jumlah_rancangan.",
+    "Revisi 24 Oktober 2026 sesudah pemeriksaan (KERANGKA V06): angka utama BAB 1 = bencana alam (dibi.alam.*); kunci semua klasifikasi 2018 dan median semua klasifikasi dicabut karena perbandingan semua klasifikasi dengan tahun sebelum 2024 dilarang; porsi Sumatra memakai penyebut alam; ditambah dibi.alam.hilang.2025, dibi.alam.per100rb.*, dibi.alam.meninggal_hilang.median_2015_2024, dibi.alam.meninggal_hilang.tanpa_sumatra_2025, dibi.alam.meninggal.2018, renstra.iku_kematian_darurat.2020 dan .2024. Untuk penggabung: tesis.mitigasi di data/angka.json masih memakai dibi.nasional.meninggal.2025 dan dibi.nasional.hilang.2025 dan perlu diganti ke dibi.alam.meninggal.2025 dan dibi.alam.hilang.2025 sesuai pesan inti KERANGKA."
+  ],
+  "angka": {
+    "dibi.nasional.meninggal_semua_laporan.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=semua,cakupan=semua_laporan].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, semua laporan",
+      "catatan": "versi grafik publik DIBI; 7 meninggal berasal dari laporan is_bencana=false (dibi/README.md)"
+    },
+    "dibi.nasional.hilang_semua_laporan.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=semua,cakupan=semua_laporan].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, semua laporan"
+    },
+    "dibi.nasional.meninggal_hilang.2025": {
+      "nilai": 2276,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "catatan": "olah(resmi): meninggal 2.030 + hilang 246, baris [tahun=2025,klasifikasi=semua,cakupan=bencana] dibi/rekap_nasional_tahunan.csv; semua klasifikasi termasuk kebakaran permukiman (kode 202) dan lainnya (kode 999). Versi komposisi saja; tidak dibandingkan dengan tahun sebelum 2024 (KERANGKA V06)"
+    },
+    "dibi.alam.meninggal.2025": {
+      "nilai": 1735,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah kolom meninggal 9 baris klasifikasi=alam, tahun=2025, cakupan=bencana; sama dengan dibi/README.md"
+    },
+    "dibi.alam.meninggal_hilang.2025": {
+      "nilai": 1956,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): meninggal 1.735 + hilang 221; seri yang sebanding antartahun menurut dibi/README.md; 2018 = 6.240"
+    },
+    "dibi.lingkup.meninggal_hilang.2025": {
+      "nilai": 2063,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, jenis dalam lingkup kajian",
+      "catatan": "olah(resmi): alam 101–109 (1.735 + 221) + epidemi 201 (28 + 0) + gagal teknologi 203 (69 + 2) + konflik sosial 301 (8 + 0); tanpa kebakaran permukiman 202 (145 + 6) dan lainnya 999 (45 + 17). Pemilahan lingkup = asumsi-kebijakan penyusun (KERANGKA §2 butir 3), angka DIBI resmi. Memuat jenis yang baru tercatat sejak 2024; tidak untuk perbandingan antartahun. Kebakaran industri yang tercatat di 202 tidak dapat dipisahkan (bukti T3.17)"
+    },
+    "dibi.kebakaran_permukiman.kejadian_bencana.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kebakaran gedung dan permukiman, kejadian bencana",
+      "catatan": "di luar lingkup kajian sebagai keputusan lingkup (P11, K21; asumsi-kebijakan), bukan akibat kewenangan; konteks saja"
+    },
+    "dibi.kebakaran_permukiman.meninggal_bencana.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kebakaran gedung dan permukiman, kejadian bencana"
+    },
+    "dibi.kebakaran_permukiman.kejadian_semua.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=semua_laporan].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kebakaran gedung dan permukiman, semua laporan",
+      "catatan": "angka KERANGKA §5 BAB 1 (881) adalah versi ini; versi kejadian bencana 327"
+    },
+    "dibi.kebakaran_permukiman.meninggal_semua.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=semua_laporan].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kebakaran gedung dan permukiman, semua laporan",
+      "catatan": "angka KERANGKA §5 BAB 1 (149) adalah versi ini; versi kejadian bencana 145"
+    },
+    "dibi.lainnya.meninggal.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=999,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kategori Lainnya",
+      "catatan": "kode 999 adalah kode DIBI di luar 13 jenis Juklak 7/2023; isinya belum diperiksa per baris"
+    },
+    "dibi.lainnya.hilang.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=999,cakupan=bencana].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, kategori Lainnya"
+    },
+    "dibi.sumatra2025.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+      "catatan": "jendela 15 Nov–31 Des 2025, kategori Banjir dan Longsor, Aceh, Sumatera Utara, Sumatera Barat (pilihan penyusun); mengungsi = nominal terbesar selama tanggap darurat dijumlah lintas laporan"
+    },
+    "dibi.sumatra2025.rumah_rusak_berat": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+      "catatan": "kategori Banjir dan Longsor saja; versi jenis musim hujan di kartu_skenario.csv = 63.019 (kunci hidromet.sumatra2025.rumah_rusak_berat)"
+    },
+    "hidromet.sumatra2025.rumah_rusak_berat": {
+      "berkas": "skenario-hidromet/kartu_skenario.csv",
+      "jalur": "[skenario=kasus_sumatra_nov2025,metrik=rumah_rusak_berat].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025 (jenis musim hujan)",
+      "catatan": "jendela sama dengan dibi.sumatra2025.*, tetapi memuat semua jenis musim hujan (termasuk cuaca ekstrem dan banjir bandang); angka KERANGKA §5 BAB 1 adalah versi ini"
+    },
+    "dibi.sumatra2025.kab_terdampak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=kab_terdampak,versi=DIBI].nilai",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025"
+    },
+    "dibi.sumatra2025.porsi_meninggal_hilang_2025": {
+      "nilai": 68.6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "catatan": "olah(resmi): (1.202 + 140) / 1.956 = 68,61%, penyebut meninggal+hilang bencana alam 2025 (V06). Versi semua klasifikasi (1.342 / 2.276 = 59,0%) hanya berdampingan. Pembilang semua laporan dalam jendela pilihan penyusun; baris is_bencana=false di jendela Sumatra membawa 0 meninggal"
+    },
+    "renas.indikator_1a.proyeksi_2025": {
+      "nilai": 0.22,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+      "catatan": "proporsi kematian (dan hilang) akibat bencana per 100.000 jiwa; kolom tabel berjudul PROYEKSI 2025, target 2029 'Menurun'. Tahun dasar, penyebut, dan cakupan jenis tidak tertulis di Renas"
+    },
+    "renas.indikator_1b.proyeksi_2025": {
+      "nilai": 2643,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+      "catatan": "proporsi penduduk terdampak bencana per 100.000 jiwa; PROYEKSI 2025, target 2029 'Menurun'; definisi 'terdampak' tidak tertulis di Renas"
+    },
+    "bps.penduduk.2026": {
+      "nilai": 287198383,
+      "pustaka": "bps-2026-penduduk",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Jumlah Penduduk Pertengahan Tahun 2026 (diperbarui 30 Juni 2026)",
+      "catatan": "air-jawa/air-jawa.json meta.air_minum.penduduk_nasional_2026.nilai menyimpan teks '287.198.383,0' sehingga tidak dapat dibaca ikuti() sebagai angka; judul tabel BPS menulis '(Ribu Jiwa)' tetapi nilainya jiwa"
+    },
+    "bps.penduduk.supas_2025": {
+      "nilai": 284.67,
+      "pustaka": "bps-bengkulu-2026-supas",
+      "satuan": "juta jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Survei Penduduk Antar Sensus 2025 (pertengahan 2025), dimuat BPS Provinsi Bengkulu 8 Mei 2026",
+      "catatan": "publikasi nasional SUPAS 2025 (BPS, 30 Juni 2026, katalog 2101048) belum dibuka; angka dibaca dari berita di domain BPS"
+    },
+    "dibi.nasional.per100rb.2025_bps2026": {
+      "nilai": 0.79,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS 2026",
+      "catatan": "olah(resmi): 2.276 / 287.198.383 × 100.000 = 0,7925. Penyebut tahun 2026 dipakai untuk korban 2025 (KERANGKA §5 BAB 1); hanya meninggal 0,71. Versi semua klasifikasi, berdampingan saja; proksi penyusun, bukan realisasi resmi 1.a; angka utama = dibi.alam.per100rb.*"
+    },
+    "dibi.nasional.per100rb.2025_supas": {
+      "nilai": 0.8,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS SUPAS 2025",
+      "catatan": "olah(resmi): 2.276 / 284.670.000 × 100.000 = 0,7995; penyebut tahun yang sama dengan korban. Versi semua klasifikasi, berdampingan saja; proksi penyusun, bukan realisasi resmi 1.a; angka utama = dibi.alam.per100rb.*"
+    },
+    "dibi.nasional.per100rb.2025_krb": {
+      "nilai": 0.84,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan InaRISK BNPB (penduduk KRB 2022–2026)",
+      "catatan": "olah(resmi): 2.276 / 271.680.290 × 100.000 = 0,8377; penyebut resmi kajian per kab (KERANGKA §1 D21), tahun basis penduduk KRB tidak tertulis di API. Versi semua klasifikasi, berdampingan saja; proksi penyusun, bukan realisasi resmi 1.a; angka utama = dibi.alam.per100rb.*"
+    },
+    "renas.indikator_1a.setara_jiwa_2025": {
+      "nilai": 632,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari Renas PB 2025–2029 Tabel 2.8 dan BPS 2026",
+      "catatan": "0,22 × 287.198.383 / 100.000 = 631,8 meninggal dan hilang; dengan SUPAS 2025 = 626,3. Ilustrasi besaran proyeksi Renas dalam jiwa, bukan angka Renas"
+    },
+    "dibi.nasional.terdampak_per100rb.2025": {
+      "nilai": 4148,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS SUPAS 2025",
+      "catatan": "olah(resmi): menderita 11.809.388 / 284.670.000 × 100.000 = 4.148,4; 'terdampak/penderita' menurut Juklak 7/2023 hlm. 28 = masih dapat menempati rumah. Bila mengungsi 1.179.213 ditambahkan: 4.562,7. Dengan penyebut BPS 2026: 4.111,9 dan 4.522,5"
+    },
+    "dibi.alam.meninggal_hilang.2018": {
+      "nilai": 6240,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, bencana alam",
+      "catatan": "olah(resmi): 5.477 + 763"
+    },
+    "irbi.aceh.2023": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=11,tahun=2023].total_sederhana",
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renstra BNPB 2025–2029 Tabel 1.1",
+      "catatan": "kelas Tinggi (Renas hlm. 19); hitung paket cocok Renstra 146,90"
+    },
+    "irbi.sumut.2023": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=12,tahun=2023].total_sederhana",
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renstra BNPB 2025–2029 Tabel 1.1",
+      "catatan": "kelas Sedang; cocok Renstra 140,65"
+    },
+    "irbi.sumbar.2023": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=13,tahun=2023].total_sederhana",
+      "satuan": "indeks",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renstra BNPB 2025–2029 Tabel 1.1",
+      "catatan": "kelas Tinggi; cocok Renstra 144,38"
+    },
+    "rpjmn.pp_irb.baseline_2023": {
+      "nilai": 1.54,
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913, PP 08.04",
+      "catatan": "persentase penurunan nilai IRB nasional, baseline 2023; target 2025 dan 2029 1,2 (riset E §E11b, dicek dari gambar halaman)"
+    },
+    "rpjmn.kp_kapasitas.baseline_2023": {
+      "nilai": 62,
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913, KP 08.04.01",
+      "catatan": "persentase daerah dengan kapasitas PB minimal sedang, baseline 2023; target 2025 67, 2029 90. Renstra menulis 'dari 67% menjadi 90%' (titik awal = target 2025). Berdampingan dengan 38% menurut kapasitas KRB 2022–2026 (KD-3)"
+    },
+    "juklak7_2023.jumlah_jenis": {
+      "nilai": 13,
+      "pustaka": "bnpb-2023-juklak7",
+      "satuan": "jenis bencana",
+      "keyakinan": "resmi",
+      "sumber": "Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana, hlm. 5–6",
+      "catatan": "9 alam (101–109), 3 nonalam (201 epidemi dan wabah, 202 kebakaran gedung dan pemukiman, 203 gagal teknologi), 1 sosial (301 konflik sosial: konflik sosial, teror, kerusuhan sosial)"
+    },
+    "krb2022.jumlah_bahaya": {
+      "nilai": 14,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "jenis bahaya",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 Tabel 2.2 hlm. 22, sumber Kajian Risiko Bencana 2022–2026",
+      "catatan": "gempa bumi, tsunami, letusan gunung api, banjir, banjir bandang, kekeringan, karhutla, tanah longsor, likuefaksi, cuaca ekstrem, gelombang ekstrem dan abrasi, COVID-19, epidemi wabah penyakit, kegagalan teknologi; tanpa konflik sosial, kebakaran permukiman, dan kebakaran TPA"
+    },
+    "wrr.2025.indonesia_peringkat": {
+      "nilai": 3,
+      "pustaka": "wrr-2025",
+      "satuan": "peringkat",
+      "keyakinan": "terverifikasi",
+      "sumber": "Bündnis Entwicklung Hilft dan IFHV, WorldRiskReport 2025",
+      "catatan": "dari 193 negara; di bawah Filipina (WRI 46,56) dan India (40,73). Indeks risiko termodelkan lembaga nonpemerintah; pembanding, bukan ukuran capaian"
+    },
+    "wrr.2025.indonesia_wri": {
+      "nilai": 39.8,
+      "pustaka": "wrr-2025",
+      "satuan": "indeks",
+      "keyakinan": "terverifikasi",
+      "sumber": "Bündnis Entwicklung Hilft dan IFHV, WorldRiskReport 2025",
+      "catatan": "tertulis WRI 39.80 di halaman penerbit"
+    },
+    "dibi.alam.hilang.2025": {
+      "nilai": 221,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah kolom hilang 9 baris klasifikasi=alam, tahun=2025, cakupan=bencana, dibi/rekap_nasional_tahunan.csv; angka utama BAB 1 bersama dibi.alam.meninggal.2025 (KERANGKA V06)"
+    },
+    "dibi.alam.meninggal.2018": {
+      "nilai": 5477,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah kolom meninggal 9 baris klasifikasi=alam, tahun=2018, cakupan=bencana; angka KERANGKA §5 BAB 1 'tertinggi sejak 2018 (5.477 meninggal)'"
+    },
+    "dibi.alam.meninggal_hilang.median_2015_2024": {
+      "nilai": 583.5,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2024, bencana alam",
+      "catatan": "olah(resmi): median meninggal+hilang alam 10 tahun (276, 578, 378, 6.240, 589, 418, 815, 895, 308, 603), cakupan bencana; 2025 (1.956) = 3,35 kali median. Seri alam = seri yang sebanding antartahun (dibi/README.md, Patahan seri 2024)"
+    },
+    "dibi.alam.meninggal_hilang.tanpa_sumatra_2025": {
+      "nilai": 614,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam tanpa rangkaian Sumatra November 2025",
+      "catatan": "olah(resmi): 1.956 − (1.202 + 140) = 614; di bawah 2021 (815) dan 2022 (895), di atas 2024 (603) dan 2019 (589). Pembilang Sumatra semua laporan dalam jendela pilihan penyusun; baris is_bencana=false di jendela itu membawa 0 meninggal"
+    },
+    "dibi.alam.per100rb.2025_bps2026": {
+      "nilai": 0.68,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS 2026",
+      "catatan": "olah(resmi): 1.956 / 287.198.383 × 100.000 = 0,681; proksi penyusun, bukan realisasi resmi Renas 1.a (metode BNPB untuk 0,22 tidak tertulis; seri IKU Renstra Tabel 1.7 tidak dapat direproduksi dengan rumus ini). Meninggal alam saja 0,60. Angka utama KERANGKA 'sekitar 0,7'"
+    },
+    "dibi.alam.per100rb.2025_supas": {
+      "nilai": 0.69,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan BPS SUPAS 2025",
+      "catatan": "olah(resmi): 1.956 / 284.670.000 × 100.000 = 0,687; proksi penyusun"
+    },
+    "dibi.alam.per100rb.2025_krb": {
+      "nilai": 0.72,
+      "pustaka": "bnpb-dibi",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan InaRISK BNPB (penduduk KRB 2022–2026)",
+      "catatan": "olah(resmi): 1.956 / 271.680.290 × 100.000 = 0,720; proksi penyusun; penyebut resmi kajian per kab (KERANGKA §1 D21)"
+    },
+    "renstra.iku_kematian_darurat.2020": {
+      "nilai": 0.43,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025) Tabel 1.7 hlm. 52",
+      "catatan": "IKU 'Rata-rata angka kematian akibat bencana saat keadaan darurat per 100.000 jiwa', keterangan 'Menjadi Baseline'. Seri 2020–2024: 0,43; 0,64; 0,14; 0,10; 0,15. Grafik 1.6 hlm. 53 menulis penyebut 'penduduk wilayah terdampak'; metode tidak tertulis dan tidak dapat direproduksi dari DIBI dibagi penduduk nasional"
+    },
+    "renstra.iku_kematian_darurat.2024": {
+      "nilai": 0.15,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "per 100.000 jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025) Tabel 1.7 hlm. 52",
+      "catatan": "target 2024 turun 10% (0,39), capaian turun 65% (0,15), keterangan 'Tercapai'; 2022 dan 2023 juga 'Tercapai' (0,14; 0,10), 2021 'Belum tercapai' (0,64)"
+    },
+    "dibi.sumatra2025.meninggal_hilang": {
+      "nilai": 1342,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "catatan": "olah(resmi): 1.202 meninggal + 140 hilang, banjir dan longsor Aceh, Sumatera Utara, Sumatera Barat, jendela 15 November–31 Desember 2025, cakupan semua laporan (berkas bukti bab-01 T1.4); ditambahkan penulis naskah bab 1"
+    },
+    "dibi.alam.meninggal_hilang.2021": {
+      "nilai": 815,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2021, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah 9 baris klasifikasi=alam, cakupan=bencana, meninggal+hilang (berkas bukti bab-01 T1.2); ditambahkan penulis naskah bab 1"
+    },
+    "dibi.alam.meninggal_hilang.2022": {
+      "nilai": 895,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2022, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah 9 baris klasifikasi=alam, cakupan=bencana, meninggal+hilang (berkas bukti bab-01 T1.2); ditambahkan penulis naskah bab 1"
+    },
+    "dibi.alam.rasio_median.2025": {
+      "nilai": 3.35,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+      "catatan": "olah(resmi): 1.956 / 583,5 = 3,352; median meninggal+hilang alam 2015–2024 (berkas bukti bab-01 T1.2); ditambahkan penulis naskah bab 1"
+    },
+    "renas.indikator_1c.2025": {
+      "nilai": 11060,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "per 100.000 penduduk",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+      "catatan": "penduduk di daerah berisiko yang tercakup peringatan dini; dicek di data/raw/hukum/teks/perban-nomor-1-tahun-2025.json hlm. 32",
+      "salinan_dari": "air/bab-01.angka.json"
+    },
+    "renas.indikator_1c.2029": {
+      "nilai": 52000,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "per 100.000 penduduk",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+      "salinan_dari": "air/bab-01.angka.json"
+    },
+    "renstra.iks_kapasitas_minimal_sedang.awal": {
+      "nilai": 67,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 128",
+      "catatan": "persentase daerah dengan kapasitas PB minimal sedang, nilai awal; bertentangan dengan 38% menurut kapasitas KRB 2022–2026 (KD-3, riset A §7)",
+      "salinan_dari": "air/bab-01.angka.json"
+    },
+    "rpjmn.iks_penurunan_irb_persen": {
+      "nilai": 1.2,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "% per tahun",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029, dikutip Renstra BNPB 2025–2029 hlm. 84",
+      "catatan": "lampiran Perpres 12/2025 belum dibuka; angka dari kutipan Renstra",
+      "salinan_dari": "air/bab-01.angka.json"
+    },
+    "progsun.2026.jumlah_rancangan": {
+      "nilai": 11,
+      "pustaka": "bnpb-2025-progsun",
+      "satuan": "rancangan peraturan",
+      "keyakinan": "resmi",
+      "sumber": "Keputusan Kepala BNPB 327/2025, Lampiran",
+      "catatan": "tidak satu pun merupakan perubahan Perban 1/2025 (Renas PB); butir 11 = monitoring dan evaluasi RIPB",
+      "salinan_dari": "air/bab-01.angka.json"
+    },
+    "krb.nasional.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 38.0,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi; olah; ringkasan KRB COVID-19",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026, ringkasan KRB COVID-19",
+      "catatan": "olah: (190 sedang + 3 tinggi) / 508 kab/kota berkelas di nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab; 6 kab/kota tanpa kelas; kelas kapasitas dari ringkasan KRB untuk bahaya COVID-19 (InaRISK apiv4/kajian-summary/covid-19), bukan ringkasan KRB banjir atau kekeringan; kesetaraan dengan kapasitas untuk bahaya air belum diperiksa (penarikan ulang 24 Okt 2026 gagal, InaRISK tidak menjawab); bertentangan dengan 62% (RPJMN 2023) dan 67% (nilai awal Renstra) karena alat ukur berbeda; ditulis berdampingan (KD-3)",
+      "salinan_dari": "air/bab-07.angka.json"
+    },
+    "rpjmn.kp080402.peringatan_dini_baseline": {
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913",
+      "nilai": 6.0,
+      "catatan": "KP 08.04.02 persentase cakupan layanan peringatan dini di daerah berisiko bencana; target 6,10 (2025), 6,32 (2029); dicek dari gambar halaman (riset E11b); Renstra menulis baseline N/A",
+      "salinan_dari": "air/bab-08.angka.json"
+    },
+    "rpjmn.kp080402.peringatan_dini_2029": {
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "RPJMN 2025–2029 (Perpres 12/2025) Lampiran III hlm. 913",
+      "nilai": 6.32,
+      "catatan": "KP 08.04.02 target 2029 (berkas bukti bab-08 T1.2)",
+      "salinan_dari": "air/bab-08.angka.json"
+    }
+  }
+}

@@ -1,0 +1,279 @@
+{
+  "_catatan": [
+    "Registri cakupan gerbang QA (PEDOMAN-DESAIN.md bagian D, standar uji pemilik TEST.md). Tiap kode di tabel D1 pedoman wajib ada di diuji, dikecualikan, atau antre. \"antre\" adalah utang eksplisit yang hanya boleh menyusut; kunci berbentuk \"D-n sub\" mencatat sub-aturan yang belum bergerbang di dalam gerbang yang sudah jalan.",
+    "diuji: kode -> {sub-aturan: fixture}. Tiap sub-aturan punya fixture negatif yang wajib ditolak gerbangnya; qa/uji.py juga menuntut potongan pesan khas cabangnya muncul, sehingga cabang yang dibuang membuat uji diri merah.",
+    "positif: pola yang disahkan PEDOMAN -> fixture yang harus lolos (bersih = fixture bersih qa/uji.py).",
+    "T-1..T-11 adalah gerbang tambahan di luar tabel D1: sisa sintaks naskah, jumlah halaman PDF (KEPUTUSAN P13), tautan gambar, bebas AI slop (pola S-n diuji sendiri di qa/uji_slop.py), kepala dan kaki DOCX (B4), kerangka slide (Buku Pegangan), irisan teks dan jarak tepi panel slide (Buku Pegangan Alur kerja 4), vonis ambang anti-AI per bab (T-8, Buku Pegangan Angka & copy), glosarium singkatan dan varian (T-9, L66), ejaan id_ID lewat spylls (T-10, L67), kepadatan pustaka (T-11, L65).",
+    "D-8, D-21, D-24, D-28 memeriksa SVG + manifest keluaran bangun/visual (folder --visual); fixturenya dibangkitkan bangun/visual/uji.mjs --fixture."
+  ],
+  "diuji": {
+    "D-1": {
+      "em-dash-docx": "d1-em-dash",
+      "em-dash-pdf": "pdf-helvetica-em-dash"
+    },
+    "D-2": {
+      "titik-tengah-pptx": "d2-titik-tengah-pptx"
+    },
+    "D-3": {
+      "emoji": "d3-emoji"
+    },
+    "D-4": {
+      "rfonts-docx": "d4-arial-docx",
+      "font-tema-pptx": "d4-tema-calibri-pptx",
+      "bufont-master": "d4-bufont-master-pptx",
+      "pdffonts": "pdf-helvetica-em-dash",
+      "css-font-family": "d4-css-lain",
+      "css-url-cdn": "d4-css-lain"
+    },
+    "D-5": {
+      "docx-sz": "d5-7pt-docx",
+      "pptx-sz": "d5-5pt-pptx",
+      "pptx-warisan-lststyle": "d5-warisan-pptx"
+    },
+    "D-6": {
+      "manifest-basi": "d6-manifest-basi",
+      "jumlah": "d6-jumlah-salah",
+      "jumlah-dari-csv-mentah": "d6-jumlah-meleset-2",
+      "jumlah-bulat-persis": "d6-jumlah-bulat-persis",
+      "tampil-di-berkas": "d6-tidak-tampil",
+      "format-registri": "d6-format-registri",
+      "csv-basi": "d6-csv-basi",
+      "registri-menolak": "d6-registri-menolak",
+      "turunan-bersumber": "d6-turunan-tanpa-sumber",
+      "skema-manifest": "d6-manifest-skema",
+      "sama-lintas-berkas": "d6-beda-berkas"
+    },
+    "D-7": {
+      "nomor-loncat": "d7-nomor-loncat",
+      "nomor-ganda": "d7-nomor-ganda",
+      "awalan-ulang": "d7-awalan-ulang",
+      "sumber-tepat-di-bawah": "d7-tanpa-sumber",
+      "legenda-di-baris-akhir": "d7-legenda-antara",
+      "diawali-label": "d7-tidak-diawali",
+      "objek-tabel": "d7-bukan-tabel",
+      "ada-objek": "d7-tanpa-objek",
+      "tabel-berketerangan": "d7-tabel-tanpa-keterangan",
+      "gambar-berketerangan": "d7-gambar-tanpa-keterangan",
+      "daftar-ada": "d7-daftar-tidak-ada",
+      "daftar-segar": "d7-daftar-basi"
+    },
+    "D-8": {
+      "teks-tumpuk": "d8-teks-tumpuk",
+      "tanpa-inset": "d8-tanpa-inset"
+    },
+    "D-9": {
+      "hex-docx": "d9-hex-terlarang",
+      "hex-slide": "d9-hex-slide",
+      "skema-tema-pptx": "d9-skema-tema-pptx",
+      "themecolor-docx": "d9-themecolor-docx",
+      "chart": "d9-chart-pptx",
+      "svg-lain": "d9-svg-lain"
+    },
+    "D-10": {
+      "istilah": "d10-titik-api",
+      "tag-riset-berkurung": "d10-tag-riset",
+      "peluang-100": "d10-peluang-100"
+    },
+    "D-11": {
+      "isi": "d11-kapital-isi",
+      "judul-bab-kapital": "d11-judul-bab-kecil",
+      "subbab": "d11-subbab-kapital",
+      "judul-slide": "d11-judul-slide-kapital"
+    },
+    "D-12": {
+      "batas-halaman-isi": "d12-melebihi-batas"
+    },
+    "D-13": {
+      "toc-terisi": "d13-toc-kosong",
+      "toc-tercetak-pdf": "d13-pdf-toc-kosong",
+      "updatefields": "d13-updatefields",
+      "toc-ada": "d13-tanpa-toc",
+      "judul-di-toc": "d13-judul-tak-di-toc",
+      "daftar-terisi": "d13-daftar-kosong",
+      "gaya-toc-per-tingkat": "d13-gaya-toc",
+      "keterangan-seq": "d13-tanpa-seq",
+      "depan-romawi": "d13-depan-desimal",
+      "kaki-diwarisi": "d13-depan-warisan",
+      "bab1-mulai-1": "d13-bab1-tidak-mulai-1",
+      "bab1-ada": "d13-bab-tak-ada",
+      "nomor-halaman-indeks-pdf": "d13-nomor-halaman-indeks",
+      "halaman-bab1-bernomor-1-pdf": "d13-pdf-bab1-bukan-1"
+    },
+    "D-14": {
+      "tabel": "d14-tanpa-keyakinan",
+      "label-persis": "d14-kata-resmi",
+      "kartu-skenario": "d14-kartu",
+      "kartu-angka": "d14-kartu-angka",
+      "slide-bertabel": "d14-slide-bertabel",
+      "pil-docx-c62": "d14-pil-warna-docx",
+      "pil-pptx-c62": "d14-pil-garis-pptx",
+      "pil-tidak-menempel": "d14-pil-menempel-pptx",
+      "pil-docx-warna-teks": "d14-pil-teks-docx"
+    },
+    "D-15": {
+      "lisensi": "d15-lisensi-nc",
+      "lampiran-atribusi": "d15-pengarang",
+      "pola-atribusi": "d15-pola"
+    },
+    "D-16": {
+      "desimal-titik": "d16-desimal-titik",
+      "ribuan-koma": "d16-ribuan-koma",
+      "tanggal-iso": "d16-tanggal-iso",
+      "jam-titik-dua": "d16-jam-titik-dua",
+      "svg": "d16-svg",
+      "pdf": "pdf-helvetica-em-dash"
+    },
+    "D-17": {
+      "judul-slide": "d17-judul-3-baris-pptx",
+      "elipsis": "d17-elipsis-docx",
+      "judul-docx": "d17-judul-docx",
+      "keterangan-docx": "d17-keterangan-docx"
+    },
+    "D-19": {
+      "entri-dikutip": "d19-pustaka-yatim",
+      "path-internal": "d19-path-internal",
+      "kutipan-ada-entri": "d19-kutipan-tanpa-entri",
+      "pola-entri": "d19-entri-tanpa-pola",
+      "gaya-pustaka": "d19-pustaka-tanpa-gaya"
+    },
+    "D-20": {
+      "garis-vertikal": "d20-garis-vertikal",
+      "tblheader": "d20-tanpa-tblheader",
+      "kepala-navy": "d20-kepala-bukan-navy",
+      "kepala-lampiran-tanpa-isi": "d20-lampiran-berisi",
+      "selang-seling": "d20-selang-seling",
+      "angka-kanan": "d20-angka-kiri",
+      "jumlah-navy": "d20-jumlah-bukan-navy",
+      "tabel-dalam-kartu": "d20-kartu-dalam",
+      "garis-waktu-hanya-diagram-fase": "d20-garis-waktu-pinjam",
+      "garis-waktu-kepala-tint": "d20-garis-waktu-tint",
+      "garis-waktu-pemisah-kolom": "d20-garis-waktu-tanpa-pemisah"
+    },
+    "D-21": {
+      "legenda-hilang": "d21-legenda-hilang"
+    },
+    "D-22": {
+      "isi": "d22-angka-ketikan",
+      "sel-tabel-bukan-no": "d22-sel-tabel",
+      "empat-digit-cacah": "d22-tahun-cacah",
+      "kurung-bukan-butir": "d22-kurung",
+      "pptx": "d22-pptx"
+    },
+    "D-23": {
+      "glif": "d23-panah"
+    },
+    "D-24": {
+      "hex-dua-peran": "d24-hex-dua-peran"
+    },
+    "D-28": {
+      "pesan-jenis": "d28-pesan-jenis",
+      "tanpa-besaran": "d28-tanpa-besaran"
+    },
+    "D-31": {
+      "keterangan-tahun": "d31-keterangan-tanpa-tahun",
+      "langkah-8-kata": "d31-langkah-panjang"
+    },
+    "D-32": {
+      "catatan-satu-baris": "d32-catatan-panjang"
+    },
+    "T-1": {
+      "token": "t1-token-sisa"
+    },
+    "T-2": {
+      "halaman": "t2-halaman-beda"
+    },
+    "T-3": {
+      "r-id": "t3-gambar-hilang",
+      "target": "t3-target-hilang"
+    },
+    "T-4": {
+      "slop": "t4-slop"
+    },
+    "T-5": {
+      "logo": "t5-tanpa-logo",
+      "baris1": "t5-baris1",
+      "baris1-bold": "t5-baris1-regular",
+      "baris2": "t5-baris2",
+      "aksen-oranye": "t5-tanpa-aksen",
+      "garis-bawah-kepala": "t5-tanpa-garis-bawah",
+      "alamat-kaki": "t5-alamat",
+      "garis-atas-kaki": "t5-garis-atas-kaki",
+      "nomor-bidang-page": "t5-nomor-teks",
+      "nomor-9pt-bold": "t5-nomor-format",
+      "nomor-kanan": "t5-nomor-kiri",
+      "ada-kepala": "t5-tanpa-kepala",
+      "ada-kaki": "t5-tanpa-kaki"
+    },
+    "T-6": {
+      "garis": "t6-tanpa-garis",
+      "garis-warna-tebal": "t6-garis-warna",
+      "nomor-halaman": "t6-tanpa-nomor",
+      "nomor-kanan": "t6-nomor-kiri",
+      "cut-off-slide-data": "t6-tanpa-cutoff",
+      "judul-lebar-dengan-pil": "t6-judul-lebar"
+    },
+    "T-7": {
+      "irisan-teks": "t7-irisan",
+      "jarak-tepi-bawah-panel": "t7-panel"
+    },
+    "T-8": {
+      "vonis-ambang-tiga-serangkai-gaya": "t8-tiga-serangkai"
+    },
+    "T-9": {
+      "singkatan-pertama-per-bab": "t9-singkatan",
+      "varian-nama-kl-lama": "t9-nama-lama"
+    },
+    "T-10": {
+      "kata-tak-dikenal-id_ID": "t10-ejaan",
+      "singkatan-tak-terdaftar": "t10-singkatan-asing"
+    },
+    "T-11": {
+      "sumber-per-bab-dan-kajian": "t11-pustaka-bab",
+      "kunci-ada-di-pustaka": "t11-kunci-asing",
+      "porsi-resmi-primer": "t11-resmi"
+    }
+  },
+  "positif": {
+    "D-5 chip 5,2-5,8 pt": "d5-chip-boleh-pptx",
+    "D-7 legenda di baris akhir tabel": "d7-legenda-baris-akhir",
+    "D-10 frasa biasa \"tidak ditemukan\"": "d10-frasa-biasa-boleh",
+    "D-16 nomor objek, jam WIB, versi lisensi, nomor standar": "d16-pengecualian-boleh",
+    "T-7 teks di atas pilnya sendiri": "t7-teks-di-pil-boleh",
+    "D-11/D-13/D-17 Heading 1 \"BAB 1\" diketik dengan w:br": "positif-bab-br",
+    "D-7/D-13 sampul, pembatas Lampiran, sampul belakang tanpa kepala, kaki, nomor": "bersih",
+    "D-11/D-13 Heading 1 bernomor otomatis lvlText \"BAB %1\"": "bersih",
+    "D-20/D-22 kolom NO rata tengah dan kode rekomendasi \"01\"": "bersih",
+    "D-11 label pita kapital bergaya Label Bagian": "bersih",
+    "D-7/D-14/D-20 kartu skenario majemuk (w:tblCaption skenario)": "bersih",
+    "D-14 grup kartu angka dengan label di baris kaki": "bersih",
+    "D-15 foto Commons + Lampiran Atribusi; \"Sumber: Wikimedia Commons; ...\" di bawah tabel lampiran": "bersih",
+    "D-19 singkatan APA [BNPB] lalu (BNPB, 2025a); pembatas LAMPIRAN bergaya Normal sesudah pustaka": "bersih",
+    "D-31 pil status di paragraf kedua sel LANGKAH": "bersih",
+    "D-14 pil keyakinan C6.2 (isi navy Resmi, garis teks-3, oranye, slate)": "bersih",
+    "T-5 kepala dan kaki B4": "bersih",
+    "T-6 kerangka slide (garis, nomor, CUT OFF, judul 644 pt)": "bersih",
+    "D-20 diagram garis waktu B5.12 bertanda w:tblCaption garis-waktu (kepala tint, pemisah kolom)": "d20-garis-waktu-sah",
+    "T-8 daftar bertiga faktual (nama diri) di DOCX tidak dihitung tiga-serangkai": "t8-faktual-boleh",
+    "T-9 nama K/L lama bertanda kini atau dahulu (rujukan historis)": "t9-dahulu-boleh",
+    "T-9 kutipan pustaka (BNPB, 2025a) sebelum kepanjangan bukan pemakaian singkatan di prosa": "t9-kutipan-boleh",
+    "T-9 singkatan dieja di prosa (Renas PB, DIBI); T-10 kata glosarium dan nama diri": "bersih",
+    "T-11 kajian final yang memenuhi ambang qa.pustaka": "t11-final-cukup"
+  },
+  "dikecualikan": {
+    "D-12 PDF ringkas": "KEPUTUSAN P13: keluaran 8 berkas tanpa PDF ringkas; yang diperiksa halaman isi DOCX terhadap tema.json kajian.<k>.batas_halaman_isi (T5); null = batas dicabut pemilik (KEPUTUSAN P18), D-12 LEWAT",
+    "T-7 DOCX": "tata letak DOCX mengalir (paragraf dan tabel sebaris, tanpa objek mengambang); tidak ada xfrm untuk dihitung irisannya. Irisan di halaman DOCX dibaca di gerbang visual D2 (render PNG)"
+  },
+  "antre": {
+    "D-8 label laut": "Peta NKRI BIG: nama laut (Laut Natuna Utara) dan pulau terluar belum digambar bangun/visual/peta.mjs (manifest unsur_peta.label_laut = false); gerbangnya menyusul bersama perendernya",
+    "D-18": "butuh bentuk tabel lampiran kab/kota dari pembangun DOCX; sementara dijaga naskah.py (tabel csv dari katalog lengkap, uji 119 kab/kota Jawa)",
+    "D-24 per halaman": "per gambar sudah diuji (bangun/visual); lintas gambar di satu halaman butuh manifest.json pembangun DOCX per halaman (peran tiap hex, PEDOMAN B1.8)",
+    "D-25": "glif khusus sudah di tema.json glif (bangun/visual/uji.mjs menguji satu konsep satu glif); belum ada penanda asal ikon di keluaran DOCX/PPTX",
+    "D-26": "butuh gaya 'Isi Temuan' dari pembangun DOCX dan ukur baris Bold dari render",
+    "D-27": "butuh halaman Pesan Kunci dan matriks rekomendasi dari pembangun DOCX",
+    "D-29": "butuh manifest render peta kecil berganda (kelas, skala, legenda)",
+    "D-30": "butuh halaman Pesan Kunci dan halaman studi kasus dari pembangun DOCX; ukur baris temuan dari render",
+    "D-6 tesis": "registri data/angka.json belum memuat kunci tesis.*; cabang \"kalimat tesis tampil dua kali\" baru bisa difixture saat kunci pertama ditambahkan",
+    "D-15 foto tanpa atribusi": "foto belum bisa dibedakan dari grafik di DOCX (semua PNG); butuh penanda jenis gambar (tema.json kosakata.jenis_gambar) di wp:docPr descr dari pembangun DOCX",
+    "T-6 penunjuk lampiran": "Buku Pegangan Alur kerja 4 \"nomor halaman lampiran benar\": format penunjuk lampiran di pembatas deck belum ditetapkan pembangun deck; gerbangnya menyusul formatnya"
+  }
+}

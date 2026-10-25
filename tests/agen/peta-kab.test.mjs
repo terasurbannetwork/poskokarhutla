@@ -16,7 +16,7 @@ for (const f of ['atur', 'cekKab', 'siapkanKab', 'agregatKab', 'batasKab', 'warn
 
 // 31 hari 2026-09-21 .. 2026-10-21 (Senin 19 Okt = indeks 28); celah 20 Okt (indeks 29) dan 25 Sep (indeks 4)
 const hari = Array.from({ length: 31 }, (_, i) => R.tambah('2026-09-21', i))
-const J = () => ({ versi: 1, dibuat: 'x', cutoff: 'x', hari: [...hari], porsi: 0.534, celah: ['2026-09-25', '2026-10-20'],
+const J = () => ({ versi: 1, dibuat: 'x', cutoff: 'x', hari: [...hari], faktor: { N20: 4.22, N21: 4.36 }, celah: ['2026-09-25', '2026-10-20'],
   prov: { 62: { nama: 'Kalimantan Tengah', hot: hari.map(() => 0), luas: hari.map(() => 0), belum: hari.map(() => 0), padam: hari.map(() => 0) } } })
 const P = R.siapkan(J())
 const idx = s => P.idx.get(s)
@@ -27,7 +27,7 @@ const KB = () => ({
   '62|B': { nama: 'B', prov: '62', d: [[3, 7, 2], [29, 40, 40]] },
   '62|C': { nama: 'C', prov: '62', d: [[30, 0, 9]] },
 })
-const K = () => ({ versi: 1, dibuat: 'x', cutoff: 'x', hari: [...hari], porsi: 0.534, celah: ['2026-09-25', '2026-10-20'], kab: KB() })
+const K = () => ({ versi: 1, dibuat: 'x', cutoff: 'x', hari: [...hari], faktor: { N20: 4.22, N21: 4.36 }, celah: ['2026-09-25', '2026-10-20'], kab: KB() })
 
 test('atur: ukuran, jenis periode, geser, tanggal; masukan tak sah atau tanpa tetangga = null', () => {
   const s = { metrik: 'luas', mode: 'hari', ref: '', a: '', b: '' }
@@ -266,7 +266,7 @@ test('data/peta_karhutla_kab.json (bila sudah terbit): kontrak v1, kunci ada di 
     const prov = JSON.parse(baca('public/data/peta_karhutla.json')), kab = JSON.parse(readFileSync(jalurKab, 'utf8'))
     const Pp = R.siapkan(prov)
     assert.equal(R.cek(prov), ''); assert.equal(R.cekKab(kab, Pp), '')
-    assert.deepEqual(kab.hari, prov.hari, 'hari sama dengan provinsi'); assert.equal(kab.porsi, prov.porsi)
+    assert.deepEqual(kab.hari, prov.hari, 'hari sama dengan provinsi'); assert.deepEqual(kab.faktor, prov.faktor)
     const geo = new Map()
     const S = new Map()   // `${prov}|${i}` -> [jumlah luas, jumlah belum, banyak kabupaten]
     for (const [kunci, o] of Object.entries(kab.kab)) {

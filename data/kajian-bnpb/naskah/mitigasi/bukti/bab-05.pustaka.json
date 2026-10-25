@@ -1,0 +1,691 @@
+[
+  {
+    "id": "bnpb-2025-renas",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json; Bab 5 mitigasi: Tabel 2.2 hlm. 22, Tabel 2.5 hlm. 24 (penduduk terpapar per bahaya), Tabel 2.6 hlm. 24–25 (potensi kerugian), Tabel 2.7 hlm. 25 (kapasitas provinsi), hlm. 19 (kelas IRBI 2023); korpus data/raw/hukum/teks/perban-nomor-1-tahun-2025.json"
+  },
+  {
+    "id": "bnpb-2025-renstra",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+    "verifikasi": "primer",
+    "note": "judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json; Bab 5 mitigasi: hlm. 5 (komponen IRBI), hlm. 23–24 (Tabel 1.4 NAR 2023), hlm. 52 (Tabel 1.6 IRB 2019–2024), hlm. 70 (IKD 0,46), hlm. 85 (IKD 71 indikator, 284 pertanyaan), hlm. 125, 128, 132, 152 (IKS kapasitas 67% ke 90%, target tahunan); korpus data/raw/hukum/teks/perban-nomor-5-tahun-2025.json"
+  },
+  {
+    "id": "bnpb-irbi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Indeks Risiko Bencana Indonesia (IRBI) kabupaten/kota 2015–2025",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Bab 5 mitigasi: paket data/kajian-bnpb/data/irbi (irbi_kab_2025.csv, irbi_agregat_pulau.csv, irbi_agregat_provinsi.csv, irbi_tren_2015_2024.csv, irbi_bukti_skala_*.csv); salinan riset/mentah/irbi.ndjson ditarik 18 dan 23 Okt 2026, identik"
+  },
+  {
+    "id": "bnpb-dibi",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+    "genre": "Data set",
+    "URL": "https://dibi.bnpb.go.id",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Bab 5 mitigasi: dibi/rekap_nasional_tahunan.csv, rekap_provinsi_tahunan.csv, kejadian_besar.csv (cakupan bencana) dan skenario-hidromet/dibi_kab_tahun.csv, dibi_geologi_kab_tahun.csv (semua laporan); tarik 23 Okt 2026"
+  },
+  {
+    "id": "worldpop-2025",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "WorldPop"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "WorldPop R2025A, constrained UN-adjusted population 2026",
+    "genre": "Data set",
+    "publisher": "University of Southampton",
+    "URL": "https://www.worldpop.org",
+    "verifikasi": "primer",
+    "note": "dijumlah per kecamatan di public/data/penduduk.json; porsi Jawa dihitung Pantau Bencana; Bab 5 mitigasi: penduduk_2026 per kab di irbi/irbi_kab_2025.csv (jumlah 286.674.532) untuk porsi penduduk kab Tinggi; bukan penduduk BPS"
+  },
+  {
+    "id": "bnpb-2026-krb",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Ringkasan Kajian Risiko Bencana 2022–2026 per kabupaten/kota",
+    "genre": "Data set",
+    "publisher": "InaRISK",
+    "URL": "https://inarisk.bnpb.go.id/apiv4/kajian-summary/covid-19/ALL?level=nasional",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "sama dengan bab air; penduduk nasional 271.680.290 jiwa sebagai penyebut alternatif (nonalam-sosial/krb_covid19_wilayah.csv); tahun basis penduduk tidak tertulis di API; Bab 5 mitigasi: riset/mentah/ks_*.json (kapasitas_kabupaten 315/190/3 dari 508, kapasitas_kecamatan 4.153/2.996/73 dari 7.222, kolom terpapar dan jiwa_terpapar) dan nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab; skenario-hidromet/paparan_kab.csv"
+  },
+  {
+    "id": "ri-2025-perpres12-rpjmn",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Republik Indonesia"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "title": "Peraturan Presiden Nomor 12 Tahun 2025 tentang Rencana Pembangunan Jangka Menengah Nasional Tahun 2025–2029",
+    "container-title": "Lembaran Negara Republik Indonesia Tahun 2025 Nomor 19",
+    "URL": "https://peraturan.bpk.go.id/Details/314638/perpres-no-12-tahun-2025",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Lampiran I hlm. 29, 30, 71–73, 111, 201, 216; Lampiran II hlm. 437–440; Lampiran III hlm. 913 (BNPB); teks OCR, tabel kunci dicek dari gambar halaman; Bab 5 mitigasi: Lampiran III hlm. 913 (KP 08.04.01 kapasitas PB minimal sedang 62% baseline 2023, 67% 2025, 90% 2029) dan Lampiran I hlm. 30 (IRB 2023), dibaca riset E §E11(b)"
+  },
+  {
+    "id": "bnpb-2023-renkon",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2023 tentang Penyusunan Rencana Kontingensi Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 469",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb002.pdf",
+    "verifikasi": "primer",
+    "note": "Pasal 7 ayat (1) sampai (5) dibaca di halaman PDF 4 dan Lampiran (pertimbangan sejarah kejadian terburuk, lima aspek dampak) di halaman PDF 14, korpus data/raw/hukum/teks/perban-nomor-2-tahun-2023.json"
+  },
+  {
+    "id": "bnpb-2012-pengkajian-risiko",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012
+        ]
+      ]
+    },
+    "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2012 tentang Pedoman Umum Pengkajian Risiko Bencana",
+    "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1096",
+    "URL": "https://jdih.bnpb.go.id/storage/file/2012pbbnpb002.pdf",
+    "verifikasi": "primer",
+    "note": "korpus lokal hanya memuat batang tubuh 3 halaman; lampiran metode (rumus risiko) tidak dibuka; Bab 5 mitigasi: salinan BN 2014/1096 dari https://bnpb.go.id/storage/app/media/uploads/24/peraturan-kepala/2012/perka-2-tahun-2012.pdf dibuka 24 Okt 2026, hanya batang tubuh 4 halaman; lampiran rumus R = H × V / C tidak termuat"
+  },
+  {
+    "id": "kemenkopmk-2025-sinkronisasi-irb",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+        "singkatan": "Kemenko PMK"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          9,
+          12
+        ]
+      ]
+    },
+    "title": "Kemenko PMK Dorong Sinkronisasi Indeks Risiko Bencana untuk Perkuat Ketahanan Daerah",
+    "URL": "https://kemenkopmk.go.id/node/5841",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "rapat 4 September 2025; angka 63, 87, 79 daerah disampaikan Direktur MPBG Kemendagri; Bab 5 mitigasi: dibuka ulang 24 Okt 2026; 79 daerah belum menyusun IKD 2024, 87 belum mengaktifkan KRB, 63 belum menuntaskan SPM; kalimat \"Target nasional adalah 90 persen kabupaten/kota mencapai level menengah hingga tinggi pada 2029\" berdiri sesudah paragraf Direktur Pemetaan dan Evaluasi PB BNPB tanpa ditandai sebagai ucapannya; siaran juga menulis \"perhitungan IRBI 2025 akan segera rampung pada Desember mendatang\". Label isi: terverifikasi (siaran pers)"
+  },
+  {
+    "id": "pusgen-2024-peta-gempa",
+    "type": "book",
+    "author": [
+      {
+        "literal": "Pusat Studi Gempa Nasional",
+        "singkatan": "PuSGeN"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "title": "Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+    "publisher": "Kementerian Pekerjaan Umum",
+    "publisher-place": "Jakarta",
+    "URL": "https://ciptakarya.pu.go.id/admin/assets/upload/galeri/gempa/2026/02/10/887359_0.%20Final_BUKU_PETA_SUMBER_DAN_BAHAYA_GEMPA_2024_Publish.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "hlm. xxxi–xxxii; Tabel 2.4 hlm. 68–69; hlm. 336–337; Tabel 6.2 hlm. 342–343; Tabel 6.9 hlm. 364–371. Katalog Kementerian PU mencatat tahun terbit 2025; Bab 5 mitigasi: Tabel 6.2 hlm. 342–343 (periode ulang megathrust Jawa 600 dan 400 tahun) lewat riset E §E1"
+  },
+  {
+    "id": "noaa-2026-oni",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "NOAA Climate Prediction Center"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "Oceanic Niño Index (ONI), ERSSTv5",
+    "genre": "Data set",
+    "URL": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "salinan di data/kajian-bnpb/riset/mentah/oni_cpc.txt; JAS 2026, 2015, 1997 dicek ulang ke situs CPC 23 Okt 2026; Bab 5 mitigasi: hitungan musim La Niña dan El Niño kuat 2008/2009–2025/2026 (skenario-hidromet/musim_hujan.csv)"
+  },
+  {
+    "id": "cabinetoffice-2025-nrr",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Cabinet Office"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025,
+          1,
+          16
+        ]
+      ]
+    },
+    "title": "National Risk Register 2025",
+    "publisher": "HM Government",
+    "URL": "https://assets.publishing.service.gov.uk/media/67b5f85732b2aab18314bbe4/National_Risk_Register_2025.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "definisi skenario terburuk yang masuk akal (hlm. 11), kemungkinan dalam 5 tahun untuk risiko nonmalisius dan pita <0,2%, 0,2–1%, 1–5%, 5–25%, >25% (hlm. 12 dan 16), skala dampak 1–5 logaritmik (hlm. 13–15); halaman terbitan gov.uk/government/publications/national-risk-register-2025; Bab 5 mitigasi: pita fatalitas hlm. 14 dipakai lewat usulan bab-03 P2"
+  },
+  {
+    "id": "koplitz-2016-haze",
+    "type": "article-journal",
+    "author": [
+      {
+        "family": "Koplitz",
+        "given": "Shannon N."
+      },
+      {
+        "family": "Mickley",
+        "given": "Loretta J."
+      },
+      {
+        "family": "Marlier",
+        "given": "Miriam E."
+      },
+      {
+        "family": "Buonocore",
+        "given": "Jonathan J."
+      },
+      {
+        "family": "Kim",
+        "given": "Patrick S."
+      },
+      {
+        "family": "Liu",
+        "given": "Tianjia"
+      },
+      {
+        "family": "Sulprizio",
+        "given": "Melissa P."
+      },
+      {
+        "family": "DeFries",
+        "given": "Ruth S."
+      },
+      {
+        "family": "Jacob",
+        "given": "Daniel J."
+      },
+      {
+        "family": "Schwartz",
+        "given": "Joel"
+      },
+      {
+        "family": "Pongsiri",
+        "given": "Montira"
+      },
+      {
+        "family": "Myers",
+        "given": "Samuel S."
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2016,
+          9
+        ]
+      ]
+    },
+    "title": "Public health impacts of the severe haze in Equatorial Asia in September–October 2015: demonstration of a new framework for informing fire management strategies to reduce downwind smoke exposure",
+    "container-title": "Environmental Research Letters",
+    "volume": "11",
+    "issue": "9",
+    "number": "094023",
+    "DOI": "10.1088/1748-9326/11/9/094023",
+    "URL": "https://doi.org/10.1088/1748-9326/11/9/094023",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "abstrak dan angka utama dibaca di iopscience; CC BY 3.0; Bab 5 mitigasi: 91.600 kematian berlebih Indonesia (selang 95% 24.000–159.200) sebagai angka berdampingan karhutla, lewat riset E §E15"
+  },
+  {
+    "id": "who-2023-kematian-berlebih",
+    "type": "dataset",
+    "author": [
+      {
+        "literal": "World Health Organization",
+        "singkatan": "WHO"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023,
+          5,
+          19
+        ]
+      ]
+    },
+    "title": "Global excess deaths associated with COVID-19 (modelled estimates), as of 5 April 2023",
+    "genre": "Data set",
+    "publisher": "World Health Organization",
+    "URL": "https://cdn.who.int/media/docs/default-source/world-health-data-platform/covid-19-excessmortality/2023-05-19_covid-19_gem.zip?sfvrsn=9a95fc1a_4",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "estimasi model; dipakai lewat nonalam-sosial/skenario_terburuk.csv (kematian berlebih Indonesia 2020–2021 806.815–1.343.849, rerata 1.067.865); tanggal akses mengikuti tarik paket nonalam-sosial"
+  },
+  {
+    "id": "icg-2002-maluku",
+    "type": "report",
+    "author": [
+      {
+        "literal": "International Crisis Group",
+        "singkatan": "ICG"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2002,
+          2,
+          8
+        ]
+      ]
+    },
+    "title": "Indonesia: The Search for Peace in Maluku",
+    "genre": "Asia Report",
+    "number": "31",
+    "publisher": "International Crisis Group",
+    "publisher-place": "Jakarta/Brussels",
+    "URL": "https://web.archive.org/web/20240717142222/https://www.crisisgroup.org/asia/south-east-asia/indonesia/indonesia-search-peace-maluku",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "ringkasan eksekutif via arsip Wayback; sedikitnya 5.000 (mungkin 10.000) meninggal dan sekitar 700.000 mengungsi 1999–2002; dipakai lewat nonalam-sosial/skenario_terburuk.csv; lembaga nonpemerintah, label terverifikasi"
+  },
+  {
+    "id": "bnpb-2012-kapasitas-daerah",
+    "type": "legislation",
+    "author": [
+      {
+        "literal": "Badan Nasional Penanggulangan Bencana",
+        "singkatan": "BNPB"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2012,
+          1,
+          12
+        ]
+      ]
+    },
+    "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 3 Tahun 2012 tentang Panduan Penilaian Kapasitas Daerah dalam Penanggulangan Bencana",
+    "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perka-nomor-3-tahun-2012",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          24
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "metadata saja: status BERLAKU, ditetapkan 12 Januari 2012 (katalog data/raw/hukum/indeks.json dan halaman JDIH); halaman JDIH menulis 'Dokumen belum tersedia' dan tautan PDF 2012pbbnpb003.pdf membalas 404 pada 24 Okt 2026; isi (kelas dan ambang kapasitas) tidak dibuka"
+  },
+  {
+    "id": "cabinetoffice-2026-nrr-panduan",
+    "type": "report",
+    "author": [
+      {
+        "literal": "Cabinet Office"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "title": "A Guide to the 2026 National Risk Register",
+    "publisher": "HM Government",
+    "URL": "https://assets.publishing.service.gov.uk/media/6a7c4412aadaaddf89b6e484/A_Guide_to_the_2026_National_Risk_Register.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          24
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "dibaca dengan pdftotext 24 Okt 2026 (dibaca ulang), hlm. 7 nomor cetak: kemungkinan risiko nonmalisius dalam lima tahun, pita 1–5 < 0,2%, 0,2–1%, 1–5%, 5–25%, > 25%; dampak 1 Minor sampai 5 Catastrophic dari konsekuensi terberat tujuh dimensi; definisi skenario terburuk yang masuk akal. Tanggal terbit pasti tidak tertulis di teks (riset C §1.2: [TIDAK DITEMUKAN]); rujukan metode, bukan standar Indonesia; panduan memplot tiap risiko dengan kemungkinan dan dampak skenario terburuk yang masuk akal; frasa \"skenario yang sama\" tidak tertulis harfiah"
+  },
+  {
+    "id": "brr-2009-nias",
+    "type": "book",
+    "author": [
+      {
+        "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+        "singkatan": "BRR NAD–Nias"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "title": "Nias: Membangun melalui jalan yang jarang dilalui",
+    "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "ISBN": "978-602-8199-36-0",
+    "URL": "https://aset-sejarah.dibi.bnpb.go.id/assets/arsip/670de67d21dc8.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Arsip BNPB, 205 hlm.; dibuka riset E §E4 (hlm. xiii Capaian 4 Tahun: 127.720 meninggal, 93.285 hilang; kotak Ketika Nias Luluh Lantak; Tabel 1.1; hlm. PDF 24 dan 27). Berkas > 10 MB, tidak dibuka ulang 24 Okt 2026"
+  },
+  {
+    "id": "brr-2009-scattered-beads",
+    "type": "book",
+    "author": [
+      {
+        "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+        "singkatan": "BRR NAD–Nias"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2009
+        ]
+      ]
+    },
+    "title": "Case study: The scattered beads",
+    "collection-title": "BRR Book Series",
+    "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          24
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+  },
+  {
+    "id": "usgs-usp000ensm",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "U.S. Geological Survey",
+        "singkatan": "USGS"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006,
+          7,
+          17
+        ]
+      ]
+    },
+    "title": "M 7.7 - 226 km SSW of Singaparna, Indonesia (event usp000ensm), impact-text",
+    "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+    "URL": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=usp000ensm&format=geojson",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          23
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Salinan di riset/mentah/usp000ensm.geojson. Impact-text: Ciamis 413, Tasikmalaya 62, Banjar 15, Garut 1, Cilacap 157, Kebumen 10, Banyumas 1, Gunung Kidul 3, Bantul 3 meninggal (jumlah 665); hilang 65; seluruh kematian akibat tsunami, run-up maksimum 4,6 m di Widarapayung"
+  },
+  {
+    "id": "usgs-usp000ej1c",
+    "type": "webpage",
+    "author": [
+      {
+        "literal": "U.S. Geological Survey",
+        "singkatan": "USGS"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2006,
+          5,
+          26
+        ]
+      ]
+    },
+    "title": "M 6.3 - Java, Indonesia (event usp000ej1c)",
+    "publisher": "U.S. Geological Survey, Earthquake Hazards Program",
+    "URL": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ej1c",
+    "accessed": {
+      "date-parts": [
+        [
+          2026,
+          10,
+          19
+        ]
+      ]
+    },
+    "verifikasi": "primer",
+    "note": "Tanggal UTC 26 Mei 2006 (27 Mei waktu lokal); 5.749 meninggal via public/gempa/data/factsheet_gempa.json"
+  }
+]

@@ -9,6 +9,10 @@
    "R": "penetap status/izin/norma",
    "I": "informasi dan peringatan dini"
   },
+  "jenis_bukti": {
+   "tertulis": "norma menyebut lembaga itu",
+   "dipetakan penyusun": "norma menyebut pelaku umum, fungsi, atau nama lama; atau penggolongan ancaman adalah tafsiran"
+  },
   "ancaman": {
    "semua": {
     "nama": "Lintas jenis bencana",
@@ -67,6 +71,7 @@
     "kategori": "sosial"
    }
   },
+  "hlm": "indeks halaman PDF berbasis 1; nomor cetak bisa berbeda",
   "pencocokan_kutipan": "tanpa spasi, huruf kecil; potongan dipisah ' … ' wajib semuanya ada di halaman yang disebut"
  },
  "tabel": {
@@ -77,6 +82,9 @@
     "singkatan",
     "kelompok",
     "dikoordinasikan_oleh",
+    "koordinasi_sid",
+    "koordinasi_hlm",
+    "koordinasi_kutipan",
     "dasar_hukum_lama_dicabut",
     "dasar_hukum",
     "sid",
@@ -96,6 +104,9 @@
      "Kepala pemerintahan",
      "-",
      "",
+     "",
+     "",
+     "",
      "Perpres 17/2018 Pasal 2 ayat (2)",
      "jdih:perpres-nomor-17-tahun-2018",
      "3",
@@ -113,6 +124,9 @@
      "Kepala pemerintahan",
      "-",
      "",
+     "",
+     "",
+     "",
      "UU 17/2019 Pasal 10-11 jo. UU 6/2023 Pasal 53",
      "uu-17-2019",
      "9",
@@ -129,6 +143,9 @@
      "Kemenko Polkam",
      "Kementerian koordinator",
      "-",
+     "perpres-141-2024",
+     "2",
+     "Kementerian Koordinator berada di bawah dan bertanggung jawab kepada Presiden",
      "PERPRES No. 73 Tahun 2020 tentang Kementerian Koordinator Bidang Politik, Hukum, dan Keamanan",
      "Perpres 141/2024",
      "perpres-141-2024",
@@ -146,6 +163,9 @@
      "Kemenko PMK",
      "Kementerian koordinator",
      "-",
+     "perpres-144-2024",
+     "2",
+     "Kementerian Koordinator berada di bawah dan bertanggung jawab kepada Presiden",
      "",
      "Perpres 144/2024 jo. Perpres 91/2025",
      "perpres-144-2024",
@@ -163,6 +183,9 @@
      "Kemenko IPK",
      "Kementerian koordinator",
      "-",
+     "perpres-145-2024",
+     "2",
+     "Kementerian Koordinator berada di bawah dan bertanggung jawab kepada Presiden",
      "PERPRES No. 92 Tahun 2019 tentang Kementerian Koordinator Bidang Kemaritiman dan Investasi",
      "Perpres 145/2024",
      "perpres-145-2024",
@@ -180,6 +203,9 @@
      "Kemenko PM",
      "Kementerian koordinator",
      "-",
+     "perpres-146-2024",
+     "2",
+     "Kementerian Koordinator berada di bawah dan bertanggung jawab kepada Presiden",
      "",
      "Perpres 146/2024",
      "perpres-146-2024",
@@ -197,6 +223,9 @@
      "Kemenko Pangan",
      "Kementerian koordinator",
      "-",
+     "perpres-147-2024",
+     "2",
+     "Kementerian Koordinator berada di bertanggung jawab kepada Presiden",
      "",
      "Perpres 147/2024",
      "perpres-147-2024",
@@ -214,6 +243,9 @@
      "Kemenko Perekonomian",
      "Kementerian koordinator",
      "-",
+     "perpres-143-2024",
+     "2",
+     "Kementerian Koordinator berada di bawah dan bertanggung jawab kepada Presiden",
      "PERPRES No. 37 Tahun 2020 tentang Kementerian Koordinator Bidang Perekonomian",
      "Perpres 143/2024",
      "perpres-143-2024",
@@ -231,6 +263,9 @@
      "Kemendagri",
      "Kementerian",
      "KEMENKO_POLKAM",
+     "perpres-141-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … a. Kementerian Dalam Negeri",
      "PERPRES No. 114 Tahun 2021 tentang Kementerian Dalam Negeri",
      "Perpres 149/2024",
      "perpres-149-2024",
@@ -248,6 +283,9 @@
      "Kemlu",
      "Kementerian",
      "KEMENKO_POLKAM",
+     "perpres-141-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … b. Kementerian Luar Negeri",
      "PERPRES No. 116 Tahun 2020 tentang Kementerian Luar Negeri",
      "Perpres 150/2024",
      "perpres-150-2024",
@@ -265,6 +303,9 @@
      "Kemenkeu",
      "Kementerian",
      "-",
+     "perpres-158-2024",
+     "2",
+     "Kementerian berada di bawah dan bertanggung jawab kepada Presiden",
      "PERPRES No. 57 Tahun 2020 tentang Kementerian Keuangan",
      "Perpres 158/2024",
      "perpres-158-2024",
@@ -282,6 +323,9 @@
      "Kemenkes",
      "Kementerian",
      "KEMENKO_PMK",
+     "perpres-144-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … e. Kementerian Kesehatan",
      "PERPRES No. 18 Tahun 2021 tentang Kementerian Kesehatan",
      "Perpres 161/2024",
      "perpres-161-2024",
@@ -299,6 +343,9 @@
      "Kemensos",
      "Kementerian",
      "KEMENKO_PM",
+     "perpres-146-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … a. Kementerian Sosial",
      "PERPRES No. 110 Tahun 2021 tentang Kementerian Sosial",
      "Perpres 162/2024 jo. Perpres 22/2026",
      "perpres-162-2024",
@@ -316,6 +363,9 @@
      "Kemendikdasmen",
      "Kementerian",
      "KEMENKO_PMK",
+     "perpres-144-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … b. Kementerian Pendidikan Dasar dan Menengah",
      "PERPRES No. 62 Tahun 2021 tentang Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi",
      "Perpres 188/2024 jo. Perpres 6/2026",
      "perpres-188-2024",
@@ -333,6 +383,9 @@
      "Kementerian PU",
      "Kementerian",
      "KEMENKO_IPK",
+     "perpres-145-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … b. Kementerian Pekerjaan Umum",
      "PERPRES No. 27 Tahun 2020 tentang Kementerian Pekerjaan Umum dan Perumahan Rakyat",
      "Perpres 170/2024",
      "perpres-170-2024",
@@ -350,6 +403,9 @@
      "Kementerian PKP",
      "Kementerian",
      "KEMENKO_IPK",
+     "perpres-145-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … c. Kementerian Perumahan dan Kawasan Permukiman",
      "",
      "Perpres 191/2024",
      "perpres-191-2024",
@@ -367,6 +423,9 @@
      "Kementerian ESDM",
      "Kementerian",
      "KEMENKO_EKON",
+     "perpres-143-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … d. Kementerian Energi dan Sumber Daya Mineral",
      "PERPRES No. 97 Tahun 2021 tentang Kementerian Energi dan Sumber Daya Mineral",
      "Perpres 169/2024",
      "perpres-169-2024",
@@ -384,6 +443,9 @@
      "Kemenhut",
      "Kementerian",
      "KEMENKO_PANGAN",
+     "perpres-147-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … b. Kementerian Kehutanan",
      "PERPRES No. 92 Tahun 2020 tentang Kementerian Lingkungan Hidup dan Kehutanan",
      "Perpres 175/2024",
      "perpres-175-2024",
@@ -401,6 +463,9 @@
      "KLH/BPLH",
      "Kementerian",
      "KEMENKO_PANGAN",
+     "perpres-147-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … d. Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
      "",
      "Perpres 182/2024 (KLH) dan Perpres 183/2024 (BPLH)",
      "perpres-182-2024",
@@ -418,6 +483,9 @@
      "Kementan",
      "Kementerian",
      "KEMENKO_PANGAN",
+     "perpres-147-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … a. Kementerian Pertanian",
      "PERPRES No. 117 Tahun 2022 tentang Kementerian Pertanian",
      "Perpres 192/2024",
      "perpres-192-2024",
@@ -435,6 +503,9 @@
      "KKP",
      "Kementerian",
      "KEMENKO_PANGAN",
+     "perpres-147-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … c. Kementerian Kelautan dan Perikanan",
      "PERPRES No. 38 Tahun 2023 tentang Kementerian Kelautan dan Perikanan",
      "Perpres 193/2024 jo. Perpres 112/2025",
      "perpres-193-2024",
@@ -452,6 +523,9 @@
      "ATR/BPN",
      "Kementerian",
      "KEMENKO_IPK",
+     "perpres-145-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … a. Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional",
      "PERPRES No. 47 Tahun 2020 tentang Kementerian Agraria dan Tata Ruang",
      "Perpres 176/2024 dan Perpres 177/2024",
      "perpres-176-2024",
@@ -469,6 +543,9 @@
      "Kementerian PPN/Bappenas",
      "Kementerian",
      "-",
+     "perpres-194-2024",
+     "2",
+     "Kementerian berada di bawah dan bertanggung jawab kepada Presiden",
      "PERPRES No. 80 Tahun 2021 tentang Kementerian Perencanaan Pembangunan Nasional",
      "Perpres 194/2024 dan Perpres 195/2024",
      "perpres-194-2024",
@@ -486,6 +563,9 @@
      "Komdigi",
      "Kementerian",
      "KEMENKO_POLKAM",
+     "perpres-141-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … d. Kementerian Komunikasi dan Digital",
      "PERPRES No. 22 Tahun 2023 tentang Kementerian Komunikasi dan Informatika",
      "Perpres 174/2024",
      "perpres-174-2024",
@@ -503,6 +583,9 @@
      "Kemenhub",
      "Kementerian",
      "KEMENKO_IPK",
+     "perpres-145-2024",
+     "4-5",
+     "Kementerian Koordinator mengoordinasikan: … e. Kementerian Perhubungan",
      "PERPRES No. 23 Tahun 2022 tentang Kementerian Perhubungan",
      "Perpres 173/2024 jo. Perpres 16/2026",
      "perpres-173-2024",
@@ -520,6 +603,9 @@
      "Kemendes PDT",
      "Kementerian",
      "KEMENKO_PM",
+     "perpres-146-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … c. Kementerian Desa dan Pembangunan Daerah Tertinggal",
      "PERPRES No. 85 Tahun 2020 tentang Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
      "Perpres 171/2024",
      "perpres-171-2024",
@@ -532,11 +618,34 @@
      ""
     ],
     [
+     "KEMENAG",
+     "Kementerian Agama",
+     "Kemenag",
+     "Kementerian",
+     "KEMENKO_PMK",
+     "perpres-144-2024",
+     "5",
+     "Kementerian Koordinator mengoordinasikan: … a. Kementerian Agama",
+     "",
+     "Perpres 90/2025 (daftar kementerian)",
+     "perpres-90-2025",
+     "2",
+     "12. Kementerian Agama",
+     "",
+     "Berlaku",
+     "https://peraturan.bpk.go.id/Details/331563/perpres-no-90-tahun-2025",
+     "resmi",
+     "Masuk karena mandat tertulis Renas PB 2025-2029: penanggung jawab Rencana Aksi 2.1.2.a bersama Kemendikdasmen (KERANGKA §10); Perpres organisasi Kemenag belum ada di mentah/teks."
+    ],
+    [
      "BNPB",
      "Badan Nasional Penanggulangan Bencana",
      "BNPB",
      "LPNK",
      "KEMENKO_PMK",
+     "perpres-1-2019",
+     "4",
+     "BNPB dikoordinasikan oleh kementerian yang menyelenggarakan koordinasi, sinkronisasi, dan pengendalian urusan kementerian dalam penyelenggaraan pemerintahan di bidang pembangunan manusia dan kebudayaan",
      "PERPRES No. 8 Tahun 2008 tentang Badan Nasional Penanggulangan Bencana",
      "UU 24/2007 Pasal 10-12; Perpres 1/2019 jo. Perpres 29/2021",
      "perpres-1-2019",
@@ -554,6 +663,9 @@
      "BPBD",
      "Perangkat daerah",
      "PEMDA",
+     "uu-24-2007",
+     "11",
+     "Pemerintah daerah sebagaimana dimaksud dalam Pasal 5 membentuk badan penanggulangan bencana daerah",
      "",
      "UU 24/2007 Pasal 18-21",
      "uu-24-2007",
@@ -572,6 +684,9 @@
      "Pemerintah daerah",
      "-",
      "",
+     "",
+     "",
+     "",
      "UU 23/2014 Lampiran E (sub-urusan bencana); UU 24/2007 Pasal 8-9",
      "uu-23-2014",
      "332",
@@ -588,6 +703,9 @@
      "BMKG",
      "LPNK",
      "KEMENHUB",
+     "perpres-12-2024",
+     "2",
+     "BMKG berada di bawah dan bertanggung jawab kepada Presiden melalui menteri yang menyelenggarakan urusan pemerintahan di bidang transportasi",
      "PERPRES No. 61 Tahun 2008 tentang Badan Meteorologi, Klimatologi, dan Geofosika",
      "UU 31/2009; Perpres 12/2024",
      "perpres-12-2024",
@@ -605,6 +723,9 @@
      "BRIN",
      "LPNK",
      "-",
+     "perpres-78-2021",
+     "3",
+     "lembaga pemerintah yang berada di bawah dan bertanggung j awab kepada Presiden",
      "Perpres Nomor 33 Tahun 2021",
      "Perpres 78/2021",
      "perpres-78-2021",
@@ -621,7 +742,10 @@
      "Badan Informasi Geospasial",
      "BIG",
      "LPNK",
-     "-",
+     "KEMEN_PPN",
+     "perpres-128-2022",
+     "3",
+     "BIG dikoordinasikan oleh menteri yang menyelenggarakan urusan pemerintahan di bidang perencan€an pembangunan nasional",
      "PERPRES No. 94 Tahun 2011 tentang Badan Informasi Geospasial",
      "Perpres 128/2022",
      "perpres-128-2022",
@@ -638,7 +762,10 @@
      "Badan Nasional Pencarian dan Pertolongan",
      "Basarnas",
      "LPNK",
-     "-",
+     "KEMENHUB",
+     "perpres-83-2016",
+     "4",
+     "Badan Nasional Pencarian dan Pertolongan dikoordinasikan oleh menteri yang menyelenggarakan urusan pemerintahan di bidang perhubungan",
      "PERPRES No. 99 Tahun 2007 tentang Badan SAR Nasional",
      "UU 29/2014; Perpres 83/2016",
      "perpres-83-2016",
@@ -656,6 +783,9 @@
      "TNI",
      "TNI/Polri",
      "KEMENKO_POLKAM",
+     "perpres-141-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … f. Tentara Nasional Indonesia",
      "",
      "UU 34/2004 jo. UU 3/2025",
      "uu-3-2025",
@@ -673,6 +803,9 @@
      "Polri",
      "TNI/Polri",
      "KEMENKO_POLKAM",
+     "perpres-141-2024",
+     "4",
+     "Kementerian Koordinator mengoordinasikan: … g. Kepolisian Negara Republik Indonesia",
      "",
      "UU 2/2002 jo. UU 5/2026",
      "uu-5-2026",
@@ -689,13 +822,16 @@
      "Badan Otorita Pengelola Pantai Utara Jawa",
      "BOP Pantura Jawa",
      "Lembaga nonstruktural",
-     "PRES",
+     "-",
+     "perpres-77-2025",
+     "4",
+     "BOP Pantura Jawa merupakan lembaga non struktural yang berada di bawah dan bertanggung jawab kepada Presiden",
      "",
      "Perpres 77/2025",
      "perpres-77-2025",
      "4",
      "BOP Pantura Jawa mempunyai tugas melaksanakan persiapan, perencanaan, pembangunan, dan pengembangan di Pantura Jawa",
-     "Dewan Pengarah diketuai Menko IPK",
+     "Dewan Pengarah: Ketua Menko IPK; Wakil Ketua Menko Perekonomian, PMK, PM, Pangan (Pasal 7)",
      "Berlaku",
      "https://peraturan.bpk.go.id/Details/337303/perpres-no-77-tahun-2025",
      "resmi",
@@ -707,6 +843,9 @@
      "BP BUMN",
      "Lembaga pemerintah",
      "-",
+     "perpres-105-2025",
+     "2",
+     "BP BUMN berada di bawah dan bertanggung jawab kepada Presiden",
      "Perpres No. 179 Tahun 2024 tentang Kementerian Badan Usaha Milik Negara",
      "UU 16/2025; Perpres 105/2025",
      "perpres-105-2025",
@@ -725,6 +864,9 @@
      "BUMN",
      "-",
      "",
+     "",
+     "",
+     "",
      "PP 46/2010",
      "pp-46-2010",
      "4",
@@ -741,6 +883,9 @@
      "PJT II",
      "BUMN",
      "-",
+     "",
+     "",
+     "",
      "PP No. 7 Tahun 2010 tentang Perusahaan Umum (Perum) Jasa Tirta II",
      "PP 25/2022",
      "pp-25-2022",
@@ -758,6 +903,9 @@
      "BUMD SPAM",
      "BUMD",
      "PEMDA",
+     "pp-122-2015",
+     "3",
+     "Penyelenggaraan SPAM yang seluruh atau sebagian besar modalnya dimiliki oleh Daerah",
      "",
      "PP 122/2015",
      "pp-122-2015",
@@ -787,6 +935,7 @@
     "sid2",
     "hlm2",
     "kutipan2",
+    "jenis_bukti",
     "label",
     "catatan"
    ],
@@ -806,6 +955,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -824,6 +974,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "BPBD memegang kemudahan akses yang sama (Pasal 50 ayat (1))."
     ],
@@ -842,6 +993,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -860,6 +1012,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "Setelah keputusan rapat koordinasi yang dipimpin menko pembidang PB."
     ],
@@ -878,6 +1031,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -896,6 +1050,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -914,6 +1069,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -932,6 +1088,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -950,6 +1107,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -968,6 +1126,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -986,6 +1145,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1004,6 +1164,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1022,6 +1183,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1040,6 +1202,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1058,6 +1221,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1076,6 +1240,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1094,6 +1259,7 @@
      "perpres-1-2019",
      "4",
      "BNPB dikoordinasikan oleh kementerian yang menyelenggarakan koordinasi, sinkronisasi, dan pengendalian urusan kementerian dalam penyelenggaraan pemerintahan di bidang pembangunan manusia dan kebudayaan",
+     "dipetakan penyusun",
      "resmi",
      "Perpres 46/2026 tidak menyebut nama Kemenko; dipetakan ke Kemenko PMK lewat Perpres 1/2019 Pasal 6."
     ],
@@ -1112,8 +1278,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut fungsi kementerian, bukan nama; dipetakan ke kementerian yang kini memegang fungsi itu."
     ],
     [
      "R019",
@@ -1130,6 +1297,7 @@
      "uu-29-2014",
      "3",
      "Badan Nasional Pencarian dan Pertolongan adalah lembaga pemerintah nonkementerian yang menyelenggarakan urusan pemerintahan di bidang Pencarian dan Pertolongan",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1148,6 +1316,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1166,6 +1335,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1184,6 +1354,7 @@
      "perpres-188-2024",
      "3",
      "menyelenggarakan suburusan pemerintahan pendidikan dasar dan pendidikan menengah",
+     "dipetakan penyusun",
      "resmi",
      "Kepka 308/2024 memakai nama kementerian yang tidak ada lagi; pewaris pendidikan dasar-menengah = Kemendikdasmen (lihat celah C08)."
     ],
@@ -1202,6 +1373,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1220,8 +1392,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 17/2023 menyebut Pemerintah Pusat dan Pemerintah Daerah; dipetakan ke Kemenkes sebagai kementerian urusan kesehatan."
     ],
     [
      "R025",
@@ -1238,6 +1411,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1256,6 +1430,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1274,6 +1449,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1292,6 +1468,7 @@
      "perpres-191-2024",
      "3",
      "urusan pemerintahan di bidang perumahan",
+     "dipetakan penyusun",
      "resmi",
      "UU 23/2014 menempatkannya di urusan perumahan; urusan perumahan kini di Kementerian PKP."
     ],
@@ -1310,6 +1487,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1328,6 +1506,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1346,6 +1525,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1364,6 +1544,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1382,6 +1563,7 @@
      "perpres-174-2024",
      "",
      "PERPRES No. 22 Tahun 2023 tentang Kementerian Komunikasi dan Informatika",
+     "dipetakan penyusun",
      "resmi",
      "Perban 6/2018 memakai nama lama; Perpres 174/2024 mencabut Perpres 22/2023 (relasi BPK)."
     ],
@@ -1397,11 +1579,12 @@
      "jdih:perban-nomor-6-tahun-2018",
      "19",
      "Kementerian Pekerjaan Umum dan Perumahan Rakyat berwenang dalam penanganan bantuan bidang pekerjaan umum dan perumahan rakyat",
+     "perpres-170-2024",
      "",
-     "",
-     "",
+     "PERPRES No. 27 Tahun 2020 tentang Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+     "dipetakan penyusun",
      "resmi",
-     "Nama lama; bidang perumahan kini di Kementerian PKP."
+     "Nama lama; bidang perumahan kini di Kementerian PKP. Pemetaan penyusun: Perban 6/2018 menyebut Kementerian PUPR; pekerjaan umum kini Kementerian PU (Perpres 170/2024 mencabut Perpres 27/2020), perumahan di Kementerian PKP."
     ],
     [
      "R035",
@@ -1418,6 +1601,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1436,6 +1620,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1454,6 +1639,7 @@
      "perpres-78-2021",
      "35",
      "Lembaga Penerbangan dan Antariksa Nasional yang dibentuk berdasarkan",
+     "dipetakan penyusun",
      "resmi",
      "Peran PB tidak disebut eksplisit; tugas riset umum."
     ],
@@ -1472,6 +1658,197 @@
      "jdih:perban-nomor-1-tahun-2025",
      "27",
      "Belum seluruh daerah memiliki Rencana Tata Ruang Wilayah (RTRW) dan Rencana Detail Tata Ruang (RDTR) berbasis mitigasi bencana",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R039",
+     "TNI",
+     "Tentara Nasional Indonesia",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: perizinan dan pengamanan bantuan militer asing (huruf a)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "18",
+     "Kementerian Pertahanan dan Mabes TNI, berwenang dalam aspek perijinan dan pengamanan bantuan personil",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     "Kementerian Pertahanan tidak dimasukkan sebagai lembaga tersendiri."
+    ],
+    [
+     "R040",
+     "POLRI",
+     "Kepolisian Negara Republik Indonesia",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: perizinan bantuan kepolisian asing, keamanan personil asing (huruf b)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "18",
+     "Mabes POLRI berwenang dalam aspek perijinan bantuan yang bersumber dari kepolisian asing",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R041",
+     "KEMENKES",
+     "Kementerian Kesehatan",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: kualifikasi personil medis, farmasi, alat kesehatan (huruf c)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "18",
+     "Kementerian Kesehatan berwenang dalam pemeriksaan kualifikasi personil medis",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R042",
+     "KEMENTAN",
+     "Kementerian Pertanian",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: karantina tanaman dan/atau hewan (huruf d)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "18",
+     "Kementerian Pertanian berwenang dalam pengurusan karantina tanaman dan/atau hewan",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R043",
+     "KEMENSOS",
+     "Kementerian Sosial",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: pemulihan sosial, kemitraan, logistik bencana (huruf e)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "18",
+     "Kementerian Sosial berwenang dalam pemulihan dan penguatan sosial, serta kemitraan dan pengelolaan logistik bencana",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R044",
+     "KEMENDAGRI",
+     "Kementerian Dalam Negeri",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional di Pos Pendukung PDB melalui pemda/BPBD (huruf k)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "19",
+     "Kementerian Dalam Negeri melalui Pemerintah Daerah/BPBD berwenang dalam penanganan bantuan internasional di Pos Pendukung PDB",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R045",
+     "BMKG",
+     "Badan Meteorologi, Klimatologi, dan Geofisika",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional bidang meteorologi, klimatologi, geofisika (huruf p)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "20",
+     "Badan Meteorologi, Klimatologi, dan Geofisika berwenang dalam penanganan bantuan meteorologi, klimatologi, dan geofisika",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R046",
+     "BASARNAS",
+     "Badan Nasional Pencarian dan Pertolongan",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional: mendampingi pemeriksaan bantuan SAR asing (huruf s)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "20",
+     "Badan Nasional Pencarian dan Pertolongan berwenang untuk mendampingi proses pemeriksaan masuknya bantuan pencarian dan pertolongan asing",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     ""
+    ],
+    [
+     "R047",
+     "BRIN",
+     "Badan Riset dan Inovasi Nasional",
+     "lintas",
+     "semua",
+     "saat",
+     "P",
+     "Bantuan internasional bidang penerbangan-antariksa dan teknologi tepat guna (huruf u, v; alamat Perban: LAPAN, BPPT)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "20",
+     "u. Lembaga Penerbangan dan Antariksa Nasional berwenang dalam bidang penerbangan dan antariksa … v. Badan Pengkajian dan Penerapan Teknologi berwenang dalam bidang penerapan teknologi tepat guna",
+     "perpres-78-2021",
+     "34-35",
+     "Penerapan Teknologi yang dibentuk berdasarkan … Lembaga Penerbangan dan Antariksa Nasional yang dibentuk berdasarkan … dialihkan menjadr tugas, fungsi, dan kewenangan BRIN",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: Perban 6/2018 menyebut LAPAN dan BPPT; keduanya dialihkan ke BRIN (Perpres 78/2021 Pasal 65-66)."
+    ],
+    [
+     "R048",
+     "BIG",
+     "Badan Informasi Geospasial",
+     "lintas",
+     "semua",
+     "saat",
+     "I",
+     "Bantuan internasional: data geospasial pendukung penanganan darurat (huruf w)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "20",
+     "Badan Informasi Geospasial berwenang dalam bidang penyediaan data geospasial pendukung penanganan darurat bencana",
+     "",
+     "",
+     "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1490,8 +1867,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 31/2009 menyebut 'Badan' (Pasal 1 angka 23; Pasal 36 ayat (1): pelayanan informasi hanya oleh Badan); Badan = BMKG (Perpres 12/2024)."
     ],
     [
      "R051",
@@ -1508,8 +1886,9 @@
      "perpres-169-2024",
      "12",
      "vulkanologi dan mitigasi bencana geologi",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (bagian yang masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian ESDM (Badan Geologi: vulkanologi dan mitigasi bencana geologi, Perpres 169/2024)."
     ],
     [
      "R052",
@@ -1526,8 +1905,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 31/2009 menyebut 'Badan' (Pasal 1 angka 23; Pasal 36 ayat (1): pelayanan informasi hanya oleh Badan); Badan = BMKG (Perpres 12/2024)."
     ],
     [
      "R053",
@@ -1541,11 +1921,12 @@
      "uu-23-2014",
      "436",
      "Penetapan kawasan rawan bencana geologi",
-     "",
-     "",
-     "",
+     "perpres-169-2024",
+     "12",
+     "vulkanologi dan mitigasi bencana geologi",
+     "dipetakan penyusun",
      "resmi",
-     "Tsunami tidak disebut eksplisit; dimasukkan karena KRB geologi."
+     "Tsunami tidak disebut eksplisit; dimasukkan karena KRB geologi. Pemetaan penyusun: Lampiran UU 23/2014 (bagian yang masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian ESDM (Badan Geologi: vulkanologi dan mitigasi bencana geologi, Perpres 169/2024)."
     ],
     [
      "R054",
@@ -1562,8 +1943,9 @@
      "perpres-169-2024",
      "12",
      "vulkanologi dan mitigasi bencana geologi",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (bagian yang masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian ESDM (Badan Geologi: vulkanologi dan mitigasi bencana geologi, Perpres 169/2024)."
     ],
     [
      "R055",
@@ -1577,11 +1959,12 @@
      "uu-23-2014",
      "435-436",
      "e. Peringatan dini potensi … gerakan tanah.",
-     "",
-     "",
-     "",
+     "perpres-169-2024",
+     "12",
+     "vulkanologi dan mitigasi bencana geologi",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (bagian yang masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian ESDM (Badan Geologi: vulkanologi dan mitigasi bencana geologi, Perpres 169/2024)."
     ],
     [
      "R060",
@@ -1598,8 +1981,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (huruf a, masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian PU (Ditjen SDA, BBWS)."
     ],
     [
      "R061",
@@ -1616,6 +2000,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1634,8 +2019,9 @@
      "pp-30-2024",
      "6",
      "Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang Sumber Daya Air",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "R063",
@@ -1652,6 +2038,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1670,6 +2057,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1688,6 +2076,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1706,6 +2095,7 @@
      "perpres-77-2025",
      "4",
      "BOP Pantura Jawa mempunyai tugas melaksanakan persiapan, perencanaan, pembangunan, dan pengembangan di Pantura Jawa",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1721,11 +2111,12 @@
      "pp-30-2024",
      "66",
      "c. tanah longsor",
-     "",
-     "",
-     "",
+     "pp-30-2024",
+     "6",
+     "Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang Sumber Daya Air",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "R068",
@@ -1742,8 +2133,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 31/2009 menyebut 'Badan' (Pasal 1 angka 23; Pasal 36 ayat (1): pelayanan informasi hanya oleh Badan); Badan = BMKG (Perpres 12/2024)."
     ],
     [
      "R069",
@@ -1760,8 +2152,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 31/2009 menyebut 'Badan' (Pasal 1 angka 23; Pasal 36 ayat (1): pelayanan informasi hanya oleh Badan); Badan = BMKG (Perpres 12/2024)."
     ],
     [
      "R070",
@@ -1778,6 +2171,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1796,8 +2190,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (huruf a, masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian PU (Ditjen SDA, BBWS)."
     ],
     [
      "R072",
@@ -1814,8 +2209,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 31/2009 menyebut 'Badan' (Pasal 1 angka 23; Pasal 36 ayat (1): pelayanan informasi hanya oleh Badan); Badan = BMKG (Perpres 12/2024)."
     ],
     [
      "R073",
@@ -1832,6 +2228,7 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
      "Norma menyebut Pemerintah Pusat; Menteri SDA = Kementerian PU."
     ],
@@ -1850,6 +2247,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1868,8 +2266,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Inpres 2/2025 ditujukan ke Menko Pangan untuk swasembada pangan; penggolongan ke ancaman kekeringan adalah tafsiran penyusun. Inpres menyasar 14 provinsi luar Jawa; Jawa hanya lewat klausul 'provinsi lain yang perlu ditingkatkan kinerja jaringan irigasi'."
     ],
     [
      "R076",
@@ -1886,6 +2285,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1904,8 +2304,47 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: PP 122/2015 menyebut SPAM bersifat khusus (penjelasan: penanganan bencana alam, kekeringan) oleh Pemerintah Pusat; dipetakan ke Kementerian PU (Ditjen Cipta Karya)."
+    ],
+    [
+     "R078",
+     "KEMEN_PU",
+     "Kementerian Pekerjaan Umum",
+     "alam",
+     "banjir",
+     "pra",
+     "I",
+     "Penetapan sistem peringatan dini pada setiap WS (pengaturan pencegahan daya rusak air), WS kewenangan pusat",
+     "pp-30-2024",
+     "65",
+     "b. penetapan sistem peringatan dini pada setiap Wilayah Sungai",
+     "pp-30-2024",
+     "64",
+     "menjadi tanggung jawab Menteri, menteri/pimpinan lembaga pemerintah nonkementerian, gubernur, dan/atau bupati/wali kota",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: PP 30/2024 Pasal 96 tidak menyebut pelaku; Pasal 94 ayat (5) menyebut Menteri, menteri/pimpinan LPNK, gubernur, bupati/wali kota. Untuk WS kewenangan pusat dipetakan ke Menteri SDA (Kementerian PU)."
+    ],
+    [
+     "R079",
+     "PEMDA",
+     "Pemerintah daerah provinsi dan kabupaten/kota",
+     "alam",
+     "banjir",
+     "pra",
+     "I",
+     "Penetapan sistem peringatan dini pada setiap WS kewenangan provinsi dan kab/kota",
+     "pp-30-2024",
+     "65",
+     "b. penetapan sistem peringatan dini pada setiap Wilayah Sungai",
+     "pp-30-2024",
+     "64",
+     "menjadi tanggung jawab Menteri, menteri/pimpinan lembaga pemerintah nonkementerian, gubernur, dan/atau bupati/wali kota",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: PP 30/2024 Pasal 96 tidak menyebut pelaku; untuk WS kewenangan daerah dipetakan ke gubernur dan bupati/wali kota (Pasal 94 ayat (5))."
     ],
     [
      "R080",
@@ -1922,6 +2361,7 @@
      "perpres-141-2024",
      "",
      "PERPRES No. 73 Tahun 2020 tentang Kementerian Koordinator Bidang Politik, Hukum, dan Keamanan",
+     "dipetakan penyusun",
      "resmi",
      "Pewaris: Kemenko Polkam (Perpres 141/2024 mencabut Perpres 73/2020)."
     ],
@@ -1940,6 +2380,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1958,6 +2399,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1976,6 +2418,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -1994,8 +2437,9 @@
      "perpres-170-2024",
      "",
      "PERPRES No. 27 Tahun 2020 tentang Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Inpres 3/2020 ditujukan ke Menteri PUPR; pekerjaan umum kini Kementerian PU (Perpres 170/2024 mencabut Perpres 27/2020)."
     ],
     [
      "R085",
@@ -2012,6 +2456,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2030,8 +2475,9 @@
      "perpres-174-2024",
      "",
      "PERPRES No. 22 Tahun 2023 tentang Kementerian Komunikasi dan Informatika",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Inpres 3/2020 ditujukan ke Menkominfo; kini Komdigi (Perpres 174/2024 mencabut Perpres 22/2023)."
     ],
     [
      "R087",
@@ -2048,6 +2494,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2066,6 +2513,7 @@
      "inpres-3-2020",
      "5",
      "meningkatkan patroli Polisi Kehutanan di dalam kawasan hutan",
+     "dipetakan penyusun",
      "resmi",
      "Inpres 3/2020 ditujukan ke Menteri LHK; kehutanan kini di Kemenhut."
     ],
@@ -2084,6 +2532,7 @@
      "inpres-3-2020",
      "6",
      "f. mengoordinasikan upaya pemulihan lingkungan hidup akibat kebakaran hutan dan lahan",
+     "dipetakan penyusun",
      "resmi",
      "Inpres 3/2020 ditujukan ke Menteri LHK; lingkungan hidup kini di KLH/BPLH."
     ],
@@ -2099,11 +2548,12 @@
      "inpres-3-2020",
      "6",
      "menetapkan prioritas penggunaan dana desa salah satunya untuk dukungan upaya penanggulangan kebakaran hutan dan lahan",
+     "perpres-171-2024",
      "",
-     "",
-     "",
+     "PERPRES No. 85 Tahun 2020 tentang Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
+     "dipetakan penyusun",
      "resmi",
-     "Alamat Inpres: Menteri Desa PDTT."
+     "Alamat Inpres: Menteri Desa PDTT. Pemetaan penyusun: Inpres 3/2020 ditujukan ke Menteri Desa PDTT; desa dan daerah tertinggal kini Kemendes PDT (Perpres 171/2024 mencabut Perpres 85/2020)."
     ],
     [
      "R091",
@@ -2120,6 +2570,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2138,6 +2589,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2156,6 +2608,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2174,6 +2627,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2192,6 +2646,7 @@
      "uu-31-2009",
      "17",
      "d. prakiraan potensi kebakaran hutan atau lahan",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2210,6 +2665,7 @@
      "inpres-3-2020",
      "10",
      "Kepala Badan Pengkajian dan Penerapan Teknologi, melakukan operasi modifikasi cuaca",
+     "dipetakan penyusun",
      "resmi",
      "BPPT sudah dilebur ke BRIN (Perpres 78/2021); fungsi modifikasi cuaca kini tertulis di fungsi BMKG."
     ],
@@ -2228,6 +2684,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2246,8 +2703,9 @@
      "perpres-78-2021",
      "35",
      "Lembaga Penerbangan dan Antariksa Nasional yang dibentuk berdasarkan",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Inpres 3/2020 ditujukan ke Kepala LAPAN; LAPAN dialihkan ke BRIN (Perpres 78/2021)."
     ],
     [
      "R099",
@@ -2264,6 +2722,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2282,6 +2741,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2300,6 +2760,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2318,6 +2779,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2336,8 +2798,47 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
+    ],
+    [
+     "R104",
+     "KEMENHUT",
+     "Kementerian Kehutanan",
+     "alam",
+     "karhutla",
+     "saat",
+     "P",
+     "Bantuan internasional kebakaran hutan (Perban 6/2018 Pasal 17 ayat (2) huruf f; alamat: KLHK)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "19",
+     "f. Kementerian Lingkungan Hidup dan Kehutanan berwenang dalam penanganan bantuan kebakaran hutan dan lahan",
+     "perpres-175-2024",
+     "13",
+     "pengendalian kebakaran hutan",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: Perban 6/2018 menyebut KLHK; pengendalian kebakaran hutan kini di Kemenhut (Perpres 175/2024)."
+    ],
+    [
+     "R105",
+     "KLH_BPLH",
+     "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup",
+     "alam",
+     "karhutla",
+     "saat",
+     "P",
+     "Bantuan internasional kebakaran lahan (Perban 6/2018 Pasal 17 ayat (2) huruf f; alamat: KLHK)",
+     "jdih:perban-nomor-6-tahun-2018",
+     "19",
+     "f. Kementerian Lingkungan Hidup dan Kehutanan berwenang dalam penanganan bantuan kebakaran hutan dan lahan",
+     "perpres-183-2024",
+     "15",
+     "pengendalian kebakaran lahan",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: Perban 6/2018 menyebut KLHK; pengendalian kebakaran lahan kini di BPLH (Perpres 183/2024)."
     ],
     [
      "R110",
@@ -2354,8 +2855,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 17/2023 menyebut 'Menteri' (urusan kesehatan); dipetakan ke Kemenkes."
     ],
     [
      "R111",
@@ -2372,6 +2874,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2390,6 +2893,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2408,8 +2912,9 @@
      "jdih:perban-nomor-2-tahun-2024",
      "5",
      "i. epidemik",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Peran BNPB untuk epidemi disimpulkan dari definisi bencana nonalam (UU 24/2007 Pasal 1) dan daftar data peringatan dini Perban 2/2024."
     ],
     [
      "R114",
@@ -2426,6 +2931,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2444,8 +2950,9 @@
      "perpres-149-2024",
      "7",
      "manajemen bencana dan kebakaran",
+     "dipetakan penyusun",
      "resmi",
-     "Urusan trantibum-linmas dibina Kemendagri (Ditjen Bina Adwil)."
+     "Urusan trantibum-linmas dibina Kemendagri (Ditjen Bina Adwil). Pemetaan penyusun: Lampiran UU 23/2014 menyebut kolom 'Pemerintah Pusat' (sub-urusan kebakaran); dipetakan ke Kemendagri (Ditjen Bina Administrasi Kewilayahan: manajemen bencana dan kebakaran)."
     ],
     [
      "R116",
@@ -2462,6 +2969,7 @@
      "jdih:perban-nomor-6-tahun-2018",
      "19",
      "bencana dampak pengelolaan bahan berbahaya dan beracun (B3) dan limbah B3",
+     "dipetakan penyusun",
      "resmi",
      "Perban 6/2018 menyebut KLHK."
     ],
@@ -2480,8 +2988,9 @@
      "jdih:perban-nomor-2-tahun-2024",
      "5",
      "k. teknologi industri",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Peran BNPB untuk gagal teknologi disimpulkan dari definisi bencana nonalam (UU 24/2007 Pasal 1) dan daftar data peringatan dini Perban 2/2024."
     ],
     [
      "R118",
@@ -2498,8 +3007,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma tidak menyebut kebakaran; penggolongan ke ancaman kebakaran TPA adalah tafsiran penyusun."
     ],
     [
      "R119",
@@ -2516,8 +3026,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma tidak menyebut kebakaran; penggolongan ke ancaman kebakaran TPA adalah tafsiran penyusun."
     ],
     [
      "R120",
@@ -2534,8 +3045,9 @@
      "perpres-182-2024",
      "3",
      "pengelolaan sampah, bahan berbahaya dan beracun",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: UU 18/2008 menyebut 'Pemerintah'; dipetakan ke KLH (pengelolaan sampah, Perpres 182/2024). Norma tidak menyebut kebakaran; penggolongan ke ancaman kebakaran TPA adalah tafsiran penyusun."
     ],
     [
      "R121",
@@ -2552,8 +3064,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma tidak menyebut kebakaran; penggolongan ke ancaman kebakaran TPA adalah tafsiran penyusun."
     ],
     [
      "R122",
@@ -2570,8 +3083,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma tidak menyebut kebakaran; penggolongan ke ancaman kebakaran TPA adalah tafsiran penyusun."
     ],
     [
      "R130",
@@ -2588,6 +3102,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2606,6 +3121,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2624,6 +3140,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2642,6 +3159,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2660,6 +3178,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2678,6 +3197,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2696,6 +3216,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2714,6 +3235,7 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
      "Fungsi ini sejak 2024 terbelah: Kemenko Polkam dan Kemenko Kumham Imipas (lihat celah C10)."
     ],
@@ -2732,6 +3254,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -2750,8 +3273,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut fungsi kementerian, bukan nama; dipetakan ke kementerian yang kini memegang fungsi itu."
     ],
     [
      "R140",
@@ -2768,8 +3292,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut fungsi kementerian, bukan nama; dipetakan ke kementerian yang kini memegang fungsi itu."
     ],
     [
      "R141",
@@ -2786,8 +3311,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut fungsi kementerian, bukan nama; dipetakan ke kementerian yang kini memegang fungsi itu."
     ],
     [
      "R142",
@@ -2804,8 +3330,66 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut fungsi kementerian, bukan nama; dipetakan ke kementerian yang kini memegang fungsi itu."
+    ],
+    [
+     "R143",
+     "KEMENKO_PMK",
+     "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+     "sosial",
+     "konflik_sosial",
+     "saat",
+     "P",
+     "Unsur Satgas nasional: kementerian koordinasi urusan kesejahteraan rakyat",
+     "uu-7-2012",
+     "24",
+     "b. kementerian yang membidangi koordinasi urusan kesejahteraan rakyat",
+     "perpres-144-2024",
+     "13",
+     "di bidang penanggulangan bencana dan konflik sosial",
+     "dipetakan penyusun",
+     "resmi",
+     "Pemetaan penyusun: Kemenko Kesra berganti nama menjadi Kemenko PMK pada 2014 (perpres pengubahnya tidak dibaca); fungsi PB dan konflik sosial kini di Kemenko PMK."
+    ],
+    [
+     "R144",
+     "KEMENDIKDASMEN",
+     "Kementerian Pendidikan Dasar dan Menengah",
+     "lintas",
+     "semua",
+     "pra",
+     "K",
+     "Penanggung jawab bersama Renas 2.1.2.a Penguatan Fasilitas Pendidikan Aman Bencana",
+     "jdih:perban-nomor-1-tahun-2025",
+     "72",
+     "2.1.2.a   Penguatan … Pendidikan Dasar … dan Menengah,",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     "Penanggung jawab ganda bersama Kemenag; BNPB kontributor (Renas Tabel 3.1)."
+    ],
+    [
+     "R145",
+     "KEMENAG",
+     "Kementerian Agama",
+     "lintas",
+     "semua",
+     "pra",
+     "K",
+     "Penanggung jawab bersama Renas 2.1.2.a Penguatan Fasilitas Pendidikan Aman Bencana",
+     "jdih:perban-nomor-1-tahun-2025",
+     "72",
+     "2.1.2.a   Penguatan … Kementerian Agama",
+     "",
+     "",
+     "",
+     "tertulis",
+     "resmi",
+     "Penanggung jawab ganda bersama Kemendikdasmen; BNPB kontributor (Renas Tabel 3.1)."
     ]
    ]
   },
@@ -2877,7 +3461,7 @@
      "sosial",
      "konflik_sosial",
      "",
-     "",
+     "P[R143]",
      "",
      "K[R138]"
     ],
@@ -2897,7 +3481,7 @@
      "lintas",
      "semua",
      "",
-     "",
+     "P[R044]",
      "K[R023]",
      "P[R027]"
     ],
@@ -2977,7 +3561,7 @@
      "lintas",
      "semua",
      "",
-     "K[R021]",
+     "K[R021];P[R041]",
      "",
      "K[R024]"
     ],
@@ -3017,7 +3601,7 @@
      "lintas",
      "semua",
      "",
-     "K[R020]",
+     "K[R020];P[R043]",
      "",
      ""
     ],
@@ -3046,7 +3630,7 @@
      "Kemendikdasmen",
      "lintas",
      "semua",
-     "",
+     "K[R144]",
      "K[R022]",
      "",
      ""
@@ -3066,7 +3650,7 @@
      "Kementerian PU",
      "alam",
      "banjir",
-     "R[R062]",
+     "R[R062];I[R078]",
      "",
      "",
      "K[R060]"
@@ -3187,7 +3771,7 @@
      "alam",
      "karhutla",
      "",
-     "",
+     "P[R104]",
      "",
      "K[R088]"
     ],
@@ -3197,7 +3781,7 @@
      "alam",
      "karhutla",
      "",
-     "",
+     "P[R105]",
      "",
      "K[R089]"
     ],
@@ -3218,6 +3802,16 @@
      "kebakaran_tpa",
      "R[R120]",
      "",
+     "",
+     ""
+    ],
+    [
+     "KEMENTAN",
+     "Kementan",
+     "lintas",
+     "semua",
+     "",
+     "P[R042]",
      "",
      ""
     ],
@@ -3342,6 +3936,16 @@
      ""
     ],
     [
+     "KEMENAG",
+     "Kemenag",
+     "lintas",
+     "semua",
+     "K[R145]",
+     "",
+     "",
+     ""
+    ],
+    [
      "BNPB",
      "BNPB",
      "lintas",
@@ -3426,7 +4030,7 @@
      "Pemda",
      "alam",
      "banjir",
-     "R[R063]",
+     "R[R063];I[R079]",
      "",
      "",
      "K[R061]"
@@ -3489,6 +4093,16 @@
      "",
      "R[R130]",
      "K[R134]",
+     ""
+    ],
+    [
+     "BMKG",
+     "BMKG",
+     "lintas",
+     "semua",
+     "",
+     "P[R045]",
+     "",
      ""
     ],
     [
@@ -3557,7 +4171,7 @@
      "lintas",
      "semua",
      "P[R037]",
-     "",
+     "P[R047]",
      "",
      ""
     ],
@@ -3577,7 +4191,7 @@
      "lintas",
      "semua",
      "I[R036]",
-     "",
+     "I[R048]",
      "",
      ""
     ],
@@ -3597,7 +4211,7 @@
      "lintas",
      "semua",
      "",
-     "K[R019]",
+     "K[R019];P[R046]",
      "",
      ""
     ],
@@ -3617,7 +4231,7 @@
      "lintas",
      "semua",
      "",
-     "P[R025]",
+     "P[R025];P[R039]",
      "",
      ""
     ],
@@ -3647,7 +4261,7 @@
      "lintas",
      "semua",
      "",
-     "P[R026]",
+     "P[R026];P[R040]",
      "",
      ""
     ],
@@ -3775,7 +4389,7 @@
      "",
      "",
      "",
-     "lintas:K"
+     "saat:P | lintas:K"
     ],
     [
      "KEMENKO_PANGAN",
@@ -3798,7 +4412,7 @@
     [
      "KEMENDAGRI",
      "Kemendagri",
-     "pasca:K | lintas:P",
+     "saat:P | pasca:K | lintas:P",
      "",
      "",
      "",
@@ -3852,7 +4466,7 @@
     [
      "KEMENKES",
      "Kemenkes",
-     "saat:K | lintas:K",
+     "saat:K,P | lintas:K",
      "",
      "",
      "",
@@ -3870,7 +4484,7 @@
     [
      "KEMENSOS",
      "Kemensos",
-     "saat:K",
+     "saat:K,P",
      "",
      "",
      "",
@@ -3888,7 +4502,7 @@
     [
      "KEMENDIKDASMEN",
      "Kemendikdasmen",
-     "saat:K",
+     "pra:K | saat:K",
      "",
      "",
      "",
@@ -3910,7 +4524,7 @@
      "",
      "",
      "",
-     "pra:R | lintas:K",
+     "pra:I,R | lintas:K",
      "pra:R",
      "",
      "pra:K",
@@ -3969,7 +4583,7 @@
      "",
      "",
      "",
-     "lintas:K",
+     "saat:P | lintas:K",
      "",
      "",
      "",
@@ -3987,7 +4601,7 @@
      "",
      "",
      "",
-     "lintas:K",
+     "saat:P | lintas:K",
      "",
      "lintas:P",
      "pra:R",
@@ -3996,7 +4610,7 @@
     [
      "KEMENTAN",
      "Kementan",
-     "",
+     "saat:P",
      "",
      "",
      "",
@@ -4120,6 +4734,24 @@
      ""
     ],
     [
+     "KEMENAG",
+     "Kemenag",
+     "pra:K",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     "",
+     ""
+    ],
+    [
      "BNPB",
      "BNPB",
      "pra:I | saat:K | pasca:K | lintas:K",
@@ -4162,7 +4794,7 @@
      "",
      "",
      "",
-     "pra:R | lintas:K",
+     "pra:I,R | lintas:K",
      "",
      "",
      "",
@@ -4176,7 +4808,7 @@
     [
      "BMKG",
      "BMKG",
-     "",
+     "saat:P",
      "pra:I",
      "pra:I",
      "",
@@ -4194,7 +4826,7 @@
     [
      "BRIN",
      "BRIN",
-     "pra:P",
+     "pra:P | saat:P",
      "",
      "",
      "",
@@ -4212,7 +4844,7 @@
     [
      "BIG",
      "BIG",
-     "pra:I",
+     "pra:I | saat:I",
      "",
      "",
      "",
@@ -4230,7 +4862,7 @@
     [
      "BASARNAS",
      "Basarnas",
-     "saat:K",
+     "saat:K,P",
      "",
      "",
      "",
@@ -4351,6 +4983,7 @@
     "sid2",
     "hlm2",
     "kutipan2",
+    "jenis_bukti",
     "label",
     "catatan"
    ],
@@ -4368,8 +5001,9 @@
      "uu-17-2019",
      "5",
      "Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang Sumber Daya Air",
+     "dipetakan penyusun",
      "resmi",
-     "Norma: Pemerintah Pusat; pelaksana teknis Ditjen SDA/BBWS."
+     "Norma: Pemerintah Pusat; pelaksana teknis Ditjen SDA/BBWS. Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "A02",
@@ -4384,6 +5018,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "Teks OCR asli ('Wilayih')."
     ],
@@ -4400,6 +5035,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4416,8 +5052,9 @@
      "pp-46-2010",
      "4",
      "Wilayah Sungai Kali Brantas dan Wilayah Sungai Bengawan Solo secara utuh dari hulu sampai hilir",
+     "tertulis",
      "resmi",
-     ""
+     "Pasal 19 diubah UU 6/2023 (uu-6-2023 hlm 368); bunyi ayat (2) sama."
     ],
     [
      "A05",
@@ -4432,6 +5069,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4448,6 +5086,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "Pasal 10, 11, 13-16 UU 17/2019 tidak diubah UU 6/2023; Pasal 9, 12, 17, 19 diubah."
     ],
@@ -4464,8 +5103,9 @@
      "perpres-170-2024",
      "7",
      "Direktorat Jenderal Cipta Karya mempunyai tugas menyelenggarakan perumusan dan pelaksanaan kebijakan di bidang penyelenggaraan sistem penyediaan air minum",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian PU (Ditjen Cipta Karya)."
     ],
     [
      "A08",
@@ -4480,6 +5120,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4496,6 +5137,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4512,6 +5154,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4521,15 +5164,16 @@
      "pusat",
      "KEMEN_PU",
      "Kementerian PU",
-     "Sistem irigasi primer-sekunder DI > 3.000 ha, lintas provinsi/negara, strategis; menetapkan status DI",
-     "uu-23-2014",
-     "322",
-     "daerah irigasi yang luasnya lebih dari 3000 ha",
+     "Sistem irigasi pada DI kewenangan pusat; menetapkan status DI. Ambang: DI > 3000 ha, lintas provinsi/negara, strategis nasional (Permen PUPR 14/2015)",
      "uu-17-2019",
-     "11",
-     "f. menetapkan status daerah irigasi",
+     "10-11",
+     "mengembangkan dan mengelola sistem irigasi sebagai satu kesatuan sistem pada daerah irigasi yang menjadi kewenangan Pemerintah Pusat … f. menetapkan status daerah irigasi",
+     "permen-pupr-14-2015",
+     "9",
+     "Pemerintah Pusat mempunyai wewenang dan tanggungjawab melakukan pengembangan dan pengelolaan sistem irigasi primer dan sekunder pada daerah irigasi yang luasnya lebih dari 3000 ha … dilaksanakan oleh Menteri",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Ambang luas dari Permen PUPR 14/PRT/M/2015 (BPK: Berlaku, relasi 'Belum Tersedia'), bukan lagi UU 23/2014 (Lamp. C kolom 3 huruf b dicabut UU 17/2019 Pasal 77; C16). Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "A12",
@@ -4537,15 +5181,16 @@
      "provinsi",
      "PEMDA",
      "Pemda",
-     "Sistem irigasi primer-sekunder DI 1.000-3.000 ha dan lintas kab/kota",
-     "uu-23-2014",
-     "322",
-     "daerah irigasi yang luasnya 1000 ha - 3000 ha",
-     "",
-     "",
-     "",
+     "Sistem irigasi pada DI kewenangan provinsi. Ambang: DI 1000-3000 ha dan lintas kab/kota (Permen PUPR 14/2015)",
+     "uu-17-2019",
+     "12",
+     "mengembangkan dan mengelola sistem irigasi sebagai satu kesatuan sistem pada daerah irigasi yang menjadi kewenangan Pemerintah Daerah provinsi",
+     "permen-pupr-14-2015",
+     "9",
+     "Pemerintah daerah provinsi mempunyai wewenang dan tanggungjawab melakukan pengembangan dan pengelolaan sistem irigasi primer dan sekunder pada daerah irigasi yang luasnnya 1000 ha-3000 ha",
+     "tertulis",
      "resmi",
-     ""
+     "Ambang dari Permen PUPR 14/2015; UU 23/2014 Lamp. C kolom 4 huruf b dicabut (C16). 'luasnnya' = teks asli."
     ],
     [
      "A13",
@@ -4553,15 +5198,16 @@
      "kabupaten_kota",
      "PEMDA",
      "Pemda",
-     "Sistem irigasi primer-sekunder DI < 1.000 ha dalam satu kab/kota",
-     "uu-23-2014",
-     "322",
-     "daerah irigasi yang luasnya kurang dari 1000 ha dalam 1 (satu) Daerah kabupaten/kota",
-     "",
-     "",
-     "",
+     "Sistem irigasi pada DI kewenangan kab/kota. Ambang: DI < 1000 ha dalam satu kab/kota (Permen PUPR 14/2015)",
+     "uu-17-2019",
+     "14",
+     "mengembangkan dan mengelola sistem irigasi sebagai satu kesatuan sistem pada daerah irigasi yang menjadi kewenangan Pemerintah Daerah kabupaten/kota",
+     "permen-pupr-14-2015",
+     "9",
+     "Pemerintah daerah kabupaten/kota mempunyai wewenang dan tanggunjawab melakukan pengembangan dan pengelolaan sistem irigasi primer dan sekunder pada daerah irigasi yang luasnnya kurang dari 1000 ha",
+     "tertulis",
      "resmi",
-     ""
+     "Ambang dari Permen PUPR 14/2015; UU 23/2014 Lamp. C kolom 5 huruf b dicabut (C16)."
     ],
     [
      "A14",
@@ -4576,6 +5222,7 @@
      "perpres-192-2024",
      "5",
      "Direktorat Jenderal Lahan dan Irigasi Pertanian",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4592,8 +5239,9 @@
      "inpres-2-2025",
      "6",
      "kepada Kementerian Pertanian melalui alih status atau pemerintah daerah dalam bentuk hibah",
+     "tertulis",
      "resmi",
-     ""
+     "Inpres 2/2025 menyasar 14 provinsi luar Jawa (hlm 2); Jawa hanya lewat klausul 'provinsi lain yang perlu ditingkatkan kinerja jaringan irigasi'."
     ],
     [
      "A16",
@@ -4608,6 +5256,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4617,15 +5266,16 @@
      "pusat",
      "KEMEN_PU",
      "Kementerian PU",
-     "Menteri SDA membina keamanan bendungan; rencana tindak darurat bila gejala/terjadi kegagalan bendungan",
-     "pp-37-2010",
-     "23",
-     "apabila terdapat gejala kegagalan bendungan atau terjadi kegagalan bendungan",
+     "Menteri SDA menangani keamanan bendungan (dibantu instansi teknis keamanan bendungan) dan memberi persetujuan desain",
      "pp-37-2010",
      "3",
-     "Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang sumber daya air",
+     "Instansi teknis keamanan bendungan adalah instansi yang bertugas membantu Menteri dalam penanganan keamanan bendungan … Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang sumber daya air",
+     "pp-37-2010",
+     "13",
+     "diajukan oleh Pembangun bendungan kepada Menteri untuk memperoleh persetujuan desain",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "RTD bukan kewenangan Menteri: disusun Pembangun, ditetapkan Pemilik bendungan (A31). Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "A18",
@@ -4640,6 +5290,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4656,8 +5307,9 @@
      "",
      "",
      "",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Penjelasan PP 37/2010 menyebut satuan kerja perangkat daerah urusan penanggulangan bencana; perangkat daerah itu = BPBD."
     ],
     [
      "A20",
@@ -4665,15 +5317,16 @@
      "pusat",
      "KEMEN_ESDM",
      "Kementerian ESDM",
-     "Penetapan cekungan air tanah dan zona konservasi CAT lintas provinsi/negara; penyelidikan air tanah (Badan Geologi)",
+     "Zona konservasi CAT lintas provinsi/negara (Lamp. CC kolom 3 huruf b, masih berlaku); air tanah di Badan Geologi",
      "uu-23-2014",
      "435",
-     "a. Penetapan cekungan air tanah. b. Penetapan zona konservasi air tanah pada cekungan air tanah lintas Daerah provinsi dan lintas negara",
+     "b. Penetapan zona konservasi air tanah pada cekungan air tanah lintas Daerah provinsi dan lintas negara",
      "perpres-169-2024",
      "12",
      "vulkanologi dan mitigasi bencana geologi, air tanah, dan geologi lingkungan",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Lampiran UU 23/2014 (bagian yang masih berlaku) menyebut kolom 'Pemerintah Pusat'; dipetakan ke Kementerian ESDM (Badan Geologi: vulkanologi dan mitigasi bencana geologi, Perpres 169/2024)."
     ],
     [
      "A21",
@@ -4688,6 +5341,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "K/L tidak disebut."
     ],
@@ -4697,15 +5351,16 @@
      "provinsi",
      "PEMDA",
      "Pemda",
-     "Zona konservasi CAT dalam provinsi; izin pengeboran, pemakaian, pengusahaan air tanah (UU 23/2014)",
+     "Zona konservasi CAT dalam provinsi (UU 23/2014 Lamp. CC kolom 4 huruf a, masih berlaku)",
      "uu-23-2014",
      "435",
-     "Penetapan zona konservasi air tanah pada cekungan air tanah dalam Daerah provinsi … izin pemakaian, dan izin pengusahaan air tanah dalam Daerah provinsi",
+     "Penetapan zona konservasi air tanah pada cekungan air tanah dalam Daerah provinsi",
      "",
      "",
      "",
+     "tertulis",
      "resmi",
-     ""
+     "Izin air tanah TIDAK dimasukkan: Lamp. CC kolom 4 huruf b (izin di provinsi) dicabut UU 17/2019 Pasal 77; penerbit izin per Okt 2026 belum pasti (PP 28/2025, Kepmen ESDM 291.K/2023 belum dibaca; C16)."
     ],
     [
      "A23",
@@ -4720,6 +5375,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      "Teks OCR asli (apostrof)."
     ],
@@ -4736,6 +5392,7 @@
      "pp-43-2008",
      "3",
      "Menteri adalah Menteri yang tugas dan tanggung jawabnya di bidang air tanah",
+     "dipetakan penyusun",
      "resmi",
      "'Menteri bidang air tanah' dipetakan ke ESDM (Badan Geologi: air tanah)."
     ],
@@ -4752,6 +5409,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4768,8 +5426,9 @@
      "pp-30-2024",
      "6",
      "Menteri adalah menteri yang menyelenggarakan urusan pemerintahan di bidang Sumber Daya Air",
+     "dipetakan penyusun",
      "resmi",
-     ""
+     "Pemetaan penyusun: Norma menyebut 'Menteri' atau 'Pemerintah Pusat' bidang SDA; Menteri SDA = Kementerian PU (Perpres 170/2024)."
     ],
     [
      "A27",
@@ -4784,6 +5443,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4800,6 +5460,7 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
     ],
@@ -4809,15 +5470,16 @@
      "provinsi",
      "PEMDA",
      "Pemda",
-     "NCICD Fase A: trase kewenangan Pemprov DKI 20,9 km, terbangun 9,4 km (17 Jul 2025)",
+     "NCICD Fase A: trase DKI 20,9 km, terbangun 9,4 km, sisa 11,5 km (per 17 Jul 2025); total Fase A 39 km (PU + DKI)",
      "web-dsda-ncicd-2025",
      "1",
      "tercatat sepanjang 9,4 km tanggul pengaman pantai telah terealisasi dari total trase kewenangan Pemerintah Provinsi DKI Jakarta yang sepanjang 20,9 km",
-     "",
-     "",
-     "",
+     "web-dsda-ncicd-2025",
+     "1",
+     "NCICD berada di Fase A yang meliputi pembangunan Tanggul Pengaman Pantai dan Muara Sungai sepanjang 39 km",
+     "tertulis",
      "resmi",
-     ""
+     "Sisa 11,5 km = 20,9 - 9,4 (trase DKI); sumber menulisnya 'dari total 39 km trase kritis' (ambigu). Data per 17 Jul 2025, kedaluwarsa sekitar 15 bulan; pembaruan 2026 tidak ditemukan (dicari 23 Okt 2026)."
     ],
     [
      "A30",
@@ -4832,8 +5494,26 @@
      "",
      "",
      "",
+     "tertulis",
      "resmi",
      ""
+    ],
+    [
+     "A31",
+     "waduk_bendungan",
+     "operator",
+     "PEMPUS",
+     "Pemerintah Pusat",
+     "Pembangun bendungan menyusun RTD; Pemilik bendungan (Pemerintah, pemda, atau badan usaha) menetapkannya untuk tiap bendungan",
+     "pp-37-2010",
+     "24",
+     "disusun oleh Pembangun bendungan dengan mengikutsertakan instansi teknis … diajukan oleh Pembangun bendungan kepada Pemilik bendungan untuk ditetapkan",
+     "pp-37-2010",
+     "2",
+     "Pemilik bendungan adalah Pemerintah, pemerintah provinsi, pemerintah kabupaten/kota, atau badan usaha",
+     "tertulis",
+     "resmi",
+     "Lembaga diisi PEMPUS untuk bendungan milik Pemerintah; pemilik juga bisa pemda atau badan usaha. K/L pemilik tidak disebut."
     ]
    ]
   },
@@ -4848,12 +5528,13 @@
     "sid",
     "hlm",
     "kutipan",
+    "jenis_sumber",
     "label",
     "catatan"
    ],
    "baris": [
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "1",
      "Kesehatan",
      "Kepala Pusat Penanggulangan Krisis Kesehatan, Kementerian Kesehatan",
@@ -4862,11 +5543,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Kepala Pusat Penanggulangan Krisis Kesehatan, Kementerian Kesehatan",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Pusat Kedokteran Polri. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Pusat Kedokteran Polri. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "2",
      "Pencarian dan Penyelamatan",
      "Direktur Operasi dan Pelatihan, BASARNAS",
@@ -4875,11 +5557,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Direktur Operasi dan Pelatihan, BASARNAS",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Wakil Asisten Operasi TNI. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Wakil Asisten Operasi TNI. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "3",
      "Logistik",
      "Direktur Logistik, BNPB",
@@ -4888,11 +5571,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Direktur Logistik, BNPB",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Direktur PSKBA Kemensos. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Direktur PSKBA Kemensos. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "4",
      "Pengungsian dan Perlindungan",
      "Direktur Perlindungan Sosial Korban Bencana Alam, Kementerian Sosial",
@@ -4901,11 +5585,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator: Direktur Perlindungan Sosial Korban Bencana Alam, Kementerian Sosial",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Asisten Operasi Polri. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Asisten Operasi Polri. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "5",
      "Pendidikan",
      "Kepala Biro Perencanaan dan KLN, Setjen Kementerian Pendidikan",
@@ -4914,11 +5599,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Kepala Biro Perencanaan dan Kerjasama Luar Negeri, Sekretariat Jendral, Kementerian Pendidikan",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Setditjen Pendidikan Islam Kemenag. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Setditjen Pendidikan Islam Kemenag. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "6",
      "Sarana dan Prasarana",
      "Sekretaris Ditjen Cipta Karya, Kementerian Pekerjaan Umum",
@@ -4927,11 +5613,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Sekretaris Ditjen Cipta Karya, Kementerian Pekerjaan Umum",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Dirjen SDPPI Kominfo (kini Komdigi). Hunian tetap kini urusan Kementerian PKP. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Dirjen SDPPI Kominfo (kini Komdigi). Hunian tetap kini urusan Kementerian PKP. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "7",
      "Ekonomi",
      "Sekretaris Ditjen Hortikultura, Kementerian Pertanian",
@@ -4940,11 +5627,12 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Sekretaris Ditjen Hortikultura, Kementerian Pertanian",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: Kementerian Koperasi dan UKM (kini dipecah: Kemenkop, Kemen UMKM). Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: Kementerian Koperasi dan UKM (kini dipecah: Kemenkop, Kemen UMKM). Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
-     "Kepka BNPB 173/2014",
+     "Kepka BNPB 173 (2014/2015)",
      "8",
      "Pemulihan Dini",
      "Direktur Pencegahan dan Penanggulangan Bencana, Kementerian Dalam Negeri",
@@ -4953,8 +5641,9 @@
      "web-bpbddiy-klaster-2019",
      "1",
      "Koordinator : Direktur Pencegahan dan Penanggulangan Bencana, KementerianDalam Negeri",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "resmi",
-     "Wakil: KemenPANRB. Teks SK tidak dibuka; daftar dari BPBD DIY (8 Jul 2019) yang menulis tahunnya '2015'. Tahun 2014 dipakai BNPB dalam penyebutan lain."
+     "Wakil: KemenPANRB. Teks SK tidak dibuka (tidak ada di korpus JDIH lokal; tidak ditemukan lewat pencarian web 23 Okt 2026). Daftar dari berita BPBD DIY (8 Jul 2019): berita instansi, sekunder. Tahun SK berbeda antar-sumber sekunder: BPBD DIY menulis 'Nomor 173 Tahun 2015', berita suarapemerintah.id (5 Jul 2024) mengutip Direktur BNPB 'Nomor 173 Tahun 2014'."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -4966,8 +5655,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Pencarian dan Pertolongan dengan koordinator Badan Nasional Pencarian dan Pertolongan",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -4979,8 +5669,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Pengungsian dan Perlindungan dengan koordinator Kementerian Sosial",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -4992,8 +5683,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Logistik dengan koordinator Badan Nasional Penanggulangan Bencana",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -5005,8 +5697,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Kesehatan dengan koordinator Kementerian Kesehatan",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -5018,8 +5711,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Pendidikan dengan koordinator Kementerian Pendidikan dan Kebudayaan",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Nama di Kepka tidak ada di Perpres 90/2025; pewaris pendidikan dasar-menengah Kemendikdasmen, pendidikan tinggi Kemendiktisaintek, kebudayaan Kemenbud. Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Nama di Kepka tidak ada di Perpres 90/2025; pewaris pendidikan dasar-menengah Kemendikdasmen, pendidikan tinggi Kemendiktisaintek, kebudayaan Kemenbud. Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ],
     [
      "Kepka BNPB 308/2024",
@@ -5031,8 +5725,9 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "1",
      "Klaster Pemulihan dengan koordinator Kementerian Dalam Negeri",
+     "dokumen BNPB yang mengutip SK",
      "resmi",
-     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1. Apakah SK 308/2024 mencabut SK 173/2014 tidak tertulis di sumber yang dibuka."
+     "Teks SK tidak ada di korpus lokal; daftar dari Juklak BNPB 16/2025 hlm 1 (dokumen BNPB yang mengutip SK). Apakah SK 308/2024 mencabut SK 173 tidak tertulis di sumber yang dibuka."
     ]
    ]
   },
@@ -5070,12 +5765,12 @@
     ],
     [
      "C03",
-     "Peringatan dini: K/L penyedia data per bahaya tidak ditetapkan dalam aturan SPD",
+     "Regulasi peringatan dini multiancaman belum optimal (dinyatakan Renas PB 2025-2029)",
      "celah",
-     "BNPB;BMKG;KEMEN_ESDM;KEMEN_PU;KEMENHUT;KLH_BPLH;KEMENKES",
+     "BNPB",
      "dinyatakan sumber",
-     "Perban 2/2024 mendaftar 11 jenis data peringatan dini dari K/L tetapi menyerahkan siapa penyedianya ke peraturan lain. Mandat tertulis yang ditemukan: BMKG (cuaca ekstrem, iklim ekstrem, gelombang, tsunami; UU 31/2009) dan Badan Geologi (gunung api, gerakan tanah; UU 23/2014). Untuk banjir dan kekeringan hidrologis tidak ditemukan K/L penyedia peringatan dini yang ditunjuk. Renas 2025-2029 sendiri menyebut regulasi peringatan dini multiancaman belum optimal.",
-     "jdih:perban-nomor-2-tahun-2024 hlm 5: «Kementerian/lembaga menyampaikan data dan informasi sebagaimana dimaksud pada ayat (1) sesuai dengan ketentuan peraturan perundang-undangan» || jdih:perban-nomor-1-tahun-2025 hlm 26: «Belum optimalnya regulasi peringatan dini yang ada terutama untuk multi ancaman bencana» || uu-31-2009 hlm 17: «a. cuaca ekstrim; b. iklim ekstrim; c. gelombang laut berbahaya; dan d. tsunami»",
+     "Renas PB 2025-2029 sendiri menyatakan regulasi peringatan dini, terutama untuk multiancaman, belum optimal. Rincian celah per bahaya (siapa penyedia peringatan dini) adalah simpulan penyusun dan dipisah ke C17.",
+     "jdih:perban-nomor-1-tahun-2025 hlm 26: «Belum optimalnya regulasi peringatan dini yang ada terutama untuk multi ancaman bencana»",
      "resmi"
     ],
     [
@@ -5085,27 +5780,27 @@
      "KEMENHUT;KLH_BPLH;BRIN;BMKG;KEMENKO_POLKAM;KOMDIGI;KEMEN_PU;KEMEN_PKP;KEMENDIKDASMEN",
      "disimpulkan dari teks resmi",
      "Inpres 3/2020 (status BPK: Berlaku) ditujukan antara lain ke Menko Polhukam, Mendikbud, Menteri PUPR, Menkominfo, Menteri LHK, Menteri BUMN, Sekretaris Kabinet, Kepala LAPAN, Kepala BPPT. Sejak 2024 kehutanan dan lingkungan hidup dipisah: pengendalian kebakaran HUTAN di Kemenhut, pengendalian kebakaran LAHAN di BPLH; LAPAN dan BPPT dilebur ke BRIN; modifikasi cuaca kini fungsi BMKG; Sekretariat Kabinet dibubarkan dan diintegrasikan ke Kemensetneg. Inpres sendiri memerintahkan inventarisasi tumpang tindih regulasi karhutla.",
-     "inpres-3-2020 hlm 1: «Menteri Lingkungan Hidup dan Kehutanan» || inpres-3-2020 hlm 6: «melakukan inventarisasi dan prakarsa penyelesaian tumpang tindih peraturan perundang-undangan yang terkait upaya penanggulangan kebakaran hutan dan lahan» || perpres-175-2024 hlm 13: «pengendalian kebakaran hutan» || perpres-183-2024 hlm 15: «pengendalian kebakaran lahan» || perpres-12-2024 hlm 2: «serta modifikasi cuaca» || inpres-3-2020 hlm 13: «Sekretaris Kabinet, melakukan pengawasan pelaksanaan Instruksi Presiden ini» || perpres-139-2024 hlm semua: «membubarkan Sekretariat Kabinet»",
+     "inpres-3-2020 hlm 1: «Menteri Lingkungan Hidup dan Kehutanan» || inpres-3-2020 hlm 6: «melakukan inventarisasi dan prakarsa penyelesaian tumpang tindih peraturan perundang-undangan yang terkait upaya penanggulangan kebakaran hutan dan lahan» || perpres-175-2024 hlm 13: «pengendalian kebakaran hutan» || perpres-183-2024 hlm 15: «pengendalian kebakaran lahan» || perpres-12-2024 hlm 2: «serta modifikasi cuaca» || inpres-3-2020 hlm 13: «Sekretaris Kabinet, melakukan pengawasan pelaksanaan Instruksi Presiden ini» || perpres-139-2024 hlm 4: «membubarkan Sekretariat Kabinet»",
      "resmi"
     ],
     [
      "C05",
-     "Irigasi: tiga pemegang kewenangan dan pengambilalihan sementara oleh PU",
+     "Irigasi: kewenangan per daerah irigasi di tiga tingkat, jaringan tersier di Kementan, dan pengambilalihan sementara oleh PU",
      "tumpang_tindih",
      "KEMEN_PU;KEMENTAN;PEMDA;KEMENKO_IPK;KEMENKO_PANGAN",
-     "dinyatakan sumber",
-     "Kewenangan irigasi dibagi menurut luas DI (pusat > 3.000 ha, provinsi 1.000-3.000 ha, kab/kota < 1.000 ha) ditambah jaringan tersier di Kementan. Inpres 2/2025 membuat PU mengambil alih percepatan jaringan kewenangan Kementan dan pemda lalu menyerahkannya kembali (alih status/hibah), dan mewajibkan PU serta Kementan memastikan tidak ada tumpang tindih.",
-     "inpres-2-2025 hlm 5: «memastikan tidak ada tumpang tindih kegiatan percepatan pembangunan» || inpres-2-2025 hlm 7: «pada lokasi jaringan irigasi tersier kewenangan Kementerian Pertanian dengan kegiatan yang dilaksanakan oleh pemerintah daerah» || uu-23-2014 hlm 322: «daerah irigasi yang luasnya lebih dari 3000 ha»",
+     "disimpulkan dari teks resmi",
+     "UU 17/2019 membagi pengembangan dan pengelolaan sistem irigasi menurut daerah irigasi yang menjadi kewenangan pusat, provinsi, dan kab/kota, dan Pemerintah Pusat menetapkan status daerah irigasi. Ambang luasnya (pusat lebih dari 3000 ha, provinsi 1000-3000 ha, kab/kota kurang dari 1000 ha) kini tertulis di Permen PUPR 14/PRT/M/2015; ketentuan yang sama di UU 23/2014 Lampiran C sudah dicabut UU 17/2019 Pasal 77 (C16). Jaringan tersier ada di Kementan. Inpres 2/2025 membuat PU mengambil alih percepatan jaringan kewenangan Kementan dan pemda lalu menyerahkannya kembali (alih status/hibah), dan memerintahkan PU serta Kementan memastikan tidak ada tumpang tindih. Inpres itu tidak menyatakan tumpang tindih sudah terjadi; titik tumpang tindih adalah simpulan penyusun. Inpres 2/2025 menyasar 14 provinsi di luar Jawa; Jawa hanya tercakup lewat klausul 'provinsi lain yang perlu ditingkatkan kinerja jaringan irigasi'.",
+     "uu-17-2019 hlm 11: «f. menetapkan status daerah irigasi» || permen-pupr-14-2015 hlm 8: «a. daerah irigasi yang luasnya lebih dari 3000 ha; b. daerah irigasi yang luasnya 1000 ha-3000 ha; dan c. daerah irigasi yang luasnya kurang dari 1000 ha» || inpres-2-2025 hlm 5: «memastikan tidak ada tumpang tindih kegiatan percepatan pembangunan» || inpres-2-2025 hlm 7: «pada lokasi jaringan irigasi tersier kewenangan Kementerian Pertanian dengan kegiatan yang dilaksanakan oleh pemerintah daerah» || inpres-2-2025 hlm 2: «a. 14 (empat belas) provinsi terdiri atas Aceh … b. provinsi lain yang perlu ditingkatkan kinerja jaringan irigasi»",
      "resmi"
     ],
     [
      "C06",
      "Penurunan muka tanah (subsiden) tanpa pemegang kewenangan tunggal",
      "tumpang_tindih",
-     "KEMEN_ESDM;KEMEN_PU;PEMDA;BOP_PANTURA;BNPB",
+     "KEMEN_ESDM;KEMEN_PU;PEMDA;BOP_PANTURA;BNPB;KEMENKO_EKON;KEMENKO_PMK",
      "disimpulkan dari teks resmi",
-     "Amblesan diatur di dua rezim: pengendalian daya rusak air tanah oleh 'Menteri bidang air tanah', gubernur, bupati (PP 43/2008) dan kawasan daya rusak air yang memuat 'ambles' oleh Menteri SDA, gubernur, bupati (PP 30/2024). Izin air tanah menurut UU 23/2014 di provinsi. BOP Pantura Jawa dibentuk dengan alasan penurunan muka tanah, tetapi Dewan Pengarahnya tidak memuat Kementerian ESDM maupun BNPB.",
-     "pp-43-2008 hlm 31: «mencegah, menghentikan, atau mengurangi terjadinya amblesan tanah» || pp-30-2024 hlm 66: «e. ambles» || perpres-77-2025 hlm 1: «terjadinya penurunan air muka tanah» || perpres-77-2025 hlm 5-6: «a. Menteri Perencanaan Pembangunan Nasional/Kepala Badan Perencanaan Pembangunan Nasional … m. Kepala Badan Informasi Geospasial; dan n. Kepala daerah di Pantura Jawa»",
+     "Amblesan diatur di dua rezim: pengendalian daya rusak air tanah oleh 'Menteri' bidang air tanah, gubernur, dan bupati/wali kota (PP 43/2008), dan kawasan daya rusak air yang memuat 'ambles' oleh Menteri SDA, gubernur, dan bupati/wali kota (PP 30/2024). Penerbit izin air tanah per Okt 2026 belum pasti (UU 23/2014 Lamp. CC kolom 4 huruf b sudah dicabut; PP 28/2025 dan Kepmen ESDM 291.K/2023 belum dibaca; C16). Konsiderans Perpres 77/2025 menyebut 'terjadinya penurunan air muka tanah' di Pantura. Kementerian ESDM dan BNPB tidak duduk di Dewan Pengarah BOP Pantura Jawa, tetapi pengoordinasi keduanya, Menko Perekonomian (ESDM) dan Menko PMK (BNPB), duduk sebagai Wakil Ketua.",
+     "pp-43-2008 hlm 31: «mencegah, menghentikan, atau mengurangi terjadinya amblesan tanah» || pp-30-2024 hlm 66: «e. ambles» || perpres-77-2025 hlm 1: «terjadinya penurunan air muka tanah» || perpres-77-2025 hlm 5: «a. Menteri Koordinator Bidang Perekonomian; b. Menteri Koordinator Bidang Pembangunan Manusia dan Kebudayaan» || perpres-77-2025 hlm 5-6: «a. Menteri Perencanaan Pembangunan Nasional/Kepala Badan Perencanaan Pembangunan Nasional … m. Kepala Badan Informasi Geospasial; dan n. Kepala daerah di Pantura Jawa»",
      "resmi"
     ],
     [
@@ -5114,17 +5809,17 @@
      "tumpang_tindih",
      "KEMEN_ESDM;PEMPUS;PEMDA",
      "disimpulkan dari teks resmi",
-     "UU 23/2014 memberi provinsi zona konservasi untuk CAT 'dalam Daerah provinsi' dan izin air tanah; UU 17/2019 memberi provinsi zona konservasi CAT 'di Wilayah Sungai lintas kabupaten/kota' dan pusat untuk CAT di WS lintas provinsi/strategis. Batas CAT dan WS tidak sama, dan UU 17/2019 menyebut 'Pemerintah Pusat' tanpa menunjuk K/L.",
+     "UU 23/2014 Lamp. CC kolom 4 huruf a (masih berlaku) memberi provinsi zona konservasi untuk CAT 'dalam Daerah provinsi'; UU 17/2019 memberi provinsi zona konservasi CAT 'di Wilayah Sungai lintas kabupaten/kota' dan pusat untuk CAT di WS lintas provinsi/strategis. Batas CAT dan WS tidak sama, dan UU 17/2019 menyebut 'Pemerintah Pusat' tanpa menunjuk K/L.",
      "uu-23-2014 hlm 435: «Penetapan zona konservasi air tanah pada cekungan air tanah dalam Daerah provinsi» || uu-17-2019 hlm 13: «menetapkan zona konservasi Air Tanah'pada Cekungan Air Tanah di Wilayah Sungai lintas kabupaten» || uu-17-2019 hlm 11: «menetapkan zona konservasi Air Tanah pada Cekungan Air Tanah di Wilayah Sungai lintas negara»",
      "resmi"
     ],
     [
      "C08",
-     "Klaster nasional: 8 klaster (2014) menjadi 6 (2024); klaster Sarana-Prasarana dan Ekonomi hilang; nama koordinator pendidikan usang",
+     "Klaster nasional: 8 klaster (Kepka 173, 2014/2015) menjadi 6 (Kepka 308/2024); klaster Sarana-Prasarana dan Ekonomi hilang; nama koordinator pendidikan usang",
      "nomenklatur_usang",
      "KEMEN_PU;KEMENTAN;KEMENDIKDASMEN;BNPB",
      "disimpulkan dari teks resmi",
-     "Versi 2014 (dikutip BPBD DIY) memuat klaster Sarana dan Prasarana (koordinator Kementerian PU) dan Ekonomi (Kementan). Versi Kepka 308/2024 (dikutip Juklak 16/2025) tinggal 6 klaster tanpa keduanya, dan menulis koordinator pendidikan 'Kementerian Pendidikan dan Kebudayaan' yang tidak ada di daftar kementerian Perpres 90/2025. Teks SK 308/2024 tidak tersedia di korpus lokal.",
+     "Versi Kepka 173 (dikutip berita BPBD DIY yang menulis tahun 2015; berita lain menulis 2014; teks SK tidak dibuka) memuat klaster Sarana dan Prasarana (koordinator Kementerian PU) dan Ekonomi (Kementan). Versi Kepka 308/2024 (dikutip Juklak 16/2025) tinggal 6 klaster tanpa keduanya, dan menulis koordinator pendidikan 'Kementerian Pendidikan dan Kebudayaan' yang tidak ada di daftar kementerian Perpres 90/2025. Teks SK 308/2024 tidak tersedia di korpus lokal.",
      "web-bpbddiy-klaster-2019 hlm 1: «Koordinator : Sekretaris Ditjen Cipta Karya, Kementerian Pekerjaan Umum» || jdih:juklak-nomor-16-tahun-2025 hlm 1: «ditetapkan 6 (enam) klaster penanggulangan bencana» || jdih:juklak-nomor-16-tahun-2025 hlm 1: «Klaster Pendidikan dengan koordinator Kementerian Pendidikan dan Kebudayaan»",
      "resmi"
     ],
@@ -5144,8 +5839,8 @@
      "tumpang_tindih",
      "PEMDA;PRES;BNPB;KEMENKO_POLKAM;KEMENKO_PMK;POLRI;TNI",
      "disimpulkan dari teks resmi",
-     "Status keadaan konflik ditetapkan kepala daerah/Presiden menurut UU 7/2012, sementara konflik sosial juga 'bencana sosial' menurut UU 24/2007 dan sejak Perpres 46/2026 BNPB dapat bertindak dalam keadaan tertentu bagi daerah pascakonflik. Satgas nasional UU 7/2012 memakai 'kementerian yang membidangi koordinasi urusan politik, hukum, dan keamanan', fungsi yang sejak 2024 dibagi ke Kemenko Polkam dan Kemenko Kumham Imipas; deputi PB dan konflik sosial justru di Kemenko PMK.",
-     "uu-7-2012 hlm 11: «Status Keadaan Konflik skala nasional sebagaimana dimaksud dalam Pasal 15 ayat (4) ditetapkan oleh Presiden» || uu-24-2007 hlm 2: «konflik sosial antarkelompok atau antarkomunitas masyarakat» || uu-7-2012 hlm 24: «a. kementerian yang membidangi koordinasi urusan politik, hukum, dan keamanan» || perpres-90-2025 hlm 2: «1. Kementerian Koordinator Bidang Politik dan Keamanan; 2. Kementerian Koordinator Bidang Hukum, Hak Asasi Manusia, Imigrasi, dan Pemasyarakatan» || perpres-144-2024 hlm 13: «di bidang penanggulangan bencana dan konflik sosial»",
+     "Status keadaan konflik ditetapkan kepala daerah/Presiden menurut UU 7/2012, sementara konflik sosial juga 'bencana sosial' menurut UU 24/2007 dan sejak Perpres 46/2026 BNPB dapat bertindak dalam keadaan tertentu bagi daerah pascakonflik. Satgas nasional UU 7/2012 memuat 'kementerian yang membidangi koordinasi urusan politik, hukum, dan keamanan', fungsi yang sejak 2024 dibagi ke Kemenko Polkam dan Kemenko Kumham Imipas, serta 'kementerian yang membidangi koordinasi urusan kesejahteraan rakyat' (pendahulu Kemenko PMK; pemetaan penyusun). Deputi PB dan konflik sosial ada di Kemenko PMK.",
+     "uu-7-2012 hlm 11: «Status Keadaan Konflik skala nasional sebagaimana dimaksud dalam Pasal 15 ayat (4) ditetapkan oleh Presiden» || uu-24-2007 hlm 2: «konflik sosial antarkelompok atau antarkomunitas masyarakat» || uu-7-2012 hlm 24: «a. kementerian yang membidangi koordinasi urusan politik, hukum, dan keamanan; b. kementerian yang membidangi koordinasi urusan kesejahteraan rakyat» || perpres-90-2025 hlm 2: «1. Kementerian Koordinator Bidang Politik dan Keamanan; 2. Kementerian Koordinator Bidang Hukum, Hak Asasi Manusia, Imigrasi, dan Pemasyarakatan» || perpres-144-2024 hlm 13: «di bidang penanggulangan bencana dan konflik sosial»",
      "resmi"
     ],
     [
@@ -5160,12 +5855,12 @@
     ],
     [
      "C12",
-     "Unsur Pengarah BNPB dan peran K/L bantuan internasional masih memakai nama kementerian lama",
+     "Unsur Pengarah BNPB dan peran K/L bantuan internasional masih memakai nama kementerian dan lembaga lama",
      "nomenklatur_usang",
-     "BNPB;KEMENKO_POLKAM;KEMEN_PU;KEMEN_PKP;KEMENHUT;KLH_BPLH;KOMDIGI",
+     "BNPB;KEMENKO_POLKAM;KEMEN_PU;KEMEN_PKP;KEMENHUT;KLH_BPLH;KOMDIGI;BRIN",
      "disimpulkan dari teks resmi",
-     "Perpres 1/2019 Pasal 13 menetapkan wakil Kemenko Polhukam dan Kementerian PUPR di Unsur Pengarah; Perban 6/2018 Pasal 17 membagi peran bantuan internasional ke KLHK, Kemenkumham, Kominfo, PUPR. Keempatnya sudah dipecah/diganti sejak 2024.",
-     "perpres-1-2019 hlm 5: «b. Kementerian Koordinator Bidang Politik, Hukum, dan Keamanan» || perpres-1-2019 hlm 6: «h. Kementerian Pekerjaan Umum dan Perumahan Ralryat» || jdih:perban-nomor-6-tahun-2018 hlm 19: «f. Kementerian Lingkungan Hidup dan Kehutanan berwenang dalam penanganan bantuan kebakaran hutan dan lahan»",
+     "Perpres 1/2019 Pasal 13 menetapkan wakil Kemenko Polhukam dan Kementerian PUPR di Unsur Pengarah. Perban 6/2018 Pasal 17 ayat (2) membagi peran bantuan internasional ke 23 K/L (huruf a-w), antara lain KLHK, Kementerian Hukum dan HAM, Kominfo, PUPR, LAPAN, dan BPPT. Semuanya sudah dipecah atau diganti: Kemenkumham kini Kementerian Hukum, Kementerian HAM, dan Kementerian Imigrasi dan Pemasyarakatan (pewaris kewenangan visa dan izin tinggal menurut pemetaan penyusun: Kementerian Imigrasi dan Pemasyarakatan, Perpres 90/2025 no. 16); LAPAN dan BPPT dilebur ke BRIN.",
+     "perpres-1-2019 hlm 5: «b. Kementerian Koordinator Bidang Politik, Hukum, dan Keamanan» || perpres-1-2019 hlm 6: «h. Kementerian Pekerjaan Umum dan Perumahan Ralryat» || jdih:perban-nomor-6-tahun-2018 hlm 19: «f. Kementerian Lingkungan Hidup dan Kehutanan berwenang dalam penanganan bantuan kebakaran hutan dan lahan» || jdih:perban-nomor-6-tahun-2018 hlm 19: «g. Kementerian Hukum dan Hak Asasi Manusia berwenang dalam pemberian visa setibanya di Indonesia, izin masuk dan izin tinggal» || perpres-90-2025 hlm 2: «14. Kementerian Hukum; 15. Kementerian Hak Asasi Manusia; 16. Kementerian Imigrasi dan Pemasyarakatan» || jdih:perban-nomor-6-tahun-2018 hlm 20: «u. Lembaga Penerbangan dan Antariksa Nasional berwenang dalam bidang penerbangan dan antariksa»",
      "resmi"
     ],
     [
@@ -5174,28 +5869,48 @@
      "tumpang_tindih",
      "KEMEN_PU;PEMDA;BOP_PANTURA;KEMENKO_IPK",
      "disimpulkan dari teks resmi",
-     "NCICD dibangun terbagi antara Kementerian PU dan Pemprov DKI (trase kewenangan DKI 20,9 km dari 39 km trase kritis); sejak 2025 BOP Pantura Jawa berwenang atas persiapan sampai pembangunan Pantura termasuk Giant Sea Wall, dengan Gubernur DKI dan Menteri PU sebagai anggota Dewan Pengarah.",
-     "web-dsda-ncicd-2025 hlm 1: «Pelaksanaan pembangunan NCICD ini terbagi melalui Pemerintah Pusat oleh Kementerian PU dan Pemprov DKI Jakarta» || perpres-77-2025 hlm 4: «BOP Pantura Jawa mempunyai tugas melaksanakan persiapan, perencanaan, pembangunan, dan pengembangan di Pantura Jawa» || perpres-77-2025 hlm 6: «b. Gubernur Provinsi Daerah Khusus Ibukota Jakarta»",
+     "NCICD dibangun terbagi antara Kementerian PU dan Pemprov DKI. Menurut Dinas SDA DKI per 17 Jul 2025: trase DKI 20,9 km, terbangun 9,4 km, sisa 11,5 km; total Fase A 39 km (PU + DKI), target 2030. Data ini sekitar 15 bulan sebelum batas data; pembaruan 2026 tidak ditemukan (dicari 23 Okt 2026). Sejak 2025 BOP Pantura Jawa bertugas atas persiapan sampai pembangunan Pantura termasuk Giant Sea Wall, dengan Menteri PU sebagai anggota Dewan Pengarah dan Gubernur DKI sebagai salah satu kepala daerah anggota.",
+     "web-dsda-ncicd-2025 hlm 1: «Pelaksanaan pembangunan NCICD ini terbagi melalui Pemerintah Pusat oleh Kementerian PU dan Pemprov DKI Jakarta» || web-dsda-ncicd-2025 hlm 1: «Tanggul Pengaman Pantai dan Muara Sungai sepanjang 39 km yang ditargetkan rampung pada tahun 2030» || perpres-77-2025 hlm 4: «BOP Pantura Jawa mempunyai tugas melaksanakan persiapan, perencanaan, pembangunan, dan pengembangan di Pantura Jawa» || perpres-77-2025 hlm 5: «g. Menteri Pekerjaan Umum» || perpres-77-2025 hlm 6: «b. Gubernur Provinsi Daerah Khusus Ibukota Jakarta»",
      "resmi"
     ],
     [
      "C14",
-     "Kebakaran industri/gagal teknologi tanpa K/L penanggung jawab nasional yang tertulis",
+     "Kebakaran industri/gagal teknologi: K/L penanggung jawab nasional belum ditemukan di sumber yang dibaca",
      "celah",
      "PEMDA;KEMENDAGRI;KLH_BPLH;BNPB",
      "disimpulkan dari teks resmi",
-     "Yang tertulis: pemadaman oleh damkar kab/kota (UU 23/2014), standardisasi damkar oleh pusat, B3 di KLH/BPLH, dan gagal teknologi sebagai bencana nonalam (UU 24/2007). Tidak ditemukan norma yang menunjuk K/L koordinator untuk kebakaran industri/kilang berskala bencana di sumber yang dibaca.",
+     "Yang tertulis di sumber yang dibaca: pemadaman oleh damkar kab/kota (UU 23/2014), standardisasi damkar oleh pusat, B3 di KLH/BPLH, dan gagal teknologi sebagai bencana nonalam (UU 24/2007). Rezim keselamatan sektoral (UU 1/1970 Keselamatan Kerja, UU 3/2014 Perindustrian, peraturan keselamatan operasi migas Kementerian ESDM) belum dibaca dan belum ada di mentah/teks paket ini (KERANGKA M06, §8), jadi celah ini tidak disimpulkan sebagai ketiadaan norma: K/L penanggung jawab kebakaran industri/kilang berskala bencana belum ditemukan di sumber yang dibaca. Kemenperin dan Kemnaker masuk matriks hanya setelah mandat tertulisnya dibaca.",
      "uu-23-2014 hlm 333: «Pencegahan, pengendalian, pemadaman, penyelamatan, dan penanganan bahan berbahaya dan beracun kebakaran dalam Daerah kabupaten/kota» || uu-24-2007 hlm 2: «gagal teknologi, gagal modernisasi, epidemi, dan wabah penyakit»",
      "resmi"
     ],
     [
      "C15",
-     "Rantai koordinasi peringatan dini melintasi tiga Kemenko",
+     "Rantai koordinasi peringatan dini dan pertolongan melintasi tiga Kemenko",
      "celah",
-     "BMKG;KEMENHUB;BNPB;KEMENKO_PMK;KEMEN_PU;KEMENKO_IPK;KEMEN_ESDM;KEMENKO_EKON",
+     "BMKG;KEMENHUB;BASARNAS;BNPB;KEMENKO_PMK;KEMEN_PU;KEMENKO_IPK;KEMEN_ESDM;KEMENKO_EKON",
      "disimpulkan dari teks resmi",
-     "BMKG bertanggung jawab kepada Presiden melalui menteri bidang transportasi (di bawah Kemenko IPK), BNPB dikoordinasikan Kemenko PMK, Badan Geologi ada di Kementerian ESDM (Kemenko Perekonomian), dan Kementerian PU (banjir, bendungan) di Kemenko IPK.",
-     "perpres-12-2024 hlm 2: «BMKG berada di bawah dan bertanggung jawab kepada Presiden melalui menteri yang menyelenggarakan urusan pemerintahan di bidang transportasi» || perpres-1-2019 hlm 4: «BNPB dikoordinasikan oleh kementerian yang menyelenggarakan koordinasi» || perpres-143-2024 hlm 5: «d. Kementerian Energi dan Sumber Daya Mineral» || perpres-145-2024 hlm 4: «b. Kementerian Pekerjaan Umum»",
+     "BMKG bertanggung jawab kepada Presiden melalui menteri bidang transportasi dan Basarnas dikoordinasikan menteri bidang perhubungan; Kementerian Perhubungan dan Kementerian PU (banjir, bendungan) di bawah koordinasi Kemenko IPK. BNPB dikoordinasikan Kemenko PMK, dan Badan Geologi ada di Kementerian ESDM (Kemenko Perekonomian).",
+     "perpres-12-2024 hlm 2: «BMKG berada di bawah dan bertanggung jawab kepada Presiden melalui menteri yang menyelenggarakan urusan pemerintahan di bidang transportasi» || perpres-83-2016 hlm 4: «Badan Nasional Pencarian dan Pertolongan dikoordinasikan oleh menteri yang menyelenggarakan urusan pemerintahan di bidang perhubungan» || perpres-145-2024 hlm 4-5: «b. Kementerian Pekerjaan Umum … e. Kementerian Perhubungan» || perpres-1-2019 hlm 4: «BNPB dikoordinasikan oleh kementerian yang menyelenggarakan koordinasi» || perpres-143-2024 hlm 5: «d. Kementerian Energi dan Sumber Daya Mineral»",
+     "resmi"
+    ],
+    [
+     "C16",
+     "UU 23/2014 Lampiran C (irigasi) dan CC (cekungan dan izin air tanah) sebagian dicabut UU 17/2019 Pasal 77",
+     "regulasi_dicabut",
+     "KEMEN_PU;KEMEN_ESDM;PEMDA",
+     "disimpulkan dari teks resmi",
+     "UU 17/2019 Pasal 77 mencabut UU 23/2014 Lampiran C No. 1 SDA kolom 3, 4, 5 huruf b (ambang irigasi lebih dari 3000 ha, 1000-3000 ha, kurang dari 1000 ha) dan Lampiran CC No. 1 Geologi kolom 3 huruf a (penetapan cekungan air tanah), kolom 4 huruf b (izin pengeboran, pemakaian, pengusahaan air tanah oleh provinsi), dan kolom 5. Yang masih berlaku: SDA huruf a dan Geologi kolom 3 huruf b-g serta kolom 4 huruf a dan c. Ambang luas irigasi kini tertulis di Permen PUPR 14/PRT/M/2015 (BPK: Berlaku; dasar 'Mengingat'-nya UU 11/1974 dan UU 23/2014; tetap berlaku lewat UU 17/2019 Pasal 76 huruf b sepanjang tidak bertentangan, tafsiran penyusun); penggantinya belum ditemukan. Penerbit izin air tanah per Okt 2026 belum pasti (PP 28/2025 dan Kepmen ESDM 291.K/2023 belum dibaca) dan tidak boleh dianggap provinsi secara default. Riset B §4.1 dan versi awal paket ini memakai ambang UU 23/2014 dan perlu dikoreksi.",
+     "uu-17-2019 hlm 49: «huruf C Pembagian Urusan Pemerintahan Bidang Pekerjaan Umum dan Penataan Ruang Nomor 1 Sub- Urusan Sumber Daya Air (SDA) kolom 3 huruf b, kolom 4 huruf b, dan kolom 5 huruf b … Sub-Urusan Geologi kolom 3 huruf a, kolom 4 huruf b, dan kolom 5 … dicabut dan dinyatakan tidak berlaku» || uu-17-2019 hlm 49: «semua peraturan pelaksanaan yang mengatur mengenai Sumber Daya Air dinyatakan tetap berlaku sepanjang tidak bertentangan dan belum diganti» || permen-pupr-14-2015 hlm 9: «Pemerintah Pusat mempunyai wewenang dan tanggungjawab melakukan pengembangan dan pengelolaan sistem irigasi primer dan sekunder pada daerah irigasi yang luasnya lebih dari 3000 ha»",
+     "resmi"
+    ],
+    [
+     "C17",
+     "Penyedia peringatan dini per bahaya: mandat banjir per WS di rezim SDA tidak terhubung ke Perban 2/2024; kekeringan hidrologis tanpa penyedia yang ditunjuk",
+     "celah",
+     "BNPB;BMKG;KEMEN_ESDM;KEMEN_PU;PEMDA",
+     "disimpulkan dari teks resmi",
+     "Perban 2/2024 mendaftar 11 jenis data peringatan dini dari K/L dan menyerahkan penyedianya ke peraturan lain. Mandat tertulis yang ditemukan: BMKG (cuaca ekstrem, iklim ekstrem, gelombang, tsunami; UU 31/2009), Badan Geologi (gunung api, gerakan tanah; UU 23/2014 Lamp. CC kolom 3 huruf d-e, masih berlaku), dan rezim SDA: penetapan sistem peringatan dini pada setiap WS sebagai bagian pengaturan pencegahan daya rusak air (PP 30/2024 Pasal 96 ayat (1) huruf b), yang menjadi tanggung jawab Menteri, menteri/pimpinan LPNK, gubernur, dan/atau bupati/wali kota (Pasal 94 ayat (5)); PP 37/2010 Pasal 117 juga mendasarkan pengendalian daya rusak air pada peringatan dini per WS. Yang tidak ditemukan: (a) norma yang menghubungkan sistem peringatan dini per WS dengan Perban 2/2024 dan platform BNPB; (b) siapa di antara pemegang tanggung jawab Pasal 94 ayat (5) yang menetapkannya; (c) penyedia peringatan dini kekeringan hidrologis (BMKG hanya iklim ekstrem dan prakiraan musim).",
+     "jdih:perban-nomor-2-tahun-2024 hlm 5: «Kementerian/lembaga menyampaikan data dan informasi sebagaimana dimaksud pada ayat (1) sesuai dengan ketentuan peraturan perundang-undangan» || uu-31-2009 hlm 17: «a. cuaca ekstrim; b. iklim ekstrim; c. gelombang laut berbahaya; dan d. tsunami» || pp-30-2024 hlm 65: «b. penetapan sistem peringatan dini pada setiap Wilayah Sungai» || pp-30-2024 hlm 64: «menjadi tanggung jawab Menteri, menteri/pimpinan lembaga pemerintah nonkementerian, gubernur, dan/atau bupati/wali kota» || pp-37-2010 hlm 50: «dilakukan berdasarkan peringatan dini pada wilayah sungai yang bersangkutan»",
      "resmi"
     ]
    ]
@@ -5205,6 +5920,7 @@
     "sid",
     "judul",
     "status",
+    "jenis_sumber",
     "relasi_bpk",
     "tanggal_penetapan",
     "url",
@@ -5220,6 +5936,7 @@
      "inpres-2-2025",
      "Instruksi Presiden (Inpres) Nomor 2 Tahun 2025 tentang Percepatan Pembangunan, Peningkatan, Rehabilitasi, Serta Operasi dan Pemeliharaan Jaringan Irigasi untuk Mendukung Swasembada Pangan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "30 Januari 2025",
      "https://peraturan.bpk.go.id/Details/313402/inpres-no-2-tahun-2025-percepatan-pembangunan-peningkatan-rehabilitasi-serta-ope",
@@ -5234,6 +5951,7 @@
      "inpres-3-2020",
      "Instruksi Presiden (Inpres) Nomor 3 Tahun 2020 tentang Penanggulangan Kebakaran Hutan dan Lahan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : Inpres No. 11 Tahun 2015 tentang Peningkatan Pengendalian Kebakaran Hutan dan Lahan",
      "28 Februari 2020",
      "https://peraturan.bpk.go.id/Details/133045/inpres-no-3-tahun-2020-penanggulangan-kebakaran-hutan-dan-lahan",
@@ -5248,13 +5966,14 @@
      "jdih:juklak-nomor-16-tahun-2025",
      "Petunjuk Pelaksanaan Penyelenggaraan Klaster Logistik Penanggulangan Bencana Nomor 16 Tahun 2025",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "18 December 2025",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/juklak-nomor-16-tahun-2025",
      "https://jdih.bnpb.go.id/storage/file/2025juklakbnpb016.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/juklak-nomor-16-tahun-2025.json",
+     "78c91694bbf501a19e569c13f7c311011c62a580",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-juklak-nomor-16-tahun-2025.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5262,13 +5981,14 @@
      "jdih:perban-nomor-1-tahun-2025",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025-2029",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "06 January 2025",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-1-tahun-2025",
      "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-1-tahun-2025.json",
+     "16c9abc407fb3ff53e220a0c1d0452d171a6b4cb",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-1-tahun-2025.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5276,13 +5996,14 @@
      "jdih:perban-nomor-1-tahun-2026",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2026 tentang Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi Terhadap Penyaluran Dana Bersama Penanggulangan Bencana",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "10 March 2026",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-1-tahun-2026",
      "https://jdih.bnpb.go.id/storage/file/2026pbbnpb001.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-1-tahun-2026.json",
+     "855225e9bd77bc32e891fbdd058b19888752eb33",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-1-tahun-2026.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5290,13 +6011,14 @@
      "jdih:perban-nomor-2-tahun-2024",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2024 tentang Sistem Peringatan Dini Bencana",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "25 Maret 2024",
      "https://peraturan.bpk.go.id/Details/284502/peraturan-bnpb-no-2-tahun-2024",
-     "",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-2-tahun-2024.json",
+     "https://peraturan.bpk.go.id/Download/343554/peraturan-bnpb-no-2-tahun-2024.pdf",
+     "50aed7463312a75bff0c9d7a0ea587f36118928f",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-2-tahun-2024.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5304,13 +6026,14 @@
      "jdih:perban-nomor-5-tahun-2017",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "07 November 2017",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-5-tahun-2017",
      "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-5-tahun-2017.json",
+     "5a6137392ab9b925ebbeb832d282f131fe1a57b7",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-5-tahun-2017.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5318,13 +6041,14 @@
      "jdih:perban-nomor-5-tahun-2025",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025-2029",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "03 October 2025",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-5-tahun-2025",
      "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-5-tahun-2025.json",
+     "2d025b5de59e80e03b1245fc02d8cdd47c6a1b10",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-5-tahun-2025.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5332,13 +6056,14 @@
      "jdih:perban-nomor-6-tahun-2018",
      "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2018 tentang Penerimaan Bantuan Internasional Dalam Keadaan Darurat Bencana",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "27 September 2018",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perban-nomor-6-tahun-2018",
      "https://jdih.bnpb.go.id/storage/file/2018pbbnpb006.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perban-nomor-6-tahun-2018.json",
+     "ee0612c7cc6c5ee92d021680d0212517952dbd38",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perban-nomor-6-tahun-2018.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5346,13 +6071,14 @@
      "jdih:perpres-nomor-17-tahun-2018",
      "Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "19 March 2018",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perpres-nomor-17-tahun-2018",
      "https://jdih.bnpb.go.id/storage/file/2018perpresri017.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perpres-nomor-17-tahun-2018.json",
+     "f0ae126191e5f18d284ea853b73c21ad84277350",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perpres-nomor-17-tahun-2018.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5360,13 +6086,29 @@
      "jdih:perpres-nomor-46-tahun-2026",
      "Peraturan Presiden Nomor 46 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 17 Tahun 2018 tentang Penyelenggaraan Penanggulangan Bencana dalam Keadaan Tertentu",
      "BERLAKU",
+     "dokumen JDIH BNPB (salinan korpus lokal)",
      "",
      "16 July 2026",
      "https://jdih.bnpb.go.id/dokumen/Peraturan/perpres-nomor-46-tahun-2026",
      "https://jdih.bnpb.go.id/storage/file/2026perpresri046.pdf",
-     "",
-     "korpus JDIH lokal",
-     "data/raw/hukum/teks/perpres-nomor-46-tahun-2026.json",
+     "974cfafc39573628e76cef899666c38e201eb353",
+     "disalin 2026-10-23 dari korpus JDIH lokal",
+     "mentah/teks/jdih-perpres-nomor-46-tahun-2026.json.gz",
+     "\"semua\"",
+     "resmi"
+    ],
+    [
+     "permen-pupr-14-2015",
+     "Peraturan Menteri Pekerjaan Umum dan Perumahan Rakyat Nomor 14/PRT/M/2015 Tahun 2015 tentang Kriteria dan Penetapan Status Daerah Irigasi",
+     "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
+     "Belum Tersedia",
+     "21 April 2015",
+     "https://peraturan.bpk.go.id/Details/159870/permen-pupr-no-14prtm2015-tahun-2015",
+     "https://peraturan.bpk.go.id/Download/152421/PermenPUPR14-2015.pdf",
+     "e7200ad41e57a4da3e45590bab11f3c6f6c236bb",
+     "2026-10-23",
+     "mentah/teks/permen-pupr-14-2015.json.gz",
      "\"semua\"",
      "resmi"
     ],
@@ -5374,6 +6116,7 @@
      "perpres-1-2019",
      "Peraturan Presiden (Perpres) Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : PERPRES No. 29 Tahun 2021 tentang Perubahan atas Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana Mencabut : PERPRES No. 8 Tahun 2008 tentang Badan Nasional Penanggulangan Bencana",
      "01 Januari 2019",
      "https://peraturan.bpk.go.id/Details/100440/perpres-no-1-tahun-2019",
@@ -5388,6 +6131,7 @@
      "perpres-105-2025",
      "Peraturan Presiden (Perpres) Nomor 105 Tahun 2025 tentang Badan Pengaturan Badan Usaha Milik Negara",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : Perpres No. 179 Tahun 2024 tentang Kementerian Badan Usaha Milik Negara",
      "07 Oktober 2025",
      "https://peraturan.bpk.go.id/Details/334645/perpres-no-105-tahun-2025",
@@ -5402,6 +6146,7 @@
      "perpres-12-2024",
      "Peraturan Presiden (Perpres) Nomor 12 Tahun 2024 tentang Badan Meteorologi, Klimatologi, dan Geofisika",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 61 Tahun 2008 tentang Badan Meteorologi, Klimatologi, dan Geofosika",
      "26 Januari 2024",
      "https://peraturan.bpk.go.id/Details/276838/perpres-no-12-tahun-2024",
@@ -5416,6 +6161,7 @@
      "perpres-128-2022",
      "Peraturan Presiden (Perpres) Nomor 128 Tahun 2022 tentang Badan Informasi Geospasial",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 127 Tahun 2015 tentang Perubahan atas Peraturan Presiden Nomor 94 Tahun 2011 tentang Badan Informasi Geospasial PERPRES No. 94 Tahun 2011 tentang Badan Informasi Geospasial",
      "01 November 2022",
      "https://peraturan.bpk.go.id/Details/230419/perpres-no-128-tahun-2022",
@@ -5430,6 +6176,7 @@
      "perpres-139-2024",
      "Peraturan Presiden (Perpres) Nomor 139 Tahun 2024 tentang Penataan Tugas dan Fungsi Kementerian Negara Kabinet Merah Putih Periode Tahun 2024-2029",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "21 Oktober 2024",
      "https://peraturan.bpk.go.id/Details/305115/perpres-no-139-tahun-2024",
@@ -5444,6 +6191,7 @@
      "perpres-140-2024",
      "Peraturan Presiden (Perpres) Nomor 140 Tahun 2024 tentang Organisasi Kementerian Negara",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 90 Tahun 2025 tentang Perubahan atas Peraturan Presiden Nomor 140 Tahun 2024 tentang Organisasi Kementerian Negara Mencabut : PERPRES No. 32 Tahun 2021 tentang Perubahan atas Peraturan Presiden Nomor 68 Tahun 2019 tentang Organisasi Kementerian Negara PERPRES No. 68 Tahun 2019 tentang Organisasi Kementerian Negara",
      "21 Oktober 2024",
      "https://peraturan.bpk.go.id/Details/305099/perpres-no-140-tahun-2024",
@@ -5458,6 +6206,7 @@
      "perpres-141-2024",
      "Peraturan Presiden (Perpres) Nomor 141 Tahun 2024 tentang Kementerian Koordinator Bidang Politik dan Keamanan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 73 Tahun 2020 tentang Kementerian Koordinator Bidang Politik, Hukum, dan Keamanan",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306461/perpres-no-141-tahun-2024",
@@ -5472,6 +6221,7 @@
      "perpres-143-2024",
      "Peraturan Presiden (Perpres) Nomor 143 Tahun 2024 tentang Kementerian Koordinator Bidang Perekonomian",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 37 Tahun 2020 tentang Kementerian Koordinator Bidang Perekonomian",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306481/perpres-no-143-tahun-2024",
@@ -5486,6 +6236,7 @@
      "perpres-144-2024",
      "Peraturan Presiden (Perpres) Nomor 144 Tahun 2024 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 91 Tahun 2025 tentang Perubahan atas Peraturan Presiden Nomor 144 Tahun 2024 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan Mencabut : PERPRES No. 35 Tahun 2020 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306486/perpres-no-144-tahun-2024",
@@ -5500,6 +6251,7 @@
      "perpres-145-2024",
      "Peraturan Presiden (Perpres) Nomor 145 Tahun 2024 tentang Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 92 Tahun 2019 tentang Kementerian Koordinator Bidang Kemaritiman dan Investasi",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306491/perpres-no-145-tahun-2024",
@@ -5514,6 +6266,7 @@
      "perpres-146-2024",
      "Peraturan Presiden (Perpres) Nomor 146 Tahun 2024 tentang Kementerian Koordinator Bidang Pemberdayaan Masyarakat",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306508/perpres-no-146-tahun-2024",
@@ -5528,6 +6281,7 @@
      "perpres-147-2024",
      "Peraturan Presiden (Perpres) Nomor 147 Tahun 2024 tentang Kementerian Koordinator Bidang Pangan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306509/perpres-no-147-tahun-2024",
@@ -5542,6 +6296,7 @@
      "perpres-149-2024",
      "Peraturan Presiden (Perpres) Nomor 149 Tahun 2024 tentang Kementerian Dalam Negeri",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 114 Tahun 2021 tentang Kementerian Dalam Negeri",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306615/perpres-no-149-tahun-2024",
@@ -5556,6 +6311,7 @@
      "perpres-150-2024",
      "Peraturan Presiden (Perpres) Nomor 150 Tahun 2024 tentang Kementerian Luar Negeri",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 116 Tahun 2020 tentang Kementerian Luar Negeri",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306631/perpres-no-150-tahun-2024",
@@ -5570,6 +6326,7 @@
      "perpres-158-2024",
      "Peraturan Presiden (Perpres) Nomor 158 Tahun 2024 tentang Kementerian Keuangan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 57 Tahun 2020 tentang Kementerian Keuangan",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306691/perpres-no-158-tahun-2024",
@@ -5584,6 +6341,7 @@
      "perpres-161-2024",
      "Peraturan Presiden (Perpres) Nomor 161 Tahun 2024 tentang Kementerian Kesehatan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 18 Tahun 2021 tentang Kementerian Kesehatan",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306704/perpres-no-161-tahun-2024",
@@ -5598,6 +6356,7 @@
      "perpres-162-2024",
      "Peraturan Presiden (Perpres) Nomor 162 Tahun 2024 tentang Kementerian Sosial",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 22 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 162 Tahun 2024 tentang Kementerian Sosial Mencabut : PERPRES No. 110 Tahun 2021 tentang Kementerian Sosial",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306711/perpres-no-162-tahun-2024",
@@ -5612,6 +6371,7 @@
      "perpres-169-2024",
      "Peraturan Presiden (Perpres) Nomor 169 Tahun 2024 tentang Kementerian Energi dan Sumber Daya Mineral",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 97 Tahun 2021 tentang Kementerian Energi dan Sumber Daya Mineral",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306750/perpres-no-169-tahun-2024",
@@ -5626,6 +6386,7 @@
      "perpres-170-2024",
      "Peraturan Presiden (Perpres) Nomor 170 Tahun 2024 tentang Kementerian Pekerjaan Umum",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 24 Tahun 2024 tentang Perubahan atas Peraturan Presiden Nomor 27 Tahun 2020 tentang Kementerian Pekerjaan Umum dan Perumahan Rakyat PERPRES No. 27 Tahun 2020 tentang Kementerian Pekerjaan Umum dan Perumahan Rakyat",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306752/perpres-no-170-tahun-2024",
@@ -5640,6 +6401,7 @@
      "perpres-171-2024",
      "Peraturan Presiden (Perpres) Nomor 171 Tahun 2024 tentang Kementerian Desa dan Pembangunan Daerah Tertinggal",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 85 Tahun 2020 tentang Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306844/perpres-no-171-tahun-2024",
@@ -5654,6 +6416,7 @@
      "perpres-173-2024",
      "Peraturan Presiden (Perpres) Nomor 173 Tahun 2024 tentang Kementerian Perhubungan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 16 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 173 Tahun 2024 tentang Kementerian Perhubungan Mencabut : PERPRES No. 23 Tahun 2022 tentang Kementerian Perhubungan PERPRES No. 103 Tahun 2015 tentang Badan Pengelola Transportasi Jakarta, Bogor, Depok, Tangerang, dan Bekasi",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306856/perpres-no-173-tahun-2024",
@@ -5668,6 +6431,7 @@
      "perpres-174-2024",
      "Peraturan Presiden (Perpres) Nomor 174 Tahun 2024 tentang Kementerian Komunikasi dan Digital",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 22 Tahun 2023 tentang Kementerian Komunikasi dan Informatika",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306884/perpres-no-174-tahun-2024",
@@ -5682,6 +6446,7 @@
      "perpres-175-2024",
      "Peraturan Presiden (Perpres) Nomor 175 Tahun 2024 tentang Kementerian Kehutanan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 92 Tahun 2020 tentang Kementerian Lingkungan Hidup dan Kehutanan",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306886/perpres-no-175-tahun-2024",
@@ -5696,6 +6461,7 @@
      "perpres-176-2024",
      "Peraturan Presiden (Perpres) Nomor 176 Tahun 2024 tentang Kementerian Agraria dan Tata Ruang",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 47 Tahun 2020 tentang Kementerian Agraria dan Tata Ruang",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306891/perpres-no-176-tahun-2024",
@@ -5710,6 +6476,7 @@
      "perpres-177-2024",
      "Peraturan Presiden (Perpres) Nomor 177 Tahun 2024 tentang Badan Pertanahan Nasional",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 48 Tahun 2020 tentang Badan Pertanahan Nasional",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306890/perpres-no-177-tahun-2024",
@@ -5724,6 +6491,7 @@
      "perpres-179-2024",
      "Peraturan Presiden (Perpres) Nomor 179 Tahun 2024 tentang Kementerian Badan Usaha Milik Negara",
      "Tidak Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Dicabut dengan : Perpres No. 105 Tahun 2025 tentang Badan Pengaturan Badan Usaha Milik Negara Mencabut : PERPRES No. 81 Tahun 2019 tentang Kementerian Badan Usaha Milik Negara",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306863/perpres-no-179-tahun-2024",
@@ -5738,6 +6506,7 @@
      "perpres-182-2024",
      "Peraturan Presiden (Perpres) Nomor 182 Tahun 2024 tentang Kementerian Lingkungan Hidup",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306830/perpres-no-182-tahun-2024",
@@ -5752,6 +6521,7 @@
      "perpres-183-2024",
      "Peraturan Presiden (Perpres) Nomor 183 Tahun 2024 tentang Badan Pengendalian Lingkungan Hidup",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "05 November 2024",
      "https://peraturan.bpk.go.id/Details/306818/perpres-no-183-tahun-2024",
@@ -5766,6 +6536,7 @@
      "perpres-188-2024",
      "Peraturan Presiden (Perpres) Nomor 188 Tahun 2024 tentang Kementerian Pendidikan Dasar dan Menengah",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 6 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 188 Tahun 2024 tentang Kementerian Pendidikan Dasar dan Menengah Mencabut : PERPRES No. 62 Tahun 2021 tentang Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306926/perpres-no-188-tahun-2024",
@@ -5780,6 +6551,7 @@
      "perpres-191-2024",
      "Peraturan Presiden (Perpres) Nomor 191 Tahun 2024 tentang Kementerian Perumahan dan Kawasan Permukiman",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306929/perpres-no-191-tahun-2024",
@@ -5794,6 +6566,7 @@
      "perpres-192-2024",
      "Peraturan Presiden (Perpres) Nomor 192 Tahun 2024 tentang Kementerian Pertanian",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 117 Tahun 2022 tentang Kementerian Pertanian",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306932/perpres-no-192-tahun-2024",
@@ -5808,6 +6581,7 @@
      "perpres-193-2024",
      "Peraturan Presiden (Perpres) Nomor 193 Tahun 2024 tentang Kementerian Kelautan dan Perikanan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : Perpres No. 112 Tahun 2025 tentang Perubahan atas Peraturan Presiden Nomor 193 Tahun 2024 tentang Kementerian Kelautan dan Perikanan Mencabut : PERPRES No. 38 Tahun 2023 tentang Kementerian Kelautan dan Perikanan",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306935/perpres-no-193-tahun-2024",
@@ -5822,6 +6596,7 @@
      "perpres-194-2024",
      "Peraturan Presiden (Perpres) Nomor 194 Tahun 2024 tentang Kementerian Perencanaan Pembangunan Nasional",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 80 Tahun 2021 tentang Kementerian Perencanaan Pembangunan Nasional",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306937/perpres-no-194-tahun-2024",
@@ -5836,6 +6611,7 @@
      "perpres-195-2024",
      "Peraturan Presiden (Perpres) Nomor 195 Tahun 2024 tentang Badan Perencanaan Pembangunan Nasional",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 81 Tahun 2021 tentang Badan Perencanaan Pembangunan Nasional",
      "08 November 2024",
      "https://peraturan.bpk.go.id/Details/306939/perpres-no-195-tahun-2024",
@@ -5850,6 +6626,7 @@
      "perpres-22-2026",
      "Peraturan Presiden (Perpres) Nomor 22 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 162 Tahun 2024 tentang Kementerian Sosial",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : Perpres No. 162 Tahun 2024 tentang Kementerian Sosial",
      "15 April 2026",
      "https://peraturan.bpk.go.id/Details/349423/perpres-no-22-tahun-2026",
@@ -5864,6 +6641,7 @@
      "perpres-29-2021",
      "Peraturan Presiden (Perpres) Nomor 29 Tahun 2021 tentang Perubahan atas Peraturan Presiden Nomor 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : PERPRES No. 1 Tahun 2019 tentang Badan Nasional Penanggulangan Bencana",
      "19 April 2021",
      "https://peraturan.bpk.go.id/Details/166181/perpres-no-29-tahun-2021",
@@ -5878,6 +6656,7 @@
      "perpres-6-2026",
      "Peraturan Presiden (Perpres) Nomor 6 Tahun 2026 tentang Perubahan atas Peraturan Presiden Nomor 188 Tahun 2024 tentang Kementerian Pendidikan Dasar dan Menengah",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : Perpres No. 188 Tahun 2024 tentang Kementerian Pendidikan Dasar dan Menengah",
      "09 Februari 2026",
      "https://peraturan.bpk.go.id/Details/347930/perpres-no-6-tahun-2026",
@@ -5892,6 +6671,7 @@
      "perpres-77-2025",
      "Peraturan Presiden (Perpres) Nomor 77 Tahun 2025 tentang Badan Otorita Pengelola Pantai Utara Jawa",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "24 Juni 2025",
      "https://peraturan.bpk.go.id/Details/337303/perpres-no-77-tahun-2025",
@@ -5906,6 +6686,7 @@
      "perpres-78-2021",
      "Peraturan Presiden (Perpres) Nomor 78 Tahun 2021 tentang Badan Riset dan Inovasi Nasional",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : Perpres Nomor 33 Tahun 2021",
      "24 Agustus 2021",
      "https://peraturan.bpk.go.id/Details/178084/perpres-no-78-tahun-2021",
@@ -5920,6 +6701,7 @@
      "perpres-83-2016",
      "Peraturan Presiden (Perpres) Nomor 83 Tahun 2016 tentang Badan Nasional Pencarian Dan Pertolongan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PERPRES No. 99 Tahun 2007 tentang Badan SAR Nasional",
      "06 September 2016",
      "https://peraturan.bpk.go.id/Details/40987/perpres-no-83-tahun-2016",
@@ -5934,6 +6716,7 @@
      "perpres-90-2025",
      "Peraturan Presiden (Perpres) Nomor 90 Tahun 2025 tentang Perubahan atas Peraturan Presiden Nomor 140 Tahun 2024 tentang Organisasi Kementerian Negara",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : Perpres No. 140 Tahun 2024 tentang Organisasi Kementerian Negara",
      "08 September 2025",
      "https://peraturan.bpk.go.id/Details/331563/perpres-no-90-tahun-2025",
@@ -5948,6 +6731,7 @@
      "perpres-91-2025",
      "Peraturan Presiden (Perpres) Nomor 91 Tahun 2025 tentang Perubahan atas Peraturan Presiden Nomor 144 Tahun 2024 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : Perpres No. 144 Tahun 2024 tentang Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
      "08 September 2025",
      "https://peraturan.bpk.go.id/Details/331567/perpres-no-91-tahun-2025",
@@ -5962,6 +6746,7 @@
      "pp-122-2015",
      "Peraturan Pemerintah (PP) Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "28 Desember 2015",
      "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
@@ -5976,6 +6761,7 @@
      "pp-25-2022",
      "Peraturan Pemerintah (PP) Nomor 25 Tahun 2022 tentang Perusahaan Umum (Perum) Jasa Tirta II",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PP No. 7 Tahun 2010 tentang Perusahaan Umum (Perum) Jasa Tirta II",
      "20 Juli 2022",
      "https://peraturan.bpk.go.id/Details/217596/pp-no-25-tahun-2022",
@@ -5990,6 +6776,7 @@
      "pp-30-2024",
      "Peraturan Pemerintah (PP) Nomor 30 Tahun 2024 tentang Pengelolaan Sumber Daya Air",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PP No. 121 Tahun 2015 tentang Pengusahaan Sumber Daya Air PP No. 22 Tahun 1982 tentang Tata Pengaturan Air PP No. 6 Tahun 1981 tentang Iuran Pembayaran Eksploitasi Dan Pemeliharaan Prasarana Pengairan",
      "14 Agustus 2024",
      "https://peraturan.bpk.go.id/Details/295844/pp-no-30-tahun-2024",
@@ -5997,13 +6784,14 @@
      "69f9cd5530b3012de2ef0a9ec167c35d76f19661",
      "2026-10-23",
      "mentah/teks/pp-30-2024.json.gz",
-     "[1, 2, 3, 4, 5, 6, 7, 8, 65, 66]",
+     "[1, 2, 3, 4, 5, 6, 7, 8, 64, 65, 66]",
      "resmi"
     ],
     [
      "pp-37-2010",
      "Peraturan Pemerintah (PP) Nomor 37 Tahun 2010 tentang Bendungan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "18 Februari 2010",
      "https://peraturan.bpk.go.id/Details/5049/pp-no-37-tahun-2010",
@@ -6018,6 +6806,7 @@
      "pp-43-2008",
      "Peraturan Pemerintah (PP) Nomor 43 Tahun 2008 tentang Air Tanah",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PP No. 22 Tahun 1982 tentang Tata Pengaturan Air",
      "23 Mei 2008",
      "https://peraturan.bpk.go.id/Details/4857/pp-no-43-tahun-2008",
@@ -6032,6 +6821,7 @@
      "pp-46-2010",
      "Peraturan Pemerintah (PP) Nomor 46 Tahun 2010 tentang Perusahaan Umum Perum Jasa Tirta I",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : PP No. 93 Tahun 1999 tentang Perusahaan Umum (Perum) Jasa Tirta I",
      "03 Mei 2010",
      "https://peraturan.bpk.go.id/Details/5062/pp-no-46-tahun-2010",
@@ -6046,6 +6836,7 @@
      "uu-16-2025",
      "Undang-undang (UU) Nomor 16 Tahun 2025 tentang Perubahan Keempat atas Undang-Undang Nomor 19 Tahun 2003 tentang Badan Usaha Milik Negara",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : UU No. 1 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 19 Tahun 2003 tentang Badan Usaha Milik Negara UU No. 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang UU No. 11 Tahun 2020 tentang Cipta Kerja UU No. 19 Tahun 2003 tentang Badan Usaha Milik Negara",
      "06 Oktober 2025",
      "https://peraturan.bpk.go.id/Details/330668/uu-no-16-tahun-2025",
@@ -6060,6 +6851,7 @@
      "uu-17-2019",
      "Undang-undang (UU) Nomor 17 Tahun 2019 tentang Sumber Daya Air",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Dicabut sebagian dengan : UU No. 32 Tahun 2024 tentang Perubahan atas Undang-Undang Nomor 5 Tahun 1990 tentang Konservasi Sumber Daya Alam Hayati dan Ekosistemnya Pasal 33 dan Pasal 69 huruf c Undang-Undang Nomor 17 Tahun 2019, dicabut dan dinyatakan tidak berlaku. Diubah dengan : UU No. 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang PERPU No. 2 Tahun 2022 tentang Cipta Kerja UU No. 11 Tahun 2020 tentang Cipta Kerja Perpu Nomor 2 Tahun 2022 tentang Cipta Kerja Mencabut : UU No. 11 Tahun 1974 tentang Pengairan Mencabut sebagian : UU No. 9 Tahun 2015 tentang Perubahan Kedua Atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah Ketentuan mengenai pembagian urusan pemerintahan konkuren antara Pemerintah Pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota, Angka I Matriks pembagian urusan pemerintahan konkuren antara pemerintah pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota: (a). huruf C Pembagian Urusan Pemerintahan Bidang Pekerjaan Umum dan Penataan Ruang Nomor 1 Suburusan Sumber Daya Air (SDA) kolom 3 huruf b, kolom 4 huruf b, dan kolom 5 huruf b; (b). huruf CC Pembagian Urusan Pemerintahan Bidang Energi dan Sumber Daya Mineral Nomor I Sub-Urusan Geologi kolom 3 huruf a, kolom 4 huruf b, dan kolom 5, yang tertuang dalam lampiran yang merupakan bagian tidak terpisahkan dari Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah sebagaimana telah beberapa kali diubah terakhir dengan Undang-Undang Nomor 9 Tahun 2015 tentang Perubahan Kedua atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah UU No. 2 Tahun 2015 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2014 tentang Perubahan atas Undang-Undang Nomor 23 Tahun 2014 Tentang Pemerintahan Daerah Menjadi Undang-Undang Ketentuan mengenai pembagian urusan pemerintahan konkuren antara Pemerintah Pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota, Angka I Matriks pembagian urusan pemerintahan konkuren antara pemerintah pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota: (a). huruf C Pembagian Urusan Pemerintahan Bidang Pekerjaan Umum dan Penataan Ruang Nomor 1 Suburusan Sumber Daya Air (SDA) kolom 3 huruf b, kolom 4 huruf b, dan kolom 5 huruf b; (b). huruf CC Pembagian Urusan Pemerintahan Bidang Energi dan Sumber Daya Mineral Nomor I Sub-Urusan Geologi kolom 3 huruf a, kolom 4 huruf b, dan kolom 5, yang tertuang dalam lampiran yang merupakan bagian tidak terpisahkan dari Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah sebagaimana telah beberapa kali diubah terakhir dengan Undang-Undang Nomor 9 Tahun 2015 tentang Perubahan Kedua atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah UU No. 23 Tahun 2014 tentang Pemerintahan Daerah Ketentuan mengenai pembagian urusan pemerintahan konkuren antara Pemerintah Pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota, Angka I Matriks pembagian urusan pemerintahan konkuren antara pemerintah pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota: (a). huruf C Pembagian Urusan Pemerintahan Bidang Pekerjaan Umum dan Penataan Ruang Nomor 1 Suburusan Sumber Daya Air (SDA) kolom 3 huruf b, kolom 4 huruf b, dan kolom 5 huruf b; (b). huruf CC Pembagian Urusan Pemerintahan Bidang Energi dan Sumber Daya Mineral Nomor I Sub-Urusan Geologi kolom 3 huruf a, kolom 4 huruf b, dan kolom 5, yang tertuang dalam lampiran yang merupakan bagian tidak terpisahkan dari Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah sebagaimana telah beberapa kali diubah terakhir dengan Undang-Undang Nomor 9 Tahun 2015 tentang Perubahan Kedua atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah",
      "15 Oktober 2019",
      "https://peraturan.bpk.go.id/Details/122742/uu-no-17-tahun-2019",
@@ -6074,6 +6866,7 @@
      "uu-17-2023",
      "Undang-undang (UU) Nomor 17 Tahun 2023 tentang Kesehatan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mencabut : UU No. 4 Tahun 2019 tentang Kebidanan UU No. 6 Tahun 2018 tentang Kekarantinaan Kesehatan UU No. 38 Tahun 2014 tentang Keperawatan UU No. 36 Tahun 2014 tentang Tenaga Kesehatan UU No. 18 Tahun 2014 tentang Kesehatan Jiwa UU No. 20 Tahun 2013 tentang Pendidikan Kedokteran UU No. 44 Tahun 2009 tentang Rumah Sakit UU No. 36 Tahun 2009 tentang Kesehatan UU No. 29 Tahun 2004 tentang Praktik Kedokteran UU No. 4 Tahun 1984 tentang Wabah Penyakit Menular Undang-Undang Nomor 419 Tahun 1949 tentang Ordonansi Obat Keras (Staatsblad 1949 Nomor 419)",
      "08 Agustus 2023",
      "https://peraturan.bpk.go.id/Details/258028/uu-no-17-tahun-2023",
@@ -6088,6 +6881,7 @@
      "uu-18-2008",
      "Undang-undang (UU) Nomor 18 Tahun 2008 tentang Pengelolaan Sampah",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "07 Mei 2008",
      "https://peraturan.bpk.go.id/Details/39067/uu-no-18-tahun-2008",
@@ -6102,6 +6896,7 @@
      "uu-2-2002",
      "Undang-undang (UU) Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : UU No. 5 Tahun 2026 tentang Perubahan Ketiga atas Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia UU No. 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang PERPU No. 2 Tahun 2022 tentang Cipta Kerja UU No. 11 Tahun 2020 tentang Cipta Kerja Mencabut : UU No. 28 Tahun 1997 tentang Kepolisian Negara Republik Indonesia",
      "08 Januari 2002",
      "https://peraturan.bpk.go.id/Details/44418/uu-no-2-tahun-2002",
@@ -6116,6 +6911,7 @@
      "uu-23-2014",
      "Undang-undang (UU) Nomor 23 Tahun 2014 tentang Pemerintahan Daerah",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Dicabut sebagian dengan : UU No. 1 Tahun 2022 tentang Hubungan Keuangan antara Pemerintah Pusat dan Pemerintahan Daerah Pasal 1 angka 30, Pasal 1 angka 38, Pasal L angka 47 sampai dengan angka 49, Pasal 245 sepanjang terkait dengan Pajak Daerah dan Retribusi Daerah, Pasal 279, Pasal 285 ayat (2) huruf a angka 1 sampai dengan angka 4, Pasal 288 sampai dengan Pasal 291, Pasal 296, Pasal 302, Pasal 324, dan Pasal 325 Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah (l,embaran Negara Republik Indonesia Tahun 2Ol4 Nomor 244, Tambahan Lembaran Negara Republik Indonesia Nomor 5587) sebagaimana telah beberapa kali diubah, terakhir dengan Undang-Undang Nomor 11 Tahun 2020 tentang Cipta Kerja (Lembaran Negara Republik Indonesia Tahun 2O2O Nomor 245, Tambahan Lembaran Negara Republik Indonesia Nomor 6573); UU No. 17 Tahun 2019 tentang Sumber Daya Air Ketentuan mengenai pembagian urusan pemerintahan konkuren antara Pemerintah Pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota, Angka I Matriks pembagian urusan pemerintahan konkuren antara pemerintah pusat dan pemerintah daerah provinsi dan pemerintah daerah kabupaten/kota: (a). huruf C Pembagian Urusan Pemerintahan Bidang Pekerjaan Umum dan Penataan Ruang Nomor 1 Suburusan Sumber Daya Air (SDA) kolom 3 huruf b, kolom 4 huruf b, dan kolom 5 huruf b; (b). huruf CC Pembagian Urusan Pemerintahan Bidang Energi dan Sumber Daya Mineral Nomor I Sub-Urusan Geologi kolom 3 huruf a, kolom 4 huruf b, dan kolom 5, yang tertuang dalam lampiran yang merupakan bagian tidak terpisahkan dari Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah sebagaimana telah beberapa kali diubah terakhir dengan Undang-Undang Nomor 9 Tahun 2015 tentang Perubahan Kedua atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah Diubah dengan : UU No. 1 Tahun 2026 tentang Penyesuaian Pidana Ketentuan Pasal 238 dalam Undang-Undang Nomor 23 Tahun 2014, diubah UU No. 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang UU No. 11 Tahun 2020 tentang Cipta Kerja PERPU No. 1 Tahun 2020 tentang Kebijakan Keuangan Negara dan Stabilitas Sistem Keuangan untuk Penanganan Pandemi Corona Virus Disease 2019 (COVID-19) dan/atau dalam Rangka Menghadapi Ancaman yang Membahayakan Perekonomian Nasional dan/atau Stabilitas Sistem Keuangan UU No. 9 Tahun 2015 tentang Perubahan Kedua Atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah UU No. 2 Tahun 2015 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2014 tentang Perubahan atas Undang-Undang Nomor 23 Tahun 2014 Tentang Pemerintahan Daerah Menjadi Undang-Undang Perpu Nomor 2 Tahun 2022 tentang Cipta Kerja Mencabut : UU No. 12 Tahun 2008 tentang Perubahan Kedua atas Undang-Undang Nomor 32 Tahun 2004 tentang Pemerintahan Daerah UU No. 8 Tahun 2005 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 3 Tahun 2005 tentang Perubahan atas Undang-Undang Nomor 32 Tahun 2004 tentang Pemerintahan Daerah Menjadi Undang-Undang UU No. 32 Tahun 2004 tentang Pemerintahan Daerah UU No. 5 Tahun 1962 tentang Perusahaan Daerah Mengubah : UU No. 17 Tahun 2014 tentang Majelis Permusyawaratan Rakyat, Dewan Perwakilan Rakyat, Dewan Perwakilan Daerah, dan Dewan Perwakilan Rakyat Daerah UU No. 28 Tahun 2009 tentang Pajak Daerah dan Retribusi Daerah",
      "30 September 2014",
      "https://peraturan.bpk.go.id/Details/38685/uu-no-23-tahun-2014",
@@ -6130,6 +6926,7 @@
      "uu-24-2007",
      "Undang-undang (UU) Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "26 April 2007",
      "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
@@ -6144,6 +6941,7 @@
      "uu-29-2014",
      "Undang-undang (UU) Nomor 29 Tahun 2014 tentang Pencarian dan Pertolongan",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "16 Oktober 2014",
      "https://peraturan.bpk.go.id/Details/38691/uu-no-29-tahun-2014",
@@ -6158,6 +6956,7 @@
      "uu-3-2025",
      "Undang-undang (UU) Nomor 3 Tahun 2025 tentang Perubahan atas Undang-Undang Nomor 34 Tahun 2004 tentang Tentara Nasional Indonesia",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : UU No. 34 Tahun 2004 tentang Tentara Nasional Indonesia",
      "26 Maret 2025",
      "https://peraturan.bpk.go.id/Details/319166/uu-no-3-tahun-2025",
@@ -6172,6 +6971,7 @@
      "uu-31-2009",
      "Undang-undang (UU) Nomor 31 Tahun 2009 tentang Meteorologi, Klimatologi, dan Geofisika",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "01 Oktober 2009",
      "https://peraturan.bpk.go.id/Details/38769/uu-no-31-tahun-2009",
@@ -6186,6 +6986,7 @@
      "uu-34-2004",
      "Undang-undang (UU) Nomor 34 Tahun 2004 tentang Tentara Nasional Indonesia",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : UU No. 3 Tahun 2025 tentang Perubahan atas Undang-Undang Nomor 34 Tahun 2004 tentang Tentara Nasional Indonesia Mencabut : UU No. 2 Tahun 1988 tentang Prajurit Angkatan Bersenjata Republik Indonesia",
      "16 Oktober 2004",
      "https://peraturan.bpk.go.id/Details/40774/uu-no-34-tahun-2004",
@@ -6200,6 +7001,7 @@
      "uu-5-2026",
      "Undang-undang (UU) Nomor 5 Tahun 2026 tentang Perubahan Ketiga atas Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Mengubah : UU No. 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang UU No. 11 Tahun 2020 tentang Cipta Kerja UU No. 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia",
      "17 Juni 2026",
      "https://peraturan.bpk.go.id/Details/350096/uu-no-5-tahun-2026",
@@ -6214,6 +7016,7 @@
      "uu-6-2018",
      "Undang-undang (UU) Nomor 6 Tahun 2018 tentang Kekarantinaan Kesehatan",
      "Tidak Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Dicabut dengan : UU No. 17 Tahun 2023 tentang Kesehatan Mencabut : UU No. 2 Tahun 1962 tentang Karantina Udara UU No. 1 Tahun 1962 tentang Karantina Laut",
      "07 Agustus 2018",
      "https://peraturan.bpk.go.id/Details/90037/uu-no-6-tahun-2018",
@@ -6228,6 +7031,7 @@
      "uu-6-2023",
      "Undang-undang (UU) Nomor 6 Tahun 2023 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2022 tentang Cipta Kerja menjadi Undang-Undang",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Diubah dengan : UU No. 5 Tahun 2026 tentang Perubahan Ketiga atas Undang-Undang Nomor 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia UU No. 1 Tahun 2026 tentang Penyesuaian Pidana Ketentuan Pasal 238 dalam Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah, diubah UU No. 2 Tahun 2025 tentang Perubahan Keempat atas Undang-Undang Nomor 4 Tahun 2009 tentang Pertambangan Mineral dan Batubara UU No. 18 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 10 Tahun 2009 tentang Kepariwisataan UU No. 16 Tahun 2025 tentang Perubahan Keempat atas Undang-Undang Nomor 19 Tahun 2003 tentang Badan Usaha Milik Negara UU No. 14 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 8 Tahun 2019 tentang Ibadah Haji dan Umrah UU No. 1 Tahun 2025 tentang Perubahan Ketiga atas Undang-Undang Nomor 19 Tahun 2003 tentang Badan Usaha Milik Negara UU No. 66 Tahun 2024 tentang Perubahan Ketiga atas Undang-Undang Nomor 17 Tahun 2008 tentang Pelayaran UU No. 65 Tahun 2024 tentang Perubahan Ketiga atas Undang-Undang Nomor 13 Tahun 2016 tentang Paten UU No. 63 Tahun 2024 tentang Perubahan Ketiga atas Undang-Undang Nomor 6 Tahun 2011 tentan Keimigrasian UU No. 3 Tahun 2024 tentang Perubahan Kedua atas Undang-Undang Nomor 6 Tahun 2014 tentang Desa Mencabut : UU No. 11 Tahun 2020 tentang Cipta Kerja Staatsblad Tahun 1926 Nomor 226 juncto Staatsblad Tahun 1940 Nomor 450 tentang Undang-Undang Gangguan (Hinderordonnantie) Menetapkan : PERPU No. 2 Tahun 2022 tentang Cipta Kerja Mengubah : UU No. 2 Tahun 2022 tentang Perubahan Kedua atas Undang-Undang Nomor 38 Tahun 2004 tentang Jalan UU No. 7 Tahun 2021 tentang Harmonisasi Peraturan Perpajakan UU No. 3 Tahun 2020 tentang Perubahan atas Undang-Undang Nomor 4 Tahun 2009 tentang Pertambangan Mineral dan Batubara UU No. 8 Tahun 2019 tentang Penyelenggaraan Ibadah Haji dan Umrah UU No. 22 Tahun 2019 tentang Sistem Budi Daya Pertanian Berkelanjutan UU No. 17 Tahun 2019 tentang Sumber Daya Air UU No. 11 Tahun 2019 tentang Sistem Nasional Ilmu Pengetahuan dan Teknologi UU No. 6 Tahun 2017 tentang Arsitek UU No. 2 Tahun 2017 tentang Jasa Konstruksi UU No. 18 Tahun 2017 tentang Pelindungan Pekerja Migran Indonesia UU No. 7 Tahun 2016 tentang Perlindungan dan Pemberdayaan Nelayan, Pembudi Daya Ikan, dan Petambak Garam UU No. 20 Tahun 2016 tentang Merek dan Indikasi Geografis UU No. 13 Tahun 2016 tentang Paten UU No. 9 Tahun 2015 tentang Perubahan Kedua Atas Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah UU No. 2 Tahun 2015 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2014 tentang Perubahan atas Undang-Undang Nomor 23 Tahun 2014 Tentang Pemerintahan Daerah Menjadi Undang-Undang UU No. 7 Tahun 2014 tentang Perdagangan UU No. 6 Tahun 2014 tentang Desa UU No. 41 Tahun 2014 tentang Perubahan atas Undang-Undang Nomor 18 Tahun 2009 Tentang Peternakan dan Kesehatan Hewan UU No. 39 Tahun 2014 tentang Perkebunan UU No. 33 Tahun 2014 tentang Jaminan Produk Halal UU No. 32 Tahun 2014 tentang Kelautan UU No. 30 Tahun 2014 tentang Administrasi Pemerintahan UU No. 3 Tahun 2014 tentang Perindustrian UU No. 23 Tahun 2014 tentang Pemerintahan Daerah UU No. 21 Tahun 2014 tentang Panas Bumi UU No. 1 Tahun 2014 tentang Perubahan atas Undang-Undang Nomor 27 Tahun 2007 Tentang Pengelolaan Wilayah Pesisir dan Pulau-Pulau Kecil UU No. 19 Tahun 2013 tentang Perlindungan dan Pemberdayaan Petani UU No. 18 Tahun 2013 tentang Pencegahan dan Pemberantasan Perusakan Hutan UU No. 2 Tahun 2012 tentang Pengadaan Tanah Bagi Pembangunan Untuk Kepentingan Umum UU No. 18 Tahun 2012 tentang Pangan UU No. 16 Tahun 2012 tentang Industri Pertahanan UU No. 6 Tahun 2011 tentang Keimigrasian UU No. 4 Tahun 2011 tentang Informasi Geospasial UU No. 24 Tahun 2011 tentang Badan Penyelenggara Jaminan Sosial UU No. 20 Tahun 2011 tentang Rumah Susun UU No. 1 Tahun 2011 tentang Perumahan dan Kawasan Permukiman UU No. 13 Tahun 2010 tentang Hortikultura UU No. 45 Tahun 2009 tentang Perubahan Atas Undang-Undang Nomor 31 Tahun 2004 Tentang Perikanan UU No. 44 Tahun 2009 tentang Rumah Sakit UU No. 41 Tahun 2009 tentang Perlindungan Lahan Pertanian Pangan Berkelanjutan UU No. 4 Tahun 2009 tentang Pertambangan Mineral dan Batubara UU No. 39 Tahun 2009 tentang Kawasan Ekonomi Khusus UU No. 38 Tahun 2009 tentang POS UU No. 36 Tahun 2009 tentang Kesehatan UU No. 35 Tahun 2009 tentang Narkotika UU No. 33 Tahun 2009 tentang Perfilman UU No. 32 Tahun 2009 tentang Perlindungan dan Pengelolaan Lingkungan Hidup UU No. 30 Tahun 2009 tentang Ketenagalistrikan UU No. 22 Tahun 2009 tentang Lalu Lintas Dan Angkutan Jalan UU No. 18 Tahun 2009 tentang Peternakan dan Kesehatan Hewan UU No. 10 Tahun 2009 tentang Kepariwisataan UU No. 1 Tahun 2009 tentang Penerbangan UU No. 21 Tahun 2008 tentang Perbankan Syariah UU No. 20 Tahun 2008 tentang Usaha Mikro, Kecil, dan Menengah UU No. 17 Tahun 2008 tentang Pelayaran UU No. 44 Tahun 2007 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 1 Tahun 2007 tentang Perubahan Atas Undang-Undang Nomor 36 Tahun 2000 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 1 Tahun 2000 tentang Kawasan Perdagangan Bebas dan Pelabuhan Bebas Menjadi Undang-Undang Menjadi Undang-Undang UU No. 40 Tahun 2007 tentang Perseroan Terbatas UU No. 27 Tahun 2007 tentang Pengelolaan Wilayah Pesisir dan Pulau-Pulau Kecil UU No. 26 Tahun 2007 tentang Penataan Ruang UU No. 25 Tahun 2007 tentang Penanaman Modal UU No. 23 Tahun 2007 tentang Perkeretaapian UU No. 40 Tahun 2004 tentang Sistem Jaminan Sosial Nasional UU No. 38 Tahun 2004 tentang Jalan UU No. 31 Tahun 2004 tentang Perikanan UU No. 19 Tahun 2004 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 1 Tahun 2004 tentang Perubahan atas Undang-Undang Nomor 41 Tahun 1999 tentang Kehutanan Menjadi Undang-Undang UU No. 19 Tahun 2003 tentang Badan Usaha Milik Negara UU No. 13 Tahun 2003 tentang Ketenagakerjaan UU No. 32 Tahun 2002 tentang Penyiaran UU No. 28 Tahun 2002 tentang Bangunan Gedung UU No. 2 Tahun 2002 tentang Kepolisian Negara Republik Indonesia UU No. 22 Tahun 2001 tentang Minyak dan Gas Bumi UU No. 37 Tahun 2000 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 2 Tahun 2000 tentang Kawasan Perdagangan Bebas dan Pelabuhan Bebas Sabang Menjadi Undang-Undang UU No. 36 Tahun 2000 tentang Penetapan Peraturan Pemerintah Pengganti Undang-Undang Nomor 1 Tahun 2000 tentang Kawasan Perdagangan Bebas dan Pelabuhan Bebas Menjadi Undang-Undang UU No. 29 Tahun 2000 tentang Perlindungan Varietas Tanaman UU No. 5 Tahun 1999 tentang Larangan Praktek Monopoli dan Persaingan Usaha Tidak Sehat UU No. 41 Tahun 1999 tentang Kehutanan UU No. 36 Tahun 1999 tentang Telekomunikasi UU No. 10 Tahun 1998 tentang Perubahan atas Undang-Undang Nomor 7 Tahun 1992 tentang Perbankan UU No. 5 Tahun 1997 tentang Psikotropika UU No. 10 Tahun 1997 tentang Ketenaganukliran UU No. 7 Tahun 1992 tentang Perbankan UU No. 25 Tahun 1992 tentang Perkoperasian UU No. 8 Tahun 1983 tentang Pajak Pertambahan Nilai Barang dan Jasa dan Pajak Penjualan atas Barang Mewah UU No. 7 Tahun 1983 tentang Pajak Penghasilan UU No. 6 Tahun 1983 tentang Ketentuan Umum dan Tata Cara Perpajakan UU No. 3 Tahun 1982 tentang Wajib Daftar Perusahaan UU No. 2 Tahun 1981 tentang Metrologi Legal",
      "31 Maret 2023",
      "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023",
@@ -6242,6 +7046,7 @@
      "uu-7-2012",
      "Undang-undang (UU) Nomor 7 Tahun 2012 tentang Penanganan Konflik Sosial",
      "Berlaku",
+     "peraturan (peraturan.bpk.go.id)",
      "Belum Tersedia",
      "10 Mei 2012",
      "https://peraturan.bpk.go.id/Details/39049/uu-no-7-tahun-2012",
@@ -6256,6 +7061,7 @@
      "web-bpbddiy-klaster-2019",
      "https://bpbd.jogjaprov.go.id/berita/rakor-pembentukan-klaster-pemulihan-dini-1",
      "halaman web",
+     "berita instansi pemerintah (BPBD DIY), sekunder terhadap SK yang dikutip",
      "",
      "",
      "https://bpbd.jogjaprov.go.id/berita/rakor-pembentukan-klaster-pemulihan-dini-1",
@@ -6270,6 +7076,7 @@
      "web-dsda-ncicd-2025",
      "https://dsda.jakarta.go.id/detail-artikel/update-progres-pekerjaan-ncicd-ini-tanggul-terbangun-per-juli-2025/85",
      "halaman web",
+     "laporan progres instansi pelaksana (Dinas SDA DKI)",
      "",
      "",
      "https://dsda.jakarta.go.id/detail-artikel/update-progres-pekerjaan-ncicd-ini-tanggul-terbangun-per-juli-2025/85",
@@ -6279,6 +7086,21 @@
      "mentah/teks/web-dsda-ncicd-2025.json.gz",
      "\"semua\"",
      "resmi"
+    ],
+    [
+     "web-suarapemerintah-klaster-2024",
+     "https://suarapemerintah.id/?p=341456",
+     "halaman web",
+     "berita media nonpemerintah mengutip pejabat BNPB, sekunder terhadap SK",
+     "",
+     "",
+     "https://suarapemerintah.id/?p=341456",
+     "",
+     "062c84e71d2d6b2908668c8972445ae594302e3b",
+     "2026-10-23",
+     "mentah/teks/web-suarapemerintah-klaster-2024.json.gz",
+     "\"semua\"",
+     "terverifikasi"
     ]
    ]
   }

@@ -1,0 +1,1282 @@
+[
+ {
+  "nama": "bab04-diagram-hulu-hilir",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan pelaksana per komponen air sepanjang sungai; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Komponen sumber daya air Pulau Jawa sepanjang aliran sungai dan lembaga pelaksananya, 2026",
+  "sumber": "UU 17/2019; UU 24/2007; analisis kajian ini",
+  "kolom": 5,
+  "baris": 3,
+  "judul_kolom": [
+   "Hulu dan cekungan",
+   "Waduk",
+   "Irigasi",
+   "Air baku dan air minum",
+   "Hilir dan pesisir"
+  ],
+  "judul_baris": [
+   "Komponen",
+   "Pelaksana",
+   "Saat bencana"
+  ],
+  "kelas": {
+   "komponen": {
+    "label": "Komponen air",
+    "warna": "tint.basah.pita"
+   },
+   "pelaksana": {
+    "label": "Pelaksana pengelolaan",
+    "warna": "tint.netral.pita"
+   },
+   "bencana": {
+    "label": "Penanggulangan bencana",
+    "warna": "navy"
+   }
+  },
+  "kotak": [
+   {
+    "id": "k1",
+    "k": 0,
+    "b": 0,
+    "kelas": "komponen",
+    "judul": "Air tanah",
+    "isi": "cekungan air tanah (CAT)"
+   },
+   {
+    "id": "k2",
+    "k": 1,
+    "b": 0,
+    "kelas": "komponen",
+    "judul": "Waduk dan bendungan",
+    "isi": "tampungan dan pola operasi"
+   },
+   {
+    "id": "k3",
+    "k": 2,
+    "b": 0,
+    "kelas": "komponen",
+    "judul": "Daerah irigasi",
+    "isi": "kewenangan pusat, provinsi, kab/kota"
+   },
+   {
+    "id": "k4",
+    "k": 3,
+    "b": 0,
+    "kelas": "komponen",
+    "judul": "Air minum",
+    "isi": "perpipaan, sumur, mata air"
+   },
+   {
+    "id": "k5",
+    "k": 4,
+    "b": 0,
+    "kelas": "komponen",
+    "judul": "Pesisir",
+    "isi": "rob dan penurunan muka tanah"
+   },
+   {
+    "id": "p1",
+    "k": 0,
+    "b": 1,
+    "kelas": "pelaksana",
+    "judul": "Badan Geologi",
+    "isi": "Kementerian ESDM"
+   },
+   {
+    "id": "p2",
+    "k": 1,
+    "b": 1,
+    "kelas": "pelaksana",
+    "judul": "BBWS dan PJT",
+    "isi": "Kementerian PU"
+   },
+   {
+    "id": "p3",
+    "k": 2,
+    "b": 1,
+    "kelas": "pelaksana",
+    "judul": "BBWS dan dinas",
+    "isi": "BBWS untuk DI pusat, dinas kab/kota untuk DI kecil"
+   },
+   {
+    "id": "p4",
+    "k": 3,
+    "b": 1,
+    "kelas": "pelaksana",
+    "judul": "PDAM",
+    "isi": "pemerintah daerah"
+   },
+   {
+    "id": "p5",
+    "k": 4,
+    "b": 1,
+    "kelas": "pelaksana",
+    "judul": "Kementerian PU",
+    "isi": "tanggul dan polder; BOP Pantura Jawa"
+   },
+   {
+    "id": "b1",
+    "k": 0,
+    "b": 2,
+    "lk": 5,
+    "kelas": "bencana",
+    "judul": "BPBD dan BNPB",
+    "isi": "saat daya rusak air dinyatakan bencana (UU 17/2019 Pasal 35 ayat (5) dan UU 24/2007); tindakan darurat oleh gubernur dan bupati/wali kota (Pasal 35 ayat (6))"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "k1",
+    "ke": "k2"
+   },
+   {
+    "dari": "k2",
+    "ke": "k3"
+   },
+   {
+    "dari": "k3",
+    "ke": "k4"
+   },
+   {
+    "dari": "k4",
+    "ke": "k5"
+   },
+   {
+    "dari": "p1",
+    "ke": "b1"
+   },
+   {
+    "dari": "p2",
+    "ke": "b1"
+   },
+   {
+    "dari": "p3",
+    "ke": "b1"
+   },
+   {
+    "dari": "p4",
+    "ke": "b1"
+   },
+   {
+    "dari": "p5",
+    "ke": "b1"
+   }
+  ]
+ },
+ {
+  "nama": "bab06-diagram-rantai-risiko-kronis",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai sebab berurutan dengan bukti per mata rantai; tabel pilih grafik B5.10 tidak memuat bagan alur sebab",
+  "keterangan": "Rantai risiko kronis pesisir utara Jawa, contoh ruas Pekalongan dan Demak, 2026",
+  "sumber": "Susilo dkk. 2023; Aditiya dkk. 2023; RPSDA WS Jratunseluna 2024; DIBI BNPB",
+  "kolom": 4,
+  "baris": 2,
+  "judul_baris": [
+   "Mata rantai",
+   "Bukti"
+  ],
+  "kelas": {
+   "rantai": {
+    "label": "Mata rantai sebab",
+    "warna": "tint.basah.pita"
+   },
+   "bukti": {
+    "label": "Sumber bukti",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "r1",
+    "k": 0,
+    "b": 0,
+    "kelas": "rantai",
+    "judul": "Pengambilan air tanah",
+    "isi": "pemakaian rumah tangga, industri, dan perkotaan"
+   },
+   {
+    "id": "r2",
+    "k": 1,
+    "b": 0,
+    "kelas": "rantai",
+    "judul": "Muka air tanah turun",
+    "isi": "cekungan air tanah pesisir"
+   },
+   {
+    "id": "r3",
+    "k": 2,
+    "b": 0,
+    "kelas": "rantai",
+    "judul": "Penurunan muka tanah",
+    "isi": "laju terverifikasi tertinggi di Jawa"
+   },
+   {
+    "id": "r4",
+    "k": 3,
+    "b": 0,
+    "kelas": "rantai",
+    "judul": "Genangan rob dan banjir",
+    "isi": "terdampak, rumah terendam, pengungsian"
+   },
+   {
+    "id": "e1",
+    "k": 0,
+    "b": 1,
+    "lk": 2,
+    "kelas": "bukti",
+    "judul": "Aditiya dkk. (2023)",
+    "isi": "korelasi muka air tanah dan deformasi, Semarang"
+   },
+   {
+    "id": "e2",
+    "k": 2,
+    "b": 1,
+    "kelas": "bukti",
+    "judul": "Susilo dkk. (2023); Badan Geologi 2018",
+    "isi": "GNSS dan patok: Pekalongan, Semarang, Demak"
+   },
+   {
+    "id": "e3",
+    "k": 3,
+    "b": 1,
+    "kelas": "bukti",
+    "judul": "DIBI BNPB",
+    "isi": "kejadian rob dan banjir kab/kota pesisir utara"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "r1",
+    "ke": "r2"
+   },
+   {
+    "dari": "r2",
+    "ke": "r3"
+   },
+   {
+    "dari": "r3",
+    "ke": "r4"
+   }
+  ]
+ },
+ {
+  "nama": "rantai-metode",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Alur dari sumber data ke paket, aturan kajian, dan bab pemakai; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Rantai metode dari sumber data ke bab pemakai, kajian ketahanan air Pulau Jawa 2026",
+  "sumber": "Pengolahan Pantau Bencana",
+  "kolom": 4,
+  "baris": 5,
+  "judul_kolom": [
+   "Sumber data",
+   "Paket data per tema",
+   "Aturan kajian",
+   "Bab pemakai"
+  ],
+  "kelas": {
+   "sumber": {
+    "label": "Sumber data resmi atau terverifikasi",
+    "warna": "tint.netral.pita"
+   },
+   "paket": {
+    "label": "Paket data",
+    "warna": "tint.basah.pita"
+   },
+   "aturan": {
+    "label": "Aturan kajian",
+    "warna": "navy"
+   },
+   "model": {
+    "label": "Estimasi model, bukan Data Bencana",
+    "warna": "tint.kering.pita"
+   },
+   "bab": {
+    "label": "Bab pemakai",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "s1",
+    "k": 0,
+    "b": 0,
+    "kelas": "sumber",
+    "judul": "DIBI BNPB 2008–2026",
+    "isi": "kejadian dan korban per kab/kota"
+   },
+   {
+    "id": "d1",
+    "k": 1,
+    "b": 0,
+    "kelas": "paket",
+    "judul": "Paket DIBI",
+    "isi": "seri per tahun dan per musim"
+   },
+   {
+    "id": "a1",
+    "k": 2,
+    "b": 0,
+    "kelas": "aturan",
+    "judul": "Skenario dan lantai",
+    "isi": "musim tercatat terburuk"
+   },
+   {
+    "id": "c1",
+    "k": 3,
+    "b": 0,
+    "kelas": "bab",
+    "judul": "Bab 5 dan 6",
+    "isi": "profil risiko dan kartu skenario"
+   },
+   {
+    "id": "s2",
+    "k": 0,
+    "b": 1,
+    "kelas": "sumber",
+    "judul": "InaRISK BNPB",
+    "isi": "IRBI 2015–2025 dan KRB 2022–2026"
+   },
+   {
+    "id": "d2",
+    "k": 1,
+    "b": 1,
+    "kelas": "paket",
+    "judul": "Paket IRBI",
+    "isi": "kelas nilai kuantil kab/kota"
+   },
+   {
+    "id": "a2",
+    "k": 2,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Daftar perhatian",
+    "isi": "syarat IRBI dan rekaman DIBI"
+   },
+   {
+    "id": "c2",
+    "k": 3,
+    "b": 1,
+    "kelas": "bab",
+    "judul": "Bab 5, 6, dan 8",
+    "isi": "daftar perhatian dan strategi"
+   },
+   {
+    "id": "s3",
+    "k": 0,
+    "b": 2,
+    "kelas": "sumber",
+    "judul": "BPS dan Kementerian PU",
+    "isi": "irigasi, bendungan, air minum"
+   },
+   {
+    "id": "d3",
+    "k": 1,
+    "b": 2,
+    "kelas": "paket",
+    "judul": "Paket air Jawa",
+    "isi": "komponen air per kab/kota"
+   },
+   {
+    "id": "a3",
+    "k": 2,
+    "b": 2,
+    "kelas": "aturan",
+    "judul": "Kerugian",
+    "isi": "penduduk terpapar dan potensi kerugian KRB"
+   },
+   {
+    "id": "c3",
+    "k": 3,
+    "b": 2,
+    "kelas": "bab",
+    "judul": "Bab 4 dan 7",
+    "isi": "kondisi sumber daya air dan kesenjangan"
+   },
+   {
+    "id": "s4",
+    "k": 0,
+    "b": 3,
+    "kelas": "sumber",
+    "judul": "Literatur terverifikasi",
+    "isi": "penurunan muka tanah dan evaluasi program"
+   },
+   {
+    "id": "d4",
+    "k": 1,
+    "b": 3,
+    "kelas": "paket",
+    "judul": "Paket program",
+    "isi": "kategori bukti program"
+   },
+   {
+    "id": "a4",
+    "k": 2,
+    "b": 3,
+    "kelas": "aturan",
+    "judul": "Kategori bukti",
+    "isi": "kuat, sedang, belum dievaluasi"
+   },
+   {
+    "id": "c4",
+    "k": 3,
+    "b": 3,
+    "kelas": "bab",
+    "judul": "Bab 7 dan 8",
+    "isi": "program dan strategi"
+   },
+   {
+    "id": "s5",
+    "k": 0,
+    "b": 4,
+    "kelas": "model",
+    "judul": "Platform Pantau Bencana",
+    "isi": "model neraca, padi, dan rasio korban"
+   },
+   {
+    "id": "d5",
+    "k": 1,
+    "b": 4,
+    "kelas": "model",
+    "judul": "Paket skenario hidrometeorologi",
+    "isi": "keluaran simulasi"
+   },
+   {
+    "id": "a5",
+    "k": 2,
+    "b": 4,
+    "kelas": "aturan",
+    "judul": "Kepekaan",
+    "isi": "cakupan peringatan dini"
+   },
+   {
+    "id": "c5",
+    "k": 3,
+    "b": 4,
+    "kelas": "bab",
+    "judul": "Bab 6 dan Lampiran I",
+    "isi": "uji kepekaan dan keluaran model"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "s1",
+    "ke": "d1"
+   },
+   {
+    "dari": "d1",
+    "ke": "a1"
+   },
+   {
+    "dari": "a1",
+    "ke": "c1"
+   },
+   {
+    "dari": "s2",
+    "ke": "d2"
+   },
+   {
+    "dari": "d2",
+    "ke": "a2"
+   },
+   {
+    "dari": "a2",
+    "ke": "c2"
+   },
+   {
+    "dari": "s3",
+    "ke": "d3"
+   },
+   {
+    "dari": "d3",
+    "ke": "a3"
+   },
+   {
+    "dari": "a3",
+    "ke": "c3"
+   },
+   {
+    "dari": "s4",
+    "ke": "d4"
+   },
+   {
+    "dari": "d4",
+    "ke": "a4"
+   },
+   {
+    "dari": "a4",
+    "ke": "c4"
+   },
+   {
+    "dari": "s5",
+    "ke": "d5"
+   },
+   {
+    "dari": "d5",
+    "ke": "a5"
+   },
+   {
+    "dari": "a5",
+    "ke": "c5"
+   }
+  ]
+ },
+ {
+  "nama": "garis-waktu-musim-2026-2027",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "sela_pt": 5,
+  "alasan": "Garis waktu musim dan tonggak kebijakan berlajur; tabel pilih grafik B5.10 tidak memuat garis waktu",
+  "keterangan": "Prakiraan musim 2026/2027 di Pulau Jawa dan tonggak peninjauan Renas PB, 2026–2028",
+  "sumber": "BMKG 2026; Perban BNPB 1/2025; analisis kajian ini",
+  "kolom": 8,
+  "baris": 4,
+  "judul_kolom": [
+   "Okt 2026",
+   "Nov 2026",
+   "Des 2026",
+   "Jan 2027",
+   "Feb 2027",
+   "Mar 2027",
+   "2027",
+   "2028"
+  ],
+  "judul_baris": [
+   "Sebagian besar Jawa",
+   "Sebagian Jawa",
+   "Peta jalan BNPB",
+   "Renas PB"
+  ],
+  "kelas": {
+   "kemarau": {
+    "label": "Kemarau",
+    "warna": "tint.kering.pita"
+   },
+   "hujan": {
+    "label": "Musim hujan",
+    "warna": "tint.basah.pita"
+   },
+   "puncak": {
+    "label": "Puncak musim hujan",
+    "warna": "kategori.basah"
+   },
+   "bnpb": {
+    "label": "Peta jalan, asumsi hari ke-0",
+    "warna": "navy"
+   },
+   "renas": {
+    "label": "Tonggak Renas PB",
+    "warna": "tint.netral.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "m1",
+    "k": 0,
+    "b": 0,
+    "lk": 2,
+    "kelas": "kemarau",
+    "judul": "Kemarau El Niño"
+   },
+   {
+    "id": "m2",
+    "k": 2,
+    "b": 0,
+    "lk": 2,
+    "kelas": "hujan",
+    "judul": "Awal Desember"
+   },
+   {
+    "id": "m3",
+    "k": 4,
+    "b": 0,
+    "kelas": "puncak",
+    "judul": "Puncak"
+   },
+   {
+    "id": "n1",
+    "k": 0,
+    "b": 1,
+    "kelas": "kemarau",
+    "judul": "Kemarau"
+   },
+   {
+    "id": "n2",
+    "k": 1,
+    "b": 1,
+    "lk": 2,
+    "kelas": "hujan",
+    "judul": "Awal November"
+   },
+   {
+    "id": "n3",
+    "k": 3,
+    "b": 1,
+    "kelas": "puncak",
+    "judul": "Puncak"
+   },
+   {
+    "id": "h0",
+    "k": 1,
+    "b": 2,
+    "kelas": "bnpb",
+    "judul": "Hari ke-0"
+   },
+   {
+    "id": "h1",
+    "k": 2,
+    "b": 2,
+    "lk": 4,
+    "kelas": "bnpb",
+    "judul": "100 hari pertama",
+    "isi": "hari ke-100: 9 Februari sampai 10 Maret 2027"
+   },
+   {
+    "id": "r1",
+    "k": 6,
+    "b": 3,
+    "kelas": "renas",
+    "judul": "Rakor Renas PB",
+    "isi": "triwulan II"
+   },
+   {
+    "id": "r2",
+    "k": 7,
+    "b": 3,
+    "kelas": "renas",
+    "judul": "Jalur bencana",
+    "isi": "batas akhir"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "h0",
+    "ke": "h1"
+   }
+  ]
+ },
+ {
+  "nama": "bab09-forum-koordinasi",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan forum dan jalur adopsi rekomendasi lintas lembaga; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Forum koordinasi dan aliran rekomendasi kajian air lintas K/L, 2026–2030",
+  "sumber": "Perpres 1/2019; Perpres 87/2020; Perpres 53/2022; Perpres 77/2025; Perban BNPB 6/2025",
+  "kolom": 4,
+  "baris": 2,
+  "kelas": {
+   "bnpb": {
+    "label": "BNPB",
+    "warna": "navy"
+   },
+   "koordinasi": {
+    "label": "Koordinasi dan pelaporan",
+    "warna": "tint.netral.pita"
+   },
+   "air": {
+    "label": "Forum air",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "up",
+    "k": 0,
+    "b": 0,
+    "kelas": "bnpb",
+    "judul": "Unsur Pengarah BNPB",
+    "isi": "masukan kepada Kepala; memuat Kementerian ESDM dan PU"
+   },
+   {
+    "id": "kb",
+    "k": 1,
+    "b": 0,
+    "kelas": "bnpb",
+    "judul": "Kepala BNPB",
+    "isi": "KD-1, KD-2, dan KD-5"
+   },
+   {
+    "id": "rk",
+    "k": 2,
+    "b": 0,
+    "kelas": "koordinasi",
+    "judul": "Rakor Kemenko PMK",
+    "isi": "peninjauan Renas PB triwulan II 2027; keadaan tertentu; Dana Bersama"
+   },
+   {
+    "id": "pr",
+    "k": 3,
+    "b": 0,
+    "kelas": "koordinasi",
+    "judul": "Presiden",
+    "isi": "laporan pemantauan RIPB melalui Menko PMK"
+   },
+   {
+    "id": "ds",
+    "k": 0,
+    "b": 1,
+    "kelas": "air",
+    "judul": "Dewan SDA Nasional",
+    "isi": "Kepala BNPB anggota"
+   },
+   {
+    "id": "tk",
+    "k": 1,
+    "b": 1,
+    "kelas": "air",
+    "judul": "TKPSDA WS",
+    "isi": "butir air per wilayah sungai"
+   },
+   {
+    "id": "bo",
+    "k": 3,
+    "b": 1,
+    "kelas": "air",
+    "judul": "Dewan Pengarah BOP Pantura Jawa",
+    "isi": "Menko PMK Wakil Ketua; tanpa BNPB"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "up",
+    "ke": "kb"
+   },
+   {
+    "dari": "kb",
+    "ke": "rk"
+   },
+   {
+    "dari": "rk",
+    "ke": "pr"
+   },
+   {
+    "dari": "kb",
+    "ke": "ds"
+   },
+   {
+    "dari": "kb",
+    "ke": "tk"
+   },
+   {
+    "dari": "rk",
+    "ke": "bo"
+   }
+  ]
+ },
+ {
+  "nama": "bab09-lapisan-pembiayaan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Lapisan sumber dana per fase tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+  "keterangan": "Lapisan sumber dana per fase penanggulangan bencana untuk komponen air, peraturan berlaku Oktober 2026",
+  "sumber": "PP 22/2008; PP 12/2019; Perpres 75/2021; Perban BNPB 1/2026; Juklak BNPB 2/2026; Renas PB 2025–2029",
+  "kolom": 3,
+  "baris": 5,
+  "judul_kolom": [
+   "Prabencana",
+   "Tanggap darurat",
+   "Pascabencana"
+  ],
+  "kelas": {
+   "apbn": {
+    "label": "APBN dan APBD",
+    "warna": "tint.netral.pita"
+   },
+   "bersama": {
+    "label": "Dana Bersama",
+    "warna": "tint.basah.pita"
+   },
+   "bnpb": {
+    "label": "Dana BNPB",
+    "warna": "navy"
+   },
+   "daerah": {
+    "label": "Belanja tidak terduga daerah",
+    "warna": "tint.kering.pita"
+   },
+   "asuransi": {
+    "label": "Asuransi",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "a",
+    "k": 0,
+    "b": 0,
+    "lk": 3,
+    "kelas": "apbn",
+    "judul": "APBN dan APBD",
+    "isi": "DAK irigasi; dana desa 2026; dana kontinjensi APBN (PP 22/2008 Pasal 6 ayat (1))"
+   },
+   {
+    "id": "b1",
+    "k": 0,
+    "b": 1,
+    "kelas": "bersama",
+    "judul": "Dana Bersama",
+    "isi": "rencana kontinjensi, kapasitas badan air, peringatan dini"
+   },
+   {
+    "id": "b2",
+    "k": 2,
+    "b": 1,
+    "kelas": "bersama",
+    "judul": "Dana Bersama",
+    "isi": "sesuai rencana rehabilitasi dan rekonstruksi"
+   },
+   {
+    "id": "c",
+    "k": 1,
+    "b": 2,
+    "kelas": "bnpb",
+    "judul": "Dana Siap Pakai",
+    "isi": "air bersih dan sanitasi (PP 22/2008 Pasal 17)"
+   },
+   {
+    "id": "d",
+    "k": 1,
+    "b": 3,
+    "kelas": "daerah",
+    "judul": "BTT APBD",
+    "isi": "keadaan darurat bencana (PP 12/2019 Pasal 68–69)"
+   },
+   {
+    "id": "e",
+    "k": 2,
+    "b": 2,
+    "lb": 2,
+    "kelas": "bnpb",
+    "judul": "Bantuan sosial berpola hibah",
+    "isi": "atas permohonan pemda (PP 22/2008 Pasal 23)"
+   },
+   {
+    "id": "f",
+    "k": 0,
+    "b": 4,
+    "lk": 3,
+    "kelas": "asuransi",
+    "judul": "Asuransi pertanian",
+    "isi": "Renas PB 2.5.1.c; jalur pembiayaan puso kekeringan"
+   }
+  ],
+  "panah": []
+ },
+ {
+  "nama": "bab09-pelaporan-tiga-lapis",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Tiga lapis pelapor, laporan, dan penerima; tabel pilih grafik B5.10 tidak memuat bagan tata kelola",
+  "keterangan": "Tata kelola dan pelaporan rekomendasi kajian air dalam tiga lapis, 2026–2030",
+  "sumber": "Perpres 1/2019; Perpres 87/2020; Perban BNPB 4/2020; Perban BNPB 1/2023; Perban BNPB 6/2025; Perban BNPB 1/2026",
+  "kolom": 3,
+  "baris": 3,
+  "judul_kolom": [
+   "Lapis internal BNPB",
+   "Lapis lintas K/L",
+   "Lapis daerah"
+  ],
+  "kelas": {
+   "bnpb": {
+    "label": "BNPB",
+    "warna": "navy"
+   },
+   "lintas": {
+    "label": "Lintas K/L",
+    "warna": "tint.netral.pita"
+   },
+   "daerah": {
+    "label": "Daerah",
+    "warna": "tint.basah.pita"
+   },
+   "data": {
+    "label": "Data Bencana",
+    "warna": "kertas",
+    "garis": "garis-kuat"
+   }
+  },
+  "kotak": [
+   {
+    "id": "i1",
+    "k": 0,
+    "b": 0,
+    "kelas": "bnpb",
+    "judul": "Laporan pemantauan",
+    "isi": "Biro Perencanaan dan Direktorat Pengembangan Strategi PB (Perban BNPB 6/2025)"
+   },
+   {
+    "id": "l1",
+    "k": 1,
+    "b": 0,
+    "kelas": "lintas",
+    "judul": "Evaluasi Renas PB tahunan",
+    "isi": "lampiran irisan Jawa indikator 1.a dan 1.b"
+   },
+   {
+    "id": "r1",
+    "k": 2,
+    "b": 0,
+    "kelas": "daerah",
+    "judul": "Laporan akhir Dana Bersama",
+    "isi": "pemohon (Perban BNPB 1/2026 Pasal 32)"
+   },
+   {
+    "id": "i2",
+    "k": 0,
+    "b": 1,
+    "kelas": "bnpb",
+    "judul": "Kepala BNPB kepada Presiden",
+    "isi": "sebulan sekali dalam kondisi normal (Perpres 1/2019 Pasal 3)"
+   },
+   {
+    "id": "l2",
+    "k": 1,
+    "b": 1,
+    "kelas": "lintas",
+    "judul": "Pemantauan RIPB",
+    "isi": "setahun sekali kepada Presiden melalui Menko PMK"
+   },
+   {
+    "id": "r2",
+    "k": 2,
+    "b": 1,
+    "kelas": "daerah",
+    "judul": "Pertanggungjawaban DSP",
+    "isi": "sesudah status berakhir (Perban BNPB 4/2020 Pasal 21)"
+   },
+   {
+    "id": "w",
+    "k": 0,
+    "b": 2,
+    "lk": 3,
+    "kelas": "data",
+    "judul": "Walidata Bencana",
+    "isi": "Pusdatinkom (pemetaan penyusun); Perban BNPB 1/2023"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "i1",
+    "ke": "i2"
+   },
+   {
+    "dari": "l1",
+    "ke": "l2"
+   },
+   {
+    "dari": "r1",
+    "ke": "r2"
+   },
+   {
+    "dari": "i2",
+    "ke": "w"
+   },
+   {
+    "dari": "l2",
+    "ke": "w"
+   },
+   {
+    "dari": "r2",
+    "ke": "w"
+   }
+  ]
+ },
+ {
+  "nama": "bab07-sel-bukti-program",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "sela_pt": 3,
+  "tinggi_baris_min_pt": 26,
+  "alasan": "Kisi kategori komponen kali musim kali fase dengan isi program; matriks titik G16 hanya untuk nilai berkelas angka",
+  "keterangan": "Sel komponen × musim × fase air Pulau Jawa menurut kategori bukti program, 2026",
+  "sumber": "Kompendium program Pantau Bencana; PP 37/2010; PP 122/2015; PP 30/2024",
+  "kolom": 6,
+  "baris": 5,
+  "judul_kolom": [
+   "Kemarau, prabencana",
+   "Kemarau, tanggap darurat",
+   "Kemarau, pascabencana",
+   "Hujan, prabencana",
+   "Hujan, tanggap darurat",
+   "Hujan, pascabencana"
+  ],
+  "judul_baris": [
+   "Air baku dan air minum",
+   "Irigasi",
+   "Waduk dan bendungan",
+   "Air tanah",
+   "Penurunan muka tanah dan pesisir utara"
+  ],
+  "kelas": {
+   "kuat": {
+    "label": "Bukti kuat",
+    "warna": "navy"
+   },
+   "sedang": {
+    "label": "Bukti sedang",
+    "warna": "biru-abu"
+   },
+   "lemah": {
+    "label": "Bukti lemah atau belum terbukti",
+    "warna": "tint.basah.pita"
+   },
+   "wajib": {
+    "label": "Aksi wajib menurut peraturan",
+    "warna": "tint.kering.pita"
+   },
+   "kosong": {
+    "label": "Tanpa program",
+    "warna": "kertas",
+    "garis": "garis"
+   }
+  },
+  "kotak": [
+   {
+    "id": "s00",
+    "k": 0,
+    "b": 0,
+    "kelas": "sedang",
+    "judul": "",
+    "isi": "PAMSIMAS"
+   },
+   {
+    "id": "s01",
+    "k": 1,
+    "b": 0,
+    "kelas": "wajib",
+    "judul": "",
+    "isi": "SPAM khusus bencana"
+   },
+   {
+    "id": "s02",
+    "k": 2,
+    "b": 0,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s03",
+    "k": 3,
+    "b": 0,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "Citarum Harum"
+   },
+   {
+    "id": "s04",
+    "k": 4,
+    "b": 0,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s05",
+    "k": 5,
+    "b": 0,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s10",
+    "k": 0,
+    "b": 1,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "SLI; embung belum terbukti"
+   },
+   {
+    "id": "s11",
+    "k": 1,
+    "b": 1,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s12",
+    "k": 2,
+    "b": 1,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s13",
+    "k": 3,
+    "b": 1,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "SLI"
+   },
+   {
+    "id": "s14",
+    "k": 4,
+    "b": 1,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s15",
+    "k": 5,
+    "b": 1,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s20",
+    "k": 0,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s21",
+    "k": 1,
+    "b": 2,
+    "kelas": "wajib",
+    "judul": "",
+    "isi": "RTD bendungan"
+   },
+   {
+    "id": "s22",
+    "k": 2,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s23",
+    "k": 3,
+    "b": 2,
+    "kelas": "lemah",
+    "judul": "",
+    "isi": "Bendungan kering Ciliwung"
+   },
+   {
+    "id": "s24",
+    "k": 4,
+    "b": 2,
+    "kelas": "wajib",
+    "judul": "",
+    "isi": "RTD bendungan"
+   },
+   {
+    "id": "s25",
+    "k": 5,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s30",
+    "k": 0,
+    "b": 3,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s31",
+    "k": 1,
+    "b": 3,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s32",
+    "k": 2,
+    "b": 3,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s33",
+    "k": 3,
+    "b": 3,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "Tokyo, Osaka, Bangkok (luar negeri); sumur resapan"
+   },
+   {
+    "id": "s34",
+    "k": 4,
+    "b": 3,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s35",
+    "k": 5,
+    "b": 3,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s40",
+    "k": 0,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s41",
+    "k": 1,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s42",
+    "k": 2,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s43",
+    "k": 3,
+    "b": 4,
+    "kelas": "kuat",
+    "judul": "",
+    "isi": "Tokyo, Osaka, Bangkok (luar negeri); polder belum terbukti"
+   },
+   {
+    "id": "s44",
+    "k": 4,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   },
+   {
+    "id": "s45",
+    "k": 5,
+    "b": 4,
+    "kelas": "kosong",
+    "judul": "",
+    "isi": ""
+   }
+  ],
+  "panah": []
+ }
+]

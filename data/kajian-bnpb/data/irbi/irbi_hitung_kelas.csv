@@ -18,6 +18,6 @@ provinsi,2019,> 144 pada rerata sederhana kab,38,19,19,0,,turunan: rerata kab pe
 provinsi,2020,> 144 pada rerata sederhana kab,38,18,20,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
 provinsi,2021,> 144 pada rerata sederhana kab,38,15,23,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
 provinsi,2022,> 144 pada rerata sederhana kab,38,13,25,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
-provinsi,2023,> 144 pada rerata sederhana kab,38,13,25,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,resmi
-provinsi,2024,> 144 pada rerata sederhana kab,38,8,30,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang,asumsi-kebijakan
+provinsi,2023,> 144 pada rerata sederhana kab,38,13,25,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang; cocok RENAS hlm. 19 (13/25),resmi
+provinsi,2024,> 144 pada rerata sederhana kab,38,8,30,0,,"turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang; cocok Katadata 2024 (8/30, sekunder)",terverifikasi; sekunder
 provinsi,2025,> 176 pada rerata sederhana kab,38,15,23,0,,turunan: rerata kab per provinsi (38 provinsi kini) dibanding ambang; metode provinsi 2025 tidak terdokumentasi,asumsi-kebijakan

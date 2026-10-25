@@ -1,0 +1,308 @@
+{
+ "nama": "bab06-batang-tambahan-muka-tanah",
+ "keterangan": "Tambahan penurunan muka tanah 2026–2030 per titik atau kota terverifikasi di Pulau Jawa bila laju tetap (cm)",
+ "sumber": "Pengolahan Pantau Bencana dari laju terverifikasi",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  155.4
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.48
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "laju terverifikasi dikali 4 tahun",
+   "jenis": "garis",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "versi kutipan latar, pembanding",
+   "jenis": "garis",
+   "warna": "#B7B0A6"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 105.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "laju terverifikasi dikali 4 tahun"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 119.48,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "laju terverifikasi dikali 4 tahun"
+  },
+  {
+   "x": 145.48,
+   "y": 3,
+   "w": 110.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "versi kutipan latar, pembanding"
+  },
+  {
+   "x": 131.48,
+   "y": 2,
+   "w": 124.98,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "versi kutipan latar, pembanding"
+  },
+  {
+   "x": 129.51,
+   "y": 145.4,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 195.58,
+   "y": 145.4,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "25"
+  },
+  {
+   "x": 263.9,
+   "y": 145.4,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "50"
+  },
+  {
+   "x": 332.22,
+   "y": 145.4,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "75"
+  },
+  {
+   "x": 398.29,
+   "y": 145.4,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "100"
+  },
+  {
+   "x": 2,
+   "y": 26.2,
+   "w": 87.61,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan, GNSS CPKL"
+  },
+  {
+   "x": 255.11,
+   "y": 25.95,
+   "w": 52.69,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "42,8–42,8 cm"
+  },
+  {
+   "x": 2,
+   "y": 46.6,
+   "w": 65.48,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan, patok"
+  },
+  {
+   "x": 196.91,
+   "y": 46.35,
+   "w": 52.69,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "21,5–21,5 cm"
+  },
+  {
+   "x": 2,
+   "y": 67,
+   "w": 89.63,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan, kutipan latar"
+  },
+  {
+   "x": 345.84,
+   "y": 66.75,
+   "w": 52.69,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "40,0–76,0 cm"
+  },
+  {
+   "x": 2,
+   "y": 87.4,
+   "w": 119.75,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semarang utara-timur dan Demak"
+  },
+  {
+   "x": 269.33,
+   "y": 87.15,
+   "w": 52.69,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "40,0–48,0 cm"
+  },
+  {
+   "x": 2,
+   "y": 107.8,
+   "w": 44.02,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "CAT Jakarta"
+  },
+  {
+   "x": 207.02,
+   "y": 107.55,
+   "w": 47.81,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0,2–25,2 cm"
+  },
+  {
+   "x": 2,
+   "y": 128.2,
+   "w": 97.65,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kab. Bandung, titik tertinggi"
+  },
+  {
+   "x": 381.91,
+   "y": 127.95,
+   "w": 52.69,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "88,0–89,2 cm"
+  }
+ ],
+ "jenis": "rentang",
+ "pesan": "G12",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_baris": 6,
+ "baris_rentang": [
+  {
+   "id": "Pekalongan, GNSS CPKL",
+   "rendah": 42.8,
+   "tinggi": 42.8,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    42.8,
+    42.8
+   ],
+   "label": "42,8–42,8 cm"
+  },
+  {
+   "id": "Pekalongan, patok",
+   "rendah": 21.5,
+   "tinggi": 21.5,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    21.5,
+    21.5
+   ],
+   "label": "21,5–21,5 cm"
+  },
+  {
+   "id": "Pekalongan, kutipan latar",
+   "rendah": 40,
+   "tinggi": 76,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    40,
+    76
+   ],
+   "label": "40,0–76,0 cm"
+  },
+  {
+   "id": "Semarang utara-timur dan Demak",
+   "rendah": 40,
+   "tinggi": 48,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    40,
+    48
+   ],
+   "label": "40,0–48,0 cm"
+  },
+  {
+   "id": "CAT Jakarta",
+   "rendah": 0.16,
+   "tinggi": 25.2,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    0.16,
+    25.2
+   ],
+   "label": "0,2–25,2 cm"
+  },
+  {
+   "id": "Kab. Bandung, titik tertinggi",
+   "rendah": 88,
+   "tinggi": 89.2,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    88,
+    89.2
+   ],
+   "label": "88,0–89,2 cm"
+  }
+ ]
+}

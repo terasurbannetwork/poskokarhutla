@@ -1,0 +1,1138 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 4 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-04.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur, atau nilai + pustaka (id di bab-04.pustaka.json, digabung ke pustaka.json saat registri disatukan).",
+    "Kunci yang sudah ada di data/angka.json tidak diulang. Angka sekunder tidak dimasukkan. Bentuk A diperiksa: tiap jalur menunjuk tepat satu baris dan nilainya sama dengan berkas bukti.",
+    "Disusun 24 Oktober 2026.",
+    "Diperbarui 24 Oktober 2026 setelah pemeriksaan: porsi memakai penyebut alam (V06, V16), kunci Pangandaran, BRR naratif, hidromet 2008–2024, Spearman 2015–2023, alam semua laporan 2024–2025; label Surono menjadi estimasi-model.",
+    "Diperbarui 24 Oktober 2026 oleh penulis Bab 4: kunci tambahan untuk naskah naskah/mitigasi/bab-04.md (hilang DIBI per kejadian, USGS Padang/Mentawai/Lombok/hilang Sulteng, Podes 2021, konflik/epidemi/gagal teknologi DIBI, rasio hidromet 2025, Surono radius dan kutipan BNPB, R3P Cianjur kerugian)."
+  ],
+  "angka": {
+    "dibi.nasional.kejadian.2015": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2015,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.kejadian.2018": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2018,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.kejadian.2021": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2021,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2021",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.kejadian.2023": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2023,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2023",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.kejadian.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2024",
+      "catatan": "kejadian bencana (Juklak 7/2023); semua laporan 3.636; bencana alam 3.471,5"
+    },
+    "dibi.nasional.kejadian_semua_laporan.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,klasifikasi=semua,cakupan=semua_laporan].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2024",
+      "catatan": "sama dengan grafik publik DIBI; bukan kejadian bencana"
+    },
+    "dibi.nasional.kejadian_semua_laporan.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=semua,cakupan=semua_laporan].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025",
+      "catatan": "versi semua laporan; tidak boleh disebut kejadian bencana 2025 (5.440,45)"
+    },
+    "dibi.nasional.meninggal.2015": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2015,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.meninggal.2018": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2018,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.meninggal.2022": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2022,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2022",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.meninggal.2023": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2023,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2023",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.hilang.2018": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2018,klasifikasi=semua,cakupan=bencana].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018",
+      "catatan": "cakupan kejadian bencana; sebelum 2024 tidak tersaring ambang Juklak 7/2023 (patahan seri)"
+    },
+    "dibi.nasional.meninggal_semua_laporan.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=semua,cakupan=semua_laporan].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025",
+      "catatan": "semua laporan; kejadian bencana 2.030"
+    },
+    "dibi.nasional.meninggal.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 (sementara)",
+      "catatan": "sampai 23 Okt 2026; final sekitar Feb 2027"
+    },
+    "dibi.nasional.kejadian_alam.2024": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2024",
+      "nilai": 3471.5,
+      "catatan": "olah: jumlah sembilan baris klasifikasi=alam, cakupan=bencana, di dibi/rekap_nasional_tahunan.csv; seri sebanding antartahun"
+    },
+    "dibi.nasional.kejadian_alam.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 5077.45,
+      "catatan": "olah: idem"
+    },
+    "dibi.nasional.meninggal_alam.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 1735,
+      "catatan": "olah: idem; tertinggi sejak 2018 (5.477)"
+    },
+    "dibi.nasional.kejadian_alam.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 41621.95,
+      "catatan": "olah: jumlah 11 tahun kejadian alam"
+    },
+    "dibi.nasional.meninggal.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 11873,
+      "catatan": "olah: jumlah meninggal klasifikasi=semua, cakupan=bencana, 2015–2025; COVID-19 tidak termasuk"
+    },
+    "dibi.nasional.hilang.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 1606,
+      "catatan": "olah: semua klasifikasi; versi alam 1.579 (dibi.nasional.hilang_alam.2015_2025)"
+    },
+    "dibi.nasional.meninggal_geologi.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 6236,
+      "catatan": "olah: kode 107 gempa bumi, 108 tsunami, 109 erupsi"
+    },
+    "dibi.nasional.meninggal_geologi_porsi.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 54.3,
+      "catatan": "olah: 6.236 / 11.477 meninggal alam"
+    },
+    "dibi.nasional.kejadian_geologi_porsi.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 0.91,
+      "catatan": "olah: 377,2 / 41.621,95 kejadian alam"
+    },
+    "dibi.nasional.meninggal_hidromet.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 1731,
+      "catatan": "olah: kode 101–106 (banjir 1.396, longsor 244, cuaca ekstrem 80, gelombang 7, karhutla 4)"
+    },
+    "dibi.nasional.meninggal_hidromet_maks.2015_2024": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2024",
+      "nilai": 545,
+      "catatan": "olah: maksimum tahunan kode 101–106, tahun 2021; minimum 219 (2015); jendela asumsi-kebijakan; periode acuan KERANGKA 2008–2024 memberi 774 (2010)"
+    },
+    "dibi.nasional.spearman_kejadian_meninggal.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "nilai": 0.22,
+      "catatan": "olah: korelasi peringkat Spearman kejadian alam dan meninggal alam per tahun, n = 11; melintasi patahan ambang 2024 (2015–2023 tidak tersaring, 2024–2025 tersaring); 0,17 untuk 2015–2023; 0,29 bila 2024–2025 memakai alam semua laporan"
+    },
+    "dibi.nasional.nonalam_sosial_lainnya.kejadian.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 363,
+      "catatan": "olah: kode 201, 202, 203, 301, 999, cakupan bencana; 2018–2023 hanya 0–15 per tahun"
+    },
+    "dibi.nasional.nonalam_sosial_lainnya.meninggal.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 295,
+      "catatan": "olah: idem; termasuk entri ganda epidemi Nias Selatan"
+    },
+    "dibi.kebakaran_permukiman.kejadian.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,kode_jenis_juklak=202,cakupan=semua_laporan].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2024",
+      "catatan": "semua laporan; di luar lingkup kajian (prinsip 3), konteks saja"
+    },
+    "dibi.kebakaran_permukiman.kejadian.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=semua_laporan].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025",
+      "catatan": "semua laporan; di luar lingkup kajian (prinsip 3), konteks saja"
+    },
+    "dibi.kebakaran_permukiman.meninggal.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=semua_laporan].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025",
+      "catatan": "semua laporan; di luar lingkup kajian (prinsip 3), konteks saja"
+    },
+    "dibi.kejadian_besar.lima_teratas_porsi_meninggal.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 60.6,
+      "catatan": "olah: (Sulteng 4.140 + Sumatra 1.202 + Cianjur 602 + Lombok 569 + Selat Sunda 437) / 11.477 meninggal bencana alam (V06, V16); versi semua klasifikasi 6.950 / 11.873 = 58,5%; jendela per kejadian pilihan penyusun (dibi/kejadian_besar.csv)"
+    },
+    "dibi.kejadian_besar.porsi_meninggal.2018": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018",
+      "nilai": 94.0,
+      "catatan": "olah: (Sulteng 4.140 + Lombok 569 + Selat Sunda 437) / 5.477 meninggal alam 2018; semua klasifikasi 5.146 / 5.500 = 93,6%"
+    },
+    "dibi.sumatra2025.porsi_meninggal.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "nilai": 69.3,
+      "catatan": "olah: 1.202 / 1.735 meninggal alam 2025; semua klasifikasi 1.202 / 2.030 = 59,2% (patahan 2024); jendela 15 Nov–31 Des 2025 pilihan penyusun"
+    },
+    "dibi.sumatra2025.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela); nominal terbesar dijumlah lintas laporan"
+    },
+    "dibi.sulteng2018.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Sulawesi Tengah 2018",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela); USGS 1.075, BNPB 21 Okt 2018 1.309 (sekunder)"
+    },
+    "dibi.lombok2018.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=lombok2018,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, rangkaian gempa Lombok 2018",
+      "catatan": "jendela 29 Jul–30 Sep 2018, NTB dan Bali; USGS 563; baris 5 Agu saja 528"
+    },
+    "dibi.selatsunda2018.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=selatsunda2018,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tsunami Selat Sunda 2018",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.selatsunda2018.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=selatsunda2018,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tsunami Selat Sunda 2018",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.cianjur2022.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Cianjur 2022",
+      "catatan": "sama dengan Renstra 602; R3P Cianjur 334 per data BPBD 7 Des 2022"
+    },
+    "dibi.cianjur2022.rumah_rusak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=rumah_rusak,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Cianjur 2022",
+      "catatan": "Renstra 56.548; R3P 114.315 (SK Bupati tahap II)"
+    },
+    "dibi.merapi2010.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=merapi2010,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, erupsi Merapi 2010",
+      "catatan": "sama dengan rekap BNPB 12 Des 2010; rekap 1 Des 2010: 347"
+    },
+    "dibi.merapi2010.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=merapi2010,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, erupsi Merapi 2010",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.mentawai2010.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=mentawai2010,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tsunami Mentawai 2010",
+      "catatan": "USGS 445"
+    },
+    "dibi.mentawai2010.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=mentawai2010,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tsunami Mentawai 2010",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.padang2009.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=padang2009,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Sumatera Barat 2009",
+      "catatan": "USGS 1.117"
+    },
+    "dibi.wasior2010.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=wasior2010,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir bandang Wasior 2010",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.wasior2010.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=wasior2010,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir bandang Wasior 2010",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.seroja2021.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=seroja2021,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Siklon Tropis Seroja 2021",
+      "catatan": "Renstra 184; beda tidak terjelaskan"
+    },
+    "dibi.seroja2021.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=seroja2021,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Siklon Tropis Seroja 2021",
+      "catatan": "Renstra 47"
+    },
+    "renstra.seroja2021.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=seroja2021,metrik=meninggal,versi=pustaka].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 hlm. 11 (BNPB, 2022)",
+      "catatan": "seluruh dampak siklon; DIBI 154"
+    },
+    "renstra.seroja2021.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=seroja2021,metrik=hilang,versi=pustaka].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 hlm. 11 (BNPB, 2022)",
+      "catatan": "DIBI 34"
+    },
+    "dibi.semeru2021.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=semeru2021,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, erupsi Semeru 2021",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.semeru2021.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=semeru2021,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, erupsi Semeru 2021",
+      "catatan": "jendela tanggal dan wilayah pilihan penyusun (dibi/kejadian_besar.csv kolom cakupan_atau_jendela)"
+    },
+    "dibi.jabodetabek2020.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=jabodetabek2020,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir Jabodetabek awal 2020",
+      "catatan": "jendela 31 Des 2019–8 Jan 2020, 14 kab/kota; Renstra 61"
+    },
+    "renstra.jabodetabek2020.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=jabodetabek2020,metrik=meninggal,versi=pustaka].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 hlm. 11",
+      "catatan": "\"banjir di DKI Jakarta pada awal tahun 2020\"; cakupan wilayah tidak dirinci"
+    },
+    "renstra.jabodetabek2020.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=jabodetabek2020,metrik=mengungsi,versi=pustaka].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 hlm. 11",
+      "catatan": "pembanding DIBI DKI saja 36.424; DIBI 14 kab 433.628 tidak terbukti (rekaman Kota Bekasi)"
+    },
+    "dibi.karhutla2015.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=karhutla2015,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kebakaran hutan dan lahan 2015",
+      "catatan": "33 kab; bukan beban kesehatan asap (Koplitz dkk. 2016: 91.600 kematian berlebih, estimasi-model)"
+    },
+    "dibi.wamena2019.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=wamena2019,metrik=meninggal,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial Wamena 2019",
+      "catatan": "Presiden RI 33 (Setkab 30 Sep 2019)"
+    },
+    "dibi.ntt2026.gempa.meninggal": {
+      "berkas": "dibi/rekap_provinsi_tahunan.csv",
+      "jalur": "[tahun=2026,provinsi=Nusa Tenggara Timur,kategori_dibi=Gempabumi,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 (sementara), NTT kategori Gempabumi",
+      "catatan": "3,73 kejadian, terutama gempa M7,7 15 Agustus 2026 (halaman BNPB tidak terbuka); belum ada di kejadian_besar.csv; final sekitar Feb 2027"
+    },
+    "dibi.ntt2026.gempa.mengungsi": {
+      "berkas": "dibi/rekap_provinsi_tahunan.csv",
+      "jalur": "[tahun=2026,provinsi=Nusa Tenggara Timur,kategori_dibi=Gempabumi,cakupan=bencana].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 (sementara), NTT kategori Gempabumi",
+      "catatan": "3,73 kejadian, terutama gempa M7,7 15 Agustus 2026 (halaman BNPB tidak terbuka); belum ada di kejadian_besar.csv; final sekitar Feb 2027"
+    },
+    "dibi.ntt2026.gempa.rumah_rusak_berat": {
+      "berkas": "dibi/rekap_provinsi_tahunan.csv",
+      "jalur": "[tahun=2026,provinsi=Nusa Tenggara Timur,kategori_dibi=Gempabumi,cakupan=bencana].rumah_rusak_berat",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 (sementara), NTT kategori Gempabumi",
+      "catatan": "3,73 kejadian, terutama gempa M7,7 15 Agustus 2026 (halaman BNPB tidak terbuka); belum ada di kejadian_besar.csv; final sekitar Feb 2027"
+    },
+    "usgs.sulteng2018.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=meninggal,label=terverifikasi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, halaman event us1000h3p4",
+      "catatan": "\"at least\" (batas bawah); DIBI 4.140"
+    },
+    "usgs.yogya2006.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=yogya2006,metrik=meninggal,versi=USGS].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, halaman event usp000ej1c (via factsheet_gempa.json)",
+      "catatan": "pra-DIBI; Bappenas ±5.700 (sekunder)"
+    },
+    "sipongi.karhutla2019.luas_ha": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=karhutla2019,metrik=luas_ha,versi=SiPongi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "SiPongi KLHK (kini Kementerian Kehutanan), indikasi luas kebakaran 2019",
+      "catatan": "indikasi dari titik panas dan verifikasi, dijumlah 38 provinsi (public/data/luas_resmi.json)"
+    },
+    "brr.aceh2004.meninggal": {
+      "pustaka": "brr-2009-nias",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD–Nias (2009), halaman capaian 4 tahun",
+      "nilai": 127720,
+      "catatan": "Aceh dan Nias; buku Nias hlm. xiii (riset E §E4) dan infografik The Scattered Beads PDF 15; berdampingan dengan 126.741 (teks naratif BRR); Buku Utama Rencana Induk tidak ditemukan; bawaan KERANGKA diterapkan, dapat dibalik"
+    },
+    "brr.aceh2004.hilang": {
+      "pustaka": "brr-2009-nias",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD–Nias (2009)",
+      "nilai": 93285,
+      "catatan": "idem"
+    },
+    "brr.nias2005.meninggal": {
+      "pustaka": "brr-2009-nias",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD–Nias (2009)",
+      "nilai": 966,
+      "catatan": "gempa 28 Mar 2005; 850 saat gempa; idem status"
+    },
+    "r3p.cianjur2022.meninggal": {
+      "pustaka": "bnpb-2022-r3p-cianjur",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022, data BPBD 7 Des 2022",
+      "nilai": 334,
+      "catatan": "dokumen berstatus contoh di portal BNPB, tanpa nomor penetapan; DIBI dan Renstra 602; beda tidak terjelaskan"
+    },
+    "r3p.cianjur2022.rumah_rusak": {
+      "pustaka": "bnpb-2022-r3p-cianjur",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "R3P Cianjur 2022, SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II hasil reviu BNPB",
+      "nilai": 114315,
+      "catatan": "berat 20.969, sedang 24.584, ringan 68.762; DIBI 57.337; Renstra 56.548"
+    },
+    "koplitz.asap2015.kematian_berlebih": {
+      "pustaka": "koplitz-2016-asap",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "Koplitz dkk. (2016), Environmental Research Letters 11: 094023, bagian 3.4",
+      "nilai": 91600,
+      "rendah": 24000,
+      "tinggi": 159200,
+      "catatan": "kematian berlebih akibat paparan PM2,5 asap 2015 di Indonesia, model GEOS-Chem; bukan korban tercatat (DIBI karhutla 2015: 24); pita 6,6 kali, boleh di kartu, tidak di judul"
+    },
+    "surono.merapi2010.jiwa_terselamatkan": {
+      "pustaka": "surono-2012-merapi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "Surono dkk. (2012), JVGR 241–242: 121–135",
+      "nilai": "10000–20000",
+      "rendah": 10000,
+      "tinggi": 20000,
+      "catatan": "perkiraan penulis, belum diuji: 2.300 rumah hancur (BNPB) dikali 4–8 jiwa per rumah tangga (hlm. 129, naskah penuh dibuka 24 Okt 2026); bukan angka resmi; selalu berdampingan dengan korban tercatat DIBI 386"
+    },
+    "harnantyari.palu2018.evakuasi_melihat_orang_lain": {
+      "pustaka": "harnantyari-2020-palu",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "Harnantyari dkk. (2020), IJDRR 43: 101389",
+      "nilai": 82.5,
+      "catatan": "persen penduduk tersurvei di Donggala dan Palu yang mengungsi setelah melihat orang lain mengungsi; tidak ada peringatan resmi diterima sebelum tsunami tiba; abstrak saja"
+    },
+    "widiyanto.palu2018.waktu_tiba": {
+      "pustaka": "widiyanto-2019-palu",
+      "satuan": "menit",
+      "keyakinan": "terverifikasi",
+      "sumber": "Widiyanto dkk. (2019), NHESS 19: 2781–2794",
+      "nilai": "3–8",
+      "rendah": 3,
+      "tinggi": 8,
+      "catatan": "waktu tiba tsunami setelah guncangan utama; sekitar 3 menit di Donggala dan Lero, sekitar 10 menit di ujung Teluk Palu"
+    },
+    "widiyanto.palu2018.runup_maks": {
+      "pustaka": "widiyanto-2019-palu",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "Widiyanto dkk. (2019), NHESS 19: 2781–2794",
+      "nilai": 10.73,
+      "catatan": "run-up tertinggi terukur, Tondo"
+    },
+    "renstra.peringatan_dini.keterpenuhan": {
+      "berkas": "program-terbukti/bukti_dampak.csv",
+      "jalur": "[id=B017].nilai_angka",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban 5/2025) hlm. 70",
+      "catatan": "keterpenuhan sistem peringatan dini bagi masyarakat terpapar di kawasan risiko tinggi; penyebut berbeda dengan IKP 6,10% ke 6,32%"
+    },
+    "covid19.rasio_terhadap_dibi.2015_2025": {
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari Kemenkes (dikutip Renstra hlm. 14) dan DIBI",
+      "nilai": 13.6,
+      "catatan": "olah: 161.870 meninggal COVID-19 / 11.873 meninggal kejadian bencana DIBI 2015–2025; definisi berbeda, hanya untuk besaran, tidak dijumlah"
+    },
+    "dibi.nasional.meninggal_hidromet_maks.2008_2024": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 774,
+      "catatan": "olah: maksimum tahunan kode 101–106 cakupan bencana 2008–2024, tahun 2010 (Wasior); 1.731 (2025) = 2,24 kali"
+    },
+    "dibi.nasional.spearman_kejadian_meninggal.2015_2023": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 0.17,
+      "catatan": "olah: Spearman kejadian alam dan meninggal alam per tahun, n = 9, sebelum patahan ambang 2024; 0,23 bila meninggal ditambah hilang"
+    },
+    "dibi.nasional.meninggal_alam.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 11477,
+      "catatan": "olah: jumlah meninggal kode 101–109 cakupan bencana 2015–2025"
+    },
+    "dibi.nasional.hilang_alam.2015_2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 1579,
+      "catatan": "olah: jumlah hilang kode 101–109 cakupan bencana 2015–2025"
+    },
+    "dibi.nasional.meninggal_alam.2018": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 5477,
+      "catatan": "olah: kode 101–109 cakupan bencana"
+    },
+    "dibi.nasional.hilang_alam.2018": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 763,
+      "catatan": "olah: kode 101–109 cakupan bencana"
+    },
+    "dibi.nasional.hilang_alam.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 221,
+      "catatan": "olah: kode 101–109 cakupan bencana; semua klasifikasi 246"
+    },
+    "dibi.nasional.kejadian_alam_semua_laporan.2024": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 3550.5,
+      "catatan": "olah: kode 101–109 cakupan semua_laporan, saringan sama dengan 2015–2023; cakupan bencana 3.471,5"
+    },
+    "dibi.nasional.kejadian_alam_semua_laporan.2025": {
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "nilai": 8359.45,
+      "catatan": "olah: idem; rekor seri; cakupan bencana 5.077,45"
+    },
+    "brr.aceh2004.meninggal_naratif": {
+      "pustaka": "brr-2009-scattered-beads",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD–Nias (2009), Case Study: The Scattered Beads, hlm. x",
+      "nilai": 126741,
+      "catatan": "Aceh dan Nias; 'A total of 126,741 lives were lost'; berdampingan dengan 127.720 (halaman capaian BRR); selisih 979 tidak dijelaskan BRR"
+    },
+    "usgs.pangandaran2006.meninggal": {
+      "pustaka": "usgs-usp000ensm",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS usp000ensm impact-text",
+      "nilai": 665,
+      "catatan": "olah: jumlah per kab impact-text (Ciamis 413, Tasikmalaya 62, Banjar 15, Garut 1, Cilacap 157, Kebumen 10, Banyumas 1, Gunung Kidul 3, Bantul 3); lantai megathrust selatan Jawa (KERANGKA §2 butir 9)"
+    },
+    "usgs.pangandaran2006.hilang": {
+      "pustaka": "usgs-usp000ensm",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS usp000ensm impact-text",
+      "nilai": 65,
+      "catatan": "olah: Ciamis 15, Tasikmalaya 2, Cilacap 15, Kebumen 33"
+    },
+    "usgs.pangandaran2006.runup_maks": {
+      "pustaka": "usgs-usp000ensm",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS usp000ensm impact-text",
+      "nilai": 4.6,
+      "catatan": "run-up tsunami maksimum di Widarapayung"
+    },
+    "r3p.cianjur2022.rumah_rusak_bpbd": {
+      "pustaka": "bnpb-2022-r3p-cianjur",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+      "nilai": 53408,
+      "catatan": "data BPBD Kab. Cianjur hingga 7 Des 2022 (12.956 berat, 15.196 sedang, 25.256 ringan), hlm. PDF 13; data dinamis; SK Bupati tahap II 114.315"
+    },
+    "bps.podes.desa_perkelahian.2021": {
+      "nilai": 1553,
+      "pustaka": "bps-2024-podes",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa 2021 dan 2024"
+    },
+    "bps.podes.desa_perkelahian_meninggal.2024": {
+      "nilai": 150,
+      "pustaka": "bps-2024-podes",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "bps.podes.desa_perkelahian_porsi.2021": {
+      "nilai": 1.85,
+      "pustaka": "bps-2024-podes",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Podes 2021",
+      "catatan": "olah 1.553 / jumlah desa/kelurahan 2021"
+    },
+    "bps.podes.desa_perkelahian_porsi.2024": {
+      "nilai": 2.41,
+      "pustaka": "bps-2024-podes",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Podes 2024",
+      "catatan": "olah 2.031 / jumlah desa/kelurahan 2024"
+    },
+    "brr.aceh2004.rumah_rusak": {
+      "nilai": 139195,
+      "pustaka": "brr-2009-scattered-beads",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD–Nias, The Scattered Beads hlm. x",
+      "catatan": "rumah hancur atau rusak berat"
+    },
+    "buletin.sumatra2025.aceh.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=meninggal,versi=pustaka,verifikasi=primer].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BNPB, Buletin Info Bencana Desember 2025 hlm. 6, Provinsi Aceh saja"
+    },
+    "dibi.alkhoziny2025.meninggal": {
+      "nilai": 63,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, gagal teknologi",
+      "catatan": "nonalam-sosial/README.md Angka kunci; Basarnas 67 (sekunder) tidak dipakai"
+    },
+    "dibi.cianjur2022.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian cianjur2022",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.cianjur2022.porsi_meninggal.2022": {
+      "nilai": 70.2,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB",
+      "catatan": "olah 602 / 858 meninggal alam 2022"
+    },
+    "dibi.cianjur2022.rumah_rusak_berat": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian cianjur2022",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.epidemi.meninggal_terbaca.2025": {
+      "nilai": 28,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, epidemi",
+      "catatan": "memuat entri ganda Nias Selatan; nonalam-sosial/README.md §Rekonsiliasi"
+    },
+    "dibi.epidemi.niasselatan2025.meninggal": {
+      "nilai": 14,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Nias Selatan 9 Jan 2025",
+      "catatan": "tercatat di dua subjenis"
+    },
+    "dibi.gagal_teknologi.kejadian.2018_2026": {
+      "nilai": 10,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018–2026, gagal teknologi",
+      "catatan": "2026 sementara"
+    },
+    "dibi.gagal_teknologi.meninggal.2018_2026": {
+      "nilai": 90,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018–2026, gagal teknologi",
+      "catatan": "2026 sementara"
+    },
+    "dibi.jabodetabek2020.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=jabodetabek2020,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian jabodetabek2020",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.karhutla2015.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=karhutla2015,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian karhutla2015",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.kebakaran_permukiman.kejadian_bencana.2024": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2024,kode_jenis_juklak=202,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2024"
+    },
+    "dibi.kebakaran_permukiman.kejadian_bencana.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,kode_jenis_juklak=202,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025"
+    },
+    "dibi.kejadian_besar.lima_teratas_meninggal.2015_2025": {
+      "nilai": 6950,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB",
+      "catatan": "olah Sulteng 4.140 + Sumatra 1.202 + Cianjur 602 + Lombok 569 + Selat Sunda 437"
+    },
+    "dibi.konflik_sosial.jayawijaya2026.meninggal": {
+      "nilai": 33,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Jayawijaya 7 Mei 2026",
+      "catatan": "catatan mutu: bertanggal hari jembatan Wouma putus"
+    },
+    "dibi.konflik_sosial.kejadian.2019_2026": {
+      "nilai": 17,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2019–2026, konflik sosial",
+      "catatan": "2026 sementara; memuat dugaan entri ganda"
+    },
+    "dibi.konflik_sosial.meninggal.2019_2026": {
+      "nilai": 93,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2019–2026, konflik sosial",
+      "catatan": "2026 sementara; memuat dugaan entri ganda"
+    },
+    "dibi.lombok2018.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=lombok2018,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian lombok2018",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.merapi2010.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=merapi2010,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian merapi2010",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.nasional.kejadian.2020": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2020,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2020",
+      "catatan": "sama dengan kejadian alam 2020"
+    },
+    "dibi.nasional.kejadian.2022": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2022,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2022",
+      "catatan": "sama dengan kejadian alam 2022"
+    },
+    "dibi.nasional.kejadian.2026": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2026,klasifikasi=semua,cakupan=bencana].kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 sementara",
+      "catatan": "sampai 23 Okt 2026"
+    },
+    "dibi.nasional.kejadian_alam.2019": {
+      "nilai": 3814,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2019",
+      "catatan": "olah jumlah sembilan baris alam"
+    },
+    "dibi.nasional.kejadian_ckan.2024": {
+      "nilai": 3472,
+      "pustaka": "bnpb-2025-ckan",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "BNPB, data.bnpb.go.id, Jumlah Kejadian Bencana Menurut Jenis 2010–2024"
+    },
+    "dibi.nasional.meninggal.2021": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2021,klasifikasi=semua,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2021",
+      "catatan": "sama dengan meninggal alam 2021"
+    },
+    "dibi.nasional.meninggal_hidromet.2015_2025": {
+      "nilai": 5241,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025",
+      "catatan": "olah enam jenis hidrometeorologi; 11.477 - 6.236"
+    },
+    "dibi.nasional.meninggal_hidromet_porsi.2015_2025": {
+      "nilai": 45.7,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025",
+      "catatan": "olah 5.241 / 11.477"
+    },
+    "dibi.nasional.nonalam_sosial_lainnya.kejadian_maks.2018_2023": {
+      "nilai": 15,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018–2023",
+      "catatan": "olah semua klasifikasi dikurangi alam; maksimum tahun 2019"
+    },
+    "dibi.nasional.rasio_hidromet_2025.maks_2008_2024": {
+      "nilai": 2.24,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2008–2025",
+      "catatan": "olah 1.731 / 774; jendela asumsi-kebijakan (periode acuan KERANGKA §2 butir 9)"
+    },
+    "dibi.nasional.rasio_hidromet_2025.maks_2015_2024": {
+      "nilai": 3.18,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025",
+      "catatan": "olah 1.731 / 545; jendela asumsi-kebijakan"
+    },
+    "dibi.ntt2026.gempa.hilang": {
+      "berkas": "dibi/rekap_provinsi_tahunan.csv",
+      "jalur": "[tahun=2026,provinsi=Nusa Tenggara Timur,kategori_dibi=Gempabumi,cakupan=bencana].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2026 sementara"
+    },
+    "dibi.padang2009.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=padang2009,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian padang2009",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.sumatra2025.kab": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=kab_terdampak,versi=DIBI].nilai",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian sumatra2025",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "dibi.wamena2019.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=wamena2019,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian wamena2019",
+      "catatan": "jendela tanggal pilihan penyusun"
+    },
+    "hidromet.nasional.musim_2025.hilang": {
+      "berkas": "skenario-hidromet/musim_hujan.csv",
+      "jalur": "[wilayah=nasional,musim=2025/2026].hilang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, musim hujan 1 Okt 2025–30 Apr 2026"
+    },
+    "nonalam.plumpang2023.hilang": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=plumpang2023,metrik=hilang].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
+      "catatan": "data hari kedua"
+    },
+    "r3p.cianjur2022.kerugian": {
+      "nilai": 4550000000000,
+      "pustaka": "bnpb-2022-r3p-cianjur",
+      "satuan": "rupiah",
+      "keyakinan": "resmi",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+      "catatan": "kerusakan dan kerugian Rp4,55 triliun; riset E §E5"
+    },
+    "surono.merapi2010.meninggal_bnpb": {
+      "nilai": 367,
+      "pustaka": "surono-2012-merapi",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Surono dkk. 2012 hlm. 129 mengutip data BNPB",
+      "catatan": "tanggal rekap tidak disebut"
+    },
+    "surono.merapi2010.pengungsi_3nov": {
+      "nilai": 100000,
+      "pustaka": "surono-2012-merapi",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Surono dkk. 2012 hlm. 126–127",
+      "catatan": "\"lebih dari\"; setelah perluasan radius ke 15 km, 3 Nov 2010"
+    },
+    "surono.merapi2010.radius_akhir": {
+      "nilai": 20,
+      "pustaka": "surono-2012-merapi",
+      "satuan": "km",
+      "keyakinan": "terverifikasi",
+      "sumber": "Surono dkk. 2012"
+    },
+    "surono.merapi2010.radius_awal": {
+      "nilai": 10,
+      "pustaka": "surono-2012-merapi",
+      "satuan": "km",
+      "keyakinan": "terverifikasi",
+      "sumber": "Surono dkk. 2012"
+    },
+    "surono.merapi2010.radius_kedua": {
+      "nilai": 15,
+      "pustaka": "surono-2012-merapi",
+      "satuan": "km",
+      "keyakinan": "terverifikasi",
+      "sumber": "Surono dkk. 2012"
+    },
+    "usgs.lombok2018.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=lombok2018,metrik=meninggal,versi=USGS].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS us1000g3ub"
+    },
+    "usgs.mentawai2010.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=mentawai2010,metrik=meninggal,versi=USGS].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS usp000hnj4"
+    },
+    "usgs.padang2009.meninggal": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=padang2009,metrik=meninggal,versi=USGS].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS usp000h237"
+    },
+    "usgs.sulteng2018.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=hilang,label=terverifikasi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS us1000h3p4"
+    }
+  }
+}

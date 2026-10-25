@@ -20,7 +20,7 @@
   }
   async function ambil(url) {
     const r = await fetch(url);
-    if (r.status === 403) { location.href = window.Admin.staf ? "/admin/pantau" : "/admin/masuk"; throw new Error("perlu masuk"); }
+    if (r.status === 403) await window.Admin.keMasuk();
     return r.json();
   }
   const pil = (kelas, t) => `<span class="pk-pil ${esc(kelas)}">${esc(t)}</span>`;

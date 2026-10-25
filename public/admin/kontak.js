@@ -110,7 +110,7 @@
   async function muat() {
     const [r, kec] = await Promise.all([fetch("/api/kontak/admin").catch(() => null), fetch("/banjir/data/pusat_kec.json").then(x => x.ok ? x.json() : {}).catch(() => ({}))]);
     if (!r) return app.replaceChildren(h("p", {class: "ak-kosong", teks: "Jaringan putus. Muat ulang halaman."}));
-    if (r.status === 403) { location.href = "/admin/masuk"; return; }
+    if (r.status === 403) return Admin.keMasuk().catch(e => app.replaceChildren(h("p", {class: "ak-kosong", teks: e.message})));
     if (r.status === 503) return app.replaceChildren(h("p", {class: "ak-kosong", teks: "Buku kontak belum aktif (migrasi D1 0053_kontak belum diterapkan)."}));
     if (!r.ok) return app.replaceChildren(h("p", {class: "ak-kosong", teks: `Galat ${r.status}. Daftar belum bisa dimuat.`}));
     D = await r.json();

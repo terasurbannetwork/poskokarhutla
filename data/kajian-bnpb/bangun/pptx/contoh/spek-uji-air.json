@@ -1,0 +1,381 @@
+{
+  "_catatan": "Spek uji jenis slide yang tidak ada di spek-mitigasi: sampul gelap, tabel-peringkat, skenario, strategi-tiga-fase, rekomendasi dua slide. Angka dari registri nyata (IRBI 2025, skenario La Niña Jawa, pasangan utama peringatan dini Renas 1.c); kelas kemungkinan, aksi, lembaga, dan rekomendasi adalah ilustrasi sintaks, bukan naskah kajian. Aksi tiga fase memakai kode rekomendasi; waktu dan lembaga pemimpinnya diturunkan dari matriks.",
+  "pesan_kunci": "Banjir di Pulau Jawa terkonsentrasi di kab/kota tertentu, dan skenario musim hujan terburuk menuntut aksi tiga fase yang dibagi ke lembaga berwenang.",
+  "kajian": "air",
+  "tanggal": "2026-10-23",
+  "cut_off": "18 Okt 2026",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "gelap",
+      "foto": "../../public/img/bencana-rob.jpg",
+      "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "pesan": "Kab/kota Jawa dengan bahaya banjir tertinggi",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "deskriptif",
+      "judul": "Sepuluh kab/kota di Pulau Jawa dengan nilai bahaya banjir IRBI tertinggi pada 2025; {{tempat:Kab. Karawang}} juga tinggi untuk longsor",
+      "cut_off": true,
+      "tabel": {
+        "judul_panel": "IRBI banjir 2025, Pulau Jawa",
+        "ikon": "banjir",
+        "nada": "air",
+        "data": {
+          "csv": "data/irbi/irbi_kab_2025.csv",
+          "saring": "pulau=Jawa",
+          "urut": "-banjir",
+          "batas": 10,
+          "sorot": [
+            "Kab. Karawang"
+          ],
+          "kolom": [
+            {
+              "nama": "nama_kepmendagri",
+              "kepala": "Kab/kota"
+            },
+            {
+              "nama": "prov_nama",
+              "kepala": "Provinsi"
+            },
+            {
+              "nama": "banjir",
+              "kepala": "Banjir",
+              "fmt": "0",
+              "warna": "kategori.basah",
+              "ikon": "banjir"
+            },
+            {
+              "nama": "longsor",
+              "kepala": "Longsor",
+              "fmt": "0",
+              "warna": "biru-abu",
+              "ikon": "wilayah"
+            },
+            {
+              "nama": "total",
+              "kepala": "IRB 2025",
+              "fmt": "2",
+              "warna": "navy",
+              "ikon": "data"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "InaRISK BNPB, IRBI 2025"
+        }
+      },
+      "panel": {
+        "judul": "Cara membaca",
+        "ikon": "ringkasan",
+        "daftar": [
+          "Nilai bahaya per jenis IRBI 2025 berupa bilangan bulat dengan skala baru.",
+          "Kab/kota tanpa nilai longsor ditulis dengan tanda pisah karena bahaya itu tidak dinilai.",
+          "Urutan memakai nilai banjir; nilai yang sama mengikuti urutan data InaRISK.",
+          "Baris bertint menandai wilayah fokus pembahasan."
+        ]
+      },
+      "pita": {
+        "label": "Yang perlu disiapkan sebelum musim hujan",
+        "nada": "hujan",
+        "kolom": [
+          {
+            "ikon": "banjir",
+            "judul": "Peta genangan",
+            "isi": "Pemutakhiran peta genangan kab/kota bernilai banjir tertinggi bersama BBWS."
+          },
+          {
+            "ikon": "peringatan",
+            "judul": "Peringatan dini",
+            "isi": "Uji jalur peringatan dini dari BMKG ke desa di sepanjang sungai utama."
+          },
+          {
+            "ikon": "pengungsi",
+            "judul": "Tempat evakuasi",
+            "isi": "Pendataan tempat evakuasi sementara yang aman dari genangan."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "skenario",
+      "pesan": "Skenario musim hujan terburuk dan angka kebijakan",
+      "jenis_slide": "kartu-skenario",
+      "judul_bentuk": "temuan",
+      "sumber": "DIBI BNPB 2008–2026; InaRISK BNPB; NOAA CPC, indeks ONI; Renas PB 2025–2029; UNDRR-WMO 2022; simulasi dan olah data Pantau Bencana",
+      "judul": "Skenario musim hujan La Niña di Jawa memakai analog {{angka:hidromet.jawa.lanina.tahun_analog|tahun}}/2021; korban jiwa diperkirakan {{angka:hidromet.jawa.lanina.korban_jiwa|rentang}} jiwa",
+      "cut_off": true,
+      "skenario": {
+        "jenis": "banjir",
+        "judul": "musim hujan La Niña, analog 2020/2021",
+        "keyakinan": "estimasi-model; belum diuji balik",
+        "kemungkinan": 4,
+        "kerusakan": [
+          {
+            "besaran": "Korban jiwa",
+            "nilai": "{{angka:hidromet.jawa.lanina.korban_jiwa|rentang|satuan}}"
+          },
+          {
+            "besaran": "Pengungsi",
+            "nilai": "{{angka:hidromet.jawa.lanina.mengungsi|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak berat",
+            "nilai": "{{angka:hidromet.jawa.lanina.rumah_rusak_berat|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak sedang",
+            "nilai": "{{angka:hidromet.jawa.lanina.rumah_rusak_sedang|satuan}}"
+          },
+          {
+            "besaran": "Luas bahaya banjir tinggi",
+            "nilai": "{{angka:hidromet.jawa.lanina.luas_bahaya_tinggi_banjir|ringkas}} ha"
+          },
+          {
+            "besaran": "Kerugian materiil, batas bawah",
+            "nilai": "{{angka:hidromet.jawa.lanina.materiil_batas_bawah|rentang|rupiah}}"
+          },
+          {
+            "besaran": "Hari mengungsi",
+            "nilai": "{{angka:hidromet.jawa.lanina.hari_mengungsi|ringkas}} jiwa-hari"
+          }
+        ],
+        "kebijakan": {
+          "sekarang": {
+            "label": "Cakupan peringatan dini {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2025|persen}}",
+            "nilai": "{{angka:hidromet.jawa.lanina.korban_jiwa|rentang}}"
+          },
+          "target": {
+            "label": "Bila naik ke {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2029|persen}}",
+            "nilai": "{{angka:hidromet.jawa.lanina.pd_renas.korban_jiwa|rentang|fmt=0}}"
+          },
+          "keterangan": "korban jiwa bila target Renas PB 2029 tercapai"
+        },
+        "respons": [
+          "Evakuasi dini warga bantaran sungai berdasar peringatan BMKG.",
+          "Pompa bergerak dan perahu karet di kab/kota bernilai banjir tertinggi.",
+          "Layanan kesehatan dan air bersih di tempat evakuasi."
+        ],
+        "pemulihan": [
+          "Kaji kebutuhan pascabencana untuk rumah rusak berat dan sedang.",
+          "Perbaikan tanggul dan normalisasi alur sungai bersama BBWS.",
+          "Stimulan perbaikan rumah sesuai standar BNPB."
+        ],
+        "lembaga": [
+          "BNPB",
+          "BMKG",
+          "Kementerian PU",
+          "BPBD provinsi",
+          "BPBD kab/kota"
+        ]
+      }
+    },
+    {
+      "jenis": "strategi-tiga-fase",
+      "pesan": "Aksi tiga fase merujuk matriks rekomendasi",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "deskriptif",
+      "judul": "Strategi musim hujan dibagi tiga fase; aksi bernomor merujuk matriks rekomendasi",
+      "fase": {
+        "prabencana": [
+          {
+            "kode": "01",
+            "aksi": "Pemutakhiran kajian risiko banjir kab/kota prioritas"
+          },
+          {
+            "kode": "02",
+            "aksi": "Uji jalur peringatan dini sampai tingkat desa"
+          },
+          {
+            "kode": "03",
+            "aksi": "Pengendalian ruang di sempadan sungai"
+          }
+        ],
+        "tanggap-darurat": [
+          {
+            "kode": "04",
+            "aksi": "Pos komando terpadu dan rencana operasi banjir"
+          },
+          {
+            "kode": "05",
+            "aksi": "Pompa bergerak dan logistik di gudang terdekat"
+          },
+          {
+            "kode": "06",
+            "aksi": "Layanan kesehatan dan air bersih di pengungsian"
+          }
+        ],
+        "pascabencana": [
+          {
+            "kode": "07",
+            "aksi": "Kaji kebutuhan pascabencana dalam tiga puluh hari"
+          },
+          {
+            "kode": "08",
+            "aksi": "Perbaikan tanggul dan alur sungai yang rusak"
+          },
+          {
+            "kode": "09",
+            "aksi": "Relokasi rumah dari zona genangan berulang"
+          }
+        ]
+      },
+      "pita": {
+        "label": "Horizon peta jalan",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "kalender",
+            "judul": "100 hari",
+            "isi": "Aksi yang bisa dimulai dengan anggaran dan aturan yang sudah ada."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "2026–2027",
+            "isi": "Aksi yang butuh penyesuaian program dan koordinasi lintas K/L."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "2028–2030",
+            "isi": "Aksi yang butuh regulasi baru atau pembangunan fisik."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "rekomendasi",
+      "pesan": "Rekomendasi dan penanggung jawab",
+      "jenis_slide": "rekomendasi",
+      "judul_bentuk": "deskriptif",
+      "seri": "rekomendasi",
+      "judul": "Rekomendasi Rencana Tindak Lanjut {{sorot:(2026–2030)}} untuk musim hujan di Pulau Jawa",
+      "rekomendasi": [
+        {
+          "kode": "01",
+          "jenis": "data",
+          "langkah": "Mutakhirkan kajian risiko banjir prioritas",
+          "waktu": "100-hari",
+          "status": "dikembangkan",
+          "rincian": "Kajian risiko kab/kota bernilai banjir tertinggi dimutakhirkan dengan peta genangan terbaru sebelum puncak musim hujan.",
+          "lembaga": [
+            "BNPB",
+            "BPBD",
+            "BBWS"
+          ]
+        },
+        {
+          "kode": "02",
+          "jenis": "infrastruktur",
+          "langkah": "Lengkapi peringatan dini sampai desa",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Jalur peringatan dini dari BMKG diuji sampai desa di bantaran sungai utama, termasuk sirene dan pesan singkat.",
+          "lembaga": [
+            "BMKG",
+            "BNPB",
+            "Komdigi"
+          ]
+        },
+        {
+          "kode": "03",
+          "jenis": "regulasi",
+          "langkah": "Atur pemanfaatan ruang sempadan sungai",
+          "waktu": "2028-2030",
+          "status": "baru",
+          "rincian": "Pemanfaatan ruang di sempadan sungai dan zona genangan berulang dikendalikan lewat rencana tata ruang daerah.",
+          "lembaga": [
+            "ATR/BPN",
+            "Kemendagri",
+            "Pemda"
+          ]
+        },
+        {
+          "kode": "04",
+          "jenis": "kapasitas",
+          "langkah": "Siapkan pos komando dan rencana operasi",
+          "waktu": "100-hari",
+          "status": "sudah-ada",
+          "rincian": "BPBD kab/kota prioritas menyiapkan pos komando terpadu dan berlatih rencana operasi banjir sebelum musim hujan.",
+          "lembaga": [
+            "BNPB",
+            "BPBD",
+            "TNI",
+            "Polri"
+          ]
+        },
+        {
+          "kode": "05",
+          "jenis": "infrastruktur",
+          "langkah": "Tempatkan pompa dan logistik dekat wilayah rawan",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Pompa bergerak dan perahu karet disiagakan bersama logistik di gudang terdekat dari kab/kota bernilai banjir tertinggi.",
+          "lembaga": [
+            "BNPB",
+            "Kementerian PU",
+            "BPBD"
+          ]
+        }
+      ]
+    },
+    {
+      "jenis": "rekomendasi",
+      "pesan": "Rekomendasi dan penanggung jawab, lanjutan",
+      "jenis_slide": "rekomendasi",
+      "judul_bentuk": "deskriptif",
+      "seri": "rekomendasi",
+      "judul": "Rekomendasi Rencana Tindak Lanjut {{sorot:(2026–2030)}} untuk musim hujan di Pulau Jawa (lanjutan)",
+      "rekomendasi": [
+        {
+          "kode": "06",
+          "jenis": "kapasitas",
+          "langkah": "Jamin layanan kesehatan di pengungsian",
+          "waktu": "2026-2027",
+          "status": "sudah-ada",
+          "rincian": "Layanan kesehatan dan sanitasi di tempat evakuasi disiapkan bersama dinas kesehatan setempat.",
+          "lembaga": [
+            "Kemenkes",
+            "BPBD"
+          ]
+        },
+        {
+          "kode": "07",
+          "jenis": "data",
+          "langkah": "Percepat kaji kebutuhan pascabencana",
+          "waktu": "100-hari",
+          "status": "dikembangkan",
+          "rincian": "Kaji kebutuhan pascabencana untuk rumah rusak berat dan sedang diselesaikan dalam tiga puluh hari sesudah kejadian.",
+          "lembaga": [
+            "BNPB",
+            "BPBD"
+          ]
+        },
+        {
+          "kode": "08",
+          "jenis": "infrastruktur",
+          "langkah": "Perbaiki tanggul dan alur sungai rusak",
+          "waktu": "2026-2027",
+          "status": "sudah-ada",
+          "rincian": "Tanggul jebol dan alur sungai yang tersumbat diperbaiki bersama balai wilayah sungai sebelum musim hujan berikutnya.",
+          "lembaga": [
+            "Kementerian PU",
+            "BBWS"
+          ]
+        },
+        {
+          "kode": "09",
+          "jenis": "pembiayaan",
+          "langkah": "Biayai relokasi dari zona genangan berulang",
+          "waktu": "2028-2030",
+          "status": "baru",
+          "rincian": "Relokasi rumah dari zona genangan berulang dibiayai dana siap pakai dan anggaran daerah, dilengkapi dana bersama.",
+          "lembaga": [
+            "Pemda",
+            "BNPB",
+            "Kemenkeu"
+          ]
+        }
+      ]
+    }
+  ]
+}

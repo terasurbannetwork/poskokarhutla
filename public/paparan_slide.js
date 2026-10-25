@@ -318,7 +318,7 @@ slide("harian", "Laporan harian nasional dan {prov}", "situasi", c => c.D.lapora
   const kab = kabProv(c).map(x => ({...x, t7: jum(irisan(c, x.titik).slice(-7)), l7: jum(irisan(c, x.luas).slice(-7))})).sort((a, b) => b.t7 - a.t7).slice(0, 13);
   rangka(k, c, {
     judul: [R(`Dalam 7 hari terakhir, rata-rata titik panas nasional `), R(fmt(rata) + " titik per hari", C.jingga), R("; "), R(c.namaProv + " ", C.biru), R(fmt(tujuh) + " titik", C.jingga), R(" dalam 7 hari")],
-    sumber: `Laporan harian ${c.merek} ${tglP(L.hari[Math.max(0, hariIdx(c) - 11)])} sampai ${tglP(c.tgl)} (MODIS, VIIRS S-NPP, NOAA-20); kejadian api, status, dan FWI posisi laporan ${tglP(L.cutoff.slice(0, 10))} (status dari aturan ${c.merek}; FWI dari Open-Meteo)`,
+    sumber: `Laporan harian ${c.merek} ${tglP(L.hari[Math.max(0, hariIdx(c) - 11)])} sampai ${tglP(c.tgl)} (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21; lokasi unik per hari); kejadian api, status, dan FWI posisi laporan ${tglP(L.cutoff.slice(0, 10))} (status dari aturan ${c.merek}; FWI dari Open-Meteo)`,
   });
   judulBagian(k, 0.6, 1.55, 5.2, "Nasional: titik panas per hari");
   batangV(k, 0.6, 2.0, 5.3, 1.95, nas.map((v, i) => ({l: lab[i], v, on: mx(nas, i)})));

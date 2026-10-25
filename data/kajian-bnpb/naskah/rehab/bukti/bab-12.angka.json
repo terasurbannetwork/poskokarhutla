@@ -1,0 +1,126 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 12 kajian rehab, disusun 25 Oktober 2026 dari naskah/rehab/bukti/bab-12.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Hitungan register dijalankan ulang dari tabel KERANGKA §6 dengan assert. Kunci angka bab lain yang dipakai Bab 12 tidak diulang (bab-01 sampai bab-08 .angka.json).",
+    "Koreksi atas KERANGKA yang dibawa: tesis porsi banjir 89,2 (kunci rehab.dibi.jembatan_rusak.porsi_banjir_persen); Dana Bersama merujuk Perban 1/2026 Pasal 14 ayat (5); status R-RR-01 diusulkan Sudah ada, perlu dikembangkan.",
+    "Revisi 25 Oktober 2026 atas temuan pemeriksa: catatan dua kunci olahan dipersempit (khusus jembatan; n=1). Nilai tidak berubah.",
+    "Ditambahkan penulis naskah Bab 12 (25 Oktober 2026): rehab.tesis sebagai entri teks bertoken, dari P1 Inferensi berkas bukti, dengan porsi banjir memakai token 89,2% (bukan 'sekitar 89%')."
+  ],
+  "angka": {
+    "rehab.rekomendasi.jumlah": {
+      "nilai": 15,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "hitung baris R-RR-01 sampai R-RR-15 di rehab/KERANGKA.md §6"
+    },
+    "rehab.rekomendasi.horizon_100hari": {
+      "nilai": 4,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "kolom Waktu: R-RR-01, 04, 11 (100 hari) dan R-RR-06 (14 hari, di dalam horizon 100 hari P4)"
+    },
+    "rehab.rekomendasi.horizon_2026_2027": {
+      "nilai": 10,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "kolom Waktu = 2026–2027"
+    },
+    "rehab.rekomendasi.horizon_2028_2030": {
+      "nilai": 1,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "kolom Waktu = 2028–2030 (R-RR-13)"
+    },
+    "rehab.rekomendasi.usulan_baru_kerangka": {
+      "nilai": 11,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "kolom Status (P7) = Usulan baru, sebelum koreksi"
+    },
+    "rehab.rekomendasi.sudah_ada_dikembangkan_kerangka": {
+      "nilai": 4,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "kolom Status (P7) = Sudah ada, perlu dikembangkan, sebelum koreksi"
+    },
+    "rehab.rekomendasi.usulan_baru": {
+      "nilai": 10,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6); Juklak BNPB 7/2023",
+      "catatan": "setelah usulan koreksi status R-RR-01 ke Sudah ada, perlu dikembangkan (bab-12.md P3 Inferensi); pustaka bnpb-2023-standar-data"
+    },
+    "rehab.rekomendasi.sudah_ada_dikembangkan": {
+      "nilai": 5,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6); Juklak BNPB 7/2023",
+      "catatan": "idem"
+    },
+    "rehab.rekomendasi.internal_bnpb": {
+      "nilai": 8,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Klasifikasi penyusun bukti Bab 12",
+      "catatan": "R-RR-01, 02, 03, 05, 06, 09, 11, 15; instrumen penetap dipegang BNPB"
+    },
+    "rehab.rekomendasi.lintas_kl": {
+      "nilai": 7,
+      "satuan": "rekomendasi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Klasifikasi penyusun bukti Bab 12",
+      "catatan": "R-RR-04, 07, 08, 10, 12, 13, 14; memerlukan tindakan atau instrumen K/L"
+    },
+    "rehab.keputusan.jumlah": {
+      "nilai": 4,
+      "satuan": "keputusan",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "KD-R1 sampai KD-R4"
+    },
+    "rehab.keputusan.hari14_jumlah": {
+      "nilai": 5,
+      "satuan": "keputusan",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Register rekomendasi Grand Design RR Air dan Akses (rehab/KERANGKA.md §6)",
+      "catatan": "Keputusan 14 hari pertama butir (1)–(5); butir (4) tinggal Inpres 18/2025 karena Keppres 1/2026 sudah dibuka"
+    },
+    "rehab.tidak_direkomendasikan.jumlah": {
+      "nilai": 5,
+      "satuan": "butir",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "rehab/KERANGKA.md §4 BAB 12",
+      "catatan": "daftar 'Yang tidak direkomendasikan'; dua butir tambahan usulan bab-12.md P5 tidak dihitung"
+    },
+    "rehab.pulih.sumatra2025.selisih_nasional_daerah_poin": {
+      "nilai": 33,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "poin persen",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan dari rilis Kementerian PU 11 Mei 2026 (data 7 Mei 2026)",
+      "catatan": "olah(resmi): rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026 (100) dikurangi rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026 (67); khusus jembatan daerah (1.181 jembatan); jalan daerah 94% dari 2.421 ruas, selisih 6 poin, jadi tidak boleh dibaca sebagai selisih semua aset daerah"
+    },
+    "rehab.pulih.palu4_kali_masa_r3p": {
+      "nilai": 2.5,
+      "pustaka": "ocg-2026-palu4",
+      "satuan": "kali",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan dari OC Global 2026 dan Perban BNPB 5/2017 Pasal 10",
+      "catatan": "olah: rehab.akses.palu4.tahun_runtuh_ke_buka (7,4) dibagi masa R3P paling lama 3 tahun (bnpb-2017-r3p); satu jembatan (n=1), tidak boleh disajikan sebagai rasio umum aset permanen; dari tiga contoh tercatat dua melampaui masa R3P (Palu IV, huntap Sulteng) dan target SPAM Sumbar Agustus 2028 masih di dalamnya"
+    },
+    "rehab.tesis": {
+      "nilai": "Pada 2018–2025 DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak akibat bencana alam, {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} karena banjir dan {{angka:rehab.dibi.jembatan_rusak.2025}} pada 2025 saja, sedangkan kerusakan sistem air minum tidak tercatat di DIBI dan aset desa berada di luar hibah rehabilitasi dan rekonstruksi; Grand Design 2026–2030 menjadikan waktu pulih akses dan air sebagai ukuran keberhasilan rehabilitasi dan rekonstruksi, mengikat program jembatan dan sumur bor TNI, Polri, dan Kementerian PU ke R3P, dan membentuk baseline kerusakan dan pemulihan layanan air per kab/kota paling lambat 2027.",
+      "pustaka": "bnpb-dibi",
+      "satuan": "",
+      "keyakinan": "resmi; asumsi-kebijakan untuk komitmen",
+      "sumber": "DIBI BNPB 2018–2025 (bencana alam, cakupan bencana); Perban BNPB 4/2024 Pasal 5 huruf e",
+      "catatan": "kalimat tesis kajian rehab (KERANGKA rehab §3) dengan koreksi porsi banjir 89,2% (bukti bab-12 §0.1 K1, P1 Inferensi); dipanggil {{angka:rehab.tesis|teks}} di Bab 12 dan Ringkasan Eksekutif supaya identik (D-6)"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+/* risiko7.css: kartu keterangan overlay eksperimental "Peluang api 7 hari" (risiko7.js) di atas legenda peta utama, dan baris keterangan di legenda.
+   Pil label dan daftar provinsi = bahasa tampilan kartu lain (pil, tanpa batang kemajuan); pemberitahuan memakai warna catatan .lp-cl di peta_kab.css. */
+#r7Kartu{width:min(640px,100%);display:grid;gap:6px;padding:10px 12px}
+#r7Kartu[hidden]{display:none}
+#r7Kartu .r7-hd{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+#r7Kartu .r7-pil{display:inline-block;padding:2px 10px;border-radius:999px;background:#4b2a8a;color:#fff;font:700 10.5px/1.5 var(--font);box-shadow:inset 0 0 0 1px rgb(255 255 255 / .16)}
+#r7Kartu .r7-wkt{font:600 12px/1.4 var(--font);color:var(--ink)}
+#r7Kartu .r7-cat{display:grid;gap:2px;padding:6px 10px;border-radius:9px;background:#FBE7D6;color:#8A3F07;font:600 11.5px/1.4 var(--font)}
+#r7Kartu .r7-cat[hidden]{display:none}
+:root[data-theme="dark"] #r7Kartu .r7-cat{background:oklch(100% 0 0 / .08);color:#FFB27A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #r7Kartu .r7-cat{background:oklch(100% 0 0 / .08);color:#FFB27A}}
+#r7Kartu .r7-rinci[hidden],#r7Kartu .r7-rinci p[hidden],#r7Kartu .r7-prov[hidden]{display:none}
+#r7Kartu .r7-rinci > summary{cursor:pointer;list-style:none;font:800 10.5px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+#r7Kartu .r7-rinci > summary::-webkit-details-marker{display:none}
+#r7Kartu .r7-rinci > summary::after{content:" ▾"}
+#r7Kartu .r7-rinci:not([open]) > summary::after{content:" ▸"}
+#r7Kartu .r7-rinci p{margin:6px 0 0;font-size:12px;line-height:1.45;color:var(--ink2)}
+#r7Kartu .r7-prov{margin-top:8px;container-type:inline-size}   /* @container di index.html (.nm-pjg/.nm-pdk): nama provinsi singkat bila kartu sempit */
+#r7Kartu .r7-prov ul{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+#r7Kartu .r7-prov li{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;padding:3px 0;border-bottom:1px solid var(--line);font-size:12px}
+#r7Kartu .r7-prov li > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#r7Kartu .r7-prov li b{flex:none;padding:0 8px;border-radius:999px;background:oklch(50% .02 256 / .12);font-size:11px;font-variant-numeric:tabular-nums}
+/* legenda: catatan di bawah kelas warna */
+.leg .r7-cat-leg{display:block;margin-top:2px;max-width:260px;font-size:10.5px;line-height:1.35;color:var(--ink2);white-space:normal}
+@media (max-width:900px){#r7Kartu{width:100%}}

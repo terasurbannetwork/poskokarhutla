@@ -1,0 +1,385 @@
+{
+ "nama": "bab04-batang-irigasi-kewenangan",
+ "keterangan": "Luas daerah irigasi per provinsi di Pulau Jawa menurut kewenangan, penetapan 2015 (persen luas)",
+ "sumber": "Permen PUPR 14/PRT/M/2015, Lampiran I–III",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  243.21
+ ],
+ "ukuran_cm": [
+  16.5,
+  8.58
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Pusat",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Provinsi",
+   "jenis": "kotak",
+   "warna": "#3F5F80"
+  },
+  {
+   "label": "Kabupaten/kota",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#3F5F80": [
+   "legenda",
+   "seri"
+  ],
+  "#2F86D1": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "garis",
+   "latar"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 20.55,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Pusat"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 34.55,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Pusat"
+  },
+  {
+   "x": 60.55,
+   "y": 3,
+   "w": 28.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Provinsi"
+  },
+  {
+   "x": 46.55,
+   "y": 2,
+   "w": 42.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Provinsi"
+  },
+  {
+   "x": 113.16,
+   "y": 3,
+   "w": 57.25,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "Kabupaten/kota"
+  },
+  {
+   "x": 99.16,
+   "y": 2,
+   "w": 71.25,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "Kabupaten/kota"
+  },
+  {
+   "x": 40.38,
+   "y": 179.3,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg0",
+   "teks": "46,5"
+  },
+  {
+   "x": 40.38,
+   "y": 121.09,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg0",
+   "teks": "11,5"
+  },
+  {
+   "x": 40.38,
+   "y": 67.5,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg0",
+   "teks": "41,9"
+  },
+  {
+   "x": 40.02,
+   "y": 20.24,
+   "w": 16.71,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "99,9"
+  },
+  {
+   "x": 28.32,
+   "y": 233.21,
+   "w": 40.11,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 133.12,
+   "y": 190.34,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg1",
+   "teks": "35,5"
+  },
+  {
+   "x": 135.51,
+   "y": 145.78,
+   "w": 11.21,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg1",
+   "teks": "8,9"
+  },
+  {
+   "x": 133.12,
+   "y": 81.05,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg1",
+   "teks": "55,6"
+  },
+  {
+   "x": 130.32,
+   "y": 20.04,
+   "w": 21.58,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "100,0"
+  },
+  {
+   "x": 117.22,
+   "y": 233.21,
+   "w": 47.78,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 225.86,
+   "y": 208.4,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg2",
+   "teks": "17,5"
+  },
+  {
+   "x": 225.86,
+   "y": 171.07,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg2",
+   "teks": "19,7"
+  },
+  {
+   "x": 225.86,
+   "y": 88.27,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg2",
+   "teks": "62,8"
+  },
+  {
+   "x": 223.07,
+   "y": 20.04,
+   "w": 21.58,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "100,0"
+  },
+  {
+   "x": 209.12,
+   "y": 233.21,
+   "w": 49.47,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 318.61,
+   "y": 196.56,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg3",
+   "teks": "29,3"
+  },
+  {
+   "x": 318.61,
+   "y": 149.69,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg3",
+   "teks": "17,4"
+  },
+  {
+   "x": 318.61,
+   "y": 78.74,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg3",
+   "teks": "53,3"
+  },
+  {
+   "x": 315.81,
+   "y": 20.04,
+   "w": 21.58,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "100,0"
+  },
+  {
+   "x": 305.63,
+   "y": 233.21,
+   "w": 41.95,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 411.35,
+   "y": 196.76,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg4",
+   "teks": "29,1"
+  },
+  {
+   "x": 411.35,
+   "y": 153.1,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg4",
+   "teks": "14,4"
+  },
+  {
+   "x": 411.35,
+   "y": 81.95,
+   "w": 15.99,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg4",
+   "teks": "56,5"
+  },
+  {
+   "x": 408.55,
+   "y": 20.04,
+   "w": 21.58,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "100,0"
+  },
+  {
+   "x": 406.84,
+   "y": 233.21,
+   "w": 25.01,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Banten"
+  }
+ ],
+ "jenis": "bertumpuk",
+ "pesan": "G8",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 5,
+ "segmen": 3,
+ "nilai_tak_tertulis": 0,
+ "kontras_teks_min": 4.52,
+ "baris_dibuang": 0,
+ "cacah_pecahan": 15,
+ "jumlah_per_batang": [
+  {
+   "x": "Jawa Barat",
+   "segmen": [
+    46.5,
+    11.5,
+    41.9
+   ],
+   "total": 99.9
+  },
+  {
+   "x": "Jawa Tengah",
+   "segmen": [
+    35.5,
+    8.9,
+    55.6
+   ],
+   "total": 100
+  },
+  {
+   "x": "DI Yogyakarta",
+   "segmen": [
+    17.5,
+    19.7,
+    62.8
+   ],
+   "total": 100
+  },
+  {
+   "x": "Jawa Timur",
+   "segmen": [
+    29.3,
+    17.4,
+    53.3
+   ],
+   "total": 100
+  },
+  {
+   "x": "Banten",
+   "segmen": [
+    29.1,
+    14.4,
+    56.5
+   ],
+   "total": 100
+  }
+ ]
+}

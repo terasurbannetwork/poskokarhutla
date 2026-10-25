@@ -14,7 +14,7 @@ assert.equal(typeof R.kontrol, 'function', 'peta_karhutla.js harus mengekspor wi
 // 31 hari 2026-09-21 .. 2026-10-21 (Senin 19 Okt = indeks 28); hot = i+1, luas = 10(i+1), belum = 100(i+1); satu provinsi tambahan serba nol
 const hari = Array.from({ length: 31 }, (_, i) => R.tambah('2026-09-21', i))
 const deret = f => hari.map((_, i) => f(i))
-const J = () => ({ versi: 1, dibuat: '2026-10-21T22:00:00+07:00', cutoff: '2026-10-21T07:00:00+07:00', hari: [...hari], porsi: 0.534, celah: ['2026-10-20'],
+const J = () => ({ versi: 1, dibuat: '2026-10-21T22:00:00+07:00', cutoff: '2026-10-21T07:00:00+07:00', hari: [...hari], faktor: { N20: 4.22, N21: 4.36 }, celah: ['2026-10-20'],
   metode: { hot: 'a', luas: 'b', belum: 'c', padam: 'd', catatan: [] },
   prov: { 62: { nama: 'Kalimantan Tengah', hot: deret(i => i + 1), luas: deret(i => 10 * (i + 1)), belum: deret(i => 100 * (i + 1)), padam: deret(() => 0) },
           14: { nama: 'Riau', hot: deret(() => 0), luas: deret(() => 0), belum: deret(() => 0), padam: deret(() => 0) } } })
@@ -236,7 +236,8 @@ test('data/peta_karhutla.json (bila sudah terbit): kontrak v1, 38 provinsi, nasi
   const d = JSON.parse(readFileSync(nyata, 'utf8'))
   assert.equal(R.cek(d), '')
   assert.equal(Object.keys(d.prov).length, 38, 'harus 38 provinsi')
-  assert.ok(Number.isFinite(d.porsi) && d.porsi > 0 && d.porsi < 2, `porsi ${d.porsi}`)
+  assert.equal(d.porsi, undefined, 'bentuk lama (porsi) tidak boleh terbit lagi')
+  for (const s of ['N20', 'N21']) assert.ok(Number.isFinite(d.faktor?.[s]) && d.faktor[s] > 1 && d.faktor[s] < 10, `faktor ${s} ${d.faktor?.[s]} ha/titik`)
   for (const m of ['hot', 'luas', 'belum', 'padam']) {
     assert.ok(Array.isArray(d.nasional[m]) && d.nasional[m].length === d.hari.length, `nasional.${m} sejajar hari`)
     d.hari.forEach((h, k) => {

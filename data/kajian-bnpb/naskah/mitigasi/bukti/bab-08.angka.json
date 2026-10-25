@@ -1,0 +1,598 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 8 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-08.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur (atau jalur_rendah/jalur_tinggi untuk rentang), atau nilai + pustaka (id di bab-08.pustaka.json).",
+    "Kunci yang sudah ada di data/angka.json atau berkas bukti lain tidak diulang. Angka sekunder tidak dimasukkan. Bentuk A diperiksa skrip: tiap jalur menunjuk tepat satu baris dan nilainya sama dengan berkas bukti.",
+    "Disusun 24 Oktober 2026.",
+    "Diperbaiki 24 Oktober 2026 sesuai temuan pemeriksa: dibi.epidemi.meninggal.2025 menjadi 14 setelah entri ganda dibuang; nonalam.tpa.belum_berhenti_porsi menjadi rentang; kunci baru nonalam.plumpang2023.meninggal_pemprov_18mar.",
+    "Ditambahkan penulis naskah Bab 8, 24 Oktober 2026: 15 kunci KRB nonalam (Tabel 8.1) dan 10 kunci TPA dari peristiwa.csv (Tabel 8.2), semua bentuk A dan berlabel resmi."
+  ],
+  "angka": {
+    "nonalam.covid19.kasus": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=kasus_analog_covid19].nilai",
+      "satuan": "kasus",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029 hlm. 14",
+      "catatan": "kumulatif sampai sekitar akhir Juni 2023; jangan ditulis \"hingga Maret 2023\""
+    },
+    "nonalam.covid19.durasi_status_hari": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=durasi_status_bencana_nasional].nilai",
+      "satuan": "hari",
+      "keyakinan": "resmi",
+      "sumber": "Keppres 12/2020 (13 Apr 2020) dan Keppres 17/2023 (berlaku 21 Jun 2023)",
+      "catatan": "hari kalender inklusif; 1.164 bila hari berlakunya Keppres 17/2023 tidak dihitung"
+    },
+    "nonalam.covid19.kematian_minggu_puncak": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=kematian_minggu_puncak].nilai",
+      "satuan": "jiwa per minggu",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO COVID-19 dashboard, pekan 26 Jul s.d. 1 Agt 2021",
+      "catatan": "sama persis dengan jumlah harian covid19.go.id pekan yang sama"
+    },
+    "nonalam.covid19.meninggal.2020": {
+      "berkas": "nonalam-sosial/covid19_nasional.csv",
+      "jalur": "[metrik=meninggal_per_tahun,periode=2020,label=resmi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (arsip 27 Okt 2022)",
+      "catatan": "kematian terlapor; pembanding kematian berlebih 2020"
+    },
+    "nonalam.covid19.meninggal.2021": {
+      "berkas": "nonalam-sosial/covid19_nasional.csv",
+      "jalur": "[metrik=meninggal_per_tahun,periode=2021,label=resmi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (arsip 27 Okt 2022)",
+      "catatan": "kematian terlapor; pembanding kematian berlebih 2021"
+    },
+    "nonalam.covid19.meninggal_who": {
+      "berkas": "nonalam-sosial/covid19_nasional.csv",
+      "jalur": "[metrik=meninggal,label=terverifikasi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO COVID-19 dashboard (data dilaporkan negara), laporan terakhir berisi 25 Mei 2025",
+      "catatan": "pemutakhiran, bukan angka yang bertentangan dengan 161.870"
+    },
+    "nonalam.covid19.kematian_berlebih.2020": {
+      "berkas": "nonalam-sosial/covid19_nasional.csv",
+      "jalur_rendah": "[metrik=kematian_berlebih_batas_bawah_95,periode=2020].nilai",
+      "jalur_tinggi": "[metrik=kematian_berlebih_batas_atas_95,periode=2020].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "WHO, estimasi kematian berlebih terkait pandemi COVID-19 (rilis 19 Mei 2023)",
+      "catatan": "selang 95%; selalu tulis sebagai rentang dan berdampingan dengan 22.138 terlapor"
+    },
+    "nonalam.covid19.kematian_berlebih.2021": {
+      "berkas": "nonalam-sosial/covid19_nasional.csv",
+      "jalur_rendah": "[metrik=kematian_berlebih_batas_bawah_95,periode=2021].nilai",
+      "jalur_tinggi": "[metrik=kematian_berlebih_batas_atas_95,periode=2021].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "WHO, estimasi kematian berlebih terkait pandemi COVID-19 (rilis 19 Mei 2023)",
+      "catatan": "selang 95%; selalu tulis sebagai rentang dan berdampingan dengan 121.956 terlapor"
+    },
+    "nonalam.covid19.dtp3.2019": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_WHS4_100_2019].nilai",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
+      "catatan": "imunisasi DTP3 anak 1 tahun"
+    },
+    "nonalam.covid19.dtp3.2021": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_WHS4_100_2021].nilai",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
+      "catatan": "imunisasi DTP3 anak 1 tahun; deret WUENIC 2019–2024: 85, 77, 67, 91, 83, 78 (indikator.csv); jangan ditulis 'pulih'"
+    },
+    "nonalam.covid19.mcv1.2019": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_WHS8_110_2019].nilai",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
+      "catatan": "imunisasi campak MCV1 anak 1 tahun"
+    },
+    "nonalam.covid19.mcv1.2021": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_WHS8_110_2021].nilai",
+      "satuan": "%",
+      "keyakinan": "terverifikasi",
+      "sumber": "WUENIC (WHO/UNICEF) via WHO GHO",
+      "catatan": "imunisasi campak MCV1 anak 1 tahun"
+    },
+    "nonalam.covid19.tb_notifikasi.2019": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_TB_notif_num_2019].nilai",
+      "satuan": "orang",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO Global TB Programme via WHO GHO",
+      "catatan": "notifikasi kasus TB episode baru"
+    },
+    "nonalam.covid19.tb_notifikasi.2020": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=epidemi_pandemi,komponen=imateriil_layanan_TB_notif_num_2020].nilai",
+      "satuan": "orang",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO Global TB Programme via WHO GHO",
+      "catatan": "notifikasi kasus TB episode baru"
+    },
+    "nonalam.covid19.prov_meninggal_per100rb_maks": {
+      "berkas": "nonalam-sosial/covid19_provinsi.csv",
+      "jalur": "[provinsi=DI Yogyakarta].meninggal_per_100rb",
+      "satuan": "jiwa per 100.000",
+      "keyakinan": "resmi",
+      "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (data 30 Sep 2022); penyebut penduduk KRB",
+      "catatan": "bukan angka akhir; berikutnya Kalimantan Timur 150,7 dan DKI Jakarta 138,4"
+    },
+    "nonalam.covid19.prov_meninggal_terbanyak": {
+      "berkas": "nonalam-sosial/covid19_provinsi.csv",
+      "jalur": "[provinsi=Jawa Tengah].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Satgas Penanganan COVID-19, data.covid19.go.id (data 30 Sep 2022)",
+      "catatan": "bukan angka akhir; Jawa Timur 31.808"
+    },
+    "krb.covid19.luas_bahaya_tinggi_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=luas_bahaya_tinggi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026"
+    },
+    "krb.covid19.luas_bahaya_tinggi_jawa_ha": {
+      "berkas": "nonalam-sosial/krb_covid19_wilayah.csv",
+      "jalur": "[tingkat=pulau,nama=Jawa].bahaya_luas_tinggi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK apiv4 kajian-summary covid-19, jumlah kab di Jawa",
+      "catatan": "olah: 82,2% dari luas bahaya tinggi nasional"
+    },
+    "krb.covid19.luas_risiko_tinggi_papua_ha": {
+      "berkas": "nonalam-sosial/krb_covid19_wilayah.csv",
+      "jalur": "[tingkat=pulau,nama=Papua].risiko_luas_tinggi",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK apiv4 kajian-summary covid-19, jumlah kab di Papua",
+      "catatan": "dari 4.231 ha kelas risiko tinggi nasional; Jawa 0 ha"
+    },
+    "krb.epidemi.luas_bahaya_tinggi_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=luas_bahaya_tinggi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026"
+    },
+    "krb.gagal_teknologi.luas_bahaya_total_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=luas_bahaya_total].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026"
+    },
+    "krb.gagal_teknologi.luas_bahaya_tinggi_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=luas_bahaya_tinggi].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026"
+    },
+    "nonalam.plumpang2023.hilang": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=plumpang2023,metrik=hilang].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
+      "catatan": "angka per 5 Mar 2023 (\"hingga saat ini\"); kebakaran malam 3 Mar 2023"
+    },
+    "nonalam.plumpang2023.pengungsi": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=gagal_teknologi,komponen=analog_plumpang2023_pengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
+      "catatan": "Kompas TV 4 Mar 2023: 579 (sekunder, pembanding)"
+    },
+    "nonalam.alkhoziny2025.meninggal_dibi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=alkhoziny2025,metrik=meninggal,label=resmi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, dasbor publik 1, ditarik 23 Okt 2026",
+      "catatan": "DIBI jenis gagal teknologi (kegagalan konstruksi); Basarnas 67 (sekunder)"
+    },
+    "dibi.epidemi.meninggal.2025": {
+      "nilai": 14,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; olah",
+      "sumber": "olah(resmi): rekap DIBI 2025 kode 201 = 28 dikurangi entri ganda Nias Selatan 9 Jan 2025 (14) yang tercatat di subjenis 'Epidemi dan Wabah Penyakit' dan 'Wabah Penyakit'",
+      "catatan": "nonalam-sosial/dibi_nonalam_sosial_baris.csv baris Nias Selatan 2025-01-09 (dua baris identik); angka mentah DIBI 28 hanya untuk catatan mutu, jangan dikutip"
+    },
+    "dibi.gagal_teknologi.meninggal.2025": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2025,kode_jenis_juklak=203,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, dasbor publik 1, ditarik 23 Okt 2026",
+      "catatan": "termasuk Al Khoziny 63"
+    },
+    "nonalam.tpa.sarimukti_kk_asap": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=kebakaran_tpa,komponen=analog_sarimukti_kk_terdampak_asap].nilai",
+      "satuan": "KK",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 26 Agt 2023",
+      "catatan": "\"diperkirakan sekitar 3.000 KK\""
+    },
+    "nonalam.tpa.sarimukti_persen_lahan": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=sarimukti2023,metrik=persen_lahan_terbakar].nilai",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 26 Agt 2023 (Pusdalops s.d. 25 Agt 2023)",
+      "catatan": "luas dalam hektare hanya sekunder: 16,5 ha (Metro TV) lawan 25 ha (opini Jakarta Post)"
+    },
+    "nonalam.tpa.suwung_luas_ha": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=kebakaran_tpa,komponen=analog_suwung_luas_ha].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 22 Jun 2024 (Kepala BNPB)",
+      "catatan": "7 km dari Bandara I Gusti Ngurah Rai"
+    },
+    "nonalam.tpa.jatiwaringin_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jatiwaringin2026,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 1 Jul 2026"
+    },
+    "nonalam.tpa.jatiwaringin_hari_padam": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jatiwaringin2026,metrik=durasi_sampai_padam_100].nilai",
+      "satuan": "hari",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 1 dan 10 Jul 2026",
+      "catatan": "hari kalender inklusif 30 Jun s.d. 9 Jul 2026; dihitung skrip paket"
+    },
+    "nonalam.tpa.disanksi": {
+      "berkas": "nonalam-sosial/indikator.csv",
+      "jalur": "[tema=tpa_open_dumping,indikator=tpa_disanksi_administratif].nilai",
+      "satuan": "TPA",
+      "keyakinan": "resmi",
+      "sumber": "KLH/BPLH, berita 26 Feb 2026",
+      "catatan": "250 sepanjang 2025 + 23 pada Jan 2026; 231 wajib hentikan open dumping, 22 dihentikan, 20 wajib memiliki TPA"
+    },
+    "nonalam.jee2023.ce1": {
+      "berkas": "nonalam-sosial/indikator.csv",
+      "jalur": "[kode=CE1].nilai",
+      "satuan": "skor 1–5",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
+      "catatan": "deteksi dan respons kejadian kimia"
+    },
+    "nonalam.jee2023.ce2": {
+      "berkas": "nonalam-sosial/indikator.csv",
+      "jalur": "[kode=CE2].nilai",
+      "satuan": "skor 1–5",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
+      "catatan": "lingkungan pemungkin pengelolaan kejadian kimia"
+    },
+    "nonalam.jee2023.r2_1": {
+      "berkas": "nonalam-sosial/indikator.csv",
+      "jalur": "[kode=R2.1].nilai",
+      "satuan": "skor 1–5",
+      "keyakinan": "terverifikasi",
+      "sumber": "WHO, JEE IHR Indonesia 2023 (terbit 2024), bagian rinci",
+      "catatan": "keterkaitan otoritas kesehatan masyarakat dan keamanan; bukan keterkaitan dengan otoritas bencana"
+    },
+    "nonalam.covid19.selisih_kkm_bencana_hari": {
+      "nilai": 13,
+      "pustaka": "ri-2020-keppres12",
+      "satuan": "hari",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): Keppres 11/2020 (31 Mar 2020) ke Keppres 12/2020 (13 Apr 2020)",
+      "catatan": "selisih tanggal penetapan dua status untuk kejadian yang sama"
+    },
+    "nonalam.covid19.meninggal_terlapor.2020_2021": {
+      "nilai": 144094,
+      "pustaka": "satgas-2022-covid19",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): 22.138 + 121.956"
+    },
+    "nonalam.covid19.rasio_berlebih_terlapor.2020_2021": {
+      "nilai": "5,6–9,3",
+      "pustaka": "who-2023-kematian-berlebih",
+      "satuan": "kali",
+      "keyakinan": "estimasi-model",
+      "sumber": "olah: 806.815 dan 1.343.849 dibagi 144.094",
+      "catatan": "rasio model terhadap tercatat; tidak masuk judul"
+    },
+    "dibi.gagal_teknologi.kejadian.2018_2026": {
+      "nilai": 10,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): cakupan bencana, kode 203, 2018 + 2024 + 2025 + 2026 (2026 sementara)",
+      "catatan": "Plumpang, Balongan, Morowali tidak punya baris"
+    },
+    "dibi.gagal_teknologi.meninggal.2018_2026": {
+      "nilai": 90,
+      "pustaka": "bnpb-2026-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): 2 + 2 + 69 + 17",
+      "catatan": "70% dari Al Khoziny 2025 (63)"
+    },
+    "nonalam.balongan2021.pengungsi": {
+      "nilai": 932,
+      "pustaka": "bnpb-2021-balongan",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 30 Mar 2021 09.23 WIB",
+      "catatan": "naik dari 912 (29 Mar 2021); 1 meninggal, 5 desa"
+    },
+    "renas.epidemi.psc.target_2029": {
+      "nilai": 510,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 kegiatan 1.2.1.f, hlm. 57",
+      "catatan": "baseline 2024: 90; PJ Kementerian Kesehatan; dibaca dari OCR tabel berkolom bertumpuk"
+    },
+    "renas.epidemi.gladi_rs.target_2029": {
+      "nilai": 192,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "rumah sakit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 kegiatan 1.2.1.g, hlm. 57",
+      "catatan": "baseline NA; PJ Kementerian Kesehatan"
+    },
+    "program.kompendium.nonalam": {
+      "nilai": 0,
+      "pustaka": "pantau-2026-program-terbukti",
+      "satuan": "program dari 25",
+      "keyakinan": "resmi",
+      "sumber": "olah: baris kompendium_program.csv yang kolom bencana memuat epidemi, gagal teknologi, atau kebakaran TPA",
+      "catatan": "kolom bencana hanya memuat sepuluh jenis bencana alam"
+    },
+    "nonalam.tpa.belum_berhenti_porsi": {
+      "nilai": "sekitar 70–76%",
+      "pustaka": "klh-2026-open-dumping",
+      "satuan": "persen TPA",
+      "keyakinan": "resmi; olah",
+      "sumber": "olah(resmi): 100% dikurangi \"sekitar 30 persen\" yang telah berhenti (sekitar 70%), dan 369 / 485 (76%)",
+      "catatan": "rilis KLH menulis 369 TPA \"perlu segera bertransformasi\"; menyamakannya dengan \"belum berhenti open dumping\" adalah tafsiran tim, jadi batas 76% bertumpu pada tafsiran itu. Tulis sebagai rentang atau dua angka berdampingan, tanpa desimal"
+    },
+    "nonalam.tpa.tenggat_tutup_uu18": {
+      "nilai": "7 Mei 2013",
+      "pustaka": "ri-2008-uu18",
+      "satuan": "tanggal",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): UU 18/2008 berlaku 7 Mei 2008 + 5 tahun (Pasal 44 ayat (2))"
+    },
+    "nonalam.tpa.terbakar_2026_tercatat": {
+      "nilai": 4,
+      "pustaka": "klh-2026-galuga",
+      "satuan": "TPA",
+      "keyakinan": "resmi",
+      "sumber": "olah(resmi): Jatiwaringin, Galuga, Putri Cempo, Jatibarang (BNPB dan KLH, sampai 23 Okt 2026)",
+      "catatan": "Galuga (KLH 9 Sep 2026) belum ada di peristiwa.csv; kunci kajian air nonalam.tpa.jawa_2026_tercatat = 3 tidak memuatnya"
+    },
+    "nonalam.plumpang2023.meninggal_pemprov_18mar": {
+      "nilai": 29,
+      "pustaka": "beritajakarta-2023-plumpang",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pemprov DKI Jakarta (Berita Jakarta 18 Mar 2023): Kalaksa BPBD DKI, data Dinkes DKI",
+      "catatan": "angka tercatat resmi tertinggi yang dibuka; lantai Kartu 8.2. Angka lebih tinggi 33 per 24 Mar 2023 hanya sekunder (IDX Channel). Kunci registri nonalam.plumpang2023.meninggal_akhir (nilai sama, label resmi tetapi sumber sekunder Merah Putih) tidak dipakai ulang"
+    },
+    "krb.covid19.luas_bahaya_total_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=luas_bahaya_total].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.covid19.luas_bahaya_sedang_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=luas_bahaya_sedang].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.covid19.terpapar": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=penduduk_terpapar].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "melebihi penduduk KRB 271.680.290 karena terpapar Sulawesi Barat terhitung ganda di API; tulis 'praktis seluruh penduduk' dengan angka ini di catatan; ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.covid19.terpapar_umur_rentan": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=terpapar_kelompok_umur_rentan].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.covid19.terpapar_miskin": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=terpapar_penduduk_miskin].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.covid19.terpapar_disabilitas": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=COVID-19,metrik=terpapar_penduduk_disabilitas].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.epidemi.luas_bahaya_total_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=luas_bahaya_total].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.epidemi.luas_bahaya_sedang_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=luas_bahaya_sedang].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.epidemi.terpapar_umur_rentan": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=terpapar_kelompok_umur_rentan].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.epidemi.terpapar_miskin": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=terpapar_penduduk_miskin].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.epidemi.terpapar_disabilitas": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Epidemi dan wabah penyakit,metrik=terpapar_penduduk_disabilitas].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.gagal_teknologi.luas_bahaya_sedang_ha": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=luas_bahaya_sedang].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.2, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.gagal_teknologi.terpapar_umur_rentan": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=terpapar_kelompok_umur_rentan].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.gagal_teknologi.terpapar_miskin": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=terpapar_penduduk_miskin].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "krb.gagal_teknologi.terpapar_disabilitas": {
+      "berkas": "nonalam-sosial/krb_nonalam_nasional.csv",
+      "jalur": "[bahaya=Kegagalan teknologi,metrik=terpapar_penduduk_disabilitas].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.5, sumber asli Kajian Risiko Bencana 2022–2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.kopiluhur_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=kopiluhur2023,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 11 Sep 2023 (BPBD Kota Cirebon)",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.kopiluhur_kk_sekitar": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=kopiluhur2023,metrik=kk_sekitar_lokasi].nilai",
+      "satuan": "KK",
+      "keyakinan": "resmi",
+      "sumber": "BPBD Kota Cirebon, dikutip BNPB 11 Sep 2023",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.putricempo2023_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=putricempo2023,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Pusdalops BPBD Kota Surakarta, dikutip BNPB 18 Sep 2023",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.putricempo2023_jiwa_asap": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=putricempo2023,metrik=jiwa_terdampak_asap].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 18 Sep 2023",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.rawakucing_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=rawakucing2023,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 21 Okt 2023 (Pusdalops)",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.jalupang_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jalupang2023,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 30 Okt 2023",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.jalupang_desa_asap": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jalupang2023,metrik=desa_terdampak_asap].nilai",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 30 Okt 2023",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.jatiwaringin_mengungsi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jatiwaringin2026,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BNPB 1 Jul 2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.putricempo2026_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=putricempo2026,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BNPB, Perkembangan Situasi per 25 Sep 2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    },
+    "nonalam.tpa.jatibarang2026_luas_ha": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=jatibarang2026,metrik=luas_terbakar].nilai",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "BPBD Prov. Jawa Tengah, dikutip BNPB 1 Okt 2026",
+      "catatan": "ditambahkan penulis bab 24 Okt 2026 untuk Tabel 8.1/8.2"
+    }
+  }
+}

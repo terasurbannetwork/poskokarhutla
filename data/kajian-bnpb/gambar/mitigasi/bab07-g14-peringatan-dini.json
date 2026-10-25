@@ -1,0 +1,153 @@
+{
+ "nama": "bab07-g14-peringatan-dini",
+ "keterangan": "Korban jiwa lantai musim hujan 2025/2026 nasional pada cakupan peringatan dini 2025, dua lintasan 2029, dan cakupan penuh (jiwa)",
+ "sumber": "BNPB, DIBI dasbor publik; Renas PB 2025–2029; Renstra BNPB 2025–2029; WMO (2022); pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lantai tercatat, cakupan 2025",
+   "jenis": "kotak",
+   "warna": "#DCE1E7"
+  },
+  {
+   "label": "Batas atas ilustratif sesudah kepekaan",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#DCE1E7": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 105.39,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lantai tercatat, cakupan 2025"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 119.39,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lantai tercatat, cakupan 2025"
+  },
+  {
+   "x": 145.39,
+   "y": 3,
+   "w": 137.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "Batas atas ilustratif sesudah kepekaan"
+  },
+  {
+   "x": 131.39,
+   "y": 2,
+   "w": 151.57,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "Batas atas ilustratif sesudah kepekaan"
+  },
+  {
+   "x": 48.98,
+   "y": 20.04,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.692"
+  },
+  {
+   "x": 34.35,
+   "y": 186.44,
+   "w": 51.23,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Cakupan 2025"
+  },
+  {
+   "x": 164.91,
+   "y": 20.31,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.689"
+  },
+  {
+   "x": 128.87,
+   "y": 186.44,
+   "w": 94.04,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lintasan IKP Renstra 2029"
+  },
+  {
+   "x": 280.83,
+   "y": 81.09,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.021"
+  },
+  {
+   "x": 242.19,
+   "y": 186.44,
+   "w": 99.27,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lintasan Renas PB 1.c 2029"
+  },
+  {
+   "x": 400.44,
+   "y": 152.69,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "234"
+  },
+  {
+   "x": 380.14,
+   "y": 186.44,
+   "w": 55.21,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Cakupan penuh"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 4
+}

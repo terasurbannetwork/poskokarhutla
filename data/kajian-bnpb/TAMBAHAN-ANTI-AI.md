@@ -1,8 +1,9 @@
 # Tambahan dari skill anti-ai-checker untuk naskah kajian
 
 Dinilai 23 Okt 2026. Dilebur ke ANTI-SLOP.md dan `qa/slop.py` setelah workflow anti-slop
-selesai. Daftar `banned-ai-words.txt` yang dirujuk skill tidak ada di mesin ini; daftar
-kata terlarang diambil dari ANTI-SLOP.md dan TAMBAHAN-PPTX-RULES.md no. 9.
+selesai. Daftar `banned-ai-words.txt` milik pemilik (182 baris) ditemukan di
+knowledge-hub dan disalin ke `riset/anti-slop/banned-ai-words.txt`; dipakai untuk teks
+Inggris dan dibuatkan padanan Indonesianya di ANTI-SLOP.md.
 
 ## Ambang terukur yang dipakai
 

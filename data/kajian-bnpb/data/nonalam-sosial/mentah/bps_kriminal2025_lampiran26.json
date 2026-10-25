@@ -1,5 +1,6 @@
 {
  "sumber": "BPS, Statistik Kriminal 2024/2025 (rilis 12 Des 2025), Lampiran 26 'Jumlah dan Persentase Desa/Kelurahan yang Ada Kejadian Konflik Massal Selama Setahun yang Lalu Menurut Provinsi, 2021 dan 2024' (hlm. 136); https://www.bps.go.id/id/publication/2025/12/12/2edc8ea4c35b19ba912fc7e4/statistik-kriminal-2024-2025.html",
+ "berkas_pdf_sha256": "48a27c44fc1217e5a7bac0cf134c4099c3955881a1f651d7a8d379cd5e8f531d",
  "diakses": "2026-10-23",
  "ekstraksi": "teks PDF diekstrak dengan PyMuPDF sekali; '…' = provinsi belum ada pada 2021 (null), '-' = nol",
  "baris": [

@@ -19,7 +19,7 @@ const Ringkasan = (() => {
     "63": "101/Antasari", "64": "091/Aji Surya Natakesuma", "53": "161/Wira Sakti", "93": "174/Anim Ti Waninggap"};
   const JENIS = {resmi: "Resmi", satelit: "Satelit", model: "Model", berita: "Berita"};
   const SUMBER = {
-    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20), dihitung setara SiPongi",
+    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik per hari",
     kompleks: "Cluster: titik panas 7 hari digabung DBSCAN 1,5 km, status dari aturan keparahan + cuaca (tab Metode)",
     asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan cluster searah angin ≤ 300 km",
     ansambel: "Ansambel ECMWF 51 anggota (fwi_ansambel.json), rata-rata sel 0,5° per provinsi",
@@ -76,7 +76,7 @@ const Ringkasan = (() => {
       }
       /* titik panas: 24 jam terakhir vs 24 jam sebelumnya, dari lintasan terakhir (S.acuan) */
       const kab24 = {};
-      for (const b of S.titik) { const w = S.wilKunci[b[6]], x = w && P[w[0]]; if (!x || b[2] < -48) continue; const utama = S.utama.has(b[3]);
+      for (const b of S.titik) { const w = S.wilKunci[b[6]], x = w && P[w[0]]; if (!x || b[2] < -48) continue; const utama = S.dihitung(b);
         if (b[2] >= -24) { if (utama) { x.h24++; kab24[w[1]] = (kab24[w[1]] || 0) + 1; } if (b[3] === "N" && b[5] >= 1) x.snpp++; } else if (utama) x.hKmr++; }
       for (const f of S.kluster.features) { const p = f.properties, x = P[p.prov]; if (!x) continue; if (p.level === 3) { x.p3++; x.kom3.push(p); } else if (p.level === 2) x.p2++; }
       for (const x of Object.values(P)) x.kom3.sort((a, b) => b.px24 - a.px24);
@@ -156,7 +156,7 @@ const Ringkasan = (() => {
     hariTitik() {
       if (!S.titikPenuh && this.rk?.titik_hari?.v.length >= 3) return this.rk.titik_hari.v;   // dihitung di Actions dari hotspot.json 7 hari
       const per = []; let jMin = 0;
-      for (const b of S.titik) { if (b[2] < jMin) jMin = b[2]; const w = S.wilKunci[b[6]]; if (!w || !S.meta.provinsi[w[0]] || !S.utama.has(b[3])) continue; const i = Math.max(0, Math.ceil(-b[2] / 24) - 1); per[i] = (per[i] || 0) + 1; }
+      for (const b of S.titik) { if (b[2] < jMin) jMin = b[2]; const w = S.wilKunci[b[6]]; if (!w || !S.meta.provinsi[w[0]] || !S.dihitung(b)) continue; const i = Math.max(0, Math.ceil(-b[2] / 24) - 1); per[i] = (per[i] || 0) + 1; }
       const nH = Math.min(14, Math.floor(-jMin / 24)); return Array.from({length: nH}, (_, i) => per[nH - 1 - i] || 0);
     },
     spark(th) {

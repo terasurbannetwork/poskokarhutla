@@ -14,9 +14,10 @@ const H = [-2, 114, 20, 30, 3, 3, 1, 4, 50];   // lat lon u frp level rel qf n u
 const lonKm = (lat, k) => k / (111.19 * Math.cos(lat * Math.PI / 180));   // derajat bujur untuk k km
 const baru = (h, f, t = kini) => tandaiBaru(h, f, t).map(r => r[9]);
 
-uji("himawari: tandaiBaru: FIRMS dalam 4 km = bukan baru, 5 km = baru, semua keyakinan dihitung", () => {
+uji("himawari: tandaiBaru: FIRMS sedang/tinggi dalam 4 km = bukan baru, 5 km = baru; keyakinan rendah tidak menutup (pemilik 25 Okt 2026)", () => {
   assert.equal(BARU_KM, 4);
-  assert.deepEqual(baru(hw([H]), firms([[-2, 114 + lonKm(-2, 3), -1, "VIIRS", 5, 0]])), [0], "3 km, keyakinan 0");
+  assert.deepEqual(baru(hw([H]), firms([[-2, 114 + lonKm(-2, 3), -1, "VIIRS", 5, 1]])), [0], "3 km, keyakinan sedang");
+  assert.deepEqual(baru(hw([H]), firms([[-2, 114 + lonKm(-2, 3), -1, "VIIRS", 5, 0]])), [1], "3 km, keyakinan rendah: tetap baru");
   assert.deepEqual(baru(hw([H]), firms([[-2, 114 + lonKm(-2, 5), -1, "VIIRS", 5, 2]])), [1], "5 km");
   assert.deepEqual(baru(hw([H]), null), [1], "tanpa FIRMS");
 });

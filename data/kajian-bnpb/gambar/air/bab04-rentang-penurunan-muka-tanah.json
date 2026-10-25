@@ -1,0 +1,534 @@
+{
+ "nama": "bab04-rentang-penurunan-muka-tanah",
+ "keterangan": "Laju penurunan muka tanah terukur per kota di Pulau Jawa menurut metode dan periode, 1982–2023 (cm per tahun)",
+ "sumber": "Literatur terverifikasi, paket air-jawa subsiden_kota",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  339
+ ],
+ "ukuran_cm": [
+  16.5,
+  11.96
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "rentang laju satu studi, terendah sampai tertinggi",
+   "jenis": "garis",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 173.59,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "rentang laju satu studi, terendah sampai tertinggi"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 187.59,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "rentang laju satu studi, terendah sampai tertinggi"
+  },
+  {
+   "x": 197.71,
+   "y": 329,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 260.22,
+   "y": 329,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "10"
+  },
+  {
+   "x": 324.97,
+   "y": 329,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "20"
+  },
+  {
+   "x": 389.73,
+   "y": 329,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "30"
+  },
+  {
+   "x": 2,
+   "y": 26.2,
+   "w": 138.13,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jakarta 1982–2010, gabungan metode"
+  },
+  {
+   "x": 387.67,
+   "y": 25.95,
+   "w": 58.62,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,0–28,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 46.6,
+   "w": 95.04,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jakarta 2016–2020, InSAR"
+  },
+  {
+   "x": 238.73,
+   "y": 46.35,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5,0–5,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 67,
+   "w": 147.59,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semarang 1999–2011, gabungan metode"
+  },
+  {
+   "x": 329.39,
+   "y": 66.75,
+   "w": 58.62,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "6,0–19,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 87.4,
+   "w": 104.51,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semarang 2016–2020, InSAR"
+  },
+  {
+   "x": 258.16,
+   "y": 87.15,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "8,0–8,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 107.8,
+   "w": 61.34,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semarang, InSAR"
+  },
+  {
+   "x": 271.11,
+   "y": 107.55,
+   "w": 63.49,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "10,0–10,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 128.2,
+   "w": 153.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan 2016–2023, gabungan metode"
+  },
+  {
+   "x": 309.96,
+   "y": 127.95,
+   "w": 58.62,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5,0–16,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 148.6,
+   "w": 153.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan 2016–2024, gabungan metode"
+  },
+  {
+   "x": 238.73,
+   "y": 148.35,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5,0–5,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 169,
+   "w": 110.06,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan 2016–2020, InSAR"
+  },
+  {
+   "x": 251.68,
+   "y": 168.75,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7,0–7,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 189.4,
+   "w": 101.3,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Surabaya, gabungan metode"
+  },
+  {
+   "x": 235.49,
+   "y": 189.15,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "4,5–4,5 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 209.8,
+   "w": 138.13,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jakarta 1982–2014, gabungan metode"
+  },
+  {
+   "x": 271.11,
+   "y": 209.55,
+   "w": 58.62,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "3,0–10,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 230.2,
+   "w": 187.95,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Semarang utara-timur dan Demak 2015–2022, InSAR"
+  },
+  {
+   "x": 284.06,
+   "y": 229.95,
+   "w": 63.49,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "10,0–12,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 250.6,
+   "w": 92.67,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kendal 2015–2022, InSAR"
+  },
+  {
+   "x": 238.73,
+   "y": 250.35,
+   "w": 53.74,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5,0–5,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 271,
+   "w": 110.06,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pekalongan 2014–2022, InSAR"
+  },
+  {
+   "x": 329.39,
+   "y": 270.75,
+   "w": 63.49,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "10,0–19,0 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 291.4,
+   "w": 74.54,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kab. Bandung, InSAR"
+  },
+  {
+   "x": 350.76,
+   "y": 291.15,
+   "w": 63.49,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "22,3–22,3 cm/th"
+  },
+  {
+   "x": 2,
+   "y": 311.8,
+   "w": 77.59,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Bandung Barat, InSAR"
+  },
+  {
+   "x": 348.82,
+   "y": 311.55,
+   "w": 63.49,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "22,0–22,0 cm/th"
+  }
+ ],
+ "jenis": "rentang",
+ "pesan": "G12",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_baris": 15,
+ "baris_rentang": [
+  {
+   "id": "Jakarta 1982–2010, gabungan metode",
+   "rendah": 1,
+   "tinggi": 28,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1,
+    28
+   ],
+   "label": "1,0–28,0 cm/th"
+  },
+  {
+   "id": "Jakarta 2016–2020, InSAR",
+   "rendah": 5,
+   "tinggi": 5,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    5,
+    5
+   ],
+   "label": "5,0–5,0 cm/th"
+  },
+  {
+   "id": "Semarang 1999–2011, gabungan metode",
+   "rendah": 6,
+   "tinggi": 19,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    6,
+    19
+   ],
+   "label": "6,0–19,0 cm/th"
+  },
+  {
+   "id": "Semarang 2016–2020, InSAR",
+   "rendah": 8,
+   "tinggi": 8,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    8,
+    8
+   ],
+   "label": "8,0–8,0 cm/th"
+  },
+  {
+   "id": "Semarang, InSAR",
+   "rendah": 10,
+   "tinggi": 10,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    10,
+    10
+   ],
+   "label": "10,0–10,0 cm/th"
+  },
+  {
+   "id": "Pekalongan 2016–2023, gabungan metode",
+   "rendah": 5,
+   "tinggi": 16,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    5,
+    16
+   ],
+   "label": "5,0–16,0 cm/th"
+  },
+  {
+   "id": "Pekalongan 2016–2024, gabungan metode",
+   "rendah": 5,
+   "tinggi": 5,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    5,
+    5
+   ],
+   "label": "5,0–5,0 cm/th"
+  },
+  {
+   "id": "Pekalongan 2016–2020, InSAR",
+   "rendah": 7,
+   "tinggi": 7,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    7,
+    7
+   ],
+   "label": "7,0–7,0 cm/th"
+  },
+  {
+   "id": "Surabaya, gabungan metode",
+   "rendah": 4.5,
+   "tinggi": 4.5,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    4.5,
+    4.5
+   ],
+   "label": "4,5–4,5 cm/th"
+  },
+  {
+   "id": "Jakarta 1982–2014, gabungan metode",
+   "rendah": 3,
+   "tinggi": 10,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    3,
+    10
+   ],
+   "label": "3,0–10,0 cm/th"
+  },
+  {
+   "id": "Semarang utara-timur dan Demak 2015–2022, InSAR",
+   "rendah": 10,
+   "tinggi": 12,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    10,
+    12
+   ],
+   "label": "10,0–12,0 cm/th"
+  },
+  {
+   "id": "Kendal 2015–2022, InSAR",
+   "rendah": 5,
+   "tinggi": 5,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    5,
+    5
+   ],
+   "label": "5,0–5,0 cm/th"
+  },
+  {
+   "id": "Pekalongan 2014–2022, InSAR",
+   "rendah": 10,
+   "tinggi": 19,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    10,
+    19
+   ],
+   "label": "10,0–19,0 cm/th"
+  },
+  {
+   "id": "Kab. Bandung, InSAR",
+   "rendah": 22.3,
+   "tinggi": 22.3,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    22.3,
+    22.3
+   ],
+   "label": "22,3–22,3 cm/th"
+  },
+  {
+   "id": "Bandung Barat, InSAR",
+   "rendah": 22,
+   "tinggi": 22,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    22,
+    22
+   ],
+   "label": "22,0–22,0 cm/th"
+  }
+ ]
+}

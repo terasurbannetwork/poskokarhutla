@@ -1,0 +1,1046 @@
+{
+  "_catatan": [
+    "Kunci angka baru Bab 6 kajian mitigasi (berkas bukti naskah/mitigasi/bukti/bab-06.md), belum digabung ke data/angka.json. Bentuk entri sama dengan data/angka.json: berkas relatif ke data/ + jalur, atau nilai + pustaka (id di bab-06.pustaka.json, digabung ke pustaka.json saat registri disatukan).",
+    "Kunci yang sudah ada di data/angka.json atau di bab-01/03/04.angka.json tidak diulang (mis. pusgen.jawa.mmaks, nankai.faktor_70, nankai.faktor_survei, dibi.sulteng2018.hilang, dibi.cianjur2022.meninggal, r3p.cianjur2022.meninggal, surono.merapi2010.jiwa_terselamatkan, dibi.ntt2026.gempa.*). Angka sekunder tidak dimasukkan.",
+    "Bentuk A diperiksa dengan salinan fungsi ikuti() dari bangun/kontrak/naskah.py: tiap jalur menunjuk tepat satu baris; bentuk B diperiksa pustakanya ada. Pita lebih dari satu orde (korban guncangan, rumah rusak, kerugian skenario) sengaja tidak didaftar karena dilarang tampil di judul, kartu angka, dan RE.",
+    "Disusun 24 Oktober 2026.",
+    "Kunci tambahan penulis naskah Bab 6 (24 Okt 2026): renas.krb.kerugian_*_rp, geologi.*.pantai_30mnt, geologi.mentawai_mmaks.luas_mmi6, geologi.merapi2010.luas_sapuan, stimulan.*, geologi.pembanding.*, bappenas.yogya2006.perumahan, geologi.pengungsi_rumah.lombok/sulteng, krb.likuefaksi.puskesmas_kelas_tinggi, irbi.gempa.kab_dinilai.2025, geologi.asumsi.jiwa_per_rumah, nankai.evakuasi_*_persen, geologi.ambang.tiba_menit."
+  ],
+  "angka": {
+    "dibi.cianjur2022.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Cianjur 2022",
+      "catatan": "5 kab, jendela 21–30 Nov 2022 pilihan penyusun; Kab. Cianjur saja 114.683 (= angka R3P); Renstra 108.720"
+    },
+    "dibi.cianjur2022.hilang": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=cianjur2022,metrik=hilang,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Cianjur 2022",
+      "catatan": "R3P Cianjur: 8 hilang per data BPBD 7 Des 2022"
+    },
+    "dibi.sulteng2018.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Sulawesi Tengah 2018",
+      "catatan": "BNPB 21 Okt 2018: 223.751 (sementara)"
+    },
+    "dibi.sulteng2018.rumah_rusak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=rumah_rusak,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, Sulawesi Tengah 2018",
+      "catatan": "RB 34.166, RS 28.899, RR 47.149; BNPB 22 Okt 2018: 68.451 unit (sementara)"
+    },
+    "dibi.lombok2018.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=lombok2018,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, rangkaian gempa Lombok 2018",
+      "catatan": "jendela 29 Jul–30 Sep 2018; BNPB via IGPA UGM 396.032 (sekunder)"
+    },
+    "dibi.lombok2018.rumah_rusak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=lombok2018,metrik=rumah_rusak,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, rangkaian gempa Lombok 2018",
+      "catatan": "RB 75.160, RS 33.951, RR 108.744"
+    },
+    "dibi.merapi2010.rumah_rusak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=merapi2010,metrik=rumah_rusak,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, erupsi Merapi 2010",
+      "catatan": "RB 2.465, RS 158, RR 296"
+    },
+    "dibi.mentawai2010.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=mentawai2010,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, tsunami Mentawai 2010",
+      "catatan": "1 kab (Kep. Mentawai)"
+    },
+    "dibi.cianjur2022.mengungsi_kab_cianjur": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[kejadian=Gempa Cianjur 21 Nov 2022 (Kab. Cianjur saja)].pengungsi_dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, gempa Cianjur 2022, Kab. Cianjur",
+      "catatan": "baris DIBI Kab. Cianjur saja; sama dengan R3P Cianjur dan angka KERANGKA; seluruh kejadian 115.382"
+    },
+    "geologi.jawa_mmaks.jiwa_mmi7": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=jawa-mmaks,butir=jiwa terpapar MMI >= VII].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Mw 9,1 (Mmaks PuSGeN 2024) pada geometri platform 702 km, bukan segmen PuSGeN 1.120 km; pita 3,65 kali, di bawah satu orde, boleh di kartu; GMPE belum diuji",
+      "jalur_rendah": "[skenario=jawa-mmaks,butir=jiwa terpapar MMI >= VII].rendah",
+      "jalur_tinggi": "[skenario=jawa-mmaks,butir=jiwa terpapar MMI >= VII].tinggi"
+    },
+    "geologi.mentawai_mmaks.jiwa_mmi7": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=mentawai-mmaks,butir=jiwa terpapar MMI >= VII].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Mw 8,9 (Mmaks PuSGeN 2024 segmen Mentawai dan Enggano) pada geometri platform; pita 4,44 kali",
+      "jalur_rendah": "[skenario=mentawai-mmaks,butir=jiwa terpapar MMI >= VII].rendah",
+      "jalur_tinggi": "[skenario=mentawai-mmaks,butir=jiwa terpapar MMI >= VII].tinggi"
+    },
+    "geologi.jawa.jiwa_mmi7": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=jawa,butir=jiwa terpapar MMI >= VII].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "M8,5 ilustratif sim.js di bawah Mmaks; tengah 0 adalah artefak magnitudo; tidak dipakai di kartu terburuk",
+      "jalur_rendah": "[skenario=jawa,butir=jiwa terpapar MMI >= VII].rendah",
+      "jalur_tinggi": "[skenario=jawa,butir=jiwa terpapar MMI >= VII].tinggi"
+    },
+    "geologi.jawa_mmaks.jiwa_mmi6": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=jawa-mmaks,butir=jiwa terpapar MMI >= VI].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "satu nilai tengah"
+    },
+    "geologi.jawa_mmaks.luas_mmi6": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=jawa-mmaks,butir=luas MMI >= VI].tengah",
+      "satuan": "km2",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "kisi 0,02 derajat, daratan dalam poligon kab"
+    },
+    "geologi.jawa_mmaks.pengungsi": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=jawa-mmaks,butir=pengungsi (penghuni RB + RS)].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; turunan (aturan asumsi-kebijakan × rumah rusak model); lampiran saja",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "lampiran saja: pita turunan dari rumah rusak berpita, (RB + RS) × 3,9 dengan RB 121.057–6.161.572 dan RS 242.560–9.907.394 memberi 1.418.106–62.668.967 jiwa (44 kali, lebih dari satu orde); nilai tengah ini tidak boleh tampil di kartu angka (KERANGKA §2 butir 9); aturan pengungsi diuji pada Cianjur, Lombok, Sulteng (selisih 1–16%), rumah rusak modelnya belum diuji"
+    },
+    "geologi.mentawai_mmaks.pengungsi": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=mentawai-mmaks,butir=pengungsi (penghuni RB + RS)].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; turunan (aturan asumsi-kebijakan × rumah rusak model); lampiran saja",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "lampiran saja: pita turunan dari rumah rusak berpita, (RB + RS) × 3,9 dengan RB 11.657–573.253 dan RS 22.027–897.670 memberi 131.368–5.736.600 jiwa (44 kali, lebih dari satu orde); nilai tengah ini tidak boleh tampil di kartu angka"
+    },
+    "geologi.merapi2010.pengungsi_radius20": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "jalur": "[skenario=merapi2010,butir=pengungsi (radius 20 km seperti 2010)].tengah",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "batas atas; DIBI 2010 mengungsi 447.982 (3,46 kali lebih kecil)"
+    },
+    "geologi.jawa_mmaks.panjang_bidang": {
+      "berkas": "skenario-geologi/skenario.json",
+      "jalur": "skenario[id=jawa-mmaks].panjang_km",
+      "satuan": "km",
+      "keyakinan": "estimasi-model",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "skala Strasser 2010 dari Mw 9,1; PuSGeN 2024 segmen gabungan Jawa 1.120 km"
+    },
+    "geologi.analog_guncangan.rasio": {
+      "berkas": "skenario-geologi/skenario.json",
+      "jalur": "rasio_analog.guncangan.median",
+      "jalur_rendah": "rasio_analog.guncangan.min",
+      "jalur_tinggi": "rasio_analog.guncangan.maks",
+      "kali": 100,
+      "satuan": "%",
+      "keyakinan": "estimasi-model; rasio dari data resmi dan terverifikasi",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB dan USGS (6 gempa kerak dan slab)",
+      "catatan": "meninggal / jiwa MMI ≥ VII, dinormalkan ke okupansi 0,85; belum ada analog megathrust"
+    },
+    "geologi.mentawai2010.rasio_tsunami": {
+      "berkas": "skenario-geologi/analog.csv",
+      "jalur": "[id=mentawai-2010].rasio_meninggal_per_terpapar",
+      "kali": 100,
+      "satuan": "%",
+      "keyakinan": "estimasi-model; orde besaran, belum layak dikutip",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB (447 meninggal Kep. Mentawai 2010)",
+      "catatan": "447 / 11.016 jiwa pesisir rendah tiba ≤ 30 menit; satu analog tanpa pita; hanya lampiran"
+    },
+    "usgs.pangandaran2006.meninggal": {
+      "berkas": "skenario-geologi/analog.csv",
+      "jalur": "[id=pangandaran-2006].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, event usp000ensm (rincian korban per kabupaten)",
+      "catatan": "jumlah rincian impact-text; hilang 65 (dihitung dari teks yang sama); lantai tsunami selatan Jawa periode 1996–2025"
+    },
+    "geologi.pangandaran2006.porsi_korban_berpaparan": {
+      "berkas": "skenario-geologi/analog.csv",
+      "jalur": "[id=pangandaran-2006].porsi_korban_di_kab_berpaparan",
+      "kali": 100,
+      "satuan": "%",
+      "keyakinan": "estimasi-model",
+      "sumber": "Pengolahan Pantau Bencana dari USGS event usp000ensm",
+      "catatan": "porsi korban 2006 yang jatuh di kab dengan jiwa pesisir rendah tiba ≤ 30 menit > 0; proksi luput di Ciamis, Pangandaran, Tasikmalaya, Garut"
+    },
+    "geologi.kepekaan.bangunan_naik.jawa_mmaks": {
+      "berkas": "skenario-geologi/kepekaan.csv",
+      "jalur": "[skenario=jawa-mmaks,nilai_tuas=kepatuhan naik (20/50/30)].faktor_terhadap_dasar",
+      "satuan": "",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "porsi stok tembok tanpa tulangan / beton terkekang / kayu 40/30/30 ke 20/50/30; kelima skenario 0,58–0,69"
+    },
+    "geologi.kepekaan.bangunan_penuh.jawa_mmaks": {
+      "berkas": "skenario-geologi/kepekaan.csv",
+      "jalur": "[skenario=jawa-mmaks,nilai_tuas=kepatuhan penuh (0/70/30)].faktor_terhadap_dasar",
+      "satuan": "",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "0/70/30; kelima skenario 0,15–0,38; kurva beton tetap pre-code sehingga manfaat kemungkinan terlalu kecil"
+    },
+    "geologi.kepekaan.bangunan_penuh.mentawai_mmaks": {
+      "berkas": "skenario-geologi/kepekaan.csv",
+      "jalur": "[skenario=mentawai-mmaks,nilai_tuas=kepatuhan penuh (0/70/30)].faktor_terhadap_dasar",
+      "satuan": "",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "0/70/30"
+    },
+    "geologi.kepekaan.malam": {
+      "berkas": "skenario-geologi/kepekaan.csv",
+      "jalur": "[skenario=jawa-mmaks,tuas=jam kejadian (okupansi rumah)].faktor_terhadap_dasar",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "okupansi malam 0,99 lawan 0,85; kondisi, bukan tuas"
+    },
+    "geologi.pengungsi_rumah.cianjur": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[kejadian=Gempa Cianjur 21 Nov 2022 (Kab. Cianjur saja)].pengungsi_dari_rumah_rb_rs_x3_9",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB",
+      "catatan": "(RB + RS DIBI) × 3,9 lawan 114.683 tercatat (selisih 1%); Lombok 425.233 lawan 406.202 (5%); Sulteng 245.954 lawan DIBI 212.719 (16%; pembanding_pdna.csv memuat 221.450)"
+    },
+    "renas.krb.luas_tinggi_tsunami": {
+      "nilai": 740906,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "ha",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, sumber Kajian Risiko Bencana 2022–2026",
+      "catatan": "luas bahaya tsunami total 1.746.893 ha",
+      "lokasi": "hlm. 22"
+    },
+    "renas.krb.tsunami.terpapar_umur_rentan": {
+      "nilai": 543028,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, sumber Kajian Risiko Bencana 2022–2026",
+      "catatan": "kelompok umur rentan di antara 5.341.282 terpapar",
+      "lokasi": "hlm. 24"
+    },
+    "renas.krb.tsunami.terpapar_miskin": {
+      "nilai": 610525,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, sumber Kajian Risiko Bencana 2022–2026",
+      "catatan": "penduduk miskin terpapar tsunami",
+      "lokasi": "hlm. 24"
+    },
+    "renas.krb.tsunami.terpapar_disabilitas": {
+      "nilai": 27354,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, sumber Kajian Risiko Bencana 2022–2026",
+      "catatan": "penyandang disabilitas terpapar tsunami",
+      "lokasi": "hlm. 24"
+    },
+    "krb.tsunami.sekolah_kelas_tinggi": {
+      "nilai": 59839,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 70.505; dokumentasi API tidak dibuka"
+    },
+    "krb.tsunami.puskesmas_kelas_tinggi": {
+      "nilai": 1210,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 1.459; dokumentasi API tidak dibuka"
+    },
+    "krb.tsunami.rs_kelas_tinggi": {
+      "nilai": 232,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 264; dokumentasi API tidak dibuka"
+    },
+    "krb.gempa.sekolah_kelas_tinggi": {
+      "nilai": 198052,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 322.390; dokumentasi API tidak dibuka"
+    },
+    "krb.gempa.puskesmas_kelas_tinggi": {
+      "nilai": 3351,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 5.000; dokumentasi API tidak dibuka"
+    },
+    "krb.gunungapi.sekolah_kelas_tinggi": {
+      "nilai": 24721,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 35.468; dokumentasi API tidak dibuka"
+    },
+    "krb.gunungapi.puskesmas_kelas_tinggi": {
+      "nilai": 378,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 528; dokumentasi API tidak dibuka"
+    },
+    "krb.likuefaksi.sekolah_kelas_tinggi": {
+      "nilai": 73208,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets.<jenis>.tinggi riset/mentah/ks_*.json (ditarik 23 Okt 2026); kelas sedang 226.593; dokumentasi API tidak dibuka"
+    },
+    "irbi.gempa.kab_kelas_atas.2025": {
+      "nilai": 112,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025",
+      "catatan": "nilai ≥ batas kuintil v[⌊n×4/5⌋] = 11 dari 514 kab; Sumatra 59, Papua 20, Sulawesi 14, Jawa 9, Bali dan Nusa Tenggara 5, Maluku 5; dihitung penyusun bukti 24 Okt 2026 dari irbi/irbi_kab_2025.csv"
+    },
+    "irbi.tsunami.kab_dinilai.2025": {
+      "nilai": 273,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; dihitung dari jumlah sel bernilai",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "241 kab lain \"tidak dinilai\"; irbi/irbi_kab_2025.csv kolom tsunami"
+    },
+    "irbi.tsunami.kab_kelas_atas.2025": {
+      "nilai": 56,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025",
+      "catatan": "batas kuintil 22; Sumatra 18, Sulawesi 11, Papua 10, Maluku 9, Bali dan Nusa Tenggara 8, Jawa 0"
+    },
+    "irbi.tsunami.kab_kelas_atas_jawa.2025": {
+      "nilai": 0,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025",
+      "catatan": "nilai tsunami tertinggi di Jawa: Kab. Sukabumi 19, Kab. Pangandaran 16 (batas 22)"
+    },
+    "irbi.gunungapi.kab_dinilai.2025": {
+      "nilai": 132,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi; dihitung dari jumlah sel bernilai",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "382 kab lain \"tidak dinilai\""
+    },
+    "irbi.gunungapi.kab_kelas_atas.2025": {
+      "nilai": 31,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025",
+      "catatan": "batas kuintil 17; Kab. Sleman 14, Kab. Karangasem 13, Kab. Lumajang 11 di bawah batas"
+    },
+    "pusgen.mentawai.mmaks": {
+      "nilai": 8.9,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "Mw",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "Mentawai-Siberut, Mentawai-Pagai, dan Enggano masing-masing 8,9; periode ulang 330 tahun (kunci pusgen.mentawai.periode_ulang)",
+      "lokasi": "Tabel 6.2 hlm. 342–343"
+    },
+    "pusgen.jawa.panjang": {
+      "nilai": 1120,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "km",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "segmen gabungan Jawa, baru di 2024; geometri platform 702 km",
+      "lokasi": "Tabel 6.2 hlm. 342–343"
+    },
+    "pusgen.lembang.mmaks": {
+      "nilai": 6.6,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "Mw",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "laju geser 3,45 mm/tahun; sim.js memakai 6,8 tanpa sumber",
+      "lokasi": "Tabel 6.9 hlm. 368–371"
+    },
+    "pusgen.opak.mmaks": {
+      "nilai": 6.9,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "Mw",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "laju 2 mm/tahun; gempa Yogyakarta 2006 Mw 6,3; sim.js memakai 6,6 tanpa sumber",
+      "lokasi": "Tabel 6.9 hlm. 368–371"
+    },
+    "pusgen.cimandiri.mmaks": {
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "Mw",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "empat segmen: Citatah 6,3, Nyalindung-Cibeber 6,5, Cimandiri 6,6, Cisokan 6,8",
+      "lokasi": "Tabel 6.9 hlm. 368–371",
+      "rendah": 6.3,
+      "tinggi": 6.8
+    },
+    "pusgen.cianjur.mmaks": {
+      "nilai": 5.6,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "Mw",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "segmen Cianjur 1 dan Cianjur 2 masing-masing 5,6; gempa Cianjur 2022 Mw 5,6",
+      "lokasi": "Tabel 6.9 hlm. 368–371"
+    },
+    "widiyantoro.jawa_barat.tinggi_tsunami": {
+      "nilai": 20,
+      "pustaka": "widiyantoro-2020-tsunami",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "Widiyantoro dkk. (2020), Scientific Reports 10:15274",
+      "catatan": "sekitar 20 m (20,2 m) di pulau-pulau kecil selatan Banten, sekitar 105,5° BT, bila dua zona defisit slip pecah bersamaan (Mw 9,1); \"West Java\" di abstrak berarti Jawa bagian barat, bukan Provinsi Jawa Barat; keluaran model, bukan run-up terukur; teks lengkap Europe PMC PMC7499206 dibuka 24 Okt 2026"
+    },
+    "widiyantoro.jawa_timur.tinggi_tsunami": {
+      "nilai": 12,
+      "pustaka": "widiyantoro-2020-tsunami",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "Widiyantoro dkk. (2020), Scientific Reports 10:15274",
+      "catatan": "sekitar 12 m (11,7 m di bagian Diskusi) di Jawa Timur; keluaran model, bukan run-up terukur"
+    },
+    "widiyantoro.jawa.tinggi_rerata_maks": {
+      "nilai": 4.5,
+      "pustaka": "widiyantoro-2020-tsunami",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "Widiyantoro dkk. (2020), Scientific Reports 10:15274",
+      "catatan": "rata-rata tinggi maksimum sepanjang pantai selatan Jawa"
+    },
+    "supendi.ujung_kulon.tinggi_tsunami": {
+      "nilai": 34,
+      "pustaka": "supendi-2022-megathrust",
+      "satuan": "m",
+      "keyakinan": "terverifikasi",
+      "sumber": "Supendi dkk. (2022), Natural Hazards 116: 1315–1328",
+      "catatan": "tinggi maksimum skenario model (\"up to\"), dua skenario sumber di celah seismik selatan Jawa Barat dan Sumatra tenggara, salah satunya dengan sesar naik belakang (backthrust); di pantai barat Sumatra paling selatan dan pantai selatan Jawa dekat Ujung Kulon; bukan segmen Mentawai–Enggano; abstrak lewat Crossref; label asal: terverifikasi (keluaran model terbitan bertinjauan)"
+    },
+    "nankai.faktor_rentang_kasus": {
+      "pustaka": "cao-japan-2025-nankai",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; rasio dari estimasi-model Cabinet Office Jepang 2025",
+      "sumber": "Cabinet Office Jepang (2025), perkiraan kerusakan gempa Palung Nankai kelas maksimum",
+      "catatan": "rasio kematian tsunami evakuasi segera tinggi lawan rendah di delapan kombinasi kasus; 0,437 terbesar (paling konservatif); angka dasar 215.000, 94.000, 129.000 adalah perkiraan model Cabinet Office, bukan kejadian teramati; riset E §E3",
+      "lokasi": "lampiran metode hlm. 25; saidai_01 hlm. 18–19",
+      "rendah": 0.077,
+      "tinggi": 0.437
+    },
+    "renkon.jatim2021.rasio_meninggal": {
+      "nilai": 1,
+      "pustaka": "bnpb-2023-renkon",
+      "satuan": "%",
+      "keyakinan": "resmi; contoh di lampiran peraturan",
+      "sumber": "Perban BNPB 2/2023, Lampiran Contoh 1 (Renkon Tsunami Megathrust Jawa Timur 2021)",
+      "catatan": "Banyuwangi 1.652 / 165.202, Jember 1.394 / 139.835; hilang 0,2%, mengungsi 90%, luka berat 0,5%, luka ringan 5%; dokumen renkon Jatim 2021 sendiri tidak dibuka",
+      "lokasi": "Lampiran hlm. 17"
+    },
+    "renkon.jatim2021.banyuwangi_terpapar": {
+      "nilai": 165202,
+      "pustaka": "bnpb-2023-renkon",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; contoh di lampiran peraturan",
+      "sumber": "Perban BNPB 2/2023, Lampiran Contoh 1 (Renkon Tsunami Megathrust Jawa Timur 2021)",
+      "catatan": "beda definisi dengan proksi platform: renkon = penduduk terpapar tanpa batas waktu tiba; proksi tanpa batas waktu (jiwa_pesisir_rendah_180) Banyuwangi 44.692 pada M8,5 dan Mw 9,1; kolom tiba ≤ 30 menit 0 pada M8,5 dan 44.692 pada Mw 9,1",
+      "lokasi": "Lampiran hlm. 17"
+    },
+    "renkon.jatim2021.jember_terpapar": {
+      "nilai": 139835,
+      "pustaka": "bnpb-2023-renkon",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; contoh di lampiran peraturan",
+      "sumber": "Perban BNPB 2/2023, Lampiran Contoh 1 (Renkon Tsunami Megathrust Jawa Timur 2021)",
+      "catatan": "proksi platform Jawa M8,5: 225.289 jiwa pesisir rendah",
+      "lokasi": "Lampiran hlm. 17"
+    },
+    "renas.diseminasi_gempa_tsunami.unit_2024": {
+      "nilai": 480,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "kegiatan 1.1.2.d, WRS/sirine tsunami; PJ BMKG",
+      "lokasi": "hlm. 52"
+    },
+    "renas.diseminasi_gempa_tsunami.unit_2029": {
+      "nilai": 530,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "target 2029; PJ BMKG",
+      "lokasi": "hlm. 52"
+    },
+    "renas.pasut.unit_2024": {
+      "nilai": 171,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "kegiatan 1.1.2.c stasiun pasang surut; CORS 397 ke 420; PJ BMKG",
+      "lokasi": "hlm. 52"
+    },
+    "renas.pasut.unit_2029": {
+      "nilai": 200,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "target 2029",
+      "lokasi": "hlm. 52"
+    },
+    "renas.pengamatan_gunungapi.unit_2024": {
+      "nilai": 219,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "kegiatan 1.1.2.e jaringan pengamatan gunung api dan gerakan tanah; PJ Kementerian ESDM",
+      "lokasi": "hlm. 52–53"
+    },
+    "renas.pengamatan_gunungapi.unit_2029": {
+      "nilai": 1200,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029, matriks kegiatan",
+      "catatan": "target 2029",
+      "lokasi": "hlm. 52–53"
+    },
+    "r3p.cianjur2022.kerusakan_kerugian": {
+      "nilai": 4550000000000,
+      "pustaka": "cianjur-2022-r3p",
+      "satuan": "Rp",
+      "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+      "catatan": "kerusakan Rp3,98 T + kerugian Rp0,57 T; menggantikan perkiraan Bupati Rp4 T (sekunder) di pembanding_pdna.csv; total kebutuhan R3P Rp5,05 T",
+      "lokasi": "hlm. PDF 51"
+    },
+    "r3p.cianjur2022.perumahan": {
+      "nilai": 3210000000000,
+      "pustaka": "cianjur-2022-r3p",
+      "satuan": "Rp",
+      "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+      "catatan": "kerusakan dan kerugian sektor perumahan",
+      "lokasi": "hlm. PDF 51"
+    },
+    "r3p.cianjur2022.desa_dikosongkan": {
+      "nilai": 9,
+      "pustaka": "cianjur-2022-r3p",
+      "satuan": "desa",
+      "keyakinan": "resmi; dokumen berstatus contoh tanpa nomor penetapan",
+      "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022",
+      "catatan": "desa di jalur Sesar Cugenang yang dikosongkan dari permukiman; riset E §E5; evaluasi dampak tidak ditemukan"
+    },
+    "r3p.cianjur2022.rasio_perumahan_stimulan": {
+      "nilai": 1.06,
+      "pustaka": "cianjur-2022-r3p",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; turunan dari data resmi",
+      "sumber": "Pengolahan Pantau Bencana dari R3P Cianjur 2022",
+      "catatan": "Rp3,21 T / (20.969 × 60 + 24.584 × 30 + 68.762 × 15 juta = Rp3,027 T); stimulan 60/30/15 dihitung penyusun bukti"
+    },
+    "kemenkopmk.lombok2018.kebutuhan_r3p": {
+      "nilai": 11440594509577,
+      "pustaka": "kemenkopmk-2024-rehabrekon-lombok",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kemenko PMK, 20 Mei 2024",
+      "catatan": "total kebutuhan R3P, bukan nilai kerusakan dan kerugian; realisasi 94,73% per 11 Sep 2023; dokumen R3P Lombok tidak ditemukan"
+    },
+    "bnpb.sulteng2018.kerusakan_kerugian": {
+      "nilai": 13820000000000,
+      "pustaka": "bnpb-2018-kerugian-sulteng",
+      "satuan": "Rp",
+      "keyakinan": "resmi; angka sementara",
+      "sumber": "BNPB, 22 Okt 2018 (data 20 Okt 2018)",
+      "catatan": "kerusakan Rp11,83 T + kerugian Rp1,99 T; dibaca dari arsip Wayback; PDNA final tidak ditemukan"
+    },
+    "bnpb.sulteng2018.perumahan": {
+      "nilai": 7950000000000,
+      "pustaka": "bnpb-2018-kerugian-sulteng",
+      "satuan": "Rp",
+      "keyakinan": "resmi; angka sementara",
+      "sumber": "BNPB, 22 Okt 2018 (data 20 Okt 2018)",
+      "catatan": "sektor perumahan; stimulan 60/30/15 × rumah rusak DIBI = Rp3,62 T"
+    },
+    "bappenas.yogya2006.kerusakan_kerugian": {
+      "nilai": 29100000000000,
+      "pustaka": "bappenas-2006-dala-yogya",
+      "satuan": "Rp",
+      "keyakinan": "resmi; penilaian awal",
+      "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006), penilaian awal kerusakan dan kerugian",
+      "catatan": "kerusakan Rp22,75 T (78%), kerugian Rp6,40 T (22%); perumahan Rp15,3 T",
+      "lokasi": "Section II hlm. 12"
+    },
+    "bappenas.yogya2006.meninggal": {
+      "nilai": 5716,
+      "pustaka": "bappenas-2006-dala-yogya",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; penilaian awal",
+      "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006)",
+      "catatan": "Tabel 1; kata pengantar menulis lebih dari 5.700; USGS 5.749",
+      "lokasi": "Tabel 1"
+    },
+    "bappenas.yogya2006.rumah_hancur": {
+      "pustaka": "bappenas-2006-dala-yogya",
+      "satuan": "unit",
+      "keyakinan": "resmi; penilaian awal",
+      "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006)",
+      "catatan": "dua versi di dokumen yang sama: 154.000 hancur dan 260.000 rusak (Key Sectoral Facts) lawan 157.000 hancur dan 202.000 rusak (hlm. 15)",
+      "lokasi": "hlm. 15",
+      "rendah": 154000,
+      "tinggi": 157000
+    },
+    "usgs.flores2026.meninggal": {
+      "nilai": 136,
+      "pustaka": "usgs-us6000tkt2",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, event us6000tkt2",
+      "catatan": "\"at least\" (batas bawah); DIBI NTT kategori Gempabumi 2026 sementara 151 (kunci dibi.ntt2026.gempa.meninggal); BNPB via media 111 per 30 Agu (sekunder)"
+    },
+    "usgs.flores2026.rumah_hancur": {
+      "nilai": 27414,
+      "pustaka": "usgs-us6000tkt2",
+      "satuan": "unit",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, event us6000tkt2",
+      "catatan": "71.486 rumah rusak; DIBI NTT 2026 sementara 29.315 rumah rusak berat"
+    },
+    "usgs.flores2026.tsunami_maks": {
+      "nilai": 169,
+      "pustaka": "usgs-us6000tkt2",
+      "satuan": "cm",
+      "keyakinan": "terverifikasi",
+      "sumber": "USGS, event us6000tkt2",
+      "catatan": "tinggi gelombang tercatat maksimum di Pelabuhan Laut Pota; 54 cm Pelabuhan Leppe'e, 30 cm Baubau"
+    },
+    "usgs.flores2026.terpapar_mmi6_8": {
+      "nilai": 1700000,
+      "pustaka": "usgs-us6000tkt2",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; PAGER USGS",
+      "sumber": "USGS, event us6000tkt2",
+      "catatan": "sekitar 1,7 juta jiwa terpapar MMI VI–VIII menurut PAGER (status otomatis)"
+    },
+    "geologi.merapi2010.jiwa_sapuan": {
+      "nilai": 89707,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; regresi, bukan validasi",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Merapi setara 2010 (V 10 juta m3) tanpa evakuasi; rentang dua nilai H/L 34.742 (0,18) sampai 89.707 (0,15); penduduk WorldPop 2026, bukan 2010; 51% sapuan di Magelang, padahal 72% korban 2010 di Sleman; DIBI 2010: 386 meninggal; perbandingan dengan korban mengandaikan seluruh penduduk sapuan meninggal tanpa evakuasi, jadi bukan besar efek tuas; ringkasan.csv skenario merapi2010"
+    },
+    "geologi.krb30.jiwa_krb3": {
+      "nilai": 86615,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Pengolahan Pantau Bencana dari KRB PVMBG 2018 dan WorldPop 2026",
+      "catatan": "30 gunung, piksel ≤ 20 km; ringkasan.csv skenario krb-30-gunung; label asal: resmi (zona KRB PVMBG 2018) × terverifikasi (WorldPop 2026)"
+    },
+    "geologi.krb30.jiwa_krb2": {
+      "nilai": 297012,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Pengolahan Pantau Bencana dari KRB PVMBG 2018 dan WorldPop 2026",
+      "catatan": "30 gunung; label asal: resmi (zona KRB PVMBG 2018) × terverifikasi (WorldPop 2026)"
+    },
+    "geologi.krb30.jiwa_krb1": {
+      "nilai": 482762,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Pengolahan Pantau Bencana dari KRB PVMBG 2018 dan WorldPop 2026",
+      "catatan": "30 gunung; jumlah III+II+I 866.389 = 14,8% KRB nasional 5.864.711 (beda cakupan); label asal: resmi (zona KRB PVMBG 2018) × terverifikasi (WorldPop 2026)"
+    },
+    "geologi.krb30.porsi_merapi_agung_krb3": {
+      "nilai": 75.0,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan",
+      "sumber": "Pengolahan Pantau Bencana dari KRB PVMBG 2018 dan WorldPop 2026",
+      "catatan": "(Merapi 34.582 + Agung 30.414) / 86.615; Jawa dan Bali 87,0% jiwa KRB III; gunungapi_krb_kab.csv"
+    },
+    "geologi.jawa.jiwa_pesisir_30mnt": {
+      "nilai": 2862544,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; proksi, bukan genangan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "M8,5; skenario megathrust Jawa termasuk Bali dan NTB (466.249 jiwa, 16,3%); Pulau Jawa saja 2.396.295; batas atas seluruh penduduk kecamatan pesisir rendah; lubang proksi 18 kab"
+    },
+    "geologi.jawa_mmaks.jiwa_pesisir_30mnt": {
+      "nilai": 3442456,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; proksi, bukan genangan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Mw 9,1; skenario megathrust Jawa termasuk Bali dan NTB (892.046 jiwa, 25,9%); Pulau Jawa saja 2.550.410; 20 kab bertiba sisi aman < 30 menit dengan jiwa pesisir rendah 0"
+    },
+    "geologi.mentawai.jiwa_pesisir_30mnt": {
+      "nilai": 930750,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; proksi, bukan genangan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "M8,8 dan M8,9 sama; Kota Bengkulu 285.942, Kota Padang 223.143"
+    },
+    "geologi.jawa.porsi_cilacap_pesisir": {
+      "nilai": 35.9,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan dari estimasi-model",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Kab. Cilacap 1.028.616 / 2.862.544 = 35,9% dari total skenario megathrust Jawa M8,5 (termasuk Bali dan NTB), bukan dari Pulau Jawa saja"
+    },
+    "geologi.jawa.lubang_proksi_kab": {
+      "nilai": 18,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "kab/kota",
+      "keyakinan": "estimasi-model",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "kab bertiba sisi aman < 30 menit tetapi jiwa pesisir rendah 0 pada M8,5 (skenario.json lubang_proksi_tsunami)"
+    },
+    "geologi.jawa_mmaks.kab_mmi7": {
+      "nilai": 77,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "kab/kota",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "kab dengan jiwa MMI ≥ VII tengah > 0; Jawa Timur 38,8%, Jawa Tengah 29,0%, Jawa Barat 22,6%, DIY 5,7%, Bali 4,0% (gempa_kab.csv)"
+    },
+    "geologi.mesin.yogya2006_model": {
+      "nilai": 555,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; meleset dari data tercatat",
+      "sumber": "Mesin kerusakan Pantau Bencana (kalibrasi 20 Okt 2026)",
+      "catatan": "kalibrasi_kerusakan.json: model 555 (LOO 394) lawan 5.700 di berkas, USGS 5.749: 10,4 kali di bawah; Cianjur 336 lawan 600; Padang 2009 di luar sampel 3.063 lawan 1.115"
+    },
+    "geologi.mesin.faktor_loo": {
+      "nilai": 5.341,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "",
+      "keyakinan": "estimasi-model",
+      "sumber": "Mesin kerusakan Pantau Bencana (kalibrasi 20 Okt 2026)",
+      "catatan": "exp(rms galat ln leave-one-out) 8 gempa kerak; korban pengamatan di berkas ditulis dari ingatan"
+    },
+    "pusgen.mentawai.periode_ulang": {
+      "nilai": 330,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+      "catatan": "kolom Reccurent period: Mentawai-Siberut 330, Mentawai-Pagai 330, Enggano 330 (disamakan dengan Segmen Pagai); Aceh-Andaman 600, Nias-Simeulue 580, Batu 150; Sumba No Data",
+      "lokasi": "Tabel 6.2 hlm. 342"
+    },
+    "geologi.mentawai_segmen.peluang_5th": {
+      "nilai": 1.5,
+      "pustaka": "pusgen-2024-peta-gempa",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; turunan Poisson dari periode ulang resmi",
+      "sumber": "Pengolahan Pantau Bencana dari PuSGeN (2024) Tabel 6.2",
+      "catatan": "1 − e^(−5/330) = 1,50% per segmen Mw 8,9 (Mentawai-Siberut, Mentawai-Pagai, Enggano); pita 3 NRR; asumsi Poisson bukan angka PuSGeN",
+      "lokasi": "Tabel 6.2 hlm. 342"
+    },
+    "geologi.jawa.jiwa_pesisir_30mnt_pulau_jawa": {
+      "nilai": 2396295,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; proksi, bukan genangan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "M8,5; tsunami_kab.csv kolom jiwa_pesisir_rendah_lt30, pulau = Jawa, dijumlah penyusun; 45% dari KRB tsunami nasional 5.341.282 (ukuran berbeda)"
+    },
+    "geologi.jawa_mmaks.jiwa_pesisir_30mnt_pulau_jawa": {
+      "nilai": 2550410,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; proksi, bukan genangan",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "Mw 9,1; tsunami_kab.csv kolom jiwa_pesisir_rendah_lt30, pulau = Jawa, dijumlah penyusun; 48% dari KRB tsunami nasional 5.341.282 (ukuran berbeda)"
+    },
+    "geologi.jawa_mmaks.lubang_proksi_kab": {
+      "nilai": 20,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "kab/kota",
+      "keyakinan": "estimasi-model",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "kab bertiba sisi aman < 30 menit tetapi jiwa pesisir rendah 0 pada Mw 9,1 (tsunami_kab.csv): Malang 5,2 menit sampai Buleleng 25,1; tiba sisi aman tercepat semua kab Banyuwangi 4,0 menit"
+    },
+    "renas.krb.kerugian_tsunami_rp": {
+      "nilai": 42978422,
+      "kali": 1000000,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 24",
+      "catatan": "sama dengan renas.krb.kerugian_tsunami (juta Rp) dikali 1.000.000 supaya opsi rupiah tampil benar; potensi kerugian fisik dan ekonomi, tidak dijumlah antarbahaya; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "renas.krb.kerugian_gunungapi_rp": {
+      "nilai": 12048691,
+      "kali": 1000000,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 24",
+      "catatan": "sama dengan renas.krb.kerugian_gunungapi (juta Rp) dikali 1.000.000 supaya opsi rupiah tampil benar; potensi kerugian fisik dan ekonomi, tidak dijumlah antarbahaya; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "renas.krb.kerugian_likuefaksi_rp": {
+      "nilai": 351875950,
+      "kali": 1000000,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "Rp",
+      "keyakinan": "resmi",
+      "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.6 hlm. 25",
+      "catatan": "sama dengan renas.krb.kerugian_likuefaksi (juta Rp) dikali 1.000.000 supaya opsi rupiah tampil benar; potensi kerugian fisik dan ekonomi, tidak dijumlah antarbahaya; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.jawa_mmaks.pantai_30mnt": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "satuan": "km",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "ditambah penulis naskah Bab 6 (24 Okt 2026)",
+      "jalur_rendah": "[skenario=jawa-mmaks,butir=panjang pantai tiba < 30 menit].rendah",
+      "jalur_tinggi": "[skenario=jawa-mmaks,butir=panjang pantai tiba < 30 menit].tinggi"
+    },
+    "geologi.mentawai_mmaks.pantai_30mnt": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "satuan": "km",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "ditambah penulis naskah Bab 6 (24 Okt 2026)",
+      "jalur_rendah": "[skenario=mentawai-mmaks,butir=panjang pantai tiba < 30 menit].rendah",
+      "jalur_tinggi": "[skenario=mentawai-mmaks,butir=panjang pantai tiba < 30 menit].tinggi"
+    },
+    "geologi.mentawai_mmaks.luas_mmi6": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "satuan": "km2",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "ditambah penulis naskah Bab 6 (24 Okt 2026)",
+      "jalur": "[skenario=mentawai-mmaks,butir=luas MMI >= VI].tengah"
+    },
+    "geologi.merapi2010.luas_sapuan": {
+      "berkas": "skenario-geologi/ringkasan.csv",
+      "satuan": "ha",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi",
+      "catatan": "ditambah penulis naskah Bab 6 (24 Okt 2026)",
+      "jalur": "[skenario=merapi2010,butir=luas sapuan].tengah"
+    },
+    "stimulan.cianjur2022.rumah_dibi": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=602].stimulan_60_30_15_rp_juta",
+      "kali": 1000000,
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: stimulan rumah 60/30/15 juta × rumah rusak DIBI, Kab. Cianjur 2022",
+      "catatan": "batas bawah kerugian perumahan, bukan kerugian materiil penuh; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "stimulan.sulteng2018.rumah_dibi": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=4141].stimulan_60_30_15_rp_juta",
+      "kali": 1000000,
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: stimulan rumah 60/30/15 juta × rumah rusak DIBI, Sulawesi Tengah 2018",
+      "catatan": "batas bawah kerugian perumahan, bukan kerugian materiil penuh; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "stimulan.lombok2018.rumah_dibi": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=564].stimulan_60_30_15_rp_juta",
+      "kali": 1000000,
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: stimulan rumah 60/30/15 juta × rumah rusak DIBI, Lombok 2018",
+      "catatan": "batas bawah kerugian perumahan, bukan kerugian materiil penuh; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "stimulan.merapi2010.rumah_dibi": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=386].stimulan_60_30_15_rp_juta",
+      "kali": 1000000,
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: stimulan rumah 60/30/15 juta × rumah rusak DIBI, Merapi 2010",
+      "catatan": "batas bawah kerugian perumahan, bukan kerugian materiil penuh; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "stimulan.cianjur2022.rumah_r3p": {
+      "nilai": 3027090,
+      "kali": 1000000,
+      "pustaka": "cianjur-2022-r3p",
+      "satuan": "Rp",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: stimulan 60/30/15 juta × rumah rusak R3P Cianjur (20.969 berat, 24.584 sedang, 68.762 ringan)",
+      "catatan": "20.969×60 + 24.584×30 + 68.762×15 = 3.027.090 juta; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pembanding.cianjur_total_rasio": {
+      "nilai": 2.68,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: kerusakan dan kerugian R3P Cianjur Rp4,55 T dibagi stimulan rumah DIBI Kab. Cianjur",
+      "catatan": "olah(resmi); berkas bukti Bab 6 P3 butir 12; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pembanding.sulteng_perumahan_rasio": {
+      "nilai": 2.19,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: perumahan BNPB sementara Sulteng 2018 dibagi stimulan rumah DIBI",
+      "catatan": "olah(resmi); berkas bukti Bab 6 P3 butir 12; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pembanding.sulteng_total_rasio": {
+      "nilai": 3.81,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: kerusakan dan kerugian sementara BNPB Sulteng 2018 dibagi stimulan rumah DIBI",
+      "catatan": "olah(resmi); berkas bukti Bab 6 P3 butir 12; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pembanding.lombok_rasio": {
+      "nilai": 1.6,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana: kebutuhan R3P Lombok 2018 (Kemenko PMK) dibagi stimulan rumah DIBI",
+      "catatan": "olah(resmi); berkas bukti Bab 6 P3 butir 12; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "bappenas.yogya2006.perumahan": {
+      "nilai": 15300000000000,
+      "pustaka": "bappenas-2006-dala-yogya",
+      "satuan": "Rp",
+      "keyakinan": "resmi; penilaian awal",
+      "sumber": "Bappenas dan pemda DIY dan Jawa Tengah (2006), penilaian awal kerusakan dan kerugian",
+      "catatan": "sektor perumahan, lebih dari separuh total Rp29,1 T; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pengungsi_rumah.lombok": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=564].pengungsi_dari_rumah_rb_rs_x3_9",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB: (rumah rusak berat + sedang) × 3,9, Lombok 2018",
+      "catatan": "uji aturan pengungsi terhadap pengungsi tercatat; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.pengungsi_rumah.sulteng": {
+      "berkas": "skenario-geologi/pembanding_pdna.csv",
+      "jalur": "[meninggal_dibi=4141].pengungsi_dari_rumah_rb_rs_x3_9",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan Pantau Bencana dari DIBI BNPB: (rumah rusak berat + sedang) × 3,9, Sulawesi Tengah 2018",
+      "catatan": "uji aturan pengungsi terhadap pengungsi tercatat; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "krb.likuefaksi.puskesmas_kelas_tinggi": {
+      "nilai": 1245,
+      "pustaka": "bnpb-2026-krb-geologi",
+      "satuan": "unit",
+      "keyakinan": "resmi; arti field dari nama API",
+      "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "field assets puskesmas kelas tinggi riset/mentah/ks_likuefaksi.json; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "irbi.gempa.kab_dinilai.2025": {
+      "nilai": 514,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom gempabumi irbi/irbi_kab_2025.csv)",
+      "catatan": "jumlah kab/kota bernilai gempa, berkas bukti Bab 6 P1 butir 4; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.asumsi.jiwa_per_rumah": {
+      "berkas": "skenario-geologi/skenario.json",
+      "jalur": "asumsi.jiwa_per_rumah",
+      "satuan": "jiwa per rumah",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Paket skenario-geologi Pantau Bencana (kerusakan.js JIWA_PER_RUMAH)",
+      "catatan": "pengali rumah = jiwa / 3,9 dan pengungsi = (RB + RS) × 3,9; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "nankai.evakuasi_rendah_persen": {
+      "nilai": 20,
+      "pustaka": "cao-japan-2025-nankai",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Cabinet Office Jepang (2025), perkiraan kerusakan gempa Palung Nankai kelas maksimum, kasus Tokai, musim dingin tengah malam",
+      "catatan": "porsi warga evakuasi segera rendah, parameter skenario Cabinet Office; berkas bukti Bab 6 P4 butir 4; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "nankai.evakuasi_tinggi_persen": {
+      "nilai": 70,
+      "pustaka": "cao-japan-2025-nankai",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Cabinet Office Jepang (2025), perkiraan kerusakan gempa Palung Nankai kelas maksimum, kasus Tokai, musim dingin tengah malam",
+      "catatan": "porsi warga evakuasi segera tinggi dengan imbauan efektif, parameter skenario Cabinet Office; berkas bukti Bab 6 P4 butir 4; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "nankai.evakuasi_survei_persen": {
+      "nilai": 53.3,
+      "pustaka": "cao-japan-2025-nankai",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Cabinet Office Jepang (2025), perkiraan kerusakan gempa Palung Nankai kelas maksimum, kasus Tokai, musim dingin tengah malam",
+      "catatan": "porsi warga evakuasi segera menurut survei warga 2023, parameter skenario Cabinet Office; berkas bukti Bab 6 P4 butir 4; ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    },
+    "geologi.ambang.tiba_menit": {
+      "nilai": 30,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "menit",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Paket skenario-geologi Pantau Bencana, ambang waktu tiba tsunami untuk proksi pesisir rendah dan panjang pantai",
+      "catatan": "ambang pilihan penyusun paket (ringkasan.csv butir 'tiba <= 30 menit'); ditambah penulis naskah Bab 6 (24 Okt 2026)"
+    }
+  }
+}

@@ -1,33 +1,34 @@
 lembaga,singkatan,semua,gempa,tsunami,gunungapi,banjir,longsor,cuaca_ekstrem,gelombang_abrasi,kekeringan,karhutla,epidemi,gagal_teknologi,kebakaran_tpa,konflik_sosial
 PRES,Presiden,saat:R,,,,,,,,,,,,,saat:R
 KEMENKO_POLKAM,Kemenko Polkam,,,,,,,,,,lintas:K,,,,saat:K
-KEMENKO_PMK,Kemenko PMK,pra:P | saat:K | lintas:K,,,,,,,,,,,,,lintas:K
+KEMENKO_PMK,Kemenko PMK,pra:P | saat:K | lintas:K,,,,,,,,,,,,,saat:P | lintas:K
 KEMENKO_PANGAN,Kemenko Pangan,,,,,,,,,pra:K,,,,,
-KEMENDAGRI,Kemendagri,pasca:K | lintas:P,,,,,,,,,pra:P,,pra:R,,saat:P
+KEMENDAGRI,Kemendagri,saat:P | pasca:K | lintas:P,,,,,,,,,pra:P,,pra:R,,saat:P
 KEMLU,Kemlu,saat:P,,,,,,,,,,,,,
 KEMENKEU,Kemenkeu,saat:P,,,,,,,,,pra:P,,,,saat:P
-KEMENKES,Kemenkes,saat:K | lintas:K,,,,,,,,,saat:P,saat:R | lintas:K,,,saat:P
-KEMENSOS,Kemensos,saat:K,,,,,,,,,saat:P,,,,saat:P
-KEMENDIKDASMEN,Kemendikdasmen,saat:K,,,,,,,,,,,,,
-KEMEN_PU,Kementerian PU,saat:P,,,,pra:R | lintas:K,pra:R,,pra:K,saat:P | lintas:K,pra:P,,,pra:P,
+KEMENKES,Kemenkes,"saat:K,P | lintas:K",,,,,,,,,saat:P,saat:R | lintas:K,,,saat:P
+KEMENSOS,Kemensos,"saat:K,P",,,,,,,,,saat:P,,,,saat:P
+KEMENDIKDASMEN,Kemendikdasmen,pra:K | saat:K,,,,,,,,,,,,,
+KEMEN_PU,Kementerian PU,saat:P,,,,"pra:I,R | lintas:K",pra:R,,pra:K,saat:P | lintas:K,pra:P,,,pra:P,
 KEMEN_PKP,Kementerian PKP,pasca:K,,,,,,,,,,,,,
 KEMEN_ESDM,Kementerian ESDM,saat:P,pra:R,pra:R,pra:I,,pra:I,,,,,,,,
-KEMENHUT,Kemenhut,,,,,,,,,,lintas:K,,,,
-KLH_BPLH,KLH/BPLH,,,,,,,,,,lintas:K,,lintas:P,pra:R,
-KEMENTAN,Kementan,,,,,,,,,pra:P,pra:R,,,,
+KEMENHUT,Kemenhut,,,,,,,,,,saat:P | lintas:K,,,,
+KLH_BPLH,KLH/BPLH,,,,,,,,,,saat:P | lintas:K,,lintas:P,pra:R,
+KEMENTAN,Kementan,saat:P,,,,,,,,pra:P,pra:R,,,,
 KKP,KKP,,,,,,,,pra:P,,,,,,
 ATR_BPN,ATR/BPN,pra:R,,,,,,,,,pra:R,,,,
 KEMEN_PPN,Kementerian PPN/Bappenas,pasca:P,,,,,,,,,pra:P,,,,
 KOMDIGI,Komdigi,saat:P,,,,,,,,,saat:P,,,,
 KEMENHUB,Kemenhub,saat:P,,,,,,,,,saat:P,,,,
 KEMENDES,Kemendes PDT,,,,,,,,,,pra:P,,,,
+KEMENAG,Kemenag,pra:K,,,,,,,,,,,,,
 BNPB,BNPB,pra:I | saat:K | pasca:K | lintas:K,,,,,,,,,saat:K,lintas:P,lintas:P,,saat:P | pasca:P
 BPBD,BPBD,pra:I | lintas:K,,,,,,,,,lintas:K,,,,
-PEMDA,Pemda,saat:R | pasca:K | lintas:K,,,,pra:R | lintas:K,,,,lintas:K,saat:K,saat:R,lintas:K,pra:K | saat:K,saat:R | pasca:K
-BMKG,BMKG,,pra:I,pra:I,,,,pra:I,pra:I,pra:I,pra:I | saat:P,,,,
-BRIN,BRIN,pra:P,,,,,,,,,pra:I,,,,
-BIG,BIG,pra:I,,,,,,,,,pra:I,,,,
-BASARNAS,Basarnas,saat:K,,,,,,,,,saat:P,,,,
+PEMDA,Pemda,saat:R | pasca:K | lintas:K,,,,"pra:I,R | lintas:K",,,,lintas:K,saat:K,saat:R,lintas:K,pra:K | saat:K,saat:R | pasca:K
+BMKG,BMKG,saat:P,pra:I,pra:I,,,,pra:I,pra:I,pra:I,pra:I | saat:P,,,,
+BRIN,BRIN,pra:P | saat:P,,,,,,,,,pra:I,,,,
+BIG,BIG,pra:I | saat:I,,,,,,,,,pra:I,,,,
+BASARNAS,Basarnas,"saat:K,P",,,,,,,,,saat:P,,,,
 TNI,TNI,saat:P,,,,,,,,,saat:P,,,,saat:P
 POLRI,Polri,saat:P,,,,,,,,,saat:P,,,,saat:K
 BOP_PANTURA,BOP Pantura Jawa,,,,,pra:P,,,,,,,,,

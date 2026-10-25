@@ -64,14 +64,17 @@ function indeksWilayah(daftar, prov, kab) {   // "kodeprov|kabupaten|kecamatan" 
   return s;
 }
 async function titikApi(env, url, {prov, kab, jam, limit}) {
-  const d = await data(env, url, jam === 72 ? "hotspot72" : "hotspot24"), cocok = indeksWilayah(d.wilayah, prov, kab), utama = new Set(d.sensor_utama);
-  const per = {}; const baris = d.baris.filter(r => r[2] >= -jam && utama.has(r[3]) && cocok.has(r[6]));
+  const d = await data(env, url, jam === 72 ? "hotspot72" : "hotspot24"), cocok = indeksWilayah(d.wilayah, prov, kab), ih = d.kolom.indexOf("hitung");
+  /* yang dihitung = kolom "hitung" (lokasi unik ~375 m per hari WIB, 4 satelit, keyakinan sedang/tinggi; scripts/data/titik_unik.py) */
+  /* berkas lama tanpa kolom itu (sebelum jalan data pertama sesudah 25 Okt 2026): sensor_utama + keyakinan_min seperti dulu */
+  const utama = new Set(d.sensor_utama), dihitung = ih >= 0 ? r => r[ih] === 1 : r => utama.has(r[3]) && r[5] >= (d.keyakinan_min ?? 0);
+  const per = {}; const baris = d.baris.filter(r => r[2] >= -jam && dihitung(r) && cocok.has(r[6]));
   for (const r of baris) per[r[3]] = (per[r[3]] || 0) + 1;
   const atas = lima(baris, (x, y) => y[4] - x[4], limit), wil = [...new Set(atas.map(r => r[6]))];   // baris berbentuk larik + tabel wilayah, supaya 200 titik muat di batas teks
   return {acuan_utc: d.acuan, jam, jumlah_cocok: baris.length, per_sensor: per, ditampilkan: atas.length, urut: "frp_mw menurun (daya radiasi api)",
     kolom: ["lat", "lon", "jam_lalu", "sensor", "frp_mw", "keyakinan", "wilayah", "tanggal_wib"], wilayah: wil.map(i => d.wilayah[i].split("|")),
     titik: atas.map(r => [r[0], r[1], Math.round(-r[2] * 10) / 10, r[3], r[4], KEYAKINAN[r[5]], wil.indexOf(r[6]), r[7]]),
-    catatan: "titik = larik baris menurut 'kolom'; wilayah = indeks ke tabel 'wilayah' ([kode provinsi, kabupaten/kota, kecamatan]). Sensor dihitung: M (MODIS), N (VIIRS S-NPP), N20 (VIIRS NOAA-20); NOAA-21 tidak dihitung. jam_lalu = jam sebelum waktu acuan data. Sumber: NASA FIRMS."};
+    catatan: "titik = larik baris menurut 'kolom'; wilayah = indeks ke tabel 'wilayah' ([kode provinsi, kabupaten/kota, kecamatan]). Yang dihitung: lokasi unik ~375 m per hari WIB dari M (MODIS), N (VIIRS S-NPP), N20 (VIIRS NOAA-20), N21 (VIIRS NOAA-21), keyakinan sedang/tinggi; per_sensor = satelit yang pertama mendeteksi lokasi itu. jam_lalu = jam sebelum waktu acuan data. Sumber: NASA FIRMS."};
 }
 async function statusKabupaten(env, url, {prov, urut, limit}) {
   const l = await data(env, url, "laporan"), i = l.hari.indexOf(l.hari_lengkap);
@@ -87,7 +90,7 @@ async function laporanHarian(env, url, {tanggal}) {
   const prov = Object.entries(l.prov).map(([kode, p]) => ({kode, nama: p.nama, titik: p.titik[i] ?? 0, luas_ha: p.luas[i] ?? 0})).sort((a, b) => b.titik - a.titik);
   return {tanggal: t, hari_lengkap: l.hari_lengkap, lengkap: t <= l.hari_lengkap, dibuat: l.dibuat, jadwal: l.jadwal, nasional: {titik: l.nasional.titik[i], luas_ha: l.nasional.luas[i], luas_baru_ha: l.nasional.baru[i], kabupaten_bertitik: l.nasional.kab[i]},
     tahun_berjalan: {luas_ha: l.tahun_berjalan.ha, rentang_ha: [l.tahun_berjalan.rendah, l.tahun_berjalan.tinggi], sampai: l.tahun_berjalan.sd}, provinsi: prov,
-    catatan: "Titik panas MODIS + VIIRS S-NPP + NOAA-20 per hari WIB. luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Pantau Bencana."};
+    catatan: "Titik panas = lokasi unik ~375 m per hari laporan dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21. luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Pantau Bencana."};
 }
 async function kualitasUdara(env, url, {prov}) {
   const u = await data(env, url, "udara_kualitas"), kol = u.kolom_prov;

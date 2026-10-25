@@ -1,20 +1,25 @@
-butir,tahun,nilai_resmi,sumber_resmi,nilai_hitung,cara_hitung,selisih,cocok,catatan
-IRB rata-rata nasional,2019,144.02,RENSTRA BNPB 2025-2029 hlm. 52 (baseline),144.02,rerata total 498 kab ber-fix_values,0.0,ya,
-IRB rata-rata nasional (cara naif),2019,144.02,RENSTRA BNPB 2025-2029 hlm. 52 (baseline),143.25,rerata total 514 kab termasuk 3 kab bernilai 0,-0.77,tidak,Selisih yang dicatat riset A §1.2; hilang bila 16 kab tanpa fix_values (DOB) dikeluarkan
-IRB rata-rata nasional,2020,141.65,RENSTRA Tabel 1.6 hlm. 52,141.65,rerata total 498 kab ber-fix_values,0.0,ya,
-IRB rata-rata nasional (cara naif),2020,141.65,RENSTRA Tabel 1.6 hlm. 52,140.96,rerata total 514 kab termasuk 3 kab bernilai 0,-0.69,tidak,Selisih yang dicatat riset A §1.2; hilang bila 16 kab tanpa fix_values (DOB) dikeluarkan
-IRB rata-rata nasional,2021,138.81,RENSTRA Tabel 1.6 hlm. 52,138.81,rerata total 514 kab ber-fix_values,0.0,ya,
-IRB rata-rata nasional,2022,135.56,RENSTRA Tabel 1.6 hlm. 52,135.56,rerata total 514 kab ber-fix_values,0.0,ya,
-IRB rata-rata nasional,2023,132.25,RENSTRA Tabel 1.6 hlm. 52; RENAS PB 2025-2029 hlm. 18,132.25,rerata total 514 kab ber-fix_values,0.0,ya,
-IRB rata-rata nasional,2024,128.52,RENSTRA Tabel 1.6 hlm. 52,128.52,rerata total 514 kab ber-fix_values,0.0,ya,
-Kab/kota kelas Tinggi,2023,168,RENAS PB 2025-2029 hlm. 19,168,hitung total > 144,0,ya,"Ambang disimpulkan; kab 7108 bernilai tepat 144 dihitung Sedang (dengan >= jadi 169). Uji konsistensi, bukan uji bebas"
-Kab/kota kelas Sedang,2023,346,RENAS PB 2025-2029 hlm. 19,346,514 - Tinggi,0,ya,BNPB tidak memakai kelas Rendah untuk kab/kota
-Kab/kota kelas Tinggi,2025,169,riset A §1.2 (kolom status API-IRBI),169,hitung status == Tinggi,0,ya,
-Kab/kota kelas Sedang,2025,345,riset A §1.2 (kolom status API-IRBI),345,hitung status == Sedang,0,ya,
-Batas kelas Tinggi 2025,2025,"~176 (skripsi 2026 mengutip BNPB: rendah < 14,67; sedang 14,67-176; tinggi > 176)",riset A §1.1 [SEKUNDER],Sedang maks 175.6802; Tinggi min 176.144,dari kolom status,,ya,"Kab total < 14,67 pada 2025: 0 (jadi kelas Rendah kosong)"
-Provinsi kelas Tinggi,2023,13,RENAS PB 2025-2029 hlm. 19,13,rerata kab per provinsi > 144,0,ya,
-Provinsi kelas Sedang,2023,25,RENAS PB 2025-2029 hlm. 19,25,rerata kab per provinsi <= 144,0,ya,
-Lima kab/kota indeks tertinggi,2023,Mandailing Natal; Halmahera Selatan; Nias Utara; Nias; Maluku Barat Daya,RENAS PB 2025-2029 hlm. 19,Mandailing Natal; Halmahera Selatan; Nias Utara; Nias; Maluku Barat Daya,urut total 2023 turun,,ya,dibanding sebagai himpunan
-Lima kab/kota indeks terendah,2023,Kota Administrasi Jakarta Selatan; Kota Surakarta; Sigi; Administrasi Kepulauan Seribu; Mamberamo Tengah,RENAS PB 2025-2029 hlm. 19,Mamberamo Tengah; Administrasi Kepulauan Seribu; Sigi; Kota Surakarta; Kota Administrasi Jakarta Selatan,urut total 2023 naik,,ya,dibanding sebagai himpunan
-Indeks provinsi 2019-2023 (RENSTRA Tabel 1.1),2019-2023,174,RENSTRA BNPB 2025-2029 Tabel 1.1 hlm. 6-8,148,"rerata sederhana kab ber-fix_values per provinsi, dibulatkan 2 desimal",-26,tidak,"148 dari 174 sel cocok (145 persis, 3 beda pembulatan); sisanya berdugaan sebab di irbi_rekonsiliasi_provinsi.csv. Kelas resmi konsisten dengan ambang > 144 pada 174 dari 174 sel"
-Indeks 9 kab/kota Bali,2024,9,"https://databoks.katadata.co.id/en/environment/statistics/69410dda44ead/disaster-risk-index-in-bali-for-2024 (diakses 23 Okt 2026; media mengutip BNPB, sekunder)",9,total 2024 per kab dibulatkan 2 desimal,0,ya,Sumber yang sama menyebut semua kab Bali < 144 = sedang (dukungan bebas untuk ambang 144)
+butir,tahun,nilai_terbit,sumber_terbit,label_sumber,nilai_hitung,cara_hitung,selisih,cocok,catatan
+IRB rata-rata nasional,2019,144.02,RENSTRA BNPB 2025-2029 hlm. 52 (baseline),resmi,144.02,rerata total 498 kab ber-fix_values,0.0,ya,
+IRB rata-rata nasional (cara naif),2019,144.02,RENSTRA BNPB 2025-2029 hlm. 52 (baseline),resmi,143.25,rerata total 514 kab termasuk 3 kab bernilai 0,-0.77,tidak,Selisih yang dicatat riset A §1.2; hilang bila 16 kab tanpa fix_values (DOB) dikeluarkan
+IRB rata-rata nasional,2020,141.65,RENSTRA Tabel 1.6 hlm. 52,resmi,141.65,rerata total 498 kab ber-fix_values,0.0,ya,
+IRB rata-rata nasional (cara naif),2020,141.65,RENSTRA Tabel 1.6 hlm. 52,resmi,140.96,rerata total 514 kab termasuk 3 kab bernilai 0,-0.69,tidak,Selisih yang dicatat riset A §1.2; hilang bila 16 kab tanpa fix_values (DOB) dikeluarkan
+IRB rata-rata nasional,2021,138.81,RENSTRA Tabel 1.6 hlm. 52,resmi,138.81,rerata total 514 kab ber-fix_values,0.0,ya,
+IRB rata-rata nasional,2022,135.56,RENSTRA Tabel 1.6 hlm. 52,resmi,135.56,rerata total 514 kab ber-fix_values,0.0,ya,
+IRB rata-rata nasional,2023,132.25,RENSTRA Tabel 1.6 hlm. 52; RENAS PB 2025-2029 hlm. 18,resmi,132.25,rerata total 514 kab ber-fix_values,0.0,ya,
+IRB rata-rata nasional,2024,128.52,RENSTRA Tabel 1.6 hlm. 52,resmi,128.52,rerata total 514 kab ber-fix_values,0.0,ya,
+Penurunan IRB nasional 2019-2024,2019-2024,"10,76% / 15,5 poin",RENSTRA BNPB 2025-2029 hlm. 52,resmi,10.76% / 15.5 poin,(2019 - 2024) / 2019 dari rerata ber-fix_values,,ya,
+Kab/kota kelas Tinggi,2023,168,RENAS PB 2025-2029 hlm. 19,resmi,168,hitung total > 144,0,ya,"Ambang disimpulkan; kab 7108 bernilai tepat 144 dihitung Sedang (dengan >= jadi 169). Uji konsistensi, bukan uji bebas"
+Kab/kota kelas Sedang,2023,346,RENAS PB 2025-2029 hlm. 19,resmi,346,514 - Tinggi,0,ya,BNPB tidak memakai kelas Rendah untuk kab/kota
+Kab/kota kelas Tinggi,2025,169,kolom `status` API-IRBI,resmi,,dibaca dari kolom status API,,bukan uji,"Riset A §1.2 menghitung dari kolom yang sama, jadi tidak ada pembanding bebas"
+Kab/kota kelas Sedang,2025,345,kolom `status` API-IRBI,resmi,,dibaca dari kolom status API,,bukan uji,"Riset A §1.2 menghitung dari kolom yang sama, jadi tidak ada pembanding bebas"
+Batas kelas Tinggi 2025 (teramati),2025,,kolom `status` API-IRBI,resmi,Sedang maks 175.6802; Tinggi min 176.144,dibaca dari kolom status dan total API,,bukan uji,"Ambang ~176 disimpulkan dari batas teramati, bukan dikutip. Skripsi 2026 yang disebut riset A §1.1 tidak bisa dilacak (tanpa judul, penulis, URL), jadi tidak dipakai. Kab total < 14,67 pada 2025: 0"
+Provinsi kelas Tinggi,2023,13,RENAS PB 2025-2029 hlm. 19,resmi,13,rerata kab per provinsi > 144,0,ya,
+Provinsi kelas Sedang,2023,25,RENAS PB 2025-2029 hlm. 19,resmi,25,rerata kab per provinsi <= 144,0,ya,
+Tiga provinsi indeks tertinggi,2023,Sulawesi Barat; Maluku; Kep. Bangka Belitung,RENAS PB 2025-2029 hlm. 19,resmi,Sulawesi Barat 160.08; Maluku 160.03; Kep. Bangka Belitung 155.61,urut rerata kab per provinsi 2023 turun,,ya,dibanding sebagai himpunan
+Tiga provinsi indeks terendah,2023,DKI Jakarta; Papua Pegunungan; DI Yogyakarta,RENAS PB 2025-2029 hlm. 19,resmi,DKI Jakarta 61.31; Papua Pegunungan 102.05; Kepulauan Riau 107.79,urut rerata kab per provinsi 2023 naik,,tidak,"Konflik antardokumen resmi: RENSTRA Tabel 1.1 (Kepulauan Riau 107.79, DI Yogyakarta 108.15) dan API menempatkan Kepulauan Riau di bawah DI Yogyakarta; teks RENAS menyebut DI Yogyakarta. Kedua versi disimpan"
+Lima kab/kota indeks tertinggi,2023,Mandailing Natal; Halmahera Selatan; Nias Utara; Nias; Maluku Barat Daya,RENAS PB 2025-2029 hlm. 19,resmi,Mandailing Natal; Halmahera Selatan; Nias Utara; Nias; Maluku Barat Daya,urut total 2023 turun,,ya,dibanding sebagai himpunan
+Lima kab/kota indeks terendah,2023,Kota Administrasi Jakarta Selatan; Kota Surakarta; Sigi; Administrasi Kepulauan Seribu; Mamberamo Tengah,RENAS PB 2025-2029 hlm. 19,resmi,Mamberamo Tengah; Administrasi Kepulauan Seribu; Sigi; Kota Surakarta; Kota Administrasi Jakarta Selatan,urut total 2023 naik,,ya,dibanding sebagai himpunan
+Indeks provinsi 2019-2023 (RENSTRA Tabel 1.1),2019-2023,174,RENSTRA BNPB 2025-2029 Tabel 1.1 hlm. 6-8,resmi,150,"rerata sederhana kab per provinsi (basis ber-fix_values atau semua kab), dibulatkan 2 desimal",-24,tidak,"150 dari 174 sel cocok (147 persis, 3 beda pembulatan); 2 sel hanya cocok dengan basis semua kab (Kaltim 2019-2020). Sisanya berdugaan sebab di irbi_rekonsiliasi_provinsi.csv. Kelas terbit konsisten dengan ambang > 144 pada 174 dari 174 sel"
+Indeks 38 provinsi,2024,38,"https://databoks.katadata.co.id/lingkungan/statistik/69410380c2ad1/indeks-risiko-bencana-di-38-provinsi-indonesia-tahun-2024 (terbit 16 Des 2025, diakses 23 Okt 2026; media mengutip BNPB)",terverifikasi; sekunder,38,"rerata sederhana kab ber-fix_values per provinsi, dibulatkan 2 desimal",0,ya,
+Provinsi kelas Tinggi / Sedang,2024,8 / 30,https://databoks.katadata.co.id/lingkungan/statistik/69410380c2ad1/indeks-risiko-bencana-di-38-provinsi-indonesia-tahun-2024 (sekunder),terverifikasi; sekunder,8 / 30,rerata kab per provinsi > 144,,ya,Sumber yang sama menyatakan di atas 144 poin = tinggi: dukungan bebas (sekunder) untuk ambang 144
+Indeks 9 kab/kota Bali,2024,9,https://databoks.katadata.co.id/en/environment/statistics/69410dda44ead/disaster-risk-index-in-bali-for-2024 (diakses 23 Okt 2026; media mengutip BNPB),terverifikasi; sekunder,9,total 2024 per kab dibulatkan 2 desimal,0,ya,Sumber yang sama menyebut semua kab Bali < 144 = sedang (dukungan bebas untuk ambang 144)

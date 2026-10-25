@@ -1,0 +1,77 @@
+{
+  "nama": "titik-irbi-bahaya-jawa-2024",
+  "jenis": "matriks-titik",
+  "pesan": "G16",
+  "ukuran": "penuh",
+  "keterangan": "Rerata indeks per bahaya IRBI di enam provinsi Pulau Jawa, 2024",
+  "sumber": "InaRISK BNPB, IRBI 2024; rerata sederhana kab/kota yang dinilai per bahaya; kelas buatan penyusun karena IRBI tidak punya ambang kelas per bahaya ({rumus_kelas} provinsi x bahaya)",
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_agregat_provinsi.csv",
+      "saring": {
+        "tahun": "2024",
+        "prov_kode": [
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36"
+        ]
+      }
+    },
+    "baris": "prov_nama",
+    "urutan": [
+      "Banten",
+      "DKI Jakarta",
+      "Jawa Barat",
+      "Jawa Tengah",
+      "DI Yogyakarta",
+      "Jawa Timur"
+    ],
+    "kolom": [
+      {
+        "kolom": "banjir_sederhana",
+        "label": "Banjir"
+      },
+      {
+        "kolom": "longsor_sederhana",
+        "label": "Tanah longsor"
+      },
+      {
+        "kolom": "kekeringan_sederhana",
+        "label": "Kekeringan"
+      },
+      {
+        "kolom": "cuaca_ekstrem_sederhana",
+        "label": "Cuaca ekstrem"
+      },
+      {
+        "kolom": "abrasi_sederhana",
+        "label": "Abrasi"
+      },
+      {
+        "kolom": "gempabumi_sederhana",
+        "label": "Gempa bumi"
+      },
+      {
+        "kolom": "tsunami_sederhana",
+        "label": "Tsunami"
+      },
+      {
+        "kolom": "karlahut_sederhana",
+        "label": "Karhutla"
+      },
+      {
+        "kolom": "gunungapi_sederhana",
+        "label": "Gunung api"
+      }
+    ]
+  },
+  "kelas": {
+    "ramp": "api",
+    "kuantil": 5,
+    "desimal": 1
+  },
+  "judul_legenda": "Indeks per bahaya, kuintil"
+}

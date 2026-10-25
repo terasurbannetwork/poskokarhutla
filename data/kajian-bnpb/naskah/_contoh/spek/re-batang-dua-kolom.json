@@ -1,0 +1,29 @@
+{
+  "nama": "re-batang-irbi-dua-kolom",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "dua-kolom",
+  "keterangan": "IRBI nasional per tahun, 2015 sampai 2024 (lebar dua kolom untuk Ringkasan Eksekutif)",
+  "sumber": "InaRISK BNPB, IRBI 2015 sampai 2024; rerata sederhana kab/kota ber-fix_values",
+  "data": {
+    "sumber": {
+      "berkas": "data/kajian-bnpb/data/irbi/irbi_tren_2015_2024.csv",
+      "saring": {
+        "tingkat": "nasional",
+        "metode": "rerata_sederhana"
+      }
+    },
+    "kolom": "y{2015..2024}"
+  },
+  "pembanding": true,
+  "tekan": 3,
+  "desimal": 1,
+  "kepala": {
+    "kiri": "IRBI nasional",
+    "neto": true
+  },
+  "legenda": {
+    "pembanding": "2015, tahun awal",
+    "tekan": "tiga tahun terakhir"
+  }
+}

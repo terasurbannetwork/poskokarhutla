@@ -1,0 +1,433 @@
+{
+ "nama": "garis-waktu-musim-2026-2027",
+ "keterangan": "Prakiraan musim 2026/2027 di Pulau Jawa dan tonggak peninjauan Renas PB, 2026–2028",
+ "sumber": "BMKG 2026; Perban BNPB 1/2025; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  168
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Kemarau",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Musim hujan",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Puncak musim hujan",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Peta jalan, asumsi hari ke-0",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Tonggak Renas PB",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  }
+ ],
+ "hex": {
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#2F86D1": [
+   "legenda",
+   "seri"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 32.09,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kemarau"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 46.09,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kemarau"
+  },
+  {
+   "x": 72.09,
+   "y": 3,
+   "w": 45.95,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-58",
+   "teks": "Musim hujan"
+  },
+  {
+   "x": 58.09,
+   "y": 2,
+   "w": 59.95,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-58",
+   "teks": "Musim hujan"
+  },
+  {
+   "x": 142.03,
+   "y": 3,
+   "w": 74.42,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-128",
+   "teks": "Puncak musim hujan"
+  },
+  {
+   "x": 128.03,
+   "y": 2,
+   "w": 88.42,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-128",
+   "teks": "Puncak musim hujan"
+  },
+  {
+   "x": 240.45,
+   "y": 3,
+   "w": 97.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-226",
+   "teks": "Peta jalan, asumsi hari ke-0"
+  },
+  {
+   "x": 226.45,
+   "y": 2,
+   "w": 111.07,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-226",
+   "teks": "Peta jalan, asumsi hari ke-0"
+  },
+  {
+   "x": 361.52,
+   "y": 3,
+   "w": 67.18,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-347",
+   "teks": "Tonggak Renas PB"
+  },
+  {
+   "x": 347.52,
+   "y": 2,
+   "w": 81.18,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-347",
+   "teks": "Tonggak Renas PB"
+  },
+  {
+   "x": 77.35,
+   "y": 20,
+   "w": 34.9,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Okt 2026"
+  },
+  {
+   "x": 126.23,
+   "y": 20,
+   "w": 36.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Nov 2026"
+  },
+  {
+   "x": 176.32,
+   "y": 20,
+   "w": 36.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Des 2026"
+  },
+  {
+   "x": 226.32,
+   "y": 20,
+   "w": 35.69,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "Jan 2027"
+  },
+  {
+   "x": 276.13,
+   "y": 20,
+   "w": 35.66,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk4",
+   "teks": "Feb 2027"
+  },
+  {
+   "x": 325.38,
+   "y": 20,
+   "w": 36.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk5",
+   "teks": "Mar 2027"
+  },
+  {
+   "x": 383.78,
+   "y": 20,
+   "w": 19.51,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk6",
+   "teks": "2027"
+  },
+  {
+   "x": 433.57,
+   "y": 20,
+   "w": 19.51,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk7",
+   "teks": "2028"
+  },
+  {
+   "x": 2,
+   "y": 34.95,
+   "w": 59.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Sebagian besar"
+  },
+  {
+   "x": 2,
+   "y": 45.15,
+   "w": 20.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Jawa"
+  },
+  {
+   "x": 2,
+   "y": 63.25,
+   "w": 57.81,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Sebagian Jawa"
+  },
+  {
+   "x": 2,
+   "y": 92.25,
+   "w": 62.41,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Peta jalan BNPB"
+  },
+  {
+   "x": 2,
+   "y": 136.95,
+   "w": 36.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb3",
+   "teks": "Renas PB"
+  },
+  {
+   "x": 87.99,
+   "y": 40.05,
+   "w": 63.41,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "m1",
+   "teks": "Kemarau El Niño"
+  },
+  {
+   "x": 189.37,
+   "y": 40.05,
+   "w": 59.82,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "m2",
+   "teks": "Awal Desember"
+  },
+  {
+   "x": 279.69,
+   "y": 40.05,
+   "w": 28.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "m3",
+   "teks": "Puncak"
+  },
+  {
+   "x": 77.64,
+   "y": 63.25,
+   "w": 34.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "n1",
+   "teks": "Kemarau"
+  },
+  {
+   "x": 139.27,
+   "y": 63.25,
+   "w": 60.43,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "n2",
+   "teks": "Awal November"
+  },
+  {
+   "x": 229.9,
+   "y": 63.25,
+   "w": 28.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "n3",
+   "teks": "Puncak"
+  },
+  {
+   "x": 126.92,
+   "y": 92.25,
+   "w": 35.34,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h0",
+   "teks": "Hari ke-0"
+  },
+  {
+   "x": 236.38,
+   "y": 86.4,
+   "w": 65.36,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "100 hari pertama"
+  },
+  {
+   "x": 188.53,
+   "y": 98,
+   "w": 161.06,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "hari ke-100: 9 Februari sampai 10 Maret 2027"
+  },
+  {
+   "x": 382.32,
+   "y": 126,
+   "w": 22.43,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Rakor"
+  },
+  {
+   "x": 375.17,
+   "y": 136.2,
+   "w": 36.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Renas PB"
+  },
+  {
+   "x": 376.17,
+   "y": 147.8,
+   "w": 34.72,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "triwulan II"
+  },
+  {
+   "x": 433.61,
+   "y": 121.2,
+   "w": 19.42,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "Jalur"
+  },
+  {
+   "x": 427.1,
+   "y": 131.4,
+   "w": 32.45,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "bencana"
+  },
+  {
+   "x": 433.36,
+   "y": 143,
+   "w": 19.93,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "batas"
+  },
+  {
+   "x": 434.59,
+   "y": 152.6,
+   "w": 17.46,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "akhir"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Garis waktu musim dan tonggak kebijakan berlajur; tabel pilih grafik B5.10 tidak memuat garis waktu",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 10
+}

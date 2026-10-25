@@ -1,7 +1,7 @@
 """Titik panas kumulatif tahun berjalan vs tahun parah pada hari yang sama -> public/data/kumulatif.json
 
 Dua dasar yang TIDAK dicampur:
-  banding  (semua satelit M + N + N20, public/data/musim_harian.json, terbarui tiap hari): 2019, 2023 dan rerata 2019-2025 (NOAA-20
+  banding  (lokasi unik per hari WIB dari M, N, N20, N21 sedang/tinggi, titik_unik.py, public/data/musim_harian.json, terbarui tiap hari): 2019, 2023 dan rerata 2019-2025 (NOAA-20
            ada sejak April 2018, jadi 2019-2026 satu definisi) vs tahun berjalan.
   setara_2015 (MODIS + S-NPP saja, data/kumulatif_mn.json): 2015 belum punya NOAA-20 (terbang 2017), jadi 2015, 2019, 2023, dan tahun
            berjalan dihitung ulang tanpa NOAA-20 supaya persen vs 2015 sah. Berkas ini dibangun LOKAL dari arsip FIRMS dan berhenti di
@@ -80,7 +80,7 @@ def bangun(m, mn, luas=None):
     res = {"versi": 2, "dibuat": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(), "tahun": tahun, "sd": m["sd"], "hari_ke": n,
            "rerata_tahun": [RERATA[0], RERATA[-1]],
            "hari_kurva": "hari ke-7, 14, ... lalu hari ke-n (ini) atau hari terakhir tahun (pembanding); nilai = titik panas kumulatif",
-           "definisi": "banding: M + N + N20, semua keyakinan, hari WIB (musim_harian.json). setara_2015: M + N saja, di tanggal potongnya sendiri.",
+           "definisi": "banding: lokasi unik per hari WIB (titik_unik.py: M, N, N20, N21 yang ada di tahun itu; sedang/tinggi; tanpa sumber panas tetap; musim_harian.json). setara_2015: M + N saja, di tanggal potongnya sendiri.",
            **out}
     if mn:
         ny = (dt.date.fromisoformat(mn["sd"]) - dt.date(int(tahun), 1, 1)).days + 1
@@ -128,7 +128,7 @@ def dasar_mn(sd, berkas):
             p = {k: v[:n] for k, v in p.items()}
             tahun[y] = {"nasional": [sum(v[i] for v in p.values()) for i in range(n)], "prov": p}
     with open(DASAR, "w") as f:
-        json.dump({"sumber": "NASA FIRMS MODIS C6.1 + VIIRS S-NPP arsip standar (SP) + NRT, semua keyakinan, hari WIB, provinsi menurut batas BIG; tanpa NOAA-20",
+        json.dump({"sumber": "NASA FIRMS MODIS C6.1 + VIIRS S-NPP arsip standar (SP) + NRT, lokasi unik per hari WIB (titik_unik.py), sedang/tinggi, tanpa sumber panas tetap, provinsi menurut batas BIG; tanpa NOAA-20",
                    "sd": sd, "tahun": tahun}, f, separators=(",", ":"))
     print(f"data/kumulatif_mn.json: {os.path.getsize(DASAR) / 1024:.0f} KB", {y: sum(v["nasional"]) for y, v in tahun.items()})
 

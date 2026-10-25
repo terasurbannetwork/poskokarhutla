@@ -1,0 +1,619 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 9 kajian mitigasi (Grand Design Mitigasi Bencana Indonesia 2026–2030). Disusun 24 Oktober 2026 dari berkas bukti naskah/mitigasi/bukti/bab-09.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Bentuk entri sama dengan data/angka.json: berkas (relatif ke data/) + jalur, atau nilai + pustaka (kunci di bab-09.pustaka.json). Entri berkas+jalur diuji dengan salinan ikuti() dari bangun/kontrak/naskah.py. Entri bernilai hasil hitungan menulis cara hitungnya di catatan.",
+    "Kunci lama yang dipakai ulang (sosial.desa_perkelahian.2024, sosial.maluku.meninggal_bawah, sosial.maluku.pengungsi, sosial.kerusuhan2025.*, dibi.wamena2019.meninggal, progsun.2026.jumlah_rancangan) tidak diulang di sini. Angka sekunder tidak didaftarkan.",
+    "Revisi 24 Okt 2026 sesuai temuan pemeriksa: kunci sosial.podes.jenis.jumlah_desa_jenis_2024 dan dibi.konflik.2019_2026.* dihapus (agregat tak bermakna atau cacat mutu, D16); prov_naik dan papua diberi label asumsi-kebijakan; 8 kunci jenis per provinsi ditambah untuk jawaban PK2.",
+    "Tambahan 25 Okt 2026 oleh penulis naskah bab-09: 9 kunci (persen jenis antarkelompok DKI, Maluku Utara, Maluku; antardesa Maluku Utara dan Maluku; 32 provinsi sebanding; 196 desa perkelahian enam provinsi Papua; 38 provinsi dinilai PMK 97/2025; pita perkiraan Sambas 1996–1997), semuanya dari angka berkas bukti."
+  ],
+  "angka": {
+    "sosial.desa_perkelahian.2021": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].desa_perkelahian_massal_2021",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Kriminal 2024/2025 Lampiran 26",
+      "catatan": "desa/kelurahan dengan perkelahian massal setahun sebelum Podes 2021; 34 provinsi batas lama"
+    },
+    "sosial.desa_perkelahian.persen_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].persen_2024",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024",
+      "catatan": "persen dari 84.276 desa/kelurahan; semua jenis perkelahian"
+    },
+    "sosial.desa_perkelahian.persen_2021": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].persen_2021",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Kriminal 2024/2025 Lampiran 26"
+    },
+    "sosial.desa_kelurahan.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].desa_kelurahan_2024",
+      "satuan": "desa/kelurahan",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 1.1"
+    },
+    "sosial.desa_korban_meninggal.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].desa_korban_meninggal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.2",
+      "catatan": "satuan desa, bukan jumlah korban"
+    },
+    "sosial.desa_korban_luka.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].desa_korban_luka_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.2",
+      "catatan": "satuan desa, bukan jumlah korban"
+    },
+    "sosial.podes.jenis.antar_kelompok.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa)"
+    },
+    "sosial.podes.jenis.antar_desa.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_antar_desa_kelurahan",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa)"
+    },
+    "sosial.podes.jenis.antar_suku.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_antar_suku",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa)"
+    },
+    "sosial.podes.jenis.pelajar_mahasiswa.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_pelajar_mahasiswa",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa)"
+    },
+    "sosial.podes.jenis.vs_aparat_keamanan.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_masyarakat_vs_aparat_keamanan",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa); di luar lingkup prinsip 3 (berhadapan dengan aparat)"
+    },
+    "sosial.podes.jenis.vs_aparat_pemerintah.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_masyarakat_vs_aparat_pemerintah",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa); di luar lingkup prinsip 3 (berhadapan dengan aparat)"
+    },
+    "sosial.podes.jenis.lainnya.2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=00].jenis_lainnya",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1",
+      "catatan": "jenis tidak saling lepas (jumlah 7 jenis 2.450 lawan 2.031 desa)"
+    },
+    "sosial.podes.dki.persen_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=31].persen_2024",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024",
+      "catatan": "penyebut kecil (267 kelurahan); sebut jumlah di samping persen"
+    },
+    "sosial.podes.dki.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=31].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024",
+      "catatan": "penyebut kecil (267 kelurahan); sebut jumlah di samping persen"
+    },
+    "sosial.podes.dki.desa_kelurahan_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=31].desa_kelurahan_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024",
+      "catatan": "penyebut kecil (267 kelurahan); sebut jumlah di samping persen"
+    },
+    "sosial.podes.maluku.persen_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=81].persen_2024",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.maluku.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=81].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.malut.persen_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=82].persen_2024",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.malut.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=82].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.jabar.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=32].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.jateng.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=33].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.ntt.desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=53].desa_perkelahian_massal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.ntt.desa_korban_meninggal_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=53].desa_korban_meninggal_2024",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024"
+    },
+    "sosial.podes.kenaikan_desa_2021_2024": {
+      "nilai": 478,
+      "pustaka": "bps-2025-statistik-kriminal",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS",
+      "catatan": "2.031 (2024) − 1.553 (2021); dua titik waktu, bukan tren; Papua tidak sebanding karena pemekaran"
+    },
+    "sosial.podes.papua.desa_korban_meninggal_2024": {
+      "nilai": 37,
+      "pustaka": "bps-2024-podes",
+      "satuan": "desa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS Podes 2024 Tabel 18.2",
+      "catatan": "jumlah desa_korban_meninggal_2024 enam provinsi Papua (kode 91, 92, 93, 94, 95, 96): 4+1+4+12+10+6; 24,7% dari 150 desa nasional; olahan penyusun: pengelompokan enam provinsi sebagai \"Papua\" adalah pilihan penyusun"
+    },
+    "sosial.podes.prov_naik_2021_2024": {
+      "nilai": 23,
+      "pustaka": "bps-2025-statistik-kriminal",
+      "satuan": "provinsi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS",
+      "catatan": "dari 32 provinsi sebanding (tanpa Papua, Papua Barat, dan 4 provinsi baru): 23 naik, 7 turun, 2 tetap (Bali, Kepulauan Riau); olahan penyusun: bergantung pada pilihan mengeluarkan Papua, Papua Barat, dan 4 provinsi baru, jadi bukan angka resmi"
+    },
+    "sosial.maluku.meninggal_atas": {
+      "berkas": "nonalam-sosial/skenario_terburuk.csv",
+      "jalur": "[jenis=konflik_sosial,komponen=analog_maluku_meninggal_atas].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°31, 2002",
+      "catatan": "\"perhaps as many as 10,000\"; pasangan sosial.maluku.meninggal_bawah"
+    },
+    "sosial.poso.meninggal": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=poso1998,metrik=meninggal].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Human Rights Watch, siaran pers 4 Des 2002",
+      "catatan": "\"An estimated 1,000\""
+    },
+    "sosial.poso.pengungsi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=poso1998,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Human Rights Watch, siaran pers 4 Des 2002",
+      "catatan": "batas bawah (\"more than 100,000\")"
+    },
+    "sosial.sampit.meninggal": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=sampit2001,metrik=meninggal].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°19, 2001",
+      "catatan": "\"about 500 - and possibly many more\""
+    },
+    "sosial.sampit.pengungsi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=sampit2001,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°19, 2001",
+      "catatan": "sampai pertengahan April 2001"
+    },
+    "sosial.sambas1997.meninggal": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=sambas1997,metrik=meninggal].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°19, 2001 (mengutip HRW)",
+      "catatan": "perkiraan 300–3.000 (pita satu orde, tidak masuk kartu angka); HRW sekitar 500"
+    },
+    "sosial.sambas1999.meninggal": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=sambas1999,metrik=meninggal].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°19, 2001",
+      "catatan": "hitungan resmi tiga bulan pertama 1999; perkiraan tidak resmi lebih tinggi"
+    },
+    "sosial.pengungsi_nasional_2001.tercatat_resmi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=pengungsi2001,metrik=mengungsi_tercatat_resmi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Report of Seminar on Internal Displacement in Indonesia, Jun 2001",
+      "catatan": "batas bawah (\"more than one million\"); semua pengungsi konflik nasional"
+    },
+    "sosial.pengungsi_nasional_2001.kelompok_kerja": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=pengungsi2001,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "Report of Seminar on Internal Displacement in Indonesia, Jun 2001 (kelompok kerja koordinasi)"
+    },
+    "dibi.wamena2019.mengungsi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=wamena2019,metrik=mengungsi].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial Wamena 2019"
+    },
+    "sosial.wamena2019.meninggal_presiden": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=wamena2019,metrik=meninggal,asal=rujukan].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Presiden RI, Setkab 30 Sep 2019",
+      "catatan": "berdampingan dengan dibi.wamena2019.meninggal (36)"
+    },
+    "dibi.wamena2026.meninggal": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=wamena2026,metrik=meninggal].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial Jayawijaya 7 Mei 2026",
+      "catatan": "tanggal = hari jembatan Wouma putus; kemungkinan memuat korban jembatan; bukan analog"
+    },
+    "dibi.wamena2026.mengungsi": {
+      "berkas": "nonalam-sosial/peristiwa.csv",
+      "jalur": "[kode=wamena2026,metrik=mengungsi,asal=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial Jayawijaya 7 Mei 2026",
+      "catatan": "Polda Papua 874 (sekunder) sebagai pembanding"
+    },
+    "dibi.konflik.2019.kejadian": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2019,jenis_juklak=konflik_sosial,cakupan=bencana].jumlah_kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana"
+    },
+    "dibi.konflik.2019.meninggal": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2019,jenis_juklak=konflik_sosial,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana"
+    },
+    "dibi.konflik.2019.mengungsi": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2019,jenis_juklak=konflik_sosial,cakupan=bencana].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana"
+    },
+    "dibi.konflik.2025.kejadian": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2025,jenis_juklak=konflik_sosial,cakupan=bencana].jumlah_kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "memuat dugaan entri ganda Maluku Tengah 3 Apr 2025"
+    },
+    "dibi.konflik.2025.meninggal": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2025,jenis_juklak=konflik_sosial,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "memuat dugaan entri ganda Maluku Tengah 3 Apr 2025"
+    },
+    "dibi.konflik.2025.mengungsi": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2025,jenis_juklak=konflik_sosial,cakupan=bencana].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "memuat dugaan entri ganda Maluku Tengah 3 Apr 2025"
+    },
+    "dibi.konflik.2026.kejadian": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2026,jenis_juklak=konflik_sosial,cakupan=bencana].jumlah_kejadian",
+      "satuan": "kejadian",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "data sementara; memuat dugaan entri ganda Maluku Tengah dan baris Jayawijaya 7 Mei 2026"
+    },
+    "dibi.konflik.2026.meninggal": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2026,jenis_juklak=konflik_sosial,cakupan=bencana].meninggal",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "data sementara; memuat dugaan entri ganda Maluku Tengah dan baris Jayawijaya 7 Mei 2026"
+    },
+    "dibi.konflik.2026.mengungsi": {
+      "berkas": "nonalam-sosial/dibi_nonalam_sosial_rekap.csv",
+      "jalur": "[tingkat=nasional,tahun=2026,jenis_juklak=konflik_sosial,cakupan=bencana].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, konflik sosial (Juklak 301), cakupan bencana",
+      "catatan": "data sementara; memuat dugaan entri ganda Maluku Tengah dan baris Jayawijaya 7 Mei 2026"
+    },
+    "dibi.konflik.kab_fiskal_rendah_2025_2026": {
+      "nilai": 3,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "kab",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan PMK 97/2025",
+      "catatan": "dari 9 kab otonom dengan baris konflik sosial DIBI cakupan bencana 2025–2026: rendah 3 (Manokwari, Kepulauan Aru, Flores Timur), sedang 3, tinggi 1, sangat tinggi 2; Kota Adm. Jakarta Pusat bukan daerah otonom; ilustrasi, mutu baris DIBI lihat rekonsiliasi.csv"
+    },
+    "uu7_2012.status_konflik.hari_maks": {
+      "nilai": 90,
+      "pustaka": "ri-2012-uu7",
+      "satuan": "hari",
+      "keyakinan": "resmi",
+      "sumber": "UU 7/2012 Pasal 22",
+      "catatan": "status keadaan konflik berlaku paling lama 90 hari"
+    },
+    "uu7_2012.status_konflik.perpanjangan_hari": {
+      "nilai": 30,
+      "pustaka": "ri-2012-uu7",
+      "satuan": "hari",
+      "keyakinan": "resmi",
+      "sumber": "UU 7/2012 Pasal 29",
+      "catatan": "perpanjangan paling lama 30 hari setelah konsultasi pimpinan DPRD/DPR"
+    },
+    "uu7_2012.satgas_nasional.unsur_pemerintah": {
+      "nilai": 15,
+      "pustaka": "ri-2012-uu7",
+      "satuan": "unsur",
+      "keyakinan": "resmi",
+      "sumber": "UU 7/2012 Pasal 49 ayat (2) huruf a–o",
+      "catatan": "BNPB huruf l; satu-satunya penyebutan BNPB dalam UU 7/2012"
+    },
+    "perpres46_2026.kondisi_keadaan_tertentu": {
+      "nilai": 3,
+      "pustaka": "ri-2026-perpres46",
+      "satuan": "kondisi",
+      "keyakinan": "resmi",
+      "sumber": "Perpres 46/2026 Pasal 3 ayat (2) huruf a–c",
+      "catatan": "a faktor alam, nonalam, dan/atau sosial; b evakuasi atau gangguan layanan; c rekonsiliasi pascakonflik dengan kapasitas fiskal sangat rendah atau rendah; dihubungkan \"dan/atau\""
+    },
+    "perban5_2018.jenis_ancaman": {
+      "nilai": 10,
+      "pustaka": "bnpb-2018-keadaan-tertentu",
+      "satuan": "jenis",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 5/2018 Pasal 3 ayat (2) huruf a angka 1–10",
+      "catatan": "tanpa ancaman sosial atau konflik"
+    },
+    "perban5_2018.anggota_rakor": {
+      "nilai": 20,
+      "pustaka": "bnpb-2018-keadaan-tertentu",
+      "satuan": "unsur",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 5/2018 Pasal 6 huruf a–t",
+      "catatan": "huruf a–t; Kemenag, Kemenhan, Kejaksaan Agung, dan Komnas HAM (unsur Satgas nasional UU 7/2012 Pasal 49 ayat (2) huruf d, h, k, m) tidak disebut namanya, tetapi dapat masuk lewat huruf t \"kementerian/lembaga terkait lainnya\"; nomenklatur lama (PUPR, LHK, Kominfo, LAPAN)"
+    },
+    "renas.1_1_2_j.target_2029": {
+      "nilai": 5,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "unit/jaringan",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 kegiatan 1.1.2.j, hlm. 55",
+      "catatan": "jaringan pengamatan dan pantauan konflik sosial; baseline NA; PJ Kementerian Sosial; kontributor Kemenag, Kemendagri, BIN"
+    },
+    "renas.1_2_4_c.target_2029": {
+      "nilai": 10,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "riset",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 kegiatan 1.2.4.c, hlm. 62",
+      "catatan": "riset jaringan pengamatan konflik sosial; PJ Kementerian Sosial, BNPB, BRIN, Kemendiktisaintek"
+    },
+    "pmk97_2025.prov_rendah_sangat_rendah": {
+      "nilai": 24,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "PMK 97/2025 Lampiran butir 1",
+      "catatan": "dari 38 provinsi: sangat rendah 2 (Papua, Papua Selatan), rendah 22; dihitung dari Lampiran"
+    },
+    "pmk97_2025.kab_rendah_sangat_rendah": {
+      "nilai": 351,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "PMK 97/2025 Lampiran butir 2",
+      "catatan": "sangat rendah 51 + rendah 300 dari 508 kab/kota (69,1%); dihitung dari Lampiran"
+    },
+    "pmk97_2025.kab_dinilai": {
+      "nilai": 508,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "PMK 97/2025 Lampiran butir 2",
+      "catatan": "514 − 6 wilayah administrasi DKI"
+    },
+    "pmk97_2025.kab_sangat_rendah": {
+      "nilai": 51,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "PMK 97/2025 Lampiran butir 2",
+      "catatan": "dihitung dari Lampiran"
+    },
+    "sosial.podes.dki.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=31].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.jabar.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=32].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.jateng.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=33].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.ntt.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=53].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.maluku.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=81].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.malut.jenis_antar_kelompok_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=82].jenis_antar_kelompok_masyarakat",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.dki.jenis_pelajar_mahasiswa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=31].jenis_pelajar_mahasiswa",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.jabar.jenis_pelajar_mahasiswa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=32].jenis_pelajar_mahasiswa",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.dki.persen_antar_kelompok_2024": {
+      "nilai": 7.49,
+      "pustaka": "bps-2024-podes",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS, Podes 2024 Tabel 1.1 dan 18.1",
+      "catatan": "jenis antarkelompok masyarakat 20 dibagi 267 desa/kelurahan (7,4906%); dihitung penyusun bukti PK2 Temuan 4a"
+    },
+    "sosial.podes.malut.persen_antar_kelompok_2024": {
+      "nilai": 6.45,
+      "pustaka": "bps-2024-podes",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS, Podes 2024 Tabel 1.1 dan 18.1",
+      "catatan": "78 dibagi 1.209 desa/kelurahan (6,4516%); dihitung penyusun bukti PK2 Temuan 4a"
+    },
+    "sosial.podes.maluku.persen_antar_kelompok_2024": {
+      "nilai": 6.26,
+      "pustaka": "bps-2024-podes",
+      "satuan": "persen",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS, Podes 2024 Tabel 1.1 dan 18.1",
+      "catatan": "79 dibagi 1.262 desa/kelurahan (6,2599%); dihitung penyusun bukti PK2 Temuan 4a"
+    },
+    "sosial.podes.malut.jenis_antar_desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=82].jenis_antar_desa_kelurahan",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.maluku.jenis_antar_desa_2024": {
+      "berkas": "nonalam-sosial/konflik_podes_provinsi.csv",
+      "jalur": "[kode_prov=81].jenis_antar_desa_kelurahan",
+      "satuan": "desa",
+      "keyakinan": "resmi",
+      "sumber": "BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1"
+    },
+    "sosial.podes.prov_sebanding_2021_2024": {
+      "nilai": 32,
+      "pustaka": "bps-2025-statistik-kriminal",
+      "satuan": "provinsi",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS",
+      "catatan": "38 provinsi dikurangi Papua dan Papua Barat (wilayah terbelah) dan empat provinsi baru; pilihan penyusun, bukti PK2 Temuan 8"
+    },
+    "sosial.podes.papua.desa_perkelahian_2024": {
+      "nilai": 196,
+      "pustaka": "bps-2024-podes",
+      "satuan": "desa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari BPS, Podes 2024",
+      "catatan": "jumlah enam provinsi Papua (22+47+36+39+21+31); pengelompokan pilihan penyusun, bukti PK2 Temuan 5"
+    },
+    "pmk97_2025.prov_dinilai": {
+      "nilai": 38,
+      "pustaka": "kemenkeu-2025-pmk97",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "PMK 97/2025 Lampiran",
+      "catatan": "2 sangat rendah + 22 rendah + 7 sedang + 4 tinggi + 3 sangat tinggi; bukti PK4 Temuan 12"
+    },
+    "sosial.sambas1997.meninggal_pita": {
+      "rendah": 300,
+      "tinggi": 3000,
+      "pustaka": "icg-2001-kalimantan",
+      "satuan": "jiwa",
+      "keyakinan": "terverifikasi",
+      "sumber": "ICG Asia Report N°19, 27 Jun 2001 (mengutip perkiraan yang beredar)",
+      "catatan": "pita satu orde; hanya untuk catatan kaki, bukan angka kartu (prinsip 9); bukti PK3 Temuan 4"
+    }
+  }
+}

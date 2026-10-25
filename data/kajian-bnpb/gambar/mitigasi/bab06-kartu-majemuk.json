@@ -1,0 +1,271 @@
+{
+ "nama": "bab06-kartu-majemuk",
+ "keterangan": "Nilai IRBI gempa bumi per kab/kota di Sulawesi Tengah, 2025",
+ "sumber": "InaRISK BNPB, IRBI 2025 (kuintil dari 13 nilai, batas atas inklusif)",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  259.94
+ ],
+ "ukuran_cm": [
+  5.23,
+  9.17
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 8,0 (4)",
+   "jenis": "kotak",
+   "warna": "#FBE7D6"
+  },
+  {
+   "label": "8,0–9,0 (4)",
+   "jenis": "kotak",
+   "warna": "#F4C3A0"
+  },
+  {
+   "label": "9,0–13,0 (3)",
+   "jenis": "kotak",
+   "warna": "#D9600B"
+  },
+  {
+   "label": "> 13,0 (2)",
+   "jenis": "kotak",
+   "warna": "#8F3F07"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#8F3F07": [
+   "skala",
+   "legenda"
+  ],
+  "#FBE7D6": [
+   "skala",
+   "legenda"
+  ],
+  "#D9600B": [
+   "skala",
+   "legenda"
+  ],
+  "#F4C3A0": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 11.95,
+   "y": 170.94,
+   "w": 71.75,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-11",
+   "teks": "Gempa bumi, kuintil"
+  },
+  {
+   "x": 11.95,
+   "y": 169.94,
+   "w": 71.75,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-11",
+   "teks": "Gempa bumi, kuintil"
+  },
+  {
+   "x": 107.71,
+   "y": 170.94,
+   "w": 28.59,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-93",
+   "teks": "≤ 8,0 (4)"
+  },
+  {
+   "x": 93.71,
+   "y": 169.94,
+   "w": 42.59,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-93",
+   "teks": "≤ 8,0 (4)"
+  },
+  {
+   "x": 28.53,
+   "y": 183.94,
+   "w": 38.35,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-14",
+   "teks": "8,0–9,0 (4)"
+  },
+  {
+   "x": 14.53,
+   "y": 182.94,
+   "w": 52.35,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-14",
+   "teks": "8,0–9,0 (4)"
+  },
+  {
+   "x": 90.88,
+   "y": 183.94,
+   "w": 42.84,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-76",
+   "teks": "9,0–13,0 (3)"
+  },
+  {
+   "x": 76.88,
+   "y": 182.94,
+   "w": 56.84,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-76",
+   "teks": "9,0–13,0 (3)"
+  },
+  {
+   "x": 64.53,
+   "y": 196.94,
+   "w": 33.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-50",
+   "teks": "> 13,0 (2)"
+  },
+  {
+   "x": 50.53,
+   "y": 195.94,
+   "w": 47.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-50",
+   "teks": "> 13,0 (2)"
+  },
+  {
+   "x": 3,
+   "y": 208.94,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 218.54,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 228.14,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 237.74,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 247.34,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 1,1° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": [
+  "72"
+ ],
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "api",
+  "batas": [
+   8,
+   9,
+   13
+  ],
+  "label": [
+   "≤ 8,0",
+   "8,0–9,0",
+   "9,0–13,0",
+   "> 13,0"
+  ],
+  "warna": [
+   "skala.api.1",
+   "skala.api.2",
+   "skala.api.4",
+   "skala.api.5"
+  ],
+  "rumus": "kuintil dari 13 nilai, batas atas inklusif",
+  "resmi": false,
+  "jumlah": [
+   4,
+   4,
+   3,
+   2
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 1,1° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

@@ -1,9 +1,12 @@
-/* Paket skenario-geologi: skenario terburuk yang masuk akal untuk gempa megathrust, tsunami, dan gunung api, per kab/kota.
+/* Paket skenario-geologi: skenario ILUSTRATIF platform (magnitudo sim.js di bawah Mmaks) + kepekaan Mmaks, untuk gempa megathrust,
+   tsunami, dan gunung api, per kab/kota.
    Menjalankan mesin platform APA ADANYA di node (pola scripts/gunungapi/cek_merapi2010.mjs dan scripts/gempa/kalibrasi_kerusakan.mjs):
-     gempa   public/gempa/guncangan.js + kerusakan.js + tsunami.js (skenario dari public/gempa/sim.js DIKENAL)
-     gunung  public/gunungapi/sim_lahar.js + sim_tanggap.js (Merapi setara 2010) dan overlay KRB PVMBG (paparan_geo.json x pop/<id>.json)
-   Korban jiwa TIDAK diambil dari satu angka model: rentang = paparan skenario x rasio historis kejadian analog (paparan analog dihitung
-   lewat mesin yang sama), disandingkan pita kerusakan.js [rendah, tengah, tinggi] (galat LOO tercatat ±5,3 kali).
+     gempa   public/gempa/guncangan.js + kerusakan.js + tsunami.js (skenario dari public/gempa/sim.js DIKENAL; varian Mmaks = bentuk() yang
+             sama dengan m diganti, sim.js tidak diubah)
+     gunung  public/gunungapi/sim_lahar.js + sim_tanggap.js (Merapi setara 2010) dan overlay KRB PVMBG: data/raw/gunungapi/krb.geojson
+             (poligon utuh) x pop_piksel.json (WorldPop 1 km tak dibulatkan), aturan scripts/gunungapi/paparan.py pilih_krb
+   Korban guncangan = paparan skenario x rasio historis kejadian analog (dinormalkan ke okupansi 0,85), disandingkan pita kerusakan.js
+   (galat LOO tercatat ±5,3 kali). Korban tsunami = orde besaran: rasio analog dicocokkan per kab (korban dan paparan di kab yang sama).
    Jalankan:  node data/kajian-bnpb/bangun/skenario-geologi.mjs      (butuh jaringan sekali untuk ubin DEM terrarium; disimpan di data/raw/terrarium)
    Keluaran:  data/kajian-bnpb/data/skenario-geologi/*  lalu self-check assert; keluar non-nol bila invarian rusak. */
 import fs from "node:fs";
@@ -58,6 +61,13 @@ const SESAR = baca(P + "gempa/data/sesar.geojson");
 const JIWA_PER_RUMAH = +fs.readFileSync(P + "gempa/kerusakan.js", "utf8").match(/JIWA_PER_RUMAH = ([\d.]+)/)[1];
 const SIMJS = fs.readFileSync(P + "gempa/sim.js", "utf8");
 const DIKENAL = ["jawa", "mentawai", "sumba"].map(id => new Function("return " + SIMJS.match(new RegExp(`\\{id: "${id}"[^\\n]*?\\}(?=,\\n)`))[0])());
+/* magnitudo sim.js di bawah Mmaks yang dikutip paket ini -> kepekaan Mmaks: bentuk() yang sama, hanya m diganti (sim.js tidak diubah).
+   Mmaks Peta Gempa 2024: Jawa 9,1; Mentawai/Enggano 8,9 (sekunder, riset A §6). Mmaks Bali-Sumba tidak ditemukan -> tanpa varian. */
+const MMAKS = { jawa: 9.1, mentawai: 8.9 };
+const SUMBER_SK = [...DIKENAL, ...DIKENAL.filter(s => MMAKS[s.id]).map(s => ({ ...s, id: s.id + "-mmaks", n: `${s.n} (kepekaan Mmaks)`, m: MMAKS[s.id] }))];
+const STATUS_MAG = { jawa: "M8,5 sim.js, di bawah Mmaks 9,1; tanpa sumber per baris", mentawai: "M8,8 sim.js, di bawah Mmaks 8,9; tanpa sumber per baris", sumba: "M8,3 sim.js TANPA SUMBER; Mmaks Bali-Sumba tidak ditemukan",
+  "jawa-mmaks": "M9,1 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)", "mentawai-mmaks": "M8,9 = Mmaks Peta Gempa 2024 (sekunder riset A §6, dokumen belum dibuka)" };
+const MAG_PENDEK = { jawa: "di bawah Mmaks", mentawai: "di bawah Mmaks", sumba: "tanpa sumber", "jawa-mmaks": "Mmaks (sekunder)", "mentawai-mmaks": "Mmaks (sekunder)" }; /* kolom status_magnitudo tiap tabel hasil */
 
 /* ================================================================ parameter kebijakan & sumber angka */
 const PB = baca(P + "banjir/data/param_banjir.json").param;
@@ -146,7 +156,9 @@ function tsunami(sk) {
     if (Math.abs(la - sk.lat) > 12 || Math.abs(lo - sk.lon) > 14) continue; const z = T.nilai(G, la, lo); if (z == null || z > 10) continue;
     const tb = tibaDi(la, lo); if (tb > 180) continue; let b = null;
     for (const p of wt.pantai) { if (Math.abs(p.lat - la) > .15 || Math.abs(p.lon - lo) > .15) continue; if (!b || p.tinggi_hi > b.tinggi_hi) b = p; }
-    if (!b || b.tinggi_hi < .5) continue; const kode = kecKode(k), jiwa = PEND[k] || 0; if (!kode) continue; const o = kab(kode);
+    if (!b || b.tinggi_hi < .5) continue; const kode = kecKode(k), jiwa = PEND[k] || 0; if (!kode) continue;
+    if (!(per.get(kode)?.sel > 0)) continue; /* kab tanpa sel pantai tercapai (mis. Banyumas, tak berpantai) tidak boleh punya jiwa pesisir */
+    const o = kab(kode);
     const tuju = T.tempatTinggi(G, la, lo, 20, 40), sempat = tuju ? tuju.km * 1.3 / 4 * 60 < tb : false;
     o.p180 += jiwa; if (tb <= 30) { o.p30 += jiwa; o.kec30++; } if (!sempat) o.tak += jiwa; }
   return { wt, per };
@@ -158,6 +170,7 @@ const D = {
   mamuju: dibi("2021", r => r.jenis_bencana === "Gempabumi" && tglUTC(r) === "2021-01-15"),
   pasaman: dibi("2022", r => r.jenis_bencana === "Gempabumi" && tglUTC(r) === "2022-02-25"),
   cianjur: dibi("2022", r => r.jenis_bencana === "Gempabumi" && tglUTC(r) === "2022-11-21"),
+  cianjurKab: dibi("2022", r => r.jenis_bencana === "Gempabumi" && tglUTC(r) === "2022-11-21" && r.kabupaten === "Cianjur"), /* angka Rp4 T Bupati = Kab. Cianjur saja */
   mentawai: dibi("2010", r => r.jenis_bencana === "Tsunami" && r.kabupaten === "Kepulauan Mentawai"),
   merapi: dibi("2010", r => r.jenis_bencana === "Erupsi Gunung Api" && tglUTC(r) === "2010-10-26"),
   semeru: dibi("2021", r => r.jenis_bencana === "Erupsi Gunung Api" && tglUTC(r) === "2021-12-04"),
@@ -174,16 +187,43 @@ const ANALOG_GEMPA = [
   { id: "cianjur-2022", ev: evKal("cianjur-2022"), meninggal: D.cianjur.meninggal, sumber: "DIBI baris 21 Nov 2022", label: "resmi", versi_lain: "600 (kalibrasi); RENSTRA 602" },
   { id: "padang-2009", ev: evKal("padang-2009"), meninggal: fakta("2009-09-30").meninggal, sumber: "factsheet_gempa.json (USGS usp000h237)", label: "terverifikasi", versi_lain: "1.115 (kalibrasi_kerusakan.json)" },
 ];
-for (const a of ANALOG_GEMPA) { const g = guncang(a.ev, a.ev.jg || "kerak"); a.e7 = g.e7; a.rasio = a.meninggal / g.e7[1]; }
+/* rasio analog membawa jam kejadian aslinya: dinormalkan ke okupansi rata-rata (skenario tanpa jam) = rasio x 0,85 / okupansi(jam kejadian),
+   jam dari kalibrasi_kerusakan.json, okupansi() dari kerusakan.js. Tuas "malam" di kepekaan.csv diterapkan SETELAH normalisasi ini. */
+const OKUP0 = K.okupansi(null);
+for (const a of ANALOG_GEMPA) { const g = guncang(a.ev, a.ev.jg || "kerak"); assert.ok(Number.isFinite(a.ev.jam), "jam kejadian analog tidak ada: " + a.id);
+  a.e7 = g.e7; a.okup = K.okupansi(a.ev.jam); a.rasio_mentah = a.meninggal / g.e7[1]; a.rasio = a.rasio_mentah * OKUP0 / a.okup; }
 const RG = ANALOG_GEMPA.map(a => a.rasio), RASIO_GEMPA = [Math.min(...RG), median(RG), Math.max(...RG)];
 
+/* Korban dan paparan dicocokkan PER KAB (temuan pemeriksa 23 Okt): rasio = meninggal di kab ber-p30 > 0 / p30 kab yang sama.
+   Mentawai 2010 = baris DIBI (semuanya Kep. Mentawai). Pangandaran 2006 = impact-text USGS usp000ensm (riset/mentah/usp000ensm.geojson,
+   diunduh 23 Okt 2026); batas 2006: Ciamis memuat Pangandaran (dimekarkan 2012), "Tasikmalaya" tidak membedakan kab/kota.
+   Analog dipakai hanya bila >= 80% korbannya jatuh di kab dengan p30 > 0; selain itu proksinya tidak mewakili kejadian. */
+const provKode = nama => Object.keys(PROVNAMA).find(p => PROVNAMA[p] === nama || PROVNAMA[p].replace(/^DI /, "Daerah Istimewa ") === nama);
+const kodeDibi = r => kodeKab(provKode(r.provinsi), r.kabupaten);
+const ENSM = baca(MENTAH + "usp000ensm.geojson").properties.products["impact-text"][0].contents[""].bytes;
+const PANG_KAB = [["Four-hundred and thirteen people", 413, "Ciamis", ["32|Ciamis", "32|Pangandaran"]], ["62 people", 62, "Tasikmalaya", ["32|Tasikmalaya", "32|Kota Tasikmalaya"]], ["15 people", 15, "Banjar", ["32|Kota Banjar"]],
+  ["1 person", 1, "Garut", ["32|Garut"]], ["157 people", 157, "Cilacap", ["33|Cilacap"]], ["10 people", 10, "Kebumen", ["33|Kebumen"]], ["1 person", 1, "Banyumas", ["33|Banyumas"]],
+  ["3 people", 3, "Gunung Kidul", ["34|Gunungkidul"]], ["3 people", 3, "Bantul", ["34|Bantul"]]];
+for (const [frasa, , nama, kab] of PANG_KAB) { assert.match(ENSM, new RegExp(`${frasa} killed[^;]*? (in|at) ${nama}`), "impact-text USGS: " + nama); kab.forEach(x => assert.ok(kodeDari.get(x), "kab USGS: " + x)); }
+const BATAS_COCOK = 0.8;
 const ANALOG_TS = [
-  { id: "mentawai-2010", q: usgs("2010-10-25", 7.5), meninggal: D.mentawai.meninggal, hilang: D.mentawai.hilang, sumber: "DIBI 2010 Tsunami Kepulauan Mentawai; parameter gempa: katalog USGS riwayat_m5.json", label: "resmi", versi_lain: "445 (USGS, factsheet)" },
-  { id: "pangandaran-2006", q: usgs("2006-07-17", 7.5), meninggal: 665, hilang: null, sumber: "factsheet_gempa.json catatan: rincian USGS per kabupaten dijumlah 665 (usp000ensm); parameter: riwayat_m5.json", label: "terverifikasi", versi_lain: "668 (angka lama, tidak ditemukan sumbernya)" },
+  { id: "mentawai-2010", q: usgs("2010-10-25", 7.5), meninggal: D.mentawai.meninggal, hilang: D.mentawai.hilang, korbanKab: D.mentawai.kab.map(r => [[kodeDibi(r)], r.meninggal, r.kabupaten]),
+    sumber: "DIBI 2010 Tsunami Kepulauan Mentawai; parameter gempa: katalog USGS riwayat_m5.json", label: "resmi", versi_lain: "445 (USGS, factsheet)" },
+  { id: "pangandaran-2006", q: usgs("2006-07-17", 7.5), meninggal: jumlah(PANG_KAB, x => x[1]), hilang: null, korbanKab: PANG_KAB.map(([, n, nama, kab]) => [kab.map(x => kodeDari.get(x)), n, nama]),
+    sumber: "impact-text USGS usp000ensm per kabupaten (riset/mentah/usp000ensm.geojson, diunduh 23 Okt 2026; factsheet_gempa.json meninggal = null); parameter: riwayat_m5.json",
+    label: "terverifikasi (dihitung dari rincian USGS: Ciamis 413, Tasikmalaya 62, Banjar 15, Garut 1, Cilacap 157, Kebumen 10, Banyumas 1, Gunungkidul 3, Bantul 3)", versi_lain: "668 (angka lama, tidak ditemukan sumbernya)" },
 ];
-for (const a of ANALOG_TS) { const s = strikePalung(a.q.lat, a.q.lon); a.strike = s.strike; const t = tsunami({ id: a.id, ...a.q, strike: s.strike });
-  a.p30 = jumlah([...t.per.values()], o => o.p30); a.rasio = a.meninggal / a.p30; }
-const RT = ANALOG_TS.map(a => a.rasio), RASIO_TS = [Math.min(...RT), Math.sqrt(RT[0] * RT[1]), Math.max(...RT)];
+for (const a of ANALOG_TS) { const s = strikePalung(a.q.lat, a.q.lon); a.strike = s.strike; const t = tsunami({ id: a.id, ...a.q, strike: s.strike }), p30 = k => t.per.get(k)?.p30 || 0;
+  a.korbanKab.forEach(([kode]) => kode.forEach(k => assert.ok(KABK.has(k), `${a.id}: kab korban tanpa kode`)));
+  a.p30_semua = jumlah([...t.per.values()], o => o.p30); a.rasio_lama = a.meninggal / a.p30_semua;
+  a.rincian = a.korbanKab.map(([kode, n, nama]) => ({ nama, meninggal: n, p30: Math.round(jumlah(kode, p30)) }));
+  const cocok = a.rincian.filter(x => x.p30 > 0);
+  a.meninggal_cocok = jumlah(cocok, x => x.meninggal); a.p30 = jumlah(cocok, x => x.p30); a.porsi_cocok = a.meninggal_cocok / a.meninggal;
+  a.rasio = a.p30 > 0 ? a.meninggal_cocok / a.p30 : null; a.dipakai = a.porsi_cocok >= BATAS_COCOK; }
+const TS_PAKAI = ANALOG_TS.filter(a => a.dipakai);
+assert.ok(TS_PAKAI.length > 0, "tidak ada analog tsunami yang lolos uji pencocokan wilayah");
+/* satu angka, bukan pita: rerata geometrik analog yang lolos (kini hanya Mentawai 2010). Orde besaran, belum layak dikutip. */
+const RASIO_TS = Math.exp(jumlah(TS_PAKAI, a => Math.log(a.rasio)) / TS_PAKAI.length);
 
 /* gunung api: rasio per jiwa KRB III (paparan.json 2026) */
 const PAP = baca(P + "gunungapi/data/paparan.json"), GUNG = new Map(PAP.gunung.map(g => [g.id, g]));
@@ -195,8 +235,8 @@ for (const a of ANALOG_GA) { const k3 = GUNG.get(a.gunung).zona.III.penduduk;
   a.krb3 = k3; a.r = { korban: a.d.meninggal / k3, rb: a.d.rb / k3, rs: a.d.rs / k3, rr: a.d.rr / k3, ungsi: a.d.mengungsi / k3 }; }
 const rgGA = k => { const v = ANALOG_GA.map(a => a.r[k]); return [Math.min(...v), Math.max(...v)]; };
 
-/* ================================================================ jalankan tiga skenario megathrust */
-const SKEN = DIKENAL.map(src => { const sk = bentuk(src), g = gempaKab(sk), t = tsunami(sk); return { src, sk, g, t }; });
+/* ================================================================ jalankan skenario megathrust: 3 sim.js + 2 kepekaan Mmaks */
+const SKEN = SUMBER_SK.map(src => { const sk = bentuk(src), g = gempaKab(sk), t = tsunami(sk); return { src, sk, g, t }; });
 /* kepekaan kepatuhan bangunan: porsi stok tembok tanpa tulangan dipindah ke beton/tembok terkekang (KELAS kerusakan.js) */
 const VARIAN_BANGUNAN = [["dasar (40/30/30)", [0.40, 0.30, 0.30]], ["kepatuhan naik (20/50/30)", [0.20, 0.50, 0.30]], ["kepatuhan penuh (0/70/30)", [0.00, 0.70, 0.30]]];
 const asli = K.KELAS.map(k => k.bagian);
@@ -251,13 +291,14 @@ const KRB = PAP.gunung.map(g => {
   const puncak = STATUS.get(g.nama); assert.ok(puncak, "puncak tak dikenal: " + g.nama);
   const zon = pilihKrb({ nama: g.nama, lat: puncak.lat, lon: puncak.lon }), zonaTitik = (lo, la) => ZONA.find(z => (zon[z] || []).some(q => dalamQ(q, lo, la))) || null;
   const per = new Map(), kab = k => per.get(k) || per.set(k, { III: 0, II: 0, I: 0, lIII: 0, lII: 0, lI: 0, sIII: 0, sII: 0, fIII: 0, fII: 0 }).get(k);
-  for (const [la, lo, j] of PIX[g.id] || []) { if (hav(puncak.lat, puncak.lon, la, lo) > 20) continue; const z = zonaTitik(lo, la); if (z) kab(kabTitik(la, lo))[z] += j; }
+  let r20 = 0; /* penduduk <= 20 km dari puncak: batas atas pengungsi (radius evakuasi Merapi 2010) */
+  for (const [la, lo, j] of PIX[g.id] || []) { if (hav(puncak.lat, puncak.lon, la, lo) > 20) continue; r20 += j; const z = zonaTitik(lo, la); if (z) kab(kabTitik(la, lo))[z] += j; }
   const semua = Object.values(zon).flat();
   if (semua.length) { const b = [Math.min(...semua.map(q => q.b[0])), Math.min(...semua.map(q => q.b[1])), Math.max(...semua.map(q => q.b[2])), Math.max(...semua.map(q => q.b[3]))], s = 0.0045;
     for (let la = b[1] + s / 2; la < b[3]; la += s) for (let lo = b[0] + s / 2; lo < b[2]; lo += s) { const z = zonaTitik(lo, la); if (!z) continue; const k = kabPIP(la, lo); if (k) kab(k)["l" + z] += (s * 111.19) ** 2 * Math.cos(la * RAD) * 100; } }
   for (const [t, c] of [["sekolah", "s"], ["faskes", "f"]]) for (const f of g[t]) if (f.zona === "III" || f.zona === "II") kab(kabTitik(f.lat, f.lon))[c + f.zona]++;
   const selisih = Object.fromEntries(ZONA.map(z => [z, jumlah([...per.values()], o => o[z]) - g.zona[z].penduduk]));
-  return { g, per, selisih };
+  return { g, per, selisih, r20 };
 });
 
 /* ================================================================ tulis keluaran */
@@ -267,22 +308,25 @@ function csv(nama, kolom, baris) {
   const esc = v => { if (v == null) return ""; if (typeof v === "number") { assert.ok(Number.isFinite(v), `${nama}: angka tak hingga/NaN`); SEMUA_ANGKA.push(v); return String(v); } const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
   fs.writeFileSync(OUT + nama, [kolom.join(","), ...baris.map(b => kolom.map(k => esc(b[k])).join(","))].join("\n") + "\n"); return baris.length; }
 const json = (nama, o) => fs.writeFileSync(OUT + nama, JSON.stringify(o, (k, v) => { if (typeof v === "number") assert.ok(Number.isFinite(v), `${nama}.${k}: NaN`); return v; }, 1) + "\n");
-const dasarKab = k => ({ kode: k.kode, prov: k.prov, provinsi: PROVNAMA[k.prov], pulau: PULAU(k.prov), kab: k.nama });
+const dasarKab = k => ({ kode: k.kode, prov: k.prov, provinsi: PROVNAMA[k.prov], pulau: PULAU(k.prov), kab: k.nama.trim() });
 const PEND_KAB = new Map(); for (const [k, v] of Object.entries(PEND)) { const c = kecKode(k); assert.ok(c || !v, "penduduk tanpa kab: " + k); if (c) PEND_KAB.set(c, (PEND_KAB.get(c) || 0) + v); }
 const tri = (a, f = 0) => a.map(v => bulat(v, f));
 
 /* --- gempa_kab.csv */
-const KG = ["kode", "prov", "provinsi", "pulau", "kab", "skenario", "penduduk_kab", "mmi_maks", "jiwa_mmi_2_3", "jiwa_mmi_4", "jiwa_mmi_5", "jiwa_mmi_6", "jiwa_mmi_7", "jiwa_mmi_8", "jiwa_mmi_9plus",
+const KG = ["kode", "prov", "provinsi", "pulau", "kab", "skenario", "status_magnitudo", "penduduk_kab", "mmi_maks", "jiwa_mmi_2_3", "jiwa_mmi_4", "jiwa_mmi_5", "jiwa_mmi_6", "jiwa_mmi_7", "jiwa_mmi_8", "jiwa_mmi_9plus",
   "jiwa_mmi7plus_rendah", "jiwa_mmi7plus_tengah", "jiwa_mmi7plus_tinggi", "luas_mmi6plus_km2", "luas_mmi7plus_km2", "rumah_dalam_jendela",
   "rb_rendah", "rb_tengah", "rb_tinggi", "rs_rendah", "rs_tengah", "rs_tinggi", "rr_rendah", "rr_tengah", "rr_tinggi",
   "korban_mesin_rendah", "korban_mesin_tengah", "korban_mesin_tinggi", "korban_analog_rendah", "korban_analog_tengah", "korban_analog_tinggi",
   "pengungsi", "hari_mengungsi_7", "hari_mengungsi_30", "hari_mengungsi_90", "kerugian_stimulan_rp_juta_rendah", "kerugian_stimulan_rp_juta_tengah", "kerugian_stimulan_rp_juta_tinggi",
   "yll_rendah", "yll_tengah", "yll_tinggi", "sekolah_mmi7plus", "faskes_mmi7plus"];
 const barisG = [];
-const analogKorban = e7 => [e7[0] * RASIO_GEMPA[0], e7[1] * RASIO_GEMPA[1], e7[2] * RASIO_GEMPA[2]];
+/* satu sumber ketidakpastian per ujung pita, diambil yang lebih ekstrem: rasio min/maks x paparan tengah ATAU rasio median x paparan pita
+   rendah/tinggi. Menumpuk keduanya (min x pita rendah) memperlebar pita tanpa dasar; membuang pita paparan menghapus satu-satunya sinyal
+   guncangan untuk Jawa/Sumba (paparan tengah 0). */
+const analogKorban = e7 => { const [r0, r1, r2] = RASIO_GEMPA; return [Math.min(r0 * e7[1], r1 * e7[0]), r1 * e7[1], Math.max(r2 * e7[1], r1 * e7[2])]; };
 for (const s of SKEN) for (const k of KAB) {
   const o = s.g.per.get(k.kode), z = [0, 0, 0], q = o ? o.k : { rb: z, rs: z, rr: z, jiwa: z, rumah: 0 }, m = o ? o.mmi : new Array(13).fill(0), e7 = o ? o.e7 : z, ka = analogKorban(e7), ungsi = (q.rb[1] + q.rs[1]) * JIWA_PER_RUMAH;
-  barisG.push({ ...dasarKab(k), skenario: s.src.id, penduduk_kab: Math.round(PEND_KAB.get(k.kode) || 0), mmi_maks: o ? bulat(o.mmiMaks, 1) : null,
+  barisG.push({ ...dasarKab(k), skenario: s.src.id, status_magnitudo: MAG_PENDEK[s.src.id], penduduk_kab: Math.round(PEND_KAB.get(k.kode) || 0), mmi_maks: o ? bulat(o.mmiMaks, 2) : null,
     jiwa_mmi_2_3: Math.round(m[2] + m[3]), jiwa_mmi_4: Math.round(m[4]), jiwa_mmi_5: Math.round(m[5]), jiwa_mmi_6: Math.round(m[6]), jiwa_mmi_7: Math.round(m[7]), jiwa_mmi_8: Math.round(m[8]), jiwa_mmi_9plus: Math.round(jumlah(m.slice(9))),
     jiwa_mmi7plus_rendah: Math.round(e7[0]), jiwa_mmi7plus_tengah: Math.round(e7[1]), jiwa_mmi7plus_tinggi: Math.round(e7[2]), luas_mmi6plus_km2: bulat(o?.luas6 || 0), luas_mmi7plus_km2: bulat(o?.luas7 || 0),
     rumah_dalam_jendela: Math.round(q.rumah), rb_rendah: Math.round(q.rb[0]), rb_tengah: Math.round(q.rb[1]), rb_tinggi: Math.round(q.rb[2]), rs_rendah: Math.round(Math.min(...q.rs)), rs_tengah: Math.round(q.rs[1]), rs_tinggi: Math.round(Math.max(...q.rs)),
@@ -296,30 +340,33 @@ for (const s of SKEN) for (const k of KAB) {
 csv("gempa_kab.csv", KG, barisG);
 
 /* --- tsunami_kab.csv */
-const KT = ["kode", "prov", "provinsi", "pulau", "kab", "skenario", "tercapai_180_menit", "tiba_menit", "tiba_menit_sisi_aman", "tinggi_indikatif_lo_m", "tinggi_indikatif_hi_m", "sel_pantai", "panjang_pantai_km",
+const KT = ["kode", "prov", "provinsi", "pulau", "kab", "skenario", "status_magnitudo", "tercapai_180_menit", "tiba_menit", "tiba_menit_sisi_aman", "tinggi_indikatif_lo_m", "tinggi_indikatif_hi_m", "sel_pantai", "panjang_pantai_km",
   "panjang_pantai_lt30_km", "panjang_pantai_lt30_sisi_aman_km", "jiwa_pesisir_rendah_180", "jiwa_pesisir_rendah_lt30", "jiwa_tak_sempat_jalan_kaki",
-  "korban_e20_rendah", "korban_e20_tengah", "korban_e20_tinggi", "korban_e50_rendah", "korban_e50_tengah", "korban_e50_tinggi", "korban_e70_rendah", "korban_e70_tengah", "korban_e70_tinggi", "yll_e20_tengah"];
+  "korban_e20_orde", "korban_e50_orde", "korban_e70_orde", "yll_e20_orde"];
 const barisT = [];
 for (const s of SKEN) for (const k of KAB) {
-  const o = s.t.per.get(k.kode), ada = !!o && o.sel > 0, b = { ...dasarKab(k), skenario: s.src.id, tercapai_180_menit: ada ? 1 : 0 };
+  const o = s.t.per.get(k.kode), ada = !!o && o.sel > 0, b = { ...dasarKab(k), skenario: s.src.id, status_magnitudo: MAG_PENDEK[s.src.id], tercapai_180_menit: ada ? 1 : 0 };
   Object.assign(b, { tiba_menit: ada ? bulat(o.tiba, 1) : null, tiba_menit_sisi_aman: ada ? bulat(o.tiba * AMAN, 1) : null, tinggi_indikatif_lo_m: ada ? o.hlo : null, tinggi_indikatif_hi_m: ada ? o.hhi : null,
     sel_pantai: o?.sel || 0, panjang_pantai_km: bulat((o?.sel || 0) * SEL_KM), panjang_pantai_lt30_km: bulat((o?.sel30 || 0) * SEL_KM), panjang_pantai_lt30_sisi_aman_km: bulat((o?.sel30a || 0) * SEL_KM),
     jiwa_pesisir_rendah_180: Math.round(o?.p180 || 0), jiwa_pesisir_rendah_lt30: Math.round(o?.p30 || 0), jiwa_tak_sempat_jalan_kaki: Math.round(o?.tak || 0) });
-  for (const e of EVAK) RASIO_TS.forEach((r, i) => b[`korban_e${Math.round(e * 100)}_${["rendah", "tengah", "tinggi"][i]}`] = bulat((o?.p30 || 0) * r * fEvak(e), 1));
-  b.yll_e20_tengah = Math.round((o?.p30 || 0) * RASIO_TS[1] * SISA_HIDUP[1]);
+  for (const e of EVAK) b[`korban_e${Math.round(e * 100)}_orde`] = bulat((o?.p30 || 0) * RASIO_TS * fEvak(e), 1); /* orde besaran, belum layak dikutip */
+  b.yll_e20_orde = Math.round((o?.p30 || 0) * RASIO_TS * SISA_HIDUP[1]);
   barisT.push(b);
 }
 csv("tsunami_kab.csv", KT, barisT);
 
 /* --- merapi2010_kab.csv */
 const M15 = MERAPI[0.15], M18 = MERAPI[0.18], dibiMer = new Map();
-for (const r of D.merapi.kab) { const pk = Object.keys(PROVNAMA).find(p => PROVNAMA[p].replace(/^DI /, "Daerah Istimewa ") === r.provinsi || PROVNAMA[p] === r.provinsi); const c = kodeKab(pk, r.kabupaten); assert.ok(c, "DIBI Merapi: " + r.kabupaten); dibiMer.set(c, r); }
+for (const r of D.merapi.kab) { const c = kodeDibi(r); assert.ok(c, "DIBI Merapi: " + r.kabupaten); dibiMer.set(c, r); }
 const KMER = ["kode", "prov", "provinsi", "pulau", "kab", "jiwa_sapuan_tanpa_evakuasi", "jiwa_sapuan_hl018", "luas_sapuan_ha", "luas_awan_panas_ha", "rumah_di_sapuan_batas_atas", "sekolah_di_sapuan", "faskes_di_sapuan",
   "pengungsi_radius20km", "korban_analog_rendah", "korban_analog_tinggi", "rb_analog", "rs_analog", "rr_analog", "kerugian_stimulan_rp_juta", "hari_mengungsi_7", "hari_mengungsi_30", "hari_mengungsi_90", "yll_rendah", "yll_tinggi",
   "dibi2010_meninggal", "dibi2010_mengungsi", "dibi2010_rb", "dibi2010_rs", "dibi2010_rr"];
 const KORBAN_MER = [347, D.merapi.meninggal]; /* rentang versi sumber kejadian 2010: 347 (sekunder) s.d. DIBI 386 */
 const barisM = [];
-for (const [kode, o] of M15.per) { if (!kode) continue; const k = KABK.get(kode), sh = o.jiwa / M15.terpapar, d = dibiMer.get(kode), o18 = M18.per.get(kode);
+/* baris = kab di sapuan/radius 20 km model  GABUNG  kab DIBI 2010 (Kota Magelang: mengungsi 3.783, di luar sapuan model -> nilai model 0) */
+const NOL_MER = { jiwa: 0, luas: 0, luasPdc: 0, r20: 0, sekolah: 0, faskes: 0 };
+for (const m of [M15, M18]) assert.ok(![...m.per.keys()].some(k => !k), "Merapi: ada piksel/sel tanpa kode kab (kunci null)");
+for (const kode of new Set([...M15.per.keys(), ...dibiMer.keys()])) { const o = M15.per.get(kode) || NOL_MER, k = KABK.get(kode), sh = o.jiwa / M15.terpapar, d = dibiMer.get(kode), o18 = M18.per.get(kode);
   const rb = D.merapi.rb * sh, rs = D.merapi.rs * sh, rr = D.merapi.rr * sh;
   barisM.push({ ...dasarKab(k), jiwa_sapuan_tanpa_evakuasi: Math.round(o.jiwa), jiwa_sapuan_hl018: Math.round(o18?.jiwa || 0), luas_sapuan_ha: bulat(o.luas), luas_awan_panas_ha: bulat(o.luasPdc), rumah_di_sapuan_batas_atas: Math.round(o.jiwa / JIWA_PER_RUMAH),
     sekolah_di_sapuan: o.sekolah, faskes_di_sapuan: o.faskes, pengungsi_radius20km: Math.round(o.r20), korban_analog_rendah: bulat(KORBAN_MER[0] * sh, 1), korban_analog_tinggi: bulat(KORBAN_MER[1] * sh, 1),
@@ -331,96 +378,122 @@ csv("merapi2010_kab.csv", KMER, barisM);
 
 /* --- gunungapi_krb_kab.csv */
 const KK = ["gunung_id", "gunung", "zona_sumber", "kode", "prov", "provinsi", "pulau", "kab", "jiwa_krb3", "jiwa_krb2", "jiwa_krb1", "luas_krb3_ha", "luas_krb2_ha", "luas_krb1_ha", "sekolah_krb3", "sekolah_krb2", "faskes_krb3", "faskes_krb2",
-  "rumah_krb3", "korban_analog_rendah", "korban_analog_tinggi", "rb_analog_rendah", "rb_analog_tinggi", "pengungsi_analog_rendah", "pengungsi_analog_tinggi", "kerugian_stimulan_rp_juta_rendah", "kerugian_stimulan_rp_juta_tinggi",
+  "rumah_krb3", "korban_analog_rendah", "korban_analog_tinggi", "rb_analog_rendah", "rb_analog_tinggi", "pengungsi_analog_rendah", "pengungsi_analog_tinggi", "penduduk_radius20km_gunung", "kerugian_stimulan_rp_juta_rendah", "kerugian_stimulan_rp_juta_tinggi",
   "hari_mengungsi_30_rendah", "hari_mengungsi_30_tinggi", "yll_rendah", "yll_tinggi"];
 const barisK = [], rK = rgGA("korban"), rRB = rgGA("rb"), rRS = rgGA("rs"), rRR = rgGA("rr"), rU = rgGA("ungsi");
-for (const { g, per } of KRB) for (const [kode, o] of per) {
-  if (!kode || !(o.III + o.II + o.I + o.lIII + o.lII + o.lI + o.sIII + o.sII + o.fIII + o.fII > 0)) continue; const k = KABK.get(kode), j3 = o.III;
+/* pengungsi = jiwa KRB III x rasio, DIBATASI penduduk <= 20 km dari puncak per gunung (batas atas; dibagi ke kab menurut porsi KRB III) */
+for (const x of KRB) { const { g, per } = x; assert.ok(![...per.keys()].some(k => !k), `KRB ${g.id}: ada piksel/sel tanpa kode kab (kunci null)`);
+  x.j3 = jumlah([...per.values()], o => o.III); x.fU = rU.map(r => x.j3 * r > x.r20 ? x.r20 / (x.j3 * r) : 1); const fU = x.fU;
+  for (const [kode, o] of per) {
+  if (!(o.III + o.II + o.I + o.lIII + o.lII + o.lI + o.sIII + o.sII + o.fIII + o.fII > 0)) continue; const k = KABK.get(kode), j3 = o.III;
   barisK.push({ gunung_id: g.id, gunung: g.nama, zona_sumber: g.zona_sumber, ...dasarKab(k), jiwa_krb3: Math.round(o.III), jiwa_krb2: Math.round(o.II), jiwa_krb1: Math.round(o.I),
     luas_krb3_ha: bulat(o.lIII), luas_krb2_ha: bulat(o.lII), luas_krb1_ha: bulat(o.lI), sekolah_krb3: o.sIII, sekolah_krb2: o.sII, faskes_krb3: o.fIII, faskes_krb2: o.fII, rumah_krb3: Math.round(j3 / JIWA_PER_RUMAH),
     korban_analog_rendah: bulat(j3 * rK[0], 1), korban_analog_tinggi: bulat(j3 * rK[1], 1), rb_analog_rendah: bulat(j3 * rRB[0], 1), rb_analog_tinggi: bulat(j3 * rRB[1], 1),
-    pengungsi_analog_rendah: Math.round(j3 * rU[0]), pengungsi_analog_tinggi: Math.round(j3 * rU[1]),
+    pengungsi_analog_rendah: Math.round(j3 * rU[0] * fU[0]), pengungsi_analog_tinggi: Math.round(j3 * rU[1] * fU[1]), penduduk_radius20km_gunung: Math.round(x.r20),
     kerugian_stimulan_rp_juta_rendah: Math.round(rupiah(j3 * rRB[0], j3 * rRS[0], j3 * rRR[0])), kerugian_stimulan_rp_juta_tinggi: Math.round(rupiah(j3 * rRB[1], j3 * rRS[1], j3 * rRR[1])),
-    hari_mengungsi_30_rendah: Math.round(j3 * rU[0] * 30), hari_mengungsi_30_tinggi: Math.round(j3 * rU[1] * 30), yll_rendah: Math.round(j3 * rK[0] * SISA_HIDUP[0]), yll_tinggi: Math.round(j3 * rK[1] * SISA_HIDUP[2]) });
-}
+    hari_mengungsi_30_rendah: Math.round(j3 * rU[0] * fU[0] * 30), hari_mengungsi_30_tinggi: Math.round(j3 * rU[1] * fU[1] * 30), yll_rendah: Math.round(j3 * rK[0] * SISA_HIDUP[0]), yll_tinggi: Math.round(j3 * rK[1] * SISA_HIDUP[2]) });
+} }
 csv("gunungapi_krb_kab.csv", KK, barisK);
 
 /* --- analog.csv */
-const KA = ["kelompok", "id", "kejadian", "meninggal", "hilang", "sumber", "label", "versi_lain", "paparan_model", "arti_paparan", "rasio_meninggal_per_terpapar", "dipakai_untuk"];
+const KA = ["kelompok", "id", "kejadian", "meninggal", "hilang", "sumber", "label", "versi_lain", "paparan_model", "arti_paparan", "rasio_meninggal_per_terpapar", "catatan_rasio", "porsi_korban_di_kab_berpaparan", "dipakai", "dipakai_untuk"];
+const koma = v => String(v).replace(".", ","), pct = (v, n = 4) => koma(bulat(v * 100, n)) + "%";
 const barisA = [
   ...ANALOG_GEMPA.map(a => ({ kelompok: "guncangan gempa", id: a.id, kejadian: `${a.ev.nama} M${a.ev.m}`, meninggal: a.meninggal, hilang: null, sumber: a.sumber, label: a.label, versi_lain: a.versi_lain,
-    paparan_model: Math.round(a.e7[1]), arti_paparan: "jiwa di kecamatan MMI >= VII (mesin guncangan.js, WorldPop 2026, geometri kalibrasi_kerusakan.json)", rasio_meninggal_per_terpapar: bulat(a.rasio, 6), dipakai_untuk: "korban_analog gempa_kab.csv" })),
+    paparan_model: Math.round(a.e7[1]), arti_paparan: "jiwa di kecamatan MMI >= VII (mesin guncangan.js, WorldPop 2026, geometri kalibrasi_kerusakan.json)", rasio_meninggal_per_terpapar: bulat(a.rasio, 6),
+    catatan_rasio: `dinormalkan ke okupansi ${koma(OKUP0)}: jam lokal ${koma(a.ev.jam)} (kalibrasi_kerusakan.json) -> okupansi ${koma(a.okup)} (kerusakan.js); rasio mentah ${pct(a.rasio_mentah)} x ${koma(OKUP0)}/${koma(a.okup)}`,
+    porsi_korban_di_kab_berpaparan: null, dipakai: 1, dipakai_untuk: "korban_analog gempa_kab.csv" })),
   ...ANALOG_TS.map(a => ({ kelompok: "tsunami", id: a.id, kejadian: `${a.id} M${a.q.m} (${a.q.waktu} UTC, strike palung ${bulat(a.strike, 1)})`, meninggal: a.meninggal, hilang: a.hilang, sumber: a.sumber, label: a.label, versi_lain: a.versi_lain,
-    paparan_model: Math.round(a.p30), arti_paparan: "jiwa kecamatan pesisir rendah (pusat <= 10 m ETOPO, tinggi indikatif atas >= 0,5 m) dengan tiba sisi aman <= 30 menit (mesin tsunami.js)", rasio_meninggal_per_terpapar: bulat(a.rasio, 6), dipakai_untuk: "korban tsunami_kab.csv (evakuasi segera 20%)" })),
+    paparan_model: Math.round(a.p30), arti_paparan: "jiwa kecamatan pesisir rendah (pusat <= 10 m ETOPO, tinggi indikatif atas >= 0,5 m, kab bersel pantai tercapai) dengan tiba sisi aman <= 30 menit, HANYA di kab yang berkorban",
+    rasio_meninggal_per_terpapar: bulat(a.rasio, 6),
+    catatan_rasio: `dicocokkan per kab: ${a.rincian.map(x => `${x.nama} ${x.meninggal}/${x.p30}`).join("; ")}. Rasio lama lintas wilayah (dibuang): ${a.meninggal}/${Math.round(a.p30_semua)} = ${pct(a.rasio_lama)}`,
+    porsi_korban_di_kab_berpaparan: bulat(a.porsi_cocok, 3), dipakai: a.dipakai ? 1 : 0,
+    dipakai_untuk: a.dipakai ? "korban tsunami_kab.csv (orde besaran, evakuasi segera 20%)" : `TIDAK dipakai: hanya ${pct(a.porsi_cocok, 1)} korban jatuh di kab dengan p30 > 0 (syarat ${BATAS_COCOK * 100}%); proksi pesisir rendah = 0 di pantai Ciamis/Pangandaran/Tasikmalaya/Garut` })),
   ...ANALOG_GA.map(a => ({ kelompok: "gunung api", id: a.id, kejadian: a.id, meninggal: a.d.meninggal, hilang: a.d.hilang, sumber: a.sumber, label: a.label, versi_lain: a.versi_lain,
-    paparan_model: a.krb3, arti_paparan: "jiwa KRB III PVMBG 2018 (paparan.json, WorldPop 2026)", rasio_meninggal_per_terpapar: bulat(a.r.korban, 6), dipakai_untuk: `korban/rumah/pengungsi gunungapi_krb_kab.csv (RB ${a.d.rb}, RS ${a.d.rs}, RR ${a.d.rr}, mengungsi ${a.d.mengungsi})` })),
+    paparan_model: a.krb3, arti_paparan: "jiwa KRB III PVMBG 2018 (paparan.json, WorldPop 2026)", rasio_meninggal_per_terpapar: bulat(a.r.korban, 6), catatan_rasio: null, porsi_korban_di_kab_berpaparan: null, dipakai: 1,
+    dipakai_untuk: `korban/rumah/pengungsi gunungapi_krb_kab.csv (RB ${a.d.rb}, RS ${a.d.rs}, RR ${a.d.rr}, mengungsi ${a.d.mengungsi}; pengungsi dibatasi penduduk <= 20 km)` })),
 ];
 csv("analog.csv", KA, barisA);
 
 /* --- pembanding_pdna.csv: stimulan batas bawah dari rumah rusak DIBI vs angka kerugian kejadian nyata */
+/* skema stimulan saat kejadian (param_banjir.json: skema lama 50/25/10 untuk 2018-2021, Lombok 2018 & Sulbar 2021 disebut; Cianjur 2022 60/30/15) */
 const PDNA = [
-  { kejadian: "Gempa Cianjur 21 Nov 2022", d: D.cianjur, angka_rp_juta: 4e6, angka_teks: "kerugian ±Rp4 triliun (perkiraan kasar Bupati)", sumber_angka: "https://www.medcom.id/nasional/daerah/0k8a5y9K-bupati-cianjur-sebut-kerugian-akibat-gempa-rp4-triliun (riset C §3.3)", label_angka: "terverifikasi (sekunder: media)" },
-  { kejadian: "Gempa Lombok Jul-Agu 2018", d: D.lombokSeri, angka_rp_juta: 12.1e6, angka_teks: "kerusakan Rp10,1 T + kerugian Rp2 T (BNPB ke DPR 10 Sep 2018)", sumber_angka: "https://en.tempo.co/amp/921532/lombok-needs-rp8-6tn-for-rehabilitation-bnpb (riset C §3.3)", label_angka: "terverifikasi (sekunder: media)" },
-  { kejadian: "Gempa, tsunami, likuefaksi Sulteng 28 Sep 2018", d: D.sulteng, angka_rp_juta: 13.82e6, angka_teks: "kerugian & kerusakan Rp13,82 T (data sementara Okt 2018)", sumber_angka: "https://bnpb.go.id/berita/loss-and-damage-of-disaster-in-central-sulawesi-reach-1382-trillion-rupiah (riset C §3.3)", label_angka: "resmi (angka sementara)" },
-  { kejadian: "Erupsi Merapi Okt-Nov 2010", d: D.merapi, angka_rp_juta: null, angka_teks: "PDNA/R3P tidak ditemukan di riset", sumber_angka: null, label_angka: null },
+  { kejadian: "Gempa Cianjur 21 Nov 2022 (Kab. Cianjur saja)", d: D.cianjurKab, angka_rp_juta: 4e6, angka_teks: "kerugian ±Rp4 triliun (perkiraan kasar Bupati, Kab. Cianjur)", sumber_angka: "https://www.medcom.id/nasional/daerah/0k8a5y9K-bupati-cianjur-sebut-kerugian-akibat-gempa-rp4-triliun (riset C §3.3)", label_angka: "sekunder (media), belum dibuka ulang", skema: "60/30/15", s: STIM },
+  { kejadian: "Gempa Lombok Jul-Agu 2018", d: D.lombokSeri, angka_rp_juta: 12.1e6, angka_teks: "kerusakan Rp10,1 T + kerugian Rp2 T (BNPB ke DPR 10 Sep 2018)", sumber_angka: "https://en.tempo.co/amp/921532/lombok-needs-rp8-6tn-for-rehabilitation-bnpb (riset C §3.3)", label_angka: "sekunder (media), belum dibuka ulang", skema: "50/25/10", s: STIM_LAMA },
+  { kejadian: "Gempa, tsunami, likuefaksi Sulteng 28 Sep 2018", d: D.sulteng, angka_rp_juta: 13.82e6, angka_teks: "kerugian Rp1,99 T + kerusakan Rp11,83 T = Rp13,82 T (data sementara 20 Okt 2018)", sumber_angka: "https://bnpb.go.id/berita/loss-and-damage-of-disaster-in-central-sulawesi-reach-1382-trillion-rupiah (riset C §3.3; dibuka pemeriksa 23 Okt 2026)", label_angka: "resmi (angka sementara)", skema: "50/25/10 (skema 2018-2021 menurut param_banjir.json; Sulteng tidak disebut khusus)", s: STIM_LAMA },
+  { kejadian: "Erupsi Merapi Okt-Nov 2010", d: D.merapi, angka_rp_juta: null, angka_teks: "PDNA/R3P tidak ditemukan di riset", sumber_angka: null, label_angka: null, skema: null, s: null },
 ];
-const KP = ["kejadian", "meninggal_dibi", "rb_dibi", "rs_dibi", "rr_dibi", "stimulan_60_30_15_rp_juta", "stimulan_skema_lama_50_25_10_rp_juta", "angka_kerugian_rp_juta", "angka_teks", "sumber_angka", "label_angka", "rasio_angka_per_stimulan", "pengungsi_dibi", "pengungsi_dari_rumah_rb_rs_x3_9"];
+const KP = ["kejadian", "meninggal_dibi", "rb_dibi", "rs_dibi", "rr_dibi", "stimulan_60_30_15_rp_juta", "stimulan_skema_lama_50_25_10_rp_juta", "angka_kerugian_rp_juta", "angka_teks", "sumber_angka", "label_angka",
+  "rasio_angka_per_stimulan", "skema_saat_kejadian", "rasio_angka_per_stimulan_skema_saat_kejadian", "pengungsi_dibi", "pengungsi_dari_rumah_rb_rs_x3_9"];
 csv("pembanding_pdna.csv", KP, PDNA.map(x => { const st = rupiah(x.d.rb, x.d.rs, x.d.rr); return { kejadian: x.kejadian, meninggal_dibi: x.d.meninggal, rb_dibi: x.d.rb, rs_dibi: x.d.rs, rr_dibi: x.d.rr, stimulan_60_30_15_rp_juta: Math.round(st),
   stimulan_skema_lama_50_25_10_rp_juta: Math.round(rupiah(x.d.rb, x.d.rs, x.d.rr, STIM_LAMA)), angka_kerugian_rp_juta: x.angka_rp_juta, angka_teks: x.angka_teks, sumber_angka: x.sumber_angka, label_angka: x.label_angka,
-  rasio_angka_per_stimulan: x.angka_rp_juta ? bulat(x.angka_rp_juta / st, 2) : null, pengungsi_dibi: x.d.mengungsi, pengungsi_dari_rumah_rb_rs_x3_9: Math.round((x.d.rb + x.d.rs) * JIWA_PER_RUMAH) }; }));
+  rasio_angka_per_stimulan: x.angka_rp_juta ? bulat(x.angka_rp_juta / st, 2) : null, skema_saat_kejadian: x.skema,
+  rasio_angka_per_stimulan_skema_saat_kejadian: x.angka_rp_juta ? bulat(x.angka_rp_juta / rupiah(x.d.rb, x.d.rs, x.d.rr, x.s), 2) : null,
+  pengungsi_dibi: x.d.mengungsi, pengungsi_dari_rumah_rb_rs_x3_9: Math.round((x.d.rb + x.d.rs) * JIWA_PER_RUMAH) }; }));
 
-/* --- ringkasan nasional per skenario (tabel kerusakan pola Nankai) */
+/* --- ringkasan nasional per skenario (tabel kerusakan pola Nankai). Pita rendah/tinggi nasional = taksiran atas semua kecamatan sekaligus;
+   pita per kab di gempa_kab.csv TIDAK aditif (min/maks diambil per kab), hanya kolom tengah yang menjumlah ke nasional. */
 const nas = (s, f) => jumlah(barisG.filter(b => b.skenario === s.src.id), f), nasT = (s, f) => jumlah(barisT.filter(b => b.skenario === s.src.id), f);
-const KR = ["skenario", "butir", "rendah", "tengah", "tinggi", "satuan", "label", "catatan"];
+const KR = ["skenario", "status_magnitudo", "butir", "rendah", "tengah", "tinggi", "satuan", "label", "catatan"];
 const barisR = [];
-const R = (skenario, butir, v, satuan, label, catatan) => barisR.push({ skenario, butir, rendah: v[0], tengah: v[1], tinggi: v[2], satuan, label, catatan });
-for (const s of SKEN) { const id = s.src.id, q = s.g.nas, e7 = s.g.g.e7, ka = analogKorban(e7), ts = RASIO_TS.map(r => nasT(s, b => b.jiwa_pesisir_rendah_lt30) * r);
-  R(id, "magnitudo / kedalaman / strike", [null, `M${s.sk.m} / ${s.sk.dalam} km / ${bulat(s.sk.strike, 1)}°`, null], "-", "asumsi-kebijakan", "public/gempa/sim.js DIKENAL; jejak PuSGeN 2017 menurut komentar sim.js, magnitudo tidak bersumber per baris (audit 21 Okt)");
+const R = (skenario, butir, v, satuan, label, catatan) => barisR.push({ skenario, status_magnitudo: MAG_PENDEK[skenario] ?? null, butir, rendah: v[0], tengah: v[1], tinggi: v[2], satuan, label, catatan });
+const ORDE = "estimasi-model; ORDE BESARAN, BELUM LAYAK DIKUTIP";
+const PANG = ANALOG_TS.find(a => a.id === "pangandaran-2006");
+const TS_KET = `jiwa pesisir rendah tiba <= 30 menit x rasio Mentawai 2010 dicocokkan per kab (${pct(RASIO_TS, 2)}); satu analog, tanpa pita; BUKAN genangan (layer InaRISK Inun_* belum dipakai). ` +
+  `Pembanding: Pangandaran 2006 gagal uji pencocokan wilayah, rasio cocoknya ${pct(PANG.rasio, 3)} (${Math.round(RASIO_TS / PANG.rasio)} kali lebih kecil)`;
+for (const s of SKEN) { const id = s.src.id, q = s.g.nas, e7 = s.g.g.e7, ka = analogKorban(e7), p30 = nasT(s, b => b.jiwa_pesisir_rendah_lt30), ts = p30 * RASIO_TS, peng = (q.rb[1] + q.rs[1]) * JIWA_PER_RUMAH;
+  R(id, "magnitudo / kedalaman / strike", [null, `M${s.sk.m} / ${s.sk.dalam} km / ${bulat(s.sk.strike, 1)}°`, null], "-", id.endsWith("-mmaks") ? "literatur sekunder (Mmaks Peta Gempa 2024, riset A §6)" : "asumsi-model (tanpa sumber per baris)",
+    `${STATUS_MAG[id]}; geometri public/gempa/sim.js DIKENAL (jejak PuSGeN 2017 menurut komentar sim.js)`);
   R(id, "jiwa terpapar MMI >= VI", [null, Math.round(nas(s, b => b.jiwa_mmi_6 + b.jiwa_mmi_7 + b.jiwa_mmi_8 + b.jiwa_mmi_9plus)), null], "jiwa", "estimasi-model", "guncangan.js belum diuji (model_guncangan.json kinerja_uji belum_diuji)");
   R(id, "jiwa terpapar MMI >= VII", tri(e7), "jiwa", "estimasi-model", "rendah/tinggi = guncangan satu tau antar-kejadian lebih lemah/kuat");
   R(id, "luas MMI >= VI", [null, Math.round(nas(s, b => b.luas_mmi6plus_km2)), null], "km2", "estimasi-model", "kisi 0,02 derajat, daratan dalam poligon kab");
-  R(id, "rumah rusak berat", tri(q.rb), "unit", "estimasi-model", "rumah = jiwa/3,9 (bukan data bangunan); pita kerusakan.js");
+  R(id, "rumah rusak berat", tri(q.rb), "unit", "estimasi-model", "rumah = jiwa/3,9 (bukan data bangunan); pita kerusakan.js; pita per kab tidak aditif");
   R(id, "rumah rusak sedang", [Math.round(Math.min(...q.rs)), Math.round(q.rs[1]), Math.round(Math.max(...q.rs))], "unit", "estimasi-model", "");
   R(id, "rumah rusak ringan", [Math.round(Math.min(...q.rr)), Math.round(q.rr[1]), Math.round(Math.max(...q.rr))], "unit", "estimasi-model", "");
   R(id, "korban jiwa guncangan, pita mesin", tri(q.jiwa), "jiwa", "estimasi-model", `kerusakan.js; galat LOO x${KAL.faktor_loo} (kalibrasi 8 gempa kerak, korban ditulis dari ingatan); okupansi 0,85`);
-  R(id, "korban jiwa guncangan, rasio analog", tri(ka), "jiwa", "estimasi-model", "jiwa MMI>=VII x rasio analog [min x pita rendah, median x tengah, maks x pita tinggi]; analog.csv");
-  R(id, "korban jiwa tsunami (evakuasi segera 20%)", tri(ts), "jiwa", "estimasi-model", "proksi jiwa pesisir rendah tiba <= 30 menit x rasio Mentawai 2010/Pangandaran 2006; BUKAN genangan");
-  for (const e of [0.5, 0.7]) R(id, `korban jiwa tsunami (evakuasi segera ${Math.round(e * 100)}%)`, tri(ts.map(v => v * fEvak(e))), "jiwa", "asumsi-kebijakan", `skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x${bulat(fEvak(e), 3)}`);
-  R(id, "pengungsi (penghuni RB + RS)", [null, Math.round((q.rb[1] + q.rs[1]) * JIWA_PER_RUMAH), null], "jiwa", "asumsi-kebijakan", "(RB+RS) x 3,9; cek Cianjur 2022: lihat pembanding_pdna.csv");
-  R(id, "jiwa evakuasi tsunami (pesisir rendah, tiba <= 30 menit)", [null, Math.round(nasT(s, b => b.jiwa_pesisir_rendah_lt30)), null], "jiwa", "estimasi-model", "batas atas, seluruh penduduk kecamatan");
+  R(id, "korban jiwa guncangan, rasio analog", tri(ka), "jiwa", "estimasi-model",
+    "jiwa MMI>=VII x rasio analog dinormalkan ke okupansi 0,85; rendah/tinggi = satu sumber ketidakpastian per ujung (rasio min/maks x paparan tengah, atau median x pita paparan; yang lebih ekstrem); analog gempa kerak/slab, belum ada analog megathrust; analog.csv");
+  R(id, "korban jiwa tsunami (evakuasi segera 20%)", [null, Math.round(ts), null], "jiwa", ORDE, TS_KET);
+  for (const e of [0.5, 0.7]) R(id, `korban jiwa tsunami (evakuasi segera ${Math.round(e * 100)}%)`, [null, Math.round(ts * fEvak(e)), null], "jiwa", ORDE + " + asumsi-kebijakan", `skala Nankai 2025 (215.000 pada 20%, 94.000 pada 70%; linear) = x${bulat(fEvak(e), 3)}`);
+  R(id, "pengungsi (penghuni RB + RS)", [null, Math.round(peng), null], "jiwa", "asumsi-kebijakan", "(RB+RS) x 3,9; cek Cianjur 2022: lihat pembanding_pdna.csv");
+  R(id, "jiwa evakuasi tsunami (pesisir rendah, tiba <= 30 menit)", [null, Math.round(p30), null], "jiwa", "estimasi-model", "batas atas, seluruh penduduk kecamatan; kab tanpa sel pantai tercapai = 0; pantai selatan Jabar/Banyuwangi luput (README §6.4)");
   R(id, "panjang pantai tiba < 30 menit", [Math.round(nasT(s, b => b.panjang_pantai_lt30_km)), null, Math.round(nasT(s, b => b.panjang_pantai_lt30_sisi_aman_km))], "km", "estimasi-model", "rendah = waktu tampilan (x0,85), tinggi = sisi aman (x0,61); proksi jumlah sel pantai ETOPO 3' x 5,6 km");
   R(id, "kerugian materiil batas bawah (stimulan rumah)", [Math.round(rupiah(q.rb[0], Math.min(...q.rs), Math.min(...q.rr))), Math.round(rupiah(q.rb[1], q.rs[1], q.rr[1])), Math.round(rupiah(q.rb[2], Math.max(...q.rs), Math.max(...q.rr)))], "juta Rp", "asumsi-kebijakan", "Rp60/30/15 jt per rumah RB/RS/RR (param_banjir.json); bukan kerugian ekonomi penuh");
   R(id, "kerugian materiil batas bawah, skema lama 50/25/10", [null, Math.round(rupiah(q.rb[1], q.rs[1], q.rr[1], STIM_LAMA)), null], "juta Rp", "asumsi-kebijakan", "skema Lombok 2018/Sulbar 2021");
   R(id, "tahun hidup hilang (YLL), guncangan analog", [Math.round(ka[0] * SISA_HIDUP[0]), Math.round(ka[1] * SISA_HIDUP[1]), Math.round(ka[2] * SISA_HIDUP[2])], "tahun", "asumsi-kebijakan", "korban x sisa harapan hidup 25/35/45 tahun");
-  R(id, "hari-mengungsi (guncangan)", HARI.map(h => Math.round((q.rb[1] + q.rs[1]) * JIWA_PER_RUMAH * h)), "jiwa-hari", "asumsi-kebijakan", "pengungsi x 7 / 30 / 90 hari");
+  for (const h of HARI) R(id, `hari-mengungsi guncangan (${h} hari)`, [null, Math.round(peng * h), null], "jiwa-hari", "asumsi-kebijakan", `pengungsi x ${h} hari (durasi asumsi, bukan pita)`);
   R(id, "tsunami: kab/kota tercapai <= 180 menit", [null, nasT(s, b => b.tercapai_180_menit), null], "kab/kota", "estimasi-model", "");
-  R(id, "tsunami: tinggi indikatif maksimum di pantai", [null, Math.max(...barisT.filter(b => b.skenario === id && b.tercapai_180_menit).map(b => b.tinggi_indikatif_hi_m)), null], "m", "estimasi-model", "Abe 1995 x2 (batas atas rentang), bukan run-up");
+  const tr = barisT.filter(b => b.skenario === id && b.tercapai_180_menit), hMaks = Math.max(...tr.map(b => b.tinggi_indikatif_hi_m)), di = tr.filter(b => b.tinggi_indikatif_hi_m === hMaks).map(b => b.kab);
+  R(id, "tsunami: tinggi indikatif maksimum di pantai", [Math.max(...tr.map(b => b.tinggi_indikatif_lo_m)), null, hMaks], "m", "estimasi-model",
+    `Abe 1995: rendah = maks tinggi_lo, tinggi = maks tinggi_hi (x2, batas atas), dicapai di ${di.length} kab (${di.slice(0, 4).join(", ")}${di.length > 4 ? ", ..." : ""}); bukan run-up, JANGAN DIKUTIP`);
 }
 R("merapi2010", "jiwa di area sapuan awan panas + lahar tanpa evakuasi (H/L 0,15)", [null, Math.round(M15.terpapar), null], "jiwa", "estimasi-model", `awan panas ${bulat(M15.r.pdc_km, 1)} km, lahar ${bulat(M15.r.lahar_km, 1)} km; H/L 0,18: ${Math.round(M18.terpapar)} jiwa`);
 R("merapi2010", "luas sapuan", [null, Math.round(M15.luas_ha), null], "ha", "estimasi-model", "gabungan sel DEM awan panas + lahar");
-R("merapi2010", "korban jiwa (pola evakuasi 2010)", [KORBAN_MER[0], null, KORBAN_MER[1]], "jiwa", "resmi", "kejadian 2010: 347 (sekunder) s.d. 386 (DIBI); dibagi ke kab menurut porsi sapuan");
+R("merapi2010", "korban jiwa (pola evakuasi 2010)", [KORBAN_MER[0], null, KORBAN_MER[1]], "jiwa", "resmi (DIBI 386) / sekunder (347); dipakai sebagai asumsi skenario", "angka kejadian 2010 dipakai sebagai perkiraan skenario setara; dibagi ke kab menurut porsi sapuan");
 R("merapi2010", "pengungsi (radius 20 km seperti 2010)", [null, Math.round(jumlah(barisM, b => b.pengungsi_radius20km)), null], "jiwa", "estimasi-model", `DIBI 2010 mengungsi ${D.merapi.mengungsi}`);
-for (const [n, v] of [["berat", D.merapi.rb], ["sedang", D.merapi.rs], ["ringan", D.merapi.rr]]) R("merapi2010", `rumah rusak ${n} (analog 2010)`, [null, v, null], "unit", "resmi", "DIBI 26 Okt 2010; batas atas model = rumah di sapuan (merapi2010_kab.csv)");
+for (const [n, v] of [["berat", D.merapi.rb], ["sedang", D.merapi.rs], ["ringan", D.merapi.rr]]) R("merapi2010", `rumah rusak ${n} (analog 2010)`, [null, v, null], "unit", "resmi (DIBI 2010); dipakai sebagai asumsi skenario", "DIBI 26 Okt 2010; batas atas model = rumah di sapuan (merapi2010_kab.csv)");
 R("merapi2010", "kerugian materiil batas bawah (stimulan)", [null, Math.round(rupiah(D.merapi.rb, D.merapi.rs, D.merapi.rr)), null], "juta Rp", "asumsi-kebijakan", "rumah DIBI 2010 x Rp60/30/15 jt");
 R("merapi2010", "tahun hidup hilang (YLL)", [Math.round(KORBAN_MER[0] * SISA_HIDUP[0]), Math.round((KORBAN_MER[0] + KORBAN_MER[1]) / 2 * SISA_HIDUP[1]), Math.round(KORBAN_MER[1] * SISA_HIDUP[2])], "tahun", "asumsi-kebijakan", "korban x 25/35/45 tahun");
-for (const z of ZONA) R("krb-30-gunung", `jiwa KRB ${z} (jumlah 30 gunung, piksel <= 20 km)`, [null, Math.round(jumlah(KRB, x => jumlah([...x.per.values()], o => o[z]))), null], "jiwa", "resmi", "zona KRB PVMBG 2018 x WorldPop 2026; = paparan.json");
+for (const z of ZONA) R("krb-30-gunung", `jiwa KRB ${z} (jumlah 30 gunung, piksel <= 20 km)`, [null, jumlah(PAP.gunung, g => g.zona[z].penduduk), null], "jiwa", "resmi (zona) x terverifikasi (penduduk)",
+  "zona KRB PVMBG 2018 x WorldPop 2026; = jumlah paparan.json; jumlah gunungapi_krb_kab.csv selisih <= 3 jiwa (pembulatan per baris)");
 R("krb-30-gunung", "korban jiwa erupsi besar pola historis", [Math.round(jumlah(barisK, b => b.korban_analog_rendah)), null, Math.round(jumlah(barisK, b => b.korban_analog_tinggi))], "jiwa", "estimasi-model", "jiwa KRB III x rasio Semeru 2021 / Merapi 2010; bila SEMUA gunung erupsi besar (bukan satu kejadian)");
 R("krb-30-gunung", "rumah rusak berat pola historis", [Math.round(jumlah(barisK, b => b.rb_analog_rendah)), null, Math.round(jumlah(barisK, b => b.rb_analog_tinggi))], "unit", "estimasi-model", "jiwa KRB III x RB/jiwa KRB III Merapi 2010 & Semeru 2021");
-R("krb-30-gunung", "pengungsi pola historis", [Math.round(jumlah(barisK, b => b.pengungsi_analog_rendah)), null, Math.round(jumlah(barisK, b => b.pengungsi_analog_tinggi))], "jiwa", "estimasi-model", "jiwa KRB III x mengungsi/jiwa KRB III (Semeru 1,1x; Merapi 13x)");
+R("krb-30-gunung", "pengungsi pola historis (batas atas)", [Math.round(jumlah(barisK, b => b.pengungsi_analog_rendah)), null, Math.round(jumlah(barisK, b => b.pengungsi_analog_tinggi))], "jiwa", "estimasi-model (batas atas)",
+  `jiwa KRB III x mengungsi/jiwa KRB III (Semeru ${bulat(rU[0], 2)}x; Merapi ${bulat(rU[1], 2)}x), dibatasi penduduk <= 20 km per gunung (${KRB.filter(x => x.fU[1] < 1).length} gunung terpotong pada pita tinggi)`);
 csv("ringkasan.csv", KR, barisR);
 
 /* --- kepekaan.csv */
-const KS = ["skenario", "tuas", "nilai_tuas", "korban_rendah", "korban_tengah", "korban_tinggi", "rb_tengah", "faktor_terhadap_dasar", "dasar_angka", "label"];
-const barisS = [];
-for (const s of SKEN) { const id = s.src.id, ts = RASIO_TS.map(r => nasT(s, b => b.jiwa_pesisir_rendah_lt30) * r), ka = analogKorban(s.g.g.e7);
-  for (const e of EVAK) barisS.push({ skenario: id, tuas: "porsi evakuasi segera (tsunami)", nilai_tuas: `${Math.round(e * 100)}%`, korban_rendah: bulat(ts[0] * fEvak(e), 1), korban_tengah: bulat(ts[1] * fEvak(e), 1), korban_tinggi: bulat(ts[2] * fEvak(e), 1), rb_tengah: null,
-    faktor_terhadap_dasar: bulat(fEvak(e), 4), dasar_angka: "Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%", label: "asumsi-kebijakan" });
+const KS = ["skenario", "status_magnitudo", "tuas", "nilai_tuas", "korban_rendah", "korban_tengah", "korban_tinggi", "rb_tengah", "faktor_terhadap_dasar", "dasar_angka", "label"];
+const barisS = [], MALAM = K.okupansi(2);
+for (const s of SKEN) { const id = s.src.id, ts = nasT(s, b => b.jiwa_pesisir_rendah_lt30) * RASIO_TS, ka = analogKorban(s.g.g.e7), st = MAG_PENDEK[id];
+  for (const e of EVAK) barisS.push({ skenario: id, status_magnitudo: st, tuas: "porsi evakuasi segera (tsunami)", nilai_tuas: `${Math.round(e * 100)}%`, korban_rendah: null, korban_tengah: bulat(ts * fEvak(e), 1), korban_tinggi: null, rb_tengah: null,
+    faktor_terhadap_dasar: bulat(fEvak(e), 4), dasar_angka: "Nankai 2025: 215.000 (20%) -> 94.000 (70%), linear di antaranya; rasio analog dianggap setara 20%. Korban tsunami = orde besaran, belum layak dikutip (satu analog, tanpa pita)", label: "asumsi-kebijakan (faktor); orde besaran (korban)" });
   const d0 = s.bangunan[0];
   for (const v of s.bangunan) { const f = d0.jiwa > 0 ? v.jiwa / d0.jiwa : 1;
-    barisS.push({ skenario: id, tuas: "kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu)", nilai_tuas: v.n, korban_rendah: bulat(ka[0] * f, 1), korban_tengah: bulat(ka[1] * f, 1), korban_tinggi: bulat(ka[2] * f, 1), rb_tengah: Math.round(v.rb),
+    barisS.push({ skenario: id, status_magnitudo: st, tuas: "kepatuhan bangunan (porsi tembok tanpa tulangan / beton-terkekang / kayu)", nilai_tuas: v.n, korban_rendah: bulat(ka[0] * f, 1), korban_tengah: bulat(ka[1] * f, 1), korban_tinggi: bulat(ka[2] * f, 1), rb_tengah: Math.round(v.rb),
       faktor_terhadap_dasar: bulat(f, 4), dasar_angka: `korban mesin tengah ${bulat(v.jiwa, 1)} vs dasar ${bulat(d0.jiwa, 1)}; faktor diterapkan ke korban analog guncangan`, label: "estimasi-model" }); }
-  barisS.push({ skenario: id, tuas: "jam kejadian (okupansi rumah)", nilai_tuas: "malam (0,99) vs rata-rata (0,85)", korban_rendah: bulat(ka[0] * 0.99 / 0.85, 1), korban_tengah: bulat(ka[1] * 0.99 / 0.85, 1), korban_tinggi: bulat(ka[2] * 0.99 / 0.85, 1), rb_tengah: null,
-    faktor_terhadap_dasar: bulat(0.99 / 0.85, 4), dasar_angka: "okupansi HAZUS di kerusakan.js; korban mesin linear terhadap okupansi", label: "asumsi-kebijakan" }); }
+  barisS.push({ skenario: id, status_magnitudo: st, tuas: "jam kejadian (okupansi rumah)", nilai_tuas: `malam (${koma(MALAM)}) vs rata-rata (${koma(OKUP0)})`, korban_rendah: bulat(ka[0] * MALAM / OKUP0, 1), korban_tengah: bulat(ka[1] * MALAM / OKUP0, 1), korban_tinggi: bulat(ka[2] * MALAM / OKUP0, 1), rb_tengah: null,
+    faktor_terhadap_dasar: bulat(MALAM / OKUP0, 4), dasar_angka: `okupansi HAZUS di kerusakan.js; rasio analog SUDAH dinormalkan ke okupansi ${koma(OKUP0)} dari jam kejadian aslinya (analog.csv catatan_rasio), lalu faktor malam diterapkan`, label: "asumsi-kebijakan" }); }
 csv("kepekaan.csv", KS, barisS);
 
 /* --- pembanding_resmi.csv */
@@ -429,23 +502,23 @@ const ksT = baca(MENTAH + "ks_tsunami.json").summary, ksG = baca(MENTAH + "ks_ge
 const KB = ["butir", "angka_resmi_atau_literatur", "sumber", "label", "angka_platform", "arti_angka_platform", "dipakai_sebagai_utama"];
 const krbJml = jumlah(PAP.gunung, g => g.zona.III.penduduk + g.zona.II.penduduk + g.zona.I.penduduk);
 const PR = [
-  { butir: "Penduduk terpapar bahaya tsunami (nasional)", angka_resmi_atau_literatur: `${ksT.terpapar} (jiwa_terpapar ${ksT.jiwa_terpapar})`, sumber: "KRB 2022-2026 via API-KRB kajian-summary/tsunami (riset/mentah/ks_tsunami.json; RENAS 2025-2029 Tabel 2.x, riset A §1.4)", label: "resmi",
+  { butir: "Penduduk terpapar bahaya tsunami (nasional)", angka_resmi_atau_literatur: `${ksT.terpapar} (field jiwa_terpapar ${ksT.jiwa_terpapar}: arti field belum dikonfirmasi)`, sumber: "KRB 2022-2026 via API-KRB kajian-summary/tsunami (riset/mentah/ks_tsunami.json); 'terpapar' = kolom penduduk terpapar RENAS 2025-2029 Tabel 2.x (riset A §1.4)", label: "resmi",
     angka_platform: SKEN.map(s => `${s.src.id} ${Math.round(nasT(s, b => b.jiwa_pesisir_rendah_lt30))}`).join("; "), arti_angka_platform: "jiwa kecamatan pesisir rendah tiba <= 30 menit per skenario (proksi, bukan genangan)", dipakai_sebagai_utama: "resmi" },
-  { butir: "Penduduk terpapar bahaya gempa (nasional)", angka_resmi_atau_literatur: String(ksG.terpapar), sumber: "KRB 2022-2026 (ks_gempabumi.json)", label: "resmi",
+  { butir: "Penduduk terpapar bahaya gempa (nasional)", angka_resmi_atau_literatur: `${ksG.terpapar} (melampaui wilayah_penduduk ${ksG.wilayah_penduduk} di record yang sama: praktis seluruh penduduk, basis berbeda; field jiwa_terpapar ${ksG.jiwa_terpapar}: arti field belum dikonfirmasi)`, sumber: "KRB 2022-2026 (ks_gempabumi.json); kolom penduduk terpapar RENAS Tabel 2.x (riset A §1.4)", label: "resmi",
     angka_platform: SKEN.map(s => `${s.src.id} MMI>=VI ${Math.round(nas(s, b => b.jiwa_mmi_6 + b.jiwa_mmi_7 + b.jiwa_mmi_8 + b.jiwa_mmi_9plus))}`).join("; "), arti_angka_platform: "per skenario tunggal, bukan bahaya probabilistik", dipakai_sebagai_utama: "resmi" },
-  { butir: "Penduduk terpapar bahaya letusan gunung api (nasional)", angka_resmi_atau_literatur: String(ksV.terpapar), sumber: "KRB 2022-2026 (ks_letusan-gunungapi.json)", label: "resmi",
+  { butir: "Penduduk terpapar bahaya letusan gunung api (nasional)", angka_resmi_atau_literatur: `${ksV.terpapar} (field jiwa_terpapar ${ksV.jiwa_terpapar}: arti field belum dikonfirmasi)`, sumber: "KRB 2022-2026 (ks_letusan-gunungapi.json); kolom penduduk terpapar RENAS Tabel 2.x (riset A §1.4)", label: "resmi",
     angka_platform: String(krbJml), arti_angka_platform: "jumlah KRB III+II+I 30 gunung (paparan.json, dalam 20 km)", dipakai_sebagai_utama: "resmi" },
   { butir: "Mmaks megathrust Jawa", angka_resmi_atau_literatur: "9,1 (Peta Gempa 2024); PuSGeN 2017: tabel tidak dibuka", sumber: "tektonesiana.org; katadata; CNBC (riset A §6)", label: "terverifikasi (sekunder)",
-    angka_platform: "8,5", arti_angka_platform: "skenario sim.js; lebih kecil dari Mmaks 2024", dipakai_sebagai_utama: "resmi untuk Mmaks; platform hanya ilustrasi" },
-  { butir: "Mmaks megathrust Mentawai/Enggano", angka_resmi_atau_literatur: "8,9 (Peta Gempa 2024)", sumber: "riset A §6 (sekunder)", label: "terverifikasi (sekunder)", angka_platform: "8,8", arti_angka_platform: "skenario sim.js", dipakai_sebagai_utama: "resmi untuk Mmaks" },
+    angka_platform: "8,5 (kepekaan: 9,1)", arti_angka_platform: "skenario sim.js lebih kecil dari Mmaks 2024; skenario jawa-mmaks memakai 9,1", dipakai_sebagai_utama: "literatur sekunder; dokumen PuSGeN 2024 belum dibuka" },
+  { butir: "Mmaks megathrust Mentawai/Enggano", angka_resmi_atau_literatur: "8,9 (Peta Gempa 2024)", sumber: "riset A §6 (sekunder)", label: "terverifikasi (sekunder)", angka_platform: "8,8 (kepekaan: 8,9)", arti_angka_platform: "skenario sim.js; skenario mentawai-mmaks memakai 8,9", dipakai_sebagai_utama: "literatur sekunder; dokumen PuSGeN 2024 belum dibuka" },
   { butir: "Mmaks megathrust selatan Bali-Sumba", angka_resmi_atau_literatur: "tidak ditemukan di riset", sumber: "-", label: "-", angka_platform: "8,3", arti_angka_platform: "skenario sim.js, tanpa rujukan per baris", dipakai_sebagai_utama: "platform (ilustrasi), tandai belum bersumber" },
   { butir: "Jumlah segmen megathrust", angka_resmi_atau_literatur: "13 (RPJMN/Renstra, PuSGeN 2017) / 14 (Peta Gempa 2024) / 15 (GeoServer InaRISK) / 16 (sumber lain 2017)", sumber: "riset A §6, §8", label: "resmi/sekunder, bertentangan", angka_platform: "3 skenario", arti_angka_platform: "hanya tiga segmen dijalankan", dipakai_sebagai_utama: "resmi" },
   { butir: "Tinggi tsunami terburuk selatan Jawa Barat", angka_resmi_atau_literatur: "~20 m (dua segmen pecah bersamaan)", sumber: "Widiyantoro dkk. 2020, Sci. Rep. 10:15274 (ITB/BMKG; abstrak, riset A §6)", label: "terverifikasi (sekunder: abstrak)",
-    angka_platform: String(maxProv("jawa", ["32", "36"])), arti_angka_platform: "tinggi indikatif atas (Abe 1995 x2) di pantai Jabar/Banten, skenario jawa M8,5", dipakai_sebagai_utama: "literatur" },
+    angka_platform: `jawa ${maxProv("jawa", ["32", "36"])}; jawa-mmaks ${maxProv("jawa-mmaks", ["32", "36"])}`, arti_angka_platform: "tinggi indikatif atas (Abe 1995 x2) di pantai Jabar/Banten, skenario jawa M8,5 dan M9,1", dipakai_sebagai_utama: "literatur" },
   { butir: "Tinggi tsunami terburuk selatan Jawa Timur", angka_resmi_atau_literatur: "~12 m; rata-rata maksimum 4,5 m sepanjang pantai selatan Jawa", sumber: "Widiyantoro dkk. 2020 (abstrak)", label: "terverifikasi (sekunder: abstrak)",
-    angka_platform: String(maxProv("jawa", ["35"])), arti_angka_platform: "tinggi indikatif atas di pantai Jatim, skenario jawa", dipakai_sebagai_utama: "literatur" },
+    angka_platform: `jawa ${maxProv("jawa", ["35"])}; jawa-mmaks ${maxProv("jawa-mmaks", ["35"])}`, arti_angka_platform: "tinggi indikatif atas di pantai Jatim, skenario jawa M8,5 dan M9,1", dipakai_sebagai_utama: "literatur" },
   { butir: "Tinggi tsunami Sumatra paling selatan / Ujung Kulon", angka_resmi_atau_literatur: "hingga 34 m", sumber: "Supendi dkk. 2022, Nat. Hazards (riset A §6)", label: "terverifikasi (sekunder)",
-    angka_platform: String(Math.max(maxProv("jawa", ["18", "36"]), maxProv("mentawai", ["18", "36"]))), arti_angka_platform: "tinggi indikatif atas Lampung/Banten, skenario jawa & mentawai", dipakai_sebagai_utama: "literatur" },
+    angka_platform: `jawa/mentawai ${Math.max(maxProv("jawa", ["18", "36"]), maxProv("mentawai", ["18", "36"]))}; varian Mmaks ${Math.max(maxProv("jawa-mmaks", ["18", "36"]), maxProv("mentawai-mmaks", ["18", "36"]))}`, arti_angka_platform: "tinggi indikatif atas Lampung/Banten, skenario jawa & mentawai dan varian Mmaks", dipakai_sebagai_utama: "literatur" },
   { butir: "Genangan tsunami skenario", angka_resmi_atau_literatur: "layer Inun_7_8_Mw ... Inun_9_0_Mw dan INA_Megathrust di GeoServer InaRISK", sumber: "docs/multi-bencana/SUMBER-BNPB.md (riset A §6), cakupan belum dicek", label: "resmi (keberadaan layer)", angka_platform: "-", arti_angka_platform: "platform TIDAK menghitung genangan", dipakai_sebagai_utama: "resmi" },
   { butir: "Korban jiwa Merapi 2010", angka_resmi_atau_literatur: `${D.merapi.meninggal} (DIBI) / 347 / 354`, sumber: "DIBI; riset A §4.4", label: "resmi", angka_platform: String(Math.round(M15.terpapar)), arti_angka_platform: "jiwa di sapuan model tanpa evakuasi (bukan korban)", dipakai_sebagai_utama: "resmi" },
 ];
@@ -458,7 +531,7 @@ for (const b of barisG) if (b.mmi_maks != null) isi(b.kode, ["gempa", b.skenario
 for (const b of barisT) if (b.tercapai_180_menit) isi(b.kode, ["tsunami", b.skenario], { tiba_menit: b.tiba_menit, tiba_menit_sisi_aman: b.tiba_menit_sisi_aman, tinggi_hi_m: b.tinggi_indikatif_hi_m, jiwa_pesisir_rendah_lt30: b.jiwa_pesisir_rendah_lt30 });
 for (const b of barisM) isi(b.kode, ["merapi2010"], { jiwa_sapuan: b.jiwa_sapuan_tanpa_evakuasi, pengungsi_radius20km: b.pengungsi_radius20km, luas_sapuan_ha: b.luas_sapuan_ha });
 for (const b of barisK) { const o = (peta[b.kode]?.krb) || { jiwa_krb3: 0, jiwa_krb2: 0, jiwa_krb1: 0, gunung: [] }; o.jiwa_krb3 += b.jiwa_krb3; o.jiwa_krb2 += b.jiwa_krb2; o.jiwa_krb1 += b.jiwa_krb1; if (!o.gunung.includes(b.gunung_id)) o.gunung.push(b.gunung_id); isi(b.kode, ["krb"], o); }
-json("peta_kab.json", { dibuat: new Date().toISOString().slice(0, 10), arti: "per kode kab/kota Kemendagri 4 digit; gabungkan ke public/geo/kabupaten/<prov>.json lewat (prov, kab). Angka sama dengan CSV paket ini.", kab: peta });
+json("peta_kab.json", { dibuat: new Date().toISOString().slice(0, 10), arti: "per kode kab/kota Kemendagri 4 digit; gabungkan ke public/geo/kabupaten/<prov>.json lewat (prov, kab). Angka sama dengan CSV paket ini.", status_magnitudo: STATUS_MAG, kab: peta });
 const fitur = [];
 for (const s of SKEN) { const r = s.sk.r, sr = r.strike * RAD, u = [Math.sin(sr), Math.cos(sr)], v = [Math.cos(sr), -Math.sin(sr)];
   fitur.push({ type: "Feature", properties: { jenis: "bidang patahan", skenario: s.src.id, m: s.sk.m, L_km: bulat(r.L), lebar_km: bulat(r.Wh), slip_m: bulat(r.slip, 1) }, geometry: { type: "Polygon", coordinates: [[[1, 1], [1, -1], [-1, -1], [-1, 1], [1, 1]].map(([a, b]) => {
@@ -468,38 +541,50 @@ json("jejak.geojson", { type: "FeatureCollection", features: fitur });
 
 /* --- skenario.json: definisi, asumsi, analog, kamus kolom, hasil self-check */
 const SUMBER_MESIN = "Pantau Bencana: public/gempa/{guncangan,kerusakan,tsunami}.js; public/gunungapi/{sim_lahar,sim_tanggap}.js";
+/* lubang proksi tsunami: kab yang dicapai < 30 menit (sisi aman) tetapi jiwa pesisir rendah = 0 (pusat kecamatan > 10 m atau pantai dekat < 0,5 m) */
+const LUBANG = Object.fromEntries(SKEN.map(s => [s.src.id, barisT.filter(b => b.skenario === s.src.id && b.tercapai_180_menit && b.tiba_menit_sisi_aman < 30 && b.jiwa_pesisir_rendah_lt30 === 0)
+  .sort((a, b) => a.tiba_menit_sisi_aman - b.tiba_menit_sisi_aman).map(b => `${b.kab} (${b.provinsi}): tiba ${b.tiba_menit_sisi_aman} mnt, tinggi atas ${b.tinggi_indikatif_hi_m} m`)]));
 const kamus = {
+  "status_magnitudo": ["-", "di bawah Mmaks = magnitudo sim.js lebih kecil dari Mmaks Peta Gempa 2024 (sekunder); tanpa sumber = Sumba 8,3 tanpa rujukan dan tanpa Mmaks; Mmaks (sekunder) = varian kepekaan"],
   "jiwa_mmi_*": ["estimasi-model", "public/data/penduduk.json kec (WorldPop R2025A 2026) x MMI guncangan.js (BSSA14/Zhao06 + Worden 2012, Vs30 kemiringan DEM)"],
+  "mmi_maks": ["estimasi-model", "MMI tertinggi di pusat kecamatan kab, 2 desimal (di bawah 6,5 = belum VII, jiwa_mmi7plus 0)"],
   "jiwa_mmi7plus_rendah/tinggi": ["estimasi-model", "PGA digeser satu tau antar-kejadian (kerusakan.js pita)"], "luas_mmi*_km2": ["estimasi-model", "kisi 0,02 derajat, sel di dalam poligon public/geo/kabupaten"],
-  "rumah_dalam_jendela, rb_*, rs_*, rr_*": ["estimasi-model", "rumah = jiwa/3,9 (kerusakan.js JIWA_PER_RUMAH, bukan data bangunan); kurva HAZUS pre-code + kalib 3,0586; pita [rendah,tengah,tinggi]"],
+  "rumah_dalam_jendela, rb_*, rs_*, rr_*": ["estimasi-model", "rumah = jiwa/3,9 (kerusakan.js JIWA_PER_RUMAH, bukan data bangunan); kurva HAZUS pre-code + kalib 3,0586; pita [rendah,tengah,tinggi]; pita per kab tidak aditif"],
   "korban_mesin_*": ["estimasi-model", `kerusakan.js taksir; galat LOO x${KAL.faktor_loo}; audit 21 Okt: tidak layak untuk gempa nyata`],
-  "korban_analog_*": ["estimasi-model", "jiwa MMI>=VII x rasio meninggal/terpapar analog (analog.csv): rendah = min x pita rendah, tengah = median x tengah, tinggi = maks x pita tinggi"],
+  "korban_analog_*": ["estimasi-model", "jiwa MMI>=VII x rasio meninggal/terpapar analog dinormalkan ke okupansi 0,85 (analog.csv); rendah = min(rasio min x paparan tengah, median x pita rendah), tinggi = maks(rasio maks x paparan tengah, median x pita tinggi)"],
   "pengungsi (gempa)": ["asumsi-kebijakan", "(RB+RS tengah) x 3,9"], "hari_mengungsi_*": ["asumsi-kebijakan", "pengungsi x 7/30/90 hari"],
   "kerugian_stimulan_rp_juta_*": ["asumsi-kebijakan", "RB x 60 + RS x 30 + RR x 15 juta (param_banjir.json stimulan_rumah_*, Cianjur 2022 kemenkopmk.go.id/node/3416); batas bawah biaya rehab rumah"],
   "yll_*": ["asumsi-kebijakan", "korban x sisa harapan hidup 25/35/45 tahun"], "sekolah_mmi7plus, faskes_mmi7plus": ["terverifikasi", "sekolah.json (Dapodik/EMIS) dan fasilitas.json (OSM) hanya 9 provinsi; kosong = tidak tercakup"],
   "tiba_menit": ["estimasi-model", "tsunami.js Dijkstra gelombang panjang x0,85 (waktu tampilan)"], "tiba_menit_sisi_aman": ["estimasi-model", "waktu mentah x0,61 (SISI_AMAN, dipakai evakuasi)"],
   "tinggi_indikatif_*": ["estimasi-model", "Abe 1995 + koreksi Green, rentang 0,5-2 Hr; bukan run-up/genangan"], "panjang_pantai_*": ["estimasi-model", "jumlah sel pantai ETOPO 3' x 5,56 km (proksi)"],
-  "jiwa_pesisir_rendah_*": ["estimasi-model", "penduduk kecamatan dengan pusat di sel ETOPO <= 10 m dan pantai terdekat tinggi atas >= 0,5 m (aturan sim.js); batas atas, bukan genangan"],
+  "jiwa_pesisir_rendah_*": ["estimasi-model", "penduduk kecamatan dengan pusat di sel ETOPO <= 10 m dan pantai terdekat tinggi atas >= 0,5 m (aturan sim.js), hanya di kab yang punya sel pantai tercapai; batas atas, bukan genangan; lubang: lubang_proksi_tsunami"],
   "jiwa_tak_sempat_jalan_kaki": ["estimasi-model", "jalan kaki 4 km/jam, jarak lurus x1,3 ke tanah >= 20 m (Tsunami.tempatTinggi) lebih lama dari tiba sisi aman"],
-  "korban_e20/e50/e70_*": ["estimasi-model + asumsi-kebijakan", "jiwa_pesisir_rendah_lt30 x rasio tsunami analog [min, rerata geometrik, maks] x faktor Nankai"],
+  "korban_e20/e50/e70_orde, yll_e20_orde": ["estimasi-model + asumsi-kebijakan; ORDE BESARAN, BELUM LAYAK DIKUTIP", "jiwa_pesisir_rendah_lt30 x rasio tsunami Mentawai 2010 dicocokkan per kab x faktor Nankai; satu analog, tanpa pita"],
   "jiwa_sapuan_*": ["estimasi-model", "sim_lahar.js V 10 jt m3, H/L 0,15 (0,18 pembanding) x WorldPop 1 km bobot luas"], "pengungsi_radius20km": ["asumsi-kebijakan", "penduduk <= 20 km dari puncak (radius 2010)"],
-  "dibi2010_*": ["resmi", "DIBI 26 Okt 2010"], "jiwa_krb*": ["resmi (zona) x terverifikasi (penduduk)", "KRB PVMBG 2018 (paparan_geo.json, poligon diperhalus) x pop/<id>.json, piksel <= 20 km dari puncak (aturan paparan.py)"],
+  "dibi2010_*": ["resmi", "DIBI 26 Okt 2010; baris = kab model GABUNG kab DIBI (Kota Magelang ikut, nilai model 0)"],
+  "jiwa_krb*": ["resmi (zona) x terverifikasi (penduduk)", "data/raw/gunungapi/krb.geojson (poligon utuh) x pop_piksel.json (WorldPop 1 km tak dibulatkan), aturan paparan.py pilih_krb, piksel <= 20 km dari puncak (gunungapi_status.json)"],
   "luas_krb*_ha": ["resmi", "sampel 0,0045 derajat di poligon KRB, tanpa batas 20 km"], "*_analog_* (gunung)": ["estimasi-model", "jiwa KRB III x rasio Semeru 2021 / Merapi 2010 (analog.csv)"],
+  "pengungsi_analog_*, hari_mengungsi_30_* (gunung)": ["estimasi-model (batas atas)", "jiwa KRB III x mengungsi/jiwa KRB III, dibatasi penduduk_radius20km_gunung (pop_piksel.json <= 20 km dari puncak), dibagi ke kab menurut porsi KRB III"],
 };
 json("skenario.json", {
   paket: "skenario-geologi", dibuat: new Date().toISOString().slice(0, 10), skrip: "data/kajian-bnpb/bangun/skenario-geologi.mjs", mesin: SUMBER_MESIN,
-  prinsip: "Angka utama kajian = resmi (KRB 2022-2026, KRB PVMBG, DIBI). Hasil mesin platform = ilustrasi berlabel, selalu rentang. Tidak ada genangan tsunami.",
-  skenario: [...SKEN.map(s => ({ id: s.src.id, nama: s.src.n, jenis: "megathrust (antarmuka)", m: s.sk.m, dalam_km: s.sk.dalam, strike: bulat(s.sk.strike, 2), pusat_bidang: [bulat(s.sk.lat, 4), bulat(s.sk.lon, 4)], titik_palung: s.sk.parit.map(v => bulat(v, 4)),
-      panjang_km: bulat(s.sk.r.L, 1), lebar_proyeksi_km: bulat(s.sk.r.Wh, 1), slip_m: bulat(s.sk.r.slip, 2), jendela_km: bulat(s.g.g.win, 1), sumber_parameter: "public/gempa/sim.js DIKENAL (jejak dari peta PuSGeN 2017/literatur menurut komentar berkas; magnitudo tidak bersumber per baris)", okupansi: 0.85,
+  bingkai: "Skenario ILUSTRATIF platform (magnitudo sim.js di bawah Mmaks), BUKAN skenario terburuk. Kepekaan Mmaks (jawa-mmaks M9,1; mentawai-mmaks M8,9) memakai geometri yang sama; Sumba M8,3 tanpa sumber dan tanpa Mmaks.",
+  prinsip: "Angka utama kajian = resmi (KRB 2022-2026, KRB PVMBG, DIBI). Hasil mesin platform = ilustrasi berlabel, selalu rentang. Korban tsunami = orde besaran, belum layak dikutip. Tidak ada genangan tsunami.",
+  skenario: [...SKEN.map(s => ({ id: s.src.id, nama: s.src.n, jenis: "megathrust (antarmuka)", m: s.sk.m, status_magnitudo: STATUS_MAG[s.src.id], dalam_km: s.sk.dalam, strike: bulat(s.sk.strike, 2), pusat_bidang: [bulat(s.sk.lat, 4), bulat(s.sk.lon, 4)], titik_palung: s.sk.parit.map(v => bulat(v, 4)),
+      panjang_km: bulat(s.sk.r.L, 1), lebar_proyeksi_km: bulat(s.sk.r.Wh, 1), slip_m: bulat(s.sk.r.slip, 2), jendela_km: bulat(s.g.g.win, 1), sumber_parameter: "public/gempa/sim.js DIKENAL (jejak dari peta PuSGeN 2017/literatur menurut komentar berkas; magnitudo tidak bersumber per baris)" + (s.src.id.endsWith("-mmaks") ? "; m diganti Mmaks Peta Gempa 2024 (sekunder, riset A §6)" : ""), okupansi: OKUP0,
       kepatuhan_bangunan: s.bangunan.map(v => ({ varian: v.n, korban_mesin_tengah: bulat(v.jiwa, 1), rb_tengah: Math.round(v.rb) })) })),
     { id: "merapi2010", nama: "Erupsi Merapi setara 2010", V_m3: 1e7, hl: 0.15, hl_pembanding: 0.18, puncak: [MER.lat, MER.lon], awan_panas_km: bulat(M15.r.pdc_km, 1), lahar_km: bulat(M15.r.lahar_km, 1), sumber_parameter: "scripts/gunungapi/cek_merapi2010.mjs" },
-    { id: "krb-30-gunung", nama: "Paparan KRB PVMBG 30 gunung (paparan.json)", catatan: "paparan, bukan skenario erupsi; korban/rumah/pengungsi dari rasio Semeru 2021 dan Merapi 2010 per jiwa KRB III" },
+    { id: "krb-30-gunung", nama: "Paparan KRB PVMBG 30 gunung (paparan.json)", catatan: "paparan, bukan skenario erupsi; korban/rumah/pengungsi dari rasio Semeru 2021 dan Merapi 2010 per jiwa KRB III; pengungsi dibatasi penduduk <= 20 km" },
     { id: "sesar-darat", nama: "Gempa sesar darat dekat kota besar (Mmaks PuSGeN 2017)", dibuat: false, alasan: "Tabel Mmaks PuSGeN 2017 tidak bisa dibuktikan sesi ini: PDF buku (luk.tsipil.ugm.ac.id, 37,6 MB) melebihi batas baca dan tidak diunduh tanpa izin; pencarian hanya menemukan Lembang M6,8 dari siaran pers BMKG tanpa menyebut PuSGeN. sim.js punya Lembang 6,8 / Cimandiri 6,9 / Opak 6,6 tanpa sumber per baris (audit 21 Okt)." }],
-  asumsi: { jiwa_per_rumah: JIWA_PER_RUMAH, stimulan_juta: STIM, stimulan_skema_lama_juta: STIM_LAMA, sisa_harapan_hidup_tahun: SISA_HIDUP, hari_mengungsi: HARI, okupansi_tanpa_jam: 0.85,
+  asumsi: { jiwa_per_rumah: JIWA_PER_RUMAH, stimulan_juta: STIM, stimulan_skema_lama_juta: STIM_LAMA, sisa_harapan_hidup_tahun: SISA_HIDUP, hari_mengungsi: HARI, okupansi_tanpa_jam: OKUP0, okupansi_malam: MALAM,
     nankai: { ...NANKAI, sumber: "https://sj.jst.go.jp/stories/2025/s0519-01p.html (riset C §1.1, sekunder)", faktor: Object.fromEntries(EVAK.map(e => [e, bulat(fEvak(e), 4)])), catatan: "50% = interpolasi linear (asumsi)" },
-    sisa_harapan_hidup_dasar: "Asumsi kebijakan. BPS 2024: UHH laki-laki 70,32 / perempuan 74,21 (ringkasan pencarian bps.go.id, tabel tidak terbuka langsung); umur rata-rata korban tidak tersedia, dipakai sisa 35 tahun (25-45)." },
-  rasio_analog: { guncangan: { min: RASIO_GEMPA[0], median: RASIO_GEMPA[1], maks: RASIO_GEMPA[2] }, tsunami: { min: RASIO_TS[0], rerata_geometrik: RASIO_TS[1], maks: RASIO_TS[2] },
+    sisa_harapan_hidup_dasar: "Asumsi kebijakan 25/35/45 tahun; umur rata-rata korban tidak tersedia. UHH BPS hanya KONTEKS, tidak masuk hitungan: seri lama 2024 70,32 laki-laki / 74,21 perempuan (ringkasan pencarian bps.go.id, dikutip media, tabel belum dibuka); pemeriksa 23 Okt 2026 mencatat rilis IPM 2024 metode baru memakai UHH total 74,15 (belum dibuka)." },
+  rasio_analog: { guncangan: { min: RASIO_GEMPA[0], median: RASIO_GEMPA[1], maks: RASIO_GEMPA[2], catatan: "dinormalkan ke okupansi 0,85 dari jam kejadian (analog.csv catatan_rasio)" },
+    tsunami: { dipakai: RASIO_TS, catatan: "rerata geometrik analog yang lolos uji pencocokan wilayah (>= 80% korban di kab ber-p30 > 0); kini hanya Mentawai 2010. Orde besaran, belum layak dikutip.",
+      analog: ANALOG_TS.map(a => ({ id: a.id, meninggal: a.meninggal, meninggal_di_kab_berpaparan: a.meninggal_cocok, porsi: bulat(a.porsi_cocok, 3), p30_kab_berkorban: a.p30, rasio_cocok: a.rasio, dipakai: a.dipakai, rincian: a.rincian, rasio_lama_lintas_wilayah: a.rasio_lama, p30_semua_kab: Math.round(a.p30_semua) })) },
     gunung_krb3: Object.fromEntries(["korban", "rb", "rs", "rr", "ungsi"].map(k => [k, rgGA(k)])) },
+  lubang_proksi_tsunami: LUBANG,
+  pengungsi_gunung_terpotong_radius20km: Object.fromEntries(KRB.filter(x => x.fU[1] < 1).map(x => [x.g.id, { jiwa_krb3: Math.round(x.j3), penduduk_radius20km: Math.round(x.r20), tanpa_batas_tinggi: Math.round(x.j3 * rU[1]) }])),
   kamus_kolom: Object.fromEntries(Object.entries(kamus).map(([k, [label, sumber]]) => [k, { label, sumber }])),
   krb_selisih_terhadap_paparan_json: Object.fromEntries(KRB.map(x => [x.g.id, x.selisih])),
 });
@@ -511,9 +596,17 @@ assert.equal(new Set(POLI.map(q => q.kode)).size, 514, "tiap kab punya poligon")
 const totPend = jumlah([...PEND_KAB.values()]), totKec = jumlah(Object.values(PEND));
 assert.ok(Math.abs(totPend - totKec) < 1, "penduduk kab = jumlah kecamatan");
 assert.ok(Math.abs(totKec - (PENDF.total - PENDF.di_luar_poligon)) < 10, `penduduk kec ${totKec} vs total-di_luar ${PENDF.total - PENDF.di_luar_poligon}`);
+assert.equal(SKEN.length, 5, "3 skenario sim.js + 2 kepekaan Mmaks");
 for (const s of SKEN) {
-  for (const f of [barisG, barisT]) assert.equal(f.filter(b => b.skenario === s.src.id).length, 514, "514 baris per skenario");
-  assert.equal(s.src.m, { jawa: 8.5, mentawai: 8.8, sumba: 8.3 }[s.src.id], "magnitudo skenario harus sesuai sim.js");
+  for (const [nama, f] of [["gempa_kab", barisG], ["tsunami_kab", barisT]]) { const kd = f.filter(b => b.skenario === s.src.id).map(b => b.kode);
+    assert.equal(new Set(kd).size, kd.length, `${nama} ${s.src.id}: kode kab ganda`); assert.equal(kd.length, 514, `${nama} ${s.src.id}: ${kd.length} baris, harus 514`);
+    assert.ok(kd.every(k => KABK.has(k)), `${nama} ${s.src.id}: kode kab tak dikenal`); }
+  for (const m of [s.g.per, s.t.per]) assert.ok(![...m.keys()].some(k => !k), `${s.src.id}: kunci kab null di agregasi`);
+  /* kolom tengah CSV menjumlah ke nasional (pembulatan per baris); pita rendah/tinggi per kab sengaja tidak aditif (README §2) */
+  const bg = barisG.filter(b => b.skenario === s.src.id);
+  for (const [k, ref, tol] of [["rb_tengah", s.g.nas.rb[1], 514 * 0.5], ["korban_analog_tengah", analogKorban(s.g.g.e7)[1], 514 * 0.05], ["jiwa_mmi7plus_tengah", s.g.g.e7[1], 514 * 0.5]])
+    assert.ok(Math.abs(jumlah(bg, b => b[k]) - ref) <= tol, `${s.src.id}: jumlah CSV ${k} ${jumlah(bg, b => b[k])} != nasional ${ref}`);
+  assert.equal(s.src.m, { jawa: 8.5, mentawai: 8.8, sumba: 8.3, "jawa-mmaks": MMAKS.jawa, "mentawai-mmaks": MMAKS.mentawai }[s.src.id], "magnitudo skenario harus sesuai sim.js / Mmaks");
   const kecTot = jumlah(s.g.g.sebar, c => c.p), kabTot = jumlah([...s.g.per.values()], o => jumlah(o.mmi));
   assert.ok(Math.abs(kecTot - kabTot) < 1e-6 * Math.max(1, kecTot), `${s.src.id}: jiwa per kab != per kec`);
   for (const n of ["rb", "rs", "rr", "jiwa"]) { const a = jumlah([...s.g.per.values()], o => o.k[n][1]), b = s.g.nas[n][1]; assert.ok(Math.abs(a - b) <= 1e-6 * Math.max(1, b), `${s.src.id}: ${n} tengah kab ${a} != nasional ${b}`); }
@@ -521,20 +614,39 @@ for (const s of SKEN) {
   assert.ok(s.t.per.size > 0 && nasT(s, b => b.tercapai_180_menit) > 0, "tsunami mencapai pantai");
   assert.ok(s.bangunan[1].jiwa <= s.bangunan[0].jiwa && s.bangunan[2].jiwa <= s.bangunan[1].jiwa, "kepatuhan naik tidak boleh menambah korban");
 }
-for (const r of [...RASIO_GEMPA, ...RASIO_TS]) assert.ok(Number.isFinite(r) && r > 0, "rasio analog harus positif");
+/* tsunami: kab tanpa sel pantai tercapai tidak boleh punya jiwa pesisir (Banyumas 2006: 68.702 sebelum perbaikan) */
+for (const b of barisT) if (!b.tercapai_180_menit) assert.ok(b.jiwa_pesisir_rendah_180 === 0 && b.jiwa_pesisir_rendah_lt30 === 0, `${b.skenario} ${b.kab}: tercapai=0 tetapi jiwa pesisir rendah ${b.jiwa_pesisir_rendah_180}`);
+for (const r of RASIO_GEMPA) assert.ok(Number.isFinite(r) && r > 0, "rasio analog guncangan harus positif");
+for (const a of ANALOG_GEMPA) assert.ok(Math.abs(a.rasio - a.rasio_mentah * OKUP0 / K.okupansi(a.ev.jam)) < 1e-15, `${a.id}: rasio tidak dinormalkan ke okupansi`);
+/* pencocokan wilayah analog tsunami: korban di kab yang paparannya > 0, dan analog dipakai hanya bila >= 80% korbannya tercocokkan */
+for (const a of ANALOG_TS) { assert.equal(jumlah(a.rincian, x => x.meninggal), a.meninggal, `${a.id}: rincian korban per kab != total`);
+  assert.ok(jumlah(a.rincian, x => x.p30) <= a.p30_semua + a.rincian.length, `${a.id}: penyebut kab berkorban ${jumlah(a.rincian, x => x.p30)} > paparan semua kab ${Math.round(a.p30_semua)} (paparan dari luar kab berkorban?)`);
+  assert.equal(a.dipakai, a.porsi_cocok >= BATAS_COCOK, `${a.id}: status dipakai tidak mengikuti uji pencocokan`); }
+for (const a of TS_PAKAI) assert.ok(a.porsi_cocok >= BATAS_COCOK && Number.isFinite(a.rasio) && a.rasio > 0, `${a.id}: hanya ${a.porsi_cocok} korban di kab ber-p30 > 0`);
+assert.ok(Number.isFinite(RASIO_TS) && RASIO_TS > 0, "rasio tsunami harus positif");
+assert.equal(jumlah(PANG_KAB, x => x[1]), 665, "rincian USGS Pangandaran harus 665");
 assert.ok(fEvak(0.2) === 1 && Math.abs(fEvak(0.7) - NANKAI.e70 / NANKAI.e20) < 1e-12, "faktor Nankai");
 assert.equal(D.merapi.meninggal, 386, "DIBI Merapi 2010 = 386 (riset A §4.4)");
 assert.equal(D.cianjur.meninggal, 602, "DIBI Cianjur = 602");
+assert.equal(D.cianjurKab.meninggal, 602, "DIBI Cianjur: semua korban di Kab. Cianjur");
 assert.equal(D.mentawai.meninggal, 447, "DIBI Mentawai 2010 = 447");
 assert.equal(D.sulteng.meninggal, 4141, "DIBI Sulteng 2018 baris = 4.141 (riset A: 4.140)");
-assert.ok(Math.abs(M15.terpapar - 89707) / 89707 < 0.02, `Merapi H/L 0,15 terpapar ${M15.terpapar} harus ~89.707 (cek_merapi2010.mjs, sim.js:355)`);
+assert.ok(Math.abs(M15.terpapar - 89707) / 89707 < 0.02, `Merapi H/L 0,15 terpapar ${M15.terpapar}: regresi atas keluaran 23 Okt 2026 (89.707); public/gunungapi/sim.js:355 menyebut sekitar 90.000`);
 assert.ok(Math.abs(jumlah([...M15.per.values()], o => o.jiwa) - M15.terpapar) < 1, "Merapi jiwa kab = total");
+assert.equal(jumlah(barisM, b => b.dibi2010_mengungsi || 0), D.merapi.mengungsi, "merapi2010_kab.csv: jumlah dibi2010_mengungsi harus = DIBI 2010");
+assert.equal(jumlah(barisM, b => b.dibi2010_meninggal || 0), 386, "merapi2010_kab.csv: jumlah dibi2010_meninggal harus 386");
+assert.equal(new Set(barisM.map(b => b.kode)).size, barisM.length, "merapi2010_kab.csv: kode ganda");
 for (const x of KRB) for (const z of ZONA) { const ref = x.g.zona[z].penduduk, sel = x.selisih[z];
   assert.ok(Math.abs(sel) <= 1, `KRB ${x.g.id} zona ${z}: jumlah per kab ${Math.round(ref + sel)} != paparan.json ${ref}`); }
-for (const b of [...barisG, ...barisT, ...barisK, ...barisM]) assert.ok(KABK.has(b.kode), "kode kab tak dikenal");
+for (const z of ZONA) { const c = jumlah(barisK, b => b["jiwa_krb" + { III: 3, II: 2, I: 1 }[z]]), ref = jumlah(PAP.gunung, g => g.zona[z].penduduk);
+  assert.ok(Math.abs(c - ref) <= 3, `gunungapi_krb_kab.csv KRB ${z}: jumlah CSV ${c} vs paparan.json ${ref} (toleransi 3)`); }
+for (const x of KRB) { const kab = barisK.filter(b => b.gunung_id === x.g.id); assert.equal(new Set(kab.map(b => b.kode)).size, kab.length, `KRB ${x.g.id}: kode ganda`);
+  for (const k of ["pengungsi_analog_rendah", "pengungsi_analog_tinggi"]) assert.ok(jumlah(kab, b => b[k]) <= x.r20 + kab.length, `KRB ${x.g.id}: ${k} ${jumlah(kab, b => b[k])} > penduduk <= 20 km ${Math.round(x.r20)}`); }
+for (const b of [...barisG, ...barisT, ...barisK, ...barisM]) assert.ok(KABK.has(b.kode) && b.kab === b.kab.trim(), "kode kab tak dikenal / nama berspasi");
 assert.ok(SEMUA_ANGKA.length > 1e4 && SEMUA_ANGKA.every(Number.isFinite), "tidak ada NaN");
 const maks = (a, f) => a.reduce((m, x) => Math.max(m, Math.abs(f(x))), 0);
-console.log("skenario:", SKEN.map(s => `${s.src.id} M${s.sk.m}: MMI>=VII ${Math.round(s.g.g.e7[1])} jiwa, korban analog ${tri(analogKorban(s.g.g.e7)).join("/")}, mesin ${tri(s.g.nas.jiwa).join("/")}, tsunami<=30mnt ${Math.round(nasT(s, b => b.jiwa_pesisir_rendah_lt30))} jiwa`).join("\n          "));
-console.log("rasio analog guncangan", RASIO_GEMPA.map(v => bulat(v * 100, 4) + "%").join(" / "), "| tsunami", RASIO_TS.map(v => bulat(v * 100, 4) + "%").join(" / "));
-console.log("Merapi 2010: terpapar", Math.round(M15.terpapar), "| KRB selisih maks", Math.round(maks(KRB, x => maks(ZONA, z => x.selisih[z]))), "jiwa");
+console.log("skenario:", SKEN.map(s => `${s.src.id} M${s.sk.m}: MMI>=VII ${Math.round(s.g.g.e7[1])} jiwa, korban analog ${tri(analogKorban(s.g.g.e7)).join("/")}, mesin ${tri(s.g.nas.jiwa).join("/")}, tsunami<=30mnt ${Math.round(nasT(s, b => b.jiwa_pesisir_rendah_lt30))} jiwa, korban tsunami orde ${Math.round(nasT(s, b => b.jiwa_pesisir_rendah_lt30) * RASIO_TS)}`).join("\n          "));
+console.log("rasio analog guncangan", RASIO_GEMPA.map(v => pct(v)).join(" / "), "| tsunami", ANALOG_TS.map(a => `${a.id} ${pct(a.rasio)} (porsi cocok ${bulat(a.porsi_cocok, 3)}${a.dipakai ? "" : ", TIDAK dipakai"})`).join("; "));
+console.log("Merapi 2010: terpapar", Math.round(M15.terpapar), "| KRB selisih maks", Math.round(maks(KRB, x => maks(ZONA, z => x.selisih[z]))), "jiwa | gunung terpotong radius 20 km:", KRB.filter(x => x.fU[1] < 1).map(x => x.g.id).join(", "));
+console.log("lubang proksi tsunami:", Object.entries(LUBANG).map(([k, v]) => `${k} ${v.length}`).join(", "));
 console.log("self-check hijau");

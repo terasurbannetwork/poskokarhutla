@@ -6,7 +6,7 @@ Badan Nasional Penanggulangan Bencana:
 1. **Grand Design Ketahanan Air Pulau Jawa 2026–2030** (selanjutnya "kajian air").
 2. **Grand Design Mitigasi Bencana Indonesia 2026–2030** (selanjutnya "kajian mitigasi").
 
-Versi 1.1, 23 Oktober 2026. Berkas ini satu-satunya sumber aturan tampilan, bahasa,
+Versi 1.3, 23 Oktober 2026. Berkas ini satu-satunya sumber aturan tampilan, bahasa,
 angka, dan QA untuk kedua kajian. Isi bab ada di `KERANGKA.md`; ukuran terukur tata
 letak acuan ada di `SPESIFIKASI-GAYA.md`; bahan isi ada di `riset/A`–`D`. Pedoman ini
 mengikat atas `SPESIFIKASI-GAYA.md` dan `KERANGKA.md` untuk tampilan dan proses;
@@ -22,7 +22,7 @@ membuat salinan aturan ketiga.
 
 1. Kata pemilik di percakapan (dicatat di §0.3 Riwayat).
 2. Buku Pegangan Pantau Bencana (`docs/buku-pegangan/pantau-bencana.md`): kanon proyek; dan
-   `KEPUTUSAN.md`: keputusan pemilik P1–P17 serta keputusan bawaan orkestrator T1–T10 yang
+   `KEPUTUSAN.md`: keputusan pemilik P1–P17 serta keputusan bawaan orkestrator T1–T13 yang
    berlaku sampai pemilik membaliknya. Bila pedoman ini bertentangan dengan `KEPUTUSAN.md`,
    `KEPUTUSAN.md` yang berlaku.
 3. Pedoman ini. Pedoman boleh berbeda dari Buku Pegangan hanya bila perbedaannya dicatat
@@ -48,7 +48,7 @@ pemilik 20 Okt (dicatat di Buku Pegangan) melarangnya. Yang berlaku: dilarang.
 | K1 | Penerbit BNPB saja; tanpa halaman tim penyusun, tanpa ucapan terima kasih bernama | 23 Okt 2026 |
 | K2 | Keluaran utama DOCX A4 tegak, huruf Roboto saja | 23 Okt 2026 |
 | K3 | DOCX paling banyak 150 halaman di luar lampiran (bagian depan berangka romawi tidak dihitung) | 23 Okt 2026 |
-| K4 | PDF ringkas paling banyak 10 halaman per kajian | 23 Okt 2026 |
+| K4 | PDF ringkas paling banyak 10 halaman per kajian. **Dicabut** 23 Okt 2026 (tersirat dari `KEPUTUSAN.md` P13: delapan berkas tanpa PDF ringkas; K17): PDF mengikuti dokumen asalnya | 23 Okt 2026 |
 | K5 | Foto dari Wikimedia Commons berlisensi bebas beratribusi (CC BY, CC BY-SA, CC0, PD; tanpa NC/ND); ilustrasi buatan AI tidak dipakai | 23 Okt 2026 |
 | K6 | Kajian air sampai kab/kota, lima komponen: air baku, irigasi, waduk, air tanah, penurunan muka tanah. Proyek boleh disebut, tanpa angka biaya | 23 Okt 2026 |
 | K7 | Skenario terburuk dikelompokkan per jenis bencana, dengan korban jiwa, luas terdampak, kerugian materiil dan imateriil dari simulasi platform | 23 Okt 2026 |
@@ -60,6 +60,8 @@ pemilik 20 Okt (dicatat di Buku Pegangan) melarangnya. Yang berlaku: dilarang.
 | K13 | Bahasa formal ilmiah, tanpa kalimat bergaya dan tanpa yang dibuat-buat | 23 Okt 2026 |
 | K14 | Kedua kajian tidak harus meniru JAPFA REPORT, tetapi wajib punya grand design dan design system | 23 Okt 2026 |
 | K15 | Pola laporan kelas dunia yang divonis cocok di `riset/desain-benchmark/SINTESIS.md` diterapkan di §A–§B dan dicatat di Buku Pegangan bab Selera laporan (DOCX/PDF); aturan pemilik yang tertulis menang bila bentrok (`KEPUTUSAN.md` P16) | 23 Okt 2026 |
+| K16 | Pola deck konsultan kelas dunia (McKinsey, BCG, Big Four) yang divonis cocok di `riset/desain-benchmark/deck/SINTESIS-DECK.md` diterapkan di §B7 dan dicatat di Buku Pegangan bab Selera presentasi (subbab Pola deck konsultan kelas dunia, S1–S33; S34–S39 berasal dari penilaian skill `alfatehan-pptx-rules` di `TAMBAHAN-PPTX-RULES.md`, bukan P16); aturan pemilik yang tertulis menang bila bentrok (`KEPUTUSAN.md` P16) | 23 Okt 2026 |
+| K17 | Keluaran 8 berkas: per kajian DOCX dan PDF-nya, PPTX dan PDF-nya; jumlah halaman PDF sama dengan dokumen asal (`KEPUTUSAN.md` P13). Menggantikan K4 | 23 Okt 2026 |
 
 **Diputus sebagai keputusan bawaan** (`KEPUTUSAN.md`, 23 Okt 2026; pemilik meminta tidak ada
 pertanyaan lagi, jadi bawaan ini berlaku sampai pemilik membaliknya):
@@ -69,26 +71,101 @@ pertanyaan lagi, jadi bawaan ini berlaku sampai pemilik membaliknya):
 | T1 | Judul bab KAPITAL ("BAB 1 PENDAHULUAN"); subbab ke bawah huruf judul ("1.1 Latar Belakang") | §B2, §C2; D-11 mengecualikan Heading 1 dan judul bagian depan |
 | T2 | Oranye naik, biru turun, juga di peta web kajian | §B1.5, §B6 |
 | T3 | Peta web di situs Pantau Bencana, `public/kajian/`, dibangun lokal; terbit hanya bila pemilik mendorong | §B6 |
-| T4 | Kaki halaman: "Badan Nasional Penanggulangan Bencana, Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120" dan "Call Center 117, www.bnpb.go.id" | §B4. T4 tidak memutus teks pil batas data PDF ringkas; bawaannya di §B4 |
+| T4 | Kaki halaman: "Badan Nasional Penanggulangan Bencana, Graha BNPB, Jl. Pramuka Kav. 38, Jakarta Timur 13120" dan "Call Center 117, www.bnpb.go.id" | §B4 (catatan soal pil batas data PDF ringkas: v1.2, dicabut K17) |
 | T5 | Kajian air batas atas ±110 hlm isi; kajian mitigasi ±150 | §A3.2, §A3.3, D-12 |
 | T6 | Palet tambal enam keluarga (ΔE CIEDE2000 terkecil 17,6) | §B1.3 |
-| T7 | Kata Pengantar ditulis sebagai draf untuk ditandatangani Kepala BNPB, ditandai untuk diperiksa pemilik | §A3.4 |
+| T7 | Kata Pengantar ditulis sebagai draf untuk ditandatangani Kepala BNPB, ditandai untuk diperiksa pemilik | §A3.4, §D3; Kata Pengantar satu-satunya bagian yang ditandai untuk pemilik, karena bagian lain diserahkan tanpa putaran tinjauan pemilik (K18) |
 | T8 | Kelas IRBI memakai skala oranye rumah BNPB (ramp api, kelas 1, 3, 5) dengan nama kelas resmi Rendah, Sedang, Tinggi dan legenda; merah hanya bahaya | §B1.4; ramp keluarga hanya untuk indeks platform |
 | T9 | Daftar Pustaka tidak dihitung dalam batas halaman, sama seperti lampiran | §A3.2, §A3.3, §B5.17, D-12 |
 | T10 | "prabencana", "tanggap darurat", "pascabencana" sesuai UU 24/2007; subjudul kajian mitigasi "Strategi Prabencana, Tanggap Darurat, dan Pascabencana" | §A4, §B5.12, §B5.14, §B5.22, §C3 |
+| T11 | Judul slide deck kajian: slide temuan memakai kalimat temuan berangka paling banyak 2 baris (pola lampiran Presiden d9); sampul, pembatas, dan slide rekomendasi memakai judul deskriptif | §B7.1; Buku Pegangan S7. Menyimpang dari vonis pemilik "Judul deskriptif menang atas judul data", yang tidak dibatasi ke deck tertentu; dicatat di Buku Pegangan Keputusan pemilik, Belum diputus, dan berlaku sampai pemilik memutus. Menjawab pertanyaan T15 pedoman v1.2 |
+| T12 | Pelacak bagian di deck: kode bagian berwarna sorot di depan judul ("A1.", "B2."); pola kode lampiran d9 dipakai ulang untuk bagian, ditambah nomor bagian berwarna sorot Deloitte-NEMA; tanpa unsur baru di pojok | §B7.1; Buku Pegangan S10; kode lampiran deck jadi "L1." (U5). Huruf bagian A–E tidak sama artinya dengan huruf pertanyaan pimpinan A–C di "Temuan A.1" DOCX, jadi kode DOCX selalu ditulis lengkap sebagai chip di kartu Pesan Kunci (§B7.4); tercatat di Buku Pegangan Belum diputus |
+| T13 | Warna pembatas bab di deck: GELAP 051C2C, sama dengan pembatas Lampiran dan penutup | §B7.1; deck ±12 slide isi tidak memakai pembatas bab (S10), jadi T13 berlaku bila pembatas dipakai |
+| K18 | Tanpa pertanyaan lagi ke pemilik; pertanyaan terbuka diputus sebagai bawaan (`KEPUTUSAN.md` T1–T13). `KEPUTUSAN.md` hanya mencatat "pemilik meminta tidak ada pertanyaan lagi", jadi hasil yang diserahkan tanpa putaran tinjauan pemilik adalah bawaan orkestrator, bukan vonis pemilik, dan bisa dibalik | §C9, §D3, §D4; T7 tetap berlaku untuk Kata Pengantar |
 
-**Belum diputus** (berbawaan; tiap bawaan bisa dibalik pemilik):
+**Belum diputus** (berbawaan; tiap bawaan bisa dibalik pemilik). Nomor U1–U4 dulu T11–T14 di
+pedoman v1.2; diganti karena `KEPUTUSAN.md` kini memakai T11–T13 untuk deck. Rujukan lama "PEDOMAN
+T14" dan "PEDOMAN T15" di `riset/desain-benchmark/SINTESIS.md` dibaca sebagai U4 dan T11, dan "T15" di
+`riset/desain-benchmark/deck/SINTESIS-DECK.md` juga dibaca sebagai T11.
 
 | No | Pertanyaan | Bawaan yang dipakai | Bila dibalik |
 | --- | --- | --- | --- |
-| T11 | Peta bernomor sendiri ("Peta 4.1") dengan Daftar Peta, pola GAR dan UNICEF (SINTESIS P11)? | Peta tetap seri Gambar, satu seri Caption | SEQ "Peta" dan bidang Daftar Peta ditambah; D-7 menghitung dua seri |
-| T12 | Tabel tahap × tahun pola Deltaprogramma (SINTESIS P78) di DOCX, padahal pemilik membuang Gantt dari slide rekomendasi d5? | Kolom WAKTU berpil horizon di matriks rekomendasi (§B5.13) saja, mengikuti satu-satunya sinyal pemilik; tabel §B5.29 tidak dibuat | Tabel §B5.29 dipasang di DOCX bab Peta Jalan saja, sel tahap berupa pil native; tidak di deck dan PDF ringkas |
-| T13 | Kelas IRBI banjir, longsor, dan kekeringan di kajian air ikut berwarna oranye (ramp api, T8), padahal kategori basah biru dan kering emas. Dikehendaki? | T8 apa adanya: semua kelas IRBI ramp api, legenda "Kelas IRBI BNPB" | `skala.irbi.ramp` di `tema.json` diganti per keluarga (air, emas, netral); ambang IRBI ΔE ≥ 20 tetap berlaku |
-| T14 | Keterangan gambar dan tabel: judul aksi berangka (MGI, WDR; SINTESIS P22) atau deskriptif? Vonis pemilik 23 Okt ("judul memakai bentuk deskriptif", Riwayat Buku Pegangan; "Judul deskriptif menang atas judul data", bab Selera presentasi) lebih baru daripada "judul = fakta + angka + sumber", dan tidak ada kata pemilik yang membatasinya ke deck | Deskriptif stabil berisi besaran, tempat, periode, dan satuan ("Gambar 5.2 Kejadian banjir per kabupaten/kota di Pulau Jawa, 2015–2025 (kejadian)"); kalimat temuan berangka ditulis di kalimat pembuka tebal paragraf yang merujuk gambar (§B2, §C2) | Keterangan berupa kalimat temuan berangka ≤ 2 baris; kutipan pemilik dicatat di §0.3; Daftar Gambar berubah tiap pembaruan data |
-| T15 | Judul slide deck kajian: tabel Judul Buku Pegangan bab Selera presentasi belum punya baris untuk deck kajian (§B7) | Kalimat temuan ≤ 2 baris, angka `oranye`, seperti Paparan Presiden lampiran, karena `KERANGKA.md` menyusun deck seperti Paparan Presiden | Judul topik deskriptif seperti deck wilayah |
+| U1 | Peta bernomor sendiri ("Peta 4.1") dengan Daftar Peta, pola GAR dan UNICEF (SINTESIS P11)? | Peta tetap seri Gambar, satu seri Caption | SEQ "Peta" dan bidang Daftar Peta ditambah; D-7 menghitung dua seri |
+| U2 | Tabel tahap × tahun pola Deltaprogramma (SINTESIS P78) di DOCX, padahal pemilik membuang Gantt dari slide rekomendasi d5? | Kolom WAKTU berpil horizon di matriks rekomendasi (§B5.13) saja, mengikuti satu-satunya sinyal pemilik; tabel §B5.29 tidak dibuat | Tabel §B5.29 dipasang di DOCX bab Peta Jalan saja, sel tahap berupa pil native; tidak di deck |
+| U3 | Kelas IRBI banjir, longsor, dan kekeringan di kajian air ikut berwarna oranye (ramp api, T8), padahal kategori basah biru dan kering emas. Dikehendaki? | T8 apa adanya: semua kelas IRBI ramp api, legenda "Kelas IRBI BNPB" | `skala.irbi.ramp` di `tema.json` diganti per keluarga (air, emas, netral); ambang IRBI ΔE ≥ 20 tetap berlaku |
+| U4 | Keterangan gambar dan tabel: judul aksi berangka (MGI, WDR; SINTESIS P22) atau deskriptif? Vonis pemilik 23 Okt ("judul memakai bentuk deskriptif", Riwayat Buku Pegangan; "Judul deskriptif menang atas judul data", bab Selera presentasi) lebih baru daripada "judul = fakta + angka + sumber", dan tidak ada kata pemilik yang membatasinya ke deck | Deskriptif stabil berisi besaran, tempat, periode, dan satuan ("Gambar 5.2 Kejadian banjir per kabupaten/kota di Pulau Jawa, 2015–2025 (kejadian)"); kalimat temuan berangka ditulis di kalimat pembuka tebal paragraf yang merujuk gambar (§B2, §C2) | Keterangan berupa kalimat temuan berangka ≤ 2 baris; kutipan pemilik dicatat di §0.3; Daftar Gambar berubah tiap pembaruan data |
+| U5 | Kode lampiran deck kajian, karena pola d9 ("A1.") kini dipakai kode bagian (T12)? | "L1." sampai "L10."; di prosa ditulis "lampiran deck L1" supaya tidak terbaca sebagai aturan L1–L72 Buku Pegangan | Pemilik memilih kode lain, mis. bagian bernomor "1. " dan lampiran kembali "A1." pola d9; §B7.4, §B7.5, dan Buku Pegangan S10 dan S33 ikut diganti |
+| U6 | Nama berkas deck: `tema.json` `kajian.<k>.nama_berkas` memberi PPTX dan DOCX nama dasar yang sama, sehingga PDF deck dan PDF DOCX sama-sama `<judul pendek> DDMMYY.pdf` | Deck memakai pola Buku Pegangan `<Judul deck> DDMMYY`: "Paparan Kajian Ketahanan Air Pulau Jawa DDMMYY" dan "Paparan Kajian Mitigasi Bencana Indonesia DDMMYY" (`.pptx` dan `.pdf`) | Pemilik memilih nama lain; `tema.json` dan `bangun/pptx/deck.py` mengikuti |
+| U7 | Judul subbab tingkat 3 berangka (skill `deep-research`, `TAMBAHAN-RISET.md` butir 6), padahal vonis pemilik "Judul deskriptif menang atas judul data" tidak dibatasi ke deck dan Daftar Isi memuat tingkat 1.1.1? | Tingkat 1–3 deskriptif stabil (§C2), supaya Daftar Isi stabil dengan alasan yang sama dengan U4; temuan berangka di kalimat pembuka tebal (§B2) dan di judul kotak temuan (§B5.5), yang tidak masuk Daftar Isi. Bawaan awal v1.3 (tingkat 3 berangka) dibalik pada tinjauan silang 23 Okt karena aturan skill tidak boleh mengalahkan vonis pemilik | Tingkat 3 berupa temuan berangka (token), ≤ 2 baris; Daftar Isi berubah tiap pembaruan data; kutipan pemilik dicatat di §0.3 |
 
 ### 0.3 Riwayat (terbaru di atas; kutipan miring = kata pemilik)
 
+- **24 Okt 2026.** Penyetelan mesin sebelum produksi naskah (bukan vonis pemilik baru). Daftar `KERANGKA.md` §10 dibawa:
+  §A2 tesis dari KERANGKA §4 dan §5 (kunci `tesis.*` di `data/angka.json`, tanpa `angka-kunci.json`); §A3.2 dan
+  §A3.3 alokasi 103 dan 136 hlm dengan komponen per bab, bab per jenis tanpa strategi dan lembaga (prinsip 17);
+  §A3.4 Ringkasan Eksekutif dua lapis sesudah Daftar Isi, kolofon final, T7 lewat log QA; §A6 kartu analog
+  berangka, kebakaran gedung dan permukiman, luka dan DALY; §B5.11 lima aspek Perban 2/2023 dan baris kebutuhan
+  respons, aturan lantai, varian (c) analog berangka; §B5.25 dan §B5.26 keputusan di Pesan Kunci; §B5.27 dan
+  §B5.28 skala dampak dan kunci dampak kisi; §B7.4 dan §B7.5 alur dari tabel deck KERANGKA. Status mesin
+  diperbarui: garis besar spek deck dan laporan QA per deck (S34, S35, S39), glosarium, ejaan, pemenggalan,
+  metadata, kepadatan pustaka, dan ambang anti-AI kini bergerbang (T-8 sampai T-11, §D4). Label keyakinan lima
+  (§C6.2).
+
+- **23 Okt 2026.** Tinjauan silang v1.3 (bukan vonis pemilik baru). K18 pindah ke tabel bawaan, karena
+  `KEPUTUSAN.md` hanya mencatat permintaan tanpa pertanyaan lagi; T7 tetap, dengan Kata Pengantar sebagai
+  satu-satunya bagian yang ditandai untuk pemilik; persetujuan pemilik yang dulu diminta §D3 dicatat
+  sebagai bawaan yang bisa dibalik. U7 dibalik: judul subbab tingkat 3 deskriptif stabil. Ambang
+  tiga-serangkai kembali nol untuk tiga-serangkai gaya (§D4), karena kuota 3 per 1.000 kata dari
+  `TAMBAHAN-ANTI-AI.md` melonggarkan larangan pemilik 19 Okt tanpa tercatat sebagai bentrok; ambang
+  anti-AI ditandai belum punya gerbang. Deck (§B7): definisi slide temuan dan medan `judul`; slide usulan
+  berangka tetap berbaris Sumber dan berpil CUT OFF; pil CUT OFF bertanggal dan berjam; zona kaki satu
+  baris Sumber 7,5 pt ditambah 2 baris 6 pt; peta deck memakai PNG peta dasar tanpa label dan legenda
+  dengan pil dan legenda native; daftar tertutup `jenis` dan urutannya per alur (kerangka program jadi
+  rantai tahap, slide rekomendasi kajian mitigasi pindah ke E3); chip "Temuan A.1" di kartu Pesan
+  Kunci; "lampiran deck L1" di prosa; laporan QA per deck ditandai belum dibangun. Sisa rujukan PDF
+  ringkas ditandai "(v1.2, dicabut K17)" di tempatnya atau dihapus, dan token `sumber` dialihkan ke
+  catatan kaki deck. Pemenggalan memakai profil LibreOffice khusus ekspor. K4, K16, dan T12 ditulis
+  ulang supaya inferensi tidak tampil sebagai kata pemilik. Judul aturan §C9 tanpa pola kontras.
+- **23 Okt 2026.** Pedoman v1.3: sintesis deck konsultan dan empat skill pemilik dilebur, lalu
+  pedoman direkonsiliasi dengan `KEPUTUSAN.md` (P13, P17, T11–T13). Vonis pemilik baru hanya K16–K17 (K18 semula tertulis sebagai vonis; kini bawaan, lihat tinjauan silang
+  di atas).
+  Pemilik: *"ppt mckinsey bcg dan konsultan big four management juga ditiru ya"*. Yang berubah:
+  §B7 ditulis ulang (struktur, anatomi, aturan bersama, dan alur slide kedua kajian dari
+  `riset/desain-benchmark/deck/SINTESIS-DECK.md`; aturan pola S1–S39 tinggal di Buku Pegangan dan
+  tidak disalin); grafik deck native dari data yang sama, bukan PNG DOCX, karena prinsip native Buku
+  Pegangan menang atas draf bedah; kode bagian "A1." (T12) dan kode lampiran deck "L1." (U5); nama
+  berkas deck (U6). Keluaran 8 berkas (K17): PDF ringkas dicabut, dan §A1, §A3, §A3.1, §A5, §B5.4,
+  §B5.25, §B5.26, D-6, D-12, D-27, D-30, serta §D2 disesuaikan; rujukan "PDF ringkas" lain yang
+  tersisa di §B, §C, dan §E adalah sisa v1.2 yang tidak lagi mengikat keluaran. QA lima lapis,
+  ambang anti-AI, kepadatan pustaka, glosarium, ejaan, pemenggalan, dan metadata masuk §B2, §B4,
+  §B5.17, §B5.18, §B5.24, dan §D4 baru (skill `book-production-rules` dan `anti-ai-checker`); alur
+  naskah berbasis berkas bukti masuk §C9 baru (skill `deep-research`); judul subbab tingkat 3 berangka
+  (U7); pembatas bab memuat 2–3 pertanyaan; kolofon tanpa nomor tata naskah dinas (P17); judul Bab 9
+  kajian air, Bab 10 dan Bab 12 kajian mitigasi mengikuti `KERANGKA.md`; status gerbang §D mengikuti
+  `qa/cakupan.json`; §D3 tidak lagi menunggu persetujuan pemilik (K18). Nomor Belum diputus T11–T14
+  diganti U1–U4, dan T15 diputus sebagai T11. Bentrok yang dimenangkan aturan pemilik: ukuran huruf
+  dan jarak skill `alfatehan-pptx-rules`, larangan garis bawah judul, em dash satu per slide,
+  Garamond, halaman pembatas bab penuh, pembaca beta, dan kotak ringkasan 3–4 temuan. Keterlacakan
+  aturan baru di §E (kode DEK, PPX, AAI, BKU, RST, KEP).
+- **23 Okt 2026.** Tinjauan silang v1.2 (bukan vonis pemilik baru). Pedoman direkonsiliasi dengan
+  `KEPUTUSAN.md`, yang sudah diikuti `tema.json` dan generator: T1–T10 pindah ke tabel Diputus
+  sebagai keputusan bawaan; judul dan horizon 2026–2030 dengan peta jalan 100 hari, 2026–2027,
+  2028–2030 (P2, P4); judul bab kapital (T1; D-11 mengecualikan Heading 1); kaki halaman alamat
+  BNPB (T4); batas kajian air ±110 dengan alokasi bab mengikuti `KERANGKA.md` dan kajian mitigasi
+  ±150 (T5); kelas IRBI ramp api untuk semua bahaya (T8); Daftar Pustaka tidak dihitung (T9); fase
+  "tanggap darurat" (T10). Pertanyaan baru berbawaan: T13 (IRBI banjir ikut oranye; kini U3),
+  T14 (keterangan gambar deskriptif atau judul aksi; vonis pemilik 23 Okt soal judul deskriptif lebih
+  baru; kini U4), T15 (judul slide deck kajian; kini T11); bawaan T12 (kini U2) dibalik ke kolom WAKTU
+  berpil horizon. Perbaikan
+  lain: kode temuan selalu "Temuan A.1" dan D-27 membaca token itu, karena "A.1" bertabrakan dengan
+  "Tabel A.1" di lampiran; PDF ringkas hlm 2 berisi Pesan Kunci dan pita keputusan, kartu angka ke
+  hlm 3, kolofon ke kaki hlm 10; Kartu Insight dibatasi ke layar situs (di kertas: kepala grafik
+  satu baris, "Catatan:" satu baris); legenda tabel di baris terakhir tabel supaya "Sumber:" tetap
+  paragraf pertama sesudah objek; warna mengikuti arah, besaran baik-buruk di kajian air memakai
+  `teks-2` berlabel kata; label keyakinan kelima "Penilaian pakar" (`KERANGKA.md` prinsip 4 masih
+  menyebut empat; pemilik berkasnya yang menyunting); urgensi = horizon; Sankey hanya untuk aliran
+  fisik; gaya Isi Temuan didefinisikan; gerbang D-30 sampai D-32; status gerbang ditulis "dirancang,
+  belum dibangun"; label tahap "Perencanaan" dan "Pelaksanaan" ("laksana" berarti "seperti").
 - **23 Okt 2026.** Pola laporan kelas dunia diterapkan (K15). Pemilik: *"Tiru style mereka dan
   implementasikan untuk sempurnakan system kita."* Bedah 22 laporan (World Bank, ADB, IMF,
   McKinsey, BCG, Deloitte, IPCC, UNDRR, WMO, OECD, UNICEF, Jepang, Inggris, Belanda, Our World in
@@ -141,7 +218,7 @@ pemilik dicatat di sini berikut berkas dan cara memulihkannya; tidak dihapus dia
 
 | Pembaca | Yang dicari | Keluaran yang dibaca | Kepadatan |
 | --- | --- | --- | --- |
-| Kepala BNPB | Satu pesan, angka kunci, keputusan yang diminta | PDF ringkas (10 hlm), Ringkasan Eksekutif DOCX | Rendah, satu temuan per baris |
+| Kepala BNPB | Satu pesan, angka kunci, keputusan yang diminta | Deck PPTX dan PDF-nya (±12 slide isi), Ringkasan Eksekutif DOCX | Rendah, satu temuan per baris |
 | Pejabat eselon I–II BNPB | Dasar tiap rekomendasi, pembagian tugas internal | DOCX Bab Grand Design, Kelembagaan, Lampiran | Sedang |
 | K/L teknis (PU, BMKG, Badan Geologi, Kemenkes, KLH, Kemendagri, Bappenas, Kemenkeu, ATR/BPN) | Tugas lembaganya, data yang diminta darinya | Matriks lembaga, lampiran per provinsi | Tinggi |
 | Analis BNPB/BPBD | Metode, data per kab/kota, angka untuk disalin | DOCX Metodologi, Lampiran A, peta web, berkas data | Tinggi |
@@ -152,61 +229,75 @@ bahan pemasaran.
 
 ### A2. Pesan inti
 
-Tiap kajian berdiri di atas satu kalimat tesis yang muncul di halaman 2 PDF, kalimat
-pertama Ringkasan Eksekutif, dan Bab Kesimpulan. Bab lain menurunkan bukti untuknya.
+Tiap kajian berdiri di atas satu kalimat tesis yang muncul di kalimat pertama Ringkasan
+Eksekutif, Bab Kesimpulan, dan slide Pesan Kunci deck. Bab lain menurunkan bukti untuknya.
 Tesis dikunci setelah Bab 4–6 selesai dan angkanya diisi dari data, bukan diketik.
 
 Sebelum Bab 4–6 selesai, yang ada hanya templat slot berlabel **hipotesis kerja**. Slot
 diisi dari JSON; kalimatnya tanpa kata kerja sebab-akibat ("memperbesar", "didorong",
 "menyebabkan", "karena") kecuali Bab Metodologi memuat uji sebab-akibatnya (§C8).
 
-**Kajian air (hipotesis kerja):** "{temuan berangka: jumlah kab/kota di Pulau Jawa yang
-masuk kelas tinggi kekeringan dan banjir sekaligus, sumber, tahun}; {wilayah: wilayah
-sungai atau kab/kota dengan nilai tertinggi}; {tuas kebijakan dari Bab Kesenjangan}." Tiga
-pertanyaan pimpinan yang dijawab: (1) Wilayah mana yang paling berisiko kekurangan air saat
-kemarau panjang? (2) Wilayah mana yang paling berisiko tergenang saat hujan ekstrem dan rob?
-(3) Siapa mengerjakan apa sebelum, saat, dan sesudah kejadian?
+**Kajian air (hipotesis kerja, `KERANGKA.md` §4):** "Pada 2015–2026, tanah longsor dan banjir mencatat
+{a} dari {b} korban meninggal bencana hidrometeorologi di Pulau Jawa, sedangkan kekeringan tidak mencatat
+korban jiwa tetapi tercatat di {c} kab/kota pada 2019 dan {d} kab/kota pada 2023 (DIBI); Grand Design
+2026–2030 memakai korban jiwa sebagai ukuran keberhasilan musim hujan dan gangguan air bersih serta pangan
+sebagai ukuran keberhasilan musim kemarau." Templat v1.3 ("jumlah kab/kota yang masuk kelas tinggi
+kekeringan dan banjir sekaligus") dicabut: kelas per bahaya tidak ada di IRBI, dan kelas total Jawa 2025
+nyaris seragam (`KERANGKA.md` D10). Pertanyaan pimpinan: (1) Wilayah mana yang paling berisiko kekurangan
+air saat kemarau panjang? (2) Wilayah mana yang paling berisiko tergenang dan longsor saat hujan ekstrem
+dan rob? (3) Siapa mengerjakan apa sebelum, saat, dan sesudah kejadian? Keputusan yang diminta di Pesan
+Kunci: KD-1, KD-2, KD-5 (`KERANGKA.md` §6).
 
-**Kajian mitigasi (hipotesis kerja):** "{temuan berangka: angka IRBI atau INFORM
-bersumber}; {wilayah: pulau, provinsi, atau kab/kota tempat risiko terkonsentrasi}; {tuas
-kebijakan dari Bab Kesenjangan}." Pertanyaan pimpinan: (1) Bencana apa yang paling mungkin
-menimbulkan kerugian terbesar, dan berapa skenario terburuknya? (2) Di pulau, provinsi,
-kab/kota mana risikonya terkonsentrasi? (3) Kesenjangan apa yang paling menahan, dan
-lembaga mana yang membukanya?
+**Kajian mitigasi (hipotesis kerja, `KERANGKA.md` §5):** "Pada 2025 DIBI mencatat {a} korban meninggal
+dan {b} hilang dalam kejadian bencana, tertinggi sejak 2018, dengan {c} meninggal dan {d} hilang dalam
+satu rangkaian banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat pada akhir November 2025;
+Grand Design 2026–2030 menetapkan indikator korban Renas PB 1.a dan 1.b, yang langsung terukur dari DIBI,
+sebagai sasaran utama sampai baseline IRBI 2025 skala baru diterbitkan." Pertanyaan pimpinan: (1) Bencana
+apa yang paling mungkin menimbulkan kerugian terbesar, dan berapa skenario terburuknya? (2) Di pulau,
+provinsi, kab/kota mana risikonya terkonsentrasi? (3) Kesenjangan apa yang paling menahan, dan lembaga
+mana yang membukanya? Keputusan yang diminta di Pesan Kunci: KD-1, KD-2, KD-3; KD-4 sebagai rekomendasi
+100 hari.
 
-Tesis final disimpan di `angka-kunci.json` (kunci `tesis`, satu per kajian); gerbang D-6
-memeriksa kalimatnya identik di PDF hlm 2, kalimat pertama Ringkasan Eksekutif, dan Bab
-Kesimpulan.
+Tesis disimpan di registri `data/angka.json` kunci `tesis.air` dan `tesis.mitigasi` (bentuk B, slot
+`{a}`–`{d}` berupa token `{{angka:…}}` dari `dibi.*` dan `turunan/angka_tesis.csv`) dan dipanggil
+`{{angka:tesis.<kajian>|teks}}`; berkas terpisah `angka-kunci.json` tidak dibuat. Gerbang D-6 memeriksa
+kalimatnya identik di kalimat pertama Ringkasan Eksekutif, Bab Kesimpulan, dan slide Pesan Kunci deck.
 
 Larangan: tesis tidak memakai kontras "X bukan Y", slogan, tiga-serangkai, atau angka
 yang belum bersumber. Bila datanya belum mendukung, tesis ditulis lebih sempit.
 
 ### A3. Arsitektur dua tingkat
 
-Dua keluaran per kajian, satu design system, satu set data dan gambar.
+Empat berkas per kajian, delapan untuk dua kajian (K17, `KEPUTUSAN.md` P13): DOCX lengkap dan PDF-nya,
+deck PPTX dan PDF-nya. Jumlah halaman tiap PDF sama dengan dokumen asalnya (gerbang T-2). Satu design
+system, satu set data dan gambar.
 
-| | PDF ringkas | DOCX lengkap |
+| | Deck PPTX + PDF | DOCX lengkap + PDF |
 | --- | --- | --- |
 | Pembaca utama | Kepala BNPB | Eselon, K/L, analis |
-| Panjang | ≤ 10 hlm | ≤ 150 hlm isi + bagian depan + lampiran |
-| Bentuk | Halaman infografis: kartu angka, peta, kartu skenario, matriks | Teks mengalir rata kiri-kanan dengan blok visual |
-| Dibuat dari | `ringkas.html` yang membaca `tema.json` dan data yang sama, lalu Chromium headless ke PDF (pola `peta.mjs`) | `lengkap.docx` (python-docx, bidang TOC dan Caption), indeks diperbarui lewat UNO, lalu soffice ke PDF |
-| Komponen | Subset §B5, tata letak yang sama | Semua komponen §B5 |
+| Panjang | ±12 slide isi + lampiran (P14) | ≤ 110 hlm isi (kajian air) atau ≤ 150 hlm isi (kajian mitigasi), T5, + bagian depan + lampiran |
+| Bentuk | Slide gaya rumah BNPB (Buku Pegangan bab Selera presentasi) | Teks mengalir rata kiri-kanan dengan blok visual |
+| Dibuat dari | `bangun/pptx/deck.py`: spek JSON, `tema.json`, `data/angka.json`, dan PNG peta dasar dari render yang sama dengan DOCX (tanpa label dan legenda); `--pdf` lewat soffice | `lengkap.docx` (python-docx, bidang TOC dan Caption), indeks diperbarui lewat UNO, lalu soffice ke PDF |
+| Komponen | Komponen slide Buku Pegangan dan §B7 | Semua komponen §B5 |
 | Nama berkas | tabel nama di bawah | tabel nama di bawah |
 
-PDF ringkas dibuat dengan memotong dan memadatkan, bukan mendesain ulang: angka dan PNG
-peta, grafik, serta jejak skenario di PDF adalah berkas yang sama dengan di DOCX. Komponen
-PDF (kartu bertint, lingkaran ikon, pil, sudut membulat) dirender dari HTML dengan token dan
-ukuran yang sama, karena bentuk itu tidak stabil bila dibuat lewat tabel Word lalu soffice.
+Deck dibuat dari angka yang sama dengan DOCX dan PNG peta dasar dari render yang sama, dengan lapisan
+label dan legenda dimatikan; pil wilayah, nomor, legenda, dan grafik di slide dibangun native dari data
+dan token yang sama (§B7.2). PDF ringkas 10 halaman pada pedoman v1.2 dicabut (K4, K17). Sisa rujukan
+"PDF ringkas" di §B, §C, dan §E ditandai "(v1.2, dicabut K17)" di tempatnya; tabel §A3.1 dan Riwayat §0.3
+adalah catatan.
 
 | Kajian | Judul resmi (sampul) | Judul pendek (header) | Nama berkas (DDMMYY = tanggal paparan) |
 | --- | --- | --- | --- |
-| Kajian air | judul nomor 1 di kepala pedoman ini | Kajian Ketahanan Air Pulau Jawa | `Kajian Ketahanan Air Pulau Jawa DDMMYY.docx` dan `.pdf`; `Kajian Ketahanan Air Pulau Jawa Ringkas DDMMYY.pdf` |
-| Kajian mitigasi | judul nomor 2 di kepala pedoman ini | Kajian Mitigasi Bencana Indonesia | `Kajian Mitigasi Bencana Indonesia DDMMYY.docx` dan `.pdf`; `Kajian Mitigasi Bencana Indonesia Ringkas DDMMYY.pdf` |
+| Kajian air | judul nomor 1 di kepala pedoman ini | Kajian Ketahanan Air Pulau Jawa | `Kajian Ketahanan Air Pulau Jawa DDMMYY.docx` dan `.pdf`; deck `Paparan Kajian Ketahanan Air Pulau Jawa DDMMYY.pptx` dan `.pdf` (bawaan U6) |
+| Kajian mitigasi | judul nomor 2 di kepala pedoman ini | Kajian Mitigasi Bencana Indonesia | `Kajian Mitigasi Bencana Indonesia DDMMYY.docx` dan `.pdf`; deck `Paparan Kajian Mitigasi Bencana Indonesia DDMMYY.pptx` dan `.pdf` (bawaan U6) |
 
 Nama lain ("Kajian Pengelolaan Air Pulau Jawa", "Kajian Air Jawa") tidak dipakai.
 
-#### A3.1 PDF ringkas, isi per halaman
+#### A3.1 PDF ringkas, isi per halaman (dicabut, K17)
+
+PDF ringkas tidak dibangun lagi. Tabel di bawah disimpan sebagai catatan v1.2; isinya kini dibawa
+slide deck (§B7.4, §B7.5) dan Ringkasan Eksekutif DOCX.
 
 Kajian air:
 
@@ -244,79 +335,92 @@ keputusan; kartu angka pindah ke halaman 3, sehingga halaman 2 tetap tiga blok (
 10. Halaman sebaran per bahaya (kajian air hlm 4–5, kajian mitigasi hlm 5) boleh memakai peta mini
 berpasangan satu kalimat berangka per bahaya (UNICEF; SINTESIS P20), berlatar putih.
 
-#### A3.2 DOCX kajian air (isi ±104 hlm, cadangan 6, batas ±110, T5)
+#### A3.2 DOCX kajian air (isi ±103 hlm, cadangan 7, batas ±110, T5)
+
+Alokasi dan komponen wajib mengikuti `KERANGKA.md` §4 v3; bila tabel ini berbeda dengan KERANGKA, KERANGKA
+yang berlaku untuk isi.
 
 | Bab | Judul | Hlm | Komponen wajib |
 | --- | --- | --- | --- |
-| – | Bagian depan (romawi, tidak dihitung) | ±18 | sampul, kolofon, kata pengantar, daftar isi/tabel/gambar/lampiran, singkatan, Ringkasan Eksekutif 6–8 hlm |
-| 1 | Pendahuluan | 8 | pembatas bab, kotak ringkasan |
-| 2 | Tinjauan Pustaka dan Kerangka Konseptual | 12 | tabel pembanding benchmark (praktik, negara, yang ditiru, penyesuaian) |
-| 3 | Metodologi dan Data | 8 | pola metode (§C6.4), tabel sumber data berstatus, tabel rekonsiliasi angka |
-| 4 | Kondisi Sumber Daya Air Pulau Jawa | 16 | 5 subbab komponen; diagram alur hulu–hilir B5.23; peta per komponen hanya bila datanya ada, komponen tanpa data (zona air tanah Badan Geologi, indeks kekritisan per wilayah sungai) ditulis sebagai celah dan permintaan data, bukan peta kosong; tabel per provinsi |
-| 5 | Profil Risiko Musim Kemarau | 12 | peta kab/kota, kurva musim vs median, kartu skenario terburuk 1 hlm |
-| 6 | Profil Risiko Musim Hujan | 14 | peta banjir, longsor, rob; kartu skenario terburuk 1 hlm |
-| 7 | Analisis Kesenjangan | 8 | kartu temuan (bukti, dampak, pembuka) |
-| 8 | Grand Design dan Strategi | 14 | pilar, garis waktu prabencana, tanggap darurat, pascabencana per musim, tabel per wilayah sungai |
-| 9 | Kelembagaan, Pembiayaan, Peta Jalan | 8 | matriks lembaga, lapisan pembiayaan B5.21, instrumen hukum B5.20, peta jalan tiga horizon, indikator B5.19 |
-| 10 | Kesimpulan dan Rekomendasi | 4 | kisi kesimpulan dan pita keputusan B5.25, baris rekomendasi bernomor |
+| – | Bagian depan (romawi, tidak dihitung) | ±18 | §A3.4: sampul, kolofon, kata pengantar, daftar isi, Ringkasan Eksekutif dua lapis, daftar tabel/gambar/lampiran, singkatan |
+| 1 | Pendahuluan | 7 | pembatas bab, kotak ringkasan; Kotak 1.1 tiga jangkar UU 17/2019 Pasal 35; garis waktu prakiraan musim 2026/2027; tabel keterkaitan dokumen perencanaan dan Pola PSDA |
+| 2 | Tinjauan Pustaka dan Kerangka Konseptual | 8 | kajian BNPB terdahulu, kronologi regulasi air B5.31, ONI 2008–2026, praktik pembanding baris kompendium saja (kekuatan bukti, posisi, padanan di Indonesia), studi kasus Tokyo dan Bangkok B5.30 |
+| 3 | Metodologi dan Data | 9 | pola metode §C6.4; matriks resolusi data (Tabel 3.1); korelasi IRBI dan DIBI; aturan daftar perhatian dan uji kepekaan; skala dampak 1–5 per aspek Perban 2/2023 (§B5.27); matriks ketersediaan kuantifikasi; tiga besaran kerugian; rekonsiliasi angka; indikator yang belum dapat ditarget |
+| 4 | Kondisi Sumber Daya Air Pulau Jawa | 14 | diagram hulu ke hilir B5.23; profil 6 provinsi; irigasi per kab/kota dan kewenangan; titik bendungan dalam paket berpita; tabel bendungan BBWS Pemali-Juana (resmi saja); laju penurunan muka tanah terverifikasi; CAT rusak dan permintaan data. Komponen tanpa data ditulis sebagai celah dan permintaan data, bukan peta kosong |
+| 5 | Profil Risiko Musim Kemarau | 13 | IRBI kekeringan 5 kelas nilai (G19), jumlah tahun tercatat DIBI, kab/kota per tahun dengan catatan pelaporan, Kotak IRBI dan pengalaman lapangan, daftar perhatian kekeringan, siapa mengerjakan apa saat kemarau, Kartu 5.1 (B5.11) |
+| 6 | Profil Risiko Musim Hujan | 15 | korban per bahaya 2015–2026 (longsor subbab utama), peta kecil berganda IRBI banjir, longsor, abrasi; daftar perhatian banjir dan longsor; meninggal+hilang per musim; kejadian besar; rantai risiko kronis; siapa mengerjakan apa saat musim hujan; Kartu 6.1 lantai, 6.2 musim 2026/2027 setelah El Niño kuat, 6.3 pesisir; kepekaan peringatan dini dua lintasan |
+| 7 | Analisis Kesenjangan | 8 | kartu temuan 7.1–7.6 (bukti, dampak, lembaga pembuka; B5.6), tumpang tindih dan celah kewenangan air, sel komponen × musim × fase menurut kategori bukti (G16), kotak yang tidak boleh dikorbankan |
+| 8 | Grand Design dan Strategi | 16 | halaman kerangka B5.12, indikator Target 2029 resmi dan arah 2030 berlabel (B5.19), matriks komponen × musim × fase (B5.22), rekomendasi per BBWS dan DI pusat, daftar perhatian × instrumen daerah, posisi Tanggul Laut Pantura, kalender Rencana Aksi Musim Hujan 2026/2027, keputusan 14 hari pertama, agenda bukti, studi kasus PAMSIMAS |
+| 9 | Kelembagaan, Pembiayaan, dan Peta Jalan | 9 | matriks mandat tertulis berpasal dan usulan penugasan terpisah, forum koordinasi, lapisan pembiayaan B5.21, instrumen hukum B5.20 berkolom Progsun, peta jalan tiga horizon, indikator B5.19, tata kelola dan pelaporan |
+| 10 | Kesimpulan dan Rekomendasi | 4 | kisi kesimpulan dan pita keputusan B5.25, matriks rekomendasi B5.13, kisi prioritas B5.28 bila rekomendasi lebih dari 9 |
 | – | Daftar Pustaka | tidak dihitung (T9) | B5.17 |
-| Lampiran | A–H sesuai `KERANGKA.md`; glosarium dari `glosarium.json` (B5.18) | bebas | tabel lampiran B5.8, atribusi foto |
+| Lampiran | A–L sesuai `KERANGKA.md` §4 (K Glosarium dari `data/glosarium.json`, B5.18; L Atribusi foto) | bebas | tabel lampiran B5.8, pernyataan produsen di tiap lampiran data |
 | – | Sampul belakang | – | B5.24 |
 
-#### A3.3 DOCX kajian mitigasi (isi ±140 hlm, cadangan 10, batas ±150, T5)
+#### A3.3 DOCX kajian mitigasi (isi ±136 hlm, cadangan 14, batas ±150, T5)
+
+Alokasi dan komponen wajib mengikuti `KERANGKA.md` §5 v3.
 
 | Bab | Judul | Hlm | Komponen wajib |
 | --- | --- | --- | --- |
 | – | Bagian depan | ±18 | sama dengan kajian air |
-| 1 | Pendahuluan | 8 | |
-| 2 | Tinjauan Pustaka dan Kerangka Konseptual | 10 | tabel benchmark, tabel target Sendai |
-| 3 | Metodologi | 8 | definisi skenario terburuk yang masuk akal, cara kuantifikasi, rekonsiliasi |
-| 4 | Histori Bencana Indonesia | 11 | grafik per jenis, tabel kejadian besar dan pelajarannya |
-| 5 | Profil Risiko Nasional | 15 | peta provinsi, peta kab/kota, peta kisi, tabel peringkat |
-| 6 | Bencana Geologi | 17 | per jenis: histori, sebaran, kartu skenario B5.11 varian (a) 1 hlm, strategi tiga fase |
-| 7 | Bencana Hidrometeorologi | 18 | pola sama dengan Bab 6 |
-| 8 | Bencana Nonalam | 9 | kartu kejadian analog B5.11 varian (b): pandemi, kebakaran industri, kebakaran TPA |
-| 9 | Bencana Sosial | 6 | kartu kualitatif B5.11 varian (c); batas mandat |
-| 10 | Analisis Kesenjangan | 9 | kartu temuan |
-| 11 | Grand Design Mitigasi 2026–2030 | 14 | matriks fase × jenis bencana B5.22 |
-| 12 | Kelembagaan, Pembiayaan, Peta Jalan | 11 | matriks lembaga, lapisan pembiayaan B5.21, instrumen hukum B5.20, indikator B5.19 |
-| 13 | Kesimpulan dan Rekomendasi | 4 | kisi kesimpulan dan pita keputusan B5.25 |
+| 1 | Pendahuluan | 7 | meninggal dan hilang 2015–2025 beranotasi 2018 dan 2025; Kotak definisi operasional (kerusuhan sosial, mitigasi); tabel taksonomi dan lingkup |
+| 2 | Tinjauan Pustaka dan Kerangka Konseptual | 8 | kajian BNPB terdahulu, kronologi regulasi B5.31, praktik pembanding dan padanan di Indonesia, target Sendai dan indikator Renas |
+| 3 | Metodologi | 9 | sumber, produsen, dan label; bukti patahan skala IRBI 2025; skala dampak 1–5 per aspek (§B5.27); dasar kemungkinan per jenis; matriks ketersediaan kuantifikasi (G16); tiga besaran kerugian; aturan daftar perhatian dan provinsi utama; rekonsiliasi; rantai metode |
+| 4 | Histori Bencana Indonesia | 11 | kejadian bertumpuk kelompok dengan penanda patahan 2024 (G9), meninggal dan hilang per tahun, kejadian besar dan pelajarannya, rekonsiliasi korban, studi kasus InaTEWS Palu 2018 |
+| 5 | Profil Risiko Nasional | 15 | tren IRB 2015–2024, status IRBI 2025 per kab/kota, peta kecil berganda per bahaya, peta panas bahaya × pulau, kelas provinsi 2023 resmi, provinsi utama dua kriteria, ringkasan daftar perhatian, dua ukuran kapasitas, matriks kemungkinan × dampak B5.27 dengan panel "dampak dinilai, kemungkinan tidak dinilai" |
+| 6 | Bencana Geologi | 14 | paparan tsunami dan MMI berlabel, Kartu 6.1–6.5 (megathrust sebagai kepekaan magnitudo, sesar darat dan erupsi dan majemuk sebagai analog berangka), tuas evakuasi dan kepatuhan bangunan, rasio analog, pembanding kerugian kejadian |
+| 7 | Bencana Hidrometeorologi | 16 | peta kecil berganda IRBI, meninggal dan hilang per musim hujan nasional, Kartu 7.1 lantai, 7.2 musim 2026/2027, 7.3 kemarau, 7.4 gelombang dan rob; kepekaan peringatan dini dua lintasan; karhutla per provinsi asap |
+| 8 | Bencana Nonalam | 9 | Kartu 8.1–8.3 analog berangka empat besaran tanpa perkalian (B5.11 varian b), COVID-19 terlapor dan rentang kematian berlebih, garis waktu dua rezim status epidemi, KRB nonalam, TPA terbakar 2023–2026 |
+| 9 | Bencana Sosial | 6 | persen desa berkonflik per provinsi, Kartu 9.1 analog berangka (B5.11 varian c, kemungkinan "tidak dinilai"), batas mandat per fase |
+| 10 | Analisis Kesenjangan Sistem Penanggulangan Bencana | 9 | kartu temuan 10.1–10.8, celah kewenangan, klaster dua versi, empat angka cakupan peringatan dini, sel matriks per kategori bukti, kotak yang tidak boleh dikorbankan |
+| 11 | Grand Design Mitigasi 2026–2030 | 17 | halaman kerangka B5.12, indikator B5.19, alur langkah berpemicu, matriks fase × jenis berkolom pemicu (B5.22), kalender bahaya bulanan per pulau, operasi musiman, kalender Rencana Aksi Musim Hujan 2026/2027, kebutuhan respons per Direktorat PD Wilayah, agenda bukti, studi kasus Bangladesh dan Odisha |
+| 12 | Kelembagaan, Pembiayaan, dan Peta Jalan | 11 | matriks mandat tertulis dan usulan penugasan, forum dan jalur adopsi, yang berubah dari Renas PB, profil kerugian tahunan batas bawah (G1, Asumsi kebijakan), lapisan pembiayaan B5.21, instrumen hukum B5.20, peta jalan, indikator, tata kelola dan pelaporan |
+| 13 | Kesimpulan dan Rekomendasi | 4 | kisi kesimpulan dan pita keputusan B5.25, matriks rekomendasi B5.13, kisi prioritas B5.28 |
 | – | Daftar Pustaka | tidak dihitung (T9) | B5.17 |
-| Lampiran | A–I sesuai `KERANGKA.md`; glosarium dari `glosarium.json` (B5.18) | bebas | |
+| Lampiran | A–L sesuai `KERANGKA.md` §5 (K Glosarium dari `data/glosarium.json`, B5.18; L Atribusi foto) | bebas | |
 | – | Sampul belakang | – | B5.24 |
 
-Kajian air: Bab 1–10 berjumlah 104 hlm mengikuti alokasi `KERANGKA.md`, cadangan 6 hlm sampai
-batas ±110 (T5). Kajian mitigasi: Bab 1–13 berjumlah 140 hlm, cadangan 10 hlm sampai batas ±150
-(T5). Cadangan menampung pembatas, foto, tabel lanjutan, dan beda paginasi soffice dengan Word
-(D-12); Daftar Pustaka tidak dihitung (T9). `KERANGKA.md` menjumlah 153 hlm untuk kajian mitigasi
-walau tertulis ±145; pemangkasan per bab dicatat di §0.3.
+Kajian air: Bab 1–10 berjumlah 103 hlm, cadangan 7 hlm sampai batas ±110 (T5). Kajian mitigasi: Bab 1–13
+berjumlah 136 hlm, cadangan 14 hlm sampai batas ±150 (T5). Cadangan menampung pembatas, foto, tabel
+lanjutan, dan beda paginasi soffice dengan Word (D-12); Daftar Pustaka tidak dihitung (T9). Pemangkasan v1.3
+(104 dan 140 hlm) digantikan alokasi `KERANGKA.md` v3.
 
-Bab per jenis bencana (6–9) memakai urutan subbab seragam: (1) bahaya dan histori,
-(2) status resmi lembaga lalu indeks pendukung, (3) sebaran per pulau/provinsi/kab-kota,
-(4) kartu skenario terburuk, (5) strategi prabencana, tanggap darurat, pascabencana, (6) lembaga
-dan tugas.
+Bab per jenis bencana (6–9) memakai urutan subbab seragam tanpa strategi dan lembaga (`KERANGKA.md`
+prinsip 17): (1) bahaya dan histori, (2) status resmi lembaga lalu indeks pendukung, (3) sebaran per
+pulau/provinsi/kab-kota, (4) kartu skenario terburuk, (5) kesenjangan spesifik, (6) implikasi. Strategi
+hanya di bab grand design (matriks fase × jenis), lembaga hanya di bab kelembagaan, rekomendasi hanya di
+bab kesimpulan.
 Tiap sel matriks fase × jenis wajib terisi aksi atau "tidak berlaku" dengan alasan
 satu kalimat yang bisa dibantah.
 
 #### A3.4 Bagian depan dan lampiran
 
-Urutan bagian depan: Sampul (tanpa nomor) → Kolofon → Kata Pengantar → Daftar Isi →
-Daftar Tabel → Daftar Gambar → Daftar Lampiran → Daftar Singkatan → Ringkasan Eksekutif.
-Tanpa halaman tim penyusun (K1). Urutan bagian belakang: bab terakhir → Daftar Pustaka
+Urutan bagian depan (`KERANGKA.md` §3): Sampul (tanpa nomor) → Kolofon → Kata Pengantar Kepala
+BNPB (1–2 hlm, final siap tanda tangan) → Daftar Isi → Ringkasan Eksekutif → Daftar Tabel → Daftar
+Gambar → Daftar Lampiran → Daftar Singkatan → BAB 1. Nomor romawi kecil. Tanpa halaman tim penyusun (K1). Urutan bagian belakang: bab terakhir → Daftar Pustaka
 (B5.17) → Pembatas Lampiran → Lampiran (termasuk Glosarium dan Atribusi Foto) → Sampul
 belakang (B5.24).
 
-Kolofon adalah lembar identitas dokumen: judul resmi; penerbit BNPB dan alamat; dasar
-penyusunan (UU 24/2007, RIPB Perpres 87/2020, Renas PB 2025–2029 Perban 1/2025); nomor
-dokumen dan versi menurut pola tata naskah BNPB; ditujukan kepada (Kepala BNPB); tanggal
-terbit dan batas data; status draf/final; cara mengutip; atribusi foto sampul. Tanpa nama
-tim (K1).
+Kolofon adalah lembar identitas dokumen sekaligus halaman keterangan terbitan (skill
+`book-production-rules`, `TAMBAHAN-BUKU.md` butir 8): judul resmi; penerbit BNPB dan alamat;
+tahun terbit; dasar penyusunan (UU 24/2007, RIPB Perpres 87/2020, Renas PB 2025–2029 Perban
+1/2025); versi dokumen, tanpa nomor dan format tata naskah dinas (`KEPUTUSAN.md` P17); ditujukan
+kepada (Kepala BNPB); tanggal terbit dan batas data; status final; cara mengutip; atribusi
+foto sampul. Tanpa nama tim (K1). Kolofon berstatus final di keluaran (`KERANGKA.md` K18); catatan
+bahwa teks belum diperiksa pemilik dan penanda T7 untuk Kata Pengantar ditulis di log QA
+`keluaran/qa/log-<kajian>.md`, tidak di keluaran.
 
-Ringkasan Eksekutif berbentuk baku: kalimat tesis; 4–6 angka kunci dengan sumber, kartu
-pertama berisi hitungan wilayah yang perlu ditindak (B5.4); satu peta; tiga risiko teratas
-dan tiga kapasitas yang sudah ada; rekomendasi utama bernomor berlembaga; keputusan yang
-diminta dari Kepala BNPB; yang belum diketahui. Halaman pertamanya halaman Pesan Kunci (§B5.26);
-tiap paragraf temuan sesudahnya dibuka kalimat Bold berangka (§B2; OECD, CCDR; SINTESIS P17).
+Ringkasan Eksekutif dua lapis (`KERANGKA.md` §3):
+
+- **Lapis keputusan (2 hlm, dapat dibaca terpisah).** Halaman Pesan Kunci (§B5.26): tesis, lalu 2–3
+  keputusan yang diminta beserta akibat tiap pilihan (pita §B5.25), lalu 4–6 temuan bernomor yang menopang
+  keputusan itu. Halaman kedua: 4–6 kartu angka, kartu pertama jumlah kab/kota di daftar perhatian (B5.4),
+  dan rekomendasi 100 hari berlembaga.
+- **Lapis rincian (4–6 hlm).** Temuan bernomor lengkap bergaya Isi Temuan, dibuka kalimat Bold berangka
+  (§B2; OECD, CCDR; SINTESIS P17); satu peta; tiga risiko teratas dan tiga kapasitas yang sudah ada;
+  ringkasan Rencana Aksi Musim Hujan 2026/2027 (1 hlm); ringkasan tabel yang berubah dari Renas PB; yang
+  belum diketahui.
 
 Lampiran berkode huruf di depan judul ("Lampiran A. Tabel indikator 119 kab/kota"),
 tabel di dalamnya "Tabel A.1". Lampiran memuat data per kab/kota yang juga diserahkan
@@ -344,7 +448,9 @@ Satu alur untuk kedua kajian, dari luas ke sempit, dari masalah ke tindakan:
 8. **Penutup**: yang sengaja tidak direkomendasikan dan alasannya; yang belum diketahui
    dan data yang diminta dari K/L pemegangnya.
 
-Tiap bab dibuka pertanyaan yang dijawabnya dan kotak ringkasan bab (§B5.2).
+Tiap bab dibuka 2–3 pertanyaan yang dijawabnya dan kotak ringkasan bab (§B5.2, §B5.3), dan
+ditutup implikasinya bagi BNPB. Rekomendasi besar yang diperdebatkan menampilkan argumen tandingan
+sebelum posisi kajian (§C9).
 
 ### A5. Satu sumber data, satu set gambar
 
@@ -360,14 +466,16 @@ data/kajian-bnpb/data/*.json        ← satu-satunya tempat angka
         ├─► angka naskah  disuntik dari JSON saat build (templat), tidak diketik tangan (D-22)
         │
         ├─► generator python-docx → lengkap.docx → UNO perbarui indeks → soffice → PDF
-        └─► ringkas.html (tema.json yang sama) → Chromium headless → PDF ringkas
+        └─► bangun/pptx/deck.py (tema.json, angka.json, PNG peta dasar tanpa label) → PPTX → soffice → PDF
 ```
 
 Aturan:
 
 - Angka di judul, kartu angka, tabel, peta, dan teks dibaca dari JSON yang sama. Baris
   Jumlah dihitung dari angka yang tampil. Subtotal menjumlah ke total.
-- Satu PNG dipakai di DOCX dan PDF; peta web memakai JSON dan legenda yang sama.
+- Satu PNG dipakai di DOCX dan PDF-nya; deck memakai PNG peta dasar dari render yang sama dengan lapisan
+  label dan legenda dimatikan, sedangkan pil, legenda, dan grafik deck dibangun native dari data dan token
+  yang sama (§B7.2); peta web memakai JSON dan legenda yang sama.
   Prioritas yang disorot dan bernomor di web sama jumlahnya dengan di dokumen.
 - Tiap gambar dan tabel punya berkas data di balik layar yang ikut diserahkan (lampiran
   atau `.xlsx`).
@@ -391,7 +499,9 @@ Aturan:
 | Debit sungai Jawa, air tanah, penurunan muka tanah terukur | Data tidak ada di platform; ditulis sebagai celah dan permintaan data |
 | Neraca air dan indeks kekritisan per wilayah sungai, bila Pola/RPSDA BBWS tidak terambil | `riset/B` §1.4 menandainya [TIDAK DITEMUKAN] (§C8); diganti IPA per pulau, ketersediaan per kapita, dan IRBI per kab/kota (§A3.1) |
 | Peta zona air tanah | Data Badan Geologi tidak tersedia (`KERANGKA.md` tabel celah); ditulis sebagai celah dan permintaan data |
-| Simulasi pandemi, kebakaran industri, kebakaran TPA, dan kerusuhan; tabel kerusakan seragam dan pita peluang untuk nonalam dan sosial | Platform tidak punya simulasinya (`riset/D` §1 hanya bahaya alam, udara, abrasi, penurunan muka tanah). Nonalam memakai kejadian analog, sosial kartu kualitatif tanpa proyeksi korban (B5.11); K7 berlaku penuh hanya untuk bencana alam yang dimodelkan |
+| Simulasi pandemi, kebakaran industri, kebakaran TPA, dan kerusuhan; perkalian analog ke wilayah lain, proyeksi korban per wilayah, dan pita peluang untuk nonalam dan sosial | Platform tidak punya simulasinya (`riset/D` §1 hanya bahaya alam, udara, abrasi, penurunan muka tanah). Nonalam dan sosial memakai kartu analog berangka empat besaran (korban jiwa, luas terdampak, kerugian materiil, kerugian imateriil) tanpa perkalian; skenario terburuk = analog terbesar dalam 30 tahun terakhir beserta alasan analog yang disisihkan; kemungkinan "tidak dinilai" (B5.11, `KERANGKA.md` prinsip 9). Mei 1998 dan kerusuhan Agustus 2025 tidak dipakai sebagai analog (M01) |
+| Kajian kebakaran gedung dan permukiman | Di luar lingkup P11: urusan pemadam kebakaran kab/kota (UU 23/2014 Lampiran E); angka DIBI-nya hanya konteks lingkup di Bab 1 dan rekap Bab 4 kajian mitigasi (`KERANGKA.md` prinsip 3) |
+| Luka, pengungsi hari ke-7, dan DALY di kartu skenario | Tidak ada di DIBI dan tidak dimodelkan; pengungsi = pengungsi tercatat puncak atau penghuni rumah RB+RS; YLL hanya di lampiran metode (`KERANGKA.md` prinsip 9) |
 | Bencana akibat teror | UU 24/2007 Pasal 1 angka 4 memasukkannya ke bencana sosial; kewenangan BNPT dan Polri |
 | Bencana akibat gagal modernisasi | UU 24/2007 Pasal 1 angka 3 memasukkannya ke bencana nonalam; belum ada definisi operasional dan data |
 | Logo BNPB versi putih buatan sendiri | Mengubah lambang resmi (§C6.5); logo berwarna di bidang putih (B5.1) |
@@ -404,7 +514,7 @@ Aturan:
 ## B. Design system
 
 Semua token hidup di satu berkas `data/kajian-bnpb/tema.json` yang dibaca generator DOCX,
-perender peta dan grafik, HTML PDF ringkas, dan peta web. Konstanta warna tidak disalin ke
+perender peta dan grafik, pembangun deck, dan peta web. Konstanta warna tidak disalin ke
 kode.
 
 ### B1. Warna
@@ -437,7 +547,7 @@ adalah bingkai templat dan tidak dihitung sebagai arti data.
 | `biru-abu` | aksen | `#3F5F80` | ukuran kedua (pil kolom luas, seri kedua grafik) |
 | `biru-lembaga` | aksen | `#00499D` | nama tempat yang disorot di judul PDF |
 | `emas-teks` | aksen | `#8A6A2E` | teks bernada kekeringan |
-| `sumber` | aksen | `#4A9BE0` | bilah 3 pt di kiri catatan sumber PDF ringkas; tanda grafis saja, tidak di DOCX |
+| `sumber` | aksen | `#4A9BE0` | bilah 3 pt di kiri catatan kaki slide deck (Buku Pegangan bab Selera presentasi, Komponen, Catatan kaki); tanda grafis saja, tidak di DOCX. Pemakaian di PDF ringkas: v1.2, dicabut K17 |
 
 Kontras: teks di latar putih ≥ 4,5:1. `oranye` (3,73:1), `biru` (3,85:1), kering
 `#B08A3E` (3,21:1), dan `sumber` (2,98:1) hanya dipakai untuk tanda grafis (ikon, garis,
@@ -512,7 +622,7 @@ bahaya (T8). Lima kelas dari terang ke pekat:
   `#E8894A` / `#8F3F07`) untuk semua bahaya, dengan nama kelas resmi dan legenda "Kelas IRBI
   BNPB" (T8; `skala.irbi` di `tema.json`). Ramp keluarga air, emas, dan netral hanya untuk indeks
   platform. Hex kategori (`#D9600B`, `#2F86D1`) tidak pernah menjadi kelas IRBI. Peta IRBI banjir
-  di kajian air ikut oranye; apakah pemilik menghendakinya masih terbuka (T13).
+  di kajian air ikut oranye; apakah pemilik menghendakinya masih terbuka (U3).
 - Validator ramp: kelas bersebelahan ΔE ≥ 10 (hasil terkecil 10,5), kelas 1 ΔE ≥ 7
   terhadap putih (terkecil 7,5), kelas IRBI 1–3–5 ΔE ≥ 20 (terkecil 22,0).
 - Peta koroplet tidak memakai `wilayah` untuk daratan (kelas 1 ramp netral hanya ΔE 2,0
@@ -607,7 +717,7 @@ digambarnya; gerbang D-24 menolak hex yang tercatat dalam dua peran pada satu ha
 | Isi | 10,5 pt, spasi 1,15, 6 pt sesudah paragraf | Regular | `teks` | rata kiri-kanan; istilah asing miring |
 | Penekanan | 10,5 pt | Bold | `navy` | hemat; tanpa garis bawah dekoratif |
 | Isi Temuan (gaya paragraf) | 10,5 pt, spasi seperti Isi | Regular; run pertama Bold | `teks`; run pertama `navy` | turunan gaya Isi. Run pertama = kalimat pembuka ≤ 2 baris bergaya Penekanan yang memuat angka, tempat, dan tahun (OECD, CCDR; SINTESIS P17; D-26). Wajib untuk paragraf temuan Ringkasan Eksekutif dan semua paragraf isi Bab 4–7 kajian air dan Bab 4–10 kajian mitigasi; paragraf keputusan yang diminta dan yang belum diketahui di Ringkasan Eksekutif memakai gaya Isi |
-| Keterangan Tabel/Gambar | 9 pt | label Bold, judul Regular | label `navy`, judul `teks` | judul deskriptif stabil (§C2, T14); di atas objek, rata tengah, ≤ 2 baris; label dan judul dipisah satu spasi ("Tabel 4.2 Judul"), tanpa titik dua atau titik |
+| Keterangan Tabel/Gambar | 9 pt | label Bold, judul Regular | label `navy`, judul `teks` | judul deskriptif stabil (§C2, U4); di atas objek, rata tengah, ≤ 2 baris; label dan judul dipisah satu spasi ("Tabel 4.2 Judul"), tanpa titik dua atau titik |
 | "Sumber:" dan catatan | 8,5 pt | "Sumber:" Bold | `teks-3` di latar putih, `teks-2` di dalam kotak bertint | di bawah objek, rata kiri sejajar objek; "Catatan:" sesudah "Sumber:", paling banyak satu baris dan 120 karakter (§B5.10, D-32) |
 | Isi tabel | 9 pt (≥ 8 pt) | Regular, angka tabular | `teks` | |
 | Teks grafik dan peta | label nilai 8,5 pt; kategori, legenda, anotasi 8 pt; label panel (a)(b)(c) 9 pt, pada ukuran cetak | nilai dan label panel Bold, lainnya Regular | `teks`; anotasi dan garis kejadian `teks-2` | ≥ 8 pt; label 5,9–7 pt di CCDR, Atlas, dan MGI tidak ditiru (SINTESIS P40) |
@@ -630,6 +740,16 @@ hanya untuk pil bagian, kepala kolom, dan label pita; singkatan resmi (BNPB, BMK
 BPBD, PVMBG) tetap kapital karena itu nama. Angka memakai digit tabular Roboto
 (`tnum`) di tabel dan kartu.
 
+Ejaan dan pemenggalan (skill `book-production-rules`, `TAMBAHAN-BUKU.md` butir 3–4): isi rata
+kiri-kanan butuh pemenggalan supaya tidak ada celah antarkata yang lebar. Semua gaya DOCX diberi
+bahasa `id-ID` dan `w:autoHyphenation` aktif di `settings.xml`. LibreOffice di mesin ini tidak membawa
+pola pemenggalan Indonesia, jadi `hyph_id_ID` dari repositori kamus LibreOffice dipasang ke profil
+LibreOffice khusus ekspor (`-env:UserInstallation` ke `bangun/docx/keluaran/.lo-profil`), bukan profil pemilik, sebelum ekspor PDF. Ejaan diperiksa dengan kamus `id_ID` lewat
+pustaka Python `spylls` di venv; kata yang tidak dikenal dan bukan istilah `glosarium.json` atau nama
+diri dilaporkan per bab dan wajib nol sebelum serah (§D4, gerbang T-10). Kamus dan pola disalin ke
+`bangun/kamus/id` dan dikunci SHA-256 di `bangun/docx/bangun.py`; uji diri pembangun DOCX memeriksa gaya
+ber-`id-ID`, pemenggalan aktif, pola terpasang di profil ekspor, dan kata terpenggal di PDF.
+
 Kapital pada label ditulis sebagai teks literal pada kata labelnya; `w:caps` tidak dipakai
 pada run yang memuat satuan, supaya "ha", "mm", "m³/detik", dan "µg/m³" tetap huruf
 aslinya. Butir tingkat 1 memakai "•" (U+2022) berfont Roboto, tingkat 2 bernomor huruf
@@ -647,13 +767,13 @@ tidak ada di Roboto (D-23).
   Gambar dan tabel memenuhi lebar isi atau salah satu lebar kolom, tidak lebar bebas.
 - Skala spasi: 3, 6, 12, 18, 24 pt. Sebelum subbab 18 pt, sebelum sub-subbab 12 pt;
   sebelum keterangan objek 12 pt, sesudah "Sumber:" 12 pt.
-- Radius kotak satu skala: 2 mm, hanya di PNG, SVG, dan HTML (PDF ringkas, peta, grafik).
+- Radius kotak satu skala: 2 mm, hanya di PNG, SVG, dan HTML (peta, grafik).
   Kotak di DOCX dibuat dari tabel bersudut tegak, karena sel tabel Word tidak bisa membulat
   dan bentuk dirender tidak konsisten di LibreOffice. Garis panel 0,75 pt `garis`. Jarak isi
   ke tepi panel ≥ 3 mm (≥ 7 pt), tidak ada isi menempel ke tepi bawah.
 - Daftar lebih dari 5 butir dijadikan tabel atau kisi, bukan butir panjang.
-- Halaman PDF ringkas: 3–4 blok per halaman (grup angka, 2–3 panel, pita bawah), semua
-  blok berbagi tepi kiri dan kanan yang sama, tanpa ruang menganga.
+- (v1.2, dicabut K17) Halaman PDF ringkas: 3–4 blok per halaman. Kepadatan slide deck mengikuti Buku
+  Pegangan bab Selera presentasi, Prinsip.
 
 ### B4. Aturan halaman
 
@@ -683,12 +803,15 @@ tidak ada di Roboto (D-23).
   memperbarui semua indeks lewat LibreOffice UNO (`XDocumentIndexesSupplier`, `update()`)
   sebelum ekspor PDF, dan menyetel `w:updateFields` di `settings.xml` untuk Word.
 - **Bab** selalu mulai halaman baru (halaman ganjil tidak diwajibkan).
+- **Metadata** (skill `book-production-rules`, `TAMBAHAN-BUKU.md` butir 9): properti inti DOCX,
+  PDF, dan PPTX berisi judul resmi, penerbit BNPB, subjek, kata kunci, dan bahasa `id-ID`. PDF
+  memuat bookmark dari judul bab dan subbab (Heading 1–2) untuk navigasi (§D4).
 - **Sampul depan dan sampul belakang** (B5.1, B5.24) tanpa header, footer, dan nomor.
 - **Tabel lintas halaman**: baris kepala diulang (Repeat Header Row), baris tidak pecah
   lintas halaman, sisa di halaman terakhir ≥ 4 baris (bila kurang, baris dibagi rata).
-- **Tanggal data**: tiap halaman data PDF punya pil batas data (teksnya belum diputus, karena T4
-  hanya memutus kaki; bawaan "CUT OFF DATA" seperti pil yang ditambahkan pemilik di deck); di
-  DOCX batas data ditulis di baris "Sumber:" tiap tabel/gambar.
+- **Tanggal data**: di DOCX dan PDF-nya batas data ditulis di baris "Sumber:" tiap tabel/gambar. Pil
+  CUT OFF DATA hanya di deck (Buku Pegangan S16). Pil batas data di tiap halaman PDF ringkas: v1.2,
+  dicabut K17.
 
 ### B5. Komponen
 
@@ -709,10 +832,13 @@ foto sampul di kolofon dan Lampiran Atribusi. Tanpa header/footer/nomor, tanpa l
 
 #### B5.2 Pembatas bab
 
-Bukan halaman penuh (hemat batas 150 hlm). Bab mulai halaman baru: label pita "BAB 6"
-→ judul bab 20 pt → satu kalimat pertanyaan yang dijawab bab (10,5 pt miring `teks-2`)
-→ kotak ringkasan bab (B5.3) → isi. Pembatas Lampiran satu halaman berlatar `navy`
-dengan judul putih (satu-satunya halaman gelap selain sampul).
+Bukan halaman penuh (hemat batas halaman T5). Bab mulai halaman baru: label pita "BAB 6"
+→ judul bab 20 pt → 2–3 pertanyaan yang dijawab bab (10,5 pt miring `teks-2`) → foto
+Commons beratribusi hanya bila membawa informasi (§B5.15) → kotak ringkasan bab (B5.3) → isi.
+Pertanyaan 2–3 dan foto diambil dari skill `book-production-rules` (`TAMBAHAN-BUKU.md` butir 7);
+halaman pembatas penuh dan nomor bab besar dari skill itu tidak dipakai, karena memakan batas halaman
+dan hierarki di §B2 dibangun dari bobot dan warna, bukan judul raksasa. Pembatas Lampiran satu
+halaman berlatar `navy` dengan judul putih (satu-satunya halaman gelap selain sampul).
 
 #### B5.3 Kotak ringkasan bab
 
@@ -720,7 +846,9 @@ Panel putih bergaris `garis` 0,75 pt, radius 2 mm, pita kepala tint netral beris
 dan judul "Ringkasan bab". Isi berlabel, satu baris satu gagasan: **Temuan:** (≤ 3
 butir, angka di depan) **Angka kunci:** (≤ 3, bersumber) **Rekomendasi:** (nomor
 rekomendasi yang diturunkan bab ini). Tanpa paragraf. Ditulis terakhir setelah bab
-selesai.
+selesai. Temuan pertama adalah temuan terpenting berangka, lalu arti dan dampaknya bagi BNPB (BLUF,
+skill `deep-research`, §C9); pembaca yang berhenti di kotak ini sudah paham. Skill
+`book-production-rules` meminta 3–4 temuan; batas 3 dari Buku Pegangan L17 yang berlaku.
 
 #### B5.4 Kartu angka
 
@@ -732,9 +860,9 @@ keyakinan sendiri: sumber dan label keyakinan ditulis satu baris kaki per grup k
 ("Sumber: …; Resmi"). Kartu dikelompokkan dalam grup bertint dengan pil bagian, 3–4 kartu
 per baris, bukan satu deret datar. Warna pil bagian: `navy` untuk data (mis. "DATA RESMI",
 "SIMULASI"), `merah` untuk perlu perhatian dan preseden, pil garis `slate` untuk peringatan
-BMKG. Kartu tanpa data dihapus, bukan diisi "–". Di Ringkasan Eksekutif dan PDF hlm 2,
-kalimat tesis datang lebih dulu; kartu pertama berisi hitungan wilayah yang perlu ditindak,
-didampingi total singkat.
+BMKG. Kartu tanpa data dihapus, bukan diisi "–". Di Ringkasan Eksekutif kalimat tesis datang
+lebih dulu (halaman Pesan Kunci); di Ringkasan Eksekutif, kartu pertama berisi hitungan
+wilayah yang perlu ditindak, didampingi total singkat.
 
 #### B5.5 Kotak temuan kunci, kotak keputusan, kotak catatan
 
@@ -770,7 +898,7 @@ kategori), atau 3–4 kolom dipisah garis 0,75 pt (pita bawah aksi; latar `#FDF4
 #### B5.7 Tabel
 
 **Aturan umum (semua tabel):**
-- Keterangan di atas ("**Tabel 5.2** Judul deskriptif berbentuk kalimat temuan"), sumber
+- Keterangan di atas ("**Tabel 5.2** Judul deskriptif", bentuknya §C2 dan U4), sumber
   di bawah ("**Sumber:** …; data per 22 Okt 2026"). Judul tabel ≤ 2 baris.
 - Kepala `navy` teks putih Bold 8,5 pt, kata label kapital dan satuan huruf aslinya, rata
   tengah, ≤ 3 baris, diulang tiap halaman. Satuan di kepala dalam kurung ("LUAS (ha)",
@@ -794,7 +922,9 @@ kategori), atau 3–4 kolom dipisah garis 0,75 pt (pita bawah aksi; latar `#FDF4
   di catatan ("tidak dipublikasikan", "belum ada", "menunggu data K/L", "belum dicari").
   Tidak diisi 0. Kolom yang seluruhnya kosong dibuang. "–" adalah satu-satunya notasi data
   kosong di seluruh dokumen, termasuk lampiran.
-- Tabel berisi warna/ikon/pil ditutup legenda satu baris di bawahnya.
+- Tabel berisi warna/ikon/pil ditutup legenda di baris terakhir tabel itu sendiri: sel digabung
+  selebar tabel, tanpa isi warna, 8 pt. Dengan begitu "Sumber:" tetap paragraf pertama sesudah
+  objek (D-7). Legenda grafik dan peta dibakar ke PNG.
 - Label keyakinan per tabel di baris sumber, atau per baris bila campuran.
 - Sel gabungan rata tengah vertikal.
 - Data berperiode (harian, bulanan, tahunan) dalam satu tabel dengan periode sebagai kolom,
@@ -806,12 +936,12 @@ kategori), atau 3–4 kolom dipisah garis 0,75 pt (pita bawah aksi; latar `#FDF4
 - **Tabel peringkat**: nomor peringkat dalam bulatan `navy` angka putih; wilayah fokus
   diblok `#FDF1E8` dan tetap memakai nomor aslinya; kolom jumlah absolut (jiwa terpapar)
   selalu ada di samping indeks/persen; dasar urutan disebut di judul. Nilai indeks boleh diikuti
-  titik kelas ramp keluarga (UNICEF; SINTESIS P106).
+  titik kelas ramp §B1.4 (kelas IRBI: ramp api, T8) (UNICEF; SINTESIS P106).
 - **Tabel perbandingan** (benchmark, opsi kebijakan): kolom Praktik | Negara/lembaga |
   Yang ditiru | Yang tidak cocok | Penyesuaian Indonesia; kolom vonis berupa pil dengan
   kosakata tetap.
 - **Matriks lembaga**: baris lembaga (BNPB, BPBD, K/L, pemda, BUMD), kolom fase
-  pra/saat/pasca; sel berisi tugas ≤ 2 baris; lembaga pemimpin ditandai pil `navy`
+  prabencana, tanggap darurat, pascabencana; sel berisi tugas ≤ 2 baris; lembaga pemimpin ditandai pil `navy`
   "Pemimpin", pendukung pil garis "Pendukung"; lembaga sebagai chip berikon, bukan logo.
 - **Tabel lampiran** (B5.8), pengecualian aturan kepala navy: kepala Bold `teks-3` tanpa
   isi dengan garis bawah 1 pt, baris 0,5 pt `garis`, 8–9 pt; data belum ada "–" dijelaskan
@@ -824,14 +954,16 @@ kategori), atau 3–4 kolom dipisah garis 0,75 pt (pita bawah aksi; latar `#FDF4
 - **Tabel perkiraan lama lawan baru** (Nankai; SINTESIS P59): kolom dokumen lama dan kajian ini,
   kolom kajian ini Bold; nilai berupa rentang "sekitar", asumsi ditulis di bawah nilai, stempel
   skenario di baris sumber.
-- **Tabel peta panas** (ADB, MGI; SINTESIS G16): sel diwarnai kelas diskret ramp keluarga (§B1.4),
-  angka tetap tertulis, legenda kelas satu baris di bawah; kepala tidak diputar bila muat.
+- **Tabel peta panas** (ADB, MGI; SINTESIS G16): sel diwarnai kelas diskret ramp §B1.4 (kelas IRBI:
+  ramp api, T8), angka tetap tertulis, legenda kelas di baris terakhir tabel; kepala tidak diputar
+  bila muat.
 - **Tabel preseden** (White Paper Jepang; SINTESIS P108): kejadian besar sebagai kolom berikon
   jenis, besaran yang sama sebagai baris (waktu, magnitudo atau luas, korban, rumah rusak); kolom
   yang sedang dikaji berlatar `#FDF1E8`.
 - **Tabel tipologi wilayah** (MGIA, Nankai; SINTESIS P104): baris dikelompokkan per tipe wilayah
   dengan pita grup `#E6EAF0` berlabel tipe dan cacah; profil tipe 2–3 label pendek; rekomendasi
-  merujuk tipe.
+  merujuk tipe. Tipe tidak diberi warna sendiri; bila perlu di peta, tipe digambar sebagai kelas
+  ramp netral berlabel.
 - **Kolom proyeksi dan target** (IMF; SINTESIS P67): berlatar `#F3F5F8` di tabel indikator,
   skenario, dan proyeksi; ini pembeda kolom, bukan pita selang-seling. Nilai berketidakpastian
   ditulis "X ± Y" atau rentang "a–b"; baris pembanding (Pulau Jawa, nasional) Bold tanpa isi
@@ -878,7 +1010,8 @@ dampak terukur, asumsi, dan sumber tiap angka; tanpa biaya (K6).
   sumber batas, sistem referensi, proyeksi, inset, dan catatan ke manifest; D-8
   memeriksanya.
 - **Koroplet hanya untuk rasio dan indeks** (per 100.000 jiwa, per km², kelas indeks); total dan
-  jumlah digambar sebagai simbol sebanding (FT; SINTESIS P46).
+  jumlah digambar sebagai simbol sebanding (FT; SINTESIS P46). Manifest peta mencatat `besaran`;
+  D-28 menolak koroplet untuk total.
 - **Peta kecil berganda** untuk tahun, skenario, atau komponen (MGI, OECD, Nankai; SINTESIS P43):
   skala dan batas sama, satu legenda bersama, kelas sama di semua panel (D-29), label panel (a)(b)(c)
   atau nama skenario dalam pil. Pulau Jawa yang memanjang disusun bertumpuk.
@@ -889,10 +1022,13 @@ dampak terukur, asumsi, dan sumber tiap angka; tanpa biaya (K6).
 - **Inset perbesaran** bergaris `batas` untuk kawasan padat, mis. Jabodetabek dan Semarang–Demak
   (OECD; SINTESIS P47).
 - **Sorot satu kategori** di atas daratan netral memakai warna keluarga yang dibahas (§B1.3), tidak
-  `merah` (CCDR; SINTESIS P42). Bahaya disandingkan keterpaparan (penduduk, aset) sebagai dua peta
+  `merah` (CCDR; SINTESIS P42). Pengecualian: kelas IRBI memakai ramp api di semua peta (T8); ramp
+  keluarga hanya untuk kategori dan indeks platform. Bahaya disandingkan keterpaparan (penduduk, aset) sebagai dua peta
   sama skala (MGIA; P50).
-- **Legenda pil wilayah** (Deltaprogramma; SINTESIS P49): tiap wilayah sungai berpil warnanya dan
-  satu kalimat arah; dipakai di peta strategi per wilayah sungai.
+- **Peta strategi per wilayah sungai** (Deltaprogramma; SINTESIS P49, disesuaikan): wilayah sungai
+  dibedakan nomor putih dalam bulatan `navy` dan batas 1 pt `teks-2`, tanpa isi warna; legenda
+  berupa pil nama 2–3 kata; kalimat arah 2030 pindah ke tabel tepat di bawah peta (No, Wilayah
+  sungai, Arah 2030). Tidak ada warna baru per wilayah (§B1.3, §B1.6, D-9).
 - Peta di dokumen sama isinya dengan peta web: prioritas yang disorot dan bernomor sama,
   jumlahnya sama.
 - Koordinat titik dari sumber luar divalidasi; titik ragu tidak digambar tetapi tetap ada
@@ -908,8 +1044,8 @@ dampak terukur, asumsi, dan sumber tiap angka; tanpa biaya (K6).
 - **Batang**: ujung atas membulat di atas garis dasar `garis`; tanpa sumbu Y; nilai Bold di atas tiap
   batang termasuk nilai kecil; batang pembanding `#DCE1E7`; periode lama tint, periode yang
   ditekankan pekat (ditetapkan di judul, mis. tiga tahun terakhir); garis rata-rata berpil `navy`
-  "rata-rata"; kepala grafik: nama besaran kiri, perubahan neto kanan berwarna arah dengan ikon
-  vektor (§B1.5). Batang bertumpuk paling banyak 4 kategori ditambah "lainnya", nilai tiap segmen dan
+  "rata-rata"; kepala grafik pola grafik batang pemilik: nama besaran kiri, perubahan neto kanan
+  berwarna arah dengan ikon vektor (§B1.5), satu baris tanpa satuan dan periode (lihat Anatomi). Batang bertumpuk paling banyak 4 kategori ditambah "lainnya", nilai tiap segmen dan
   total di atas batang tertulis.
 - **Seri panjang** (lebih dari 24 periode): diringkas menjadi rata-rata per dekade sebagai batang
   (OWID; SINTESIS P29), atau digambar sebagai garis berlabel di ujung dengan paling banyak 3 garis
@@ -919,13 +1055,19 @@ dampak terukur, asumsi, dan sumber tiap angka; tanpa biaya (K6).
   (mis. 2019–2025) berwarna tint; tahun analog (2015) garis putus.
 - **Anatomi** (MGI, Atlas, CCDR; SINTESIS P32–P38): dari atas keterangan (§B2), pil kanan atas paling
   banyak satu (label keyakinan §C6.2, skenario, atau sasaran yang diukur, mis. "Sasaran Sendai B"),
-  grafik, "Sumber:", lalu "Catatan:" bila ada. Tanpa baris subjudul indikator atau satuan; satuan dan
-  periode dilebur ke akhir keterangan dalam kurung atau ke legenda. Label seri langsung di ujung garis
+  grafik, "Sumber:", lalu "Catatan:" bila ada. Kartu Insight Buku Pegangan adalah aturan layar
+  situs; di kertas berlaku dua hal: (1) kepala grafik pola grafik batang pemilik (nama besaran kiri,
+  perubahan neto kanan) menjadi satu-satunya baris di atas grafik, tanpa satuan dan periode; baris
+  subjudul indikator, satuan, atau periode tidak dipakai, satuan dan periode dilebur ke akhir
+  keterangan dalam kurung atau ke legenda; (2) "Catatan:" paling banyak satu baris dan 120
+  karakter, hanya untuk cara baca atau bias data (D-32). Label seri langsung di ujung garis
   atau batang bila seri paling banyak 4, selebihnya legenda di atas grafik. Paling banyak 3 anotasi
   per grafik; kejadian pada deret waktu ditandai garis tegak tipis `teks-2` berlabel (El Niño 2015,
   2019, 2023; UU 17/2019) (IMF, Atlas; P26, P27). Panel berganda berlabel (a), (b), (c), skala sama,
-  satu legenda di kaki (P36). Grafik boleh satu blok dengan kolom 3 butir pesan berangka di kanannya
-  (GAR; P72). Teks grafik ≥ 8 pt pada ukuran cetak (§B2).
+  satu legenda di kaki (P36). Di deck grafik boleh satu blok dengan kolom temuan di panel yang sama
+  (GAR; P72; Buku Pegangan S13); di DOCX pesannya ditulis sebagai kalimat pembuka tebal paragraf di
+  bawah gambar, karena kolom samping di Word rapuh (P12). Teks grafik ≥ 8 pt pada ukuran
+  cetak (§B2).
 - **Rentang ketidakpastian**: batang galat atau pita (p10–p90, rendah–tinggi) dengan titik
   tengah; angka rentang ditulis di label ("1.200–4.800 jiwa"); judul menyebut sumber
   rentang. Presisi tidak melebihi data. Bentuk yang dipakai (SINTESIS §7): pita persentil dengan
@@ -933,112 +1075,133 @@ dampak terukur, asumsi, dan sumber tiap angka; tanpa biaya (K6).
   (ADB, MGI; P55); pita melebar untuk proyeksi dengan garis tengah `navy` (FT, IMF; G11); data garis
   solid, proyeksi garis putus, estimasi arsir (Atlas; P56); small multiples selisih dari skenario
   dasar (IMF; P57); bara risiko dan strip kelas per skenario dengan 5 kelas ramp berlabel dan pil
-  "penilaian" (IPCC, GAR; P63, P64); beberapa sumber sekaligus dengan seri utama pekat dan sumber lain
+  "Penilaian pakar" (§C6.2) (IPCC, GAR; P63, P64); beberapa sumber sekaligus dengan seri utama pekat dan sumber lain
   garis tipis `teks-3` (WMO; P65). Paling banyak 2 pita per grafik; garis per anggota ansambel tidak
   digambar.
 - Palet grafik dari token B1; warna per seri tetap di seluruh dokumen.
 - Grafik cetak tidak punya tooltip, jadi semua angka yang dibaca tertulis.
 - Legenda wajib untuk tiap seri, warna, dan pita (D-21); grafik yang tidak lazim diberi satu baris
   cara baca dan definisi besarannya di baris "Catatan:" di bawah "Sumber:" (OECD; P37), bukan di bawah
-  judul. Seri yang bias pelaporannya mengubah cara baca diberi Catatan, mis. DIBI sebelum dan sesudah
-  BPBD terbentuk 2008 (OWID; P28).
+  judul. Seri yang bias pelaporannya mengubah cara baca diberi Catatan satu baris, mis. DIBI sebelum
+  dan sesudah BPBD terbentuk 2008 (OWID; P28).
 
 **Pilih grafik menurut pesan** (kode sama dengan SINTESIS §5 dan Buku Pegangan bab Selera laporan):
 
 | Kode | Pesan | Grafik | Asal |
 | --- | --- | --- | --- |
-| G1 | Perubahan waktu, ≤ 24 periode | Batang tegak sesuai butir Batang | WDR 2024 |
+| G1 | Perubahan waktu, ≤ 24 periode | Batang tegak sesuai butir Batang | gaya rumah d3/d5; WDR 2024 hanya untuk nilai di atas batang |
 | G2 | Perubahan waktu, seri panjang | Rata-rata per dekade sebagai batang, atau garis sesuai butir Seri panjang | OWID, White Paper Jepang, IMF |
-| G3 | Musim berjalan lawan normal | Kurva musim di atas pita median | ADB 2024 |
-| G4 | Peringkat | Batang horizontal terurut, nomor dalam bulatan `navy`, kolom jiwa terpapar | Atlas SDG |
+| G3 | Musim berjalan lawan normal | Kurva musim di atas pita median | gaya rumah (kurva musim pemilik); ADB 2024 hanya untuk pita persentil |
+| G4 | Peringkat | Batang horizontal terurut, nomor dalam bulatan `navy`, kolom jiwa terpapar | gaya rumah d5 (batang, bulatan nomor); Atlas SDG hanya untuk urutan |
 | G5 | Peringkat seluruh wilayah | Satu deret batang terurut, nama hanya untuk yang disorot | Charting Our Water Future |
 | G6 | Dua titik waktu per wilayah | Dumbbell terurut, titik awal `#DCE1E7`, titik akhir warna makna, selisih ditulis | Atlas SDG |
-| G7 | Surplus atau defisit, anomali | Batang divergen dari nol, warna arah §B1.5 berlabel kata | FT |
+| G7 | Surplus atau defisit, anomali | Batang divergen dari nol berlabel kata; di kajian air `teks-2` lawan `#DCE1E7`, di luar itu warna arah (§B1.5) | FT |
 | G8 | Komposisi | Batang bertumpuk 100%, ≤ 4 kategori + "lainnya"; pangsa tunggal batang 100% satu baris | Atlas SDG, BCG |
 | G9 | Komposisi per skenario atau tahun | Batang bertumpuk per skenario, total di atas | GAR 2025, Deloitte |
 | G10 | Kesenjangan kebutuhan lawan pasokan | Waterfall atau baji dalam satuan fisik (m³), pil selisih; tidak dalam rupiah (K6) | Charting Our Water Future |
 | G11 | Proyeksi dengan rentang | Pita melebar, garis tengah `navy`, angka rentang tertulis, pil keyakinan | FT, IMF |
 | G12 | Rentang per wilayah atau skenario | Batang rentang mengambang dengan median | ADB 2024, MGI |
-| G13 | Skenario lawan dasar | Small multiples selisih dari skenario dasar | IMF |
+| G13 | Skenario lawan dasar | Small multiples selisih dari skenario dasar; di kajian air `teks-2` lawan `#DCE1E7` berlabel "membaik"/"memburuk" (§B1.5) | IMF |
 | G14 | Efek tindakan | Pasangan batang sebelum dan sesudah, label "turun …%" dan ikon arah | Nankai |
 | G15 | Rugi bila diam lawan manfaat bertindak | Batang kupu-kupu, 2 skenario, satuan fisik atau rupiah bersumber | WS45 |
 | G16 | Wilayah × kategori | Matriks titik (warna kelas, isi titik keyakinan) atau tabel peta panas (§B5.7) | IPCC, ADB 2024, MGI |
-| G17 | Kemungkinan × dampak | Matriks risiko §B5.27 | NRR |
+| G17 | Kemungkinan × dampak | Matriks risiko §B5.27 | NRR (nomor polos); bulatan `navy` gaya rumah d5 |
 | G18 | Prioritas | Kisi prioritas §B5.28 | CCDR |
 | G19 | Sebaran rasio atau indeks | Koroplet 5 kelas diskret (§B5.9) | Atlas SDG, FT |
 | G20 | Sebaran total | Simbol sebanding berlegenda tiga ukuran | FT, Atlas SDG |
-| G21 | Aliran | Sankey ≤ 3 tingkat; diagram aliran berikon dengan persen di panah (§B5.23) | ADB 2024, WS45, MGI |
+| G21 | Aliran | Aliran fisik bersumber (m³ air per sektor): Sankey ≤ 3 tingkat. Aliran dana dan tanggung jawab: diagram aliran berikon tanpa lebar sebanding (§B5.21, §B5.23); Sankey dana tanpa nominal tidak jujur dan nominal dilarang (K6) | ADB 2024, WS45, MGI |
 | G22 | Capaian lawan target | Bullet chart atau tabel indikator §B5.19 | FT, White Paper Jepang |
-| G23 | Kapan dan berapa lama | Tabel tahap × horizon §B5.29 (DOCX saja); kronologi regulasi §B5.31 | Deltaprogramma, CCDR |
+| G23 | Kapan dan berapa lama | Kolom WAKTU berpil horizon di matriks rekomendasi §B5.13 (tabel tahap × tahun §B5.29 hanya bila pemilik menyetujui, U2); kronologi regulasi §B5.31 | Deltaprogramma, CCDR |
 | G24 | Respons antar-kejadian | Garis bersumbu "hari sejak kejadian", label di ujung garis | White Paper Jepang |
 | G25 | Dilarang | Pai lebih dari satu pangsa, donat, sumbu ganda, radar, chord, streamgraph, violin, Voronoi, area bertumpuk > 4 kategori, 3D, lingkaran konsentris, ikon dekoratif sebagai grafik, kurva biaya (K6) | – |
 
 Sebar beranotasi (hubungan dua besaran) dan Marimekko (penduduk × indeks) hanya di bab analisis
-DOCX, tidak di PDF ringkas, dan tanpa kata kerja sebab-akibat (§C8).
+DOCX, tidak di deck, dan tanpa kata kerja sebab-akibat (§C8).
 
 #### B5.11 Kartu skenario terburuk (satu halaman)
 
-Pola UK NRR (satu halaman per risiko) dan tabel kerusakan Nankai. Satu kartu per jenis
-bencana (kajian mitigasi) atau per musim/komponen (kajian air). Tiga varian menurut apa
-yang benar-benar ada di platform dan sumber; angka yang tidak ada tidak dikarang.
+Format tiga blok Perban BNPB 2/2023 Pasal 7 (karakteristik ancaman, skenario kejadian, asumsi dampak lima
+aspek) ditambah baris kebutuhan respons, supaya kartu dapat disalin ke rencana kontingensi (`KERANGKA.md`
+prinsip 9, R10). Pola satu halaman per risiko dari UK NRR tetap dipakai untuk tata letak. Satu kartu per
+jenis bencana (kajian mitigasi) atau per musim/komponen (kajian air). Angka yang tidak ada tidak dikarang;
+kontrak isinya adalah matriks ketersediaan kuantifikasi Bab 3 (jenis × metrik, kode Resmi / Turunan /
+Estimasi model / Tidak dikuantifikasi, alasan satu kalimat).
 
-**Varian (a), bencana alam yang dimodelkan** (cakupan `riset/D` §1):
+**Aturan lantai.** Skenario terburuk tidak boleh lebih ringan daripada kejadian atau musim tercatat
+terburuk dalam periode acuan untuk jenis dan wilayah yang sama (lantai = meninggal+hilang tercatat terbesar
+dalam seri DIBI; nasional musim 2025/26, Jawa musim 2008/09; registri `hidromet.<wilayah>.lantai.*`). Yang
+boleh disisihkan hanya kejadian berpeluang lima tahun < 0,2% dengan alasan tertulis. Keluaran model yang
+batas tingginya di bawah lantai tampil berdampingan sebagai "pembanding musim berat tipikal", bukan
+skenario terburuk; gerbang paket `skenario-hidromet` menolak skenario tinggi di bawah lantai tanpa penanda
+itu.
 
-1. **Kepala**: pita tint keluarga (§B1.3) dengan ikon, nama jenis, dan judul skenario
-   ("Gempa megathrust selatan Jawa M 8,5"), teks `teks`.
-2. **Dasar skenario**: sumber parameter (PuSGeN 2017, PVMBG, BMKG), definisi "skenario
-   terburuk yang masuk akal" (ekstrem yang sangat tidak mungkin disisihkan).
-3. **Kemungkinan**: pita peluang 5 tahun gaya NRR (1 = < 0,2%; 2 = 0,2–1%; 3 = 1–5%;
-   4 = 5–25%; 5 = > 25%) atau periode ulang, bersumber; tidak pernah "100%"; nilai kecil
-   "< 1%". Posisi kartu ditandai di matriks mini kemungkinan × dampak dengan garis silang rentang
-   keyakinan (NRR; SINTESIS P62, §B5.27).
-4. **Tabel kerusakan** (kolom: Besaran | Rendah | Tinggi | Label keyakinan | Sumber):
-   korban jiwa per penyebab, luka, pengungsi hari ke-7, bangunan rusak berat/sedang/
-   ringan, luas terdampak (ha/km²), kerugian materiil (batas bawah stimulan rumah BNPB +
-   pembanding PDNA), kerugian imateriil dalam satuan fisik: DALY dan hari mengungsi
-   (`KERANGKA.md` prinsip 5), ditambah sekolah dan faskes terganggu. Rupiah imateriil hanya
-   di lampiran metode, tidak dijumlah ke materiil. Baris yang tidak bisa dihitung dari model
-   atau sumber ditulis "–" beralasan, tidak diisi perkiraan.
-5. **Angka kebijakan**: satu baris pembanding yang mengubah angka jadi keputusan
-   (mis. korban bila evakuasi cepat vs lambat), digambar sebagai pasangan batang kondisi sekarang
-   lawan bila target tercapai berlabel "turun …%" dengan ikon arah `biru` (Nankai; SINTESIS P61).
+**Varian (a), bencana alam yang dimodelkan atau berparameter** (cakupan `riset/D` §1):
+
+1. **Kepala**: pita tint keluarga (§B1.3) dengan ikon, nama jenis, dan judul skenario, teks `teks`.
+2. **Karakteristik ancaman dan skenario kejadian**: sumber parameter (PuSGeN, PVMBG, BMKG, DIBI), definisi
+   "skenario terburuk yang masuk akal" (ekstrem yang sangat tidak mungkin disisihkan), dan lantai tercatat.
+3. **Kemungkinan**: peluang skenario dalam 2026–2030 pada pita 5 tahun gaya NRR (1 = < 0,2%; 2 = 0,2–1%;
+   3 = 1–5%; 4 = 5–25%; 5 = > 25%) atau periode ulang, bersumber per jenis (ONI untuk fase ENSO, laju
+   Poisson gempa atau PuSGeN); tidak pernah "100%"; nilai kecil "< 1%". Jenis tanpa dasar peluang ditulis
+   "tidak dinilai" dan tidak diberi posisi. Posisi kartu ditandai di matriks mini kemungkinan × dampak
+   (§B5.27).
+4. **Tabel asumsi dampak** (kolom: Besaran | Rendah | Tinggi | Label keyakinan | Sumber), baris per aspek
+   Perban 2/2023 Pasal 7 ayat (5) (`tema.json` `kosakata.besaran_skenario_alam`), boleh beberapa baris per
+   aspek:
+   - Kependudukan: meninggal dan hilang, pengungsi tercatat puncak tanggap darurat (hidrometeorologi) atau
+     penghuni rumah RB+RS (gempa), pengungsi-hari dengan rentang durasi;
+   - Infrastruktur/fisik: rumah rusak berat, sedang, ringan (DIBI atau kejadian analog), fasilitas;
+   - Ekonomi: tiga besaran berlabel tetap, tidak dijumlah: (a) nilai aset terpapar KRB (batas atas, "bukan
+     kerugian"), (b) kerugian kejadian analog (DaLA, PDNA, Bank Dunia), (c) kebutuhan stimulan rumah, hanya
+     untuk gempa, longsor, dan banjir bandang;
+   - Lingkungan: luas sesuai konsep per jenis (zona bahaya tinggi KRB, luas terbakar), tidak dibandingkan
+     antarjenis;
+   - Layanan sipil: fasilitas pendidikan, kesehatan, dan layanan dasar terganggu bila tercatat;
+   - **Kebutuhan respons**: kebutuhan minimum dari standar Perka BNPB 7/2008 dan Perban 3/2018 (mis. air
+     15 l per orang per hari × lama status) atas dasar hitung pengungsi tercatat.
+
+   Luka, pengungsi hari ke-7, dan DALY tidak dipakai karena tidak ada di DIBI (`kosakata.besaran_skenario_terlarang`;
+   pembaca naskah menolaknya). Kerugian imateriil dalam satuan fisik; YLL dan rupiah imateriil hanya di
+   lampiran metode, tidak dijumlah ke materiil. Baris yang tidak bisa dihitung ditulis "–" beralasan.
+5. **Angka kebijakan**: satu baris pembanding yang mengubah angka jadi keputusan (mis. korban bila evakuasi
+   segera ×1 / ×0,662 / ×0,437 atas paparan; cakupan peringatan dini dua lintasan Renstra dan Renas),
+   digambar sebagai pasangan batang berlabel "turun …%" dengan ikon arah `biru` (Nankai; SINTESIS P61);
+   efek dari koefisien asosiasi berpil Asumsi kebijakan.
 6. **Peta kecil** jejak skenario dengan legenda.
-7. **Kemampuan respons yang dibutuhkan** dan **kebutuhan pemulihan**, 3–4 butir.
+7. **Kemampuan respons** dan **kebutuhan pemulihan**, 3–4 butir.
 8. **Lembaga** pemimpin dan pendukung (chip berikon).
-9. **Kaki**: "Simulasi skenario Pantau Bencana, belum divalidasi" bila dari model, galat
-   tercatat (mis. "model korban gempa meleset ±5 kali"), cut-off data.
+9. **Kaki**: pernyataan produsen "Simulasi skenario Pantau Bencana, belum divalidasi" bila dari model, galat
+   tercatat, cut-off data.
 
-**Varian (b), bencana nonalam** (pandemi, kebakaran industri, kebakaran TPA). Platform
-tidak punya simulasinya, jadi kartu memuat kejadian analog terdokumentasi, bukan pita
-model: COVID-19 untuk pandemi, Plumpang 2023 untuk kebakaran industri, Sarimukti 2023 untuk
-kebakaran TPA. Kepala, dasar, lembaga, dan kaki sama dengan varian (a); kemungkinan ditulis
-sebagai frekuensi kejadian serupa bila sumbernya ada. Tabel kerusakan memakai indikator
-sesuai jenis:
+**Varian (b), bencana nonalam** (pandemi, kebakaran industri, kebakaran TPA), dan **varian (c), bencana
+sosial** (konflik sosial antarkelompok menurut UU 24/2007 Pasal 1 angka 4 dan UU 7/2012 Pasal 1 angka 1):
+kartu analog berangka tanpa perkalian dan tanpa proyeksi per wilayah. Skenario terburuk = analog terbesar
+dalam 30 tahun terakhir beserta alasan analog yang disisihkan: COVID-19 untuk pandemi, Plumpang 2023 untuk
+kebakaran industri, Sarimukti 2023 untuk kebakaran TPA, Maluku 1999–2002 untuk konflik (Poso, Sampit,
+Sambas sebagai pembanding). Mei 1998 dan kerusuhan Agustus 2025 tidak dipakai (M01); metrik perkosaan tidak
+dipakai. Tabel empat besaran (`tema.json` `kosakata.indikator_skenario_nonalam`):
 
-| Jenis | Indikator tabel kerusakan |
-| --- | --- |
-| Pandemi | kasus, kematian, hari layanan kesehatan terganggu |
-| Kebakaran TPA | luas terbakar, hari asap, kasus ISPA |
-| Kebakaran industri | radius evakuasi, pengungsi, korban jiwa dan luka |
+| Besaran | Isi | Sel kosong |
+| --- | --- | --- |
+| Korban jiwa | meninggal (dan hilang) tercatat analog | "–" beralasan |
+| Luas terdampak | luas atau radius sesuai konsep jenis | "–" beralasan |
+| Kerugian materiil | kerugian kejadian analog bila ada penilaian resmi | "–" beralasan |
+| Kerugian imateriil | pengungsi, durasi status, hari layanan terganggu | "–" beralasan |
 
-**Varian (c), bencana sosial** (kerusuhan dan konflik sosial). Kartu kualitatif tanpa
-proyeksi korban: pemicu dan pola kejadian terdokumentasi, batas mandat (UU 7/2012; peran
-BNPB pada dukungan logistik, pengungsian, dan pemulihan), kebutuhan respons dan pemulihan,
-lembaga. Butir kemungkinan ditulis "tidak berlaku" beserta alasannya: kejadian sosial tidak
-punya model peluang yang bisa diuji balik, dan proyeksi korbannya sensitif serta di luar
-kepemimpinan BNPB.
+Kemungkinan ditulis "tidak dinilai: <alasan>" karena tidak ada model peluang yang dapat diuji balik.
+Varian (c) menambah blok batas mandat (UU 7/2012; peran BNPB tiga hal: unsur Satgas nasional, pengungsi
+bersama Kemensos, keadaan tertentu Perpres 46/2026 Pasal 3 ayat (2) huruf c). Kepala, lembaga, respons,
+pemulihan, dan kaki sama dengan varian (a).
 
-Versi mini untuk PDF: kepala, kemungkinan (varian a), 4 baris kerusakan atau indikator,
-angka kebijakan.
-
-#### B5.12 Garis waktu pra/saat/pasca
+#### B5.12 Garis waktu prabencana, tanggap darurat, pascabencana
 
 Tiga kolom sama lebar dipisah garis 0,75 pt, ketiganya bertint netral `#E6EAF0` dan
-dibedakan ikon fase dan label (§B5.14): Prabencana, Saat bencana, Pascabencana. Fase tidak
+dibedakan ikon fase dan label (§B5.14): Prabencana, Tanggap darurat, Pascabencana (T10). Fase tidak
 diberi warna tema supaya tidak bertabrakan dengan keluarga bencana (§B1.3); merah tetap
 hanya untuk bahaya, dan kanon tidak memerahkan yang sedang ditangani. Tiap kolom: ikon fase,
 3–5 aksi bernomor (nomor merujuk matriks rekomendasi), lembaga pemimpin. Di bawahnya pita
-horizon tiga tingkat dengan legenda tetap: 100 hari, 2026–2029, 2030–2045.
+horizon tiga tingkat dengan legenda tetap: 100 hari, 2026–2027, 2028–2030 (`KEPUTUSAN.md` P4;
+`kosakata.horizon` di `tema.json`, divalidasi generator).
 
 Bab Grand Design dibuka satu halaman kerangka (BCG; SINTESIS P2): pilar, sasaran terukur, dan program
 berkode dalam satu halaman berlatar putih. Kode program dipakai ulang di §B5.13, §B5.19, §B5.22, dan
@@ -1050,8 +1213,8 @@ ditangani" (§B5.5) dan ditutup aksi 100 hari berlembaga (WS45; SINTESIS P3).
 Dua baris per butir, supaya sel prosa tidak melipat 4–6 baris pada 9 pt di lebar 165 mm:
 
 - Baris 1: No (lingkaran `navy` angka putih) | LANGKAH (judul tindakan ≤ 8 kata, ikon jenis
-  aksi di depannya) | LEMBAGA (pemimpin pil `navy`, pendukung pil garis, chip berikon) |
-  WAKTU (pil horizon).
+  aksi di depannya; D-31) | LEMBAGA (pemimpin pil `navy`, pendukung pil garis, chip berikon) |
+  WAKTU (pil horizon: 100 hari, 2026–2027, 2028–2030).
 - Baris 2, digabung selebar tabel: RINCIAN (satu kalimat rata kiri-kanan ±110 karakter:
   keadaan sekarang, yang kurang, mengapa penting), lalu INDIKATOR SELESAI (terukur) dan
   DASAR (data/regulasi) sebagai label Bold sebaris.
@@ -1062,9 +1225,10 @@ internal BNPB dan lintas K/L. Satu daftar berurut prioritas; yang lain kategori 
 begitu. Tiga rekomendasi teratas diberi sketsa langkah dan satu paragraf "Risiko
 pelaksanaan".
 
-Kolom DASAR memuat kode temuan dari halaman Pesan Kunci (§B5.26, mis. "Temuan B.2") dan regulasi
-(D-27). Urgensi ditulis sebagai pil berkosakata tetap ("urgensi tinggi", "urgensi sedang") di baris
-1, bukan kotak penilaian bergambar (CCDR; SINTESIS P75). Matriks tegak, tidak diputar lanskap (WS45;
+Kolom DASAR memuat kode temuan lengkap dari halaman Pesan Kunci (§B5.26, mis. "Temuan B.2", selalu
+dengan kata "Temuan") dan regulasi (D-27). Urgensi = horizon peta jalan: dibaca dari pil horizon di
+kolom WAKTU (100 hari paling mendesak), tidak ditulis sebagai pil terpisah dan bukan kotak penilaian
+bergambar (CCDR; SINTESIS P75). Matriks tegak, tidak diputar lanskap (WS45;
 P76). Bila rekomendasi lebih dari 9, matriks didahului kisi prioritas §B5.28. Rincian per aktor
 memakai chip aktor berikon diikuti 1–2 butir, bukan paragraf (NRR; P79). Rekomendasi berupa prosa
 atau daftar pertanyaan tanpa penanggung jawab tidak dipakai (ADB, Deloitte, MGI; P87).
@@ -1086,7 +1250,7 @@ Satu registri konsep → ikon, satu ikon satu arti (gerbang D-25):
 - Jenis bencana §B1.3; komponen kajian air §B1.7.
 - Orang/jiwa `users` (path `orang` deck); rumah/KK `house` (path `rumah` deck); tetes untuk
   air bersih dan air minum saja `droplet`; pengungsi path `tenda` deck.
-- Fase: prabencana `shield-check`, saat bencana `siren`, pascabencana `hammer`.
+- Fase: prabencana `shield-check`, tanggap darurat `siren`, pascabencana `hammer` (T10).
 - Jenis aksi: regulasi `scale`, data `database`, infrastruktur `construction`, kapasitas
   `graduation-cap`, pembiayaan `banknote`.
 - Arah naik/turun: segitiga vektor (§B1.5).
@@ -1121,17 +1285,33 @@ Penanggulangan Bencana. (2025). *Judul*. URL"), tanggal akses untuk halaman yang
 Data pihak ketiga mencantumkan lisensi (mis. "CC BY-NC 4.0") bila ada. Tanpa path internal
 repo. Hanya sumber yang benar-benar dikutip.
 
+Kepadatan pustaka (skill `book-production-rules`, `TAMBAHAN-BUKU.md` butir 1; lantainya dinaikkan
+untuk kajian kebijakan): kajian mitigasi paling sedikit 80 sumber, kajian air paling sedikit 50;
+paling sedikit 50% sumber resmi atau primer (§C6.1); tiap bab paling sedikit 8 sumber berbeda.
+Yang dihitung hanya entri `pustaka.json` yang benar-benar dirujuk di bab itu (§D4).
+
 #### B5.18 Daftar singkatan dan glosarium
 
 Bagian depan memuat Daftar Singkatan saja (dua kolom, urut abjad). Definisi istilah ada di
 lampiran Glosarium (Lampiran G kajian air, Lampiran H kajian mitigasi). Keduanya dibangkitkan
 dari satu `data/kajian-bnpb/data/glosarium.json` (istilah baku, padanan terlarang,
-singkatan, definisi, sumber), yang juga dibaca D-10.
+singkatan, definisi, sumber), yang juga dibaca D-10 (`terlarang`), T-9 (singkatan dan `varian_konteks`), dan
+T-10 (kata dikenal). Daftar Singkatan hanya memuat singkatan yang muncul di naskah.
+
+Penegak konsistensi istilah (skill `book-production-rules`, `TAMBAHAN-BUKU.md` butir 2): singkatan
+dieja lengkap pada kemunculan pertama di tiap bab, bukan sekali per dokumen, karena bab dibaca
+terpisah. Varian terlarang di glosarium ikut dipindai, antara lain "pra bencana" untuk "prabencana",
+"Karhutla" berhuruf besar di tengah kalimat untuk "karhutla", "air bersih" dan "air minum" yang
+dipakai di luar definisi BPS, dan nama K/L lama. Pindaian ini di §D4. Gerbang T-9 memeriksa singkatan di prosa
+tiap BAB (kutipan pustaka "(BNPB, 2025)" tidak dihitung; bagian depan dan lampiran tidak diperiksa singkatannya)
+dan varian berkonteks: nama K/L lama kecuali kalimat bertanda "kini" atau "dahulu", dan "Karhutla" berhuruf besar
+di tengah kalimat. "Air bersih" dan "air minum" di luar definisi BPS tidak bisa dimekaniskan dan tetap pekerjaan
+penyunting bahasa (lapis c).
 
 #### B5.19 Tabel indikator
 
 Kolom: Indikator | Baseline (nilai, tahun) | Target per horizon peta jalan (satu kolom per
-horizon, §B5.12) | Sumber data | Lembaga. Indikator tanpa baseline ditulis "–" beralasan dan
+horizon: 100 hari, 2026–2027, 2028–2030; §B5.12) | Sumber data | Lembaga. Indikator tanpa baseline ditulis "–" beralasan dan
 masuk daftar permintaan data. Satu baris satu indikator terukur.
 
 #### B5.20 Tabel instrumen hukum yang diusulkan
@@ -1148,7 +1328,7 @@ pengelola. Tanpa nominal proyek (K6). Digambar sebagai diagram vektor B5.23.
 
 #### B5.22 Matriks fase × jenis bencana
 
-Baris jenis bencana berikon (§B1.3), kolom Prabencana | Saat bencana | Pascabencana bertint
+Baris jenis bencana berikon (§B1.3), kolom Prabencana | Tanggap darurat | Pascabencana bertint
 netral (§B5.12). Tiap sel berisi aksi ≤ 2 baris dengan nomor rekomendasi, atau "tidak
 berlaku: {alasan satu kalimat yang bisa dibantah}". Sel kosong dilarang.
 
@@ -1166,57 +1346,79 @@ jawab (WS45, MGI; P86), dan diagram konsep bertahap dengan fase bergaris putus (
 
 Halaman terakhir, latar `navy` penuh: logo BNPB berwarna di bidang putih, "Badan Nasional
 Penanggulangan Bencana", alamat Graha BNPB (Jl. Pramuka Kav. 38, Jakarta Timur 13120), Call
-Center 117, www.bnpb.go.id, persuratan@bnpb.go.id. Tanpa header, footer, dan nomor.
+Center 117, www.bnpb.go.id, persuratan@bnpb.go.id, dan satu paragraf ringkas kajian (tesis dan
+cakupan; skill `book-production-rules`, `TAMBAHAN-BUKU.md` butir 8). Tanpa
+header, footer, dan nomor.
 
 #### B5.25 Kisi kesimpulan dan pita keputusan
 
-Dipakai di PDF hlm 10 dan Bab Kesimpulan, mengikuti pola kesimpulan dan pita arahan Paparan
-Presiden: kisi 4 × 2 kotak putih bergaris, tiap kotak satu kesimpulan berangka berikon; di
-bawahnya pita keputusan selebar isi bertint api/aksi berlabel "KEPUTUSAN YANG DIMINTA", berisi
-2–3 keputusan Kepala BNPB beserta akibat tiap pilihan.
+Mengikuti pola kesimpulan dan pita arahan Paparan Presiden. Kisi 4 × 2 kotak putih bergaris, tiap
+kotak satu kesimpulan berangka berikon, dipakai di Bab Kesimpulan; slide Kesimpulan deck memakai
+pola yang sama (Buku Pegangan S32). Pita keputusan selebar isi bertint api/aksi berlabel "KEPUTUSAN
+YANG DIMINTA", berisi 2–3 keputusan Kepala BNPB (kode KD-n dari register `KERANGKA.md` §6) beserta
+akibat tiap pilihan. Pita yang sama dipasang dua kali dengan isi identik: di halaman Pesan Kunci
+(§B5.26) sesudah tesis, dan di Bab Kesimpulan di bawah kisi (`KERANGKA.md` P15). Di deck isinya
+menjadi pita keputusan slide Pesan Kunci dan pita ARAHAN slide Kesimpulan.
 
 #### B5.26 Halaman Pesan Kunci
 
-Halaman pertama Ringkasan Eksekutif DOCX dan halaman 2 PDF ringkas (WMO, ADB, IPCC; SINTESIS P16, P18,
-P97). Isi: kalimat tesis (§A2) 12 pt Bold `navy`, lalu 6–8 temuan bernomor. Tiap temuan: lingkaran
-`navy` 9 mm berikon putih dari registri (§B5.14), kode temuan Bold, satu temuan berangka paling banyak
-3 baris dengan angka di depan, ditutup rujukan "(Bab 5.2)" dan label keyakinan (§C6.2). Kode huruf =
-pertanyaan pimpinan §A2 (A, B, C), nomor urut di dalamnya (A.1, A.2). Kode yang sama dipakai di kotak
-ringkasan bab dan kolom DASAR §B5.13 (D-27). Di DOCX disusun sebagai tabel tak bergaris dua kolom,
+Halaman pertama Ringkasan Eksekutif DOCX; slide Pesan Kunci deck memakai tesis yang sama dan 4–6
+temuan yang dipilih dari sini (Buku Pegangan S1, §B7.1) (WMO untuk ikon dalam lingkaran,
+IPCC untuk kode bertingkat; SINTESIS P16, P18, P97). Isi berurutan: kalimat tesis (§A2) 12 pt Bold
+`navy`; pita keputusan (§B5.25) berisi 2–3 keputusan yang diminta beserta akibat tiap pilihan (air:
+KD-1, KD-2, KD-5; mitigasi: KD-1, KD-2, KD-3); lalu 4–6 temuan bernomor yang menopang keputusan itu
+(D-30). Tiap temuan: lingkaran `navy` 9 mm berikon putih dari registri (§B5.14),
+kode temuan Bold, satu temuan berangka paling banyak 3 baris dengan angka di depan, ditutup rujukan
+"(Bab 5.2)" dan label keyakinan (§C6.2). Kode huruf = pertanyaan pimpinan §A2 (A, B, C), nomor urut
+di dalamnya, selalu ditulis lengkap "Temuan A.1", "Temuan A.2"; bentuk telanjang "A.1" tidak dipakai
+karena sama dengan nomor "Tabel A.1" di lampiran. Kode yang sama dipakai di kotak ringkasan bab,
+kolom DASAR §B5.13, dan subbab yang dirujuk (D-27). Di DOCX disusun sebagai tabel tak bergaris dua kolom,
 bersudut tegak (§B3).
 
 #### B5.27 Matriks risiko kemungkinan × dampak
 
 Pola NRR (SINTESIS P62, G17), untuk profil ancaman kajian mitigasi. Kisi 5×5: kolom kemungkinan memakai
 pita peluang 5 tahun §B5.11 (< 0,2%, 0,2–1%, 1–5%, 5–25%, > 25%), baris dampak 1–5 berlabel kata
-(Ringan, Terbatas, Sedang, Berat, Sangat berat) dengan definisi di Metodologi. Semua sel bertint
+(Ringan, Terbatas, Sedang, Berat, Sangat berat; `tema.json` `kosakata.skala_dampak`). Skala dampak
+didefinisikan di Bab 3 (kajian air Tabel 3.4, kajian mitigasi Tabel 3.3) per aspek Perban 2/2023 Pasal 7
+ayat (5) (`kosakata.aspek_dampak`), dengan ambang tiap kelas ditetapkan dari sebaran DIBI 2008–2025
+sebelum angka skenario diisi; kelas skenario = aspek terberat (`KERANGKA.md` prinsip 9, B04). Jenis tanpa
+dasar peluang (pandemi, kebakaran industri, kebakaran TPA, konflik) tidak diberi posisi kolom: jenis itu
+didaftar di panel samping "dampak dinilai, kemungkinan tidak dinilai" dengan kelas dampaknya dari analog
+(`KERANGKA.md` D18, B03). Semua sel bertint
 `#E6EAF0` seragam, tanpa gradasi hijau-kuning-merah, supaya merah tetap hanya bahaya. Isi sel: nomor
-ancaman dalam bulatan `navy` angka putih; daftar bernomor di samping dikelompokkan per keluarga
+ancaman dalam bulatan `navy` angka putih (gaya rumah d5), atau angka Bold polos dipisah koma bila
+sel memuat lebih dari 3 nomor (NRR menulis nomor polos, sampai 11 per sel); daftar bernomor di samping dikelompokkan per keluarga
 bencana berikon (§B1.3). Versi mini di tiap kartu skenario: satu titik posisi dengan garis silang
 rentang kemungkinan dan dampak (rendah–tinggi). Posisi dibaca dari rumus Metodologi; posisi dari
-penilaian pakar berpil "penilaian".
+penilaian pakar berpil "Penilaian pakar" (§C6.2).
 
 #### B5.28 Kisi prioritas rekomendasi
 
-Pola CCDR (SINTESIS P77, G18). Kisi 3×3: kolom horizon peta jalan (§B5.12), baris dampak (sedang,
-tinggi, sangat tinggi). Sel berisi kode rekomendasi saja dalam pil `navy`; nama rekomendasi di daftar
-samping urut kode; kunci penilaian satu baris di bawah kisi. Tanpa gelembung berukuran dan tanpa
+Pola CCDR (SINTESIS P77, G18), dipakai bila rekomendasi lebih dari 9 (§B5.13). Kisi 3×3: kolom
+horizon peta jalan (100 hari, 2026–2027, 2028–2030; urgensi = horizon), baris dampak (sedang, tinggi,
+sangat tinggi). Kunci dampak (`tema.json` `kosakata.dampak_prioritas`, label Asumsi kebijakan): dampak
+rekomendasi = kelas skala dampak tertinggi (§B5.27) di antara jenis atau aspek yang disasarnya; kelas 1–3
+= sedang, 4 = tinggi, 5 = sangat tinggi. Kunci ini ditulis di baris terakhir kisi. Sel berisi kode rekomendasi saja dalam pil `navy`, tanpa tint bertingkat; nama
+rekomendasi di daftar samping urut kode; kunci penilaian di baris terakhir kisi (§B5.7). Tanpa gelembung berukuran dan tanpa
 label bertumpuk (D-8).
 
-#### B5.29 Tabel peta jalan tahap × horizon
+#### B5.29 Tabel peta jalan tahap × tahun (hanya bila disetujui, U2)
 
-Pola Deltaprogramma (SINTESIS P78, G23), hanya di DOCX bab Peta Jalan (T12). Kolom: Kode | Program |
-Pemimpin | satu kolom per tahun horizon. Sel tahun berisi pil tahap native berhuruf kata singkat:
-Kajian (pil garis `teks-3`), Rencana (pil garis `navy`), Laksana (pil `navy` teks putih), Evaluasi
-(pil `#E6EAF0` teks `teks`); legenda tahap satu baris di bawah tabel. Tanpa batang Gantt bergambar.
-Tidak dipakai di deck dan PDF ringkas, karena pemilik membuang Gantt dari slide rekomendasi d5.
+Pola Deltaprogramma (SINTESIS P78, G23). Bawaan U2: tabel ini tidak dibuat; waktu ditulis sebagai
+kolom WAKTU berpil horizon di matriks rekomendasi (§B5.13), mengikuti satu-satunya sinyal pemilik
+(Gantt dibuang dari slide rekomendasi d5). Bila pemilik menyetujuinya, tabel dipasang hanya di DOCX
+bab Peta Jalan. Kolom: Kode | Program | Pemimpin | satu kolom per tahun 2026–2030. Sel tahun berisi
+pil tahap native: Kajian (pil garis `teks-3`), Perencanaan (pil garis `navy`), Pelaksanaan (pil `navy`
+teks putih), Evaluasi (pil `#E6EAF0` teks `teks`); legenda tahap di baris terakhir tabel (§B5.7).
+Tanpa batang Gantt bergambar. Tidak dipakai di deck.
 
 #### B5.30 Halaman studi kasus
 
 Pola Deltaprogramma dan BCG (SINTESIS P69, P24, P70). Satu studi kasus satu halaman: pil "STUDI KASUS"
 `navy`; judul berupa hasil berangka (fakta, angka, tempat, tahun); foto Commons beratribusi bila
 membawa informasi (§B5.15); tabel dua kolom tak bergaris berlatar `#F3F5F8` dengan label Bold tetap
-Masalah, Pelaksana, Cara, Hasil, isi paling banyak 3 baris per label; satu grafik kecil bila datanya
+Masalah, Pelaksana, Cara, Hasil (D-30), isi paling banyak 3 baris per label; satu grafik kecil bila datanya
 ada; "Sumber:" dan label keyakinan di kaki. Kalimat bergaya slogan di judul tidak dipakai (WMO, BCG;
 P25).
 
@@ -1249,20 +1451,159 @@ HTML, CSS, dan JSON peta web.
 ### B7. Deck kajian
 
 Deck PPTX per kajian (`KEPUTUSAN.md` P13–P14) memakai gaya rumah BNPB di Buku Pegangan bab Selera
-presentasi (PPT): kerangka halaman, judul per jenis deck, palet, komponen, dan larangannya. Dari pola
-laporan kelas dunia (SINTESIS), yang dibawa ke deck:
+presentasi (PPT): kerangka halaman, judul per jenis deck, palet, komponen, dan larangannya. Pola deck
+konsultan kelas dunia (K16) tinggal di subbab Buku Pegangan "Pola deck konsultan kelas dunia
+(McKinsey, BCG, Big Four)" dengan kode S1–S39. Bagian ini hanya memuat struktur, anatomi, dan alur
+slide yang khusus dua kajian, dan merujuk kode S tanpa menyalin aturannya (kepala pedoman: tanpa
+salinan aturan ketiga). Bukti dan vonis per pola ada di `riset/desain-benchmark/deck/SINTESIS-DECK.md`;
+penilaian skill pemilik `alfatehan-pptx-rules` ada di `TAMBAHAN-PPTX-RULES.md`.
 
-- Satu slide satu pesan; grafik dipilih dari tabel pilih grafik §B5.10 dan memakai PNG yang sama
-  dengan DOCX (§A5).
-- Halaman Pesan Kunci (§B5.26) menjadi slide pembuka sesudah sampul, dengan kode temuan yang sama.
-- Matriks risiko (§B5.27), kisi prioritas (§B5.28), dan kartu skenario versi mini (§B5.11) boleh
-  tampil sebagai slide utuh.
-- Pil CUT OFF DATA di slide data menggantikan batas data di baris "Sumber:".
+#### B7.1 Struktur
 
-Yang tidak dibawa ke deck, karena keputusan pemilik untuk slide: baris sumber di bawah grafik
-(dibuang di d5, "Keterangan jadi label"), Gantt dan tabel tahap × horizon §B5.29 (dibuang dari slide
-rekomendasi d5), dan batas huruf 8 pt (slide memakai batas 6 pt Buku Pegangan). Judul slide mengikuti
-tabel Judul per jenis deck di Buku Pegangan, bukan judul aksi laporan.
+- Seperti Paparan Presiden (`KERANGKA.md` bagian Keluaran): sampul, Pesan Kunci, slide temuan,
+  Kesimpulan, Terima kasih, pembatas Lampiran, lampiran. Slide Pesan Kunci sesudah sampul berasal dari
+  pedoman ini (§B5.26), bukan vonis pemilik (S1). Tiga belas slide isi (Pesan Kunci, 11 slide bagian,
+  Kesimpulan), dalam batas "±12 slide isi" P14. Sampul dan penutup tanpa footer dan nomor halaman.
+  PDF deck memuat slide sebanyak PPTX (P13, gerbang T-2).
+- Lima bagian per kajian, berurut dari masalah ke tindakan (S3), satu temuan Pesan Kunci per bagian
+  (S2). Kode bagian D9600B di depan judul: huruf bagian lalu nomor slide di bagian itu ("A1. ",
+  "B2. "; T12, S10). Lampiran berkode "L1. " (U5, S33); di prosa ditulis "lampiran deck L1" supaya tidak
+  terbaca sebagai aturan L1–L72 Buku Pegangan.
+- Judul (T11, S7; menyimpang dari vonis pemilik "Judul deskriptif menang atas judul data", tercatat di
+  Buku Pegangan Belum diputus): slide temuan berupa kalimat temuan berangka paling banyak 2 baris,
+  19–22 pt bold, angka D9600B, tempat 00499D. Slide temuan = slide bagian A sampai D dan matriks
+  lembaga × fase. Slide usulan di bagian Grand design (kerangka program, prioritas program, rekomendasi
+  dan peta jalan), sampul, pembatas, Pesan Kunci, dan Kesimpulan berjudul deskriptif; hitungan slide
+  usulan pindah ke badan slide. Spek tiap slide memuat medan `judul: temuan` atau `judul: deskriptif`.
+- Jenis judul tidak menentukan kaki dan pil. Slide usulan yang memuat angka (kerangka program dengan
+  Target 2029, prioritas program) tetap memasang baris Sumber, catatan kaki, dan pil CUT OFF (S14, S16).
+  Hanya slide baris LANGKAH, RINCIAN, PENANGGUNG JAWAB (E3 kedua kajian) yang tanpa kaki dan tanpa pil,
+  mengikuti d5.
+- Tanpa slide agenda, slide pelacak, atau pembatas bab (S10, S11). Bila deck yang lebih panjang memakai
+  pembatas bab, layout-nya GELAP 051C2C (T13). Seri slide sejenis memakai chip seri (S12).
+- Sebelum render, spek deck memuat satu kalimat `pesan_kunci` serta judul, medan `judul`, `jenis` dari
+  daftar tertutup S35, pesan, dan visual tiap slide (S34). Di spek, medan S35 ditulis `jenis_slide` dan medan
+  S7 `judul_bentuk`, karena `jenis` (tata letak) dan `judul` (teks) sudah dipakai; `bangun/pptx/deck.py` menolak
+  spek tanpa `pesan_kunci`, slide tanpa `pesan`, `jenis_slide` di luar daftar, dan jenis berurutan sama di luar
+  seri (`bangun/NASKAH-SPEK.md` bagian Spek deck). Tabel §B7.4 dan §B7.5 adalah garis besar itu dan dibaca berurutan sebelum membangun
+  (S6).
+
+#### B7.2 Anatomi slide
+
+| Unsur | Aturan di deck kajian | Rujukan |
+| --- | --- | --- |
+| Blok | Satu pesan per slide dalam 3–4 blok: satu bukti utama, 2–3 kartu angka, pita bawah bila ada aksi; 180–290 kata | S13, S17 |
+| Grafik | Dipilih dari tabel pilih grafik §B5.10 dan tabel pilih grafik slide di Buku Pegangan; dibangun native dari data dan token yang sama dengan DOCX, bukan PNG | S37, §A5 |
+| Peta | PNG peta dasar dari render yang sama dengan DOCX, dengan lapisan label dan legenda dimatikan; pil wilayah berangka, nomor, dan legenda dibangun native dari koordinat manifest peta (D-8); berlatar putih, legenda wajib. Periksa: PNG peta di slide tidak memuat teks (SVG sumbernya tanpa elemen `text`) | S27, S37, §A5 |
+| Catatan kaki dan sumber | Zona kaki y≈485–507,6: paling banyak satu baris "Sumber:" 7,5 pt ditambah 2 baris catatan 6 pt, tinggi kotak ≤ 22,6 pt; di semua slide berangka termasuk slide usulan, kecuali slide baris rekomendasi; tanpa baris sumber di bawah grafik | S14 |
+| Label keyakinan | Pil panel atau chip per baris, sama dengan `keyakinan` di `angka.json`; menggantikan stempel konsultan | S15 |
+| Pil CUT OFF DATA | Satu batas data kajian bertanggal dan berjam (mis. `23 Okt 2026, 23.59 WIB`) dari satu kunci di semua slide data, termasuk Pesan Kunci, Kesimpulan, dan slide usulan berangka; tidak di slide baris rekomendasi; menggantikan batas data di baris "Sumber:" | S16 |
+| Warna | Satu warna sorot per grafik, satu warna per keluarga bencana sepanjang deck, sorot dengan bingkai, label langsung bila paling banyak 4 seri | S18–S21 |
+| Daftar dan variasi | Paling banyak 6 butir per daftar; tiap slide isi selain navigasi memuat grafik native, tabel native, atau gambar peta; `jenis` dari daftar tertutup S35 dan dua slide berurutan tidak berjenis sama kecuali pengecualian S35 | S35, S36, S38 |
+| Matriks dan tabel | Matriks lembaga × fase, tabel penanggung jawab, kondisi kini ke target 2029, tabel skenario, profil wilayah bertemplat sama; matriks risiko §B5.27, kisi prioritas §B5.28, dan kartu skenario mini §B5.11 boleh tampil sebagai slide utuh | S22–S26 |
+| Rekomendasi | Baris LANGKAH, RINCIAN, PENANGGUNG JAWAB bernomor dalam lingkaran navy, pil status usulan, pita grup horizon tanpa Gantt; slide baris ini tanpa pil CUT OFF, catatan kaki, dan pita kepala panel. Slide usulan lain (kerangka program, prioritas program) tetap berkaki dan berpil | S14, S16, S28, S29 |
+| Penutup dan lampiran | Kesimpulan 8 kartu 4×2 dan pita ARAHAN; penutup tanpa nama orang; lampiran tabel native paling banyak 24 baris, dipecah rata | S32, S33 |
+| Huruf | Batas 6 pt Buku Pegangan, bukan 8 pt laporan; 5,2–5,8 pt hanya untuk persen tabel padat dan chip | S17 |
+| QA | Laporan QA per deck (font, ikon, tata letak, anti-AI) ditulis `bangun/pptx/periksa.py` ke `keluaran/qa/deck-<nama>.md` tiap `deck.py --pdf` dan `periksa.py --serah`; kosakata LOLOS dan GAGAL; build gagal bila laporan GAGAL | S39, §D4 |
+
+Yang tidak dibawa dari laporan ke deck, karena keputusan pemilik untuk slide: baris sumber di bawah
+grafik (dibuang di d5, "Keterangan jadi label"), Gantt dan tabel tahap × tahun §B5.29 (dibuang dari
+slide rekomendasi d5), dan batas huruf 8 pt.
+
+#### B7.3 Aturan bersama kedua alur
+
+- **Angka tidak diketik.** `{a}`, `{b}`, dan seterusnya di tabel alur adalah slot yang diisi token
+  `{{angka:<kunci>}}` (`bangun/NASKAH-SPEK.md`, gerbang D-22). Kolom Sumber menyebut kuncinya:
+  `angka:` untuk kunci yang sudah ada di `data/angka.json`, "kunci baru" untuk yang didaftarkan saat
+  naskah dibangun. Path data relatif ke `data/kajian-bnpb/data/`. Templat judul sekitar 110 karakter
+  sesudah angka diisi, supaya muat 2 baris di lebar 644 pt.
+- **Kata arah dari tanda angka.** "Naik" atau "turun" di judul dipilih dari tanda nilainya, bukan
+  ditulis tetap. Judul tanpa kata kerja sebab-akibat (§A2).
+- **Kelas IRBI.** Peta kelas IRBI memakai ramp oranye (T8). Nama kelas resmi Rendah, Sedang, Tinggi
+  hanya ada untuk indeks total; kelas per bahaya tidak ada di data (`irbi/README.md` bagian Kelas),
+  dan kelas total IRBI 2025 di Jawa nyaris seragam (118 Sedang, 1 Tinggi). Peta dan judul per bahaya
+  memakai nilai indeks dalam 5 kelas nilai (G19), bukan "kelas Tinggi".
+- **Keyakinan.** Keluaran model selalu "Estimasi model, belum diuji balik". Korban jiwa skenario
+  hidrometeorologi hanya ada sebagai rentang (kolom `rendah` dan `tinggi`, `nilai` kosong), jadi
+  judulnya memakai dua slot.
+- **Sampul**: judul resmi 2 baris, subjudul kajian, "Badan Nasional Penanggulangan Bencana" 00499D,
+  pil tanggal paparan navy, foto Wikimedia Commons beratribusi (K5). Tanpa nama penyaji (bawaan; P1 hanya
+  melarang tim penyusun).
+- **Tesis dan glosarium**: tesis di `data/angka.json` kunci `tesis.air` dan `tesis.mitigasi` (§A2);
+  singkatan dan istilah di `data/glosarium.json` (§B5.18). Slide Pesan Kunci dan lampiran singkatan
+  membaca keduanya.
+
+#### B7.4 Alur deck kajian air
+
+Alur slide mengikuti tabel deck `KERANGKA.md` §4 v3 dan disalin di bawah supaya pembangun deck punya satu garis
+besar (S34); bila berbeda, KERANGKA yang berlaku untuk isi. Bagian (label sama di Pesan Kunci dan kode bagian
+slide isi): A Kondisi air, B Musim kemarau, C Musim hujan dan pesisir, D Kesenjangan, E Grand design.
+
+Urutan `jenis` slide isi (S35): 1 navigasi, 2 tabel (profil wilayah, S26), 3 peta, 4 kartu-skenario, 5 peta,
+6 kartu-skenario, 7 peta, 8 matriks, 9 grafik (rantai tahap), 10 tabel, 11 matriks, 12 rekomendasi,
+13 navigasi; tidak ada dua jenis sama berurutan. Medan `judul`: slide 2–8 dan 11 `temuan`; 1, 9, 10, 12,
+dan 13 `deskriptif`. Slot `{a}`, `{b}` diisi token `{{angka:…}}` (§B7.3); "kunci baru" didaftarkan di
+`data/angka.json` saat spek deck dibangun. Di spek, kolom "Jenis; medan judul" ditulis `jenis_slide` dan
+`judul_bentuk`; `bangun/pptx/deck.py` menolak slide tanpa `pesan` atau dengan nilai di luar daftar S35 dan S7.
+
+| No | Kode dan judul | Pesan | Jenis; medan judul | Visual dan sumber |
+| --- | --- | --- | --- | --- |
+| – | Grand Design Ketahanan Air Pulau Jawa 2026–2030 | Sampul | sampul | Sampul d9, subjudul kajian, foto Commons beratribusi (`pustaka.json`) |
+| 1 | Pesan Kunci | Tesis, 2–3 keputusan yang diminta beserta akibat tiap pilihan, 3–4 temuan penopang | navigasi; deskriptif | Tesis 1–2 baris; pita keputusan (KD-1, KD-2, KD-5); kartu temuan berchip "Temuan A.1" (S1, S2); `angka:tesis.air`, naskah Bab 10 |
+| 2 | A1. Jawa menampung {a}% penduduk nasional dengan 6,3% air permukaan nasional; korban hidrometeorologi 2015–2025 terbanyak di {P} ({b} jiwa) | Tekanan air struktural dan sebaran korban per provinsi | tabel; temuan | Tabel profil 6 provinsi (penduduk KRB, korban per bahaya, rerata IRBI banjir dan kekeringan berlabel Asumsi kebijakan, sumber air minum 2023, irigasi) dan 3 kartu angka (S26, S8); `air-jawa/provinsi.csv`, `kab_jawa.csv`, `neraca_jawa.csv`, `dibi/jawa_kab_hidromet.csv` |
+| 3 | B1. {a} kab/kota memenuhi syarat daftar perhatian kekeringan; kejadian DIBI dan IRBI kekeringan berkorelasi lemah (ρ = 0,18) | Daftar disusun dengan syarat; peta resmi dan lapangan berbeda | peta; temuan | Peta IRBI kekeringan 2025, 5 kelas nilai (G19), kab daftar perhatian bernomor (G4), pil "IRBI tidak untuk peringkat"; `air-jawa/irbi_kab_2015_2025.csv`, `dibi_kab_tahun.csv`, `peta_kab.geojson` |
+| 4 | B2. Kemarau 2026: {a} kab/kota Jawa mencatat kekeringan sampai 23 Oktober (sementara); hari tanpa hujan terpanjang {b} hari di {L} | Kartu kemarau terburuk yang masuk akal dengan metrik resmi | kartu-skenario; temuan | Kab tercatat per tahun El Niño (2015, 2019, 2023, 2026; G1) berchip Resmi dan catatan pelaporan; bahaya tinggi KRB 2.877.406 ha; baris korban "tidak berlaku"; pita aksi sebelum kemarau 2027; `air-jawa/dibi_kab_tahun.csv`, `skenario-hidromet/kartu_skenario.csv`, BMKG (kunci baru) |
+| 5 | C1. Tanah longsor mencatat 924 dari 1.738 korban meninggal hidrometeorologi Jawa 2015–2026; IRBI longsor 2025 tertinggi di {B} | Bahaya musim hujan dengan korban terbanyak | peta; temuan | Peta kecil berganda IRBI banjir, longsor, abrasi (G19); batang korban per bahaya di panel; `air-jawa/irbi_kab_2015_2025.csv`, `dibi/jawa_kab_hidromet.csv` |
+| 6 | C2. Musim hujan Jawa dengan korban tercatat terbesar: {a} meninggal dan hilang ({musim}); musim 2026/2027 diprakirakan mulai Desember dengan puncak Desember–Februari | Lantai skenario dan kartu operasional 2026/2027 | kartu-skenario; temuan | Kiri tabel lima aspek, tercatat Resmi dan model berdampingan berlabel; kanan kepekaan peringatan dini dua lintasan (G14, pil Asumsi kebijakan, longsor tidak dihitung); `skenario-hidromet/musim_hujan.csv`, `kartu_skenario.csv`, `kepekaan_peringatan_dini.csv` |
+| 7 | C3. Penurunan muka tanah terverifikasi di {a} kota pesisir utara, tertinggi {b}–{c} cm per tahun di {K} | Risiko kronis pesisir memperbesar rob | peta; temuan | Garis pantai berlatar putih, titik kota bernomor, batang rentang (G12), baris "Data yang belum ada", chip prasyarat Tanggul Laut Pantura; pil Terverifikasi; `air-jawa/subsiden_kota.csv`, `peta_subsiden.geojson` |
+| 8 | D1. Lima komponen air terbagi ke {a} lembaga; {b} tumpang tindih dan celah kewenangan tercatat dalam peraturan | Kesenjangan kewenangan dan tiga jangkar Pasal 35 | matriks; temuan | Grid komponen × tingkat, chip lembaga, sel tertulis lawan pemetaan penyusun ditandai (S20); `lembaga/matriks_air.csv`, `celah.csv` |
+| 9 | E1. Kerangka Program Grand Design 2026–2030 per Fase dan Musim | Program berkode dengan kategori bukti; pita Kondisi 2025 ke Target 2029 | grafik (rantai tahap, G21); deskriptif | `program-terbukti/kompendium_program.csv`, `renstra_bnpb_2025_2029.csv`, naskah Bab 8; baris Sumber dan pil CUT OFF dipasang |
+| 10 | E2. Rencana Aksi Musim Hujan 2026/2027 dan Kesiapan Kemarau 2027 | Aksi bulanan November 2026–April 2027 dan pemicu kemarau 2027 | tabel; deskriptif | Tabel bulanan × unit (G23), hari ke-0 dan hari ke-100 ditandai; naskah Bab 8.8–8.9 |
+| 11 | E3. Tugas per fase untuk {a} lembaga pada ancaman air; {b} peran tertulis dalam peraturan | Siapa mengerjakan apa per fase; mandat dipisah dari usulan | matriks; temuan | Matriks lembaga × fase, kode K/P/R/I, ≤ 12 baris (S22, S23); `lembaga/peran.csv`, `matriks_bencana.csv`, `lembaga.csv` |
+| 12 | E4. Rekomendasi dan Peta Jalan 2026–2030 | {a} rekomendasi berlembaga, {b} dalam 100 hari, {c} pada 2026–2027, {d} pada 2028–2030 | rekomendasi; deskriptif | Baris LANGKAH, RINCIAN, PENANGGUNG JAWAB, pil status, pita horizon (S28, S29); register bersama |
+| 13 | Kesimpulan | 8 kesimpulan; pita ARAHAN berisi keputusan yang sama dengan slide 1 | navigasi; deskriptif | Kisi 4 × 2 (S32); angka sama persis dengan slide 2–12 |
+| – | Terima kasih; Lampiran | Penutup dan pembatas | layout GELAP | – |
+
+Lampiran deck (kode "L1. ", U5): L1 Indikator 119 kab/kota dengan kolom tingkat data (lanjutan per 24 baris); L2 Profil 24 wilayah
+sungai (kewenangan, tanpa neraca); L3 Bendungan dalam paket data, baris resmi dan sekunder terpisah; L4 Irigasi per
+provinsi dan kewenangan, rekonsiliasi; L5 Kisi kekuatan bukti × status program air; L6 Arsitektur pembiayaan; L7 Tata
+kelola, pelaporan, matriks mandat lengkap; L8 Instrumen hukum (kolom Progsun); L9 Metode, label, rekonsiliasi, data yang
+belum ada (Tabel 3.1); L10 Daftar singkatan.
+
+#### B7.5 Alur deck kajian mitigasi
+
+Alur slide mengikuti tabel deck `KERANGKA.md` §5 v3. Bagian: A Histori, B Profil risiko, C Skenario terburuk,
+D Kesenjangan, E Grand design. Slide C1–C3 satu seri dengan chip GEOLOGI, HIDROMETEOROLOGI, NONALAM DAN SOSIAL
+(S12).
+
+Urutan `jenis` slide isi (S35): 1 navigasi, 2 grafik, 3 peta, 4 matriks, 5–7 seri berchip (S12: tabel, tabel,
+grafik; 5–6 berurutan sebagai seri berchip, pengecualian S35), 8 panel, 9 grafik (rantai tahap), 10 tabel,
+11 matriks, 12 rekomendasi, 13 navigasi. Medan `judul`: slide 2–8 dan 11 `temuan`; 1, 9, 10, 12, dan 13
+`deskriptif`.
+
+| No | Kode dan judul | Pesan | Jenis; medan judul | Visual dan sumber |
+| --- | --- | --- | --- | --- |
+| – | Grand Design Mitigasi Bencana Indonesia 2026–2030 | Sampul | sampul | Subjudul "Strategi Prabencana, Tanggap Darurat, dan Pascabencana" (T10) |
+| 1 | Pesan Kunci | Tesis, 2–3 keputusan beserta akibat, temuan penopang | navigasi; deskriptif | Pita keputusan KD-1, KD-2, KD-3; kartu temuan berchip (S1, S2) |
+| 2 | A1. Korban meninggal dan hilang 2025 mencapai {a} jiwa, tertinggi sejak 2018; {b} di antaranya dari banjir dan longsor Sumatra November 2025 | Korban naik meskipun indeks turun | grafik; temuan | Batang meninggal+hilang 2015–2025 (G1) dan kejadian alam bertumpuk kelompok (G9) dengan penanda patahan 2024; 3 kartu angka; `dibi/rekap_nasional_tahunan.csv`, `skenario-hidromet/kartu_skenario.csv` |
+| 3 | B1. {a} dari 514 kab/kota berstatus Tinggi pada IRBI 2025, terbanyak di {pulau} ({b}) | Sebaran risiko dari pulau ke kab/kota | peta; temuan | Peta Indonesia status IRBI 2025 per kab/kota (G19, ramp T8), pil pulau dan 5–8 provinsi native, catatan skala 2025; `irbi/irbi_kab_2025.csv`, `irbi_agregat_pulau.csv` |
+| 4 | B2. {a} dari {n} jenis bencana berada di kelas dampak tertinggi; peluang lima tahun dapat dinilai untuk {m} jenis | Penilaian terbanding semua jenis | matriks; temuan | Matriks kemungkinan × dampak (G17, B5.27); panel "dampak dinilai, kemungkinan tidak dinilai"; pil Penilaian pakar bila posisi dari analog; `skenario-geologi`, `skenario-hidromet`, `nonalam-sosial/skenario_terburuk.csv`, `riset/mentah/oni_cpc.txt` |
+| 5 | C1. Penduduk terpapar tsunami {a} jiwa (KRB); {b} jiwa pesisir rendah dicapai gelombang ≤ 30 menit pada skenario selatan Jawa | Skenario geologi dinyatakan dengan paparan; korban tsunami belum dapat dihitung | tabel; temuan | Chip GEOLOGI. Tabel paparan resmi, jiwa pesisir rendah (Estimasi model), faktor evakuasi atas paparan; baris analog Cianjur 2022 dan Sulteng 2018; `skenario-geologi/ringkasan.csv`, `tsunami_kab.csv`, `kepekaan.csv`, `pembanding_resmi.csv` |
+| 6 | C2. Musim hujan 2025/2026 mencatat {a} meninggal dan hilang, lantai skenario terburuk hidrometeorologi nasional | Lantai dari kejadian nyata; kartu 2026/2027 | tabel; temuan | Chip HIDROMETEOROLOGI. Kolom musim tercatat terburuk, kasus Sumatra 2025, musim 2026/2027 setelah El Niño kuat, kemarau; model rasio berdampingan berlabel; `skenario-hidromet/kartu_skenario.csv`, `musim_hujan.csv` |
+| 7 | C3. Analog terburuk: COVID-19 {a} meninggal (resmi; {b}–{c} kematian berlebih menurut model WHO); konflik Maluku 1999–2002 sedikitnya {d} meninggal | Nonalam dan sosial dikuantifikasi dari analog tanpa perkalian | grafik; temuan | Chip NONALAM DAN SOSIAL. Batang analog per jenis dengan rentang (G12) dan label keyakinan; `nonalam-sosial/covid19_nasional.csv`, `peristiwa.csv`, `skenario_terburuk.csv` |
+| 8 | D1. Target cakupan peringatan dini 2029: Renstra {a}% lawan Renas {b} per 100.000; {c} tumpang tindih dan celah kewenangan tercatat | Kesenjangan yang menuntut keputusan | panel; temuan | Tiga panel kartu temuan; pita Kondisi 2025 ke Target 2029 dengan dua lintasan dan catatan penyebut (S24); `program-terbukti/renstra_bnpb_2025_2029.csv`, `lembaga/celah.csv` |
+| 9 | E1. Alur Langkah dan Kerangka Program 2026–2030 | Rantai pemicu dan program berkode per kelompok bencana | grafik (rantai tahap, G21); deskriptif | Naskah Bab 11.1 dan 11.3; pita sasaran 2029 resmi; baris Sumber dan pil CUT OFF |
+| 10 | E2. Operasi Musiman dan Rencana Aksi Musim Hujan 2026/2027 | Apa yang dikerjakan saat kemarau dan saat musim hujan | tabel; deskriptif | Kalender bahaya, pemicu, unit; baris 2026/2027 dan kemarau 2027; naskah Bab 11.5–11.6 |
+| 11 | E3. Tugas per fase untuk {a} lembaga pada {n} ancaman; BNPB koordinator tanggap darurat pada {b} ancaman | Siapa mengerjakan apa per fase | matriks; temuan | Matriks mandat tertulis lembaga × fase, kode K/P/R/I, ≤ 12 baris (S22, S23); `lembaga/peran.csv`, `matriks_ringkas.csv`, `matriks_bencana.csv` |
+| 12 | E4. Rekomendasi dan Peta Jalan 2026–2030 | {a} rekomendasi, {b} dalam 100 hari | rekomendasi; deskriptif | Baris LANGKAH, RINCIAN, PENANGGUNG JAWAB (S28, S29); register bersama |
+| 13 | Kesimpulan | 8 kesimpulan dan pita ARAHAN | navigasi; deskriptif | Kisi 4 × 2 (S32) |
+| – | Terima kasih; Lampiran | Penutup dan pembatas | layout GELAP | – |
+
+Lampiran deck (kode "L1. ", U5): L1 Tren IRB per pulau 2015–2024; L2 Nilai IRBI 2025 per bahaya untuk kab/kota berstatus Tinggi; L3 Kartu
+skenario per jenis; L4 Rekap DIBI dan rekonsiliasi kejadian 2024; L5 Kisi kekuatan bukti × status program; L6 Profil
+kerugian dan arsitektur pembiayaan; L7 Tata kelola, pelaporan, matriks mandat lengkap; L8 Instrumen hukum dan yang
+berubah dari Renas PB; L9 Metode, label keyakinan, data yang belum ada; L10 Peta kapasitas daerah dua ukuran; L11 Peta
+paparan skenario geologi; L12 Daftar singkatan.
 
 ---
 
@@ -1279,8 +1620,8 @@ tabel Judul per jenis deck di Buku Pegangan, bukan judul aksi laporan.
   "transformatif", "holistik", "sinergi" tanpa isi), kalimat yang terdengar seperti model
   berusaha bijak, basa-basi "ini peluang, bukan kepastian".
 - Dampak ditulis sebagai skenario konkret: siapa, di mana, kapan, apa yang gagal.
-- PDF ringkas dan kotak ringkasan ditulis berkerangka label (Temuan, Rekomendasi, Aksi),
-  bukan blok paragraf.
+- Kotak ringkasan dan slide deck ditulis berkerangka label (Temuan, Rekomendasi, Aksi),
+  bukan blok paragraf. Paragraf isi DOCX tetap prosa padat (§C9).
 - Data K/L lain diposisikan sebagai data lembaga itu, bukan posisi BNPB. Rincian teknis
   yang menjadi kewenangan K/L lain dirujuk, tidak diambil alih.
 - Bila anggapan umum keliru, koreksi di awal bagian dengan dasar (kotak B5.5).
@@ -1291,9 +1632,12 @@ tabel Judul per jenis deck di Buku Pegangan, bukan judul aksi laporan.
 
 | Unsur | Bentuk | Huruf |
 | --- | --- | --- |
-| Judul bab, subbab, sub-subbab | frasa deskriptif yang stabil ("Profil Risiko Musim Kemarau"), tanpa angka yang berubah tiap pembaruan data, supaya Daftar Isi stabil | kapital tiap kata menurut PUEBI |
-| Keterangan tabel dan gambar | kalimat temuan atau deskriptif: angka + satuan + kata kerja + tempat + waktu ("{n} kab/kota di Pulau Jawa masuk kelas tinggi kekeringan, IRBI 2025") | huruf kalimat |
-| Kalimat pertama subbab | kalimat temuan berangka, sama dengan keterangan objek utamanya | huruf kalimat |
+| Judul bab | frasa deskriptif yang stabil, tanpa angka yang berubah tiap pembaruan data, supaya Daftar Isi stabil ("PROFIL RISIKO MUSIM KEMARAU") | KAPITAL (T1) |
+| Subbab (tingkat 2) | frasa deskriptif yang stabil ("5.1 Sebaran Risiko Kekeringan") | kapital tiap kata menurut PUEBI (T1) |
+| Sub-subbab (tingkat 3) | frasa deskriptif yang stabil ("4.3.2 Sedimentasi Waduk"), tanpa angka yang berubah tiap pembaruan data, supaya Daftar Isi (sampai tingkat 1.1.1, §B4) stabil; bawaan U7. Temuan berangka skill `deep-research` (`TAMBAHAN-RISET.md` butir 6), mis. "Kedung Ombo kehilangan 5,5% tampungan", ditulis di kalimat pembuka tebal subbab (§B2) | kapital tiap kata menurut PUEBI (T1) |
+| Judul kotak temuan (§B5.5) | kalimat temuan berangka, formal, ≤ 2 baris; angkanya token (D-22); tidak masuk Daftar Isi | huruf kalimat |
+| Keterangan tabel dan gambar | bawaan U4: frasa deskriptif yang stabil berisi besaran, tempat, periode, dan satuan dalam kurung ("Kejadian banjir per kabupaten/kota di Pulau Jawa, 2015–2025 (kejadian)"), tanpa angka hasil yang berubah tiap pembaruan data, supaya Daftar Tabel dan Daftar Gambar stabil; memuat tahun atau periode (D-31) | huruf kalimat |
+| Kalimat pertama subbab dan paragraf yang merujuk objek | kalimat temuan berangka dari objek itu (angka, satuan, tempat, waktu), sebagai kalimat pembuka tebal bergaya Isi Temuan (§B2) | huruf kalimat |
 | Label, pil, kolom, legenda | kata benda polos | huruf kalimat; kapital berspasi hanya pil bagian, kepala kolom, label pita (§B2); singkatan resmi tetap kapital |
 
 - Angka kunci di judul PDF ≥ 14 pt boleh disorot `oranye` dan nama tempat `biru-lembaga`;
@@ -1317,7 +1661,7 @@ padanan terlarang, dan definisi hidup di `glosarium.json` (§B5.18).
 | provinsi yang sering mengalami {bencana} | N provinsi prioritas (kecuali status resmi BNPB yang memang bernama demikian, dikutip dengan sumbernya) |
 | titik panas berada di dalam areal konsesi | tuduhan pembakar; nomor izin, kasus sanksi tidak ditulis; WALHI tidak dipakai sebagai kolom, angka, atau sumber |
 | musim hujan | hujan pertama |
-| prabencana, saat bencana, pascabencana (T10); "saat bencana" disamakan dengan tahap tanggap darurat UU 24/2007 di glosarium | pra bencana, pra-bencana, campuran tanpa aturan |
+| prabencana, tanggap darurat, pascabencana (T10, UU 24/2007) | pra bencana, pra-bencana, "saat bencana" sebagai nama fase, campuran tanpa aturan |
 | terpapar (penduduk di zona bahaya tanpa evakuasi) | korban (untuk angka paparan) |
 | bahaya, keterpaparan, kerentanan, kapasitas, risiko | dipertukarkan |
 | penurunan muka tanah | amblesan, subsiden, dicampur (istilah asing miring sekali di glosarium) |
@@ -1417,6 +1761,10 @@ Wajib di tiap tabel (baris sumber atau per baris), kartu angka, dan kartu skenar
 | Terverifikasi | Sumber primer non-resmi, dibaca langsung | pil garis `slate`, teks `teks` |
 | Estimasi model | Keluaran model/simulasi; ditambah "belum diuji balik" atau "uji balik gagal" bila begitu | pil garis `oranye`, teks `teks` |
 | Asumsi kebijakan | Nilai pilihan (VSL, biaya pengungsi per hari, stimulan sebagai batas bawah) | pil garis `teks-3` |
+| Penilaian pakar | Posisi atau kelas hasil penilaian analis atau pakar, bukan rumus atau model (posisi matriks risiko §B5.27, bara risiko §B5.10) | pil garis `teks-3`, dibedakan dari Asumsi kebijakan oleh teksnya |
+
+`KERANGKA.md` v3 prinsip 6 memakai lima label yang sama; `kosakata.keyakinan` di `tema.json` memuat
+`penilaian-pakar`, dan pembangun deck mengurutkannya paling lemah (posisi hasil penilaian, bukan rumus atau model).
 
 Tambahan di teks: kalimat bertanda "fakta" (diverifikasi langsung) atau "penilaian"
 (pendapat analis yang bisa dibantah) di kotak temuan. Angka ilustrasi/contoh berlabel
@@ -1484,6 +1832,60 @@ Kohort tidak dicampur dengan total. Gerbang D-6 memeriksa.
 - Tidak menyebut biaya proyek (K6).
 - Tidak menyatakan sebab-akibat dari korelasi.
 
+### C9. Alur naskah dan aturan penulis
+
+Arsitektur tahap naskah dari skill pemilik `deep-research` (`TAMBAHAN-RISET.md`; Buku Pegangan L56–L64).
+Hasil diserahkan tanpa putaran tinjauan pemilik (K18, bawaan), jadi pemisahan peran di bawah adalah
+pengganti pemeriksaannya.
+
+**Urutan kerja per bab**
+
+1. **Berkas bukti per bab disusun sebelum naskah.** Peneliti menyusun `naskah/<kajian>/bukti/bab-NN.md` dari riset A–D,
+   `data/*`, dan sumber tambahan sebelum bab ditulis. Penulis bab tidak meriset sendiri: ia menulis
+   hanya dari berkas bukti dan `data/angka.json` (angka sebagai token, §A5, D-22).
+2. **Naskah** `naskah/<kajian>/bab-NN.md` mengikuti `bangun/NASKAH-SPEK.md`, §B, dan §C.
+3. **QA lima lapis** (§D4): penulis, penyunting substansi, penyunting bahasa, proofread render,
+   gerbang mekanis. Penyunting substansi menolak klaim naskah yang tidak ada di berkas bukti.
+
+**Struktur berkas bukti.** Per pertanyaan kunci bab (pertanyaan pimpinan §A2 dan pertanyaan pembatas
+bab §B5.2), empat bagian wajib:
+
+| Bagian | Isi |
+| --- | --- |
+| Inti | Jawaban satu sampai tiga kalimat atas pertanyaan itu |
+| Temuan bersumber | Tiap butir bersumber (pustaka, kunci `angka.json`, atau berkas data) dan berlabel keyakinan §C6.2; temuan yang membantah ditulis sebagai "dibantah oleh" |
+| Inferensi | Analisis tim yang ditarik dari temuan, ditandai sebagai penilaian |
+| Celah | Yang dicari dan tidak ditemukan, berikut data yang diminta dari lembaga pemegangnya |
+
+Berkas tanpa empat bagian ditolak (§D4).
+
+**Evaluasi sumber.** Fakta dipisah dari spekulasi dan sumber asli dari agregator. Berita hanya dipakai
+bila sumber resmi tidak ada dan ditandai (§C6.1 butir 4); agregator diganti sumber aslinya; konflik
+angka ditulis berdampingan di tabel rekonsiliasi (§C6.5).
+
+**Aturan penulis**
+
+- **Kalimat faktual tanpa sumber dipindah ke Celah atau dihapus.** "Diperkirakan" tidak dipakai untuk menutupi ketiadaan sumber (§C8).
+- **BLUF.** Ringkasan Eksekutif dan kotak ringkasan bab (§B5.3) dibuka temuan terpenting berangka,
+  lalu arti dan dampaknya bagi BNPB.
+- **Temuan berangka di kalimat pembuka tebal dan judul kotak temuan.** Judul bab tetap baku dan
+  kapital (T1); judul subbab tingkat 2 dan 3 deskriptif stabil (§C2, U7).
+- **Prosa padat.** Paragraf isi berbentuk prosa; daftar butir hanya untuk enumerasi sejajar (lembaga,
+  langkah), dan rasio butir terhadap paragraf per bab dilaporkan (§D4). Angka kunci ditebalkan lewat
+  kalimat pembuka tebal gaya Isi Temuan (§B2); tebal tambahan di tengah paragraf tidak dipakai
+  (`ANTI-SLOP.md` M-12). Rujukan ditaruh pada klaim besar, angka, dan dokumen.
+- **Tiap angka utama disertai pembanding dan artinya bagi keputusan.** Pembandingnya target RPJMN,
+  tahun lalu, provinsi lain, atau standar internasional.
+- **Argumen tandingan.** Rekomendasi besar yang diperdebatkan (tanggul laut, normalisasi lawan
+  naturalisasi sungai, relokasi) menampilkan argumen tandingan dan bukti kegagalan, misalnya pola
+  Empat Sungai Korea, lalu posisi kajian. Ketidakpastian dinyatakan dengan besar dan sebabnya (§C4).
+- **Kesimpulan tanpa ulangan.** Bab Kesimpulan dan Rekomendasi berisi keputusan dan implikasi, tidak
+  mengulang paragraf bab sebelumnya; detektor pengulangan kalimat lintas bab memeriksanya (§D4).
+
+Tidak dipakai dari skill: batas 15 panggilan alat per peneliti (penelusuran per bab perlu lebih
+dalam), laporan tanpa daftar butir sama sekali (dokumen kebijakan butuh enumerasi lembaga dan langkah;
+dibatasi, bukan dilarang), judul bab naratif (T1), dan judul subbab tingkat 3 berangka (U7).
+
 ---
 
 ## D. Gerbang QA sebelum kirim
@@ -1492,6 +1894,15 @@ Aturan tanpa gerbang mekanis dianggap belum jadi. Gerbang dibangun sebelum naska
 (`data/kajian-bnpb/qa/periksa.py`; pemiliknya `pipa-data` menurut `ilmu.mjs pemilik`,
 atau `penulis-gerbang` bila ujinya ditaruh di `tests/agen/`), dijalankan pada tiap build,
 dan berhenti pada temuan pertama. Satu butir gagal = belum selesai.
+
+Status 23 Okt 2026 (v1.3): `qa/periksa.py`, `qa/uji.py`, dan `qa/cakupan.json` sudah ada. Menurut
+`qa/cakupan.json`, 22 kode diuji dengan fixture negatif, 10 masih `antre` (D-8, D-18, D-21, D-24
+sampai D-30), "D-12 PDF ringkas" dikecualikan karena P13, dan gerbang tambahan T-1 sampai T-4 (sisa
+sintaks naskah, jumlah halaman PDF sama dengan dokumen asal, tautan gambar, anti-slop) ikut diuji.
+`qa/uji.py` menolak kode D di tabel D1 yang tidak terdaftar di `qa/cakupan.json`, jadi kode D baru
+hanya ditambahkan bersama gerbang dan fixture-nya (atau alasan pengecualian); pemeriksaan baru di §D4
+belum berkode karena itu. Kode yang `antre` dan pemeriksaan §D4 berstatus belum jadi menurut standar
+uji pemilik.
 
 Standar uji pemilik berlaku:
 - **Fixture negatif per gerbang**: `qa/fixtures/` berisi satu berkas gagal per kode (DOCX,
@@ -1504,8 +1915,8 @@ Standar uji pemilik berlaku:
   ditemukan, ambang, dan sebab teknisnya, mis. `D-5 lengkap.docx p.412: w:sz=14 (7 pt) < 16
   (8 pt), gaya "Catatan tabel"`.
 - **Cakupan berkas**: D-1, D-2, D-3, D-10, dan D-16 dijalankan pada `word/document.xml`,
-  footnotes, headers, `pdftotext`, SVG sumber tiap PNG (label, legenda, judul), serta HTML
-  dan JSON PDF ringkas dan peta web.
+  footnotes, headers, `pdftotext`, SVG sumber tiap PNG (label, legenda, judul), `ppt/slides/*.xml`
+  deck, serta HTML dan JSON peta web.
 
 ### D1. Gerbang mekanis
 
@@ -1516,15 +1927,15 @@ Standar uji pemilik berlaku:
 | D-3 | Emoji nol | regex rentang emoji Unicode = 0 |
 | D-4 | Font hanya Roboto | `w:rFonts`, `theme1.xml`, `numbering.xml` (font butir), `pdffonts`, dan `font-family`/`@font-face` CSS: hanya keluarga Roboto; tanpa URL font CDN |
 | D-5 | Huruf terkecil ≥ 8 pt | semua `w:sz` ≥ 16 (half-point); ukuran teks di PNG dicek dari SVG sumber |
-| D-6 | Angka silang | angka kunci dan kalimat `tesis` di `angka-kunci.json` dicari di teks DOCX, PDF, dan JSON web; semua sama; tesis identik di PDF hlm 2, kalimat pertama Ringkasan Eksekutif, dan Bab Kesimpulan; baris Jumlah = jumlah baris tampil; subtotal = total; hitungan judul = jumlah baris |
-| D-7 | Tiap Gambar dan Tabel bernomor, berurutan, tanpa nomor ganda atau loncat, punya baris "Sumber:" di bawahnya, masuk Daftar Tabel/Gambar | parse Caption + paragraf sesudah objek |
+| D-6 | Angka silang | angka kunci dan kalimat `tesis.<kajian>` di `data/angka.json` dicari di teks DOCX, PDF, PPTX, dan JSON web; semua sama; tesis identik di kalimat pertama Ringkasan Eksekutif, Bab Kesimpulan, dan slide Pesan Kunci deck; baris Jumlah = jumlah baris tampil; subtotal = total; hitungan judul = jumlah baris |
+| D-7 | Tiap Gambar dan Tabel bernomor, berurutan, tanpa nomor ganda atau loncat, punya baris "Sumber:" sebagai paragraf pertama sesudah objek, masuk Daftar Tabel/Gambar; legenda tabel berada di baris terakhir tabel (§B5.7) | parse Caption + paragraf sesudah objek; fixture tabel berlegenda di baris terakhir (lolos) dan tabel dengan paragraf legenda di antara tabel dan "Sumber:" (gagal) |
 | D-8 | Peta: legenda ada (manifest render `legenda: true`), tidak ada irisan kotak label/bulatan/badge, nama provinsi ≥ 8 pt, unsur peta resmi tercatat (sumber batas, sistem referensi, proyeksi, inset untuk peta pulau/provinsi, catatan batas tidak resmi bila berlaku) | perender peta menulis bounding box dan unsur peta ke manifest; uji irisan dan kelengkapan |
 | D-9 | Hex di luar `tema.json` nol | daftar putih: tiap hex di DOCX, SVG, HTML, CSS, dan JSON gaya ada di `tema.json`; §B1.6 jadi fixture negatif |
 | D-10 | Istilah terlarang nol | daftar dari `glosarium.json`: "titik api", "perkiraan satelit", "provinsi prioritas" (kecuali kutipan resmi bertanda), "hujan pertama", "kamu", "Anda", "100%" pada peluang, "pra bencana", "pra-bencana", "subsiden", "amblesan", "Bali–Nusa Tenggara", "[SEKUNDER]", "TIDAK DITEMUKAN" |
-| D-11 | Kapital penuh | paragraf bergaya Heading dan isi tanpa kapital penuh, kecuali daftar singkatan resmi dan gaya yang dikecualikan (kepala kolom, pil, label pita); selama T1 belum diputus lain |
-| D-12 | Panjang | halaman isi DOCX hasil soffice ≤ 142 (150 dikurangi cadangan 5% untuk beda paginasi Word); PDF ringkas ≤ 10 |
+| D-11 | Kapital penuh | paragraf bergaya Heading 2 ke bawah dan isi tanpa kapital penuh, kecuali daftar singkatan resmi dan gaya yang dikecualikan (kepala kolom, pil, label pita, Heading 1, judul bagian depan; T1) |
+| D-12 | Panjang | halaman isi DOCX hasil soffice dari Bab 1 sampai sebelum judul Daftar Pustaka (T9): kajian air ≤ 104 (110 dikurangi 5% untuk beda paginasi Word), kajian mitigasi ≤ 142 (150 dikurangi 5%). PDF ringkas dicabut (K17; dikecualikan di `qa/cakupan.json`); jumlah halaman PDF sama dengan dokumen asal diperiksa T-2 |
 | D-13 | Penomoran | sampul tanpa nomor; romawi di bagian depan; Bab 1 = 1; bidang TOC, Daftar Tabel/Gambar/Lampiran, dan Caption ada dan hasilnya terisi (indeks diperbarui lewat UNO, §B4); `w:updateFields` aktif |
-| D-14 | Label keyakinan | tiap tabel dan kartu skenario punya salah satu dari empat label |
+| D-14 | Label keyakinan | tiap tabel dan kartu skenario punya salah satu dari lima label §C6.2 (Resmi, Terverifikasi, Estimasi model, Asumsi kebijakan, Penilaian pakar); pil di luar daftar itu ditolak |
 | D-15 | Atribusi foto | tiap gambar foto punya baris "Wikimedia Commons, pengarang, lisensi" dan entri di Lampiran Atribusi; lisensi bukan NC/ND |
 | D-16 | Format angka | tolak `\d,\d{3}\b`, `\d\.\d{1,2}\b`, tanggal ISO, dan jam bertitik dua. Dikecualikan: gaya Heading, Caption, dan TOC; pola `(Tabel\|Gambar\|Bab\|Lampiran) \d+(\.\d+)*`; nomor subbab di awal paragraf; jam `\b\d{2}\.\d{2} (WIB\|WITA\|WIT)\b`; angka kinerja model yang tercatat di manifest injeksi. Tiap pola dan pengecualian punya fixture |
 | D-17 | Judul ≤ 2 baris, tanpa "…" terpotong | ukur dari render PDF (pdfplumber) |
@@ -1536,27 +1947,39 @@ Standar uji pemilik berlaku:
 | D-23 | Glif di luar Roboto nol | tiap karakter di `document.xml`, footnotes, headers, SVG, dan HTML ada di cmap berkas Roboto yang dipakai (▲ U+25B2, ▼ U+25BC, → U+2192, ◦, ▪, ✓ tidak ada) |
 | D-24 | Satu hex satu arti per halaman | tidak ada hex yang tercatat dalam dua peran (kategori, skala, aksen, permukaan) pada satu halaman; dibaca dari `manifest.json` generator (§B1.8) |
 | D-25 | Satu ikon satu arti | tiap konsep di registri ikon `tema.json` punya glif unik; tiap ikon di keluaran berasal dari registri |
-| D-26 | Kalimat pembuka tebal | tiap paragraf isi Ringkasan Eksekutif sesudah halaman Pesan Kunci dan tiap paragraf bergaya "Isi Temuan" dibuka run Bold yang memuat angka; kalimat Bold itu ≤ 2 baris pada render | parse `w:p` per bagian; panjang baris dari pdfplumber |
-| D-27 | Temuan dan rekomendasi bertaut | tiap kode temuan `[A-C]\.\d+` di halaman Pesan Kunci muncul lagi di Ringkasan Eksekutif; tiap baris rekomendasi §B5.13 memuat "Dasar:" dengan ≥ 1 kode temuan yang ada; tidak ada kode temuan yatim | parse teks DOCX dan HTML PDF ringkas |
-| D-28 | Pilih grafik | manifest tiap PNG grafik mencatat `pesan` (G1–G24) dan `jenis`, atau alasan bila di luar tabel; jenis G25 ditolak; batang lebih dari 24 tanpa diringkas ditolak; batang bertumpuk lebih dari 5 segmen ditolak; sumbu Y pada batang ditolak; pil kanan atas ≤ 1 | manifest render grafik |
+| D-26 | Kalimat pembuka tebal | tiap paragraf bergaya "Isi Temuan" (§B2) dibuka run Bold yang memuat angka; kalimat Bold itu ≤ 2 baris pada render; semua paragraf isi Bab 4–7 kajian air dan Bab 4–10 kajian mitigasi bergaya Isi Temuan, sehingga gerbang tidak bisa dihindari dengan memakai gaya Isi | parse `w:p` per bagian; panjang baris dari pdfplumber |
+| D-27 | Temuan dan rekomendasi bertaut | token `Temuan [A-C]\.\d+` dibaca dari semua paragraf kecuali gaya Caption dan Judul Lampiran; tiap kode di halaman Pesan Kunci muncul lagi di paragraf Ringkasan Eksekutif sesudah halaman Pesan Kunci dan di subbab yang dirujuknya ("Bab x.y"); tiap baris rekomendasi §B5.13 memuat "Dasar:" dengan ≥ 1 kode temuan yang ada; tidak ada kode temuan yatim; fixture berisi "Tabel A.1" dan "Gambar B.2" di lampiran harus lolos tanpa dihitung sebagai temuan | parse teks DOCX |
+| D-28 | Pilih grafik | manifest tiap PNG grafik mencatat `pesan` (G1–G24) dan `jenis`, atau alasan bila di luar tabel; pasangan `pesan` dan `jenis` dicocokkan ke kolom Grafik tabel pilih grafik §B5.10 (G1 batang tegak, G2 batang per dekade atau garis, G4 dan G5 batang horizontal, G6 dumbbell, G19 koroplet, G20 simbol sebanding, dan seterusnya) dan pasangan lain ditolak; manifest peta mencatat `besaran` (rasio, indeks, total) dan koroplet untuk total ditolak; `anotasi` ≤ 3; jenis G25 ditolak; batang lebih dari 24 tanpa diringkas ditolak; batang bertumpuk lebih dari 5 segmen ditolak; sumbu Y pada batang ditolak; pil kanan atas ≤ 1 | manifest render grafik |
 | D-29 | Peta kecil berganda | panel dalam satu kelompok berbagi `kelas`, `skala`, dan satu `legenda` yang identik | manifest render peta |
+| D-30 | Pesan Kunci dan studi kasus | halaman Pesan Kunci memuat 6–8 temuan, tiap temuan ≤ 3 baris pada render; tiap halaman studi kasus memuat tepat empat label Masalah, Pelaksana, Cara, Hasil | parse DOCX; panjang baris dari pdfplumber |
+| D-31 | Rekomendasi dan keterangan | kolom LANGKAH matriks rekomendasi ≤ 8 kata; tiap keterangan Gambar dan Tabel memuat tahun atau periode (`\d{4}`) | parse tabel §B5.13 dan paragraf Caption |
+| D-32 | Catatan grafik | paragraf "Catatan:" sesudah "Sumber:" paling banyak satu baris pada render dan 120 karakter | parse paragraf sesudah objek; panjang baris dari pdfplumber |
 
 ### D2. Gerbang visual (manusia/agent membaca)
 
 1. Render: DOCX dengan `soffice --headless --convert-to pdf` sesudah indeks diperbarui,
-   PDF ringkas dengan Chromium headless, lalu `pdftoppm -r 110 -png`.
+   deck dengan `bangun/pptx/deck.py --pdf` (soffice), lalu `pdftoppm -r 110 -png`.
 2. Baca setiap PNG halaman, bukan sampel. Laporan "sudah rapi" tanpa melihat PNG tidak
    dihitung sebagai bukti.
 3. Daftar periksa per halaman: tidak ada teks turun baris tak sengaja, tumpang tindih,
    isi menempel ke tepi panel, garis footer pendek, ruang putih menganga, tabel lanjutan
    yang hanya berisi sisa sedikit baris, penunjuk halaman lampiran salah, data basi tanpa
    tanda, setiap warna berlegenda.
-4. Peta web dibuka di 1440 dan 390 px dan dibandingkan dengan PNG.
+4. Per bab, kalimat Bold pembuka paragraf dibaca berurutan tanpa isi lainnya; bila alur bab tidak
+   terbaca dari kalimat itu saja, kalimat pembukanya ditulis ulang (SINTESIS P17).
+5. Peta web dibuka di 1440 dan 390 px dan dibandingkan dengan PNG.
+6. Judul slide deck dibaca berurutan sebagai ringkasan (Buku Pegangan S6), lalu tiap slide dibaca
+   pada render. Proofread lapis (d) §D4 dilakukan di sini, pada render halaman utuh, bukan pada
+   Markdown.
 
 ### D3. Proses kerja
 
-- Grand design dan halaman contoh (satu halaman per komponen B5) disetujui pemilik dulu,
-  lalu produksi mengikuti contoh itu.
+- Pemilik meminta tidak ada pertanyaan lagi; hasil diserahkan tanpa putaran tinjauan pemilik (K18,
+  bawaan). Pedoman sebelum v1.3 meminta grand design dan halaman contoh (satu halaman per komponen B5)
+  disetujui pemilik dulu; persetujuan itu kini diganti pemeriksaan penyunting independen berkonteks
+  bersih sebagai bawaan yang bisa dibalik pemilik, lalu produksi mengikuti contoh itu. Kata Pengantar
+  satu-satunya bagian yang ditandai untuk diperiksa pemilik (T7). Pertanyaan terbuka memakai bawaan
+  `KEPUTUSAN.md` T1–T13 atau U1–U7 di §0.2.
 - Opus merencanakan dan memegang kontrak (pedoman ini, kerangka, tesis); Sonnet menulis bab
   dan membangun generator; Haiku menjalankan pemeriksaan pola. Pemeriksa adalah subagent
   baru berkonteks bersih, bukan penulis babnya; hasil agent dibaca sendiri, laporan agent
@@ -1565,8 +1988,65 @@ Standar uji pemilik berlaku:
   kembarannya.
 - Pedoman ini bila diterbitkan sebagai artifact diterbitkan ulang ke URL yang sama.
 - Subagent tidak commit, push, atau deploy; pengiriman ke Kepala BNPB diputuskan pemilik.
-- Definisi selesai: semua D1 lolos, D2 dibaca seluruhnya, angka kunci diverifikasi oleh
-  pemeriksa terpisah, dan laporan akhir menyebut apa yang belum.
+- Definisi selesai: semua D1 lolos, D2 dibaca seluruhnya, lima lapis §D4 selesai dengan
+  laporannya, semua bab LULUS ambang anti-AI (T-8), laporan QA per deck LOLOS (S39), angka kunci diverifikasi
+  oleh pemeriksa terpisah, dan laporan akhir menyebut apa yang belum.
+
+### D4. QA lima lapis dan pemeriksaan naskah
+
+Dari skill pemilik `book-production-rules` (lapis dan produksi, `TAMBAHAN-BUKU.md`), `anti-ai-checker`
+(ambang, `TAMBAHAN-ANTI-AI.md`), `deep-research` (berkas bukti, `TAMBAHAN-RISET.md`), dan
+`alfatehan-pptx-rules` (laporan per deck, `TAMBAHAN-PPTX-RULES.md`). Karena hasil diserahkan tanpa
+putaran tinjauan pemilik (K18, bawaan), fungsi pembaca beta dijalankan penyunting independen di lapis
+(b) sampai (d).
+
+**Lima lapis, berurutan.** Laporan tiap lapis ditulis ke `keluaran/qa/`.
+
+| Lapis | Pelaku | Yang diperiksa | Padanan `ANTI-SLOP.md` §6.1 |
+| --- | --- | --- | --- |
+| (a) Penulis | penulis bab | memeriksa sendiri terhadap berkas bukti, `angka.json`, dan daftar M `ANTI-SLOP.md` | tahap 1 |
+| (b) Penyunting substansi | subagent berkonteks bersih, bukan penulis | cek fakta tiap angka ke `angka.json` dan sumbernya; klaim yang tidak ada di berkas bukti ditolak; paragraf tanpa angka, sumber, atau keputusan dipotong; data ditafsirkan dan argumen tandingan ada (§C9) | tahap 2 |
+| (c) Penyunting bahasa | subagent berkonteks bersih, bukan (a) atau (b) | KBBI, PUEBI, glosarium, anti-slop dan ambang anti-AI di bawah, BLUF, judul subbab deskriptif dan temuan berangka di kalimat pembuka (§C2) | tahap 2 |
+| (d) Proofread render | mata baru, bukan (a) sampai (c) | PDF hasil render halaman utuh, bukan Markdown (§D2 butir 3, 4, dan 6) | – |
+| (e) Gerbang mekanis | `qa/periksa.py` | §D1 dan gerbang T-1 sampai T-4 | tahap 3 |
+
+**Ambang anti-AI per bab** (skill `anti-ai-checker`; Buku Pegangan bab Angka & copy). Dibaca `qa/slop.py`
+(S-1, S-17, S-18 per kemunculan, S-40 titik dua, S-41 hedging, S-42 pembuka klise, S-43 kata terlarang khas AI;
+`AMBANG_KODE`) dan ditegakkan gerbang `qa/periksa.py` T-8 (terdaftar di `qa/cakupan.json` bersama fixture).
+
+| Cek | Ambang | Catatan |
+| --- | --- | --- |
+| Em dash | 0 di teks tampil | D-1; skill membolehkan 3 per 1.000 kata, aturan pemilik lebih ketat |
+| Titik dua | ≤ 20 per 1.500 kata di paragraf isi | Label tabel, keterangan gambar ("Gambar 3.1"), dan "Sumber:" tidak dihitung |
+| Pembuka klise | nol di 50 kata pertama tiap bab dan tiap subbab | "Di era", "Dalam lanskap", "Seiring perkembangan zaman", "Tidak dapat dipungkiri", "Pada hakikatnya", "Sebagaimana kita ketahui", "Dalam rangka", "Perlu diketahui" |
+| Hedging | ≤ 2 per 1.500 kata | "perlu dicatat bahwa", "patut dicatat", "penting untuk diperhatikan", "dapat dikatakan bahwa", "tampaknya", "cenderung" tanpa data |
+| Tiga-serangkai | 0 (gaya) | Skill membolehkan 5 per 1.000 kata; Buku Pegangan melarang (Bahasa lugas, 19 Okt). Di DOCX daftar tiga yang faktual (nama diri atau angka) tidak dihitung; di deck tanpa pengecualian (`ANTI-SLOP.md`) |
+| Kata terlarang khas AI | nol | `riset/anti-slop/banned-ai-words.txt` (182 baris) untuk teks Inggris; padanan Indonesia baru sebagian di `ANTI-SLOP.md` S-12 (mulus, menavigasi, mendalami, menyelami, memulai perjalanan, memupuk, mendayagunakan, dan kokoh belum masuk) |
+
+Vonis per bab: nol pelanggaran LULUS; 1–2 GAGAL RINGAN, ditulis ulang penyunting; 3 atau lebih GAGAL
+BERAT, bab dikembalikan ke penulis, ditulis ulang, dan dipindai ulang. Semua bab wajib LULUS sebelum
+serah (aturan proses orkestrator; K18 bawaan). Laporan per bab memakai format skill (berkas, jumlah kata, status,
+jumlah pelanggaran, kata terlarang berikut lokasi paragraf, rasio em dash dan titik dua, pembuka, usulan tulis
+ulang, vonis): `python3 qa/slop.py --ambang --laporan keluaran/qa/slop-<kajian>.md <docx>`; pembangun DOCX
+menulisnya sendiri tiap build. S-18 kini menghitung tiap tiga-serangkai gaya; daftar faktual (nama diri atau
+angka) di DOCX dan set istilah resmi (tahap PB menurut UU 24/2007, komponen IRBI) tidak dihitung.
+
+**Pemeriksaan naskah dan produksi.** Yang sudah bergerbang berkode T (gerbang tambahan `qa/periksa.py`, terdaftar
+di `qa/cakupan.json` dengan fixture negatif dan positif); sisanya belum bergerbang.
+
+| Pemeriksaan | Ambang | Cara | Asal |
+| --- | --- | --- | --- |
+| Berkas bukti | tiap `naskah/<kajian>/bukti/bab-NN.md` memuat Inti, Temuan bersumber, Inferensi, dan Celah per pertanyaan kunci | parse Markdown | §C9, skill `deep-research` |
+| Klaim tanpa rujukan | paragraf isi tanpa rujukan atau token angka dihitung dan dilaporkan per bab | parse naskah | §C9 |
+| Rasio butir | rasio butir terhadap paragraf per bab dilaporkan | parse naskah | §C9 |
+| Pengulangan lintas bab | kalimat Bab Kesimpulan yang mengulang kalimat bab lain ditolak | detektor pengulangan kalimat | §C9 |
+| Kepadatan pustaka | kajian mitigasi ≥ 80 dan kajian air ≥ 50 sumber dirujuk; ≥ 50% resmi atau primer; ≥ 8 sumber berbeda per bab | T-11: blok `pustaka` manifest DOCX (kunci `pustaka.json` per bab, ditulis `bangun/docx`); ambang `tema.json` `qa.pustaka` berlaku untuk naskah berstatus final, draf hanya diperiksa keutuhan kuncinya | §B5.17, skill `book-production-rules` |
+| Singkatan dan varian terlarang | singkatan tanpa kepanjangan pada kemunculan pertama per bab dan varian terlarang `glosarium.json` berjumlah nol | T-9 (prosa tiap BAB) dan D-10 (`terlarang`, seluruh teks tampil) | §B5.18 |
+| Ejaan | kata tak dikenal yang bukan istilah glosarium atau nama diri berjumlah nol per bab | T-10: kamus `id_ID` (`bangun/kamus/id`) lewat `spylls` di venv | §B2 |
+| Pemenggalan | tidak ada baris rata kiri-kanan dengan celah antarkata lebih dari 3 kali normal | ukur dari PDF | §B2 |
+| Metadata | properti inti DOCX, PDF, dan PPTX terisi (judul, penerbit BNPB, subjek, kata kunci, bahasa id-ID); outline PDF memuat judul bab dan subbab | uji diri `bangun/docx/uji.py` (properti DOCX, metadata dan `/Lang` PDF, bookmark bab dan subbab) dan `bangun/pptx/deck.py` (properti PPTX) | §B4 |
+| Laporan QA per deck | font, ikon, tata letak, dan anti-AI masing-masing LOLOS | `bangun/pptx/periksa.py` `laporan()` ke `keluaran/qa/deck-<nama>.md`, kosakata LOLOS dan GAGAL seperti `qa/periksa.py`; uji diri menuntut contoh LOLOS dan fixture em dash GAGAL | Buku Pegangan S39 |
+| Pemeriksaan deck kajian | judul berurutan, kode bagian, label keyakinan, satu warna sorot, spek berisi `pesan_kunci` dan `pesan`, variasi jenis slide, raster dari daftar izin, paling banyak 6 butir | `deck.py` menolak saat membangun (S7, S34, S35, S38); laporan QA deck memeriksa S6, S35, S36, S37, S38 dari berkas jadi; kode bagian, warna sorot, dan S8 masih manual | S1–S39 |
 
 ---
 
@@ -1603,6 +2083,12 @@ Kode asal:
 | MKL | Mesin Klip (artifact 20182ebd) |
 | SPG | Slip Gaji Nol PPh 21 (artifact 73907b23) |
 | SIN | Sintesis 22 laporan kelas dunia (`riset/desain-benchmark/SINTESIS.md`, 23 Okt 2026) |
+| DEK | Sintesis 10 deck konsultan McKinsey, BCG, Bain, Deloitte, KPMG (`riset/desain-benchmark/deck/SINTESIS-DECK.md`, 23 Okt 2026) |
+| PPX | Skill pemilik `alfatehan-pptx-rules`, dinilai di `TAMBAHAN-PPTX-RULES.md` |
+| AAI | Skill pemilik `anti-ai-checker`, dinilai di `TAMBAHAN-ANTI-AI.md` |
+| BKU | Skill pemilik `book-production-rules`, dinilai di `TAMBAHAN-BUKU.md` |
+| RST | Skill pemilik `deep-research`, dinilai di `TAMBAHAN-RISET.md` |
+| KEP | `KEPUTUSAN.md` P13, P17, T11–T13 |
 
 Jumlah: 506 kriteria dari 21 kode asal (22 artifact; MB09 mewakili dua salinan
 identik). Langsung 242, adaptasi 235, tidak dipakai 29. Delapan status diubah dari hasil
@@ -1610,7 +2096,9 @@ sisir karena bertabrakan dengan kanon proyek atau keputusan yang lebih baru (No 
 214, 233, 258, 280, 301, 302). Lima lagi diubah dari L ke A di v1.1 karena pedoman kini
 menyimpang dari bentuk aslinya dengan alasan yang dicatat di §0.3 (No 42, 47, 55, 89,
 114).
-Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak dipakai 20.
+Ditambah 110 kriteria dari SIN (No 507–616): langsung 35, adaptasi 54, tidak dipakai 21 (dihitung
+ulang sesudah tinjauan 23 Okt: No 512, 522, 555, 610 dari L ke A; No 557 dari A ke T).
+Ditambah 92 kriteria v1.3 (No 617–708) dari DEK, PPX, AAI, BKU, RST, dan KEP: langsung 40, adaptasi 39, tidak dipakai 13.
 
 | No | Asal | Kriteria | St | Bagian | Catatan |
 | --- | --- | --- | --- | --- | --- |
@@ -1644,15 +2132,15 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 28 | BPB | Skala ukuran slide (nilai 17 pt, panel 11 pt, label 7,5 pt) | A | §B2 | Rasio dipakai, ukuran A4 |
 | 29 | BPB | Palet rumah BNPB berikut tint | L | §B1.1, §B1.2 | |
 | 30 | BPB | Palet generator lama dilarang | L | §B1.6, D-9 | |
-| 31 | BPB | Naik oranye, turun biru, 0% abu; di atas navy F2A35E/8EC5F5 | A | §B1.5, T2 | Peta web menunggu T2 |
+| 31 | BPB | Naik oranye, turun biru, 0% abu; di atas navy F2A35E/8EC5F5 | A | §B1.5, T2 | Peta web ikut oranye/biru (T2) |
 | 32 | BPB | Merah hanya untuk perlu perhatian; satu skema per kategori per dokumen | L | §B1.1, §B1.4 | |
 | 33 | BPB | Bencana berbeda ikon dan warna berbeda | A | §B1.3, T6 | Ikon berbeda per jenis; warna per keluarga (enam), karena warna per jenis gagal ΔE; dicatat §0.3 |
 | 34 | BPB | Satu gaya rumah: kerangka BNPB (logo, garis 0,75 pt, footer, nomor bold kanan) | A | §B4 | Diterjemahkan ke header/footer A4 |
 | 35 | BPB | Sampul dan penutup tanpa footer dan nomor | L | §B4, §B5.1, D-13 | |
-| 36 | BPB | Padat tapi bernapas: 3–4 blok, jarak ≥ 7 pt ke tepi panel | A | §B3 | Untuk PDF ringkas dan kotak DOCX |
+| 36 | BPB | Padat tapi bernapas: 3–4 blok, jarak ≥ 7 pt ke tepi panel | A | §B3 | Untuk kotak DOCX; PDF ringkas: v1.2, dicabut K17 |
 | 37 | BPB | Satu topik satu kontainer, tanpa panel gelap samping, tanpa ruang kosong | L | §B5.5, §B3 | |
 | 38 | BPB | Paparan wilayah menyempit bertahap | A | §A4 butir 3 | Nasional, pulau, provinsi, kab/kota |
-| 39 | BPB | Paparan Presiden: versi Utama dan Lengkap, pembatas Lampiran gelap, kode "A1." | A | §A3, §B5.2, §A3.4, §B5.25 | PDF ringkas vs DOCX; kode lampiran; kisi kesimpulan dan pita keputusan |
+| 39 | BPB | Paparan Presiden: versi Utama dan Lengkap, pembatas Lampiran gelap, kode "A1." | A | §A3, §B5.2, §A3.4, §B5.25 | Deck vs DOCX (PDF ringkas: v1.2, dicabut K17); kode lampiran; kisi kesimpulan dan pita keputusan |
 | 40 | BPB | Versi ringkas dibuat dengan memotong, tata letak tidak diubah | A | §A3 | |
 | 41 | BPB | Tabel panjang "(lanjutan)", halaman sisa sedikit baris = cacat, ≤ 24 baris/slide | A | §B4 tabel lintas halaman | Kepala diulang; sisa ≥ 4 baris |
 | 42 | BPB | Judul paling banyak dua baris | A | §C2, D-17 | Judul diperpendek, ukuran gaya Heading tetap (kanon: huruf dikecilkan); dicatat §0.3 |
@@ -1666,7 +2154,7 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 50 | BPB | Baris rekomendasi LANGKAH/RINCIAN/PENANGGUNG JAWAB, chip lembaga berikon | L | §B5.13 | |
 | 51 | BPB | Daftar status: ikon, nama bold, pil status, urut terbesar | A | §B5.6 | Kategori status disesuaikan |
 | 52 | BPB | Pil CUT OFF DATA tiap halaman data | A | §B4, §C5 | PDF pil; DOCX di baris sumber |
-| 53 | BPB | Catatan sumber berbilah biru, "sementara" untuk hari berjalan, "Sumber:" abu | L | §B5.7, §C5, §B1.1 | Bilah `sumber` hanya di PDF ringkas, tanda grafis |
+| 53 | BPB | Catatan sumber berbilah biru, "sementara" untuk hari berjalan, "Sumber:" abu | L | §B5.7, §C5, §B1.1 | Bilah `sumber` hanya di catatan kaki deck, tanda grafis |
 | 54 | BPB | Tabel peringkat: nomor bulatan navy, wilayah fokus FDF1E8, total navy | L | §B5.7 | |
 | 55 | BPB | Tabel lampiran native: garis bawah 1 pt, baris 0,5 pt, tanpa vertikal, "NA" dijelaskan | A | §B5.7 | Data kosong "–" beralasan, satu notasi; dicatat §0.3 |
 | 56 | BPB | Tabel situs: kepala gelap, nol sel dua baris, kolom teks rata kiri | A | §B5.7, §B6 | Urut/paginasi hanya web |
@@ -1997,7 +2485,7 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 381 | KKM | Isi temuan teknis aplikasi | T | – | Khusus MBG |
 | 382 | J29 | Satu tesis kalimat di pembuka menurunkan isi | L | §A2 | |
 | 383 | J29 | Hanya satu daftar berurut prioritas, sisanya kategori | L | §A4 butir 7, §B5.13 | |
-| 384 | J29 | Horizon waktu skala tetap tiga tingkat dengan legenda | A | §B5.12 | 100 hari, 2026–2029, 2030–2045 |
+| 384 | J29 | Horizon waktu skala tetap tiga tingkat dengan legenda | A | §B5.12 | 100 hari, 2026–2027, 2028–2030 |
 | 385 | J29 | Hanya menulis yang belum ada | A | §A4 butir 5 | Kondisi eksisting diringkas |
 | 386 | J29 | Dikelompokkan menurut pemangku | L | §B5.13 | Internal BNPB dan lintas K/L |
 | 387 | J29 | Seksi berhitungan butir dan kalimat pertanyaan | L | §B5.2 | |
@@ -2077,7 +2565,7 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 461 | KNG | Klaim skala berangka bersatuan dan berpembanding | L | §C4, §B5.4 | |
 | 462 | KNG | Angka beda versi ditandai, kedua versi dan asal disebut | L | §B5.7 tabel rekonsiliasi, §C6.5 | |
 | 463 | KNG | Kapasitas penerbit jelas; contoh pihak lain sebagai bukti | A | §C1 | Data K/L sebagai data lembaga |
-| 464 | KNG | Versi singkat menjelaskan bagian yang diringkas | A | §A3 | PDF ringkas dari DOCX |
+| 464 | KNG | Versi singkat menjelaskan bagian yang diringkas | A | §A3 | Deck dari DOCX (PDF ringkas: v1.2, dicabut K17) |
 | 465 | KNG | Batas peran antarbagian, rujukan silang | A | §C1 | |
 | 466 | KNG | Penutup tiga syarat bernomor, kalimat pertama = syarat | L | §B5.13, §A4 butir 7 | |
 | 467 | KNG | Bahasa sesuai audiens; istilah asing miring | A | §C1, §B2 | Seluruhnya bahasa Indonesia |
@@ -2120,28 +2608,28 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 504 | SPG | Satu warna lembaga, tiga warna status | A | §B1 | Navy BNPB |
 | 505 | SPG | Mode gelap, responsif | A | §B6 | Hanya web |
 | 506 | SPG | Contoh disajikan sebagai baku dengan dasar hukum dan revisi; yang belum dicakup disebut | L | §A3.4, §A6 | |
-| 507 | SIN | P1. Ringkasan bertingkat: pesan kunci 1 hlm, infografik sekilas 1 hlm, ringkasan eksekutif, lalu bab | A | §A3.4, §B5.26 | Pesan Kunci di halaman pertama Ringkasan Eksekutif; PDF ringkas = lapis sekilas |
+| 507 | SIN | P1. Ringkasan bertingkat: pesan kunci 1 hlm, infografik sekilas 1 hlm, ringkasan eksekutif, lalu bab | A | §A3.4, §B5.26 | Pesan Kunci di halaman pertama Ringkasan Eksekutif; deck = lapis sekilas (PDF ringkas: v1.2, dicabut K17) |
 | 508 | SIN | P2. Halaman kerangka satu halaman: pilar, sasaran, program bernomor; nomor program dipakai ulang di bab, matriks, dan daftar isi | A | §B5.12 | Latar putih |
 | 509 | SIN | P3. Pilar, lalu aksi bernomor, lalu kotak "dampak bila tidak ditangani" berangka, lalu aksi cepat dengan instansi penanggung jawab | L | §B5.12, §B5.5 | |
 | 510 | SIN | P4. Satu ancaman satu templat halaman dengan kepala tetap (skenario, asumsi, variasi, kebutuhan kapasitas per aktor, pemulihan, kelompok rentan) | L | §B5.11 | |
 | 511 | SIN | P5. Dasbor wilayah bertemplat identik 1–2 hlm, hanya nama wilayah dan angka yang berganti | L | §B5.8 | Di lampiran |
-| 512 | SIN | P6. Pembuka bab berisi kotak pesan kunci bab 3–5 butir berangka | L | §B5.3 | |
+| 512 | SIN | P6. Pembuka bab berisi kotak pesan kunci bab 3–5 butir berangka | A | §B5.3 | ≤ 3 butir |
 | 513 | SIN | P7. Pembuka bab halaman penuh berwarna atau foto | T | §B5.2 | Batas halaman; halaman gelap hanya sampul dan pembatas Lampiran |
 | 514 | SIN | P8. Daftar isi berubin bergambar, atau tanpa titik penuntun | A | §B2 | Titik penuntun tetap |
 | 515 | SIN | P9. Lampiran katalog langkah dengan asumsi dan sumber tiap angka; lampiran per wilayah; lampiran rujukan kerangka | L | §B5.8 | Tanpa biaya (K6) |
 | 516 | SIN | P10. Nomor objek per bagian: ringkasan, bab, lampiran | A | §B4 | Gambar RE.1, Tabel A.1 |
-| 517 | SIN | P11. Peta bernomor sendiri ("Map 12") dengan Daftar Peta | A | §0.2 T11 | Bawaan: seri Gambar |
+| 517 | SIN | P11. Peta bernomor sendiri ("Map 12") dengan Daftar Peta | A | §0.2 U1 | Bawaan: seri Gambar |
 | 518 | SIN | P12. Grid asimetris dengan kolom samping untuk catatan kaki, kartu angka, dan keterangan | A | §B3 | Prinsip lebar penuh saja; satu kolom |
 | 519 | SIN | P13. Isi dua kolom atau halaman A4 lanskap | T | §B3 | K2 |
 | 520 | SIN | P14. Rujukan silang berwarna yang bisa diklik "(See Exhibit 2.)" | A | §B4 | Cross-reference Word |
 | 521 | SIN | P15. Kata pengantar bertanda tangan pimpinan | A | §A3.4 | Draf untuk Kepala BNPB |
-| 522 | SIN | P16. Halaman pesan kunci: 6–10 temuan, tiap temuan ikon putih dalam lingkaran solid dan satu temuan berangka 2–4 baris | L | §B5.26 | |
+| 522 | SIN | P16. Halaman pesan kunci: 6–10 temuan, tiap temuan ikon putih dalam lingkaran solid dan satu temuan berangka 2–4 baris | A | §B5.26 | 6–8 temuan, ≤ 3 baris, lingkaran `navy`, angka di depan |
 | 523 | SIN | P17. Tiap paragraf dibuka satu kalimat temuan tebal, lalu bukti berangka; pembaca bisa membaca kalimat tebal saja | L | §B2, D-26 | |
 | 524 | SIN | P18. Temuan bernomor berkelompok (A.1, B.2.3) ditutup tingkat keyakinan dan rujukan bab | A | §B5.26, §B5.13, D-27 | Huruf kelompok = pertanyaan §A2 |
 | 525 | SIN | P19. Ringkasan berbentuk pertanyaan lalu jawaban per bagian | A | §B5.26 | Kepala kelompok temuan |
 | 526 | SIN | P20. Infografik sekilas: angka sekarang, proyeksi, pendorong, kontribusi per bahaya, peta per wilayah; peta mini per bahaya berpasangan dengan satu kalimat berangka | A | §A3.1 | Latar putih |
 | 527 | SIN | P21. Ringkasan prosa tanpa angka sorotan, atau paragraf meta "Bab 1 membahas" | T | §A3.4 | Angka kunci di halaman pertama |
-| 528 | SIN | P22. Judul gambar = satu kalimat temuan, sering berangka ("judul aksi") | A | §C2, §B5.10 | ≤ 2 baris, tanpa kontras retoris |
+| 528 | SIN | P22. Judul gambar = satu kalimat temuan, sering berangka ("judul aksi") | A | §C2, §0.2 U4 | Bawaan: keterangan deskriptif stabil; temuan berangka di kalimat pembuka tebal |
 | 529 | SIN | P23. Judul berantai antarpanel ("…so its concentration is also growing") | A | §C2 | Tiap judul bermakna sendiri |
 | 530 | SIN | P24. Judul studi kasus berupa hasil berangka | L | §B5.30 | |
 | 531 | SIN | P25. Judul atau halaman bergaya slogan ("pays off", "There is no time to waste", kutipan besar) | T | §C1, §B5.30 | Larangan slogan |
@@ -2161,28 +2649,28 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 545 | SIN | P39. Grafik dan peta pihak ketiga ditempel apa adanya | T | §A5 | Digambar ulang dari data |
 | 546 | SIN | P40. Teks grafik 5,9–7 pt, sumber 6 pt abu sangat terang | T | §B2 | ≥ 8 pt |
 | 547 | SIN | P41. Tiga jenis label objek (Figure, Chart, Table) | T | §B4 | Gambar dan Tabel saja |
-| 548 | SIN | P42. Daratan abu, satu warna sorot untuk kategori yang dibahas, laut putih, legenda, skala dan utara | L | §B5.9 | Tidak merah |
+| 548 | SIN | P42. Daratan abu, satu warna sorot untuk kategori yang dibahas, laut putih, legenda, skala dan utara | L | §B5.9 | Tidak merah; kelas IRBI tetap ramp api (T8) |
 | 549 | SIN | P43. Peta kecil berganda per tahun atau skenario, satu legenda, kelas sama di semua panel | L | §B5.9, D-29 | |
 | 550 | SIN | P44. Peta indeks studi kasus: bulatan bernomor di peta, tabel nomor dan judul di bawahnya | L | §B5.9 | |
 | 551 | SIN | P45. Koroplet dan tabel peringkat berdampingan; kurung kelas di samping tabel sekaligus menjadi legenda dan hitungan | L | §B5.9 | |
 | 552 | SIN | P46. Koroplet hanya untuk rasio atau laju; simbol proporsional untuk total | L | §B5.9 | |
 | 553 | SIN | P47. Inset perbesaran bergaris abu untuk kawasan padat | L | §B5.9 | |
 | 554 | SIN | P48. Label wilayah dengan angka dan garis penunjuk ("22% of GDP WS Ciliwung-Cisadane"); hanya wilayah terbesar yang diwarnai dan dilabel | A | §B5.9 | Pil putih, angka tegak |
-| 555 | SIN | P49. Legenda berupa pil warna per wilayah dengan satu kalimat arah strategi | L | §B5.9 | |
+| 555 | SIN | P49. Legenda berupa pil warna per wilayah dengan satu kalimat arah strategi | A | §B5.9 | Nomor dalam bulatan `navy`, tanpa warna per wilayah; kalimat arah ke tabel |
 | 556 | SIN | P50. Peta bahaya disandingkan peta keterpaparan; elips tipis menandai kawasan padat dengan angka besar | A | §B5.9 | Anotasi pil putih |
-| 557 | SIN | P51. Peta pesan utama: peta pucat dengan 4–5 lokasi berketerangan pendek | A | §A3.1 | Penanda bernama, fakta berangka |
+| 557 | SIN | P51. Peta pesan utama: peta pucat dengan 4–5 lokasi berketerangan pendek | T | §B5.9 | Gaya kampanye; strukturnya sudah tercakup P44 |
 | 558 | SIN | P52. Laut biru, bayangan relief, skala pelangi atau ungu, pai di atas peta, legenda 30 warna | T | §B5.9, §B1.6 | Laut putih, tanpa ungu |
 | 559 | SIN | P53. Legenda gradien kontinu | T | §B1.4 | Kelas diskret |
 | 560 | SIN | P54. Pita persentil 25–75 dengan median tebal dan garis tegak tahun sekarang | A | §B5.10 | Tanpa garis per model |
 | 561 | SIN | P55. Batang rentang rendah–tinggi dengan median; batang gelap nilai tinggi, muda nilai rendah | L | §B5.10 | |
 | 562 | SIN | P56. Garis solid untuk data, titik-titik untuk proyeksi, arsir untuk estimasi atau data tidak lengkap | A | §B5.10 | Pil belum diuji balik |
-| 563 | SIN | P57. Kotak skenario: asumsi tiap skenario dan small multiples deviasi dari dasar | A | §B5.10 | Warna arah §B1.5 |
+| 563 | SIN | P57. Kotak skenario: asumsi tiap skenario dan small multiples deviasi dari dasar | A | §B5.10 | Warna arah §B1.5; di kajian air `teks-2` berlabel kata |
 | 564 | SIN | P58. Kotak "dampak bila tidak ditangani" berisi butir dengan angka tebal | A | §B5.5 | Panel berpita |
 | 565 | SIN | P59. Tabel perkiraan lama lawan baru: rentang "sekitar", asumsi tertulis, stempel skenario | L | §B5.7 | |
 | 566 | SIN | P60. Tabel skenario: kolom = skenario, sel digabung bila nilainya sama di semua skenario | L | §B5.7 | |
 | 567 | SIN | P61. Efek tindakan: pasangan batang kondisi sekarang lawan bila target tercapai | A | §B5.11 | Turun biru |
 | 568 | SIN | P62. Matriks kemungkinan × dampak satu warna dan kartu mini per ancaman dengan garis silang rentang keyakinan | L | §B5.27, §B5.11 | |
-| 569 | SIN | P63. Bara risiko per skenario respons dengan titik keyakinan tiap transisi | A | §B5.10 | 5 kelas ramp, pil penilaian |
+| 569 | SIN | P63. Bara risiko per skenario respons dengan titik keyakinan tiap transisi | A | §B5.10 | 5 kelas ramp, pil Penilaian pakar |
 | 570 | SIN | P64. Strip kelas per skenario × tahun dengan penanda tahun sekarang | A | §B5.10 | Kelas diskret |
 | 571 | SIN | P65. Banyak sumber digambar bersama sebagai tampilan ketidakpastian | A | §B5.10 | Sumber lain garis tipis |
 | 572 | SIN | P66. Tabel nilai "± ketidakpastian" dengan baris pembanding bertint | A | §B5.7 | Baris pembanding Bold |
@@ -2191,13 +2679,13 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 575 | SIN | P69. Studi kasus satu halaman bertint dengan empat pertanyaan tetap: masalah apa, siapa yang mengerjakan, bagaimana, apa hasilnya | L | §B5.30 | |
 | 576 | SIN | P70. Kotak studi kasus berisi grafik dan sumber di dalam kotak | A | §B5.30 | Tint netral |
 | 577 | SIN | P71. Kotak perbandingan dengan kajian sebelumnya | A | §B5.5 | Kotak Catatan, bukan panel gelap |
-| 578 | SIN | P72. Grafik di kiri dan kolom pesan kunci 3–4 butir di kanan dalam satu blok | A | §B5.10 | ≤ 3 butir, latar putih |
+| 578 | SIN | P72. Grafik di kiri dan kolom pesan kunci 3–4 butir di kanan dalam satu blok | A | §B5.10 | Deck saja (kolom temuan di panel yang sama, Buku Pegangan S13); di DOCX kalimat pembuka tebal |
 | 579 | SIN | P73. Kotak metode bergaris tipis; daftar pertanyaan pemangku kepentingan sebagai pengganti rekomendasi | A | §B5.5, §B5.13 | Metode jadi kotak Catatan; pertanyaan pengganti rekomendasi tidak dipakai |
 | 580 | SIN | P74. Foto pimpinan dan kotak kata pimpinan di halaman pesan kunci; kolom testimoni dan sidebar kisah personal (JWP hlm 40 dan 48, UNICEF "Youth perspectives", tanpa PNG bukti) | T | §B5.15, §C1 | Register formal |
-| 581 | SIN | P75. Kartu rekomendasi berkode: masalah singkat di kiri, kalimat aksi tebal dan rincian abu di kanan, penilaian urgensi dan dampak | A | §B5.13 | Ditambah pemimpin, pendukung, tahun; pil urgensi |
+| 581 | SIN | P75. Kartu rekomendasi berkode: masalah singkat di kiri, kalimat aksi tebal dan rincian abu di kanan, penilaian urgensi dan dampak | A | §B5.13 | Ditambah pemimpin, pendukung, tahun; urgensi = pil horizon |
 | 582 | SIN | P76. Matriks rekomendasi dengan penanggung jawab, tenggat, dan target per pilar | A | §B5.13 | Tegak |
 | 583 | SIN | P77. Matriks prioritas urgensi × dampak satu halaman, didahului kunci penilaian | A | §B5.28 | Kisi kode, tanpa gelembung |
-| 584 | SIN | P78. Tabel pemrograman: kode, pengelola, proyek, lalu kolom tahun dengan sel huruf tahap berwarna dan legenda | A | §B5.29, §0.2 T12 | DOCX saja |
+| 584 | SIN | P78. Tabel pemrograman: kode, pengelola, proyek, lalu kolom tahun dengan sel huruf tahap berwarna dan legenda | A | §B5.29, §0.2 U2 | Hanya bila pemilik setuju, DOCX saja |
 | 585 | SIN | P79. Rekomendasi per aktor: paragraf diawali nama aktor | A | §B5.13 | Chip aktor berikon |
 | 586 | SIN | P80. Matriks strategi tahap × pilar berisi butir aksi; dial jarum untuk prioritas | A | §B5.13 | Pil native, tanpa dial |
 | 587 | SIN | P81. Matriks langkah × jenis bahaya, sel skala 4 tingkat, huruf merujuk studi kasus | A | §B5.22 | Kode program, tint rumah |
@@ -2208,7 +2696,7 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 592 | SIN | P86. Bagan kelembagaan bertingkat; diagram siapa menanggung risiko | A | §B5.23 | Chip berikon |
 | 593 | SIN | P87. Rekomendasi berupa prosa tanpa kode, penanggung jawab, atau tahun | T | §B5.13 | Tidak bisa ditindaklanjuti |
 | 594 | SIN | P88. Kurva biaya langkah (lebar = volume, tinggi = biaya per satuan) dan neraca dana kebutuhan lawan anggaran dalam rupiah | T | §A6, K6 | Tanpa biaya proyek; strukturnya untuk neraca air |
-| 595 | SIN | P89. Satu keluarga huruf sans di seluruh laporan; GAR seluruhnya Roboto, WDR memakai Roboto di grafik | L | §B2 | Bold, tanpa Black |
+| 595 | SIN | P89. Satu keluarga huruf sans di seluruh laporan; GAR terutama Roboto, WDR memakai Roboto di grafik | L | §B2 | Bold, tanpa Black |
 | 596 | SIN | P90. Hierarki dari bobot dan warna; huruf terbesar halaman isi 12–13 pt | L | §B2 | |
 | 597 | SIN | P91. Navy + satu aksen + abu pembanding; navy McKinsey `#051C2C` identik dengan navy rumah BNPB | L | §B1.1 | Aksen oranye atau biru |
 | 598 | SIN | P92. Isi satu kolom 10–10,5 pt rata kiri-kanan, penomoran bertingkat polos | L | §B2 | |
@@ -2223,10 +2711,102 @@ Ditambah 110 kriteria dari SIN (No 507–616): langsung 39, adaptasi 51, tidak d
 | 607 | SIN | P101. Foto beratribusi dengan keterangan tempat dan waktu, satu foto membawa informasi | A | §B5.15 | Commons |
 | 608 | SIN | P102. Foto anak atau korban, potret pejabat di halaman isi | T | §B5.15 | Etika kemanusiaan, UU 27/2022 |
 | 609 | SIN | P103. Sampul foto di atas dan blok warna berisi judul di bawah | L | §B5.1 | |
-| 610 | SIN | P104. Tipologi wilayah: wilayah dikelompokkan per tipe dengan pita grup, lalu profil dan rekomendasi per tipe | L | §B5.7 | Pita grup |
+| 610 | SIN | P104. Tipologi wilayah: wilayah dikelompokkan per tipe dengan pita grup, lalu profil dan rekomendasi per tipe | A | §B5.7 | Pita grup, tanpa warna per tipe |
 | 611 | SIN | P105. Diagram struktur indeks dan pohon indikator | A | §B5.23 | Native, ≥ 8 pt |
 | 612 | SIN | P106. Tabel peringkat dengan nilai dan titik warna kelas, kepala kolom berpita kelas | A | §B5.7 | Kolom jiwa terpapar |
 | 613 | SIN | P107. Diagram konsep bertahap: dua kurva dengan fase bertanda garis putus dan label fase | L | §B5.23 | Dua warna rumah |
 | 614 | SIN | P108. Tabel preseden: kejadian besar sebagai kolom, besaran yang sama sebagai baris, kolom yang sedang dikaji diberi tint | L | §B5.7 | |
 | 615 | SIN | P109. Kartu angka: nilai besar berwarna makna, label pendek, kadang pangsa terhadap total | A | §B5.4 | Climate stripes dibuang |
 | 616 | SIN | G1–G25. Pilih grafik menurut pesan: 24 pesan dan daftar terlarang (FT Visual Vocabulary dan contoh laporan) | A | §B5.10, D-28 | Disaring dengan selera grafik pemilik |
+| 617 | DEK | S1. Pesan Kunci sesudah sampul: tesis dan 4–6 temuan, satu per bagian (DNEMA s003, MCOV s003) | A | §B7.1, §B5.26 | Bawaan pedoman, bukan vonis pemilik; d9 tanpa slide ini |
+| 618 | DEK | S2. Pesan Kunci sekaligus peta deck: temuan ke-n memakai nama bagian ke-n | A | §B7.1 | Kode bagian berhuruf (T12) |
+| 619 | DEK | S3. Urutan bagian dari masalah ke tindakan | L | §B7.1, §A4 |  |
+| 620 | DEK | S4. Satu kerangka dipakai ulang sebagai kolom matriks, label peta, dan chip | A | §B7.4, §B7.5 | Istilah undang-undang dan nama musim, tanpa nama slogan |
+| 621 | DEK | S5. Slide isi membawa temuan, lampiran membawa rincian | L | §B7.4, §B7.5 |  |
+| 622 | DEK | S6. Judul slide dibaca berurutan menjadi ringkasan | L | §B7.1, §D2 |  |
+| 623 | DEK | S7. Judul aksi di tiap slide data (MCOV, BAIN) | A | §B7.1, §0.2 T11 | Slide temuan saja (T11, menyimpang dari vonis judul deskriptif, tercatat di Buku Pegangan Belum diputus); slide usulan, navigasi, sampul, dan pembatas deskriptif |
+| 624 | DEK | S8. Angka di judul dibuktikan di slide yang sama | L | §B7.2 |  |
+| 625 | DEK | S9. Judul grafik memuat topik, satuan, dan periode dalam satu baris | L | §B7.2 |  |
+| 626 | DEK | S10. Nomor bagian berwarna sorot di depan judul; tanpa slide agenda dan pembatas bab | A | §B7.1, §0.2 T12, T13 | Huruf dan nomor ("A1."); pembatas bab, bila dipakai, GELAP |
+| 627 | DEK | S11. Daftar isi berulang sebagai slide pelacak | T | §B7.1 | Deck ±12 slide isi tidak memerlukannya |
+| 628 | DEK | S12. Chip seri untuk slide sejenis | L | §B7.1, §B7.5 |  |
+| 629 | DEK | S13. Satu slide satu pesan dalam 3–4 blok | L | §B7.2 |  |
+| 630 | DEK | S14. Catatan kaki bernomor dan satu baris Sumber di zona kaki | A | §B7.2 | Huruf di bawah 6 pt tidak ditiru; tanpa baris sumber di bawah grafik |
+| 631 | DEK | S15. Stempel ILLUSTRATIVE, PRELIMINARY, NON-EXHAUSTIVE | A | §B7.2, §C6.2 | Diganti pil label keyakinan |
+| 632 | DEK | S16. Stempel "As of" | A | §B7.2 | Pil CUT OFF DATA berisi satu batas data kajian bertanggal dan berjam |
+| 633 | DEK | S17. Kepadatan 180–290 kata per slide | A | §B7.2 | Median MBB 167 dan 276 kata; huruf di bawah 6 pt tidak ditiru |
+| 634 | DEK | S18. Satu warna sorot per grafik | L | §B7.2, §B1 |  |
+| 635 | DEK | S19. Satu keluarga bencana satu warna di seluruh deck | L | §B7.2, §B1.3 |  |
+| 636 | DEK | S20. Sorot dengan bingkai, bukan isi warna baru | L | §B7.2 |  |
+| 637 | DEK | S21. Label langsung di ujung seri | A | §B7.2 | Paling banyak 4 seri |
+| 638 | DEK | Pilih grafik menurut pesan untuk slide: kurung kelipatan, waterfall tuas, kecil berganda, peta panas, grid kewenangan, matriks status, dan seterusnya | A | §B7.2, §B5.10 | Satuan fisik, tanpa rupiah; G25 tetap dilarang |
+| 639 | DEK | S22. Matriks aktor × fase | A | §B7.4, §B7.5 | Sel berisi chip kode peran; sel kosong "–" berlegenda |
+| 640 | DEK | S23. Tabel penanggung jawab berikon (pola R/A/S/C/I) | A | §B7.2 | Huruf peran K, P, R, I dari data lembaga |
+| 641 | DEK | S24. Kondisi kini ke sasaran | A | §B7.4, §B7.5 | Target 2029 dari Renstra; kolom 2030 hanya bila naskah menetapkannya |
+| 642 | DEK | S25. Tabel skenario berkolom skenario | A | §B7.4, §B7.5 | Kepala kolom bertint keluarga bencana skenarionya; tint merah tidak dipakai sebagai pembeda |
+| 643 | DEK | S26. Profil wilayah bertemplat sama | L | §B7.4 |  |
+| 644 | DEK | S27. Label wilayah berangka dan berarah di peta | A | §B7.2 | Latar putih, bukan navy atau satelit; pil native di atas peta dasar tanpa label |
+| 645 | DEK | S28. Rekomendasi bernomor | A | §B7.2 | Baris LANGKAH, RINCIAN, PENANGGUNG JAWAB d5; lingkaran navy |
+| 646 | DEK | S29. Peta jalan bertahap | A | §B7.2 | Pita grup horizon, tanpa Gantt |
+| 647 | DEK | S30. Tata kelola dan pelaporan | L | §B7.4, §B7.5 | Di lampiran |
+| 648 | DEK | S31. Situasi dan tuas pembiayaan | A | §B7.4, §B7.5 | Arsitektur sumber tanpa nominal (P5) |
+| 649 | DEK | S32. Kesimpulan pola d9 | L | §B7.2, §B5.25 |  |
+| 650 | DEK | S33. Lampiran tabel dipecah rata, daftar singkatan, baris data yang belum ada | A | §B7.4, §B7.5, §0.2 U5 | Kode "L1."; di prosa "lampiran deck L1" |
+| 651 | DEK | Pola yang sengaja tidak ditiru: panel gelap, judul 3 baris, serif, watermark, pembatas berfoto, Venn dan 3D, logo mitra, peta satelit, Gantt, angka biaya, slogan, merah, centang bertingkat | T | §B7.2 | Bentrok dengan aturan pemilik; daftarnya di Buku Pegangan |
+| 652 | PPX | 1. Satu pesan kunci per deck dan garis besar per slide sebelum membangun | L | §B7.1 | S34; spek `pesan_kunci` dan `pesan` |
+| 653 | PPX | 2. Slide master dulu | L | §B7 | Master deck pemilik 221026 |
+| 654 | PPX | 3. Variasi tata letak | A | §B7.2 | S35; daftar `jenis` tertutup; seri berchip dan profil bertemplat dikecualikan |
+| 655 | PPX | 4. Tiap slide punya unsur visual | A | §B7.2 | S36; grafik native, tabel native, atau peta; navigasi dan pembatas bab dikecualikan |
+| 656 | PPX | 5. Ikon PNG asli, nol emoji | L | §B5.14 | Sudah sejalan |
+| 657 | PPX | 6. Paling banyak 6 butir per daftar, 2 tingkat | L | §B7.2 | S38 |
+| 658 | PPX | 7. Tiap angka di slide bersumber dan bertahun | A | §B7.2 | Satu baris Sumber 7,5 pt di zona kaki, bukan di bawah tiap grafik (S14) |
+| 659 | PPX | 8. Grafik native, bukan gambar | L | §B7.2, §A5 | S37; raster hanya peta dasar tanpa teks, foto, logo, ikon |
+| 660 | PPX | 9. Kata terlarang khas AI | A | §D4 | Padanan Indonesia baru sebagian di `ANTI-SLOP.md` S-12; belum dibaca gerbang |
+| 661 | PPX | 10. Nol tiga-serangkai; em dash paling banyak 1 per slide | A | §C1, §D4, D-1 | Tiga-serangkai nol; lebih ketat: em dash nol |
+| 662 | PPX | 11. Margin minimal 0,5 inci | L | §B7 | 43,2 pt |
+| 663 | PPX | 12. Laporan QA per deck | A | §D4 | S39; belum dibangun, bawaan pemiliknya `bangun/pptx/periksa.py` |
+| 664 | PPX | 13. Render ke gambar, periksa, perbaiki, periksa ulang | L | §D2 |  |
+| 665 | PPX | Judul 36–44 pt | T | §B7.1 | Judul 19–26 pt, paling banyak 2 baris |
+| 666 | PPX | Isi 14–16 pt, keterangan 10–12 pt | T | §B7.2 | Skala padat deck BNPB, batas 6 pt |
+| 667 | PPX | Jarak antarblok 0,3–0,5 inci | T | §B7.2 | Jarak kartu 7,2 pt, antarpanel 10,8 pt, antargrup 21 pt |
+| 668 | PPX | Tanpa garis di bawah judul | T | §B7 | Garis 0,75 pt adalah kerangka rumah BNPB |
+| 669 | PPX | Mesin PptxGenJS | T | §A3 | Templat XML deck pemilik |
+| 670 | AAI | Em dash paling banyak 3 per 1.000 kata | A | §D4, D-1 | Nol |
+| 671 | AAI | Titik dua paling banyak 20 per 1.500 kata | A | §D4 | Label tabel, keterangan, dan "Sumber:" dikecualikan |
+| 672 | AAI | Pembuka klise di 50 kata pertama | A | §D4 | Tiap bab dan tiap subbab; padanan Indonesia |
+| 673 | AAI | Hedging lebih dari 2 per 1.500 kata gagal | L | §D4 | Padanan Indonesia |
+| 674 | AAI | Tiga-serangkai lebih dari 5 per 1.000 kata gagal | A | §D4 | Nol tiga-serangkai gaya; di DOCX daftar faktual tidak dihitung, di deck tanpa pengecualian |
+| 675 | AAI | Vonis tiga tingkat; GAGAL RINGAN boleh diterima pemilik | A | §D4 | Semua bab wajib LULUS (aturan proses; tanpa putaran tinjauan pemilik, K18 bawaan) |
+| 676 | AAI | Format laporan pindaian per berkas | L | §D4 | `keluaran/qa/slop-<kajian>.md` |
+| 677 | AAI | Daftar kata terlarang pemilik (182 baris) | A | §D4 | Untuk teks Inggris; padanan Indonesia di `ANTI-SLOP.md` |
+| 678 | BKU | 1. Kepadatan pustaka paling sedikit 20 sumber per 50 ribu kata | A | §B5.17, §D4 | Lantai lebih tinggi: 80 dan 50 sumber, ≥ 50% resmi, ≥ 8 per bab |
+| 679 | BKU | 2. Penegak konsistensi istilah | L | §B5.18, §D4 |  |
+| 680 | BKU | 3. Mesin pemenggalan kata Indonesia | A | §B2, §D4 | Pola `hyph_id_ID` dipasang ke profil LibreOffice khusus ekspor |
+| 681 | BKU | 4. Pemeriksa ejaan | A | §B2, §D4 | Kamus `id_ID` lewat `spylls` |
+| 682 | BKU | 5. QA berlapis | A | §D4 | Lima lapis berurutan |
+| 683 | BKU | 6. Penyuntingan struktural | A | §B5.3, §A4, §D4 | Kotak ringkasan paling banyak 3 temuan (L17); bab ditutup implikasi untuk BNPB |
+| 684 | BKU | 7. Pembatas bab | A | §B5.2 | Bukan halaman penuh; 2–3 pertanyaan; foto bila membawa informasi |
+| 685 | BKU | 8. Bagian depan dan belakang lengkap | A | §A3.4, §B5.24 | Kolofon menjadi halaman keterangan terbitan; paragraf ringkas di sampul belakang |
+| 686 | BKU | 9. Metadata dan bookmark | L | §B4, §D4 |  |
+| 687 | BKU | 10. Pratinjau cetak sebelum serah | L | §D2, §D4 | Lapis (d) |
+| 688 | BKU | Garamond 11 pt | T | §B2 | Roboto (P12) |
+| 689 | BKU | ISBN, BISAC, ebook, rencana pemasaran | T | §A6 | Dokumen kebijakan, bukan buku dagang |
+| 690 | BKU | Pembaca beta dan persetujuan pemilik tiap fase | T | §D3, §D4 | Tanpa putaran tinjauan pemilik (K18 bawaan); penyunting independen di lapis (b) sampai (d) |
+| 691 | RST | 1. Peneliti dan penulis dipisah; penulis hanya menyintesis catatan | L | §C9 | Berkas bukti per bab |
+| 692 | RST | 2. Catatan per pertanyaan kunci: Inti, Temuan bersumber, Inferensi, Celah | L | §C9, §D4 |  |
+| 693 | RST | 3. Evaluasi sumber | A | §C9, §C6.1 | Label keyakinan; berita hanya bila sumber resmi tidak ada |
+| 694 | RST | 4. Klaim tanpa sumber dibuang | L | §C9, §C8 |  |
+| 695 | RST | 5. BLUF | L | §C9, §B5.3 |  |
+| 696 | RST | 6. Judul penunjuk arah berisi temuan spesifik | A | §C2, §0.2 U7 | Hanya judul kotak temuan dan kalimat pembuka tebal; judul subbab deskriptif |
+| 697 | RST | 7. Prosa padat, fakta kunci ditebalkan | A | §C9, §B2 | Tebal hanya kalimat pembuka (`ANTI-SLOP.md` M-12) |
+| 698 | RST | 8. Data ditafsirkan, bukan didaftar | L | §C9 |  |
+| 699 | RST | 9. Kejujuran analitis dan argumen tandingan | L | §C9, §A4 |  |
+| 700 | RST | 10. Kesimpulan berisi wawasan baru | L | §C9, §D4 |  |
+| 701 | RST | Batas 15 panggilan alat per peneliti | T | §C9 | Penelusuran per bab perlu lebih dalam |
+| 702 | RST | Laporan tanpa daftar butir | T | §C9 | Enumerasi dibatasi, bukan dilarang |
+| 703 | RST | Judul bab naratif | T | §C2 | T1 |
+| 704 | KEP | P13. Keluaran 8 berkas; jumlah halaman PDF sama dengan dokumen asal | L | §0.2 K17, §A3, D-12 | PDF ringkas dicabut |
+| 705 | KEP | P17. Tanpa tata naskah dinas khusus | L | §A3.4 | Kolofon tanpa nomor tata naskah |
+| 706 | KEP | T11. Judul slide deck kajian | L | §0.2, §B7.1 | Menyimpang dari vonis judul deskriptif; tercatat di Buku Pegangan Belum diputus |
+| 707 | KEP | T12. Kode bagian di depan judul | L | §0.2, §B7.1 | Kode lampiran jadi "L1." (U5); chip "Temuan A.1" di kartu Pesan Kunci |
+| 708 | KEP | T13. Pembatas bab deck GELAP | L | §0.2, §B7.1 | Deck ±12 slide isi tanpa pembatas bab |

@@ -1,0 +1,5 @@
+# dibi.json menduplikasi semua CSV (11 MB) dan bisa dibangun ulang dari mentah/ dengan bangun/dibi.py
+dibi.json
+.baru-*/
+mentah.baru/
+mentah.lama/

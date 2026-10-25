@@ -1,0 +1,588 @@
+{
+ "nama": "bab12-profil-kerugian",
+ "keterangan": "Kebutuhan stimulan rumah tahunan batas bawah, 2015–2025, dengan lapisan dan kejadian tunggal (Rp triliun)",
+ "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan siaran Kemenko PMK 22 November 2023 (besaran stimulan)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  339
+ ],
+ "ukuran_cm": [
+  16.5,
+  11.96
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "tahun, besaran 2010 sampai besaran 2023",
+   "jenis": "garis",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "lapisan sering dan berat",
+   "jenis": "garis",
+   "warna": "#5B7A99"
+  },
+  {
+   "label": "kejadian tunggal",
+   "jenis": "garis",
+   "warna": "#8A4B2A"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#5B7A99": [
+   "legenda",
+   "seri"
+  ],
+  "#8A4B2A": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 151.23,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "tahun, besaran 2010 sampai besaran 2023"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 165.23,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "tahun, besaran 2010 sampai besaran 2023"
+  },
+  {
+   "x": 191.23,
+   "y": 3,
+   "w": 85.14,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-177",
+   "teks": "lapisan sering dan berat"
+  },
+  {
+   "x": 177.23,
+   "y": 2,
+   "w": 99.14,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-177",
+   "teks": "lapisan sering dan berat"
+  },
+  {
+   "x": 300.37,
+   "y": 3,
+   "w": 58.46,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-286",
+   "teks": "kejadian tunggal"
+  },
+  {
+   "x": 286.37,
+   "y": 2,
+   "w": 72.46,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-286",
+   "teks": "kejadian tunggal"
+  },
+  {
+   "x": 123.45,
+   "y": 329,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 220.36,
+   "y": 329,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "5"
+  },
+  {
+   "x": 315.03,
+   "y": 329,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "10"
+  },
+  {
+   "x": 411.94,
+   "y": 329,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "15"
+  },
+  {
+   "x": 2,
+   "y": 26.2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015"
+  },
+  {
+   "x": 145.27,
+   "y": 25.95,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0,5–0,7 T"
+  },
+  {
+   "x": 2,
+   "y": 46.6,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016"
+  },
+  {
+   "x": 156.71,
+   "y": 46.35,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,0–1,3 T"
+  },
+  {
+   "x": 2,
+   "y": 67,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2017"
+  },
+  {
+   "x": 158.84,
+   "y": 66.75,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,1–1,4 T"
+  },
+  {
+   "x": 2,
+   "y": 87.4,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 362.75,
+   "y": 87.15,
+   "w": 41.28,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "9,5–11,9 T"
+  },
+  {
+   "x": 2,
+   "y": 107.8,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 171.83,
+   "y": 107.55,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,6–2,1 T"
+  },
+  {
+   "x": 2,
+   "y": 128.2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 165.62,
+   "y": 127.95,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,3–1,7 T"
+  },
+  {
+   "x": 2,
+   "y": 148.6,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 204.97,
+   "y": 148.35,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "2,9–3,8 T"
+  },
+  {
+   "x": 2,
+   "y": 169,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 184.23,
+   "y": 168.75,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "2,1–2,7 T"
+  },
+  {
+   "x": 2,
+   "y": 189.4,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 151.86,
+   "y": 189.15,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0,8–1,0 T"
+  },
+  {
+   "x": 2,
+   "y": 209.8,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 172.8,
+   "y": 209.55,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,6–2,1 T"
+  },
+  {
+   "x": 2,
+   "y": 230.2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  },
+  {
+   "x": 298.2,
+   "y": 229.95,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "6,8–8,6 T"
+  },
+  {
+   "x": 2,
+   "y": 250.6,
+   "w": 81.89,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lapisan sering, median"
+  },
+  {
+   "x": 171.83,
+   "y": 250.35,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1,6–2,1 T"
+  },
+  {
+   "x": 2,
+   "y": 271,
+   "w": 93.58,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lapisan berat, persentil 90"
+  },
+  {
+   "x": 298.2,
+   "y": 270.75,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "6,8–8,6 T"
+  },
+  {
+   "x": 2,
+   "y": 291.4,
+   "w": 113.69,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sulawesi Tengah 2018, kejadian"
+  },
+  {
+   "x": 202.26,
+   "y": 291.15,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "2,9–3,6 T"
+  },
+  {
+   "x": 2,
+   "y": 311.8,
+   "w": 83.46,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 2025, kejadian"
+  },
+  {
+   "x": 268.94,
+   "y": 311.55,
+   "w": 36.4,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "5,6–7,1 T"
+  }
+ ],
+ "jenis": "rentang",
+ "pesan": "G12",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_baris": 15,
+ "baris_rentang": [
+  {
+   "id": "2015",
+   "rendah": 0.52,
+   "tinggi": 0.68,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    0.52,
+    0.68
+   ],
+   "label": "0,5–0,7 T"
+  },
+  {
+   "id": "2016",
+   "rendah": 0.99,
+   "tinggi": 1.27,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    0.99,
+    1.27
+   ],
+   "label": "1,0–1,3 T"
+  },
+  {
+   "id": "2017",
+   "rendah": 1.08,
+   "tinggi": 1.38,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1.08,
+    1.38
+   ],
+   "label": "1,1–1,4 T"
+  },
+  {
+   "id": "2018",
+   "rendah": 9.46,
+   "tinggi": 11.9,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    9.46,
+    11.9
+   ],
+   "label": "9,5–11,9 T"
+  },
+  {
+   "id": "2019",
+   "rendah": 1.6,
+   "tinggi": 2.05,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1.6,
+    2.05
+   ],
+   "label": "1,6–2,1 T"
+  },
+  {
+   "id": "2020",
+   "rendah": 1.33,
+   "tinggi": 1.73,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1.33,
+    1.73
+   ],
+   "label": "1,3–1,7 T"
+  },
+  {
+   "id": "2021",
+   "rendah": 2.86,
+   "tinggi": 3.76,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    2.86,
+    3.76
+   ],
+   "label": "2,9–3,8 T"
+  },
+  {
+   "id": "2022",
+   "rendah": 2.11,
+   "tinggi": 2.69,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    2.11,
+    2.69
+   ],
+   "label": "2,1–2,7 T"
+  },
+  {
+   "id": "2023",
+   "rendah": 0.76,
+   "tinggi": 1.02,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    0.76,
+    1.02
+   ],
+   "label": "0,8–1,0 T"
+  },
+  {
+   "id": "2024",
+   "rendah": 1.62,
+   "tinggi": 2.1,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1.62,
+    2.1
+   ],
+   "label": "1,6–2,1 T"
+  },
+  {
+   "id": "2025",
+   "rendah": 6.76,
+   "tinggi": 8.57,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    6.76,
+    8.57
+   ],
+   "label": "6,8–8,6 T"
+  },
+  {
+   "id": "Lapisan sering, median",
+   "rendah": 1.6,
+   "tinggi": 2.05,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    1.6,
+    2.05
+   ],
+   "label": "1,6–2,1 T"
+  },
+  {
+   "id": "Lapisan berat, persentil 90",
+   "rendah": 6.76,
+   "tinggi": 8.57,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    6.76,
+    8.57
+   ],
+   "label": "6,8–8,6 T"
+  },
+  {
+   "id": "Sulawesi Tengah 2018, kejadian",
+   "rendah": 2.9,
+   "tinggi": 3.62,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    2.9,
+    3.62
+   ],
+   "label": "2,9–3,6 T"
+  },
+  {
+   "id": "Sumatra 2025, kejadian",
+   "rendah": 5.6,
+   "tinggi": 7.06,
+   "median": null,
+   "tercatat": null,
+   "geser": false,
+   "tampil": [
+    5.6,
+    7.06
+   ],
+   "label": "5,6–7,1 T"
+  }
+ ]
+}

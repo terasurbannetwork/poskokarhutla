@@ -1,0 +1,27 @@
+{
+  "nama": "rentang-korban-skenario-nasional",
+  "jenis": "rentang",
+  "pesan": "G12",
+  "ukuran": "penuh",
+  "keterangan": "Rentang korban jiwa skenario hidrometeorologi basah tingkat nasional, median sampai persentil 90 rasio DIBI 2010–2025 (jiwa)",
+  "sumber": "Simulasi skenario Pantau Bencana dari DIBI BNPB 2010 sampai 2025: korban = kejadian musim analog x rasio (meninggal+hilang)/kejadian per jenis; tercatat = meninggal dan hilang DIBI di musim analog",
+  "data": {
+    "sumber": {"berkas": "data/kajian-bnpb/data/skenario-hidromet/kartu_skenario.json", "jalur": "baris", "saring": {"wilayah": "nasional", "metrik": "korban_jiwa"}},
+    "kategori": "skenario", "rendah": "rendah", "tinggi": "tinggi", "tengah": "rendah",
+    "urutan": ["musim_hujan_lanina", "musim_hujan_terberat_tercatat", "gelombang_abrasi_rob"],
+    "label_kategori": {
+      "musim_hujan_lanina": "Musim hujan La Niña",
+      "musim_hujan_terberat_tercatat": "Musim hujan terberat tercatat",
+      "gelombang_abrasi_rob": "Gelombang, abrasi, dan rob"
+    },
+    "warna_kategori": {"musim_hujan_lanina": "kategori.basah", "musim_hujan_terberat_tercatat": "kategori.basah", "gelombang_abrasi_rob": "kategori.basah"},
+    "legenda_warna": {"kategori.basah": "estimasi model, median sampai persentil 90"},
+    "tercatat": {
+      "sumber": {"berkas": "data/kajian-bnpb/data/skenario-hidromet/kartu_skenario.json", "jalur": "baris",
+                 "saring": {"wilayah": "nasional", "metrik": ["meninggal_tercatat", "hilang_tercatat"]}, "kelompok": "skenario", "ringkas": {"tercatat": "jumlah:nilai"}},
+      "kategori": "skenario", "nilai": "tercatat", "label": "tercatat di musim analog (DIBI)"
+    }
+  },
+  "satuan": "jiwa",
+  "pil": {"keyakinan": "estimasi-model", "tambahan": "belum diuji balik"}
+}

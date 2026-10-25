@@ -170,7 +170,7 @@
     let r, j;
     try { r = await fetch("/api/sla?" + q); } catch (e) { if (n === no) pasang(galat(0, "Jaringan terputus atau server tidak menjawab.")); return; }
     if (n !== no) return;   // jawaban basi: filter sudah berganti
-    if (r.status === 403) { location.href = Admin.staf ? "/admin/pantau" : "/admin/masuk?ke=" + encodeURIComponent(location.pathname); return; }
+    if (r.status === 403) { await Admin.keMasuk().catch(e => pasang(galat(403, e.message))); return; }
     j = await r.json().catch(() => ({}));
     if (r.status === 503) return pasang(galat(503, "Kinerja pemantauan belum aktif: migrasi 0042 dan 0043 belum diterapkan di D1. Layar ini terisi sendiri setelah migrasinya jalan."));
     if (!r.ok) return pasang(galat(r.status, `Server menjawab galat ${r.status}.`));

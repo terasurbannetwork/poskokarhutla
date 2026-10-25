@@ -1,0 +1,532 @@
+{
+ "nama": "bab12-lapisan-pembiayaan",
+ "keterangan": "Lapisan kejadian dan sumber dana penanggulangan bencana menurut peraturan yang berlaku, Oktober 2026",
+ "sumber": "Strategi PARB Kemenkeu; PP 22/2008; PP 12/2019; UU 7/2012; Perpres 75/2021; PMK 28/2025; Perban BNPB 4/2020 dan 1/2026; Permendes PDT 16/2025",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  294.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  10.39
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis kejadian",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "APBN, APBD, dana desa",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Dana BNPB dan daerah",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Dana Bersama dan transfer risiko",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 50.96,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis kejadian"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 64.96,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis kejadian"
+  },
+  {
+   "x": 90.96,
+   "y": 3,
+   "w": 85.38,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-76",
+   "teks": "APBN, APBD, dana desa"
+  },
+  {
+   "x": 76.96,
+   "y": 2,
+   "w": 99.38,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-76",
+   "teks": "APBN, APBD, dana desa"
+  },
+  {
+   "x": 200.34,
+   "y": 3,
+   "w": 82.86,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-186",
+   "teks": "Dana BNPB dan daerah"
+  },
+  {
+   "x": 186.34,
+   "y": 2,
+   "w": 96.86,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-186",
+   "teks": "Dana BNPB dan daerah"
+  },
+  {
+   "x": 307.2,
+   "y": 3,
+   "w": 118.59,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-293",
+   "teks": "Dana Bersama dan transfer risiko"
+  },
+  {
+   "x": 293.2,
+   "y": 2,
+   "w": 132.59,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-293",
+   "teks": "Dana Bersama dan transfer risiko"
+  },
+  {
+   "x": 45.93,
+   "y": 20,
+   "w": 20.57,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Lapis"
+  },
+  {
+   "x": 136.23,
+   "y": 20,
+   "w": 76.82,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Sumber dana utama"
+  },
+  {
+   "x": 247.61,
+   "y": 20,
+   "w": 90.92,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Sumber dana tambahan"
+  },
+  {
+   "x": 378.23,
+   "y": 20,
+   "w": 66.54,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "Sumber dana lain"
+  },
+  {
+   "x": 33.42,
+   "y": 49.9,
+   "w": 45.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "Prabencana"
+  },
+  {
+   "x": 7.78,
+   "y": 61.5,
+   "w": 96.88,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "mitigasi dan kesiapsiagaan"
+  },
+  {
+   "x": 131.09,
+   "y": 40,
+   "w": 87.12,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "APBN K/L, APBD, dana"
+  },
+  {
+   "x": 165.49,
+   "y": 50.2,
+   "w": 18.31,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "desa"
+  },
+  {
+   "x": 136.46,
+   "y": 61.8,
+   "w": 76.37,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "kontinjensi APBN (PP"
+  },
+  {
+   "x": 129.46,
+   "y": 71.4,
+   "w": 90.37,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "22/2008 Pasal 6 ayat (1))"
+  },
+  {
+   "x": 265.33,
+   "y": 44.8,
+   "w": 55.48,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 270.63,
+   "y": 55,
+   "w": 44.89,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "prabencana"
+  },
+  {
+   "x": 249.05,
+   "y": 66.6,
+   "w": 88.05,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Perpres 75/2021 Pasal 8"
+  },
+  {
+   "x": 368.52,
+   "y": 45.1,
+   "w": 85.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c1",
+   "teks": "Fokus dana desa 2026"
+  },
+  {
+   "x": 366.6,
+   "y": 56.7,
+   "w": 89.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c1",
+   "teks": "Permendes PDT 16/2025"
+  },
+  {
+   "x": 398.36,
+   "y": 66.3,
+   "w": 26.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c1",
+   "teks": "Pasal 2"
+  },
+  {
+   "x": 43.82,
+   "y": 104.4,
+   "w": 24.79,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "Sering"
+  },
+  {
+   "x": 15.06,
+   "y": 116,
+   "w": 82.31,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "sampai lapisan median"
+  },
+  {
+   "x": 134.2,
+   "y": 99.6,
+   "w": 80.88,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "DSP BNPB dan BPBD"
+  },
+  {
+   "x": 125.91,
+   "y": 111.2,
+   "w": 97.47,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Perban BNPB 4/2020 Pasal"
+  },
+  {
+   "x": 170.15,
+   "y": 120.8,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "20"
+  },
+  {
+   "x": 332.18,
+   "y": 104.4,
+   "w": 40.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "BTT APBD"
+  },
+  {
+   "x": 307.63,
+   "y": 116,
+   "w": 89.32,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "PP 12/2019 Pasal 68–69"
+  },
+  {
+   "x": 45.94,
+   "y": 153.8,
+   "w": 20.55,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Berat"
+  },
+  {
+   "x": 21.25,
+   "y": 165.4,
+   "w": 69.92,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "sampai persentil 90"
+  },
+  {
+   "x": 146.9,
+   "y": 149,
+   "w": 55.48,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 130.13,
+   "y": 160.6,
+   "w": 89.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "R3P syarat wajib (Perban"
+  },
+  {
+   "x": 132.65,
+   "y": 170.2,
+   "w": 83.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "BNPB 1/2026 Pasal 14)"
+  },
+  {
+   "x": 285.54,
+   "y": 153.8,
+   "w": 133.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Hibah rehabilitasi dan rekonstruksi"
+  },
+  {
+   "x": 275.13,
+   "y": 165.4,
+   "w": 154.32,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "permohonan pemda (PP 22/2008 Pasal 23)"
+  },
+  {
+   "x": 40.41,
+   "y": 208.3,
+   "w": 31.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l4",
+   "teks": "Ekstrem"
+  },
+  {
+   "x": 8.11,
+   "y": 219.9,
+   "w": 96.21,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l4",
+   "teks": "tidak lebih ringan dari 2018"
+  },
+  {
+   "x": 141.08,
+   "y": 198.4,
+   "w": 67.13,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "Dana utama Dana"
+  },
+  {
+   "x": 157.66,
+   "y": 208.6,
+   "w": 33.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "Bersama"
+  },
+  {
+   "x": 134.88,
+   "y": 220.2,
+   "w": 79.52,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "rekening BPDLH (PMK"
+  },
+  {
+   "x": 158.13,
+   "y": 229.8,
+   "w": 33.03,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "28/2025)"
+  },
+  {
+   "x": 277.36,
+   "y": 208.3,
+   "w": 149.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "Transfer risiko dan asuransi BMN/BMD"
+  },
+  {
+   "x": 282.34,
+   "y": 219.9,
+   "w": 139.9,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "Perpres 75/2021 Pasal 6; Renas 4.6.3.a"
+  },
+  {
+   "x": 30.32,
+   "y": 258,
+   "w": 51.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l5",
+   "teks": "Konflik sosial"
+  },
+  {
+   "x": 26.58,
+   "y": 269.6,
+   "w": 59.27,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l5",
+   "teks": "penghentian dan"
+  },
+  {
+   "x": 36.04,
+   "y": 279.2,
+   "w": 40.34,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l5",
+   "teks": "rekonsiliasi"
+  },
+  {
+   "x": 243.31,
+   "y": 262.8,
+   "w": 99.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a5",
+   "teks": "DSP APBN dan BTT APBD"
+  },
+  {
+   "x": 243.1,
+   "y": 274.4,
+   "w": 99.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a5",
+   "teks": "UU 7/2012 Pasal 55 ayat (1)"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Lapisan sumber dana per lapis kejadian tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 15
+}

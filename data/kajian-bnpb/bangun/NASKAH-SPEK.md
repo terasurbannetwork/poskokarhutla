@@ -237,19 +237,19 @@ Isi Markdown: paragraf, paragraf berlabel, daftar, atau satu tabel pipa.
 | Direktif | Atribut wajib | Atribut opsional | Isi | Komponen pedoman |
 | --- | --- | --- | --- | --- |
 | `gambar` | berkas, judul, jenis | sumber, keyakinan (wajib selain foto), lebar, data_per, catatan; foto: pengarang, lisensi, url (wajib), potong | kosong, atau satu paragraf cara baca grafik tak lazim | B5.9, B5.10, B5.15 |
-| `tabel` | judul, sumber, keyakinan | csv, kolom, saring, urut, batas, total, angka, peringkat, sorot, data_per, catatan | satu tabel pipa, atau kosong bila `csv` | B5.7 |
+| `tabel` | judul, sumber, keyakinan | csv, kolom, saring, urut, batas, total, angka, peringkat, sorot, data_per, catatan, grup | satu tabel pipa, atau kosong bila `csv` | B5.7 |
 | `kartu-angka` | pil, sumber, keyakinan | nada | tabel NILAI, SATUAN, LABEL, IKON, WARNA | B5.4 |
 | `temuan` | judul, sifat | | paragraf berlabel Bukti, Dampak, Pembuka; opsional "Mengapa bukan satu tingkat lebih baik atau lebih buruk" | B5.5 |
 | `keputusan` | | judul | daftar: pertanyaan, butir tingkat 2 akibat tiap pilihan | B5.5, B5.25 |
 | `koreksi`, `catatan` | | | paragraf; koreksi paling banyak satu per bab | B5.5 |
 | `ringkasan-bab` | | | paragraf berlabel Temuan, Angka kunci, Rekomendasi (rujukan @rek) | B5.3 |
 | `program` | nama, lokasi, lembaga, periode, dampak, sumber, keyakinan | status, jenis | paragraf berlabel Yang dilakukan, Yang ditiru, Yang tidak cocok, Penyesuaian Indonesia | P6, B5.7 perbandingan |
-| `skenario` | jenis, judul, dasar, sumber, lembaga | kemungkinan, peta, analog, kaki, data_per | blok anak menurut varian | B5.11, P10 |
-| `garis-waktu` | judul, sumber | musim | tabel FASE, AKSI, REK, LEMBAGA | B5.12 |
-| `matriks-rekomendasi` | judul, kelompok, sumber | | blok `rek` | B5.13, P7, P8 |
+| `skenario` | jenis, judul, dasar, sumber, lembaga | kemungkinan, peta, analog, kaki, data_per, keyakinan | blok anak menurut varian | B5.11, P10 |
+| `garis-waktu` | judul, sumber | musim, keyakinan | tabel FASE, AKSI, REK, LEMBAGA | B5.12 |
+| `matriks-rekomendasi` | judul, kelompok, sumber | keyakinan | blok `rek` | B5.13, P7, P8 |
 | `rek` | langkah, jenis, status, unit, kl, waktu, indikator, dasar | program (wajib bila status bukan baru), butuh, membuka | satu kalimat rincian; opsional paragraf berlabel Langkah pelaksanaan, Risiko pelaksanaan (tiga teratas) | B5.13 |
-| `matriks-lembaga` | judul, sumber | | tabel LEMBAGA, PRABENCANA, TANGGAP DARURAT, PASCABENCANA | B5.7 matriks lembaga |
-| `matriks-jenis` | judul, sumber | | tabel JENIS, PRABENCANA, TANGGAP DARURAT, PASCABENCANA | B5.22 |
+| `matriks-lembaga` | judul, sumber | keyakinan | tabel LEMBAGA, PRABENCANA, TANGGAP DARURAT, PASCABENCANA | B5.7 matriks lembaga |
+| `matriks-jenis` | judul, sumber | keyakinan | tabel JENIS, PRABENCANA, TANGGAP DARURAT, PASCABENCANA | B5.22 |
 
 ### 11.2 Nilai kode
 
@@ -298,7 +298,9 @@ Dua sumber, pilih satu:
    pakai `total: ya`.
 
 `peringkat: ya` = nomor peringkat dalam bulatan navy; `sorot: Kab. Demak; Kab. Kudus` = baris
-wilayah fokus bertint (PEDOMAN B5.7). Sel kosong: "–" dengan alasan di `catatan:`.
+wilayah fokus bertint (PEDOMAN B5.7). Sel kosong: "–" dengan alasan di `catatan:`. `grup: PROVINSI` (atau
+`PULAU; PROVINSI`) = kolom itu menjadi baris grup berjenjang, dengan subtotal per grup bila ber-`total`
+(PEDOMAN B5.8, tabel lampiran kab/kota).
 
 ### 11.4 Kartu skenario
 
@@ -308,19 +310,24 @@ Varian diturunkan dari `jenis` lewat keluarga bencana (`tema.json` warna.kategor
 | --- | --- | --- | --- |
 | a (alam, dimodelkan) | geologi, basah, kering, api | kemungkinan (kelas 1–5 pita peluang 5 tahun, atau "periode ulang n tahun"), peta, kaki | kerusakan, kebijakan, kepekaan, respons, pemulihan |
 | b (nonalam, kejadian analog) | pandemi, kebakaran-industri, kebakaran-tpa | analog | kerusakan, respons, pemulihan |
-| c (sosial, kualitatif) | konflik-sosial | kemungkinan diawali "tidak berlaku:" | pemicu, mandat, respons, pemulihan |
+| c (sosial, kejadian analog) | konflik-sosial | analog, kemungkinan diawali "tidak dinilai:" | kerusakan, mandat, respons, pemulihan |
 
-- `kerusakan` varian a: tabel BESARAN, RENDAH, TINGGI, KEYAKINAN, SUMBER. Wajib baris yang diawali
-  tiap besaran di `tema.json` kosakata.besaran_skenario_alam (korban jiwa, luka, pengungsi hari
-  ke-7, bangunan rusak berat/sedang/ringan, luas terdampak, kerugian materiil, DALY, hari
-  mengungsi, sekolah dan faskes terganggu). Yang tidak terhitung: "–" dengan alasan di kolom
-  SUMBER. Rupiah imateriil tidak di sini (lampiran metode).
-- `kerusakan` varian b: tabel INDIKATOR, NILAI, KEYAKINAN, SUMBER dengan indikator dari
-  kosakata.indikator_skenario_nonalam.
+- `kerusakan` varian a: tabel BESARAN, RENDAH, TINGGI, KEYAKINAN, SUMBER. Wajib paling sedikit satu baris yang
+  diawali tiap aspek di `tema.json` kosakata.besaran_skenario_alam: lima aspek Perban BNPB 2/2023 Pasal 7 ayat (5)
+  (Lingkungan, Kependudukan, Ekonomi, Infrastruktur/fisik, Layanan sipil) ditambah Kebutuhan respons (Perka BNPB
+  7/2008, Perban 3/2018). Satu aspek boleh beberapa baris ("Kependudukan, korban jiwa", "Kependudukan,
+  pengungsi"). Besaran di kosakata.besaran_skenario_terlarang (luka, pengungsi hari ke-7, DALY) ditolak karena
+  tidak ada di DIBI (KERANGKA prinsip 9). Yang tidak terhitung: "–" dengan alasan di kolom SUMBER. Rupiah
+  imateriil tidak di sini (lampiran metode).
+- `kerusakan` varian b dan c: kartu analog berangka tanpa perkalian, tabel INDIKATOR, NILAI, KEYAKINAN, SUMBER
+  dengan empat besaran kosakata.indikator_skenario_nonalam (korban jiwa, luas terdampak, kerugian materiil,
+  kerugian imateriil); sel tanpa data "–" beralasan.
 - `kebijakan`: satu paragraf angka kebijakan. `kepekaan`: tabel TUAS, NILAI DASAR, NILAI
   DIGESER, KORBAN JIWA, KERUGIAN MATERIIL (KERANGKA prinsip 12). `respons`, `pemulihan`: daftar
-  3–4 butir. `pemicu`, `mandat`: paragraf.
-- Kartu skenario satu halaman: dahului dengan `{{halaman-baru}}` bila perlu.
+  3–4 butir. `mandat`: paragraf batas mandat (varian c).
+- Kartu skenario satu halaman: pembangun DOCX merakitnya sebagai satu blok yang pindah halaman utuh bila tidak muat;
+  `{{halaman-baru}}` tidak diperlukan. Kartu tanpa label keyakinan di kolom KEYAKINAN (varian b yang semua "–",
+  varian c) wajib atribut `keyakinan`; pembangun DOCX menolak kartu, garis waktu, dan matriks tanpa label (PEDOMAN C6.2).
 
 ### 11.5 Garis waktu dan matriks
 
@@ -363,7 +370,7 @@ Run = `{j, s, tebal, miring}` dengan `j`: `teks`; `angka` (+ kunci); `catatan` (
 
 ## 15. Contoh lengkap satu subbab
 
-Contoh di bawah dibaca uji diri pembaca: semua direktif (kecuali anak varian c), semua bentuk
+Contoh di bawah dibaca uji diri pembaca: semua direktif (kecuali `mandat`, anak varian c), semua bentuk
 kutipan, rujukan, catatan kaki, dan pemisah halaman. Angka berasal dari registri nyata;
 kalimat, kelas kemungkinan, dan rincian aksi adalah ilustrasi sintaks, bukan naskah final.
 
@@ -489,30 +496,28 @@ data_per: 23 Okt 2026
 ::: kerusakan
 | BESARAN | RENDAH | TINGGI | KEYAKINAN | SUMBER |
 | --- | ---: | ---: | --- | --- |
-| Korban jiwa | {{angka:hidromet.jawa.lanina.korban_jiwa|rendah}} | {{angka:hidromet.jawa.lanina.korban_jiwa|tinggi}} | estimasi-model | DIBI BNPB; simulasi Pantau Bencana |
-| Luka | – | – | – | tidak dihitung model |
-| Pengungsi hari ke-7 | – | – | – | DIBI tidak mencatat per hari |
-| Bangunan rusak berat | {{angka:hidromet.jawa.lanina.rumah_rusak_berat}} | – | resmi | DIBI BNPB, musim analog |
-| Bangunan rusak sedang | {{angka:hidromet.jawa.lanina.rumah_rusak_sedang}} | – | resmi | DIBI BNPB, musim analog |
-| Bangunan rusak ringan | {{angka:hidromet.jawa.lanina.rumah_rusak_ringan}} | – | resmi | DIBI BNPB, musim analog |
-| Luas terdampak (zona bahaya tinggi banjir) | {{angka:hidromet.jawa.lanina.luas_bahaya_tinggi_banjir|ringkas|satuan}} | – | resmi | InaRISK BNPB |
-| Kerugian materiil (batas bawah) | {{angka:hidromet.jawa.lanina.materiil_batas_bawah|rendah|rupiah}} | {{angka:hidromet.jawa.lanina.materiil_batas_bawah|tinggi|rupiah}} | asumsi-kebijakan | stimulan rumah BNPB |
-| DALY | – | – | – | belum dihitung |
-| Hari mengungsi | {{angka:hidromet.jawa.lanina.hari_mengungsi|rendah}} | {{angka:hidromet.jawa.lanina.hari_mengungsi|tinggi}} | asumsi-kebijakan | DIBI BNPB; lama mengungsi asumsi |
-| Sekolah terganggu | – | – | – | menunggu data kementerian |
-| Faskes terganggu | – | – | – | menunggu data Kementerian Kesehatan |
+| Kependudukan, korban jiwa | {{angka:hidromet.jawa.lanina.korban_jiwa|rendah}} | {{angka:hidromet.jawa.lanina.korban_jiwa|tinggi}} | estimasi-model | DIBI BNPB; simulasi Pantau Bencana |
+| Kependudukan, pengungsi tercatat | {{angka:hidromet.jawa.lanina.mengungsi}} | – | resmi | DIBI BNPB, musim analog |
+| Kependudukan, pengungsi-hari | {{angka:hidromet.jawa.lanina.hari_mengungsi|rendah}} | {{angka:hidromet.jawa.lanina.hari_mengungsi|tinggi}} | asumsi-kebijakan | DIBI BNPB; lama mengungsi asumsi |
+| Infrastruktur/fisik, rumah rusak berat | {{angka:hidromet.jawa.lanina.rumah_rusak_berat}} | – | resmi | DIBI BNPB, musim analog |
+| Infrastruktur/fisik, rumah rusak sedang | {{angka:hidromet.jawa.lanina.rumah_rusak_sedang}} | – | resmi | DIBI BNPB, musim analog |
+| Infrastruktur/fisik, rumah rusak ringan | {{angka:hidromet.jawa.lanina.rumah_rusak_ringan}} | – | resmi | DIBI BNPB, musim analog |
+| Lingkungan, zona bahaya tinggi banjir | {{angka:hidromet.jawa.lanina.luas_bahaya_tinggi_banjir|ringkas|satuan}} | – | resmi | InaRISK BNPB |
+| Ekonomi, kebutuhan stimulan rumah (batas bawah) | {{angka:hidromet.jawa.lanina.materiil_batas_bawah|rendah|rupiah}} | {{angka:hidromet.jawa.lanina.materiil_batas_bawah|tinggi|rupiah}} | asumsi-kebijakan | stimulan rumah BNPB |
+| Layanan sipil, fasilitas rusak | – | – | – | menunggu rekap fasilitas rusak DIBI per musim |
+| Kebutuhan respons, tempat pengungsian | – | – | – | dihitung dari pengungsi tercatat dan standar Perka BNPB 7/2008 saat naskah final |
 :::
 
 ::: kebijakan
 Bila cakupan peringatan dini naik ke target Renas 2029, korban jiwa skenario dihitung
-{{angka:hidromet.jawa.lanina.pd.korban_jiwa|fmt=0|satuan}}, dibanding
+{{angka:hidromet.jawa.lanina.pd_renas.korban_jiwa|fmt=0|satuan}}, dibanding
 {{angka:hidromet.jawa.lanina.korban_jiwa|satuan}} pada cakupan sekarang.
 :::
 
 ::: kepekaan
 | TUAS | NILAI DASAR | NILAI DIGESER | KORBAN JIWA | KERUGIAN MATERIIL |
 | --- | ---: | ---: | ---: | --- |
-| Cakupan peringatan dini | {{angka:hidromet.jawa.lanina.pd.cakupan_awal|satuan}} | {{angka:hidromet.jawa.lanina.pd.cakupan_target|satuan}} | {{angka:hidromet.jawa.lanina.pd.korban_jiwa|fmt=0}} | tidak berubah: peringatan dini tidak mengurangi rumah rusak |
+| Cakupan peringatan dini (Renas 1.c) | {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2025|satuan}} | {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2029|satuan}} | {{angka:hidromet.jawa.lanina.pd_renas.korban_jiwa|fmt=0}} | tidak berubah: peringatan dini tidak mengurangi rumah rusak |
 :::
 
 ::: respons
@@ -586,12 +591,12 @@ program: Layanan peringatan dini cuaca BMKG
 unit: Direktorat Peringatan Dini; Direktorat Kesiapsiagaan
 kl: BMKG; Kementerian Pekerjaan Umum
 waktu: 2026-2027
-indikator: cakupan peringatan dini masyarakat terpapar mencapai {{angka:hidromet.jawa.lanina.pd.cakupan_target|satuan}}
+indikator: penduduk daerah berisiko yang tercakup peringatan dini mencapai {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2029|satuan}}
 dasar: Renas PB 2025–2029 indikator 1.c [@bnpb-2025-renas]
 butuh: @rek:data-genangan
 
-Cakupan peringatan dini masyarakat terpapar di kawasan risiko tinggi baru
-{{angka:hidromet.jawa.lanina.pd.cakupan_awal|satuan}}, di bawah target Renas 2029.
+Penduduk daerah berisiko yang tercakup peringatan dini baru
+{{angka:hidromet.jawa.lanina.pd_renas.cakupan_2025|satuan}}, di bawah target Renas 2029.
 :::
 
 ::: rek {#rek:data-genangan}
@@ -676,9 +681,10 @@ kaki: Kejadian analog, bukan proyeksi model.
 ::: kerusakan
 | INDIKATOR | NILAI | KEYAKINAN | SUMBER |
 | --- | --- | --- | --- |
-| Luas terbakar | – | – | menunggu laporan resmi |
-| Hari asap | – | – | menunggu laporan resmi |
-| Kasus ISPA | – | – | menunggu data dinas kesehatan |
+| Korban jiwa | – | – | tidak ada korban jiwa tercatat di laporan BPBD |
+| Luas terdampak | – | – | menunggu laporan resmi luas terbakar |
+| Kerugian materiil | – | – | tidak ada penilaian kerugian resmi |
+| Kerugian imateriil | – | – | hari asap dan kasus ISPA menunggu data dinas kesehatan |
 :::
 
 ::: respons
@@ -695,19 +701,25 @@ kaki: Kejadian analog, bukan proyeksi model.
 ::::
 ````
 
-Kartu skenario varian c (sosial, kualitatif, tanpa proyeksi korban):
+Kartu skenario varian c (sosial, kartu analog berangka tanpa perkalian dan tanpa proyeksi per wilayah):
 
 ````naskah-potongan
 :::: skenario {#tbl:skenario-sosial}
 jenis: konflik-sosial
-judul: Kerusuhan dan konflik sosial berdampak pengungsian
-dasar: Kartu kualitatif; tidak ada proyeksi korban.
-kemungkinan: tidak berlaku: kejadian sosial tidak punya model peluang yang bisa diuji balik
+judul: Konflik sosial antarkelompok setara Maluku 1999–2002
+dasar: Analog terbesar dalam 30 tahun terakhir; tanpa perkalian dan tanpa proyeksi per wilayah.
+analog: Konflik antarkelompok Maluku, 1999–2002
+kemungkinan: tidak dinilai: kejadian sosial tidak punya model peluang yang bisa diuji balik
 lembaga: Kementerian Dalam Negeri; Kepolisian Negara Republik Indonesia; Deputi Bidang Penanganan Darurat
-sumber: UU 7/2012; Perpres 46/2026
+sumber: International Crisis Group; UU 7/2012; Perpres 46/2026
 
-::: pemicu
-Pemicu dan pola kejadian ditulis dari kejadian terdokumentasi, tanpa nama pelaku.
+::: kerusakan
+| INDIKATOR | NILAI | KEYAKINAN | SUMBER |
+| --- | --- | --- | --- |
+| Korban jiwa | {{angka:sosial.maluku.meninggal_bawah|satuan}} | terverifikasi | International Crisis Group |
+| Luas terdampak | – | – | tidak ada luas terdampak terdokumentasi |
+| Kerugian materiil | – | – | tidak ada penilaian kerugian resmi |
+| Kerugian imateriil | {{angka:sosial.maluku.pengungsi|satuan}} | terverifikasi | International Crisis Group, pengungsi |
 :::
 
 ::: mandat
@@ -729,7 +741,24 @@ logistik, pengungsian, dan pemulihan.
 ::::
 ````
 
-## 17. Mengubah kontrak
+## 17. Spek deck: garis besar sebelum render
+
+Deck tidak ditulis dalam dialek naskah ini; spek JSON-nya dibaca `bangun/pptx/deck.py` (format lengkap di
+`bangun/pptx/README.md`) dengan token teks yang sama (`{{angka:...}}`, `{{tempat:...}}`, `{{sorot:...}}`). Sebelum satu
+bentuk pun digambar, spek wajib memuat garis besar (Buku Pegangan S34, S35, S7):
+
+| Medan | Letak | Isi | Ditolak bila |
+| --- | --- | --- | --- |
+| `pesan_kunci` | akar spek | satu kalimat pesan kunci deck | kosong atau tidak ada |
+| `pesan` | tiap slide selain sampul, penutup, pembatas | pesan slide satu frasa | kosong atau tidak ada |
+| `jenis_slide` | idem | daftar tertutup S35: `navigasi`, `peta`, `grafik`, `tabel`, `matriks`, `kartu-skenario`, `panel`, `rekomendasi`, `lampiran` | di luar daftar; tidak cocok dengan tata letak (kesimpulan navigasi, skenario kartu-skenario, temuan-peta peta, rekomendasi rekomendasi, lampiran-tabel lampiran); sama dengan slide isi sebelumnya kecuali lampiran atau `seri` sama |
+| `judul_bentuk` | idem | `temuan` atau `deskriptif` (S7, KEPUTUSAN T11) | di luar dua nilai; `temuan` tanpa token angka di judul; judul berkode bagian A sampai D yang tidak `temuan`; navigasi atau lampiran yang tidak `deskriptif` |
+| `seri` | opsional | nama seri: seri berchip S12, profil wilayah S26, lanjutan satu tabel | – |
+
+Medan S35 "jenis" dan S7 "judul" ditulis `jenis_slide` dan `judul_bentuk` karena `jenis` (tata letak) dan `judul`
+(teks judul) sudah dipakai spek. Daftar butir di slide paling banyak 6 (S38).
+
+## 18. Mengubah kontrak
 
 Direktif, atribut, atau opsi token baru: tambahkan di berkas ini, di `naskah.py` (tabel
 `DIREKTIF`, `KOLOM`, opsi `suntik`), dan di contoh bagian 15, lalu jalankan uji diri. Kode

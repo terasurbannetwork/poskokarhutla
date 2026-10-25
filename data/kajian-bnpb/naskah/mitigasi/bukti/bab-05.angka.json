@@ -1,0 +1,1268 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 5 kajian mitigasi (Grand Design Mitigasi Bencana Indonesia 2026–2030). Disusun 24 Oktober 2026 dari berkas bukti naskah/mitigasi/bukti/bab-05.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Bentuk entri sama dengan data/angka.json: berkas (relatif ke data/) + jalur, atau nilai + pustaka (kunci di bab-05.pustaka.json). Entri berkas+jalur diuji dengan salinan ikuti() dari bangun/kontrak/naskah.py. Entri bernilai hasil hitungan atas paket data menulis cara hitungnya di catatan.",
+    "Kunci lama dan usulan bab lain yang dipakai ulang tercantum di bab-05.md bagian Angka untuk registri; tidak diulang di sini. Tidak ada kunci di berkas ini yang sudah ada di data/angka.json atau di berkas *.angka.json lain (dicek saat ditulis)."
+  ],
+  "angka": {
+    "irbi.pulau.papua.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=PAP,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.papua.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=PAP,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.pulau.maluku.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=MAL,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.maluku.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=MAL,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.pulau.sulawesi.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=SUL,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.sulawesi.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=SUL,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.pulau.bnt.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=BNT,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.bnt.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=BNT,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.pulau.sumatra.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=SUM,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.sumatra.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=SUM,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.pulau.kalimantan.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=KAL,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "jumlah kab berstatus Tinggi (kolom status API, resmi); pengelompokan pulau = kode provinsi (irbi/README.md §3, pilihan penyusun)"
+    },
+    "irbi.pulau.kalimantan.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=KAL,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025"
+    },
+    "irbi.jawa.rerata_2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=JAW,tahun=2025].total_sederhana",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "rerata sederhana total kab 2025 di pulau; belum pernah diterbitkan BNPB; tidak sebanding dengan 2015–2024; terendah dari 7 pulau"
+    },
+    "irbi.maluku.rerata_2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=MAL,tahun=2025].total_sederhana",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+      "catatan": "rerata sederhana total kab 2025; tertinggi dari 7 pulau; belum pernah diterbitkan BNPB"
+    },
+    "irbi.sumatra.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=SUM,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.jawa.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=JAW,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.bnt.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=BNT,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.kalimantan.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=KAL,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.sulawesi.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=SUL,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.maluku.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=MAL,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun"
+    },
+    "irbi.papua.persen_2019_2024": {
+      "berkas": "irbi/irbi_tren_2015_2024.csv",
+      "jalur": "[tingkat=pulau,kode=PAP,metode=rerata_sederhana].persen_2019_2024",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019–2024",
+      "catatan": "persen perubahan rerata kab 2019 ke 2024 (baseline Renstra); pengelompokan pulau pilihan penyusun; Papua dan Papua Barat dengan batas 2025, tidak sebanding seri Renstra 34 provinsi (seri terbit Papua +11,82%)"
+    },
+    "irbi.bahaya.banjir.median_2019": {
+      "berkas": "irbi/irbi_bukti_skala_bahaya.csv",
+      "jalur": "[bahaya=banjir,tahun=2019].median",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019",
+      "catatan": "median nilai bahaya per kab; skala 2015–2024"
+    },
+    "irbi.bahaya.banjir.median_2024": {
+      "berkas": "irbi/irbi_bukti_skala_bahaya.csv",
+      "jalur": "[bahaya=banjir,tahun=2024].median",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2024",
+      "catatan": "median nilai bahaya per kab; skala 2015–2024"
+    },
+    "irbi.bahaya.gempabumi.median_2019": {
+      "berkas": "irbi/irbi_bukti_skala_bahaya.csv",
+      "jalur": "[bahaya=gempabumi,tahun=2019].median",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019",
+      "catatan": "median nilai bahaya per kab; skala 2015–2024"
+    },
+    "irbi.bahaya.gempabumi.median_2024": {
+      "berkas": "irbi/irbi_bukti_skala_bahaya.csv",
+      "jalur": "[bahaya=gempabumi,tahun=2024].median",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2024",
+      "catatan": "median nilai bahaya per kab; skala 2015–2024"
+    },
+    "irbi.kab.berubah_2019_2024": {
+      "nilai": 400,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRB 2019 dan 2024",
+      "catatan": "irbi/irbi_kab_2015_2025.csv kolom 9 bahaya [tahun 2019, 2024]; kab berubah = sedikitnya satu kolom bahaya berbeda; dari 514 kab; 368 di antaranya semua kolom terisi berubah. Menggantikan usulan irbi.bahaya.n_turun_2019_2024 (9 dari 9 bahaya), yang bukan sembilan pengamatan bebas"
+    },
+    "irbi.kab.satu_pengali_2019_2024": {
+      "nilai": 230,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRB 2019 dan 2024",
+      "catatan": "dari 400 kab yang berubah 2019 ke 2024, semua kolom bahaya terisi berubah dengan satu rasio identik (selisih relatif rasio antarkolom < 1e-4; sel kosong dikeluarkan); pemeriksa menghitung 240 dengan aturan yang tidak tertulis, hitungan ulang penyusun memberi 230 (235 pada toleransi 1%). Contoh Kab. Cianjur 2016 ke 2017: tiap kolom x 0,6864"
+    },
+    "irbi2025.kab_tinggi.penduduk": {
+      "nilai": 43105491,
+      "pustaka": "worldpop-2025",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan WorldPop R2025A",
+      "catatan": "olah: jumlah penduduk_2026 (WorldPop) 169 kab status_total_resmi=Tinggi di irbi/irbi_kab_2025.csv; bukan penduduk BPS"
+    },
+    "irbi2025.kab_tinggi.porsi_penduduk": {
+      "nilai": 15.0,
+      "pustaka": "worldpop-2025",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (IRBI 2025) dan WorldPop R2025A",
+      "catatan": "olah: 43.105.491 / 286.674.532 (jumlah penduduk_2026 514 kab)"
+    },
+    "irbi_dibi.nasional.spearman.total_kejadian": {
+      "nilai": -0.38,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "dihitung penyusun bukti 24 Okt 2026: Spearman, peringkat rata-rata untuk nilai kembar, n = 514 kab; IRBI irbi/irbi_kab_2025.csv kolom total; DIBI skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025, kolom kejadian dijumlah 9 jenis hidromet dan 4 jenis geologi"
+    },
+    "irbi_dibi.nasional.spearman.total_meninggal_hilang": {
+      "nilai": -0.044,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "dihitung penyusun bukti 24 Okt 2026: Spearman, peringkat rata-rata untuk nilai kembar, n = 514 kab; IRBI irbi/irbi_kab_2025.csv kolom total; DIBI skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025, meninggal + hilang; lawan mengungsi +0,016"
+    },
+    "irbi_dibi.nasional.spearman.total_penduduk": {
+      "nilai": -0.465,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan WorldPop",
+      "catatan": "dihitung penyusun bukti: Spearman total IRBI 2025 lawan penduduk_2026 (WorldPop) irbi/irbi_kab_2025.csv, n = 514"
+    },
+    "irbi_dibi.nasional.spearman.penduduk_kejadian": {
+      "nilai": 0.633,
+      "pustaka": "bnpb-dibi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB dan WorldPop",
+      "catatan": "dihitung penyusun bukti: Spearman penduduk_2026 lawan jumlah kejadian DIBI 2015–2025 per kab, n = 514; skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025"
+    },
+    "irbi_dibi.kab_tinggi.porsi_kejadian_2015_2025": {
+      "nilai": 17.9,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "olah: kejadian di 169 kab Tinggi IRBI 2025 / 44.982,95 kejadian 514 kab; skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025"
+    },
+    "irbi_dibi.kab_tinggi.porsi_meninggal_hilang_2015_2025": {
+      "nilai": 24.3,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "olah: meninggal + hilang di 169 kab Tinggi / 13.063 jiwa 514 kab; skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025"
+    },
+    "irbi_dibi.kab_tinggi.porsi_meninggal_hilang_2025": {
+      "nilai": 57.6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "olah: 1.130 / 1.961 meninggal + hilang tingkat kab 2025 (alam, semua laporan); tanggal ekspor IRBI 2025 tidak diketahui, bukan uji ramalan"
+    },
+    "dibi.pulau.jawa.porsi_kejadian_2015_2025": {
+      "nilai": 47.2,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 19.855,5 / 42.079,44 kejadian; dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025; kolom pulau paket dibi"
+    },
+    "dibi.pulau.jawa.porsi_meninggal_hilang_2015_2025": {
+      "nilai": 22.2,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 2.998 / 13.479 meninggal + hilang; dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025; kolom pulau paket dibi"
+    },
+    "dibi.pulau.sulawesi.porsi_meninggal_hilang_2015_2025": {
+      "nilai": 41.3,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 5.569 / 13.479; Sulawesi Tengah 4.925, sebagian besar 2018; dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025; kolom pulau paket dibi"
+    },
+    "dibi.pulau.papua.porsi_kejadian_2015_2025": {
+      "nilai": 0.8,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 322,0 / 42.079,44 kejadian; dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025; kolom pulau paket dibi"
+    },
+    "dibi.pulau.jawa.porsi_penduduk_2026": {
+      "nilai": 56.1,
+      "pustaka": "worldpop-2025",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan; WorldPop, bukan BPS",
+      "sumber": "Pengolahan data Pantau Bencana dari WorldPop 2026 (via irbi/irbi_kab_2025.csv)",
+      "catatan": "160.830.619 dari 286.674.532 jiwa; krb_covid19_kab.csv juga memberi 56,1%"
+    },
+    "dibi.pulau.jawa.kejadian_per100rb_2015_2025": {
+      "pustaka": "bnpb-dibi",
+      "keyakinan": "asumsi-kebijakan; penyebut WorldPop 2026 satu tahun untuk jumlah sebelas tahun, bukan BPS",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan WorldPop 2026",
+      "nilai": 12.3,
+      "satuan": "kejadian per 100.000 penduduk",
+      "catatan": "dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana,tahun 2015–2025] dijumlah per pulau; penduduk irbi/irbi_kab_2025.csv kolom penduduk_2026 dijumlah per pulau (total 286.674.532); nasional 14,7"
+    },
+    "dibi.pulau.jawa.meninggal_hilang_per100rb_2015_2025": {
+      "pustaka": "bnpb-dibi",
+      "keyakinan": "asumsi-kebijakan; penyebut WorldPop 2026 satu tahun untuk jumlah sebelas tahun, bukan BPS",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan WorldPop 2026",
+      "nilai": 1.86,
+      "satuan": "jiwa per 100.000 penduduk",
+      "catatan": "dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana,tahun 2015–2025] dijumlah per pulau; penduduk irbi/irbi_kab_2025.csv kolom penduduk_2026 dijumlah per pulau (total 286.674.532); 2.998 jiwa"
+    },
+    "dibi.pulau.sulawesi.meninggal_hilang_per100rb_2015_2025": {
+      "pustaka": "bnpb-dibi",
+      "keyakinan": "asumsi-kebijakan; penyebut WorldPop 2026 satu tahun untuk jumlah sebelas tahun, bukan BPS",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan WorldPop 2026",
+      "nilai": 26.39,
+      "satuan": "jiwa per 100.000 penduduk",
+      "catatan": "dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana,tahun 2015–2025] dijumlah per pulau; penduduk irbi/irbi_kab_2025.csv kolom penduduk_2026 dijumlah per pulau (total 286.674.532); 5.569 jiwa dengan 21.100.509 penduduk"
+    },
+    "dibi.nasional.meninggal_hilang_per100rb_2015_2025": {
+      "pustaka": "bnpb-dibi",
+      "keyakinan": "asumsi-kebijakan; penyebut WorldPop 2026 satu tahun untuk jumlah sebelas tahun, bukan BPS",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan WorldPop 2026",
+      "nilai": 4.7,
+      "satuan": "jiwa per 100.000 penduduk",
+      "catatan": "dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana,tahun 2015–2025] dijumlah per pulau; penduduk irbi/irbi_kab_2025.csv kolom penduduk_2026 dijumlah per pulau (total 286.674.532); 13.479 jiwa"
+    },
+    "irbi_dibi.kab_korban_top5.tinggi_tahun_kejadian": {
+      "nilai": 3,
+      "pustaka": "bnpb-irbi",
+      "satuan": "dari 5 kab",
+      "keyakinan": "asumsi-kebijakan; ambang turunan > 144 (resmi hanya 2023)",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+      "catatan": "lima kab dengan meninggal dan hilang terbanyak 2015–2025 (skenario-hidromet/dibi_kab_tahun.csv, dibi_geologi_kab_tahun.csv); status pada tahun korban terbesar dari irbi/irbi_kab_2015_2025.csv kolom total dan kelas_total: Kota Palu 2018 162,70 Tinggi; Kab. Cianjur 2022 207,62 Tinggi; Kab. Pandeglang 2018 215,20 Tinggi; Kab. Lombok Utara 2018 120,62 Sedang; Kab. Sigi 2018 52,16 Sedang. Kelimanya Sedang pada IRBI 2025 (sesudah kejadian)"
+    },
+    "dibi.kab.palu.meninggal_hilang_2015_2025": {
+      "nilai": 4194,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Kota Palu",
+      "catatan": "olah(resmi): skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025; status IRBI 2025 Kota Palu Sedang"
+    },
+    "dibi.kab.palu.porsi_2015_2025": {
+      "nilai": 32.1,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 4.194 / 13.063 meninggal + hilang tingkat kab; skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (alam, semua laporan; tidak menyaring is_bencana), 2015–2025"
+    },
+    "dibi.alam.hidromet.meninggal_hilang_rerata_2015_2019": {
+      "nilai": 399.2,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah(resmi): rerata meninggal + hilang alam kode 101–106 per tahun (276, 463, 373, 364, 520); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; seri patah 2024"
+    },
+    "dibi.alam.hidromet.meninggal_hilang_rerata_2020_2024": {
+      "nilai": 424.0,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+      "catatan": "olah(resmi): rerata meninggal + hilang alam kode 101–106 per tahun (417, 620, 257, 279, 547); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; seri patah 2024"
+    },
+    "dibi.alam.hidromet.meninggal_hilang.2025": {
+      "nilai": 1952,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+      "catatan": "olah(resmi): meninggal + hilang alam kode 101–106; dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]"
+    },
+    "dibi.alam.geologi.meninggal_hilang_2015_2025": {
+      "nilai": 6988,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): kode 107 gempabumi, 108 tsunami, 109 erupsi; 5.876 di antaranya 2018; dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]"
+    },
+    "dibi.alam.meninggal_hilang_2015_2025": {
+      "nilai": 13056,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): geologi 6.988 + hidrometeorologi 6.068; dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]"
+    },
+    "dibi.jawa.meninggal_hilang_rerata_2015_2019": {
+      "nilai": 246.8,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, Jawa",
+      "catatan": "olah(resmi): 134, 292, 221, 492, 95; dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025 [pulau=Jawa]"
+    },
+    "dibi.jawa.meninggal_hilang_rerata_2020_2024": {
+      "nilai": 274.0,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, Jawa",
+      "catatan": "olah(resmi): 170, 236, 715, 75, 174 (2022 memuat Cianjur); dibi/rekap_provinsi_tahunan.csv [klasifikasi=semua,cakupan=bencana], 2015–2025 [pulau=Jawa]"
+    },
+    "dibi.alam.gempa.meninggal_hilang_maks_tahun": {
+      "nilai": 5423,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 107 (2018); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.banjir.meninggal_hilang_maks_tahun": {
+      "nilai": 1585,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 101 (2025); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.longsor.meninggal_hilang_maks_tahun": {
+      "nilai": 354,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 102 (2014); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.tsunami.meninggal_hilang_maks_tahun": {
+      "nilai": 503,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 108 (2010); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.gunungapi.meninggal_hilang_maks_tahun": {
+      "nilai": 394,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 109 (2010); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.cuaca_ekstrem.meninggal_hilang_maks_tahun": {
+      "nilai": 81,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 104 (2025); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.gelombang.meninggal_hilang_maks_tahun": {
+      "nilai": 36,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 103 (2011); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.kekeringan.meninggal_hilang_maks_tahun": {
+      "nilai": 6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 105 (2023); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "dibi.alam.karhutla.meninggal_hilang_maks_tahun": {
+      "nilai": 24,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): meninggal + hilang tahun nasional terbesar 2008–2025 kode 106 (2015); dibi/rekap_nasional_tahunan.csv [klasifikasi=alam,cakupan=bencana]; jumlah setahun = batas atas satu kejadian (dasar kelas aspek kependudukan, bab-05 I4.1)"
+    },
+    "perhatian.mitigasi.kab_unik": {
+      "nilai": 426,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun; 82,9% dari 514; aturan syarat pilihan penyusun"
+    },
+    "perhatian.mitigasi.pasangan": {
+      "nilai": 903,
+      "pustaka": "bnpb-irbi",
+      "satuan": "pasangan kab–bahaya",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], jumlah baris 9 bahaya = jumlah kunci perhatian.mitigasi.*.n"
+    },
+    "perhatian.mitigasi.irisan_tinggi": {
+      "nilai": 135,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True] beririsan dengan 169 kab status_total_resmi=Tinggi (irbi/irbi_kab_2025.csv)"
+    },
+    "perhatian.mitigasi.tinggi_tidak_masuk": {
+      "nilai": 34,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: 169 kab Tinggi dikurangi 135 yang masuk daftar perhatian bahaya apa pun"
+    },
+    "perhatian.mitigasi.prov12.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=12].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "Sumatera Utara; peringkat 3 kriteria daftar, peringkat 4 kriteria korban"
+    },
+    "perhatian.mitigasi.prov11.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=11].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi; dijumlah",
+      "sumber": "DIBI BNPB 2015–2025 (alam, semua laporan)",
+      "catatan": "Aceh; peringkat 3 kriteria korban, peringkat 5 kriteria daftar"
+    },
+    "renstra.iks_kapasitas_minimal_sedang.2026": {
+      "nilai": 73,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), tabel target hlm. 132 dan 152",
+      "catatan": "target tahunan 67% (2025), 73% (2026), 79% (2027), 85% (2028), 90% (2029); kolom baseline '-'; hlm. 125: 67% adalah target 2025"
+    },
+    "krb.kec.kapasitas_minimal_sedang_persen": {
+      "nilai": 42.5,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): (2.996 sedang + 73 tinggi) / 7.222 kecamatan; riset/mentah/ks_*.json kunci kapasitas_kecamatan, identik di semua bahaya"
+    },
+    "krb.prov.kapasitas_minimal_sedang": {
+      "nilai": 31,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.7 hlm. 25, sumber asli KRB 2022–2026",
+      "catatan": "dari 34 provinsi lama: Tinggi Jawa Tengah; Rendah Kep. Bangka Belitung, Kalimantan Selatan, Papua Barat; 30 Sedang"
+    },
+    "krb.prov.kapasitas_minimal_sedang_persen": {
+      "nilai": 91.2,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari Renas PB 2025–2029 Tabel 2.7",
+      "catatan": "olah(resmi): 31 / 34"
+    },
+    "krb.pulau.sumatra.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 20.9,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 32 / 153 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Sumatra] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.pulau.bnt.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 46.3,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 19 / 41 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Bali–Nusa Tenggara] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.pulau.kalimantan.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 12.5,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 7 / 56 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Kalimantan] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.pulau.sulawesi.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 23.7,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 18 / 76 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Sulawesi] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.pulau.maluku.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 9.5,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 2 / 21 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Maluku] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.pulau.papua.kab_kapasitas_minimal_sedang_persen": {
+      "nilai": 2.4,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah(resmi): 1 / 42 kab berkelas, nonalam-sosial/krb_covid19_kab.csv [pulau=Papua] kolom kapasitas_kab; kab bukan unit KRB tidak dihitung; pengelompokan pulau pilihan penyusun"
+    },
+    "krb.kab.porsi_penduduk_kapasitas_minimal_sedang": {
+      "nilai": 67.0,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+      "catatan": "olah: 181.988.385 / 271.680.290 penduduk KRB di kab berkapasitas sedang atau tinggi (nonalam-sosial/krb_covid19_kab.csv kolom penduduk, kapasitas_kab); sama dengan target Renstra 2025 secara kebetulan, bukan sumber angka Renstra"
+    },
+    "krb_irbi.kab_kapasitas_rendah_tinggi": {
+      "nilai": 148,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (KRB 2022–2026, IRBI 2025)",
+      "catatan": "olah: silang nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab dengan irbi/irbi_kab_2025.csv kolom status_total_resmi; kapasitas rendah dan status Tinggi"
+    },
+    "krb_irbi.kab_kapasitas_rendah_tinggi_penduduk": {
+      "nilai": 34538191,
+      "pustaka": "worldpop-2025",
+      "satuan": "jiwa",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan WorldPop R2025A",
+      "catatan": "olah: silang nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab dengan irbi/irbi_kab_2025.csv kolom status_total_resmi; penduduk_2026 (WorldPop) 148 kab"
+    },
+    "krb_irbi.persen_tinggi_kapasitas_rendah": {
+      "nilai": 47.0,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (KRB 2022–2026, IRBI 2025)",
+      "catatan": "olah: silang nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab dengan irbi/irbi_kab_2025.csv kolom status_total_resmi; 148 / 315 kab berkapasitas rendah berstatus Tinggi"
+    },
+    "krb_irbi.persen_tinggi_kapasitas_minimal_sedang": {
+      "nilai": 8.8,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB (KRB 2022–2026, IRBI 2025)",
+      "catatan": "olah: silang nonalam-sosial/krb_covid19_kab.csv kolom kapasitas_kab dengan irbi/irbi_kab_2025.csv kolom status_total_resmi; 17 / 193 kab berkapasitas sedang atau tinggi berstatus Tinggi"
+    },
+    "matriks.mitigasi.jenis_lingkup": {
+      "nilai": 15,
+      "pustaka": "cabinetoffice-2025-nrr",
+      "satuan": "jenis",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "KERANGKA §5 BAB 5 (baris 1226), slide B2 (baris 1583), keputusan V05/V08",
+      "catatan": "rancangan posisi Gambar 5.6 (bab-05 I4.1); pita fatalitas Cabinet Office usulan Bab 3 (bab-03 P2), belum dikunci; 15 jenis tema.json kosakata.jenis_bencana: gempa, tsunami, gunung api, likuefaksi, banjir (termasuk banjir bandang), longsor, cuaca ekstrem, gelombang ekstrem dan abrasi, rob, kekeringan, karhutla, epidemi dan pandemi, kebakaran industri, kebakaran TPA, konflik sosial"
+    },
+    "matriks.mitigasi.kemungkinan_dinilai": {
+      "nilai": 3,
+      "pustaka": "cabinetoffice-2025-nrr",
+      "satuan": "jenis",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+      "catatan": "rancangan posisi Gambar 5.6 (bab-05 I4.1); pita fatalitas Cabinet Office usulan Bab 3 (bab-03 P2), belum dikunci; jenis dengan kemungkinan lima tahun yang dipasangkan dengan skenario dampak yang sama: gempa dan tsunami (Kartu 6.1 megathrust selatan Jawa, PuSGeN 2024, pita 2–3, lantai Pangandaran 2006) dan banjir (musim seburuk lantai 2025/2026, 23,7%, pita 4); fase La Niña dan El Niño kuat tidak dipakai karena peluang fase, bukan peluang dampak"
+    },
+    "matriks.mitigasi.kelas5_fatalitas": {
+      "nilai": 5,
+      "pustaka": "cabinetoffice-2025-nrr",
+      "satuan": "jenis",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+      "catatan": "rancangan posisi Gambar 5.6 (bab-05 I4.1); pita fatalitas Cabinet Office usulan Bab 3 (bab-03 P2), belum dikunci; > 1.000 meninggal + hilang tercatat dalam periode acuan: gempa (Sulteng 2018; Yogyakarta 2006), tsunami (Aceh 2004, buku BRR, KEPUTUSAN T14), banjir (banjir saja 2025, 1.585), epidemi dan pandemi (COVID-19), konflik (Maluku 1999–2002); karhutla naik hanya dengan model (estimasi-model, tidak dihitung)"
+    },
+    "matriks.mitigasi.kelas5_fatalitas_atau_mengungsi": {
+      "nilai": 6,
+      "pustaka": "cabinetoffice-2025-nrr",
+      "satuan": "jenis",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+      "catatan": "rancangan posisi Gambar 5.6 (bab-05 I4.1); pita fatalitas Cabinet Office usulan Bab 3 (bab-03 P2), belum dikunci; ditambah pita mengungsi > 175.000 (usulan Bab 3): gunung api (Merapi 2010, 447.982 mengungsi)"
+    },
+    "matriks.mitigasi.kelas5_dengan_gabungan": {
+      "nilai": 7,
+      "pustaka": "cabinetoffice-2025-nrr",
+      "satuan": "jenis",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+      "catatan": "rancangan posisi Gambar 5.6 (bab-05 I4.1); pita fatalitas Cabinet Office usulan Bab 3 (bab-03 P2), belum dikunci; ditambah likuefaksi bila angka gabungan Sulawesi Tengah 2018 (gempa, tsunami, likuefaksi tidak terpisah) diterima"
+    },
+    "tsunami.aceh2004.meninggal_brr": {
+      "nilai": 126741,
+      "pustaka": "brr-2009-scattered-beads",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "BRR NAD-Nias (2009), The Scattered Beads, hlm. x",
+      "catatan": "angka berdampingan: 127.720 meninggal pada infografik capaian empat tahun buku yang sama (hlm. PDF 15) dan buku BRR Nias (2009) hlm. xiii (brr-2009-nias); hilang 93.285 di keduanya. dibi/kejadian_besar.csv mencatat 126.741 sebagai versi BRR via Republika (resmi) dan 127.720 sebagai versi CNN Indonesia (terverifikasi) Label resmi menurut KEPUTUSAN T14 (terbitan BRR NAD-Nias berlabel resmi); keyakinan dirapikan ke kode registri saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "kemenkopmk.iks_kapasitas_penyebut": {
+      "nilai": "kabupaten/kota",
+      "pustaka": "kemenkopmk-2025-sinkronisasi-irb",
+      "satuan": "",
+      "keyakinan": "terverifikasi; siaran pers kementerian",
+      "sumber": "Kemenko PMK, siaran 12 September 2025 (node/5841)",
+      "catatan": "'Target nasional adalah 90 persen kabupaten/kota mencapai level menengah hingga tinggi pada 2029' (dibuka ulang 24 Okt 2026); kalimat tidak ditandai sebagai ucapan pejabat BNPB; Renstra tidak mendefinisikan penyebut"
+    },
+    "irbi.kab.dinilai.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=ID,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "jumlah kab/kota berstatus di kolom status API (bukti T1.1). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.pulau.jawa.kab.2025": {
+      "berkas": "irbi/irbi_agregat_pulau.csv",
+      "jalur": "[pulau_kode=JAW,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "jumlah kab/kota Pulau Jawa; pengelompokan pulau = kode provinsi (bukti T1.2). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.prov2023.sulbar": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=76,tahun=2023].total_sederhana",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renas PB hlm. 19; Renstra BNPB Tabel 1.1",
+      "catatan": "indeks provinsi 2023 Sulawesi Barat, kelas Tinggi (bukti T1.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.prov2023.maluku": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=81,tahun=2023].total_sederhana",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renas PB hlm. 19; Renstra BNPB Tabel 1.1",
+      "catatan": "indeks provinsi 2023 Maluku, kelas Tinggi (bukti T1.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.prov2023.babel": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=19,tahun=2023].total_sederhana",
+      "satuan": "",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2023; Renas PB hlm. 19; Renstra BNPB Tabel 1.1",
+      "catatan": "indeks provinsi 2023 Kepulauan Bangka Belitung, kelas Tinggi (bukti T1.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.prov.ntt.kab_tinggi.2025": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=53,tahun=2025].n_tinggi",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+      "catatan": "hitungan atas status resmi, Nusa Tenggara Timur (bukti T1.3). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.prov.ntt.kab.2025": {
+      "berkas": "irbi/irbi_agregat_provinsi.csv",
+      "jalur": "[prov_kode=53,tahun=2025].n_kab",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, IRBI 2025",
+      "catatan": "jumlah kab/kota Nusa Tenggara Timur (bukti T1.3). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.pulau.sulawesi.porsi_penduduk_2026": {
+      "nilai": 7.4,
+      "pustaka": "worldpop-2025",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari WorldPop 2026",
+      "catatan": "porsi penduduk Pulau Sulawesi; irbi/irbi_kab_2025.csv kolom penduduk_2026, dijumlah per pulau (bukti T1.8a). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.nasional.kejadian_per100rb_2015_2025": {
+      "nilai": 14.7,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kejadian per 100.000 penduduk",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025 dan WorldPop 2026",
+      "catatan": "jumlah sebelas tahun dibagi penduduk WorldPop 2026 satu tahun, bukan BPS (bukti T1.8a). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.meninggal_hilang_2015_2025": {
+      "nilai": 13063,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): meninggal + hilang tingkat kab, alam, semua laporan; skenario-hidromet/dibi_kab_tahun.csv + dibi_geologi_kab_tahun.csv (bukti T1.10, §0.1 butir 10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.cianjur.meninggal_hilang_2015_2025": {
+      "nilai": 643,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Kab. Cianjur",
+      "catatan": "olah(resmi): alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.lombokutara.meninggal_hilang_2015_2025": {
+      "nilai": 469,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Kab. Lombok Utara",
+      "catatan": "olah(resmi): alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.sigi.meninggal_hilang_2015_2025": {
+      "nilai": 415,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Kab. Sigi",
+      "catatan": "olah(resmi): alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.pandeglang.meninggal_hilang_2015_2025": {
+      "nilai": 319,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Kab. Pandeglang",
+      "catatan": "olah(resmi): alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.palu.meninggal_hilang_tahun_terbesar": {
+      "nilai": 4194,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, Kota Palu",
+      "catatan": "olah(resmi): meninggal + hilang tahun korban terbesar 2018, alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.cianjur.meninggal_hilang_tahun_terbesar": {
+      "nilai": 613,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2022, Kab. Cianjur",
+      "catatan": "olah(resmi): meninggal + hilang tahun korban terbesar 2022, alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.pandeglang.meninggal_hilang_tahun_terbesar": {
+      "nilai": 304,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, Kab. Pandeglang",
+      "catatan": "olah(resmi): meninggal + hilang tahun korban terbesar 2018, alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.lombokutara.meninggal_hilang_tahun_terbesar": {
+      "nilai": 469,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, Kab. Lombok Utara",
+      "catatan": "olah(resmi): meninggal + hilang tahun korban terbesar 2018, alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.kab.sigi.meninggal_hilang_tahun_terbesar": {
+      "nilai": 405,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018, Kab. Sigi",
+      "catatan": "olah(resmi): meninggal + hilang tahun korban terbesar 2018, alam, semua laporan (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.kab.palu.total_tahun_kejadian": {
+      "berkas": "irbi/irbi_kab_2015_2025.csv",
+      "jalur": "[kode=7271,tahun=2018].total",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "InaRISK BNPB, IRBI 2018; pengolahan data Pantau Bencana",
+      "catatan": "nilai total IRB Kota Palu pada tahun korban terbesarnya; dikelaskan dengan ambang turunan > 144 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.kab.cianjur.total_tahun_kejadian": {
+      "berkas": "irbi/irbi_kab_2015_2025.csv",
+      "jalur": "[kode=3203,tahun=2022].total",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "InaRISK BNPB, IRBI 2022; pengolahan data Pantau Bencana",
+      "catatan": "nilai total IRB Kab. Cianjur pada tahun korban terbesarnya; dikelaskan dengan ambang turunan > 144 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.kab.pandeglang.total_tahun_kejadian": {
+      "berkas": "irbi/irbi_kab_2015_2025.csv",
+      "jalur": "[kode=3601,tahun=2018].total",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "InaRISK BNPB, IRBI 2018; pengolahan data Pantau Bencana",
+      "catatan": "nilai total IRB Kab. Pandeglang pada tahun korban terbesarnya; dikelaskan dengan ambang turunan > 144 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.kab.lombokutara.total_tahun_kejadian": {
+      "berkas": "irbi/irbi_kab_2015_2025.csv",
+      "jalur": "[kode=5208,tahun=2018].total",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "InaRISK BNPB, IRBI 2018; pengolahan data Pantau Bencana",
+      "catatan": "nilai total IRB Kab. Lombok Utara pada tahun korban terbesarnya; dikelaskan dengan ambang turunan > 144 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.kab.sigi.total_tahun_kejadian": {
+      "berkas": "irbi/irbi_kab_2015_2025.csv",
+      "jalur": "[kode=7210,tahun=2018].total",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "InaRISK BNPB, IRBI 2018; pengolahan data Pantau Bencana",
+      "catatan": "nilai total IRB Kab. Sigi pada tahun korban terbesarnya; dikelaskan dengan ambang turunan > 144 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "irbi.ambang_turunan_tinggi_2015_2024": {
+      "nilai": 144,
+      "pustaka": "bnpb-irbi",
+      "satuan": "",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2023",
+      "catatan": "ambang turunan yang menghasilkan tepat 168 Tinggi dan 346 Sedang pada 2023 (angka resmi Renas); irbi/irbi_hitung_kelas.csv berlabel resmi hanya untuk 2023 (bukti T1.10). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.nasional.meninggal_hilang.2018": {
+      "nilai": 6264,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018",
+      "catatan": "olah(resmi): dibi/rekap_nasional_tahunan.csv [tahun=2018,klasifikasi=semua,cakupan=bencana] meninggal + hilang (bukti T2.6). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.alam.geologi.meninggal_hilang.2018": {
+      "nilai": 5876,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018",
+      "catatan": "olah(resmi): gempa, tsunami, erupsi, klasifikasi alam, cakupan bencana (bukti T2.6). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.alam.geologi.porsi_meninggal_hilang_2015_2025": {
+      "nilai": 53.5,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+      "catatan": "olah(resmi): 6.988 / 13.056 meninggal + hilang alam (bukti T2.6). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.nasional.meninggal_hilang_rerata_2015_2019_tanpa2018": {
+      "nilai": 465.25,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2019",
+      "catatan": "olah(resmi): rerata 2015, 2016, 2017, 2019 semua klasifikasi cakupan bencana (276 + 578 + 378 + 629) / 4 (bukti I2.3, angka T2.6). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.nasional.meninggal_hilang_rerata_2020_2024": {
+      "nilai": 615.6,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2020–2024",
+      "catatan": "olah(resmi): (418 + 815 + 895 + 308 + 642) / 5, semua klasifikasi cakupan bencana (bukti I2.3, angka T2.6). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "renstra.ikd.jumlah_pertanyaan": {
+      "nilai": 284,
+      "pustaka": "bnpb-2025-renstra",
+      "satuan": "pertanyaan",
+      "keyakinan": "resmi",
+      "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 85",
+      "catatan": "IKD: 7 prioritas, 71 indikator, 284 pertanyaan per pengisian (bukti T2.4, T3.3). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "krb.nasional.kab_kapasitas_minimal_sedang": {
+      "nilai": 193,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, KRB 2022–2026",
+      "catatan": "olah(resmi): 190 sedang + 3 tinggi dari 508 kab dinilai (bukti T3.4). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "krb.prov.kapasitas_dinilai": {
+      "nilai": 34,
+      "pustaka": "bnpb-2025-renas",
+      "satuan": "provinsi",
+      "keyakinan": "resmi",
+      "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025) Tabel 2.7 hlm. 25",
+      "catatan": "provinsi lama yang dinilai kapasitas KRB multibahaya (bukti T3.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "kapasitas.jarak_rpjmn_2029_poin": {
+      "nilai": 28,
+      "pustaka": "ri-2025-perpres12-rpjmn",
+      "satuan": "poin persen",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari RPJMN 2025–2029 KP 08.04.01",
+      "catatan": "target 90 dikurangi baseline 62 (2023) (bukti I3.2). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "kapasitas.jarak_krb_2029_poin": {
+      "nilai": 52,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "poin persen",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026 dan RPJMN 2025–2029",
+      "catatan": "target 90 dikurangi 38,0 kab/kota KRB, dibulatkan (bukti I3.2). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "kapasitas.krb.kab_target_2029": {
+      "nilai": 458,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026",
+      "catatan": "90% dari 508 kab/kota dinilai (bukti I3.2). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "kapasitas.krb.kab_tambahan_2029": {
+      "nilai": 265,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari KRB 2022–2026",
+      "catatan": "458 dikurangi 193 kab/kota minimal sedang (bukti I3.2). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "krb.penduduk_wilayah_api": {
+      "nilai": 271680290,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, KRB 2022–2026 (kolom penduduk, nonalam-sosial/krb_covid19_kab.csv)",
+      "catatan": "penyebut penduduk wilayah API (bukti T1.14, T3.7). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "krb.api.jiwa_terpapar_banjir": {
+      "nilai": 109618626,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, apiv4 kajian-summary banjir, kolom jiwa_terpapar",
+      "catatan": "arti kolom tidak terdokumentasi; tidak dipakai sebagai angka utama (bukti T1.14 angka berdampingan). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "krb.api.jiwa_terpapar_gempa": {
+      "nilai": 131881978,
+      "pustaka": "bnpb-2026-krb",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "InaRISK BNPB, apiv4 kajian-summary gempa bumi, kolom jiwa_terpapar",
+      "catatan": "arti kolom tidak terdokumentasi; tidak dipakai sebagai angka utama (bukti T1.14 angka berdampingan). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.kab_unik_persen": {
+      "nilai": 82.9,
+      "pustaka": "bnpb-irbi",
+      "satuan": "%",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: 426 / 514 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.kab_empat_bahaya_lebih": {
+      "nilai": 47,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: 40 kab empat bahaya + 5 lima bahaya + 2 enam bahaya (bukti T1.18, I1.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.prov.jabar.meninggal_hilang_2015_2025": {
+      "nilai": 1271,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Jawa Barat",
+      "catatan": "olah(resmi): dibi/rekap_provinsi_tahunan.csv semua klasifikasi, cakupan bencana (bukti T1.9). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.prov.aceh.meninggal_hilang_2015_2025": {
+      "nilai": 823,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, Aceh",
+      "catatan": "olah(resmi): dibi/rekap_provinsi_tahunan.csv semua klasifikasi, cakupan bencana (bukti T1.9). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.alam.banjir.mengungsi.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=alam,kode_jenis_juklak=101,cakupan=bencana].mengungsi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, banjir (kode 101)",
+      "catatan": "dasar kelas mengungsi banjir (bukti T4.5). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.sulteng2018.mengungsi": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sulteng2018,metrik=mengungsi,versi=DIBI].nilai",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, kejadian Sulawesi Tengah 2018",
+      "catatan": "gabungan gempa, tsunami, likuefaksi; jendela 28 Sep–31 Okt 2018 pilihan penyusun (bukti T4.4). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "hidromet.nasional.musim_lanina.maks_meninggal_hilang": {
+      "nilai": 599,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, musim hujan 2010/2011",
+      "catatan": "olah(resmi): skenario-hidromet/musim_hujan.csv [wilayah=nasional,tahun_awal=2010] meninggal 439 + hilang 160; terbesar dari 7 musim La Niña 2008/09–2022/23 (bukti T4.14). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "dibi.alam.kekeringan.terdampak_maks_tahun": {
+      "nilai": 7798763,
+      "pustaka": "bnpb-dibi",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2018, kekeringan",
+      "catatan": "terdampak terbesar 2018; tidak termasuk pita fatalitas maupun mengungsi (bukti T4.9). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov11.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=11].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana",
+      "catatan": "Aceh; jumlah kab/kota daftar perhatian (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov12.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=12].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025 (dijumlah per provinsi dari tingkat kab, alam, semua laporan)",
+      "catatan": "Sumatera Utara; meninggal + hilang 2015–2025 (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov13.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=13].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana",
+      "catatan": "Sumatera Barat; jumlah kab/kota daftar perhatian (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov13.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=13].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025 (dijumlah per provinsi dari tingkat kab, alam, semua laporan)",
+      "catatan": "Sumatera Barat; meninggal + hilang 2015–2025 (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov32.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=32].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana",
+      "catatan": "Jawa Barat; jumlah kab/kota daftar perhatian (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov33.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=33].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025 (dijumlah per provinsi dari tingkat kab, alam, semua laporan)",
+      "catatan": "Jawa Tengah; meninggal + hilang 2015–2025 (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov35.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=35].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025 (dijumlah per provinsi dari tingkat kab, alam, semua laporan)",
+      "catatan": "Jawa Timur; meninggal + hilang 2015–2025 (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov72.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=72].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana",
+      "catatan": "Sulawesi Tengah; jumlah kab/kota daftar perhatian (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov73.n_kab": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=73].n_kab_daftar_perhatian",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana",
+      "catatan": "Sulawesi Selatan; jumlah kab/kota daftar perhatian (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.prov73.meninggal_hilang": {
+      "berkas": "turunan/provinsi_utama.csv",
+      "jalur": "[prov=73].meninggal_hilang_2015_2025",
+      "satuan": "jiwa",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2015–2025 (dijumlah per provinsi dari tingkat kab, alam, semua laporan)",
+      "catatan": "Sulawesi Selatan; meninggal + hilang 2015–2025 (bukti T1.20). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.jawa.kab_unik": {
+      "nilai": 108,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 119 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.sumatra.kab_unik": {
+      "nilai": 136,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 154 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.sulawesi.kab_unik": {
+      "nilai": 65,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 81 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.kalimantan.kab_unik": {
+      "nilai": 40,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 56 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.bnt.kab_unik": {
+      "nilai": 34,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 41 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.papua.kab_unik": {
+      "nilai": 24,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 42 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "perhatian.mitigasi.pulau.maluku.kab_unik": {
+      "nilai": 19,
+      "pustaka": "bnpb-irbi",
+      "satuan": "kab/kota",
+      "keyakinan": "asumsi-kebijakan",
+      "sumber": "Pengolahan data Pantau Bencana dari IRBI BNPB 2025 dan DIBI BNPB 2015–2025",
+      "catatan": "olah: turunan/daftar_perhatian.csv [kajian=mitigasi, masuk=True], kab unik bahaya apa pun di pulau ini, dari 21 kab/kota (bukti T1.18). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    },
+    "geologi.jawa_mmaks.korban_guncangan": {
+      "rendah": 10720,
+      "tinggi": 136032,
+      "pustaka": "pantaubencana-2026-skenario-geologi",
+      "satuan": "jiwa",
+      "keyakinan": "estimasi-model; belum diuji balik",
+      "sumber": "Simulasi skenario Pantau Bencana (rasio korban gempa analog), megathrust selatan Jawa magnitudo maksimum",
+      "catatan": "skenario-geologi/ringkasan.csv skenario=jawa-mmaks, butir 'korban jiwa guncangan, rasio analog' (butir memuat koma sehingga ditulis sebagai rendah/tinggi); sama nilainya dengan geologi.jawa_mmaks.korban_analog usulan bab-03 yang tidak memuat pustaka; pita lebih dari satu orde (bukti T4.4). Ditambahkan saat penulisan naskah bab-05, 24 Okt 2026."
+    }
+  }
+}

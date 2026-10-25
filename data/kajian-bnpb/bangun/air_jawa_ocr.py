@@ -17,6 +17,12 @@ TANPA_BELAH = {13, 29, 63, 28, 60}   # rekap per provinsi (tabel lebar) + hlm 28
 GELAP = bytes(1 if b < 160 else 0 for b in range(256))
 
 
+def versi_mesin():
+    t = subprocess.run(["tesseract", "--version"], capture_output=True, text=True).stdout.split("\n")[0].strip()
+    p = subprocess.run(["pdftoppm", "-v"], capture_output=True, text=True).stderr.split("\n")[0].strip()
+    return f"#mesin {t}; {p}; lang ind; psm 6; dpi {DPI}\n"
+
+
 def pgm(hlm):
     raw = subprocess.run(["pdftoppm", "-f", str(hlm), "-l", str(hlm), "-r", str(DPI), "-gray", PDF], capture_output=True, check=True).stdout
     p5, wh, mx, data = raw.split(b"\n", 3)
@@ -83,13 +89,15 @@ def satu(hlm):
     x = None if hlm in TANPA_BELAH else belah(w, kol)
     tmp = os.path.join(OUT, f".tmp{hlm}.pgm")
     if x:
-        teks = f"#TATA_LETAK dua-tabel belah_x={x} lebar={w}\n#KIRI\n" + ocr(w, h, ba, 0, x, tmp) + "#KANAN\n" + ocr(w, h, ba, x, w, tmp)
+        teks = MESIN + f"#TATA_LETAK dua-tabel belah_x={x} lebar={w}\n#KIRI\n" + ocr(w, h, ba, 0, x, tmp) + "#KANAN\n" + ocr(w, h, ba, x, w, tmp)
     else:
-        teks = f"#TATA_LETAK satu-tabel lebar={w}\n" + ocr(w, h, ba, 0, w, tmp)
+        teks = MESIN + f"#TATA_LETAK satu-tabel lebar={w}\n" + ocr(w, h, ba, 0, w, tmp)
     with open(os.path.join(OUT, f"p{hlm:03d}.txt"), "w", encoding="utf-8") as f:
         f.write(teks)
     return hlm, bool(x)
 
+
+MESIN = versi_mesin() if __name__ == "__main__" else ""
 
 if __name__ == "__main__":
     os.makedirs(OUT, exist_ok=True)

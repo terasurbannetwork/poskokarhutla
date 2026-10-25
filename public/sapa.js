@@ -75,11 +75,26 @@
     const provAwas = [...prov.values()].filter(o => o.ini > 0).sort((a, b) => b.ini - a.ini).slice(0, 5);
     const urutIni = (a, b) => (b.ini || 0) - (a.ini || 0) || b.n - a.n;
     for (const o of provAwas) { o.api.sort(urutIni); o.baru.sort(urutIni); o.gambut.sort(urutIni); }
-    return {baruKmrn, pm10Kab: [...pm10Kab].sort((a, b) => b[1] - a[1]), ini, kmrn, baru, provAwas, lama, gambut, nyala, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
+    /* asap per provinsi (muatAsap/asapDi di index.html, PM2,5 24 jam CAMS, hanya asap api): provinsi tanpa titik panas
+       tapi udaranya tidak sehat ikut masuk tabel, karena asap tetap berbahaya walau apinya di provinsi lain */
+    const A = typeof asapDi === "function" && S.asap ? S.asap : null, provAsap = [];
+    if (A) { for (const o of provAwas) o.as = asapDi(o.k);
+      for (const k of Object.keys(A.prov)) if (A.prov[k].lv >= 1 && !provAwas.some(o => o.k === k)) { const o = q(k); o.as = asapDi(k); provAsap.push(o); }
+      provAsap.sort((a, b) => b.as.lv - a.as.lv || b.as.r24[A.hi] - a.as.r24[A.hi]).splice(3); }
+    const kabAsapN = A ? Object.values(A.kab).filter(x => x.lv >= 1) : [];
+    return {A, provAsap, kabAsapN, baruKmrn, pm10Kab: [...pm10Kab].sort((a, b) => b[1] - a[1]), ini, kmrn, baru, provAwas, lama, gambut, nyala, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
   }
 
   function html(h) {
-    const naik = h.ini - h.kmrn, arah = naik > 0 ? `<b class="naik">▲ ${fmt(naik)}</b> dari kemarin` : naik < 0 ? `<b class="turun">▼ ${fmt(-naik)}</b> dari kemarin` : "sama dengan kemarin";
+    const naik = h.ini - h.kmrn, pct = h.kmrn ? ` (${fmt(Math.round(Math.abs(naik) / h.kmrn * 100))}%)` : "";
+    const arah = naik > 0 ? `<b class="naik">${ik("naik")}${fmt(naik)}${pct}</b> dari kemarin` : naik < 0 ? `<b class="turun">${ik("turun")}${fmt(-naik)}${pct}</b> dari kemarin` : "sama dengan kemarin";
+    /* sel asap provinsi: pil status (warna skala P.14/2020) + PM2,5 rata-rata 24 jam kab/kota terburuk */
+    const NM = ["Baik", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
+    const selAsap = o => { const a = o.as; if (!a) return `<span class="sp-nol">–</span>`;
+      return `<em class="sp-p as${a.lv}" title="PM2,5 rata-rata 24 jam tertinggi di ${esc(a.nama)}${a.n ? `; ${fmt(a.n)} kab/kota tidak sehat, ${fmt(a.jiwa)} jiwa` : ""}">${ik("asap")}${NM[a.lv]} · ${fmt(a.r24[h.A.hi])}</em>`; };
+    const barisPv = o => { const d = o.ini - o.kmrn;
+      return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${o.ini ? pilPv(o, "api", `${fmt(o.ini)}${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`) : `<span class="sp-nol">0 titik</span>`}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}${h.A ? selAsap(o) : ""}</div><div class="sp-pd" hidden></div>`; };
+    const jiwaAsap = h.kabAsapN.reduce((s, x) => s + (x.jiwa || 0), 0);
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const kab = topKab(h.baru, 5), maks = kab[0]?.n || 1, kmrnKab = new Map();
     for (const p of h.baruKmrn) { const k = `${p.kab}|${p.prov}`; kmrnKab.set(k, (kmrnKab.get(k) || 0) + 1); }
@@ -93,12 +108,11 @@
       ...h.bmkg.slice(0, 2).map((x, i) => kartuIsu(`bmkg${i}`, kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event))))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("api")}Situasi karhutla hari ini</span>
         <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik panas terdeteksi, ${arah}</h3>
-        <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} cluster baru, 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span></div>
+        <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.nyala.length)} cluster menyala</span><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} cluster baru, 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span><span class="sp-p putih">${ik("daun")}${fmt(h.gambut.length)} di gambut</span>${h.A ? `<span class="sp-p putih" title="Kab/kota dengan PM2,5 rata-rata 24 jam di atas 55,4 µg/m³ yang asapnya dari kebakaran">${ik("asap")}${fmt(h.kabAsapN.length)} kab/kota asap tidak sehat${jiwaAsap ? `, ${fmt(jiwaAsap)} jiwa` : ""}</span>` : ""}</div>
 </div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
-      ${h.provAwas.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel">${th("p", ["Provinsi", "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut"])}${h.provAwas.map(o => { const d = o.ini - o.kmrn;
-        return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${pilPv(o, "api", `${fmt(o.ini)}${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`)}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}</div><div class="sp-pd" hidden></div>`; }).join("")}</div>`) : ""}
+      ${h.provAwas.length || h.provAsap.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel${h.A ? " as" : ""}">${th("p", ["Provinsi", "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut", ...(h.A ? ["Asap (PM2,5 24 jam)"] : [])])}${h.provAwas.map(barisPv).join("")}${h.provAsap.length ? `<p class="sp-ct">Di luar lima besar titik panas, tapi udaranya tidak sehat karena asap kebakaran:</p>${h.provAsap.map(barisPv).join("")}` : ""}</div>`) : ""}
       ${kab.length ? sek("Cluster baru terbanyak", `<div class="sp-bs sp-panel rata">${th("b", ["Kabupaten", "Provinsi", "", "Kemarin", "Hari ini"], [3, 4])}${bar}</div>`) : ""}
       ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel rata">${kepalaK()}${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
       ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel rata">${th("c", ["Isu", "Rincian"])}${awas}</div>`) : ""}
@@ -108,6 +122,8 @@
 
   async function tampil(paksa) {
     if (!(await siap()) || (!paksa && sudah())) return;
+    /* tunggu asap per wilayah paling lama 3 detik; tanpa itu kolom asap tidak tampil */
+    if (typeof muatAsap === "function") { muatAsap(); for (let i = 0; i < 20 && !S.asap; i++) await new Promise(r => setTimeout(r, 150)); }
     const [per, asap] = await Promise.all([muatJSON("data/peringatan.json").catch(() => null), muatJSON("data/asap.json").catch(() => null)]);
     const h = hitung(per, asap);
     const dlg = SapaInti.dialog(html(h), (e, d) => {
@@ -120,7 +136,7 @@
       const tutup = !det.hidden && det.dataset.kunci === kunci;
       d.querySelectorAll(".sp-pd").forEach(x => { x.hidden = true; });
       d.querySelectorAll("[aria-expanded]").forEach(x => x.setAttribute("aria-expanded", "false"));
-      if (!tutup) { det.innerHTML = isu ? (isu.startsWith("bmkg") ? ISU.bmkg(h, +isu.slice(4)) : ISU[isu](h)) : rinci(h.provAwas.find(o => o.k === b.dataset.sppv), b.dataset.kat);
+      if (!tutup) { det.innerHTML = isu ? (isu.startsWith("bmkg") ? ISU.bmkg(h, +isu.slice(4)) : ISU[isu](h)) : rinci([...h.provAwas, ...h.provAsap].find(o => o.k === b.dataset.sppv), b.dataset.kat);
         det.dataset.kunci = kunci; det.hidden = false; (isu ? b : pr.querySelector(`button.sp-p[data-kat="${b.dataset.kat}"]`)).setAttribute("aria-expanded", "true"); }
       return true;
     });
