@@ -243,18 +243,18 @@ def ganti(slide_, lama, baru, sz=None):
 
 
 ganti(sampul, 'Laporan Kejadian Bencana Harian', 'Metode Perhitungan Titik Panas dan Luas Terbakar', 30)
-ganti(sampul, 'Badan Nasional Penanggulangan Bencana', 'Pantau Bencana, centurisk97.id')
-ganti(sampul, 'PERIODE', 'VERSI   25 Oktober 2026')
+for sh in [sh for sh in sampul.shapes if 3400000 < sh.top < 3950000 and sh.left < 6000000]:   # pil PERIODE/VERSI di sampul dibuang (pemilik)
+    sh._element.getparent().remove(sh._element)
 ganti(sampul, 'DISAMPAIKAN OLEH', 'CAKUPAN')
 ganti(sampul, 'Letnan Jenderal', 'Titik panas, luas terbakar, belum padam, padam, cluster, dan status')
 ganti(sampul, 'Kepala Badan', 'Data GIS satelit NASA FIRMS: MODIS dan VIIRS')
 ganti(sampul, 'Kamis, 22 Oktober 2026', 'Minggu, 25 Oktober 2026')
 sampul.notes_slide.notes_text_frame.text = ('Paparan ini menjelaskan bagaimana angka titik panas, luas terbakar, belum padam, padam, dan status cluster '
-    'di website Pantau Bencana dan di laporan harian BNPB dihitung. Semua angka berasal dari satelit NASA FIRMS, dihitung otomatis, dan '
+    'di website dan di laporan harian BNPB dihitung. Semua angka berasal dari satelit NASA FIRMS, dihitung otomatis, dan '
     'merupakan perkiraan, bukan luas terbakar resmi hasil verifikasi lapangan.')
 
 # ================================================================== 2 alur
-s = slide('Lima langkah dari titik panas ke status kebakaran',
+s = slide('Lima langkah metode perhitungan',
     'Gambaran besarnya ada lima langkah. Pertama, satelit mendeteksi titik panas dan kami hitung per hari WIB. Kedua, titik yang bukan '
     'kebakaran vegetasi, seperti industri, PLTU, dan kawah, dibuang. Ketiga, titik diubah menjadi perkiraan luas terbakar. Keempat, kami cek '
     'apakah api masih bertahan di lokasi yang sama, untuk belum padam dan padam. Kelima, titik berdekatan digabung menjadi cluster dan diberi '
@@ -304,7 +304,7 @@ yi = panel(s, 7810000, Y2, XK - 7810000, 4000000, 'Cocok dengan GIS BNPB', NAVY,
 tx(s, 7960000, yi + 120000, 3500000, 250000, [('PAPUA SELATAN, 18 S.D. 20 OKT', 6.5, True, ABU)], spc=80)
 for k, (a, b_) in enumerate((('2.619', '2.618'), ('2.632', '2.632'), ('2.766', '2.766'))):
     y = yi + 420000 + k * 560000
-    tx(s, 7960000, y, 1700000, 300000, [(a, 15, True, ORANYE)]); tx(s, 7960000, y + 280000, 1700000, 200000, [('Pantau Bencana', 7, False, TEKS)])
+    tx(s, 7960000, y, 1700000, 300000, [(a, 15, True, ORANYE)]); tx(s, 7960000, y + 280000, 1700000, 200000, [('metode ini', 7, False, TEKS)])
     tx(s, 9800000, y, 1700000, 300000, [(b_, 15, True, NAVY)]); tx(s, 9800000, y + 280000, 1700000, 200000, [('GIS BNPB', 7, False, TEKS)])
 tx(s, 7960000, yi + 2250000, 3550000, 900000, [('Provinsi lain bisa berselisih karena GIS BNPB menyaring titik dengan cara yang berbeda; selisih yang tercatat disebut di deck.', 7, False, ABU)], an='t')
 kaki(s)
@@ -542,7 +542,7 @@ for k, (j, d_, st) in enumerate(POLA):
     baris(s, X0 + 400000, yi + 140000 + k * 560000, X0 + 7170725 - 140000, j, None, st, MERAH if st[1] == 'merah' else BAJA, 'api', d_)
 yi = panel(s, 7810000, Y2, XK - 7810000, 4000000, 'Beda dengan Kemenhut', NAVY, 'E6EAF0', 'jabat', 3)
 for k, (j, d_) in enumerate((('Piksel unik, bukan titik', 'satu api dilihat 3 satelit VIIRS tidak dihitung 3 kali'),
-                             ('Persistensi lewat cluster', 'bukan radius 375 m: posisi VIIRS bergeser +-375 m antarlintasan'),
+                             ('Persistensi lewat cluster', 'bukan radius 375 m: posisi VIIRS bergeser ± 375 m antarlintasan'),
                              ('Api malam', 'keyakinan tinggi jarang malam (1 s.d. 3%), jadi lolos lewat jalur 4 piksel'))):
     baris(s, 7810000 + 400000, yi + 200000 + k * 900000, XK - 120000, j, None, bulat=NAVY, ik='jabat', sub=d_)
 kaki(s)
@@ -604,7 +604,7 @@ s = slide('Jam cut-off: kapan satu hari dihitung',
     'sendiri: Laporan Kejadian Bencana Harian pukul 12.00 WIB dan Laporan Penanganan Karhutla pukul 15.00 WIB. Angka hari laporan pada jam itu '
     'masih sementara, karena lintasan sore dan malam belum lewat, dan data FIRMS datang sekitar tiga jam sesudah satelit lewat.', ('cut-off',))
 wadah_kartu(s, X0, Y1, W, 'JAM CUT-OFF', [('rumah', 'navy', '24.00', 'website, hari kalender'), ('kalender', 'oranye', '12.00', 'Laporan Harian Bencana'),
-            ('kalender', 'oranye', '15.00', 'Laporan Penanganan'), ('putar', 'merah', '+-3 jam', 'keterlambatan FIRMS')])
+            ('kalender', 'oranye', '15.00', 'Laporan Penanganan'), ('putar', 'merah', '± 3 jam', 'keterlambatan FIRMS')])
 yi = panel(s, X0, Y2, 7170725, 4000000, 'Lintasan satelit di Sumatra dan Kalimantan', ORANYE, 'FBE7D6', 'pesawat', 4)
 for k, (j, ch) in enumerate((('VIIRS S-NPP, NOAA-20, NOAA-21', [('00.00 s.d. 02.30 WIB', 'navy', 'kalender'), ('12.00 s.d. 14.00 WIB', 'navy', 'kalender')]),
                              ('MODIS Terra', [('07.30 s.d. 08.30 WIB', 'navy', 'kalender'), ('19.00 s.d. 21.00 WIB', 'navy', 'kalender')]),
@@ -669,17 +669,17 @@ for k, (j, d_, st, ik) in enumerate(BT):
 kaki(s)
 
 # ================================================================== 15 banding Kemenhut
-s = slide('Beda metode Pantau Bencana dengan SIPANTAU Kemenhut',
+s = slide('Beda dengan SIPANTAU Kemenhut',
     'Kedua sistem memakai data FIRMS yang sama, tetapi berbeda di tiga hal. Cara mengelompokkan: kami DBSCAN sampai 1,5 kilometer, Kemenhut '
     'radius 750 meter. Firespot: kami menghitung piksel unik dan persistensi lewat cluster yang sama. Luas: kami 4,3 hektare per titik S-NPP '
     'yang dikalibrasi ke luas resmi SiPongi, setara 2,30 hektare per titik NOAA; Kemenhut 20 persen luas piksel, sekitar 2,8 hektare, sebagai '
     'asumsi yang akan dikalibrasi dengan dNBR. Hasilnya berdekatan, selisih sekitar 20 persen.', ('SIPANTAU Kemenhut',))
-wadah_kartu(s, X0, Y1, 7170725, 'LUAS PER TITIK VIIRS', [('luas', 'oranye', '2,30 ha', 'Pantau Bencana'), ('luas', 'navy', '2,8 ha', 'SIPANTAU Kemenhut'),
+wadah_kartu(s, X0, Y1, 7170725, 'LUAS PER TITIK VIIRS', [('luas', 'oranye', '2,30 ha', 'metode ini'), ('luas', 'navy', '2,8 ha', 'SIPANTAU Kemenhut'),
             ('lapis', 'navy', '~20%', 'selisih'), ('centang', 'navy', 'FIRMS', 'sumber yang sama')])
 wadah_kartu(s, 7810000, Y1, XK - 7810000, 'DASAR FAKTOR', [('centang', 'oranye', 'Kalibrasi', 'SiPongi 2015 s.d. 2025'), ('awas', 'merah', 'Asumsi', 'Kemenhut, dNBR nanti')],
             latar='FCF1F2', warna_pil=ORANYE, ik_pil='luas')
 yi = panel(s, X0, Y2, W, 4000000, 'Perbandingan per aspek', NAVY, 'E6EAF0', 'jabat', 7)
-tabel(s, X0 + 150000, yi + 100000, W - 300000, [('ASPEK', 2, 'l'), ('PANTAU BENCANA', 4, 'l'), ('SIPANTAU KEMENHUT', 4, 'l')],
+tabel(s, X0 + 150000, yi + 100000, W - 300000, [('ASPEK', 2, 'l'), ('METODE INI', 4, 'l'), ('SIPANTAU KEMENHUT', 4, 'l')],
       [['Titik panas', 'MODIS + S-NPP + NOAA-20, semua keyakinan, hari WIB', 'VIIRS dan MODIS, keyakinan Medium atau High'],
        ['Cluster', 'DBSCAN, jarak adaptif sampai 1,5 km', 'radius 750 m dari titik tengah'],
        ['Persistensi', 'cluster yang sama, sambungan 48 jam', 'H-1 dalam 750 m; H-2 dalam 375 m'],
@@ -701,5 +701,7 @@ for sl in prs.slides:
         if sh.has_text_frame:
             t = sh.text_frame.text
             assert '—' not in t and '·' not in t, ('em dash / titik tengah', t)
+            assert 'pantau bencana' not in t.lower() and '+-' not in t, ('nama Pantau Bencana / +- tersisa (pemilik 25 Okt)', t)
+    assert 'pantau bencana' not in sl.notes_slide.notes_text_frame.text.lower(), 'nama Pantau Bencana di catatan pembicara'
 assert not PANJANG, ('label kartu terlalu panjang (label, maks huruf)', PANJANG)
 prs.save(OUT); print('ok', OUT, len(prs.slides), 'slide')
