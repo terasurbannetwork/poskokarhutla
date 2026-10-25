@@ -1499,19 +1499,19 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-m="kom" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg>Cluster api</button><button data-m="posko" aria-pressed="false" hidden>Posko (Ajuan)</button></div>
-          <div class="cari">
+          <div class="cari" style="margin-bottom:8px">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari wilayah, taman nasional, gunung, konsesi, atau K001" autocomplete="off" aria-label="Cari wilayah">
             <div class="hasil card" id="hasil" hidden></div>
           </div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none"><button data-m="wil" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-m="riw" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-m="kom" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg>Cluster api</button><button data-m="posko" aria-pressed="false" hidden>Posko (Ajuan)</button></div>
         </div>
         <div class="rows" id="rows" role="list"></div>
       </div>
     </div>
     <div class="tools" id="tools">
       <!-- dua pemilih berbeda: hari titik panas yang SUDAH terdeteksi vs hari prakiraan cuaca (pemilik, 14 Okt 2026); titik panas = SATU hari kalender WIB per pilihan, tanpa akumulasi 72 jam / 7 hari (pemilik, 21 Okt 2026) -->
-      <div class="card garis-waktu on" id="rentangKartu" aria-label="Hari titik panas"><span class="lbl" style="white-space:nowrap">Titik panas terdeteksi</span><div class="seg penuh" role="group" aria-label="Pilih hari" id="rentang"></div></div>
+      <div class="card garis-waktu on" id="rentangKartu" aria-label="Tanggal data"><span class="lbl" style="white-space:nowrap">Tanggal data</span><div class="seg penuh" role="group" aria-label="Pilih hari" id="rentang"></div></div>
       <div class="card garis-waktu" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Prakiraan cuaca (siang)</span><div id="fwiHari" style="flex:1"></div></div>
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
@@ -1652,7 +1652,7 @@ const S = {
   meta: null, titik: [], acuan: null, kluster: null, fwi: null, bnpb: null, wilayah: null,
   /* satu hari kalender WIB: "hari" | "kemarin" | "YYYY-MM-DD" (hari lebih lama, hanya ada di hotspot.json). Hanya hari/kemarin yang diingat;
      nilai simpanan lama (72, 168, dll.) jatuh ke "hari" */
-  rentang: bacaLokal("pk-rentang2", "hari") === "kemarin" ? "kemarin" : "hari", jalur: [], fwiHari: 0, wilKunci: [],
+  rentang: "hari", jalur: [], fwiHari: 0, wilKunci: [],
   geo: {prov: null, kab: {}, kec: {}}, pilihK: null,
 };
 /* Tindakan per status: disusun dari insight SOP & regulasi (lihat Metode & data), bukan salinan SOP */
@@ -2518,7 +2518,7 @@ function renderDaftar() {
   const G = "grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(40px,.8fr) minmax(40px,.8fr) minmax(62px,1fr) minmax(62px,1fr)";
   const pilUkur =`<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
-  /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
+  /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Tanggal data"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "hot" || u === "fs" ? `<div class="tr-hari" title="${u === "hot" ? "Kolom Titik: titik panas" : "Firespot: cluster lolos metode Kemenhut"} pada satu hari kalender WIB"><b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
     : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
   /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
@@ -2751,7 +2751,7 @@ function pilihRentang(v) {
   if (v === S.rentang) return;
   if (hariLama(v) && !hariLain().includes(v)) return renderSeg();
   const fokus = $("#rentang").contains(document.activeElement) ? (document.activeElement.id === "rentangLain" ? "#rentangLain" : `[data-v="${v}"]`) : null;
-  S.rentang = v; simpanLokal("pk-rentang2", v === "kemarin" ? v : "hari");   /* S.hariPilih/S.rentangHit baru berganti di hitung() */
+  S.rentang = v;   /* tidak diingat: buka ulang selalu Hari ini. S.hariPilih/S.rentangHit baru berganti di hitung() */
   renderSeg(); if (fokus) $("#rentang").querySelector(fokus)?.focus();
   /* pilihan beruntun (panah di <select>): hanya yang terakhir menghitung ulang */
   const n = pilihRentang._n = (pilihRentang._n || 0) + 1;
