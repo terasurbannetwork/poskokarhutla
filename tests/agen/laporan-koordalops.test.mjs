@@ -83,6 +83,32 @@ test('PDF A4 tegak dari jsPDF vendor: jadi tanpa galat, banyak halaman, nomor ha
   if (process.env.KOORD_PDF) writeFileSync(process.env.KOORD_PDF, bytes)
 })
 
+test('status darurat daerah: WhatsApp hanya hitungan, rinciannya di dokumen', () => {
+  const i = isi()
+  i.status_daerah = [
+    { prov: '33', kabkota: 'Kab. Karanganyar', jenis_teks: 'Karhutla', macam: 'tanggap', masa: 'SK TMT 17 Okt s.d 30 Okt 2026', sk_posko: 'SK Posko 12' },
+    { prov: '33', kabkota: '', jenis_teks: 'Kekeringan dan Karhutla', macam: 'siaga', masa: 'SK TMT 1 Juni s.d 31 Des 2026', sk_posko: '' },
+    { prov: '14', kabkota: 'Kab. Bengkalis', jenis_teks: 'Karhutla', macam: 'siaga', masa: 'SK Siaga TMT 2 Feb. sd. 30 Nov 2026', sk_posko: '' },
+  ]
+  const t = KO.teks(konteks(i))
+  assert.ok(t.includes(`3.${WJ} ${WJ}Status darurat yang berlaku di daerah sejumlah 3 (tiga) penetapan: 2 siaga darurat, 1 tanggap darurat, 0 transisi darurat.`), t.slice(-700))
+  assert.ok(!t.includes('Rekapitulasi status darurat daerah'), 'daftar penuh tidak dikirim lewat WhatsApp')
+  assert.ok(!t.includes('Kab. Karanganyar: Karhutla'), 'rincian per daerah tidak di WhatsApp')
+
+  const baris = KO.susun(konteks(i)).filter(b => b.dok)
+  const teksDok = baris.map(b => b.s.map(g => g.t).join('')).join('\n')
+  assert.ok(teksDok.includes('Rekapitulasi status darurat daerah'))
+  assert.ok(teksDok.includes('Prov. Jawa Tengah') && teksDok.includes('Prov. Riau'), teksDok)
+  assert.ok(teksDok.includes('- Kab. Karanganyar: Karhutla, Tanggap Darurat, SK TMT 17 Okt s.d 30 Okt 2026 (SK Posko 12)'), teksDok)
+  assert.ok(teksDok.includes('- Tingkat provinsi: Kekeringan dan Karhutla, Siaga Darurat'), 'baris tanpa kab/kota = tingkat provinsi')
+})
+
+test('status darurat daerah kosong: tidak ada butir 3 dan tidak ada judul rekap', () => {
+  const t = KO.teks(konteks())
+  assert.ok(!t.includes('Status darurat yang berlaku'))
+  assert.ok(!KO.susun(konteks()).some(b => b.s.some(g => /Rekapitulasi status darurat/.test(g.t))))
+})
+
 test('DOCX: zip sah, tiga berkas wajib + footer, CRC cocok, teks isian ada', () => {
   const z = Buffer.from(KO.docx(konteks())), dir = mkdtempSync(join(tmpdir(), 'koord-')); writeFileSync(join(dir, 'k.docx'), z)
   assert.equal(z.readUInt32LE(0), 0x04034b50)

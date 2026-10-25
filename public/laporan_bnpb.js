@@ -26,7 +26,7 @@ const LABEL_KES = ["Situasi", "Wilayah", "Tren", "Prioritas terkini", "Efektivit
 const kosong = n => Array(n).fill(null);
 const BARU = {
   harian: t => ({mulai: geser(t, -1), jam: "09.00", laporan_masuk: null, penyaji: "", jabatan: "", instansi: "Badan Nasional Penanggulangan Bencana", singkatan: "BNPB",
-    kejadian: [], perhatian_tambahan: [], tindak: Array.from({length: 4}, () => ({judul: "", isi: ""})), judul_ringkasan: "", judul_rincian: "", imbauan: [], konpers_pembuka: "", kepada: "Kepala BNPB", tembusan: [...window.LaporanKoordalops.TEMBUSAN], koordinator: ""}),
+    kejadian: [], status_daerah: [], perhatian_tambahan: [], tindak: Array.from({length: 4}, () => ({judul: "", isi: ""})), judul_ringkasan: "", judul_rincian: "", imbauan: [], konpers_pembuka: "", kepada: "Kepala BNPB", tembusan: [...window.LaporanKoordalops.TEMBUSAN], koordinator: ""}),
   presiden: t => ({judul: "Penanganan dan Pengendalian Kebakaran Hutan dan Lahan di Provinsi Prioritas", kepada: "Presiden Republik Indonesia", kepada_nama: "", penyaji: "", jabatan: "",
     instansi: "Badan Nasional Penanggulangan Bencana", hari: [-4, -3, -2].map(n => geser(t, n)), fs: kosong(3), sub_catatan: "",
     prov: BNPB6.map(nama => ({nama, hotspot: kosong(3), luas: kosong(3), belum: kosong(3), status: "", personel: null, heli: null, heli_ket: "heli WB", omc: null, wb_ha: null, kendala: ""})),
@@ -38,6 +38,16 @@ const BARU = {
     kesimpulan: LABEL_KES.map(label => ({label, judul: "", isi: ""})), arahan: "", judul_situasi: "", judul_efektivitas: ""}),
 };
 const JENIS_OPSI = Object.entries(LB.JENIS).map(([k, v]) => [k, v.nama]);
+const MACAM_OPSI = [["", "—"], ["siaga", "Siaga Darurat"], ["tanggap", "Tanggap Darurat"], ["transisi", "Transisi Darurat"]];
+/* Medan rincian entri laphar Dit. Koordalops (bagian A), diisi Pusdalops. Nama kunci sama dengan
+   keluaran public/laporan_urai.js supaya hasil urai langsung masuk tanpa pemetaan. */
+const MEDAN_PUSDALOPS = [["update", "Update (waktu laporan)", "t"], ["kronologi", "Kronologis", "a"],
+  ["lokasi_rekap", "Rekap lokasi (x kec / x desa)", "t"], ["lokasi_rinci", "Lokasi rinci", "a"],
+  ["korban", "Korban jiwa", "a"], ["pengungsi", "Pengungsi", "a"], ["kerugian", "Kerugian materiil", "a"],
+  ["upaya", "Upaya", "a"], ["kebutuhan", "Kebutuhan mendesak", "a"], ["kendala", "Kendala", "a"],
+  ["terlibat", "Unsur yang terlibat", "a"], ["peralatan", "Peralatan dan armada", "a"],
+  ["status_sk", "Status (kutipan SK)", "a"], ["rekomendasi", "Rekomendasi / saran", "a"],
+  ["dokumentasi", "Dokumentasi", "t"], ["sumber", "Sumber", "t"]];
 const SIFAT_OPSI = [["", "—"], ["Kejadian Baru", "Kejadian Baru"], ["Pengkinian Data", "Pengkinian Data"]];
 const STATUS_OPSI = [["berjalan", "Berjalan"], ["selesai", "Selesai/terkendali"], ["belum", "Belum selesai"]];
 let PROV_OPSI = [];   // [kode, nama] dari /data/laporan.json
@@ -57,6 +67,15 @@ const FORM = {
     {judul: "Yang akan dilakukan", tabel: "tindak", tetap: true, kolom: [["judul", "Judul", "t", 12], ["isi", "Isi", "t", 30]]},
     {judul: "Dit. Koordalops (opsional)", ket: "Untuk keluaran Dit. Koordalops. Kolom tambahan per kejadian ada di tabel Kejadian menonjol (geser ke kanan); kosong tampil sebagai tanda hubung.", lipat: true,
       medan: [["kepada", "Kepada (Yth.)", "t"], ["koordinator", "Koordinator pembuat laporan", "t"], ["tembusan", "Tembusan (pisah koma)", "t"]]},
+    {judul: "Bahan Pusdalops", impor: true, ket: "Tempel rekap WA Dit. Koordalops, atau unggah laphar PDF. Isian di bawah diisi dari situ; baris yang sudah Anda ketik tidak ditimpa nilai kosong. Tabel status darurat daerah hanya ada di laphar PDF."},
+    {judul: "Pusdalops: rincian entri laphar", kartu: "kejadian", lipat: true,
+      ket: "Satu kartu per kejadian pada tabel Kejadian menonjol di atas. Medan ini mengikuti bagian A laphar Dit. Koordalops dan dipakai keluaran Dit. Koordalops.",
+      medan: MEDAN_PUSDALOPS},
+    {judul: "Status darurat daerah", lipat: true,
+      ket: "Rekapitulasi SK darurat yang berlaku (bagian I laphar), didata harian. Satu baris per daerah per jenis kejadian; kolom Masa status disalin apa adanya dari SK.",
+      tabel: "status_daerah", kolom: [["prov", "Provinsi", "p", "prov"], ["kabkota", "Kab/Kota", "t", 12], ["jenis_teks", "Jenis kejadian", "t", 16],
+        ["waktu_kejadian", "Waktu kejadian", "t", 9], ["tgl_surat", "Tanggal surat", "t", 9], ["macam", "Macam", "p", MACAM_OPSI],
+        ["masa", "Masa status (teks SK)", "t", 22], ["mulai", "Mulai", "d"], ["sampai", "Sampai", "d"], ["sk_posko", "SK Posko", "t", 12]]},
     {judul: "Konferensi pers (opsional)", ket: "Kosong = kalimat imbauan baku per jenis bencana yang ada hari itu. Maks. 6 imbauan. Pembuka dipakai di naskah juru bicara dan halaman ringkasan.", lipat: true,
       tabel: "imbauan", kolom: [["judul", "Judul imbauan", "t", 16], ["isi", "Isi", "t", 30]], medan: [["konpers_pembuka", "Kalimat pembuka konpers", "a"]]},
     {judul: "Judul slide (opsional)", ket: "Kosong = judul dihitung otomatis dari angka.", lipat: true, medan: [["judul_ringkasan", "Judul slide ringkasan", "a"], ["judul_rincian", "Judul slide rincian", "a"]]},
@@ -119,9 +138,35 @@ function tabelHtml(b) {
     : `<td>${sel(`${b.tabel}.${i}.${k}`, j, o, typeof o === "number" ? o : 0)}</td>`).join("")}${b.tetap ? "" : `<td class="lb-aksi"><button type="button" data-a="naik" data-t="${b.tabel}" aria-label="Naikkan">&#9650;</button><button type="button" data-a="hapus" data-t="${b.tabel}" aria-label="Hapus baris">&#10005;</button></td>`}</tr>`).join("");
   return `<div class="lb-tabel"><table><thead><tr>${kep}${b.tetap ? "" : "<th></th>"}</tr></thead><tbody>${isi}</tbody></table></div>${b.tetap ? "" : `<button type="button" class="pp-btn kecil ke2" data-a="tambah" data-t="${b.tabel}">+ Tambah baris</button>`}`;
 }
-const htmlBlok = b => `<summary>${esc(b.judul)}${b.tabel ? ` <small>${(ambil(S.isi, b.tabel) || []).length} baris</small>` : ""}</summary>
+/* kartu: satu baris larik = satu kartu lipat, untuk baris yang medannya terlalu banyak untuk tabel
+   mendatar (rincian entri laphar: 16 medan, sebagian paragraf). Larik dan indeksnya sama dengan tabel. */
+const judulKartu = (x, i) => {
+  const jn = (LB.JENIS[x.jenis] || {}).nama || "Kejadian", di = tulisTempat(x);
+  return `${x.entry_no == null || x.entry_no === "" ? `#${i + 1}` : `Entry ${x.entry_no}`} · ${jn}${di ? " di " + di : ""}`;
+};
+const tulisTempat = x => String(x.tempat || x.lokasi || "").trim() || S.prov[x.prov] || "";
+function kartuHtml(b) {
+  const rows = ambil(S.isi, b.kartu) || [];
+  if (!rows.length) return `<p class="lb-ket">Belum ada kejadian. Isi lewat panel Bahan Pusdalops, atau tambah baris di tabel Kejadian menonjol.</p>`;
+  return rows.map((x, i) => `<details class="lb-kartu" data-k="${i}"><summary>${esc(judulKartu(x, i))}</summary>
+    <div class="lb-grid">${b.medan.map(([k, l, j, o]) => inputMedan(`${b.kartu}.${i}.${k}`, l, j, o)).join("")}</div></details>`).join("");
+}
+/* panel impor digambar SEKALI (lihat gambarForm): teks yang sedang ditempel tidak boleh hilang
+   tiap kali isian lain berubah. */
+const imporHtml = () => `<div class="lb-impor">
+    <textarea id="lbUraiTeks" rows="5" spellcheck="false" placeholder="Tempel di sini rekap WA Dit. Koordalops (Mohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal ...)"></textarea>
+    <div class="lb-impor-aksi">
+      <button type="button" class="pp-btn kecil" data-a="urai">Urai teks</button>
+      <label class="pp-btn kecil ke2 lb-imp">Unggah laphar PDF<input type="file" id="lbUraiBerkas" accept=".pdf,.txt,application/pdf,text/plain" hidden></label>
+      <button type="button" class="pp-btn kecil ke2" data-a="uraiModel" title="Untuk teks yang bentuknya tidak dikenali pengurai">Urai dengan model</button>
+      <button type="button" class="pp-btn kecil" data-a="uraiMasuk" disabled>Masukkan ke isian</button>
+    </div>
+    <div class="lb-impor-st" id="lbUraiSt" role="status" aria-live="polite"></div>
+    <pre class="lb-impor-pv" id="lbUraiPv" hidden></pre>
+  </div>`;
+const htmlBlok = b => `<summary>${esc(b.judul)}${b.tabel ? ` <small>${(ambil(S.isi, b.tabel) || []).length} baris</small>` : ""}${b.kartu ? ` <small>${(ambil(S.isi, b.kartu) || []).length} kejadian</small>` : ""}</summary>
     ${b.ket ? `<p class="lb-ket">${esc(b.ket)}</p>` : ""}${(b.tombol || []).map(([a, l]) => `<button type="button" class="pp-btn kecil ke2" data-a="${a}">${esc(l)}</button>`).join("")}
-    ${b.medan ? `<div class="lb-grid">${b.medan.map(m => inputMedan(...m)).join("")}</div>` : ""}${b.tabel ? tabelHtml(b) : ""}`;
+    ${b.medan && !b.kartu ? `<div class="lb-grid">${b.medan.map(m => inputMedan(...m)).join("")}</div>` : ""}${b.tabel ? tabelHtml(b) : ""}${b.kartu ? kartuHtml(b) : ""}${b.impor ? imporHtml() : ""}`;
 /* gambarForm(sel): tanpa argumen = isi semua blok; sel = indeks blok yang berubah saja. Elemen <details> dipertahankan (buka/tutup, scroll),
    fokus dikembalikan ke kontrol yang sama bila masih ada. */
 const blokDari = f => FORM[S.jenis].map((b, i) => f(b) ? i : -1).filter(i => i >= 0);
@@ -129,7 +174,7 @@ function gambarForm(sel) {
   const w = $("#lbForm"), fs = FORM[S.jenis];
   if (w.dataset.jenis !== S.jenis || w.children.length !== fs.length) { w.innerHTML = fs.map((b, i) => `<details class="lb-bag" data-b="${i}"${b.lipat ? "" : " open"}>${htmlBlok(b)}</details>`).join(""); w.dataset.jenis = S.jenis; return; }
   const ae = document.activeElement, f = ae && w.contains(ae) ? {p: ae.dataset.p, a: ae.dataset.a, t: ae.dataset.t} : null;
-  fs.forEach((b, i) => { if (!sel || sel.includes(i)) w.children[i].innerHTML = htmlBlok(b); });
+  fs.forEach((b, i) => { if (b.impor) return; if (!sel || sel.includes(i)) w.children[i].innerHTML = htmlBlok(b); });
   const q = f && (f.p ? `[data-p="${f.p}"]` : f.a ? `button[data-a="${f.a}"]${f.t ? `[data-t="${f.t}"]` : ""}` : null), el = q && w.querySelector(q); if (el) el.focus({preventScroll: true});
 }
 $("#lbForm").addEventListener("input", e => {
@@ -141,6 +186,7 @@ $("#lbForm").addEventListener("input", e => {
   if (el.dataset.p === "prioritas.hari.0" && v) S.isi.prioritas.hari = Array.from({length: 7}, (_, i) => geser(v, i));
   tandaUbah();
 });
+$("#lbForm").addEventListener("change", e => { const f = e.target.closest("#lbUraiBerkas"); if (f?.files?.[0]) { uraiBerkas(f.files[0]); f.value = ""; } });
 $("#lbForm").addEventListener("click", e => {
   const b = e.target.closest("button[data-a]"); if (!b) return;
   const a = b.dataset.a, t = b.dataset.t, arr = t && ambil(S.isi, t);
@@ -148,6 +194,9 @@ $("#lbForm").addEventListener("click", e => {
   else if (a === "hapus") arr.splice(+b.closest("tr").dataset.i, 1);
   else if (a === "naik") { const i = +b.closest("tr").dataset.i; if (!i) return; [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; }
   else if (a === "isiSatelit") return isiSatelit();
+  else if (a === "urai") return uraiTempel();
+  else if (a === "uraiModel") return uraiModel();
+  else if (a === "uraiMasuk") return uraiMasuk();
   else return;
   gambarForm(blokDari(x => x.tabel === t)); tandaUbah();
 });
@@ -157,6 +206,72 @@ function barisBaru(t) {
   return o;
 }
 function tandaUbah() { S.ubah = true; S.kotor = true; $("#lbSimpan").classList.add("perlu"); jadwalkan(); }
+
+/* ---------------------------------------------------------------- bahan Pusdalops (urai) */
+/* Dua bentuk bahan harian Dit. Koordalops diurai tanpa model di public/laporan_urai.js: rekap WA dan
+   laphar PDF. Model (Workers AI) hanya dipakai lewat tombol terpisah, untuk teks yang bentuknya tidak
+   dikenali -- supaya bahan yang sudah pasti bentuknya tidak pernah bergantung pada tebakan model. */
+const uraiSt = t => { $("#lbUraiSt").textContent = t; };
+const provNama = () => S.prov;
+function pasangHasil(h, asal) {
+  S.urai = h && (h.kejadian || []).length + (h.status_daerah || []).length ? {hasil: h, asal} : null;
+  const tombol = $("#lbForm").querySelector('button[data-a="uraiMasuk"]'), pv = $("#lbUraiPv");
+  if (tombol) tombol.disabled = !S.urai;
+  if (!S.urai) { pv.hidden = true; return; }
+  const k = h.kejadian || [], sd = h.status_daerah || [];
+  pv.hidden = false;
+  pv.textContent = [
+    ...k.map(x => `kejadian  ${String(x.entry_no ?? "-").padStart(3)}  ${(S.prov[x.prov] || x.prov || "?")} · ${(LB.JENIS[x.jenis] || {}).nama || x.jenis}${x.lokasi ? " · " + x.lokasi : ""}`),
+    ...sd.map(x => `status    ${(S.prov[x.prov] || x.prov_teks || "?")}${x.kabkota ? " · " + x.kabkota : ""} · ${x.macam || "-"} · ${x.masa || "-"}`),
+  ].join("\n");
+  uraiSt(`${asal}: ${k.length} kejadian, ${sd.length} baris status daerah.${(h.lewat || []).length ? " Catatan: " + h.lewat.slice(0, 3).join("; ") : ""} Periksa daftarnya, lalu tekan Masukkan ke isian.`);
+}
+function uraiTempel() {
+  const teks = $("#lbUraiTeks").value;
+  if (!teks.trim()) return uraiSt("Tempel dulu teksnya, atau unggah laphar PDF.");
+  const h = window.LaporanUrai.urai(teks, provNama());
+  if (!h.bentuk) { pasangHasil(null); return uraiSt("Bentuk teks ini tidak dikenali. Pastikan yang ditempel rekap WA Dit. Koordalops utuh, atau coba tombol Urai dengan model."); }
+  S.uraiTeks = teks;
+  pasangHasil(h, h.bentuk === "wa" ? "Rekap WA" : "Teks laphar");
+}
+async function uraiBerkas(file) {
+  uraiSt(`Membaca ${file.name}…`);
+  try {
+    const {teks, items} = await window.LaporanImpor.bacaBerkas(file);
+    $("#lbUraiTeks").value = teks.length > 200000 ? teks.slice(0, 200000) : teks;
+    S.uraiTeks = teks;
+    const h = window.LaporanUrai.urai(teks, provNama(), items);
+    if (!h.bentuk) { pasangHasil(null); return uraiSt(`${file.name} terbaca, tapi bentuknya bukan laphar Dit. Koordalops. Coba tombol Urai dengan model.`); }
+    pasangHasil(h, file.name);
+  } catch (e) { pasangHasil(null); uraiSt(e.message); }
+}
+async function uraiModel() {
+  const teks = (S.uraiTeks || $("#lbUraiTeks").value || "").trim();
+  if (!teks) return uraiSt("Tempel dulu teksnya, atau unggah berkasnya.");
+  uraiSt("Meminta model membaca teks ini…");
+  try {
+    const r = await api("/api/laporan-bnpb/urai", {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify({teks})});
+    const h = {bentuk: "model", kejadian: r.kejadian || [], status_daerah: [], lewat: r.catatan || []};
+    for (const x of h.kejadian) x.prov = window.LaporanUrai.kodeProv(x.prov || x.prov_teks || "", provNama()) || "";
+    if (!h.kejadian.length) { pasangHasil(null); return uraiSt("Model tidak menemukan kejadian di teks ini. Angka tidak pernah dikarang: isi manual, atau tempel bahan yang benar."); }
+    pasangHasil(h, r.terpotong ? "Model (teks dipotong, periksa bagian akhir)" : "Model");
+  } catch (e) { pasangHasil(null); uraiSt(e.status === 503 ? "Model tidak tersedia di server ini." : "Gagal memanggil model: " + e.message); }
+}
+function uraiMasuk() {
+  if (!S.urai) return;
+  const h = S.urai.hasil, i = S.isi;
+  i.kejadian ||= []; i.status_daerah ||= [];
+  const k = window.LaporanUrai.gabungKejadian(i.kejadian, h.kejadian || []);
+  const sd = window.LaporanUrai.gabungStatus(i.status_daerah, h.status_daerah || []);
+  if (h.mulai) i.mulai = h.mulai;
+  if (h.jam) i.jam = h.jam;
+  if (typeof h.laporan_masuk === "number") i.laporan_masuk = h.laporan_masuk;
+  if (h.koordinator && !i.koordinator) i.koordinator = h.koordinator;
+  if (h.kepada && !i.kepada) i.kepada = h.kepada;
+  gambarForm(); tandaUbah();
+  uraiSt(`Masuk ke isian: kejadian ${k.tambah} baru dan ${k.ubah} diperbarui; status daerah ${sd.tambah} baru dan ${sd.ubah} diperbarui. Periksa isiannya, lalu Simpan.`);
+  pasangHasil(null);
+}
 
 /* hotspot 7 hari dari satelit: laporan.json (titik per provinsi per hari WIB, deret L.hari). Peringkat = urutan jumlah 7 hari di 38 provinsi. */
 function isiSatelit() {

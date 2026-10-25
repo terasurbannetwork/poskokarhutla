@@ -15,7 +15,9 @@
 .lb-m.lebar{grid-column:1/-1}
 .lb-tabel{overflow-x:auto;margin:8px 0}
 .lb-tabel table{border-collapse:collapse;font-size:11.5px}
-.lb-tabel th{text-align:center;font-size:10.5px;color:var(--ink2);padding:2px 3px;white-space:nowrap}
+/* warna huruf kepala tabel dibiarkan dari inti/tabel.css (putih di atas latar brand, dan dibalik
+   sendiri pada tema gelap). Dulu ditimpa var(--ink2) di sini dan jadi tidak terbaca. */
+.lb-tabel th{text-align:center;font-size:10.5px;padding:2px 3px;white-space:nowrap}
 .lb-tabel td{padding:2px}
 .pp-atur .lb-tabel input,.pp-atur .lb-tabel select{padding:4px 6px;border-radius:6px;font-size:11.5px;width:auto}
 .pp-atur .lb-tabel select{max-width:11em}
@@ -24,6 +26,14 @@
 .lb-aksi button{border:0;background:none;color:var(--ink2);cursor:pointer;width:22px;height:22px;border-radius:6px}
 .lb-aksi button:hover{background:var(--line)}
 .lb-imp{display:inline-flex;align-items:center;cursor:pointer}
+.lb-kartu{border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin:6px 0}
+.lb-kartu summary{cursor:pointer;font:600 12px var(--font);color:var(--ink)}
+.lb-kartu .lb-grid{margin:8px 0 4px}
+.lb-impor{display:grid;gap:8px;margin:8px 0}
+.lb-impor textarea{width:100%;min-height:92px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:500 11.5px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--card);color:var(--ink);resize:vertical}
+.lb-impor-aksi{display:flex;flex-wrap:wrap;gap:6px}
+.lb-impor-st{font-size:11.5px;color:var(--ink2);min-height:1.2em}
+.lb-impor-pv{max-height:240px;overflow:auto;margin:0;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);font:500 11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre;color:var(--ink2)}
 #p-paparan [hidden]{display:none!important}
 .lb-naskah{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
 .lb-naskah-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;position:sticky;top:0;background:var(--card);padding-bottom:10px;font-size:12.5px;font-weight:600}

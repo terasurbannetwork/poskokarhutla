@@ -1,5 +1,23 @@
 # Generator laporan BNPB
 
+## Bahan Pusdalops di layar (/laporan-bnpb)
+
+Sejak 25 Okt 2026 bahan harian Dit. Koordalops juga bisa dimasukkan lewat layar, tanpa menjalankan
+skrip di sini: panel **Bahan Pusdalops** menerima tempelan rekap WA atau unggahan **laphar PDF**, lalu
+mengisi tabel Kejadian menonjol, kartu **Pusdalops: rincian entri laphar** (medan bagian A laphar), dan
+tabel **Status darurat daerah** (rekapitulasi SK darurat, bagian I laphar).
+
+- Pengurai: `public/laporan_urai.js` (murni, tanpa jaringan). Pembaca berkas: `public/laporan_impor.js` (pdf.js).
+- Tabel bagian I hanya terbaca dari **unggahan PDF**: selnya rata tengah tegak, jadi baris logisnya cuma
+  bisa dipisah dari koordinat kata. Teks tempelan biasa tetap mengisi bagian A, dan layar mengatakan
+  bagian mana yang tidak ikut terbaca.
+- Teks yang bentuknya tidak dikenali bisa dicoba lewat tombol **Urai dengan model** (`POST /api/laporan-bnpb/urai`,
+  Workers AI). Tiap nilai yang dikembalikan model wajib benar-benar ada di teks sumber (`periksaSalinan`
+  di `src/laporan_bnpb_spek.js`); yang tidak ada dibuang, jadi angka tidak pernah dikarang.
+- Uji: `node --test tests/warga/laporan_urai.test.mjs` (bahan asli 24 Okt 2026 di `tests/warga/fixtures/`).
+
+Jalur Python di bawah tetap dipakai untuk membuat decknya.
+
 ## Harian
 
 Laporan Kejadian Bencana Harian DDMMYY: 4 slide (sampul, ringkasan + peta, rincian, penutup) dalam format deck pemilik 221026.

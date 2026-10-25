@@ -6,6 +6,7 @@ const WJ = "⁠";   // word joiner: "1.⁠ ⁠" tampil sama di WhatsApp
 const TEMBUSAN = ["Unsur Pengarah BNPB", "Ess I BNPB", "Ess II BNPB", "Tenaga Ahli Ka.BNPB"];
 const JENIS_PANJANG = {karhutla: "Kebakaran Hutan dan Lahan", kekeringan: "Kekeringan", banjir: "Banjir", longsor: "Tanah Longsor", cuaca: "Cuaca Ekstrem", gempabumi: "Gempa Bumi",
   gunungapi: "Erupsi Gunung Api", kebakaran_permukiman: "Kebakaran Permukiman", lainnya: "Kejadian Lainnya"};
+const MACAM_STATUS = {siaga: "Siaga Darurat", tanggap: "Tanggap Darurat", transisi: "Transisi Darurat"};
 const SAT = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
 function terbilang(n) {
   n = Math.floor(n); const sisa = (m, d) => (m % d ? " " + terbilang(m % d) : "");
@@ -55,6 +56,22 @@ function susun(c) {
       for (const [lb, v] of [["Dampak", tulis(x.dampak) || tulis(x.utama)], ["Penetapan status", tulis(x.status_penetapan)], ["Pendampingan BNPB", tulis(x.pendampingan)],
         ["Kondisi mutakhir", tulis(x.kondisi) || tulis(x.catatan)], ["Detail", det]]) r.push({s: [N("- "), L(lb + ":"), N(" " + (v || "-"))], gantung: 0.14});
     });
+  }
+  /* Rekapitulasi status darurat daerah (bagian I laphar, didata Pusdalops harian). Di WhatsApp hanya
+     satu baris hitungan: daftar penuhnya ratusan baris dan tidak terbaca di pesan. Rinciannya ikut di
+     PDF dan DOCX, dikelompokkan per provinsi seperti di laphar. */
+  const sd = (i.status_daerah || []).filter(x => tulis(x.prov) || tulis(x.prov_teks));
+  if (sd.length) {
+    const n = m => sd.filter(x => x.macam === m).length;
+    r.push({s: [N(`3.${WJ} ${WJ}Status darurat yang berlaku di daerah sejumlah ${bil(sd.length)} penetapan: ${n("siaga")} siaga darurat, ${n("tanggap")} tanggap darurat, ${n("transisi")} transisi darurat.`)], jarak: 10, gantung: 0.25});
+    const gs = new Map();
+    for (const x of sd) { const k = tulis(x.prov) || tulis(x.prov_teks); if (!gs.has(k)) gs.set(k, []); gs.get(k).push(x); }
+    r.push({dok: true, s: [B("Rekapitulasi status darurat daerah")], jarak: 14, jaga: 3});
+    for (const [k, xs] of gs) {
+      r.push({dok: true, s: [L(`Prov. ${sing(prov[k] || k)}`)], jarak: 8, jaga: 2});
+      for (const x of xs) r.push({dok: true, ind: 1, gantung: 0.14,
+        s: [N(`- ${tulis(x.kabkota) || "Tingkat provinsi"}: ${tulis(x.jenis_teks) || "-"}, ${MACAM_STATUS[x.macam] || "status belum diisi"}${tulis(x.masa) ? ", " + tulis(x.masa) : ""}${tulis(x.sk_posko) ? ` (${tulis(x.sk_posko)})` : ""}`)]});
+    }
   }
   r.push({s: [N(`Koordinator pembuat laporan: ${tulis(i.koordinator) || "-"}`)], jarak: 14});
   r.push({s: [N("Demikian disampaikan. Mohon arahan lebih lanjut")], jarak: 8});
@@ -147,5 +164,5 @@ function docx(c) {
     ["word/document.xml", dok], ["word/footer1.xml", kaki]]);
 }
 
-window.LaporanKoordalops = {susun, teks, pdf, docx, zip, terbilang, bil, TEMBUSAN, JENIS_PANJANG, WJ};
+window.LaporanKoordalops = {susun, teks, pdf, docx, zip, terbilang, bil, TEMBUSAN, JENIS_PANJANG, MACAM_STATUS, WJ};
 })();

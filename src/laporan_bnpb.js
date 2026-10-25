@@ -3,6 +3,9 @@
    Server tidak tahu bentuk slide: isi = JSON bebas, dibersihkan generik (kunci, panjang teks, kedalaman, ukuran). Bentuknya dijaga
    public/laporan_bnpb.js; penggambaran slide memakai teks apa adanya (tidak pernah innerHTML), jadi teks mentah aman. */
 import {json, gagal, adminOK, bacaBody} from "./worker.js";
+import {laju} from "./bnpb.js";
+import {MODEL_URAI, MAKS_URAI, HARI, BATAS_URAI_HARI, SKEMA_URAI, SISTEM_URAI, ULANG_URAI, uraiJson, rapat, periksaSalinan} from "./laporan_bnpb_spek.js";
+export {MODEL_URAI, periksaSalinan};
 import {KONTROL, tglSah} from "./posko.js";
 
 export const JENIS_LAPORAN = ["harian", "presiden"];
@@ -68,7 +71,54 @@ async function simpan(env, req, url, kini) {
   return json({ok: true, jenis, tanggal, diubah: kini, ukuran: bersih.length}, 201);
 }
 
+/* ---------------------------------------------------------------- urai dengan model (jalur cadangan)
+   Bahan harian Pusdalops yang bentuknya tetap -- rekap WA Dit. Koordalops dan laphar PDF -- diurai di
+   peramban tanpa model (public/laporan_urai.js). Rute ini HANYA untuk teks yang bentuknya tidak dikenali
+   pengurai itu, dan menirukan empat lapis pintu dokumen pangantara:
+
+     1. VONIS BERTINGKAT. "model bilang tidak ada kejadian" bukan "model gagal": yang pertama balik 200
+        dengan daftar kosong dan catatannya, yang kedua balik galat. Dulu keduanya tak dibedakan dan
+        yang terjadi adalah isian terisi karangan.
+     2. ULANG BERUMPAN-BALIK. Jawaban kosong pada teks yang jelas memuat kejadian = model menyerah,
+        bukan vonis. Diulang SEKALI dengan instruksi korektif, bukan diulang buta.
+     3. PEMOTONGAN DILAPORKAN. Mutu jatuh pada prompt panjang, jadi teks dipotong di MAKS_URAI dan
+        pemotongannya SELALU diberitahukan ke layar, tidak senyap.
+     4. ANGKA TIDAK PERNAH DIKARANG. Tiap nilai teks yang dikembalikan model wajib benar-benar ada di
+        dalam teks sumber (periksaSalinan); yang tidak ada dibuang. Ini pengganti korpus koreksi
+        pangantara: lebih murah, dan menutup kelas kesalahan yang paling mahal di laporan ini.
+
+   Hasilnya tidak pernah langsung tersimpan: layar menampilkannya untuk diperiksa, lalu petugas menekan
+   Masukkan ke isian. */
+async function uraiModel(env, req, kini) {
+  if (!await adminOK(env, req, kini)) return tolak();
+  /* Validasi masukan DULU, baru ketersediaan model: kiriman yang memang salah harus dapat 400 yang
+     menjelaskan, bukan 503 yang menyesatkan ke "server ini tidak punya model". */
+  const b = await bacaBody(req, MAKS_URAI * 4 + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
+  const mentah = typeof b.o?.teks === "string" ? b.o.teks : "";
+  if (rapat(mentah).length < 40) return gagal(400, "teks terlalu pendek untuk diurai");
+  if (typeof env.AI?.run !== "function") return gagal(503, "model tidak tersedia di server ini");
+  const terpotong = mentah.length > MAKS_URAI, teks = mentah.slice(0, MAKS_URAI);
+  const g = await laju(env, "global", "lbnpb.urai", [[HARI, BATAS_URAI_HARI]], kini); if (g) return g;   // plafon biaya model
+  const minta = async tambahan => uraiJson(await env.AI.run(MODEL_URAI, {max_tokens: 2000, temperature: 0, response_format: {type: "json_schema", json_schema: SKEMA_URAI},
+    messages: [{role: "system", content: SISTEM_URAI + (tambahan ? " " + tambahan : "")}, {role: "user", content: `--- MULAI TEKS SUMBER ---\n${teks}\n--- AKHIR TEKS SUMBER ---`}]}));
+  let out;
+  try {
+    out = await minta("");
+    /* berbau: teks yang jelas memuat baris kejadian. Sengaja longgar -- salah tebak hanya memakai satu
+       panggilan tambahan, salah diam berarti laporan hilang tanpa jejak. */
+    const berbau = /bencana|kejadian|karhutla|banjir|gempa|kekeringan|longsor|erupsi/i.test(teks);
+    if (berbau && !(out?.kejadian || []).length) out = await minta(ULANG_URAI);
+  } catch (e) { console.error("lbnpb.urai AI", e?.message); return gagal(502, "model gagal membaca teks ini"); }
+  const {kejadian, dibuang} = periksaSalinan(out?.kejadian, teks);
+  const catatan = [];
+  if (terpotong) catatan.push(`teks dipotong di ${MAKS_URAI} huruf; bagian sesudahnya belum dibaca`);
+  if (dibuang.length) catatan.push(`${dibuang.length} nilai dibuang karena tidak ada di teks sumber`);
+  if (!kejadian.length) catatan.push("model tidak menemukan kejadian di teks ini");
+  return json({kejadian, catatan, dibuang: dibuang.slice(0, 10), terpotong, model: MODEL_URAI}, 200, {"cache-control": "no-store"});
+}
+
 export const RUTE_LAPORAN_BNPB = {
   "GET /api/laporan-bnpb": (env, req, url) => baca(env, req, url),
   "POST /api/laporan-bnpb": (env, req, url, kini) => simpan(env, req, url, kini),
+  "POST /api/laporan-bnpb/urai": (env, req, url, kini) => uraiModel(env, req, kini),
 };
