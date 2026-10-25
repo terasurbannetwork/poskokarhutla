@@ -2492,7 +2492,7 @@ function arsipHari(h) {
 }
 const klusterHari = h => { const a = arsipHari(h); return a ? a.w : a; };
 /* ringkasan cluster per wilayah hari h, bentuk sama dengan harian.ringkas_kluster: [aktif, firespot, level maks, bertitik hari itu,
-   firespot bertitik hari itu, titik terakhir < 24 jam, 24-72 jam]. Hari data terbaru dihitung dari kluster.json (jam_sejak relatif
+   titik firespot hari itu (lokasi unik, satuan HS, per wilayah titiknya), titik terakhir < 24 jam, 24-72 jam]. Hari data terbaru dihitung dari kluster.json (jam_sejak relatif
    meta.dibuat); arsip lama tiga kolom = sisanya null; tanpa arsip = {} */
 function klusterWil(h) { const a = klusterHari(h), c = klusterWil._c;
   if (c && c.a === a && c.kl === S.kluster) return c.w;
@@ -2501,7 +2501,10 @@ function klusterWil(h) { const a = klusterHari(h), c = klusterWil._c;
   else if (a === null) { const jh = (Date.parse(S.meta.dibuat) - Date.parse(S.meta.hari_wib + "T00:00:00+07:00")) / 36e5;
     for (const f of S.kluster.features) { const p = f.properties, j = p.jam_sejak ?? Infinity, fs = p.firespot === "ya", adm = [p.prov || "", p.kab || "", p.kec || ""];
       for (const i of [1, 2, 3]) { const r = w[adm.slice(0, i).join("|")] ||= [0, 0, -1, 0, 0, 0, 0];
-        r[0]++; r[1] += fs; r[2] = Math.max(r[2], p.level); r[3] += j <= jh; r[4] += j <= jh && fs; r[5] += j < 24; r[6] += j >= 24 && j < 72; } } }
+        r[0]++; r[1] += fs; r[2] = Math.max(r[2], p.level); r[3] += j <= jh; r[5] += j < 24; r[6] += j >= 24 && j < 72; }
+      /* titik firespot dijumlah ke wilayah titiknya (fs_ini dari harian.py), bukan wilayah pusat cluster: FS <= HS di tiap tingkat */
+      for (const k in p.fs_ini || {}) { const q = k.split("|");
+        for (const i of [1, 2, 3]) (w[q.slice(0, i).join("|")] ||= [0, 0, -1, 0, 0, 0, 0])[4] += p.fs_ini[k]; } } }
   klusterWil._c = {a, kl: S.kluster, w}; return w; }
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
@@ -2530,7 +2533,7 @@ function renderDaftar() {
   const chip = (k, w, s, l) => `<span class="lg-c" style="--w:${w}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${k}</svg><b>${s}</b>${l}</span>`;
   const legenda = u === "kl" ? "" : `<span class="lg-hs nm-pdk">${u === "hot" ? chip('<circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/>', "#e58a45", "HS", "Hotspot") : ""}${chip(IKON.api, "#c9503a", "FS", "Firespot")}${chip(IKON.titik, "#1d4e89", "CL", "Cluster")}</span>`;
   const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span>${u === "kl" ? `<span class="n" title="Cluster yang masih aktif: titik terakhir <= 72 jam, di gambut <= 7 hari">Aktif</span><span class="n" title="Titik terakhir kurang dari 24 jam">&lt; 24 j</span><span class="n" title="Titik terakhir 24-72 jam lalu">1–3 hr</span><span class="n" title="Titik terakhir lebih dari 72 jam lalu; masih aktif karena di gambut (bara bisa bertahan di bawah permukaan)">&gt; 3 hr</span>`
-    : `<span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Firespot (metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut) di antara cluster yang bertitik hari itu"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Cluster yang punya titik panas hari itu; semua cluster aktif ada di indikator Cluster"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span>`}<span style="text-align:right" title="Status api dari cluster titik panas">Api</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
+    : `<span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Titik firespot: lokasi titik panas hari itu (satuan sama dengan HS) di dalam cluster yang lolos syarat firespot metode Kemenhut (titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut)"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Cluster yang punya titik panas hari itu; semua cluster aktif ada di indikator Cluster"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span>`}<span style="text-align:right" title="Status api dari cluster titik panas">Api</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const [akt, , , nk, fs, j24, j72] = i.kw, lv = i.lv, f = v => v ? fmt(v) : "–";
     const t = j.length === 0 ? trenProv(i.kunci) : null;
