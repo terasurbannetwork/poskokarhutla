@@ -205,20 +205,22 @@ tidak boleh muncul di D atau S. Akibatnya token admin web (`--navy` #0b2545, `--
 Kelas web memakai variabel `--w` (pola `.pl`, insight.css:41) sehingga satu kelas melayani
 semua status. Kolom D berisi rupa pil cetak.
 
-**Zona kelayakan A–D** (PRD §5.1, §9.4.2)
+**Zona kelayakan A–D** (PRD §5.1, §9.4.2; pembanding ketat `<`, keputusan 51)
 
 | Zona | Arti | W `--w` | W pola isi | D isi | D pola isi |
 | --- | --- | --- | --- | --- | --- |
-| A | air ≤ 2,5 km, jalan ≤ 5 km | `--ok` | penuh | `biru` #2F86D1 | penuh |
-| B | air ≤ 2,5 km, jalan > 5 km atau null | `--info` | cincin | `biru` #2F86D1 | cincin (isi putih, garis 1,5 pt) |
-| C | air > 2,5 km, jalan ≤ 5 km | `--warn` | setengah | `skala.emas.4` #A07A32 | setengah |
-| D | air > 2,5 km, jalan > 5 km atau null | `--bad` | silang | `skala.emas.4` #A07A32 | silang |
+| A | air < 2,5 km, jalan < 5 km | `--ok` | penuh | `biru` #2F86D1 | penuh |
+| B | air < 2,5 km, jalan ≥ 5 km atau null | `--info` | cincin | `biru` #2F86D1 | cincin (isi putih, garis 1,5 pt) |
+| C | air ≥ 2,5 km, jalan < 5 km | `--warn` | setengah | `skala.emas.4` #A07A32 | setengah |
+| D | air ≥ 2,5 km, jalan ≥ 5 km atau null | `--bad` | silang | `skala.emas.4` #A07A32 | silang |
 
 Di W warna mengikuti PRD §9.4.2 (terkunci). Di D dan S warna hijau tidak ada di
 `tema.json` dan merah dibatasi untuk bahaya, jadi zona digambar bivariat dari dua ramp yang
 sudah ada: rona = dimensi air (biru dekat, emas jauh), pola = dimensi jalan dan identitas
 zona; pola dan huruf identik dengan W. Huruf A–D selalu tertulis di legenda, di sel tabel,
-dan di pop-up. Lihat butir terbuka di §8.
+dan di pop-up. Ditetapkan pemilik sebagai keputusan 52 (KEPUTUSAN-SIPPA §H): buku dan deck
+biru dan emas dengan huruf dan arsiran sama dengan web; web palet PRD ditambah huruf dan pola
+wajib karena uji buta warna.
 
 **Status kit** (PRD §9.4.5, CHECK `sippa_kit.status`)
 
@@ -1329,11 +1331,11 @@ Desktop (peta 60%, panel 40%):
 |[3.6 .sp-peta-bilah] Satuan (Per kompleks|Per sel 2,2km)|[3.6 .sp-peta-panel]               |
 | (A)(B)(C)(D) (terbakar>=3 th) (GSW: perm|mus|tdk)     |[3.2.1] (Zona) [Terverifikasi]     |
 | [Kabupaten v] [cari kompleks___] [Daftar] [lapisan]  |188 dari 865 kompleks Kalteng di   |
-|                                                      |zona A (jalan utama); 469 bila     |
-|                [3.6 peta MapLibre]                   |jalan track OSM dihitung           |
-|        o  @   (penanda berpola per zona)             | [3.4 tabel 4 x 3: zona x versi,   |
-|     @     o      x                                   |  pil persen; tanpa jalan 16 km 44;|
-|          (    x     o                                |  median air 1,02 km, jalan 2,27]  |
+|                                                      |zona A (versi kendala.json); 469  |
+|                [3.6 peta MapLibre]                   |bila semua jalan OSM dihitung     |
+|        o  @   (penanda berpola per zona)             | [3.4 tabel 4 x 4: zona x versi    |
+|     @     o      x                                   |  kendala/utama OSM/semua OSM/terv;|
+|          (    x     o                                |  pil persen; tanpa jalan 16 km 44]|
 |                                                      |Sumber: OSM (ODbL) via Overpass    |
 |+------------------+                         (+)(-)   +-----------------------------------+
 ||[3.6 legenda]     |                                  |Rincian kompleks KT-0412           |
@@ -1360,7 +1362,7 @@ HP (peta penuh, panel jadi lembar bawah tiga tinggi):
 +----------------------------------+
 |[3.16 .sp-lembar intip 96px]  ==  |
 |188 dari 865 kompleks di zona A   |
-|(jalan utama); 469 bila track OSM |
+|(versi kendala.json); 469 bila    |
 +----------------------------------+
 ```
 
@@ -1388,13 +1390,13 @@ Desktop:
 | POMPA                              | Volume isi 7,9 m3 | Air tiba 13 menit             |
 |  Kelas pompa [1.500 L/min v]       +---------------------------------------------------+
 |  Jumlah [1]  Efisiensi [0,65]      |[3.11 garis] Tekanan sepanjang trase, bar, per 50 m|
-|  Debit [600] L/min                 |  ----batas 11,1 bar------------------------------ |
+|  Debit [300] L/min                 |  ----batas 11,1 bar------------------------------ |
 | LANCE                              |  \                                                |
 |  Jumlah aktif [8]                  |   \______________                                 |
 |  Kedalaman [1,5] m (0-5)           |  ----2 bar--------------------------------------- |
 | SUMBER AIR                         +---------------------------------------------------+
 |  Q95 [ ] L/s  Q eko [ ]  stok [ ]  |[3.11 batang horizontal] Head loss per diameter    |
-| LINGKUNGAN                         |  pada 600 L/min, m per km (DN65 ... OD200)        |
+| LINGKUNGAN                         |  pada 300 L/min, m per km (DN65 ... OD200)        |
 |  Suhu pipa [35] C                  |Sumber: rumus Hazen-Williams; datasheet kelas pompa|
 |  Ujung di perimeter aktif (sakelar)|                                                   |
 +------------------------------------+---------------------------------------------------+
@@ -1598,21 +1600,22 @@ satu `.lp-blok` utama.
 | [I  jalan 4x4, gambut dangkal]   | Jam pompa [6,2] jam (otomatis)   |
 | [II darat + sungai, sedang  ]    | BBM [____] L                     |
 | [III perahu/portage, dalam  ]    | Totalizer awal [__] akhir [__] m3|
-|                                  | Catatan [__________] 0/1000      |
-| [3.7.2 .sp-stopwatch]            | [ Tambah foto ]                  |
-|  Tiba            08.12 [Koreksi] |                                  |
-|  Mulai gelar     08.40 [Koreksi] |                                  |
-|  [ Air mengalir ]  (aktif, 66px) |                                  |
-|  Mulai injeksi   (nonaktif)      |                                  |
-|  Selesai         (nonaktif)      |                                  |
-|  Bongkar selesai (nonaktif)      | [ Simpan sesi ]  (lengket, 66px) |
+|                                  | Petak [P-03]                     |
+| [3.7.2 .sp-stopwatch]            | Air sampai ujung lance (Ya)(Tdk) |
+|  Tiba            08.12 [Koreksi] | Tekanan ujung [__] bar, bertahan |
+|  Mulai gelar     08.40 [Koreksi] |  >= 2 bar [__] menit (Gauge)(Op.)|
+|  [ Air mengalir ]  (aktif, 66px) | Kecelakaan (Tidak)(Ya)           |
+|  Mulai injeksi   (nonaktif)      | Henti karena bocor [__] menit    |
+|  Selesai         (nonaktif)      | Catatan [__________] 0/1000      |
+|  Bongkar selesai (nonaktif)      | [ Tambah foto ]                  |
+|                                  | [ Simpan sesi ]  (lengket, 66px) |
 +----------------------------------+----------------------------------+
 
 (e) Probe                          (f) BBM dan (g) Pindah kit
 +----------------------------------+----------------------------------+
 | Petak [P-03]  Titik [T2]         | BBM: (Terima)(Keluar)(Kembali)   |
-| Tahap (Sebelum)(24 jam)(72 jam)  |      (Koreksi)                   |
-|       (7 h)(30 h)(90 h)          | Liter [____]  Tiket [____]       |
+| Tahap (Sebelum)(Sesudah)(24 jam) |      (Koreksi)                   |
+|       (72 jam)(7 h)(30 h)(90 h)  | Liter [____]  Tiket [____]       |
 | [3.7.2 .sp-probe]                | [ Simpan BBM ]                   |
 |  10 cm  [ 31,5 ] C               |----------------------------------|
 |  30 cm  [ 64,0 ] C [belum dingin]| Pindah kit: (Gelar)(Bongkar)     |
@@ -1622,6 +1625,10 @@ satu `.lp-blok` utama.
 | [ Simpan probe ]  (66px)         | [ Simpan gerak ]                 |
 +----------------------------------+----------------------------------+
 ```
+
+Medan (d) baris Petak sampai Henti karena bocor adalah medan vonis pilot keputusan 53
+(DESAIN-TEKNIS §5.5.2); `konfigurasi` hidraulika diisi otomatis dari kit tugas. Tahap probe
+"Sesudah" = segera sesudah injeksi.
 
 ### 4.8 Dashboard A/B `/pipa/ab`
 
@@ -1652,6 +1659,26 @@ Desktop:
 
 HP: unggah disembunyikan (pita "Unggah dari laptop"), kartu vonis per lengan satu kolom,
 grafik titik, tabel mode kartu.
+
+Kartu vonis pilot "dapat dipakai" (keputusan 53, `vonisPilot` DESAIN-TEKNIS §5.5.2) tampil di
+atas kartu lengan selama ada data pilot Okt 2026, terpisah dari vonis G4 dan berpil
+"pilot, n kecil" dan "asumsi-kebijakan". Vonis memakai pil status §3.12 dengan teks, bukan
+warna saja: DAPAT DIPAKAI (`--ok`), DAPAT DIPAKAI BERSYARAT (`--warn`), BELUM DAPAT DIPAKAI
+(`--bad`); butir bernilai null tampil "data belum lengkap".
+
+```
++-----------------------------------------------------------------------------------------+
+|[3.12] Vonis pilot Okt 2026 [pilot, n kecil] [asumsi-kebijakan]   DAPAT DIPAKAI BERSYARAT |
+| 1 Air sampai ujung lance >= 2 sesi di >= 2 petak        lulus   3 sesi, 2 petak         |
+| 2 Tiba-sampai-air <= 4 jam, lima waktu lengkap          lulus   3,4 jam                 |
+| 3 Tekanan ujung >= 2 bar >= 30 menit                    lulus   2,6 bar 45 menit (gauge)|
+| 4 Tanpa gerbang keras kalkulator                        lulus                           |
+| 5 Probe >= 90% lengkap (sebelum, sesudah, 24 jam)       GAGAL   20 dari 24 (83%)        |
+| 6 Nol kecelakaan, tanpa henti bocor > 30 menit          lulus                           |
+| 7 >= 95% komponen kembali berfungsi                     lulus   39 dari 40              |
+| Vonis "lebih baik dari konvensional" tidak diputus dari pilot (n < 8 per lengan).       |
++-----------------------------------------------------------------------------------------+
+```
 
 ```
 +----------------------------------+
@@ -1722,7 +1749,7 @@ Desktop:
 ```
 +-------------------------------------------------------------+---------------------------+
 |[3.17 .sp-3d-kanvas] (Susunan kit|Jalur air|Injeksi)         |[3.17 .sp-3d-panel]        |
-|                                                             | Debit ===o== 600 L/min    |
+|                                                             | Debit ===o== 300 L/min    |
 |     [adegan Three.js]                                       | DN (65|100|150)           |
 |      pompa --- filter --- selang ~~~~~~~~ manifold = lance  | Panjang ===o== 1.000 m    |
 |                                                             | Beda elevasi  2 m         |
@@ -1817,6 +1844,10 @@ HP: form satu kolom, lalu arsip mode kartu dengan tombol Unduh.
 +----------------------------------+
 ```
 
+Templat Laporan pilot memuat tabel tujuh butir keputusan 53 yang sama dengan kartu vonis pilot
+§4.8 (nilai dan alasan per butir, sumber `sippa_log_gelar`, `sippa_probe`, `sippa_komponen`),
+lalu bagian terpisah "Lebih baik dari konvensional: belum dapat diputus (n < 8 per lengan)".
+
 Halaman 1 PDF (A4 tegak, §3.18):
 
 ```
@@ -1897,7 +1928,7 @@ dengan DOCX, label dan legenda dibangun native di PPTX (PEDOMAN §B7.2).
 | Latar dan laut | putih (`peta.latar`, `peta.laut` = `kertas`); tidak biru | PEDOMAN §B5.9, S peta |
 | Daratan | netral `wilayah` #D3DBE5 di peta simbol; batas kab putih 0,4 pt; batas provinsi `batas` #A9B4C2 0,6 pt | `tema.json garis_pt` |
 | Kompleks (Gambar 4.1, RE.1, slide B1) | simbol lingkaran zona §2.1.3 kolom D (biru/emas + pola penuh/cincin/setengah/silang), garis 0,5 pt `teks-2`; jari-jari menurut tahun terbakar MCD64A1 (`simbol_r_min_pt` 1,8 sampai `simbol_r_maks_pt` 7), kecil di atas besar | §2.1.3, L34 |
-| Dua versi zona | peta kecil berganda (a) Konservatif, (b) Optimistis, skala dan legenda sama, label panel 9 pt Bold; di deck slide B1 dua panel berdampingan menggantikan "sakelar" | L33, L44, PRD §8.5 |
+| Versi zona | peta kecil berganda (a) versi `kendala.json` (Konservatif), (b) semua jalan OSM (Optimistis); versi jalan utama OSM hanya di tabel; skala dan legenda sama, label panel 9 pt Bold; di deck slide B1 dua panel berdampingan menggantikan "sakelar" | L33, L44, PRD §8.5 |
 | Sel 2,2 km (Gambar 3.2, 4.2, slide A2) | kisi berwarna kekerapan 5 kelas `skala.api` (1–2, 3–4, 5–6, 7–9, 10–14 tahun); sel tanpa deteksi tidak digambar; garis sel tidak digambar di skala provinsi (hanya di inset) | §2.1.4 |
 | Peta Indonesia kit per provinsi (Gambar 4.3, slide B2) | bulatan sebanding jumlah kit (total = simbol, bukan koroplet), `navy`, legenda tiga ukuran; label pil putih bergaris abu "Kalteng 12" | L34, PEDOMAN §B5.9 |
 | Calon AOI | bulatan `navy` bernomor putih, tabel nomor di bawah peta (peta indeks) | L35 |
@@ -1920,7 +1951,7 @@ Mengikuti tabel pilih grafik PEDOMAN §B5.10 dan anatomi L37–L44. Grafik SIPPA
 | 3.4 Histogram tahun terbakar MCD64A1 per kompleks | G1 (sebaran cacah) | batang tegak per jumlah tahun 0–25, `navy`, kelas ≥ 3 tahun pekat dan lainnya `pembanding`; alasan satu kalimat di manifest (D-28): sebaran cacah per kompleks, bukan deret waktu |
 | 6.1 Head loss per diameter | G4 | batang horizontal terurut, m per km pada 10 L/s, DN100 disorot `oranye`, lainnya `navy` |
 | 6.2 Profil trase SIPPA-G-08 | garis (gambar teknik ringan) | elevasi DEMNAS (area `wilayah`) + garis tekanan `navy` 1,75 pt + batas 88% PN `merah` putus + 2 bar `oranye` putus; sumbu jarak dan elevasi berlabel satuan |
-| slide C2 kurva head loss + serap lance | G4 + kartu angka | kurva atau batang per diameter, kartu "17 m per km", "8 lance paling banyak 320 L/min" |
+| slide C2 kurva head loss + serap lance | G4 + kartu angka | kurva atau batang per diameter, kartu "19,06 m per km pada 10 L/s", "8 lance paling banyak 320 L/min" |
 | 11.1 Garis waktu gerbang | diagram vektor | lingkaran per gerbang G0–G6 di garis waktu Des 2026–2028, ikon status (§2.1.3 kolom D) |
 | 12.1 CAPEX bertingkat gerbang; slide E1 | G9 | batang bertumpuk per tingkat (pilot 2026, pilot 2027–2028, skala Kalteng, nasional 81 kit), ≤ 4 kategori + "lainnya", total di atas |
 | 12.2 Kipas Monte Carlo; slide E1 | G11 | pita P10–P90 `skala.air.1`, median `navy`, angka P10/P50/P90 tertulis, pil "Estimasi model, belum diuji balik" |
@@ -2051,28 +2082,28 @@ tebal, probe 0,1/0,3/0,5/1,0 m sebagai titik `navy` berlabel; skala kedalaman di
 
 ### 5.5 Jenis slide deck (konsisten dengan S1–S39)
 
-Deck sekitar 15 slide isi + lampiran (KEPUTUSAN 19, PRD §8.5). Kerangka halaman, margin, garis
-y95 dan y507,6, logo, footer, dan nomor halaman mengikuti Buku Pegangan "Kerangka halaman".
+Deck 15 slide isi + sampul, penutup, dan lampiran L1–L4 (keputusan 19). Urutan, kode, `jenis_slide`, judul, dan token mengikat di KERANGKA-BUKU §11; tabel ini hanya menetapkan tata letak. Semua judul slide isi berbentuk temuan berangka kecuali slide 1 (Pesan Kunci, navigasi). Kerangka halaman, margin, garis y95 dan y507,6, logo, footer, dan nomor halaman mengikuti Buku Pegangan "Kerangka halaman". Zona di slide memakai biru dan emas dengan huruf A–D dan pola (keputusan 52, §2.1.3).
 
 | No | Kode | `jenis` (S35) | Judul | Tata letak (S13: 3–4 blok) |
 | --- | --- | --- | --- | --- |
-| 1 | sampul | – | deskriptif 2 baris | foto Commons kanan dengan fade, logo dalam lingkaran putih, nama BNPB `biru-lembaga`, pil tanggal navy, tanpa nama penyaji (PEDOMAN §B7.3) |
-| 2 | navigasi | navigasi | Pesan Kunci (deskriptif) | tesis 1 baris + 5 kartu temuan A–E berkode (S1, S2) + pita 3 keputusan oranye; pil CUT OFF |
-| 3 | A1 | grafik | temuan berangka | batang VIIRS (§5.2) kiri 2/3 + kolom 2 kartu angka kanan |
-| 4 | A2 | peta | temuan berangka | peta sel 2,2 km kiri 2/3 + kartu 85% dan 72% kanan |
-| 5 | B1 | peta | temuan berangka | dua panel peta zona (a)(b) + legenda native di bawah + pita "wajib cek lapangan jalan track" |
-| 6 | B2 | tabel | temuan berangka | tabel 18 provinsi native kiri + peta kecil kit per provinsi kanan; pil "rencana bersyarat, bukan pengadaan" |
-| 7 | C1 | panel | temuan berangka | diagram penampang gambut + 3 kartu angka (0,3–0,5 m, PP 57/2016 0,4 m, air per m3) |
-| 8 | C2 | grafik | temuan berangka | grafik head loss + serap lance; kartu 17 m/km; pil NO-GO untuk trunk 2.000 L/min |
-| 9 | C3 | matriks | deskriptif | GA ringkas SIPPA-G-01 (PNG tanpa teks, label native) + tabel BOM kelas kinerja |
-| 10 | D1 | tabel | deskriptif | matriks respons FRP x luas x zona, sel berpil tingkat |
-| 11 | D2 | kartu-skenario | deskriptif | tujuh kartu gerbang G0–G6 (ikon status, syarat lulus, vonis gagal) dalam kisi 4 + 3 |
-| 12 | D3 | matriks | deskriptif | RACI lembaga x tahap (S22): baris BNPB, Satgas, Manggala Agni, YonTP, BPBD, BRGM; sel chip R/A/C/I |
-| 13 | E1 | grafik | temuan berangka | batang CAPEX bertingkat kiri + kipas Monte Carlo kanan, pil "Estimasi model" |
-| 14 | E2 | rekomendasi | deskriptif | baris LANGKAH, RINCIAN, PENANGGUNG JAWAB bernomor, pita grup horizon 100 hari, 2026–2027, 2028–2030 (S28, S29); tanpa pil CUT OFF dan tanpa kaki |
-| 15 | navigasi | navigasi | Kesimpulan (deskriptif) | 8 kartu 4 x 2 + pita ARAHAN oranye berisi 3 keputusan (S32) |
-| 16 | penutup | – | Terima kasih | latar GELAP #051C2C, garis #F28C28, nama BNPB, alamat (T4), tanpa nama orang |
-| L1–L3 | lampiran | tabel | "L1. " + deskriptif | pembatas GELAP lalu tabel native ≤ 24 baris dipecah rata (S33) |
+| – | sampul | – | deskriptif 2 baris | foto Commons kanan dengan fade, logo dalam lingkaran putih, nama BNPB `biru-lembaga`, pil tanggal navy, tanpa nama penyaji (PEDOMAN §B7.3) |
+| 1 | navigasi | navigasi | Pesan Kunci (deskriptif) | tesis 1 baris + 5 kartu temuan A–E berkode (S1, S2) + pita KD-1 sampai KD-3 oranye; pil CUT OFF |
+| 2 | A1 | peta | temuan berangka | peta sel 2,2 km kiri 2/3 + kartu 85% dan 72% kanan |
+| 3 | A2 | grafik | temuan berangka | batang VIIRS (§5.2) kiri 2/3 + kolom 2 kartu angka kanan |
+| 4 | B1 | peta | temuan berangka | dua panel peta zona (a) versi `kendala.json` (b) semua jalan OSM + legenda native biru/emas berhuruf dan berpola + tabel mini A–D tiga versi + pita "wajib cek lapangan jalan track" |
+| 5 | B2 | tabel | temuan berangka | tabel 18 provinsi native kiri + peta kecil kit per provinsi kanan; pil "rencana bersyarat, bukan pengadaan" |
+| 6 | C1 | panel | temuan berangka | diagram penampang gambut + 3 kartu angka (0,3–0,5 m, PP 57/2016 0,4 m, air per m3) |
+| 7 | C2 | grafik | temuan berangka | grafik head loss per diameter + panel serapan lance; kartu "19,06 m per km pada 10 L/s", "8 lance paling banyak 320 L/min, debit bawaan 300 L/min"; pil NO-GO untuk 600 L/min dengan 8 lance |
+| 8 | C3 | matriks | temuan berangka | GA ringkas SIPPA-G-01 (PNG tanpa teks, label native) + tabel BOM 8 baris teratas menurut biaya |
+| 9 | C4 | tabel | temuan berangka | tabel native kapasitas modul banjir + kalender kit karhutla-banjir-irigasi |
+| 10 | D1 | matriks | temuan berangka | matriks respons tingkat 1–4 x FRP, luas, regu, hari, sarana, heli; sel berpil tingkat |
+| 11 | D2 | panel | temuan berangka | tujuh kartu gerbang G0–G6 (ikon status, syarat lulus, vonis gagal) dalam kisi 4 + 3 + garis waktu ringkas |
+| 12 | D3 | matriks | temuan berangka | RACI lembaga x tahap (S22): baris BNPB, Satgas, Manggala Agni, YonTP, BPBD, BRGM; sel chip R/A/C/I |
+| 13 | E1 | grafik | temuan berangka | batang CAPEX bertingkat kiri + kipas Monte Carlo kanan (dua panel, satu sumbu per panel), pil "Estimasi model" |
+| 14 | E2 | rekomendasi | temuan berangka | baris LANGKAH, RINCIAN, PENANGGUNG JAWAB bernomor, pita grup horizon 100 hari, 2026–2027, 2028–2030 (S28, S29); tanpa pil CUT OFF dan tanpa kaki |
+| 15 | navigasi | navigasi | temuan (tanpa angka baru) | 8 kartu 4 x 2 + pita ARAHAN oranye berisi KD-1 sampai KD-3 (S32) |
+| – | penutup | – | Terima kasih | latar GELAP #051C2C, garis #F28C28, nama BNPB, alamat (T4), tanpa nama orang |
+| L1–L4 | lampiran | tabel | "L1. " + deskriptif | pembatas GELAP lalu tabel native ≤ 24 baris dipecah rata (S33) |
 
 Aturan yang wajib dicek di tiap slide: judul ≤ 2 baris 19–22 pt (S7), angka judul muncul lagi
 di badan (S8), judul grafik 10 pt memuat topik, satuan, periode (S9), kode bagian oranye di
@@ -2117,7 +2148,7 @@ slide bervisual native (S36, S37), ≤ 6 butir per daftar (S38), tanpa emoji, Ro
 | Rupiah besar dalam miliar atau juta, kata ditulis | Rp5,2 miliar; Rp745 juta | Rp5,2 M; 5.230.000.000 |
 | "rb/jt" hanya di label sempit, berspasi | 2,6 jt | 2,6jt di kalimat |
 | Peluang kasar, tidak pernah 100% | < 1%; sekitar 60%; tinggi | 100%; 63,47% |
-| Estimasi model sebagai rentang atau "sekitar" | Rp12,1–16,1 miliar (P10–P90); sekitar 17 m per km | Rp14.103.552.000 |
+| Estimasi model sebagai rentang atau "sekitar" | Rp12,1–16,1 miliar (P10–P90); sekitar 19 m per km | Rp14.103.552.000 |
 | Hitungan persis tanpa ± | 188 kompleks; 3 sesi | ± 188 |
 | n kecil disebut | p50 3,4 jam dari 6 ulangan (n kecil) | p50 3,4 jam |
 | Koordinat: 5 desimal di layar staf, 2 desimal di ekspor luar | -2,71234; 114,10234 | -2.71234 |
@@ -2223,7 +2254,7 @@ hanya dengan label §2.1.3.
 
 | No | Butir | Keadaan dan usulan bawaan | Yang memutus |
 | --- | --- | --- | --- |
-| 1 | Warna zona di buku dan deck | PRD mengunci hijau/biru/kuning/merah untuk web; `tema.json` tidak punya hijau dan membatasi merah untuk bahaya. Bawaan dokumen ini: bivariat biru/emas + pola dan huruf identik dengan web (§2.1.3). Bila pemilik ingin warna sama persis dengan web, `tema.json` perlu token zona baru yang lolos `validasi` | pemilik |
+| 1 | Warna zona di buku dan deck | **diputus** keputusan 52 (25 Okt 2026): biru dan emas dengan huruf A–D dan pola sama dengan web (§2.1.3); web tetap palet PRD + huruf + pola wajib | selesai |
 | 2 | Kunci `hipotesis` dan `menunggu` di `tema.json kosakata.keyakinan` | belum ada; rupa diusulkan di §2.1.3 (garis putus oranye, garis putus teks-3). Penambahan oleh pemilik berkas `data/kajian-bnpb/**` (`pipa-data`) | pemilik / `pipa-data` |
 | 3 | z-index 12 untuk rel dan bilah bawah | tidak ada nilai repo di antara 10 dan 20 untuk navigasi lengket bawah; diusulkan 12 | pengerja `sippa` saat membangun |
 | 4 | Glif ikon `khusus:` (api-pompa, pompa, selang, lance, manifold, heli, drone, probe-gambut) | belum digambar; aturan stroke 2 viewBox 24 | pengerja `sippa` + `pipa-data` (tema) |

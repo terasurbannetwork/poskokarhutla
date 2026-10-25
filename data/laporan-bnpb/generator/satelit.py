@@ -2,8 +2,8 @@
 
 Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, hitung, hitung_wil; luas per titik F20/F21 per satelit), jadi untuk hari yang sudah
 lengkap hasilnya sama dengan public/data/peta_karhutla*.json. Yang ditambah di sini hanya: tarikan FIRMS mentah per hari UTC (cache CSV),
-pemotongan di jam cut-off WIB. hot SUDAH tanpa titik sumber panas industri dan hanya keyakinan sedang/tinggi (keputusan pemilik 25 Okt 2026), jadi hot_bersih == hot
-(kunci dipertahankan untuk pembaca lama).
+pemotongan di jam cut-off WIB. hot = LOKASI UNIK per hari WIB (titik_unik.py: M, N, N20, N21, sedang/tinggi, tanpa sel industri; keputusan pemilik 25 Okt 2026), jadi hot_bersih == hot
+(kunci dipertahankan untuk pembaca lama) dan 'hot_mandiri' = hitungan ulang terpisah dari baris mentah (pembanding uji).
 
 API:
     hitung(tanggal: date, jam='15:00', hari_n=4, kunci=None) -> {
@@ -25,6 +25,7 @@ AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')
 sys.path.insert(0, os.path.join(AKAR, 'scripts', 'data'))
 import peta_karhutla as PK   # noqa: E402
 import titik_palsu as TP      # noqa: E402
+import titik_unik as TU       # noqa: E402
 from wilayah import Wilayah   # noqa: E402
 
 CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'cache', 'raw')
@@ -77,6 +78,22 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
     for u in utc:
         rek.setdefault(u.isoformat(), PK.baru_rekaman(''))
     hd = {d: PK.hari_data(rek, d) for d in utc[1:]}
+    # pembanding mandiri: titik_unik.unik langsung atas baris mentah (tanpa rekam/hari_data), berurut waktu, hari WIB
+    pts = []
+    for _, r in semua:
+        sen = {'Terra': 'M', 'Aqua': 'M'}.get(r['satellite'], r['satellite'])
+        la, lo = float(r['latitude']), float(r['longitude'])
+        if sen in TU.SENSOR and PK.sedang(r) and not TP.palsu(la, lo, sel_ind):
+            t = dt.datetime.strptime(r['acq_date'] + r['acq_time'].zfill(4), '%Y-%m-%d%H%M').replace(tzinfo=PK.UTC)
+            pts.append({'s': sen, 'c': 1, 'lat': la, 'lon': lo, 't': t, 'wib': t.astimezone(WIB).date().isoformat()})
+    pts.sort(key=lambda x: x['t'])
+    mandiri, mentah = defaultdict(int), defaultdict(int)
+    for x in pts:
+        a_ = w.cari(x['lon'], x['lat'])
+        x['p'] = a_[0] if a_ else ''
+        mentah[(x['wib'], x['p'])] += 1
+    for x in TU.unik(pts, lambda x: x['wib']):
+        mandiri[(x['wib'], x['p'])] += 1
     out = {'prov': {}, 'kab': {}, 'kec': {}}
     def isi(tingkat, k, i, hot, luas, belum, padam):
         o = out[tingkat].setdefault(k, {m: [0] * hari_n for m in ('hot', 'hot_bersih', 'luas', 'belum', 'padam', 'fs')})
@@ -87,23 +104,30 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
             isi('prov', k, i, h, l, b, p)
         for k, (h, l, b, p) in PK.hitung_wil(hd, d).items():
             isi('kec' if k.count('|') == 2 else 'kab', k, i, h, l, b, p)
-    return {'hari': [d.isoformat() for d in hari], 'cutoff': cutoff.isoformat(timespec='minutes'), 'faktor': PK.FAKTOR, **out}
+    mand = {k: [mandiri.get((d.isoformat(), k), 0) for d in hari] for k in PK.PROVINSI}
+    mentah_p = {k: [mentah.get((d.isoformat(), k), 0) for d in hari] for k in PK.PROVINSI}
+    return {'hari': [d.isoformat() for d in hari], 'cutoff': cutoff.isoformat(timespec='minutes'), 'faktor': PK.FAKTOR, 'hot_mandiri': mand, 'hot_mentah': mentah_p, **out}
 
 
 def uji():
-    """Hari lengkap 23 Okt 2026 = berkas website lokal (public/data/peta_karhutla.json luas/belum/padam per provinsi, rumus F20/F21 yang sama); hot = harian30.json
-    lokal. Berkas lokal harus dibangun ulang penuh dengan peta_karhutla.py bila F20/F21 berubah."""
+    """Hari lengkap 23 Okt 2026: luas/belum/padam = berkas website lokal (public/data/peta_karhutla.json, rumus F20/F21 yang sama); hot (lokasi unik) = hitungan ulang mandiri
+    titik_unik.unik atas baris mentah, harus sama persis, <= deteksi mentah, dan nasional lebih kecil (sel yang dilihat dua satelit = satu).
+    Berkas lokal harus dibangun ulang penuh dengan peta_karhutla.py bila F20/F21 berubah."""
     a = hitung(dt.date(2026, 10, 23), '23:59', 3)
     P = json.load(open(os.path.join(AKAR, 'public/data/peta_karhutla.json')))
     assert P['faktor'] == PK.FAKTOR, f"berkas lokal memakai faktor {P['faktor']}, mesin {PK.FAKTOR}: bangun ulang penuh"
-    H = json.load(open(os.path.join(AKAR, 'public/data/harian30.json')))   # lokal, definisi yang sama (sedang/tinggi, tanpa sumber panas tetap); produksi lama beda sampai CI jalan
-    ip, ih = P['hari'].index('2026-10-23'), H['hari'].index('2026-10-23')
+    ip = P['hari'].index('2026-10-23')
     beda = [(k, m, PK.bul(o[m][-1]), P['prov'][k][m][ip]) for k, o in a['prov'].items() if k in P['prov']
             for m in ('luas', 'belum', 'padam') if abs(PK.bul(o[m][-1]) - (P['prov'][k][m][ip] or 0)) > 1]
-    hb = [(k, o['hot_bersih'][-1], H['prov'].get(k, [0] * 99)[ih]) for k, o in a['prov'].items() if o['hot_bersih'][-1] != H['prov'].get(k, [0] * 99)[ih]]
     assert not beda, f'luas/belum/padam beda dengan berkas website: {beda[:8]}'
-    assert len(hb) <= 2 and all(abs(x - y) <= 3 for _, x, y in hb), f'hot bersih beda dengan harian30: {hb[:8]}'
-    print('uji lolos: 23 Okt sama dengan berkas website lokal untuk', len(a['prov']), 'provinsi; hot_bersih selisih', hb)
+    hm = [(k, o['hot'][-1], a['hot_mandiri'][k][-1]) for k, o in a['prov'].items() if o['hot'][-1] != a['hot_mandiri'][k][-1]]
+    assert not hm, f'hot (lokasi unik) beda dengan hitungan mandiri titik_unik: {hm[:8]}'
+    assert all(a['hot_mandiri'][k][-1] <= a['hot_mentah'][k][-1] for k in a['hot_mandiri']), 'lokasi unik > deteksi mentah'
+    nu, nm = sum(v[-1] for v in a['hot_mandiri'].values()), sum(v[-1] for v in a['hot_mentah'].values())
+    assert nu < nm, f'lokasi unik nasional {nu} harus lebih kecil dari deteksi mentah {nm}'
+    hp = [(k, o['hot'][-1], P['prov'][k]['hot'][ip]) for k, o in a['prov'].items() if k in P['prov'] and o['hot'][-1] != P['prov'][k]['hot'][ip]]
+    assert not hp, f'hot beda dengan peta_karhutla.json lokal: {hp[:8]}'
+    print(f'uji lolos: 23 Okt sama dengan berkas website lokal untuk {len(a["prov"])} provinsi; hot = lokasi unik mandiri {nu} dari {nm} deteksi mentah')
 
 
 if __name__ == '__main__':

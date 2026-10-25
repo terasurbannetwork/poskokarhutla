@@ -6,7 +6,7 @@ Kontrak skema: lihat kunci-kunci di build(); halaman laporan membaca berkas ini.
 Definisi angka:
   titik  = LOKASI UNIK ~375 m (titik_unik.py: M, N, N20, N21, keyakinan sedang/tinggi; keputusan pemilik 25 Okt 2026), satu sel sekali per
            hari laporan = jendela 24 jam s.d. 16.00 WIB (lihat 'Hari laporan'); BUKAN sama dengan wilayah.json harian (hari kalender).
-           Hari arsip sebelum 25 Okt 2026 memakai definisi lama (titik mentah M+N+N20) dan tidak dihitung ulang.
+           Hari arsip sebelum 25 Okt 2026 (dulu titik mentah M+N+N20) dihitung ulang sekali dari FIRMS 4 satelit: migrasi_titik().
   luas   = PERKIRAAN luas terbakar = titik VIIRS S-NPP (N) keyakinan >= 1 hari itu x HA_TITIK (4,3 ha)
   baru   = sama dengan luas (tiap deteksi harian menyumbang luas baru); kumulatif = jumlah luas harian
   dampak = luas TERDAMPAK = sel kisi 375 m (1 piksel VIIRS) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan >= 1 hari itu
@@ -42,6 +42,7 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 HA_TITIK, HA_RENDAH, HA_TINGGI = 4.30, 3.22, 4.59   # ha per titik S-NPP; lihat docstring
 HA_PIKSEL, SEL = 14.06, 0.375 / 111.32   # 1 piksel VIIRS 375 m; sel kisi dalam derajat lintang
 LUAS_V = 2
+MULAI_UNIK = "2026-10-25"   # hari laporan pertama yang build() hitung sebagai lokasi unik; hari arsip sebelumnya dimigrasi sekali (migrasi_titik)
 ARSIP_HARI = 90
 TUTUP_JAM = 16   # jam WIB penutup hari laporan
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
@@ -170,6 +171,65 @@ def arsip_seri(arsip):
     for v in arsip.get("kab") or []:
         o[(v["prov"], v["nama"])] = {f: v.get(f) for f in ("titik", "luas", "baru", "dampak")}
     return o
+
+
+def migrasi_titik(arsip, ambil_csv, cari, palsu=None):
+    """Hari arsip < MULAI_UNIK yang belum lokasi unik (arsip["titik_unik"]) dihitung ulang SEKALI dari FIRMS 4 satelit lewat hitung() yang
+    sama dengan jendela hotspot.json: titik nasional/prov/kab hari itu = lokasi unik per hari laporan (D-1 16.00, D 16.00] WIB. Hari arsip
+    sebelum 21 Okt 2026 (dulu hari kalender) ikut pindah ke jendela 16.00, jadi seluruh seri satu definisi.
+    ambil_csv(u0, u1) -> ([(sumber, baris_csv)], ok) = firms_sumber.unduh 4 famili; cari(lon, lat) -> [prov, kab, kec] | None;
+    palsu(lat, lon) -> True untuk sel sumber panas tetap. Hari yang unduhannya tidak lengkap (penuh() 4 famili) dibiarkan dan dicoba lagi
+    di jalan berikutnya. luas, baru, dampak arsip tidak disentuh."""
+    from firms_sumber import SENSOR, kelas_yakin, penuh
+    if not arsip or not arsip.get("hari"):
+        return arsip
+    sudah = set(arsip.get("titik_unik") or [])
+    perlu = [d for d in arsip["hari"] if d < MULAI_UNIK and d not in sudah]
+    if not perlu:
+        return arsip
+    D, sensor = dt.date.fromisoformat, {**SENSOR, "VIIRS_NOAA21": "N21"}
+    baris, ok = ambil_csv(D(perlu[0]) - dt.timedelta(days=1), D(perlu[-1]))
+    acuan = dt.datetime.combine(D(perlu[-1]), dt.time(16), WIB)
+    tabel, idx, rows, lihat = [], {}, [], set()
+    for src, r in baris:
+        jam = r["acq_time"].zfill(4)
+        t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
+        lat, lon, s = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4), sensor.get(src.rsplit("_", 1)[0])
+        if s is None or (lat, lon, t, s) in lihat or (palsu and palsu(lat, lon)):
+            continue
+        lihat.add((lat, lon, t, s))
+        adm = cari(lon, lat)
+        if not adm:
+            continue   # laut atau negara tetangga
+        k = "|".join(adm)
+        if k not in idx:
+            idx[k] = len(tabel)
+            tabel.append(k)
+        rows.append([lat, lon, (t - acuan).total_seconds() / 3600, s, float(r.get("frp") or 0), kelas_yakin(r.get("confidence", ""), src.startswith("MODIS")),
+                     idx[k], t.astimezone(WIB).strftime("%m-%d")])
+    _, _, tt, _, _ = hitung({"acuan": acuan.isoformat(), "wilayah": tabel, "baris": rows})
+    selesai = [d for d in perlu if penuh(ok, D(d), tuple(f for f in sensor))]
+    if not selesai:
+        return arsip
+    a = json.loads(json.dumps(arsip))
+    n = len(a["hari"])
+    kosong = lambda: {"titik": [0] * n, "luas": [0] * n, "baru": [0] * n, "dampak": [None] * n}
+    prov, kab = a.setdefault("prov", {}), {(v["prov"], v["nama"]): v for v in a.setdefault("kab", [])}
+    for d in selesai:
+        i, h = a["hari"].index(d), tt.get(D(d), {})
+        for k in [k for k in h if len(k) == 1 and k[0] not in prov] :
+            prov[k[0]] = kosong()
+        for k in [k for k in h if len(k) == 2 and k not in kab]:
+            kab[k] = {"prov": k[0], "nama": k[1], **kosong()}
+            a["kab"].append(kab[k])
+        a.setdefault("nasional", kosong())["titik"][i] = h.get((), 0)
+        for p, v in prov.items():
+            v["titik"][i] = h.get((p,), 0)
+        for k, v in kab.items():
+            v["titik"][i] = h.get(k, 0)
+    a["titik_unik"] = sorted(sudah | set(selesai))
+    print(f"laporan: migrasi titik lokasi unik {len(selesai)} hari ({selesai[0]} s.d. {selesai[-1]}), belum {len(perlu) - len(selesai)}", file=sys.stderr)
+    return a
 
 
 def isi_celah(t, s, ambang=0.15):
@@ -415,12 +475,13 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "awal_arsip": hari_iso[0] if hari_iso else None,
         "jadwal": {"tutup": "16.00 WIB", "pembaruan": "tiap 3 jam"},
         "luas_v": LUAS_V,
+        "titik_unik": sorted(d for d in ((arsip or {}).get("titik_unik") or []) if d in hari_iso),   # hari arsip yang sudah dimigrasi (migrasi_titik)
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
         "tahun_berjalan": tb,
         "luas_banding": luas_banding(sejarah, luas_sat, luas_resmi, tb, hari_iso, prov, tahun),
         "sumber": {
-            "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
+            "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20, VIIRS NOAA-21; lokasi unik ~375 m per hari laporan (s.d. 16.00 WIB)",
             "dampak": "Luas terdampak: sel 375 m (1 piksel VIIRS, 14,06 ha) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan sedang/tinggi hari itu; memuat lahan belum terbakar di piksel yang sama, jadi selalu lebih luas dari luas terbakar; harian, tidak dijumlahkan",
             "luas": "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) × 4,3 ha, dikalibrasi ke luas terbakar resmi tahunan 2015–2025 (SiPongi KLHK); kuartil 3,2–4,6 ha per titik; uji balik tahunan meleset sampai +101%/−35%; angka harian dan per wilayah indikatif; bukan pengukuran citra",
             "kompleks": "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari); status dihitung dari aturan Centurisk97",
@@ -437,11 +498,28 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
     }
 
 
+def unduh_4satelit():
+    """-> (ambil_csv, cari, palsu) untuk migrasi_titik: FIRMS area API 4 famili (kunci FIRMS_MAP_KEY), wilayah BIG, sel sumber panas tetap."""
+    from firms_sumber import FAMILI, muat_ketersediaan, unduh
+    from harian import BBOX, ambil, kunci
+    from wilayah import Wilayah
+    import titik_palsu as TP
+    fam, k, w = FAMILI + ("VIIRS_NOAA21",), kunci(), Wilayah()
+    ket = muat_ketersediaan(k, ambil, fam)
+    sel = TP.sel_industri()[0]
+    return (lambda u0, u1: unduh(u0, u1, k, ambil, BBOX, ket, famili=fam)), w.cari, (lambda la, lo: TP.palsu(la, lo, sel)) if sel else None
+
+
 def main():
     hs = baca("hotspot.json")
     if not hs:
         sys.exit("hotspot.json tidak ada")
-    lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), baca("laporan.json"),
+    arsip = baca("laporan.json")
+    try:   # sekali: hari arsip sebelum MULAI_UNIK dihitung ulang sebagai lokasi unik; gagal = arsip lama tetap dipakai, dicoba lagi jalan berikutnya
+        arsip = migrasi_titik(arsip, *unduh_4satelit())
+    except (Exception, SystemExit) as e:
+        print(f"peringatan: migrasi titik arsip gagal: {e!r}", file=sys.stderr)
+    lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), arsip,
                 sejarah=baca("sejarah.json"), h30=baca("harian30.json"), titik_tahun=baca("titik_tahun.json"), luas_sat=baca("luas_satelit.json"))
     jalur = os.path.join(DATA, "laporan.json")
     with open(jalur, "w") as f:
@@ -557,6 +635,24 @@ def uji():
         n = len({(hari_lap(acu_l + dt.timedelta(hours=r[2])) if isinstance(r[2], (int, float)) else tanggal(r[7], akh_l), TU.sel(r[0], r[1]))
                  for r in hl["baris"] if TU.dihitung(r[3], r[5])})
         assert sum(v.get((), 0) for v in tt.values()) == n, (sum(v.get((), 0) for v in tt.values()), n)
+    # migrasi_titik: hari arsip lama dihitung ulang sebagai lokasi unik per hari laporan; unduhan tak lengkap = hari dibiarkan
+    nol3 = lambda v: {"titik": list(v), "luas": [9, 9, 9], "baru": [9, 9, 9], "dampak": [None, None, None]}
+    ar = {"hari": ["2026-10-01", "2026-10-02", "2026-10-25"], "luas_v": LUAS_V, "nasional": nol3([100, 100, 7]),
+          "prov": {"14": nol3([100, 100, 7])}, "kab": [{"prov": "14", "nama": "A", **nol3([100, 100, 7])}]}
+    K = lambda la, lo, tg, jm, c, f="VIIRS_NOAA20_NRT": (f, {"latitude": str(la), "longitude": str(lo), "acq_date": tg, "acq_time": jm, "confidence": c, "frp": "1"})
+    csv_m = [K(0.5, 101.5, "2026-10-02", "0300", "n"), K(0.5, 101.5, "2026-10-02", "0350", "h", "VIIRS_NOAA21_NRT"),   # sel sama 10-02: SATU
+             K(0.5, 102.5, "2026-10-02", "0400", "n", "VIIRS_NOAA21_NRT"),                                             # kab B (baru di arsip)
+             K(0.6, 101.5, "2026-10-02", "1000", "n"),                                                                  # 17.00 WIB = hari laporan 10-03
+             K(0.7, 101.5, "2026-10-02", "0300", "l"), K(0.8, 101.5, "2026-10-02", "0300", "h"), K(9, 9, "2026-10-02", "0300", "h")]   # rendah / sel palsu / laut
+    fam = {"VIIRS_SNPP", "VIIRS_NOAA20", "VIIRS_NOAA21", "MODIS"}
+    okm = {D: set(fam) for D in (dt.date(2026, 10, 1), dt.date(2026, 10, 2))}   # 30 Sep tak lengkap -> hari 10-01 tidak dimigrasi
+    cari_m = lambda lon, lat: None if lon < 100 else ["14", "A" if lon < 102 else "B", "x"]
+    mg = migrasi_titik(ar, lambda u0, u1: (csv_m, okm), cari_m, lambda la, lo: abs(la - 0.8) < 1e-6)
+    assert mg["nasional"]["titik"] == [100, 2, 7] and mg["prov"]["14"]["titik"] == [100, 2, 7], mg["nasional"]
+    assert {v["nama"]: v["titik"] for v in mg["kab"]} == {"A": [100, 1, 7], "B": [0, 1, 0]}, mg["kab"]
+    assert mg["titik_unik"] == ["2026-10-02"] and mg["nasional"]["luas"] == [9, 9, 9] and ar["nasional"]["titik"] == [100, 100, 7]
+    assert migrasi_titik(mg, lambda u0, u1: (csv_m, {D: set(fam) for D in (dt.date(2026, 9, 30), dt.date(2026, 10, 1))}), cari_m)["titik_unik"] == ["2026-10-01", "2026-10-02"]
+    assert migrasi_titik({**mg, "titik_unik": ["2026-10-01", "2026-10-02"]}, None, None)["titik_unik"] == ["2026-10-01", "2026-10-02"]   # selesai: tak mengunduh
     # luas_banding: sumber tanpa data suatu tahun = None (bukan 0); GWIS digabung di kode pertama grup
     sj2 = {"tahun": ["2025", "2026"], "dibuat": "2026-01-02", "prov": {"14": {"2025": [100] + [0] * 11, "2026": [10] + [0] * 11}}}
     tb2 = tahun_berjalan(sj2, ["2026-01-02"], [7], "2026")

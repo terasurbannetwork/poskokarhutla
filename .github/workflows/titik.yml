@@ -121,6 +121,8 @@ jobs:
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}   # sekali: migrasi titik arsip ke lokasi unik (laporan.migrasi_titik)
         run: python3 scripts/data/laporan.py
 
       - name: Laporan harian gagal (peringatan)

@@ -90,7 +90,7 @@ async function laporanHarian(env, url, {tanggal}) {
   const prov = Object.entries(l.prov).map(([kode, p]) => ({kode, nama: p.nama, titik: p.titik[i] ?? 0, luas_ha: p.luas[i] ?? 0})).sort((a, b) => b.titik - a.titik);
   return {tanggal: t, hari_lengkap: l.hari_lengkap, lengkap: t <= l.hari_lengkap, dibuat: l.dibuat, jadwal: l.jadwal, nasional: {titik: l.nasional.titik[i], luas_ha: l.nasional.luas[i], luas_baru_ha: l.nasional.baru[i], kabupaten_bertitik: l.nasional.kab[i]},
     tahun_berjalan: {luas_ha: l.tahun_berjalan.ha, rentang_ha: [l.tahun_berjalan.rendah, l.tahun_berjalan.tinggi], sampai: l.tahun_berjalan.sd}, provinsi: prov,
-    catatan: "Titik panas = lokasi unik ~375 m per hari laporan dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21 (hari sebelum 25 Okt 2026: deteksi mentah MODIS + S-NPP + NOAA-20). luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Pantau Bencana."};
+    catatan: "Titik panas = lokasi unik ~375 m per hari laporan dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21. luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Pantau Bencana."};
 }
 async function kualitasUdara(env, url, {prov}) {
   const u = await data(env, url, "udara_kualitas"), kol = u.kolom_prov;

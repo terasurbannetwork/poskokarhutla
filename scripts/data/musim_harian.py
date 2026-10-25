@@ -28,7 +28,7 @@ HITUNG = os.path.join(AKAR, "data/raw/firms/musim_harian_hitung.json")
 AWAL, LATAR_AKHIR = 2019, 2025
 WIB = dt.timedelta(hours=7)
 SUMBER = "NASA FIRMS MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20, VIIRS NOAA-21; arsip standar (SP) + NRT; tahun berjalan dari laporan.json"
-DEFINISI = "Lokasi unik ~375 m per hari dari semua satelit (M, N, N20, N21 sejak 2023), keyakinan sedang/tinggi saja, tanpa sumber panas tetap, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif. Hari arsip laporan sebelum 25 Okt 2026: deteksi mentah M+N+N20"
+DEFINISI = "Lokasi unik ~375 m per hari dari semua satelit (M, N, N20, N21 sejak 2023), keyakinan sedang/tinggi saja, tanpa sumber panas tetap, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif. Hari arsip laporan ikut lokasi unik sesudah migrasi_titik (laporan.py)"
 
 
 def hari_tahun(tahun):
