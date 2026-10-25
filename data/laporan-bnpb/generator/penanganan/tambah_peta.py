@@ -56,31 +56,33 @@ def gambar(rid, x, y, w, h, nama):
             f'<p:blipFill><a:blip r:embed="{rid}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="{x}" y="{y}"/><a:ext cx="{w}" cy="{h}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 L, R_ = 640080, 11551920                     # tepi dalam panel
 # 1) empat kotak angka nasional selebar panel: ikon + label + angka (tanpa ±, tanpa keterangan).
-# FIRESPOT (keputusan pemilik 25 Okt 2026) memakai ikon hotspot dan merah Firespot layar; satuannya lokasi, bukan titik.
+# FIRESPOT (keputusan pemilik 25 Okt 2026) memakai ikon hotspot dan merah Firespot layar; satuannya TITIK, sama dengan
+# hotspot, karena firespot adalah bagian dari hotspot (titik yang sudah terkonfirmasi api).
 ky, kh, gap = 1435608, 502920, 91440; kw = (R_ - L - 3 * gap) // 4
 KP = [('051C2C', 'AFC3DA', 'rIdIk1', 'HOTSPOT', f0(HOT), 'titik'),
-      ('C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT', f0(FS), 'lokasi'),
+      ('C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT', f0(FS), 'titik'),
       ('3F5F80', 'D3DFEA', 'rIdIk2', 'LUAS TERBAKAR', f0(LUAS), 'ha'),
       ('D9600B', 'FFDCC2', 'rIdIk3', 'BELUM PADAM', f0(BEL), 'ha')]
 for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
     x = L + n * (kw + gap)
+    # empat kotak lebih sempit dari tiga: ikon dirapatkan dan huruf dikecilkan supaya label dan angka tidak bertemu
     out.append(kotak(x, ky, kw, kh, fill=col, geomp='roundRect', adj=13636))
-    out.append(gambar(rid, x + 164592, ky + (kh - 274320) // 2, 274320, 274320, 'Ikon ' + lab.title()))
-    out.append(kotak(x + 566928, ky, kw - 566928 - 128016, kh, [[(lab, 900, True, muda, 100)]], anchor='ctr'))
-    out.append(kotak(x + 566928, ky, kw - 566928 - 164592, kh, [[(val, 1800, True, 'FFFFFF'), (' ' + sat, 1000, False, 'FFFFFF')]], algn='r', anchor='ctr'))
+    out.append(gambar(rid, x + 128016, ky + (kh - 237744) // 2, 237744, 237744, 'Ikon ' + lab.title()))
+    out.append(kotak(x + 438912, ky, kw - 438912 - 109728, kh, [[(lab, 820, True, muda, 80)]], anchor='ctr'))
+    out.append(kotak(x + 438912, ky, kw - 438912 - 137160, kh, [[(val, 1600, True, 'FFFFFF'), (' ' + sat, 900, False, 'FFFFFF')]], algn='r', anchor='ctr'))
 top_isi = ky + kh + 91440; dasar = 5724144
 # 2) peringkat 10 provinsi di kanan; judul kolom bergaya judul kolom slide tabel (kotak warna + ikon + label* + satuan)
 CW = [256032, 950000, 800000, 800000, 880000, 820000]; RW = sum(CW); RX = R_ - RW; cx = [RX + sum(CW[:j]) for j in range(6)]
 hh = 338328
 out.append(kotak(cx[1], top_isi, CW[1], hh, [[('PROVINSI', 750, True, '6B7280', 150)]], anchor='ctr'))
-KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs', 'C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT*', '(lokasi)'),
+KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs', 'C9503A', 'FFE3DC', 'rIdIk1', 'FIRESPOT*', '(titik)'),
        (4, 'luas', '3F5F80', 'E6ECF3', 'rIdIk2', 'LUAS TERBAKAR*', '(ha)'),
        (5, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
 for j, key, col, muda, rid, t, sat in KOL:
     bx, bw = cx[j] + 27432, CW[j] - 27432
     out.append(kotak(bx, top_isi, bw, hh, fill=col, geomp='roundRect', adj=13636))
     out.append(gambar(rid, bx + 45720, top_isi + (hh - 100584) // 2, 100584, 100584, 'Ikon ' + t))
-    out.append(kotak(bx + 173736, top_isi, bw - 182880, hh, [[(t, 490, True, 'FFFFFF'), (' ' + sat, 490, False, muda)]], anchor='ctr', wrap='none'))
+    out.append(kotak(bx + 164592, top_isi, bw - 173736, hh, [[(t, 450, True, 'FFFFFF'), (' ' + sat, 450, False, muda)]], anchor='ctr', wrap='none'))
 TOP = rows[:10]
 MX = {key: max(A[k][key][I] for k in TOP) or 1 for _, key, *_ in KOL}
 ry = top_isi + hh + 45720; rh = (dasar - ry) // 10

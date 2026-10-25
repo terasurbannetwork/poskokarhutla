@@ -72,10 +72,16 @@ def seri_sel(awal=None, akhir=None, bn=None):
     """[(lat, lon, prov, {tgl: {fwi, dc, hujan, ws}})] untuk seluruh grid darat."""
     grid = H.grid_darat(Wilayah())
     bn = benih() if bn is None else bn
+    # Sel yang tak ada di benih dipinjami keadaan sel benih TERDEKAT, bukan nilai awal standar: beda satu sel 0,5 derajat
+    # jauh lebih kecil daripada beda DC yang menumpuk sejak awal musim (lihat uji()). Hari-harinya tetap dihitung sendiri
+    # dari cuaca selnya; yang dipinjam cuma titik mulainya.
     tanpa = [g for g in grid if (g[0], g[1]) not in bn]
+    for g in tanpa:
+        dekat = min(bn, key=lambda c: (c[0] - g[0]) ** 2 + (c[1] - g[1]) ** 2)
+        bn[(g[0], g[1])] = (bn[dekat][0], bn[dekat][1], {})
     if tanpa:
-        print(f'{len(tanpa)} sel tidak ada di {os.path.basename(BENIH)}: dipanaskan dari nilai awal standar '
-              f'(DC-nya bisa terlalu rendah), contoh {tanpa[:3]}', file=sys.stderr)
+        print(f'{len(tanpa)} sel tidak ada di {os.path.basename(BENIH)}: keadaan awalnya dipinjam dari sel terdekat, '
+              f'contoh {tanpa[:3]}', file=sys.stderr)
     out = []
     for a in range(0, len(grid), BATCH):
         bagian = grid[a:a + BATCH]

@@ -108,7 +108,8 @@ def ganti_tabel(s, lib, top6, bm):
         h, a = k in bm['hujan'] or k in bm['lebat'], k in bm['angin']
         s = pasang(s, lib, X_CU, y, 'hujan' if h else 'angin' if a else 'cerah',
                    ('HUJAN LEBAT' if k in bm['lebat'] else 'HUJAN, ANGIN' if a else 'HUJAN SEDANG') if h else 'ANGIN KENCANG' if a else 'CERAH BERAWAN')
-    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>cuaca {bm["periode"]}</a:t>')
+    lab = f'PM2,5 {bm["pm_tgl"]}, cuaca {bm["periode"]}' if bm.get('pm_tgl') else f'prakiraan cuaca {bm["periode"]}'
+    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>{lab}</a:t>')
 
 
 def singkat(t, n=46):

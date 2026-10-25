@@ -58,8 +58,10 @@ masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks
 
 - Angka satelit: `satelit.py` (mesin website, FIRMS ditarik ulang; uji `python3 satelit.py --uji`).
 - Firespot per provinsi per hari: `firespot_hari.py` (mesin `scripts/data/harian.py` dengan jam dibekukan; uji
-  `python3 firespot_hari.py --uji` membandingkannya dengan arsip `public/data/kluster_hari/`). Hasil per hari dicache di
-  `cache/firespot-17.00.json`. **Satuannya lokasi (kluster), bukan titik**; label "(titik)" templat BNPB sengaja diganti.
+  `python3 firespot_hari.py --uji` membandingkannya dengan arsip `public/data/kluster_hari/` indeks 4, FWI dikunci ke
+  fwi.json pipeline supaya yang diuji algoritmanya). Hasil per hari dicache di `cache/firespot-17.00.json`.
+  **Satuannya titik, sama dengan hotspot** (keputusan pemilik 25 Okt 2026): lokasi unik ~375 m hari itu yang berada di
+  cluster lolos syarat firespot, jadi firespot <= hotspot. Jumlah cluster-nya tidak dipakai di deck ini.
 - Cuaca/FWI hari lampau: `cuaca_riwayat.py` (ERA5 300 hari + forecast; uji `python3 cuaca_riwayat.py --uji`).
 - Pil PM2,5 + cuaca tanpa `--bmkg`: `pil_sendiri.py` (rata-rata provinsi CAMS + ambang P.14/2020, hujan/angin Open-Meteo
   dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).

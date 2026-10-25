@@ -3,7 +3,8 @@
 Aturan pemilik (25 Okt 2026): cut-off 17.00 WIB hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara
 s.d. jam cut-off; empat kelompok kolom FIRESPOT, HOTSPOT, LUAS TERBAKAR, BELUM PADAM, masing-masing tiga hari dan berbintang;
 halaman "Operasi Penanganan Karhutla" dibuang (sumbernya teks WA satgas, tidak ada untuk hari lampau).
-Angka satelit dari satelit.hitung dan firespot dari firespot_hari.seri, keduanya mesin website. Pil PM2,5 + cuaca dari
+Angka satelit dari satelit.hitung dan firespot dari firespot_hari.seri, keduanya mesin website. Firespot dihitung dalam
+TITIK, bagian dari hotspot, jadi firespot <= hotspot di tiap sel tabel. Pil PM2,5 + cuaca dari
 pil_sendiri (data sendiri, ambang resmi) atau dari teks WA BMKG bila --bmkg diberikan. Templat = deck BNPB 211026.
 
     python3 penanganan.py --tanggal 2026-10-25 [--jam 17:00] [--bmkg bmkg.txt] [--out DIR]
@@ -36,6 +37,10 @@ def bangun(D, jam, bmkg, out):
     prov = {k: {m: o[m] for m in ('hot', 'luas', 'belum', 'padam')} for k, o in a['prov'].items()}
     for k, o in prov.items():
         o['fs'] = fs.get(k, [0] * 4)
+    # firespot adalah BAGIAN dari hotspot (lokasi unik hari itu yang ada di cluster lolos syarat), jadi tak boleh melebihinya;
+    # kalau ini jebol, satuan salah satu kolom berubah tanpa yang lain ikut (mis. firespot kembali dihitung per cluster)
+    langgar = [(k, i, o['fs'][i], o['hot'][i]) for k, o in prov.items() for i in range(4) if o['fs'][i] > o['hot'][i]]
+    assert not langgar, f'firespot melebihi hotspot di (prov, kolom, fs, hot): {langgar[:8]}'
     for f in ('angka.json', 'angka_nasional.json'):
         json.dump({'hari': a['hari'], 'prov': prov, 'faktor': a['faktor'], 'metode': 'generator/satelit.py ' + a['cutoff']}, open(os.path.join(kerja, f), 'w'))
     top6 = sorted(prov, key=lambda k: -prov[k]['hot'][3])[:6]

@@ -96,7 +96,7 @@ def ganti_total(s, y, kode, nid=None):
             tot = sum(bul(A[k][grp][i + 1]) for k in kode)  # jumlah = jumlah angka yang tampil
             baru.append(settext(setgeom(cetak, LX[grp][i], y, LW, cy), f0(tot)))
     if nid is not None:
-        baru = [re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid[0] + 1 + j}"', b, 1) for j, b in enumerate(baru)]
+        baru = [re.sub(r'<p:cNvPr id="\d+"', f'<p:cNvPr id="{nid[0] + 1 + j}"', b, count=1) for j, b in enumerate(baru)]
         nid[0] += len(baru)
     return s.replace('</p:spTree>', ''.join(baru) + '</p:spTree>')
 
@@ -227,13 +227,13 @@ s2 = rep(s2, '<a:t>554,76 ha</a:t>', f'<a:t>{f0(B8)} ha</a:t>')
 s2 = rep(s2, '<a:t>LUAS TERBAKAR / TARGET</a:t>', '<a:t>LUAS TERBAKAR*</a:t>')   # kepala s1 dibangun ulang kepala_tabel()
 s2 = rep(s2, '<a:t>BELUM PADAM</a:t>', '<a:t>BELUM PADAM*</a:t>')
 for lama, i in (('272 FS', 1), ('269 FS', 2), ('279 FS', 3)):
-    s2 = rep(s2, f'<a:t>{lama}</a:t>', f'<a:t>{f0(sum(A[k]["fs"][i] for k in P8))} lokasi</a:t>')
+    s2 = rep(s2, f'<a:t>{lama}</a:t>', f'<a:t>{f0(sum(A[k]["fs"][i] for k in P8))} titik</a:t>')
 s2 = rep(s2, '<a:t>Fire spot 8 provinsi</a:t>', '<a:t>Lokasi api bertahan, 8 provinsi</a:t>')
 s2 = rep(s2, '<a:t>3 provinsi tambahan masuk prioritas karena peningkatan hotspot.</a:t>', '<a:t>3 provinsi tambahan masuk daftar prioritas.</a:t>')
 CAT = '**Perkiraan satelit VIIRS S-NPP (NASA FIRMS), 4,3 ha per titik; belum padam = titik yang bertahan ≥1 hari di lokasi sama.'
 s1 = rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>',
          '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS). '
-         'Firespot = lokasi api yang pola nyalanya berturut, metode Kemenhut SIPANTAU; satuannya lokasi, bukan titik.</a:t>')
+         'Firespot = titik panas yang sudah terkonfirmasi api (syarat Kemenhut SIPANTAU), bagian dari hotspot.</a:t>')
 s2 = rep(s2, '<a:t>Fire spot belum termasuk Papua Selatan dan Sulawesi Tengah.</a:t>', '<a:t>Lokasi api bertahan = kluster titik api satelit yang menyala ≥1 hari di tempat sama; berbeda dari Fire Spot BNPB.</a:t>')
 s2 = rep(s2, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System). NA: belum ada data laporan lapangan.</a:t>', '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).</a:t>')
 CUTOFF = PAR['cutoff']

@@ -16,7 +16,7 @@ LX = {g: [GX[g] + i * PITCH - (LW - PITCH) // 2 for i in range(3)] for g in GRUP
 BX = {g: [GX[g] + i * PITCH + (PITCH - BW) // 2 for i in range(3)] for g in GRUP}
 HGX = {'fs': 'C9503A', 'hot': '051C2C', 'luas': '3F5F80', 'belum': 'D9600B'}   # warna kepala; FIRESPOT = merah Firespot layar
 HGX_MUDA = {'fs': 'FFE3DC', 'hot': 'E6ECF3', 'luas': 'E6ECF3', 'belum': 'FFE6D5'}
-KEPALA = {'fs': ('FIRESPOT*', '  (lokasi)'), 'hot': ('HOTSPOT*', '  (titik)'),
+KEPALA = {'fs': ('FIRESPOT*', '  (titik)'), 'hot': ('HOTSPOT*', '  (titik)'),   # firespot bagian dari hotspot, satuan sama
           'luas': ('LUAS TERBAKAR*', '  (ha)'), 'belum': ('BELUM PADAM*', '  (ha)')}
 KEPALA_SZ, IKON_DX, IKON_W = 800, 91440, 164592   # templat 1050/321213/219456; kelompoknya menyempit, kepalanya ikut
 KEPALA_TX = IKON_DX + IKON_W + 68580              # x tulisan kepala, relatif kiri kelompok

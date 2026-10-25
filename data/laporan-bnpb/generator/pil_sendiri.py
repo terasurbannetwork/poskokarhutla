@@ -39,8 +39,15 @@ def pm25(hari):
 
 
 def bahan(hari, cuaca):
+    """riwayat.json hanya memuat hari yang SUDAH SELESAI, jadi deck hari ini (cut-off 17.00) memakai hari terakhir
+    yang ada; tanggalnya ikut ditulis di legenda supaya tidak tertukar dengan tanggal cuacanya."""
     hari = str(hari)
-    pm = pm25(hari)
+    R = json.load(open(RIWAYAT))
+    ada = sorted({t for v in R['prov'].values() for t in v if t <= hari})
+    if not ada:
+        sys.exit(f'tidak ada PM2,5 di {RIWAYAT} untuk {hari} atau sebelumnya')
+    pm_tgl = ada[-1]
+    pm = pm25(pm_tgl)
     nilai = sorted(pm.values(), reverse=True)
     per = {}
     for s in cuaca.values():
@@ -56,11 +63,11 @@ def bahan(hari, cuaca):
             hujan.add(k)
         if ws >= ANGIN_KENCANG:
             angin.add(k)
-    d = dt.date.fromisoformat(hari)
+    hb = lambda s: (lambda d: f'{d.day} {BULAN[d.month - 1][:3]}')(dt.date.fromisoformat(s))
     return {'pm': {k: (v, kategori(v), None) for k, v in pm.items()},
             'pm_ke10': nilai[9] if len(nilai) >= 10 else (nilai[-1] if nilai else 0.0),
             'hujan': hujan, 'lebat': lebat, 'angin': angin,
-            'periode': f'{d.day} {BULAN[d.month - 1][:3]}'}
+            'pm_tgl': hb(pm_tgl), 'periode': hb(hari)}
 
 
 def uji():
