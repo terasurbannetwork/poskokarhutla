@@ -13,6 +13,14 @@ FAMILI = ("VIIRS_SNPP", "VIIRS_NOAA20", "MODIS")
 SENSOR = {"VIIRS_SNPP": "N", "VIIRS_NOAA20": "N20", "MODIS": "M"}
 
 
+def kelas_yakin(conf, modis):
+    """Keyakinan FIRMS -> 0 rendah, 1 sedang, 2 tinggi (BRIN: MODIS 0-29/30-79/80-100; VIIRS l/n/h, nilai tak dikenal = sedang).
+    Titik panas yang dihitung = kelas >= 1 (keputusan pemilik 25 Okt 2026)."""
+    if modis:
+        return 0 if not conf.isdigit() or int(conf) < 30 else 1 if int(conf) < 80 else 2
+    return {"l": 0, "n": 1, "h": 2}.get(conf.lower(), 1)
+
+
 def muat_ketersediaan(kunci, ambil, famili=FAMILI):
     """{data_id: (tgl_min, tgl_maks)}; RuntimeError bila NRT satu famili (bawaan FAMILI) tak tercantum."""
     ket = {}
@@ -81,6 +89,7 @@ def nasional_harian(jalur):
 
 def uji():
     D = dt.date.fromisoformat
+    assert [kelas_yakin(c, False) for c in "lnhN"] == [0, 1, 2, 1] and [kelas_yakin(c, True) for c in ("0", "29", "30", "79", "80", "100")] == [0, 0, 1, 1, 2, 2], "keyakinan rendah (l, MODIS < 30) harus kelas 0"
     HDR = "latitude,longitude,acq_date,acq_time\n"
     avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-01-02\n{f}_NRT,2026-01-03,2026-12-31\n" for f in FAMILI)
     ket = muat_ketersediaan("K", lambda u: avail)

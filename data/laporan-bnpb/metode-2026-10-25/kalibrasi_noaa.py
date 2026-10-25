@@ -4,6 +4,7 @@ Titik per tahun = keyakinan n/h, di dalam batas wilayah, tahun WIB, TANPA titik 
 pembangkit, lepas pantai; kawah tetap dihitung) = saringan YANG SAMA dengan mesin luas scripts/data/peta_karhutla.py (sebelum 25 Okt 2026 aturan sejarah.vegetasi), untuk
 data/raw/firms/viirs_noaa20.csv (SP 2018-04-01..) dan viirs_noaa21.csv (SP 2023-03-01..). S-NPP dari sejarah.json website (sumber faktor 4,3).
 Luas resmi 2015-2025: riwayat.json (factsheet_karhutla.json website, Bakom/BNPB). 2026 Jan-Jul: SiPongi 202.011 ha (laporan.py, uji luar contoh).
+Faktor luas PERIODE (sel 375 m unik, tanpa hitung ganda antarhari) dikalibrasi di kalibrasi_unik.py dengan cara yang sama.
 Keluaran: kalibrasi_noaa.json + ringkasan di stdout.
 Pakai: python3 kalibrasi_noaa.py"""
 import csv, datetime as dt, json, os, statistics, sys

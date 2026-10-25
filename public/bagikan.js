@@ -424,11 +424,11 @@ const Bagikan = {
     const h = this.hariIni(), pr = S.meta.prioritas || [];
     return [...pr, ...semua.filter(k => !pr.includes(k)).sort((a, b) => (h.per[b] || 0) - (h.per[a] || 0))];
   },
-  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, semua keyakinan; sama dengan KPI peta saat rentang "Hari ini") */
+  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, keyakinan sedang dan tinggi; sama dengan KPI peta saat rentang "Hari ini") */
   hariIni() {
     if (this._hari) return this._hari;
     const per = {}, kab = {}; let tot = 0, tinggi = 0;
-    for (const b of S.titik || []) { if (b[7] !== S.hariIni || !S.utama?.has(b[3])) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
+    for (const b of S.titik || []) { if (b[7] !== S.hariIni || !S.dihitung?.(b)) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
       per[w[0]] = (per[w[0]] || 0) + 1; kab[w[1]] = (kab[w[1]] || 0) + 1; tot++; if (b[5] === 2) tinggi++; }
     return this._hari = {per, kab, tot, tinggi};
   },
@@ -1030,7 +1030,7 @@ const Bagikan = {
       "Riwayat kejadian: DIBI BNPB. Fitur banjir masih uji coba; cek peringatan resmi BMKG dan BPBD sebelum bertindak."];
     const db = S.meta.dbscan || {};
     return [
-      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20), semua tingkat keyakinan, dihitung per hari kalender WIB.",
+      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik ± 375 m per hari kalender WIB.",
       `Cluster: titik dikelompokkan (DBSCAN radius ${fmt(db.eps_km)} km, jendela ${fmt(db.jendela_hari)} hari); aktif ${fmt(db.aktif_jam)} jam, di gambut ${fmt(db.aktif_gambut_jam)} jam.`,
       `Status kompleks: ${S.meta.status.join(", ")}; dari ukuran front aktif, bahaya cuaca, kekeringan gambut (DC), dan risiko wilayah.`,
       "Bahaya cuaca: Fire Weather Index sistem Kanada dari prakiraan BMKG/Open-Meteo; kelas rendah 0–1, sedang 2–6, tinggi 7–13, sangat tinggi di atas 13.",
@@ -1080,7 +1080,7 @@ const Bagikan = {
     } else {
       const h = this.hariIni(), hr = Object.keys(S.wilayah[Object.keys(S.wilayah)[0]]?.harian || {}).sort(), pk = new Map(), ang = new Map();
       for (const x of S.posko || []) { pk.set(x.prov, (pk.get(x.prov) || 0) + 1); ang.set(x.prov, (ang.get(x.prov) || 0) + anggaran(S.semuaPosko.get(x.id)).total); }
-      const tg = {}; for (const b of S.titik) if (b[7] === S.hariIni && S.utama.has(b[3]) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
+      const tg = {}; for (const b of S.titik) if (b[7] === S.hariIni && S.dihitung(b) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
       tambah("Provinsi", ["Kode", "Provinsi", "Status", "Titik panas hari ini (WIB)", "Keyakinan tinggi hari ini", ...hr.map(t => "Titik " + t), "Cluster aktif", "Prioritas pemadaman", "Siaga pemadaman", "Patroli terpadu", "FWI maks", "FWI rata-rata", "DC maks", "FFMC maks", "Posko lapangan", "Anggaran posko (Rp)", "Pantauan harian BNPB"],
         Object.keys(S.meta.provinsi).map(k => { const w = S.wilayah[k] || {}, kl = klusterDi(k), n = l => kl.filter(f => f.properties.level === l).length;
           return [k, namaProv(k), S.meta.status[w.level ?? 0], h.per[k] || 0, tg[k] || 0, ...hr.map(t => w.harian?.[t] ?? 0), kl.length, n(3), n(2), n(1), w.fwi_maks ?? null, w.fwi_rata ?? null, w.dc_maks ?? null, w.ffmc_maks ?? null, pk.get(k) || 0, Math.round(ang.get(k) || 0), S.meta.bnpb?.[k] ? "ya" : "tidak"]; })
@@ -1099,7 +1099,7 @@ const Bagikan = {
             .map(r => [J[r.jenis], namaProv(r.prov), r.jenis === "prov" ? "" : r.kab, r.nama, r.skor, r.kelas, r.tahun, r.total, r.puncak, r.tren, ...r.v]));
       } catch (e) { console.warn("riwayat", e); info.push("peringkat risiko gagal dimuat"); }
       meta.push(["Data satelit terakhir", S.meta.data_terakhir], ["Jumlah titik (arsip 7 hari)", S.meta.jumlah_titik], ["Jumlah cluster", S.meta.jumlah_kluster],
-        ["Sumber titik panas", "NASA FIRMS: MODIS, VIIRS S-NPP, NOAA-20"], ["Sumber cuaca & FWI", "BMKG / Open-Meteo"], ["Laporan harian", "BNPB"], ["Riwayat", "Arsip NASA FIRMS MODIS 2002–sekarang"],
+        ["Sumber titik panas", "NASA FIRMS: MODIS, VIIRS S-NPP, NOAA-20, NOAA-21 (lokasi unik per hari)"], ["Sumber cuaca & FWI", "BMKG / Open-Meteo"], ["Laporan harian", "BNPB"], ["Riwayat", "Arsip NASA FIRMS MODIS 2002–sekarang"],
         ["Status cluster", S.meta.status.join(", ")], ["Catatan", "Luas dan anggaran indikatif; harga satuan 2026 perlu dicek ke e-Katalog/SSH daerah."]);
     }
     meta.push(...this.catatanMetode().map((t, i) => ["Metode " + (i + 1), t]));

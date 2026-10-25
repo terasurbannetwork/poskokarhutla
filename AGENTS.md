@@ -94,6 +94,22 @@ ulang yang berubah.
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
 
+### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang SIPPA (halaman `/pipa`, buku kajian pipa,
+data pipa), baca dokumen di `data/kajian-bnpb/pipa/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-SIPPA.md`: 50 keputusan pemilik, menang atas semuanya.
+2. `PRD.md`: lingkup, fitur, larangan.
+3. `DESIGN-SYSTEM.md`: token, komponen, wireframe tiap layar.
+4. `DESAIN-TEKNIS.md`: berkas, model data, skema D1, rute, rumus.
+5. `KERANGKA-BUKU.md`: isi buku per bab.
+6. `RENCANA-UJI.md`: kriteria terima dan perintah bukti.
+7. `TIKET.md`: urutan kerja; ambil tiket, kerjakan hanya cakupannya.
+
+Fitur, layar, atau bab yang tidak ada di dokumen itu tidak dibuat. Bila dokumen
+bertentangan atau kurang, berhenti dan tanya pemilik; jangan mengarang arah.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih

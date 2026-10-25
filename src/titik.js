@@ -6,7 +6,7 @@
    wilayah dicari dari geo/provinsi.json + pusat kecamatan terdekat (banjir/data/pusat_kec.json), bukan poligon
    kecamatan penuh, jadi titik di pantai/perbatasan bisa sedikit berbeda dari data harian. */
 export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA21_NRT: "N21", MODIS_NRT: "M"};
-export const SENSOR_UTAMA = ["M", "N", "N20"];
+export const SENSOR_UTAMA = ["M", "N", "N20", "N21"];   // semua dihitung sebagai lokasi unik di peramban (AngkaKawasan.unik), sama dengan hotspot.json
 const BBOX = [94, -11.5, 141.5, 6.5], JAM = 3600e3, SIMPAN = 8, MAKS_BYTE = 1.8e6, KEC_CADANGAN_KM = 8;
 
 export const km = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };

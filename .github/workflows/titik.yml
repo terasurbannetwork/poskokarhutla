@@ -44,11 +44,11 @@ jobs:
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
-      # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
-      # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
-      - name: Pulihkan musim_harian dari repo bila latar cache bukan median
+      # sekali jalan: musim_harian.json dibangun ulang (latar median; 25 Okt 2026: lokasi unik 4 satelit, titik_unik.py); cache data- lama
+      # (latar atau definisi lain) tidak boleh menang. Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
+      - name: Pulihkan musim_harian dari repo bila cache berdefinisi lama
         run: |
-          python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
+          python3 -c "import json,sys; m=json.load(open('public/data/musim_harian.json')); sys.exit(0 if m['latar']['stat']=='median' and m['definisi'].startswith('Lokasi unik') else 1)" 2>/dev/null \
             || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
 
       - name: Titik panas, kompleks (FWI dipakai ulang)

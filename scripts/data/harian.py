@@ -21,9 +21,10 @@ BBOX = "94,-11.5,141.5,6.5"
 SENSOR = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT", "MODIS_NRT"]
 HARI = 7
 
-# Hitungan utama setara SiPongi/BNPB: MODIS + VIIRS S-NPP + NOAA-20 (tanpa NOAA-21), semua tingkat keyakinan,
-# per hari kalender WIB, tanpa dedup. NOAA-21 tetap ditampilkan di peta.
-SENSOR_UTAMA = {"M", "N", "N20"}
+# Hitungan utama (keputusan pemilik 25 Okt 2026): LOKASI UNIK ~375 m per hari kalender WIB dari MODIS + S-NPP + NOAA-20 + NOAA-21,
+# keyakinan sedang/tinggi saja (definisi di titik_unik.py). Sengaja tidak sama dengan SiPongi/GIS BNPB (titik mentah M+N+N20).
+# Titik keyakinan rendah tetap ada di berkas titik dan digambar di peta; kolom "hitung" hotspot.json menandai deteksi yang dihitung.
+import titik_unik as TU  # noqa: E402
 # Kejadian api (FEDS, Chen dkk. 2022; Indradjad dkk. 2024): VIIRS 3 satelit, keyakinan nominal+tinggi,
 # DBSCAN Haversine eps adaptif hingga 1,5 km, minPts 1 (titik tunggal tetap kejadian), jendela 7 hari,
 # aktif bila terdeteksi <= 72 jam (168 jam di gambut kering).
@@ -69,7 +70,7 @@ SYARAT = {"permukiman_km": 5.0, "tumbuh_tambah": 3, "tumbuh_kali": 1.5}
 
 
 def pix(p):  # sel kisi ~375 m tempat titik jatuh
-    return (round(p["lat"] / 0.003375), round(p["lon"] * math.cos(math.radians(p["lat"])) / 0.003375))
+    return TU.sel(p["lat"], p["lon"])
 
 
 def tgl(t):  # hari kalender WIB
@@ -380,7 +381,7 @@ def main():
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w)
     # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
-    # jumlah titik, kompleks, status, dan harian30. Gunung api tetap (setara SiPongi). Matikan: TITIK_PALSU=0.
+    # jumlah titik, kompleks, status, dan harian30. Gunung api (kawah) tetap dihitung. Matikan: TITIK_PALSU=0.
     industri = {"aktif": False, "titik": 0, "jenis": {}}
     if os.environ.get("TITIK_PALSU", "1") != "0":
         import titik_palsu as TP, harian30
@@ -422,7 +423,7 @@ def main():
     kini = dt.datetime.now(dt.timezone.utc)
     akhir = max((p["t"] for p in titik), default=kini)
     hari_akhir = tgl(kini)
-    # gunung api aktif (aturan.GUNUNG_API) tidak dijadikan kompleks karhutla; titiknya tetap ada di hotspot.json (setara SiPongi)
+    # gunung api aktif (aturan.GUNUNG_API) tidak dijadikan kompleks karhutla; titiknya tetap ada di hotspot.json
     viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)
              and not A.gunung_api(p["lat"], p["lon"])]
     label, inti = dbscan(viirs)
@@ -576,10 +577,11 @@ def main():
             for k in [k for k in q if k not in INTI]:
                 q.pop(k)
 
-    # ringkasan per provinsi: hitungan utama per hari WIB (setara SiPongi/BNPB) + FWI
+    # ringkasan per provinsi: hitungan utama = lokasi unik per hari WIB (titik_unik.py) + FWI
     rek = {}
+    dihitung = {id(p) for p in TU.unik(titik, lambda p: tgl(p["t"]))}
     for p in titik:
-        if p["s"] not in SENSOR_UTAMA:
+        if id(p) not in dihitung:
             continue
         r = rek.setdefault(p["adm"][0], {"harian": {}, "tinggi": {}})
         d = tgl(p["t"]).isoformat()
@@ -616,10 +618,11 @@ def main():
     tabel = sorted({"|".join(p["adm"]) for p in titik})
     idx = {k: i for i, k in enumerate(tabel)}
     def titik_json(pilih, **tambah):
-        return {"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"],
-                "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA), **tambah,
+        return {"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"],
+                "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": list(TU.SENSOR), "keyakinan_min": TU.KEYAKINAN_MIN,
+                "satuan": "lokasi unik ~375 m per hari WIB (titik_unik.py)", **tambah,
                 "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
-                           idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik if pilih(p)]}
+                           idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:], int(id(p) in dihitung)] for p in titik if pilih(p)]}
     simpan("hotspot.json", titik_json(lambda p: True))
     simpan("hotspot72.json", titik_json(lambda p: p["t"] >= akhir - dt.timedelta(hours=72), jam_maks=72))
     # muatan awal (rentang bawaan "hari ini", juga "kemarin", dan jendela 48 jam Ringkasan): tanggal WIB hari ini & kemarin
@@ -683,7 +686,10 @@ def arsip_kluster(fitur, hari, folder, simpan_hari=8):
     Dibaca tabel wilayah saat hari lampau dipilih. Berkas lebih tua dari simpan_hari dihapus (pemilih hari layar maks 7 hari)."""
     os.makedirs(folder, exist_ok=True)
     with open(os.path.join(folder, f"{hari.isoformat()}.json"), "w") as f:
-        json.dump({"hari": hari.isoformat(), "w": ringkas_kluster(fitur)}, f, ensure_ascii=False, separators=(",", ":"))
+        # k = pusat cluster level >= 1 (yang digambar peta) supaya peta ikut hari terpilih; poligon tidak diarsip
+        k = [[p["id"], round(p["lon"], 4), round(p["lat"], 4), p["level"], p.get("n", 0), p.get("px24", 0)]
+             for p in (x["properties"] for x in fitur) if p.get("level", 0) >= 1 and "lon" in p]
+        json.dump({"hari": hari.isoformat(), "w": ringkas_kluster(fitur), "k": k}, f, ensure_ascii=False, separators=(",", ":"))
     batas = (hari - dt.timedelta(days=simpan_hari)).isoformat()
     for n in os.listdir(folder):
         if n.endswith(".json") and n[:10] < batas:
@@ -876,6 +882,7 @@ def uji():
         arsip_kluster([{"properties": P3}], dt.date(2026, 10, 19), d)
         assert sorted(os.listdir(d)) == ["2026-10-12.json", "2026-10-19.json"], os.listdir(d)
         assert json.load(open(os.path.join(d, "2026-10-19.json")))["w"]["62"] == [1, 0, 3]
+        assert [r[3] for r in json.load(open(os.path.join(d, "2026-10-19.json")))["k"]] == [3], "arsip k: pusat cluster level>=1"
     print("harian uji: arsip kluster OK")
     # firespot: enam pola, piksel unik, gerbang
     def tt(hari, c, n=1, lat=-3.0, lon=112.0, geser=0.0):  # n titik di piksel berbeda, hari ke-`hari` Okt 2026 siang WIB

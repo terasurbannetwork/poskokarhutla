@@ -223,7 +223,7 @@ function modelLama(P, K) {
   const ctl = b > 0 ? Kartu.seg("petaH", [["", tgl(st.hari)], ["b", tgl(D.hari[b]) + " (belum final)"]], {petaH: pakaiB ? "b" : ""}) : "";
   const dft = K ? barisKab().filter(r => r.t > 0).sort((a, c) => c.t - a.t).slice(0, 10).map(r => ({nama: r.nama, t: r.t, tp: r.tp})) : rows.slice(0, 10);
   return {rows, j, ctl, pakaiB, dft, kepala: "", ket: "", cetak: "", sat: " titik", ey: P.length ? "Peta " + namaWil(P) : "Peta provinsi", aria: `Peta titik panas tiap provinsi ${tgl(h)}`,
-    sumber: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG",
+    sumber: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21); batas wilayah BIG",
     leg: [["#D9600B", "Ukuran lingkaran sebanding jumlah titik panas"], ["#051C2C", "Provinsi dengan titik panas"], ["#DCE1E7", "Tanpa titik panas"],
       ["#D9600B", "naik dari hari sebelumnya"], ["#2F86D1", "turun dari hari sebelumnya"]],
     tip: r => `<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / (totNas || 1) * 100))}%`};
@@ -478,7 +478,7 @@ function kartuSumber() {
 
 /* ---------- tiga kartu musim & luas (tugas 2): musim_harian.json (dimuat malas, X.mh) + laporan.json luas_banding. Ikut pemilih provinsi kartu (pilih) ---------- */
 /* semua teks label metode/sumber di sini supaya gampang diganti (validasi-model bisa mengubahnya) */
-const CATATAN_TITIK = "Semua deteksi NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20), semua tingkat keyakinan, di dalam batas provinsi, hari WIB; sumber statis, gunung api, dan lepas pantai tidak disaring.";
+const CATATAN_TITIK = "Lokasi unik ± 375 m per hari dari NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, di dalam batas provinsi, hari WIB; sumber panas tetap (industri, tambang, PLTU) dibuang, gunung api dan lepas pantai tidak disaring.";
 const SUMBER_MUSIM = `NASA FIRMS; tahun berjalan dari data harian ${MEREK}`;
 const MULAI = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];   /* awal tiap bulan, kalender kabisat (0 = 1 Jan, 59 = 29 Feb) */
 const li = h => MULAI[+h.slice(5, 7) - 1] + (+h.slice(8) - 1);
@@ -685,7 +685,7 @@ function kartuTren() {
         + `<text x="${cx}" y="${y0 + ch - 4}" text-anchor="middle" font-size="10" opacity="${bf ? .9 : .55}" font-weight="${bf ? 700 : 400}">${+hari[j].slice(8)}${bf ? "*" : ""}</text>`
         + (j > 0 && v[j - 1] ? (() => { const a = Math.round((x / v[j - 1] - 1) * 100); return `<text x="${cx}" y="${y0 + ch + 10}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:${a > 0 ? MERAH : a < 0 ? HIJAU : "#8a94a6"}">${a > 0 ? "▲" : a < 0 ? "▼" : "•"}${fmt(Math.abs(a))}%</text>`; })() : ""); }); });
   return Kartu.kartu("Tren harian", `Titik panas naik di ${Kartu.hl(naik + " dari " + pv.length)} provinsi yang sering mengalami karhutla dalam 3 hari terakhir`,
-    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)", "",
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21; lokasi unik per hari)", "",
     [[HIJAU, "3 hari terakhir turun"], [MERAH, "3 hari terakhir naik"], [BANDING, "3 hari pembanding"], [LAMA, "hari sebelumnya"], ["#8a94a6", "▲▼% di bawah tanggal = perubahan dari hari sebelumnya"]]);
 }
 

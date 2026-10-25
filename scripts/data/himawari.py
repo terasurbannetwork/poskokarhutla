@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/data/himawari.py          # butuh env PTREE_USER, PTREE_PASS
         python3 scripts/data/himawari.py --uji    # self-check parser
 Env: HIMAWARI_JAM (jendela jam terhadap pindaian terbaru, bawaan 3).
-Level 1 dingin/2 membara/3 menyala; Reliability 1 rendah (sering = industri, dibuang) 3 normal 5 tinggi;
+Level 1 dingin/2 membara/3 menyala; Reliability 1 rendah (sering = industri) 3 normal 5 tinggi; hanya >= 3 yang disimpan (keyakinan sedang/tinggi, pemilik 25 Okt 2026);
 QF 0 normal/1 jenuh/2 FRP kurang yakin. FRP MW = FRP(W/m2) x Area(km2). Grid 0.02 derajat.
 """
 import datetime as dt, ftplib, io, json, os, re, sys, time
@@ -28,7 +28,7 @@ def parse(teks):
             lv, rel, frp, qf = int(k[9]), int(k[10]), float(k[11]), int(k[12])
         except (ValueError, IndexError):
             continue
-        if not (-11.5 <= lat <= 6.5 and 94.5 <= lon <= 141.5) or rel == 1 or gunung > 0:
+        if not (-11.5 <= lat <= 6.5 and 94.5 <= lon <= 141.5) or rel < 3 or gunung > 0:
             continue
         w = dt.datetime(th, bl, tg, hm // 100, hm % 100)
         if (lat, lon) not in out or w > out[(lat, lon)][0]:
@@ -58,6 +58,7 @@ def uji():
          "1,2026,10,19,600,-2.0,110.0,4.0,0,3,3,10.0,0\n"      # frp 40.0
          "2,2026,10,19,610,-2.0,110.0,4.0,0,2,5,12.5,1\n"      # grid sama, lebih baru -> menang, 50.0
          "3,2026,10,19,610,-2.02,110.0,4.0,0,3,1,10.0,0\n"     # rel 1 -> buang
+         "6,2026,10,19,610,-2.04,110.0,4.0,0,3,2,10.0,0\n"     # rel 2 (di bawah normal) -> buang
          "4,2026,10,19,610,20.0,110.0,4.0,0,3,3,10.0,0\n"      # luar bbox
          "5,2026,10,19,610,-3.0,110.0,4.0,1,3,3,10.0,0\n")     # gunung api
     d = parse(s)

@@ -169,12 +169,12 @@
     const ren = namaRentang();   /* satu hari WIB terpilih: "hari ini" | "kemarin" | "Sen 19 Okt" */
     if (TITIK.has(T.i.t)) { const [lo, la] = T.i.c, BUF = BUFJ[T.i.t], t = BUF.map(() => 0), kp = BUF.map(() => 0);
       const dl = .5, dlo = .5 / Math.max(.2, Math.cos(la * rad));
-      for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.utama.has(b[3]) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
+      for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.dihitung(b) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
       for (const f of S.kluster.features) { const p = f.properties; if (Math.abs(p.lat - la) > dl || Math.abs(p.lon - lo) > dlo) continue; const d = jarak(la, lo, p.lat, p.lon); BUF.forEach((km, j) => d <= km && kp[j]++); }
       bd = tab("Radius", [`Titik panas ${ren}`, "Cluster aktif (72 jam, tak ikut hari terpilih)"], BUF.map((km, j) => [km + " km", fmt(t[j]) + " titik", fmt(kp[j]) + " cluster"])); }
     else if (T.poli) { const P = polys(T.poli.geometry), b = T.bb; let kp = 0;
       /* mesin yang sama dengan Luas terbakar / Belum padam panel peta (peta_karhutla.py), dihitung di dalam batas ini */
-      const a = AngkaKawasan.hitung(S.titik, b, (x, y) => dalamPoli(x, y, P), S.utama, S.hariPilih);
+      const a = AngkaKawasan.hitung(S.titik, b, (x, y) => dalamPoli(x, y, P), S.dihitung, S.hariPilih);
       for (const f of S.kluster.features) { const p = f.properties; if (p.lon >= b[0] && p.lon <= b[2] && p.lat >= b[1] && p.lat <= b[3] && dalamPoli(p.lon, p.lat, P)) kp++; }
       const tl = `<span title="(Titik NOAA-20 × 4,22 ha + titik NOAA-21 × 4,36 ha) ÷ 2, per hari kalender WIB. Bukan angka regu darat">`;
       bd = tab("Di dalam batas", [ren[0].toUpperCase() + ren.slice(1)], [[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],

@@ -80,7 +80,7 @@ def bangun(m, mn, luas=None):
     res = {"versi": 2, "dibuat": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(), "tahun": tahun, "sd": m["sd"], "hari_ke": n,
            "rerata_tahun": [RERATA[0], RERATA[-1]],
            "hari_kurva": "hari ke-7, 14, ... lalu hari ke-n (ini) atau hari terakhir tahun (pembanding); nilai = titik panas kumulatif",
-           "definisi": "banding: M + N + N20, semua keyakinan, hari WIB (musim_harian.json). setara_2015: M + N saja, di tanggal potongnya sendiri.",
+           "definisi": "banding: M + N + N20, keyakinan sedang/tinggi, tanpa sumber panas tetap, hari WIB (musim_harian.json). setara_2015: M + N saja, di tanggal potongnya sendiri.",
            **out}
     if mn:
         ny = (dt.date.fromisoformat(mn["sd"]) - dt.date(int(tahun), 1, 1)).days + 1
@@ -128,7 +128,7 @@ def dasar_mn(sd, berkas):
             p = {k: v[:n] for k, v in p.items()}
             tahun[y] = {"nasional": [sum(v[i] for v in p.values()) for i in range(n)], "prov": p}
     with open(DASAR, "w") as f:
-        json.dump({"sumber": "NASA FIRMS MODIS C6.1 + VIIRS S-NPP arsip standar (SP) + NRT, semua keyakinan, hari WIB, provinsi menurut batas BIG; tanpa NOAA-20",
+        json.dump({"sumber": "NASA FIRMS MODIS C6.1 + VIIRS S-NPP arsip standar (SP) + NRT, keyakinan sedang/tinggi, tanpa sumber panas tetap, hari WIB, provinsi menurut batas BIG; tanpa NOAA-20",
                    "sd": sd, "tahun": tahun}, f, separators=(",", ":"))
     print(f"data/kumulatif_mn.json: {os.path.getsize(DASAR) / 1024:.0f} KB", {y: sum(v["nasional"]) for y, v in tahun.items()})
 

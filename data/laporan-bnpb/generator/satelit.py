@@ -2,7 +2,8 @@
 
 Mesin hitungnya mesin website (scripts/data/peta_karhutla.py: rekam, hari_data, hitung, hitung_wil; luas per titik F20/F21 per satelit), jadi untuk hari yang sudah
 lengkap hasilnya sama dengan public/data/peta_karhutla*.json. Yang ditambah di sini hanya: tarikan FIRMS mentah per hari UTC (cache CSV),
-pemotongan di jam cut-off WIB, dan hot_bersih (tanpa titik sumber panas industri, sama dengan harian30.json / tabel Real Time website).
+pemotongan di jam cut-off WIB. hot SUDAH tanpa titik sumber panas industri dan hanya keyakinan sedang/tinggi (keputusan pemilik 25 Okt 2026), jadi hot_bersih == hot
+(kunci dipertahankan untuk pembaca lama).
 
 API:
     hitung(tanggal: date, jam='15:00', hari_n=4, kunci=None) -> {
@@ -63,7 +64,7 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
     utc = [hari[0] - (3 - i) * PK.HARI for i in range((tanggal - hari[0]).days + 4)]   # hari_data(d) butuh UTC d-1, d; hitung(d) butuh d-2
     kunci = kunci_firms(kunci)
     sel_ind, _ = TP.sel_industri()
-    semua, ind = [], []
+    semua = []
     for u in utc:
         for src in SUMBER:
             for r in csv.DictReader(io.StringIO(csv_hari(src, u, cutoff, kunci))):
@@ -71,39 +72,31 @@ def hitung(tanggal, jam='15:00', hari_n=4, kunci=None):
                 if t >= cutoff:
                     continue
                 semua.append((src, r))
-                if r['satellite'] in PK.HOT and TP.palsu(r['latitude'], r['longitude'], sel_ind):
-                    ind.append((src, r))
     w = Wilayah()
-    rek, rek_ind = PK.rekam(semua, w, '', sel_ind), PK.rekam(ind, w, '')
-    for r in (rek, rek_ind):
-        for u in utc:
-            r.setdefault(u.isoformat(), PK.baru_rekaman(''))
+    rek = PK.rekam(semua, w, '', sel_ind)
+    for u in utc:
+        rek.setdefault(u.isoformat(), PK.baru_rekaman(''))
     hd = {d: PK.hari_data(rek, d) for d in utc[1:]}
-    hd_ind = {d: PK.hari_data(rek_ind, d) for d in utc[1:]}
     out = {'prov': {}, 'kab': {}, 'kec': {}}
-    def isi(tingkat, k, i, hot, luas, belum, padam, hot_ind):
+    def isi(tingkat, k, i, hot, luas, belum, padam):
         o = out[tingkat].setdefault(k, {m: [0] * hari_n for m in ('hot', 'hot_bersih', 'luas', 'belum', 'padam', 'fs')})
         o['hot'][i], o['luas'][i], o['belum'][i], o['padam'][i] = hot, luas, belum, padam
-        o['hot_bersih'][i] = hot - hot_ind
+        o['hot_bersih'][i] = hot   # hot sudah bersih
     for i, d in enumerate(hari):
         for k, (h, l, b, p) in PK.hitung(hd, d).items():
-            isi('prov', k, i, h, l, b, p, hd_ind[d]['hot'].get(k, 0))
-        ind_w = defaultdict(int)
-        for kk, n in hd_ind[d]['hotw'].items():
-            ind_w[kk] += n; ind_w[kk.rsplit('|', 1)[0]] += n
+            isi('prov', k, i, h, l, b, p)
         for k, (h, l, b, p) in PK.hitung_wil(hd, d).items():
-            isi('kec' if k.count('|') == 2 else 'kab', k, i, h, l, b, p, ind_w.get(k, 0))
+            isi('kec' if k.count('|') == 2 else 'kab', k, i, h, l, b, p)
     return {'hari': [d.isoformat() for d in hari], 'cutoff': cutoff.isoformat(timespec='minutes'), 'faktor': PK.FAKTOR, **out}
 
 
 def uji():
-    """Hari lengkap 23 Okt 2026 = berkas website lokal (public/data/peta_karhutla.json luas/belum/padam per provinsi, rumus F20/F21 yang sama); hot bersih = harian30.json
-    di website (jaringan). Berkas lokal harus dibangun ulang penuh dengan peta_karhutla.py bila F20/F21 berubah."""
+    """Hari lengkap 23 Okt 2026 = berkas website lokal (public/data/peta_karhutla.json luas/belum/padam per provinsi, rumus F20/F21 yang sama); hot = harian30.json
+    lokal. Berkas lokal harus dibangun ulang penuh dengan peta_karhutla.py bila F20/F21 berubah."""
     a = hitung(dt.date(2026, 10, 23), '23:59', 3)
     P = json.load(open(os.path.join(AKAR, 'public/data/peta_karhutla.json')))
     assert P['faktor'] == PK.FAKTOR, f"berkas lokal memakai faktor {P['faktor']}, mesin {PK.FAKTOR}: bangun ulang penuh"
-    ambil = lambda f: json.load(urllib.request.urlopen(urllib.request.Request(f'https://centurisk97.id/data/{f}', headers={'User-Agent': 'curl/8'}), timeout=60))
-    H = ambil('harian30.json')
+    H = json.load(open(os.path.join(AKAR, 'public/data/harian30.json')))   # lokal, definisi yang sama (sedang/tinggi, tanpa sumber panas tetap); produksi lama beda sampai CI jalan
     ip, ih = P['hari'].index('2026-10-23'), H['hari'].index('2026-10-23')
     beda = [(k, m, PK.bul(o[m][-1]), P['prov'][k][m][ip]) for k, o in a['prov'].items() if k in P['prov']
             for m in ('luas', 'belum', 'padam') if abs(PK.bul(o[m][-1]) - (P['prov'][k][m][ip] or 0)) > 1]

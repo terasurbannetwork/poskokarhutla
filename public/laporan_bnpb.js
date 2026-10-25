@@ -78,7 +78,8 @@ const FORM = {
         ["masa", "Masa status (teks SK)", "t", 22], ["mulai", "Mulai", "d"], ["sampai", "Sampai", "d"], ["sk_posko", "SK Posko", "t", 12]]},
     {judul: "Konferensi pers (opsional)", ket: "Kosong = kalimat imbauan baku per jenis bencana yang ada hari itu. Maks. 6 imbauan. Pembuka dipakai di naskah juru bicara dan halaman ringkasan.", lipat: true,
       tabel: "imbauan", kolom: [["judul", "Judul imbauan", "t", 16], ["isi", "Isi", "t", 30]], medan: [["konpers_pembuka", "Kalimat pembuka konpers", "a"]]},
-    {judul: "Judul slide (opsional)", ket: "Kosong = judul dihitung otomatis dari angka.", lipat: true, medan: [["judul_ringkasan", "Judul slide ringkasan", "a"], ["judul_rincian", "Judul slide rincian", "a"]]},
+    {judul: "Judul slide (opsional)", ket: "Kosong = judul dihitung otomatis dari angka. Dua slide Pusdalops hanya ikut tercetak bila isiannya ada.", lipat: true,
+      medan: [["judul_ringkasan", "Judul slide ringkasan", "a"], ["judul_rincian", "Judul slide rincian", "a"], ["judul_status", "Judul slide status darurat daerah", "a"], ["judul_pusdalops", "Judul slide hambatan dan kebutuhan", "a"]]},
   ],
   presiden: [
     {judul: "Sampul", medan: [["judul", "Judul paparan", "a"], ["kepada", "Disampaikan kepada", "t"], ["kepada_nama", "Nama penerima", "t"], ["penyaji", "Dipresentasikan oleh", "t"], ["jabatan", "Jabatan", "t"], ["instansi", "Instansi", "t"]]},
@@ -404,7 +405,7 @@ function konteks(no, total) { const [W, H] = dim(); return {isi: S.isi, tanggal:
 function DECK() {
   const o = OUT(); if (o === "presiden") return LB.DECK.presiden;
   if (o === "konpers") return LB.deckKonpers(konteks(1)); if (o === "matador") return LB.deckMatador(konteks(1));
-  return LB.DECK.harian;
+  return LB.deckHarian(konteks(1));   // halaman Pusdalops ikut hanya bila datanya ada
 }
 function siapkanPeta() {
   if (S.jenis !== "harian") return; const ks = S.isi.kejadian || [], o = OUT();

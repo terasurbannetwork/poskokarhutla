@@ -7,7 +7,8 @@ Hanya KHG dengan titik musim > 0 yang terbit, urut titik 7 hari lalu titik musim
 Poligon: public/data/lahan/khg.geojson (BRGM PRIMS, scripts/scrape/khg.py). Lisensi PRIMS melarang mengubah isi poligon;
 di sini poligon hanya dibaca untuk menghitung titik di dalamnya (point-in-polygon), tidak ditulis ulang.
 
-Titik panas (sama dengan angka utama: sensor M, N, N20, semua keyakinan, hari kalender WIB, titik palsu industri sudah dibuang):
+Titik panas (sama dengan angka utama, titik_unik.py: lokasi unik ~375 m per hari kalender WIB dari M, N, N20, N21, keyakinan sedang/tinggi
+saja (kolom "hitung" hotspot.json), titik palsu industri sudah dibuang):
   7 hari    = semua baris public/data/hotspot.json (jendela 7 x 24 jam dari `acuan`)
   30 hari / musim = penghitung harian per KHG di public/data/khg_hari.json ({tanggal WIB: {kode KHG: n}}), dibawa antar-jalan
   lewat cache public/data (seperti harian30.json). Hari yang tertutup jendela 7 hari ditimpa dari hotspot.json; hari yang lebih tua
@@ -20,8 +21,9 @@ Pakai:  python3 scripts/data/khg_prioritas.py        # tulis khg_prioritas.json 
 import csv, datetime as dt, io, json, math, os, sys, time
 
 sys.path.insert(0, os.path.dirname(__file__))
-from firms_sumber import FAMILI, csv_sah, muat_ketersediaan, nasional_harian, penuh, sumber_hari, unduh  # noqa: E402
+from firms_sumber import FAMILI, csv_sah, kelas_yakin, muat_ketersediaan, nasional_harian, penuh, sumber_hari, unduh  # noqa: E402
 from wilayah import AKAR, PROVINSI, Poligon, Wilayah, _cincin, _di_dalam  # noqa: E402
+import titik_unik as TU  # noqa: E402
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -62,8 +64,10 @@ def perbarui_hari(hari, baru, batas_lengkap, akhir):
     return out
 
 
-VERSI_HARI = 2     # v1 memilih SP/NRT dari umur hari: SP VIIRS berakhir 30 Jun 2026, jadi Jul-Agu hanya terisi MODIS atau kosong
-MIGRASI_DARI = "2026-07-01"
+VERSI_HARI = 4     # v1 memilih SP/NRT dari umur hari: SP VIIRS berakhir 30 Jun 2026, jadi Jul-Agu hanya terisi MODIS atau kosong; v3 (25 Okt 2026): hanya keyakinan sedang/tinggi; v4 (25 Okt 2026): lokasi unik 4 satelit; semua hari diisi ulang
+FAM4 = FAMILI + ("VIIRS_NOAA21",)
+MIGRASI_DARI = "2000-01-01"   # hari >= ini dibuang saat versi berkas lama < VERSI_HARI (kini semua hari)
+KEYAKINAN_MIN = 1
 CURIGA_NAS = 300   # hari KHG kosong tetapi titik nasional (musim_harian.json) >= ini dianggap unduhan gagal, bukan nol sungguhan
 
 
@@ -84,9 +88,9 @@ def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS
     sensor sukses untuk hari UTC D-1 dan D."""
     if not perlu:
         return 0
-    ket = ket or muat_ketersediaan(kunci, ambil)
-    sasaran = sorted(perlu)[:(maks_req // 3) * 5 - 1]
-    baris, ok = unduh(sasaran[0] - dt.timedelta(days=1), sasaran[-1], kunci, ambil, bbox, ket)
+    ket = ket or muat_ketersediaan(kunci, ambil, FAM4)
+    sasaran = sorted(perlu)[:(maks_req // len(FAM4)) * 5 - 1]
+    baris, ok = unduh(sasaran[0] - dt.timedelta(days=1), sasaran[-1], kunci, ambil, bbox, ket, famili=FAM4)
     lihat, hitung = set(), {}
     for src, r in baris:
         jam = r["acq_time"].zfill(4)
@@ -97,11 +101,16 @@ def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS
         lihat.add((lat, lon, t, src))
         if saring and saring(lat, lon):
             continue
+        if kelas_yakin(r.get("confidence", ""), src.startswith("MODIS")) < KEYAKINAN_MIN:
+            continue   # keyakinan rendah tidak dihitung
+        tg = t.astimezone(WIB).date().isoformat()
+        if (tg, TU.sel(lat, lon)) in lihat:
+            continue   # lokasi yang sama hari itu sudah dihitung (satelit/lintasan lain): titik_unik.py
+        lihat.add((tg, TU.sel(lat, lon)))
         k = cari(lon, lat)
         if k:
-            tg = t.astimezone(WIB).date().isoformat()
             hitung.setdefault(tg, {})[k] = hitung.setdefault(tg, {}).get(k, 0) + 1
-    selesai = [d for d in sasaran if penuh(ok, d)]
+    selesai = [d for d in sasaran if penuh(ok, d, FAM4)]
     for d in selesai:
         hari[d.isoformat()] = hitung.get(d.isoformat(), {})
         if parsial is not None:
@@ -170,8 +179,12 @@ def main():
         return p["kode"] if p else None
 
     h = json.load(open(os.path.join(DATA, "hotspot.json")))
-    ks = h["kolom"].index("sensor")
-    baris = [b for b in h["baris"] if b[ks] in h["sensor_utama"]]
+    if "hitung" in h["kolom"]:   # 1 = deteksi yang dihitung (lokasi unik per hari, harian.py)
+        ih = h["kolom"].index("hitung")
+        baris = [b for b in h["baris"] if b[ih]]
+    else:   # berkas lama (harian.py gagal sesudah 25 Okt 2026): sensor_utama + keyakinan_min seperti dulu
+        ks, kk = h["kolom"].index("sensor"), h["kolom"].index("keyakinan")
+        baris = [b for b in h["baris"] if b[ks] in h["sensor_utama"] and b[kk] >= h.get("keyakinan_min", KEYAKINAN_MIN)]
     acuan = dt.datetime.fromisoformat(h["acuan"])
     hari_ini = dt.datetime.now(WIB).date().isoformat()
     ki = h["kolom"].index("tgl_wib")
@@ -236,7 +249,7 @@ def main():
            "musim_tahun": int(hari_ini[:4]), "musim_lengkap": lengkap, "musim_data_dari": tgl_awal_ada,
            "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); kanal: OpenStreetMap (ODbL); cluster: operasi.json",
            "catatan": ("Poligon KHG tidak diubah isinya, hanya disederhanakan untuk tampilan (Douglas-Peucker, toleransi 0,002 derajat, galat sampai +-220 m di tepi), jadi titik dekat tepi bisa masuk/keluar KHG secara keliru; lisensi PRIMS nonkomersial. "
-                       "Titik dihitung di dalam poligon (point-in-polygon, cincin luar), sensor M/N/N20 semua keyakinan, titik industri/PLTU sudah dibuang. "
+                       "Titik dihitung di dalam poligon (point-in-polygon, cincin luar), sensor M/N/N20 keyakinan sedang/tinggi, titik industri/PLTU sudah dibuang. "
                        f"titik_7h = jumlah titik harian WIB pada jendela_7h {j7[0]} s.d. {j7[1]} (7 hari penuh terakhir; hari ini yang belum selesai tidak dihitung); titik_30h dan titik_musim dari khg_hari.json sampai {kemarin}. "
                        + ("" if lengkap else f"Musim BELUM lengkap: {len(curiga_sisa)} hari belum terisi/parsial/curiga (kosong padahal nasional >= {CURIGA_NAS}; contoh {curiga_sisa[0]}): titik_musim dan titik_30h batas bawah, terisi penuh bertahap tiap jalan harian. ")
                        + f"kompleks_aktif = cluster operasi.json (per {op.get('per')}, titik tengah) dengan deteksi hari itu > 0 yang jatuh di KHG. "
@@ -279,8 +292,8 @@ def uji():
     g2 = perbarui_hari({"2026-01-05": {"A": 5}}, {}, "2026-01-02", "2026-01-03")
     assert "2026-01-04" not in g2 and g2["2026-01-05"] == {"A": 5} and g2["2026-01-02"] == {} and g2["2026-01-03"] == {}, g2
     D = dt.date.fromisoformat
-    HDR = "latitude,longitude,acq_date,acq_time\n"
-    avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-01-02\n{f}_NRT,2026-01-03,2026-12-31\n" for f in FAMILI)
+    HDR = "latitude,longitude,acq_date,acq_time,confidence\n"
+    avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-01-02\n{f}_NRT,2026-01-03,2026-12-31\n" for f in FAM4)
     dipanggil = []
     def ambil_ok(url, isi=HDR):
         dipanggil.append(url)
@@ -294,14 +307,14 @@ def uji():
     assert sumber_hari("MODIS", D("2026-01-02"), ket) == "MODIS_SP" and sumber_hari("MODIS", D("2026-01-03"), ket) == "MODIS_NRT" and sumber_hari("MODIS", D("2025-01-01"), ket) == "MODIS_SP"
     assert sumber_hari("MODIS", D("2027-01-01"), ket) is None
     # isi mundur dengan FIRMS palsu: titik di A, titik palsu disaring, duplikat dalam satu sensor dibuang
-    csv_ = HDR + "-2.5,100.5,2026-01-02,0100\n-2.5,100.5,2026-01-02,0100\n-2.5,100.6,2026-01-02,2000\n-2.4,100.4,2026-01-03,0300\n"
+    csv_ = HDR + "-2.5,100.5,2026-01-02,0100,90\n-2.5,100.5,2026-01-02,0100,90\n-2.5,100.6,2026-01-02,2000,90\n-2.4,100.4,2026-01-03,0300,90\n-2.5,100.7,2026-01-02,0200,l\n-2.5,100.8,2026-01-02,0200,l\n"   # dua baris terakhir keyakinan rendah (l; MODIS < 30 diuji di firms_sumber.kelas_yakin): DITOLAK
     dipanggil.clear()
     hari = {}
     n = isi_mundur(hari, [D("2026-01-02"), D("2026-01-03")], "KEY", lambda u: ambil_ok(u, csv_), "94,-11.5,141.5,6.5", cari, lambda la, lo: abs(lo - 100.4) < 1e-6)
     pakai = [u.split("/")[-4] for u in dipanggil if "area/csv" in u]
-    assert n == 2 and sorted(pakai) == sorted([f + "_SP" for f in FAMILI] * 1 + [f + "_NRT" for f in FAMILI]) , (n, pakai)
-    # 01-02 WIB = UTC 01-01 17:00 .. 01-02 17:00; 2000 UTC => 01-03 WIB. SP dan NRT masing-masing menjawab csv_ => 6 jawaban
-    assert hari["2026-01-02"] == {"A": 6} and hari["2026-01-03"] == {"A": 6}, hari
+    assert n == 2 and sorted(pakai) == sorted([f + "_SP" for f in FAM4] * 1 + [f + "_NRT" for f in FAM4]) , (n, pakai)
+    # 01-02 WIB = UTC 01-01 17:00 .. 01-02 17:00; 2000 UTC => 01-03 WIB. 4 famili x (SP + NRT) menjawab csv_ yang sama = SATU lokasi per hari
+    assert hari["2026-01-02"] == {"A": 1} and hari["2026-01-03"] == {"A": 1}, hari
     # gagal unduh ATAU balasan galat (200 berisi teks) = tidak ada hari yang ditandai selesai, termasuk balasan header saja yang salah-sumber tidak lolos
     for galat in (lambda u: avail if "data_availability" in u else (_ for _ in ()).throw(RuntimeError("mati")),
                   lambda u: avail if "data_availability" in u else "Invalid MAP_KEY."):

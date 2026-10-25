@@ -65,3 +65,17 @@ Jawaban pemilik atas 50 pertanyaan pra-PRD. Dokumen ini menang atas KRITIK-DAN-K
 48. Maksimal 60% kuota minggu ini untuk pipa, sisanya mitigasi.
 49. Boleh deploy setelah lolos uji (deploy dari sesi induk, bukan subagent).
 50. Tidak boleh ada: klaim "terbukti" tanpa uji, angka tanpa sumber, jaringan permanen nasional, pembelian massal sebelum pilot, injeksi > 5 m, nama/logo pihak lain selain BNPB.
+
+## H. Keputusan tambahan (25 Okt 2026)
+51. **Ambang zona memakai "<"** (air < 2,5 km, jalan < 5 km). Jarak tepat 2,50 km atau 5,00 km masuk kelas "jauh". Semua angka zona dihitung dengan aturan ini.
+52. **Warna zona di buku dan deck: biru dan emas**, dengan huruf A–D dan pola arsiran yang sama dengan web. Web tetap memakai palet PRD, ditambah huruf dan pola wajib karena uji buta warna.
+53. **Definisi vonis pilot "dapat dipakai"** (diputus atas wewenang yang diberikan pemilik; label `asumsi-kebijakan`). Kit dinyatakan **dapat dipakai** bila SEMUA terpenuhi:
+    1. Air mengalir sampai ujung lance pada ≥ 2 sesi di ≥ 2 petak berbeda.
+    2. Waktu dari tiba di lokasi sampai air mengalir ≤ 4 jam pada sesi terbaik, dan waktu tiap sesi tercatat lengkap (tiba, mulai gelar, air mengalir, selesai, bongkar).
+    3. Tekanan ujung lance ≥ 2 bar bertahan ≥ 30 menit terus-menerus pada ≥ 1 sesi (gauge, atau catatan operator bila gauge tidak ada; sumbernya ditandai).
+    4. Tidak ada gerbang keras kalkulator yang dilanggar untuk konfigurasi yang dipakai (tekanan ≤ 88% × PN × penurunan suhu).
+    5. Data probe suhu gambut lengkap ≥ 90%: sebelum injeksi, sesudah injeksi, dan 24 jam kemudian, di semua petak.
+    6. Nol kecelakaan kerja, dan tidak ada kebocoran sambungan yang menghentikan sesi > 30 menit.
+    7. Kit kembali dari lapangan dengan ≥ 95% komponen lengkap dan berfungsi.
+
+    Vonis: semua terpenuhi = **dapat dipakai**; satu butir gagal di luar butir 1 dan 6 = **dapat dipakai bersyarat** (perbaikan tertulis sebelum dipakai untuk banjir); butir 1 atau butir 6 gagal = **belum dapat dipakai**. Vonis "lebih baik dari cara konvensional" tidak diputus dari pilot ini (n < 8 per lengan).
