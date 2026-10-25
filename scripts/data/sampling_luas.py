@@ -291,8 +291,8 @@ def adegan_titik(lat, lon, dari, sampai):
     q = {"collections": ["sentinel-2-l2a"], "bbox": C.kotak(lat, lon, 1.2), "limit": 400, "datetime": f"{dari}T00:00:00Z/{sampai}T23:59:59Z", "query": {"eo:cloud_cover": {"lt": 90}}}
     per = {}
     for it in json.loads(C.ambil(C.STAC, data=json.dumps(q).encode()))["features"]:
-        if not C.menutup(it["geometry"], C.kotak(lat, lon, 1.4)):
-            continue
+        if not C.menutup(it["geometry"], C.kotak(lat, lon, 1.4)) or not all(it["assets"].get(k, {}).get("href", "").endswith(".tif") for k in ("scl", "nir08", "swir22", "visual")):
+            continue        # sebagian adegan 2023 hanya berupa JP2 di bucket requester-pays (s3://sentinel-s2-l2a): dilewati
         d = it["properties"]["datetime"][:10]
         if d not in per or it["properties"].get("eo:cloud_cover", 100) < per[d]["properties"].get("eo:cloud_cover", 100):
             per[d] = it

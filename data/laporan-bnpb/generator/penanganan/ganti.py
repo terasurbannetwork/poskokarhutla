@@ -13,7 +13,7 @@ from kisi import (GRUP, KOL0, PITCH0, GW0, SELA, GW, PITCH, BW, LW, GX, LX, BX, 
 s1 = open(SP + '/deck/x/ppt/slides/slide1.xml').read()
 SHAPES = lambda s: list(re.finditer(r'<p:sp>.*?</p:sp>', s, re.S))
 def geom(b):
-    o = re.search(r'<a:off x="(\d+)" y="(\d+)"/><a:ext cx="(\d+)" cy="(\d+)"/>', b)
+    o = re.search(r'<a:off x="(\d+)" y="(\d+)"/>\s*<a:ext cx="(\d+)" cy="(\d+)"/>', b)
     return tuple(map(int, o.groups())) if o else None
 def text(b): return ''.join(re.findall(r'<a:t>([^<]*)</a:t>', b))
 # template dari baris pertama slide 1, plus kepala kolom HOTSPOT sebagai cetakan keempat kelompok
@@ -34,7 +34,7 @@ for m in re.finditer(r'<p:pic>.*?</p:pic>', s1, re.S):
     if geom(m.group(0)) == (5030373, 1554480, 219456, 219456): T['ikon'] = m.group(0)
 assert len(T) == 9, T.keys()
 def setgeom(b, x, y, cx, cy):
-    return re.sub(r'<a:off x="\d+" y="\d+"/><a:ext cx="\d+" cy="\d+"/>', f'<a:off x="{x}" y="{y}"/><a:ext cx="{cx}" cy="{cy}"/>', b, 1)
+    return re.sub(r'<a:off x="\d+" y="\d+"/>\s*<a:ext cx="\d+" cy="\d+"/>', f'<a:off x="{x}" y="{y}"/><a:ext cx="{cx}" cy="{cy}"/>', b, 1)
 def settext(b, t):
     first = [True]
     def r(m):
