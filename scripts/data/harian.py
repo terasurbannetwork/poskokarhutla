@@ -630,6 +630,7 @@ def main():
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
     simpan("kluster_geo.json", geo)
+    arsip_kluster(fitur, hari_akhir, os.path.join(KELUAR, "kluster_hari"))
     simpan("kejadian_karhutla_awal.json", kejadian_awal(fitur, sekarang))
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "pfvi": {"ambang": P.AMBANG_PG, "catatan": "Muka air tanah = perkiraan (proxy) dari hujan dan ET0, bukan pengukuran. Uji balik 2019+2023: scripts/sebaran/RISET-PFVI.md"}, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:], **({"wt": g["wt"]} if "wt" in g else {})} for g in grid]})
@@ -660,6 +661,33 @@ def pecah_kluster(fitur):
         if poli or p.get("api24"):
             geo[p["id"]] = [poli, p.get("api24") or []]
     return {"type": "FeatureCollection", "features": awal}, geo
+
+
+def ringkas_kluster(fitur):
+    """Cluster per wilayah untuk tabel wilayah layar: {kunci: [jumlah, firespot "ya", level maks]}; kunci = prov, prov|kab, prov|kab|kec
+    (sama dengan klusterDi di index.html)."""
+    w = {}
+    for f in fitur:
+        p = f["properties"]
+        adm = [p.get("prov") or "", p.get("kab") or "", p.get("kec") or ""]
+        for i in (1, 2, 3):
+            r = w.setdefault("|".join(adm[:i]), [0, 0, -1])
+            r[0] += 1
+            r[1] += p.get("firespot") == "ya"
+            r[2] = max(r[2], p.get("level", 0))
+    return w
+
+
+def arsip_kluster(fitur, hari, folder, simpan_hari=8):
+    """kluster_hari/<hari WIB>.json = ringkas_kluster jalan terakhir hari itu (jalan 3-jam menimpa, jadi yang tersisa = keadaan akhir hari).
+    Dibaca tabel wilayah saat hari lampau dipilih. Berkas lebih tua dari simpan_hari dihapus (pemilih hari layar maks 7 hari)."""
+    os.makedirs(folder, exist_ok=True)
+    with open(os.path.join(folder, f"{hari.isoformat()}.json"), "w") as f:
+        json.dump({"hari": hari.isoformat(), "w": ringkas_kluster(fitur)}, f, ensure_ascii=False, separators=(",", ":"))
+    batas = (hari - dt.timedelta(days=simpan_hari)).isoformat()
+    for n in os.listdir(folder):
+        if n.endswith(".json") and n[:10] < batas:
+            os.remove(os.path.join(folder, n))
 
 
 def kejadian_awal(fitur, kini):
@@ -839,6 +867,16 @@ def uji():
     t = tugas_kompleks([{"properties": {**L2, "lat": -3.1, "lon": 112.1}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))["kompleks"][0]
     assert t["otomatis"] is False and t["syarat_dinilai"]["permukiman"] is False and t["syarat_dinilai"]["konsesi"] is False, "tanpa data permukiman/konsesi: syarat tidak dinilai, bukan dianggap terpenuhi"
     print("harian uji: pecah_kluster OK")
+    R = ringkas_kluster([{"properties": {**P3, "firespot": "ya"}}, {"properties": {**P3, "id": "K8", "level": 1, "kec": "Danau Sembuluh"}}])
+    assert R["62"] == [2, 1, 3] and R["62|Seruyan"] == [2, 1, 3] and R["62|Seruyan|Danau Sembuluh"] == [1, 0, 1], R
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        open(os.path.join(d, "2026-10-10.json"), "w").write("{}")
+        open(os.path.join(d, "2026-10-12.json"), "w").write("{}")
+        arsip_kluster([{"properties": P3}], dt.date(2026, 10, 19), d)
+        assert sorted(os.listdir(d)) == ["2026-10-12.json", "2026-10-19.json"], os.listdir(d)
+        assert json.load(open(os.path.join(d, "2026-10-19.json")))["w"]["62"] == [1, 0, 3]
+    print("harian uji: arsip kluster OK")
     # firespot: enam pola, piksel unik, gerbang
     def tt(hari, c, n=1, lat=-3.0, lon=112.0, geser=0.0):  # n titik di piksel berbeda, hari ke-`hari` Okt 2026 siang WIB
         return [{"t": dt.datetime(2026, 10, hari, 5, 0, tzinfo=dt.timezone.utc), "c": c, "lat": lat + i * 0.01 + geser, "lon": lon} for i in range(n)]
