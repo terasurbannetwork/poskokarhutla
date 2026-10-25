@@ -985,7 +985,7 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .tr-lb{flex-direction:column;align-items:stretch;gap:4px}
 #rows{container-type:inline-size}.nm-pdk{display:none}@container (max-width:480px){.nm-pjg{display:none}.nm-pdk{display:inline}}
 #panelMode button{display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}#panelMode button[hidden]{display:none}/* Posko (Ajuan) disembunyikan dulu (pemilik, 22 Okt 2026) */#panelMode button svg{width:14px;height:14px;flex:none}
-.tr-hari{padding:2px 2px 5px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}.tr-hari b{color:var(--ink)}
+.tr-hari{padding:2px 2px 5px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}.tr-hari b{color:var(--ink)}.tr-baris{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
 .tp-tr{border-top:1px solid var(--line);padding:5px 0 0}
 .tp-tr-h{display:flex;justify-content:space-between;align-items:center;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}
 .tp-tr svg{display:block}
@@ -2496,21 +2496,23 @@ function renderDaftar() {
   item.sort((a, b) => b.lv - a.lv || b.v - a.v || a.nama.localeCompare(b.nama));
   const maks = Math.max(1, ...item.map(i => i.v));
   const prio = new Set(S.meta.prioritas);
-  const G = "grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(54px,.8fr) minmax(58px,.8fr) minmax(70px,1fr)";
+  const G = "grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(40px,.8fr) minmax(40px,.8fr) minmax(70px,1fr)";
   const pilUkur =`<div class="tr-sw"><span>Indikator</span><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "baru" ? `<div class="tr-hari" title="Api Himawari-9 (JAXA) per 10 menit; piksel berdekatan digabung jadi satu api, sama dengan lingkaran di peta">Api baru Himawari-9: <b>pukul ${new Date(Lapis.cache.hwMeta.acuan).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"})} WIB</b></div>`
     : u === "hot" ? `<div class="tr-hari" title="Kolom Titik: titik panas pada satu hari kalender WIB">Titik panas: <b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
     : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
-  const kepala = hariTitik + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? "Titik" : u === "baru" ? "Api" : "Ha"}</span><span class="n" title="Jumlah cluster titik panas">Cluster</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut">Firespot</span><span style="text-align:right">Status</span></div>`;
+  /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
+  const legenda = `<span class="tr-hari nm-pdk">${u === "hot" ? "<b>HS</b> Hotspot · " : ""}<b>FS</b> Firespot · <b>CL</b> Cluster</span>`;
+  const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : u === "baru" ? "Api" : "Ha"}</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Jumlah cluster titik panas"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const [nk, fs] = i.kw, lv = i.lv;
     const t = j.length === 0 ? trenProv(i.kunci) : null;
     const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
     return `<button class="tb${lv >= 2 ? " hl" + lv : ""}" style="${G}" role="listitem" data-k="${esc(i.kunci)}" ${j.length >= 2 ? "data-daun=1" : ""} title="${esc(judul)}">
       <span class="rk">${n + 1}</span><span style="font-weight:600">${j.length === 0 ? namaProvHtml(i.kunci) : esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi yang sering mengalami karhutla"></i>' : ""}</span>
-      <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${nk ? fmt(nk) : "–"}</span><span class="n">${fs ? fmt(fs) : "–"}</span>
+      <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${fs ? fmt(fs) : "–"}</span><span class="n">${nk ? fmt(nk) : "–"}</span>
       <span style="text-align:right" data-sort="${lv}">${pilStatus(i.kw[2], i.as)}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   terapkanUrut();
