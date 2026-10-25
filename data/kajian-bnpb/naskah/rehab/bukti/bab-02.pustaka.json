@@ -1,0 +1,1274 @@
+[
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "verifikasi": "primer",
+  "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+  "note": "sama dengan pustaka.json utama; sama dengan entri pustaka.json utama, ditambah URL; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz (Pasal 1 angka 2, Pasal 5, 12, 21, 51, 53)"
+ },
+ {
+  "id": "ri-2008-pp21",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 21 Tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2008 Nomor 42",
+  "URL": "https://peraturan.bpk.go.id/Details/4833/pp-no-21-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Pasal 6, 21, 23 dan Penjelasannya"
+ },
+ {
+  "id": "ri-2014-uu23",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2014
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 23 Tahun 2014 tentang Pemerintahan Daerah",
+  "URL": "https://peraturan.bpk.go.id/Details/38685/uu-no-23-tahun-2014",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Lampiran C (hlm. PDF 322) dan CC (hlm. 435) dibaca dari lembaga/mentah/teks/uu-23-2014.json.gz; sebagian dicabut UU 17/2019 Pasal 77 dan UU 1/2022"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c)"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "bnpb-2011-pdna",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12,
+     8
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pasca Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2011pbbnpb015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; korpus data/raw/hukum/teks/perka-nomor-15-tahun-2011.json: gabungan DaLA dan HRNA (hlm. 8), alur akibat-dampak-kebutuhan (hlm. 11), nilai kerusakan (hlm. 40); kata Jitupasna tidak muncul"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; korpus perban-nomor-5-tahun-2017.json: Pasal 1 angka 5 definisi Jitupasna (hlm. 3), Pasal 8 ayat (1) (hlm. 7), Pasal 9 (hlm. 9); Bab 9: judul dari indeks JDIH untuk pencocokan Progsun butir 4 (Lampiran J)",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "bnpb-2017-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     12,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-6-tahun-2017.json (Pasal 1 angka 6 hlm. 3; Pasal 7 hlm. 7; penetapan hlm. 14)",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2017 Nomor 1903"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2020 Nomor 482",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2020.json (Pasal 1 hlm. 3–4; Pasal 2 hlm. 5; Pasal 4 hlm. 6–7; Pasal 14 hlm. 12–13; Pasal 20 hlm. 16); URL dari data/raw/hukum/indeks.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2023-satudata",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2023 tentang Satu Data Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2023 Nomor 21",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Pasal 1 angka 3 dan 6 dibaca dari data/raw/hukum/teks/perban-nomor-1-tahun-2023.json"
+ },
+ {
+  "id": "bnpb-2023-dth",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     16
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 1 Tahun 2023 tentang Bantuan Dana Tunggu Hunian",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023juklakbnpb001.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/juklak-nomor-1-tahun-2023.json (hlm. 3–4; pencabutan Juklak 2/2022 dan penetapan hlm. 6)"
+ },
+ {
+  "id": "bnpb-2023-huntara",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     10,
+     24
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 3 Tahun 2023 tentang Pemberian Bantuan Hunian Sementara bagi Pengungsi Korban Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023juklakbnpb003.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/juklak-nomor-3-tahun-2023.json (hlm. 4, 7, 19, 22; penetapan hlm. 26)"
+ },
+ {
+  "id": "bnpb-2024-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2024 tentang Penyelenggaraan Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024pbbnpb004.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2024.json (Pasal 6–8 hlm. 5; Pasal 28 hlm. 11; penetapan hlm. 14)",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 546"
+ },
+ {
+  "id": "bnpb-2025-juklak15",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     15
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Bantuan Dana Tunggu Hunian untuk Provinsi Aceh, Sumatera Utara dan Sumatera Barat Akibat Bencana Alam Nomor 15 Tahun 2025",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juklak-nomor-15-tahun-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; metadata indeks JDIH lokal (status Berlaku)"
+ },
+ {
+  "id": "bnpb-2010-perka17-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 17 Tahun 2010 tentang Pedoman Umum Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/perka-nomor-17-tahun-2010",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer (metadata)",
+  "note": "sama dengan pustaka.json utama; indeks JDIH menandai BERLAKU dan sumber \"BN 2014 (1553)\"; Perban 5/2017 Pasal 12 mencabutnya dan menulis Berita Negara 2010 Nomor 1553; isi tidak dibaca"
+ },
+ {
+  "id": "bnpb-2025-otk",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     6
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; lewat program-terbukti/organisasi_bnpb.csv",
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2025-otk-ubah",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     30
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 11 Tahun 2025 tentang Perubahan atas Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb011.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Pusat Pengendalian Operasi diganti Pusat Pembinaan Jabatan Fungsional Kebencanaan; Direktorat Fasilitasi Penanganan Korban dan Pengungsi diganti (organisasi_bnpb.csv)",
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2025-renstra",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2025 tentang Rencana Strategis Badan Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 768",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb005.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+ },
+ {
+  "id": "bnpb-2025-renas",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2025 Nomor 6",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; judul dari katalog JDIH BNPB lokal data/raw/hukum/indeks.json"
+ },
+ {
+  "id": "bnpb-2026-dana-bersama",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     3,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2026 tentang Pelaksanaan Penelaahan, Verifikasi, dan Evaluasi terhadap Penyaluran Dana Bersama Penanggulangan Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2026 Nomor 189",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2026pbbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Pasal 2 ayat (2) hlm. 3, korpus data/raw/hukum/teks/perban-nomor-1-tahun-2026.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "cianjur-2022-r3p",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   },
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "BNPB (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; hlm. PDF 13, 51, 55, 142; tanpa nomor penetapan"
+ },
+ {
+  "id": "kemenkoinfra-2026-inpres18",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     29
+    ]
+   ]
+  },
+  "title": "Inpres 18/2025: Percepatan Penanganan Darurat, Rehabilitasi, dan Rekonstruksi Pascabencana Alam di Provinsi Aceh, Provinsi Sumatera Utara, dan Provinsi Sumatera Barat",
+  "container-title": "JDIH Kemenko Infrastruktur",
+  "URL": "https://jdih.kemenkoinfra.go.id/inpres-182025-percepatan-penanganan-darurat-rehabilitasi-dan-rekonstruksi-pascabencana-alam-di-provinsi-aceh-provinsi-sumatera-utara-dan-provinsi-sumatera-barat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer (ringkasan halaman)",
+  "note": "sama dengan pustaka.json utama; tanggal = penetapan Inpres; dibaca ringkasan halaman (Menko Infrastruktur dan Pembangunan Kewilayahan mengoordinasikan masalah infrastruktur; pemda berkoordinasi dengan BNPB); PDF Inpres tidak dibuka"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "dfat-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Department of Foreign Affairs and Trade, Australia",
+    "singkatan": "DFAT"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "PAMSIMAS final independent evaluation, Volume 1 (Final V.2)",
+  "publisher": "Department of Foreign Affairs and Trade",
+  "URL": "https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; penulis laporan Murray dkk. (daftar lengkap belum dicatat); dibuka paket program-terbukti lewat arsip http://web.archive.org/web/20251023113557/https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf; PDF hlm. 11, 32, 40"
+ },
+ {
+  "id": "bankdunia-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     6,
+     29
+    ]
+   ]
+  },
+  "title": "Implementation Completion and Results Report on a credit and loans to the Republic of Indonesia for the Third Water Supply and Sanitation for Low-Income Communities / Community Based Water Supply Project (PAMSIMAS III)",
+  "genre": "Report No. ICR00005882",
+  "publisher": "World Bank",
+  "URL": "https://documents1.worldbank.org/curated/en/099070523124528093/pdf/BOSIB0fe61a43c0c2081aa0f122dbc2be54.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; dibuka langsung 24 Okt 2026, SHA-1 791e693c05fc56a10228430b63bb85b36f3058ed; hlm. cetak = hlm. PDF − 11; 24,8 dan 22,1 juta jiwa hlm. 10; 35.553 desa hlm. 8 dan 10; 91% (data MIS) hlm. 11; EIRR 52,11% hlm. 45; menggantikan ringkasan RWSN rwsn-2023-pamsimas"
+ },
+ {
+  "id": "ri-2026-keppres1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Presiden Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 1 Tahun 2026 tentang Satuan Tugas Percepatan Rehabilitasi dan Rekonstruksi Pascabencana Alam di Provinsi Aceh, Provinsi Sumatera Utara, dan Provinsi Sumatera Barat",
+  "URL": "https://jdih.kemenkoinfra.go.id/dokumen/file/keputusan-presiden-republik-indonesia/2026/keppres-nomor-1-tahun-2026.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka utuh 25 Okt 2026, 8 hlm salinan Setneg berlapisan teks; Pasal 1–13"
+ },
+ {
+  "id": "bnpb-2010-perka12",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010,
+     9,
+     14
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 12 Tahun 2010 tentang Pedoman Mekanisme Pemberian Bantuan Perbaikan Darurat",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2010pbbnpb012.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perka-nomor-12-tahun-2010.json (hlm. 3, 9, 13); BERLAKU"
+ },
+ {
+  "id": "bnpb-2025-juklak-dana-bersama",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     4,
+     16
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 1 Tahun 2025 tentang Penelaahan, Verifikasi, dan Evaluasi Penyaluran Dana Bersama Penanggulangan Bencana Tahap Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025juklakbnpb001.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/juklak-nomor-1-tahun-2025.json hlm. 3; merujuk Perban 1/2024 yang dicabut Perban 1/2026"
+ },
+ {
+  "id": "bnpb-2025-bailey-dsp",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     31
+    ]
+   ]
+  },
+  "title": "Pembangunan Jembatan Bailey dan Operasional Personil TNI di Kawasan Terdampak Bencana Dibiayai oleh Negara",
+  "URL": "https://www.bnpb.go.id/berita/pembangunan-jembatan-bailey-dan-operasional-personil-tni-di-kawasan-terdampak-bencana-dibiayai-oleh-negara",
+  "verifikasi": "primer",
+  "note": "dari riset B [33] dan riset A [20]; tidak dibuka ulang sesi ini"
+ },
+ {
+  "id": "ri-2005-perpres30",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Presiden Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2005
+    ]
+   ]
+  },
+  "title": "Peraturan Presiden Nomor 30 Tahun 2005 tentang Rencana Induk Rehabilitasi dan Rekonstruksi Wilayah dan Kehidupan Masyarakat Provinsi Nanggroe Aceh Darussalam dan Kepulauan Nias Provinsi Sumatera Utara",
+  "URL": "https://peraturan.bpk.go.id/Details/42564/perpres-no-30-tahun-2005",
+  "verifikasi": "primer",
+  "note": "dari riset E [3]; rencana induk berlaku 4 tahun"
+ },
+ {
+  "id": "mdf-2011-progress",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Multi Donor Fund for Aceh and Nias Secretariat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12
+    ]
+   ]
+  },
+  "title": "Partnerships for Sustainability: MDF Progress Report December 2011",
+  "URL": "https://www.locjkt.or.id/application/docliblcjkt/upload/MDF-Progress-Report-2011.pdf",
+  "verifikasi": "primer",
+  "note": "dari riset E [4]; laporan pengelola dana"
+ },
+ {
+  "id": "scirt-2018-value",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Stronger Christchurch Infrastructure Rebuild Team"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     6
+    ]
+   ]
+  },
+  "title": "The Value of SCIRT in Summary",
+  "publisher": "SCIRT Learning Legacy",
+  "URL": "https://scirtlearninglegacy.org.nz/wp-content/uploads/2021/09/The-Value-of-SCIRT-Summary.pdf",
+  "verifikasi": "primer",
+  "note": "dari riset E [35]; dokumen aliansi sendiri"
+ },
+ {
+  "id": "oag-2016-scirt",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Controller and Auditor-General New Zealand"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     5,
+     5
+    ]
+   ]
+  },
+  "title": "Effectiveness and efficiency of arrangements to repair pipes and roads in Christchurch: Follow-up audit",
+  "URL": "https://ao.parliament.nz/2016/scirt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026"
+ },
+ {
+  "id": "worldbank-2020-nepal",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     9,
+     29
+    ]
+   ]
+  },
+  "title": "Post-Earthquake Reconstruction in Nepal: Rebuilding Lives, One Home at a Time",
+  "container-title": "Results Brief",
+  "URL": "https://www.worldbank.org/en/results/2020/09/29/post-earthquake-reconstruction-in-nepal-rebuilding-lives-one-home-at-a-time",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026"
+ },
+ {
+  "id": "jsce-2011-lifeline",
+  "type": "speech",
+  "author": [
+   {
+    "family": "Nojima"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     6,
+     13
+    ]
+   ]
+  },
+  "title": "Lifeline Restoration Overview",
+  "publisher": "Japan Society of Civil Engineers",
+  "URL": "https://www.jsce.or.jp/kokusai/what's_new/2011/Prof.Nojima_lifeline-overview_110613.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF dibuka dan diekstrak 25 Okt 2026; tabel waktu pulih Kobe dan Tohoku; nama depan penulis tidak tercantum di teks yang terekstrak"
+ },
+ {
+  "id": "kaken-2000-kobe",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kanazawa University (KAKENHI 11650480)"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2000
+    ]
+   ]
+  },
+  "title": "Study of Seismic Design of Lifeline System Considering System Performance after an Earthquake",
+  "publisher": "Japan Society for the Promotion of Science (KAKEN)",
+  "URL": "https://kaken.nii.ac.jp/en/grant/KAKENHI-PROJECT-11650480/",
+  "verifikasi": "primer",
+  "note": "abstrak; dari riset E [37]"
+ },
+ {
+  "id": "brooks-2020-nicaragua",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Brooks",
+    "given": "Wyatt"
+   },
+   {
+    "family": "Donovan",
+    "given": "Kevin"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     9
+    ]
+   ]
+  },
+  "title": "Eliminating Uncertainty in Market Access: The Impact of New Bridges in Rural Nicaragua",
+  "container-title": "Econometrica",
+  "volume": "88",
+  "issue": "5",
+  "page": "1965-1997",
+  "DOI": "10.3982/ECTA15828",
+  "URL": "https://www.econometricsociety.org/publications/econometrica/2020/09/01/eliminating-uncertainty-market-access-impact-new-bridges-rural",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "abstrak dibuka 25 Okt 2026"
+ },
+ {
+  "id": "jpal-2026-rwanda",
+  "type": "post-weblog",
+  "author": [
+   {
+    "family": "Fahle",
+    "given": "Jenna"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     6
+    ]
+   ]
+  },
+  "title": "An underrated development investment that can double returns: Trail bridges",
+  "container-title": "J-PAL (CEGA)",
+  "URL": "https://www.povertyactionlab.org/node/8138263",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder-akademik",
+  "note": "ringkasan studi Brooks dan Donovan; makalah hasil belum dibuka"
+ },
+ {
+  "id": "aea-2024-rwanda",
+  "type": "dataset",
+  "author": [
+   {
+    "family": "Brooks",
+    "given": "Wyatt"
+   },
+   {
+    "family": "Donovan",
+    "given": "Kevin"
+   },
+   {
+    "family": "Thomas",
+    "given": "Evan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     5,
+     23
+    ]
+   ]
+  },
+  "title": "Market Access and Economic Development: Experimental Evidence from New Bridges in Rwanda (AEARCTR-0013478)",
+  "publisher": "AEA RCT Registry",
+  "URL": "https://www.socialscienceregistry.org/trials/13478",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "registri dibuka 25 Okt 2026; pembaruan terakhir 24 Mar 2025; tanpa makalah hasil"
+ },
+ {
+  "id": "kemenkopmk-2021-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     2,
+     27
+    ]
+   ]
+  },
+  "title": "Kemenko PMK Dorong Percepatan Penanganan Pasca Bencana Gempa Bumi, Tsunami, dan Likuefaksi Provinsi Sulawesi Tengah",
+  "URL": "https://kemenkopmk.go.id/node/1332",
+  "verifikasi": "primer",
+  "note": "dari riset E [13]"
+ },
+ {
+  "id": "kemenkopmk-2024-huntap-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     15
+    ]
+   ]
+  },
+  "title": "Menko PMK Serahkan Kunci Huntap Warga Terdampak Bencana Gempa dan Likuefaksi Sulawesi Tengah",
+  "URL": "https://kemenkopmk.go.id/node/5032",
+  "verifikasi": "primer",
+  "note": "dari riset E [14]"
+ },
+ {
+  "id": "ocg-2026-palu4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Oriental Consultants Global"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     19
+    ]
+   ]
+  },
+  "title": "Opening ceremony, Programme for the Reconstruction of Palu 4 Bridges and its Access Road",
+  "URL": "https://ocglobal.jp/news/260218-indonesia-en/",
+  "verifikasi": "primer",
+  "note": "dari riset E [18]; konsultan pengawas proyek JICA"
+ },
+ {
+  "id": "comerio-2013-chile",
+  "type": "report",
+  "author": [
+   {
+    "family": "Comerio",
+    "given": "Mary C."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013,
+     2,
+     1
+    ]
+   ]
+  },
+  "title": "Housing Recovery in Chile: A Qualitative Mid-program Review (PEER Report 2013/01)",
+  "publisher": "Pacific Earthquake Engineering Research Center",
+  "URL": "https://peer.berkeley.edu/publications/2013-01",
+  "verifikasi": "primer",
+  "note": "dari riset E [39]"
+ },
+ {
+  "id": "erra-presentasi",
+  "type": "speech",
+  "author": [
+   {
+    "literal": "Earthquake Reconstruction and Rehabilitation Authority Pakistan"
+   }
+  ],
+  "title": "Strategy for Large Scale Housing Reconstruction: Pakistan's Experience",
+  "publisher": "IISEE, Building Research Institute Japan",
+  "URL": "https://iisee.kenken.go.jp/symposium/pdf/VideoC_7%20(Pakistan).pdf",
+  "verifikasi": "primer",
+  "note": "tanggal tidak tercantum; dari riset E [34]"
+ },
+ {
+  "id": "un-2025-renk",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "United Nations South Sudan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     6
+    ]
+   ]
+  },
+  "title": "Solarizing Safe Water for Displaced Families in Renk",
+  "URL": "https://southsudan.un.org/en/302785-solarizing-safe-water-displaced-families-renk",
+  "verifikasi": "primer",
+  "note": "dari riset D [46]"
+ }
+]

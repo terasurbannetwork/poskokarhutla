@@ -1,0 +1,39 @@
+prov_kode,prov_nama,pulau,n_kab,penduduk_2026,n_kab_tinggi_2025,n_kab_perhatian,meninggal_hilang_2015_2025,peringkat_daftar,peringkat_korban
+11,Aceh,Sumatra,23,5602631,13,22,794,5,3
+12,Sumatera Utara,Sumatra,33,15719991,14,32,739,3,4
+13,Sumatera Barat,Sumatra,19,5882205,8,19,690,7,5
+14,Riau,Sumatra,12,6782344,1,11,15,12,36
+15,Jambi,Sumatra,11,3762630,3,8,52,20,27
+16,Sumatera Selatan,Sumatra,17,8997440,3,13,57,9,26
+17,Bengkulu,Sumatra,10,2133717,5,7,100,23,16
+18,Lampung,Sumatra,15,9559544,3,12,199,11,13
+19,Kep. Bangka Belitung,Sumatra,7,1541617,0,5,27,28,34
+21,Kepulauan Riau,Sumatra,7,2173180,0,7,72,24,20
+31,DKI Jakarta,Jawa,6,11147200,0,6,64,26,22
+32,Jawa Barat,Jawa,27,51002450,1,26,1260,4,2
+33,Jawa Tengah,Jawa,35,38770526,0,33,559,1,7
+34,DI Yogyakarta,Jawa,5,3913753,0,5,52,29,28
+35,Jawa Timur,Jawa,38,43211767,0,33,467,2,8
+36,Banten,Jawa,8,12784923,0,5,403,30,9
+51,Bali,Bali dan Nusa Tenggara,9,4591019,0,9,186,17,14
+52,Nusa Tenggara Barat,Bali dan Nusa Tenggara,10,5642061,2,8,664,21,6
+53,Nusa Tenggara Timur,Bali dan Nusa Tenggara,22,5670394,19,17,351,8,10
+61,Kalimantan Barat,Kalimantan,14,5750703,0,13,59,10,25
+62,Kalimantan Tengah,Kalimantan,14,2823573,0,6,51,27,29
+63,Kalimantan Selatan,Kalimantan,13,4317654,0,8,86,22,17
+64,Kalimantan Timur,Kalimantan,10,3987512,1,9,64,18,23
+65,Kalimantan Utara,Kalimantan,5,743519,0,4,23,34,35
+71,Sulawesi Utara,Sulawesi,15,2784192,8,11,86,13,18
+72,Sulawesi Tengah,Sulawesi,13,3164781,9,11,4925,14,1
+73,Sulawesi Selatan,Sulawesi,24,9621547,4,22,301,6,11
+74,Sulawesi Tenggara,Sulawesi,17,2786042,12,11,28,15,33
+75,Gorontalo,Sulawesi,6,1233337,2,5,68,31,21
+76,Sulawesi Barat,Sulawesi,6,1510610,5,5,138,32,15
+81,Maluku,Maluku,11,1958501,10,10,76,16,19
+82,Maluku Utara,Maluku,10,1356755,9,9,61,19,24
+91,Papua,Papua,9,1072358,8,7,219,25,12
+92,Papua Barat,Papua,7,574213,7,4,35,35,31
+93,Papua Selatan,Papua,4,548594,2,1,0,38,38
+94,Papua Tengah,Papua,8,1485046,7,4,29,36,32
+95,Papua Pegunungan,Papua,8,1446708,7,5,50,33,30
+96,Papua Barat Daya,Papua,6,619495,6,3,13,37,37

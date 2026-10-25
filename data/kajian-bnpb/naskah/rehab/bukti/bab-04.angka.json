@@ -1,0 +1,605 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 4 kajian rehab (berkas bukti naskah/rehab/bukti/bab-04.md), belum digabung ke data/angka.json. Bentuk sama dengan data/angka.json: berkas + jalur untuk satu baris, atau nilai + pustaka (id di bab-04.pustaka.json). Untuk penjumlahan multibaris, medan berkas_olah mencatat berkas asal dan catatan olah(resmi) menyebut filternya; skrip reproduksi bangun/rehab_angka.py belum ada.",
+  "Kunci yang sudah ada di data/angka.json tidak diulang. Angka sekunder (media) tidak dimasukkan.",
+  "Disusun 25 Oktober 2026. Hitungan DIBI dijalankan ulang atas CSV paket dibi (tarik 23 Okt 2026); angka per jenis riset F §2 dibantah (lihat bab-04.md, tabel koreksi)."
+ ],
+ "angka": {
+  "rehab.dibi.rumah_rb.2015_2025": {
+   "nilai": 301311,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat klasifikasi=alam, cakupan=bencana, 2015–2025"
+  },
+  "rehab.dibi.rumah_rs.2015_2025": {
+   "nilai": 256321,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_sedang klasifikasi=alam, cakupan=bencana, 2015–2025"
+  },
+  "rehab.dibi.rumah_rr.2015_2025": {
+   "nilai": 743198,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_ringan klasifikasi=alam, cakupan=bencana, 2015–2025"
+  },
+  "rehab.dibi.rumah_rusak.2015_2025": {
+   "nilai": 1300830,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak klasifikasi=alam, cakupan=bencana, 2015–2025"
+  },
+  "rehab.dibi.rumah_rb.2018": {
+   "nilai": 117655,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ semua kategori alam, 2018; gempa 111.214"
+  },
+  "rehab.dibi.rumah_rb.2025": {
+   "nilai": 70391,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ semua kategori alam, 2025; banjir 65.648"
+  },
+  "rehab.dibi.rumah_rb.porsi_2018_2025_persen": {
+   "nilai": 62.4,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): (117.655 + 70.391) / 301.311"
+  },
+  "rehab.dibi.rumah_rb.gempa.2015_2025": {
+   "nilai": 152659,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Gempabumi, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.banjir.2015_2025": {
+   "nilai": 104296,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Banjir, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.cuaca_ekstrem.2015_2025": {
+   "nilai": 24876,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Cuaca ekstrem, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.longsor.2015_2025": {
+   "nilai": 12865,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Longsor, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.erupsi.2015_2025": {
+   "nilai": 3648,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Erupsi gunung api, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.tsunami.2015_2025": {
+   "nilai": 1583,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat kategori_dibi=Tsunami, klasifikasi=alam, cakupan=bencana, 2015–2025; membantah angka per jenis riset F §2"
+  },
+  "rehab.dibi.rumah_rb.geologi_persen.2015_2025": {
+   "nilai": 52.4,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): (gempa 152.659 + tsunami 1.583 + erupsi 3.648) / 301.311"
+  },
+  "rehab.dibi.jembatan_rusak.2018_2025": {
+   "nilai": 3833,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, 2018–2025; kolom bernilai 0 untuk 2008–2017"
+  },
+  "rehab.dibi.jembatan_rusak.2025": {
+   "nilai": 1088,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, 2025"
+  },
+  "rehab.dibi.jembatan_rusak.rerata_2018_2024": {
+   "nilai": 392,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit per tahun",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): (275+433+487+505+342+258+445)/7 = 392,1"
+  },
+  "rehab.dibi.jembatan_rusak.banjir.2018_2025": {
+   "nilai": 3419,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Banjir, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.longsor.2018_2025": {
+   "nilai": 246,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Longsor, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.gempa.2018_2025": {
+   "nilai": 52,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Gempabumi, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.erupsi.2018_2025": {
+   "nilai": 51,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Erupsi gunung api, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.cuaca_ekstrem.2018_2025": {
+   "nilai": 37,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Cuaca ekstrem, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.gelombang.2018_2025": {
+   "nilai": 28,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak kategori_dibi=Gelombang pasang / Abrasi, klasifikasi=alam, cakupan=bencana, 2018–2025; membantah riset F §2 bila berbeda"
+  },
+  "rehab.dibi.jembatan_rusak.porsi_banjir_persen": {
+   "nilai": 89.2,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): 3.419 / 3.833; KERANGKA menulis sekitar 91 (dibantah)"
+  },
+  "rehab.dibi.fasum_rusak.2015_2025": {
+   "nilai": 21703,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ fasum_rusak klasifikasi=alam, cakupan=bencana, 2015–2025; kolom fasilitas bernilai 0 pada 2017"
+  },
+  "rehab.dibi.pendidikan_rusak.2015_2025": {
+   "nilai": 11617,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ pendidikan_rusak klasifikasi=alam, cakupan=bencana, 2015–2025; kolom fasilitas bernilai 0 pada 2017"
+  },
+  "rehab.dibi.fasyankes_rusak.2015_2025": {
+   "nilai": 1714,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ fasyankes_rusak klasifikasi=alam, cakupan=bencana, 2015–2025; kolom fasilitas bernilai 0 pada 2017"
+  },
+  "rehab.dibi.rumah_ibadat_rusak.2015_2025": {
+   "nilai": 8372,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_ibadat_rusak klasifikasi=alam, cakupan=bencana, 2015–2025; kolom fasilitas bernilai 0 pada 2017"
+  },
+  "rehab.dibi.jembatan_rusak.prov.aceh.2018_2025": {
+   "nilai": 633,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Aceh 2018–2025"
+  },
+  "rehab.dibi.jembatan_rusak.prov.sumbar.2018_2025": {
+   "nilai": 521,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Sumatera Barat 2018–2025"
+  },
+  "rehab.dibi.jembatan_rusak.prov.sulsel.2018_2025": {
+   "nilai": 280,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Sulawesi Selatan 2018–2025"
+  },
+  "rehab.dibi.jembatan_rusak.prov.aceh.2025": {
+   "nilai": 480,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Aceh 2025"
+  },
+  "rehab.dibi.jembatan_rusak.prov.sumbar.2025": {
+   "nilai": 182,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Sumatera Barat 2025"
+  },
+  "rehab.dibi.jembatan_rusak.sumatra3prov.2025": {
+   "nilai": 744,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ jembatan_rusak klasifikasi=alam, cakupan=bencana, Aceh+Sumatera Utara+Sumatera Barat 2025, semua kejadian alam tahun itu"
+  },
+  "rehab.dibi.jembatan_rusak.porsi_6prov_persen": {
+   "nilai": 54.5,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): (633+521+280+236+215+204)/3.833; lima provinsi 49,2"
+  },
+  "rehab.dibi.jembatan_rusak.prov_berulang_8_tahun": {
+   "nilai": 17,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): provinsi dengan jembatan_rusak > 0 pada kedelapan tahun 2018–2025"
+  },
+  "rehab.dibi.jembatan_rusak.prov_tercatat": {
+   "nilai": 37,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "provinsi",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): provinsi dengan Σ jembatan_rusak 2018–2025 ≥ 1, dari 38"
+  },
+  "rehab.dibi.rumah_rb.prov.ntb.2015_2025": {
+   "nilai": 78167,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat klasifikasi=alam, cakupan=bencana, Nusa Tenggara Barat 2015–2025"
+  },
+  "rehab.dibi.rumah_rb.prov.aceh.2015_2025": {
+   "nilai": 58932,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat klasifikasi=alam, cakupan=bencana, Aceh 2015–2025"
+  },
+  "rehab.dibi.rumah_rb.prov.sulteng.2015_2025": {
+   "nilai": 35921,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat klasifikasi=alam, cakupan=bencana, Sulawesi Tengah 2015–2025"
+  },
+  "rehab.dibi.rumah_rb.prov.aceh.2025": {
+   "nilai": 53905,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat klasifikasi=alam, cakupan=bencana, Aceh 2025"
+  },
+  "rehab.dibi.kab.berulang_hidromet_11_tahun": {
+   "nilai": 94,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "skenario-hidromet/dibi_kab_tahun.csv",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): kab dengan rumah_rusak > 0 di tiap tahun 2015–2025, jenis hidromet tanpa kekeringan dan karhutla; DIBI 2024 tidak lengkap untuk lima jenis (README paket)"
+  },
+  "rehab.dibi.kab.acehutara.rumah_rusak_hidromet.2015_2025": {
+   "nilai": 92450,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "skenario-hidromet/dibi_kab_tahun.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak (RB+RS+RR) Kab. Aceh Utara 2015–2025, jenis hidromet tanpa kekeringan dan karhutla"
+  },
+  "rehab.lantai.gempa.padang2009.rumah_rusak": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=padang2009,metrik=rumah_rusak,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "jendela 30 Sep–31 Okt 2009 pilihan penyusun"
+  },
+  "rehab.lantai.gempa.lombok2018.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=lombok2018,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "jendela 29 Jul–30 Sep 2018 pilihan penyusun"
+  },
+  "rehab.lantai.likuefaksi.sulteng2018.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=sulteng2018,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "gempa, tsunami, likuefaksi tidak terpisah; jendela 28 Sep–31 Okt 2018"
+  },
+  "rehab.lantai.banjir.sumatra2025.rumah_rusak": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=sumatra2025,metrik=rumah_rusak,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "jendela 15 Nov–31 Des 2025; versi lain BNPB sekitar 147.000, PKP sekitar 189.308 (terdampak)"
+  },
+  "rehab.lantai.erupsi.merapi2010.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=merapi2010,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "jendela 26 Okt–31 Des 2010"
+  },
+  "rehab.lantai.banjir.seroja2021.rumah_rusak": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=seroja2021,metrik=rumah_rusak,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "catatan": "jendela 3–30 Apr 2021; banjir, longsor, cuaca ekstrem"
+  },
+  "rehab.lantai.tsunami.aceh2004.rumah_brr": {
+   "nilai": 140304,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias, The Scattered Beads",
+   "catatan": "rumah permanen dibangun dalam 4 tahun; laporan keluaran pelaksana sendiri (kompendium P08, kekuatan lemah)",
+   "lokasi": "hlm. xiii (PDF 15)"
+  },
+  "rehab.pulih.sumatra2025.jembatan_daerah_terdampak": {
+   "nilai": 1181,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "jembatan daerah terdampak; definisi terdampak lebih luas dari rusak; DIBI tiga provinsi 2025 = 744"
+  },
+  "rehab.pulih.sumatra2025.jembatan_daerah_fungsi_persen_2026_05": {
+   "nilai": 67,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "\"sekitar 67%\"; 791 unit adalah hitungan penyusun, bukan angka PU"
+  },
+  "rehab.pulih.sumatra2025.jalan_daerah_ruas_terdampak": {
+   "nilai": 2421,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "ruas",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "ruas jalan daerah terdampak"
+  },
+  "rehab.pulih.sumatra2025.jalan_daerah_fungsi_persen_2026_05": {
+   "nilai": 94,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "\"sekitar 94%\""
+  },
+  "rehab.pulih.sumatra2025.jalan_jembatan_nasional_fungsi_persen_2026_05": {
+   "nilai": 100,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "jalan dan jembatan nasional; jumlah unit tidak disebut"
+  },
+  "rehab.pulih.sumatra2025.hunian_kk_selesai_2026_05": {
+   "nilai": 1547,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "KK",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "rumah hunian selesai untuk 1.547 KK"
+  },
+  "rehab.pipa.sumatra2025.spam_terdampak": {
+   "nilai": 178,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "rilis 5 Feb 2026 memakai penyebut 176"
+  },
+  "rehab.pipa.sumatra2025.persen_fungsi_mei2026": {
+   "nilai": 95.5,
+   "pustaka": "pu-2026-pemulihan-sumatera-mei",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 7 Mei 2026 (terbit 11 Mei 2026)",
+   "catatan": "\"sekitar 95,5%\" unit SPAM, bukan jiwa atau sambungan"
+  },
+  "rehab.pipa.sumatra2025.spam_fungsi_feb2026": {
+   "nilai": 143,
+   "pustaka": "pu-2026-spam-februari",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, data per 2 Feb 2026",
+   "catatan": "dari 176; judul rilis menulis 142; versi 153 (media) sekunder"
+  },
+  "rehab.pulih.sumatra2025.rumah_rusak_bnpb_2025_12": {
+   "nilai": 147000,
+   "pustaka": "dpr-2026-info-singkat-sumatra",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB per 17 Des 2025, dikutip Info Singkat DPR RI",
+   "catatan": "\"sekitar\"; dokumen DPR primer, angka BNPB kutipan; DIBI 228.006"
+  },
+  "rehab.pulih.sumatra2025.rumah_terdampak_pkp_2026_01": {
+   "nilai": 189308,
+   "pustaka": "dpr-2026-info-singkat-sumatra",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PKP per 9 Jan 2026, dikutip Info Singkat DPR RI",
+   "catatan": "\"rumah terdampak\", istilah berbeda dari rusak"
+  },
+  "rehab.pelajaran.sulteng.huntap_ditetapkan": {
+   "nilai": 5598,
+   "pustaka": "kemenkopmk-2024-huntap-sulteng",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 15 Jun 2024",
+   "catatan": "huntap korban gempa dan likuefaksi Sulawesi Tengah 2018"
+  },
+  "rehab.pelajaran.sulteng.huntap_sisa_jun2024": {
+   "nilai": 382,
+   "pustaka": "kemenkopmk-2024-huntap-sulteng",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 15 Jun 2024",
+   "catatan": "belum selesai per Juni 2024; \"tertunda cukup lama 6 tahun\""
+  },
+  "rehab.pulih.lombok2018.rumah_selesai_2020_03": {
+   "nilai": 170559,
+   "pustaka": "kemenkopmk-2020-lombok-percepatan",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 13 Mar 2020",
+   "catatan": "kompendium P09 kekuatan lemah; bukti_dampak B057"
+  },
+  "rehab.pulih.lombok2018.rumah_sasaran": {
+   "nilai": 226204,
+   "pustaka": "kemenkopmk-2020-lombok-percepatan",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 13 Mar 2020",
+   "catatan": "sasaran rumah; DIBI rumah rusak 217.855"
+  },
+  "rehab.pulih.lombok2018.persen_selesai_2020_03": {
+   "nilai": 75.4,
+   "pustaka": "kemenkopmk-2020-lombok-percepatan",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 13 Mar 2020",
+   "catatan": "bukti_dampak B058"
+  },
+  "rehab.pulih.sumatra2025.jembatan_nasional_putus_aceh_2025_12": {
+   "nilai": 14,
+   "pustaka": "binamarga-2025-jembatan-aceh",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Ditjen Bina Marga BPJN Aceh, per 1 Des 2025",
+   "catatan": "riset B [29]; tidak dibuka ulang 25 Okt 2026"
+  },
+  "rehab.pipa.pulih.kobe_90": {
+   "nilai": 38,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "catatan": "Kobe 1995 air 90%; 100% dalam 81 hari; riset D [36]"
+  },
+  "rehab.pipa.pulih.tohoku_90": {
+   "nilai": 36,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "catatan": "Tohoku 2011 air 90%; riset D [36]"
+  }
+ }
+}

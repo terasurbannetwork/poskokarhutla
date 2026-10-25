@@ -1,0 +1,564 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 6 kajian rehab (naskah/rehab/bukti/bab-06.md), belum digabung ke data/angka.json. Bentuk mengikuti bab-04.angka.json: nilai + pustaka (id di bab-06.pustaka.json), lokasi bila ada, catatan olah untuk turunan.",
+  "Kunci yang sudah ada di data/angka.json (perka_2008.*) atau berkas bukti bab lain (bab-01, bab-02, bab-03) tidak diulang. Angka sekunder (media) tidak dimasukkan.",
+  "Disusun 25 Oktober 2026. Sumber yang dibuka ulang sesi ini: rilis PU 5 Feb dan 11 Mei 2026, buku Satgas Lombok, buku Cianjur 2022, R3P Cianjur, JSCE Nojima 2011, WHO TN9, Sphere 2018, SCIRT 2018, audit OAG NZ 2016. Sisanya dari riset D (catatan di pustaka)."
+ ],
+ "angka": {
+  "rehab.pipa.sumatra2025.spam_terdampak_aceh_feb2026": {
+   "nilai": 71,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "10 kab/kota; kapasitas 2.177 l/dt"
+  },
+  "rehab.pipa.sumatra2025.spam_berfungsi_aceh_feb2026": {
+   "nilai": 54,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "kapasitas berfungsi 1.595 l/dt"
+  },
+  "rehab.pipa.sumatra2025.spam_terdampak_sumut_feb2026": {
+   "nilai": 45,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "9 kab/kota; kapasitas awal tidak disebut"
+  },
+  "rehab.pipa.sumatra2025.spam_berfungsi_sumut_feb2026": {
+   "nilai": 37,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "kapasitas berfungsi 1.445 l/dt"
+  },
+  "rehab.pipa.sumatra2025.spam_terdampak_sumbar_feb2026": {
+   "nilai": 60,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "13 kab/kota; kapasitas 2.663 l/dt"
+  },
+  "rehab.pipa.sumatra2025.spam_berfungsi_sumbar_feb2026": {
+   "nilai": 52,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "kapasitas berfungsi 2.263 l/dt; permanen Sumbar bertahap hingga Agustus 2028 (kunci bab-01 rehab.pipa.sumbar.target_permanen)"
+  },
+  "rehab.pipa.sumatra2025.kapasitas_fungsi_feb2026_lps": {
+   "nilai": 5300,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "l/detik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "tertulis 'lebih dari 5.300'; nilai adalah batas bawah"
+  },
+  "rehab.pipa.sumatra2025.progres_infrastruktur_feb2026_persen": {
+   "nilai": 82,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID) 5 Feb 2026, data per 2 Feb 2026",
+   "catatan": "progres penanganan infrastruktur SPAM 'sekitar 82%'"
+  },
+  "rehab.pipa.sumatra2025.persen_fungsi_feb2026": {
+   "nilai": 81.25,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "persen unit SPAM",
+   "keyakinan": "estimasi-model",
+   "sumber": "turunan",
+   "catatan": "olah: 143 ÷ 176; unit, bukan jiwa"
+  },
+  "rehab.pipa.sumatra2025.hari_ke_feb2026": {
+   "nilai": 72,
+   "pustaka": "bnpb-dibi",
+   "satuan": "hari",
+   "keyakinan": "estimasi-model",
+   "sumber": "turunan",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "catatan": "olah: 2 Feb 2026 dikurangi 22 Nov 2025 (tanggal kejadian sumatra2025 di dibi/kejadian_besar.csv; jendela DIBI mulai 15 Nov 2025, dipilih penyusun paket)"
+  },
+  "rehab.pipa.sumatra2025.hari_ke_mei2026": {
+   "nilai": 166,
+   "pustaka": "bnpb-dibi",
+   "satuan": "hari",
+   "keyakinan": "estimasi-model",
+   "sumber": "turunan",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "catatan": "olah: 7 Mei 2026 dikurangi 22 Nov 2025"
+  },
+  "rehab.pipa.sumatra2025.spam_fungsi_mei2026_turunan": {
+   "nilai": 170,
+   "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+   "satuan": "SPAM",
+   "keyakinan": "estimasi-model",
+   "sumber": "turunan",
+   "catatan": "olah: sekitar 95,5% x 178 = 169,99; rilis tidak menyebut jumlah unit"
+  },
+  "rehab.pipa.lombok.sumur_jiat_diaktifkan": {
+   "nilai": 83,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 4, hlm. cetak 50",
+   "catatan": "sumur bor jaringan irigasi air tanah yang sudah ada, diaktifkan BWS Nusa Tenggara I; Lombok Timur 8, Lombok Utara 70, Sumbawa 2, Sumbawa Barat 3"
+  },
+  "rehab.pipa.lombok.sumur_jiat_kapasitas_lps": {
+   "nilai": 1314,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "l/detik",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 4, hlm. cetak 50",
+   "catatan": "Lombok Utara 1.095"
+  },
+  "rehab.pipa.lombok.hidran_2000l": {
+   "nilai": 242,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 5, hlm. cetak 51-52"
+  },
+  "rehab.pipa.lombok.hidran_1000l": {
+   "nilai": 65,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 5"
+  },
+  "rehab.pipa.lombok.mobil_tangki_4000l": {
+   "nilai": 28,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 5",
+   "catatan": "dari Balai Teknik Air Minum Bekasi; 19 di gudang regional. Setkab 10 Agu 2018 menyebut sekitar 13 mobil tangki"
+  },
+  "rehab.pipa.lombok.ipa_unit": {
+   "nilai": 26,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 6, hlm. cetak 52",
+   "catatan": "sebaran NTB termasuk Bima dan Dompu"
+  },
+  "rehab.pipa.lombok.ipa_kapasitas_lps": {
+   "nilai": 358,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "l/detik",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok (Kementerian PUPR)",
+   "lokasi": "Tabel 6"
+  },
+  "rehab.pipa.cianjur.alat_dasar_awal": {
+   "nilai": 57,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 41",
+   "catatan": "15 hidran umum, 14 toilet portable, 3 tenda besar, 10 tenda kecil, 6 mobil tangki, 1 mobil toilet dari Depo Cipta Karya Bekasi"
+  },
+  "rehab.pipa.cianjur.pdam_mobil_tangki": {
+   "nilai": 10,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 42",
+   "catatan": "milik PDAM Tirta Mukti; PMI 10 mobil lain"
+  },
+  "rehab.pipa.cianjur.rit_truk_per_hari": {
+   "nilai": 5,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "rit per truk per hari",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 42"
+  },
+  "rehab.pipa.cianjur.hidran_puncak": {
+   "nilai": 172,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit hidran 200 liter",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 43",
+   "catatan": "18 Des 2022"
+  },
+  "rehab.pipa.cianjur.hidran_hari_puncak": {
+   "nilai": 27,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "hari sejak gempa",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "catatan": "olah(resmi): 18 Des 2022 dikurangi 21 Nov 2022"
+  },
+  "rehab.pipa.cianjur.hidran_2023_03": {
+   "nilai": 59,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 43",
+   "catatan": "tercetak '21 Maret 2022', kemungkinan salah ketik untuk 2023"
+  },
+  "rehab.pipa.cianjur.sumber_daya_puncak": {
+   "nilai": 406,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 44",
+   "catatan": "seluruh sumber daya PUPR, 14 Des 2022 (hari ke-23)"
+  },
+  "rehab.pipa.cianjur.sumber_daya_kembali_2023_03": {
+   "nilai": 202,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 44",
+   "catatan": "dikembalikan ke depo asal per 21 Mar 2023 (hari ke-120)"
+  },
+  "rehab.pipa.cianjur.spam_rehab_titik": {
+   "nilai": 5,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "SPAM",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 59",
+   "catatan": "Cirumput, Yonif Raider 300, huntap Sirnagalih, huntap Murnisari, Ponpes Darul Falah"
+  },
+  "rehab.pipa.cianjur.spam_rehab_progres_mk_2023_09": {
+   "nilai": 98.31,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 60",
+   "catatan": "status 25 Sep 2023"
+  },
+  "rehab.pipa.cianjur.spam_cirumput_realisasi_2023_09": {
+   "nilai": 98.55,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 60",
+   "catatan": "rencana 100"
+  },
+  "rehab.pipa.cianjur.spam_huntap_sirnagalih_realisasi_2023_09": {
+   "nilai": 78.21,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 60",
+   "catatan": "rencana 98,02; deviasi -19,81"
+  },
+  "rehab.pipa.cianjur.spam_huntap_murnisari_realisasi_2023_09": {
+   "nilai": 80.88,
+   "pustaka": "kemenpupr-2023-cianjur",
+   "satuan": "persen",
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "lokasi": "hlm. cetak 60",
+   "catatan": "rencana 97,11; deviasi -16,23"
+  },
+  "rehab.pipa.cianjur.r3p_mobilisasi_air_kerugian_rp": {
+   "nilai": 324800000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "rupiah",
+   "keyakinan": "resmi",
+   "sumber": "R3P Kabupaten Cianjur 2022 (Jitupasna 2023)",
+   "lokasi": "hlm. cetak 57 (PDF 64)",
+   "catatan": "kerugian mobilisasi pendistribusian air bersih, Tabel 3.8"
+  },
+  "rehab.pipa.cianjur.r3p_kebutuhan_spam_perkotaan_rp": {
+   "nilai": 62671663000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "rupiah",
+   "keyakinan": "resmi",
+   "sumber": "R3P Kabupaten Cianjur 2022 (Jitupasna 2023)",
+   "lokasi": "hlm. PDF 107",
+   "catatan": "kebutuhan RR SPAM perkotaan, sumber pendanaan kabupaten"
+  },
+  "rehab.pipa.cianjur.r3p_penanganan_spam_5lokasi_rp": {
+   "nilai": 32200466000,
+   "pustaka": "cianjur-2022-r3p",
+   "satuan": "rupiah",
+   "keyakinan": "resmi",
+   "sumber": "R3P Kabupaten Cianjur 2022 (Jitupasna 2023)",
+   "lokasi": "hlm. PDF 107",
+   "catatan": "lima SPAM yang sama dengan buku PUPR; MK terpisah Rp2.589.122.000"
+  },
+  "rehab.pipa.palu.pengolah_esdm_unit": {
+   "nilai": 17,
+   "pustaka": "esdm-2018-air-siap-minum",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM 17 Des 2018",
+   "catatan": "15 lokasi; dari riset D [17]"
+  },
+  "rehab.pipa.palu.pengolah_esdm_jiwa": {
+   "nilai": 22241,
+   "pustaka": "esdm-2018-air-siap-minum",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM 17 Des 2018",
+   "catatan": "dari riset D [17]"
+  },
+  "rehab.pipa.palu.hari_pengolah_darurat": {
+   "nilai": 19,
+   "pustaka": "esdm-2018-air-siap-minum",
+   "satuan": "hari sejak gempa",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: 17 Okt 2018 dikurangi 28 Sep 2018"
+  },
+  "rehab.pipa.pulih.kobe_95": {
+   "nilai": 43,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE (Nojima 2011)",
+   "catatan": "persen rumah tangga tersambung"
+  },
+  "rehab.pipa.pulih.tohoku_95": {
+   "nilai": 41,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE (Nojima 2011)",
+   "catatan": "100% belum tercapai saat paparan Juni 2011"
+  },
+  "rehab.pipa.intl.kobe_rumah_tangga_padam": {
+   "nilai": 1260000,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "rumah tangga",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE (Nojima 2011)",
+   "catatan": "Prefektur Hyogo saja; Biro Air Tokyo menulis sekitar 1,27 juta (riset D [37])"
+  },
+  "rehab.pipa.intl.tohoku_rumah_tangga_padam": {
+   "nilai": 2000000,
+   "pustaka": "jsce-2011-nojima",
+   "satuan": "rumah tangga",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE (Nojima 2011)",
+   "catatan": "tertulis 'over 2 million', batas bawah; versi lain 2,2 juta (Kuwata dan Okamoto 2012) dan 2,57 juta (Biro Air Tokyo)"
+  },
+  "rehab.pipa.standar.sphere_liter": {
+   "nilai": 15,
+   "pustaka": "sphere-2018-handbook",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere 2018",
+   "lokasi": "hlm. 105",
+   "catatan": "minimum, 'never a maximum'"
+  },
+  "rehab.pipa.standar.sphere_orang_per_keran": {
+   "nilai": 250,
+   "pustaka": "sphere-2018-handbook",
+   "satuan": "orang per keran",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere 2018",
+   "lokasi": "hlm. 105",
+   "catatan": "debit 7,5 liter per menit"
+  },
+  "rehab.pipa.standar.sphere_antre_menit": {
+   "nilai": 30,
+   "pustaka": "sphere-2018-handbook",
+   "satuan": "menit",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere 2018",
+   "lokasi": "hlm. 105",
+   "catatan": "kurang dari 30 menit"
+  },
+  "rehab.pipa.standar.sphere_urban_liter": {
+   "nilai": 50,
+   "pustaka": "sphere-2018-handbook",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere 2018",
+   "lokasi": "hlm. 106",
+   "catatan": "konteks perkotaan berpendapatan menengah, 'may be the minimum acceptable'"
+  },
+  "rehab.pipa.standar.who_minggu2_4": {
+   "nilai": 5,
+   "pustaka": "who-2013-tn9",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO TN9 2013",
+   "lokasi": "Tabel 9.3",
+   "catatan": "jarak 1 km; 2 minggu sampai 1 bulan"
+  },
+  "rehab.pipa.standar.who_bulan1_3": {
+   "nilai": 10,
+   "pustaka": "who-2013-tn9",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO TN9 2013",
+   "lokasi": "Tabel 9.3",
+   "catatan": "jarak 1 km; 1 sampai 3 bulan"
+  },
+  "rehab.pipa.standar.who_bulan3_6": {
+   "nilai": 15,
+   "pustaka": "who-2013-tn9",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO TN9 2013",
+   "lokasi": "Tabel 9.3",
+   "catatan": "15 atau lebih; jarak 0,5 km; 3 sampai 6 bulan"
+  },
+  "rehab.pipa.standar.spm_kuantitas": {
+   "nilai": 60,
+   "pustaka": "ntb-2022-pergub32-spm",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "resmi",
+   "sumber": "Pergub NTB 32/2022 Lampiran III (turunan Permen PUPR 13/2023)",
+   "catatan": "dari riset D [4]; nilai SPM diukur sebagai persen penduduk berakses"
+  },
+  "rehab.pipa.biaya.per_lps_banjarbakula": {
+   "nilai": 1.57,
+   "pustaka": "setkab-2023-banjarbakula",
+   "satuan": "miliar Rp per l/dt (2023)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp787 miliar ÷ 500 l/dt; proyek regional, bukan SPAM perdesaan"
+  },
+  "rehab.pipa.biaya.per_lps_jatiluhur1": {
+   "nilai": 0.37,
+   "pustaka": "pu-2025-jatiluhur1",
+   "satuan": "miliar Rp per l/dt (2025)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp1,75 triliun ÷ 4.750 l/dt; hulu KPBU saja"
+  },
+  "rehab.pipa.biaya.per_lps_semarang_barat": {
+   "nilai": 0.75,
+   "pustaka": "pupr-2023-semarang-barat",
+   "satuan": "miliar Rp per l/dt (2017-2023)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp746 miliar ÷ 1.000 l/dt"
+  },
+  "rehab.pipa.biaya.per_sr_banjarbakula": {
+   "nilai": 13.0,
+   "pustaka": "setkab-2023-banjarbakula",
+   "satuan": "juta Rp per rumah tangga (2023)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp787 miliar ÷ 60.353"
+  },
+  "rehab.pipa.biaya.per_sr_semarang_barat": {
+   "nilai": 10.7,
+   "pustaka": "pupr-2023-semarang-barat",
+   "satuan": "juta Rp per SR (2017-2023)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp746 miliar ÷ 70.000 SR"
+  },
+  "rehab.pipa.biaya.pipa_distribusi_utama_per_km": {
+   "nilai": 4.3,
+   "pustaka": "pupr-2023-semarang-barat",
+   "satuan": "miliar Rp per km (2023)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp224 miliar ÷ 52,2 km; diameter tidak disebut"
+  },
+  "rehab.pipa.biaya.truk_pdam_per_m3": {
+   "nilai": 19000,
+   "pustaka": "hsu-2022-perbup-tarif",
+   "satuan": "Rp per m3 (2022)",
+   "keyakinan": "estimasi-model",
+   "sumber": "riset D",
+   "catatan": "olah: Rp95.000 ÷ 5 m3; tarif layanan biasa satu kabupaten, 10 km pertama, tanpa pajak"
+  },
+  "rehab.pipa.biaya.truk_intl_per_m3": {
+   "nilai": 9,
+   "pustaka": "unss-2025-renk",
+   "satuan": "USD per m3 (2025)",
+   "keyakinan": "terverifikasi",
+   "sumber": "UN South Sudan",
+   "catatan": "truk dan diesel, kamp pengungsian Renk"
+  },
+  "rehab.pipa.biaya.pipa_surya_intl_per_m3": {
+   "nilai": 1,
+   "pustaka": "unss-2025-renk",
+   "satuan": "USD per m3 (2025)",
+   "keyakinan": "terverifikasi",
+   "sumber": "UN South Sudan",
+   "catatan": "perpipaan bertenaga surya"
+  },
+  "rehab.pipa.biaya.penurunan_truk_ke_pipa": {
+   "nilai": 92,
+   "pustaka": "unicef-2024-afrika-timur",
+   "satuan": "persen",
+   "keyakinan": "terverifikasi",
+   "sumber": "UNICEF, IRC, KfW, UNHCR 2024",
+   "catatan": "Ethiopia; truk ke perpipaan, utilitas, pompa surya"
+  },
+  "rehab.pipa.pamsimas.jiwa_layanan_icr2023": {
+   "nilai": 24.8,
+   "pustaka": "rwsn-2023-pamsimas",
+   "satuan": "juta jiwa",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia ICR 2023 (ringkasan RWSN), program-terbukti P13",
+   "catatan": "lebih dari 35.553 desa; bukan program darurat"
+  },
+  "rehab.pipa.pamsimas.persen_berfungsi_icr2023": {
+   "nilai": 91,
+   "pustaka": "rwsn-2023-pamsimas",
+   "satuan": "persen sistem",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia ICR 2023, program-terbukti P13",
+   "catatan": "dibantah sebagian oleh evaluasi DFAT 2023 (data MIS terlalu optimistis)"
+  },
+  "rehab.pipa.pamsimas.orang_akses_2021": {
+   "nilai": 24.4,
+   "pustaka": "wb-2023-pamsimas-brief",
+   "satuan": "juta orang",
+   "keyakinan": "terverifikasi",
+   "sumber": "World Bank Results Brief 2023",
+   "catatan": "per Desember 2021; 35.443 desa"
+  },
+  "rehab.pipa.intl.scirt_program_nzd_miliar": {
+   "nilai": 2.2,
+   "pustaka": "scirt-2018-value",
+   "satuan": "miliar NZD",
+   "keyakinan": "terverifikasi",
+   "sumber": "SCIRT 2018",
+   "catatan": "5,5 tahun"
+  },
+  "rehab.pipa.intl.scirt_proyek": {
+   "nilai": 600,
+   "pustaka": "scirt-2018-value",
+   "satuan": "proyek",
+   "keyakinan": "terverifikasi",
+   "sumber": "SCIRT 2018",
+   "catatan": "tertulis 'more than 600', batas bawah"
+  },
+  "rehab.pipa.intl.scirt_kepastian_dana_bulan": {
+   "nilai": 19,
+   "pustaka": "oag-nz-2016-scirt",
+   "satuan": "bulan",
+   "keyakinan": "terverifikasi",
+   "sumber": "Auditor-General NZ 2016",
+   "catatan": "waktu sampai pengaturan dana dipastikan"
+  }
+ }
+}

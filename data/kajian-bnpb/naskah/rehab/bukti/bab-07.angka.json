@@ -1,0 +1,444 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 7 kajian rehab (naskah/rehab/bukti/bab-07.md), belum digabung ke data/angka.json. Bentuk sama dengan data/angka.json: berkas_olah + catatan olah untuk turunan, atau nilai + pustaka (id di bab-07.pustaka.json).",
+  "Kunci yang sudah ada di data/angka.json atau bab-01 sampai bab-04.angka.json tidak diulang. Angka sekunder (media) tidak dimasukkan.",
+  "Kunci subsidence memakai rendah/tinggi dalam satu entri (rehab.akuifer.subsidence_pantura_jateng) mengikuti pola airjawa.turun_tanah.*.",
+  "Disusun 25 Oktober 2026."
+ ],
+ "angka": {
+  "rehab.akuifer.zona_konservasi_target_semua_cat": {
+   "nilai": 2045,
+   "pustaka": "badangeologi-2025-capaian",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Badan Geologi, 27 Oktober 2025",
+   "catatan": "target zona konservasi air tanah seluruh CAT"
+  },
+  "rehab.akuifer.zona_konservasi_target_prioritas": {
+   "nilai": 2029,
+   "pustaka": "badangeologi-2025-capaian",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Badan Geologi, 27 Oktober 2025",
+   "catatan": "target zona konservasi CAT prioritas"
+  },
+  "rehab.akuifer.kebutuhan_pokok_minimal_uu17": {
+   "nilai": 60,
+   "pustaka": "ri-2019-uu17",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "resmi",
+   "sumber": "Penjelasan UU 17/2019 Pasal 6",
+   "catatan": "dibaca langsung riset C [7]"
+  },
+  "rehab.akuifer.ambang_jumlah_besar_uu17": {
+   "nilai": 25,
+   "pustaka": "ri-2019-uu17",
+   "satuan": "m³ per bulan per KK",
+   "keyakinan": "resmi",
+   "sumber": "Penjelasan UU 17/2019",
+   "catatan": "atau sumur bor berdiameter lebih dari 2 inci; Penjelasan Pasal 45 huruf a angka 2 menurut salinan riset C"
+  },
+  "rehab.akuifer.volume_bulanan_sumur_bg_min": {
+   "nilai": 2592,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "m³ per bulan",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: 1 l/detik × 86.400 × 30 hari"
+  },
+  "rehab.akuifer.volume_bulanan_sumur_bg_maks": {
+   "nilai": 6221,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "m³ per bulan",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: 2,4 l/detik × 86.400 × 30 hari = 6.220,8"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.indonesia": {
+   "nilai": 32.33,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 17.07 + sumur terlindung 15.26 (kolom 2 dan 4 baris Indonesia); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.aceh": {
+   "nilai": 33.77,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 9.19 + sumur terlindung 24.58 (kolom 2 dan 4 baris Aceh); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.sumut": {
+   "nilai": 33.0,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 23.73 + sumur terlindung 9.27 (kolom 2 dan 4 baris Sumatera Utara); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.sumbar": {
+   "nilai": 23.35,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 6.48 + sumur terlindung 16.87 (kolom 2 dan 4 baris Sumatera Barat); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.ntb": {
+   "nilai": 42.33,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 22.52 + sumur terlindung 19.81 (kolom 2 dan 4 baris Nusa Tenggara Barat); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.sulteng": {
+   "nilai": 19.75,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 12.94 + sumur terlindung 6.81 (kolom 2 dan 4 baris Sulawesi Tengah); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.rt_air_tanah_minum_2023.jabar": {
+   "nilai": 33.68,
+   "pustaka": "bps-2024-sumber-air-minum-prov",
+   "berkas_olah": "air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt",
+   "satuan": "%",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan dari BPS, Susenas 2023",
+   "catatan": "olah(resmi): sumur bor/pompa 18.44 + sumur terlindung 15.24 (kolom 2 dan 4 baris Jawa Barat); nama kolom dikukuhkan pembanding Kompas 13 Feb 2024 (air-jawa/README.md); batas bawah, sumur tak terlindung tidak dihitung"
+  },
+  "rehab.akuifer.sumur_bg_kedalaman_tipikal": {
+   "nilai": 125,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "m",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "sekitar 125 m"
+  },
+  "rehab.akuifer.sumur_bg_debit_min": {
+   "nilai": 1,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "liter per detik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)"
+  },
+  "rehab.akuifer.sumur_bg_debit_maks": {
+   "nilai": 2.4,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "liter per detik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)"
+  },
+  "rehab.akuifer.sumur_bg_jiwa_per_sumur": {
+   "nilai": 2000,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "sekitar 2.000 orang per sumur"
+  },
+  "rehab.akuifer.sumur_bg_kumulatif_2005_2018": {
+   "nilai": 2290,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "berdampingan: 1.782 unit 2005–2017 (rilis ESDM Maret 2018, riset C [14])"
+  },
+  "rehab.akuifer.sumur_bg_jiwa_kumulatif_2005_2018": {
+   "nilai": 6.6,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "juta jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "sekitar 6,6 juta jiwa; 144,4 juta m³ per tahun"
+  },
+  "rehab.akuifer.sumur_pengungsi_2018": {
+   "nilai": 55,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "pengungsi bencana Bali, Lombok, Sulawesi 2018"
+  },
+  "rehab.akuifer.sulteng_titik_serah_2019": {
+   "nilai": 8,
+   "pustaka": "esdm-2019-sumur-sulteng",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 12 Februari 2019",
+   "catatan": "diserahkan 12 Februari 2019, sekitar 4,5 bulan setelah 28 September 2018"
+  },
+  "rehab.akuifer.sulteng_debit_rata_2019": {
+   "nilai": 1.9,
+   "pustaka": "esdm-2019-sumur-sulteng",
+   "satuan": "liter per detik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 12 Februari 2019",
+   "catatan": "kedalaman 78–125 m; Pombewe 2.500 jiwa"
+  },
+  "rehab.akuifer.cianjur_sumur_bor_bg_2022": {
+   "nilai": 19,
+   "pustaka": "esdm-2022-sumur-cianjur",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 29 November 2022",
+   "catatan": "4 dicadangkan untuk lokasi relokasi"
+  },
+  "rehab.akuifer.biaya_sumur_dalam_per_unit_2020": {
+   "nilai": 572,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "juta Rp per unit",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: Rp429,1 miliar / 750 sumur rencana 2020; komponen tidak seragam; bukan harga satuan resmi",
+   "tahun_harga": 2020
+  },
+  "rehab.akuifer.biaya_sumur_dalam_tambahan_per_unit_2020": {
+   "nilai": 500,
+   "pustaka": "esdm-2019-sumur-1000",
+   "satuan": "juta Rp per unit",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, 6 September 2019",
+   "catatan": "olah: Rp125 miliar / 250 titik tambahan",
+   "tahun_harga": 2020
+  },
+  "rehab.akuifer.nilai_perolehan_sumur_dalam_per_unit_2023": {
+   "nilai": 472,
+   "pustaka": "esdm-2023-hibah-bmn",
+   "satuan": "juta Rp per unit",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, 13 Maret 2023",
+   "catatan": "olah: Rp8,5 miliar / 18 sumur; rincian per kabupaten di rilis berjumlah 17",
+   "tahun_harga": 2023
+  },
+  "rehab.akuifer.biaya_sumur_dangkal_darurat_per_unit": {
+   "nilai": 142,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "juta Rp per unit",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: sekitar Rp7,1 miliar / 50 sumur dangkal tanggap bencana",
+   "tahun_harga": 2019
+  },
+  "rehab.akuifer.biaya_sumur_dalam_per_jiwa": {
+   "nilai": 286000,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "Rp per jiwa",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: Rp572 juta / 2.000 jiwa"
+  },
+  "rehab.akuifer.takaran_tersirat_lpd_min": {
+   "nilai": 43.2,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: 1 l/detik × 86.400 / 2.000 jiwa"
+  },
+  "rehab.akuifer.takaran_tersirat_lpd_maks": {
+   "nilai": 103.7,
+   "pustaka": "esdm-2019-sumur-750",
+   "satuan": "liter per orang per hari",
+   "keyakinan": "estimasi-model",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "catatan": "olah: 2,4 l/detik × 86.400 / 2.000 jiwa"
+  },
+  "rehab.akuifer.sumatra2025.pu_sumur_dalam_sda_feb2026": {
+   "nilai": 25,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data 2 Februari 2026)",
+   "catatan": "Ditjen SDA: Aceh 24 (11 selesai, 13 dikerjakan), Sumbar 1"
+  },
+  "rehab.akuifer.sumatra2025.pu_sumur_dalam_ck_feb2026": {
+   "nilai": 86,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data 2 Februari 2026)",
+   "catatan": "Ditjen Cipta Karya; rincian Aceh 17 selesai + 46 dikerjakan, Sumut 5, Sumbar 18 survei; bagian dari 128, bukan versi lain"
+  },
+  "rehab.akuifer.sumatra2025.pu_sumur_dangkal_ck_feb2026": {
+   "nilai": 17,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data 2 Februari 2026)",
+   "catatan": "seluruhnya Aceh; 9 selesai, 8 dikerjakan"
+  },
+  "rehab.akuifer.sumatra2025.pu_sumur_selesai_feb2026": {
+   "nilai": 37,
+   "pustaka": "pu-2026-spam-sumatera-feb",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data 2 Februari 2026)",
+   "catatan": "olah(resmi): 11 SDA + 9 CK dangkal + 17 CK dalam, dari 128 (28,9%)"
+  },
+  "rehab.pipa.lombok.sumur_bor_darurat": {
+   "nilai": 83,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PUPR, Buku Satgas Penanganan Gempa Lombok (2019)",
+   "catatan": "sumur bor JIAT diaktifkan saat tanggap darurat (riset D [10])"
+  },
+  "rehab.pipa.lombok.sumur_bor_kapasitas": {
+   "nilai": 1314,
+   "pustaka": "kemenpupr-2019-satgas-lombok",
+   "satuan": "liter per detik",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PUPR, Buku Satgas Penanganan Gempa Lombok (2019)",
+   "catatan": "kapasitas total 83 sumur"
+  },
+  "rehab.akuifer.tniad_sumber_air_2026_08": {
+   "nilai": 3000,
+   "pustaka": "setneg-2026-jembatan-tni-polri",
+   "satuan": "sumber air",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "catatan": "jenis, lokasi, biaya tidak disebut; 3.300 titik (Antara 2025) sekunder, tidak didaftarkan"
+  },
+  "rehab.akuifer.kebutuhan_sumur_model.sumatra2025": {
+   "nilai": 485,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=sumatra2025, metrik=mengungsi, versi=DIBI].nilai",
+   "satuan": "sumur",
+   "keyakinan": "estimasi-model",
+   "sumber": "DIBI BNPB; rasio Badan Geologi 2.000 jiwa per sumur",
+   "catatan": "olah: 970.876 / 2.000 = 485,4; batas atas kasar; disandingkan dengan PU 128 sumur (rehab.pipa.sumatra2025.sumur_bor_feb2026)"
+  },
+  "rehab.akuifer.kebutuhan_sumur_model.lombok2018": {
+   "nilai": 203,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=lombok2018, metrik=mengungsi, versi=DIBI].nilai",
+   "satuan": "sumur",
+   "keyakinan": "estimasi-model",
+   "sumber": "DIBI BNPB; rasio Badan Geologi 2.000 jiwa per sumur",
+   "catatan": "olah: 406.202 / 2.000 = 203,1; disandingkan dengan 83 sumur JIAT (rehab.pipa.lombok.sumur_bor_darurat)"
+  },
+  "rehab.akuifer.permenkes_ecoli_maks": {
+   "nilai": 0,
+   "pustaka": "kemenkes-2023-permenkes2",
+   "satuan": "CFU per 100 ml",
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023",
+   "catatan": "juga total coliform 0"
+  },
+  "rehab.akuifer.permenkes_arsen_maks": {
+   "nilai": 0.01,
+   "pustaka": "kemenkes-2023-permenkes2",
+   "satuan": "mg/L",
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023"
+  },
+  "rehab.akuifer.permenkes_besi_maks": {
+   "nilai": 0.2,
+   "pustaka": "kemenkes-2023-permenkes2",
+   "satuan": "mg/L",
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023"
+  },
+  "rehab.akuifer.permenkes_mangan_maks": {
+   "nilai": 0.1,
+   "pustaka": "kemenkes-2023-permenkes2",
+   "satuan": "mg/L",
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023"
+  },
+  "rehab.akuifer.permenkes_tds_maks": {
+   "nilai": 300,
+   "pustaka": "kemenkes-2023-permenkes2",
+   "satuan": "mg/L",
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023",
+   "catatan": "kurang dari 300"
+  },
+  "rehab.akuifer.sphere_ecoli_tanpa_klorin_maks": {
+   "nilai": 10,
+   "pustaka": "sphere-2018",
+   "satuan": "CFU per 100 ml",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere Handbook 2018",
+   "catatan": "kurang dari 10 untuk air tanpa klorin"
+  },
+  "rehab.akuifer.sphere_orang_per_pompa_tangan": {
+   "nilai": 500,
+   "pustaka": "sphere-2018",
+   "satuan": "orang",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere Handbook 2018"
+  },
+  "rehab.akuifer.aceh_barat_waktu_pulih_salinitas": {
+   "nilai": 2,
+   "pustaka": "marohn-2012-aceh",
+   "satuan": "tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Marohn dkk. 2012, NHESS",
+   "catatan": "curah hujan lebih dari 3.000 mm/tahun; salinitas berulang musiman"
+  },
+  "rehab.akuifer.aceh_barat_salinitas_awal": {
+   "nilai": 10,
+   "pustaka": "marohn-2012-aceh",
+   "satuan": "mS/cm (lebih dari)",
+   "keyakinan": "terverifikasi",
+   "sumber": "Marohn dkk. 2012, NHESS",
+   "catatan": "batas bawah: \"over 10\""
+  },
+  "rehab.akuifer.aceh_barat_salinitas_akhir": {
+   "nilai": 2,
+   "pustaka": "marohn-2012-aceh",
+   "satuan": "mS/cm (kurang dari)",
+   "keyakinan": "terverifikasi",
+   "sumber": "Marohn dkk. 2012, NHESS",
+   "catatan": "batas atas: \"less than 2\""
+  },
+  "rehab.akuifer.srilanka_durasi_dampak_salinitas": {
+   "nilai": 1.5,
+   "pustaka": "villholth-2011-srilanka",
+   "satuan": "tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "Villholth dkk. 2011, UNESCO IHP",
+   "catatan": "analog luar negeri"
+  },
+  "rehab.akuifer.huntap_tondo_unit": {
+   "nilai": 1102,
+   "pustaka": "setneg-2022-huntap-tondo",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 6 Januari 2022",
+   "catatan": "65,3 ha; masih pakai sumur bor"
+  },
+  "rehab.akuifer.hibah_bmn_sumur_2023": {
+   "nilai": 18,
+   "pustaka": "esdm-2023-hibah-bmn",
+   "satuan": "sumur",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 13 Maret 2023",
+   "catatan": "nilai perolehan Rp8,5 miliar; rincian per kabupaten 17"
+  },
+  "rehab.akuifer.subsidence_pantura_jateng": {
+   "pustaka": "esdm-2020-penurunan-pantura",
+   "rendah": 6,
+   "tinggi": 10,
+   "satuan": "cm per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 2 Desember 2020",
+   "catatan": "pesisir utara Jawa Tengah; penyebab utama lempung muda; peran air tanah belum terbukti ilmiah menurut rilis yang sama"
+  }
+ }
+}

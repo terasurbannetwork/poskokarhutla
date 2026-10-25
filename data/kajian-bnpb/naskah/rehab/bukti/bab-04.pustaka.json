@@ -1,0 +1,543 @@
+[
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-2023-juklak7",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     29
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "URL": "data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Korpus JDIH lokal (slug juknis, isi dokumen Petunjuk Pelaksanaan); hlm. 3 data dinamis dan statis, hlm. 7 ambang batas kejadian bencana"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus perban-nomor-5-tahun-2017.json: Pasal 1 angka 5 definisi Jitupasna (hlm. 3), Pasal 8 ayat (1) (hlm. 7), Pasal 9 (hlm. 9); Bab 9: judul dari indeks JDIH untuk pencocokan Progsun butir 4 (Lampiran J)",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "cianjur-2022-r3p",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   },
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "BNPB (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. PDF 13, 51, 55, 142; tanpa nomor penetapan"
+ },
+ {
+  "id": "brr-2009-scattered-beads",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+    "singkatan": "BRR NAD–Nias"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009
+    ]
+   ]
+  },
+  "title": "Case study: The scattered beads",
+  "collection-title": "BRR Book Series",
+  "publisher": "Badan Rehabilitasi dan Rekonstruksi NAD–Nias",
+  "URL": "https://aset-sejarah.dibi.bnpb.go.id/media/assets/arsip/6748628c6962c.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Arsip BNPB; dibuka 24 Okt 2026. Hlm. x (PDF 12): 'A total of 126,741 lives were lost' dan 93.285 hilang; 'up to 139,195 homes were destroyed or severely damaged'. Infografik capaian 4 tahun (PDF 15): '127,720 people killed and 93,285 missing'"
+ },
+ {
+  "id": "kemenkopmk-2024-rehabrekon-lombok",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     5,
+     20
+    ]
+   ]
+  },
+  "title": "Komitmen Bersama dalam Penuntasan Rehab Rekon Pascabencana Gempa Bumi Pulau Lombok dan Sekitarnya",
+  "URL": "https://kemenkopmk.go.id/node/4970",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "total kebutuhan R3P Rp11.440.594.509.577; realisasi 94,73% per 11 September 2023"
+ },
+ {
+  "id": "kemenkopmk-2020-lombok-percepatan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     13
+    ]
+   ]
+  },
+  "title": "Pemerintah Upayakan Percepatan Penanganan Pascabencana Gempa Bumi NTB",
+  "URL": "https://www.kemenkopmk.go.id/pemerintah-upayakan-percepatan-penanganan-pascabencana-gempa-bumi-ntb",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "170.559 dari 226.204 rumah selesai (75,40%); program-terbukti bukti_dampak B057–B058"
+ },
+ {
+  "id": "kemenkopmk-2021-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     2,
+     27
+    ]
+   ]
+  },
+  "title": "Kemenko PMK Dorong Percepatan Penanganan Pasca Bencana Gempa Bumi, Tsunami, dan Likuefaksi Provinsi Sulawesi Tengah",
+  "URL": "https://kemenkopmk.go.id/node/1332",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Inpres 10/2018 dan Keppres 28/2018 berakhir; dibaca riset rehab E [13], tidak dibuka ulang di berkas bukti Bab 4"
+ },
+ {
+  "id": "kemenkopmk-2024-huntap-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan",
+    "singkatan": "Kemenko PMK"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6,
+     15
+    ]
+   ]
+  },
+  "title": "Menko PMK Serahkan Kunci Huntap Warga Terdampak Bencana Gempa dan Likuefaksi Sulawesi Tengah",
+  "URL": "https://kemenkopmk.go.id/node/5032",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "5.598 huntap; 382 belum selesai per Juni 2024; serah kunci 14 Jun 2024 di Tondo II; kutipan 'Ini sudah tertunda cukup lama 6 tahun'"
+ },
+ {
+  "id": "pu-2026-spam-februari",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "publisher": "Kementerian PU (ePPID)",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "143 dari 176 SPAM berfungsi per 2 Feb 2026 (judul 142); 537 sarana darurat; dibaca riset rehab D [21]"
+ },
+ {
+  "id": "pu-2026-pemulihan-sumatera-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera, Mayoritas Infrastruktur Kembali Fungsional",
+  "publisher": "Kementerian PU (ePPID)",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Data per 7 Mei 2026: jalan dan jembatan nasional 100%; jembatan daerah sekitar 67% dari 1.181; jalan daerah sekitar 94% dari 2.421 ruas; SPAM sekitar 95,5% dari 178; hunian selesai 1.547 KK. Judul dipulihkan dari slug URL"
+ },
+ {
+  "id": "dpr-2026-info-singkat-sumatra",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pusat Analisis Keparlemenan, Badan Keahlian DPR RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1
+    ]
+   ]
+  },
+  "title": "Percepatan Rehabilitasi dan Rekonstruksi Rumah Pascabencana Sumatra",
+  "collection-title": "Info Singkat Vol. XVIII No. 2/II/Pusaka/Januari 2026",
+  "publisher": "Dewan Perwakilan Rakyat Republik Indonesia",
+  "URL": "https://berkas.dpr.go.id/pusaka/files/info_singkat/Info%20Singkat-XVIII-2-II-P3DI-Januari-2026-230.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "BNPB sekitar 147.000 rumah rusak per 17 Des 2025; PKP sekitar 189.308 rumah terdampak per 9 Jan 2026; pemutakhiran 'belum sepenuhnya sinkron'; tekanan percepatan menurunkan kepatuhan SNI"
+ },
+ {
+  "id": "binamarga-2025-jembatan-aceh",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, Balai Pelaksanaan Jalan Nasional Aceh",
+    "singkatan": "BPJN Aceh"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     3
+    ]
+   ]
+  },
+  "title": "Dampak Bencana Banjir dan Longsor Sumatera, Kementerian PU Percepat Penanganan 14 Jembatan Rusak di Aceh",
+  "URL": "https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "14 jembatan putus atau terputus per 1 Des 2025; dibaca riset rehab B [29], tidak dibuka ulang di berkas bukti Bab 4"
+ },
+ {
+  "id": "ocg-2026-palu4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Oriental Consultants Global"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     19
+    ]
+   ]
+  },
+  "title": "Opening ceremony, Programme for the Reconstruction of Palu 4 Bridges and its Access Road",
+  "URL": "https://ocglobal.jp/news/260218-indonesia-en/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Jembatan 250 m, jalan pesisir sekitar 5 km, dibuka 13 Feb 2026; konsultan pengawas proyek JICA (terverifikasi); dibaca riset rehab E [18]"
+ },
+ {
+  "id": "jsce-2011-nojima",
+  "type": "speech",
+  "author": [
+   {
+    "family": "Nojima"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     6,
+     13
+    ]
+   ]
+  },
+  "title": "Lifeline Restoration Overview",
+  "publisher": "Japan Society of Civil Engineers",
+  "URL": "https://www.jsce.or.jp/kokusai/what's_new/2011/Prof.Nojima_lifeline-overview_110613.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Air Kobe 90% 38 hari, 95% 43 hari, 100% 81 hari; Tohoku 90% 36 hari, 95% 41 hari; dibaca riset rehab D [36]"
+ },
+ {
+  "id": "kontan-2025-jembatan-sumatra",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kontan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Update BNPB: Korban Tewas Banjir Sumatra Bertambah Jadi 969 Jiwa, 252 Hilang",
+  "container-title": "Kontan",
+  "URL": "https://nasional.kontan.co.id/news/update-bnpb-korban-tewas-banjir-sumatra-bertambah-jadi-969-jiwa-252-hilang",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER: 498 jembatan rusak (data BNPB dikutip media); lampiran rekonsiliasi saja"
+ },
+ {
+  "id": "cnn-2026-satgas-prr",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "CNN Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     5
+    ]
+   ]
+  },
+  "title": "Satgas PRR pastikan jalan dan jembatan nasional Sumatra pulih 100%",
+  "container-title": "CNN Indonesia",
+  "URL": "https://www.cnnindonesia.com/nasional/20261005183414-25-1411939/satgas-prr-pastikan-jalan-dan-jembatan-nasional-sumatra-pulih-100",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER: jembatan daerah Aceh 58,93%, Sumut 93,98%, Sumbar 59,50%; huntara 20.770 dari 20.803; huntap 2.085 dari 57.027; lampiran rekonsiliasi saja"
+ }
+]

@@ -1,0 +1,1038 @@
+[
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "ri-2015-pp122",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 122 Tahun 2015 tentang Sistem Penyediaan Air Minum",
+  "URL": "https://peraturan.bpk.go.id/Details/5701/pp-no-122-tahun-2015",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "status Berlaku di BPK; penyelenggara SPAM dibaca dari lembaga/mentah/teks/pp-122-2015.json.gz hlm. 19 (matriks_air A10)"
+ },
+ {
+  "id": "bnpb-2011-pdna",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12,
+     8
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pasca Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2011pbbnpb015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perka-nomor-15-tahun-2011.json: gabungan DaLA dan HRNA (hlm. 8), alur akibat-dampak-kebutuhan (hlm. 11), nilai kerusakan (hlm. 40); kata Jitupasna tidak muncul"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2020 Nomor 482",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2020.json (Pasal 1 hlm. 3–4; Pasal 2 hlm. 5; Pasal 4 hlm. 6–7; Pasal 14 hlm. 12–13; Pasal 20 hlm. 16); URL dari data/raw/hukum/indeks.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "rwsn-2023-pamsimas",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Rural Water Supply Network",
+    "singkatan": "RWSN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "PAMSIMAS III (ringkasan Implementation Completion Report Bank Dunia 2023)",
+  "URL": "https://rural-water-supply.net/en/resources/1221-pamsimas3",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "ringkasan pihak ketiga atas ICR Bank Dunia, dibuka langsung paket program-terbukti; ICR asli tidak dibuka"
+ },
+ {
+  "id": "dfat-2023-pamsimas",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Department of Foreign Affairs and Trade, Australia",
+    "singkatan": "DFAT"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "PAMSIMAS final independent evaluation, Volume 1 (Final V.2)",
+  "publisher": "Department of Foreign Affairs and Trade",
+  "URL": "https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "penulis laporan Murray dkk. (daftar lengkap belum dicatat); dibuka paket program-terbukti lewat arsip http://web.archive.org/web/20251023113557/https://www.dfat.gov.au/sites/default/files/pamsimas-independent-evaluation.pdf; PDF hlm. 11, 32, 40"
+ },
+ {
+  "id": "bnpb-2010-perka12-perbaikan-darurat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010,
+     9,
+     14
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 12 Tahun 2010 tentang Pedoman Mekanisme Pemberian Bantuan Perbaikan Darurat",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1091",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2010pbbnpb012.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perka-nomor-12-tahun-2010.json (bukan OCR): hasil yang diharapkan (hlm. 3), definisi keadaan darurat (hlm. 5), bantuan perbaikan darurat (hlm. 6), jembatan rangka baja dari Departemen Pekerjaan Umum (hlm. 9); status BERLAKU, sumber BN dari katalog; id berbeda dari bnpb-2014-perka12 (Perka 12/2014 peran serta lembaga usaha)"
+ },
+ {
+  "id": "pu-2026-spam-sumatera-feb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 2 Feb 2026: 143 dari 176 SPAM berfungsi (judul 142); >5.300 l/detik; 537 sarana darurat; SDA 25 sumur bor air dalam, Cipta Karya 103 (17 dangkal, 86 dalam); permanen Sumbar bertahap hingga Agustus 2028. Riset D [21]"
+ },
+ {
+  "id": "pu-2026-infrastruktur-sumatera-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 7 Mei 2026: sekitar 95,5% dari 178 SPAM fungsional; jalan dan jembatan nasional terdampak 100%; 94% dari 2.421 ruas jalan daerah; sekitar 67% dari 1.181 unit jembatan daerah; provinsi tidak dirinci. Riset D [22]"
+ },
+ {
+  "id": "kemenpupr-2019-satgas-lombok",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Buku Satgas Penanganan Gempa Lombok",
+  "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Satgas%20Penanganan%20Gempa%20Lombok.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca utuh oleh riset D [10] 25 Okt 2026, tidak dibuka ulang di bab ini; data sampai 31 Mar 2019; 37 titik SPAM rusak; halaman tim penyusun berisi nama pengganti (tanda draf)",
+  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 37 titik SPAM (hlm. cetak 11, 61); 83 sumur bor JIAT diaktifkan 1.314 l/dt (Tabel 4, hlm. 50); hidran 242 @2.000 L dan 65 @1.000 L, 28 mobil tangki @4.000 L (Tabel 5, hlm. 51-52); 26 IPA 358 l/dt (Tabel 6); pemantauan mutu Dinkes NTB dan BBTKL Surabaya (hlm. 59)"
+ },
+ {
+  "id": "kemenpupr-2023-cianjur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Penanganan Gempa Cianjur 2022",
+  "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Penanganan%20Gempa%20Cianjur%202022_lowres.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca utuh oleh riset D [12], tidak dibuka ulang di bab ini; status sampai 25 Sep 2023; 10 titik area kerusakan pipa SPAM",
+  "note_bab06": "dibuka ulang dan diekstrak utuh 25 Okt 2026 untuk bab 6: 57 alat dasar dari Depo Cipta Karya Bekasi, distribusi satu pintu di posko PDAM, 10 mobil tangki PDAM x 5 rit (hlm. cetak 41-42); hidran 200 L puncak 172 unit 18 Des 2022, turun ke 59 unit '21 Maret 2022' (kemungkinan 2023) (hlm. 43); sumber daya puncak 406 unit 14 Des 2022, 202 kembali per 21 Mar 2023 (hlm. 44); 10 titik kerusakan pipa SPAM (hlm. 59); rehab 5 SPAM, progres MK 98,31% per 25 Sep 2023 (hlm. 60)"
+ },
+ {
+  "id": "cianjur-2022-r3p",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Cianjur"
+   },
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana Gempa Bumi Kabupaten Cianjur Tahun 2022",
+  "publisher": "BNPB (portal e-proposal RR, contoh dokumen R3P bencana masif)",
+  "URL": "https://eproposalrr.bnpb.go.id/manual/panduan_contoh-dokumen-r3p-bencana-masif_1739152465.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "hlm. PDF 13, 51, 55, 142; tanpa nomor penetapan",
+  "note_bab06": "bab 6: Tabel 3.8 air dan sanitasi (hlm. cetak 57, PDF 64); Tabel 3.9 SDA termasuk SPAM perkotaan Rp41,60 miliar (hlm. cetak 58); kebutuhan SPAM perkotaan Rp62,67 miliar termasuk penanganan 5 SPAM Rp32,20 miliar (hlm. PDF 106-107); teks menulis kerugian SDA Rp690,57 miliar lawan tabel Rp90,57 miliar (tabel dipakai)"
+ },
+ {
+  "id": "jsce-2011-nojima",
+  "type": "speech",
+  "author": [
+   {
+    "family": "Nojima"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     6,
+     13
+    ]
+   ]
+  },
+  "title": "Lifeline Restoration Overview",
+  "publisher": "Japan Society of Civil Engineers",
+  "URL": "https://www.jsce.or.jp/kokusai/what's_new/2011/Prof.Nojima_lifeline-overview_110613.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Air Kobe 90% 38 hari, 95% 43 hari, 100% 81 hari; Tohoku 90% 36 hari, 95% 41 hari; dibaca riset rehab D [36]",
+  "note_bab06": "dibuka ulang dan diekstrak (pdftotext) 25 Okt 2026: air Tohoku 90% 36 hari, 95% 41 hari; Kobe 90% 38, 95% 43, 100% 81 hari; gangguan awal Tohoku lebih dari 2 juta, Kobe 1,26 juta (Hyogo)"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa)"
+ },
+ {
+  "id": "bnpb-2024-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2024 tentang Penyelenggaraan Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024pbbnpb004.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2024.json (Pasal 6–8 hlm. 5; Pasal 28 hlm. 11; penetapan hlm. 14)",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 546"
+ },
+ {
+  "id": "bnpb-2017-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     12,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-6-tahun-2017.json (Pasal 1 angka 6 hlm. 3; Pasal 7 hlm. 7; penetapan hlm. 14)",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2017 Nomor 1903"
+ },
+ {
+  "id": "ri-2008-pp21",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 21 Tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2008 Nomor 42",
+  "URL": "https://peraturan.bpk.go.id/Details/4833/pp-no-21-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 6, 21, 23 dan Penjelasannya"
+ },
+ {
+  "id": "bnpb-2018-dsp-dicabut",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     3,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 2 Tahun 2018 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2018 Nomor 382",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2018pbbnpb002.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perban-nomor-2-tahun-2018.json hlm. 12-13, 19, 25 (kegiatan pelayanan air bersih termasuk hidran umum, sumur bor, jaringan air bersih); status TIDAK BERLAKU, dicabut Perban 4/2020 Pasal 27"
+ },
+ {
+  "id": "bnpb-2009-perka17-peralatan",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     12,
+     31
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 17 Tahun 2009 tentang Pedoman Standarisasi Peralatan Penanggulangan Bencana",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1089",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2009pbbnpb017.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus perka-nomor-17-tahun-2009.json hlm. 7 (jenis alat: mobile water treatment, mobil tangki air, water pillow, instalasi penjernih air) dan lampiran per wilayah; status BERLAKU"
+ },
+ {
+  "id": "sphere-2018-handbook",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Sphere Association"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "The Sphere Handbook: Humanitarian Charter and Minimum Standards in Humanitarian Response",
+  "edition": "4",
+  "publisher": "Sphere Association",
+  "publisher-place": "Geneva",
+  "URL": "https://spherestandards.org/handbook/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF edisi 2018 dibuka sesi ini (salinan unduhan di scratchpad sesi); Water supply standard 2.1 hlm. 105-106: minimal 15 l/o/h, 250 orang per keran, kurang dari 500 m, antre kurang dari 30 menit, 50 l/o/h perkotaan berpendapatan menengah"
+ },
+ {
+  "id": "who-2013-tn9",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Health Organization",
+    "singkatan": "WHO"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2013
+    ]
+   ]
+  },
+  "title": "Technical Notes on Drinking-Water, Sanitation and Hygiene in Emergencies, No. 9: How much water is needed in emergencies",
+  "publisher": "WHO; disusun WEDC Loughborough University",
+  "URL": "https://cdn.who.int/media/docs/default-source/wash-documents/who-tn-09-how-much-water-is-needed.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak sesi ini; Tabel 9.3: 5 l/o/h dan 1 km (2 minggu-1 bulan), 10 l/o/h dan 1 km (1-3 bulan), 15+ l/o/h dan 0,5 km (3-6 bulan); total kebutuhan bertahan hidup 7,5-15 lpd. Riset D [34]"
+ },
+ {
+  "id": "scirt-2018-value",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Stronger Christchurch Infrastructure Rebuild Team",
+    "singkatan": "SCIRT"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     6,
+     8
+    ]
+   ]
+  },
+  "title": "The Value of SCIRT in Summary",
+  "publisher": "SCIRT Learning Legacy",
+  "URL": "https://scirtlearninglegacy.org.nz/wp-content/uploads/2021/09/The-Value-of-SCIRT-Summary.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka dan diekstrak sesi ini; dibentuk lima bulan pada 2011; program NZ$2,2 miliar, 5,5 tahun, lebih dari 600 proyek; dokumen aliansi sendiri. Riset E [35]"
+ },
+ {
+  "id": "oag-nz-2016-scirt",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Controller and Auditor-General New Zealand"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     5,
+     5
+    ]
+   ]
+  },
+  "title": "Effectiveness and efficiency of arrangements to repair pipes and roads in Christchurch: follow-up audit",
+  "publisher": "Office of the Auditor-General New Zealand",
+  "URL": "https://ao.parliament.nz/2016/scirt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "laman dibuka sesi ini: good progress; kepastian dana hingga 19 bulan; sekitar 30 proyek air limbah dan drainase tidak pasti dananya lebih dari 8 bulan; serah terima informasi aset semula lambat. Riset E [36]"
+ },
+ {
+  "id": "esdm-2018-air-siap-minum",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     12,
+     17
+    ]
+   ]
+  },
+  "title": "Program \"Air Bersih Siap Minum\" Kementerian ESDM Jangkau 22 Ribu Pengungsi di Sulawesi Tengah",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/program-air-bersih-siap-minum-kementerian-esdm-jangkau-22-ribu-pengungsi-di-sulawesi-tengah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [17], tidak dibuka ulang: 17 unit pengolah air di 15 lokasi mulai 17 Okt 2018, 22.241 jiwa"
+ },
+ {
+  "id": "setkab-2023-banjarbakula",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     17
+    ]
+   ]
+  },
+  "title": "Diresmikan Presiden Jokowi, SPAM Banjarbakula Suplai Air Minum ke 60 Ribu Rumah",
+  "URL": "https://setkab.go.id/diresmikan-presiden-jokowi-spam-banjarbakula-suplai-air-minum-ke-60-ribu-rumah/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [29], tidak dibuka ulang: Rp787 miliar tahap II, 500 l/dt, 60.353 rumah tangga"
+ },
+ {
+  "id": "pu-2025-jatiluhur1",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     9,
+     26
+    ]
+   ]
+  },
+  "title": "SPAM Regional Jatiluhur I Beroperasi, Kementerian PU Tingkatkan Suplai Air Bersih",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/spam-regional-jatiluhur-i-beroperasi-kementerian-pu-tingkatkan-suplai-air-bersih",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [30], tidak dibuka ulang: Rp1,75 triliun, 4.750 l/dt, sekitar 380.000 SR, hulu KPBU"
+ },
+ {
+  "id": "pupr-2023-semarang-barat",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     8,
+     1
+    ]
+   ]
+  },
+  "title": "Tingkatkan Layanan Air Minum bagi 70.000 SR, Kementerian PUPR Tuntaskan SPAM Semarang Barat Berkapasitas 1.000 Liter/Detik",
+  "URL": "https://pu.go.id/berita/tingkatkan-layanan-air-minum-bagi-70000-sr-kementerian-pupr-tuntaskan-spam-semarang-barat-berkapasitas-1000-literdetik",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [31], tidak dibuka ulang: intake Rp105 miliar, IPA Rp417 miliar, pipa distribusi utama 52,2 km sekitar Rp224 miliar"
+ },
+ {
+  "id": "hsu-2022-perbup-tarif",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Pemerintah Kabupaten Hulu Sungai Utara"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     1
+    ]
+   ]
+  },
+  "title": "Peraturan Bupati Hulu Sungai Utara Nomor 3 Tahun 2022 tentang Tarif Air Minum PDAM",
+  "URL": "https://peraturan.bpk.go.id/Download/282907/3.%20PERBUP%20TAHUN%202022%20TTG%20TARIF%20AIR%20MINUM%20PDAM%20edit.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [32], tidak dibuka ulang: Pasal 12 mobil tangki 5.000 L dalam 10 km pertama Rp95.000, tanpa pajak"
+ },
+ {
+  "id": "unss-2025-renk",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "United Nations South Sudan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     6
+    ]
+   ]
+  },
+  "title": "Solarizing Safe Water for Displaced Families in Renk",
+  "URL": "https://southsudan.un.org/en/302785-solarizing-safe-water-displaced-families-renk",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [46], tidak dibuka ulang: biaya dari USD 9 ke USD 1 per m3; kerja IOM"
+ },
+ {
+  "id": "unicef-2024-afrika-timur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "UNICEF"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     6
+    ]
+   ]
+  },
+  "title": "Securing cost-effective, sustainable water services for refugees and host communities in Eastern Africa",
+  "publisher": "UNICEF, IRC, KfW, UNHCR",
+  "URL": "https://www.unicef.org/esa/reports/securing-cost-effective-sustainable-water-services-refugees-host-communities-eastern-africa",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [45], tidak dibuka ulang: biaya air Ethiopia turun 92% setelah peralihan dari truk"
+ },
+ {
+  "id": "ntb-2022-pergub32-spm",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Pemerintah Provinsi Nusa Tenggara Barat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022
+    ]
+   ]
+  },
+  "title": "Lampiran III Peraturan Gubernur Nusa Tenggara Barat Nomor 32 Tahun 2022 tentang Standar Pelayanan Minimal Pemerintah Daerah (Bidang Pekerjaan Umum)",
+  "URL": "https://storage.ntbprov.go.id/jdih/produk-hukum/Lampiran%20III%20SPM%20Bidang%20Pekerjaan%20Umum.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [4], tidak dibuka ulang: kebutuhan pokok minimal air minum 60 liter/orang/hari; menurunkan Permen PUPR 13/2023"
+ },
+ {
+  "id": "kemenpupr-2016-permen27",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri PUPR Nomor 27/PRT/M/2016 tentang Penyelenggaraan Sistem Penyediaan Air Minum",
+  "URL": "https://klinikkonstruksi.jogjaprov.go.id/storage/images/peraturan/PerMen%20PUPR%20No%2027%20Th%202016%20ttg%20SPAM.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [2] (dibaca utuh riset D), tidak dibuka ulang: Pasal 15 ayat (2) SPAM bukan jaringan perpipaan; hidran umum pipa 3/4-1 inci"
+ },
+ {
+  "id": "wb-2023-pamsimas-brief",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     20
+    ]
+   ]
+  },
+  "title": "Expanding Inclusion for People with Disabilities in Rural Water Supply and Sanitation Services in Indonesia (Results Brief)",
+  "URL": "https://www.worldbank.org/en/results/2023/01/20/expanding-inclusion-for-people-with-disabilities-in-rural-water-supply-and-sanitation-services-in-indonesia",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset D [33], tidak dibuka ulang: sekitar 24,4 juta orang akses air, 35.443 desa per Desember 2021"
+ }
+]

@@ -1,0 +1,338 @@
+{
+  "_catatan": [
+    "Usulan kunci baru untuk BAB 1 kajian rehab (Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030). Disusun 25 Oktober 2026 dari naskah/rehab/bukti/bab-01.md. Belum digabung ke data/angka.json; penggabungan dikerjakan sesi induk.",
+    "Bentuk entri sama dengan data/angka.json: berkas (relatif ke data/) + jalur, atau nilai + pustaka (kunci di bab-01.pustaka.json). Entri olah DIBI dihitung ulang dan diuji assert sesi ini; skrip resmi bangun/rehab_angka.py belum ada (KERANGKA §12).",
+    "Kunci lama yang dipakai ulang (tidak diulang): dibi.sumatra2025.meninggal, dibi.sumatra2025.hilang, dibi.sumatra2025.mengungsi, dibi.sumatra2025.rumah_rusak_berat, dibi.sumatra2025.kab_terdampak, perban2017_5.r3p_hari_maks, perban2017_5.r3p_masa_tahun, perka_2008.air_bersih_3hari_liter, perka_2008.air_bersih_liter_hari, perka_2008.jarak_sumber_air_m.",
+    "Koreksi atas KERANGKA §5: porsi_banjir_persen 89,2 (bukan sekitar 91); target_permanen hanya Sumatera Barat (kunci rehab.pipa.sumbar.target_permanen); rehab.hukum.r3p_hari_maks dan r3p_tahun_maks tidak dibuat karena setara kunci perban2017_5.*."
+  ],
+  "angka": {
+    "rehab.dibi.jembatan_rusak.2018_2025": {
+      "nilai": 3833,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+      "catatan": "olah(resmi): jumlah kolom jembatan_rusak dibi/rekap_nasional_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], tahun 2018–2025 (275; 433; 487; 505; 342; 258; 445; 1.088); patahan seri 2024"
+    },
+    "rehab.dibi.jembatan_rusak.2025": {
+      "nilai": 1088,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+      "catatan": "olah(resmi): jumlah kolom jembatan_rusak dibi/rekap_nasional_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], tahun 2025 (banjir 1.021; longsor 39; cuaca ekstrem 12; gempa 7; erupsi 6; gelombang 3)"
+    },
+    "rehab.dibi.jembatan_rusak.semua_klasifikasi.2025": {
+      "berkas": "dibi/rekap_nasional_tahunan.csv",
+      "jalur": "[tahun=2025,klasifikasi=semua,cakupan=bencana].jembatan_rusak",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB 2025, semua klasifikasi",
+      "catatan": "memuat 26 jembatan dari kebakaran permukiman (nonalam); hanya berdampingan, angka utama alam"
+    },
+    "rehab.dibi.jembatan_rusak.rerata_2018_2024": {
+      "nilai": 392.1,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit per tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2024, bencana alam",
+      "catatan": "olah(resmi): 2.745 / 7 = 392,14; median 433"
+    },
+    "rehab.dibi.jembatan_rusak.rasio_2025_rerata": {
+      "nilai": 2.8,
+      "pustaka": "bnpb-dibi",
+      "satuan": "kali",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam",
+      "catatan": "olah(resmi): 1.088 / 392,14 = 2,77; terhadap median 433 = 2,51; patahan seri 2024 (penyaringan ambang hanya menurunkan angka pasca-2024)"
+    },
+    "rehab.dibi.jembatan_rusak.porsi_2025_persen": {
+      "nilai": 28.4,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam",
+      "catatan": "olah(resmi): 1.088 / 3.833 = 28,39%"
+    },
+    "rehab.dibi.jembatan_rusak.banjir.2018_2025": {
+      "nilai": 3419,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, banjir (kategori DIBI Banjir)",
+      "catatan": "olah(resmi): jumlah jembatan_rusak dibi/rekap_nasional_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], kategori_dibi=Banjir, 2018–2025; riset F menulis 3.490 (tidak dapat direproduksi)"
+    },
+    "rehab.dibi.jembatan_rusak.longsor.2018_2025": {
+      "nilai": 246,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, longsor",
+      "catatan": "olah(resmi): idem kategori_dibi=Longsor; riset F menulis 250"
+    },
+    "rehab.dibi.jembatan_rusak.porsi_banjir_persen": {
+      "nilai": 89.2,
+      "pustaka": "bnpb-dibi",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam",
+      "catatan": "olah(resmi): 3.419 / 3.833 = 89,20%; mengganti \"sekitar 91\" di rehab/KERANGKA.md §3 dan §5. Rincian lain: gempa bumi 52, erupsi 51, cuaca ekstrem 37, gelombang pasang dan abrasi 28"
+    },
+    "rehab.dibi.jembatan_rusak.tahun_awal_terisi": {
+      "nilai": 2018,
+      "pustaka": "bnpb-dibi",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2008–2025",
+      "catatan": "olah(resmi): kolom jembatan_rusak bernilai 0 di semua baris 2008–2017; seri efektif mulai 2018"
+    },
+    "rehab.dibi.jembatan_rusak.prov.aceh.2018_2025": {
+      "nilai": 633,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, Provinsi Aceh, bencana alam",
+      "catatan": "olah(resmi): jumlah jembatan_rusak dibi/rekap_provinsi_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], provinsi=Aceh, 2018–2025; berikutnya Sumbar 521, Sulsel 280"
+    },
+    "rehab.dibi.jembatan_rusak.prov.aceh.2025": {
+      "nilai": 480,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Provinsi Aceh, bencana alam",
+      "catatan": "olah(resmi): jumlah jembatan_rusak dibi/rekap_provinsi_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], provinsi=Aceh, 2025"
+    },
+    "rehab.dibi.jembatan_rusak.sumatra3prov.2025": {
+      "nilai": 744,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Aceh, Sumatera Utara, Sumatera Barat, bencana alam",
+      "catatan": "olah(resmi): dibi/rekap_provinsi_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], 2025: Aceh 480 + Sumbar 182 + Sumut 82; semua kejadian alam 2025 di tiga provinsi, bukan hanya rangkaian November; berbeda dengan PU 1.181 jembatan daerah terdampak (rehab.akses.sumatra2025.jembatan_daerah_terdampak)"
+    },
+    "rehab.dibi.rumah_rb.2025": {
+      "nilai": 70391,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+      "catatan": "olah(resmi): jumlah rumah_rusak_berat dibi/rekap_nasional_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], 2025; tertinggi sesudah 2018 (117.655)"
+    },
+    "rehab.dibi.fasum_rusak.2015_2025": {
+      "nilai": 21703,
+      "pustaka": "bnpb-dibi",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+      "catatan": "olah(resmi): jumlah fasum_rusak dibi/rekap_nasional_tahunan.csv baris [klasifikasi=alam,cakupan=bencana], 2015–2025; kategori DIBI tidak memisah SPAM"
+    },
+    "rehab.lantai.banjir.sumatra2025.rumah_rusak": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=rumah_rusak,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+      "catatan": "RB 62.956 + RS 53.530 + RR 111.520; jendela 15 Nov–31 Des 2025 pilihan penyusun; versi BNPB sekitar 147.000 dan PKP 189.308 sekunder (lampiran rekonsiliasi)"
+    },
+    "rehab.lantai.banjir.sumatra2025.rumah_rb": {
+      "berkas": "dibi/kejadian_besar.csv",
+      "jalur": "[kode=sumatra2025,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+      "catatan": "setara dibi.sumatra2025.rumah_rusak_berat; kategori Banjir dan Longsor saja"
+    },
+    "rehab.pipa.sumatra2025.spam_terdampak_feb2026": {
+      "nilai": 176,
+      "pustaka": "pu-2026-spam-sumatera-feb",
+      "satuan": "SPAM",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+      "catatan": "Aceh 71, Sumut 45, Sumbar 60"
+    },
+    "rehab.pipa.sumatra2025.spam_berfungsi_feb2026": {
+      "nilai": 143,
+      "pustaka": "pu-2026-spam-sumatera-feb",
+      "satuan": "SPAM",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+      "catatan": "judul rilis 142, isi 143; Aceh 54, Sumut 37, Sumbar 52; versi 153 (Investortrust 11 Feb 2026) sekunder"
+    },
+    "rehab.pipa.sumatra2025.sarana_darurat_feb2026": {
+      "nilai": 537,
+      "pustaka": "pu-2026-spam-sumatera-feb",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+      "catatan": "sarana darurat disiagakan di seluruh Sumatera; jenis tidak dirinci"
+    },
+    "rehab.pipa.sumatra2025.sumur_bor_feb2026": {
+      "nilai": 128,
+      "pustaka": "pu-2026-spam-sumatera-feb",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+      "catatan": "olah: Ditjen SDA 25 sumur bor air dalam + Ditjen Cipta Karya 103 (17 dangkal, 86 dalam); status campuran selesai, dikerjakan, survei"
+    },
+    "rehab.pipa.sumbar.target_permanen": {
+      "nilai": "Agustus 2028",
+      "pustaka": "pu-2026-spam-sumatera-feb",
+      "satuan": "bulan",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+      "catatan": "penanganan permanen SPAM Sumatera Barat ditargetkan selesai bertahap hingga Agustus 2028; target Aceh dan Sumut tidak disebut; mengganti rehab.pipa.sumatra2025.target_permanen di KERANGKA §5"
+    },
+    "rehab.pipa.sumatra2025.spam_terdampak": {
+      "nilai": 178,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "SPAM",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "berbeda dengan 176 per 2 Feb 2026; ditulis berdampingan"
+    },
+    "rehab.pipa.sumatra2025.persen_fungsi_mei2026": {
+      "nilai": 95.5,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "\"sekitar 95,5%\" dari 178 SPAM kembali fungsional; fungsional tidak didefinisikan"
+    },
+    "rehab.akses.sumatra2025.jembatan_daerah_terdampak": {
+      "nilai": 1181,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "jembatan daerah terdampak di Sumatera; provinsi tidak dirinci; berbeda dengan DIBI 2025 tiga provinsi 744"
+    },
+    "rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026": {
+      "nilai": 67,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "\"sekitar 67%\" dapat difungsikan kembali"
+    },
+    "rehab.akses.sumatra2025.jalan_daerah_ruas_terdampak": {
+      "nilai": 2421,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "ruas",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "ruas jalan daerah terdampak"
+    },
+    "rehab.akses.sumatra2025.jalan_daerah_persen_fungsi_mei2026": {
+      "nilai": 94,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "\"sekitar 94%\" kembali fungsional"
+    },
+    "rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026": {
+      "nilai": 100,
+      "pustaka": "pu-2026-infrastruktur-sumatera-mei",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+      "catatan": "seluruh jalan dan jembatan nasional terdampak kembali fungsional 100%"
+    },
+    "rehab.akses.aceh.jembatan_putus_des2025": {
+      "nilai": 14,
+      "pustaka": "binamarga-2025-jembatan-aceh",
+      "satuan": "jembatan",
+      "keyakinan": "resmi",
+      "sumber": "Ditjen Bina Marga, BPJN Aceh, 3 Desember 2025 (data per 1 Desember 2025)",
+      "catatan": "14 jembatan roboh atau terputus; hanya Krueng Tingkeum disebut jalan nasional, jadi tidak ditulis \"jembatan nasional\""
+    },
+    "rehab.pipa.lombok.spam_rusak": {
+      "nilai": 37,
+      "pustaka": "kemenpupr-2019-satgas-lombok",
+      "satuan": "titik SPAM",
+      "keyakinan": "resmi",
+      "sumber": "Buku Satgas Penanganan Gempa Lombok, Kementerian PUPR (data sampai 31 Maret 2019)",
+      "catatan": "dibaca riset D [10]"
+    },
+    "rehab.pipa.cianjur.titik_kerusakan_pipa": {
+      "nilai": 10,
+      "pustaka": "kemenpupr-2023-cianjur",
+      "satuan": "titik area",
+      "keyakinan": "resmi",
+      "sumber": "Penanganan Gempa Cianjur 2022, Kementerian PUPR (status 25 September 2023)",
+      "catatan": "titik area kerusakan pipa SPAM; dibaca riset D [12]"
+    },
+    "rehab.jembatan.garuda.titik_2026_08": {
+      "nilai": 3008,
+      "pustaka": "setneg-2026-jembatan-tni-polri",
+      "satuan": "titik",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+      "catatan": "Satgas Pembangunan Jembatan TNI AD; 508 dalam proses"
+    },
+    "rehab.jembatan.garuda.selesai_2026_08": {
+      "nilai": 2500,
+      "pustaka": "setneg-2026-jembatan-tni-polri",
+      "satuan": "titik",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+      "catatan": "TNI AD"
+    },
+    "rehab.jembatan.garuda.titik_wilayah_bencana_2026_08": {
+      "nilai": 798,
+      "pustaka": "setneg-2026-jembatan-tni-polri",
+      "satuan": "titik",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+      "catatan": "TNI AD di wilayah bencana"
+    },
+    "rehab.jembatan.polri_mpp.jumlah_total_2026_08": {
+      "nilai": 895,
+      "pustaka": "setneg-2026-jembatan-tni-polri",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+      "catatan": "Jembatan Merah Putih Presisi, 30 Polda"
+    },
+    "rehab.jembatan.polri_mpp.selesai_2026_08": {
+      "nilai": 874,
+      "pustaka": "setneg-2026-jembatan-tni-polri",
+      "satuan": "unit",
+      "keyakinan": "resmi",
+      "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+      "catatan": "17 unit masih dibangun"
+    },
+    "rehab.hukum.pokja_rr_tahun_maks": {
+      "nilai": 3,
+      "pustaka": "bnpb-2017-rr",
+      "satuan": "tahun",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 6/2017",
+      "catatan": "kelompok kerja koordinatif sementara RR paling lama 3 tahun; Pasal 12 ayat (4), hlm. 11–12"
+    },
+    "rehab.hukum.hibah_rr_tambah_volume_maks": {
+      "nilai": 10,
+      "pustaka": "bnpb-2024-hibah-rr",
+      "satuan": "%",
+      "keyakinan": "resmi",
+      "sumber": "Perban BNPB 4/2024",
+      "catatan": "penambahan volume kegiatan maksimal 10% dari volume aset rusak; Pasal 3 huruf a, hlm. 4"
+    },
+    "rehab.keppres2026_1.bidang_tim_pelaksana": {
+      "nilai": 10,
+      "pustaka": "ri-2026-keppres1",
+      "satuan": "bidang",
+      "keyakinan": "resmi",
+      "sumber": "Keppres 1/2026",
+      "catatan": "Pasal 4 ayat (2) huruf f–o: rencana induk, lahan, data, komunikasi publik, infrastruktur, permukiman, sosial, energi dan konektivitas, ekonomi dan pangan, tata kelola"
+    },
+    "rehab.keppres2026_1.laporan_bulan": {
+      "nilai": 2,
+      "pustaka": "ri-2026-keppres1",
+      "satuan": "bulan",
+      "keyakinan": "resmi",
+      "sumber": "Keppres 1/2026",
+      "catatan": "ketua tim pengarah melapor kepada Presiden setiap 2 bulan; Pasal 10"
+    }
+  }
+}

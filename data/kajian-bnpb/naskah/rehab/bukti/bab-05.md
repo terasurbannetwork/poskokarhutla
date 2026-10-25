@@ -1,0 +1,259 @@
+# Berkas bukti Bab 5: AKSES: JEMBATAN DAN JALAN PENGHUBUNG PASCABENCANA
+
+Kajian: Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030 (pembaca Kepala BNPB).
+Disusun 25 Oktober 2026 oleh peneliti berkas bukti (subagent), dari `rehab/KERANGKA.md` Bab 5, `rehab/KEPUTUSAN-AWAL.md` (R2, R3), riset `rehab/riset/A`, `B`, `E`, `F`, berkas bukti Bab 1–4 kajian ini (kunci yang sudah dibuat dipakai ulang), paket `data/dibi`, rubrik `data/program-terbukti/README.md`, korpus `data/raw/hukum/teks`, dan sebelas halaman resmi atau primer yang dibuka ulang sesi ini.
+
+Konvensi. Path relatif ke `data/kajian-bnpb/` kecuali disebut lain. Label keyakinan: resmi, terverifikasi, estimasi-model, asumsi-kebijakan. Angka media ditandai **sekunder** dan hanya boleh masuk lampiran rekonsiliasi (KEPUTUSAN-AWAL R3), tidak masuk badan teks. "Dibuka sesi ini" berarti halaman sumber dibaca langsung pada 25 Oktober 2026; "tidak dibuka ulang" berarti angka diambil dari riset dan statusnya ditulis apa adanya. Kunci `rehab.*` baru ada di `bab-05.angka.json`; kunci dari berkas bukti bab lain disebut dengan namanya.
+
+## Pegangan bab (dari KERANGKA §4 Bab 5)
+
+- **Judul:** BAB 5 AKSES: JEMBATAN DAN JALAN PENGHUBUNG PASCABENCANA (perkiraan 12 hlm).
+- **Subbab:** 5.1 Kerusakan Jembatan dan Desa Terputus; 5.2 Lapis Darurat: Bailey dan Rangka Baja; 5.3 Program Jembatan Nasional 2025–2026: Satgas Pembangunan Jembatan (Jembatan Garuda TNI AD), Jembatan Merah Putih Presisi (Polri), Jembatan Gantung Kementerian PU; 5.4 Status Nama "Jembatan Merah Putih"; 5.5 Lapis Permanen dan Membangun Kembali Lebih Baik (Palu IV dan desain fungsi ganda); 5.6 Bukti Dampak Jembatan Pedesaan; 5.7 Kesenjangan Spesifik Akses.
+- **Tujuan bab:** memetakan siapa membangun jembatan apa, pada lapis mana, dan bagaimana program yang ada dipakai untuk RR.
+- **Pertanyaan kunci:** (1) Berapa jembatan rusak dan desa terputus per kejadian, dan berapa hari sampai akses darurat terbuka? (2) Program jembatan mana yang ada, milik siapa, jenis apa, berapa unit, dan berapa yang di daerah bencana? (3) Apa yang sebenarnya dimaksud "Jembatan Merah Putih"? (4) Bagaimana jembatan darurat diganti permanen tanpa menjadi aset yatim?
+- **Temuan kunci yang diharapkan (KERANGKA):** Satgas dibentuk 28 November 2025 dipimpin KSAD (sekunder); 218 jembatan diresmikan 9 Maret 2026, 480 titik wilayah bencana disurvei dan 145 selesai (resmi, Setkab); 3.008 titik, 2.500 selesai, 798 di daerah bencana per 13 Agustus 2026 (resmi, Setneg); Polri 895 unit, 874 selesai, swadaya 30 Polda (resmi); PU 43 jembatan gantung 2025 Rp246,36 miliar, 2026 sekitar Rp920 miliar untuk 122 unit lawan 105 unit; bailey DSP sebagai hibah barang; Temanggung Rp144 juta; 14 jembatan putus di Aceh; Garoga 44 m 25 ton; status nama; bukti Rwanda dan Nicaragua, posisi "Program berjalan, wajib evaluasi dampak".
+- **Komponen (KERANGKA):** Tabel 5.1 (B5.7), Gambar 5.1 (G9), Kotak 5.1 (B5.5), Gambar 5.2 (B5.23), Halaman studi kasus 5.1 (B5.30), Gambar 5.3 (G24) bila data terkumpul.
+- **Status data (KERANGKA):** sebagian (biaya per unit Polri dan TNI tidak diumumkan; stok bailey nasional dan data bailey Palu, Lombok, Cianjur, Semeru tidak ditemukan; progres Oktober 2026 tidak ditemukan).
+
+**Koreksi atas kerangka yang wajib dibawa penulis.**
+
+1. **Nama "Satgas Pembangunan Jembatan" dan "Jembatan Garuda" tidak ada di dua rilis resmi yang dibuka.** Rilis Setneg 13 Agustus 2026 dan Setkab 9 Maret 2026 menyebut program ini lewat KSAD dan TNI AD saja; kata "Garuda", "Satgas", dan "Satuan Tugas" tidak muncul (dicek sesi ini). Kedua nama itu hanya bersumber media (riset B [12][13][17][18][21]). Badan teks menulis "program jembatan TNI AD yang dipimpin KSAD"; nama "Jembatan Garuda" dan "Satgas Pembangunan Jembatan" boleh tampil sebagai nama yang beredar dengan penanda sekunder, sampai dokumen dasarnya ditemukan. Ini tidak membatalkan R2 (menulis program menurut pemiliknya), hanya mengganti label pemiliknya dari nama satgas ke nama lembaga.
+2. **Panjang 19,2 km dan 1.314 desa Polri naik dari media ke resmi.** Riset B melabeli keduanya media; rilis Setneg memuatnya (dibuka sesi ini).
+3. **Unit Polri di wilayah bencana punya angka resmi lebih awal:** 34 unit (17 selesai) per 14 Januari 2026 dari Tribratanews (dibuka sesi ini). Angka 39 unit Agustus 2026 tetap sekunder (iNews).
+4. **Bailey Temanggung Rp144 juta tetap belum terbuka.** Laman BNPB menolak akses (403) sesi ini juga. Pemprov Jawa Tengah membuka fakta pendampingnya (tanggal putus, status, perakit) tanpa biaya. Angka Rp144 juta tidak masuk badan teks.
+
+---
+
+## Pertanyaan kunci 1. Berapa jembatan rusak dan desa terputus per kejadian, dan berapa hari sampai akses darurat terbuka?
+
+### Inti
+
+DIBI mencatat 3.833 jembatan rusak akibat bencana alam pada 2018–2025 dan 1.088 pada 2025, tetapi per kejadian angkanya tipis dan tidak sebanding dengan sumber lain: rangkaian Sumatra November 2025 tercatat 726 jembatan di DIBI, sedangkan Kementerian PU mencatat 1.181 jembatan daerah terdampak, dan kejadian gempa besar nyaris nol (Lombok 2018 nol, Sulteng 2018 tujuh, Cianjur 2022 dua). DIBI dan sumber resmi lain tidak mencatat desa terputus. Hari sampai akses darurat terbuka tidak dicatat sistematis di mana pun; dari tiga contoh resmi yang dapat dirangkai, bailey di jalan nasional Aceh berfungsi sekitar 39 hari setelah tercatat putus, bailey Temanggung masih dirakit 26 hari setelah jembatan putus, dan di Gladak Perak (Semeru 2021) bailey dinyatakan tidak memungkinkan sama sekali.
+
+### Temuan bersumber
+
+1. Jembatan rusak akibat bencana alam 2018–2025: 3.833; 2025: 1.088; rerata 2018–2024: 392 per tahun; banjir 3.419 (89,2%). Kolom `jembatan_rusak` bernilai 0 untuk semua tahun 2008–2017. Sumber: `dibi/rekap_nasional_tahunan.csv` (alam, cakupan bencana); kunci ada `rehab.dibi.jembatan_rusak.2018_2025`, `rehab.dibi.jembatan_rusak.2025`, `rehab.dibi.jembatan_rusak.rerata_2018_2024`, `rehab.dibi.jembatan_rusak.porsi_banjir_persen` (bab-04). Label: resmi. **Membantah:** KERANGKA dan riset F menulis banjir 3.490 (sekitar 91%); hitungan ulang Bab 4 memberi 3.419 (89,2%).
+2. Jembatan rusak per kejadian besar di DIBI (jendela sama dengan `dibi/kejadian_besar.csv`): Sumatra 15 Nov–31 Des 2025 726 (Aceh 479, Sumatera Barat 178, Sumatera Utara 69; 38 kab dengan jembatan rusak); Seroja April 2021 95; Sulawesi Tengah 2018 7; Cianjur 2022 2; Lombok 2018 0. Sumber: `dibi/mentah/dibi_peristiwa.json`, dijumlah berkas bukti Bab 3; kunci ada `rehab.dibi.jembatan_rusak.sumatra2025_jendela`, `.seroja2021`, `.sulteng2018`, `.cianjur2022`, `.lombok2018` (bab-03). Label: resmi (olahan). Nol Lombok adalah nol tercatat, bukan bukti tidak ada kerusakan.
+3. Sumatra 2025 dalam sumber lain: 14 jembatan roboh atau terputus di Aceh per 1 Desember 2025 (hanya Krueng Tingkeum disebut lintas nasional), lima ruas jalan terputus, 310 personel PU di tiga provinsi. Sumber: Ditjen Bina Marga BPJN Aceh, 3 Des 2025, https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh, dibuka sesi ini; kunci ada `rehab.akses.aceh.jembatan_putus_des2025` (bab-01). Label: resmi.
+4. Sumatra 2025 per 7 Mei 2026: 1.181 jembatan daerah terdampak, sekitar 67% kembali fungsional; jalan dan jembatan nasional 100%; 2.421 ruas jalan daerah terdampak, sekitar 94% fungsional. Sumber: Kementerian PU (ePPID), 11 Mei 2026 (pustaka `pu-2026-infrastruktur-sumatera-mei`, dibuka berkas bukti Bab 1 dan 4); kunci ada `rehab.akses.sumatra2025.jembatan_daerah_terdampak`, `rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026`, `rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026` (bab-01). Label: resmi. **Ditulis berdampingan dengan:** DIBI 726 (jendela kejadian) dan 744 (tiga provinsi, seluruh 2025, `rehab.dibi.jembatan_rusak.sumatra3prov.2025`); BNPB 498 per 10 Desember 2025 (Kontan, riset B [36], **sekunder**). Definisi berbeda (rusak, terdampak, putus) dan tanggal berbeda.
+5. Bailey Krueng Beutong (Nagan Raya, Aceh): panjang 30 m, lebar 4,2 m, beban maksimum 20 ton, difungsionalkan 9 Januari 2026; "puluhan" bailey berfungsi per 18 Januari 2026 di sembilan kabupaten Aceh, sementara menunggu jembatan permanen "secara bertahap". Sumber: Kementerian PU (ePPID), 19 Jan 2026, https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-imbau-kendaraan-odol-tidak-melintasi-jembatan-bailey-di-lokasi-bencana-sumatera, dibuka sesi ini. Oprit Krueng Beutong tercantum dalam 14 jembatan putus per 1 Desember 2025 (butir 3). Hitungan penyusun: 1 Desember 2025 sampai 9 Januari 2026 = 39 hari (batas bawah, karena tanggal putus sebenarnya lebih awal dari tanggal data). Kunci baru `rehab.akses.sumatra2025.krueng_beutong_hari_ke_fungsi`, `rehab.akses.sumatra2025.krueng_beutong_bentang_m`, `rehab.akses.sumatra2025.krueng_beutong_beban_ton`. Label: resmi (dua tanggal); selisih hari resmi (olahan).
+6. Bailey Sungai Garoga (Tapanuli Selatan): bentang 44 m, lebar 3,7 m, beban hingga 25 ton; pemasangan selesai saat ditinjau Presiden 31 Desember 2025; dikerjakan Kementerian PU bersama TNI dan PT Nindya Karya; tanggal putus dan rencana permanen tidak disebut. Sumber: Kementerian PU (ePPID), terbit 6 Jan 2026, https://sahabat.pu.go.id/eppid/berita/detail/presiden-prabowo-tinjau-jembatan-bailey-sungai-garoga-kementerian-pu-akses-vital-tapanuli-selatan-ke, dibuka sesi ini. Kunci baru `rehab.akses.sumatra2025.garoga_bentang_m`, `.garoga_beban_ton`. Label: resmi.
+7. Jembatan Kalijaran, Desa Plosogaden (Temanggung): terputus total 16 Mei 2026; Bupati menetapkan status tanggap darurat kurang dari 24 jam setelah kejadian dan bersamaan mengirim surat permohonan bailey ke pusat; per 11 Juni 2026 perakitan oleh Yonzipur 4/Tanpa Kawandya disebut sudah berjalan sekitar dua minggu. Sumber: Pemprov Jawa Tengah, "Kabar Gembira, Jembatan Bailey dari BNPB Mulai Dibangun di Plosogaden", 12 Jun 2026, https://jatengprov.go.id/beritadaerah/kabar-gembira-jembatan-bailey-dari-bnpb-mulai-dibangun-di-plosogaden/, dibuka sesi ini. Hitungan penyusun: 16 Mei sampai 11 Juni 2026 = 26 hari dan bailey belum berfungsi. Kunci baru `rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit`. Label: resmi (tanggal); selisih resmi (olahan). Tahun kejadian disimpulkan dari tanggal terbit artikel.
+8. Gladak Perak (Besuk Kobokan, Lumajang) runtuh akibat erupsi Semeru 4 Desember 2021; bentang 192 m dan tinggi 70 m membutuhkan tiga pilar tengah yang tidak mungkin dibangun, sehingga bailey dinilai tidak memungkinkan dan kendaraan dialihkan lewat Probolinggo. Sumber: Kemenko PMK, 6 Des 2021, https://kemenkopmk.go.id/node/2160, dibuka sesi ini (keterangan Wadan Yonzipur 5). Kunci baru `rehab.akses.semeru2021.gladak_perak_bentang_m`, `.gladak_perak_tinggi_m`. Label: resmi.
+9. Formulir pengkajian kebutuhan pascabencana sudah memuat "gangguan akses" sebagai salah satu komponen akibat bencana, dan formulir sektor transportasi memuat baris unit dan biaya infrastruktur darurat dengan contoh bailey. Sumber: Perka BNPB 15/2011 (pustaka `bnpb-2011-pdna`; riset A [8], OCR sebagian; kunci ada `rehab.hukum.jitupasna_komponen_akibat`, bab-02). Label: resmi.
+
+### Inferensi (analisis tim, bukan fakta bersumber)
+
+- DIBI adalah pencatat kejadian, bukan pencatat aset: ia menangkap jembatan rusak pada banjir yang tersebar (Seroja 95, Sumatra 726) tetapi hampir tidak menangkapnya pada gempa besar, padahal Palu IV runtuh di Sulteng 2018. Untuk lantai skenario akses Bab 8, angka per kejadian dari DIBI harus selalu disandingkan dengan angka pemilik aset (PU 1.181 untuk Sumatra), dan yang lebih berat dipakai sebagai lantai.
+- Tiga contoh hari buka akses menunjukkan dua jam yang berbeda: jalan nasional dengan aset bailey PU di lokasi (Aceh) terbuka dalam hitungan minggu; jembatan desa yang menunggu permohonan bailey ke pusat (Temanggung) butuh lebih dari tiga minggu hanya sampai perakitan berjalan; bentang panjang atau lembah dalam (Gladak Perak) tidak punya opsi bailey dan bergantung pada jalur alternatif. Standar hari buka akses darurat (R-RR-05) karena itu perlu dibedakan menurut kelas jalan dan bentang, bukan satu angka.
+- 39 hari Krueng Beutong adalah batas bawah dan berasal dari satu jembatan; tidak boleh disajikan sebagai rata-rata Sumatra.
+
+### Celah
+
+- Desa terputus per kejadian tidak ditemukan di DIBI, rilis PU, maupun rilis BNPB. Disajikan sebagai "tidak tercatat" dan masuk usulan kolom DIBI (R-RR-01, D1), tidak diperkirakan dari jumlah jembatan.
+- Hari sampai akses darurat terbuka tidak tersedia untuk Palu 2018, Lombok 2018, Cianjur 2022, dan Semeru 2021 dari sumber resmi yang dapat dibaca. Gambar 5.3 (G24) hanya boleh menampilkan titik yang punya dua tanggal resmi (Krueng Beutong, Temanggung sebagai "belum terbuka pada hari ke-26"); bila kurang dari tiga titik bertanggal lengkap, gambar diganti tabel kecil.
+- Tanggal putus sebenarnya Krueng Beutong dan Garoga tidak disebut; selisih hari dihitung dari tanggal data, bukan tanggal kejadian.
+- DIBI jembatan tidak memisah status jalan (nasional, provinsi, kab/kota, desa) dan jenis (kendaraan, gantung); jembatan per kab hanya ada untuk jendela kejadian di `dibi_peristiwa.json`, tidak untuk 2018–2025 penuh.
+
+---
+
+## Pertanyaan kunci 2. Program jembatan mana yang ada, milik siapa, jenis apa, berapa unit, dan berapa yang di daerah bencana?
+
+### Inti
+
+Empat jalur jembatan berjalan bersamaan dengan pemilik, dana, dan tujuan berbeda. Program TNI AD yang dipimpin KSAD adalah yang terbesar dan paling dekat ke RR: 3.008 titik dikerjakan, 2.500 selesai, 798 titik di daerah bencana per 13 Agustus 2026. Jembatan Merah Putih Presisi Polri berjumlah 895 unit (874 selesai) dan dibangun swadaya, dengan 34 unit di wilayah bencana pada Januari 2026. Kementerian PU membangun jembatan gantung reguler APBN (43 unit Rp246,36 miliar pada 2025) yang tidak dikaitkan dengan bencana, sedangkan BNPB membiayai bailey lewat DSP sebagai barang hibah ke daerah. Biaya per unit program TNI AD dan Polri tidak diumumkan, dan tidak satu pun program punya evaluasi dampak.
+
+### Temuan bersumber
+
+**A. Program jembatan TNI AD (KSAD)**
+
+1. Per 13 Agustus 2026: 3.008 titik dikerjakan, 2.500 selesai, 508 dalam proses, 798 titik di daerah bencana; pekerjaan di Aceh, Sumatera Utara, dan Padang ditargetkan rampung tahun ini; 7.807 desa terhubung, 9.008 sekolah, 4.502 fasilitas kesehatan, dan 4.618 fasilitas ekonomi lebih mudah diakses; sekitar 4,5 juta penerima manfaat. Jenis dan biaya tidak disebut; kata "swadaya" hanya dipakai untuk Polri. Sumber: Kementerian Sekretariat Negara, 13 Agu 2026 (pustaka `setneg-2026-jembatan-tni-polri`), dibuka sesi ini; kunci ada `rehab.jembatan.garuda.titik_2026_08`, `.selesai_2026_08`, `.titik_wilayah_bencana_2026_08` (bab-01); baru `rehab.jembatan.tniad.proses_2026_08`, `.desa_terhubung_2026_08`, `.penerima_manfaat_2026_08`. Label: resmi (laporan pelaksana yang dikutip rilis).
+2. Per 9 Maret 2026: 218 jembatan diresmikan, dibangun "dalam waktu 2,5 bulan"; 1.072 jembatan dikerjakan; di wilayah bencana 480 jembatan hasil survei dan 145 selesai; target 7.000 jembatan selesai awal tahun berikutnya. Laporan KSAD disampaikan dari Lhok Kuyuen, Aceh Utara. Sumber: Sekretariat Kabinet, "Presiden Prabowo Resmikan 218 Jembatan, Perkuat Akses Daerah dan Penanganan Bencana", 9 Mar 2026, https://setkab.go.id/ocze, dibuka sesi ini. Kunci baru `rehab.jembatan.tniad.diresmikan_2026_03`, `.dikerjakan_2026_03`, `.wilayah_bencana_survei_2026_03`, `.wilayah_bencana_selesai_2026_03`, `.durasi_218_unit_bulan`, `.target_awal_2027`. Label: resmi.
+3. Rincian jenis: komposisi 218 unit 77 bailey, 59 armco, 82 perintis (Investortrust 9 Mar 2026, riset B [16]); target Juli 2026 per jenis bailey 112, armco 652, beton 1.246, perintis 828 dari 2.838 titik, 1.416 selesai (Detik, Katadata 29 Jul 2026, riset B [20][21]). **Sekunder**, lampiran rekonsiliasi saja.
+4. Pembentukan: diumumkan Presiden 28 November 2025; KSAD ditunjuk memimpin sekitar 7 Desember 2025; nama berganti antara Satgas Darurat Jembatan, Satgas Percepatan Perbaikan Jembatan, dan Satgas Pembangunan Jembatan; target awal 300.000 jembatan. Sumber: Bisnis, Kontan, Investortrust, Katadata (riset B [11][12][13][21]; pencarian ulang sesi ini tidak menemukan Keppres atau Perpres). **Sekunder.**
+5. Pembiayaan: Menteri Keuangan menargetkan Rp1 triliun untuk satgas jembatan; KSAD menyebut pembangunan awal memakai swadaya dan utang (Katadata 31 Des 2025, riset B [22]). **Sekunder.**
+
+**B. Jembatan Merah Putih Presisi (Polri)**
+
+6. Per 13 Agustus 2026: 895 jembatan dibangun dan direvitalisasi "secara swadaya" di 30 Polda; 874 selesai, 17 dalam pembangunan, 4 dalam perencanaan; 874 unit selesai sepanjang 19,2 km; 1.314 desa terhubung; sekitar 2 juta penerima manfaat. Sumber: Setneg 13 Agu 2026, dibuka sesi ini; kunci ada `rehab.jembatan.polri_mpp.jumlah_total_2026_08`, `.selesai_2026_08` (bab-01); baru `rehab.jembatan.polri_mpp.dibangun_2026_08`, `.rencana_2026_08`, `.panjang_km_2026_08`, `.desa_terhubung_2026_08`. Label: resmi. **Membantah:** riset B melabeli 19,2 km dan 1.314 desa sebagai media.
+7. Per 14 Januari 2026: 178 jembatan nasional (58 selesai, 32 dibangun, 6 bailey dalam pengiriman, 82 perencanaan); di wilayah terdampak bencana 34 unit (17 selesai, 3 dibangun, 6 bailey dalam pengiriman, 8 perencanaan); Polda Jawa Tengah 63. Tujuan: mobilitas anak sekolah, ekonomi, pemulihan infrastruktur. Sumber dana tidak disebut. Sumber: Tribratanews Polri, 14 Jan 2026, https://tribratanews.polri.go.id/blog/nasional-3/kapolri-resmikan-19-jembatan-merah-putih-presisi-komitmen-tindaklanjuti-arahan-presiden-prabowo-97813, dibuka sesi ini. Kunci baru `rehab.jembatan.polri_mpp.jumlah_2026_01`, `.selesai_2026_01`, `.wilayah_bencana_2026_01`, `.wilayah_bencana_selesai_2026_01`. Label: resmi.
+8. Sekitar 807 unit per 8 Juli 2026 (Tribratanews, riset B [8], resmi; tidak dibuka ulang). 39 unit wilayah bencana Sumatra termasuk 6 bailey per Agustus 2026 dan sebaran Banten 145, Jabar 137, Riau 110 (iNews, riset B [3], **sekunder**).
+
+**C. Jembatan gantung Kementerian PU (Bina Marga)**
+
+9. 2025: 43 paket jembatan gantung, Rp246,36 miliar, progres fisik 81% per awal Oktober 2025, lebih dari 300 ribu warga penerima manfaat; bentang 40–120 m, lebar sekitar 1,8 m; rencana 2026 sekitar Rp920 miliar untuk 122 unit. Halaman tidak mengaitkan program dengan bencana. Sumber: Kementerian PU (ePPID), 16 Okt 2025 (pustaka `pu-2025-jembatan-gantung`), dibuka sesi ini. Kunci baru `rehab.jembatan.pu.gantung_2025_anggaran`, `.gantung_2025_unit`, `.gantung_2026_anggaran`, `.gantung_2026_unit_rencana`, `.gantung_bentang_maks_m`. Label: resmi.
+10. Target 2026 105 jembatan gantung di 25 provinsi; Jawa Tengah 20 unit, 12 paket terkontrak per 1 September 2026. Sumber: Ditjen Bina Marga BBPJN Jateng-DIY, 1 Sep 2026, https://binamarga.pu.go.id/balai-jateng-diy/berita/perkuat-konektivitas-daerah-12-jembatan-gantung-sedang-dibangun-kementerian-pu-tahun-2026-di-jateng, dibuka sesi ini. Kunci baru `rehab.jembatan.pu.gantung_2026_unit_target_balai`. Label: resmi. **Dibantah oleh / versi lain:** 122 unit (butir 9) dan 63 unit Rp630 miliar (Detik Juli 2025, riset B [27], **sekunder**). Ditulis berdampingan.
+11. Biaya rata-rata per paket 2025 sekitar Rp5,73 miliar (Rp246,36 miliar dibagi 43) dan rencana 2026 sekitar Rp7,54 miliar (Rp920 miliar dibagi 122). Hitungan penyusun; anggaran paket dapat memuat biaya selain konstruksi. Kunci baru `rehab.jembatan.pu.gantung_biaya_rata2_2025`, `.gantung_biaya_rata2_2026_rencana`. Label: asumsi-kebijakan (pembanding, bukan anggaran; prinsip 8).
+12. Pedoman teknis jembatan gantung pejalan kaki: SE Menteri PU 02/SE/M/2010, bentang utama maksimum 120 m (riset B [28], dari cuplikan; status keberlakuan belum dicek). Label: resmi, belum dibuka.
+
+**D. Bailey DSP BNPB dan bailey Kementerian PU**
+
+13. DSP dipakai untuk "pengadaan barang yang akan dihibahkan ke daerah seperti jembatan bailey"; pembayaran setelah BNPB menerima hasil audit kelaikan harga dari BPKP; dasar PMK 105/PMK.05/2013 jo. PMK 173/PMK.05/2019 dan Perban BNPB 4/2020. Penggantian bailey yang dipakai saat tanggap darurat: 2 unit (2024) dan 5 unit (2025), di luar Aceh, Sumut, Sumbar. DSP yang sudah masuk BNPB untuk Sumatra Rp1,4 triliun dan Rp1,5 triliun lagi masih dapat dimanfaatkan dari kas negara (pernyataan Menteri Keuangan, 30 Des 2025). Sumber: BNPB, 31 Des 2025 (pustaka `bnpb-2025-bailey-dsp`), dibuka sesi ini. Kunci baru `rehab.jembatan.bnpb.bailey_penggantian_2024`, `.bailey_penggantian_2025`, `rehab.jembatan.bnpb.dsp_sumatra_masuk_2025_12`. Label: resmi.
+14. TNI/Polri adalah pengguna DSP yang sah (Perban BNPB 4/2020 Pasal 14 huruf c, hlm. 12); permohonan DSP K/L/TNI/Polri ditandatangani pejabat eselon I dengan rencana kegiatan, rincian biaya, dan kajian teknis (hlm. 10); penyaluran ke TNI/Polri ditandatangani komandan tertinggi di daerah terdampak, bukan perjanjian eselon I (hlm. 14). Sumber: korpus `data/raw/hukum/teks/perban-nomor-4-tahun-2020.json` (OCR), dicek sesi ini; pustaka `bnpb-2020-dsp`. Label: resmi.
+15. Perka BNPB 12/2010 menyebut bantuan perbaikan darurat untuk "Jembatan penghubung, berupa bantuan rangka baja dan struktur dari Departemen Pekerjaan Umum, dengan penutup kayu dolken" (hlm. 9), dengan hasil yang diharapkan berfungsinya kembali secara minimal "jalan, jembatan, dermaga, irigasi, utilitas air minum" (hlm. 3). Sumber: korpus `perka-nomor-12-tahun-2010.json` (bukan OCR), dicek sesi ini; pustaka `bnpb-2010-perka12-perbaikan-darurat`. Label: resmi; nomenklatur kementerian lama.
+16. Biaya pemasangan bailey Plosogaden sekitar 16,5 m Rp144 juta dari DSP TA 2026, dirakit TNI. Sumber: laman BNPB (riset B [34]); 403 pada riset dan sesi ini, angka dari cuplikan mesin pencari. Label: resmi tetapi **belum dibuka**; tidak masuk badan teks sampai laman terbaca.
+
+**E. Perbandingan program dengan beban**
+
+17. Pembanding yang tersedia untuk 798 titik TNI AD di daerah bencana: DIBI 1.088 jembatan rusak nasional 2025, DIBI 726 jembatan rusak di jendela kejadian Sumatra, dan PU 1.181 jembatan daerah terdampak Sumatra (Temuan PK1 butir 1, 2, 4). Sumber: berkas di butir rujukan. Label: resmi (masing-masing). Satuan berbeda: "titik" program dapat berupa jembatan baru di lokasi yang belum pernah berjembatan.
+
+### Inferensi (analisis tim, bukan fakta bersumber)
+
+- Program TNI AD dan Polri lahir dari arahan akses anak sekolah, bukan dari R3P; daerah bencana hanya sebagian (798 dari 3.008 titik TNI AD, sekitar 27%; 34 dari 178 unit Polri pada Januari 2026, sekitar 19%). Bagi RR, keduanya adalah kapasitas pelaksana yang besar dan cepat, tetapi pencatatannya berada di luar DIBI, R3P, dan daftar aset daerah. Ini dasar R-RR-04 (ikat ke R3P) dan KD-R3.
+- Gambar 5.1 tidak boleh menumpuk "jembatan program" di atas "jembatan rusak DIBI" seolah satu menutup yang lain: titik program bukan pengganti jembatan rusak satu banding satu. Yang jujur adalah batang berdampingan berlabel satuan (titik program di daerah bencana; jembatan rusak DIBI 2025; jembatan daerah terdampak PU) dengan catatan definisi.
+- Jembatan gantung PU (Rp5,73–7,54 miliar rata-rata per paket) adalah satu-satunya pembanding biaya berlabel resmi di dalam negeri; tanpa biaya terbuka TNI AD dan Polri, Grand Design tidak dapat menilai efisiensi program mana pun dan tidak boleh menulis bahwa salah satu "lebih murah".
+- BNPB sudah memegang tuas terkecil tetapi paling tertulis: bailey DSP sebagai hibah barang dengan audit BPKP. Penggantian 7 unit pada 2024–2025 di luar Sumatra memberi gambaran skala rutin yang jauh di bawah kebutuhan kejadian besar ("puluhan" bailey di Aceh saja).
+
+### Celah
+
+- Biaya per unit dan per jenis program TNI AD dan Polri tidak diumumkan; disajikan "tidak diumumkan", dengan biaya PU sebagai pembanding berlabel.
+- Dasar hukum satgas jembatan TNI AD tidak ditemukan (pencarian ulang sesi ini); tidak dikacaukan dengan Keppres 1/2026 (Satgas PRR Sumatra). Disajikan sebagai celah dan permintaan dokumen ke Kemensetneg.
+- Rincian jenis resmi (bailey, armco, beton, perintis) dan daftar titik di daerah bencana tidak ada di sumber resmi; peta titik program (KERANGKA §9) ditunda sampai daftar diperoleh dari TNI AD atau Polri.
+- Progres setelah 13 Agustus 2026 (Oktober 2026) tidak ditemukan dari sumber resmi.
+- Stok bailey nasional (PU, TNI, BNPB) dan harga satuan pengadaan bailey tidak ditemukan; masuk permintaan data 14 hari (R-RR-06).
+- Realisasi akhir jembatan gantung PU 2025 dan jumlah final 2026 (105 lawan 122) tidak terselesaikan.
+
+---
+
+## Pertanyaan kunci 3. Apa yang sebenarnya dimaksud "Jembatan Merah Putih"?
+
+### Inti
+
+Tidak ada satu program nasional bernama "Jembatan Merah Putih". Satu-satunya pemakaian nama itu di sumber resmi yang dibuka adalah "Jembatan Merah Putih Presisi", program Polri yang dibangun swadaya di 30 Polda. Nama yang sama dipakai media untuk jembatan TNI AD saat peluncuran di Aceh Utara, oleh Kodim dan Kodam untuk jembatan gantung lokal, dan oleh pemda untuk usulan jembatan setempat. Program TNI AD sendiri di rilis resmi tidak bernama "Garuda" maupun "Merah Putih".
+
+### Temuan bersumber
+
+1. Rilis Setneg 13 Agustus 2026 memakai "Merah Putih" hanya dalam kutipan Kapolri: "895 Jembatan Merah Putih Presisi secara swadaya yang tersebar di 30 Polda"; kata "Garuda", "Satgas", dan "Satuan Tugas" tidak muncul. Sumber: pustaka `setneg-2026-jembatan-tni-polri`, dibuka dan dicari sesi ini. Label: resmi.
+2. Rilis Setkab 9 Maret 2026 tidak memuat "Garuda", "Merah Putih", "Satgas", "bailey", "armco", "perintis", atau "gantung". Sumber: https://setkab.go.id/ocze, dibuka dan dicari sesi ini. Label: resmi.
+3. Tribratanews Polri memakai "Jembatan Merah Putih Presisi" sejak laporan 14 Januari 2026 (butir PK2-7). Label: resmi.
+4. Pemakaian lain: "200 unit jembatan Merah Putih atau Jembatan Garuda" pada peluncuran KSAD di Aceh Utara 10 Maret 2026 (Metro TV, riset B [17]); "Jembatan Merah Putih" Kodim 1622/Alor, jembatan gantung 30 m (RRI, riset B [19]); "Jembatan Gantung Merah Putih" Kodam IV/Diponegoro dan Pemkab Batang, 50 m, sekitar Rp1,8 miliar dari dana campuran termasuk pos bencana (kliping BPK Jateng atas Disway, riset B [23]); usulan Bupati Lampung Timur (Jawa Pos, riset B [24]). **Sekunder**, Kotak 5.1 boleh menyebut keberadaan pemakaian ini tanpa angka.
+5. Keputusan pemilik: nama "Jembatan Merah Putih" tidak dipakai sebagai nama program generik; program ditulis menurut pemiliknya (KEPUTUSAN-AWAL R2; Q2 disetujui pemilik 25 Okt 2026). Label: keputusan, bukan angka.
+
+### Inferensi (analisis tim, bukan fakta bersumber)
+
+- Nama yang sama untuk program berbeda pemilik membuat pelaporan ganda mungkin terjadi: satu jembatan di Aceh dapat diresmikan sebagai jembatan TNI AD, tercatat media sebagai "Merah Putih", dan tidak tercatat di DIBI atau aset daerah. Kotak 5.1 karena itu bukan soal tata nama, tetapi alasan perlunya satu daftar jembatan pascabencana per kab dengan kolom pemilik dan pembangun (D1, R-RR-04).
+- Judul subbab 5.3 di KERANGKA ("Satgas Pembangunan Jembatan (Jembatan Garuda TNI AD)") perlu diganti menjadi "Program Jembatan TNI AD, Jembatan Merah Putih Presisi Polri, dan Jembatan Gantung Kementerian PU" agar judul tidak memuat nama yang hanya bersumber media.
+
+### Celah
+
+- Dokumen program resmi Polri (dasar, standar desain, tanggal mulai) tidak ditemukan; humas.polri.go.id tidak terbaca otomatis (riset B).
+- Tidak diketahui apakah pemilik (Q2) memaksudkan program tertentu; bawaan R2 berlaku.
+
+---
+
+## Pertanyaan kunci 4. Bagaimana jembatan darurat diganti permanen tanpa menjadi aset yatim?
+
+### Inti
+
+Aturan yang ada menetapkan siapa memiliki hasil RR dan siapa menanggung barang DSP setelah diserahkan, tetapi tidak menetapkan jadwal penggantian bailey ke jembatan permanen, dan menutup satu jalur dana yang paling dibutuhkan: hibah RR tidak dapat membiayai aset rusak milik pemerintah desa maupun pemeliharaan. Akibatnya jembatan darurat di jalan desa, termasuk yang dibangun TNI AD dan Polri di luar R3P, tidak punya jalur permanen tertulis. Bukti lapis permanen di dalam negeri hanya satu contoh berbukti lemah (Palu IV, dibuka lebih dari tujuh tahun setelah runtuh, dengan desain fungsi ganda), sedangkan bukti dampak jembatan pedesaan yang paling kuat berasal dari luar negeri (RCT Rwanda).
+
+### Temuan bersumber
+
+**A. Kepemilikan dan tanggung jawab tertulis**
+
+1. Hasil kegiatan RR "menjadi aset Pemerintah, pemerintah daerah, dan/atau masyarakat dan dilakukan penatausahaan sesuai dengan ketentuan peraturan perundang-undangan" (Perban BNPB 6/2017 Pasal 13 ayat (6), hlm. 12). Sumber: korpus `perban-nomor-6-tahun-2017.json`, dicek sesi ini; pustaka `bnpb-2017-rr`. Label: resmi.
+2. Kegiatan DSP yang sudah diserahterimakan dengan perjanjian kerja sama ke penerima, "sepenuhnya baik fisik maupun keuangannya menjadi tanggung jawab penerima DSP" (Perban BNPB 4/2020 Pasal 13, ayat sesudah ayat (3), hlm. 12; OCR menghilangkan nomor ayat). Sumber: korpus `perban-nomor-4-tahun-2020.json`, dicek sesi ini. Label: resmi.
+3. Hibah RR "tidak dapat membiayai" antara lain biaya perencanaan, pengawasan, operasional, dan pemeliharaan RR (Pasal 5 huruf b), pekerjaan penanganan darurat (huruf c), pembelian lahan (huruf d), "aset rusak milik pemerintah desa" (huruf e), dan kegiatan yang telah didanai sumber lain (huruf g) (Perban BNPB 4/2024 Pasal 5, hlm. 4). Sumber: korpus `perban-nomor-4-tahun-2024.json`, dicek sesi ini; pustaka `bnpb-2024-hibah-rr`; kunci ada `rehab.hukum.hibah_rr_larangan_pembiayaan_huruf` (bab-02). Label: resmi.
+4. Bila pemda tidak menyelesaikan kegiatan hibah RR dalam jangka waktu, pemda menyelesaikannya melalui APBD (Perban 4/2024 Pasal 27, hlm. 11); perubahan RKA tidak boleh mengubah jenis atau lokasi kegiatan (Pasal 26 ayat (2); riset A §4). Sumber: korpus, dicek sesi ini (Pasal 27). Label: resmi.
+5. R3P memuat sektor infrastruktur termasuk "transportasi darat" (Perban 5/2017 Pasal 8 ayat (2) huruf b) dan berlaku paling lama 3 tahun (Pasal 10); tidak ada baris wajib untuk jembatan sementara yang harus diganti permanen (riset A §3). Sumber: pustaka `bnpb-2017-r3p`; kunci ada `rehab.hukum.r3p_tahun_maks` (bab-03). Label: resmi.
+6. Kementerian PU menyebut bailey Aceh bersifat sementara sambil menunggu "pembangunan jembatan permanen secara bertahap", tanpa jadwal atau daftar (Temuan PK1 butir 5). Label: resmi.
+
+**B. Lapis permanen dan membangun kembali lebih baik**
+
+7. Jembatan Palu IV: struktur gelagar kotak beton prategang menerus tiga bentang, panjang 250 m; jalan pesisir sekitar 5 km ditinggikan agar berfungsi sebagai tanggul pelindung yang mengurangi kerusakan tsunami; balkon jembatan menjadi ruang evakuasi; upacara pembukaan 13 Februari 2026; rekonstruksi diluncurkan lewat kerja sama teknis JICA. Sumber: Oriental Consultants Global, 19 Feb 2026, https://ocglobal.jp/news/260218-indonesia-en/, dibuka sesi ini (pustaka `ocg-2026-palu4`). Hitungan penyusun: 28 September 2018 sampai 13 Februari 2026 sekitar 7 tahun 4,5 bulan. Kunci baru `rehab.akses.palu4.panjang_m`, `.jalan_pesisir_km`, `.tahun_runtuh_ke_buka`. Label: terverifikasi (konsultan proyek). Kekuatan bukti: lemah (riset E kompendium; keluaran dan klaim peresmian, tanpa ukuran dampak).
+8. Pola pemulihan per kelas aset Sumatra per 7 Mei 2026: jalan dan jembatan nasional 100%, jembatan daerah sekitar 67% dari 1.181 (Temuan PK1 butir 4). Label: resmi.
+9. SCIRT Christchurch: aliansi pemilik aset dan lima kontraktor, NZ$2,2 miliar, lebih dari 600 proyek pipa, jalan, jembatan, dan dinding penahan; audit Auditor-General 2016 menilai progres solid tetapi kepastian dana memakan hingga 19 bulan dan serah terima data aset ke dewan kota semula lambat. Sumber: riset E [35][36] (pustaka `oag-2016-scirt`, dibuka berkas bukti Bab 2; tidak dibuka ulang sesi ini). Label: terverifikasi. Kekuatan: sedang (audit negara independen).
+
+**C. Bukti dampak jembatan pedesaan**
+
+10. RCT Rwanda (rancangan stepped-wedge): 97 jembatan pejalan kaki dibangun 2021–2024, sekitar 10.000 rumah tangga di 290 desa disurvei empat tahun; biaya sekitar US$100.000 per jembatan; konsumsi rumah tangga, panen, laba usaha tani, dan adopsi tanaman niaga naik; imbal hasil 78–98% selama umur jembatan sekitar 40 tahun. Sumber: J-PAL/CEGA, 6 Mei 2026, https://www.povertyactionlab.org/node/8138263, dibuka sesi ini (pustaka `jpal-2026-rwanda`; ringkasan, makalah hasil belum dibuka); registri AEARCTR-0013478 (pustaka `aea-2024-rwanda`). Kunci ada `rehab.pembanding.rwanda_jembatan_rct` (97, bab-02); baru `rehab.pembanding.rwanda_jembatan_biaya_usd`, `.rwanda_rumah_tangga`, `.rwanda_desa`, `.rwanda_imbal_hasil_persen`. Label: terverifikasi (rancangan dan biaya); estimasi-model (imbal hasil). **Dibantah oleh / versi lain:** registri AEA menyebut 94 jembatan (berkas bukti Bab 2); ditulis berdampingan.
+11. Nicaragua: banjir menurunkan pendapatan pasar kerja 18% di desa tanpa jembatan, dan jembatan menghapus efek itu. Sumber: Brooks dan Donovan, *Econometrica* 88(5), 2020, DOI 10.3982/ECTA15828, abstrak dibuka sesi ini (pustaka `brooks-2020-nicaragua`). Kunci baru `rehab.pembanding.nicaragua_turun_pendapatan_persen`. Label: terverifikasi.
+12. Paket `data/program-terbukti` tidak memuat satu pun program jembatan (dicek sesi ini: `kompendium_program.csv`, `bukti_dampak.csv`, `kompendium.md` tanpa "jembatan" atau "bridge"). Rubrik README: "kuat" hanya untuk deret pra-pasca resmi atau studi bertinjauan dengan paling sedikit dua angka dibuka; laporan sendiri pelaksana paling tinggi "lemah"; posisi "Program berjalan, wajib evaluasi dampak" untuk sedang, lemah, atau belum terbukti. Sumber: `program-terbukti/README.md` baris 91–105. Label: resmi (rubrik repo).
+13. Belum ditemukan evaluasi dampak program jembatan Indonesia mana pun, termasuk program TNI AD, Jembatan Merah Putih Presisi, dan jembatan gantung PU (riset B §8; pencarian sesi ini). Label: ketiadaan, bukan angka.
+
+### Inferensi (analisis tim, bukan fakta bersumber)
+
+- "Aset yatim" pada akses terbentuk di tiga simpul yang semuanya tertulis: (a) barang DSP menjadi tanggung jawab penerima setelah serah terima, padahal penerima jembatan desa tidak punya jalur hibah RR untuk penggantinya (Pasal 5 huruf e) maupun pemeliharaannya (huruf b); (b) jembatan TNI AD dan Polri dibangun di luar R3P sehingga tidak masuk daftar aset yang diserahterimakan menurut Perban 6/2017 Pasal 13 ayat (6); (c) R3P paling lama 3 tahun, sedangkan jembatan permanen bentang besar seperti Palu IV butuh lebih dari 7 tahun. Gambar 5.2 sebaiknya menggambar ketiga simpul ini sebagai titik serah yang belum punya pemutus.
+- Program jembatan Indonesia tidak boleh ditulis "terbukti". Menurut rubrik, posisinya "Program berjalan, wajib evaluasi dampak" (laporan pelaksana, tanpa pembanding). RCT Rwanda memenuhi syarat "kuat" hanya bila dua angka hasil dari makalah dibuka; sampai itu ia ditulis "terverifikasi, luar negeri, rancangan acak" dan dipakai sebagai cetakan rancangan evaluasi (R-RR-13), bukan sebagai bukti bahwa program Indonesia berhasil. Konteksnya pun berbeda: Rwanda mengukur jembatan pejalan kaki baru untuk akses pasar, bukan jembatan pengganti pascabencana.
+- Nicaragua adalah satu-satunya bukti yang langsung menyentuh banjir: nilai jembatan justru muncul saat banjir memutus akses. Ini argumen paling dekat untuk mendahulukan jembatan desa di daerah banjir berulang (17 provinsi mencatat jembatan rusak setiap tahun 2018–2025, Bab 4), dengan catatan sampel 15 desa.
+- Argumen tandingan (L63): membangun banyak jembatan cepat oleh TNI dan Polri mempercepat akses, tetapi tanpa standar desain terbuka dan pemilik aset, jembatan itu dapat menjadi beban pemeliharaan daerah atau rusak lagi pada banjir berikutnya. Posisi kajian: program dipertahankan sebagai kapasitas pelaksana, diikat ke R3P dan daftar aset, dan dievaluasi, bukan dihentikan atau diambil alih BNPB (KERANGKA §4 Bab 12, yang tidak direkomendasikan).
+
+### Celah
+
+- Tidak ditemukan daftar atau jumlah bailey yang sudah diganti permanen untuk kejadian mana pun, maupun rata-rata umur pakai bailey di lapangan. Disajikan sebagai permintaan data ke Direktorat Jembatan Bina Marga.
+- Standar desain, umur rencana, dan status serah terima aset jembatan TNI AD dan Polri tidak ditemukan.
+- Tidak ditemukan ketentuan BNPB atau PU yang menetapkan batas waktu bailey sebelum diganti permanen.
+- Makalah hasil RCT Rwanda belum dibuka; angka dampak dikutip dari ringkasan J-PAL. Rencana induk RR Sumatra 2026–2028 dan R3P Aceh, Sumut, Sumbar (daftar jembatan permanen) belum dibuka.
+- Palu IV: biaya, sumber pinjaman, dan alasan durasi tujuh tahun tidak disebut sumber yang dibuka; halaman OCG menyebut kerja sama teknis JICA, bukan pinjaman. Studi kasus 5.1 menulis bukti "lemah" apa adanya.
+
+---
+
+## Komponen
+
+| Kode | Komponen | Isi | Sumber data | Kode G / B5 | Catatan penulis |
+|---|---|---|---|---|---|
+| Tabel 5.1 | Program jembatan × pemilik × jenis × jumlah × wilayah bencana × biaya satuan × sumber | Baris: TNI AD (KSAD), Polri Jembatan Merah Putih Presisi, PU jembatan gantung, bailey DSP BNPB, bailey PU. Kolom: pemilik, dasar, dana, jenis, jumlah dan tanggal, wilayah bencana, biaya satuan, sumber, label | Setneg 13 Agu 2026; Setkab 9 Mar 2026; Tribratanews 14 Jan 2026; PU 16 Okt 2025; Bina Marga Jateng-DIY 1 Sep 2026; BNPB 31 Des 2025 | B5.7 | Sel jenis TNI AD "tidak diumumkan resmi (rincian media di Lampiran F)"; biaya TNI AD dan Polri "tidak diumumkan"; 105 dan 122 unit PU berdampingan |
+| Gambar 5.1 | Jumlah jembatan program lawan jembatan rusak 2025 | Batang berdampingan, bukan bertumpuk: 798 titik TNI AD di daerah bencana; 34 unit Polri wilayah bencana (Jan 2026); DIBI 1.088 (nasional 2025) dan 726 (jendela Sumatra); PU 1.181 jembatan daerah terdampak | sama + `dibi/rekap_nasional_tahunan.csv`, `dibi/mentah/dibi_peristiwa.json`, PU 11 Mei 2026 | G9 | Catatan satuan: titik program bukan pengganti jembatan rusak satu banding satu |
+| Kotak 5.1 | Status nama "Jembatan Merah Putih" | Satu nama, empat pemakai; hanya Polri yang resmi; program TNI AD tanpa nama di rilis resmi | PK3 butir 1–5 | B5.5 | Pemakaian Kodim, Kodam, pemda disebut tanpa angka (sekunder) |
+| Gambar 5.2 | Rantai darurat ke permanen untuk jembatan | Lapis darurat (bailey DSP/PU, rangka baja Perka 12/2010) → sementara (jembatan TNI AD, Polri) → permanen (PU, pemda, desa); tiga titik serah tanpa pemutus: serah DSP, di luar R3P, aset desa | Perban 4/2020 Pasal 13–14; Perban 4/2024 Pasal 5, 27; Perban 6/2017 Pasal 13 ayat (6); Perban 5/2017 Pasal 10 | B5.23 (G21) | Pasal ditulis di tiap simpul |
+| Halaman studi kasus 5.1 | Jembatan Palu IV fungsi ganda | 250 m, jalan pesisir 5 km sebagai tanggul, balkon evakuasi, sekitar 7 tahun 4,5 bulan dari runtuh ke buka | OCG 19 Feb 2026 | B5.30 (L21) | Bukti lemah, ditulis apa adanya; alternatif RCT Rwanda (terverifikasi) bila penulis memilih bukti dampak |
+| Gambar 5.3 | Hari sampai akses darurat terbuka | Hanya titik bertanggal resmi: Krueng Beutong 39 hari (batas bawah); Temanggung belum terbuka pada hari ke-26; Gladak Perak tanpa opsi bailey | PU 19 Jan 2026 + Bina Marga 3 Des 2025; Pemprov Jateng 12 Jun 2026; Kemenko PMK 6 Des 2021 | G24 | Kurang dari tiga titik lengkap, jadi bawaan: tabel kecil, bukan kurva |
+| Kotak 5.2 (usulan) | Perbandingan dengan sumber lain: jembatan Sumatra 2025 | DIBI 726/744; PU 1.181; Bina Marga 14 (Aceh); BNPB 498 (sekunder) | PK1 butir 2–4 | L22 | Angka sekunder berpenanda |
+
+## Angka untuk registri
+
+Ditulis juga sebagai JSON di `naskah/rehab/bukti/bab-05.angka.json` (tidak menyunting `data/angka.json`). Kunci dari berkas bukti lain yang dipakai ulang tanpa diulang: `rehab.dibi.jembatan_rusak.2018_2025`, `.2025`, `.rerata_2018_2024`, `.porsi_banjir_persen`, `.sumatra3prov.2025` (bab-04); `rehab.dibi.jembatan_rusak.sumatra2025_jendela`, `.seroja2021`, `.sulteng2018`, `.cianjur2022`, `.lombok2018`, `rehab.hukum.r3p_tahun_maks` (bab-03); `rehab.akses.aceh.jembatan_putus_des2025`, `rehab.akses.sumatra2025.jembatan_daerah_terdampak`, `.jembatan_daerah_persen_fungsi_mei2026`, `.jalan_jembatan_nasional_persen_fungsi_mei2026`, `rehab.jembatan.garuda.titik_2026_08`, `.selesai_2026_08`, `.titik_wilayah_bencana_2026_08`, `rehab.jembatan.polri_mpp.jumlah_total_2026_08`, `.selesai_2026_08` (bab-01); `rehab.hukum.hibah_rr_larangan_pembiayaan_huruf`, `rehab.hukum.jitupasna_komponen_akibat`, `rehab.pembanding.rwanda_jembatan_rct` (bab-02). Catatan penamaan: bab-01 memakai awalan `rehab.jembatan.garuda.*`; kunci baru bab ini memakai `rehab.jembatan.tniad.*` sesuai koreksi nama (lihat atas). Penggabung registri sebaiknya menyeragamkan ke `tniad` dan menyimpan `garuda` sebagai alias.
+
+| Kunci | Nilai | Berkas + jalur / pustaka | Label | Sumber |
+|---|---|---|---|---|
+| rehab.jembatan.tniad.proses_2026_08 | 508 | `setneg-2026-jembatan-tni-polri` | resmi | Setneg |
+| rehab.jembatan.tniad.desa_terhubung_2026_08 | 7.807 | sama | resmi | Setneg |
+| rehab.jembatan.tniad.penerima_manfaat_2026_08 | sekitar 4.500.000 | sama | resmi | Setneg |
+| rehab.jembatan.tniad.diresmikan_2026_03 | 218 | `setkab-2026-218-jembatan` | resmi | Setkab |
+| rehab.jembatan.tniad.dikerjakan_2026_03 | 1.072 | sama | resmi | Setkab |
+| rehab.jembatan.tniad.wilayah_bencana_survei_2026_03 | 480 | sama | resmi | Setkab |
+| rehab.jembatan.tniad.wilayah_bencana_selesai_2026_03 | 145 | sama | resmi | Setkab |
+| rehab.jembatan.tniad.durasi_218_unit_bulan | 2,5 | sama | resmi | Setkab |
+| rehab.jembatan.tniad.target_awal_2027 | 7.000 | sama | resmi | Setkab |
+| rehab.jembatan.tniad.porsi_wilayah_bencana_persen_2026_08 | 26,5 | olahan 798/3.008 | resmi (olahan) | Setneg |
+| rehab.jembatan.polri_mpp.dibangun_2026_08 | 17 | `setneg-2026-jembatan-tni-polri` | resmi | Setneg |
+| rehab.jembatan.polri_mpp.rencana_2026_08 | 4 | sama | resmi | Setneg |
+| rehab.jembatan.polri_mpp.panjang_km_2026_08 | 19,2 | sama | resmi | Setneg |
+| rehab.jembatan.polri_mpp.desa_terhubung_2026_08 | 1.314 | sama | resmi | Setneg |
+| rehab.jembatan.polri_mpp.jumlah_2026_01 | 178 | `tribratanews-2026-mpp-januari` | resmi | Polri |
+| rehab.jembatan.polri_mpp.selesai_2026_01 | 58 | sama | resmi | Polri |
+| rehab.jembatan.polri_mpp.wilayah_bencana_2026_01 | 34 | sama | resmi | Polri |
+| rehab.jembatan.polri_mpp.wilayah_bencana_selesai_2026_01 | 17 | sama | resmi | Polri |
+| rehab.jembatan.pu.gantung_2025_anggaran | 246,36 miliar rupiah | `pu-2025-jembatan-gantung` | resmi | Kementerian PU |
+| rehab.jembatan.pu.gantung_2025_unit | 43 | sama | resmi | Kementerian PU |
+| rehab.jembatan.pu.gantung_2026_anggaran | 920 miliar rupiah | sama | resmi | Kementerian PU |
+| rehab.jembatan.pu.gantung_2026_unit_rencana | 122 | sama | resmi | Kementerian PU |
+| rehab.jembatan.pu.gantung_bentang_maks_m | 120 | sama | resmi | Kementerian PU |
+| rehab.jembatan.pu.gantung_2026_unit_target_balai | 105 | `binamarga-2026-gantung-jateng` | resmi | Bina Marga |
+| rehab.jembatan.pu.gantung_biaya_rata2_2025 | 5,73 miliar rupiah per paket | olahan dari `pu-2025-jembatan-gantung` | asumsi-kebijakan | hitungan penyusun |
+| rehab.jembatan.pu.gantung_biaya_rata2_2026_rencana | 7,54 miliar rupiah per unit | sama | asumsi-kebijakan | hitungan penyusun |
+| rehab.jembatan.bnpb.bailey_penggantian_2024 | 2 | `bnpb-2025-bailey-dsp` | resmi | BNPB |
+| rehab.jembatan.bnpb.bailey_penggantian_2025 | 5 | sama | resmi | BNPB |
+| rehab.jembatan.bnpb.dsp_sumatra_masuk_2025_12 | 1,4 triliun rupiah | sama | resmi | BNPB (pernyataan Menkeu) |
+| rehab.akses.sumatra2025.krueng_beutong_bentang_m | 30 | `pu-2026-bailey-odol` | resmi | Kementerian PU |
+| rehab.akses.sumatra2025.krueng_beutong_beban_ton | 20 | sama | resmi | Kementerian PU |
+| rehab.akses.sumatra2025.krueng_beutong_hari_ke_fungsi | 39 | olahan `binamarga-2025-jembatan-aceh` + `pu-2026-bailey-odol` | resmi (olahan) | Bina Marga, PU |
+| rehab.akses.sumatra2025.garoga_bentang_m | 44 | `pu-2026-bailey-garoga` | resmi | Kementerian PU |
+| rehab.akses.sumatra2025.garoga_beban_ton | 25 | sama | resmi | Kementerian PU |
+| rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit | 26 | olahan `jatengprov-2026-bailey-plosogaden` | resmi (olahan) | Pemprov Jateng |
+| rehab.akses.semeru2021.gladak_perak_bentang_m | 192 | `kemenkopmk-2021-gladak-perak` | resmi | Kemenko PMK |
+| rehab.akses.semeru2021.gladak_perak_tinggi_m | 70 | sama | resmi | Kemenko PMK |
+| rehab.akses.palu4.panjang_m | 250 | `ocg-2026-palu4` | terverifikasi | OCG |
+| rehab.akses.palu4.jalan_pesisir_km | 5 | sama | terverifikasi | OCG |
+| rehab.akses.palu4.tahun_runtuh_ke_buka | 7,4 | olahan | terverifikasi (olahan) | OCG |
+| rehab.pembanding.rwanda_jembatan_biaya_usd | 100.000 | `jpal-2026-rwanda` | terverifikasi | J-PAL/CEGA |
+| rehab.pembanding.rwanda_rumah_tangga | 10.000 | sama | terverifikasi | J-PAL/CEGA |
+| rehab.pembanding.rwanda_desa | 290 | sama | terverifikasi | J-PAL/CEGA |
+| rehab.pembanding.rwanda_imbal_hasil_persen | 78–98 | sama | estimasi-model | J-PAL/CEGA |
+| rehab.pembanding.nicaragua_turun_pendapatan_persen | 18 | `brooks-2020-nicaragua` | terverifikasi | Econometrica |
+
+Tidak didaftarkan (sekunder atau belum dibuka): rincian jenis TNI AD (77/59/82; 112/652/1.246/828), 2.838 dan 1.416 (Juli 2026), 300.000 dan 6.900 (target media), Rp1 triliun satgas, 39 unit Polri Sumatra, 498 jembatan BNPB, Rp144 juta Plosogaden, Rp630 miliar dan 63 unit PU, Rp1,8 miliar Batang, 807 unit Polri Juli 2026 (resmi tetapi tidak dibuka ulang; boleh didaftarkan setelah dibuka).
+
+## Pustaka
+
+CSL-JSON di `naskah/rehab/bukti/bab-05.pustaka.json`, 24 entri primer atau terverifikasi: `setneg-2026-jembatan-tni-polri`, `setkab-2026-218-jembatan`, `tribratanews-2026-mpp-januari`, `pu-2025-jembatan-gantung`, `binamarga-2026-gantung-jateng`, `bnpb-2025-bailey-dsp`, `binamarga-2025-jembatan-aceh`, `pu-2026-bailey-odol`, `pu-2026-bailey-garoga`, `pu-2026-infrastruktur-sumatera-mei`, `jatengprov-2026-bailey-plosogaden`, `kemenkopmk-2021-gladak-perak`, `ocg-2026-palu4`, `jpal-2026-rwanda`, `aea-2024-rwanda`, `brooks-2020-nicaragua`, `oag-2016-scirt`, `bnpb-dibi`, `bnpb-2010-perka12-perbaikan-darurat`, `bnpb-2020-dsp`, `bnpb-2024-hibah-rr`, `bnpb-2017-rr`, `bnpb-2017-r3p`, `bnpb-2011-pdna`; ditambah entri berpenanda untuk lampiran rekonsiliasi saja: `bnpb-2026-bailey-plosogaden` (resmi, belum dapat dibuka, 403), `investortrust-2026-218-komposisi`, `detik-2026-2838-jembatan`, `kontan-2025-jembatan-sumatra` (sekunder). Id yang sama dengan berkas bukti Bab 1–4 disalin apa adanya agar penggabungan idempoten; catatan entri yang dibuka ulang sesi ini diperbarui.

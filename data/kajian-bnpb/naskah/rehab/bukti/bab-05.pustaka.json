@@ -1,0 +1,885 @@
+[
+ {
+  "id": "setneg-2026-jembatan-tni-polri",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     13
+    ]
+   ]
+  },
+  "title": "Resmikan 3.395 Jembatan TNI-Polri dan 3.000 Sumber Air Bersih TNI AD, Presiden Prabowo: Misi Bakti kepada Rakyat",
+  "container-title": "Kementerian Sekretariat Negara",
+  "URL": "https://www.setneg.go.id/baca/index/resmikan_3395_jembatan_tni_polri_dan_3000_sumber_air_bersih_tni_ad_presiden_prabowo_misi_bakti_kepada_rakyat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "TNI AD 3.008 titik, 2.500 selesai, 508 proses, 798 titik wilayah bencana; Polri 895 unit di 30 Polda, 874 selesai, 17 dibangun; 3.000 sumber air bersih TNI AD. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]; Bab 5 rehab: dibuka ulang 25 Okt 2026; TNI AD 7.807 desa, 9.008 sekolah, 4.502 faskes, 4.618 fasilitas ekonomi, sekitar 4,5 juta jiwa; Polri 4 perencanaan, 19,2 km, 1.314 desa, sekitar 2 juta; kata Garuda, Satgas, Satuan Tugas tidak muncul"
+ },
+ {
+  "id": "pu-2025-jembatan-gantung",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     16
+    ]
+   ]
+  },
+  "title": "Kementerian PU Genjot Pembangunan 43 Jembatan Gantung Tahun 2025, Progres Fisik Capai 81 Persen",
+  "container-title": "ePPID Kementerian PU",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-genjot-pembangunan-43-jembatan-gantung-tahun-2025-progres-fisik-capai-81-persen",
+  "verifikasi": "primer",
+  "note": "dari riset B [25], tidak dibuka ulang sesi ini: Rp246,36 miliar untuk 43 jembatan gantung 2025; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan; Bab 5 rehab: dibuka 25 Okt 2026; progres 81% per e-Monitoring awal Okt 2025; lebih dari 300 ribu penerima; rencana 2026 sekitar Rp920 miliar 122 unit; bentang 40–120 m, lebar 1,8 m; tidak menyebut bencana",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "bnpb-2025-bailey-dsp",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     31
+    ]
+   ]
+  },
+  "title": "Pembangunan Jembatan Bailey dan Operasional Personil TNI di Kawasan Terdampak Bencana Dibiayai oleh Negara",
+  "URL": "https://www.bnpb.go.id/berita/pembangunan-jembatan-bailey-dan-operasional-personil-tni-di-kawasan-terdampak-bencana-dibiayai-oleh-negara",
+  "verifikasi": "primer",
+  "note": "dari riset B [33] dan riset A [20]; tidak dibuka ulang sesi ini; Bab 5 rehab: dibuka 25 Okt 2026; ditandatangani Kapusdatinkom Abdul Muhari; penggantian bailey 2 unit 2024, 5 unit 2025; DSP Sumatra Rp1,4 triliun masuk, Rp1,5 triliun dapat dimanfaatkan; PMK 105/2013 jo. 173/2019, Perban 4/2020",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "binamarga-2025-jembatan-aceh",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, Balai Pelaksanaan Jalan Nasional Aceh"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     3
+    ]
+   ]
+  },
+  "title": "Dampak Bencana Banjir dan Longsor Sumatera, Kementerian PU Percepat Penanganan 14 Jembatan Rusak di Aceh",
+  "container-title": "Direktorat Jenderal Bina Marga",
+  "URL": "https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "14 jembatan roboh atau terputus per 1 Des 2025; hanya Jembatan Krueng Tingkeum disebut jalan nasional. Riset B [29]; Bab 5 rehab: dibuka ulang 25 Okt 2026; daftar nama jembatan termasuk oprit Krueng Beutong; 310 personel; lima ruas terputus"
+ },
+ {
+  "id": "pu-2026-infrastruktur-sumatera-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 7 Mei 2026: sekitar 95,5% dari 178 SPAM fungsional; jalan dan jembatan nasional terdampak 100%; 94% dari 2.421 ruas jalan daerah; sekitar 67% dari 1.181 unit jembatan daerah; provinsi tidak dirinci. Riset D [22]"
+ },
+ {
+  "id": "ocg-2026-palu4",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Oriental Consultants Global"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     19
+    ]
+   ]
+  },
+  "title": "Opening ceremony, Programme for the Reconstruction of Palu 4 Bridges and its Access Road",
+  "URL": "https://ocglobal.jp/news/260218-indonesia-en/",
+  "verifikasi": "primer",
+  "note": "dari riset E [18]; konsultan pengawas proyek JICA; Bab 5 rehab: dibuka 25 Okt 2026; gelagar kotak PC tiga bentang; balkon evakuasi; kerja sama teknis JICA (pinjaman tidak disebut)",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "jpal-2026-rwanda",
+  "type": "post-weblog",
+  "author": [
+   {
+    "family": "Fahle",
+    "given": "Jenna"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     6
+    ]
+   ]
+  },
+  "title": "An underrated development investment that can double returns: Trail bridges",
+  "container-title": "J-PAL (CEGA)",
+  "URL": "https://www.povertyactionlab.org/node/8138263",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder-akademik",
+  "note": "ringkasan studi Brooks dan Donovan; makalah hasil belum dibuka; Bab 5 rehab: dibuka 25 Okt 2026; stepped-wedge, 97 jembatan 2021–2024, sekitar 10.000 rumah tangga, 290 desa, sekitar US$100.000 per jembatan, imbal hasil 78–98%"
+ },
+ {
+  "id": "aea-2024-rwanda",
+  "type": "dataset",
+  "author": [
+   {
+    "family": "Brooks",
+    "given": "Wyatt"
+   },
+   {
+    "family": "Donovan",
+    "given": "Kevin"
+   },
+   {
+    "family": "Thomas",
+    "given": "Evan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     5,
+     23
+    ]
+   ]
+  },
+  "title": "Market Access and Economic Development: Experimental Evidence from New Bridges in Rwanda (AEARCTR-0013478)",
+  "publisher": "AEA RCT Registry",
+  "URL": "https://www.socialscienceregistry.org/trials/13478",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "registri dibuka 25 Okt 2026; pembaruan terakhir 24 Mar 2025; tanpa makalah hasil"
+ },
+ {
+  "id": "brooks-2020-nicaragua",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Brooks",
+    "given": "Wyatt"
+   },
+   {
+    "family": "Donovan",
+    "given": "Kevin"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     9
+    ]
+   ]
+  },
+  "title": "Eliminating Uncertainty in Market Access: The Impact of New Bridges in Rural Nicaragua",
+  "container-title": "Econometrica",
+  "volume": "88",
+  "issue": "5",
+  "page": "1965-1997",
+  "DOI": "10.3982/ECTA15828",
+  "URL": "https://www.econometricsociety.org/publications/econometrica/2020/09/01/eliminating-uncertainty-market-access-impact-new-bridges-rural",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "abstrak dibuka 25 Okt 2026; Bab 5 rehab: abstrak dibuka ulang 25 Okt 2026 (18%)"
+ },
+ {
+  "id": "oag-2016-scirt",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Controller and Auditor-General New Zealand"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     5,
+     5
+    ]
+   ]
+  },
+  "title": "Effectiveness and efficiency of arrangements to repair pipes and roads in Christchurch: Follow-up audit",
+  "URL": "https://ao.parliament.nz/2016/scirt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa); Bab 1 rehab: jembatan_rusak, rumah_rusak_berat, fasum_rusak dari dibi/rekap_nasional_tahunan.csv dan rekap_provinsi_tahunan.csv; kejadian sumatra2025 dari dibi/kejadian_besar.csv; ditarik 23 Okt 2026"
+ },
+ {
+  "id": "bnpb-2010-perka12-perbaikan-darurat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010,
+     9,
+     14
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 12 Tahun 2010 tentang Pedoman Mekanisme Pemberian Bantuan Perbaikan Darurat",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1091",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2010pbbnpb012.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perka-nomor-12-tahun-2010.json (bukan OCR): hasil yang diharapkan (hlm. 3), definisi keadaan darurat (hlm. 5), bantuan perbaikan darurat (hlm. 6), jembatan rangka baja dari Departemen Pekerjaan Umum (hlm. 9); status BERLAKU, sumber BN dari katalog; id berbeda dari bnpb-2014-perka12 (Perka 12/2014 peran serta lembaga usaha); Bab 5 rehab: hlm. 3 dan 9 dicek ulang 25 Okt 2026"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2020 Nomor 482",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2020.json (Pasal 1 hlm. 3–4; Pasal 2 hlm. 5; Pasal 4 hlm. 6–7; Pasal 14 hlm. 12–13; Pasal 20 hlm. 16); URL dari data/raw/hukum/indeks.json; Bab 1 rehab: Pasal 1 definisi status keadaan darurat dan transisi darurat ke pemulihan (hlm. 3, OCR), Pasal 14 (hlm. 12–13); korpus perban-nomor-4-tahun-2020.json; Bab 5 rehab: Pasal 13 (tanggung jawab penerima setelah serah terima, hlm. 12), Pasal 14 huruf c (hlm. 12), permohonan K/L/TNI/Polri (hlm. 10), penyaluran TNI/Polri (hlm. 14); dicek 25 Okt 2026",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2024-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2024 tentang Penyelenggaraan Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024pbbnpb004.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2024.json (Pasal 6–8 hlm. 5; Pasal 28 hlm. 11; penetapan hlm. 14); Bab 1 rehab: Pasal 2–6 (hlm. 3–5), Pasal 26 (hlm. 10–11); korpus perban-nomor-4-tahun-2024.json; BERLAKU; Bab 5 rehab: Pasal 5 huruf b–g (hlm. 4), Pasal 27 (hlm. 11); dicek 25 Okt 2026",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 546"
+ },
+ {
+  "id": "bnpb-2017-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     12,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-6-tahun-2017.json (Pasal 1 angka 6 hlm. 3; Pasal 7 hlm. 7; penetapan hlm. 14); Bab 1 rehab: Pasal 1 angka 3–7 (hlm. 3–4), Pasal 7 ayat (4) (hlm. 8), Pasal 9 ayat (1) (hlm. 9), Pasal 10 (hlm. 10), Pasal 12–14 (hlm. 11–13); korpus perban-nomor-6-tahun-2017.json; BERLAKU; Bab 5 rehab: Pasal 13 ayat (6) (hlm. 12); dicek 25 Okt 2026",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2017 Nomor 1903"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus perban-nomor-5-tahun-2017.json: Pasal 1 angka 5 definisi Jitupasna (hlm. 3), Pasal 8 ayat (1) (hlm. 7), Pasal 9 (hlm. 9); Bab 9: judul dari indeks JDIH untuk pencocokan Progsun butir 4 (Lampiran J); Bab 1 rehab: Pasal 2 ayat (2)–(3) (hlm. 4), Pasal 8 ayat (2) huruf b dan ayat (3) huruf f (hlm. 7–8), Pasal 10 (hlm. 9–10), Pasal 12 mencabut Perka 17/2010 (hlm. 10); korpus perban-nomor-5-tahun-2017.json; BERLAKU",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "bnpb-2011-pdna",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12,
+     8
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 15 Tahun 2011 tentang Pedoman Pengkajian Kebutuhan Pasca Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2011pbbnpb015.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; korpus data/raw/hukum/teks/perka-nomor-15-tahun-2011.json: gabungan DaLA dan HRNA (hlm. 8), alur akibat-dampak-kebutuhan (hlm. 11), nilai kerusakan (hlm. 40); kata Jitupasna tidak muncul"
+ },
+ {
+  "id": "setkab-2026-218-jembatan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     3,
+     9
+    ]
+   ]
+  },
+  "title": "Presiden Prabowo Resmikan 218 Jembatan, Perkuat Akses Daerah dan Penanganan Bencana",
+  "container-title": "Sekretariat Kabinet",
+  "URL": "https://setkab.go.id/ocze",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; 218 diresmikan dalam 2,5 bulan; 1.072 dikerjakan; wilayah bencana 480 disurvei, 145 selesai; target 7.000 awal tahun depan; tanpa kata Garuda, Satgas, bailey, armco, perintis. Riset B [15]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "tribratanews-2026-mpp-januari",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Divisi Humas Polri (Tribratanews)"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     14
+    ]
+   ]
+  },
+  "title": "Kapolri Resmikan 19 Jembatan Merah Putih Presisi, Komitmen Tindaklanjuti Arahan Presiden Prabowo",
+  "container-title": "Tribratanews Polri",
+  "URL": "https://tribratanews.polri.go.id/blog/nasional-3/kapolri-resmikan-19-jembatan-merah-putih-presisi-komitmen-tindaklanjuti-arahan-presiden-prabowo-97813",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; nasional 178 (58 selesai, 32 dibangun, 6 bailey dikirim, 82 perencanaan); wilayah bencana 34 (17 selesai); Polda Jateng 63; sumber dana tidak disebut. Riset B [5]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "binamarga-2026-gantung-jateng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, BBPJN Jawa Tengah-DIY"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     9,
+     1
+    ]
+   ]
+  },
+  "title": "Perkuat Konektivitas Daerah, 12 Jembatan Gantung Sedang Dibangun Kementerian PU Tahun 2026 di Jateng",
+  "container-title": "Direktorat Jenderal Bina Marga",
+  "URL": "https://binamarga.pu.go.id/balai-jateng-diy/berita/perkuat-konektivitas-daerah-12-jembatan-gantung-sedang-dibangun-kementerian-pu-tahun-2026-di-jateng",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; target 105 jembatan gantung di 25 provinsi; Jateng 20 unit, 12 paket terkontrak; anggaran tidak disebut. Riset B [26]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "pu-2026-bailey-odol",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     19
+    ]
+   ]
+  },
+  "title": "Kementerian PU Imbau Kendaraan ODOL Tidak Melintasi Jembatan Bailey di Lokasi Bencana Sumatera",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-imbau-kendaraan-odol-tidak-melintasi-jembatan-bailey-di-lokasi-bencana-sumatera",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; puluhan bailey fungsional per 18 Jan 2026 di sembilan kabupaten Aceh; Krueng Beutong 30 m x 4,2 m, 20 ton, fungsional 9 Jan 2026; permanen bertahap. Riset B [30]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "pu-2026-bailey-garoga",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     6
+    ]
+   ]
+  },
+  "title": "Presiden Prabowo Tinjau Jembatan Bailey Sungai Garoga, Kementerian PU: Akses Vital Tapanuli Selatan",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/presiden-prabowo-tinjau-jembatan-bailey-sungai-garoga-kementerian-pu-akses-vital-tapanuli-selatan-ke",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; bentang 44 m, lebar 3,7 m, 25 ton; ditinjau 31 Des 2025; PU, TNI, PT Nindya Karya. Tanggal terbit laman 6 Jan 2026 (riset B menulis 31 Des 2025). Riset B [31]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "jatengprov-2026-bailey-plosogaden",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Pemerintah Provinsi Jawa Tengah"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     6,
+     12
+    ]
+   ]
+  },
+  "title": "Kabar Gembira, Jembatan Bailey dari BNPB Mulai Dibangun di Plosogaden",
+  "container-title": "Portal Resmi Provinsi Jawa Tengah",
+  "URL": "https://jatengprov.go.id/beritadaerah/kabar-gembira-jembatan-bailey-dari-bnpb-mulai-dibangun-di-plosogaden/",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; Jembatan Kalijaran putus 16 Mei; status tanggap darurat kurang dari 24 jam; perakitan Yonzipur 4 sekitar dua minggu per 11 Jun 2026; biaya dan panjang tidak disebut",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "kemenkopmk-2021-gladak-perak",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     12,
+     6
+    ]
+   ]
+  },
+  "title": "Pemerintah Akan Kaji Pembangunan Jembatan Darurat Pengganti Jembatan Gladak Perak",
+  "container-title": "Kemenko PMK",
+  "URL": "https://kemenkopmk.go.id/node/2160",
+  "verifikasi": "primer",
+  "note": "dibuka 25 Okt 2026; runtuh 4 Des 2021; bentang 192 m, tinggi 70 m; bailey tidak memungkinkan karena butuh tiga pilar. Riset B [37]",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "bnpb-2026-bailey-plosogaden",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026
+    ]
+   ]
+  },
+  "title": "Kepala BNPB Resmikan Jembatan Bailey Sepanjang 16,5 Meter, Akses Warga Desa Plosogaden di Temanggung Kembali Tersambung",
+  "container-title": "BNPB",
+  "URL": "https://bnpb.go.id/index.php/berita/kepala-bnpb-resmikan-jembatan-bailey-sepanjang-165-meter-akses-warga-desa-plosogaden-di-temanggung-kembali-tersambung",
+  "verifikasi": "belum-dibuka",
+  "note": "BELUM DAPAT DIBUKA (403 pada riset dan 25 Okt 2026); Rp144 juta DSP TA 2026 hanya dari cuplikan mesin pencari; tanggal terbit tidak diketahui; lampiran saja. Riset B [34]"
+ },
+ {
+  "id": "investortrust-2026-218-komposisi",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Investortrust"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     3,
+     9
+    ]
+   ]
+  },
+  "title": "Prabowo Resmikan 218 Jembatan di Daerah Terdampak Bencana Sumatra",
+  "container-title": "Investortrust",
+  "URL": "https://www.investortrust.id/national/96628/prabowo-resmikan-218-jembatan-di-daerah-terdampak-bencana-sumatra",
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER, lampiran rekonsiliasi saja: 77 bailey, 59 armco, 82 perintis; dibaca dari cuplikan oleh riset B [16]"
+ },
+ {
+  "id": "detik-2026-2838-jembatan",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Detik Finance"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     7,
+     29
+    ]
+   ]
+  },
+  "title": "Pembangunan 2.838 Jembatan Perintis Dikebut, Sudah Rampung 49,9%",
+  "container-title": "Detik Finance",
+  "URL": "https://finance.detik.com/infrastruktur/d-8595305/pembangunan-2-838-jembatan-perintis-dikebut-sudah-rampung-49-9",
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER, lampiran rekonsiliasi saja: target bailey 112, armco 652, beton 1.246, perintis 828; 1.416 selesai. Riset B [20]"
+ },
+ {
+  "id": "kontan-2025-jembatan-sumatra",
+  "type": "article-newspaper",
+  "author": [
+   {
+    "literal": "Kontan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     10
+    ]
+   ]
+  },
+  "title": "Update BNPB: Korban Tewas Banjir Sumatra Bertambah Jadi 969 Jiwa, 252 Hilang",
+  "container-title": "Kontan",
+  "URL": "https://nasional.kontan.co.id/news/update-bnpb-korban-tewas-banjir-sumatra-bertambah-jadi-969-jiwa-252-hilang",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "sekunder",
+  "note": "SEKUNDER: 498 jembatan rusak (data BNPB dikutip media); lampiran rekonsiliasi saja"
+ }
+]

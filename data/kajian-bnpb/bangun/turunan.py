@@ -3,7 +3,7 @@
 (KERANGKA §10 "Turunan baru", Bab 3.5 Kajian 1, Bab 3.8 dan 12.5 Kajian 2, prinsip 8 dan 15).
 
 Jalankan dari mana saja:  python3 data/kajian-bnpb/bangun/turunan.py
-Menulis data/kajian-bnpb/data/turunan/*.csv, lalu self-check assert dan uji penolakan (gagal = keluar non-nol). Stdlib, luring.
+Menulis data/kajian-bnpb/data/turunan/*.csv (termasuk lampiran_*.csv untuk tabel lampiran Kajian 2), lalu self-check assert dan uji penolakan (gagal = keluar non-nol). Stdlib, luring.
 Masukan hanya keluaran paket lain (jalankan paketnya dulu bila berubah):
   air-jawa/kab_jawa.csv, air-jawa/dibi_kab_tahun.csv, air-jawa/subsiden_kota.csv    Kajian 1 (119 kab/kota Jawa)
   irbi/irbi_kab_2025.csv, skenario-hidromet/dibi_kab_tahun.csv,
@@ -16,6 +16,7 @@ import csv
 import json
 import math
 import os
+import re
 import statistics
 from collections import defaultdict
 
@@ -258,6 +259,127 @@ def angka_tesis():
     ]
 
 
+# ---------------------------------------------------------------- tabel lampiran Kajian 2 (KERANGKA §5 Lampiran A, B, C, D, E, H)
+BAHAYA_TAMPIL = {"banjir": "banjir", "longsor": "tanah longsor", "kekeringan": "kekeringan", "cuaca_ekstrem": "cuaca ekstrem",
+                 "gelombang_abrasi": "gelombang ekstrem dan abrasi", "karhutla": "karhutla", "gempa": "gempa bumi", "tsunami": "tsunami",
+                 "gunungapi": "gunung api"}
+PULAU_TAMPIL = {"Bali–Nusa Tenggara": "Bali dan Nusa Tenggara"}   # en dash hanya untuk rentang (NASKAH-SPEK §4)
+SKENARIO_GEO = {"jawa": "Megathrust selatan Jawa, di bawah magnitudo maksimum", "jawa-mmaks": "Megathrust selatan Jawa, magnitudo maksimum",
+                "mentawai": "Megathrust Mentawai, di bawah magnitudo maksimum", "mentawai-mmaks": "Megathrust Mentawai, magnitudo maksimum",
+                "sumba": "Megathrust Sumba, magnitudo tanpa sumber", "merapi2010": "Erupsi setara Merapi 2010",
+                "krb-30-gunung": "Erupsi besar tiga puluh gunung api, pola historis"}
+FASE_TAMPIL = {"pra": "prabencana", "saat": "tanggap darurat", "pasca": "pascabencana", "lintas": "lintas tahap"}
+ANCAMAN_TAMPIL = dict(BAHAYA_TAMPIL, semua="semua jenis", epidemi="epidemi", gagal_teknologi="gagal teknologi", kebakaran_tpa="kebakaran TPA",
+                      konflik_sosial="konflik sosial")
+KEKUATAN_TAMPIL = {"kuat": "kuat", "sedang": "sedang", "lemah": "lemah", "belum-terbukti": "belum terbukti"}
+
+
+def nama_peraturan(sid):
+    """sid paket lembaga -> bentuk rujukan baku: uu-24-2007 -> UU 24/2007; jdih:perban-nomor-1-tahun-2025 -> Perban BNPB 1/2025."""
+    m = re.match(r"jdih:(\w+)-nomor-(\d+)-tahun-(\d{4})$", sid)
+    if m:
+        jenis = {"perban": "Perban BNPB", "juklak": "Juklak BNPB", "perpres": "Perpres"}[m[1]]
+        return f"{jenis} {m[2]}/{m[3]}"
+    jenis, no, th = re.match(r"(\w+)-(\d+)-(\d{4})$", sid).groups()
+    return f"{ {'uu': 'UU', 'pp': 'PP', 'perpres': 'Perpres', 'inpres': 'Inpres'}[jenis]} {no}/{th}"
+
+
+def lampiran_mitigasi(semua, prov_utama):
+    ir = baca("irbi", "irbi_kab_2025.csv")
+    syarat = defaultdict(list)
+    for r in semua:   # urutan baris semua = urutan bahaya, jadi urutan bahaya per kab stabil
+        if r["kajian"] == "mitigasi" and r["masuk"]:
+            geo = r["bahaya"] in ("gempa", "tsunami", "gunungapi")   # geologi: syarat_d = paparan, ditulis (b) di Bab 3.8
+            huruf = sorted("b" if geo and x == "d" else x for x in "abcd" if r[f"syarat_{x}"])
+            syarat[r["kode"]].append(f'{BAHAYA_TAMPIL[r["bahaya"]]} ({", ".join(huruf)})')
+    kab = [{"kode": x["kode"], "nama": x["nama_kepmendagri"], "prov_nama": x["prov_nama"], "pulau": PULAU_TAMPIL.get(x["pulau"], x["pulau"]),
+            "penduduk_2026": f(x["penduduk_2026"]), "irb_2025": f(x["total"]), "status_2025": x["status_total_resmi"],
+            "daftar_perhatian": "; ".join(syarat[x["kode"]]), "n_bahaya_perhatian": len(syarat[x["kode"]])} for x in ir]
+    pu = {r["prov"]: r for r in prov_utama}
+    prov = {}
+    for x in kab:
+        p = prov.setdefault(x["kode"][:2], {"prov_kode": x["kode"][:2], "prov_nama": x["prov_nama"], "pulau": x["pulau"], "n_kab": 0,
+                                            "penduduk_2026": 0.0, "n_kab_tinggi_2025": 0, "n_kab_perhatian": 0})
+        p["n_kab"] += 1
+        p["penduduk_2026"] += x["penduduk_2026"]
+        p["n_kab_tinggi_2025"] += x["status_2025"] == "Tinggi"
+        p["n_kab_perhatian"] += x["n_bahaya_perhatian"] > 0
+    for k, p in prov.items():   # kriteria provinsi utama (Bab 3.8) dari provinsi_utama.csv agar sama dengan Bab 3 dan Bab 5
+        p.update(meninggal_hilang_2015_2025=pu[k]["meninggal_hilang_2015_2025"], peringkat_daftar=str(pu[k]["peringkat_daftar"]),
+                 peringkat_korban=str(pu[k]["peringkat_korban"]))
+    # DIBI nasional per tahun (cakupan bencana): bencana alam dan semua klasifikasi; per jenis alam 2015-2025
+    rn = [r for r in baca("dibi", "rekap_nasional_tahunan.csv") if r["cakupan"] == "bencana"]
+    th = {}
+    for r in rn:
+        t = th.setdefault(r["tahun"], {"tahun": r["tahun"], "seri": "sejak 2024 (Juklak BNPB 7/2023)" if int(r["tahun"]) >= 2024 else "sebelum 2024",
+                                        "kejadian_alam": 0.0, "meninggal_alam": 0.0, "hilang_alam": 0.0, "mengungsi_alam": 0.0, "rumah_rb_alam": 0.0,
+                                        "meninggal_semua": 0.0, "hilang_semua": 0.0})
+        if r["klasifikasi"] == "alam":
+            for a, b in (("kejadian_alam", "kejadian"), ("meninggal_alam", "meninggal"), ("hilang_alam", "hilang"), ("mengungsi_alam", "mengungsi"),
+                         ("rumah_rb_alam", "rumah_rusak_berat")):
+                t[a] += f(r[b]) or 0
+        elif r["klasifikasi"] == "semua":
+            t["meninggal_semua"], t["hilang_semua"] = f(r["meninggal"]) or 0, f(r["hilang"]) or 0
+    jenis = {}
+    for r in rn:
+        if r["klasifikasi"] == "alam" and int(r["tahun"]) in TAHUN:
+            j = jenis.setdefault(r["kategori_dibi"], {"jenis": r["kategori_dibi"], "kejadian": 0.0, "meninggal_hilang": 0.0, "mengungsi": 0.0,
+                                                      "rumah_rb": 0.0})
+            j["kejadian"] += f(r["kejadian"]) or 0
+            j["meninggal_hilang"] += (f(r["meninggal"]) or 0) + (f(r["hilang"]) or 0)
+            j["mengungsi"] += f(r["mengungsi"]) or 0
+            j["rumah_rb"] += f(r["rumah_rusak_berat"]) or 0
+    # keluaran model geologi berlabel; korban tsunami model dan faktor evakuasi x0,662 tidak dimuat (KERANGKA prinsip 10, celah 3)
+    geo = []
+    for r in baca("skenario-geologi", "ringkasan.csv"):
+        if r["butir"].startswith(("magnitudo /", "korban jiwa tsunami")):
+            continue
+        k = 1e6 if r["satuan"] == "juta Rp" else 1
+        bersih = (r["butir"].replace(">=", "≥").replace("<=", "≤").replace(" < ", " ≤ ").replace("RB + RS", "rumah rusak berat dan sedang")
+                  .replace("(H/L 0,15)", "").strip())
+        geo.append({"skenario": SKENARIO_GEO[r["skenario"]], "butir": bersih, **{c: (f(r[c]) * k if f(r[c]) is not None else None)
+                                                                                  for c in ("rendah", "tengah", "tinggi")},
+                    "satuan": {"juta Rp": "Rp", "km2": "km²"}.get(r["satuan"], r["satuan"]), "label": r["label"].split(" (")[0].split(";")[0]})
+    kep = [{"skenario": SKENARIO_GEO[r["skenario"]], "tuas": "kepatuhan bangunan" if r["tuas"].startswith("kepatuhan") else "jam kejadian",
+            "nilai_tuas": r["nilai_tuas"], **{c: f(r[c]) for c in ("korban_rendah", "korban_tengah", "korban_tinggi", "rb_tengah", "faktor_terhadap_dasar")}}
+           for r in baca("skenario-geologi", "kepekaan.csv") if not r["tuas"].startswith("porsi evakuasi")]
+    peran = [{"lembaga": r["nama_lembaga"], "ancaman": ANCAMAN_TAMPIL[r["ancaman"]], "fase": FASE_TAMPIL[r["fase"]], "peran": r["peran"],
+              "uraian": r["uraian"], "dasar": f'{nama_peraturan(r["sid"])}, hlm. {r["hlm"]}', "jenis_bukti": r["jenis_bukti"]}
+             for r in baca("lembaga", "peran.csv")]
+    urut = {x: i for i, x in reversed(list(enumerate(r["lembaga"] for r in peran)))}   # baris satu lembaga bersambung (grup LEMBAGA)
+    peran.sort(key=lambda r: urut[r["lembaga"]])
+    program = [{"id": r["id"], "nama": r["nama"], "kelompok": r["kelompok"], "lokasi": r["lokasi"], "periode": r["periode"].replace("-", "–"),
+                "kekuatan": KEKUATAN_TAMPIL[r["kekuatan"]], "posisi": r["posisi"], "status": r["status_label"] or "–",
+                "kajian": {"air-jawa": "air", "mitigasi": "mitigasi", "keduanya": "keduanya"}[r["kajian"]]}
+               for r in baca("program-terbukti", "kompendium_program.csv")]
+    # keluaran mesin hidrometeorologi nasional; baris tahun analog dibuang (tahun tidak diformat sebagai bilangan, NASKAH-SPEK §8)
+    hid = [{k: r[k] for k in ("skenario", "metrik", "nilai", "rendah", "tinggi", "satuan", "label")}
+           for r in baca("skenario-hidromet", "kartu_skenario.csv") if r["wilayah"] == "nasional" and r["satuan"] != "tahun"]
+    return (kab, sorted(prov.values(), key=lambda p: p["prov_kode"]), sorted(th.values(), key=lambda t: t["tahun"]),
+            sorted(jenis.values(), key=lambda j: -j["meninggal_hilang"]), geo, kep, peran, program, hid)
+
+
+def cek_lampiran(kab, prov, th, jenis, geo, kep, peran, program, hid, semua):
+    angka = json.load(open(D("angka.json"), encoding="utf-8"))["angka"]
+    assert len(kab) == 514 and [x["kode"] for x in kab] == sorted(x["kode"] for x in kab), "Lampiran A: 514 kab urut kode (grup provinsi)"
+    assert sum(x["n_bahaya_perhatian"] > 0 for x in kab) == angka["perhatian.mitigasi.kab_unik"]["nilai"], "kab unik daftar perhatian != registri"
+    assert sum(x["n_bahaya_perhatian"] for x in kab) == sum(r["masuk"] for r in semua if r["kajian"] == "mitigasi"), "pasangan kab-bahaya hilang"
+    assert len(prov) == 38 and sum(p["n_kab"] for p in prov) == 514
+    assert sum(p["n_kab_tinggi_2025"] for p in prov) == 169, "kab Tinggi IRBI 2025 != 169 (irbi_hitung_kelas)"
+    pulau = [p["pulau"] for p in prov]
+    assert all(pulau.index(x) == i or pulau[i - 1] == x for i, x in enumerate(pulau)), "pulau tidak bersambung: grup PULAU pecah"
+    t = {x["tahun"]: x for x in th}
+    assert (t["2025"]["meninggal_alam"], t["2025"]["hilang_alam"]) == (angka["dibi.alam.meninggal.2025"]["nilai"], 221), "DIBI alam 2025 != registri"
+    assert sum(t[str(y)]["meninggal_alam"] for y in TAHUN) == angka["dibi.nasional.meninggal_alam.2015_2025"]["nilai"]
+    assert sum(j["meninggal_hilang"] for j in jenis) == sum(t[str(y)]["meninggal_alam"] + t[str(y)]["hilang_alam"] for y in TAHUN)
+    assert geo and not any("tsunami" in g["butir"] and "korban" in g["butir"] for g in geo), "korban tsunami model tidak boleh masuk lampiran"
+    assert not any(abs((k["faktor_terhadap_dasar"] or 0) - 0.6623) < 1e-3 for k in kep), "faktor x0,662 tidak boleh tampil"
+    assert len(peran) == 129 and len(program) == 25
+    lb = [r["lembaga"] for r in peran]
+    assert all(lb.index(x) == i or lb[i - 1] == x for i, x in enumerate(lb)), "baris lembaga tidak bersambung: grup LEMBAGA pecah"
+    assert hid and all(r["satuan"] != "tahun" for r in hid)
+
+
 # ---------------------------------------------------------------- self-check dan uji penolakan
 def cek(semua, kep, prov, prof, tesis):
     for kajian, n in (("air", 119), ("mitigasi", 514)):
@@ -307,6 +429,11 @@ def main():
     tulis("provinsi_utama.csv", ["prov", "n_kab_daftar_perhatian", "peringkat_daftar", "meninggal_hilang_2015_2025", "peringkat_korban", "label"], prov)
     tulis("profil_kerugian.csv", ["lapisan", "tahun", "rumah_rb", "rumah_rs", "rumah_rr", "rp_tinggi", "rp_rendah", "sumber", "label"], prof)
     tulis("angka_tesis.csv", ["kajian", "besaran", "nilai", "sumber", "label"], tesis)
+    lamp = lampiran_mitigasi(semua, prov)
+    cek_lampiran(*lamp, semua)
+    for nama, baris in zip(("lampiran_kab", "lampiran_prov", "lampiran_dibi_tahun", "lampiran_dibi_jenis", "lampiran_geologi_model",
+                            "lampiran_geologi_kepekaan", "lampiran_peran_lembaga", "lampiran_program", "lampiran_hidromet"), lamp):
+        tulis(f"{nama}.csv", list(baris[0]), baris)
     ring = defaultdict(int)
     for r in semua:
         ring[(r["kajian"], r["bahaya"])] += r["masuk"]

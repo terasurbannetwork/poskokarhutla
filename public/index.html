@@ -1802,13 +1802,14 @@ const kunciHari = v => v === "hari" ? S.hariIni : v === "kemarin" ? S.kemarin : 
 const tglRentang = () => { const r = S.rentangHit || S.rentang; return r === "hari" ? S.meta.hari_wib : r === "kemarin" ? hariSebelum(S.meta.hari_wib) : r; };
 /* ukuran panel Real Time dan warna wilayah (pemilik, 22 Okt 2026): Hotspot = titik hari terpilih; Luas terbakar / Belum padam = perkiraan satelit
    dari data/peta_karhutla.json (metode deck BNPB), baru per provinsi dan tertinggal ±2 hari, jadi dipakai hari terpilih bila ada, selain itu hari terakhir datanya.
-   Di kab/kota dan kecamatan belum ada datanya: ukuran kembali ke Hotspot. Api baru Himawari dan Firespot bukan ukuran di sini (pemilik, 25 Okt 2026): Api baru cukup lapisan peta, Firespot cukup kolom FS */
-const UKUR = {hot: "Hotspot", luas: "Luas terbakar", belum: "Belum padam"};
-const IK_UKUR = {hot: IKON.titik, luas: '<path d="M4 7l6-3 10 4-2 11-12 1z"/><path d="M9 11l3 3 4-5"/>', belum: IKON.api};
+   Di kab/kota dan kecamatan belum ada datanya: ukuran kembali ke Hotspot. Cluster = cluster masih aktif pada akhir hari terpilih, semua tingkat (kolom CL di Hotspot = hanya yang bertitik hari itu).
+   Api baru Himawari dan Firespot bukan ukuran di sini (pemilik, 25 Okt 2026): Api baru cukup lapisan peta, Firespot cukup kolom FS */
+const UKUR = {hot: "Hotspot", kl: "Cluster", luas: "Luas terbakar", belum: "Belum padam"};
+const IK_UKUR = {hot: IKON.titik, kl: IKON.api, luas: '<path d="M4 7l6-3 10 4-2 11-12 1z"/><path d="M9 11l3 3 4-5"/>', belum: IKON.api};
 S.ukur = "hot";
-const ukurAktif = () => S.jalur.length || !S.pk ? "hot" : S.ukur;
+const ukurAktif = () => S.ukur === "kl" ? "kl" : S.jalur.length || !S.pk ? "hot" : S.ukur;
 const pkHari = () => { const i = S.pk.hari.indexOf(tglRentang()); return i >= 0 ? i : S.pk.hari.length - 1; };
-const nilaiWil = k => { const u = ukurAktif(); return u === "hot" ? S.hit[k] || 0 : S.pk.prov[k]?.[u][pkHari()] || 0; };
+const nilaiWil = k => { const u = ukurAktif(); return u === "hot" ? S.hit[k] || 0 : u === "kl" ? klusterWil(tglRentang())[k]?.[0] || 0 : S.pk.prov[k]?.[u][pkHari()] || 0; };
 /* "Sen 19 Okt" (hari kalender WIB, apa pun zona waktu peramban) */
 const tglLain = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, weekday: "short", day: "numeric", month: "short"}).replace(",", "");
 /* "Hari ini" / "Kemarin" menurut jam WIB sekarang (sama dengan label tombol: data yang terlambat sehari tampil "Kemarin"), selain itu "" */
@@ -2486,10 +2487,22 @@ function grafikTren(kunci) { const sr = seriHarian(kunci, Math.max(7, S.trenN)),
 const KLH = new Map();
 function arsipHari(h) {
   if (!h || h === S.meta.hari_wib) return null;
-  if (!KLH.has(h)) { KLH.set(h, false); muatJSON(`data/kluster_hari/${h}.json`).then(d => { KLH.set(h, d); if (S.panel === "wil") renderDaftar(); Peta.aturHari(); }, () => {}); }
+  if (!KLH.has(h)) { KLH.set(h, false); muatJSON(`data/kluster_hari/${h}.json`).then(d => { KLH.set(h, d); if (S.panel === "wil") renderDaftar(); Peta.aturHari(); if (S.ukur === "kl") Peta.aturWilayah(false); }, () => {}); }
   return KLH.get(h);
 }
 const klusterHari = h => { const a = arsipHari(h); return a ? a.w : a; };
+/* ringkasan cluster per wilayah hari h, bentuk sama dengan harian.ringkas_kluster: [aktif, firespot, level maks, bertitik hari itu,
+   firespot bertitik hari itu, titik terakhir < 24 jam, 24-72 jam]. Hari data terbaru dihitung dari kluster.json (jam_sejak relatif
+   meta.dibuat); arsip lama tiga kolom = sisanya null; tanpa arsip = {} */
+function klusterWil(h) { const a = klusterHari(h), c = klusterWil._c;
+  if (c && c.a === a && c.kl === S.kluster) return c.w;
+  let w = {};
+  if (a) for (const k in a) w[k] = a[k].length > 3 ? a[k] : [...a[k], null, null, null, null];
+  else if (a === null) { const jh = (Date.parse(S.meta.dibuat) - Date.parse(S.meta.hari_wib + "T00:00:00+07:00")) / 36e5;
+    for (const f of S.kluster.features) { const p = f.properties, j = p.jam_sejak ?? Infinity, fs = p.firespot === "ya", adm = [p.prov || "", p.kab || "", p.kec || ""];
+      for (const i of [1, 2, 3]) { const r = w[adm.slice(0, i).join("|")] ||= [0, 0, -1, 0, 0, 0, 0];
+        r[0]++; r[1] += fs; r[2] = Math.max(r[2], p.level); r[3] += j <= jh; r[4] += j <= jh && fs; r[5] += j < 24; r[6] += j >= 24 && j < 72; } } }
+  klusterWil._c = {a, kl: S.kluster, w}; return w; }
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.panel === "riw") return renderDaftarRiw();
@@ -2497,10 +2510,9 @@ function renderDaftar() {
   const j = S.jalur;
   let item = (S.fiturWil || []).map(f => ({kunci: f.properties.kunci, nama: f.properties.nama, v: nilaiWil(f.properties.kunci)}));
   const gabung = new Map(); item.forEach(i => { const g = gabung.get(i.kunci); if (g) g.v = Math.max(g.v, i.v); else gabung.set(i.kunci, i); });
-  const u = ukurAktif(), arsip = klusterHari(u === "hot" ? tglRentang() : S.pk.hari[pkHari()]);
-  /* [jumlah cluster, firespot, level maks] wilayah pada hari kolom pertama; tanpa arsip = [null, null, -1] */
-  const klW = k => { if (arsip === false) return [null, null, -1]; if (arsip) return arsip[k] || [0, 0, -1];
-    const kl = klusterDi(k); return [kl.length, kl.filter(f => f.properties.firespot === "ya").length, Math.max(-1, ...kl.map(f => f.properties.level))]; };
+  const u = ukurAktif(), hk = u === "hot" || u === "kl" ? tglRentang() : S.pk.hari[pkHari()], W = klusterWil(hk), ada = klusterHari(hk) !== false;
+  /* ringkasan cluster wilayah pada hari kolom pertama (klusterWil); tanpa arsip = semua null, level -1 */
+  const klW = k => !ada ? [null, null, -1, null, null, null, null] : W[k] || [0, 0, -1, 0, 0, 0, 0];
   muatAsap();
   /* urutan memakai tingkat terberat antara api (cluster) dan asap: wilayah tanpa titik tapi udaranya siaga tetap naik */
   item = [...gabung.values()]; item.forEach(i => { i.kw = klW(i.kunci); i.as = asapDi(i.kunci); i.lv = Math.max(i.kw[2], i.as?.lv || 0); });
@@ -2511,19 +2523,21 @@ function renderDaftar() {
   const pilUkur =`<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Tanggal data"; harinya disebut di baris atas kepala tabel */
-  const hariTitik = u === "hot" ? `<div class="tr-hari" title="Kolom Titik: titik panas pada satu hari kalender WIB"><b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
-    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat">${UKUR[u]}: <b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
+  const hariTitik = u === "hot" || u === "kl" ? `<div class="tr-hari" title="${u === "hot" ? "Kolom Titik: titik panas" : "Cluster masih aktif (titik terakhir <= 72 jam, gambut <= 7 hari) pada akhir"} satu hari kalender WIB"><b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
+    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB. Bukan angka regu darat"><b>${tglLain(S.pk.hari[pkHari()])}</b></div>`;
   /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
   const chip = (k, w, s, l) => `<span class="lg-c" style="--w:${w}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${k}</svg><b>${s}</b>${l}</span>`;
-  const legenda = `<span class="lg-hs nm-pdk">${u === "hot" ? chip('<circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/>', "#e58a45", "HS", "Hotspot") : ""}${chip(IKON.api, "#c9503a", "FS", "Firespot")}${chip(IKON.titik, "#1d4e89", "CL", "Cluster")}</span>`;
-  const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Cluster yang lolos firespot metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Jumlah cluster titik panas"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span><span style="text-align:right" title="Status api dari cluster titik panas">Api</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
+  const legenda = u === "kl" ? "" : `<span class="lg-hs nm-pdk">${u === "hot" ? chip('<circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/>', "#e58a45", "HS", "Hotspot") : ""}${chip(IKON.api, "#c9503a", "FS", "Firespot")}${chip(IKON.titik, "#1d4e89", "CL", "Cluster")}</span>`;
+  const kepala = `<div class="tr-baris">${hariTitik}${legenda}</div>` + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span>${u === "kl" ? `<span class="n" title="Cluster yang masih aktif: titik terakhir <= 72 jam, di gambut <= 7 hari">Aktif</span><span class="n" title="Titik terakhir kurang dari 24 jam">&lt; 24 j</span><span class="n" title="Titik terakhir 24-72 jam lalu">1–3 hr</span><span class="n" title="Titik terakhir lebih dari 72 jam lalu; masih aktif karena di gambut (bara bisa bertahan di bawah permukaan)">&gt; 3 hr</span>`
+    : `<span class="n">${u === "hot" ? `<span class="nm-pjg">Titik</span><span class="nm-pdk" title="Hotspot (titik panas)">HS</span>` : "Ha"}</span><span class="n" title="Firespot (metode Kemenhut: titik High, atau 4 piksel Medium, atau Medium 3 hari berturut-turut) di antara cluster yang bertitik hari itu"><span class="nm-pjg">Firespot</span><span class="nm-pdk">FS</span></span><span class="n" title="Cluster yang punya titik panas hari itu; semua cluster aktif ada di indikator Cluster"><span class="nm-pjg">Cluster</span><span class="nm-pdk">CL</span></span>`}<span style="text-align:right" title="Status api dari cluster titik panas">Api</span><span style="text-align:right" title="Status asap kebakaran dari PM2,5 rata-rata 24 jam (kategori ISPU, PermenLHK P.14/2020): Waspada = tidak sehat, Siaga = sangat tidak sehat, Awas = berbahaya">Asap</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
-    const [nk, fs] = i.kw, lv = i.lv;
+    const [akt, , , nk, fs, j24, j72] = i.kw, lv = i.lv, f = v => v ? fmt(v) : "–";
     const t = j.length === 0 ? trenProv(i.kunci) : null;
     const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
     return `<button class="tb${lv >= 2 ? " hl" + lv : ""}" style="${G}" role="listitem" data-k="${esc(i.kunci)}" ${j.length >= 2 ? "data-daun=1" : ""} title="${esc(judul)}">
       <span class="rk">${n + 1}</span><span style="font-weight:600">${j.length === 0 ? namaProvHtml(i.kunci) : esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi yang sering mengalami karhutla"></i>' : ""}</span>
-      <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${fs ? fmt(fs) : "–"}</span><span class="n">${nk ? fmt(nk) : "–"}</span>
+      ${u === "kl" ? `<span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${f(j24)}</span><span class="n">${f(j72)}</span><span class="n">${j24 == null ? "–" : f(akt - j24 - j72)}</span>`
+        : `<span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${f(fs)}</span><span class="n" title="${akt ? `${fmt(nk || 0)} cluster bertitik hari itu, ${fmt(akt)} masih aktif` : ""}">${f(nk)}</span>`}
       <span style="text-align:right" data-sort="${i.kw[2]}">${pilStatus(i.kw[2])}</span><span style="text-align:right" data-sort="${i.as?.lv || 0}">${pilAsap(i.as)}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   terapkanUrut();
@@ -2605,8 +2619,8 @@ $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-r
   const uk = e.target.closest("[data-uk]");
   if (uk) { S.ukur = uk.dataset.uk; uk.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === uk));   /* chrome dulu, data & daftar menyusul */
     return nanti(async () => {
-      if (S.ukur !== "hot" && !S.pk) S.pk = await muatJSON("data/peta_karhutla.json").catch(() => null);
-      if (S.ukur !== "hot" && !S.pk) { S.ukur = "hot"; toast("Data luas terbakar belum bisa dimuat"); }
+      if (S.ukur !== "hot" && S.ukur !== "kl" && !S.pk) S.pk = await muatJSON("data/peta_karhutla.json").catch(() => null);
+      if (S.ukur !== "hot" && S.ukur !== "kl" && !S.pk) { S.ukur = "hot"; toast("Data luas terbakar belum bisa dimuat"); }
       await Peta.aturWilayah(false); renderLegenda(); }); }
   const kol = e.target.closest(".kepala span[data-s]");
   if (kol) { const i = +kol.dataset.s, u = S.urut[S.panel]; S.urut[S.panel] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; return terapkanUrut(); }
@@ -2860,7 +2874,7 @@ function renderLegenda() {
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel sekitar 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
-    <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && !window.PetaKab?.aktif() && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha)"}</div>
+    <div class="leg-cat"><i style="--w:#c9503a"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="7"/></svg></i><span><b>Lingkaran = skor risiko</b>warna = kelas · klik untuk analisa</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && !window.PetaKab?.aktif() && z < 8.5 ? `<div class="lbl">${ukurAktif() === "hot" ? "Jumlah titik per wilayah" : ukurAktif() === "kl" ? "Jumlah cluster aktif per wilayah" : UKUR[ukurAktif()] + " per provinsi (ha)"}</div>
     <div class="legscale">${SKALA_WIL.map(([, c]) => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
     ${!Peta.lihat("langganan") ? "" : `<div class="lbl" style="margin-top:8px">Lokasi langganan · musim biasanya mulai</div>

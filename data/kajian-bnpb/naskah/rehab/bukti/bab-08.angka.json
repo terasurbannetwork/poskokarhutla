@@ -1,0 +1,810 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 8 kajian rehab (naskah/rehab/bukti/bab-08.md), belum digabung ke data/angka.json. Bentuk sama dengan bab-04.angka.json: berkas + jalur untuk satu baris, nilai + pustaka (id di bab-08.pustaka.json), atau nilai + berkas_olah dengan catatan olah(resmi) untuk penjumlahan multibaris.",
+  "Kunci yang sudah ada di data/angka.json atau bab-04.angka.json tidak diulang (antara lain dibi.lombok2018.mengungsi, dibi.sulteng2018.mengungsi, dibi.merapi2010.mengungsi, dibi.sumatra2025.mengungsi, dibi.ntt2026.gempa.*, usgs.flores2026.*, hidromet.nasional.lantai.peluang_5_musim, geologi.jawa_gabungan.peluang_5th). Angka sekunder (media) tidak dimasukkan.",
+  "Kunci rehab.darurat.* berlabel asumsi-kebijakan: hasil kali standar dengan basis jiwa lantai, bukan kebutuhan terukur. Disusun 25 Oktober 2026."
+ ],
+ "angka": {
+  "rehab.lantai.gempa.padang2009.jiwa_kehilangan_hunian": {
+   "nilai": 464120,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "DIBI BNPB; olah penyusun",
+   "catatan": "turunan: (RB 119.005 + RS 0) x 3,9 jiwa per rumah (rasio rumah = jiwa/3,9 dari public/gempa/kerusakan.js, sama dengan naskah/mitigasi/bukti/bab-11.md); pengungsi tercatat DIBI hanya 6.554"
+  },
+  "rehab.lantai.gempa.lombok2018.jiwa_kehilangan_hunian": {
+   "nilai": 425533,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "DIBI BNPB; olah penyusun",
+   "catatan": "turunan: (RB 75.160 + RS 33.951) x 3,9; pengungsi tercatat DIBI 406.202 (kunci dibi.lombok2018.mengungsi)"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_rb_dibi": {
+   "nilai": 29303,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara, tarik 23 Okt 2026)",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat 11 baris kab jenis Gempabumi dt 15 Agu 2026 (jumlah_kejadian 0,090909 per kab); tahun berjalan, data sementara"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_rusak_dibi": {
+   "nilai": 131331,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara)",
+   "catatan": "olah(resmi): RB 29.303 + RS 34.460 + RR 67.568, 11 kab, gempa 15 Agu 2026"
+  },
+  "rehab.lantai.gempa.flores2026.mengungsi_dibi": {
+   "nilai": 171287,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara)",
+   "catatan": "olah(resmi): Σ mengungsi 11 kab; jumlah per laporan, bukan stok serentak"
+  },
+  "rehab.lantai.gempa.flores2026.meninggal_dibi": {
+   "nilai": 151,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara)",
+   "catatan": "olah(resmi): 11 kab; USGS sedikitnya 136 (kunci usgs.flores2026.meninggal)"
+  },
+  "rehab.lantai.gempa.flores2026.jiwa_kehilangan_hunian": {
+   "nilai": 248676,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "DIBI BNPB; olah penyusun",
+   "catatan": "turunan: (29.303 + 34.460) x 3,9"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_rusak_bnpb_2026_08_22": {
+   "nilai": 53971,
+   "pustaka": "bnpb-2026-flores-hari8",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, rilis 23 Agu 2026",
+   "catatan": "data sementara hari kedelapan (22 Agu 2026): RB 19.006, RS 11.777, RR 23.188"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_rb_bnpb_2026_08_22": {
+   "nilai": 19006,
+   "pustaka": "bnpb-2026-flores-hari8",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, rilis 23 Agu 2026",
+   "catatan": "sementara"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_data_awal": {
+   "nilai": 102384,
+   "pustaka": "bnpb-2026-flores-verifikasi",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, rilis 7 Sep 2026",
+   "catatan": "data awal rumah yang diverifikasi; bukan jumlah rumah rusak"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_terverifikasi": {
+   "nilai": 51591,
+   "pustaka": "bnpb-2026-flores-verifikasi",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, rilis 7 Sep 2026",
+   "catatan": "50,39% data awal; hasil: RB 2.382, RS 7.276, RR 14.177, tidak rusak 27.756; dinamis"
+  },
+  "rehab.lantai.gempa.flores2026.rumah_rb_terverifikasi": {
+   "nilai": 2382,
+   "pustaka": "bnpb-2026-flores-verifikasi",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BNPB, rilis 7 Sep 2026",
+   "catatan": "dari 51.591 rumah terverifikasi; bukan angka akhir"
+  },
+  "rehab.dibi.jembatan_rusak.gempa.2026": {
+   "nilai": 38,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara)",
+   "catatan": "olah(resmi): tahun=2026 kategori Gempabumi, klasifikasi=alam, cakupan=bencana; sampai tarik 23 Okt 2026"
+  },
+  "rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026": {
+   "nilai": 36,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB (sementara)",
+   "catatan": "olah(resmi): provinsi=Nusa Tenggara Timur, tahun=2026, Gempabumi, klasifikasi=alam, cakupan=bencana; memuat gempa Flores 15 Agu 2026 dan gempa NTT lain 2026"
+  },
+  "rehab.dibi.jembatan_rusak.gempa.prov_tahun_maks_2018_2025": {
+   "nilai": 10,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): maksimum provinsi-tahun Gempabumi 2018–2025 = Maluku 2019"
+  },
+  "rehab.dibi.jembatan_rusak.gempa.tahun_maks_2018_2025": {
+   "nilai": 21,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): maksimum tahunan Gempabumi 2018–2025 = 2019"
+  },
+  "rehab.lantai.erupsi.kelud2014.rumah_rb": {
+   "nilai": 12404,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Σ rumah_rusak_berat baris Erupsi Gunung Api 13–14 Feb 2014 (Kediri 8.622, Malang 3.782); sama dengan rekap nasional erupsi 2014"
+  },
+  "rehab.lantai.erupsi.kelud2014.mengungsi": {
+   "nilai": 87629,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "riset/mentah/dibi_geologi.json",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Blitar, Jombang, Kediri, Malang, Kota Batu, 13–14 Feb 2014"
+  },
+  "rehab.dibi.jembatan_rusak.erupsi.prov_tahun_maks": {
+   "nilai": 31,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Sumatera Barat 2024, Erupsi gunung api, klasifikasi=alam, cakupan=bencana"
+  },
+  "rehab.dibi.jembatan_rusak.banjir.prov_tahun_maks": {
+   "nilai": 479,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Aceh 2025 kategori Banjir; semua jenis Aceh 2025 = 480 (kunci rehab.dibi.jembatan_rusak.prov.aceh.2025)"
+  },
+  "rehab.dibi.jembatan_rusak.banjir.2025": {
+   "nilai": 1021,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Banjir 2025, klasifikasi=alam, cakupan=bencana"
+  },
+  "rehab.dibi.jembatan_rusak.longsor.tahun_maks": {
+   "nilai": 61,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Longsor 2020"
+  },
+  "rehab.dibi.jembatan_rusak.longsor.prov_tahun_maks": {
+   "nilai": 28,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Jawa Tengah 2020, Longsor"
+  },
+  "rehab.dibi.rumah_rb.longsor.tahun_maks": {
+   "nilai": 2992,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Longsor 2017"
+  },
+  "rehab.dibi.mengungsi.longsor.tahun_maks": {
+   "nilai": 17484,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Longsor 2025; jumlah setahun, batas atas satu kejadian"
+  },
+  "rehab.lantai.longsor.pacitan2017.rumah_rusak": {
+   "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+   "jalur": "[nama=Kab. Pacitan,jenis=longsor,tahun=2017].rumah_rusak",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "kab-tahun terbesar jenis longsor 2008–2026 (RB+RS+RR); setahun, bukan satu kejadian"
+  },
+  "rehab.dibi.rumah_rusak.cuaca_ekstrem.tahun_maks": {
+   "nilai": 33820,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Cuaca ekstrem 2019 (RB+RS+RR)"
+  },
+  "rehab.dibi.rumah_rb.cuaca_ekstrem.tahun_maks": {
+   "nilai": 6039,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Cuaca ekstrem 2012"
+  },
+  "rehab.dibi.mengungsi.cuaca_ekstrem.tahun_maks": {
+   "nilai": 10680,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_nasional_tahunan.csv",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Cuaca ekstrem 2019"
+  },
+  "rehab.dibi.jembatan_rusak.cuaca_ekstrem.prov_tahun_maks": {
+   "nilai": 11,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/rekap_provinsi_tahunan.csv",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "olah(resmi): Jawa Tengah 2025"
+  },
+  "rehab.lantai.cuaca_ekstrem.bandung2019.rumah_rusak": {
+   "berkas": "skenario-hidromet/dibi_kab_tahun.csv",
+   "jalur": "[nama=Kab. Bandung,jenis=cuaca_ekstrem,tahun=2019].rumah_rusak",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "kab-tahun terbesar cuaca ekstrem 2008–2026"
+  },
+  "rehab.lantai.tsunami.selatsunda2018.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=selatsunda2018,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "tsunami Selat Sunda 22 Des 2018; kejadian tsunami terbesar di DIBI"
+  },
+  "rehab.lantai.tsunami.selatsunda2018.mengungsi": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=selatsunda2018,metrik=mengungsi,versi=DIBI].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "jendela 22–31 Des 2018"
+  },
+  "rehab.lantai.tsunami.aceh2004.jalan_rusak_km": {
+   "nilai": 2618,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009), hlm. xiii",
+   "catatan": "program-terbukti/bukti_dampak.csv B055"
+  },
+  "rehab.lantai.tsunami.aceh2004.jalan_dibangun_km": {
+   "nilai": 3696,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "km",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009), hlm. xiii",
+   "catatan": "B054; masa kerja 4 tahun"
+  },
+  "rehab.lantai.tsunami.aceh2004.rumah_rusak_brr": {
+   "nilai": 139195,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009), hlm. x",
+   "catatan": "hancur atau rusak berat, Aceh dan Nias (B049); setara kunci brr.aceh2004.rumah_rusak bila ada"
+  },
+  "rehab.lantai.tsunami.aceh2004.sumur_mdf": {
+   "nilai": 8000,
+   "pustaka": "mdf-2011-progress",
+   "satuan": "unit",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sekretariat MDF Aceh–Nias, Des 2011",
+   "catatan": "\"hampir 8.000 sumur\"; laporan pengelola dana sendiri; tidak dibuka ulang sesi ini (riset E [4])"
+  },
+  "rehab.lantai.likuefaksi.sulteng2018.jiwa_kehilangan_hunian": {
+   "nilai": 245954,
+   "pustaka": "bnpb-dibi",
+   "berkas_olah": "dibi/kejadian_besar.csv",
+   "satuan": "jiwa",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "DIBI BNPB; olah penyusun",
+   "catatan": "turunan: (34.166 + 28.899) x 3,9; mengungsi tercatat 212.719 (kunci dibi.sulteng2018.mengungsi)"
+  },
+  "rehab.lantai.likuefaksi.sulteng2018.rumah_rb": {
+   "berkas": "dibi/kejadian_besar.csv",
+   "jalur": "[kode=sulteng2018,metrik=rumah_rusak_berat,versi=DIBI].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "gabungan gempa, tsunami, likuefaksi; tidak terpisah"
+  },
+  "rehab.musim.2025_26.rumah_rb": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=rumah_rusak_berat].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "musim hujan 1 Okt 2025–30 Apr 2026, jenis banjir, bandang, longsor, banjir_longsor, cuaca ekstrem"
+  },
+  "rehab.musim.2025_26.rumah_rs": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=rumah_rusak_sedang].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "musim hujan 1 Okt 2025–30 Apr 2026, jenis banjir, bandang, longsor, banjir_longsor, cuaca ekstrem"
+  },
+  "rehab.musim.2025_26.rumah_rr": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=rumah_rusak_ringan].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "musim hujan 1 Okt 2025–30 Apr 2026, jenis banjir, bandang, longsor, banjir_longsor, cuaca ekstrem"
+  },
+  "rehab.musim.2025_26.mengungsi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_terberat_tercatat,wilayah=nasional,metrik=mengungsi].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "musim hujan 1 Okt 2025–30 Apr 2026, jenis banjir, bandang, longsor, banjir_longsor, cuaca ekstrem"
+  },
+  "rehab.musim.lanina_2020_21.rumah_rb": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=nasional,metrik=rumah_rusak_berat].nilai",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "musim La Niña analog 2020/2021 (pemilihan analog asumsi-kebijakan)"
+  },
+  "rehab.musim.lanina_2020_21.mengungsi": {
+   "berkas": "skenario-hidromet/kartu_skenario.csv",
+   "jalur": "[skenario=musim_hujan_lanina,wilayah=nasional,metrik=mengungsi].nilai",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "catatan": "idem"
+  },
+  "rehab.pipa.lombok.sumur_bor_darurat": {
+   "nilai": 83,
+   "pustaka": "pupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok, Kementerian PUPR (data s.d. 31 Mar 2019)",
+   "catatan": "83 sumur bor JIAT, total 1.314 l/dt; via riset D [10], tidak dibuka ulang sesi ini"
+  },
+  "rehab.pipa.lombok.hidran_2000l": {
+   "nilai": 242,
+   "pustaka": "pupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok, Kementerian PUPR (data s.d. 31 Mar 2019)",
+   "catatan": "ditambah 65 hidran 1.000 liter; via riset D [10], tidak dibuka ulang sesi ini"
+  },
+  "rehab.pipa.lombok.truk_tangki": {
+   "nilai": 28,
+   "pustaka": "pupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok, Kementerian PUPR (data s.d. 31 Mar 2019)",
+   "catatan": "mobil tangki 4.000 liter, BTAM Bekasi; via riset D [10], tidak dibuka ulang sesi ini"
+  },
+  "rehab.pipa.lombok.ipa_darurat": {
+   "nilai": 26,
+   "pustaka": "pupr-2019-satgas-lombok",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Buku Satgas Penanganan Gempa Lombok, Kementerian PUPR (data s.d. 31 Mar 2019)",
+   "catatan": "produksi 358 l/dt; via riset D [10], tidak dibuka ulang sesi ini"
+  },
+  "rehab.pipa.cianjur.titik_spam_rusak": {
+   "nilai": 10,
+   "pustaka": "pupr-2023-cianjur",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "Buku Penanganan Gempa Cianjur 2022, Kementerian PUPR",
+   "catatan": "via riset D [12]"
+  },
+  "rehab.pipa.cianjur.hidran_puncak": {
+   "nilai": 172,
+   "pustaka": "pupr-2023-cianjur",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "idem",
+   "catatan": "puncak 18 Des 2022; PDAM 10 mobil tangki x 5 rit/hari"
+  },
+  "rehab.pipa.sumatra2025.sarana_darurat": {
+   "nilai": 537,
+   "pustaka": "pu-2026-spam-februari",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, 5 Feb 2026",
+   "catatan": "IPA mobile, mobil tangki, hidran umum; data 2 Feb 2026"
+  },
+  "rehab.pipa.sumatra2025.sumur_bor_pu": {
+   "nilai": 128,
+   "pustaka": "pu-2026-spam-februari",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, 5 Feb 2026",
+   "catatan": "dibangun atau dalam proses"
+  },
+  "rehab.akuifer.sulteng2018.ipa_esdm_jiwa": {
+   "nilai": 22241,
+   "pustaka": "esdm-2018-air-sulteng",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 17 Des 2018",
+   "catatan": "17 unit pengolah air di 15 lokasi, mulai 17 Okt 2018 (19 hari setelah gempa)"
+  },
+  "rehab.darurat.asumsi.truk_m3_hari": {
+   "nilai": 20,
+   "pustaka": "pupr-2019-satgas-lombok",
+   "satuan": "m³ per truk per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "4.000 liter (Lombok, Buku Satgas PUPR) x 5 rit per hari (Cianjur, Buku PUPR 2023)"
+  },
+  "rehab.darurat.asumsi.orang_per_keran": {
+   "nilai": 250,
+   "pustaka": "sphere-2018",
+   "satuan": "orang per keran",
+   "keyakinan": "terverifikasi",
+   "sumber": "Sphere 2018",
+   "catatan": "water supply standard 2.1"
+  },
+  "rehab.darurat.asumsi.jiwa_per_sumur": {
+   "nilai": 2000,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "jiwa per sumur",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, 27 Jun 2019",
+   "catatan": "sumur Badan Geologi tipikal 125 m, 1–2,4 l/dt"
+  },
+  "rehab.darurat.gempa.air_m3_hari_awal": {
+   "nilai": 3249,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 464.120 jiwa (Padang 2009 jiwa kehilangan hunian (RB+RS)x3.9); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.gempa.air_m3_hari": {
+   "nilai": 6962,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 464.120 jiwa (Padang 2009 jiwa kehilangan hunian (RB+RS)x3.9); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.gempa.truk_setara": {
+   "nilai": 349,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 464.120 jiwa (Padang 2009 jiwa kehilangan hunian (RB+RS)x3.9); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.gempa.keran": {
+   "nilai": 1857,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 464.120 jiwa (Padang 2009 jiwa kehilangan hunian (RB+RS)x3.9); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.gempa.sumur_setara": {
+   "nilai": 233,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 464.120 jiwa (Padang 2009 jiwa kehilangan hunian (RB+RS)x3.9); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.tsunami.air_m3_hari_awal": {
+   "nilai": 4448,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 635.384 jiwa (Aceh–Nias 2004 kehilangan tempat tinggal. BRR (kunci brr.aceh2004.kehilangan_tempat_tinggal. usulan mitigasi bab-11)); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.tsunami.air_m3_hari": {
+   "nilai": 9531,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 635.384 jiwa (Aceh–Nias 2004 kehilangan tempat tinggal. BRR (kunci brr.aceh2004.kehilangan_tempat_tinggal. usulan mitigasi bab-11)); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.tsunami.truk_setara": {
+   "nilai": 477,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 635.384 jiwa (Aceh–Nias 2004 kehilangan tempat tinggal. BRR (kunci brr.aceh2004.kehilangan_tempat_tinggal. usulan mitigasi bab-11)); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.tsunami.keran": {
+   "nilai": 2542,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 635.384 jiwa (Aceh–Nias 2004 kehilangan tempat tinggal. BRR (kunci brr.aceh2004.kehilangan_tempat_tinggal. usulan mitigasi bab-11)); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.tsunami.sumur_setara": {
+   "nilai": 318,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 635.384 jiwa (Aceh–Nias 2004 kehilangan tempat tinggal. BRR (kunci brr.aceh2004.kehilangan_tempat_tinggal. usulan mitigasi bab-11)); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.likuefaksi.air_m3_hari_awal": {
+   "nilai": 1722,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 245.954 jiwa (Sulteng 2018 (RB+RS)x3.9); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.likuefaksi.air_m3_hari": {
+   "nilai": 3689,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 245.954 jiwa (Sulteng 2018 (RB+RS)x3.9); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.likuefaksi.truk_setara": {
+   "nilai": 185,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 245.954 jiwa (Sulteng 2018 (RB+RS)x3.9); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.likuefaksi.keran": {
+   "nilai": 984,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 245.954 jiwa (Sulteng 2018 (RB+RS)x3.9); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.likuefaksi.sumur_setara": {
+   "nilai": 123,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 245.954 jiwa (Sulteng 2018 (RB+RS)x3.9); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.banjir.air_m3_hari_awal": {
+   "nilai": 6796,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 970.876 jiwa (Sumatra 2025 mengungsi DIBI. jumlah per laporan); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.banjir.air_m3_hari": {
+   "nilai": 14563,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 970.876 jiwa (Sumatra 2025 mengungsi DIBI. jumlah per laporan); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.banjir.truk_setara": {
+   "nilai": 729,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 970.876 jiwa (Sumatra 2025 mengungsi DIBI. jumlah per laporan); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.banjir.keran": {
+   "nilai": 3884,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 970.876 jiwa (Sumatra 2025 mengungsi DIBI. jumlah per laporan); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.banjir.sumur_setara": {
+   "nilai": 486,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 970.876 jiwa (Sumatra 2025 mengungsi DIBI. jumlah per laporan); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.longsor.air_m3_hari_awal": {
+   "nilai": 122,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 17.484 jiwa (longsor 2025 nasional. setahun); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.longsor.air_m3_hari": {
+   "nilai": 262,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 17.484 jiwa (longsor 2025 nasional. setahun); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.longsor.truk_setara": {
+   "nilai": 14,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 17.484 jiwa (longsor 2025 nasional. setahun); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.longsor.keran": {
+   "nilai": 70,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 17.484 jiwa (longsor 2025 nasional. setahun); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.longsor.sumur_setara": {
+   "nilai": 9,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 17.484 jiwa (longsor 2025 nasional. setahun); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.erupsi.air_m3_hari_awal": {
+   "nilai": 3136,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 447.982 jiwa (Merapi 2010 mengungsi DIBI); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.erupsi.air_m3_hari": {
+   "nilai": 6720,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 447.982 jiwa (Merapi 2010 mengungsi DIBI); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.erupsi.truk_setara": {
+   "nilai": 336,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 447.982 jiwa (Merapi 2010 mengungsi DIBI); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.erupsi.keran": {
+   "nilai": 1792,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 447.982 jiwa (Merapi 2010 mengungsi DIBI); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.erupsi.sumur_setara": {
+   "nilai": 224,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 447.982 jiwa (Merapi 2010 mengungsi DIBI); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.cuaca_ekstrem.air_m3_hari_awal": {
+   "nilai": 75,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 10.680 jiwa (cuaca ekstrem 2019 nasional. setahun); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.cuaca_ekstrem.air_m3_hari": {
+   "nilai": 160,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 10.680 jiwa (cuaca ekstrem 2019 nasional. setahun); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.cuaca_ekstrem.truk_setara": {
+   "nilai": 8,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 10.680 jiwa (cuaca ekstrem 2019 nasional. setahun); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.cuaca_ekstrem.keran": {
+   "nilai": 43,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 10.680 jiwa (cuaca ekstrem 2019 nasional. setahun); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.cuaca_ekstrem.sumur_setara": {
+   "nilai": 6,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 10.680 jiwa (cuaca ekstrem 2019 nasional. setahun); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  },
+  "rehab.darurat.musim.air_m3_hari_awal": {
+   "nilai": 7306,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 1.043.740 jiwa (musim hujan 2025/2026 nasional); Perka BNPB 7/2008 7 liter/orang/hari tiga hari pertama"
+  },
+  "rehab.darurat.musim.air_m3_hari": {
+   "nilai": 15656,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "m³ per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 1.043.740 jiwa (musim hujan 2025/2026 nasional); Perka BNPB 7/2008 15 liter/orang/hari sesudah hari ketiga"
+  },
+  "rehab.darurat.musim.truk_setara": {
+   "nilai": 783,
+   "pustaka": "bnpb-2008-kebutuhan-dasar",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 1.043.740 jiwa (musim hujan 2025/2026 nasional); Perka BNPB 7/2008; 20 m³ per truk per hari; alternatif, tidak dijumlah dengan sumur"
+  },
+  "rehab.darurat.musim.keran": {
+   "nilai": 4175,
+   "pustaka": "sphere-2018",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 1.043.740 jiwa (musim hujan 2025/2026 nasional); 250 orang per keran (Sphere)"
+  },
+  "rehab.darurat.musim.sumur_setara": {
+   "nilai": 522,
+   "pustaka": "esdm-2019-sumur-bor",
+   "satuan": "unit",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "olah penyusun",
+   "catatan": "basis 1.043.740 jiwa (musim hujan 2025/2026 nasional); 2.000 jiwa per sumur Badan Geologi; alternatif, tidak dijumlah dengan truk"
+  }
+ }
+}

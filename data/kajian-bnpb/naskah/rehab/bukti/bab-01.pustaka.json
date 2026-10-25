@@ -1,0 +1,642 @@
+[
+ {
+  "id": "ri-2007-uu24",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2007 Nomor 66",
+  "verifikasi": "primer",
+  "URL": "https://peraturan.bpk.go.id/Details/39901/uu-no-24-tahun-2007",
+  "note": "sama dengan entri pustaka.json utama, ditambah URL; teks di data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz (Pasal 1 angka 2, Pasal 5, 12, 21, 51, 53); Bab 1 rehab: Pasal 1 angka 11–12 (hlm. 3), Pasal 48 huruf f, 53 huruf a, 56 (hlm. 23–25), Pasal 58–59 (hlm. 25–26); teks data/kajian-bnpb/data/lembaga/mentah/teks/uu-24-2007.json.gz"
+ },
+ {
+  "id": "ri-2008-pp21",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 21 Tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2008 Nomor 42",
+  "URL": "https://peraturan.bpk.go.id/Details/4833/pp-no-21-tahun-2008",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pasal 6, 21, 23 dan Penjelasannya; Bab 1 rehab: Pasal 54 ayat (2), 57 ayat (1), 66, 76 ayat (1); string dicek riset A atas PDF JDIH BPK (rehab/riset/A-hukum-kelembagaan.md [2]); tidak ada di korpus lokal"
+ },
+ {
+  "id": "bnpb-2017-r3p",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     11,
+     7
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb005.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus perban-nomor-5-tahun-2017.json: Pasal 1 angka 5 definisi Jitupasna (hlm. 3), Pasal 8 ayat (1) (hlm. 7), Pasal 9 (hlm. 9); Bab 9: judul dari indeks JDIH untuk pencocokan Progsun butir 4 (Lampiran J); Bab 1 rehab: Pasal 2 ayat (2)–(3) (hlm. 4), Pasal 8 ayat (2) huruf b dan ayat (3) huruf f (hlm. 7–8), Pasal 10 (hlm. 9–10), Pasal 12 mencabut Perka 17/2010 (hlm. 10); korpus perban-nomor-5-tahun-2017.json; BERLAKU",
+  "container-title": "Berita Negara Republik Indonesia, BN 2017 (1570); 11 Hlm"
+ },
+ {
+  "id": "bnpb-2017-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     12,
+     27
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2017pbbnpb006.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-6-tahun-2017.json (Pasal 1 angka 6 hlm. 3; Pasal 7 hlm. 7; penetapan hlm. 14); Bab 1 rehab: Pasal 1 angka 3–7 (hlm. 3–4), Pasal 7 ayat (4) (hlm. 8), Pasal 9 ayat (1) (hlm. 9), Pasal 10 (hlm. 10), Pasal 12–14 (hlm. 11–13); korpus perban-nomor-6-tahun-2017.json; BERLAKU",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2017 Nomor 1903"
+ },
+ {
+  "id": "bnpb-2024-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2024 tentang Penyelenggaraan Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024pbbnpb004.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2024.json (Pasal 6–8 hlm. 5; Pasal 28 hlm. 11; penetapan hlm. 14); Bab 1 rehab: Pasal 2–6 (hlm. 3–5), Pasal 26 (hlm. 10–11); korpus perban-nomor-4-tahun-2024.json; BERLAKU",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 546"
+ },
+ {
+  "id": "bnpb-2020-dsp",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     5,
+     15
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2020 tentang Penggunaan Dana Siap Pakai",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2020 Nomor 482",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2020pbbnpb004.pdf",
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2020.json (Pasal 1 hlm. 3–4; Pasal 2 hlm. 5; Pasal 4 hlm. 6–7; Pasal 14 hlm. 12–13; Pasal 20 hlm. 16); URL dari data/raw/hukum/indeks.json; Bab 1 rehab: Pasal 1 definisi status keadaan darurat dan transisi darurat ke pemulihan (hlm. 3, OCR), Pasal 14 (hlm. 12–13); korpus perban-nomor-4-tahun-2020.json",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json; Bab 1 rehab: 7 liter tiga hari pertama lalu 15 liter per orang per hari; jarak sumber air 500 m (hlm. PDF 12)"
+ },
+ {
+  "id": "bnpb-2023-huntara",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     10,
+     24
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 3 Tahun 2023 tentang Pemberian Bantuan Hunian Sementara bagi Pengungsi Korban Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2023juklakbnpb003.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/juklak-nomor-3-tahun-2023.json (hlm. 4, 7, 19, 22; penetapan hlm. 26); Bab 1 rehab: definisi status keadaan darurat (hlm. 3, OCR); lokasi huntara harus memiliki akses air bersih dan sanitasi (hlm. 7, OCR); korpus juklak-nomor-3-tahun-2023.json"
+ },
+ {
+  "id": "bnpb-2023-standar-data",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Petunjuk Pelaksanaan Nomor 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana",
+  "URL": "https://jdih.bnpb.go.id/dokumen/Peraturan/juknis-nomor-7-tahun-2023",
+  "verifikasi": "primer",
+  "note": "ditetapkan 29 Desember 2023. Ambang kejadian bencana dan metode hitung dibaca di halaman PDF 7 korpus data/raw/hukum/teks/juknis-nomor-7-tahun-2023.json. JDIH BNPB tidak memuat PDF; teks korpus berasal dari salinan dokumen di indonesia.unfpa.org (data/raw/hukum/indeks.json kunci sumber_tidak_resmi). Ganti dengan salinan Pusdatinkom atau JDIH sebelum status final; Bab 1 rehab: ambang kejadian bencana (hlm. 7) yang menyebabkan patahan seri DIBI 2024, lewat dibi/README.md"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "genre": "Data set",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "sama dengan pustaka.json utama; ditarik 23 Okt 2026 15.23 WIB (paket dibi dan air-jawa); Bab 1 rehab: jembatan_rusak, rumah_rusak_berat, fasum_rusak dari dibi/rekap_nasional_tahunan.csv dan rekap_provinsi_tahunan.csv; kejadian sumatra2025 dari dibi/kejadian_besar.csv; ditarik 23 Okt 2026"
+ },
+ {
+  "id": "kemenkoinfra-2026-inpres18",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     29
+    ]
+   ]
+  },
+  "title": "Inpres 18/2025: Percepatan Penanganan Darurat, Rehabilitasi, dan Rekonstruksi Pascabencana Alam di Provinsi Aceh, Provinsi Sumatera Utara, dan Provinsi Sumatera Barat",
+  "container-title": "JDIH Kemenko Infrastruktur",
+  "URL": "https://jdih.kemenkoinfra.go.id/inpres-182025-percepatan-penanganan-darurat-rehabilitasi-dan-rekonstruksi-pascabencana-alam-di-provinsi-aceh-provinsi-sumatera-utara-dan-provinsi-sumatera-barat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer (ringkasan halaman)",
+  "note": "tanggal = penetapan Inpres; dibaca ringkasan halaman (Menko Infrastruktur dan Pembangunan Kewilayahan mengoordinasikan masalah infrastruktur; pemda berkoordinasi dengan BNPB); PDF Inpres tidak dibuka; Bab 1 rehab: dipakai hanya ringkasan halaman; PDF Inpres tidak dibuka"
+ },
+ {
+  "id": "bnpb-2025-otk-ubah",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     30
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 11 Tahun 2025 tentang Perubahan atas Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2025 tentang Organisasi dan Tata Kerja Badan Nasional Penanggulangan Bencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2025pbbnpb011.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pusat Pengendalian Operasi diganti Pusat Pembinaan Jabatan Fungsional Kebencanaan; Direktorat Fasilitasi Penanganan Korban dan Pengungsi diganti (organisasi_bnpb.csv); Bab 1 rehab: Deputi Bidang RR dengan Direktorat RR Perumahan, RR Infrastruktur, RR Sosial, Ekonomi, dan Lingkungan Hidup (lewat program-terbukti/organisasi_bnpb.csv)",
+  "publisher": "Badan Nasional Penanggulangan Bencana"
+ },
+ {
+  "id": "bnpb-2010-perka12-perbaikan-darurat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2010,
+     9,
+     14
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 12 Tahun 2010 tentang Pedoman Mekanisme Pemberian Bantuan Perbaikan Darurat",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1091",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2010pbbnpb012.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "korpus data/raw/hukum/teks/perka-nomor-12-tahun-2010.json (bukan OCR): hasil yang diharapkan (hlm. 3), definisi keadaan darurat (hlm. 5), bantuan perbaikan darurat (hlm. 6), jembatan rangka baja dari Departemen Pekerjaan Umum (hlm. 9); status BERLAKU, sumber BN dari katalog; id berbeda dari bnpb-2014-perka12 (Perka 12/2014 peran serta lembaga usaha)"
+ },
+ {
+  "id": "ri-2026-keppres1",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 1 Tahun 2026 tentang Satuan Tugas Percepatan Rehabilitasi dan Rekonstruksi Pascabencana Alam di Provinsi Aceh, Provinsi Sumatera Utara, dan Provinsi Sumatera Barat",
+  "container-title": "JDIH Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan",
+  "URL": "https://jdih.kemenkoinfra.go.id/dokumen/file/keputusan-presiden-republik-indonesia/2026/keppres-nomor-1-tahun-2026.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "salinan 8 halaman dengan lapisan teks, dibaca utuh lewat pdftotext 25 Okt 2026 (halaman metadata https://jdih.kemenkoinfra.go.id/en/keppres-no-1-tahun-2026, status Berlaku). Pasal 1–2, 4 (tim pengarah diketuai Menko PMK; tim pelaksana diketuai Mendagri, Kepala BNPB Wakil Ketua II; Bidang Infrastruktur koordinator Menteri PU; Bidang Pengelolaan Data koordinator Kepala BPS), 5, 7, 8, 10, 11, 12"
+ },
+ {
+  "id": "pu-2026-spam-sumatera-feb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 2 Feb 2026: 143 dari 176 SPAM berfungsi (judul 142); >5.300 l/detik; 537 sarana darurat; SDA 25 sumur bor air dalam, Cipta Karya 103 (17 dangkal, 86 dalam); permanen Sumbar bertahap hingga Agustus 2028. Riset D [21]"
+ },
+ {
+  "id": "pu-2026-infrastruktur-sumatera-mei",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     5,
+     11
+    ]
+   ]
+  },
+  "title": "Kementerian PU Percepat Penanganan Infrastruktur Terdampak Bencana di Sumatera",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/kementerian-pu-percepat-penanganan-infrastruktur-terdampak-bencana-di-sumatera-mayoritas-infrastrukt",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 7 Mei 2026: sekitar 95,5% dari 178 SPAM fungsional; jalan dan jembatan nasional terdampak 100%; 94% dari 2.421 ruas jalan daerah; sekitar 67% dari 1.181 unit jembatan daerah; provinsi tidak dirinci. Riset D [22]"
+ },
+ {
+  "id": "binamarga-2025-jembatan-aceh",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Direktorat Jenderal Bina Marga, Balai Pelaksanaan Jalan Nasional Aceh"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     12,
+     3
+    ]
+   ]
+  },
+  "title": "Dampak Bencana Banjir dan Longsor Sumatera, Kementerian PU Percepat Penanganan 14 Jembatan Rusak di Aceh",
+  "container-title": "Direktorat Jenderal Bina Marga",
+  "URL": "https://binamarga.pu.go.id/balai-aceh/berita/dampak-bencana-banjir-dan-longsor-sumatera-kementerian-pu-percepat-penanganan-14-jembatan-rusak-di-aceh",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "14 jembatan roboh atau terputus per 1 Des 2025; hanya Jembatan Krueng Tingkeum disebut jalan nasional. Riset B [29]"
+ },
+ {
+  "id": "setneg-2026-jembatan-tni-polri",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     13
+    ]
+   ]
+  },
+  "title": "Resmikan 3.395 Jembatan TNI-Polri dan 3.000 Sumber Air Bersih TNI AD, Presiden Prabowo: Misi Bakti kepada Rakyat",
+  "container-title": "Kementerian Sekretariat Negara",
+  "URL": "https://www.setneg.go.id/baca/index/resmikan_3395_jembatan_tni_polri_dan_3000_sumber_air_bersih_tni_ad_presiden_prabowo_misi_bakti_kepada_rakyat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "TNI AD 3.008 titik, 2.500 selesai, 508 proses, 798 titik wilayah bencana; Polri 895 unit di 30 Polda, 874 selesai, 17 dibangun; 3.000 sumber air bersih TNI AD. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]"
+ },
+ {
+  "id": "dpr-2026-infosingkat-rumah-sumatra",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Sari",
+    "given": "Rafika"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     1
+    ]
+   ]
+  },
+  "title": "Percepatan Rehabilitasi dan Rekonstruksi Rumah Pascabencana Sumatra",
+  "container-title": "Info Singkat Komisi V, Badan Keahlian DPR RI",
+  "volume": "XVIII",
+  "issue": "2",
+  "publisher": "Pusat Analisis Keparlemenan, Badan Keahlian DPR RI",
+  "URL": "https://berkas.dpr.go.id/pusaka/files/info_singkat/Info%20Singkat-XVIII-2-II-P3DI-Januari-2026-230.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "primer untuk pernyataan data belum sinkron; angka BNPB sekitar 147.000 rumah rusak (17 Des 2025) dan PKP sekitar 189.308 rumah terdampak (9 Jan 2026) sekunder (dikutip DPR). Riset E [27]"
+ },
+ {
+  "id": "kemenpupr-2019-satgas-lombok",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Buku Satgas Penanganan Gempa Lombok",
+  "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Satgas%20Penanganan%20Gempa%20Lombok.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca utuh oleh riset D [10] 25 Okt 2026, tidak dibuka ulang di bab ini; data sampai 31 Mar 2019; 37 titik SPAM rusak; halaman tim penyusun berisi nama pengganti (tanda draf)"
+ },
+ {
+  "id": "kemenpupr-2023-cianjur",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Penanganan Gempa Cianjur 2022",
+  "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Penanganan%20Gempa%20Cianjur%202022_lowres.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca utuh oleh riset D [12], tidak dibuka ulang di bab ini; status sampai 25 Sep 2023; 10 titik area kerusakan pipa SPAM"
+ }
+]
