@@ -1,0 +1,43 @@
+{
+  "jenis": "harian",
+  "tanggal": "2026-10-25",
+  "isi": {
+    "mulai": "2026-10-24",
+    "jam": "08.00",
+    "laporan_masuk": 23,
+    "penyaji": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)",
+    "jabatan": "Kepala Badan Nasional Penanggulangan Bencana",
+    "instansi": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB",
+    "kejadian": [
+      {"jenis": "karhutla", "prov": "62", "lokasi": "", "utama": "±24.978,73 ha", "kedua": "", "ket": "target ±529,40 ha | padam ±140,30 ha | sisa ±389,10 ha", "catatan": "Koordalops entri 19; Tanggap Darurat s.d. 29 Okt", "status": "berjalan", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "16", "lokasi": "", "utama": "±9.327,71 ha", "kedua": "", "ket": "target ±366,13 ha | padam ±241,75 ha | sisa ±124,38 ha (23 Okt)", "catatan": "Koordalops entri 02; Siaga Darurat s.d. 30 Nov", "status": "berjalan", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "15", "lokasi": "", "utama": "±4.954,90 ha", "kedua": "", "ket": "target ±109,5 ha | padam ±54,5 ha | sisa ±55 ha", "catatan": "Koordalops entri 21; Siaga Darurat s.d. 30 Nov", "status": "berjalan", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "14", "lokasi": "", "utama": "±20.714,53 ha", "kedua": "", "ket": "target ±13,45 ha | padam ±7,95 ha | sisa ±5,5 ha", "catatan": "Koordalops entri 20; Siaga Darurat s.d. 30 Nov", "status": "berjalan", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "64", "lokasi": "", "utama": "±2.715,76 ha", "kedua": "", "ket": "target ±48,65 ha | padam ±48,65 ha | sisa 0 ha", "catatan": "Koordalops entri 22; Siaga Darurat s.d. 30 Nov", "status": "selesai", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "32", "lokasi": "Kuningan", "utama": "dalam pendataan", "kedua": "", "ket": "api belum padam, titik api berkurang", "catatan": "Koordalops entri 01, TN Gunung Ciremai, kejadian baru", "status": "belum", "perhatian": "TN Gunung Ciremai; BPBD: api belum padam"},
+      {"jenis": "karhutla", "prov": "32", "lokasi": "Ciamis", "utama": "±2,25 ha", "kedua": "", "ket": "api padam", "catatan": "Koordalops entri 18, kejadian baru", "status": "selesai", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "33", "lokasi": "Karanganyar", "utama": "±885 ha", "kedua": "", "ket": "api belum padam", "catatan": "Koordalops entri 03, Gunung Lawu; Tanggap Darurat s.d. 30 Okt", "status": "belum", "perhatian": "Gunung Lawu; BPBD: api belum padam"},
+      {"jenis": "karhutla", "prov": "33", "lokasi": "Wonosobo", "utama": "±362 ha", "kedua": "", "ket": "api padam | ±152 pendaki dievakuasi", "catatan": "Koordalops entri 05, Gunung Sumbing; Tanggap Darurat s.d. 27 Okt", "status": "selesai", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "33", "lokasi": "Temanggung", "utama": "±398 ha", "kedua": "", "ket": "api padam", "catatan": "Koordalops entri 06, Gunung Sumbing, kejadian baru", "status": "selesai", "perhatian": ""},
+      {"jenis": "karhutla", "prov": "33", "lokasi": "Magelang", "utama": "±213,40 ha", "kedua": "", "ket": "api padam", "catatan": "Koordalops entri 12, Gunung Sumbing, kejadian baru", "status": "selesai", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "32", "lokasi": "Subang", "utama": "± 8.064 KK", "kedua": "20.726 jiwa", "ket": "274.000 liter", "air": "23 desa", "catatan": "Koordalops entri 16; SD s.d. 31 Okt", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "33", "lokasi": "Banyumas", "utama": "± 19.941 KK", "kedua": "68.750 jiwa", "ket": "10.000 liter", "air": "4 ritase", "catatan": "Koordalops entri 07; SD s.d. 31 Okt", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "33", "lokasi": "Boyolali", "utama": "± 12.022 KK", "kedua": "57.311 jiwa", "ket": "124.000 liter", "air": "6 desa", "catatan": "Koordalops entri 08; SD TMT 21 Jul", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "33", "lokasi": "Grobogan", "utama": "± 3.285 KK", "kedua": "", "ket": "39.000 liter", "air": "", "catatan": "Koordalops entri 10; SD s.d. 31 Okt", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "33", "lokasi": "Klaten", "utama": "± 5.136 KK", "kedua": "17.127 jiwa", "ket": "100.000 liter", "air": "20 tangki", "catatan": "Koordalops entri 14; SD s.d. 31 Okt", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "35", "lokasi": "Blitar", "utama": "± 16.043 KK", "kedua": "45.090 jiwa", "ket": "2.439.200 liter", "air": "sejak 22 Jul", "catatan": "Koordalops entri 13 (WA menulisnya di bawah Jawa Tengah; PDF: Provinsi Jawa Timur)", "status": "berjalan", "perhatian": ""},
+      {"jenis": "kekeringan", "prov": "73", "lokasi": "Bulukumba", "utama": "± 248 KK", "kedua": "900 jiwa", "ket": "8.000 liter", "air": "49 KK", "catatan": "Koordalops entri 09; tanpa status", "status": "berjalan", "perhatian": ""},
+      {"jenis": "gempabumi", "prov": "53", "lokasi": "", "utama": "±27.551 jiwa mengungsi", "kedua": "156 jiwa meninggal", "ket": "197 huntara selesai", "catatan": "Koordalops entri 17; ±17.707 KK terdampak, 118.834 rumah rusak (verifikasi tahap I)", "status": "berjalan", "perhatian": ""},
+      {"jenis": "banjir", "prov": "13", "lokasi": "Solok", "utama": "2 jiwa meninggal", "kedua": "77 jiwa mengungsi", "ket": "masih penanganan", "catatan": "Koordalops entri 15, banjir bandang; 2 LB, 12 LR; rumah 19 RB, 9 RS, 33 RR, 13 terendam; Transisi s.d. 13 Apr 2027", "status": "berjalan", "perhatian": ""},
+      {"jenis": "lainnya", "prov": "96", "lokasi": "TPA Makbon, Sorong", "utama": "± 5 ha", "kedua": "kebakaran TPA", "ket": "api belum padam ±2 ha | ±3 ha berasap", "catatan": "Koordalops entri 04", "status": "belum", "perhatian": "Api belum padam ±2 ha"}
+    ],
+    "perhatian_tambahan": [
+      {"jenis": "gunungapi", "judul": "Gunung api: Anak Krakatau, Merapi, Semeru", "isi": "Level III (Siaga); 0 Awas, 24 Waspada, 42 Normal (PVMBG 25 Okt 06.00 WIB)", "status": "berjalan"},
+      {"jenis": "lainnya", "judul": "Kualitas udara: PM2.5 Berbahaya", "isi": "Palangkaraya 721,7, Pangkalan Bun 669,1, Musi 2 Palembang 322,5 µg/m³ (BMKG 25 Okt 06.00 WIB)", "status": "berjalan"}
+    ],
+    "tindak": [],
+    "judul_ringkasan": "",
+    "judul_rincian": ""
+  }
+}
