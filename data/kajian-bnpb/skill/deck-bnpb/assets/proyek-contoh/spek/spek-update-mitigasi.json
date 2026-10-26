@@ -1,0 +1,985 @@
+{
+  "_catatan": "Deck PEMBARUAN 23 Okt 2026 Grand Design Mitigasi Bencana Indonesia 2026–2030, bukan deck final. Dibangun lewat bangun-update.py (pil DRAF PEMBARUAN memakai pola pil CUT OFF). Salinan skill 26 Okt 2026: lintasan perbaikan devil's advocate terhadap gerbang terkini (T-4, T-8 tiga-serangkai; S36 slide 7 kini bergrafik); naskah lain tidak diubah.",
+  "pesan_kunci": "Indeks risiko nasional turun, tetapi korban jiwa dan sebaran kab/kota berkelas Tinggi menuntut Grand Design 2026–2030 yang bertumpu pada program terbukti dan skenario terburuk berlantai kejadian nyata.",
+  "judul_dokumen": "Update Grand Design Mitigasi Bencana Indonesia 2026–2030",
+  "subjek_dokumen": "Pembaruan penyusunan, 23 Oktober 2026",
+  "kajian": "mitigasi",
+  "tanggal": "2026-10-23",
+  "cut_off": "23 Okt 2026",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "foto": "foto/bencana-gempa.jpg",
+      "kepada": "Pembaruan penyusunan untuk Kepala BNPB"
+    },
+    {
+      "jenis": "kartu-angka",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lima temuan kunci sejauh ini",
+      "judul": "Lima temuan kunci sejauh ini: IRB nasional {{angka:irbi.nasional.persen_2019_2024|fmt=1|persen|arah}} sejak 2019, tetapi {{angka:irbi.kab.tinggi.2023}} kab/kota masih berkelas risiko Tinggi",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Indeks risiko",
+          "nada": "data",
+          "ikon": "data",
+          "kartu": [
+            {
+              "nilai": "{{angka:irbi.nasional.2024|fmt=2}}",
+              "label": "IRB nasional 2024",
+              "ikon": "data",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:irbi.nasional.persen_2019_2024|fmt=1|persen|arah}}",
+              "label": "perubahan sejak 2019",
+              "ikon": "turun",
+              "warna": "biru"
+            },
+            {
+              "nilai": "{{angka:irbi.kab.tinggi.2023}}",
+              "label": "kab/kota kelas Tinggi 2023",
+              "ikon": "wilayah",
+              "warna": "skala.api.5"
+            }
+          ]
+        },
+        {
+          "pil": "Perlu perhatian",
+          "nada": "perhatian",
+          "ikon": "peringatan",
+          "kartu": [
+            {
+              "nilai": "{{angka:dibi.nasional.meninggal.2025}}",
+              "label": "meninggal akibat bencana 2025",
+              "ikon": "peringatan",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:dibi.nasional.kejadian.2025|fmt=0}}",
+              "label": "kejadian bencana 2025",
+              "ikon": "kalender",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "judul_panel": "Pesan kunci",
+      "tesis": "Risiko bencana nasional turun, tetapi korban jiwa 2025 tertinggi sejak 2018; korban analog La Niña diperkirakan turun ke {{angka:hidromet.nasional.lanina.pd_renas.korban_jiwa|rentang|fmt=0}} jiwa bila cakupan peringatan dini mencapai {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|persen}} (asumsi kebijakan).",
+      "kolom": 1,
+      "temuan": [
+        {
+          "kode": "Temuan B.1",
+          "keyakinan": "resmi",
+          "ikon": "data",
+          "teks": "IRB nasional turun dari {{angka:irbi.nasional.2019|fmt=2}} pada 2019 menjadi {{angka:irbi.nasional.2024|fmt=2}} pada 2024."
+        },
+        {
+          "kode": "Temuan B.2",
+          "keyakinan": "resmi",
+          "ikon": "wilayah",
+          "teks": "{{angka:irbi.kab.tinggi.2023}} dari {{angka:irbi.kab.dinilai.2023}} kab/kota masih berkelas risiko Tinggi pada 2023, sama dengan angka Renas PB 2025–2029."
+        },
+        {
+          "kode": "Temuan B.3",
+          "keyakinan": "resmi",
+          "ikon": "peringatan",
+          "teks": "DIBI mencatat {{angka:dibi.nasional.meninggal.2025}} jiwa meninggal pada 2025; banjir dan longsor Sumatra akhir 2025 menyumbang {{angka:dibi.sumatra2025.meninggal}} jiwa."
+        },
+        {
+          "kode": "Temuan B.4",
+          "keyakinan": "estimasi-model; belum diuji balik",
+          "ikon": "banjir",
+          "teks": "Musim hujan setara La Niña 2020/2021 diperkirakan menewaskan {{angka:hidromet.nasional.lanina.korban_jiwa|rentang|satuan}} akibat bencana hidrometeorologi basah; musim 2025/2026 tercatat {{angka:hidromet.nasional.musim_2025.meninggal|satuan}} meninggal."
+        },
+        {
+          "kode": "Temuan B.5",
+          "keyakinan": "estimasi-model",
+          "ikon": "pandemi",
+          "teks": "Pandemi COVID tercatat {{angka:nonalam.covid19.meninggal}} kematian resmi; WHO memperkirakan kematian berlebih {{angka:nonalam.covid19.kematian_berlebih|rentang|satuan}}."
+        }
+      ],
+      "sumber": "InaRISK BNPB, IRBI 2019–2024; Renas PB 2025–2029; DIBI BNPB 2025; Kemenkes; WHO; simulasi Pantau Bencana"
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Posisi BNPB dan dasar kebijakan",
+      "judul": "Posisi BNPB: Grand Design menurunkan RIPB 2020–2044 dan Renas PB 2025–2029 ke program lima tahun berbasis risiko",
+      "cut_off": true,
+      "tabel": {
+        "judul_panel": "Arah kebijakan Renas PB 2025–2029",
+        "ikon": "lembaga",
+        "peringkat": true,
+        "data": {
+          "csv": "data/program-terbukti/renas_pb_2025_2029.csv",
+          "saring": "tingkat=kebijakan",
+          "kolom": [
+            {
+              "nama": "nama",
+              "kepala": "Arah kebijakan",
+              "ganti": {
+                "Penguatan Kelembagaan, Pendanaan, dan Peningkatan Kolaborasi Multi-Pihak dalam Penanggulangan Bencana": "Penguatan Kelembagaan dan Kolaborasi Multipihak dalam Penanggulangan Bencana, termasuk Pendanaan"
+              }
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025)"
+        }
+      },
+      "panel": {
+        "judul": "Dasar dan posisi kajian",
+        "ikon": "ringkasan",
+        "daftar": [
+          "RIPB 2020–2044 memberi arah jangka panjang; Renas PB dan Renstra BNPB 2025–2029 menjadi pijakan lima tahun.",
+          "Sasaran RPJMN 2025–2029 dirujuk lewat Renas PB, tidak disusun ulang.",
+          "IRBI BNPB menjadi rujukan utama risiko; indeks dan simulasi platform hanya pendukung dan selalu berlabel.",
+          "Tiap usulan membawa kelas kekuatan bukti program dan satu status usulan.",
+          "Tanpa pagu dan biaya proyek; pembiayaan cukup sampai arsitektur sumber dana."
+        ]
+      },
+      "pita": {
+        "label": "Yang dipakai dari tiap dokumen",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "kalender",
+            "judul": "RIPB 2020–2044",
+            "isi": "Arah dan fokus jangka panjang penanggulangan bencana."
+          },
+          {
+            "ikon": "data",
+            "judul": "Renas PB 2025–2029",
+            "isi": "Indikator bergaris dasar dan bertarget 2029 untuk sasaran terukur."
+          },
+          {
+            "ikon": "lembaga",
+            "judul": "Renstra BNPB 2025–2029",
+            "isi": "Program dan unit pelaksana di lingkungan BNPB."
+          },
+          {
+            "ikon": "regulasi",
+            "judul": "RPJMN 2025–2029",
+            "isi": "Sasaran nasional yang diturunkan lewat Renas PB."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "pesan": "Tren indeks risiko nasional 2019 sampai 2024",
+      "judul": "IRB nasional {{angka:irbi.nasional.persen_2019_2024|fmt=1|persen|arah}} dalam lima tahun, dari {{angka:irbi.nasional.2019|fmt=2}} pada 2019 menjadi {{angka:irbi.nasional.2024|fmt=2}} pada 2024",
+      "cut_off": true,
+      "grafik": {
+        "judul_panel": "IRB nasional 2019–2024",
+        "ikon": "data",
+        "judul": "Rerata sederhana kab/kota",
+        "keluarga": "netral",
+        "data": {
+          "csv": "data/irbi/irbi_tren_2015_2024.csv",
+          "saring": "tingkat=nasional; metode=rerata_sederhana",
+          "seri": "kolom",
+          "kolom": [
+            {
+              "nama": "y2019",
+              "kepala": "2019",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2020",
+              "kepala": "2020",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2021",
+              "kepala": "2021",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2022",
+              "kepala": "2022",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2023",
+              "kepala": "2023",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2024",
+              "kepala": "2024",
+              "fmt": "2"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "InaRISK BNPB, IRBI 2019–2024"
+        }
+      },
+      "panel": {
+        "judul": "IRB 2024 per pulau",
+        "ikon": "wilayah",
+        "data": {
+          "csv": "data/irbi/irbi_tren_2015_2024.csv",
+          "saring": "tingkat=pulau; metode=rerata_sederhana",
+          "urut": "-y2024",
+          "kolom": [
+            {
+              "nama": "nama",
+              "kepala": "Pulau"
+            },
+            {
+              "nama": "y2024",
+              "kepala": "IRB 2024",
+              "fmt": "2",
+              "warna": "navy",
+              "ikon": "data"
+            },
+            {
+              "nama": "persen_2019_2024",
+              "kepala": "Sejak 2019",
+              "fmt": "1|persen|arah",
+              "warna": "biru-abu",
+              "ikon": "kalender"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB"
+        },
+        "daftar": [
+          "Maluku dan Papua naik sejak 2019; lima pulau lain turun, Jawa paling cepat.",
+          "Urutan memakai IRB 2024, tahun terakhir yang sebanding dengan seri resmi."
+        ]
+      },
+      "pita": {
+        "label": "Cara membaca",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "data",
+            "judul": "Angka resmi",
+            "isi": "Nilai nasional 2019–2024 sama dengan angka terbit Renstra BNPB 2025–2029."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "Skala 2025 berbeda",
+            "isi": "IRBI 2025 memakai skala baru dan tidak dibandingkan dengan seri ini."
+          },
+          {
+            "ikon": "wilayah",
+            "judul": "Pengelompokan pulau",
+            "isi": "Pulau dikelompokkan oleh penyusun; batas kelompoknya tidak resmi."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "pesan": "Sebaran kab/kota kelas Tinggi",
+      "judul": "{{angka:irbi.kab.tinggi.2023}} kab/kota berkelas risiko Tinggi pada 2023, terbanyak di {{tempat:Sumatra}} dengan {{angka:irbi.sumatra.kab_tinggi.2023}} dari {{angka:irbi.sumatra.kab.2023}} kab/kota",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Kelas risiko kab/kota 2023",
+          "nada": "data",
+          "ikon": "wilayah",
+          "kartu": [
+            {
+              "nilai": "{{angka:irbi.kab.dinilai.2023}}",
+              "label": "kab/kota dinilai",
+              "ikon": "wilayah",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:irbi.kab.tinggi.2023}}",
+              "label": "kab/kota kelas Tinggi",
+              "ikon": "peringatan",
+              "warna": "skala.api.5"
+            }
+          ]
+        },
+        {
+          "pil": "Pembanding 2015, asumsi kebijakan",
+          "nada": "data",
+          "ikon": "data",
+          "kartu": [
+            {
+              "nilai": "{{angka:irbi.kab.tinggi.2015}}",
+              "label": "kelas Tinggi 2015",
+              "ikon": "peringatan",
+              "warna": "skala.api.5"
+            },
+            {
+              "nilai": "{{angka:irbi.kab.dinilai.2015}}",
+              "label": "kab/kota dinilai 2015",
+              "ikon": "wilayah",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "peta": {
+        "png": "peta/peta-irbi-2023.png",
+        "legenda": {
+          "irbi": [
+            "Tinggi",
+            "Sedang"
+          ],
+          "judul": "Kelas IRBI BNPB 2023"
+        },
+        "keyakinan": "resmi",
+        "sumber": "InaRISK BNPB, IRBI 2023",
+        "penanda": [
+          {
+            "x": 0.056,
+            "y": 0.507,
+            "teks": "Sumatra"
+          },
+          {
+            "x": 0.37,
+            "y": 0.165,
+            "teks": "Kalimantan"
+          },
+          {
+            "x": 0.337,
+            "y": 0.874,
+            "teks": "Jawa"
+          },
+          {
+            "x": 0.559,
+            "y": 0.243,
+            "teks": "Sulawesi"
+          },
+          {
+            "x": 0.439,
+            "y": 0.959,
+            "teks": "Bali dan Nusa Tenggara"
+          },
+          {
+            "x": 0.73,
+            "y": 0.615,
+            "teks": "Maluku"
+          },
+          {
+            "x": 0.85,
+            "y": 0.92,
+            "teks": "Papua"
+          }
+        ]
+      },
+      "panel": {
+        "judul": "Kab/kota kelas Tinggi per pulau",
+        "ikon": "wilayah",
+        "total": true,
+        "data": {
+          "csv": "data/irbi/irbi_agregat_pulau.csv",
+          "saring": "tahun=2023; pulau_kode!=ID",
+          "urut": "-n_tinggi",
+          "kolom": [
+            {
+              "nama": "pulau_nama",
+              "kepala": "Pulau"
+            },
+            {
+              "nama": "n_tinggi",
+              "kepala": "Tinggi",
+              "fmt": "0",
+              "warna": "skala.api.5",
+              "ikon": "peringatan"
+            },
+            {
+              "nama": "n_kab",
+              "kepala": "Kab/kota",
+              "fmt": "0",
+              "warna": "navy",
+              "ikon": "wilayah"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2023"
+        }
+      }
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "pesan": "Kejadian dengan korban jiwa terbesar sejak 2008",
+      "judul": "Korban jiwa bencana alam terbesar sejak 2008: {{tempat:Sulawesi Tengah}} 2018, {{angka:dibi.sulteng2018.meninggal}} jiwa; disusul banjir dan longsor {{tempat:Sumatra}} 2025, {{angka:dibi.sumatra2025.meninggal}} jiwa",
+      "cut_off": true,
+      "tabel": {
+        "judul_panel": "Kejadian besar menurut korban meninggal",
+        "ikon": "peringatan",
+        "nada": "bahaya",
+        "data": {
+          "csv": "data/dibi/kejadian_besar.csv",
+          "saring": "metrik=meninggal; versi=DIBI",
+          "urut": "-nilai",
+          "batas": 8,
+          "kolom": [
+            {
+              "nama": "nama",
+              "kepala": "Kejadian",
+              "ganti": {
+                "Gempa, tsunami, dan likuefaksi Sulawesi Tengah": "Gempa dan tsunami Sulawesi Tengah"
+              }
+            },
+            {
+              "nama": "kode",
+              "kepala": "Tahun",
+              "ganti": {
+                "sulteng2018": "2018",
+                "sumatra2025": "2025",
+                "padang2009": "2009",
+                "cianjur2022": "2022",
+                "lombok2018": "2018",
+                "mentawai2010": "2010",
+                "selatsunda2018": "2018",
+                "merapi2010": "2010",
+                "wasior2010": "2010"
+              }
+            },
+            {
+              "nama": "nilai",
+              "kepala": "Meninggal",
+              "fmt": "0",
+              "warna": "merah",
+              "ikon": "peringatan"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB 2008–2026, kejadian besar"
+        }
+      },
+      "panel": {
+        "judul": "Rekap DIBI per tahun",
+        "ikon": "kalender",
+        "data": {
+          "csv": "data/dibi/rekap_nasional_tahunan.csv",
+          "saring": "klasifikasi=semua; cakupan=bencana",
+          "urut": "-tahun",
+          "batas": 6,
+          "peringkat": false,
+          "kolom": [
+            {
+              "nama": "tahun",
+              "kepala": "Tahun"
+            },
+            {
+              "nama": "kejadian",
+              "kepala": "Kejadian",
+              "fmt": "0",
+              "warna": "navy",
+              "ikon": "kalender"
+            },
+            {
+              "nama": "meninggal",
+              "kepala": "Meninggal",
+              "fmt": "0",
+              "warna": "merah",
+              "ikon": "peringatan"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, rekap nasional tahunan"
+        },
+        "peringkat": false,
+        "daftar": [
+          "Data 2026 masih sementara."
+        ]
+      },
+      "pita": {
+        "label": "Catatan data",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "kalender",
+            "judul": "Patahan seri 2024",
+            "isi": "Sejak 2024 laporan di bawah ambang Juklak BNPB dikeluarkan dan nonalam mulai tercatat."
+          },
+          {
+            "ikon": "wilayah",
+            "judul": "Jendela kejadian",
+            "isi": "Rentang tanggal dan wilayah tiap kejadian besar dipilih penyusun; angka bergeser bila jendela diubah."
+          },
+          {
+            "ikon": "data",
+            "judul": "Sebelum 2008",
+            "isi": "Aceh 2004, Nias 2005, dan Yogyakarta 2006 tidak tersedia di dasbor publik DIBI."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "pesan": "Nonalam dan sosial dari kejadian analog",
+      "judul": "Nonalam dan sosial belum punya skenario resmi; analog pandemi COVID mencatat {{angka:nonalam.covid19.meninggal}} kematian resmi",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Nonalam",
+          "nada": "perhatian",
+          "ikon": "peringatan",
+          "kartu": [
+            {
+              "nilai": "{{angka:nonalam.covid19.meninggal}}",
+              "label": "kematian resmi pandemi COVID",
+              "ikon": "pandemi",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:nonalam.tpa.terbakar_2023}}",
+              "label": "TPA terbakar serentak 2023",
+              "ikon": "kebakaran-tpa",
+              "warna": "merah"
+            },
+            {
+              "nilai": "{{angka:nonalam.tpa.open_dumping}}",
+              "label": "TPA masih pembuangan terbuka",
+              "ikon": "kebakaran-tpa",
+              "warna": "navy"
+            }
+          ]
+        },
+        {
+          "pil": "Sosial",
+          "nada": "data",
+          "ikon": "lembaga",
+          "kartu": [
+            {
+              "nilai": "{{angka:sosial.desa_perkelahian.2024}}",
+              "label": "desa dengan perkelahian massal 2024",
+              "ikon": "konflik-sosial",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "sumber": "Kemenkes dikutip Renstra BNPB 2025–2029; WHO; Setkab; BPBD DKI; KLH/BPLH; BNPB; BPS Podes 2024; DIBI BNPB; Komnas HAM",
+      "grafik": {
+        "judul_panel": "Kematian pandemi COVID terlapor per tahun",
+        "ikon": "pandemi",
+        "judul": "**Kematian terlapor**, jiwa, 2020–2025",
+        "keluarga": "netral",
+        "data": {
+          "csv": "data/nonalam-sosial/covid19_nasional.csv",
+          "saring": "metrik=meninggal_per_tahun; label=terverifikasi",
+          "kolom": [
+            {
+              "nama": "periode",
+              "kepala": "Tahun"
+            },
+            {
+              "nama": "nilai",
+              "kepala": "Meninggal",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "terverifikasi",
+          "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+        }
+      },
+      "panel": {
+        "judul": "Analog terburuk tercatat",
+        "ikon": "ringkasan",
+        "daftar": [
+          "Pandemi: WHO memperkirakan kematian berlebih pandemi COVID {{angka:nonalam.covid19.kematian_berlebih|rentang|satuan}}, jauh di atas angka resmi.",
+          "Gagal teknologi: kebakaran depo BBM Plumpang 2023, {{angka:nonalam.plumpang2023.meninggal}} meninggal pada data hari kedua (Kepala BNPB) dan {{angka:nonalam.plumpang2023.meninggal_akhir}} pada data BPBD DKI (sekunder).",
+          "Kebakaran TPA: {{angka:nonalam.tpa.terbakar_2023}} TPA terbakar serentak pada 2023; {{angka:nonalam.tpa.open_dumping}} dari {{angka:nonalam.tpa.jumlah}} TPA masih pembuangan terbuka pada 2026.",
+          "Konflik: DIBI mencatat {{angka:sosial.kerusuhan2025.meninggal_dibi}} meninggal pada kerusuhan akhir Agustus 2025; Komnas HAM {{angka:sosial.kerusuhan2025.meninggal_komnas}} (sekunder)."
+        ]
+      }
+    },
+    {
+      "jenis": "skenario",
+      "jenis_slide": "kartu-skenario",
+      "judul_bentuk": "temuan",
+      "pesan": "Skenario musim hujan terburuk nasional",
+      "sumber": "DIBI BNPB 2008–2026; InaRISK BNPB; NOAA CPC (ONI); Renas PB 2025–2029; UNDRR-WMO 2022; Pantau Bencana; kemungkinan dihitung penyusun dari frekuensi musim La Niña setara 2020/2021",
+      "judul": "Analog La Niña 2020/2021: korban jiwa {{angka:hidromet.nasional.lanina.korban_jiwa|rentang}} jiwa, di bawah {{angka:hidromet.nasional.musim_2025.meninggal}} meninggal pada musim 2025/2026 yang bukan La Niña",
+      "cut_off": true,
+      "skenario": {
+        "jenis": "banjir",
+        "judul": "banjir, longsor, cuaca ekstrem; analog La Niña 2020/2021",
+        "keyakinan": "estimasi-model; belum diuji balik",
+        "kemungkinan": 5,
+        "kerusakan": [
+          {
+            "besaran": "Korban jiwa, semua jenis",
+            "nilai": "{{angka:hidromet.nasional.lanina.korban_jiwa|rentang|satuan}}"
+          },
+          {
+            "besaran": "Korban jiwa dari longsor",
+            "nilai": "{{angka:hidromet.nasional.lanina.korban_jiwa_longsor|rentang|satuan}}"
+          },
+          {
+            "besaran": "Pembanding: meninggal 2025/2026",
+            "nilai": "{{angka:hidromet.nasional.musim_2025.meninggal|satuan}}"
+          },
+          {
+            "besaran": "Terdampak",
+            "nilai": "{{angka:hidromet.nasional.lanina.terdampak|ringkas}} jiwa"
+          },
+          {
+            "besaran": "Pengungsi",
+            "nilai": "{{angka:hidromet.nasional.lanina.mengungsi|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak berat",
+            "nilai": "{{angka:hidromet.nasional.lanina.rumah_rusak_berat|satuan}}"
+          },
+          {
+            "besaran": "Kerugian materiil, batas bawah",
+            "nilai": "{{angka:hidromet.nasional.lanina.materiil_batas_bawah|rentang|rupiah}}"
+          }
+        ],
+        "kebijakan": {
+          "sekarang": {
+            "label": "Cakupan peringatan dini {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2025|persen}}",
+            "nilai": "{{angka:hidromet.nasional.lanina.korban_jiwa|rentang}}"
+          },
+          "target": {
+            "label": "Bila naik ke {{angka:hidromet.nasional.lanina.pd_renas.cakupan_2029|persen}}",
+            "nilai": "{{angka:hidromet.nasional.lanina.pd_renas.korban_jiwa|rentang|fmt=0}}"
+          },
+          "keterangan": "korban jiwa bila target Renas PB 2029 tercapai",
+          "keyakinan": "asumsi-kebijakan",
+          "legenda": "Batang: rentang korban jiwa, rendah sampai tinggi"
+        },
+        "respons": [
+          "Evakuasi dini warga bantaran sungai dan lereng rawan longsor berdasar peringatan BMKG.",
+          "Pompa bergerak dan perahu karet di kab/kota bernilai banjir tertinggi.",
+          "Layanan kesehatan dan air bersih di tempat evakuasi."
+        ],
+        "pemulihan": [
+          "Kaji kebutuhan pascabencana untuk rumah rusak berat dan sedang.",
+          "Perbaikan tanggul dan alur sungai bersama balai wilayah sungai.",
+          "Stimulan perbaikan rumah sesuai standar BNPB."
+        ],
+        "lembaga": [
+          "BNPB",
+          "BMKG",
+          "Kementerian PU",
+          "BPBD provinsi",
+          "BPBD kab/kota"
+        ],
+        "label_jenis": "Hidrometeorologi basah",
+        "kemungkinan_keyakinan": "asumsi-kebijakan; hitungan penyusun"
+      }
+    },
+    {
+      "jenis": "strategi-tiga-fase",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Kerangka Grand Design per fase",
+      "judul": "Kerangka Grand Design 2026–2030: program berbukti dipetakan ke prabencana, tanggap darurat, dan pascabencana; waktu usulan penyusun",
+      "cut_off": true,
+      "fase": {
+        "prabencana": [
+          {
+            "kode": "01",
+            "aksi": "Kode bangunan tahan gempa beserta penegakannya"
+          },
+          {
+            "kode": "02",
+            "aksi": "Pendidikan evakuasi mandiri di sekolah"
+          },
+          {
+            "kode": "03",
+            "aksi": "Hibah mitigasi bersyarat analisis manfaat dan biaya"
+          },
+          {
+            "kode": "04",
+            "aksi": "Lengkapi rantai peringatan dini tsunami"
+          },
+          {
+            "kode": "05",
+            "aksi": "Latih relawan desa untuk evakuasi preemptif"
+          }
+        ],
+        "tanggap-darurat": [
+          {
+            "kode": "04",
+            "aksi": "Sebarkan peringatan tsunami sampai sirene dan warga"
+          },
+          {
+            "kode": "05",
+            "aksi": "Relawan desa memandu evakuasi warga"
+          },
+          {
+            "kode": "06",
+            "aksi": "Evakuasi ke tempat evakuasi yang sudah ditetapkan"
+          }
+        ],
+        "pascabencana": [
+          {
+            "kode": "07",
+            "aksi": "Rekonstruksi rumah berbasis komunitas"
+          },
+          {
+            "kode": "08",
+            "aksi": "Badan rekonstruksi berbatas waktu untuk bencana besar"
+          },
+          {
+            "kode": "09",
+            "aksi": "Asuransi risiko bencana dan pooling regional"
+          }
+        ]
+      },
+      "pita": {
+        "label": "Pilar Grand Design (dalam penyusunan)",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "data",
+            "judul": "Risiko sebagai dasar",
+            "isi": "IRBI per kab/kota menentukan urutan prioritas program."
+          },
+          {
+            "ikon": "ringkasan",
+            "judul": "Program berbukti",
+            "isi": "Kelas kekuatan bukti disebut per program; kode di dua fase disiapkan prabencana."
+          },
+          {
+            "ikon": "lembaga",
+            "judul": "Lembaga pelaksana",
+            "isi": "Unit BNPB dan K/L sesuai nomenklatur kabinet terkini."
+          },
+          {
+            "ikon": "pembiayaan",
+            "judul": "Arsitektur pendanaan",
+            "isi": "Tanpa pagu; sumber dana berlapis dari pusat sampai daerah."
+          }
+        ]
+      }
+    },
+    {
+      "jenis": "rekomendasi",
+      "jenis_slide": "rekomendasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Contoh program kompendium",
+      "seri": "kompendium",
+      "judul": "Contoh program kompendium {{sorot:(2026–2030)}} beserta status usulan dan waktu dari penyusun",
+      "rekomendasi": [
+        {
+          "kode": "01",
+          "jenis": "regulasi",
+          "langkah": "Tegakkan kode bangunan tahan gempa",
+          "waktu": "2028-2030",
+          "status": "dikembangkan",
+          "rincian": "Pola Chile; bukti sedang. Indikator: bagian bangunan baru yang lolos pemeriksaan kode tahan gempa.",
+          "lembaga": [
+            "Kementerian PU",
+            "BNPB"
+          ]
+        },
+        {
+          "kode": "02",
+          "jenis": "kapasitas",
+          "langkah": "Perkuat pendidikan evakuasi di sekolah",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Pola Kamaishi, bukti sedang; SPAB belum punya evaluasi dampak nasional berpembanding. Indikator: sekolah bergladi tiap tahun.",
+          "lembaga": [
+            "Kemendikdasmen",
+            "BNPB",
+            "Kemenag"
+          ]
+        },
+        {
+          "kode": "03",
+          "jenis": "pembiayaan",
+          "langkah": "Siapkan hibah mitigasi bersyarat",
+          "waktu": "2028-2030",
+          "status": "baru",
+          "rincian": "Pola FEMA HMGP dan BRIC; bukti sedang. Indikator: hibah daerah yang lolos analisis manfaat dan biaya.",
+          "lembaga": [
+            "BNPB",
+            "Kemenkeu",
+            "Bappenas"
+          ]
+        },
+        {
+          "kode": "04",
+          "jenis": "infrastruktur",
+          "langkah": "Lengkapi rantai peringatan dini tsunami",
+          "waktu": "100-hari",
+          "status": "dikembangkan",
+          "rincian": "InaTEWS; bukti sedang. Mata rantai terakhir sampai sirene dan Pusdalops dikuatkan. Indikator: waktu peringatan sampai ke warga.",
+          "lembaga": [
+            "BNPB",
+            "BMKG",
+            "BPBD"
+          ]
+        },
+        {
+          "kode": "05",
+          "jenis": "kapasitas",
+          "langkah": "Bangun evakuasi preemptif berbasis relawan",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Pola Cyclone Preparedness Programme Bangladesh; bukti kuat. Indikator: desa rawan dengan relawan peringatan terlatih.",
+          "lembaga": [
+            "BNPB",
+            "BMKG",
+            "Kemensos"
+          ]
+        }
+      ],
+      "cut_off": true,
+      "sumber": "Kompendium program berbukti Pantau Bencana; Renas PB 2025–2029; riset praktik baik"
+    },
+    {
+      "jenis": "rekomendasi",
+      "jenis_slide": "rekomendasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Contoh program kompendium, lanjutan",
+      "seri": "kompendium",
+      "judul": "Contoh program kompendium {{sorot:(2026–2030)}} beserta status usulan dan waktu dari penyusun (lanjutan)",
+      "rekomendasi": [
+        {
+          "kode": "06",
+          "jenis": "kapasitas",
+          "langkah": "Rencanakan evakuasi preemptif dan tempat evakuasi",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Pola OSDMA Odisha, India; bukti sedang. Indikator: kab/kota rawan dengan rencana dan tempat evakuasi yang ditetapkan.",
+          "lembaga": [
+            "BNPB",
+            "BMKG",
+            "BPBD"
+          ]
+        },
+        {
+          "kode": "07",
+          "jenis": "kapasitas",
+          "langkah": "Rekonstruksi rumah berbasis komunitas",
+          "waktu": "2026-2027",
+          "status": "dikembangkan",
+          "rincian": "Rekompak pascagempa Yogyakarta; bukti lemah. Indikator: rumah terbangun ulang sesuai standar tahan gempa.",
+          "lembaga": [
+            "Kementerian PKP",
+            "BNPB",
+            "Kementerian PU"
+          ]
+        },
+        {
+          "kode": "08",
+          "jenis": "regulasi",
+          "langkah": "Siapkan badan rekonstruksi berbatas waktu",
+          "waktu": "2028-2030",
+          "status": "baru",
+          "rincian": "Pola BRR Aceh-Nias 2005–2009 yang sudah bubar; bukti lemah. Indikator: kerangka hukum badan siap sebelum bencana besar.",
+          "lembaga": [
+            "BNPB",
+            "Bappenas",
+            "Kemenkeu"
+          ]
+        },
+        {
+          "kode": "09",
+          "jenis": "pembiayaan",
+          "langkah": "Kembangkan asuransi risiko bencana",
+          "waktu": "2028-2030",
+          "status": "dikembangkan",
+          "rincian": "Pola CCRIF dan ARC; bukti sedang. Indikator: aset pemerintah yang diasuransikan terhadap bencana.",
+          "lembaga": [
+            "Kemenkeu",
+            "BNPB",
+            "OJK"
+          ]
+        }
+      ],
+      "cut_off": true,
+      "sumber": "Kompendium program berbukti Pantau Bencana; Renas PB 2025–2029; riset praktik baik"
+    },
+    {
+      "jenis": "kesimpulan",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Status penyusunan dan syarat penyelesaian",
+      "judul": "Status penyusunan dan syarat penyelesaian",
+      "kartu": [
+        {
+          "label": "Selesai",
+          "ikon": "ringkasan",
+          "warna": "navy",
+          "judul": "Riset pustaka",
+          "isi": "Kajian data dan regulasi beserta praktik baik dalam dan luar negeri menjadi dasar semua bab."
+        },
+        {
+          "label": "Selesai",
+          "ikon": "data",
+          "warna": "navy",
+          "judul": "Paket IRBI",
+          "isi": "Tren 2015–2024 dan kelas kab/kota beserta agregatnya; IRBI 2025 berskala baru."
+        },
+        {
+          "label": "Selesai",
+          "ikon": "data",
+          "warna": "navy",
+          "judul": "Paket DIBI",
+          "isi": "Rekap 2015–2026, kejadian besar, rekonsiliasi; patahan seri 2024 dicatat."
+        },
+        {
+          "label": "Selesai",
+          "ikon": "lembaga",
+          "warna": "navy",
+          "judul": "Program dan lembaga",
+          "isi": "Kompendium program berbukti berstatus usulan dan peta unit BNPB dari peraturan BNPB."
+        },
+        {
+          "label": "Menunggu uji balik",
+          "ikon": "banjir",
+          "warna": "oranye",
+          "judul": "Skenario hidrometeorologi",
+          "isi": "Kartu nasional dan Jawa berlabel estimasi model; uji balik belum dijalankan."
+        },
+        {
+          "label": "Dalam penyusunan",
+          "ikon": "gempa",
+          "warna": "oranye",
+          "judul": "Skenario geologi",
+          "isi": "Masih ilustratif; menunggu dokumen Peta Gempa 2024 dan lapisan genangan InaRISK."
+        },
+        {
+          "label": "Perlu keputusan",
+          "ikon": "peringatan",
+          "warna": "oranye",
+          "judul": "Arahan pimpinan",
+          "isi": "Dibutuhkan sebelum naskah bab dikunci; rinciannya pada pita keputusan di bawah."
+        },
+        {
+          "label": "Berjalan",
+          "ikon": "kalender",
+          "warna": "oranye",
+          "judul": "Naskah bab",
+          "isi": "Naskah bab sedang ditulis dari paket data; kerugian rupiah nonalam belum tersedia."
+        }
+      ],
+      "arahan": {
+        "label": "Keputusan diminta",
+        "ikon": "kalender",
+        "teks": "Tanggal final kedua kajian dan arahan atas empat pilar Grand Design."
+      },
+      "cut_off": true
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/bencana-tsunami.jpg"
+    }
+  ],
+  "horizon_label": {
+    "100-hari": "100 hari sejak penetapan"
+  },
+  "judul_sampul_maks_baris": 2,
+  "judul_sampul_pt": 27,
+  "pil_draf": "DRAF PEMBARUAN|23 Okt 2026"
+}

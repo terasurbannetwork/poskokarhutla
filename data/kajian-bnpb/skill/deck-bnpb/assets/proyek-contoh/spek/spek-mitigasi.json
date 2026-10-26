@@ -1,0 +1,204 @@
+{
+  "_catatan": "Spek contoh 8 slide, data nyata IRBI (data/irbi, registri data/angka.json). Teks naratif, tesis, kode temuan, dan arahan adalah ilustrasi sintaks, bukan naskah kajian.",
+  "pesan_kunci": "Indeks risiko bencana nasional turun dalam sepuluh tahun, tetapi kab/kota berkelas risiko Tinggi masih tersebar luas, terutama di Sumatra.",
+  "kajian": "mitigasi",
+  "tanggal": "2026-10-23",
+  "cut_off": "18 Okt 2026",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "foto": "foto/bencana-gempa.jpg",
+      "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana"
+    },
+    {
+      "jenis": "kartu-angka",
+      "pesan": "Risiko nasional turun, kelas Tinggi masih luas",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "judul": "IRB nasional {{angka:irbi.nasional.persen_2015_2024|fmt=1|persen|arah}} pada 2015–2024; {{angka:irbi.kab.tinggi.2023}} dari {{angka:irbi.kab.dinilai.2023}} kab/kota masih berkelas risiko Tinggi pada 2023",
+      "cut_off": true,
+      "grup": [
+        {"pil": "Indeks risiko", "nada": "data", "ikon": "data", "kartu": [
+          {"nilai": "{{angka:irbi.nasional.2024|fmt=2}}", "label": "IRB nasional 2024", "ikon": "data", "warna": "navy"},
+          {"nilai": "{{angka:irbi.nasional.persen_2015_2024|fmt=1|persen|arah}}", "label": "perubahan sejak 2015", "ikon": "kalender", "warna": "biru"},
+          {"nilai": "{{angka:irbi.jawa.2024|fmt=2}}", "label": "IRB Pulau Jawa 2024", "ikon": "wilayah", "warna": "navy"}
+        ]},
+        {"pil": "Perlu perhatian", "nada": "perhatian", "ikon": "peringatan", "kartu": [
+          {"nilai": "{{angka:irbi.kab.tinggi.2023}}", "label": "kab/kota kelas Tinggi 2023", "ikon": "wilayah", "warna": "skala.api.5"},
+          {"nilai": "{{angka:irbi.prov.tinggi.2023}}", "label": "provinsi kelas Tinggi 2023", "ikon": "peringatan", "warna": "skala.api.5"}
+        ]}
+      ],
+      "judul_panel": "Pesan kunci",
+      "tesis": "Risiko bencana nasional turun selama sepuluh tahun, tetapi penurunannya tidak merata antarpulau dan banyak kab/kota masih berkelas Tinggi.",
+      "temuan": [
+        {"kode": "Temuan B.1", "keyakinan": "asumsi-kebijakan", "ikon": "data", "teks": "IRB nasional turun tiap tahun dari {{angka:irbi.nasional.2015|fmt=2}} pada 2015 menjadi {{angka:irbi.nasional.2024|fmt=2}} pada 2024."},
+        {"kode": "Temuan B.2", "keyakinan": "asumsi-kebijakan", "ikon": "wilayah", "teks": "Pulau Jawa {{angka:irbi.jawa.persen_2015_2024|fmt=1|persen|arah}}, penurunan tercepat di antara tujuh pulau, menjadi {{angka:irbi.jawa.2024|fmt=2}} pada 2024."},
+        {"kode": "Temuan B.3", "keyakinan": "asumsi-kebijakan", "ikon": "peringatan", "teks": "Maluku tetap tertinggi dengan IRB {{angka:irbi.maluku.2024|fmt=2}} pada 2024, hanya {{angka:irbi.maluku.persen_2015_2024|fmt=1|persen|arah}} sejak 2015."},
+        {"kode": "Temuan B.4", "keyakinan": "asumsi-kebijakan", "ikon": "wilayah", "teks": "{{angka:irbi.kab.tinggi.2023}} dari {{angka:irbi.kab.dinilai.2023}} kab/kota berkelas Tinggi pada 2023, sama dengan Renas PB 2025–2029; pada 2015 jumlahnya {{angka:irbi.kab.tinggi.2015}}."},
+        {"kode": "Temuan B.5", "keyakinan": "asumsi-kebijakan", "ikon": "peringatan", "teks": "{{angka:irbi.sumatra.kab_tinggi.2023}} kab/kota kelas Tinggi 2023 ada di Sumatra, terbanyak di antara tujuh pulau."},
+        {"kode": "Temuan B.6", "keyakinan": "resmi", "ikon": "kalender", "teks": "IRBI 2025 memakai skala baru, sehingga tren dibaca hanya untuk 2015–2024."}
+      ]
+    },
+    {
+      "jenis": "temuan-grafik",
+      "pesan": "Tren indeks risiko nasional 2015 sampai 2024",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "judul": "Indeks risiko bencana nasional {{angka:irbi.nasional.persen_2015_2024|fmt=1|persen|arah}} dalam sepuluh tahun, dari {{angka:irbi.nasional.2015|fmt=2}} menjadi {{angka:irbi.nasional.2024|fmt=2}}",
+      "cut_off": true,
+      "grafik": {
+        "judul_panel": "IRB nasional 2015–2024",
+        "ikon": "data",
+        "judul": "Rerata sederhana kab/kota",
+        "keluarga": "netral",
+        "data": {
+          "csv": "data/irbi/irbi_tren_2015_2024.csv",
+          "saring": "tingkat=nasional; metode=rerata_sederhana",
+          "seri": "kolom",
+          "kolom": [
+            {"nama": "y2015", "kepala": "2015", "fmt": "2"}, {"nama": "y2016", "kepala": "2016", "fmt": "2"},
+            {"nama": "y2017", "kepala": "2017", "fmt": "2"}, {"nama": "y2018", "kepala": "2018", "fmt": "2"},
+            {"nama": "y2019", "kepala": "2019", "fmt": "2"}, {"nama": "y2020", "kepala": "2020", "fmt": "2"},
+            {"nama": "y2021", "kepala": "2021", "fmt": "2"}, {"nama": "y2022", "kepala": "2022", "fmt": "2"},
+            {"nama": "y2023", "kepala": "2023", "fmt": "2"}, {"nama": "y2024", "kepala": "2024", "fmt": "2"}
+          ],
+          "keyakinan": "resmi",
+          "sumber": "InaRISK BNPB, IRBI 2015–2024"
+        }
+      },
+      "panel": {
+        "judul": "IRB 2024 per pulau",
+        "ikon": "wilayah",
+        "data": {
+          "csv": "data/irbi/irbi_tren_2015_2024.csv",
+          "saring": "tingkat=pulau; metode=rerata_sederhana",
+          "urut": "-y2024",
+          "kolom": [
+            {"nama": "nama", "kepala": "Pulau"},
+            {"nama": "y2024", "kepala": "IRB 2024", "fmt": "2", "warna": "navy", "ikon": "data"},
+            {"nama": "persen_2015_2024", "kepala": "Sejak 2015", "fmt": "1|persen|arah", "warna": "biru-abu", "ikon": "kalender"}
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB"
+        },
+        "daftar": [
+          "Semua pulau turun sejak 2015; Jawa serta Bali dan Nusa Tenggara turun paling cepat.",
+          "Papua dan Sumatra turun paling lambat, sehingga kini berada di atas Kalimantan.",
+          "Urutan memakai IRB 2024, tahun terakhir yang sebanding dengan 2015."
+        ]
+      },
+      "pita": {
+        "label": "Cara membaca",
+        "nada": "data",
+        "kolom": [
+          {"ikon": "data", "judul": "Rerata sederhana", "isi": "Nilai nasional dan pulau adalah rerata kab/kota, cara yang mereproduksi angka resmi Renstra BNPB."},
+          {"ikon": "kalender", "judul": "Skala 2025 berbeda", "isi": "IRBI 2025 memakai skala baru dan tidak dibandingkan dengan seri 2015–2024."},
+          {"ikon": "wilayah", "judul": "Pengelompokan pulau", "isi": "Tujuh pulau adalah pengelompokan penyusun, bukan wilayah administrasi resmi."}
+        ]
+      }
+    },
+    {
+      "jenis": "temuan-peta",
+      "pesan": "Sebaran kab/kota kelas Tinggi per pulau",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "judul": "{{angka:irbi.kab.tinggi.2023}} kab/kota berkelas risiko Tinggi pada 2023, terbanyak di {{tempat:Sumatra}} dengan {{angka:irbi.sumatra.kab_tinggi.2023}} dari {{angka:irbi.sumatra.kab.2023}} kab/kota",
+      "cut_off": true,
+      "grup": [
+        {"pil": "Kelas risiko kab/kota 2023", "nada": "data", "ikon": "wilayah", "kartu": [
+          {"nilai": "{{angka:irbi.kab.dinilai.2023}}", "label": "kab/kota dinilai", "ikon": "wilayah", "warna": "navy"},
+          {"nilai": "{{angka:irbi.kab.tinggi.2023}}", "label": "kab/kota kelas Tinggi", "ikon": "peringatan", "warna": "skala.api.5"},
+          {"nilai": "{{angka:irbi.kab.tinggi.2015}}", "label": "kelas Tinggi pada 2015", "ikon": "kalender", "warna": "skala.api.5"}
+        ]},
+        {"pil": "Provinsi 2023", "nada": "data", "ikon": "lembaga", "kartu": [
+          {"nilai": "{{angka:irbi.prov.tinggi.2023}}", "label": "provinsi kelas Tinggi", "ikon": "peringatan", "warna": "skala.api.5"},
+          {"nilai": "{{angka:irbi.prov.dinilai.2023}}", "label": "provinsi dinilai", "ikon": "lembaga", "warna": "navy"}
+        ]}
+      ],
+      "peta": {
+        "png": "peta/peta-irbi-2023.png",
+        "legenda": {"irbi": ["Tinggi", "Sedang"], "judul": "Kelas IRBI BNPB 2023"},
+        "keyakinan": "resmi",
+        "sumber": "InaRISK BNPB, IRBI 2023",
+        "penanda": [
+          {"x": 0.056, "y": 0.507, "teks": "Sumatra"},
+          {"x": 0.373, "y": 0.229, "teks": "Kalimantan"},
+          {"x": 0.337, "y": 0.874, "teks": "Jawa"},
+          {"x": 0.559, "y": 0.243, "teks": "Sulawesi"},
+          {"x": 0.439, "y": 0.959, "teks": "Bali dan Nusa Tenggara"},
+          {"x": 0.653, "y": 0.399, "teks": "Maluku"},
+          {"x": 0.898, "y": 0.727, "teks": "Papua"}
+        ]
+      },
+      "panel": {
+        "judul": "Kab/kota kelas Tinggi per pulau",
+        "ikon": "wilayah",
+        "total": true,
+        "data": {
+          "csv": "data/irbi/irbi_agregat_pulau.csv",
+          "saring": "tahun=2023; pulau_kode!=ID",
+          "urut": "-n_tinggi",
+          "kolom": [
+            {"nama": "pulau_nama", "kepala": "Pulau"},
+            {"nama": "n_tinggi", "kepala": "Tinggi", "fmt": "0", "warna": "skala.api.5", "ikon": "peringatan"},
+            {"nama": "n_kab", "kepala": "Kab/kota", "fmt": "0", "warna": "navy", "ikon": "wilayah"}
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2023"
+        }
+      }
+    },
+    {
+      "jenis": "kesimpulan",
+      "pesan": "Delapan kesimpulan dan arahan",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "cut_off": true,
+      "judul": "Kesimpulan",
+      "kartu": [
+        {"label": "Tren nasional", "ikon": "data", "warna": "navy", "judul": "IRB {{angka:irbi.nasional.persen_2015_2024|fmt=1|persen|arah}}", "isi": "Dari {{angka:irbi.nasional.2015|fmt=2}} pada 2015 menjadi {{angka:irbi.nasional.2024|fmt=2}} pada 2024; turun setiap tahun sejak 2016."},
+        {"label": "Pulau Jawa", "ikon": "wilayah", "warna": "navy", "judul": "Jawa {{angka:irbi.jawa.persen_2015_2024|fmt=1|persen|arah}}", "isi": "IRB Pulau Jawa {{angka:irbi.jawa.2015|fmt=2}} menjadi {{angka:irbi.jawa.2024|fmt=2}}; penurunan tercepat di antara tujuh pulau."},
+        {"label": "Pulau tertinggi", "ikon": "peringatan", "warna": "oranye", "judul": "Maluku {{angka:irbi.maluku.2024|fmt=2}}", "isi": "Tertinggi pada 2024 dan hanya {{angka:irbi.maluku.persen_2015_2024|fmt=1|persen|arah}} sejak 2015, lebih lambat dari rerata nasional."},
+        {"label": "Kab/kota", "ikon": "wilayah", "warna": "skala.api.5", "judul": "{{angka:irbi.kab.tinggi.2023}} kab/kota kelas Tinggi", "isi": "Dari {{angka:irbi.kab.dinilai.2023}} kab/kota pada 2023, sama dengan angka Renas PB 2025–2029."},
+        {"label": "Provinsi", "ikon": "peringatan", "warna": "skala.api.5", "judul": "{{angka:irbi.prov.tinggi.2023}} provinsi kelas Tinggi", "isi": "Dari {{angka:irbi.prov.dinilai.2023}} provinsi pada 2023 menurut rerata kab/kota tiap provinsi."},
+        {"label": "Sebaran", "ikon": "wilayah", "warna": "navy", "judul": "Sumatra {{angka:irbi.sumatra.kab_tinggi.2023}} kab/kota Tinggi", "isi": "Terbanyak di antara tujuh pulau, dari {{angka:irbi.sumatra.kab.2023}} kab/kota di Sumatra pada 2023."},
+        {"label": "Papua", "ikon": "wilayah", "warna": "navy", "judul": "Papua {{angka:irbi.papua.persen_2015_2024|fmt=1|persen|arah}}", "isi": "IRB Papua {{angka:irbi.papua.2024|fmt=2}} pada 2024; penurunan paling lambat di antara tujuh pulau sejak 2015."},
+        {"label": "Batas data", "ikon": "kalender", "warna": "navy", "judul": "IRBI 2025 berskala baru", "isi": "Nilai 2025 tidak dibandingkan dengan seri 2015–2024, sehingga tren berhenti di 2024."}
+      ],
+      "arahan": {"label": "Keputusan yang diminta", "ikon": "peringatan", "teks": "Menetapkan IRBI per kab/kota sebagai dasar urutan prioritas program mitigasi 2026–2030"}
+    },
+    {
+      "jenis": "penutup",
+      "foto": "foto/bencana-tsunami.jpg"
+    },
+    {
+      "jenis": "pembatas-lampiran",
+      "subjudul": "Data rinci pendukung paparan",
+      "kelompok": {"A": "Indeks risiko per wilayah"}
+    },
+    {
+      "jenis": "lampiran-tabel",
+      "pesan": "Rincian indeks per provinsi",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "cut_off": true,
+      "kode": "A1",
+      "judul": "IRB per provinsi 2023, diurutkan dari indeks tertinggi",
+      "judul_daftar": "IRB dan jumlah kab/kota kelas Tinggi per provinsi 2023",
+      "data": {
+        "csv": "data/irbi/irbi_agregat_provinsi.csv",
+        "saring": "tahun=2023",
+        "urut": "-total_sederhana",
+        "kolom": [
+          {"nama": "prov_nama", "kepala": "Provinsi"},
+          {"nama": "pulau", "kepala": "Pulau"},
+          {"nama": "n_kab", "kepala": "Kab/kota", "fmt": "0"},
+          {"nama": "n_tinggi", "kepala": "Kelas Tinggi", "fmt": "0"},
+          {"nama": "total_sederhana", "kepala": "IRB 2023", "fmt": "2"}
+        ],
+        "keyakinan": "resmi",
+        "sumber": "InaRISK BNPB, IRBI 2023 (rerata sederhana kab/kota per provinsi)"
+      }
+    }
+  ]
+}

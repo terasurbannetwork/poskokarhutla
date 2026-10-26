@@ -1,0 +1,515 @@
+kode,nama,nama_kepmendagri,prov_kode,prov_nama,pulau,penduduk_2026,banjir,longsor,kekeringan,cuaca_ekstrem,abrasi,gempabumi,tsunami,karlahut,gunungapi,total,status_total_resmi,n_bahaya_bernilai,pembanding,pembanding_label
+1101,Aceh Selatan,Kab. Aceh Selatan,11,Aceh,Sumatra,244677,24,24,16,24,28,16,28,15,,246.384,Tinggi,8,238.811003641488,SEB_60
+1102,Aceh Tenggara,Kab. Aceh Tenggara,11,Aceh,Sumatra,233549,24,20,7,20,,20,,7,,163.716342147592,Sedang,6,162.761965125539,SEB_60
+1103,Aceh Timur,Kab. Aceh Timur,11,Aceh,Sumatra,456472,16,16,11,16,16,5,5,10,,175.680196954647,Sedang,8,148.23110003537,SEB_60
+1104,Aceh Tengah,Kab. Aceh Tengah,11,Aceh,Sumatra,229623,22,19,12,6,,19,,6,1,181.389864957744,Tinggi,7,156.819899840695,SEB_60
+1105,Aceh Barat,Kab. Aceh Barat,11,Aceh,Sumatra,209680,16,16,11,16,16,5,19,16,,164.865292123238,Sedang,8,170.800081398694,SEB_60
+1106,Aceh Besar,Kab. Aceh Besar,11,Aceh,Sumatra,420672,26,22,14,22,22,22,26,21,22,244.632244883123,Tinggi,9,254.981869443136,SEB_60
+1107,Pidie,Kab. Pidie,11,Aceh,Sumatra,471672,25,21,14,21,23,21,24,13,7,224.663568664081,Tinggi,9,238.173775421551,SEB_60
+1108,Aceh Utara,Kab. Aceh Utara,11,Aceh,Sumatra,629379,21,14,14,21,25,7,20,14,1,233.576902083515,Tinggi,9,211.09114731862,SEB_60
+1109,Simeulue,Kab. Simeulue,11,Aceh,Sumatra,98489,25,17,8,8,3,25,25,16,,232.913901786347,Tinggi,8,215.634666393999,SEB_60
+1110,Aceh Singkil,Kab. Aceh Singkil,11,Aceh,Sumatra,132786,26,5,17,26,26,26,26,16,,235.344,Tinggi,8,237.261642358766,SEB_60
+1111,Bireuen,Kab. Bireuen,11,Aceh,Sumatra,465541,23,19,13,19,18,6,18,6,,204.481173300651,Tinggi,8,194.800648981341,SEB_60
+1112,Aceh Barat Daya,Kab. Aceh Barat Daya,11,Aceh,Sumatra,161537,26,26,17,26,24,9,26,25,,229.104,Tinggi,8,237.567374258848,SEB_60
+1113,Gayo Lues,Kab. Gayo Lues,11,Aceh,Sumatra,105190,17,18,12,6,,12,,6,,170.290848634282,Sedang,6,131.332750498181,SEB_60
+1114,Aceh Jaya,Kab. Aceh Jaya,11,Aceh,Sumatra,99450,14,14,9,14,14,5,14,9,,181.318921261236,Tinggi,8,149.09874318191,SEB_60
+1115,Nagan Raya,Kab. Nagan Raya,11,Aceh,Sumatra,180144,17,25,17,25,17,17,25,16,,197.806228235838,Tinggi,8,216.977628396092,SEB_60
+1116,Aceh Tamiang,Kab. Aceh Tamiang,11,Aceh,Sumatra,309133,16,16,11,16,0,5,,10,,144.791972299168,Sedang,7,136.265685067683,SEB_60
+1117,Bener Meriah,Kab. Bener Meriah,11,Aceh,Sumatra,171026,12,18,12,6,,6,,6,18,170.554544004391,Sedang,7,154.028990285012,SEB_60
+1118,Pidie Jaya,Kab. Pidie Jaya,11,Aceh,Sumatra,159101,30,26,17,26,28,9,28,8,3,256.128,Tinggi,9,246.835342502036,SEB_60
+1171,Kota Banda Aceh,Kota Banda Aceh,11,Aceh,Sumatra,280246,13,,7,14,10,9,13,,,129.3960776093,Sedang,6,94.8057805648788,SEB_60
+1172,Kota Sabang,Kota Sabang,11,Aceh,Sumatra,43816,16,10,10,5,15,15,15,5,12,191.704017204301,Tinggi,9,140.784035688226,SEB_60
+1173,Kota Lhokseumawe,Kota Lhokseumawe,11,Aceh,Sumatra,202574,23,10,13,24,23,7,23,2,,168.970999187446,Sedang,8,148.403981797346,SEB_60
+1174,Kota Langsa,Kota Langsa,11,Aceh,Sumatra,201239,17,1,14,21,5,2,1,9,,119.683218901861,Sedang,8,107.440372087814,SEB_60
+1175,Kota Subulussalam,Kota Subulussalam,11,Aceh,Sumatra,96635,21,21,7,21,,14,,20,,165.776712699408,Sedang,6,171.17085460096,SEB_60
+1201,Tapanuli Tengah,Kab. Tapanuli Tengah,12,Sumatera Utara,Sumatra,423643,21,26,14,21,7,7,21,13,,230.41809310251,Tinggi,8,213.243807526282,SEB_60
+1202,Tapanuli Utara,Kab. Tapanuli Utara,12,Sumatera Utara,Sumatra,331091,26,28,1,22,,22,,7,,144.418801635278,Sedang,6,165.693160127503,SEB_60
+1203,Tapanuli Selatan,Kab. Tapanuli Selatan,12,Sumatera Utara,Sumatra,314456,13,17,4,13,1,9,13,9,6,177.413186581708,Tinggi,9,156.977766958284,SEB_60
+1204,Nias,Kab. Nias,12,Sumatera Utara,Sumatra,145606,21,17,1,14,1,21,21,13,,202.82383015436,Tinggi,8,185.387328904871,SEB_60
+1205,Langkat,Kab. Langkat,12,Sumatera Utara,Sumatra,1139418,24,29,16,24,4,8,4,15,5,231.473980778204,Tinggi,9,204.51293006767,SEB_60
+1206,Karo,Kab. Karo,12,Sumatera Utara,Sumatra,433093,16,21,1,17,,11,,5,13,124.686891902882,Sedang,7,135.283835654642,SEB_60
+1207,Deli Serdang,Kab. Deli Serdang,12,Sumatera Utara,Sumatra,2060289,20,18,11,17,2,5,1,9,11,209.686955259513,Tinggi,9,166.936182077756,SEB_60
+1208,Simalungun,Kab. Simalungun,12,Sumatera Utara,Sumatra,1096512,25,31,2,25,,8,,16,,129.112092988174,Sedang,6,142.601739346003,SEB_60
+1209,Asahan,Kab. Asahan,12,Sumatera Utara,Sumatra,825709,11,11,1,11,,4,,11,,148.935869219189,Sedang,6,110.845277910731,SEB_60
+1210,Labuhanbatu,Kab. Labuhanbatu,12,Sumatera Utara,Sumatra,532771,26,11,2,26,,9,,25,,175.168,Sedang,6,167.887574968004,SEB_60
+1211,Dairi,Kab. Dairi,12,Sumatera Utara,Sumatra,328132,14,15,1,15,,15,,5,,119.092543448863,Sedang,6,119.9636980885,SEB_60
+1212,Toba,Kab. Toba,12,Sumatera Utara,Sumatra,220518,25,33,2,26,,9,,8,,130.616795038102,Sedang,6,159.288,SEB_60
+1213,Mandailing Natal,Kab. Mandailing Natal,12,Sumatera Utara,Sumatra,505566,24,29,8,24,6,16,24,15,18,274.825169303598,Tinggi,9,248.873168933751,SEB_60
+1214,Nias Selatan,Kab. Nias Selatan,12,Sumatera Utara,Sumatra,388438,16,20,1,16,1,16,16,15,,206.988179091434,Tinggi,8,169.673995364092,SEB_60
+1215,Pakpak Bharat,Kab. Pakpak Bharat,12,Sumatera Utara,Sumatra,55744,16,20,5,5,,16,,5,,122.855114023516,Sedang,6,110.45495771431,SEB_60
+1216,Humbang Hasundutan,Kab. Humbang Hasundutan,12,Sumatera Utara,Sumatra,215796,21,27,7,21,,14,,14,,190.619870175347,Tinggi,6,177.759630792778,SEB_60
+1217,Samosir,Kab. Samosir,12,Sumatera Utara,Sumatra,147269,26,33,2,26,,18,,17,20,185.365412578951,Tinggi,7,194.128,SEB_60
+1218,Serdang Bedagai,Kab. Serdang Bedagai,12,Sumatera Utara,Sumatra,724015,13,5,6,13,11,2,1,8,,140.287622366533,Sedang,8,101.768764744603,SEB_60
+1219,Batu Bara,Kab. Batu Bara,12,Sumatera Utara,Sumatra,424460,26,,2,31,8,2,2,17,,103.248,Sedang,7,100.128,SEB_60
+1220,Padang Lawas Utara,Kab. Padang Lawas Utara,12,Sumatera Utara,Sumatra,276827,25,31,1,16,,16,,24,,170.361895996318,Sedang,6,173.445733178955,SEB_60
+1221,Padang Lawas,Kab. Padang Lawas,12,Sumatera Utara,Sumatra,277749,20,25,1,20,,14,,19,,170.531821370326,Sedang,6,165.346026801022,SEB_60
+1222,Labuhanbatu Selatan,Kab. Labuhanbatu Selatan,12,Sumatera Utara,Sumatra,322857,26,11,2,18,,9,,25,,169.888,Sedang,6,161.368,SEB_60
+1223,Labuhanbatu Utara,Kab. Labuhanbatu Utara,12,Sumatera Utara,Sumatra,409120,26,33,2,18,8,9,2,25,,194.688,Tinggi,8,189.528,SEB_60
+1224,Nias Utara,Kab. Nias Utara,12,Sumatera Utara,Sumatra,157835,26,33,5,26,4,26,26,17,,202.288,Tinggi,8,210.808,SEB_60
+1225,Nias Barat,Kab. Nias Barat,12,Sumatera Utara,Sumatra,94947,26,33,2,26,2,26,26,17,,181.648,Tinggi,8,199.768,SEB_60
+1271,Kota Medan,Kota Medan,12,Sumatera Utara,Sumatra,2567030,19,,12,19,17,6,2,9,,103.671584558907,Sedang,7,106.920359428124,SEB_60
+1272,Kota Pematangsiantar,Kota Pematangsiantar,12,Sumatera Utara,Sumatra,256219,31,,5,34,,11,,,,93.168,Sedang,4,99.9859441139043,SEB_60
+1273,Kota Sibolga,Kota Sibolga,12,Sumatera Utara,Sumatra,61985,22,42,5,36,32,12,35,6,,191.346475283451,Tinggi,8,207.024,SEB_60
+1274,Kota Tanjung Balai,Kota Tanjungbalai,12,Sumatera Utara,Sumatra,165515,25,,4,27,,4,,5,,68.0574130254073,Sedang,5,83.4496200465804,SEB_60
+1275,Kota Binjai,Kota Binjai,12,Sumatera Utara,Sumatra,263924,22,,8,36,,12,,7,,154.848,Sedang,5,145.92,SEB_60
+1276,Kota Tebing Tinggi,Kota Tebing Tinggi,12,Sumatera Utara,Sumatra,168710,11,,2,18,,2,,4,,57.9915038967331,Sedang,5,60.8771632244828,SEB_60
+1277,Kota Padang Sidempuan,Kota Padangsidimpuan,12,Sumatera Utara,Sumatra,239255,22,11,5,10,,36,,5,,166.446884601533,Sedang,6,166.568,SEB_60
+1278,Kota Gunungsitoli,Kota Gunungsitoli,12,Sumatera Utara,Sumatra,145492,23,23,2,22,3,22,24,6,,181.354821287751,Tinggi,8,196.108572191594,SEB_60
+1301,Pesisir Selatan,Kab. Pesisir Selatan,13,Sumatera Barat,Sumatra,535959,12,12,12,12,12,12,12,12,,158.287834361614,Sedang,8,143.214432810889,SEB_60
+1302,Solok,Kab. Solok,13,Sumatera Barat,Sumatra,445136,29,26,18,26,,26,,8,26,183.20912589919,Tinggi,7,213.168,SEB_60
+1303,Sijunjung,Kab. Sijunjung,13,Sumatera Barat,Sumatra,250873,23,8,16,8,,8,,15,,166.034517445688,Sedang,6,156.272988638434,SEB_60
+1304,Tanah Datar,Kab. Tanah Datar,13,Sumatera Barat,Sumatra,422583,24,9,18,26,,26,,8,26,219.488,Tinggi,7,213.008,SEB_60
+1305,Padang Pariaman,Kab. Padang Pariaman,13,Sumatera Barat,Sumatra,486557,22,18,12,18,16,12,17,3,18,163.655440315048,Sedang,9,177.645060071075,SEB_60
+1306,Agam,Kab. Agam,13,Sumatera Barat,Sumatra,576392,15,15,10,15,10,15,15,10,15,240.301374772588,Tinggi,9,183.422812561315,SEB_60
+1307,Lima Puluh Kota,Kab. Lima Puluh Kota,13,Sumatera Barat,Sumatra,406729,26,26,9,26,,9,,8,,197.517229443859,Tinggi,6,185.808,SEB_60
+1308,Pasaman,Kab. Pasaman,13,Sumatera Barat,Sumatra,319962,21,21,7,21,,21,,7,21,213.87214749512,Tinggi,7,200.313416788212,SEB_60
+1309,Kepulauan Mentawai,Kab. Kepulauan Mentawai,13,Sumatera Barat,Sumatra,92831,13,9,13,4,1,13,13,4,,201.406438102107,Tinggi,8,143.799139634839,SEB_60
+1310,Dharmasraya,Kab. Dharmasraya,13,Sumatera Barat,Sumatra,240693,19,6,12,19,,6,,18,,150.610492716624,Sedang,6,140.60878199338,SEB_60
+1311,Solok Selatan,Kab. Solok Selatan,13,Sumatera Barat,Sumatra,192175,25,26,18,9,,18,,17,14,172.248674103329,Sedang,7,201.753706545791,SEB_60
+1312,Pasaman Barat,Kab. Pasaman Barat,13,Sumatera Barat,Sumatra,456467,26,26,18,26,21,9,26,17,26,254.235513437472,Tinggi,9,271.968,SEB_60
+1371,Kota Padang,Kota Padang,13,Sumatera Barat,Sumatra,948308,14,16,14,21,7,12,21,2,,185.52681511622,Tinggi,8,174.274835351364,SEB_60
+1372,Kota Solok,Kota Solok,13,Sumatera Barat,Sumatra,51856,12,10,13,20,,20,,,3,159.114975243221,Sedang,6,127.565853719103,SEB_60
+1373,Kota Sawahlunto,Kota Sawahlunto,13,Sumatera Barat,Sumatra,68285,13,12,8,5,,4,,4,,162.898204262879,Sedang,6,119.077143105972,SEB_60
+1374,Kota Padang Panjang,Kota Padang Panjang,13,Sumatera Barat,Sumatra,26657,22,3,24,36,,36,,,5,117.31759144483,Sedang,6,132.048,SEB_60
+1375,Kota Bukittinggi,Kota Bukittinggi,13,Sumatera Barat,Sumatra,107227,16,17,6,9,,27,,,,137.201929584603,Sedang,5,110.157258715904,SEB_60
+1376,Kota Payakumbuh,Kota Payakumbuh,13,Sumatera Barat,Sumatra,152331,32,2,5,35,,20,,,,130.128,Sedang,5,146.393139539352,SEB_60
+1377,Kota Pariaman,Kota Pariaman,13,Sumatera Barat,Sumatra,101184,23,,12,25,23,7,24,,,146.483211056976,Sedang,6,199.102079291032,SEB_60
+1401,Kampar,Kab. Kampar,14,Riau,Sumatra,906421,13,13,3,9,,5,,13,,145.796233079371,Sedang,6,112.315452319835,SEB_60
+1402,Indragiri Hulu,Kab. Indragiri Hulu,14,Riau,Sumatra,468538,19,6,1,13,,1,,18,,127.550502523422,Sedang,6,112.959239330937,SEB_60
+1403,Bengkalis,Kab. Bengkalis,14,Riau,Sumatra,602530,13,,1,9,4,1,,12,,85.761371520893,Sedang,6,55.2709051323129,SEB_60
+1404,Indragiri Hilir,Kab. Indragiri Hilir,14,Riau,Sumatra,691590,24,8,16,16,8,1,,23,,157.488,Sedang,7,138.759925902768,SEB_60
+1405,Pelalawan,Kab. Pelalawan,14,Riau,Sumatra,422194,19,1,1,13,6,1,,18,,141.981945662546,Sedang,7,115.991578787637,SEB_60
+1406,Rokan Hulu,Kab. Rokan Hulu,14,Riau,Sumatra,588898,25,17,2,25,,8,,24,,136.181236122489,Sedang,6,144.423381253188,SEB_60
+1407,Rokan Hilir,Kab. Rokan Hilir,14,Riau,Sumatra,679747,16,,1,11,5,1,,15,,120.8544467003,Sedang,6,92.2495377898066,SEB_60
+1408,Siak,Kab. Siak,14,Riau,Sumatra,484868,12,1,1,8,4,1,,12,,80.9019249522693,Sedang,7,62.8139989452985,SEB_60
+1409,Kuantan Singingi,Kab. Kuantan Singingi,14,Riau,Sumatra,357336,23,8,5,16,,8,,22,,176.928,Tinggi,6,155.812015572963,SEB_60
+1410,Kepulauan Meranti,Kab. Kepulauan Meranti,14,Riau,Sumatra,217397,21,,1,14,7,1,,20,,86.7615311407956,Sedang,6,77.3971450907961,SEB_60
+1471,Kota Pekanbaru,Kota Pekanbaru,14,Riau,Sumatra,1027469,25,1,3,25,,3,,17,,96.4988307315222,Sedang,6,89.1223390607066,SEB_60
+1472,Kota Dumai,Kota Dumai,14,Riau,Sumatra,335356,19,,1,19,17,1,,18,,61.1307113675858,Sedang,6,79.6705580700253,SEB_60
+1501,Kerinci,Kab. Kerinci,15,Jambi,Sumatra,266568,16,13,13,13,,13,,4,13,189.855824932661,Tinggi,7,138.173785451325,SEB_60
+1502,Merangin,Kab. Merangin,15,Jambi,Sumatra,376852,26,26,26,26,,18,,25,26,186.864,Tinggi,7,207.984,SEB_60
+1503,Sarolangun,Kab. Sarolangun,15,Jambi,Sumatra,307641,16,16,11,11,,5,,15,,141.428140523191,Sedang,6,111.494763664286,SEB_60
+1504,Batanghari,Kab. Batanghari,15,Jambi,Sumatra,322380,24,4,16,16,,1,,23,,115.984,Sedang,6,125.653666650623,SEB_60
+1505,Muaro Jambi,Kab. Muaro Jambi,15,Jambi,Sumatra,383881,19,1,12,12,,1,,18,,90.0271829359284,Sedang,6,82.5846770742362,SEB_60
+1506,Tanjung Jabung Barat,Kab. Tanjung Jabung Barat,15,Jambi,Sumatra,336121,13,9,9,9,2,1,,13,,97.516211579099,Sedang,7,84.9437099118489,SEB_60
+1507,Tanjung Jabung Timur,Kab. Tanjung Jabung Timur,15,Jambi,Sumatra,245636,26,,18,18,7,2,,25,,99.8405131636704,Sedang,6,103.584,SEB_60
+1508,Bungo,Kab. Bungo,15,Jambi,Sumatra,388906,15,5,10,15,,5,,10,,148.188796557669,Sedang,6,116.001145832433,SEB_60
+1509,Tebo,Kab. Tebo,15,Jambi,Sumatra,354502,26,9,18,18,,9,,25,,176.144,Tinggi,6,170.864,SEB_60
+1571,Kota Jambi,Kota Jambi,15,Jambi,Sumatra,678445,21,,14,21,,3,,10,,92.2741060616636,Sedang,5,82.0243010700302,SEB_60
+1572,Kota Sungai Penuh,Kota Sungai Penuh,15,Jambi,Sumatra,101698,19,15,15,15,,15,,,,118.841971983402,Sedang,5,124.326910146007,SEB_60
+1601,Ogan Komering Ulu,Kab. Ogan Komering Ulu,16,Sumatera Selatan,Sumatra,387388,17,12,12,17,,6,,11,6,185.339629657341,Tinggi,7,155.306586374394,SEB_60
+1602,Ogan Komering Ilir,Kab. Ogan Komering Ilir,16,Sumatera Selatan,Sumatra,810629,17,,11,17,3,1,1,16,,135.502720179781,Sedang,7,113.03241406833,SEB_60
+1603,Muara Enim,Kab. Muara Enim,16,Sumatera Selatan,Sumatra,655658,17,17,11,17,,6,,16,9,168.352464682867,Sedang,7,165.711211140226,SEB_60
+1604,Lahat,Kab. Lahat,16,Sumatera Selatan,Sumatra,456207,17,17,11,17,,11,,16,13,196.392349232124,Tinggi,7,167.293997366407,SEB_60
+1605,Musi Rawas,Kab. Musi Rawas,16,Sumatera Selatan,Sumatra,430499,16,16,11,16,,5,,16,,151.716074267024,Sedang,6,125.881364053835,SEB_60
+1606,Musi Banyuasin,Kab. Musi Banyuasin,16,Sumatera Selatan,Sumatra,661705,16,,10,16,,1,,15,,108.175831962203,Sedang,5,109.253212913728,SEB_60
+1607,Banyuasin,Kab. Banyuasin,16,Sumatera Selatan,Sumatra,935021,18,,12,18,4,1,,17,,102.815062707134,Sedang,6,109.889518971673,SEB_60
+1608,Ogan Komering Ulu Timur,Kab. Ogan Komering Ulu Timur,16,Sumatera Selatan,Sumatra,699794,14,1,9,14,,5,,13,,139.073580030934,Sedang,6,131.204388649602,SEB_60
+1609,Ogan Komering Ulu Selatan,Kab. Ogan Komering Ulu Selatan,16,Sumatera Selatan,Sumatra,436570,13,13,9,9,,9,,4,,113.634352255081,Sedang,6,109.654564465097,SEB_60
+1610,Ogan Ilir,Kab. Ogan Ilir,16,Sumatera Selatan,Sumatra,451006,13,,9,13,,1,,12,,85.6021680564278,Sedang,5,90.4723613624713,SEB_60
+1611,Empat Lawang,Kab. Empat Lawang,16,Sumatera Selatan,Sumatra,349148,17,19,13,19,,19,,12,19,193.271316919354,Tinggi,7,185.495768758889,SEB_60
+1612,Penukal Abab Lematang Ilir,Kab. Penukal Abab Lematang Ilir,16,Sumatera Selatan,Sumatra,208064,14,,9,14,,1,,13,,121.69557865825,Sedang,5,106.68091032335,SEB_60
+1613,Musi Rawas Utara,Kab. Musi Rawas Utara,16,Sumatera Selatan,Sumatra,202136,19,19,12,12,,6,,18,,133.51444481325,Sedang,6,143.046740701186,SEB_60
+1671,Kota Palembang,Kota Palembang,16,Sumatera Selatan,Sumatra,1715970,36,,24,36,,5,,25,,105.168,Sedang,5,119.568,SEB_60
+1672,Kota Pagar Alam,Kota Pagar Alam,16,Sumatera Selatan,Sumatra,152205,18,18,12,18,,6,,,5,161.610411130677,Sedang,6,136.285234276036,SEB_60
+1673,Kota Lubuk Linggau,Kota Lubuk Linggau,16,Sumatera Selatan,Sumatra,242671,25,1,17,26,,15,,14,,151.44480616439,Sedang,6,145.67279940509,SEB_60
+1674,Kota Prabumulih,Kota Prabumulih,16,Sumatera Selatan,Sumatra,202769,25,,16,25,,1,,16,,121.008,Sedang,5,130.572715663419,SEB_60
+1701,Bengkulu Selatan,Kab. Bengkulu Selatan,17,Bengkulu,Sumatra,180891,13,13,9,13,12,9,12,9,,174.11417293556,Sedang,8,161.352583341854,SEB_60
+1702,Rejang Lebong,Kab. Rejang Lebong,17,Bengkulu,Sumatra,281924,11,13,9,13,,13,,4,13,163.139703984539,Sedang,7,123.55763086169,SEB_60
+1703,Bengkulu Utara,Kab. Bengkulu Utara,17,Bengkulu,Sumatra,316333,14,14,9,9,13,14,14,9,8,220.491522400177,Tinggi,9,173.724385592292,SEB_60
+1704,Kaur,Kab. Kaur,17,Bengkulu,Sumatra,136567,16,17,11,17,19,11,19,11,,195.196888919686,Tinggi,8,174.781586642822,SEB_60
+1705,Seluma,Kab. Seluma,17,Bengkulu,Sumatra,215244,11,11,7,11,9,11,11,7,,156.143915822098,Sedang,8,126.241387154655,SEB_60
+1706,Muko Muko,Kab. Mukomuko,17,Bengkulu,Sumatra,201154,16,11,16,16,16,16,16,10,,228.275857994124,Tinggi,8,185.031524575599,SEB_60
+1707,Lebong,Kab. Lebong,17,Bengkulu,Sumatra,113923,19,17,11,17,,17,,,17,155.67091936832,Sedang,6,161.596149352351,SEB_60
+1708,Kepahiang,Kab. Kepahiang,17,Bengkulu,Sumatra,167490,10,9,6,3,,9,,2,9,125.656857743598,Sedang,7,106.997161629491,SEB_60
+1709,Bengkulu Tengah,Kab. Bengkulu Tengah,17,Bengkulu,Sumatra,118796,18,6,13,19,17,19,17,12,,215.057429200877,Tinggi,8,184.492124297532,SEB_60
+1771,Kota Bengkulu,Kota Bengkulu,17,Bengkulu,Sumatra,401395,25,8,16,25,20,25,25,12,,202.247384697119,Tinggi,8,218.361374685772,SEB_60
+1801,Lampung Selatan,Kab. Lampung Selatan,18,Lampung,Sumatra,1178120,15,15,10,18,18,5,15,10,15,205.358160684771,Tinggi,9,185.947095987172,SEB_60
+1802,Lampung Tengah,Kab. Lampung Tengah,18,Lampung,Sumatra,1539679,14,5,9,14,,5,,9,,115.148038834292,Sedang,6,106.031458870219,SEB_60
+1803,Lampung Utara,Kab. Lampung Utara,18,Lampung,Sumatra,678756,22,14,14,22,,7,,14,,161.968,Sedang,6,146.958726883712,SEB_60
+1804,Lampung Barat,Kab. Lampung Barat,18,Lampung,Sumatra,296651,13,15,10,15,,15,,4,15,132.893681900788,Sedang,7,118.928953053733,SEB_60
+1805,Tulang Bawang,Kab. Tulang Bawang,18,Lampung,Sumatra,453426,13,,9,13,1,1,1,8,,90.013756187084,Sedang,7,82.5930884617279,SEB_60
+1806,Tanggamus,Kab. Tanggamus,18,Lampung,Sumatra,688392,20,17,11,20,17,17,17,4,,126.175424737913,Sedang,8,179.982274568673,SEB_60
+1807,Lampung Timur,Kab. Lampung Timur,18,Lampung,Sumatra,1152456,25,2,17,25,25,8,2,24,,106.134347363045,Sedang,8,151.931038391369,SEB_60
+1808,Way Kanan,Kab. Way Kanan,18,Lampung,Sumatra,503240,10,11,7,11,,4,,10,,103.469790371623,Sedang,6,105.275743173894,SEB_60
+1809,Pesawaran,Kab. Pesawaran,18,Lampung,Sumatra,519889,16,9,9,17,5,5,14,3,,176.769218723579,Tinggi,8,154.377080860523,SEB_60
+1810,Pringsewu,Kab. Pringsewu,18,Lampung,Sumatra,420261,28,18,21,31,,9,,4,,135.14884343781,Sedang,6,165.168,SEB_60
+1811,Mesuji,Kab. Mesuji,18,Lampung,Sumatra,244487,18,,12,18,,1,,17,,75.5891188740659,Sedang,5,82.0167930175744,SEB_60
+1812,Tulang Bawang Barat,Kab. Tulang Bawang Barat,18,Lampung,Sumatra,304002,21,,14,21,,1,,20,,85.2482274687787,Sedang,5,98.8943889785309,SEB_60
+1813,Pesisir Barat,Kab. Pesisir Barat,18,Lampung,Sumatra,174946,23,23,15,23,23,15,27,15,,199.539998992271,Tinggi,8,234.385152118544,SEB_60
+1871,Kota Bandar Lampung,Kota Bandar Lampung,18,Lampung,Sumatra,1199897,11,6,6,12,11,4,11,,,115.991041708218,Sedang,7,97.01695060034,SEB_60
+1872,Kota Metro,Kota Metro,18,Lampung,Sumatra,205342,15,,8,16,,3,,,,39.4341360996963,Sedang,4,40.0261595527819,SEB_60
+1901,Bangka,Kab. Bangka,19,Kep. Bangka Belitung,Sumatra,348459,18,1,12,18,18,1,,12,,100.025921423395,Sedang,7,107.071103930971,SEB_60
+1902,Belitung,Kab. Belitung,19,Kep. Bangka Belitung,Sumatra,192339,17,6,11,17,6,1,,11,,98.9683986654172,Sedang,7,87.9725395499138,SEB_60
+1903,Bangka Selatan,Kab. Bangka Selatan,19,Kep. Bangka Belitung,Sumatra,209786,23,15,15,23,23,1,,22,,159.486516379454,Sedang,7,156.770036584235,SEB_60
+1904,Bangka Tengah,Kab. Bangka Tengah,19,Kep. Bangka Belitung,Sumatra,218132,24,16,16,24,24,1,,23,,140.124853004309,Sedang,7,158.14329427833,SEB_60
+1905,Bangka Barat,Kab. Bangka Barat,19,Kep. Bangka Belitung,Sumatra,217119,15,10,10,15,15,1,,9,,96.6643427609957,Sedang,7,99.2672461217952,SEB_60
+1906,Belitung Timur,Kab. Belitung Timur,19,Kep. Bangka Belitung,Sumatra,134592,24,16,16,24,8,1,,15,,112.3616779458,Sedang,7,122.311370105048,SEB_60
+1971,Kota Pangkal Pinang,Kota Pangkal Pinang,19,Kep. Bangka Belitung,Sumatra,221190,23,,15,23,5,3,,11,,84.2638384943149,Sedang,6,88.4723050037948,SEB_60
+2101,Bintan,Kab. Bintan,21,Kepulauan Riau,Sumatra,165515,15,1,15,15,5,1,,10,,117.22407956813,Sedang,7,101.230870725304,SEB_60
+2102,Karimun,Kab. Karimun,21,Kepulauan Riau,Sumatra,268236,26,18,18,26,9,2,,17,,153.168,Sedang,7,137.568,SEB_60
+2103,Natuna,Kab. Natuna,21,Kepulauan Riau,Sumatra,85821,16,11,16,16,16,1,,16,,140.343581383213,Sedang,7,139.262033516748,SEB_60
+2104,Lingga,Kab. Lingga,21,Kepulauan Riau,Sumatra,102971,18,18,12,12,18,1,,12,,138.269905944677,Sedang,7,114.203745746535,SEB_60
+2105,Kepulauan Anambas,Kab. Kepulauan Anambas,21,Kepulauan Riau,Sumatra,49816,13,9,9,4,13,1,,9,,114.82446282238,Sedang,7,89.5508313555018,SEB_60
+2171,Kota Batam,Kota Batam,21,Kepulauan Riau,Sumatra,1256320,11,8,9,16,12,2,,8,,147.203683108413,Sedang,7,91.4172125346408,SEB_60
+2172,Kota Tanjung Pinang,Kota Tanjung Pinang,21,Kepulauan Riau,Sumatra,244501,24,,24,36,10,5,,17,,117.744,Sedang,6,116.736,SEB_60
+3101,Administrasi Kepulauan Seribu,Kab. Administrasi Kepulauan Seribu,31,DKI Jakarta,Jawa,5689,,,9,9,4,4,2,,,40.8440881403717,Sedang,5,32.8793882655016,SEB_60
+3171,Kota Administrasi Jakarta Pusat,Kota Administrasi Jakarta Pusat,31,DKI Jakarta,Jawa,1039730,10,,8,16,,5,,,,54.8521298942957,Sedang,4,51.2865369774956,SEB_60
+3172,Kota Administrasi Jakarta Utara,Kota Administrasi Jakarta Utara,31,DKI Jakarta,Jawa,2057774,10,,11,16,15,5,2,,,85.2577944091559,Sedang,6,76.6501114381788,SEB_60
+3173,Kota Administrasi Jakarta Barat,Kota Administrasi Jakarta Barat,31,DKI Jakarta,Jawa,2494927,10,,8,16,,5,,,,54.8521298942957,Sedang,4,51.2865369774956,SEB_60
+3174,Kota Administrasi Jakarta Selatan,Kota Administrasi Jakarta Selatan,31,DKI Jakarta,Jawa,2345448,10,,8,16,,5,,,,54.8521298942957,Sedang,4,51.2865369774956,SEB_60
+3175,Kota Administrasi Jakarta Timur,Kota Administrasi Jakarta Timur,31,DKI Jakarta,Jawa,3203632,15,,8,16,,5,,,,54.8521298942957,Sedang,4,54.1858050767196,SEB_60
+3201,Bogor,Kab. Bogor,32,Jawa Barat,Jawa,5964481,14,11,10,16,,9,,11,11,122.642336150042,Sedang,7,117.747824940885,SEB_60
+3202,Sukabumi,Kab. Sukabumi,32,Jawa Barat,Jawa,2930871,22,16,19,19,17,16,19,16,16,198.857906089386,Tinggi,9,212.984580925344,SEB_60
+3203,Cianjur,Kab. Cianjur,32,Jawa Barat,Jawa,2630626,17,13,16,16,1,9,15,13,18,136.31253554541,Sedang,9,159.041521793405,SEB_60
+3204,Bandung,Kab. Bandung,32,Jawa Barat,Jawa,3755528,15,14,16,16,,9,,11,8,112.324816585868,Sedang,7,120.49008231153,SEB_60
+3205,Garut,Kab. Garut,32,Jawa Barat,Jawa,2762991,13,10,12,14,2,3,12,10,14,133.79032643858,Sedang,9,130.721382838802,SEB_60
+3206,Tasikmalaya,Kab. Tasikmalaya,32,Jawa Barat,Jawa,1977508,14,11,13,13,2,4,12,10,13,156.203355475208,Sedang,9,143.647346420811,SEB_60
+3207,Ciamis,Kab. Ciamis,32,Jawa Barat,Jawa,1290179,15,12,15,15,,4,,12,1,85.5221670286182,Sedang,7,95.984977599506,SEB_60
+3208,Kuningan,Kab. Kuningan,32,Jawa Barat,Jawa,1239663,11,9,8,13,,4,,9,11,93.6590478646467,Sedang,7,84.173130944379,SEB_60
+3209,Cirebon,Kab. Cirebon,32,Jawa Barat,Jawa,2395666,21,16,14,23,7,8,,7,3,109.723898614594,Sedang,8,133.911123623707,SEB_60
+3210,Majalengka,Kab. Majalengka,32,Jawa Barat,Jawa,1385298,11,10,8,14,,4,,6,10,100.634179168751,Sedang,7,89.1692585797213,SEB_60
+3211,Sumedang,Kab. Sumedang,32,Jawa Barat,Jawa,1270326,11,10,8,12,,3,,10,,102.911819232369,Sedang,6,87.1798773464375,SEB_60
+3212,Indramayu,Kab. Indramayu,32,Jawa Barat,Jawa,1938627,10,6,8,12,9,4,,4,,83.8982563398678,Sedang,7,81.2745490815868,SEB_60
+3213,Subang,Kab. Subang,32,Jawa Barat,Jawa,1706899,14,13,11,16,4,5,,13,13,165.512723356885,Sedang,8,154.026920332366,SEB_60
+3214,Purwakarta,Kab. Purwakarta,32,Jawa Barat,Jawa,1036204,22,12,16,24,,6,,11,,102.683387022551,Sedang,6,128.267398233847,SEB_60
+3215,Karawang,Kab. Karawang,32,Jawa Barat,Jawa,2568344,24,19,18,27,20,8,1,12,,147.421954472105,Sedang,8,173.291819352275,SEB_60
+3216,Bekasi,Kab. Bekasi,32,Jawa Barat,Jawa,3317430,19,8,11,20,4,7,1,,,105.452748700408,Sedang,7,112.109159435883,SEB_60
+3217,Bandung Barat,Kab. Bandung Barat,32,Jawa Barat,Jawa,1993454,20,20,15,23,,6,,16,17,124.44731562472,Sedang,7,134.400956552391,SEB_60
+3218,Pangandaran,Kab. Pangandaran,32,Jawa Barat,Jawa,446889,14,8,12,12,13,4,16,7,,118.176392446696,Sedang,8,112.908893215726,SEB_60
+3271,Kota Bogor,Kota Bogor,32,Jawa Barat,Jawa,1069415,7,7,6,12,,8,,,2,54.5854442876727,Sedang,6,52.3430627962749,SEB_60
+3272,Kota Sukabumi,Kota Sukabumi,32,Jawa Barat,Jawa,314355,9,,7,15,,15,,,2,61.1144114622968,Sedang,5,64.6597023046381,SEB_60
+3273,Kota Bandung,Kota Bandung,32,Jawa Barat,Jawa,2635928,13,13,7,15,,15,,,2,76.4729734877145,Sedang,6,78.2934061274695,SEB_60
+3274,Kota Cirebon,Kota Cirebon,32,Jawa Barat,Jawa,385993,8,7,7,14,13,5,,,2,93.3066670100582,Sedang,7,84.0320783617878,SEB_60
+3275,Kota Bekasi,Kota Bekasi,32,Jawa Barat,Jawa,2545113,10,,8,17,,6,,,,67.7937014980082,Sedang,4,74.8893593821746,SEB_60
+3276,Kota Depok,Kota Depok,32,Jawa Barat,Jawa,1984199,15,,8,17,,11,,,,59.9743510999832,Sedang,4,59.7305921260125,SEB_60
+3277,Kota Cimahi,Kota Cimahi,32,Jawa Barat,Jawa,492926,8,8,6,13,,9,,,2,57.6092763871887,Sedang,6,62.9925447539526,SEB_60
+3278,Kota Tasikmalaya,Kota Tasikmalaya,32,Jawa Barat,Jawa,755376,13,11,15,21,,14,,,3,90.7775220052235,Sedang,6,105.116235361726,SEB_60
+3279,Kota Banjar,Kota Banjar,32,Jawa Barat,Jawa,208161,13,6,7,15,,4,,3,,100.798961507497,Sedang,6,94.4487450465292,SEB_60
+3301,Cilacap,Kab. Cilacap,33,Jawa Tengah,Jawa,2063051,13,10,11,11,9,3,11,9,,108.741426788226,Sedang,8,107.077512218985,SEB_60
+3302,Banyumas,Kab. Banyumas,33,Jawa Tengah,Jawa,1882056,13,10,9,14,,4,,7,10,82.8707445377853,Sedang,7,100.542516398122,SEB_60
+3303,Purbalingga,Kab. Purbalingga,33,Jawa Tengah,Jawa,1079550,12,14,13,19,,6,,13,17,130.206378467132,Sedang,7,136.339217863508,SEB_60
+3304,Banjarnegara,Kab. Banjarnegara,33,Jawa Tengah,Jawa,1065819,9,10,7,12,,3,,6,12,87.5626900571752,Sedang,7,83.4121915602573,SEB_60
+3305,Kebumen,Kab. Kebumen,33,Jawa Tengah,Jawa,1443425,11,5,6,12,8,3,8,3,,78.8789601294606,Sedang,8,81.4934271190848,SEB_60
+3306,Purworejo,Kab. Purworejo,33,Jawa Tengah,Jawa,816325,11,8,6,11,8,3,9,3,1,86.4542941229517,Sedang,9,88.7570343089568,SEB_60
+3307,Wonosobo,Kab. Wonosobo,33,Jawa Tengah,Jawa,949943,8,10,7,12,,3,,6,10,74.5604139835092,Sedang,7,76.6881505781344,SEB_60
+3308,Magelang,Kab. Magelang,33,Jawa Tengah,Jawa,1401756,10,11,11,12,,4,,9,11,76.9006953288744,Sedang,7,80.8056213682029,SEB_60
+3309,Boyolali,Kab. Boyolali,33,Jawa Tengah,Jawa,1134097,12,11,13,15,,4,,7,13,71.4419885643063,Sedang,7,83.5343388288549,SEB_60
+3310,Klaten,Kab. Klaten,33,Jawa Tengah,Jawa,1337767,12,9,13,13,,7,,3,9,74.2818983132575,Sedang,7,75.03359398769,SEB_60
+3311,Sukoharjo,Kab. Sukoharjo,33,Jawa Tengah,Jawa,1059775,11,5,9,13,,7,,3,,87.0295996229115,Sedang,6,79.0993138128082,SEB_60
+3312,Wonogiri,Kab. Wonogiri,33,Jawa Tengah,Jawa,1128384,8,10,8,11,1,3,8,9,,83.3829723204262,Sedang,8,84.3474053657987,SEB_60
+3313,Karanganyar,Kab. Karanganyar,33,Jawa Tengah,Jawa,1060008,9,13,15,15,,4,,11,7,82.140719071874,Sedang,7,85.8459710654786,SEB_60
+3314,Sragen,Kab. Sragen,33,Jawa Tengah,Jawa,1039914,14,8,9,17,,5,,5,2,97.4465797583749,Sedang,7,104.005574748765,SEB_60
+3315,Grobogan,Kab. Grobogan,33,Jawa Tengah,Jawa,1554094,13,6,8,12,,3,,10,,65.5927669088595,Sedang,6,68.4902996626431,SEB_60
+3316,Blora,Kab. Blora,33,Jawa Tengah,Jawa,934292,9,13,8,13,,4,,12,,82.5239787024721,Sedang,6,82.0372555684875,SEB_60
+3317,Rembang,Kab. Rembang,33,Jawa Tengah,Jawa,696695,14,13,10,15,3,2,,12,,81.9741189914421,Sedang,7,83.3219093507291,SEB_60
+3318,Pati,Kab. Pati,33,Jawa Tengah,Jawa,1397194,15,15,11,17,3,2,,9,,125.780905052474,Sedang,7,126.060839096662,SEB_60
+3319,Kudus,Kab. Kudus,33,Jawa Tengah,Jawa,904771,15,12,11,16,,2,,8,,69.1437675766986,Sedang,6,86.4370295381388,SEB_60
+3320,Jepara,Kab. Jepara,33,Jawa Tengah,Jawa,1264350,17,13,18,18,13,2,,12,,121.22393817429,Sedang,7,134.847165386354,SEB_60
+3321,Demak,Kab. Demak,33,Jawa Tengah,Jawa,1263207,14,6,9,14,4,2,,3,,85.9985827593221,Sedang,7,75.7977882952031,SEB_60
+3322,Semarang,Kab. Semarang,33,Jawa Tengah,Jawa,1129845,13,12,14,16,,5,,7,14,83.4428366407358,Sedang,7,91.7054588592937,SEB_60
+3323,Temanggung,Kab. Temanggung,33,Jawa Tengah,Jawa,839804,11,15,18,21,,6,,10,18,113.277953007013,Sedang,7,122.425376596819,SEB_60
+3324,Kendal,Kab. Kendal,33,Jawa Tengah,Jawa,1072302,13,7,12,14,9,2,,7,11,109.793963265847,Sedang,8,112.24637037544,SEB_60
+3325,Batang,Kab. Batang,33,Jawa Tengah,Jawa,856939,17,14,17,19,12,2,,9,14,140.604177876717,Sedang,8,156.432794457199,SEB_60
+3326,Pekalongan,Kab. Pekalongan,33,Jawa Tengah,Jawa,1103256,16,13,15,18,1,2,,8,,102.142026505388,Sedang,7,115.381794360967,SEB_60
+3327,Pemalang,Kab. Pemalang,33,Jawa Tengah,Jawa,1550131,11,9,12,12,10,2,,9,11,97.4865732832915,Sedang,8,111.707077998843,SEB_60
+3328,Tegal,Kab. Tegal,33,Jawa Tengah,Jawa,1654229,11,9,12,12,11,4,,8,9,110.85193320353,Sedang,8,106.701003714107,SEB_60
+3329,Brebes,Kab. Brebes,33,Jawa Tengah,Jawa,2105951,16,12,11,17,4,5,,8,3,131.590644188841,Sedang,8,119.980112179169,SEB_60
+3371,Kota Magelang,Kota Magelang,33,Jawa Tengah,Jawa,104192,19,11,15,21,,7,,,1,92.3047227800974,Sedang,6,90.9365769135973,SEB_60
+3372,Kota Surakarta,Kota Surakarta,33,Jawa Tengah,Jawa,377759,7,,8,12,,8,,,,51.0838097235693,Sedang,4,46.6625344047396,SEB_60
+3373,Kota Salatiga,Kota Salatiga,33,Jawa Tengah,Jawa,204575,14,9,13,18,,6,,4,2,98.794952458754,Sedang,7,88.3544638279629,SEB_60
+3374,Kota Semarang,Kota Semarang,33,Jawa Tengah,Jawa,1726629,11,16,18,18,16,2,,4,,82.7647149538627,Sedang,7,95.372992149698,SEB_60
+3375,Kota Pekalongan,Kota Pekalongan,33,Jawa Tengah,Jawa,255801,16,,13,18,16,2,,,,81.1825183888788,Sedang,5,98.3500937971456,SEB_60
+3376,Kota Tegal,Kota Tegal,33,Jawa Tengah,Jawa,312640,13,,10,14,11,2,,,,83.6568384470911,Sedang,5,86.1398592577309,SEB_60
+3401,Kulon Progo,Kab. Kulon Progo,34,DI Yogyakarta,Jawa,470913,11,9,6,12,9,3,9,,,107.515273821586,Sedang,7,100.375741133131,SEB_60
+3402,Bantul,Kab. Bantul,34,DI Yogyakarta,Jawa,1208541,11,8,6,12,1,7,8,2,,96.0221050503964,Sedang,8,92.2696388989928,SEB_60
+3403,Gunungkidul,Kab. Gunungkidul,34,DI Yogyakarta,Jawa,810910,10,8,5,11,1,3,8,3,,86.9368180788007,Sedang,8,86.8421182326063,SEB_60
+3404,Sleman,Kab. Sleman,34,DI Yogyakarta,Jawa,1249372,10,12,16,16,,9,,11,14,102.263901184367,Sedang,7,113.097094914159,SEB_60
+3471,Kota Yogyakarta,Kota Yogyakarta,34,DI Yogyakarta,Jawa,174017,16,,8,18,,18,,,2,51.7921900855827,Sedang,5,66.8565042611789,SEB_60
+3501,Pacitan,Kab. Pacitan,35,Jawa Timur,Jawa,620553,15,13,8,4,1,4,15,8,,103.92390761209,Sedang,8,104.19546084509,SEB_60
+3502,Ponorogo,Kab. Ponorogo,35,Jawa Timur,Jawa,1037355,20,16,12,21,,11,,15,2,111.462290439423,Sedang,7,131.219561856759,SEB_60
+3503,Trenggalek,Kab. Trenggalek,35,Jawa Timur,Jawa,771853,18,13,10,16,1,4,15,8,,120.854765792227,Sedang,8,126.018777388698,SEB_60
+3504,Tulungagung,Kab. Tulungagung,35,Jawa Timur,Jawa,1161072,16,13,10,18,1,4,13,13,13,132.300278730097,Sedang,9,136.594502428059,SEB_60
+3505,Blitar,Kab. Blitar,35,Jawa Timur,Jawa,1337793,14,13,10,16,1,4,13,13,16,130.220380452412,Sedang,9,140.07221447683,SEB_60
+3506,Kediri,Kab. Kediri,35,Jawa Timur,Jawa,1689129,16,13,12,17,,4,,12,15,103.846084580391,Sedang,7,123.414480919874,SEB_60
+3507,Malang,Kab. Malang,35,Jawa Timur,Jawa,2871534,16,14,11,19,3,5,14,13,14,142.20518382452,Sedang,9,150.195863638086,SEB_60
+3508,Lumajang,Kab. Lumajang,35,Jawa Timur,Jawa,1180661,13,11,7,13,11,4,11,11,11,116.867395783158,Sedang,9,123.01932240526,SEB_60
+3509,Jember,Kab. Jember,35,Jawa Timur,Jawa,2714752,19,14,11,19,14,5,14,13,14,161.941555676538,Sedang,9,169.743237678662,SEB_60
+3510,Banyuwangi,Kab. Banyuwangi,35,Jawa Timur,Jawa,1819039,13,11,11,13,11,4,11,11,11,126.230319377931,Sedang,9,131.014305645381,SEB_60
+3511,Bondowoso,Kab. Bondowoso,35,Jawa Timur,Jawa,812538,8,9,6,10,,3,,8,9,104.15945445648,Sedang,7,86.4132409369949,SEB_60
+3512,Situbondo,Kab. Situbondo,35,Jawa Timur,Jawa,733518,9,11,11,13,15,4,8,10,7,138.425823773379,Sedang,9,125.791574454509,SEB_60
+3513,Probolinggo,Kab. Probolinggo,35,Jawa Timur,Jawa,1183546,13,10,8,12,11,3,1,9,10,142.930400131284,Sedang,9,118.562619221124,SEB_60
+3514,Pasuruan,Kab. Pasuruan,35,Jawa Timur,Jawa,1738876,16,12,10,17,16,5,2,12,12,116.752999359818,Sedang,9,125.721251794087,SEB_60
+3515,Sidoarjo,Kab. Sidoarjo,35,Jawa Timur,Jawa,2236675,16,,11,16,1,5,1,,,91.6806701408354,Sedang,6,75.7621078611223,SEB_60
+3516,Mojokerto,Kab. Mojokerto,35,Jawa Timur,Jawa,1219471,14,12,9,16,,5,,11,12,97.2296086176663,Sedang,7,105.067408085155,SEB_60
+3517,Jombang,Kab. Jombang,35,Jawa Timur,Jawa,1403699,25,20,18,28,,8,,19,4,118.74547583567,Sedang,7,155.280007705869,SEB_60
+3518,Nganjuk,Kab. Nganjuk,35,Jawa Timur,Jawa,1171411,17,14,11,16,,5,,13,,95.5827778700064,Sedang,6,108.474747564431,SEB_60
+3519,Madiun,Kab. Madiun,35,Jawa Timur,Jawa,759708,21,16,13,19,,5,,16,,114.332405646481,Sedang,6,128.791571498103,SEB_60
+3520,Magetan,Kab. Magetan,35,Jawa Timur,Jawa,736501,13,8,10,17,,4,,12,10,95.8409980190544,Sedang,7,95.4985032440914,SEB_60
+3521,Ngawi,Kab. Ngawi,35,Jawa Timur,Jawa,924016,19,5,13,19,,5,,16,11,129.326604329062,Sedang,7,144.84630439577,SEB_60
+3522,Bojonegoro,Kab. Bojonegoro,35,Jawa Timur,Jawa,1386844,19,13,11,17,,5,,13,,97.3465332713183,Sedang,6,107.382429508568,SEB_60
+3523,Tuban,Kab. Tuban,35,Jawa Timur,Jawa,1263996,15,12,11,17,3,2,,14,,104.801293163862,Sedang,7,101.429437838672,SEB_60
+3524,Lamongan,Kab. Lamongan,35,Jawa Timur,Jawa,1423186,15,12,9,17,3,6,3,6,,136.245882337021,Sedang,8,90.1300608395711,SEB_60
+3525,Gresik,Kab. Gresik,35,Jawa Timur,Jawa,1380228,16,1,16,19,16,5,2,9,,119.660357422556,Sedang,8,124.346182120204,SEB_60
+3526,Bangkalan,Kab. Bangkalan,35,Jawa Timur,Jawa,1124346,16,12,11,16,17,2,2,4,,98.870438679368,Sedang,8,97.0440452273217,SEB_60
+3527,Sampang,Kab. Sampang,35,Jawa Timur,Jawa,1030392,15,11,10,15,15,2,2,3,,89.8655275694167,Sedang,8,111.875588285472,SEB_60
+3528,Pamekasan,Kab. Pamekasan,35,Jawa Timur,Jawa,909188,12,8,8,12,12,2,2,2,,86.4958695799251,Sedang,8,78.6983003033616,SEB_60
+3529,Sumenep,Kab. Sumenep,35,Jawa Timur,Jawa,1179478,14,12,14,16,15,2,1,9,,112.674492347995,Sedang,8,105.894890266231,SEB_60
+3571,Kota Kediri,Kota Kediri,35,Jawa Timur,Jawa,310024,8,9,6,14,,5,,3,2,75.096509464213,Sedang,7,58.1206558557386,SEB_60
+3572,Kota Blitar,Kota Blitar,35,Jawa Timur,Jawa,140608,13,,10,21,,14,,,1,69.6593807283611,Sedang,5,64.2400876368812,SEB_60
+3573,Kota Malang,Kota Malang,35,Jawa Timur,Jawa,855305,17,3,9,19,,6,,,,67.6709571593804,Sedang,5,72.8988478938066,SEB_60
+3574,Kota Probolinggo,Kota Probolinggo,35,Jawa Timur,Jawa,276824,13,,5,21,20,7,2,,,110.557255192946,Sedang,6,103.824633488948,SEB_60
+3575,Kota Pasuruan,Kota Pasuruan,35,Jawa Timur,Jawa,206135,18,,9,20,3,7,2,,,90.488976216938,Sedang,6,87.7730501339909,SEB_60
+3576,Kota Mojokerto,Kota Mojokerto,35,Jawa Timur,Jawa,153871,32,,17,36,,12,,,,116.304,Sedang,4,135.744,SEB_60
+3577,Kota Madiun,Kota Madiun,35,Jawa Timur,Jawa,215264,24,,12,27,,9,,,,66.7849086558988,Sedang,4,83.4850977488702,SEB_60
+3578,Kota Surabaya,Kota Surabaya,35,Jawa Timur,Jawa,3007494,16,,9,17,13,6,2,,,96.7587536517132,Sedang,6,90.1982045897762,SEB_60
+3579,Kota Batu,Kota Batu,35,Jawa Timur,Jawa,224884,12,14,13,19,,6,,13,4,83.619517722764,Sedang,7,96.5394383872711,SEB_60
+3601,Pandeglang,Kab. Pandeglang,36,Banten,Jawa,1367727,11,11,11,11,11,8,13,11,13,116.815595534783,Sedang,9,125.870192721108,SEB_60
+3602,Lebak,Kab. Lebak,36,Banten,Jawa,1440420,12,10,6,11,8,3,12,9,,145.976354546915,Sedang,8,111.293344610256,SEB_60
+3603,Tangerang,Kab. Tangerang,36,Banten,Jawa,3374527,15,,8,17,13,6,2,3,,73.1232123897806,Sedang,7,84.3229829883761,SEB_60
+3604,Serang,Kab. Serang,36,Banten,Jawa,1729201,16,12,14,16,13,4,12,7,9,138.440079767367,Sedang,9,140.565251947279,SEB_60
+3671,Kota Tangerang,Kota Tangerang,36,Banten,Jawa,2054134,14,,7,16,,5,,,,68.0087214557142,Sedang,4,94.6218046061357,SEB_60
+3672,Kota Cilegon,Kota Cilegon,36,Banten,Jawa,445707,16,13,10,17,11,5,12,1,,112.941929061711,Sedang,8,113.073309295779,SEB_60
+3673,Kota Serang,Kota Serang,36,Banten,Jawa,745813,10,4,11,17,11,6,1,,,109.515203757162,Sedang,7,101.674814530169,SEB_60
+3674,Kota Tangerang Selatan,Kota Tangerang Selatan,36,Banten,Jawa,1627394,11,,8,18,,6,,,,63.828981783797,Sedang,4,69.9413274994429,SEB_60
+5101,Jembrana,Kab. Jembrana,51,Bali,Bali–Nusa Tenggara,324797,18,20,13,23,21,7,22,6,,153.463751625954,Sedang,8,183.05867305893,SEB_60
+5102,Tabanan,Kab. Tabanan,51,Bali,Bali–Nusa Tenggara,493497,13,12,14,22,17,6,17,5,,116.723247840441,Sedang,8,136.921324949898,SEB_60
+5103,Badung,Kab. Badung,51,Bali,Bali–Nusa Tenggara,616277,18,13,12,18,14,4,18,7,,114.523140185844,Sedang,8,128.642397227825,SEB_60
+5104,Gianyar,Kab. Gianyar,51,Bali,Bali–Nusa Tenggara,548956,18,13,14,30,19,7,23,3,,120.050016078145,Sedang,8,151.393374309513,SEB_60
+5105,Klungkung,Kab. Klungkung,51,Bali,Bali–Nusa Tenggara,218743,21,15,12,18,18,5,21,8,3,149.496201885879,Sedang,9,154.333079435391,SEB_60
+5106,Bangli,Kab. Bangli,51,Bali,Bali–Nusa Tenggara,277249,,14,14,16,,7,,13,21,102.836294474505,Sedang,6,108.138355028283,SEB_60
+5107,Karangasem,Kab. Karangasem,51,Bali,Bali–Nusa Tenggara,533001,11,13,10,5,17,4,14,8,13,131.437816273947,Sedang,9,132.731664948237,SEB_60
+5108,Buleleng,Kab. Buleleng,51,Bali,Bali–Nusa Tenggara,847925,9,10,7,12,14,3,12,10,,118.307161904047,Sedang,8,110.627565662953,SEB_60
+5171,Kota Denpasar,Kota Denpasar,51,Bali,Bali–Nusa Tenggara,730574,10,,10,14,10,5,12,,,103.312052220657,Sedang,6,86.0136419105495,SEB_60
+5201,Lombok Barat,Kab. Lombok Barat,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,753200,9,10,8,13,10,3,12,6,,119.666601048392,Sedang,8,108.880543746397,SEB_60
+5202,Lombok Tengah,Kab. Lombok Tengah,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,1124011,14,16,12,21,16,10,16,10,2,165.069090396162,Sedang,9,162.809703278419,SEB_60
+5203,Lombok Timur,Kab. Lombok Timur,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,1408364,13,14,17,20,14,10,17,9,5,172.845630532339,Sedang,9,173.07067324751,SEB_60
+5204,Sumbawa,Kab. Sumbawa,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,540875,12,12,12,12,12,4,12,8,,195.072138062689,Tinggi,8,161.807518903835,SEB_60
+5205,Dompu,Kab. Dompu,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,254030,8,8,12,4,12,4,12,8,2,169.006440060441,Sedang,9,123.477136981657,SEB_60
+5206,Bima,Kab. Bima,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,539401,12,10,10,10,10,3,10,9,10,194.282892115766,Tinggi,9,143.278788119968,SEB_60
+5207,Sumbawa Barat,Kab. Sumbawa Barat,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,155455,19,5,11,5,16,5,16,10,,144.20310018618,Sedang,8,140.224028238534,SEB_60
+5208,Lombok Utara,Kab. Lombok Utara,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,252004,9,11,7,4,13,4,10,7,9,118.392054714669,Sedang,9,109.065761011208,SEB_60
+5271,Kota Mataram,Kota Mataram,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,445067,11,,8,18,16,12,16,,,133.461586388761,Sedang,6,109.966046679775,SEB_60
+5272,Kota Bima,Kota Bima,52,Nusa Tenggara Barat,Bali–Nusa Tenggara,169654,15,12,8,5,5,4,15,7,,148.171508899321,Sedang,8,121.543470282221,SEB_60
+5301,Kupang,Kab. Kupang,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,399335,15,10,15,15,10,5,15,9,,215.800499423249,Tinggi,8,174.555660893707,SEB_60
+5302,Timor Tengah Selatan,Kab. Timor Tengah Selatan,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,484152,16,16,16,11,1,5,15,5,,111.603785408627,Sedang,8,110.861260627775,SEB_60
+5303,Timor Tengah Utara,Kab. Timor Tengah Utara,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,279696,26,18,26,26,2,9,25,17,,194.015525694006,Tinggi,8,223.024988366161,SEB_60
+5304,Belu,Kab. Belu,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,232406,13,13,13,20,4,7,19,13,,190.436875305366,Tinggi,8,182.017175013224,SEB_60
+5305,Alor,Kab. Alor,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,226062,18,16,11,11,16,16,16,10,9,196.257351817155,Tinggi,9,160.361710917482,SEB_60
+5306,Flores Timur,Kab. Flores Timur,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,295999,26,26,26,18,31,18,26,17,26,200.853696296788,Tinggi,9,266.51051035435,SEB_60
+5307,Sikka,Kab. Sikka,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,341499,15,17,12,17,21,6,21,17,17,180.093261667917,Tinggi,9,193.114427763757,SEB_60
+5308,Ende,Kab. Ende,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,285817,12,12,8,12,15,4,15,12,12,205.712508066334,Tinggi,9,152.096562784459,SEB_60
+5309,Ngada,Kab. Ngada,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,177735,17,26,26,9,2,9,26,25,26,240.260146954356,Tinggi,9,244.448555256213,SEB_60
+5310,Manggarai,Kab. Manggarai,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,328377,31,26,26,9,9,9,26,17,31,241.901366372506,Tinggi,9,237.390379146684,SEB_60
+5311,Sumba Timur,Kab. Sumba Timur,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,260611,17,17,11,11,17,11,17,16,,174.640008069456,Sedang,8,182.223726632781,SEB_60
+5312,Sumba Barat,Kab. Sumba Barat,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,153189,13,5,14,5,9,5,14,9,,193.310500779697,Tinggi,8,156.248049693845,SEB_60
+5313,Lembata,Kab. Lembata,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,145821,8,12,8,8,12,8,12,8,12,205.273931499213,Tinggi,9,175.355472865713,SEB_60
+5314,Rote Ndao,Kab. Rote Ndao,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,153674,12,8,12,8,12,4,12,12,,188.13687688308,Tinggi,8,141.049947220013,SEB_60
+5315,Manggarai Barat,Kab. Manggarai Barat,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,270961,13,13,13,4,4,4,13,12,13,188.819782769981,Tinggi,9,163.663951015739,SEB_60
+5316,Nagekeo,Kab. Nagekeo,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,171197,26,26,26,18,10,9,26,25,26,206.639121994232,Tinggi,9,304.813304007641,SEB_60
+5317,Sumba Tengah,Kab. Sumba Tengah,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,91420,16,5,11,5,6,5,16,15,,197.58281893537,Tinggi,8,159.090192234185,SEB_60
+5318,Sumba Barat Daya,Kab. Sumba Barat Daya,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,326211,21,14,21,14,1,7,21,14,,220.455953120102,Tinggi,8,193.816857177414,SEB_60
+5319,Manggarai Timur,Kab. Manggarai Timur,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,298572,9,14,14,5,1,9,14,9,8,172.937534353947,Sedang,9,151.51484763508,SEB_60
+5320,Sabu Raijua,Kab. Sabu Raijua,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,95748,16,17,26,9,25,26,30,25,,198.049045627148,Tinggi,8,210.064,SEB_60
+5321,Malaka,Kab. Malaka,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,192961,11,11,17,17,2,6,17,11,,233.072184276095,Tinggi,8,177.329372295674,SEB_60
+5371,Kota Kupang,Kota Kupang,53,Nusa Tenggara Timur,Bali–Nusa Tenggara,458951,12,11,22,22,4,7,21,10,,187.537257914946,Tinggi,8,151.509169383234,SEB_60
+6101,Sambas,Kab. Sambas,61,Kalimantan Barat,Kalimantan,666289,14,5,9,14,14,1,,14,,109.614396115013,Sedang,7,105.007806706075,SEB_60
+6102,Mempawah,Kab. Mempawah,61,Kalimantan Barat,Kalimantan,306788,18,12,18,12,17,1,,17,,90.3347579260295,Sedang,7,110.364810348583,SEB_60
+6103,Sanggau,Kab. Sanggau,61,Kalimantan Barat,Kalimantan,511514,17,6,17,12,,1,,11,,113.392549733471,Sedang,6,122.053271420914,SEB_60
+6104,Ketapang,Kab. Ketapang,61,Kalimantan Barat,Kalimantan,614433,17,12,17,17,17,1,,17,,101.107677116695,Sedang,7,113.075635597758,SEB_60
+6105,Sintang,Kab. Sintang,61,Kalimantan Barat,Kalimantan,448448,21,14,14,21,,1,,13,,107.753210479365,Sedang,6,121.262848611657,SEB_60
+6106,Kapuas Hulu,Kab. Kapuas Hulu,61,Kalimantan Barat,Kalimantan,267978,20,13,13,20,,1,,13,,137.626881844519,Sedang,6,122.893227554222,SEB_60
+6107,Bengkayang,Kab. Bengkayang,61,Kalimantan Barat,Kalimantan,308313,11,4,7,11,11,1,,11,,103.093198132901,Sedang,7,81.0204878782948,SEB_60
+6108,Landak,Kab. Landak,61,Kalimantan Barat,Kalimantan,423146,18,6,12,12,,1,,11,,140.64004162847,Sedang,6,112.604170154141,SEB_60
+6109,Sekadau,Kab. Sekadau,61,Kalimantan Barat,Kalimantan,223415,15,5,10,15,,1,,9,,105.554598296474,Sedang,6,101.354296878348,SEB_60
+6110,Melawi,Kab. Melawi,61,Kalimantan Barat,Kalimantan,240451,26,18,18,26,,2,,17,,137.808,Sedang,6,148.608,SEB_60
+6111,Kayong Utara,Kab. Kayong Utara,61,Kalimantan Barat,Kalimantan,133856,13,4,13,9,13,1,,8,,127.93492953924,Sedang,7,104.272527949647,SEB_60
+6112,Kubu Raya,Kab. Kubu Raya,61,Kalimantan Barat,Kalimantan,642542,18,2,26,26,9,2,,25,,117.870145565123,Sedang,7,119.088,SEB_60
+6171,Kota Pontianak,Kota Pontianak,61,Kalimantan Barat,Kalimantan,711260,24,,19,27,,4,,8,,50.0921609742384,Sedang,5,70.1018809513304,SEB_60
+6172,Kota Singkawang,Kota Singkawang,61,Kalimantan Barat,Kalimantan,252270,31,26,18,26,26,2,,25,,143.648,Sedang,7,162.368,SEB_60
+6201,Kotawaringin Barat,Kab. Kotawaringin Barat,62,Kalimantan Tengah,Kalimantan,285869,12,1,8,8,4,1,,11,,85.1386300582605,Sedang,7,78.1514728809393,SEB_60
+6202,Kotawaringin Timur,Kab. Kotawaringin Timur,62,Kalimantan Tengah,Kalimantan,456236,13,1,9,13,4,1,1,13,,85.8379899895707,Sedang,8,87.0591108995473,SEB_60
+6203,Kapuas,Kab. Kapuas,62,Kalimantan Tengah,Kalimantan,438180,14,9,9,14,2,1,1,13,,126.274907837495,Sedang,8,102.37473906321,SEB_60
+6204,Barito Selatan,Kab. Barito Selatan,62,Kalimantan Tengah,Kalimantan,138568,15,2,10,15,,1,,14,,117.502492889944,Sedang,6,93.9136781541021,SEB_60
+6205,Barito Utara,Kab. Barito Utara,62,Kalimantan Tengah,Kalimantan,163933,18,6,12,12,,1,,12,,103.87960040313,Sedang,6,107.990807201779,SEB_60
+6206,Katingan,Kab. Katingan,62,Kalimantan Tengah,Kalimantan,171166,19,6,13,19,3,1,1,18,,131.846921117287,Sedang,8,122.572422106956,SEB_60
+6207,Seruyan,Kab. Seruyan,62,Kalimantan Tengah,Kalimantan,171252,16,5,11,16,9,1,6,15,,117.867514631143,Sedang,8,129.967311969329,SEB_60
+6208,Sukamara,Kab. Sukamara,62,Kalimantan Tengah,Kalimantan,57711,14,1,9,14,14,1,,13,,106.232135834323,Sedang,7,97.2504880881538,SEB_60
+6209,Lamandau,Kab. Lamandau,62,Kalimantan Tengah,Kalimantan,103321,13,4,8,8,,1,,8,,102.394159233087,Sedang,6,88.3485254058286,SEB_60
+6210,Gunung Mas,Kab. Gunung Mas,62,Kalimantan Tengah,Kalimantan,143494,17,11,3,11,,1,,11,,115.531241664937,Sedang,6,99.9957233709408,SEB_60
+6211,Pulang Pisau,Kab. Pulang Pisau,62,Kalimantan Tengah,Kalimantan,143415,10,,6,10,3,1,1,9,,71.0683995032006,Sedang,7,49.2083894495339,SEB_60
+6212,Murung Raya,Kab. Murung Raya,62,Kalimantan Tengah,Kalimantan,118377,23,15,8,8,,1,,15,,135.888,Sedang,6,116.846895277308,SEB_60
+6213,Barito Timur,Kab. Barito Timur,62,Kalimantan Tengah,Kalimantan,121134,16,1,11,16,,1,,16,,102.552544492776,Sedang,6,91.5509666261694,SEB_60
+6271,Kota Palangkaraya,Kota Palangkaraya,62,Kalimantan Tengah,Kalimantan,310917,10,1,3,15,,1,,15,,64.6782771991044,Sedang,6,62.6276658003363,SEB_60
+6301,Tanah Laut,Kab. Tanah Laut,63,Kalimantan Selatan,Kalimantan,371260,11,11,8,11,11,1,1,11,,131.76390807433,Sedang,8,114.708071651418,SEB_60
+6302,Kotabaru,Kab. Kotabaru,63,Kalimantan Selatan,Kalimantan,343128,10,6,6,6,10,1,1,9,,108.018250888139,Sedang,8,87.5653258604408,SEB_60
+6303,Banjar,Kab. Banjar,63,Kalimantan Selatan,Kalimantan,607367,10,3,7,10,2,1,,10,,75.6591130966703,Sedang,7,72.4325102226595,SEB_60
+6304,Barito Kuala,Kab. Barito Kuala,63,Kalimantan Selatan,Kalimantan,363271,14,,9,14,2,1,1,14,,67.5972715816808,Sedang,7,66.1332491138183,SEB_60
+6305,Tapin,Kab. Tapin,63,Kalimantan Selatan,Kalimantan,200385,14,5,9,14,,1,,13,,79.5973475953778,Sedang,6,83.2245968070493,SEB_60
+6306,Hulu Sungai Selatan,Kab. Hulu Sungai Selatan,63,Kalimantan Selatan,Kalimantan,245200,14,5,9,14,,1,,13,,93.5273935431149,Sedang,6,93.1875280049444,SEB_60
+6307,Hulu Sungai Tengah,Kab. Hulu Sungai Tengah,63,Kalimantan Selatan,Kalimantan,273292,17,6,12,17,,1,,17,,105.231412692282,Sedang,6,104.095881216551,SEB_60
+6308,Hulu Sungai Utara,Kab. Hulu Sungai Utara,63,Kalimantan Selatan,Kalimantan,234642,14,,9,14,,1,,13,,52.6269412431135,Sedang,5,60.033596149146,SEB_60
+6309,Tabalong,Kab. Tabalong,63,Kalimantan Selatan,Kalimantan,270597,12,8,8,12,,1,,11,,97.0362788487805,Sedang,6,79.5157824992329,SEB_60
+6310,Tanah Bumbu,Kab. Tanah Bumbu,63,Kalimantan Selatan,Kalimantan,342403,13,9,9,13,15,1,1,12,,77.5861872877868,Sedang,8,109.861192483607,SEB_60
+6311,Balangan,Kab. Balangan,63,Kalimantan Selatan,Kalimantan,140232,14,9,9,14,,1,,13,,63.5644246897836,Sedang,6,82.6169694179368,SEB_60
+6371,Kota Banjarmasin,Kota Banjarmasin,63,Kalimantan Selatan,Kalimantan,683411,13,,7,14,,2,,4,,47.9590498449219,Sedang,5,57.7671467946233,SEB_60
+6372,Kota Banjarbaru,Kota Banjarbaru,63,Kalimantan Selatan,Kalimantan,242466,14,,9,14,,1,,11,,87.6481422228847,Sedang,5,78.137560048795,SEB_60
+6401,Paser,Kab. Paser,64,Kalimantan Timur,Kalimantan,289501,21,7,14,21,15,1,1,20,,136.600453161432,Sedang,8,133.40966606472,SEB_60
+6402,Kutai Kartanegara,Kab. Kutai Kartanegara,64,Kalimantan Timur,Kalimantan,756520,16,5,11,16,5,1,11,15,,106.395868410401,Sedang,8,115.255996885455,SEB_60
+6403,Berau,Kab. Berau,64,Kalimantan Timur,Kalimantan,260041,16,10,16,16,10,5,10,10,,155.266656472344,Sedang,8,160.246379628661,SEB_60
+6407,Kutai Barat,Kab. Kutai Barat,64,Kalimantan Timur,Kalimantan,182385,19,12,12,19,,1,,18,,140.505575647214,Sedang,6,128.081702346572,SEB_60
+6408,Kutai Timur,Kab. Kutai Timur,64,Kalimantan Timur,Kalimantan,454568,18,18,12,12,3,6,12,17,,200.096622494626,Tinggi,8,188.474961770206,SEB_60
+6409,Penajam Paser Utara,Kab. Penajam Paser Utara,64,Kalimantan Timur,Kalimantan,191110,13,2,9,4,2,1,1,8,,88.5380631863022,Sedang,8,71.6564291723404,SEB_60
+6411,Mahakam Ulu,Kab. Mahakam Ulu,64,Kalimantan Timur,Kalimantan,34433,21,14,7,7,,1,,7,,103.735264080872,Sedang,6,109.666013340184,SEB_60
+6471,Kota Balikpapan,Kota Balikpapan,64,Kalimantan Timur,Kalimantan,730426,13,1,8,13,2,2,,6,,89.4335798512719,Sedang,7,77.0722679851961,SEB_60
+6472,Kota Samarinda,Kota Samarinda,64,Kalimantan Timur,Kalimantan,896341,18,1,12,18,,2,1,9,,71.48073952786,Sedang,7,81.6317315353903,SEB_60
+6474,Kota Bontang,Kota Bontang,64,Kalimantan Timur,Kalimantan,192187,17,1,11,17,2,2,10,8,,85.2537311793211,Sedang,8,80.0799548019196,SEB_60
+6501,Bulungan,Kab. Bulungan,65,Kalimantan Utara,Kalimantan,160536,26,26,18,26,26,2,14,17,,135.479100250884,Sedang,8,184.255441197434,SEB_60
+6502,Malinau,Kab. Malinau,65,Kalimantan Utara,Kalimantan,87596,26,26,18,26,,2,,17,,127.512312674496,Sedang,6,150.65685881103,SEB_60
+6503,Nunukan,Kab. Nunukan,65,Kalimantan Utara,Kalimantan,209024,26,26,18,18,26,2,18,17,,134.361384461466,Sedang,8,201.259822706044,SEB_60
+6504,Tana Tidung,Kab. Tana Tidung,65,Kalimantan Utara,Kalimantan,29261,20,1,13,20,7,1,10,13,,106.765787537712,Sedang,8,117.687448940663,SEB_60
+6571,Kota Tarakan,Kota Tarakan,65,Kalimantan Utara,Kalimantan,257102,27,1,18,27,26,4,18,13,,102.619784295252,Sedang,8,134.259425780573,SEB_60
+7101,Bolaang Mongondow,Kab. Bolaang Mongondow,71,Sulawesi Utara,Sulawesi,261966,9,9,6,9,10,6,9,6,4,132.358260833502,Sedang,9,100.3351394258,SEB_60
+7102,Minahasa,Kab. Minahasa,71,Sulawesi Utara,Sulawesi,348008,22,18,12,18,19,12,21,12,18,231.859934837487,Tinggi,9,204.40802749272,SEB_60
+7103,Kepulauan Sangihe,Kab. Kepulauan Sangihe,71,Sulawesi Utara,Sulawesi,142867,23,18,12,18,20,6,21,11,18,250.266993916654,Tinggi,9,204.291210709046,SEB_60
+7104,Kepulauan Talaud,Kab. Kepulauan Talaud,71,Sulawesi Utara,Sulawesi,99594,18,13,20,20,23,20,20,13,,204.373877055549,Tinggi,8,191.211097339896,SEB_60
+7105,Minahasa Selatan,Kab. Minahasa Selatan,71,Sulawesi Utara,Sulawesi,249883,18,10,10,10,3,5,20,9,14,186.761543507324,Tinggi,9,159.146536286135,SEB_60
+7106,Minahasa Utara,Kab. Minahasa Utara,71,Sulawesi Utara,Sulawesi,235781,13,9,9,13,13,4,13,8,13,197.697295740443,Tinggi,9,174.484954138927,SEB_60
+7107,Minahasa Tenggara,Kab. Minahasa Tenggara,71,Sulawesi Utara,Sulawesi,125122,21,16,11,5,18,5,19,16,16,215.773092293646,Tinggi,9,188.365726637798,SEB_60
+7108,Bolaang Mongondow Utara,Kab. Bolaang Mongondow Utara,71,Sulawesi Utara,Sulawesi,94817,26,26,18,9,25,26,26,17,,221.664,Tinggi,8,227.184,SEB_60
+7109,Kepulauan Siau Tagulandang Biaro,Kab. Kep. Siau Tagulandang Biaro,71,Sulawesi Utara,Sulawesi,74649,,10,10,4,12,3,14,7,10,113.118093814819,Sedang,8,99.948908810563,SEB_60
+7110,Bolaang Mongondow Timur,Kab. Bolaang Mongondow Timur,71,Sulawesi Utara,Sulawesi,89813,15,9,9,4,12,4,13,8,13,167.414465589068,Sedang,9,153.74980177976,SEB_60
+7111,Bolaang Mongondow Selatan,Kab. Bolaang Mongondow Selatan,71,Sulawesi Utara,Sulawesi,74996,19,16,11,5,16,5,16,10,,201.823037423323,Tinggi,8,173.21887348328,SEB_60
+7171,Kota Manado,Kota Manado,71,Sulawesi Utara,Sulawesi,493575,15,9,10,16,5,4,15,7,2,119.449282473109,Sedang,9,122.238736488394,SEB_60
+7172,Kota Bitung,Kota Bitung,71,Sulawesi Utara,Sulawesi,241146,16,12,12,14,16,4,16,8,12,140.76739594783,Sedang,9,134.393563385125,SEB_60
+7173,Kota Tomohon,Kota Tomohon,71,Sulawesi Utara,Sulawesi,113522,19,10,12,6,,5,,10,18,146.999140690436,Sedang,7,123.489195031821,SEB_60
+7174,Kota Kotamobagu,Kota Kotamobagu,71,Sulawesi Utara,Sulawesi,138453,13,16,15,22,,11,,10,3,153.242980264694,Sedang,7,129.765876390496,SEB_60
+7201,Banggai,Kab. Banggai,72,Sulawesi Tengah,Sulawesi,384086,20,20,13,20,7,7,20,13,,249.332722907902,Tinggi,8,208.679106248403,SEB_60
+7202,Poso,Kab. Poso,72,Sulawesi Tengah,Sulawesi,258280,15,15,10,15,2,10,10,14,,159.085195281318,Sedang,8,142.528126448102,SEB_60
+7203,Donggala,Kab. Donggala,72,Sulawesi Tengah,Sulawesi,304869,18,18,12,6,21,12,18,11,,199.735704922686,Tinggi,8,191.875039712632,SEB_60
+7204,Toli Toli,Kab. Toli-Toli,72,Sulawesi Tengah,Sulawesi,244715,13,13,9,4,13,13,13,8,,189.164523778316,Tinggi,8,159.878522278269,SEB_60
+7205,Buol,Kab. Buol,72,Sulawesi Tengah,Sulawesi,153929,26,26,18,26,29,26,31,17,,242.928,Tinggi,8,253.728,SEB_60
+7206,Morowali,Kab. Morowali,72,Sulawesi Tengah,Sulawesi,170059,26,9,17,26,26,9,26,24,,230.07545706657,Tinggi,8,236.507437699188,SEB_60
+7207,Banggai Kepulauan,Kab. Banggai Kepulauan,72,Sulawesi Tengah,Sulawesi,128154,20,13,13,7,7,7,20,12,,197.454650591294,Tinggi,8,161.869236282599,SEB_60
+7208,Parigi Moutong,Kab. Parigi Moutong,72,Sulawesi Tengah,Sulawesi,468074,13,13,8,13,2,8,1,8,,121.080482861467,Sedang,8,104.708802931176,SEB_60
+7209,Tojo Una Una,Kab. Tojo Una Una,72,Sulawesi Tengah,Sulawesi,174435,26,26,18,9,9,9,18,17,26,264.048,Tinggi,9,232.608,SEB_60
+7210,Sigi,Kab. Sigi,72,Sulawesi Tengah,Sulawesi,285997,15,15,10,15,,15,,9,,126.739766018288,Sedang,6,132.627767268617,SEB_60
+7211,Banggai Laut,Kab. Banggai Laut,72,Sulawesi Tengah,Sulawesi,72775,26,18,18,9,18,9,26,8,,209.984,Tinggi,8,186.944,SEB_60
+7212,Morowali Utara,Kab. Morowali Utara,72,Sulawesi Tengah,Sulawesi,129783,25,17,17,25,8,8,17,16,,232.944,Tinggi,8,211.420524609052,SEB_60
+7271,Kota Palu,Kota Palu,72,Sulawesi Tengah,Sulawesi,389625,7,9,8,12,2,9,11,6,,132.577555473955,Sedang,8,124.309841028293,SEB_60
+7301,Kepulauan Selayar,Kab. Kepulauan Selayar,73,Sulawesi Selatan,Sulawesi,141245,14,5,15,10,15,2,9,14,,155.417737191535,Sedang,8,135.678494833216,SEB_60
+7302,Bulukumba,Kab. Bulukumba,73,Sulawesi Selatan,Sulawesi,456469,17,17,17,17,6,1,13,11,,146.167553264644,Sedang,8,141.397938705291,SEB_60
+7303,Bantaeng,Kab. Bantaeng,73,Sulawesi Selatan,Sulawesi,218009,11,5,9,16,3,2,11,9,,93.748275384244,Sedang,8,90.1277495894997,SEB_60
+7304,Jeneponto,Kab. Jeneponto,73,Sulawesi Selatan,Sulawesi,419863,20,26,21,31,5,3,16,17,,165.504,Sedang,8,174.384,SEB_60
+7305,Takalar,Kab. Takalar,73,Sulawesi Selatan,Sulawesi,302057,21,6,14,21,22,2,12,11,,171.249566106778,Sedang,8,142.435431885262,SEB_60
+7306,Gowa,Kab. Gowa,73,Sulawesi Selatan,Sulawesi,877197,19,14,14,17,12,1,2,9,,138.193370066023,Sedang,8,105.756086382318,SEB_60
+7307,Sinjai,Kab. Sinjai,73,Sulawesi Selatan,Sulawesi,268399,16,22,22,22,28,1,19,21,,183.984,Tinggi,8,179.227072574453,SEB_60
+7308,Bone,Kab. Bone,73,Sulawesi Selatan,Sulawesi,860889,14,14,14,14,5,1,6,9,,131.314635492,Sedang,8,128.214787812582,SEB_60
+7309,Maros,Kab. Maros,73,Sulawesi Selatan,Sulawesi,453462,23,20,13,20,6,1,3,13,,150.743073579241,Sedang,8,131.211501045806,SEB_60
+7310,Pangkajene Kepulauan,Kab. Pangkajene dan Kepulauan,73,Sulawesi Selatan,Sulawesi,347457,25,21,21,21,25,7,13,13,,201.662845632252,Tinggi,8,188.760489083635,SEB_60
+7311,Barru,Kab. Barru,73,Sulawesi Selatan,Sulawesi,198235,14,12,8,12,15,1,8,8,,153.592818157756,Sedang,8,123.60204849239,SEB_60
+7312,Soppeng,Kab. Soppeng,73,Sulawesi Selatan,Sulawesi,250954,23,23,16,23,,1,,15,,157.584,Sedang,6,162.431053523644,SEB_60
+7313,Wajo,Kab. Wajo,73,Sulawesi Selatan,Sulawesi,405562,9,3,6,9,1,1,1,6,,125.427341763905,Sedang,8,90.4046023850565,SEB_60
+7314,Sidenreng Rappang,Kab. Sidenreng Rappang,73,Sulawesi Selatan,Sulawesi,345522,25,25,17,25,,2,,16,,159.504,Sedang,6,172.237020333623,SEB_60
+7315,Pinrang,Kab. Pinrang,73,Sulawesi Selatan,Sulawesi,417821,13,13,9,13,15,3,8,8,,181.347743021502,Tinggi,8,122.915722028683,SEB_60
+7316,Enrekang,Kab. Enrekang,73,Sulawesi Selatan,Sulawesi,235183,14,15,10,5,,1,,9,,140.690263318184,Sedang,6,108.762450060622,SEB_60
+7317,Luwu,Kab. Luwu,73,Sulawesi Selatan,Sulawesi,398736,19,19,12,19,5,1,1,12,,147.482178043795,Sedang,8,135.545065550465,SEB_60
+7318,Tana Toraja,Kab. Tana Toraja,73,Sulawesi Selatan,Sulawesi,302265,35,26,18,9,,2,,25,,135.408,Sedang,6,147.648,SEB_60
+7322,Luwu Utara,Kab. Luwu Utara,73,Sulawesi Selatan,Sulawesi,339939,11,11,7,11,3,4,1,7,,127.914107869272,Sedang,8,103.340200058595,SEB_60
+7324,Luwu Timur,Kab. Luwu Timur,73,Sulawesi Selatan,Sulawesi,315940,10,10,6,10,3,10,1,6,,117.324219046962,Sedang,8,107.115358158803,SEB_60
+7326,Toraja Utara,Kab. Toraja Utara,73,Sulawesi Selatan,Sulawesi,274699,34,26,18,31,,2,,17,,144.970587491907,Sedang,6,173.248,SEB_60
+7371,Kota Makassar,Kota Makassar,73,Sulawesi Selatan,Sulawesi,1431959,20,,12,20,19,3,8,,,91.4415328856761,Sedang,6,88.8309172334508,SEB_60
+7372,Kota Pare Pare,Kota Parepare,73,Sulawesi Selatan,Sulawesi,168768,23,19,17,25,23,3,15,12,,178.869271015795,Tinggi,8,182.662654047685,SEB_60
+7373,Kota Palopo,Kota Palopo,73,Sulawesi Selatan,Sulawesi,190917,16,12,9,16,2,1,1,7,,153.732590931736,Sedang,8,115.109706693124,SEB_60
+7401,Kolaka,Kab. Kolaka,74,Sulawesi Tenggara,Sulawesi,251750,15,5,15,15,5,1,7,15,,182.822499288721,Tinggi,8,132.975249892953,SEB_60
+7402,Konawe,Kab. Konawe,74,Sulawesi Tenggara,Sulawesi,272756,26,26,26,26,10,9,26,25,,252.288,Tinggi,8,245.568,SEB_60
+7403,Muna,Kab. Muna,74,Sulawesi Tenggara,Sulawesi,228512,23,8,23,23,7,3,23,15,,235.888,Tinggi,8,205.817180412877,SEB_60
+7404,Buton,Kab. Buton,74,Sulawesi Tenggara,Sulawesi,123102,18,6,18,6,2,3,22,12,,180.21585025511,Tinggi,8,149.541757047789,SEB_60
+7405,Konawe Selatan,Kab. Konawe Selatan,74,Sulawesi Tenggara,Sulawesi,324148,16,10,16,16,5,2,16,15,,209.833118132689,Tinggi,8,155.715963142157,SEB_60
+7406,Bombana,Kab. Bombana,74,Sulawesi Tenggara,Sulawesi,159954,16,16,16,16,5,1,11,15,,164.121240816768,Sedang,8,144.337194431866,SEB_60
+7407,Wakatobi,Kab. Wakatobi,74,Sulawesi Tenggara,Sulawesi,118177,22,1,22,15,26,1,26,14,,174.78086165942,Sedang,8,157.690257945221,SEB_60
+7408,Kolaka Utara,Kab. Kolaka Utara,74,Sulawesi Tenggara,Sulawesi,145879,18,18,18,18,4,3,1,11,,198.365539275735,Tinggi,8,162.590858718887,SEB_60
+7409,Konawe Utara,Kab. Konawe Utara,74,Sulawesi Tenggara,Sulawesi,72338,17,17,17,17,17,1,17,11,,188.800217362424,Tinggi,8,156.8048522178,SEB_60
+7410,Buton Utara,Kab. Buton Utara,74,Sulawesi Tenggara,Sulawesi,71106,8,1,12,4,2,4,12,7,,208.238429818695,Tinggi,8,134.922784984893,SEB_60
+7411,Kolaka Timur,Kab. Kolaka Timur,74,Sulawesi Tenggara,Sulawesi,126881,24,24,24,24,,1,,15,,167.184,Sedang,6,174.782352359375,SEB_60
+7412,Konawe Kepulauan,Kab. Konawe Kepulauan,74,Sulawesi Tenggara,Sulawesi,39294,26,2,26,9,31,9,31,17,,230.928,Tinggi,8,213.408,SEB_60
+7413,Muna Barat,Kab. Muna Barat,74,Sulawesi Tenggara,Sulawesi,89718,26,2,26,18,8,2,18,17,,167.568,Sedang,8,151.008,SEB_60
+7414,Buton Tengah,Kab. Buton Tengah,74,Sulawesi Tenggara,Sulawesi,150377,20,1,20,20,9,1,15,19,,200.056519517328,Tinggi,8,171.565677869094,SEB_60
+7415,Buton Selatan,Kab. Buton Selatan,74,Sulawesi Tenggara,Sulawesi,101932,28,8,24,24,32,1,21,23,,236.128,Tinggi,8,223.591131963373,SEB_60
+7471,Kota Kendari,Kota Kendari,74,Sulawesi Tenggara,Sulawesi,369586,16,8,16,16,2,2,15,12,,115.399282237525,Sedang,8,123.84709435196,SEB_60
+7472,Kota Bau Bau,Kota Bau Bau,74,Sulawesi Tenggara,Sulawesi,140532,28,16,24,32,6,3,20,23,,215.584,Tinggi,8,208.356099137636,SEB_60
+7501,Gorontalo,Kab. Gorontalo,75,Gorontalo,Sulawesi,397179,15,8,8,13,16,13,11,8,,128.977889800564,Sedang,8,120.861843983275,SEB_60
+7502,Boalemo,Kab. Boalemo,75,Gorontalo,Sulawesi,156037,20,6,11,6,5,11,11,11,,167.693665357352,Sedang,8,164.261529024075,SEB_60
+7503,Bone Bolango,Kab. Bone Bolango,75,Gorontalo,Sulawesi,183041,10,12,8,12,16,12,10,8,,175.652181118055,Sedang,8,155.297879451527,SEB_60
+7504,Pohuwato,Kab. Pohuwato,75,Gorontalo,Sulawesi,154675,26,26,18,26,26,18,13,17,,182.481714378343,Tinggi,8,232.224,SEB_60
+7505,Gorontalo Utara,Kab. Gorontalo Utara,75,Gorontalo,Sulawesi,125130,21,18,12,6,17,18,18,11,,204.519375225542,Tinggi,8,183.959007968199,SEB_60
+7571,Kota Gorontalo,Kota Gorontalo,75,Gorontalo,Sulawesi,217275,16,1,11,17,16,17,10,8,,126.872230567821,Sedang,8,110.772958919048,SEB_60
+7601,Pasangkayu,Kab. Pasangkayu,76,Sulawesi Barat,Sulawesi,202135,26,26,18,18,19,9,26,17,,229.584,Tinggi,8,224.064,SEB_60
+7602,Mamuju,Kab. Mamuju,76,Sulawesi Barat,Sulawesi,296665,23,23,15,23,25,8,23,14,,233.731844582115,Tinggi,8,214.915725332565,SEB_60
+7603,Mamasa,Kab. Mamasa,76,Sulawesi Barat,Sulawesi,173797,21,17,11,6,,6,,5,,152.775722444566,Sedang,6,115.848029502525,SEB_60
+7604,Polewali Mandar,Kab. Polewali Mandar,76,Sulawesi Barat,Sulawesi,506924,18,15,10,18,19,5,15,10,,202.151940150441,Tinggi,8,145.589817447753,SEB_60
+7605,Majene,Kab. Majene,76,Sulawesi Barat,Sulawesi,184928,9,11,7,5,3,7,13,7,,228.319747426754,Tinggi,8,138.509217070914,SEB_60
+7606,Mamuju Tengah,Kab. Mamuju Tengah,76,Sulawesi Barat,Sulawesi,146161,11,11,7,7,4,4,11,7,,222.176495685239,Tinggi,8,145.756440322304,SEB_60
+8101,Maluku Tengah,Kab. Maluku Tengah,81,Maluku,Maluku,452378,15,15,15,15,17,5,17,9,17,186.423051937234,Tinggi,9,172.279955536223,SEB_60
+8102,Maluku Tenggara,Kab. Maluku Tenggara,81,Maluku,Maluku,86730,26,2,18,18,21,18,31,17,,204.528,Tinggi,8,189.408,SEB_60
+8103,Kepulauan Tanimbar,Kab. Kepulauan Tanimbar,81,Maluku,Maluku,130460,26,2,26,18,26,9,18,17,,195.685154824314,Tinggi,8,187.878862838947,SEB_60
+8104,Buru,Kab. Buru,81,Maluku,Maluku,143534,19,19,13,19,23,6,19,18,,192.979067614359,Tinggi,8,184.705705217604,SEB_60
+8105,Seram Bagian Timur,Kab. Seram Bagian Timur,81,Maluku,Maluku,144725,25,8,25,8,30,8,30,16,,244.528,Tinggi,8,224.010740356937,SEB_60
+8106,Seram Bagian Barat,Kab. Seram Bagian Barat,81,Maluku,Maluku,225600,15,15,10,15,18,5,18,10,,200.962078466389,Tinggi,8,180.153609586692,SEB_60
+8107,Kepulauan Aru,Kab. Kepulauan Aru,81,Maluku,Maluku,108089,26,2,18,9,9,9,18,17,,183.868109492761,Tinggi,8,156.865632807239,SEB_60
+8108,Maluku Barat Daya,Kab. Maluku Barat Daya,81,Maluku,Maluku,87251,18,12,18,18,18,6,18,17,18,246.316542945535,Tinggi,9,220.451613900857,SEB_60
+8109,Buru Selatan,Kab. Buru Selatan,81,Maluku,Maluku,80030,22,22,15,22,26,7,26,21,,220.561169803174,Tinggi,8,224.583155962399,SEB_60
+8171,Kota Ambon,Kota Ambon,81,Maluku,Maluku,364071,12,5,13,6,19,5,19,9,,159.487837020228,Sedang,8,134.646028416746,SEB_60
+8172,Kota Tual,Kota Tual,81,Maluku,Maluku,135633,26,2,26,26,10,9,31,17,,207.984,Tinggi,8,189.984,SEB_60
+8201,Halmahera Barat,Kab. Halmahera Barat,82,Maluku Utara,Maluku,141439,26,26,18,9,16,9,26,17,26,254.448,Tinggi,9,244.608,SEB_60
+8202,Halmahera Tengah,Kab. Halmahera Tengah,82,Maluku Utara,Maluku,59267,26,18,26,9,18,9,18,17,,251.088,Tinggi,8,224.928,SEB_60
+8203,Halmahera Utara,Kab. Halmahera Utara,82,Maluku Utara,Maluku,206837,19,7,13,13,14,13,23,12,19,236.170829243615,Tinggi,9,188.562501447381,SEB_60
+8204,Halmahera Selatan,Kab. Halmahera Selatan,82,Maluku Utara,Maluku,261384,16,16,16,10,16,5,16,10,16,278.507756306277,Tinggi,9,213.880045732088,SEB_60
+8205,Kepulauan Sula,Kab. Kepulauan Sula,82,Maluku Utara,Maluku,108775,16,16,16,5,12,16,19,10,,186.21906116643,Tinggi,8,166.362184559157,SEB_60
+8206,Halmahera Timur,Kab. Halmahera Timur,82,Maluku Utara,Maluku,99775,26,26,18,26,18,9,26,17,,240.528,Tinggi,8,235.488,SEB_60
+8207,Pulau Morotai,Kab. Pulau Morotai,82,Maluku Utara,Maluku,77950,19,6,13,6,22,19,22,12,,182.098504158908,Tinggi,8,170.809016373885,SEB_60
+8208,Pulau Taliabu,Kab. Pulau Taliabu,82,Maluku Utara,Maluku,62746,17,6,12,12,12,12,17,11,,223.41472688172,Tinggi,8,168.18480621652,SEB_60
+8271,Kota Ternate,Kota Ternate,82,Maluku Utara,Maluku,217123,,15,20,20,20,5,20,9,18,109.577018355795,Sedang,8,138.249127259915,SEB_60
+8272,Kota Tidore Kepulauan,Kota Tidore Kepulauan,82,Maluku Utara,Maluku,121459,25,25,17,25,33,8,34,16,,241.248,Tinggi,8,238.081802816901,SEB_60
+9103,Jayapura,Kab. Jayapura,91,Papua,Papua,179193,26,26,26,26,6,26,26,17,,244.104,Tinggi,8,249.024,SEB_60
+9105,Kepulauan Yapen,Kab. Kepulauan Yapen,91,Papua,Papua,120214,22,19,19,19,1,19,19,12,,219.188547258286,Tinggi,8,194.100597998244,SEB_60
+9106,Biak Numfor,Kab. Biak Numfor,91,Papua,Papua,142838,26,18,26,26,18,26,26,17,,228.504,Tinggi,8,224.784,SEB_60
+9110,Sarmi,Kab. Sarmi,91,Papua,Papua,43555,25,25,25,8,25,25,25,8,,232.019726227336,Tinggi,8,220.707491464356,SEB_60
+9111,Keerom,Kab. Keerom,91,Papua,Papua,66251,26,26,26,9,,26,,17,,204.024,Tinggi,6,205.584,SEB_60
+9115,Waropen,Kab. Waropen,91,Papua,Papua,37588,26,18,18,18,26,9,18,17,,239.544,Tinggi,8,225.264,SEB_60
+9119,Supiori,Kab. Supiori,91,Papua,Papua,23761,26,18,18,9,5,26,26,8,,239.624,Tinggi,8,222.704,SEB_60
+9120,Mamberamo Raya,Kab. Mamberamo Raya,91,Papua,Papua,38313,26,18,18,18,5,9,26,8,,231.384,Tinggi,8,206.304,SEB_60
+9171,Kota Jayapura,Kota Jayapura,91,Papua,Papua,420645,16,9,13,4,2,13,18,9,,128.259095198504,Sedang,8,106.715118369761,SEB_60
+9202,Manokwari,Kab. Manokwari,92,Papua Barat,Papua,204242,20,20,20,7,4,20,24,13,,218.89707309921,Tinggi,8,188.080502328209,SEB_60
+9203,Fak Fak,Kab. Fak Fak,92,Papua Barat,Papua,90053,26,18,18,18,5,6,26,17,,206.973383469596,Tinggi,8,210.624,SEB_60
+9206,Teluk Bintuni,Kab. Teluk Bintuni,92,Papua Barat,Papua,93339,26,26,26,18,10,9,18,17,,241.488,Tinggi,8,228.288,SEB_60
+9207,Teluk Wondama,Kab. Teluk Wondama,92,Papua Barat,Papua,43865,19,19,19,19,3,19,13,6,,219.544040953021,Tinggi,8,194.383623409187,SEB_60
+9208,Kaimana,Kab. Kaimana,92,Papua Barat,Papua,65542,24,24,16,8,8,8,6,15,,225.984,Tinggi,8,193.999530075168,SEB_60
+9211,Manokwari Selatan,Kab. Manokwari Selatan,92,Papua Barat,Papua,37050,26,26,26,9,4,18,26,17,,221.424,Tinggi,8,216.864,SEB_60
+9212,Pegunungan Arfak,Kab. Pegunungan Arfak,92,Papua Barat,Papua,40122,26,26,26,26,,18,,17,,192.048,Tinggi,6,200.928,SEB_60
+9301,Merauke,Kab. Merauke,93,Papua Selatan,Papua,247519,26,2,26,18,26,2,2,25,,120.984,Sedang,8,128.904,SEB_60
+9302,Boven Digoel,Kab. Boven Digoel,93,Papua Selatan,Papua,67587,26,18,18,9,,9,,17,,192.504,Tinggi,6,178.224,SEB_60
+9303,Mappi,Kab. Mappi,93,Papua Selatan,Papua,117016,26,2,18,26,5,4,2,25,,159.144,Sedang,8,148.344,SEB_60
+9304,Asmat,Kab. Asmat,93,Papua Selatan,Papua,116472,26,1,18,26,18,9,2,17,,188.964,Tinggi,8,181.944,SEB_60
+9401,Nabire,Kab. Nabire,94,Papua Tengah,Papua,180380,22,22,15,22,22,15,15,14,,203.454045417139,Tinggi,8,202.005015420771,SEB_60
+9402,Puncak Jaya,Kab. Puncak Jaya,94,Papua Tengah,Papua,240651,26,26,18,18,,9,,17,,200.248,Tinggi,6,191.248,SEB_60
+9403,Paniai,Kab. Paniai,94,Papua Tengah,Papua,230694,31,26,18,26,,9,,25,,193.464,Tinggi,6,200.064,SEB_60
+9404,Mimika,Kab. Mimika,94,Papua Tengah,Papua,341571,26,26,18,26,5,9,2,12,,203.544,Tinggi,8,195.504,SEB_60
+9405,Puncak,Kab. Puncak,94,Papua Tengah,Papua,105275,26,26,18,26,,9,,25,,188.664,Tinggi,6,195.264,SEB_60
+9406,Dogiyai,Kab. Dogiyai,94,Papua Tengah,Papua,122100,26,26,18,26,,18,,17,,188.664,Tinggi,6,195.504,SEB_60
+9407,Intan Jaya,Kab. Intan Jaya,94,Papua Tengah,Papua,155506,20,26,18,2,,9,,17,,175.544,Sedang,6,165.344,SEB_60
+9408,Deiyai,Kab. Deiyai,94,Papua Tengah,Papua,108869,26,26,18,26,,9,,8,,194.104,Tinggi,6,190.624,SEB_60
+9501,Jayawijaya,Kab. Jayawijaya,95,Papua Pegunungan,Papua,302517,26,26,18,26,,26,,25,,194.424,Tinggi,6,211.584,SEB_60
+9502,Pegunungan Bintang,Kab. Pegunungan Bintang,95,Papua Pegunungan,Papua,84783,26,26,26,18,,18,,17,,206.808,Tinggi,6,203.088,SEB_60
+9503,Yahukimo,Kab. Yahukimo,95,Papua Pegunungan,Papua,365006,26,26,26,9,,18,,25,,197.944,Tinggi,6,199.264,SEB_60
+9504,Tolikara,Kab. Tolikara,95,Papua Pegunungan,Papua,215247,26,26,18,18,,9,,17,,194.264,Tinggi,6,190.544,SEB_60
+9505,Mamberamo Tengah,Kab. Mamberamo Tengah,95,Papua Pegunungan,Papua,55463,26,26,18,18,,9,,17,,197.944,Tinggi,6,188.944,SEB_60
+9506,Yalimo,Kab. Yalimo,95,Papua Pegunungan,Papua,103407,26,26,26,18,,9,,8,,197.944,Tinggi,6,189.184,SEB_60
+9507,Lanny Jaya,Kab. Lanny Jaya,95,Papua Pegunungan,Papua,212091,26,26,18,9,,18,,25,,167.064,Sedang,6,173.664,SEB_60
+9508,Nduga,Kab. Nduga,95,Papua Pegunungan,Papua,108194,26,26,18,9,,18,,25,,188.344,Tinggi,6,189.664,SEB_60
+9601,Sorong,Kab. Sorong,96,Papua Barat Daya,Papua,128219,26,26,18,26,18,9,18,17,,240.528,Tinggi,8,230.208,SEB_60
+9602,Sorong Selatan,Kab. Sorong Selatan,96,Papua Barat Daya,Papua,55898,26,26,18,26,14,9,10,17,,221.328,Tinggi,8,218.688,SEB_60
+9603,Raja Ampat,Kab. Raja Ampat,96,Papua Barat Daya,Papua,64028,18,18,18,6,18,6,12,12,,245.969026356074,Tinggi,8,192.286724197801,SEB_60
+9604,Tambrauw,Kab. Tambrauw,96,Papua Barat Daya,Papua,29945,26,26,26,9,2,26,26,17,,226.368,Tinggi,8,224.208,SEB_60
+9605,Maybrat,Kab. Maybrat,96,Papua Barat Daya,Papua,44371,26,26,26,26,,9,,17,,197.088,Tinggi,6,198.528,SEB_60
+9671,Kota Sorong,Kota Sorong,96,Papua Barat Daya,Papua,297034,22,16,22,33,10,19,22,15,,253.412286828609,Tinggi,8,229.975669913186,SEB_60

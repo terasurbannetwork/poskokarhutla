@@ -136,6 +136,28 @@
         "public"
       ],
       "port": 8812
+    },
+    {
+      "name": "sippa",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8801",
+        "--persist-to",
+        ".wrangler/sippa",
+        "--var",
+        "SESI_KUNCI:kunci-lokal",
+        "--var",
+        "ADMIN_TOKEN:uji:sandi-uji",
+        "--var",
+        "SUPER_ADMIN:fee6957b3172",
+        "--var",
+        "IP_SALT:garam-lokal"
+      ],
+      "port": 8801
     }
   ]
 }
