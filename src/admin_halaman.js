@@ -17,9 +17,9 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "kinerja"];
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
 const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),

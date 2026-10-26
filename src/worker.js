@@ -22,6 +22,7 @@ import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
 import {RUTE_RISIKO7} from "./risiko7.js";
+import {RUTE_PENDATAAN} from "./pendataan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
@@ -558,15 +559,16 @@ const RUTE = {
   "GET /admin/kontak": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKontak()),
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
   ...RUTE_RISIKO7,   // peta peluang api 7 hari (eksperimental) dari R2 MEDIA risiko/, hanya admin atau akun pemirsa (src/risiko7.js)
+  ...RUTE_PENDATAAN,   // pendataan Satu Data BNPB Fase 1: akun responden, isian data/aplikasi, monitoring Super Admin (src/pendataan.js)
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
-/* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
+/* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin atau sesi_pendataan wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
    ditolak, karena SameSite=Lax tidak menahannya. Tanpa cookie sesi (publik, token header): seperti semula.
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)sesi_admin=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -594,7 +596,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);

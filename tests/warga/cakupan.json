@@ -696,7 +696,27 @@
     "GET /api/sippa/probe.csv": "GET log.csv dan probe.csv",
     "POST /api/sippa/log": "POST /api/sippa/log: W 201",
     "POST /api/sippa/dummy/isi": "dummy: Super Admin mengisi layar log",
-    "POST /api/sippa/dummy/hapus": "dummy: Super Admin mengisi layar log"
+    "POST /api/sippa/dummy/hapus": "dummy: Super Admin mengisi layar log",
+    "table pdt_akun": "migrasi 0060 idempoten",
+    "table pdt_sesi": "migrasi 0060 idempoten",
+    "table pdt_isian": "migrasi 0060 idempoten",
+    "table pdt_berkas": "migrasi 0060 idempoten",
+    "GET /api/pendataan/konfig": "tiap rute tanpa auth ditolak",
+    "POST /api/pendataan/daftar": "daftar: validasi 400",
+    "POST /api/pendataan/masuk": "masuk: menunggu 403",
+    "POST /api/pendataan/keluar": "POST lewat sesi tanpa x-pb ditolak",
+    "GET /api/pendataan/saya": "isolasi: akun lain tidak bisa mengubah",
+    "POST /api/pendataan/gantisandi": "reset Super Admin",
+    "POST /api/pendataan/isian": "isian: draf tanpa wajib lolos",
+    "POST /api/pendataan/hapus/:id": "hapus isian ikut menghapus berkas",
+    "POST /api/pendataan/berkas/:id": "berkas: unggah sah",
+    "GET /api/pendataan/berkas/:id": "berkas: unggah sah",
+    "POST /api/pendataan/berkas-hapus/:id": "berkas: unggah sah",
+    "GET /api/pendataan/admin/ringkas": "monitoring: ringkas admin",
+    "POST /api/pendataan/admin/akun/:id": "Super Admin setujui, tolak, cabut",
+    "GET /api/pendataan/admin/ekspor": "ekspor CSV",
+    "POST /api/pendataan/dummy": "dummy: isi memuat kelima status unit",
+    "GET /admin/pendataan": "halaman /admin/pendataan"
   },
   "dikecualikan": {
     "GET /api/sippa/data/:nama": "dibangun di SP-029 (rute data R2 bersesi); belum ada di src/sippa.js",
@@ -722,7 +742,8 @@
     "GET /api/sippa/alarm": "dibangun di SP-050 (alarm telemetri); belum ada di src/sippa.js",
     "POST /api/sippa/alarm-tutup/:id": "dibangun di SP-050 (alarm telemetri); belum ada di src/sippa.js",
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
-    "GET /admin/foto": "kerangka HTML statis; gerbang sesinya sama persis dengan /admin/statistik (St.halamanAdmin) yang sudah diuji di statistik.test.mjs"
+    "GET /admin/foto": "kerangka HTML statis; gerbang sesinya sama persis dengan /admin/statistik (St.halamanAdmin) yang sudah diuji di statistik.test.mjs",
+    "GET /pendataan": "halaman statis responden lewat halamanBnpbPublik; layarnya diuji tests/bnpb/pendataan.test.mjs"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"

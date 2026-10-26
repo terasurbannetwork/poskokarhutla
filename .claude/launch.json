@@ -158,6 +158,28 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8801
+    },
+    {
+      "name": "pendataan",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8803",
+        "--persist-to",
+        ".wrangler/pendataan",
+        "--var",
+        "SESI_KUNCI:kunci-lokal",
+        "--var",
+        "ADMIN_TOKEN:uji:sandi-uji",
+        "--var",
+        "SUPER_ADMIN:fee6957b3172",
+        "--var",
+        "IP_SALT:garam-lokal"
+      ],
+      "port": 8803
     }
   ]
 }

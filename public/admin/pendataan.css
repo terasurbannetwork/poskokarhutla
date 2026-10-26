@@ -1,0 +1,46 @@
+/* Pendataan Satu Data BNPB (/admin/pendataan): token warna dan tombol dari admin.css. Ponsel dulu. */
+.ad-wrap:has(.pd-bar){max-width:1440px}
+#app{display:grid;gap:14px;min-width:0}
+.pd-baris-pil{display:flex;flex-wrap:wrap;gap:8px}
+.pd-ringkas{display:inline-flex;align-items:baseline;gap:6px;background:var(--card);box-shadow:var(--bayang);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--ink2);font-weight:700}
+.pd-ringkas b{font:800 18px var(--display);color:var(--c2);font-variant-numeric:tabular-nums}
+.pd-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.pd-tab{display:inline-flex;gap:4px;background:var(--soft);border-radius:12px;padding:4px}
+.pd-tab button{border:0;background:transparent;color:var(--ink2);font:700 13px var(--font);padding:0 14px;min-height:36px;border-radius:9px;cursor:pointer;touch-action:manipulation}
+.pd-tab button[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:var(--bayang)}
+.pd-ekspor,.pd-aksi{display:flex;flex-wrap:wrap;gap:6px}
+.pd-tabel-wadah{overflow-x:auto;border-radius:14px 14px 0 0;background:var(--card);box-shadow:var(--bayang)}
+.pd-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
+.pd-tabel thead th{background:var(--navy);color:#fff;text-align:left;font-size:12px;font-weight:700;padding:10px 10px;white-space:nowrap;user-select:none}
+.pd-tabel thead th[data-urut]{cursor:pointer}
+.pd-tabel thead th:first-child{border-top-left-radius:14px}.pd-tabel thead th:last-child{border-top-right-radius:14px}
+.pd-tabel td{padding:10px;border-top:1px solid var(--line);vertical-align:top}
+.pd-tabel td small{display:block;color:var(--ink2);font-size:11.5px;overflow-wrap:anywhere}
+.pd-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.pd-tabel tr.pd-redup>td:not(:last-child){opacity:.55}
+.pd-klik tbody tr{cursor:pointer}.pd-klik tbody tr:hover{background:var(--soft)}
+.pd-pil{display:inline-flex;align-items:center;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;margin:0 4px 2px 0;
+  background:color-mix(in srgb,var(--pil,var(--ink3)) 16%,transparent);color:color-mix(in srgb,var(--pil,var(--ink3)) 80%,var(--ink))}
+.pd-pil.merah{--pil:var(--c1)}.pd-pil.kuning{--pil:var(--c3)}.pd-pil.hijau{--pil:var(--c4)}.pd-pil.biru{--pil:var(--c5)}.pd-pil.abu{--pil:var(--ink3)}.pd-pil.dummy{--pil:var(--c6);font-size:10px;letter-spacing:.06em}
+.pd-wa{text-decoration:none}
+.pd-saring{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.pd-saring select,.pd-cari{height:36px;border:0;border-radius:10px;background:var(--soft);padding:0 12px;font:inherit;font-size:13px;color:var(--ink)}
+.pd-cari{flex:1;min-width:180px;max-width:320px}
+.pd-chip{border:0;border-radius:999px;min-height:34px;padding:0 14px;background:var(--soft);color:var(--ink2);font:700 12.5px var(--font);cursor:pointer;touch-action:manipulation}
+.pd-chip[aria-pressed=true]{background:var(--navy);color:#fff}
+.pd-jumlah{margin-left:auto;color:var(--ink2);font-weight:700;font-size:12.5px}
+.pd-kosong{text-align:center;color:var(--ink2);font-weight:600;padding:24px 10px;margin:0;background:var(--card);border-radius:14px}
+.pd-redup{color:var(--ink2);font-size:12.5px}
+.pd-rahasia{border:2px dashed var(--c2);border-radius:14px;padding:12px 14px;background:var(--card);display:grid;gap:8px}
+.pd-rahasia p{margin:0;font-weight:700}
+.pd-rahasia code{display:block;background:var(--soft);border-radius:10px;padding:10px 12px;font:700 15px ui-monospace,Menlo,monospace;white-space:pre-wrap;overflow-wrap:anywhere;user-select:all}
+.pd-rahasia small{color:var(--ink2)}
+.pd-dialog{width:min(920px,calc(100vw - 24px));max-height:88dvh;border:0;border-radius:18px;padding:16px 18px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px -12px rgb(11 37 69 / .5)}
+.pd-dialog::backdrop{background:rgb(11 37 69 / .45)}
+.pd-dialog-kepala{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.pd-dialog-kepala h2{font-size:17px}
+.pd-dl{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:8px 14px;margin:10px 0}
+.pd-dl dt{color:var(--ink2);font-size:12.5px;font-weight:700}.pd-dl dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.pd-berkas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+@media (max-width:600px){.pd-dl{grid-template-columns:1fr;gap:2px}.pd-dl dd{margin-bottom:8px}}
+@media (prefers-reduced-motion:reduce){.pd-tab button,.pd-chip{transition:none}}
