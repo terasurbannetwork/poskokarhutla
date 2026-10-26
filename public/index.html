@@ -2420,6 +2420,7 @@ function renderCrumb() {
 }
 $("#crumb").addEventListener("click", async e => { const b = e.target.closest("button"); if (!b) return;
   if (b.dataset.rinci != null) { await Riwayat.muat(); const k = S.jalur.join("|"); return S.riw?.[k] ? Riwayat.buka(k) : toast("Rincian wilayah ini belum tersedia"); }
+  if (+b.dataset.n === 0) window.Cari?.hapus();   /* balik ke Indonesia: sorotan dan kartu hasil cari (kawasan, konsesi, buffer) ikut hilang */
   naik(+b.dataset.n); });
 function renderKPI() {
   if (!$("#kpis")) return;
@@ -2871,8 +2872,8 @@ function renderLegenda() {
     ${S.panel === "riw" || !Peta.lihat("titik") || (Kini.on && z < 6.5) ? "" : `<div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ecaa4f"></i>6–24 jam</span><span><i class="sw dot" style="background:#d4643c"></i>1–3 hari</span><span><i class="sw dot" style="background:#93352c"></i>3–7 hari</span></div>`}
-    ${S.panel === "riw" || !Peta.lihat("himawari") || (S.rentangHit || S.rentang) !== "hari" ? "" : `<div class="lbl">Deteksi Himawari-9</div>
-    <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#d946ef;border:2px solid #fff;box-shadow:0 0 0 3px rgba(217,70,239,.25)"></i>Api baru</span></div>`}
+    ${S.panel === "riw" || !Peta.lihat("himawari") || (S.rentangHit || S.rentang) !== "hari" ? "" : `<div class="lbl">Deteksi Api Baru</div>
+    <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#d946ef;border:2px solid #fff;box-shadow:0 0 0 3px rgba(217,70,239,.25);margin-left:3px"></i>Api baru</span></div>`}
     ${/* sengaja di atas: legenda mendatar dibatasi tingginya, bulatan merah berangka harus terjelaskan tanpa digulir */
       S.panel === "riw" || !Peta.lihat("kluster") ? "" : `<div class="lbl">Status cluster</div>
     <div class="leg" style="margin-top:4px">${S.meta.status.map((s, i) => i === 0 || (i < 3 && z < 6) ? "" : i === 3 ? `<span><i class="sw dot" style="background:#c9503a;border:2px solid #fff;box-shadow:0 0 0 1px #c9503a;color:#fff;font:700 8px/10px sans-serif;text-align:center;width:14px;height:14px">2</i>Cluster prioritas (angka = jumlah cluster)</span>` : `<span><i class="sw" style="background:${["#5a9e74", "#4f8fc4", "#e58a45", "#c9503a"][i]}"></i>${s}</span>`).join("")}</div>`}
